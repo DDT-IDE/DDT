@@ -1,0 +1,53 @@
+<project name="BuildDDT" default="build">
+	
+	<property name="projects.dir" location="${basedir}/.." />
+	<echo message="projects.dir: ${projects.dir}"/>
+	
+	<import file="pdebuild.xml"/>
+	
+	<!-- =============== Setup PDE Build host =============== -->
+	
+	<!-- =============== Setup target platform =============== -->
+	
+	<!-- =============== Main Build =============== -->
+	
+	<fileset id="projects.plugins.fileset" dir="${projects.dir}/" 
+		includes="org.dsource.melnorme/**,org.dsource.ddt.*/**,descent.compiler/**" 
+		excludes="**/.metadata/,**/*.class,*-feature/**,*-build/**,*.update-site/**"
+	/>
+	
+	<fileset id="projects.features.fileset" dir="${projects.dir}/" 
+		includes="org.dsource.ddt-feature/**" 
+	/>
+	
+	<target name="prepareBuildDir.copyProjects" depends="PDEBuild.prepareBuildDir.copyProjects">
+	   	<move file="${build.dir}/features/org.dsource.ddt-feature/" tofile="${build.dir}/features/org.dsource.ddt/" />
+		<copy file="${basedir}/products/rtgpack.product" tofile="${build.dir}/default.product" />
+		<copy todir="${build.dir}/features/" >
+			<fileset dir="${basedir}/features/" />
+		</copy>
+	</target>
+    
+	<property name="build.buildLabel" value="DDT" />
+	<property name="build.archivePrefix" value="eclipse" />
+	<property name="builder.pdebuild.element.configs" value="*, *, *" />
+	<property name="builder.pdebuild.product.configs" value="win32, win32, x86" />
+	
+	<target name="build" depends="build.element, build.product" description="Builds the IDE artifacts for release">
+	</target>
+	
+	<target name="build.testproduct" description="Builds an eclipse installation for automated Testing"
+		depends="preparePDEBuilder, prepareTargetPlatform, build.testproduct.PDEBuild">
+	</target>
+	
+	<target name="build.testproduct.PDEBuild" depends="prepareBuildDir.forTest, build.product.PDEBuild">
+	</target>
+	
+	<target name="prepareBuildDir.forTest" depends="prepareBuildDir" >
+		<replaceregexp byline="false" flags="gs" match="((\n|\r\n)_addToPrevious@TESTS@) = " replace="," >
+			<fileset dir="${build.dir}/plugins" includes="*/build.properties" />
+		</replaceregexp>
+		<copy tofile="${build.dir}/default.product" file="${basedir}/products/test.product" />
+	</target>
+
+</project>

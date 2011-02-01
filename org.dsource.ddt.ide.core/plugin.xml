@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="nature"
+         name="Dee nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run class="mmrnmhrm.core.model.DeeNature"/>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            default-charset="UTF-8"
+            file-extensions="d, di, dh"
+            id="org.dsource.ddt.ide.core.content.dsource"
+            name="D Source (Mmrnmhrm)"
+            priority="high">
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="mmrnmhrm.core.DeeCorePreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.core.language">
+      <language
+            class="mmrnmhrm.core.dltk.DeeLanguageToolkit"
+            nature="org.dsource.ddt.ide.core.nature">
+      </language>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.core.sourceElementParsers">
+      <parser
+            class="mmrnmhrm.core.dltk.DeeSourceElementParser"
+            nature="org.dsource.ddt.ide.core.nature"
+            priority="0">
+      </parser>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.core.sourceParsers">
+      <parserContribution
+            natureId="org.dsource.ddt.ide.core.nature">
+         <parser
+               class="mmrnmhrm.core.dltk.DeeSourceParserFactory"
+               description="%sourceParser.description"
+               id="org.dsource.ddt.ide.core.SourceParser"
+               name="%sourceParser.name"
+               priority="1">
+         </parser>
+      </parserContribution>
+   </extension>
+   <extension
+         id="deebuilder"
+         name="Dee Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run class="mmrnmhrm.core.build.DeeProjectBuilder">
+            <parameter
+                  name="comment"
+                  value="Builder comment"/>
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="deeproblem"
+         name="Dee Problem Name"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <super type="org.eclipse.core.resources.textmarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.dsource.ddt.ide.core.expressions.isDeeNature">
+         <adapt
+               type="org.eclipse.core.resources.IProject">
+            <test
+                  property="org.eclipse.core.resources.projectNature"
+                  value="org.dsource.ddt.ide.core.nature">
+            </test>
+         </adapt>
+      </definition>
+      <definition
+            id="org.dsource.ddt.ide.core.expressions.isDeeNatureContainer">
+         <adapt
+               type="org.eclipse.core.resources.IContainer">
+            <test
+                  property="org.eclipse.core.resources.projectNature"
+                  value="org.dsource.ddt.ide.core.nature">
+            </test>
+         </adapt>
+      </definition>
+   </extension>
+   <extension
+         name="TODO"
+         point="org.eclipse.dltk.core.selectionEngine">
+      <selectionEngine
+            class="mmrnmhrm.core.codeassist.DeeSelectionEngine"
+            nature="org.dsource.ddt.ide.core.nature"
+            priority="0">
+      </selectionEngine>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.core.search">
+      <searchFactory
+            class="mmrnmhrm.core.dltk.search.DeeSearchFactory"
+            nature="org.dsource.ddt.ide.core.nature">
+      </searchFactory>
+      <matchLocator
+            class="mmrnmhrm.core.dltk.search.DeeMatchLocator"
+            nature="org.dsource.ddt.ide.core.nature">
+      </matchLocator>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.launching.interpreterInstallTypes">
+      <interpreterInstallType
+            class="mmrnmhrm.core.launch.DeeDmdInstallType"
+            id="org.dsource.ddt.ide.core.launching.deeDmdInstallType">
+      </interpreterInstallType>
+   </extension>
+   <!--
+   <extension
+         point="org.eclipse.dltk.core.builder">
+      <builder
+            class="mmrnmhrm.core.build.DeeDLTKScriptBuilder"
+            nature="org.dsource.ddt.ide.core.nature">
+      </builder>
+   </extension>
+   -->
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="mmrnmhrm.core.launch.DeeLaunchConfigurationDelegate"
+            id="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
+            modes="run, debug"
+            name="%localDeeApplication">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         id="org.dsource.ddt.ide.core.hierarchyResolverTODO"
+         point="org.eclipse.dltk.core.fileHierarchyResolvers">
+      <fileHierarchyResolver
+            class="mmrnmhrm.core.dltk.search.DeeFileHierarchyResolver"
+            nature="org.dsource.ddt.ide.core.nature"
+            priority="0">
+      </fileHierarchyResolver>
+   </extension>
+
+</plugin>

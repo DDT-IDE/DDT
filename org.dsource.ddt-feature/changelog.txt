@@ -1,0 +1,91 @@
+= DDT Change Log =
+
+== DDT 0.4.1 (devel) ==
+ * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)
+ * Fixed #25 and other source highlighting bugs (like nested comments being lexed as non-nested comments). 
+   Also added additional syntax highlighting options for WYSIWYG strings, delimited strings, and character literals.
+ * Fixed a bug due to reuse of a single instance of the editor source-highlighting & folding parser. 
+    This bug may have been manifested in obscure, unknown, and/or hard to replicate ways.   
+
+== DDT 0.4.0 (2010-11-17) ==
+ * Renamed project to DDT
+ * Updated IDE to latest DLTK version (2.0).
+ * Fixed comment indentation character (was '#' instead of '//') on toggle comment actions 
+ * Fixed defaults bug in DeeRootPreferencePage and DeeEditorPreferencePage.
+ * Added DEEBUILDER.COMPILEREXEPATH variable to builder, changed builder response file defaults.
+ * Fixed parser to be able to parse expressions as the argument of typeid.
+ * Added a parser workaround to allow parsing D source with annotations.
+ * Fixed several parser bugs.
+ * Removed Content Assist Templates preference page.
+ 
+== Mmrnmhrm 0.3.1 (2010-04-12) ==
+ * Updated IDE to latest DLTK version (1.0), fixed bugs related to DLTK version migration.
+ * Added Eclipse feature and update-site (so now supports automatic updating).
+ * Updated support for new folder layout in newer DMD compiler installations.
+ * Added D perspective.
+
+== Mmrnmhrm 0.3.0 (2008-10-09) ==
+ * Updated IDE to latest DLTK version (1.0M2), and also to Eclipse 3.4.
+ * Minor builder changes. Added $DEEBUILDER.COMPILERPATH builder flag for compiler executable location.
+ * Implemented initial DLTK Type Hierarchies implementation. Supertype hierarchy viewing should work ok, but subtype hierarchy is not, needs further work on part of DLTK. (Type Hierarchy View is available by pressing F4, Type Hierarchy Pop-up is available by pressing Ctrl-T).
+ * Minor fixes to the search engine (searching for classes and functions should work better now, as well as Open-Type)
+ * Added auto edit strategies: smarter indentation on enter presses, copy&paste, etc. There may still be some kinks.
+
+
+== Mmrnmhrm 0.2.2 (2007-11-13) ==
+ * Fixed dependency on the org.junit plugin, and consequently on JDT.
+ * Fixed SWT debug colors allways on.
+ * Fixed Source Coloring preference page "Basic types" entry bug.
+ * Removed unused DTLK project script builder (fix only takes effect on new projects).
+ * Rethought and implemented the integrated project builder, based on a simple IDE-managed response file. It should be ready for use now.
+
+== Mmrnmhrm 0.2.1 (2007-10-23) ==
+ * Fixed major bug with document syntax highlighting and partitions.
+ * Improved name lookup: statement blocks and enum bodies are now supported correctly (they don't see forward definitions anymore).
+ * Improved Code completion: duplicates or occluded names are no longer presented.
+ * Can now set, view, and remove Descent-compatible breakpoints in Mmrnmhrm's editor (these will work with Descent's debugger).
+ * DDoc text and code completion hovers are now processed and presented as HTML instead of raw characters, thanks to Ary Mazana's Descent DDoc parser. ([http://svn.dsource.org/projects/descent/downloads/images/mmrnmhrm_html_ddoc_hover2.png pic])
+ * Fixed some Neo AST bugs.
+ * Minor builder changes (builder still work in progress).
+
+== Mmrnmhrm 0.2.0 (2007-09-18) ==
+
+ * Major rewrite of Mmrnmhrm to use the DTLK framework.
+ * Huge Model improvements:
+  * Rich JDT-like project model, (with build path support for source and zip folders, local and external libraries, build path variables and containers, build path access rules, as well as UI boilerplate code for build path management and navigation)
+  * Supports caching and indexing (improved performance in large projects)
+  * Supports resource delta processing (no more need for manual refreshing)
+  * Added support for DMD+Phobos install location and Standard Library
+ * Updated the parser to latest Descent parser (now supports D 2.0)
+ * Added editor folding
+ * Added JDT-like Quick Outline
+ * Added JDT-like Open Type Dialog
+ * Selections in selective imports no longer considered definitions, they are now considered references. This behavior is now according to the spec.
+ * Added special code completion context for module names in imports (completion shows available modules for importing).
+ * Added special code completion context for name selections in selective imports (completion shows available names for selection).
+ * Added initial semantic search: 
+   * Search for definitions based on a text pattern.
+   * Search for all references to a given definition.
+ * Added very basic builder support (using BUD (http://www.dsource.org/projects/build))
+ * Added very basic launch support (debugging not supported)
+
+== Mmrnmhrm 0.1 - (2007-08-17) ==
+Initial public release 
+
+ * New Project Wizard  
+ * Very basic D Project Model (src-folders only, uncached, no resource listening)
+ * Project Configuration Page
+ * D Editor:
+  * Syntax Highlighting
+  * Content Outline
+ * Syntax Highlighting configuration page
+ * Find Definition: Locates any definition unit: Module, class, struct/union, variable, function parameter, template, template parameter, alias, typedef, named enums, enum members, unnamed enum members, named mixins, import aliases, import selections. Unsupported:
+   * Searching inside unnamed mixins, and the scope of the with() statement.
+   * Special reference targets: goto labels, version/debug identifiers.
+   * Most expression reference nodes (including function calls).
+   * Special references (new, delete, this, super).
+   * Some native references (int, void, arrays, functions, etc.).
+   * Function or template overload resolution (if there are several matches, lists all homonyms).
+ * Basic Code Completion
+   * with some minor syntax recovery
+ * An AST Viewer (for IDE debugging purposes only)

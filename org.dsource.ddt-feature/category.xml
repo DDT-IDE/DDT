@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.dsource.ddt_0.4.0.qualifier.jar" id="org.dsource.ddt" version="0.4.0.qualifier">
+      <category name="ddt.category"/>
+   </feature>
+   <category-def name="ddt.category" label="DDT Project"/>
+</site>

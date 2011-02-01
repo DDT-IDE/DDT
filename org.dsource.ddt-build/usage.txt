@@ -1,0 +1,13 @@
+
+	Build script for the Eclipse product.
+	Requirements:
+	 	projects.dir set to a folder containing all Frontend projects, as per the SVN directory
+	
+	Info:
+		The product is built against the target platform in ${basedir}/target , 
+		which can be created with the prepareTargetPlatform Ant target. 
+	
+	Results:
+	  * The update site in ${build.dir}/Frontend/site-repo
+	  * A bundled product in ${build.dir}/Frontend/Frontend-win32.win32.x86.zip
+		

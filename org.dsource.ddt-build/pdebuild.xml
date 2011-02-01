@@ -1,0 +1,180 @@
+<project name="PDEBuild" default="help" >
+	
+	<echo message="Base Dir: ${basedir}"/>
+	
+	<!-- Redefine properties as desired:  -->
+	
+	<property name="java.jvm6.dir" location="${basedir}/jre" />
+	<property name="java.jvm5.dir" location="${java.jvm6.dir}" />
+	
+	<property name="build.workdir" location="${basedir}/../_buildworkdir" />
+	
+	
+	<property name="build.dir" location="${build.workdir}/build.dir" />
+	<property name="results.dir" location="${build.workdir}/results" />
+	<property name="builder.pdebuild" location="${build.workdir}/pdebuild" />
+	<property name="builder.targetplatform" location="${build.workdir}/target" />
+	
+	<!-- - - - - - - - - - - - - - - - - - - - -  -->
+	
+	<property name="builder.source.pdebuild" location="${basedir}/eclipse.pdebuild" />
+	<property name="builder.source.targetplatform" location="${basedir}/target" />
+	
+	<tstamp />
+	<property name="build.qualifier" value="${DSTAMP}${TSTAMP}" />
+	<echo message="build.qualifier: ${build.qualifier}"/>
+	
+    <target name="clean" description="Clean temporary and result files.">
+    	<delete dir="${build.dir}"/>
+    	<mkdir dir="${build.dir}"/>
+    	<delete dir="${results.dir}"/>
+    	<mkdir dir="${results.dir}"/>
+    </target>
+	
+	<target name="help" description="Print usage">
+		<loadfile property="help.filecontents" srcfile="usage.txt" />
+		<echo message="${help.filecontents}" />
+	</target>
+	
+	
+	<!-- =============== Setup PDE Build host =============== -->
+    <target name="preparePDEBuilder" unless="preparePDEBuilder.dont" 
+    	description="unpacks the PDE Build Eclipse installation">
+    	<available property="builder.source.pdebuild._exists" file="${builder.source.pdebuild}"/>
+    	<fail unless="builder.source.pdebuild._exists"/>
+    	
+    	<delete dir="${builder.pdebuild}/eclipse" />
+    	<unzip dest="${builder.pdebuild}">
+    	    <patternset includes="eclipse/**" />
+    		<files includes="${builder.source.pdebuild}/*.zip" />
+    	</unzip>
+    </target>
+	
+	<!-- TODO, search for this automatically ? -->
+	<property name="builder.pdebuild.launcher" location="${builder.pdebuild}/eclipse/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
+	<property name="builder.pdebuild.home" location="${builder.pdebuild}/eclipse/plugins/org.eclipse.pde.build_3.6.0.v20100603/" />
+	
+	<property name="builder.pdebuild.productbuildfile" location="${builder.pdebuild.home}/scripts/productBuild/productBuild.xml" />
+	<property name="builder.pdebuild.elementbuildfile" location="${builder.pdebuild.home}/scripts/build.xml" />
+	
+	
+	<!-- =============== Setup target platform =============== -->
+    <target name="prepareTargetPlatform.unzip">
+    	<delete dir="${builder.targetplatform}/eclipse" />
+    	<unzip dest="${builder.targetplatform}">
+    	    <patternset includes="eclipse/**" />
+    		<files includes="${builder.source.targetplatform}/*.zip" />
+    	</unzip>
+		<unzip dest="${builder.targetplatform}/eclipse/dropins">
+			<files includes="${builder.source.targetplatform}/dependencies/*.zip" />
+			<files includes="${builder.source.targetplatform}/dependencies.tests/*.zip" />
+		</unzip>
+    </target>
+	
+    <target name="prepareTargetPlatform.post">
+    </target>
+	
+    <target name="prepareTargetPlatform" unless="prepareTargetPlatform.dont" 
+    	depends="prepareTargetPlatform.unzip,prepareTargetPlatform.post" 
+    	description="unpacks the target platform">
+    </target>
+	
+	
+	<!-- =============== Main Build =============== -->
+	
+    <target name="prepareBuildDir.copyProjects" depends="clean">
+    	<pathconvert property="projects.plugins.fileset.prop" refid="projects.plugins.fileset" targetos="unix" pathsep="${line.separator}" />
+    	<echo message="${projects.plugins.fileset.prop}" level="debug" />
+    	
+    	<copy todir="${build.dir}/plugins" >
+    		<fileset refid="projects.plugins.fileset" />
+    	</copy>
+    	<copy todir="${build.dir}/features" >
+    		<fileset refid="projects.features.fileset" />
+    	</copy>
+	</target>
+	
+    <target name="prepareBuildDir" depends="clean, prepareBuildDir.copyProjects">
+		<!-- Update build version qualifier -->
+		<replace dir="${build.dir}/plugins" value="${build.qualifier}" token="@BUILDID@">
+			<include name="**/about.mappings" />
+		</replace>
+    </target>
+	
+	
+	<target name="build.element" description="Builds the feature/plugin artifacts"
+		depends="preparePDEBuilder, prepareTargetPlatform, build.element.PDEBuild">
+	</target>
+	
+	<target name="build.element.PDEBuild" depends="prepareBuildDir" >
+		<fail unless="builder.pdebuild.elementbuildfile"/>
+		<fail unless="builder.pdebuild.element.configs"/>
+		<antcall target="-build.PDEBuild.do">
+			<param name="builder.pdebuild.buildfile" value="${builder.pdebuild.elementbuildfile}"/>
+			<param name="builder.pdebuild.configs" value="${builder.pdebuild.element.configs}"/>
+		</antcall>
+	</target>
+	
+	<target name="build.product" description="Builds the Product archive"
+		depends="preparePDEBuilder, prepareTargetPlatform, build.product.PDEBuild">
+	</target>
+	
+	<target name="build.product.PDEBuild" depends="prepareBuildDir" >
+		<fail unless="builder.pdebuild.productbuildfile"/>
+		<fail unless="builder.pdebuild.product.configs"/>
+		<antcall target="-build.PDEBuild.do">
+			<param name="builder.pdebuild.buildfile" value="${builder.pdebuild.productbuildfile}"/>
+			<param name="builder.pdebuild.configs" value="${builder.pdebuild.product.configs}"/>
+		</antcall>
+	</target>
+	
+	<target name="-build.PDEBuild.do" >
+		<fail unless="build.buildLabel"/>
+		<fail unless="build.archivePrefix"/>
+		<fail unless="builder.pdebuild.buildfile"/>
+		<fail unless="builder.pdebuild.configs"/>
+		<available file="${java.jvm6.dir}" property="java.jvm6.dir._exists"/>
+		<fail unless="java.jvm6.dir._exists"/>
+		
+		
+		<!-- Invoke PDE Build -->
+		<java jar="${builder.pdebuild.launcher}" fork="true" failonerror="true" >
+			<arg line="-data ${build.dir}/workspace" />
+			<arg line="-application org.eclipse.ant.core.antRunner" />
+			<arg line="-buildfile ${builder.pdebuild.buildfile}" />
+			<arg value="-Dbuilder=${basedir}/product.configdir" />
+			<arg value="-Dbuild.dir=${build.dir}" />
+			<arg value="-Dbuild.qualifier=${build.qualifier}" />
+			<arg value="-DbuildLabel=${build.buildLabel}" />
+			<arg value="-DarchivePrefix=${build.archivePrefix}" />
+			<arg value="-Dconfigs=${builder.pdebuild.configs}" />
+			<arg value="-Declipse.targetplatform=${builder.targetplatform}" />
+			<arg value="-Djava.jvm6.dir=${java.jvm6.dir}" />
+		</java>
+		
+    	<move todir="${results.dir}" >
+    		<fileset dir="${build.dir}/${build.buildLabel}"/>
+    	</move>
+	</target>
+	
+	
+	<property name="product.updatesite.outputdir" value="${build.dir}/Product/site-repo" />
+	
+	<!-- Create the update site -->
+	<target name="build.UpdateSiteForProduct" depends="build.product.PDEBuild">
+		<fail unless="product.outputzipfile"/>
+		
+		<unzip src="${product.outputzipfile}" dest="${build.dir}/Product-installation/" />
+		
+		<java jar="${builder.pdebuild.launcher}" fork="true" failonerror="true" >
+			<arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
+			<arg line="-metadataRepository file:/${product.updatesite.outputdir}" />
+			<arg line="-artifactRepository file:/${product.updatesite.outputdir}" />
+			<arg line="-source ${build.dir}/Product-installation/${build.archivePrefix}" />
+			<arg line="-configs win32.win32.x86 -publishArtifacts -compress" />
+		</java>
+		
+    	<move todir="${results.dir}" file="${product.updatesite.outputdir}" />
+	</target>
+	
+</project>

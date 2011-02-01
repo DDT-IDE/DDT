@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/*******************************************************************************
+ * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+
+<templates>
+
+<template name="for" description="%Templates.for_array" id="descent.ui.templates.for_array" context="d" enabled="true" autoinsert="false">for (int ${index} = 0; ${index} &lt; ${array}.length; ${index}++) {
+	${line_selection}${cursor}
+}</template>
+
+<template name="for" description="%Templates.for_temp" id="descent.ui.templates.for_temp" context="d" enabled="true" autoinsert="false">for (int ${index} = 0; ${index} &lt; ${array}.length; ${index}++) {
+	${array_type} ${array_element} = ${array}[${index}];
+	${cursor}
+}</template>
+
+<template name="foreach" description="%Templates.foreach_collection" id="descent.ui.templates.foreach_single" context="d" enabled="true" autoinsert="false">foreach (${var}; ${iterable}) {
+	${cursor}
+}</template>
+
+<template name="foreach" description="%Templates.foreach_dictionary" id="descent.ui.templates.foreach_dictionary" context="d" enabled="true" autoinsert="false">foreach (${key}, ${value}; ${iterable}) {
+	${cursor}
+}</template>
+
+<template name="foreach_reverse" description="%Templates.foreach_reverse_collection" id="descent.ui.templates.foreach_reverse_single" context="d" enabled="true" autoinsert="false">foreach_reverse (${var}; ${iterable}) {
+	${cursor}
+}</template>
+
+<template name="foreach_reverse" description="%Templates.foreach_reverse_dictionary" id="descent.ui.templates.foreach_reverse_dictionary" context="d" enabled="true" autoinsert="false">foreach_reverse (${key}, ${value}; ${iterable}) {
+	${cursor}
+}</template>
+
+<template name="do" description="%Templates.do" id="descent.ui.templates.do" context="d" enabled="true" autoinsert="false">do {
+	${line_selection}${cursor}
+} while (${condition});</template>
+
+<template name="switch" description="%Templates.switch" id="descent.ui.templates.switch" context="d" enabled="true" autoinsert="false">switch (${key}) {
+	case ${value}:
+		${cursor}
+		break;
+
+	default:
+		break;
+}</template>
+
+<template name="if" description="%Templates.if" id="descent.ui.templates.if" context="d" enabled="true" autoinsert="false">if (${condition}) {
+	${line_selection}${cursor}
+}</template>
+
+<template name="ifelse" description="%Templates.ifelse" id="descent.ui.templates.ifelse" context="d" enabled="true" autoinsert="false">if (${condition}) {
+	${cursor}
+} else {
+	
+}</template>
+
+<template name="elseif" description="%Templates.elseif" id="descent.ui.templates.elseif" context="d" enabled="true" autoinsert="false">else if (${condition}) {
+	${cursor}
+}</template>
+
+<template name="else" description="%Templates.else" id="descent.ui.templates.else" context="d" enabled="true" autoinsert="false">else {
+	${cursor}
+}</template>
+
+<template name="try" description="%Templates.try" id="descent.ui.templates.try" context="d" enabled="true" autoinsert="false">try {
+	${line_selection}${cursor}
+} catch (${Exception} e) {
+	// ${todo}: handle exception
+}</template>
+
+<template name="catch" description="%Templates.catch" id="descent.ui.templates.catch" context="d" enabled="true" autoinsert="false">catch (${Exception} e) {
+	${cursor}// ${todo}: handle exception
+}</template>
+
+<template name="main" description="%Templates.main" id="descent.ui.templates.main" context="d" enabled="true" autoinsert="false">int main(char[][] args) {
+	${cursor}
+	return 0;
+}</template>
+
+<template name="public_method" description="%Templates.public_method" id="descent.ui.templates.public_method" context="d" enabled="true" autoinsert="false">public ${return_type} ${name}(${}) {
+	${cursor}
+}</template>
+
+<template name="protected_method" description="%Templates.protected_method" id="descent.ui.templates.protected_method" context="d" enabled="true" autoinsert="false">protected ${return_type} ${name}(${}) {
+	${cursor}
+}</template>
+
+<template name="package_method" description="%Templates.package_method" id="descent.ui.templates.package_method" context="d" enabled="true" autoinsert="false">package ${return_type} ${name}(${}) {
+	${cursor}
+}</template>
+
+<template name="private_method" description="%Templates.private_method" id="descent.ui.templates.private_method" context="d" enabled="true" autoinsert="false">private ${return_type} ${name}(${}) {
+	${cursor}
+}</template>
+
+<template name="private_static_method" description="%Templates.private_static_method" id="descent.ui.templates.private_static_method" context="d" enabled="true" autoinsert="false">private static ${return_type} ${name}(${}) {
+	${cursor}
+}</template>
+
+<template name="cast" description="%Templates.cast" id="descent.ui.templates.cast" context="d" enabled="true" autoinsert="false">${type} ${new_name} = cast(${type}) ${name};</template>
+
+<template name="new" description="%Templates.new" id="descent.ui.templates.new" context="d" enabled="true" autoinsert="false">${type} ${name} = new ${type}(${arguments});</template>
+<template name="authors" description="%Templates.author" id="descent.ui.templates.author" context="ddoc" enabled="true" autoinsert="true">Authors: ${user}</template>
+
+<template name="while" description="%Templates.while_condition" id="descent.ui.templates.while_condition" context="d" enabled="true" autoinsert="false">while (${condition}) {
+	${line_selection}${cursor}
+}</template>
+
+<template name="synchronized" description="%Templates.synchronized" id="descent.ui.templates.synchronized" context="d" enabled="true" autoinsert="false">synchronized (${mutex}) {
+	${line_selection}${cursor}
+}</template>
+
+<template name="volatile" description="%Templates.volatile" id="descent.ui.templates.volatile" context="d" enabled="true" autoinsert="false">volatile (${mutex}) {
+	${line_selection}${cursor}
+}</template>
+
+</templates>

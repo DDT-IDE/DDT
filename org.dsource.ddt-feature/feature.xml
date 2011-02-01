@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.dsource.ddt"
+      label="%featureName"
+      version="0.4.0.qualifier"
+      provider-name="%providerName"
+      plugin="org.dsource.ddt.ide.ui">
+
+   <description url="http://www.dsource.org/projects/ddt">
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <url>
+      <update label="%updateSiteName" url="http://svn.codespot.com/a/eclipselabs.org/ddt/repo/"/>
+   </url>
+
+   <requires>
+      <import feature="org.eclipse.dltk.core" version="2.0.0" match="compatible"/>
+   </requires>
+
+   <plugin
+         id="org.dsource.ddt.ide.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.dsource.ddt.ide.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.dsource.ddt.dtool"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="descent.compiler"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
