@@ -7,7 +7,7 @@ import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.text.DeeCodeContentAssistProcessor;
 import mmrnmhrm.ui.editor.text.DeeDocTextHover;
 import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
-import mmrnmhrm.ui.internal.text.RubyAutoEditStrategy;
+import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
@@ -202,7 +202,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		// TODO improve auto edit strategy
 		String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
-		return new IAutoEditStrategy[] { new RubyAutoEditStrategy(partitioning ) };
+		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(partitioning ) };
 	}
 	
 	
