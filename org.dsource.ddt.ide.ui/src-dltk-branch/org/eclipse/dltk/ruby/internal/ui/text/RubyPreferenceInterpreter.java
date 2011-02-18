@@ -1,6 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ 
+ *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
-
-import mmrnmhrm.ui.DeePlugin;
 
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.PreferenceConstants;
@@ -10,15 +17,8 @@ import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class RubyPreferenceInterpreter implements ITabPreferencesProvider {
-	private static RubyPreferenceInterpreter instance;
-	private final IPreferenceStore store;
 
-	public static final RubyPreferenceInterpreter getDefault() {
-		if (instance == null)
-			instance = new RubyPreferenceInterpreter(DeePlugin.getDefault()
-					.getPreferenceStore());
-		return instance;
-	}
+	private final IPreferenceStore store;
 
 	public RubyPreferenceInterpreter(IPreferenceStore store) {
 		this.store = store;
