@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.tests.ui.DeeUITests;
 import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
+import mmrnmhrm.ui.internal.text.LangAutoEditsPreferencesAdapter;
 import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.dltk.ui.CodeFormatterConstants;
@@ -19,10 +20,22 @@ import dtool.tests.DeeTestUtils;
 
 public class DeeAutoEditStragetyTest extends DeeTestUtils {
 	
-	private static final String NL = "\r\n";
-	private static final String TAB = "\t";
+	protected static final String NL = "\r\n";
+	protected static final String TAB = "\t";
 	
-	private static final String GENERIC_CODE = DeeUITests.readResource("sampledefs.d");
+	public static final String GENERIC_CODE = DeeUITests.readResource("sampledefs.d");
+	public static final String NEUTRAL_SRC1 = 
+		line("void func() {")+
+		line(TAB+"blah();")+
+		line(TAB+"blah2([1, 2, 3]);")+
+		NL
+		;
+	public static final String NEUTRAL_SRC2 = GENERIC_CODE; // TODO: should write some more
+	public static final String NEUTRAL_SRC3 = NEUTRAL_SRC1; // TODO: should write some more
+	
+	public static String line(String string) {
+		return string+NL;
+	}
 	
 	protected DeeAutoEditStrategy autoEditStrategy;
 	protected Document document;
@@ -65,17 +78,51 @@ public class DeeAutoEditStragetyTest extends DeeTestUtils {
 	
 	@Test
 	public void testSmartIndentBasic() {
-		testEnterAutoEdit("void main(){", "", NL+TAB+NL+"}", -1);
-		testEnterAutoEdit("void main(){", "}", NL+TAB+NL, -1);
+		testEnterAutoEdit("void main(){}", "blah", NL); // balance 0 : 0
+		
+		testEnterAutoEdit("void main(){", NL+"}", NL+TAB); // balance 0 : 1 (closed)
+		testEnterAutoEdit("void main(){", "}",    NL+TAB);
 	}
 	
-	private void testEnterAutoEdit(String sourceText, String sourceAfter, String expectedEdit, int caretOffset) {
-		int keypressOffset = sourceText.length();
+	@Test
+	public void testSmartIndentBasic2() {
+		// balance 0 : 1(unclosed)
+		testEnterAutoEdit("void main{", ""                             , NL+TAB+NL+"}", (NL+TAB).length());
+		testEnterAutoEdit("void main(",      NL+"func(){}"+NL+"blah();", NL+TAB+NL+")", (NL+TAB).length());
+		testEnterAutoEdit("vo() main{", "  "+NL+"func(){}"+NL+"blah();", NL+TAB+NL+"}", (NL+TAB).length());
+		// balance 0 : 1(unclosed but don't close)
+		testEnterAutoEdit("void main(){",       "func(){}"+NL+"blah();", NL+TAB, -1);
+	}
+	
+	@Test
+	public void testSmartIndentBasic3() {
+		String sourcePre = 
+			line("func{{")+
+			TAB+"abc}"; // balance -1 : 0
+		testEnterAutoEdit(sourcePre, "}"+NEUTRAL_SRC1, NL+TAB);
+		
+		sourcePre = 
+			line(TAB+"func(((")+
+			TAB+"abc))"; // balance -2 : 0	 '('
+		testEnterAutoEdit(sourcePre, NEUTRAL_SRC1+")", NL+TAB);
+	}
+	
+	protected void testEnterAutoEdit(String sourceBefore, String sourceAfter, String expectedEdit) {
+		testEnterAutoEdit(sourceBefore, sourceAfter, expectedEdit, -1);
+	}
+	
+	protected void testEnterAutoEdit(String sourceBefore, String sourceAfter, String expectedInsert, int offsetDelta) {
+		int keypressOffset = sourceBefore.length();
 		Document document = getDocument();
-		document.set(sourceText + sourceAfter);
+		document.set(sourceBefore + sourceAfter);
 		DocumentCommand docCommand = createDocumentCommand(keypressOffset, 0, NL);
 		getAutoEditStrategy().customizeDocumentCommand(document, docCommand);
-		checkCommand(docCommand, expectedEdit, keypressOffset, 0, caretOffset);
+		int caretOffset = (offsetDelta == -1) ? -1 : sourceBefore.length() + offsetDelta;
+		checkCommand(docCommand, expectedInsert, keypressOffset, 0, caretOffset);
+	}
+	
+	protected void checkCommand(DocumentCommand documentCommand, String text, int offset, int length) {
+		checkCommand(documentCommand, text, offset, length, -1);
 	}
 	
 	protected void checkCommand(DocumentCommand documentCommand, String text, int offset, int length, int caretOffset) {
@@ -83,87 +130,236 @@ public class DeeAutoEditStragetyTest extends DeeTestUtils {
 		assertTrue(documentCommand.offset == offset);
 		assertTrue(documentCommand.length == length);
 		assertTrue(documentCommand.caretOffset == caretOffset);
-		assertTrue(documentCommand.shiftsCaret == (caretOffset != -1));
+		assertTrue(documentCommand.shiftsCaret == (caretOffset == -1));
 	}
 	
 	
 	@Test
 	public void testSmartIndent() throws Exception { testSmartIndent$(); }
 	public void testSmartIndent$() throws Exception {
-		testScenarios("void main","");
-		testScenarios(TAB+"void main",TAB);
-		testScenarios("{ \n\t blah() }"+NL+"\t  void main","\t  ");
-		testScenarios("{ \n\t blah() {"+NL+"\t\tvoid main","\t\t");
-		testScenarios("} \n\t blah() }"+NL+"\t  void main","\t  ");
+		int indent = 0;
+		String s;
+		
+		s = mkline(indent, "func(")+
+			mklast(indent, "abc{"); // test 0 : 1
+		testEnterAutoEdit(s, NL +"})"+ NEUTRAL_SRC1, expectInd(indent+1));
+		
+		s = mkline(indent, "func{")+
+			mklast(indent, "}abc{"); // test -1 : 1
+		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRC1, expectInd(indent+1));
+		
+		indent = 1;
+		
+		s = mkline(indent, "func{")+
+			mklast(indent, "}blah("); // test another -1 : 1   
+		testEnterAutoEdit(s, NL +")"+ NEUTRAL_SRC2, expectInd(indent+1));
+		
+		
+		s = mkline(indent, "func{")+
+			mklast(indent, "}blah("); // test -1 : 1 with close   
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectClose(indent+0, ")"));
+		
+		indent = 0;
+		s = mkline(indent, "func{")+
+			mkline(indent+4, "func{()}")+ // test interim lines with irregular ident
+			mklast(indent, TAB+"}blah("); // test -1 : 1 with close   
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectClose(indent+1, ")"));
+		
+		
+		
+		s = mkline(indent, "func{{{")+
+			mklast(indent, TAB+"abc}}}"); // test -3 : 0
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC2, expectInd(indent+0));
+		
+		indent = 0;
+		s = mkline(indent, "func")+
+			mklast(indent, TAB+"abc}}}"); // test -3 : 0 with zero indent
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC2, expectInd(indent+0));
+		
+		s = mkline(indent, "func")+
+			mklast(indent, "abc}}}");     // test -3 : 0 with zero indent
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC2, expectInd(indent+0));
+
+		
+		s = mkline(indent, "func{{{")+
+			mkline(indent+4, "func{()}")+ // test interim lines with irregular ident
+			mklast(indent, TAB+"abc}}");  // -2 : 0
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectInd(indent+1)); 
+		
+		indent = 2;
+		s = mkline(indent, NEUTRAL_SRC1)+ // more lines
+			mkline(indent, "}}func{{{")+  // matching start block is -2 : 3
+			mkline(indent, NEUTRAL_SRC1)+ // more lines
+			mkline(indent-2, "func{()}")+ // interim lines with irregular ident (negative)
+			mklast(indent, TAB+"abc(blah{}) blah}}"); // -2 : 0
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC2, expectInd(indent+1));
+		
 	}
 	
-	private void testScenarios(String preSource, String firstIndent) {
-		String ___ = firstIndent+TAB; // The expected indent
-		testAddIndentCase(preSource + "{", ___, "}");
-		
-		testAddIndentCase(preSource + "(){{", ___ + ___, "}");
-		
-		testAddIndentCase(preSource + "(", ___, ")");
-		
-		testAddIndentCase(preSource + "({) {", ___ + ___, "}"); // ???
-		
-		
-		testReduceIndent(preSource, ___);
+	protected String mkline(int indent, String string) {
+		return line(TABn(indent) + string);
 	}
 	
-	private void testAddIndentCase(String sourceText, String ___, String newB) {
-		testEnterAutoEdit(sourceText    , "", NL+___+NL+newB, -1);
-		testEnterAutoEdit(sourceText+" ", "", NL+___+NL+newB, -1);
+	protected String mklast(int indent, String string) {
+		return TABn(indent) + string;
+	}
+	
+	protected static String TABn(int indent) {
+		return LangAutoEditsPreferencesAdapter.stringNTimes(TAB, indent);
+	}
+	
+	protected static String expectInd(int indent) {
+		return NL+TABn(indent);
+	}
+	
+	protected static String expectClose(int indent, String close) {
+		return NL+TABn(indent) +NL+TABn(indent-1)+close ;
+	}
+	
+	
+	@Test
+	public void testSmartIdent_SyntaxErrors() throws Exception { testSmartIdent_SyntaxErrors$(); }
+	public void testSmartIdent_SyntaxErrors$() throws Exception {
+		String s;
+		int indent = 0;
 		
-		testEnterAutoEdit(sourceText    , newB, NL+___+NL, -1);
-		testEnterAutoEdit(sourceText+"\t", newB, NL+___+NL, -1);
-		testEnterAutoEdit(sourceText, NL+newB, NL+___, -1);
-	}
-	
-	private void testReduceIndent(String preSource, String ___) {
-		String ___1 = reduceIndent(___, 1);
-		String ___2 = reduceIndent(___, 2);
-		testEnterAutoEdit(preSource + "}", "", NL+___1, -1);
-		testEnterAutoEdit(preSource + "}", "{", NL+___1, -1);
-		testEnterAutoEdit(preSource + "})", "{ blah(", NL+___2, -1);
-	}
-	
-	private String reduceIndent(String indent, int level) {
-		if(indent.length() == 0 || level == 0){
-			return indent;
-		}
-		return reduceIndent(indent.replaceFirst("( ? ? ?\t)|(    )", indent), level-1);
+		s = mkline(indent, "func")+ mklast(indent, "abc{"); // test 0 : 1 (with syntax error)
+		testEnterAutoEdit(s, NL +"})"+ NEUTRAL_SRC1, expectInd(indent+1));
+		
+		s = mkline(indent, "func{")+ mklast(indent, TAB+"{ab(c}"); // test 0 : 0 (corrected)
+		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRC2, expectInd(1+indent));
+
+		s = mkline(indent, "func{")+ mklast(indent, TAB+"{ab)c}"); // test 0 : 0 (corrected)
+		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRC3, expectInd(1+indent));
+
+		indent = 1;
+		s = mkline(indent, "func{")+
+			mklast(indent, TAB+"(ab{c)"); // test 0 : 2 (corrected)
+		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRC1, expectInd(1+indent+2));
+
+		s = mkline(indent, "func{")+
+			mklast(indent, TAB+"(ab}c)"); // test -1 : 0 (corrected)
+		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRC2, expectInd(indent));
+
+		
+		s = mkline(indent, "func{")+
+			mklast(indent, "}blah{)"); // test -1 : 1 (corrected)
+		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRC3, expectInd(indent+1));
+		
+		
+		s = mkline(indent, "func{")+
+			mklast(indent, "}blah{)"); // test -1 : 1 with close   
+		testEnterAutoEdit(s, NL     + NEUTRAL_SRC1, expectClose(indent+0, "}"));
+		
+		
+		s = mkline(indent, "func{{){")+    // (corrected)
+			mklast(indent, TAB+"abc}}(}"); // test -3 : 0 (corrected)
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC2, expectInd(indent+0));
+
+		s = mkline(indent, "func{({")+    // (corrected on EOF)
+			mklast(indent, TAB+"aaa}})"); // test -3 : 0
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC3, expectInd(indent+0));
+
+		s = mkline(indent, "func(")+    // decoy
+			mkline(indent+7, "{func{")+ // (corrected on '{' superblock )
+			mklast(indent, "aaa})");    
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectInd(indent+7+1));
 	}
 	
 	@Test
-	public void testSmartDeIdent() throws Exception { testSmartDeIdent$(); }
-	public void testSmartDeIdent$() throws Exception {
+	public void testSmartIdent_conflictingSyntax() throws Exception { testSmartIdent_conflictingSyntax$(); }
+	public void testSmartIdent_conflictingSyntax$() throws Exception {
+		String s;
+		int indent = 0;
 		
-//		testAutoEdit("void main{"+NL+TAB, "{", NL+___1, -1);
-		testBackspaceAutoEdit("void main() {", NL+TAB, NL+"}"); 
+		s = mkline(indent, "func")+ mklast(indent, "abc{"); // test 0 : 1 (with syntax error)
+		testEnterAutoEdit(s, NL +"})"+ NEUTRAL_SRC1, expectInd(indent+1));
 		
-		testBackspaceAutoEdit(TAB+"void main() {", NL+TAB+TAB, "}");
-		testBackspaceAutoEdit(GENERIC_CODE+ TAB+"void main() {",NL+TAB+TAB+(TAB), NL+"}", (TAB).length());
+		// TODO: q{} comments /++/ etc.
+	}
+	
+	/* ---------------------------------------*/
+	
+	public static boolean NOT_DONE = false;
+	@Test
+	public void testSmartDeIndent() throws Exception { testSmartDeIndent$(); }
+	public void testSmartDeIndent$() throws Exception {
+		String s;
+		int indent = 0;
+		
+		s = mklast(0, "void main() {");
+		testDeIndentAutoEdit(s, NL+TAB, NL+"}"); // Deindent NL 
+		
+		indent = 1;
+		s = NEUTRAL_SRC1+
+			mklast(indent, "void main{} (");
+		testDeIndentAutoEdit(s, expectInd(indent+1), NL+")"); // Deindent NL 
+		
+		
+		s = NEUTRAL_SRC1+
+			mklast(indent, "void main{({");
+		testDeIndentAutoEdit(s, expectInd(indent+3), NL+")"); // Deindent NL 
+		
+		s = NEUTRAL_SRC1+
+			mkline(indent+0, "void main{({")+
+			mklast(indent+1, "void main()"); // test with 0 : 0 balance
+		testDeIndentAutoEdit(s, expectInd(indent+1), NL+"}"); // Deindent NL 
+		
+		
+		s = NEUTRAL_SRC3+
+			mklast(indent, "void main{({)(");
+		testDeIndentAutoEdit(s, expectInd(indent+3), NL+"}"); // Deindent NL 
+		
 	}
 	
 	
-	private void testBackspaceAutoEdit(String srcPre, String srcIdent, String sourceAfter) {
-		testBackspaceAutoEdit(srcPre, srcIdent, sourceAfter, srcIdent.length());
+	protected void testDeIndentAutoEdit(String srcPre, String srcIndent, String sourceAfter) {
+		DocumentCommand bsCommand = applyBackSpaceCommand(srcPre + srcIndent, sourceAfter);
+		checkCommand(bsCommand, "", srcPre.length(), srcIndent.length());
+		
+		DocumentCommand delCommand = applyDelCommand(srcPre, srcIndent + sourceAfter);
+		checkCommand(delCommand, "", srcPre.length(), srcIndent.length());
+		
+		testBackSpaceCommandWithNoEffect(srcPre + srcIndent +TAB, sourceAfter );
+		
+		assertTrue(srcIndent.length() > 2);
+		// AutoEdit should not apply in the middle of indent element, test that
+		String srcPre2 = srcPre + srcIndent.substring(0, srcIndent.length()-1);
+		String srcAfter2 = srcIndent.substring(srcIndent.length()-1, srcIndent.length()) + sourceAfter;
+		testBackSpaceCommandWithNoEffect(srcAfter2, srcPre2);
+		testDeleteCommandWithNoEffect(srcPre2, srcAfter2);
 	}
-
-	private void testBackspaceAutoEdit(String srcPre, String srcIdent, String sourceAfter, int indentLen) {
-		Document document = getDocument();
-		document.set(srcPre + srcIdent + sourceAfter);
-		int keypressOffset = srcPre.length() + indentLen;
-		DocumentCommand docCommand = createDocumentCommand(keypressOffset-1, 1, ""); //Backspace
-		getAutoEditStrategy().customizeDocumentCommand(document, docCommand);
-		checkCommand(docCommand, "", srcPre.length(), indentLen, -1);
+	
+	protected DocumentCommand applyBackSpaceCommand(String srcPre, String sourceAfter) {
+		getDocument().set(srcPre + sourceAfter);
+		int keypressOffset = srcPre.length();
+		DocumentCommand docCommand = createDocumentCommand(keypressOffset-1, 1, "");
+		getAutoEditStrategy().customizeDocumentCommand(getDocument(), docCommand);
+		return docCommand;
+	}
+	
+	protected DocumentCommand applyDelCommand(String srcPre, String sourceAfter) {
+		getDocument().set(srcPre + sourceAfter);
+		int keypressOffset = srcPre.length();
+		DocumentCommand docCommand = createDocumentCommand(keypressOffset, 1, "");
+		getAutoEditStrategy().customizeDocumentCommand(getDocument(), docCommand);
+		return docCommand;
+	}
+	
+	protected void testBackSpaceCommandWithNoEffect(String sourcePre, String sourceAfter) {
+		DocumentCommand bsCommand = applyBackSpaceCommand(sourcePre, sourceAfter);
+		checkCommand(bsCommand, "", sourcePre.length()-1, 1);
+	}
+	
+	protected void testDeleteCommandWithNoEffect(String sourcePre, String sourceAfter) {
+		DocumentCommand delCommand = applyDelCommand(sourcePre, sourceAfter);
+		checkCommand(delCommand, "", sourcePre.length(), 1);
 	}
 	
 	@Test
 	public void testNoAutoEdit() throws Exception { testNoAutoEdit$(); }
 	public void testNoAutoEdit$() throws Exception {
-		// TODO: test cases which should not creat any auto-edit 
+		// TODO: test cases which should not create any auto-edit 
 	}
 	
 }

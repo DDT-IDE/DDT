@@ -289,7 +289,7 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		c.shiftsCaret = false;
 	}
 
-	private void smartIndentOnKeypress(IDocument d, DocumentCommand c)
+	public void smartIndentOnKeypress(IDocument d, DocumentCommand c)
 			throws BadLocationException {
 		RubyHeuristicScanner scanner = new RubyHeuristicScanner(d);
 		IRegion info = d.getLineInformationOfOffset(c.offset);
@@ -376,7 +376,7 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		return ""; //$NON-NLS-1$
 	}
 
-	private void smartIndentAfterNewLine(IDocument d, DocumentCommand c)
+	public void smartIndentAfterNewLine(IDocument d, DocumentCommand c)
 			throws BadLocationException {
 		IRegion line = d.getLineInformationOfOffset(c.offset);
 		int lineEnd = line.getOffset() + line.getLength();
@@ -473,7 +473,7 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		return Arrays.binarySearch(INDENT_TO_BLOCK_TOKENS, token) >= 0;
 	}
 
-	private void smartPaste(IDocument d, DocumentCommand c)
+	public void smartPaste(IDocument d, DocumentCommand c)
 			throws BadLocationException {
 		// fix first line whitespace
 		IRegion info = d.getLineInformationOfOffset(c.offset);

@@ -1,9 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.text;
 
 import java.util.HashSet;
 import java.util.Map;
 
 import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUI;
 import mmrnmhrm.ui.editor.text.DeeCodeContentAssistProcessor;
 import mmrnmhrm.ui.editor.text.DeeDocTextHover;
 import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
@@ -200,9 +211,8 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
-		// TODO improve auto edit strategy
 		String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
-		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(partitioning ) };
+		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(partitioning, DeeUI.getPrefStore() ) };
 	}
 	
 	
