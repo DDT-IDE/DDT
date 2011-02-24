@@ -12,8 +12,10 @@ package mmrnmhrm.ui.internal.text;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+
+
 import mmrnmhrm.ui.internal.text.BlockHeuristicsScannner.BlockBalanceResult;
-import mmrnmhrm.ui.internal.text.BlockHeuristicsScannner.BlockTokenRule;
 
 import org.eclipse.dltk.ruby.internal.ui.text.RubyPreferenceInterpreter;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
@@ -73,7 +75,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
 	protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
 		// Default implementation
-		return new BlockHeuristicsScannner(doc, new BlockTokenRule('{', '}'));
+		return new BlockHeuristicsScannner(doc, new BlockHeuristicsScannner.BlockTokenRule('{', '}'));
 	}
 	
 	/* ------------------------------------- */
@@ -93,35 +95,42 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		// Find block delta of preceding text (line start to edit cursor)
 		BlockBalanceResult blockInfo = bhscanner.calculateBlockBalances(lineRegion.getOffset(), cmd.offset);  
 		
-		if(blockInfo.unbalancedOpens == 0 && blockInfo.unbalancedCloses < 0) {
+		if(blockInfo.unbalancedOpens == 0 && blockInfo.unbalancedCloses > 0) {
 			int blockStartOffset = bhscanner.findBlockStart(blockInfo.rightmostUnbalancedBlockCloseOffset);
 			int blockStartLine = doc.getLineOfOffset(blockStartOffset);
-			// BUG here
+			
 			assertTrue(blockStartLine < doc.getLineOfOffset(lineRegion.getOffset()));
-			cmd.text += AutoEditUtils.getLineIndent(doc, blockStartLine);
+			String startLineIndent = AutoEditUtils.getLineIndent(doc, blockStartLine);
+			
+			// Now calculate the balance for the block start line, before the block start
+			int lineOffset = doc.getLineOffset(blockStartLine);
+			BlockBalanceResult blockStartInfo = bhscanner.calculateBlockBalances(lineOffset, blockStartOffset);
+			
+			// Add the indent of the start line, plus the unbalanced opens there
+			cmd.text += addIndent(startLineIndent, blockStartInfo.unbalancedOpens);
 			return;
 		}
 		
 		// The indent string to be added to the new line
-		String indentStr = getLineIndent(doc, lineRegion);
+		String lineIndent = getLineIndent(doc, lineRegion);
 		if(blockInfo.unbalancedOpens == 0 && blockInfo.unbalancedCloses == 0) {
-			cmd.text += indentStr; 
+			cmd.text += lineIndent; 
 			return; // finished
 		}
 		
 		if(blockInfo.unbalancedOpens > 0) {
-			cmd.text += addIndent(indentStr, blockInfo.unbalancedOpens);
+			cmd.text += addIndent(lineIndent, blockInfo.unbalancedOpens);
 			
 			boolean hasPendingText = postWsEndPos != lineEnd;
 			if (fCloseBlocks && !hasPendingText){
 				if(!bhscanner.isBlockClosed(blockInfo.rightmostUnbalancedBlockOpenOffset)) {
 					//close block
 					cmd.caretOffset = cmd.offset + cmd.text.length();
-					cmd.shiftsCaret = false; // BUG here
+					cmd.shiftsCaret = false;
 					String delimiter = TextUtilities.getDefaultLineDelimiter(doc);
 					char openChar = doc.getChar(blockInfo.rightmostUnbalancedBlockOpenOffset);
 					char closeChar = bhscanner.getClosingPeer(openChar); 
-					cmd.text += delimiter + addIndent(indentStr, blockInfo.unbalancedOpens - 1) + closeChar;
+					cmd.text += delimiter + addIndent(lineIndent, blockInfo.unbalancedOpens - 1) + closeChar;
 				}
 			}
 			return;

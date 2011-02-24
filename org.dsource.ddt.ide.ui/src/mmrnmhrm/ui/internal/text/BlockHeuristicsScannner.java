@@ -11,7 +11,9 @@
 package mmrnmhrm.ui.internal.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import org.dsource.ddt.lang.text.LangHeuristicScanner;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
@@ -32,41 +34,58 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 	}
 	
 	protected final BlockTokenRule[] blockRules;
-
+	protected final BlockTokenRule[] blockRulesReversed;
+	
 	public BlockHeuristicsScannner(IDocument document, BlockTokenRule... blockRules) {
 		super(document, "TODO"); // partitinioning
 		this.blockRules = blockRules;
-	}
-
-	protected final int readPreviousToken() throws BadLocationException {
-		return token = previousToken();
+		
+		blockRulesReversed = new BlockTokenRule[blockRules.length];
+		for (int i = 0; i < blockRules.length; i++) {
+			BlockTokenRule blockRule = blockRules[i];
+			blockRulesReversed[i] = new BlockTokenRule(blockRule.close, blockRule.open);
+		}
 	}
 	
-	protected final int previousToken() throws BadLocationException {
-		if(pos == limitPos) {
-			return TOKEN_EOF;
+	protected final int readPreviousToken() throws BadLocationException {
+		if(pos <= limitPos) {
+			return token = TOKEN_EOF;
 		} else {
 			pos--;
-			return getSourceChar(pos);
+			return token = getSourceChar(pos);
 		}
+	}
+	
+	protected final void revertPreviousToken()  {
+		assertTrue(token != TOKEN_EOF);
+		pos++;
 	}
 	
 	protected final int readNextToken() throws BadLocationException {
-		return token = nextToken();
-	}
-	
-	protected final int nextToken() throws BadLocationException {
-		if(pos == limitPos) {
-			return TOKEN_EOF;
+		if(pos >= limitPos) {
+			return token = TOKEN_EOF;
 		} else {
 			pos++;
-			return getSourceChar(pos);
+			return token = getSourceChar(pos);
 		}
 	}
 	
+	protected final void revertNextToken()  {
+		assertTrue(token != TOKEN_EOF);
+		pos--;
+	}
+	
 	public char getClosingPeer(char openChar) {
-		for (int i = 0; i < blockRules.length; i++) {
-			BlockTokenRule blockRule = blockRules[i];
+		return getMatchingPeer(openChar, blockRules);
+	}
+	
+	public char getOpeningPeer(char closeChar) {
+		return getMatchingPeer(closeChar, blockRulesReversed);
+	}
+	
+	public static char getMatchingPeer(char openChar, BlockTokenRule[] blockTokenRules) {
+		for (int i = 0; i < blockTokenRules.length; i++) {
+			BlockTokenRule blockRule = blockTokenRules[i];
 			if(blockRule.open == openChar){
 				return blockRule.close;
 			}
@@ -85,7 +104,7 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 	
 	
 	/** Calculate the block balance in given range. */
-	protected BlockBalanceResult calculateBlockBalances(int beginPos, int endPos) throws BadLocationException {
+	public BlockBalanceResult calculateBlockBalances(int beginPos, int endPos) throws BadLocationException {
 		// Calculate backwards
 		setPosition(endPos);
 		limitPos = beginPos;
@@ -98,11 +117,11 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 				BlockTokenRule blockRule = blockRules[i];
 				
 				if(token == blockRule.close) {
-
 					int blockCloseOffset = getPosition();
 					
-					int balance = scanToBlockStart(i); // do a subscan
-					if(balance < 0) {
+					// do a subscan
+					int balance = scanToBlockStart(i, prevTokenFn, blockRules);
+					if(balance > 0) {
 						// block start not found
 						result.unbalancedCloses = balance;
 						result.rightmostUnbalancedBlockCloseOffset = blockCloseOffset;
@@ -123,92 +142,107 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 		return result;
 	}
 	
+	private abstract class FnTokenAdvance {
+		protected abstract int advanceToken() throws BadLocationException;
+
+		protected abstract void revertToken() ;
+	}
+	
+	protected final FnTokenAdvance prevTokenFn = new FnTokenAdvance() {
+		@Override
+		protected int advanceToken() throws BadLocationException {
+			return readPreviousToken();
+		}
+		@Override
+		protected void revertToken() {
+			revertPreviousToken();
+		}
+	};
+	protected final FnTokenAdvance nextTokenFn= new FnTokenAdvance() {
+		@Override
+		protected int advanceToken() throws BadLocationException {
+			return readNextToken();
+		}
+		@Override
+		protected void revertToken() {
+			revertNextToken();
+		}
+	};
+	
+	public int scanToBlockStart(int blockCloseOffset) throws BadLocationException {
+		setPosition(blockCloseOffset);
+		limitPos = 0;
+		char blockClose = document.getChar(getPosition());
+		return scanToBlockStartForChar(blockClose, prevTokenFn, blockRules);
+	}
+	
+	public int scanToBlockEnd(int blockOpenOffset) throws BadLocationException {
+		setPosition(blockOpenOffset);
+		limitPos = document.getLength()-1;
+		char blockOpen = document.getChar(getPosition());
+		return scanToBlockStartForChar(blockOpen, nextTokenFn, blockRulesReversed);
+	}
+	
+	protected int scanToBlockStartForChar(char blockClose, FnTokenAdvance fnAdvance, BlockTokenRule[] blockTkRules)
+			throws BadLocationException {
+		for (int i = 0; i < blockTkRules.length; i++) {
+			BlockTokenRule blockRule = blockTkRules[i];
+			if(blockRule.close == blockClose)
+				return scanToBlockStart(i, fnAdvance, blockTkRules);
+		}
+		throw assertFail();
+	}
+	
 	/** Scans in search of a block open.
 	 * Stops on EOF, or when block open is found (balance is 0)
-	 * @return 0 if block open token was found (even if created to syntax correct), 
-	 * or a count (balance) of how many blocks were left open.
+	 * @return 0 if block open token was found (even if assumed by a syntax correction), 
+	 * or a count of how many blocks were left open.
 	 */
-	protected int scanToBlockStart() throws BadLocationException {
-		return scanToBlockStart(0);
-	}
-	
-	protected int scanToBlockStart(int expectedRuleIx) throws BadLocationException {
-		while(readPreviousToken() != TOKEN_EOF) {
-			for (int i = expectedRuleIx; i < blockRules.length; i++) {
-				BlockTokenRule blockRule = blockRules[i];
+	protected int scanToBlockStart(int expectedTokenIx, FnTokenAdvance fnAdvance, BlockTokenRule[] blockTkRules)
+			throws BadLocationException {
+		assertTrue(expectedTokenIx >= 0 && expectedTokenIx < blockTkRules.length);
+		while(fnAdvance.advanceToken() != TOKEN_EOF) {
+			for (int i = 0; i < blockTkRules.length; i++) {
+				BlockTokenRule blockRule = blockTkRules[i];
 				
 				if(token == blockRule.close) {
-					int balance = scanToBlockStart(i);
-					if(balance < 0){
-						return balance + 1;
+					int pendingBlocks = scanToBlockStart(i, fnAdvance, blockTkRules);
+					if(pendingBlocks > 0) {
+						return pendingBlocks + 1;
 					}
 					break;
-				} 
+				}
 				if(token == blockRule.open) {
-					if(i == expectedRuleIx){
+					if(i == expectedTokenIx){
 						return 0; 
 					} else {
 						// syntax error
-						if(i > expectedRuleIx) {
-							// ignore token
+						if(i < expectedTokenIx) {
+							// Stronger rule takes precedence.
+							// Assume syntax correction, as if blockRule[expectedTokenIx].open was found:
+							fnAdvance.revertToken();
+							token = TOKEN_INVALID;
+							return 0; 
 						} else {
-							// stronger rule takes precedence, assume syntax correction
+							// ignore token
 						}
 					}
 					break;
 				} 
 			}
 		}
-		return 1; // Balance is -1 if we reached the end without finding peer
-	}
-	
-	protected int scanToBlockEnd() throws BadLocationException {
-		return scanToBlockEnd(0);
-	}
-	
-	protected int scanToBlockEnd(int expectedRuleIx) throws BadLocationException {
-		while(readNextToken() != TOKEN_EOF) {
-			for (int i = 0; i < blockRules.length; i++) {
-				BlockTokenRule blockRule = blockRules[i];
-				
-				if(token == blockRule.open) {
-					int balance = scanToBlockEnd(i);
-					if(balance < 0){
-						return balance - 1;
-					}
-					break;
-				} 
-				if(token == blockRule.close) {
-					if(i == expectedRuleIx){
-						return 0; 
-					} else {
-						// syntax error
-						if(i > expectedRuleIx) {
-							// ignore token
-						} else {
-							// stronger rule takes precedence, assume syntax correction
-						}
-					}
-					break;
-				} 
-			}
-		}
-		return -1;
+		return 1; // Balance is 1 if we reached the end without finding peer
 	}
 	
 	/** Finds the offset where starts the blocks whose end token is at given blockCloseOffset */
-	protected int findBlockStart(int blockCloseOffset) throws BadLocationException {
-		setPosition(blockCloseOffset);
-		limitPos = 0;
-		scanToBlockStart(); // XXX BUG here, find token
+	public int findBlockStart(int blockCloseOffset) throws BadLocationException {
+		scanToBlockStart(blockCloseOffset);
 		return getPosition();
 	}
 	
-	protected boolean isBlockClosed(int blockOpenOffset) throws BadLocationException {
-		setPosition(blockOpenOffset);
-		limitPos = document.getLength()-1;
-		int balance = scanToBlockEnd(); // XXX BUG here, find token
+	public boolean isBlockClosed(int blockOpenOffset) throws BadLocationException {
+		int balance = scanToBlockEnd(blockOpenOffset);
 		return balance == 0;
 	}
-
+	
 }

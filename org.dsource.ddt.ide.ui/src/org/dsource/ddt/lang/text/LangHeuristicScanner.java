@@ -8,7 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.internal.text;
+package org.dsource.ddt.lang.text;
+
+
+import mmrnmhrm.ui.internal.text.IDeeHeuristicSymbols;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
@@ -26,7 +29,7 @@ public class LangHeuristicScanner implements IDeeHeuristicSymbols {
 	protected int limitPos;
 	/** the last read token. */
 	protected int token;
-
+	
 	
 	protected LangHeuristicScanner(IDocument document, String partitioning) {
 		Assert.isLegal(document != null);

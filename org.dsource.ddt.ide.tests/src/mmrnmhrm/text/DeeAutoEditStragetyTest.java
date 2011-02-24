@@ -2,12 +2,12 @@ package mmrnmhrm.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.tests.ui.DeeUITests;
 import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.internal.text.LangAutoEditsPreferencesAdapter;
 import mmrnmhrm.ui.text.DeePartitions;
 
+import org.dsource.ddt.lang.text.ScannerTestUtils;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.util.TabStyle;
@@ -16,37 +16,12 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentCommand;
 import org.junit.Test;
 
-import dtool.tests.DeeTestUtils;
-
-public class DeeAutoEditStragetyTest extends DeeTestUtils {
-	
-	protected static final String NL = "\r\n";
-	protected static final String TAB = "\t";
+public class DeeAutoEditStragetyTest extends ScannerTestUtils {
 	
 	public static final String GENERIC_CODE = DeeUITests.readResource("sampledefs.d");
-	public static final String NEUTRAL_SRC1 = 
-		line("void func() {")+
-		line(TAB+"blah();")+
-		line(TAB+"blah2([1, 2, 3]);")+
-		NL
-		;
-	public static final String NEUTRAL_SRC2 = GENERIC_CODE; // TODO: should write some more
-	public static final String NEUTRAL_SRC3 = NEUTRAL_SRC1; // TODO: should write some more
-	
-	public static String line(String string) {
-		return string+NL;
-	}
+	public static final String NEUTRAL_SRCX = GENERIC_CODE;
 	
 	protected DeeAutoEditStrategy autoEditStrategy;
-	protected Document document;
-	
-	protected Document getDocument() {
-		if(document == null) {
-			document = new Document();
-			assertTrue(ArrayUtil.contains(document.getLegalLineDelimiters(), NL));
-		}
-		return document;
-	}
 	
 	protected DeeAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
@@ -96,15 +71,19 @@ public class DeeAutoEditStragetyTest extends DeeTestUtils {
 	
 	@Test
 	public void testSmartIndentBasic3() {
-		String sourcePre = 
-			line("func{{")+
-			TAB+"abc}"; // balance -1 : 0
-		testEnterAutoEdit(sourcePre, "}"+NEUTRAL_SRC1, NL+TAB);
+		String s;
 		
-		sourcePre = 
-			line(TAB+"func(((")+
+		s = line("func{")+
+			TAB+"abc}"; // balance -1 : 0
+		testEnterAutoEdit(s, "}"+NEUTRAL_SRC1, NL);
+
+		s = line("func{{")+
+			TAB+"abc}}"; // balance -2 : 0
+		testEnterAutoEdit(s, "}"+NEUTRAL_SRC1, NL);
+		
+		s = line(TAB+"func((")+
 			TAB+"abc))"; // balance -2 : 0	 '('
-		testEnterAutoEdit(sourcePre, NEUTRAL_SRC1+")", NL+TAB);
+		testEnterAutoEdit(s, NEUTRAL_SRC1+")", NL+TAB);
 	}
 	
 	protected void testEnterAutoEdit(String sourceBefore, String sourceAfter, String expectedEdit) {
@@ -152,33 +131,37 @@ public class DeeAutoEditStragetyTest extends DeeTestUtils {
 		
 		s = mkline(indent, "func{")+
 			mklast(indent, "}blah("); // test another -1 : 1   
-		testEnterAutoEdit(s, NL +")"+ NEUTRAL_SRC2, expectInd(indent+1));
+		testEnterAutoEdit(s, NL +")"+ NEUTRAL_SRCX, expectInd(indent+1));
 		
 		
 		s = mkline(indent, "func{")+
 			mklast(indent, "}blah("); // test -1 : 1 with close   
-		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectClose(indent+0, ")"));
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectClose(indent+1, ")"), expectInd(indent+1).length());
 		
 		indent = 0;
-		s = mkline(indent, "func{")+
+		s = mkline(indent  , "func{")+
 			mkline(indent+4, "func{()}")+ // test interim lines with irregular ident
-			mklast(indent, TAB+"}blah("); // test -1 : 1 with close   
-		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectClose(indent+1, ")"));
+			mklast(indent+1, "}blah("); // test -1 : 1 with close   
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectClose(indent+2, ")"), expectInd(indent+2).length());
 		
 		
 		
 		s = mkline(indent, "func{{{")+
 			mklast(indent, TAB+"abc}}}"); // test -3 : 0
-		testEnterAutoEdit(s, NL+NEUTRAL_SRC2, expectInd(indent+0));
-		
+		testEnterAutoEdit(s, NL+NEUTRAL_SRCX, expectInd(indent+0));
+
+		s = mkline(indent+7, "func({{{")+  // start block still has : 2 open block
+			mklast(indent  , TAB+"abc}}"); // test -2 : 0
+		testEnterAutoEdit(s, NL+NEUTRAL_SRCX, expectInd(indent+7+2));
+
 		indent = 0;
 		s = mkline(indent, "func")+
 			mklast(indent, TAB+"abc}}}"); // test -3 : 0 with zero indent
-		testEnterAutoEdit(s, NL+NEUTRAL_SRC2, expectInd(indent+0));
+		testEnterAutoEdit(s, NL+NEUTRAL_SRCX, expectInd(indent+0));
 		
 		s = mkline(indent, "func")+
 			mklast(indent, "abc}}}");     // test -3 : 0 with zero indent
-		testEnterAutoEdit(s, NL+NEUTRAL_SRC2, expectInd(indent+0));
+		testEnterAutoEdit(s, NL+NEUTRAL_SRCX, expectInd(indent+0));
 
 		
 		s = mkline(indent, "func{{{")+
@@ -192,8 +175,7 @@ public class DeeAutoEditStragetyTest extends DeeTestUtils {
 			mkline(indent, NEUTRAL_SRC1)+ // more lines
 			mkline(indent-2, "func{()}")+ // interim lines with irregular ident (negative)
 			mklast(indent, TAB+"abc(blah{}) blah}}"); // -2 : 0
-		testEnterAutoEdit(s, NL+NEUTRAL_SRC2, expectInd(indent+1));
-		
+		testEnterAutoEdit(s, NL+NEUTRAL_SRCX, expectInd(indent+1));
 	}
 	
 	protected String mkline(int indent, String string) {
@@ -223,13 +205,16 @@ public class DeeAutoEditStragetyTest extends DeeTestUtils {
 		String s;
 		int indent = 0;
 		
-		s = mkline(indent, "func")+ mklast(indent, "abc{"); // test 0 : 1 (with syntax error)
+		s = mkline(indent, "func")+
+			mklast(indent, "abc{"); // test 0 : 1 (with syntax error)
 		testEnterAutoEdit(s, NL +"})"+ NEUTRAL_SRC1, expectInd(indent+1));
 		
-		s = mkline(indent, "func{")+ mklast(indent, TAB+"{ab(c}"); // test 0 : 0 (corrected)
-		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRC2, expectInd(1+indent));
+		s = mkline(indent, "func{")+
+			mklast(indent, TAB+"{ab(c}"); // test 0 : 0 (corrected)
+		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRCX, expectInd(1+indent));
 
-		s = mkline(indent, "func{")+ mklast(indent, TAB+"{ab)c}"); // test 0 : 0 (corrected)
+		s = mkline(indent, "func{")+
+			mklast(indent, TAB+"{ab)c}"); // test 0 : 0 (corrected)
 		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRC3, expectInd(1+indent));
 
 		indent = 1;
@@ -239,7 +224,7 @@ public class DeeAutoEditStragetyTest extends DeeTestUtils {
 
 		s = mkline(indent, "func{")+
 			mklast(indent, TAB+"(ab}c)"); // test -1 : 0 (corrected)
-		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRC2, expectInd(indent));
+		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRCX, expectInd(indent));
 
 		
 		s = mkline(indent, "func{")+
@@ -249,12 +234,12 @@ public class DeeAutoEditStragetyTest extends DeeTestUtils {
 		
 		s = mkline(indent, "func{")+
 			mklast(indent, "}blah{)"); // test -1 : 1 with close   
-		testEnterAutoEdit(s, NL     + NEUTRAL_SRC1, expectClose(indent+0, "}"));
+		testEnterAutoEdit(s, NL+/*}*/ NEUTRAL_SRC1, expectClose(indent+1, "}"), expectInd(indent+1).length());
 		
 		
 		s = mkline(indent, "func{{){")+    // (corrected)
 			mklast(indent, TAB+"abc}}(}"); // test -3 : 0 (corrected)
-		testEnterAutoEdit(s, NL+NEUTRAL_SRC2, expectInd(indent+0));
+		testEnterAutoEdit(s, NL+NEUTRAL_SRCX, expectInd(indent+0));
 
 		s = mkline(indent, "func{({")+    // (corrected on EOF)
 			mklast(indent, TAB+"aaa}})"); // test -3 : 0

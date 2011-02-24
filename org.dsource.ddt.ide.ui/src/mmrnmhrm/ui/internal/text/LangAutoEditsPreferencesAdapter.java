@@ -17,7 +17,7 @@ import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-// Originall RubyPreferencesInterpreter
+// Originally was RubyPreferencesInterpreter
 public class LangAutoEditsPreferencesAdapter {
 	
 	protected final IPreferenceStore store;

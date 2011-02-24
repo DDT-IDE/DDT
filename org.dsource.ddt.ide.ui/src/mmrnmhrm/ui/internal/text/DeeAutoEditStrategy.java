@@ -36,7 +36,7 @@ public class DeeAutoEditStrategy extends LangAutoEditStrategy {
 	protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
 		BlockHeuristicsScannner scanner = new BlockHeuristicsScannner(doc, 
 				new BlockTokenRule('{', '}'),
-				new BlockTokenRule('{', '}') //BUG HERE
+				new BlockTokenRule('(', ')')
 		);
 		return scanner;
 	}

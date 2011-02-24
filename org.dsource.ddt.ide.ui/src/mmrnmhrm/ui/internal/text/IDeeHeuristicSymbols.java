@@ -16,6 +16,6 @@ package mmrnmhrm.ui.internal.text;
  */
 public interface IDeeHeuristicSymbols {
 	int TOKEN_EOF = -1;
-	int TOKEN_NONE = -1;
+	int TOKEN_INVALID = -2;
 	
 }
