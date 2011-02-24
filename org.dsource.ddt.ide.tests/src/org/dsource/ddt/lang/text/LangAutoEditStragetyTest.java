@@ -1,13 +1,12 @@
-package mmrnmhrm.text;
+package org.dsource.ddt.lang.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.tests.ui.DeeUITests;
 import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
-import mmrnmhrm.ui.internal.text.LangAutoEditsPreferencesAdapter;
 import mmrnmhrm.ui.text.DeePartitions;
 
-import org.dsource.ddt.lang.text.ScannerTestUtils;
+import org.dsource.ddt.lang.text.LangAutoEditsPreferencesAdapter;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.util.TabStyle;
@@ -16,7 +15,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentCommand;
 import org.junit.Test;
 
-public class DeeAutoEditStragetyTest extends ScannerTestUtils {
+public class LangAutoEditStragetyTest extends ScannerTestUtils {
 	
 	public static final String GENERIC_CODE = DeeUITests.readResource("sampledefs.d");
 	public static final String NEUTRAL_SRCX = GENERIC_CODE;

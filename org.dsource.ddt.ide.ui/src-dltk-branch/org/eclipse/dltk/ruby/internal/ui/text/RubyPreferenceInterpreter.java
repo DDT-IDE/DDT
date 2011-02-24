@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
 
-import mmrnmhrm.ui.internal.text.LangAutoEditsPreferencesAdapter;
 
+import org.dsource.ddt.lang.text.LangAutoEditsPreferencesAdapter;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.dltk.ui.text.util.ITabPreferencesProvider;

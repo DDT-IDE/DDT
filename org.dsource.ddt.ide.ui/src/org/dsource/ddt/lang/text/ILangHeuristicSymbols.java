@@ -8,13 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.internal.text;
+package org.dsource.ddt.lang.text;
 
 
 /**
- * Symbols for the heuristic D scanner.
+ * Symbols for the heuristic scanner.
  */
-public interface IDeeHeuristicSymbols {
+public interface ILangHeuristicSymbols {
+	
 	int TOKEN_EOF = -1;
 	int TOKEN_INVALID = -2;
 	

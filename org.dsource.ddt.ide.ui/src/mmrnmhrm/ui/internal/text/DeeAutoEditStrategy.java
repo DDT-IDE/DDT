@@ -10,8 +10,10 @@
  *******************************************************************************/
 package mmrnmhrm.ui.internal.text;
 
-import mmrnmhrm.ui.internal.text.BlockHeuristicsScannner.BlockTokenRule;
 
+import org.dsource.ddt.lang.text.BlockHeuristicsScannner;
+import org.dsource.ddt.lang.text.LangAutoEditStrategy;
+import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyAutoEditStrategy;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;

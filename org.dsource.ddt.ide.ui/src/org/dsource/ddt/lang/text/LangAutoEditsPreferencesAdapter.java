@@ -7,7 +7,7 @@
  *
  
  *******************************************************************************/
-package mmrnmhrm.ui.internal.text;
+package org.dsource.ddt.lang.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 

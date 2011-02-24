@@ -8,15 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.internal.text;
+package org.dsource.ddt.lang.text;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 
 
-import mmrnmhrm.ui.internal.text.BlockHeuristicsScannner.BlockBalanceResult;
 
+import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockBalanceResult;
+import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyPreferenceInterpreter;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.jface.preference.IPreferenceStore;

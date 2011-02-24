@@ -4,10 +4,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import mmrnmhrm.ui.internal.text.BlockHeuristicsScannner;
-import mmrnmhrm.ui.internal.text.IDeeHeuristicSymbols;
-import mmrnmhrm.ui.internal.text.BlockHeuristicsScannner.BlockTokenRule;
 
+import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
 import org.eclipse.jface.text.BadLocationException;
 import org.junit.Test;
 
@@ -54,11 +52,11 @@ public class BlockHeuristicsScannnerTest extends ScannerTestUtils {
 		
 		assertTrue(scanner.getPosition() == srcPre.length());
 		assertTrue(balance == expecBalance);
-		assertTrue((scanner.token == IDeeHeuristicSymbols.TOKEN_INVALID) == expecInvalidLeft);
+		assertTrue((scanner.token == ILangHeuristicSymbols.TOKEN_INVALID) == expecInvalidLeft);
 		
 		if(balance == 0) {
 			int blockEndOffset = srcBefore.length();
-			if (scanner.token != IDeeHeuristicSymbols.TOKEN_INVALID) {
+			if (scanner.token != ILangHeuristicSymbols.TOKEN_INVALID) {
 				scanner.scanToBlockEnd(scanner.getPosition());
 				assertEquals(scanner.getPosition(), blockEndOffset);
 			} else {

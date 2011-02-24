@@ -11,13 +11,12 @@
 package org.dsource.ddt.lang.text;
 
 
-import mmrnmhrm.ui.internal.text.IDeeHeuristicSymbols;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
-public class LangHeuristicScanner implements IDeeHeuristicSymbols {
+public class LangHeuristicScanner implements ILangHeuristicSymbols {
 	
 	protected final IDocument document;
 	
