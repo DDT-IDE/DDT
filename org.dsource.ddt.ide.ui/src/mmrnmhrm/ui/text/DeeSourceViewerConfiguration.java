@@ -10,6 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.HashSet;
 import java.util.Map;
 
@@ -212,7 +214,8 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
-		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(partitioning, DeeUI.getPrefStore() ) };
+		assertTrue(DeePartitions.DEE_PARTITIONING.equals(partitioning));
+		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(DeeUI.getPrefStore(), contentType) };
 	}
 	
 	

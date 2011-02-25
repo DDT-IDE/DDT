@@ -1,16 +1,42 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package org.dsource.ddt.lang.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-
 import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
+import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.junit.Test;
 
 
-public class BlockHeuristicsScannnerTest extends ScannerTestUtils {
+public class BlockHeuristicsScannnerTest extends ScannerTestUtils implements ILangHeuristicSymbols {
+	
+	public static BlockTokenRule[] SAMPLE_BLOCK_TOKENS = new BlockTokenRule[] {
+		new BlockTokenRule('{', '}'),
+		new BlockTokenRule('(', ')')
+	};
+	
+	public static final boolean LEFT_INVALID = true;
+	
+	protected BlockHeuristicsScannner setupSource(String source) {
+		getDocument().set(source);
+		return setupScanner();
+	}
+	
+	public BlockHeuristicsScannner setupScanner() {
+		return new BlockHeuristicsScannner(getDocument(), null, null, SAMPLE_BLOCK_TOKENS);
+	}
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
@@ -24,17 +50,6 @@ public class BlockHeuristicsScannnerTest extends ScannerTestUtils {
 		testScanToBlockStart("", "", "}", 1);
 	}
 	
-	public BlockHeuristicsScannner setupScanner(String srcBefore, String srcAfter) {
-		BlockTokenRule[] ar = new BlockTokenRule[] {
-			new BlockTokenRule('{', '}'),
-			new BlockTokenRule('(', ')')
-		};
-		BlockHeuristicsScannner scanner = new BlockHeuristicsScannner(getDocument(), ar);
-		
-		getDocument().set(srcBefore + srcAfter);
-		return scanner;
-	}
-	
 	protected void testScanToBlockStart(String srcPre, String scrBlock, String srcAfter, int expecBalance)
 			throws BadLocationException {
 		testScanToBlockStart(srcPre, scrBlock, srcAfter, expecBalance, false);
@@ -44,29 +59,54 @@ public class BlockHeuristicsScannnerTest extends ScannerTestUtils {
 			boolean expecInvalidLeft)
 			throws BadLocationException {
 		String srcBefore = srcPre + srcBlock;
-		BlockHeuristicsScannner scanner = setupScanner(srcBefore, srcAfter);
+		
+		BlockHeuristicsScannner scanner = setupSource(srcBefore + srcAfter);
+		
 		char closeChar = srcAfter.charAt(0);
 		assertNotNull(scanner.getOpeningPeer(closeChar));
 		
 		int balance = scanner.scanToBlockStart(srcBefore.length());
 		
-		assertTrue(scanner.getPosition() == srcPre.length());
 		assertTrue(balance == expecBalance);
+		assertTrue(scanner.getPosition() == srcPre.length());
 		assertTrue((scanner.token == ILangHeuristicSymbols.TOKEN_INVALID) == expecInvalidLeft);
 		
 		if(balance == 0) {
 			int blockEndOffset = srcBefore.length();
 			if (scanner.token != ILangHeuristicSymbols.TOKEN_INVALID) {
-				scanner.scanToBlockEnd(scanner.getPosition());
-				assertEquals(scanner.getPosition(), blockEndOffset);
+				balance = scanner.scanToBlockEnd(scanner.getPosition());
+				assertTrue(balance == 0);
+				assertEquals(scanner.getPosition()-1, blockEndOffset);
 			} else {
-				scanner.scanToBlockEnd(scanner.getPosition()-1);
-				assertTrue(scanner.getPosition() == document.getLength()-1 || scanner.getPosition() > blockEndOffset);
+				// There must be a brace next to where the scanner stopped
+				scanner.scanToBlockEnd(scanner.getPosition()-1); 
+				assertTrue(scanner.getPosition() == document.getLength() || scanner.getPosition() > blockEndOffset);
 			}
 		}
+		
+		// Now let's try a reverted test case, which should yield the same result
+		String srcBeforeR = reverse(srcAfter);
+		String srcAfterR = reverse(srcBefore);
+		scanner = setupSource(srcBeforeR + srcAfterR);
+		balance = scanner.scanToBlockEnd(srcBeforeR.length()-1);
+		
+		assertTrue(balance == expecBalance);
+		assertTrue(scanner.getPosition() == reversePosition(srcPre.length()));
+		assertTrue((scanner.token == ILangHeuristicSymbols.TOKEN_INVALID) == expecInvalidLeft);
 	}
 	
-	public static final boolean LEFT_INVALID = true; 
+	protected String reverse(String string) {
+		StringBuffer buffer = new StringBuffer();
+		for (int i = string.length()-1; i >= 0; i--) {
+			char ch = string.charAt(i);
+			char revertedCh = AutoEditUtils.getBracePair(ch);
+			buffer.append(revertedCh);
+		}
+		return buffer.toString();
+	}
+	protected int reversePosition(int position) {
+		return document.getLength() - position;
+	}
 	
 	@Test
 	public void testScanToBlockStart() throws Exception { testScanToBlockStart$(); }

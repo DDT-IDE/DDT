@@ -18,5 +18,6 @@ public interface ILangHeuristicSymbols {
 	
 	int TOKEN_EOF = -1;
 	int TOKEN_INVALID = -2;
+	int TOKEN_OUTSIDE = -3; // Token for whole partitions that we skip over
 	
 }

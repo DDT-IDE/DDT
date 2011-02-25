@@ -13,18 +13,15 @@ package org.dsource.ddt.lang.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-
-
-
 import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockBalanceResult;
 import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
-import org.eclipse.dltk.ruby.internal.ui.text.RubyPreferenceInterpreter;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextUtilities;
 
@@ -36,7 +33,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	protected boolean fCloseBlocks = true;
 	
 	public LangAutoEditStrategy(IPreferenceStore store) {
-		fPreferences = new RubyPreferenceInterpreter(store);
+		fPreferences = new LangAutoEditsPreferencesAdapter(store);
 	}
 	
 	protected boolean isSmartMode() {
@@ -49,25 +46,25 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 	
 	@Override
-	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
-		if (c.doit == false)
+	public void customizeDocumentCommand(IDocument doc, DocumentCommand cmd) {
+		if (cmd.doit == false)
 			return;
 		
 		clearCachedValues();
 		if (!isSmartMode()) {
-			super.customizeDocumentCommand(d, c); 
+			super.customizeDocumentCommand(doc, cmd); 
 			return;
 		}
 		
 		try {
-			if (AutoEditUtils.isNewLineInsertionCommand(d, c))
-				smartIndentAfterNewLine(d, c);
-			else if (AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(c))
-				smartIndentOnKeypress(d, c);
-			else if (c.text.length() > 1 && fPreferences.isSmartPaste())
-				smartPaste(d, c); // no smart backspace for paste
+			if (AutoEditUtils.isNewLineInsertionCommand(doc, cmd))
+				smartIndentAfterNewLine(doc, cmd);
+			else if (AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(cmd))
+				smartIndentOnKeypress(doc, cmd);
+			else if (cmd.text.length() > 1 && fPreferences.isSmartPaste())
+				smartPaste(doc, cmd); // no smart backspace for paste
 			else
-				super.customizeDocumentCommand(d, c);
+				super.customizeDocumentCommand(doc, cmd);
 		} catch (BadLocationException e) {
 			//DLTKUIPlugin.log(e);
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
@@ -76,7 +73,9 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
 	protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
 		// Default implementation
-		return new BlockHeuristicsScannner(doc, new BlockHeuristicsScannner.BlockTokenRule('{', '}'));
+		String partitioning = IDocumentExtension3.DEFAULT_PARTITIONING;
+		String contentType = IDocument.DEFAULT_CONTENT_TYPE;
+		return new BlockHeuristicsScannner(doc, partitioning, contentType, new BlockTokenRule('{', '}'));
 	}
 	
 	/* ------------------------------------- */

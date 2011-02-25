@@ -35,8 +35,8 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 	protected final BlockTokenRule[] blockRules;
 	protected final BlockTokenRule[] blockRulesReversed;
 	
-	public BlockHeuristicsScannner(IDocument document, BlockTokenRule... blockRules) {
-		super(document, "TODO"); // partitinioning
+	public BlockHeuristicsScannner(IDocument document, String partitioning, String contentType, BlockTokenRule... blockRules) {
+		super(document, partitioning, contentType);
 		this.blockRules = blockRules;
 		
 		blockRulesReversed = new BlockTokenRule[blockRules.length];
@@ -44,34 +44,6 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 			BlockTokenRule blockRule = blockRules[i];
 			blockRulesReversed[i] = new BlockTokenRule(blockRule.close, blockRule.open);
 		}
-	}
-	
-	protected final int readPreviousToken() throws BadLocationException {
-		if(pos <= limitPos) {
-			return token = TOKEN_EOF;
-		} else {
-			pos--;
-			return token = getSourceChar(pos);
-		}
-	}
-	
-	protected final void revertPreviousToken()  {
-		assertTrue(token != TOKEN_EOF);
-		pos++;
-	}
-	
-	protected final int readNextToken() throws BadLocationException {
-		if(pos >= limitPos) {
-			return token = TOKEN_EOF;
-		} else {
-			pos++;
-			return token = getSourceChar(pos);
-		}
-	}
-	
-	protected final void revertNextToken()  {
-		assertTrue(token != TOKEN_EOF);
-		pos--;
 	}
 	
 	public char getClosingPeer(char openChar) {
@@ -105,13 +77,12 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 	/** Calculate the block balance in given range. */
 	public BlockBalanceResult calculateBlockBalances(int beginPos, int endPos) throws BadLocationException {
 		// Calculate backwards
-		setPosition(endPos);
-		limitPos = beginPos;
+		setScanRange(endPos, beginPos);
 		// Ideally we would fully parse the code to figure the delta.
 		// But ATM we just estimate using number of blocks
 		BlockBalanceResult result = new BlockBalanceResult();
 		
-		while(readPreviousToken() != TOKEN_EOF) {
+		while(readPreviousCharacter() != TOKEN_EOF) {
 			for (int i = 0; i < blockRules.length; i++) {
 				BlockTokenRule blockRule = blockRules[i];
 				
@@ -141,7 +112,7 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 		return result;
 	}
 	
-	private abstract class FnTokenAdvance {
+	protected abstract class FnTokenAdvance {
 		protected abstract int advanceToken() throws BadLocationException;
 
 		protected abstract void revertToken() ;
@@ -150,35 +121,35 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 	protected final FnTokenAdvance prevTokenFn = new FnTokenAdvance() {
 		@Override
 		protected int advanceToken() throws BadLocationException {
-			return readPreviousToken();
+			return readPreviousCharacter();
 		}
 		@Override
 		protected void revertToken() {
-			revertPreviousToken();
+			revertPreviousCharacter();
 		}
 	};
-	protected final FnTokenAdvance nextTokenFn= new FnTokenAdvance() {
+	protected final FnTokenAdvance nextTokenFn = new FnTokenAdvance() {
 		@Override
 		protected int advanceToken() throws BadLocationException {
-			return readNextToken();
+			return readNextCharacter();
 		}
 		@Override
 		protected void revertToken() {
-			revertNextToken();
+			revertNextCharacter();
 		}
 	};
 	
 	public int scanToBlockStart(int blockCloseOffset) throws BadLocationException {
 		setPosition(blockCloseOffset);
-		limitPos = 0;
-		char blockClose = document.getChar(getPosition());
+		posLimit = 0;
+		char blockClose = document.getChar(blockCloseOffset);
 		return scanToBlockStartForChar(blockClose, prevTokenFn, blockRules);
 	}
 	
 	public int scanToBlockEnd(int blockOpenOffset) throws BadLocationException {
-		setPosition(blockOpenOffset);
-		limitPos = document.getLength()-1;
-		char blockOpen = document.getChar(getPosition());
+		setPosition(blockOpenOffset+1);
+		posLimit = document.getLength();
+		char blockOpen = document.getChar(blockOpenOffset);
 		return scanToBlockStartForChar(blockOpen, nextTokenFn, blockRulesReversed);
 	}
 	
