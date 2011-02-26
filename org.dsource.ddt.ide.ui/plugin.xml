@@ -42,7 +42,7 @@
  <extension
        point="org.eclipse.ui.perspectiveExtensions">
     <perspectiveExtension
-          targetID="org.dsource.ddt.ide.ui.deeperspective">
+          targetID="org.dsource.ddt.ide.ui.DeePerspective">
        <showInPart
              id="org.eclipse.ui.navigator.ProjectExplorer">
        </showInPart>
