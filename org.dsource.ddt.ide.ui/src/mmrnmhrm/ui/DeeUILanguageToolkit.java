@@ -1,9 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui;
 
 import mmrnmhrm.core.dltk.DeeLanguageToolkit;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.preferences.pages.DeeCompilersPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeEditorSmartTypingPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage;
 import mmrnmhrm.ui.text.DeeSimpleSourceViewerConfiguration;
@@ -43,7 +54,6 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 		return DeePlugin.getInstance().getPreferenceStore();
 	}
 	
-	//XXX: DLTK: use DLTK partitioning?
 	@Override
 	public String getPartitioningId() {
 		return DeeConstants.PARTITIONING_ID;
@@ -79,6 +89,7 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	public String[] getEditorPreferencePages() {
 		return new String[]{ 
 				DeeEditorPreferencePage.PAGE_ID, 
+				DeeEditorSmartTypingPreferencePage.PAGE_ID,
 				DeeTemplatePreferencePage.PAGE_ID,
 				DeeSourceColoringPreferencePage.PAGE_ID};
 	}
