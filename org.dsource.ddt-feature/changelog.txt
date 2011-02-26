@@ -5,7 +5,9 @@
  * Fixed #25 and other source highlighting bugs (like nested comments being lexed as non-nested comments). 
    Also added additional syntax highlighting options for WYSIWYG strings, delimited strings, and character literals.
  * Fixed a bug due to reuse of a single instance of the editor source-highlighting & folding parser. 
-    This bug may have been manifested in obscure, unknown, and/or hard to replicate ways.   
+    This bug may have been manifested in obscure, unknown, and/or hard to replicate ways.
+ * Fixed #17, #18, #20, all related to editor auto edits. Properly implemented:
+   * Editor auto-edits (smart indenting according to block structure), added "Typing" preference page.
 
 == DDT 0.4.0 (2010-11-17) ==
  * Renamed project to DDT
