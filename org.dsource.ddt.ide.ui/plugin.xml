@@ -98,6 +98,12 @@
 	          class="mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage"
 	          id="org.dsource.ddt.ide.ui.preferences.Editor"
 	          name="%LangEditorPreferencePage.name"/>
+       <page
+             category="org.dsource.ddt.ide.ui.preferences.Editor"
+             class="mmrnmhrm.ui.preferences.pages.DeeEditorSmartTypingPreferencePage"
+             id="org.dsource.ddt.ide.ui.preferences.Editor.typing"
+             name="%LangEditorTypingPreferencePage.name">
+       </page>
 	    <page
 	          category="org.dsource.ddt.ide.ui.preferences.Editor"
 	          class="mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage"

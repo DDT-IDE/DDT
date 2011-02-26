@@ -1,8 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
-import mmrnmhrm.ui.text.DeePartitionScanner;
 import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.DeeTextTestUtils;
 import mmrnmhrm.ui.text.DeeTextTools;
@@ -46,19 +55,10 @@ public class DeePartitionScannerTest extends DeeTestUtils implements DeePartitio
 	private void setupDocument(String docContents) {
 		if(recreateDocSetup){ 
 			document = new Document(docContents);
-			installPartitionerOnDocument();
+			fp = DeeTextTestUtils.installDeePartitioner(document);
 		} else {
 			document.set(docContents);
 		}
-	}
-	
-	private void installPartitionerOnDocument() {
-		DeePartitionScanner partitionScanner = new DeePartitionScanner();
-		partitionScanner.setRange(document, 0, document.getLength());
-		
-		fp = new FastPartitioner(partitionScanner, DeeTextTestUtils.LEGAL_CONTENT_TYPES);
-		document.setDocumentPartitioner(fp);
-		fp.connect(document, false);
 	}
 	
 	private void installPartitionerOnDocumentWithTextTools() {

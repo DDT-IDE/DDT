@@ -24,6 +24,7 @@
 <setEntry value="org.dsource.ddt:default"/>
 <setEntry value="org.eclipse.dltk.core:default"/>
 <setEntry value="org.eclipse.dltk.ruby:default"/>
+<setEntry value="org.eclipse.dltk.tcl:default"/>
 <setEntry value="org.eclipse.emf.codegen.ecore.ui:default"/>
 <setEntry value="org.eclipse.emf.codegen.ecore:default"/>
 <setEntry value="org.eclipse.emf.codegen.ui:default"/>

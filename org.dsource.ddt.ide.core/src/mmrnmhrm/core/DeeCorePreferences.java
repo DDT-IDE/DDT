@@ -3,6 +3,8 @@ package mmrnmhrm.core;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
+@Deprecated 
+//refactor usage of preferences lookup
 public class DeeCorePreferences {
 	
 	public static final String ADAPT_MALFORMED_DMD_AST = "adapt_malformed_ast";

@@ -2,6 +2,7 @@ package mmrnmhrm.ui.internal.text;
 
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 
+@Deprecated
 public class LangWhitespaceDetector implements IWhitespaceDetector {
 	
 	@Override

@@ -12,7 +12,7 @@ package mmrnmhrm.ui.preferences.pages;
 
 
 import mmrnmhrm.ui.DeePlugin;
-import mmrnmhrm.ui.preferences.DeeEditorConfigurationBlock;
+import mmrnmhrm.ui.preferences.DeeEditorSmartTypingConfigurationBlock;
 
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
 import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
@@ -21,9 +21,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 
-public class DeeEditorPreferencePage extends AbstractConfigurationBlockPreferencePage {
+public class DeeEditorSmartTypingPreferencePage extends AbstractConfigurationBlockPreferencePage {
 	
-	public final static String PAGE_ID = DeePlugin.EXTENSIONS_IDPREFIX+"preferences.Editor";
+	public final static String PAGE_ID = DeePlugin.EXTENSIONS_IDPREFIX+"preferences.Editor.typing";
 	
 	@Override
 	protected void setDescription() {
@@ -42,6 +42,7 @@ public class DeeEditorPreferencePage extends AbstractConfigurationBlockPreferenc
 	
 	@Override
 	protected IPreferenceConfigurationBlock createConfigurationBlock(OverlayPreferenceStore overlayPreferenceStore) {
-		return new DeeEditorConfigurationBlock(this, overlayPreferenceStore);
+		return new DeeEditorSmartTypingConfigurationBlock(overlayPreferenceStore);
 	}
+	
 }

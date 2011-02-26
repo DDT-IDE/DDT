@@ -1,10 +1,23 @@
-package mmrnmhrm.ui.internal.text;
+/*******************************************************************************
+ * Copyright (c) 2008 xored software, Inc.  
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html  
+ *
+ * Contributors:
+ *     xored software, Inc. - initial API and Implementation
+ * 	   Alex Panchenko <alex@xored.com>
+ *******************************************************************************/
+package org.eclipse.dltk.ruby.internal.ui.text;
 
 import java.util.Arrays;
 
-import mmrnmhrm.ui.DeePlugin;
-
-import org.eclipse.dltk.ruby.internal.ui.text.RubyPreferenceInterpreter;
+import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.PreferencesLookupDelegate;
+import org.eclipse.dltk.ruby.internal.ui.RubyUI;
+import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -18,15 +31,18 @@ import org.eclipse.jface.text.TextUtilities;
 public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	private static final int[] INDENT_TO_BLOCK_TOKENS = {
-			IDeeSymbols.TokenELSE,
-			IDeeSymbols.TokenRBRACE };
+			IRubySymbols.TokenELSE, IRubySymbols.TokenELSIF,
+			IRubySymbols.TokenEND, IRubySymbols.TokenENSURE,
+			IRubySymbols.TokenRESCUE, IRubySymbols.TokenWHEN,
+			IRubySymbols.TokenRBRACE };
 
 	private static final int[] CONTINUATION_TOKENS = {
-			IDeeSymbols.TokenBACKSLASH, IDeeSymbols.TokenCOMMA,
-			IDeeSymbols.TokenSLASH, IDeeSymbols.TokenPLUS,
-			IDeeSymbols.TokenMINUS, IDeeSymbols.TokenSTAR };
+			IRubySymbols.TokenBACKSLASH, IRubySymbols.TokenCOMMA,
+			IRubySymbols.TokenSLASH, IRubySymbols.TokenPLUS,
+			IRubySymbols.TokenMINUS, IRubySymbols.TokenSTAR };
 
-	private static final int[] REMOVE_IDENTATION_TOKENS = { };
+	private static final int[] REMOVE_IDENTATION_TOKENS = {
+			IRubySymbols.TokenRDOCBEGIN, IRubySymbols.TokenRDOCEND };
 
 	static {
 		Arrays.sort(INDENT_TO_BLOCK_TOKENS);
@@ -39,12 +55,9 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	private RubyPreferenceInterpreter fPreferences;
 
 	public RubyAutoEditStrategy(String partitioning) {
-		this(partitioning, DeePlugin.getDefault().getPreferenceStore());
+		this(partitioning, RubyUI.getDefault().getPreferenceStore());
 	}
 
-	/**
-	 * @param partitioning  
-	 */
 	public RubyAutoEditStrategy(String partitioning, IPreferenceStore store) {
 		fPreferences = new RubyPreferenceInterpreter(store);
 	}
@@ -76,7 +89,7 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		int ending = Math.min(line.getOffset() + line.getLength(), offset);
 		int blockOffset = scanner.findBlockBeginningOffset(ending);
 		int token = scanner.nextToken(blockOffset, ending);
-		if (token == IDeeSymbols.TokenLBRACE) {
+		if (token == IRubySymbols.TokenLBRACE) {
 			return "}"; //$NON-NLS-1$
 		} else {
 			return "end"; //$NON-NLS-1$
@@ -87,7 +100,6 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		return fIsSmartMode;
 	}
 
-	@Override
 	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
 		if (c.doit == false)
 			return;
@@ -101,7 +113,9 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		try {
 			if (c.length == 0 && c.text != null && isLineDelimiter(d, c.text))
 				smartIndentAfterNewLine(d, c);
-			else if (c.text.length() == 1 && c.text.charAt(0) == '\t')
+			else if (c.length == 0 && c.text != null && isSpace(c.text))
+				smartInsertEndOnSpace(d, c);
+			else if (isRepresentingTab(c.text))
 				smartTab(d, c);
 			else if (c.text.length() == 1)
 				smartIndentOnKeypress(d, c);
@@ -114,11 +128,133 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		}
 	}
 
+	/**
+	 * @param document
+	 * @param c
+	 * @throws BadLocationException
+	 */
+	private void smartInsertEndOnSpace(IDocument document, DocumentCommand c)
+			throws BadLocationException {
+		IRegion line = document.getLineInformationOfOffset(c.offset);
+		RubyHeuristicScanner scanner = new RubyHeuristicScanner(document);
+		int prevToken = scanner.previousToken(c.offset - 1, line.getOffset());
+		if (c.offset > 1 && prevToken == ISymbols.TokenEOF) {
+			return;
+		}
+		int prevTokenOffset = scanner.getPosition();
+		if (prevTokenOffset < 0)
+			prevTokenOffset = 0;
+		String previous = document.get(prevTokenOffset,
+				c.offset - prevTokenOffset).trim();
+
+		int hasOffset = line.getOffset();
+		int hasLength = (prevTokenOffset - line.getOffset());
+		boolean hasPrefixContent = ((hasLength > 0) && (document.get(hasOffset,
+				hasLength).trim().length() > 0));
+
+		hasOffset = (prevTokenOffset + previous.length() + 1);
+		hasLength = (line.getLength() - (hasOffset - line.getOffset()));
+		boolean hasSuffixContent = ((hasLength > 0)
+				&& ((hasOffset + hasLength) <= document.getLength()) && (document
+				.get(hasOffset, hasLength).trim().length() > 0));
+
+		if (!"case".equals(previous) && !"class".equals(previous) //$NON-NLS-1$ //$NON-NLS-2$
+				&& !"def".equals(previous) && !"do".equals(previous) //$NON-NLS-1$ //$NON-NLS-2$
+				&& !"if".equals(previous) && !"module".equals(previous) //$NON-NLS-1$ //$NON-NLS-2$
+				&& !"unless".equals(previous) //$NON-NLS-1$
+				&& !"while".equals(previous)) //$NON-NLS-1$
+			return;
+		if ((hasPrefixContent && !"do".equals(previous)) //$NON-NLS-1$
+				|| hasSuffixContent)
+			return;
+		if ((prevTokenOffset + previous.length()) < (c.offset - 1))
+			return;
+		if (fCloseBlocks && !isBlockClosed(document, c.offset)) {
+			c.caretOffset = c.offset + 1;
+			c.shiftsCaret = false;
+			c.text = c.text + TextUtilities.getDefaultLineDelimiter(document)
+					+ getBlockIndent(document, c.offset, scanner) + "end"; //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Tells whether the given inserted string represents hitting the Tab key.
+	 * 
+	 * @param text
+	 *            the text to check
+	 * @return <code>true</code> if the text represents hitting the Tab key
+	 * @since 3.5
+	 */
+	private boolean isRepresentingTab(String text) {
+		if (text == null)
+			return false;
+
+		if (isInsertingSpacesForTab()) {
+			if (text.length() == 0
+					|| text.length() > getVisualTabLengthPreference())
+				return false;
+			for (int i = 0; i < text.length(); i++) {
+				if (text.charAt(i) != ' ')
+					return false;
+			}
+			return true;
+		} else
+			return text.length() == 1 && text.charAt(0) == '\t';
+	}
+
+	/**
+	 * The preference setting that tells whether to insert spaces when pressing
+	 * the Tab key.
+	 * 
+	 * @return <code>true</code> if spaces are inserted when pressing the Tab
+	 *         key
+	 * @since 3.5
+	 */
+	private boolean isInsertingSpacesForTab() {
+		return CodeFormatterConstants.SPACE.equals(getOption(RubyUI.PLUGIN_ID,
+				CodeFormatterConstants.FORMATTER_TAB_CHAR));
+	}
+
+	private IScriptProject getProject() {
+		// TODO implement getProject()
+		return null;
+	}
+
+	/**
+	 * @param project
+	 * @param qualifier
+	 * @param key
+	 * @return
+	 */
+	private String getOption(String qualifier, String key) {
+		return new PreferencesLookupDelegate(getProject()).getString(qualifier,
+				key);
+	}
+
+	/**
+	 * @param project
+	 * @param qualifier
+	 * @param key
+	 * @return
+	 */
+	private int getIntOption(String qualifier, String key) {
+		return new PreferencesLookupDelegate(getProject()).getInt(qualifier,
+				key);
+	}
+
+	private int getVisualTabLengthPreference() {
+		return getIntOption(RubyUI.PLUGIN_ID,
+				CodeFormatterConstants.FORMATTER_TAB_SIZE);
+	}
+
+	private boolean isSpace(String text) {
+		return text.length() == 1 && text.charAt(0) == ' ';
+	}
+
 	private boolean isLineDelimiter(IDocument document, String text) {
 		String[] delimiters = document.getLegalLineDelimiters();
-		if (delimiters != null)
-			return TextUtilities.equals(delimiters, text) > -1;
-		return false;
+		return delimiters != null
+				&& TextUtilities.equals(delimiters, text) > -1;
 	}
 
 	private void smartTab(IDocument d, DocumentCommand c)
@@ -153,7 +289,7 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		c.shiftsCaret = false;
 	}
 
-	private void smartIndentOnKeypress(IDocument d, DocumentCommand c)
+	public void smartIndentOnKeypress(IDocument d, DocumentCommand c)
 			throws BadLocationException {
 		RubyHeuristicScanner scanner = new RubyHeuristicScanner(d);
 		IRegion info = d.getLineInformationOfOffset(c.offset);
@@ -165,7 +301,8 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 			// ssanders: If Block was opened on same line, add extra indent
 			int blockStart = scanner.findBlockBeginningOffset(c.offset);
-			int prevBlockStart = scanner.findBlockBeginningOffset(info.getOffset());
+			int prevBlockStart = scanner.findBlockBeginningOffset(info
+					.getOffset());
 			if (blockStart >= info.getOffset() && prevBlockStart != -1)
 				indent += fPreferences.getIndent();
 
@@ -239,7 +376,7 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		return ""; //$NON-NLS-1$
 	}
 
-	private void smartIndentAfterNewLine(IDocument d, DocumentCommand c)
+	public void smartIndentAfterNewLine(IDocument d, DocumentCommand c)
 			throws BadLocationException {
 		IRegion line = d.getLineInformationOfOffset(c.offset);
 		int lineEnd = line.getOffset() + line.getLength();
@@ -336,7 +473,7 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		return Arrays.binarySearch(INDENT_TO_BLOCK_TOKENS, token) >= 0;
 	}
 
-	private void smartPaste(IDocument d, DocumentCommand c)
+	public void smartPaste(IDocument d, DocumentCommand c)
 			throws BadLocationException {
 		// fix first line whitespace
 		IRegion info = d.getLineInformationOfOffset(c.offset);
@@ -349,14 +486,7 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		}
 
 		RubyHeuristicScanner scanner = new RubyHeuristicScanner(d);
-		//String indent = getLineIndent(d, c.offset, scanner);  // DLTK modified
-		String indent = getPreviousLineIndent(d, c.offset, scanner);
-		
-		if (previousIsBlockBeginning(d, scanner, c.offset)) {
-			// if this line was beginning of the block
-			indent += fPreferences.getIndent();
-		}
-		
+		String indent = getLineIndent(d, c.offset, scanner);
 		String delimiter = TextUtilities.getDefaultLineDelimiter(d);
 		boolean addLastDelimiter = c.text.endsWith(delimiter);
 		String[] lines = c.text.split(delimiter);
@@ -403,9 +533,9 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 
 	/**
-	 * Computes the length of a <code>CharacterSequence</code>, counting a
-	 * tab character as the size until the next tab stop and every other
-	 * character as one.
+	 * Computes the length of a <code>CharacterSequence</code>, counting a tab
+	 * character as the size until the next tab stop and every other character
+	 * as one.
 	 * 
 	 * @param indent
 	 *            the string to measure
@@ -508,7 +638,7 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			return 1;
 
 		int begin = offset;
-		int end = offset /*- 1*/; // OFF BY ONE HERE IN DLTK
+		int end = offset - 1;
 
 		RubyHeuristicScanner scanner = new RubyHeuristicScanner(document);
 
