@@ -73,7 +73,7 @@ public class DeeAutoEditStrategyTest extends LangAutoEditStragetyTest {
 		
 		s = mkline(indent+0, "def {")+
 			mklast(indent+1, "func('blah ({ ' "); 
-		testEnterAutoEdit(s, NL +NEUTRAL_SRC1+"//)", expectClose(indent+2, ")"), expectInd(indent+2).length());
+		testEnterAutoEdit(s, NL +NEUTRAL_SRC1+"//)", expectInd(indent+2), expectClose(indent+2, ")"));
 		
 		s = mkline(indent+7, "def { func/+({")+
 			mklast(indent+0, "  {blah+/ } "); 

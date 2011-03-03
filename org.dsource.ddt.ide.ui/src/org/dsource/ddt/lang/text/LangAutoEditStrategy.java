@@ -121,9 +121,9 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		if(blockInfo.unbalancedOpens > 0) {
 			cmd.text += addIndent(lineIndent, blockInfo.unbalancedOpens);
 			
-			boolean hasPendingText = postWsEndPos != lineEnd;
-			if (fCloseBlocks && !hasPendingText){
-				if(!bhscanner.isBlockClosed(blockInfo.rightmostUnbalancedBlockOpenOffset)) {
+			boolean hasPendingTextAfterEdit = postWsEndPos != lineEnd;
+			if (fCloseBlocks && !hasPendingTextAfterEdit){
+				if(bhscanner.shouldCloseBlock(blockInfo.rightmostUnbalancedBlockOpenOffset)) {
 					//close block
 					cmd.caretOffset = cmd.offset + cmd.text.length();
 					cmd.shiftsCaret = false;

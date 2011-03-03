@@ -84,11 +84,11 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 	@Test
 	public void testSmartIndentBasic2() {
 		// balance 0 : 1(unclosed)
-		testEnterAutoEdit("void main{", ""                             , NL+TAB+NL+"}", (NL+TAB).length());
-		testEnterAutoEdit("void main(",      NL+"func(){}"+NL+"blah();", NL+TAB+NL+")", (NL+TAB).length());
-		testEnterAutoEdit("vo() main{", "  "+NL+"func(){}"+NL+"blah();", NL+TAB+NL+"}", (NL+TAB).length());
-		// balance 0 : 1(unclosed but don't close)
-		testEnterAutoEdit("void main(){",       "func(){}"+NL+"blah();", NL+TAB, -1);
+		testEnterAutoEdit("void main{", ""                             , NL+TAB, NL+"}");
+		testEnterAutoEdit("void main(",      NL+"func(){}"+NL+"blah();", NL+TAB, NL+")");
+		testEnterAutoEdit("vo() main{", "  "+NL+"func(){}"+NL+"blah();", NL+TAB, NL+"}");
+		// balance 0 : 1(unclosed but don't close due to pending text)
+		testEnterAutoEdit("void main(){",       "func(){}"+NL+"blah();", NL+TAB);
 	}
 	
 	@Test
@@ -109,15 +109,15 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 	}
 	
 	protected final void testEnterAutoEdit(String sourceBefore, String sourceAfter, String expectedEdit) {
-		testEnterAutoEdit(sourceBefore, sourceAfter, expectedEdit, -1);
+		dotestEnterAutoEdit(sourceBefore, sourceAfter, expectedEdit, -1);
 	}
 	
-	protected void testEnterAutoEdit(String sourceBefore, String sourceAfter, String expectedInsert, int offsetDelta) {
+	protected void testEnterAutoEdit(String sourceBefore, String sourceAfter, String expectedInsert, String expInsertAfter) {
+		dotestEnterAutoEdit(sourceBefore, sourceAfter, expectedInsert+expInsertAfter, expectedInsert.length());
+	}
+	
+	protected void dotestEnterAutoEdit(String sourceBefore, String sourceAfter, String expectedInsert, int offsetDelta) {
 		Document document = setupDocument(sourceBefore, sourceAfter);
-		runStrategyAndCheck(sourceBefore, expectedInsert, offsetDelta, document);
-	}
-	
-	protected void runStrategyAndCheck(String sourceBefore, String expectedInsert, int offsetDelta, Document document) {
 		int keypressOffset = sourceBefore.length();
 		DocumentCommand docCommand = createDocumentCommand(keypressOffset, 0, NL);
 		getAutoEditStrategy().customizeDocumentCommand(document, docCommand);
@@ -165,17 +165,38 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		testEnterAutoEdit(s, NL +")"+ NEUTRAL_SRCX, expectInd(indent+1));
 		
 		
+		s = mkline(indent, "func({")+
+			mklast(indent, "abc(");     // test potential close (go outside dominating block?)
+		testEnterAutoEdit(s, NL+")"+ NEUTRAL_SRC1+"}", expectInd(indent+1));
+		
 		s = mkline(indent, "func{")+
-			mklast(indent, "}blah("); // test -1 : 1 with close   
-		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectClose(indent+1, ")"), expectInd(indent+1).length());
+			mklast(indent, "abc(");     // test potential close (unclosed dominating block)
+		testEnterAutoEdit(s, NL+")", expectInd(indent+1));
+
+		
+		s = mkline(indent, "func{")+
+			mklast(indent, "}blah(");   // test close, -1 : 1, right=(_
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectInd(indent+1), expectClose(indent+1, ")"));
+		
+		s = mkline(indent, "func{")+
+			mklast(indent, "}blah{{");  // test close, -1 : 2, right={{_
+		testEnterAutoEdit(s, NL, expectInd(indent+2), expectClose(indent+2, "}"));
+		
+		s = mkline(indent, "func{")+
+			mklast(indent, "}}blah{");  // test close, -2 : 1, right={_..
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectInd(indent+1), expectClose(indent+1, "}"));
+		
+		s = mkline(indent, "func{")+
+			mklast(indent, "}}blah{{"); // test close, -2 : 1, right= {{_..}     
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1+"}", expectInd(indent+2), expectClose(indent+2, "}"));
+		
+		s = mkline(indent, "}}blah{")+
+			mkline(indent, "{func{")+
+			mkline(indent+2, NEUTRAL_SRC1)+
+			mklast(indent, "}blah{"); // test close, -2 : 1, right=}} {{..}{_..}     
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1+mkline(indent, "}"), expectInd(indent+1), expectClose(indent+1, "}"));		
 		
 		indent = 0;
-		s = mkline(indent  , "func{")+
-			mkline(indent+4, "func{()}")+ // test interim lines with irregular ident
-			mklast(indent+1, "}blah("); // test -1 : 1 with close   
-		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectClose(indent+2, ")"), expectInd(indent+2).length());
-		
-		
 		
 		s = mkline(indent, "func{{{")+
 			mklast(indent, TAB+"abc}}}"); // test -3 : 0
@@ -209,6 +230,20 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		testEnterAutoEdit(s, NL+NEUTRAL_SRCX, expectInd(indent+1));
 	}
 	
+	@Test
+	public void testSmartIdent_Boundary() throws Exception { testSmartIdent_Boundary$(); }
+	public void testSmartIdent_Boundary$() throws Exception {
+		String s;
+		s = "(";     // test potential close
+		testEnterAutoEdit(s, NL +")"+ NEUTRAL_SRC1+"}", expectInd(1));
+
+		s = "}(";     // test potential close
+		testEnterAutoEdit(s, NL +")"+ NEUTRAL_SRC1+"}", expectInd(1));
+		
+		s = "{"+NL+"(";     // test potential close
+		testEnterAutoEdit(s, NL +"){", expectInd(1));
+	}
+	
 	protected String mkline(int indent, String string) {
 		return line(TABn(indent) + string);
 	}
@@ -226,7 +261,7 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 	}
 	
 	protected static String expectClose(int indent, String close) {
-		return NL+TABn(indent) +NL+TABn(indent-1)+close ;
+		return NL+TABn(indent-1)+close;
 	}
 	
 	
@@ -251,8 +286,8 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		indent = 1;
 		s = mkline(indent, "func{")+
 			mklast(indent, TAB+"(ab{c)"); // test 0 : 2 (corrected)
-		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRC1, expectInd(1+indent+2));
-
+		testEnterAutoEdit(s, NL +"}"+NEUTRAL_SRC1+"}", expectInd(1+indent+2));
+		
 		s = mkline(indent, "func{")+
 			mklast(indent, TAB+"(ab}c)"); // test -1 : 0 (corrected)
 		testEnterAutoEdit(s, NL +"}"+ NEUTRAL_SRCX, expectInd(indent));
@@ -264,9 +299,17 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		
 		
 		s = mkline(indent, "func{")+
-			mklast(indent, "}blah{)"); // test -1 : 1 with close   
-		testEnterAutoEdit(s, NL+/*}*/ NEUTRAL_SRC1, expectClose(indent+1, "}"), expectInd(indent+1).length());
+			mklast(indent, "}blah{)"); // test -1 : 1 with close, right={)_..   
+		testEnterAutoEdit(s, NL+/*}*/ NEUTRAL_SRC1, expectInd(indent+1), expectClose(indent+1, "}"));
 		
+		s = mkline(indent, "func{")+
+			mklast(indent, "}blah{)"); // test -1 : 1 with close, right={)_({..(}
+		testEnterAutoEdit(s, NL+/*}*/ "({"+NEUTRAL_SRC1+"(}", expectInd(indent+1), expectClose(indent+1, "}"));
+		
+		s = mkline(indent  , "func{")+
+			mkline(indent+4, "func{()}")+ // test interim lines with irregular ident
+			mklast(indent+1, "}blah("); // test close, -1 : 1, right=(_..} 
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1+"}", expectInd(indent+2), expectClose(indent+2, ")"));
 		
 		s = mkline(indent, "func{{){")+    // (corrected)
 			mklast(indent, TAB+"abc}}(}"); // test -3 : 0 (corrected)

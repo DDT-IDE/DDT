@@ -64,6 +64,17 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 		throw assertFail();
 	}
 	
+	protected int getPriorityOfBlockToken(char blockToken) {
+		for (int i = 0; i < blockRules.length; i++) {
+			BlockTokenRule blockRule = blockRules[i];
+			if(blockRule.open == blockToken || blockRule.close == blockToken) {
+				return i;
+			}
+		}
+		throw assertFail();
+	}
+	
+	
 	/*-------------------*/
 	
 	public static class BlockBalanceResult {
@@ -90,7 +101,7 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 					int blockCloseOffset = getPosition();
 					
 					// do a subscan
-					int balance = scanToBlockStart(i, prevTokenFn, blockRules);
+					int balance = scanToBlockPeer(i, prevTokenFn, blockRules);
 					if(balance > 0) {
 						// block start not found
 						result.unbalancedCloses = balance;
@@ -147,28 +158,27 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 	}
 	
 	public int scanToBlockEnd(int blockOpenOffset) throws BadLocationException {
-		setPosition(blockOpenOffset+1);
-		posLimit = document.getLength();
+		setScanRange(blockOpenOffset+1, document.getLength());
 		char blockOpen = document.getChar(blockOpenOffset);
+		return scanToBlockEnd(blockOpen);
+	}
+	
+	protected int scanToBlockEnd(char blockOpen) throws BadLocationException {
 		return scanToBlockStartForChar(blockOpen, nextTokenFn, blockRulesReversed);
 	}
 	
 	protected int scanToBlockStartForChar(char blockClose, FnTokenAdvance fnAdvance, BlockTokenRule[] blockTkRules)
 			throws BadLocationException {
-		for (int i = 0; i < blockTkRules.length; i++) {
-			BlockTokenRule blockRule = blockTkRules[i];
-			if(blockRule.close == blockClose)
-				return scanToBlockStart(i, fnAdvance, blockTkRules);
-		}
-		throw assertFail();
+		int ix = getPriorityOfBlockToken(blockClose);
+		return scanToBlockPeer(ix, fnAdvance, blockTkRules);
 	}
-	
-	/** Scans in search of a block open.
-	 * Stops on EOF, or when block open is found (balance is 0)
-	 * @return 0 if block open token was found (even if assumed by a syntax correction), 
+
+	/** Scans in search of a block peer (open/close).
+	 * Stops on EOF, or when block peer is found (balance is 0)
+	 * @return 0 if block peer token was found (even if assumed by a syntax correction), 
 	 * or a count of how many blocks were left open.
 	 */
-	protected int scanToBlockStart(int expectedTokenIx, FnTokenAdvance fnAdvance, BlockTokenRule[] blockTkRules)
+	protected int scanToBlockPeer(int expectedTokenIx, FnTokenAdvance fnAdvance, BlockTokenRule[] blockTkRules)
 			throws BadLocationException {
 		assertTrue(expectedTokenIx >= 0 && expectedTokenIx < blockTkRules.length);
 		while(fnAdvance.advanceToken() != TOKEN_EOF) {
@@ -176,7 +186,7 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 				BlockTokenRule blockRule = blockTkRules[i];
 				
 				if(token == blockRule.close) {
-					int pendingBlocks = scanToBlockStart(i, fnAdvance, blockTkRules);
+					int pendingBlocks = scanToBlockPeer(i, fnAdvance, blockTkRules);
 					if(pendingBlocks > 0) {
 						return pendingBlocks + 1;
 					}
@@ -210,9 +220,67 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 		return getPosition();
 	}
 	
-	public boolean isBlockClosed(int blockOpenOffset) throws BadLocationException {
-		int balance = scanToBlockEnd(blockOpenOffset);
-		return balance == 0;
+	public boolean shouldCloseBlock(int blockOpenOffset) throws BadLocationException {
+		char primaryBlockOpen = document.getChar(blockOpenOffset);
+		int primaryBlockPriority = getPriorityOfBlockToken(primaryBlockOpen);
+		char blockOpen = primaryBlockOpen;
+		
+		int leftOffset = blockOpenOffset;
+		int rightOffset = blockOpenOffset+1;
+		while(true) {
+			assertTrue(getPriorityOfBlockToken(blockOpen) == primaryBlockPriority);
+			
+			setScanRange(rightOffset, document.getLength());
+			int balance = scanToBlockEnd(blockOpen);
+			
+			if(balance == 0 && token == TOKEN_INVALID) {
+				return true; // a block close is necessary
+			}
+			
+			if(balance > 0) {
+				return true;
+			}
+			
+			// Otherwise look for unmatched block opens on left, that are at least as important at the primary block
+			
+			rightOffset = getPosition(); // save value for later iterations
+			setScanRange(leftOffset, 0);
+			int balanceToTheLeft = findUnmatchedOpen(primaryBlockPriority);
+			leftOffset = getPosition(); // save value for later iterations
+			
+			if(balanceToTheLeft <= 0) {
+				return false; // relevant balance is zero or less, should not close
+			} else {
+				// Got an unmatched open
+				blockOpen = (char) token;
+				if(getPriorityOfBlockToken(blockOpen) < primaryBlockPriority) {
+					// opening is from syntax-dominant block, doesn't matter the rest of the balance
+					return false;
+				}				
+				continue;
+			}
+		}
+	}
+	
+	protected int findUnmatchedOpen(int requiredPriority) throws BadLocationException {
+		while(prevTokenFn.advanceToken() != TOKEN_EOF) {
+			for (int i = 0; i < blockRules.length; i++) {
+				BlockTokenRule blockRule = blockRules[i];
+				
+				if(token == blockRule.close) {
+					// do a subscan
+					if(scanToBlockPeer(i, prevTokenFn, blockRules) > 0) {
+						// block start not found, so there is an unmatched close
+						return -1; 
+					}
+					break;
+				}
+				if(token == blockRule.open && (getPriorityOfBlockToken((char) token) <= requiredPriority)) {
+					return 1;
+				}
+			}
+		}
+		return 0;
 	}
 	
 }
