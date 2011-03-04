@@ -55,6 +55,7 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		PreferenceStore prefStore = new PreferenceStore();
 		prefStore.setValue(LangAutoEditPreferenceConstants.AE_SMART_INDENT, true);
 		prefStore.setValue(LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, true);
+		prefStore.setValue(LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, true);
 		prefStore.setValue(LangAutoEditPreferenceConstants.AE_CLOSE_BRACES, true);
 		prefStore.setValue(LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS, true);
 		prefStore.setValue(LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, true);
