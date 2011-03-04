@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.dsource.ddt.ide.ui;singleton:=true
-Bundle-Version: 0.4.0.qualifier
+Bundle-Version: 0.4.1.qualifier
 Bundle-Activator: mmrnmhrm.ui.DeePlugin
 Bundle-Localization: plugin
 Require-Bundle: org.dsource.ddt.ide.core;bundle-version="[0.4.0,0.5.0)",
