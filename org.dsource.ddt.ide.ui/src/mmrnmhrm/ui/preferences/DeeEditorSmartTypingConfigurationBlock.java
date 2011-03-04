@@ -105,11 +105,9 @@ public class DeeEditorSmartTypingConfigurationBlock extends AbstractConfiguratio
 				DeePreferencesMessages.EditorPreferencePage_smartIndent,
 				DeeUIPreferenceConstants.AE_SMART_INDENT, 2);
 		
-		if(false) { // TODO implement
 		addCheckBox(group,
 				DeePreferencesMessages.EditorPreferencePage_smartDeIndent,
 				DeeUIPreferenceConstants.AE_SMART_DEINDENT, 2);
-		}
 		
 		addCheckBox(group,
 				DeePreferencesMessages.EditorPreferencePage_considerParenthesesAsBlocks,

@@ -7,7 +7,7 @@
  * Fixed a bug due to reuse of a single instance of the editor source-highlighting & folding parser. 
     This bug may have been manifested in obscure, unknown, and/or hard to replicate ways.
  * Fixed #17, #18, #20, all related to editor auto edits. Properly implemented:
-   * Editor auto-edits (smart indenting according to block structure), added "Typing" preference page.
+   * Editor auto-edits (smart indenting/deindenting according to block structure), added "Typing" preference page.
 
 == DDT 0.4.0 (2010-11-17) ==
  * Renamed project to DDT

@@ -172,6 +172,9 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	/* ------------------------------------- */
 	
 	protected boolean smartDeIndentAfterDelete(IDocument doc, DocumentCommand cmd) throws BadLocationException {
+		if(!fPreferences.isSmartDeIndent())
+			return false;
+		
 		if(!cmd.text.isEmpty())
 			return false;
 		

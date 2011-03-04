@@ -30,8 +30,8 @@ public class LangAutoEditsPreferencesAdapter {
 		return store.getBoolean(PreferenceConstants.EDITOR_SMART_INDENT);
 	}
 	
-	public boolean isSmartPaste() {
-		return store.getBoolean(PreferenceConstants.EDITOR_SMART_PASTE);
+	public boolean isSmartDeIndent() {
+		return store.getBoolean(LangAutoEditPreferenceConstants.AE_SMART_DEINDENT);
 	}
 	
 	public boolean closeBlocks() {
@@ -42,6 +42,11 @@ public class LangAutoEditsPreferencesAdapter {
 		return store.getBoolean(PreferenceConstants.EDITOR_CLOSE_BRACES);
 	}
 	
+	public boolean isSmartPaste() {
+		return store.getBoolean(PreferenceConstants.EDITOR_SMART_PASTE);
+	}
+	
+
 	public TabStyle getTabStyle() {
 		return TabStyle.forName(store
 				.getString(CodeFormatterConstants.FORMATTER_TAB_CHAR),
@@ -71,6 +76,5 @@ public class LangAutoEditsPreferencesAdapter {
 		}
 		return result.toString();
 	}
-
 	
 }
