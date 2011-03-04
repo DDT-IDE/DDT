@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class LangAutoEditStragetyTest extends ScannerTestUtils {
 	
-	public static final String GENERIC_CODE = DeeUITests.readResource("sampledefs.d");
+	public static final String GENERIC_CODE = DeeUITests.readResource("common/sampledefs.d");
 	public static final String NEUTRAL_SRCX = GENERIC_CODE;
 	
 	public static final String PENDING_WS1 = "  "; 

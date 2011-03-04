@@ -5,6 +5,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 
+import dtool.DToolBundle;
+
 
 
 public class DToolTestResources {
@@ -26,9 +28,10 @@ public class DToolTestResources {
 	public DToolTestResources(String workingDir) {
 		testResourcesDir = System.getProperty(D_TOOL_TEST_RESOURCES_BASE_DIR);
 		if(testResourcesDir == null) {
-			testResourcesDir = TESTDATA; // Assume a default based on process working dir
+			// Assume a default based on process working dir
+			testResourcesDir = "../"+DToolBundle.BUNDLE_ID+"/"+TESTDATA;
 		}
-
+		
 		this.testsWorkingDir = workingDir;
 		System.out.println("====>> WORKING DIR: " + testsWorkingDir);
 		
@@ -64,7 +67,7 @@ public class DToolTestResources {
 	}
 	
 	public File getWorkingDir() {
-		assertNotNull(testsWorkingDir); // Maybe use workingDir = "_runtime-tests" instead
+		assertNotNull(testsWorkingDir); // Maybe use workingDir = "../_runtime-tests" instead
 		File file = new File(testsWorkingDir);
 		assertTrue(file.exists() && file.isDirectory());
 		return file;
