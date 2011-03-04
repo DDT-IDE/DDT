@@ -248,6 +248,11 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 			mkline(indent-2, "func{()}")+ // interim lines with irregular ident (negative)
 			mklast(indent, TAB+"abc(blah{}) blah}}"); // -2 : 0
 		testEnterAutoEdit(s, NL+NEUTRAL_SRCX, expectInd(indent+1));
+		
+		
+		s = mkline(indent, "func{")+
+			mklast(0, ""); // test empty line   
+		testEnterAutoEdit(s, "){"+NL+")", expectInd(0));
 	}
 	
 	@Test
@@ -380,9 +385,14 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 			mklast(indent, "void main{({"); // Less indent than expected
 		testDeIndentAutoEdit(s, expectInd(pNL, indent+1), "|{{", false);
 		
-		s = NEUTRAL_SRC1+
+		s = mkline(0, "")+
 			mklast(indent, "\t\t");  // Test all Whitespace
 		testDeIndentAutoEdit(s, expectInd(pNL, indent+2), PENDING_WS1+pNL+")"); 
+		
+		s = NEUTRAL_SRC1+
+			mklast(0, "");  // Test empty line
+		testDeIndentAutoEdit(s, expectInd(pNL, 0), PENDING_WS2+pNL+")"); 
+		
 		
 		s = NEUTRAL_SRC1+
 			mkline(indent+0, "void func{({")+
@@ -392,7 +402,7 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		
 		s = NEUTRAL_SRC3+
 			mklast(indent, "void main{{)(");
-		testDeIndentAutoEdit(s, expectInd(pNL, indent+3), "{{");
+		testDeIndentAutoEdit(s, expectInd(pNL, indent+3), "");
 		
 		
 		// Some boundary cases
@@ -400,8 +410,9 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		testDeIndentAutoEdit(TAB, pNL+"", "", false);
 		testDeIndentAutoEdit(TAB+"func{", pNL+TAB, "", false);
 		
-		testBackSpaceCommandWithNoEffect(TAB, "{" ); // backspace on first line
-		testBackSpaceCommandWithNoEffect(" ", " {" ); // backspace on first line
+		testBackSpaceCommandWithNoEffect(TAB, "" ); // backspace on first line
+		testBackSpaceCommandWithNoEffect(TAB, "{" ); 
+		testBackSpaceCommandWithNoEffect(" ", " {" );
 		testBackSpaceCommandWithNoEffect(pNL+TAB, TAB+"{" );
 		testBackSpaceCommandWithNoEffect(TAB+pNL+TAB+TAB, "");
 		
@@ -409,6 +420,11 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		testDeleteCommandWithNoEffect("", " ");
 		testDeleteCommandWithNoEffect(TAB, pNL);
 		testDeleteCommandWithNoEffect(NEUTRAL_SRC1, pNL);
+		
+		testArtificialNoopCommand("", ""); // Extreme boundary case
+		testArtificialNoopCommand("", NL);
+		testArtificialNoopCommand("", TAB);
+		testArtificialNoopCommand(TAB, NL);
 	}
 	
 	
@@ -473,9 +489,9 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		return docCommand;
 	}
 	
-	protected DocumentCommand applyDelCommand(String srcPre, String sourceAfter) {
-		getDocument().set(srcPre + sourceAfter);
-		int keypressOffset = srcPre.length();
+	protected DocumentCommand applyDelCommand(String sourcePre, String sourceAfter) {
+		getDocument().set(sourcePre + sourceAfter);
+		int keypressOffset = sourcePre.length();
 		int length;
 		try {
 			IRegion lineInfo = getDocument().getLineInformationOfOffset(keypressOffset);
@@ -505,6 +521,14 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		String text = bsCommand.text;
 		getAutoEditStrategy().customizeDocumentCommand(getDocument(), bsCommand);
 		checkCommand(bsCommand, text, offset, length);
+	}
+	
+	protected void testArtificialNoopCommand(String sourcePre, String sourceAfter) {
+		String text = sourcePre + sourceAfter;
+		getDocument().set(text);
+		testCommandWithNoEffect(createDocumentCommand(sourcePre.length(), 0, ""));
+		testCommandWithNoEffect(createDocumentCommand(sourceAfter.length(), 0, ""));
+		testCommandWithNoEffect(createDocumentCommand(text.length(), 0, ""));
 	}
 	
 }

@@ -188,7 +188,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		
 		
 		// Delete at beginning of NL
-		if(cmd.offset == lineEnd && cmd.length == doc.getLineDelimiter(line)./*BUG*/length()) {
+		if(cmd.offset == lineEnd && lengthMatchesLineDelimiter(cmd.length, doc.getLineDelimiter(line))) {
 			int indentLine = line+1;
 			if(indentLine < doc.getNumberOfLines()) {
 				assertTrue(doc.getLineInformation(indentLine).getOffset() == cmd.offset + cmd.length);
@@ -227,6 +227,10 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		}
 		
 		return false;
+	}
+	
+	protected static boolean lengthMatchesLineDelimiter(int length, String lineDelimiter) {
+		return lineDelimiter != null && length == lineDelimiter.length();
 	}
 	
 	protected boolean isIndentWhiteSpace(char ch) throws BadLocationException {
