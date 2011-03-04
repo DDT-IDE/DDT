@@ -19,9 +19,11 @@ import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.junit.Test;
 
 public class LangAutoEditStragetyTest extends ScannerTestUtils {
@@ -257,7 +259,11 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 	}
 	
 	protected static String expectInd(int indent) {
-		return NL+TABn(indent);
+		return expectInd(NL, indent);
+	}
+	
+	private static String expectInd(String nl, int indent) {
+		return nl+TABn(indent);
 	}
 	
 	protected static String expectClose(int indent, String close) {
@@ -331,78 +337,148 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 	@Test
 	public void testSmartDeIndent() throws Exception { testSmartDeIndent$(); }
 	public void testSmartDeIndent$() throws Exception {
-		if(true) return; // TODO deIndent
-		
+		testSmartDeIndent(NL);
+		testSmartDeIndent("\n");
+	}
+	
+	protected void testSmartDeIndent(String pNL) {
 		String s;
 		int indent = 0;
 		
 		s = mklast(0, "void main() {");
-		testDeIndentAutoEdit(s, NL+TAB, NL+"}"); // Deindent NL 
+		testDeIndentAutoEdit(s, NL+TAB, pNL+"}"); 
 		
 		indent = 1;
 		s = NEUTRAL_SRC1+
 			mklast(indent, "void main{} (");
-		testDeIndentAutoEdit(s, expectInd(indent+1), NL+")"); // Deindent NL 
+		testDeIndentAutoEdit(s, expectInd(pNL, indent+1), pNL+")"); 
 		
 		
 		s = NEUTRAL_SRC1+
 			mklast(indent, "void main{({");
-		testDeIndentAutoEdit(s, expectInd(indent+3), NL+")"); // Deindent NL 
+		testDeIndentAutoEdit(s, expectInd(pNL, indent+3), pNL+")"); 
 		
 		s = NEUTRAL_SRC1+
-			mkline(indent+0, "void main{({")+
+			mkline(indent+0, "void func{({")+
 			mklast(indent+1, "void main()"); // test with 0 : 0 balance
-		testDeIndentAutoEdit(s, expectInd(indent+1), NL+"}"); // Deindent NL 
+		testDeIndentAutoEdit(s, expectInd(pNL, indent+1), pNL+"}"); 
 		
 		
 		s = NEUTRAL_SRC3+
-			mklast(indent, "void main{({)(");
-		testDeIndentAutoEdit(s, expectInd(indent+3), NL+"}"); // Deindent NL 
+			mklast(indent, "void main{{)(");
+		testDeIndentAutoEdit(s, expectInd(pNL, indent+3), pNL+"}");
 		
+		
+		// Some boundary cases
+		testDeIndentAutoEdit("", pNL+"", ""); 
+		testDeIndentAutoEdit(TAB, pNL+"", "", false);
+		testDeIndentAutoEdit(TAB+"func{", pNL+TAB, "", false);
+		
+		testBackSpaceCommandWithNoEffect(TAB, "{" ); // backspace on first line
+		testBackSpaceCommandWithNoEffect(" ", " {" ); // backspace on first line
+		testBackSpaceCommandWithNoEffect(pNL+TAB, TAB+"{" );
+		testBackSpaceCommandWithNoEffect(TAB+pNL+TAB+TAB, "");
+		
+		testDeleteCommandWithNoEffect("", pNL);
+		testDeleteCommandWithNoEffect("", " ");
+		testDeleteCommandWithNoEffect(TAB, pNL);
+		testDeleteCommandWithNoEffect(NEUTRAL_SRC1, pNL);
 	}
 	
 	
 	protected void testDeIndentAutoEdit(String srcPre, String srcIndent, String sourceAfter) {
-		DocumentCommand bsCommand = applyBackSpaceCommand(srcPre + srcIndent, sourceAfter);
-		checkCommand(bsCommand, "", srcPre.length(), srcIndent.length());
+		testDeIndentAutoEdit(srcPre, srcIndent, sourceAfter, true);
+	}
+	
+	protected void testDeIndentAutoEdit(String srcPre, String srcIndent, String sourceAfter, boolean indentNotSmaller) {
+		testBackSpaceDeindent(srcPre, srcIndent, sourceAfter);
 		
-		DocumentCommand delCommand = applyDelCommand(srcPre, srcIndent + sourceAfter);
-		checkCommand(delCommand, "", srcPre.length(), srcIndent.length());
+		testDeleteDeindent(srcPre, srcIndent, sourceAfter);
 		
-		testBackSpaceCommandWithNoEffect(srcPre + srcIndent +TAB, sourceAfter );
+		if(indentNotSmaller) {
+			testBackSpaceCommandWithNoEffect(srcPre + srcIndent +TAB, sourceAfter);
+		}
 		
-		assertTrue(srcIndent.length() > 2);
+		String pureIndent = srcIndent.replaceFirst("(\r)?\n", "");
+		if(pureIndent.length() == 0) {
+			return; // There is no middle of indent available for further tests
+		}
+		if(pureIndent.length() <= 1) {
+			return; //cannot test alternatives, because of not being able do distinguish BS and DEL
+			//TODO
+		}
 		// AutoEdit should not apply in the middle of indent element, test that
 		String srcPre2 = srcPre + srcIndent.substring(0, srcIndent.length()-1);
 		String srcAfter2 = srcIndent.substring(srcIndent.length()-1, srcIndent.length()) + sourceAfter;
 		testBackSpaceCommandWithNoEffect(srcAfter2, srcPre2);
-		testDeleteCommandWithNoEffect(srcPre2, srcAfter2);
+		
+		int nlSize = srcIndent.length() - pureIndent.length();
+		String srcPre3 = srcPre + srcIndent.substring(0, nlSize);
+		String srcAfter3 = srcIndent.substring(nlSize, srcIndent.length()) + sourceAfter;
+		testDeleteCommandWithNoEffect(srcPre3, srcAfter3);
 	}
+	
+	protected void testDeleteDeindent(String srcPre, String srcIndent, String sourceAfter) {
+		DocumentCommand delCommand = applyDelCommand(srcPre, srcIndent + sourceAfter);
+		getAutoEditStrategy().customizeDocumentCommand(getDocument(), delCommand);
+		checkCommand(delCommand, "", srcPre.length(), srcIndent.length());
+	}
+	
+	protected void testBackSpaceDeindent(String srcPre, String srcIndent, String sourceAfter) {
+		DocumentCommand bsCommand = applyBackSpaceCommand(srcPre + srcIndent, sourceAfter);
+		getAutoEditStrategy().customizeDocumentCommand(getDocument(), bsCommand);
+		checkCommand(bsCommand, "", srcPre.length(), srcIndent.length());
+	}
+	
 	
 	protected DocumentCommand applyBackSpaceCommand(String srcPre, String sourceAfter) {
 		getDocument().set(srcPre + sourceAfter);
 		int keypressOffset = srcPre.length();
-		DocumentCommand docCommand = createDocumentCommand(keypressOffset-1, 1, "");
-		getAutoEditStrategy().customizeDocumentCommand(getDocument(), docCommand);
+		int length;
+		try {
+			IRegion lineInfo = getDocument().getLineInformationOfOffset(keypressOffset);
+			int lineLimit = lineInfo.getOffset();
+			int line = getDocument().getLineOfOffset(keypressOffset);
+			length = (keypressOffset == lineLimit) ? getDocument().getLineDelimiter(line - 1).length() : 1;
+		} catch (BadLocationException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+		DocumentCommand docCommand = createDocumentCommand(keypressOffset - length, length, "");
 		return docCommand;
 	}
 	
 	protected DocumentCommand applyDelCommand(String srcPre, String sourceAfter) {
 		getDocument().set(srcPre + sourceAfter);
 		int keypressOffset = srcPre.length();
-		DocumentCommand docCommand = createDocumentCommand(keypressOffset, 1, "");
-		getAutoEditStrategy().customizeDocumentCommand(getDocument(), docCommand);
+		int length;
+		try {
+			IRegion lineInfo = getDocument().getLineInformationOfOffset(keypressOffset);
+			int lineEnd = lineInfo.getOffset() + lineInfo.getLength();
+			int line = getDocument().getLineOfOffset(keypressOffset);
+			length = (keypressOffset == lineEnd) ? getDocument().getLineDelimiter(line).length() : 1;
+		} catch (BadLocationException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+		DocumentCommand docCommand = createDocumentCommand(keypressOffset, length, "");
 		return docCommand;
 	}
 	
 	protected void testBackSpaceCommandWithNoEffect(String sourcePre, String sourceAfter) {
 		DocumentCommand bsCommand = applyBackSpaceCommand(sourcePre, sourceAfter);
-		checkCommand(bsCommand, "", sourcePre.length()-1, 1);
+		testCommandWithNoEffect(bsCommand);
 	}
 	
 	protected void testDeleteCommandWithNoEffect(String sourcePre, String sourceAfter) {
 		DocumentCommand delCommand = applyDelCommand(sourcePre, sourceAfter);
-		checkCommand(delCommand, "", sourcePre.length(), 1);
+		testCommandWithNoEffect(delCommand);
+	}
+	
+	protected void testCommandWithNoEffect(DocumentCommand bsCommand) {
+		int length = bsCommand.length;
+		int offset = bsCommand.offset;
+		String text = bsCommand.text;
+		getAutoEditStrategy().customizeDocumentCommand(getDocument(), bsCommand);
+		checkCommand(bsCommand, text, offset, length);
 	}
 	
 }

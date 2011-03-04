@@ -12,6 +12,7 @@ package org.dsource.ddt.lang.text;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockBalanceResult;
 import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
@@ -59,6 +60,8 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		try {
 			if (AutoEditUtils.isNewLineInsertionCommand(doc, cmd))
 				smartIndentAfterNewLine(doc, cmd);
+			else if(smartDeIndentAfterDelete(doc, cmd))
+				return;
 			else if (AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(cmd))
 				smartIndentOnKeypress(doc, cmd);
 			else if (cmd.text.length() > 1 && fPreferences.isSmartPaste())
@@ -91,9 +94,39 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		}
 		
 		BlockHeuristicsScannner bhscanner = createBlockHeuristicsScanner(doc);
+		// Find block balances of preceding text (line start to edit cursor)
+		LineIndentResult nli = determineIndent(doc, lineRegion, cmd.offset, bhscanner);
+		cmd.text += nli.newLineIndent;
+		BlockBalanceResult blockInfo = nli.blockInfo;
 		
-		// Find block delta of preceding text (line start to edit cursor)
-		BlockBalanceResult blockInfo = bhscanner.calculateBlockBalances(lineRegion.getOffset(), cmd.offset);  
+		if(blockInfo.unbalancedOpens > 0) {
+			boolean hasPendingTextAfterEdit = postWsEndPos != lineEnd;
+			if (fCloseBlocks && !hasPendingTextAfterEdit){
+				if(bhscanner.shouldCloseBlock(blockInfo.rightmostUnbalancedBlockOpenOffset)) {
+					//close block
+					cmd.caretOffset = cmd.offset + cmd.text.length();
+					cmd.shiftsCaret = false;
+					String delimiter = TextUtilities.getDefaultLineDelimiter(doc);
+					char openChar = doc.getChar(blockInfo.rightmostUnbalancedBlockOpenOffset);
+					char closeChar = bhscanner.getClosingPeer(openChar); 
+					cmd.text += delimiter + addIndent(nli.lineIndent, blockInfo.unbalancedOpens - 1) + closeChar;
+				}
+			}
+			return;
+		}
+	}
+	
+	public static class LineIndentResult {
+		String lineIndent;
+		String newLineIndent;
+		BlockBalanceResult blockInfo;
+	}
+	
+	private LineIndentResult determineIndent(IDocument doc, IRegion lineRegion, int endOffset,
+			BlockHeuristicsScannner bhscanner) throws BadLocationException {
+		LineIndentResult result = new LineIndentResult();
+		BlockBalanceResult blockInfo = bhscanner.calculateBlockBalances(lineRegion.getOffset(), endOffset);
+		result.blockInfo = blockInfo;
 		
 		if(blockInfo.unbalancedOpens == 0 && blockInfo.unbalancedCloses > 0) {
 			int blockStartOffset = bhscanner.findBlockStart(blockInfo.rightmostUnbalancedBlockCloseOffset);
@@ -107,34 +140,23 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			BlockBalanceResult blockStartInfo = bhscanner.calculateBlockBalances(lineOffset, blockStartOffset);
 			
 			// Add the indent of the start line, plus the unbalanced opens there
-			cmd.text += addIndent(startLineIndent, blockStartInfo.unbalancedOpens);
-			return;
+			result.newLineIndent = addIndent(startLineIndent, blockStartInfo.unbalancedOpens); 
+			return result;
 		}
 		
 		// The indent string to be added to the new line
 		String lineIndent = getLineIndent(doc, lineRegion);
 		if(blockInfo.unbalancedOpens == 0 && blockInfo.unbalancedCloses == 0) {
-			cmd.text += lineIndent; 
-			return; // finished
+			result.newLineIndent = lineIndent;
+			return result; // finished
 		}
 		
 		if(blockInfo.unbalancedOpens > 0) {
-			cmd.text += addIndent(lineIndent, blockInfo.unbalancedOpens);
-			
-			boolean hasPendingTextAfterEdit = postWsEndPos != lineEnd;
-			if (fCloseBlocks && !hasPendingTextAfterEdit){
-				if(bhscanner.shouldCloseBlock(blockInfo.rightmostUnbalancedBlockOpenOffset)) {
-					//close block
-					cmd.caretOffset = cmd.offset + cmd.text.length();
-					cmd.shiftsCaret = false;
-					String delimiter = TextUtilities.getDefaultLineDelimiter(doc);
-					char openChar = doc.getChar(blockInfo.rightmostUnbalancedBlockOpenOffset);
-					char closeChar = bhscanner.getClosingPeer(openChar); 
-					cmd.text += delimiter + addIndent(lineIndent, blockInfo.unbalancedOpens - 1) + closeChar;
-				}
-			}
-			return;
+			result.newLineIndent = addIndent(lineIndent, blockInfo.unbalancedOpens);
+			result.lineIndent = lineIndent; // cache this value to not recalculate
+			return result;
 		}
+		throw assertUnreachable();
 	}
 	
 	protected static String getLineIndent(IDocument doc, IRegion line) throws BadLocationException {
@@ -143,8 +165,79 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		return doc.get(lineOffset, indentEnd - lineOffset);
 	}
 	
-	private String addIndent(String indentStr, int indentDelta) {
+	protected String addIndent(String indentStr, int indentDelta) {
 		return indentStr + fPreferences.getIndent(indentDelta);
+	}
+	
+	/* ------------------------------------- */
+	
+	protected boolean smartDeIndentAfterDelete(IDocument doc, DocumentCommand cmd) throws BadLocationException {
+		if(!cmd.text.isEmpty())
+			return false;
+		
+		IRegion lineRegion = doc.getLineInformationOfOffset(cmd.offset);
+		int lineEnd = lineRegion.getOffset() + lineRegion.getLength();
+		int line = doc.getLineOfOffset(cmd.offset);
+		
+		
+		// Delete at beginning of NL
+		if(cmd.offset == lineEnd && cmd.length == doc.getLineDelimiter(line).length()) { // bug here
+			int indentLine = line+1;
+			if(indentLine < doc.getNumberOfLines()) {
+				assertTrue(doc.getLineInformation(indentLine).getOffset() == cmd.offset + cmd.length);
+				IRegion nextLineRegion = doc.getLineInformation(indentLine);
+				
+				String expectedIndentStr = determineExpectedIndent(doc, nextLineRegion/*BUG*/, cmd.offset); 
+				if(equalsDocumentString(expectedIndentStr, doc, nextLineRegion)) {
+					cmd.length += expectedIndentStr.length();
+				}
+			}
+			return true;
+		}
+		
+		// Backspace at end of indent case
+		if(cmd.length == 1 && line > 0) { // BUG here?
+			int indentLine = line;
+			int indentEnd = findEndOfWhiteSpace(doc, lineRegion);
+			if(cmd.offset < indentEnd) {
+				// potentially true
+				
+				String expectedIndentStr = determineExpectedIndent(doc, doc.getLineInformation(line-1), cmd.offset);/*BUG*/
+				int indentLength = indentEnd - lineRegion.getOffset(); 
+				if(indentLength < expectedIndentStr.length()) {
+					expectedIndentStr = expectedIndentStr.substring(0, indentLength);
+				}
+				int acceptedIndentEnd = lineRegion.getOffset() + expectedIndentStr.length();
+				if(equalsDocumentString(expectedIndentStr, doc, lineRegion) && cmd.offset == acceptedIndentEnd-1) {
+					int lineDelimLen = doc.getLineDelimiter(indentLine-1).length();
+					cmd.offset = lineRegion.getOffset() - lineDelimLen;
+					cmd.length = lineDelimLen + expectedIndentStr.length();
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		return false;
+	}
+	
+	protected boolean equalsDocumentString(String expectedIndentStr, IDocument doc, IRegion lineRegion)
+			throws BadLocationException {
+		int length = Math.min(lineRegion.getLength(), expectedIndentStr.length());
+		String lineIndent = doc.get(lineRegion.getOffset(), length);
+		return expectedIndentStr.equals(lineIndent);
+	}
+	
+	protected int findEndOfWhiteSpace(IDocument doc, IRegion region) throws BadLocationException {
+		return AutoEditUtils.findEndOfWhiteSpace(doc, region.getOffset(), region.getOffset() + region.getLength());
+	}
+	
+	protected String determineExpectedIndent(IDocument doc, IRegion lineRegion, int endOffset)
+			throws BadLocationException {
+		BlockHeuristicsScannner bhscanner = createBlockHeuristicsScanner(doc);
+		LineIndentResult nli = determineIndent(doc, lineRegion, endOffset, bhscanner);
+		String expectedIndentStr = nli.newLineIndent;
+		return expectedIndentStr;
 	}
 	
 	/* ------------------------------------- */
