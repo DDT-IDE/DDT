@@ -90,10 +90,11 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 	
 	@Test
 	public void testSmartIndentBasic2() {
+		String dNL = getDocument().getDefaultLineDelimiter();
 		// balance 0 : 1(unclosed)
-		testEnterAutoEdit("void main{", ""                             , NL+TAB, NL+"}");
-		testEnterAutoEdit("void main(",      NL+"func(){}"+NL+"blah();", NL+TAB, NL+")");
-		testEnterAutoEdit("vo() main{", "  "+NL+"func(){}"+NL+"blah();", NL+TAB, NL+"}");
+		testEnterAutoEdit("void main{", ""                             , NL+TAB, dNL+"}");
+		testEnterAutoEdit("void main(",      NL+"func(){}"+NL+"blah();", NL+TAB,  NL+")");
+		testEnterAutoEdit("vo() main{", "  "+NL+"func(){}"+NL+"blah();", NL+TAB,  NL+"}");
 		// balance 0 : 1(unclosed but don't close due to pending text)
 		testEnterAutoEdit("void main(){",       "func(){}"+NL+"blah();", NL+TAB);
 	}
