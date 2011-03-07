@@ -39,7 +39,7 @@ public abstract class SampleMainProject extends DeeCoreTestUtils {
 	public static final String TEST_SRC3 = ITestDataConstants.SAMPLE_SRC3;
 	public static final String TEST_SRC_REFS = "refs";
 	public static final String TEST_SRC_CA = "src-ca"; // Content Assist
-	public static final String TEST_SRC_OUTSIDE_MODEL = "srcOUT"; // Not a source folder
+	public static final String TEST_SRC_OUTSIDE_MODEL = "srcOut"; // Not a source folder
 	
 	static {
 		MiscUtil.loadClass(BaseDeeTest.class);
