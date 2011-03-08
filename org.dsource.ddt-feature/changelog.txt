@@ -1,6 +1,8 @@
 = DDT Change Log =
 
-== DDT 0.4.1 (devel) ==
+== DDT 0.4.2 (devel) ==
+
+== DDT 0.4.1 (2011-03-04) ==
  * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)
  * Fixed #25 and other source highlighting bugs (like nested comments being lexed as non-nested comments). 
    Also added additional syntax highlighting options for WYSIWYG strings, delimited strings, and character literals.
