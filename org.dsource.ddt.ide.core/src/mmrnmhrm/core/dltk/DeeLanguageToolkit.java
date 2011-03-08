@@ -49,6 +49,8 @@ public class DeeLanguageToolkit extends AbstractLanguageToolkit  {
 		return false;
 	}
 	
+	// TODO: DLTK understand a bit better the validate and canValidate methods
+	
 	@Override
 	public IStatus validateSourceModule(IResource resource) {
 		String name = resource.getName();
