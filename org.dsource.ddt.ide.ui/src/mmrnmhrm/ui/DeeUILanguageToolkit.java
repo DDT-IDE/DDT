@@ -45,13 +45,13 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	}
 	
 	@Override
-	public String getEditorId(Object inputElement) {
-		return DeeEditor.EDITOR_ID;
+	public IPreferenceStore getPreferenceStore() {
+		return DeePlugin.getInstance().getPreferenceStore();
 	}
 	
 	@Override
-	public IPreferenceStore getPreferenceStore() {
-		return DeePlugin.getInstance().getPreferenceStore();
+	public String getEditorId(Object inputElement) {
+		return DeeEditor.EDITOR_ID;
 	}
 	
 	@Override

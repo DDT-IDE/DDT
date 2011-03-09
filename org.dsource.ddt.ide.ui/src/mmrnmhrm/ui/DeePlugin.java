@@ -38,13 +38,10 @@ public class DeePlugin extends LangPlugin {
 	private DeeTextTools fTextTools;
 	private DeeBuilderUIListener listener;
 	
-	public DeePlugin() {
-		pluginInstance = this;
-	}
-	
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
+		pluginInstance = this;
 		super.start(context);
 		initPlugin();
 		

@@ -20,12 +20,8 @@ public class DeeCore extends LangCore {
 
 	protected static DeeCore pluginInstance;
 	
-	public DeeCore() {
-		pluginInstance = this;
-	}
-	
 	/** Returns the shared instance. */
-	public static DeeCore getInstance() {
+	public static LangCore getInstance() {
 		return pluginInstance;
 	}
 	
@@ -34,6 +30,7 @@ public class DeeCore extends LangCore {
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
+		pluginInstance = this;
 		super.start(context);
 		initPlugin();
 	}
@@ -41,8 +38,8 @@ public class DeeCore extends LangCore {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		pluginInstance = null;
 		DeeModel.dispose();
+		pluginInstance = null;
 	}
 	
 	

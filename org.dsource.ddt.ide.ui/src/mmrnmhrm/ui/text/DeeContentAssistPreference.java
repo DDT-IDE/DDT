@@ -18,7 +18,7 @@ public class DeeContentAssistPreference extends ContentAssistPreference {
 
 	@Override
 	protected ScriptTextTools getTextTools() {
-		return DeePlugin.getDefault().getTextTools();
+		return DeePlugin.getInstance().getTextTools();
 	}
 	
 	@Override
