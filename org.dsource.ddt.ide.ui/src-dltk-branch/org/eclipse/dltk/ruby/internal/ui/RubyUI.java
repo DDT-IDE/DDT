@@ -1,7 +1,7 @@
 package org.eclipse.dltk.ruby.internal.ui;
 
-import mmrnmhrm.ui.DeeUI;
+import mmrnmhrm.ui.DeePlugin;
 
-public class RubyUI extends DeeUI {
+public class RubyUI extends DeePlugin {
 	
 }
