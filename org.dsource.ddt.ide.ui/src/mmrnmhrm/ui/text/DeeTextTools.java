@@ -24,7 +24,6 @@ public class DeeTextTools extends ScriptTextTools {
 	@Override
 	public IPartitionTokenScanner createPartitionScanner() {
 		return super.createPartitionScanner();
-		// return new DeePartitionScanner();
 	}
 	
 	@Override
@@ -43,12 +42,12 @@ public class DeeTextTools extends ScriptTextTools {
 	
 	@Override
 	public SemanticHighlighting[] getSemanticHighlightings() {
-		return new SemanticHighlighting[0];
+		return new SemanticHighlighting[0]; // TODO
 	}
 	
 	@Override
 	public ISemanticHighlighter getSemanticPositionUpdater() {
-		return null;
+		return null; // TODO
 	}
 	
 }

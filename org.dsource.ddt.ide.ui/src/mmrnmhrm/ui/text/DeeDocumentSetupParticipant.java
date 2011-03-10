@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+
+ *******************************************************************************/
 package mmrnmhrm.ui.text;
 
 import mmrnmhrm.ui.DeePlugin;
@@ -10,7 +20,7 @@ public class DeeDocumentSetupParticipant implements IDocumentSetupParticipant {
 	
 	@Override
 	public void setup(IDocument document) {
-		ScriptTextTools tools= DeePlugin.getDefault().getTextTools();
+		ScriptTextTools tools = DeePlugin.getDefault().getTextTools();
 		tools.setupDocumentPartitioner(document, DeePartitions.DEE_PARTITIONING);
 	}
 
