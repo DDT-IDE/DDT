@@ -1,8 +1,8 @@
 package mmrnmhrm.tests.ui;
 
 import mmrnmhrm.tests.BaseDeeTest;
-import mmrnmhrm.ui.DeePlugin;
 
+import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.ui.IWorkbenchPage;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -13,7 +13,7 @@ public class BaseDeeUITest extends BaseDeeTest {
 	
 	@BeforeClass
 	public static void staticTestInit() throws Exception {
-		IWorkbenchPage page = DeePlugin.getActivePage();
+		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		page.closeAllEditors(false);
 	}
 	

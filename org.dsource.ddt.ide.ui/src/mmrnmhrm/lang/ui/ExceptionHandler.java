@@ -13,8 +13,8 @@ package mmrnmhrm.lang.ui;
 
 import java.io.StringWriter;
 
-import mmrnmhrm.ui.DeePlugin;
 
+import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -43,7 +43,7 @@ public class ExceptionHandler {
 	 * @param message the message to be displayed by the dialog window
 	 */
 	public static void handle(CoreException e, String title, String message) {
-		handle(e, DeePlugin.getActiveWorkbenchShell(), title, message);
+		handle(e, WorkbenchUtils.getActiveWorkbenchShell(), title, message);
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class ExceptionHandler {
 	 * @param message message to be displayed by the dialog window
 	 */
 	public static void handle(Throwable e, String title, String message) {
-		handle(e, DeePlugin.getActiveWorkbenchShell(), title, message);
+		handle(e, WorkbenchUtils.getActiveWorkbenchShell(), title, message);
 	}
 	
 	/**

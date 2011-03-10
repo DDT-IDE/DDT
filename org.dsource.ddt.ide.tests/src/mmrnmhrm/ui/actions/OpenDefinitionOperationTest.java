@@ -5,9 +5,9 @@ import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.SampleNonDeeProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
-import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.DeeEditor;
 
+import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -50,7 +50,7 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	}
 
 	private void setupWithFile(IProject project, String path) throws PartInitException, CoreException {
-		IWorkbenchPage page = DeePlugin.getActivePage();
+		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		file = project.getFile(path);
 		assertTrue(file.exists());
 		editor = IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
@@ -123,7 +123,7 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	
 	private void assertCurrentEditorIsEditing(IPath prjpath, String targetpath) {
 		DeeEditor deeEditor;
-		deeEditor = (DeeEditor) DeePlugin.getActivePage().getActiveEditor();
+		deeEditor = (DeeEditor) WorkbenchUtils.getActivePage().getActiveEditor();
 		IFile editorFile = ((FileEditorInput) deeEditor.getEditorInput()).getFile();
 		IPath path = editorFile.getFullPath();
 		Assert.assertEquals(path, prjpath.append(targetpath));

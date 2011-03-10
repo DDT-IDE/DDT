@@ -8,12 +8,12 @@ import java.util.List;
 
 import melnorme.utilbox.core.Function;
 import mmrnmhrm.tests.ui.SWTTestUtils;
-import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.text.AbstractCompletionProposal__Accessor;
 import mmrnmhrm.ui.editor.text.DeeCodeContentAssistProcessor;
 import mmrnmhrm.ui.editor.text.DeeCompletionProposal;
 
+import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
@@ -41,7 +41,7 @@ public class CodeCompletionUITestAdapter extends CommonTestUtils implements ICod
 	public CodeCompletionUITestAdapter(IFile file) {
 		this.file = file;
 		srcModule = DLTKCore.createSourceModuleFrom(file);
-		IWorkbenchPage page = DeePlugin.getActivePage();
+		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		try {
 			editor = (ScriptEditor) IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
 		} catch(PartInitException e) {

@@ -2,7 +2,7 @@ package mmrnmhrm.ui.editor.text;
 
 import mmrnmhrm.ui.DeePlugin;
 
-import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
@@ -65,7 +65,7 @@ implements ITextHoverExtension {
 			}
 		};
 		
-		Shell shell= JavaPlugin.getActiveWorkbenchShell();
+		Shell shell= WorkbenchUtils.getActiveWorkbenchShell();
 		if (shell == null
 				|| !org.eclipse.dltk.internal.ui.BrowserInformationControl
 						.isAvailable(shell))

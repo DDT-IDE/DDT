@@ -3,9 +3,10 @@ package mmrnmhrm.ui.editor.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+
+import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
@@ -258,7 +259,7 @@ public abstract class AbstractCompletionProposal implements
 	@SuppressWarnings("restriction")
 	@Override
 	public IInformationControlCreator getInformationControlCreator() {
-		Shell shell = JavaPlugin.getActiveWorkbenchShell();
+		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		if (shell == null
 				|| !org.eclipse.jface.internal.text.html.BrowserInformationControl.isAvailable(shell))
 			return null;

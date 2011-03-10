@@ -7,8 +7,8 @@ import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.tests.ui.accessors.ProjectWizardFirstPage__Accessor;
 import mmrnmhrm.tests.ui.accessors.WizardDialog__Accessor;
-import mmrnmhrm.ui.DeePlugin;
 
+import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -34,10 +34,10 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 		tearDown();
         //WorkbenchPlugin.getDefault().getNewWizardRegistry().findWizard(id);
 		wizard = new DeeNewProjectWizard();
-		IWorkbenchWindow window = DeePlugin.getActiveWorkbenchWindow();
+		IWorkbenchWindow window = WorkbenchUtils.getActiveWorkbenchWindow();
 		wizard.init(window.getWorkbench(), null);
 		
-        Shell parent = DeePlugin.getActiveWorkbenchShell();
+        Shell parent = WorkbenchUtils.getActiveWorkbenchShell();
         wizDialog = new WizardDialog__Accessor(parent, wizard);
         wizDialog.setBlockOnOpen(false);
 		wizDialog.open();
