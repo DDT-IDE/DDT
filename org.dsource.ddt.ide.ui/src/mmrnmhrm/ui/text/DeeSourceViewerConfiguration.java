@@ -12,26 +12,21 @@ package mmrnmhrm.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.HashSet;
 import java.util.Map;
 
 import mmrnmhrm.ui.DeePlugin;
-import mmrnmhrm.ui.DeeUI;
 import mmrnmhrm.ui.editor.text.DeeCodeContentAssistProcessor;
 import mmrnmhrm.ui.editor.text.DeeDocTextHover;
 import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
 import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
+import org.dsource.ddt.lang.ui.editor.ScriptSourceViewerConfigurationExtension;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.typehierarchy.HierarchyInformationControl;
-import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
-import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
-import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
-import org.eclipse.dltk.ui.text.SingleTokenScriptScanner;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
@@ -47,25 +42,12 @@ import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.InformationPresenter;
-import org.eclipse.jface.text.presentation.IPresentationReconciler;
-import org.eclipse.jface.text.presentation.PresentationReconciler;
-import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
-	
-	protected AbstractScriptScanner fCodeScanner;
-	protected AbstractScriptScanner fCommentScanner;
-	protected AbstractScriptScanner fDocCommentScanner;
-	protected AbstractScriptScanner fStringScanner;
-	protected AbstractScriptScanner fRawStringScanner;
-	protected AbstractScriptScanner fDelimStringScanner;
-	protected AbstractScriptScanner fCharScanner;
-	protected HashSet<AbstractScriptScanner> scanners;
+public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfigurationExtension {
 	
 	public DeeSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore,
 			ITextEditor editor, String partitioning) {
@@ -78,90 +60,33 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	}
 	
 	@Override
-	protected void initializeScanners() {
-		scanners = new HashSet<AbstractScriptScanner>();
+	protected void createScanners() {
 		
-		fCodeScanner = new DeeCodeScanner(getColorManager(), fPreferenceStore);
-		scanners.add(fCodeScanner);
-		fCommentScanner = new SingleTokenScriptScanner(getColorManager(), fPreferenceStore, IDeeColorConstants.DEE_COMMENT);
-		scanners.add(fCommentScanner);
-		fDocCommentScanner = new SingleTokenScriptScanner(getColorManager(), fPreferenceStore, IDeeColorConstants.DEE_DOCCOMMENT);
-		scanners.add(fDocCommentScanner);
-		fStringScanner = new SingleTokenScriptScanner(getColorManager(), fPreferenceStore, IDeeColorConstants.DEE_STRING);
-		scanners.add(fStringScanner);
-		fRawStringScanner = new SingleTokenScriptScanner(getColorManager(), fPreferenceStore, IDeeColorConstants.DEE_RAW_STRING);
-		scanners.add(fRawStringScanner);
-		fDelimStringScanner = new SingleTokenScriptScanner(getColorManager(), fPreferenceStore, IDeeColorConstants.DEE_DELIM_STRING);
-		scanners.add(fDelimStringScanner);
-		fCharScanner = new SingleTokenScriptScanner(getColorManager(), fPreferenceStore, IDeeColorConstants.DEE_CHARACTER_LITERALS);
-		scanners.add(fCharScanner);
+		addScanner(new DeeCodeScanner(getColorManager(), fPreferenceStore), 
+				DeePartitions.DEE_CODE);
+		
+		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_COMMENT), 
+				DeePartitions.DEE_SINGLE_COMMENT, 
+				DeePartitions.DEE_MULTI_COMMENT, 
+				DeePartitions.DEE_NESTED_COMMENT);
+		
+		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_DOCCOMMENT), 
+				DeePartitions.DEE_SINGLE_DOCCOMMENT, 
+				DeePartitions.DEE_MULTI_DOCCOMMENT, 
+				DeePartitions.DEE_NESTED_DOCCOMMENT);
+		
+		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_STRING), 
+				DeePartitions.DEE_STRING);
+		
+		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_RAW_STRING), 
+				DeePartitions.DEE_RAW_STRING);
+		
+		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_DELIM_STRING), 
+				DeePartitions.DEE_DELIM_STRING);
+		
+		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_CHARACTER_LITERALS),
+				DeePartitions.DEE_CHARACTER);
 	}
-	
-	@Override
-	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
-		PresentationReconciler reconciler = new ScriptPresentationReconciler();
-		reconciler.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-		
-		DefaultDamagerRepairer dr;
-		
-		dr = new DefaultDamagerRepairer(fCodeScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_CODE);
-		reconciler.setRepairer(dr, DeePartitions.DEE_CODE);
-		
-		dr = new DefaultDamagerRepairer(fCommentScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_SINGLE_COMMENT);
-		reconciler.setRepairer(dr, DeePartitions.DEE_SINGLE_COMMENT);
-		dr = new DefaultDamagerRepairer(fCommentScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_MULTI_COMMENT);
-		reconciler.setRepairer(dr, DeePartitions.DEE_MULTI_COMMENT);
-		dr = new DefaultDamagerRepairer(fCommentScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_NESTED_COMMENT);
-		reconciler.setRepairer(dr, DeePartitions.DEE_NESTED_COMMENT);
-		
-		dr = new DefaultDamagerRepairer(fDocCommentScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_SINGLE_DOCCOMMENT);
-		reconciler.setRepairer(dr, DeePartitions.DEE_SINGLE_DOCCOMMENT);
-		dr = new DefaultDamagerRepairer(fDocCommentScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_MULTI_DOCCOMMENT);
-		reconciler.setRepairer(dr, DeePartitions.DEE_MULTI_DOCCOMMENT);
-		dr = new DefaultDamagerRepairer(fDocCommentScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_NESTED_DOCCOMMENT);
-		reconciler.setRepairer(dr, DeePartitions.DEE_NESTED_DOCCOMMENT);
-		
-		dr = new DefaultDamagerRepairer(fStringScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_STRING);
-		reconciler.setRepairer(dr, DeePartitions.DEE_STRING);
-		dr = new DefaultDamagerRepairer(fRawStringScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_RAW_STRING);
-		reconciler.setRepairer(dr, DeePartitions.DEE_RAW_STRING);
-		dr = new DefaultDamagerRepairer(fDelimStringScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_DELIM_STRING);
-		reconciler.setRepairer(dr, DeePartitions.DEE_DELIM_STRING);
-		dr = new DefaultDamagerRepairer(fCharScanner);
-		reconciler.setDamager(dr, DeePartitions.DEE_CHARACTER);
-		reconciler.setRepairer(dr, DeePartitions.DEE_CHARACTER);
-		
-		return reconciler;
-	}
-	
-	
-	@Override
-	public boolean affectsTextPresentation(PropertyChangeEvent event) {
-		for (AbstractScriptScanner scanner : scanners) {
-			if(scanner.affectsBehavior(event))
-				return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
-		for (AbstractScriptScanner scanner : scanners) {
-			if (scanner.affectsBehavior(event))
-				scanner.adaptToPreferenceChange(event);
-		}
-	}
-	
 	
 	@Override
 	protected String getCommentPrefix() {
@@ -215,7 +140,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
 		assertTrue(DeePartitions.DEE_PARTITIONING.equals(partitioning));
-		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(DeeUI.getPrefStore(), contentType) };
+		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(DeePlugin.getPrefStore(), contentType) };
 	}
 	
 	
