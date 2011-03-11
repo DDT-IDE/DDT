@@ -33,6 +33,7 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 	}
 	
 	private void initializeDefaultValues(IPreferenceStore store) {
+		
 		EditorsUI.useAnnotationsPreferencePage(store);
 		EditorsUI.useQuickDiffPreferencePage(store);
 		
