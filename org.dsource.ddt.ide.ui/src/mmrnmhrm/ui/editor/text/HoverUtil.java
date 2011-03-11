@@ -7,8 +7,9 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
-import mmrnmhrm.ui.DeePluginPreferences;
+import mmrnmhrm.ui.DeePlugin;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.ui.PreferenceConstants;
@@ -26,6 +27,12 @@ import dtool.DeeDocAccessor;
 import dtool.ast.definitions.DefUnit;
 
 public class HoverUtil {
+	
+	public static class DeePluginPreferences {
+		public static String getPreference(String key, @SuppressWarnings("unused") IProject project) {
+			return DeePlugin.getPrefStore().getString(key);
+		}
+	}
 
 	private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
 

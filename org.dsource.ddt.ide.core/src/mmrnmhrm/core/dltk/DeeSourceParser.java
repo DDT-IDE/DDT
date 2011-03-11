@@ -37,7 +37,7 @@ public class DeeSourceParser extends AbstractSourceParser {
 	
 	@Override
 	public DeeModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
-		int langVersion = 2; // TODO we should use default from project configured interpreter version
+		int langVersion = 2; // TODO we should use value from project configured interpreter version
 		
 		char[] source = input.getContentsAsCharArray();
 		Parser parser = new Parser(langVersion, source);
