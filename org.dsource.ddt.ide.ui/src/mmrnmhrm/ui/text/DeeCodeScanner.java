@@ -1,27 +1,36 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.text;
+
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import mmrnmhrm.ui.internal.text.JavaWordDetector;
-import mmrnmhrm.ui.internal.text.LangWhitespaceDetector;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.SingleLineRule;
+import org.eclipse.jface.text.rules.IWhitespaceDetector;
+import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
+import descent.internal.compiler.parser.TOK;
 import descent.internal.compiler.parser.ast.TokenUtil;
-import dtool.Logg;
 
 public class DeeCodeScanner extends AbstractScriptScanner {
-
 	
 	public DeeCodeScanner(IColorManager manager, IPreferenceStore store) {
 		super(manager, store);
@@ -29,76 +38,66 @@ public class DeeCodeScanner extends AbstractScriptScanner {
 	}
 	
 	private static String fgTokenProperties[] = new String[] {
-		IDeeColorConstants.DEE_SPECIAL,
-		IDeeColorConstants.DEE_STRING,
+		IDeeColorConstants.DEE_DEFAULT,
+		IDeeColorConstants.DEE_KEYWORDS,
+		IDeeColorConstants.DEE_BASICTYPES,
 		IDeeColorConstants.DEE_LITERALS,
 		IDeeColorConstants.DEE_OPERATORS,
-		IDeeColorConstants.DEE_BASICTYPES,
-		IDeeColorConstants.DEE_KEYWORD,
-		IDeeColorConstants.DEE_DOCCOMMENT,
-		IDeeColorConstants.DEE_COMMENT,
-		IDeeColorConstants.DEE_DEFAULT
 	};
-
+	
 	@Override
 	protected String[] getTokenProperties() {
 		return fgTokenProperties;
 	}
-
+	
 	@Override
 	protected List<IRule> createRules() {
 		List<IRule> rules = new ArrayList<IRule>();
 		
-		IToken tkKeyword = getToken(IDeeColorConstants.DEE_KEYWORD);
-		IToken tkBasics = getToken(IDeeColorConstants.DEE_BASICTYPES);
-//		IToken tkOperators = getToken(DeeColorConstants.DEE_OPERATORS);
-		IToken tkLiterals = getToken(IDeeColorConstants.DEE_LITERALS);
-		IToken tkString = getToken(IDeeColorConstants.DEE_STRING);
 		IToken tkOther = getToken(IDeeColorConstants.DEE_DEFAULT);
-		
-		rules.add(new SingleLineRule("'", "'", tkString, '\\'));
+		IToken tkKeyword = getToken(IDeeColorConstants.DEE_KEYWORDS);
+		IToken tkBasics = getToken(IDeeColorConstants.DEE_BASICTYPES);
+		IToken tkLiterals = getToken(IDeeColorConstants.DEE_LITERALS);
+//		IToken tkOperators = getToken(DeeColorConstants.DEE_OPERATORS);
 		
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
-							
+		
 		// Add word rule for keywords, types, and constants.
 		WordRule wordRule = new WordRule(new JavaWordDetector(), tkOther);
-		for (int i = 0; i < TokenUtil.keywords.length; i++) {
-			wordRule.addWord(TokenUtil.keywords[i].toString(), tkKeyword);
-		}
-		for (int i = 0; i < TokenUtil.basicTypes.length; i++) {
-			wordRule.addWord(TokenUtil.basicTypes[i].toString(), tkBasics);
-		}
-		for (int i = 0; i < TokenUtil.specialNamedLiterals.length; i++) {
-			wordRule.addWord(TokenUtil.specialNamedLiterals[i].toString(), tkLiterals);
-		}
+		addWordsFromTokens(wordRule, TokenUtil.keywords, tkKeyword);
+		addWordsFromTokens(wordRule, TokenUtil.basicTypes, tkBasics);
+		addWordsFromTokens(wordRule, TokenUtil.specialNamedLiterals, tkLiterals);
 		rules.add(wordRule);
-		
-		/*WordRule wordRule2 = new WordRule(new JavaWordDetector(), tkOther);
-		for (int i = 0; i < TokenUtil.literals.length; i++) {
-			wordRule.addWord(TokenUtil.literals[i].toString(), tkLiterals);
-		}*/
-		//rules.add(wordRule2);
 		
 		setDefaultReturnToken(tkOther);
 		return rules;
 	}
 	
-	@Override
-	public void setRange(IDocument document, int offset, int length) {
-		Logg.codeScanner.println(">> DeeCodeScanner#setRange: " + offset + ","+ length);
-		super.setRange(document, offset, length);
+	protected void addWordsFromTokens(WordRule wordRule, TOK[] toks, IToken token) {
+		for (TOK tok : toks) {
+			assertNotNull(tok.value);
+			wordRule.addWord(tok.toString(), token);
+		}
 	}
 	
-	@Override
-	public IToken nextToken() {
-		IToken token = super.nextToken();
-		String offsetStr = String.format("%3d", getTokenOffset());
-		String lenStr = String.format("%2d", getTokenLength());
-		Object data = token.getData();
-		//int ix = indexOf(token);
-		Logg.codeScanner.println("Token["+offsetStr +","+ lenStr +"]: " +data);
-		return token;
+	public static class LangWhitespaceDetector implements IWhitespaceDetector {
+		@Override
+		public boolean isWhitespace(char character) {
+			return Character.isWhitespace(character);
+		}
 	}
 	
+	public static class JavaWordDetector implements IWordDetector {
+		
+		@Override
+		public boolean isWordPart(char character) {
+			return Character.isJavaIdentifierPart(character);
+		}
+		
+		@Override
+		public boolean isWordStart(char character) {
+			return Character.isJavaIdentifierPart(character);
+		}
+	}
 }

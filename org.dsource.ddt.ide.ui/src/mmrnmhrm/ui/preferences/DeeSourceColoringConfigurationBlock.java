@@ -28,31 +28,19 @@ public class DeeSourceColoringConfigurationBlock extends
 	private static final String PREVIEW_FILE_NAME = "SourceColoringPreviewFile.d";
 
 	private static final String[][] fSyntaxColorListModel = new String[][] {
-			{ "Comment",
-				IDeeColorConstants.DEE_COMMENT, sDocumentationCategory },
-			{ "Doc Comment",
-				IDeeColorConstants.DEE_DOCCOMMENT, sDocumentationCategory },
+			{ "Comment", IDeeColorConstants.DEE_COMMENT, sDocumentationCategory },
+			{ "Doc Comment", IDeeColorConstants.DEE_DOCCOMMENT, sDocumentationCategory },
 				
-				
-				{ "Keywords",
-					IDeeColorConstants.DEE_KEYWORD, sCoreCategory },
-				{ "Basic Types",
-					IDeeColorConstants.DEE_BASICTYPES, sCoreCategory },
-				{ "Literals",
-					IDeeColorConstants.DEE_LITERALS, sCoreCategory },
-                { "Character Literals",
-					IDeeColorConstants.DEE_CHARACTER_LITERALS, sCoreCategory },
-                { "Strings",
-					IDeeColorConstants.DEE_STRING, sCoreCategory },
-                { "WYSIWYG Strings",
-					IDeeColorConstants.DEE_RAW_STRING, sCoreCategory },
-                { "Delimited String",
-					IDeeColorConstants.DEE_DELIM_STRING, sCoreCategory },
-                { "Operators",
-					IDeeColorConstants.DEE_OPERATORS, sCoreCategory },
-				{ "Default",
-					IDeeColorConstants.DEE_DEFAULT, sCoreCategory },							
-			};
+			{ "Keywords"		, IDeeColorConstants.DEE_KEYWORDS, sCoreCategory },
+			{ "Basic Types"		, IDeeColorConstants.DEE_BASICTYPES, sCoreCategory },
+			{ "Literals"		, IDeeColorConstants.DEE_LITERALS, sCoreCategory },
+            { "Character Literals", IDeeColorConstants.DEE_CHARACTER_LITERALS, sCoreCategory },
+            { "Strings"			, IDeeColorConstants.DEE_STRING, sCoreCategory },
+            { "WYSIWYG Strings"	, IDeeColorConstants.DEE_RAW_STRING, sCoreCategory },
+            { "Delimited String", IDeeColorConstants.DEE_DELIM_STRING, sCoreCategory },
+            //{ "Operators"		, IDeeColorConstants.DEE_OPERATORS, sCoreCategory },
+			{ "Default"			, IDeeColorConstants.DEE_DEFAULT, sCoreCategory },							
+	};
 	
 
 	public DeeSourceColoringConfigurationBlock(OverlayPreferenceStore store) {

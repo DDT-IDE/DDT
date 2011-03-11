@@ -14,7 +14,7 @@ import org.eclipse.jface.text.rules.Token;
 // See: http://www.digitalmars.com/d/2.0/lex.html
 public class DeePartitionScanner extends RuleBasedPartitionScanner {
 	
-	private static final char NO_ESCAPE = (char) -1;
+	private static final char NO_ESCAPE_CHAR = (char) -1;
 	
 	/**
 	 * Creates the partitioner and sets up the appropriate rules.
@@ -33,20 +33,20 @@ public class DeePartitionScanner extends RuleBasedPartitionScanner {
 		
 		List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 		
-		rules.add(new MultiLineRule("`", "`", tkRawString, NO_ESCAPE, true));
-		rules.add(new MultiLineRule("r\"", "\"", tkRawString, NO_ESCAPE, true));
-		rules.add(new MultiLineRule("q\"", "\"", tkDelimString, NO_ESCAPE, true)); // TODO: this rule is not accurate
+		rules.add(new MultiLineRule("`", "`", tkRawString, NO_ESCAPE_CHAR, true));
+		rules.add(new MultiLineRule("r\"", "\"", tkRawString, NO_ESCAPE_CHAR, true));
+		rules.add(new MultiLineRule("q\"", "\"", tkDelimString, NO_ESCAPE_CHAR, true)); // TODO: this rule is not accurate
 		rules.add(new MultiLineRule("\"", "\"", tkString, '\\', true));
 		rules.add(new SingleLineRule("'", "'", tkCharacter, '\\', true));
 		
 		
-		rules.add(new EndOfLineRule("///", tkSingleDocComment, NO_ESCAPE)); 
-		rules.add(new EndOfLineRule("//", tkSingleComment, NO_ESCAPE));
+		rules.add(new EndOfLineRule("///", tkSingleDocComment, NO_ESCAPE_CHAR)); 
+		rules.add(new EndOfLineRule("//", tkSingleComment, NO_ESCAPE_CHAR));
 		
-		rules.add(new NestedDelimiterRule("/++", "/+", "+/", tkNestedDocComment, NO_ESCAPE, true));
-		rules.add(new NestedDelimiterRule("/+", "/+", "+/", tkNestedComment, NO_ESCAPE, true));
-		rules.add(new MultiLineRule("/**", "*/", tkMultiDocComment, NO_ESCAPE, true));
-		rules.add(new MultiLineRule("/*", "*/", tkMultiComment, NO_ESCAPE, true));
+		rules.add(new NestedDelimiterRule("/++", "/+", "+/", tkNestedDocComment, NO_ESCAPE_CHAR, true));
+		rules.add(new NestedDelimiterRule("/+", "/+", "+/", tkNestedComment, NO_ESCAPE_CHAR, true));
+		rules.add(new MultiLineRule("/**", "*/", tkMultiDocComment, NO_ESCAPE_CHAR, true));
+		rules.add(new MultiLineRule("/*", "*/", tkMultiComment, NO_ESCAPE_CHAR, true));
 		
 		
 		setPredicateRules(rules.toArray(new IPredicateRule[rules.size()]));

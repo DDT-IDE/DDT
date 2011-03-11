@@ -19,7 +19,7 @@ public abstract class DeeColorPreferenceInitializer implements IDeeColorConstant
 	public static void initializeDefaults(IPreferenceStore store) {
 		setColoringStyle(store, DEE_DEFAULT, true, COLOR_BLACK_RGB, false, false, false);
 		
-		setColoringStyle(store, DEE_KEYWORD, true, new RGB(0, 0, 127), true, false, false);
+		setColoringStyle(store, DEE_KEYWORDS, true, new RGB(0, 0, 127), true, false, false);
 		
 		setColoringStyle(store, DEE_BASICTYPES, true, new RGB(0, 0, 127), false, false, false);
 		
