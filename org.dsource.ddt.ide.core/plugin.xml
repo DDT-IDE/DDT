@@ -55,6 +55,13 @@
       </parserContribution>
    </extension>
    <extension
+         point="org.eclipse.dltk.launching.interpreterInstallTypes">
+      <interpreterInstallType
+            class="mmrnmhrm.core.launch.DeeDmdInstallType"
+            id="org.dsource.ddt.ide.core.launching.deeDmdInstallType">
+      </interpreterInstallType>
+   </extension>
+   <extension
          id="deebuilder"
          name="Dee Builder"
          point="org.eclipse.core.resources.builders">
@@ -116,13 +123,6 @@
             class="mmrnmhrm.core.dltk.search.DeeMatchLocator"
             nature="org.dsource.ddt.ide.core.nature">
       </matchLocator>
-   </extension>
-   <extension
-         point="org.eclipse.dltk.launching.interpreterInstallTypes">
-      <interpreterInstallType
-            class="mmrnmhrm.core.launch.DeeDmdInstallType"
-            id="org.dsource.ddt.ide.core.launching.deeDmdInstallType">
-      </interpreterInstallType>
    </extension>
    <!--
    <extension
