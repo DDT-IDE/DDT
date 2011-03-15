@@ -89,7 +89,7 @@ public class DeeAutoEditStrategy extends LangAutoEditStrategy {
 	
 	@Override
 	protected void smartPaste(IDocument doc, DocumentCommand cmd) throws BadLocationException {
-		rubyAutoEditStrategy.smartPaste(doc, cmd);
+		//rubyAutoEditStrategy.smartPaste(doc, cmd);
 	}
 	
 }
