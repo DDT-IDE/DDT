@@ -1,4 +1,4 @@
-package mmrnmhrm.core;
+package mmrnmhrm.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 
-public class CoreUtils {
+public class ResourceUtils {
 	
 	public static void createRecursive(IFolder container, boolean force) throws CoreException {
 		if(!container.getParent().exists()) {

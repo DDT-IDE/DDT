@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import mmrnmhrm.core.CoreUtils;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model.ModelUtil;
 
@@ -62,7 +61,7 @@ public class DeeCoreTestUtils {
 		assertNotNull(sourceURL);
 		
 		URI uri = getURI_Assured(FileLocator.toFileURL(sourceURL));
-		CoreUtils.copyURLResourceToWorkspace(uri, destFolder, vcsFilter);
+		ResourceUtils.copyURLResourceToWorkspace(uri, destFolder, vcsFilter);
 	}
 	
 	/** Return a URI for given url, which must comply to RFC 2396. */
@@ -75,7 +74,7 @@ public class DeeCoreTestUtils {
 	}
 	
 	public static void copyURLResourceToWorkspace(URI uri, final IContainer destFolder) throws CoreException {
-		CoreUtils.copyURLResourceToWorkspace(uri, destFolder, vcsFilter);
+		ResourceUtils.copyURLResourceToWorkspace(uri, destFolder, vcsFilter);
 	}
 	
 }
