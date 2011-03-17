@@ -1,6 +1,7 @@
 = DDT Change Log =
 
 == DDT 0.4.2 (devel) ==
+ * Fixed #33, bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.
 
 == DDT 0.4.1 (2011-03-04) ==
  * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)

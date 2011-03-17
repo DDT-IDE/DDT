@@ -226,18 +226,18 @@ public class DeeBuilder {
 		
 		IPath outputPath = options.getOutputFolder().getProjectRelativePath();
 		String outputDir = outputPath.toOSString();
-		while(StringUtil.replace(strb, "$DEEBUILDER.OUTPUTPATH", outputDir))
+		while(StringUtil.replace(strb, "$DEEBUILDER.OUTPUTPATH", encodeString(outputDir)))
 			;
 		
 		String outputExe = outputPath.append(options.getArtifactName()).toOSString();
-		while(StringUtil.replace(strb, "$DEEBUILDER.OUTPUTEXE", outputExe))
+		while(StringUtil.replace(strb, "$DEEBUILDER.OUTPUTEXE", encodeString(outputExe)))
 			;
 		
 
 		{
 			String srcLibs = "";
 			for(String srcLib : libraryEntries) {
-				srcLibs += "-I" + srcLib + "\n";
+				srcLibs += "-I" + encodeString(srcLib) + "\n";
 			}
 			while(StringUtil.replace(strb, "$DEEBUILDER.SRCLIBS.-I", srcLibs))
 				;
@@ -246,7 +246,7 @@ public class DeeBuilder {
 		{
 			String srcFolders = "";
 			for(String srcfolder : folderEntries) {
-				srcFolders += "-I" + srcfolder + "\n";
+				srcFolders += "-I" + encodeString(srcfolder) + "\n";
 			}
 			while(StringUtil.replace(strb, "$DEEBUILDER.SRCFOLDERS.-I", srcFolders))
 				;
@@ -256,7 +256,7 @@ public class DeeBuilder {
 		{
 			String srcModules = "";
 			for(String srcModule : buildModules) {
-				srcModules += srcModule + "\n";
+				srcModules += encodeString(srcModule) + "\n";
 			}
 			while(StringUtil.replace(strb, "$DEEBUILDER.SRCMODULES", srcModules))
 				;
@@ -272,6 +272,9 @@ public class DeeBuilder {
 		return strb.toString();
 	}
 	
+	protected String encodeString(String str) {
+		return "\"" + escapeQuotes(str) + "\"";
+	}
 	
 	public void runBuilder(IScriptProject deeProj, IProgressMonitor monitor)
 			throws CoreException {
@@ -346,6 +349,26 @@ public class DeeBuilder {
 		String localCompilerPath = EnvironmentPathUtils.getLocalPath(compilerPath).toOSString();
 		pathStr = localCompilerPath + File.pathSeparator + pathStr;
 		env.put(pathEnvKey, pathStr);
+	}
+	
+	/*-------------------------------*/
+	
+	public static String escapeQuotes(String str) {
+		StringBuilder sb = new StringBuilder();
+		char characters[] = str.toCharArray();
+		for (int i = 0; i < characters.length; i++) {
+			char c = characters[i];
+			switch (c) {
+			case '"':
+				sb.append('\\');
+				sb.append('"');
+				break;
+			default:
+				sb.append(c);
+				break;
+			}
+		}
+		return sb.toString();
 	}
 	
 }
