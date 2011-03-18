@@ -1,7 +1,7 @@
 package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
-import mmrnmhrm.core.dltk.SourceModelUtil;
+import mmrnmhrm.core.codeassist.SourceModelUtil;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
 import mmrnmhrm.ui.actions.OperationsManager;
 

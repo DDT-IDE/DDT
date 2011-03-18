@@ -1,4 +1,4 @@
-package mmrnmhrm.core.dltk;
+package mmrnmhrm.core.parser;
 
 import java.io.File;
 import java.util.ArrayList;

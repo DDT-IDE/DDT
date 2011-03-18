@@ -1,4 +1,4 @@
-package mmrnmhrm.core.dltk;
+package mmrnmhrm.core.codeassist;
 
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;

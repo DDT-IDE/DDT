@@ -1,6 +1,6 @@
 package mmrnmhrm.core;
 
-import mmrnmhrm.core.dltk.DLTKModuleResolver;
+import mmrnmhrm.core.parser.DLTKModuleResolver;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 
 import org.eclipse.core.runtime.CoreException;

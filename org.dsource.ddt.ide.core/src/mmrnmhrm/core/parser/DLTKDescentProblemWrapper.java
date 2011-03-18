@@ -1,4 +1,4 @@
-package mmrnmhrm.core.dltk;
+package mmrnmhrm.core.parser;
 
 import descent.core.compiler.IProblem;
 

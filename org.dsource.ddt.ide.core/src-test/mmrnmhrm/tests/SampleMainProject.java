@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
 
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.MiscUtil;
-import mmrnmhrm.core.dltk.DeeSourceParser;
+import mmrnmhrm.core.parser.DeeSourceParser;
 import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;

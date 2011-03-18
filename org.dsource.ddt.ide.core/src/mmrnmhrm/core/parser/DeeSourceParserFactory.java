@@ -1,4 +1,4 @@
-package mmrnmhrm.core.dltk;
+package mmrnmhrm.core.parser;
 
 import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ast.parser.ISourceParserFactory;

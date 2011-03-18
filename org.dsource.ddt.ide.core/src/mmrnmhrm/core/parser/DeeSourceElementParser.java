@@ -1,4 +1,4 @@
-package mmrnmhrm.core.dltk;
+package mmrnmhrm.core.parser;
 
 
 import org.dsource.ddt.ide.core.DeeNature;
