@@ -1,9 +1,9 @@
 package mmrnmhrm.ui.editor;
 
-import mmrnmhrm.core.dltk.DeeLanguageToolkit;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.text.DeePartitions;
 
+import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.ui.text.ScriptTextTools;

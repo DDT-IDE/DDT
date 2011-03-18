@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.search;
 
-import mmrnmhrm.core.dltk.DeeLanguageToolkit;
 
+import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.ui.search.ScriptSearchPage;
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
-import mmrnmhrm.core.dltk.DeeLanguageToolkit;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.preferences.pages.DeeCompilersPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
@@ -19,6 +18,7 @@ import mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage;
 import mmrnmhrm.ui.text.DeeSimpleSourceViewerConfiguration;
 
+import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.AbstractDLTKUILanguageToolkit;

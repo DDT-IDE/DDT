@@ -1,12 +1,12 @@
 package mmrnmhrm.ui.views;
 
-import mmrnmhrm.core.dltk.DeeModuleDeclaration;
-import mmrnmhrm.core.dltk.DeeParserUtil;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.dsource.ddt.ide.core.model.DeeParserUtil;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;

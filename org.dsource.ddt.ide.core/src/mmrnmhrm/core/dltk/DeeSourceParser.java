@@ -1,8 +1,10 @@
 package mmrnmhrm.core.dltk;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import mmrnmhrm.core.LangCore;
 
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;

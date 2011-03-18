@@ -2,9 +2,9 @@ package mmrnmhrm.core.dltk.search;
 
 
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.dltk.DeeModuleDeclaration;
-import mmrnmhrm.core.dltk.DeeParserUtil;
 
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.dsource.ddt.ide.core.model.DeeParserUtil;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;

@@ -1,4 +1,4 @@
-package mmrnmhrm.core.dltk;
+package org.dsource.ddt.ide.core;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model.DeeNature;

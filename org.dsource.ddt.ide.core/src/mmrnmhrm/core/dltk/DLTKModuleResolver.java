@@ -6,6 +6,9 @@ import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
 
+import org.dsource.ddt.ide.core.DeeLanguageToolkit;
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.dsource.ddt.ide.core.model.DeeParserUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.IExternalSourceModule;

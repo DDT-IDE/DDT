@@ -2,9 +2,9 @@ package mmrnmhrm.ui.editor;
 
 import java.util.Iterator;
 
-import mmrnmhrm.core.dltk.ASTUtils;
 import mmrnmhrm.org.eclipse.dltk.ui.actions.ReferencesSearchGroup;
 
+import org.dsource.ddt.ide.core.model.ASTUtils;
 import org.dsource.ddt.lang.ui.editor.ScriptEditorLangExtension;
 import org.eclipse.dltk.core.ISourceReference;
 import org.eclipse.dltk.internal.ui.editor.BracketInserter;

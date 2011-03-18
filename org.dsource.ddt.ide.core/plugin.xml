@@ -29,7 +29,7 @@
    <extension
          point="org.eclipse.dltk.core.language">
       <language
-            class="mmrnmhrm.core.dltk.DeeLanguageToolkit"
+            class="org.dsource.ddt.ide.core.DeeLanguageToolkit"
             nature="org.dsource.ddt.ide.core.nature">
       </language>
    </extension>

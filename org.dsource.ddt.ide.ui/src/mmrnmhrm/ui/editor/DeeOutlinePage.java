@@ -2,9 +2,9 @@ package mmrnmhrm.ui.editor;
 
 import melnorme.swtutil.SWTUtilExt;
 import melnorme.utilbox.tree.IElement;
-import mmrnmhrm.core.dltk.DeeModuleDeclaration;
-import mmrnmhrm.core.dltk.DeeParserUtil;
 
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.dsource.ddt.ide.core.model.DeeParserUtil;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IElementChangedListener;
 import org.eclipse.dltk.core.ISourceModule;

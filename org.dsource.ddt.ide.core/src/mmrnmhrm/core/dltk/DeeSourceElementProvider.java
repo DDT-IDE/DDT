@@ -3,6 +3,7 @@ package mmrnmhrm.core.dltk;
 import java.util.Iterator;
 import java.util.List;
 
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;

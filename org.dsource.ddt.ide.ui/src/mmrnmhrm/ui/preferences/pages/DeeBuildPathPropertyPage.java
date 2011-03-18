@@ -1,9 +1,9 @@
 package mmrnmhrm.ui.preferences.pages;
 
-import mmrnmhrm.core.dltk.DeeLanguageToolkit;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.preferences.DeeBuildpathsBlock;
 
+import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.ui.preferences.BuildPathsPropertyPage;
 import org.eclipse.dltk.ui.util.BusyIndicatorRunnableContext;
