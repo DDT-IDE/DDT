@@ -77,16 +77,11 @@ public class DeeDocTextHover extends AbstractTextHover {
 			DefUnit defUnit = ((DefSymbol) node).getDefUnit();
 			info= HoverUtil.getDefUnitHoverInfoWithDeeDoc(defUnit);
 		} else if (node instanceof Reference) {
-			DefUnit defUnit;
-			try {
-				defUnit = ((Reference) node).findTargetDefUnit();
-				if(defUnit != null)
-					info= HoverUtil.getDefUnitHoverInfoWithDeeDoc(defUnit);
-				else
-					info= "404 DefUnit not found";
-			} catch (UnsupportedOperationException uoe) {
-				info= "UnsupportedOperationException:\n" + uoe;
-			}
+			DefUnit defUnit = ((Reference) node).findTargetDefUnit();
+			if(defUnit != null)
+				info= HoverUtil.getDefUnitHoverInfoWithDeeDoc(defUnit);
+			else
+				info= "404 DefUnit not found";
 		}
 		if(info != null)
 			return HoverUtil.getCompleteHoverInfo(info, getCSSStyles());
