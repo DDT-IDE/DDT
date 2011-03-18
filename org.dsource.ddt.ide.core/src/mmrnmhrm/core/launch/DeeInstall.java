@@ -1,7 +1,7 @@
 package mmrnmhrm.core.launch;
 
-import mmrnmhrm.core.model.DeeNature;
 
+import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.dltk.core.environment.IFileHandle;

@@ -6,8 +6,8 @@ import java.util.List;
 
 import melnorme.utilbox.core.Assert;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.model.DeeNature;
 
+import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;

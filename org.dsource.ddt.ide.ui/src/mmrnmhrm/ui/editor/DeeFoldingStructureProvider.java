@@ -1,9 +1,9 @@
 package mmrnmhrm.ui.editor;
 
-import mmrnmhrm.core.model.DeeNature;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.text.DeePartitions;
 
+import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider;

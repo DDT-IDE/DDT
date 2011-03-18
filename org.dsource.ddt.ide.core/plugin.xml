@@ -6,7 +6,7 @@
          name="Dee nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
-         <run class="mmrnmhrm.core.model.DeeNature"/>
+         <run class="org.dsource.ddt.ide.core.DeeNature"/>
       </runtime>
    </extension>
    <extension

@@ -1,8 +1,8 @@
 package mmrnmhrm.ui.launch;
 
-import mmrnmhrm.core.model.DeeNature;
 import mmrnmhrm.ui.DeePlugin;
 
+import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.dltk.core.PreferencesLookupDelegate;
 import org.eclipse.dltk.debug.core.DLTKDebugPreferenceConstants;

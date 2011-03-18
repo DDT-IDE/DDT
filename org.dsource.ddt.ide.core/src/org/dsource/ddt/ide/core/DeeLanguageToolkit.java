@@ -1,7 +1,6 @@
 package org.dsource.ddt.ide.core;
 
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.model.DeeNature;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;

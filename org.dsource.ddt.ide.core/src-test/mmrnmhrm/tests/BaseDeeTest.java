@@ -10,9 +10,9 @@ import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuilder__Accessor;
 import mmrnmhrm.core.launch.DeeDmdInstallType;
-import mmrnmhrm.core.model.DeeNature;
 import mmrnmhrm.core.model.ModelUtil;
 
+import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;

@@ -1,9 +1,9 @@
 package mmrnmhrm.ui.wizards;
 
 
-import mmrnmhrm.core.model.DeeNature;
 import mmrnmhrm.ui.DeePlugin;
 
+import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.dltk.ui.DLTKUIPlugin;

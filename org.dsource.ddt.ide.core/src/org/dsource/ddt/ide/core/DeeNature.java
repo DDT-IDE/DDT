@@ -1,4 +1,4 @@
-package mmrnmhrm.core.model;
+package org.dsource.ddt.ide.core;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.DeeCore;

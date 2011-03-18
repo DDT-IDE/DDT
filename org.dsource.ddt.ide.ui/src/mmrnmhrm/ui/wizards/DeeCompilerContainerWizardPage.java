@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.wizards;
 
-import mmrnmhrm.core.model.DeeNature;
 
+import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterContainerWizardPage;
 
 

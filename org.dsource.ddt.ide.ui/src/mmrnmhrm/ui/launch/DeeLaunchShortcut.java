@@ -5,9 +5,9 @@ import java.util.List;
 
 import mmrnmhrm.core.launch.DeeLaunchConfigurationConstants;
 import mmrnmhrm.core.model.DeeModel;
-import mmrnmhrm.core.model.DeeNature;
 import mmrnmhrm.core.model.DeeProjectOptions;
 
+import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
