@@ -21,8 +21,8 @@ import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.build.CommonDeeBuilderListener;
 import mmrnmhrm.core.build.DeeProjectBuilder;
-import mmrnmhrm.core.model.DeeModel;
-import mmrnmhrm.core.model.DeeProjectOptions;
+import mmrnmhrm.core.projectmodel.DeeProjectModel;
+import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.DeeCoreTestUtils;
 import mmrnmhrm.tests.ITestDataConstants;
@@ -40,7 +40,7 @@ public class DeeBuilder_Test extends BaseDeeTest {
 	protected IScriptProject createBuildProject(String projectName) throws CoreException {
 		IScriptProject deeProj = createAndOpenProject(projectName);
 		
-		DeeProjectOptions deeProjectInfo = DeeModel.getDeeProjectInfo(deeProj);
+		DeeProjectOptions deeProjectInfo = DeeProjectModel.getDeeProjectInfo(deeProj);
 		
 		deeProjectInfo.compilerOptions.buildToolCmdLine = deeProjectInfo.compilerOptions.buildToolCmdLine;
 		return deeProj;
@@ -77,7 +77,7 @@ public class DeeBuilder_Test extends BaseDeeTest {
 			DeeCoreTestUtils.createSrcFolderInProject(ITestDataConstants.SAMPLE_SRC1, project.getFolder("src1 copy"));
 			doProjectBuild(deeProj);
 			
-			DeeModel.getDeeProjectInfo(deeProj).compilerOptions.outputDir = new Path("out");
+			DeeProjectModel.getDeeProjectInfo(deeProj).compilerOptions.outputDir = new Path("out");
 			doProjectBuild(deeProj);
 		} finally {
 			project.delete(true, null);

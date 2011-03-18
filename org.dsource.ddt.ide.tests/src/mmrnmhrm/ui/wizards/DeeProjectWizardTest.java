@@ -2,7 +2,7 @@ package mmrnmhrm.ui.wizards;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.model.ModelUtil;
+import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.tests.ui.accessors.ProjectWizardFirstPage__Accessor;
@@ -177,11 +177,11 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 	
 	protected boolean checkNoChanges() throws Throwable {
 		logErrorListener.checkErrors();
-		return ModelUtil.getDeeProject(NEWPROJNAME).exists() == false;
+		return ProjectModelUtil.getDeeProject(NEWPROJNAME).exists() == false;
 	}
 
 	protected boolean checkProjectCreated() throws Throwable {
 		logErrorListener.checkErrors();
-		return ModelUtil.getDeeProject(NEWPROJNAME).exists();
+		return ProjectModelUtil.getDeeProject(NEWPROJNAME).exists();
 	}
 }

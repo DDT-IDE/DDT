@@ -2,7 +2,7 @@ package mmrnmhrm.ui.actions;
 
 import melnorme.utilbox.core.Assert;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.model.ModelUtil;
+import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -35,7 +35,7 @@ public class AddSourceFolderHandler extends AbstractHandler {
 		final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				ModelUtil.addLibraryEntry(res, monitor);
+				ProjectModelUtil.addLibraryEntry(res, monitor);
 			}
 		};
 		

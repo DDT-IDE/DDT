@@ -10,8 +10,8 @@ import melnorme.util.ui.fields.StringDialogField;
 import melnorme.util.ui.swt.SWTLayoutUtil;
 import mmrnmhrm.core.build.DeeBuildOptions;
 import mmrnmhrm.core.build.DeeBuilder;
-import mmrnmhrm.core.model.DeeModel;
-import mmrnmhrm.core.model.DeeProjectOptions;
+import mmrnmhrm.core.projectmodel.DeeProjectModel;
+import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 import mmrnmhrm.ui.actions.OperationsManager;
 
 import org.eclipse.core.resources.IContainer;
@@ -129,7 +129,7 @@ public class DeeProjectOptionsBlock implements IDialogFieldListener  {
 	}
 	
 	public void init2(IScriptProject scriptProject) {
-		internalInit(DeeModel.getDeeProjectInfo(scriptProject));
+		internalInit(DeeProjectModel.getDeeProjectInfo(scriptProject));
 	}
 
 	

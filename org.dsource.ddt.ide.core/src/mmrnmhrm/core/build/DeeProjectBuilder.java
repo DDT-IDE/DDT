@@ -9,8 +9,8 @@ import java.util.Map;
 
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.model.DeeModel;
-import mmrnmhrm.core.model.DeeProjectOptions;
+import mmrnmhrm.core.projectmodel.DeeProjectModel;
+import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -57,7 +57,7 @@ public class DeeProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	private DeeProjectOptions getProjectOptions() throws CoreException {
-		return DeeModel.getDeeProjectInfo(getModelProject());
+		return DeeProjectModel.getDeeProjectInfo(getModelProject());
 	}
 	
 	

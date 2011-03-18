@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mmrnmhrm.core.launch.DeeLaunchConfigurationConstants;
-import mmrnmhrm.core.model.DeeModel;
-import mmrnmhrm.core.model.DeeProjectOptions;
+import mmrnmhrm.core.projectmodel.DeeProjectModel;
+import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IFile;
@@ -60,7 +60,7 @@ public class DeeLaunchShortcut extends AbstractScriptLaunchShortcut {
 	
 	
 	private IFile getScriptResources(IProject proj) {
-		DeeProjectOptions projectInfo = DeeModel.getDeeProjectInfo(DLTKCore.create(proj));
+		DeeProjectOptions projectInfo = DeeProjectModel.getDeeProjectInfo(DLTKCore.create(proj));
 		return projectInfo.getOutputFolder().getFile(projectInfo.getArtifactName());
 	}
 

@@ -1,7 +1,7 @@
 package mmrnmhrm.core;
 
 import mmrnmhrm.core.dltk.DLTKModuleResolver;
-import mmrnmhrm.core.model.DeeModel;
+import mmrnmhrm.core.projectmodel.DeeProjectModel;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
@@ -38,7 +38,7 @@ public class DeeCore extends LangCore {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		DeeModel.dispose();
+		DeeProjectModel.dispose();
 		pluginInstance = null;
 	}
 	
@@ -48,7 +48,7 @@ public class DeeCore extends LangCore {
 		ReferenceResolver.initializeEntityResolver(DLTKModuleResolver.instance);
 		//TypeHierarchy.DEBUG = true;
 		
-		DeeModel.initModel(); // Can we add a listener here?
+		DeeProjectModel.initModel(); // Can we add a listener here?
 	}
 	
 	/* *********************************************** */

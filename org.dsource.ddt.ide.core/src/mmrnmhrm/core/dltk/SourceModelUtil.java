@@ -1,4 +1,4 @@
-package mmrnmhrm.core.model;
+package mmrnmhrm.core.dltk;
 
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;

@@ -10,7 +10,7 @@ import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuilder__Accessor;
 import mmrnmhrm.core.launch.DeeDmdInstallType;
-import mmrnmhrm.core.model.ModelUtil;
+import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;
@@ -103,7 +103,7 @@ public class BaseDeeTest extends BaseLangPluginTest {
 		assertTrue(project.exists());
 		IScriptProject dltkProj = DLTKCore.create(project);
 		assertTrue(!dltkProj.exists()); 
-		ModelUtil.addNature(project, DeeNature.NATURE_ID);
+		ProjectModelUtil.addNature(project, DeeNature.NATURE_ID);
 		assertTrue(dltkProj.exists());
 		
 		IBuildpathEntry entry = DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()

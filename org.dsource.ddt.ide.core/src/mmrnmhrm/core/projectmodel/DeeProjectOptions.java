@@ -1,4 +1,4 @@
-package mmrnmhrm.core.model;
+package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 

@@ -1,4 +1,4 @@
-package mmrnmhrm.core.model;
+package mmrnmhrm.core.projectmodel;
 
 
 import java.util.HashMap;
@@ -27,12 +27,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
  * The D Model. 
  * It is a listener for the DLTK Model, and maintains a list of DeeProjects.
  */
-public class DeeModel implements IElementChangedListener {
+public class DeeProjectModel implements IElementChangedListener {
 	
-	private static DeeModel instance;
+	private static DeeProjectModel instance;
 	
 	public static void initModel() {
-		instance = new DeeModel();
+		instance = new DeeProjectModel();
 		DLTKCore.addElementChangedListener(instance, ElementChangedEvent.POST_CHANGE);
 	}
 
@@ -42,7 +42,7 @@ public class DeeModel implements IElementChangedListener {
 
 	Map<IScriptProject, DeeProjectOptions> deeInfos;
 	
-	public DeeModel() {
+	public DeeProjectModel() {
 		deeInfos = new HashMap<IScriptProject, DeeProjectOptions>(); 
 	}
 	

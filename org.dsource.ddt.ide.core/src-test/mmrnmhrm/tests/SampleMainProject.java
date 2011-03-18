@@ -11,7 +11,7 @@ import java.net.URISyntaxException;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.dltk.DeeSourceParser;
-import mmrnmhrm.core.model.ModelUtil;
+import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.DeeModelUtil;
@@ -86,11 +86,11 @@ public abstract class SampleMainProject extends DeeCoreTestUtils {
 		
 		
 		copyDToolCommonResource(MassParse__CommonTest.TESTSRC_PHOBOS1_OLD);
-		ModelUtil.addSourceFolder(project.getFolder(MassParse__CommonTest.TESTSRC_PHOBOS1_OLD__HEADER), null);
-		ModelUtil.addSourceFolder(project.getFolder(MassParse__CommonTest.TESTSRC_PHOBOS1_OLD__INTERNAL), null);
+		ProjectModelUtil.addSourceFolder(project.getFolder(MassParse__CommonTest.TESTSRC_PHOBOS1_OLD__HEADER), null);
+		ProjectModelUtil.addSourceFolder(project.getFolder(MassParse__CommonTest.TESTSRC_PHOBOS1_OLD__INTERNAL), null);
 		
 		copyDToolCommonResource(MassParse__CommonTest.TESTSRC_TANGO_0_99);
-		ModelUtil.addSourceFolder(project.getFolder(MassParse__CommonTest.TESTSRC_TANGO_0_99), null);
+		ProjectModelUtil.addSourceFolder(project.getFolder(MassParse__CommonTest.TESTSRC_TANGO_0_99), null);
 	}
 	
 	private static void copyDToolCommonResource(String resourcePath) throws CoreException {

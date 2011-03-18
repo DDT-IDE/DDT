@@ -1,7 +1,7 @@
 package mmrnmhrm.core.search;
 
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.model.SourceModelUtil;
+import mmrnmhrm.core.dltk.SourceModelUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;

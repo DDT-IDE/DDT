@@ -5,7 +5,7 @@ package mmrnmhrm.ui.launch;
 
 import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.launch.DeeLaunchConfigurationDelegate;
-import mmrnmhrm.core.model.DeeModel;
+import mmrnmhrm.core.projectmodel.DeeProjectModel;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -32,7 +32,7 @@ final class DeeScriptArgumentsTab extends ScriptArgumentsTab {
 			if(deeProj != null) {
 				//String buildCmds = DeeBuilder.getDemoBuildCommands(deeProj,
 				//		DeeModel.getDeeProjectInfo(deeProj),new NullProgressMonitor());
-				String buildCmds = DeeModel.getDeeProjectInfo(deeProj).getBuildCommands();
+				String buildCmds = DeeProjectModel.getDeeProjectInfo(deeProj).getBuildCommands();
 				fInterpreterArgumentsText.setText(buildCmds.replace("\n", " "));
 			}
 		}

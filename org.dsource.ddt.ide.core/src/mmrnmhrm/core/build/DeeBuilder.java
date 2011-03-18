@@ -16,8 +16,8 @@ import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.launch.DeeDmdInstallType;
 import mmrnmhrm.core.launch.DeeInstall;
-import mmrnmhrm.core.model.DeeModel;
-import mmrnmhrm.core.model.DeeProjectOptions;
+import mmrnmhrm.core.projectmodel.DeeProjectModel;
+import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -96,7 +96,7 @@ public class DeeBuilder {
 	}
 	
 	private DeeProjectOptions getProjectOptions(IScriptProject deeProj) {
-		return DeeModel.getDeeProjectInfo(deeProj);
+		return DeeProjectModel.getDeeProjectInfo(deeProj);
 	}
 	
 	

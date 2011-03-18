@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.wizards;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import mmrnmhrm.core.model.DeeProjectOptions;
+import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 import mmrnmhrm.ui.preferences.DeeProjectOptionsBlock;
 
 import org.eclipse.core.resources.IFile;

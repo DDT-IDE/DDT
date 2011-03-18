@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.model.ModelUtil;
+import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
@@ -29,7 +29,7 @@ public class DeeCoreTestUtils {
 	public static void createSrcFolderInProject(String bundleDir, IContainer destFolder) 
 			throws CoreException, URISyntaxException, IOException, ModelException {
 		copyDeeCoreDirToWorkspace(bundleDir, destFolder);
-		ModelUtil.addSourceFolder(destFolder, null);
+		ProjectModelUtil.addSourceFolder(destFolder, null);
 	}
 	
 	protected static IResourceVisitor vcsFilter = new IResourceVisitor() {

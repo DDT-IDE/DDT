@@ -1,4 +1,4 @@
-package mmrnmhrm.core.model;
+package mmrnmhrm.core.projectmodel;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.DeeCore;
@@ -19,7 +19,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
 
-public class ModelUtil {
+public class ProjectModelUtil {
 	
 	public static IScriptProject getDeeProject(String projectName) {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
