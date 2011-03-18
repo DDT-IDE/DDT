@@ -116,11 +116,11 @@
    <extension
          point="org.eclipse.dltk.core.search">
       <searchFactory
-            class="mmrnmhrm.core.dltk.search.DeeSearchFactory"
+            class="mmrnmhrm.core.search.DeeSearchFactory"
             nature="org.dsource.ddt.ide.core.nature">
       </searchFactory>
       <matchLocator
-            class="mmrnmhrm.core.dltk.search.DeeMatchLocator"
+            class="mmrnmhrm.core.search.DeeMatchLocator"
             nature="org.dsource.ddt.ide.core.nature">
       </matchLocator>
    </extension>
@@ -146,7 +146,7 @@
          id="org.dsource.ddt.ide.core.hierarchyResolverTODO"
          point="org.eclipse.dltk.core.fileHierarchyResolvers">
       <fileHierarchyResolver
-            class="mmrnmhrm.core.dltk.search.DeeFileHierarchyResolver"
+            class="mmrnmhrm.core.search.DeeFileHierarchyResolver"
             nature="org.dsource.ddt.ide.core.nature"
             priority="0">
       </fileHierarchyResolver>

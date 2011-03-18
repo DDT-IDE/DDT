@@ -1,7 +1,7 @@
 package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
-import mmrnmhrm.core.dltk.search.DeeDefPatternLocator;
+import mmrnmhrm.core.search.DeeDefPatternLocator;
 
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ModelException;

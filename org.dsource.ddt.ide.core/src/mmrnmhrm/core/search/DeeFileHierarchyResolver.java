@@ -1,4 +1,4 @@
-package mmrnmhrm.core.dltk.search;
+package mmrnmhrm.core.search;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.IFileHierarchyInfo;

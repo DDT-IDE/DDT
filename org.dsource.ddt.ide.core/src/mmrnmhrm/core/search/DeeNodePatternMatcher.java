@@ -1,4 +1,4 @@
-package mmrnmhrm.core.dltk.search;
+package mmrnmhrm.core.search;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 

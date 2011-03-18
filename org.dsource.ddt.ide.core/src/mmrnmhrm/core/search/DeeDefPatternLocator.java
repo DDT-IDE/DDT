@@ -1,4 +1,4 @@
-package mmrnmhrm.core.dltk.search;
+package mmrnmhrm.core.search;
 
 import java.util.Collection;
 import java.util.Iterator;

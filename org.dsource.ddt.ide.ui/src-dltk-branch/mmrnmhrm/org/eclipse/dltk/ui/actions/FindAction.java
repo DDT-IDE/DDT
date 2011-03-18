@@ -2,7 +2,7 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import mmrnmhrm.core.dltk.search.DeeDefPatternLocator;
+import mmrnmhrm.core.search.DeeDefPatternLocator;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.actions.OperationsManager;
 

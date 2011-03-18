@@ -1,4 +1,4 @@
-package mmrnmhrm.core.dltk.search;
+package mmrnmhrm.core.search;
 
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.dltk.core.ISearchPatternProcessor;

@@ -10,9 +10,9 @@ Export-Package: dtool.tests.ref.cc;x-friends:="org.dsource.ddt.ide.tests,org.dso
  mmrnmhrm.core,
  mmrnmhrm.core.build,
  mmrnmhrm.core.dltk;x-friends:="org.dsource.ddt.ide.tests",
- mmrnmhrm.core.dltk.search,
  mmrnmhrm.core.launch,
  mmrnmhrm.core.model,
+ mmrnmhrm.core.search,
  mmrnmhrm.tests;x-friends:="org.dsource.ddt.ide.ui",
  org.dsource.ddt.ide.core,
  org.dsource.ddt.ide.core.model
