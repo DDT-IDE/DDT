@@ -93,6 +93,12 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		return "//";
 	}
 	
+	@Override
+	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
+		String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
+		assertTrue(DeePartitions.DEE_PARTITIONING.equals(partitioning));
+		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(DeePlugin.getPrefStore(), contentType) };
+	}
 	
 	@Override 
 	protected Map<String, ITextEditor> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
@@ -136,13 +142,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		return DeeContentAssistPreference.getDefault();
 	}
 	
-	@Override
-	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
-		String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
-		assertTrue(DeePartitions.DEE_PARTITIONING.equals(partitioning));
-		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(DeePlugin.getPrefStore(), contentType) };
-	}
-	
 	
 	@Override
 	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
@@ -155,6 +154,18 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		return super.getInformationPresenter(sourceViewer);
 	}
 	
+	@Override
+	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
+		// this code is like JDT 3.6 and DLTK 3.0
+		return new IInformationControlCreator() {
+			@Override
+			public IInformationControl createInformationControl(Shell parent) {
+				return new DefaultInformationControl(parent, false);
+			}
+		};
+	}
+	
+	// ================
 	@Override
 	protected void initializeQuickOutlineContexts(InformationPresenter presenter, IInformationProvider provider) {
 		String[] contentTypes = DeePartitions.DEE_PARTITION_TYPES;
@@ -197,20 +208,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		
 		presenter.setSizeConstraints(50, 20, true, false);
 		return presenter;
-	}
-	
-	
-	// XXX: use DTLK default method?
-	@Override
-	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
-		return new IInformationControlCreator() {
-			@Override
-			@SuppressWarnings("restriction")
-			public IInformationControl createInformationControl(Shell parent) {
-				return new DefaultInformationControl(parent,
-						new org.eclipse.jface.internal.text.html.HTMLTextPresenter(true));
-			}
-		};
 	}
 	
 	
