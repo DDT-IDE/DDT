@@ -8,7 +8,7 @@ import melnorme.utilbox.misc.StringUtil;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeParserUtil;
+import org.dsource.ddt.ide.core.model.DeeModelUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.IExternalSourceModule;
@@ -52,7 +52,7 @@ public class DLTKModuleResolver implements IModuleResolver {
 					String fileext = DeeNamingRules.VALID_EXTENSIONS[i];
 					ISourceModule modUnit = pkgFrag.getSourceModule(modName+fileext);
 					if(exists(modUnit)) { 
-						DeeModuleDeclaration modDecl = DeeParserUtil.getParsedDeeModule(modUnit);
+						DeeModuleDeclaration modDecl = DeeModelUtil.getParsedDeeModule(modUnit);
 						return modDecl.neoModule;
 					}
 				}

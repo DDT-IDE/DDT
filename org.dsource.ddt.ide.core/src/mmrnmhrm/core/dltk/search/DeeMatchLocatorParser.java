@@ -4,7 +4,7 @@ package mmrnmhrm.core.dltk.search;
 import mmrnmhrm.core.DeeCore;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeParserUtil;
+import org.dsource.ddt.ide.core.model.DeeModelUtil;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
@@ -27,7 +27,7 @@ public class DeeMatchLocatorParser extends MatchLocatorParser {
 	public ModuleDeclaration parse(PossibleMatch possibleMatch) {
 		ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
 		ModuleDeclaration module = SourceParserUtil.getModuleDeclaration( sourceModule, null);
-		DeeModuleDeclaration deeModuleDecl = DeeParserUtil.parentizeDeeModuleDeclaration(module, sourceModule);
+		DeeModuleDeclaration deeModuleDecl = DeeModelUtil.parentizeDeeModuleDeclaration(module, sourceModule);
 		if(deeModuleDecl != null)
 			return deeModuleDecl;
 		return module;

@@ -6,7 +6,7 @@ import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeParserUtil;
+import org.dsource.ddt.ide.core.model.DeeModelUtil;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -176,7 +176,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 			return;
 		}
 		
-		fDeeModule = DeeParserUtil.getParsedDeeModule(fSourceModule);
+		fDeeModule = DeeModelUtil.getParsedDeeModule(fSourceModule);
 		if(fDeeModule == null) {
 			setContentDescription("No DeeModuleUnit available");
 			viewer.getControl().setVisible(false);

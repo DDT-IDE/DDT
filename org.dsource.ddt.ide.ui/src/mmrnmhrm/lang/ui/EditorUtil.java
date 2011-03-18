@@ -4,7 +4,7 @@ package mmrnmhrm.lang.ui;
 
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeParserUtil;
+import org.dsource.ddt.ide.core.model.DeeModelUtil;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
@@ -90,7 +90,7 @@ public class EditorUtil {
 		if(!(element instanceof ISourceModule))
 			return null;
 		ISourceModule modUnit = (ISourceModule) element;
-		DeeModuleDeclaration deeModule = DeeParserUtil.getParsedDeeModule(modUnit);
+		DeeModuleDeclaration deeModule = DeeModelUtil.getParsedDeeModule(modUnit);
 		return deeModule == null ? null : deeModule.neoModule;
 	}
 

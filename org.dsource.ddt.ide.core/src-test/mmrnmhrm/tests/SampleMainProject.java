@@ -14,7 +14,7 @@ import mmrnmhrm.core.dltk.DeeSourceParser;
 import mmrnmhrm.core.model.ModelUtil;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeParserUtil;
+import org.dsource.ddt.ide.core.model.DeeModelUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -120,7 +120,7 @@ public abstract class SampleMainProject extends DeeCoreTestUtils {
 		}
 		
 		DeeModuleDeclaration deeModule = sourceParser.parse(source, null);
-		DeeParserUtil.parentizeDeeModuleDeclaration(deeModule, sourceModule);
+		DeeModelUtil.parentizeDeeModuleDeclaration(deeModule, sourceModule);
 		return deeModule;
 	}
 	
