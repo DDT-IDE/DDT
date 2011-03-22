@@ -50,8 +50,8 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	public static class DeclarationModule extends ASTNeoNode {
 		
-		public String[] packages; // non-structural element
 		public Symbol moduleName; 
+		public String[] packages; // non-structural element
 		
 		public DeclarationModule(DefSymbol moduleName, ModuleDeclaration md) {
 			setSourceRange(md);

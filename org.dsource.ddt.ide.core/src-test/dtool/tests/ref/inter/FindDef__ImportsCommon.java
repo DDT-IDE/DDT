@@ -3,7 +3,7 @@ package dtool.tests.ref.inter;
 import java.io.IOException;
 
 import melnorme.utilbox.core.ExceptionAdapter;
-import mmrnmhrm.tests.SampleMainProject;
+import mmrnmhrm.tests.ITestResourcesConstants;
 
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import dtool.tests.ref.FindDef__Common;
 
 public abstract class FindDef__ImportsCommon extends FindDef__Common {
 	
-	public static final String TEST_SRCFOLDER = SampleMainProject.TEST_SRC3;
+	public static final String TEST_SRCFOLDER = ITestResourcesConstants.TR_SAMPLE_SRC3;
 	
 	protected static Module getTestModule(String path) throws CoreException {
 		return parseNeoModuleNode(TEST_SRCFOLDER +"/"+ path);

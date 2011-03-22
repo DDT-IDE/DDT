@@ -10,6 +10,7 @@ import java.util.Set;
 
 import melnorme.utilbox.core.Function;
 import melnorme.utilbox.misc.StringUtil;
+import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
 import org.eclipse.core.resources.IFile;
@@ -34,7 +35,7 @@ public class CodeCompletion__Common extends DeeTestUtils {
 	protected ICodeCompletionTester ccTester;
 	
 	public CodeCompletion__Common(String testFilePath) {
-		this.file = SampleMainProject.deeProj.getProject().getFile(SampleMainProject.TEST_SRC_CA + "/" + testFilePath);
+		this.file = SampleMainProject.deeProj.getProject().getFile(ITestResourcesConstants.TR_CA + "/" + testFilePath);
 		this.srcModule = DLTKCore.createSourceModuleFrom(file);
 		this.ccTester = new ICodeCompletionTester() {
 			@Override

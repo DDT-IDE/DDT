@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.core.Function;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -19,6 +20,10 @@ import melnorme.utilbox.misc.CollectionUtil;
  * Some of this stuff may later be refactored into the common utils code (ie, into melnorme/utilbox)
  */
 public class CommonTestUtils {
+	
+	public static <T, U extends T> void assertEquals(T obj1, U obj2) {
+		Assert.equals(obj1, obj2);
+	}
 	
 	public static <T, U extends T> void assertAreEqual(T obj1, U obj2) {
 		assertTrue(CoreUtil.areEqual(obj1, obj2));

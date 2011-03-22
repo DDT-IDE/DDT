@@ -2,6 +2,7 @@ package mmrnmhrm.ui.actions;
 
 import junit.framework.Assert;
 import mmrnmhrm.lang.ui.EditorUtil;
+import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.SampleNonDeeProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
@@ -28,10 +29,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public class OpenDefinitionOperationTest extends BaseDeeUITest {
 
-	private static final String TEST_SRCFILE = SampleMainProject.TEST_SRC1 + "/testGoToDefOp.d";
-	private static final String TEST_SRC_TARGETFILE = SampleMainProject.TEST_SRC3 +"/pack/sample.d";
+	private static final String TEST_SRCFILE = ITestResourcesConstants.TR_SAMPLE_SRC1 + "/testGoToDefOp.d";
+	private static final String TEST_SRC_TARGETFILE = ITestResourcesConstants.TR_SAMPLE_SRC3 +"/pack/sample.d";
 
-	private static final String TEST_OUTSRCFILE = SampleMainProject.TEST_SRC_OUTSIDE_MODEL
+	private static final String TEST_OUTSRCFILE = ITestResourcesConstants.TR_SRC_OUTSIDE_MODEL
 			+ "/testGoToDefOp.d";
 
 	protected IFile file; 
