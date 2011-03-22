@@ -10,6 +10,7 @@ import java.net.URL;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.ProjectModelUtil;
+import mmrnmhrm.tests.utils.ResourceUtils;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;

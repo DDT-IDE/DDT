@@ -15,7 +15,9 @@ import dtool.tests.DToolTestResources;
 /**
  * Initialize {@link DToolTestResources} working dir to use the Eclipse/OSGI instance location
  */
-public class DToolResourcesPluginAdapter extends DToolTestResources {
+public class DToolResourcesPluginAdapter 
+	extends DToolTestResources // for visibility purposes 
+{
 	
 	public static void initialize() {
 		

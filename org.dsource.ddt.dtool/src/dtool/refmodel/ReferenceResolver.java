@@ -30,6 +30,7 @@ public class ReferenceResolver {
 	private static final String[] EMPTY_PACKAGE = new String[0];
 	protected static IModuleResolver modResolver;
 
+	// XXX: blergh, remove this singleton design
 	/** Initializes the EntityResolver with a ModuleResolver. */
 	public static void initializeEntityResolver(IModuleResolver modResolver) {
 		ReferenceResolver.modResolver = modResolver;

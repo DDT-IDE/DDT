@@ -5,7 +5,6 @@ import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.SourceParserUtil;
 
-// TODO: review new IBM developerworks IDE guide
 public abstract class DeeModelUtil {
 	
 	/** Gets a DeeModuleDeclaration from given sourceModule, either by parsing or retrieving a cached version.

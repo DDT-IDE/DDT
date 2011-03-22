@@ -38,7 +38,7 @@ import dtool.tests.DToolTestResources;
  * in case it wasn't cleared.
  */
 @SuppressWarnings("restriction")
-public class BaseDeeTest extends BaseLangPluginTest {
+public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	
 	static {
 		DToolResourcesPluginAdapter.initialize();

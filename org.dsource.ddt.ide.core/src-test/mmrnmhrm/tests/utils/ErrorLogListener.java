@@ -1,4 +1,4 @@
-package mmrnmhrm.tests;
+package mmrnmhrm.tests.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 

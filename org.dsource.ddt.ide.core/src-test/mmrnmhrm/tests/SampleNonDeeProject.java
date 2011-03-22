@@ -15,7 +15,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * Builds a simple project with d sources, but that is not a Dee Project
+ * Builds a simple project with D sources, but that is not a Dee Project
  */
 public abstract class SampleNonDeeProject {
 	
