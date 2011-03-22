@@ -1,9 +1,14 @@
 package mmrnmhrm.tests.utils;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -13,8 +18,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 
 public class ResourceUtils {
@@ -99,6 +106,35 @@ public class ResourceUtils {
 		project.create(null);
 		project.open(null);
 		return project;
+	}
+	
+	public static void copyBundleDirToWorkspace(String bundleId, final IContainer destFolder, IPath bundlesrcpath)
+			throws CoreException, IOException {
+		URL sourceURL = FileLocator.find(Platform.getBundle(bundleId), bundlesrcpath, null);
+		assertNotNull(sourceURL);
+		
+		URI uri = getURIFromProperURL(FileLocator.toFileURL(sourceURL));
+		ResourceUtils.copyURLResourceToWorkspace(uri, destFolder, vcsFilter);
+	}
+	
+	public static void copyURIResourceToWorkspace(URI uri, final IContainer destFolder) throws CoreException {
+		ResourceUtils.copyURLResourceToWorkspace(uri, destFolder, vcsFilter);
+	}
+	
+	protected static IResourceVisitor vcsFilter = new IResourceVisitor() {
+		@Override
+		public boolean visit(IResource resource) throws CoreException {
+			return !(resource.getType() == IResource.FOLDER && resource.getName().equals(".svn"));
+		}
+	};
+	
+	/** Return a URI for given url, which must comply to RFC 2396. */
+	public static URI getURIFromProperURL(URL validUrl) {
+		try {
+			return validUrl.toURI();
+		} catch(URISyntaxException e) {
+			throw assertFail();
+		}
 	}
 	
 }

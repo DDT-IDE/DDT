@@ -25,7 +25,6 @@ import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.internal.environment.LazyFileHandle;
 import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
 import org.eclipse.dltk.core.search.indexing.IndexManager;
-import org.eclipse.dltk.internal.core.ModelManager;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.eclipse.dltk.launching.ScriptRuntime;
@@ -33,26 +32,30 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import dtool.tests.DToolTestResources;
 
 /**
- * Common Plugin Test class. 
- * Statically loads some read only projects, and prepares the workbench,
- * in case it wasn't cleared.
+ * Initializes a common Dee test setup:
+ * - No autobuild, no DLTK indexer, creates mock compiler installs. 
+ * - Creates common sample workspace projects.
+ * Statically loads some read only projects, and prepares the workbench, in case it wasn't cleared.
  */
-@SuppressWarnings("restriction")
 public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	
 	static {
 		DToolResourcesPluginAdapter.initialize();
 		
 		disableWorkspaceAutoBuild();
-		
-		IndexManager indexManager = ModelManager.getModelManager().getIndexManager();
-		indexManager.disable();
+		disableDLTKIndexer();
 		
 		DeeBuilder__Accessor.setTestsMode(true);
 		setupTestDMDInstalls();
 		
 		SamplePreExistingProject.checkForExistanceOfPreExistingProject();
 		SampleNonDeeProject.createAndSetupNonDeeProject();
+	}
+	
+	@SuppressWarnings("restriction")
+	public static void disableDLTKIndexer() {
+		IndexManager indexManager = org.eclipse.dltk.internal.core.ModelManager.getModelManager().getIndexManager();
+		indexManager.disable();
 	}
 	
 	private static void disableWorkspaceAutoBuild() {
@@ -84,7 +87,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		install.convertToRealInterpreter();
 	}
 	
-	public static IScriptProject createAndOpenProject(String name) throws CoreException {
+	public static IScriptProject createAndOpenDeeProject(String name) throws CoreException {
 		IWorkspaceRoot workspaceRoot = DeeCore.getWorkspaceRoot();
 		
 		IProject project;
@@ -96,7 +99,10 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		project.open(null);
 		EnvironmentManager.setEnvironmentId(project, null, false);
 		setupDeeProject(project);
-		return DLTKCore.create(project);
+		IScriptProject scriptProject = DLTKCore.create(project);
+//		scriptProject.setOption(DLTKCore.INDEXER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
+//		scriptProject.setOption(DLTKCore.BUILDER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
+		return scriptProject;
 	}
 	
 	public static void setupDeeProject(IProject project) throws CoreException {

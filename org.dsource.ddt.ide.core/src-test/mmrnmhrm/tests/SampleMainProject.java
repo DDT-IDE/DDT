@@ -6,12 +6,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.parser.DeeSourceParser;
 import mmrnmhrm.core.projectmodel.ProjectModelUtil;
+import mmrnmhrm.tests.utils.ResourceUtils;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.DeeModelUtil;
@@ -30,16 +30,16 @@ import dtool.parser.MassParse__CommonTest;
 /**
  * This class creates the main sample project, in which most tests will be based upon.
  */
-public abstract class SampleMainProject extends DeeCoreTestUtils {
+public abstract class SampleMainProject extends DeeCoreTestResources {
 	
 	
 	public static final String SAMPLEPROJNAME = "SampleProj";
 	
-	public static final String TEST_SRC1 = ITestDataConstants.SAMPLE_SRC1;
-	public static final String TEST_SRC3 = ITestDataConstants.SAMPLE_SRC3;
-	public static final String TEST_SRC_REFS = "refs";
-	public static final String TEST_SRC_CA = "src-ca"; // Content Assist
-	public static final String TEST_SRC_OUTSIDE_MODEL = "srcOut"; // Not a source folder
+	public static final String TEST_SRC1 = ITestResourcesConstants.TR_SAMPLE_SRC1;
+	public static final String TEST_SRC3 = ITestResourcesConstants.TR_SAMPLE_SRC3;
+	public static final String TEST_SRC_REFS = ITestResourcesConstants.TR_REFS;
+	public static final String TEST_SRC_CA = ITestResourcesConstants.TR_CA;
+	public static final String TEST_SRC_OUTSIDE_MODEL = ITestResourcesConstants.TR_SRC_OUTSIDE_MODEL;
 	
 	static {
 		MiscUtil.loadClass(BaseDeeTest.class);
@@ -56,14 +56,14 @@ public abstract class SampleMainProject extends DeeCoreTestUtils {
 	
 	public static void createAndSetupSampleProj() {
 		try {
-			deeProj = BaseDeeTest.createAndOpenProject(SAMPLEPROJNAME);
+			deeProj = BaseDeeTest.createAndOpenDeeProject(SAMPLEPROJNAME);
 			fillSampleProj();
 		} catch (Exception e) {
 			throw ExceptionAdapter.unchecked(e);
 		}
 	}
 	
-	protected static void fillSampleProj() throws CoreException, URISyntaxException, IOException {
+	protected static void fillSampleProj() throws CoreException, IOException {
 		// Watch out when changing these values, tests may depend on these paths
 		
 		project = deeProj.getProject();
@@ -72,16 +72,16 @@ public abstract class SampleMainProject extends DeeCoreTestUtils {
 		sampleNonExistantFile = project.getFile(new Path("nonexistant.d"));
 		
 		folder = project.getFolder(TEST_SRC1);
-		copyDeeCoreDirToWorkspace(ITestDataConstants.SAMPLE_SRC1, folder);
+		copyDeeCoreResourceToWorkspace(ITestResourcesConstants.TR_SAMPLE_SRC1, folder);
 		sampleFile1 = folder.getFile("bigfile.d");
 		
 		folder = project.getFolder(TEST_SRC_OUTSIDE_MODEL);
-		copyDeeCoreDirToWorkspace(TEST_SRC_OUTSIDE_MODEL, folder);
+		copyDeeCoreResourceToWorkspace(TEST_SRC_OUTSIDE_MODEL, folder);
 		sampleOutOfModelFile = folder.getFile("outfile.d");
 		
 		createSrcFolderInProject(TEST_SRC_REFS, project.getFolder(TEST_SRC_REFS));
 		
-		createSrcFolderInProject(ITestDataConstants.SAMPLE_SRC3, project.getFolder(TEST_SRC3));
+		createSrcFolderInProject(TEST_SRC_REFS, project.getFolder(TEST_SRC3));
 		createSrcFolderInProject(TEST_SRC_CA, project.getFolder(TEST_SRC_CA));
 		
 		
@@ -95,7 +95,7 @@ public abstract class SampleMainProject extends DeeCoreTestUtils {
 	
 	private static void copyDToolCommonResource(String resourcePath) throws CoreException {
 		File testFile = MassParse__CommonTest.getCommonResource(resourcePath);
-		copyURLResourceToWorkspace(testFile.toURI(), project.getFolder(resourcePath));
+		ResourceUtils.copyURIResourceToWorkspace(testFile.toURI(), project.getFolder(resourcePath));
 	}
 	
 	

@@ -48,15 +48,11 @@ public abstract class SampleNonDeeProject {
 		}
 		project.create(null);
 		project.open(null);
-		fillSampleProj();
+		// Watch out when changing these values, tests may depend on these paths
+		DeeCoreTestResources.copyDeeCoreResourceToWorkspace(ITestResourcesConstants.TR_SAMPLE_SRC1, project.getFolder(TEST_OUT_SRC));
 		return project;
 	}
 	
-	
-	public static void fillSampleProj() throws CoreException, URISyntaxException, IOException {
-		// Watch out when changing these values, tests may depend on these paths
-		DeeCoreTestUtils.copyDeeCoreDirToWorkspace(ITestDataConstants.SAMPLE_SRC1, project.getFolder(TEST_OUT_SRC));
-	}
 	
 	public static void commonTearDown() throws Exception {
 		IWorkspaceRoot workspaceRoot = DeeCore.getWorkspaceRoot();

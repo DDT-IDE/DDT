@@ -24,8 +24,8 @@ import mmrnmhrm.core.build.DeeProjectBuilder;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 import mmrnmhrm.tests.BaseDeeTest;
-import mmrnmhrm.tests.DeeCoreTestUtils;
-import mmrnmhrm.tests.ITestDataConstants;
+import mmrnmhrm.tests.DeeCoreTestResources;
+import mmrnmhrm.tests.ITestResourcesConstants;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -35,10 +35,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IScriptProject;
 import org.junit.Test;
 
-public class DeeBuilder_Test extends BaseDeeTest {
+public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConstants {
 	
 	protected IScriptProject createBuildProject(String projectName) throws CoreException {
-		IScriptProject deeProj = createAndOpenProject(projectName);
+		IScriptProject deeProj = createAndOpenDeeProject(projectName);
 		
 		DeeProjectOptions deeProjectInfo = DeeProjectModel.getDeeProjectInfo(deeProj);
 		
@@ -64,17 +64,17 @@ public class DeeBuilder_Test extends BaseDeeTest {
 			//UITestUtils.runEventLoop();
 			doProjectBuild(deeProj);
 			
-			DeeCoreTestUtils.createSrcFolderInProject(ITestDataConstants.BUILD_SRC, project.getFolder("buildSrc"));
+			DeeCoreTestResources.createSrcFolderInProject(TR_BUILD_SRC, project.getFolder("buildSrc"));
 			doProjectBuild(deeProj);
 			
 			
-			DeeCoreTestUtils.createSrcFolderInProject(ITestDataConstants.SAMPLE_SRC1, project.getFolder("src1"));
+			DeeCoreTestResources.createSrcFolderInProject(TR_SAMPLE_SRC1, project.getFolder("src1"));
 			doProjectBuild(deeProj);
 			
-			DeeCoreTestUtils.createSrcFolderInProject(ITestDataConstants.SAMPLE_SRC3, project.getFolder("src3"));
+			DeeCoreTestResources.createSrcFolderInProject(TR_SAMPLE_SRC3, project.getFolder("src3"));
 			doProjectBuild(deeProj);
 			
-			DeeCoreTestUtils.createSrcFolderInProject(ITestDataConstants.SAMPLE_SRC1, project.getFolder("src1 copy"));
+			DeeCoreTestResources.createSrcFolderInProject(TR_SAMPLE_SRC1, project.getFolder("src1 copy"));
 			doProjectBuild(deeProj);
 			
 			DeeProjectModel.getDeeProjectInfo(deeProj).compilerOptions.outputDir = new Path("out");
@@ -108,7 +108,7 @@ public class DeeBuilder_Test extends BaseDeeTest {
 			protected void run(IScriptProject deeProj, IProject project) throws Exception {
 				doProjectBuild(deeProj);
 				// Output Folder Inside src project
-				DeeCoreTestUtils.createSrcFolderInProject(ITestDataConstants.BUILD_SRC, project);
+				DeeCoreTestResources.createSrcFolderInProject(TR_BUILD_SRC, project);
 				doProjectBuild(deeProj);
 			}
 		};
@@ -128,8 +128,7 @@ public class DeeBuilder_Test extends BaseDeeTest {
 			@Override
 			protected void run(IScriptProject deeProj, IProject project) throws Exception {
 				doProjectBuild(deeProj);
-				DeeCoreTestUtils.
-				createSrcFolderInProject(ITestDataConstants.SAMPLE_SRC1, project.getFolder("src1 copy"));
+				DeeCoreTestResources.createSrcFolderInProject(TR_SAMPLE_SRC1, project.getFolder("src1 copy"));
 				doProjectBuild(deeProj);
 				
 				InputStream buildFileIS = project.getFile("build.rf").getContents();
@@ -139,7 +138,7 @@ public class DeeBuilder_Test extends BaseDeeTest {
 					"-of\"bin"+SEP+"Spaces in Project name.exe\""+NL+
 					""+NL+
 					"-I\"src1 copy\""+NL
-					;
+				;
 				assertTrue(contents.startsWith(responseBegin));
 			}
 		};
