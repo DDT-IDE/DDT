@@ -51,7 +51,7 @@ public abstract class MassParse__CommonTest extends Parser__CommonTest {
 		if(!DToolBaseTest.TESTS_LITE_MODE) {
 			MiscFileUtils.unzipFile(zipFile, outDir);
 		} else {
-			outDir.mkdir();
+			assertTrue(outDir.mkdirs());
 		}
 	}
 	
