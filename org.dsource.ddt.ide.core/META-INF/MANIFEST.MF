@@ -9,6 +9,7 @@ Bundle-Localization: plugin
 Export-Package: dtool.tests.ref.cc;x-friends:="org.dsource.ddt.ide.tests,org.dsource.ddt.ide.ui",
  mmrnmhrm.core,
  mmrnmhrm.core.build,
+ mmrnmhrm.core.codeassist,
  mmrnmhrm.core.launch,
  mmrnmhrm.core.parser;x-friends:="org.dsource.ddt.ide.tests",
  mmrnmhrm.core.projectmodel,
