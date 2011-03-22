@@ -52,12 +52,6 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		SampleNonDeeProject.createAndSetupNonDeeProject();
 	}
 	
-	@SuppressWarnings("restriction")
-	public static void disableDLTKIndexer() {
-		IndexManager indexManager = org.eclipse.dltk.internal.core.ModelManager.getModelManager().getIndexManager();
-		indexManager.disable();
-	}
-	
 	private static void disableWorkspaceAutoBuild() {
 		IWorkspaceDescription desc = DeeCore.getWorkspace().getDescription();
 		desc.setAutoBuilding(false);
@@ -69,7 +63,13 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		assertTrue(DeeCore.getWorkspace().isAutoBuilding() == false);
 	}
 	
-	protected static final String DMD2_TESTDATA_PATH = "defaultDMDInstall/windows/bin/dmd.exe";
+	@SuppressWarnings("restriction")
+	public static void disableDLTKIndexer() {
+		IndexManager indexManager = org.eclipse.dltk.internal.core.ModelManager.getModelManager().getIndexManager();
+		indexManager.disable();
+	}
+	
+	protected static final String DMD2INSTALL_TESTDATA_PATH = "defaultDMDInstall/windows/bin/dmd.exe";
 	public static final String DEFAULT_DMD2_MOCKINSTALL_NAME = "defaultDMD2Install";
 	
 	private static void setupTestDMDInstalls() {
@@ -77,13 +77,13 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 			= ScriptRuntime.getInterpreterInstallType(DeeDmdInstallType.INSTALLTYPE_ID);
 		InterpreterStandin install = new InterpreterStandin(deeDmdInstallType, DEFAULT_DMD2_MOCKINSTALL_NAME + ".id");
 		
-		String installPathStr = DToolTestResources.getTestResource(DMD2_TESTDATA_PATH).getAbsolutePath();
+		String installPathStr = DToolTestResources.getTestResource(DMD2INSTALL_TESTDATA_PATH).getAbsolutePath();
 		assertTrue(new File(installPathStr).exists());
 		
 		install.setInstallLocation(new LazyFileHandle(LocalEnvironment.ENVIRONMENT_ID, new Path(installPathStr)));
 		install.setName(DEFAULT_DMD2_MOCKINSTALL_NAME);
 		install.setInterpreterArgs(null);
-		install.setLibraryLocations(null); // Use default location
+		install.setLibraryLocations(null); // Use default locations
 		install.convertToRealInterpreter();
 	}
 	

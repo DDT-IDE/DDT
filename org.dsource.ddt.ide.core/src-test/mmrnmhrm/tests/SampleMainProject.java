@@ -4,17 +4,14 @@ package mmrnmhrm.tests;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.parser.DeeSourceParser;
-import mmrnmhrm.core.projectmodel.ProjectModelUtil;
-import mmrnmhrm.tests.utils.ResourceUtils;
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -25,21 +22,13 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 
-import dtool.parser.MassParse__CommonTest;
-
 /**
  * This class creates the main sample project, in which most tests will be based upon.
  */
-public abstract class SampleMainProject extends DeeCoreTestResources {
+public abstract class SampleMainProject extends DeeCoreTestResources implements ITestResourcesConstants {
 	
 	
 	public static final String SAMPLEPROJNAME = "SampleProj";
-	
-	public static final String TEST_SRC1 = ITestResourcesConstants.TR_SAMPLE_SRC1;
-	public static final String TEST_SRC3 = ITestResourcesConstants.TR_SAMPLE_SRC3;
-	public static final String TEST_SRC_REFS = ITestResourcesConstants.TR_REFS;
-	public static final String TEST_SRC_CA = ITestResourcesConstants.TR_CA;
-	public static final String TEST_SRC_OUTSIDE_MODEL = ITestResourcesConstants.TR_SRC_OUTSIDE_MODEL;
 	
 	static {
 		MiscUtil.loadClass(BaseDeeTest.class);
@@ -49,7 +38,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources {
 	public static IProject project;
 	public static IScriptProject deeProj;
 	
-	public static IFile sampleFile1;
+	public static IFile sampleBigFile;
 	public static IFile sampleOutOfModelFile;
 	public static IFile sampleNonExistantFile;
 	
@@ -69,35 +58,19 @@ public abstract class SampleMainProject extends DeeCoreTestResources {
 		project = deeProj.getProject();
 		IFolder folder;
 		
-		sampleNonExistantFile = project.getFile(new Path("nonexistant.d"));
+		folder = createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC1, project.getFolder(TR_SAMPLE_SRC1));
+		sampleBigFile = folder.getFile("bigfile.d");
 		
-		folder = project.getFolder(TEST_SRC1);
-		copyDeeCoreResourceToWorkspace(ITestResourcesConstants.TR_SAMPLE_SRC1, folder);
-		sampleFile1 = folder.getFile("bigfile.d");
+		createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC3, project.getFolder(TR_SAMPLE_SRC3));
+		createSrcFolderFromDeeCoreResource(TR_CA, project.getFolder(TR_CA));
+		createSrcFolderFromDeeCoreResource(TR_REFS, project.getFolder(TR_REFS));
 		
-		folder = project.getFolder(TEST_SRC_OUTSIDE_MODEL);
-		copyDeeCoreResourceToWorkspace(TEST_SRC_OUTSIDE_MODEL, folder);
+		folder = createFolderFromDeeResource(TR_SRC_OUTSIDE_MODEL, project.getFolder(TR_SRC_OUTSIDE_MODEL));
 		sampleOutOfModelFile = folder.getFile("outfile.d");
 		
-		createSrcFolderInProject(TEST_SRC_REFS, project.getFolder(TEST_SRC_REFS));
 		
-		createSrcFolderInProject(TEST_SRC_REFS, project.getFolder(TEST_SRC3));
-		createSrcFolderInProject(TEST_SRC_CA, project.getFolder(TEST_SRC_CA));
-		
-		
-		copyDToolCommonResource(MassParse__CommonTest.TESTSRC_PHOBOS1_OLD);
-		ProjectModelUtil.addSourceFolder(project.getFolder(MassParse__CommonTest.TESTSRC_PHOBOS1_OLD__HEADER), null);
-		ProjectModelUtil.addSourceFolder(project.getFolder(MassParse__CommonTest.TESTSRC_PHOBOS1_OLD__INTERNAL), null);
-		
-		copyDToolCommonResource(MassParse__CommonTest.TESTSRC_TANGO_0_99);
-		ProjectModelUtil.addSourceFolder(project.getFolder(MassParse__CommonTest.TESTSRC_TANGO_0_99), null);
+		sampleNonExistantFile = project.getFile(new Path("nonexistant.d"));
 	}
-	
-	private static void copyDToolCommonResource(String resourcePath) throws CoreException {
-		File testFile = MassParse__CommonTest.getCommonResource(resourcePath);
-		ResourceUtils.copyURIResourceToWorkspace(testFile.toURI(), project.getFolder(resourcePath));
-	}
-	
 	
 	/** Gets a IFile from the sample project. */
 	public static IFile getFile(String filepath) {

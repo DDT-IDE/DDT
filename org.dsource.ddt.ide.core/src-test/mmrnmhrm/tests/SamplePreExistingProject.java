@@ -18,7 +18,7 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 	
 	public static final String PREEXISTINGPROJNAME = "PreExistingDeeProj";
 	
-	public static final String PROJ_SRC1 = "src1";
+	public static final String PROJ_SRC = "src";
 	
 	private static final boolean REQUIRE_PREEXISTING_PROJ = false;
 	
@@ -35,7 +35,7 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 			try {
 				sampleDeeProj = BaseDeeTest.createAndOpenDeeProject(PREEXISTINGPROJNAME);
 				project = sampleDeeProj.getProject();
-				DeeCoreTestResources.createSrcFolderInProject(TR_SAMPLE_SRC1, project.getFolder(PROJ_SRC1));
+				DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_SRC_SIMPLE, project.getFolder(PROJ_SRC));
 			} catch (Exception e) {
 				DeeCore.log(e);
 				ExceptionAdapter.unchecked(e);

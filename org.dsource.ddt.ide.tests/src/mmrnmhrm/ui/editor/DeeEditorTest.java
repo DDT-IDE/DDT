@@ -35,7 +35,7 @@ public class DeeEditorTest extends BaseDeeUITest {
 
 	@Test
 	public void testDeeEditor() throws CoreException {
-		IFile file = SampleMainProject.sampleFile1;
+		IFile file = SampleMainProject.sampleBigFile;
 		
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		IEditorPart editor = IDE.openEditor(page, file, DeeEditor.EDITOR_ID);

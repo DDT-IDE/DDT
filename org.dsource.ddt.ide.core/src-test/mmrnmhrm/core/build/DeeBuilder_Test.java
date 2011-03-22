@@ -19,8 +19,6 @@ import java.net.URISyntaxException;
 
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.build.CommonDeeBuilderListener;
-import mmrnmhrm.core.build.DeeProjectBuilder;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 import mmrnmhrm.tests.BaseDeeTest;
@@ -47,7 +45,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 	}
 	
 	@Test
-	public void test() throws CoreException, URISyntaxException, IOException {
+	public void test_Main() throws CoreException, URISyntaxException, IOException {
 		IScriptProject deeProj = createBuildProject("__BuilderProject");
 		IProject project = deeProj.getProject();
 		
@@ -55,7 +53,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 			@Override
 			public void processAboutToStart(String[] cmdLine) {
 				String compilerPath = new Path(cmdLine[0]).toString();
-				assertTrue(compilerPath.endsWith(DMD2_TESTDATA_PATH));
+				assertTrue(compilerPath.endsWith(DMD2INSTALL_TESTDATA_PATH));
 			}
 		};
 		
@@ -64,17 +62,17 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 			//UITestUtils.runEventLoop();
 			doProjectBuild(deeProj);
 			
-			DeeCoreTestResources.createSrcFolderInProject(TR_BUILD_SRC, project.getFolder("buildSrc"));
+			DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_BUILD_SRC, project.getFolder("buildSrc"));
 			doProjectBuild(deeProj);
 			
 			
-			DeeCoreTestResources.createSrcFolderInProject(TR_SAMPLE_SRC1, project.getFolder("src1"));
+			DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC1, project.getFolder("src1"));
 			doProjectBuild(deeProj);
 			
-			DeeCoreTestResources.createSrcFolderInProject(TR_SAMPLE_SRC3, project.getFolder("src3"));
+			DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC3, project.getFolder("src3"));
 			doProjectBuild(deeProj);
 			
-			DeeCoreTestResources.createSrcFolderInProject(TR_SAMPLE_SRC1, project.getFolder("src1 copy"));
+			DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC3, project.getFolder("src3 copy"));
 			doProjectBuild(deeProj);
 			
 			DeeProjectModel.getDeeProjectInfo(deeProj).compilerOptions.outputDir = new Path("out");
@@ -108,7 +106,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 			protected void run(IScriptProject deeProj, IProject project) throws Exception {
 				doProjectBuild(deeProj);
 				// Output Folder Inside src project
-				DeeCoreTestResources.createSrcFolderInProject(TR_BUILD_SRC, project);
+				DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_BUILD_SRC, project);
 				doProjectBuild(deeProj);
 			}
 		};
@@ -128,7 +126,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 			@Override
 			protected void run(IScriptProject deeProj, IProject project) throws Exception {
 				doProjectBuild(deeProj);
-				DeeCoreTestResources.createSrcFolderInProject(TR_SAMPLE_SRC1, project.getFolder("src1 copy"));
+				DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_BUILD_SRC, project.getFolder("src copy"));
 				doProjectBuild(deeProj);
 				
 				InputStream buildFileIS = project.getFile("build.rf").getContents();
@@ -137,7 +135,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 					"-od\"bin\""+NL+
 					"-of\"bin"+SEP+"Spaces in Project name.exe\""+NL+
 					""+NL+
-					"-I\"src1 copy\""+NL
+					"-I\"src copy\""+NL
 				;
 				assertTrue(contents.startsWith(responseBegin));
 			}

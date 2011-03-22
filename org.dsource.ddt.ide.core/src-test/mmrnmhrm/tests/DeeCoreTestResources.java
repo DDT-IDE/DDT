@@ -15,17 +15,19 @@ public class DeeCoreTestResources {
 	
 	public static final String TESTDATA = "testdata/";
 	
-	public static void createSrcFolderInProject(String bundleDir, IContainer destFolder) 
+	public static <T extends IContainer> T createSrcFolderFromDeeCoreResource(String resourcePath, T destFolder) 
 			throws CoreException, IOException {
-		copyDeeCoreResourceToWorkspace(bundleDir, destFolder);
+		createFolderFromDeeResource(resourcePath, destFolder);
 		ProjectModelUtil.addSourceFolder(destFolder, null);
+		return destFolder;
 	}
 	
-	static void copyDeeCoreResourceToWorkspace(final String srcPath, final IContainer destFolder) 
+	public static <T extends IContainer> T createFolderFromDeeResource(String resourcePath, T destFolder) 
 			throws CoreException, IOException {
 		String pluginId = DeeCore.PLUGIN_ID;
 		String basePath = DeeCoreTestResources.TESTDATA;
-		ResourceUtils.copyBundleDirToWorkspace(pluginId, destFolder, new Path(basePath).append(srcPath));
+		ResourceUtils.copyBundleDirToWorkspace(pluginId, destFolder, new Path(basePath).append(resourcePath));
+		return destFolder;
 	}
 	
 }

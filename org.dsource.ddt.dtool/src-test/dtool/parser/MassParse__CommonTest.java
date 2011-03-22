@@ -29,9 +29,10 @@ public abstract class MassParse__CommonTest extends Parser__CommonTest {
 	
 	public static final String TESTSRC_DRUNTIME_PHOBOS2 = "druntime_phobos-2.047-src";
 	public static final String TESTSRC_PHOBOS1_OLD = "phobos1-old";
-	public static final String TESTSRC_PHOBOS1_OLD__HEADER = TESTSRC_PHOBOS1_OLD + "phobos-header";
-	public static final String TESTSRC_PHOBOS1_OLD__INTERNAL = TESTSRC_PHOBOS1_OLD + "phobos-internal";
 	public static final String TESTSRC_TANGO_0_99 = "tango-0.99";
+	
+	public static final String TESTSRC_PHOBOS1_OLD__HEADER = TESTSRC_PHOBOS1_OLD + "/phobos-header";
+	public static final String TESTSRC_PHOBOS1_OLD__INTERNAL = TESTSRC_PHOBOS1_OLD + "/phobos-internal";
 	
 	static {
 		try {

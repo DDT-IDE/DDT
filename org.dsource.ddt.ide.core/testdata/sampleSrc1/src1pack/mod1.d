@@ -1,4 +1,4 @@
-module pack.mod1;
+module src1pack.mod1;
 
 int mod1Var; 
 
