@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
+import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
 import org.eclipse.dltk.core.ISourceModule;
@@ -19,23 +20,34 @@ import dtool.refmodel.NodeUtil;
 
 public class FindDef__Common {
 	
-	protected static Module parseNeoModuleNode(String filepath) {
-		ISourceModule sourceModuleDLTK = SampleMainProject.getSourceModule(filepath);
-		return SampleMainProject.parsedDeeModule(sourceModuleDLTK).neoModule;
+	public static int counter = -666;
+	
+	protected static void staticClassInit(String testfile) {
+		counter = -1;
+		System.out.println("======== " + testfile + " ========");
 	}
 	
 	
-	public static int counter = -666;
-	
-	protected static void staticTestInit(String testfile) {
-		counter = -1;
-		System.out.println("======== " + testfile + " ========");
+	public static String testdataRefsPath(String testfile) {
+		return ITestResourcesConstants.TR_REFS +"/"+ testfile;
 	}
 	
 	protected Module sourceModule;
 	protected int offset;
 	protected Module targetModule;
 	protected int targetOffset;
+	
+	
+	protected void prepSameModuleTest(String testdataFilePath) {
+		sourceModule = parseNeoModuleNode(testdataFilePath); 
+		targetModule = null;
+	}
+	
+	protected static Module parseNeoModuleNode(String filepath) {
+		ISourceModule sourceModuleDLTK = SampleMainProject.getSourceModule(filepath);
+		return SampleMainProject.parsedDeeModule(sourceModuleDLTK).neoModule;
+	}
+	
 	
 	protected int getMarkerEndOffset(String marker) throws ModelException {
 		String source = sourceModule.getModuleUnit().getSource();

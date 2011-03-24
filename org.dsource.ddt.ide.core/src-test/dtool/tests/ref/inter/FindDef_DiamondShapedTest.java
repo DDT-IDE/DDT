@@ -32,8 +32,7 @@ public class FindDef_DiamondShapedTest extends FindDef__ImportsCommon  {
     }
     
 	
-	public FindDef_DiamondShapedTest(int defOffset, int refOffset, String targetFile) 
-		throws Exception {
+	public FindDef_DiamondShapedTest(int defOffset, int refOffset, String targetFile) throws Exception {
 		super(defOffset, refOffset, targetFile);
 	}
 	

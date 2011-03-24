@@ -14,7 +14,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 
 @RunWith(Parameterized.class)
-public class FindDef_Targets2Test extends FindDef__SingleModuleCommonP  {
+public class FindDef_Targets2Test extends FindDef__CommonParameterizedTest  {
 	
 	static final String testfile = "refTargets2.d";
 	
@@ -33,7 +33,7 @@ public class FindDef_Targets2Test extends FindDef__SingleModuleCommonP  {
     
 	@BeforeClass
 	public static void classSetup() {
-		staticTestInit(testfile);
+		staticClassInit(testfile);
 	}
 	        
 	public FindDef_Targets2Test(int offset, int targetOffset) throws IOException, CoreException  {

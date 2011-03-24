@@ -5,18 +5,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FindDef_ScopeRulesTest extends FindDef__SingleModuleCommon  {
+public class FindDef_ScopeRulesTest extends FindDef__Common  {
 	
 	static final String testfile = "refScopes.d";
 	
 	@BeforeClass
 	public static void commonSetup() {
-		staticTestInit(testfile);
+		staticClassInit(testfile);
 	}
 	
 	@Before
 	public void prepTest() throws CoreException {
-		prepTestModule(testfile);
+		prepSameModuleTest(testdataRefsPath(testfile));
 	}
 	
 	@Test public void test1() throws CoreException {

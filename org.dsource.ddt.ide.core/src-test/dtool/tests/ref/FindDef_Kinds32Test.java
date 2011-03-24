@@ -11,14 +11,14 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class FindDef_Kinds32Test extends FindDef__SingleModuleCommonP  {
+public class FindDef_Kinds32Test extends FindDef__CommonParameterizedTest  {
 	
 	static final String testfile = "refKinds32.d";
 	
     
 	@BeforeClass
 	public static void classSetup() {
-		staticTestInit(testfile);
+		staticClassInit(testfile);
 	}
 
 	@Parameters
