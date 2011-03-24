@@ -16,7 +16,6 @@ import java.util.Map;
 
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.text.DeeCodeContentAssistProcessor;
-import mmrnmhrm.ui.editor.text.DeeDocTextHover;
 import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
 import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
@@ -32,6 +31,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
@@ -100,6 +100,42 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(DeePlugin.getPrefStore(), contentType) };
 	}
 	
+	@Override
+	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
+		return super.getTextHover(sourceViewer, contentType, stateMask);
+	}
+	
+	@Override
+	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
+		IInformationPresenter informationPresenter = super.getInformationPresenter(sourceViewer);
+//		ScriptInformationProvider sip = new ScriptInformationProvider(getEditor()) { 
+//		};
+		informationPresenter.getInformationProvider(IDocument.DEFAULT_CONTENT_TYPE);
+		return informationPresenter;
+	}
+	
+	@Override
+	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
+		// this code is like JDT 3.6 and DLTK 3.0
+		return new IInformationControlCreator() {
+			@Override
+			public IInformationControl createInformationControl(Shell parent) {
+				return new DefaultInformationControl(parent, false);
+			}
+		};
+	}
+	
+	
+	@Override
+	protected void initializeQuickOutlineContexts(InformationPresenter presenter, IInformationProvider provider) {
+		String[] contentTypes = DeePartitions.DEE_PARTITION_TYPES;
+		for (int i= 0; i < contentTypes.length; i++) {
+			presenter.setInformationProvider(provider, contentTypes[i]);
+		}
+	}
+	
+	// ================
+	
 	@Override 
 	protected Map<String, ITextEditor> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
 		@SuppressWarnings("unchecked")
@@ -120,7 +156,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		}
 		return hyperlinkDetectors;
 	}
-	
 	
 	@Override
 	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
@@ -143,35 +178,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	}
 	
 	
-	@Override
-	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
-		// TODO: Note: we are currently using own TextHover, not DLTK's. maybe can change
-		return new DeeDocTextHover(getEditor());
-	}
-	
-	@Override
-	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
-		return super.getInformationPresenter(sourceViewer);
-	}
-	
-	@Override
-	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
-		// this code is like JDT 3.6 and DLTK 3.0
-		return new IInformationControlCreator() {
-			@Override
-			public IInformationControl createInformationControl(Shell parent) {
-				return new DefaultInformationControl(parent, false);
-			}
-		};
-	}
-	
 	// ================
-	@Override
-	protected void initializeQuickOutlineContexts(InformationPresenter presenter, IInformationProvider provider) {
-		String[] contentTypes = DeePartitions.DEE_PARTITION_TYPES;
-		for (int i= 0; i < contentTypes.length; i++)
-			presenter.setInformationProvider(provider, contentTypes[i]);
-	}
 	
 	private IInformationControlCreator getHierarchyPresenterControlCreator() {
 		return new IInformationControlCreator() {
@@ -209,6 +216,5 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		presenter.setSizeConstraints(50, 20, true, false);
 		return presenter;
 	}
-	
 	
 }

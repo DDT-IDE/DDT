@@ -147,6 +147,38 @@
             id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
       </context>
    </extension>
+   <extension
+         point="org.eclipse.search.searchPages">
+      <page
+            canSearchEnclosingProjects="true"
+            class="mmrnmhrm.ui.search.DeeSearchPage"
+            enabled="true"
+            extensions="d,di,dh:90"
+            icon="icons/action16e/search_obj.RUBY.gif"
+            id="org.dsource.ddt.ide.ui.DeeSearchPage"
+            label="%LangSearchPage.label"
+            showScopeSection="true"
+            sizeHint="460,160">
+      </page>
+   </extension>
+ <extension
+       point="org.eclipse.dltk.ui.scriptDocumentationProviders">
+    <provider
+          class="mmrnmhrm.ui.editor.doc.DeeDocumentationProvider"
+          id="org.dsource.ddt.ide.ui.DeeDocumentationProvider"
+          nature="org.dsource.ddt.ide.core.nature">
+    </provider>
+ </extension>
+ <extension
+       point="org.eclipse.dltk.ui.editorTextHovers">
+    <hover
+          activate="false"
+          class="mmrnmhrm.ui.editor.text.DeeDocTextHover"
+          id="org.dsource.ddt.ide.ui.DeeDocHover"
+          label="D Documentation Hover"
+          nature="org.dsource.ddt.ide.core.nature">
+    </hover>
+ </extension>
    
  <extension
        point="org.eclipse.ui.editors.templates">
@@ -175,20 +207,6 @@
             icon="icons/action16e/extra/sample.gif"
             id="org.dsource.ddt.ide.ui.views.ASTViewer"
             name="DDT AST Viewer"/>
-   </extension>
-   <extension
-         point="org.eclipse.search.searchPages">
-      <page
-            canSearchEnclosingProjects="true"
-            class="mmrnmhrm.ui.search.DeeSearchPage"
-            enabled="true"
-            extensions="d,di,dh:90"
-            icon="icons/action16e/search_obj.RUBY.gif"
-            id="org.dsource.ddt.ide.ui.DeeSearchPage"
-            label="%LangSearchPage.label"
-            showScopeSection="true"
-            sizeHint="460,160">
-      </page>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -674,14 +692,6 @@
             typeFactory="mmrnmhrm.ui.launch.RubyTypeFactory">
       </debugModel>
 	</extension>
- <extension
-       point="org.eclipse.dltk.ui.scriptDocumentationProviders">
-    <provider
-          class="mmrnmhrm.ui.editor.doc.DeeDocumentationProvider"
-          id="org.dsource.ddt.ide.ui.DeeDocumentationProvider"
-          nature="org.dsource.ddt.ide.core.nature">
-    </provider>
- </extension>
    
 
 </plugin>

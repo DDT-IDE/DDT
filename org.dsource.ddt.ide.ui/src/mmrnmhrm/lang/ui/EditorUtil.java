@@ -76,7 +76,7 @@ public class EditorUtil {
 	
 	// ------------  Used by editor ------------ 
 	
-	public static ISourceModule getModuleUnit(ITextEditor textEditor) {
+	public static ISourceModule getModuleUnit(IEditorPart textEditor) {
 		IModelElement element = EditorUtility.getEditorInputModelElement(textEditor, false);
 		if(!(element instanceof ISourceModule))
 			return null;
@@ -85,7 +85,7 @@ public class EditorUtil {
 
 	/** Gets a Module from this editor's input, and setups the Module'
 	 * modUnit as the editor's input. */
-	public static Module getNeoModuleFromEditor(ITextEditor textEditor) {
+	public static Module getNeoModuleFromEditor(IEditorPart textEditor) {
 		IModelElement element = EditorUtility.getEditorInputModelElement(textEditor, false);
 		if(!(element instanceof ISourceModule))
 			return null;
