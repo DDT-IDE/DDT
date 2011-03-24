@@ -2,6 +2,7 @@
 
 == DDT 0.4.2 (devel) ==
  * Fixed #33, bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.
+ * Fixed bug where all comments where considered documentation comments for doc hover
 
 == DDT 0.4.1 (2011-03-04) ==
  * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)

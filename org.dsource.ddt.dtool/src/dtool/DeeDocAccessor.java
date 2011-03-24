@@ -27,11 +27,12 @@ public class DeeDocAccessor {
 	}
 	
 	public static Ddoc getDdoc(DefUnit def) {
-
 		Ddoc ddoc = null;
 		Comment[] preComments = def.comments;
 		if (preComments != null && preComments.length > 0) {
 			for(Comment comment : preComments) {
+				if(!comment.isDDocComment())
+					continue;
 				DdocParser parser = new DdocParser(new String(comment.string));
 				Ddoc newddoc = parser.parse();
 				if (ddoc == null) {
@@ -46,8 +47,7 @@ public class DeeDocAccessor {
 		return null;
 	}
 	
-	public static StringBuffer transform(Ddoc ddoc,
-			Map<String, String> parameters) {
+	public static StringBuffer transform(Ddoc ddoc, Map<String, String> parameters) {
 		Map<String, String> defaultMacros = DdocMacros.getDefaultMacros();
 		Map<String, String> macros = mergeMacros(ddoc, defaultMacros);
 
