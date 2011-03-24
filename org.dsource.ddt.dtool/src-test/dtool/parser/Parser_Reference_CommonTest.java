@@ -1,6 +1,5 @@
 package dtool.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTChecker;
 import dtool.ast.definitions.DefinitionFunction;

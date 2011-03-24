@@ -1,6 +1,5 @@
 package dtool.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 
 import org.junit.Test;
 
