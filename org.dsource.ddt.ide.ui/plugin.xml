@@ -171,6 +171,13 @@
  </extension>
  <extension
        point="org.eclipse.dltk.ui.editorTextHovers">
+	<hover
+	        activate="false"
+	        class="mmrnmhrm.ui.editor.text.ProblemHoverWrapper"
+	        id="org.dsource.ddt.ide.ui.#org.eclipse.dltk.ui.ProblemHover"
+	        label="Problem Description"
+	        nature="org.dsource.ddt.ide.core.nature">
+	</hover>
     <hover
           activate="false"
           class="mmrnmhrm.ui.editor.text.DeeDocTextHover"
