@@ -10,7 +10,6 @@ import melnorme.utilbox.core.Function;
 import mmrnmhrm.tests.ui.SWTTestUtils;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeContentAssistProcessor;
-import mmrnmhrm.ui.editor.text.AbstractCompletionProposal__Accessor;
 import mmrnmhrm.ui.editor.text.DeeCompletionProposal;
 
 import org.dsource.ddt.lang.ui.WorkbenchUtils;
@@ -104,7 +103,7 @@ public class CodeCompletionUITestAdapter extends CommonTestUtils implements ICod
 		}
 		assertTrue(repOffset == proposal.getReplacementOffset());
 		assertTrue(repLen == proposal.getReplacementLength());
-		assertTrue(repStr.equals(AbstractCompletionProposal__Accessor.getfReplacementString(proposal)));
+		assertTrue(repStr.equals(proposal.getReplacementString()));
 	}
 	
 }
