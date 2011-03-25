@@ -161,48 +161,6 @@
             sizeHint="460,160">
       </page>
    </extension>
- <extension
-       point="org.eclipse.dltk.ui.scriptDocumentationProviders">
-    <provider
-          class="mmrnmhrm.ui.editor.doc.DeeDocumentationProvider"
-          id="org.dsource.ddt.ide.ui.DeeDocumentationProvider"
-          nature="org.dsource.ddt.ide.core.nature">
-    </provider>
- </extension>
- <extension
-       point="org.eclipse.dltk.ui.editorTextHovers">
-	<hover
-	        activate="false"
-	        class="mmrnmhrm.ui.editor.text.ProblemHoverWrapper"
-	        id="org.dsource.ddt.ide.ui.#org.eclipse.dltk.ui.ProblemHover"
-	        label="Problem Description"
-	        nature="org.dsource.ddt.ide.core.nature">
-	</hover>
-    <hover
-          activate="false"
-          class="mmrnmhrm.ui.editor.text.DeeDocTextHover"
-          id="org.dsource.ddt.ide.ui.DeeDocHover"
-          label="D Documentation Hover"
-          nature="org.dsource.ddt.ide.core.nature">
-    </hover>
- </extension>
-   
- <extension
-       point="org.eclipse.ui.editors.templates">
-    <contextType
-          class="mmrnmhrm.ui.editor.templates.DeeUniversalTemplateContextType"
-          id="DeeUniversalTemplateContextType"
-          name="%LangTemplateContext.name">
-    </contextType>
-    <include
-          file="templates/default-templates.xml"
-          translations="templates/default-templates.properties">
-    </include>
-    <!--<include
-          file="templates/templates.xml"
-          translations="templates/templates.properties">
-    </include> -->
- </extension>
    <extension
          point="org.eclipse.ui.views">
       <category
@@ -470,7 +428,49 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+G">
       </key>
-   </extension>   
+   </extension>
+ <extension
+       point="org.eclipse.dltk.ui.scriptDocumentationProviders">
+    <provider
+          class="mmrnmhrm.ui.editor.doc.DeeDocumentationProvider"
+          id="org.dsource.ddt.ide.ui.DeeDocumentationProvider"
+          nature="org.dsource.ddt.ide.core.nature">
+    </provider>
+ </extension>
+ <extension
+       point="org.eclipse.dltk.ui.editorTextHovers">
+	<hover
+	        activate="false"
+	        class="mmrnmhrm.ui.editor.text.ProblemHoverWrapper"
+	        id="org.dsource.ddt.ide.ui.#org.eclipse.dltk.ui.ProblemHover"
+	        label="Problem Description"
+	        nature="org.dsource.ddt.ide.core.nature">
+	</hover>
+    <hover
+          activate="false"
+          class="mmrnmhrm.ui.editor.text.DeeDocTextHover"
+          id="org.dsource.ddt.ide.ui.DeeDocHover"
+          label="D Documentation Hover"
+          nature="org.dsource.ddt.ide.core.nature">
+    </hover>
+ </extension>
+   
+ <extension
+       point="org.eclipse.ui.editors.templates">
+    <contextType
+          class="mmrnmhrm.ui.editor.templates.DeeUniversalTemplateContextType"
+          id="DeeUniversalTemplateContextType"
+          name="%LangTemplateContext.name">
+    </contextType>
+    <include
+          file="templates/default-templates.xml"
+          translations="templates/default-templates.properties">
+    </include>
+    <!--<include
+          file="templates/templates.xml"
+          translations="templates/templates.properties">
+    </include> -->
+ </extension>   
    
    <extension
          point="org.eclipse.ui.navigator.viewer">
