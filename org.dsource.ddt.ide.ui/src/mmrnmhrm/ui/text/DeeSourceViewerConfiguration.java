@@ -25,6 +25,7 @@ import org.dsource.ddt.lang.ui.editor.ScriptSourceViewerConfigurationExtension;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
+import org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
 import org.eclipse.dltk.internal.ui.typehierarchy.HierarchyInformationControl;
 import org.eclipse.dltk.ui.text.IColorManager;
@@ -151,9 +152,9 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		
 		// assistant.setStatusLineVisible(true);
 		
-//		IContentAssistProcessor scriptProcessor = new DeeCompletionProcessor(
-//				getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
-//		assistant.setContentAssistProcessor(scriptProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+		IContentAssistProcessor scriptProcessor = new DeeCompletionProcessor(
+				getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
+		assistant.setContentAssistProcessor(scriptProcessor, IDocument.DEFAULT_CONTENT_TYPE);
 		
 	}
 	
@@ -217,12 +218,13 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 				&& EditorUtility.getEditorInputModelElement(getEditor(), true) == null)
 			return null;
 		
-		InformationPresenter presenter = new InformationPresenter(
-				getHierarchyPresenterControlCreator());
+		InformationPresenter presenter = new InformationPresenter(getHierarchyPresenterControlCreator());
 		presenter.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 		presenter.setAnchor(AbstractInformationControlManager.ANCHOR_GLOBAL);
 		@SuppressWarnings("restriction")
 		IInformationProvider provider = new org.eclipse.dltk.internal.ui.text.ScriptElementProvider(getEditor(), doCodeResolve);
+//		IInformationProvider provider = new ScriptElementProvider(getEditor(), doCodeResolve);
+		
 		presenter.setInformationProvider(provider, DeePartitions.DEE_CODE);
 		
 		presenter.setSizeConstraints(50, 20, true, false);

@@ -454,6 +454,17 @@
           nature="org.dsource.ddt.ide.core.nature">
     </hover>
  </extension>
+ <extension
+       id="ExamplePythonTypeCompletionProposalComputer"
+       point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
+		<scriptCompletionProposalComputer
+        activate="false"
+        categoryId="org.eclipse.dltk.ui.scriptTypeProposalCategory"
+        class="mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer"
+        toolkitId="org.dsource.ddt.ide.core.nature">
+			<partition type="__dftl_partition_content_type"/>
+		</scriptCompletionProposalComputer>
+ </extension>
    
  <extension
        point="org.eclipse.ui.editors.templates">

@@ -1,4 +1,7 @@
-package mmrnmhrm.ui.editor.text;
+package mmrnmhrm.ui.editor.codeassist;
+
+import mmrnmhrm.ui.editor.text.HoverUtil;
+import mmrnmhrm.ui.editor.text.ScriptCompletionProposalExtension;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
