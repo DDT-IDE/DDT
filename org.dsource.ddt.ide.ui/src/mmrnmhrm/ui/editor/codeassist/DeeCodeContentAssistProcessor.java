@@ -1,9 +1,10 @@
-package mmrnmhrm.ui.editor.text;
+package mmrnmhrm.ui.editor.codeassist;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import mmrnmhrm.lang.ui.EditorUtil;
+import mmrnmhrm.ui.editor.text.DeeCompletionProposal;
 import mmrnmhrm.ui.views.DeeElementImageProvider;
 
 import org.eclipse.dltk.core.ISourceModule;

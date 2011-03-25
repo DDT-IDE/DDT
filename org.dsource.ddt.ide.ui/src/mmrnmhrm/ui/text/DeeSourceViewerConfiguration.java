@@ -15,7 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Map;
 
 import mmrnmhrm.ui.DeePlugin;
-import mmrnmhrm.ui.editor.text.DeeCodeContentAssistProcessor;
+import mmrnmhrm.ui.editor.codeassist.DeeCodeContentAssistProcessor;
+import mmrnmhrm.ui.editor.codeassist.DeeCompletionProcessor;
 import mmrnmhrm.ui.editor.text.DeeDocTextHover;
 import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
 import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
@@ -25,7 +26,6 @@ import org.dsource.ddt.lang.ui.editor.ScriptSourceViewerConfigurationExtension;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
-import org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
 import org.eclipse.dltk.internal.ui.typehierarchy.HierarchyInformationControl;
 import org.eclipse.dltk.ui.text.IColorManager;
@@ -125,7 +125,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	@Override
 	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
-		// this code is like JDT 3.6 and DLTK 3.0
+		// this code is like JDT 3.6 and DLTK 3.0 TODO: remove in DLTK 3.0
 		return new IInformationControlCreator() {
 			@Override
 			public IInformationControl createInformationControl(Shell parent) {
@@ -141,6 +141,26 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		for (int i= 0; i < contentTypes.length; i++) {
 			presenter.setInformationProvider(provider, contentTypes[i]);
 		}
+	}
+	
+	// ================ Content Assist
+	
+	@Override
+	protected void alterContentAssistant(ContentAssistant assistant) {
+		IContentAssistProcessor deeContentAssistProcessor = new DeeCodeContentAssistProcessor(assistant, getEditor());
+		assistant.setContentAssistProcessor(deeContentAssistProcessor, DeePartitions.DEE_CODE);
+		
+		// assistant.setStatusLineVisible(true);
+		
+//		IContentAssistProcessor scriptProcessor = new DeeCompletionProcessor(
+//				getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
+//		assistant.setContentAssistProcessor(scriptProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+		
+	}
+	
+	@Override
+	protected ContentAssistPreference getContentAssistPreference() {
+		return DeeContentAssistPreference.getDefault();
 	}
 	
 	// ================
@@ -170,22 +190,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 		return super.getContentAssistant(sourceViewer);
 	}
-	
-	@Override
-	protected void alterContentAssistant(ContentAssistant assistant) {
-		super.alterContentAssistant(assistant);
-		IContentAssistProcessor deeContentAssistProcessor = new DeeCodeContentAssistProcessor(
-				assistant, getEditor());
-		assistant.setContentAssistProcessor(deeContentAssistProcessor, DeePartitions.DEE_CODE);
-		
-		// assistant.setStatusLineVisible(true);
-	}
-	
-	@Override
-	protected ContentAssistPreference getContentAssistPreference() {
-		return DeeContentAssistPreference.getDefault();
-	}
-	
 	
 	// ================
 	

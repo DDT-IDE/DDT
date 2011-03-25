@@ -9,8 +9,8 @@ import java.util.List;
 import melnorme.utilbox.core.Function;
 import mmrnmhrm.tests.ui.SWTTestUtils;
 import mmrnmhrm.ui.editor.DeeEditor;
+import mmrnmhrm.ui.editor.codeassist.DeeCodeContentAssistProcessor;
 import mmrnmhrm.ui.editor.text.AbstractCompletionProposal__Accessor;
-import mmrnmhrm.ui.editor.text.DeeCodeContentAssistProcessor;
 import mmrnmhrm.ui.editor.text.DeeCompletionProposal;
 
 import org.dsource.ddt.lang.ui.WorkbenchUtils;
