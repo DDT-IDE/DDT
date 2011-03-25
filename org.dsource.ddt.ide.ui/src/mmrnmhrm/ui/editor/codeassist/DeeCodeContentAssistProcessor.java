@@ -1,10 +1,11 @@
-package mmrnmhrm.ui.editor.codeassist;
+package mmrnmhrm.ui.editor.text;
+
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import mmrnmhrm.lang.ui.EditorUtil;
-import mmrnmhrm.ui.editor.text.DeeCompletionProposal;
 import mmrnmhrm.ui.views.DeeElementImageProvider;
 
 import org.eclipse.dltk.core.ISourceModule;
@@ -61,6 +62,14 @@ public class DeeCodeContentAssistProcessor implements IContentAssistProcessor {
 			final int offset) {
 		
 		ISourceModule moduleUnit = EditorUtil.getModuleUnit(textEditor);
+		
+		assertTrue(session.errorMsg == null);
+		if(session.invokeNode != null) {
+			// Give no results if durring a code completion session the
+			// cursor goes behind the invoked reference node.
+			if(offset < session.invokeNode.getOffset()) 
+				return null; // return without doing matches
+		}
 		
 		String str = viewer.getDocument().get();
 		ICompletionProposal[] proposals = computeProposals(offset, moduleUnit, str, session);

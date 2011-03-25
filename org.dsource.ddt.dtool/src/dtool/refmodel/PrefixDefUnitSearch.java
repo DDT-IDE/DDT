@@ -91,13 +91,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		assertTrue(session.errorMsg == null);
 		session.resultCode = ECompletionSessionResults.RESULT_OK;
 		
-		if(session.invokeNode != null) {
-			// Give no results if durring a code completion session the
-			// cursor goes behind the invoked reference node.
-			if(offset < session.invokeNode.getOffset()) 
-				return null; // return without doing matches
-		}
-		
 		Token tokenList = ParserAdapter.tokenizeSource(source);
 		
 		Token lastTokenNonWS = null;
