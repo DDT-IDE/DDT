@@ -4,7 +4,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -119,10 +118,6 @@ public class CodeCompletion__Common extends DeeTestUtils {
 			results.add(defUnit);
 		}
 		
-		@Override
-		public Iterator<DefUnit> getResultsIterator() {
-			return results.iterator();
-		}
 	}
 	
 	

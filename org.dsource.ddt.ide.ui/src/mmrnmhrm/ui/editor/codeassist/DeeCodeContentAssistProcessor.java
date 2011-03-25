@@ -3,7 +3,6 @@ package mmrnmhrm.ui.editor.codeassist;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import mmrnmhrm.core.codeassist.ExamplePythonCompletionEngine;
 import mmrnmhrm.lang.ui.EditorUtil;
@@ -23,9 +22,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.contentassist.CompletionSession;
-import dtool.refmodel.PrefixDefUnitSearch;
-import dtool.refmodel.PrefixSearchOptions;
 import dtool.refmodel.PrefixDefUnitSearch.IDefUnitMatchAccepter;
+import dtool.refmodel.PrefixSearchOptions;
 
 // TODO: DTLK: Start using ScriptCompletionProposal ?
 public class DeeCodeContentAssistProcessor implements IContentAssistProcessor {
@@ -87,11 +85,6 @@ public class DeeCodeContentAssistProcessor implements IContentAssistProcessor {
 		final ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
 		
 		IDefUnitMatchAccepter defUnitAccepter = new IDefUnitMatchAccepter() {
-			@Override
-			public Iterator<DefUnit> getResultsIterator() {
-				return defUnitResults.iterator();
-			}
-			
 			@Override
 			public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
 				String rplStr = defUnit.getName().substring(searchOptions.prefixLen);

@@ -74,11 +74,6 @@ public class ExamplePythonCompletionEngine extends ScriptCompletionEngine {
 		
 		IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
 			@Override
-			public Iterator<DefUnit> getResultsIterator() {
-				return null;
-			}
-			
-			@Override
 			public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
 				String rplStr = defUnit.getName().substring(searchOptions.prefixLen);
 

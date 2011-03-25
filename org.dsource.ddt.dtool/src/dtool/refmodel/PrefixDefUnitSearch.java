@@ -4,7 +4,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.Iterator;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.dltk.core.ISourceModule;
 
@@ -37,6 +38,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	public PrefixSearchOptions searchOptions;
 	private IDefUnitMatchAccepter defUnitAccepter;
 	
+	private Set<String> addedDefUnits = new HashSet<String>();
+	
 	public PrefixDefUnitSearch(PrefixSearchOptions searchOptions, IScopeNode refScope, int refOffset,
 			IDefUnitMatchAccepter defUnitAccepter) {
 		super(refScope, refOffset);
@@ -67,21 +70,17 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	}
 	
 	public boolean notOccluded(DefUnit newDefUnit) {
-		Iterator<DefUnit> iter = defUnitAccepter.getResultsIterator();
-		while (iter.hasNext()) {
-			DefUnit	defunit = iter.next();
-			// FIXME: CRAPPY complexity, use hashing 
-			if(defunit.toStringAsElement().equals(newDefUnit.toStringAsElement())) {
-				return false;
-			}
+		String newDefUnitName = newDefUnit.toStringAsElement();
+		
+		if(addedDefUnits.contains(newDefUnitName)) {
+			return false;
 		}
+		addedDefUnits.add(newDefUnitName);
 		return true;
 	};
 	
 	public static interface IDefUnitMatchAccepter {
 		void accept(DefUnit defUnit, PrefixSearchOptions searchOptions);
-		
-		Iterator<DefUnit> getResultsIterator();
 	}
 	
 	public static PrefixDefUnitSearch doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
