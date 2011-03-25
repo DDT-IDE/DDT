@@ -16,6 +16,7 @@ import java.util.Map;
 
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.text.DeeCodeContentAssistProcessor;
+import mmrnmhrm.ui.editor.text.DeeDocTextHover;
 import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
 import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
@@ -24,9 +25,12 @@ import org.dsource.ddt.lang.ui.editor.ScriptSourceViewerConfigurationExtension;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
+import org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider;
+import org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
 import org.eclipse.dltk.internal.ui.typehierarchy.HierarchyInformationControl;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
+import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -107,10 +111,15 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	@Override
 	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
-		IInformationPresenter informationPresenter = super.getInformationPresenter(sourceViewer);
-//		ScriptInformationProvider sip = new ScriptInformationProvider(getEditor()) { 
-//		};
-		informationPresenter.getInformationProvider(IDocument.DEFAULT_CONTENT_TYPE);
+		// TODO review this in DLTK 3.0
+		InformationPresenter informationPresenter = (InformationPresenter) super.getInformationPresenter(sourceViewer);
+		ScriptInformationProvider_Mod sip = new ScriptInformationProvider_Mod(getEditor()) { 
+			@Override
+			protected IScriptEditorTextHover createImplementation() {
+				return new DeeDocTextHover();
+			}
+		};
+		informationPresenter.setInformationProvider(sip, IDocument.DEFAULT_CONTENT_TYPE);
 		return informationPresenter;
 	}
 	
