@@ -10,7 +10,8 @@ import melnorme.utilbox.core.Function;
 import mmrnmhrm.tests.ui.SWTTestUtils;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeContentAssistProcessor;
-import mmrnmhrm.ui.editor.text.DeeCompletionProposal;
+import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
+import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalCollector;
 
 import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IFile;
@@ -58,8 +59,10 @@ public class CodeCompletionUITestAdapter extends CommonTestUtils implements ICod
 	public void testComputeProposalsWithRepLen(int repOffset, int prefixLen, 
 			int repLen, boolean removeObjectIntrinsics, String... expectedProposals) throws ModelException {
 		
+		DeeCompletionProposalCollector collector = new DeeCompletionProposalCollector(srcModule);
+		
 		ICompletionProposal[] proposals = DeeCodeContentAssistProcessor
-				.computeProposals(repOffset, srcModule, srcModule.getSource(), new CompletionSession());
+				.computeProposals(repOffset, srcModule, srcModule.getSource(), new CompletionSession(), collector);
 		assertNotNull(proposals, "Code Completion Unavailable");
 		
 		

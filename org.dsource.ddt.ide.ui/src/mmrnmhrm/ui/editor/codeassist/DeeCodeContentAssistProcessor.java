@@ -3,8 +3,8 @@ package mmrnmhrm.ui.editor.codeassist;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import mmrnmhrm.core.codeassist.ExamplePythonCompletionEngine;
 import mmrnmhrm.lang.ui.EditorUtil;
-import mmrnmhrm.ui.editor.text.DeeCompletionProposal;
 import mmrnmhrm.ui.views.DeeElementImageProvider;
 
 import org.eclipse.dltk.core.ISourceModule;
@@ -63,14 +63,15 @@ public class DeeCodeContentAssistProcessor implements IContentAssistProcessor {
 		ISourceModule moduleUnit = EditorUtil.getModuleUnit(textEditor);
 		
 		String str = viewer.getDocument().get();
-		ICompletionProposal[] proposals = computeProposals(offset, moduleUnit, str, session);
+		DeeCompletionProposalCollector collector = new DeeCompletionProposalCollector(moduleUnit);
+		ICompletionProposal[] proposals = computeProposals(offset, moduleUnit, str, session, collector);
 		
 		errorMsg = session.errorMsg;
 		return proposals; 
 	}
 	
 	public static ICompletionProposal[] computeProposals(final int offset,
-			ISourceModule moduleUnit, String source, CompletionSession session) {
+			ISourceModule moduleUnit, String source, CompletionSession session, final DeeCompletionProposalCollector collector) {
 		
 		final ArrayList<DefUnit> defUnitResults = new ArrayList<DefUnit>();
 		final ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
@@ -79,7 +80,7 @@ public class DeeCodeContentAssistProcessor implements IContentAssistProcessor {
 			@Override
 			public Iterator<DefUnit> getResultsIterator() {
 				return defUnitResults.iterator();
-			};
+			}
 			
 			@Override
 			public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
@@ -99,8 +100,8 @@ public class DeeCodeContentAssistProcessor implements IContentAssistProcessor {
 			
 		};
 		
-		
-		PrefixDefUnitSearch.doCompletionSearch(offset, moduleUnit, source, session, defUnitAccepter);
+		ExamplePythonCompletionEngine completionEngine = new ExamplePythonCompletionEngine();
+		completionEngine.doCompletionSearch(offset, moduleUnit, source, session, defUnitAccepter, collector);
 		
 		if(session.errorMsg == null)
 			return results.toArray(RESULTS_EMPTY_ARRAY);
