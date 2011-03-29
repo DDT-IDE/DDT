@@ -24,20 +24,6 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 		this.defUnit = defUnit;
 	}
 	
-	public DeeCompletionProposal(String replacementString, int replacementOffset, int replacementLength,
-			Image image, String displayString, int relevance) {
-		super(replacementString, replacementOffset, replacementLength, image, displayString, relevance);
-		// TODO
-		defUnit = null;
-	}
-	
-	public DeeCompletionProposal(String replacementString, int replacementOffset, int replacementLength,
-			Image image, String displayString, int relevance, boolean isInDoc) {
-		super(replacementString, replacementOffset, replacementLength, image, displayString, relevance, isInDoc);
-		// TODO
-		defUnit = null;
-	}
-	
 	@Override
 	public String getProposalInfoString(IProgressMonitor monitor) {
 		return HoverUtil.getDefUnitHoverInfoWithDeeDoc(defUnit);

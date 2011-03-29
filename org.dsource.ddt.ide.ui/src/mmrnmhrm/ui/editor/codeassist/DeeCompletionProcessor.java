@@ -1,7 +1,10 @@
 package mmrnmhrm.ui.editor.codeassist;
 
 import org.dsource.ddt.ide.core.DeeNature;
+import org.eclipse.dltk.ui.text.completion.ContentAssistInvocationContext;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProcessor;
+import org.eclipse.dltk.ui.text.completion.ScriptContentAssistInvocationContext;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.ui.IEditorPart;
@@ -21,6 +24,12 @@ public class DeeCompletionProcessor extends ScriptCompletionProcessor {
 	@Override
 	public char[] getContextInformationAutoActivationCharacters() {
 		return new char[] { '(' };
+	}
+	
+	@Override
+	protected ContentAssistInvocationContext createContext(ITextViewer viewer, int offset) {
+		System.out.println("Context Create");
+		return new ScriptContentAssistInvocationContext(viewer, offset, fEditor, getNatureId());
 	}
 	
 	@Override

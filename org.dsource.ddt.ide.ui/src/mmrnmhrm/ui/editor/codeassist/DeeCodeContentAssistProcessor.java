@@ -4,7 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
-import mmrnmhrm.core.codeassist.ExamplePythonCompletionEngine;
+import mmrnmhrm.core.codeassist.DeeCompletionEngine;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.views.DeeElementImageProvider;
 
@@ -103,7 +103,7 @@ public class DeeCodeContentAssistProcessor implements IContentAssistProcessor {
 			
 		};
 		
-		ExamplePythonCompletionEngine completionEngine = new ExamplePythonCompletionEngine();
+		DeeCompletionEngine completionEngine = new DeeCompletionEngine();
 		completionEngine.doCompletionSearch(offset, moduleUnit, source, session, defUnitAccepter, collector);
 		
 		if(session.errorMsg == null)
