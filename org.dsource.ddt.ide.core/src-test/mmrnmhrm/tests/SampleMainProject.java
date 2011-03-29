@@ -59,6 +59,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		IFolder folder;
 		
 		folder = createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC1, project.getFolder(TR_SAMPLE_SRC1));
+		folder = createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRCBIG, project.getFolder(TR_SAMPLE_SRCBIG));
 		sampleBigFile = folder.getFile("bigfile.d");
 		
 		createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC3, project.getFolder(TR_SAMPLE_SRC3));

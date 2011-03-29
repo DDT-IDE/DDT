@@ -49,7 +49,7 @@ public abstract class SampleNonDeeProject {
 		project.create(null);
 		project.open(null);
 		// Watch out when changing these values, tests may depend on these paths
-		DeeCoreTestResources.createFolderFromDeeResource(ITestResourcesConstants.TR_SRC_SIMPLE, project.getFolder(TEST_OUT_SRC));
+		DeeCoreTestResources.createFolderFromDeeResource(ITestResourcesConstants.TR_SAMPLE_SRC1, project.getFolder(TEST_OUT_SRC));
 		return project;
 	}
 	

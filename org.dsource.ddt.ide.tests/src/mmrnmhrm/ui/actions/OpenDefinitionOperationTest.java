@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+
 package mmrnmhrm.ui.actions;
 
 import junit.framework.Assert;
@@ -28,13 +39,11 @@ import org.junit.Test;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public class OpenDefinitionOperationTest extends BaseDeeUITest {
-
+	
 	private static final String TEST_SRCFILE = ITestResourcesConstants.TR_SAMPLE_SRC1 + "/testGoToDefOp.d";
 	private static final String TEST_SRC_TARGETFILE = ITestResourcesConstants.TR_SAMPLE_SRC3 +"/pack/sample.d";
-
-	private static final String TEST_OUTSRCFILE = ITestResourcesConstants.TR_SRC_OUTSIDE_MODEL
-			+ "/testGoToDefOp.d";
-
+	private static final String TEST_OUTSRCFILE = ITestResourcesConstants.TR_SRC_OUTSIDE_MODEL + "/testGoToDefOp.d";
+	
 	protected IFile file; 
 	protected IEditorPart editor;
 	protected ITextEditor srcEditor;
@@ -43,13 +52,13 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	public static void commonSetUp() throws Exception {
 		OperationsManager.get().unitTestMode = true;
 	}
-
+	
 	@Before
 	public void setUp() throws Exception {
 		IProject project = SampleMainProject.deeProj.getProject();
 		setupWithFile(project, TEST_SRCFILE);
 	}
-
+	
 	private void setupWithFile(IProject project, String path) throws PartInitException, CoreException {
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		file = project.getFile(path);
@@ -57,11 +66,11 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 		editor = IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
 		srcEditor = (ITextEditor) editor;
 	}
-
+	
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	
 	@Test
 	public void test1() {
 		// find target in same file
@@ -85,7 +94,7 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 		// find target in other file
 		doTest(157, IStatus.OK, SampleMainProject.project, TEST_SRC_TARGETFILE); 
 	}
-
+	
 	@Test
 	public void testOutside() throws CoreException {
 		IProject project = SampleMainProject.project;
@@ -114,7 +123,7 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 		setupWithFile(project, TEST_OUTSRCFILE);
 		doTest(157, IStatus.WARNING, project, TEST_OUTSRCFILE);
 	}
-
+	
 	private void doTest(int offset, int result, IProject project, String editorFile) {
 		EditorUtil.setSelection(srcEditor, offset, 0);
 		GoToDefinitionHandler.executeChecked(srcEditor, true);
@@ -129,6 +138,6 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 		IPath path = editorFile.getFullPath();
 		Assert.assertEquals(path, prjpath.append(targetpath));
 	}
-
-
+	
+	
 }
