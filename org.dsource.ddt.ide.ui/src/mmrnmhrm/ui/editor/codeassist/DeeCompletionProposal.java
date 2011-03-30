@@ -31,7 +31,7 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
 	@Override
 	protected boolean isSmartTrigger(char trigger) {
-		// what is this exactlY?
+		// BM what is this exactly?
 		if(trigger == '.') {
 			return true;
 		}

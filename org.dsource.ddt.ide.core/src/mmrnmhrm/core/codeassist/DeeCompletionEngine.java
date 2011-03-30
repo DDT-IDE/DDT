@@ -1,5 +1,7 @@
 package mmrnmhrm.core.codeassist;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionContext;
@@ -18,14 +20,11 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
 	@Override
 	public void complete(IModuleSource module, int position, int i) {
-		System.out.println(" " + position + " " + i);
-		
+		assertNotNull(requestor);
 		requestor.beginReporting();
-		CompletionContext context = new CompletionContext();
-		requestor.acceptContext(context);
 		try {
-			this.actualCompletionPosition = position;
-			this.offset = i;
+			CompletionContext context = new CompletionContext();
+			requestor.acceptContext(context);
 			
 			// Completion for model elements.
 			IModelElement modelElement = module.getModelElement();
@@ -59,8 +58,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 				CompletionProposal proposal = createProposal(CompletionProposal.TYPE_REF, offset);
 				proposal.setName(defUnit.toStringForCodeCompletion());
 				proposal.setCompletion(rplStr);
-				proposal.setReplaceRange(offset, offset + rplStr.length());
-//				proposal.setModelElement(name);
+				proposal.setReplaceRange(offset-searchOptions.prefixLen, offset);
 				proposal.setExtraInfo(defUnit);
 				
 				collector.accept(proposal);
