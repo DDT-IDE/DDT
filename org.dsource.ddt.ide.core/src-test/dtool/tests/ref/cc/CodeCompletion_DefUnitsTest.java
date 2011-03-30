@@ -13,13 +13,13 @@ public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
 	
 	
 	/* ------------- Tests -------------  */
-	
+
 	@Test
 	public void test1() throws Exception {
 		testComputeProposals(getMarkerStartOffset("/+@CC1+/"), 0, true,
 				"IfTypeDefUnit",
 				"parameter",
-				"func(asdf.qwer parameter)", 
+				"func(asdf.qwer parameter)",
 				"Class",
 				
 				"sampledefs",
@@ -50,4 +50,3 @@ public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
 		);
 	}
 }
-

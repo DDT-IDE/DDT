@@ -8,46 +8,32 @@ import java.util.List;
 
 import melnorme.utilbox.core.Function;
 import mmrnmhrm.tests.ui.SWTTestUtils;
-import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeContentAssistProcessor;
+import mmrnmhrm.ui.editor.codeassist.DeeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalCollector;
+import mmrnmhrm.ui.text.DeePartitions;
 
-import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
-import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.ide.IDE;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.contentassist.CompletionSession;
-import dtool.tests.CommonTestUtils;
 import dtool.tests.ref.cc.CodeCompletion__Common;
 import dtool.tests.ref.cc.ICodeCompletionTester;
 
-public class CodeCompletionUITestAdapter extends CommonTestUtils implements ICodeCompletionTester {
+// Not that this class is run as a JUnit test, so annotated initializers are not run
+public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest implements ICodeCompletionTester {
 	
-	protected IFile file;
 	protected ISourceModule srcModule;
-	protected ScriptEditor editor; // TODO, close editor on Dynamic AfterClass
 	
 	public CodeCompletionUITestAdapter(IFile file) {
-		this.file = file;
+		super(file);
 		this.srcModule = DLTKCore.createSourceModuleFrom(file);
-		IWorkbenchPage page = WorkbenchUtils.getActivePage();
-		try {
-			this.editor = (ScriptEditor) IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
-		} catch(PartInitException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-		assertTrue(editor.getScriptSourceViewer() != null);
 	}
 	
 	@Override
@@ -61,10 +47,24 @@ public class CodeCompletionUITestAdapter extends CommonTestUtils implements ICod
 		
 		DeeCompletionProposalCollector collector = new DeeCompletionProposalCollector(srcModule);
 		
-		ICompletionProposal[] proposals = DeeCodeContentAssistProcessor
-				.computeProposals(repOffset, srcModule, srcModule.getSource(), new CompletionSession(), collector);
-		assertNotNull(proposals, "Code Completion Unavailable");
+		ICompletionProposal[] proposals = DeeCodeContentAssistProcessor.computeProposals(repOffset, 
+				srcModule, srcModule.getSource(), new CompletionSession(), collector);
+		checkProposals(repOffset, prefixLen, repLen, removeObjectIntrinsics, proposals, expectedProposals);
 		
+		if(false) {
+			ContentAssistant ca = getContentAssistant(editor);
+			DeeCompletionProcessor caProcessor = new DeeCompletionProcessor(editor, ca, DeePartitions.DEE_CODE);
+			proposals = caProcessor.computeCompletionProposals(editor.getViewer(), repOffset);
+			checkProposals(repOffset, prefixLen, repLen, removeObjectIntrinsics, proposals, expectedProposals);
+		}
+		
+		invokeContentAssist();
+		SWTTestUtils.________________clearEventQueue________________();
+	}
+
+	protected void checkProposals(int repOffset, int prefixLen, int repLen, boolean removeObjectIntrinsics,
+			ICompletionProposal[] proposals, String... expectedProposals) {
+		assertNotNull(proposals, "Code Completion Unavailable");
 		
 		Function<ICompletionProposal, DefUnit> proposalToDefunit  = new Function<ICompletionProposal, DefUnit>() {
 			@Override
@@ -73,21 +73,11 @@ public class CodeCompletionUITestAdapter extends CommonTestUtils implements ICod
 			}
 		};
 		List<DefUnit> results = mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>());
-
+		
 		CodeCompletion__Common.checkProposals(prefixLen, results, expectedProposals, removeObjectIntrinsics);
 		
 		checkProposals(repOffset, repLen, prefixLen, proposals);
-		invokeContentAssist();
-		SWTTestUtils.________________clearEventQueue________________();
 	}
-
-	protected void invokeContentAssist() {
-		ITextOperationTarget target= (ITextOperationTarget) editor.getAdapter(ITextOperationTarget.class);
-		if (target != null && target.canDoOperation(ISourceViewer.CONTENTASSIST_PROPOSALS)) {
-			target.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
-		}
-	}
-	
 	
 	protected static void checkProposals(int repOffset, int repLen, int prefixLen, ICompletionProposal[] proposals) {
 		

@@ -57,8 +57,7 @@ public class DeeCodeContentAssistProcessor implements IContentAssistProcessor {
 	}
 	
 	@Override
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
-			final int offset) {
+	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, final int offset) {
 		
 		ISourceModule moduleUnit = EditorUtil.getModuleUnit(textEditor);
 		
