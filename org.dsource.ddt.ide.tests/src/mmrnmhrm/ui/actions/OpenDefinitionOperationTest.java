@@ -55,14 +55,14 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	
 	@Before
 	public void setUp() throws Exception {
-		IProject project = SampleMainProject.deeProj.getProject();
+		IProject project = SampleMainProject.scriptProject.getProject();
 		setupWithFile(project, TEST_SRCFILE);
 	}
 	
 	private void setupWithFile(IProject project, String path) throws PartInitException, CoreException {
-		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		file = project.getFile(path);
 		assertTrue(file.exists());
+		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		editor = IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
 		srcEditor = (ITextEditor) editor;
 	}
@@ -74,37 +74,37 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	@Test
 	public void test1() {
 		// find target in same file
-		doTest(123, IStatus.OK, SampleMainProject.project, TEST_SRCFILE); 
+		doTest(123, IStatus.OK, file.getProject(), TEST_SRCFILE); 
 	}
 	
 	@Test
 	public void test2() {
 		// not found
-		doTest(135, IStatus.WARNING, SampleMainProject.project, TEST_SRCFILE); 
+		doTest(135, IStatus.WARNING, file.getProject(), TEST_SRCFILE); 
 	}
 	
 	@Test
 	public void test3() {		
 		// already a def
-		doTest(54, IStatus.INFO, SampleMainProject.project, TEST_SRCFILE); 
+		doTest(54, IStatus.INFO, file.getProject(), TEST_SRCFILE); 
 	}
 	
 	@Test
 	public void test4() {
 		// find target in other file
-		doTest(157, IStatus.OK, SampleMainProject.project, TEST_SRC_TARGETFILE); 
+		doTest(157, IStatus.OK, file.getProject(), TEST_SRC_TARGETFILE); 
 	}
 	
 	@Test
 	public void testOutside() throws CoreException {
-		IProject project = SampleMainProject.project;
+		IProject project = SampleMainProject.scriptProject.getProject();
 		setupWithFile(project, TEST_OUTSRCFILE);
 		doTest(123, IStatus.OK, project, TEST_OUTSRCFILE);
 	}
 	
 	@Test
 	public void testOutside2() throws CoreException {
-		IProject project = SampleMainProject.project;
+		IProject project = SampleMainProject.scriptProject.getProject();
 		setupWithFile(project, TEST_OUTSRCFILE);
 		doTest(157, IStatus.OK, project, TEST_SRC_TARGETFILE);
 	}

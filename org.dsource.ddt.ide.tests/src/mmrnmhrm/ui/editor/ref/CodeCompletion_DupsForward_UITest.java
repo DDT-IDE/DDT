@@ -9,4 +9,3 @@ public class CodeCompletion_DupsForward_UITest extends CodeCompletion_Duplicates
 	}
 	
 }
-

@@ -9,5 +9,3 @@ public class CodeCompletion_Lookup_UITest extends CodeCompletion_LookupTest {
 	}
 	
 }
-
-

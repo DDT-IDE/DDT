@@ -30,22 +30,20 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 	
 	public static final String SAMPLEPROJNAME = "SampleProj";
 	
-	static {
-		MiscUtil.loadClass(BaseDeeTest.class);
-		SampleMainProject.createAndSetupSampleProj();
-	}
-	
-	public static IProject project;
-	public static IScriptProject deeProj;
+	public static IScriptProject scriptProject;
 	
 	public static IFile sampleBigFile;
 	public static IFile sampleOutOfModelFile;
 	public static IFile sampleNonExistantFile;
 	
+	static {
+		MiscUtil.loadClass(BaseDeeTest.class);
+		SampleMainProject.createAndSetupSampleProj();
+	}
 	
 	public static void createAndSetupSampleProj() {
 		try {
-			deeProj = BaseDeeTest.createAndOpenDeeProject(SAMPLEPROJNAME);
+			scriptProject = BaseDeeTest.createAndOpenDeeProject(SAMPLEPROJNAME);
 			fillSampleProj();
 		} catch (Exception e) {
 			throw ExceptionAdapter.unchecked(e);
@@ -55,7 +53,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 	protected static void fillSampleProj() throws CoreException, IOException {
 		// Watch out when changing these values, tests may depend on these paths
 		
-		project = deeProj.getProject();
+		IProject project = scriptProject.getProject();
 		IFolder folder;
 		
 		folder = createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC1, project.getFolder(TR_SAMPLE_SRC1));
@@ -75,7 +73,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 	
 	/** Gets a IFile from the sample project. */
 	public static IFile getFile(String filepath) {
-		IFile file = deeProj.getProject().getFile(filepath);
+		IFile file = scriptProject.getProject().getFile(filepath);
 		assertTrue(file.exists(), "Test file not found.");
 		return file;
 	}

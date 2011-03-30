@@ -19,4 +19,3 @@ public class CodeCompletion_n3_UITest extends CodeCompletion_n3Test {
 		SWTTestUtils.runEventQueueUntilEmpty(PlatformUI.getWorkbench().getDisplay());
 	}
 }
-

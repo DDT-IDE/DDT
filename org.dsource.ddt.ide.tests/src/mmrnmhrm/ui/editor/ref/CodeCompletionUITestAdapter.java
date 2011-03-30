@@ -40,10 +40,10 @@ public class CodeCompletionUITestAdapter extends CommonTestUtils implements ICod
 	
 	public CodeCompletionUITestAdapter(IFile file) {
 		this.file = file;
-		srcModule = DLTKCore.createSourceModuleFrom(file);
+		this.srcModule = DLTKCore.createSourceModuleFrom(file);
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		try {
-			editor = (ScriptEditor) IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
+			this.editor = (ScriptEditor) IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
 		} catch(PartInitException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
@@ -91,8 +91,8 @@ public class CodeCompletionUITestAdapter extends CommonTestUtils implements ICod
 	
 	protected static void checkProposals(int repOffset, int repLen, int prefixLen, ICompletionProposal[] proposals) {
 		
-		for(ICompletionProposal iCompletionProposal : proposals) {
-			DeeCompletionProposal proposal = (DeeCompletionProposal) iCompletionProposal;
+		for(ICompletionProposal completionProposal : proposals) {
+			DeeCompletionProposal proposal = (DeeCompletionProposal) completionProposal;
 			String defName = proposal.defUnit.toStringAsElement();
 			
 			String repStr = defName.substring(prefixLen);

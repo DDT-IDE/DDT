@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+
 package mmrnmhrm.tests.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
@@ -25,6 +36,10 @@ public class SWTTestUtils {
 		}
 	}
 	
+	public static void ________________flushUIEventQueue________________() {
+		runPendingUIEvents(Display.getCurrent());
+	}
+	
 	/** Runs the event queue until there are no events in the queue. 
 	 * Note that it is possible that this method might not return, if new events keep being added to the queue. */
 	public static void runEventQueueUntilEmpty(Display display) {
@@ -32,11 +47,11 @@ public class SWTTestUtils {
 		while (display.readAndDispatch()) {
 		}
 	}
-
+	
 	public static void clearEventQueue() {
 		runEventQueueUntilEmpty(PlatformUI.getWorkbench().getDisplay());
 	}
-
+	
 	public static void ________________clearEventQueue________________() {
 		clearEventQueue();
 	}

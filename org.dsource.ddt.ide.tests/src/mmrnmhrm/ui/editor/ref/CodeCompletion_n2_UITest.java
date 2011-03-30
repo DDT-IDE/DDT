@@ -19,4 +19,3 @@ public class CodeCompletion_n2_UITest extends CodeCompletion_n2Test {
 	}
 	
 }
-

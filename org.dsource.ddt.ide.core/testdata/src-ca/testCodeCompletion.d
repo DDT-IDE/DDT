@@ -38,7 +38,7 @@ class FooBar : Foo {
 		
 		/+CC4@+/fo; // 2 char prefix, with common prefix
 		
-		f; // Also test interactive keyboard events?
+		f/+CC.I@+/; // test interactive CA (moving cursor left and right)
 		
 		/+CC6@+/Foo ; // Qualified 0 char prefix
 		/+CC6b@+/Foo.f; // Qualified 1 char prefix
