@@ -5,6 +5,7 @@
  * Fixed bug where all D comments where considered documentation comments for documentation hover.
  * Fixed limitation where problem hovers where not more priority than documentation hovers
  * Fixed #37: F2 always brings up empty documentation hover
+ * Fixed #38: autocomplete crashing / very slow (Content Assist takes very long to show up when many completion options are available) 
 
 == DDT 0.4.1 (2011-03-04) ==
  * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)
