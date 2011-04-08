@@ -34,7 +34,7 @@ public class CodeCompletion__Common extends DeeTestUtils {
 	protected ICodeCompletionTester ccTester;
 	
 	public CodeCompletion__Common(String testFilePath) {
-		this.file = SampleMainProject.scriptProject.getProject().getFile(ITestResourcesConstants.TR_CA + "/" + testFilePath);
+		this.file = SampleMainProject.getFile(ITestResourcesConstants.TR_CA + "/" + testFilePath);
 		this.srcModule = DLTKCore.createSourceModuleFrom(file);
 		this.ccTester = new ICodeCompletionTester() {
 			@Override

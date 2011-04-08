@@ -11,6 +11,7 @@
 package mmrnmhrm.ui.editor.ref;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 
@@ -19,6 +20,7 @@ import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.widgets.Display;
 
 public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 	
@@ -28,6 +30,20 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 	public ContentAssistUI_CommonTest(IFile file) {
 		this.file = file;
 		this.editor = BaseDeeUITest.openDeeEditorForFile(file);
+	}
+	
+	protected int getMarkerStartPos(String markerString) {
+		String source = editor.getScriptSourceViewer().getDocument().get();
+		int ccOffset = source.indexOf(markerString);
+		assertTrue(ccOffset >= 0);
+		return ccOffset;
+	}
+	
+	protected int getMarkerEndPos(String markerString) {
+		String source = editor.getScriptSourceViewer().getDocument().get();
+		int ccOffset = source.indexOf(markerString);
+		assertTrue(ccOffset >= 0);
+		return ccOffset + markerString.length();
 	}
 	
 	protected void invokeContentAssist() {
@@ -42,6 +58,14 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 		Object caField = ReflectionUtils.readField(scriptEditor.getScriptSourceViewer(), "fContentAssistant");
 		ContentAssistant ca = (ContentAssistant) caField;
 		return ca;
+	}
+	
+	// For interactive debugging purposes, not used in automated testing
+	protected void runUIEventLoop() {
+		Display display = Display.getCurrent(); 
+		while (editor.getViewer() != null && !editor.getViewer().getTextWidget().isDisposed()) {
+			if (!display.readAndDispatch ()) display.sleep ();
+		}
 	}
 	
 }

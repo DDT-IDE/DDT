@@ -1,5 +1,7 @@
 package mmrnmhrm.core.codeassist;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionContext;
@@ -18,14 +20,11 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
 	@Override
 	public void complete(IModuleSource module, int position, int i) {
-		System.out.println(" " + position + " " + i);
-		
+		assertNotNull(requestor);
 		requestor.beginReporting();
-		CompletionContext context = new CompletionContext();
-		requestor.acceptContext(context);
 		try {
-			this.actualCompletionPosition = position;
-			this.offset = i;
+			CompletionContext context = new CompletionContext();
+			requestor.acceptContext(context);
 			
 			// Completion for model elements.
 			IModelElement modelElement = module.getModelElement();
@@ -37,38 +36,34 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			
 			
 			CompletionSession completionSession = new CompletionSession();
-			doCompletionSearch(position, sourceModule, module.getSourceContents(), completionSession, null, requestor);
+			doCompletionSearch(position, sourceModule, module.getSourceContents(), completionSession, requestor);
 		} finally {
 			requestor.endReporting();
 		}
-		
 	}
 	
-	public void doCompletionSearch(final int offset, ISourceModule moduleUnit, String source, CompletionSession session,
-			IDefUnitMatchAccepter defUnitAccepter, final CompletionRequestor collector) {
-		
-		if(defUnitAccepter != null) {
-			PrefixDefUnitSearch.doCompletionSearch(offset, moduleUnit, source, session, defUnitAccepter);
-		}
+	public void doCompletionSearch(final int ccOffset, ISourceModule moduleUnit, String source, CompletionSession session,
+			final CompletionRequestor collector) {
 		
 		IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
 			@Override
 			public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
-				String rplStr = defUnit.getName().substring(searchOptions.prefixLen);
-				
-				CompletionProposal proposal = createProposal(CompletionProposal.TYPE_REF, offset);
-				proposal.setName(defUnit.toStringForCodeCompletion());
-				proposal.setCompletion(rplStr);
-				proposal.setReplaceRange(offset, offset + rplStr.length());
-//				proposal.setModelElement(name);
-				proposal.setExtraInfo(defUnit);
-				
-				collector.accept(proposal);
+				collector.accept(createProposal(defUnit, ccOffset, searchOptions));
 			}
-			
 		};
 		
-		PrefixDefUnitSearch.doCompletionSearch(offset, moduleUnit, source, session, collectorAdapter);
+		PrefixDefUnitSearch.doCompletionSearch(ccOffset, moduleUnit, source, session, collectorAdapter);
+	}
+	
+	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset, PrefixSearchOptions searchOptions) {
+		String rplStr = defUnit.getName().substring(searchOptions.prefixLen);
+		
+		CompletionProposal proposal = createProposal(CompletionProposal.TYPE_REF, ccOffset);
+		proposal.setName(defUnit.toStringForCodeCompletion());
+		proposal.setCompletion(rplStr);
+		proposal.setReplaceRange(ccOffset, ccOffset + searchOptions.rplLen);
+		proposal.setExtraInfo(defUnit);
+		return proposal;
 	}
 	
 }

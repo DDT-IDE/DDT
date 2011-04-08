@@ -51,14 +51,16 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 				srcModule, srcModule.getSource(), new CompletionSession(), collector);
 		checkProposals(repOffset, prefixLen, repLen, removeObjectIntrinsics, proposals, expectedProposals);
 		
-		if(false) {
+		if(true) {
+			// Test with DeeCompletionProcessor as well
 			ContentAssistant ca = getContentAssistant(editor);
 			DeeCompletionProcessor caProcessor = new DeeCompletionProcessor(editor, ca, DeePartitions.DEE_CODE);
 			proposals = caProcessor.computeCompletionProposals(editor.getViewer(), repOffset);
 			checkProposals(repOffset, prefixLen, repLen, removeObjectIntrinsics, proposals, expectedProposals);
 		}
 		
-		invokeContentAssist();
+		
+		invokeContentAssist(); // Just a wild shot test
 		SWTTestUtils.________________clearEventQueue________________();
 	}
 
