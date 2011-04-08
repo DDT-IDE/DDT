@@ -46,7 +46,7 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 			
 			String completion = proposal.getCompletion();
 			int replaceStart = proposal.getReplaceStart();
-			int length = proposal.getReplaceEnd() - proposal.getReplaceStart() + 1; // BUG here
+			int length = proposal.getReplaceEnd() - proposal.getReplaceStart();
 			Image image = DeeElementImageProvider.getNodeImage(defUnit);
 			
 			String displayString = defUnit.toStringForCodeCompletion();
@@ -60,7 +60,6 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 		}
 	}
 	
-	// Specific proposals creation. May be use factory?
 	@Override
 	protected ScriptCompletionProposal createScriptCompletionProposal(String completion, int replaceStart, int length,
 			Image image, String displayString, int i) {
@@ -82,8 +81,7 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 			String displayName, String completionProposal) {
 		throw assertFail();
 //		return new ExamplePythonOverrideCompletionProposal(scriptProject, compilationUnit,
-//				name, paramTypes, start, length, displayName,
-//				completionProposal);
+//				name, paramTypes, start, length, displayName, completionProposal);
 	}
 	
 }

@@ -17,30 +17,31 @@ import org.junit.Test;
 // These tests could be expanded
 public class CompletionEngine_Test extends BaseDeeCoreTest {
 	
-	protected IFile file;
 	protected ISourceModule srcModule;
 	
 	public CompletionEngine_Test() {
 		String filePath = ITestResourcesConstants.TR_CA + "/" + "testCodeCompletion.d";
-		this.file = SampleMainProject.scriptProject.getProject().getFile(filePath);
+		IFile file = SampleMainProject.scriptProject.getProject().getFile(filePath);
 		this.srcModule = DLTKCore.createSourceModuleFrom(file);
 	}
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		testCompletionEngine("/+CC1@+/");
-		testCompletionEngine("/+CC2@+/");
-		testCompletionEngine("/+CC3@+/");
+		testCompletionEngine(getMarkerEndPos("/+CC1@+/"), 0);
+		testCompletionEngine(getMarkerEndPos("/+CC2@+/")+1, 0);
+		
+		testCompletionEngine(getMarkerEndPos("/+CC2@+/"), 1);
+		testCompletionEngine(getMarkerEndPos("/+CC3@+/"), 3);
+		testCompletionEngine(getMarkerEndPos("/+CC3@+/")+1, 2);
 	}
-
-	protected CompletionRequestor testCompletionEngine(String markerStr) throws ModelException {
-		final int offset = getOffsetOfMarker(markerStr);
+	
+	protected CompletionRequestor testCompletionEngine(final int offset, final int rplLen) throws ModelException {
 		CompletionRequestor requestor = new CompletionRequestor() {
 			@Override
 			public void accept(CompletionProposal proposal) {
 				assertTrue(proposal.getReplaceStart() == offset);
-				assertTrue(proposal.getReplaceEnd() - proposal.getReplaceStart() == 0);
+				assertTrue(proposal.getReplaceEnd() - proposal.getReplaceStart() == rplLen);
 			}
 		};
 		DeeCompletionEngine completionEngine = new DeeCompletionEngine();
@@ -49,10 +50,10 @@ public class CompletionEngine_Test extends BaseDeeCoreTest {
 		return requestor;
 	}
 	
-	protected int getOffsetOfMarker(String markerString) throws ModelException {
-		int indexOf = srcModule.getSource().indexOf(markerString);
-		assertTrue(indexOf >= 0);
-		return indexOf;
+	protected int getMarkerEndPos(String markerString) throws ModelException {
+		int startPos = srcModule.getSource().indexOf(markerString);
+		assertTrue(startPos >= 0);
+		return startPos + markerString.length();
 	}
-
+	
 }

@@ -22,13 +22,11 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 	@Test
 	public void testMoveCursorBeforeStartOffset() throws Exception { testMoveCursorBeforeStartOffset$(); }
 	public void testMoveCursorBeforeStartOffset$() throws Exception {
-		String source = editor.getScriptSourceViewer().getDocument().get();
-		int ccOffset = source.indexOf("/+CC.I@+/");
-		assertTrue(ccOffset >= 0);
 		ISourceViewer viewer = editor.getViewer();
+		
+		int ccOffset = getMarkerStartPos("/+@CC.I+/");
 		viewer.setSelectedRange(ccOffset, 0);
 		assertTrue(viewer.getSelectedRange().x == ccOffset);
-		
 		
 		ContentAssistant ca = getContentAssistant(editor);
 		CompletionWatcher caWatcher = new CompletionWatcher();
@@ -36,29 +34,19 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		
 		viewer.revealRange(ccOffset, 10);
 		invokeContentAssist();
-		checkCAWatcherActive(caWatcher, true);
+		assertTrue(caWatcher.active == true);
 		
 		simulateCursorLeft(); // at start of defunit
 		SWTTestUtils.________________flushUIEventQueue________________();
 		assertTrue(viewer.getSelectedRange().x == ccOffset - 1);
-		checkCAWatcherActive(caWatcher, true);
+		assertTrue(caWatcher.active == true);
 		
 		
 		simulateCursorLeft(); // before defunit
 		SWTTestUtils.________________flushUIEventQueue________________();
 		assertTrue(viewer.getSelectedRange().x == ccOffset - 2);
 		
-		checkCAWatcherActive(caWatcher, false); // Assert content Assist closed
-	}
-	
-	protected void checkCAWatcherActive(CompletionWatcher caWatcher, boolean expected) {
-//		if(caWatcher.active != expected) {
-//			Display display = Display.getCurrent(); 
-//			while (editor.getViewer() != null && !editor.getViewer().getTextWidget().isDisposed()) {
-//				if (!display.readAndDispatch ()) display.sleep ();
-//			}
-//		}
-		assertTrue(caWatcher.active == expected);
+		assertTrue(caWatcher.active == false); // Assert content Assist closed
 	}
 	
 	private void simulateCursorLeft() {

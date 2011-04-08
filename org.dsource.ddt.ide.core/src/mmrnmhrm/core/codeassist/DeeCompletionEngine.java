@@ -43,30 +43,34 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		
 	}
 	
-	public void doCompletionSearch(final int offset, ISourceModule moduleUnit, String source, CompletionSession session,
+	public void doCompletionSearch(final int ccOffset, ISourceModule moduleUnit, String source, CompletionSession session,
 			IDefUnitMatchAccepter defUnitAccepter, final CompletionRequestor collector) {
 		
 		if(defUnitAccepter != null) {
-			PrefixDefUnitSearch.doCompletionSearch(offset, moduleUnit, source, session, defUnitAccepter);
+			PrefixDefUnitSearch.doCompletionSearch(ccOffset, moduleUnit, source, session, defUnitAccepter);
 		}
 		
 		IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
 			@Override
 			public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
-				String rplStr = defUnit.getName().substring(searchOptions.prefixLen);
-				
-				CompletionProposal proposal = createProposal(CompletionProposal.TYPE_REF, offset);
-				proposal.setName(defUnit.toStringForCodeCompletion());
-				proposal.setCompletion(rplStr);
-				proposal.setReplaceRange(offset-searchOptions.prefixLen, offset);
-				proposal.setExtraInfo(defUnit);
-				
+				CompletionProposal proposal = createProposal(defUnit, ccOffset, searchOptions);
 				collector.accept(proposal);
 			}
-			
+
 		};
 		
-		PrefixDefUnitSearch.doCompletionSearch(offset, moduleUnit, source, session, collectorAdapter);
+		PrefixDefUnitSearch.doCompletionSearch(ccOffset, moduleUnit, source, session, collectorAdapter);
+	}
+	
+	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset, PrefixSearchOptions searchOptions) {
+		String rplStr = defUnit.getName().substring(searchOptions.prefixLen);
+		
+		CompletionProposal proposal = createProposal(CompletionProposal.TYPE_REF, ccOffset);
+		proposal.setName(defUnit.toStringForCodeCompletion());
+		proposal.setCompletion(rplStr);
+		proposal.setReplaceRange(ccOffset, ccOffset + searchOptions.rplLen);
+		proposal.setExtraInfo(defUnit);
+		return proposal;
 	}
 	
 }
