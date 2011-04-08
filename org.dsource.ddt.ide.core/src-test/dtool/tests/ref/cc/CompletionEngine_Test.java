@@ -40,6 +40,7 @@ public class CompletionEngine_Test extends BaseDeeCoreTest {
 		CompletionRequestor requestor = new CompletionRequestor() {
 			@Override
 			public void accept(CompletionProposal proposal) {
+				assertTrue(proposal.getCompletionLocation() == offset);
 				assertTrue(proposal.getReplaceStart() == offset);
 				assertTrue(proposal.getReplaceEnd() - proposal.getReplaceStart() == rplLen);
 			}

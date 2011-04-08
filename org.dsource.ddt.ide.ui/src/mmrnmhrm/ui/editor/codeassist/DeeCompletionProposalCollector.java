@@ -52,8 +52,8 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 			String displayString = defUnit.toStringForCodeCompletion();
 			
 			
-			return new DeeCompletionProposal(completion, replaceStart, length, replaceStart + completion.length(),
-					image, displayString, defUnit, null);
+			return new DeeCompletionProposal(completion, replaceStart, length, image,
+					displayString, defUnit, null);
 			
 		} else {
 			return super.createScriptCompletionProposal(proposal);

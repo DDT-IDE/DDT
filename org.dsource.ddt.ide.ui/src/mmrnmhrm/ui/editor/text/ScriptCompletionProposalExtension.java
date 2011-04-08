@@ -2,7 +2,6 @@ package mmrnmhrm.ui.editor.text;
 
 
 import org.dsource.ddt.lang.ui.WorkbenchUtils;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ui.text.completion.ProposalInfo;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
@@ -21,13 +20,10 @@ public abstract class ScriptCompletionProposalExtension extends ScriptCompletion
 	
 	
 	public ScriptCompletionProposalExtension(String replacementString, int replacementOffset, int replacementLength, 
-			int cursorPosition, Image image, String displayString, IContextInformation contextInformation, 
-			int relevance) {
+			Image image, String displayString, IContextInformation contextInformation, int relevance) {
 		
 		super(replacementString, replacementOffset, replacementLength, image, displayString, relevance);
 		
-		Assert.isTrue(cursorPosition >= 0);
-		setCursorPosition(cursorPosition);
 		setContextInformation(contextInformation);
 	}
 	
@@ -48,7 +44,13 @@ public abstract class ScriptCompletionProposalExtension extends ScriptCompletion
 			return super.getDisplayString();
 		return getReplacementString();
 	}
-
+	
+	// This actually returns a delta from replacement offset, not the actual final offset
+	@Override
+	public int getCursorPosition() {
+		return super.getCursorPosition();
+	}
+	
 	/* --------------------------------- */
 	
 	/** Returns the style information for displaying HTML (Javadoc) content. */

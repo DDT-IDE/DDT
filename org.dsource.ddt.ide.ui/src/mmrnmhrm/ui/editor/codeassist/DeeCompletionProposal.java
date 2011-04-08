@@ -14,13 +14,10 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
 	public final DefUnit defUnit;
 	
-	public DeeCompletionProposal(String replacementString,
-			int replacementOffset, int replacementLength, int cursorPosition,
-			Image image, String displayString,
-			DefUnit defUnit,
+	public DeeCompletionProposal(String replacementString, int replacementOffset, int replacementLength, 
+			Image image, String displayString, DefUnit defUnit,
 			IContextInformation contextInformation) {
-		super(replacementString, replacementOffset, replacementLength,
-				cursorPosition, image, displayString, contextInformation, 5);
+		super(replacementString, replacementOffset, replacementLength, image, displayString, contextInformation, 5);
 		this.defUnit = defUnit;
 	}
 	

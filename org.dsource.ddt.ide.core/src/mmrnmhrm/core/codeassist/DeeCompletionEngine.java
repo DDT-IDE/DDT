@@ -36,27 +36,20 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			
 			
 			CompletionSession completionSession = new CompletionSession();
-			doCompletionSearch(position, sourceModule, module.getSourceContents(), completionSession, null, requestor);
+			doCompletionSearch(position, sourceModule, module.getSourceContents(), completionSession, requestor);
 		} finally {
 			requestor.endReporting();
 		}
-		
 	}
 	
 	public void doCompletionSearch(final int ccOffset, ISourceModule moduleUnit, String source, CompletionSession session,
-			IDefUnitMatchAccepter defUnitAccepter, final CompletionRequestor collector) {
-		
-		if(defUnitAccepter != null) {
-			PrefixDefUnitSearch.doCompletionSearch(ccOffset, moduleUnit, source, session, defUnitAccepter);
-		}
+			final CompletionRequestor collector) {
 		
 		IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
 			@Override
 			public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
-				CompletionProposal proposal = createProposal(defUnit, ccOffset, searchOptions);
-				collector.accept(proposal);
+				collector.accept(createProposal(defUnit, ccOffset, searchOptions));
 			}
-
 		};
 		
 		PrefixDefUnitSearch.doCompletionSearch(ccOffset, moduleUnit, source, session, collectorAdapter);

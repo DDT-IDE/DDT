@@ -39,6 +39,7 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 					DeeCompletionProposal deeProposal = (DeeCompletionProposal) completionProposal;
 					assertTrue(deeProposal.getReplacementOffset() == offset);
 					assertTrue(deeProposal.getReplacementLength() == rplLen);
+					assertTrue(deeProposal.getCursorPosition() == deeProposal.getReplacementString().length());
 				}
 				
 				return null;
