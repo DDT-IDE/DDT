@@ -1,17 +1,12 @@
 package mmrnmhrm.ui.editor.text;
 
 
-import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ui.text.completion.ProposalInfo;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
-import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
-import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Shell;
 
 public abstract class ScriptCompletionProposalExtension extends ScriptCompletionProposal {
 	
@@ -60,29 +55,6 @@ public abstract class ScriptCompletionProposalExtension extends ScriptCompletion
 			fgCSSStyles= HoverUtil.getDDocPreparedCSS("/JavadocHoverStyleSheet.css");
 		}
 		return fgCSSStyles;
-	}
-	
-	private IInformationControlCreator fCreator;
-	
-	@Override
-	public IInformationControlCreator getInformationControlCreator() {
-		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
-		if (shell == null
-				|| !org.eclipse.dltk.internal.ui.BrowserInformationControl.isAvailable(shell))
-			return null;
-		
-		if (fCreator == null) {
-			fCreator = new AbstractReusableInformationControlCreator() {
-				
-				@Override
-				public IInformationControl doCreateInformationControl(Shell parent) {
-					return new org.eclipse.dltk.internal.ui.BrowserInformationControl(
-							parent, SWT.NO_TRIM | SWT.TOOL, SWT.NONE, null);
-				}
-			};
-		}
-		
-		return fCreator;
 	}
 	
 	@Override
