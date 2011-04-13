@@ -4,7 +4,6 @@ package mmrnmhrm.ui.editor.text;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ui.text.completion.ProposalInfo;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
@@ -41,6 +40,7 @@ public abstract class ScriptCompletionProposalExtension extends ScriptCompletion
 	}
 	
 	// This actually returns a delta from replacement offset, not the actual final offset
+	// Overridden to have public access
 	@Override
 	public int getCursorPosition() {
 		return super.getCursorPosition();

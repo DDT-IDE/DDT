@@ -17,6 +17,7 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 	
 	@Override
 	protected TemplateCompletionProcessor createTemplateProposalComputer(ScriptContentAssistInvocationContext context) {
-		return null;
+		return new DeeTemplateCompletionProcessor(context);
 	}
+	
 }

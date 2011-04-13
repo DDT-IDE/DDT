@@ -9,6 +9,7 @@ import mmrnmhrm.ui.text.DeePartitions;
 import org.eclipse.dltk.core.CompletionRequestor;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.junit.Test;
@@ -35,6 +36,10 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 				ICompletionProposal[] proposals = caProcessor.computeCompletionProposals(editor.getViewer(), offset);
 				
 				for (ICompletionProposal completionProposal : proposals) {
+					if(completionProposal instanceof ScriptTemplateProposal) {
+						continue;
+					}
+					
 					assertTrue(completionProposal instanceof DeeCompletionProposal);
 					DeeCompletionProposal deeProposal = (DeeCompletionProposal) completionProposal;
 					assertTrue(deeProposal.getReplacementOffset() == offset);

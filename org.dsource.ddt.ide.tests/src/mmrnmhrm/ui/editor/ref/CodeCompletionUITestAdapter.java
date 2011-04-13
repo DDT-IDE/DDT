@@ -6,6 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.core.Function;
 import mmrnmhrm.tests.ui.SWTTestUtils;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeContentAssistProcessor;
@@ -18,6 +19,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
@@ -71,7 +73,8 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 		Function<ICompletionProposal, DefUnit> proposalToDefunit  = new Function<ICompletionProposal, DefUnit>() {
 			@Override
 			public DefUnit evaluate(ICompletionProposal obj) {
-				return obj == null ? null : ((DeeCompletionProposal) obj).defUnit;
+				DeeCompletionProposal deeProposal = CoreUtil.tryCast(obj, DeeCompletionProposal.class);
+				return deeProposal == null ? null : deeProposal.defUnit;
 			}
 		};
 		List<DefUnit> results = mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>());
@@ -82,8 +85,10 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 	}
 	
 	protected static void checkProposals(int repOffset, int repLen, int prefixLen, ICompletionProposal[] proposals) {
-		
 		for(ICompletionProposal completionProposal : proposals) {
+			if(completionProposal instanceof ScriptTemplateProposal) {
+				continue;
+			}
 			DeeCompletionProposal proposal = (DeeCompletionProposal) completionProposal;
 			String defName = proposal.defUnit.toStringAsElement();
 			

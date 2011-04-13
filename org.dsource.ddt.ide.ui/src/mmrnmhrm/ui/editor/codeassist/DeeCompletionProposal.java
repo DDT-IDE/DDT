@@ -11,8 +11,8 @@ import dtool.ast.definitions.DefUnit;
 
 public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
-	
-	public final DefUnit defUnit;
+	// TODO: Consider removing this reference, use less info, to be more lightweight memory-wise
+	public final DefUnit defUnit; 
 	
 	public DeeCompletionProposal(String replacementString, int replacementOffset, int replacementLength, 
 			Image image, String displayString, DefUnit defUnit,

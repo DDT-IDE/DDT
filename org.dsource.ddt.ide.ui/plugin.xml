@@ -109,13 +109,11 @@
 	          class="mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage"
 	          id="org.dsource.ddt.ide.ui.preferences.editor.SourceColoring"
 	          name="%LangEditorSyntaxColoringPreferencePage.name"/>
-	          <!--
      	<page
               category="org.dsource.ddt.ide.ui.preferences.Editor"
               class="mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage"
               id="org.dsource.ddt.ide.ui.preferences.editor.CodeTemplates"
               name="%LangCodeTemplatesPreferencePage.name" />
-              -->      
       <page
             category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
             class="mmrnmhrm.ui.preferences.pages.DeeCompilersPreferencePage"
@@ -466,22 +464,18 @@
 		</scriptCompletionProposalComputer>
  </extension>
    
- <extension
-       point="org.eclipse.ui.editors.templates">
-    <contextType
-          class="mmrnmhrm.ui.editor.templates.DeeUniversalTemplateContextType"
-          id="DeeUniversalTemplateContextType"
-          name="%LangTemplateContext.name">
-    </contextType>
-    <include
-          file="templates/default-templates.xml"
-          translations="templates/default-templates.properties">
-    </include>
-    <!--<include
-          file="templates/templates.xml"
-          translations="templates/templates.properties">
-    </include> -->
- </extension>   
+	 <extension
+	       point="org.eclipse.ui.editors.templates">
+	    <contextType
+	          class="mmrnmhrm.ui.editor.templates.DeeUniversalTemplateContextType"
+	          id="DeeUniversalTemplateContextType"
+	          name="%LangTemplateContext.name">
+	    </contextType>
+	    <include
+	          file="templates/default-templates.xml"
+	          translations="templates/default-templates.properties">
+	    </include>
+	 </extension>
    
    <extension
          point="org.eclipse.ui.navigator.viewer">

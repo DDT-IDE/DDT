@@ -152,9 +152,9 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		
 		// assistant.setStatusLineVisible(true);
 		
-//		IContentAssistProcessor scriptProcessor = new DeeCompletionProcessor(
-//				getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
-//		assistant.setContentAssistProcessor(scriptProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+		IContentAssistProcessor scriptProcessor = new DeeCompletionProcessor(
+				getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
+		assistant.setContentAssistProcessor(scriptProcessor, IDocument.DEFAULT_CONTENT_TYPE);
 		
 	}
 	
