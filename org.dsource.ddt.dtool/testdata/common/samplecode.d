@@ -1,5 +1,5 @@
-module sampledefs;
-// A sample file with all kinds of DefUnits
+// A sample file with all sample code (it does not need to be teh same as sampledefs)
+
 
 alias Class Alias;
 

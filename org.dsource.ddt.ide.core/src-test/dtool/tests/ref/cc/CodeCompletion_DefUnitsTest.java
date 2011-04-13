@@ -20,10 +20,11 @@ public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
 				"IfTypeDefUnit",
 				"parameter",
 				"func(asdf.qwer parameter)",
-				"Class",
+				"TplNestedClass",
 				
 				"sampledefs",
 				"Alias",
+				"Class",
 				"Enum",
 				"Interface",
 				"Struct",

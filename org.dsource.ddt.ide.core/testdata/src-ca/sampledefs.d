@@ -1,7 +1,18 @@
 module sampledefs;
 // A sample file with all kinds of DefUnits
 
-alias Class Alias;
+import pack.sample : ImportSelectiveAlias = SampleClassB;
+
+import ImportAliasingDefUnit = pack.sample;
+
+static import pack.sample;
+
+alias AliasTarget Alias;
+
+class Class  {
+	int fieldA;
+	void methodB() { }
+}
 
 enum Enum { EnumMemberA, EnumMemberB }
 
@@ -9,16 +20,11 @@ interface Interface { }
 
 struct Struct { }
 
-typedef Struct Typedef;
+typedef TypedefTarget Typedef;
 
 union Union { }
 
 int variable;
-
-import pack.sample : ImportSelectiveAlias = SampleClassB;
-
-import ImportAliasingDefUnit = pack.sample;
-
 
 template Template(
 	TypeParam,
@@ -27,7 +33,7 @@ template Template(
 	TupleParam...
 ) { 
 
-	class Class  {
+	class TplNestedClass  {
 		this() {}
 		~this() {}
 		
@@ -44,7 +50,7 @@ template Template(
 	}
 }
 
-static import pack.sample;
+
 
 
 
