@@ -22,7 +22,7 @@ import org.junit.Test;
 public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesConstants {
 	
 	public static ISourceModule getSourceModule(String srcFolder, String cuPath) {
-		return SampleMainProject.getSourceModule(srcFolder + "/" + cuPath);
+		return SampleMainProject.getSourceModule(srcFolder, cuPath);
 	}
 	
 	@Test

@@ -82,6 +82,10 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		return DLTKCore.createSourceModuleFrom(getFile(filepath));
 	}
 	
+	public static ISourceModule getSourceModule(String srcFolder, String filepath) {
+		return DLTKCore.createSourceModuleFrom(getFile(srcFolder + "/" + filepath));
+	}
+	
 	public static DeeModuleDeclaration parsedDeeModule(ISourceModule sourceModule) {
 		DeeSourceParser sourceParser = new DeeSourceParser();
 		IModuleSource source;

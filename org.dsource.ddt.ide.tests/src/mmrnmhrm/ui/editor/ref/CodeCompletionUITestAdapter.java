@@ -38,6 +38,11 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 		this.srcModule = DLTKCore.createSourceModuleFrom(file);
 	}
 	
+	public CodeCompletionUITestAdapter(ISourceModule srcModule) {
+		super(assertCast(srcModule.getResource(), IFile.class));
+		this.srcModule = DLTKCore.createSourceModuleFrom(file);
+	}
+	
 	@Override
 	public void runAfters() {
 		SWTTestUtils.clearEventQueue();

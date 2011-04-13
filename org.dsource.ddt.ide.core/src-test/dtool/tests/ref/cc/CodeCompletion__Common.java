@@ -12,8 +12,6 @@ import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuffer;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
@@ -29,13 +27,11 @@ import dtool.tests.DeeTestUtils;
 
 public class CodeCompletion__Common extends DeeTestUtils {
 	
-	protected IFile file;
-	protected ISourceModule srcModule;
+	protected final ISourceModule srcModule;
 	protected ICodeCompletionTester ccTester;
 	
 	public CodeCompletion__Common(String testFilePath) {
-		this.file = SampleMainProject.getFile(ITestResourcesConstants.TR_CA + "/" + testFilePath);
-		this.srcModule = DLTKCore.createSourceModuleFrom(file);
+		this.srcModule = SampleMainProject.getSourceModule(ITestResourcesConstants.TR_CA, testFilePath);
 		this.ccTester = new ICodeCompletionTester() {
 			@Override
 			public void testComputeProposalsWithRepLen(int repOffset, int prefixLen,

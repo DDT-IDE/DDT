@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 	
-	protected IFile file;
-	protected ScriptEditor editor;
+	protected final IFile file;
+	protected final ScriptEditor editor;
 	
 	public ContentAssistUI_CommonTest(IFile file) {
 		this.file = file;

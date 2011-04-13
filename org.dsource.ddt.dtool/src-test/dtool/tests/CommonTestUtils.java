@@ -35,6 +35,13 @@ public class CommonTestUtils {
 		assertTrue(Arrays.equals(arr1, arr2));
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static <T> T assertCast(Object object, Class<T> klass) {
+		assertTrue(object == null || klass.isInstance(object));
+		return (T) object;
+	}
+	
+	
 	public static <T> T[] array(T... elems) {
 		return elems;
 	}
