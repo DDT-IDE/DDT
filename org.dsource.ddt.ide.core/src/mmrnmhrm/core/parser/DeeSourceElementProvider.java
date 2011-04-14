@@ -37,22 +37,21 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 
 public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
-
+	
 	protected static final String[] EMPTY_STRING = new String[0];
 	protected static final String OBJECT = "Object"; //$NON-NLS-1$
-	protected static final String[] OBJECT_SUPER_CLASS_LIST = new String[] {OBJECT};
-
+	protected static final String[] OBJECT_SUPER_CLASS_LIST = new String[] { OBJECT };
+	
 	protected ISourceElementRequestor requestor;
-
+	
 	public DeeSourceElementProvider(ISourceElementRequestor requestor) {
 		this.requestor = requestor;
 	}
-
+	
 	public void provide(DeeModuleDeclaration moduleDecl) {
-		Module neoModule = moduleDecl.neoModule;
-		
 		requestor.enterModule();
-
+		
+		Module neoModule = moduleDecl.neoModule;
 		if(neoModule != null) {
 			neoModule.accept(this);
 		}
@@ -62,29 +61,28 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 	
 	@Override
 	public boolean visit(Module node) {
-		//requestor.enterModule();
 		requestor.enterType(createTypeInfoForModule(node));
-		/*DeclarationModule md = node.md;
-		String pkgName = "";
-		if(md != null) {
-			for (int i = 0; i < md.packages.length; i++) {
-				RefIdentifier id = md.packages[i];
-				if(i == 0)
-					pkgName = pkgName + id.toString();
-				else
-					pkgName = pkgName + "." + id.toString();
-			}
-			requestor.acceptPackage(md.getStartPos(), md.getEndPos()-1, pkgName.toCharArray());
-		} else {
-			//requestor.acceptPackage(0, 0-1, "".toCharArray());
-		}*/
+//		DeclarationModule md = node.md;
+//		String pkgName = "";
+//		if(md != null) {
+//			for (int i = 0; i < md.packages.length; i++) {
+//				String id = md.packages[i];
+//				if(i == 0) {
+//					pkgName = pkgName + id.toString();
+//				} else {
+//					pkgName = pkgName + "." + id.toString();
+//				}
+//			}
+//			requestor.acceptPackage(md.getStartPos(), md.getEndPos()-1, pkgName.toCharArray());
+//		} else {
+//			//requestor.acceptPackage(0, 0-1, "".toCharArray());
+//		}
 		return true;
 	}
-
+	
 	@Override
 	public void endVisit(Module node) {
-		requestor.exitType(node.sourceEnd() -1);
-		//requestor.exitModule(node.sourceEnd() -1);
+		requestor.exitType(node.sourceEnd() - 1);
 	}
 	
 	@Override
@@ -94,7 +92,7 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 	}
 	@Override
 	public void endVisit(DefinitionAggregate elem) {
-		requestor.exitType(elem.sourceEnd() -1);
+		requestor.exitType(elem.sourceEnd() - 1);
 	}
 	
 	@Override
@@ -104,8 +102,8 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 	}
 	@Override
 	public void endVisit(DefinitionTemplate elem) {
-		requestor.exitType(elem.sourceEnd() -1);
-	}		
+		requestor.exitType(elem.sourceEnd() - 1);
+	}
 	
 	@Override
 	public boolean visit(DefinitionClass elem) {
@@ -114,8 +112,8 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 	}
 	@Override
 	public void endVisit(DefinitionClass elem) {
-		requestor.exitType(elem.sourceEnd() -1);
-	}	
+		requestor.exitType(elem.sourceEnd() - 1);
+	}
 	
 	@Override
 	public boolean visit(DefinitionFunction elem) {
@@ -124,9 +122,9 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 	}
 	@Override
 	public void endVisit(DefinitionFunction elem) {
-		requestor.exitMethod(elem.sourceEnd() -1);
-	}	
-
+		requestor.exitMethod(elem.sourceEnd() - 1);
+	}
+	
 	
 	@Override
 	public boolean visit(DefinitionEnum elem) {
@@ -159,7 +157,7 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 	}
 	
 	/* ---------------------------------- */
-
+	
 	@Override
 	public boolean visit(DefinitionVariable elem) {
 		requestor.enterField(createFieldInfo(elem));
@@ -178,36 +176,30 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 	}
 	
 	/* ================================== */
-
 	
-
-
-	protected static void setupDefUnitTypeInfo(DefUnit defAggr,
-			ISourceElementRequestor.ElementInfo elemInfo) {
+	
+	
+	protected static void setupDefUnitTypeInfo(DefUnit defAggr, ISourceElementRequestor.ElementInfo elemInfo) {
 		elemInfo.name = defAggr.getName();
 		elemInfo.declarationStart = defAggr.sourceStart();
 		elemInfo.nameSourceStart = defAggr.defname.sourceStart();
 		elemInfo.nameSourceEnd = defAggr.defname.sourceEnd() - 1;
 	}
 	
-	private void setupDefinitionTypeInfo(Definition elem, ISourceElementRequestor.ElementInfo elemInfo) {
+	protected void setupDefinitionTypeInfo(Definition elem, ISourceElementRequestor.ElementInfo elemInfo) {
 		elemInfo.modifiers = getModifiersFlags(elem);
 		elemInfo.modifiers = getProtectionFlags(elem, elemInfo.modifiers);
 	}
 	
-
-
-	private static int getModifiersFlags(Definition elem) {
+	
+	
+	protected static int getModifiersFlags(Definition elem) {
 		int modifiers = 0;
 		
-		if((elem.effectiveModifiers & STC.STCabstract) != 0)
-			modifiers |= Modifiers.AccAbstract; 
-		if((elem.effectiveModifiers & STC.STCconst) != 0)
-			modifiers |= Modifiers.AccConst; 
-		if((elem.effectiveModifiers & STC.STCfinal) != 0)
-			modifiers |= Modifiers.AccFinal; 
-		if((elem.effectiveModifiers & STC.STCstatic) != 0)
-			modifiers |= Modifiers.AccStatic; 
+		modifiers = addBitFlag(elem.effectiveModifiers, STC.STCabstract, modifiers, Modifiers.AccAbstract);
+		modifiers = addBitFlag(elem.effectiveModifiers, STC.STCconst, modifiers, Modifiers.AccConst);
+		modifiers = addBitFlag(elem.effectiveModifiers, STC.STCfinal, modifiers, Modifiers.AccFinal);
+		modifiers = addBitFlag(elem.effectiveModifiers, STC.STCstatic, modifiers, Modifiers.AccStatic);
 /*		
 		for (int i = 0; i < elem.modifiers.length; i++) {
 			Modifier mod = elem.modifiers[i];
@@ -226,7 +218,14 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 		return modifiers;
 	}
 	
-	private static int getProtectionFlags(Definition elem, int modifiers) {
+	private static int addBitFlag(int effectiveModifiers, int conditionFlag, int modifiers, int modifierFlag) {
+		if((effectiveModifiers & conditionFlag) != 0) {
+			modifiers |= modifierFlag;
+		}
+		return modifiers;
+	}
+	
+	protected static int getProtectionFlags(Definition elem, int modifiers) {
 		// default:
 		
 		switch(elem.getEffectiveProtection()) {
@@ -239,7 +238,7 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 		return modifiers;
 	}
 	
-	private TypeInfo createTypeInfoForModule(Module elem) {
+	protected TypeInfo createTypeInfoForModule(Module elem) {
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 		setupDefUnitTypeInfo(elem, typeInfo);
 		typeInfo.modifiers |= Modifiers.AccModule;
@@ -247,45 +246,47 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 		return typeInfo;
 	}
 	
-	private TypeInfo createTypeInfoForDefinition(Definition elem) {
+	protected TypeInfo createTypeInfoForDefinition(Definition elem) {
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 		setupDefUnitTypeInfo(elem, typeInfo);
 		setupDefinitionTypeInfo(elem, typeInfo);
-		if(elem instanceof DefinitionInterface)
-			typeInfo.modifiers |= Modifiers.AccInterface;
 		typeInfo.superclasses = DeeSourceElementProvider.EMPTY_STRING;
 		return typeInfo;
 	}
-
 	
-	private TypeInfo createTypeInfoForClass(DefinitionClass elem) {
+	
+	protected TypeInfo createTypeInfoForClass(DefinitionClass elem) {
 		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(elem);
-		typeInfo.superclasses = DeeSourceElementProvider.processClassNames(elem);
+		if(elem instanceof DefinitionInterface) {
+			typeInfo.modifiers |= Modifiers.AccInterface;
+		}
+		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(elem);
 		return typeInfo;
 	}
 	
-
-	protected static String[] processClassNames(DefinitionClass defClass) {
+	
+	protected static String[] processSuperClassNames(DefinitionClass defClass) {
 		if(defClass.getName().equals("Object"))
 			return DeeSourceElementProvider.EMPTY_STRING;
-
-		List<BaseClass> coll = defClass.baseClasses;
-		if(coll == null || coll.isEmpty()) {
-			if(defClass instanceof DefinitionInterface && false)
+		
+		List<BaseClass> baseClasses = defClass.baseClasses;
+		if(baseClasses == null || baseClasses.isEmpty()) {
+			if(defClass instanceof DefinitionInterface) {
 				return DeeSourceElementProvider.EMPTY_STRING;
-			else {
+			} else {
 				return DeeSourceElementProvider.OBJECT_SUPER_CLASS_LIST;
 			}
 		}
-		String[] strs = new String[coll.size()];
-		Iterator<BaseClass> iter = coll.iterator();
-		for (int i = 0; i < strs.length; i++) {
-			strs[i] = iter.next().type.toStringAsElement();
+		String[] baseClassesStr = new String[baseClasses.size()];
+		Iterator<BaseClass> iter = baseClasses.iterator();
+		for (int i = 0; i < baseClassesStr.length; i++) {
+			// There is no way this can work without a FQN, but I don't know what DLTK wants
+			baseClassesStr[i] = iter.next().type.toStringAsElement(); 
 		}
-		return strs;
+		return baseClassesStr;
 	}
 	
-	private ISourceElementRequestor.MethodInfo createMethodInfo(DefinitionFunction elem) {
+	protected ISourceElementRequestor.MethodInfo createMethodInfo(DefinitionFunction elem) {
 		ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
 		setupDefUnitTypeInfo(elem, methodInfo);
 		setupDefinitionTypeInfo(elem, methodInfo);
@@ -294,8 +295,9 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 		methodInfo.parameterInitializers = new String[elem.params.size()];
 		for (int i = 0; i < methodInfo.parameterNames.length; i++) {
 			String name = elem.params.get(i).toStringAsFunctionSimpleSignaturePart();
-			if(name == null)
+			if(name == null) {
 				name = "";
+			}
 			methodInfo.parameterNames[i] = name;
 			String initStr = elem.params.get(i).toStringInitializer();
 			methodInfo.parameterInitializers[i] = initStr; 
@@ -304,7 +306,7 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 	}
 	
 	
-	private FieldInfo createFieldInfo(DefinitionVariable elem) {
+	protected FieldInfo createFieldInfo(DefinitionVariable elem) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		setupDefUnitTypeInfo(elem, fieldInfo);
 		setupDefinitionTypeInfo(elem, fieldInfo);
