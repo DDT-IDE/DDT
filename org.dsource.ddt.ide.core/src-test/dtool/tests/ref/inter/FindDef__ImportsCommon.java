@@ -39,16 +39,8 @@ public abstract class FindDef__ImportsCommon extends FindDef__Common {
 			throws IOException, CoreException {
 		this.offset = defOffset;
 		this.targetOffset = refOffset;
-		if(newModule == null) {
-			sourceModule = defaultModule;
-		} else {
-			sourceModule = newModule;
-		}
-		if(targetFile == null) {
-			targetModule = null;
-		} else {
-			targetModule = getTestModule(targetFile);
-		}
+		sourceModule = newModule == null ? defaultModule : newModule;
+		targetModule = targetFile == null ? null : getTestModule(targetFile);
 	}
 
 	@Test

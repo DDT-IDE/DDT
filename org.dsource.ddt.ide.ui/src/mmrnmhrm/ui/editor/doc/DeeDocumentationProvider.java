@@ -17,7 +17,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
 
 /**
- * It is preferable that this documentation provider is not as it has a more limited API.
+ * It is preferable that this documentation provider is not used as it has a more limited API.
  * Preferable to use {@link DeeDocTextHover} whenever possible.
  */
 public class DeeDocumentationProvider implements IScriptDocumentationProvider {
@@ -57,7 +57,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider {
 	
 	@Override
 	public Reader getInfo(String content) {
-		// BM: AFAIK as of DLTK 2.0 this method is not used
+		// BM: used for keywords and some other unclear DLTK scenarios
 		return null; 
 	}
 	
