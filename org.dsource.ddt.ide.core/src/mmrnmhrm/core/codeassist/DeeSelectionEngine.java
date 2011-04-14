@@ -33,9 +33,10 @@ import dtool.refmodel.NodeUtil;
 public class DeeSelectionEngine extends ScriptSelectionEngine {
 	
 	public IModelElement[] select(IModuleSource sourceUnit, int offset) {
-		return select(sourceUnit, offset);
+		return select(sourceUnit, offset, 0);
 	}
 	
+	// BM: don't quite understand what param i is used, if anything
 	@Override
 	public IModelElement[] select(IModuleSource sourceUnit, int offset, int i) {
 		ISourceModule sourceModule = (ISourceModule) sourceUnit.getModelElement();
@@ -43,11 +44,14 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		DeeModuleDeclaration deeModule = DeeModelUtil.getParsedDeeModule(sourceModule);
 		ASTNeoNode node = ASTNodeFinder.findElement(deeModule.neoModule, offset);
 		if(!(node instanceof Reference)) {
-			//return new IModelElement[0];
+			return new IModelElement[0];
 		}
 		Reference ref = (Reference) node;
 		
 		Collection<DefUnit> defunits = ref.findTargetDefUnits(true);
+		if(defunits == null) {
+			return new IModelElement[0];
+		}
 		
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
 		for (DefUnit defUnit : defunits) {
