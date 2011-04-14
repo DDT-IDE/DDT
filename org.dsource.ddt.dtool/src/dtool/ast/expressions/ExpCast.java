@@ -9,23 +9,23 @@ import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class ExpCast extends Expression {
 	
-	Resolvable exp;
-	Reference type;
-
+	public final Resolvable exp;
+	public final Reference type;
+	
 	public ExpCast(CastExp elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.exp = Expression.convert(elem.e1, convContext); 
-		this.type = ReferenceConverter.convertType(elem.type, convContext);
+		this.exp = Expression.convert(elem.sourceE1, convContext);
+		this.type = ReferenceConverter.convertType(elem.sourceTo, convContext);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
-		if (children) {
+		if(children) {
 			TreeVisitor.acceptChildren(visitor, exp);
 			TreeVisitor.acceptChildren(visitor, type);
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

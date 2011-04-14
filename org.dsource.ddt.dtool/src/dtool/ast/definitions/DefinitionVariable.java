@@ -28,8 +28,8 @@ public class DefinitionVariable extends Definition implements IStatement {
 		}
 	}
 	
-	public Reference type;
-	public Initializer init;
+	public final Reference type;
+	public final Initializer init;
 
 	public DefinitionVariable(descent.internal.compiler.parser.VarDeclaration elem, ASTConversionContext convContext) {
 		super(elem, convContext);
@@ -52,7 +52,15 @@ public class DefinitionVariable extends Definition implements IStatement {
 	public EArcheType getArcheType() {
 		return EArcheType.Variable;
 	}
-
+	
+	public Initializer getInitializer() {
+		return init;
+	}
+	
+	public Reference getTypeReference() {
+		return type;
+	}
+	
 	private IDefUnitReference determineType() {
 		if(type != null)
 			return type;
