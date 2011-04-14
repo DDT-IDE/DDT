@@ -1,4 +1,4 @@
-module moduleNameIsDifferentFromFileName;
+module actualModuleName_DifferentFromFileName;
 
 import pack.sample;
 

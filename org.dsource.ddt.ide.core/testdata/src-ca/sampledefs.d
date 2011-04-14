@@ -7,7 +7,7 @@ import ImportAliasingDefUnit = pack.sample;
 
 static import pack.sample;
 
-alias AliasTarget Alias;
+alias TargetFoo Alias;
 
 class Class  {
 	int fieldA;
@@ -20,7 +20,7 @@ interface Interface { }
 
 struct Struct { }
 
-typedef TypedefTarget Typedef;
+typedef TargetBar Typedef;
 
 union Union { }
 

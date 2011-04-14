@@ -1,13 +1,28 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.tests.ref;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
+import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
+import org.eclipse.dltk.compiler.env.IModuleSource;
+import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
@@ -78,7 +93,7 @@ public class FindDef__Common {
 		}
 		DefUnit defunit = defunits.iterator().next();
 		
-		assertTrue(defunit != null, " defunit = null");
+		assertNotNull(defunit);
 		
 		Module obtainedModule = NodeUtil.getParentModule(defunit);
 		assertTrue(equalModule(targetMod, obtainedModule),
@@ -86,6 +101,26 @@ public class FindDef__Common {
 		
 		assertTrue(defunit.defname.getStartPos() == targetOffset,
 				" Find Ref went to wrong offset: " + defunit.defname.getStartPos());
+		
+		
+		testDeeSelectionEngine(srcMod, offset, defunit);
+	}
+	
+	public static void testDeeSelectionEngine(Module srcMod, int offset, DefUnit defunit) {
+		DeeSelectionEngine selectionEngine = new DeeSelectionEngine();
+		IModelElement[] select = selectionEngine.select((IModuleSource) srcMod.getModuleUnit(), offset, offset-1);
+		assertTrue(select.length == 1);
+		IModelElement modelElement = select[0];
+		while(true) {
+			assertNotNull(modelElement);
+			if(modelElement.getElementType() == IModelElement.SOURCE_MODULE) {
+				assertTrue(defunit == null);
+				break;
+			}
+			assertEquals(defunit.getName(), modelElement.getElementName());
+			defunit = NodeUtil.getOuterDefUnit(defunit);
+			modelElement = modelElement.getParent();
+		}
 	}
 	
 	private static boolean equalModule(Module targetMod, Module obtainedModule) {

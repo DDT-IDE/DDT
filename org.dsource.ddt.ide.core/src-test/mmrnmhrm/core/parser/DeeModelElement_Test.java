@@ -10,67 +10,130 @@
  *******************************************************************************/
 package mmrnmhrm.core.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.ArrayList;
+
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
+import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
 public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesConstants {
 	
 	public static ISourceModule getSourceModule(String srcFolder, String cuPath) {
-		return SampleMainProject.getSourceModule(srcFolder, cuPath);
+		ISourceModule sourceModule = SampleMainProject.getSourceModule(srcFolder, cuPath);
+		assertTrue(sourceModule.exists());
+		return sourceModule;
 	}
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		ISourceModule sourceModule = getSourceModule(TR_CA, "sampledefs.d");
-		IModelElement elemZero = sourceModule.getElementAt(0);
-		assertEquals(elemZero.getElementName(), "sampledefs");
+		ISourceModule srcModule = getSourceModule(TR_CA, "sampledefs.d");
+		
+		IType topLevelElement = srcModule.getType("sampledefs");
+		checkElementExists(srcModule, topLevelElement, 
+				"module sampledefs;");
 		
 		// TODO: test the other elements
+		checkElementExists(srcModule, topLevelElement.getType("Alias"), 
+			"alias TargetFoo Alias;");
+		checkElementExists(srcModule, topLevelElement.getType("Class"), 
+			"class Class  {");
+		checkElementExists(srcModule, topLevelElement.getType("Enum"), 
+			"enum Enum {");
+		checkElementExists(srcModule, topLevelElement.getType("Interface"), 
+			"interface Interface { }");
+		checkElementExists(srcModule, topLevelElement.getType("Struct"), 
+			"struct Struct { }");
+		checkElementExists(srcModule, topLevelElement.getType("Typedef"), 
+			"typedef TargetBar Typedef;");
+		checkElementExists(srcModule, topLevelElement.getType("Union"), 
+			"union Union { }");
+		checkElementExists(srcModule, topLevelElement.getField("variable"), 
+			"int variable;");
+		checkElementExists(srcModule, topLevelElement.getType("Template"), 
+				"template Template(");
 		
-//		checkForElement(sourceModule, "alias Class Alias", "Alias");
-//		checkForElement(sourceModule, "enum Enum { EnumMemberA, EnumMemberB }", "Enum");
-		checkForElement(sourceModule, "struct Struct { }", "Struct");
-		checkForElement(sourceModule, "class Class", "Class");
-		checkForElement(sourceModule, "template Template(", "Template");
 		
-		checkForElement(sourceModule, "int variable;", "variable");
+		checkElementExists(srcModule, topLevelElement.getType("Class").getField("fieldA"), 
+				"int fieldA;");
+		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("methodB"), 
+			"void methodB() { }");
 		
-		checkForElement(sourceModule, "void func(asdf.qwer parameter)", "func");
+		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass"), 
+			"class TplNestedClass  {");
+		
+		
+		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("func"), 
+			"void func(asdf.qwer parameter) {");
 		
 	}
-	protected void checkForElement(ISourceModule sourceModule, String code, String elementName) throws ModelException {
+	protected void checkElementExists(ISourceModule sourceModule, IMember element, String code) throws ModelException {
 		String source = sourceModule.getSource();
-		IModelElement elemFoo = sourceModule.getElementAt(source.indexOf(code));
-		assertEquals(elemFoo.getElementName(), elementName);
-	}
-	
-	@Test
-	public void testModuleName() throws Exception { testModuleName$(); }
-	public void testModuleName$() throws Exception {
-		if(true) return; // TODO fix the bug
 		
-		ISourceModule implicitNameMod = getSourceModule(TR_SAMPLE_SRC1, "moduleDeclImplicitName.d");
-		assertEquals(implicitNameMod.getElementName(), "moduleDeclImplicitName.d");
-		IModelElement atZero = implicitNameMod.getElementAt(0);
-		assertEquals(atZero.getElementName(), "moduleDeclImplicitName");
-		assertEquals(atZero.getParent(), implicitNameMod);
+		assertTrue(element.exists());
+		assertTrue(element.getCorrespondingResource() == null);
+		assertTrue(element.getOpenable() == sourceModule);
+		assertTrue(element.getSource().startsWith(code));
+		assertTrue(element.getNameRange().getOffset() == source.indexOf(" " + element.getElementName()) + 1);
+		assertTrue(element.getNameRange().getLength() == element.getElementName().length());
 	}
 	
 	@Test
-	public void testIncorrectName() throws Exception { testIncorrectName$(); }
-	public void testIncorrectName$() throws Exception {
+	public void testImplicitModuleName() throws Exception { testImplicitModuleName$(); }
+	public void testImplicitModuleName$() throws Exception {
+		ISourceModule srcModule = getSourceModule(TR_SAMPLE_SRC1, "moduleDeclImplicitName.d");
+		assertEquals(srcModule.getElementName(), "moduleDeclImplicitName.d");
+		
+		assertTrue(srcModule.getType("moduleDeclImplicitName").exists() == false);
+		assertTrue(getChild(srcModule, "moduleDeclImplicitName").size() == 0);
+		
+		IType topLevelElement = srcModule.getType("<unnamed>"); // TODO fix this
+		
+		checkElementExists(srcModule, topLevelElement.getType("Foo"), 
+			"class Foo");
+		checkElementExists(srcModule, topLevelElement.getType("Foo").getMethod("func"), 
+			"void func()");
+		
+		
+//		checkElementExists(implicitNameMod, implicitNameMod.getType("moduleDeclImplicitName"), 
+//			"module actualModuleName_DifferentFromFileName;");
+//
+//		IModelElement atZero = implicitNameMod.getElementAt(0);
+//		assertEquals(atZero.getElementName(), "moduleDeclImplicitName");
+//		assertEquals(atZero.getParent(), implicitNameMod);
+	}
+	
+	public static ArrayList<IMember> getChild(IParent element, String childName) throws ModelException {
+		assertCast(null, IMember.class);
+		ArrayList<IMember> matchedChildren = new ArrayList<IMember>();
+		
+		for (IModelElement child : element.getChildren()) {
+			IMember member = assertCast(child, IMember.class);
+			if(child.getElementName().equals(childName)) {
+				matchedChildren.add(member);
+			}
+		}
+		return matchedChildren;
+	}
+	
+	@Test
+	public void testMismatchedModuleName() throws Exception { testMismatchedModuleName$(); }
+	public void testMismatchedModuleName$() throws Exception {
 		ISourceModule incorrectNameMod = getSourceModule(TR_SAMPLE_SRC1, "moduleDeclIncorrectName.d");
 		assertEquals(incorrectNameMod.getElementName(), "moduleDeclIncorrectName.d");
-		IModelElement atZero = incorrectNameMod.getElementAt(0);
-		assertEquals(atZero.getElementName(), "moduleNameIsDifferentFromFileName");
-		assertEquals(atZero.getParent(), incorrectNameMod);
+		
+		checkElementExists(incorrectNameMod, incorrectNameMod.getType("actualModuleName_DifferentFromFileName"), 
+				"module actualModuleName_DifferentFromFileName;");
 	}
 	
 }

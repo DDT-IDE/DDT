@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.core.parser;
 
 import java.util.Iterator;
@@ -5,9 +15,9 @@ import java.util.List;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.ast.Modifiers;
-import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
+import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
 import descent.internal.compiler.parser.STC;
 import dtool.ast.ASTNeoUpTreeVisitor;
@@ -117,6 +127,37 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 		requestor.exitMethod(elem.sourceEnd() -1);
 	}	
 
+	
+	@Override
+	public boolean visit(DefinitionEnum elem) {
+		requestor.enterType(createTypeInfoForDefinition(elem));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionEnum elem) {
+		requestor.exitType(elem.sourceEnd()-1);
+	}
+	
+	@Override
+	public boolean visit(DefinitionTypedef elem) {
+		requestor.enterType(createTypeInfoForDefinition(elem));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionTypedef elem) {
+		requestor.exitType(elem.sourceEnd()-1);
+	}
+	
+	@Override
+	public boolean visit(DefinitionAlias elem) {
+		requestor.enterType(createTypeInfoForDefinition(elem));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionAlias elem) {
+		requestor.exitType(elem.sourceEnd()-1);
+	}
+	
 	/* ---------------------------------- */
 
 	@Override
@@ -128,27 +169,8 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 	@Override
 	public void endVisit(DefinitionVariable elem) {
 		requestor.exitField(elem.sourceEnd()-1);
-	}	
-	
-	@Override
-	public boolean visit(DefinitionEnum elem) {
-		requestor.acceptFieldReference(elem.getName(), elem.sourceStart());
-		return true;
 	}
 	
-	@Override
-	public boolean visit(DefinitionTypedef elem) {
-		requestor.acceptFieldReference(elem.getName(), elem.sourceStart());
-		return true;
-	}
-	
-	@Override
-	public boolean visit(DefinitionAlias elem) {
-		requestor.acceptFieldReference(elem.getName(), elem.sourceStart());
-		return true;
-	}
-	
-
 	@Override
 	public boolean visit(NamedReference elem) {
 		requestor.acceptTypeReference(elem.toStringAsElement(), elem.sourceStart() /*-1*/);
@@ -289,5 +311,4 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 		return fieldInfo;
 	}
 	
-
 }
