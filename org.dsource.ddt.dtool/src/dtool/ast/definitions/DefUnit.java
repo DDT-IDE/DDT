@@ -37,7 +37,7 @@ public abstract class DefUnit extends ASTNeoNode {
 	}
 	
 	
-	public /*final*/ Comment[] comments;
+	public final Comment[] comments;
 	public final Symbol defname;
 	public EArcheType archeType;
 	
@@ -98,9 +98,13 @@ public abstract class DefUnit extends ASTNeoNode {
 	}
 	
 	public DefUnit(Symbol defname) {
+		this(defname, null);
+	}
+	
+	public DefUnit(Symbol defname, Comment[] comments) {
 		assertNotNull(defname);
 		this.defname = defname;
-		this.comments = null;
+		this.comments = comments;
 	}
 	
 	public String getName() {

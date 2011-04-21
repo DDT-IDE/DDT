@@ -126,10 +126,9 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	public Module(ModuleDefSymbol defname, Comment[] preComments, DeclarationModule md,
 			ASTNeoNode[] members, NeoSourceRange sourceRange) {
-		super(defname);
+		super(defname, preComments);
 		defname.module = this;
 		maybeSetSourceRange(sourceRange);
-		this.comments = preComments;
 		this.md = md;
 		this.members = members;
 	}
