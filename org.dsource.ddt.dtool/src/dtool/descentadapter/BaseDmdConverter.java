@@ -1,4 +1,4 @@
-package dtool.ast.references;
+package dtool.descentadapter;
 
 import descent.internal.compiler.parser.ASTDmdNode;
 import dtool.ast.NeoSourceRange;

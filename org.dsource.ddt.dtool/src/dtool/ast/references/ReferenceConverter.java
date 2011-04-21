@@ -27,6 +27,7 @@ import dtool.ast.declarations.InvalidSyntaxDeclaration;
 import dtool.ast.definitions.MixinContainer;
 import dtool.ast.definitions.NamedMixin;
 import dtool.ast.expressions.Expression;
+import dtool.descentadapter.BaseDmdConverter;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IDefUnitReferenceNode;

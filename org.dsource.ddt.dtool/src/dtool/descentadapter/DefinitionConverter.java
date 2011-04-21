@@ -11,7 +11,6 @@ import descent.internal.compiler.parser.Type;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.expressions.Expression;
-import dtool.ast.references.BaseDmdConverter;
 import dtool.ast.references.ReferenceConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
@@ -31,7 +30,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		return new NamelessParameter(ReferenceConverter.convertType(elem.type, convContext), elem.storageClass, 
 				Expression.convert(elem.defaultArg, convContext), sourceRange(elem));
 	}
-
+	
 	public static boolean isSingleSymbolDeclaration(ASTDmdNode parent) {
 		if(!(parent instanceof AttribDeclaration)) {
 			return false;

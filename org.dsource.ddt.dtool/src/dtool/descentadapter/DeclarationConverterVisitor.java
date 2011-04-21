@@ -21,7 +21,6 @@ import descent.internal.compiler.parser.VersionSymbol;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAnonMember;
-import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationConditionalDefinition;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
@@ -134,7 +133,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.ConditionalDeclaration elem) {
-		return endAdapt(DeclarationConditional.create(elem, convContext));
+		return endAdapt(DeclarationConverter.convert(elem, convContext));
 	}
 	
 	@Override
@@ -192,7 +191,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StaticIfDeclaration elem) {
-		return endAdapt(DeclarationConditional.create(elem, convContext));
+		return endAdapt(DeclarationConverter.convert(elem, convContext));
 	}
 	
 	@Override

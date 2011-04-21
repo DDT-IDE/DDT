@@ -35,7 +35,6 @@ import descent.internal.compiler.parser.VolatileStatement;
 import descent.internal.compiler.parser.WhileStatement;
 import descent.internal.compiler.parser.WithStatement;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.statements.BlockStatement;
@@ -104,7 +103,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(ConditionalStatement element) {
-		return endAdapt(DeclarationConditional.create(element, convContext));
+		return endAdapt(DeclarationConverter.convert(element, convContext));
 	}
 
 	@Override
