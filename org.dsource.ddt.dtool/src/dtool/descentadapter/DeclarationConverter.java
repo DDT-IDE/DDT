@@ -1,12 +1,13 @@
 package dtool.descentadapter;
 
+import java.util.Collection;
+
 import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.Condition;
 import descent.internal.compiler.parser.ConditionalDeclaration;
 import descent.internal.compiler.parser.ConditionalStatement;
 import descent.internal.compiler.parser.DVCondition;
 import descent.internal.compiler.parser.Dsymbol;
-import descent.internal.compiler.parser.Dsymbols;
 import descent.internal.compiler.parser.IsExp;
 import descent.internal.compiler.parser.StaticIfCondition;
 import dtool.ast.declarations.DeclarationConditional;
@@ -52,7 +53,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 		}
 	}
 	
-	protected static void doSetParent(ASTDmdNode parent, Dsymbols children) {
+	public static void doSetParent(ASTDmdNode parent, Collection<Dsymbol> children) {
 		if(children != null) {
 			for (Dsymbol dsymbol : children) {
 				dsymbol.setParent(parent);

@@ -10,23 +10,22 @@ import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.Statement;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.descentadapter.DeclarationConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.INonScopedBlock;
 
 public abstract class DeclarationAttrib extends ASTNeoNode implements INonScopedBlock {
-
+	
 	public final NodeList body;
-
+	
 	public DeclarationAttrib(Statement elem, Statement body, ASTConversionContext convContex) {
 		convertNode(elem);
 		this.body = NodeList.createNodeList(body, convContex);
 	}
-
+	
 	public DeclarationAttrib(AttribDeclaration elem, List<Dsymbol> bodydecls, ASTConversionContext convContex) {
 		convertNode(elem);
-		for (Dsymbol dsymbol : bodydecls) {
-			dsymbol.setParent(elem);
-		}
+		DeclarationConverter.doSetParent(elem, bodydecls);
 		this.body = NodeList.createNodeList(bodydecls, convContex);
 	}
 	
@@ -42,5 +41,5 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 			return IteratorUtil.getEMPTY_ITERATOR();
 		return body.getNodeIterator();
 	}
-
+	
 }
