@@ -15,10 +15,11 @@ import org.eclipse.dltk.core.ISourceModule;
 import descent.internal.compiler.parser.Comment;
 import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.ModuleDeclaration;
-import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NeoSourceRange;
 import dtool.ast.declarations.Declaration;
+import dtool.descentadapter.BaseDmdConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -108,7 +109,7 @@ public class Module extends DefUnit implements IScopeNode {
 			// Remove comments of other defunits (DMD parser quirk)
 			comments = filterComments(elem, elem.md.start); 
 		}
-		return new Module(defname, comments, md, members, elem);
+		return new Module(defname, comments, md, members, BaseDmdConverter.sourceRangeForced(elem));
 	}
 	
 	private static Comment[] filterComments(descent.internal.compiler.parser.Module elem, int modDeclOffset) {
@@ -124,10 +125,10 @@ public class Module extends DefUnit implements IScopeNode {
 	}
 	
 	public Module(ModuleDefSymbol defname, Comment[] preComments, DeclarationModule md,
-			ASTNeoNode[] members, IASTNode sourceRange) {
+			ASTNeoNode[] members, NeoSourceRange sourceRange) {
 		super(defname);
 		defname.module = this;
-		setSourceRange(sourceRange);
+		maybeSetSourceRange(sourceRange);
 		this.comments = preComments;
 		this.md = md;
 		this.members = members;

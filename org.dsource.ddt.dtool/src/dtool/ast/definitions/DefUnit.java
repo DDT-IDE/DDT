@@ -19,7 +19,6 @@ import dtool.refmodel.IScopeNode;
  */
 public abstract class DefUnit extends ASTNeoNode {
 	
-
 	static public enum EArcheType {
 		Module,
 		Package,
@@ -37,15 +36,12 @@ public abstract class DefUnit extends ASTNeoNode {
 		;
 	}
 	
+	
 	public /*final*/ Comment[] comments;
 	public final Symbol defname;
 	public EArcheType archeType;
 	
 	public DefUnit(Dsymbol elem, ASTConversionContext convContext) {
-		convertNode(elem, false);
-		IdentifierExp ident = elem.ident;
-		this.defname = (ident == null) ? new DefSymbol("<syntax_error>", this) : new DefSymbol(ident, this);
-		int size = 0;
 		Module module = convContext.module;
 		
 		// The following code is a workaround for the way the DMD AST is created.
@@ -70,21 +66,30 @@ public abstract class DefUnit extends ASTNeoNode {
 		}
 		
 		
-		if(preDdocs != null)
-			size = preDdocs.size();
-		if(postDdoc != null)
-			size = size+1;
+		int commentsSize = 0;
+		if(preDdocs != null) {
+			commentsSize = preDdocs.size();
+		}
+		if(postDdoc != null) {
+			commentsSize = commentsSize+1;
+		}
 		
-		if(size != 0)
-			this.comments = new Comment[size];
+		Comment[] newComments = (commentsSize == 0) ? null : new Comment[commentsSize];
 		
 		if(preDdocs != null) {
 			for (int i = 0; i < preDdocs.size(); i++) {
-				this.comments[i] = preDdocs.get(i);
+				newComments[i] = preDdocs.get(i);
 			}
 		}
-		if(postDdoc != null)
-			this.comments[size-1] = postDdoc;
+		if(postDdoc != null) {
+			newComments[commentsSize-1] = postDdoc;
+		}
+		
+		convertNode(elem);
+		IdentifierExp ident = elem.ident;
+		this.defname = (ident == null) ? new DefSymbol("<syntax_error>", this) : new DefSymbol(ident, this);
+		
+		this.comments = newComments;
 	}
 	
 	public DefUnit(IdentifierExp id) {
@@ -104,18 +109,19 @@ public abstract class DefUnit extends ASTNeoNode {
 	
 	
 	public String getCombinedDocComments() {
-		if(comments == null || comments.length == 0)
+		if(comments == null || comments.length == 0) {
 			return null;
+		}
 		String str = new String(comments[0].string);
 		for (int i = 1; i < comments.length; i++) {
 			str = str + "\n" + comments[i].toString();
 		}
 		return str;
 	}
-
+	
 	/** Gets the archtype (the kind) of this DefUnit. */
 	public abstract EArcheType getArcheType() ;
-
+	
 	/** Gets the scope which contains the members of this DefUnit. 
 	 * In the case of aggregate like DefUnits the members scope is contained
 	 * in the DefUnit node, but on other cases the scope is somewhere else.
@@ -139,5 +145,5 @@ public abstract class DefUnit extends ASTNeoNode {
 	public String toStringForCodeCompletion() {
 		return getName() + " - " + getModuleScope().toStringAsElement();
 	}
-
+	
 }

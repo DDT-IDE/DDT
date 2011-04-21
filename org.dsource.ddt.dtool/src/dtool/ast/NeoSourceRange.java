@@ -10,8 +10,14 @@ public final class NeoSourceRange {
 	private final int length;
 	
 	public NeoSourceRange(int offset, int length) {
-		assertTrue(offset >= 0);
-		assertTrue(length > 0); 
+		this(offset, length, true);
+	}
+	
+	public NeoSourceRange(int offset, int length, boolean mustBeValid) {
+		if(mustBeValid) {
+			assertTrue(offset >= 0);
+			assertTrue(length > 0);
+		}
 		this.offset = offset;
 		this.length = length;
 	}

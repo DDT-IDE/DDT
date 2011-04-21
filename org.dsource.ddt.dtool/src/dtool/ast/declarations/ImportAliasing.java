@@ -24,7 +24,6 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 
 		public ImportAliasingDefUnit(IdentifierExp ident, ImportAliasing impAlias) {
 			super(ident);
-			convertNode(impAlias);
 			setSourceRange(ident.start, impAlias.getEndPos() - ident.start);
 			this.impAlias = impAlias;
 			assertNotNull(impAlias);

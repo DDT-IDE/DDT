@@ -9,9 +9,11 @@ import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.core.ISourceRange;
 
+import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.definitions.Module;
+import dtool.descentadapter.BaseDmdConverter;
 import dtool.refmodel.IScope;
 import dtool.refmodel.NodeUtil;
 
@@ -115,18 +117,11 @@ public abstract class ASTNeoNode extends ASTNode
 	public ASTNeoNode[] getChildren() {
 		return (ASTNeoNode[]) ASTNeoChildrenCollector.getChildrenArray(this);
 	}
-
-	public void convertNode(IASTNode node) {
-		convertNode(node, false);
+	
+	public void convertNode(ASTDmdNode node) {
+		setSourceRange(node);
 	}
 	
-	public void convertNode(IASTNode node, boolean checkRange) {
-		setSourceRange(node);
-		if(checkRange && node.hasNoSourceRangeInfo()) {
-			Assert.fail("Has no source range Info");
-		}
-	}
-
 	/**
 	 * Same as ASTNode.accept but makes sub-elements accept0 use ASTNeoVisitor.
 	 * This is a temporary adapting solution.
@@ -178,9 +173,8 @@ public abstract class ASTNeoNode extends ASTNode
 
 
 	/** Sets the source range the same as the given elem, even if the range is invalid. */
-	public final void setSourceRange(IASTNode elem) {
-		setStart(elem.getStartPos());
-		setEnd(elem.getStartPos() + elem.getLength());
+	public final void setSourceRange(ASTDmdNode elem) {
+		maybeSetSourceRange(BaseDmdConverter.sourceRangeForced(elem));
 	}
 	
 	/** Sets the source range according to given sourceRange. */
