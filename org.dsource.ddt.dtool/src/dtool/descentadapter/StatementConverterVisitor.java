@@ -65,7 +65,7 @@ import dtool.ast.statements.StatementVolatile;
 import dtool.ast.statements.StatementWhile;
 import dtool.ast.statements.StatementWith;
 
-public class StatementConverter extends ExpressionConverter {
+public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(ForeachRangeStatement elem) {

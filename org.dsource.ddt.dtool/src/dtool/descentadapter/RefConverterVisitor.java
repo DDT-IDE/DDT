@@ -21,10 +21,10 @@ import dtool.ast.references.TypePointer;
 import dtool.ast.references.TypeStaticArray;
 
 /**
- * This class is a mixin. 
- * Do not use it, instead use it's subclass: {@link DeclarationConverter}
+ * This class is a mixin of sorts (using inheritance for code reuse).
+ * Do not use it, instead use it's subclass: {@link DeclarationConverterVisitor}
  */
-abstract class RefConverter extends CoreConverter {
+abstract class RefConverterVisitor extends CoreConverterVisitor {
 	
 
 	@Override

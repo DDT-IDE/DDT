@@ -55,7 +55,7 @@ import dtool.ast.references.ReferenceConverter;
 /**
  * Converts from DMD's AST to a nicer AST ("Neo AST")
  */
-public abstract class DeclarationConverter extends RefConverter {
+public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(Version node) {

@@ -8,7 +8,7 @@ import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 @SuppressWarnings("unused")
-public abstract class CoreConverter extends ASTCommonConverter {
+public abstract class CoreConverterVisitor extends ASTCommonConverter {
 
 	@Override
 	public boolean visit(BoolExp node) {

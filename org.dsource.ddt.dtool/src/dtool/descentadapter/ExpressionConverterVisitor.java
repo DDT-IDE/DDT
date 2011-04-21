@@ -116,7 +116,7 @@ import dtool.ast.expressions.PostfixExpression;
 import dtool.ast.expressions.PrefixExpression;
 import dtool.ast.expressions.Resolvable;
 
-abstract class ExpressionConverter extends DeclarationConverter {
+abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(FileExp node) {

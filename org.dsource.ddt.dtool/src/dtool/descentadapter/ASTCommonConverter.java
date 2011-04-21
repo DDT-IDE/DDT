@@ -8,7 +8,7 @@ import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 /**
  * This class is a mixin. 
- * Do not use it, instead use it's subclass: {@link DeclarationConverter}
+ * Do not use it, instead use it's subclass: {@link DeclarationConverterVisitor}
  */
 public abstract class ASTCommonConverter implements IASTVisitor {
 	

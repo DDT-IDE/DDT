@@ -9,7 +9,7 @@ import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
 
-public class DescentASTConverter extends StatementConverter {
+public class DescentASTConverter extends StatementConverterVisitor {
 
 	public DescentASTConverter(ASTConversionContext convContext) {
 		this.convContext = convContext;
