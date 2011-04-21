@@ -24,6 +24,9 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 
 	public DeclarationAttrib(AttribDeclaration elem, List<Dsymbol> bodydecls, ASTConversionContext convContex) {
 		convertNode(elem);
+		for (Dsymbol dsymbol : bodydecls) {
+			dsymbol.setParent(elem);
+		}
 		this.body = NodeList.createNodeList(bodydecls, convContex);
 	}
 	

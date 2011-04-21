@@ -1,7 +1,5 @@
 package mmrnmhrm.core.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import mmrnmhrm.core.LangCore;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
@@ -11,8 +9,8 @@ import org.eclipse.dltk.compiler.problem.IProblemReporter;
 
 import descent.core.compiler.IProblem;
 import descent.internal.compiler.parser.Module;
-import descent.internal.compiler.parser.Parser;
 import dtool.descentadapter.DescentASTConverter;
+import dtool.refmodel.ParserAdapter;
 
 public class DeeSourceParser extends AbstractSourceParser {
 	
@@ -41,18 +39,15 @@ public class DeeSourceParser extends AbstractSourceParser {
 	public DeeModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
 		int langVersion = 2; // TODO we should use value from project configured interpreter version
 		
-		char[] source = input.getContentsAsCharArray();
-		Parser parser = new Parser(langVersion, source);
-		parser.setProblemReporter(DescentProblemAdapter.create(reporter));
+		String source = input.getSourceContents();
 		Module dmdModule = null;
 		try {
-			dmdModule = parser.parseModuleObj();
+			dmdModule = ParserAdapter.parseSource(source, langVersion, DescentProblemAdapter.create(reporter)).mod;
 		} catch (RuntimeException e) {
 			LangCore.log(e);
 			throw e;
 		}
 		
-		assertTrue(dmdModule.length == source.length);
 		DeeModuleDeclaration deeModuleDecl = new DeeModuleDeclaration(dmdModule);
 		boolean adaptMalformedAST = true;
 		if(dmdModule.hasSyntaxErrors() && !adaptMalformedAST) {

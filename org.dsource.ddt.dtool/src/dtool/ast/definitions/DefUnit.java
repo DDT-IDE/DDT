@@ -4,11 +4,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.List;
 
+import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.Comment;
 import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.Module;
 import dtool.ast.ASTNeoNode;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScopeNode;
 
@@ -45,8 +47,29 @@ public abstract class DefUnit extends ASTNeoNode {
 		this.defname = (ident == null) ? new DefSymbol("<syntax_error>", this) : new DefSymbol(ident, this);
 		int size = 0;
 		Module module = convContext.module;
-		List<Comment> preDdocs = module.getPreComments(elem);
-		Comment postDdoc = module.getPostComment(elem);
+		
+		// The following code is a workaround for the way the DMD AST is created.
+		ASTDmdNode nodeWithComments = elem;
+		List<Comment> preDdocs;
+		Comment postDdoc;
+		while(true) {
+			preDdocs = module.getPreComments(nodeWithComments);
+			postDdoc = module.getPostComment(nodeWithComments);
+			if(preDdocs != null || postDdoc != null) {
+				break;
+			}
+			ASTDmdNode parent = nodeWithComments.getParent();
+			if(parent == null) {
+				break;
+			}
+			if(DefinitionConverter.isSingleSymbolDeclaration(parent)) {
+				nodeWithComments = parent;
+			} else {
+				break;
+			}
+		}
+		
+		
 		if(preDdocs != null)
 			size = preDdocs.size();
 		if(postDdoc != null)
@@ -63,12 +86,12 @@ public abstract class DefUnit extends ASTNeoNode {
 		if(postDdoc != null)
 			this.comments[size-1] = postDdoc;
 	}
-
+	
 	public DefUnit(IdentifierExp id) {
 		this.defname = new DefSymbol(id, this);
 		this.comments = null;
 	}
-
+	
 	public DefUnit(Symbol defname) {
 		assertNotNull(defname);
 		this.defname = defname;

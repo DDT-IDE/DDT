@@ -2,12 +2,14 @@
 
 == DDT 0.4.2 (devel) ==
  * Fixed #33, bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.
- * Fixed bug where all D comments where considered documentation comments for documentation hover.
+ * Fixed bug where all D comments where considered DDoc comments for documentation hover.
  * Fixed limitation where problem hovers where not more prioritary than documentation hovers.
  * Fixed #37: F2 always brings up empty documentation hover.
  * Fixed #38: autocomplete crashing / very slow. (Content Assist takes very long to show up when many completion options are available)
  * Added support for editor code templates in Content Assist. 
  * Fixed bug in cast expression, where the cast type reference was ignored by the parser/semantic-engine; 
+ * Fixed bug where DDoc comments where not associated with the corresponding symbol definition if that definition had 
+		protection, storage, linkage, or certain other kinds of attributes;
 
 == DDT 0.4.1 (2011-03-04) ==
  * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)
