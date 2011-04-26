@@ -31,10 +31,6 @@ import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class DefinitionConverter extends BaseDmdConverter {
 	
-	public static SourceRange convertSourceRange(ASTDmdNode elem) {
-		return BaseDmdConverter.sourceRangeForced(elem);
-	}
-	
 	public static TokenInfo convertIdToken(IdentifierExp id) {
 		assertTrue(id.getClass() == IdentifierExp.class);
 		assertTrue(id.hasNoSourceRangeInfo() || id.getLength() == id.ident.length);
@@ -46,7 +42,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	}
 	
 	public static DefUnit.DefUnitDataTuple convertDsymbol(Dsymbol elem, ASTConversionContext convContext) {
-		SourceRange sourceRange = convertSourceRange(elem);
+		SourceRange sourceRange = sourceRange(elem);
 		
 		descent.internal.compiler.parser.Module module = convContext.module;
 		
@@ -107,12 +103,12 @@ public class DefinitionConverter extends BaseDmdConverter {
 		
 		ASTNeoNode[] members = Declaration.convertMany(elem.members, convContext);
 		
-		SourceRange sourceRange = BaseDmdConverter.sourceRangeForced(elem);
+		SourceRange sourceRange = sourceRange(elem, false);
 		if(elem.md == null) {
 			return Module.createModule(sourceRange, members);
 		} else  {
-			TokenInfo defName = DefinitionConverter.convertIdToken(elem.md.id);
-			SourceRange declRange = DefinitionConverter.convertSourceRange(elem.md);
+			TokenInfo defnameInfo = DefinitionConverter.convertIdToken(elem.md.id);
+			SourceRange declRange = sourceRange(elem.md);
 			
 			String[] packages = ArrayUtil.newSameSize(elem.md.packages, String.class);
 			
@@ -122,7 +118,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			
 			// Remove comments of other defunits (DMD parser quirk)
 			Comment[] comments = filterComments(elem, elem.md.start); 
-			return Module.createModule(sourceRange, comments, packages, defName, declRange, members);
+			return Module.createModule(sourceRange, comments, packages, defnameInfo, declRange, members);
 		}
 	}
 	
@@ -143,7 +139,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static EnumMember createEnumMember(descent.internal.compiler.parser.EnumMember elem, ASTConversionContext convContext) {
 		assertNotNull(elem.ident);
 		elem.ident.length = elem.ident.ident.length; // Fix a parser source range issue
-//		elem.length = Math.max(elem.length, elem.ident.length);
+		elem.length = Math.max(elem.length, elem.ident.length);
 		DefUnitDataTuple defunitInfo = convertDsymbol(elem, convContext);
 		return new EnumMember(defunitInfo, Expression.convert(elem.value, convContext));
 	}

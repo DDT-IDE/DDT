@@ -62,13 +62,6 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		return refIdentifier;
 	}
 	
-	@Deprecated 
-	public static RefIdentifier convertToRefIdentifierXXX(descent.internal.compiler.parser.IdentifierExp elem) {
-		RefIdentifier refIdentifier = convertToRefIdentifierOrNull(elem);
-		assertNotNull(refIdentifier);
-		return refIdentifier;
-	}
-	
 	public static RefIdentifier convertToRefIdentifierOrNull(descent.internal.compiler.parser.IdentifierExp elem) {
 		if (elem instanceof TemplateInstanceWrapper) {
 			TemplateInstanceWrapper wrapper = (TemplateInstanceWrapper) elem;

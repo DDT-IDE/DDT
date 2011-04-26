@@ -8,10 +8,20 @@ import dtool.ast.SourceRange;
 public class BaseDmdConverter {
 	
 	public static SourceRange sourceRange(ASTDmdNode node) {
+		return sourceRange(node, true);
+	}
+	
+	public static SourceRange sourceRange(ASTDmdNode node, boolean nonEmpty) {
 		if (node.getStartPos() == -1) {
 			return null;
 		}
-		return sourceRangeStrict(node);
+		assertTrue(node.getStartPos() >= 0);
+		if(nonEmpty) {
+			assertTrue(node.getLength() > 0);
+		} else {
+			assertTrue(node.getLength() >= 0);
+		}
+		return new SourceRange(node.getStartPos(), node.getLength());
 	}
 	
 	public static SourceRange sourceRangeForced(ASTDmdNode node) {

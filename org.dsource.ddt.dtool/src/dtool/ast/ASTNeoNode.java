@@ -174,7 +174,7 @@ public abstract class ASTNeoNode extends ASTNode implements IASTNode, IElement, 
 	/** Sets the source range the same as the given elem, even if the range is invalid. */
 	@Deprecated
 	public final void setSourceRange(ASTDmdNode elem) {
-		setSourceRange(DefinitionConverter.convertSourceRange(elem));
+		initSourceRange(DefinitionConverter.sourceRange(elem));
 	}
 	
 	/** Sets the source range according to given sourceRange. */

@@ -13,29 +13,29 @@ public final class SourceRange {
 		this.length = length;
 	}
 	
-	public int getOffset() {
+	public final int getOffset() {
 		return offset;
 	}
 	
-	public int getLength() {
+	public final int getLength() {
 		return length;
 	}
 	
-	public int getStartPos() {
+	public final int getStartPos() {
 		return getOffset();
 	}
 	
-	public int getEndPos() {
+	public final int getEndPos() {
 		return getOffset() + getLength();
 	}
 	
 	@Override
-	public String toString() {
-		return "[" + getStartPos() + "-" + getEndPos() + "]";
+	public final String toString() {
+		return "[" + offset + ":" + length + "]";
 	}
 	
 	@Override
-	public boolean equals(Object obj) {
+	public final boolean equals(Object obj) {
 		if(!(obj instanceof SourceRange))
 			return false;
 		

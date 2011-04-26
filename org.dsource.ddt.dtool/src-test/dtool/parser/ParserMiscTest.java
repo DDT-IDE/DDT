@@ -10,6 +10,10 @@ import org.junit.Test;
  */
 public class ParserMiscTest extends Parser__CommonTest {
 	
+	@Test
+	public void testEmptyFile() throws CoreException {
+		testDtoolParse("");
+	}
 	
 	@Test
 	public void testFoo() throws CoreException {
