@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.GotoStatement;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.Symbol;
+import dtool.descentadapter.DefinitionConverter;
 
 public class StatementGoto extends Statement {
 
@@ -11,7 +12,7 @@ public class StatementGoto extends Statement {
 	
 	public StatementGoto(GotoStatement elem) {
 		convertNode(elem);
-		this.label = new Symbol(elem.ident);
+		this.label = DefinitionConverter.convertId(elem.ident);
 	}
 
 	@Override

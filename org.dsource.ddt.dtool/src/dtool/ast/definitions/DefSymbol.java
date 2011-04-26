@@ -15,17 +15,13 @@ public class DefSymbol extends Symbol {
 		setParent(parent);
 	}
 	
-	protected DefSymbol(String id) {
-		super(id, null);
-	}
-	
-	protected DefSymbol(String id, DefUnit parent) {
-		this(id, null, parent);
-	}
-	
-	protected DefSymbol(String id,  NeoSourceRange sourceRange, DefUnit parent) {
+	public DefSymbol(String id,  NeoSourceRange sourceRange, DefUnit parent) {
 		super(id, sourceRange);
 		setParent(parent);
+	}
+	
+	protected DefSymbol(String id) {
+		super(id, null);
 	}
 	
 	public DefUnit getDefUnit() {

@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ContinueStatement;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.Symbol;
+import dtool.descentadapter.DefinitionConverter;
 
 public class StatementContinue extends Statement {
 
@@ -12,7 +13,7 @@ public class StatementContinue extends Statement {
 	public StatementContinue(ContinueStatement elem) {
 		convertNode(elem);
 		if(elem.ident != null)
-			this.id = new Symbol(elem.ident);
+			this.id = DefinitionConverter.convertId(elem.ident);
 	}
 
 	@Override

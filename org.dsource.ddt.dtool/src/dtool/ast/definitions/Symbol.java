@@ -1,22 +1,15 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import descent.internal.compiler.parser.IdentifierExp;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.NeoSourceRange;
 import dtool.ast.TokenInfo;
-import dtool.descentadapter.DefinitionConverter;
 
 /** A Symbol is node wrapping an identifier, used only in DefUnits names.*/
 public class Symbol extends ASTNeoNode {
 	
 	public String name;
-	
-	@Deprecated
-	public Symbol(IdentifierExp id) {
-		this(DefinitionConverter.convertId(id));
-	}
 	
 	public Symbol(TokenInfo symbol) {
 		this(symbol.value, symbol.getRange());

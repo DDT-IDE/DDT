@@ -9,6 +9,7 @@ import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class DeclarationPragma extends DeclarationAttrib implements IStatement {
@@ -18,14 +19,14 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	
 	public DeclarationPragma(PragmaDeclaration elem, ASTConversionContext convContex) {
 		super(elem, elem.decl, convContex);
-		this.ident = new Symbol(elem.ident);
+		this.ident = DefinitionConverter.convertId(elem.ident);
 		if(elem.args != null)
 			this.expressions = Expression.convertMany(elem.args, convContex);
 	}
 	
 	public DeclarationPragma(PragmaStatement elem, ASTConversionContext convContex) {
 		super(elem, elem.body, convContex);
-		this.ident = new Symbol(elem.ident);
+		this.ident = DefinitionConverter.convertId(elem.ident);
 		if(elem.args != null)
 			this.expressions = Expression.convertMany(elem.args, convContex);
 	}

@@ -4,14 +4,15 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.LabelStatement;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.Symbol;
+import dtool.descentadapter.DefinitionConverter;
 
 public class StatementLabel extends Statement {
 
 	public Symbol label;
 	
 	public StatementLabel(LabelStatement elem) {
-		convertNode(elem);
-		this.label = new Symbol(elem.ident);
+		setSourceRange(elem);
+		this.label = DefinitionConverter.convertId(elem.ident);
 	}
 
 	@Override

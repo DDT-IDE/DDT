@@ -64,7 +64,7 @@ public abstract class DefUnit extends ASTNeoNode {
 	
 	@Deprecated
 	public DefUnit(IdentifierExp id) {
-		this.defname = new DefSymbol(DefinitionConverter.convertId(id), this);
+		this.defname = new DefSymbol(DefinitionConverter.convertIdToken(id), this);
 		this.comments = null;
 	}
 	

@@ -6,6 +6,7 @@ import descent.internal.compiler.parser.VersionSymbol;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.Symbol;
+import dtool.descentadapter.DefinitionConverter;
 
 /**
  * Node of type:
@@ -25,7 +26,7 @@ public class DeclarationConditionalDefinition extends ASTNeoNode {
 	public DeclarationConditionalDefinition(DebugSymbol elem) {
 		setSourceRange(elem);
 		if(elem.ident != null)
-			this.identifier = new Symbol(elem.ident);
+			this.identifier = DefinitionConverter.convertId(elem.ident);
 		else 
 			this.identifier = new Symbol(new String(elem.version.value));
 		conditionalKind = Type.DEBUG;
@@ -34,7 +35,7 @@ public class DeclarationConditionalDefinition extends ASTNeoNode {
 	public DeclarationConditionalDefinition(VersionSymbol elem) {
 		setSourceRange(elem);
 		if(elem.ident != null)
-			this.identifier = new Symbol(elem.ident);
+			this.identifier = DefinitionConverter.convertId(elem.ident);
 		else 
 			this.identifier = new Symbol(new String(elem.version.value));
 		conditionalKind = Type.VERSION;

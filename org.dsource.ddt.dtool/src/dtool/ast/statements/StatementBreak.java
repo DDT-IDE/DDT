@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.BreakStatement;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.Symbol;
+import dtool.descentadapter.DefinitionConverter;
 
 public class StatementBreak extends Statement {
 
@@ -12,7 +13,7 @@ public class StatementBreak extends Statement {
 	public StatementBreak(BreakStatement elem) {
 		convertNode(elem);
 		if(elem.ident != null)
-			this.id = new Symbol(elem.ident);
+			this.id = DefinitionConverter.convertId(elem.ident);
 	}
 
 	@Override

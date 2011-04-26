@@ -22,6 +22,7 @@ import dtool.ast.declarations.Declaration;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.NamelessParameter;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.ReferenceConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -32,11 +33,15 @@ public class DefinitionConverter extends BaseDmdConverter {
 		return BaseDmdConverter.sourceRangeForced(elem);
 	}
 	
-	public static TokenInfo convertId(IdentifierExp id) {
+	public static TokenInfo convertIdToken(IdentifierExp id) {
 		assertTrue(id.getClass() == IdentifierExp.class);
 		if(DToolBundle.UNSUPPORTED_DMD_CONTRACTS)
 			assertTrue(id.getLength() == id.ident.length); // TODO check this
 		return new TokenInfo(new String(id.ident), id.getStartPos());
+	}
+	
+	public static Symbol convertId(IdentifierExp idExp) {
+		return new Symbol(DefinitionConverter.convertIdToken(idExp));
 	}
 	
 	public static DefUnit.DefUnitDataTuple convertDsymbol(Dsymbol elem, ASTConversionContext convContext) {
@@ -89,7 +94,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			TokenInfo defName = new TokenInfo("<syntax_error>");
 			return new DefUnit.DefUnitDataTuple(sourceRange, defName, newComments);
 		} else {
-			TokenInfo defName = convertId(ident);
+			TokenInfo defName = convertIdToken(ident);
 			return new DefUnit.DefUnitDataTuple(sourceRange, defName, newComments);
 		}
 	}
@@ -104,7 +109,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		if(elem.md == null) {
 			return Module.createModule(sourceRange, members);
 		} else  {
-			TokenInfo defName = DefinitionConverter.convertId(elem.md.id);
+			TokenInfo defName = DefinitionConverter.convertIdToken(elem.md.id);
 			NeoSourceRange declRange = DefinitionConverter.convertSourceRange(elem.md);
 			
 			String[] packages = ArrayUtil.newSameSize(elem.md.packages, String.class);
