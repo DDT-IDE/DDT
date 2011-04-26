@@ -18,7 +18,7 @@ public class RefModuleQualified extends CommonRefQualified {
 	
 	public RefModuleQualified(RefIdentifier subref, NeoSourceRange sourceRange) {
 		this.qualifiedName = subref;
-		maybeSetSourceRange(sourceRange);
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

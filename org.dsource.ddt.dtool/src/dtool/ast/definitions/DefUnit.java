@@ -57,7 +57,7 @@ public abstract class DefUnit extends ASTNeoNode {
 	}
 	
 	public DefUnit(NeoSourceRange sourceRange, String defName, NeoSourceRange defNameSourceRange, Comment[] comments) {
-		maybeSetSourceRange(sourceRange);
+		initSourceRange(sourceRange);
 		this.defname = new DefSymbol(defName, defNameSourceRange, this);
 		this.comments = comments;
 	}
@@ -69,7 +69,7 @@ public abstract class DefUnit extends ASTNeoNode {
 	}
 	
 	protected DefUnit(NeoSourceRange sourceRange, DefSymbol defname, Comment[] comments) {
-		maybeSetSourceRange(sourceRange);
+		initSourceRange(sourceRange);
 		assertNotNull(defname);
 		this.defname = defname;
 		this.comments = comments;

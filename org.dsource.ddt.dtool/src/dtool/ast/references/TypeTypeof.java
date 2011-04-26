@@ -14,7 +14,7 @@ public class TypeTypeof extends CommonRefNative {
 	
 	public TypeTypeof(Expression exp, NeoSourceRange sourceRange) {
 		this.expression = exp;
-		maybeSetSourceRange(sourceRange);
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

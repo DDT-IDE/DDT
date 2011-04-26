@@ -51,7 +51,7 @@ public class Module extends DefUnit implements IScopeNode {
 		public String[] packages; // non-structural element
 		
 		public DeclarationModule(NeoSourceRange sourceRange, String[] packages, DefSymbol moduleName) {
-			maybeSetSourceRange(sourceRange);
+			initSourceRange(sourceRange);
 			
 			assertNotNull(packages);
 			this.packages = packages;
@@ -72,10 +72,11 @@ public class Module extends DefUnit implements IScopeNode {
 		public String toStringAsElement() {
 			//String str = ASTPrinter.toStringAsElements(packages, "."); 
 			String str = StringUtil.collToString(packages, ".");
-			if(str.length() == 0)
+			if(str.length() == 0) {
 				return moduleName.toStringAsElement();
-			else
+			} else {
 				return str + "." + moduleName.toStringAsElement();
+			}
 		}
 	}
 	

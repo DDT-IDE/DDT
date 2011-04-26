@@ -28,7 +28,7 @@ public class RefQualified extends CommonRefQualified {
 	
 	public RefQualified(IDefUnitReferenceNode rootRef, RefIdentifier subRef, NeoSourceRange sourceRange) {
 		this(rootRef, subRef);
-		maybeSetSourceRange(sourceRange);
+		initSourceRange(sourceRange);
 	}
 	
 	

@@ -24,7 +24,7 @@ public class NamelessParameter extends ASTNeoNode implements IFunctionParameter 
 		this.type = type;
 		this.storageClass = storageClass;
 		this.defaultValue = defaultValue;
-		maybeSetSourceRange(sourceRange);
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

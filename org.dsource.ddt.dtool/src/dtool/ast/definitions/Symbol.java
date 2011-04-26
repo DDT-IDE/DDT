@@ -25,7 +25,7 @@ public class Symbol extends ASTNeoNode {
 	public Symbol(String name, NeoSourceRange sourceRange) {
 		assertNotNull(name);
 		this.name = name;
-		maybeSetSourceRange(sourceRange);
+		initSourceRange(sourceRange);
 	}
 	
 	public Symbol(String name) {
