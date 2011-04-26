@@ -6,6 +6,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.NeoSourceRange;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.statements.IStatement;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScopeNode;
 
@@ -15,7 +16,7 @@ public class NamedMixin extends DefUnit implements IStatement {
 	public final RefTemplateInstance type;
 	
 	public NamedMixin(TemplateMixin elem, RefTemplateInstance tplInstance, ASTConversionContext convContext, NeoSourceRange sourceRange) {
-		super(DefUnit.convertDsymbol(elem, convContext));
+		super(DefinitionConverter.convertDsymbol(elem, convContext));
 		this.type = tplInstance;
 		setSourceRange(sourceRange);
 	}

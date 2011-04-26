@@ -14,7 +14,7 @@ public class EnumMember extends DefUnit {
 	public Resolvable value;
 	
 	public EnumMember(descent.internal.compiler.parser.EnumMember elem, ASTConversionContext convContext) {
-		super(DefUnit.convertDsymbol(elem, convContext));
+		super(DefinitionConverter.convertDsymbol(elem, convContext));
 		maybeSetSourceRange(DefinitionConverter.convertSourceRange(elem));
 		this.value = Expression.convert(elem.value, convContext);
 	}

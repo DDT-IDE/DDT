@@ -2,18 +2,13 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.util.List;
 
-import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.Comment;
-import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.IdentifierExp;
-import descent.internal.compiler.parser.Module;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NeoSourceRange;
 import dtool.ast.TokenInfo;
 import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScopeNode;
 
 /**
@@ -41,62 +36,6 @@ public abstract class DefUnit extends ASTNeoNode {
 	
 	public final Comment[] comments;
 	public final DefSymbol defname;
-	public EArcheType archeType;
-	
-	public static DefUnitDataTuple convertDsymbol(Dsymbol elem, ASTConversionContext convContext) {
-		Module module = convContext.module;
-		
-		// The following code is a workaround for the way the DMD AST is created.
-		ASTDmdNode nodeWithComments = elem;
-		List<Comment> preDdocs;
-		Comment postDdoc;
-		while(true) {
-			preDdocs = module.getPreComments(nodeWithComments);
-			postDdoc = module.getPostComment(nodeWithComments);
-			if(preDdocs != null || postDdoc != null) {
-				break;
-			}
-			ASTDmdNode parent = nodeWithComments.getParent();
-			if(parent == null) {
-				break;
-			}
-			if(DefinitionConverter.isSingleSymbolDeclaration(parent)) {
-				nodeWithComments = parent;
-			} else {
-				break;
-			}
-		}
-		
-		
-		int commentsSize = 0;
-		if(preDdocs != null) {
-			commentsSize = preDdocs.size();
-		}
-		if(postDdoc != null) {
-			commentsSize = commentsSize+1;
-		}
-		
-		Comment[] newComments = (commentsSize == 0) ? null : new Comment[commentsSize];
-		
-		if(preDdocs != null) {
-			for (int i = 0; i < preDdocs.size(); i++) {
-				newComments[i] = preDdocs.get(i);
-			}
-		}
-		if(postDdoc != null) {
-			newComments[commentsSize-1] = postDdoc;
-		}
-		
-		NeoSourceRange sourceRange = DefinitionConverter.convertSourceRange(elem);
-		IdentifierExp ident = elem.ident;
-		if(ident == null) {
-			TokenInfo defName = new TokenInfo("<syntax_error>");
-			return new DefUnitDataTuple(sourceRange, defName, newComments);
-		} else {
-			TokenInfo defName = DefinitionConverter.convertId(ident);
-			return new DefUnitDataTuple(sourceRange, defName, newComments);
-		}
-	}
 	
 	public static final class DefUnitDataTuple {
 		public NeoSourceRange sourceRange;
@@ -129,8 +68,7 @@ public abstract class DefUnit extends ASTNeoNode {
 		this.comments = null;
 	}
 	
-	@Deprecated
-	public DefUnit(NeoSourceRange sourceRange, DefSymbol defname, Comment[] comments) {
+	protected DefUnit(NeoSourceRange sourceRange, DefSymbol defname, Comment[] comments) {
 		maybeSetSourceRange(sourceRange);
 		assertNotNull(defname);
 		this.defname = defname;

@@ -31,7 +31,7 @@ public class DescentASTConverter extends StatementConverterVisitor {
 	
 	public static Module convertModule(ASTNode cumodule) {
 		ASTConversionContext convContext = new ASTConversionContext((descent.internal.compiler.parser.Module) cumodule);
-		Module module = Module.createModule(convContext.module, convContext);
+		Module module = DefinitionConverter.createModule(convContext.module, convContext);
 		module.accept(new PostConvertionAdapter());
 		return module;
 	}

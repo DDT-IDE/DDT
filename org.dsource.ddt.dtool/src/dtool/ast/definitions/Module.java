@@ -1,27 +1,22 @@
 package dtool.ast.definitions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 
 import org.eclipse.dltk.core.ISourceModule;
 
 import descent.internal.compiler.parser.Comment;
-import descent.internal.compiler.parser.IdentifierExp;
-import descent.internal.compiler.parser.ModuleDeclaration;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.NeoSourceRange;
-import dtool.ast.declarations.Declaration;
-import dtool.descentadapter.BaseDmdConverter;
-import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.ast.TokenInfo;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
@@ -36,8 +31,8 @@ public class Module extends DefUnit implements IScopeNode {
 		
 		protected Module module;
 		
-		public ModuleDefSymbol(IdentifierExp id) {
-			super(DefinitionConverter.convertId(id), null);
+		public ModuleDefSymbol(TokenInfo id) {
+			super(id, null);
 		}
 		
 		public ModuleDefSymbol(String id) {
@@ -52,11 +47,14 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	public static class DeclarationModule extends ASTNeoNode {
 		
-		public Symbol moduleName; 
+		public DefSymbol moduleName; 
 		public String[] packages; // non-structural element
 		
-		public DeclarationModule(DefSymbol moduleName, ModuleDeclaration md) {
-			maybeSetSourceRange(DefinitionConverter.convertSourceRange(md));
+		public DeclarationModule(NeoSourceRange sourceRange, String[] packages, DefSymbol moduleName) {
+			maybeSetSourceRange(sourceRange);
+			
+			assertNotNull(packages);
+			this.packages = packages;
 			this.moduleName = moduleName; 
 		}
 		
@@ -86,49 +84,22 @@ public class Module extends DefUnit implements IScopeNode {
 	public final DeclarationModule md;
 	public final ASTNeoNode[] members;
 	
-	
-	public static Module createModule(descent.internal.compiler.parser.Module elem, ASTConversionContext convContext) {
-		ModuleDefSymbol defname;
-		Comment[] comments = null;
-		DeclarationModule md;
-		
-		ASTNeoNode[] members = Declaration.convertMany(elem.members, convContext);
-		
-		if(elem.md == null) {
-			defname = new ModuleDefSymbol("<unnamed>");
-			md = null;
-		} else  {
-			defname = new ModuleDefSymbol(elem.md.id);
-			md = new DeclarationModule(defname, elem.md);
-			
-			md.packages = ArrayUtil.newSameSize(elem.md.packages, String.class);
-			
-			for (int i = 0; i < md.packages.length; i++) {
-				md.packages[i] = new String(elem.md.packages.get(i).ident);
-			}
-			
-			// Remove comments of other defunits (DMD parser quirk)
-			comments = filterComments(elem, elem.md.start); 
-		}
-		return new Module(defname, comments, md, members, BaseDmdConverter.sourceRangeForced(elem));
+	public static Module createModule(NeoSourceRange sourceRange, Comment[] comments, String[] packages,
+			TokenInfo defName, NeoSourceRange declRange, ASTNeoNode[] members) {
+		ModuleDefSymbol defSymbol = new ModuleDefSymbol(defName);
+		DeclarationModule md = new DeclarationModule(declRange, packages, defSymbol);
+		return new Module(defSymbol, comments, md, members, sourceRange);
 	}
 	
-	private static Comment[] filterComments(descent.internal.compiler.parser.Module elem, int modDeclOffset) {
-		Comment[] moduleComments = elem.comments;
-		for (int i = 0; i < elem.comments.length; i++) {
-			Comment comment = elem.comments[i];
-			if(comment.start > modDeclOffset) {
-				moduleComments = ArrayUtil.copyOfRange(elem.comments, 0, i);
-				break;
-			}
-		}
-		return moduleComments;
+	public static Module createModule(NeoSourceRange sourceRange, ASTNeoNode[] members) {
+		ModuleDefSymbol defSymbol = new ModuleDefSymbol("<unnamed>");
+		return new Module(defSymbol, null, null, members, sourceRange);
 	}
 	
-	public Module(ModuleDefSymbol defname, Comment[] preComments, DeclarationModule md,
+	protected Module(ModuleDefSymbol defSymbol, Comment[] preComments, DeclarationModule md, 
 			ASTNeoNode[] members, NeoSourceRange sourceRange) {
-		super(sourceRange, defname, preComments);
-		defname.module = this;
+		super(sourceRange, defSymbol, preComments);
+		defSymbol.module = this;
 		this.md = md;
 		this.members = members;
 	}
@@ -141,8 +112,9 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	public void setModuleUnit(ISourceModule modUnit) {
 		//assertTrue(modUnit.exists());
-		if(this.moduleUnit != null)
+		if(this.moduleUnit != null) {
 			assertTrue(this.moduleUnit.equals(modUnit));
+		}
 		this.moduleUnit = modUnit;
 	}
 	public ISourceModule getModuleUnit() {
@@ -182,8 +154,9 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	@Override
 	public String toStringAsElement() {
-		if(md == null)
+		if(md == null) {
 			return "<undefined>";
+		}
 		return md.toStringAsElement();
 	}
 	
