@@ -87,13 +87,18 @@ public abstract class DefUnit extends ASTNeoNode {
 		
 		convertNode(elem);
 		IdentifierExp ident = elem.ident;
-		this.defname = (ident == null) ? new DefSymbol("<syntax_error>", this) : new DefSymbol(ident, this);
+		if(ident == null) {
+			this.defname = new DefSymbol("<syntax_error>", this);
+		} else {
+			this.defname = new DefSymbol(DefinitionConverter.convertId(ident), this);
+		}
 		
 		this.comments = newComments;
 	}
 	
+	@Deprecated
 	public DefUnit(IdentifierExp id) {
-		this.defname = new DefSymbol(id, this);
+		this.defname = new DefSymbol(DefinitionConverter.convertId(id), this);
 		this.comments = null;
 	}
 	

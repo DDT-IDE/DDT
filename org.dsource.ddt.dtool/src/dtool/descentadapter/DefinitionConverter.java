@@ -9,12 +9,25 @@ import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.TemplateInstanceWrapper;
 import descent.internal.compiler.parser.Type;
 import descent.internal.compiler.parser.ast.ASTNode;
+import dtool.ast.NeoSourceRange;
 import dtool.ast.definitions.NamelessParameter;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.ReferenceConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class DefinitionConverter extends BaseDmdConverter {
+	
+	public static NeoSourceRange convertSourceRange(ASTDmdNode elem) {
+		return BaseDmdConverter.sourceRangeForced(elem);
+	}
+	
+	public static Symbol convertId(IdentifierExp id) {
+		assertTrue(id.getClass() == IdentifierExp.class);
+		return new Symbol(new String(id.ident), convertSourceRange(id));
+	}
+	
+	/*------------------------------------*/
 	
 	public static NamelessParameter convertNamelessParameter(Type type, ASTConversionContext convContext) {
 		return new NamelessParameter(ReferenceConverter.convertType(type, convContext), 0, null, sourceRange(type));
@@ -46,6 +59,5 @@ public class DefinitionConverter extends BaseDmdConverter {
 		}
 		return length == 1;
 	}
-	
 	
 }

@@ -13,12 +13,11 @@ import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.definitions.Module;
-import dtool.descentadapter.BaseDmdConverter;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.refmodel.IScope;
 import dtool.refmodel.NodeUtil;
 
-public abstract class ASTNeoNode extends ASTNode
-	implements IASTNode, IElement, IVisitable<IASTVisitor>{
+public abstract class ASTNeoNode extends ASTNode implements IASTNode, IElement, IVisitable<IASTVisitor>{
 	
 	public static final ASTNeoNode[] NO_ELEMENTS = new ASTNeoNode[0]; 
 	
@@ -73,7 +72,7 @@ public abstract class ASTNeoNode extends ASTNode
 		assertTrue(sourceStart() != -1);
 		setEnd(endPos);
 	}
-
+	
 	/** Sets the source range of the original source file where the source
 	 * fragment corresponding to this node was found.
 	 */
@@ -86,10 +85,15 @@ public abstract class ASTNeoNode extends ASTNode
 		setEnd(startPosition + length);
 	}
 	
-	/** Get's an ISourceRange of this node's source range. */
+	/** Gets an ISourceRange of this node's source range. */
 	@Override
 	public ISourceRange getSourceRange () {
 		return super.getSourceRange();
+	}
+	
+	/** Gets an source range (different API Neo). */
+	public NeoSourceRange getSourceRangeNeo() {
+		return new NeoSourceRange(getStartPos(), getLength(), false);
 	}
 	
 	/** Checks if the node has no defined source range info. */
@@ -102,8 +106,8 @@ public abstract class ASTNeoNode extends ASTNode
 	public boolean hasChildren() {
 		return getChildren().length > 0;
 	}
-
-
+	
+	
 	/******************************/
 	
 	/** All Neo nodes return the same type 
@@ -112,7 +116,7 @@ public abstract class ASTNeoNode extends ASTNode
 	public int getElementType() {
 		return 0; 
 	}
-
+	
 	@Override
 	public ASTNeoNode[] getChildren() {
 		return (ASTNeoNode[]) ASTNeoChildrenCollector.getChildrenArray(this);
@@ -140,7 +144,7 @@ public abstract class ASTNeoNode extends ASTNode
 		// end with the generic post-visit
 		neovisitor.postVisit(this);
 	}
-
+	
 	
 	public final void accept0(@SuppressWarnings("unused") IASTVisitor visitor) {
 		Assert.fail("NEO AST elements should not use IASTVisitor");
@@ -148,8 +152,8 @@ public abstract class ASTNeoNode extends ASTNode
 	
 	// Neo AST elements use ASTNeoVisitor
 	public abstract void accept0(IASTNeoVisitor visitor);
-
-
+	
+	
 	/** DLTK visitor mechanism */
 	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
@@ -170,11 +174,12 @@ public abstract class ASTNeoNode extends ASTNode
 	public Module getModuleNode() {
 		return NodeUtil.getParentModule(this);
 	}
-
-
+	
+	
 	/** Sets the source range the same as the given elem, even if the range is invalid. */
+	@Deprecated
 	public final void setSourceRange(ASTDmdNode elem) {
-		maybeSetSourceRange(BaseDmdConverter.sourceRangeForced(elem));
+		maybeSetSourceRange(DefinitionConverter.convertSourceRange(elem));
 	}
 	
 	/** Sets the source range according to given sourceRange. */
@@ -191,17 +196,15 @@ public abstract class ASTNeoNode extends ASTNode
 	
 	
 	/* =============== STRING FUNCTIONS =============== */
-
-	/** Gets the node's classname striped of package qualifier,
-	 * plus optional range info. */
+	
+	/** Gets the node's classname striped of package qualifier,  plus optional range info. */
 	@Override
 	public final String toStringAsNode(boolean printRangeInfo) {
 		String str = toStringClassName();
-
-/*		if(this instanceof ASTDmdNode)
-			str = "#" + str;
-*/		if(printRangeInfo)
+		
+		if(printRangeInfo) {
 			str += " ["+ getStartPos()  +"+"+ getLengthUnchecked() +"]";
+		}
 		return str;
 	}
 	
@@ -211,7 +214,7 @@ public abstract class ASTNeoNode extends ASTNode
 		int lastIx = str.lastIndexOf('.');
 		return str.substring(lastIx+1);
 	}
-
+	
 	@Override
 	@Deprecated
 	public final String toString() {
@@ -220,17 +223,15 @@ public abstract class ASTNeoNode extends ASTNode
 		//return ASTPrinter.toStringAsFullNodeTree(this, true);
 	}
 	
-	/** Returns a simple representation of this node, 
-	 * element-like and for for a line. */
+	/** Returns a simple representation of this node, element-like and for for a line. */
 	public String toStringAsElement() {
 		return "?";
 	}
 	
-	/** Returns a simple representation of this node 
-	 * (ie. one liner, no members). */
+	/** Returns a simple representation of this node (ie. one liner, no members). */
 	protected String toStringAsCode() {
 		return "<"+toStringAsElement()+">";
 	}
-
-
+	
+	
 }

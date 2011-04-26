@@ -20,6 +20,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.NeoSourceRange;
 import dtool.ast.declarations.Declaration;
 import dtool.descentadapter.BaseDmdConverter;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -36,7 +37,7 @@ public class Module extends DefUnit implements IScopeNode {
 		protected Module module;
 		
 		public ModuleDefSymbol(IdentifierExp id) {
-			super(id, null);
+			super(DefinitionConverter.convertId(id), null);
 		}
 		
 		public ModuleDefSymbol(String id) {
@@ -55,7 +56,7 @@ public class Module extends DefUnit implements IScopeNode {
 		public String[] packages; // non-structural element
 		
 		public DeclarationModule(DefSymbol moduleName, ModuleDeclaration md) {
-			setSourceRange(md);
+			maybeSetSourceRange(DefinitionConverter.convertSourceRange(md));
 			this.moduleName = moduleName; 
 		}
 		
