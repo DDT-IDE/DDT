@@ -44,7 +44,6 @@ import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
-import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.TemplateParamAlias;
 import dtool.ast.definitions.TemplateParamTuple;
 import dtool.ast.definitions.TemplateParamType;
@@ -236,7 +235,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.EnumMember elem) {
-		return endAdapt(new EnumMember(elem, convContext));
+		return endAdapt(DefinitionConverter.createEnumMember(elem, convContext));
 	}
 
 	/* agregates */

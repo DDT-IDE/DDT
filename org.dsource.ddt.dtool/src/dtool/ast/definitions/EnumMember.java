@@ -5,18 +5,15 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
-import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScopeNode;
 
 public class EnumMember extends DefUnit {
 	
-	public Resolvable value;
+	public final Resolvable value;
 	
-	public EnumMember(descent.internal.compiler.parser.EnumMember elem, ASTConversionContext convContext) {
-		super(DefinitionConverter.convertDsymbol(elem, convContext));
-		initSourceRange(DefinitionConverter.convertSourceRange(elem));
-		this.value = Expression.convert(elem.value, convContext);
+	public EnumMember(DefUnitDataTuple defunit, Expression value) {
+		super(defunit.sourceRange, defunit.defName, defunit.comments);
+		this.value = value;
 	}
 	
 	@Override
