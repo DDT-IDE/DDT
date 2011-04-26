@@ -30,7 +30,7 @@ public final class TokenInfo {
 	}
 	
 	public SourceRange getRange() {
-		return new SourceRange(offset, value.length(), false);
+		return new SourceRange(offset, value.length());
 	}
 	
 }

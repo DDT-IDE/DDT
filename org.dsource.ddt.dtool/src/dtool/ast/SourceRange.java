@@ -1,6 +1,5 @@
 package dtool.ast;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
 
 
@@ -10,14 +9,6 @@ public final class SourceRange {
 	private final int length;
 	
 	public SourceRange(int offset, int length) {
-		this(offset, length, true);
-	}
-	
-	public SourceRange(int offset, int length, boolean mustBeValid) {
-		if(mustBeValid) {
-			assertTrue(offset >= 0);
-			assertTrue(length > 0);
-		}
 		this.offset = offset;
 		this.length = length;
 	}

@@ -45,11 +45,11 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	
 	private static RefIdentifier convertToRefIdentifierValid(descent.internal.compiler.parser.IdentifierExp elem) {
-		return convertToRefIdentifier(elem, sourceRangeValid(elem));
+		return convertToRefIdentifier(elem, sourceRangeStrict(elem));
 	}
 	
 	public static RefIdentifier convertToRefIdentifier(descent.internal.compiler.parser.IdentifierExp elem) {
-		return convertToRefIdentifier(elem, elem.hasNoSourceRangeInfo() ? null : sourceRangeValid(elem));
+		return convertToRefIdentifier(elem, elem.hasNoSourceRangeInfo() ? null : sourceRangeStrict(elem));
 	}
 	
 	private static RefIdentifier convertToRefIdentifier(descent.internal.compiler.parser.IdentifierExp elem,
@@ -101,10 +101,10 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			assertTrue(elem.ident == null);
 			return new InvalidSyntaxDeclaration(elem);
 		}
-		SourceRange sourceRange = sourceRangeValid(elem);
+		SourceRange sourceRange = sourceRangeStrict(elem);
 		
 		Reference tplReference = convertFromIdents(startPosRef, null, null, true, idents, idents.size(), convContext);
-		SourceRange sourceRangeTplInst = sourceRangeValid(startPosRef, endPosRef);
+		SourceRange sourceRangeTplInst = sourceRangeStrict(startPosRef, endPosRef);
 		RefTemplateInstance refTplInstance = createRefTemplateInstance(tplReference, elem.tiargs, sourceRangeTplInst,
 				convContext);
 		if (elem.ident != null) {
@@ -127,7 +127,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static Reference convertTypeTypeOf(descent.internal.compiler.parser.TypeTypeof elem
 			, ASTConversionContext convContext) {
-		Reference rootRef = new TypeTypeof(Expression.convert(elem.exp, convContext), sourceRangeValid(elem));
+		Reference rootRef = new TypeTypeof(Expression.convert(elem.exp, convContext), sourceRangeStrict(elem));
 		return createReferenceFromIdents(elem, rootRef, convContext);
 	}
 	
@@ -153,7 +153,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static RefTemplateInstance convertTemplateInstance(TemplateInstance elem, ASTConversionContext convContext) {
 		RefIdentifier refRawTemplate = convertToRefIdentifierValid(elem.name);
-		SourceRange sourceRange = sourceRangeValid(elem);
+		SourceRange sourceRange = sourceRangeStrict(elem);
 		return createRefTemplateInstance(refRawTemplate, elem.tiargs, sourceRange, convContext);
 	}
 	
@@ -169,7 +169,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 				endPosFixed = lastArg.hasNoSourceRangeInfo() && !DToolBundle.BUGS_MODE ? -1 : lastArg.getEndPos();
 				// we could add one to endPosFixed, but it's possible there are no parenthesis
 			} else {
-				endPosFixed = "!()".length();
+				endPosFixed = startPos + "!()".length();
 			}
 			
 			if (!templInstance.hasNoSourceRangeInfo()) {
@@ -180,7 +180,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		} else {
 			endPosFixed = endPos;
 		}
-		SourceRange sourceRange = new SourceRange(startPos, endPosFixed);
+		SourceRange sourceRange = sourceRangeStrict(startPos, endPosFixed);
 		return createRefTemplateInstance(tplReference, tiargs, sourceRange, convContext);
 	}
 	
@@ -281,14 +281,14 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			// convertToRawReference will correct the range if created reference.
 		}
 		
-		SourceRange topSourceRange = elem.hasNoSourceRangeInfo() ? null : sourceRangeValid(elem); 
+		SourceRange topSourceRange = elem.hasNoSourceRangeInfo() ? null : sourceRangeStrict(elem); 
 		return convertToRawReference(topSourceRange, convContext, rootExpression, subIdentifierExp);
 	}
 	
 	public static Reference convertDotTemplateIdExp(DotTemplateInstanceExp elem, ASTConversionContext convContext) {
 		Reference rawTplRef = convertToRawReference(elem, convContext, elem.e1, elem.ti.name);
 		
-		SourceRange tplInstSourceRange = sourceRangeValid(rawTplRef.getStartPos(), elem.ti.getEndPos());
+		SourceRange tplInstSourceRange = sourceRangeStrict(rawTplRef.getStartPos(), elem.ti.getEndPos());
 		if(!elem.hasNoSourceRangeInfo()) {
 			if(DToolBundle.UNSUPPORTED_DMD_CONTRACTS)
 				assertTrue(elem.getStartPos() == tplInstSourceRange.getStartPos());
@@ -301,7 +301,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 
 	private static Reference convertToRawReference(ASTDmdNode elem, ASTConversionContext convContext,
 			descent.internal.compiler.parser.Expression rootIdentifierExp, IdentifierExp subIdentifierExp) {
-		SourceRange topSourceRange = elem.hasNoSourceRangeInfo() ? null : sourceRangeValid(elem); 
+		SourceRange topSourceRange = elem.hasNoSourceRangeInfo() ? null : sourceRangeStrict(elem); 
 		return convertToRawReference(topSourceRange, convContext, rootIdentifierExp, subIdentifierExp);
 	}
 		
@@ -317,7 +317,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			RefModuleQualified refModuleQual = new RefModuleQualified(subName, null);
 			
 			int newStartPos = (topSourceRange == null) ? rootIdentifierExp.getStartPos() : topSourceRange.getStartPos();
-			refModuleQual.setSourceRange(sourceRangeValid(newStartPos, newEndPos));
+			refModuleQual.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
 			return refModuleQual;
 		} else {
 			IDefUnitReferenceNode rootRef = Expression.convert2(rootIdentifierExp, convContext);
@@ -339,7 +339,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			RefQualified refQualified = new RefQualified(rootRef, subName, topSourceRange);
 			int newStartPos = refQualified.getQualifier().getStartPos();
 			// Fix some DMD missing ranges 
-			refQualified.setSourceRange(sourceRangeValid(newStartPos, newEndPos));
+			refQualified.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
 			return refQualified;
 		}
 	}

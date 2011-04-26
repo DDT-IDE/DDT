@@ -11,21 +11,24 @@ public class BaseDmdConverter {
 		if (node.getStartPos() == -1) {
 			return null;
 		}
-		return sourceRangeValid(node);
+		return sourceRangeStrict(node);
 	}
 	
 	public static SourceRange sourceRangeForced(ASTDmdNode node) {
-		return new SourceRange(node.getStartPos(), node.getLength(), false);
+		return new SourceRange(node.getStartPos(), node.getLength());
 	}
 	
-	public static SourceRange sourceRangeValid(ASTDmdNode node) {
-		assertTrue(node.hasNoSourceRangeInfo() == false);
+	public static SourceRange sourceRangeStrict(ASTDmdNode node) {
+		assertTrue(node.getStartPos() >= 0);
 		assertTrue(node.getLength() > 0);
 		return new SourceRange(node.getStartPos(), node.getLength());
 	}
 	
-	public static SourceRange sourceRangeValid(int startPos, int endPos) {
-		return new SourceRange(startPos, endPos - startPos);
+	public static SourceRange sourceRangeStrict(int startPos, int endPos) {
+		assertTrue(startPos >= 0);
+		int length = endPos - startPos;
+		assertTrue(length > 0);
+		return new SourceRange(startPos, length);
 	}
 	
 }
