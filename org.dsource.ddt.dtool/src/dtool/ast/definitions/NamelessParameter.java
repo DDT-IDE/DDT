@@ -4,7 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 
@@ -19,7 +19,7 @@ public class NamelessParameter extends ASTNeoNode implements IFunctionParameter 
 	public final int storageClass;
 	public final Resolvable defaultValue;
 
-	public NamelessParameter(Reference type, int storageClass, Resolvable defaultValue, NeoSourceRange sourceRange) {
+	public NamelessParameter(Reference type, int storageClass, Resolvable defaultValue, SourceRange sourceRange) {
 		assertNotNull(type);
 		this.type = type;
 		this.storageClass = storageClass;

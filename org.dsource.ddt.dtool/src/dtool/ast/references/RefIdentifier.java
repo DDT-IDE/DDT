@@ -6,7 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Collection;
 
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.DefUnitSearch;
@@ -24,7 +24,7 @@ public class RefIdentifier extends NamedReference {
 		this.name = name;
 	}
 	
-	public RefIdentifier(String name, NeoSourceRange sourceRange) {
+	public RefIdentifier(String name, SourceRange sourceRange) {
 		this(name);
 		setSourceRange(sourceRange);
 	}

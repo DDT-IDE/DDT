@@ -178,12 +178,12 @@ public abstract class ASTNeoNode extends ASTNode implements IASTNode, IElement, 
 	}
 	
 	/** Sets the source range according to given sourceRange. */
-	public final void setSourceRange(NeoSourceRange sourceRange) {
+	public final void setSourceRange(SourceRange sourceRange) {
 		setStart(sourceRange.getOffset());
 		setEnd(sourceRange.getOffset() + sourceRange.getLength());
 	}
 	
-	protected final void initSourceRange(NeoSourceRange sourceRange) {
+	protected final void initSourceRange(SourceRange sourceRange) {
 		if(sourceRange != null) {
 			setSourceRange(sourceRange);
 		}

@@ -8,7 +8,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTPrinter;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 
 public class RefTemplateInstance extends Reference {
@@ -16,7 +16,7 @@ public class RefTemplateInstance extends Reference {
 	public final Reference refRawTemplate;
 	public final ASTNeoNode[] tiargs;
 	
-	protected RefTemplateInstance(Reference refRawTemplate, ASTNeoNode[] tiargs, NeoSourceRange sourceRange) {
+	protected RefTemplateInstance(Reference refRawTemplate, ASTNeoNode[] tiargs, SourceRange sourceRange) {
 		assertNotNull(refRawTemplate);
 		assertNotNull(tiargs);
 		this.refRawTemplate = refRawTemplate; 

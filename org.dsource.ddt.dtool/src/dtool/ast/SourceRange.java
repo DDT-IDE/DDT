@@ -4,16 +4,16 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
 
 
-public final class NeoSourceRange {
+public final class SourceRange {
 	
 	private final int offset;
 	private final int length;
 	
-	public NeoSourceRange(int offset, int length) {
+	public SourceRange(int offset, int length) {
 		this(offset, length, true);
 	}
 	
-	public NeoSourceRange(int offset, int length, boolean mustBeValid) {
+	public SourceRange(int offset, int length, boolean mustBeValid) {
 		if(mustBeValid) {
 			assertTrue(offset >= 0);
 			assertTrue(length > 0);
@@ -45,10 +45,10 @@ public final class NeoSourceRange {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if(!(obj instanceof NeoSourceRange))
+		if(!(obj instanceof SourceRange))
 			return false;
 		
-		NeoSourceRange other = downCast(obj);
+		SourceRange other = downCast(obj);
 		return this.offset == other.offset && this.length == other.length;
 	}
 }

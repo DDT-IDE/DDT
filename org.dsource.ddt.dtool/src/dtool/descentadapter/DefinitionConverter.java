@@ -16,7 +16,7 @@ import descent.internal.compiler.parser.Type;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.DToolBundle;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.ast.declarations.Declaration;
 import dtool.ast.definitions.DefUnit;
@@ -29,7 +29,7 @@ import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class DefinitionConverter extends BaseDmdConverter {
 	
-	public static NeoSourceRange convertSourceRange(ASTDmdNode elem) {
+	public static SourceRange convertSourceRange(ASTDmdNode elem) {
 		return BaseDmdConverter.sourceRangeForced(elem);
 	}
 	
@@ -88,7 +88,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			newComments[commentsSize-1] = postDdoc;
 		}
 		
-		NeoSourceRange sourceRange = convertSourceRange(elem);
+		SourceRange sourceRange = convertSourceRange(elem);
 		IdentifierExp ident = elem.ident;
 		if(ident == null) {
 			TokenInfo defName = new TokenInfo("<syntax_error>");
@@ -105,12 +105,12 @@ public class DefinitionConverter extends BaseDmdConverter {
 		
 		ASTNeoNode[] members = Declaration.convertMany(elem.members, convContext);
 		
-		NeoSourceRange sourceRange = BaseDmdConverter.sourceRangeForced(elem);
+		SourceRange sourceRange = BaseDmdConverter.sourceRangeForced(elem);
 		if(elem.md == null) {
 			return Module.createModule(sourceRange, members);
 		} else  {
 			TokenInfo defName = DefinitionConverter.convertIdToken(elem.md.id);
-			NeoSourceRange declRange = DefinitionConverter.convertSourceRange(elem.md);
+			SourceRange declRange = DefinitionConverter.convertSourceRange(elem.md);
 			
 			String[] packages = ArrayUtil.newSameSize(elem.md.packages, String.class);
 			

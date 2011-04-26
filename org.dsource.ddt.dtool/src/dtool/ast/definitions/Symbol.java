@@ -3,7 +3,7 @@ package dtool.ast.definitions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 
 /** A Symbol is node wrapping an identifier, used only in DefUnits names.*/
@@ -15,7 +15,7 @@ public class Symbol extends ASTNeoNode {
 		this(symbol.value, symbol.getRange());
 	}
 	
-	public Symbol(String name, NeoSourceRange sourceRange) {
+	public Symbol(String name, SourceRange sourceRange) {
 		assertNotNull(name);
 		this.name = name;
 		initSourceRange(sourceRange);

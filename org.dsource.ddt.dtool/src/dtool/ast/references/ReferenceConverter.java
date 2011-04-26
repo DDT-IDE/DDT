@@ -22,7 +22,7 @@ import descent.internal.compiler.parser.TypeInstance;
 import descent.internal.compiler.parser.TypeQualified;
 import dtool.DToolBundle;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.declarations.InvalidSyntaxDeclaration;
 import dtool.ast.definitions.MixinContainer;
 import dtool.ast.definitions.NamedMixin;
@@ -53,7 +53,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	}
 	
 	private static RefIdentifier convertToRefIdentifier(descent.internal.compiler.parser.IdentifierExp elem,
-			NeoSourceRange sourceRange) {
+			SourceRange sourceRange) {
 		assertTrue(elem.getClass() == IdentifierExp.class && elem.ident.length > 0);
 		RefIdentifier refIdentifier = new RefIdentifier(new String(elem.ident));
 		if (sourceRange != null) {
@@ -101,10 +101,10 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			assertTrue(elem.ident == null);
 			return new InvalidSyntaxDeclaration(elem);
 		}
-		NeoSourceRange sourceRange = sourceRangeValid(elem);
+		SourceRange sourceRange = sourceRangeValid(elem);
 		
 		Reference tplReference = convertFromIdents(startPosRef, null, null, true, idents, idents.size(), convContext);
-		NeoSourceRange sourceRangeTplInst = sourceRangeValid(startPosRef, endPosRef);
+		SourceRange sourceRangeTplInst = sourceRangeValid(startPosRef, endPosRef);
 		RefTemplateInstance refTplInstance = createRefTemplateInstance(tplReference, elem.tiargs, sourceRangeTplInst,
 				convContext);
 		if (elem.ident != null) {
@@ -153,7 +153,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static RefTemplateInstance convertTemplateInstance(TemplateInstance elem, ASTConversionContext convContext) {
 		RefIdentifier refRawTemplate = convertToRefIdentifierValid(elem.name);
-		NeoSourceRange sourceRange = sourceRangeValid(elem);
+		SourceRange sourceRange = sourceRangeValid(elem);
 		return createRefTemplateInstance(refRawTemplate, elem.tiargs, sourceRange, convContext);
 	}
 	
@@ -180,12 +180,12 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		} else {
 			endPosFixed = endPos;
 		}
-		NeoSourceRange sourceRange = new NeoSourceRange(startPos, endPosFixed);
+		SourceRange sourceRange = new SourceRange(startPos, endPosFixed);
 		return createRefTemplateInstance(tplReference, tiargs, sourceRange, convContext);
 	}
 	
 	public static RefTemplateInstance createRefTemplateInstance(Reference tplReference,
-			List<ASTDmdNode> tiargs, NeoSourceRange sourceRange, ASTConversionContext convContext) {
+			List<ASTDmdNode> tiargs, SourceRange sourceRange, ASTConversionContext convContext) {
 		ASTNeoNode[] tiargsNew = DescentASTConverter.convertMany(tiargs, convContext);
 		return new RefTemplateInstance(tplReference, tiargsNew, sourceRange);
 	}
@@ -281,14 +281,14 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			// convertToRawReference will correct the range if created reference.
 		}
 		
-		NeoSourceRange topSourceRange = elem.hasNoSourceRangeInfo() ? null : sourceRangeValid(elem); 
+		SourceRange topSourceRange = elem.hasNoSourceRangeInfo() ? null : sourceRangeValid(elem); 
 		return convertToRawReference(topSourceRange, convContext, rootExpression, subIdentifierExp);
 	}
 	
 	public static Reference convertDotTemplateIdExp(DotTemplateInstanceExp elem, ASTConversionContext convContext) {
 		Reference rawTplRef = convertToRawReference(elem, convContext, elem.e1, elem.ti.name);
 		
-		NeoSourceRange tplInstSourceRange = sourceRangeValid(rawTplRef.getStartPos(), elem.ti.getEndPos());
+		SourceRange tplInstSourceRange = sourceRangeValid(rawTplRef.getStartPos(), elem.ti.getEndPos());
 		if(!elem.hasNoSourceRangeInfo()) {
 			if(DToolBundle.UNSUPPORTED_DMD_CONTRACTS)
 				assertTrue(elem.getStartPos() == tplInstSourceRange.getStartPos());
@@ -301,11 +301,11 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 
 	private static Reference convertToRawReference(ASTDmdNode elem, ASTConversionContext convContext,
 			descent.internal.compiler.parser.Expression rootIdentifierExp, IdentifierExp subIdentifierExp) {
-		NeoSourceRange topSourceRange = elem.hasNoSourceRangeInfo() ? null : sourceRangeValid(elem); 
+		SourceRange topSourceRange = elem.hasNoSourceRangeInfo() ? null : sourceRangeValid(elem); 
 		return convertToRawReference(topSourceRange, convContext, rootIdentifierExp, subIdentifierExp);
 	}
 		
-	private static Reference convertToRawReference(NeoSourceRange topSourceRange, ASTConversionContext convContext,
+	private static Reference convertToRawReference(SourceRange topSourceRange, ASTConversionContext convContext,
 			descent.internal.compiler.parser.Expression rootIdentifierExp, IdentifierExp subIdentifierExp) {
 		RefIdentifier subName = convertToRefIdentifierValid(subIdentifierExp);
 		assertTrue(subName.getEndPos() == subIdentifierExp.getEndPos());

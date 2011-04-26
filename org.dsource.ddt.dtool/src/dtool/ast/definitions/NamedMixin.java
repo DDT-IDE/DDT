@@ -3,7 +3,7 @@ package dtool.ast.definitions;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.TemplateMixin;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.statements.IStatement;
 import dtool.descentadapter.DefinitionConverter;
@@ -15,7 +15,7 @@ public class NamedMixin extends DefUnit implements IStatement {
 	
 	public final RefTemplateInstance type;
 	
-	public NamedMixin(TemplateMixin elem, RefTemplateInstance tplInstance, ASTConversionContext convContext, NeoSourceRange sourceRange) {
+	public NamedMixin(TemplateMixin elem, RefTemplateInstance tplInstance, ASTConversionContext convContext, SourceRange sourceRange) {
 		super(DefinitionConverter.convertDsymbol(elem, convContext));
 		this.type = tplInstance;
 		setSourceRange(sourceRange);

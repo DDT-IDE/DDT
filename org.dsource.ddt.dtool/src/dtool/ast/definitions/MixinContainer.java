@@ -7,7 +7,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
@@ -16,7 +16,7 @@ public class MixinContainer extends ASTNeoNode implements IStatement, INonScoped
 	
 	public final RefTemplateInstance type;
 	
-	public MixinContainer(RefTemplateInstance typeref, NeoSourceRange neoSourceRange) {
+	public MixinContainer(RefTemplateInstance typeref, SourceRange neoSourceRange) {
 		this.type = typeref;
 		setSourceRange(neoSourceRange);
 	}

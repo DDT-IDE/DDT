@@ -29,8 +29,8 @@ public final class TokenInfo {
 		this.offset = -1;
 	}
 	
-	public NeoSourceRange getRange() {
-		return new NeoSourceRange(offset, value.length(), false);
+	public SourceRange getRange() {
+		return new SourceRange(offset, value.length(), false);
 	}
 	
 }

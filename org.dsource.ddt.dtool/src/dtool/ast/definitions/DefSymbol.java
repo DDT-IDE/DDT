@@ -1,6 +1,6 @@
 package dtool.ast.definitions;
 
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 
 
@@ -15,7 +15,7 @@ public class DefSymbol extends Symbol {
 		setParent(parent);
 	}
 	
-	public DefSymbol(String id,  NeoSourceRange sourceRange, DefUnit parent) {
+	public DefSymbol(String id,  SourceRange sourceRange, DefUnit parent) {
 		super(id, sourceRange);
 		setParent(parent);
 	}

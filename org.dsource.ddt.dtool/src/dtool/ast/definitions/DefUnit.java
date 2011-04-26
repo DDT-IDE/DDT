@@ -6,7 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import descent.internal.compiler.parser.Comment;
 import descent.internal.compiler.parser.IdentifierExp;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.descentadapter.DefinitionConverter;
 import dtool.refmodel.IScopeNode;
@@ -38,10 +38,10 @@ public abstract class DefUnit extends ASTNeoNode {
 	public final DefSymbol defname;
 	
 	public static final class DefUnitDataTuple {
-		public NeoSourceRange sourceRange;
+		public SourceRange sourceRange;
 		public TokenInfo defName;
 		public Comment[] comments;
-		public DefUnitDataTuple(NeoSourceRange sourceRange, TokenInfo defName, Comment[] comments) {
+		public DefUnitDataTuple(SourceRange sourceRange, TokenInfo defName, Comment[] comments) {
 			this.sourceRange = sourceRange;
 			this.defName = defName;
 			this.comments = comments;
@@ -52,11 +52,11 @@ public abstract class DefUnit extends ASTNeoNode {
 		this(defunit.sourceRange, defunit.defName, defunit.comments);
 	}
 	
-	public DefUnit(NeoSourceRange sourceRange, TokenInfo defName, Comment[] comments) {
+	public DefUnit(SourceRange sourceRange, TokenInfo defName, Comment[] comments) {
 		this(sourceRange, defName.value, defName.getRange(), comments);
 	}
 	
-	public DefUnit(NeoSourceRange sourceRange, String defName, NeoSourceRange defNameSourceRange, Comment[] comments) {
+	public DefUnit(SourceRange sourceRange, String defName, SourceRange defNameSourceRange, Comment[] comments) {
 		initSourceRange(sourceRange);
 		this.defname = new DefSymbol(defName, defNameSourceRange, this);
 		this.comments = comments;
@@ -68,7 +68,7 @@ public abstract class DefUnit extends ASTNeoNode {
 		this.comments = null;
 	}
 	
-	protected DefUnit(NeoSourceRange sourceRange, DefSymbol defname, Comment[] comments) {
+	protected DefUnit(SourceRange sourceRange, DefSymbol defname, Comment[] comments) {
 		initSourceRange(sourceRange);
 		assertNotNull(defname);
 		this.defname = defname;

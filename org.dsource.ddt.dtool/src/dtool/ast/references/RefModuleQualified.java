@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.refmodel.IDefUnitReferenceNode;
@@ -16,7 +16,7 @@ import dtool.refmodel.NodeUtil;
  */
 public class RefModuleQualified extends CommonRefQualified {
 	
-	public RefModuleQualified(RefIdentifier subref, NeoSourceRange sourceRange) {
+	public RefModuleQualified(RefIdentifier subref, SourceRange sourceRange) {
 		this.qualifiedName = subref;
 		initSourceRange(sourceRange);
 	}

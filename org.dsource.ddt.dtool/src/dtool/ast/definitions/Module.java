@@ -15,7 +15,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NeoSourceRange;
+import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -50,7 +50,7 @@ public class Module extends DefUnit implements IScopeNode {
 		public DefSymbol moduleName; 
 		public String[] packages; // non-structural element
 		
-		public DeclarationModule(NeoSourceRange sourceRange, String[] packages, DefSymbol moduleName) {
+		public DeclarationModule(SourceRange sourceRange, String[] packages, DefSymbol moduleName) {
 			initSourceRange(sourceRange);
 			
 			assertNotNull(packages);
@@ -85,20 +85,20 @@ public class Module extends DefUnit implements IScopeNode {
 	public final DeclarationModule md;
 	public final ASTNeoNode[] members;
 	
-	public static Module createModule(NeoSourceRange sourceRange, Comment[] comments, String[] packages,
-			TokenInfo defName, NeoSourceRange declRange, ASTNeoNode[] members) {
+	public static Module createModule(SourceRange sourceRange, Comment[] comments, String[] packages,
+			TokenInfo defName, SourceRange declRange, ASTNeoNode[] members) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(defName);
 		DeclarationModule md = new DeclarationModule(declRange, packages, defSymbol);
 		return new Module(defSymbol, comments, md, members, sourceRange);
 	}
 	
-	public static Module createModule(NeoSourceRange sourceRange, ASTNeoNode[] members) {
+	public static Module createModule(SourceRange sourceRange, ASTNeoNode[] members) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol("<unnamed>");
 		return new Module(defSymbol, null, null, members, sourceRange);
 	}
 	
 	protected Module(ModuleDefSymbol defSymbol, Comment[] preComments, DeclarationModule md, 
-			ASTNeoNode[] members, NeoSourceRange sourceRange) {
+			ASTNeoNode[] members, SourceRange sourceRange) {
 		super(sourceRange, defSymbol, preComments);
 		defSymbol.module = this;
 		this.md = md;
