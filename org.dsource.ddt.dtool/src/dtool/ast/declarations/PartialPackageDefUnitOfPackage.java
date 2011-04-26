@@ -4,14 +4,14 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import dtool.ast.ASTNeoNode;
-import dtool.ast.definitions.Symbol;
+import dtool.ast.TokenInfo;
 
 
 public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
 	
 	PartialPackageDefUnit child;
 	
-	protected PartialPackageDefUnitOfPackage(Symbol defname) {
+	protected PartialPackageDefUnitOfPackage(TokenInfo defname) {
 		super(defname);
 	}
 	

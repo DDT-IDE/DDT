@@ -10,6 +10,8 @@ import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.Module;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.NeoSourceRange;
+import dtool.ast.TokenInfo;
 import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScopeNode;
@@ -38,10 +40,10 @@ public abstract class DefUnit extends ASTNeoNode {
 	
 	
 	public final Comment[] comments;
-	public final Symbol defname;
+	public final DefSymbol defname;
 	public EArcheType archeType;
 	
-	public DefUnit(Dsymbol elem, ASTConversionContext convContext) {
+	public static DefUnitDataTuple convertDsymbol(Dsymbol elem, ASTConversionContext convContext) {
 		Module module = convContext.module;
 		
 		// The following code is a workaround for the way the DMD AST is created.
@@ -85,15 +87,40 @@ public abstract class DefUnit extends ASTNeoNode {
 			newComments[commentsSize-1] = postDdoc;
 		}
 		
-		convertNode(elem);
+		NeoSourceRange sourceRange = DefinitionConverter.convertSourceRange(elem);
 		IdentifierExp ident = elem.ident;
 		if(ident == null) {
-			this.defname = new DefSymbol("<syntax_error>", this);
+			TokenInfo defName = new TokenInfo("<syntax_error>");
+			return new DefUnitDataTuple(sourceRange, defName, newComments);
 		} else {
-			this.defname = new DefSymbol(DefinitionConverter.convertId(ident), this);
+			TokenInfo defName = DefinitionConverter.convertId(ident);
+			return new DefUnitDataTuple(sourceRange, defName, newComments);
 		}
-		
-		this.comments = newComments;
+	}
+	
+	public static final class DefUnitDataTuple {
+		public NeoSourceRange sourceRange;
+		public TokenInfo defName;
+		public Comment[] comments;
+		public DefUnitDataTuple(NeoSourceRange sourceRange, TokenInfo defName, Comment[] comments) {
+			this.sourceRange = sourceRange;
+			this.defName = defName;
+			this.comments = comments;
+		}
+	}
+	
+	public DefUnit(DefUnitDataTuple defunit) {
+		this(defunit.sourceRange, defunit.defName, defunit.comments);
+	}
+	
+	public DefUnit(NeoSourceRange sourceRange, TokenInfo defName, Comment[] comments) {
+		this(sourceRange, defName.value, defName.getRange(), comments);
+	}
+	
+	public DefUnit(NeoSourceRange sourceRange, String defName, NeoSourceRange defNameSourceRange, Comment[] comments) {
+		maybeSetSourceRange(sourceRange);
+		this.defname = new DefSymbol(defName, defNameSourceRange, this);
+		this.comments = comments;
 	}
 	
 	@Deprecated
@@ -102,11 +129,9 @@ public abstract class DefUnit extends ASTNeoNode {
 		this.comments = null;
 	}
 	
-	public DefUnit(Symbol defname) {
-		this(defname, null);
-	}
-	
-	public DefUnit(Symbol defname, Comment[] comments) {
+	@Deprecated
+	public DefUnit(NeoSourceRange sourceRange, DefSymbol defname, Comment[] comments) {
+		maybeSetSourceRange(sourceRange);
 		assertNotNull(defname);
 		this.defname = defname;
 		this.comments = comments;

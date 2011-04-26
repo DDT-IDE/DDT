@@ -4,8 +4,8 @@ package dtool.tests.ref.cc;
 import org.junit.Test;
 
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.Symbol;
 import dtool.refmodel.IScopeNode;
 
 public class CodeCompletion_IntrinsicsTest extends CodeCompletion__Common {
@@ -27,7 +27,7 @@ public class CodeCompletion_IntrinsicsTest extends CodeCompletion__Common {
 	}
 	
 	public DefUnit mockDefUnit(String name) throws Exception {
-		return new DefUnit(new Symbol(name)) {
+		return new DefUnit(null, new TokenInfo(name), null) {
 			@Override
 			public void accept0(IASTNeoVisitor visitor) {
 			}

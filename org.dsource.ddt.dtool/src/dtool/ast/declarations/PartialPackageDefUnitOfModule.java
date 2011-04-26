@@ -5,17 +5,17 @@ import java.util.Iterator;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.definitions.Symbol;
 import dtool.ast.references.RefModule;
 
 public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
-
+	
 	RefModule moduleRef;
 	DefUnit module;
 	
-	public PartialPackageDefUnitOfModule(Symbol name) {
+	public PartialPackageDefUnitOfModule(TokenInfo name) {
 		super(name);
 	}
 	
@@ -34,12 +34,11 @@ public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 	
 	@Override
 	public String toStringAsElement() {
-		if(module != null)
+		if(module != null) {
 			return getName() /*+ "." + module.toStringAsElement()*/;
-		else {
+		} else {
 			return getName() /*+ "." + moduleRef.module*/;
 		}
 	}
-
-
+	
 }

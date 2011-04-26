@@ -8,9 +8,9 @@ import java.util.List;
 import melnorme.utilbox.misc.StringUtil;
 import descent.internal.compiler.parser.IdentifierExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.definitions.Symbol;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.NodeUtil;
@@ -61,7 +61,7 @@ public class RefModule extends NamedReference {
 	
 	public static class LiteModuleDummy extends DefUnit {
 		public LiteModuleDummy(String defname) {
-			super(new Symbol(defname));
+			super(null, new TokenInfo(defname), null);
 		}
 
 		@Override

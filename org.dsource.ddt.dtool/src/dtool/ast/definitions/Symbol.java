@@ -5,6 +5,7 @@ import descent.internal.compiler.parser.IdentifierExp;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.NeoSourceRange;
+import dtool.ast.TokenInfo;
 import dtool.descentadapter.DefinitionConverter;
 
 /** A Symbol is node wrapping an identifier, used only in DefUnits names.*/
@@ -17,18 +18,14 @@ public class Symbol extends ASTNeoNode {
 		this(DefinitionConverter.convertId(id));
 	}
 	
-	public Symbol(Symbol symbol) {
-		this(symbol.name, symbol.getSourceRangeNeo());
+	public Symbol(TokenInfo symbol) {
+		this(symbol.value, symbol.getRange());
 	}
 	
 	public Symbol(String name, NeoSourceRange sourceRange) {
 		assertNotNull(name);
 		this.name = name;
 		maybeSetSourceRange(sourceRange);
-	}
-	
-	public Symbol(char[] name) {
-		this(new String(name));
 	}
 	
 	public Symbol(String name) {
@@ -46,9 +43,9 @@ public class Symbol extends ASTNeoNode {
 		visitor.endVisit(this);
 	}
 	
-	
 	@Override
 	public String toStringAsElement() {
 		return name;
 	}
+	
 }

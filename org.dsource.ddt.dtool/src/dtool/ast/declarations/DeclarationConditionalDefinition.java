@@ -27,7 +27,7 @@ public class DeclarationConditionalDefinition extends ASTNeoNode {
 		if(elem.ident != null)
 			this.identifier = new Symbol(elem.ident);
 		else 
-			this.identifier = new Symbol(elem.version.value);
+			this.identifier = new Symbol(new String(elem.version.value));
 		conditionalKind = Type.DEBUG;
 	}
 	
@@ -36,7 +36,7 @@ public class DeclarationConditionalDefinition extends ASTNeoNode {
 		if(elem.ident != null)
 			this.identifier = new Symbol(elem.ident);
 		else 
-			this.identifier = new Symbol(elem.version.value);
+			this.identifier = new Symbol(new String(elem.version.value));
 		conditionalKind = Type.VERSION;
 	}
 

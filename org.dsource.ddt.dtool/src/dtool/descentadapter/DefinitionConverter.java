@@ -9,9 +9,10 @@ import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.TemplateInstanceWrapper;
 import descent.internal.compiler.parser.Type;
 import descent.internal.compiler.parser.ast.ASTNode;
+import dtool.DToolBundle;
 import dtool.ast.NeoSourceRange;
+import dtool.ast.TokenInfo;
 import dtool.ast.definitions.NamelessParameter;
-import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.ReferenceConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -22,12 +23,12 @@ public class DefinitionConverter extends BaseDmdConverter {
 		return BaseDmdConverter.sourceRangeForced(elem);
 	}
 	
-	public static Symbol convertId(IdentifierExp id) {
+	public static TokenInfo convertId(IdentifierExp id) {
 		assertTrue(id.getClass() == IdentifierExp.class);
-		return new Symbol(new String(id.ident), convertSourceRange(id));
+		if(DToolBundle.UNSUPPORTED_DMD_CONTRACTS)
+			assertTrue(id.getLength() == id.ident.length); // TODO check this
+		return new TokenInfo(new String(id.ident), id.getStartPos());
 	}
-	
-	/*------------------------------------*/
 	
 	public static NamelessParameter convertNamelessParameter(Type type, ASTConversionContext convContext) {
 		return new NamelessParameter(ReferenceConverter.convertType(type, convContext), 0, null, sourceRange(type));

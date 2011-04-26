@@ -4,9 +4,9 @@ import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.definitions.Symbol;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -17,14 +17,14 @@ import dtool.refmodel.IScopeNode;
  * part of it's complete namespace.
  */
 public abstract class PartialPackageDefUnit extends DefUnit implements IScopeNode {
-
-	public PartialPackageDefUnit(Symbol name) {
-		super(name);
+	
+	public PartialPackageDefUnit(TokenInfo name) {
+		super(null, name, null);
 	}
-
+	
 	public static PartialPackageDefUnit createPartialDefUnits(
 			String[] packages, RefModule entModule, Module module) {
-		Symbol defname = new Symbol(packages[0]);
+		TokenInfo defname = new TokenInfo(packages[0]);
 		if(packages.length == 1 ) {
 			PartialPackageDefUnitOfModule packageDefUnit =  new PartialPackageDefUnitOfModule(defname);
 			packageDefUnit.module = module;
@@ -37,7 +37,7 @@ public abstract class PartialPackageDefUnit extends DefUnit implements IScopeNod
 			return packageDefUnit;
 		}
 	}
-
+	
 	
 	@Override
 	public EArcheType getArcheType() {
@@ -55,7 +55,7 @@ public abstract class PartialPackageDefUnit extends DefUnit implements IScopeNod
 		return getName();
 	}
 	
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 	}

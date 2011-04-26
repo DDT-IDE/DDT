@@ -1,5 +1,8 @@
 package dtool.ast.definitions;
 
+import dtool.ast.NeoSourceRange;
+import dtool.ast.TokenInfo;
+
 
 /**
  * A Symbol that is the name of a DefUnit, and that knows how to get
@@ -7,17 +10,21 @@ package dtool.ast.definitions;
  */
 public class DefSymbol extends Symbol {
 	
-	public DefSymbol(Symbol id, DefUnit parent) {
+	public DefSymbol(TokenInfo id, DefUnit parent) {
 		super(id);
 		setParent(parent);
 	}
 	
 	protected DefSymbol(String id) {
-		super(id);
+		super(id, null);
 	}
 	
 	protected DefSymbol(String id, DefUnit parent) {
-		super(id);
+		this(id, null, parent);
+	}
+	
+	protected DefSymbol(String id,  NeoSourceRange sourceRange, DefUnit parent) {
+		super(id, sourceRange);
 		setParent(parent);
 	}
 	

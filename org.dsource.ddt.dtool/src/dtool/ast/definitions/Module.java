@@ -89,8 +89,8 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	public static Module createModule(descent.internal.compiler.parser.Module elem, ASTConversionContext convContext) {
 		ModuleDefSymbol defname;
-		DeclarationModule md;
 		Comment[] comments = null;
+		DeclarationModule md;
 		
 		ASTNeoNode[] members = Declaration.convertMany(elem.members, convContext);
 		
@@ -127,9 +127,8 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	public Module(ModuleDefSymbol defname, Comment[] preComments, DeclarationModule md,
 			ASTNeoNode[] members, NeoSourceRange sourceRange) {
-		super(defname, preComments);
+		super(sourceRange, defname, preComments);
 		defname.module = this;
-		maybeSetSourceRange(sourceRange);
 		this.md = md;
 		this.members = members;
 	}

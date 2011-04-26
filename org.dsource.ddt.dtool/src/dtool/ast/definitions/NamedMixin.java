@@ -15,18 +15,10 @@ public class NamedMixin extends DefUnit implements IStatement {
 	public final RefTemplateInstance type;
 	
 	public NamedMixin(TemplateMixin elem, RefTemplateInstance tplInstance, ASTConversionContext convContext, NeoSourceRange sourceRange) {
-		super(elem, convContext);
+		super(DefUnit.convertDsymbol(elem, convContext));
 		this.type = tplInstance;
 		setSourceRange(sourceRange);
 	}
-	
-//	public NamedMixin(RefTemplateInstance tplInstance, NeoSourceRange sourceRange) {
-//		super(elem, convContext);
-//		this.type = tplInstance;
-//		if(sourceRange != null) {
-//			setSourceRange(sourceRange);
-//		}
-//	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

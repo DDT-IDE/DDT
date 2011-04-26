@@ -91,11 +91,6 @@ public abstract class ASTNeoNode extends ASTNode implements IASTNode, IElement, 
 		return super.getSourceRange();
 	}
 	
-	/** Gets an source range (different API Neo). */
-	public NeoSourceRange getSourceRangeNeo() {
-		return new NeoSourceRange(getStartPos(), getLength(), false);
-	}
-	
 	/** Checks if the node has no defined source range info. */
 	@Override
 	public final boolean hasNoSourceRangeInfo() {
@@ -120,10 +115,6 @@ public abstract class ASTNeoNode extends ASTNode implements IASTNode, IElement, 
 	@Override
 	public ASTNeoNode[] getChildren() {
 		return (ASTNeoNode[]) ASTNeoChildrenCollector.getChildrenArray(this);
-	}
-	
-	public void convertNode(ASTDmdNode node) {
-		setSourceRange(node);
 	}
 	
 	/**
@@ -175,6 +166,10 @@ public abstract class ASTNeoNode extends ASTNode implements IASTNode, IElement, 
 		return NodeUtil.getParentModule(this);
 	}
 	
+	@Deprecated
+	public final void convertNode(ASTDmdNode node) {
+		setSourceRange(node);
+	}
 	
 	/** Sets the source range the same as the given elem, even if the range is invalid. */
 	@Deprecated
