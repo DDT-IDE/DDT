@@ -10,6 +10,10 @@
  * Fixed bug in cast expression, where the cast type reference was ignored by the parser/semantic-engine; 
  * Fixed bug where DDoc comments where not associated with the corresponding symbol definition if that definition had 
 		protection, storage, linkage, or certain other kinds of attributes;
+ * Implemented #35: format immutable keyword and @annotations.
+    * Added (nothrow, pure, shared, immutable) keywords to syntax coloring
+    * Added @annotations to syntax coloring (spaces after @ not supported, any identifier accepted)
+    * Changed syntax coloring example in preferences
 
 == DDT 0.4.1 (2011-03-04) ==
  * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)

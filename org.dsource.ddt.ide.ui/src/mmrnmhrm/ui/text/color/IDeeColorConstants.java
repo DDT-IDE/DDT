@@ -28,6 +28,7 @@ public interface IDeeColorConstants {
 	String DEE_DEFAULT = PREFIX + "default";
 	String DEE_KEYWORDS = PREFIX + "keyword";
 	String DEE_BASICTYPES = PREFIX + "basictypes";
+	String DEE_ANNOTATIONS = PREFIX + "annotations";
 	String DEE_LITERALS = PREFIX + "literals";
 	String DEE_OPERATORS = PREFIX + "operators"; // Not supported yet  
 	String DEE_SPECIAL = PREFIX + "special"; // For debug purposes only

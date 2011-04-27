@@ -15,13 +15,14 @@ public abstract class DeeColorPreferenceInitializer implements IDeeColorConstant
 	private static RGB COLOR_CYAN_RGB        = new RGB(0x00, 0xFF, 0xFF); 
 	private static RGB COLOR_DARK_YELLOW_RGB = new RGB(0x80, 0x80, 0x00); 
 	
-	/** Sets the defaults for the color preferences. */ 
+	/** Sets the defaults for the color preferences. */
 	public static void initializeDefaults(IPreferenceStore store) {
 		setColoringStyle(store, DEE_DEFAULT, true, COLOR_BLACK_RGB, false, false, false);
 		
 		setColoringStyle(store, DEE_KEYWORDS, true, new RGB(0, 0, 127), true, false, false);
 		
 		setColoringStyle(store, DEE_BASICTYPES, true, new RGB(0, 0, 127), false, false, false);
+		setColoringStyle(store, DEE_ANNOTATIONS, true, new RGB(100, 100, 100), false, false, false);
 		
 		setColoringStyle(store, DEE_OPERATORS, true, COLOR_BLACK_RGB, false, false, false);
 		

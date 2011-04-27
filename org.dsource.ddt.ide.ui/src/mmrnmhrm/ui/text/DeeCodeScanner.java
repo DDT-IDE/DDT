@@ -41,6 +41,7 @@ public class DeeCodeScanner extends AbstractScriptScanner {
 		IDeeColorConstants.DEE_DEFAULT,
 		IDeeColorConstants.DEE_KEYWORDS,
 		IDeeColorConstants.DEE_BASICTYPES,
+		IDeeColorConstants.DEE_ANNOTATIONS,
 		IDeeColorConstants.DEE_LITERALS,
 		IDeeColorConstants.DEE_OPERATORS,
 	};
@@ -70,6 +71,10 @@ public class DeeCodeScanner extends AbstractScriptScanner {
 		addWordsFromTokens(wordRule, TokenUtil.specialNamedLiterals, tkLiterals);
 		rules.add(wordRule);
 		
+		IToken tkAnnotation = getToken(IDeeColorConstants.DEE_ANNOTATIONS);
+		WordRule annotationsRule = new WordRule(new AnnotationsWordDetector(), tkAnnotation);
+		rules.add(annotationsRule);
+		
 		setDefaultReturnToken(tkOther);
 		return rules;
 	}
@@ -98,6 +103,13 @@ public class DeeCodeScanner extends AbstractScriptScanner {
 		@Override
 		public boolean isWordStart(char character) {
 			return Character.isJavaIdentifierPart(character);
+		}
+	}
+	
+	public static class AnnotationsWordDetector extends JavaWordDetector {
+		@Override
+		public boolean isWordStart(char character) {
+			return character == '@';
 		}
 	}
 }
