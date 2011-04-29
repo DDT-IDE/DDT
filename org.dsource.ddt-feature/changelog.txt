@@ -1,6 +1,6 @@
 = DDT Change Log =
 
-== DDT 0.4.2 (devel) ==
+== DDT 0.4.2 (2011-04-29) ==
  * Fixed #33, bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.
  * Fixed bug where all D comments where considered DDoc comments for documentation hover.
  * Fixed limitation where problem hovers where not more prioritary than documentation hovers.
