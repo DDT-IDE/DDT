@@ -226,6 +226,11 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	private static void setupPrefixedSearchOptions(PrefixSearchOptions searchOptions, 
 			final int offset, int nameOffset, String name) {
 		int prefixLen = offset - nameOffset; 
+		assertTrue(prefixLen >= 0);
+		if(name.length() < prefixLen) {
+			// This case shouldnt happen, but can happen due to parser source range bugs, so workaround
+			prefixLen = name.length();
+		}
 		searchOptions.prefixLen = prefixLen;
 		searchOptions.rplLen = name.length() - prefixLen;
 		searchOptions.searchPrefix = name.substring(0, prefixLen);

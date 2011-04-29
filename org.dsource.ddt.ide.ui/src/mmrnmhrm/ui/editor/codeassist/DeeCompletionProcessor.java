@@ -28,7 +28,6 @@ public class DeeCompletionProcessor extends ScriptCompletionProcessor {
 	
 	@Override
 	protected ContentAssistInvocationContext createContext(ITextViewer viewer, int offset) {
-		System.out.println("Context Create");
 		return new ScriptContentAssistInvocationContext(viewer, offset, fEditor, getNatureId());
 	}
 	

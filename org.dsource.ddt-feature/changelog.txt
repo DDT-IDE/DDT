@@ -14,6 +14,7 @@
     * Added (nothrow, pure, shared, immutable) keywords to syntax coloring
     * Added @annotations to syntax coloring (spaces after @ not supported, any identifier accepted)
     * Changed syntax coloring example in preferences
+ * Fixed minor Content Assist bug where completions would not appear when requested on certain syntax errors.
 
 == DDT 0.4.1 (2011-03-04) ==
  * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)
