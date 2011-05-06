@@ -1,16 +1,17 @@
+#summary ChangeLog for releases.
+
 = DDT Change Log =
 
 == DDT 0.4.2 (2011-04-29) ==
- * Fixed #33, bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.
+ * Fixed issue #33, bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.
  * Fixed bug where all D comments where considered DDoc comments for documentation hover.
  * Fixed limitation where problem hovers where not more prioritary than documentation hovers.
- * Fixed #37: F2 always brings up empty documentation hover.
- * Fixed #38: autocomplete crashing / very slow. (Content Assist takes very long to show up when many completion options are available)
+ * Fixed issue #37: F2 always brings up empty documentation hover.
+ * Fixed issue #38: autocomplete crashing / very slow. (Content Assist takes very long to show up when many completion options are available)
  * Added support for editor code templates in Content Assist. 
  * Fixed bug in cast expression, where the cast type reference was ignored by the parser/semantic-engine; 
- * Fixed bug where DDoc comments where not associated with the corresponding symbol definition if that definition had 
-		protection, storage, linkage, or certain other kinds of attributes;
- * Implemented #35: format immutable keyword and @annotations.
+ * Fixed bug where DDoc comments where not associated with the corresponding symbol definition if that definition had protection, storage, linkage, or certain other kinds of attributes;
+ * Implemented issue #35: format immutable keyword and @annotations.
     * Added (nothrow, pure, shared, immutable) keywords to syntax coloring
     * Added @annotations to syntax coloring (spaces after @ not supported, any identifier accepted)
     * Changed syntax coloring example in preferences
@@ -18,11 +19,11 @@
 
 == DDT 0.4.1 (2011-03-04) ==
  * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)
- * Fixed #25 and other source highlighting bugs (like nested comments being lexed as non-nested comments). 
-   Also added additional syntax highlighting options for WYSIWYG strings, delimited strings, and character literals.
+ * Fixed issue #25 and other source highlighting bugs (like nested comments being lexed as non-nested comments). 
+   * Also added additional syntax highlighting options for WYSIWYG strings, delimited strings, and character literals.
  * Fixed a bug due to reuse of a single instance of the editor source-highlighting & folding parser. 
-    This bug may have been manifested in obscure, unknown, and/or hard to replicate ways.
- * Fixed #17, #18, #20, all related to editor auto edits. Properly implemented:
+   * This bug may have been manifested in obscure, unknown, and/or hard to replicate ways.
+ * Fixed issue #17, issue #18, issue #20, all related to editor auto edits. Properly implemented:
    * Editor auto-edits (smart indenting/deindenting according to block structure), added "Typing" preference page.
 
 == DDT 0.4.0 (2010-11-17) ==
