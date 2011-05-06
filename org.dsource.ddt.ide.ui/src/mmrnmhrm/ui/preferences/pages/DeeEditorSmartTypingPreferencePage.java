@@ -17,8 +17,6 @@ import mmrnmhrm.ui.preferences.DeeEditorSmartTypingConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
 import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
 
 public class DeeEditorSmartTypingPreferencePage extends AbstractConfigurationBlockPreferencePage {
@@ -28,11 +26,6 @@ public class DeeEditorSmartTypingPreferencePage extends AbstractConfigurationBlo
 	@Override
 	protected void setDescription() {
 		setDescription(null);
-	}
-	
-	@Override
-	protected Label createDescriptionLabel(Composite parent) {
-		return null;
 	}
 	
 	@Override

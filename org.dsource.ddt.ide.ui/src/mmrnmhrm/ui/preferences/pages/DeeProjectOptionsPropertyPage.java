@@ -15,7 +15,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 public class DeeProjectOptionsPropertyPage extends PropertyPage {
 	
 	private DeeProjectOptionsBlock fProjCfg;
-
+	
 	public DeeProjectOptionsPropertyPage() {
 		fProjCfg = new DeeProjectOptionsBlock();
 	}
@@ -43,7 +43,7 @@ public class DeeProjectOptionsPropertyPage extends PropertyPage {
 		}
 		return (IProject) adaptable.getAdapter(IProject.class);
 	}
-
+	
 	@Override
 	public boolean performOk() {
 		return fProjCfg.performOk();
