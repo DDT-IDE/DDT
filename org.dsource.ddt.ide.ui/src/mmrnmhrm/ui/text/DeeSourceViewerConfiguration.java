@@ -148,13 +148,13 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	@Override
 	protected void alterContentAssistant(ContentAssistant assistant) {
 		IContentAssistProcessor deeContentAssistProcessor = new DeeCodeContentAssistProcessor(assistant, getEditor());
-		assistant.setContentAssistProcessor(deeContentAssistProcessor, DeePartitions.DEE_CODE);
+		assistant.setContentAssistProcessor(deeContentAssistProcessor, IDocument.DEFAULT_CONTENT_TYPE);
 		
 		// assistant.setStatusLineVisible(true);
 		
-		IContentAssistProcessor scriptProcessor = new DeeCompletionProcessor(
+		IContentAssistProcessor deeCodeCompletionProcessor = new DeeCompletionProcessor(
 				getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
-		assistant.setContentAssistProcessor(scriptProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+		assistant.setContentAssistProcessor(deeCodeCompletionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
 		
 	}
 	

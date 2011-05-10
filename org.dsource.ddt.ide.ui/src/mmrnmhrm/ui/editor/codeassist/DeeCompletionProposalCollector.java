@@ -38,6 +38,8 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 		super.accept(proposal);
 	}
 	
+	
+	// Most of ScriptCompletionProposalCollector functionality is overridden here
 	@Override
 	protected IScriptCompletionProposal createScriptCompletionProposal(CompletionProposal proposal) {
 		
@@ -45,15 +47,17 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 			DefUnit defUnit = (DefUnit) proposal.getExtraInfo();
 			
 			String completion = proposal.getCompletion();
-			int replaceStart = proposal.getReplaceStart();
-			int length = proposal.getReplaceEnd() - proposal.getReplaceStart();
+			int repStart = proposal.getReplaceStart();
+			int repLength = proposal.getReplaceEnd() - proposal.getReplaceStart();
 			Image image = DeeElementImageProvider.getNodeImage(defUnit);
 			
 			String displayString = defUnit.toStringForCodeCompletion();
 			
 			
-			return new DeeCompletionProposal(completion, replaceStart, length, image,
-					displayString, defUnit, null);
+			DeeCompletionProposal completionProposal = new DeeCompletionProposal(completion, repStart, repLength,
+					image, displayString, defUnit, null);
+			completionProposal.setTriggerCharacters(getVarTrigger());
+			return completionProposal;
 			
 		} else {
 			return super.createScriptCompletionProposal(proposal);
