@@ -13,8 +13,6 @@ package mmrnmhrm.ui.text;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.ArrayUtil;
 
-import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlighter;
-import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlighting;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -47,17 +45,6 @@ public class DeeTextTools extends ScriptTextTools {
 		Assert.isTrue(partitioning.equals(DeePartitions.DEE_PARTITIONING));
 		return new DeeSourceViewerConfiguration(getColorManager(), preferenceStore, editor,
 				DeePartitions.DEE_PARTITIONING);
-	}
-	
-	
-	@Override
-	public SemanticHighlighting[] getSemanticHighlightings() {
-		return new SemanticHighlighting[0]; // TODO
-	}
-	
-	@Override
-	public ISemanticHighlighter getSemanticPositionUpdater() {
-		return null; // TODO
 	}
 	
 }

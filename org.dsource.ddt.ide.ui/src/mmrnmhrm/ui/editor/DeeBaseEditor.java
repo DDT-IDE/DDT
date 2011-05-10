@@ -53,14 +53,14 @@ public abstract class DeeBaseEditor extends ScriptEditorLangExtension {
 	
 	@Override
 	protected void doSelectionChanged(SelectionChangedEvent event) {
-		// XXX: DLTK copy 0.9
+		// XXX: DLTK copy 2.0
 		ISourceReference reference = null;
 		ISelection selection = event.getSelection();
 		Iterator<?> iter = ((IStructuredSelection) selection).iterator();
 		while (iter.hasNext()) {
-			Object obj = iter.next();
-			if (obj instanceof ASTNeoNode) {
-				reference = ASTUtils.adaptNodeToReference((ASTNeoNode)obj);
+			Object o = iter.next();
+			if (o instanceof ASTNeoNode) {
+				reference = ASTUtils.adaptNodeToReference((ASTNeoNode)o);
 				break;
 			}
 		}
