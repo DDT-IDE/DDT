@@ -109,6 +109,12 @@
 	          class="mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage"
 	          id="org.dsource.ddt.ide.ui.preferences.editor.SourceColoring"
 	          name="%LangEditorSyntaxColoringPreferencePage.name"/>
+     <page
+           category="org.dsource.ddt.ide.ui.preferences.Editor"
+           class="mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage"
+           id="org.dsource.ddt.ide.ui.preferences.editor.ContentAssist"
+           name="%LangContentAssistPreferencePage.name">
+     </page>
      	<page
               category="org.dsource.ddt.ide.ui.preferences.Editor"
               class="mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage"

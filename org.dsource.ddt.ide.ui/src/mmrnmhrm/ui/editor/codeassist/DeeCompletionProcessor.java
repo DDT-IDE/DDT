@@ -13,7 +13,6 @@ public class DeeCompletionProcessor extends ScriptCompletionProcessor {
 	
 	public DeeCompletionProcessor(IEditorPart editor, ContentAssistant assistant, String partition) {
 		super(editor, assistant, partition);
-		setCompletionProposalAutoActivationCharacters(new char[] { '.' });
 	}
 	
 	@Override
@@ -23,7 +22,7 @@ public class DeeCompletionProcessor extends ScriptCompletionProcessor {
 	
 	@Override
 	public char[] getContextInformationAutoActivationCharacters() {
-		return new char[] { '(' };
+		return super.getContextInformationAutoActivationCharacters();
 	}
 	
 	@Override

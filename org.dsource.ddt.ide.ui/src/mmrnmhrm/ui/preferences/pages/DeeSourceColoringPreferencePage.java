@@ -16,9 +16,6 @@ import mmrnmhrm.ui.preferences.DeeSourceColoringConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
 import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
-import org.eclipse.dltk.ui.preferences.PreferencesMessages;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
 public class DeeSourceColoringPreferencePage extends AbstractConfigurationBlockPreferencePage {
 	
@@ -31,13 +28,7 @@ public class DeeSourceColoringPreferencePage extends AbstractConfigurationBlockP
 	
 	@Override
 	protected void setDescription() {
-		String description = PreferencesMessages.DLTKEditorPreferencePage_colors;
-		setDescription(description);
-	}
-	
-	@Override
-	protected Label createDescriptionLabel(Composite parent) {
-		return null;
+		setDescription(null);
 	}
 	
 	@Override

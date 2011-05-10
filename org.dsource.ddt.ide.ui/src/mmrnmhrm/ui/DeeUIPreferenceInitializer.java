@@ -69,9 +69,10 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, true);
 		
 		// Content assist
-		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS, ".");
-		store.setDefault(PreferenceConstants.CODEASSIST_AUTOINSERT, true);
+		store.setDefault(PreferenceConstants.CODEASSIST_INSERT_COMPLETION, false); // CA overwrites by default
 		store.setDefault(PreferenceConstants.CODEASSIST_PREFIX_COMPLETION, true);
+		store.setDefault(PreferenceConstants.CODEASSIST_AUTOINSERT, true);
+		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS, ".");
 		
 		// folding
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_ENABLED, true);

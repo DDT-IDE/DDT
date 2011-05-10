@@ -1,9 +1,12 @@
 package mmrnmhrm.ui.editor.codeassist;
 
+import mmrnmhrm.ui.DeeUI;
 import mmrnmhrm.ui.editor.text.HoverUtil;
 import mmrnmhrm.ui.editor.text.ScriptCompletionProposalExtension;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.dltk.ui.PreferenceConstants;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
@@ -28,7 +31,7 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
 	@Override
 	protected boolean isSmartTrigger(char trigger) {
-		// BM what is this exactly?
+		// BM what is this exactly? TODO review on DLTK 3.0
 		if(trigger == '.') {
 			return true;
 		}
@@ -38,9 +41,8 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
 	@Override
 	protected boolean insertCompletion() {
-//		IPreferenceStore preference = DeeCorePlugin.getDefault().getPreferenceStore();
-//		return preference.getBoolean(PreferenceConstants.CODEASSIST_INSERT_COMPLETION);
-		return false; //do a replace completion
+		IPreferenceStore preference = DeeUI.getDefault().getPreferenceStore();
+		return preference.getBoolean(PreferenceConstants.CODEASSIST_INSERT_COMPLETION);
 	}
 	
 	/** A string representation of this proposal, useful for debugging purposes only. */

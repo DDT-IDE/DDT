@@ -2,6 +2,11 @@
 
 = DDT Change Log =
 
+== DDT 0.4.3 (devel) ==
+ * Added Content Assist preference page. 
+   * Options: Completion insert/override; Single proposals automatic insert; Auto-Activation enable and delay;
+ * Added Content Assist proposal auto-insertion trigger characters: ' ', '=', ';', '.'.  
+
 == DDT 0.4.2 (2011-04-29) ==
  * Fixed issue #33, bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.
  * Fixed bug where all D comments where considered DDoc comments for documentation hover.
