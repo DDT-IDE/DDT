@@ -38,6 +38,10 @@ public final class DeePreferencesMessages extends NLS {
 	public static final String EditorPreferencePage_considerParenthesesAsBlocks = 
 		"Consider (parentheses) the same as {braces} for block smart indent";
 	
+	public static final String ContentAssistConfigBlock_deeAutoActivationTriggers = 
+			"Auto activation trigger characters";
+	
+	
 	
 	private DeePreferencesMessages() {
 		// Do not instantiate
