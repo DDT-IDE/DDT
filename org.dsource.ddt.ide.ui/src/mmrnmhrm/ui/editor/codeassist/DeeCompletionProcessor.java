@@ -22,7 +22,7 @@ public class DeeCompletionProcessor extends ScriptCompletionProcessor {
 	
 	@Override
 	public char[] getContextInformationAutoActivationCharacters() {
-		return new char[] { '(' };
+		return super.getContextInformationAutoActivationCharacters();
 	}
 	
 	@Override
