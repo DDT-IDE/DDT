@@ -9,9 +9,9 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.ui.IEditorPart;
 
-public class DeeCompletionProcessor extends ScriptCompletionProcessor {
+public class DeeCodeCompletionProcessor extends ScriptCompletionProcessor {
 	
-	public DeeCompletionProcessor(IEditorPart editor, ContentAssistant assistant, String partition) {
+	public DeeCodeCompletionProcessor(IEditorPart editor, ContentAssistant assistant, String partition) {
 		super(editor, assistant, partition);
 	}
 	

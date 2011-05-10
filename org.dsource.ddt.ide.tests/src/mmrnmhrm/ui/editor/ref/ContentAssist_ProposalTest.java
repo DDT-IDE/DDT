@@ -2,7 +2,7 @@ package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.tests.SampleMainProject;
-import mmrnmhrm.ui.editor.codeassist.DeeCompletionProcessor;
+import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.text.DeePartitions;
 
@@ -32,7 +32,7 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 			protected CompletionRequestor testCompletionEngine(int offset, int rplLen) throws ModelException {
 				ContentAssistant ca = getContentAssistant(editor);
 				
-				DeeCompletionProcessor caProcessor = new DeeCompletionProcessor(editor, ca, DeePartitions.DEE_CODE);
+				DeeCodeCompletionProcessor caProcessor = new DeeCodeCompletionProcessor(editor, ca, DeePartitions.DEE_CODE);
 				ICompletionProposal[] proposals = caProcessor.computeCompletionProposals(editor.getViewer(), offset);
 				
 				for (ICompletionProposal completionProposal : proposals) {

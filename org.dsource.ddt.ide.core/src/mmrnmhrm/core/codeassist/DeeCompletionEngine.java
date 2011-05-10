@@ -6,7 +6,6 @@ import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionContext;
 import org.eclipse.dltk.core.CompletionProposal;
-import org.eclipse.dltk.core.CompletionRequestor;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 
@@ -19,7 +18,7 @@ import dtool.refmodel.PrefixSearchOptions;
 public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
 	@Override
-	public void complete(IModuleSource module, int position, int i) {
+	public void complete(IModuleSource module, final int position, int i) {
 		assertNotNull(requestor);
 		requestor.beginReporting();
 		try {
@@ -32,27 +31,22 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			if(!(modelElement instanceof ISourceModule)) {
 				return;
 			}
+			
 			ISourceModule sourceModule = (ISourceModule) modelElement;
-			
-			
+			String sourceContents = module.getSourceContents();
 			CompletionSession completionSession = new CompletionSession();
-			doCompletionSearch(position, sourceModule, module.getSourceContents(), completionSession, requestor);
+			IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
+				@Override
+				public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
+					CompletionProposal proposal = createProposal(defUnit, position, searchOptions);
+					requestor.accept(proposal);
+				}
+			};
+			PrefixDefUnitSearch.doCompletionSearch(position, sourceModule, sourceContents, completionSession, 
+					collectorAdapter);
 		} finally {
 			requestor.endReporting();
 		}
-	}
-	
-	public void doCompletionSearch(final int ccOffset, ISourceModule moduleUnit, String source, CompletionSession session,
-			final CompletionRequestor collector) {
-		
-		IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
-			@Override
-			public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
-				collector.accept(createProposal(defUnit, ccOffset, searchOptions));
-			}
-		};
-		
-		PrefixDefUnitSearch.doCompletionSearch(ccOffset, moduleUnit, source, session, collectorAdapter);
 	}
 	
 	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset, PrefixSearchOptions searchOptions) {

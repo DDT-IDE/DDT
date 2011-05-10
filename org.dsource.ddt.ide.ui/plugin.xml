@@ -459,7 +459,7 @@
     </hover>
  </extension>
  <extension
-       id="ExamplePythonTypeCompletionProposalComputer"
+       id="DeeCodeCompletionProposalComputer"
        point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
 		<scriptCompletionProposalComputer
         activate="false"

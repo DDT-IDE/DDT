@@ -9,10 +9,8 @@ import java.util.List;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.core.Function;
 import mmrnmhrm.tests.ui.SWTTestUtils;
-import mmrnmhrm.ui.editor.codeassist.DeeCodeContentAssistProcessor;
-import mmrnmhrm.ui.editor.codeassist.DeeCompletionProcessor;
+import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
-import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalCollector;
 import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.core.resources.IFile;
@@ -24,7 +22,6 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.contentassist.CompletionSession;
 import dtool.tests.ref.cc.CodeCompletion__Common;
 import dtool.tests.ref.cc.ICodeCompletionTester;
 
@@ -52,20 +49,11 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 	public void testComputeProposalsWithRepLen(int repOffset, int prefixLen, 
 			int repLen, boolean removeObjectIntrinsics, String... expectedProposals) throws ModelException {
 		
-		DeeCompletionProposalCollector collector = new DeeCompletionProposalCollector(srcModule);
-		
-		ICompletionProposal[] proposals = DeeCodeContentAssistProcessor.computeProposals(repOffset, 
-				srcModule, srcModule.getSource(), new CompletionSession(), collector);
+		// Test with DeeCompletionProcessor as well
+		ContentAssistant ca = getContentAssistant(editor);
+		DeeCodeCompletionProcessor caProcessor = new DeeCodeCompletionProcessor(editor, ca, DeePartitions.DEE_CODE);
+		ICompletionProposal[] proposals = caProcessor.computeCompletionProposals(editor.getViewer(), repOffset);
 		checkProposals(repOffset, prefixLen, repLen, removeObjectIntrinsics, proposals, expectedProposals);
-		
-		if(true) {
-			// Test with DeeCompletionProcessor as well
-			ContentAssistant ca = getContentAssistant(editor);
-			DeeCompletionProcessor caProcessor = new DeeCompletionProcessor(editor, ca, DeePartitions.DEE_CODE);
-			proposals = caProcessor.computeCompletionProposals(editor.getViewer(), repOffset);
-			checkProposals(repOffset, prefixLen, repLen, removeObjectIntrinsics, proposals, expectedProposals);
-		}
-		
 		
 		invokeContentAssist(); // Just a wild shot test
 		SWTTestUtils.________________clearEventQueue________________();
