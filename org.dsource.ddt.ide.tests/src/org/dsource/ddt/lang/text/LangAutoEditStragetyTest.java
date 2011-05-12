@@ -320,6 +320,33 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 			mklast(0, "/**/"); 		// test block comment at EOF 
 		testEnterAutoEdit(s, "", expectInd(indent));
 		
+		
+		/* ------- */
+		
+		// we don't consider the after-edit text in the edit-line for block balance in any case
+		// if this changes, we need to review these two test cases
+		
+		s = mkline(indent, "{func(")+
+			mklast(0, "// foobar"); // test line comment, characters after that afect block balance
+		testEnterAutoEdit(s, "afterEdit)}"+NL+ NEUTRAL_SRC1, expectInd(indent+2)/*, expectClose(indent+2, ")")*/);
+		
+		s = mkline(indent, "{func(")+
+			mklast(0, "// foobar{"); // test line comment, characters after that afect block balance
+		testEnterAutoEdit(s, "afterEdit)"+NL+ NEUTRAL_SRC1, expectInd(indent+2)/*, expectClose(indent+2, ")")*/);
+		
+		
+		s = mkline(indent, "(func{")+
+			mklast(indent, "/* foobar"); // test edit inside block comment
+		testEnterAutoEdit(s, NL+"})*/})"+ NEUTRAL_SRC1, expectInd(indent));
+		
+		s = mkline(indent, "{func(")+
+			mklast(0, "/* foobar"); 		   // test edit inside block comment
+		testEnterAutoEdit(s, NL+ ")}*/"+ NEUTRAL_SRC1, expectInd(indent+2), expectClose(indent+2, ")"));
+		
+		s = mkline(indent, "{func}")+
+			mklast(indent, "{func{/* foobar}"); // test edit inside block comment
+		testEnterAutoEdit(s, NL+"}}*/}"+ NEUTRAL_SRC1, expectInd(indent+2), expectClose(indent+2, "}"));
+		
 	}
 	
 	protected String mkline(int indent, String string) {
