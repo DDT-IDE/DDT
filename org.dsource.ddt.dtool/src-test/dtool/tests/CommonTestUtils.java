@@ -41,6 +41,9 @@ public class CommonTestUtils {
 		return (T) object;
 	}
 	
+	public static <T> void assertContains(T[] array, T obj) {
+		assertTrue(ArrayUtil.contains(array, obj));
+	}
 	
 	public static <T> T[] array(T... elems) {
 		return elems;

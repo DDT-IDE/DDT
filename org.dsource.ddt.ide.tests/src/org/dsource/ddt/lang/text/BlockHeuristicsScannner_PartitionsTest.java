@@ -10,40 +10,17 @@
  *******************************************************************************/
 package org.dsource.ddt.lang.text;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.dsource.ddt.lang.text.BlockHeuristicsScannner.FnTokenAdvance;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
 import org.junit.Test;
 
 public class BlockHeuristicsScannner_PartitionsTest extends BlockHeuristicsScannnerTest {
 	
-	protected String partitioning;
-	protected String contentType;
-	
-	
-	@Override
-	protected Document createDocument() {
-		Document document = super.createDocument();
-		setupSamplePartitionScanner(document);
-		return document;
-	}
-	
-	public void setupSamplePartitionScanner(Document document) {
-		partitioning = SamplePartitionScanner.LANG_PARTITIONING;
-		contentType = IDocument.DEFAULT_CONTENT_TYPE;
-		SamplePartitionScanner partitionScanner = new SamplePartitionScanner();
-		String[] legalContentTypes = SamplePartitionScanner.LEGAL_CONTENT_TYPES;
-		ScannerTestUtils.installPartitioner(document, partitioning, partitionScanner, legalContentTypes);
-	}
-	
 	@Override
 	public BlockHeuristicsScannner setupScanner() {
-		return new BlockHeuristicsScannner(getDocument(), partitioning, contentType, SAMPLE_BLOCK_TOKENS);
+		return ScannerTestUtils.createBlockHeuristicScannerWithSamplePartitioning(getDocument());
 	}
 	
 	@Test
@@ -104,7 +81,7 @@ public class BlockHeuristicsScannner_PartitionsTest extends BlockHeuristicsScann
 	public void testScanToBlockWithPartitions() throws Exception { testScanToBlockWithPartitions$(); }
 	public void testScanToBlockWithPartitions$() throws Exception {
 		document = createDocument();
-		setupSamplePartitionScanner(document);
+		ScannerTestUtils.setupSamplePartitioner(document);
 		
 		
 		testScanToBlockStart("{{", "{blah/*{*/", "}", 0);

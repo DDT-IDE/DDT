@@ -146,9 +146,8 @@ public class LangHeuristicScanner implements ILangHeuristicSymbols {
 		return lastPartition;
 	}
 	
-	protected boolean partitionContainsPosition(IRegion region, int position) {
-		int offset = region.getOffset();
-		return offset <= position && position < offset + region.getLength();
+	public static boolean partitionContainsPosition(IRegion region, int position) {
+		return region.getOffset() <= position && position < region.getOffset() + region.getLength();
 	}
 	
 }

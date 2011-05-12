@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.dsource.ddt.lang.text;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 

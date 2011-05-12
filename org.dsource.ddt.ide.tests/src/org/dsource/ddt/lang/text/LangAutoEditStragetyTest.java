@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.dsource.ddt.lang.text;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.tests.ui.DeeUITests;
 
-import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.util.TabStyle;
@@ -44,8 +42,7 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 			autoEditStrategy = new LangAutoEditStrategy(prefStore, null) {
 				@Override
 				protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
-					BlockTokenRule[] blockTokens = BlockHeuristicsScannnerTest.SAMPLE_BLOCK_TOKENS;
-					return new BlockHeuristicsScannner(doc, null, null, blockTokens);
+					return ScannerTestUtils.createBlockHeuristicScannerWithSamplePartitioning(doc);
 				};
 			};
 		}
@@ -121,23 +118,23 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		dotestEnterAutoEdit(sourceBefore, sourceAfter, expectedEdit, -1);
 	}
 	
-	protected void testEnterAutoEdit(String sourceBefore, String sourceAfter, String expectedInsert, String expInsertAfter) {
-		dotestEnterAutoEdit(sourceBefore, sourceAfter, expectedInsert+expInsertAfter, expectedInsert.length());
+	protected void testEnterAutoEdit(String textBefore, String textAfter, String expInsert, String expInsertAfter) {
+		dotestEnterAutoEdit(textBefore, textAfter, expInsert+expInsertAfter, expInsert.length());
 	}
 	
-	protected void dotestEnterAutoEdit(String sourceBefore, String sourceAfter, String expectedInsert, int offsetDelta) {
-		Document document = setupDocument(sourceBefore, sourceAfter);
-		int keypressOffset = sourceBefore.length();
+	protected void dotestEnterAutoEdit(String textBefore, String textAfter, String expectedInsert, int offsetDelta) {
+		Document document = setupDocument(textBefore, textAfter);
+		int keypressOffset = textBefore.length();
 		DocumentCommand docCommand = createDocumentCommand(keypressOffset, 0, NL);
 		getAutoEditStrategy().customizeDocumentCommand(document, docCommand);
-		int caretOffset = (offsetDelta == -1) ? -1 : sourceBefore.length() + offsetDelta;
+		int caretOffset = (offsetDelta == -1) ? -1 : textBefore.length() + offsetDelta;
 		int replaceLength = 0;
 		checkCommand(docCommand, expectedInsert, keypressOffset, replaceLength, caretOffset);
 	}
 	
-	protected Document setupDocument(String sourceBefore, String sourceAfter) {
+	protected Document setupDocument(String textBefore, String textAfter) {
 		Document document = getDocument();
-		document.set(sourceBefore + sourceAfter);
+		document.set(textBefore + textAfter);
 		return document;
 	}
 	
@@ -270,6 +267,59 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		
 		s = "{"+NL+"(";     // test potential close
 		testEnterAutoEdit(s, NL +"){", expectInd(1));
+	}
+	
+	@Test
+	public void testSmartIndent_xPartitioning() throws Exception { testSmartIndent_xPartitioning$(); }
+	public void testSmartIndent_xPartitioning$() throws Exception {
+		assertContains(getDocument().getPartitionings(), SamplePartitionScanner.LANG_PARTITIONING);
+		
+		int indent = 1; // Needs to be greater than 1
+		String s;
+		
+		s = mkline(indent, "func()")+
+			mklast(0, "//"+TAB+"abc"); // test with line comment
+		testEnterAutoEdit(s, NL +"})"+ NEUTRAL_SRC1, expectInd(indent));
+		
+		s = mkline(indent, "func(")+
+			mklast(0, "//"+TAB+"abc)"); // test with line comment, with +1 indent
+		testEnterAutoEdit(s, NL +")"+ NEUTRAL_SRC1, expectInd(indent+1));
+		
+		s = mkline(indent, "func{")+
+			mkline(indent+1, "blah}")+
+			mklast(0, "//"+TAB+"abc)"); // test with line comment, with -1 indent
+		testEnterAutoEdit(s, NL +")"+ NEUTRAL_SRC1, expectInd(indent));
+		
+		s = mkline(indent, "{func(")+
+			mklast(0, "//"+TAB+"abc"); // test with line comment, characters after
+		testEnterAutoEdit(s, ")"+NL+ NEUTRAL_SRC1, expectInd(indent+2));
+		
+		
+		s = mkline(indent, "func({")+
+			mklast(0, "/**/"); 			// test with block comment, with +2 indent Close
+		testEnterAutoEdit(s, NL +"blah"+ NEUTRAL_SRC1, expectInd(indent+2), expectClose(indent+2, "}"));
+		
+		s = mkline(indent, "func(((")+
+			mklast(indent, "// blah"); 		// test line comment with whitespace before, (This-Line)
+		testEnterAutoEdit(s, NL +"}}}"+ NEUTRAL_SRC1, expectInd(indent));
+		s = mkline(indent, "func(((")+
+			mklast(indent, "/**/"); 		// test block comment with whitespace before, (This-Line)
+		testEnterAutoEdit(s, NL +"}}}"+ NEUTRAL_SRC1, expectInd(indent));
+
+		s = mkline(indent, "func(")+
+			mklast(0     , "/* */"+TAB+"abc{{{"); // test block comment with characters after, (This-Line)
+		testEnterAutoEdit(s, NL +"}}})"+ NEUTRAL_SRC1, expectInd(0+3));
+		
+		
+		s = mklast(0, "//abc{"); 		// test line comment, no valid line before
+		testEnterAutoEdit(s, NL +"})"+ NEUTRAL_SRC1, expectInd(0));
+		s = mklast(0, "/*abc{*/"); 		// test block comment, no valid line before
+		testEnterAutoEdit(s, NL +"})"+ NEUTRAL_SRC1, expectInd(0));
+		
+		s = mkline(indent, "func((()))")+
+			mklast(0, "/**/"); 		// test block comment at EOF 
+		testEnterAutoEdit(s, "", expectInd(indent));
+		
 	}
 	
 	protected String mkline(int indent, String string) {

@@ -10,15 +10,12 @@
  *******************************************************************************/
 package mmrnmhrm.text;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
-import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.DeeTextTestUtils;
 
 import org.dsource.ddt.lang.text.LangAutoEditStragetyTest;
 import org.dsource.ddt.lang.text.LangAutoEditStrategy;
 import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.ITypedRegion;
 import org.junit.Test;
 
 public class DeeAutoEditStrategyTest extends LangAutoEditStragetyTest {
@@ -35,19 +32,6 @@ public class DeeAutoEditStrategyTest extends LangAutoEditStragetyTest {
 	protected Document createDocument() {
 		Document document = super.createDocument();
 		DeeTextTestUtils.installDeePartitioner(document);
-		return document;
-	}
-	
-	@Override
-	protected Document setupDocument(String sourceBefore, String sourceAfter) {
-		Document document = super.setupDocument(sourceBefore, sourceAfter);
-		ITypedRegion partition;
-		try {
-			partition = document.getPartition(DeePartitions.DEE_PARTITIONING, sourceBefore.length(), false);
-		} catch (Exception e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-		assertEquals(partition.getType(), DeePartitions.DEE_CODE);
 		return document;
 	}
 	

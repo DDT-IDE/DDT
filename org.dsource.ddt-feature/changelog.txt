@@ -3,10 +3,11 @@
 = DDT Change Log =
 
 == DDT 0.4.3 (devel) ==
- * Fixed issue #31: Indent auto edit: full indent deletion is incorrectly triggered on certain positions.
  * Added Content Assist preference page. 
    * Options: Completion insert/override; Single proposals automatic insert; Auto-Activation enable and delay;
  * Added Content Assist proposal auto-insertion trigger characters: ' ', '=', ';', '.'.  
+ * Fixed issue #31: Indent auto edit: full indent deletion is incorrectly triggered on certain positions.
+ * Fixed some shortcomings related to auto indent in lines that started with comments.
 
 == DDT 0.4.2 (2011-04-29) ==
  * Fixed issue #33, bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.

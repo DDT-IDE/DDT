@@ -26,12 +26,22 @@ import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension;
+import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.widgets.Event;
 
+/**
+ * LangAutoEditStrategy provides a common auto-edit strategy of smart indenting and de-indenting, 
+ * for block based languages (like C-style languages)
+ * 
+ * TODO smart paste
+ * TODO smart indent on block character keypress
+ * 
+ * @author BrunoM
+ */
 public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
 	protected LangAutoEditsPreferencesAdapter fPreferences;
@@ -120,17 +130,21 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
 	/* ------------------------------------- */
 	
+	public static int getRegionEnd(IRegion region) {
+		return region.getOffset() + region.getLength();
+	}
+	
 	protected void smartIndentAfterNewLine(IDocument doc, DocumentCommand cmd) throws BadLocationException {
-		IRegion lineRegion = doc.getLineInformationOfOffset(cmd.offset);
-		int lineEnd = lineRegion.getOffset() + lineRegion.getLength();
-		
 		BlockHeuristicsScannner bhscanner = createBlockHeuristicsScanner(doc);
 		// Find block balances of preceding text (line start to edit cursor)
-		LineIndentResult nli = determineIndent(doc, lineRegion, cmd.offset, bhscanner);
-		cmd.text += nli.newLineIndent;
+		LineIndentResult nli = determineIndent(doc, bhscanner, doc.getLineOfOffset(cmd.offset), cmd.offset);
+		cmd.text += nli.nextLineIndent;
 		BlockBalanceResult blockInfo = nli.blockInfo;
 		
 		if(blockInfo.unbalancedOpens > 0) {
+			IRegion lineRegion = doc.getLineInformationOfOffset(cmd.offset);
+			int lineEnd = getRegionEnd(lineRegion);
+			
 			int postWsEndPos = AutoEditUtils.findEndOfWhiteSpace(doc, cmd.offset, lineEnd); 
 			boolean hasPendingTextAfterEdit = postWsEndPos != lineEnd;
 			if (fCloseBlocks && !hasPendingTextAfterEdit){
@@ -141,7 +155,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 					String delimiter = TextUtilities.getDefaultLineDelimiter(doc);
 					char openChar = doc.getChar(blockInfo.rightmostUnbalancedBlockOpenOffset);
 					char closeChar = bhscanner.getClosingPeer(openChar); 
-					cmd.text += delimiter + addIndent(nli.lineIndent, blockInfo.unbalancedOpens - 1) + closeChar;
+					cmd.text += delimiter + addIndent(nli.editLineIndent, blockInfo.unbalancedOpens - 1) + closeChar;
 				}
 			}
 			return;
@@ -149,19 +163,40 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 	
 	public static class LineIndentResult {
-		String lineIndent;
-		String newLineIndent;
+		String editLineIndent;
+		String nextLineIndent;
 		BlockBalanceResult blockInfo;
+		public LineIndentResult(String editLineIndent, String nextLineIndent, BlockBalanceResult blockInfo) {
+			this.editLineIndent = editLineIndent;
+			this.nextLineIndent = nextLineIndent;
+			this.blockInfo = blockInfo;
+		}
 	}
 	
-	protected LineIndentResult determineIndent(IDocument doc, final IRegion lineRegion, final int editOffset,
-			BlockHeuristicsScannner bhscanner) throws BadLocationException {
-		int lineStart = lineRegion.getOffset();
-		int lineEnd = lineStart + lineRegion.getLength();
-		assertTrue(lineStart <= editOffset && editOffset <= lineEnd);
-		LineIndentResult result = new LineIndentResult();
+	protected final LineIndentResult determineIndent(IDocument doc, BlockHeuristicsScannner bhscanner, int line) 
+			throws BadLocationException {
+		IRegion lineRegion = doc.getLineInformation(line);
+		return determineIndent(doc, bhscanner, line, getRegionEnd(lineRegion));
+	}
+	
+	protected LineIndentResult determineIndent(IDocument doc, BlockHeuristicsScannner bhscanner, final int line,
+			final int editOffset) throws BadLocationException {
+		
+		IRegion lineRegion = doc.getLineInformation(line);
+		final int lineStart = lineRegion.getOffset();
+		assertTrue(lineStart <= editOffset && editOffset <= getRegionEnd(lineRegion));
+		
+		ITypedRegion partition = bhscanner.getPartition(lineStart);
+		if(partitionIsIgnoredForLineIndentString(editOffset, partition)) {
+			if(line == 0) {
+				// empty/zero block balance
+				return new LineIndentResult("", "", new BlockBalanceResult());
+			} else {
+				return determineIndent(doc, bhscanner, line-1);
+			}
+		}
+		
 		BlockBalanceResult blockInfo = bhscanner.calculateBlockBalances(lineStart, editOffset);
-		result.blockInfo = blockInfo;
 		
 		if(blockInfo.unbalancedOpens == 0 && blockInfo.unbalancedCloses > 0) {
 			int blockStartOffset = bhscanner.findBlockStart(blockInfo.rightmostUnbalancedBlockCloseOffset);
@@ -176,28 +211,36 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			BlockBalanceResult blockStartInfo = bhscanner.calculateBlockBalances(lineOffset, blockStartOffset);
 			
 			// Add the indent of the start line, plus the unbalanced opens there
-			result.newLineIndent = addIndent(startLineIndent, blockStartInfo.unbalancedOpens); 
-			return result;
+			String newLineIndent = addIndent(startLineIndent, blockStartInfo.unbalancedOpens); 
+			return new LineIndentResult(null, newLineIndent, blockInfo);
 		}
 		
 		// The indent string to be added to the new line
-		int maxIndentEnd = Math.min(editOffset, lineEnd);
-		String lineIndent = getLineIndent(doc, lineStart, maxIndentEnd);
+		String lineIndent = getLineIndent(doc, lineStart, editOffset);
 		if(blockInfo.unbalancedOpens == 0 && blockInfo.unbalancedCloses == 0) {
-			result.newLineIndent = lineIndent;
-			return result; // finished
+			return new LineIndentResult(null, lineIndent, blockInfo); // finished
 		}
 		
 		if(blockInfo.unbalancedOpens > 0) {
-			result.newLineIndent = addIndent(lineIndent, blockInfo.unbalancedOpens);
-			result.lineIndent = lineIndent; // cache this value to not recalculate
-			return result;
+			String newLineIndent = addIndent(lineIndent, blockInfo.unbalancedOpens);
+			// cache lineIndent so as to not recalculate
+			return new LineIndentResult(lineIndent, newLineIndent, blockInfo); // finished
 		}
 		throw assertUnreachable();
 	}
 	
+	/** Subclasses may override. */
+	protected boolean partitionIsIgnoredForLineIndentString(final int editOffset, ITypedRegion partition) {
+		return partitionTypeIsIgnoredForLineIndentString(partition) && editOffset <= getRegionEnd(partition);
+	}
+	
+	/** Subclasses may override. */
+	protected boolean partitionTypeIsIgnoredForLineIndentString(ITypedRegion partition) {
+		return !partition.getType().equals(IDocument.DEFAULT_CONTENT_TYPE);
+	}
+	
 	protected static String getLineIndent(IDocument doc, IRegion line) throws BadLocationException {
-		return getLineIndent(doc, line.getOffset(), line.getOffset() + line.getLength());
+		return getLineIndent(doc, line.getOffset(), getRegionEnd(line));
 	}
 	
 	protected static String getLineIndent(IDocument doc, int start, int end) throws BadLocationException {
@@ -220,7 +263,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			return false;
 		
 		IRegion lineRegion = doc.getLineInformationOfOffset(cmd.offset);
-		int lineEnd = lineRegion.getOffset() + lineRegion.getLength();
+		int lineEnd = getRegionEnd(lineRegion);
 		int line = doc.getLineOfOffset(cmd.offset);
 		
 		
@@ -285,7 +328,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			throws BadLocationException {
 		IRegion indentedLineRegion = doc.getLineInformation(indentedLine);
 
-		String expectedIndentStr = determineExpectedIndent(doc, doc.getLineInformation(indentedLine-1));
+		String expectedIndentStr = determineExpectedIndent(doc, indentedLine-1);
 		int indentLength = indentEnd - indentedLineRegion.getOffset(); 
 		if(indentLength < expectedIndentStr.length()) {
 			// cap expected length
@@ -302,15 +345,13 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 	
 	protected int findEndOfWhiteSpace(IDocument doc, IRegion region) throws BadLocationException {
-		return AutoEditUtils.findEndOfWhiteSpace(doc, region.getOffset(), region.getOffset() + region.getLength());
+		return AutoEditUtils.findEndOfWhiteSpace(doc, region.getOffset(), getRegionEnd(region));
 	}
 	
-	protected String determineExpectedIndent(IDocument doc, IRegion lineRegion)
-			throws BadLocationException {
+	protected String determineExpectedIndent(IDocument doc, int line) throws BadLocationException {
 		BlockHeuristicsScannner bhscanner = createBlockHeuristicsScanner(doc);
-		int lineEnd = lineRegion.getOffset() + lineRegion.getLength();
-		LineIndentResult nli = determineIndent(doc, lineRegion, lineEnd, bhscanner);
-		String expectedIndentStr = nli.newLineIndent;
+		LineIndentResult nli = determineIndent(doc, bhscanner, line);
+		String expectedIndentStr = nli.nextLineIndent;
 		return expectedIndentStr;
 	}
 	
