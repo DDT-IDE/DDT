@@ -20,13 +20,13 @@ import mmrnmhrm.ui.text.DeePartitions;
 import org.dsource.ddt.lang.text.BlockHeuristicsScannner;
 import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
 import org.dsource.ddt.lang.text.LangAutoEditStrategy;
-import org.eclipse.dltk.ruby.internal.ui.text.RubyAutoEditStrategy;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
+import org.eclipse.jface.text.ITextViewer;
 
 public class DeeAutoEditStrategy extends LangAutoEditStrategy {
 	
@@ -41,22 +41,20 @@ public class DeeAutoEditStrategy extends LangAutoEditStrategy {
 		}
 	}
 	
-	protected final RubyAutoEditStrategy rubyAutoEditStrategy;
 	protected final String partitioning;
 	protected final String contentType;
 	protected final IPreferenceStore store;
 	protected boolean parenthesesAsBlocks;
 	
 	public DeeAutoEditStrategy(IPreferenceStore store) {
-		this(store, DeePartitions.DEE_CODE);
+		this(store, DeePartitions.DEE_CODE, null);
 	}
 	
-	public DeeAutoEditStrategy(IPreferenceStore store, String contentType) {
-		super(store);
+	public DeeAutoEditStrategy(IPreferenceStore store, String contentType, ITextViewer viewer) {
+		super(store, viewer);
 		this.store = store;
 		this.contentType = contentType;
 		this.partitioning = DeePartitions.DEE_PARTITIONING;
-		this.rubyAutoEditStrategy = new RubyAutoEditStrategy(partitioning, store);
 	}
 	
 	@Override

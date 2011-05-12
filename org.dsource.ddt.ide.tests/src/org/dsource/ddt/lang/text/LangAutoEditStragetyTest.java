@@ -24,6 +24,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.swt.SWT;
 import org.junit.Test;
 
 public class LangAutoEditStragetyTest extends ScannerTestUtils {
@@ -40,7 +41,7 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
 			PreferenceStore prefStore = createPreferenceStore();
-			autoEditStrategy = new LangAutoEditStrategy(prefStore) {
+			autoEditStrategy = new LangAutoEditStrategy(prefStore, null) {
 				@Override
 				protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
 					BlockTokenRule[] blockTokens = BlockHeuristicsScannnerTest.SAMPLE_BLOCK_TOKENS;
@@ -358,7 +359,6 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 	
 	/* ---------------------------------------*/
 	
-	public static boolean NOT_DONE = false;
 	@Test
 	public void testSmartDeIndent() throws Exception { testSmartDeIndent$(); }
 	public void testSmartDeIndent$() throws Exception {
@@ -447,14 +447,11 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		if(pureIndent.length() == 0) {
 			return; // There is no middle of indent available for further tests
 		}
-		if(pureIndent.length() <= 1) {
-			return; //cannot test alternatives, because of not being able do distinguish BS and DEL
-			//TODO
-		}
+		
 		// AutoEdit should not apply in the middle of indent element, test that
 		String srcPre2 = srcPre + srcIndent.substring(0, srcIndent.length()-1);
 		String srcAfter2 = srcIndent.substring(srcIndent.length()-1, srcIndent.length()) + sourceAfter;
-		testBackSpaceCommandWithNoEffect(srcAfter2, srcPre2);
+		testBackSpaceCommandWithNoEffect(srcPre2, srcAfter2);
 		
 		int nlSize = srcIndent.length() - pureIndent.length();
 		String srcPre3 = srcPre + srcIndent.substring(0, nlSize);
@@ -487,6 +484,7 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		} catch (BadLocationException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
+		getAutoEditStrategy().lastKeyEvent.character = SWT.BS;
 		DocumentCommand docCommand = createDocumentCommand(keypressOffset - length, length, "");
 		return docCommand;
 	}
@@ -503,6 +501,7 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 		} catch (BadLocationException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
+		getAutoEditStrategy().lastKeyEvent.character = SWT.DEL;
 		DocumentCommand docCommand = createDocumentCommand(keypressOffset, length, "");
 		return docCommand;
 	}

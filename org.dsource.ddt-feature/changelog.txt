@@ -3,6 +3,7 @@
 = DDT Change Log =
 
 == DDT 0.4.3 (devel) ==
+ * Fixed issue #31: Indent auto edit: full indent deletion is incorrectly triggered on certain positions.
  * Added Content Assist preference page. 
    * Options: Completion insert/override; Single proposals automatic insert; Auto-Activation enable and delay;
  * Added Content Assist proposal auto-insertion trigger characters: ' ', '=', ';', '.'.  

@@ -100,7 +100,14 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
 		assertTrue(DeePartitions.DEE_PARTITIONING.equals(partitioning));
-		return new IAutoEditStrategy[] { new DeeAutoEditStrategy(DeePlugin.getPrefStore(), contentType) };
+		
+		if (DeePartitions.DEE_CHARACTER.equals(contentType)) {
+			return new IAutoEditStrategy[] { };
+		} else if (DeePartitions.$Methods.isString(contentType)) {
+			return new IAutoEditStrategy[] { };
+		} else {
+			return new IAutoEditStrategy[] { new DeeAutoEditStrategy(DeePlugin.getPrefStore(), contentType, sourceViewer) };
+		}
 	}
 	
 	@Override

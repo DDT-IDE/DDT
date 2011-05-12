@@ -42,4 +42,12 @@ public interface DeePartitions {
 		DEE_NESTED_DOCCOMMENT,
 	};
 	
+	public static class $Methods {
+		public static boolean isString(String contentType) {
+			return DeePartitions.DEE_STRING.equals(contentType) 
+				|| DeePartitions.DEE_RAW_STRING.equals(contentType)
+				|| DeePartitions.DEE_DELIM_STRING.equals(contentType);
+		}
+	}
+	
 }

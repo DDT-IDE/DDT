@@ -24,26 +24,62 @@ import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.TextUtilities;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.VerifyKeyListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.widgets.Event;
 
 public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
 	protected LangAutoEditsPreferencesAdapter fPreferences;
 	
 	protected boolean fIsSmartMode;
-	protected boolean fCloseBlocks = true;
+	protected boolean fCloseBlocks;
 	
-	public LangAutoEditStrategy(IPreferenceStore store) {
+	protected Event lastKeyEvent;
+	
+	public LangAutoEditStrategy(IPreferenceStore store, ITextViewer viewer) {
 		fPreferences = new LangAutoEditsPreferencesAdapter(store);
+		
+		lastKeyEvent = new Event();
+		if (viewer instanceof ITextViewerExtension) {
+			VerifyKeyRecorder verifyKeyRecorder = new VerifyKeyRecorder();
+			((ITextViewerExtension) viewer).appendVerifyKeyListener(verifyKeyRecorder);
+			// Minor issue: we should remove verifyKeyRecorder if viewer is unconfigured
+		} else {
+			// allways use blank event in lastKeyEvent
+		}
 	}
 	
-	protected boolean isSmartMode() {
-		return fIsSmartMode;
+	public final class VerifyKeyRecorder implements VerifyKeyListener {
+		@Override
+		public void verifyKey(VerifyEvent event) {
+			lastKeyEvent.character = event.character;
+			lastKeyEvent.keyCode = event.keyCode;
+			lastKeyEvent.stateMask = event.stateMask;
+		}
 	}
+	
+	protected boolean keyWasBackspace() {
+		return lastKeyEvent.character == SWT.BS;
+	}
+	
+	protected boolean keyWasDelete() {
+		return lastKeyEvent.character == SWT.DEL;
+	}
+	
+	/* ------------------------------------- */
 	
 	protected void clearCachedValues() {
 		fCloseBlocks = fPreferences.closeBlocks();
 		fIsSmartMode = fPreferences.isSmartMode();
+	}
+	
+	protected boolean isSmartMode() {
+		return fIsSmartMode;
 	}
 	
 	@Override
@@ -58,16 +94,17 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		}
 		
 		try {
-			if (AutoEditUtils.isNewLineInsertionCommand(doc, cmd))
+			if (AutoEditUtils.isNewLineInsertionCommand(doc, cmd)) {
 				smartIndentAfterNewLine(doc, cmd);
-			else if(smartDeIndentAfterDelete(doc, cmd))
+			} else if(smartDeIndentAfterDeletion(doc, cmd)) {
 				return;
-			else if (AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(cmd))
+			} else if (AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(cmd)) {
 				smartIndentOnKeypress(doc, cmd);
-			else if (cmd.text.length() > 1 && fPreferences.isSmartPaste())
+			} else if (cmd.text.length() > 1 && fPreferences.isSmartPaste()) {
 				smartPaste(doc, cmd); // no smart backspace for paste
-			else
+			} else {
 				super.customizeDocumentCommand(doc, cmd);
+			}
 		} catch (BadLocationException e) {
 			//DLTKUIPlugin.log(e);
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
@@ -175,7 +212,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
 	/* ------------------------------------- */
 	
-	protected boolean smartDeIndentAfterDelete(IDocument doc, DocumentCommand cmd) throws BadLocationException {
+	protected boolean smartDeIndentAfterDeletion(IDocument doc, DocumentCommand cmd) throws BadLocationException {
 		if(!fPreferences.isSmartDeIndent())
 			return false;
 		
@@ -189,6 +226,9 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		
 		// Delete at beginning of NL
 		if(cmd.offset == lineEnd && lengthMatchesLineDelimiter(cmd.length, doc.getLineDelimiter(line))) {
+			if(keyWasBackspace())
+				return false; // Only Delete key should trigger this edit
+			
 			int indentLine = line+1;
 			if(indentLine < doc.getNumberOfLines()) {
 				assertTrue(doc.getLineInformation(indentLine).getOffset() == cmd.offset + cmd.length);
@@ -206,6 +246,10 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		
 		// Backspace at end of indent case
 		if(cmd.length == 1 && isIndentWhiteSpace(doc.getChar(cmd.offset)) && line > 0) {
+			if(keyWasDelete())
+				return false; // Only Backspace key should trigger this
+			
+			
 			IRegion indentLineRegion = lineRegion;
 			int indentLine = line;
 			int indentEnd = findEndOfWhiteSpace(doc, indentLineRegion);
