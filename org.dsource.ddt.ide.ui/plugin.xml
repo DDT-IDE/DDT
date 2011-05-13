@@ -121,6 +121,12 @@
               id="org.dsource.ddt.ide.ui.preferences.editor.CodeTemplates"
               name="%LangCodeTemplatesPreferencePage.name" />
       <page
+            category="org.dsource.ddt.ide.ui.preferences.Editor"
+            class="mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage"
+            id="org.dsource.ddt.ide.ui.preferences.editor.Folding"
+            name="%LangEditorFoldingPreferencePage.name">
+      </page>
+      <page
             category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
             class="mmrnmhrm.ui.preferences.pages.DeeCompilersPreferencePage"
             id="org.dsource.ddt.ide.ui.preferences.DeeCompilers"

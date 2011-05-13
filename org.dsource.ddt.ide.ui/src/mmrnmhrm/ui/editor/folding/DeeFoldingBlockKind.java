@@ -28,7 +28,7 @@ public enum DeeFoldingBlockKind implements IFoldingBlockKind {
 	
 	@Override
 	public boolean isComment() {
-		return false;
+		return _isComment;
 	}
 	
 }

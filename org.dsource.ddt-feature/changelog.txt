@@ -8,6 +8,10 @@
  * Added Content Assist proposal auto-insertion trigger characters: ' ', '=', ';', '.'.  
  * Fixed issue #31: Indent auto edit: full indent deletion is incorrectly triggered on certain positions.
  * Fixed some shortcomings related to auto indent in lines that started with comments.
+ * Changed implemented of code folding to newer implementation. Now folding detects non-doc comments as well.
+   * Can configure if specific kinds of fold groups have folding enabled or not. (comments, DDoc comments, module header comments, aggregate types, functions) 
+   * Can specify whether the initial state of such fold groups is folded or not.
+   * Added folding preference page for the above functionality. 
 
 == DDT 0.4.2 (2011-04-29) ==
  * Fixed issue #33, bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.

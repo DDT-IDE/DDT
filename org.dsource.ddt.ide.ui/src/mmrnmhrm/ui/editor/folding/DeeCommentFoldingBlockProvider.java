@@ -61,7 +61,7 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 	@Override
 	protected void reportRegions(Document document, List<IRegion> regions, IFoldingBlockKind kind, boolean collapse)
 			throws BadLocationException {
-		super.reportRegions(document, regions, kind, collapse);
+//		super.reportRegions(document, regions, kind, collapse);
 		
 		// XXX: DLTK 2.0 copied/modified code
 //		for (IRegion region : regions) {

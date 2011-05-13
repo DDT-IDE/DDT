@@ -41,6 +41,13 @@ public final class DeePreferencesMessages extends NLS {
 	public static final String ContentAssistConfigBlock_deeAutoActivationTriggers = 
 			"Auto activation trigger characters";
 	
+	public static final String Folding_initFoldDoc = 
+			 "D Doc Comments";
+	
+	public static final String Folding_initFoldFunctions = 
+			 "Functions";
+	public static final String Folding_initFoldAggregates = 
+			 "Aggregate Types";
 	
 	
 	private DeePreferencesMessages() {

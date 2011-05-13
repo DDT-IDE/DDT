@@ -83,13 +83,13 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.EDITOR_DOCS_FOLDING_ENABLED, true);
 		store.setDefault(PreferenceConstants.EDITOR_COMMENT_FOLDING_JOIN_NEWLINES, false);
 		
-		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_COMMENTS, true);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_COMMENTS, false);
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS, true);
-		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_DOCS, true);
-		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_METHODS, true);
-		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_CLASSES, true);
-		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_STRINGS_FOLDING_ENABLED, true);
-		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_STRINGS, true);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_DOCS, false);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_METHODS, false);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_CLASSES, false);
+		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_STRINGS_FOLDING_ENABLED, true); // Not used much ATM
+		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_STRINGS, false); // Not used much ATM
 		
 		
 		store.setDefault(PreferenceConstants.SEARCH_USE_REDUCED_MENU, true);
