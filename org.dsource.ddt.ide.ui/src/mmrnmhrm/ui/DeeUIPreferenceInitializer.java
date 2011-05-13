@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
+import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 import mmrnmhrm.ui.text.color.DeeColorPreferenceInitializer;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -74,11 +75,24 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.CODEASSIST_AUTOINSERT, true);
 		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS, ".");
 		
+		
 		// folding
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_ENABLED, true);
-		store.setDefault(PreferenceConstants.EDITOR_COMMENTS_FOLDING_ENABLED, true);		
-		store.setDefault(PreferenceConstants.SEARCH_USE_REDUCED_MENU, true);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
+		store.setDefault(PreferenceConstants.EDITOR_COMMENTS_FOLDING_ENABLED, true);
+		store.setDefault(PreferenceConstants.EDITOR_DOCS_FOLDING_ENABLED, true);
+		store.setDefault(PreferenceConstants.EDITOR_COMMENT_FOLDING_JOIN_NEWLINES, false);
 		
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_COMMENTS, true);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS, true);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_DOCS, true);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_METHODS, true);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_CLASSES, true);
+		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_STRINGS_FOLDING_ENABLED, true);
+		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_STRINGS, true);
+		
+		
+		store.setDefault(PreferenceConstants.SEARCH_USE_REDUCED_MENU, true);
 		
 		
 		/*

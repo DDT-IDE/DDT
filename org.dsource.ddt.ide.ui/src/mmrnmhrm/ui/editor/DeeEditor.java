@@ -96,10 +96,11 @@ public class DeeEditor extends DeeBaseEditor {
 	
 	@Override
 	protected IFoldingStructureProvider getFoldingStructureProvider() {
-		if (fFoldingProvider == null) {
-			fFoldingProvider = new DeeFoldingStructureProvider();
-		}
-		return fFoldingProvider;
+		return super.getFoldingStructureProvider();
+//		if (fFoldingProvider == null) {
+//			fFoldingProvider = new DeeFoldingStructureProvider();
+//		}
+//		return fFoldingProvider;
 	}
 	
 	

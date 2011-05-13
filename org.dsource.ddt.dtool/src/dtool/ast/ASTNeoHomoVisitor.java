@@ -7,6 +7,7 @@ import melnorme.utilbox.tree.IVisitable;
  * i.e., without any type-specific methods. Uses the accept0 mechanism and
  * not getChildren().
  */
+@Deprecated
 public abstract class ASTNeoHomoVisitor extends ASTNeoUpTreeVisitor {
 
 	public <T extends IASTNeoVisitor> void traverse(IVisitable<? super IASTNeoVisitor> elem) {
@@ -16,13 +17,13 @@ public abstract class ASTNeoHomoVisitor extends ASTNeoUpTreeVisitor {
 	@Override
 	public void preVisit(ASTNeoNode elem) {
 	}
-
+	
 	@Override
 	public void postVisit(ASTNeoNode elem) {
 	}
 	
-	abstract boolean enterNode(ASTNeoNode elem);
-	abstract void leaveNode(ASTNeoNode elem);
+	protected boolean enterNode(ASTNeoNode elem) { return true; }
+	protected void leaveNode(ASTNeoNode elem) { }
 
 
 	@Override
