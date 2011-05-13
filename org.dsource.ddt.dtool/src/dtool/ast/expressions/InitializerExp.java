@@ -3,6 +3,7 @@ package dtool.ast.expressions;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ExpInitializer;
 import dtool.ast.IASTNeoVisitor;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class InitializerExp extends Initializer {
@@ -10,7 +11,7 @@ public class InitializerExp extends Initializer {
 	public Resolvable exp;
 
 	public InitializerExp(ExpInitializer elem, ASTConversionContext convContext) {
-		convertNode(elem);
+		initSourceRange(DefinitionConverter.sourceRange(elem, false));
 		this.exp = Expression.convert(elem.exp, convContext); 
 	}
 

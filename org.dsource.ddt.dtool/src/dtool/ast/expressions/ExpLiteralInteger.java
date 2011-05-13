@@ -7,6 +7,7 @@ import descent.internal.compiler.parser.TY;
 import descent.internal.compiler.parser.TypeBasic;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.descentadapter.DefinitionConverter;
 
 public class ExpLiteralInteger extends Expression {
 
@@ -21,7 +22,7 @@ public class ExpLiteralInteger extends Expression {
 	BigInteger num;
 
 	public ExpLiteralInteger(IntegerExp elem) {
-		convertNode(elem);
+		initSourceRange(DefinitionConverter.sourceRange(elem, false));
 		if(elem.value != null) {
 			num = elem.value.bigIntegerValue();
 		} else {

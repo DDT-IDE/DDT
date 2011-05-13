@@ -11,12 +11,12 @@ public class BaseDmdConverter {
 		return sourceRange(node, true);
 	}
 	
-	public static SourceRange sourceRange(ASTDmdNode node, boolean nonEmpty) {
+	public static SourceRange sourceRange(ASTDmdNode node, boolean requireNonEmpty) {
 		if (node.getStartPos() == -1) {
 			return null;
 		}
 		assertTrue(node.getStartPos() >= 0);
-		if(nonEmpty) {
+		if(requireNonEmpty) {
 			assertTrue(node.getLength() > 0);
 		} else {
 			assertTrue(node.getLength() >= 0);
