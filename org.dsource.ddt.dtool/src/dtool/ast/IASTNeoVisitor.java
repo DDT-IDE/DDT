@@ -1,6 +1,5 @@
 package dtool.ast;
 
-import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
@@ -22,7 +21,12 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
-public interface IASTNeoVisitor extends IASTVisitor {
+/**
+ * The classes that this visitor dispatches to are mostly abstract classes, not concrete ones: 
+ * it doesn't dispatch only to the leaves of the AST hierarchy. This is because it is not necessary to do so, 
+ * at the moment.
+ */
+public interface IASTNeoVisitor {
 	
 	void preVisit(ASTNeoNode node);
 	void postVisit(ASTNeoNode node);

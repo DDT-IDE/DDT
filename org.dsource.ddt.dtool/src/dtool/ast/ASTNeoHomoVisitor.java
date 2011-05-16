@@ -1,6 +1,5 @@
 package dtool.ast;
 
-import melnorme.utilbox.tree.IVisitable;
 
 /** 
  * An abstract visitor that visits nodes in a homogeneous way, 
@@ -10,10 +9,6 @@ import melnorme.utilbox.tree.IVisitable;
 @Deprecated
 public abstract class ASTNeoHomoVisitor extends ASTNeoUpTreeVisitor {
 
-	public <T extends IASTNeoVisitor> void traverse(IVisitable<? super IASTNeoVisitor> elem) {
-		elem.accept(this);
-	}
-	
 	@Override
 	public void preVisit(ASTNeoNode elem) {
 	}

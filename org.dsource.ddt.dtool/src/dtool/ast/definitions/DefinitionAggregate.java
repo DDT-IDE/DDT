@@ -6,7 +6,7 @@ import java.util.List;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.Dsymbol;
-import descent.internal.compiler.parser.ast.ASTNode;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTPrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.statements.IStatement;
@@ -19,7 +19,7 @@ import dtool.refmodel.IScopeNode;
 public abstract class DefinitionAggregate extends Definition implements IScopeNode, IStatement {
 
 	public TemplateParameter[] templateParams; 
-	public List<ASTNode> members; // can be null. (bodyless aggregates)
+	public List<ASTNeoNode> members; // can be null. (bodyless aggregates)
 
 	public DefinitionAggregate(Dsymbol elem, ASTConversionContext convContext) {
 		super(elem, convContext);
@@ -44,7 +44,7 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	}
 	
 	@Override
-	public Iterator<ASTNode> getMembersIterator() {
+	public Iterator<ASTNeoNode> getMembersIterator() {
 		if(members == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
 		return members.iterator();

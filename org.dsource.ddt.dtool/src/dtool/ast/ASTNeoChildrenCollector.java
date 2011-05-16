@@ -17,28 +17,28 @@ public class ASTNeoChildrenCollector extends ASTNeoHomoVisitor {
 	
 	public static ASTNeoNode[] getChildrenArray(ASTNeoNode elem){
 		return getChildrenList(elem).toArray(ASTNeoNode.NO_ELEMENTS);
-	}	
+	}
 	
 	public static List<ASTNeoNode> getChildrenList(IVisitable<? super IASTNeoVisitor> elem){
 		ASTNeoChildrenCollector collector = new ASTNeoChildrenCollector();
 		collector.childrenLst = new ArrayList<ASTNeoNode>();
-		collector.traverse(elem);
+		elem.accept(collector);
 		return collector.childrenLst;
 	}
 	
-
+	
 	@Override
 	public boolean enterNode(ASTNeoNode elem) {
 		if(visitingParent == true) {
 			visitingParent = false;
 			return true; // visit children
 		}
-
+		
 		// visiting children
 		childrenLst.add(elem);
 		return false;
 	}
-
+	
 	@Override
 	protected void leaveNode(ASTNeoNode elem) {
 		// Do nothing
