@@ -124,9 +124,10 @@ public abstract class ASTNeoNode extends ASTNode implements IASTNeoNode {
 		assertNotNull(visitor);
 		
 		// begin with the generic pre-visit
-		visitor.preVisit(this);
-		// dynamic dispatch to internal method for type-specific visit/endVisit
-		this.accept0(visitor);
+		if(visitor.preVisit(this)) {
+			// dynamic dispatch to internal method for type-specific visit/endVisit
+			accept0(visitor);
+		}
 		// end with the generic post-visit
 		visitor.postVisit(this);
 	}

@@ -28,9 +28,11 @@ import dtool.ast.references.Reference;
  */
 public interface IASTNeoVisitor {
 	
-	void preVisit(ASTNeoNode node);
+	/** Returns whether to proceed with type-specific dispatch visit. 
+	 * Note: if false, it implies children will not be visited. */
+	boolean preVisit(ASTNeoNode node);
 	void postVisit(ASTNeoNode node);
-
+	
 	boolean visit(ASTNeoNode node);
 	void endVisit(ASTNeoNode node);
 

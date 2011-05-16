@@ -10,7 +10,7 @@ import melnorme.utilbox.tree.IVisitable;
 /**
  * Uses a Visitor to collect a node's children.
  */
-public class ASTNeoChildrenCollector extends ASTNeoHomoVisitor {
+public class ASTNeoChildrenCollector extends ASTNeoHomogenousVisitor {
 	
 	private boolean visitingParent = true;
 	private List<ASTNeoNode> childrenLst;
@@ -28,19 +28,19 @@ public class ASTNeoChildrenCollector extends ASTNeoHomoVisitor {
 	
 	
 	@Override
-	public boolean enterNode(ASTNeoNode elem) {
+	public boolean preVisit(ASTNeoNode node) {
 		if(visitingParent == true) {
 			visitingParent = false;
 			return true; // visit children
 		}
 		
 		// visiting children
-		childrenLst.add(elem);
+		childrenLst.add(node);
 		return false;
 	}
 	
 	@Override
-	protected void leaveNode(ASTNeoNode elem) {
+	public void postVisit(ASTNeoNode node) {
 		// Do nothing
 	}
 }

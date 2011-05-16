@@ -20,7 +20,7 @@ import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Region;
 
-import dtool.ast.ASTNeoHomoVisitor;
+import dtool.ast.ASTNeoHomogenousVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.definitions.DefinitionAggregate;
@@ -58,10 +58,10 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 			ISourceModule sourceModule = (ISourceModule) content.getModelElement();
 			DeeModuleDeclaration deeModuleDecl = DeeParserUtil.getASTFromModule(sourceModule);
 			if (deeModuleDecl != null) {
-				deeModuleDecl.neoModule.accept(new ASTNeoHomoVisitor() {
+				deeModuleDecl.neoModule.accept(new ASTNeoHomogenousVisitor() {
 					
 					@Override
-					protected boolean enterNode(ASTNeoNode node) {
+					public boolean preVisit(ASTNeoNode node) {
 						if (node instanceof DefinitionAggregate) {
 							reportBlock(node, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
 						} else if (node instanceof DefinitionFunction) {
@@ -70,10 +70,6 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 							//reportBlock(node, DeeFoldingBlockKind.FUNCTION, collapseFunctions);
 						}
 						return true;
-					}
-					
-					@Override
-					protected void leaveNode(ASTNeoNode elem) {
 					}
 					
 				});

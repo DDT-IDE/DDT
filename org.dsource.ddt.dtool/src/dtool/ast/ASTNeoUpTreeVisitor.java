@@ -24,13 +24,14 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
+@Deprecated
 public abstract class ASTNeoUpTreeVisitor extends ASTUpTreeVisitor implements IASTNeoVisitor {
 
 	@Override
-	public void preVisit(ASTNeoNode elem) {
-		// Default implementation: do nothing
+	public boolean preVisit(ASTNeoNode elem) {
+		return true; // Default implementation: do nothing
 	}
-
+	
 	@Override
 	public void postVisit(ASTNeoNode elem) {
 		// Default implementation: do nothing
