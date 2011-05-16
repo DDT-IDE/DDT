@@ -1,8 +1,7 @@
 package dtool.ast;
 
 import melnorme.utilbox.core.Assert;
-import descent.internal.compiler.parser.ast.ASTUpTreeVisitor;
-import descent.internal.compiler.parser.ast.IASTNode;
+import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
@@ -24,8 +23,11 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
-@Deprecated
-public abstract class ASTNeoUpTreeVisitor extends ASTUpTreeVisitor implements IASTNeoVisitor {
+/**
+ * This visitor has default implementation methods where each defers to the method with the parameter's superclass.
+ * This is a cute idea, but it can be a performance issue. 
+ */
+public abstract class ASTNeoUpTreeVisitor extends TreeVisitor implements IASTNeoVisitor {
 
 	@Override
 	public boolean preVisit(ASTNeoNode elem) {
@@ -39,8 +41,8 @@ public abstract class ASTNeoUpTreeVisitor extends ASTUpTreeVisitor implements IA
 	
 	@Override
 	public boolean visit(ASTNeoNode elem) {
-		//Assert.isTrue(ASTNeoNode.class.getSuperclass().equals(ASTNode.class));
-		return visit((IASTNode) elem);
+		// Default implementation: do nothing
+		return true;
 	}
 	
 	@Override

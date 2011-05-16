@@ -3,7 +3,7 @@ package dtool.ast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.ast.ASTNode;
-import descent.internal.compiler.parser.ast.ASTRangeLessNode;
+import descent.internal.compiler.parser.ast.ASTUpTreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
 
 
@@ -12,7 +12,7 @@ import descent.internal.compiler.parser.ast.IASTNode;
  * An element is picked between element.startPos (inclusive) and  
  * element.endPos (inclusive).   
  */
-public class ASTNodeFinder extends ASTNeoUpTreeVisitor {
+public class ASTNodeFinder {
 	
 	private int offset; 
 	private boolean inclusiveEnd;
@@ -31,11 +31,12 @@ public class ASTNodeFinder extends ASTNeoUpTreeVisitor {
 	public static ASTNeoNode findElement(ASTNeoNode root, int offset) {
 		return (ASTNeoNode) findElement(root, offset, true);
 	}
-
+	
 	
 	public static ASTNeoNode findNeoElement(ASTNeoNode root, int offset, boolean inclusiveEnd){
 		return (ASTNeoNode) findElement(root, offset, inclusiveEnd);
 	}
+	
 	/** Finds the node at the given offset, starting from root.
 	 *  inclusiveEnd controls whether to match nodes whose end position 
 	 *  is the same as the offset.*/
@@ -43,9 +44,9 @@ public class ASTNodeFinder extends ASTNeoUpTreeVisitor {
 		if(root == null)
 			return null;
 		Assert.isTrue(!root.hasNoSourceRangeInfo());
-
+		
 		ASTNodeFinder aef = new ASTNodeFinder(offset, inclusiveEnd);
-
+		
 		if(!aef.matchesRangeStart(root) || !aef.matchesRangeEnd(root)) 
 			return null;
 		
@@ -54,22 +55,26 @@ public class ASTNodeFinder extends ASTNeoUpTreeVisitor {
 		return aef.match;
 	}
 	
-	private static void acceptDependingOnKind(IASTNode root, ASTNodeFinder visitor) {
+	private static void acceptDependingOnKind(IASTNode root, final ASTNodeFinder visitor) {
 		if(root instanceof ASTNeoNode) {
-			((ASTNeoNode) root).accept(visitor);
+			((ASTNeoNode) root).accept(new ASTNeoHomogenousVisitor() {
+				@Override
+				public boolean preVisit(ASTNeoNode node) {
+					return visitor.visit(node);
+				}
+			});
 		} else if(root instanceof ASTNode) {
-			((ASTNode)root).accept(visitor);
+			((ASTNode)root).accept(new ASTUpTreeVisitor() {
+				@Override
+				public boolean visit(ASTNode node) {
+					return visitor.visit(node);
+				}
+			});
 		} else {
 			assertFail();
 		}
 	}
 	
-	@Override
-	public boolean visit(ASTRangeLessNode elem) {
-		return true;
-	}
-
-	@Override
 	public boolean visit(IASTNode elem) {
 		if(elem.hasNoSourceRangeInfo()) {
 			//Assert.fail();
@@ -88,16 +93,9 @@ public class ASTNodeFinder extends ASTNeoUpTreeVisitor {
 	private boolean matchesRangeStart(IASTNode elem) {
 		return offset >= elem.getStartPos();
 	}
-
+	
 	private boolean matchesRangeEnd(IASTNode elem) {
-		return inclusiveEnd ? 
-				offset <= elem.getEndPos() : offset < elem.getEndPos();
+		return inclusiveEnd ? offset <= elem.getEndPos() : offset < elem.getEndPos();
 	}
-
-	@Override
-	public void endVisit(ASTRangeLessNode elem) { }
-	@Override
-	public void endVisit(ASTNeoNode elem) { }
-
+	
 }
-

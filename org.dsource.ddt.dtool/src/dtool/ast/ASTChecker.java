@@ -1,7 +1,6 @@
 package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import descent.internal.compiler.parser.ast.ASTRangeLessNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.Logg;
 
@@ -10,7 +9,7 @@ import dtool.Logg;
  * Checks for AST validity. Namely:
  * Source range consistency. 
  */
-public class ASTChecker extends ASTNeoUpTreeVisitor {
+public class ASTChecker extends ASTNeoHomogenousVisitor {
 	
 	/** Checks an AST for errors, such as source range errors. */
 	public static void checkConsistency(ASTNeoNode elem){
@@ -25,16 +24,7 @@ public class ASTChecker extends ASTNeoUpTreeVisitor {
 	}
 	
 	@Override
-	public boolean visit(ASTRangeLessNode elem) {
-		assertFail("Got an unranged node."); return false;
-	}
-	@Override
-	public void endVisit(ASTRangeLessNode elem) {
-		assertFail("Got an unranged node.");
-	}
-	
-	@Override
-	public boolean visit(IASTNode elem) {
+	public boolean preVisit(ASTNeoNode elem) {
 		if(elem.hasNoSourceRangeInfo()) {
 			return handleSourceRangeNoInfo(elem);
 		} else if(elem.getOffset() < offsetCursor) {
@@ -46,7 +36,7 @@ public class ASTChecker extends ASTNeoUpTreeVisitor {
 	}
 	
 	@Override
-	public void endVisit(IASTNode elem) {
+	public void postVisit(ASTNeoNode elem) {
 		if(elem.hasNoSourceRangeInfo()) {
 			return;
 		} else if(elem.getEndPos() < offsetCursor) {

@@ -1,12 +1,9 @@
 package dtool.ast;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeDepthRecon;
-import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.references.RefQualified;
 
@@ -50,21 +47,11 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 	
 	/** Gets a String representation of the whole node tree, with one
 	 * line per node, and using toStringAsNodePlusExtra */
-	public static String toStringAsFullNodeTree(IASTNode elem, boolean recurseUnconverted) {
+	public static String toStringAsFullNodeTree(ASTNeoNode elem, boolean recurseUnconverted) {
 		ASTPrinter astPrinter = new ASTPrinter();
 		astPrinter.recurseUnconverted = recurseUnconverted;
-		acceptDependingOnKind(elem, astPrinter);
+		elem.accept(astPrinter);
 		return astPrinter.strbuffer.toString();
-	}
-	
-	private static void acceptDependingOnKind(IASTNode root, ASTPrinter visitor) {
-		if(root instanceof ASTNeoNode) {
-			((ASTNeoNode) root).accept(visitor);
-		} else if(root instanceof ASTNode) {
-			((ASTNode)root).accept(visitor);
-		} else {
-			assertFail();
-		}
 	}
 	
 	/* ====================================================== */
@@ -91,11 +78,6 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 	private ASTPrinter() {
 		this.indent = 0;
 		this.strbuffer = new StringBuffer();
-	}
-	
-	/** Gets a String representation of elem only, with extra info. */
-	private String toStringAsNodePlusExtra(ASTNode elem) {
-		return elem.toStringAsNode(printRangeInfo);
 	}
 	
 	/** Gets a String representation of elem only, with extra info. */
@@ -139,12 +121,6 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 	}
 	
 	/* ====================================================== */
-	@Override
-	public boolean visit(ASTNode elem) {
-		printNodeDecorations(elem, toStringAsNodePlusExtra(elem));
-		return visitChildren && recurseUnconverted;
-	}
-
 	
 	/* ---------------- Neo ------------------ */
 	@Override
@@ -160,17 +136,6 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 	
 	
 	/* ---------------------------------- */
-	@Override
-	public void endVisit(ASTNode element) {
-		
-		if(collapseLeafs && TreeDepthRecon.findMaxDepth(element) == 2) {
-			allSiblingsAreLeafs = false;
-			println(" )");
-		}
-
-		indent--;
-	}
-	
 
 }
 
