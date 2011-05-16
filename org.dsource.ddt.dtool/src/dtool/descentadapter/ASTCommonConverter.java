@@ -25,7 +25,8 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	public void postVisit(ASTNode elem) {
 	}
 	@Override
-	public void preVisit(ASTNode elem) {
+	public boolean preVisit(ASTNode elem) {
+		return true;
 	}
 	
 	
