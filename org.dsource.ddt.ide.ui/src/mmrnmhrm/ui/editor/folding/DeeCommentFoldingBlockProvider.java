@@ -5,6 +5,9 @@ import java.util.List;
 import mmrnmhrm.ui.text.DeePartitioningProvider;
 import mmrnmhrm.ui.text.DeePartitions;
 
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.dsource.ddt.ide.core.model.DeeParserUtil;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.dltk.ui.text.folding.PartitioningFoldingBlockProvider;
@@ -12,6 +15,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IRegion;
+
+import dtool.ast.definitions.Module.DeclarationModule;
 
 public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProvider {
 	
@@ -21,6 +26,7 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 	
 	protected boolean fStringFolding;
 	protected boolean fInitCollapseStrings;
+	protected int offsetForFirstMember; // Used to determine header comments
 
 	
 	@Override
@@ -36,7 +42,20 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 	
 	@Override
 	public void computeFoldableBlocks(IFoldingContent content) {
+		offsetForFirstMember = -1;
+		
 		if(isFoldingComments()) {
+			ISourceModule sourceModule = (ISourceModule) content.getModelElement();
+			
+			// With changes in the parser perhaps this code could be simplified.
+			DeeModuleDeclaration deeModuleDecl = DeeParserUtil.getASTFromModule(sourceModule);
+			if (deeModuleDecl != null) {
+				DeclarationModule md = deeModuleDecl.neoModule.md;
+				if(md != null) {
+					offsetForFirstMember = md.getOffset();
+				}
+			}
+			
 			computeBlocksForPartitionType(content,
 					DeePartitions.DEE_MULTI_COMMENT, DeeFoldingBlockKind.COMMENT, isCollapseComments());
 			computeBlocksForPartitionType(content,
@@ -75,7 +94,7 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 			Object element = null;
 			
 			boolean effectiveCollapse = collapse;
-			if(kind.isComment() && region.getOffset() == 0) {
+			if(kind.isComment() && offsetForFirstMember != -1 && region.getOffset() < offsetForFirstMember) {
 				effectiveCollapse = isCollapseHeaderComment();
 			}
 			

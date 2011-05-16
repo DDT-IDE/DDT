@@ -11,9 +11,8 @@
 package mmrnmhrm.ui.editor.folding;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.eclipse.dltk.ast.parser.IModuleDeclaration;
+import org.dsource.ddt.ide.core.model.DeeParserUtil;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockRequestor;
@@ -57,9 +56,8 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	public void computeFoldableBlocks(IFoldingContent content) {
 		if (content.getModelElement() instanceof ISourceModule) {
 			ISourceModule sourceModule = (ISourceModule) content.getModelElement();
-			IModuleDeclaration moduleDeclaration = SourceParserUtil.parse(sourceModule, null);
-			if (moduleDeclaration instanceof DeeModuleDeclaration) {
-				DeeModuleDeclaration deeModuleDecl = (DeeModuleDeclaration) moduleDeclaration;
+			DeeModuleDeclaration deeModuleDecl = DeeParserUtil.getASTFromModule(sourceModule);
+			if (deeModuleDecl != null) {
 				deeModuleDecl.neoModule.accept(new ASTNeoHomoVisitor() {
 					
 					@Override
