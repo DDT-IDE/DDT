@@ -1,23 +1,21 @@
 package dtool.ast;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
-import melnorme.utilbox.tree.IElement;
-import melnorme.utilbox.tree.IVisitable;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.core.ISourceRange;
 
 import descent.internal.compiler.parser.ASTDmdNode;
-import descent.internal.compiler.parser.ast.IASTNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.definitions.Module;
 import dtool.descentadapter.DefinitionConverter;
 import dtool.refmodel.IScope;
 import dtool.refmodel.NodeUtil;
 
-public abstract class ASTNeoNode extends ASTNode implements IASTNode, IElement, IVisitable<IASTVisitor>{
+public abstract class ASTNeoNode extends ASTNode implements IASTNeoNode {
 	
 	public static final ASTNeoNode[] NO_ELEMENTS = new ASTNeoNode[0]; 
 	
@@ -122,18 +120,15 @@ public abstract class ASTNeoNode extends ASTNode implements IASTNode, IElement, 
 	 * This is a temporary adapting solution.
 	 */
 	@Override
-	public final void accept(IASTVisitor visitor) {
-		if (visitor == null) {
-			throw new IllegalArgumentException();
-		}
+	public final void accept(IASTNeoVisitor visitor) {
+		assertNotNull(visitor);
 		
-		IASTNeoVisitor neovisitor = (IASTNeoVisitor) visitor;
 		// begin with the generic pre-visit
-		neovisitor.preVisit(this);
+		visitor.preVisit(this);
 		// dynamic dispatch to internal method for type-specific visit/endVisit
-		this.accept0(neovisitor);
+		this.accept0(visitor);
 		// end with the generic post-visit
-		neovisitor.postVisit(this);
+		visitor.postVisit(this);
 	}
 	
 	

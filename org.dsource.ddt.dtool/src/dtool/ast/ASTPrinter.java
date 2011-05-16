@@ -1,5 +1,7 @@
 package dtool.ast;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -51,10 +53,19 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 	public static String toStringAsFullNodeTree(IASTNode elem, boolean recurseUnconverted) {
 		ASTPrinter astPrinter = new ASTPrinter();
 		astPrinter.recurseUnconverted = recurseUnconverted;
-		elem.accept(astPrinter);
+		acceptDependingOnKind(elem, astPrinter);
 		return astPrinter.strbuffer.toString();
 	}
-
+	
+	private static void acceptDependingOnKind(IASTNode root, ASTPrinter visitor) {
+		if(root instanceof ASTNeoNode) {
+			((ASTNeoNode) root).accept(visitor);
+		} else if(root instanceof ASTNode) {
+			((ASTNode)root).accept(visitor);
+		} else {
+			assertFail();
+		}
+	}
 	
 	/* ====================================================== */
 
@@ -159,8 +170,6 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 
 		indent--;
 	}
-
-
 	
 
 }

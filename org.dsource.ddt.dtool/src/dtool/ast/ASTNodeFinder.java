@@ -1,6 +1,8 @@
 package dtool.ast;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.utilbox.core.Assert;
+import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.ASTRangeLessNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 
@@ -47,11 +49,20 @@ public class ASTNodeFinder extends ASTNeoUpTreeVisitor {
 		if(!aef.matchesRangeStart(root) || !aef.matchesRangeEnd(root)) 
 			return null;
 		
-		root.accept(aef);
+		acceptDependingOnKind(root, aef);
 		Assert.isNotNull(aef.match);
 		return aef.match;
 	}
 	
+	private static void acceptDependingOnKind(IASTNode root, ASTNodeFinder visitor) {
+		if(root instanceof ASTNeoNode) {
+			((ASTNeoNode) root).accept(visitor);
+		} else if(root instanceof ASTNode) {
+			((ASTNode)root).accept(visitor);
+		} else {
+			assertFail();
+		}
+	}
 	
 	@Override
 	public boolean visit(ASTRangeLessNode elem) {

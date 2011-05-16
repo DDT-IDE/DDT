@@ -1,8 +1,8 @@
 package dtool.ast.definitions;
 
-import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.IASTNeoNode;
 
-public interface IFunctionParameter extends IASTNode {
+public interface IFunctionParameter extends IASTNeoNode {
 
 	/** Basicly, returns the type string for this function parameter. */
 	String toStringAsFunctionSimpleSignaturePart();

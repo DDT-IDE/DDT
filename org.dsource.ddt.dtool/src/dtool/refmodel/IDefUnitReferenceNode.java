@@ -1,10 +1,10 @@
 package dtool.refmodel;
 
-import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.IASTNeoNode;
 
 
 /** A node that references a DefUnit. */
-public interface IDefUnitReferenceNode extends IDefUnitReference, IASTNode {
+public interface IDefUnitReferenceNode extends IDefUnitReference, IASTNeoNode {
 
 	@Override
 	public String toStringAsElement();
