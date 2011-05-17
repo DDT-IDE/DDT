@@ -16,7 +16,6 @@ import melnorme.utilbox.misc.ArrayUtil;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class DeeTextTools extends ScriptTextTools {
@@ -27,16 +26,6 @@ public class DeeTextTools extends ScriptTextTools {
 	
 	public DeeTextTools(boolean autoDisposeOnDisplayDispose) {
 		super(DeePartitions.DEE_PARTITIONING, LEGAL_CONTENT_TYPES, autoDisposeOnDisplayDispose);
-	}
-	
-	@Override
-	public IPartitionTokenScanner createPartitionScanner() {
-		return super.createPartitionScanner();
-	}
-	
-	@Override
-	public IPartitionTokenScanner getPartitionScanner() {
-		return new DeePartitionScanner();
 	}
 	
 	@Override

@@ -7,7 +7,6 @@ import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
-import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
@@ -90,19 +89,6 @@ public class DeeEditor extends DeeBaseEditor {
 		
 		super.configureSourceViewerDecorationSupport(support);
 	}
-	
-	
-	private IFoldingStructureProvider fFoldingProvider = null;
-	
-	@Override
-	protected IFoldingStructureProvider getFoldingStructureProvider() {
-		return super.getFoldingStructureProvider();
-//		if (fFoldingProvider == null) {
-//			fFoldingProvider = new DeeFoldingStructureProvider();
-//		}
-//		return fFoldingProvider;
-	}
-	
 	
 	@SuppressWarnings("restriction") 
 	@Override
