@@ -120,7 +120,15 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static Reference convertTypeTypeOf(descent.internal.compiler.parser.TypeTypeof elem
 			, ASTConversionContext convContext) {
-		Reference rootRef = new TypeTypeof(Expression.convert(elem.exp, convContext), sourceRangeStrict(elem));
+		SourceRange sourceRange;
+		
+		if(elem.idents.size() == 0){
+			sourceRange = sourceRangeStrict(elem);
+		} else {
+			int typeofRefEndPos = elem.exp.getEndPos()+1; // Estimate the endPos
+			sourceRange = new SourceRange(elem.getOffset(), typeofRefEndPos - elem.getOffset());
+		}
+		Reference rootRef = new TypeTypeof(Expression.convert(elem.exp, convContext), sourceRange);
 		return createReferenceFromIdents(elem, rootRef, convContext);
 	}
 	
@@ -153,27 +161,28 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	private static RefTemplateInstance createRefTemplateInstance(int startPos, final Integer endPos,
 			TemplateInstance templInstance,
 			Reference tplReference, ASTConversionContext convContext) {
-		int endPosFixed;
+		int endPosCorrected;
 		ArrayList<ASTDmdNode> tiargs = templInstance.tiargs;
 		if (endPos == null) {
 			// Let's estimate a source range
 			if (tiargs.size() > 0) {
 				ASTDmdNode lastArg = tiargs.get(tiargs.size() - 1);
-				endPosFixed = lastArg.hasNoSourceRangeInfo() && !DToolBundle.BUGS_MODE ? -1 : lastArg.getEndPos();
+				endPosCorrected = lastArg.hasNoSourceRangeInfo() && !DToolBundle.BUGS_MODE ? -1 : lastArg.getEndPos();
 				// we could add one to endPosFixed, but it's possible there are no parenthesis
 			} else {
-				endPosFixed = startPos + "!()".length();
+				assertTrue(!tplReference.hasNoSourceRangeInfo());
+				endPosCorrected = tplReference.getEndPos() + "!()".length();
 			}
 			
 			if (!templInstance.hasNoSourceRangeInfo()) {
-				assertTrue(templInstance.getEndPos() >= endPosFixed);
-				endPosFixed = templInstance.getEndPos();
+				assertTrue(templInstance.getEndPos() >= endPosCorrected);
+				endPosCorrected = templInstance.getEndPos();
 			}
-			assertTrue(endPosFixed != -1);
+			assertTrue(endPosCorrected != -1);
 		} else {
-			endPosFixed = endPos;
+			endPosCorrected = endPos;
 		}
-		SourceRange sourceRange = sourceRangeStrict(startPos, endPosFixed);
+		SourceRange sourceRange = sourceRangeStrict(startPos, endPosCorrected);
 		return createRefTemplateInstance(tplReference, tiargs, sourceRange, convContext);
 	}
 	
