@@ -3,12 +3,12 @@
 = DDT Change Log =
 
 == DDT 0.4.3 (devel) ==
- * Added Content Assist preference page. 
+ * Resolved issue #12, added Content Assist preference page. 
    * Options: Completion insert/override; Single proposals automatic insert; Auto-Activation enable and delay;
    * Added Content Assist proposal auto-insertion trigger characters: ' ', '=', ';', '.'.  
  * Fixed issue #31: Indent auto edit: full indent deletion is incorrectly triggered on certain positions.
  * Fixed some shortcomings related to auto indent in lines that started with comments.
- * Changed implementation of editor folding to a newer API. Now the editor can fold non-DDoc comments as well (a previous limitation).
+ * Resolved issue #30, changed implementation of editor folding to a newer API. Now the editor can fold non-DDoc comments as well (a previous limitation).
    * Added folding preference page, can now configure the initial state (folded or not) of each folding group.
    * The folding groups/kinds are now: comments, DDoc comments, module header comments, aggregate types, functions.
  * Fixed minor source range bugs for template references and typeof() references.
