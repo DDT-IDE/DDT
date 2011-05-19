@@ -1,19 +1,22 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ArrayLiteralExp;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.ast.SourceRange;
 
 public class ExpArrayLiteral extends Expression {
 	
-	public Resolvable[] args;
-
-	public ExpArrayLiteral(ArrayLiteralExp elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.args = Expression.convertMany(elem.elements, convContext);
+	public final Resolvable[] args;
+	
+	public ExpArrayLiteral(Resolvable[] args, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.args = args;
 	}
-
+	
+	public Resolvable[] getArgs() {
+		return args;
+	}
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

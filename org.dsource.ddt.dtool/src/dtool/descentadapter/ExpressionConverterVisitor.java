@@ -82,9 +82,7 @@ import descent.internal.compiler.parser.XorExp;
 import dtool.ast.declarations.DeclarationStringMacro;
 import dtool.ast.expressions.ExpArrayIndex;
 import dtool.ast.expressions.ExpArrayLength;
-import dtool.ast.expressions.ExpArrayLiteral;
 import dtool.ast.expressions.ExpAssert;
-import dtool.ast.expressions.ExpCall;
 import dtool.ast.expressions.ExpCast;
 import dtool.ast.expressions.ExpCond;
 import dtool.ast.expressions.ExpDefaultInit;
@@ -100,7 +98,6 @@ import dtool.ast.expressions.ExpLiteralNull;
 import dtool.ast.expressions.ExpLiteralReal;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNew;
-import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSlice;
 import dtool.ast.expressions.ExpStringMacro;
 import dtool.ast.expressions.ExpSuper;
@@ -115,6 +112,7 @@ import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.PostfixExpression;
 import dtool.ast.expressions.PrefixExpression;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.ReferenceConverter;
 
 abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
@@ -185,7 +183,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(ArrayLiteralExp element) {
-		return endAdapt(new ExpArrayLiteral(element, convContext));
+		return endAdapt(ExpressionConverter.createExpArrayLiteral(element, convContext));
 	}
 	
 	@Override
@@ -195,7 +193,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(CallExp element) {
-		return endAdapt(new ExpCall(element, convContext));
+		return endAdapt(ExpressionConverter.createExpCall(element, convContext));
 	}
 	
 	@Override
@@ -235,7 +233,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(IdentifierExp element) {
-		return endAdapt(new ExpReference(element));
+		return endAdapt(ReferenceConverter.createExpReference(element));
 	}
 	
 	@Override
@@ -270,7 +268,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(ScopeExp element) {
-		return endAdapt(new ExpReference(element, convContext));
+		return endAdapt(ReferenceConverter.createExpReference(element, convContext));
 	}
 	
 	@Override

@@ -13,10 +13,12 @@ import descent.internal.compiler.parser.DotIdExp;
 import descent.internal.compiler.parser.DotTemplateInstanceExp;
 import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.Identifiers;
+import descent.internal.compiler.parser.ScopeExp;
 import descent.internal.compiler.parser.TemplateInstance;
 import descent.internal.compiler.parser.TemplateInstanceWrapper;
 import descent.internal.compiler.parser.TemplateMixin;
 import descent.internal.compiler.parser.Type;
+import descent.internal.compiler.parser.TypeExp;
 import descent.internal.compiler.parser.TypeIdentifier;
 import descent.internal.compiler.parser.TypeInstance;
 import descent.internal.compiler.parser.TypeQualified;
@@ -26,6 +28,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.declarations.InvalidSyntaxDeclaration;
 import dtool.ast.definitions.MixinContainer;
 import dtool.ast.definitions.NamedMixin;
+import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
 import dtool.descentadapter.BaseDmdConverter;
 import dtool.descentadapter.DescentASTConverter;
@@ -266,7 +269,10 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		IdentifierExp subIdentifierExp = elem.ident;
 		
 		if(elem.hasNoSourceRangeInfo()) {
-			assertTrue(convContext.module.hasSyntaxErrors());
+			if(!DToolBundle.DMDPARSER_PROBLEMS__BUG41) {
+				assertTrue(convContext.module.hasSyntaxErrors());
+				// We wish we could guarantee the above, but actually we can't 
+			}
 			assertTrue(subIdentifierExp.hasNoSourceRangeInfo() == false);
 		}
 		
@@ -325,11 +331,15 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			IDefUnitReferenceNode rootRef = Expression.convert2(rootIdentifierExp, convContext);
 			
 			if(rootRef.hasNoSourceRangeInfo() && !DToolBundle.BUGS_MODE){
-				assertTrue(topSourceRange != null);
-				// Estimate a range
-				ASTNeoNode rootRefAsNode = blindCast(rootRef);
-				rootRefAsNode.setStart(topSourceRange.getStartPos());
-				rootRefAsNode.setEndPos(subName.getStartPos()-1);
+				if(!DToolBundle.DMDPARSER_PROBLEMS__BUG41) {
+					assertTrue(topSourceRange != null);
+				}
+				if(topSourceRange != null) {
+					// Estimate a range
+					ASTNeoNode rootRefAsNode = blindCast(rootRef);
+					rootRefAsNode.setStart(topSourceRange.getStartPos());
+					rootRefAsNode.setEndPos(subName.getStartPos()-1);
+				}
 			}
 			
 			if(topSourceRange != null) {
@@ -339,11 +349,46 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			}
 			
 			RefQualified refQualified = new RefQualified(rootRef, subName, topSourceRange);
-			int newStartPos = refQualified.getQualifier().getStartPos();
-			// Fix some DMD missing ranges 
-			refQualified.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
+			if(refQualified.hasNoSourceRangeInfo() == false || DToolBundle.DMDPARSER_PROBLEMS__BUG41 == false) {
+				// Correct some DMD missing ranges 
+				int newStartPos = refQualified.getQualifier().getStartPos();
+				refQualified.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
+			} else {
+//				int newStartPos = newEndPos-1; // Just make up something
+//				refQualified.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
+			}
+			
 			return refQualified;
 		}
+	}
+	
+	/* --- Conversion to Expressions --- */
+	
+	
+	public static ExpReference createExpReference(IdentifierExp elem) {
+		RefIdentifier ref = ReferenceConverter.convertToRefIdentifier(elem);
+		return new ExpReference(ref, sourceRange(elem));
+	}
+	
+	public static ExpReference createExpReference(TypeExp elem, ASTConversionContext convContext) {
+		Reference ref = ReferenceConverter.convertType(elem.type, convContext);
+		return new ExpReference(ref, sourceRange(elem));
+	}
+	
+	public static ExpReference createExpReference(DotIdExp elem, ASTConversionContext convContext) {
+		Reference ref = ReferenceConverter.convertDotIdexp(elem, convContext);
+		// use ref as source range, not elem cause it is sometimes wrong
+		return new ExpReference(ref, sourceRange(elem)); 
+	}
+	
+	public static ExpReference createExpReference(DotTemplateInstanceExp elem, ASTConversionContext convContext) {
+		Reference ref = ReferenceConverter.convertDotTemplateIdExp(elem, convContext);
+		return new ExpReference(ref, sourceRange(elem));
+	}
+	
+	public static ExpReference createExpReference(ScopeExp elem, ASTConversionContext convContext) {
+		Reference ref = (Reference) DescentASTConverter.convertElem(elem.sds, convContext);
+		return new ExpReference(ref, sourceRange(elem));
 	}
 	
 }

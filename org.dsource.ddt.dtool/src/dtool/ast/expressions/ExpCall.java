@@ -5,25 +5,24 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.CallExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
 
 public class ExpCall extends Expression {
-
-	public Expression callee;
-	public Resolvable[] args;
 	
-	public ExpCall(CallExp elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.callee = Expression.convert(elem.e1, convContext); 
-		this.args = Expression.convertMany(elem.arguments, convContext);
+	public final Expression callee;
+	public final Resolvable[] args;
+	
+	public ExpCall(Expression callee, Resolvable[] args, SourceRange sourceRange) {
+		this.callee = callee;
+		this.args = args;
+		initSourceRange(sourceRange);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -38,7 +37,7 @@ public class ExpCall extends Expression {
 	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
 		DefUnit defUnit = callee.findTargetDefUnit();
 		if(defUnit == null)
-			return null;
+			return null;		
 		if (defUnit instanceof DefinitionFunction) {
 			DefinitionFunction defOpCallFunc = (DefinitionFunction) defUnit;
 			DefUnit targetDefUnit = defOpCallFunc.rettype.findTargetDefUnit();
@@ -57,5 +56,5 @@ public class ExpCall extends Expression {
 		}
 		return null;
 	}
-
+	
 }

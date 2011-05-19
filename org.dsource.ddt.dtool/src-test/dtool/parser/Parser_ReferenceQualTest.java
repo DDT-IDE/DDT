@@ -20,10 +20,14 @@ public class Parser_ReferenceQualTest extends Parser_Reference_CommonTest {
 	public void testExpQualifier() throws Exception { testExpQualifier$(); }
 	public void testExpQualifier$() throws Exception {
 		checkToStringAsElement = false;
-		runCommonTest("(blah).foo", RefFragmentDesc.EXP);
-		runCommonTest("(1+2).foo", RefFragmentDesc.EXP);
-		runCommonTest("__LINE__.stringof", RefFragmentDesc.EXP);
-		runCommonTest("__FILE__.stringof", RefFragmentDesc.EXP);
+		
+		for(String expRef : Parser_Reference_AllTest.sampleNonStaticRef) {
+			runCommonTest(expRef, RefFragmentDesc.EXP);
+		}
+		
+		for(String expRef : Parser_Reference_AllTest.sampleNonStaticRef) {
+			runCommonTest(expRef + "(blah).foo", RefFragmentDesc.EXP);
+		}
 	}
 	
 	@Override

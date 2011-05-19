@@ -30,6 +30,7 @@ public final class Parser_Reference_AllTest extends Parser_Reference_CommonTest 
 	
 	protected static String[] sampleNonStaticRef = array(
 			"(blah).foo", "(1+blah).foo",
+			"[1, 2].foo", "[].foo", "([1, 2]).foo", "func(blah).foo",
 			
 			"__LINE__.stringof", "__FILE__.foo"
 	); 

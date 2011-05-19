@@ -71,6 +71,11 @@ public class ASTChecker extends ASTNeoHomogenousVisitor {
 	}
 	
 	public static class ASTAssertChecker extends ASTChecker {
+		
+		public static void checkConsistency(ASTNeoNode elem){
+			elem.accept(new ASTAssertChecker(elem.getStartPos()));
+		}
+		
 		public ASTAssertChecker(int offsetCursor) {
 			super(offsetCursor);
 		}
