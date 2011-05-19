@@ -1,7 +1,6 @@
 package dtool.ast;
 
 import melnorme.utilbox.core.Assert;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
@@ -27,8 +26,8 @@ import dtool.ast.references.Reference;
  * This visitor has default implementation methods where each defers to the method with the parameter's superclass.
  * This is a cute idea, but it can be a performance issue. 
  */
-public abstract class ASTNeoUpTreeVisitor extends TreeVisitor implements IASTNeoVisitor {
-
+public abstract class ASTNeoUpTreeVisitor implements IASTNeoVisitor {
+	
 	@Override
 	public boolean preVisit(ASTNeoNode elem) {
 		return true; // Default implementation: do nothing
@@ -49,8 +48,8 @@ public abstract class ASTNeoUpTreeVisitor extends TreeVisitor implements IASTNeo
 	public void endVisit(ASTNeoNode elem) {
 		return;
 	}
-
-
+	
+	
 	@Override
 	public boolean visit(Symbol elem) {
 		Assert.isTrue(Symbol.class.getSuperclass().equals(ASTNeoNode.class));
@@ -67,7 +66,7 @@ public abstract class ASTNeoUpTreeVisitor extends TreeVisitor implements IASTNeo
 		Assert.isTrue(DefUnit.class.getSuperclass().equals(ASTNeoNode.class));
 		endVisit((ASTNeoNode) elem);
 	}
-
+	
 	@Override
 	public boolean visit(Module elem) {
 		Assert.isTrue(Module.class.getSuperclass().equals(DefUnit.class));
@@ -179,7 +178,7 @@ public abstract class ASTNeoUpTreeVisitor extends TreeVisitor implements IASTNeo
 		endVisit((Definition) elem);
 	}	
 	/* ---------------------------------- */
-
+	
 	@Override
 	public boolean visit(Resolvable elem) {
 		Assert.isTrue(Resolvable.class.getSuperclass().equals(ASTNeoNode.class));
@@ -190,8 +189,8 @@ public abstract class ASTNeoUpTreeVisitor extends TreeVisitor implements IASTNeo
 		Assert.isTrue(Resolvable.class.getSuperclass().equals(ASTNeoNode.class));
 		endVisit((ASTNeoNode) elem);
 	}
-
-
+	
+	
 	@Override
 	public boolean visit(Reference elem) {
 		Assert.isTrue(Reference.class.getSuperclass().equals(Resolvable.class));
@@ -215,34 +214,34 @@ public abstract class ASTNeoUpTreeVisitor extends TreeVisitor implements IASTNeo
 		Assert.isTrue(NamedReference.class.getSuperclass().equals(Reference.class));
 		return visit((Reference) elem);
 	}
-
+	
 /*	public void endVisit(NamedReference elem) {
 		Assert.isTrue(NamedReference.class.getSuperclass().equals(Reference.class));
 		endVisit((Reference) elem);
 	}
-*/
+ */
 	
 	@Override
 	public boolean visit(CommonRefQualified elem) {
 		Assert.isTrue(CommonRefQualified.class.getSuperclass().equals(NamedReference.class));
 		return visit((NamedReference) elem);
 	}
-
+	
 	@Override
 	public boolean visit(RefIdentifier elem) {
 		Assert.isTrue(RefIdentifier.class.getSuperclass() == NamedReference.class);
 		return visit((NamedReference) elem);
 	}
-
+	
 	@Override
 	public boolean visit(RefTemplateInstance elem) {
 		Assert.isTrue(RefTemplateInstance.class.getSuperclass() == Reference.class);
 		return visit((Reference) elem);
 	}
-
-
+	
+	
 	/* ---------------------------------- */
-
+	
 	@Override
 	public boolean visit(DeclarationImport elem) {
 		Assert.isTrue(DeclarationImport.class.getSuperclass().equals(ASTNeoNode.class));
@@ -251,5 +250,5 @@ public abstract class ASTNeoUpTreeVisitor extends TreeVisitor implements IASTNeo
 	
 	
 	/* ============================================= */
-
+	
 }
