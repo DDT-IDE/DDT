@@ -1,17 +1,17 @@
 package dtool.descentadapter;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import descent.internal.compiler.parser.ASTDmdNode;
+import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.SourceRange;
 
 
 public class BaseDmdConverter {
 	
-	public static SourceRange sourceRange(ASTDmdNode node) {
+	public static SourceRange sourceRange(IASTNode node) {
 		return sourceRange(node, true);
 	}
 	
-	public static SourceRange sourceRange(ASTDmdNode node, boolean requireNonEmpty) {
+	public static SourceRange sourceRange(IASTNode node, boolean requireNonEmpty) {
 		if (node.getStartPos() == -1) {
 			return null;
 		}
@@ -24,11 +24,11 @@ public class BaseDmdConverter {
 		return new SourceRange(node.getStartPos(), node.getLength());
 	}
 	
-	public static SourceRange sourceRangeForced(ASTDmdNode node) {
+	public static SourceRange sourceRangeForced(IASTNode node) {
 		return new SourceRange(node.getStartPos(), node.getLength());
 	}
 	
-	public static SourceRange sourceRangeStrict(ASTDmdNode node) {
+	public static SourceRange sourceRangeStrict(IASTNode node) {
 		assertTrue(node.getStartPos() >= 0);
 		assertTrue(node.getLength() > 0);
 		return new SourceRange(node.getStartPos(), node.getLength());

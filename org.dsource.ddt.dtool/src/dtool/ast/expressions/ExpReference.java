@@ -5,56 +5,23 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.DotIdExp;
-import descent.internal.compiler.parser.DotTemplateInstanceExp;
-import descent.internal.compiler.parser.IdentifierExp;
-import descent.internal.compiler.parser.ScopeExp;
-import descent.internal.compiler.parser.TypeExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 /**
- * An Expression wrapping a Reference
+ * An Expression wrapping a {@link Reference}
  */
 public class ExpReference extends Expression {
 	
-	public Reference ref;
+	public final Reference ref;
 	
-	public ExpReference(Reference ref) {
+	public ExpReference(Reference ref, SourceRange sourceRange) {
 		assertNotNull(ref);
 		this.ref = ref;
+		initSourceRange(sourceRange);
 	}
-	
-	public ExpReference(IdentifierExp elem) {
-		this(ReferenceConverter.convertToRefIdentifier(elem));
-		convertNode(elem);
-	}
-	
-	public ExpReference(TypeExp elem, ASTConversionContext convContext) {
-		this(ReferenceConverter.convertType(elem.type, convContext));
-		convertNode(elem);
-	}
-	
-	public ExpReference(DotIdExp elem, ASTConversionContext convContext) {
-		this(ReferenceConverter.convertDotIdexp(elem, convContext));
-		convertNode(elem);
-	}
-	
-	public ExpReference(DotTemplateInstanceExp elem, ASTConversionContext convContext) {
-		this(ReferenceConverter.convertDotTemplateIdExp(elem, convContext));
-		convertNode(elem);
-	}
-	
-	public ExpReference(ScopeExp elem, ASTConversionContext convContext) {
-		this((Reference) DescentASTConverter.convertElem(elem.sds, convContext));
-		convertNode(elem);
-	}
-	
-	
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

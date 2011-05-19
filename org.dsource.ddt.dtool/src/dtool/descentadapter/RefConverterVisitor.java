@@ -9,7 +9,6 @@ import descent.internal.compiler.parser.FuncLiteralDeclaration;
 import descent.internal.compiler.parser.TemplateInstanceWrapper;
 import descent.internal.compiler.parser.TypeExp;
 import descent.internal.compiler.parser.TypeInstance;
-import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.RefReturn;
 import dtool.ast.references.RefTypeSlice;
 import dtool.ast.references.ReferenceConverter;
@@ -34,18 +33,18 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	
 	@Override
 	public boolean visit(TypeExp node) {
-		return endAdapt(new ExpReference(node, convContext));
+		return endAdapt(ReferenceConverter.createExpReference(node, convContext));
 	}
 	
 	
 	@Override
 	public boolean visit(DotIdExp node) {
-		return endAdapt(new ExpReference(node, convContext));
+		return endAdapt(ReferenceConverter.createExpReference(node, convContext));
 	}
 		
 	@Override
 	public boolean visit(DotTemplateInstanceExp node) {
-		return endAdapt(new ExpReference(node, convContext));
+		return endAdapt(ReferenceConverter.createExpReference(node, convContext));
 	}
 
 	/* ---- References & co. --- */
@@ -58,7 +57,7 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.IdentifierExp elem) {
-		return endAdapt(new ExpReference(elem));
+		return endAdapt(ReferenceConverter.createExpReference(elem));
 	}
 	
 	@Override
