@@ -334,10 +334,14 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 				if(!DToolBundle.DMDPARSER_PROBLEMS__BUG41) {
 					assertTrue(topSourceRange != null);
 				}
+				ASTNeoNode rootRefAsNode = blindCast(rootRef);
 				if(topSourceRange != null) {
 					// Estimate a range
-					ASTNeoNode rootRefAsNode = blindCast(rootRef);
 					rootRefAsNode.setStart(topSourceRange.getStartPos());
+					rootRefAsNode.setEndPos(subName.getStartPos()-1);
+				} else {
+					// A very innacurate estimation
+					rootRefAsNode.setStart(subName.getStartPos()-2);
 					rootRefAsNode.setEndPos(subName.getStartPos()-1);
 				}
 			}
@@ -354,8 +358,9 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 				int newStartPos = refQualified.getQualifier().getStartPos();
 				refQualified.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
 			} else {
-//				int newStartPos = newEndPos-1; // Just make up something
-//				refQualified.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
+				 // Try a less accurate estimation:
+				int newStartPos = rootRef.hasNoSourceRangeInfo() ? newEndPos-1 : rootRef.getStartPos();
+				refQualified.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
 			}
 			
 			return refQualified;
@@ -378,7 +383,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	public static ExpReference createExpReference(DotIdExp elem, ASTConversionContext convContext) {
 		Reference ref = ReferenceConverter.convertDotIdexp(elem, convContext);
 		// use ref as source range, not elem cause it is sometimes wrong
-		return new ExpReference(ref, sourceRange(elem)); 
+		return new ExpReference(ref, sourceRange(ref));
 	}
 	
 	public static ExpReference createExpReference(DotTemplateInstanceExp elem, ASTConversionContext convContext) {
