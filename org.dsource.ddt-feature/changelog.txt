@@ -14,6 +14,7 @@
  * Fixed minor source range bugs for template references and typeof() references.
  * `is` and `!is` now considered keywords instead of operators for the purposes of syntax highlighting.
  * Fixed issue #41 and some other related parsing bugs with qualified expressions (DotIdExp).
+ * Fixed issue where syntax highlighting would break when typing inside a multi-line r"" string.
  
 == DDT 0.4.2 (2011-04-29) ==
  * Fixed issue #33, bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.

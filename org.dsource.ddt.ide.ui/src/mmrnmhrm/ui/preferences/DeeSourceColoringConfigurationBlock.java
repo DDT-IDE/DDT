@@ -26,18 +26,17 @@ public class DeeSourceColoringConfigurationBlock extends
 		IPreferenceConfigurationBlock {
 	
 	private static final String PREVIEW_FILE_NAME = "SourceColoringPreviewFile.d";
-
+	
 	private static final String[][] fSyntaxColorListModel = new String[][] {
 			{ "Comment", IDeeColorConstants.DEE_COMMENT, sDocumentationCategory },
 			{ "Doc Comment", IDeeColorConstants.DEE_DOCCOMMENT, sDocumentationCategory },
-				
+			
 			{ "Keywords"		, IDeeColorConstants.DEE_KEYWORDS, sCoreCategory },
 			{ "Basic Types"		, IDeeColorConstants.DEE_BASICTYPES, sCoreCategory },
 			{ "@Annotations"	, IDeeColorConstants.DEE_ANNOTATIONS, sCoreCategory },
 			{ "Literals"		, IDeeColorConstants.DEE_LITERALS, sCoreCategory },
             { "Character Literals", IDeeColorConstants.DEE_CHARACTER_LITERALS, sCoreCategory },
             { "Strings"			, IDeeColorConstants.DEE_STRING, sCoreCategory },
-            { "WYSIWYG Strings"	, IDeeColorConstants.DEE_RAW_STRING, sCoreCategory },
             { "Delimited String", IDeeColorConstants.DEE_DELIM_STRING, sCoreCategory },
             //{ "Operators"		, IDeeColorConstants.DEE_OPERATORS, sCoreCategory },
 			{ "Default"			, IDeeColorConstants.DEE_DEFAULT, sCoreCategory },							

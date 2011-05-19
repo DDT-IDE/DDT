@@ -13,15 +13,16 @@ import org.eclipse.jface.text.rules.Token;
 
 // See: http://www.digitalmars.com/d/2.0/lex.html
 public class DeePartitionScanner extends RuleBasedPartitionScanner {
+	// BM Note: we should be careful with having different rules return the same token
+	// Such behavior is not properly supported by RuleBasedPartitionScanner
 	
 	private static final char NO_ESCAPE_CHAR = (char) -1;
 	
-	/**
-	 * Creates the partitioner and sets up the appropriate rules.
-	 */
+	/**Creates the partitioner and sets up the appropriate rules. */
 	public DeePartitionScanner() {
 		IToken tkString = new Token(DeePartitions.DEE_STRING);
 		IToken tkRawString = new Token(DeePartitions.DEE_RAW_STRING);
+		IToken tkRawString2 = new Token(DeePartitions.DEE_RAW_STRING2);
 		IToken tkDelimString = new Token(DeePartitions.DEE_DELIM_STRING);
 		IToken tkCharacter = new Token(DeePartitions.DEE_CHARACTER);
 		IToken tkSingleComment = new Token(DeePartitions.DEE_SINGLE_COMMENT);
@@ -34,7 +35,7 @@ public class DeePartitionScanner extends RuleBasedPartitionScanner {
 		List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 		
 		rules.add(new MultiLineRule("`", "`", tkRawString, NO_ESCAPE_CHAR, true));
-		rules.add(new MultiLineRule("r\"", "\"", tkRawString, NO_ESCAPE_CHAR, true));
+		rules.add(new MultiLineRule("r\"", "\"", tkRawString2, NO_ESCAPE_CHAR, true));
 		rules.add(new MultiLineRule("q\"", "\"", tkDelimString, NO_ESCAPE_CHAR, true)); // TODO: this rule is not accurate
 		rules.add(new MultiLineRule("\"", "\"", tkString, '\\', true));
 		rules.add(new SingleLineRule("'", "'", tkCharacter, '\\', true));

@@ -27,7 +27,6 @@ public abstract class DeeColorPreferenceInitializer implements IDeeColorConstant
 		setColoringStyle(store, DEE_OPERATORS, true, COLOR_BLACK_RGB, false, false, false);
 		
 		setColoringStyle(store, DEE_STRING, true, COLOR_DARK_YELLOW_RGB, false, false, false);
-		setColoringStyle(store, DEE_RAW_STRING, true, COLOR_DARK_YELLOW_RGB, false, false, false);
 		setColoringStyle(store, DEE_DELIM_STRING, true, COLOR_DARK_YELLOW_RGB, false, false, false);
 		setColoringStyle(store, DEE_CHARACTER_LITERALS, true, COLOR_DARK_YELLOW_RGB, false, false, false);
 		

@@ -35,8 +35,6 @@ public interface IDeeColorConstants {
 	
 	String DEE_STRING = PREFIX + "string";
 	
-	String DEE_RAW_STRING = PREFIX + "rawstring";
-	
 	String DEE_DELIM_STRING = PREFIX + "delimstring";
 	
 	String DEE_CHARACTER_LITERALS = PREFIX + "character";

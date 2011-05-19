@@ -79,10 +79,9 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 				DeePartitions.DEE_NESTED_DOCCOMMENT);
 		
 		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_STRING), 
-				DeePartitions.DEE_STRING);
-		
-		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_RAW_STRING), 
-				DeePartitions.DEE_RAW_STRING);
+				DeePartitions.DEE_STRING,
+				DeePartitions.DEE_RAW_STRING,
+				DeePartitions.DEE_RAW_STRING2);
 		
 		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_DELIM_STRING), 
 				DeePartitions.DEE_DELIM_STRING);

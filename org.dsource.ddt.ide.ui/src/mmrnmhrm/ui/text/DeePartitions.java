@@ -18,7 +18,8 @@ public interface DeePartitions {
 	
 	String DEE_CODE = IDocument.DEFAULT_CONTENT_TYPE;
 	String DEE_STRING = "___dee_string";
-	String DEE_RAW_STRING = "___dee_raw_string"; // a WYSIWYG string
+	String DEE_RAW_STRING = "___dee_raw_string"; // a WYSIWYG string, with ``
+	String DEE_RAW_STRING2 = "___dee_raw_string2"; // a WYSIWYG string, with r"" syntax
 	String DEE_DELIM_STRING = "___dee_delim_string"; // a delimited string
 	String DEE_CHARACTER = "___dee_character";
 	String DEE_SINGLE_COMMENT = "___dee_single_comment";  
@@ -32,6 +33,7 @@ public interface DeePartitions {
 		DEE_CODE, // Same as IDocument.DEFAULT_CONTENT_TYPE
 		DEE_STRING,
 		DEE_RAW_STRING,
+		DEE_RAW_STRING2,
 		DEE_DELIM_STRING,
 		DEE_CHARACTER,
 		DEE_SINGLE_COMMENT,
@@ -46,6 +48,7 @@ public interface DeePartitions {
 		public static boolean isString(String contentType) {
 			return DeePartitions.DEE_STRING.equals(contentType) 
 				|| DeePartitions.DEE_RAW_STRING.equals(contentType)
+				|| DeePartitions.DEE_RAW_STRING2.equals(contentType)
 				|| DeePartitions.DEE_DELIM_STRING.equals(contentType);
 		}
 	}

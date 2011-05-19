@@ -103,14 +103,14 @@ public class DeePartitionScannerTest extends DeeTestUtils implements DeePartitio
 		testPartitions("foo = `as \n df`; /+ +/", array(DEE_RAW_STRING, DEE_NESTED_COMMENT));
 		
 		
-		testPartitions("foo = r\"asdf\"; ", array(DEE_RAW_STRING));
-		testPartitions("foo = r\"as\\\"df\"; /+ +/", array(DEE_RAW_STRING, DEE_STRING));
-		testPartitions("foo = r\"foo\" ~ r\"abc\"; ", array(DEE_RAW_STRING, DEE_RAW_STRING));
+		testPartitions("foo = r\"asdf\"; ", array(DEE_RAW_STRING2));
+		testPartitions("foo = r\"as\\\"df\"; /+ +/", array(DEE_RAW_STRING2, DEE_STRING));
+		testPartitions("foo = r\"foo\" ~ r\"abc\"; ", array(DEE_RAW_STRING2, DEE_RAW_STRING2));
 		
-		testPartitions("foo = r\"foo \n", array(DEE_RAW_STRING)); // incomplete string
-		testPartitions("foo = r\"foo ", array(DEE_RAW_STRING)); // incomplete string
-		testPartitions("foo = r\"as\0\"df\"; /+ +/", array(DEE_RAW_STRING, DEE_STRING));
-		testPartitions("foo = r\"as \n df\"; /+ +/", array(DEE_RAW_STRING, DEE_NESTED_COMMENT));
+		testPartitions("foo = r\"foo \n", array(DEE_RAW_STRING2)); // incomplete string
+		testPartitions("foo = r\"foo ", array(DEE_RAW_STRING2)); // incomplete string
+		testPartitions("foo = r\"as\0\"df\"; /+ +/", array(DEE_RAW_STRING2, DEE_STRING));
+		testPartitions("foo = r\"as \n df\"; /+ +/", array(DEE_RAW_STRING2, DEE_NESTED_COMMENT));
 	}
 	
 	@Test
