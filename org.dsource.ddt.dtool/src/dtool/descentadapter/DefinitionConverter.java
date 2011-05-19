@@ -25,7 +25,6 @@ import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.expressions.Expression;
 import dtool.ast.references.ReferenceConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
@@ -141,7 +140,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		elem.ident.length = elem.ident.ident.length; // Fix a parser source range issue
 		elem.length = Math.max(elem.length, elem.ident.length);
 		DefUnitDataTuple defunitInfo = convertDsymbol(elem, convContext);
-		return new EnumMember(defunitInfo, Expression.convert(elem.value, convContext));
+		return new EnumMember(defunitInfo, ExpressionConverter.convert(elem.value, convContext));
 	}
 	
 	public static NamelessParameter convertNamelessParameter(Type type, ASTConversionContext convContext) {
@@ -156,7 +155,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 
 	public static NamelessParameter convertNamelessParameter(Argument elem, ASTConversionContext convContext) {
 		return new NamelessParameter(ReferenceConverter.convertType(elem.type, convContext), elem.storageClass, 
-				Expression.convert(elem.defaultArg, convContext), sourceRange(elem));
+				ExpressionConverter.convert(elem.defaultArg, convContext), sourceRange(elem));
 	}
 	
 	public static boolean isSingleSymbolDeclaration(ASTDmdNode parent) {

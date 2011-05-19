@@ -3,9 +3,9 @@ package dtool.ast.statements;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ExpStatement;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class StatementExp extends Statement {
 	
@@ -17,7 +17,7 @@ public class StatementExp extends Statement {
 		else
 			convertNode(element);
 		
-		this.exp = Expression.convert(element.exp, convContext);
+		this.exp = ExpressionConverter.convert(element.exp, convContext);
 	}
 
 	@Override

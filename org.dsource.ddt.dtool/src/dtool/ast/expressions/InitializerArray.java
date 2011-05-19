@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ArrayInitializer;
 import dtool.ast.IASTNeoVisitor;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class InitializerArray extends Initializer {
 
@@ -13,7 +14,7 @@ public class InitializerArray extends Initializer {
 		
 	public InitializerArray(ArrayInitializer elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.indexes = Expression.convertMany(elem.index, convContext); 
+		this.indexes = ExpressionConverter.convertMany(elem.index, convContext); 
 		this.values = Initializer.convertMany(elem.value, convContext);
 	}
 

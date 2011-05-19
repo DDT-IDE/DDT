@@ -10,9 +10,9 @@ import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -24,7 +24,7 @@ public class TypeStaticArray extends CommonRefNative {
 	public TypeStaticArray(TypeSArray elem, ASTConversionContext convContext) {
 		setSourceRange(elem);
 		this.elemtype = ReferenceConverter.convertType(elem.next, convContext);
-		this.sizeexp = Expression.convert(elem.dim, convContext); 
+		this.sizeexp = ExpressionConverter.convert(elem.dim, convContext); 
 	}
 
 	@Override

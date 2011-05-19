@@ -5,6 +5,7 @@ import descent.internal.compiler.parser.ExpInitializer;
 import dtool.ast.IASTNeoVisitor;
 import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class InitializerExp extends Initializer {
 	
@@ -12,7 +13,7 @@ public class InitializerExp extends Initializer {
 
 	public InitializerExp(ExpInitializer elem, ASTConversionContext convContext) {
 		initSourceRange(DefinitionConverter.sourceRange(elem, false));
-		this.exp = Expression.convert(elem.exp, convContext); 
+		this.exp = ExpressionConverter.convert(elem.exp, convContext); 
 	}
 
 	@Override

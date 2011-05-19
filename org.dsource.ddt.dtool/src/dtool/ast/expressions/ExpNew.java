@@ -7,6 +7,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class ExpNew extends Expression {
 	
@@ -17,7 +18,7 @@ public class ExpNew extends Expression {
 	public ExpNew(NewExp elem, ASTConversionContext convContext) {
 		convertNode(elem);
 		if(elem.newargs != null) {
-			this.allocargs = Expression.convertMany(elem.newargs, convContext);
+			this.allocargs = ExpressionConverter.convertMany(elem.newargs, convContext);
 		} 
 		if(elem.newtype == null){
 			this.newtype = new Reference.InvalidSyntaxReference();
@@ -26,7 +27,7 @@ public class ExpNew extends Expression {
 		}
 		assertNotNull(newtype);
 		if(elem.arguments != null)
-			this.args = Expression.convertMany(elem.arguments, convContext);
+			this.args = ExpressionConverter.convertMany(elem.arguments, convContext);
 	}
 	
 	@Override

@@ -5,9 +5,9 @@ import descent.internal.compiler.parser.ForeachRangeStatement;
 import descent.internal.compiler.parser.TOK;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class StatementForeachRange extends Statement {
 
@@ -22,8 +22,8 @@ public class StatementForeachRange extends Statement {
 		// TODO: implement foreach parameters, and unittest them.
 		//this.param = (IFunctionParameter) DescentASTConverter.convertElem(elem.arg);
 		this.param = null;
-		this.lwr = Expression.convert(elem.lwr, convContext);
-		this.upr = Expression.convert(elem.upr, convContext);
+		this.lwr = ExpressionConverter.convert(elem.lwr, convContext);
+		this.upr = ExpressionConverter.convert(elem.upr, convContext);
 		this.body = Statement.convert(elem.body, convContext);
 		this.reverse = elem.op == TOK.TOKforeach_reverse;
 	}

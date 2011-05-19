@@ -6,6 +6,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class ExpCast extends Expression {
 	
@@ -14,7 +15,7 @@ public class ExpCast extends Expression {
 	
 	public ExpCast(CastExp elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.exp = Expression.convert(elem.sourceE1, convContext);
+		this.exp = ExpressionConverter.convert(elem.sourceE1, convContext);
 		this.type = ReferenceConverter.convertType(elem.sourceTo, convContext);
 	}
 	

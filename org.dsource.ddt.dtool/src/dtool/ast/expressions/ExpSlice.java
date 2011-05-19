@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.SliceExp;
 import dtool.ast.IASTNeoVisitor;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 import dtool.refmodel.IDefUnitReferenceNode;
 
 public class ExpSlice extends Expression {
@@ -14,9 +15,9 @@ public class ExpSlice extends Expression {
 	
 	public ExpSlice(SliceExp elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		slicee = Expression.convert(elem.e1, convContext);
-		from = Expression.convert(elem.lwr, convContext);
-		to = Expression.convert(elem.upr, convContext);
+		slicee = ExpressionConverter.convert(elem.e1, convContext);
+		from = ExpressionConverter.convert(elem.lwr, convContext);
+		to = ExpressionConverter.convert(elem.upr, convContext);
 	}
 	
 	@Override

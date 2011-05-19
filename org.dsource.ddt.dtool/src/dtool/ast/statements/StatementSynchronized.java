@@ -3,9 +3,9 @@ package dtool.ast.statements;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.SynchronizedStatement;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class StatementSynchronized extends Statement {
 
@@ -14,7 +14,7 @@ public class StatementSynchronized extends Statement {
 
 	public StatementSynchronized(SynchronizedStatement elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.exp = Expression.convert(elem.exp, convContext);
+		this.exp = ExpressionConverter.convert(elem.exp, convContext);
 		this.body = Statement.convert(elem.body, convContext);
 	}
 

@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.AssertExp;
 import dtool.ast.IASTNeoVisitor;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class ExpAssert extends Expression {
 	
@@ -12,8 +13,8 @@ public class ExpAssert extends Expression {
 
 	public ExpAssert(AssertExp elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.exp = Expression.convert(elem.e1, convContext);
-		this.msg = Expression.convert(elem.msg, convContext);
+		this.exp = ExpressionConverter.convert(elem.e1, convContext);
+		this.msg = ExpressionConverter.convert(elem.msg, convContext);
 	}
 
 	@Override

@@ -5,10 +5,10 @@ import descent.internal.compiler.parser.StaticAssert;
 import descent.internal.compiler.parser.StaticAssertStatement;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class DeclarationStaticAssert extends ASTNeoNode implements IStatement {
 
@@ -17,8 +17,8 @@ public class DeclarationStaticAssert extends ASTNeoNode implements IStatement {
 	
 	public DeclarationStaticAssert(StaticAssert elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.pred = Expression.convert(elem.exp, convContext);
-		this.msg = Expression.convert(elem.msg, convContext);
+		this.pred = ExpressionConverter.convert(elem.exp, convContext);
+		this.msg = ExpressionConverter.convert(elem.msg, convContext);
 	}
 	
 	public DeclarationStaticAssert(StaticAssertStatement elem, ASTConversionContext convContext) {

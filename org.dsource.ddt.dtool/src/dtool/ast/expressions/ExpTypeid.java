@@ -7,6 +7,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class ExpTypeid extends Expression {
 	
@@ -19,7 +20,7 @@ public class ExpTypeid extends Expression {
 			this.typeArgument = ReferenceConverter.convertType(elem.typeidType, convContext);
 		} else {
 			assertNotNull(elem.argumentExp__DDT_ADDITION);
-			expressionArgument = Expression.convert(elem.argumentExp__DDT_ADDITION, convContext);
+			expressionArgument = ExpressionConverter.convert(elem.argumentExp__DDT_ADDITION, convContext);
 		}
 	}
 	

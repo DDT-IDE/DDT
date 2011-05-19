@@ -8,6 +8,7 @@ import dtool.ast.declarations.Declaration;
 import dtool.ast.definitions.BaseClass;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class ExpLiteralNewAnonClass extends Expression {
 	
@@ -19,8 +20,8 @@ public class ExpLiteralNewAnonClass extends Expression {
 
 	public ExpLiteralNewAnonClass(NewAnonClassExp elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.allocargs = Expression.convertMany(elem.newargs, convContext); 
-		this.args = Expression.convertMany(elem.arguments, convContext); 
+		this.allocargs = ExpressionConverter.convertMany(elem.newargs, convContext); 
+		this.args = ExpressionConverter.convertMany(elem.arguments, convContext); 
 		this.baseClasses = DescentASTConverter.convertMany(elem.cd.sourceBaseclasses.toArray(),
 				new BaseClass[elem.cd.sourceBaseclasses.size()], convContext);
 		this.members = Declaration.convertMany(elem.cd.members, convContext);

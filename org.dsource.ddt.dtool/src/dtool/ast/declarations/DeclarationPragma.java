@@ -6,11 +6,11 @@ import descent.internal.compiler.parser.PragmaDeclaration;
 import descent.internal.compiler.parser.PragmaStatement;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
 import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 
@@ -21,14 +21,14 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 		super(elem, elem.decl, convContex);
 		this.ident = DefinitionConverter.convertId(elem.ident);
 		if(elem.args != null)
-			this.expressions = Expression.convertMany(elem.args, convContex);
+			this.expressions = ExpressionConverter.convertMany(elem.args, convContex);
 	}
 	
 	public DeclarationPragma(PragmaStatement elem, ASTConversionContext convContex) {
 		super(elem, elem.body, convContex);
 		this.ident = DefinitionConverter.convertId(elem.ident);
 		if(elem.args != null)
-			this.expressions = Expression.convertMany(elem.args, convContex);
+			this.expressions = ExpressionConverter.convertMany(elem.args, convContex);
 	}
 
 

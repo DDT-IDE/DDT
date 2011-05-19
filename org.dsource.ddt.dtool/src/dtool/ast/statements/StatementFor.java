@@ -3,9 +3,9 @@ package dtool.ast.statements;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ForStatement;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class StatementFor extends Statement {
 
@@ -18,8 +18,8 @@ public class StatementFor extends Statement {
 	public StatementFor(ForStatement elem, ASTConversionContext convContext) {
 		convertNode(elem);
 		this.init = Statement.convert(elem.init, convContext);
-		this.cond = Expression.convert(elem.condition, convContext);
-		this.inc = Expression.convert(elem.increment, convContext);
+		this.cond = ExpressionConverter.convert(elem.condition, convContext);
+		this.inc = ExpressionConverter.convert(elem.increment, convContext);
 		this.body = Statement.convert(elem.body, convContext);
 	}
 

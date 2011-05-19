@@ -7,11 +7,11 @@ import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.Type;
 import descent.internal.compiler.parser.TypeBasic;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.NodeUtil;
 
@@ -38,7 +38,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 		}
 		assertNotNull(this.type);
 		this.storageClass = elem.storageClass;
-		this.defaultValue = Expression.convert(elem.defaultArg, convContext);
+		this.defaultValue = ExpressionConverter.convert(elem.defaultArg, convContext);
 	}
 	
 	public FunctionParameter(Type type, IdentifierExp id, ASTConversionContext convContext) {

@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.FileExp;
 import dtool.ast.IASTNeoVisitor;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class ExpLiteralImportedString extends Expression {
 	
@@ -11,7 +12,7 @@ public class ExpLiteralImportedString extends Expression {
 
 	public ExpLiteralImportedString(FileExp node, ASTConversionContext convContext) {
 		convertNode(node);
-		this.exp = Expression.convert(node.e1, convContext); 
+		this.exp = ExpressionConverter.convert(node.e1, convContext); 
 	}
 
 	@Override

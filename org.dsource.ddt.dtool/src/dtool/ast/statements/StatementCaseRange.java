@@ -3,9 +3,9 @@ package dtool.ast.statements;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.CaseRangeStatement;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class StatementCaseRange extends Statement {
 
@@ -15,8 +15,8 @@ public class StatementCaseRange extends Statement {
 	
 	public StatementCaseRange(CaseRangeStatement elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.expFirst = Expression.convert(elem.first, convContext);
-		this.expLast = Expression.convert(elem.last, convContext);
+		this.expFirst = ExpressionConverter.convert(elem.first, convContext);
+		this.expLast = ExpressionConverter.convert(elem.last, convContext);
 		this.st = Statement.convert(elem.statement, convContext);
 	}
 	

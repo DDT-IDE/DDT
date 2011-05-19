@@ -6,9 +6,9 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.TypeSlice;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 import dtool.refmodel.IDefUnitReferenceNode;
 
 public class RefTypeSlice extends Reference {
@@ -19,8 +19,8 @@ public class RefTypeSlice extends Reference {
 	
 	public RefTypeSlice(TypeSlice elem, ASTConversionContext convContext) {
 		slicee = ReferenceConverter.convertType(elem.next, convContext);
-		from = Expression.convert(elem.lwr, convContext);
-		to = Expression.convert(elem.upr, convContext);
+		from = ExpressionConverter.convert(elem.lwr, convContext);
+		to = ExpressionConverter.convert(elem.upr, convContext);
 	}
 	
 

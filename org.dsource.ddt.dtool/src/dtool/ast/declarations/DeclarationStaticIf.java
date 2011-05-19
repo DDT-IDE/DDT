@@ -4,9 +4,9 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.StaticIfCondition;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class DeclarationStaticIf extends DeclarationConditional {
 	
@@ -15,7 +15,7 @@ public class DeclarationStaticIf extends DeclarationConditional {
 	public DeclarationStaticIf(ASTDmdNode elem, StaticIfCondition condition, NodeList thendecls, NodeList elsedecls
 			, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.exp = Expression.convert(condition.exp, convContext);
+		this.exp = ExpressionConverter.convert(condition.exp, convContext);
 		this.thendecls = thendecls; 
 		this.elsedecls = elsedecls;
 	}

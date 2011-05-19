@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.DeleteExp;
 import dtool.ast.IASTNeoVisitor;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class ExpDelete extends Expression {
 
@@ -11,7 +12,7 @@ public class ExpDelete extends Expression {
 	
 	public ExpDelete(DeleteExp elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.exp = Expression.convert(elem.e1, convContext); 
+		this.exp = ExpressionConverter.convert(elem.e1, convContext); 
 	}
 
 	@Override

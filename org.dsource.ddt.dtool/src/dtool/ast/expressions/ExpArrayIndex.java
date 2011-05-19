@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ArrayExp;
 import dtool.ast.IASTNeoVisitor;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class ExpArrayIndex extends Expression {
 
@@ -12,8 +13,8 @@ public class ExpArrayIndex extends Expression {
 	
 	public ExpArrayIndex(ArrayExp elem, ASTConversionContext convContext) {
 		convertNode(elem);
-		this.array = Expression.convert(elem.e1, convContext);
-		this.args = Expression.convertMany(elem.arguments, convContext);
+		this.array = ExpressionConverter.convert(elem.e1, convContext);
+		this.args = ExpressionConverter.convertMany(elem.arguments, convContext);
 	}
 
 	@Override

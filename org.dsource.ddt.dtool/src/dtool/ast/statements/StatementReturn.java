@@ -3,9 +3,9 @@ package dtool.ast.statements;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ReturnStatement;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.descentadapter.ExpressionConverter;
 
 public class StatementReturn extends Statement {
 
@@ -13,7 +13,7 @@ public class StatementReturn extends Statement {
 
 	public StatementReturn(ReturnStatement element, ASTConversionContext convContext) {
 		convertNode(element);
-		this.exp = Expression.convert(element.exp, convContext);
+		this.exp = ExpressionConverter.convert(element.exp, convContext);
 	}
 
 	@Override
