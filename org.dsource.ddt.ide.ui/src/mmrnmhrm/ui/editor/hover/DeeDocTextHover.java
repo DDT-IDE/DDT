@@ -9,7 +9,7 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 
-package mmrnmhrm.ui.editor.text;
+package mmrnmhrm.ui.editor.hover;
 
 import mmrnmhrm.lang.ui.EditorUtil;
 

@@ -1,4 +1,4 @@
-package mmrnmhrm.ui.editor.text;
+package mmrnmhrm.ui.editor.hover;
 
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;

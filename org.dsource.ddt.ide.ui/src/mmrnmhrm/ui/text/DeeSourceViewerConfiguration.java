@@ -16,7 +16,7 @@ import java.util.Map;
 
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
-import mmrnmhrm.ui.editor.text.DeeDocTextHover;
+import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
 import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;

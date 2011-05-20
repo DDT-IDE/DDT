@@ -1,4 +1,4 @@
-package mmrnmhrm.ui.editor.text;
+package mmrnmhrm.ui.editor.hover;
 
 import java.io.BufferedReader;
 import java.io.IOException;

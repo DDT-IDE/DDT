@@ -1,5 +1,7 @@
-package mmrnmhrm.ui.editor.text;
+package mmrnmhrm.ui.editor.codeassist;
 
+
+import mmrnmhrm.ui.editor.hover.HoverUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ui.text.completion.ProposalInfo;

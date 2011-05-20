@@ -3,7 +3,7 @@ package mmrnmhrm.ui.editor.doc;
 import java.io.Reader;
 import java.io.StringReader;
 
-import mmrnmhrm.ui.editor.text.DeeDocTextHover;
+import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
 import org.dsource.ddt.ide.core.model.DeeModelUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;

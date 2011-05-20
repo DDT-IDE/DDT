@@ -1,8 +1,7 @@
 package mmrnmhrm.ui.editor.codeassist;
 
 import mmrnmhrm.ui.DeeUI;
-import mmrnmhrm.ui.editor.text.HoverUtil;
-import mmrnmhrm.ui.editor.text.ScriptCompletionProposalExtension;
+import mmrnmhrm.ui.editor.hover.HoverUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ui.PreferenceConstants;
