@@ -12,7 +12,8 @@
    * Added folding preference page, can now configure the initial state (folded or not) of each folding group.
    * The folding groups/kinds are now: comments, DDoc comments, module header comments, aggregate types, functions.
  * Fixed minor source range bugs for template references and typeof() references.
- * `is` and `!is` now considered keywords instead of operators for the purposes of syntax highlighting.
+ * `is` and `!is` now correctly considered as keywords for the purposes of syntax highlighting.
+   * `!in` is fully highlighted, instead of just `in`.
  * Fixed issue #41 and some other related parsing bugs with qualified expressions (DotIdExp).
  * Fixed issue where syntax highlighting would break when typing inside a multi-line r"" string.
  

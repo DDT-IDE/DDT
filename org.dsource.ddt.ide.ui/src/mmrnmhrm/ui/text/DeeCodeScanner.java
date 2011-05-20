@@ -11,12 +11,14 @@
 package mmrnmhrm.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
+import org.dsource.ddt.lang.text.FullPatternRule;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -70,6 +72,10 @@ public class DeeCodeScanner extends AbstractScriptScanner {
 		addWordsFromTokens(wordRule, TokenUtil.basicTypes, tkBasics);
 		addWordsFromTokens(wordRule, TokenUtil.specialNamedLiterals, tkLiterals);
 		rules.add(wordRule);
+		
+		// These need special treament because of the '!' character
+		rules.add(new FullPatternRule(tkKeyword, array("!in", "!is"), new JavaWordDetector()));
+		
 		
 		IToken tkAnnotation = getToken(IDeeColorConstants.DEE_ANNOTATIONS);
 		WordRule annotationsRule = new WordRule(new AnnotationsWordDetector(), tkAnnotation);
