@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.internal.text;
+package mmrnmhrm.ui.editor.text;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;

@@ -12,6 +12,7 @@ package mmrnmhrm.ui.text;
 
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.ArrayUtil;
+import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;

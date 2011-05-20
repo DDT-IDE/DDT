@@ -1,4 +1,4 @@
-package mmrnmhrm.ui.text;
+package mmrnmhrm.ui.editor.codeassist;
 
 import mmrnmhrm.ui.DeePlugin;
 

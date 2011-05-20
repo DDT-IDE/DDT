@@ -1,9 +1,9 @@
 package mmrnmhrm.ui.preferences.pages;
 
 import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
 import mmrnmhrm.ui.text.DeePartitions;
-import mmrnmhrm.ui.text.DeeSimpleSourceViewerConfiguration;
 
 import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 import org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage;

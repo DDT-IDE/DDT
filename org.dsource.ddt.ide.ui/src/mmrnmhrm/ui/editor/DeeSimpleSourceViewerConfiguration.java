@@ -1,4 +1,4 @@
-package mmrnmhrm.ui.text;
+package mmrnmhrm.ui.editor;
 
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.ui.text.IColorManager;

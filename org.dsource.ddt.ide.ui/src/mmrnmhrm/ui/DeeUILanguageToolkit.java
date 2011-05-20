@@ -11,12 +11,12 @@
 package mmrnmhrm.ui;
 
 import mmrnmhrm.ui.editor.DeeEditor;
+import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.preferences.pages.DeeCompilersPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorSmartTypingPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage;
-import mmrnmhrm.ui.text.DeeSimpleSourceViewerConfiguration;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;

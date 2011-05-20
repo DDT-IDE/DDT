@@ -8,12 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.text;
+package mmrnmhrm.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
 import mmrnmhrm.ui.text.DeePartitions;
-import mmrnmhrm.ui.text.DeeTextTestUtils;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.dltk.ui.text.ScriptTextTools;

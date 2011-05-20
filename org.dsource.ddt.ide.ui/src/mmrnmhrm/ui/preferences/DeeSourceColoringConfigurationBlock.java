@@ -2,9 +2,9 @@ package mmrnmhrm.ui.preferences;
 
 import java.io.InputStream;
 
+import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeeDocumentSetupParticipant;
 import mmrnmhrm.ui.text.DeePartitions;
-import mmrnmhrm.ui.text.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;

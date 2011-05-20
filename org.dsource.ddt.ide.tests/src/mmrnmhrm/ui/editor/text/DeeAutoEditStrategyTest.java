@@ -8,9 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.text;
+package mmrnmhrm.ui.editor.text;
 
-import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
+import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.text.DeeTextTestUtils;
 
 import org.dsource.ddt.lang.text.LangAutoEditStragetyTest;

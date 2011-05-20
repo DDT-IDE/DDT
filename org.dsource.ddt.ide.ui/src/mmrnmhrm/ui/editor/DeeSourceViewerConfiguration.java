@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.text;
+package mmrnmhrm.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -16,9 +16,13 @@ import java.util.Map;
 
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
+import mmrnmhrm.ui.editor.codeassist.DeeContentAssistPreference;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
+import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
-import mmrnmhrm.ui.internal.text.DeeAutoEditStrategy;
+import mmrnmhrm.ui.text.DeeCodeScanner;
+import mmrnmhrm.ui.text.DeePartitions;
+import mmrnmhrm.ui.text.DeePartitions.$Methods;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
 import org.dsource.ddt.lang.ui.editor.ScriptSourceViewerConfigurationExtension;
