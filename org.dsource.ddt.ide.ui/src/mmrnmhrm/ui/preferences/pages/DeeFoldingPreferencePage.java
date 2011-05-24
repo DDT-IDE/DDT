@@ -2,7 +2,7 @@ package mmrnmhrm.ui.preferences.pages;
 
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.preferences.DeeDocFoldingPreferenceBlock;
-import mmrnmhrm.ui.preferences.DeeFoldingPreferenceBlock;
+import mmrnmhrm.ui.preferences.DeeSourceFoldingPreferenceBlock;
 
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
 import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
@@ -37,7 +37,7 @@ public class DeeFoldingPreferencePage extends AbstractConfigurationBlockPreferen
 			
 			@Override
 			protected IFoldingPreferenceBlock createSourceCodeBlock(OverlayPreferenceStore store, PreferencePage page) {
-				return new DeeFoldingPreferenceBlock(store, page);
+				return new DeeSourceFoldingPreferenceBlock(store, page);
 			}
 			
 		};

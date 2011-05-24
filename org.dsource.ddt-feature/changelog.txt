@@ -8,9 +8,11 @@
    * Added Content Assist proposal auto-insertion trigger characters: ' ', '=', ';', '.'.  
  * Fixed issue #31: Indent auto edit: full indent deletion is incorrectly triggered on certain positions.
  * Fixed some shortcomings related to auto indent in lines that started with comments.
- * Resolved issue #30, changed implementation of editor folding to a newer API. Now the editor can fold non-DDoc comments as well (a previous limitation).
+ * Resolved issue #30, changed implementation of editor folding to a newer API:
+   * Now the editor can fold non-DDoc comments as well (a previous limitation).
+   * Now the editor can fold unittests and conditional declarations (debug/version).
    * Added folding preference page, can now configure the initial state (folded or not) of each folding group.
-   * The folding groups/kinds are now: comments, DDoc comments, module header comments, aggregate types, functions.
+   * The folding groups/kinds are now: comments, DDoc comments, module header comments, aggregate types, functions, unittests, conditional declarations.
  * Fixed minor source range bugs for template references and typeof() references.
  * `is` and `!is` now correctly considered as keywords for the purposes of syntax highlighting.
    * `!in` is fully highlighted, instead of just `in`.

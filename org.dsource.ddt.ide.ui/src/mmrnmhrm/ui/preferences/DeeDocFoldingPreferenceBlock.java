@@ -12,13 +12,13 @@ public class DeeDocFoldingPreferenceBlock extends DocumentationFoldingPreference
 	}
 	
 	@Override
-	protected String getInitiallyFoldDocsText() {
-		return DeePreferencesMessages.Folding_initFoldDoc;
+	protected boolean supportsDocFolding() {
+		return true;
 	}
 	
 	@Override
-	protected boolean supportsDocFolding() {
-		return true;
+	protected String getInitiallyFoldDocsText() {
+		return DeePreferencesMessages.Folding_initFoldDoc;
 	}
 	
 }

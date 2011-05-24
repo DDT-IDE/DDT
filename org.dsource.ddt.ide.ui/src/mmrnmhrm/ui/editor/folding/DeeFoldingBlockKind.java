@@ -15,8 +15,10 @@ import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 public enum DeeFoldingBlockKind implements IFoldingBlockKind {
 	COMMENT(true),
 	DOCCOMMENT(true),
-	FUNCTION(false),
 	AGGREGATE(false),
+	FUNCTION(false),
+	CONDITIONALS(false),
+	UNITTEST(false),
 	MULTILINESTRING(false);
 	
 	

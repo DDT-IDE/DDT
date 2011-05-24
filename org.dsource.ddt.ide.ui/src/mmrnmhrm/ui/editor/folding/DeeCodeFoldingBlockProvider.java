@@ -20,17 +20,22 @@ import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Region;
 
-import dtool.ast.ASTNeoHomogenousVisitor;
+import dtool.ast.ASTAbstractVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationConditional;
+import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefinitionAggregate;
+import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionTemplate;
 
 public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	
 	protected int blockLinesMin;
 	protected boolean collapseFunctions;
 	protected boolean collapseAggregates;
+	protected boolean collapseUnittests;
+	protected boolean collapseConditionals;
 	
 	@Override
 	public void initializePreferences(IPreferenceStore preferenceStore) {
@@ -38,6 +43,8 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 		
 		collapseFunctions = preferenceStore.getBoolean(PreferenceConstants.EDITOR_FOLDING_INIT_METHODS);
 		collapseAggregates = preferenceStore.getBoolean(PreferenceConstants.EDITOR_FOLDING_INIT_CLASSES);
+		collapseUnittests = preferenceStore.getBoolean(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_UNITTESTS);
+		collapseConditionals = preferenceStore.getBoolean(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_CONDITIONALS);
 	}
 	
 	protected IFoldingBlockRequestor requestor;
@@ -58,17 +65,41 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 			ISourceModule sourceModule = (ISourceModule) content.getModelElement();
 			DeeModuleDeclaration deeModuleDecl = DeeParserUtil.getASTFromModule(sourceModule);
 			if (deeModuleDecl != null) {
-				deeModuleDecl.neoModule.accept(new ASTNeoHomogenousVisitor() {
+				deeModuleDecl.neoModule.accept(new ASTAbstractVisitor() {
 					
 					@Override
-					public boolean preVisit(ASTNeoNode node) {
-						if (node instanceof DefinitionAggregate) {
-							reportBlock(node, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
-						} else if (node instanceof DefinitionFunction) {
-							reportBlock(node, DeeFoldingBlockKind.FUNCTION, collapseFunctions);
-						} if (node instanceof DeclarationConditional) {
-							//reportBlock(node, DeeFoldingBlockKind.FUNCTION, collapseFunctions);
-						}
+					public boolean visit(DefinitionAggregate elem) {
+						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
+						return true;
+					}
+					
+					@Override
+					public boolean visit(DefinitionClass elem) {
+						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
+						return true;
+					}
+					
+					@Override
+					public boolean visit(DefinitionTemplate elem) {
+						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
+						return true;
+					}
+					
+					@Override
+					public boolean visit(DefinitionFunction elem) {
+						reportBlock(elem, DeeFoldingBlockKind.FUNCTION, collapseFunctions);
+						return true;
+					}
+					
+					@Override
+					public boolean visit(DeclarationUnitTest elem) {
+						reportBlock(elem, DeeFoldingBlockKind.UNITTEST, collapseUnittests);
+						return true;
+					}
+					
+					@Override
+					public boolean visit(DeclarationConditional elem) {
+						reportBlock(elem, DeeFoldingBlockKind.CONDITIONALS, collapseConditionals);
 						return true;
 					}
 					
