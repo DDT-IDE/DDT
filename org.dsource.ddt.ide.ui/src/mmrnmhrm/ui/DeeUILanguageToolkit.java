@@ -12,7 +12,6 @@ package mmrnmhrm.ui;
 
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
-import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 import mmrnmhrm.ui.preferences.pages.DeeCompilersPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
@@ -75,7 +74,8 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	
 	@Override
 	public ScriptUILabelProvider createScriptUILabelProvider() {
-		return new DeeScriptUILabelProvider();
+		// XXX: DLTK review this later and see if it will be used again
+		return null;
 	}
 	
 	@Override

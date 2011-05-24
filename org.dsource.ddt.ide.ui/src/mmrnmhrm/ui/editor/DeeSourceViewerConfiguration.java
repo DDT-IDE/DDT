@@ -22,7 +22,6 @@ import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeePartitions;
-import mmrnmhrm.ui.text.DeePartitions.$Methods;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
 import org.dsource.ddt.lang.ui.editor.ScriptSourceViewerConfigurationExtension;
