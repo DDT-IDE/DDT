@@ -1,6 +1,9 @@
 package dtool.ast;
 
+import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationImport;
+import dtool.ast.declarations.DeclarationInvariant;
+import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.DefinitionAggregate;
@@ -30,32 +33,33 @@ public interface IASTNeoVisitor {
 	
 	/** Returns whether to proceed with type-specific dispatch visit. 
 	 * Note: if false, it implies children will not be visited. */
-	boolean preVisit(ASTNeoNode node);
-	void postVisit(ASTNeoNode node);
+	public boolean preVisit(ASTNeoNode node);
+	public void postVisit(ASTNeoNode node);
 	
-	boolean visit(ASTNeoNode node);
-	void endVisit(ASTNeoNode node);
+	public boolean visit(ASTNeoNode node);
+	public void endVisit(ASTNeoNode node);
 
 	/* ---------------------------------- */
-	boolean visit(Symbol elem);
+	public boolean visit(Symbol elem);
 
-	boolean visit(DefUnit elem);
-	void endVisit(DefUnit node);
+	public boolean visit(DefUnit elem);
+	public void endVisit(DefUnit node);
 	
-	boolean visit(Module elem);
-	void endVisit(Module node);
+	public boolean visit(Module elem);
+	public void endVisit(Module node);
 
-	boolean visit(Definition elem);
-	void endVisit(Definition node);
+	public boolean visit(Definition elem);
+	public void endVisit(Definition node);
 
-	boolean visit(DefinitionAggregate elem);
-	void endVisit(DefinitionAggregate node);
-
-	boolean visit(DefinitionTemplate elem);
-	void endVisit(DefinitionTemplate node);
-
-	boolean visit(DefinitionClass elem);
-	void endVisit(DefinitionClass node);
+	public boolean visit(DefinitionAggregate elem);
+	public void endVisit(DefinitionAggregate node);
+	//--
+	public boolean visit(DefinitionClass elem);
+	public void endVisit(DefinitionClass node);
+	
+	
+	public boolean visit(DefinitionTemplate elem);
+	public void endVisit(DefinitionTemplate node);
 	
 	
 	public boolean visit(DefinitionVariable elem);
@@ -75,23 +79,34 @@ public interface IASTNeoVisitor {
 
 	/* ---------------------------------- */
 
-	boolean visit(Resolvable elem);
-	void endVisit(Resolvable node);
+	public boolean visit(Resolvable elem);
+	public void endVisit(Resolvable node);
 
-	boolean visit(Reference elem);
-	void endVisit(Reference node);
+	public boolean visit(Reference elem);
+	public void endVisit(Reference node);
 	
-	boolean visit(CommonRefNative elem);
+	public boolean visit(CommonRefNative elem);
 
-	boolean visit(NamedReference elem);
+	public boolean visit(NamedReference elem);
 	
-	boolean visit(CommonRefQualified elem);
+	public boolean visit(CommonRefQualified elem);
 	
-	boolean visit(RefIdentifier elem);
+	public boolean visit(RefIdentifier elem);
 
-	boolean visit(RefTemplateInstance elem);
+	public boolean visit(RefTemplateInstance elem);
 
 	/* ---------------------------------- */
-	boolean visit(DeclarationImport elem);
+	public boolean visit(DeclarationImport elem);
+	public void endVisit(DeclarationImport elem);
+	
+	public boolean visit(DeclarationInvariant elem);
+	public void endVisit(DeclarationInvariant elem);
 
+	
+	public boolean visit(DeclarationUnitTest elem);
+	public void endVisit(DeclarationUnitTest elem);
+	
+	public boolean visit(DeclarationConditional elem);
+	public void endVisit(DeclarationConditional elem);
+	
 }

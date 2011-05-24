@@ -1,7 +1,10 @@
 package dtool.ast;
 
 import melnorme.utilbox.core.Assert;
+import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationImport;
+import dtool.ast.declarations.DeclarationInvariant;
+import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.DefinitionAggregate;
@@ -247,7 +250,44 @@ public abstract class ASTNeoUpTreeVisitor implements IASTNeoVisitor {
 		Assert.isTrue(DeclarationImport.class.getSuperclass().equals(ASTNeoNode.class));
 		return visit((ASTNeoNode) elem);
 	}
+	@Override
+	public void endVisit(DeclarationImport elem) {
+		Assert.isTrue(DeclarationImport.class.getSuperclass().equals(ASTNeoNode.class));
+		endVisit((ASTNeoNode) elem);
+	}
 	
+	@Override
+	public boolean visit(DeclarationInvariant elem) {
+		Assert.isTrue(DeclarationInvariant.class.getSuperclass().equals(ASTNeoNode.class));
+		return visit((ASTNeoNode) elem);
+	}
+	@Override
+	public void endVisit(DeclarationInvariant elem) {
+		Assert.isTrue(DeclarationInvariant.class.getSuperclass().equals(ASTNeoNode.class));
+		endVisit((ASTNeoNode) elem);
+	}
+	
+	@Override
+	public boolean visit(DeclarationUnitTest elem) {
+		Assert.isTrue(DeclarationUnitTest.class.getSuperclass().equals(ASTNeoNode.class));
+		return visit((ASTNeoNode) elem);
+	}
+	@Override
+	public void endVisit(DeclarationUnitTest elem) {
+		Assert.isTrue(DeclarationUnitTest.class.getSuperclass().equals(ASTNeoNode.class));
+		endVisit((ASTNeoNode) elem);
+	}
+	
+	@Override
+	public boolean visit(DeclarationConditional elem) {
+		Assert.isTrue(DeclarationConditional.class.getSuperclass().equals(ASTNeoNode.class));
+		return visit((ASTNeoNode) elem);
+	}
+	@Override
+	public void endVisit(DeclarationConditional elem) {
+		Assert.isTrue(DeclarationConditional.class.getSuperclass().equals(ASTNeoNode.class));
+		endVisit((ASTNeoNode) elem);
+	}
 	
 	/* ============================================= */
 	

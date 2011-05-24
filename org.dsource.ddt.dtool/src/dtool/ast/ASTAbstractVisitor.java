@@ -34,7 +34,7 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
-public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
+public abstract class ASTAbstractVisitor implements IASTNeoVisitor {
 	
 	@Override
 	public boolean preVisit(ASTNeoNode node) {
@@ -46,191 +46,191 @@ public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public final boolean visit(ASTNeoNode node) {
+	public boolean visit(ASTNeoNode node) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(ASTNeoNode node) {
+	public void endVisit(ASTNeoNode node) {
 	}
 	
 	@Override
-	public final boolean visit(Symbol elem) {
+	public boolean visit(Symbol elem) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DefUnit elem) {
+	public boolean visit(DefUnit elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(DefUnit node) {
+	public void endVisit(DefUnit node) {
 	}
 	
 	@Override
-	public final boolean visit(Module elem) {
+	public boolean visit(Module elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(Module node) {
+	public void endVisit(Module node) {
 	}
 	
 	@Override
-	public final boolean visit(Definition elem) {
+	public boolean visit(Definition elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(Definition node) {
+	public void endVisit(Definition node) {
 	}
 	
 	@Override
-	public final boolean visit(DefinitionAggregate elem) {
+	public boolean visit(DefinitionAggregate elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(DefinitionAggregate node) {
+	public void endVisit(DefinitionAggregate node) {
 	}
 	
 	@Override
-	public final boolean visit(DefinitionTemplate elem) {
+	public boolean visit(DefinitionTemplate elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(DefinitionTemplate node) {
+	public void endVisit(DefinitionTemplate node) {
 	}
 	
 	@Override
-	public final boolean visit(DefinitionClass elem) {
+	public boolean visit(DefinitionClass elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(DefinitionClass node) {
+	public void endVisit(DefinitionClass node) {
 	}
 	
 	@Override
-	public final boolean visit(DefinitionVariable elem) {
+	public boolean visit(DefinitionVariable elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(DefinitionVariable elem) {
+	public void endVisit(DefinitionVariable elem) {
 	}
 	
 	@Override
-	public final boolean visit(DefinitionEnum elem) {
+	public boolean visit(DefinitionEnum elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(DefinitionEnum elem) {
+	public void endVisit(DefinitionEnum elem) {
 	}
 	
 	@Override
-	public final boolean visit(DefinitionTypedef elem) {
+	public boolean visit(DefinitionTypedef elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(DefinitionTypedef elem) {
+	public void endVisit(DefinitionTypedef elem) {
 	}
 	
 	@Override
-	public final boolean visit(DefinitionAlias elem) {
+	public boolean visit(DefinitionAlias elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(DefinitionAlias elem) {
+	public void endVisit(DefinitionAlias elem) {
 	}
 	
 	@Override
-	public final boolean visit(DefinitionFunction elem) {
+	public boolean visit(DefinitionFunction elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(DefinitionFunction elem) {
+	public void endVisit(DefinitionFunction elem) {
 	}
 	
 	@Override
-	public final boolean visit(Resolvable elem) {
+	public boolean visit(Resolvable elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(Resolvable node) {
+	public void endVisit(Resolvable node) {
 	}
 	
 	@Override
-	public final boolean visit(Reference elem) {
+	public boolean visit(Reference elem) {
 		return true;
 	}
 	
 	@Override
-	public final void endVisit(Reference node) {
+	public void endVisit(Reference node) {
 	}
 	
 	@Override
-	public final boolean visit(CommonRefNative elem) {
+	public boolean visit(CommonRefNative elem) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(NamedReference elem) {
+	public boolean visit(NamedReference elem) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(CommonRefQualified elem) {
+	public boolean visit(CommonRefQualified elem) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(RefIdentifier elem) {
+	public boolean visit(RefIdentifier elem) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(RefTemplateInstance elem) {
+	public boolean visit(RefTemplateInstance elem) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DeclarationImport elem) {
+	public boolean visit(DeclarationImport elem) {
 		return true;
 	}
 	@Override
-	public final void endVisit(DeclarationImport elem) {
+	public void endVisit(DeclarationImport elem) {
 	}
 	
 	@Override
-	public final boolean visit(DeclarationInvariant elem) {
+	public boolean visit(DeclarationInvariant elem) {
 		return true;
 	}
 	@Override
-	public final void endVisit(DeclarationInvariant elem) {
+	public void endVisit(DeclarationInvariant elem) {
 	}
 	
 	@Override
-	public final boolean visit(DeclarationUnitTest elem) {
+	public boolean visit(DeclarationUnitTest elem) {
 		return true;
 	}
 	@Override
-	public final void endVisit(DeclarationUnitTest elem) {
+	public void endVisit(DeclarationUnitTest elem) {
 	}
 	
 	@Override
-	public final boolean visit(DeclarationConditional elem) {
+	public boolean visit(DeclarationConditional elem) {
 		return true;
 	}
 	@Override
-	public final void endVisit(DeclarationConditional elem) {
+	public void endVisit(DeclarationConditional elem) {
 	}
 	
 }
