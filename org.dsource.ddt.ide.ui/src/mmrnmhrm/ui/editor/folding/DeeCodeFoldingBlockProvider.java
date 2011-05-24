@@ -23,6 +23,7 @@ import org.eclipse.jface.text.Region;
 import dtool.ast.ASTAbstractVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationConditional;
+import dtool.ast.declarations.DeclarationConditionalDV;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionClass;
@@ -99,7 +100,9 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 					
 					@Override
 					public boolean visit(DeclarationConditional elem) {
-						reportBlock(elem, DeeFoldingBlockKind.CONDITIONALS, collapseConditionals);
+						if(elem instanceof DeclarationConditionalDV) {
+							reportBlock(elem, DeeFoldingBlockKind.CONDITIONALS, collapseConditionals);
+						}
 						return true;
 					}
 					
