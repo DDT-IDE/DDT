@@ -12,9 +12,12 @@ package mmrnmhrm.ui;
 
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
+import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 import mmrnmhrm.ui.preferences.pages.DeeCompilersPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorSmartTypingPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage;
 
@@ -89,7 +92,9 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	public String[] getEditorPreferencePages() {
 		return new String[]{ 
 				DeeEditorPreferencePage.PAGE_ID, 
+				DeeEditorContentAssistPreferencePage.PAGE_ID,
 				DeeEditorSmartTypingPreferencePage.PAGE_ID,
+				DeeFoldingPreferencePage.PAGE_ID,
 				DeeTemplatePreferencePage.PAGE_ID,
 				DeeSourceColoringPreferencePage.PAGE_ID};
 	}
