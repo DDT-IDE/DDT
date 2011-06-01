@@ -46,7 +46,7 @@ public abstract class MassParse__CommonTest extends Parser__CommonTest {
 	
 	private static void unzipSource(String zipName) throws IOException {
 		File zipFile = DToolTestResources.getTestResource(COMMON + zipName + ".zip");
-		File outDir = new File(DToolTestResources.getInstance().getWorkingDir(), COMMON_UNPACK + zipName);
+		File outDir = new File(DToolTestResources.getWorkingDir(), COMMON_UNPACK + zipName);
 		MiscFileUtils.deleteDir(outDir); // Allways delete
 		if(!DToolBaseTest.TESTS_LITE_MODE) {
 			MiscFileUtils.unzipFile(zipFile, outDir);
@@ -56,7 +56,7 @@ public abstract class MassParse__CommonTest extends Parser__CommonTest {
 	}
 	
 	public static File getCommonResource(String subPath) {
-		return new File(DToolTestResources.getInstance().getWorkingDir(), COMMON_UNPACK + subPath);
+		return new File(DToolTestResources.getWorkingDir(), COMMON_UNPACK + subPath);
 	}
 	
 	protected static ArrayList<File> getDeeModuleList(File folder, boolean recurseDirs) throws IOException {

@@ -30,9 +30,9 @@ public class DToolResourcesPluginAdapter
 		}
 		
 		String workingDirPath = new File(uri).getAbsolutePath();
-		DToolTestResources.initialize(workingDirPath);
+		DToolTestResources.initWorkingDir(workingDirPath);
 		
-		assertEquals(workingDirPath, DToolTestResources.getInstance().getWorkingDir().getAbsolutePath());
+		assertEquals(workingDirPath, DToolTestResources.getWorkingDir().getAbsolutePath());
 	}
 	
 }

@@ -30,38 +30,19 @@ public class DToolTestResources implements IDToolTestConstants {
 	protected static DToolTestResources instance;
 	
 	private String testResourcesDir;
-	private String testsWorkingDir;
 	
 	public DToolTestResources() {
-		this(System.getProperty(D_TOOL_TEST_RESOURCES_WORKING_DIR));
-	}
-	
-	public DToolTestResources(String workingDir) {
 		testResourcesDir = System.getProperty(D_TOOL_TEST_RESOURCES_BASE_DIR);
 		if(testResourcesDir == null) {
 			// Assume a default based on process working dir
 			testResourcesDir = "../"+DToolBundle.BUNDLE_ID+"/"+TESTDATA;
 		}
-		
-		this.testsWorkingDir = workingDir;
-		System.out.println("====>> WORKING DIR: " + testsWorkingDir);
-		
-		if(testsWorkingDir != null) {
-			File file = new File(testsWorkingDir);
-			if(!file.exists()) {
-				file.mkdir();
-			}
-		}
-	}
-	
-	protected static void initialize(String workingDir) {
-		assertTrue(instance == null);
-		instance = new DToolTestResources(workingDir);
 	}
 	
 	public static synchronized DToolTestResources getInstance() {
 		if(instance == null) {
 			instance = new DToolTestResources();
+			initWorkingdir(); // attempt default init
 		}
 		return instance;
 	}
@@ -77,11 +58,38 @@ public class DToolTestResources implements IDToolTestConstants {
 		return new File(DToolTestResources.getInstance().getResourcesDir(), fileRelPath);
 	}
 	
-	public File getWorkingDir() {
-		assertNotNull(testsWorkingDir); // Maybe use workingDir = "../_runtime-tests" instead
+	protected static String testsWorkingDir;
+	
+	protected static void initWorkingDir(String workingDir) {
+		assertTrue(workingDir != null);
+		assertTrue(testsWorkingDir == null);
+		testsWorkingDir = workingDir;
+		
+		System.out.println("====>> WORKING DIR: " + testsWorkingDir);
+		
+		File file = new File(testsWorkingDir);
+		if(!file.exists()) {
+			file.mkdir();
+		}
+	}
+	
+	public static File getWorkingDir() {
+		if(testsWorkingDir == null) {
+			initWorkingdir();
+		}
+		assertNotNull(testsWorkingDir);
 		File file = new File(testsWorkingDir);
 		assertTrue(file.exists() && file.isDirectory());
 		return file;
+	}
+	
+	protected static void initWorkingdir() {
+		// default init:
+		String property = System.getProperty(D_TOOL_TEST_RESOURCES_WORKING_DIR);
+		if(property != null) {
+			initWorkingDir(property);
+		}
+		// Maybe use workingDir = "../_runtime-tests" instead
 	}
 	
 }
