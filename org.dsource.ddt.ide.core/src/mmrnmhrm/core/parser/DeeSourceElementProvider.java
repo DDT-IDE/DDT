@@ -20,7 +20,6 @@ import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
 import descent.internal.compiler.parser.STC;
-import dtool.ast.ASTNeoUpTreeVisitor;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
@@ -30,13 +29,15 @@ import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
+import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
+import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 
-public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
+public final class DeeSourceElementProvider extends DeeSourceElementProvider_BaseVisitor {
 	
 	protected static final String[] EMPTY_STRING = new String[0];
 	protected static final String OBJECT = "Object"; //$NON-NLS-1$
@@ -85,13 +86,41 @@ public final class DeeSourceElementProvider extends ASTNeoUpTreeVisitor {
 		requestor.exitType(node.sourceEnd() - 1);
 	}
 	
+	
 	@Override
-	public boolean visit(DefinitionAggregate elem) {
+	public boolean visit(DefinitionStruct node) {
+		return visitAggregate(node);
+	}
+	@Override
+	public void endVisit(DefinitionStruct node) {
+		endVisitAggregate(node);
+	}
+	
+	@Override
+	public boolean visit(DefinitionUnion node) {
+		return visitAggregate(node);
+	}
+	
+	@Override
+	public void endVisit(DefinitionUnion node) {
+		endVisitAggregate(node);
+	}
+	
+	@Override
+	public boolean visit(DefinitionInterface node) {
+		return visitAggregate(node);
+	}
+	
+	@Override
+	public void endVisit(DefinitionInterface node) {
+		endVisitAggregate(node);
+	}
+	
+	public boolean visitAggregate(DefinitionAggregate elem) {
 		requestor.enterType(createTypeInfoForDefinition(elem));
 		return true;
 	}
-	@Override
-	public void endVisit(DefinitionAggregate elem) {
+	public void endVisitAggregate(DefinitionAggregate elem) {
 		requestor.exitType(elem.sourceEnd() - 1);
 	}
 	

@@ -5,13 +5,15 @@ import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionInterface;
+import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
+import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
@@ -37,72 +39,80 @@ public interface IASTNeoVisitor {
 	
 	public boolean visit(ASTNeoNode node);
 	public void endVisit(ASTNeoNode node);
-
+	
 	/* ---------------------------------- */
-	public boolean visit(Symbol elem);
-
-	public boolean visit(DefUnit elem);
+	public boolean visit(Symbol node);
+	
+	public boolean visit(DefUnit node);
 	public void endVisit(DefUnit node);
 	
-	public boolean visit(Module elem);
+	public boolean visit(Module node);
 	public void endVisit(Module node);
-
-	public boolean visit(DefinitionAggregate elem);
-	public void endVisit(DefinitionAggregate node);
-	//--
-	public boolean visit(DefinitionClass elem);
+	
+	//-- Aggregates
+	public boolean visit(DefinitionStruct node);
+	public void endVisit(DefinitionStruct node);
+	
+	public boolean visit(DefinitionUnion node);
+	public void endVisit(DefinitionUnion node);
+	
+	public boolean visit(DefinitionClass node);
 	public void endVisit(DefinitionClass node);
 	
+	public boolean visit(DefinitionInterface node);
+	public void endVisit(DefinitionInterface node);
+	//--
 	
-	public boolean visit(DefinitionTemplate elem);
+	
+	public boolean visit(DefinitionTemplate node);
 	public void endVisit(DefinitionTemplate node);
 	
 	
-	public boolean visit(DefinitionVariable elem);
-	public void endVisit(DefinitionVariable elem);
-		
-	public boolean visit(DefinitionEnum elem);
-	public void endVisit(DefinitionEnum elem);
-		
-	public boolean visit(DefinitionTypedef elem);
-	public void endVisit(DefinitionTypedef elem);
-		
-	public boolean visit(DefinitionAlias elem);
-	public void endVisit(DefinitionAlias elem);
-		
-	public boolean visit(DefinitionFunction elem);
-	public void endVisit(DefinitionFunction elem);
-
+	public boolean visit(DefinitionVariable node);
+	public void endVisit(DefinitionVariable node);
+	
+	public boolean visit(DefinitionEnum node);
+	public void endVisit(DefinitionEnum node);
+	
+	public boolean visit(DefinitionTypedef node);
+	public void endVisit(DefinitionTypedef node);
+	
+	public boolean visit(DefinitionAlias node);
+	public void endVisit(DefinitionAlias node);
+	
+	public boolean visit(DefinitionFunction node);
+	public void endVisit(DefinitionFunction node);
+	
 	/* ---------------------------------- */
-
-	public boolean visit(Resolvable elem);
+	
+	public boolean visit(Resolvable node);
 	public void endVisit(Resolvable node);
-
-	public boolean visit(Reference elem);
+	
+	public boolean visit(Reference node);
 	public void endVisit(Reference node);
 	
-	public boolean visit(CommonRefNative elem);
-
-	public boolean visit(NamedReference elem);
+	public boolean visit(CommonRefNative node);
 	
-	public boolean visit(CommonRefQualified elem);
+	public boolean visit(NamedReference node);
 	
-	public boolean visit(RefIdentifier elem);
-
-	public boolean visit(RefTemplateInstance elem);
-
+	public boolean visit(CommonRefQualified node);
+	
+	public boolean visit(RefIdentifier node);
+	
+	public boolean visit(RefTemplateInstance node);
+	
 	/* ---------------------------------- */
-	public boolean visit(DeclarationImport elem);
-	public void endVisit(DeclarationImport elem);
+	public boolean visit(DeclarationImport node);
+	public void endVisit(DeclarationImport node);
 	
-	public boolean visit(DeclarationInvariant elem);
-	public void endVisit(DeclarationInvariant elem);
-
+	public boolean visit(DeclarationInvariant node);
+	public void endVisit(DeclarationInvariant node);
 	
-	public boolean visit(DeclarationUnitTest elem);
-	public void endVisit(DeclarationUnitTest elem);
 	
-	public boolean visit(DeclarationConditional elem);
-	public void endVisit(DeclarationConditional elem);
+	public boolean visit(DeclarationUnitTest node);
+	public void endVisit(DeclarationUnitTest node);
+	
+	public boolean visit(DeclarationConditional node);
+	public void endVisit(DeclarationConditional node);
 	
 }

@@ -12,8 +12,11 @@ import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionInterface;
+import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
+import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
@@ -85,14 +88,12 @@ public abstract class ASTNeoUpTreeVisitor implements IASTNeoVisitor {
 	
 	public void endVisit(Definition elem) {
 		endVisit((DefUnit) elem);
-	}	
+	}
 	
 	static { assertTrue(DefinitionAggregate.class.getSuperclass().equals(Definition.class)); }
-	@Override
 	public boolean visit(DefinitionAggregate elem) {
 		return visit((Definition) elem);
 	}
-	@Override
 	public void endVisit(DefinitionAggregate elem) {
 		endVisit((Definition) elem);
 	}
@@ -107,6 +108,26 @@ public abstract class ASTNeoUpTreeVisitor implements IASTNeoVisitor {
 		endVisit((Definition) elem);
 	}		
 	
+	static { assertTrue(DefinitionStruct.class.getSuperclass().equals(DefinitionAggregate.class)); }
+	@Override
+	public boolean visit(DefinitionStruct elem) {
+		return visit((DefinitionAggregate) elem);
+	}
+	@Override
+	public void endVisit(DefinitionStruct elem) {
+		endVisit((DefinitionAggregate) elem);
+	}
+	
+	static { assertTrue(DefinitionUnion.class.getSuperclass().equals(DefinitionAggregate.class)); }
+	@Override
+	public boolean visit(DefinitionUnion elem) {
+		return visit((DefinitionAggregate) elem);
+	}
+	@Override
+	public void endVisit(DefinitionUnion elem) {
+		endVisit((DefinitionAggregate) elem);
+	}
+	
 	static { assertTrue(DefinitionClass.class.getSuperclass().equals(DefinitionAggregate.class)); }
 	@Override
 	public boolean visit(DefinitionClass elem) {
@@ -115,7 +136,17 @@ public abstract class ASTNeoUpTreeVisitor implements IASTNeoVisitor {
 	@Override
 	public void endVisit(DefinitionClass elem) {
 		endVisit((DefinitionAggregate) elem);
-	}	
+	}
+	
+	static { assertTrue(DefinitionInterface.class.getSuperclass().equals(DefinitionClass.class)); }
+	@Override
+	public boolean visit(DefinitionInterface elem) {
+		return visit((DefinitionClass) elem);
+	}
+	@Override
+	public void endVisit(DefinitionInterface elem) {
+		endVisit((DefinitionClass) elem);
+	}
 	
 	
 	static { assertTrue(DefinitionVariable.class.getSuperclass().equals(Definition.class)); }

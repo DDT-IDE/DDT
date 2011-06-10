@@ -15,13 +15,15 @@ import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionInterface;
+import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
+import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
@@ -50,114 +52,124 @@ public class ASTNeoHomogenousVisitor extends ASTNeoAbstractVisitor implements IA
 	}
 	
 	@Override
-	public final boolean visit(Symbol elem) {
+	public final boolean visit(Symbol node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DefUnit elem) {
+	public final boolean visit(DefUnit node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(Module elem) {
+	public final boolean visit(Module node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DefinitionAggregate elem) {
+	public final boolean visit(DefinitionTemplate node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DefinitionTemplate elem) {
+	public boolean visit(DefinitionStruct node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DefinitionClass elem) {
+	public boolean visit(DefinitionUnion node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DefinitionVariable elem) {
+	public final boolean visit(DefinitionClass node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DefinitionEnum elem) {
+	public boolean visit(DefinitionInterface node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DefinitionTypedef elem) {
+	public final boolean visit(DefinitionVariable node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DefinitionAlias elem) {
+	public final boolean visit(DefinitionEnum node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DefinitionFunction elem) {
+	public final boolean visit(DefinitionTypedef node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(Resolvable elem) {
+	public final boolean visit(DefinitionAlias node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(Reference elem) {
+	public final boolean visit(DefinitionFunction node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(CommonRefNative elem) {
+	public final boolean visit(Resolvable node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(NamedReference elem) {
+	public final boolean visit(Reference node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(CommonRefQualified elem) {
+	public final boolean visit(CommonRefNative node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(RefIdentifier elem) {
+	public final boolean visit(NamedReference node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(RefTemplateInstance elem) {
+	public final boolean visit(CommonRefQualified node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DeclarationImport elem) {
-		return true;
-	}
-	@Override
-	public final boolean visit(DeclarationInvariant elem) {
-		return true;
-	}
-	@Override
-	public final boolean visit(DeclarationUnitTest elem) {
+	public final boolean visit(RefIdentifier node) {
 		return true;
 	}
 	
 	@Override
-	public final boolean visit(DeclarationConditional elem) {
+	public final boolean visit(RefTemplateInstance node) {
+		return true;
+	}
+	
+	@Override
+	public final boolean visit(DeclarationImport node) {
 		return true;
 	}
 	@Override
-	public final void endVisit(DeclarationConditional elem) {
+	public final boolean visit(DeclarationInvariant node) {
+		return true;
+	}
+	@Override
+	public final boolean visit(DeclarationUnitTest node) {
+		return true;
+	}
+	
+	@Override
+	public final boolean visit(DeclarationConditional node) {
+		return true;
+	}
+	@Override
+	public final void endVisit(DeclarationConditional node) {
 	}
 	
 }

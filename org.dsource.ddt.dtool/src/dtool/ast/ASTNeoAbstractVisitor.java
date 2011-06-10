@@ -15,13 +15,15 @@ import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionInterface;
+import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
+import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.Resolvable;
@@ -48,15 +50,21 @@ public abstract class ASTNeoAbstractVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public void endVisit(DefinitionAggregate node) {
+	public void endVisit(DefinitionStruct node) {
+	}
+	@Override
+	public void endVisit(DefinitionUnion node) {
+	}
+	@Override
+	public void endVisit(DefinitionClass node) {
+	}
+	
+	@Override
+	public void endVisit(DefinitionInterface node) {
 	}
 	
 	@Override
 	public void endVisit(DefinitionTemplate node) {
-	}
-	
-	@Override
-	public void endVisit(DefinitionClass node) {
 	}
 	
 	@Override

@@ -25,10 +25,12 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationConditionalDV;
 import dtool.ast.declarations.DeclarationUnitTest;
-import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionInterface;
+import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
+import dtool.ast.definitions.DefinitionUnion;
 
 public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	
@@ -69,13 +71,22 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 				deeModuleDecl.neoModule.accept(new ASTAbstractVisitor() {
 					
 					@Override
-					public boolean visit(DefinitionAggregate elem) {
+					public boolean visit(DefinitionStruct elem) {
 						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
 						return true;
 					}
-					
+					@Override
+					public boolean visit(DefinitionUnion elem) {
+						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
+						return true;
+					}
 					@Override
 					public boolean visit(DefinitionClass elem) {
+						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
+						return true;
+					}
+					@Override
+					public boolean visit(DefinitionInterface elem) {
 						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
 						return true;
 					}
