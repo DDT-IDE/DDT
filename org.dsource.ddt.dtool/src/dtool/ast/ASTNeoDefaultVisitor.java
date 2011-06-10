@@ -35,7 +35,7 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
-public abstract class ASTAbstractVisitor extends ASTNeoAbstractVisitor implements IASTNeoVisitor {
+public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor implements IASTNeoVisitor {
 	
 	@Override
 	public boolean preVisit(ASTNeoNode node) {
