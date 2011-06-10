@@ -15,7 +15,6 @@ import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
@@ -34,7 +33,7 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
-public abstract class ASTAbstractVisitor implements IASTNeoVisitor {
+public abstract class ASTAbstractVisitor extends ASTNeoAbstractVisitor implements IASTNeoVisitor {
 	
 	@Override
 	public boolean preVisit(ASTNeoNode node) {
@@ -45,13 +44,11 @@ public abstract class ASTAbstractVisitor implements IASTNeoVisitor {
 	public void postVisit(ASTNeoNode node) {
 	}
 	
+	/* -------------------- */
+	
 	@Override
 	public boolean visit(ASTNeoNode node) {
 		return true;
-	}
-	
-	@Override
-	public void endVisit(ASTNeoNode node) {
 	}
 	
 	@Override
@@ -65,25 +62,8 @@ public abstract class ASTAbstractVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public void endVisit(DefUnit node) {
-	}
-	
-	@Override
 	public boolean visit(Module elem) {
 		return true;
-	}
-	
-	@Override
-	public void endVisit(Module node) {
-	}
-	
-	@Override
-	public boolean visit(Definition elem) {
-		return true;
-	}
-	
-	@Override
-	public void endVisit(Definition node) {
 	}
 	
 	@Override
@@ -92,16 +72,8 @@ public abstract class ASTAbstractVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public void endVisit(DefinitionAggregate node) {
-	}
-	
-	@Override
 	public boolean visit(DefinitionTemplate elem) {
 		return true;
-	}
-	
-	@Override
-	public void endVisit(DefinitionTemplate node) {
 	}
 	
 	@Override
@@ -110,16 +82,8 @@ public abstract class ASTAbstractVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public void endVisit(DefinitionClass node) {
-	}
-	
-	@Override
 	public boolean visit(DefinitionVariable elem) {
 		return true;
-	}
-	
-	@Override
-	public void endVisit(DefinitionVariable elem) {
 	}
 	
 	@Override
@@ -128,16 +92,8 @@ public abstract class ASTAbstractVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public void endVisit(DefinitionEnum elem) {
-	}
-	
-	@Override
 	public boolean visit(DefinitionTypedef elem) {
 		return true;
-	}
-	
-	@Override
-	public void endVisit(DefinitionTypedef elem) {
 	}
 	
 	@Override
@@ -146,16 +102,8 @@ public abstract class ASTAbstractVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public void endVisit(DefinitionAlias elem) {
-	}
-	
-	@Override
 	public boolean visit(DefinitionFunction elem) {
 		return true;
-	}
-	
-	@Override
-	public void endVisit(DefinitionFunction elem) {
 	}
 	
 	@Override
@@ -164,16 +112,8 @@ public abstract class ASTAbstractVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public void endVisit(Resolvable node) {
-	}
-	
-	@Override
 	public boolean visit(Reference elem) {
 		return true;
-	}
-	
-	@Override
-	public void endVisit(Reference node) {
 	}
 	
 	@Override
@@ -206,31 +146,16 @@ public abstract class ASTAbstractVisitor implements IASTNeoVisitor {
 		return true;
 	}
 	@Override
-	public void endVisit(DeclarationImport elem) {
-	}
-	
-	@Override
 	public boolean visit(DeclarationInvariant elem) {
 		return true;
 	}
-	@Override
-	public void endVisit(DeclarationInvariant elem) {
-	}
-	
 	@Override
 	public boolean visit(DeclarationUnitTest elem) {
 		return true;
 	}
 	@Override
-	public void endVisit(DeclarationUnitTest elem) {
-	}
-	
-	@Override
 	public boolean visit(DeclarationConditional elem) {
 		return true;
-	}
-	@Override
-	public void endVisit(DeclarationConditional elem) {
 	}
 	
 }

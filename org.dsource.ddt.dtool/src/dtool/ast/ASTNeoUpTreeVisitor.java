@@ -1,6 +1,6 @@
 package dtool.ast;
 
-import melnorme.utilbox.core.Assert;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
@@ -52,240 +52,215 @@ public abstract class ASTNeoUpTreeVisitor implements IASTNeoVisitor {
 		return;
 	}
 	
-	
+	static { assertTrue(Symbol.class.getSuperclass().equals(ASTNeoNode.class)); }
 	@Override
 	public boolean visit(Symbol elem) {
-		Assert.isTrue(Symbol.class.getSuperclass().equals(ASTNeoNode.class));
 		return visit((ASTNeoNode) elem);
 	}
 	
+	static { assertTrue(DefUnit.class.getSuperclass().equals(ASTNeoNode.class)); }
 	@Override
 	public boolean visit(DefUnit elem) {
-		Assert.isTrue(DefUnit.class.getSuperclass().equals(ASTNeoNode.class));
 		return visit((ASTNeoNode) elem);
 	}
 	@Override
 	public void endVisit(DefUnit elem) {
-		Assert.isTrue(DefUnit.class.getSuperclass().equals(ASTNeoNode.class));
 		endVisit((ASTNeoNode) elem);
 	}
 	
+	static { assertTrue(Module.class.getSuperclass().equals(DefUnit.class)); }
 	@Override
 	public boolean visit(Module elem) {
-		Assert.isTrue(Module.class.getSuperclass().equals(DefUnit.class));
 		return visit((DefUnit) elem);
 	}
 	@Override
 	public void endVisit(Module elem) {
-		Assert.isTrue(Module.class.getSuperclass().equals(DefUnit.class));
 		endVisit((DefUnit) elem);
 	}
 	
-	@Override
+	static { assertTrue(Definition.class.getSuperclass().equals(DefUnit.class)); }
 	public boolean visit(Definition elem) {
-		Assert.isTrue(Definition.class.getSuperclass().equals(DefUnit.class));
 		return visit((DefUnit) elem);
 	}
-	@Override
+	
 	public void endVisit(Definition elem) {
-		Assert.isTrue(Definition.class.getSuperclass().equals(DefUnit.class));
 		endVisit((DefUnit) elem);
 	}	
 	
+	static { assertTrue(DefinitionAggregate.class.getSuperclass().equals(Definition.class)); }
 	@Override
 	public boolean visit(DefinitionAggregate elem) {
-		Assert.isTrue(DefinitionAggregate.class.getSuperclass().equals(Definition.class));
 		return visit((Definition) elem);
 	}
 	@Override
 	public void endVisit(DefinitionAggregate elem) {
-		Assert.isTrue(DefinitionAggregate.class.getSuperclass().equals(Definition.class));
 		endVisit((Definition) elem);
 	}
 	
+	static { assertTrue(DefinitionTemplate.class.getSuperclass().equals(Definition.class)); }
 	@Override
 	public boolean visit(DefinitionTemplate elem) {
-		Assert.isTrue(DefinitionTemplate.class.getSuperclass().equals(Definition.class));
 		return visit((Definition) elem);
 	}
 	@Override
 	public void endVisit(DefinitionTemplate elem) {
-		Assert.isTrue(DefinitionTemplate.class.getSuperclass().equals(Definition.class));
 		endVisit((Definition) elem);
 	}		
 	
+	static { assertTrue(DefinitionClass.class.getSuperclass().equals(DefinitionAggregate.class)); }
 	@Override
 	public boolean visit(DefinitionClass elem) {
-		Assert.isTrue(DefinitionClass.class.getSuperclass().equals(DefinitionAggregate.class));
 		return visit((DefinitionAggregate) elem);
 	}
 	@Override
 	public void endVisit(DefinitionClass elem) {
-		Assert.isTrue(DefinitionClass.class.getSuperclass().equals(DefinitionAggregate.class));
 		endVisit((DefinitionAggregate) elem);
 	}	
 	
 	
+	static { assertTrue(DefinitionVariable.class.getSuperclass().equals(Definition.class)); }
 	@Override
 	public boolean visit(DefinitionVariable elem) {
-		Assert.isTrue(DefinitionVariable.class.getSuperclass().equals(Definition.class));
 		return visit((Definition) elem);
 	}
 	@Override
 	public void endVisit(DefinitionVariable elem) {
-		Assert.isTrue(DefinitionVariable.class.getSuperclass().equals(Definition.class));
 		endVisit((Definition) elem);
 	}	
 	
+	static { assertTrue(DefinitionEnum.class.getSuperclass().equals(Definition.class)); }
 	@Override
 	public boolean visit(DefinitionEnum elem) {
-		Assert.isTrue(DefinitionEnum.class.getSuperclass().equals(Definition.class));
 		return visit((Definition) elem);
 	}
 	@Override
 	public void endVisit(DefinitionEnum elem) {
-		Assert.isTrue(DefinitionEnum.class.getSuperclass().equals(Definition.class));
 		endVisit((Definition) elem);
 	}	
 	
+	static { assertTrue(DefinitionTypedef.class.getSuperclass().equals(Definition.class)); }
 	@Override
 	public boolean visit(DefinitionTypedef elem) {
-		Assert.isTrue(DefinitionTypedef.class.getSuperclass().equals(Definition.class));
 		return visit((Definition) elem);
 	}
 	@Override
 	public void endVisit(DefinitionTypedef elem) {
-		Assert.isTrue(DefinitionTypedef.class.getSuperclass().equals(Definition.class));
 		endVisit((Definition) elem);
 	}	
 	
+	static { assertTrue(DefinitionAlias.class.getSuperclass().equals(Definition.class)); }
 	@Override
 	public boolean visit(DefinitionAlias elem) {
-		Assert.isTrue(DefinitionAlias.class.getSuperclass().equals(Definition.class));
 		return visit((Definition) elem);
 	}
 	@Override
 	public void endVisit(DefinitionAlias elem) {
-		Assert.isTrue(DefinitionAlias.class.getSuperclass().equals(Definition.class));
 		endVisit((Definition) elem);
 	}	
 	
+	static { assertTrue(DefinitionFunction.class.getSuperclass().equals(Definition.class)); }
 	@Override
 	public boolean visit(DefinitionFunction elem) {
-		Assert.isTrue(DefinitionFunction.class.getSuperclass().equals(Definition.class));
 		return visit((Definition) elem);
 	}
 	@Override
 	public void endVisit(DefinitionFunction elem) {
-		Assert.isTrue(DefinitionFunction.class.getSuperclass().equals(Definition.class));
 		endVisit((Definition) elem);
 	}	
 	/* ---------------------------------- */
 	
+	static { assertTrue(Resolvable.class.getSuperclass().equals(ASTNeoNode.class)); }
 	@Override
 	public boolean visit(Resolvable elem) {
-		Assert.isTrue(Resolvable.class.getSuperclass().equals(ASTNeoNode.class));
 		return visit((ASTNeoNode) elem);
 	}
 	@Override
 	public void endVisit(Resolvable elem) {
-		Assert.isTrue(Resolvable.class.getSuperclass().equals(ASTNeoNode.class));
 		endVisit((ASTNeoNode) elem);
 	}
 	
 	
+	static { assertTrue(Reference.class.getSuperclass().equals(Resolvable.class)); }
 	@Override
 	public boolean visit(Reference elem) {
-		Assert.isTrue(Reference.class.getSuperclass().equals(Resolvable.class));
 		return visit((Resolvable) elem);
 	}
 	@Override
 	public void endVisit(Reference elem) {
-		Assert.isTrue(Reference.class.getSuperclass().equals(Resolvable.class));
 		endVisit((Resolvable) elem);
 	}
 	
+	static { assertTrue(CommonRefNative.class.getSuperclass().equals(Reference.class)); }
 	@Override
 	public boolean visit(CommonRefNative elem) {
-		Assert.isTrue(CommonRefNative.class.getSuperclass().equals(Reference.class));
 		return visit((Reference) elem);
 	}
 	
 	
+	static { assertTrue(NamedReference.class.getSuperclass().equals(Reference.class)); }
 	@Override
 	public boolean visit(NamedReference elem) {
-		Assert.isTrue(NamedReference.class.getSuperclass().equals(Reference.class));
 		return visit((Reference) elem);
 	}
 	
-/*	public void endVisit(NamedReference elem) {
-		Assert.isTrue(NamedReference.class.getSuperclass().equals(Reference.class));
-		endVisit((Reference) elem);
-	}
- */
-	
+	static { assertTrue(CommonRefQualified.class.getSuperclass().equals(NamedReference.class)); }
 	@Override
 	public boolean visit(CommonRefQualified elem) {
-		Assert.isTrue(CommonRefQualified.class.getSuperclass().equals(NamedReference.class));
 		return visit((NamedReference) elem);
 	}
 	
+	static { assertTrue(RefIdentifier.class.getSuperclass() == NamedReference.class); }
 	@Override
 	public boolean visit(RefIdentifier elem) {
-		Assert.isTrue(RefIdentifier.class.getSuperclass() == NamedReference.class);
 		return visit((NamedReference) elem);
 	}
 	
+	static { assertTrue(RefTemplateInstance.class.getSuperclass() == Reference.class); }
 	@Override
 	public boolean visit(RefTemplateInstance elem) {
-		Assert.isTrue(RefTemplateInstance.class.getSuperclass() == Reference.class);
 		return visit((Reference) elem);
 	}
 	
 	
 	/* ---------------------------------- */
 	
+	static { assertTrue(DeclarationImport.class.getSuperclass().equals(ASTNeoNode.class)); }
 	@Override
 	public boolean visit(DeclarationImport elem) {
-		Assert.isTrue(DeclarationImport.class.getSuperclass().equals(ASTNeoNode.class));
 		return visit((ASTNeoNode) elem);
 	}
 	@Override
 	public void endVisit(DeclarationImport elem) {
-		Assert.isTrue(DeclarationImport.class.getSuperclass().equals(ASTNeoNode.class));
 		endVisit((ASTNeoNode) elem);
 	}
 	
+	static { assertTrue(DeclarationInvariant.class.getSuperclass().equals(ASTNeoNode.class)); }
 	@Override
 	public boolean visit(DeclarationInvariant elem) {
-		Assert.isTrue(DeclarationInvariant.class.getSuperclass().equals(ASTNeoNode.class));
 		return visit((ASTNeoNode) elem);
 	}
 	@Override
 	public void endVisit(DeclarationInvariant elem) {
-		Assert.isTrue(DeclarationInvariant.class.getSuperclass().equals(ASTNeoNode.class));
 		endVisit((ASTNeoNode) elem);
 	}
 	
+	static { assertTrue(DeclarationUnitTest.class.getSuperclass().equals(ASTNeoNode.class)); }
 	@Override
 	public boolean visit(DeclarationUnitTest elem) {
-		Assert.isTrue(DeclarationUnitTest.class.getSuperclass().equals(ASTNeoNode.class));
 		return visit((ASTNeoNode) elem);
 	}
 	@Override
 	public void endVisit(DeclarationUnitTest elem) {
-		Assert.isTrue(DeclarationUnitTest.class.getSuperclass().equals(ASTNeoNode.class));
 		endVisit((ASTNeoNode) elem);
 	}
 	
+	static { assertTrue(DeclarationConditional.class.getSuperclass().equals(ASTNeoNode.class)); }
 	@Override
 	public boolean visit(DeclarationConditional elem) {
-		Assert.isTrue(DeclarationConditional.class.getSuperclass().equals(ASTNeoNode.class));
 		return visit((ASTNeoNode) elem);
 	}
 	@Override
 	public void endVisit(DeclarationConditional elem) {
-		Assert.isTrue(DeclarationConditional.class.getSuperclass().equals(ASTNeoNode.class));
 		endVisit((ASTNeoNode) elem);
 	}
 	

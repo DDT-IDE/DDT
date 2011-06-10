@@ -5,7 +5,6 @@ import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
@@ -47,9 +46,6 @@ public interface IASTNeoVisitor {
 	
 	public boolean visit(Module elem);
 	public void endVisit(Module node);
-
-	public boolean visit(Definition elem);
-	public void endVisit(Definition node);
 
 	public boolean visit(DefinitionAggregate elem);
 	public void endVisit(DefinitionAggregate node);

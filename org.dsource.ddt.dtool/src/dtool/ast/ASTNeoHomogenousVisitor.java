@@ -15,7 +15,6 @@ import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
@@ -34,7 +33,7 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
-public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
+public class ASTNeoHomogenousVisitor extends ASTNeoAbstractVisitor implements IASTNeoVisitor {
 	
 	@Override
 	public boolean preVisit(ASTNeoNode node) {
@@ -51,10 +50,6 @@ public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public final void endVisit(ASTNeoNode node) {
-	}
-	
-	@Override
 	public final boolean visit(Symbol elem) {
 		return true;
 	}
@@ -65,25 +60,8 @@ public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public final void endVisit(DefUnit node) {
-	}
-	
-	@Override
 	public final boolean visit(Module elem) {
 		return true;
-	}
-	
-	@Override
-	public final void endVisit(Module node) {
-	}
-	
-	@Override
-	public final boolean visit(Definition elem) {
-		return true;
-	}
-	
-	@Override
-	public final void endVisit(Definition node) {
 	}
 	
 	@Override
@@ -92,16 +70,8 @@ public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public final void endVisit(DefinitionAggregate node) {
-	}
-	
-	@Override
 	public final boolean visit(DefinitionTemplate elem) {
 		return true;
-	}
-	
-	@Override
-	public final void endVisit(DefinitionTemplate node) {
 	}
 	
 	@Override
@@ -110,16 +80,8 @@ public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public final void endVisit(DefinitionClass node) {
-	}
-	
-	@Override
 	public final boolean visit(DefinitionVariable elem) {
 		return true;
-	}
-	
-	@Override
-	public final void endVisit(DefinitionVariable elem) {
 	}
 	
 	@Override
@@ -128,16 +90,8 @@ public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public final void endVisit(DefinitionEnum elem) {
-	}
-	
-	@Override
 	public final boolean visit(DefinitionTypedef elem) {
 		return true;
-	}
-	
-	@Override
-	public final void endVisit(DefinitionTypedef elem) {
 	}
 	
 	@Override
@@ -146,16 +100,8 @@ public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public final void endVisit(DefinitionAlias elem) {
-	}
-	
-	@Override
 	public final boolean visit(DefinitionFunction elem) {
 		return true;
-	}
-	
-	@Override
-	public final void endVisit(DefinitionFunction elem) {
 	}
 	
 	@Override
@@ -164,16 +110,8 @@ public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
 	}
 	
 	@Override
-	public final void endVisit(Resolvable node) {
-	}
-	
-	@Override
 	public final boolean visit(Reference elem) {
 		return true;
-	}
-	
-	@Override
-	public final void endVisit(Reference node) {
 	}
 	
 	@Override
@@ -206,23 +144,12 @@ public class ASTNeoHomogenousVisitor implements IASTNeoVisitor {
 		return true;
 	}
 	@Override
-	public final void endVisit(DeclarationImport elem) {
-	}
-	
-	@Override
 	public final boolean visit(DeclarationInvariant elem) {
 		return true;
 	}
 	@Override
-	public final void endVisit(DeclarationInvariant elem) {
-	}
-	
-	@Override
 	public final boolean visit(DeclarationUnitTest elem) {
 		return true;
-	}
-	@Override
-	public final void endVisit(DeclarationUnitTest elem) {
 	}
 	
 	@Override
