@@ -11,6 +11,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefImportSelection;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.INonScopedBlock;

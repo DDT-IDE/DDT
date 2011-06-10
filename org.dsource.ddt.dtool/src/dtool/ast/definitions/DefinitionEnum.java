@@ -48,13 +48,13 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 			TreeVisitor.acceptChildren(visitor, type);
 			TreeVisitor.acceptChildren(visitor, members);
 		}
-		visitor.endVisit(this);	
+		visitor.endVisit(this);
 
 	}
-
+	
 	@Override
 	public EArcheType getArcheType() {
-		return EArcheType.Aggregate;
+		return EArcheType.Enum;
 	}
 
 	@Override

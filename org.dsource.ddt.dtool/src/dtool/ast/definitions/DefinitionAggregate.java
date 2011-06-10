@@ -17,17 +17,12 @@ import dtool.refmodel.IScopeNode;
  * A definition of a aggregate. 
  */
 public abstract class DefinitionAggregate extends Definition implements IScopeNode, IStatement {
-
+	
 	public TemplateParameter[] templateParams; 
 	public List<ASTNeoNode> members; // can be null. (bodyless aggregates)
-
+	
 	public DefinitionAggregate(Dsymbol elem, ASTConversionContext convContext) {
 		super(elem, convContext);
-	}
-	
-	@Override
-	public EArcheType getArcheType() {
-		return EArcheType.Aggregate;
 	}
 	
 	protected void acceptNodeChildren(IASTNeoVisitor visitor, boolean children) {
@@ -57,12 +52,11 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	
 	@Override
 	public String toStringForHoverSignature() {
-		String str = getArcheType().toString() 
-		+ "  " + getModuleScope().toStringAsElement() +"."+ getName()
-		+ ASTPrinter.toStringParamListAsElements(templateParams);
+		String str = getModuleScope().toStringAsElement() +"."+ getName()
+				+ ASTPrinter.toStringParamListAsElements(templateParams);
 		return str;
 	}
-
+	
 	@Override
 	public String toStringForCodeCompletion() {
 		return getName() + " - " + getModuleScope().toStringAsElement();

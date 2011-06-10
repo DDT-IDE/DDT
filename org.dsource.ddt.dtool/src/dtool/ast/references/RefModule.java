@@ -10,6 +10,7 @@ import descent.internal.compiler.parser.IdentifierExp;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScopeNode;

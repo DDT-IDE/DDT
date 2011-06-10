@@ -29,9 +29,9 @@ public class TemplateParamType extends TemplateParameter {
 
 	@Override
 	public EArcheType getArcheType() {
-		return EArcheType.Aggregate;
+		return EArcheType.TypeParameter;
 	}
-
+	
 	/*
 	 * Can be null
 	 */

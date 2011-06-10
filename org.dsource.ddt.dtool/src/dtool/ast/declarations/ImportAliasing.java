@@ -12,6 +12,7 @@ import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.INonScopedBlock;
 import dtool.refmodel.IScopeNode;
@@ -31,7 +32,7 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 		
 		@Override
 		public EArcheType getArcheType() {
-			return EArcheType.Alias;
+			return EArcheType.Alias; // Maybe should be ImportAlias
 		}
 
 		@Override

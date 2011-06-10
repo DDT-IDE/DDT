@@ -20,5 +20,10 @@ public class DefinitionInterface extends DefinitionClass {
 		acceptNodeChildren(visitor, children);
 		visitor.endVisit(this);
 	}
+	
+	@Override
+	public EArcheType getArcheType() {
+		return EArcheType.Interface;
+	}
 
 }

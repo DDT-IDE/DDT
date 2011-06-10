@@ -35,6 +35,11 @@ public class DefinitionClass extends DefinitionAggregate {
 	}
 	
 	@Override
+	public EArcheType getArcheType() {
+		return EArcheType.Class;
+	}
+	
+	@Override
 	protected void acceptNodeChildren(IASTNeoVisitor visitor, boolean children) {
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);
@@ -59,5 +64,5 @@ public class DefinitionClass extends DefinitionAggregate {
 		return scopes;
 		// TODO add Object super scope.
 	}
-
+	
 }

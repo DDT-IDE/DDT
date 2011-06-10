@@ -150,7 +150,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 
 	@Override
 	public String toStringForHoverSignature() {
-		String str = getArcheType().toString() + "  "
+		String str = ""
 			+ rettype.toStringAsElement() + " " + getName() 
 			+ ASTPrinter.toStringParamListAsElements(templateParams)
 			+ toStringParametersForSignature(params, varargs);

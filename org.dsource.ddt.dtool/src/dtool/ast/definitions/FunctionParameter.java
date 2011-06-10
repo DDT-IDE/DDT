@@ -77,9 +77,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	
 	@Override
 	public String toStringForHoverSignature() {
-		String str = getArcheType().toString() + "  "
-			+ type.toStringAsElement() + " " + getName();
-		return str;
+		return type.toStringAsElement() + " " + getName();
 	}
 	
 	@Override

@@ -16,24 +16,6 @@ import dtool.refmodel.IScopeNode;
  */
 public abstract class DefUnit extends ASTNeoNode {
 	
-	static public enum EArcheType {
-		Module,
-		Package,
-		Native,
-		Aggregate, 
-		Enum,
-		EnumMember, // same as var?
-		Variable,
-		Function,
-		Alias,
-		Typedef,
-		Template,
-		Mixin,
-		Tuple,   
-		;
-	}
-	
-	
 	public final Comment[] comments;
 	public final DefSymbol defname;
 	
@@ -91,7 +73,7 @@ public abstract class DefUnit extends ASTNeoNode {
 		return str;
 	}
 	
-	/** Gets the archtype (the kind) of this DefUnit. */
+	/** Gets the archetype (the kind) of this DefUnit. */
 	public abstract EArcheType getArcheType() ;
 	
 	/** Gets the scope which contains the members of this DefUnit. 
@@ -105,7 +87,7 @@ public abstract class DefUnit extends ASTNeoNode {
 		return getName();
 	}
 	
-	/** Returns signature-oriented String representation. */
+	/** Returns signature-oriented String representation. TODO: this should move to UI code */
 	public String toStringForHoverSignature() {
 		String str = getModuleScope().toStringAsElement() + "." + getName();
 		//if(getMembersScope() != this)str += " : " + getMembersScope();

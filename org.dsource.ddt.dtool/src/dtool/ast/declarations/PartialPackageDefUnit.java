@@ -6,6 +6,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.IScope;

@@ -84,8 +84,7 @@ public class DefinitionVariable extends Definition implements IStatement {
 	
 	@Override
 	public String toStringForHoverSignature() {
-		String str = getArcheType().toString() + "  "
-			+ getTypeString() + " " + getName();
+		String str = getTypeString() + " " + getName();
 		return str;
 	}
 	

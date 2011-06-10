@@ -33,6 +33,11 @@ public class DefinitionUnion extends DefinitionAggregate {
 	}
 	
 	@Override
+	public EArcheType getArcheType() {
+		return EArcheType.Union;
+	}
+	
+	@Override
 	public List<IScope> getSuperScopes() {
 		return null;
 	}

@@ -6,6 +6,7 @@ import org.junit.Test;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
 import dtool.refmodel.IScopeNode;
 
 public class CodeCompletion_IntrinsicsTest extends CodeCompletion__Common {

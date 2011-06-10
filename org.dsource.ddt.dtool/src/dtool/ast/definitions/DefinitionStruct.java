@@ -31,7 +31,12 @@ public class DefinitionStruct extends DefinitionAggregate {
 		acceptNodeChildren(visitor, children);
 		visitor.endVisit(this);
 	}
-
+	
+	@Override
+	public EArcheType getArcheType() {
+		return EArcheType.Struct;
+	}
+	
 	@Override
 	public List<IScope> getSuperScopes() {
 		return null;

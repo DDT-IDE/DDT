@@ -76,7 +76,7 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 	
 	@Override
 	public EArcheType getArcheType() {
-		return EArcheType.Native;
+		return EArcheType.Struct;
 	}
 	
 	@Override
