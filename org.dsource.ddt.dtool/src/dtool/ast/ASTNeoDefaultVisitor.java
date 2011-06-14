@@ -17,6 +17,7 @@ import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
+import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
@@ -115,6 +116,11 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 	
 	@Override
 	public boolean visit(DefinitionFunction elem) {
+		return true;
+	}
+	
+	@Override
+	public boolean visit(DefinitionCtor node) {
 		return true;
 	}
 	

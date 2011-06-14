@@ -28,6 +28,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
+import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
@@ -145,17 +146,6 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	
 	@Override
-	public boolean visit(DefinitionFunction node) {
-		requestor.enterMethod(createMethodInfo(node));
-		return true;
-	}
-	@Override
-	public void endVisit(DefinitionFunction node) {
-		endVisitDefinition(node);
-	}
-	
-	
-	@Override
 	public boolean visit(DefinitionEnum node) {
 		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_ENUM));
 		return true;
@@ -183,6 +173,28 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	@Override
 	public void endVisit(DefinitionAlias node) {
 		endVisitDefinition(node);
+	}
+	
+	/* ---------------------------------- */
+	
+	@Override
+	public boolean visit(DefinitionFunction node) {
+		requestor.enterMethod(createMethodInfo(node));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionFunction node) {
+		endVisitDefinition(node);
+	}
+	
+	@Override
+	public boolean visit(DefinitionCtor node) {
+//		requestor.enterMethod(createMethodInfo(node));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionCtor node) {
+//		requestor.exitType(node.sourceEnd() - 1);
 	}
 	
 	/* ---------------------------------- */

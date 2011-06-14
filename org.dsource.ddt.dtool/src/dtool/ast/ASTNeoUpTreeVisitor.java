@@ -10,6 +10,7 @@ import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
+import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
@@ -197,7 +198,19 @@ public abstract class ASTNeoUpTreeVisitor implements IASTNeoVisitor {
 	@Override
 	public void endVisit(DefinitionFunction elem) {
 		endVisit((Definition) elem);
-	}	
+	}
+	
+	/* ---- */
+	static { assertTrue(DefinitionCtor.class.getSuperclass().equals(ASTNeoNode.class)); }
+	@Override
+	public boolean visit(DefinitionCtor elem) {
+		return visit((ASTNeoNode) elem);
+	}
+	@Override
+	public void endVisit(DefinitionCtor elem) {
+		endVisit((ASTNeoNode) elem);
+	}
+	
 	/* ---------------------------------- */
 	
 	static { assertTrue(Resolvable.class.getSuperclass().equals(ASTNeoNode.class)); }

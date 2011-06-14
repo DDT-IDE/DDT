@@ -17,6 +17,7 @@ import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
+import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
@@ -85,6 +86,10 @@ public abstract class ASTNeoAbstractVisitor implements IASTNeoVisitor {
 	
 	@Override
 	public void endVisit(DefinitionFunction elem) {
+	}
+	
+	@Override
+	public void endVisit(DefinitionCtor elem) {
 	}
 	
 	@Override

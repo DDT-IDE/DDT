@@ -28,21 +28,21 @@ import dtool.refmodel.NodeUtil;
  * TODO: special funcs
  */
 public class DefinitionFunction extends Definition implements IScopeNode, IStatement {
-
+	
 	//public Identifier outId;
 	public descent.internal.compiler.parser.LINK linkage;
 	public Reference rettype;
 	public TemplateParameter[] templateParams;	
 	public List<IFunctionParameter> params;
 	public int varargs;
-
+	
 	public IStatement frequire;
 	public IStatement fbody;
 	public IStatement fensure;
 	
 	//public descent.internal.compiler.parser.TypeFunction type;
-
-
+	
+	
 	public DefinitionFunction(FuncDeclaration elem, ASTConversionContext convContext) {
 		super(elem, convContext);
 		this.frequire = Statement.convert(elem.frequire, convContext);
@@ -50,12 +50,12 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		this.fbody = Statement.convert(elem.fbody, convContext);
 		
 		TypeFunction elemTypeFunc = ((TypeFunction) elem.type);
-
+		
 		/*if(elem.templateParameters != null)
 			this.templateParams = TemplateParameter.convertMany(elem.templateParameters);*/
 		Assert.isTrue(elem.parameters == null);
 		this.params = DescentASTConverter.convertManyL(elemTypeFunc.parameters, this.params, convContext); 
-
+		
 		varargs = convertVarArgs(elemTypeFunc.varargs);
 		if(elemTypeFunc.next == null) {
 			this.rettype = new AutoFunctionReturnReference();
@@ -104,14 +104,14 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	public EArcheType getArcheType() {
 		return EArcheType.Function;
 	}
-
+	
 	
 	@Override
 	public IScopeNode getMembersScope() {
 		// FIXME
 		return this;
 	}
-
+	
 	@Override
 	public List<IScope> getSuperScopes() {
 		// TODO: function super
@@ -147,7 +147,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		return getName() + toStringParametersForSignature(params, varargs);
 	}
 	
-
+	
 	@Override
 	public String toStringForHoverSignature() {
 		String str = ""
@@ -157,7 +157,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		return str;
 	}
 	
-
+	
 	@Override
 	public String toStringForCodeCompletion() {
 		return getName()
@@ -190,5 +190,5 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 			return false;
 		}
 	}
-
+	
 }
