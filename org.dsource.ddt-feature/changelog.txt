@@ -3,7 +3,11 @@
 = DDT Change Log =
 
 == DDT 0.4.4 (devel) ==
- * Made icons of D source elements (classes, structs templates, etc.) consistent throughtout the UI.
+ * Made icons of D source elements (classes, structs templates, etc.) consistent throughout the UI.
+ * Outline view changes:
+   * Now shows nested elements.
+   * Clicking on named elements correctly selects their name in the editor (previously it just revealed the element).
+   * Added context menu to the elements, added some filter actions to the toolbar of the view.
 
 == DDT 0.4.3 (2011-06-02) ==
  * Resolved issue #12, added Content Assist preference page. 

@@ -1,36 +1,68 @@
 package mmrnmhrm.ui.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import melnorme.swtutil.SWTUtilExt;
 import melnorme.utilbox.tree.IElement;
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IElementChangedListener;
+import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
+import org.eclipse.dltk.ui.DLTKPluginImages;
+import org.eclipse.dltk.ui.actions.MemberFilterActionGroup;
+import org.eclipse.dltk.ui.viewsupport.MemberFilterAction;
+import org.eclipse.dltk.ui.viewsupport.ModelElementFilter;
+import org.eclipse.dltk.ui.viewsupport.ModelElementFlagsFilter;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IActionBars;
 
 import descent.internal.compiler.parser.ast.ASTNode;
-import dtool.Logg;
 
-
+/**
+ * TODO: DLTK request: we would like {@link #isInnerType()}  to be protected so we can extends
+ */
 public class DeeOutlinePage extends ScriptOutlinePage {
 	
 	public DeeOutlinePage(ScriptEditor editor, IPreferenceStore store) {
 		super(editor, store);
 	}
 	
-	public final class DeeOutlinePageContentProvider extends DeeOutlineContentProvider {
+	@Override
+	protected ILabelDecorator getLabelDecorator() {
+		return null;
+	}
+	
+	@Override
+	public void createControl(Composite parent) {
+		super.createControl(parent);
+		fOutlineViewer.setContentProvider(new DeeOutlinePageContentProvider(this));
+		
+//		fOutlineViewer.expandAll();
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+	}
+	
+	@Deprecated
+	protected final class DeeOutlinePageContentProvider extends DeeOutlineContentProvider {
 		
 		private final class ElementChangedListener implements IElementChangedListener {
 			@Override
-			public void elementChanged(org.eclipse.dltk.core.ElementChangedEvent event) {
+			public void elementChanged(ElementChangedEvent event) {
 				SWTUtilExt.runInSWTThread(new Runnable() {
 					@Override
 					public void run() {
@@ -47,7 +79,7 @@ public class DeeOutlinePage extends ScriptOutlinePage {
 		
 		private final DeeOutlinePage deeOutlinePage;
 		
-		DeeOutlinePageContentProvider(DeeOutlinePage deeOutlinePage) {
+		protected DeeOutlinePageContentProvider(DeeOutlinePage deeOutlinePage) {
 			this.deeOutlinePage = deeOutlinePage;
 		}
 		
@@ -69,15 +101,10 @@ public class DeeOutlinePage extends ScriptOutlinePage {
 		
 		@Override
 		public void dispose() {
-			Logg.main.println("OutlinePageContentProvider disposing:" + this);
 			if (fListener != null) {
-				Logg.main.println("OutlinePageContentProvider remove listener:" + this);
 				DLTKCore.removeElementChangedListener(fListener);
 				fListener = null;
 			}
-			//super.dispose();
-			Logg.main.println("OutlinePageContentProvider disposed:" + this);
-			//ModelManager.getModelManager().deltaState.elementChangedListeners.clone();
 		}
 		
 		@Override
@@ -111,109 +138,54 @@ public class DeeOutlinePage extends ScriptOutlinePage {
 		
 	}
 	
-	public static class DeeOutlineLabelDecorator extends DeeOutlineLabelProvider
-			implements ILabelDecorator {
-		@Override
-		public Image decorateImage(Image image, Object element) {
-			if(element instanceof IElement)
-				return getImage(element);
-			return null;
-		}
-		@Override
-		public String decorateText(String text, Object element) {
-			if(element instanceof IElement)
-				return getText(element);
-			return null;
-		}
-	}
-	
 	@Override
-	protected ILabelDecorator getLabelDecorator() {
-		return new DeeOutlineLabelDecorator(); 
-	}
-	
-	@Override
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-		fOutlineViewer.setComparator(null);
-		fOutlineViewer.setContentProvider(new DeeOutlinePageContentProvider(this));
-		fOutlineViewer.setLabelProvider(new DeeOutlineLabelDecorator());
-		fOutlineViewer.expandAll();
-	}
-	
-	@Override
-	public void dispose() {
-		Logg.main.println("OutlinePage disposing:" + this);
-		super.dispose();
-		Logg.main.println("OutlinePage disposed:" + this);
-	}
-	
-	
-	
-	//TODO convert
-/*
 	protected void registerSpecialToolbarActions(IActionBars actionBars) {
-		// TODO: help support
-
+		// XXX: DLTK TCL 2.0 copied code: 
+		
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
-
 		MemberFilterActionGroup fMemberFilterActionGroup = new MemberFilterActionGroup(
-				fOutlineViewer, fStore); //$NON-NLS-1$
-
-		String title, helpContext;
-		ArrayList actions = new ArrayList(3);
-
-		// Hide variables
-		title = ActionMessages.MemberFilterActionGroup_hide_variables_label;
-
-		helpContext = "";// IDLTKHelpContextIds.FILTER_FIELDS_ACTION;
+				fOutlineViewer, fStore);
+		List<MemberFilterAction> actions = new ArrayList<MemberFilterAction>(3);
+		
+		// variables
+		// TODO help support IDLTKHelpContextIds.FILTER_FIELDS_ACTION;
 		MemberFilterAction hideVariables = new MemberFilterAction(
-				fMemberFilterActionGroup, title, new ModelElementFilter(
-						IModelElement.FIELD), helpContext, true);
-		hideVariables
-				.setDescription(ActionMessages.MemberFilterActionGroup_hide_variables_description);
-		hideVariables
-				.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_variables_tooltip);
-		DLTKPluginImages.setLocalImageDescriptors(hideVariables,
-				"filter_fields.gif"); //$NON-NLS-1$
+				fMemberFilterActionGroup,
+				ActionMessages.MemberFilterActionGroup_hide_variables_label,
+				new ModelElementFilter(IModelElement.FIELD), null, true);
+		hideVariables.setDescription(ActionMessages.MemberFilterActionGroup_hide_variables_description);
+		hideVariables.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_variables_tooltip);
+		DLTKPluginImages.setLocalImageDescriptors(hideVariables, "filter_fields.gif"); //$NON-NLS-1$
 		actions.add(hideVariables);
 
-		// Hid functions
-		title = ActionMessages.MemberFilterActionGroup_hide_functions_label;
-		helpContext = "";// IDLTKHelpContextIds.FILTER_STATIC_ACTION;
+		// procedures
+		// TODO help support IDLTKHelpContextIds.FILTER_STATIC_ACTION;
 		MemberFilterAction hideProcedures = new MemberFilterAction(
-				fMemberFilterActionGroup, title, new ModelElementFilter(
-						IModelElement.METHOD), helpContext, true);
-		hideProcedures
-				.setDescription(ActionMessages.MemberFilterActionGroup_hide_functions_description);
-		hideProcedures
-				.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_functions_tooltip);
+				fMemberFilterActionGroup,
+				ActionMessages.MemberFilterActionGroup_hide_functions_label,
+				new ModelElementFilter(IModelElement.METHOD), null, true);
+		hideProcedures.setDescription(ActionMessages.MemberFilterActionGroup_hide_functions_description);
+		hideProcedures.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_functions_tooltip);
 		// TODO: add correct icon
 		DLTKPluginImages.setLocalImageDescriptors(hideProcedures,
 				"filter_methods.gif"); //$NON-NLS-1$
 		actions.add(hideProcedures);
 
-		// Hide classes
-		title = ActionMessages.MemberFilterActionGroup_hide_classes_label;
-		helpContext = "";// IDLTKHelpContextIds.FILTER_PUBLIC_ACTION;
-		MemberFilterAction hideNamespaces = new MemberFilterAction(
-				fMemberFilterActionGroup, title, new ModelElementFilter(
-						IModelElement.TYPE), helpContext, true);
-		hideNamespaces
-				.setDescription(ActionMessages.MemberFilterActionGroup_hide_classes_description);
-		hideNamespaces
-				.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_classes_tooltip);
-		DLTKPluginImages.setLocalImageDescriptors(hideNamespaces,
-				"filter_classes.gif"); //$NON-NLS-1$
-		actions.add(hideNamespaces);
+		// private
+		MemberFilterAction hidePrivate = new MemberFilterAction(
+				fMemberFilterActionGroup,
+				ActionMessages.MemberFilterActionGroup_hide_private_label,
+				new ModelElementFlagsFilter(Modifiers.AccPrivate), null, true);
+		hidePrivate.setDescription(ActionMessages.MemberFilterActionGroup_hide_private_description);
+		hidePrivate.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_private_tooltip);
+		DLTKPluginImages.setLocalImageDescriptors(hidePrivate,
+				"filter_private.gif"); //$NON-NLS-1$
+		actions.add(hidePrivate);
 
-		// Adding actions to toobar
-		MemberFilterAction[] fFilterActions = (MemberFilterAction[]) actions
-				.toArray(new MemberFilterAction[actions.size()]);
-
+		// order corresponds to ordeutilusr in toolbar
+		MemberFilterAction[] fFilterActions = actions.toArray(new MemberFilterAction[actions.size()]);
 		fMemberFilterActionGroup.setActions(fFilterActions);
 		fMemberFilterActionGroup.contributeToToolBar(toolBarManager);
-	}*/
-	
+	}
 	
 }

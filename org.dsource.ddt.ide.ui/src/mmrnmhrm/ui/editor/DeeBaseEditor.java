@@ -1,24 +1,15 @@
 package mmrnmhrm.ui.editor;
 
-import java.util.Iterator;
-
 import mmrnmhrm.org.eclipse.dltk.ui.actions.ReferencesSearchGroup;
 
-import org.dsource.ddt.ide.core.model.ASTUtils;
 import org.dsource.ddt.lang.ui.editor.ScriptEditorLangExtension;
-import org.eclipse.dltk.core.ISourceReference;
 import org.eclipse.dltk.internal.ui.editor.BracketInserter;
-import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.actions.OpenViewActionGroup;
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.actions.ActionGroup;
-
-import dtool.ast.ASTNeoNode;
 
 public abstract class DeeBaseEditor extends ScriptEditorLangExtension {
 	
@@ -53,20 +44,8 @@ public abstract class DeeBaseEditor extends ScriptEditorLangExtension {
 	
 	@Override
 	protected void doSelectionChanged(SelectionChangedEvent event) {
-		// XXX: DLTK copy 2.0
-		ISourceReference reference = null;
-		ISelection selection = event.getSelection();
-		Iterator<?> iter = ((IStructuredSelection) selection).iterator();
-		while (iter.hasNext()) {
-			Object o = iter.next();
-			if (o instanceof ASTNeoNode) {
-				reference = ASTUtils.adaptNodeToReference((ASTNeoNode)o);
-				break;
-			}
-		}
-		if (!isActivePart() && DLTKUIPlugin.getActivePage() != null)
-			DLTKUIPlugin.getActivePage().bringToTop(this);
-		setSelection(reference, !isActivePart());
+		// This is the normal path
+		super.doSelectionChanged(event);
 	}
 	
 	@SuppressWarnings("restriction")

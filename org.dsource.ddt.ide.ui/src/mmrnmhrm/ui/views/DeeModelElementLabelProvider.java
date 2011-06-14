@@ -11,6 +11,8 @@ import org.eclipse.swt.graphics.Image;
 
 import dtool.ast.definitions.EArcheType;
 
+// Compare with ScriptUILabelProvider, the later has more capabilites (like flags) and different image sizes 
+// TODO: need to talk with DTLK guys because of the above
 public class DeeModelElementLabelProvider extends LabelProvider implements ILabelProvider {
 	
 	public DeeModelElementLabelProvider() {
