@@ -2,6 +2,9 @@
 
 = DDT Change Log =
 
+== DDT 0.4.4 (devel) ==
+ * Made icons of D source elements (classes, structs templates, etc.) consistent throughtout the UI.
+
 == DDT 0.4.3 (2011-06-02) ==
  * Resolved issue #12, added Content Assist preference page. 
    * Options: Completion insert/override; Single proposals automatic insert; Auto-Activation enable and delay;

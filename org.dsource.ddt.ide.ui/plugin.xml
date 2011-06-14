@@ -503,6 +503,14 @@
            nature="org.dsource.ddt.ide.core.nature">
      </blockProvider>
   </extension>
+  <extension
+        point="org.eclipse.dltk.ui.modelLabelProvider">
+     <modelLabelProvider
+           class="mmrnmhrm.ui.views.DeeModelElementLabelProvider"
+           id="org.dsource.ddt.ide.ui.modelLabelProvider"
+           language="org.dsource.ddt.ide.core.nature">
+     </modelLabelProvider>
+  </extension>
    
    <extension
          point="org.eclipse.ui.navigator.viewer">

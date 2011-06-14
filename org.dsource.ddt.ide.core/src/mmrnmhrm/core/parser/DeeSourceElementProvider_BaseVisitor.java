@@ -1,7 +1,6 @@
 package mmrnmhrm.core.parser;
 
 
-import dtool.ast.ASTNeoAbstractVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.declarations.DeclarationConditional;
@@ -18,7 +17,7 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
-public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstractVisitor implements IASTNeoVisitor {
+public abstract class DeeSourceElementProvider_BaseVisitor implements IASTNeoVisitor {
 	
 	@Override
 	public final boolean preVisit(ASTNeoNode elem) {
@@ -34,6 +33,9 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 	public final boolean visit(ASTNeoNode elem) {
 		return true; // Default implementation: do nothing
 	}
+	@Override
+	public void endVisit(ASTNeoNode node) {
+	}
 	
 	@Override
 	public final boolean visit(Symbol elem) {
@@ -44,6 +46,9 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 	public final boolean visit(DefUnit elem) {
 		return true;
 	}
+	@Override
+	public void endVisit(DefUnit node) {
+	}
 	
 	/* ---------------------------------- */
 	
@@ -51,11 +56,16 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 	public final boolean visit(Resolvable elem) {
 		return true;
 	}
-	
+	@Override
+	public void endVisit(Resolvable node) {
+	}
 	
 	@Override
 	public final boolean visit(Reference elem) {
 		return true;
+	}
+	@Override
+	public void endVisit(Reference node) {
 	}
 	
 	@Override
@@ -86,20 +96,28 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 	public final boolean visit(DeclarationImport elem) {
 		return false;
 	}
+	@Override
+	public void endVisit(DeclarationImport elem) { }
 	
 	@Override
 	public final boolean visit(DeclarationInvariant elem) {
 		return true;
 	}
+	@Override
+	public void endVisit(DeclarationInvariant elem) { }
 	
 	@Override
 	public final boolean visit(DeclarationUnitTest elem) {
 		return true;
 	}
+	@Override
+	public void endVisit(DeclarationUnitTest elem) { }
 	
 	@Override
 	public final boolean visit(DeclarationConditional elem) {
 		return true;
 	}
+	@Override
+	public void endVisit(DeclarationConditional elem) { }
 	
 }

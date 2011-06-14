@@ -10,9 +10,12 @@
  *******************************************************************************/
 package mmrnmhrm.core.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.Iterator;
 import java.util.List;
 
+import org.dsource.ddt.ide.core.model.DeeModelConstants;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
@@ -23,7 +26,6 @@ import descent.internal.compiler.parser.STC;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
-import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
@@ -89,113 +91,111 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public boolean visit(DefinitionStruct node) {
-		return visitAggregate(node);
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_STRUCT));
+		return true;
 	}
 	@Override
 	public void endVisit(DefinitionStruct node) {
-		endVisitAggregate(node);
+		endVisitDefinition(node);
 	}
 	
 	@Override
 	public boolean visit(DefinitionUnion node) {
-		return visitAggregate(node);
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_UNION));
+		return true;
 	}
-	
 	@Override
 	public void endVisit(DefinitionUnion node) {
-		endVisitAggregate(node);
+		endVisitDefinition(node);
 	}
 	
 	@Override
 	public boolean visit(DefinitionInterface node) {
-		return visitAggregate(node);
+		requestor.enterType(createTypeInfoForInterface(node));
+		return true;
 	}
-	
 	@Override
 	public void endVisit(DefinitionInterface node) {
-		endVisitAggregate(node);
-	}
-	
-	public boolean visitAggregate(DefinitionAggregate elem) {
-		requestor.enterType(createTypeInfoForDefinition(elem));
-		return true;
-	}
-	public void endVisitAggregate(DefinitionAggregate elem) {
-		requestor.exitType(elem.sourceEnd() - 1);
+		endVisitDefinition(node);
 	}
 	
 	@Override
-	public boolean visit(DefinitionTemplate elem) {
-		requestor.enterType(createTypeInfoForDefinition(elem));
+	public boolean visit(DefinitionClass node) {
+		assertTrue(node.getClass() == DefinitionClass.class);
+		requestor.enterType(createTypeInfoForClass(node));
 		return true;
 	}
 	@Override
-	public void endVisit(DefinitionTemplate elem) {
-		requestor.exitType(elem.sourceEnd() - 1);
+	public void endVisit(DefinitionClass node) {
+		endVisitDefinition(node);
+	}
+	
+	public final void endVisitDefinition(Definition node) {
+		requestor.exitType(node.sourceEnd() - 1);
 	}
 	
 	@Override
-	public boolean visit(DefinitionClass elem) {
-		requestor.enterType(createTypeInfoForClass(elem));
+	public boolean visit(DefinitionTemplate node) {
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_TEMPLATE));
 		return true;
 	}
 	@Override
-	public void endVisit(DefinitionClass elem) {
-		requestor.exitType(elem.sourceEnd() - 1);
+	public void endVisit(DefinitionTemplate node) {
+		endVisitDefinition(node);
 	}
 	
 	@Override
-	public boolean visit(DefinitionFunction elem) {
-		requestor.enterMethod(createMethodInfo(elem));
+	public boolean visit(DefinitionFunction node) {
+		requestor.enterMethod(createMethodInfo(node));
 		return true;
 	}
 	@Override
-	public void endVisit(DefinitionFunction elem) {
-		requestor.exitMethod(elem.sourceEnd() - 1);
+	public void endVisit(DefinitionFunction node) {
+		endVisitDefinition(node);
 	}
 	
 	
 	@Override
-	public boolean visit(DefinitionEnum elem) {
-		requestor.enterType(createTypeInfoForDefinition(elem));
+	public boolean visit(DefinitionEnum node) {
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_ENUM));
 		return true;
 	}
 	@Override
-	public void endVisit(DefinitionEnum elem) {
-		requestor.exitType(elem.sourceEnd()-1);
+	public void endVisit(DefinitionEnum node) {
+		endVisitDefinition(node);
 	}
 	
 	@Override
-	public boolean visit(DefinitionTypedef elem) {
-		requestor.enterType(createTypeInfoForDefinition(elem));
+	public boolean visit(DefinitionTypedef node) {
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_TYPEDEF));
 		return true;
 	}
 	@Override
-	public void endVisit(DefinitionTypedef elem) {
-		requestor.exitType(elem.sourceEnd()-1);
+	public void endVisit(DefinitionTypedef node) {
+		endVisitDefinition(node);
 	}
 	
 	@Override
-	public boolean visit(DefinitionAlias elem) {
-		requestor.enterType(createTypeInfoForDefinition(elem));
+	public boolean visit(DefinitionAlias node) {
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_ALIAS));
 		return true;
 	}
 	@Override
-	public void endVisit(DefinitionAlias elem) {
-		requestor.exitType(elem.sourceEnd()-1);
+	public void endVisit(DefinitionAlias node) {
+		endVisitDefinition(node);
 	}
 	
 	/* ---------------------------------- */
 	
 	@Override
-	public boolean visit(DefinitionVariable elem) {
-		requestor.enterField(createFieldInfo(elem));
+	public boolean visit(DefinitionVariable node) {
+		requestor.enterField(createFieldInfo(node));
 		return true;
 	}
 	
 	@Override
-	public void endVisit(DefinitionVariable elem) {
-		requestor.exitField(elem.sourceEnd()-1);
+	public void endVisit(DefinitionVariable node) {
+		endVisitDefinition(node);
 	}
 	
 	@Override
@@ -275,32 +275,40 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		return typeInfo;
 	}
 	
-	protected TypeInfo createTypeInfoForDefinition(Definition elem) {
+	protected TypeInfo createTypeInfoForDefinition(Definition elem, int archetypeMask) {
+		assertTrue((archetypeMask & DeeModelConstants.MODIFIERS_ARCHETYPE_MASK) == archetypeMask);
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 		setupDefUnitTypeInfo(elem, typeInfo);
 		setupDefinitionTypeInfo(elem, typeInfo);
+		typeInfo.modifiers |= archetypeMask;
 		typeInfo.superclasses = DeeSourceElementProvider.EMPTY_STRING;
 		return typeInfo;
 	}
 	
 	
 	protected TypeInfo createTypeInfoForClass(DefinitionClass elem) {
-		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(elem);
-		if(elem instanceof DefinitionInterface) {
-			typeInfo.modifiers |= Modifiers.AccInterface;
-		}
-		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(elem);
+		int archeType = DeeModelConstants.TYPE_CLASS;
+		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(elem, archeType);
+		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(elem, false);
+		return typeInfo;
+	}
+	
+	protected TypeInfo createTypeInfoForInterface(DefinitionInterface elem) {
+		int archetype = DeeModelConstants.TYPE_INTERFACE;
+		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(elem, archetype);
+		typeInfo.modifiers |= Modifiers.AccInterface;
+		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(elem, true);
 		return typeInfo;
 	}
 	
 	
-	protected static String[] processSuperClassNames(DefinitionClass defClass) {
+	protected static String[] processSuperClassNames(DefinitionClass defClass, boolean isInterface) {
 		if(defClass.getName().equals("Object"))
 			return DeeSourceElementProvider.EMPTY_STRING;
 		
 		List<BaseClass> baseClasses = defClass.baseClasses;
 		if(baseClasses == null || baseClasses.isEmpty()) {
-			if(defClass instanceof DefinitionInterface) {
+			if(isInterface) {
 				return DeeSourceElementProvider.EMPTY_STRING;
 			} else {
 				return DeeSourceElementProvider.OBJECT_SUPER_CLASS_LIST;

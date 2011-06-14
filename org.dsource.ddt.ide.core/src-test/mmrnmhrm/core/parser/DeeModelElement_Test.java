@@ -18,6 +18,7 @@ import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
+import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
@@ -25,6 +26,8 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
+
+import dtool.ast.definitions.EArcheType;
 
 public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesConstants {
 	
@@ -40,44 +43,46 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		ISourceModule srcModule = getSourceModule(TR_CA, "sampledefs.d");
 		
 		IType topLevelElement = srcModule.getType("sampledefs");
-		checkElementExists(srcModule, topLevelElement, 
-				"module sampledefs;");
+		checkElementExists(srcModule, EArcheType.Module, 
+				topLevelElement, "module sampledefs;");
 		
 		// TODO: test the other elements
-		checkElementExists(srcModule, topLevelElement.getType("Alias"), 
-			"alias TargetFoo Alias;");
-		checkElementExists(srcModule, topLevelElement.getType("Class"), 
-			"class Class  {");
-		checkElementExists(srcModule, topLevelElement.getType("Enum"), 
-			"enum Enum {");
-		checkElementExists(srcModule, topLevelElement.getType("Interface"), 
-			"interface Interface { }");
-		checkElementExists(srcModule, topLevelElement.getType("Struct"), 
-			"struct Struct { }");
-		checkElementExists(srcModule, topLevelElement.getType("Typedef"), 
-			"typedef TargetBar Typedef;");
-		checkElementExists(srcModule, topLevelElement.getType("Union"), 
-			"union Union { }");
-		checkElementExists(srcModule, topLevelElement.getField("variable"), 
-			"int variable;");
-		checkElementExists(srcModule, topLevelElement.getType("Template"), 
-				"template Template(");
+		checkElementExists(srcModule, EArcheType.Alias, 
+			topLevelElement.getType("Alias"), "alias TargetFoo Alias;");
+		checkElementExists(srcModule, EArcheType.Class, 
+			topLevelElement.getType("Class"), "class Class  {");
+		checkElementExists(srcModule, EArcheType.Enum, 
+			topLevelElement.getType("Enum"), "enum Enum {");
+		checkElementExists(srcModule, EArcheType.Interface, 
+			topLevelElement.getType("Interface"), "interface Interface { }");
+		checkElementExists(srcModule, EArcheType.Struct, 
+			topLevelElement.getType("Struct"), "struct Struct { }");
+		checkElementExists(srcModule, EArcheType.Typedef, 
+			topLevelElement.getType("Typedef"), "typedef TargetBar Typedef;");
+		checkElementExists(srcModule, EArcheType.Union, 
+			topLevelElement.getType("Union"), "union Union { }");
+		checkElementExists(srcModule, EArcheType.Variable, 
+			topLevelElement.getField("variable"), "int variable;");
+		checkElementExists(srcModule, EArcheType.Template, 
+				topLevelElement.getType("Template"), "template Template(");
 		
 		
-		checkElementExists(srcModule, topLevelElement.getType("Class").getField("fieldA"), 
-				"int fieldA;");
-		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("methodB"), 
-			"void methodB() { }");
+		checkElementExists(srcModule, EArcheType.Variable, 
+				topLevelElement.getType("Class").getField("fieldA"), "int fieldA;");
+		checkElementExists(srcModule, EArcheType.Function, 
+			topLevelElement.getType("Class").getMethod("methodB"), "void methodB() { }");
 		
-		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass"), 
-			"class TplNestedClass  {");
+		checkElementExists(srcModule, EArcheType.Class, 
+			topLevelElement.getType("Template").getType("TplNestedClass"), "class TplNestedClass  {");
 		
 		
-		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("func"), 
+		checkElementExists(srcModule, EArcheType.Function, 
+			topLevelElement.getType("Template").getType("TplNestedClass").getMethod("func"), 
 			"void func(asdf.qwer parameter) {");
 		
 	}
-	protected void checkElementExists(ISourceModule sourceModule, IMember element, String code) throws ModelException {
+	protected void checkElementExists(ISourceModule sourceModule, EArcheType archeType, IMember element, 
+			String code) throws ModelException {
 		String source = sourceModule.getSource();
 		
 		assertTrue(element.exists());
@@ -86,6 +91,8 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		assertTrue(element.getSource().startsWith(code));
 		assertTrue(element.getNameRange().getOffset() == source.indexOf(" " + element.getElementName()) + 1);
 		assertTrue(element.getNameRange().getLength() == element.getElementName().length());
+		
+		assertTrue(DeeModelElementUtil.elementFlagsToArcheType(element) == archeType);
 	}
 	
 	@Test
@@ -99,10 +106,10 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		
 		IType topLevelElement = srcModule.getType("<unnamed>"); // TODO fix this
 		
-		checkElementExists(srcModule, topLevelElement.getType("Foo"), 
-			"class Foo");
-		checkElementExists(srcModule, topLevelElement.getType("Foo").getMethod("func"), 
-			"void func()");
+		checkElementExists(srcModule, EArcheType.Class, 
+			topLevelElement.getType("Foo"), "class Foo");
+		checkElementExists(srcModule, EArcheType.Function, 
+			topLevelElement.getType("Foo").getMethod("func"), "void func()");
 		
 		
 //		checkElementExists(implicitNameMod, implicitNameMod.getType("moduleDeclImplicitName"), 
@@ -132,8 +139,8 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		ISourceModule incorrectNameMod = getSourceModule(TR_SAMPLE_SRC1, "moduleDeclIncorrectName.d");
 		assertEquals(incorrectNameMod.getElementName(), "moduleDeclIncorrectName.d");
 		
-		checkElementExists(incorrectNameMod, incorrectNameMod.getType("actualModuleName_DifferentFromFileName"), 
-				"module actualModuleName_DifferentFromFileName;");
+		checkElementExists(incorrectNameMod, EArcheType.Module, 
+				incorrectNameMod.getType("actualModuleName_DifferentFromFileName"), "module actualModuleName_DifferentFromFileName;");
 	}
 	
 }
