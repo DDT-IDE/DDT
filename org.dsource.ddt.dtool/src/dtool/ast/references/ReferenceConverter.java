@@ -79,7 +79,8 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 
 	
 	public static RefIdentifier convert(descent.internal.compiler.parser.TypeBasic elem) {
-		return new RefIdentifier(elem.ty.name, sourceRange(elem));
+		SourceRange srcRange = sourceRange(elem);
+		return (srcRange == null) ? new RefIdentifier(elem.ty.name) : new RefIdentifier(elem.ty.name, srcRange);
 	}
 	
 	/* --- Conversion of qualified containers. --- */
