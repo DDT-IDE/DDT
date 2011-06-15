@@ -1,10 +1,12 @@
 package mmrnmhrm.ui.views;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.DeePluginImages;
 
 import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
-import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -25,10 +27,19 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 	
 	@Override
 	public Image getImage(Object object) {
-		if(object instanceof IModelElement) {
-			IModelElement element = (IModelElement) object;
+		if(object instanceof IMember) {
+			IMember member = (IMember) object;
 			
-			EArcheType archeType = DeeModelElementUtil.elementFlagsToArcheType(element);
+			int flags;
+			try {
+				flags = member.getFlags();
+			} catch (ModelException e) {
+				// TODO throw instead?
+				DeeCore.log(e);
+				flags = 0; // Ignore, use empty flags
+			}
+			
+			EArcheType archeType = DeeModelElementUtil.elementFlagsToArcheType(member, flags);
 			if(archeType == null) {
 				return null;
 			}

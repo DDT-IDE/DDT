@@ -4,46 +4,48 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.dltk.ast.Modifiers;
+import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.definitions.EArcheType;
 
 public class DeeModelElementUtil {
 	
-	public static EArcheType elementFlagsToArcheType(IModelElement element) {
-		switch (element.getElementType()) {
-		case IModelElement.FIELD:
-			return EArcheType.Variable;
-		case IModelElement.METHOD:
-			return EArcheType.Function;
-		case IModelElement.TYPE:
-			IType type = (IType) element;
-			return typeElementFlagsToArcheType(type);
-		default:
-			return null;
-		}
-	}
-	
-	public static EArcheType typeElementFlagsToArcheType(IType type) {
+	public static EArcheType elementFlagsToArcheType(IMember member) {
 		int flags;
 		try {
-			flags = type.getFlags();
+			flags = member.getFlags();
 		} catch (ModelException e) {
 			// TODO throw instead?
 			DeeCore.log(e);
 			flags = 0; // Ignore, use empty flags
 		}
-		
-		if((flags & Modifiers.AccModule) != 0) {
+		return elementFlagsToArcheType(member, flags);
+	}
+	
+	public static EArcheType elementFlagsToArcheType(IMember member, int flags) {
+		switch (member.getElementType()) {
+		case IModelElement.FIELD:
+			return EArcheType.Variable;
+		case IModelElement.METHOD:
+			return EArcheType.Function;
+		case IModelElement.TYPE:
+			return typeElementFlagsToArcheType(flags);
+		default:
+			return null;
+		}
+	}
+	
+	public static EArcheType typeElementFlagsToArcheType(int elementFlags) {
+		if((elementFlags & Modifiers.AccModule) != 0) {
 			return EArcheType.Module;
 		}
-		if((flags & Modifiers.AccInterface) != 0) {
+		if((elementFlags & Modifiers.AccInterface) != 0) {
 			return EArcheType.Interface;
 		}
 		
-		int archetypeFlag = flags & DeeModelConstants.MODIFIERS_ARCHETYPE_MASK;
+		int archetypeFlag = elementFlags & DeeModelConstants.MODIFIERS_ARCHETYPE_MASK;
 		switch (archetypeFlag) {
 		case DeeModelConstants.TYPE_CLASS:
 			return EArcheType.Class;

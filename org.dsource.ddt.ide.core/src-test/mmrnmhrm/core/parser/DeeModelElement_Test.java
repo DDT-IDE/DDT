@@ -92,7 +92,7 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		assertTrue(element.getNameRange().getOffset() == source.indexOf(" " + element.getElementName()) + 1);
 		assertTrue(element.getNameRange().getLength() == element.getElementName().length());
 		
-		assertTrue(DeeModelElementUtil.elementFlagsToArcheType(element) == archeType);
+		assertTrue(DeeModelElementUtil.elementFlagsToArcheType(element, element.getFlags()) == archeType);
 	}
 	
 	@Test
