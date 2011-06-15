@@ -47,7 +47,7 @@ public class DeeOutlinePage extends ScriptOutlinePage {
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
-		fOutlineViewer.setContentProvider(new DeeOutlinePageContentProvider(this));
+//		fOutlineViewer.setContentProvider(new DeeOutlinePageContentProvider(this));
 		
 //		fOutlineViewer.expandAll();
 	}
