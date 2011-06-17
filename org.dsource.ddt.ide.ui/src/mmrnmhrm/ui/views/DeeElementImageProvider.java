@@ -81,7 +81,7 @@ public class DeeElementImageProvider {
 
 
 	private static Image getImage(String imageKey) {
-		return DeePluginImages.getImage(imageKey);
+		return DeePluginImages.getManagedImage(imageKey);
 	}
 
 

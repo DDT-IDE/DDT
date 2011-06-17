@@ -2,16 +2,16 @@ package mmrnmhrm.ui;
 
 import java.io.FileNotFoundException;
 
-import mmrnmhrm.lang.ui.LangPluginImages;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.action.IAction;
+import org.eclipse.dltk.ui.PluginImagesHelper;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
+import org.osgi.framework.Bundle;
 
 public class DeePluginImages {
+	
+	private DeePluginImages() {} // Don't instantiate
 	
 	
 	public static final IPath ICONS_PATH= new Path("$nl$/icons/");
@@ -21,9 +21,14 @@ public class DeePluginImages {
 	private static final String T_OBJ = "obj16";
 	private static final String T_OVR = "ovr16";
 	
-	// Registry must be on top, to be initialized firt 
-	private static ImageRegistry registry = DeePlugin.getInstance().getImageRegistry();
+	// Registry/helper must be on top, to be initialized before createImage is used 
+	private static final PluginImagesHelper helper = new PluginImagesHelper(
+			DeeUI.getDefault().getBundle(), ICONS_PATH);
 	
+	private static ImageDescriptor createUnmanaged(String base, String imageName) {
+		return helper.createUnManaged(base, imageName);
+	}
+
 	
 	public static final String ELEM_MODULE = createImage(T_OBJ, "ent_module.gif");
 	public static final String ELEM_SOURCEFOLDER = createImage(T_OBJ, "dee_packagefolder.gif");
@@ -54,52 +59,45 @@ public class DeePluginImages {
 	public static final String NODE_BASEREF = createImage(T_OBJ, "node_baseref.gif");
 	public static final String NODE_REF = createImage(T_OBJ, "node_ref.gif");
 	
-	public static final String OVR_CONST = createImage(T_OVR, "ovr_const.gif");
-	public static final String OVR_FINAL = createImage(T_OVR, "ovr_final.gif");
-	public static final String OVR_IMMUTABLE = createImage(T_OVR, "ovr_immutable.gif");
-	public static final String OVR_STATIC = createImage(T_OVR, "ovr_static.png");
-	//public static final String OVR_STATIC = createImage(T_OVR, "ovr_static.gif");
 	
+	public static final ImageDescriptor DESC_OVR_CONST = createUnmanaged(T_OVR, "ovr_const.gif");
+	public static final ImageDescriptor DESC_OVR_FINAL = createUnmanaged(T_OVR, "ovr_final.gif");
+	public static final ImageDescriptor DESC_OVR_IMMUTABLE = createUnmanaged(T_OVR, "ovr_immutable.gif");
+	public static final ImageDescriptor DESC_OVR_STATIC = createUnmanaged(T_OVR, "ovr_static.png");
+	//public static final ImageDescriptor DESC_OVR_STATIC = createUnmanaged(T_OVR, "ovr_static.gif");
 	
-	
-	private DeePluginImages() {} // Don't instantiate
 	
 	private static String createImage(String base, String imageName) {
-		String imgPath = ICONS_PATH.append(base).append(imageName).toString();
-		ImageDescriptor imgDesc = DeePlugin.imageDescriptorFromPlugin(DeePlugin.PLUGIN_ID, imgPath);
+		ImageDescriptor imgDesc = getImageDescriptor(base, imageName, false);
 		if(imgDesc == null) {
+			String imgPath = ICONS_PATH.append(base).append(imageName).toString();
 			DeePlugin.log(new FileNotFoundException(imgPath));
 		}
-		registry.put(imageName, imgDesc);
-		return imageName;
-	}
-	
-	/** Gets the shared imaged associated with the given key. */
-	public static Image getImage(String imageKey) {
-		return registry.get(imageKey);
+		String key = imageName;
+		helper.createManaged(base, imageName, key);
+		return key;
 	}
 	
 	
-	private static ImageDescriptor createImageDescriptor(String prefix,
-			String name, boolean useMissingImageDescriptor) {
-		IPath path= ICONS_PATH.append(prefix).append(name);
-		return createImageDescriptor(path, useMissingImageDescriptor);
-	}
-	
-	private static ImageDescriptor createImageDescriptor(IPath path,
+	private static ImageDescriptor getImageDescriptor(String prefix, String name, 
 			boolean useMissingImageDescriptor) {
-		return LangPluginImages.createImageDescriptor(DeePlugin.getInstance().getBundle(),
-				path, useMissingImageDescriptor);
+		IPath path = ICONS_PATH.append(prefix).append(name);
+		Bundle bundle = DeeUI.getInstance().getBundle();
+		return PluginImagesHelper.createImageDescriptor(bundle, path, useMissingImageDescriptor);
 	}
 	
-	public static ImageDescriptor createActionImageDescriptor(String file,
-			boolean useMissingImageDescriptor) {
-		return DeePluginImages.createImageDescriptor(ACTIONS_PATH, file, useMissingImageDescriptor);
+	public static ImageDescriptor getActionImageDescriptor(String file, boolean useMissingImageDescriptor) {
+		return getImageDescriptor(ACTIONS_PATH, file, useMissingImageDescriptor);
 	}
 	
-	public static void setupActionImages(IAction action, String file) {
-		ImageDescriptor imgDesc = createActionImageDescriptor(file, true); 
-		action.setImageDescriptor(imgDesc);
+	/** Gets the managed {@link Image} associated with the given key. */
+	public static Image getManagedImage(String imageKey) {
+		return helper.getImageRegistry().get(imageKey);
+	}
+	
+	/** Gets the managed {@link ImageDescriptor} associated with the given key. */
+	public static ImageDescriptor getManagedDescriptor(String imageKey) {
+		return helper.getDescriptor(imageKey);
 	}
 	
 }

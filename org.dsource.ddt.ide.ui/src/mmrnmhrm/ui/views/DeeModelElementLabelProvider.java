@@ -46,32 +46,32 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			
 			switch (archeType) {
 			case Module:
-				return DeePluginImages.getImage(DeePluginImages.NODE_MODULE_DEC);
+				return DeePluginImages.getManagedImage(DeePluginImages.NODE_MODULE_DEC);
 			case Package:
-				return DeePluginImages.getImage(DeePluginImages.ELEM_PACKAGE);
+				return DeePluginImages.getManagedImage(DeePluginImages.ELEM_PACKAGE);
 				
 			case Variable:
-				return DeePluginImages.getImage(DeePluginImages.ENT_VARIABLE);
+				return DeePluginImages.getManagedImage(DeePluginImages.ENT_VARIABLE);
 			case Function:
-				return DeePluginImages.getImage(DeePluginImages.ENT_FUNCTION);
+				return DeePluginImages.getManagedImage(DeePluginImages.ENT_FUNCTION);
 				
 			case Class:
-				return DeePluginImages.getImage(DeePluginImages.ENT_CLASS);
+				return DeePluginImages.getManagedImage(DeePluginImages.ENT_CLASS);
 			case Interface:
-				return DeePluginImages.getImage(DeePluginImages.ENT_INTERFACE);
+				return DeePluginImages.getManagedImage(DeePluginImages.ENT_INTERFACE);
 			case Struct:
-				return DeePluginImages.getImage(DeePluginImages.ENT_STRUCT);
+				return DeePluginImages.getManagedImage(DeePluginImages.ENT_STRUCT);
 			case Union:
-				return DeePluginImages.getImage(DeePluginImages.ENT_UNION);
+				return DeePluginImages.getManagedImage(DeePluginImages.ENT_UNION);
 				
 			case Template:
-				return DeePluginImages.getImage(DeePluginImages.ENT_TEMPLATE);
+				return DeePluginImages.getManagedImage(DeePluginImages.ENT_TEMPLATE);
 			case Enum:
-				return DeePluginImages.getImage(DeePluginImages.ENT_ENUM);
+				return DeePluginImages.getManagedImage(DeePluginImages.ENT_ENUM);
 			case Alias:
-				return DeePluginImages.getImage(DeePluginImages.ENT_ALIAS);
+				return DeePluginImages.getManagedImage(DeePluginImages.ENT_ALIAS);
 			case Typedef:
-				return DeePluginImages.getImage(DeePluginImages.ENT_TYPEDEF);
+				return DeePluginImages.getManagedImage(DeePluginImages.ENT_TYPEDEF);
 			default:
 				throw assertFail();
 			}

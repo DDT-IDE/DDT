@@ -43,8 +43,8 @@ import dtool.refmodel.NodeUtil;
 public class GoToDefinitionHandler extends AbstractHandler  {
 
 	public static final String COMMAND_ID = DeePlugin.EXTENSIONS_IDPREFIX+"commands.openDefinition";
-	public static final ImageDescriptor IMAGE_DESC 
-			= DeePluginImages.createActionImageDescriptor("gotodef.gif", true);
+	public static final ImageDescriptor IMAGE_DESC = 
+			DeePluginImages.getActionImageDescriptor("gotodef.gif", true);
 	private static final String GO_TO_DEFINITION_OPNAME = "Go to Definition";
 
 	@Override
