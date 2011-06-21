@@ -89,10 +89,10 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		}
 		
 		switch (archeType) {
-		case Module:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.NODE_MODULE_DEC);
 		case Package:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ELEM_PACKAGE);
+		case Module:
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.NODE_MODULE_DEC);
 			
 		case Variable:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);

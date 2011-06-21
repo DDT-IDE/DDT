@@ -32,9 +32,6 @@ public class DeePluginImages {
 	}
 
 	
-	public static final String ELEM_MODULE = createImage(T_OBJ, "ent_module.gif");
-	public static final String ELEM_SOURCEFOLDER = createImage(T_OBJ, "dee_packagefolder.gif");
-	public static final String ELEM_LIBRARY = createImage(T_OBJ, "dee_library.gif");
 	public static final String ELEM_PACKAGE = createImage(T_OBJ, "dee_package.gif");
 	public static final String ELEM_FILE = createImage(T_OBJ, "dee_file.gif");
 	
@@ -53,12 +50,10 @@ public class DeePluginImages {
 	
 	public static final String NODE_MODULE_DEC = createImage(T_OBJ, "elem_module_dec.gif");
 	public static final String NODE_IMPORT = createImage(T_OBJ, "elem_import.gif");
-	public static final String NODE_COND = createImage(T_OBJ, "elem_cond.gif");
+	public static final String NODE_IMPORTS = createImage(T_OBJ, "elem_imports.gif");
 	
 	public static final String NODE_OLDAST = createImage(T_OBJ, "node_oldast.gif");
-	public static final String NODE_UNKNOWN = createImage(T_OBJ, "node_unknown.gif");
 	public static final String NODE_OTHER = createImage(T_OBJ, "node_other.gif");
-	public static final String NODE_BASEREF = createImage(T_OBJ, "node_baseref.gif");
 	public static final String NODE_REF = createImage(T_OBJ, "node_ref.gif");
 	
 	
