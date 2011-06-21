@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.PluginImagesHelper;
+import org.eclipse.dltk.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
@@ -100,4 +102,12 @@ public class DeePluginImages {
 		return helper.getDescriptor(imageKey);
 	}
 	
+	/* ------------------------------------------- */
+	
+	/** This is an alternate registry with keys based on ImageDescriptors.
+	 * XXX: maybe this should be consolidate with the other String key-based registry */ 
+	public static ImageDescriptorRegistry getImageDescriptorRegistry() {
+		return DLTKUIPlugin.getImageDescriptorRegistry();
+	}
+
 }
