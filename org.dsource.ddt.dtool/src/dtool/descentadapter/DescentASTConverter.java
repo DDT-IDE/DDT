@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
-
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
@@ -103,7 +102,6 @@ public class DescentASTConverter extends StatementConverterVisitor {
 		return rets;
 	}
 	
-	@Deprecated
 	public static <T extends IASTNode> ArrayList<T> convertManyL(List<? extends ASTNode> children, 
 			@SuppressWarnings("unused")	Class<T> castKlass, ASTConversionContext convContext) {
 		List<T> castDummy = null;

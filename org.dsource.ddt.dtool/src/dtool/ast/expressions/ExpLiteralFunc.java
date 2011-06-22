@@ -20,7 +20,7 @@ import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 public class ExpLiteralFunc extends Expression {
 	
 	public Reference rettype;
-	public List<IFunctionParameter> params;
+	public IFunctionParameter[] params;
 	public int varargs;
 
 	public IStatement frequire;
@@ -38,7 +38,7 @@ public class ExpLiteralFunc extends Expression {
 		TypeFunction elemTypeFunc = ((TypeFunction) fd.type);
 
 		Assert.isTrue(fd.parameters == null);
-		this.params = DescentASTConverter.convertManyL(elemTypeFunc.parameters, this.params, convContext); 
+		this.params = DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext); 
 
 		varargs = DefinitionFunction.convertVarArgs(elemTypeFunc.varargs);
 		this.rettype = ReferenceConverter.convertType(elemTypeFunc.next, convContext);

@@ -15,13 +15,13 @@ import dtool.refmodel.IScope;
  */
 public class DefinitionClass extends DefinitionAggregate {
 
-	public List<BaseClass> baseClasses;
+	public final BaseClass[] baseClasses;
 	
 	public DefinitionClass(ClassDeclaration elem, ASTConversionContext convContext) {
 		super(elem, convContext);
 		if(elem.members != null)
 			this.members = DescentASTConverter.convertManyL(elem.members, this.members, convContext);
-		this.baseClasses = DescentASTConverter.convertManyL(elem.sourceBaseclasses, this.baseClasses, convContext);
+		this.baseClasses = DescentASTConverter.convertMany(elem.sourceBaseclasses, BaseClass.class, convContext);
 		// TODO: where did template Parameters go
 		//if(elem.templateParameters != null)
 		//	this.templateParams = TemplateParameter.convertMany(elem.templateParameters);
@@ -51,7 +51,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	
 	@Override
 	public List<IScope> getSuperScopes() {
-		if(baseClasses == null || baseClasses.size() < 0)
+		if(baseClasses == null || baseClasses.length < 0)
 			return null;
 
 		List<IScope> scopes = new ArrayList<IScope>();

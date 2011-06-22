@@ -24,7 +24,7 @@ import dtool.refmodel.IScopeNode;
 public class TypeFunction extends CommonRefNative {
 	
 	public Reference rettype;
-	public List<IFunctionParameter> params;
+	public IFunctionParameter[] params;
 	public int varargs;
 	public LINK linkage;
 
@@ -32,7 +32,7 @@ public class TypeFunction extends CommonRefNative {
 			, ASTConversionContext convContext) {
 		setSourceRange(elem);
 		this.rettype = (Reference) DescentASTConverter.convertElem(elem.next, convContext);
-		this.params = DescentASTConverter.convertManyL(elem.parameters, this.params, convContext);
+		this.params = DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext);
 		this.varargs = DefinitionFunction.convertVarArgs(elem.varargs);
 		this.linkage = elem.linkage;
 	}
@@ -47,7 +47,7 @@ public class TypeFunction extends CommonRefNative {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
 		return DefUnitSearch.wrapResult(IntrinsicFunction.instance);

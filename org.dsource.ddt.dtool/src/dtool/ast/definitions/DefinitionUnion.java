@@ -3,6 +3,7 @@ package dtool.ast.definitions;
 import java.util.List;
 
 import descent.internal.compiler.parser.UnionDeclaration;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -19,7 +20,7 @@ public class DefinitionUnion extends DefinitionAggregate {
 	public DefinitionUnion(UnionDeclaration elem, ASTConversionContext convContext) {
 		super(elem, convContext);
 		if(elem.members != null)
-			this.members = DescentASTConverter.convertManyL(elem.members, this.members, convContext);
+			this.members = DescentASTConverter.convertManyL(elem.members, ASTNeoNode.class, convContext);
 		// TODO: where did template Parameters go
 		//if(elem.templateParameters != null)
 		//	this.templateParams = TemplateParameter.convertMany(elem.templateParameters);

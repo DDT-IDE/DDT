@@ -1,5 +1,8 @@
 package dtool.ast.definitions;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,13 +31,13 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	public static ASTNeoNode convertEnumDecl(EnumDeclaration elem, ASTConversionContext convContext) {
 		if(elem.ident != null) {
 			DefinitionEnum defEnum = new DefinitionEnum(elem, convContext);
-			defEnum.members = DescentASTConverter.convertManyL(elem.members, defEnum.members, convContext) ;
+			defEnum.members = DescentASTConverter.convertManyL(elem.members, EnumMember.class, convContext) ;
 			defEnum.type = ReferenceConverter.convertType(elem.memtype, convContext); 
 			return defEnum;
 		} else {
 			EnumContainer enumContainer = new EnumContainer();
 			enumContainer.setSourceRange(elem);
-			enumContainer.members = DescentASTConverter.convertManyL(elem.members, enumContainer.members, convContext) ;
+			enumContainer.members = DescentASTConverter.convertManyL(elem.members, EnumMember.class, convContext) ;
 			enumContainer.type = ReferenceConverter.convertType(elem.memtype, convContext); 
 			return enumContainer;
 		}

@@ -24,7 +24,7 @@ import dtool.refmodel.IScopeNode;
 public class TypeDelegate extends CommonRefNative {
 
 	public Reference rettype;
-	public List<IFunctionParameter> params;
+	public IFunctionParameter[] params;
 	public int varargs;
 	
 	public TypeDelegate(descent.internal.compiler.parser.TypeDelegate elem
@@ -33,7 +33,7 @@ public class TypeDelegate extends CommonRefNative {
 		this.rettype = (Reference) DescentASTConverter.convertElem(elem.rto, convContext);
 		TypeFunction typeFunction = ((TypeFunction) elem.next);
 		this.varargs = DefinitionFunction.convertVarArgs(typeFunction.varargs);
-		this.params = DescentASTConverter.convertManyL(typeFunction.parameters, this.params, convContext); 
+		this.params = DescentASTConverter.convertMany(typeFunction.parameters, IFunctionParameter.class, convContext); 
 	}
 
 	@Override

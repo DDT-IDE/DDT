@@ -12,9 +12,6 @@ package mmrnmhrm.core.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.dsource.ddt.ide.core.model.DeeModelConstants;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.ast.Modifiers;
@@ -320,19 +317,18 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		if(defClass.getName().equals("Object"))
 			return DeeSourceElementProvider.EMPTY_STRING;
 		
-		List<BaseClass> baseClasses = defClass.baseClasses;
-		if(baseClasses == null || baseClasses.isEmpty()) {
+		BaseClass[] baseClasses = defClass.baseClasses;
+		if(baseClasses == null || baseClasses.length == 0) {
 			if(isInterface) {
 				return DeeSourceElementProvider.EMPTY_STRING;
 			} else {
 				return DeeSourceElementProvider.OBJECT_SUPER_CLASS_LIST;
 			}
 		}
-		String[] baseClassesStr = new String[baseClasses.size()];
-		Iterator<BaseClass> iter = baseClasses.iterator();
-		for (int i = 0; i < baseClassesStr.length; i++) {
+		String[] baseClassesStr = new String[baseClasses.length];
+		for (int i = 0; i < baseClasses.length; i++) {
 			// There is no way this can work without a FQN, but I don't know what DLTK wants
-			baseClassesStr[i] = iter.next().type.toStringAsElement(); 
+			baseClassesStr[i] = baseClasses[i].type.toStringAsElement(); 
 		}
 		return baseClassesStr;
 	}

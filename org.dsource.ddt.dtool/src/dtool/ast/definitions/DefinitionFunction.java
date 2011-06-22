@@ -1,5 +1,6 @@
 package dtool.ast.definitions;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +56,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		/*if(elem.templateParameters != null)
 			this.templateParams = TemplateParameter.convertMany(elem.templateParameters);*/
 		Assert.isTrue(elem.parameters == null);
-		this.params = DescentASTConverter.convertManyL(elemTypeFunc.parameters, this.params, convContext); 
+		this.params = DescentASTConverter.convertManyL(elemTypeFunc.parameters, IFunctionParameter.class, convContext); 
 		
 		varargs = convertVarArgs(elemTypeFunc.varargs);
 		if(elemTypeFunc.next == null) {
@@ -134,8 +135,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	}
 	
 	
-	public static String toStringParametersForSignature(
-			List<IFunctionParameter> params, int varargs) {
+	public static String toStringParametersForSignature(List<IFunctionParameter> params, int varargs) {
 		String strParams = "(";
 		for (int i = 0; i < params.size(); i++) {
 			if(i != 0)
@@ -145,6 +145,10 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		if(varargs == 1) strParams += (params.size()==0 ? "..." : ", ...");
 		if(varargs == 2) strParams += "...";
 		return strParams + ")";
+	}
+	
+	public static String toStringParametersForSignature(IFunctionParameter[] params, int varargs) {
+		return toStringParametersForSignature(Arrays.asList(params), varargs);
 	}
 	
 	@Override
