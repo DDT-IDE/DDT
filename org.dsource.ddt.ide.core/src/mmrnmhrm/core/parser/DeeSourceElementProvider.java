@@ -37,6 +37,8 @@ import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.ICallableElement;
+import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 
@@ -189,12 +191,12 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public boolean visit(DefinitionCtor node) {
-//		requestor.enterMethod(createMethodInfo(node));
+		requestor.enterMethod(createConstructorInfo(node));
 		return true;
 	}
 	@Override
 	public void endVisit(DefinitionCtor node) {
-//		requestor.exitType(node.sourceEnd() - 1);
+		requestor.exitType(node.sourceEnd() - 1);
 	}
 	
 	/* ---------------------------------- */
@@ -340,20 +342,38 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		setupDefUnitTypeInfo(elem, methodInfo);
 		setupDefinitionTypeInfo(elem, methodInfo);
 		
-		methodInfo.parameterNames = new String[elem.params.size()];
-		methodInfo.parameterInitializers = new String[elem.params.size()];
+		setupParametersInfo(elem, methodInfo);
+		return methodInfo;
+	}
+	
+	protected ISourceElementRequestor.MethodInfo createConstructorInfo(DefinitionCtor elem) {
+		ISourceElementRequestor.MethodInfo elemInfo = new ISourceElementRequestor.MethodInfo();
+		elemInfo.declarationStart = elem.sourceStart();
+		elemInfo.isConstructor = true; // for the purposes of the ModelElement's, any kind is constructor
+		elemInfo.name = elem.kind.specialName;
+		elemInfo.nameSourceStart = elem.nameStart;
+		elemInfo.nameSourceEnd = elem.nameStart + elem.kind.specialName.length(); 
+		
+		//setupDefinitionTypeInfo(elem, methodInfo);
+		setupParametersInfo(elem, elemInfo);
+		return elemInfo;
+	}
+	
+	protected void setupParametersInfo(ICallableElement elem, ISourceElementRequestor.MethodInfo methodInfo) {
+		IFunctionParameter[] params = elem.getParameters();
+		
+		methodInfo.parameterNames = new String[params.length];
+		methodInfo.parameterInitializers = new String[params.length];
 		for (int i = 0; i < methodInfo.parameterNames.length; i++) {
-			String name = elem.params.get(i).toStringAsFunctionSimpleSignaturePart();
+			String name = params[i].toStringAsFunctionSimpleSignaturePart();
 			if(name == null) {
 				name = "";
 			}
 			methodInfo.parameterNames[i] = name;
-			String initStr = elem.params.get(i).toStringInitializer();
+			String initStr = params[i].toStringInitializer();
 			methodInfo.parameterInitializers[i] = initStr; 
 		}
-		return methodInfo;
 	}
-	
 	
 	protected FieldInfo createFieldInfo(DefinitionVariable elem) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();

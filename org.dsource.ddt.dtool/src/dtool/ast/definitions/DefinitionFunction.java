@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.core.Assert;
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.Argument;
 import descent.internal.compiler.parser.FuncDeclaration;
@@ -27,7 +28,7 @@ import dtool.refmodel.NodeUtil;
  * A definition of a function.
  * TODO: special funcs
  */
-public class DefinitionFunction extends Definition implements IScopeNode, IStatement {
+public class DefinitionFunction extends Definition implements IScopeNode, IStatement, ICallableElement {
 	
 	//public Identifier outId;
 	public descent.internal.compiler.parser.LINK linkage;
@@ -105,6 +106,10 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		return EArcheType.Function;
 	}
 	
+	@Override
+	public IFunctionParameter[] getParameters() {
+		return ArrayUtil.createFrom(params, IFunctionParameter.class);
+	}
 	
 	@Override
 	public IScopeNode getMembersScope() {

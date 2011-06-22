@@ -10,8 +10,14 @@ import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.Argument;
 import descent.internal.compiler.parser.AttribDeclaration;
 import descent.internal.compiler.parser.Comment;
+import descent.internal.compiler.parser.CtorDeclaration;
+import descent.internal.compiler.parser.DeleteDeclaration;
 import descent.internal.compiler.parser.Dsymbol;
+import descent.internal.compiler.parser.DtorDeclaration;
 import descent.internal.compiler.parser.IdentifierExp;
+import descent.internal.compiler.parser.NewDeclaration;
+import descent.internal.compiler.parser.StaticCtorDeclaration;
+import descent.internal.compiler.parser.StaticDtorDeclaration;
 import descent.internal.compiler.parser.TemplateInstanceWrapper;
 import descent.internal.compiler.parser.Type;
 import descent.internal.compiler.parser.ast.ASTNode;
@@ -21,11 +27,14 @@ import dtool.ast.TokenInfo;
 import dtool.ast.declarations.Declaration;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
+import dtool.ast.definitions.DefinitionCtor;
+import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.ReferenceConverter;
+import dtool.ast.statements.Statement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class DefinitionConverter extends BaseDmdConverter {
@@ -172,6 +181,68 @@ public class DefinitionConverter extends BaseDmdConverter {
 			}
 		}
 		return length == 1;
+	}
+	
+	/* ------------------- */
+	
+	public static DefinitionCtor createDefinitionCtor(CtorDeclaration elem, ASTConversionContext convContext) {
+		return new DefinitionCtor(
+			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR, 
+			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			DefinitionFunction.convertVarArgs(elem.varargs),
+			Statement.convert(elem.fbody, convContext),
+			elem.thisStart, DefinitionConverter.sourceRange(elem)
+		);
+	}
+	
+	public static DefinitionCtor createDefinitionCtor(DtorDeclaration elem, ASTConversionContext convContext) {
+		return new DefinitionCtor(
+			DefinitionCtor.SpecialFunctionKind.DESTRUCTOR, 
+			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			0,
+			Statement.convert(elem.fbody, convContext),
+			elem.thisStart, DefinitionConverter.sourceRange(elem)
+		);
+	}
+	
+	public static DefinitionCtor createDefinitionCtor(StaticCtorDeclaration elem, ASTConversionContext convContext) {
+		return new DefinitionCtor(
+			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR,
+			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			/*DefinitionFunction.convertVarArgs(elem.varargs)*/ 0,
+			Statement.convert(elem.fbody, convContext),
+			elem.thisStart, DefinitionConverter.sourceRange(elem)
+		);
+	}
+	
+	public static DefinitionCtor createDefinitionCtor(StaticDtorDeclaration elem, ASTConversionContext convContext) {
+		return new DefinitionCtor(
+			DefinitionCtor.SpecialFunctionKind.DESTRUCTOR,
+			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			0,
+			Statement.convert(elem.fbody, convContext),
+			elem.thisStart, DefinitionConverter.sourceRange(elem)
+		);
+	}
+	
+	public static DefinitionCtor createDefinitionCtor(NewDeclaration elem, ASTConversionContext convContext) {
+		return new DefinitionCtor(
+			DefinitionCtor.SpecialFunctionKind.ALLOCATOR,
+			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			0,
+			Statement.convert(elem.fbody, convContext),
+			elem.newStart, DefinitionConverter.sourceRange(elem)
+		);
+	}
+	
+	public static DefinitionCtor createDefinitionCtor(DeleteDeclaration elem, ASTConversionContext convContext) {
+		return new DefinitionCtor(
+			DefinitionCtor.SpecialFunctionKind.DEALLOCATOR,
+			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			0,
+			Statement.convert(elem.fbody, convContext),
+			elem.deleteStart, DefinitionConverter.sourceRange(elem)
+		);
 	}
 	
 }

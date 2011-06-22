@@ -34,7 +34,6 @@ import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefModifier;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
-import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
@@ -276,7 +275,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.CtorDeclaration elem) {
-		return endAdapt(new DefinitionCtor(elem, convContext));
+		return endAdapt(DefinitionConverter.createDefinitionCtor(elem, convContext));
 	}
 	@Override
 	public boolean visit(descent.internal.compiler.parser.PostBlitDeclaration elem) {
@@ -284,24 +283,24 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	}
 	@Override
 	public boolean visit(descent.internal.compiler.parser.DtorDeclaration elem) {
-		return endAdapt(new DefinitionCtor(elem, convContext));
+		return endAdapt(DefinitionConverter.createDefinitionCtor(elem, convContext));
 	}
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StaticCtorDeclaration elem) {
-		return endAdapt(new DefinitionCtor(elem, convContext));
+		return endAdapt(DefinitionConverter.createDefinitionCtor(elem, convContext));
 	}	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StaticDtorDeclaration elem) {
-		return endAdapt(new DefinitionCtor(elem, convContext));
+		return endAdapt(DefinitionConverter.createDefinitionCtor(elem, convContext));
 	}
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.NewDeclaration elem) {
-		return endAdapt(new DefinitionCtor(elem, convContext));
+		return endAdapt(DefinitionConverter.createDefinitionCtor(elem, convContext));
 	}
 	@Override
 	public boolean visit(descent.internal.compiler.parser.DeleteDeclaration elem) {
-		return endAdapt(new DefinitionCtor(elem, convContext));
+		return endAdapt(DefinitionConverter.createDefinitionCtor(elem, convContext));
 	}
 
 	/* ---- other ---- */

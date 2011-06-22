@@ -2,38 +2,46 @@ package dtool.ast.definitions;
 
 import java.util.List;
 
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.CtorDeclaration;
-import descent.internal.compiler.parser.FuncDeclaration;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
-import dtool.ast.statements.Statement;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
-public class DefinitionCtor extends ASTNeoNode {
-
-	public List<IFunctionParameter> params;
-	public int varargs;
-
-	public IStatement fbody;
-
+public class DefinitionCtor extends ASTNeoNode implements ICallableElement {
 	
-	public DefinitionCtor(CtorDeclaration elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.params = DescentASTConverter.convertManyL(elem.parameters, this.params, convContext);
-		this.fbody = Statement.convert(elem.fbody, convContext);
-		varargs = DefinitionFunction.convertVarArgs(elem.varargs);
+	public static List<IFunctionParameter> paramsDUMMY;
+	
+	public static enum SpecialFunctionKind {
+		CONSTRUCTOR("this"),
+		DESTRUCTOR("~this"),
+		ALLOCATOR("new"),
+		DEALLOCATOR("delete"),
+		;
+		public final String specialName;
+		
+		private SpecialFunctionKind(String specialName) {
+			this.specialName = specialName;
+		}
 	}
 	
-	public DefinitionCtor(FuncDeclaration elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.params = DescentASTConverter.convertManyL(elem.parameters, this.params, convContext);
-		this.fbody = Statement.convert(elem.fbody, convContext);
+	public final SpecialFunctionKind kind; // whether it is a constructor or destructor
+	public final List<IFunctionParameter> params;
+	public final int varargs;
+	public final IStatement fbody;
+	public final int nameStart;
+	
+	public DefinitionCtor(SpecialFunctionKind kind, List<IFunctionParameter> params, int varargs, IStatement fbody, int thisStart, SourceRange sourceRange) {
+		this.kind = kind;
+		this.params = params;
+		this.varargs = varargs;
+		this.fbody = fbody;
+		
+		this.nameStart = thisStart;
+		initSourceRange(sourceRange);	
 	}
-
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -44,5 +52,10 @@ public class DefinitionCtor extends ASTNeoNode {
 		}
 		visitor.endVisit(this);
 	}
-
+	
+	@Override
+	public IFunctionParameter[] getParameters() {
+		return ArrayUtil.createFrom(params, IFunctionParameter.class);
+	}
+	
 }

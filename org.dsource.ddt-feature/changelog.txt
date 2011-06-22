@@ -9,7 +9,8 @@
    * Clicking on named elements correctly selects their name in the editor (previously it just revealed the element).
    * Added context menu to the elements, added some filter actions to the toolbar of the view.
  * Fixed issue #47: NPE while parsing is expression. Source ranges will still be missing though.
- * Fix in Documentation hovers: removed redudant text, and now displays concrete archetype (Class, Interface, Struct, Union), instead of "Aggregate". 
+ * Fix in Documentation hovers: removed redudant text, and now displays concrete archetype (Class, Interface, Struct, Union), instead of "Aggregate".
+ * Constructor/Desctructors/Allocators/Deallocators now show up in Outline view and quick Outline. 
 
 == DDT 0.4.3 (2011-06-02) ==
  * Resolved issue #12, added Content Assist preference page. 
