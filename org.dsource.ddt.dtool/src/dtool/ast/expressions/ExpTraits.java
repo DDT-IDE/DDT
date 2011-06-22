@@ -15,8 +15,7 @@ public class ExpTraits extends Expression {
 	public ExpTraits(TraitsExp node, ASTConversionContext convContext) {
 		convertNode(node);
 		this.traitsKeyword = node.ident.ident;
-		this.args = new ASTNeoNode[node.args.size()];
-		DescentASTConverter.convertMany(node.args, this.args, convContext);
+		this.args = DescentASTConverter.convertMany(node.args, ASTNeoNode.class, convContext);
 	}
 
 	@Override

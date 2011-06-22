@@ -23,7 +23,7 @@ public class ExpLiteralNewAnonClass extends Expression {
 		this.allocargs = ExpressionConverter.convertMany(elem.newargs, convContext); 
 		this.args = ExpressionConverter.convertMany(elem.arguments, convContext); 
 		this.baseClasses = DescentASTConverter.convertMany(elem.cd.sourceBaseclasses.toArray(),
-				new BaseClass[elem.cd.sourceBaseclasses.size()], convContext);
+				BaseClass.class, convContext);
 		this.members = Declaration.convertMany(elem.cd.members, convContext);
 		
 	}

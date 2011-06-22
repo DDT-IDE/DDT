@@ -46,21 +46,12 @@ public class ExpressionConverter  extends BaseDmdConverter {
 	
 	public static Expression[] convertMany(descent.internal.compiler.parser.Expression[] elements
 			, ASTConversionContext convContext) {
-		if(elements == null)
-			return null;
-		Expression[] rets = new Expression[elements.length];
-		DescentASTConverter.convertMany(elements, rets, convContext);
-		return rets;
+		return DescentASTConverter.convertMany(elements, Expression.class, convContext);
 	}
 	
 	public static Expression[] convertMany(List<descent.internal.compiler.parser.Expression> elements
 			, ASTConversionContext convContext) {
-		if(elements == null)
-			return null;
-		Expression[] rets = new Expression[elements.size()];
-		
-		DescentASTConverter.convertMany(elements, rets, convContext);
-		return rets;
+		return DescentASTConverter.convertMany(elements.toArray(), Expression.class, convContext);
 	}
 	
 	/* ------------------------- */

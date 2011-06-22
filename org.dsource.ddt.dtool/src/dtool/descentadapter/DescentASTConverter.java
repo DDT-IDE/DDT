@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import melnorme.utilbox.misc.ArrayUtil;
+
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
@@ -30,8 +32,8 @@ public class DescentASTConverter extends StatementConverterVisitor {
 	
 	
 	public static Module convertModule(ASTNode cumodule) {
-		ASTConversionContext convContext = new ASTConversionContext((descent.internal.compiler.parser.Module) cumodule);
-		Module module = DefinitionConverter.createModule(convContext.module, convContext);
+		ASTConversionContext convCtx = new ASTConversionContext((descent.internal.compiler.parser.Module) cumodule);
+		Module module = DefinitionConverter.createModule(convCtx.module, convCtx);
 		module.accept(new PostConvertionAdapter());
 		return module;
 	}
@@ -43,24 +45,32 @@ public class DescentASTConverter extends StatementConverterVisitor {
 		return conv.ret;
 	}
 	
-	public static ASTNeoNode[] convertMany(Collection<? extends IASTNode> children
-			, ASTConversionContext convContext) {
+	public static ASTNeoNode[] convertMany(Collection<? extends IASTNode> children, ASTConversionContext convContext) {
 		if(children == null) return null;
 		ASTNeoNode[] rets = new ASTNeoNode[children.size()];
 		convertMany(children.toArray(), rets, convContext);
 		return rets;
 	}
 	
-	public static void convertMany(List<? extends IASTNode> children, ASTNeoNode[] rets
-			, ASTConversionContext convContext) {
-		if(children == null) return;
+	public static <T extends IASTNode> T[] convertMany(Collection<? extends IASTNode> children, Class<T> klass,
+			ASTConversionContext convContext) {
+		if(children == null) return null;
+		T[] rets = ArrayUtil.create(children.size(), klass);
 		convertMany(children.toArray(), rets, convContext);
-		return;
+		return rets;
 	}
 	
+	public static <T extends IASTNode> T[] convertMany(Object[] children, Class<T> klass,
+			ASTConversionContext convContext) {
+		if(children == null) return null;
+		T[] rets = ArrayUtil.create(children.length, klass);
+		convertMany(children, rets, convContext);
+		return rets;
+	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T extends IASTNode> T[] convertMany(Object[] children, T[] rets, ASTConversionContext convContext) {
+	protected static <T extends IASTNode> T[] convertMany(Object[] children, T[] rets, 
+			ASTConversionContext convContext) {
 		DescentASTConverter conv = new DescentASTConverter(convContext);
 		for(int i = 0; i < children.length; ++i) {
 			ASTNode elem = (ASTNode) children[i];
@@ -91,6 +101,13 @@ public class DescentASTConverter extends StatementConverterVisitor {
 			}
 		}
 		return rets;
+	}
+	
+	@Deprecated
+	public static <T extends IASTNode> ArrayList<T> convertManyL(List<? extends ASTNode> children, 
+			@SuppressWarnings("unused")	Class<T> castKlass, ASTConversionContext convContext) {
+		List<T> castDummy = null;
+		return convertManyL(children, castDummy, convContext);
 	}
 	
 	@SuppressWarnings("unchecked")

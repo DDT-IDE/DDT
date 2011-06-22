@@ -16,10 +16,6 @@ public abstract class Initializer extends ASTNeoNode {
 	
 	public static Initializer[] convertMany(List<descent.internal.compiler.parser.Initializer> elements
 			, ASTConversionContext convContext) {
-		if(elements == null)
-			return null;
-		Initializer[] rets = new Initializer[elements.size()];
-		DescentASTConverter.convertMany(elements, rets, convContext);
-		return rets;
+		return DescentASTConverter.convertMany(elements, Initializer.class, convContext);
 	}
 }

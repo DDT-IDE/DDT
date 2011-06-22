@@ -30,6 +30,7 @@ import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.EnumMember;
+import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
@@ -188,7 +189,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(CtorDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR, 
-			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
 			DefinitionFunction.convertVarArgs(elem.varargs),
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)
@@ -198,7 +199,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(DtorDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.DESTRUCTOR, 
-			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
 			0,
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)
@@ -208,7 +209,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(StaticCtorDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR,
-			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
 			/*DefinitionFunction.convertVarArgs(elem.varargs)*/ 0,
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)
@@ -218,7 +219,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(StaticDtorDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.DESTRUCTOR,
-			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
 			0,
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)
@@ -228,7 +229,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(NewDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.ALLOCATOR,
-			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
 			0,
 			Statement.convert(elem.fbody, convContext),
 			elem.newStart, DefinitionConverter.sourceRange(elem)
@@ -238,7 +239,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(DeleteDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.DEALLOCATOR,
-			DescentASTConverter.convertManyL(elem.parameters, DefinitionCtor.paramsDUMMY, convContext),
+			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
 			0,
 			Statement.convert(elem.fbody, convContext),
 			elem.deleteStart, DefinitionConverter.sourceRange(elem)

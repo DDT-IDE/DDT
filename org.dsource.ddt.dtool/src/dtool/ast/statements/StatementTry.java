@@ -75,8 +75,8 @@ public class StatementTry extends Statement {
 	}
 
 	private void convertTryCatch(TryCatchStatement elem, ASTConversionContext convContext) {
-		this.params = new CatchClause[elem.catches.size()];
-		DescentASTConverter.convertMany(elem.catches.toArray(), this.params, convContext);
+		Object[] catches = elem.catches.toArray();
+		this.params = DescentASTConverter.convertMany(catches, CatchClause.class, convContext);
 		this.body = Statement.convert(elem.body, convContext);
 	}
 	

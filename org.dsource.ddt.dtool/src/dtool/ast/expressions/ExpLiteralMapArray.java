@@ -15,10 +15,8 @@ public class ExpLiteralMapArray extends Expression {
 	public ExpLiteralMapArray(AssocArrayLiteralExp node, ASTConversionContext convContext) {
 		convertNode(node);
 		Assert.isTrue(node.keys.size() == node.values.size());
-		this.keys = new Resolvable[node.keys.size()];
-		DescentASTConverter.convertMany(node.keys, this.keys, convContext);
-		this.values = new Resolvable[node.values.size()];
-		DescentASTConverter.convertMany(node.keys, this.keys, convContext);
+		this.keys = DescentASTConverter.convertMany(node.keys, Resolvable.class, convContext);
+		this.values = DescentASTConverter.convertMany(node.keys, Resolvable.class, convContext);
 	}
 
 	@Override
