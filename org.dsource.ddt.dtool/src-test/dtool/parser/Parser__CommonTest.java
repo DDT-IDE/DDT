@@ -8,13 +8,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import melnorme.utilbox.core.CoreUtil;
+import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
 
 import descent.internal.compiler.parser.ast.IASTNode;
 import descent.internal.compiler.parser.ast.NaiveASTFlattener;
-import dtool.ArrayUtilExt;
 import dtool.ast.ASTChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
@@ -106,7 +106,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 	}
 	
 	public static <T> T[] removeLast(T[] array, int count) {
-		return ArrayUtilExt.removeLast(array, count);
+		return ArrayUtil.removeLast(array, count);
 	}
 	
 	protected static Reference reference(String identifier) {

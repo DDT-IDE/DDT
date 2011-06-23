@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 
-import dtool.ArrayUtilExt;
+import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.IASTNeoNode;
 
 public class ArrayView<T> implements Iterable<T>, RandomAccess {
@@ -14,7 +14,7 @@ public class ArrayView<T> implements Iterable<T>, RandomAccess {
 	
 	@SuppressWarnings("unchecked")
 	public static <T extends IASTNeoNode> ArrayView<T> createFrom(T[] arr){
-		return (ArrayView<T>) create(arr == null ? ArrayUtilExt.EMPTY_ARRAY : arr);
+		return (ArrayView<T>) create(arr == null ? ArrayUtil.EMPTY_ARRAY : arr);
 	}
 	
 	public static <T> ArrayView<T> create(T[] arr){
