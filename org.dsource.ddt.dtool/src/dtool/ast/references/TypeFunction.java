@@ -8,10 +8,13 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.LINK;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.NativeDefUnit;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.DefUnitSearch;
@@ -24,20 +27,30 @@ import dtool.refmodel.IScopeNode;
 public class TypeFunction extends CommonRefNative {
 	
 	public Reference rettype;
-	public IFunctionParameter[] params;
+	public ArrayView<IFunctionParameter> params;
 	public int varargs;
 	public LINK linkage;
 
-	public TypeFunction(descent.internal.compiler.parser.TypeFunction elem
-			, ASTConversionContext convContext) {
-		setSourceRange(elem);
-		this.rettype = (Reference) DescentASTConverter.convertElem(elem.next, convContext);
-		this.params = DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext);
-		this.varargs = DefinitionFunction.convertVarArgs(elem.varargs);
-		this.linkage = elem.linkage;
+	public TypeFunction(descent.internal.compiler.parser.TypeFunction elem, ASTConversionContext convContext) {
+		this(
+				(Reference) DescentASTConverter.convertElem(elem.next, convContext), 
+				DescentASTConverter.convertManyToView(elem.parameters,IFunctionParameter.class, convContext), 
+				DefinitionFunction.convertVarArgs(elem.varargs), 
+				elem.linkage, 
+				DefinitionConverter.sourceRange(elem)
+		);
 	}
-
-
+	
+	public TypeFunction(Reference retType, ArrayView<IFunctionParameter> params, int varArgs, LINK linkage,
+			SourceRange sourceRange) {
+		this.rettype = retType;
+		this.params = params;
+		this.varargs = varArgs;
+		this.linkage = linkage;
+		initSourceRange(sourceRange);
+	}
+	
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

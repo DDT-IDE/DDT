@@ -202,7 +202,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
 			0,
 			Statement.convert(elem.fbody, convContext),
-			elem.thisStart, DefinitionConverter.sourceRange(elem)
+			elem.thisStart - 1, DefinitionConverter.sourceRange(elem)
 		);
 	}
 	
@@ -222,7 +222,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
 			0,
 			Statement.convert(elem.fbody, convContext),
-			elem.thisStart, DefinitionConverter.sourceRange(elem)
+			elem.thisStart - 1, DefinitionConverter.sourceRange(elem)
 		);
 	}
 	

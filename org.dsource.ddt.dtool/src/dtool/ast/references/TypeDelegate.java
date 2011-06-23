@@ -8,6 +8,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.TypeFunction;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.IFunctionParameter;
@@ -24,16 +25,15 @@ import dtool.refmodel.IScopeNode;
 public class TypeDelegate extends CommonRefNative {
 
 	public Reference rettype;
-	public IFunctionParameter[] params;
+	public ArrayView<IFunctionParameter> params;
 	public int varargs;
 	
-	public TypeDelegate(descent.internal.compiler.parser.TypeDelegate elem
-			, ASTConversionContext convContext) {
+	public TypeDelegate(descent.internal.compiler.parser.TypeDelegate elem, ASTConversionContext convContext) {
 		setSourceRange(elem);
 		this.rettype = (Reference) DescentASTConverter.convertElem(elem.rto, convContext);
 		TypeFunction typeFunction = ((TypeFunction) elem.next);
 		this.varargs = DefinitionFunction.convertVarArgs(typeFunction.varargs);
-		this.params = DescentASTConverter.convertMany(typeFunction.parameters, IFunctionParameter.class, convContext); 
+		this.params = DescentASTConverter.convertManyToView(typeFunction.parameters, IFunctionParameter.class, convContext); 
 	}
 
 	@Override

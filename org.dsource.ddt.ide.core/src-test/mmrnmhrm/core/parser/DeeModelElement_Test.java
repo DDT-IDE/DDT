@@ -43,45 +43,65 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		ISourceModule srcModule = getSourceModule(TR_CA, "sampledefs.d");
 		
 		IType topLevelElement = srcModule.getType("sampledefs");
-		checkElementExists(srcModule, EArcheType.Module, 
-				topLevelElement, "module sampledefs;");
+		checkElementExists(srcModule, topLevelElement, 
+				EArcheType.Module, "module sampledefs;");
 		
 		// TODO: test the other elements
-		checkElementExists(srcModule, EArcheType.Alias, 
-			topLevelElement.getType("Alias"), "alias TargetFoo Alias;");
-		checkElementExists(srcModule, EArcheType.Class, 
-			topLevelElement.getType("Class"), "class Class  {");
-		checkElementExists(srcModule, EArcheType.Enum, 
-			topLevelElement.getType("Enum"), "enum Enum {");
-		checkElementExists(srcModule, EArcheType.Interface, 
-			topLevelElement.getType("Interface"), "interface Interface { }");
-		checkElementExists(srcModule, EArcheType.Struct, 
-			topLevelElement.getType("Struct"), "struct Struct { }");
-		checkElementExists(srcModule, EArcheType.Typedef, 
-			topLevelElement.getType("Typedef"), "typedef TargetBar Typedef;");
-		checkElementExists(srcModule, EArcheType.Union, 
-			topLevelElement.getType("Union"), "union Union { }");
-		checkElementExists(srcModule, EArcheType.Variable, 
-			topLevelElement.getField("variable"), "int variable;");
-		checkElementExists(srcModule, EArcheType.Template, 
-				topLevelElement.getType("Template"), "template Template(");
+		checkElementExists(srcModule, topLevelElement.getType("Alias"), 
+			EArcheType.Alias, "alias TargetFoo Alias;");
+		checkElementExists(srcModule, topLevelElement.getType("Class"), 
+			EArcheType.Class, "class Class  {");
+		checkElementExists(srcModule, topLevelElement.getType("Enum"), 
+			EArcheType.Enum, "enum Enum {");
+		checkElementExists(srcModule, topLevelElement.getType("Interface"), 
+			EArcheType.Interface, "interface Interface { }");
+		checkElementExists(srcModule, topLevelElement.getType("Struct"), 
+			EArcheType.Struct, "struct Struct { }");
+		checkElementExists(srcModule, topLevelElement.getType("Typedef"), 
+			EArcheType.Typedef, "typedef TargetBar Typedef;");
+		checkElementExists(srcModule, topLevelElement.getType("Union"), 
+			EArcheType.Union, "union Union { }");
+		checkElementExists(srcModule, topLevelElement.getField("variable"), 
+			EArcheType.Variable, "int variable;");
+		checkElementExists(srcModule, topLevelElement.getType("Template"), 
+			EArcheType.Template, "template Template(");
 		
 		
-		checkElementExists(srcModule, EArcheType.Variable, 
-				topLevelElement.getType("Class").getField("fieldA"), "int fieldA;");
-		checkElementExists(srcModule, EArcheType.Function, 
-			topLevelElement.getType("Class").getMethod("methodB"), "void methodB() { }");
+		checkElementExists(srcModule, topLevelElement.getType("Class").getField("fieldA"), 
+			EArcheType.Variable, "int fieldA;");
+		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("methodB"), 
+			EArcheType.Function, "void methodB() { }");
 		
-		checkElementExists(srcModule, EArcheType.Class, 
-			topLevelElement.getType("Template").getType("TplNestedClass"), "class TplNestedClass  {");
+		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass"), 
+			EArcheType.Class, "class TplNestedClass  {");
 		
 		
-		checkElementExists(srcModule, EArcheType.Function, 
-			topLevelElement.getType("Template").getType("TplNestedClass").getMethod("func"), 
+		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("func"), 
+			EArcheType.Function, 
 			"void func(asdf.qwer parameter) {");
 		
+		
+		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("this"), 
+				EArcheType.Function, "/*this*/", "this(int param)");
+		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("~this"), 
+				EArcheType.Function, "/*~this*/", "~this()");
+		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("new"), 
+				EArcheType.Function, "/*new*/", "new()");
+		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("delete"), 
+				EArcheType.Function, "/*delete*/", "delete()");
+
+		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("this"), 
+				EArcheType.Function, "/*static this*/", "static /*static this*/ this()");
+		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("~this"), 
+				EArcheType.Function, "/*static ~this*/", "static /*static ~this*/ ~this()");
+
 	}
-	protected void checkElementExists(ISourceModule sourceModule, EArcheType archeType, IMember element, 
+	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, 
+			String code) throws ModelException {
+		checkElementExists(sourceModule, element, archeType, (String) null, code);
+	}
+
+	private void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, String nameKey,
 			String code) throws ModelException {
 		String source = sourceModule.getSource();
 		
@@ -89,7 +109,10 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		assertTrue(element.getCorrespondingResource() == null);
 		assertTrue(element.getOpenable() == sourceModule);
 		assertTrue(element.getSource().startsWith(code));
-		assertTrue(element.getNameRange().getOffset() == source.indexOf(" " + element.getElementName()) + 1);
+		int nameOffset = (nameKey == null) ? 
+				source.indexOf(" " + element.getElementName()) + 1 :
+				source.indexOf(nameKey) + nameKey.length() + 1;
+		assertTrue(element.getNameRange().getOffset() == nameOffset);
 		assertTrue(element.getNameRange().getLength() == element.getElementName().length());
 		
 		assertTrue(DeeModelElementUtil.elementFlagsToArcheType(element, element.getFlags()) == archeType);
@@ -106,10 +129,10 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		
 		IType topLevelElement = srcModule.getType("<unnamed>"); // TODO fix this
 		
-		checkElementExists(srcModule, EArcheType.Class, 
-			topLevelElement.getType("Foo"), "class Foo");
-		checkElementExists(srcModule, EArcheType.Function, 
-			topLevelElement.getType("Foo").getMethod("func"), "void func()");
+		checkElementExists(srcModule, topLevelElement.getType("Foo"), 
+			EArcheType.Class, "class Foo");
+		checkElementExists(srcModule, topLevelElement.getType("Foo").getMethod("func"), 
+			EArcheType.Function, "void func()");
 		
 		
 //		checkElementExists(implicitNameMod, implicitNameMod.getType("moduleDeclImplicitName"), 
@@ -139,8 +162,8 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		ISourceModule incorrectNameMod = getSourceModule(TR_SAMPLE_SRC1, "moduleDeclIncorrectName.d");
 		assertEquals(incorrectNameMod.getElementName(), "moduleDeclIncorrectName.d");
 		
-		checkElementExists(incorrectNameMod, EArcheType.Module, 
-				incorrectNameMod.getType("actualModuleName_DifferentFromFileName"), "module actualModuleName_DifferentFromFileName;");
+		checkElementExists(incorrectNameMod, incorrectNameMod.getType("actualModuleName_DifferentFromFileName"), 
+				EArcheType.Module, "module actualModuleName_DifferentFromFileName;");
 	}
 	
 }

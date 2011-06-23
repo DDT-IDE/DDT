@@ -11,6 +11,13 @@ alias TargetFoo Alias;
 
 class Class  {
 	int fieldA;
+	
+	/*this*/ this(int param) {}
+	/*~this*/ ~this() {}
+	
+	/*new*/ new() {}
+	/*delete*/ delete() {}
+	
 	void methodB() { }
 }
 
@@ -32,10 +39,10 @@ template Template(
 	alias AliasParam,
 	TupleParam...
 ) { 
-
+	
 	class TplNestedClass  {
-		this() {}
-		~this() {}
+		static /*static this*/ this() {}
+		static /*static ~this*/ ~this() {}
 		
 		void func(asdf.qwer parameter) {
 			static if(is(T IfTypeDefUnit : Foo)) {
@@ -49,10 +56,3 @@ template Template(
 		}
 	}
 }
-
-
-
-
-
-
-

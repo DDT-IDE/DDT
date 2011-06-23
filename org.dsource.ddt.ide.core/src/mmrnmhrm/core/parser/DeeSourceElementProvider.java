@@ -20,6 +20,7 @@ import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
 import descent.internal.compiler.parser.STC;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
@@ -348,7 +349,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		elemInfo.isConstructor = true; // for the purposes of the ModelElement's, any kind is constructor
 		elemInfo.name = elem.kind.specialName;
 		elemInfo.nameSourceStart = elem.nameStart;
-		elemInfo.nameSourceEnd = elem.nameStart + elem.kind.specialName.length(); 
+		elemInfo.nameSourceEnd = elem.nameStart + elem.kind.specialName.length() - 1; 
 		
 		//setupDefinitionTypeInfo(elem, methodInfo);
 		setupParametersInfo(elem, elemInfo);
@@ -356,17 +357,17 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	
 	protected void setupParametersInfo(ICallableElement elem, ISourceElementRequestor.MethodInfo methodInfo) {
-		IFunctionParameter[] params = elem.getParameters();
+		ArrayView<IFunctionParameter> params = elem.getParameters();
 		
-		methodInfo.parameterNames = new String[params.length];
-		methodInfo.parameterInitializers = new String[params.length];
+		methodInfo.parameterNames = new String[params.size()];
+		methodInfo.parameterInitializers = new String[params.size()];
 		for (int i = 0; i < methodInfo.parameterNames.length; i++) {
-			String name = params[i].toStringAsFunctionSimpleSignaturePart();
+			String name = params.get(i).toStringAsFunctionSimpleSignaturePart();
 			if(name == null) {
 				name = "";
 			}
 			methodInfo.parameterNames[i] = name;
-			String initStr = params[i].toStringInitializer();
+			String initStr = params.get(i).toStringInitializer();
 			methodInfo.parameterInitializers[i] = initStr; 
 		}
 	}

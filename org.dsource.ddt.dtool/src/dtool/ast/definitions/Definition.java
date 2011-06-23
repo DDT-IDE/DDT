@@ -15,12 +15,17 @@ public abstract class Definition extends DefUnit  {
 	private static final Modifier[] NOMODIFIERS = new Modifier[0];
 	
 	public final Modifier[] modifiers;
-	public PROT protection; // fixme, should be node
-	public int effectiveModifiers;
+	public /*final*/ PROT protection; // fixme, should be node
+	public /*final*/ int effectiveModifiers;
 	
+	@Deprecated
 	public Definition(Dsymbol elem, ASTConversionContext convContext) {
-		super(DefinitionConverter.convertDsymbol(elem, convContext));
-		this.protection = elem.prot();
+		this(DefinitionConverter.convertDsymbol(elem, convContext), elem.prot());
+	}
+	
+	public Definition(DefUnitDataTuple defunit, PROT prot) {
+		super(defunit);
+		this.protection = prot;
 		if(false) {
 //		if(elem.modifiers != null && elem.modifiers.size() != 0) {
 //			this.modifiers = elem.modifiers.toArray(

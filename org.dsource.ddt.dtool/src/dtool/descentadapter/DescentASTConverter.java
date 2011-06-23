@@ -8,6 +8,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.Module;
 
 public class DescentASTConverter extends StatementConverterVisitor {
@@ -57,6 +58,12 @@ public class DescentASTConverter extends StatementConverterVisitor {
 		T[] rets = ArrayUtil.create(children.size(), klass);
 		convertMany(children.toArray(), rets, convContext);
 		return rets;
+	}
+	
+	public static <T extends IASTNode> ArrayView<T> convertManyToView(Collection<? extends IASTNode> children,
+			Class<T> klass, ASTConversionContext convContext) {
+		if(children == null) return null;
+		return ArrayView.create(convertMany(children, klass, convContext));
 	}
 	
 	public static <T extends IASTNode> T[] convertMany(Object[] children, Class<T> klass,

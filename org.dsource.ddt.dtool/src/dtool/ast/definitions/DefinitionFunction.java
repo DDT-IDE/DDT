@@ -1,12 +1,10 @@
 package dtool.ast.definitions;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.core.Assert;
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.Argument;
 import descent.internal.compiler.parser.FuncDeclaration;
@@ -35,7 +33,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	public descent.internal.compiler.parser.LINK linkage;
 	public Reference rettype;
 	public TemplateParameter[] templateParams;	
-	public List<IFunctionParameter> params;
+	public ArrayView<IFunctionParameter> params;
 	public int varargs;
 	
 	public IStatement frequire;
@@ -56,9 +54,9 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		/*if(elem.templateParameters != null)
 			this.templateParams = TemplateParameter.convertMany(elem.templateParameters);*/
 		Assert.isTrue(elem.parameters == null);
-		this.params = DescentASTConverter.convertManyL(elemTypeFunc.parameters, IFunctionParameter.class, convContext); 
+		this.params = DescentASTConverter.convertManyToView(elemTypeFunc.parameters, IFunctionParameter.class, convContext); 
 		
-		varargs = convertVarArgs(elemTypeFunc.varargs);
+		this.varargs = convertVarArgs(elemTypeFunc.varargs);
 		if(elemTypeFunc.next == null) {
 			this.rettype = new AutoFunctionReturnReference();
 		} else {
@@ -108,8 +106,8 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	}
 	
 	@Override
-	public IFunctionParameter[] getParameters() {
-		return ArrayUtil.createFrom(params, IFunctionParameter.class);
+	public ArrayView<IFunctionParameter> getParameters() {
+		return params;
 	}
 	
 	@Override
@@ -135,7 +133,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	}
 	
 	
-	public static String toStringParametersForSignature(List<IFunctionParameter> params, int varargs) {
+	public static String toStringParametersForSignature(ArrayView<IFunctionParameter> params, int varargs) {
 		String strParams = "(";
 		for (int i = 0; i < params.size(); i++) {
 			if(i != 0)
@@ -145,10 +143,6 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		if(varargs == 1) strParams += (params.size()==0 ? "..." : ", ...");
 		if(varargs == 2) strParams += "...";
 		return strParams + ")";
-	}
-	
-	public static String toStringParametersForSignature(IFunctionParameter[] params, int varargs) {
-		return toStringParametersForSignature(Arrays.asList(params), varargs);
 	}
 	
 	@Override

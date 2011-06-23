@@ -8,6 +8,8 @@ import melnorme.utilbox.misc.ArrayUtil;
  */
 public class ArrayUtilExt extends ArrayUtil {
 	
+	public static final Object[] EMPTY_ARRAY = new Object[] {};
+	
 	/** Removes the last given count elements from given array, creating a new array. */
 	public static <T> T[] removeLast(T[] array, int count) {
 		assertTrue(array.length >= count);
