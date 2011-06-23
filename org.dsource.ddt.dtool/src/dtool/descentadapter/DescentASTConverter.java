@@ -1,5 +1,7 @@
 package dtool.descentadapter;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
@@ -62,6 +64,15 @@ public class DescentASTConverter extends StatementConverterVisitor {
 			Class<T> klass, ASTConversionContext convContext) {
 		if(children == null) return null;
 		return ArrayView.create(convertMany(children, klass, convContext));
+	}
+	
+	public static ArrayView<ASTNeoNode> convertManyNoNulls(Collection<? extends IASTNode> children, 
+			ASTConversionContext convContext) {
+		ArrayView<ASTNeoNode> res = convertManyToView(children, ASTNeoNode.class, convContext);
+		if(true) {
+			assertTrue(ArrayUtil.contains(res.getInternalArray(), null) == false);
+		}
+		return res;
 	}
 	
 	public static <T extends IASTNode> ArrayView<T> convertManyToView(Object[] children, Class<T> klass, 

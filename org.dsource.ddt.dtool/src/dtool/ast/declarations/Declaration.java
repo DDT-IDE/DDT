@@ -1,27 +1,15 @@
 package dtool.ast.declarations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.misc.ArrayUtil;
-import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.Modifier;
 import descent.internal.compiler.parser.TOK;
 import dtool.ast.ASTNeoNode;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
 
 public abstract class Declaration {
-	
-	public static ASTNeoNode[] convertMany(List<Dsymbol> declarationDefinitions
-			, ASTConversionContext convContext) {
-		ASTNeoNode[] res = DescentASTConverter.convertMany(declarationDefinitions, ASTNeoNode.class, convContext);
-		assertTrue(ArrayUtil.contains(res, null) == false);
-		return res;
-	}
 	
 	public static int hasModifier(List<Modifier> modifiers, TOK tok) {
 		int i = 0;

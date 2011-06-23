@@ -11,7 +11,6 @@ import dtool.ast.IASTNeoNode;
 
 public class ArrayView<T> implements Iterable<T>, RandomAccess {
 	
-	
 	@SuppressWarnings("unchecked")
 	public static <T extends IASTNeoNode> ArrayView<T> createFrom(T[] arr){
 		return (ArrayView<T>) create(arr == null ? ArrayUtil.EMPTY_ARRAY : arr);
@@ -38,6 +37,11 @@ public class ArrayView<T> implements Iterable<T>, RandomAccess {
 	
 	public final T get(int index) {
 		return array[index];
+	}
+	
+	/** @return The *internal* array backing this {@link ArrayView}. Clients must not modify this array! */
+	public final T[] getInternalArray() {
+		return array;
 	}
 	
 	@Override

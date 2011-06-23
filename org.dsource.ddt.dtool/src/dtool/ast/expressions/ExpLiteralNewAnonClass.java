@@ -4,7 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.NewAnonClassExp;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.declarations.Declaration;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.BaseClass;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -15,7 +15,7 @@ public class ExpLiteralNewAnonClass extends Expression {
 	public Resolvable[] allocargs;
 	public Resolvable[] args;
 	public BaseClass[] baseClasses;
-	public ASTNeoNode[] members; 
+	public ArrayView<ASTNeoNode> members; 
 
 
 	public ExpLiteralNewAnonClass(NewAnonClassExp elem, ASTConversionContext convContext) {
@@ -24,8 +24,7 @@ public class ExpLiteralNewAnonClass extends Expression {
 		this.args = ExpressionConverter.convertMany(elem.arguments, convContext); 
 		this.baseClasses = DescentASTConverter.convertMany(elem.cd.sourceBaseclasses.toArray(),
 				BaseClass.class, convContext);
-		this.members = Declaration.convertMany(elem.cd.members, convContext);
-		
+		this.members = DescentASTConverter.convertManyNoNulls(elem.cd.members, convContext);
 	}
 
 	@Override

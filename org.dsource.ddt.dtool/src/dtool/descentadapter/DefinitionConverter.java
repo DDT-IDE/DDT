@@ -26,12 +26,12 @@ import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
-import dtool.ast.declarations.Declaration;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.AutoFunctionReturnReference;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
@@ -115,7 +115,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	
 	public static Module createModule(descent.internal.compiler.parser.Module elem, ASTConversionContext convContext) {
 		
-		ASTNeoNode[] members = Declaration.convertMany(elem.members, convContext);
+		ArrayView<ASTNeoNode> members = DescentASTConverter.convertManyNoNulls(elem.members, convContext);
 		
 		SourceRange sourceRange = sourceRange(elem, false);
 		if(elem.md == null) {

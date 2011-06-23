@@ -3,7 +3,6 @@ package dtool.ast.definitions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -83,22 +82,22 @@ public class Module extends DefUnit implements IScopeNode {
 	private Object moduleUnit; // The compilation unit/Model Element
 	
 	public final DeclarationModule md;
-	public final ASTNeoNode[] members;
+	public final ArrayView<ASTNeoNode> members;
 	
 	public static Module createModule(SourceRange sourceRange, Comment[] comments, String[] packages,
-			TokenInfo defName, SourceRange declRange, ASTNeoNode[] members) {
+			TokenInfo defName, SourceRange declRange, ArrayView<ASTNeoNode> members) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(defName);
 		DeclarationModule md = new DeclarationModule(declRange, packages, defSymbol);
 		return new Module(defSymbol, comments, md, members, sourceRange);
 	}
 	
-	public static Module createModule(SourceRange sourceRange, ASTNeoNode[] members) {
+	public static Module createModule(SourceRange sourceRange, ArrayView<ASTNeoNode> members) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol("<unnamed>");
 		return new Module(defSymbol, null, null, members, sourceRange);
 	}
 	
 	protected Module(ModuleDefSymbol defSymbol, Comment[] preComments, DeclarationModule md, 
-			ASTNeoNode[] members, SourceRange sourceRange) {
+			ArrayView<ASTNeoNode> members, SourceRange sourceRange) {
 		super(sourceRange, defSymbol, preComments);
 		defSymbol.module = this;
 		this.md = md;
@@ -150,7 +149,7 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator() {
-		return Arrays.asList(members).iterator();
+		return members.iterator();
 	}
 	
 	@Override
