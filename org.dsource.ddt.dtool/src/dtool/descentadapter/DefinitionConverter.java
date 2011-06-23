@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.List;
 
+import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.Argument;
@@ -20,6 +21,7 @@ import descent.internal.compiler.parser.StaticCtorDeclaration;
 import descent.internal.compiler.parser.StaticDtorDeclaration;
 import descent.internal.compiler.parser.TemplateInstanceWrapper;
 import descent.internal.compiler.parser.Type;
+import descent.internal.compiler.parser.TypeFunction;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
@@ -29,11 +31,14 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionFunction.AutoFunctionReturnReference;
 import dtool.ast.definitions.EnumMember;
+import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.Statement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -186,11 +191,55 @@ public class DefinitionConverter extends BaseDmdConverter {
 	
 	/* ------------------- */
 	
+	public static DefinitionFunction createDefinitionFunction(descent.internal.compiler.parser.FuncDeclaration elem, ASTConversionContext convContext) {
+		TypeFunction elemTypeFunc = ((TypeFunction) elem.type);
+		
+		/*if(elem.templateParameters != null)
+			this.templateParams = TemplateParameter.convertMany(elem.templateParameters);*/
+		Assert.isTrue(elem.parameters == null);
+		
+		Reference rettype = (elemTypeFunc.next == null) ? 
+				new AutoFunctionReturnReference() : 
+				ReferenceConverter.convertType(elemTypeFunc.next, convContext);
+		
+		DefinitionFunction definitionFunction = new DefinitionFunction(
+				DefinitionConverter.convertDsymbol(elem, convContext), 
+				elem.prot(),
+				rettype,
+				DescentASTConverter.convertManyToView(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
+				convertVarArgs(elemTypeFunc.varargs),
+				Statement.convert(elem.frequire, convContext),
+				Statement.convert(elem.fensure, convContext),
+				Statement.convert(elem.fbody, convContext)
+				);
+		
+		return definitionFunction;
+	}
+	
+	public static int convertVarArgs(int varargs) {
+		Assert.isTrue(varargs >= 0 && varargs <= 2);
+		return varargs;
+	}
+	
+	public static ASTNeoNode convertFunctionParameter(Argument elem, ASTConversionContext convContext) {
+		if(elem.ident != null) {
+			if(elem.type != null) {
+				return new FunctionParameter(elem, convContext);
+			} else {
+				// strange case, likely from a syntax error
+				return convertNamelessParameter(elem, elem.ident, convContext);
+			}
+		} else {
+			return convertNamelessParameter(elem, convContext);
+		}
+	}
+	
+	
 	public static DefinitionCtor createDefinitionCtor(CtorDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR, 
 			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
-			DefinitionFunction.convertVarArgs(elem.varargs),
+			convertVarArgs(elem.varargs),
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)
 		);
@@ -210,7 +259,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR,
 			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
-			/*DefinitionFunction.convertVarArgs(elem.varargs)*/ 0,
+			0,
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)
 		);
@@ -230,7 +279,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.ALLOCATOR,
 			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
-			0,
+			convertVarArgs(elem.varargs),
 			Statement.convert(elem.fbody, convContext),
 			elem.newStart, DefinitionConverter.sourceRange(elem)
 		);

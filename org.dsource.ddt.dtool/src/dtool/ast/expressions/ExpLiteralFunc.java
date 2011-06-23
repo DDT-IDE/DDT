@@ -14,6 +14,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.Statement;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
@@ -40,7 +41,7 @@ public class ExpLiteralFunc extends Expression {
 		Assert.isTrue(fd.parameters == null);
 		this.params = DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext); 
 
-		varargs = DefinitionFunction.convertVarArgs(elemTypeFunc.varargs);
+		varargs = DefinitionConverter.convertVarArgs(elemTypeFunc.varargs);
 		this.rettype = ReferenceConverter.convertType(elemTypeFunc.next, convContext);
 	}
 

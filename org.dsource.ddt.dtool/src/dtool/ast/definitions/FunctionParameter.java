@@ -25,7 +25,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	public int storageClass;
 	public Resolvable defaultValue;
 	
-	protected FunctionParameter(descent.internal.compiler.parser.Argument elem, ASTConversionContext convContext) {
+	public FunctionParameter(descent.internal.compiler.parser.Argument elem, ASTConversionContext convContext) {
 		super(elem.ident);
 		setSourceRange(elem);
 		assertNotNull(elem.type);

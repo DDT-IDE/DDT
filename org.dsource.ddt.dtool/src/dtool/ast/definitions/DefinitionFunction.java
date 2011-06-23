@@ -1,24 +1,17 @@
 package dtool.ast.definitions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.Argument;
-import descent.internal.compiler.parser.FuncDeclaration;
-import descent.internal.compiler.parser.TypeFunction;
-import dtool.ast.ASTNeoNode;
+import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTPrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.IStatement;
-import dtool.ast.statements.Statement;
-import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.NodeUtil;
@@ -42,45 +35,17 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	
 	//public descent.internal.compiler.parser.TypeFunction type;
 	
-	
-	public DefinitionFunction(FuncDeclaration elem, ASTConversionContext convContext) {
-		super(elem, convContext);
-		this.frequire = Statement.convert(elem.frequire, convContext);
-		this.fensure = Statement.convert(elem.fensure, convContext);
-		this.fbody = Statement.convert(elem.fbody, convContext);
+	public DefinitionFunction(DefUnitDataTuple defunitData, PROT prot, Reference rettype, ArrayView<IFunctionParameter> params, int varargs, IStatement frequire, IStatement fensure,
+			IStatement fbody) {
+		super(defunitData, prot);
+		this.rettype = rettype;
+		this.params = params;
+		this.varargs = varargs; 
+		this.frequire = frequire;
+		this.fensure = fensure;
+		this.fbody = fbody;
 		
-		TypeFunction elemTypeFunc = ((TypeFunction) elem.type);
-		
-		/*if(elem.templateParameters != null)
-			this.templateParams = TemplateParameter.convertMany(elem.templateParameters);*/
-		Assert.isTrue(elem.parameters == null);
-		this.params = DescentASTConverter.convertManyToView(elemTypeFunc.parameters, IFunctionParameter.class, convContext); 
-		
-		this.varargs = convertVarArgs(elemTypeFunc.varargs);
-		if(elemTypeFunc.next == null) {
-			this.rettype = new AutoFunctionReturnReference();
-		} else {
-			this.rettype = ReferenceConverter.convertType(elemTypeFunc.next, convContext);
-		}
-		Assert.isNotNull(this.rettype);
-	}
-	
-	public static ASTNeoNode convertFunctionParameter(Argument elem, ASTConversionContext convContext) {
-		if(elem.ident != null) {
-			if(elem.type != null) {
-				return new FunctionParameter(elem, convContext);
-			} else {
-				// strange case, likely from a syntax error
-				return DefinitionConverter.convertNamelessParameter(elem, elem.ident, convContext);
-			}
-		} else {
-			return DefinitionConverter.convertNamelessParameter(elem, convContext);
-		}
-	}
-	
-	public static int convertVarArgs(int varargs) {
-		Assert.isTrue(varargs >= 0 && varargs <= 2);
-		return varargs;
+		assertNotNull(this.rettype);
 	}
 	
 	@Override

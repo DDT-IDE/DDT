@@ -35,7 +35,6 @@ import dtool.ast.definitions.DefModifier;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
-import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionPostBlit;
 import dtool.ast.definitions.DefinitionStruct;
@@ -265,14 +264,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.FuncDeclaration elem) {
-		return endAdapt(new DefinitionFunction(elem, convContext));
-	}
-	@Override
-	public boolean visit(Argument elem) {
-		return endAdapt(DefinitionFunction.convertFunctionParameter(elem, convContext));
+		return endAdapt(DefinitionConverter.createDefinitionFunction(elem, convContext));
 	}
 	
-
+	@Override
+	public boolean visit(Argument elem) {
+		return endAdapt(DefinitionConverter.convertFunctionParameter(elem, convContext));
+	}
+	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.CtorDeclaration elem) {
 		return endAdapt(DefinitionConverter.createDefinitionCtor(elem, convContext));

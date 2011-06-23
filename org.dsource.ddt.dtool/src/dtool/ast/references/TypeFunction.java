@@ -35,7 +35,7 @@ public class TypeFunction extends CommonRefNative {
 		this(
 				(Reference) DescentASTConverter.convertElem(elem.next, convContext), 
 				DescentASTConverter.convertManyToView(elem.parameters,IFunctionParameter.class, convContext), 
-				DefinitionFunction.convertVarArgs(elem.varargs), 
+				DefinitionConverter.convertVarArgs(elem.varargs), 
 				elem.linkage, 
 				DefinitionConverter.sourceRange(elem)
 		);
