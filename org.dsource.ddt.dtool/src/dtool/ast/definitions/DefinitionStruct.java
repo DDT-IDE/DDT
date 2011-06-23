@@ -5,6 +5,7 @@ import java.util.List;
 import descent.internal.compiler.parser.StructDeclaration;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
@@ -13,14 +14,13 @@ import dtool.refmodel.IScope;
  * A definition of a struct aggregate.
  */
 public class DefinitionStruct extends DefinitionAggregate {
-
+	
 	public TemplateParameter[] templateParams; 
 	
 	
 	public DefinitionStruct(StructDeclaration elem, ASTConversionContext convContext) {
-		super(elem, convContext);
-		if(elem.members != null)
-			this.members = DescentASTConverter.convertManyL(elem.members, ASTNeoNode.class, convContext);
+		super(DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
+				DescentASTConverter.convertManyToView(elem.members, ASTNeoNode.class, convContext));
 		// TODO: where did template Parameters go
 		//if(elem.templateParameters != null)
 		//	this.templateParams = TemplateParameter.convertMany(elem.templateParameters);

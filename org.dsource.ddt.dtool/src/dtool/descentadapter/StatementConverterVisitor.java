@@ -34,7 +34,6 @@ import descent.internal.compiler.parser.TryFinallyStatement;
 import descent.internal.compiler.parser.VolatileStatement;
 import descent.internal.compiler.parser.WhileStatement;
 import descent.internal.compiler.parser.WithStatement;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.statements.BlockStatement;
@@ -238,7 +237,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(DeclarationExp elem) {
-		return endAdapt((ASTNeoNode) dtool.ast.declarations.Declaration.convert(elem.declaration, convContext));
+		return endAdapt(DescentASTConverter.convertElem(elem.declaration, convContext));
 	}
 
 }

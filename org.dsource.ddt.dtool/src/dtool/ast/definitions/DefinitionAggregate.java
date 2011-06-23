@@ -1,16 +1,14 @@
 package dtool.ast.definitions;
 
 import java.util.Iterator;
-import java.util.List;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.Dsymbol;
+import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTPrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.statements.IStatement;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScopeNode;
 
 /**
@@ -19,10 +17,11 @@ import dtool.refmodel.IScopeNode;
 public abstract class DefinitionAggregate extends Definition implements IScopeNode, IStatement {
 	
 	public TemplateParameter[] templateParams; 
-	public List<ASTNeoNode> members; // can be null. (bodyless aggregates)
+	public final ArrayView<ASTNeoNode> members; // can be null. (bodyless aggregates)
 	
-	public DefinitionAggregate(Dsymbol elem, ASTConversionContext convContext) {
-		super(elem, convContext);
+	public DefinitionAggregate(DefUnitDataTuple defunit, PROT prot, ArrayView<ASTNeoNode> members) {
+		super(defunit, prot);
+		this.members = members;
 	}
 	
 	protected void acceptNodeChildren(IASTNeoVisitor visitor, boolean children) {

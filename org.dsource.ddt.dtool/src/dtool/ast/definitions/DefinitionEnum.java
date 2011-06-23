@@ -1,19 +1,18 @@
 package dtool.ast.definitions;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.EnumDeclaration;
+import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.IStatement;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
@@ -21,24 +20,31 @@ import dtool.refmodel.IScopeNode;
 
 public class DefinitionEnum extends Definition implements IScopeNode, IStatement {
 
-	public List<EnumMember> members;
+	public ArrayView<EnumMember> members;
 	public Reference type;
 	
-	public DefinitionEnum(Dsymbol elem, ASTConversionContext convContext) {
-		super(elem, convContext);
+	public DefinitionEnum(DefUnitDataTuple defunitInfo, PROT prot, ArrayView<EnumMember> members, Reference reference,
+			SourceRange sourceRange) {
+		super(defunitInfo, prot);
+		this.members = members;
+		this.type = reference; 
+		initSourceRange(sourceRange);
 	}
 	
 	public static ASTNeoNode convertEnumDecl(EnumDeclaration elem, ASTConversionContext convContext) {
 		if(elem.ident != null) {
-			DefinitionEnum defEnum = new DefinitionEnum(elem, convContext);
-			defEnum.members = DescentASTConverter.convertManyL(elem.members, EnumMember.class, convContext) ;
-			defEnum.type = ReferenceConverter.convertType(elem.memtype, convContext); 
+			DefinitionEnum defEnum = new DefinitionEnum(
+					DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
+					DescentASTConverter.convertManyToView(elem.members, EnumMember.class, convContext),
+					ReferenceConverter.convertType(elem.memtype, convContext),
+					DefinitionConverter.sourceRange(elem));
 			return defEnum;
 		} else {
-			EnumContainer enumContainer = new EnumContainer();
-			enumContainer.setSourceRange(elem);
-			enumContainer.members = DescentASTConverter.convertManyL(elem.members, EnumMember.class, convContext) ;
-			enumContainer.type = ReferenceConverter.convertType(elem.memtype, convContext); 
+			EnumContainer enumContainer = new EnumContainer(
+					DescentASTConverter.convertManyToView(elem.members, EnumMember.class, convContext),
+					ReferenceConverter.convertType(elem.memtype, convContext),
+					DefinitionConverter.sourceRange(elem)
+					);
 			return enumContainer;
 		}
 	}
