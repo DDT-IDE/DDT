@@ -7,7 +7,7 @@ import ImportAliasingDefUnit = pack.sample;
 
 static import pack.sample;
 
-alias TargetFoo Alias;
+int variable;
 
 class Class  {
 	int fieldA;
@@ -21,17 +21,17 @@ class Class  {
 	void methodB() { }
 }
 
-enum Enum { EnumMemberA, EnumMemberB }
-
 interface Interface { }
 
 struct Struct { }
 
-typedef TargetBar Typedef;
-
 union Union { }
 
-int variable;
+enum Enum { EnumMemberA, EnumMemberB }
+
+typedef TargetBar Typedef;
+
+alias TargetFoo Alias;
 
 template Template(
 	TypeParam,
