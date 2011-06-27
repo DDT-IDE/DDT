@@ -71,8 +71,7 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	}
 	
 	@Override
-	public IInformationControlCreator getInformationControlCreator(
-			ISourceViewer sourceViewer) {
+	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
 		return null;
 	}
 	
@@ -88,8 +87,7 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	}
 	
 	@Override
-	public IInformationPresenter getHierarchyPresenter(
-			ScriptSourceViewer sourceViewer, boolean doCodeResolve) {
+	public IInformationPresenter getHierarchyPresenter(ScriptSourceViewer sourceViewer, boolean doCodeResolve) {
 		return null;
 	}
 	
