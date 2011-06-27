@@ -123,9 +123,11 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	}
 	
 	protected void reportBlock(ASTNeoNode node, DeeFoldingBlockKind foldingBlockKind, boolean collapse) {
-		Region region = new Region(node.getStartPos(), node.getLength());
-		///  XXX: BM: DLTK, do we understand the full consequences of giving region as a key? 
-		requestor.acceptBlock(node.getStartPos(), node.getEndPos(), foldingBlockKind, region, collapse);
+		if(node.hasSourceRangeInfo()) {
+			Region region = new Region(node.getStartPos(), node.getLength());
+			///  XXX: BM: DLTK, do we understand the full consequences of giving region as a key? 
+			requestor.acceptBlock(node.getStartPos(), node.getEndPos(), foldingBlockKind, region, collapse);
+		}
 	}
 	
 }

@@ -95,6 +95,11 @@ public abstract class ASTNeoNode extends ASTNode implements IASTNeoNode {
 		return sourceStart() == -1;
 	}
 	
+	/** Checks if the node has source range info. */
+	public final boolean hasSourceRangeInfo() {
+		return sourceStart() != -1;
+	}
+	
 	@Override
 	public boolean hasChildren() {
 		return getChildren().length > 0;
