@@ -1,73 +1,17 @@
 package mmrnmhrm.core.parser;
 
-import descent.core.compiler.IProblem;
+import org.eclipse.dltk.compiler.problem.DefaultProblem;
+import org.eclipse.dltk.compiler.problem.DefaultProblemIdentifier;
+import org.eclipse.dltk.compiler.problem.IProblem;
+import org.eclipse.dltk.compiler.problem.ProblemSeverities;
 
-final class DLTKDescentProblemWrapper implements
-org.eclipse.dltk.compiler.problem.IProblem {
+final class DLTKDescentProblemWrapper {
 	
-	private IProblem problem;
-	
-	public DLTKDescentProblemWrapper(IProblem problem) {
-		this.problem = problem;
+	public static DefaultProblem createProblemWrapper(descent.core.compiler.IProblem problem) {
+		return new DefaultProblem(new String(problem.getOriginatingFileName()),
+				problem.getMessage(), DefaultProblemIdentifier.decode(IProblem.Syntax),
+				problem.getArguments(), ProblemSeverities.Error,
+				problem.getSourceStart(), problem.getSourceEnd(), problem.getSourceLineNumber(), 0);
 	}
 	
-	@Override
-	public String[] getArguments() {
-		return problem.getArguments();
-	}
-	
-	@Override
-	public int getID() {
-		return problem.getID();
-	}
-	
-	@Override
-	public String getMessage() {
-		return problem.getMessage();
-	}
-	
-	@Override
-	public String getOriginatingFileName() {
-		return new String(problem.getOriginatingFileName());
-	}
-	
-	@Override
-	public int getSourceEnd() {
-		return problem.getSourceEnd();
-	}
-	
-	@Override
-	public int getSourceLineNumber() {
-		return problem.getSourceLineNumber();
-	}
-	
-	@Override
-	public int getSourceStart() {
-		return problem.getSourceStart();
-	}
-	
-	@Override
-	public boolean isError() {
-		return problem.isError();
-	}
-	
-	@Override
-	public boolean isWarning() {
-		return problem.isWarning();
-	}
-	
-	@Override
-	public void setSourceEnd(int sourceEnd) {
-		problem.setSourceEnd(sourceEnd);
-	}
-	
-	@Override
-	public void setSourceLineNumber(int lineNumber) {
-		problem.setSourceLineNumber(lineNumber);
-	}
-	
-	@Override
-	public void setSourceStart(int sourceStart) {
-		problem.setSourceStart(sourceStart);
-	}
 }
