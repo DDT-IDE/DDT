@@ -7,8 +7,9 @@ import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.ISearchPatternProcessor;
+import org.eclipse.dltk.core.search.SearchPatternProcessor;
 
-public class DeeSearchPatterProcessor implements ISearchPatternProcessor {
+public class DeeSearchPatterProcessor extends SearchPatternProcessor {
 	
 	public static final DeeSearchPatterProcessor instance = new DeeSearchPatterProcessor();
 	
@@ -50,7 +51,7 @@ public class DeeSearchPatterProcessor implements ISearchPatternProcessor {
 	public char[] extractDeclaringTypeSimpleName(String pattern) {
 		String type = substringUntil(pattern, METHOD_DELIMITER);
 		if (type != null) {
-			return extractTypeChars(type).toCharArray();
+			return parseType(type).getSimpleName().toCharArray();
 		}
 		return null;
 	}
@@ -65,29 +66,15 @@ public class DeeSearchPatterProcessor implements ISearchPatternProcessor {
 	
 	// Type pattern operations
 	@Override
-	public String extractTypeChars(String pattern) {
-		String simpleName = substringFrom(pattern, TYPE_DELIMITER);
-		if (simpleName != null) {
-			return simpleName;
+	public ITypePattern parseType(String patternString) {
+		final int pos = patternString.lastIndexOf(TYPE_DELIMITER);
+		if (pos != -1) {
+			return new TypePatten(patternString.substring(0, pos).replace(
+					TYPE_DELIMITER, TYPE_SEPARATOR_STR),
+					patternString.substring(pos + TYPE_DELIMITER.length()));
+		} else {
+			return new TypePatten(null, patternString);
 		}
-		return pattern;
-	}
-	
-	@Override
-	public char[] extractTypeQualification(String pattern) {
-		char[] rawTypeQualification = extractRawTypeQualification(pattern);
-		if(rawTypeQualification == null)
-			return null;
-		// BM: Have no ideia why this '$' substitution is made
-		return CharOperation.replace(rawTypeQualification, TYPE_DELIMITER.toCharArray(),
-				new char[] { '$' });
-	}
-	private char[] extractRawTypeQualification(String pattern) {
-		String typeQual = substringUntil(pattern, TYPE_DELIMITER);
-		if (typeQual != null) {
-			return typeQual.toCharArray();
-		}
-		return null;
 	}
 	
 	// Field pattern operations
