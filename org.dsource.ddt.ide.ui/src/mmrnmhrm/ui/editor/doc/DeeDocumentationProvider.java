@@ -48,7 +48,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider {
 	@Override
 	public Reader getInfo(IMember member, boolean lookIntoParents, boolean lookIntoExternal) {
 		String header = getHeaderComment(member);
-		return new StringReader(convertToHTML(header));
+		return (header == null) ? null : new StringReader(convertToHTML(header));
 	}
 	
 	protected String convertToHTML(String header) {
