@@ -9,12 +9,11 @@
  *******************************************************************************/
 package org.eclipse.dltk.internal.ui.text.hover;
 
-import melnorme.utilbox.misc.ReflectionUtils;
-
 import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.ScriptWordFinder;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
@@ -23,8 +22,6 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
@@ -145,29 +142,14 @@ public class ScriptInformationProvider_Mod implements IInformationProvider, IInf
 		if (fPresenterControlCreator == null) {
 			fPresenterControlCreator = new AbstractReusableInformationControlCreator() {
 
-				@Override
-				public IInformationControl doCreateInformationControl(
-						Shell parent) {
-					int shellStyle = SWT.RESIZE | SWT.TOOL;
-					int style = SWT.V_SCROLL | SWT.H_SCROLL;
-					if (BrowserInformationControl.isAvailable(parent)) {
-						return fixBrowserInformationControl(new BrowserInformationControl(parent, shellStyle, style));
-					} else
+				public IInformationControl doCreateInformationControl(Shell parent) {
+					if (BrowserInformationControl.isAvailable(parent))
+						return new BrowserInformationControl(parent, JFaceResources.DIALOG_FONT, true);
+					else
 						return new DefaultInformationControl(parent, new HTMLTextPresenter(false));
 				}
-
 			};
 		}
 		return fPresenterControlCreator;
 	}
-
-	public static BrowserInformationControl fixBrowserInformationControl(BrowserInformationControl bic) {
-		// fix for http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=19
-		Object browserField = ReflectionUtils.readField(bic, "fBrowser");
-		if(browserField instanceof Browser) {
-			((Browser) browserField).setJavascriptEnabled(false);
-		}
-		return bic;
-	}
-	
 }
