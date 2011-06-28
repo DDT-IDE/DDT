@@ -18,3 +18,23 @@ void func2() {
 	
 	pack2.foopublic.foopublicImportVar++;
 }
+
+/*MultipleSelection*/SampleRefsClass xxx;
+
+class /*Class1*/SampleRefsClass {
+}
+class /*Class2*/SampleRefsClass(T:int) {
+}
+class /*Class3*/SampleRefsClass(T:Object) {
+}
+
+private class Parent {
+	auto xxx = /*MultipleSelection2*/func(2);
+	
+	void /*func1*/func() {
+	}
+	void /*func2*/func(int a) {
+	}
+	void /*Class3*/func(Object a) {
+	}
+}

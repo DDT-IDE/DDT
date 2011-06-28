@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 
@@ -86,6 +87,14 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		ISourceModule sourceModule = DLTKCore.createSourceModuleFrom(getFile(srcFolder + "/" + filepath));
 		assertTrue(sourceModule.exists());
 		return sourceModule;
+	}
+	
+	public static IProjectFragment getFolderProjectFragment(String path) {
+		IFolder member = scriptProject.getProject().getFolder(path);
+		assertTrue(member.exists());
+		IProjectFragment element = scriptProject.getProjectFragment(member);
+		assertTrue(element.exists());
+		return element;
 	}
 	
 	public static DeeModuleDeclaration parsedDeeModule(ISourceModule sourceModule) {
