@@ -109,8 +109,13 @@ public class FindDef__Common {
 	public static void testDeeSelectionEngine(Module srcMod, int offset, DefUnit defunit) {
 		DeeSelectionEngine selectionEngine = new DeeSelectionEngine();
 		IModelElement[] select = selectionEngine.select((IModuleSource) srcMod.getModuleUnit(), offset, offset-1);
-		assertTrue(select.length == 1);
+		assertTrue(select.length >= 1);
 		IModelElement modelElement = select[0];
+		for (int i = 1; i < select.length; i++) {
+			assertEquals(modelElement.getElementName(), select[i].getElementName());
+			assertEquals(modelElement.getParent(), select[i].getParent());
+		}
+		
 		while(true) {
 			assertNotNull(modelElement);
 			if(modelElement.getElementType() == IModelElement.SOURCE_MODULE) {
