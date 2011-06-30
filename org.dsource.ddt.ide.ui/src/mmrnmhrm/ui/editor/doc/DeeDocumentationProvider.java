@@ -3,6 +3,7 @@ package mmrnmhrm.ui.editor.doc;
 import java.io.Reader;
 import java.io.StringReader;
 
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
 import org.dsource.ddt.ide.core.model.DeeModelUtil;
@@ -34,6 +35,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider {
 			if(range == null)
 				return null;
 		} catch(ModelException e) {
+			DeeCore.log(e);
 			return null;
 		}
 		
