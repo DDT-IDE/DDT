@@ -4,7 +4,6 @@ import mmrnmhrm.ui.DeePlugin;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHoverExtension;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 @SuppressWarnings("restriction")
 public class AbstractTextHover extends org.eclipse.dltk.internal.ui.text.hover.DocumentationHover 
@@ -14,9 +13,6 @@ implements ITextHoverExtension {
 	/** The CSS used to format javadoc information. */
 	protected static String fgCSSStyles;
 
-	protected ITextEditor fEditor;
-
-	
 	public AbstractTextHover() {
 		super();
 		setPreferenceStore(DeePlugin.getPrefStore());
