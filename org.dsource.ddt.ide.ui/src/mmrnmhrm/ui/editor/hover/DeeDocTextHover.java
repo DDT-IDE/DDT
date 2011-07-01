@@ -11,11 +11,13 @@
 
 package mmrnmhrm.ui.editor.hover;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import mmrnmhrm.lang.ui.EditorUtil;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ast.ASTNeoNode;
@@ -53,13 +55,13 @@ public class DeeDocTextHover extends AbstractTextHover {
 	}
 	
 	public DeeDocTextHover(ITextEditor textEditor) {
-		super();
-		Assert.isNotNull(textEditor);
-		this.fEditor = textEditor;
+		assertNotNull(textEditor);
 	}
 	
 	private ASTNeoNode getNodeAtOffset(int offset) {
-		Module module = EditorUtil.getNeoModuleFromEditor(fEditor == null ? getEditor() : fEditor);
+		IEditorPart editor = getEditor();
+		assertNotNull(editor);
+		Module module = EditorUtil.getNeoModuleFromEditor(editor);
 		if(module == null)
 			return null;
 		

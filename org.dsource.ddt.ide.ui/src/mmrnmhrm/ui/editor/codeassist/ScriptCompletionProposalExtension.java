@@ -68,7 +68,7 @@ public abstract class ScriptCompletionProposalExtension extends ScriptCompletion
 	}
 	
 	@Override
-	protected ProposalInfo getProposalInfo() {
+	public ProposalInfo getProposalInfo() {
 		return super.getProposalInfo();
 	}
 	

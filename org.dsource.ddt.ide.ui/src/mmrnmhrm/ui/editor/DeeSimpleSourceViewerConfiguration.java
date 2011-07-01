@@ -19,7 +19,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * and disables all other features like code assist, quick outlines, hyperlinking, etc.
  */
 public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfiguration {
-
+	
 	private boolean fConfigureFormatter;
 	
 	public DeeSimpleSourceViewerConfiguration(IColorManager colorManager,
@@ -35,33 +35,33 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 			ISourceViewer sourceViewer, String contentType) {
 		return null;
 	}
-
+	
 	@Override
 	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
 		return null;
 	}
-
+	
 	@Override
 	public IAnnotationHover getOverviewRulerAnnotationHover(
 			ISourceViewer sourceViewer) {
 		return null;
 	}
-
+	
 	@Override
 	public int[] getConfiguredTextHoverStateMasks(ISourceViewer sourceViewer, String contentType) {
 		return null;
 	}
-
+	
 	@Override
 	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
 		return null;
 	}
-
+	
 	@Override
 	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType) {
 		return null;
 	}
-
+	
 	@Override
 	public IContentFormatter getContentFormatter(ISourceViewer sourceViewer) {
 		if (fConfigureFormatter)
@@ -69,33 +69,31 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 		else
 			return null;
 	}
-
+	
 	@Override
-	public IInformationControlCreator getInformationControlCreator(
-			ISourceViewer sourceViewer) {
-		return null;
-	}
-
-	@Override
-	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
-		return null;
-	}
-
-	@Override
-	public IInformationPresenter getOutlinePresenter(
-			ScriptSourceViewer sourceViewer, boolean doCodeResolve) {
+	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
 		return null;
 	}
 	
 	@Override
-	public IInformationPresenter getHierarchyPresenter(
-			ScriptSourceViewer sourceViewer, boolean doCodeResolve) {
+	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
 		return null;
 	}
-
+	
+	@Override
+	public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer, 
+			boolean doCodeResolve) {
+		return null;
+	}
+	
+	@Override
+	public IInformationPresenter getHierarchyPresenter(ScriptSourceViewer sourceViewer, boolean doCodeResolve) {
+		return null;
+	}
+	
 	@Override
 	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
 		return null;
 	}
-
+	
 }

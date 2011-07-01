@@ -25,7 +25,7 @@ public class DeeSourceParser extends AbstractSourceParser {
 		
 		@Override
 		public void reportProblem(IProblem problem) {
-			reporter.reportProblem(new DLTKDescentProblemWrapper(problem));
+			reporter.reportProblem(DLTKDescentProblemWrapper.createProblemWrapper(problem));
 		}
 		
 		public static descent.internal.compiler.parser.ast.IProblemReporter create(IProblemReporter reporter) {
