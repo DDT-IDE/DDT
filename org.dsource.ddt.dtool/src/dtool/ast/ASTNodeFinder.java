@@ -33,14 +33,14 @@ public class ASTNodeFinder {
 	}
 	
 	
-	public static ASTNeoNode findNeoElement(ASTNeoNode root, int offset, boolean inclusiveEnd){
+	public static ASTNeoNode findNeoElement(ASTNeoNode root, int offset, boolean inclusiveEnd) {
 		return (ASTNeoNode) findElement(root, offset, inclusiveEnd);
 	}
 	
 	/** Finds the node at the given offset, starting from root.
 	 *  inclusiveEnd controls whether to match nodes whose end position 
 	 *  is the same as the offset.*/
-	public static IASTNode findElement(IASTNode root, int offset, boolean inclusiveEnd){
+	public static IASTNode findElement(IASTNode root, int offset, boolean inclusiveEnd) {
 		if(root == null)
 			return null;
 		Assert.isTrue(!root.hasNoSourceRangeInfo());

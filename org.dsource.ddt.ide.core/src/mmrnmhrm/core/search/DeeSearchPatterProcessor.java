@@ -1,12 +1,5 @@
 package mmrnmhrm.core.search;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
-import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.StringUtil;
-
-import org.eclipse.dltk.compiler.CharOperation;
-import org.eclipse.dltk.core.ISearchPatternProcessor;
 import org.eclipse.dltk.core.search.SearchPatternProcessor;
 
 public class DeeSearchPatterProcessor extends SearchPatternProcessor {
