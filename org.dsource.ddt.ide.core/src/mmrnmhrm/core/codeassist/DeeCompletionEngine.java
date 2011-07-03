@@ -26,7 +26,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			requestor.acceptContext(context);
 			
 			// Completion for model elements.
-			IModelElement modelElement = module.getModelElement();
+			final IModelElement modelElement = module.getModelElement();
 			
 			if(!(modelElement instanceof ISourceModule)) {
 				return;
@@ -39,6 +39,8 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 				@Override
 				public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
 					CompletionProposal proposal = createProposal(defUnit, position, searchOptions);
+					IModelElement me = SourceModelUtil.getTypeHandle(defUnit);
+					proposal.setModelElement(me);
 					requestor.accept(proposal);
 				}
 			};

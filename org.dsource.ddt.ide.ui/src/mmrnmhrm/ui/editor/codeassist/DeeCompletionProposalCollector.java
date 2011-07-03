@@ -2,7 +2,9 @@ package mmrnmhrm.ui.editor.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
+import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.views.DeeElementImageProvider;
+import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.dltk.core.CompletionProposal;
@@ -11,6 +13,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.text.completion.IScriptCompletionProposal;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalCollector;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
 import dtool.ast.definitions.DefUnit;
@@ -49,7 +52,9 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 			String completion = proposal.getCompletion();
 			int repStart = proposal.getReplaceStart();
 			int repLength = proposal.getReplaceEnd() - proposal.getReplaceStart();
-			Image image = DeeElementImageProvider.getNodeImage(defUnit);
+//			Image image = DeeElementImageProvider.getNodeImage(defUnit);
+			ImageDescriptor compositeImage = getLabelProvider().createImageDescriptor(proposal);
+			Image image = DeePluginImages.getImageDescriptorRegistry().get(compositeImage);
 			
 			String displayString = defUnit.toStringForCodeCompletion();
 			
