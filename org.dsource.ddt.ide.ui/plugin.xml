@@ -739,6 +739,13 @@
             typeFactory="mmrnmhrm.ui.launch.RubyTypeFactory">
       </debugModel>
 	</extension>
+ <extension
+       point="org.eclipse.dltk.ui.completion">
+    <proposalLabelProvider
+          class="mmrnmhrm.ui.editor.codeassist.CompletionProposalLabelProvider"
+          nature="org.dsource.ddt.ide.core.nature">
+    </proposalLabelProvider>
+ </extension>
    
 
 </plugin>

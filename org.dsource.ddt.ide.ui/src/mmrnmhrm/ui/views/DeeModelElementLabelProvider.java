@@ -64,7 +64,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		}
 	}
 
-	private ImageDescriptor getImageDescriptor(Object object, Point imageSize) {
+	public ImageDescriptor getImageDescriptor(Object object, Point imageSize) {
 		IMember member = (IMember) object;
 		
 		int elementFlags = 0;
