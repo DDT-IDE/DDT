@@ -39,8 +39,10 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 				@Override
 				public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
 					CompletionProposal proposal = createProposal(defUnit, position, searchOptions);
-					IModelElement me = SourceModelUtil.getTypeHandle(defUnit);
-					proposal.setModelElement(me);
+					if(false) {
+						IModelElement me = SourceModelUtil.getTypeHandle(defUnit);
+						proposal.setModelElement(me);
+					}
 					requestor.accept(proposal);
 				}
 			};

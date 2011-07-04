@@ -41,6 +41,8 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 	@Override
 	public Image getImage(Object object) {
 		if(object instanceof IMember) {
+			IMember member = (IMember) object;
+			
 			// XXX: Due to a DLTK limitation we don't know if the what image size is preferred. 
 			// XXX: BM: so we do this awful hack to try to figure it out, 
 			// I'm particularly concerned about performance, but since it is UI elements code, it should be
@@ -56,16 +58,15 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 				}
 			}
 			
-			ImageDescriptor imageDescriptor = getImageDescriptor(object, imageSize);
+			ImageDescriptor imageDescriptor = getImageDescriptor(member, imageSize);
 			
 			return getImageDescriptorRegistry().get(imageDescriptor);
 		} else {
 			return null;
 		}
 	}
-
-	public ImageDescriptor getImageDescriptor(Object object, Point imageSize) {
-		IMember member = (IMember) object;
+	
+	public ImageDescriptor getImageDescriptor(IMember member, Point imageSize) {
 		
 		int elementFlags = 0;
 		int imageFlags = 0;
@@ -121,7 +122,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		}
 	}
 	
-	private int getImageFlags(IMember member, int modifiers) throws ModelException {
+	protected int getImageFlags(IMember member, int modifiers) throws ModelException {
 		int flags = 0;
 		
 		if (member.getElementType() == IModelElement.METHOD && ((IMethod) member).isConstructor()) {
