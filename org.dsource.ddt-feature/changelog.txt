@@ -12,6 +12,7 @@
  * Fixed issue #47: NPE while parsing is expression. Source ranges will still be missing though.
  * Fix in Documentation hovers: removed redudant text, and now displays concrete archetype (Class, Interface, Struct, Union), instead of "Aggregate".
  * Fixed some minor NPE and assertion failure bugs.
+ * Fixed issue #51, parsing AssertFailedException. 
 
 == DDT 0.4.3 (2011-06-02) ==
  * Resolved issue #12, added Content Assist preference page. 
