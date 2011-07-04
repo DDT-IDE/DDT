@@ -299,9 +299,12 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		
 		SourceRange tplInstSourceRange = sourceRangeStrict(rawTplRef.getStartPos(), elem.ti.getEndPos());
 		if(!elem.hasNoSourceRangeInfo()) {
-			if(DToolBundle.UNSUPPORTED_DMD_CONTRACTS)
+			if(DToolBundle.UNSUPPORTED_DMD_CONTRACTS) {
 				assertTrue(elem.getStartPos() == tplInstSourceRange.getStartPos());
-			assertTrue(elem.getEndPos() == tplInstSourceRange.getEndPos());
+				
+				// Even the following maybe not be true, because of parens expression omitted in the AST
+				assertTrue(elem.getEndPos() == tplInstSourceRange.getEndPos()); 
+			}
 		}
 		
 		RefTemplateInstance refTplInstance = createRefTemplateInstance(rawTplRef, elem.ti.tiargs, tplInstSourceRange, convContext); 
