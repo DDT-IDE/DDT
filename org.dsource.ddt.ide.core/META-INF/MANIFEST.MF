@@ -11,7 +11,6 @@ Export-Package: dtool.tests.ref.cc;x-friends:="org.dsource.ddt.ide.tests,org.dso
  mmrnmhrm.core.build,
  mmrnmhrm.core.codeassist,
  mmrnmhrm.core.launch,
- mmrnmhrm.core.parser;x-friends:="org.dsource.ddt.ide.tests",
  mmrnmhrm.core.projectmodel,
  mmrnmhrm.core.search,
  mmrnmhrm.tests;x-friends:="org.dsource.ddt.ide.ui",
