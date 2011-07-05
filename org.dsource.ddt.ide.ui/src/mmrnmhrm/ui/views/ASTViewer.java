@@ -1,5 +1,6 @@
 package mmrnmhrm.ui.views;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
@@ -7,6 +8,7 @@ import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration.EModelStatus;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -188,7 +190,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		makeVisible(viewer.getControl());
 		
 		int offset = EditorUtil.getSelection(fEditor).getOffset();
-		setContentDescription("AST ("+fDeeModule.toStringParseStatus()+"), sel: " + offset);
+		setContentDescription("AST ("+toStringParseStatus(fDeeModule.getParseStatus())+"), sel: " + offset);
 		
 		//viewer.getControl().setRedraw(false);
 		viewer.refresh();
@@ -198,8 +200,16 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		}
 		//viewer.getControl().setRedraw(true);
 	}
-
-
+	
+	public static String toStringParseStatus(int parseStatus) {
+		switch(parseStatus) {
+		case EModelStatus.PARSER_INTERNAL_ERROR: return "Internal Error";
+		case EModelStatus.PARSER_SYNTAX_ERRORS: return "Syntax Errors";
+		case EModelStatus.OK: return "OK";
+		default: assertFail(); return null;
+		}
+	}
+	
 	public static void makeVisible(Control control) {
 		if(!control.isVisible()) {
 			control.setVisible(true);

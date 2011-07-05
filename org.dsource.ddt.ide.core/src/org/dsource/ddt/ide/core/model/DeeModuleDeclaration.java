@@ -30,20 +30,10 @@ public class DeeModuleDeclaration extends ModuleDeclaration implements IModuleDe
 		this.dmdModule = dmdModule;
 	}
 	
-	public String toStringParseStatus() {
-		switch(getParseStatus()) {
-		case EModelStatus.PARSER_INTERNAL_ERROR: return "Internal Error";
-		case EModelStatus.PARSER_SYNTAX_ERRORS: return "Syntax Errors";
-		case EModelStatus.OK: return "OK";
-		default: assertFail(); return null;
-		}
-	}
-
 	public int getParseStatus() {
 		return status;
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	public void setNeoModule(Module neoModule) {
 		this.neoModule = neoModule;
 		getStatements().add(neoModule);
