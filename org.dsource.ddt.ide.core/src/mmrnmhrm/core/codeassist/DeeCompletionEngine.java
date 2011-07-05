@@ -2,6 +2,7 @@ package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import org.dsource.ddt.ide.core.model.SourceModelUtil;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionContext;

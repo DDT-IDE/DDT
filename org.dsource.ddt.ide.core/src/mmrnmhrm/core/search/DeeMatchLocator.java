@@ -1,8 +1,8 @@
 package mmrnmhrm.core.search;
 
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.codeassist.SourceModelUtil;
 
+import org.dsource.ddt.ide.core.model.SourceModelUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.core.IMember;

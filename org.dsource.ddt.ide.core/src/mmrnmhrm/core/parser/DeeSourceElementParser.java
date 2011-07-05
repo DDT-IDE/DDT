@@ -14,6 +14,7 @@ package mmrnmhrm.core.parser;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.dsource.ddt.ide.core.model.engine.DeeSourceElementProvider;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.AbstractSourceElementParser;

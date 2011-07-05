@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.codeassist;
+package org.dsource.ddt.ide.core.model;
 
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;

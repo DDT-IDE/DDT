@@ -1,10 +1,10 @@
 package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
-import mmrnmhrm.core.codeassist.SourceModelUtil;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
 import mmrnmhrm.ui.actions.OperationsManager;
 
+import org.dsource.ddt.ide.core.model.SourceModelUtil;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IType;

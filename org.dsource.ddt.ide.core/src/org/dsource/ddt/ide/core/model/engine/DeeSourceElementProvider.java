@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.parser;
+package org.dsource.ddt.ide.core.model.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 

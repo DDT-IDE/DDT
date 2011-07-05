@@ -1,4 +1,4 @@
-package mmrnmhrm.core.parser;
+package org.dsource.ddt.ide.core.model.engine;
 
 
 import dtool.ast.ASTNeoNode;
