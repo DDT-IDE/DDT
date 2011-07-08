@@ -2,9 +2,12 @@ package mmrnmhrm.ui.editor;
 
 import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 
+import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor;
+import org.eclipse.dltk.ui.actions.DLTKActionConstants;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.menus.CommandContributionItem;
@@ -55,5 +58,14 @@ public class DeeEditorActionContributor extends	SourceModuleEditorActionContribu
 		//toolBarManager.add(fGoToDefiniton);
 		//toolBarManager.add(getCommand_FindDefinition());
 	}
-
+	
+	@Override
+	public void setActiveEditor(IEditorPart part) {
+		super.setActiveEditor(part);
+		if (part instanceof ScriptEditor) {
+			getActionBars().setGlobalActionHandler(DLTKActionConstants.OPEN_TYPE_HIERARCHY, null);
+			getActionBars().setGlobalActionHandler(DLTKActionConstants.OPEN_CALL_HIERARCHY, null);
+		}
+	}
+	
 }
