@@ -20,7 +20,7 @@ public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelP
 			IMember member = (IMember) proposal.getModelElement();
 			return modelElementLabelProvider.getImageDescriptor(member, DeeModelElementLabelProvider.SMALL_SIZE);
 		}
-		// Return no image, this shouldn't even happen though
+		// Return no image
 		return null;
 	}
 	

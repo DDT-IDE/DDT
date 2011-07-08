@@ -50,15 +50,9 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 			String completion = proposal.getCompletion();
 			int repStart = proposal.getReplaceStart();
 			int repLength = proposal.getReplaceEnd() - proposal.getReplaceStart();
-			Image image = DeeElementImageProvider.getNodeImage(defUnit);
-			if(false) {
-				// Disabled for the moment
-				ImageDescriptor imageDesc = getLabelProvider().createImageDescriptor(proposal);
-				Image image2 = imageDesc == null ? null : DeePluginImages.getImageDescriptorRegistry().get(imageDesc);
-			}
+			Image image = createImage(proposal, defUnit);
 			
 			String displayString = defUnit.toStringForCodeCompletion();
-			
 			
 			DeeCompletionProposal completionProposal = new DeeCompletionProposal(completion, repStart, repLength,
 					image, displayString, defUnit, null);
@@ -67,6 +61,16 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 			
 		} else {
 			return super.createScriptCompletionProposal(proposal);
+		}
+	}
+	
+	protected Image createImage(CompletionProposal proposal, DefUnit defUnit) {
+		ImageDescriptor imageDesc = getLabelProvider().createImageDescriptor(proposal);
+		if(imageDesc != null) {
+			return DeePluginImages.getImageDescriptorRegistry().get(imageDesc);
+		} else {
+			// ATM, some types of proposals have images that only DeeElementImageProvider can provide
+			return DeeElementImageProvider.getNodeImage(defUnit);
 		}
 	}
 	
