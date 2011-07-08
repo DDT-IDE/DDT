@@ -227,7 +227,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		elemInfo.nameSourceEnd = defAggr.defname.sourceEnd() - 1;
 	}
 	
-	protected void setupDefinitionTypeInfo(Definition elem, ISourceElementRequestor.ElementInfo elemInfo) {
+	protected static void setupDefinitionTypeInfo(Definition elem, ISourceElementRequestor.ElementInfo elemInfo) {
 		elemInfo.modifiers = getModifiersFlags(elem);
 		elemInfo.modifiers = getProtectionFlags(elem, elemInfo.modifiers);
 	}
@@ -279,7 +279,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		return modifiers;
 	}
 	
-	protected TypeInfo createTypeInfoForModule(Module elem) {
+	protected static TypeInfo createTypeInfoForModule(Module elem) {
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 		setupDefUnitTypeInfo(elem, typeInfo);
 		typeInfo.modifiers |= Modifiers.AccModule;
@@ -287,7 +287,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		return typeInfo;
 	}
 	
-	protected TypeInfo createTypeInfoForDefinition(Definition elem, int archetypeMask) {
+	protected static TypeInfo createTypeInfoForDefinition(Definition elem, int archetypeMask) {
 		assertTrue((archetypeMask & DeeModelConstants.MODIFIERS_ARCHETYPE_MASK) == archetypeMask);
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 		setupDefUnitTypeInfo(elem, typeInfo);
@@ -298,14 +298,14 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	
 	
-	protected TypeInfo createTypeInfoForClass(DefinitionClass elem) {
+	protected static TypeInfo createTypeInfoForClass(DefinitionClass elem) {
 		int archeType = DeeModelConstants.TYPE_CLASS;
 		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(elem, archeType);
 		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(elem, false);
 		return typeInfo;
 	}
 	
-	protected TypeInfo createTypeInfoForInterface(DefinitionInterface elem) {
+	protected static TypeInfo createTypeInfoForInterface(DefinitionInterface elem) {
 		int archetype = DeeModelConstants.TYPE_INTERFACE;
 		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(elem, archetype);
 		typeInfo.modifiers |= Modifiers.AccInterface;
@@ -334,7 +334,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		return baseClassesStr;
 	}
 	
-	protected ISourceElementRequestor.MethodInfo createMethodInfo(DefinitionFunction elem) {
+	protected static ISourceElementRequestor.MethodInfo createMethodInfo(DefinitionFunction elem) {
 		ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
 		setupDefUnitTypeInfo(elem, methodInfo);
 		setupDefinitionTypeInfo(elem, methodInfo);
@@ -343,7 +343,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		return methodInfo;
 	}
 	
-	protected ISourceElementRequestor.MethodInfo createConstructorInfo(DefinitionCtor elem) {
+	protected static ISourceElementRequestor.MethodInfo createConstructorInfo(DefinitionCtor elem) {
 		ISourceElementRequestor.MethodInfo elemInfo = new ISourceElementRequestor.MethodInfo();
 		elemInfo.declarationStart = elem.sourceStart();
 		elemInfo.isConstructor = true; // for the purposes of the ModelElement's, any kind is constructor
@@ -356,7 +356,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		return elemInfo;
 	}
 	
-	protected void setupParametersInfo(ICallableElement elem, ISourceElementRequestor.MethodInfo methodInfo) {
+	protected static void setupParametersInfo(ICallableElement elem, ISourceElementRequestor.MethodInfo methodInfo) {
 		ArrayView<IFunctionParameter> params = elem.getParameters();
 		
 		methodInfo.parameterNames = new String[params.size()];
@@ -372,7 +372,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		}
 	}
 	
-	protected FieldInfo createFieldInfo(DefinitionVariable elem) {
+	protected static FieldInfo createFieldInfo(DefinitionVariable elem) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		setupDefUnitTypeInfo(elem, fieldInfo);
 		setupDefinitionTypeInfo(elem, fieldInfo);
