@@ -66,6 +66,7 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 		Function<ICompletionProposal, DefUnit> proposalToDefunit  = new Function<ICompletionProposal, DefUnit>() {
 			@Override
 			public DefUnit evaluate(ICompletionProposal obj) {
+				assertNotNull(obj);
 				DeeCompletionProposal deeProposal = CoreUtil.tryCast(obj, DeeCompletionProposal.class);
 				return deeProposal == null ? null : deeProposal.defUnit;
 			}

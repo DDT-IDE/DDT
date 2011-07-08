@@ -52,7 +52,7 @@ public class LangHeuristicScanner implements ILangHeuristicSymbols {
 		Assert.isLegal(document != null);
 		this.document = document;
 		this.partitioning = partitioning;
-
+		
 		if(partitioning == null) {
 			this.contentType = IDocument.DEFAULT_CONTENT_TYPE;
 			this.documentExt3 = null;
@@ -61,7 +61,7 @@ public class LangHeuristicScanner implements ILangHeuristicSymbols {
 			Assert.isLegal(partitioning != null);
 			Assert.isLegal(contentType != null);
 			this.contentType = contentType;
-
+			
 			this.documentExt3 = tryCast(document, IDocumentExtension3.class);
 			Assert.isLegal(documentExt3 != null, "document must support IDocumentExtension3");
 			this.partitioner = documentExt3.getDocumentPartitioner(partitioning);
