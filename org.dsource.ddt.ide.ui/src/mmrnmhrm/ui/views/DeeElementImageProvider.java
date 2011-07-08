@@ -3,6 +3,7 @@ package mmrnmhrm.ui.views;
 import melnorme.utilbox.tree.IElement;
 import mmrnmhrm.ui.DeePluginImages;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
 import dtool.ast.ASTNeoNode;
@@ -42,47 +43,50 @@ public class DeeElementImageProvider {
 	
 	
 	public static Image getNodeImage(ASTNeoNode node) {
+		return DeePluginImages.getManagedImage(getNodeImageDescriptorKey(node));
+	}
+	
+	public static ImageDescriptor getNodeImageDescriptor(ASTNeoNode node) {
+		return DeePluginImages.getManagedDescriptor(getNodeImageDescriptorKey(node));
+	}
+	
+	private static String getNodeImageDescriptorKey(ASTNeoNode node) {
 		if(node instanceof DeclarationImport) { 
-			return getImage(DeePluginImages.NODE_IMPORT);
+			return DeePluginImages.NODE_IMPORT;
 		} else if(node instanceof DeclarationModule 
 				|| node instanceof Module || node instanceof LiteModuleDummy) {
-			return getImage(DeePluginImages.NODE_MODULE_DEC);
+			return DeePluginImages.NODE_MODULE_DEC;
 		} else if(node instanceof PartialPackageDefUnit ) {
-			return getImage(DeePluginImages.NODE_MODULE_DEC);
+			return DeePluginImages.NODE_MODULE_DEC;
 		} else if (node instanceof Reference) {
-			return getImage(DeePluginImages.NODE_REF);
+			return DeePluginImages.NODE_REF;
 		} else if (node instanceof DefinitionAlias) {
-			return getImage(DeePluginImages.ENT_ALIAS);
+			return DeePluginImages.ENT_ALIAS;
 		} else if(node instanceof DefinitionTemplate) {
-			return getImage(DeePluginImages.ENT_TEMPLATE);
+			return DeePluginImages.ENT_TEMPLATE;
 		} else if(node instanceof DefinitionVariable) {
-			return getImage(DeePluginImages.ENT_VARIABLE);
+			return DeePluginImages.ENT_VARIABLE;
 		} else if(node instanceof DefinitionFunction) {
-			return getImage(DeePluginImages.ENT_FUNCTION);
+			return DeePluginImages.ENT_FUNCTION;
 		} else
-			
+		
 		if(node instanceof DefinitionInterface) {
-			return getImage(DeePluginImages.ENT_INTERFACE);
+			return DeePluginImages.ENT_INTERFACE;
 		} else if(node instanceof DefinitionStruct) {
-			return getImage(DeePluginImages.ENT_STRUCT);
+			return DeePluginImages.ENT_STRUCT;
 		} else if(node instanceof DefinitionUnion) {
-			return getImage(DeePluginImages.ENT_UNION);
+			return DeePluginImages.ENT_UNION;
 		} else if(node instanceof DefinitionClass) {
-			return getImage(DeePluginImages.ENT_CLASS);
+			return DeePluginImages.ENT_CLASS;
 		} else if(node instanceof DefinitionTypedef) {
-			return getImage(DeePluginImages.ENT_TYPEDEF);
+			return DeePluginImages.ENT_TYPEDEF;
 		} else if(node instanceof DefinitionEnum) {
-			return getImage(DeePluginImages.ENT_ENUM);
+			return DeePluginImages.ENT_ENUM;
 		} else if(!(node instanceof ASTNeoNode)) {
-			return getImage(DeePluginImages.NODE_OLDAST);
-		} else
-			return getImage(DeePluginImages.NODE_OTHER);
+			return DeePluginImages.NODE_OLDAST;
+		} else {
+			return DeePluginImages.NODE_OTHER;
+		}
 	}
-
-
-	private static Image getImage(String imageKey) {
-		return DeePluginImages.getManagedImage(imageKey);
-	}
-
-
+	
 }

@@ -89,7 +89,7 @@ public class DeePluginImages {
 	
 	/** Gets the managed {@link Image} associated with the given key. */
 	public static Image getManagedImage(String imageKey) {
-		return helper.getImageRegistry().get(imageKey);
+		return helper.get(imageKey);
 	}
 	
 	/** Gets the managed {@link ImageDescriptor} associated with the given key. */
