@@ -27,7 +27,14 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
+import dtool.ast.declarations.DeclarationStaticIfIsType;
+import dtool.ast.declarations.ImportAliasing;
+import dtool.ast.declarations.ImportSelective;
+import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.EnumMember;
+import dtool.ast.definitions.FunctionParameter;
+import dtool.ast.definitions.TemplateParameter;
 
 public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesConstants {
 	
@@ -101,7 +108,7 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		checkElementExists(sourceModule, element, archeType, (String) null, code);
 	}
 
-	private void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, String nameKey,
+	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, String nameKey,
 			String code) throws ModelException {
 		String source = sourceModule.getSource();
 		
@@ -164,6 +171,19 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		
 		checkElementExists(incorrectNameMod, incorrectNameMod.getType("actualModuleName_DifferentFromFileName"), 
 				EArcheType.Module, "module actualModuleName_DifferentFromFileName;");
+	}
+	
+	/*  ---  */
+	
+	public static boolean defunitIsReportedAsModelElement(DefUnit defunit) {
+		boolean result = 
+				defunit instanceof FunctionParameter || 
+				defunit instanceof EnumMember ||
+				defunit instanceof TemplateParameter ||
+				defunit instanceof DeclarationStaticIfIsType.IsTypeDefUnit ||
+				defunit instanceof ImportSelective.ImportSelectiveAlias ||
+				defunit instanceof ImportAliasing.ImportAliasingDefUnit;
+		return !result;
 	}
 	
 }

@@ -25,16 +25,22 @@ class /*Class1*/SampleRefsClass {
 }
 class /*Class2*/SampleRefsClass(T:int) {
 }
+Object /*Class2-decoy*/SampleRefsClass = null;
+
 class /*Class3*/SampleRefsClass(T:Object) {
 }
 
 private class Parent {
 	auto xxx = /*MultipleSelection2*/func(2);
 	
-	void /*func1*/func() {
+	void funcOther() {}
+	
+	void /*func1*/func() { }
+	
+	void funcOtherB() {}
+	
+	void /*func2*/func(int a) {}
+	void /*func3*/func(Object a) {
 	}
-	void /*func2*/func(int a) {
-	}
-	void /*Class3*/func(Object a) {
-	}
+	
 }

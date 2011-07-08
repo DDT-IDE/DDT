@@ -18,6 +18,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Collection;
 
 import mmrnmhrm.core.codeassist.DeeSelectionEngine;
+import mmrnmhrm.core.parser.DeeModelElement_Test;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
@@ -109,6 +110,13 @@ public class FindDef__Common {
 	public static void testDeeSelectionEngine(Module srcMod, int offset, DefUnit defunit) {
 		DeeSelectionEngine selectionEngine = new DeeSelectionEngine();
 		IModelElement[] select = selectionEngine.select((IModuleSource) srcMod.getModuleUnit(), offset, offset-1);
+		
+		if(!DeeModelElement_Test.defunitIsReportedAsModelElement(defunit)) {
+			// Hum, Perhaps do this case differently?
+			assertTrue(select == null || select.length == 0);
+			return;
+		}
+		
 		assertTrue(select.length >= 1);
 		IModelElement modelElement = select[0];
 		for (int i = 1; i < select.length; i++) {
