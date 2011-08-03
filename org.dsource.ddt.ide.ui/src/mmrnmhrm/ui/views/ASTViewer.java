@@ -194,7 +194,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		
 		//viewer.getControl().setRedraw(false);
 		viewer.refresh();
-		selNode = ASTNodeFinder.findElement(fDeeModule.getEffectiveModuleNode(), offset);
+		selNode = ASTNodeFinder.findElementDependingOnASTType(fDeeModule.getEffectiveModuleNode(), offset);
 		if(selNode != null) {
 			viewer.reveal(selNode);
 		}
