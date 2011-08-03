@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import java.io.Reader;
 
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
 import org.dsource.ddt.ide.core.model.DeeModelUtil;
@@ -22,8 +23,9 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
 
 /**
- * It is preferable that this documentation provider is not used as it has a more limited API.
- * Preferable to use {@link DeeDocTextHover} whenever possible.
+ * XXX: DLTK: This {@link DeeDocumentationProvider} is disabled (not used at the moment), 
+ * due to a API limitation (unable to specify empty title without DLTK provied an alternative default)
+ * {@link DeeDocTextHover} is used instead.
  */
 public class DeeDocumentationProvider implements IScriptDocumentationProvider, IScriptDocumentationProviderExtension2 {
 	
@@ -44,14 +46,14 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 	@Override
 	public IDocumentationResponse getDocumentationFor(Object element) {
 		if(element instanceof IMember) {
+			assertFail(); // DeeDocumentationProvider is disabled, should not ever find an element
 			String header = getHeaderComment((IMember) element);
-			return header == null ? null : new TextDocumentationResponse(element, null, convertToHTML(header)); 
+			return header == null ? null : new TextDocumentationResponse(element, "", convertToHTML(header)); 
 		}
 		return null;
 	}
 	
 	protected String convertToHTML(String header) {
-		assertFail();
 		return header;
 	}
 	
@@ -74,7 +76,8 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 		final int start = range.getOffset();
 		
 		DeeModuleDeclaration deeModule = DeeModelUtil.getParsedDeeModule(member.getSourceModule());
-		ASTNeoNode pickedNode = ASTNodeFinder.findNeoElement(deeModule.neoModule, start, false);
+		ASTNeoNode pickedNode = ASTNodeFinder.findNeoElement(deeModule.neoModule, start, 
+				DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		return DeeDocTextHover.getDocInfoForNode(pickedNode);
 	}

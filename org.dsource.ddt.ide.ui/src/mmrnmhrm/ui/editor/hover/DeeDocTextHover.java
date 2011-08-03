@@ -12,9 +12,9 @@
 package mmrnmhrm.ui.editor.hover;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.lang.ui.EditorUtil;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.IEditorPart;
@@ -65,7 +65,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 		if(module == null)
 			return null;
 		
-		return ASTNodeFinder.findNeoElement(module, offset, false);
+		return ASTNodeFinder.findNeoElement(module, offset, DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 	}
 	
 	@Override
