@@ -13,16 +13,14 @@ import descent.internal.compiler.parser.ast.IASTNode;
  * An element is picked between element.startPos (inclusive) and  
  * element.endPos (inclusive).   
  */
-public class ASTNodeFinder {
+public abstract class ASTNodeFinder<T extends IASTNode> {
 	
 	private int offset; 
 	private boolean inclusiveEnd;
-	private IASTNode match;
 	
-	public ASTNodeFinder(int offsetCursor, boolean inclusiveEnd) {
-		this.offset = offsetCursor;
-		this.inclusiveEnd = inclusiveEnd;
-		this.match = null;
+	private IASTNode match = null;
+	
+	public ASTNodeFinder() {
 	}
 	
 	public static IASTNode findElement(IASTNode root, int offset) {
@@ -37,39 +35,64 @@ public class ASTNodeFinder {
 	 *  inclusiveEnd controls whether to match nodes whose end position 
 	 *  is the same as the offset.*/
 	public static <T extends IASTNode> T findElement(T root, int offset, boolean inclusiveEnd) {
+		IASTNode match;
+		if(root instanceof ASTNeoNode) {
+			ASTNeoNode rootX = (ASTNeoNode) root;
+			ASTNodeFinder<ASTNeoNode> astNodeFinder = new ASTNodeFinder<ASTNeoNode>() {
+				@Override
+				protected void doVisit(ASTNeoNode root) {
+					final ASTNodeFinder<ASTNeoNode> visitor = this;
+					root.accept(new ASTNeoHomogenousVisitor() {
+						@Override
+						public boolean preVisit(ASTNeoNode node) {
+							return visitor.visit(node);
+						}
+					});
+				}
+			};
+			match = astNodeFinder.acceptDependingOnKind(rootX, offset, inclusiveEnd);
+			
+		} else if(root instanceof ASTNode) {
+			ASTNode rootX = (ASTNode) root;
+			ASTNodeFinder<ASTNode> astNodeFinder = new ASTNodeFinder<ASTNode>() {
+				@Override
+				protected void doVisit(ASTNode root) {
+					final ASTNodeFinder<ASTNode> visitor = this;
+					root.accept(new ASTUpTreeVisitor() {
+						@Override
+						public boolean visit(ASTNode node) {
+							return visitor.visit(node);
+						}
+					});
+				}
+			};
+			match = astNodeFinder.acceptDependingOnKind(rootX, offset, inclusiveEnd);
+			
+		} else {
+			throw assertFail();
+		}
+		
+		return CoreUtil.<IASTNode, T>downCast(match);
+	}
+	
+	protected IASTNode acceptDependingOnKind(T root, int offsetCursor, boolean inclusiveEnd) {
+		this.offset = offsetCursor;
+		this.inclusiveEnd = inclusiveEnd;
+		
 		if(root == null)
 			return null;
 		Assert.isTrue(!root.hasNoSourceRangeInfo());
 		
-		ASTNodeFinder aef = new ASTNodeFinder(offset, inclusiveEnd);
-		
-		if(!aef.matchesRangeStart(root) || !aef.matchesRangeEnd(root)) 
+		if(!matchesRangeStart(root) || !matchesRangeEnd(root)) 
 			return null;
 		
-		acceptDependingOnKind(root, aef);
-		Assert.isNotNull(aef.match);
-		return CoreUtil.<IASTNode, T>downCast(aef.match);
+		doVisit(root);
+		
+		Assert.isNotNull(this.match);
+		return match;
 	}
-	
-	private static void acceptDependingOnKind(IASTNode root, final ASTNodeFinder visitor) {
-		if(root instanceof ASTNeoNode) {
-			((ASTNeoNode) root).accept(new ASTNeoHomogenousVisitor() {
-				@Override
-				public boolean preVisit(ASTNeoNode node) {
-					return visitor.visit(node);
-				}
-			});
-		} else if(root instanceof ASTNode) {
-			((ASTNode)root).accept(new ASTUpTreeVisitor() {
-				@Override
-				public boolean visit(ASTNode node) {
-					return visitor.visit(node);
-				}
-			});
-		} else {
-			assertFail();
-		}
-	}
+
+	protected abstract void doVisit(T root);
 	
 	public boolean visit(IASTNode elem) {
 		if(elem.hasNoSourceRangeInfo()) {
