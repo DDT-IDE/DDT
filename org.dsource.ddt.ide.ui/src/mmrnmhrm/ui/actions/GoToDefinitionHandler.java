@@ -87,7 +87,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 
 		Module neoModule = EditorUtil.getNeoModuleFromEditor(editor);
 
-		ASTNeoNode elem = ASTNodeFinder.findNeoElement(neoModule, offset, false);
+		ASTNeoNode elem = ASTNodeFinder.findElement(neoModule, offset, false);
 		
 		if(elem == null) {
 			dialogWarning(window.getShell(), "No element found at pos: " + offset);

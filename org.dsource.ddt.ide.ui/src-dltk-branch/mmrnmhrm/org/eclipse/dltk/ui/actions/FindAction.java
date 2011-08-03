@@ -66,7 +66,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 
 		TextSelection sel = EditorUtil.getSelection(deeEditor);
 		int offset = sel.getOffset();
-		ASTNeoNode elem = ASTNodeFinder.findNeoElement(neoModule, offset, false);
+		ASTNeoNode elem = ASTNodeFinder.findElement(neoModule, offset, false);
 		run(elem);
 	}
 

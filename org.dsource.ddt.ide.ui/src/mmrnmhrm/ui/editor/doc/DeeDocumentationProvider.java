@@ -76,7 +76,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 		final int start = range.getOffset();
 		
 		DeeModuleDeclaration deeModule = DeeModelUtil.getParsedDeeModule(member.getSourceModule());
-		ASTNeoNode pickedNode = ASTNodeFinder.findNeoElement(deeModule.neoModule, start, 
+		ASTNeoNode pickedNode = ASTNodeFinder.findElement(deeModule.neoModule, start, 
 				DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		return DeeDocTextHover.getDocInfoForNode(pickedNode);

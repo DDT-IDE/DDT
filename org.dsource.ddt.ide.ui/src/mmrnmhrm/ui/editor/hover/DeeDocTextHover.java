@@ -65,7 +65,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 		if(module == null)
 			return null;
 		
-		return ASTNodeFinder.findNeoElement(module, offset, DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
+		return ASTNodeFinder.findElement(module, offset, DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 	}
 	
 	@Override

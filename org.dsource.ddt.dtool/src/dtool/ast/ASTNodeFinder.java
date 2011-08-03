@@ -2,6 +2,7 @@ package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.utilbox.core.Assert;
+import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.ASTUpTreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
@@ -29,18 +30,13 @@ public class ASTNodeFinder {
 	}
 	
 	public static ASTNeoNode findElement(ASTNeoNode root, int offset) {
-		return (ASTNeoNode) findElement(root, offset, true);
-	}
-	
-	
-	public static ASTNeoNode findNeoElement(ASTNeoNode root, int offset, boolean inclusiveEnd) {
-		return (ASTNeoNode) findElement(root, offset, inclusiveEnd);
+		return findElement(root, offset, true);
 	}
 	
 	/** Finds the node at the given offset, starting from root.
 	 *  inclusiveEnd controls whether to match nodes whose end position 
 	 *  is the same as the offset.*/
-	public static IASTNode findElement(IASTNode root, int offset, boolean inclusiveEnd) {
+	public static <T extends IASTNode> T findElement(T root, int offset, boolean inclusiveEnd) {
 		if(root == null)
 			return null;
 		Assert.isTrue(!root.hasNoSourceRangeInfo());
@@ -52,7 +48,7 @@ public class ASTNodeFinder {
 		
 		acceptDependingOnKind(root, aef);
 		Assert.isNotNull(aef.match);
-		return aef.match;
+		return CoreUtil.<IASTNode, T>downCast(aef.match);
 	}
 	
 	private static void acceptDependingOnKind(IASTNode root, final ASTNodeFinder visitor) {

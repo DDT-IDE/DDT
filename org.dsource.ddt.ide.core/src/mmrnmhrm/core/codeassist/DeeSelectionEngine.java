@@ -46,7 +46,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		ISourceModule sourceModule = (ISourceModule) sourceUnit.getModelElement();
 		
 		DeeModuleDeclaration deeModule = DeeModelUtil.getParsedDeeModule(sourceModule);
-		ASTNeoNode node = ASTNodeFinder.findNeoElement(deeModule.neoModule, offset, 
+		ASTNeoNode node = ASTNodeFinder.findElement(deeModule.neoModule, offset, 
 				ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		if(node instanceof DefSymbol) {
