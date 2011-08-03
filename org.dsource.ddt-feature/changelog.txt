@@ -2,7 +2,8 @@
 
 = DDT Change Log =
 
-== DDT 0.4.4 (devel) ==
+== DDT 0.5.0 (devel) ==
+ * Updated DDT to DTLK 3.0
  * Made icons of D source elements (classes, structs templates, etc.) consistent throughout the UI.
  * Outline view changes:
    * Now shows nested elements.
