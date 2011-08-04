@@ -167,7 +167,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	@Override 
 	protected Map<String, ITextEditor> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
-		@SuppressWarnings("unchecked")
 		Map<String, ITextEditor> targets = super.getHyperlinkDetectorTargets(sourceViewer);
 		targets.put(DeeHyperlinkDetector.DEE_EDITOR_TARGET, getEditor()); 
 		return targets;
@@ -193,7 +192,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	// ================
 	
-	private IInformationControlCreator getHierarchyPresenterControlCreator() {
+	protected IInformationControlCreator getHierarchyPresenterControlCreator() {
 		return new IInformationControlCreator() {
 			@Override
 			public IInformationControl createInformationControl(Shell parent) {

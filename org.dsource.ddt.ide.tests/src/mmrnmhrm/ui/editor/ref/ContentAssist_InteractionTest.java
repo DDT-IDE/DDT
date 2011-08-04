@@ -21,9 +21,8 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 	
 	@Test
 	public void testMoveCursorBeforeStartOffset() throws Exception { testMoveCursorBeforeStartOffset$(); }
-	@SuppressWarnings("unused")
 	public void testMoveCursorBeforeStartOffset$() throws Exception {
-		if(true) 
+		if(TRUE()) 
 			return; // This test is disable because this functionality was removed, not even JDT has it
 		
 		ISourceViewer viewer = editor.getViewer();

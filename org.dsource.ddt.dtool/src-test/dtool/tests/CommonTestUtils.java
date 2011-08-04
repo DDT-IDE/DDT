@@ -21,6 +21,10 @@ import melnorme.utilbox.misc.CollectionUtil;
  */
 public class CommonTestUtils {
 	
+	public static boolean TRUE() {
+		return true;
+	}
+	
 	public static <T, U extends T> void assertEquals(T obj1, U obj2) {
 		Assert.equals(obj1, obj2);
 	}
