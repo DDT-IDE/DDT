@@ -14,6 +14,7 @@ package mmrnmhrm.ui.editor.hover;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.lang.ui.EditorUtil;
+import mmrnmhrm.ui.editor.doc.DeeDocumentationProvider;
 
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
@@ -28,7 +29,9 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 
 /**
- * Standard documentation hover for DDoc
+ * Standard documentation hover for DDoc.
+ * Used instead of {@link DeeDocumentationProvider} due to API limitation, review in the future.
+ * (used in editor hovers extensions, and editor information provider (F2))
  */
 public class DeeDocTextHover extends AbstractTextHover {
 	
@@ -92,7 +95,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 		
 		String info = getDocInfoForNode(node);
 		if(info != null)
-			return HoverUtil.getCompleteHoverInfo(info, getCSSStyles());
+			return HoverUtil.getCompleteHoverInfo("DDOCTextHover:" + info, getCSSStyles());
 		
 		return null;
 	}

@@ -119,7 +119,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	@Override
 	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
-		// TODO review this in DLTK 3.0
 		InformationPresenter informationPresenter = (InformationPresenter) super.getInformationPresenter(sourceViewer);
 		ScriptInformationProvider_Mod sip = new ScriptInformationProvider_Mod(getEditor()) { 
 			@Override
@@ -133,7 +132,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	@Override
 	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
-		// this code is like JDT 3.6 and DLTK 3.0 TODO: remove in DLTK 3.0
 		return new IInformationControlCreator() {
 			@Override
 			public IInformationControl createInformationControl(Shell parent) {

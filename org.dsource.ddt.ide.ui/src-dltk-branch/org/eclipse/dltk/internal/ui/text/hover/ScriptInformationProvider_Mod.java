@@ -31,10 +31,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 
 /**
- * Mod from DLTK 2.0 because of limitations with ScriptTypeHover
- * TODO: review this code in DLTK 3.0, it should no longer be necessary
+ * Mod from DLTK 3.0 that allows a different fImplementation other than a ScriptTypeHover
  */
-public class ScriptInformationProvider_Mod implements IInformationProvider, IInformationProviderExtension2 {
+public class ScriptInformationProvider_Mod implements IInformationProvider,
+		IInformationProviderExtension2 {
 
 	class EditorWatcher implements IPartListener {
 
@@ -142,11 +142,15 @@ public class ScriptInformationProvider_Mod implements IInformationProvider, IInf
 		if (fPresenterControlCreator == null) {
 			fPresenterControlCreator = new AbstractReusableInformationControlCreator() {
 
-				public IInformationControl doCreateInformationControl(Shell parent) {
+				@Override
+				public IInformationControl doCreateInformationControl(
+						Shell parent) {
 					if (BrowserInformationControl.isAvailable(parent))
-						return new BrowserInformationControl(parent, JFaceResources.DIALOG_FONT, true);
+						return new BrowserInformationControl(parent,
+								JFaceResources.DIALOG_FONT, true);
 					else
-						return new DefaultInformationControl(parent, new HTMLTextPresenter(false));
+						return new DefaultInformationControl(parent,
+								new HTMLTextPresenter(false));
 				}
 			};
 		}

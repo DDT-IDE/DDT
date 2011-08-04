@@ -82,7 +82,7 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 			throws BadLocationException {
 //		super.reportRegions(document, regions, kind, collapse);
 		
-		// XXX: DLTK 2.0 copied/modified code
+//		// XXX: DLTK 3.0 copied/modified code
 //		for (IRegion region : regions) {
 //			// TODO
 //			Object element = null;
