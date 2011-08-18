@@ -7,11 +7,11 @@ import org.junit.Test;
 import dtool.contentassist.CompletionSession;
 import dtool.refmodel.PrefixDefUnitSearch;
 
-public class CodeCompletion_n3Test extends CodeCompletion__Common {
+public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 	
-	public static final String TEST_SRCFILE = "testCodeCompletion3.d";
+	public static final String TEST_SRCFILE = "testCodeCompletion_onModuleRefs.d";
 	
-	public CodeCompletion_n3Test() {
+	public CodeCompletion_OnModuleRefsTest() {
 		super(TEST_SRCFILE);
 	}
 	

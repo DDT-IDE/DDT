@@ -1,4 +1,4 @@
-module testCodeCompletion3;
+module testCodeCompletion_onModuleRefs;
 
 import pack.sample : 
 	/+CC1@+/SampleClass, 
