@@ -35,6 +35,13 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 		return false;
 	}
 	
+	@Override
+	protected boolean isValidPrefix(String prefix) {
+		if(isInScriptdoc()) {
+			return super.isValidPrefix(prefix);
+		}
+		return isPrefix(prefix, getReplacementString());
+	}
 	
 	@Override
 	protected boolean insertCompletion() {

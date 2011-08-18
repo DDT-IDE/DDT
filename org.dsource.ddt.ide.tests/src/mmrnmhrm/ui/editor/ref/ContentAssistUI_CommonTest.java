@@ -11,16 +11,26 @@
 package mmrnmhrm.ui.editor.ref;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.downCast;
+
+import java.lang.reflect.Method;
+
+import melnorme.utilbox.core.CoreUtil;
+import melnorme.utilbox.core.Function;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
+import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.widgets.Display;
+
+import dtool.ast.definitions.DefUnit;
 
 public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 	
@@ -60,12 +70,28 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 		return ca;
 	}
 	
-	// For interactive debugging purposes, not used in automated testing
-	protected void runUIEventLoop() {
-		Display display = Display.getCurrent(); 
-		while (editor.getViewer() != null && !editor.getViewer().getTextWidget().isDisposed()) {
-			if (!display.readAndDispatch ()) display.sleep ();
-		}
+	protected static boolean isProposalPopupActive(ContentAssistant ca) {
+		Method method = ReflectionUtils.getAvailableMethod(ca.getClass(), "isProposalPopupActive");
+		return ReflectionUtils.uncheckedInvoke(ca, method);
 	}
+	
+	
+	protected static ICompletionProposal[] getProposals(ContentAssistant ca) {
+		// A bit of hack
+		Object proposalPopup = ReflectionUtils.readField(ca, "fProposalPopup");
+		return downCast(ReflectionUtils.readField(proposalPopup, "fFilteredProposals"));
+	}
+	
+	/* ----------------------------------- */
+	
+	public final static Function<ICompletionProposal, DefUnit> proposalToDefunit = 
+			new Function<ICompletionProposal, DefUnit>() {
+		@Override
+		public DefUnit evaluate(ICompletionProposal obj) {
+			assertNotNull(obj);
+			DeeCompletionProposal deeProposal = CoreUtil.tryCast(obj, DeeCompletionProposal.class);
+			return deeProposal == null ? null : deeProposal.defUnit;
+		}
+	};
 	
 }

@@ -32,22 +32,25 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 				"testCodeCompletion"
 		);
 	}
+	
+	public static final String[] EXPECTED_IN_TEST_f = array(
+			"Param", "unc(int a, List!(Foo) a)", "oobarvar",
+			"oovar", "oox", 
+			"unc(char b, List!(Foo) b)", "unc()",
+			/*"FooBar",*/  "oo_t", "ooalias", "ooOfModule", "rak" /*,"Foo",*/
+	);
+	
+	public static final String[] EXPECTED_IN_TEST_fo = array(
+			"obarvar",
+			"ovar", "ox", "o_t", "oalias", "oOfModule"
+	);
+	
 	@Test
 	public void test2() throws Exception {
-		testComputeProposals(getMarkerEndOffset("/+CC2@+/")+1, 1, false,
-				"Param", "unc(int a, List!(Foo) a)", "oobarvar",
-				"oovar", "oox", 
-				"unc(char b, List!(Foo) b)", "unc()",
-				/*"FooBar",*/  "oo_t", "ooalias", "ooOfModule", "rak" /*,"Foo",*/
-		);
+		testComputeProposals(getMarkerEndOffset("/+CC2@+/")+1, 1, false, EXPECTED_IN_TEST_f);
 		
-		// same test, but characters ahead of offset
-		testComputeProposalsWithRepLen(getMarkerEndOffset("/+CC3@+/")+1, 1, 2, false,
-				"Param", "unc(int a, List!(Foo) a)", "oobarvar",
-				"oovar", "oox", 
-				"unc(char b, List!(Foo) b)", "unc()",
-				/*"FooBar",*/  "oo_t", "ooalias", "ooOfModule", "rak" /*,"Foo",*/
-		);
+		// same test, but having characters ahead of offset
+		testComputeProposalsWithRepLen(getMarkerEndOffset("/+CC3@+/")+1, 1, 2, false, EXPECTED_IN_TEST_f);
 	}
 	
 	@Test
@@ -61,8 +64,7 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 	@Test
 	public void test4() throws Exception {
 		testComputeProposals(getMarkerEndOffset("/+CC4@+/")+2, 2, false,
-				"obarvar",
-				"ovar", "ox", "o_t", "oalias", "oOfModule"
+				EXPECTED_IN_TEST_fo
 		);
 	}
 	
