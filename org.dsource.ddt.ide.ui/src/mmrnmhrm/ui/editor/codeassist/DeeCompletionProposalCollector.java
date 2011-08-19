@@ -18,7 +18,7 @@ import dtool.ast.definitions.DefUnit;
 
 public class DeeCompletionProposalCollector extends ScriptCompletionProposalCollector {
 	
-	protected final static char[] VAR_TRIGGER = { ' ', '=', ';', '.' };
+	protected final static char[] VAR_TRIGGER = { ' ', '=', ';' };
 	
 	@Override
 	protected String getNatureId() {
