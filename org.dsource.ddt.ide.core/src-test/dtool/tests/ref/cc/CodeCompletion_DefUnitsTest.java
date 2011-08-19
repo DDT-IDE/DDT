@@ -47,7 +47,7 @@ public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
 	@Test
 	public void test2() throws Exception {
 		testComputeProposals(getMarkerStartOffset("/+@CC2+/"), 1, false,
-				"numMemberA", "numMemberB"
+				"EnumMemberA", "EnumMemberB"
 		);
 	}
 }

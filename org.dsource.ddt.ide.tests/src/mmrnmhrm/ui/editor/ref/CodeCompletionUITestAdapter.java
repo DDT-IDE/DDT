@@ -63,7 +63,7 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 		
 		List<DefUnit> results = mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>());
 		
-		CodeCompletion__Common.checkProposals(prefixLen, results, expectedProposals, removeObjectIntrinsics);
+		CodeCompletion__Common.checkProposals(results, expectedProposals, removeObjectIntrinsics);
 		
 		checkProposals(repOffset, repLen, prefixLen, proposals);
 	}

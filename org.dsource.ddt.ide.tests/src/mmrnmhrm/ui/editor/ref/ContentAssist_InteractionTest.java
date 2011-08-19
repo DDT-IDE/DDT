@@ -117,7 +117,7 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		
 		ICompletionProposal[] proposals;
 		proposals = getProposals(ca);
-		CodeCompletion__Common.checkProposals(1, 
+		CodeCompletion__Common.checkProposals(/*1,*/ 
 				mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>()), 
 				CodeCompletion_LookupTest.EXPECTED_IN_TEST_f, true);
 		
@@ -127,7 +127,7 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		assertTrue(caWatcher.active == true && isProposalPopupActive(ca) == true);
 		
 		proposals = getProposals(ca);
-		CodeCompletion__Common.checkProposals(2, 
+		CodeCompletion__Common.checkProposals(/*2,*/ 
 				mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>()),
 				CodeCompletion_LookupTest.EXPECTED_IN_TEST_fo, true);
 		

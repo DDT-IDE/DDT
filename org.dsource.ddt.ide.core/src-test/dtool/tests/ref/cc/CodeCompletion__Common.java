@@ -36,7 +36,7 @@ public class CodeCompletion__Common extends DeeTestUtils {
 			@Override
 			public void testComputeProposalsWithRepLen(int repOffset, int prefixLen,
 					int repLen, boolean removeObjectIntrinsics, String... expectedProposals) throws ModelException {
-				testComputeProposalsDo(repOffset, prefixLen, repLen, removeObjectIntrinsics, expectedProposals);
+				testComputeProposalsDo(repOffset, repLen, removeObjectIntrinsics, expectedProposals);
 			}
 			
 			@Override
@@ -83,7 +83,7 @@ public class CodeCompletion__Common extends DeeTestUtils {
 	}
 	
 	
-	protected void testComputeProposalsDo(int repOffset, int prefixLen, int repLen, boolean removeObjectIntrinsics,
+	protected void testComputeProposalsDo(int repOffset, int repLen, boolean removeObjectIntrinsics,
 			String[] expectedProposals) throws ModelException {
 		
 		DefUnitArrayListCollector defUnitAccepter = new DefUnitArrayListCollector();
@@ -98,7 +98,7 @@ public class CodeCompletion__Common extends DeeTestUtils {
 			assertTrue(session.resultCode == ECompletionSessionResults.RESULT_OK, "Code Completion Unavailable");
 			assertTrue(completionSearch.searchOptions.rplLen == repLen);
 			
-			checkProposals(prefixLen, defUnitAccepter.results, expectedProposals, removeObjectIntrinsics);
+			checkProposals(defUnitAccepter.results, expectedProposals, removeObjectIntrinsics);
 		}
 	}
 	
@@ -138,15 +138,14 @@ public class CodeCompletion__Common extends DeeTestUtils {
 		}
 	};
 	
-	public static void checkProposals(final int prefixLen, List<DefUnit> results,
-			String[] expectedProposalsArr, boolean removeIntrinsics) {
+	public static void checkProposals(List<DefUnit> results, String[] expectedProposalsArr, boolean removeIntrinsics) {
 		
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);
-		HashSet<String> resultProposals = hashSet(strmap(results, fnDefUnitToStringAsElement(prefixLen)));
+		HashSet<String> resultProposals = hashSet(strmap(results, fnDefUnitToStringAsElement(0)));
 		
 		if(removeIntrinsics) {
 			// Don't remove intrinsics which are explicitly expected
-			HashSet<String> intrinsicsProposals = hashSet(strmap(INTRINSIC_DEFUNITS_SET, fnStringToSubString(prefixLen)));
+			HashSet<String> intrinsicsProposals = hashSet(INTRINSIC_DEFUNITS);
 			Set<String> intrinsicsProposalsToRemove = removeAllCopy(intrinsicsProposals, expectedProposals);
 			resultProposals.removeAll(intrinsicsProposalsToRemove);
 		}
