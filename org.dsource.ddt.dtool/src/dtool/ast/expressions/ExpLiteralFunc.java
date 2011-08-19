@@ -1,14 +1,11 @@
 package dtool.ast.expressions;
 
-import java.util.List;
-
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.FuncExp;
 import descent.internal.compiler.parser.FuncLiteralDeclaration;
 import descent.internal.compiler.parser.TypeFunction;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;

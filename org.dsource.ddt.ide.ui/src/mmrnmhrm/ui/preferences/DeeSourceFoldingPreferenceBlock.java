@@ -21,6 +21,9 @@ public class DeeSourceFoldingPreferenceBlock extends SourceCodeFoldingPreference
 		super.addOverlayKeys(keys);
 		keys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.BOOLEAN,
+				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_FUNCTIONLITERALS));
+		keys.add(new OverlayPreferenceStore.OverlayKey(
+				OverlayPreferenceStore.BOOLEAN,
 				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_UNITTESTS));
 		keys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.BOOLEAN,
@@ -45,6 +48,9 @@ public class DeeSourceFoldingPreferenceBlock extends SourceCodeFoldingPreference
 	@Override
 	protected void addInitiallyFoldOptions(Group group) {
 		super.addInitiallyFoldOptions(group);
+		createCheckBox(group,
+				DeePreferencesMessages.Folding_initFoldFunctionLiterals,
+				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_FUNCTIONLITERALS);
 		createCheckBox(group,
 				DeePreferencesMessages.Folding_initUnitTests,
 				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_UNITTESTS);

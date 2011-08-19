@@ -31,11 +31,13 @@ import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionUnion;
+import dtool.ast.expressions.ExpLiteralFunc;
 
 public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	
 	protected int blockLinesMin;
 	protected boolean collapseFunctions;
+	protected boolean collapseFunctionLiterals;
 	protected boolean collapseAggregates;
 	protected boolean collapseUnittests;
 	protected boolean collapseConditionals;
@@ -46,8 +48,12 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 		
 		collapseFunctions = preferenceStore.getBoolean(PreferenceConstants.EDITOR_FOLDING_INIT_METHODS);
 		collapseAggregates = preferenceStore.getBoolean(PreferenceConstants.EDITOR_FOLDING_INIT_CLASSES);
-		collapseUnittests = preferenceStore.getBoolean(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_UNITTESTS);
-		collapseConditionals = preferenceStore.getBoolean(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_CONDITIONALS);
+		collapseFunctionLiterals = preferenceStore.getBoolean(
+				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_FUNCTIONLITERALS);
+		collapseUnittests = preferenceStore.getBoolean(
+				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_UNITTESTS);
+		collapseConditionals = preferenceStore.getBoolean(
+				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_CONDITIONALS);
 	}
 	
 	protected IFoldingBlockRequestor requestor;
@@ -100,6 +106,12 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 					@Override
 					public boolean visit(DefinitionFunction elem) {
 						reportBlock(elem, DeeFoldingBlockKind.FUNCTION, collapseFunctions);
+						return true;
+					}
+					
+					@Override
+					public boolean visit(ExpLiteralFunc elem) {
+						reportBlock(elem, DeeFoldingBlockKind.FUNCTIONLITERALS, collapseFunctionLiterals);
 						return true;
 					}
 					

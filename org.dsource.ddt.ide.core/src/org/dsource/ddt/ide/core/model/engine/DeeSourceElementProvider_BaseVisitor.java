@@ -9,6 +9,7 @@ import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.CommonRefQualified;
@@ -120,4 +121,8 @@ public abstract class DeeSourceElementProvider_BaseVisitor implements IASTNeoVis
 	@Override
 	public void endVisit(DeclarationConditional elem) { }
 	
+	@Override
+	public final boolean visit(ExpLiteralFunc elem) {
+		return true;
+	}
 }

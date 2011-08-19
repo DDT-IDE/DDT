@@ -15,6 +15,7 @@ public interface DeeFoldingPreferenceConstants {
 	public static final String EDITOR_STRINGS_FOLDING_ENABLED = "editor_Strings_folding_enabled";
 	public static final String EDITOR_FOLDING_INIT_STRINGS = "editor_folding_init_Strings";
 	
+	public static final String EDITOR_FOLDING_INIT_FUNCTIONLITERALS = "editor_folding_init_FunctionLiterals";
 	public static final String EDITOR_FOLDING_INIT_UNITTESTS = "editor_folding_init_UnitTests";
 	public static final String EDITOR_FOLDING_INIT_CONDITIONALS = "editor_folding_init_DeclConditional";
 	

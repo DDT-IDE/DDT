@@ -50,6 +50,8 @@ public final class DeePreferencesMessages extends NLS {
 	
 	public static final String Folding_initFoldFunctions = 
 			 "Functions";
+	public static final String Folding_initFoldFunctionLiterals = 
+			 "Function/Delegate literals";
 	public static final String Folding_initFoldAggregates = 
 			 "Aggregate Types";
 	
