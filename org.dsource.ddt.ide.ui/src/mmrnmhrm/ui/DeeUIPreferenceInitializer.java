@@ -85,9 +85,10 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_CLASSES, false);
 		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_STRINGS_FOLDING_ENABLED, true); // Not used much ATM
 		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_STRINGS, false); // Not used much ATM
-		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_FUNCTIONLITERALS, false);
 		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_UNITTESTS, true);
 		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_CONDITIONALS, false);
+		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_FUNCTIONLITERALS, false);
+		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_ANONCLASSES, false);
 		
 		
 		store.setDefault(PreferenceConstants.SEARCH_USE_REDUCED_MENU, true);

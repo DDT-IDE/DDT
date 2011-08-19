@@ -10,6 +10,7 @@ import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.CommonRefQualified;
@@ -125,4 +126,10 @@ public abstract class DeeSourceElementProvider_BaseVisitor implements IASTNeoVis
 	public final boolean visit(ExpLiteralFunc elem) {
 		return true;
 	}
+	
+	@Override
+	public final boolean visit(ExpLiteralNewAnonClass elem) {
+		return true;
+	}
+	
 }

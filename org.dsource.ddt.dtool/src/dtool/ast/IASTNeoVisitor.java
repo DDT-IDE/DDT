@@ -19,6 +19,7 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.CommonRefQualified;
@@ -122,6 +123,7 @@ public interface IASTNeoVisitor {
 	public boolean visit(DeclarationConditional node);
 	public void endVisit(DeclarationConditional node);
 	
-	public boolean visit(ExpLiteralFunc elem);
+	public boolean visit(ExpLiteralFunc node);
+	public boolean visit(ExpLiteralNewAnonClass node);
 	
 }

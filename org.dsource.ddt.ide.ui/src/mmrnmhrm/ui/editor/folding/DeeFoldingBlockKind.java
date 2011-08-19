@@ -17,9 +17,10 @@ public enum DeeFoldingBlockKind implements IFoldingBlockKind {
 	DOCCOMMENT(true),
 	AGGREGATE(false),
 	FUNCTION(false),
-	FUNCTIONLITERALS(false),
 	CONDITIONALS(false),
 	UNITTEST(false),
+	FUNCTIONLITERALS(false),
+	ANONCLASSES(false),
 	MULTILINESTRING(false);
 	
 	
