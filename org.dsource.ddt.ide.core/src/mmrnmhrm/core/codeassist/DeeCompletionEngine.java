@@ -50,7 +50,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	}
 	
 	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset, PrefixSearchOptions searchOptions) {
-		String rplStr = defUnit.getName().substring(searchOptions.prefixLen);
+		String rplStr = defUnit.getName().substring(searchOptions.namePrefixLen);
 		
 		CompletionProposal proposal = createProposal(CompletionProposal.TYPE_REF, ccOffset);
 		proposal.setName(defUnit.toStringForCodeCompletion());

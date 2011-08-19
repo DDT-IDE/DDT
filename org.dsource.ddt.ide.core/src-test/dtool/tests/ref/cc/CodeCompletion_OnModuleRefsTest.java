@@ -30,8 +30,10 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 	}
 	
 	@Test
-	public void test_impModuleRef() throws Exception {
+	public void test_impModuleRef() throws Exception { test_impModuleRef$(); }
+	public void test_impModuleRef$() throws Exception {
 		int cc3Offset = getMarkerEndOffset("/+CC3@+/");
+		int cc3xOffset = getMarkerEndOffset("/+CC3x@+/");
 		
 		String[] cc3results1 = array(
 				"ack.mod1", "ack.mod2", "ack.mod3", "ack.modSyntaxErrors", 
@@ -42,7 +44,8 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 				"ack2.fooprivate", "ack2.foopublic", "ack2.foopublic2"
 		);
 		
-		testComputeProposalsWithRepLen(cc3Offset+1, 1, 8, false, cc3results1);
+		testComputeProposalsWithRepLen(cc3Offset+1, 1,  "ack.mod3".length(), false, cc3results1);
+		testComputeProposalsWithRepLen(cc3xOffset+1, 1, "ack .  mod3".length(), false, cc3results1);
 		
 		String[] cc3results5 = array(
 				"mod1", "mod2", "mod3", "modSyntaxErrors", 
@@ -50,11 +53,17 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 				"testSelfImport3",
 				"subpack.mod3", "subpack.mod4"
 		);
-		testComputeProposalsWithRepLen(cc3Offset+5, 5, 4, false, cc3results5);
+		testComputeProposalsWithRepLen(cc3Offset+5,    5, "mod3".length(), false, cc3results5);
+		testComputeProposalsWithRepLen(cc3xOffset+5+3, 5, "mod3".length(), false, cc3results5);
 		
-		testComputeProposalsWithRepLen(cc3Offset+6, 6, 3, false,
+		// maybe functionality-wise, it should that rplLen should be 0.
+		testComputeProposalsWithRepLen(cc3xOffset+5+1, 5, "  mod3".length(), false, cc3results5);
+		
+		String[] cc3results6 = array(
 				"od1", "od2", "od3", "odSyntaxErrors"
 		);
+		testComputeProposalsWithRepLen(cc3Offset+6,    6, "od3".length(), false, cc3results6);
+		testComputeProposalsWithRepLen(cc3xOffset+6+3, 6, "od3".length(), false, cc3results6);
 		
 		testComputeProposalsWithRepLen(getMarkerEndOffset("/+CC4@+/")+5, 5, 0, false, cc3results5);
 	}
