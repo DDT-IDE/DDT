@@ -1,5 +1,6 @@
 package mmrnmhrm.ui.editor;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.ui.views.ASTViewer;
@@ -16,10 +17,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 public class DeeEditorTest extends BaseDeeUITest {
-
+	
 	public static IDocument getDocument(ScriptEditor editor) {
 		return editor.getScriptSourceViewer().getDocument();
 	}
@@ -27,20 +26,20 @@ public class DeeEditorTest extends BaseDeeUITest {
 	@Before
 	public void setUp() throws Exception {
 	}
-
+	
 	@After
 	public void tearDown() throws Exception {
 	}
-
-
+	
+	
 	@Test
 	public void testDeeEditor() throws CoreException {
 		IFile file = SampleMainProject.sampleBigFile;
 		
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		IEditorPart editor = IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
-		assertTrue(editor instanceof DeeEditor, "Assertion failed.");
-
+		assertTrue(editor instanceof DeeEditor);
+		
 		page.showView("org.eclipse.ui.views.ContentOutline");
 		page.showView(ASTViewer.VIEW_ID);
 	}
@@ -51,8 +50,8 @@ public class DeeEditorTest extends BaseDeeUITest {
 		
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		IEditorPart editor = IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
-		assertTrue(editor instanceof DeeEditor, "Assertion failed.");
-
+		assertTrue(editor instanceof DeeEditor);
+		
 		page.showView("org.eclipse.ui.views.ContentOutline");
 		page.showView(ASTViewer.VIEW_ID);
 	}
@@ -61,12 +60,8 @@ public class DeeEditorTest extends BaseDeeUITest {
 	public void testDeeEditor3() throws CoreException {
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		IFile file = SampleMainProject.sampleNonExistantFile;
-		//IEditorPart editor = 
-			IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
-		//UITestUtils.runEventLoop(page.getActivePart().getSite().getShell());
-		//assertTrue(!(editor instanceof DeeEditorDLTK));
-		//assertTrue(exceptionThrown == true);
+		IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
 		logErrorListener.reset();
 	}
-
+	
 }
