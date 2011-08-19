@@ -95,7 +95,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 		
 		String info = getDocInfoForNode(node);
 		if(info != null)
-			return HoverUtil.getCompleteHoverInfo("DDOCTextHover:" + info, getCSSStyles());
+			return HoverUtil.getCompleteHoverInfo(info, getCSSStyles());
 		
 		return null;
 	}
