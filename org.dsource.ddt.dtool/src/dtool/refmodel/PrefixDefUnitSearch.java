@@ -169,7 +169,11 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 						source.substring(refMod.getStartPos(), refModEndPos) :
 						refModCanonicalName;
 						
-				setupPrefixedSearchOptions_withCanonization(offset, searchOptions, refMod, refModEndPos, refModSource);
+				int rplLen = refModEndPos - offset;
+				if(Character.isWhitespace(source.charAt(offset))) {
+					rplLen = 0; // Don't replace, just append
+				}
+				setupPrefixedSearchOptions_withCanonization(offset, searchOptions, refMod, refModSource, rplLen);
 				
 			} else if (node instanceof RefImportSelection) {
 				RefImportSelection refImpSel = (RefImportSelection) node;
@@ -248,7 +252,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	}
 	
 	private static void setupPrefixedSearchOptions_withCanonization(final int offset,
-			PrefixSearchOptions searchOptions, RefModule refMod, int refModEndPos, String refModSource) {
+			PrefixSearchOptions searchOptions, RefModule refMod, String refModSource, int rplLen) {
 		String elemSourcePrefix = refModSource.substring(0, offset-refMod.getStartPos());
 		String canonicalNamePrefix = "";
 		for (int i = 0; i < elemSourcePrefix.length(); i++) {
@@ -258,8 +262,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 				canonicalNamePrefix = canonicalNamePrefix + ch; 
 			}
 		}
-		
-		int rplLen = refModEndPos - offset;
 		
 		searchOptions.rplLen = rplLen;
 		searchOptions.namePrefixLen = canonicalNamePrefix.length();

@@ -16,7 +16,7 @@
  * Fixed some minor NPE and assertion failure bugs.
  * Fixed issue #51, parsing AssertFailedException.
  * Resolved #19 in a definite and proper way (instead of with a workaround hack).
- * Fixed some issues relate to completion of imports, related to issue #53. 
+ * Fixed some issues relate to completion of imports, including issue #53. 
 
 == DDT 0.4.3 (2011-06-02) ==
  * Resolved issue #12, added Content Assist preference page. 

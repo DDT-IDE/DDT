@@ -56,8 +56,7 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 		testComputeProposalsWithRepLen(cc3Offset+5,    5, "mod3".length(), false, cc3results5);
 		testComputeProposalsWithRepLen(cc3xOffset+5+3, 5, "mod3".length(), false, cc3results5);
 		
-		// maybe functionality-wise, it should that rplLen should be 0.
-		testComputeProposalsWithRepLen(cc3xOffset+5+1, 5, "  mod3".length(), false, cc3results5);
+		testComputeProposalsWithRepLen(cc3xOffset+5+1, 5, 0, false, cc3results5);
 		
 		String[] cc3results6 = array(
 				"od1", "od2", "od3", "odSyntaxErrors"
