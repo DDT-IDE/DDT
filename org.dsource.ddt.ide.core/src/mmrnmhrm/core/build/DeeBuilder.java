@@ -95,7 +95,7 @@ public class DeeBuilder {
 		this.listeners = iterable;
 	}
 	
-	private DeeProjectOptions getProjectOptions(IScriptProject deeProj) {
+	protected DeeProjectOptions getProjectOptions(IScriptProject deeProj) {
 		return DeeProjectModel.getDeeProjectInfo(deeProj);
 	}
 	
