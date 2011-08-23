@@ -1,6 +1,6 @@
 #summary ChangeLog for releases.
 
-= DDT Change Log =
+= DDT Change Log (TEST) =
 
 == DDT 0.4.4 (devel) ==
  * Made icons of D source elements (classes, structs templates, etc.) consistent throughout the UI.
