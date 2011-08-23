@@ -21,9 +21,11 @@ public class ExpLiteralNewAnonClass extends Expression {
 	public ExpLiteralNewAnonClass(NewAnonClassExp elem, ASTConversionContext convContext) {
 		convertNode(elem);
 		this.allocargs = ExpressionConverter.convertMany(elem.newargs, convContext); 
-		this.args = ExpressionConverter.convertMany(elem.arguments, convContext); 
-		this.baseClasses = DescentASTConverter.convertMany(elem.cd.sourceBaseclasses.toArray(),
-				BaseClass.class, convContext);
+		this.args = ExpressionConverter.convertMany(elem.arguments, convContext);
+		if(elem.cd.sourceBaseclasses != null) {
+			this.baseClasses = DescentASTConverter.convertMany(elem.cd.sourceBaseclasses.toArray(), BaseClass.class,
+					convContext);
+		}
 		this.members = DescentASTConverter.convertManyNoNulls(elem.cd.members, convContext);
 	}
 

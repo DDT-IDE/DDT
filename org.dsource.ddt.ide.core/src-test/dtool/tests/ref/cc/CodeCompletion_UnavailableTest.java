@@ -35,7 +35,7 @@ public class CodeCompletion_UnavailableTest extends CodeCompletion__Common {
 		PrefixDefUnitSearch search = testUnavailableCompletion(getMarkerEndOffset("/+CC10+/")+6, 
 				ECompletionSessionResults.RESULT_OK);
 		
-		assertTrue(search.searchOptions.prefixLen == 0 && search.searchOptions.rplLen == 0);
+		assertTrue(search.searchOptions.namePrefixLen == 0 && search.searchOptions.rplLen == 0);
 		assertTrue(search.searchOptions.searchPrefix.isEmpty());
 	}
 	

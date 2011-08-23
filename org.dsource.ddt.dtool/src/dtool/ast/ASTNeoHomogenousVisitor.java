@@ -28,6 +28,8 @@ import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.CommonRefQualified;
@@ -176,6 +178,15 @@ public class ASTNeoHomogenousVisitor extends ASTNeoAbstractVisitor implements IA
 	}
 	@Override
 	public final void endVisit(DeclarationConditional node) {
+	}
+	
+	@Override
+	public final boolean visit(ExpLiteralFunc node) {
+		return true;
+	}
+	@Override
+	public boolean visit(ExpLiteralNewAnonClass elem) {
+		return true;
 	}
 	
 }

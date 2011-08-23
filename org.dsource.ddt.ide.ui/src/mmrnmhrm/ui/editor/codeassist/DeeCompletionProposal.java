@@ -30,13 +30,18 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
 	@Override
 	protected boolean isSmartTrigger(char trigger) {
-		// BM what is this exactly? TODO review on DLTK 3.0
-		if(trigger == '.') {
-			return true;
-		}
+		// BM: From my understanding, a smart trigger is a insertion trigger character 
+		// that doesn't get added to the text
 		return false;
 	}
 	
+	@Override
+	protected boolean isValidPrefix(String prefix) {
+		if(isInScriptdoc()) {
+			return super.isValidPrefix(prefix);
+		}
+		return isPrefix(prefix, getReplacementString());
+	}
 	
 	@Override
 	protected boolean insertCompletion() {

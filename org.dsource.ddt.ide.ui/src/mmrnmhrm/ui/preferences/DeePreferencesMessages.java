@@ -43,15 +43,19 @@ public final class DeePreferencesMessages extends NLS {
 	
 	public static final String Folding_initFoldDoc = 
 			 "D Doc Comments";
-	public static final String Folding_initUnitTests = 
+	public static final String Folding_initFoldUnitTests = 
 			 "UnitTest Declarations ";
-	public static final String Folding_initConditionals = 
+	public static final String Folding_initFoldConditionals = 
 			 "Conditional Declarations (version, debug)";
 	
 	public static final String Folding_initFoldFunctions = 
 			 "Functions";
+	public static final String Folding_initFoldFunctionLiterals = 
+			 "Function/Delegate literals";
 	public static final String Folding_initFoldAggregates = 
 			 "Aggregate Types";
+	public static final String Folding_initFoldAnonClasses = 
+			 "Anonymous Classes";
 	
 	
 	private DeePreferencesMessages() {

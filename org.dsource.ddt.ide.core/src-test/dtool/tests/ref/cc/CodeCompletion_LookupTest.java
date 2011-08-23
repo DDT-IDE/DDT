@@ -32,37 +32,39 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 				"testCodeCompletion"
 		);
 	}
+	
+	public static final String[] EXPECTED_IN_TEST_f = array(
+			"fParam", "func(int a, List!(Foo) a)", "foobarvar",
+			"foovar", "foox", 
+			"func(char b, List!(Foo) b)", "func()",
+			/*"FooBar",*/  "foo_t", "fooalias", "fooOfModule", "frak" /*,"Foo",*/
+	);
+	
+	public static final String[] EXPECTED_IN_TEST_fo = array(
+			"foobarvar",
+			"foovar", "foox", "foo_t", "fooalias", "fooOfModule"
+	);
+	
 	@Test
 	public void test2() throws Exception {
-		testComputeProposals(getMarkerEndOffset("/+CC2@+/")+1, 1, false,
-				"Param", "unc(int a, List!(Foo) a)", "oobarvar",
-				"oovar", "oox", 
-				"unc(char b, List!(Foo) b)", "unc()",
-				/*"FooBar",*/  "oo_t", "ooalias", "ooOfModule", "rak" /*,"Foo",*/
-		);
+		testComputeProposals(getMarkerEndOffset("/+CC2@+/")+1, 1, false, EXPECTED_IN_TEST_f);
 		
-		// same test, but characters ahead of offset
-		testComputeProposalsWithRepLen(getMarkerEndOffset("/+CC3@+/")+1, 1, 2, false,
-				"Param", "unc(int a, List!(Foo) a)", "oobarvar",
-				"oovar", "oox", 
-				"unc(char b, List!(Foo) b)", "unc()",
-				/*"FooBar",*/  "oo_t", "ooalias", "ooOfModule", "rak" /*,"Foo",*/
-		);
+		// same test, but having characters ahead of offset
+		testComputeProposalsWithRepLen(getMarkerEndOffset("/+CC3@+/")+1, 1, 2, false, EXPECTED_IN_TEST_f);
 	}
 	
 	@Test
 	public void test3() throws Exception {
 		testComputeProposals(getMarkerEndOffset("/+CC3@+/")+3, 3, false,
-				"barvar",
-				"var", "x", "_t", "alias", "OfModule"
+				"foobarvar",
+				"foovar", "foox", "foo_t", "fooalias", "fooOfModule"
 		);
 	}
 	
 	@Test
 	public void test4() throws Exception {
 		testComputeProposals(getMarkerEndOffset("/+CC4@+/")+2, 2, false,
-				"obarvar",
-				"ovar", "ox", "o_t", "oalias", "oOfModule"
+				EXPECTED_IN_TEST_fo
 		);
 	}
 	
@@ -82,10 +84,10 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 		// Test in middle of the first name of the qualified ref
 		int offset = getMarkerEndOffset("/+CC6b@+/");
 		testComputeProposalsWithRepLen(offset+1, 1, 2, false,
-				"oo", "ooBar");
+				"Foo", "FooBar");
 		// Test at end of qualified ref
 		testComputeProposals(offset+5, 1, false,
-				"oovar", "oox");
+				"foovar", "foox");
 	}
 	
 	@Test
@@ -108,16 +110,16 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 	@Test
 	public void test7b() throws Exception {
 		testComputeProposals(getMarkerEndOffset("/+CC7b@+/")+2, 1, false,
-				"ooOfModule", "rak",
-				"unc(char b, List!(Foo) b)", "unc()",
-				"ooalias", "oo_t");
+				"fooOfModule", "frak",
+				"func(char b, List!(Foo) b)", "func()",
+				"fooalias", "foo_t");
 	}
 	
 	
 	@Test
 	public void test8() throws Exception {
 		testComputeProposals(getMarkerEndOffset("/+CC8@+/")+14, 1, false,
-				"oovar", "oox");
+				"foovar", "foox");
 	}
 }
 

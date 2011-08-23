@@ -33,7 +33,7 @@ public class SourceModelUtil {
 		return getTypeHandle((DefUnit) node);
 	}
 	
-	// This needs to be redone
+	// XXX: This needs to be redone
 	@Deprecated
 	public static IMember getTypeHandle(DefUnit defunit) {
 		

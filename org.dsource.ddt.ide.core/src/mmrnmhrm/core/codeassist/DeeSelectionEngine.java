@@ -34,6 +34,8 @@ import dtool.ast.references.Reference;
 
 public class DeeSelectionEngine extends ScriptSelectionEngine {
 	
+	public static final boolean ELEMENT_DDOC_SELECTION__INCLUSIVE_END = false;
+	
 	public IModelElement[] select(IModuleSource sourceUnit, int offset) {
 		return select(sourceUnit, offset, 0);
 	}
@@ -44,7 +46,8 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		ISourceModule sourceModule = (ISourceModule) sourceUnit.getModelElement();
 		
 		DeeModuleDeclaration deeModule = DeeModelUtil.getParsedDeeModule(sourceModule);
-		ASTNeoNode node = ASTNodeFinder.findElement(deeModule.neoModule, offset);
+		ASTNeoNode node = ASTNodeFinder.findElement(deeModule.neoModule, offset, 
+				ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		if(node instanceof DefSymbol) {
 			IMember modelElement = getModelElement(((DefSymbol) node).getDefUnit(), sourceModule);

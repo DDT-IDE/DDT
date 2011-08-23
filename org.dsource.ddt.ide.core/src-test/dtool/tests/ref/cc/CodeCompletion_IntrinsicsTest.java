@@ -22,7 +22,7 @@ public class CodeCompletion_IntrinsicsTest extends CodeCompletion__Common {
 	
 	@Test
 	public void test1() throws Exception {
-		checkProposals(0, 
+		checkProposals(
 				list(mockDefUnit("Object"), mockDefUnit("ClassInfo"), mockDefUnit("TypeInfo"), mockDefUnit("Error")),
 				array("Error", "ClassInfo"), true);
 	}

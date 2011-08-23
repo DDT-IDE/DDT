@@ -21,6 +21,9 @@ import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpLiteralNewAnonClass;
+import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.CommonRefQualified;
@@ -310,4 +313,15 @@ public abstract class ASTNeoUpTreeVisitor implements IASTNeoVisitor {
 	
 	/* ============================================= */
 	
+	static { assertTrue(ExpLiteralFunc.class.getSuperclass().equals(Expression.class)); }
+	@Override
+	public final boolean visit(ExpLiteralFunc elem) {
+		return visit((Expression) elem);
+	}
+	
+	static { assertTrue(ExpLiteralNewAnonClass.class.getSuperclass().equals(Expression.class)); }
+	@Override
+	public boolean visit(ExpLiteralNewAnonClass elem) {
+		return visit((Expression) elem);
+	}
 }

@@ -6,8 +6,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.core.Function;
 import mmrnmhrm.tests.ui.SWTTestUtils;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
@@ -63,17 +61,9 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 			ICompletionProposal[] proposals, String... expectedProposals) {
 		assertNotNull(proposals, "Code Completion Unavailable");
 		
-		Function<ICompletionProposal, DefUnit> proposalToDefunit  = new Function<ICompletionProposal, DefUnit>() {
-			@Override
-			public DefUnit evaluate(ICompletionProposal obj) {
-				assertNotNull(obj);
-				DeeCompletionProposal deeProposal = CoreUtil.tryCast(obj, DeeCompletionProposal.class);
-				return deeProposal == null ? null : deeProposal.defUnit;
-			}
-		};
 		List<DefUnit> results = mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>());
 		
-		CodeCompletion__Common.checkProposals(prefixLen, results, expectedProposals, removeObjectIntrinsics);
+		CodeCompletion__Common.checkProposals(results, expectedProposals, removeObjectIntrinsics);
 		
 		checkProposals(repOffset, repLen, prefixLen, proposals);
 	}

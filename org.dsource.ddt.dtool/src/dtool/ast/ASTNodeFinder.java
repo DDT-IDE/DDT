@@ -12,70 +12,90 @@ import descent.internal.compiler.parser.ast.IASTNode;
  * An element is picked between element.startPos (inclusive) and  
  * element.endPos (inclusive).   
  */
-public class ASTNodeFinder {
+public abstract class ASTNodeFinder<T extends IASTNode> {
 	
 	private int offset; 
 	private boolean inclusiveEnd;
-	private IASTNode match;
+	private T match;
 	
-	public ASTNodeFinder(int offsetCursor, boolean inclusiveEnd) {
-		this.offset = offsetCursor;
-		this.inclusiveEnd = inclusiveEnd;
-		this.match = null;
+	public ASTNodeFinder() {
 	}
 	
-	public static IASTNode findElement(IASTNode root, int offset) {
+	public static IASTNode findElementDependingOnASTType(IASTNode root, int offset) {
+		return findElementDependingOnType(root, offset, true);
+	}
+	
+	public static IASTNode findElementDependingOnType(IASTNode root, int offset, boolean inclusiveEnd) {
+		if(root instanceof ASTNeoNode) {
+			return findElement((ASTNeoNode) root, offset, inclusiveEnd);
+		} else if(root instanceof ASTNode) {
+			return findElement((ASTNode) root, offset, inclusiveEnd);
+		} else {
+			throw assertFail();
+		}
+	}
+	
+	public static ASTNode findElement(ASTNode root, int offset) {
 		return findElement(root, offset, true);
 	}
 	
+	protected static ASTNode findElement(final ASTNode root, int offset, boolean inclusiveEnd) {
+		ASTNodeFinder<ASTNode> astNodeFinder = new ASTNodeFinder<ASTNode>() {
+			@Override
+			public void doAcceptOnRoot() {
+				root.accept(new ASTUpTreeVisitor() {
+					@Override
+					public boolean visit(ASTNode node) {
+						return visitNode(node);
+					}
+				});
+			}
+		};
+		return astNodeFinder.doFindElementInAST(root, offset, inclusiveEnd);
+	}
+	
 	public static ASTNeoNode findElement(ASTNeoNode root, int offset) {
-		return (ASTNeoNode) findElement(root, offset, true);
+		return findElement(root, offset, true);
 	}
 	
-	
-	public static ASTNeoNode findNeoElement(ASTNeoNode root, int offset, boolean inclusiveEnd){
-		return (ASTNeoNode) findElement(root, offset, inclusiveEnd);
+	public static ASTNeoNode findElement(final ASTNeoNode root, int offset, boolean inclusiveEnd) {
+		ASTNodeFinder<ASTNeoNode> astNodeFinder = new ASTNodeFinder<ASTNeoNode>() {
+			@Override
+			public void doAcceptOnRoot() {
+				root.accept(new ASTNeoHomogenousVisitor() {
+					@Override
+					public boolean preVisit(ASTNeoNode node) {
+						return visitNode(node);
+					}
+				});
+			}
+		};
+		return astNodeFinder.doFindElementInAST(root, offset, inclusiveEnd);
 	}
 	
-	/** Finds the node at the given offset, starting from root.
-	 *  inclusiveEnd controls whether to match nodes whose end position 
-	 *  is the same as the offset.*/
-	public static IASTNode findElement(IASTNode root, int offset, boolean inclusiveEnd){
+	/** Finds the node at the given offset, starting from given root node.
+	 *  Given inclusiveEnd controls whether to match nodes whose end position is the same as the offset.*/
+	protected T doFindElementInAST(T root, int offsetCursor, boolean inclusiveEnd) {
 		if(root == null)
 			return null;
 		Assert.isTrue(!root.hasNoSourceRangeInfo());
 		
-		ASTNodeFinder aef = new ASTNodeFinder(offset, inclusiveEnd);
+		this.offset = offsetCursor;
+		this.inclusiveEnd = inclusiveEnd;
+		this.match = null;
 		
-		if(!aef.matchesRangeStart(root) || !aef.matchesRangeEnd(root)) 
+		if(!matchesRangeStart(root) || !matchesRangeEnd(root)) 
 			return null;
 		
-		acceptDependingOnKind(root, aef);
-		Assert.isNotNull(aef.match);
-		return aef.match;
+		this.doAcceptOnRoot();
+		
+		Assert.isNotNull(this.match);
+		return match;
 	}
 	
-	private static void acceptDependingOnKind(IASTNode root, final ASTNodeFinder visitor) {
-		if(root instanceof ASTNeoNode) {
-			((ASTNeoNode) root).accept(new ASTNeoHomogenousVisitor() {
-				@Override
-				public boolean preVisit(ASTNeoNode node) {
-					return visitor.visit(node);
-				}
-			});
-		} else if(root instanceof ASTNode) {
-			((ASTNode)root).accept(new ASTUpTreeVisitor() {
-				@Override
-				public boolean visit(ASTNode node) {
-					return visitor.visit(node);
-				}
-			});
-		} else {
-			assertFail();
-		}
-	}
+	protected abstract void doAcceptOnRoot();
 	
-	public boolean visit(IASTNode elem) {
+	public boolean visitNode(T elem) {
 		if(elem.hasNoSourceRangeInfo()) {
 			//Assert.fail();
 			return true; // Descend and search children.
@@ -87,7 +107,6 @@ public class ASTNodeFinder {
 			// Match not here, don't bother descending.
 			return false; 
 		}
-		
 	}
 	
 	private boolean matchesRangeStart(IASTNode elem) {

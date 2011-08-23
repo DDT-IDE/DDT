@@ -155,11 +155,26 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 				}
 			} else if(node instanceof RefModule) {
 				RefModule refMod = (RefModule) node;
-				String refModString = refMod.toStringAsElement();
+				
+				int refModEndPos = refMod.getEndPos();
+				
+				// We need to get exact source cause it may contains spaces, even comments
+				String refModCanonicalName = refMod.toStringAsElement();
 				if(parserAdapter.isQualifiedDotFixSearch) {
-					refModString = refModString.substring(0, refModString.length() - 1);
+					refModCanonicalName = refModCanonicalName.substring(0, refModCanonicalName.length() - 1);
+					refModEndPos = refModEndPos - 1;
 				}
-				setupPrefixedSearchOptions(searchOptions, offset, refMod.getOffset(), refModString);
+				
+				String refModSource = refMod.hasSourceRangeInfo() ?
+						source.substring(refMod.getStartPos(), refModEndPos) :
+						refModCanonicalName;
+						
+				int rplLen = refModEndPos - offset;
+				if(Character.isWhitespace(source.charAt(offset))) {
+					rplLen = 0; // Don't replace, just append
+				}
+				setupPrefixedSearchOptions_withCanonization(offset, searchOptions, refMod, refModSource, rplLen);
+				
 			} else if (node instanceof RefImportSelection) {
 				RefImportSelection refImpSel = (RefImportSelection) node;
 				setupPrefixedSearchOptions(searchOptions, offset, refImpSel.getOffset(), refImpSel.name);
@@ -225,17 +240,33 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
 	private static void setupPrefixedSearchOptions(PrefixSearchOptions searchOptions, 
 			final int offset, int nameOffset, String name) {
-		int prefixLen = offset - nameOffset; 
-		assertTrue(prefixLen >= 0);
-		if(name.length() < prefixLen) {
+		int namePrefixLen = offset - nameOffset;
+		assertTrue(namePrefixLen >= 0);
+		if(name.length() < namePrefixLen) {
 			// This case shouldnt happen, but can happen due to parser source range bugs, so workaround
-			prefixLen = name.length();
+			namePrefixLen = name.length();
 		}
-		searchOptions.prefixLen = prefixLen;
-		searchOptions.rplLen = name.length() - prefixLen;
-		searchOptions.searchPrefix = name.substring(0, prefixLen);
+		searchOptions.namePrefixLen = namePrefixLen;
+		searchOptions.rplLen = name.length() - namePrefixLen;
+		searchOptions.searchPrefix = name.substring(0, namePrefixLen);
 	}
 	
+	private static void setupPrefixedSearchOptions_withCanonization(final int offset,
+			PrefixSearchOptions searchOptions, RefModule refMod, String refModSource, int rplLen) {
+		String elemSourcePrefix = refModSource.substring(0, offset-refMod.getStartPos());
+		String canonicalNamePrefix = "";
+		for (int i = 0; i < elemSourcePrefix.length(); i++) {
+			char ch = elemSourcePrefix.charAt(i);
+			// This is not the ideal way to determine the canonical name, info should be provided by parser
+			if(!Character.isWhitespace(ch)) {
+				canonicalNamePrefix = canonicalNamePrefix + ch; 
+			}
+		}
+		
+		searchOptions.rplLen = rplLen;
+		searchOptions.namePrefixLen = canonicalNamePrefix.length();
+		searchOptions.searchPrefix = canonicalNamePrefix;
+	}
 	
 	private static IScopeNode isValidCompletionScope(ASTNeoNode node) {
 		if(node instanceof IScopeNode) {

@@ -11,11 +11,14 @@
 
 package mmrnmhrm.ui.editor.hover;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.lang.ui.EditorUtil;
+import mmrnmhrm.ui.editor.doc.DeeDocumentationProvider;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ast.ASTNeoNode;
@@ -26,7 +29,9 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 
 /**
- * Standard documentation hover for DDoc
+ * Standard documentation hover for DDoc.
+ * Used instead of {@link DeeDocumentationProvider} due to API limitation, review in the future.
+ * (used in editor hovers extensions, and editor information provider (F2))
  */
 public class DeeDocTextHover extends AbstractTextHover {
 	
@@ -53,17 +58,17 @@ public class DeeDocTextHover extends AbstractTextHover {
 	}
 	
 	public DeeDocTextHover(ITextEditor textEditor) {
-		super();
-		Assert.isNotNull(textEditor);
-		this.fEditor = textEditor;
+		assertNotNull(textEditor);
 	}
 	
 	private ASTNeoNode getNodeAtOffset(int offset) {
-		Module module = EditorUtil.getNeoModuleFromEditor(fEditor == null ? getEditor() : fEditor);
+		IEditorPart editor = getEditor();
+		assertNotNull(editor);
+		Module module = EditorUtil.getNeoModuleFromEditor(editor);
 		if(module == null)
 			return null;
 		
-		return ASTNodeFinder.findNeoElement(module, offset, false);
+		return ASTNodeFinder.findElement(module, offset, DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 	}
 	
 	@Override

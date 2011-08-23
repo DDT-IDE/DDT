@@ -140,7 +140,7 @@ public class DeeOutlinePage extends ScriptOutlinePage {
 	
 	@Override
 	protected void registerSpecialToolbarActions(IActionBars actionBars) {
-		// XXX: DLTK TCL 2.0 copied code: 
+		// XXX: DLTK TCL 3.0 copied and modified code: 
 		
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
 		MemberFilterActionGroup fMemberFilterActionGroup = new MemberFilterActionGroup(

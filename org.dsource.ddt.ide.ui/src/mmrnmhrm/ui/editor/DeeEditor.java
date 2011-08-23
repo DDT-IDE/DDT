@@ -37,8 +37,8 @@ public class DeeEditor extends DeeBaseEditor {
 	}
 	
 	@Override
-	protected IPreferenceStore getScriptPreferenceStore() {
-		return DeePlugin.getDefault().getPreferenceStore();
+	public IPreferenceStore getScriptPreferenceStore() {
+		return super.getScriptPreferenceStore();
 	}
 	
 	@Override

@@ -740,11 +740,4 @@
 		</actionSetPartAssociation>
 	</extension>
 
-	<extension point="org.eclipse.dltk.debug.scriptDebugModel">
-      <debugModel
-            debugModelId="descent.debug.core.model"
-            natureId="org.dsource.ddt.ide.core.nature"
-            typeFactory="mmrnmhrm.ui.launch.RubyTypeFactory">
-      </debugModel>
-	</extension>
 </plugin>

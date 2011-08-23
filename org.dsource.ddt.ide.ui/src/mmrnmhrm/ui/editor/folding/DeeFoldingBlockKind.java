@@ -19,6 +19,8 @@ public enum DeeFoldingBlockKind implements IFoldingBlockKind {
 	FUNCTION(false),
 	CONDITIONALS(false),
 	UNITTEST(false),
+	FUNCTIONLITERALS(false),
+	ANONCLASSES(false),
 	MULTILINESTRING(false);
 	
 	

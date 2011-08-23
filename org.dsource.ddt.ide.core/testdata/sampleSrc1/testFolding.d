@@ -1,5 +1,5 @@
 #!/usr/bin/dmd -run
-module coloring_preview;
+module testFolding;
 
 import std.stdio;
 
@@ -34,10 +34,9 @@ public class Foo {
 }
 
 string str = example("normal \"string\" ", x"0123456789ABCDEF", "utf8"c, "utf16"w, "utf32"d);
-string wysiwyg1 = `WYSIWYG 
- "string\" `; 
 string wysiwyg2 = r"WYSIWYG 
-\string\ ";
+\string\ 
+";
 
 string strdelim = q"(foo(xxx))" ~ q"[foo{]";  
 string strdelim2 = writefln(q"EOS
@@ -54,3 +53,20 @@ void func() {
 	if(true) return;
 }
 };
+
+
+int foo(string[] args) {
+	auto x = new class Object {
+		int a;
+		int b;
+		
+		int foo(string[] args) {
+			
+		}
+	};
+	
+	auto x = delegate()  {
+		foo(asdf);
+	};
+	
+}

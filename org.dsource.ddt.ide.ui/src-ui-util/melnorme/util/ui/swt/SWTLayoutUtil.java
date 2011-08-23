@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * SWT Layout Utils.
- * XXX: DLTK Partially obsolete by org.eclipse.dltk.internal.ui.wizards.dialogfields.LayoutUtil
+ * See also org.eclipse.dltk.internal.ui.wizards.dialogfields.LayoutUtil
  */
 public class SWTLayoutUtil {
 

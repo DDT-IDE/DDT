@@ -1,4 +1,4 @@
-module testCodeCompletion3;
+module testCodeCompletion_onModuleRefs;
 
 import pack.sample : 
 	/+CC1@+/SampleClass, 
@@ -7,16 +7,9 @@ import pack.sample :
 template Tpl(T) {
 }
 
-void func(Tuple!(1, 2) a) {
-	Tpl  ! (int);
-	foo2  . sdf;
-	
-	alias Tuple!(1, 2) tuple;
-	tuple[0].as;
-}
-
-
 import /+CC3@+/pack.mod3; // Test complete here, several offsets
+
+import /+CC3x@+/pack .  mod3; // Like CC3 but with spaces
 
 import /+CC4@+/pack.; // Test complete here, syntax-recover
 

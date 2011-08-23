@@ -17,8 +17,8 @@ public class CodeCompletion_n2Test extends CodeCompletion__Common {
 	@Test
 	public void test1() throws Exception {
 		testComputeProposals(getMarkerStartOffset("/+@CC1+/"), 1, false,
-				"unc()", "oobarvar",
-				"oovar", "oox",  "oo_t", "ooOfModule"
+				"func()", "foobarvar",
+				"foovar", "foox",  "foo_t", "fooOfModule"
 		);
 	}
 	
@@ -26,7 +26,7 @@ public class CodeCompletion_n2Test extends CodeCompletion__Common {
 	public void test2() throws Exception {
 		int offset = getMarkerStartOffset("/+@CC2+/");
 		testComputeProposals(offset, 1, false,
-				"oovar", "oox" 
+				"foovar", "foox" 
 		);
 		
 		testComputeProposalsWithRepLen(offset-1, 0, 1, false,
@@ -38,7 +38,7 @@ public class CodeCompletion_n2Test extends CodeCompletion__Common {
 	public void test3() throws Exception {
 		int offset = getMarkerStartOffset("/+@CC3+/");
 		testComputeProposals(offset, 1, false,
-				"ooOfModule", "oo_t"
+				"fooOfModule", "foo_t"
 		);
 		
 		testComputeProposalsWithRepLen(offset-1, 0, 1, false,

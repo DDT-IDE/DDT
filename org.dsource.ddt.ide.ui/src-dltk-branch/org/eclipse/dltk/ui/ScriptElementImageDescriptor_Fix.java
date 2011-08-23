@@ -15,7 +15,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 
-// XXX: DTLK copied from 3.0 : Fixes equals bug
+// XXX: DTLK copied from 3.0 : Fixes equals bug. Review in the near future
 public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 {
 	/** Flag to render the abstract adornment. */

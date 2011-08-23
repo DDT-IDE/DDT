@@ -28,6 +28,8 @@ import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.CommonRefQualified;
@@ -175,5 +177,15 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 	public boolean visit(DeclarationConditional elem) {
 		return true;
 	}
+	
+	@Override
+	public boolean visit(ExpLiteralFunc elem) {
+		return true;
+	}
+	@Override
+	public boolean visit(ExpLiteralNewAnonClass elem) {
+		return true;
+	}
+
 	
 }

@@ -20,14 +20,14 @@ public class CodeCompletion_DuplicatesTest extends CodeCompletion__Common {
 		int offset = getMarkerStartOffset("/+@CC1+/");
 		testComputeProposals(offset, 1, false,
 				
-				"unc(int aaa, List!(Foo) aaa)",
-				"unc(int bbb, List!(Foo) bbb)",
-				"unc(char a, List!(Foo) a)",
-				"unc(int a, List!(Bar) a)",
-				"unc()",
+				"func(int aaa, List!(Foo) aaa)",
+				"func(int bbb, List!(Foo) bbb)",
+				"func(char a, List!(Foo) a)",
+				"func(int a, List!(Bar) a)",
+				"func()",
 				
 				
-				"oo_t", "ooalias" 
+				"foo_t", "fooalias" 
 		);
 	}
 	
@@ -35,19 +35,19 @@ public class CodeCompletion_DuplicatesTest extends CodeCompletion__Common {
 	public void test2() throws Exception {
 		int offset = getMarkerStartOffset("/+@CC2+/");
 		testComputeProposals(offset, 1, false,
-				"oolocalinner", "oolocal1", "Param", "oobarvar",
+				"foolocalinner", "foolocal1", "fParam", "foobarvar",
 				
-				"unc(int a, List!(Foo) a)",
-				"unc(int bbb, List!(Foo) bbb)",
-				"unc(char a, List!(Foo) a)",
-				"unc(int a, List!(Bar) a)",
-				"unc()",
+				"func(int a, List!(Foo) a)",
+				"func(int bbb, List!(Foo) bbb)",
+				"func(char a, List!(Foo) a)",
+				"func(int a, List!(Bar) a)",
+				"func()",
 				
-				"unc(int aaa, List!(Foo) aaa)", //TODO: should be removed due to overload sets
+				"func(int aaa, List!(Foo) aaa)", //TODO: should be removed due to overload sets
 				
-				"oovar", "oox", 
+				"foovar", "foox", 
 				
-				"oo_t", "ooalias" 
+				"foo_t", "fooalias" 
 		);
 	}
 	

@@ -1,18 +1,24 @@
 #summary ChangeLog for releases.
 
-= DDT Change Log (TEST) =
+= DDT Change Log =
 
-== DDT 0.4.4 (devel) ==
- * Made icons of D source elements (classes, structs templates, etc.) consistent throughout the UI.
+== DDT 0.5.0 (devel) ==
+ * Updated DDT to DTLK 3.0
+ * Made icons of D source elements (classes, structs templates, etc.) consistent throughout the UI. 
+   (Previously DLTK views and some popups used simplified icons, and only CA and outline used more detailed icons.)
  * Outline view changes:
    * Now shows nested elements.
    * Clicking on named elements correctly selects their name in the editor (previously it just revealed the element).
    * Added context menu to the elements, added some filter actions to the toolbar of the view.
  * Constructor/Desctructors/Allocators/Deallocators now show up in Outline view and quick Outline.
- * Fixed issue #47: NPE while parsing is expression. Source ranges will still be missing though.
+ * Implemented #52: function/delegate literals can now be folded. And also anonymous classes.
  * Fix in Documentation hovers: removed redudant text, and now displays concrete archetype (Class, Interface, Struct, Union), instead of "Aggregate".
+ * Fixed issue #47: NPE while parsing is expression. Source ranges will still be missing though.
  * Fixed some minor NPE and assertion failure bugs.
- * Fixed issue #51, parsing AssertFailedException. 
+ * Fixed issue #51, parsing AssertFailedException.
+ * Resolved #19 in a definite and proper way (instead of with a workaround hack).
+ * Fixed some issues relate to completion of imports, including issue #53. 
+ * Fixed issue #58: typing the dot causes selected completion proposal to be applied.
 
 == DDT 0.4.3 (2011-06-02) ==
  * Resolved issue #12, added Content Assist preference page. 

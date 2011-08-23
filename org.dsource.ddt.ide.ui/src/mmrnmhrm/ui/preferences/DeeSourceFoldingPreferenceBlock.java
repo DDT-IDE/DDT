@@ -25,6 +25,12 @@ public class DeeSourceFoldingPreferenceBlock extends SourceCodeFoldingPreference
 		keys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.BOOLEAN,
 				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_CONDITIONALS));
+		keys.add(new OverlayPreferenceStore.OverlayKey(
+				OverlayPreferenceStore.BOOLEAN,
+				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_FUNCTIONLITERALS));
+		keys.add(new OverlayPreferenceStore.OverlayKey(
+				OverlayPreferenceStore.BOOLEAN,
+				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_ANONCLASSES));
 	}
 	
 	@Override
@@ -46,11 +52,17 @@ public class DeeSourceFoldingPreferenceBlock extends SourceCodeFoldingPreference
 	protected void addInitiallyFoldOptions(Group group) {
 		super.addInitiallyFoldOptions(group);
 		createCheckBox(group,
-				DeePreferencesMessages.Folding_initUnitTests,
+				DeePreferencesMessages.Folding_initFoldUnitTests,
 				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_UNITTESTS);
 		createCheckBox(group,
-				DeePreferencesMessages.Folding_initConditionals,
+				DeePreferencesMessages.Folding_initFoldConditionals,
 				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_CONDITIONALS);
+		createCheckBox(group,
+				DeePreferencesMessages.Folding_initFoldFunctionLiterals,
+				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_FUNCTIONLITERALS);
+		createCheckBox(group,
+				DeePreferencesMessages.Folding_initFoldAnonClasses,
+				DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_ANONCLASSES);
 	}
 	
 }
