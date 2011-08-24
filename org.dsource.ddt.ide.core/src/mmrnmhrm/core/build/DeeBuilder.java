@@ -14,7 +14,6 @@ import java.util.Map;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.launch.DeeDmdInstallType;
 import mmrnmhrm.core.launch.DeeInstall;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.core.projectmodel.DeeProjectOptions;
@@ -137,7 +136,8 @@ public class DeeBuilder {
 	protected void processLibraryEntry(IBuildpathEntry entry) throws CoreException {
 		if(IBuildpathEntry.BUILTIN_EXTERNAL_ENTRY.isPrefixOf(entry.getPath())) {
 			// Ignore builtin entry
-		} else if(DeeDmdInstallType.isStandardLibraryEntry(entry)) {
+		} else if(entry.isExternal()) {
+			// Assume it is standard library
 			// Ignore Standard Lib entry  
 		} else if(!entry.isExternal()) {
 			// Should not happen

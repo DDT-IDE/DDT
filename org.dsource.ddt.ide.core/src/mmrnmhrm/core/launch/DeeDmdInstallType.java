@@ -1,14 +1,11 @@
 package mmrnmhrm.core.launch;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import java.util.List;
 
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.IInterpreterInstall;
@@ -20,20 +17,6 @@ public class DeeDmdInstallType extends CommonInstallType {
 	
 	private static final Path DMD_INSTALL_LIBRARY_PATH = new Path("src/phobos");
 	private static final Path DMD2_INSTALL_LIBRARY_PATH = new Path("src/druntime/import");
-	
-	public static boolean isStandardLibraryEntry(IBuildpathEntry entry) {
-		boolean result = entry.getEntryKind() == IBuildpathEntry.BPE_LIBRARY;
-		
-		IPath path = entry.getPath();
-		int numSegs = path.segmentCount();
-		assertTrue(result == (entry.isExternal() && path.isAbsolute() && (
-				(path.lastSegment().matches("phobos") && path.segment(numSegs-2).matches("src")) ||
-				(path.lastSegment().matches("import") && path.segment(numSegs-2).matches("druntime"))
-			))
-		);
-		
-		return result;
-	}
 	
 	@Override
 	public String getName() {

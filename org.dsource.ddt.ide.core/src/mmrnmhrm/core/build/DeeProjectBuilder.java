@@ -61,7 +61,7 @@ public class DeeProjectBuilder extends IncrementalProjectBuilder {
 	
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
-		IPath outputPath = getProjectOptions().compilerOptions.outputDir;
+		IPath outputPath = getProjectOptions().getCompilerOptions().outputDir;
 		outputFolder = getProject().getFolder(outputPath);
 		if(outputFolder.exists()) {
 			for(IResource res : outputFolder.members()) {
@@ -71,7 +71,7 @@ public class DeeProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	private IFolder prepOutputFolder(DeeProjectOptions options) throws CoreException {
-		IPath outputPath = options.compilerOptions.outputDir;
+		IPath outputPath = options.getCompilerOptions().outputDir;
 		IFolder outputFolder = getProject().getFolder(outputPath);
 		
 		if(!outputFolder.exists())

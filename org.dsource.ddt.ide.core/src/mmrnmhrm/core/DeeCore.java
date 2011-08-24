@@ -48,7 +48,7 @@ public class DeeCore extends LangCore {
 		ReferenceResolver.initializeEntityResolver(DLTKModuleResolver.instance);
 		//TypeHierarchy.DEBUG = true;
 		
-		DeeProjectModel.initModel(); // Can we add a listener here?
+		DeeProjectModel.initializeModel();
 	}
 	
 	/* *********************************************** */

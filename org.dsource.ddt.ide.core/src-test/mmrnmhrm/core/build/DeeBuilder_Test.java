@@ -40,7 +40,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 		
 		DeeProjectOptions deeProjectInfo = DeeProjectModel.getDeeProjectInfo(deeProj);
 		
-		deeProjectInfo.compilerOptions.buildToolCmdLine = deeProjectInfo.compilerOptions.buildToolCmdLine;
+		deeProjectInfo.getCompilerOptions().buildToolCmdLine = deeProjectInfo.getCompilerOptions().buildToolCmdLine;
 		return deeProj;
 	}
 	
@@ -75,7 +75,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 			DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC3, project.getFolder("src3 copy"));
 			doProjectBuild(deeProj);
 			
-			DeeProjectModel.getDeeProjectInfo(deeProj).compilerOptions.outputDir = new Path("out");
+			DeeProjectModel.getDeeProjectInfo(deeProj).getCompilerOptions().outputDir = new Path("out");
 			doProjectBuild(deeProj);
 		} finally {
 			project.delete(true, null);

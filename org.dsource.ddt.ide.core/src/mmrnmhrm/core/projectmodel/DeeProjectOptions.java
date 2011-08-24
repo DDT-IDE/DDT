@@ -28,17 +28,21 @@ import dtool.Logg;
 
 
 public class DeeProjectOptions {
-
+	
 	public static final String CFG_FILE_NAME = ".dprojectoptions";
-
+	
 	private static final String CFG_FILE_SECTION = "compileoptions";
-
+	
 	public final IScriptProject dltkProj;
-	public DeeBuildOptions compilerOptions;
+	protected DeeBuildOptions compilerOptions;
 	
 	protected DeeProjectOptions(IScriptProject dltkProj) {
+		this(dltkProj, new DeeBuildOptions(dltkProj.getElementName()));
+	}
+	
+	protected DeeProjectOptions(IScriptProject dltkProj, DeeBuildOptions compilerOptions) {
 		this.dltkProj = dltkProj;
-		this.compilerOptions = new DeeBuildOptions(dltkProj.getElementName());
+		this.compilerOptions = compilerOptions;
 	}
 	
 	public IProject getProject() {
@@ -51,25 +55,32 @@ public class DeeProjectOptions {
 	
 	@Override
 	public DeeProjectOptions clone() {
-		DeeProjectOptions options = new DeeProjectOptions(dltkProj);
-		options.compilerOptions = compilerOptions.clone();
+		DeeProjectOptions options = new DeeProjectOptions(dltkProj, compilerOptions.clone());
 		return options;
+	}
+	
+	public DeeBuildOptions getCompilerOptions() {
+		return compilerOptions;
+	}
+	
+	public void changeProjectOptions(DeeBuildOptions deeBuildOptions) throws CoreException {
+		compilerOptions = deeBuildOptions;
+		saveProjectConfigFile();
 	}
 	
 	public void saveProjectConfigFile() throws CoreException {
 		Ini ini = new Ini();
 		Ini.Section section = ini.add(CFG_FILE_SECTION);
 		
-    	section.put("buildtype", compilerOptions.buildType.toString());
-    	section.put("out", getOutputFolder().getProjectRelativePath().toString());
-    	section.put("outname", compilerOptions.artifactName);
-    	section.put("buildtool", compilerOptions.buildToolCmdLine);
-    	section.put("extraOptions", compilerOptions.buildCommands);
-
+		section.put("buildtype", compilerOptions.buildType.toString());
+		section.put("out", getOutputFolder().getProjectRelativePath().toString());
+		section.put("outname", compilerOptions.artifactName);
+		section.put("buildtool", compilerOptions.buildToolCmdLine);
+		section.put("extraOptions", compilerOptions.buildCommands);
 		
 		writeConfigFile(ini);
 	}
-
+	
 	/** Loads a project config if one exists. If one doesn't 
 	 * exist already, create one with defaults settings. */
 	public void loadNewProjectConfig() throws CoreException {
@@ -86,7 +97,7 @@ public class DeeProjectOptions {
 			saveProjectConfigFile();
 		}
 	}
-
+	
 	public void loadProjectConfigFile() throws CoreException, IOException {
 		Ini ini = readConfigFile();
 		
@@ -97,30 +108,33 @@ public class DeeProjectOptions {
 		}
 		
 		String pathstr = section.get("out");
-		if(pathstr != null)
+		if(pathstr != null) {
 			compilerOptions.outputDir = Path.fromPortableString(pathstr);
-
+		}
+		
 		String outname = section.get("outname");
-		if(outname != null)
+		if(outname != null) {
 			compilerOptions.artifactName = outname;
-
+		}
+		
 		String buildtool = section.get("buildtool");
-		if(buildtool != null)
+		if(buildtool != null) {
 			compilerOptions.buildToolCmdLine = buildtool;
-
+		}
+		
 		String extraOptions = section.get("extraOptions");
 		if(extraOptions != null) {
 			compilerOptions.buildCommands = extraOptions.replace("\r\n", "\n");
 		}
 	}
-
-
+	
+	
 	private Ini readConfigFile() throws CoreException, IOException {
 		IFile projCfgFile = getProject().getFile(CFG_FILE_NAME);
 		Logg.main.println(projCfgFile.getLocationURI());
-
+		
 		Ini ini = new Ini();
- 
+		
 		try {
 			if(projCfgFile.exists()) {
 				ini.load(projCfgFile.getContents());
@@ -130,8 +144,8 @@ public class DeeProjectOptions {
 		} 
 		return ini;
 	}
-
-
+	
+	
 	private void writeConfigFile(Ini ini) throws CoreException {
 		StringWriter writer = new StringWriter();
 		try {
@@ -149,7 +163,7 @@ public class DeeProjectOptions {
 			projCfgFile.setContents(is, IResource.NONE, null);
 		}
 	}
-
+	
 	public String getArtifactName() {
 		return compilerOptions.artifactName;
 	}
@@ -160,13 +174,13 @@ public class DeeProjectOptions {
 			return compilerOptions.artifactName.substring(0, ix);
 		return compilerOptions.artifactName;
 	}
-
+	
 	public String getArtifactRelPath() {
 		String name = compilerOptions.artifactName;
 		IPath output = compilerOptions.outputDir.append(name);
 		return output.toString();
 	}
-
+	
 	public String getBuildCommands() {
 		return compilerOptions.buildCommands;
 	}
@@ -174,29 +188,33 @@ public class DeeProjectOptions {
 	public String getBuildFile() {
 		return "build.rf";
 	}
-
+	
 	public String[] getBuilderFullCommandLine() {
 		List<String> cmdLine = new ArrayList<String>();
 		String buildToolCmd = compilerOptions.buildToolCmdLine;
-		int lastpos = 0;
+		int lastNonWSpos = 0;
 		int i = 0;
 		while (i < buildToolCmd.length()) {
 			char ch = buildToolCmd.charAt(i);
 			if(ch == ' ') {
-				String cmdstr = buildToolCmd.substring(lastpos, i);
-				cmdLine.add(cmdstr);
-				while(ch == ' ' && i < buildToolCmd.length()) 
+				if(lastNonWSpos != 0) {
+					String cmdstr = buildToolCmd.substring(lastNonWSpos, i);
+					cmdLine.add(cmdstr);
+				}
+				// Eat whitespace
+				while(ch == ' ' && i < buildToolCmd.length()) {
 					ch = buildToolCmd.charAt(++i);
-				lastpos = i;
+				}
+				lastNonWSpos = i;
 				continue;
 			}
 			++i;
 		}
-		if(lastpos < i)
-			cmdLine.add(buildToolCmd.substring(lastpos, i));
-			
+		if(lastNonWSpos < i) {
+			cmdLine.add(buildToolCmd.substring(lastNonWSpos, i));
+		}
+		
 		return cmdLine.toArray(new String[0]);
 	}
-
-
+	
 }

@@ -7,7 +7,6 @@ package dtool;
  */
 public class Logg {
 
-	public static SimpleLogger nolog = new SimpleLogger(false);
 	public static SimpleLogger main = new SimpleLogger();
 	public static SimpleLogger model = new SimpleLogger();
 	public static SimpleLogger astmodel = new SimpleLogger();

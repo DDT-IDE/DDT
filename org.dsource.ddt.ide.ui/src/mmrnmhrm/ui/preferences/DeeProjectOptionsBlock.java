@@ -190,7 +190,7 @@ public class DeeProjectOptionsBlock implements IDialogFieldListener  {
 	}
 	
 	private void updateView() {
-		DeeBuildOptions options = fOverlayOptions.compilerOptions;
+		DeeBuildOptions options = fOverlayOptions.getCompilerOptions();
 		fBuildType.setTextWithoutUpdate(options.buildType.toString());
 		fArtifactName.setTextWithoutUpdate(options.artifactName);
 		fOutputDir.setTextWithoutUpdate(options.outputDir.toString());
@@ -202,7 +202,7 @@ public class DeeProjectOptionsBlock implements IDialogFieldListener  {
 	
 	@Override
 	public void dialogFieldChanged(DialogField field) {
-		DeeBuildOptions options = fOverlayOptions.compilerOptions;
+		DeeBuildOptions options = fOverlayOptions.getCompilerOptions();
 		options.buildType = fBuildType.getSelectedObject();
 		options.artifactName = fArtifactName.getText();
 		options.outputDir = new Path(fOutputDir.getText());
@@ -223,8 +223,7 @@ public class DeeProjectOptionsBlock implements IDialogFieldListener  {
 		return OperationsManager.executeOperation(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				fDeeProjOptions.compilerOptions = fOverlayOptions.compilerOptions;
-				fDeeProjOptions.saveProjectConfigFile();
+				fDeeProjOptions.changeProjectOptions(fOverlayOptions.getCompilerOptions());
 			}
 		}, "Saving Project Compile Option");
 	}

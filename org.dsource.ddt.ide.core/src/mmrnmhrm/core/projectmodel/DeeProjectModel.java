@@ -1,10 +1,12 @@
 package mmrnmhrm.core.projectmodel;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.LangCore;
 
 import org.eclipse.core.resources.IResource;
@@ -18,28 +20,28 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.dltk.core.IScriptProject;
 
-import dtool.Logg;
-
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import dtool.SimpleLogger;
 
 /**
  * The D Model. 
- * It is a listener for the DLTK Model, and maintains a list of DeeProjects.
+ * It is a listener for the DLTK Model, and maintains a map of DeeProjectOptions.
+ * XXX: We have to solve some concurrency and binding issues here
  */
 public class DeeProjectModel implements IElementChangedListener {
 	
+	protected static SimpleLogger projectModelLog = new SimpleLogger(false);
+	
 	private static DeeProjectModel instance;
 	
-	public static void initModel() {
+	public static void initializeModel() {
 		instance = new DeeProjectModel();
 		DLTKCore.addElementChangedListener(instance, ElementChangedEvent.POST_CHANGE);
 	}
-
+	
 	public static void dispose() {
 		DLTKCore.removeElementChangedListener(instance);
 	}
-
+	
 	Map<IScriptProject, DeeProjectOptions> deeInfos;
 	
 	public DeeProjectModel() {
@@ -50,11 +52,11 @@ public class DeeProjectModel implements IElementChangedListener {
 	public void elementChanged(ElementChangedEvent event) {
 		IModelElementDelta delta= event.getDelta();
 		if (delta != null) {
-			Logg.nolog.println("delta received: ");
-			Logg.nolog.println(delta);
+			projectModelLog.println("delta received: ");
+			projectModelLog.println(delta);
 		}
 		IModelElement element = delta.getElement();
-
+		
 		if(element.getElementType() == IModelElement.SCRIPT_MODEL) {
 			for (IModelElementDelta projectdelta : delta.getAffectedChildren()) {
 				processProjectDelta(projectdelta);
@@ -64,27 +66,27 @@ public class DeeProjectModel implements IElementChangedListener {
 			assertFail("Delta root must be model");
 		}
 	}
-
+	
 	private void processProjectDelta(IModelElementDelta delta) {
-    	IScriptProject project = (IScriptProject) delta.getElement();
+		IScriptProject project = (IScriptProject) delta.getElement();
 		switch(delta.getKind()) {
 		case IModelElementDelta.ADDED:
-			Logg.main.println(">> Adding project: ", project);
-			addNewDLTKProject(project);
+			projectModelLog.println(">> Adding project: ", project);
+			addNewDLTKProjectConfig(project);
 			break;
 		case IModelElementDelta.REMOVED:
-			Logg.main.println(">> Removing project: ", project);
-			removeDLTKProject(project);
+			projectModelLog.println(">> Removing project: ", project);
+			removeDLTKProjectConfig(project);
 			break;
 		case IModelElementDelta.CHANGED:
 			if(delta.getResourceDeltas() == null)
 				break;
 			for (IResourceDelta resourceDelta : delta.getResourceDeltas()) {
-		    	IResource resource =  resourceDelta.getResource();
-		    	Path cfgpath = new Path(DeeProjectOptions.CFG_FILE_NAME);
+				IResource resource =  resourceDelta.getResource();
+				Path cfgpath = new Path(DeeProjectOptions.CFG_FILE_NAME);
 				if(resource.getProjectRelativePath().equals(cfgpath)) {
-					Logg.main.println(">> CFG_FILE changed: ", resource);
-					removeDLTKProject(project);
+					projectModelLog.println(">> CFG_FILE changed: ", resource);
+					removeDLTKProjectConfig(project);
 				}
 			}
 			break;
@@ -92,23 +94,20 @@ public class DeeProjectModel implements IElementChangedListener {
 			assertFail("!!!! Unknown delta type for project;");
 		}
 	}
-
-	private void removeDLTKProject(IScriptProject project) {
-		//assertTrue(deeInfos.containsKey(project));
-		deeInfos.remove(project);
-	}
-
-
-	private void addNewDLTKProject(IScriptProject project) {
+	
+	private void addNewDLTKProjectConfig(IScriptProject project) {
 		//assertTrue(!deeInfos.containsKey(project));
 		if(deeInfos.containsKey(project)) {
-			Logg.main.println("!!!! Warning: adding project that already exists.");
+			projectModelLog.println("!!!! Warning: adding project that already exists.");
 			LangCore.logWarning("Adding project that already exists.");
 		}
 		DeeProjectOptions deeProj = new DeeProjectOptions(project);
 		deeInfos.put(project, deeProj);
 	}
 	
+	private void removeDLTKProjectConfig(IScriptProject project) {
+		deeInfos.remove(project);
+	}
 	
 	public static DeeProjectOptions getDeeProjectInfo(IScriptProject project) {
 		assertNotNull(project);
@@ -117,20 +116,18 @@ public class DeeProjectModel implements IElementChangedListener {
 			return info;
 		} 
 		try {
-			return loadProjectInfo(project);
+			return instance.loadProjectInfo(project);
 		} catch (CoreException e) {
-			// TODO: maybe check this
-			ExceptionAdapter.unchecked(e);
+			projectModelLog.println("Error Loading project config");			
+			//throw ExceptionAdapter.unchecked(e);
 			return null;
 		}
 	}
-
-
-	private static DeeProjectOptions loadProjectInfo(IScriptProject project) throws CoreException {
+	
+	protected DeeProjectOptions loadProjectInfo(IScriptProject project) throws CoreException {
 		DeeProjectOptions info = new DeeProjectOptions(project);
 		info.loadNewProjectConfig();
 		return info;
 	}
-
-
+	
 }
