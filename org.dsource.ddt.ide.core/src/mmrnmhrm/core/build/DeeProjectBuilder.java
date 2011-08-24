@@ -22,8 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptProject;
 
-import dtool.Logg;
-
 
 public class DeeProjectBuilder extends IncrementalProjectBuilder {
 	
@@ -85,10 +83,10 @@ public class DeeProjectBuilder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor monitor) throws CoreException {
 		
 		IProject project = getProject();
-		Logg.builder.println("Doing build ", kind, " for project:", project);
+		DeeBuilder.buildLog.println("Doing build ", kind, " for project:", project);
 		
 		IScriptProject deeProj = getModelProject();
-		DeeBuilder deeBuilder = TESTSMODE ? new NoOpDeeBuilder() : new DeeBuilder();
+		DeeBuilder deeBuilder = TESTSMODE ? new NoOpDeeBuilder(deeProj) : new DeeBuilder(deeProj);
 		deeBuilder.setListeners(MiscUtil.synchronizedCreateIterable(listeners));
 		
 		monitor.beginTask("Building D project", 5);
@@ -96,13 +94,13 @@ public class DeeProjectBuilder extends IncrementalProjectBuilder {
 		outputFolder = prepOutputFolder(getProjectOptions());
 		monitor.worked(1);
 		
-		deeBuilder.collectBuildUnits(deeProj, monitor);
+		deeBuilder.collectBuildUnits(monitor);
 		monitor.worked(1);
 		
-		deeBuilder.compileModules(deeProj);
+		deeBuilder.compileModules(monitor);
 		monitor.worked(1);
 		
-		deeBuilder.runBuilder(deeProj, monitor);
+		deeBuilder.runBuilder(monitor);
 		monitor.worked(1);
 		
 		
@@ -111,6 +109,10 @@ public class DeeProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	public static class NoOpDeeBuilder extends DeeBuilder {
+		
+		public NoOpDeeBuilder(IScriptProject deeProj) throws CoreException {
+			super(deeProj);
+		}
 		
 		@Override
 		protected void startProcess(IProgressMonitor monitor, ProcessBuilder builder) throws CoreException {
