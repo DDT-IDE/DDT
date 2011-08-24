@@ -5,13 +5,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
 public class DeeBuildOptions {
-
+	
 	public static enum EBuildTypes {
 		EXECUTABLE,
 		LIB_STATIC,
 		LIB_DYNAMIC
 	}
-
+	
 	public EBuildTypes buildType;
 	public String artifactName;
 	/** Project relative path */
@@ -26,14 +26,14 @@ public class DeeBuildOptions {
 		buildToolCmdLine = DeeBuilder.getDefaultBuildToolCmdLine();
 		buildCommands = DeeBuilder.getDefaultBuildFileData();
 	}
-
+	
 	private static String getOSExtension() {
 		if(Platform.getOS().equals(Platform.OS_WIN32))
 			return ".exe";
 		return "";
 	}
-
-	private String defaultOutputFolder() {
+	
+	protected String defaultOutputFolder() {
 		return "bin";
 	}
 	
@@ -45,7 +45,7 @@ public class DeeBuildOptions {
 		options.outputDir = outputDir;
 		options.buildToolCmdLine = buildToolCmdLine;
 		options.buildCommands = buildCommands;
-
+		
 		return options;
 	}
 }
