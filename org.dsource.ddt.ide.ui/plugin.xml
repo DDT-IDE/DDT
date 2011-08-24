@@ -190,12 +190,6 @@
             id="org.dsource.ddt.ide.ui.commands.category1"
             name="%LangCommandCategory.name">
       </category>
-      <command
-            categoryId="org.dsource.ddt.ide.ui.commands.category1"
-            defaultHandler="mmrnmhrm.ui.actions.AddSourceFolderHandler"
-            id="org.dsource.ddt.ide.ui.commands.buildPathAdd"
-            name="Add as Folder Library">
-      </command>
 	<command
        categoryId="org.dsource.ddt.ide.ui.commands.category1"
        description="%OpenDefinitionAction.tooltip"
@@ -227,21 +221,16 @@
  <command
        categoryId="org.dsource.ddt.ide.ui.commands.category1"
        id="org.eclipse.dltk.ui.edit.text.script.search.references.in.workspace"
-       name="&quot;&lt;FNORD&gt;&quot;">
+       name="FNORD">
  </command>
+<!--
       <command
             categoryId="org.dsource.ddt.ide.ui.commands.category1"
             defaultHandler="mmrnmhrm.ui.actions.SampleTest1Handler"
             id="org.dsource.ddt.ide.ui.commands.sampleCommand"
             name="Test Action">
       </command>
-      <command
-            categoryId="org.dsource.ddt.ide.ui.commands.category1"
-            defaultHandler="mmrnmhrm.ui.actions.SampleTest2Handler"
-            id="org.dsource.ddt.ide.ui.commands.sampleCommand2"
-            name="Test Action2">
-      </command>
- 
+--> 
  
    </extension>   
 
@@ -327,90 +316,6 @@
    
    <extension
          point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
-         <toolbar
-               id="org.dsource.ddt.ide.ui.toolbars.sampleToolbar">
-            <command
-                  commandId="org.dsource.ddt.ide.ui.commands.sampleCommand2"
-                  icon="icons/action16e/extra/spathi.16.gif"
-                  label="Sample Command2">
-               <visibleWhen>
-                  <equals
-                        value="false">
-                  </equals>
-               </visibleWhen>
-            </command>
-         </toolbar>
-      </menuContribution>
-            <menuContribution
-                  locationURI="popup:org.eclipse.dltk.ui.ScriptExplorer?after=group.edit">
-               <!--
-               <menu
-                     label="Build Path Extras">
-                     
-                  <command
-                        commandId="org.dsource.ddt.ide.ui.commands.buildPathAdd"
-                        icon="icons/lcl16e/jar_l_obj.gif"
-                        mnemonic="%contributions.view.edit.mnemonic">
-                     <visibleWhen>
-                        <with
-                              variable="activeMenuSelection">
-                           <iterate
-                                 operator="or">
-                              <instanceof
-                                    value="org.eclipse.core.resources.IFolder">
-                              </instanceof>
-                              <and>
-                                 <instanceof
-                                       value="org.eclipse.core.resources.IFile">
-                                 </instanceof>
-                                 <test
-                                       property="matchesName"
-                                       value="*.zip">
-                                 </test>
-                              </and>
-                           </iterate>
-                        </with>
-                     </visibleWhen>
-                  </command>
-                             <visibleWhen>
-               <with
-                     variable="activeMenuSelection">
-                  <iterate
-                        operator="and">
-                     <reference
-                           definitionId="org.dsource.ddt.ide.core.expressions.isDeeNatureContainer">
-                     </reference>
-                  </iterate>
-               </with>
-            </visibleWhen>
-   
-               </menu>
-               -->
-            </menuContribution>
-            <menuContribution
-                  locationURI="popup:org.eclipse.dltk.ui.buildpath.menu?before=buildpathGroup">
-               <command
-                     commandId="org.dsource.ddt.ide.ui.commands.buildPathAdd"
-                     icon="icons/lcl16e/add_as_source_folder.gif"
-                     mnemonic="%contributions.view.edit.mnemonic">
-                  <visibleWhen>
-                     <with
-                           variable="activeMenuSelection">
-                        <iterate>
-                           <instanceof
-                                 value="org.eclipse.core.resources.IFolder">
-                           </instanceof>
-                        </iterate>
-                     </with>
-                  </visibleWhen>
-               </command>
-            </menuContribution>
-      
-      
-
-      
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
