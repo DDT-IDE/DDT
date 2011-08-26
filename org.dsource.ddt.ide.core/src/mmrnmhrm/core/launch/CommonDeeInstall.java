@@ -2,16 +2,15 @@ package mmrnmhrm.core.launch;
 
 
 import org.dsource.ddt.ide.core.DeeNature;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.AbstractInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.IInterpreterRunner;
 
-public class DeeInstall extends AbstractInterpreterInstall {
+public abstract class CommonDeeInstall extends AbstractInterpreterInstall {
 	
-	public DeeInstall(IInterpreterInstallType type, String id) {
+	public CommonDeeInstall(IInterpreterInstallType type, String id) {
 		super(type, id);
 	}
 	
@@ -39,16 +38,6 @@ public class DeeInstall extends AbstractInterpreterInstall {
 		}
 		
 		return null;
-	}
-	
-	/** Get the path of the compiler directory */
-	public IPath getCompilerBasePath() {
-		return getInstallLocation().getPath().removeLastSegments(1);
-	}
-	
-	/** Get the full path of the compiler, including the executable */
-	public IPath getCompilerFullPath() {
-		return getInstallLocation().getPath();
 	}
 	
 }

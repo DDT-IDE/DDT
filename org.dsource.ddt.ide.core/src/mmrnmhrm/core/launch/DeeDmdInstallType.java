@@ -32,7 +32,7 @@ public class DeeDmdInstallType extends CommonInstallType {
 	
 	@Override
 	protected IInterpreterInstall doCreateInterpreterInstall(String id) {
-		return new DeeInstall(this, id);
+		return new DmdInstall(this, id);
 	}
 	
 	@Override

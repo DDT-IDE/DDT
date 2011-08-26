@@ -3,11 +3,14 @@ package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.LangCore;
+import mmrnmhrm.core.launch.DmdInstall;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -19,6 +22,8 @@ import org.eclipse.dltk.core.IElementChangedListener;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.launching.IInterpreterInstall;
+import org.eclipse.dltk.launching.ScriptRuntime;
 
 import dtool.SimpleLogger;
 
@@ -101,7 +106,16 @@ public class DeeProjectModel implements IElementChangedListener {
 			projectModelLog.println("!!!! Warning: adding project that already exists.");
 			LangCore.logWarning("Adding project that already exists.");
 		}
-		DeeProjectOptions deeProj = new DeeProjectOptions(project);
+		
+		IInterpreterInstall install = null;
+		try {
+			install = ScriptRuntime.getInterpreterInstall(project);
+		} catch(CoreException e) {
+			DeeCore.log(e);
+		}
+		DmdInstall deeInstall = tryCast(install, DmdInstall.class);
+		
+		DeeProjectOptions deeProj = DeeProjectOptions.createUsingInstall(project, deeInstall);
 		deeInfos.put(project, deeProj);
 	}
 	
@@ -125,7 +139,7 @@ public class DeeProjectModel implements IElementChangedListener {
 	}
 	
 	protected DeeProjectOptions loadProjectInfo(IScriptProject project) throws CoreException {
-		DeeProjectOptions info = new DeeProjectOptions(project);
+		DeeProjectOptions info = DeeProjectOptions.createUsingInstall(project, null);
 		info.loadNewProjectConfig();
 		return info;
 	}

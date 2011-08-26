@@ -14,7 +14,7 @@ import java.util.Map;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.launch.DeeInstall;
+import mmrnmhrm.core.launch.DmdInstall;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 
@@ -57,24 +57,8 @@ public class DeeBuilder {
 		return buildCommands;
 	}
 	
-	public static String getDefaultBuildFileData() {
-		return 
-			"-od$DEEBUILDER.OUTPUTPATH\n" +
-			"-of$DEEBUILDER.OUTPUTEXE\n" +
-			//"$DEEBUILDER.EXTRAOPTS\n" +
-			"$DEEBUILDER.SRCLIBS.-I\n" +
-			"$DEEBUILDER.SRCFOLDERS.-I\n" +
-			"$DEEBUILDER.SRCMODULES\n"
-		;
-	}
-	
-	public static String getDefaultBuildToolCmdLine() {
-		return "$DEEBUILDER.COMPILEREXEPATH @build.rf";
-	}
-	
-	
 	protected final IScriptProject deeProj;
-	protected final DeeInstall deeCompiler;
+	protected final DmdInstall deeCompiler;
 	
 	private boolean dontCollectModules;
 	
@@ -90,11 +74,11 @@ public class DeeBuilder {
 		this.deeProj = deeProj;
 		
 		IInterpreterInstall install = ScriptRuntime.getInterpreterInstall(deeProj);
-		if(!(install instanceof DeeInstall)) {
+		if(!(install instanceof DmdInstall)) {
 			throw DeeCore.createCoreException(
 					"Could not find a D compiler/interpreter associated to the project", null);
 		}
-		deeCompiler = ((DeeInstall) install);
+		deeCompiler = ((DmdInstall) install);
 		
 		dontCollectModules = false;
 		

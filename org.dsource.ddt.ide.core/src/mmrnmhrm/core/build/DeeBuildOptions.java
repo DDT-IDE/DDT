@@ -1,5 +1,7 @@
 package mmrnmhrm.core.build;
 
+import mmrnmhrm.core.launch.DmdInstall;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -19,12 +21,21 @@ public class DeeBuildOptions {
 	public String buildToolCmdLine;
 	public String buildCommands;
 	
-	public DeeBuildOptions(String projname) {
+	public DeeBuildOptions(String projname, DmdInstall deeInstall) {
 		buildType = EBuildTypes.EXECUTABLE;
 		artifactName = projname + getOSExtension();
 		outputDir = new Path(defaultOutputFolder());
-		buildToolCmdLine = DeeBuilder.getDefaultBuildToolCmdLine();
-		buildCommands = DeeBuilder.getDefaultBuildFileData();
+		buildToolCmdLine = deeInstall == null ? "" : deeInstall.getDefaultBuildToolCmdLine();
+		buildCommands = deeInstall == null ? "" : deeInstall.getDefaultBuildFileData();
+	}
+	
+	/** copy constructor */
+	protected DeeBuildOptions(DeeBuildOptions other) {
+		buildType = other.buildType;
+		artifactName = other.artifactName;
+		outputDir = other.outputDir;
+		buildToolCmdLine = other.buildToolCmdLine;
+		buildCommands = other.buildCommands;
 	}
 	
 	protected String defaultOutputFolder() {
@@ -33,14 +44,7 @@ public class DeeBuildOptions {
 	
 	@Override
 	public DeeBuildOptions clone() {
-		DeeBuildOptions options = new DeeBuildOptions(artifactName);
-		options.buildType = buildType;
-		options.artifactName = artifactName;
-		options.outputDir = outputDir;
-		options.buildToolCmdLine = buildToolCmdLine;
-		options.buildCommands = buildCommands;
-		
-		return options;
+		return new DeeBuildOptions(this);
 	}
 	
 	protected static String getOSExtension() {

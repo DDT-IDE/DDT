@@ -29,7 +29,7 @@ public class GDCInstallType extends CommonInstallType {
 	
 	@Override
 	protected IInterpreterInstall doCreateInterpreterInstall(String id) {
-		return new DeeInstall(this, id);
+		return new GDCInstall(this, id);
 	}
 	
 	@Override
