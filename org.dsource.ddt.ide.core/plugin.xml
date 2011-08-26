@@ -60,10 +60,10 @@
             class="mmrnmhrm.core.launch.DeeDmdInstallType"
             id="org.dsource.ddt.ide.core.launching.deeDmdInstallType">
       </interpreterInstallType>
-      <interpreterInstallType
+      <!--interpreterInstallType
             class="mmrnmhrm.core.launch.GDCInstallType"
             id="org.dsource.ddt.ide.core.launching.GDCInstallType">
-      </interpreterInstallType>      
+      </interpreterInstallType-->      
    </extension>
    <extension
          id="deebuilder"
