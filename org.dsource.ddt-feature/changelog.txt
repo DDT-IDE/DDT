@@ -5,7 +5,7 @@
 == DDT 0.5.0 (2011-08-26) ==
  * Updated DDT to DTLK 3.0
  * Made icons of D source elements (classes, structs templates, etc.) consistent throughout the UI. 
-   (Previously DLTK views and some popups used simplified icons, and only CA and outline used more detailed icons.)
+   * (Previously DLTK views and some popups used simplified icons, and only CA and outline used more detailed icons.)
  * Outline view changes:
    * Now shows nested elements.
    * Clicking on named elements correctly selects their name in the editor (previously it just revealed the element).
