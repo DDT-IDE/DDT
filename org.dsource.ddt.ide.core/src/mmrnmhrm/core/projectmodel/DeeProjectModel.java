@@ -66,7 +66,6 @@ public class DeeProjectModel implements IElementChangedListener {
 			for (IModelElementDelta projectdelta : delta.getAffectedChildren()) {
 				processProjectDelta(projectdelta);
 			}
-			
 		} else {
 			assertFail("Delta root must be model");
 		}
@@ -107,6 +106,13 @@ public class DeeProjectModel implements IElementChangedListener {
 			LangCore.logWarning("Adding project that already exists.");
 		}
 		
+		DmdInstall deeInstall = getInstallForProject(project);
+		
+		DeeProjectOptions deeProj = DeeProjectOptions.createUsingInstall(project, deeInstall);
+		deeInfos.put(project, deeProj);
+	}
+	
+	protected DmdInstall getInstallForProject(IScriptProject project) {
 		IInterpreterInstall install = null;
 		try {
 			install = ScriptRuntime.getInterpreterInstall(project);
@@ -114,9 +120,7 @@ public class DeeProjectModel implements IElementChangedListener {
 			DeeCore.log(e);
 		}
 		DmdInstall deeInstall = tryCast(install, DmdInstall.class);
-		
-		DeeProjectOptions deeProj = DeeProjectOptions.createUsingInstall(project, deeInstall);
-		deeInfos.put(project, deeProj);
+		return deeInstall;
 	}
 	
 	private void removeDLTKProjectConfig(IScriptProject project) {
@@ -139,7 +143,8 @@ public class DeeProjectModel implements IElementChangedListener {
 	}
 	
 	protected DeeProjectOptions loadProjectInfo(IScriptProject project) throws CoreException {
-		DeeProjectOptions info = DeeProjectOptions.createUsingInstall(project, null);
+		DmdInstall deeInstall = getInstallForProject(project);
+		DeeProjectOptions info = DeeProjectOptions.createUsingInstall(project, deeInstall);
 		info.loadNewProjectConfig();
 		return info;
 	}

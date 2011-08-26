@@ -14,9 +14,12 @@ import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
@@ -90,7 +93,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	public static IScriptProject createAndOpenDeeProject(String name) throws CoreException {
 		IWorkspaceRoot workspaceRoot = DeeCore.getWorkspaceRoot();
 		
-		IProject project;
+		final IProject project;
 		project = workspaceRoot.getProject(name);
 		if(project.exists()) {
 			project.delete(true, null);
@@ -98,7 +101,12 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		project.create(null);
 		project.open(null);
 		EnvironmentManager.setEnvironmentId(project, null, false);
-		setupDeeProject(project);
+		project.getWorkspace().run(new IWorkspaceRunnable() {
+			@Override
+			public void run(IProgressMonitor monitor) throws CoreException {
+				setupDeeProject(project);
+			}
+		}, null, IWorkspace.AVOID_UPDATE, null);
 		IScriptProject scriptProject = DLTKCore.create(project);
 //		scriptProject.setOption(DLTKCore.INDEXER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
 //		scriptProject.setOption(DLTKCore.BUILDER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);

@@ -193,19 +193,28 @@ public class DeeProjectOptions {
 	public String[] getBuilderFullCommandLine() {
 		List<String> cmdLine = new ArrayList<String>();
 		String buildToolCmd = compilerOptions.buildToolCmdLine;
-		int lastNonWSpos = 0;
+		
 		int i = 0;
+		
+		// Eat whitespace
+		while(i < buildToolCmd.length() && buildToolCmd.charAt(i) == ' ') {
+			++i;
+		}
+		int lastNonWSpos = i;
+		
 		while (i < buildToolCmd.length()) {
 			char ch = buildToolCmd.charAt(i);
 			if(ch == ' ') {
-				if(lastNonWSpos != 0) {
+				if(lastNonWSpos != -1) {
 					String cmdstr = buildToolCmd.substring(lastNonWSpos, i);
 					cmdLine.add(cmdstr);
 				}
+				++i;
 				// Eat whitespace
-				while(ch == ' ' && i < buildToolCmd.length()) {
-					ch = buildToolCmd.charAt(++i);
+				while(i < buildToolCmd.length() && buildToolCmd.charAt(i) == ' ') {
+					++i;
 				}
+				
 				lastNonWSpos = i;
 				continue;
 			}

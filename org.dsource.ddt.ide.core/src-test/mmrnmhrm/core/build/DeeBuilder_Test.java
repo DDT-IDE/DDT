@@ -52,6 +52,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 		CommonDeeBuilderListener checkBuild = new CommonDeeBuilderListener() {
 			@Override
 			public void processAboutToStart(String[] cmdLine) {
+				assertTrue(cmdLine.length > 0);
 				String compilerPath = new Path(cmdLine[0]).toString();
 				assertTrue(compilerPath.endsWith(DMD2INSTALL_TESTDATA_PATH));
 			}
