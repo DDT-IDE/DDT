@@ -14,6 +14,7 @@ import java.util.Map;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.launch.CommonDeeInstall;
 import mmrnmhrm.core.launch.DmdInstall;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.core.projectmodel.DeeProjectOptions;
@@ -58,7 +59,7 @@ public class DeeBuilder {
 	}
 	
 	protected final IScriptProject deeProj;
-	protected final DmdInstall deeCompiler;
+	protected final CommonDeeInstall deeCompiler;
 	
 	private boolean dontCollectModules;
 	
@@ -98,7 +99,7 @@ public class DeeBuilder {
 	
 	public void collectBuildUnits(IProgressMonitor monitor) throws CoreException {
 		
-		compilerPath = deeCompiler.getCompilerBasePath();
+		compilerPath = deeCompiler.getCompilerDirectoryPath();
 		assertNotNull(compilerPath);
 		
 		IBuildpathEntry[] buildpathEntries = deeProj.getResolvedBuildpath(true);
@@ -256,12 +257,12 @@ public class DeeBuilder {
 				;
 		}
 		
-		IPath compilerFullPath = deeCompiler.getCompilerFullPath();
+		IPath compilerExePath = deeCompiler.getCompilerExecutablePath();
 		String localCompilerPath = EnvironmentPathUtils.getLocalPath(compilerPath).toOSString();
-		String localCompilerFullPath = EnvironmentPathUtils.getLocalPath(compilerFullPath).toOSString();
+		String localCompilerExePath = EnvironmentPathUtils.getLocalPath(compilerExePath).toOSString();
 		while(StringUtil.replace(strb, "$DEEBUILDER.COMPILERPATH", localCompilerPath))
 			;
-		while(StringUtil.replace(strb, "$DEEBUILDER.COMPILEREXEPATH", localCompilerFullPath))
+		while(StringUtil.replace(strb, "$DEEBUILDER.COMPILEREXEPATH", localCompilerExePath))
 			;
 		
 		return strb.toString();
@@ -285,7 +286,7 @@ public class DeeBuilder {
 		for(int i = 0; i < cmdLine.length; i++) {
 			String localCompilerBasePath = EnvironmentPathUtils.getLocalPath(compilerPath).toOSString();
 			cmdLine[i] = cmdLine[i].replace("$DEEBUILDER.COMPILERPATH", localCompilerBasePath);
-			IPath compilerFullPath = deeCompiler.getCompilerFullPath();
+			IPath compilerFullPath = deeCompiler.getCompilerExecutablePath();
 			String localCompilerFullPath = EnvironmentPathUtils.getLocalPath(compilerFullPath).toOSString();
 			cmdLine[i] = cmdLine[i].replace("$DEEBUILDER.COMPILEREXEPATH", localCompilerFullPath);
 		}

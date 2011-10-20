@@ -20,9 +20,10 @@ public class GDCInstall extends CommonDeeInstall {
 		return getInstallLocation().getPath();
 	}
 	
+	@Override
 	public String getDefaultBuildFileData() {
 		return 
-			"-od$DEEBUILDER.OUTPUTPATH\n" +
+			"XXX -od$DEEBUILDER.OUTPUTPATH\n" +
 			"-of$DEEBUILDER.OUTPUTEXE\n" +
 			//"$DEEBUILDER.EXTRAOPTS\n" +
 			"$DEEBUILDER.SRCLIBS.-I\n" +
@@ -31,8 +32,9 @@ public class GDCInstall extends CommonDeeInstall {
 		;
 	}
 	
+	@Override
 	public String getDefaultBuildToolCmdLine() {
-		return "$DEEBUILDER.COMPILEREXEPATH @build.rf";
+		return "XXX $DEEBUILDER.COMPILEREXEPATH @build.rf";
 	}
 	
 }

@@ -12,7 +12,7 @@ import java.util.List;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuildOptions;
-import mmrnmhrm.core.launch.DmdInstall;
+import mmrnmhrm.core.launch.CommonDeeInstall;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -37,7 +37,7 @@ public class DeeProjectOptions {
 	public final IScriptProject dltkProj;
 	protected DeeBuildOptions compilerOptions;
 	
-	protected static DeeProjectOptions createUsingInstall(IScriptProject dltkProj, DmdInstall deeInstall) {
+	protected static DeeProjectOptions createUsingInstall(IScriptProject dltkProj, CommonDeeInstall deeInstall) {
 		return new DeeProjectOptions(dltkProj, new DeeBuildOptions(dltkProj.getElementName(), deeInstall));
 	}
 	

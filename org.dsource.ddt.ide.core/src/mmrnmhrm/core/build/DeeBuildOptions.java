@@ -1,6 +1,6 @@
 package mmrnmhrm.core.build;
 
-import mmrnmhrm.core.launch.DmdInstall;
+import mmrnmhrm.core.launch.CommonDeeInstall;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -21,7 +21,7 @@ public class DeeBuildOptions {
 	public String buildToolCmdLine;
 	public String buildCommands;
 	
-	public DeeBuildOptions(String projname, DmdInstall deeInstall) {
+	public DeeBuildOptions(String projname, CommonDeeInstall deeInstall) {
 		buildType = EBuildTypes.EXECUTABLE;
 		artifactName = projname + getOSExtension();
 		outputDir = new Path(defaultOutputFolder());

@@ -10,6 +10,7 @@ import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuilder__Accessor;
 import mmrnmhrm.core.launch.DeeDmdInstallType;
+import mmrnmhrm.core.launch.GDCInstallType;
 import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 
 import org.dsource.ddt.ide.core.DeeNature;
@@ -49,7 +50,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		disableDLTKIndexer();
 		
 		DeeBuilder__Accessor.setTestsMode(true);
-		setupTestDMDInstalls();
+		setupTestDeeInstalls();
 		
 		SamplePreExistingProject.checkForExistanceOfPreExistingProject();
 		SampleNonDeeProject.createAndSetupNonDeeProject();
@@ -72,19 +73,30 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		indexManager.disable();
 	}
 	
-	protected static final String DMD2INSTALL_TESTDATA_PATH = "defaultDMDInstall/windows/bin/dmd.exe";
+	protected static final String DMD2INSTALL_TESTDATA_PATH = "deeCompilerInstalls/DMDInstall/windows/bin/dmd.exe";
 	public static final String DEFAULT_DMD2_MOCKINSTALL_NAME = "defaultDMD2Install";
 	
-	private static void setupTestDMDInstalls() {
-		IInterpreterInstallType deeDmdInstallType 
-			= ScriptRuntime.getInterpreterInstallType(DeeDmdInstallType.INSTALLTYPE_ID);
-		InterpreterStandin install = new InterpreterStandin(deeDmdInstallType, DEFAULT_DMD2_MOCKINSTALL_NAME + ".id");
+	protected static void setupTestDeeInstalls() {
+		createFakeDeeInstall(
+				DeeDmdInstallType.INSTALLTYPE_ID, 
+				DEFAULT_DMD2_MOCKINSTALL_NAME, 
+				DMD2INSTALL_TESTDATA_PATH);
 		
-		String installPathStr = DToolTestResources.getTestResource(DMD2INSTALL_TESTDATA_PATH).getAbsolutePath();
+		createFakeDeeInstall(
+				GDCInstallType.INSTALLTYPE_ID, 
+				"gdcInstall", 
+				"deeCompilerInstalls/gdcInstall/bin/gdc");
+	}
+	
+	protected static void createFakeDeeInstall(String installTypeId, String installName, String installExePath) {
+		IInterpreterInstallType deeDmdInstallType = ScriptRuntime.getInterpreterInstallType(installTypeId);
+		InterpreterStandin install = new InterpreterStandin(deeDmdInstallType, installName + ".id");
+		
+		String installPathStr = DToolTestResources.getTestResource(installExePath).getAbsolutePath();
 		assertTrue(new File(installPathStr).exists());
 		
 		install.setInstallLocation(new LazyFileHandle(LocalEnvironment.ENVIRONMENT_ID, new Path(installPathStr)));
-		install.setName(DEFAULT_DMD2_MOCKINSTALL_NAME);
+		install.setName(installName);
 		install.setInterpreterArgs(null);
 		install.setLibraryLocations(null); // Use default locations
 		install.convertToRealInterpreter();
