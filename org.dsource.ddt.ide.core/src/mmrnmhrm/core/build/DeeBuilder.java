@@ -15,7 +15,6 @@ import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.launch.CommonDeeInstall;
-import mmrnmhrm.core.launch.DmdInstall;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 
@@ -75,11 +74,11 @@ public class DeeBuilder {
 		this.deeProj = deeProj;
 		
 		IInterpreterInstall install = ScriptRuntime.getInterpreterInstall(deeProj);
-		if(!(install instanceof DmdInstall)) {
+		if(!(install instanceof CommonDeeInstall)) {
 			throw DeeCore.createCoreException(
 					"Could not find a D compiler/interpreter associated to the project", null);
 		}
-		deeCompiler = ((DmdInstall) install);
+		deeCompiler = ((CommonDeeInstall) install);
 		
 		dontCollectModules = false;
 		

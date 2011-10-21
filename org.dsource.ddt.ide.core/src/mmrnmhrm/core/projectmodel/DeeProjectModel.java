@@ -10,7 +10,7 @@ import java.util.Map;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.LangCore;
-import mmrnmhrm.core.launch.DmdInstall;
+import mmrnmhrm.core.launch.CommonDeeInstall;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -106,20 +106,20 @@ public class DeeProjectModel implements IElementChangedListener {
 			LangCore.logWarning("Adding project that already exists.");
 		}
 		
-		DmdInstall deeInstall = getInstallForProject(project);
+		CommonDeeInstall deeInstall = getInstallForProject(project);
 		
 		DeeProjectOptions deeProj = DeeProjectOptions.createUsingInstall(project, deeInstall);
 		deeInfos.put(project, deeProj);
 	}
 	
-	protected DmdInstall getInstallForProject(IScriptProject project) {
+	protected static CommonDeeInstall getInstallForProject(IScriptProject project) {
 		IInterpreterInstall install = null;
 		try {
 			install = ScriptRuntime.getInterpreterInstall(project);
 		} catch(CoreException e) {
 			DeeCore.log(e);
 		}
-		DmdInstall deeInstall = tryCast(install, DmdInstall.class);
+		CommonDeeInstall deeInstall = tryCast(install, CommonDeeInstall.class);
 		return deeInstall;
 	}
 	
@@ -132,18 +132,18 @@ public class DeeProjectModel implements IElementChangedListener {
 		if(instance.deeInfos.containsKey(project)) {
 			DeeProjectOptions info = instance.deeInfos.get(project);
 			return info;
-		} 
+		}
 		try {
 			return instance.loadProjectInfo(project);
 		} catch (CoreException e) {
 			projectModelLog.println("Error Loading project config");			
-			//throw ExceptionAdapter.unchecked(e);
+			//throw ExceptionAdapter.unchecked(e); XXX
 			return null;
 		}
 	}
 	
 	protected DeeProjectOptions loadProjectInfo(IScriptProject project) throws CoreException {
-		DmdInstall deeInstall = getInstallForProject(project);
+		CommonDeeInstall deeInstall = getInstallForProject(project);
 		DeeProjectOptions info = DeeProjectOptions.createUsingInstall(project, deeInstall);
 		info.loadNewProjectConfig();
 		return info;

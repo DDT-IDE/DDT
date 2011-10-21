@@ -11,6 +11,8 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuilder__Accessor;
 import mmrnmhrm.core.launch.DeeDmdInstallType;
 import mmrnmhrm.core.launch.GDCInstallType;
+import mmrnmhrm.core.projectmodel.DeeProjectModel;
+import mmrnmhrm.core.projectmodel.DeeProjectModelTest;
 import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 
 import org.dsource.ddt.ide.core.DeeNature;
@@ -75,6 +77,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	
 	protected static final String DMD2INSTALL_TESTDATA_PATH = "deeCompilerInstalls/DMDInstall/windows/bin/dmd.exe";
 	public static final String DEFAULT_DMD2_MOCKINSTALL_NAME = "defaultDMD2Install";
+	public static final String DEFAULT_GDC_MOCKINSTALL_NAME = "gdcInstall";
 	
 	protected static void setupTestDeeInstalls() {
 		createFakeDeeInstall(
@@ -103,6 +106,11 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	}
 	
 	public static IScriptProject createAndOpenDeeProject(String name) throws CoreException {
+		return createAndOpenDeeProject(name, DeeDmdInstallType.INSTALLTYPE_ID, DEFAULT_DMD2_MOCKINSTALL_NAME);
+	}
+	
+	public static IScriptProject createAndOpenDeeProject(String name, final String installTypeId, final String installId)
+			throws CoreException {
 		IWorkspaceRoot workspaceRoot = DeeCore.getWorkspaceRoot();
 		
 		final IProject project;
@@ -116,16 +124,19 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		project.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				setupDeeProject(project);
+				setupDeeProject(project, installTypeId + "/" + installId);
 			}
 		}, null, IWorkspace.AVOID_UPDATE, null);
 		IScriptProject scriptProject = DLTKCore.create(project);
 //		scriptProject.setOption(DLTKCore.INDEXER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
 //		scriptProject.setOption(DLTKCore.BUILDER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
+		
+		DeeProjectModelTest.checkInstall(scriptProject, installTypeId, installId);
+		DeeProjectModel.getDeeProjectInfo(scriptProject);
 		return scriptProject;
 	}
 	
-	public static void setupDeeProject(IProject project) throws CoreException {
+	public static void setupDeeProject(IProject project, String libraryEntry) throws CoreException {
 		assertTrue(project.exists());
 		IScriptProject dltkProj = DLTKCore.create(project);
 		assertTrue(!dltkProj.exists()); 
@@ -133,7 +144,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		assertTrue(dltkProj.exists());
 		
 		IBuildpathEntry entry = DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()
-				.append(DeeDmdInstallType.INSTALLTYPE_ID).append(DEFAULT_DMD2_MOCKINSTALL_NAME)		
+				.append(libraryEntry)		
 		);
 		dltkProj.setRawBuildpath(new IBuildpathEntry[] {entry}, null);
 		assertNotNull(ScriptRuntime.getInterpreterInstall(dltkProj));

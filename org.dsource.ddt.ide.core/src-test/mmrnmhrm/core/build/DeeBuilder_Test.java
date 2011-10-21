@@ -20,7 +20,6 @@ import java.net.URISyntaxException;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
-import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
@@ -37,10 +36,6 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 	
 	protected IScriptProject createBuildProject(String projectName) throws CoreException {
 		IScriptProject deeProj = createAndOpenDeeProject(projectName);
-		
-		DeeProjectOptions deeProjectInfo = DeeProjectModel.getDeeProjectInfo(deeProj);
-		
-		deeProjectInfo.getCompilerOptions().buildToolCmdLine = deeProjectInfo.getCompilerOptions().buildToolCmdLine;
 		return deeProj;
 	}
 	
@@ -84,6 +79,11 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 		}
 	}
 	
+	protected void doProjectBuild(IScriptProject deeProj) throws CoreException {
+		IProject project = deeProj.getProject();
+		project.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
+	}
+	
 	protected abstract class RunWithTemporaryProject {
 		String projName;
 		
@@ -111,11 +111,6 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 				doProjectBuild(deeProj);
 			}
 		};
-	}
-	
-	protected void doProjectBuild(IScriptProject deeProj) throws CoreException {
-		IProject project = deeProj.getProject();
-		project.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
 	}
 	
 	public static final String SEP = System.getProperty("file.separator");
