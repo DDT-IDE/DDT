@@ -57,7 +57,7 @@
    <extension
          point="org.eclipse.dltk.launching.interpreterInstallTypes">
       <interpreterInstallType
-            class="mmrnmhrm.core.launch.DeeDmdInstallType"
+            class="mmrnmhrm.core.launch.DMDInstallType"
             id="org.dsource.ddt.ide.core.launching.deeDmdInstallType">
       </interpreterInstallType>
       <interpreterInstallType

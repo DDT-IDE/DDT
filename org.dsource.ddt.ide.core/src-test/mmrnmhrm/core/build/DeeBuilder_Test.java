@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.launch.DeeDmdInstallType;
+import mmrnmhrm.core.launch.DMDInstallType;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
@@ -41,7 +41,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 	
 	protected IScriptProject createBuildProject(String projectName) throws CoreException {
 		this.projectName = projectName;
-		return createAndOpenDeeProject(projectName, DeeDmdInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
+		return createAndOpenDeeProject(projectName, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
 	}
 	
 	protected void doProjectBuild(IScriptProject deeProj) throws CoreException {

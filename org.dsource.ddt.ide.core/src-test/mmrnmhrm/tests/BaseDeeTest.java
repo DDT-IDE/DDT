@@ -9,7 +9,7 @@ import java.io.File;
 import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuilder__Accessor;
-import mmrnmhrm.core.launch.DeeDmdInstallType;
+import mmrnmhrm.core.launch.DMDInstallType;
 import mmrnmhrm.core.launch.GDCInstallType;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.core.projectmodel.DeeProjectModelTest;
@@ -82,7 +82,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	
 	protected static void setupTestDeeInstalls() {
 		createFakeDeeInstall(
-				DeeDmdInstallType.INSTALLTYPE_ID, 
+				DMDInstallType.INSTALLTYPE_ID, 
 				MOCK_DMD2_INSTALL_NAME, 
 				MOCK_DMD2_TESTDATA_PATH);
 		
@@ -107,7 +107,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	}
 	
 	public static IScriptProject createAndOpenDeeProject(String name) throws CoreException {
-		return createAndOpenDeeProject(name, DeeDmdInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
+		return createAndOpenDeeProject(name, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
 	}
 	
 	public static IScriptProject createAndOpenDeeProject(String name, final String installTypeId, final String installId)

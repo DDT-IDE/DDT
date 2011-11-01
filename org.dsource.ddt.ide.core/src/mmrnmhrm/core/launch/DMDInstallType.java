@@ -11,7 +11,7 @@ import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.LibraryLocation;
 
-public class DeeDmdInstallType extends CommonInstallType {
+public class DMDInstallType extends CommonInstallType {
 	
 	public static final String INSTALLTYPE_ID = DeeCore.EXTENSIONS_IDPREFIX+"launching.deeDmdInstallType";
 	
@@ -32,7 +32,7 @@ public class DeeDmdInstallType extends CommonInstallType {
 	
 	@Override
 	protected IInterpreterInstall doCreateInterpreterInstall(String id) {
-		return new DmdInstall(this, id);
+		return new DMDInstall(this, id);
 	}
 	
 	@Override

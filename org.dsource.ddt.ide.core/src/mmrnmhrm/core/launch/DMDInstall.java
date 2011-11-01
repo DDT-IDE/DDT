@@ -3,9 +3,9 @@ package mmrnmhrm.core.launch;
 
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 
-public class DmdInstall extends CommonDeeInstall {
+public class DMDInstall extends CommonDeeInstall {
 	
-	public DmdInstall(IInterpreterInstallType type, String id) {
+	public DMDInstall(IInterpreterInstallType type, String id) {
 		super(type, id);
 	}
 	
