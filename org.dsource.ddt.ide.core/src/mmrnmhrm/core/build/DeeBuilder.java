@@ -62,9 +62,9 @@ public class DeeBuilder {
 	
 	private boolean dontCollectModules;
 	
-	private List<String> libraryEntries;
-	private List<String> folderEntries;
-	private List<String> buildModules;
+	private List<IPath> libraryEntries;
+	private List<IPath> folderEntries;
+	private List<IPath> buildModules;
 	private IPath compilerPath;
 	
 	protected Iterable<IDeeBuilderListener> listeners;
@@ -82,9 +82,9 @@ public class DeeBuilder {
 		
 		dontCollectModules = false;
 		
-		buildModules = new ArrayList<String>();
-		libraryEntries = new ArrayList<String>();
-		folderEntries = new ArrayList<String>();
+		buildModules = new ArrayList<IPath>();
+		libraryEntries = new ArrayList<IPath>();
+		folderEntries = new ArrayList<IPath>();
 	}
 	
 	protected void setListeners(Iterable<IDeeBuilderListener> iterable) {
@@ -140,11 +140,11 @@ public class DeeBuilder {
 		IContainer entryContainer = (IContainer) project.findMember(projectBasedPath);
 		
 		
-		String containerPathStr = entryContainer.isLinked(IResource.CHECK_ANCESTORS) ?
-				entryContainer.getLocation().toOSString() :
-				projectBasedPath.toOSString();
+		IPath containerPath = entryContainer.isLinked(IResource.CHECK_ANCESTORS) ?
+				entryContainer.getLocation() :
+				projectBasedPath;
 		
-		folderEntries.add(containerPathStr);
+		folderEntries.add(containerPath);
 		if(dontCollectModules)
 			return;
 		
@@ -180,11 +180,11 @@ public class DeeBuilder {
 		String modUnitName = file.getName();
 		IPath projectRelativePath = file.getProjectRelativePath();
 		if(DeeNamingRules.isValidCompilationUnitName(modUnitName)) {
-			String resourcePathStr = file.isLinked(IResource.CHECK_ANCESTORS) ?
-					file.getLocation().toOSString() :
-					projectRelativePath.toOSString();
+			IPath resourcePath = file.isLinked(IResource.CHECK_ANCESTORS) ?
+					file.getLocation() :
+					projectRelativePath;
 			
-			buildModules.add(resourcePathStr);
+			buildModules.add(resourcePath);
 			//addCompileBuildUnit(resource);
 		} else {
 		}
@@ -219,52 +219,39 @@ public class DeeBuilder {
 		StringBuilder strb = new StringBuilder(options.getBuildCommands());
 		
 		IPath outputPath = options.getOutputFolder().getProjectRelativePath();
-		String outputDir = outputPath.toOSString();
-		while(StringUtil.replace(strb, "$DEEBUILDER.OUTPUTPATH", encodeString(outputDir)))
-			;
+		replacePathVar(strb, "DEEBUILDER.OUTPUTPATH", outputPath);
 		
-		String outputExe = outputPath.append(options.getArtifactName()).toOSString();
-		while(StringUtil.replace(strb, "$DEEBUILDER.OUTPUTEXE", encodeString(outputExe)))
-			;
+		IPath outputExePath = outputPath.append(options.getArtifactName());
+		replacePathVar(strb, "DEEBUILDER.OUTPUTEXE", outputExePath);
 		
+		//replaceMultiPathVar(strb, "DEEBUILDER.SRCLIBS.-I", "-I", libraryEntries);
+		replaceMultiPathVar(strb, "DEEBUILDER.SRCLIBS.-I", "-I", folderEntries);
+		replaceMultiPathVar(strb, "DEEBUILDER.SRCFOLDERS.-I", "-I", folderEntries);
+		replaceMultiPathVar(strb, "DEEBUILDER.SRCMODULES", "", buildModules);
 		
-		{
-			String srcLibs = "";
-			for(String srcLib : libraryEntries) {
-				srcLibs += "-I" + encodeString(srcLib) + "\n";
-			}
-			while(StringUtil.replace(strb, "$DEEBUILDER.SRCLIBS.-I", srcLibs))
-				;
-		}
+		IPath localCompilerPath = EnvironmentPathUtils.getLocalPath(compilerPath);
+		replacePathVar(strb, "DEEBUILDER.COMPILERPATH", localCompilerPath);
 		
-		{
-			String srcFolders = "";
-			for(String srcfolder : folderEntries) {
-				srcFolders += "-I" + encodeString(srcfolder) + "\n";
-			}
-			while(StringUtil.replace(strb, "$DEEBUILDER.SRCFOLDERS.-I", srcFolders))
-				;
-		}
-		
-		
-		{
-			String srcModules = "";
-			for(String srcModule : buildModules) {
-				srcModules += encodeString(srcModule) + "\n";
-			}
-			while(StringUtil.replace(strb, "$DEEBUILDER.SRCMODULES", srcModules))
-				;
-		}
-		
-		IPath compilerExePath = deeCompiler.getCompilerExecutablePath();
-		String localCompilerPath = EnvironmentPathUtils.getLocalPath(compilerPath).toOSString();
-		String localCompilerExePath = EnvironmentPathUtils.getLocalPath(compilerExePath).toOSString();
-		while(StringUtil.replace(strb, "$DEEBUILDER.COMPILERPATH", localCompilerPath))
-			;
-		while(StringUtil.replace(strb, "$DEEBUILDER.COMPILEREXEPATH", localCompilerExePath))
-			;
+		IPath localCompilerExePath = EnvironmentPathUtils.getLocalPath(deeCompiler.getCompilerExecutablePath());
+		replacePathVar(strb, "DEEBUILDER.COMPILEREXEPATH", localCompilerExePath);
 		
 		return strb.toString();
+	}
+	
+	protected void replacePathVar(StringBuilder strb, String varName, IPath outputPath) {
+		while(StringUtil.replace(strb, "$"+varName, encodeString(outputPath.toOSString())))
+			;
+		while(StringUtil.replace(strb, "$/"+varName, encodeString(outputPath.toString())))
+			;
+	}
+	
+	protected void replaceMultiPathVar(StringBuilder strb, String varName, String pathPrefix, List<IPath> paths) {
+		String varText = "";
+		for(IPath srcModule : paths) {
+			varText += pathPrefix + encodeString(srcModule.toOSString()) + "\n";
+		}
+		while(StringUtil.replace(strb, "$"+varName, varText))
+			;
 	}
 	
 	protected String encodeString(String str) {

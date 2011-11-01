@@ -2,11 +2,10 @@ package mmrnmhrm.core.launch;
 
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.dltk.launching.IInterpreterInstallType;
 
 public class GDCInstall extends CommonDeeInstall {
 	
-	public GDCInstall(IInterpreterInstallType type, String id) {
+	public GDCInstall(GDCInstallType type, String id) {
 		super(type, id);
 	}
 	
@@ -23,9 +22,8 @@ public class GDCInstall extends CommonDeeInstall {
 	@Override
 	public String getDefaultBuildFileData() {
 		return 
-			"XXX -od$DEEBUILDER.OUTPUTPATH\n" +
-			"-of$DEEBUILDER.OUTPUTEXE\n" +
-			//"$DEEBUILDER.EXTRAOPTS\n" +
+			"-v2\n" +
+			"-o$/DEEBUILDER.OUTPUTEXE\n" +
 			"$DEEBUILDER.SRCLIBS.-I\n" +
 			"$DEEBUILDER.SRCFOLDERS.-I\n" +
 			"$DEEBUILDER.SRCMODULES\n"
@@ -34,7 +32,7 @@ public class GDCInstall extends CommonDeeInstall {
 	
 	@Override
 	public String getDefaultBuildToolCmdLine() {
-		return "XXX $DEEBUILDER.COMPILEREXEPATH @build.rf";
+		return "$DEEBUILDER.COMPILEREXEPATH @build.rf";
 	}
 	
 }
