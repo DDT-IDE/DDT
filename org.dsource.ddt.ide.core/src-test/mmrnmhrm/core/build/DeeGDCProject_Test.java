@@ -13,57 +13,49 @@ package mmrnmhrm.core.build;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import mmrnmhrm.core.launch.GDCInstallType;
-import mmrnmhrm.tests.BaseDeeTest;
-import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IScriptProject;
-import org.junit.Test;
 
-public class DeeGDCProject_Test extends BaseDeeTest implements ITestResourcesConstants {
+public class DeeGDCProject_Test extends DeeBuilder_Test implements ITestResourcesConstants {
 	
-	@Test
-	public void test_Main() throws CoreException, URISyntaxException, IOException {
-		IScriptProject deeProj2 = createAndOpenDeeProject("__BuilderProject",
-				GDCInstallType.INSTALLTYPE_ID, DEFAULT_GDC_MOCKINSTALL_NAME);
-		IScriptProject deeProj1 = deeProj2;
-		IScriptProject deeProj = deeProj1;
-		IProject project = deeProj.getProject();
-		
-		CommonDeeBuilderListener checkBuild = new CommonDeeBuilderListener() {
-			@Override
-			public void processAboutToStart(String[] cmdLine) {
-				assertTrue(cmdLine.length > 0);
-				String compilerPath = new Path(cmdLine[0]).toString();
-				assertTrue(compilerPath.endsWith(DEFAULT_GDC_MOCKINSTALL_NAME));
-			}
-		};
-		
-		try {
-			DeeProjectBuilder.addDataListener(checkBuild);
-			//UITestUtils.runEventLoop();
-			doProjectBuild(deeProj);
-			
-			DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_BUILD_SRC, project.getFolder("buildSrc"));
-			doProjectBuild(deeProj);
-			
-		} finally {
-			project.delete(true, null);
-			DeeProjectBuilder.removeDataListener(checkBuild);
-		}
+	public DeeGDCProject_Test() {
+		mockInstallTestdataPath = MOCK_GDC_INSTALL_PATH;
 	}
 	
-	protected void doProjectBuild(IScriptProject deeProj) throws CoreException {
-		IProject project = deeProj.getProject();
-		project.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
+	@Override
+	protected IScriptProject createBuildProject(String projectName) throws CoreException {
+		this.projectName = projectName;
+		return createAndOpenDeeProject(projectName, GDCInstallType.INSTALLTYPE_ID, MOCK_GDC_INSTALL_NAME);
+	}
+	
+	@Override
+	protected void checkResponseFileForBuildSrc(IProject project) throws CoreException, IOException {
+		String contents = readContentsOfIFile(project.getFile("build.rf"));
+		String responseBegin =
+			"-v2"+NL+
+			"-o\"bin/" + projectName+".exe\""+NL+
+			""+NL+
+			"-I\"buildSrc\""+NL
+		;
+		assertTrue(contents.startsWith(responseBegin));
+		assertTrue(contents.contains("\"buildSrc/foofile.d\""));
+		assertTrue(contents.contains("\"buildSrc/packs1/mod1.d\""));
+	}
+	
+	@Override
+	protected void checkResponseForTest_SpacesInNames(String contents) {
+		String responseBegin =
+			"-v2"+NL+
+			"-o\"bin/"+"Spaces in Project name.exe\""+NL+
+			""+NL+
+			"-I\"src copy\""+NL
+		;
+		assertTrue(contents.startsWith(responseBegin));
 	}
 	
 }

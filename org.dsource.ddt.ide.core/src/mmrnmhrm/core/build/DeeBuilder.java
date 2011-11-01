@@ -224,8 +224,7 @@ public class DeeBuilder {
 		IPath outputExePath = outputPath.append(options.getArtifactName());
 		replacePathVar(strb, "DEEBUILDER.OUTPUTEXE", outputExePath);
 		
-		//replaceMultiPathVar(strb, "DEEBUILDER.SRCLIBS.-I", "-I", libraryEntries);
-		replaceMultiPathVar(strb, "DEEBUILDER.SRCLIBS.-I", "-I", folderEntries);
+		replaceMultiPathVar(strb, "DEEBUILDER.SRCLIBS.-I", "-I", libraryEntries);
 		replaceMultiPathVar(strb, "DEEBUILDER.SRCFOLDERS.-I", "-I", folderEntries);
 		replaceMultiPathVar(strb, "DEEBUILDER.SRCMODULES", "", buildModules);
 		
@@ -246,11 +245,15 @@ public class DeeBuilder {
 	}
 	
 	protected void replaceMultiPathVar(StringBuilder strb, String varName, String pathPrefix, List<IPath> paths) {
-		String varText = "";
+		StringBuilder varTextOSString = new StringBuilder();
+		StringBuilder varTextPosix = new StringBuilder();
 		for(IPath srcModule : paths) {
-			varText += pathPrefix + encodeString(srcModule.toOSString()) + "\n";
+			varTextOSString.append(pathPrefix + encodeString(srcModule.toOSString()) + "\n");
+			varTextPosix.append(pathPrefix + encodeString(srcModule.toString()) + "\n");
 		}
-		while(StringUtil.replace(strb, "$"+varName, varText))
+		while(StringUtil.replace(strb, "$"+varName, varTextOSString.toString()))
+			;
+		while(StringUtil.replace(strb, "$/"+varName, varTextPosix.toString()))
 			;
 	}
 	

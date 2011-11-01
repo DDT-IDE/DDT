@@ -75,20 +75,21 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		indexManager.disable();
 	}
 	
-	protected static final String DMD2INSTALL_TESTDATA_PATH = "deeCompilerInstalls/DMDInstall/windows/bin/dmd.exe";
-	public static final String DEFAULT_DMD2_MOCKINSTALL_NAME = "defaultDMD2Install";
-	public static final String DEFAULT_GDC_MOCKINSTALL_NAME = "gdcInstall";
+	public static final String MOCK_DMD2_INSTALL_NAME = "defaultDMD2Install";
+	protected static final String MOCK_DMD2_TESTDATA_PATH = "deeCompilerInstalls/DMDInstall/windows/bin/dmd.exe";
+	public static final String MOCK_GDC_INSTALL_NAME = "gdcInstall";
+	protected static final String MOCK_GDC_INSTALL_PATH = "deeCompilerInstalls/gdcInstall/bin/gdc";
 	
 	protected static void setupTestDeeInstalls() {
 		createFakeDeeInstall(
 				DeeDmdInstallType.INSTALLTYPE_ID, 
-				DEFAULT_DMD2_MOCKINSTALL_NAME, 
-				DMD2INSTALL_TESTDATA_PATH);
+				MOCK_DMD2_INSTALL_NAME, 
+				MOCK_DMD2_TESTDATA_PATH);
 		
 		createFakeDeeInstall(
 				GDCInstallType.INSTALLTYPE_ID, 
-				"gdcInstall", 
-				"deeCompilerInstalls/gdcInstall/bin/gdc");
+				MOCK_GDC_INSTALL_NAME, 
+				MOCK_GDC_INSTALL_PATH);
 	}
 	
 	protected static void createFakeDeeInstall(String installTypeId, String installName, String installExePath) {
@@ -106,7 +107,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	}
 	
 	public static IScriptProject createAndOpenDeeProject(String name) throws CoreException {
-		return createAndOpenDeeProject(name, DeeDmdInstallType.INSTALLTYPE_ID, DEFAULT_DMD2_MOCKINSTALL_NAME);
+		return createAndOpenDeeProject(name, DeeDmdInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
 	}
 	
 	public static IScriptProject createAndOpenDeeProject(String name, final String installTypeId, final String installId)

@@ -24,9 +24,9 @@ public class GDCInstall extends CommonDeeInstall {
 		return 
 			"-v2\n" +
 			"-o$/DEEBUILDER.OUTPUTEXE\n" +
-			"$DEEBUILDER.SRCLIBS.-I\n" +
-			"$DEEBUILDER.SRCFOLDERS.-I\n" +
-			"$DEEBUILDER.SRCMODULES\n"
+			"$/DEEBUILDER.SRCLIBS.-I\n" +
+			"$/DEEBUILDER.SRCFOLDERS.-I\n" +
+			"$/DEEBUILDER.SRCMODULES\n"
 		;
 	}
 	
