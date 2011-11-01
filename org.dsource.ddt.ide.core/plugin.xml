@@ -64,6 +64,10 @@
             class="mmrnmhrm.core.launch.GDCInstallType"
             id="org.dsource.ddt.ide.core.launching.GDCInstallType">
       </interpreterInstallType>      
+      <interpreterInstallType
+            class="mmrnmhrm.core.launch.GenericInstallType"
+            id="org.dsource.ddt.ide.core.launching.GenericInstallType">
+      </interpreterInstallType>      
    </extension>
    <extension
          id="deebuilder"
