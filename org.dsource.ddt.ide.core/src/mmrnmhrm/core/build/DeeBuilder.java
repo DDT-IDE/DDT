@@ -315,6 +315,10 @@ public class DeeBuilder {
 	
 	protected void startProcess(IProgressMonitor monitor, final ProcessBuilder builder) throws CoreException {
 		try {
+			if(builder.command().size() == 0) {
+				fireHandleOutputLine("DDT: No build process specified.");
+				return;
+			}
 			Process proc = builder.start();
 			ExternalProcessAdapter processUtil = new ExternalProcessAdapter() {
 				@Override
