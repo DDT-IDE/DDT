@@ -10,6 +10,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import mmrnmhrm.core.DeeCore;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -84,6 +86,7 @@ public class ResourceUtils {
 		}
 	}
 	
+	
 	public static void copyURLResourceToWorkspace(URI uri, final IContainer destFolder, IResourceVisitor filter) 
 			throws CoreException {
 		IProject tempProject = createNewProject("__temp.linkProject"); // a hack!
@@ -108,12 +111,21 @@ public class ResourceUtils {
 		return project;
 	}
 	
-	public static void copyBundleDirToWorkspace(String bundleId, final IContainer destFolder, IPath bundlesrcpath)
-			throws CoreException, IOException {
-		URL sourceURL = FileLocator.find(Platform.getBundle(bundleId), bundlesrcpath, null);
+	/**
+	 * Copy a file/folder from given bundleResourcePath and bundleid, to given destFolder. 
+//	 *## If destFolder is a project, doesn't actually add the project dir to the workspace. ## 
+	 */
+	public static void copyBundleDirToWorkspace(String bundleId, IPath bundleResourcePath, final IContainer destFolder)
+			throws CoreException {
+		URL sourceURL = FileLocator.find(Platform.getBundle(bundleId), bundleResourcePath, null);
 		assertNotNull(sourceURL);
 		
-		URI uri = getURIFromProperURL(FileLocator.toFileURL(sourceURL));
+		URI uri;
+		try {
+			uri = getURIFromProperURL(FileLocator.toFileURL(sourceURL));
+		} catch(IOException e) {
+			throw DeeCore.createCoreException("Error converting URL to URI", e);
+		}
 		ResourceUtils.copyURLResourceToWorkspace(uri, destFolder, vcsFilter);
 	}
 	

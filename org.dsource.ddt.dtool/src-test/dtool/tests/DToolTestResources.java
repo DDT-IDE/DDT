@@ -22,23 +22,14 @@ import dtool.DToolBundle;
 
 public class DToolTestResources implements IDToolTestConstants {
 	
-	protected static final String D_TOOL_TEST_RESOURCES_BASE_DIR = DToolBaseTest.DTOOL_PREFIX + "TestResourcesDir";
-	protected static final String D_TOOL_TEST_RESOURCES_WORKING_DIR = DToolBaseTest.DTOOL_PREFIX + "TestsWorkingDir";
+	protected static final String TEST_RESOURCES_BASE_DIR_PROPERTY = DToolBaseTest.DTOOL_PREFIX + "TestResourcesDir";
+	protected static final String TEST_RESOURCES_WORKING_DIR_PROPERTY = DToolBaseTest.DTOOL_PREFIX + "TestsWorkingDir";
 	
-	private static final String TESTDATA = "testdata/";
+	protected static final String TESTDATA = "testdata/";
 	
 	protected static DToolTestResources instance;
 	
-	private String testResourcesDir;
-	
-	public DToolTestResources() {
-		testResourcesDir = System.getProperty(D_TOOL_TEST_RESOURCES_BASE_DIR);
-		if(testResourcesDir == null) {
-			// Assume a default based on process working dir
-			testResourcesDir = "../"+DToolBundle.BUNDLE_ID+"/"+TESTDATA;
-		}
-	}
-	
+	// lazy loaded
 	public static synchronized DToolTestResources getInstance() {
 		if(instance == null) {
 			instance = new DToolTestResources();
@@ -47,6 +38,16 @@ public class DToolTestResources implements IDToolTestConstants {
 		return instance;
 	}
 	
+	private String testResourcesDir;
+	
+	public DToolTestResources() {
+		testResourcesDir = System.getProperty(TEST_RESOURCES_BASE_DIR_PROPERTY);
+		if(testResourcesDir == null) {
+			// Assume a default based on process working directory
+			// This is so test can be started from typical Eclipse workspace without setting up VM properties
+			testResourcesDir = "../"+DToolBundle.BUNDLE_ID+"/"+TESTDATA;
+		}
+	}
 	
 	public File getResourcesDir() {
 		File file = new File(testResourcesDir);
@@ -85,7 +86,7 @@ public class DToolTestResources implements IDToolTestConstants {
 	
 	protected static void initWorkingdir() {
 		// default init:
-		String property = System.getProperty(D_TOOL_TEST_RESOURCES_WORKING_DIR);
+		String property = System.getProperty(TEST_RESOURCES_WORKING_DIR_PROPERTY);
 		if(property != null) {
 			initWorkingDir(property);
 		}

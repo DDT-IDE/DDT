@@ -17,6 +17,7 @@ public class DMDInstallType extends CommonInstallType {
 	
 	private static final Path DMD_INSTALL_LIBRARY_PATH = new Path("src/phobos");
 	private static final Path DMD2_INSTALL_LIBRARY_PATH = new Path("src/druntime/import");
+	private static final Path DMD2_INSTALL_LIBRARYPHOBOS_PATH = new Path("src/phobos");
 	
 	@Override
 	public String getName() {
@@ -43,7 +44,7 @@ public class DMDInstallType extends CommonInstallType {
 		if(path.toFile().exists() && path.toFile().isDirectory()) {
 			// Found a D2 DMD install
 			addLibraryLocationFromPath(locs, env, path);
-			addLibraryLocationFromPath(locs, env, installPath.append("src/phobos"));
+			addLibraryLocationFromPath(locs, env, installPath.append(DMD2_INSTALL_LIBRARYPHOBOS_PATH));
 		} else {
 			// Can only be a D1 DMD install
 			path = installPath.append(DMD_INSTALL_LIBRARY_PATH);

@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -50,7 +49,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 	}
 	
 	@Test
-	public void test_Main() throws CoreException, URISyntaxException, IOException {
+	public void test_Main() throws CoreException, IOException {
 		IScriptProject deeProj = createBuildProject(projectName);
 		IProject project = deeProj.getProject();
 		

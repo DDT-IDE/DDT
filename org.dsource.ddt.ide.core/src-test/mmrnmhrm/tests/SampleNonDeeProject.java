@@ -2,10 +2,6 @@ package mmrnmhrm.tests;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
 
@@ -39,8 +35,7 @@ public abstract class SampleNonDeeProject {
 	}
 	
 	
-	public static IProject createAndFillSampleProj() throws CoreException,
-			URISyntaxException, IOException {
+	public static IProject createAndFillSampleProj() throws CoreException {
 		IWorkspaceRoot workspaceRoot = DeeCore.getWorkspaceRoot();
 		project = workspaceRoot.getProject(SAMPLEPROJNAME);
 		if(project.exists()) {
@@ -49,7 +44,7 @@ public abstract class SampleNonDeeProject {
 		project.create(null);
 		project.open(null);
 		// Watch out when changing these values, tests may depend on these paths
-		DeeCoreTestResources.createFolderFromDeeResource(ITestResourcesConstants.TR_SAMPLE_SRC1, project.getFolder(TEST_OUT_SRC));
+		DeeCoreTestResources.createWorkspaceFolderFromDeeResource(ITestResourcesConstants.TR_SAMPLE_SRC1, project.getFolder(TEST_OUT_SRC));
 		return project;
 	}
 	

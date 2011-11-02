@@ -13,10 +13,10 @@ import org.eclipse.osgi.service.datalocation.Location;
 import dtool.tests.DToolTestResources;
 
 /**
- * Initialize {@link DToolTestResources} working dir to use the Eclipse/OSGI instance location
+ * Configures {@link DToolTestResources} working dir to be the same as the Eclipse/OSGI instance location
  */
 public class DToolResourcesPluginAdapter 
-	extends DToolTestResources // for visibility purposes 
+	extends DToolTestResources 
 {
 	
 	public static void initialize() {

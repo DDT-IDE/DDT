@@ -3,9 +3,6 @@ package mmrnmhrm.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.io.IOException;
-
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.parser.DeeSourceParser;
@@ -51,7 +48,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		}
 	}
 	
-	protected static void fillSampleProj() throws CoreException, IOException {
+	protected static void fillSampleProj() throws CoreException {
 		// Watch out when changing these values, tests may depend on these paths
 		
 		IProject project = scriptProject.getProject();
@@ -65,7 +62,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		createSrcFolderFromDeeCoreResource(TR_CA, project.getFolder(TR_CA));
 		createSrcFolderFromDeeCoreResource(TR_REFS, project.getFolder(TR_REFS));
 		
-		folder = createFolderFromDeeResource(TR_SRC_OUTSIDE_MODEL, project.getFolder(TR_SRC_OUTSIDE_MODEL));
+		folder = createWorkspaceFolderFromDeeResource(TR_SRC_OUTSIDE_MODEL, project.getFolder(TR_SRC_OUTSIDE_MODEL));
 		sampleOutOfModelFile = folder.getFile("outfile.d");
 		
 		
