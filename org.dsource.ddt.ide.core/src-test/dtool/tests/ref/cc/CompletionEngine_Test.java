@@ -47,7 +47,7 @@ public class CompletionEngine_Test extends BaseDeeCoreTest {
 		};
 		DeeCompletionEngine completionEngine = new DeeCompletionEngine();
 		completionEngine.setRequestor(requestor);
-		completionEngine.complete(moduleToIModuleSource(srcModule), offset, 0);
+		completionEngine.complete(ModuleSourceTestUtils.moduleToIModuleSource(srcModule), offset, 0);
 		return requestor;
 	}
 	

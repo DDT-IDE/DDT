@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -34,8 +35,6 @@ import org.eclipse.dltk.core.search.indexing.IndexManager;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.eclipse.dltk.launching.ScriptRuntime;
-
-import dtool.tests.DToolTestResources;
 
 /**
  * Initializes a common Dee test setup:
@@ -81,6 +80,12 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	protected static final String MOCK_GDC_INSTALL_PATH = "deeCompilerInstalls/gdcInstall/bin/gdc";
 	
 	protected static void setupTestDeeInstalls() {
+		try {
+			DeeCoreTestResources.copyTestFolderContentsFromDeeResource("deeCompilerInstalls", "deeCompilerInstalls");
+		} catch(CoreException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+		
 		createFakeDeeInstall(
 				DMDInstallType.INSTALLTYPE_ID, 
 				MOCK_DMD2_INSTALL_NAME, 
@@ -96,7 +101,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		IInterpreterInstallType deeDmdInstallType = ScriptRuntime.getInterpreterInstallType(installTypeId);
 		InterpreterStandin install = new InterpreterStandin(deeDmdInstallType, installName + ".id");
 		
-		String installPathStr = DToolTestResources.getTestResource(installExePath).getAbsolutePath();
+		String installPathStr = DeeCoreTestResources.getTestResource(installExePath).getAbsolutePath();
 		assertTrue(new File(installPathStr).exists());
 		
 		install.setInstallLocation(new LazyFileHandle(LocalEnvironment.ENVIRONMENT_ID, new Path(installPathStr)));
@@ -110,9 +115,9 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		return createAndOpenDeeProject(name, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
 	}
 	
-	public static IScriptProject createAndOpenDeeProject(String name, final String installTypeId, final String installId)
-			throws CoreException {
-		IWorkspaceRoot workspaceRoot = DeeCore.getWorkspaceRoot();
+	public static IScriptProject createAndOpenDeeProject(
+			String name, final String installTypeId, final String installId) throws CoreException {
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		
 		final IProject project;
 		project = workspaceRoot.getProject(name);
@@ -134,6 +139,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		
 		DeeProjectModelTest.checkInstall(scriptProject, installTypeId, installId);
 		DeeProjectModel.getDeeProjectInfo(scriptProject);
+		assertTrue(project.exists() && project.isOpen());
 		return scriptProject;
 	}
 	

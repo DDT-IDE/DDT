@@ -13,16 +13,13 @@ package mmrnmhrm.tests;
 
 import mmrnmhrm.tests.utils.ErrorLogListener;
 
-import org.eclipse.dltk.compiler.env.IModuleSource;
-import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
 import org.junit.After;
 import org.junit.Before;
 
 import dtool.tests.DeeTestUtils;
 
-/** Base Test class that adds an exception listener to the platform log. 
+/** 
+ * Base core test class that adds an exception listener to the platform log. 
  * The ErrorLogListener was the only way I found to detect UI exceptions in SafeRunnable's 
  * when running as plugin test. 
  */
@@ -38,40 +35,6 @@ public abstract class BaseDeeCoreTest extends DeeTestUtils {
 	@After
 	public void checkLogErrorListener() throws Throwable {
 		logErrorListener.checkErrorsAndUninstall();
-	}
-	
-	/* -------------- */
-	
-	protected static IModuleSource moduleToIModuleSource(final ISourceModule srcModule) {
-		return new IModuleSource() {
-			@Override
-			public String getFileName() {
-				return srcModule.getPath().toString();
-			}
-			
-			@Override
-			public String getSourceContents() {
-				try {
-					return srcModule.getSource();
-				} catch(ModelException e) {
-					throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-				}
-			}
-			
-			@Override
-			public IModelElement getModelElement() {
-				return srcModule;
-			}
-			
-			@Override
-			public char[] getContentsAsCharArray() {
-				try {
-					return srcModule.getSourceAsCharArray();
-				} catch(ModelException e) {
-					throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-				}
-			}
-		};
 	}
 	
 }

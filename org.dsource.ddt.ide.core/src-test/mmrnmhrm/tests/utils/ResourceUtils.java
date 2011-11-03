@@ -86,10 +86,10 @@ public class ResourceUtils {
 		}
 	}
 	
-	
+	@Deprecated
 	public static void copyURLResourceToWorkspace(URI uri, final IContainer destFolder, IResourceVisitor filter) 
 			throws CoreException {
-		IProject tempProject = createNewProject("__temp.linkProject"); // a hack!
+		IProject tempProject = createNewProject("__temp.DDT.linkProject"); // a hack!
 		IFolder linkFolder = tempProject.getFolder(new Path("__copylink")); 
 		linkFolder.createLink(uri, IResource.NONE, null);
 		
@@ -113,7 +113,6 @@ public class ResourceUtils {
 	
 	/**
 	 * Copy a file/folder from given bundleResourcePath and bundleid, to given destFolder. 
-//	 *## If destFolder is a project, doesn't actually add the project dir to the workspace. ## 
 	 */
 	public static void copyBundleDirToWorkspace(String bundleId, IPath bundleResourcePath, final IContainer destFolder)
 			throws CoreException {
@@ -126,10 +125,6 @@ public class ResourceUtils {
 		} catch(IOException e) {
 			throw DeeCore.createCoreException("Error converting URL to URI", e);
 		}
-		ResourceUtils.copyURLResourceToWorkspace(uri, destFolder, vcsFilter);
-	}
-	
-	public static void copyURIResourceToWorkspace(URI uri, final IContainer destFolder) throws CoreException {
 		ResourceUtils.copyURLResourceToWorkspace(uri, destFolder, vcsFilter);
 	}
 	

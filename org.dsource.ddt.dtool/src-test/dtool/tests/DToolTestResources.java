@@ -92,5 +92,5 @@ public class DToolTestResources implements IDToolTestConstants {
 		}
 		// Maybe use workingDir = "../_runtime-tests" instead
 	}
-	
+
 }

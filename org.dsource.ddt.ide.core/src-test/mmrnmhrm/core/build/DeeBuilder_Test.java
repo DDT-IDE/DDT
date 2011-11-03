@@ -45,11 +45,13 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 	
 	protected void doProjectBuild(IScriptProject deeProj) throws CoreException {
 		IProject project = deeProj.getProject();
+		assertTrue(project.exists() && project.isOpen());
 		project.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
 	}
 	
 	@Test
-	public void test_Main() throws CoreException, IOException {
+	public void testProjectBuild() throws Exception { testProjectBuild$(); }
+	public void testProjectBuild$() throws Exception {
 		IScriptProject deeProj = createBuildProject(projectName);
 		IProject project = deeProj.getProject();
 		
@@ -106,8 +108,6 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 	}
 	
 	protected abstract class RunWithTemporaryProject {
-		String projName;
-		
 		public RunWithTemporaryProject(String projName) throws Exception {
 			IScriptProject deeProj = createBuildProject(projName);
 			IProject project = deeProj.getProject();
