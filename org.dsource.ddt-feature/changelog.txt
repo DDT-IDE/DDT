@@ -5,7 +5,8 @@
 == DDT 0.5.1 (devel) ==
  * Fixed bug where DDT would not ship with any default editor Code Templates.
  * Added support for GDC, as well as a generic compiler install. (Implemented issue #59)
-
+ * Implemented issue #59: Added support for DMD Unix style installs ("usr/bin/dmd" and the like).
+ 
 == DDT 0.5.0 (2011-08-26) ==
  * Updated DDT to DTLK 3.0
  * Made icons of D source elements (classes, structs templates, etc.) consistent throughout the UI. 

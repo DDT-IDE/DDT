@@ -75,9 +75,10 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	}
 	
 	public static final String MOCK_DMD2_INSTALL_NAME = "defaultDMD2Install";
-	protected static final String MOCK_DMD2_TESTDATA_PATH = "deeCompilerInstalls/DMDInstall/windows/bin/dmd.exe";
+	protected static final String MOCK_DEE_COMPILERS_PATH = "deeCompilerInstalls/";
+	protected static final String MOCK_DMD2_TESTDATA_PATH = MOCK_DEE_COMPILERS_PATH+"DMDInstall/windows/bin/dmd.exe";
 	public static final String MOCK_GDC_INSTALL_NAME = "gdcInstall";
-	protected static final String MOCK_GDC_INSTALL_PATH = "deeCompilerInstalls/gdcInstall/bin/gdc";
+	protected static final String MOCK_GDC_INSTALL_PATH = MOCK_DEE_COMPILERS_PATH+"gdcInstall/bin/gdc";
 	
 	protected static void setupTestDeeInstalls() {
 		try {
