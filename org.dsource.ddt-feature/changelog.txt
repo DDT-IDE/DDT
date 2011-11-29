@@ -4,7 +4,7 @@
 
 == DDT 0.5.1 (devel) ==
  * Fixed bug where DDT would not ship with any default editor Code Templates.
- * Added support for GDC, as well as a generic compiler install.
+ * Added support for GDC, as well as a generic compiler install. (Implemented issue #59)
 
 == DDT 0.5.0 (2011-08-26) ==
  * Updated DDT to DTLK 3.0
@@ -15,7 +15,7 @@
    * Clicking on named elements correctly selects their name in the editor (previously it just revealed the element).
    * Added context menu to the outline elements, added some filter actions to the toolbar of the view.
  * Constructor/Desctructors/Allocators/Deallocators now show up in Outline view and quick Outline.
- * Implemented #52: function/delegate literals can now be folded. And also anonymous classes.
+ * Implemented issue #52: function/delegate literals can now be folded. And also anonymous classes.
  * Fix in Documentation hovers: removed redudant text, and now displays concrete archetype (Class, Interface, Struct, Union), instead of "Aggregate".
  * Fixed issue #47: NPE while parsing is expression. Source ranges will still be missing though.
  * Fixed some minor NPE and assertion failure bugs.
