@@ -40,7 +40,6 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 				"pack.sample", "pack.sample2", "pack.sample3", 
 				"pack.testSelfImport3",
 				"pack.subpack.mod3", "pack.subpack.mod4",
-				"phobos",
 				"pack2.fooprivate", "pack2.foopublic", "pack2.foopublic2"
 		);
 		
