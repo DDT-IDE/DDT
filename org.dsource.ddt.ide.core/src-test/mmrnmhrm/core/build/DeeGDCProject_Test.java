@@ -38,7 +38,7 @@ public class DeeGDCProject_Test extends DeeBuilder_Test implements ITestResource
 		String contents = readContentsOfIFile(project.getFile("build.rf"));
 		String responseBegin =
 			"-v2"+NL+
-			"-o\"bin/" + projectName+".exe\""+NL+
+			"-o\"bin/" + projectName+OS_EXT+"\""+NL+
 			""+NL+
 			"-I\"buildSrc\""+NL
 		;
@@ -51,7 +51,7 @@ public class DeeGDCProject_Test extends DeeBuilder_Test implements ITestResource
 	protected void checkResponseForTest_SpacesInNames(String contents) {
 		String responseBegin =
 			"-v2"+NL+
-			"-o\"bin/"+"Spaces in Project name.exe\""+NL+
+			"-o\"bin/"+"Spaces in Project name"+OS_EXT+"\""+NL+
 			""+NL+
 			"-I\"src copy\""+NL
 		;
