@@ -24,49 +24,48 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 public class DeeLaunchShortcut extends AbstractScriptLaunchShortcut {
+	
 	@Override
 	protected ILaunchConfigurationType getConfigurationType() {
 		return getLaunchManager().getLaunchConfigurationType(
-				DeeLaunchConfigurationConstants.ID_DEE_SCRIPT);
+				DeeLaunchConfigurationConstants.ID_DEE_EXECUTABLE);
 	}
-
+	
 	@Override
 	protected String getNatureId() {
 		return DeeNature.NATURE_ID;
 	}
 	
 	@Override
-	protected IResource[] findScripts(Object[] elements,
-			IRunnableContext context) throws InterruptedException,
-			CoreException {
+	protected IResource[] findScripts(Object[] elements, IRunnableContext context)
+			throws InterruptedException, CoreException {
 		
 		List<IResource> list = new ArrayList<IResource>(elements.length);
 		for (int i = 0; i < elements.length; i++) {
 			Object object = elements[i];
-				if (object instanceof IFile) {
-					IFile f = (IFile) object;
-					if (!f.getName().startsWith("."))
-						list.add(f);
-				} else if (object instanceof IProject) {
-					IProject proj = (IProject) object;
-					list.add(getScriptResources(proj));
-				} else if (object instanceof IScriptProject) {
-					IScriptProject deeProj = (IScriptProject) object;
-					list.add(getScriptResources(deeProj.getProject()));
-				}
+			if (object instanceof IFile) {
+				IFile f = (IFile) object;
+				if (!f.getName().startsWith("."))
+					list.add(f);
+			} else if (object instanceof IProject) {
+				IProject proj = (IProject) object;
+				list.add(getProjectExecutableArtifact(proj));
+			} else if (object instanceof IScriptProject) {
+				IScriptProject deeProj = (IScriptProject) object;
+				list.add(getProjectExecutableArtifact(deeProj.getProject()));
+			}
 		}
 		return list.toArray(new IResource[list.size()]);
 	}
 	
 	
-	private IFile getScriptResources(IProject proj) {
+	protected static IFile getProjectExecutableArtifact(IProject proj) {
 		DeeProjectOptions projectInfo = DeeProjectModel.getDeeProjectInfo(DLTKCore.create(proj));
 		return projectInfo.getOutputFolder().getFile(projectInfo.getArtifactName());
 	}
-
+	
 	@Override
-	protected ILaunchConfiguration findLaunchConfiguration(IResource script,
-			ILaunchConfigurationType configType) {
+	protected ILaunchConfiguration findLaunchConfiguration(IResource script, ILaunchConfigurationType configType) {
 		return super.findLaunchConfiguration(script, configType);
 	}
 	
@@ -76,7 +75,7 @@ public class DeeLaunchShortcut extends AbstractScriptLaunchShortcut {
 		if (editorInput == null)
 			return;
 		IModelElement element = EditorUtility.getEditorInputModelElement(editor, false);
-		IFile file = getScriptResources(element.getScriptProject().getProject());
+		IFile file = getProjectExecutableArtifact(element.getScriptProject().getProject());
 		launch(file, mode);
 	}
 	

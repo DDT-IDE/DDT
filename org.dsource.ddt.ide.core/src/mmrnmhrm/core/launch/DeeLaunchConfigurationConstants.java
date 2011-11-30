@@ -10,7 +10,7 @@ public class DeeLaunchConfigurationConstants extends ScriptLaunchConfigurationCo
 	protected DeeLaunchConfigurationConstants() {
 	}
 	
-	public static final String ID_DEE_SCRIPT = DeeCore.EXTENSIONS_IDPREFIX+"deeLaunchConfigurationType"; //$NON-NLS-1$
+	public static final String ID_DEE_EXECUTABLE = DeeCore.EXTENSIONS_IDPREFIX+"deeLaunchConfigurationType";
 	
-	public static final String ID_DEE_PROCESS_TYPE = "deeprocess"; //$NON-NLS-1$
+	public static final String ID_DEE_PROCESS_TYPE = "deeNative";
 }

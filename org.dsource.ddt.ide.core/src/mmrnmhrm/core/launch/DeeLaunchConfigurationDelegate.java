@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 
+import melnorme.utilbox.misc.ArrayUtil;
+
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -20,10 +23,11 @@ import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IExecutionEnvironment;
 import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
 import org.eclipse.dltk.launching.IInterpreterInstall;
+import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterConfig;
 
 public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegate {
-
+	
 	/** This specialized InterpreterConfig ignores the interpreter (which in this case
 	 * is the DMD compiler) and runs the executable directly. */
 	public static class DeeInterpreterConfig extends InterpreterConfig {
@@ -46,18 +50,17 @@ public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 		protected String[] renderCommandLine(IEnvironment environment, IPath interpreter) {
 			return renderCommandLine(null);
 		}
-
-		@SuppressWarnings("unchecked")
+		
 		private String[] renderCommandLine() {
 			List<String> items = new ArrayList<String>();
-
+			
 			items.add(getScriptFilePath().toString());
-
+			
 			// Script arguments
-			List<String> scriptArgs = (List<String>) getScriptArgs();
+			List<String> scriptArgs = getScriptArgs();
 			items.addAll(scriptArgs);
-
-			return (String[]) items.toArray(new String[items.size()]);
+			
+			return ArrayUtil.createFrom(items, String.class);
 		}
 	}
 	
@@ -66,12 +69,24 @@ public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 		return DeeNature.NATURE_ID;
 	}
 	
+	@Override
+	public IInterpreterRunner getInterpreterRunner(ILaunchConfiguration configuration, String mode)
+			throws CoreException {
+		return super.getInterpreterRunner(configuration, mode);
+	}
+	
+	@Override
+	protected void runRunner(ILaunchConfiguration configuration, IInterpreterRunner runner, InterpreterConfig config,
+			ILaunch launch, IProgressMonitor monitor) throws CoreException {
+		super.runRunner(configuration, runner, config, launch, monitor);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	// Note: this is code copied from DLTK super.createInterpreterConfig
 	protected InterpreterConfig createInterpreterConfig(ILaunchConfiguration configuration,
 			ILaunch launch) throws CoreException {
-
+		
 		// Validation already included
 		IEnvironment scriptEnvironment = getScriptEnvironment(configuration);
 		IExecutionEnvironment scriptExecEnvironment = (IExecutionEnvironment) scriptEnvironment
@@ -82,22 +97,22 @@ public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 		// }
 		final IPath workingDirectory = new Path(getWorkingDirectory(configuration,
 				scriptEnvironment));
-
+		
 		IPath mainScript = null;//
 		if (scriptLaunchPath != null) {
 			mainScript = new Path(scriptLaunchPath);
 		}
 		InterpreterConfig config = new DeeInterpreterConfig(scriptEnvironment, mainScript,
 				workingDirectory);
-
+		
 		// Script arguments
 		String[] scriptArgs = getScriptArguments(configuration);
 		config.addScriptArgs(scriptArgs);
-
+		
 		// Interpreter argument
 		String[] interpreterArgs = getInterpreterArguments(configuration);
 		config.addInterpreterArgs(interpreterArgs);
-
+		
 		// Environment
 		// config.addEnvVars(DebugPlugin.getDefault().getLaunchManager()
 		// .getNativeEnvironmentCasePreserved());
@@ -116,15 +131,15 @@ public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 			}
 		}
 		config.addEnvVars(env);
-
+		
 		return config;
 	}
-
+	
 	protected IEnvironment getScriptEnvironment(ILaunchConfiguration configuration)
 			throws CoreException {
 		IScriptProject scriptProject = AbstractScriptLaunchConfigurationDelegate
 				.getScriptProject(configuration);
 		return EnvironmentManager.getEnvironment(scriptProject);
 	}
-
+	
 }
