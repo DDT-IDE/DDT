@@ -65,7 +65,7 @@ public class DLTKModuleResolver implements IModuleResolver {
 		return deeproj.getLanguageToolkit().getNatureId().equals(DeeLanguageToolkit.NATURE_ID);
 	}
 	
-	private boolean exists(ISourceModule modUnit) {
+	private static boolean exists(ISourceModule modUnit) {
 		return modUnit != null && modUnit.exists()
 		// XXX: DLTK bug workaround: 
 		// modUnit.exists() true on ANY external source modules of libraries
@@ -74,7 +74,7 @@ public class DLTKModuleResolver implements IModuleResolver {
 		;
 	}
 	
-	private boolean externalReallyExists(ISourceModule modUnit) {
+	private static boolean externalReallyExists(ISourceModule modUnit) {
 		if(!(modUnit instanceof IExternalSourceModule))
 			return true;
 		//modUnit.getUnderlyingResource() of externals is allways null
