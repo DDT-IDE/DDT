@@ -3,7 +3,6 @@ package mmrnmhrm.core.launch;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.dltk.launching.AbstractInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.IInterpreterRunner;
@@ -35,16 +34,7 @@ public abstract class CommonDeeInstall extends AbstractInterpreterInstall {
 	
 	@Override
 	public IInterpreterRunner getInterpreterRunner(String mode) {
-		IInterpreterRunner runner = super.getInterpreterRunner(mode);
-		if (runner != null) {
-			return runner;
-		}
-		
-		if (mode.equals(ILaunchManager.RUN_MODE)) {
-			return new DeeInterpreterRunner(this);
-		}
-		
-		return null;
+		return null; // No need for one, the D LaunchConfigurationDelegate know how to launch things
 	}
 	
 }
