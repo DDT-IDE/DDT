@@ -492,6 +492,15 @@
             nature="org.dsource.ddt.ide.core.nature">
       </buildpathContainerPage>
    </extension>
+   
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+		<launchConfigurationTypeImage
+            configTypeID="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
+            icon="$nl$/icons/d_app.gif"
+            id="org.dsource.ddt.ide.ui.launchConfigurationTypeImage1">
+		</launchConfigurationTypeImage>
+	</extension>
+   
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
@@ -551,15 +560,14 @@
          </contextualLaunch>
       </shortcut>
    </extension>
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-      <launchConfigurationTypeImage
-            configTypeID="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
-            icon="$nl$/icons/d_app.gif"
-            id="org.dsource.ddt.ide.ui.launchConfigurationTypeImage1">
-      </launchConfigurationTypeImage>
-   </extension>
    
+	<extension point="org.eclipse.ui.actionSetPartAssociations">
+		<actionSetPartAssociation
+			targetID="org.eclipse.debug.ui.launchActionSet">
+			<part id="org.eclipse.dltk.ui.ScriptExplorer" />
+			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor" />
+		</actionSetPartAssociation>
+	</extension>
    
    	<extension point="org.eclipse.ui.editorActions">
 		<editorContribution
@@ -633,16 +641,4 @@
 		</viewerContribution>
 	</extension>
 	
-	<extension point="org.eclipse.ui.actionSetPartAssociations">
-		<actionSetPartAssociation
-			targetID="org.eclipse.debug.ui.launchActionSet">
-			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor" />
-		</actionSetPartAssociation>
-		<actionSetPartAssociation
-			targetID="org.eclipse.debug.ui.launchActionSet">
-			<part id="org.eclipse.dltk.ui.ScriptExplorer" />
-			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor" />
-		</actionSetPartAssociation>
-	</extension>
-
 </plugin>
