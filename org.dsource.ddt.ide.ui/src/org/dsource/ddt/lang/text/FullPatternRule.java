@@ -12,7 +12,6 @@ package org.dsource.ddt.lang.text;
 
 import melnorme.utilbox.misc.ArrayUtil;
 
-import org.dsource.ddt.lang.LangUtil;
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -34,7 +33,7 @@ public class FullPatternRule implements IRule {
 	public FullPatternRule(IToken token, String[] possibleSequences, IWordDetector ruleCancelDetector) {
 		this.token = token;
 		this.ruleCancelWordDetector = ruleCancelDetector;
-		this.possibleSequences = ArrayUtil.map(possibleSequences, LangUtil.STRING_to_CHAR_ARRAY, char[].class);
+		this.possibleSequences = ArrayUtil.map(possibleSequences, LangTextUtil.STRING_to_CHAR_ARRAY, char[].class);
 	}
 	
 	@Override

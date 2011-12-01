@@ -8,11 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.lang;
+package org.dsource.ddt.lang.text;
 
 import melnorme.utilbox.core.Function;
 
-public class LangUtil {
+public class LangTextUtil {
 	
 	public static final Function<String, char[]> STRING_to_CHAR_ARRAY = new Function<String, char[]>() {
 		@Override
