@@ -92,13 +92,14 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 	}
 	
 	public static final String OS_SEP = System.getProperty("file.separator");
+	public static final String OS_EXT = DeeBuildOptions.getOSExtension();
 	public static final String NL = "\n";
 	
 	protected void checkResponseFileForBuildSrc(IProject project) throws CoreException, IOException {
 		String contents = readContentsOfIFile(project.getFile("build.rf"));
 		String responseBegin =
 			"-od\"bin\""+NL+
-			"-of\"bin"+OS_SEP+ projectName+".exe\""+NL+
+			"-of\"bin"+OS_SEP+ projectName+OS_EXT+"\""+NL+
 			""+NL+
 			"-I\"buildSrc\""+NL
 		;
@@ -153,7 +154,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 	protected void checkResponseForTest_SpacesInNames(String contents) {
 		String responseBegin =
 			"-od\"bin\""+NL+
-			"-of\"bin"+OS_SEP+"Spaces in Project name.exe\""+NL+
+			"-of\"bin"+OS_SEP+"Spaces in Project name"+OS_EXT+"\""+NL+
 			""+NL+
 			"-I\"src copy\""+NL
 		;
