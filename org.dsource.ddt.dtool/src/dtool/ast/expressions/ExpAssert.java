@@ -1,22 +1,20 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.AssertExp;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
+import dtool.ast.SourceRange;
 
 public class ExpAssert extends Expression {
 	
-	public Resolvable exp;
-	public Resolvable msg;
-
-	public ExpAssert(AssertExp elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.exp = ExpressionConverter.convert(elem.e1, convContext);
-		this.msg = ExpressionConverter.convert(elem.msg, convContext);
+	public final Resolvable exp;
+	public final Resolvable msg;
+	
+	public ExpAssert(Expression exp, Expression msg, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.exp = exp;
+		this.msg = msg;
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -26,5 +24,5 @@ public class ExpAssert extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

@@ -18,9 +18,9 @@ public class ExpCall extends Expression {
 	public final Resolvable[] args;
 	
 	public ExpCall(Expression callee, Resolvable[] args, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 		this.callee = callee;
 		this.args = args;
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

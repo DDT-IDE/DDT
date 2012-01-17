@@ -104,6 +104,7 @@ import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.ExpTraits;
 import dtool.ast.expressions.ExpTypeid;
+import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.InfixExpression;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
@@ -112,6 +113,7 @@ import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.PostfixExpression;
 import dtool.ast.expressions.PrefixExpression;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 
 abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
@@ -172,13 +174,15 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	/* ===================== Special ===================== */
 	@Override
-	public boolean visit(ArrayExp element) {
-		return endAdapt(new ExpArrayIndex(element, convContext));
+	public boolean visit(ArrayExp elem) {
+		Resolvable array = ExpressionConverter.convert(elem.e1, convContext);
+		Resolvable[] args = ExpressionConverter.convertMany(elem.arguments, convContext);
+		return endAdapt(new ExpArrayIndex(array, args, DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override
 	public boolean visit(ArrayLengthExp element) {
-		return endAdapt(new ExpArrayLength(element));
+		return endAdapt(new ExpArrayLength(DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override
@@ -187,23 +191,31 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	}
 	
 	@Override
-	public boolean visit(AssertExp element) {
-		return endAdapt(new ExpAssert(element, convContext));
+	public boolean visit(AssertExp elem) {
+		Expression exp = ExpressionConverter.convert(elem.e1, convContext);
+		Expression msg = ExpressionConverter.convert(elem.msg, convContext);
+		return endAdapt(new ExpAssert(exp, msg, DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override
-	public boolean visit(CallExp element) {
-		return endAdapt(ExpressionConverter.createExpCall(element, convContext));
+	public boolean visit(CallExp elem) {
+		return endAdapt(ExpressionConverter.createExpCall(elem, convContext));
 	}
 	
 	@Override
-	public boolean visit(CastExp element) {
-		return endAdapt(new ExpCast(element, convContext));
+	public boolean visit(CastExp elem) {
+		Expression exp = ExpressionConverter.convert(elem.sourceE1, convContext);
+		Reference type = ReferenceConverter.convertType(elem.sourceTo, convContext);
+		return endAdapt(new ExpCast(exp, type, DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override
-	public boolean visit(CondExp element) {
-		return endAdapt(new ExpCond(element, convContext));
+	public boolean visit(CondExp elem) {
+		Resolvable predExp = ExpressionConverter.convert(elem.econd, convContext); 
+		Resolvable trueExp = ExpressionConverter.convert(elem.e1, convContext);
+		Resolvable falseExp = ExpressionConverter.convert(elem.e2, convContext); 
+		
+		return endAdapt(new ExpCond(predExp, trueExp, falseExp, DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override

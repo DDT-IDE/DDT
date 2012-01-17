@@ -1,24 +1,22 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.CondExp;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
+import dtool.ast.SourceRange;
 
 public class ExpCond extends Expression {
-
+	
 	public Resolvable predExp;
 	public Resolvable trueExp;
 	public Resolvable falseExp;
-
-	public ExpCond(CondExp elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.predExp = ExpressionConverter.convert(elem.econd, convContext); 
-		this.trueExp = ExpressionConverter.convert(elem.e1, convContext);
-		this.falseExp = ExpressionConverter.convert(elem.e2, convContext); 
+	
+	public ExpCond(Resolvable predExp, Resolvable trueExp, Resolvable falseExp, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.predExp = predExp; 
+		this.trueExp = trueExp;
+		this.falseExp = falseExp; 
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -29,5 +27,5 @@ public class ExpCond extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

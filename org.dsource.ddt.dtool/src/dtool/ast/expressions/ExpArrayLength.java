@@ -1,12 +1,12 @@
 package dtool.ast.expressions;
 
-import descent.internal.compiler.parser.ArrayLengthExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class ExpArrayLength extends Expression {
 	
-	public ExpArrayLength(ArrayLengthExp element) {
-		convertNode(element);
+	public ExpArrayLength(SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 	}
 	
 	@Override
