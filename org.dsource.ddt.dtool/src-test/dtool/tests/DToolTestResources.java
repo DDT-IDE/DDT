@@ -22,8 +22,8 @@ import dtool.DToolBundle;
 
 public class DToolTestResources implements IDToolTestConstants {
 	
-	protected static final String TEST_RESOURCES_BASE_DIR_PROPERTY = DToolBaseTest.DTOOL_PREFIX + "TestResourcesDir";
-	protected static final String TEST_RESOURCES_WORKING_DIR_PROPERTY = DToolBaseTest.DTOOL_PREFIX + "TestsWorkingDir";
+	protected static final String TEST_RESOURCES_BASE_DIR_PROPERTY = DToolTests.DTOOL_PREFIX + "TestResourcesDir";
+	protected static final String TEST_RESOURCES_WORKING_DIR_PROPERTY = DToolTests.DTOOL_PREFIX + "TestsWorkingDir";
 	
 	protected static final String TESTDATA = "testdata/";
 	

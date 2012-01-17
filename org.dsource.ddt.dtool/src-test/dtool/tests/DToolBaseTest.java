@@ -21,9 +21,6 @@ import melnorme.utilbox.misc.StringUtil;
 
 public class DToolBaseTest extends DeeTestUtils {
 	
-	public static final String DTOOL_PREFIX = "DTool.";
-	public static final boolean TESTS_LITE_MODE = System.getProperty(DTOOL_PREFIX + "TestsLiteMode") != null;
-	
 	public static String readTestResourceFile(String filePath) throws IOException {
 		File testDataDir = DToolTestResources.getInstance().getResourcesDir();
 		File file = new File(testDataDir, filePath);

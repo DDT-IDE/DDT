@@ -16,8 +16,8 @@ import melnorme.utilbox.misc.ArrayUtil;
 import org.junit.Test;
 
 import dtool.DeeNamingRules_Test;
-import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
+import dtool.tests.DToolTests;
 import dtool.tests.MiscFileUtils;
 
 /**
@@ -48,7 +48,7 @@ public abstract class MassParse__CommonTest extends Parser__CommonTest {
 		File zipFile = DToolTestResources.getTestResource(COMMON + zipName + ".zip");
 		File outDir = new File(DToolTestResources.getWorkingDir(), COMMON_UNPACK + zipName);
 		MiscFileUtils.deleteDir(outDir); // Allways delete
-		if(!DToolBaseTest.TESTS_LITE_MODE) {
+		if(!DToolTests.TESTS_LITE_MODE) {
 			MiscFileUtils.unzipFile(zipFile, outDir);
 		} else {
 			assertTrue(outDir.mkdirs());
