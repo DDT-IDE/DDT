@@ -1,7 +1,6 @@
 package mmrnmhrm.tests;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.MiscUtil;
@@ -95,14 +94,11 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 	}
 	
 	public static DeeModuleDeclaration parsedDeeModule(ISourceModule sourceModule) {
-		DeeSourceParser sourceParser = new DeeSourceParser();
 		IModuleSource source;
-		if (sourceModule instanceof IModuleSource) {
-			source = (IModuleSource) sourceModule;
-		} else {
-			throw assertFail();
-		}
+		assertTrue(sourceModule instanceof IModuleSource);
+		source = (IModuleSource) sourceModule;
 		
+		DeeSourceParser sourceParser = new DeeSourceParser();
 		DeeModuleDeclaration deeModule = sourceParser.parse(source, null);
 		DeeModelUtil.parentizeDeeModuleDeclaration(deeModule, sourceModule);
 		return deeModule;

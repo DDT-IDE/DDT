@@ -74,6 +74,12 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		indexManager.disable();
 	}
 	
+	@SuppressWarnings("restriction")
+	public static void enableDLTKIndexer() {
+		IndexManager indexManager = org.eclipse.dltk.internal.core.ModelManager.getModelManager().getIndexManager();
+		indexManager.enable();
+	}
+	
 	public static final String MOCK_DMD2_INSTALL_NAME = "defaultDMD2Install";
 	protected static final String MOCK_DEE_COMPILERS_PATH = "deeCompilerInstalls/";
 	protected static final String MOCK_DMD2_TESTDATA_PATH = MOCK_DEE_COMPILERS_PATH+"DMDInstall/windows/bin/dmd.exe";

@@ -45,6 +45,12 @@ public class CommonTestUtils {
 		return (T) object;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static <T> T assertInstance(Object object, Class<T> klass) {
+		assertTrue(klass.isInstance(object));
+		return (T) object;
+	}
+	
 	public static <T> void assertContains(T[] array, T obj) {
 		assertTrue(ArrayUtil.contains(array, obj));
 	}
