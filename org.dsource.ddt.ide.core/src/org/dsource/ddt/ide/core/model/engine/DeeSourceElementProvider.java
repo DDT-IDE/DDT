@@ -20,6 +20,7 @@ import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
 import descent.internal.compiler.parser.STC;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefUnit;
@@ -86,9 +87,12 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public void endVisit(Module node) {
-		requestor.exitType(node.sourceEnd() - 1);
+		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
+	protected static int getDeclarationEndforNode(ASTNeoNode node) {
+		return node.sourceEnd() - 1;
+	}
 	
 	@Override
 	public boolean visit(DefinitionStruct node) {
@@ -97,7 +101,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	@Override
 	public void endVisit(DefinitionStruct node) {
-		endVisitDefinition(node);
+		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
 	@Override
@@ -107,7 +111,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	@Override
 	public void endVisit(DefinitionUnion node) {
-		endVisitDefinition(node);
+		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
 	@Override
@@ -117,7 +121,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	@Override
 	public void endVisit(DefinitionInterface node) {
-		endVisitDefinition(node);
+		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
 	@Override
@@ -128,12 +132,9 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	@Override
 	public void endVisit(DefinitionClass node) {
-		endVisitDefinition(node);
+		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
-	public final void endVisitDefinition(Definition node) {
-		requestor.exitType(node.sourceEnd() - 1);
-	}
 	
 	@Override
 	public boolean visit(DefinitionTemplate node) {
@@ -142,7 +143,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	@Override
 	public void endVisit(DefinitionTemplate node) {
-		endVisitDefinition(node);
+		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
 	@Override
@@ -152,7 +153,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	@Override
 	public void endVisit(DefinitionEnum node) {
-		endVisitDefinition(node);
+		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
 	@Override
@@ -162,7 +163,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	@Override
 	public void endVisit(DefinitionTypedef node) {
-		endVisitDefinition(node);
+		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
 	@Override
@@ -172,7 +173,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	@Override
 	public void endVisit(DefinitionAlias node) {
-		endVisitDefinition(node);
+		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
 	/* ---------------------------------- */
@@ -184,7 +185,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	@Override
 	public void endVisit(DefinitionFunction node) {
-		endVisitDefinition(node);
+		requestor.exitMethod(getDeclarationEndforNode(node));
 	}
 	
 	@Override
@@ -194,7 +195,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	@Override
 	public void endVisit(DefinitionCtor node) {
-		requestor.exitType(node.sourceEnd() - 1);
+		requestor.exitMethod(getDeclarationEndforNode(node));
 	}
 	
 	/* ---------------------------------- */
@@ -207,7 +208,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public void endVisit(DefinitionVariable node) {
-		endVisitDefinition(node);
+		requestor.exitField(getDeclarationEndforNode(node));
 	}
 	
 	@Override
