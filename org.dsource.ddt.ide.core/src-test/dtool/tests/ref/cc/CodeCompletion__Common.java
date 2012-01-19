@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import melnorme.utilbox.core.Function;
-import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
@@ -151,14 +150,7 @@ public class CodeCompletion__Common extends DeeTestUtils {
 		}
 		resultProposals.remove(null);
 		
-		assertTrue(resultProposals.equals(expectedProposals),
-				"Obtained results not the same as expected. \n" +
-				"--- Missing result elements: --- \n" +
-				StringUtil.collToString(removeAllCopy(expectedProposals, resultProposals), "\n") + "\n" +
-				"--- Unepexcted result elements: --- \n" +
-				StringUtil.collToString(removeAllCopy(resultProposals, expectedProposals), "\n") +
-				"==="
-		);
+		assertEqualSet(resultProposals, expectedProposals);
 		
 	}
 	

@@ -14,6 +14,7 @@ import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.core.Function;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.StringUtil;
 
 /**
  * A base class for common, miscellaneous test utils. 
@@ -33,12 +34,6 @@ public class CommonTestUtils {
 		assertTrue(CoreUtil.areEqual(obj1, obj2));
 	}
 	
-	/** Assert that the given arrays are equal according to Arrays.equals().
-	 *  (equal content-wise, order relevant) */
-	public static void assertEqualArrays(Object[] arr1, Object[] arr2) {
-		assertTrue(Arrays.equals(arr1, arr2));
-	}
-	
 	@SuppressWarnings("unchecked")
 	public static <T> T assertCast(Object object, Class<T> klass) {
 		assertTrue(object == null || klass.isInstance(object));
@@ -51,9 +46,36 @@ public class CommonTestUtils {
 		return (T) object;
 	}
 	
+	/** Assert that the given arrays are equal according to Arrays.equals().
+	 *  (equal content-wise, order relevant) */
+	public static void assertEqualArrays(Object[] arr1, Object[] arr2) {
+		assertTrue(Arrays.equals(arr1, arr2));
+	}
+	
 	public static <T> void assertContains(T[] array, T obj) {
 		assertTrue(ArrayUtil.contains(array, obj));
 	}
+	
+	public static <T> void assertEqualSet(Set<T> result, Set<T> expected) {
+		boolean equals = result.equals(expected);
+		
+		if(equals) {
+			return;
+		}
+		
+		HashSet<T> set1Delta = removeAllCopy(result, expected);
+		HashSet<T> set2Delta = removeAllCopy(expected, result);
+		assertTrue(equals,
+				"Obtained result set not equal to expected set. \n" +
+				"--- Extra elements in result set ("+set1Delta.size()+") : --- \n" +
+				StringUtil.collToString(set1Delta, "\n") + "\n" +
+				"--- Extra elements in expected set ("+set2Delta.size()+") : --- \n" +
+				StringUtil.collToString(set2Delta, "\n") + "\n" +
+				"== -- =="
+		);
+	}
+	
+	/* -------------------------- */
 	
 	public static <T> T[] array(T... elems) {
 		return elems;
