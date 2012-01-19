@@ -58,7 +58,16 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		
 		Module neoModule = moduleDecl.neoModule;
 		if(neoModule != null) {
-			neoModule.accept(this);
+			
+			if(neoModule.md != null) {
+				requestor.enterNamespace(neoModule.md.packages);
+				neoModule.accept(this);
+				requestor.exitNamespace();
+			} else {
+				requestor.enterNamespace(EMPTY_STRING);
+				neoModule.accept(this);
+				requestor.exitNamespace();
+			}
 		}
 		
 		requestor.exitModule(moduleDecl.dmdModule.getEndPos());

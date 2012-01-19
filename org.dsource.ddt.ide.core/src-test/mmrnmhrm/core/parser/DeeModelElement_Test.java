@@ -96,18 +96,18 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 				EArcheType.Function, "/*new*/", "new()");
 		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("delete"), 
 				EArcheType.Function, "/*delete*/", "delete()");
-
+		
 		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("this"), 
 				EArcheType.Function, "/*static this*/", "static /*static this*/ this()");
 		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("~this"), 
 				EArcheType.Function, "/*static ~this*/", "static /*static ~this*/ ~this()");
-
+		
 	}
 	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, 
 			String code) throws ModelException {
 		checkElementExists(sourceModule, element, archeType, (String) null, code);
 	}
-
+	
 	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, String nameKey,
 			String code) throws ModelException {
 		String source = sourceModule.getSource();
@@ -123,7 +123,15 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		assertTrue(element.getNameRange().getLength() == element.getElementName().length());
 		
 		assertTrue(DeeModelElementUtil.elementFlagsToArcheType(element, element.getFlags()) == archeType);
+		
+		if(element.getNamespace() == null) {
+			assertTrue(element.getParent() != sourceModule.getParent());
+		} else {
+			assertEquals(element.getNamespace().getQualifiedName("."), sourceModule.getParent().getElementName());
+		}
 	}
+	
+	protected static final String UNNAMED_DEFAULT = "<unnamed>";
 	
 	@Test
 	public void testImplicitModuleName() throws Exception { testImplicitModuleName$(); }
@@ -134,7 +142,7 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		assertTrue(srcModule.getType("moduleDeclImplicitName").exists() == false);
 		assertTrue(getChild(srcModule, "moduleDeclImplicitName").size() == 0);
 		
-		IType topLevelElement = srcModule.getType("<unnamed>"); // TODO fix this
+		IType topLevelElement = srcModule.getType(UNNAMED_DEFAULT); // TODO fix this
 		
 		checkElementExists(srcModule, topLevelElement.getType("Foo"), 
 			EArcheType.Class, "class Foo");
@@ -172,6 +180,39 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		checkElementExists(incorrectNameMod, incorrectNameMod.getType("actualModuleName_DifferentFromFileName"), 
 				EArcheType.Module, "module actualModuleName_DifferentFromFileName;");
 	}
+	
+	@Test
+	public void testNameSpace() throws Exception { testNameSpace$(); }
+	public void testNameSpace$() throws Exception {
+		IType topLevelElement;
+		topLevelElement = getTopLevelElement(TR_CA, "/", "sampledefs");
+		testNameSpace(topLevelElement, "", "Class");
+		
+		topLevelElement = getTopLevelElement(TR_SAMPLE_SRC3, "pack/", "mod1");
+		testNameSpace(topLevelElement, "pack", "Mod1Class");
+		
+		topLevelElement = getTopLevelElement(TR_SAMPLE_SRC3, "pack/subpack/","mod3");
+		testNameSpace(topLevelElement, "pack.subpack", "Mod3Class");
+		
+		topLevelElement = getSourceModule(TR_SAMPLE_SRC1, "moduleDeclImplicitName.d").
+				getType(UNNAMED_DEFAULT);
+		testNameSpace(topLevelElement, "", "Foo");
+		
+		topLevelElement = getSourceModule(TR_SAMPLE_SRC1, "src1pack/moduleDeclImplicitName2.d").
+				getType(UNNAMED_DEFAULT);
+		testNameSpace(topLevelElement, "", "Foo");
+	}
+	
+	private IType getTopLevelElement(String srcFolder, String folderName, String moduleName) {
+		return getSourceModule(srcFolder, folderName+"/"+moduleName+".d").getType(moduleName);
+	}
+	
+	protected void testNameSpace(IType topLevelElement, String nameSpace, String sampleSubType) throws ModelException {
+		assertEquals(topLevelElement.getNamespace().getQualifiedName("."), nameSpace);
+		IType subElement = topLevelElement.getType(sampleSubType);
+		assertTrue(subElement.exists() && subElement.getNamespace() == null);
+	}
+	
 	
 	/*  ---  */
 	
