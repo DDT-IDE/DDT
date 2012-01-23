@@ -56,13 +56,13 @@ public class CommonTestUtils {
 		assertTrue(ArrayUtil.contains(array, obj));
 	}
 	
-	public static <T> void assertEqualSet(Set<T> result, Set<T> expected) {
+	public static void assertEqualSet(Set<?> result, Set<?> expected) {
 		boolean equals = result.equals(expected);
 		if(equals) {
 			return;
 		}
-		HashSet<T> resultExtra = removeAllCopy(result, expected);
-		HashSet<T> expectedExtra = removeAllCopy(expected, result);
+		HashSet<?> resultExtra = removeAllCopy(result, expected);
+		HashSet<?> expectedExtra = removeAllCopy(expected, result);
 		assertTrue(equals,
 				"Obtained result set not equal to expected set. \n" +
 				"--- Extra elements in result set ("+resultExtra.size()+") : --- \n" +
