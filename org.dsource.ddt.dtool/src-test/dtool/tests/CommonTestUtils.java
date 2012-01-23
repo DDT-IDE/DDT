@@ -58,19 +58,17 @@ public class CommonTestUtils {
 	
 	public static <T> void assertEqualSet(Set<T> result, Set<T> expected) {
 		boolean equals = result.equals(expected);
-		
 		if(equals) {
 			return;
 		}
-		
-		HashSet<T> set1Delta = removeAllCopy(result, expected);
-		HashSet<T> set2Delta = removeAllCopy(expected, result);
+		HashSet<T> resultExtra = removeAllCopy(result, expected);
+		HashSet<T> expectedExtra = removeAllCopy(expected, result);
 		assertTrue(equals,
 				"Obtained result set not equal to expected set. \n" +
-				"--- Extra elements in result set ("+set1Delta.size()+") : --- \n" +
-				StringUtil.collToString(set1Delta, "\n") + "\n" +
-				"--- Extra elements in expected set ("+set2Delta.size()+") : --- \n" +
-				StringUtil.collToString(set2Delta, "\n") + "\n" +
+				"--- Extra elements in result set ("+resultExtra.size()+") : --- \n" +
+				StringUtil.collToString(resultExtra, "\n") + "\n" +
+				"--- Extra elements in expected set ("+expectedExtra.size()+") : --- \n" +
+				StringUtil.collToString(expectedExtra, "\n") + "\n" +
 				"== -- =="
 		);
 	}
