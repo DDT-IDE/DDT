@@ -2,6 +2,7 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
+import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
@@ -34,7 +35,7 @@ public abstract class Reference extends Resolvable {
 		}
 		
 		@Override
-		public boolean canMatch(DefUnit defunit) {
+		public boolean canMatch(DefUnitDescriptor defunit) {
 			return false;
 		}
 		
@@ -71,7 +72,7 @@ public abstract class Reference extends Resolvable {
 	@Override
 	public abstract String toStringAsElement();
 	
-	public abstract boolean canMatch(DefUnit defunit);
+	public abstract boolean canMatch(DefUnitDescriptor defunit);
 	
 }
 

@@ -7,6 +7,7 @@ import java.util.Collection;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTPrinter;
+import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -35,7 +36,7 @@ public class RefTemplateInstance extends Reference {
 	}
 	
 	@Override
-	public final boolean canMatch(DefUnit defunit) {
+	public final boolean canMatch(DefUnitDescriptor defunit) {
 		return refRawTemplate.canMatch(defunit);
 	}
 	

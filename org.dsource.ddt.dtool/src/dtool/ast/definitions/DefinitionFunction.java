@@ -9,6 +9,7 @@ import java.util.List;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTPrinter;
+import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -154,7 +155,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		}
 		
 		@Override
-		public boolean canMatch(DefUnit defunit) {
+		public boolean canMatch(DefUnitDescriptor defunit) {
 			return false;
 		}
 	}

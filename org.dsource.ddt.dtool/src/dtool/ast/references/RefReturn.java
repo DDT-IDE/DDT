@@ -3,6 +3,7 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import descent.internal.compiler.parser.TypeReturn;
+import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.DefUnit;
 
@@ -36,7 +37,7 @@ public class RefReturn extends Reference {
 	}
 	
 	@Override
-	public boolean canMatch(DefUnit defunit) {
+	public boolean canMatch(DefUnitDescriptor defunit) {
 		return false;
 	}
 	

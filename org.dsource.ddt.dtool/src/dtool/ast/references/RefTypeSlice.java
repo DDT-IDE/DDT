@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.TypeSlice;
+import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable;
@@ -51,7 +52,7 @@ public class RefTypeSlice extends Reference {
 
 
 	@Override
-	public boolean canMatch(DefUnit defunit) {
+	public boolean canMatch(DefUnitDescriptor defunit) {
 		return false;
 	}
 

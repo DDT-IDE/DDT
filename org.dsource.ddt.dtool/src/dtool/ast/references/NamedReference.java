@@ -1,6 +1,6 @@
 package dtool.ast.references;
 
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.DefUnitDescriptor;
 import dtool.refmodel.PrefixDefUnitSearch;
 
 /** 
@@ -19,8 +19,8 @@ public abstract class NamedReference extends Reference {
 	 * XXX: Qualified refs, how should they compare? 
 	 */
 	@Override
-	public final boolean canMatch(DefUnit defunit) {
-		return getReferenceName().equals(defunit.getName());
+	public final boolean canMatch(DefUnitDescriptor defunit) {
+		return getReferenceName().equals(defunit.getBaseName());
 	}
 
 	protected String getReferenceName() {
