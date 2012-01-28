@@ -3,6 +3,7 @@ package mmrnmhrm.ui.views;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.views.DeeElementImageDescriptor.Protection;
 
 import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
 import org.eclipse.dltk.ast.Modifiers;
@@ -80,7 +81,16 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		}
 		
 		ImageDescriptor baseImage = getBaseImageDescriptor(member, elementFlags);
-		return new DeeElementImageDescriptor(baseImage, imageFlags, imageSize);
+		DeeElementImageDescriptor.Protection prot = Protection.PUBLIC;
+		
+		if (member.getElementType() != IModelElement.FIELD && member.getElementType() != IModelElement.METHOD) {
+			if (Flags.isPrivate(elementFlags))
+				prot = Protection.PRIVATE;
+			else if (Flags.isProtected(elementFlags))
+				prot = Protection.PROTECTED;
+		}
+		
+		return new DeeElementImageDescriptor(baseImage, imageFlags, prot, imageSize);
 	}
 	
 	protected ImageDescriptor getBaseImageDescriptor(IMember member, int flags) {

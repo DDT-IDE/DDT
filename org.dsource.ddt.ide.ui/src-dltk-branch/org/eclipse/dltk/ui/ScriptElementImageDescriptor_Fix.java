@@ -45,6 +45,10 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 	private Point fSize;
 	private int fFlags;
 	
+	protected int fBottomRightPos;
+	protected int fBottomLeftPos;
+	protected int fTopRightPos;
+	
 	ImageDescriptor fBaseImage;
 
 	public ScriptElementImageDescriptor_Fix( ImageDescriptor baseImageDescriptor, int flags, Point size ) {
@@ -144,7 +148,7 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 	
 	private void drawBottomLeft() {
 		Point size= getSize();
-		int x= 0;
+		int x = fBottomLeftPos;
 		if ((fFlags & ERROR) != 0) {
 			ImageData data= getImageData(DLTKPluginImages.DESC_OVR_ERROR);
 			drawImage(data, x, size.y - data.height);
@@ -155,11 +159,12 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 			drawImage(data, x, size.y - data.height);
 			x+= data.width;
 		}
-
+		
+		fBottomLeftPos = x;
 	}		
 	
 	private void drawTopRight() {
-		Point pos = new Point(getSize().x, 0);
+		Point pos = new Point(getSize().x - fTopRightPos, 0);
 		if ((fFlags & ABSTRACT) != 0) {
 			addTopRightImage(DLTKPluginImages.DESC_OVR_ABSTRACT, pos);
 		}
@@ -173,11 +178,12 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 			addTopRightImage(DLTKPluginImages.DESC_OVR_STATIC, pos);
 		}
 
+		fTopRightPos = pos.x;
 	}
 
 	private void drawBottomRight() {
 		Point size = getSize();
-		Point pos = new Point(size.x, size.y);
+		Point pos = new Point(size.x - fBottomRightPos, size.y);
 
 		int flags = fFlags;
 
@@ -187,9 +193,11 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 		if ((flags & IMPLEMENTS) != 0) {
 			addBottomRightImage(DLTKPluginImages.DESC_OVR_IMPLEMENTS, pos);
 		}
+		
+		fBottomRightPos = pos.x;
 	}
 
-	private void addTopRightImage(ImageDescriptor desc, Point pos) {
+	protected void addTopRightImage(ImageDescriptor desc, Point pos) {
 		ImageData data = getImageData(desc);
 		int x = pos.x - data.width;
 		if (x >= 0) {
@@ -198,7 +206,7 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 		}
 	}
 
-	private void addBottomRightImage(ImageDescriptor desc, Point pos) {
+	protected void addBottomRightImage(ImageDescriptor desc, Point pos) {
 		ImageData data = getImageData(desc);
 		int x = pos.x - data.width;
 		int y = pos.y - data.height;
