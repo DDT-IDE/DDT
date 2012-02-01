@@ -1,24 +1,21 @@
 package mmrnmhrm.core.parser;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
+import mmrnmhrm.core.DLTKModelUtils;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.dltk.core.IExternalSourceModule;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 
 import dtool.DeeNamingRules;
 import dtool.ast.definitions.Module;
@@ -51,7 +48,7 @@ public class DLTKModuleResolver implements IModuleResolver {
 				for (int i = 0; i < DeeNamingRules.VALID_EXTENSIONS.length; i++) {
 					String fileext = DeeNamingRules.VALID_EXTENSIONS[i];
 					ISourceModule modUnit = pkgFrag.getSourceModule(modName+fileext);
-					if(exists(modUnit)) { 
+					if(DLTKModelUtils.exists(modUnit)) { 
 						DeeModuleDeclaration modDecl = DeeModelUtil.getParsedDeeModule(modUnit);
 						return modDecl.neoModule;
 					}
@@ -63,23 +60,6 @@ public class DLTKModuleResolver implements IModuleResolver {
 	
 	protected static boolean isDeeProject(IScriptProject deeproj) {
 		return deeproj.getLanguageToolkit().getNatureId().equals(DeeLanguageToolkit.NATURE_ID);
-	}
-	
-	private static boolean exists(ISourceModule modUnit) {
-		return modUnit != null && modUnit.exists()
-		// XXX: DLTK bug workaround: 
-		// modUnit.exists() true on ANY external source modules of libraries
-		// we should make a test case for this
-			&& externalReallyExists(modUnit)
-		;
-	}
-	
-	private static boolean externalReallyExists(ISourceModule modUnit) {
-		if(!(modUnit instanceof IExternalSourceModule))
-			return true;
-		//modUnit.getUnderlyingResource() of externals is allways null
-		IPath localPath = EnvironmentPathUtils.getLocalPath(modUnit.getPath());
-		return new File(localPath.toOSString()).exists();
 	}
 	
 	@Override
