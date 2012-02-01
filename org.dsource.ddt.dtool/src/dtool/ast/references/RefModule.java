@@ -93,7 +93,7 @@ public class RefModule extends NamedReference {
 	
 	
 	@Override
-	protected String getReferenceName() {
+	public String getReferenceName() {
 		return module;
 	}
 	

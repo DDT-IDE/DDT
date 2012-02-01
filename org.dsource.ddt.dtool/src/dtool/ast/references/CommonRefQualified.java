@@ -31,7 +31,7 @@ public abstract class CommonRefQualified extends NamedReference implements IDefU
 	public abstract Collection<DefUnit> findRootDefUnits();
 	
 	@Override
-	protected String getReferenceName() {
+	public String getReferenceName() {
 		return qualifiedName.getReferenceName();
 	}
 	

@@ -6,9 +6,8 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.refmodel.IDefUnitReferenceNode;
 
-public abstract class Resolvable extends ASTNeoNode 
-	implements IDefUnitReferenceNode {
-
+public abstract class Resolvable extends ASTNeoNode implements IDefUnitReferenceNode {
+	
 	@Override
 	public abstract Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly);
 	

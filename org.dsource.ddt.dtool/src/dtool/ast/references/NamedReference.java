@@ -8,10 +8,10 @@ import dtool.refmodel.PrefixDefUnitSearch;
  * allow doing a search based on their lookup rules.
  */
 public abstract class NamedReference extends Reference {
- 
+	
 	/** Perform a search using the lookup rules of this reference. */
 	public abstract void doSearch(PrefixDefUnitSearch search);
-
+	
 	
 	/** Return wheter this reference can match the given defunit.
 	 * This is a very lightweight method that only compares the defunit's 
@@ -22,9 +22,7 @@ public abstract class NamedReference extends Reference {
 	public final boolean canMatch(DefUnitDescriptor defunit) {
 		return getReferenceName().equals(defunit.getBaseName());
 	}
-
-	protected String getReferenceName() {
-		return toStringAsElement();
-	}
-
+	
+	public abstract String getReferenceName();
+	
 }
