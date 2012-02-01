@@ -31,7 +31,12 @@ import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.Reference;
 
-
+/**
+ * XXX: what is the exact contract of this class. Do returned model elements have to exists?
+ * Current known uses:
+ * - Initializing text for ScripSearchPage
+ * - Picking element for type hierarchy action
+ */
 public class DeeSelectionEngine extends ScriptSelectionEngine {
 	
 	public static final boolean ELEMENT_DDOC_SELECTION__INCLUSIVE_END = false;

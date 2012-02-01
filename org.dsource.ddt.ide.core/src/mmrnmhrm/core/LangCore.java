@@ -54,20 +54,29 @@ public abstract class LangCore extends Plugin {
 		return new CoreException(createErrorStatus(msg, e));
 	}
 	
-	/** Logs the given exception, creating a new status for this plugin. */
 	public static void log(Exception e) {
+		logError(e);
+	}
+	
+	/** Logs an error status with given exception and given message. */
+	public static void logError(Exception e, String message) {
+		getInstance().getLog().log(createErrorStatus(message, e));
+	}
+	
+	/** Logs an error status with given message. */
+	public static void logError(String message) {
+		getInstance().getLog().log(createErrorStatus(message, null));
+	}
+	
+	/** Logs an error status with given exception. */
+	public static void logError(Exception e) {
 		getInstance().getLog().log(createErrorStatus(LangCoreMessages.LangCore_internal_error, e));
 	}
 	
-	/** Logs the given message, creating a new error status for this plugin. */
-	public static void logError(String msg) {
-		getInstance().getLog().log(createErrorStatus(msg, null));
-	}
-	
 	/** Logs the given message, creating a new warning status for this plugin. */
-	public static void logWarning(String msg) {
+	public static void logWarning(String message) {
 		getInstance().getLog().log(new Status(IStatus.WARNING, DeeCore.PLUGIN_ID,
-						IModelStatusConstants.INTERNAL_ERROR, msg, null));
+						IModelStatusConstants.INTERNAL_ERROR, message, null));
 	}
 	
 	

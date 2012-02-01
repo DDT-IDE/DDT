@@ -75,12 +75,12 @@ public class ASTNeoHomogenousVisitor extends ASTNeoAbstractVisitor implements IA
 	}
 	
 	@Override
-	public boolean visit(DefinitionStruct node) {
+	public final boolean visit(DefinitionStruct node) {
 		return true;
 	}
 	
 	@Override
-	public boolean visit(DefinitionUnion node) {
+	public final boolean visit(DefinitionUnion node) {
 		return true;
 	}
 	
@@ -90,7 +90,7 @@ public class ASTNeoHomogenousVisitor extends ASTNeoAbstractVisitor implements IA
 	}
 	
 	@Override
-	public boolean visit(DefinitionInterface node) {
+	public final boolean visit(DefinitionInterface node) {
 		return true;
 	}
 	
@@ -185,7 +185,7 @@ public class ASTNeoHomogenousVisitor extends ASTNeoAbstractVisitor implements IA
 		return true;
 	}
 	@Override
-	public boolean visit(ExpLiteralNewAnonClass elem) {
+	public final boolean visit(ExpLiteralNewAnonClass elem) {
 		return true;
 	}
 	
