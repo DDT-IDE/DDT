@@ -98,6 +98,8 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 		if( this.fBaseImage == null ) {
 			return false;
 		}
+		//==== Original DLTK Code: ====
+		// return (other.fFlags == this.fFlags) && (fBaseImage.equals(other.fBaseImage) == fSize.equals(other.fSize));
 		return (other.fFlags == this.fFlags) && (fSize.equals(other.fSize)) && (fBaseImage.equals(other.fBaseImage)) ;
 	}
 	
