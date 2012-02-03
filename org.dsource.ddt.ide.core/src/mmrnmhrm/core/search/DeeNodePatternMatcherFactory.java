@@ -11,6 +11,7 @@ import org.eclipse.dltk.core.search.indexing.IIndexConstants;
 import org.eclipse.dltk.internal.core.search.matching.FieldPattern;
 import org.eclipse.dltk.internal.core.search.matching.MethodDeclarationPattern;
 import org.eclipse.dltk.internal.core.search.matching.MethodPattern;
+import org.eclipse.dltk.internal.core.search.matching.OrPattern;
 import org.eclipse.dltk.internal.core.search.matching.QualifiedTypeDeclarationPattern;
 import org.eclipse.dltk.internal.core.search.matching.TypeReferencePattern;
 import org.eclipse.dltk.internal.core.search.matching.VariablePattern;
@@ -52,10 +53,20 @@ public class DeeNodePatternMatcherFactory implements IUsesReflectionToAccessInte
 			case IIndexConstants.TYPE_DECL_PATTERN:
 			case IIndexConstants.METHOD_DECL_PATTERN:
 				break;
+			case IIndexConstants.OR_PATTERN:
+				findDeclarations = true;
+				findReferences = true;
+				break;
 			default: 
 				assertFail();
 			}
 			return new DeeFocusedNodeMatcher(deeMatchLocator, pattern.focus, findDeclarations, findReferences);
+		}
+		
+		if(pattern.kind == IIndexConstants.OR_PATTERN) {
+			OrPattern orPattern = (OrPattern) pattern;
+			// Lets assume the first pattern has all information we need
+			pattern = orPattern.getPatterns()[0];
 		}
 		
 		switch (pattern.kind) {
