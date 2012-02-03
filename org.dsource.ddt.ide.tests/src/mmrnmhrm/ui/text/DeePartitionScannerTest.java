@@ -12,8 +12,6 @@ package mmrnmhrm.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
-import mmrnmhrm.ui.text.DeePartitions;
-import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.text.BadPositionCategoryException;
@@ -24,10 +22,10 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 import org.junit.Test;
 
 import dtool.DToolBundle;
-import dtool.tests.DeeTestUtils;
+import dtool.tests.CommonTestUtils;
 
 // BM: a lot more could done in terms of test, this is just basic example
-public class DeePartitionScannerTest extends DeeTestUtils implements DeePartitions {
+public class DeePartitionScannerTest extends CommonTestUtils implements DeePartitions {
 	
 	private static final String NL = "\n";
 	private Document document;

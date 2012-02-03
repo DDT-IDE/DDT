@@ -28,6 +28,8 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
+import dtool.tests.DToolTests;
+
 public class DeeSelectionEngine_Test extends BaseDeeTest implements ITestResourcesConstants {
 	
 	private static final String SAMPLE_REFS = "sampleRefs.d";
@@ -95,7 +97,7 @@ public class DeeSelectionEngine_Test extends BaseDeeTest implements ITestResourc
 		checkEngineMultipleSelection(srcModule, "/*Class1*/", 
 				getModuleContainer(srcModule).getType("SampleRefsClass", 1)
 		);
-		if(UNSUPPORTED_FUNCTIONALITY_MARKER) {
+		if(DToolTests.UNSUPPORTED_FUNCTIONALITY_MARKER) {
 			//This is disabled because of the way Class Templates are represented in the AST structure
 			checkEngineMultipleSelection(srcModule, "/*Class3*/", 
 					getModuleContainer(srcModule).getType("SampleRefsClass", 3)

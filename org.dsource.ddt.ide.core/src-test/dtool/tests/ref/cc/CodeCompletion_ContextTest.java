@@ -4,6 +4,7 @@ package dtool.tests.ref.cc;
 import org.junit.Test;
 
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
+import dtool.tests.DToolTests;
 
 public class CodeCompletion_ContextTest extends CodeCompletion__Common {
 	
@@ -33,7 +34,7 @@ public class CodeCompletion_ContextTest extends CodeCompletion__Common {
 	public void test3() throws Exception {
 		testUnavailableCompletion(getMarkerEndOffset("/+CC3i@+/"), ECompletionSessionResults.INVALID_LOCATION_INSCOPE);
 		testUnavailableCompletion(getMarkerEndOffset("/+CC4i+/"), ECompletionSessionResults.INVALID_LOCATION_INSCOPE);
-		if(UNSUPPORTED_FUNCTIONALITY_MARKER) {
+		if(DToolTests.UNSUPPORTED_FUNCTIONALITY_MARKER) {
 			testUnavailableCompletion(getMarkerEndOffset("/+CC5i+/"), ECompletionSessionResults.INVALID_LOCATION_INSCOPE);
 		}
 		

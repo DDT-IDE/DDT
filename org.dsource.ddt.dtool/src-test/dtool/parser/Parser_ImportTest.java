@@ -1,5 +1,6 @@
 package dtool.parser;
 
+import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsElement;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;

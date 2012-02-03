@@ -1,5 +1,6 @@
 package dtool.tests.ref.cc;
 
+import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsElement;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
@@ -22,9 +23,9 @@ import dtool.contentassist.CompletionSession.ECompletionSessionResults;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.PrefixDefUnitSearch.IDefUnitMatchAccepter;
 import dtool.refmodel.PrefixSearchOptions;
-import dtool.tests.DeeTestUtils;
+import dtool.tests.DToolBaseTest;
 
-public class CodeCompletion__Common extends DeeTestUtils {
+public class CodeCompletion__Common extends DToolBaseTest {
 	
 	protected final ISourceModule srcModule;
 	protected ICodeCompletionTester ccTester;

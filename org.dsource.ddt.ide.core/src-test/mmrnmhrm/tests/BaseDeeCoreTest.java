@@ -16,14 +16,14 @@ import mmrnmhrm.tests.utils.ErrorLogListener;
 import org.junit.After;
 import org.junit.Before;
 
-import dtool.tests.DeeTestUtils;
+import dtool.tests.CommonTestUtils;
 
 /** 
  * Base core test class that adds an exception listener to the platform log. 
  * The ErrorLogListener was the only way I found to detect UI exceptions in SafeRunnable's 
  * when running as plugin test. 
  */
-public abstract class BaseDeeCoreTest extends DeeTestUtils {
+public abstract class BaseDeeCoreTest extends CommonTestUtils {
 	
 	protected ErrorLogListener logErrorListener;
 	

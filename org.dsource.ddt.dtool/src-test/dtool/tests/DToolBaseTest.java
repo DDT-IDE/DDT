@@ -19,15 +19,17 @@ import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 
-public class DToolBaseTest extends DeeTestUtils {
+public class DToolBaseTest extends CommonTestUtils {
+	
+	/* -------------  Resources stuff   ------------ */
+	
+	protected static final Charset DEFAULT_TESTDATA_ENCODING = StringUtil.UTF8;
 	
 	public static String readTestResourceFile(String filePath) throws IOException {
 		File testDataDir = DToolTestResources.getInstance().getResourcesDir();
 		File file = new File(testDataDir, filePath);
 		return readStringFromFile(file);
 	}
-	
-	private static final Charset DEFAULT_TESTDATA_ENCODING = StringUtil.UTF8;
 	
 	public static String readStringFromFile(File file) throws IOException, FileNotFoundException {
 		return new String(FileUtil.readBytesFromFile(file), DEFAULT_TESTDATA_ENCODING);
