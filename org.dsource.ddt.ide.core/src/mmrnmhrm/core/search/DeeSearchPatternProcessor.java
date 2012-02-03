@@ -6,34 +6,41 @@ public class DeeSearchPatternProcessor extends SearchPatternProcessor {
 	
 	public static final DeeSearchPatternProcessor instance = new DeeSearchPatternProcessor();
 	
-	private static final String TYPE_DELIMITER = ".";
-	private static final char METHOD_DELIMITER = '.';
+	private static final char NAME_DELIMITER = '.';
+	private static final String NAME_DELIMITER_STR = String.valueOf(NAME_DELIMITER);
+	private static final char METHOD_PARAM_DELIMITER = '(';
 	
 	@Override
 	public String getDelimiterReplacementString() {
-		return TYPE_DELIMITER;
+		return NAME_DELIMITER_STR;
 	}
 	
 	public static String substringUntil(String string, char delimiter) {
+		return substringUntil(string, delimiter, false);
+	}
+	public static String substringUntil(String string, char delimiter, boolean endAlsoDelimits) {
 		final int pos = string.lastIndexOf(delimiter);
 		if (pos != -1) {
 			return string.substring(0, pos);
 		}
-		return null;
+		return endAlsoDelimits ? string : null;
 	}
 	
-	public static String substringFrom(String string, char delimiter) {
+	public static String substringFromLast(String string, char delimiter) {
+		return substringFromLast(string, delimiter, false);
+	}
+	public static String substringFromLast(String string, char delimiter, boolean startAlsoDelimits) {
 		final int pos = string.lastIndexOf(delimiter);
 		if (pos != -1) {
 			return string.substring(pos + 1);
 		}
-		return null;
+		return startAlsoDelimits ? string : null;
 	}
 	
 	// Method pattern operations
 	@Override
 	public char[] extractDeclaringTypeQualification(String pattern) {
-		String type = substringUntil(pattern, METHOD_DELIMITER);
+		String type = substringUntil(pattern, NAME_DELIMITER);
 		if (type != null) {
 			return parseType(type).qualification();
 		}
@@ -42,7 +49,7 @@ public class DeeSearchPatternProcessor extends SearchPatternProcessor {
 	
 	@Override
 	public char[] extractDeclaringTypeSimpleName(String pattern) {
-		String type = substringUntil(pattern, METHOD_DELIMITER);
+		String type = substringUntil(pattern, NAME_DELIMITER);
 		if (type != null) {
 			return parseType(type).simpleName();
 		}
@@ -51,22 +58,20 @@ public class DeeSearchPatternProcessor extends SearchPatternProcessor {
 	
 	@Override
 	public char[] extractSelector(String pattern) {
-		String selector = substringFrom(pattern, METHOD_DELIMITER);
-		if(selector == null) {
-			return pattern.toCharArray();
-		}
+		String fqNamepattern = substringUntil(pattern, METHOD_PARAM_DELIMITER, true);
+		String selector = substringFromLast(fqNamepattern, NAME_DELIMITER, true);
 		return selector.toCharArray();
 	}
 	
 	// Type pattern operations
 	@Override
 	public ITypePattern parseType(String patternString) {
-		final int pos = patternString.lastIndexOf(TYPE_DELIMITER);
+		final int pos = patternString.lastIndexOf(NAME_DELIMITER);
 		if (pos != -1) {
 			// In the internal representation of qualications for patterns, the type delimiter is '$',
 			// so was to not confuse with the wildcard '.'
-			String qualification = patternString.substring(0, pos).replace(TYPE_DELIMITER, TYPE_SEPARATOR_STR);
-			String simpleName = patternString.substring(pos + TYPE_DELIMITER.length());
+			String qualification = patternString.substring(0, pos).replace(NAME_DELIMITER, TYPE_SEPARATOR);
+			String simpleName = patternString.substring(pos + 1);
 			return new TypePatten(qualification,simpleName);
 		} else {
 			return new TypePatten(null, patternString);

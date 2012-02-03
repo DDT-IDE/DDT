@@ -31,6 +31,7 @@ import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
@@ -78,9 +79,13 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 		return SearchPattern.createPattern(element, limitTo, SearchPattern.R_EXACT_MATCH, toolkit);
 	}
 	
-	protected SearchPattern createFQNPattern(IMember element, int limitTo) {
+	protected SearchPattern createFQNamePattern(IMember element, int limitTo) {
 		String elementFQName = DeeSearchEngineTestUtils.getModelElementFQName(element);
 		return createStringPattern(elementFQName, searchFor(element), limitTo);
+	}
+	
+	protected SearchPattern createBaseNamePattern(IMember element, int limitTo) {
+		return createStringPattern(element.getElementName(), searchFor(element), limitTo);
 	}
 	
 	protected static int searchFor(IModelElement element) {
@@ -108,6 +113,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 		if(pattern instanceof FieldPattern) {
 			FieldPattern fieldPattern = (FieldPattern) pattern;
 			// we may have to work arround a DLTK bug here
+			// -- we are still going to test this codepath, even though it's not accessible because of DLTK bug 
 			char[] name = ((FieldPattern) pattern).name;
 			int lastIx = CharOperation.lastIndexOf('.', name); 
 			if(lastIx != -1) {
@@ -132,7 +138,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 	protected SearchRequestorResultCollector executeSearch(SearchPattern searchPattern) throws CoreException {
 		return executeSearch(searchPattern, new SearchRequestorResultCollector());
 	}
-
+	
 	private SearchRequestorResultCollector executeSearch(SearchPattern searchPattern, 
 			SearchRequestorResultCollector requestor) throws CoreException {
 		SearchEngine engine = new SearchEngine();
@@ -146,21 +152,22 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 	
 	protected void testSearch(SearchPattern searchPattern, HashSet<IModelElement> expected) throws CoreException {
 		SearchRequestorResultCollector requestor = executeSearch(searchPattern);
-		
 		assertEqualSet(new HashSet<Object>(requestor.results), expected);
 	}
 	
-	protected void testPatternSearch(SearchPattern searchPattern, HashSet<IModelElement> expectedContains)
+	protected void testPatternSearch(SearchPattern searchPattern, Collection<IModelElement> expectedContains)
 			throws CoreException {
 		SearchRequestorResultCollector requestor = executeSearch(searchPattern);
-		
 		assertTrue(requestor.results.containsAll(expectedContains));
 	}
 	
 	protected void testNameSearch(SearchPattern searchPattern, HashSet<IModelElement> expectedContains)
 			throws CoreException {
 		final String name = expectedContains.iterator().next().getElementName();
-		
+		testNameSearch(searchPattern, expectedContains, name);
+	}
+	protected void testNameSearch(SearchPattern searchPattern, HashSet<IModelElement> expectedContains, final String name)
+			throws CoreException {
 		SearchRequestorResultCollector requestor = executeSearch(searchPattern, new SearchRequestorResultCollector(){
 			@Override
 			public void acceptSearchMatch(SearchMatch match) throws CoreException {
@@ -169,13 +176,11 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 				super.acceptSearchMatch(match);
 			}
 		});
-		
 		assertTrue(requestor.results.containsAll(expectedContains));
 	}
 	
 	protected void testPrefixSearch(SearchPattern searchPattern, HashSet<IModelElement> expectedContains,
-			final String prefix)
-			throws CoreException {
+			final String prefix) throws CoreException {
 		SearchRequestorResultCollector requestor = executeSearch(searchPattern, new SearchRequestorResultCollector(){
 			@Override
 			public void acceptSearchMatch(SearchMatch match) throws CoreException {
@@ -184,7 +189,6 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 				super.acceptSearchMatch(match);
 			}
 		});
-		
 		assertTrue(requestor.results.containsAll(expectedContains));
 	}
 	
@@ -218,12 +222,13 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 	@Test
 	public void searchMethod() throws Exception { searchMethod$(); }
 	public void searchMethod$() throws Exception {
-		testSearchForElement(getElement(searchProj, "srcA", "pack", "mod1").getMethod("mod1Func"));
-		testSearchForElement(getElement(searchProj, "srcA", "pack", "mod1").getType("Mod1Class").getMethod("methodA"));
+		IType mod1 = getElement(searchProj, "srcA", "pack", "mod1");
+		testSearchForElement(mod1.getMethod("mod1Func"), true);
+		testSearchForElement(mod1.getType("Mod1Class").getMethod("methodA"), true);
 		
 		// The test boundaries we are exploring here mostly relate to the package name
-		testSearchForElement(getElement(searchProj, "srcA", "pack/subpack", "mod3").getMethod("mod3Func"));
-		testSearchForElement(getElement(searchProj, "srcA", "", "mod0").getField("mod0Var"));
+		testSearchForElement(getElement(searchProj, "srcA", "pack/subpack", "mod3").getMethod("mod3Func"), true);
+		testSearchForElement(getElement(searchProj, "srcA", "", "mod0").getMethod("mod0Func"), true);
 		
 		// TODO: test search with homonym methods with different parameters
 	}
@@ -233,7 +238,11 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 	protected static final int PATTERN_MATCH = SearchPattern.R_PATTERN_MATCH; 
 	protected static final int REGEXP_MATCH = SearchPattern.R_REGEXP_MATCH; // TODO: test this
 	
-	protected void testSearchForElement(IMember element) throws CoreException {
+		protected void testSearchForElement(IMember element) throws CoreException {
+		testSearchForElement(element, false);
+	}
+	
+	protected void testSearchForElement(IMember element, boolean extraMethodTests) throws CoreException {
 		assertTrue(element.exists());
 		if (element instanceof IMethod && ((IMethod) element).isConstructor()) {
 			// Constructors not definitions ATM
@@ -244,18 +253,25 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 		}
 		
 		doTestSearchForElement(element);
-		
 		testSearchForElementReferences(element);
+		
+		if(extraMethodTests) {
+			assertTrue(element instanceof IMethod);
+			String elementFQName = DeeSearchEngineTestUtils.getModelElementFQName(element) + "()";
+			testSearch(createStringPattern(elementFQName, searchFor(element), DECLARATIONS), elementSet(element));
+			
+			final String baseName = element.getElementName() + "()";
+			testNameSearch(createStringPattern(baseName, searchFor(element), DECLARATIONS), elementSet(element));
+		}
 	}
 	
 	protected void doTestSearchForElement(IMember element) throws CoreException {
 		testSearch(createFocusPattern(element, DECLARATIONS), elementSet(element));
-		testSearch(createFQNPattern(element, DECLARATIONS), elementSet(element));
+		testSearch(createFQNamePattern(element, DECLARATIONS), elementSet(element));
+		testNameSearch(createBaseNamePattern(element, DECLARATIONS), elementSet(element));
+		
 		int searchFor = searchFor(element);
-		
 		final String name = element.getElementName();
-		testNameSearch(createStringPattern(name, searchFor, DECLARATIONS), elementSet(element));
-		
 		final String prefix = name.substring(0, min(4, name.length()));
 		SearchPattern stringPattern = createStringPattern(prefix, searchFor, DECLARATIONS, PREFIX_MATCH_CS);
 		testPrefixSearch(stringPattern, elementSet(element), prefix);
@@ -267,7 +283,6 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 			String patternB = name.substring(0, 2) + "*" + name.substring(4, name.length()-1) + "?"; 
 			testPatternSearch(createStringPattern(patternB, searchFor, DECLARATIONS, PATTERN_MATCH), elementSet(element));
 		}
-		
 	}
 	
 	/*------------------  Test References   -------------------*/
@@ -283,11 +298,14 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 	}
 	
 	protected SearchRequestorResultCollector doTestSearchForElementReferences(IMember element,
-			final MatchChecker matchChecker)
-			throws CoreException {
-		final String keyIdentifier = DeeSearchEngineTestUtils.getModelElementFQName(element);
+			final MatchChecker matchChecker) throws CoreException {
+		return doTestSearchForElementReferences(element, matchChecker, false);
+	}
+	protected SearchRequestorResultCollector doTestSearchForElementReferences(IMember element,
+			final MatchChecker matchChecker, boolean extraMethodTests) throws CoreException {
 		
-		SearchRequestorResultCollector requestor = new SearchRequestorResultCollector(){
+		final String keyIdentifier = DeeSearchEngineTestUtils.getModelElementFQName(element);
+		final SearchRequestorResultCollector requestor = new SearchRequestorResultCollector(){
 			@Override
 			public void acceptSearchMatch(SearchMatch match) throws CoreException {
 				IModelElement refElement = assertInstance(match.getElement(), IModelElement.class);
@@ -304,8 +322,21 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 		
 		executeSearch(createFocusPattern(element, REFERENCES), requestor);
 		
-		SearchRequestorResultCollector requestor2 = executeSearch(createFQNPattern(element, REFERENCES));
+		SearchRequestorResultCollector requestor2 = executeSearch(createFQNamePattern(element, REFERENCES));
 		assertAreEqual(requestor.results, requestor2.results);
+		
+		SearchRequestorResultCollector requestor3 = executeSearch(createBaseNamePattern(element, REFERENCES));
+		assertTrue(requestor3.results.containsAll(requestor.results));
+		
+		if(extraMethodTests) {
+			assertTrue(element instanceof IMethod);
+			
+			String baseName = element.getElementName() + "()";
+			SearchRequestorResultCollector requestor4 
+				= executeSearch(createStringPattern(baseName, searchFor(element), REFERENCES));
+			assertTrue(requestor4.results.containsAll(requestor.results));
+		}
+		
 		return requestor;
 	}
 	
@@ -493,7 +524,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 					
 					checkReferences(expectedReferences, match);
 				}
-
+				
 				private void checkReferences(final HashSet<Reference> expectedReferences, SearchMatch referenceMatch) {
 					// Search for referenceMatch in expectedReferences, then remove it
 					
@@ -507,10 +538,10 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 						
 						String[] matchModuleName = DeeSearchEngineTestUtils.getModelElementFQNameArray(matchSrcModule);
 						
-						if(areEqualArrays(refModuleName, matchModuleName) && 
+						if( areEqualArrays(refModuleName, matchModuleName) &&
 							reference.getOffset() == referenceMatch.getOffset() &&
-							reference.getLength() == referenceMatch.getLength()) {
-							
+							reference.getLength() == referenceMatch.getLength()
+						) {
 							expectedReferences.remove(pair);
 							return;
 						}
