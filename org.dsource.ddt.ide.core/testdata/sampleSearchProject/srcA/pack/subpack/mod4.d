@@ -1,6 +1,6 @@
 module pack.subpack.mod4;
 
-int mod4var; 
+int mod4Var; 
 
 class Mod4Class {
 	static int foo;

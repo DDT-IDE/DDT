@@ -30,8 +30,6 @@ public class DLTKModuleResolver implements IModuleResolver {
 	@Override
 	public Module findModule(Module sourceRefModule, String[] packages, String modName) throws CoreException {
 		
-		//ScriptModelUtil.findType(module, qualifiedName, delimeter)
-		
 		ISourceModule sourceModule = (ISourceModule) sourceRefModule.getModuleUnit();
 		
 		IScriptProject deeproj = sourceModule.getScriptProject();

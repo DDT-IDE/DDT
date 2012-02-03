@@ -1,31 +1,40 @@
 package mmrnmhrm.core.search;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.ArrayList;
+
 import mmrnmhrm.core.DeeCore;
 
-import org.dsource.ddt.ide.core.model.SourceModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
-import org.eclipse.dltk.core.IMember;
-import org.eclipse.dltk.core.search.BasicSearchEngine;
+import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.SearchMatch;
 import org.eclipse.dltk.core.search.SearchPattern;
-import org.eclipse.dltk.core.search.indexing.IIndexConstants;
+import org.eclipse.dltk.core.search.matching.IMatchLocator;
 import org.eclipse.dltk.core.search.matching.MatchLocator;
-import org.eclipse.dltk.core.search.matching.PatternLocator;
-import org.eclipse.dltk.internal.core.search.matching.FieldPattern;
-import org.eclipse.dltk.internal.core.search.matching.InternalSearchPattern;
-import org.eclipse.dltk.internal.core.search.matching.MatchingNodeSet;
-import org.eclipse.dltk.internal.core.search.matching.MethodPattern;
-import org.eclipse.dltk.internal.core.search.matching.OrLocator;
-import org.eclipse.dltk.internal.core.search.matching.OrPattern;
-import org.eclipse.dltk.internal.core.search.matching.TypeDeclarationPattern;
-import org.eclipse.dltk.internal.core.search.matching.TypeReferencePattern;
+import org.eclipse.dltk.core.search.matching.MatchLocatorParser;
+import org.eclipse.dltk.core.search.matching.PossibleMatch;
 
 import dtool.ast.ASTNeoNode;
+import dtool.ast.definitions.DefUnit;
+import dtool.refmodel.NodeUtil;
 
-public class DeeMatchLocator extends MatchLocator {
+public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 	
+	
+	protected AbstractNodePatternMatcher patternMatcher;
+	
+	protected ArrayList<SearchMatch> matches;
 	
 	public DeeMatchLocator() {
 	}
@@ -33,74 +42,127 @@ public class DeeMatchLocator extends MatchLocator {
 	@Override
 	public void initialize(SearchPattern pattern, IDLTKSearchScope scope) {
 		super.initialize(pattern, scope);
-		this.patternLocator = PatternLocator.patternLocator(this.pattern, scope.getLanguageToolkit());
-		this.patternLocator = neoCreatePatternLocator(this.pattern);
-		this.matchContainer = this.patternLocator.matchContainer();
+		this.patternMatcher = DeeNodePatternMatcherFactory.createPatternMatcher(this, this.pattern);
+		assertNotNull(patternMatcher);
 	}
 	
-	public static PatternLocator neoCreatePatternLocator(SearchPattern pattern) {
-		if(DeeCore.DEBUG_MODE)
-			System.out.println("== Requested match pattern: " + pattern);
-		
-		if(DeeDefPatternLocator.GLOBAL_param_defunit != null) {
-			DeeDefPatternLocator defMatcher = new DeeDefPatternLocator(DeeDefPatternLocator.GLOBAL_param_defunit, pattern);
-			DeeDefPatternLocator.GLOBAL_param_defunit = null;
-			return defMatcher;
-		}
-		
-		switch (((InternalSearchPattern) pattern).kind) {
-		case IIndexConstants.TYPE_REF_PATTERN:
-			return new DeeNodePatternMatcher((TypeReferencePattern) pattern);
-		case IIndexConstants.TYPE_DECL_PATTERN:
-			return new DeeNodePatternMatcher((TypeDeclarationPattern) pattern);
-		case IIndexConstants.FIELD_PATTERN:
-			return new DeeNodePatternMatcher((FieldPattern) pattern);
-		case IIndexConstants.METHOD_PATTERN:
-			return new DeeNodePatternMatcher((MethodPattern) pattern);
-		case IIndexConstants.OR_PATTERN:
-			return new OrLocator((OrPattern) pattern);
-		}
-		return null;
-	}
-	
-	
-	
-	// XXX: DLTK copied code
 	@Override
-	protected void reportMatching(ModuleDeclaration unit) throws CoreException {
-		//DeeModuleDeclaration deeDec = (DeeModuleDeclaration) unit;
-		//super.reportMatching(unit);
-		MatchingNodeSet nodeSet = currentPossibleMatch.nodeSet;
+	public void initialize(IScriptProject project, int possibleMatchSize) throws ModelException {
+		super.initialize(project, possibleMatchSize);
+		assertTrue(parser instanceof DeeMatchLocatorParser);
+	}
+	
+	public static class DeeMatchLocatorParser extends MatchLocatorParser {
 		
-		if (DeeCore.DEBUG_MODE || BasicSearchEngine.VERBOSE) {
-			System.out.println("Report matching: "); //$NON-NLS-1$
-			int size = nodeSet.matchingNodes == null ? 0
-					: nodeSet.matchingNodes.elementSize;
-			System.out.print("	- node set: accurate=" + size); //$NON-NLS-1$
-			size = nodeSet.possibleMatchingNodesSet == null ? 0
-					: nodeSet.possibleMatchingNodesSet.elementSize;
-			System.out.println(", possible=" + size); //$NON-NLS-1$			
-			
+		public DeeMatchLocatorParser(MatchLocator locator) {
+			super(locator);
 		}
-		// All matches already correctly determined
-		for (int i = 0; i < nodeSet.matchingNodes.keyTable.length; i++) {
-			Object obj = nodeSet.matchingNodes.keyTable[i];
-			if(obj instanceof ASTNeoNode) {
-				ASTNeoNode node = (ASTNeoNode) obj;
-				Integer accLevel = (Integer) nodeSet.matchingNodes.valueTable[i];
-				//IModelElement modelElement = currentPossibleMatch.getModelElement();
-				//IModelElement enclosingElement = modelElement;
-				IMember enclosingType = SourceModelUtil.getTypeHandle(node);
-				//Logg.main.println(enclosingType.getFullyQualifiedName());
-				SearchMatch match = patternLocator.newDeclarationMatch(node,
-						enclosingType, accLevel.intValue(), this);
-				
+		
+		@Override
+		public ModuleDeclaration parse(PossibleMatch possibleMatch) {
+			ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
+			ModuleDeclaration module = super.parse(possibleMatch);
+			return DeeModelUtil.parentizeDeeModuleDeclaration(module, sourceModule);
+		}
+		
+		@Override
+		public void parseBodies(ModuleDeclaration unit) {
+			assertFail();
+		}
+		
+	}
+	
+	@Override
+	protected void locateMatches(IScriptProject scriptProject, PossibleMatch[] possibleMatches, int start, int length)
+			throws CoreException {
+		super.locateMatches(scriptProject, possibleMatches, start, length);
+		
+		// Warning: the rest of this class relies that the code for #locateMatches is like this:
+		
+//		initialize(scriptProject, length);
+//		// create and resolve binding (equivalent to beginCompilation() in
+//		// Compiler)
+//		for (int i = start, maxUnits = start + length; i < maxUnits; i++) {
+//			PossibleMatch possibleMatch = possibleMatches[i];
+//			try {
+//				if (!parse(possibleMatch))
+//					continue;
+//				worked();
+//				process(possibleMatch);
+//				if (this.numberOfMatches > 0
+//						&& this.matchesToProcess[this.numberOfMatches - 1] == possibleMatch) {
+//					// forget last possible match as it was processed
+//					this.numberOfMatches--;
+//				}
+//			} finally {
+//				possibleMatch.cleanUp();
+//			}
+//		}
+	}
+	
+	@SuppressWarnings("restriction")
+	@Override
+	protected void getMethodBodies(ModuleDeclaration unit, 
+			org.eclipse.dltk.internal.core.search.matching.MatchingNodeSet nodeSet) {
+		// Do nothing. As a consequence this.parser.parseBodies() is not called. 
+	}
+	
+	@Override
+	protected void process(PossibleMatch possibleMatch) throws CoreException {
+		
+		DeeModuleDeclaration deeUnit = (DeeModuleDeclaration) possibleMatch.parsedUnit;
+		ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
+		
+		
+		this.currentPossibleMatch = possibleMatch; // required by addMatch
+		
+		// Stage 1: collect matches 
+		matches = new ArrayList<SearchMatch>();
+		patternMatcher.doMatching(deeUnit, sourceModule);
+		
+		
+		// Stage 2: report matches
+		// BM: I don't quite like the way this code is structured, but we are following the DLTK way, literally
+		
+		// DLTK copied code, partially, 3.0
+		// unit comes from ModuleDeclaration parsedUnit = this.parser.parse(possibleMatch);
+		
+		this.currentPossibleMatch = possibleMatch;
+		
+		ModuleDeclaration unit = possibleMatch.parsedUnit;
+		try {
+			if (unit == null || unit.isEmpty()) {
+				return;
+			}
+			reportMatchingDo();
+		} finally {
+			this.matches = null;
+			this.currentPossibleMatch = null;
+		}
+	}
+	
+	public void addMatch(ASTNeoNode node, int accLevel, ISourceModule sourceModule) {
+		DefUnit defUnit = (node instanceof DefUnit) ? (DefUnit) node : NodeUtil.getOuterDefUnit(node);
+		IModelElement enclosingType;
+		try {
+			enclosingType = DeeModelEngine.searchForModelElement(defUnit, sourceModule, true);
+			assertNotNull(enclosingType);
+		} catch (ModelException e) {
+			enclosingType = sourceModule;
+		}
+		SearchMatch match = this.newDeclarationMatch(enclosingType, accLevel, node.matchStart(), node.matchLength());
+		// TODO: create reference matches
+		matches.add(match);
+	}
+	
+	protected void reportMatchingDo() {
+		for (SearchMatch match : matches) {
+			try {
 				report(match);
+			} catch (CoreException e) {
+				DeeCore.log(e);
 			}
 		}
-		
-		super.reportMatching(unit);
 	}
-	
 	
 }

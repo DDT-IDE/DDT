@@ -4,9 +4,7 @@ import melnorme.utilbox.core.Function;
 import dtool.ast.ASTNeoNode;
 
 
-public class DeeTestUtils extends CommonTestUtils {
-	
-	public static final boolean UNSUPPORTED_FUNCTIONALITY_MARKER = false;
+public class MiscDeeTestUtils {
 	
 	public static Function<String, String> fnStringToSubString(final int index) {
 		return new Function<String, String>() {
@@ -24,10 +22,6 @@ public class DeeTestUtils extends CommonTestUtils {
 				return obj == null ? null : obj.toStringAsElement().substring(prefixLen);
 			}
 		};
-	}
-	
-	public DeeTestUtils() {
-		super();
 	}
 	
 }

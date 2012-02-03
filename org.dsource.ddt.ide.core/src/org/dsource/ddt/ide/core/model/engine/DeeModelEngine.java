@@ -1,59 +1,102 @@
 package org.dsource.ddt.ide.core.model.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqualArrays;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+
+import melnorme.utilbox.misc.ArrayUtil;
+import mmrnmhrm.core.DLTKModelUtils;
+import mmrnmhrm.core.search.DeeSearchEngineTestUtils;
 
 import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IProjectFragment;
+import org.eclipse.dltk.core.IScriptFolder;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
+import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 
+import dtool.DeeNamingRules;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.Module;
 import dtool.refmodel.NodeUtil;
 
+/**
+ * This class manages how to do mapping between definition nodes and ModelElements. 
+ *
+ */
 public class DeeModelEngine {
 	
+	public static final String[] EMPTY_STRINGS = new String[0];
+
 	public static IMember findCorrespondingModelElement(DefUnit defUnit, ISourceModule sourceModule)
 			throws ModelException {
+		return searchForModelElement(defUnit, sourceModule, false);
+	}
+	
+	public static IMember searchForModelElement(DefUnit defUnit, ISourceModule sourceModule, boolean returnNonExisting)
+			throws ModelException {
+	
 		DefUnit parentDefUnit = NodeUtil.getOuterDefUnit(defUnit);
 		
 		if(parentDefUnit == null) {
 			return sourceModule.getType(defUnit.getName());
 		} else {
-			IMember parentElement = findCorrespondingModelElement(parentDefUnit, sourceModule);
+			IMember parentElement = searchForModelElement(parentDefUnit, sourceModule, returnNonExisting);
 			if(parentElement == null) {
 				return null;
 			}
-			final IModelElement[] children = (IModelElement[]) parentElement.getChildren();
-			
 			IMember bestMatch = null;
-			for (int i = 0; i < children.length; i++) {
-				IModelElement modelElement = children[i];
-				if(!modelElement.getElementName().equals(defUnit.getName()))
-					continue;
-				
-				switch (modelElement.getElementType()) {
-				case IModelElement.FIELD:
-					if(!isFieldElement(defUnit)) continue;
-					break;
-				case IModelElement.METHOD:
-					if(!isMethodElement(defUnit)) continue;
-					break;
-				case IModelElement.TYPE:
-					if(!isTypeElement(defUnit)) continue;
-					break;
-				default:
-					assertFail();
+			
+			if(parentElement.exists()) {
+				final IModelElement[] children = (IModelElement[]) parentElement.getChildren();
+				for (int i = 0; i < children.length; i++) {
+					IModelElement modelElement = children[i];
+					if(!modelElement.getElementName().equals(defUnit.getName()))
+						continue;
+					
+					switch (modelElement.getElementType()) {
+					case IModelElement.FIELD:
+						if(!isFieldElement(defUnit)) continue;
+						break;
+					case IModelElement.METHOD:
+						if(!isMethodElement(defUnit)) continue;
+						break;
+					case IModelElement.TYPE:
+						if(!isTypeElement(defUnit)) continue;
+						break;
+					default:
+						assertFail();
+					}
+					
+					IMember member = (IMember) modelElement;
+					ISourceRange nameRange = member.getNameRange();
+					if(nameRange != null && nameRange.getOffset() == defUnit.defname.getStartPos()) {
+						return member; // We found a perfect match
+					}
+					bestMatch = member;
 				}
-				
-				IMember member = (IMember) modelElement;
-				ISourceRange nameRange = member.getNameRange();
-				if(nameRange != null && nameRange.getOffset() == defUnit.defname.getStartPos()) {
-					return member; // We found a perfect match
+			}
+			
+			if(bestMatch == null && returnNonExisting) {
+				if(isTypeElement(defUnit)) {
+					return parentElement.getType(defUnit.getName(), 1);
+				} else if(isFieldElement(defUnit) && parentElement instanceof IMethod) {
+					return ((IType) parentElement).getField(defUnit.getName());
+				} else if(isMethodElement(defUnit) && parentElement instanceof IMethod) {
+					return ((IType) parentElement).getMethod(defUnit.getName());
+				} else {
+					return parentElement.getType(defUnit.getName(), 1);
 				}
-				bestMatch = member;
 			}
 			return bestMatch;
 		}
@@ -71,7 +114,8 @@ public class DeeModelEngine {
 		return !isFieldElement(defUnit) && !isMethodElement(defUnit);
 	}
 	
-	public static IMember findMember(IMember parent, int elementKind, String name, int occurrenceCount) throws ModelException {
+	public static IMember findMember(IMember parent, int elementKind, String name, int occurrenceCount) 
+			throws ModelException {
 		IModelElement[] children = parent.getChildren();
 		
 		int occurrenceIx = 0;
@@ -93,27 +137,92 @@ public class DeeModelEngine {
 		return null;
 	}
 	
-//	private static void asdfdffdfd(DefUnit defUnit, IMember parentElement, IMember bestMatch) {
-//		if(bestMatch == null) {
-//			// If no matches, return
-//			
-//			switch(defUnit.getArcheType()) {
-//			case Variable:
-//				if(parentElement instanceof IType) {
-//					((IType) parentElement).getField(defUnit.getName());
-//				}
-//				break;
-//			case Function:
-//				if(parentElement instanceof IType) {
-//					((IType) parentElement).getMethod(defUnit.getName());
-//				}
-//				break;
-//			default:
-//				parentElement.getType(defUnit.getName(), 1);
-//			}
-//			// Bug above
-//			return parentElement.getType(defUnit.getName(), 1);
-//		}
-//	}
+	public static String[] getQualification(final DefUnit defUnit) {
+		return getQualification(defUnit, null);
+	}
+	
+	/**
+	 * Returns the fully qualified name for given defUnit.
+	 * TODO think more about the naming of local elements 
+	 */
+	public static String[] getQualification(final DefUnit defUnit, final ISourceModule sourceModule) {
+		LinkedList<String> qualification = getQualificationList(defUnit, sourceModule);
+		return ArrayUtil.createFrom(qualification, String.class);
+	}
+	
+	public static LinkedList<String> getQualificationList(final DefUnit defUnit, final ISourceModule sourceModule) {
+		LinkedList<String> qualications = new LinkedList<String>();
+		
+		DefUnit defUnitIter = defUnit;
+		
+		while(true) {
+			DefUnit parentDefUnit = NodeUtil.getOuterDefUnit(defUnitIter);
+			
+			if(parentDefUnit == null) {
+				assertTrue(defUnitIter instanceof Module);
+				
+				if(sourceModule != null) {
+					String[] packageNames = EMPTY_STRINGS;
+					String packageName = getPackageName(sourceModule);
+					if(!packageName.isEmpty()) {
+						packageNames = packageName.split("\\.");
+					}
+					// XXX:
+					assertTrue(areEqualArrays(packageNames, getPackageQualification(defUnitIter.getModuleNode())));
+				}
+				
+				String[] packageNames = getPackageQualification(defUnitIter.getModuleNode());
+				
+				qualications.addAll(0, Arrays.asList(packageNames));
+				
+				return qualications;
+			} else {
+				qualications.add(0, parentDefUnit.getName());
+				defUnitIter = parentDefUnit;
+			}
+		}
+	}
+	
+	public static String getPackageName(ISourceModule sourceModule) {
+		return sourceModule.getParent().getElementName().replaceAll("/", ".");
+	}
+	
+	public static String[] getPackageQualification(Module moduleNode) {
+		if(moduleNode.md == null || moduleNode.md.packages == null) {
+			return EMPTY_STRINGS;
+		}
+		return moduleNode.md.packages;
+	}
+	
+	
+	// TODO: test this, consider multiple named source Packages
+	public static ISourceModule getSourceModule(IScriptProject searchProj, String[] pkgName, String moduleName) {
+		try {
+			IProjectFragment[] projectFragments = searchProj.getProjectFragments();
+			for (IProjectFragment prjFragment : projectFragments) {
+				IScriptFolder scriptFolder = prjFragment.getScriptFolder(DeeSearchEngineTestUtils.createPathFromSegments(pkgName));
+				
+				if(scriptFolder.exists()){
+					for (String validExtension : DeeNamingRules.VALID_EXTENSIONS) {
+						ISourceModule sourceModule = scriptFolder.getSourceModule(moduleName + validExtension);
+						if(DLTKModelUtils.exists(sourceModule)){
+							return sourceModule;
+						}
+					}
+				}
+			}
+			return null;
+		} catch (ModelException e) {
+			return null;
+		}
+	}
+	
+	public static ISourceModule getSourceModule(ASTNeoNode node, IScriptProject searchProj) {
+		Module moduleNode = node.getModuleNode();
+		String[] packageQualification = getPackageQualification(moduleNode);
+		String moduleName = moduleNode.getName();
+		
+		return getSourceModule(searchProj, packageQualification, moduleName);
+	}
 	
 }

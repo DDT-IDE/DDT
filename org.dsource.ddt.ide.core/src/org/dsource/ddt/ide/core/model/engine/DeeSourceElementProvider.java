@@ -39,7 +39,10 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.ICallableElement;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
+import dtool.ast.expressions.ExpCall;
+import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.NamedReference;
+import dtool.ast.references.Reference;
 
 public final class DeeSourceElementProvider extends DeeSourceElementProvider_BaseVisitor {
 	
@@ -222,7 +225,21 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public boolean visit(NamedReference elem) {
-		requestor.acceptTypeReference(elem.toStringAsElement(), elem.sourceStart() /*-1*/);
+		Reference topReference = elem;
+		
+		ASTNeoNode parent = topReference.getParent();
+		if(parent instanceof ExpReference) {
+			parent = parent.getParent();
+		}
+		if(parent instanceof ExpCall) {
+			ExpCall expCall = (ExpCall) parent;
+			int length = expCall.args == null ? 0 : expCall.args.length;
+			// Dont use qualified name
+			String methodName = elem.getReferenceName();
+			requestor.acceptMethodReference(methodName, length, elem.sourceStart(), elem.sourceEnd()-1);
+		} 
+		
+		requestor.acceptTypeReference(elem.toStringAsElement(), elem.sourceStart());
 		return true;
 	}
 	

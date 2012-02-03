@@ -2,11 +2,13 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
 import mmrnmhrm.core.search.DeeDefPatternLocator;
+import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.actions.OperationsManager;
 
-import org.dsource.ddt.ide.core.model.SourceModelUtil;
+import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
@@ -39,8 +41,7 @@ public final class FindReferencesInHierarchyAction extends FindAction {
 	
 	@Override
 	protected void runOperation(DefUnit defunit) {
-		IMember member = SourceModelUtil.getTypeHandle(defunit);
-		if(member instanceof IType) {
+		if(defunit.getArcheType().isType()) {
 			super.runOperation(defunit);
 		} else {
 			OperationsManager.openWarning(getShell(), super.SEARCH_REFS, 
@@ -49,7 +50,8 @@ public final class FindReferencesInHierarchyAction extends FindAction {
 	}
 	
 	protected QuerySpecification createQuery(DefUnit defunit) throws ModelException {
-		IType type = (IType) SourceModelUtil.getTypeHandle(defunit);
+		ISourceModule sourceModule = EditorUtil.getModuleUnit(deeEditor);
+		IType type = (IType) DeeModelEngine.findCorrespondingModelElement(defunit, sourceModule);
 		if (type == null) {
 			return super.createQuery(defunit);
 		}

@@ -1,4 +1,4 @@
-module search1_decoy;
+module refsTo_CopyOfmod1;
 
 // search1_decoy actually uses CopyOfmod1 instead of mod1
 // this tests for homonym classes
@@ -9,6 +9,6 @@ void func() {
 }
 
 
-void func2() {
+void func2(int a) {
 	Mod1Class foo2;
 }

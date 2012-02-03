@@ -14,14 +14,17 @@ public abstract class DeeModelUtil {
 		return parentizeDeeModuleDeclaration(moduleDeclaration, sourceModule);
 	}
 	
+	// TODO: investigate if we can get rid of parentizeDeeModuleDeclaration
+	
 	/** If given moduleDeclaration is a DeeModuleDeclaration, parentizes it to given sourceModule and returns it, 
 	 * otherwise return null. */
 	public static DeeModuleDeclaration parentizeDeeModuleDeclaration(
 			IModuleDeclaration moduleDeclaration, ISourceModule sourceModule) {
 		if (moduleDeclaration instanceof DeeModuleDeclaration) {
 			DeeModuleDeclaration deeModuleDecl = (DeeModuleDeclaration) moduleDeclaration;
-			if (deeModuleDecl.neoModule != null)
+			if (deeModuleDecl.neoModule != null) {
 				deeModuleDecl.neoModule.setModuleUnit(sourceModule);
+			}
 			return deeModuleDecl;
 		}
 		return null;
