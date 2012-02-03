@@ -2,7 +2,6 @@ package org.dsource.ddt.ide.core.model.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.areEqualArrays;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -137,20 +136,16 @@ public class DeeModelEngine {
 		return null;
 	}
 	
-	public static String[] getQualification(final DefUnit defUnit) {
-		return getQualification(defUnit, null);
-	}
-	
 	/**
 	 * Returns the fully qualified name for given defUnit.
 	 * TODO think more about the naming of local elements 
 	 */
-	public static String[] getQualification(final DefUnit defUnit, final ISourceModule sourceModule) {
-		LinkedList<String> qualification = getQualificationList(defUnit, sourceModule);
+	public static String[] getQualification(final DefUnit defUnit) {
+		LinkedList<String> qualification = getQualificationList(defUnit);
 		return ArrayUtil.createFrom(qualification, String.class);
 	}
 	
-	public static LinkedList<String> getQualificationList(final DefUnit defUnit, final ISourceModule sourceModule) {
+	public static LinkedList<String> getQualificationList(final DefUnit defUnit) {
 		LinkedList<String> qualications = new LinkedList<String>();
 		
 		DefUnit defUnitIter = defUnit;
@@ -161,18 +156,7 @@ public class DeeModelEngine {
 			if(parentDefUnit == null) {
 				assertTrue(defUnitIter instanceof Module);
 				
-				if(sourceModule != null) {
-					String[] packageNames = EMPTY_STRINGS;
-					String packageName = getPackageName(sourceModule);
-					if(!packageName.isEmpty()) {
-						packageNames = packageName.split("\\.");
-					}
-					// XXX:
-					assertTrue(areEqualArrays(packageNames, getPackageQualification(defUnitIter.getModuleNode())));
-				}
-				
 				String[] packageNames = getPackageQualification(defUnitIter.getModuleNode());
-				
 				qualications.addAll(0, Arrays.asList(packageNames));
 				
 				return qualications;

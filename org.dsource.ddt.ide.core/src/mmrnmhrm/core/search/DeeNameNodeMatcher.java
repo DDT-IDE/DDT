@@ -91,7 +91,7 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 		
 		if(patternMatcherHelper.matchesName(simpleName, node.getName().toCharArray())) {
 			
-			String[] qualificationArray = DeeModelEngine.getQualification(node, sourceModule);
+			String[] qualificationArray = DeeModelEngine.getQualification(node);
 			char[] nodeQualification = StringUtil.collToString(qualificationArray, "$").toCharArray();
 			
 			if(patternMatcherHelper.matchesName(this.qualification, nodeQualification)) {

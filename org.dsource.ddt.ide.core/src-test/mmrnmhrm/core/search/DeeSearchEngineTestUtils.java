@@ -154,7 +154,7 @@ public class DeeSearchEngineTestUtils {
 	}
 	
 	public static String[] getModuleFQName(Module moduleNode) {
-		LinkedList<String> qualification = DeeModelEngine.getQualificationList(moduleNode, null);
+		LinkedList<String> qualification = DeeModelEngine.getQualificationList(moduleNode);
 		qualification.add(moduleNode.getName());
 		return ArrayUtil.createFrom(qualification, String.class);
 	}
