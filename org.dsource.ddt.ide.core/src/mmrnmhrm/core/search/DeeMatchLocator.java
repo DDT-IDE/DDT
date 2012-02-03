@@ -23,6 +23,7 @@ import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.matching.IMatchLocator;
 import org.eclipse.dltk.core.search.matching.MatchLocator;
 import org.eclipse.dltk.core.search.matching.MatchLocatorParser;
+import org.eclipse.dltk.core.search.matching.PatternLocator;
 import org.eclipse.dltk.core.search.matching.PossibleMatch;
 
 import dtool.ast.ASTNeoNode;
@@ -150,7 +151,12 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 		} catch (ModelException e) {
 			enclosingType = sourceModule;
 		}
-		SearchMatch match = this.newDeclarationMatch(enclosingType, accLevel, node.matchStart(), node.matchLength());
+		int level = SearchMatch.A_INACCURATE;
+		if(accLevel == PatternLocator.ACCURATE_MATCH || accLevel == PatternLocator.ERASURE_MATCH) {
+			level = SearchMatch.A_ACCURATE;
+		}
+		
+		SearchMatch match = this.newDeclarationMatch(enclosingType, level, node.matchStart(), node.matchLength());
 		// TODO: create reference matches
 		matches.add(match);
 	}
