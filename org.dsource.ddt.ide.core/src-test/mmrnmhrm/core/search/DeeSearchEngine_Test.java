@@ -239,9 +239,6 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 			// Constructors not definitions ATM
 			return;
 		}
-		if (element.getElementName().equals("<unnamed>")) {
-			return;
-		}
 		if (element.getElementName().equals("xxx")) {
 			return; // Dont test these definitions
 		}
@@ -422,7 +419,6 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 					try {
 						IMember element = DeeModelEngine.findCorrespondingModelElement(defUnit, sourceModule);
 						if(element != null) {
-							// TODO: consider this case
 							testSearchForElement(element);
 						}
 					} catch (CoreException e) {

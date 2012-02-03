@@ -72,6 +72,7 @@ public class DeeNodePatternMatcherFactory implements IUsesReflectionToAccessInte
 				return new DeeNameNodeMatcher(deeMatchLocator, pattern, true,
 						qualTypeDeclPatter.simpleName, qualTypeDeclPatter.qualification);
 			}
+			//TypeDeclarationPattern only occurs if it is a focus element... at least as of current DLTK 3.0 version
 //			TypeDeclarationPattern typeDeclPatter = (TypeDeclarationPattern) pattern;
 			assertFail();
 		}

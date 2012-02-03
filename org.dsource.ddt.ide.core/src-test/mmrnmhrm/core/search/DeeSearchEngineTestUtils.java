@@ -135,7 +135,7 @@ public class DeeSearchEngineTestUtils {
 			
 			if(depth > 0 && element instanceof IParent) {
 				if(element instanceof IProjectFragment && ((IProjectFragment) element).isExternal()) {
-					return; // We do this to ignore standar library entry
+					return; // We do this to ignore standard library entry
 				}
 				IModelElement[] children = ((IParent) element).getChildren();
 				for (IModelElement child : children) {
