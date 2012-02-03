@@ -15,7 +15,7 @@ import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
 
-import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
@@ -50,7 +50,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 	public IModelElement[] select(IModuleSource sourceUnit, int offset, int i) {
 		ISourceModule sourceModule = (ISourceModule) sourceUnit.getModelElement();
 		
-		DeeModuleDeclaration deeModule = DeeModelUtil.getParsedDeeModule(sourceModule);
+		DeeModuleDeclaration deeModule = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
 		ASTNeoNode node = ASTNodeFinder.findElement(deeModule.neoModule, offset, 
 				ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		

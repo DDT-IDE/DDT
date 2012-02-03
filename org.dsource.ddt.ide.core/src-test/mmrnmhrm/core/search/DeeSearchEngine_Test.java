@@ -19,9 +19,8 @@ import java.util.List;
 import melnorme.utilbox.misc.Pair;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
-import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeParserUtil;
 import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -46,6 +45,7 @@ import org.junit.Test;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.tests.MiscNodeUtils;
 
@@ -397,7 +397,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 	public void testTestData() throws Exception { testTestData$(); }
 	public void testTestData$() throws Exception {
 		ISourceModule module = getModule(searchProj, "srcB", "", "search2");
-		DeeModuleDeclaration deeModuleDecl = DeeModelUtil.getParsedDeeModule(module);
+		DeeModuleDeclaration deeModuleDecl = DeeModuleParsingUtil.getParsedDeeModule(module);
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(deeModuleDecl.neoModule.getChildren(), "xxxTestUnboundRef");
 		assertTrue(assertInstance(defUnit, DefinitionVariable.class).type.findTargetDefUnit() == null);
@@ -474,8 +474,8 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 			ISourceModule sourceModule = key.getFirst();
 			ArrayList<Integer> nodeTreePath = blindCast(key.getSecond());
 			
-			DeeModuleDeclaration deeModuleDec = DeeParserUtil.getASTFromModule(sourceModule);
-			ASTNeoNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModuleDec.neoModule, nodeTreePath);
+			Module deeModule = DeeModuleParsingUtil.parseAndGetAST(sourceModule);
+			ASTNeoNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModule, nodeTreePath);
 			
 			final DefUnit defUnit = (DefUnit) node;
 			final HashSet<Reference> expectedReferences = defUnitToReferencesMap.get(key);
@@ -485,7 +485,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 //				// TODO: consider this case
 //				continue;
 //			}
-				
+			
 			final String keyIdentifier = DeeSearchEngineTestUtils.getModelElementFQName(element);
 			
 			doTestSearchForElementReferences(element, new MatchChecker(){

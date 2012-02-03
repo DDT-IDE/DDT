@@ -8,7 +8,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
-import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
@@ -75,7 +75,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 		
 		final int start = range.getOffset();
 		
-		DeeModuleDeclaration deeModule = DeeModelUtil.getParsedDeeModule(member.getSourceModule());
+		DeeModuleDeclaration deeModule = DeeModuleParsingUtil.getParsedDeeModule(member.getSourceModule());
 		ASTNeoNode pickedNode = ASTNodeFinder.findElement(deeModule.neoModule, start, 
 				DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		

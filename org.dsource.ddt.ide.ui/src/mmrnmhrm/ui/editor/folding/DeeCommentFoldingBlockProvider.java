@@ -5,8 +5,7 @@ import java.util.List;
 import mmrnmhrm.ui.text.DeePartitioningProvider;
 import mmrnmhrm.ui.text.DeePartitions;
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeParserUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 import org.eclipse.dltk.ui.text.folding.IFoldingContent;
@@ -16,7 +15,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IRegion;
 
-import dtool.ast.definitions.Module.DeclarationModule;
+import dtool.ast.definitions.Module;
 
 public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProvider {
 	
@@ -48,11 +47,10 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 			ISourceModule sourceModule = (ISourceModule) content.getModelElement();
 			
 			// With changes in the parser perhaps this code could be simplified.
-			DeeModuleDeclaration deeModuleDecl = DeeParserUtil.getASTFromModule(sourceModule);
-			if (deeModuleDecl != null) {
-				DeclarationModule md = deeModuleDecl.neoModule.md;
-				if(md != null) {
-					offsetForFirstMember = md.getOffset();
+			Module deeModule = DeeModuleParsingUtil.parseAndGetAST(sourceModule);
+			if (deeModule != null) {
+				if(deeModule.md != null) {
+					offsetForFirstMember = deeModule.md.getOffset();
 				}
 			}
 			

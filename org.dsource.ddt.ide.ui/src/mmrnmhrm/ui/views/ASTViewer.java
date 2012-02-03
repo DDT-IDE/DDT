@@ -7,7 +7,7 @@ import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration.EModelStatus;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.jface.action.Action;
@@ -180,7 +180,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 			return;
 		}
 		
-		fDeeModule = DeeModelUtil.getParsedDeeModule(fSourceModule);
+		fDeeModule = DeeModuleParsingUtil.getParsedDeeModule(fSourceModule);
 		if(fDeeModule == null) {
 			setContentDescription("No DeeModuleUnit available");
 			viewer.getControl().setVisible(false);

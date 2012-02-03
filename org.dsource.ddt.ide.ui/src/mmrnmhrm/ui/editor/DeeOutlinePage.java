@@ -6,7 +6,7 @@ import java.util.List;
 import melnorme.swtutil.SWTUtilExt;
 import melnorme.utilbox.tree.IElement;
 
-import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.DLTKCore;
@@ -122,7 +122,7 @@ public class DeeOutlinePage extends ScriptOutlinePage {
 		public Object[] getElements(Object parent) {
 			if(parent instanceof ISourceModule) {
 				ISourceModule sourceModule = (ISourceModule) parent;
-				DeeModuleDeclaration moduleDec = DeeModelUtil.getParsedDeeModule(sourceModule);
+				DeeModuleDeclaration moduleDec = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
 				if(moduleDec != null)
 					return super.getElements(moduleDec.neoModule);
 			}

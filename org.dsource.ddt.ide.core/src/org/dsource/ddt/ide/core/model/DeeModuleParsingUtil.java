@@ -5,9 +5,12 @@ import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.SourceParserUtil;
 
-public abstract class DeeModelUtil {
+import dtool.ast.definitions.Module;
+
+public abstract class DeeModuleParsingUtil {
 	
 	/** Gets a DeeModuleDeclaration from given sourceModule, either by parsing or retrieving a cached version.
+	 * Parentizes the returned DeeModuleDeclaration
 	 * TODO: define proper behavior for sourceModule is not from a DDT DLTK nature */
 	public static DeeModuleDeclaration getParsedDeeModule(ISourceModule sourceModule) {
 		ModuleDeclaration moduleDeclaration = SourceParserUtil.getModuleDeclaration(sourceModule, null);
@@ -26,6 +29,18 @@ public abstract class DeeModelUtil {
 				deeModuleDecl.neoModule.setModuleUnit(sourceModule);
 			}
 			return deeModuleDecl;
+		}
+		return null;
+	}
+	
+	/** Parses the module and returns an AST. Returns null if given module is not the DDT nature. 
+	 * This operation uses caching for the created AST. */
+	public static Module parseAndGetAST(final ISourceModule module) {
+		IModuleDeclaration moduleDeclaration = SourceParserUtil.parse(module, null);
+		
+		if (moduleDeclaration instanceof DeeModuleDeclaration) {
+			DeeModuleDeclaration deeModuleDecl = (DeeModuleDeclaration) moduleDeclaration;
+			return deeModuleDecl.neoModule;
 		}
 		return null;
 	}

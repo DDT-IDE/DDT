@@ -6,7 +6,7 @@ import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.parser.DeeSourceParser;
 
-import org.dsource.ddt.ide.core.model.DeeModelUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -100,7 +100,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		
 		DeeSourceParser sourceParser = new DeeSourceParser();
 		DeeModuleDeclaration deeModule = sourceParser.parse(source, null);
-		DeeModelUtil.parentizeDeeModuleDeclaration(deeModule, sourceModule);
+		DeeModuleParsingUtil.parentizeDeeModuleDeclaration(deeModule, sourceModule);
 		return deeModule;
 	}
 	

@@ -10,8 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.folding;
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeParserUtil;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
@@ -31,6 +30,7 @@ import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionUnion;
+import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 
@@ -76,9 +76,9 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	public void computeFoldableBlocks(IFoldingContent content) {
 		if (content.getModelElement() instanceof ISourceModule) {
 			ISourceModule sourceModule = (ISourceModule) content.getModelElement();
-			DeeModuleDeclaration deeModuleDecl = DeeParserUtil.getASTFromModule(sourceModule);
-			if (deeModuleDecl != null) {
-				deeModuleDecl.neoModule.accept(new ASTNeoDefaultVisitor() {
+			Module deeModule = DeeModuleParsingUtil.parseAndGetAST(sourceModule);
+			if (deeModule != null) {
+				deeModule.accept(new ASTNeoDefaultVisitor() {
 					
 					@Override
 					public boolean visit(DefinitionStruct elem) {
