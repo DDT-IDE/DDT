@@ -43,11 +43,10 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		if(object instanceof IMember) {
 			IMember member = (IMember) object;
 			
-			// XXX: Due to a DLTK limitation we don't know if the what image size is preferred. 
-			// XXX: BM: so we do this awful hack to try to figure it out, 
+			// XXX: Due to a DLTK limitation we don't know if what image size is preferred. 
+			// BM: so we do this awful hack to try to figure it out, 
 			// I'm particularly concerned about performance, but since it is UI elements code, it should be
 			// called a limited number of times 
-			// TODO: need to talk with DTLK guys because of the above
 			
 			Point imageSize = BIG_SIZE;
 			StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();

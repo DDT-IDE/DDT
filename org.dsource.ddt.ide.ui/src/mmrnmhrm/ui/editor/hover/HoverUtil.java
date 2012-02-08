@@ -36,7 +36,7 @@ public class HoverUtil {
 
 	private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
 
-	/** Get's the HTML info for the given DefUnit. */
+	/** Gets the HTML info for the given DefUnit. */
 	public static String getDefUnitHoverInfoWithDeeDoc(DefUnit defUnit) {
 		String sig = defUnit.toStringForHoverSignature();
 		String str = convertToHTMLContent(sig);
