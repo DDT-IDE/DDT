@@ -6,6 +6,8 @@
  * Fixed bug where DDT would not ship with any default editor Code Templates.
  * Added support for GDC, as well as a generic compiler install. (Implemented issue #59)
  * Implemented issue #59: Added support for DMD Unix style installs ("usr/bin/dmd" and the like).
+ * Fixed several bugs with the D Search Page (incorrect or missing search matches). 
+ * Fixed bug with default text shown in D Search Page when editor selection was on a type;
  
 == DDT 0.5.0 (2011-08-26) ==
  * Updated DDT to DTLK 3.0
