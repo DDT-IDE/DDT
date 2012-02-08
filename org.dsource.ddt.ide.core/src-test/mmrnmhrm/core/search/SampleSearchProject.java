@@ -10,7 +10,7 @@ import mmrnmhrm.tests.DeeCoreTestResources;
 
 public class SampleSearchProject extends DeeCoreTestResources {
 	
-	public static final String SAMPLEPROJNAME = "SampleSearchProject";
+	public static final String SAMPLEPROJNAME = "sampleSearchProject";
 	
 	public static final SampleSearchProject defaultInstance; 
 	
