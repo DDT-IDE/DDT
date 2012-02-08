@@ -5,8 +5,6 @@ import java.util.List;
 
 import melnorme.utilbox.tree.IVisitable;
 
-
-
 /**
  * Uses a Visitor to collect a node's children.
  */

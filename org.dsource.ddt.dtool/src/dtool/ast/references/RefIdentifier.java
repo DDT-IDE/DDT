@@ -43,7 +43,7 @@ public class RefIdentifier extends NamedReference {
 	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(boolean findOneOnly) {
-		DefUnitSearch search = new DefUnitSearch(name, this, this.getOffset(), findOneOnly);
+		DefUnitSearch search = new DefUnitSearch(name, this, this.getStartPos(), findOneOnly);
 		doSearchForPossiblyQualifiedSingleRef(search, this);
 		return search.getMatchDefUnits();
 	}

@@ -256,8 +256,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			assertTrue(rootReference.getStartPos() == startPos);
 		}
 		
-		refQualified.setStart(startPos);
-		refQualified.setEndPos(singleRef.getEndPos());
+		refQualified.setSourcePosition(startPos, singleRef.getEndPos());
 		return refQualified;
 	}
 	
@@ -341,12 +340,10 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 				ASTNeoNode rootRefAsNode = blindCast(rootRef);
 				if(topSourceRange != null) {
 					// Estimate a range
-					rootRefAsNode.setStart(topSourceRange.getStartPos());
-					rootRefAsNode.setEndPos(subName.getStartPos()-1);
+					rootRefAsNode.setSourcePosition(topSourceRange.getStartPos(), subName.getStartPos()-1);
 				} else {
 					// A very innacurate estimation
-					rootRefAsNode.setStart(subName.getStartPos()-2);
-					rootRefAsNode.setEndPos(subName.getStartPos()-1);
+					rootRefAsNode.setSourcePosition(subName.getStartPos()-2, subName.getStartPos()-1); 
 				}
 			}
 			

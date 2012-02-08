@@ -103,7 +103,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	
 	protected static int getDeclarationEndforNode(ASTNeoNode node) {
-		return node.sourceEnd() - 1;
+		return node.getEndPos() - 1;
 	}
 	
 	@Override
@@ -236,10 +236,10 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 			int length = expCall.args == null ? 0 : expCall.args.length;
 			// Dont use qualified name
 			String methodName = elem.getReferenceName();
-			requestor.acceptMethodReference(methodName, length, elem.sourceStart(), elem.sourceEnd()-1);
+			requestor.acceptMethodReference(methodName, length, elem.getStartPos(), elem.getEndPos()-1);
 		} 
 		
-		requestor.acceptTypeReference(elem.toStringAsElement(), elem.sourceStart());
+		requestor.acceptTypeReference(elem.toStringAsElement(), elem.getStartPos());
 		return true;
 	}
 	
@@ -249,9 +249,9 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	protected static void setupDefUnitTypeInfo(DefUnit defAggr, ISourceElementRequestor.ElementInfo elemInfo) {
 		elemInfo.name = defAggr.getName();
-		elemInfo.declarationStart = defAggr.sourceStart();
-		elemInfo.nameSourceStart = defAggr.defname.sourceStart();
-		elemInfo.nameSourceEnd = defAggr.defname.sourceEnd() - 1;
+		elemInfo.declarationStart = defAggr.getStartPos();
+		elemInfo.nameSourceStart = defAggr.defname.getStartPos();
+		elemInfo.nameSourceEnd = defAggr.defname.getEndPos() - 1;
 	}
 	
 	protected static void setupDefinitionTypeInfo(Definition elem, ISourceElementRequestor.ElementInfo elemInfo) {
@@ -372,7 +372,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	protected static ISourceElementRequestor.MethodInfo createConstructorInfo(DefinitionCtor elem) {
 		ISourceElementRequestor.MethodInfo elemInfo = new ISourceElementRequestor.MethodInfo();
-		elemInfo.declarationStart = elem.sourceStart();
+		elemInfo.declarationStart = elem.getStartPos();
 		elemInfo.isConstructor = true; // for the purposes of the ModelElement's, any kind is constructor
 		elemInfo.name = elem.kind.specialName;
 		elemInfo.nameSourceStart = elem.nameStart;

@@ -156,7 +156,7 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 			level = SearchMatch.A_ACCURATE;
 		}
 		
-		SearchMatch match = this.newDeclarationMatch(enclosingType, level, node.matchStart(), node.matchLength());
+		SearchMatch match = this.newDeclarationMatch(enclosingType, level, node.getOffset(), node.getLength());
 		// TODO: create reference matches
 		matches.add(match);
 	}
