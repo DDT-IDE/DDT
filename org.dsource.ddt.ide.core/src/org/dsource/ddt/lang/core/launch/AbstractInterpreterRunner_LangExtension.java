@@ -14,7 +14,6 @@ import org.eclipse.dltk.launching.InterpreterConfig;
  * 
  * TODO: allow running with requiring an IInterpreterInstall
  * 
- * @author bruno
  */
 public abstract class AbstractInterpreterRunner_LangExtension extends AbstractInterpreterRunner {
 	
@@ -27,7 +26,7 @@ public abstract class AbstractInterpreterRunner_LangExtension extends AbstractIn
 		
 		items.add(config.getScriptFilePath().toString());
 		
-		// native executable arguments
+		// application arguments arguments
 		List<String> scriptArgs = config.getScriptArgs();
 		items.addAll(scriptArgs);
 		
