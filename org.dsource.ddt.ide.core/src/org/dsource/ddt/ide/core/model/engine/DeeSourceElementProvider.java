@@ -367,6 +367,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		setupDefinitionTypeInfo(elem, methodInfo);
 		
 		setupParametersInfo(elem, methodInfo);
+		methodInfo.returnType = elem.rettype.toStringAsElement();
 		return methodInfo;
 	}
 	
@@ -403,6 +404,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		setupDefUnitTypeInfo(elem, fieldInfo);
 		setupDefinitionTypeInfo(elem, fieldInfo);
+		fieldInfo.type = elem.type.toStringAsElement();
 		return fieldInfo;
 	}
 	
