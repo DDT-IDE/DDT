@@ -12,11 +12,8 @@ package mmrnmhrm.ui.preferences.pages;
 
 import mmrnmhrm.ui.DeePlugin;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -24,28 +21,28 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 /**
  * The root preference page for DDT 
  */
-public class DeeRootPreferencePage extends PreferencePage implements IWorkbenchPreferencePage{
+public class DeeRootPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	
 	public DeeRootPreferencePage() {
-		super("DDT root preference page");
-		setDescription("DDT preferences");
+		super(GRID);
 	}
 	
+	@Override
+	protected void createFieldEditors() {
+		addField(new RadioGroupFieldEditor("label-style", "Label provider visual style", 1,
+				                           new String[][] { { "JDT-style labels (methods and variables have protection dependent icons)", "jdt" },
+														    { "DDT-style labels (protection level is overlayed in all cases)", "ddt" }
+														  },
+										   getFieldEditorParent()
+				)
+		);
+	}	
+
 	@Override
 	public void init(IWorkbench workbench) {
-		// Nothing to do
-	}
-	
-	@Override
-	protected Control createContents(Composite parent) {
-		Composite content = new Composite(parent, SWT.NONE);
-		return content;
-	}
-	
-	/** Gets the preference store for this page. */
-	@Override
-	public IPreferenceStore getPreferenceStore() {
-		return DeePlugin.getInstance().getPreferenceStore();
+		setPreferenceStore(DeePlugin.getInstance().getPreferenceStore());
+		setDescription("DDT Preferences");
+		getPreferenceStore().setDefault("label-style", "ddt");
 	}
 	
 }

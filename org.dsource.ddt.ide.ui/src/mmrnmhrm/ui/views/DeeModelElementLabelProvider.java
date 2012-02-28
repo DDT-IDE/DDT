@@ -2,6 +2,7 @@ package mmrnmhrm.ui.views;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
 
 import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
@@ -44,7 +45,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		if(object instanceof IMember) {
 			IMember member = (IMember) object;
 			
-			// XXX: Due to a DLTK limitation we don't know if what image size is preferred. 
+			// XXX: Due to a DLTK limitation we don't know what image size is preferred. 
 			// BM: so we do this awful hack to try to figure it out, 
 			// I'm particularly concerned about performance, but since it is UI elements code, it should be
 			// called a limited number of times 
@@ -82,7 +83,8 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		ImageDescriptor baseImage = getBaseImageDescriptor(member, elementFlags);
 		ProtectionAttribute prot = null;
 		
-		if (member.getElementType() != IModelElement.FIELD && member.getElementType() != IModelElement.METHOD) {
+		boolean jdtStyle = (DeePlugin.getInstance().getPreferenceStore().getString("label-style").equals("jdt"));
+		if (!jdtStyle || member.getElementType() != IModelElement.FIELD && member.getElementType() != IModelElement.METHOD) {
 			prot = DeeModelElementUtil.elementFlagsToProtection(elementFlags, null);
 		}
 		
@@ -95,6 +97,8 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			return null;
 		}
 		
+		boolean jdtStyle = DeePlugin.getInstance().getPreferenceStore().getString("label-style").equals("jdt");
+		
 		switch (archeType) {
 		case Package:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ELEM_PACKAGE);
@@ -102,6 +106,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.NODE_MODULE_DEC);
 			
 		case Variable:
+			if (jdtStyle) {
 			switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
 			case PRIVATE: 
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PRIVATE);
@@ -113,8 +118,12 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			case EXPORT:
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PUBLIC);
 			}
+			} else {
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);
+			}
 			
 		case Function:
+			if (jdtStyle) {
 			switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
 			case PRIVATE: 
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PRIVATE);
@@ -125,6 +134,9 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			case PUBLIC:
 			case EXPORT:
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PUBLIC);
+			}
+			} else {
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_FUNCTION);
 			}
 		case Class:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_CLASS);
