@@ -367,7 +367,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		setupDefinitionTypeInfo(elem, methodInfo);
 		
 		setupParametersInfo(elem, methodInfo);
-		methodInfo.returnType = elem.rettype.toStringAsElement();
+		methodInfo.returnType = typeRefToUIString(elem.rettype);
 		return methodInfo;
 	}
 	
@@ -404,8 +404,16 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		setupDefUnitTypeInfo(elem, fieldInfo);
 		setupDefinitionTypeInfo(elem, fieldInfo);
-		fieldInfo.type = elem.type.toStringAsElement();
+		
+		fieldInfo.type = typeRefToUIString(elem.type);
 		return fieldInfo;
+	}
+	
+	protected static String typeRefToUIString(Reference typeReference) {
+		if(typeReference == null) {
+			return "auto";
+		}
+		return typeReference.toStringAsElement();
 	}
 	
 }
