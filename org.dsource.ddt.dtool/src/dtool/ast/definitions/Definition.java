@@ -45,6 +45,7 @@ public abstract class Definition extends DefUnit  {
 	
 	public PROT getEffectiveProtection() {
 		if(protection == null || protection == PROT.PROTundefined) {
+			// BM: What about is PROTnone, what is it??
 			return PROT.PROTpublic;
 		}
 		return protection;

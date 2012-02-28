@@ -2,24 +2,16 @@ package mmrnmhrm.ui.views;
 
 import mmrnmhrm.ui.DeePluginImages;
 
-import org.eclipse.dltk.ui.ScriptElementImageDescriptor_Fix;
+import org.dsource.ddt.ide.core.model.ProtectionAttribute;
+import org.eclipse.dltk.ui.ScriptElementImageDescriptor_Extension;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Point;
 
-import descent.internal.compiler.parser.PROT;
-
-public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Fix {
+public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Extension {
 	
-	/** Code for the protection modifier. They are mutually exclusive therefore couldn't */
-	public enum Protection {
-		PRIVATE,
-		PROTECTED,
-		PUBLIC
-	}
+	protected final ProtectionAttribute prot;
 	
-	private final Protection prot;
-	
-	public DeeElementImageDescriptor(ImageDescriptor baseImage, int flags, Protection prot, Point size) {
+	public DeeElementImageDescriptor(ImageDescriptor baseImage, int flags, ProtectionAttribute prot, Point size) {
 		super(baseImage, flags, size);
 		this.prot = prot;
 	}
@@ -27,20 +19,29 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Fix 
 	@Override
 	protected void drawCompositeImage(int width, int height) {
 		super.drawCompositeImage(width, height);
+		if(prot == null)
+			return;
+		
 		Point pos;
 		switch (prot) {
 		
 		case PRIVATE:
-			pos = new Point (fBottomRightPos, getSize().y);
+			pos = new Point(fBottomRightPos, getSize().y);
 			addBottomRightImage(DeePluginImages.DESC_OVR_PRIVATE, pos);
 			break;
 			
 		case PROTECTED:
-			pos = new Point (fBottomRightPos, getSize().y);
+			pos = new Point(fBottomRightPos, getSize().y);
 			addBottomRightImage(DeePluginImages.DESC_OVR_PROTECTED, pos);
 			break;
 		
+		case PACKAGE:
+			pos = new Point(fBottomRightPos, getSize().y);
+			addBottomRightImage(DeePluginImages.DESC_OVR_DEFAULT, pos);
+			break;
+		
 		case PUBLIC:
+		case EXPORT: // TODO?
 			break;
 		}
 	}

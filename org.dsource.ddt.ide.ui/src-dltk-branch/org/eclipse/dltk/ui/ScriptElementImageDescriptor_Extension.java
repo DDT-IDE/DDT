@@ -15,8 +15,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 
-// XXX: DTLK copied from 3.0 : Fixes equals bug. Review in the near future
-public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
+/**
+ * Extends functionality from {@link ScriptElementImageDescriptor_Fix}:
+ *  - keeps track of drawing positions 
+ */
+public class ScriptElementImageDescriptor_Extension extends CompositeImageDescriptor
 {
 	/** Flag to render the abstract adornment. */
 	public final static int ABSTRACT= 		0x001;
@@ -45,9 +48,13 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 	private Point fSize;
 	private int fFlags;
 	
+	protected int fBottomRightPos;
+	protected int fBottomLeftPos;
+	protected int fTopRightPos;
+	
 	ImageDescriptor fBaseImage;
 
-	public ScriptElementImageDescriptor_Fix( ImageDescriptor baseImageDescriptor, int flags, Point size ) {
+	public ScriptElementImageDescriptor_Extension( ImageDescriptor baseImageDescriptor, int flags, Point size ) {
 		fBaseImage= baseImageDescriptor;
 		Assert.isNotNull(fBaseImage);
 		fFlags= flags;
@@ -89,11 +96,11 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 	 * Method declared on Object.
 	 */
 	public boolean equals(Object object) {		
-		if (object == null || !ScriptElementImageDescriptor_Fix.class.equals(object.getClass())) {			
+		if (object == null || !ScriptElementImageDescriptor_Extension.class.equals(object.getClass())) {			
 			return false;
 		}
 			
-		ScriptElementImageDescriptor_Fix other= (ScriptElementImageDescriptor_Fix)object;
+		ScriptElementImageDescriptor_Extension other= (ScriptElementImageDescriptor_Extension)object;
 		
 		if( this.fBaseImage == null ) {
 			return false;
@@ -155,7 +162,8 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 			drawImage(data, x, size.y - data.height);
 			x+= data.width;
 		}
-
+		
+		fBottomLeftPos = x;
 	}		
 	
 	private void drawTopRight() {
@@ -173,6 +181,7 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 			addTopRightImage(DLTKPluginImages.DESC_OVR_STATIC, pos);
 		}
 
+		fTopRightPos = pos.x;
 	}
 
 	private void drawBottomRight() {
@@ -187,9 +196,11 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 		if ((flags & IMPLEMENTS) != 0) {
 			addBottomRightImage(DLTKPluginImages.DESC_OVR_IMPLEMENTS, pos);
 		}
+		
+		fBottomRightPos = pos.x;
 	}
 
-	private void addTopRightImage(ImageDescriptor desc, Point pos) {
+	protected void addTopRightImage(ImageDescriptor desc, Point pos) {
 		ImageData data = getImageData(desc);
 		int x = pos.x - data.width;
 		if (x >= 0) {
@@ -198,7 +209,7 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 		}
 	}
 
-	private void addBottomRightImage(ImageDescriptor desc, Point pos) {
+	protected void addBottomRightImage(ImageDescriptor desc, Point pos) {
 		ImageData data = getImageData(desc);
 		int x = pos.x - data.width;
 		int y = pos.y - data.height;

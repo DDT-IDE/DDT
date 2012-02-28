@@ -3,10 +3,9 @@ package mmrnmhrm.ui.views;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.DeePluginImages;
-import mmrnmhrm.ui.views.DeeElementImageDescriptor.Protection;
 
 import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
-import org.eclipse.dltk.ast.Modifiers;
+import org.dsource.ddt.ide.core.model.ProtectionAttribute;
 import org.eclipse.dltk.core.Flags;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
@@ -81,13 +80,10 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		}
 		
 		ImageDescriptor baseImage = getBaseImageDescriptor(member, elementFlags);
-		DeeElementImageDescriptor.Protection prot = Protection.PUBLIC;
+		ProtectionAttribute prot = null;
 		
 		if (member.getElementType() != IModelElement.FIELD && member.getElementType() != IModelElement.METHOD) {
-			if (Flags.isPrivate(elementFlags))
-				prot = Protection.PRIVATE;
-			else if (Flags.isProtected(elementFlags))
-				prot = Protection.PROTECTED;
+			prot = DeeModelElementUtil.elementFlagsToProtection(elementFlags, null);
 		}
 		
 		return new DeeElementImageDescriptor(baseImage, imageFlags, prot, imageSize);
@@ -106,25 +102,30 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.NODE_MODULE_DEC);
 			
 		case Variable:
-			if ((flags & Modifiers.AccPrivate) != 0)
+			switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
+			case PRIVATE: 
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PRIVATE);
-			else if ((flags & Modifiers.AccProtected) != 0)
+			case PROTECTED:
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PROTECTED);
-			else if ((flags & Modifiers.AccPublic) != 0)
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PUBLIC);
-			else
+			case PACKAGE: 
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_DEFAULT);
+			case PUBLIC:
+			case EXPORT:
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PUBLIC);
+			}
 			
 		case Function:
-			if ((flags & Modifiers.AccPrivate) != 0)
+			switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
+			case PRIVATE: 
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PRIVATE);
-			else if ((flags & Modifiers.AccProtected) != 0)
+			case PROTECTED:
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PROTECTED);
-			else if ((flags & Modifiers.AccPublic) != 0)
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PUBLIC);
-			else
+			case PACKAGE: 
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_DEFAULT);
-			
+			case PUBLIC:
+			case EXPORT:
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PUBLIC);
+			}
 		case Class:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_CLASS);
 		case Interface:

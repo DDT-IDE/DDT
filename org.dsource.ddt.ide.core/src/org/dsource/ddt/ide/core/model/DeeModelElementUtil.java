@@ -3,6 +3,7 @@ package org.dsource.ddt.ide.core.model;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import org.eclipse.dltk.ast.Modifiers;
+import org.eclipse.dltk.core.Flags;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
 
@@ -54,4 +55,22 @@ public class DeeModelElementUtil {
 		}
 	}
 	
+	public static ProtectionAttribute elementFlagsToProtection(int elementFlags, ProtectionAttribute undefined) {
+		if((elementFlags & DeeModelConstants.FLAG_ALT_PROTECTION) != 0) {
+			if(Flags.isPrivate(elementFlags)) {
+				return ProtectionAttribute.PACKAGE;
+			} else if(Flags.isPublic(elementFlags)) {
+				return ProtectionAttribute.EXPORT;
+			}
+			return undefined;
+		}
+		if(Flags.isPrivate(elementFlags)) {
+			return ProtectionAttribute.PRIVATE;
+		} else if(Flags.isProtected(elementFlags)) {
+			return ProtectionAttribute.PROTECTED;
+		} else if(Flags.isPublic(elementFlags)) {
+			return ProtectionAttribute.PUBLIC;
+		}
+		return undefined;
+	}
 }
