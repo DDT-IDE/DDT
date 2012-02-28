@@ -39,10 +39,22 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		DeeColorPreferenceInitializer.initializeDefaults(store);
 		DeeDoc_initializeDefaultValues(store);
 		
+		// Explorer
+		store.setDefault(PreferenceConstants.SHOW_SOURCE_MODULE_CHILDREN, true); //Doesn't seem to be working in 3.0
+		
+		// Appearance
+		store.setDefault(PreferenceConstants.APPEARANCE_COMPRESS_PACKAGE_NAMES, false);
+		store.setDefault(PreferenceConstants.APPEARANCE_METHOD_RETURNTYPE, true);
+		store.setDefault(PreferenceConstants.APPEARANCE_METHOD_TYPEPARAMETERS, true);
+		// BM: I don't know how the next preference works:
+		//store.setDefault(PreferenceConstants.APPEARANCE_PKG_NAME_PATTERN_FOR_PKG_VIEW, ""); //$NON-NLS-1$
+		
+		// Formatter
 		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_CHAR, CodeFormatterConstants.TAB);
 		store.setDefault(CodeFormatterConstants.FORMATTER_INDENTATION_SIZE, 4);
 		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_SIZE, 4);
 		
+		// Editor
 		store.setDefault(PreferenceConstants.EDITOR_SMART_INDENT, true);
 		store.setDefault(PreferenceConstants.EDITOR_SMART_HOME_END, true);
 		store.setDefault(PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION, true);		
@@ -71,7 +83,7 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS, ".");
 		
 		
-		// folding
+		// Folding
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_ENABLED, true);
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
 		store.setDefault(PreferenceConstants.EDITOR_COMMENTS_FOLDING_ENABLED, true);
@@ -91,18 +103,9 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_ANONCLASSES, false);
 		
 		
+		// Search
 		store.setDefault(PreferenceConstants.SEARCH_USE_REDUCED_MENU, true);
-		
-		
-		/*
-		store.setDefault(APPEARANCE_COMPRESS_PACKAGE_NAMES, false);
-		store.setDefault(APPEARANCE_METHOD_RETURNTYPE, false);
-		store.setDefault(APPEARANCE_METHOD_TYPEPARAMETERS, true);
-		store.setDefault(APPEARANCE_PKG_NAME_PATTERN_FOR_PKG_VIEW, ""); //$NON-NLS-1$
 
-		store.setDefault(SHOW_SOURCE_MODULE_CHILDREN, true);
-		 */
-		
 		// WIZARDS
 		store.setDefault(PreferenceConstants.SRCBIN_FOLDERS_IN_NEWPROJ, true);
 		store.setDefault(PreferenceConstants.SRC_SRCNAME, "src"); //$NON-NLS-1$		
