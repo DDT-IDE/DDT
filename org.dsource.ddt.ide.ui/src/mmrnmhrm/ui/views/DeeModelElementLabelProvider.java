@@ -5,6 +5,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.DeePluginImages;
 
 import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
+import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.Flags;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
@@ -95,9 +96,24 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.NODE_MODULE_DEC);
 			
 		case Variable:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);
+			if ((flags & Modifiers.AccPrivate) != 0)
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PRIVATE);
+			else if ((flags & Modifiers.AccProtected) != 0)
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PROTECTED);
+			else if ((flags & Modifiers.AccPublic) != 0)
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PUBLIC);
+			else
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_DEFAULT);
+			
 		case Function:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_FUNCTION);
+			if ((flags & Modifiers.AccPrivate) != 0)
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PRIVATE);
+			else if ((flags & Modifiers.AccProtected) != 0)
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PROTECTED);
+			else if ((flags & Modifiers.AccPublic) != 0)
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PUBLIC);
+			else
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_DEFAULT);
 			
 		case Class:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_CLASS);

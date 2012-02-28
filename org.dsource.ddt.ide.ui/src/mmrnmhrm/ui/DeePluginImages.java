@@ -56,6 +56,15 @@ public class DeePluginImages {
 	public static final String NODE_OTHER = createImage(T_OBJ, "node_other.gif");
 	public static final String NODE_REF = createImage(T_OBJ, "node_ref.gif");
 	
+	public static final String IMG_METHOD_PUBLIC = createImage(T_OBJ, "methpub_obj.gif"); 			//$NON-NLS-1$
+	public static final String IMG_METHOD_PROTECTED = createImage(T_OBJ,"methpro_obj.gif"); 		//$NON-NLS-1$
+	public static final String IMG_METHOD_PRIVATE = createImage(T_OBJ, "methpri_obj.gif"); 		//$NON-NLS-1$
+	public static final String IMG_METHOD_DEFAULT = createImage(T_OBJ,"methdef_obj.gif"); 		//$NON-NLS-1$
+	
+	public static final String IMG_FIELD_PUBLIC = createImage(T_OBJ, "field_public_obj.gif"); 			//$NON-NLS-1$
+	public static final String IMG_FIELD_PROTECTED = createImage(T_OBJ, "field_protected_obj.gif"); 		//$NON-NLS-1$
+	public static final String IMG_FIELD_PRIVATE = createImage(T_OBJ, "field_private_obj.gif"); 		//$NON-NLS-1$
+	public static final String IMG_FIELD_DEFAULT = createImage(T_OBJ, "field_default_obj.gif"); 		//$NON-NLS-1$
 	
 	public static final ImageDescriptor DESC_OVR_CONST = createUnmanaged(T_OVR, "ovr_const.gif");
 	public static final ImageDescriptor DESC_OVR_FINAL = createUnmanaged(T_OVR, "ovr_final.gif");
