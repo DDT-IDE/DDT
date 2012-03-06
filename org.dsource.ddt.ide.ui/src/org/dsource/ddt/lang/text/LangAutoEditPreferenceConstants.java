@@ -23,6 +23,5 @@ public interface LangAutoEditPreferenceConstants {
 	String AE_CLOSE_STRINGS = PreferenceConstants.EDITOR_CLOSE_STRINGS;
 	String AE_CLOSE_BRACKETS = PreferenceConstants.EDITOR_CLOSE_BRACKETS;
 	String AE_CLOSE_BRACES = PreferenceConstants.EDITOR_CLOSE_BRACES;
-
 	
 }

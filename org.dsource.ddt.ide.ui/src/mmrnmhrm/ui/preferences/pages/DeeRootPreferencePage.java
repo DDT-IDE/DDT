@@ -11,6 +11,7 @@
 package mmrnmhrm.ui.preferences.pages;
 
 import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPreferenceConstants;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
@@ -23,26 +24,33 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 public class DeeRootPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	
+	private static final String LABEL_PROVIDER_STYLE = 
+			"Icon style for D elements in viewers:";
+	private static final String LABEL_PROVIDER_STYLE_DDT = 
+			"DDT default style (protection is overlayed for all element kinds)";
+	private static final String LABEL_PROVIDER_STYLE_JDT = 
+			"JDT style (methods and variables have protection dependent base icons)";
+
 	public DeeRootPreferencePage() {
 		super(GRID);
 	}
 	
 	@Override
-	protected void createFieldEditors() {
-		addField(new RadioGroupFieldEditor("label-style", "Label provider visual style", 1,
-				                           new String[][] { { "JDT-style labels (methods and variables have protection dependent icons)", "jdt" },
-														    { "DDT-style labels (protection level is overlayed in all cases)", "ddt" }
-														  },
-										   getFieldEditorParent()
-				)
-		);
-	}	
-
-	@Override
 	public void init(IWorkbench workbench) {
 		setPreferenceStore(DeePlugin.getInstance().getPreferenceStore());
 		setDescription("DDT Preferences");
-		getPreferenceStore().setDefault("label-style", "ddt");
+	}
+	
+	@Override
+	protected void createFieldEditors() {
+		String[][] labelAndValues = new String[][] { 
+				{ LABEL_PROVIDER_STYLE_DDT, DeeUIPreferenceConstants.ElementIconsStyle.DDT.toString() },
+				{ LABEL_PROVIDER_STYLE_JDT, DeeUIPreferenceConstants.ElementIconsStyle.JDTLIKE.toString() },
+		};
+		RadioGroupFieldEditor editor = new RadioGroupFieldEditor(
+				DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE, LABEL_PROVIDER_STYLE, 1, 
+				labelAndValues, getFieldEditorParent());
+		addField(editor);
 	}
 	
 }

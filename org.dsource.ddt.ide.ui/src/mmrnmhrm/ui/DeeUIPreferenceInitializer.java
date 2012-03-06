@@ -48,6 +48,7 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.APPEARANCE_METHOD_TYPEPARAMETERS, true);
 		// BM: I don't know how the next preference works:
 		//store.setDefault(PreferenceConstants.APPEARANCE_PKG_NAME_PATTERN_FOR_PKG_VIEW, ""); //$NON-NLS-1$
+		store.setDefault(DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE, ""); // No specific default
 		
 		// Formatter
 		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_CHAR, CodeFormatterConstants.TAB);

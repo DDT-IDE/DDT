@@ -14,4 +14,21 @@ import org.dsource.ddt.lang.text.LangAutoEditPreferenceConstants;
 
 public interface DeeUIPreferenceConstants extends LangAutoEditPreferenceConstants {
 	
+	String ELEMENT_ICONS_STYLE = "elementIcons.style";
+	
+	public static enum ElementIconsStyle { 
+		DDTLEAN, DDT, JDTLIKE;
+		
+		public static ElementIconsStyle create(String stringValue, ElementIconsStyle defaultValue) {
+			if(stringValue == null) {
+				return defaultValue;
+			}
+			try {
+				return valueOf(stringValue);
+			} catch (IllegalArgumentException e) {
+				return defaultValue;
+			}
+		} 
+	}; 
+	
 }

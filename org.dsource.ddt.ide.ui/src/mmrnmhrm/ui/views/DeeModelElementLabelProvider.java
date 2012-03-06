@@ -4,6 +4,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeUIPreferenceConstants;
+import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 
 import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
 import org.dsource.ddt.ide.core.model.ProtectionAttribute;
@@ -80,24 +82,25 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			DeeCore.log(e);
 		}
 		
-		ImageDescriptor baseImage = getBaseImageDescriptor(member, elementFlags);
-		ProtectionAttribute prot = null;
+		String iconStyleStr = DeePlugin.getPrefStore().getString(DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE);
+		ElementIconsStyle iconStyle = ElementIconsStyle.create(iconStyleStr, ElementIconsStyle.DDT);
 		
-		boolean jdtStyle = (DeePlugin.getInstance().getPreferenceStore().getString("label-style").equals("jdt"));
-		if (!jdtStyle || member.getElementType() != IModelElement.FIELD && member.getElementType() != IModelElement.METHOD) {
+		ImageDescriptor baseImage = getBaseImageDescriptor(member, elementFlags, iconStyle);
+		
+		ProtectionAttribute prot = null;
+		if (iconStyle != ElementIconsStyle.JDTLIKE || 
+				(member.getElementType() != IModelElement.FIELD && member.getElementType() != IModelElement.METHOD)) {
 			prot = DeeModelElementUtil.elementFlagsToProtection(elementFlags, null);
 		}
 		
 		return new DeeElementImageDescriptor(baseImage, imageFlags, prot, imageSize);
 	}
 	
-	protected ImageDescriptor getBaseImageDescriptor(IMember member, int flags) {
+	protected ImageDescriptor getBaseImageDescriptor(IMember member, int flags, ElementIconsStyle iconStyle) {
 		EArcheType archeType = DeeModelElementUtil.elementFlagsToArcheType(member, flags);
 		if(archeType == null) {
 			return null;
 		}
-		
-		boolean jdtStyle = DeePlugin.getInstance().getPreferenceStore().getString("label-style").equals("jdt");
 		
 		switch (archeType) {
 		case Package:
@@ -106,7 +109,9 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.NODE_MODULE_DEC);
 			
 		case Variable:
-			if (jdtStyle) {
+			if(iconStyle != ElementIconsStyle.JDTLIKE) {
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);
+			} 
 			switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
 			case PRIVATE: 
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PRIVATE);
@@ -118,12 +123,11 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			case EXPORT:
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PUBLIC);
 			}
-			} else {
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);
-			}
 			
 		case Function:
-			if (jdtStyle) {
+			if(iconStyle != ElementIconsStyle.JDTLIKE) {
+				return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_FUNCTION);
+			}
 			switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
 			case PRIVATE: 
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PRIVATE);
@@ -134,9 +138,6 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			case PUBLIC:
 			case EXPORT:
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PUBLIC);
-			}
-			} else {
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_FUNCTION);
 			}
 		case Class:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_CLASS);
