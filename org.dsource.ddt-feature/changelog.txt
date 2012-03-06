@@ -3,14 +3,14 @@
 = DDT Change Log =
 
 == DDT 0.5.1 (devel) ==
- * Fixed bug where DDT would not ship with any default editor Code Templates.
- * Added support for GDC, as well as a generic compiler install. (Implemented issue #59)
- * Implemented issue #59: Added support for DMD Unix style installs ("usr/bin/dmd" and the like).
- * Labels for D elements in the outline and quick outline now show type (for variables) and return type (for functions).
- * Icons for D elements in all viewers now show protection attribute info.
-   * This can be configured (overlay for all elements, or JDT-style icon overlays) in new Appearance preference page. 
+ * Fixed bug causing DDT to never load the pre-defined editor Code Templates.
+ * Added support for GDC, as well as a generic compiler install. (issue #59)
+ * Added support for DMD Unix style compiler installs ("usr/bin/dmd" and similar). (issue #56)
  * Fixed several bugs with the D Search Page (incorrect or missing search matches). 
  * Fixed bug with default text shown in D Search Page when editor selection was on a type;
+ * Labels for D elements in the outline and quick outline now show type (for variables) and return type (for functions).
+ * Icons for D elements in all viewers now show protection attribute info.
+   * This can be configured (overlay for all elements, or JDT-style icon overlays) in the new Appearance preference page. 
  
 == DDT 0.5.0 (2011-08-26) ==
  * Updated DDT to DTLK 3.0
