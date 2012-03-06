@@ -13,8 +13,14 @@ import org.eclipse.jface.text.IDocument;
 
 public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	
+	private static final String DEE_TEMPLATE_PREFPAGE_TITLE = "Code Templates";
+	
 	public final static String PAGE_ID = DeePlugin.EXTENSIONS_IDPREFIX + "preferences.editor.CodeTemplates";
 	
+	@Override
+	public void setTitle(String title) {
+		super.setTitle(DEE_TEMPLATE_PREFPAGE_TITLE);
+	}
 	
 	@Override
 	protected void setPreferenceStore() {
