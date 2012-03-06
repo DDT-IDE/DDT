@@ -8,7 +8,7 @@
  * Implemented issue #59: Added support for DMD Unix style installs ("usr/bin/dmd" and the like).
  * Labels for D elements in the outline and quick outline now show type (for variables) and return type (for functions).
  * Icons for D elements in all viewers now show protection attribute info.
-   * This can be configured (overlay for all elements, or JDT-style icon overlays) in DDT preference page. 
+   * This can be configured (overlay for all elements, or JDT-style icon overlays) in new Appearance preference page. 
  * Fixed several bugs with the D Search Page (incorrect or missing search matches). 
  * Fixed bug with default text shown in D Search Page when editor selection was on a type;
  

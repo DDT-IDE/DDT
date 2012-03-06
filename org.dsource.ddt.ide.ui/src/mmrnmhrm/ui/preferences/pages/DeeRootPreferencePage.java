@@ -11,10 +11,11 @@
 package mmrnmhrm.ui.preferences.pages;
 
 import mmrnmhrm.ui.DeePlugin;
-import mmrnmhrm.ui.DeeUIPreferenceConstants;
 
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.RadioGroupFieldEditor;
+import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -22,36 +23,22 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 /**
  * The root preference page for DDT 
  */
-public class DeeRootPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class DeeRootPreferencePage extends PreferencePage implements IWorkbenchPreferencePage{
 	
-	private static final String LABEL_PROVIDER_STYLE = 
-			"Icon style for D elements in viewers:";
-	private static final String LABEL_PROVIDER_STYLE_DDT = 
-			"DDT default style (protection is overlayed for all element kinds)";
-	private static final String LABEL_PROVIDER_STYLE_JDT = 
-			"JDT style (methods and variables have protection dependent base icons)";
-
 	public DeeRootPreferencePage() {
-		super(GRID);
+		setPreferenceStore(DeePlugin.getPrefStore());
+		setDescription("General DDT preferences");
 	}
 	
 	@Override
 	public void init(IWorkbench workbench) {
-		setPreferenceStore(DeePlugin.getInstance().getPreferenceStore());
-		setDescription("DDT Preferences");
+		// Nothing to do
 	}
 	
 	@Override
-	protected void createFieldEditors() {
-		String[][] labelAndValues = new String[][] { 
-				{ LABEL_PROVIDER_STYLE_DDT, DeeUIPreferenceConstants.ElementIconsStyle.DDT.toString() },
-				{ LABEL_PROVIDER_STYLE_JDT, DeeUIPreferenceConstants.ElementIconsStyle.JDTLIKE.toString() },
-		};
-		RadioGroupFieldEditor editor = new RadioGroupFieldEditor(
-				DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE, LABEL_PROVIDER_STYLE, 1, 
-				labelAndValues, getFieldEditorParent());
-		addField(editor);
+	protected Control createContents(Composite parent) {
+		Composite content = new Composite(parent, SWT.NONE);
+		return content;
 	}
 	
 }
-
