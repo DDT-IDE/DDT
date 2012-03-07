@@ -300,8 +300,8 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		case PROTprivate: modifiers |= Modifiers.AccPrivate; break;
 		case PROTpublic: modifiers |= Modifiers.AccPublic; break;
 		case PROTprotected: modifiers |= Modifiers.AccProtected; break;
-		case PROTpackage: modifiers |= (Modifiers.AccPrivate | DeeModelConstants.FLAG_ALT_PROTECTION); break;
-		case PROTexport: modifiers |= (Modifiers.AccPublic | DeeModelConstants.FLAG_ALT_PROTECTION); break;
+		case PROTpackage: modifiers |= DeeModelConstants.FLAG_PROTECTION_PACKAGE; break;
+		case PROTexport: modifiers |= DeeModelConstants.FLAG_PROTECTION_EXPORT; break;
 		
 		default: modifiers |= Modifiers.AccPublic;
 		}
