@@ -1,5 +1,7 @@
 package dtool.descentadapter;
 
+import java.math.BigInteger;
+
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AddAssignExp;
 import descent.internal.compiler.parser.AddExp;
@@ -69,8 +71,11 @@ import descent.internal.compiler.parser.StringExp;
 import descent.internal.compiler.parser.StructInitializer;
 import descent.internal.compiler.parser.SuperExp;
 import descent.internal.compiler.parser.TOK;
+import descent.internal.compiler.parser.TY;
 import descent.internal.compiler.parser.ThisExp;
 import descent.internal.compiler.parser.TraitsExp;
+import descent.internal.compiler.parser.TypeBasic;
+import descent.internal.compiler.parser.TypeFunction;
 import descent.internal.compiler.parser.TypeidExp;
 import descent.internal.compiler.parser.UAddExp;
 import descent.internal.compiler.parser.UnaExp;
@@ -80,6 +85,7 @@ import descent.internal.compiler.parser.VoidInitializer;
 import descent.internal.compiler.parser.XorAssignExp;
 import descent.internal.compiler.parser.XorExp;
 import dtool.ast.declarations.DeclarationStringMacro;
+import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.ExpArrayIndex;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
@@ -89,6 +95,7 @@ import dtool.ast.expressions.ExpDefaultInit;
 import dtool.ast.expressions.ExpDelete;
 import dtool.ast.expressions.ExpDollar;
 import dtool.ast.expressions.ExpIftype;
+import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralImportedString;
 import dtool.ast.expressions.ExpLiteralInteger;
@@ -115,6 +122,7 @@ import dtool.ast.expressions.PrefixExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
+import dtool.ast.statements.Statement;
 
 abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
@@ -220,27 +228,53 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(DeleteExp element) {
-		return endAdapt(new ExpDelete(element, convContext));
+		return endAdapt(
+			new ExpDelete(
+				ExpressionConverter.convert(element.e1, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(DollarExp element) {
-		return endAdapt(new ExpDollar(element));
+		return endAdapt(new ExpDollar(DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override
 	public boolean visit(FileInitExp element) {
-		return endAdapt(new ExpDefaultInit(element));
+		return endAdapt(
+			new ExpDefaultInit(
+				ExpDefaultInit.DefaultInit.FILE,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(LineInitExp element) {
-		return endAdapt(new ExpDefaultInit(element));
+		return endAdapt(
+			new ExpDefaultInit(
+				ExpDefaultInit.DefaultInit.LINE,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(FuncExp element) {
-		return endAdapt(new ExpLiteralFunc(element, convContext));
+		// return endAdapt(new ExpLiteralFunc(element, convContext));
+		return endAdapt(
+			new ExpLiteralFunc(
+				ReferenceConverter.convertType(((TypeFunction) element.fd.type).next, convContext),
+				DescentASTConverter.convertMany(((TypeFunction) element.fd.type).parameters, IFunctionParameter.class, convContext),
+				((TypeFunction) element.fd.type).varargs,
+				Statement.convert(element.fd.frequire, convContext),
+				Statement.convert(element.fd.fbody, convContext),
+				Statement.convert(element.fd.fensure, convContext),
+				DefinitionConverter.sourceRange(element)
+			) 
+		);
 	}
 	
 	@Override
@@ -250,12 +284,28 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(IsExp element) {
-		return endAdapt(new ExpIftype(element, convContext));
+		return endAdapt(
+			new ExpIftype(
+				ReferenceConverter.convertType(element.targ, convContext),
+				element.tok,
+				ReferenceConverter.convertType(element.tspec, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(IntegerExp element) {
-		return endAdapt(ExpLiteralInteger.convertIntegerExp(element));
+		if (((TypeBasic) element.type).ty == TY.Tbool)
+			return endAdapt(new ExpLiteralBool(element));
+		else {
+			return endAdapt(
+				new ExpLiteralInteger(
+					element.value != null ? element.value.bigIntegerValue() : new BigInteger("0"),
+					DefinitionConverter.sourceRange(element)
+				)
+			);
+		}
 	}
 	
 	@Override

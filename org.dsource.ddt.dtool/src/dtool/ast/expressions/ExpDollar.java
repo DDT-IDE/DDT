@@ -1,16 +1,12 @@
 package dtool.ast.expressions;
 
-import descent.internal.compiler.parser.DollarExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class ExpDollar extends Expression {
 
-	public ExpDollar(DollarExp elem) {
-		convertNode(elem);
-	}
-	
-	public ExpDollar() {
-		
+	public ExpDollar(SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 	}
 
 	@Override

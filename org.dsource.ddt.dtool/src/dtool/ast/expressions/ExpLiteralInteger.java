@@ -2,35 +2,15 @@ package dtool.ast.expressions;
 
 import java.math.BigInteger;
 
-import descent.internal.compiler.parser.IntegerExp;
-import descent.internal.compiler.parser.TY;
-import descent.internal.compiler.parser.TypeBasic;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DefinitionConverter;
+import dtool.ast.SourceRange;
 
 public class ExpLiteralInteger extends Expression {
 
-	public static ASTNeoNode convertIntegerExp(IntegerExp node) {
-		if(((TypeBasic) node.type).ty == TY.Tbool)
-			return new ExpLiteralBool(node);
-		else
-			return new ExpLiteralInteger(node);
-			
-	}
-	
 	BigInteger num;
 
-	public ExpLiteralInteger(IntegerExp elem) {
-		initSourceRange(DefinitionConverter.sourceRange(elem, false));
-		if(elem.value != null) {
-			num = elem.value.bigIntegerValue();
-		} else {
-			// TODO special tokens __LINE__ , etc.
-		}
-	}
-	
-	public ExpLiteralInteger(BigInteger value) {
+	public ExpLiteralInteger(BigInteger value, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 		this.num = value;
 	}
 

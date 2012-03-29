@@ -1,21 +1,15 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.DeleteExp;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
+import dtool.ast.SourceRange;
 
 public class ExpDelete extends Expression {
 
 	public Resolvable exp;
 	
-	public ExpDelete(DeleteExp elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.exp = ExpressionConverter.convert(elem.e1, convContext); 
-	}
-	
-	public ExpDelete(Resolvable exp) {
+	public ExpDelete(Resolvable exp, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 		this.exp = exp;
 		if (this.exp != null)
 			this.exp.setParent(this);

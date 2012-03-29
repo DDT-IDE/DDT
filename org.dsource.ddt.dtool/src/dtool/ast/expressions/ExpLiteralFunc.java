@@ -1,45 +1,49 @@
 package dtool.ast.expressions;
 
-import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.FuncExp;
-import descent.internal.compiler.parser.FuncLiteralDeclaration;
-import descent.internal.compiler.parser.TypeFunction;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.IStatement;
-import dtool.ast.statements.Statement;
-import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class ExpLiteralFunc extends Expression {
 	
-	public Reference rettype;
-	public IFunctionParameter[] params;
-	public int varargs;
+	public final Reference rettype;
+	public final IFunctionParameter[] params;
+	public final int varargs;
 
-	public IStatement frequire;
-	public IStatement fbody;
-	public IStatement fensure;
+	public final IStatement frequire;
+	public final IStatement fbody;
+	public final IStatement fensure;
 
-	public ExpLiteralFunc(FuncExp elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		FuncLiteralDeclaration fd = elem.fd;
+	public ExpLiteralFunc(Reference retType, IFunctionParameter[] params, int varargs, IStatement freq, IStatement fbody, IStatement fensure, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 		
-		this.frequire = Statement.convert(fd.frequire, convContext);
-		this.fensure = Statement.convert(fd.fensure, convContext);
-		this.fbody = Statement.convert(fd.fbody, convContext);
+		this.frequire = freq;
+		if (this.frequire != null)
+			((ASTNeoNode) this.frequire).setParent(this);
 		
-		TypeFunction elemTypeFunc = ((TypeFunction) fd.type);
+		this.fbody = fbody;
+		if (this.fbody != null)
+			((ASTNeoNode) this.fbody).setParent(this);
 
-		Assert.isTrue(fd.parameters == null);
-		this.params = DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext); 
-
-		varargs = DefinitionConverter.convertVarArgs(elemTypeFunc.varargs);
-		this.rettype = ReferenceConverter.convertType(elemTypeFunc.next, convContext);
+		this.fensure = fensure;
+		if (this.fensure != null)
+			((ASTNeoNode) this.fensure).setParent(this);
+		
+		this.params = params;
+		if (this.params != null) {
+			for (IFunctionParameter fp : this.params) {
+				((ASTNeoNode) fp).setParent(this);
+			}
+		}
+		
+		this.varargs = varargs;
+		this.rettype = retType;
+		if (this.rettype != null)
+			this.rettype.setParent(this);
 	}
 
 	@Override

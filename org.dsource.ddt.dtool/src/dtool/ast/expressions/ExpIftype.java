@@ -1,32 +1,25 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.IsExp;
 import descent.internal.compiler.parser.TOK;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class ExpIftype extends Expression {
 
-	public Reference arg;
-	public TOK tok;
-	public Reference specType;
+	public final Reference arg;
+	public final TOK tok;
+	public final Reference specType;
 	
-	public ExpIftype(IsExp node, ASTConversionContext convContext) {
-		convertNode(node);
-		//Assert.isNull(node.id); //Can occur in error in illegal D code
-		this.tok = node.tok;
-		this.arg = ReferenceConverter.convertType(node.targ, convContext);
-		this.specType = ReferenceConverter.convertType(node.tspec, convContext);
-	}
-	
-	public ExpIftype(Reference arg, TOK tok, Reference specType) {
+	public ExpIftype(Reference arg, TOK tok, Reference specType, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		
 		this.tok = tok;
 		this.arg = arg;
 		if (this.arg != null)
 			this.arg.setParent(this);
+		
 		this.specType = specType;
 		if (this.specType != null)
 			this.specType.setParent(this);
