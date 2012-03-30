@@ -1,32 +1,20 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.TraitsExp;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.ast.SourceRange;
+import dtool.ast.definitions.ArrayView;
 
 public class ExpTraits extends Expression {
 
-	public final ASTNeoNode[] args;
+	public final ArrayView<ASTNeoNode> args;
 	public final char[] traitsKeyword;
 	
-	public ExpTraits(TraitsExp node, ASTConversionContext convContext) {
-		convertNode(node);
-		this.traitsKeyword = node.ident.ident;
-		this.args = DescentASTConverter.convertMany(node.args, ASTNeoNode.class, convContext);
-	}
-	
-	public ExpTraits(char[] traitsKeyword, ASTNeoNode[] args) {
+	public ExpTraits(char[] traitsKeyword, ASTNeoNode[] args, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 		this.traitsKeyword = traitsKeyword;
-		this.args = args;
-		
-		if (this.args != null) {
-			for (ASTNeoNode n : this.args) {
-				n.setParent(this);
-			}
-		}
+		this.args = new ArrayView<ASTNeoNode>(args); parentize(this.args);
 	}
 
 	@Override

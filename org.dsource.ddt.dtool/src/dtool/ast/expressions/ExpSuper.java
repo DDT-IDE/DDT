@@ -1,16 +1,12 @@
 package dtool.ast.expressions;
 
-import descent.internal.compiler.parser.SuperExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class ExpSuper extends Expression {
 
-	public ExpSuper(SuperExp elem) {
-		convertNode(elem);
-	}
-	
-	public ExpSuper() {
-		
+	public ExpSuper(SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 	}
 
 	@Override

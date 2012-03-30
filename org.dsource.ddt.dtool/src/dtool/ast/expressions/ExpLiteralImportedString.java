@@ -1,18 +1,16 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.FileExp;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
+import dtool.ast.SourceRange;
 
 public class ExpLiteralImportedString extends Expression {
 	
 	final public Resolvable exp; 
 
-	public ExpLiteralImportedString(FileExp node, ASTConversionContext convContext) {
-		convertNode(node);
-		this.exp = ExpressionConverter.convert(node.e1, convContext); 
+	public ExpLiteralImportedString(Resolvable exp, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.exp = exp; parentize(this.exp);
 	}
 
 	@Override

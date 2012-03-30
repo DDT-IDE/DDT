@@ -82,7 +82,9 @@ import descent.internal.compiler.parser.UshrExp;
 import descent.internal.compiler.parser.VoidInitializer;
 import descent.internal.compiler.parser.XorAssignExp;
 import descent.internal.compiler.parser.XorExp;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationStringMacro;
+import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.ExpArrayIndex;
 import dtool.ast.expressions.ExpArrayLength;
@@ -126,17 +128,35 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(FileExp node) {
-		return endAdapt(new ExpLiteralImportedString(node, convContext));
+		return endAdapt(
+			new ExpLiteralImportedString(
+				ExpressionConverter.convert(node.e1, convContext),
+				DefinitionConverter.sourceRange(node)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(TraitsExp node) {
-		return endAdapt(new ExpTraits(node, convContext));
+		return endAdapt(
+			new ExpTraits(
+				node.ident.ident,
+				DescentASTConverter.convertMany(node.args, ASTNeoNode.class, convContext),
+				DefinitionConverter.sourceRange(node)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(AssocArrayLiteralExp node) {
-		return endAdapt(new ExpLiteralMapArray(node, convContext));
+		Assert.isTrue(node.keys.size() == node.values.size());
+		return endAdapt(
+			new ExpLiteralMapArray(
+				DescentASTConverter.convertMany(node.keys, Resolvable.class, convContext),
+				DescentASTConverter.convertMany(node.values, Resolvable.class, convContext),
+				DefinitionConverter.sourceRange(node)
+			)
+		);
 	}
 
 	@Override
@@ -146,7 +166,12 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 
 	@Override
 	public boolean visit(CompileExp node) {
-		return endAdapt(new ExpStringMacro(node, convContext));
+		return endAdapt(
+			new ExpStringMacro(
+				ExpressionConverter.convert(node.e1, convContext),
+				DefinitionConverter.sourceRange(node)	
+			)
+		);
 	}
 
 	@Override
@@ -296,7 +321,12 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(IntegerExp element) {
 		if (((TypeBasic) element.type).ty == TY.Tbool)
-			return endAdapt(new ExpLiteralBool(element));
+			return endAdapt(
+				new ExpLiteralBool(
+					element.value.intValue() != 0,
+					DefinitionConverter.sourceRange(element)
+				)
+			);
 		else {
 			return endAdapt(
 				new ExpLiteralInteger(
@@ -309,22 +339,38 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(NewAnonClassExp element) {
-		return endAdapt(new ExpLiteralNewAnonClass(element, convContext));
+		// return endAdapt(new ExpLiteralNewAnonClass(element, convContext));
+		return endAdapt(
+			new ExpLiteralNewAnonClass(
+				ExpressionConverter.convertMany(element.newargs, convContext),
+				ExpressionConverter.convertMany(element.arguments, convContext),
+				element.cd.sourceBaseclasses != null ? DescentASTConverter.convertMany(element.cd.sourceBaseclasses.toArray(), BaseClass.class, convContext) : null,
+				DescentASTConverter.convertMany(element.cd.members, ASTNeoNode.class, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(NewExp element) {
-		return endAdapt(new ExpNew(element, convContext));
+		return endAdapt(
+			new ExpNew(
+				ExpressionConverter.convertMany(element.newargs, convContext),
+				element.newtype == null ? new Reference.InvalidSyntaxReference() : ReferenceConverter.convertType(element.newtype, convContext),
+				ExpressionConverter.convertMany(element.arguments, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(NullExp element) {
-		return endAdapt(new ExpLiteralNull(element));
+		return endAdapt(new ExpLiteralNull(DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override
 	public boolean visit(RealExp element) {
-		return endAdapt(new ExpLiteralReal(element));
+		return endAdapt(new ExpLiteralReal(element.value.doubleValue(), DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override
@@ -334,28 +380,46 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(SliceExp element) {
-		return endAdapt(new ExpSlice(element, convContext));
+		return endAdapt(
+			new ExpSlice(
+				ExpressionConverter.convert(element.e1, convContext),
+				ExpressionConverter.convert(element.lwr, convContext),
+				ExpressionConverter.convert(element.upr, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(StringExp element) {
-		return endAdapt(new ExpLiteralString(element));
+		return endAdapt(new ExpLiteralString(new String(element.string), DefinitionConverter.sourceRange(element)));
 	}
 	
 
 	@Override
 	public boolean visit(SuperExp element) {
-		return endAdapt(new ExpSuper(element));
+		return endAdapt(new ExpSuper(DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override
 	public boolean visit(ThisExp element) {
-		return endAdapt(new ExpThis(element));
+		return endAdapt(new ExpThis(DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override
 	public boolean visit(TypeidExp element) {
-		return endAdapt(new ExpTypeid(element, convContext));
+		assert(element.typeidType != null || element.argumentExp__DDT_ADDITION != null);
+		return endAdapt(
+			element.typeidType != null
+			? new ExpTypeid(
+				ReferenceConverter.convertType(element.typeidType, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+			: new ExpTypeid(
+				ExpressionConverter.convert(element.argumentExp__DDT_ADDITION, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}	
 
 	/* ===================== Unary ===================== */

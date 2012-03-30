@@ -1,25 +1,16 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.CompileExp;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
+import dtool.ast.SourceRange;
 
 public class ExpStringMacro extends Expression {
 
 	public final Resolvable exp;
 
-	public ExpStringMacro(CompileExp node, ASTConversionContext convContext) {
-		convertNode(node);
-		this.exp = ExpressionConverter.convert(node.e1, convContext);
-	}
-	
-	public ExpStringMacro(Resolvable exp) {
-		this.exp = exp;
-		
-		if (this.exp != null)
-			this.exp.setParent(this);
+	public ExpStringMacro(Resolvable exp, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.exp = exp; parentize(this.exp);
 	}
 	
 	@Override

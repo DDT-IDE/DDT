@@ -1,16 +1,15 @@
 package dtool.ast.expressions;
 
-import descent.internal.compiler.parser.RealExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class ExpLiteralReal extends Expression {
-
-	public ExpLiteralReal(RealExp elem) {
-		convertNode(elem);
-		// TODO Auto-generated constructor stub
-	}
 	
-	public ExpLiteralReal(float value) {
+	public final double value;
+
+	public ExpLiteralReal(double value, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.value = value;
 	}
 
 	@Override

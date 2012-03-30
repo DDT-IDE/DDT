@@ -3,6 +3,7 @@ package dtool.ast.expressions;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.BinExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
@@ -61,16 +62,11 @@ public class InfixExpression extends Expression {
 		this.kind = kind;
 	}
 	
-	public InfixExpression(Resolvable left, int kind, Resolvable right) {
-		this.leftExp = left;
-		this.kind = kind;
-		this.rightExp = right;
-		
-		if (this.leftExp != null)
-			this.leftExp.setParent(this);
-		
-		if (this.rightExp != null)
-			this.rightExp.setParent(this);
+	public InfixExpression(Resolvable left, int kind, Resolvable right, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.leftExp = left; parentize(this.leftExp);
+		this.kind = kind; 
+		this.rightExp = right; parentize(this.rightExp);
 	}
 	
 	@Override

@@ -1,16 +1,12 @@
 package dtool.ast.expressions;
 
-import descent.internal.compiler.parser.ThisExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class ExpThis extends Expression {
 
-	public ExpThis(ThisExp elem) {
-		convertNode(elem);
-	}
-	
-	public ExpThis() {
-		
+	public ExpThis(SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 	}
 
 	@Override

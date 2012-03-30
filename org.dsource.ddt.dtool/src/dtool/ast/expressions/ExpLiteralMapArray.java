@@ -1,22 +1,19 @@
 package dtool.ast.expressions;
 
-import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.AssocArrayLiteralExp;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.ast.SourceRange;
+import dtool.ast.definitions.ArrayView;
 
 public class ExpLiteralMapArray extends Expression {
 
-	public final Resolvable[] keys;
-	public final Resolvable[] values;
+	public final ArrayView<Resolvable> keys;
+	public final ArrayView<Resolvable> values;
 	
-	public ExpLiteralMapArray(AssocArrayLiteralExp node, ASTConversionContext convContext) {
-		convertNode(node);
-		Assert.isTrue(node.keys.size() == node.values.size());
-		this.keys = DescentASTConverter.convertMany(node.keys, Resolvable.class, convContext);
-		this.values = DescentASTConverter.convertMany(node.keys, Resolvable.class, convContext);
+	public ExpLiteralMapArray(Resolvable[] keys, Resolvable[] values, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.keys = new ArrayView<Resolvable>(keys); parentize(this.keys);
+		this.values = new ArrayView<Resolvable>(values); parentize(this.values);
 	}
 
 	@Override

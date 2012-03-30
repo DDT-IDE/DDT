@@ -1,39 +1,22 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.SliceExp;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 import dtool.refmodel.IDefUnitReferenceNode;
 
 public class ExpSlice extends Expression {
 
-	public IDefUnitReferenceNode slicee;
-	public Resolvable from;
-	public Resolvable to;
-	
-	public ExpSlice(SliceExp elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		slicee = ExpressionConverter.convert(elem.e1, convContext);
-		from = ExpressionConverter.convert(elem.lwr, convContext);
-		to = ExpressionConverter.convert(elem.upr, convContext);
-	}
+	public final IDefUnitReferenceNode slicee;
+	public final Resolvable from;
+	public final Resolvable to;
 	
 	public ExpSlice(Resolvable slicee, Resolvable from, Resolvable to, SourceRange sourceRange) {
-		this.slicee = slicee;
-		this.from = from;
-		this.to = to;
-		setSourceRange(sourceRange);
-		
-		if (this.slicee != null)
-			((ASTNeoNode) this.slicee).setParent(this);
-		if (this.from != null)
-			this.from.setParent(this);
-		if (this.to != null)
-			this.to.setParent(this);
+		initSourceRange(sourceRange);
+		this.slicee = slicee; parentize(this.slicee);
+		this.from = from; parentize(this.from);
+		this.to = to; parentize(this.to);
 	}
 	
 	@Override

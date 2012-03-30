@@ -1,43 +1,26 @@
 package dtool.ast.expressions;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.TypeidExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 
 public class ExpTypeid extends Expression {
 	
 	Reference typeArgument;
 	Expression expressionArgument;
 	
-	public ExpTypeid(TypeidExp elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		if(elem.typeidType != null) {
-			this.typeArgument = ReferenceConverter.convertType(elem.typeidType, convContext);
-		} else {
-			assertNotNull(elem.argumentExp__DDT_ADDITION);
-			expressionArgument = ExpressionConverter.convert(elem.argumentExp__DDT_ADDITION, convContext);
-		}
-	}
-	
-	public ExpTypeid(Reference typeArgument) {
-		this.typeArgument = typeArgument;
+	public ExpTypeid(Reference typeArgument, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.typeArgument = typeArgument; parentize(this.typeArgument);
 		this.expressionArgument = null;
 		
-		if (this.typeArgument != null)
-			this.typeArgument.setParent(this);
 	}
 
-	public ExpTypeid(Expression expressionArgument) {
-		this.expressionArgument = expressionArgument;
+	public ExpTypeid(Expression expressionArgument, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.expressionArgument = expressionArgument; parentize(this.expressionArgument);
 		this.typeArgument = null;
-		
-		if (this.expressionArgument != null)
-			this.expressionArgument.setParent(this);
 	}
 
 	public Resolvable getArgument() {

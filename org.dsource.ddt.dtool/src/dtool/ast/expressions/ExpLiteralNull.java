@@ -1,16 +1,12 @@
 package dtool.ast.expressions;
 
-import descent.internal.compiler.parser.NullExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class ExpLiteralNull extends Expression {
 
-	public ExpLiteralNull(NullExp elem) {
-		convertNode(elem);
-	}
-	
-	public ExpLiteralNull() {
-		
+	public ExpLiteralNull(SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 	}
 
 	@Override

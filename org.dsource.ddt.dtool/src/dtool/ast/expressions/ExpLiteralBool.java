@@ -1,18 +1,14 @@
 package dtool.ast.expressions;
 
-import descent.internal.compiler.parser.IntegerExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class ExpLiteralBool extends Expression {
 	
 	public final boolean value;
 
-	public ExpLiteralBool(IntegerExp node) {
-		convertNode(node);
-		this.value = node.value.intValue() != 0;
-	}
-	
-	public ExpLiteralBool(boolean value) {
+	public ExpLiteralBool(boolean value, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 		this.value = value;
 	}
 

@@ -1,32 +1,26 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.NewAnonClassExp;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.BaseClass;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 
 public class ExpLiteralNewAnonClass extends Expression {
 	
-	public Resolvable[] allocargs;
-	public Resolvable[] args;
-	public BaseClass[] baseClasses;
-	public ArrayView<ASTNeoNode> members; 
+	public final ArrayView<Resolvable> allocargs;
+	public final ArrayView<Resolvable> args;
+	public final ArrayView<BaseClass> baseClasses;
+	public final ArrayView<ASTNeoNode> members; 
 
 
-	public ExpLiteralNewAnonClass(NewAnonClassExp elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.allocargs = ExpressionConverter.convertMany(elem.newargs, convContext); 
-		this.args = ExpressionConverter.convertMany(elem.arguments, convContext);
-		if(elem.cd.sourceBaseclasses != null) {
-			this.baseClasses = DescentASTConverter.convertMany(elem.cd.sourceBaseclasses.toArray(), BaseClass.class,
-					convContext);
-		}
-		this.members = DescentASTConverter.convertManyNoNulls(elem.cd.members, convContext);
+	public ExpLiteralNewAnonClass(Resolvable[] allocargs, Resolvable[] args, BaseClass[] baseClasses, ASTNeoNode[] members, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.allocargs = new ArrayView<Resolvable>(allocargs); parentize(this.allocargs);
+		this.args = new ArrayView<Resolvable>(args); parentize(this.args);
+		this.baseClasses = new ArrayView<BaseClass>(baseClasses); parentize(this.baseClasses);
+		this.members = new ArrayView<ASTNeoNode>(members); parentize(this.members);
 	}
 
 	@Override
