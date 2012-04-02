@@ -1,9 +1,9 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -11,7 +11,7 @@ import dtool.ast.statements.IStatement;
 public class ExpLiteralFunc extends Expression {
 	
 	public final Reference rettype;
-	public final IFunctionParameter[] params;
+	public final ArrayView<IFunctionParameter> params;
 	public final int varargs;
 
 	public final IStatement frequire;
@@ -22,29 +22,12 @@ public class ExpLiteralFunc extends Expression {
 			IStatement fbody, IStatement fensure, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		
-		this.frequire = freq;
-		if (this.frequire != null)
-			((ASTNeoNode) this.frequire).setParent(this);
-		
-		this.fbody = fbody;
-		if (this.fbody != null)
-			((ASTNeoNode) this.fbody).setParent(this);
-
-		this.fensure = fensure;
-		if (this.fensure != null)
-			((ASTNeoNode) this.fensure).setParent(this);
-		
-		this.params = params;
-		if (this.params != null) {
-			for (IFunctionParameter fp : this.params) {
-				((ASTNeoNode) fp).setParent(this);
-			}
-		}
-		
+		this.frequire = freq; parentize(this.frequire); 
+		this.fbody = fbody; parentize(this.fbody);
+		this.fensure = fensure; parentize(this.fensure);
+		this.params = new ArrayView<IFunctionParameter>(params); parentize(this.params);
 		this.varargs = varargs;
-		this.rettype = retType;
-		if (this.rettype != null)
-			this.rettype.setParent(this);
+		this.rettype = retType; parentize(this.rettype);
 	}
 
 	@Override

@@ -233,7 +233,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		}
 		if(parent instanceof ExpCall) {
 			ExpCall expCall = (ExpCall) parent;
-			int length = expCall.args == null ? 0 : expCall.args.length;
+			int length = expCall.args == null ? 0 : expCall.args.size();
 			// Dont use qualified name
 			String methodName = elem.getReferenceName();
 			requestor.acceptMethodReference(methodName, length, elem.getStartPos(), elem.getEndPos()-1);

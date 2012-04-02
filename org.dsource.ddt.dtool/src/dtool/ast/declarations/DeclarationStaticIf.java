@@ -1,39 +1,17 @@
 package dtool.ast.declarations;
 
-import java.util.Collection;
-
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ASTDmdNode;
-import descent.internal.compiler.parser.StaticIfCondition;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.statements.IStatement;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 
 public class DeclarationStaticIf extends DeclarationConditional {
+	public final Resolvable exp;
 	
-	public Resolvable exp;
-	
-	public DeclarationStaticIf(ASTDmdNode elem, StaticIfCondition condition, NodeList thendecls, NodeList elsedecls
-			, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.exp = ExpressionConverter.convert(condition.exp, convContext);
-		this.thendecls = thendecls; 
-		this.elsedecls = elsedecls;
+	public DeclarationStaticIf(Resolvable exp, NodeList thenDecls, NodeList elseDecls, SourceRange sourceRange) {
+		super(thenDecls, elseDecls, sourceRange);
+		this.exp = exp; parentize(this.exp);
 	}
-	
-	
-	public DeclarationStaticIf(Resolvable exp, Collection<IStatement> thenDecls, Collection<IStatement> elseDecls) {
-		super(
-			NodeList.createNodeList(thenDecls, false),
-			NodeList.createNodeList(elseDecls, false)
-		);
-		this.exp = exp;
-		if (this.exp != null)
-			this.exp.setParent(this);
-	}
-	
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

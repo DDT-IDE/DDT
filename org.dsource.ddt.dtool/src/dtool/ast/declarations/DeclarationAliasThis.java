@@ -1,9 +1,9 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.AliasThis;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.statements.IStatement;
 
@@ -11,10 +11,9 @@ public class DeclarationAliasThis extends ASTNeoNode implements IStatement {
 	
 	public final RefIdentifier targetDef;
 	
-	
-	public DeclarationAliasThis(AliasThis elem) {
-		convertNode(elem);
-		this.targetDef = new RefIdentifier(new String(elem.ident.ident));
+	public DeclarationAliasThis(RefIdentifier targetDef, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.targetDef = targetDef; parentize(this.targetDef);
 	}
 	
 	@Override

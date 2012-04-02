@@ -46,10 +46,10 @@ public class InfixExpression extends Expression {
 		int POW = 47;
 	}
 
-	public Resolvable leftExp;
-	public Resolvable rightExp;
+	public final Resolvable leftExp;
+	public final Resolvable rightExp;
 	
-	public int kind;
+	public final int kind;
 	
 	public InfixExpression(Resolvable left, int kind, Resolvable right, SourceRange sourceRange) {
 		initSourceRange(sourceRange);

@@ -7,7 +7,7 @@ import dtool.ast.SourceRange;
 
 public class ExpLiteralInteger extends Expression {
 	
-	protected final BigInteger num;
+	public final BigInteger num;
 	
 	public ExpLiteralInteger(BigInteger value, SourceRange sourceRange) {
 		initSourceRange(sourceRange);

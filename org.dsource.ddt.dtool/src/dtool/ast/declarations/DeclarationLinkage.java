@@ -1,23 +1,22 @@
 package dtool.ast.declarations;
 
 import descent.internal.compiler.parser.LINK;
-import descent.internal.compiler.parser.LinkDeclaration;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class DeclarationLinkage extends DeclarationAttrib implements IStatement {
 
-	public LINK linkage;
+	public final LINK linkage;
 	
-	public DeclarationLinkage(LinkDeclaration elem, ASTConversionContext convContex) {
-		super(elem, elem.decl, convContex);
-		this.linkage = elem.linkage;
+	public DeclarationLinkage(LINK link, ASTNeoNode[] decls, boolean hasCurlies, SourceRange sourceRange) {
+		super(new dtool.ast.declarations.NodeList(decls, hasCurlies), sourceRange);
+		this.linkage = link;
 	}
-	
-	public DeclarationLinkage(LINK link, ASTNeoNode[] decls, boolean hasCurlies) {
-		super(new dtool.ast.declarations.NodeList(decls, hasCurlies));
+
+	public DeclarationLinkage(LINK link, NodeList decls, SourceRange sourceRange) {
+		super(decls, sourceRange);
 		this.linkage = link;
 	}
 

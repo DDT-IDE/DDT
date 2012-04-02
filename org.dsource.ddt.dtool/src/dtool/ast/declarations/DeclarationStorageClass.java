@@ -1,25 +1,25 @@
 package dtool.ast.declarations;
 
 import java.util.Iterator;
-import descent.internal.compiler.parser.StorageClassDeclaration;
+
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.INonScopedBlock;
 
 public final class DeclarationStorageClass extends DeclarationAttrib {
 
-	public int stclass; // we assume there is only one storage class flag here
+	public final int stclass; // we assume there is only one storage class flag here
 	
-	public DeclarationStorageClass(StorageClassDeclaration elem, ASTConversionContext convContex) {
-		super(elem, elem.decl, convContex);
-		this.stclass = elem.stc;
+	public DeclarationStorageClass(int stclass, ASTNeoNode[] decls, boolean hasCurlies, SourceRange sourceRange) {
+		super(new dtool.ast.declarations.NodeList(decls, hasCurlies), sourceRange);
+		this.stclass = stclass;
 	}
-	
-	public DeclarationStorageClass(int stclass, ASTNeoNode[] decls, boolean hasCurlies) {
-		super(new dtool.ast.declarations.NodeList(decls, hasCurlies));
+
+	public DeclarationStorageClass(int stclass, NodeList decls, SourceRange sourceRange) {
+		super(decls, sourceRange);
 		this.stclass = stclass;
 	}
 

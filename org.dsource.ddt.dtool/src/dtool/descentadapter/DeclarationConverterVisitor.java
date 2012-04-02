@@ -1,6 +1,7 @@
 package dtool.descentadapter;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AnonDeclaration;
 import descent.internal.compiler.parser.Argument;
@@ -8,6 +9,7 @@ import descent.internal.compiler.parser.AttribDeclaration;
 import descent.internal.compiler.parser.DebugCondition;
 import descent.internal.compiler.parser.DebugSymbol;
 import descent.internal.compiler.parser.IftypeCondition;
+import descent.internal.compiler.parser.Import;
 import descent.internal.compiler.parser.Modifier;
 import descent.internal.compiler.parser.StaticIfCondition;
 import descent.internal.compiler.parser.TemplateAliasParameter;
@@ -30,6 +32,12 @@ import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.DeclarationStorageClass;
 import dtool.ast.declarations.DeclarationUnitTest;
+import dtool.ast.declarations.ImportAliasing;
+import dtool.ast.declarations.ImportContent;
+import dtool.ast.declarations.ImportSelective;
+import dtool.ast.declarations.ImportStatic;
+import dtool.ast.declarations.NodeList;
+import dtool.ast.declarations.DeclarationImport.ImportFragment;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefModifier;
 import dtool.ast.definitions.DefinitionAlias;
@@ -46,6 +54,7 @@ import dtool.ast.definitions.TemplateParamAlias;
 import dtool.ast.definitions.TemplateParamTuple;
 import dtool.ast.definitions.TemplateParamType;
 import dtool.ast.definitions.TemplateParamValue;
+import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.ReferenceConverter;
 
 /**
@@ -60,12 +69,24 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(DebugSymbol elem) {
-		return endAdapt(new DeclarationConditionalDefinition(elem));
+		return endAdapt(
+			new DeclarationConditionalDefinition(
+				DefinitionConverter.convertId(elem.ident),
+				DeclarationConditionalDefinition.Type.DEBUG,
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(VersionSymbol elem) {
-		return endAdapt(new DeclarationConditionalDefinition(elem));
+		return endAdapt(
+			new DeclarationConditionalDefinition(
+				DefinitionConverter.convertId(elem.ident),
+				DeclarationConditionalDefinition.Type.VERSION,
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
 	}
 	
 	@Override
@@ -90,7 +111,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(AnonDeclaration node) {
-		return endAdapt(new DeclarationAnonMember(node, convContext));
+		NodeList body = NodeList.createNodeList(node.decl, convContext);
+		return endAdapt(new DeclarationAnonMember(body, DefinitionConverter.sourceRange(node)));
 	}
 
 	@Override
@@ -125,7 +147,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.AlignDeclaration elem) {
-		return endAdapt(new DeclarationAlign(elem, convContext));
+		DeclarationConverter.doSetParent(elem, elem.decl);
+		NodeList body = NodeList.createNodeList(elem.decl, convContext);
+		return endAdapt(new DeclarationAlign(elem.salign, body, DefinitionConverter.sourceRange(elem)));
 	}
 
 	@Override
@@ -135,7 +159,37 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.Import elem) {
-		return endAdapt(new DeclarationImport(elem));
+		int importsNum = 1;
+		Import imprt = elem;
+		while(imprt.next != null) {
+			imprt = imprt.next;
+			importsNum++;
+		}
+		
+		// Selective import are at the end		
+		ImportFragment[] imports = new ImportFragment[importsNum];
+		imprt = elem;
+		for(int i = 0; i < importsNum; i++, imprt = imprt.next) {
+			
+			ImportFragment imprtFragment = null;
+			if(elem.isstatic) {
+				imprtFragment = new ImportStatic(imprt);
+				//Ignore FQN aliasing for now.
+				//Assert.isTrue(imprt.alias == null);
+			} else if(imprt.aliasId != null) {
+				imprtFragment = new ImportAliasing(imprt);
+			} else if(imprt.names != null) {
+				assertTrue(imprt.names.size() == imprt.aliases.size());
+				assertTrue(imprt.names.size() > 0 );
+				imprtFragment = new ImportSelective(imprt);
+			} else {
+				imprtFragment = new ImportContent(imprt);
+			}
+			imports[i] = imprtFragment;
+		}
+		assertTrue(imprt == null);
+
+		return endAdapt(new DeclarationImport(imports, elem.isstatic, false, DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override
@@ -145,17 +199,30 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.LinkDeclaration elem) {
-		return endAdapt(new DeclarationLinkage(elem, convContext));
+		DeclarationConverter.doSetParent(elem, elem.decl);
+		NodeList body = NodeList.createNodeList(elem.decl, convContext);
+		return endAdapt(new DeclarationLinkage(elem.linkage, body, DefinitionConverter.sourceRange(elem)));
 	}
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.PragmaDeclaration elem) {
-		return endAdapt(new DeclarationPragma(elem, convContext));
+		DeclarationConverter.doSetParent(elem, elem.decl);
+		NodeList body = NodeList.createNodeList(elem.decl, convContext);
+		return endAdapt(
+			new DeclarationPragma(
+				DefinitionConverter.convertId(elem.ident),
+				elem.args != null ? ExpressionConverter.convertMany(elem.args, convContext) : null,
+				body,
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.ProtDeclaration elem) {
-		return endAdapt(new DeclarationProtection(elem, convContext));
+		DeclarationConverter.doSetParent(elem, elem.decl);
+		NodeList body = NodeList.createNodeList(elem.decl, convContext);
+		return endAdapt(new DeclarationProtection(elem.protection, elem.modifier, body, DefinitionConverter.sourceRange(elem)));
 	}
 
 	@Override
@@ -166,7 +233,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StorageClassDeclaration elem) {
-		return endAdapt(new DeclarationStorageClass(elem, convContext));
+		DeclarationConverter.doSetParent(elem, elem.decl);
+		NodeList body = NodeList.createNodeList(elem.decl, convContext);
+		return endAdapt(new DeclarationStorageClass(elem.stc, body, DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override
@@ -183,7 +252,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StaticAssert elem) {
-		return endAdapt(new DeclarationStaticAssert(elem, convContext));
+		return endAdapt(
+			new DeclarationStaticAssert(
+				ExpressionConverter.convert(elem.exp, convContext),
+				ExpressionConverter.convert(elem.msg, convContext),
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
 	}
 
 	@Override
@@ -193,7 +268,12 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.AliasThis elem) {
-		return endAdapt(new DeclarationAliasThis(elem));
+		return endAdapt(
+			new DeclarationAliasThis(
+				new RefIdentifier(new String(elem.ident.ident)),
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
 	}
 
 	

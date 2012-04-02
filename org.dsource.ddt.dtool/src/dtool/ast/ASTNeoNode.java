@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
+import dtool.ast.declarations.NodeList;
 import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.Module;
 import dtool.descentadapter.DefinitionConverter;
@@ -241,6 +242,20 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 				node.setParent(this);
 			}
 		}
+	}
+	
+	protected void parentize(Object[] collection) {
+		if (collection != null) {
+			for (Object node : collection) {
+				if (node != null)
+					((ASTNeoNode) node).setParent(this);
+			}
+		}
+	}
+	
+	protected void parentize(NodeList node) {
+		if (node != null)
+			parentize(node.nodes);
 	}
 	
 	/** Set the parent of the given node to this.  */

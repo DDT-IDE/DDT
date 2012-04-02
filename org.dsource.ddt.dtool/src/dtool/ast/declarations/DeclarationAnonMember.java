@@ -1,25 +1,21 @@
 package dtool.ast.declarations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.util.Arrays;
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.AnonDeclaration;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.ast.SourceRange;
 import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationAnonMember extends ASTNeoNode implements INonScopedBlock {
 
 	public NodeList body;
 
-	public DeclarationAnonMember(AnonDeclaration node, ASTConversionContext convContext) {
-		convertNode(node);
-		assertNotNull(node.decl);
-		this.body = NodeList.createNodeList(node.decl, convContext);
+	public DeclarationAnonMember(NodeList body, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.body = body; parentize(this.body);
 	}
 	
 	@Override

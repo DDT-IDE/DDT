@@ -1,28 +1,21 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.StaticAssert;
-import descent.internal.compiler.parser.StaticAssertStatement;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 
 public class DeclarationStaticAssert extends ASTNeoNode implements IStatement {
 
-	public Resolvable pred;
-	public Resolvable msg;
+	public final Resolvable pred;
+	public final Resolvable msg;
 	
-	public DeclarationStaticAssert(StaticAssert elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.pred = ExpressionConverter.convert(elem.exp, convContext);
-		this.msg = ExpressionConverter.convert(elem.msg, convContext);
-	}
-	
-	public DeclarationStaticAssert(StaticAssertStatement elem, ASTConversionContext convContext) {
-		this(elem.sa, convContext);
+	public DeclarationStaticAssert(Resolvable pred, Resolvable msg, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.pred = pred; parentize(this.pred);
+		this.msg = msg; parentize(this.msg);
 	}
 
 	@Override

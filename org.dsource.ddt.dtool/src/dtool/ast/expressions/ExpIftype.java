@@ -14,15 +14,9 @@ public class ExpIftype extends Expression {
 	
 	public ExpIftype(Reference arg, TOK tok, Reference specType, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		
 		this.tok = tok;
-		this.arg = arg;
-		if (this.arg != null)
-			this.arg.setParent(this);
-		
-		this.specType = specType;
-		if (this.specType != null)
-			this.specType.setParent(this);
+		this.arg = arg; parentize(this.arg);
+		this.specType = specType; parentize(specType);
 	}
 
 	@Override

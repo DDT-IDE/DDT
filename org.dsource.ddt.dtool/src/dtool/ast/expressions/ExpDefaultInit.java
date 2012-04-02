@@ -9,11 +9,11 @@ public class ExpDefaultInit extends Expression {
 		FILE,
 		LINE
 	}
-	protected final DefaultInit defInit;
+	public final DefaultInit defInit;
 	
 	public ExpDefaultInit(DefaultInit defInit, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.defInit = defInit;
+		this.defInit = defInit; parentize(this.defInit);
 	}
 	
 	@Override

@@ -36,6 +36,7 @@ import descent.internal.compiler.parser.WhileStatement;
 import descent.internal.compiler.parser.WithStatement;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
+import dtool.ast.declarations.NodeList;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.StatementAsm;
 import dtool.ast.statements.StatementBreak;
@@ -172,7 +173,15 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(PragmaStatement element) {
-		return endAdapt(new DeclarationPragma(element, convContext));
+		NodeList body = NodeList.createNodeList(element.body, convContext);
+		return endAdapt(
+			new DeclarationPragma(
+				DefinitionConverter.convertId(element.ident),
+				element.args != null ? ExpressionConverter.convertMany(element.args, convContext) : null,
+				body,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
@@ -187,7 +196,13 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(StaticAssertStatement element) {
-		return endAdapt(new DeclarationStaticAssert(element, convContext));
+		return endAdapt(
+			new DeclarationStaticAssert(
+				ExpressionConverter.convert(element.sa.exp, convContext),
+				ExpressionConverter.convert(element.sa.msg, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override

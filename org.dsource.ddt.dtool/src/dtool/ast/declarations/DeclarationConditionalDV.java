@@ -1,50 +1,19 @@
 package dtool.ast.declarations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ASTDmdNode;
-import descent.internal.compiler.parser.DVCondition;
-import descent.internal.compiler.parser.DebugCondition;
-import descent.internal.compiler.parser.VersionCondition;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.statements.IStatement;
 
 public class DeclarationConditionalDV extends DeclarationConditional {
 	
 	public final Symbol ident;
 	public final boolean isDebug;
 	
-	public DeclarationConditionalDV(ASTDmdNode elem, DVCondition condition, NodeList thendecls, NodeList elsedecls) {
-		convertNode(elem);
-		if(condition.ident != null) {
-			this.ident = new Symbol(new String(condition.ident));
-			this.ident.setSourceRange(condition);
-		} else {
-			ident = null;
-		}
-		isDebug = condition instanceof DebugCondition;
-		if(!isDebug) {
-			assertTrue(condition instanceof VersionCondition);
-		}
-		this.thendecls = thendecls; 
-		this.elsedecls = elsedecls;
-	}
-	
-	public DeclarationConditionalDV(boolean isDebug, Symbol id, Collection<IStatement> thenDecls,  Collection<IStatement> elseDecls) {
-		super(
-			NodeList.createNodeList(thenDecls, false),
-			NodeList.createNodeList(elseDecls, false)
-		);
-				
+	public DeclarationConditionalDV(boolean isDebug, Symbol id, NodeList thenDecls, NodeList elseDecls, SourceRange sourceRange) {
+		super(thenDecls, elseDecls, sourceRange );
 		this.isDebug = isDebug;
-		this.ident = id;
-		if (this.ident != null)
-			this.ident.setParent(this);
+		this.ident = id; parentize(this.ident);
 	}
 	
 	@Override

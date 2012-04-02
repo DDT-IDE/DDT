@@ -9,21 +9,10 @@ public class ExpAssert extends Expression {
 	public final Resolvable exp;
 	public final Resolvable msg;
 	
-	public ExpAssert(Expression exp, Expression msg, SourceRange sourceRange) {
+	public ExpAssert(Resolvable exp, Resolvable msg, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp;
-		this.msg = msg;
-	}
-	
-	public ExpAssert(Resolvable exp, Resolvable msg) {
-		this.exp = exp;
-		this.msg = msg;
-		
-		if (this.exp != null)
-			this.exp.setParent(this);
-		
-		if (this.msg != null)
-			this.msg.setParent(this);
+		this.exp = exp; parentize(this.exp);
+		this.msg = msg; parentize(this.msg);
 	}
 
 	@Override

@@ -5,12 +5,11 @@ import java.util.Iterator;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.Modifier;
 import descent.internal.compiler.parser.PROT;
-import descent.internal.compiler.parser.ProtDeclaration;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationProtection extends DeclarationAttrib {
@@ -18,22 +17,21 @@ public class DeclarationProtection extends DeclarationAttrib {
 	public Modifier modifier;
 	public PROT prot;
 	
-	public DeclarationProtection(ProtDeclaration elem, ASTConversionContext convContex) {
-		super(elem, elem.decl, convContex);
-		this.modifier = elem.modifier;
-		this.prot = elem.protection;
-		Assert.isTrue(PROT.fromTOK(this.modifier.tok) == this.prot);
-	}
-	
-	public DeclarationProtection(PROT prot, ASTNeoNode[] decls, boolean hasCurlies) {
-		super(new dtool.ast.declarations.NodeList(decls, hasCurlies));
-		this.prot = prot;
+	public DeclarationProtection(PROT prot, ASTNeoNode[] decls, boolean hasCurlies, SourceRange sourceRange) {
+		super(new dtool.ast.declarations.NodeList(decls, hasCurlies), sourceRange);
+		this.prot = prot; 
 		for (ASTNeoNode d : decls) {
 			d.setParent(this);
 			if (d instanceof DeclarationImport && this.prot == PROT.PROTpublic)
 				((DeclarationImport) d).isTransitive = true;
-				
 		}
+	}
+	
+	public DeclarationProtection(PROT prot, Modifier modifier, NodeList decls, SourceRange sourceRange) {
+		super(decls, sourceRange);
+		this.prot = prot;
+		this.modifier = modifier;
+		Assert.isTrue(PROT.fromTOK(this.modifier.tok) == this.prot);
 	}
 
 	@Override

@@ -1,13 +1,11 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.DebugSymbol;
 import descent.internal.compiler.parser.PROT;
-import descent.internal.compiler.parser.VersionSymbol;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
-import dtool.descentadapter.DefinitionConverter;
 
 /**
  * Node of type:
@@ -24,29 +22,9 @@ public class DeclarationConditionalDefinition extends ASTNeoNode implements IDec
 	public Symbol identifier;
 	public int conditionalKind;
 	
-	public DeclarationConditionalDefinition(DebugSymbol elem) {
-		setSourceRange(elem);
-		if(elem.ident != null)
-			this.identifier = DefinitionConverter.convertId(elem.ident);
-		else 
-			this.identifier = new Symbol(new String(elem.version.value));
-		conditionalKind = Type.DEBUG;
-	}
-	
-	public DeclarationConditionalDefinition(VersionSymbol elem) {
-		setSourceRange(elem);
-		if(elem.ident != null)
-			this.identifier = DefinitionConverter.convertId(elem.ident);
-		else 
-			this.identifier = new Symbol(new String(elem.version.value));
-		conditionalKind = Type.VERSION;
-	}
-	
-	public DeclarationConditionalDefinition(Symbol id, int t) {
-		this.identifier = id;
-		if (this.identifier != null)
-			this.identifier.setParent(this);
-		
+	public DeclarationConditionalDefinition(Symbol id, int t, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.identifier = id; parentize(this.identifier);
 		this.conditionalKind = t;
 	}
 

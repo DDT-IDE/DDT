@@ -6,13 +6,11 @@ import dtool.ast.SourceRange;
 
 public class ExpDelete extends Expression {
 
-	public Resolvable exp;
+	public final Resolvable exp;
 	
 	public ExpDelete(Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp;
-		if (this.exp != null)
-			this.exp.setParent(this);
+		this.exp = exp; parentize(this.exp);
 	}
 
 	@Override

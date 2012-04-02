@@ -1,21 +1,20 @@
 package dtool.ast.declarations;
 
-import descent.internal.compiler.parser.AlignDeclaration;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.ast.SourceRange;
 
 public class DeclarationAlign extends DeclarationAttrib {
 	
-	public long alignnum;
+	public final long alignnum;
 
-	public DeclarationAlign(AlignDeclaration elem, ASTConversionContext convContex) {
-		super(elem, elem.decl, convContex);
-		this.alignnum = elem.salign;
+	public DeclarationAlign(long align, ASTNeoNode[] decls, boolean hasCurlies, SourceRange sourceRange) {
+		super(new dtool.ast.declarations.NodeList(decls, hasCurlies), sourceRange);
+		this.alignnum = align;
 	}
 	
-	public DeclarationAlign(long align, ASTNeoNode[] decls, boolean hasCurlies) {
-		super(new dtool.ast.declarations.NodeList(decls, hasCurlies));
+	public DeclarationAlign(long align, dtool.ast.declarations.NodeList decls, SourceRange sourceRange) {
+		super(decls, sourceRange);
 		this.alignnum = align;
 	}
 

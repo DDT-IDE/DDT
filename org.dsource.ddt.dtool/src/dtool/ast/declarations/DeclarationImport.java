@@ -1,7 +1,5 @@
 package dtool.ast.declarations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -9,6 +7,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.Import;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
@@ -21,57 +20,15 @@ import dtool.refmodel.INonScopedBlock;
  */
 public class DeclarationImport extends ASTNeoNode implements INonScopedBlock, IDeclaration {
 
-	public ImportFragment[] imports;
-	public boolean isStatic;
+	public final ImportFragment[] imports;
+	public final boolean isStatic;
 	public boolean isTransitive; // aka public imports
 	
-	public DeclarationImport(Import elem) {
-		convertNode(elem);
-		this.isStatic = elem.isstatic;
-		//this.isTransitive is adapted in post conversion;
-		
-		
-		int importsNum = 1;
-		Import imprt = elem;
-		while(imprt.next != null) {
-			imprt = imprt.next;
-			importsNum++;
-		}
-		
-		// Selective import are at the end		
-		this.imports = new ImportFragment[importsNum];
-		imprt = elem;
-		for(int i = 0; i < importsNum; i++, imprt = imprt.next) {
-			
-			ImportFragment imprtFragment = null;
-			if(elem.isstatic) {
-				imprtFragment = new ImportStatic(imprt);
-				//Ignore FQN aliasing for now.
-				//Assert.isTrue(imprt.alias == null);
-			} else if(imprt.aliasId != null) {
-				imprtFragment = new ImportAliasing(imprt);
-			} else if(imprt.names != null) {
-				assertTrue(imprt.names.size() == imprt.aliases.size());
-				assertTrue(imprt.names.size() > 0 );
-				imprtFragment = new ImportSelective(imprt);
-			} else {
-				imprtFragment = new ImportContent(imprt);
-			}
-			imports[i] = imprtFragment;
-		}
-		assertTrue(imprt == null);
-	}
-	
-	public DeclarationImport(ImportFragment[] imports, boolean isStatic, boolean isTransitive) {
-		this.imports = imports;
+	public DeclarationImport(ImportFragment[] imports, boolean isStatic, boolean isTransitive, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.imports = imports; parentize(this.imports);
 		this.isStatic = isStatic;
 		this.isTransitive = isTransitive;
-		
-		if (this.imports != null) {
-			for (ImportFragment f : this.imports) {
-				f.setParent(this);
-			}
-		}
 	}
 	
 	@Override

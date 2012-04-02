@@ -7,8 +7,8 @@ import dtool.ast.references.Reference;
 
 public class ExpTypeid extends Expression {
 	
-	Reference typeArgument;
-	Expression expressionArgument;
+	public final Reference typeArgument;
+	public final Expression expressionArgument;
 	
 	public ExpTypeid(Reference typeArgument, SourceRange sourceRange) {
 		initSourceRange(sourceRange);

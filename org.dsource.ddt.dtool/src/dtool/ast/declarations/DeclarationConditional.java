@@ -7,6 +7,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
@@ -20,19 +21,10 @@ public abstract class DeclarationConditional extends ASTNeoNode implements IDecl
 		this.elsedecls = null;
 	}
 	
-	public DeclarationConditional(NodeList thenDecls, NodeList elseDecls) {
-		this.thendecls = thenDecls;
-		if (this.thendecls != null) {
-			for (ASTNeoNode n: this.thendecls.nodes) {
-				n.setParent(this);
-			}
-		}
-		this.elsedecls = elseDecls;
-		if (this.elsedecls != null) {
-			for (ASTNeoNode n: this.elsedecls.nodes) {
-				n.setParent(this);
-			}
-		}
+	public DeclarationConditional(NodeList thenDecls, NodeList elseDecls, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.thendecls = thenDecls; parentize(thenDecls);
+		this.elsedecls = elseDecls; parentize(elsedecls);
 	}
 	
 	protected ASTNeoNode[] getMembers() {
