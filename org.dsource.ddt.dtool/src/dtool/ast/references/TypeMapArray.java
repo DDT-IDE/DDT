@@ -5,24 +5,23 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.TypeAArray;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
 public class TypeMapArray extends CommonRefNative {
-	public Reference keytype;
-	public Reference valuetype;
+	public final Reference keytype;
+	public final Reference valuetype;
 
-	public TypeMapArray(TypeAArray elem, ASTConversionContext convContext) {
-		setSourceRange(elem);
-		this.valuetype = ReferenceConverter.convertType(elem.next, convContext);
-		this.keytype = ReferenceConverter.convertType(elem.index, convContext);
+	public TypeMapArray(Reference keyType, Reference valueType, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.keytype = keyType; parentize(this.keytype);
+		this.valuetype = valueType; parentize(this.valuetype);
 	}
 
 	@Override

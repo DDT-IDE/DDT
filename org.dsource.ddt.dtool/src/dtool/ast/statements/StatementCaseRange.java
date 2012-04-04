@@ -1,23 +1,21 @@
 package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.CaseRangeStatement;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 
 public class StatementCaseRange extends Statement {
 
-	public Resolvable expFirst;
-	public Resolvable expLast;
-	public IStatement st;
+	public final Resolvable expFirst;
+	public final Resolvable expLast;
+	public final IStatement st;
 	
-	public StatementCaseRange(CaseRangeStatement elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.expFirst = ExpressionConverter.convert(elem.first, convContext);
-		this.expLast = ExpressionConverter.convert(elem.last, convContext);
-		this.st = Statement.convert(elem.statement, convContext);
+	public StatementCaseRange(Resolvable expFirst, Resolvable expLast, IStatement st, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.expFirst = expFirst; parentize(this.expFirst);
+		this.expLast = expLast; parentize(this.expLast);
+		this.st = st; parentize(this.st);
 	}
 	
 	@Override

@@ -2,18 +2,15 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import descent.internal.compiler.parser.TypeReturn;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 
 public class RefReturn extends Reference {
 	
-	public RefReturn(TypeReturn elem) {
-		convertNode(elem);
-	}
-	
-	public RefReturn() {
+	public RefReturn(SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

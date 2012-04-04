@@ -1,35 +1,34 @@
 package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.CaseStatement;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.expressions.Resolvable;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 
 public class StatementCase extends Statement {
 
-	public Resolvable exp;
-	public IStatement st;
+	public final Resolvable exp;
+	public final IStatement st;
 	
-	public StatementCase(CaseStatement elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.exp = ExpressionConverter.convert(elem.exp, convContext);
-		this.st = Statement.convert(elem.statement, convContext);
+	public final ArrayView<Resolvable> expList;
+	public final ArrayView<IStatement> stList;
+	
+	public StatementCase(Resolvable[] expList, IStatement[] stList, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.expList = new ArrayView<Resolvable>(expList); parentize(this.expList);
+		this.stList = new ArrayView<IStatement>(stList); parentize(this.stList);
+		this.exp = null;
+		this.st = null;
 	}
 	
-	public StatementCase(Resolvable exp, IStatement st) {
-		this.exp = exp;
-		this.st = st;
-		
-		if (this.exp != null) {
-			exp.setParent(this);
-		}
-		
-		if (this.st != null) {
-			((ASTNeoNode) this.st).setParent(this);
-		}
+	public StatementCase(Resolvable exp, IStatement st, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.exp = exp; parentize(this.exp);
+		this.st = st; parentize(this.st);
+		this.expList = null;
+		this.stList = null;
 	}
 
 	@Override

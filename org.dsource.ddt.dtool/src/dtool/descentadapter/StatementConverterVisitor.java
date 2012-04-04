@@ -1,5 +1,6 @@
 package dtool.descentadapter;
 
+import static melnorme.utilbox.core.CoreUtil.array;
 import descent.internal.compiler.parser.AsmBlock;
 import descent.internal.compiler.parser.AsmStatement;
 import descent.internal.compiler.parser.BreakStatement;
@@ -28,16 +29,23 @@ import descent.internal.compiler.parser.ScopeStatement;
 import descent.internal.compiler.parser.StaticAssertStatement;
 import descent.internal.compiler.parser.SwitchStatement;
 import descent.internal.compiler.parser.SynchronizedStatement;
+import descent.internal.compiler.parser.TOK;
 import descent.internal.compiler.parser.ThrowStatement;
 import descent.internal.compiler.parser.TryCatchStatement;
 import descent.internal.compiler.parser.TryFinallyStatement;
 import descent.internal.compiler.parser.VolatileStatement;
 import descent.internal.compiler.parser.WhileStatement;
 import descent.internal.compiler.parser.WithStatement;
+import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.NodeList;
+import dtool.ast.definitions.Definition;
+import dtool.ast.definitions.FunctionParameter;
+import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.statements.BlockStatement;
+import dtool.ast.statements.IStatement;
+import dtool.ast.statements.Statement;
 import dtool.ast.statements.StatementAsm;
 import dtool.ast.statements.StatementBreak;
 import dtool.ast.statements.StatementCase;
@@ -68,37 +76,76 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(ForeachRangeStatement elem) {
-		return endAdapt(new StatementForeachRange(elem, convContext));
+		return endAdapt(
+			new StatementForeachRange(
+				(IFunctionParameter) DescentASTConverter.convertElem(elem.arg, convContext),
+				ExpressionConverter.convert(elem.lwr, convContext),
+				ExpressionConverter.convert(elem.upr, convContext),
+				Statement.convert(elem.body, convContext),
+				elem.op == TOK.TOKforeach_reverse,
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(AsmBlock elem) {
-		return endAdapt(new BlockStatement(elem, convContext));
+		return endAdapt(
+			new BlockStatement(
+				DescentASTConverter.convertMany(elem.statements, IStatement.class, convContext),
+				false, // TODO: How do we know if it is curly or not?
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.CompoundStatement elem) {
-		return endAdapt(new BlockStatement(elem, convContext));
+		return endAdapt(
+			new BlockStatement(
+				DescentASTConverter.convertMany(elem.statements, IStatement.class, convContext),
+				false, // TODO: How do we know if it is curly or not?
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(AsmStatement element) {
-		return endAdapt(new StatementAsm(element));
+		return endAdapt(new StatementAsm(DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override
 	public boolean visit(BreakStatement element) {
-		return endAdapt(new StatementBreak(element));
+		return endAdapt(
+			new StatementBreak(
+				element.ident == null ? null : DefinitionConverter.convertId(element.ident),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(CaseStatement element) {
-		return endAdapt(new StatementCase(element, convContext));
+		return endAdapt(
+			new StatementCase(
+				ExpressionConverter.convert(element.exp, convContext),
+				Statement.convert(element.statement, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(CaseRangeStatement element) {
-		return endAdapt(new StatementCaseRange(element, convContext));
+		return endAdapt(
+			new StatementCaseRange(
+				ExpressionConverter.convert(element.first, convContext),
+				ExpressionConverter.convert(element.last, convContext),
+				Statement.convert(element.statement, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
@@ -108,7 +155,12 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(ContinueStatement element) {
-		return endAdapt(new StatementContinue(element));
+		return endAdapt(
+			new StatementContinue(
+				DefinitionConverter.convertId(element.ident),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
@@ -118,57 +170,119 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(DefaultStatement element) {
-		return endAdapt(new StatementDefault(element, convContext));
+		return endAdapt(
+			new StatementDefault(
+				Statement.convert(element.statement, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(DoStatement element) {
-		return endAdapt(new StatementDo(element, convContext));
+		return endAdapt(
+			new StatementDo(
+				ExpressionConverter.convert(element.condition, convContext),
+				Statement.convert(element.body, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(ExpStatement element) {
-		return endAdapt(new StatementExp(element, convContext));
+		return endAdapt(
+			new StatementExp(
+				ExpressionConverter.convert(element.exp, convContext),
+				element.hasNoSourceRangeInfo() && element.exp != null
+					? DefinitionConverter.sourceRange(element.exp)
+					: DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(ForeachStatement element) {
-		return endAdapt(new StatementForeach(element, convContext));
+		return endAdapt(
+			new StatementForeach(
+				DescentASTConverter.convertMany(element.arguments.toArray(), IFunctionParameter.class, convContext),
+				ExpressionConverter.convert(element.sourceAggr, convContext),
+				Statement.convert(element.body, convContext),
+				element.op == TOK.TOKforeach_reverse,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(ForStatement element) {
-		return endAdapt(new StatementFor(element, convContext));
+		return endAdapt(
+			new StatementFor(
+				Statement.convert(element.init, convContext),
+				ExpressionConverter.convert(element.condition, convContext),
+				ExpressionConverter.convert(element.increment, convContext),
+				Statement.convert(element.body, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(GotoCaseStatement element) {
-		return endAdapt(new StatementGotoCase(element, convContext));
+		return endAdapt(
+			new StatementGotoCase(
+				ExpressionConverter.convert(element.exp, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(GotoDefaultStatement element) {
-		return endAdapt(new StatementGotoDefault(element));
+		return endAdapt(new StatementGotoDefault(DefinitionConverter.sourceRange(element)));
 	}
 
 	@Override
 	public boolean visit(GotoStatement element) {
-		return endAdapt(new StatementGoto(element));
+		return endAdapt(
+			new StatementGoto(
+				DefinitionConverter.convertId(element.ident),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(IfStatement element) {
-		return endAdapt(new StatementIf(element, convContext));
+		return endAdapt(
+			new StatementIf(
+				ExpressionConverter.convert(element.condition, convContext),
+				Statement.convert(element.ifbody, convContext),
+				Statement.convert(element.elsebody, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(LabelStatement element) {
-		return endAdapt(new StatementLabel(element));
+		return endAdapt(
+			new StatementLabel(
+				DefinitionConverter.convertId(element.ident),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(OnScopeStatement element) {
-		return endAdapt(new StatementOnScope(element, convContext));
+		return endAdapt(
+			new StatementOnScope(
+				StatementOnScope.EventType.ON_EXIT, // TODO: Find out how to access this scope value
+				Statement.convert(element.statement, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
@@ -186,12 +300,36 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(ReturnStatement element) {
-		return endAdapt(new StatementReturn(element, convContext));
+		return endAdapt(
+			new StatementReturn(
+				ExpressionConverter.convert(element.exp, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(ScopeStatement element) {
-		return endAdapt(new BlockStatement(element, convContext));
+		IStatement[] statements = null;
+		boolean hasCurlyBraces = false;
+		if(element.statement instanceof descent.internal.compiler.parser.CompoundStatement) {
+			descent.internal.compiler.parser.CompoundStatement compoundSt = 
+				(descent.internal.compiler.parser.CompoundStatement) element.statement;
+			statements = DescentASTConverter.convertMany(compoundSt.statements, IStatement.class, 
+					convContext);
+			hasCurlyBraces = true;
+		} else {
+			statements = DescentASTConverter.convertMany(array(element.statement), IStatement.class, 
+					convContext);
+		}
+
+		return endAdapt(
+			new BlockStatement(
+				statements,
+				hasCurlyBraces,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
@@ -207,17 +345,34 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(SwitchStatement element) {
-		return endAdapt(new StatementSwitch(element, convContext));
+		return endAdapt(
+			new StatementSwitch(
+				ExpressionConverter.convert(element.condition, convContext),
+				Statement.convert(element.body, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(SynchronizedStatement element) {
-		return endAdapt(new StatementSynchronized(element, convContext));
+		return endAdapt(
+			new StatementSynchronized(
+				ExpressionConverter.convert(element.exp, convContext),
+				Statement.convert(element.body, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(ThrowStatement element) {
-		return endAdapt(new StatementThrow(element, convContext));
+		return endAdapt(
+			new StatementThrow(
+				ExpressionConverter.convert(element.exp, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
@@ -247,7 +402,21 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(Catch element) {
-		return endAdapt(new StatementTry.CatchClause(element, convContext));
+		IFunctionParameter param = null;
+		if(element.type == null)
+			param = null;
+		else if(element.ident == null)
+			param = DefinitionConverter.convertNamelessParameter(element.type, convContext);
+		else
+			param = new FunctionParameter(element.type, element.ident, convContext);
+
+		return endAdapt(
+			new StatementTry.CatchClause(
+				param,
+				Statement.convert(element.handler, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override

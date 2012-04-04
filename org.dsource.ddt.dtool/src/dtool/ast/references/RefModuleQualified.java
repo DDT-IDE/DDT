@@ -17,11 +17,8 @@ import dtool.refmodel.NodeUtil;
 public class RefModuleQualified extends CommonRefQualified {
 	
 	public RefModuleQualified(RefIdentifier subref, SourceRange sourceRange) {
-		this.qualifiedName = subref;
-		if (this.qualifiedName != null)
-			this.qualifiedName.setParent(this);
-		
 		initSourceRange(sourceRange);
+		this.qualifiedName = subref; parentize(this.qualifiedName);
 	}
 	
 	@Override

@@ -1,26 +1,17 @@
 package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ThrowStatement;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 
 public class StatementThrow extends Statement {
 
-	public Resolvable exp;
+	public final Resolvable exp;
 
-	public StatementThrow(ThrowStatement elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.exp = ExpressionConverter.convert(elem.exp, convContext);
-	}
-	
-	public StatementThrow(Resolvable exp) {
-		this.exp = exp;
-		
-		if (this.exp != null)
-			this.exp.setParent(this);
+	public StatementThrow(Resolvable exp, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.exp = exp; parentize(this.exp);
 	}
 
 	@Override

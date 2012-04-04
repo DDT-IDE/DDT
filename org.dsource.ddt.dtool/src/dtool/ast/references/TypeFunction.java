@@ -14,9 +14,6 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.NativeDefUnit;
-import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -26,28 +23,18 @@ import dtool.refmodel.IScopeNode;
  */
 public class TypeFunction extends CommonRefNative {
 	
-	public Reference rettype;
-	public ArrayView<IFunctionParameter> params;
-	public int varargs;
-	public LINK linkage;
+	public final Reference rettype;
+	public final ArrayView<IFunctionParameter> params;
+	public final int varargs;
+	public final LINK linkage;
 
-	public TypeFunction(descent.internal.compiler.parser.TypeFunction elem, ASTConversionContext convContext) {
-		this(
-				(Reference) DescentASTConverter.convertElem(elem.next, convContext), 
-				DescentASTConverter.convertManyToView(elem.parameters,IFunctionParameter.class, convContext), 
-				DefinitionConverter.convertVarArgs(elem.varargs), 
-				elem.linkage, 
-				DefinitionConverter.sourceRange(elem)
-		);
-	}
-	
-	public TypeFunction(Reference retType, ArrayView<IFunctionParameter> params, int varArgs, LINK linkage,
+	public TypeFunction(Reference retType, IFunctionParameter[] params, int varArgs, LINK linkage,
 			SourceRange sourceRange) {
-		this.rettype = retType;
-		this.params = params;
+		initSourceRange(sourceRange);
+		this.rettype = retType; parentize(this.rettype);
+		this.params = new ArrayView<IFunctionParameter>(params); parentize(this.params);
 		this.varargs = varArgs;
 		this.linkage = linkage;
-		initSourceRange(sourceRange);
 	}
 	
 	

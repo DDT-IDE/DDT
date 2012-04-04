@@ -3,10 +3,8 @@ package dtool.ast.references;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.util.Collection;
-import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
-import descent.internal.compiler.parser.IdentifierExp;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
@@ -25,9 +23,15 @@ import dtool.refmodel.ReferenceResolver;
 public class RefModule extends NamedReference {
 	
 	//public String packageName;
+<<<<<<< OURS
 	public final String[] packages;
 	public final String module;
 	
+=======
+	public String[] packages;
+	public String module;
+
+>>>>>>> THEIRS
 	public RefModule(String[] packages, String module, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.packages = packages;

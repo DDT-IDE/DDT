@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeDepthRecon;
 import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.references.RefQualified;
 
 /**
@@ -20,7 +21,13 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 			return "";
 		return "("+toStringAsElements(nodes, ", ")+")";
 	}
-	
+
+	public static String toStringParamListAsElements(ArrayView<ASTNeoNode> nodes) {
+		if(nodes == null)
+			return "";
+		return "("+toStringAsElements(nodes, ", ")+")";
+	}
+
 	/** Util for printing a collection of nodes. */
 	public static String toStringAsElements(ASTNeoNode[] nodes, String sep) {
 		
@@ -29,6 +36,18 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 			if(i > 0)
 				sb.append(sep);
 			sb.append(nodes[i].toStringAsElement());
+		}
+		return sb.toString();
+	}
+	
+	/** Util for printing a collection of nodes. */
+	public static String toStringAsElements(ArrayView<ASTNeoNode> nodes, String sep) {
+		
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < nodes.size(); i++) {
+			if(i > 0)
+				sb.append(sep);
+			sb.append(nodes.get(i).toStringAsElement());
 		}
 		return sb.toString();
 	}

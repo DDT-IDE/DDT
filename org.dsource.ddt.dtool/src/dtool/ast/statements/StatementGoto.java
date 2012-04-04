@@ -1,24 +1,17 @@
 package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.GotoStatement;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
-import dtool.descentadapter.DefinitionConverter;
 
 public class StatementGoto extends Statement {
 
-	public Symbol label;
+	public final Symbol label;
 	
-	public StatementGoto(GotoStatement elem) {
-		convertNode(elem);
-		this.label = DefinitionConverter.convertId(elem.ident);
-	}
-	
-	public StatementGoto(Symbol label) {
-		this.label = label;
-		if (this.label != null)
-			this.label.setParent(this);
+	public StatementGoto(Symbol label, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.label = label; parentize(this.label);
 	}
 
 	@Override

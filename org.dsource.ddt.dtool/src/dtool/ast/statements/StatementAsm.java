@@ -1,12 +1,12 @@
 package dtool.ast.statements;
 
-import descent.internal.compiler.parser.AsmStatement;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class StatementAsm extends Statement {
 
-	public StatementAsm(AsmStatement node) {
-		convertNode(node);
+	public StatementAsm(SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 	}
 
 	@Override

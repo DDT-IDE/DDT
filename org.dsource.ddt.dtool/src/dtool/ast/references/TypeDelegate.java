@@ -5,17 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.TypeFunction;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.NativeDefUnit;
-import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -25,16 +22,15 @@ import dtool.refmodel.IScopeNode;
  */
 public class TypeDelegate extends CommonRefNative {
 
-	public Reference rettype;
-	public ArrayView<IFunctionParameter> params;
-	public int varargs;
+	public final Reference rettype;
+	public final ArrayView<IFunctionParameter> params;
+	public final int varargs;
 	
-	public TypeDelegate(descent.internal.compiler.parser.TypeDelegate elem, ASTConversionContext convContext) {
-		setSourceRange(elem);
-		this.rettype = (Reference) DescentASTConverter.convertElem(elem.rto, convContext);
-		TypeFunction typeFunction = ((TypeFunction) elem.next);
-		this.varargs = DefinitionConverter.convertVarArgs(typeFunction.varargs);
-		this.params = DescentASTConverter.convertManyToView(typeFunction.parameters, IFunctionParameter.class, convContext); 
+	public TypeDelegate(Reference rettype, IFunctionParameter[] params, int varargs, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.rettype = rettype; parentize(this.rettype);
+		this.varargs = varargs;
+		this.params = new ArrayView<IFunctionParameter>(params); parentize(this.params);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.TypeSlice;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -14,9 +15,9 @@ import dtool.refmodel.IDefUnitReferenceNode;
 
 public class RefTypeSlice extends Reference {
 
-	public IDefUnitReferenceNode slicee;
-	public Resolvable from;
-	public Resolvable to;
+	public final IDefUnitReferenceNode slicee;
+	public final Resolvable from;
+	public final Resolvable to;
 	
 	public RefTypeSlice(TypeSlice elem, ASTConversionContext convContext) {
 		slicee = ReferenceConverter.convertType(elem.next, convContext);
@@ -24,6 +25,12 @@ public class RefTypeSlice extends Reference {
 		to = ExpressionConverter.convert(elem.upr, convContext);
 	}
 	
+	public RefTypeSlice(IDefUnitReferenceNode slicee, Resolvable from, Resolvable to, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.from = from; parentize(this.from);
+		this.to = to; parentize(this.to);
+		this.slicee = slicee; parentize(this.slicee);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

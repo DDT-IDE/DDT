@@ -137,7 +137,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 			}
         }
     }
-    
+	
 	public static void checkParent(ASTNeoNode parent, ASTNeoNode... nodes) {
 		for (ASTNeoNode child : nodes) {
 			assertTrue(child.getParent() == parent);

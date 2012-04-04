@@ -26,7 +26,7 @@ public class RefIdentifier extends NamedReference {
 	
 	public RefIdentifier(String name, SourceRange sourceRange) {
 		this(name);
-		setSourceRange(sourceRange);
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

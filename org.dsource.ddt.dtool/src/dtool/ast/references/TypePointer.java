@@ -6,41 +6,20 @@ import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.ASTNode;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
 public class TypePointer extends CommonRefNative {
+	public final Reference elemtype;
 	
-	public static ASTNeoNode convertTypePointer(descent.internal.compiler.parser.TypePointer elem
-			, ASTConversionContext convContext) {
-		if(elem.next instanceof descent.internal.compiler.parser.TypeFunction) {
-			ASTNeoNode node= new TypeFunction((descent.internal.compiler.parser.TypeFunction)elem.next, convContext);
-			node.setSourceRange(elem);
-			return node;
-		}
-		else
-			return new TypePointer(elem, convContext);
-	}
-
-
-	public Reference elemtype;
-	
-	private TypePointer(descent.internal.compiler.parser.TypePointer elem
-			, ASTConversionContext convContext) {
-		setSourceRange(elem);
-		this.elemtype = ReferenceConverter.convertType(elem.next, convContext);
-	}
-	
-	public TypePointer(Reference elemtype) {
-		this.elemtype = elemtype;
-		if (this.elemtype != null)
-			this.elemtype.setParent(this);
+	public TypePointer(Reference elemtype, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.elemtype = elemtype; parentize(this.elemtype);
 	}
 
 	@Override

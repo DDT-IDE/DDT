@@ -1,20 +1,13 @@
 package dtool.ast.statements;
 
-import static melnorme.utilbox.core.CoreUtil.array;
-
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ScopeStatement;
 import descent.internal.compiler.parser.ast.ASTNode;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.ArrayView;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
@@ -26,38 +19,10 @@ public class BlockStatement extends Statement implements IScopeNode {
 	public ArrayView<IStatement> statements;
 	public boolean hasCurlyBraces; // syntax-structural?
 	
-	public BlockStatement(Collection<IStatement> statements, boolean hasCurlyBraces) {
-		this.statements = ArrayView.create(ArrayUtil.createFrom(statements, IStatement.class));
-		if (statements != null) {
-			for (IStatement stmt : statements) {
-				((ASTNeoNode) stmt).setParent(this);
-			}
-		}
+	public BlockStatement(IStatement[] statements, boolean hasCurlyBraces, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.statements = new ArrayView<IStatement>(statements); parentize(this.statements);
 		this.hasCurlyBraces = hasCurlyBraces;
-	}
-	
-	public BlockStatement(descent.internal.compiler.parser.CompoundStatement elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.statements = DescentASTConverter.convertManyToView(elem.statements, IStatement.class, convContext);
-		
-		for(@SuppressWarnings("unused")	IStatement decl : statements) {
-			// just check class cast
-		}
-	}
-
-	public BlockStatement(ScopeStatement elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		if(elem.statement instanceof descent.internal.compiler.parser.CompoundStatement) {
-			descent.internal.compiler.parser.CompoundStatement compoundSt = 
-				(descent.internal.compiler.parser.CompoundStatement) elem.statement;
-			this.statements = DescentASTConverter.convertManyToView(compoundSt.statements, IStatement.class, 
-					convContext);
-			this.hasCurlyBraces = true;
-		} else {
-			this.statements = DescentASTConverter.convertManyToView(array(elem.statement), IStatement.class, 
-					convContext);
-			setSourceRange(elem.statement);
-		}
 	}
 	
 	@Override

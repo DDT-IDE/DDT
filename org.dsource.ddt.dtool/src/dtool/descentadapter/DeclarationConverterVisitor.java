@@ -234,7 +234,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				packages = new String[imprt.packages.size()];
 				int idx = 0;
 				for (IdentifierExp ie : imprt.packages) {
-					packages[idx] = new String(ie.ident);
+					packages[idx++] = new String(ie.ident);
 				}
 				int startPos = imprt.packages.get(0).getStartPos();
 				sr = new SourceRange(startPos, imprt.id.getEndPos() - startPos);
@@ -352,9 +352,11 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		if (stmt instanceof BlockStatement) {
 			return endAdapt(new DeclarationUnitTest((BlockStatement) stmt, DefinitionConverter.sourceRange(elem)));
 		} else {
+			IStatement[] stmts = new IStatement[1];
+			stmts[0] = stmt;
 			return endAdapt(
 				new DeclarationUnitTest(
-					new BlockStatement(Collections.singleton(stmt) , false),
+					new BlockStatement(stmts, false, DefinitionConverter.sourceRange(elem)),
 					DefinitionConverter.sourceRange(elem)
 				)
 			);

@@ -1,26 +1,26 @@
 package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.DefaultStatement;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.ast.SourceRange;
+import dtool.ast.definitions.ArrayView;
 
 public class StatementDefault extends Statement {
 
-	public IStatement st;
+	public final IStatement st;
+	public final ArrayView<IStatement> stList;
 	
-	public StatementDefault(DefaultStatement elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.st = Statement.convert(elem.statement, convContext);
+	public StatementDefault(IStatement[] stList, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.stList = new ArrayView<IStatement>(stList); parentize(this.stList);
+		this.st = null;
 	}
 	
-	public StatementDefault(IStatement st) {
-		this.st = st;
-		
-		if (st != null) {
-			((ASTNeoNode) st).setParent(this);
-		}
+	public StatementDefault(IStatement st, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.st = st; parentize(this.st);
+		this.stList = null;
 	}
 
 	@Override

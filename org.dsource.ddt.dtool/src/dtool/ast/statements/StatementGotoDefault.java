@@ -1,16 +1,12 @@
 package dtool.ast.statements;
 
-import descent.internal.compiler.parser.GotoDefaultStatement;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class StatementGotoDefault extends Statement {
 
-	public StatementGotoDefault(GotoDefaultStatement node) {
-		convertNode(node);
-	}
-	
-	public StatementGotoDefault() {
-		
+	public StatementGotoDefault(SourceRange sourceRange) {
+		initSourceRange(sourceRange);		
 	}
 
 	@Override

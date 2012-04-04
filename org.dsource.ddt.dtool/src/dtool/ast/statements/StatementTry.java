@@ -11,6 +11,7 @@ import descent.internal.compiler.parser.TryFinallyStatement;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.descentadapter.DefinitionConverter;
@@ -23,30 +24,13 @@ public class StatementTry extends Statement {
 	
 	public static class CatchClause extends ASTNeoNode implements IScopeNode {
 		
-		public IFunctionParameter param;
-		public IStatement body;
+		public final IFunctionParameter param;
+		public final IStatement body;
 
-		public CatchClause(Catch elem, ASTConversionContext convContext) {
-			convertNode(elem);
-			this.body = Statement.convert(elem.handler, convContext);
-			if(elem.type == null) {
-				this.param = null;
-			} else if(elem.ident == null) {
-				this.param = DefinitionConverter.convertNamelessParameter(elem.type, convContext);
-			} else {
-				this.param = new FunctionParameter(elem.type, elem.ident, convContext);
-			}
-		}
-		
-		public CatchClause(IFunctionParameter param, IStatement body) {
-			this.param = param;
-			this.body = body;
-			
-			if (this.param != null)
-				((ASTNeoNode) this.param).setParent(this);
-			
-			if (this.body != null)
-				((ASTNeoNode) body).setParent(this);
+		public CatchClause(IFunctionParameter param, IStatement body, SourceRange sourceRange) {
+			initSourceRange(sourceRange);
+			this.param = param; parentize(this.param);
+			this.body = body; parentize(this.body);
 		}
 
 		@Override

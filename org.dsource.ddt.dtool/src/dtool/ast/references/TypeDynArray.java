@@ -5,28 +5,21 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.TypeDArray;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
 public class TypeDynArray extends CommonRefNative {
-	public Reference elemtype;
+	public final Reference elemtype;
 
-	public TypeDynArray(TypeDArray elem, ASTConversionContext convContext) {
-		setSourceRange(elem);
-		this.elemtype = ReferenceConverter.convertType(elem.next, convContext);
-	}
-	
-	public TypeDynArray(Reference elemType) {
-		this.elemtype = elemType;
-		if (this.elemtype != null)
-			this.elemtype.setParent(this);
+	public TypeDynArray(Reference elemType, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.elemtype = elemType; parentize(this.elemtype);
 	}
 
 	@Override

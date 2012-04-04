@@ -1,10 +1,8 @@
 package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.OnScopeStatement;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.ast.SourceRange;
 
 public class StatementOnScope extends Statement {
 	
@@ -14,20 +12,13 @@ public class StatementOnScope extends Statement {
 		ON_FAILURE
 	}
 	
-	public IStatement st;
-	public EventType eventType;
+	public final IStatement st;
+	public final EventType eventType;
 
-	public StatementOnScope(OnScopeStatement elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.st = Statement.convert(elem.statement, convContext);
-	}
-	
-	public StatementOnScope(EventType eventType, IStatement st) {
+	public StatementOnScope(EventType eventType, IStatement st, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 		this.eventType = eventType;
-		this.st = st;
-		
-		if (this.st != null)
-			((ASTNeoNode) this.st).setParent(this);
+		this.st = st; parentize(this.st);
 	}
 
 	@Override

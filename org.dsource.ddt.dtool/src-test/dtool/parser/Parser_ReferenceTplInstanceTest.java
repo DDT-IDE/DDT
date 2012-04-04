@@ -4,6 +4,8 @@ package dtool.parser;
 import org.junit.Test;
 
 import dtool.DToolBundle;
+import dtool.ast.ASTNeoNode;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.MixinContainer;
 import dtool.ast.definitions.NamedMixin;
@@ -37,9 +39,9 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 		if(checkToStringAsElement) {
 			assertEquals(refTplInst.refRawTemplate.toStringAsElement(), rawTplName);
 		}
-		checkEqualAsElement(refTplInst.tiargs, args);
+		checkEqualAsElement(refTplInst.tiargs.getInternalArray(), args);
 		checkParent(refTplInst, refTplInst.refRawTemplate);
-		checkParent(refTplInst, refTplInst.tiargs);
+		checkParent(refTplInst, refTplInst.tiargs.getInternalArray());
 	}
 	
 	@Override
