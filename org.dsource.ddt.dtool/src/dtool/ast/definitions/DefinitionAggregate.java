@@ -21,12 +21,7 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	
 	public DefinitionAggregate(DefUnitDataTuple defunit, PROT prot, ASTNeoNode[] members) {
 		super(defunit, prot);
-		this.members = new ArrayView<ASTNeoNode>(members);
-		if (members != null) {
-			for (ASTNeoNode member : members) {
-				member.setParent(this);
-			}
-		}
+		this.members = new ArrayView<ASTNeoNode>(members); parentize(this.members);
 	}
 	
 	protected void acceptNodeChildren(IASTNeoVisitor visitor, boolean children) {

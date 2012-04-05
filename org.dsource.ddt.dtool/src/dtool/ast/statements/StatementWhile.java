@@ -1,32 +1,19 @@
 package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.WhileStatement;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 
 public class StatementWhile extends Statement {
 
-	public Resolvable exp;
-	public IStatement body;
+	public final Resolvable exp;
+	public final IStatement body;
 
-	public StatementWhile(WhileStatement elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.exp = ExpressionConverter.convert(elem.condition, convContext);
-		this.body = Statement.convert(elem.body, convContext);
-	}
-	
-	public StatementWhile(Resolvable exp, IStatement body) {
-		this.exp = exp;
-		this.body = body;
-		
-		if (this.exp != null)
-			this.exp.setParent(this);
-		if (this.body != null)
-			((ASTNeoNode) this.body).setParent(this);
+	public StatementWhile(Resolvable exp, IStatement body, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.exp = exp; parentize(this.exp);
+		this.body = body; parentize(this.body);
 	}
 
 	@Override

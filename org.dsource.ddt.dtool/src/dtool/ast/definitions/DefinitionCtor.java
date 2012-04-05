@@ -34,19 +34,12 @@ public class DefinitionCtor extends ASTNeoNode implements IScopeNode, ICallableE
 	public final int nameStart;
 	
 	public DefinitionCtor(SpecialFunctionKind kind, IFunctionParameter[] params, int varargs, IStatement fbody, int thisStart, SourceRange sourceRange) {
-		this.kind = kind;
-		this.params = ArrayView.createFrom(params);
-		if (this.params != null) {
-			for (IFunctionParameter fp :  this.params) {
-				((ASTNeoNode) fp).setParent(this);
-			}
-		}
-		
-		this.varargs = varargs;
-		this.fbody = fbody;
-		
-		this.nameStart = thisStart;
 		initSourceRange(sourceRange);	
+		this.kind = kind;
+		this.params = ArrayView.createFrom(params); parentize(this.params);
+		this.varargs = varargs;
+		this.fbody = fbody; parentize(this.fbody);
+		this.nameStart = thisStart;
 	}
 	
 	@Override

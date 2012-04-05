@@ -65,10 +65,12 @@ import dtool.ast.definitions.TemplateParamAlias;
 import dtool.ast.definitions.TemplateParamTuple;
 import dtool.ast.definitions.TemplateParamType;
 import dtool.ast.definitions.TemplateParamValue;
+import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
+import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
@@ -159,7 +161,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.BaseClass elem) {
-		return endAdapt(new BaseClass(elem, convContext));
+		return endAdapt(
+			new BaseClass(
+				elem.protection,
+				ReferenceConverter.convertType(elem.type, convContext),
+				DefinitionConverter.sourceRange(elem.hasNoSourceRangeInfo() ? elem.type : elem)
+			)
+		);
 	}
 	
 	@Override
@@ -395,13 +403,26 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public final boolean visit(descent.internal.compiler.parser.AliasDeclaration elem) {
-		return endAdapt(new DefinitionAlias(elem, convContext));
+		return endAdapt(
+			new DefinitionAlias(
+				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
+				(Reference) DescentASTConverter.convertElem(elem.type, convContext)
+			)
+		);
 	}	
 
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TemplateDeclaration elem) {
-		return endAdapt(new DefinitionTemplate(elem, convContext));
+		return endAdapt(
+			new DefinitionTemplate(
+				DefinitionConverter.convertDsymbol(elem, convContext),
+				elem.prot(),
+				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext),
+				DescentASTConverter.convertMany(elem.parameters, TemplateParameter.class, convContext),
+				elem.wrapper
+			)
+		);
 	}	
 	
 	@Override
@@ -442,17 +463,38 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.ClassDeclaration elem) {
-		return endAdapt(new DefinitionClass(elem, convContext));
+		return endAdapt(
+			new DefinitionClass(
+				DefinitionConverter.convertDsymbol(elem, convContext),
+				elem.prot(),
+				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext),
+				DescentASTConverter.convertMany(elem.sourceBaseclasses, BaseClass.class, convContext)
+			)
+		);
 	}	
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.InterfaceDeclaration elem) {
-		return endAdapt(new DefinitionInterface(elem, convContext));
+		return endAdapt(
+			new DefinitionInterface(
+				DefinitionConverter.convertDsymbol(elem, convContext),
+				elem.prot(),
+				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext),
+				DescentASTConverter.convertMany(elem.sourceBaseclasses, BaseClass.class, convContext)
+			)
+		);
 	}	
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StructDeclaration elem) {
-		return endAdapt(new DefinitionStruct(elem, convContext));
+		return endAdapt(
+			new DefinitionStruct(
+				DefinitionConverter.convertDsymbol(elem, convContext),
+				elem.prot(),
+				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext),
+				null // TODO: Where are the base classes?
+			)
+		);
 	}	
 	
 	@Override

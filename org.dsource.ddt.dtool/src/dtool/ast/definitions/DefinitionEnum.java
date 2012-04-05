@@ -26,17 +26,13 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	public DefinitionEnum(DefUnitDataTuple defunitInfo, PROT prot, EnumMember[] members, Reference reference,
 			SourceRange sourceRange) {
 		super(defunitInfo, prot);
-
+		
 		if (members != null) {
 			this.members = new ArrayView<EnumMember>(members);
-			for (EnumMember em : this.members) {
-				em.setParent(this);
-			}
+			parentize(this.members);
 		}
 		
-		this.type = reference;
-		if (this.type != null)
-			type.setParent(this);
+		this.type = reference; parentize(this.type);
 		
 		initSourceRange(sourceRange);
 	}

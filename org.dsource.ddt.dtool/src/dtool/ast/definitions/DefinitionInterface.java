@@ -1,20 +1,13 @@
 package dtool.ast.definitions;
 
-import descent.internal.compiler.parser.InterfaceDeclaration;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 /**
  * A definition of an interface aggregate. 
  */
 public class DefinitionInterface extends DefinitionClass {
-
-	
-	public DefinitionInterface(InterfaceDeclaration elem, ASTConversionContext convContext) {
-		super(elem, convContext);
-	}
 	
 	public DefinitionInterface(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] members, BaseClass[] superClasses) {
 		super(dudt, prot, members, superClasses);

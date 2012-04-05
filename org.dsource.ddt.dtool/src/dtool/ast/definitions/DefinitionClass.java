@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ClassDeclaration;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
 
 /**
@@ -20,26 +16,13 @@ public class DefinitionClass extends DefinitionAggregate {
 
 	public final BaseClass[] baseClasses;
 	
-	public DefinitionClass(ClassDeclaration elem, ASTConversionContext convContext) {
-		super(
-			DefinitionConverter.convertDsymbol(elem, convContext),
-			elem.prot(),
-			DescentASTConverter.convertManyToView(elem.members, ASTNeoNode.class, convContext).getInternalArray()
-		);
-		this.baseClasses = DescentASTConverter.convertMany(elem.sourceBaseclasses, BaseClass.class, convContext);
-		// TODO: where did template Parameters go
-		//if(elem.templateParameters != null)
-		//	this.templateParams = TemplateParameter.convertMany(elem.templateParameters);
-	}
-	
 	public DefinitionClass(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] members, BaseClass[] baseClasses) {
 		super(dudt, prot, members);
-		this.baseClasses = baseClasses;
-		if (this.baseClasses != null) {
-			for (BaseClass bc : this.baseClasses) {
-				bc.parent = this;
-			}
-		}
+		this.baseClasses = baseClasses; parentize(this.baseClasses);
+		// TODO: where did template Parameters go
+		//if(elem.templateParameters != null)
+		//	this.templateParams = ?? TemplateParameter.convertMany(elem.templateParameters);
+
 	}
 	
 	@Override

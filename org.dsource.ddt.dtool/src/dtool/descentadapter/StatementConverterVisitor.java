@@ -36,7 +36,6 @@ import descent.internal.compiler.parser.TryFinallyStatement;
 import descent.internal.compiler.parser.VolatileStatement;
 import descent.internal.compiler.parser.WhileStatement;
 import descent.internal.compiler.parser.WithStatement;
-import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.NodeList;
@@ -67,6 +66,7 @@ import dtool.ast.statements.StatementSwitch;
 import dtool.ast.statements.StatementSynchronized;
 import dtool.ast.statements.StatementThrow;
 import dtool.ast.statements.StatementTry;
+import dtool.ast.statements.StatementTry.CatchClause;
 import dtool.ast.statements.StatementVolatile;
 import dtool.ast.statements.StatementWhile;
 import dtool.ast.statements.StatementWith;
@@ -380,27 +380,73 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(TryCatchStatement element) {
-		return endAdapt(new StatementTry(element, convContext));
+		Object[] catches = element.catches.toArray();
+		return endAdapt(
+			new StatementTry(
+				Statement.convert(element.body, convContext),
+				DescentASTConverter.convertMany(catches, CatchClause.class, convContext),
+				null, 
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(TryFinallyStatement element) {
-		return endAdapt(new StatementTry(element, convContext));
+		if (element.body instanceof TryCatchStatement) {
+			TryCatchStatement tcs = (TryCatchStatement) element.body;
+			Object[] catches = tcs.catches.toArray();
+			return endAdapt(
+				new StatementTry(
+					Statement.convert(tcs.body, convContext),
+					DescentASTConverter.convertMany(catches, CatchClause.class, convContext),
+					Statement.convert(element.finalbody, convContext), 
+					DefinitionConverter.sourceRange(element)
+				)
+			);
+		}
+		else {
+			return endAdapt(
+				new StatementTry(
+					Statement.convert(element.body, convContext),
+					new CatchClause[0],
+					Statement.convert(element.finalbody, convContext), 
+					DefinitionConverter.sourceRange(element)
+				)
+			);
+		}
 	}
 
 	@Override
 	public boolean visit(VolatileStatement element) {
-		return endAdapt(new StatementVolatile(element, convContext));
+		return endAdapt(
+			new StatementVolatile(
+				Statement.convert(element.statement, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(WhileStatement element) {
-		return endAdapt(new StatementWhile(element, convContext));
+		return endAdapt(
+			new StatementWhile(
+				ExpressionConverter.convert(element.condition, convContext),
+				Statement.convert(element.body, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(WithStatement element) {
-		return endAdapt(new StatementWith(element, convContext));
+		return endAdapt(
+			new StatementWith(
+				ExpressionConverter.convert(element.exp, convContext),
+				Statement.convert(element.body, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override

@@ -2,13 +2,10 @@ package dtool.ast.definitions;
 
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.AliasDeclaration;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScopeNode;
 
 /**
@@ -16,19 +13,11 @@ import dtool.refmodel.IScopeNode;
  */
 public class DefinitionAlias extends Definition implements IStatement {
 	
-	public Reference target;
-	
-	public DefinitionAlias(AliasDeclaration elem, ASTConversionContext convContext) {
-		super(elem, convContext);
-		target = (Reference) DescentASTConverter.convertElem(elem.type, convContext);
-	}
+	public final Reference target;
 	
 	public DefinitionAlias(DefUnitDataTuple dudt, PROT prot, Reference target) {
 		super(dudt, prot);
-		this.target = target;
-		
-		if (target != null)
-			target.setParent(this);
+		this.target = target; parentize(this.target);
 	}
 	
 	@Override

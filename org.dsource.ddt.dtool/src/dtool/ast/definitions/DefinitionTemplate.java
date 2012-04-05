@@ -8,13 +8,10 @@ import java.util.List;
 import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
-import descent.internal.compiler.parser.TemplateDeclaration;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.statements.IStatement;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
@@ -27,35 +24,15 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	public final ArrayView<ASTNeoNode> decls;
 	public final boolean wrapper;
 	
-	
-	public DefinitionTemplate(TemplateDeclaration elem, ASTConversionContext convContext) {
-		super(elem, convContext);
-		this.decls = DescentASTConverter.convertManyNoNulls(elem.members, convContext);
-		this.templateParams = DescentASTConverter.convertManyToView(elem.parameters, TemplateParameter.class, convContext);
-		this.wrapper = elem.wrapper;
-		if(wrapper) {
-			assertTrue(decls.size() == 1);
-		}
-	}
-	
-	public DefinitionTemplate(DefUnitDataTuple dudt, PROT prot, TemplateParameter[] params, ASTNeoNode[] decls) {
+	public DefinitionTemplate(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] decls, TemplateParameter[] params, boolean wrapper) {
 		super(dudt, prot);
-		
-		this.templateParams = new ArrayView<TemplateParameter>(params);
-		if (params != null) {
-			for (TemplateParameter p : params) {
-				p.setParent(this);
-			}
-		}
-		
-		this.decls = new ArrayView<ASTNeoNode>(decls);
-		if (decls != null) {
-			for (ASTNeoNode d : decls) {
-				d.setParent(this);
-			}
-		}
+		this.templateParams = new ArrayView<TemplateParameter>(params); parentize(this.templateParams);
+		this.decls = new ArrayView<ASTNeoNode>(decls); parentize(this.decls);
 		// Must define what it does!
-		this.wrapper = this.templateParams.size() != 1;
+		// this.wrapper = this.templateParams.size() != 1;
+		this.wrapper = wrapper;
+		if(wrapper)
+			assertTrue(this.decls.size() == 1);
 	}
 	
 	@Override
