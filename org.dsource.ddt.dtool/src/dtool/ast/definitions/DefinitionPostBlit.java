@@ -1,20 +1,18 @@
 package dtool.ast.definitions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.PostBlitDeclaration;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
-import dtool.ast.statements.Statement;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class DefinitionPostBlit extends ASTNeoNode {
 	
-	public IStatement fbody;
+	public final IStatement fbody;
 	
-	public DefinitionPostBlit(PostBlitDeclaration elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.fbody = Statement.convert(elem.fbody, convContext);
+	public DefinitionPostBlit(IStatement fbody, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.fbody = fbody; parentize(this.fbody);
 	}
 	
 	@Override

@@ -106,7 +106,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		RefTemplateInstance refTplInstance = createRefTemplateInstance(tplReference, elem.tiargs, sourceRangeTplInst,
 				convContext);
 		if (elem.ident != null) {
-			return new NamedMixin(elem, refTplInstance, convContext, sourceRange);
+			return new NamedMixin(DefinitionConverter.convertDsymbol(elem, convContext), refTplInstance, convContext, sourceRange);
 		} else {
 			return new MixinContainer(refTplInstance, sourceRange);
 		}

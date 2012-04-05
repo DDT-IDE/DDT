@@ -8,7 +8,6 @@ import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTPrinter;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
@@ -26,15 +25,15 @@ import dtool.refmodel.NodeUtil;
 public class DefinitionFunction extends Definition implements IScopeNode, IStatement, ICallableElement {
 	
 	//public Identifier outId;
-	public descent.internal.compiler.parser.LINK linkage;
-	public Reference rettype;
-	public TemplateParameter[] templateParams;	
-	public ArrayView<IFunctionParameter> params;
-	public int varargs;
+	public descent.internal.compiler.parser.LINK linkage; // ???
+	public final Reference rettype;
+	public TemplateParameter[] templateParams; // ???
+	public final ArrayView<IFunctionParameter> params;
+	public final int varargs;
 	
-	public IStatement frequire;
-	public IStatement fbody;
-	public IStatement fensure;
+	public final IStatement frequire;
+	public final IStatement fbody;
+	public final IStatement fensure;
 	
 	//public descent.internal.compiler.parser.TypeFunction type;
 	
@@ -43,28 +42,12 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		super(defunitData, prot);
 		assertNotNull(rettype);
 		
-		this.rettype = rettype;
-		this.rettype.setParent(this);
-		
-		this.params = new ArrayView<IFunctionParameter>(params);
-		if (params != null) {
-			for (IFunctionParameter fp : params) {
-				((ASTNeoNode) fp).setParent(this);
-			}
-		}
-		
+		this.rettype = rettype; parentize(this.rettype);
+		this.params = new ArrayView<IFunctionParameter>(params); parentize(this.params);
 		this.varargs = varargs;
-		this.frequire = frequire;
-		if (this.frequire != null)
-			((ASTNeoNode) this.frequire).setParent(this);
-		
-		this.fensure = fensure;
-		if (this.fensure != null)
-			((ASTNeoNode) this.fensure).setParent(this);
-		
-		this.fbody = fbody;
-		if (this.fbody != null)
-			((ASTNeoNode) this.fbody).setParent(this);
+		this.frequire = frequire; parentize(this.frequire);
+		this.fensure = fensure; parentize(this.fensure);
+		this.fbody = fbody; parentize(fbody);
 	}
 	
 	@Override

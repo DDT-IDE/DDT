@@ -1,17 +1,17 @@
 package dtool.ast.definitions;
 
-import descent.internal.compiler.parser.Modifier;
 import descent.internal.compiler.parser.TOK;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class DefModifier extends ASTNeoNode {
 
-	public TOK tok;
+	public final TOK tok;
 	
-	public DefModifier(Modifier node) {
-		convertNode(node);
-		this.tok = node.tok;
+	public DefModifier(TOK tok, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.tok = tok;
 	}
 
 	@Override

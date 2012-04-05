@@ -145,7 +145,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(Modifier node) {
-		return endAdapt(new DefModifier(node));
+		return endAdapt(new DefModifier(node.tok, DefinitionConverter.sourceRange(node)));
 	}
 
 	/*  =======================================================  */
@@ -428,7 +428,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypedefDeclaration elem) {
-		return endAdapt(new DefinitionTypedef(elem, convContext));
+		return endAdapt(
+			new DefinitionTypedef(
+				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
+				ReferenceConverter.convertType(elem.sourceBasetype, convContext),
+				Initializer.convert(elem.init, convContext)
+			)
+		);
 	}	
 	
 	@Override
@@ -440,14 +446,34 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				Initializer.convert(elem.init, convContext)
 			));
 		}  else {
-			return endAdapt(new DefinitionVariable(elem, convContext));
+			return endAdapt(new DefinitionVariable(
+				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
+				ReferenceConverter.convertType(elem.type, convContext),
+				Initializer.convert(elem.init, convContext)
+			));
 		}
 	}	
 	
+	public static ASTNeoNode convertEnumDecl(EnumDeclaration elem, ASTConversionContext convContext) {
+		if(elem.ident != null) {
+			return new DefinitionEnum(
+				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
+				DescentASTConverter.convertManyToView(elem.members, EnumMember.class, convContext).getInternalArray(),
+				ReferenceConverter.convertType(elem.memtype, convContext),
+				DefinitionConverter.sourceRange(elem)
+			);
+		} else {
+			return new EnumContainer(
+				DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext),
+				ReferenceConverter.convertType(elem.memtype, convContext),
+				DefinitionConverter.sourceRange(elem)
+			);
+		}
+	}
+	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.EnumDeclaration elem) {
-		return endAdapt(DefinitionEnum.convertEnumDecl(elem, convContext));
-	}	
+		return endAdapt(convertEnumDecl(elem, convContext));
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.EnumMember elem) {
@@ -498,7 +524,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.UnionDeclaration elem) {
-		return endAdapt(new DefinitionUnion(elem, convContext));
+		return endAdapt(
+			new DefinitionUnion(
+				DefinitionConverter.convertDsymbol(elem, convContext),
+				elem.prot(),
+				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
+			)
+		);
 	}	
 	
 	
@@ -520,7 +552,12 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	}
 	@Override
 	public boolean visit(descent.internal.compiler.parser.PostBlitDeclaration elem) {
-		return endAdapt(new DefinitionPostBlit(elem, convContext));
+		return endAdapt(
+			new DefinitionPostBlit(
+				Statement.convert(elem.fbody, convContext),
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
 	}
 	@Override
 	public boolean visit(descent.internal.compiler.parser.DtorDeclaration elem) {
@@ -549,27 +586,63 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(TemplateAliasParameter elem) {
-		return endAdapt(new TemplateParamAlias(elem));
+		DefUnitDataTuple dudt = new DefUnitDataTuple(
+			DefinitionConverter.sourceRange(elem),
+			DefinitionConverter.convertIdToken(elem.ident),
+			null
+		);
+		return endAdapt(new TemplateParamAlias(dudt));
 	}
 	
 	@Override
 	public boolean visit(TemplateTupleParameter elem) {
-		return endAdapt(new TemplateParamTuple(elem));
+		DefUnitDataTuple dudt = new DefUnitDataTuple(
+			DefinitionConverter.sourceRange(elem),
+			DefinitionConverter.convertIdToken(elem.ident),
+			null
+		);
+		return endAdapt(new TemplateParamTuple(dudt));
 	}
 	
 	@Override
 	public boolean visit(TemplateTypeParameter elem) {
-		return endAdapt(new TemplateParamType(elem, convContext));
+		DefUnitDataTuple dudt = new DefUnitDataTuple(
+			DefinitionConverter.sourceRange(elem),
+			DefinitionConverter.convertIdToken(elem.ident),
+			null
+		);
+
+		return endAdapt(
+			new TemplateParamType(
+				dudt,
+				ReferenceConverter.convertType(elem.specType, convContext),
+				ReferenceConverter.convertType(elem.defaultType, convContext)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(TemplateThisParameter elem) {
-		return endAdapt(new TemplateParamType(elem, convContext));
+		// TODO: There was something to do with this...
+		return visit((TemplateTypeParameter) elem);
 	}
 	
 	@Override
 	public boolean visit(TemplateValueParameter elem) {
-		return endAdapt(new TemplateParamValue(elem, convContext));
+		DefUnitDataTuple dudt = new DefUnitDataTuple(
+			DefinitionConverter.sourceRange(elem),
+			DefinitionConverter.convertIdToken(elem.ident),
+			null
+		);
+
+		return endAdapt(
+			new TemplateParamValue(
+				dudt,
+				ReferenceConverter.convertType(elem.valType, convContext),
+				ExpressionConverter.convert(elem.specValue, convContext),
+				ExpressionConverter.convert(elem.defaultValue, convContext)
+			)
+		);
 	}
 
 }

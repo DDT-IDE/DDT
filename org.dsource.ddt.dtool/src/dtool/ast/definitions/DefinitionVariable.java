@@ -4,14 +4,10 @@ import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.declarations.InvalidSyntaxDeclaration;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.IStatement;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
 
@@ -22,21 +18,10 @@ public class DefinitionVariable extends Definition implements IStatement {
 	public final Reference type;
 	public final Initializer init;
 
-	public DefinitionVariable(descent.internal.compiler.parser.VarDeclaration elem, ASTConversionContext convContext) {
-		super(elem, convContext);
-		this.type = ReferenceConverter.convertType(elem.type, convContext);
-		this.init = Initializer.convert(elem.init, convContext);
-	}
-	
 	public DefinitionVariable(DefUnitDataTuple dudt, PROT prot, Reference type, Initializer init) {
 		super(dudt, prot);
-		this.type = type;
-		this.init = init;
-		
-		if (this.type != null)
-			this.type.setParent(this);
-		if (this.init != null)
-			this.init.setParent(this);
+		this.type = type; parentize(this.type);
+		this.init = init; parentize(this.init);
 	}
 	
 	@Override

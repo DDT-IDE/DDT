@@ -17,8 +17,8 @@ public class MixinContainer extends ASTNeoNode implements IStatement, INonScoped
 	public final RefTemplateInstance type;
 	
 	public MixinContainer(RefTemplateInstance typeref, SourceRange neoSourceRange) {
-		this.type = typeref;
-		setSourceRange(neoSourceRange);
+		initSourceRange(neoSourceRange);
+		this.type = typeref; parentize(this.type);
 	}
 	
 	

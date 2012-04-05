@@ -1,23 +1,20 @@
 package dtool.ast.definitions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.TemplateMixin;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.statements.IStatement;
-import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScopeNode;
-
 
 public class NamedMixin extends DefUnit implements IStatement {
 	
 	public final RefTemplateInstance type;
 	
-	public NamedMixin(TemplateMixin elem, RefTemplateInstance tplInstance, ASTConversionContext convContext, SourceRange sourceRange) {
-		super(DefinitionConverter.convertDsymbol(elem, convContext));
-		this.type = tplInstance;
+	public NamedMixin(DefUnitDataTuple dudt, RefTemplateInstance tplInstance, ASTConversionContext convContext, SourceRange sourceRange) {
+		super(dudt);
+		this.type = tplInstance; parentize(this.type);
 		setSourceRange(sourceRange);
 	}
 	

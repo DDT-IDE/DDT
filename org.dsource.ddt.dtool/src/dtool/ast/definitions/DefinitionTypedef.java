@@ -2,34 +2,21 @@ package dtool.ast.definitions;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
-import descent.internal.compiler.parser.TypedefDeclaration;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.IStatement;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScopeNode;
 
 public class DefinitionTypedef extends Definition implements IStatement {
 
-	Reference type;
-	Initializer initializer;
-	
-	public DefinitionTypedef(TypedefDeclaration elem, ASTConversionContext convContext) {
-		super(elem, convContext);
-		this.type = ReferenceConverter.convertType(elem.sourceBasetype, convContext);
-		this.initializer = Initializer.convert(elem.init, convContext);
-	}
+	public final Reference type;
+	public final Initializer initializer;
 	
 	public DefinitionTypedef(DefUnitDataTuple dudt, PROT prot, Reference type, Initializer initializer) {
 		super(dudt, prot);
-		this.type = type;
-		if (this.type != null)
-			this.type.setParent(this);
-		this.initializer = initializer;
-		if (this.initializer != null)
-			this.initializer.setParent(this);
+		this.type = type; parentize(this.type);
+		this.initializer = initializer; parentize(this.initializer);
 	}
 
 	@Override

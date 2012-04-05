@@ -457,8 +457,17 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		} else if(element.ident == null) {
 			param = DefinitionConverter.convertNamelessParameter(element.type, convContext);
 		} else {
-			param = new FunctionParameter(element.type, element.ident, convContext);
-		}
+			// param = new FunctionParameter(element.type, element.ident, convContext);
+			DefUnitDataTuple dudt = new DefUnitDataTuple(
+				DefinitionConverter.sourceRange(element), DefinitionConverter.convertIdToken(element.ident), null
+			);
+			
+			param = new FunctionParameter(
+				dudt, 0,
+				ReferenceConverter.convertType(element.type, convContext),
+				null,
+				new SourceRange(element.type.getStartPos(), element.ident.getEndPos() - element.type.getStartPos())
+			);		}
 		
 		return endAdapt(
 			new StatementTry.CatchClause(

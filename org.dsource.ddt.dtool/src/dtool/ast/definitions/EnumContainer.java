@@ -9,7 +9,6 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
-import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
 public class EnumContainer extends ASTNeoNode implements IDeclaration, INonScopedBlock {
@@ -17,26 +16,10 @@ public class EnumContainer extends ASTNeoNode implements IDeclaration, INonScope
 	public final ArrayView<EnumMember> members;
 	public final Reference type;
 	
-	
 	public EnumContainer(EnumMember[] members, Reference type, SourceRange sourceRange) {
-		this.members = new ArrayView<EnumMember>(members);
-		if (this.members != null) {
-			for (EnumMember em : members) {
-				em.setParent(this);
-			}
-		}
-
-		this.type = type;
-		if (type != null)
-			type.setParent(this);
-
 		initSourceRange(sourceRange);
-	}
-
-	public EnumContainer(ArrayView<EnumMember> members, Reference type, SourceRange sourceRange) {
-		this.members = members;
-		this.type = type;
-		initSourceRange(sourceRange);
+		this.members = new ArrayView<EnumMember>(members); parentize(this.members);
+		this.type = type; parentize(this.type);
 	}
 
 	@Override

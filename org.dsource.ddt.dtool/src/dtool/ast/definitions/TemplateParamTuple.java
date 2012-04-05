@@ -1,16 +1,13 @@
 package dtool.ast.definitions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.TemplateTupleParameter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.refmodel.IScopeNode;
 
 public class TemplateParamTuple extends TemplateParameter {
-
 	
-	public TemplateParamTuple(TemplateTupleParameter elem) {
-		super(elem.ident);
-		convertNode(elem);
+	public TemplateParamTuple(DefUnitDataTuple dudt) {
+		super(dudt);
 	}
 
 	@Override

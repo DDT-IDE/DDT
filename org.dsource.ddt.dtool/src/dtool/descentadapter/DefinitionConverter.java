@@ -1,5 +1,6 @@
 package dtool.descentadapter;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -21,17 +22,18 @@ import descent.internal.compiler.parser.StaticCtorDeclaration;
 import descent.internal.compiler.parser.StaticDtorDeclaration;
 import descent.internal.compiler.parser.TemplateInstanceWrapper;
 import descent.internal.compiler.parser.Type;
+import descent.internal.compiler.parser.TypeBasic;
 import descent.internal.compiler.parser.TypeFunction;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
+import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.AutoFunctionReturnReference;
-import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
@@ -204,15 +206,15 @@ public class DefinitionConverter extends BaseDmdConverter {
 				ReferenceConverter.convertType(elemTypeFunc.next, convContext);
 		
 		DefinitionFunction definitionFunction = new DefinitionFunction(
-				DefinitionConverter.convertDsymbol(elem, convContext), 
-				elem.prot(),
-				rettype,
-				DescentASTConverter.convertManyToView(elemTypeFunc.parameters, IFunctionParameter.class, convContext).getInternalArray(),
-				convertVarArgs(elemTypeFunc.varargs),
-				Statement.convert(elem.frequire, convContext),
-				Statement.convert(elem.fensure, convContext),
-				Statement.convert(elem.fbody, convContext)
-				);
+			DefinitionConverter.convertDsymbol(elem, convContext), 
+			elem.prot(),
+			rettype,
+			DescentASTConverter.convertManyToView(elemTypeFunc.parameters, IFunctionParameter.class, convContext).getInternalArray(),
+			convertVarArgs(elemTypeFunc.varargs),
+			Statement.convert(elem.frequire, convContext),
+			Statement.convert(elem.fensure, convContext),
+			Statement.convert(elem.fbody, convContext)
+		);
 		
 		return definitionFunction;
 	}
@@ -225,7 +227,24 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static ASTNeoNode convertFunctionParameter(Argument elem, ASTConversionContext convContext) {
 		if(elem.ident != null) {
 			if(elem.type != null) {
-				return new FunctionParameter(elem, convContext);
+				Reference type;
+				if(elem.type instanceof TypeBasic && ((TypeBasic)elem.type).ty.name == null) {
+					assertFail();
+					type = null;
+				} else
+					type = ReferenceConverter.convertType(elem.type, convContext);
+				
+				DefUnitDataTuple dudt = new DefUnitDataTuple(
+					DefinitionConverter.sourceRange(elem), DefinitionConverter.convertIdToken(elem.ident), null
+				);
+
+				return new FunctionParameter(
+					dudt, 
+					elem.storageClass,
+					type,
+					ExpressionConverter.convert(elem.defaultArg, convContext),
+					DefinitionConverter.sourceRange(elem)
+				);
 			} else {
 				// strange case, likely from a syntax error
 				return convertNamelessParameter(elem, elem.ident, convContext);
