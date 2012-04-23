@@ -9,6 +9,9 @@
  *******************************************************************************/
 package org.eclipse.dltk.ui;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.downCast;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -52,7 +55,7 @@ public class ScriptElementImageDescriptor_Extension extends CompositeImageDescri
 	protected int fBottomLeftPos;
 	protected int fTopRightPos;
 	
-	ImageDescriptor fBaseImage;
+	final ImageDescriptor fBaseImage;
 
 	public ScriptElementImageDescriptor_Extension( ImageDescriptor baseImageDescriptor, int flags, Point size ) {
 		fBaseImage= baseImageDescriptor;
@@ -96,15 +99,16 @@ public class ScriptElementImageDescriptor_Extension extends CompositeImageDescri
 	 * Method declared on Object.
 	 */
 	public boolean equals(Object object) {		
-		if (object == null || !ScriptElementImageDescriptor_Extension.class.equals(object.getClass())) {			
+		if (this == object)
+			return true;
+		if (object == null || this.getClass() != object.getClass())		
 			return false;
-		}
-			
-		ScriptElementImageDescriptor_Extension other= (ScriptElementImageDescriptor_Extension)object;
 		
-		if( this.fBaseImage == null ) {
-			return false;
-		}
+		return equalsPeer((ScriptElementImageDescriptor_Extension) object);
+	}
+	
+	public boolean equalsPeer(ScriptElementImageDescriptor_Extension other) {
+		assertNotNull(this.fBaseImage);
 		//==== Original DLTK Code: ====
 		// return (other.fFlags == this.fFlags) && (fBaseImage.equals(other.fBaseImage) == fSize.equals(other.fSize));
 		return (other.fFlags == this.fFlags) && (fSize.equals(other.fSize)) && (fBaseImage.equals(other.fBaseImage)) ;

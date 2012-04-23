@@ -1,5 +1,8 @@
 package mmrnmhrm.ui.views;
 
+import static melnorme.utilbox.core.CoreUtil.downCast;
+import melnorme.utilbox.core.CoreUtil;
+import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.ui.DeePluginImages;
 
 import org.dsource.ddt.ide.core.model.ProtectionAttribute;
@@ -14,6 +17,17 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 	public DeeElementImageDescriptor(ImageDescriptor baseImage, int flags, ProtectionAttribute prot, Point size) {
 		super(baseImage, flags, size);
 		this.prot = prot;
+	}
+	
+	@Override
+	public boolean equalsPeer(ScriptElementImageDescriptor_Extension object) {
+		DeeElementImageDescriptor other = downCast(object);
+		return this.prot == other.prot && super.equalsPeer(other);
+	}
+	
+	@Override
+	public int hashCode() {
+		return MiscUtil.combineHashCodes(prot == null ? 0 : prot.hashCode(), super.hashCode());
 	}
 	
 	@Override
@@ -45,4 +59,5 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 			break;
 		}
 	}
+	
 }

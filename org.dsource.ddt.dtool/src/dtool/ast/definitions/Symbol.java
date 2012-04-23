@@ -26,7 +26,7 @@ public class Symbol extends ASTNeoNode {
 	}
 	
 	@Override
-	public boolean equals(Object obj) {
+	public final boolean equals(Object obj) {
 		return (obj instanceof Symbol) && name.equals(((Symbol) obj).name);
 	}
 	
