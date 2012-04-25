@@ -376,7 +376,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	protected static ISourceElementRequestor.MethodInfo createConstructorInfo(DefinitionCtor elem) {
 		ISourceElementRequestor.MethodInfo elemInfo = new ISourceElementRequestor.MethodInfo();
 		elemInfo.declarationStart = elem.getStartPos();
-		elemInfo.isConstructor = true; // for the purposes of the ModelElement's, any kind is constructor
+		elemInfo.isConstructor = true; // for purposes of ModelElements, any kind of *ctor is marked as a constructor
 		elemInfo.name = elem.kind.specialName;
 		elemInfo.nameSourceStart = elem.nameStart;
 		elemInfo.nameSourceEnd = elem.nameStart + elem.kind.specialName.length() - 1; 

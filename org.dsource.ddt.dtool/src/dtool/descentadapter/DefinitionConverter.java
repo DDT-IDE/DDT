@@ -238,7 +238,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(CtorDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR, 
-			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
+			DescentASTConverter.convertMany(elem.arguments, IFunctionParameter.class, convContext),
 			convertVarArgs(elem.varargs),
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)

@@ -12,7 +12,8 @@
  * Icons for D elements in all viewers now show protection attribute info.
    * This can be configured (overlay for all elements, or JDT-style icon overlays) in the new Appearance preference page.
  * Fixed parser NPE bug when using inout as const wildcard declarator.
- * Fixed parser error when "alias this" appeared as a statement. 
+ * Fixed parser error when "alias this" appeared as a statement.
+ * Fixed bug where parser and semantic engine ignored the parameters of constructors
  
 == DDT 0.5.0 (2011-08-26) ==
  * Updated DDT to DTLK 3.0
