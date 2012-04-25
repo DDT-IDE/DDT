@@ -24,7 +24,6 @@ import org.eclipse.dltk.core.ISourceModule;
  */
 public abstract class SampleMainProject extends DeeCoreTestResources implements ITestResourcesConstants {
 	
-	
 	public static final String SAMPLEPROJNAME = "SampleProj";
 	
 	public static IScriptProject scriptProject;
@@ -38,7 +37,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		SampleMainProject.createAndSetupSampleProj();
 	}
 	
-	public static void createAndSetupSampleProj() {
+	private static void createAndSetupSampleProj() {
 		try {
 			scriptProject = BaseDeeTest.createAndOpenDeeProject(SAMPLEPROJNAME);
 			fillSampleProj();

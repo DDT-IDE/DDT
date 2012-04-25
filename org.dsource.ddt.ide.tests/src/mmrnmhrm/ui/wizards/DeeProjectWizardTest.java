@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.wizards;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 import mmrnmhrm.tests.SampleMainProject;
@@ -23,7 +24,7 @@ import org.junit.Test;
 
 
 public class DeeProjectWizardTest extends BaseDeeUITest {
-
+	
 	private DeeNewProjectWizard wizard;
 	private WizardDialog__Accessor wizDialog;
 	
@@ -31,19 +32,21 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 	
 	@Before
 	public void setUp() throws Exception {
+		MiscUtil.loadClass(SampleMainProject.class);
+		
 		tearDown();
-        //WorkbenchPlugin.getDefault().getNewWizardRegistry().findWizard(id);
+		//WorkbenchPlugin.getDefault().getNewWizardRegistry().findWizard(id);
 		wizard = new DeeNewProjectWizard();
 		IWorkbenchWindow window = WorkbenchUtils.getActiveWorkbenchWindow();
 		wizard.init(window.getWorkbench(), null);
 		
-        Shell parent = WorkbenchUtils.getActiveWorkbenchShell();
-        wizDialog = new WizardDialog__Accessor(parent, wizard);
-        wizDialog.setBlockOnOpen(false);
+		Shell parent = WorkbenchUtils.getActiveWorkbenchShell();
+		wizDialog = new WizardDialog__Accessor(parent, wizard);
+		wizDialog.setBlockOnOpen(false);
 		wizDialog.open();
 	}
 	
-
+	
 	@After
 	public void tearDown() throws Exception {
 		// Should undo all wizard actions
@@ -60,12 +63,12 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 			}
 		}, null);
 	}
-
-
+	
+	
 	private void simulateEnterPage2() {
 		wizDialog.nextPressed();
 	}
-
+	
 	private void simulatePage2GoBack() {
 		wizDialog.backPressed();
 	}
@@ -73,30 +76,31 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 	private void simulatePressCancel() {
 		wizDialog.cancelPressed();
 	}
-
+	
 	private void simulatePressFinish() {
 		wizDialog.finishPressed();
 	}
 	
 	@Test
-	public void test_P1Validation() throws Throwable {
+	public void test_P1Validation() throws Throwable { test_P1Validation$(); }
+	public void test_P1Validation$() throws Throwable {
 		ProjectWizardFirstPage__Accessor.access_fNameGroup(wizard.fFirstPage).setName(SampleMainProject.SAMPLEPROJNAME);
 		assertTrue(!wizard.canFinish());
-
+		
 		simulatePressCancel();
 		assertTrue(checkNoChanges());
 	}
-
+	
 	@Test
 	public void test_P1_Finish() throws Throwable {
 		wizard.fFirstPage.getProjectName();
 		ProjectWizardFirstPage__Accessor.access_fNameGroup(wizard.fFirstPage).setName(NEWPROJNAME);
 		assertTrue(wizard.canFinish());
-
+		
 		simulatePressFinish();
 		assertTrue(checkProjectCreated());
 	}
-
+	
 	
 	/*@Test
 	public void test_P1_P2_Finish() throws Throwable {
@@ -113,7 +117,7 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 		assertTrue(checkProjectCreated());
 		//auxtest.assertChangeSet1Applied();
 	}*/
-
+	
 	
 	
 	@Test
@@ -127,8 +131,8 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 		simulatePressFinish();
 		assertTrue(checkProjectCreated());
 	}
-
-
+	
+	
 	/* ---- */
 	
 	@Test
@@ -140,7 +144,7 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 		simulatePressCancel();
 		assertTrue(checkNoChanges());
 	}
-
+	
 	
 	/*@Test
 	public void test_P1_P2_Cancel() throws Throwable {
@@ -179,7 +183,7 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 		logErrorListener.checkErrors();
 		return ProjectModelUtil.getDeeProject(NEWPROJNAME).exists() == false;
 	}
-
+	
 	protected boolean checkProjectCreated() throws Throwable {
 		logErrorListener.checkErrors();
 		return ProjectModelUtil.getDeeProject(NEWPROJNAME).exists();
