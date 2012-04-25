@@ -1,14 +1,19 @@
 package mmrnmhrm.ui;
 
+import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.INamespace;
 import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.ScriptElementLabels;
 
-// TODO: costumize some of the label strings? Don't print initializers for the methods? 
+// TODO: customize some of the label strings? Don't print initializers for the methods? 
 public class DeeScriptElementLabels extends ScriptElementLabels {
 	
+	@Override
+	public String getElementLabel(IModelElement element, long flags) {
+		return super.getElementLabel(element, flags);
+	}
 	
 	@Override
 	protected void appendTypeQualification(IType type, long flags, StringBuffer buf) {

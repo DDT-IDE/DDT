@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
@@ -23,6 +24,14 @@ import org.eclipse.swt.widgets.Control;
  * SWT Layout Utils v2.
  */
 public class LayoutUtil {
+	
+	public static FillLayout createFillLayout(int marginWidth, int marginHeight, int spacing) {
+		FillLayout fillLayout = new FillLayout();
+		fillLayout.marginWidth = marginWidth;
+		fillLayout.marginHeight = marginHeight;
+		fillLayout.spacing = spacing;
+		return fillLayout;
+	}
 	
 	public static GridLayout createGridLayout() {
 		return createGridLayout(1);

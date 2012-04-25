@@ -25,7 +25,6 @@ import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.AbstractDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
-import org.eclipse.dltk.ui.ScriptElementLabels;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
@@ -79,7 +78,7 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	}
 	
 	@Override
-	public ScriptElementLabels getScriptElementLabels() {
+	public DeeScriptElementLabels getScriptElementLabels() {
 		return elementLabels; 
 	}
 	

@@ -18,7 +18,10 @@ public interface DeeModelConstants {
 	public static final int FLAG_TEMPLATED = 1 << Modifiers.USER_MODIFIER + 3; // Not used yet
 	// Indicates an export or package protection attribute 
 	public static final int FLAG_ALT_PROTECTION = 1 << Modifiers.USER_MODIFIER + 4; 
+	public static final int FLAG_PROTECTION_PRIVATE =	Modifiers.AccPrivate;
 	public static final int FLAG_PROTECTION_PACKAGE =	FLAG_ALT_PROTECTION | Modifiers.AccPrivate;
+	public static final int FLAG_PROTECTION_PROTECTED =	Modifiers.AccProtected;
+	public static final int FLAG_PROTECTION_PUBLIC =	Modifiers.AccPublic;
 	public static final int FLAG_PROTECTION_EXPORT =	FLAG_ALT_PROTECTION | Modifiers.AccPublic;
 	
 }

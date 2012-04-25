@@ -13,7 +13,7 @@ package mmrnmhrm.ui.launch;
 public class DeeLaunchConfigurationsMessages {
 	
 	public static String mainTab_launchFileGroup =
-			"Launch Executable";
+			"Launch Executable:";
 	
 	public static String argumentsTab_launchArgumentsGroup =
 			"Executable &arguments:";
