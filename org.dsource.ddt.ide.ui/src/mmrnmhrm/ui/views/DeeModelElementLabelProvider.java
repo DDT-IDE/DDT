@@ -82,8 +82,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			DeeCore.log(e);
 		}
 		
-		String iconStyleStr = DeePlugin.getPrefStore().getString(DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE);
-		ElementIconsStyle iconStyle = ElementIconsStyle.create(iconStyleStr, ElementIconsStyle.DDT);
+		ElementIconsStyle iconStyle = getIconStylePreference();
 		
 		ImageDescriptor baseImage = getBaseImageDescriptor(member, elementFlags, iconStyle);
 		
@@ -94,6 +93,11 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		}
 		
 		return new DeeElementImageDescriptor(baseImage, imageFlags, prot, imageSize);
+	}
+
+	protected ElementIconsStyle getIconStylePreference() {
+		String iconStyleStr = DeePlugin.getPrefStore().getString(DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE);
+		return ElementIconsStyle.create(iconStyleStr, ElementIconsStyle.DDT);
 	}
 	
 	protected ImageDescriptor getBaseImageDescriptor(IMember member, int flags, ElementIconsStyle iconStyle) {
@@ -167,18 +171,19 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		if (member.getElementType() == IModelElement.METHOD && ((IMethod) member).isConstructor()) {
 			flags |= ScriptElementImageDescriptor.CONSTRUCTOR; // TODO: this should be it's own base image
 		}
-
+		
 		IType declaringType = member.getDeclaringType();
 		boolean isInterface = declaringType != null && Flags.isInterface(declaringType.getFlags());
-
-		if (Flags.isAbstract(modifiers) && !isInterface)
-			flags |= ScriptElementImageDescriptor.ABSTRACT;
-		if (Flags.isFinal(modifiers))
-			flags |= ScriptElementImageDescriptor.FINAL;
-		if (Flags.isStatic(modifiers))
-			flags |= ScriptElementImageDescriptor.STATIC;
 		
-		// TODO: add decorators for protection attributes
+		if(Flags.isAbstract(modifiers) && !isInterface) {
+			flags |= ScriptElementImageDescriptor.ABSTRACT;
+		}
+		if(Flags.isFinal(modifiers)) {
+			flags |= ScriptElementImageDescriptor.FINAL;
+		}
+		if(Flags.isStatic(modifiers)) {
+			flags |= ScriptElementImageDescriptor.STATIC;
+		}
 		
 		return flags;
 	}
