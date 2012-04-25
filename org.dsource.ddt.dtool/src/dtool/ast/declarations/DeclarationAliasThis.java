@@ -5,8 +5,9 @@ import descent.internal.compiler.parser.AliasThis;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.statements.IStatement;
 
-public class DeclarationAliasThis extends ASTNeoNode {
+public class DeclarationAliasThis extends ASTNeoNode implements IStatement {
 	
 	public final RefIdentifier targetDef;
 	

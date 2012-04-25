@@ -52,18 +52,18 @@ public class DescentASTConverter extends StatementConverterVisitor {
 		return rets;
 	}
 	
-	public static <T extends IASTNode> T[] convertMany(Collection<? extends IASTNode> children, Class<T> klass,
+	public static <T extends IASTNode> T[] convertMany(Collection<? extends IASTNode> children, Class<T> elemClass,
 			ASTConversionContext convContext) {
 		if(children == null) return null;
-		T[] rets = ArrayUtil.create(children.size(), klass);
+		T[] rets = ArrayUtil.create(children.size(), elemClass);
 		convertMany(children.toArray(), rets, convContext);
 		return rets;
 	}
 	
 	public static <T extends IASTNode> ArrayView<T> convertManyToView(Collection<? extends IASTNode> children,
-			Class<T> klass, ASTConversionContext convContext) {
+			Class<T> elemClass, ASTConversionContext convContext) {
 		if(children == null) return null;
-		return ArrayView.create(convertMany(children, klass, convContext));
+		return ArrayView.create(convertMany(children, elemClass, convContext));
 	}
 	
 	public static ArrayView<ASTNeoNode> convertManyNoNulls(Collection<? extends IASTNode> children, 
@@ -76,16 +76,16 @@ public class DescentASTConverter extends StatementConverterVisitor {
 		return res;
 	}
 	
-	public static <T extends IASTNode> ArrayView<T> convertManyToView(Object[] children, Class<T> klass, 
+	public static <T extends IASTNode> ArrayView<T> convertManyToView(Object[] children, Class<T> elemClass, 
 			ASTConversionContext convContext) {
 		if(children == null) return null;
-		return ArrayView.create(convertMany(children, klass, convContext));
+		return ArrayView.create(convertMany(children, elemClass, convContext));
 	}
 	
-	public static <T extends IASTNode> T[] convertMany(Object[] children, Class<T> klass,
+	public static <T extends IASTNode> T[] convertMany(Object[] children, Class<T> elemClass,
 			ASTConversionContext convContext) {
 		if(children == null) return null;
-		T[] rets = ArrayUtil.create(children.length, klass);
+		T[] rets = ArrayUtil.create(children.length, elemClass);
 		convertMany(children, rets, convContext);
 		return rets;
 	}
