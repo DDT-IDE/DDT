@@ -1,12 +1,17 @@
 package dtool.ast.definitions;
 
+import java.util.Iterator;
+import java.util.List;
+
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
+import dtool.refmodel.IScope;
+import dtool.refmodel.IScopeNode;
 
-public class DefinitionCtor extends ASTNeoNode implements ICallableElement {
+public class DefinitionCtor extends ASTNeoNode implements IScopeNode, ICallableElement {
 	
 	public static enum SpecialFunctionKind {
 		CONSTRUCTOR("this"),
@@ -50,6 +55,21 @@ public class DefinitionCtor extends ASTNeoNode implements ICallableElement {
 	@Override
 	public ArrayView<IFunctionParameter> getParameters() {
 		return params;
+	}
+	
+	@Override
+	public Iterator<IFunctionParameter> getMembersIterator() {
+		return params.iterator();
+	}
+	
+	@Override
+	public List<IScope> getSuperScopes() {
+		return null;
+	}
+	
+	@Override
+	public boolean hasSequentialLookup() {
+		return false;
 	}
 	
 }

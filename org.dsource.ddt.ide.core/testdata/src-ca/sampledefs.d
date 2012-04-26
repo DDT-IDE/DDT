@@ -12,7 +12,9 @@ int variable;
 class Class  {
 	int fieldA;
 	
-	/*this*/ this(int param) {}
+	/*this*/ this(int ctorParam) { 
+		auto x = ctor/+CC-ctor@+/; 
+	}
 	/*~this*/ ~this() {}
 	
 	/*new*/ new() {}

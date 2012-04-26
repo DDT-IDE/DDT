@@ -50,4 +50,11 @@ public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
 				"EnumMemberA", "EnumMemberB"
 		);
 	}
+	
+	@Test
+	public void testCtor() throws Exception {
+		testComputeProposals(getMarkerStartOffset("/+CC-ctor@+/"), 4, true,
+				"ctorParam"
+		);
+	}
 }

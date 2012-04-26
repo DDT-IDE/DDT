@@ -89,7 +89,7 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		
 		
 		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("this"), 
-				EArcheType.Function, "/*this*/", "this(int param)");
+				EArcheType.Function, "/*this*/", "this(int ");
 		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("~this"), 
 				EArcheType.Function, "/*~this*/", "~this()");
 		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("new"), 
