@@ -11,25 +11,6 @@ import dtool.ast.definitions.EArcheType;
 
 public class DeeModelElementUtil {
 	
-	public static EArcheType elementFlagsToArcheType(IMember member, int flags) {
-		return elementFlagsToArcheType(getCorrectedElementFlags(member, flags));
-	}
-	
-	public static int getCorrectedElementFlags(IMember member, int flags) {
-		int elementType = member.getElementType();
-		switch (elementType) {
-		case IModelElement.FIELD:
-			flags = DeeModelConstants.FLAG_KIND_VARIABLE; break;
-		case IModelElement.METHOD:
-			flags = DeeModelConstants.FLAG_KIND_FUNCTION; break;
-		case IModelElement.TYPE:
-			break;
-		default:
-			throw assertFail();
-		}
-		return flags;
-	}
-	
 	public static EArcheType elementFlagsToArcheType(int elementFlags) {
 		if((elementFlags & Modifiers.AccModule) != 0) {
 			return EArcheType.Module;
@@ -86,6 +67,21 @@ public class DeeModelElementUtil {
 			return ProtectionAttribute.PUBLIC;
 		}
 		return undefined;
+	}
+	
+	public static int getCorrectedElementFlags(IMember member, int flags) {
+		int elementType = member.getElementType();
+		switch (elementType) {
+		case IModelElement.FIELD:
+			flags = (flags & ~DeeModelConstants.FLAGMASK_KIND) | DeeModelConstants.FLAG_KIND_VARIABLE; break;
+		case IModelElement.METHOD:
+			flags = (flags & ~DeeModelConstants.FLAGMASK_KIND) | DeeModelConstants.FLAG_KIND_FUNCTION; break;
+		case IModelElement.TYPE:
+			break;
+		default:
+			throw assertFail();
+		}
+		return flags;
 	}
 	
 }

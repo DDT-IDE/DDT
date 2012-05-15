@@ -75,7 +75,13 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			DeeCore.logError(e);
 			return ImageDescriptor.getMissingImageDescriptor();
 		}
-		EArcheType archeType = DeeModelElementUtil.elementFlagsToArcheType(member, elementFlags);
+		// correct element flags in case it is used by some fake ModelElement
+		elementFlags = DeeModelElementUtil.getCorrectedElementFlags(member, elementFlags);
+		return getImageDescriptor(elementFlags, imageSize);
+	}
+	
+	public ImageDescriptor getImageDescriptor(int elementFlags, Point imageSize) {
+		EArcheType archeType = DeeModelElementUtil.elementFlagsToArcheType(elementFlags);
 		
 		ElementIconsStyle iconStyle = getIconStylePreference();
 		ImageDescriptor baseImage = getBaseImageDescriptor(archeType, elementFlags, iconStyle);
