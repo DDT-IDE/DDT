@@ -42,7 +42,7 @@ public class DeeModelElementUtil {
 		case DeeModelConstants.FLAG_KIND_TYPEDEF:
 			return EArcheType.Typedef;
 		default:
-			throw assertFail();
+			return null;
 		}
 	}
 	

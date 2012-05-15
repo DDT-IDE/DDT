@@ -27,6 +27,11 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 	public static final Point SMALL_SIZE= new Point(16, 16);
 	public static final Point BIG_SIZE= new Point(22, 16);
 	
+	public static ImageDescriptor getIDEInternalErrorImageDescriptor() {
+		// BM: maybe there's some other image we could use
+		return ImageDescriptor.getMissingImageDescriptor();
+	}
+	
 	public DeeModelElementLabelProvider() {
 	}
 	
@@ -73,7 +78,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			elementFlags = member.getFlags();
 		} catch (ModelException e) {
 			DeeCore.logError(e);
-			return ImageDescriptor.getMissingImageDescriptor();
+			return getIDEInternalErrorImageDescriptor();
 		}
 		// correct element flags in case it is used by some fake ModelElement
 		elementFlags = DeeModelElementUtil.getCorrectedElementFlags(member, elementFlags);
@@ -81,18 +86,23 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 	}
 	
 	public ImageDescriptor getImageDescriptor(int elementFlags, Point imageSize) {
-		EArcheType archeType = DeeModelElementUtil.elementFlagsToArcheType(elementFlags);
+		EArcheType archetype = DeeModelElementUtil.elementFlagsToArcheType(elementFlags);
+		if(archetype == null) {
+			// archetype can be null if elementFlags is somehow wrongly created
+			// for example, can happen if elementFlags is serialized/deserialized with incompatible DDT versions  
+			return getIDEInternalErrorImageDescriptor();
+		}
 		
 		ElementIconsStyle iconStyle = getIconStylePreference();
-		ImageDescriptor baseImage = getBaseImageDescriptor(archeType, elementFlags, iconStyle);
+		ImageDescriptor baseImage = getBaseImageDescriptor(archetype, elementFlags, iconStyle);
 		
 		ProtectionAttribute prot = null;
 		if (iconStyle != ElementIconsStyle.JDTLIKE || 
-				(archeType != EArcheType.Variable && archeType != EArcheType.Function)) {
+				(archetype != EArcheType.Variable && archetype != EArcheType.Function)) {
 			prot = DeeModelElementUtil.elementFlagsToProtection(elementFlags, null);
 		}
 		
-		int imageFlags = getImageFlags(archeType, elementFlags);
+		int imageFlags = getImageFlags(archetype, elementFlags);
 		return new DeeElementImageDescriptor(baseImage, imageFlags, prot, imageSize);
 	}
 	
