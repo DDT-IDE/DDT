@@ -12,20 +12,25 @@ import dtool.ast.definitions.EArcheType;
 public class DeeModelElementUtil {
 	
 	public static EArcheType elementFlagsToArcheType(IMember member, int flags) {
+		return elementFlagsToArcheType(getCorrectedElementFlags(member, flags));
+	}
+	
+	public static int getCorrectedElementFlags(IMember member, int flags) {
 		int elementType = member.getElementType();
 		switch (elementType) {
 		case IModelElement.FIELD:
-			flags = DeeModelConstants.TYPE_VARIABLE;
+			flags = DeeModelConstants.FLAG_KIND_VARIABLE; break;
 		case IModelElement.METHOD:
-			flags = DeeModelConstants.TYPE_FUNCTION;
+			flags = DeeModelConstants.FLAG_KIND_FUNCTION; break;
 		case IModelElement.TYPE:
-			return typeElementFlagsToArcheType(flags);
+			break;
 		default:
 			throw assertFail();
 		}
+		return flags;
 	}
 	
-	public static EArcheType typeElementFlagsToArcheType(int elementFlags) {
+	public static EArcheType elementFlagsToArcheType(int elementFlags) {
 		if((elementFlags & Modifiers.AccModule) != 0) {
 			return EArcheType.Module;
 		}
@@ -33,31 +38,35 @@ public class DeeModelElementUtil {
 			return EArcheType.Interface;
 		}
 		
-		int archetypeFlag = elementFlags & DeeModelConstants.MODIFIERS_ARCHETYPE_MASK;
+		int archetypeFlag = elementFlags & DeeModelConstants.FLAGMASK_KIND;
 		switch (archetypeFlag) {
-		case DeeModelConstants.TYPE_FUNCTION:
+		case DeeModelConstants.FLAG_KIND_FUNCTION:
 			return EArcheType.Function;
-		case DeeModelConstants.TYPE_VARIABLE:
+		case DeeModelConstants.FLAG_KIND_VARIABLE:
 			return EArcheType.Variable;
-		case DeeModelConstants.TYPE_CLASS:
+		case DeeModelConstants.FLAG_KIND_CLASS:
 			return EArcheType.Class;
-		case DeeModelConstants.TYPE_INTERFACE:
+		case DeeModelConstants.FLAG_KIND_INTERFACE:
 			return EArcheType.Interface;
-		case DeeModelConstants.TYPE_STRUCT:
+		case DeeModelConstants.FLAG_KIND_STRUCT:
 			return EArcheType.Struct;
-		case DeeModelConstants.TYPE_UNION:
+		case DeeModelConstants.FLAG_KIND_UNION:
 			return EArcheType.Union;
-		case DeeModelConstants.TYPE_ENUM:
+		case DeeModelConstants.FLAG_KIND_ENUM:
 			return EArcheType.Enum;
-		case DeeModelConstants.TYPE_TEMPLATE:
+		case DeeModelConstants.FLAG_KIND_TEMPLATE:
 			return EArcheType.Template;
-		case DeeModelConstants.TYPE_ALIAS:
+		case DeeModelConstants.FLAG_KIND_ALIAS:
 			return EArcheType.Alias;
-		case DeeModelConstants.TYPE_TYPEDEF:
+		case DeeModelConstants.FLAG_KIND_TYPEDEF:
 			return EArcheType.Typedef;
 		default:
 			throw assertFail();
 		}
+	}
+	
+	public static boolean isConstructor(int elementFlags) {
+		return (elementFlags & DeeModelConstants.FLAG_CONSTRUCTOR) != 0;
 	}
 	
 	public static ProtectionAttribute elementFlagsToProtection(int elementFlags, ProtectionAttribute undefined) {
@@ -78,4 +87,5 @@ public class DeeModelElementUtil {
 		}
 		return undefined;
 	}
+	
 }

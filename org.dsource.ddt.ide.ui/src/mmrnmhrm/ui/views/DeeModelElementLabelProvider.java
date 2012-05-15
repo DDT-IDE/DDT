@@ -11,9 +11,6 @@ import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
 import org.dsource.ddt.ide.core.model.ProtectionAttribute;
 import org.eclipse.dltk.core.Flags;
 import org.eclipse.dltk.core.IMember;
-import org.eclipse.dltk.core.IMethod;
-import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.ScriptElementImageDescriptor;
 import org.eclipse.dltk.ui.viewsupport.ImageDescriptorRegistry;
@@ -72,18 +69,15 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 	public ImageDescriptor getImageDescriptor(IMember member, Point imageSize) {
 		
 		int elementFlags = 0;
-		int imageFlags = 0;
 		try {
 			elementFlags = member.getFlags();
-			imageFlags = getImageFlags(member, elementFlags);
 		} catch (ModelException e) {
-			// Ignore, use default flags
-			// TODO throw instead?
-			DeeCore.log(e);
+			DeeCore.logError(e);
+			return ImageDescriptor.getMissingImageDescriptor();
 		}
+		EArcheType archeType = DeeModelElementUtil.elementFlagsToArcheType(member, elementFlags);
 		
 		ElementIconsStyle iconStyle = getIconStylePreference();
-		EArcheType archeType = DeeModelElementUtil.elementFlagsToArcheType(member, elementFlags);
 		ImageDescriptor baseImage = getBaseImageDescriptor(archeType, elementFlags, iconStyle);
 		
 		ProtectionAttribute prot = null;
@@ -92,30 +86,28 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			prot = DeeModelElementUtil.elementFlagsToProtection(elementFlags, null);
 		}
 		
+		int imageFlags = getImageFlags(archeType, elementFlags);
 		return new DeeElementImageDescriptor(baseImage, imageFlags, prot, imageSize);
 	}
 	
-	protected int getImageFlags(IMember member, int modifiers) throws ModelException {
-		int flags = 0;
+	protected int getImageFlags(EArcheType archeType, int modifiers) {
+		int imageFlags = 0;
 		
-		if (member.getElementType() == IModelElement.METHOD && ((IMethod) member).isConstructor()) {
-			flags |= ScriptElementImageDescriptor.CONSTRUCTOR; // TODO: this should be it's own base image
+		if (archeType == EArcheType.Function && DeeModelElementUtil.isConstructor(modifiers)) {
+			imageFlags |= ScriptElementImageDescriptor.CONSTRUCTOR; // TODO: this should be its own base image
 		}
 		
-		IType declaringType = member.getDeclaringType();
-		boolean isInterface = declaringType != null && Flags.isInterface(declaringType.getFlags());
-		
-		if(Flags.isAbstract(modifiers) && !isInterface) {
-			flags |= ScriptElementImageDescriptor.ABSTRACT;
+		if(Flags.isAbstract(modifiers)) {
+			imageFlags |= ScriptElementImageDescriptor.ABSTRACT;
 		}
 		if(Flags.isFinal(modifiers)) {
-			flags |= ScriptElementImageDescriptor.FINAL;
+			imageFlags |= ScriptElementImageDescriptor.FINAL;
 		}
 		if(Flags.isStatic(modifiers)) {
-			flags |= ScriptElementImageDescriptor.STATIC;
+			imageFlags |= ScriptElementImageDescriptor.STATIC;
 		}
 		
-		return flags;
+		return imageFlags;
 	}
 	
 	protected ElementIconsStyle getIconStylePreference() {

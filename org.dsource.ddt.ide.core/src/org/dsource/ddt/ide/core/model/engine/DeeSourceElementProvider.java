@@ -108,7 +108,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public boolean visit(DefinitionStruct node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_STRUCT));
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_STRUCT));
 		return true;
 	}
 	@Override
@@ -118,7 +118,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public boolean visit(DefinitionUnion node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_UNION));
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_UNION));
 		return true;
 	}
 	@Override
@@ -150,7 +150,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public boolean visit(DefinitionTemplate node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_TEMPLATE));
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_TEMPLATE));
 		return true;
 	}
 	@Override
@@ -160,7 +160,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public boolean visit(DefinitionEnum node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_ENUM));
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ENUM));
 		return true;
 	}
 	@Override
@@ -170,7 +170,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public boolean visit(DefinitionTypedef node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_TYPEDEF));
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_TYPEDEF));
 		return true;
 	}
 	@Override
@@ -180,7 +180,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	@Override
 	public boolean visit(DefinitionAlias node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.TYPE_ALIAS));
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
 		return true;
 	}
 	@Override
@@ -247,21 +247,23 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	
 	
-	protected static void setupDefUnitTypeInfo(DefUnit defAggr, ISourceElementRequestor.ElementInfo elemInfo) {
+	protected static void setupDefUnitTypeInfo(DefUnit defAggr, ISourceElementRequestor.ElementInfo elemInfo,
+			int archetypeMask) {
+		assertTrue((archetypeMask & DeeModelConstants.FLAGMASK_KIND) == archetypeMask);
 		elemInfo.name = defAggr.getName();
 		elemInfo.declarationStart = defAggr.getStartPos();
 		elemInfo.nameSourceStart = defAggr.defname.getStartPos();
 		elemInfo.nameSourceEnd = defAggr.defname.getEndPos() - 1;
+		
+		elemInfo.modifiers |= archetypeMask;
 	}
 	
 	protected static void setupDefinitionTypeInfo(Definition elem, ISourceElementRequestor.ElementInfo elemInfo) {
-		elemInfo.modifiers = getModifiersFlags(elem);
-		elemInfo.modifiers = getProtectionFlags(elem, elemInfo.modifiers);
+		elemInfo.modifiers |= getDeclarationModifiersFlags(elem);
+		elemInfo.modifiers |= getProtectionFlags(elem);
 	}
 	
-	
-	
-	protected static int getModifiersFlags(Definition elem) {
+	protected static int getDeclarationModifiersFlags(Definition elem) {
 		int modifiers = 0;
 		
 		modifiers = addBitFlag(elem.effectiveModifiers, STC.STCabstract, modifiers, Modifiers.AccAbstract);
@@ -293,49 +295,47 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		return modifiers;
 	}
 	
-	protected static int getProtectionFlags(Definition elem, int modifiers) {
-		// default:
+	protected static int getProtectionFlags(Definition elem) {
+		int flags = 0;
 		
 		switch(elem.getEffectiveProtection()) {
-		case PROTprivate: modifiers |= Modifiers.AccPrivate; break;
-		case PROTpublic: modifiers |= Modifiers.AccPublic; break;
-		case PROTprotected: modifiers |= Modifiers.AccProtected; break;
-		case PROTpackage: modifiers |= DeeModelConstants.FLAG_PROTECTION_PACKAGE; break;
-		case PROTexport: modifiers |= DeeModelConstants.FLAG_PROTECTION_EXPORT; break;
+		case PROTprivate: flags |= Modifiers.AccPrivate; break;
+		case PROTpublic: flags |= Modifiers.AccPublic; break;
+		case PROTprotected: flags |= Modifiers.AccProtected; break;
+		case PROTpackage: flags |= DeeModelConstants.FLAG_PROTECTION_PACKAGE; break;
+		case PROTexport: flags |= DeeModelConstants.FLAG_PROTECTION_EXPORT; break;
 		
-		default: modifiers |= Modifiers.AccPublic;
+		default: flags |= Modifiers.AccPublic;
 		}
-		return modifiers;
+		return flags;
 	}
 	
 	protected static TypeInfo createTypeInfoForModule(Module elem) {
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
-		setupDefUnitTypeInfo(elem, typeInfo);
+		setupDefUnitTypeInfo(elem, typeInfo, 0);
 		typeInfo.modifiers |= Modifiers.AccModule;
 		//typeInfo.superclasses = DeeSourceElementProvider.EMPTY_STRING;
 		return typeInfo;
 	}
 	
 	protected static TypeInfo createTypeInfoForDefinition(Definition elem, int archetypeMask) {
-		assertTrue((archetypeMask & DeeModelConstants.MODIFIERS_ARCHETYPE_MASK) == archetypeMask);
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
-		setupDefUnitTypeInfo(elem, typeInfo);
+		setupDefUnitTypeInfo(elem, typeInfo, archetypeMask);
 		setupDefinitionTypeInfo(elem, typeInfo);
-		typeInfo.modifiers |= archetypeMask;
 		typeInfo.superclasses = DeeSourceElementProvider.EMPTY_STRING;
 		return typeInfo;
 	}
 	
 	
 	protected static TypeInfo createTypeInfoForClass(DefinitionClass elem) {
-		int archeType = DeeModelConstants.TYPE_CLASS;
+		int archeType = DeeModelConstants.FLAG_KIND_CLASS;
 		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(elem, archeType);
 		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(elem, false);
 		return typeInfo;
 	}
 	
 	protected static TypeInfo createTypeInfoForInterface(DefinitionInterface elem) {
-		int archetype = DeeModelConstants.TYPE_INTERFACE;
+		int archetype = DeeModelConstants.FLAG_KIND_INTERFACE;
 		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(elem, archetype);
 		typeInfo.modifiers |= Modifiers.AccInterface;
 		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(elem, true);
@@ -365,7 +365,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	protected static ISourceElementRequestor.MethodInfo createMethodInfo(DefinitionFunction elem) {
 		ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
-		setupDefUnitTypeInfo(elem, methodInfo);
+		setupDefUnitTypeInfo(elem, methodInfo, DeeModelConstants.FLAG_KIND_FUNCTION);
 		setupDefinitionTypeInfo(elem, methodInfo);
 		
 		setupParametersInfo(elem, methodInfo);
@@ -375,13 +375,16 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	protected static ISourceElementRequestor.MethodInfo createConstructorInfo(DefinitionCtor elem) {
 		ISourceElementRequestor.MethodInfo elemInfo = new ISourceElementRequestor.MethodInfo();
+		//setupDefUnitTypeInfo(elem, elemInfo);
 		elemInfo.declarationStart = elem.getStartPos();
-		elemInfo.isConstructor = true; // for purposes of ModelElements, any kind of *ctor is marked as a constructor
 		elemInfo.name = elem.kind.specialName;
 		elemInfo.nameSourceStart = elem.nameStart;
 		elemInfo.nameSourceEnd = elem.nameStart + elem.kind.specialName.length() - 1; 
 		
-		//setupDefinitionTypeInfo(elem, methodInfo);
+		elemInfo.modifiers |= DeeModelConstants.FLAG_KIND_FUNCTION;
+		elemInfo.modifiers |= DeeModelConstants.FLAG_CONSTRUCTOR;
+		elemInfo.isConstructor = true; // for purposes of ModelElements, any kind of *ctor is marked as a constructor
+		
 		setupParametersInfo(elem, elemInfo);
 		return elemInfo;
 	}
@@ -404,7 +407,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	
 	protected static FieldInfo createFieldInfo(DefinitionVariable elem) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
-		setupDefUnitTypeInfo(elem, fieldInfo);
+		setupDefUnitTypeInfo(elem, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
 		setupDefinitionTypeInfo(elem, fieldInfo);
 		
 		fieldInfo.type = typeRefToUIString(elem.type);

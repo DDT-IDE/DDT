@@ -1,7 +1,6 @@
 package mmrnmhrm.ui.views;
 
 import static melnorme.utilbox.core.CoreUtil.downCast;
-import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.ui.DeePluginImages;
 

@@ -227,25 +227,25 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			new FakeMember.FakeMethod(module, "function3", FLAG_PROTECTION_PACKAGE, ns, paramsI, false, "int");
 			new FakeMember.FakeMethod(module, "function4", FLAG_PROTECTION_PRIVATE, ns, paramsI, false, "int");
 			
-			FakeMember.FakeType sampleClass = new FakeMember.FakeType(module, "Class", TYPE_CLASS, ns);
+			FakeMember.FakeType sampleClass = new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS, ns);
 			
 			new FakeMember.FakeMethod(sampleClass, "this", FLAG_PROTECTION_PUBLIC, ns, paramsO, true, "int");
 			new FakeMember.FakeMethod(sampleClass, "~this", FLAG_PROTECTION_PRIVATE, ns, paramsO, true, "int");
 			new FakeMember.FakeMethod(sampleClass, "method1", FLAG_PROTECTION_PUBLIC | SF, ns, paramsE, false, "int");
 			new FakeMember.FakeMethod(sampleClass, "method2", FLAG_PROTECTION_PROTECTED, ns, paramsE, false, "void");
 			
-			new FakeMember.FakeType(sampleClass, "Class2", TYPE_CLASS | FLAG_PROTECTION_PROTECTED | FINAL, ns);
-			new FakeMember.FakeType(sampleClass, "Class3", TYPE_CLASS | FLAG_PROTECTION_PRIVATE | SF, ns);
+			new FakeMember.FakeType(sampleClass, "Class2", FLAG_KIND_CLASS | FLAG_PROTECTION_PROTECTED | FINAL, ns);
+			new FakeMember.FakeType(sampleClass, "Class3", FLAG_KIND_CLASS | FLAG_PROTECTION_PRIVATE | SF, ns);
 			
-			new FakeMember.FakeType(module, "Interface", TYPE_INTERFACE | FLAG_PROTECTION_PUBLIC, ns);
-			new FakeMember.FakeType(module, "Interface", TYPE_INTERFACE | FLAG_PROTECTION_PROTECTED, ns);
-			new FakeMember.FakeType(module, "Interface", TYPE_INTERFACE | FLAG_PROTECTION_PACKAGE, ns);
-			new FakeMember.FakeType(module, "Interface", TYPE_INTERFACE | FLAG_PROTECTION_PRIVATE, ns);
-			new FakeMember.FakeType(module, "Struct", TYPE_STRUCT, ns);
-			new FakeMember.FakeType(module, "Union", TYPE_UNION, ns);
-			new FakeMember.FakeType(module, "Template", TYPE_TEMPLATE, ns);
-			new FakeMember.FakeType(module, "Alias", TYPE_ALIAS, ns);
-			new FakeMember.FakeType(module, "Typedef", TYPE_TYPEDEF, ns);
+			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE | FLAG_PROTECTION_PUBLIC, ns);
+			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE | FLAG_PROTECTION_PROTECTED, ns);
+			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE | FLAG_PROTECTION_PACKAGE, ns);
+			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE | FLAG_PROTECTION_PRIVATE, ns);
+			new FakeMember.FakeType(module, "Struct", FLAG_KIND_STRUCT, ns);
+			new FakeMember.FakeType(module, "Union", FLAG_KIND_UNION, ns);
+			new FakeMember.FakeType(module, "Template", FLAG_KIND_TEMPLATE, ns);
+			new FakeMember.FakeType(module, "Alias", FLAG_KIND_ALIAS, ns);
+			new FakeMember.FakeType(module, "Typedef", FLAG_KIND_TYPEDEF, ns);
 			
 			IModelElement[] treeModel = CoreUtil.<IModelElement>array(sourceModule1, module);
 			return treeModel;

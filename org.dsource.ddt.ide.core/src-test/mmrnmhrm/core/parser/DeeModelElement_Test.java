@@ -20,6 +20,7 @@ import mmrnmhrm.tests.SampleMainProject;
 
 import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
 import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.core.ISourceModule;
@@ -123,6 +124,11 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		assertTrue(element.getNameRange().getLength() == element.getElementName().length());
 		
 		assertTrue(DeeModelElementUtil.elementFlagsToArcheType(element, element.getFlags()) == archeType);
+		assertTrue(DeeModelElementUtil.elementFlagsToArcheType(element.getFlags()) == archeType);
+		if(element instanceof IMethod) {
+			IMethod method = (IMethod) element;
+			assertTrue(method.isConstructor() == DeeModelElementUtil.isConstructor(element.getFlags()));
+		}
 		
 		if(element.getNamespace() == null) {
 			assertTrue(element.getParent() != sourceModule.getParent());
