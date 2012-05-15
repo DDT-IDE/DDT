@@ -14,6 +14,7 @@
  * Fixed parser NPE bug when using inout as const wildcard declarator.
  * Fixed parser error when "alias this" appeared as a statement.
  * Fixed bugs where parser and semantic engine ignored the parameters of constructors.
+ * Fixed some invalid menu entries in editor context menu (entries for commands that are not implemented).
  
 == DDT 0.5.0 (2011-08-26) ==
  * Updated DDT to DTLK 3.0

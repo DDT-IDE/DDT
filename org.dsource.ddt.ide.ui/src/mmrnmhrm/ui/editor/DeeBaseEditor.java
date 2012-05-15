@@ -1,17 +1,19 @@
 package mmrnmhrm.ui.editor;
 
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import mmrnmhrm.org.eclipse.dltk.ui.actions.ReferencesSearchGroup;
 
 import org.dsource.ddt.lang.ui.editor.ScriptEditorLangExtension;
 import org.eclipse.dltk.internal.ui.editor.BracketInserter;
 import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
-import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.actions.ActionGroup;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 public abstract class DeeBaseEditor extends ScriptEditorLangExtension {
 	
@@ -55,29 +57,34 @@ public abstract class DeeBaseEditor extends ScriptEditorLangExtension {
 	protected void createActions() {
 		super.createActions();
 		
+		// This will deactivate the keybindings for these actions
 		setAction("OpenTypeHierarchy", null);
 		setAction("OpenCallHierarchy", null);
 		
-		Action dummyAction = new Action() { };
-		setAction(IScriptEditorActionDefinitionIds.OPEN_HIERARCHY, dummyAction);
-		
 		fReferencesGroup = new ReferencesSearchGroup(this, this.getLanguageToolkit());
-		
 	}
 	
 	@Override
 	public void editorContextMenuAboutToShow(IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
-		menu.getItems();
+		
+		menu.remove("OpenEditor");
 		menu.remove("OpenTypeHierarchy");
 		menu.remove("OpenCallHierarchy");
 		
+		menu.remove(IScriptEditorActionDefinitionIds.OPEN_HIERARCHY); // This is quick hierarchy action
 		menu.remove("org.eclipse.dltk.ui.refactoring.menu");
 		
-		menu.remove(IScriptEditorActionDefinitionIds.OPEN_HIERARCHY);
+		IContributionItem[] items = menu.getItems();
+		for (int i = 0; i < items.length; i++) {
+			IContributionItem item = items[i];
+			if (areEqual(item.getId(), ITextEditorActionConstants.GROUP_FIND) && item instanceof IMenuManager) {
+				menu.remove(item);
+				break;
+			}
+		}
 		
 		fReferencesGroup.fillContextMenu(menu);
-		
 	}
 	
 }

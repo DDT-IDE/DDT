@@ -223,11 +223,6 @@
        id="org.dsource.ddt.ide.ui.commands.openDeeSearchPage"
        name="%OpenLangSearchPageAction.name">
  </command>
- <command
-       categoryId="org.dsource.ddt.ide.ui.commands.category1"
-       id="org.eclipse.dltk.ui.edit.text.script.search.references.in.workspace"
-       name="FNORD">
- </command>
 <!--
       <command
             categoryId="org.dsource.ddt.ide.ui.commands.category1"
@@ -246,7 +241,7 @@
             id="org.dsource.ddt.ide.ui.DeeActionSet"
             label="%LangActionSet.label"
             visible="false">
-
+<!--
          <action
                definitionId="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
                label="%OpenTypeInHierarchyAction.label"
@@ -254,6 +249,17 @@
                class="mmrnmhrm.ui.actions.DeeOpenTypeInHierarchyAction"
                menubarPath="navigate/open.ext2"
                id="org.dsource.ddt.ide.ui.actions.openTypeInHierarchy">
+         </action>
+-->  
+         <action
+               class="mmrnmhrm.ui.actions.GoToDefinitionAction"
+               definitionId="org.dsource.ddt.ide.ui.commands.openDefinition"
+               icon="icons/action16e/gotodef.gif"
+               id="org.dsource.ddt.ide.ui.actions.openDefinition"
+               label="%OpenDefinitionAction.label"
+               menubarPath="navigate/open.ext"
+               toolbarPath="org.eclipse.search.searchActionSet/Search"
+               tooltip="%OpenDefinitionAction.tooltip">
          </action>
          <action
             definitionId="org.dsource.ddt.ide.ui.commands.openDeeType"
@@ -265,18 +271,7 @@
             toolbarPath="org.eclipse.search.searchActionSet/Search"
             tooltip="%OpenTypeAction.tooltip">
          </action>
- 
-         <action
-               class="mmrnmhrm.ui.actions.GoToDefinitionAction"
-               definitionId="org.dsource.ddt.ide.ui.commands.openDefinition"
-               icon="icons/action16e/gotodef.gif"
-               id="org.dsource.ddt.ide.ui.actions.openDefinition"
-               label="%OpenDefinitionAction.label"
-               menubarPath="navigate/open.ext"
-               toolbarPath="org.eclipse.search.searchActionSet/Search"
-               tooltip="%OpenDefinitionAction.tooltip">
-         </action>
-         
+       
          <menu
                label="%SearchMenu.label"
                path="navigate"
