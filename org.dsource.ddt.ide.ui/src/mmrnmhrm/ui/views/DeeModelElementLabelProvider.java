@@ -83,29 +83,47 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		}
 		
 		ElementIconsStyle iconStyle = getIconStylePreference();
-		
-		ImageDescriptor baseImage = getBaseImageDescriptor(member, elementFlags, iconStyle);
+		EArcheType archeType = DeeModelElementUtil.elementFlagsToArcheType(member, elementFlags);
+		ImageDescriptor baseImage = getBaseImageDescriptor(archeType, elementFlags, iconStyle);
 		
 		ProtectionAttribute prot = null;
 		if (iconStyle != ElementIconsStyle.JDTLIKE || 
-				(member.getElementType() != IModelElement.FIELD && member.getElementType() != IModelElement.METHOD)) {
+				(archeType != EArcheType.Variable && archeType != EArcheType.Function)) {
 			prot = DeeModelElementUtil.elementFlagsToProtection(elementFlags, null);
 		}
 		
 		return new DeeElementImageDescriptor(baseImage, imageFlags, prot, imageSize);
 	}
-
+	
+	protected int getImageFlags(IMember member, int modifiers) throws ModelException {
+		int flags = 0;
+		
+		if (member.getElementType() == IModelElement.METHOD && ((IMethod) member).isConstructor()) {
+			flags |= ScriptElementImageDescriptor.CONSTRUCTOR; // TODO: this should be it's own base image
+		}
+		
+		IType declaringType = member.getDeclaringType();
+		boolean isInterface = declaringType != null && Flags.isInterface(declaringType.getFlags());
+		
+		if(Flags.isAbstract(modifiers) && !isInterface) {
+			flags |= ScriptElementImageDescriptor.ABSTRACT;
+		}
+		if(Flags.isFinal(modifiers)) {
+			flags |= ScriptElementImageDescriptor.FINAL;
+		}
+		if(Flags.isStatic(modifiers)) {
+			flags |= ScriptElementImageDescriptor.STATIC;
+		}
+		
+		return flags;
+	}
+	
 	protected ElementIconsStyle getIconStylePreference() {
 		String iconStyleStr = DeePlugin.getPrefStore().getString(DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE);
 		return ElementIconsStyle.create(iconStyleStr, ElementIconsStyle.DDT);
 	}
 	
-	protected ImageDescriptor getBaseImageDescriptor(IMember member, int flags, ElementIconsStyle iconStyle) {
-		EArcheType archeType = DeeModelElementUtil.elementFlagsToArcheType(member, flags);
-		if(archeType == null) {
-			return null;
-		}
-		
+	protected ImageDescriptor getBaseImageDescriptor(EArcheType archeType, int flags, ElementIconsStyle iconStyle) {
 		switch (archeType) {
 		case Package:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ELEM_PACKAGE);
@@ -163,29 +181,6 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		default:
 			throw assertFail();
 		}
-	}
-	
-	protected int getImageFlags(IMember member, int modifiers) throws ModelException {
-		int flags = 0;
-		
-		if (member.getElementType() == IModelElement.METHOD && ((IMethod) member).isConstructor()) {
-			flags |= ScriptElementImageDescriptor.CONSTRUCTOR; // TODO: this should be it's own base image
-		}
-		
-		IType declaringType = member.getDeclaringType();
-		boolean isInterface = declaringType != null && Flags.isInterface(declaringType.getFlags());
-		
-		if(Flags.isAbstract(modifiers) && !isInterface) {
-			flags |= ScriptElementImageDescriptor.ABSTRACT;
-		}
-		if(Flags.isFinal(modifiers)) {
-			flags |= ScriptElementImageDescriptor.FINAL;
-		}
-		if(Flags.isStatic(modifiers)) {
-			flags |= ScriptElementImageDescriptor.STATIC;
-		}
-		
-		return flags;
 	}
 	
 }

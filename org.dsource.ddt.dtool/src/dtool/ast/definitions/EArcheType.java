@@ -20,7 +20,7 @@ public enum EArcheType {
 	Template,
 	TypeParameter(true),
 	Mixin,
-	Tuple,
+	Tuple, //This probably should not be an archetype
 	;
 	
 	protected final boolean isType;

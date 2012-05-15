@@ -12,15 +12,16 @@ import dtool.ast.definitions.EArcheType;
 public class DeeModelElementUtil {
 	
 	public static EArcheType elementFlagsToArcheType(IMember member, int flags) {
-		switch (member.getElementType()) {
+		int elementType = member.getElementType();
+		switch (elementType) {
 		case IModelElement.FIELD:
-			return EArcheType.Variable;
+			flags = DeeModelConstants.TYPE_VARIABLE;
 		case IModelElement.METHOD:
-			return EArcheType.Function;
+			flags = DeeModelConstants.TYPE_FUNCTION;
 		case IModelElement.TYPE:
 			return typeElementFlagsToArcheType(flags);
 		default:
-			return null;
+			throw assertFail();
 		}
 	}
 	
@@ -34,6 +35,10 @@ public class DeeModelElementUtil {
 		
 		int archetypeFlag = elementFlags & DeeModelConstants.MODIFIERS_ARCHETYPE_MASK;
 		switch (archetypeFlag) {
+		case DeeModelConstants.TYPE_FUNCTION:
+			return EArcheType.Function;
+		case DeeModelConstants.TYPE_VARIABLE:
+			return EArcheType.Variable;
 		case DeeModelConstants.TYPE_CLASS:
 			return EArcheType.Class;
 		case DeeModelConstants.TYPE_INTERFACE:
