@@ -12,6 +12,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import descent.internal.compiler.parser.TOK;
 import descent.internal.compiler.parser.Token;
 import descent.internal.compiler.parser.ast.TokenUtil;
+import dtool.DeeNamingRules;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -120,7 +121,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		ParserAdapter parserAdapter = ParserAdapter.parseSource(source);
 		parserAdapter.recoverForCompletion(source, offset, lastTokenNonWS);
 		
-		Module neoModule = DescentASTConverter.convertModule(parserAdapter.mod);
+		String moduleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
+		Module neoModule = DescentASTConverter.convertModule(parserAdapter.mod, moduleName);
 		neoModule.setModuleUnit(moduleUnit);
 		
 		/* ============================================== */

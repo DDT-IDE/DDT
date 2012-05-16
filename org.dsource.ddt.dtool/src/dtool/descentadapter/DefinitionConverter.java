@@ -113,13 +113,14 @@ public class DefinitionConverter extends BaseDmdConverter {
 	
 	/*---------------------------------------------------------*/
 	
-	public static Module createModule(descent.internal.compiler.parser.Module elem, ASTConversionContext convContext) {
+	public static Module createModule(descent.internal.compiler.parser.Module elem, ASTConversionContext convContext,
+			String moduleName) {
 		
 		ArrayView<ASTNeoNode> members = DescentASTConverter.convertManyNoNulls(elem.members, convContext);
 		
 		SourceRange sourceRange = sourceRange(elem, false);
 		if(elem.md == null) {
-			return Module.createModule(sourceRange, members);
+			return Module.createModule(sourceRange, members, moduleName);
 		} else  {
 			TokenInfo defnameInfo = DefinitionConverter.convertIdToken(elem.md.id);
 			SourceRange declRange = sourceRange(elem.md);

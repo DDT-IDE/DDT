@@ -16,6 +16,7 @@
  * Fixed parser error when "alias this" appeared as a statement.
  * Fixed bugs where parser and semantic engine ignored the parameters of constructors.
  * Fixed some invalid menu entries in editor context menu (entries for commands that are not implemented).
+ * Modules without module declarations will now have their names inferred from their filename. (issue #26)
  
 == DDT 0.5.0 (2011-08-26) ==
  * Updated DDT to DTLK 3.0

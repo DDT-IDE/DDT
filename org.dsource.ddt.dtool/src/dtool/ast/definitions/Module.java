@@ -91,8 +91,8 @@ public class Module extends DefUnit implements IScopeNode {
 		return new Module(defSymbol, comments, md, members, sourceRange);
 	}
 	
-	public static Module createModule(SourceRange sourceRange, ArrayView<ASTNeoNode> members) {
-		ModuleDefSymbol defSymbol = new ModuleDefSymbol("<unnamed>");
+	public static Module createModule(SourceRange sourceRange, ArrayView<ASTNeoNode> members, String moduleName) {
+		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
 		return new Module(defSymbol, null, null, members, sourceRange);
 	}
 	

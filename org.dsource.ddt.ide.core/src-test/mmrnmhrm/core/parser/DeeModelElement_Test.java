@@ -136,31 +136,21 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		}
 	}
 	
-	protected static final String UNNAMED_DEFAULT = "<unnamed>";
-	
 	@Test
 	public void testImplicitModuleName() throws Exception { testImplicitModuleName$(); }
 	public void testImplicitModuleName$() throws Exception {
 		ISourceModule srcModule = getSourceModule(TR_SAMPLE_SRC1, "moduleDeclImplicitName.d");
 		assertEquals(srcModule.getElementName(), "moduleDeclImplicitName.d");
 		
-		assertTrue(srcModule.getType("moduleDeclImplicitName").exists() == false);
-		assertTrue(ModelElementTestUtils.getChildren(srcModule, "moduleDeclImplicitName").size() == 0);
+		assertTrue(ModelElementTestUtils.getChildren(srcModule, "moduleDeclImplicitName").size() > 0);
 		
-		IType topLevelElement = srcModule.getType(UNNAMED_DEFAULT); // TODO fix this
+		IType topLevelElement = srcModule.getType("moduleDeclImplicitName");
 		
 		checkElementExists(srcModule, topLevelElement.getType("Foo"), 
 			EArcheType.Class, "class Foo");
 		checkElementExists(srcModule, topLevelElement.getType("Foo").getMethod("func"), 
 			EArcheType.Function, "void func()");
 		
-		
-//		checkElementExists(implicitNameMod, implicitNameMod.getType("moduleDeclImplicitName"), 
-//			"module actualModuleName_DifferentFromFileName;");
-//
-//		IModelElement atZero = implicitNameMod.getElementAt(0);
-//		assertEquals(atZero.getElementName(), "moduleDeclImplicitName");
-//		assertEquals(atZero.getParent(), implicitNameMod);
 	}
 	
 	@Test
@@ -187,11 +177,11 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		testNameSpace(topLevelElement, "pack.subpack", "Mod3Class");
 		
 		topLevelElement = getSourceModule(TR_SAMPLE_SRC1, "moduleDeclImplicitName.d").
-				getType(UNNAMED_DEFAULT);
+				getType("moduleDeclImplicitName");
 		testNameSpace(topLevelElement, "", "Foo");
 		
 		topLevelElement = getSourceModule(TR_SAMPLE_SRC1, "src1pack/moduleDeclImplicitName2.d").
-				getType(UNNAMED_DEFAULT);
+				getType("moduleDeclImplicitName2");
 		testNameSpace(topLevelElement, "", "Foo");
 	}
 	

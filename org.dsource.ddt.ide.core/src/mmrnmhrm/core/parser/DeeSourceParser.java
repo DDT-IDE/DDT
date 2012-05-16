@@ -6,9 +6,11 @@ import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
+import org.eclipse.dltk.core.IModelElement;
 
 import descent.core.compiler.IProblem;
 import descent.internal.compiler.parser.Module;
+import dtool.DeeNamingRules;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.refmodel.ParserAdapter;
 
@@ -54,7 +56,12 @@ public class DeeSourceParser extends AbstractSourceParser {
 			// DontLet's try to convert a malformed AST
 			return deeModuleDecl;
 		}
-		dtool.ast.definitions.Module neoModule = DescentASTConverter.convertModule(dmdModule);
+		String moduleName = "_unnamedSource_";
+		IModelElement modelElement = input.getModelElement();
+		if(modelElement != null) {
+			moduleName = DeeNamingRules.getModuleNameFromFileName(modelElement.getElementName());
+		}
+		dtool.ast.definitions.Module neoModule = DescentASTConverter.convertModule(dmdModule, moduleName);
 		deeModuleDecl.setNeoModule(neoModule);
 		//setModuleDeclModuleUnit(fileName, deeModuleDecl);
 		return deeModuleDecl;

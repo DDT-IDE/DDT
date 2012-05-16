@@ -76,7 +76,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 			assertTrue((parseResult.mod.problems.size() > 0) == expectedErrors, "expectedErrors is not: " + expectedErrors);
 		}
 		
-		Module neoModule = DescentASTConverter.convertModule(parseResult.mod);
+		Module neoModule = DescentASTConverter.convertModule(parseResult.mod, "_tests_unnamed_");
 		if(checkAST && parseResult.mod.problems.size() == 0) {
 			// We rarely get good source ranges with size == 0; 
 			ASTChecker.checkConsistency(neoModule);

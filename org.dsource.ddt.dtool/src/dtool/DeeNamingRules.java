@@ -1,5 +1,6 @@
 package dtool;
 
+import melnorme.utilbox.misc.StringUtil;
 import descent.core.JavaConventions_Common;
 
 /**
@@ -63,6 +64,11 @@ public class DeeNamingRules {
 	
 	public static boolean isValidPackageNamePart(CharSequence partname) {
 		return isValidDIdentifier(partname);
+	}
+	
+	public static String getModuleNameFromFileName(String fileName) {
+		// Hum, should we validate the identifier?
+		return StringUtil.upUntil(fileName, ".");
 	}
 	
 }
