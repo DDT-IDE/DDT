@@ -1,13 +1,13 @@
 package mmrnmhrm.ui;
 
+import org.eclipse.dltk.core.IField;
+import org.eclipse.dltk.core.ILocalVariable;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.INamespace;
 import org.eclipse.dltk.core.IScriptFolder;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
-import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.ScriptElementLabels;
 
-// TODO: customize some of the label strings? Don't print initializers for the methods? 
 public class DeeScriptElementLabels extends ScriptElementLabels {
 	
 	@Override
@@ -43,24 +43,39 @@ public class DeeScriptElementLabels extends ScriptElementLabels {
 //		}
 //		getScriptFolderLabel(pack, (flags & QUALIFIER_FLAGS), buf);
 		
-		// -------------- 
-		try {
-			final INamespace namespace = type.getNamespace();
-			if (namespace != null) {
-				buf.append(namespace.getQualifiedName("."));
-				if(!namespace.isRoot()) {
-					buf.append(".");
-				}
-				return;
-			}
-		} catch (ModelException e) {
-			// ignore
+		IScriptFolder pkg = type.getScriptFolder();
+		if(pkg.isRootFolder()) {
 			return;
 		}
-		IScriptFolder pkg = type.getScriptFolder();
+		buf.append(pkg.getElementName().replaceAll("/", ".") + ".");
+	}
+	
+	@Override
+	protected void getFieldLabel(IField field, long flags, StringBuffer buf) {
+		super.getFieldLabel(field, flags, buf);
+	}
+	
+	@Override
+	protected void getLocalVariableLabel(ILocalVariable field, long flags, StringBuffer buf) {
+		super.getLocalVariableLabel(field, flags, buf);
+	}
+	
+	@Override
+	protected void getSourceModule(ISourceModule module, long flags, StringBuffer buf) {
+		if (getFlag(flags, CU_QUALIFIED)) {
+			IScriptFolder pack = (IScriptFolder) module.getParent();
+			if(!pack.isRootFolder()) {
+				getScriptFolderLabel(pack, (flags & QUALIFIER_FLAGS), buf);
+				buf.append("/");
+			}
+		}
+		buf.append(module.getElementName());
 		
-		getScriptFolderLabel(pkg, (flags & QUALIFIER_FLAGS), buf);
-		buf.append(".");
+		if (getFlag(flags, CU_POST_QUALIFIED) && !((IScriptFolder) module.getParent()).isRootFolder()) {
+			IScriptFolder pack = (IScriptFolder) module.getParent();
+			buf.append(CONCAT_STRING);
+			getScriptFolderLabel(pack, flags & QUALIFIER_FLAGS, buf);
+		}
 	}
 	
 }
