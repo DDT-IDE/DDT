@@ -1,6 +1,9 @@
 package dtool.tests.ref.cc;
 
 
+import mmrnmhrm.tests.ITestResourcesConstants;
+import mmrnmhrm.tests.SampleMainProject;
+
 import org.junit.Test;
 
 public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
@@ -8,7 +11,7 @@ public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
 	public static final String TEST_SRCFILE = "sampledefs.d";
 	
 	public CodeCompletion_DefUnitsTest() {
-		super(TEST_SRCFILE);
+		super(SampleMainProject.getSourceModule(ITestResourcesConstants.TR_SAMPLE_SRC1, TEST_SRCFILE));
 	}
 	
 	
@@ -19,10 +22,11 @@ public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
 		testComputeProposals(getMarkerStartOffset("/+@CC1+/"), 0, true,
 				"IfTypeDefUnit",
 				"parameter",
-				"func(asdf.qwer parameter)",
+				"tplFunc(asdf.qwer parameter)",
 				"TplNestedClass",
 				
 				"sampledefs",
+				"functionFoo(int fooParam)",
 				"Alias",
 				"Class",
 				"Enum",

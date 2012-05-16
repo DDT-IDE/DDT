@@ -36,6 +36,7 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 		int cc3xOffset = getMarkerEndOffset("/+CC3x@+/");
 		
 		String[] cc3results1 = array(
+				"packA.sampledefs_inpack", "packA.subpack.sampledefs_inpack",
 				"pack.mod1", "pack.mod2", "pack.mod3", "pack.modSyntaxErrors", 
 				"pack.sample", "pack.sample2", "pack.sample3", 
 				"pack.testSelfImport3",

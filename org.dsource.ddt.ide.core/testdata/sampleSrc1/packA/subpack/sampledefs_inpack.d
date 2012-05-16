@@ -1,4 +1,4 @@
-module sampledefs;
+module packA.subpack.sampledefs_inpack;
 // A sample file with all kinds of DefUnits
 
 import pack.sample : ImportSelectiveAlias = SampleClassB;
@@ -8,6 +8,10 @@ import ImportAliasingDefUnit = pack.sample;
 static import pack.sample;
 
 int variable;
+
+void functionFoo(int fooParam) {
+	int fooLocalVar;
+}
 
 class Class  {
 	int fieldA;

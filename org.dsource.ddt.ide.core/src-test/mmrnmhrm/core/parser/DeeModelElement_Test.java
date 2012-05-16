@@ -12,17 +12,15 @@ package mmrnmhrm.core.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.ArrayList;
 
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
+import mmrnmhrm.tests.ModelElementTestUtils;
 import mmrnmhrm.tests.SampleMainProject;
 
 import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
-import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
@@ -48,7 +46,7 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		ISourceModule srcModule = getSourceModule(TR_CA, "sampledefs.d");
+		ISourceModule srcModule = getSourceModule(TR_SAMPLE_SRC1, "sampledefs.d");
 		
 		IType topLevelElement = srcModule.getType("sampledefs");
 		checkElementExists(srcModule, topLevelElement, 
@@ -84,9 +82,10 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 			EArcheType.Class, "class TplNestedClass  {");
 		
 		
-		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("func"), 
+		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass")
+				.getMethod("tplFunc"),
 			EArcheType.Function, 
-			"void func(asdf.qwer parameter) {");
+			"void tplFunc(asdf.qwer parameter) {");
 		
 		
 		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("this"), 
@@ -146,7 +145,7 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		assertEquals(srcModule.getElementName(), "moduleDeclImplicitName.d");
 		
 		assertTrue(srcModule.getType("moduleDeclImplicitName").exists() == false);
-		assertTrue(getChild(srcModule, "moduleDeclImplicitName").size() == 0);
+		assertTrue(ModelElementTestUtils.getChildren(srcModule, "moduleDeclImplicitName").size() == 0);
 		
 		IType topLevelElement = srcModule.getType(UNNAMED_DEFAULT); // TODO fix this
 		
@@ -164,19 +163,6 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 //		assertEquals(atZero.getParent(), implicitNameMod);
 	}
 	
-	public static ArrayList<IMember> getChild(IParent element, String childName) throws ModelException {
-		assertCast(null, IMember.class);
-		ArrayList<IMember> matchedChildren = new ArrayList<IMember>();
-		
-		for (IModelElement child : element.getChildren()) {
-			IMember member = assertCast(child, IMember.class);
-			if(child.getElementName().equals(childName)) {
-				matchedChildren.add(member);
-			}
-		}
-		return matchedChildren;
-	}
-	
 	@Test
 	public void testMismatchedModuleName() throws Exception { testMismatchedModuleName$(); }
 	public void testMismatchedModuleName$() throws Exception {
@@ -191,7 +177,7 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 	public void testNameSpace() throws Exception { testNameSpace$(); }
 	public void testNameSpace$() throws Exception {
 		IType topLevelElement;
-		topLevelElement = getTopLevelElement(TR_CA, "/", "sampledefs");
+		topLevelElement = getTopLevelElement(TR_SAMPLE_SRC1, "/", "sampledefs");
 		testNameSpace(topLevelElement, "", "Class");
 		
 		topLevelElement = getTopLevelElement(TR_SAMPLE_SRC3, "pack/", "mod1");

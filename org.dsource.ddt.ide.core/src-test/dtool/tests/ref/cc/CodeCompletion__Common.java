@@ -31,7 +31,11 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	protected ICodeCompletionTester ccTester;
 	
 	public CodeCompletion__Common(String testFilePath) {
-		this.srcModule = SampleMainProject.getSourceModule(ITestResourcesConstants.TR_CA, testFilePath);
+		this(SampleMainProject.getSourceModule(ITestResourcesConstants.TR_CA, testFilePath));
+	}
+	
+	public CodeCompletion__Common(ISourceModule srcModule) {
+		this.srcModule = srcModule;
 		this.ccTester = new ICodeCompletionTester() {
 			@Override
 			public void testComputeProposalsWithRepLen(int repOffset, int prefixLen,
