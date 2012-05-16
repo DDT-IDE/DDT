@@ -1,4 +1,4 @@
-package dtool;
+package dtool.ddoc;
 
 
 public interface IDeeDocColorConstants {

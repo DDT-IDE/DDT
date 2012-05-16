@@ -22,9 +22,9 @@ import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.Bundle;
 
 import descent.core.ddoc.Ddoc;
-import dtool.IDeeDocColorConstants;
-import dtool.DeeDocAccessor;
 import dtool.ast.definitions.DefUnit;
+import dtool.ddoc.DeeDocAccessor;
+import dtool.ddoc.IDeeDocColorConstants;
 
 public class HoverUtil {
 	

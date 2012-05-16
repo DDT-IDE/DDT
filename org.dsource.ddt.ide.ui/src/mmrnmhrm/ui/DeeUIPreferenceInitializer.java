@@ -21,7 +21,7 @@ import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.editors.text.EditorsUI;
 
-import dtool.IDeeDocColorConstants;
+import dtool.ddoc.IDeeDocColorConstants;
 
 public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 	
