@@ -53,7 +53,6 @@ public class ReflectionUtils2 {
 	}
 	
 	/** Same as {@link Method#invoke(Object, Object...)} but unchecks the exceptions. */
-	@SuppressWarnings("unchecked")
 	public static <T> T uncheckedInvoke(Object obj, final Method method, Object... args) {
 		try {
 			return (T) method.invoke(obj, args);

@@ -108,12 +108,6 @@ public class DeeSearchEngineTestUtils {
 		return getNodeFromPath(node.getChildren()[ix], nodeTreePath, treePathIx+1);
 	}
 	
-	public static IPath createPathFromSegments(String[] pathSegments) {
-		String pathString = StringUtil.collToString(pathSegments, "/") ;
-		org.eclipse.core.runtime.Path path = new org.eclipse.core.runtime.Path(pathString);
-		return path;
-	}
-	
 	public static class ElementsAndDefUnitVisitor { 
 		
 		public void visitElementsAndNodes(IModelElement element, int depth) throws ModelException, CoreException {

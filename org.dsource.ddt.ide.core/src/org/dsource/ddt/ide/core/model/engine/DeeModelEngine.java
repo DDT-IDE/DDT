@@ -7,9 +7,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DLTKModelUtils;
-import mmrnmhrm.core.search.DeeSearchEngineTestUtils;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
@@ -184,7 +185,7 @@ public class DeeModelEngine {
 		try {
 			IProjectFragment[] projectFragments = searchProj.getProjectFragments();
 			for (IProjectFragment prjFragment : projectFragments) {
-				IScriptFolder scriptFolder = prjFragment.getScriptFolder(DeeSearchEngineTestUtils.createPathFromSegments(pkgName));
+				IScriptFolder scriptFolder = prjFragment.getScriptFolder(createPathFromSegments(pkgName));
 				
 				if(scriptFolder.exists()){
 					for (String validExtension : DeeNamingRules.VALID_EXTENSIONS) {
@@ -207,6 +208,11 @@ public class DeeModelEngine {
 		String moduleName = moduleNode.getName();
 		
 		return getSourceModule(searchProj, packageQualification, moduleName);
+	}
+	
+	public static IPath createPathFromSegments(String[] pathSegments) {
+		String pathString = StringUtil.collToString(pathSegments, "/") ;
+		return new org.eclipse.core.runtime.Path(pathString);
 	}
 	
 }
