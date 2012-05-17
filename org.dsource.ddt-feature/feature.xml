@@ -18,10 +18,6 @@
       %license
    </license>
 
-   <url>
-      <update label="%updateSiteName" url="http://svn.codespot.com/a/eclipselabs.org/ddt/repo/"/>
-   </url>
-
    <requires>
       <import feature="org.eclipse.dltk.core" version="3.0.0" match="compatible"/>
    </requires>
