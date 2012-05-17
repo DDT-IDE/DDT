@@ -247,7 +247,7 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			new FakeMember.FakeType(module, "Alias", FLAG_KIND_ALIAS, ns);
 			new FakeMember.FakeType(module, "Typedef", FLAG_KIND_TYPEDEF, ns);
 			
-			IModelElement[] treeModel = CoreUtil.<IModelElement>array(sourceModule1, module);
+			IModelElement[] treeModel = CoreUtil.<IModelElement>array(module);
 			return treeModel;
 		}
 		
