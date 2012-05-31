@@ -14,9 +14,9 @@ public class ExpNew extends Expression {
 	
 	public ExpNew(Resolvable[] atorArgs, Reference type, Resolvable[] args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.allocargs = new ArrayView<Resolvable>(atorArgs); parentize(this.allocargs);
+		this.allocargs = ArrayView.create(atorArgs); parentize(this.allocargs);
 		this.newtype = type; parentize(this.newtype);
-		this.args = new ArrayView<Resolvable>(args); parentize(this.args);
+		this.args = ArrayView.create(args); parentize(this.args);
 	}
 	
 	@Override

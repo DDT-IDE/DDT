@@ -234,18 +234,19 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	}
 	
 	/** Set the parent of the given collection to this.  */
-	protected void parentize(ArrayView<?> collection) {
+	protected void parentize(ArrayView<? extends ASTNeoNode> collection) {
 		if (collection != null) {
-			for (Object node : collection) {
-				assert(node != null);
-				((ASTNeoNode) node).setParent(this);
+			for (ASTNeoNode node : collection) {
+				assertNotNull(node);
+				node.setParent(this);
 			}
 		}
 	}
 	
 	/** Set the parent of the given node to this.  */
-	protected void parentize(Object node) {
-		if (node != null)
-			((ASTNeoNode) node).setParent(this);
+	protected void parentize(ASTNeoNode node) {
+		if (node != null) {
+			node.setParent(this);
+		}
 	}
 }

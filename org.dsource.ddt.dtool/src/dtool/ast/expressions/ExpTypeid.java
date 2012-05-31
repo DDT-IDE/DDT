@@ -14,15 +14,14 @@ public class ExpTypeid extends Expression {
 		initSourceRange(sourceRange);
 		this.typeArgument = typeArgument; parentize(this.typeArgument);
 		this.expressionArgument = null;
-		
 	}
-
+	
 	public ExpTypeid(Expression expressionArgument, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.expressionArgument = expressionArgument; parentize(this.expressionArgument);
 		this.typeArgument = null;
+		this.expressionArgument = expressionArgument; parentize(this.expressionArgument);
 	}
-
+	
 	public Resolvable getArgument() {
 		return typeArgument != null ? typeArgument : expressionArgument;
 	}

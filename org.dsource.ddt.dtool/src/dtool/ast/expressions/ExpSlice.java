@@ -14,7 +14,7 @@ public class ExpSlice extends Expression {
 	
 	public ExpSlice(Resolvable slicee, Resolvable from, Resolvable to, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.slicee = slicee; parentize(this.slicee);
+		this.slicee = slicee; parentize((ASTNeoNode) this.slicee);
 		this.from = from; parentize(this.from);
 		this.to = to; parentize(this.to);
 	}

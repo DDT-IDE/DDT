@@ -1,5 +1,6 @@
 package dtool.descentadapter;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AddAssignExp;
 import descent.internal.compiler.parser.AddExp;
@@ -339,7 +340,6 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(NewAnonClassExp element) {
-		// return endAdapt(new ExpLiteralNewAnonClass(element, convContext));
 		return endAdapt(
 			new ExpLiteralNewAnonClass(
 				ExpressionConverter.convertMany(element.newargs, convContext),
@@ -370,7 +370,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(RealExp element) {
-		return endAdapt(new ExpLiteralReal(element.value.doubleValue(), DefinitionConverter.sourceRange(element)));
+		double doubleValue = element.value != null ? element.value.doubleValue() : Double.NaN;
+		return endAdapt(new ExpLiteralReal(doubleValue, DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override
@@ -408,7 +409,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(TypeidExp element) {
-		assert(element.typeidType != null || element.argumentExp__DDT_ADDITION != null);
+		assertTrue(element.typeidType != null || element.argumentExp__DDT_ADDITION != null);
 		return endAdapt(
 			element.typeidType != null
 			? new ExpTypeid(

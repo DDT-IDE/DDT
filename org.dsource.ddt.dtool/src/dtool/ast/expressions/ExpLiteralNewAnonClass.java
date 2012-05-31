@@ -17,10 +17,10 @@ public class ExpLiteralNewAnonClass extends Expression {
 
 	public ExpLiteralNewAnonClass(Resolvable[] allocargs, Resolvable[] args, BaseClass[] baseClasses, ASTNeoNode[] members, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.allocargs = new ArrayView<Resolvable>(allocargs); parentize(this.allocargs);
-		this.args = new ArrayView<Resolvable>(args); parentize(this.args);
-		this.baseClasses = new ArrayView<BaseClass>(baseClasses); parentize(this.baseClasses);
-		this.members = new ArrayView<ASTNeoNode>(members); parentize(this.members);
+		this.allocargs = ArrayView.create(allocargs); parentize(this.allocargs);
+		this.args = ArrayView.create(args); parentize(this.args);
+		this.baseClasses = ArrayView.create(baseClasses); parentize(this.baseClasses);
+		this.members = ArrayView.create(members); parentize(this.members);
 	}
 
 	@Override

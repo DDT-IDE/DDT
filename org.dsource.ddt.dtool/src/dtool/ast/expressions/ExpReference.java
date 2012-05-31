@@ -19,8 +19,9 @@ public class ExpReference extends Expression {
 	
 	public ExpReference(Reference ref, SourceRange sourceRange) {
 		assertNotNull(ref);
-		initSourceRange(sourceRange);
 		this.ref = ref; parentize(this.ref);
+		
+		initSourceRange(sourceRange);
 	}
 	
 	@Override
