@@ -9,20 +9,17 @@ import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 public class StatementDefault extends Statement {
 
 	public IStatement st;
-	public IStatement[] stList;
 	
 	public StatementDefault(DefaultStatement elem, ASTConversionContext convContext) {
 		convertNode(elem);
 		this.st = Statement.convert(elem.statement, convContext);
 	}
 	
-	public StatementDefault(IStatement[] stList) {
-		this.stList = stList;
+	public StatementDefault(IStatement st) {
+		this.st = st;
 		
-		if (stList != null) {
-			for (IStatement s : stList) {
-				((ASTNeoNode) s).setParent(this);
-			}
+		if (st != null) {
+			((ASTNeoNode) st).setParent(this);
 		}
 	}
 
@@ -30,7 +27,7 @@ public class StatementDefault extends Statement {
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, stList);
+			TreeVisitor.acceptChildren(visitor, st);
 		}
 		visitor.endVisit(this);
 	}

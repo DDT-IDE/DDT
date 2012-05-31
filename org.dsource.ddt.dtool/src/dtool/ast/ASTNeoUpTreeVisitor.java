@@ -1,7 +1,6 @@
 package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import dtool.ast.declarations.Declaration;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
@@ -205,7 +204,7 @@ public abstract class ASTNeoUpTreeVisitor implements IASTNeoVisitor {
 	}
 	
 	/* ---- */
-	static { assertTrue(DefinitionCtor.class.getSuperclass().equals(Declaration.class)); }
+	static { assertTrue(DefinitionCtor.class.getSuperclass().equals(ASTNeoNode.class)); }
 	@Override
 	public boolean visit(DefinitionCtor elem) {
 		return visit((ASTNeoNode) elem);
@@ -272,7 +271,7 @@ public abstract class ASTNeoUpTreeVisitor implements IASTNeoVisitor {
 	
 	/* ---------------------------------- */
 	
-	static { assertTrue(DeclarationImport.class.getSuperclass().equals(Declaration.class)); }
+	static { assertTrue(DeclarationImport.class.getSuperclass().equals(ASTNeoNode.class)); }
 	@Override
 	public boolean visit(DeclarationImport elem) {
 		return visit((ASTNeoNode) elem);

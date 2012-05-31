@@ -19,7 +19,7 @@ import dtool.refmodel.INonScopedBlock;
  * This is considered an INonScopedBlock because it might contain aliasing
  * imports and selective imports, which are primary-space {@link DefUnit}s.
  */
-public class DeclarationImport extends Declaration implements INonScopedBlock, IDeclaration {
+public class DeclarationImport extends ASTNeoNode implements INonScopedBlock, IDeclaration {
 
 	public ImportFragment[] imports;
 	public boolean isStatic;

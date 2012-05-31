@@ -42,19 +42,5 @@ public abstract class Definition extends DefUnit implements IDeclaration {
 		}
 		return protection;
 	}
-
-	@Override
-	public void setAttributes(int effectiveModifiers) {
-		this.effectiveModifiers = effectiveModifiers;
-	}
-
-	@Override
-	public int getAttributes() {
-		return effectiveModifiers;
-	}
-
-	@Override
-	public void setProtection(PROT prot) {
-		this.protection = prot;
-	}
+	
 }

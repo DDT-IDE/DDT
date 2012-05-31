@@ -15,7 +15,7 @@ import dtool.ast.references.Reference;
  */
 public class ExpReference extends Expression {
 	
-	public Reference ref;
+	public final Reference ref;
 	
 	public ExpReference(Reference ref, SourceRange sourceRange) {
 		assertNotNull(ref);

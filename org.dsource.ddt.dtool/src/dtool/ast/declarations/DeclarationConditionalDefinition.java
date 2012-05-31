@@ -64,28 +64,4 @@ public class DeclarationConditionalDefinition extends ASTNeoNode implements IDec
 		return "["+ (conditionalKind == Type.VERSION?"debug":"version") 
 			+ "="+identifier.toStringAsElement()+")]";
 	}
-
-	@Override
-	public void setAttributes(int effectiveModifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getAttributes() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setProtection(PROT prot) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public PROT getEffectiveProtection() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

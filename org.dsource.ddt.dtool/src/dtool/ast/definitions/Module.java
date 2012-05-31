@@ -16,7 +16,6 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
-import dtool.ast.declarations.Declaration;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
@@ -45,7 +44,7 @@ public class Module extends DefUnit implements IScopeNode {
 		}
 	}
 	
-	public static class DeclarationModule extends Declaration {
+	public static class DeclarationModule extends ASTNeoNode {
 		
 		public DefSymbol moduleName; 
 		public String[] packages; // non-structural element

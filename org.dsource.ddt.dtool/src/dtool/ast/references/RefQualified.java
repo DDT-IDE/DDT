@@ -18,7 +18,7 @@ import dtool.refmodel.IDefUnitReferenceNode;
 public class RefQualified extends CommonRefQualified {
 	
 	
-	public IDefUnitReferenceNode qualifier; //Entity or Expression
+	public final IDefUnitReferenceNode qualifier; //Entity or Expression
 	
 	public RefQualified(IDefUnitReferenceNode qualifier, RefIdentifier qualifiedName) {
 		assertNotNull(qualifier);

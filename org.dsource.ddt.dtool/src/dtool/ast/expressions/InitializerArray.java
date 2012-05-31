@@ -26,7 +26,7 @@ public class InitializerArray extends Initializer {
 			for (Resolvable r : this.indexes)
 				r.setParent(this);
 		}
-
+		
 		if (this.values != null) {
 			for (Initializer i : this.values)
 				i.setParent(this);

@@ -35,7 +35,6 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	public IStatement frequire;
 	public IStatement fbody;
 	public IStatement fensure;
-	public RefIdentifier fensureid;
 	
 	//public descent.internal.compiler.parser.TypeFunction type;
 	

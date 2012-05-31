@@ -2,14 +2,16 @@ package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.SliceExp;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.descentadapter.ExpressionConverter;
+import dtool.refmodel.IDefUnitReferenceNode;
 
 public class ExpSlice extends Expression {
 
-	public Resolvable slicee;
+	public IDefUnitReferenceNode slicee;
 	public Resolvable from;
 	public Resolvable to;
 	
@@ -27,7 +29,7 @@ public class ExpSlice extends Expression {
 		setSourceRange(sourceRange);
 		
 		if (this.slicee != null)
-			this.slicee.setParent(this);
+			((ASTNeoNode) this.slicee).setParent(this);
 		if (this.from != null)
 			this.from.setParent(this);
 		if (this.to != null)

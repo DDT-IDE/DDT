@@ -53,29 +53,5 @@ public class EnumContainer extends ASTNeoNode implements IDeclaration, INonScope
 	public Iterator<EnumMember> getMembersIterator() {
 		return members.iterator();
 	}
-
-	@Override
-	public void setAttributes(int effectiveModifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getAttributes() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setProtection(PROT prot) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public PROT getEffectiveProtection() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 }

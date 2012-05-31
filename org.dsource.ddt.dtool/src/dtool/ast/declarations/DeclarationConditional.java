@@ -50,35 +50,5 @@ public abstract class DeclarationConditional extends ASTNeoNode implements IDecl
 	public Iterator<ASTNeoNode> getMembersIterator() {
 		return Arrays.asList(getMembers()).iterator();
 	}
-
-	@Override
-	public void setAttributes(int effectiveModifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getAttributes() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setProtection(PROT prot) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public PROT getEffectiveProtection() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void accept0(IASTNeoVisitor visitor) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }
