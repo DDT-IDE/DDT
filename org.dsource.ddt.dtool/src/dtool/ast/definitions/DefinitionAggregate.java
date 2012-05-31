@@ -19,9 +19,14 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	public TemplateParameter[] templateParams; 
 	public final ArrayView<ASTNeoNode> members; // can be null. (bodyless aggregates)
 	
-	public DefinitionAggregate(DefUnitDataTuple defunit, PROT prot, ArrayView<ASTNeoNode> members) {
+	public DefinitionAggregate(DefUnitDataTuple defunit, PROT prot, ASTNeoNode[] members) {
 		super(defunit, prot);
-		this.members = members;
+		this.members = new ArrayView<ASTNeoNode>(members);
+		if (members != null) {
+			for (ASTNeoNode member : members) {
+				member.setParent(this);
+			}
+		}
 	}
 	
 	protected void acceptNodeChildren(IASTNeoVisitor visitor, boolean children) {

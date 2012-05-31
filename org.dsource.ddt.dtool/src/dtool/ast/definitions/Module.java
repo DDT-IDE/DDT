@@ -16,6 +16,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
+import dtool.ast.declarations.Declaration;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
@@ -44,7 +45,7 @@ public class Module extends DefUnit implements IScopeNode {
 		}
 	}
 	
-	public static class DeclarationModule extends ASTNeoNode {
+	public static class DeclarationModule extends Declaration {
 		
 		public DefSymbol moduleName; 
 		public String[] packages; // non-structural element
@@ -95,13 +96,24 @@ public class Module extends DefUnit implements IScopeNode {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
 		return new Module(defSymbol, null, null, members, sourceRange);
 	}
-	
+
+	public static Module createModule(SourceRange sourceRange, ArrayView<ASTNeoNode> members, DeclarationModule md) {
+		ModuleDefSymbol defSymbol = new ModuleDefSymbol(md.moduleName.name);
+		defSymbol.setSourceRange(md.moduleName.getStartPos(), md.moduleName.getEndPos() - md.moduleName.getStartPos());
+		return new Module(defSymbol, null, md, members, sourceRange);
+	}
+
 	protected Module(ModuleDefSymbol defSymbol, Comment[] preComments, DeclarationModule md, 
 			ArrayView<ASTNeoNode> members, SourceRange sourceRange) {
 		super(sourceRange, defSymbol, preComments);
 		defSymbol.module = this;
 		this.md = md;
-		this.members = members;
+		this.members= members;
+		if (this.members != null) {
+			for (ASTNeoNode node : this.members) {
+				node.setParent(this);
+			}
+		}
 	}
 	
 	

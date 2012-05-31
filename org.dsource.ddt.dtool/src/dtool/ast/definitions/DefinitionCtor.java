@@ -7,6 +7,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.Declaration;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -35,6 +36,12 @@ public class DefinitionCtor extends ASTNeoNode implements IScopeNode, ICallableE
 	public DefinitionCtor(SpecialFunctionKind kind, IFunctionParameter[] params, int varargs, IStatement fbody, int thisStart, SourceRange sourceRange) {
 		this.kind = kind;
 		this.params = ArrayView.createFrom(params);
+		if (this.params != null) {
+			for (IFunctionParameter fp :  this.params) {
+				((ASTNeoNode) fp).setParent(this);
+			}
+		}
+		
 		this.varargs = varargs;
 		this.fbody = fbody;
 		

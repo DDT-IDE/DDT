@@ -2,6 +2,7 @@ package dtool.ast.definitions;
 
 import java.util.List;
 
+import descent.internal.compiler.parser.PROT;
 import descent.internal.compiler.parser.StructDeclaration;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
@@ -19,11 +20,18 @@ public class DefinitionStruct extends DefinitionAggregate {
 	
 	
 	public DefinitionStruct(StructDeclaration elem, ASTConversionContext convContext) {
-		super(DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
-				DescentASTConverter.convertManyToView(elem.members, ASTNeoNode.class, convContext));
+		super(
+			DefinitionConverter.convertDsymbol(elem, convContext),
+			elem.prot(),
+			DescentASTConverter.convertManyToView(elem.members, ASTNeoNode.class, convContext).getInternalArray()
+		);
 		// TODO: where did template Parameters go
 		//if(elem.templateParameters != null)
 		//	this.templateParams = TemplateParameter.convertMany(elem.templateParameters);
+	}
+	
+	public DefinitionStruct(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] members, BaseClass[] superClasses) {
+		super(dudt, prot, members);
 	}
 	
 	@Override

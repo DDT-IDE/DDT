@@ -24,6 +24,10 @@ public class RefImportSelection extends NamedReference
 		this.name = new String(elem.ident);
 		this.impSel = impSel;
 	}
+	
+	public RefImportSelection(String name) {
+		this.name = name;
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

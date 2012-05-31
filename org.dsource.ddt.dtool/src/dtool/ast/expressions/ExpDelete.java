@@ -14,6 +14,12 @@ public class ExpDelete extends Expression {
 		convertNode(elem);
 		this.exp = ExpressionConverter.convert(elem.e1, convContext); 
 	}
+	
+	public ExpDelete(Resolvable exp) {
+		this.exp = exp;
+		if (this.exp != null)
+			this.exp.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

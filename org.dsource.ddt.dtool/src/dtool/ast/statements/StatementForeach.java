@@ -3,6 +3,7 @@ package dtool.ast.statements;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ForeachStatement;
 import descent.internal.compiler.parser.TOK;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.Resolvable;
@@ -24,6 +25,24 @@ public class StatementForeach extends Statement {
 		this.iterable = ExpressionConverter.convert(elem.sourceAggr, convContext);
 		this.body = Statement.convert(elem.body, convContext);
 		this.reverse = elem.op == TOK.TOKforeach_reverse;
+	}
+	
+	public StatementForeach(IFunctionParameter[] params, Resolvable iterable, IStatement body, boolean reverse) {
+		this.params = params;
+		this.iterable = iterable;
+		this.body = body;
+		this.reverse = reverse;
+
+		if (this.params != null) {
+			for (IFunctionParameter fp: this.params)
+				((ASTNeoNode) fp).setParent(this);
+		}
+		
+		if (this.iterable != null)
+			this.iterable.setParent(this);
+		
+		if (this.body != null)
+			((ASTNeoNode) this.body).setParent(this);
 	}
 
 	@Override

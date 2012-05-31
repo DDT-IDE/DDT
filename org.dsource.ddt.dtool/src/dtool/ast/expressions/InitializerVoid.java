@@ -8,6 +8,10 @@ public class InitializerVoid extends Initializer {
 	public InitializerVoid(VoidInitializer elem) {
 		convertNode(elem);
 	}
+	
+	public InitializerVoid() {
+		
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

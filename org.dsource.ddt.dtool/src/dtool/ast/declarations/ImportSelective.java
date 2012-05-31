@@ -10,9 +10,11 @@ import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefImportSelection;
+import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.INonScopedBlock;
 import dtool.refmodel.IScopeNode;
@@ -33,6 +35,13 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 		public ImportSelectiveAlias(IdentifierExp name, RefImportSelection impSelection) {
 			super(name);
 			this.target = impSelection;
+		}
+		
+		public ImportSelectiveAlias(DefUnitDataTuple dudt, RefImportSelection impSelection) {
+			super(dudt);
+			this.target = impSelection;
+			if (this.target != null)
+				this.target.setParent(this);
 		}
 
 		@Override
@@ -88,7 +97,22 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 					selImport.aliases.get(i), this);
 		}
 	}
-
+	
+	public ImportSelective(RefModule refModule, ASTNeoNode[] frags) {
+		super(refModule);
+		this.impSelFrags = frags;
+		if (this.impSelFrags != null) {
+			for (ASTNeoNode n : this.impSelFrags) {
+				n.setParent(this);
+				if (n instanceof ImportSelectiveAlias) {
+					((ImportSelectiveAlias) n).target.impSel = this;
+				}
+				else if (n instanceof RefImportSelection) {
+					((RefImportSelection) n).impSel = this;
+				}
+			}
+		}
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

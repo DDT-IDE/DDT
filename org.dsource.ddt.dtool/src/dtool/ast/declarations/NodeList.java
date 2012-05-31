@@ -8,6 +8,7 @@ import descent.internal.compiler.parser.CompoundStatement;
 import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.Statement;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.statements.IStatement;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
@@ -20,7 +21,7 @@ public class NodeList  {
 	public final ASTNeoNode[] nodes;
 	public final boolean hasCurlies; // Accurate detection not implement yet
 
-	private NodeList(ASTNeoNode[] nodes, boolean hasCurlies) {
+	public NodeList(ASTNeoNode[] nodes, boolean hasCurlies) {
 		this.nodes = nodes;
 		this.hasCurlies = hasCurlies;
 	}
@@ -43,6 +44,13 @@ public class NodeList  {
 			return null;
 		ASTNeoNode[] neoNodes = DescentASTConverter.convertMany(decl, convContext);
 		return new NodeList(neoNodes, false);
+	}
+	
+	public static NodeList createNodeList(Collection<IStatement> decls, boolean hasCurlies) {
+		if (decls != null)
+			return new NodeList(decls.toArray(new ASTNeoNode[decls.size()]), hasCurlies);
+		
+		return null;
 	}
 	
 	public static ASTNeoNode[] getNodes(NodeList nodeList) {

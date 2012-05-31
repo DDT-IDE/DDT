@@ -44,6 +44,8 @@ public class InfixExpression extends Expression {
 		int CAT_ASSIGN = 42;
 		int COMMA = 44;
 		int NOT_IDENTITY = 45;
+		int POW_ASSIGN = 46;
+		int POW = 47;
 	}
 
 	public Resolvable leftExp;
@@ -58,7 +60,18 @@ public class InfixExpression extends Expression {
 		this.rightExp = (Resolvable) DescentASTConverter.convertElem(elem.e2, convContext);
 		this.kind = kind;
 	}
-
+	
+	public InfixExpression(Resolvable left, int kind, Resolvable right) {
+		this.leftExp = left;
+		this.kind = kind;
+		this.rightExp = right;
+		
+		if (this.leftExp != null)
+			this.leftExp.setParent(this);
+		
+		if (this.rightExp != null)
+			this.rightExp.setParent(this);
+	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

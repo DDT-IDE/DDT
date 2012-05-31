@@ -22,6 +22,14 @@ public class BaseClass extends ASTNeoNode {
 		this.type = ReferenceConverter.convertType(elem.type, convContext);
 	}
 	
+	public BaseClass(PROT prot, Reference type) {
+		this.prot = prot;
+		this.type = type;
+		
+		if (type != null)
+			type.setParent(this);
+	}
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

@@ -30,6 +30,22 @@ public class ExpNew extends Expression {
 			this.args = ExpressionConverter.convertMany(elem.arguments, convContext);
 	}
 	
+	public ExpNew(Resolvable[] atorArgs, Reference type, Resolvable[] args) {
+		this.allocargs = atorArgs;
+		this.newtype = type;
+		this.args = args;
+		
+		if (this.allocargs != null) { 
+			for (Resolvable r : this.allocargs)
+				r.setParent(this);
+		}
+		
+		if (this.args != null) { 
+			for (Resolvable r : this.args)
+				r.setParent(this);
+		}
+	}
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

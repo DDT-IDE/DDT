@@ -207,7 +207,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 				DefinitionConverter.convertDsymbol(elem, convContext), 
 				elem.prot(),
 				rettype,
-				DescentASTConverter.convertManyToView(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
+				DescentASTConverter.convertManyToView(elemTypeFunc.parameters, IFunctionParameter.class, convContext).getInternalArray(),
 				convertVarArgs(elemTypeFunc.varargs),
 				Statement.convert(elem.frequire, convContext),
 				Statement.convert(elem.fensure, convContext),

@@ -21,6 +21,16 @@ public class ExpIftype extends Expression {
 		this.arg = ReferenceConverter.convertType(node.targ, convContext);
 		this.specType = ReferenceConverter.convertType(node.tspec, convContext);
 	}
+	
+	public ExpIftype(Reference arg, TOK tok, Reference specType) {
+		this.tok = tok;
+		this.arg = arg;
+		if (this.arg != null)
+			this.arg.setParent(this);
+		this.specType = specType;
+		if (this.specType != null)
+			this.specType.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

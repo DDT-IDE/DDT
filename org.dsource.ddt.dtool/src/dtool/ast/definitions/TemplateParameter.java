@@ -11,4 +11,8 @@ public abstract class TemplateParameter extends DefUnit {
 		super(ident);
 	}
 	
+	public TemplateParameter(DefUnitDataTuple dudt) {
+		super(dudt);
+	}
+	
 }

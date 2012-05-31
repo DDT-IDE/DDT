@@ -21,6 +21,10 @@ public class InvalidSyntaxDeclaration extends ASTNeoNode implements IStatement {
 		this.genericChildren = children;
 	}
 	
+	public InvalidSyntaxDeclaration() {
+		this.genericChildren = null;
+	}
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

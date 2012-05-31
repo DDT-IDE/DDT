@@ -8,6 +8,10 @@ public class StatementGotoDefault extends Statement {
 	public StatementGotoDefault(GotoDefaultStatement node) {
 		convertNode(node);
 	}
+	
+	public StatementGotoDefault() {
+		
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

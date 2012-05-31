@@ -8,9 +8,11 @@ import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTPrinter;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
@@ -33,20 +35,37 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	public IStatement frequire;
 	public IStatement fbody;
 	public IStatement fensure;
+	public RefIdentifier fensureid;
 	
 	//public descent.internal.compiler.parser.TypeFunction type;
 	
-	public DefinitionFunction(DefUnitDataTuple defunitData, PROT prot, Reference rettype, ArrayView<IFunctionParameter> params, int varargs, IStatement frequire, IStatement fensure,
+	public DefinitionFunction(DefUnitDataTuple defunitData, PROT prot, Reference rettype, IFunctionParameter[] params, int varargs, IStatement frequire, IStatement fensure,
 			IStatement fbody) {
 		super(defunitData, prot);
-		this.rettype = rettype;
-		this.params = params;
-		this.varargs = varargs; 
-		this.frequire = frequire;
-		this.fensure = fensure;
-		this.fbody = fbody;
+		assertNotNull(rettype);
 		
-		assertNotNull(this.rettype);
+		this.rettype = rettype;
+		this.rettype.setParent(this);
+		
+		this.params = new ArrayView<IFunctionParameter>(params);
+		if (params != null) {
+			for (IFunctionParameter fp : params) {
+				((ASTNeoNode) fp).setParent(this);
+			}
+		}
+		
+		this.varargs = varargs;
+		this.frequire = frequire;
+		if (this.frequire != null)
+			((ASTNeoNode) this.frequire).setParent(this);
+		
+		this.fensure = fensure;
+		if (this.fensure != null)
+			((ASTNeoNode) this.fensure).setParent(this);
+		
+		this.fbody = fbody;
+		if (this.fbody != null)
+			((ASTNeoNode) this.fbody).setParent(this);
 	}
 	
 	@Override

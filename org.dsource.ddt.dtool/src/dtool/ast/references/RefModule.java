@@ -42,6 +42,10 @@ public class RefModule extends NamedReference {
 		}
 	}
 	
+	public RefModule(List<String> packages, String module) {
+		this.packages = packages.toArray(new String[packages.size()]);
+		this.module = module;
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

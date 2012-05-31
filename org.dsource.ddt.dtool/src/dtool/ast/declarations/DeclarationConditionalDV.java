@@ -1,13 +1,18 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.Collection;
+
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.DVCondition;
 import descent.internal.compiler.parser.DebugCondition;
 import descent.internal.compiler.parser.VersionCondition;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.statements.IStatement;
 
 public class DeclarationConditionalDV extends DeclarationConditional {
 	
@@ -30,6 +35,17 @@ public class DeclarationConditionalDV extends DeclarationConditional {
 		this.elsedecls = elsedecls;
 	}
 	
+	public DeclarationConditionalDV(boolean isDebug, Symbol id, Collection<IStatement> thenDecls,  Collection<IStatement> elseDecls) {
+		super(
+			NodeList.createNodeList(thenDecls, false),
+			NodeList.createNodeList(elseDecls, false)
+		);
+				
+		this.isDebug = isDebug;
+		this.ident = id;
+		if (this.ident != null)
+			this.ident.setParent(this);
+	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

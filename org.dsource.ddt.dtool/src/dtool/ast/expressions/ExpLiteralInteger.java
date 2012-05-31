@@ -29,6 +29,10 @@ public class ExpLiteralInteger extends Expression {
 			// TODO special tokens __LINE__ , etc.
 		}
 	}
+	
+	public ExpLiteralInteger(BigInteger value) {
+		this.num = value;
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

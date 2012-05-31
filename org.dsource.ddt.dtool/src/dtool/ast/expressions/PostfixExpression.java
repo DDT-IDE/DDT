@@ -36,6 +36,14 @@ public class PostfixExpression extends Expression {
 			this.kind = Type.POST_DECREMENT;
 		} else Assert.fail();
 	}
+	
+	public PostfixExpression(Resolvable exp, int kind) {
+		this.exp = exp;
+		this.kind = kind;
+		
+		if (this.exp != null)
+			this.exp.setParent(this);
+	}
 
 	
 	@Override

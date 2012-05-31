@@ -15,6 +15,17 @@ public class ExpAssert extends Expression {
 		this.msg = msg;
 	}
 	
+	public ExpAssert(Resolvable exp, Resolvable msg) {
+		this.exp = exp;
+		this.msg = msg;
+		
+		if (this.exp != null)
+			this.exp.setParent(this);
+		
+		if (this.msg != null)
+			this.msg.setParent(this);
+	}
+
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

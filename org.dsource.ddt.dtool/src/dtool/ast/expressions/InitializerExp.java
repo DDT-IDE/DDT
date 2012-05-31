@@ -15,6 +15,13 @@ public class InitializerExp extends Initializer {
 		initSourceRange(DefinitionConverter.sourceRange(elem, false));
 		this.exp = ExpressionConverter.convert(elem.exp, convContext); 
 	}
+	
+	public InitializerExp(Resolvable exp) {
+		this.exp = exp;
+		
+		if (this.exp != null)
+			exp.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

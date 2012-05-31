@@ -1,5 +1,8 @@
 package dtool.ast.definitions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
@@ -14,9 +17,6 @@ import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.descentadapter.ExpressionConverter;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.NodeUtil;
-
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 // TODO: Need to test this a lot more, especially with many other kinds of parameters
 public class FunctionParameter extends DefUnit implements IFunctionParameter {
@@ -46,6 +46,19 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 		setSourceRange(type.getStartPos(), id.getEndPos() - type.getStartPos());
 		
 		this.type = ReferenceConverter.convertType(type, convContext);
+	}
+	
+	public FunctionParameter(DefUnitDataTuple dudt, int storageClass, Reference type, Resolvable defaultValue) {
+		super(dudt);
+		this.storageClass = storageClass;
+		
+		this.type = type;
+		if (this.type != null)
+			this.type.setParent(this);
+		
+		this.defaultValue = defaultValue;
+		if (this.defaultValue != null)
+			this.defaultValue.setParent(this);
 	}
 
 	

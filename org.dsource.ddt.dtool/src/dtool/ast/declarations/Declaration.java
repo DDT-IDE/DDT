@@ -1,39 +1,29 @@
 package dtool.ast.declarations;
 
-
-import java.util.Iterator;
-import java.util.List;
-
-import descent.internal.compiler.parser.Modifier;
-import descent.internal.compiler.parser.TOK;
+import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
-import dtool.refmodel.IScope;
 
-public abstract class Declaration {
+public abstract class Declaration extends ASTNeoNode implements IDeclaration {
+	public PROT protection;
+	public int effectiveModifiers;
 	
-	public static int hasModifier(List<Modifier> modifiers, TOK tok) {
-		int i = 0;
-		if(modifiers == null)
-			return -1;
-		for (Iterator<Modifier> iter = modifiers.iterator(); iter.hasNext(); i++) {
-			Modifier modifier = iter.next();
-			if(modifier.tok == tok)
-				return i;
-		}
-		return -1;
+	@Override
+	public void setAttributes(int effectiveModifiers) {
+		this.effectiveModifiers = effectiveModifiers; 
 	}
-
-	public static boolean hasInheritedProtection(ASTNeoNode elem, TOK tok) {
-		while(elem != null && !(elem instanceof IScope)) {
-			elem = elem.getParent();
-			if(elem instanceof DeclarationProtection) {
-				DeclarationProtection pdecl = (DeclarationProtection) elem;
-				if(pdecl.modifier.tok == tok)
-					return true;
-				else
-					return false;
-			}
-		} 
-		return false;
+	
+	@Override
+	public int getAttributes() {
+		return this.effectiveModifiers;
+	}
+	
+	@Override
+	public void setProtection(PROT prot) {
+		this.protection = prot; 
+	}
+	
+	@Override
+	public PROT getEffectiveProtection() {
+		return this.protection;
 	}
 }

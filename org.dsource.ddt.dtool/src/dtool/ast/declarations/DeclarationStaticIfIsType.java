@@ -1,5 +1,6 @@
 package dtool.ast.declarations;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,10 +13,14 @@ import descent.internal.compiler.parser.TOK;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
+import dtool.ast.TokenInfo;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
+import dtool.ast.statements.IStatement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -36,6 +41,15 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 		public IsTypeDefUnit(IdentifierExp ident) {
 			super(ident);
 			setSourceRange(ident);
+		}
+		
+		public IsTypeDefUnit(DefSymbol id) {
+			super(
+				new SourceRange(id.getOffset(), id.getLength()),
+				id.name,
+				new SourceRange(id.getOffset(), id.getLength()),
+				null
+			);
 		}
 
 		@Override
@@ -66,7 +80,11 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 		
 		public IsTypeScope(NodeList nodes) {
 			this.nodelist = nodes;
-			// The range?
+			if (this.nodelist != null) {
+				for (ASTNeoNode n : this.nodelist.nodes) {
+					n.setParent(this);
+				}
+			}
 		}
 
 		@Override
@@ -113,6 +131,27 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 		this.thendeclsScope = new IsTypeScope(thendecls);
 		this.thendeclsScope.setSourceRange(isExp.getStartPos(), 
 				elem.getEndPos() - isExp.getStartPos());
+	}
+	
+	public DeclarationStaticIfIsType(Reference arg, DefSymbol id, Reference specType, Collection<IStatement> thenDecls, Collection<IStatement> elseDecls) {
+		super(
+			NodeList.createNodeList(thenDecls, false),
+			NodeList.createNodeList(elseDecls, false)
+		);
+		
+		this.arg = arg;
+		if (this.arg != null)
+			this.arg.setParent(this);
+		
+		this.defUnit = new IsTypeDefUnit(id);
+		this.defUnit.setParent(this);
+		
+		this.specType = specType;
+		if (this.specType != null)
+			this.specType.setParent(this);
+		
+		this.thendeclsScope = new IsTypeScope(this.thendecls);
+		this.thendeclsScope.setParent(this);
 	}
 
 	@Override

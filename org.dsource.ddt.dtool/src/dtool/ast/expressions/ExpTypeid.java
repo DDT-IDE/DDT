@@ -24,6 +24,22 @@ public class ExpTypeid extends Expression {
 		}
 	}
 	
+	public ExpTypeid(Reference typeArgument) {
+		this.typeArgument = typeArgument;
+		this.expressionArgument = null;
+		
+		if (this.typeArgument != null)
+			this.typeArgument.setParent(this);
+	}
+
+	public ExpTypeid(Expression expressionArgument) {
+		this.expressionArgument = expressionArgument;
+		this.typeArgument = null;
+		
+		if (this.expressionArgument != null)
+			this.expressionArgument.setParent(this);
+	}
+
 	public Resolvable getArgument() {
 		return typeArgument != null ? typeArgument : expressionArgument;
 	}

@@ -8,6 +8,10 @@ public class ExpDollar extends Expression {
 	public ExpDollar(DollarExp elem) {
 		convertNode(elem);
 	}
+	
+	public ExpDollar() {
+		
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

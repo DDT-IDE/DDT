@@ -1,9 +1,9 @@
 package dtool.ast.declarations;
 
 import java.util.Iterator;
-
 import descent.internal.compiler.parser.StorageClassDeclaration;
 import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.Definition;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -16,6 +16,11 @@ public final class DeclarationStorageClass extends DeclarationAttrib {
 	public DeclarationStorageClass(StorageClassDeclaration elem, ASTConversionContext convContex) {
 		super(elem, elem.decl, convContex);
 		this.stclass = elem.stc;
+	}
+	
+	public DeclarationStorageClass(int stclass, ASTNeoNode[] decls, boolean hasCurlies) {
+		super(new dtool.ast.declarations.NodeList(decls, hasCurlies));
+		this.stclass = stclass;
 	}
 
 	@Override

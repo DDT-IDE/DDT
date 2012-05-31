@@ -9,11 +9,12 @@ import dtool.ast.definitions.DefUnit;
 
 public class RefReturn extends Reference {
 	
-	
 	public RefReturn(TypeReturn elem) {
 		convertNode(elem);
 	}
 	
+	public RefReturn() {
+	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

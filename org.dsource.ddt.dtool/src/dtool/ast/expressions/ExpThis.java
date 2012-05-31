@@ -8,6 +8,10 @@ public class ExpThis extends Expression {
 	public ExpThis(ThisExp elem) {
 		convertNode(elem);
 	}
+	
+	public ExpThis() {
+		
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

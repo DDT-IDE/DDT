@@ -37,6 +37,17 @@ public class StatementTry extends Statement {
 				this.param = new FunctionParameter(elem.type, elem.ident, convContext);
 			}
 		}
+		
+		public CatchClause(IFunctionParameter param, IStatement body) {
+			this.param = param;
+			this.body = body;
+			
+			if (this.param != null)
+				((ASTNeoNode) this.param).setParent(this);
+			
+			if (this.body != null)
+				((ASTNeoNode) body).setParent(this);
+		}
 
 		@Override
 		public void accept0(IASTNeoVisitor visitor) {
@@ -72,6 +83,24 @@ public class StatementTry extends Statement {
 	public StatementTry(TryCatchStatement elem, ASTConversionContext convContext) {
 		convertNode(elem);
 		convertTryCatch(elem, convContext);
+	}
+	
+	public StatementTry(IStatement body, CatchClause[] params, IStatement finallyBody) {
+		this.body = body;
+		this.params = params;
+		this.finallybody = finallyBody;
+		
+		if (this.body != null)
+			((ASTNeoNode) this.body).setParent(this);
+		
+		if (this.finallybody != null)
+			((ASTNeoNode) this.finallybody).setParent(this);
+		
+		if (this.params != null) {
+			for (CatchClause cc : params) {
+				cc.setParent(this);
+			}
+		}
 	}
 
 	private void convertTryCatch(TryCatchStatement elem, ASTConversionContext convContext) {

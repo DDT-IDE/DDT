@@ -10,6 +10,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ScopeStatement;
 import descent.internal.compiler.parser.ast.ASTNode;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.ArrayView;
 import dtool.descentadapter.DescentASTConverter;
@@ -26,7 +27,12 @@ public class BlockStatement extends Statement implements IScopeNode {
 	public boolean hasCurlyBraces; // syntax-structural?
 	
 	public BlockStatement(Collection<IStatement> statements, boolean hasCurlyBraces) {
-		this.statements = ArrayView.create(ArrayUtil.createFrom(statements, IStatement.class)); 
+		this.statements = ArrayView.create(ArrayUtil.createFrom(statements, IStatement.class));
+		if (statements != null) {
+			for (IStatement stmt : statements) {
+				((ASTNeoNode) stmt).setParent(this);
+			}
+		}
 		this.hasCurlyBraces = hasCurlyBraces;
 	}
 	
@@ -53,7 +59,6 @@ public class BlockStatement extends Statement implements IScopeNode {
 			setSourceRange(elem.statement);
 		}
 	}
-	
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

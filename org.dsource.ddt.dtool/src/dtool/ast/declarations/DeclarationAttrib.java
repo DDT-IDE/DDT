@@ -7,6 +7,7 @@ import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.AttribDeclaration;
 import descent.internal.compiler.parser.Dsymbol;
+import descent.internal.compiler.parser.PROT;
 import descent.internal.compiler.parser.Statement;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
@@ -14,7 +15,7 @@ import dtool.descentadapter.DeclarationConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.INonScopedBlock;
 
-public abstract class DeclarationAttrib extends ASTNeoNode implements INonScopedBlock {
+public abstract class DeclarationAttrib extends ASTNeoNode implements INonScopedBlock, IDeclaration {
 	
 	public final NodeList body;
 	
@@ -29,6 +30,15 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 		this.body = NodeList.createNodeList(bodydecls, convContex);
 	}
 	
+	public DeclarationAttrib(NodeList body) {
+		this.body = body;
+		if (this.body != null) {
+			for (ASTNeoNode n : this.body.nodes) {
+				n.setParent(this);
+			}
+		}
+	}
+	
 	protected void acceptBodyChildren(IASTNeoVisitor visitor) {
 		if(body != null) {
 			TreeVisitor.acceptChildren(visitor, body.nodes);
@@ -40,6 +50,36 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 		if(body == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
 		return body.getNodeIterator();
+	}
+
+	@Override
+	public void setAttributes(int effectiveModifiers) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getAttributes() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setProtection(PROT prot) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PROT getEffectiveProtection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void accept0(IASTNeoVisitor visitor) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -26,6 +26,16 @@ public class TemplateParamType extends TemplateParameter {
 		this((TemplateTypeParameter) elem, convContext); // TODO: TODO
 	}
 	
+	public TemplateParamType(DefUnitDataTuple dudt, Reference specType, Reference defaultType){
+		super(dudt);
+		this.specType = specType;
+		if (this.specType != null)
+			this.specType.setParent(this);
+		
+		this.defaultType = defaultType;
+		if (this.defaultType != null)
+			this.defaultType.setParent(this);
+	}
 
 	@Override
 	public EArcheType getArcheType() {

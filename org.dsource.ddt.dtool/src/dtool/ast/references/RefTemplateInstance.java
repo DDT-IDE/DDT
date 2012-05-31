@@ -17,11 +17,18 @@ public class RefTemplateInstance extends Reference {
 	public final Reference refRawTemplate;
 	public final ASTNeoNode[] tiargs;
 	
-	protected RefTemplateInstance(Reference refRawTemplate, ASTNeoNode[] tiargs, SourceRange sourceRange) {
+	public RefTemplateInstance(Reference refRawTemplate, ASTNeoNode[] tiargs, SourceRange sourceRange) {
 		assertNotNull(refRawTemplate);
 		assertNotNull(tiargs);
-		this.refRawTemplate = refRawTemplate; 
+		this.refRawTemplate = refRawTemplate;
+		if (this.refRawTemplate != null)
+			this.refRawTemplate.setParent(this);
 		this.tiargs = tiargs;
+		if (this.tiargs != null) {
+			for (ASTNeoNode node : this.tiargs) {
+				node.setParent(this);
+			}
+		}
 		initSourceRange(sourceRange);
 	}
 	

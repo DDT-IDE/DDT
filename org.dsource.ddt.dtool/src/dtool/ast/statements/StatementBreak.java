@@ -15,6 +15,13 @@ public class StatementBreak extends Statement {
 		if(elem.ident != null)
 			this.id = DefinitionConverter.convertId(elem.ident);
 	}
+	
+	public StatementBreak(Symbol id) {
+		this.id = id;
+		
+		if (this.id != null)
+			this.id.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

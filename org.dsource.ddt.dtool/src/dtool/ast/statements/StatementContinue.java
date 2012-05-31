@@ -15,6 +15,12 @@ public class StatementContinue extends Statement {
 		if(elem.ident != null)
 			this.id = DefinitionConverter.convertId(elem.ident);
 	}
+	
+	public StatementContinue(Symbol id) {
+		this.id = id;
+		if (this.id != null)
+			this.id.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

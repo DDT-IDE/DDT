@@ -2,6 +2,7 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ForStatement;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -13,6 +14,22 @@ public class StatementFor extends Statement {
 	public Resolvable cond;
 	public Resolvable inc;
 	public IStatement body;
+	
+	public StatementFor(IStatement init, Resolvable cond, Resolvable inc, IStatement body) {
+		this.init = init;
+		this.cond = cond;
+		this.inc = inc;
+		this.body = body;
+
+		if (this.init != null)
+			((ASTNeoNode) this.init).setParent(this);
+		if (this.cond != null)
+			this.cond.setParent(this);
+		if (this.inc != null)
+			this.inc.setParent(this);
+		if (this.body != null)
+			((ASTNeoNode) this.body).setParent(this);
+	}
 
 
 	public StatementFor(ForStatement elem, ASTConversionContext convContext) {

@@ -11,6 +11,10 @@ public class ExpLiteralBool extends Expression {
 		convertNode(node);
 		this.value = node.value.intValue() != 0;
 	}
+	
+	public ExpLiteralBool(boolean value) {
+		this.value = value;
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

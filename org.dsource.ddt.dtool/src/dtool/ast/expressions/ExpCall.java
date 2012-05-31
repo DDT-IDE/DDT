@@ -21,6 +21,13 @@ public class ExpCall extends Expression {
 		initSourceRange(sourceRange);
 		this.callee = callee;
 		this.args = args;
+		
+		if (this.callee != null)
+			this.callee.setParent(this);
+		
+		for (Resolvable r : args) {
+			r.setParent(this);
+		}
 	}
 	
 	@Override

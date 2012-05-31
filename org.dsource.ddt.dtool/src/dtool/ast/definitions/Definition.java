@@ -3,14 +3,15 @@ package dtool.ast.definitions;
 import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.Modifier;
 import descent.internal.compiler.parser.PROT;
+import dtool.ast.declarations.IDeclaration;
 import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 /**
- * Abstract classe for all declaration-based DefUnits. 
+ * Abstract class for all declaration-based DefUnits. 
  */
-public abstract class Definition extends DefUnit  {
+public abstract class Definition extends DefUnit implements IDeclaration {
 	
 	private static final Modifier[] NOMODIFIERS = new Modifier[0];
 	
@@ -26,17 +27,8 @@ public abstract class Definition extends DefUnit  {
 	public Definition(DefUnitDataTuple defunit, PROT prot) {
 		super(defunit);
 		this.protection = prot;
-		if(false) {
-//		if(elem.modifiers != null && elem.modifiers.size() != 0) {
-//			this.modifiers = elem.modifiers.toArray(
-//					new Modifier[elem.modifiers.size()]);
-//			for (int i = 0; i < this.modifiers.length; i++) {
-//				effectiveModifiers |= STC.fromTOK(modifiers[i].tok);
-//			}
-		} else {
-			this.modifiers = NOMODIFIERS;
-			this.effectiveModifiers = 0;
-		}
+		this.modifiers = NOMODIFIERS;
+		this.effectiveModifiers = 0;
 	}
 	
 	public static Definition convert(Dsymbol elem, ASTConversionContext convContext) {
@@ -49,5 +41,20 @@ public abstract class Definition extends DefUnit  {
 			return PROT.PROTpublic;
 		}
 		return protection;
+	}
+
+	@Override
+	public void setAttributes(int effectiveModifiers) {
+		this.effectiveModifiers = effectiveModifiers;
+	}
+
+	@Override
+	public int getAttributes() {
+		return effectiveModifiers;
+	}
+
+	@Override
+	public void setProtection(PROT prot) {
+		this.protection = prot;
 	}
 }

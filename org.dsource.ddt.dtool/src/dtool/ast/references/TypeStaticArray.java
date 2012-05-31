@@ -26,6 +26,17 @@ public class TypeStaticArray extends CommonRefNative {
 		this.elemtype = ReferenceConverter.convertType(elem.next, convContext);
 		this.sizeexp = ExpressionConverter.convert(elem.dim, convContext); 
 	}
+	
+	public TypeStaticArray(Reference elemtype, Resolvable sizeexp) {
+		this.elemtype = elemtype;
+		this.sizeexp = sizeexp;
+		
+		if (this.elemtype != null)
+			this.elemtype.setParent(this);
+		
+		if (this.sizeexp != null)
+			this.sizeexp.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

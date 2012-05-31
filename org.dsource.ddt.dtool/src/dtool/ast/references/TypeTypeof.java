@@ -15,6 +15,16 @@ public class TypeTypeof extends CommonRefNative {
 	public TypeTypeof(Expression exp, SourceRange sourceRange) {
 		this.expression = exp;
 		initSourceRange(sourceRange);
+		
+		if (this.expression != null)
+			this.expression.setParent(this);
+	}
+	
+	public TypeTypeof(Expression exp) {
+		this.expression = exp;
+		
+		if (this.expression != null)
+			this.expression.setParent(this);
 	}
 	
 	@Override

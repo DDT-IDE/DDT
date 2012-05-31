@@ -16,6 +16,17 @@ public class ExpCast extends Expression {
 		this.type = type;
 	}
 	
+	public ExpCast(Resolvable exp, Reference type) {
+		this.exp = exp;
+		this.type = type;
+		
+		if (this.exp != null)
+			this.exp.setParent(this);
+		
+		if (this.type != null)
+			this.exp.setParent(this);
+	}
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

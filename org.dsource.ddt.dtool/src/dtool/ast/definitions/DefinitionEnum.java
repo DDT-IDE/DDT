@@ -23,11 +23,21 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	public ArrayView<EnumMember> members;
 	public Reference type;
 	
-	public DefinitionEnum(DefUnitDataTuple defunitInfo, PROT prot, ArrayView<EnumMember> members, Reference reference,
+	public DefinitionEnum(DefUnitDataTuple defunitInfo, PROT prot, EnumMember[] members, Reference reference,
 			SourceRange sourceRange) {
 		super(defunitInfo, prot);
-		this.members = members;
-		this.type = reference; 
+
+		if (members != null) {
+			this.members = new ArrayView<EnumMember>(members);
+			for (EnumMember em : this.members) {
+				em.setParent(this);
+			}
+		}
+		
+		this.type = reference;
+		if (this.type != null)
+			type.setParent(this);
+		
 		initSourceRange(sourceRange);
 	}
 	
@@ -35,7 +45,7 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 		if(elem.ident != null) {
 			DefinitionEnum defEnum = new DefinitionEnum(
 					DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
-					DescentASTConverter.convertManyToView(elem.members, EnumMember.class, convContext),
+					DescentASTConverter.convertManyToView(elem.members, EnumMember.class, convContext).getInternalArray(),
 					ReferenceConverter.convertType(elem.memtype, convContext),
 					DefinitionConverter.sourceRange(elem));
 			return defEnum;

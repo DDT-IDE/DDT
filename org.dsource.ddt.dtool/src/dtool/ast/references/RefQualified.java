@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -17,20 +18,24 @@ import dtool.refmodel.IDefUnitReferenceNode;
 public class RefQualified extends CommonRefQualified {
 	
 	
-	public final IDefUnitReferenceNode qualifier; //Entity or Expression
+	public IDefUnitReferenceNode qualifier; //Entity or Expression
 	
 	public RefQualified(IDefUnitReferenceNode qualifier, RefIdentifier qualifiedName) {
 		assertNotNull(qualifier);
 		assertNotNull(qualifiedName);
 		this.qualifier = qualifier;
 		this.qualifiedName = qualifiedName;
+		
+		if (this.qualifiedName != null)
+			this.qualifiedName.setParent(this);
+		if (this.qualifier != null)
+			((ASTNeoNode) qualifier).setParent(this);
 	}
 	
 	public RefQualified(IDefUnitReferenceNode rootRef, RefIdentifier subRef, SourceRange sourceRange) {
 		this(rootRef, subRef);
 		initSourceRange(sourceRange);
 	}
-	
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

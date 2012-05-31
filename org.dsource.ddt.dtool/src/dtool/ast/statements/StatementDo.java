@@ -2,6 +2,7 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.DoStatement;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -16,6 +17,16 @@ public class StatementDo extends Statement {
 		convertNode(elem);
 		this.exp = ExpressionConverter.convert(elem.condition, convContext);
 		this.st = Statement.convert(elem.body, convContext);
+	}
+	
+	public StatementDo(Resolvable exp, IStatement st) {
+		this.exp = exp;
+		this.st = st;
+		
+		if (this.exp != null)
+			this.exp.setParent(this);
+		if (this.st != null)
+			((ASTNeoNode) this.st).setParent(this);
 	}
 
 	@Override

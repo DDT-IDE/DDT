@@ -8,6 +8,7 @@ import descent.internal.compiler.parser.Import;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
 
@@ -19,6 +20,10 @@ public class ImportStatic extends ImportFragment {
 	public ImportStatic(Import elem) {
 		super(elem);
 		//names = moduleRef.packageName.split("\\.");
+	}
+	
+	public ImportStatic(RefModule refModule) {
+		super(refModule);
 	}
 	
 	private String[] getPackageNames() {

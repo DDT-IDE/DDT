@@ -7,6 +7,7 @@ import java.util.List;
 
 import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.tree.TreeVisitor;
+import descent.internal.compiler.parser.PROT;
 import descent.internal.compiler.parser.TemplateDeclaration;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
@@ -35,6 +36,26 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 		if(wrapper) {
 			assertTrue(decls.size() == 1);
 		}
+	}
+	
+	public DefinitionTemplate(DefUnitDataTuple dudt, PROT prot, TemplateParameter[] params, ASTNeoNode[] decls) {
+		super(dudt, prot);
+		
+		this.templateParams = new ArrayView<TemplateParameter>(params);
+		if (params != null) {
+			for (TemplateParameter p : params) {
+				p.setParent(this);
+			}
+		}
+		
+		this.decls = new ArrayView<ASTNeoNode>(decls);
+		if (decls != null) {
+			for (ASTNeoNode d : decls) {
+				d.setParent(this);
+			}
+		}
+		// Must define what it does!
+		this.wrapper = this.templateParams.size() != 1;
 	}
 	
 	@Override
@@ -74,9 +95,8 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 		// TODO: check if in a template invocation
 		if(wrapper) {
 			// Go straight to decls member's members
-			IScopeNode scope = ((DefUnit)decls.get(0)).getMembersScope();
 			Iterator<? extends IASTNode> tplIter = templateParams.iterator();
-			return ChainedIterator.create(tplIter, scope.getMembersIterator());
+			return ChainedIterator.create(tplIter, decls.iterator());
 		}
 		return new ChainedIterator<ASTNeoNode>(templateParams.iterator(), decls.iterator());
 	}

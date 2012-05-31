@@ -2,6 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.DebugSymbol;
+import descent.internal.compiler.parser.PROT;
 import descent.internal.compiler.parser.VersionSymbol;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
@@ -13,7 +14,7 @@ import dtool.descentadapter.DefinitionConverter;
  *	version = someident;
  *  debug = someident;   
  */
-public class DeclarationConditionalDefinition extends ASTNeoNode {
+public class DeclarationConditionalDefinition extends ASTNeoNode implements IDeclaration {
 
 	public interface Type {
 		int DEBUG = 9;
@@ -40,6 +41,14 @@ public class DeclarationConditionalDefinition extends ASTNeoNode {
 			this.identifier = new Symbol(new String(elem.version.value));
 		conditionalKind = Type.VERSION;
 	}
+	
+	public DeclarationConditionalDefinition(Symbol id, int t) {
+		this.identifier = id;
+		if (this.identifier != null)
+			this.identifier.setParent(this);
+		
+		this.conditionalKind = t;
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
@@ -54,5 +63,29 @@ public class DeclarationConditionalDefinition extends ASTNeoNode {
 	public String toStringAsElement() {
 		return "["+ (conditionalKind == Type.VERSION?"debug":"version") 
 			+ "="+identifier.toStringAsElement()+")]";
+	}
+
+	@Override
+	public void setAttributes(int effectiveModifiers) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getAttributes() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setProtection(PROT prot) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PROT getEffectiveProtection() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

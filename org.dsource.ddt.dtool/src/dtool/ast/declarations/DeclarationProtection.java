@@ -7,6 +7,7 @@ import descent.internal.compiler.parser.Modifier;
 import descent.internal.compiler.parser.PROT;
 import descent.internal.compiler.parser.ProtDeclaration;
 import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.Definition;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -22,6 +23,17 @@ public class DeclarationProtection extends DeclarationAttrib {
 		this.modifier = elem.modifier;
 		this.prot = elem.protection;
 		Assert.isTrue(PROT.fromTOK(this.modifier.tok) == this.prot);
+	}
+	
+	public DeclarationProtection(PROT prot, ASTNeoNode[] decls, boolean hasCurlies) {
+		super(new dtool.ast.declarations.NodeList(decls, hasCurlies));
+		this.prot = prot;
+		for (ASTNeoNode d : decls) {
+			d.setParent(this);
+			if (d instanceof DeclarationImport && this.prot == PROT.PROTpublic)
+				((DeclarationImport) d).isTransitive = true;
+				
+		}
 	}
 
 	@Override

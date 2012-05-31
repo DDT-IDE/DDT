@@ -6,10 +6,14 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.refmodel.IScopeNode;
 
 public class TemplateParamAlias extends TemplateParameter {
-
+	
 	public TemplateParamAlias(TemplateAliasParameter elem) {
 		super(elem.ident);
 		convertNode(elem);
+	}
+	
+	public TemplateParamAlias(DefUnitDataTuple dudt) {
+		super(dudt);
 	}
 
 	@Override

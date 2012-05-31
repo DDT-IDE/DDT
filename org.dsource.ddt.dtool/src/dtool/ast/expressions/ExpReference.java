@@ -15,11 +15,14 @@ import dtool.ast.references.Reference;
  */
 public class ExpReference extends Expression {
 	
-	public final Reference ref;
+	public Reference ref;
 	
 	public ExpReference(Reference ref, SourceRange sourceRange) {
 		assertNotNull(ref);
 		this.ref = ref;
+		if (this.ref != null)
+			this.ref.setParent(this);
+		
 		initSourceRange(sourceRange);
 	}
 	

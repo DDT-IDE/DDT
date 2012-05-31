@@ -15,6 +15,13 @@ public class ExpStringMacro extends Expression {
 		this.exp = ExpressionConverter.convert(node.e1, convContext);
 	}
 	
+	public ExpStringMacro(Resolvable exp) {
+		this.exp = exp;
+		
+		if (this.exp != null)
+			this.exp.setParent(this);
+	}
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

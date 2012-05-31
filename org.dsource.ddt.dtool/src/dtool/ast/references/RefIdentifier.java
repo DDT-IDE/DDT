@@ -54,7 +54,7 @@ public class RefIdentifier extends NamedReference {
 	}
 	
 	/** Does a search determining the correct lookup scope when
-	 * the CommonRefSingle is part of a qualified referencet. */
+	 * the CommonRefSingle is part of a qualified reference. */
 	public static void doSearchForPossiblyQualifiedSingleRef(CommonDefUnitSearch search, RefIdentifier refSingle) {
 		// First determine the lookup scope.
 		if(refSingle.getParent() instanceof CommonRefQualified) {

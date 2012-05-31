@@ -22,6 +22,12 @@ public class TypeDynArray extends CommonRefNative {
 		setSourceRange(elem);
 		this.elemtype = ReferenceConverter.convertType(elem.next, convContext);
 	}
+	
+	public TypeDynArray(Reference elemType) {
+		this.elemtype = elemType;
+		if (this.elemtype != null)
+			this.elemtype.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

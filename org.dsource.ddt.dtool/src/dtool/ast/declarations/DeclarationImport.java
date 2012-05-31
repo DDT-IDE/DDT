@@ -19,7 +19,7 @@ import dtool.refmodel.INonScopedBlock;
  * This is considered an INonScopedBlock because it might contain aliasing
  * imports and selective imports, which are primary-space {@link DefUnit}s.
  */
-public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
+public class DeclarationImport extends Declaration implements INonScopedBlock, IDeclaration {
 
 	public ImportFragment[] imports;
 	public boolean isStatic;
@@ -62,6 +62,18 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 		assertTrue(imprt == null);
 	}
 	
+	public DeclarationImport(ImportFragment[] imports, boolean isStatic, boolean isTransitive) {
+		this.imports = imports;
+		this.isStatic = isStatic;
+		this.isTransitive = isTransitive;
+		
+		if (this.imports != null) {
+			for (ImportFragment f : this.imports) {
+				f.setParent(this);
+			}
+		}
+	}
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -78,6 +90,13 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 		public ImportFragment(Import elem) {
 			convertNode(elem);
 			this.moduleRef = new RefModule(elem.packages, elem.id);
+			this.moduleRef.setParent(this);
+		}
+		
+		public ImportFragment(RefModule moduleRef) {
+			this.moduleRef = moduleRef;
+			if (this.moduleRef != null)
+				this.moduleRef.setParent(this);
 		}
 
 		/** Performs a search in the secondary/background scope.

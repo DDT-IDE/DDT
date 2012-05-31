@@ -15,6 +15,13 @@ public class StatementThrow extends Statement {
 		convertNode(elem);
 		this.exp = ExpressionConverter.convert(elem.exp, convContext);
 	}
+	
+	public StatementThrow(Resolvable exp) {
+		this.exp = exp;
+		
+		if (this.exp != null)
+			this.exp.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

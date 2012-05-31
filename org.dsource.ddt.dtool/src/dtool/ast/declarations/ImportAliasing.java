@@ -11,8 +11,11 @@ import descent.internal.compiler.parser.Import;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.INonScopedBlock;
 import dtool.refmodel.IScopeNode;
@@ -28,6 +31,11 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 			setSourceRange(ident.start, impAlias.getEndPos() - ident.start);
 			this.impAlias = impAlias;
 			assertNotNull(impAlias);
+		}
+		
+		public ImportAliasingDefUnit(DefUnitDataTuple dudt, ImportAliasing impAlias) {
+			super(dudt);
+			this.impAlias = impAlias;
 		}
 		
 		@Override
@@ -58,6 +66,12 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 		// Fix Import fragment range
 		//elem.startPos = elem.ident.getStartPos();
 		//elem.setEndPos(elem.qName.getEndPos());
+	}
+	
+	public ImportAliasing(DefUnitDataTuple dudt, RefModule refModule) {
+		super(refModule);
+		this.aliasDefUnit = new ImportAliasingDefUnit(dudt, this);
+		this.aliasDefUnit.setParent(this);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package dtool.ast.definitions;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.AliasDeclaration;
+import descent.internal.compiler.parser.PROT;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -20,6 +21,14 @@ public class DefinitionAlias extends Definition implements IStatement {
 	public DefinitionAlias(AliasDeclaration elem, ASTConversionContext convContext) {
 		super(elem, convContext);
 		target = (Reference) DescentASTConverter.convertElem(elem.type, convContext);
+	}
+	
+	public DefinitionAlias(DefUnitDataTuple dudt, PROT prot, Reference target) {
+		super(dudt, prot);
+		this.target = target;
+		
+		if (target != null)
+			target.setParent(this);
 	}
 	
 	@Override

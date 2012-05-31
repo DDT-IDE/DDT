@@ -8,6 +8,10 @@ public class ExpLiteralNull extends Expression {
 	public ExpLiteralNull(NullExp elem) {
 		convertNode(elem);
 	}
+	
+	public ExpLiteralNull() {
+		
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

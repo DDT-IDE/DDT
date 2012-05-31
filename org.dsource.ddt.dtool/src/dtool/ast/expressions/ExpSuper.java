@@ -8,6 +8,10 @@ public class ExpSuper extends Expression {
 	public ExpSuper(SuperExp elem) {
 		convertNode(elem);
 	}
+	
+	public ExpSuper() {
+		
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

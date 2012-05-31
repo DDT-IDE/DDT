@@ -1,10 +1,13 @@
 package dtool.ast.declarations;
 
+import java.util.Collection;
+
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.StaticIfCondition;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.statements.IStatement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.descentadapter.ExpressionConverter;
 
@@ -18,6 +21,17 @@ public class DeclarationStaticIf extends DeclarationConditional {
 		this.exp = ExpressionConverter.convert(condition.exp, convContext);
 		this.thendecls = thendecls; 
 		this.elsedecls = elsedecls;
+	}
+	
+	
+	public DeclarationStaticIf(Resolvable exp, Collection<IStatement> thenDecls, Collection<IStatement> elseDecls) {
+		super(
+			NodeList.createNodeList(thenDecls, false),
+			NodeList.createNodeList(elseDecls, false)
+		);
+		this.exp = exp;
+		if (this.exp != null)
+			this.exp.setParent(this);
 	}
 	
 	

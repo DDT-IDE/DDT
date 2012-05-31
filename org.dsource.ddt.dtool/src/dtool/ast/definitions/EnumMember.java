@@ -2,7 +2,6 @@ package dtool.ast.definitions;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
@@ -11,9 +10,11 @@ public class EnumMember extends DefUnit {
 	
 	public final Resolvable value;
 	
-	public EnumMember(DefUnitDataTuple defunit, Expression value) {
+	public EnumMember(DefUnitDataTuple defunit, Resolvable value) {
 		super(defunit.sourceRange, defunit.defName, defunit.comments);
 		this.value = value;
+		if (this.value != null)
+			this.value.setParent(this);
 	}
 	
 	@Override

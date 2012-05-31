@@ -19,6 +19,12 @@ public class StatementExp extends Statement {
 		
 		this.exp = ExpressionConverter.convert(element.exp, convContext);
 	}
+	
+	public StatementExp(Resolvable exp) {
+		this.exp = exp;
+		if (this.exp != null)
+			this.exp.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

@@ -9,6 +9,9 @@ public class ExpLiteralReal extends Expression {
 		convertNode(elem);
 		// TODO Auto-generated constructor stub
 	}
+	
+	public ExpLiteralReal(float value) {
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

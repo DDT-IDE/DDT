@@ -23,6 +23,22 @@ public class TemplateParamValue extends TemplateParameter {
 		this.specvalue = ExpressionConverter.convert(elem.specValue, convContext);
 		this.defaultvalue = ExpressionConverter.convert(elem.defaultValue, convContext);
 	}
+	
+	public TemplateParamValue(DefUnitDataTuple dudt, Reference type, Resolvable specValue, Resolvable defaultValue) {
+		super(dudt);
+		
+		this.type = type;
+		if (this.type != null)
+			this.type.setParent(this);
+		
+		this.specvalue = specValue;
+		if (this.specvalue != null)
+			this.specvalue.setParent(this);
+		
+		this.defaultvalue = defaultValue;
+		if (this.defaultvalue != null)
+			this.defaultvalue.setParent(this);
+	}
 
 	@Override
 	public EArcheType getArcheType() {

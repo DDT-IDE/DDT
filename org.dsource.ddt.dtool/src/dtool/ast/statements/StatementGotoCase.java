@@ -15,6 +15,12 @@ public class StatementGotoCase extends Statement {
 		convertNode(elem);
 		this.exp = ExpressionConverter.convert(elem.exp, convContext);
 	}
+	
+	public StatementGotoCase(Resolvable exp) {
+		this.exp = exp;
+		if (this.exp != null)
+			this.exp.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

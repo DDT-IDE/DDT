@@ -38,6 +38,14 @@ public class PrefixExpression extends Expression {
 		this.kind = kind;
 	}
 	
+	public PrefixExpression(Resolvable exp, int kind) {
+		this.exp = exp;
+		this.kind = kind;
+		
+		if (this.exp != null)
+			this.exp.setParent(this);
+	}
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

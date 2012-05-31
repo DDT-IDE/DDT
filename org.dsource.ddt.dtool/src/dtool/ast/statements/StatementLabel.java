@@ -14,6 +14,12 @@ public class StatementLabel extends Statement {
 		setSourceRange(elem);
 		this.label = DefinitionConverter.convertId(elem.ident);
 	}
+	
+	public StatementLabel(Symbol label) {
+		this.label = label;
+		if (this.label != null)
+			this.label.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

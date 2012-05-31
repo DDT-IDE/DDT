@@ -36,6 +36,12 @@ public class TypePointer extends CommonRefNative {
 		setSourceRange(elem);
 		this.elemtype = ReferenceConverter.convertType(elem.next, convContext);
 	}
+	
+	public TypePointer(Reference elemtype) {
+		this.elemtype = elemtype;
+		if (this.elemtype != null)
+			this.elemtype.setParent(this);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

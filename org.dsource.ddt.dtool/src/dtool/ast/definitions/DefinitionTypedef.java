@@ -1,6 +1,7 @@
 package dtool.ast.definitions;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import descent.internal.compiler.parser.PROT;
 import descent.internal.compiler.parser.TypedefDeclaration;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.expressions.Initializer;
@@ -19,6 +20,16 @@ public class DefinitionTypedef extends Definition implements IStatement {
 		super(elem, convContext);
 		this.type = ReferenceConverter.convertType(elem.sourceBasetype, convContext);
 		this.initializer = Initializer.convert(elem.init, convContext);
+	}
+	
+	public DefinitionTypedef(DefUnitDataTuple dudt, PROT prot, Reference type, Initializer initializer) {
+		super(dudt, prot);
+		this.type = type;
+		if (this.type != null)
+			this.type.setParent(this);
+		this.initializer = initializer;
+		if (this.initializer != null)
+			this.initializer.setParent(this);
 	}
 
 	@Override

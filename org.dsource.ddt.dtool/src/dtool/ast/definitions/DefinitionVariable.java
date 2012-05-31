@@ -3,6 +3,7 @@ package dtool.ast.definitions;
 import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.declarations.InvalidSyntaxDeclaration;
@@ -35,6 +36,17 @@ public class DefinitionVariable extends Definition implements IStatement {
 		super(elem, convContext);
 		this.type = ReferenceConverter.convertType(elem.type, convContext);
 		this.init = Initializer.convert(elem.init, convContext);
+	}
+	
+	public DefinitionVariable(DefUnitDataTuple dudt, PROT prot, Reference type, Initializer init) {
+		super(dudt, prot);
+		this.type = type;
+		this.init = init;
+		
+		if (this.type != null)
+			this.type.setParent(this);
+		if (this.init != null)
+			this.init.setParent(this);
 	}
 	
 	@Override
