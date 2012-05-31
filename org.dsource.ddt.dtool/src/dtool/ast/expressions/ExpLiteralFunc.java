@@ -18,7 +18,8 @@ public class ExpLiteralFunc extends Expression {
 	public final IStatement fbody;
 	public final IStatement fensure;
 
-	public ExpLiteralFunc(Reference retType, IFunctionParameter[] params, int varargs, IStatement freq, IStatement fbody, IStatement fensure, SourceRange sourceRange) {
+	public ExpLiteralFunc(Reference retType, IFunctionParameter[] params, int varargs, IStatement freq,
+			IStatement fbody, IStatement fensure, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		
 		this.frequire = freq;

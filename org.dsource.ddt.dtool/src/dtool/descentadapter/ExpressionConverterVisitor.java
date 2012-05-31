@@ -1,7 +1,5 @@
 package dtool.descentadapter;
 
-import java.math.BigInteger;
-
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AddAssignExp;
 import descent.internal.compiler.parser.AddExp;
@@ -263,12 +261,13 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(FuncExp element) {
-		// return endAdapt(new ExpLiteralFunc(element, convContext));
+		TypeFunction elemTypeFunc = (TypeFunction) element.fd.type;
+		
 		return endAdapt(
 			new ExpLiteralFunc(
-				ReferenceConverter.convertType(((TypeFunction) element.fd.type).next, convContext),
-				DescentASTConverter.convertMany(((TypeFunction) element.fd.type).parameters, IFunctionParameter.class, convContext),
-				((TypeFunction) element.fd.type).varargs,
+				ReferenceConverter.convertType(elemTypeFunc.next, convContext),
+				DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
+				DefinitionConverter.convertVarArgs(elemTypeFunc.varargs),
 				Statement.convert(element.fd.frequire, convContext),
 				Statement.convert(element.fd.fbody, convContext),
 				Statement.convert(element.fd.fensure, convContext),
@@ -301,7 +300,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		else {
 			return endAdapt(
 				new ExpLiteralInteger(
-					element.value != null ? element.value.bigIntegerValue() : new BigInteger("0"),
+					element.value != null ? element.value.bigIntegerValue() : null,
 					DefinitionConverter.sourceRange(element)
 				)
 			);
