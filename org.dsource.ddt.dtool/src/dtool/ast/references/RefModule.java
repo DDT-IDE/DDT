@@ -8,6 +8,7 @@ import java.util.List;
 import melnorme.utilbox.misc.StringUtil;
 import descent.internal.compiler.parser.IdentifierExp;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -24,26 +25,12 @@ import dtool.refmodel.ReferenceResolver;
 public class RefModule extends NamedReference {
 	
 	//public String packageName;
-	public String[] packages;
-	public String module;
-
-	public RefModule(List<IdentifierExp> packages, IdentifierExp id) {
-		this.module = new String(id.ident);
-		if(packages == null) {
-			this.packages = new String[0];
-			setSourceRange(id);
-		} else {
-			this.packages = new String[packages.size()];
-			for (int i = 0; i < packages.size(); i++) {
-				this.packages[i] = new String(packages.get(i).ident);
-			}
-			int startPos = packages.get(0).getStartPos();
-			setSourceRange(startPos, id.getEndPos() - startPos);
-		}
-	}
+	public final String[] packages;
+	public final String module;
 	
-	public RefModule(List<String> packages, String module) {
-		this.packages = packages.toArray(new String[packages.size()]);
+	public RefModule(String[] packages, String module, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.packages = packages;
 		this.module = module;
 	}
 

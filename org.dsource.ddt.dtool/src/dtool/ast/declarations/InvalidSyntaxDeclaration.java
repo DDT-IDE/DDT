@@ -1,28 +1,23 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ASTDmdNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 
 public class InvalidSyntaxDeclaration extends ASTNeoNode implements IStatement {
 	
 	public ASTNeoNode[] genericChildren;
 	
-	public InvalidSyntaxDeclaration(ASTDmdNode elem) {
-		convertNode(elem);
+	public InvalidSyntaxDeclaration(SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 		this.genericChildren = null;
 	}
 	
-	
-	public InvalidSyntaxDeclaration(ASTDmdNode elem, ASTNeoNode... children) {
-		convertNode(elem);
+	public InvalidSyntaxDeclaration(SourceRange sourceRange, ASTNeoNode... children) {
+		initSourceRange(sourceRange);
 		this.genericChildren = children;
-	}
-	
-	public InvalidSyntaxDeclaration() {
-		this.genericChildren = null;
 	}
 	
 	@Override

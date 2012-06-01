@@ -4,29 +4,21 @@ import java.util.Iterator;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.CompileDeclaration;
-import descent.internal.compiler.parser.CompileStatement;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationStringMacro extends ASTNeoNode implements IStatement, INonScopedBlock {
 	
 	public final Resolvable exp;
 
-	public DeclarationStringMacro(CompileDeclaration node, ASTConversionContext convContext) {
-		convertNode(node);
-		this.exp = ExpressionConverter.convert(node.exp, convContext);
-	}
-
-	public DeclarationStringMacro(CompileStatement node, ASTConversionContext convContext) {
-		convertNode(node);
-		this.exp = ExpressionConverter.convert(node.exp, convContext);
+	public DeclarationStringMacro(Resolvable exp, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.exp = exp; parentize(this.exp);
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.Import;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
@@ -44,16 +43,9 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock, ID
 	public static abstract class ImportFragment extends ASTNeoNode {
 		public RefModule moduleRef;
 
-		public ImportFragment(Import elem) {
-			convertNode(elem);
-			this.moduleRef = new RefModule(elem.packages, elem.id);
-			this.moduleRef.setParent(this);
-		}
-		
-		public ImportFragment(RefModule moduleRef) {
-			this.moduleRef = moduleRef;
-			if (this.moduleRef != null)
-				this.moduleRef.setParent(this);
+		public ImportFragment(RefModule moduleRef, SourceRange sourceRange) {
+			initSourceRange(sourceRange);
+			this.moduleRef = moduleRef; parentize(this.moduleRef);
 		}
 
 		/** Performs a search in the secondary/background scope.

@@ -2,16 +2,12 @@ package dtool.ast.declarations;
 
 import java.util.Iterator;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.IdentifierExp;
-import descent.internal.compiler.parser.Import;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
-import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.EArcheType;
@@ -26,16 +22,9 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 		
 		public ImportAliasing impAlias; // Non-structural Element
 
-		public ImportAliasingDefUnit(IdentifierExp ident, ImportAliasing impAlias) {
-			super(ident);
-			setSourceRange(ident.start, impAlias.getEndPos() - ident.start);
-			this.impAlias = impAlias;
-			assertNotNull(impAlias);
-		}
-		
 		public ImportAliasingDefUnit(DefUnitDataTuple dudt, ImportAliasing impAlias) {
 			super(dudt);
-			this.impAlias = impAlias;
+			this.impAlias = impAlias; parentize(this.impAlias);
 		}
 		
 		@Override
@@ -60,18 +49,9 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 	
 	ImportAliasingDefUnit aliasDefUnit;
 	
-	public ImportAliasing(Import elem) {
-		super(elem);
-		this.aliasDefUnit = new ImportAliasingDefUnit(elem.aliasId, this);
-		// Fix Import fragment range
-		//elem.startPos = elem.ident.getStartPos();
-		//elem.setEndPos(elem.qName.getEndPos());
-	}
-	
-	public ImportAliasing(DefUnitDataTuple dudt, RefModule refModule) {
-		super(refModule);
-		this.aliasDefUnit = new ImportAliasingDefUnit(dudt, this);
-		this.aliasDefUnit.setParent(this);
+	public ImportAliasing(DefUnitDataTuple dudt, RefModule refModule, SourceRange sourceRange) {
+		super(refModule, sourceRange);
+		this.aliasDefUnit = new ImportAliasingDefUnit(dudt, this); parentize(this.aliasDefUnit);
 	}
 
 	@Override

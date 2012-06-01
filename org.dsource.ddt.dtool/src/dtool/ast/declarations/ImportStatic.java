@@ -4,8 +4,8 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.Import;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
@@ -17,13 +17,8 @@ public class ImportStatic extends ImportFragment {
 	private PartialPackageDefUnit defunit; // Non-Structural Element
 	//private String[] names; // Non-Structural Element
 
-	public ImportStatic(Import elem) {
-		super(elem);
-		//names = moduleRef.packageName.split("\\.");
-	}
-	
-	public ImportStatic(RefModule refModule) {
-		super(refModule);
+	public ImportStatic(RefModule refModule, SourceRange sourceRange) {
+		super(refModule, sourceRange);
 	}
 	
 	private String[] getPackageNames() {

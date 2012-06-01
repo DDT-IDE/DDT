@@ -19,16 +19,6 @@ import dtool.refmodel.IScopeNode;
  * A definition of a variable
  */
 public class DefinitionVariable extends Definition implements IStatement {
-	
-	public static ASTNeoNode convert(descent.internal.compiler.parser.VarDeclaration elem, ASTConversionContext convContext) {
-		if(elem.ident == null) {
-			return new InvalidSyntaxDeclaration(elem, 
-					ReferenceConverter.convertType(elem.type, convContext), Initializer.convert(elem.init, convContext));
-		}  else {
-			return new DefinitionVariable(elem, convContext);
-		}
-	}
-	
 	public final Reference type;
 	public final Initializer init;
 

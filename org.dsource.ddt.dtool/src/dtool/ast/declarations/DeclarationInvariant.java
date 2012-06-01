@@ -1,20 +1,18 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.InvariantDeclaration;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.statements.BlockStatement;
-import dtool.ast.statements.Statement;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class DeclarationInvariant extends ASTNeoNode {
 
-	public BlockStatement body;
+	public final BlockStatement body;
 	
-	public DeclarationInvariant(InvariantDeclaration elem, ASTConversionContext convContext) {
-		setSourceRange(elem);
-		this.body = (BlockStatement) Statement.convert(elem.fbody, convContext);
+	public DeclarationInvariant(BlockStatement body, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.body = body; parentize(body);
 	}
 
 	@Override

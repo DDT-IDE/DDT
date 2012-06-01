@@ -2,8 +2,8 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import melnorme.utilbox.core.Assert;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
@@ -17,16 +17,10 @@ public class RefImportSelection extends NamedReference
 	
 	public ImportSelective impSel; // non structural
 	
-	public RefImportSelection(descent.internal.compiler.parser.IdentifierExp elem,
-			ImportSelective impSel) {
-		setSourceRange(elem);
-		Assert.isTrue(!(elem.ident.length == 0));
-		this.name = new String(elem.ident);
-		this.impSel = impSel;
-	}
-	
-	public RefImportSelection(String name) {
+	public RefImportSelection(String name, ImportSelective impSel, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 		this.name = name;
+		this.impSel = impSel; parentize(this.impSel);
 	}
 
 	@Override

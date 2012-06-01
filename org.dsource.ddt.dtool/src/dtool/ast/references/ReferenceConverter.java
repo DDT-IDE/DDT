@@ -30,6 +30,7 @@ import dtool.ast.definitions.MixinContainer;
 import dtool.ast.definitions.NamedMixin;
 import dtool.ast.expressions.ExpReference;
 import dtool.descentadapter.BaseDmdConverter;
+import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.descentadapter.ExpressionConverter;
@@ -96,7 +97,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		if(idents == null) {
 			assertTrue(convContext.hasSyntaxErrors());
 			assertTrue(elem.ident == null);
-			return new InvalidSyntaxDeclaration(elem);
+			return new InvalidSyntaxDeclaration(DefinitionConverter.sourceRange(elem));
 		}
 		SourceRange sourceRange = sourceRangeStrict(elem);
 		

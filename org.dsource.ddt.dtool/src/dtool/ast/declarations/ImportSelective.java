@@ -4,13 +4,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.IdentifierExp;
-import descent.internal.compiler.parser.Import;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
-import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefImportSelection;
@@ -29,19 +27,11 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 		implements IImportSelectiveSelection {
 
 		public final RefImportSelection target;
-
-		//public ImportSelective impSel; // Non Structural Element
 		
-		public ImportSelectiveAlias(IdentifierExp name, RefImportSelection impSelection) {
-			super(name);
-			this.target = impSelection;
-		}
-		
-		public ImportSelectiveAlias(DefUnitDataTuple dudt, RefImportSelection impSelection) {
+		public ImportSelectiveAlias(DefUnitDataTuple dudt, RefImportSelection impSelection, SourceRange sourceRange) {
 			super(dudt);
-			this.target = impSelection;
-			if (this.target != null)
-				this.target.setParent(this);
+			initSourceRange(sourceRange);
+			this.target = impSelection; parentize(this.target);
 		}
 
 		@Override
@@ -67,47 +57,20 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 	}
 
 	
-	public static ASTNeoNode create(IdentifierExp name,
-			IdentifierExp alias, ImportSelective impSel) {
-		
-		RefImportSelection impSelection;
-		impSelection = new RefImportSelection(name, impSel);
-		if(alias == null) {
-			//implements IImportSelectiveFragment
-			return impSelection;
-		} else {
-			ImportSelectiveAlias impSelfrag;
-			impSelfrag = new ImportSelectiveAlias(alias, impSelection);
-			impSelfrag.setSourceRange(alias.start, name.getEndPos() - alias.start);
-			return impSelfrag;
-		}
-		
-	}
-	
-	
 	public ASTNeoNode impSelFrags[];
 	
-	public ImportSelective(Import selImport) {
-		super(selImport);
-		
-		int importsSize = selImport.names.size(); 
-		this.impSelFrags = new ASTNeoNode[importsSize];
-		for(int i = 0; i < importsSize; i++) {
-			this.impSelFrags[i] = ImportSelective.create(selImport.names.get(i),
-					selImport.aliases.get(i), this);
-		}
+	public ImportSelective(RefModule refModule, ASTNeoNode[] frags, SourceRange sourceRange) {
+		super(refModule, sourceRange);
+		this.impSelFrags = frags; parentizeFrags(this.impSelFrags);
 	}
 	
-	public ImportSelective(RefModule refModule, ASTNeoNode[] frags) {
-		super(refModule);
-		this.impSelFrags = frags;
-		if (this.impSelFrags != null) {
-			for (ASTNeoNode n : this.impSelFrags) {
+	public void parentizeFrags(ASTNeoNode[] frags) {
+		if (frags != null) {
+			for (ASTNeoNode n : frags) {
 				n.setParent(this);
 				if (n instanceof ImportSelectiveAlias) {
 					((ImportSelectiveAlias) n).target.impSel = this;
-				}
-				else if (n instanceof RefImportSelection) {
+				} else if (n instanceof RefImportSelection) {
 					((RefImportSelection) n).impSel = this;
 				}
 			}

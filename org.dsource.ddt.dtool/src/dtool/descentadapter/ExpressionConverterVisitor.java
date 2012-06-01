@@ -166,7 +166,12 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 
 	@Override
 	public boolean visit(CompileDeclaration node) {
-		return endAdapt(new DeclarationStringMacro(node, convContext));
+		return endAdapt(
+			new DeclarationStringMacro(
+				ExpressionConverter.convert(node.exp, convContext),
+				DefinitionConverter.sourceRange(node)
+			)
+		);
 	}
 
 	@Override
@@ -181,7 +186,12 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 
 	@Override
 	public boolean visit(CompileStatement node) {
-		return endAdapt(new DeclarationStringMacro(node, convContext));
+		return endAdapt(
+			new DeclarationStringMacro(
+				ExpressionConverter.convert(node.exp, convContext),
+				DefinitionConverter.sourceRange(node)
+			)
+		);
 	}
 
 	

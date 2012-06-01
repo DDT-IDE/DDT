@@ -2,12 +2,16 @@ package dtool.descentadapter;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.Collections;
+
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AnonDeclaration;
 import descent.internal.compiler.parser.Argument;
 import descent.internal.compiler.parser.AttribDeclaration;
 import descent.internal.compiler.parser.DebugCondition;
 import descent.internal.compiler.parser.DebugSymbol;
+import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.IftypeCondition;
 import descent.internal.compiler.parser.Import;
 import descent.internal.compiler.parser.Modifier;
@@ -20,6 +24,8 @@ import descent.internal.compiler.parser.TemplateValueParameter;
 import descent.internal.compiler.parser.Version;
 import descent.internal.compiler.parser.VersionCondition;
 import descent.internal.compiler.parser.VersionSymbol;
+import dtool.ast.ASTNeoNode;
+import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAnonMember;
@@ -36,10 +42,14 @@ import dtool.ast.declarations.ImportAliasing;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportStatic;
+import dtool.ast.declarations.InvalidSyntaxDeclaration;
 import dtool.ast.declarations.NodeList;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
+import dtool.ast.declarations.ImportSelective.ImportSelectiveAlias;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefModifier;
+import dtool.ast.definitions.DefSymbol;
+import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
@@ -55,8 +65,14 @@ import dtool.ast.definitions.TemplateParamAlias;
 import dtool.ast.definitions.TemplateParamTuple;
 import dtool.ast.definitions.TemplateParamType;
 import dtool.ast.definitions.TemplateParamValue;
+import dtool.ast.expressions.Initializer;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefImportSelection;
+import dtool.ast.references.RefModule;
 import dtool.ast.references.ReferenceConverter;
+import dtool.ast.statements.BlockStatement;
+import dtool.ast.statements.IStatement;
+import dtool.ast.statements.Statement;
 
 /**
  * Converts from DMD's AST to a nicer AST ("Neo AST")
@@ -166,6 +182,32 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		return endAdapt(DeclarationConverter.convert(elem, convContext));
 	}
 	
+	// Helper function for the ImportSelective conversion.
+	private static ASTNeoNode createSelectionFragment(IdentifierExp name, IdentifierExp alias, ImportSelective impSel) {
+		assertTrue(!(name.ident.length == 0));
+		RefImportSelection impSelection = new RefImportSelection(
+			new String(name.ident),
+			impSel,
+			DefinitionConverter.sourceRange(name)
+		);
+		
+		if(alias == null) {
+			return impSelection; //implements IImportSelectiveFragment
+		}
+		else {
+			DefUnitDataTuple dudt = new DefUnitDataTuple(
+				DefinitionConverter.sourceRange(alias),
+				DefinitionConverter.convertIdToken(alias),
+				null
+			);
+			
+			return new ImportSelectiveAlias(
+				dudt, impSelection,
+				new SourceRange(alias.start, name.getEndPos() - alias.start)
+			);
+		}
+	}
+	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.Import elem) {
 		int importsNum = 1;
@@ -181,19 +223,64 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		for(int i = 0; i < importsNum; i++, imprt = imprt.next) {
 			
 			ImportFragment imprtFragment = null;
+			
+			// Storing the packages.
+			String[] packages;
+			SourceRange sr;
+			if (imprt.packages == null) {
+				packages = new String[0];
+				sr = DefinitionConverter.sourceRange(imprt.id);
+			} else {
+				packages = new String[imprt.packages.size()];
+				int idx = 0;
+				for (IdentifierExp ie : imprt.packages) {
+					packages[idx] = new String(ie.ident);
+				}
+				int startPos = imprt.packages.get(0).getStartPos();
+				sr = new SourceRange(startPos, imprt.id.getEndPos() - startPos);
+			}
+			
 			if(elem.isstatic) {
-				imprtFragment = new ImportStatic(imprt);
+				imprtFragment = new ImportStatic(
+					new RefModule(packages, new String(imprt.id.ident), sr),
+					DefinitionConverter.sourceRange(imprt)
+				);
 				//Ignore FQN aliasing for now.
 				//Assert.isTrue(imprt.alias == null);
 			} else if(imprt.aliasId != null) {
-				imprtFragment = new ImportAliasing(imprt);
+				SourceRange entireRange = DefinitionConverter.sourceRange(imprt);
+				DefUnitDataTuple dudt = new DefUnitDataTuple(
+					new SourceRange(imprt.aliasId.start, entireRange.getEndPos() - imprt.aliasId.start),
+					DefinitionConverter.convertIdToken(imprt.aliasId), null
+				);
+				imprtFragment = new ImportAliasing(
+					dudt,
+					new RefModule(packages, new String(imprt.id.ident), sr),
+					entireRange
+				);
 			} else if(imprt.names != null) {
 				assertTrue(imprt.names.size() == imprt.aliases.size());
 				assertTrue(imprt.names.size() > 0 );
-				imprtFragment = new ImportSelective(imprt);
+				ASTNeoNode[] impSelFrags = new ASTNeoNode[imprt.names.size()];
+				for(int selFragment = 0; selFragment < imprt.names.size(); selFragment++) {
+					impSelFrags[selFragment] = createSelectionFragment(
+						imprt.names.get(selFragment),
+						imprt.aliases.get(selFragment),
+						(ImportSelective) null
+					);
+				}
+				
+				imprtFragment = new ImportSelective(
+					new RefModule(packages, new String(imprt.id.ident), sr),
+					impSelFrags, DefinitionConverter.sourceRange(imprt)
+				);
 			} else {
-				imprtFragment = new ImportContent(imprt);
+				imprtFragment = new ImportContent(
+					new RefModule(packages, new String(imprt.id.ident), sr),
+					DefinitionConverter.sourceRange(imprt)
+				);
 			}
+			
 			imports[i] = imprtFragment;
 		}
 		assertTrue(imprt == null);
@@ -204,7 +291,12 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.InvariantDeclaration elem) {
-		return endAdapt(new DeclarationInvariant(elem, convContext));
+		return endAdapt(
+			new DeclarationInvariant(
+				(BlockStatement) Statement.convert(elem.fbody, convContext),
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
 	}
 
 	@Override
@@ -256,7 +348,17 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.UnitTestDeclaration elem) {
-		return endAdapt(new DeclarationUnitTest(elem, convContext));
+		IStatement stmt = Statement.convert(elem.fbody, convContext);
+		if (stmt instanceof BlockStatement) {
+			return endAdapt(new DeclarationUnitTest((BlockStatement) stmt, DefinitionConverter.sourceRange(elem)));
+		} else {
+			return endAdapt(
+				new DeclarationUnitTest(
+					new BlockStatement(Collections.singleton(stmt) , false),
+					DefinitionConverter.sourceRange(elem)
+				)
+			);
+		}
 	}
 
 
@@ -313,7 +415,15 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.VarDeclaration elem) {
-		return endAdapt(DefinitionVariable.convert(elem, convContext));
+		if(elem.ident == null) {
+			return endAdapt(new InvalidSyntaxDeclaration(
+				DefinitionConverter.sourceRange(elem), 
+				ReferenceConverter.convertType(elem.type, convContext),
+				Initializer.convert(elem.init, convContext)
+			));
+		}  else {
+			return endAdapt(new DefinitionVariable(elem, convContext));
+		}
 	}	
 	
 	@Override
