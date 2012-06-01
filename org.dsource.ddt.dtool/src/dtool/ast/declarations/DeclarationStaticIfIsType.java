@@ -62,6 +62,7 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 	
 	/** This is a special scope, where the IsTypeDefUnit is available. */
 	public class IsTypeScope extends ASTNeoNode implements IScopeNode {
+		
 		public final NodeList nodelist;
 		
 		public IsTypeScope(NodeList nodes, SourceRange sourceRange) {
@@ -104,7 +105,8 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 	public DeclarationStaticIfIsType(Reference arg, DefSymbol id, TOK tok, Reference specType, NodeList thenDecls, NodeList elseDecls, SourceRange innerRange, SourceRange sourceRange) {
 		super(thenDecls, elseDecls, sourceRange);
 		this.arg = arg; parentize(this.arg);
-		id.setParent(this); this.defUnit = new IsTypeDefUnit(id); parentize(this.defUnit);
+		id.setParent(this); // BUG here
+		this.defUnit = new IsTypeDefUnit(id); parentize(this.defUnit);
 		this.tok = tok;
 		this.specType = specType; parentize(this.specType);
 		this.thendeclsScope = new IsTypeScope(this.thendecls, innerRange); parentize(this.thendeclsScope);

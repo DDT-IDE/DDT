@@ -6,6 +6,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
 public class DeclarationStaticIf extends DeclarationConditional {
+	
 	public final Resolvable exp;
 	
 	public DeclarationStaticIf(Resolvable exp, NodeList thenDecls, NodeList elseDecls, SourceRange sourceRange) {

@@ -19,7 +19,7 @@ import dtool.refmodel.INonScopedBlock;
  * imports and selective imports, which are primary-space {@link DefUnit}s.
  */
 public class DeclarationImport extends ASTNeoNode implements INonScopedBlock, IDeclaration {
-
+	
 	public final ImportFragment[] imports;
 	public final boolean isStatic;
 	public boolean isTransitive; // aka public imports

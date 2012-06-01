@@ -12,10 +12,10 @@ public class InitializerArray extends Initializer {
 	
 	public InitializerArray(Resolvable[] indexes, Initializer[] values, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.indexes = new ArrayView<Resolvable>(indexes); parentize(this.indexes);
+		this.indexes = new ArrayView<Resolvable>(indexes); parentize(this.indexes, true);
 		this.values = new ArrayView<Initializer>(values); parentize(this.values);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

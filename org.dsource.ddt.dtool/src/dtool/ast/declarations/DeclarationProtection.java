@@ -6,7 +6,6 @@ import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.Modifier;
 import descent.internal.compiler.parser.PROT;
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
@@ -17,15 +16,16 @@ public class DeclarationProtection extends DeclarationAttrib {
 	public Modifier modifier;
 	public PROT prot;
 	
-	public DeclarationProtection(PROT prot, ASTNeoNode[] decls, boolean hasCurlies, SourceRange sourceRange) {
-		super(new dtool.ast.declarations.NodeList(decls, hasCurlies), sourceRange);
-		this.prot = prot; 
-		for (ASTNeoNode d : decls) {
-			d.setParent(this);
-			if (d instanceof DeclarationImport && this.prot == PROT.PROTpublic)
-				((DeclarationImport) d).isTransitive = true;
-		}
-	}
+//	public DeclarationProtection(PROT prot, ASTNeoNode[] decls, boolean hasCurlies, SourceRange sourceRange) {
+//		super(new dtool.ast.declarations.NodeList(decls, hasCurlies), sourceRange);
+//		this.prot = prot;
+//		for (ASTNeoNode d : decls) {
+//			d.setParent(this);
+//			if (d instanceof DeclarationImport && this.prot == PROT.PROTpublic) {
+//				((DeclarationImport) d).isTransitive = true;
+//			}
+//		}
+//	}
 	
 	public DeclarationProtection(PROT prot, Modifier modifier, NodeList decls, SourceRange sourceRange) {
 		super(decls, sourceRange);

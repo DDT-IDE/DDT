@@ -10,18 +10,18 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
 
 public class DeclarationPragma extends DeclarationAttrib implements IStatement {
-
+	
 	public final Symbol ident;
 	public final ArrayView<Resolvable> expressions;
 	
 	public DeclarationPragma(Symbol id, Resolvable[] expressions, NodeList body, SourceRange sourceRange) {
 		super(body, sourceRange);
 		this.ident = id; parentize(this.ident);
-		if (expressions != null) {
+		if(expressions != null) {
 			this.expressions = new ArrayView<Resolvable>(expressions); parentize(this.expressions);
-		}
-		else
+		} else {
 			this.expressions = null;
+		}
 	}
 
 	public DeclarationPragma(Symbol id, Resolvable[] expressions, ASTNeoNode[] body, boolean hasCurlies, SourceRange sourceRange) {
@@ -29,9 +29,9 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 		this.ident = id; parentize(this.ident);
 		if (expressions != null) {
 			this.expressions = new ArrayView<Resolvable>(expressions); parentize(this.expressions);
-		}
-		else
+		} else {
 			this.expressions = null;
+		}
 	}
 
 	@Override

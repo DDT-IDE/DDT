@@ -1,7 +1,6 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;

@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;

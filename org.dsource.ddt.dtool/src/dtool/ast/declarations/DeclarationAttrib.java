@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;

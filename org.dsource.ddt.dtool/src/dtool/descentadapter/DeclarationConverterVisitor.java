@@ -50,6 +50,7 @@ import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.TemplateParamAlias;
 import dtool.ast.definitions.TemplateParamTuple;
 import dtool.ast.definitions.TemplateParamType;
@@ -69,9 +70,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(DebugSymbol elem) {
+		Symbol identifier = elem.ident != null ? 
+				DefinitionConverter.convertId(elem.ident) : 
+				new Symbol(new String(elem.version.value));
+		
 		return endAdapt(
 			new DeclarationConditionalDefinition(
-				DefinitionConverter.convertId(elem.ident),
+				identifier,
 				DeclarationConditionalDefinition.Type.DEBUG,
 				DefinitionConverter.sourceRange(elem)
 			)
@@ -80,9 +85,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(VersionSymbol elem) {
+		Symbol identifier = elem.ident != null ? 
+				DefinitionConverter.convertId(elem.ident) : 
+				new Symbol(new String(elem.version.value));
+		
 		return endAdapt(
 			new DeclarationConditionalDefinition(
-				DefinitionConverter.convertId(elem.ident),
+				identifier,
 				DeclarationConditionalDefinition.Type.VERSION,
 				DefinitionConverter.sourceRange(elem)
 			)
@@ -188,8 +197,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			imports[i] = imprtFragment;
 		}
 		assertTrue(imprt == null);
-
-		return endAdapt(new DeclarationImport(imports, elem.isstatic, false, DefinitionConverter.sourceRange(elem)));
+		
+		boolean isTransitive = false; //isTransitive is adapted in post conversion;
+		return endAdapt(new DeclarationImport(imports, elem.isstatic, isTransitive, DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override

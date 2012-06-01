@@ -13,7 +13,7 @@ public class ExpArrayIndex extends Expression {
 	public ExpArrayIndex(Resolvable array, Resolvable[] args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.array = array; parentize(this.array);
-		this.args = new ArrayView<Resolvable>(args); parentize(this.args);
+		this.args = ArrayView.create(args); parentize(this.args);
 	}
 	
 	@Override

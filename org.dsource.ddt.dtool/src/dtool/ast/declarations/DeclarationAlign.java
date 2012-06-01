@@ -7,9 +7,9 @@ import dtool.ast.SourceRange;
 public class DeclarationAlign extends DeclarationAttrib {
 	
 	public final long alignnum;
-
+	
 	public DeclarationAlign(long align, ASTNeoNode[] decls, boolean hasCurlies, SourceRange sourceRange) {
-		super(new dtool.ast.declarations.NodeList(decls, hasCurlies), sourceRange);
+		super(new NodeList(decls, hasCurlies), sourceRange);
 		this.alignnum = align;
 	}
 	

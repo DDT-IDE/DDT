@@ -1,5 +1,7 @@
 package dtool.descentadapter;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.Collection;
 
 import descent.internal.compiler.parser.ASTDmdNode;
@@ -11,6 +13,7 @@ import descent.internal.compiler.parser.DebugCondition;
 import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.IsExp;
 import descent.internal.compiler.parser.StaticIfCondition;
+import descent.internal.compiler.parser.VersionCondition;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationConditionalDV;
@@ -48,9 +51,23 @@ public class DeclarationConverter extends BaseDmdConverter {
 			Condition condition, ASTConversionContext convContext) 
 	{
 		if(condition instanceof DVCondition) {
+			DVCondition dvCondition = (DVCondition) condition;
+			Symbol ident;
+			if(dvCondition.ident != null) {
+				ident = new Symbol(new String(dvCondition.ident));
+				SourceRange identSourceRange = DefinitionConverter.sourceRange(dvCondition);
+				if(identSourceRange != null) {
+					ident.setSourceRange(identSourceRange);
+				}
+			} else {
+				ident = null;
+			}
+			boolean isDebug = condition instanceof DebugCondition;
+			assertTrue(isDebug || dvCondition instanceof VersionCondition);
+			
 			return new DeclarationConditionalDV(
-				condition instanceof DebugCondition,
-				condition != null ? new Symbol(new String(((DVCondition) condition).ident)) : null,
+				isDebug,
+				ident,
 				thendecls, elsedecls,
 				DefinitionConverter.sourceRange(elem)
 			);
@@ -61,7 +78,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 			return new DeclarationStaticIfIsType(
 				ReferenceConverter.convertType(isExp.targ, convContext),
 				new DefSymbol(DefinitionConverter.convertIdToken(isExp.id).value, DefinitionConverter.sourceRange(isExp.id), null),
-				stIfCondition.exp.op,
+				isExp.tok,
 				ReferenceConverter.convertType(isExp.tspec, convContext),
 				thendecls, elsedecls,
 				new SourceRange(isExp.getStartPos(), elem.getEndPos() - isExp.getStartPos()),

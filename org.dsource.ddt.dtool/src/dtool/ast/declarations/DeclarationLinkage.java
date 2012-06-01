@@ -7,11 +7,11 @@ import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 
 public class DeclarationLinkage extends DeclarationAttrib implements IStatement {
-
+	
 	public final LINK linkage;
 	
 	public DeclarationLinkage(LINK link, ASTNeoNode[] decls, boolean hasCurlies, SourceRange sourceRange) {
-		super(new dtool.ast.declarations.NodeList(decls, hasCurlies), sourceRange);
+		super(new NodeList(decls, hasCurlies), sourceRange);
 		this.linkage = link;
 	}
 

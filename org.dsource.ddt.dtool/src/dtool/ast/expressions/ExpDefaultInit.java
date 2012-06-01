@@ -13,7 +13,7 @@ public class ExpDefaultInit extends Expression {
 	
 	public ExpDefaultInit(DefaultInit defInit, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.defInit = defInit; parentize(this.defInit);
+		this.defInit = defInit;
 	}
 	
 	@Override

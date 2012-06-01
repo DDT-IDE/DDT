@@ -1,6 +1,8 @@
 package dtool.ast.expressions;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.ArrayView;
@@ -18,14 +20,15 @@ public class ExpLiteralFunc extends Expression {
 	public final IStatement fbody;
 	public final IStatement fensure;
 
+	
 	public ExpLiteralFunc(Reference retType, IFunctionParameter[] params, int varargs, IStatement freq,
 			IStatement fbody, IStatement fensure, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		
-		this.frequire = freq; parentize(this.frequire); 
-		this.fbody = fbody; parentize(this.fbody);
-		this.fensure = fensure; parentize(this.fensure);
-		this.params = new ArrayView<IFunctionParameter>(params); parentize(this.params);
+		this.frequire = freq; parentize((ASTNeoNode) this.frequire); 
+		this.fbody = fbody; parentize((ASTNeoNode) this.fbody);
+		this.fensure = fensure; parentize((ASTNeoNode) this.fensure);
+		this.params = ArrayView.create(params); parentize(CoreUtil.<ArrayView<ASTNeoNode>>blindCast(this.params));
 		this.varargs = varargs;
 		this.rettype = retType; parentize(this.rettype);
 	}
