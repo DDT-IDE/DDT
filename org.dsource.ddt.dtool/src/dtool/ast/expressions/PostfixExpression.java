@@ -1,13 +1,8 @@
 package dtool.ast.expressions;
 
-import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.BinExp;
-import descent.internal.compiler.parser.TOK;
-import descent.internal.compiler.parser.UnaExp;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.ast.SourceRange;
 
 public class PostfixExpression extends Expression {
 	
@@ -16,35 +11,14 @@ public class PostfixExpression extends Expression {
 		int POST_DECREMENT = 10;
 	}
 	
-	public Resolvable exp;
+	public final int kind;
+	public final Resolvable exp;
 	
-	public int kind;
-
-	
-	public PostfixExpression(UnaExp elem, int kind, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.exp = (Resolvable) DescentASTConverter.convertElem(elem.e1, convContext);
+	public PostfixExpression(Resolvable exp, int kind, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.exp = exp; parentize(this.exp);
 		this.kind = kind;
 	}
-
-	public PostfixExpression(BinExp elem, ASTConversionContext convContext) {
-		setSourceRange(elem);
-		this.exp = (Resolvable) DescentASTConverter.convertElem(elem.e1, convContext);
-		if(elem.op == TOK.TOKplusplus) {
-			this.kind = Type.POST_INCREMENT;
-		} else if(elem.op == TOK.TOKminusminus) {
-			this.kind = Type.POST_DECREMENT;
-		} else Assert.fail();
-	}
-	
-	public PostfixExpression(Resolvable exp, int kind) {
-		this.exp = exp;
-		this.kind = kind;
-		
-		if (this.exp != null)
-			this.exp.setParent(this);
-	}
-
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

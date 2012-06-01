@@ -1,11 +1,8 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.BinExp;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class InfixExpression extends Expression {
 	
@@ -53,14 +50,6 @@ public class InfixExpression extends Expression {
 	public Resolvable rightExp;
 	
 	public int kind;
-
-	
-	public InfixExpression(BinExp elem, int kind, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.leftExp = (Resolvable) DescentASTConverter.convertElem(elem.e1, convContext);
-		this.rightExp = (Resolvable) DescentASTConverter.convertElem(elem.e2, convContext);
-		this.kind = kind;
-	}
 	
 	public InfixExpression(Resolvable left, int kind, Resolvable right, SourceRange sourceRange) {
 		initSourceRange(sourceRange);

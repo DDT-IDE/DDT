@@ -1,37 +1,20 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ArrayInitializer;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
+import dtool.ast.SourceRange;
+import dtool.ast.definitions.ArrayView;
 
 public class InitializerArray extends Initializer {
-
-	public Resolvable[] indexes;
-	public Initializer[] values;
-
-		
-	public InitializerArray(ArrayInitializer elem, ASTConversionContext convContext) {
-		convertNode(elem);
-		this.indexes = ExpressionConverter.convertMany(elem.index, convContext); 
-		this.values = Initializer.convertMany(elem.value, convContext);
-	}
 	
-	public InitializerArray(Resolvable[] indexes, Initializer[] values) {
-		this.indexes = indexes;
-		this.values = values;
-		
-		if (this.indexes != null) {
-			for (Resolvable r : this.indexes)
-				r.setParent(this);
-		}
-		
-		if (this.values != null) {
-			for (Initializer i : this.values)
-				i.setParent(this);
-		}
-}
+	public final ArrayView<Resolvable> indexes;
+	public final ArrayView<Initializer> values;
+	
+	public InitializerArray(Resolvable[] indexes, Initializer[] values, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.indexes = new ArrayView<Resolvable>(indexes); parentize(this.indexes);
+		this.values = new ArrayView<Initializer>(values); parentize(this.values);
+	}
 
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {

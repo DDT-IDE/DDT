@@ -1,26 +1,16 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ExpInitializer;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
+import dtool.ast.SourceRange;
 
 public class InitializerExp extends Initializer {
 	
-	public Resolvable exp;
-
-	public InitializerExp(ExpInitializer elem, ASTConversionContext convContext) {
-		initSourceRange(DefinitionConverter.sourceRange(elem, false));
-		this.exp = ExpressionConverter.convert(elem.exp, convContext); 
-	}
+	public final Resolvable exp;
 	
-	public InitializerExp(Resolvable exp) {
-		this.exp = exp;
-		
-		if (this.exp != null)
-			exp.setParent(this);
+	public InitializerExp(Resolvable exp, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.exp = exp; parentize(this.exp);
 	}
 
 	@Override

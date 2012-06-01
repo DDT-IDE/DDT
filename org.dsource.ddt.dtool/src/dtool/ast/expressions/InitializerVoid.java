@@ -1,18 +1,14 @@
 package dtool.ast.expressions;
 
-import descent.internal.compiler.parser.VoidInitializer;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 
 public class InitializerVoid extends Initializer {
-
-	public InitializerVoid(VoidInitializer elem) {
-		convertNode(elem);
+	
+	public InitializerVoid(SourceRange sourceRange) {
+		initSourceRange(sourceRange);		
 	}
 	
-	public InitializerVoid() {
-		
-	}
-
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		visitor.visit(this);

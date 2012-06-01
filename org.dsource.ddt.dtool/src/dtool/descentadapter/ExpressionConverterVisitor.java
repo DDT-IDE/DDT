@@ -84,6 +84,7 @@ import descent.internal.compiler.parser.VoidInitializer;
 import descent.internal.compiler.parser.XorAssignExp;
 import descent.internal.compiler.parser.XorExp;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationStringMacro;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.IFunctionParameter;
@@ -106,6 +107,7 @@ import dtool.ast.expressions.ExpLiteralNull;
 import dtool.ast.expressions.ExpLiteralReal;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNew;
+import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSlice;
 import dtool.ast.expressions.ExpStringMacro;
 import dtool.ast.expressions.ExpSuper;
@@ -114,6 +116,7 @@ import dtool.ast.expressions.ExpTraits;
 import dtool.ast.expressions.ExpTypeid;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.InfixExpression;
+import dtool.ast.expressions.Initializer;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
@@ -121,6 +124,7 @@ import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.PostfixExpression;
 import dtool.ast.expressions.PrefixExpression;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.Statement;
@@ -185,22 +189,50 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(ArrayInitializer element) {
-		return endAdapt(new InitializerArray(element, convContext));
+		return endAdapt(
+			new InitializerArray(
+				ExpressionConverter.convertMany(element.index, convContext),
+				Initializer.convertMany(element.value, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(ExpInitializer element) {
-		return endAdapt(new InitializerExp(element, convContext));
+		return endAdapt(
+			new InitializerExp(
+				ExpressionConverter.convert(element.exp, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(StructInitializer element) {
-		return endAdapt(new InitializerStruct(element, convContext));
+		RefIdentifier[] indices = new RefIdentifier[element.field.size()];
+		for(int i = 0; i < element.field.size(); ++i) {
+			IdentifierExp id = element.field.get(i);
+			ExpReference expref = (ExpReference) DescentASTConverter.convertElem(id, convContext);
+			if(expref == null) {
+				indices[i] = null;
+			} else {
+				indices[i] = (RefIdentifier) expref.ref;
+			}
+		}
+		
+		return endAdapt(
+			new InitializerStruct(
+				indices,
+				Initializer.convertMany(element.value, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(VoidInitializer element) {
-		return endAdapt(new InitializerVoid(element));
+		return endAdapt(new InitializerVoid(DefinitionConverter.sourceRange(element)));
 	}
 
 	
@@ -433,22 +465,46 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(AddrExp element) {
-		return endAdapt(new PrefixExpression(element, PrefixExpression.Type.ADDRESS, convContext));
+		return endAdapt(
+			new PrefixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				PrefixExpression.Type.ADDRESS,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(ComExp element) {
-		return endAdapt(new PrefixExpression(element, PrefixExpression.Type.INVERT, convContext));
+		return endAdapt(
+			new PrefixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				PrefixExpression.Type.INVERT,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}	
 	
 	@Override
 	public boolean visit(NegExp element) {
-		return endAdapt(new PrefixExpression(element, PrefixExpression.Type.NEGATIVE, convContext));
+		return endAdapt(
+			new PrefixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				PrefixExpression.Type.NEGATIVE,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(NotExp element) {
-		return endAdapt(new PrefixExpression(element, PrefixExpression.Type.NOT, convContext));
+		return endAdapt(
+			new PrefixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				PrefixExpression.Type.NOT,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}	
 
 	
@@ -459,17 +515,42 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 
 	@Override
 	public boolean visit(PostExp node) {
-		return endAdapt(new PostfixExpression(node, convContext));
+		int type = 0;
+		switch (node.op) {
+		case TOKplusplus: type = PostfixExpression.Type.POST_INCREMENT; break;
+		case TOKminusminus: type = PostfixExpression.Type.POST_DECREMENT; break;
+		default: Assert.fail();
+		}
+		
+		return endAdapt(
+			new PostfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(node.e1, convContext),
+				type,
+				DefinitionConverter.sourceRange(node)
+			)
+		);
 	}
 
 	@Override
 	public boolean visit(PtrExp element) {
-		return endAdapt(new PrefixExpression(element, PrefixExpression.Type.POINTER, convContext));
+		return endAdapt(
+			new PrefixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				PrefixExpression.Type.POINTER,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(UAddExp element) {
-		return endAdapt(new PrefixExpression(element, PrefixExpression.Type.POSITIVE, convContext));
+		return endAdapt(
+			new PrefixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				PrefixExpression.Type.POSITIVE,
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}	
 
 	/* ===================== Binary ===================== */
@@ -481,178 +562,395 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 
 	@Override
 	public boolean visit(AddAssignExp element) {
-		Resolvable newelem = element.isPreIncrement ?
-				new PrefixExpression(element, PrefixExpression.Type.PRE_INCREMENT, convContext) :
-				new InfixExpression(element, InfixExpression.Type.ADD_ASSIGN, convContext);
+		Resolvable exp1 = (Resolvable) DescentASTConverter.convertElem(element.e1, convContext);
+		SourceRange sourceRange = DefinitionConverter.sourceRange(element);
+		Resolvable newelem = element.isPreIncrement
+				? new PrefixExpression(exp1, PrefixExpression.Type.PRE_INCREMENT, sourceRange)
+				: new InfixExpression(
+					exp1,
+					InfixExpression.Type.ADD_ASSIGN,
+					(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+					sourceRange
+				);
 		return endAdapt(newelem);
 	}
 	
 
 	@Override
 	public boolean visit(MinAssignExp element) {
-		Resolvable newelem = element.isPreDecrement ?
-				new PrefixExpression(element, PrefixExpression.Type.PRE_DECREMENT, convContext) :
-				new InfixExpression(element, InfixExpression.Type.MIN_ASSIGN, convContext);
+		Resolvable exp1 = (Resolvable) DescentASTConverter.convertElem(element.e1, convContext);
+		SourceRange sourceRange = DefinitionConverter.sourceRange(element);
+		Resolvable newelem = element.isPreDecrement
+				? new PrefixExpression(exp1, PrefixExpression.Type.PRE_DECREMENT, sourceRange)
+				: new InfixExpression(
+					exp1, 
+					InfixExpression.Type.MIN_ASSIGN,
+					(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+					sourceRange
+				);
 		return endAdapt(newelem);
 	}
 	
 	
 	@Override
 	public boolean visit(AddExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.ADD, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.ADD,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(AndAndExp element) {
-
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.AND_AND, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.AND_AND,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(AndAssignExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.AND_ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.AND_ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(AndExp element) {
-
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.AND, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.AND,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(AssignExp element) {
-
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(CatAssignExp element) {
-
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.CAT_ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.CAT_ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(CatExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.CAT, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.CAT,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(CmpExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.CMP, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.CMP,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(CommaExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.COMMA, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.COMMA,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(DivAssignExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.DIV_ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.DIV_ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(DivExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.DIV, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.DIV,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(EqualExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.EQUAL, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.EQUAL,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(IdentityExp element) {
-		if(element.op == TOK.TOKis)
-			return endAdapt(new InfixExpression(element, InfixExpression.Type.IDENTITY, convContext));
-		else if(element.op == TOK.TOKnotis)
-			return endAdapt(new InfixExpression(element, InfixExpression.Type.NOT_IDENTITY, convContext));
+		Assert.isTrue(element.op == TOK.TOKis || element.op == TOK.TOKnotis);
 		
-		Assert.fail(); return false;
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				element.op == TOK.TOKis ? InfixExpression.Type.IDENTITY : InfixExpression.Type.NOT_IDENTITY,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(InExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.IN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.IN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(MinExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.MIN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.MIN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(ModAssignExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.MOD_ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.MOD_ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(ModExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.MOD, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.MOD,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(MulAssignExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.MUL_ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.MUL_ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(MulExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.MUL, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.MUL,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(OrAssignExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.OR_ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.OR_ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(OrExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.OR, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.OR,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(OrOrExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.OR_OR, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.OR_OR,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(ShlAssignExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.SHIFT_LEFT_ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.SHIFT_LEFT_ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(ShlExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.SHIFT_LEFT, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.SHIFT_LEFT,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(ShrAssignExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.SHIFT_RIGHT_ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.SHIFT_RIGHT_ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(ShrExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.SHIFT_RIGHT, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.SHIFT_RIGHT,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(UshrAssignExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.UNSIGNED_SHIFT_RIGHT_ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.UNSIGNED_SHIFT_RIGHT_ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(UshrExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.UNSIGNED_SHIFT_RIGHT, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.UNSIGNED_SHIFT_RIGHT,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(XorAssignExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.XOR_ASSIGN, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.XOR_ASSIGN,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 	
 	@Override
 	public boolean visit(XorExp element) {
-		return endAdapt(new InfixExpression(element, InfixExpression.Type.XOR, convContext));
+		return endAdapt(
+			new InfixExpression(
+				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				InfixExpression.Type.XOR,
+				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+				DefinitionConverter.sourceRange(element)
+			)
+		);
 	}
 }
