@@ -66,6 +66,7 @@ public class DescentASTConverter extends StatementConverterVisitor {
 		return ArrayView.create(convertMany(children, elemClass, convContext));
 	}
 	
+	@Deprecated
 	public static ArrayView<ASTNeoNode> convertManyNoNulls(Collection<? extends IASTNode> children, 
 			ASTConversionContext convContext) {
 		if(children == null) return null;

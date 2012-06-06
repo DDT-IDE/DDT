@@ -3,12 +3,8 @@ package dtool.ast.definitions;
 import java.util.List;
 
 import descent.internal.compiler.parser.PROT;
-import descent.internal.compiler.parser.StructDeclaration;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
 
 /**
@@ -16,12 +12,8 @@ import dtool.refmodel.IScope;
  */
 public class DefinitionStruct extends DefinitionAggregate {
 	
-	public DefinitionStruct(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] members, BaseClass[] superClasses) {
+	public DefinitionStruct(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] members) {
 		super(dudt, prot, members);
-		// TODO: Where are the base classes?
-		// TODO: where did template Parameters go
-		//if(elem.templateParameters != null)
-		//	this.templateParams = TemplateParameter.convertMany(elem.templateParameters);
 	}
 	
 	@Override

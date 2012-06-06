@@ -10,7 +10,7 @@ public class StatementVolatile extends Statement {
 
 	public StatementVolatile(IStatement st, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.st = st; parentize(this.st);
+		this.st = st; parentizeI(this.st);
 	}
 
 	@Override

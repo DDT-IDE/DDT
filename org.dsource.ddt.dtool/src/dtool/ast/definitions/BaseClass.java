@@ -15,6 +15,7 @@ public class BaseClass extends ASTNeoNode {
 	public BaseClass(PROT prot, Reference type, SourceRange sourceRange) {
 		this.prot = prot;
 		this.type = type; parentize(this.type);
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

@@ -36,6 +36,7 @@ import descent.internal.compiler.parser.TryFinallyStatement;
 import descent.internal.compiler.parser.VolatileStatement;
 import descent.internal.compiler.parser.WhileStatement;
 import descent.internal.compiler.parser.WithStatement;
+import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.NodeList;
@@ -377,7 +378,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 			)
 		);
 	}
-
+	
 	@Override
 	public boolean visit(TryCatchStatement element) {
 		Object[] catches = element.catches.toArray();
@@ -404,8 +405,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 					DefinitionConverter.sourceRange(element)
 				)
 			);
-		}
-		else {
+		} else {
 			return endAdapt(
 				new StatementTry(
 					Statement.convert(element.body, convContext),

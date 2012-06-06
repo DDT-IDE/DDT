@@ -58,9 +58,9 @@ public class StatementTry extends Statement {
 
 	public StatementTry(IStatement body, CatchClause[] params, IStatement finallyBody, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.body = body; parentize(this.body);
+		this.body = body; parentizeI(this.body);
 		this.params = params; parentize(this.params);
-		this.finallybody = finallyBody; parentize(this.finallybody);
+		this.finallybody = finallyBody; parentizeI(this.finallybody);
 	}
 
 	@Override

@@ -19,10 +19,6 @@ public class DefinitionClass extends DefinitionAggregate {
 	public DefinitionClass(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] members, BaseClass[] baseClasses) {
 		super(dudt, prot, members);
 		this.baseClasses = baseClasses; parentize(this.baseClasses);
-		// TODO: where did template Parameters go
-		//if(elem.templateParameters != null)
-		//	this.templateParams = ?? TemplateParameter.convertMany(elem.templateParameters);
-
 	}
 	
 	@Override

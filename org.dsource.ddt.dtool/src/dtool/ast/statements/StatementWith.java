@@ -13,7 +13,7 @@ public class StatementWith extends Statement {
 	public StatementWith(Resolvable exp, IStatement body, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = exp; parentize(this.exp);
-		this.body = body; parentize(this.body);
+		this.body = body; parentizeI(this.body);
 	}
 
 	@Override

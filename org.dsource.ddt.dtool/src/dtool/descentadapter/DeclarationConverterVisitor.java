@@ -2,9 +2,6 @@ package dtool.descentadapter;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collections;
-
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AnonDeclaration;
 import descent.internal.compiler.parser.Argument;
@@ -31,6 +28,7 @@ import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAnonMember;
 import dtool.ast.declarations.DeclarationConditionalDefinition;
 import dtool.ast.declarations.DeclarationImport;
+import dtool.ast.declarations.DeclarationImport.ImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationPragma;
@@ -41,14 +39,12 @@ import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAliasing;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
+import dtool.ast.declarations.ImportSelective.ImportSelectiveAlias;
 import dtool.ast.declarations.ImportStatic;
 import dtool.ast.declarations.InvalidSyntaxDeclaration;
 import dtool.ast.declarations.NodeList;
-import dtool.ast.declarations.DeclarationImport.ImportFragment;
-import dtool.ast.declarations.ImportSelective.ImportSelectiveAlias;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefModifier;
-import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
@@ -418,7 +414,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			new DefinitionTemplate(
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				elem.prot(),
-				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext),
+				DescentASTConverter.convertManyNoNulls(elem.members, convContext).getInternalArray(), // TODO simplify
 				DescentASTConverter.convertMany(elem.parameters, TemplateParameter.class, convContext),
 				elem.wrapper
 			)
@@ -463,6 +459,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.ClassDeclaration elem) {
+		// TODO: where did template Parameters go
+		//if(elem.templateParameters != null)
+		//	this.templateParams = ?? TemplateParameter.convertMany(elem.templateParameters);
+		
 		return endAdapt(
 			new DefinitionClass(
 				DefinitionConverter.convertDsymbol(elem, convContext),
@@ -491,8 +491,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			new DefinitionStruct(
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				elem.prot(),
-				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext),
-				null // TODO: Where are the base classes?
+				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
 			)
 		);
 	}	
