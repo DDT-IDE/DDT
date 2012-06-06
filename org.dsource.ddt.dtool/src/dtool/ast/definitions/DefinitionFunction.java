@@ -11,7 +11,6 @@ import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTPrinter;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
@@ -43,11 +42,11 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		assertNotNull(rettype);
 		
 		this.rettype = rettype; parentize(this.rettype);
-		this.params = new ArrayView<IFunctionParameter>(params); parentize(this.params);
+		this.params = ArrayView.create(params); parentizeI(this.params);
 		this.varargs = varargs;
-		this.frequire = frequire; parentize(this.frequire);
-		this.fensure = fensure; parentize(this.fensure);
-		this.fbody = fbody; parentize(fbody);
+		this.frequire = frequire; parentizeI(this.frequire);
+		this.fensure = fensure; parentizeI(this.fensure);
+		this.fbody = fbody; parentizeI(fbody);
 	}
 	
 	@Override

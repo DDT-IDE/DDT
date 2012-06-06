@@ -1,14 +1,10 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-
 import descent.internal.compiler.parser.Comment;
-import descent.internal.compiler.parser.IdentifierExp;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
-import dtool.descentadapter.DefinitionConverter;
 import dtool.refmodel.IScopeNode;
 
 /**
@@ -42,12 +38,6 @@ public abstract class DefUnit extends ASTNeoNode {
 		initSourceRange(sourceRange);
 		this.defname = new DefSymbol(defName, defNameSourceRange, this);
 		this.comments = comments;
-	}
-	
-	@Deprecated
-	public DefUnit(IdentifierExp id) {
-		this.defname = new DefSymbol(DefinitionConverter.convertIdToken(id), this);
-		this.comments = null;
 	}
 	
 	protected DefUnit(SourceRange sourceRange, DefSymbol defname, Comment[] comments) {

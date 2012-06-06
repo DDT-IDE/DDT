@@ -12,7 +12,7 @@ public class DefinitionPostBlit extends ASTNeoNode {
 	
 	public DefinitionPostBlit(IStatement fbody, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.fbody = fbody; parentize(this.fbody);
+		this.fbody = fbody; parentizeI(this.fbody);
 	}
 	
 	@Override

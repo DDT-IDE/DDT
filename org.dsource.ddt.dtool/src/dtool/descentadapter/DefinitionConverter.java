@@ -237,13 +237,12 @@ public class DefinitionConverter extends BaseDmdConverter {
 				DefUnitDataTuple dudt = new DefUnitDataTuple(
 					DefinitionConverter.sourceRange(elem), DefinitionConverter.convertIdToken(elem.ident), null
 				);
-
+				
 				return new FunctionParameter(
 					dudt, 
 					elem.storageClass,
 					type,
-					ExpressionConverter.convert(elem.defaultArg, convContext),
-					DefinitionConverter.sourceRange(elem)
+					ExpressionConverter.convert(elem.defaultArg, convContext)
 				);
 			} else {
 				// strange case, likely from a syntax error

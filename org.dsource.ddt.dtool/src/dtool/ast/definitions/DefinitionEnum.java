@@ -6,7 +6,6 @@ import java.util.List;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
@@ -17,10 +16,9 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	public final ArrayView<EnumMember> members;
 	public final Reference type;
 	
-	public DefinitionEnum(DefUnitDataTuple defunitInfo, PROT prot, EnumMember[] members, Reference reference,
-			SourceRange sourceRange) {
+	public DefinitionEnum(DefUnitDataTuple defunitInfo, PROT prot, EnumMember[] members, Reference reference) {
 		super(defunitInfo, prot);
-		this.members = new ArrayView<EnumMember>(members); parentize(this.members);
+		this.members = ArrayView.create(members); parentize(this.members);
 		this.type = reference; parentize(this.type);
 	}
 	

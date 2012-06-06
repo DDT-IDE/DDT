@@ -1,12 +1,9 @@
 package dtool.ast.definitions;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
@@ -19,10 +16,9 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	public final int storageClass;
 	public final Resolvable defaultValue;
 	
-	public FunctionParameter(DefUnitDataTuple dudt, int storageClass, Reference type, Resolvable defaultValue, SourceRange sourceRange) {
+	public FunctionParameter(DefUnitDataTuple dudt, int storageClass, Reference type, Resolvable defaultValue) {
 		super(dudt);
 		// assertNotNull(this.type);
-		initSourceRange(sourceRange);
 		this.storageClass = storageClass;
 		this.type = type; parentize(this.type);
 		this.defaultValue = defaultValue; parentize(this.defaultValue);

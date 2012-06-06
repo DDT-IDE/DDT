@@ -42,6 +42,8 @@ import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.NodeList;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
+import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
+import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.Statement;
@@ -457,17 +459,18 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		} else if(element.ident == null) {
 			param = DefinitionConverter.convertNamelessParameter(element.type, convContext);
 		} else {
-			// param = new FunctionParameter(element.type, element.ident, convContext);
 			DefUnitDataTuple dudt = new DefUnitDataTuple(
-				DefinitionConverter.sourceRange(element), DefinitionConverter.convertIdToken(element.ident), null
+					new SourceRange(element.type.getStartPos(), element.ident.getEndPos() - element.type.getStartPos()),
+					DefinitionConverter.convertIdToken(element.ident), 
+					null
 			);
 			
 			param = new FunctionParameter(
 				dudt, 0,
 				ReferenceConverter.convertType(element.type, convContext),
-				null,
-				new SourceRange(element.type.getStartPos(), element.ident.getEndPos() - element.type.getStartPos())
-			);		}
+				null
+			);
+		}
 		
 		return endAdapt(
 			new StatementTry.CatchClause(

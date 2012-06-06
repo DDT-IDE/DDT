@@ -14,9 +14,6 @@ public class DefinitionUnion extends DefinitionAggregate {
 	
 	public DefinitionUnion(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] members) {
 		super(dudt, prot, members);
-		// TODO: where did template Parameters go
-		//if(elem.templateParameters != null)
-		//	this.templateParams = TemplateParameter.convertMany(elem.templateParameters);
 	}
 	
 	@Override	

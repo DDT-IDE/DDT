@@ -8,6 +8,7 @@ import descent.internal.compiler.parser.Argument;
 import descent.internal.compiler.parser.AttribDeclaration;
 import descent.internal.compiler.parser.DebugCondition;
 import descent.internal.compiler.parser.DebugSymbol;
+import descent.internal.compiler.parser.EnumDeclaration;
 import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.IftypeCondition;
 import descent.internal.compiler.parser.Import;
@@ -56,6 +57,8 @@ import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.EnumContainer;
+import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.TemplateParamAlias;
 import dtool.ast.definitions.TemplateParamTuple;
@@ -71,6 +74,7 @@ import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.Statement;
+import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 /**
  * Converts from DMD's AST to a nicer AST ("Neo AST")
@@ -452,15 +456,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				Initializer.convert(elem.init, convContext)
 			));
 		}
-	}	
+	}
 	
 	public static ASTNeoNode convertEnumDecl(EnumDeclaration elem, ASTConversionContext convContext) {
 		if(elem.ident != null) {
 			return new DefinitionEnum(
 				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
 				DescentASTConverter.convertManyToView(elem.members, EnumMember.class, convContext).getInternalArray(),
-				ReferenceConverter.convertType(elem.memtype, convContext),
-				DefinitionConverter.sourceRange(elem)
+				ReferenceConverter.convertType(elem.memtype, convContext)
 			);
 		} else {
 			return new EnumContainer(
@@ -474,6 +477,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.EnumDeclaration elem) {
 		return endAdapt(convertEnumDecl(elem, convContext));
+	}
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.EnumMember elem) {
@@ -611,7 +615,6 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
 		);
-
 		return endAdapt(
 			new TemplateParamType(
 				dudt,
@@ -634,7 +637,6 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
 		);
-
 		return endAdapt(
 			new TemplateParamValue(
 				dudt,
