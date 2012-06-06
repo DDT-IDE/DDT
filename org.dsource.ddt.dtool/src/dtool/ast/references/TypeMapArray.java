@@ -15,6 +15,7 @@ import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
 public class TypeMapArray extends CommonRefNative {
+	
 	public final Reference keytype;
 	public final Reference valuetype;
 

@@ -15,8 +15,9 @@ import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
 public class TypeDynArray extends CommonRefNative {
+	
 	public final Reference elemtype;
-
+	
 	public TypeDynArray(Reference elemType, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.elemtype = elemType; parentize(this.elemtype);

@@ -32,7 +32,7 @@ public class TypeFunction extends CommonRefNative {
 			SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.rettype = retType; parentize(this.rettype);
-		this.params = new ArrayView<IFunctionParameter>(params); parentize(this.params);
+		this.params = ArrayView.create(params); parentizeI(this.params);
 		this.varargs = varArgs;
 		this.linkage = linkage;
 	}

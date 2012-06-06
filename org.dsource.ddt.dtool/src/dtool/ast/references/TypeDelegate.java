@@ -30,7 +30,7 @@ public class TypeDelegate extends CommonRefNative {
 		initSourceRange(sourceRange);
 		this.rettype = rettype; parentize(this.rettype);
 		this.varargs = varargs;
-		this.params = new ArrayView<IFunctionParameter>(params); parentize(this.params);
+		this.params = ArrayView.create(params); parentizeI(this.params);
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import descent.internal.compiler.parser.TemplateInstanceWrapper;
 import descent.internal.compiler.parser.TypeExp;
 import descent.internal.compiler.parser.TypeInstance;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.references.RefReturn;
 import dtool.ast.references.RefTypeSlice;
@@ -99,8 +100,8 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.TypeAArray elem) {
 		return endAdapt(
 			new TypeMapArray(
-				ReferenceConverter.convertType(elem.next, convContext),
 				ReferenceConverter.convertType(elem.index, convContext),
+				ReferenceConverter.convertType(elem.next, convContext),
 				DefinitionConverter.sourceRange(elem)
 			)
 		);
@@ -144,32 +145,31 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeFunction elem) {
 		return endAdapt(
-			new TypeFunction(
-				(Reference) DescentASTConverter.convertElem(elem.next, convContext), 
-				DescentASTConverter.convertMany(elem.parameters,IFunctionParameter.class, convContext), 
-				DefinitionConverter.convertVarArgs(elem.varargs), 
-				elem.linkage, 
-				DefinitionConverter.sourceRange(elem)
-			)
+			convertFunction(elem, DefinitionConverter.sourceRange(elem), convContext)
+		);
+	}
+	
+	public static TypeFunction convertFunction(descent.internal.compiler.parser.TypeFunction elem,
+			SourceRange sourceRange, ASTConversionContext convContext) {
+		return new TypeFunction(
+			(Reference) DescentASTConverter.convertElem(elem.next, convContext), 
+			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext), 
+			DefinitionConverter.convertVarArgs(elem.varargs), 
+			elem.linkage,
+			sourceRange
 		);
 	}
 	
 	public static ASTNeoNode convertTypePointer(descent.internal.compiler.parser.TypePointer elem, ASTConversionContext convContext) {
 		if(elem.next instanceof descent.internal.compiler.parser.TypeFunction) {
 			descent.internal.compiler.parser.TypeFunction tf = (descent.internal.compiler.parser.TypeFunction) elem.next; 
-			return new TypeFunction(
-				(Reference) DescentASTConverter.convertElem(tf.next, convContext), 
-				DescentASTConverter.convertMany(tf.parameters,IFunctionParameter.class, convContext), 
-				DefinitionConverter.convertVarArgs(tf.varargs), 
-				tf.linkage, 
-				DefinitionConverter.sourceRange(tf)
-			);
-		}
-		else
+			return convertFunction(tf, DefinitionConverter.sourceRange(elem), convContext);
+		} else {
 			return new TypePointer(
 				ReferenceConverter.convertType(elem.next, convContext),
 				DefinitionConverter.sourceRange(elem)
 			);
+		}
 	}
 	
 	@Override

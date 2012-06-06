@@ -16,9 +16,9 @@ public class StatementForeach extends Statement {
 
 	public StatementForeach(IFunctionParameter[] params, Resolvable iterable, IStatement body, boolean reverse, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.params = new ArrayView<IFunctionParameter>(params); parentize(this.params);
+		this.params = ArrayView.create(params); parentizeI(this.params);
 		this.iterable = iterable; parentize(this.iterable);
-		this.body = body; parentize(this.body);
+		this.body = body; parentizeI(this.body);
 		this.reverse = reverse;
 	}
 

@@ -352,8 +352,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		if (stmt instanceof BlockStatement) {
 			return endAdapt(new DeclarationUnitTest((BlockStatement) stmt, DefinitionConverter.sourceRange(elem)));
 		} else {
-			IStatement[] stmts = new IStatement[1];
-			stmts[0] = stmt;
+			IStatement[] stmts = new IStatement[] { stmt };
 			return endAdapt(
 				new DeclarationUnitTest(
 					new BlockStatement(stmts, false, DefinitionConverter.sourceRange(elem)),

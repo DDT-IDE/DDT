@@ -14,10 +14,10 @@ public class StatementFor extends Statement {
 	
 	public StatementFor(IStatement init, Resolvable cond, Resolvable inc, IStatement body, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.init = init; parentize(this.init);
+		this.init = init; parentizeI(this.init);
 		this.cond = cond; parentize(this.cond);
 		this.inc = inc; parentize(this.inc);
-		this.body = body; parentize(this.body);
+		this.body = body; parentizeI(this.body);
 	}
 
 	@Override

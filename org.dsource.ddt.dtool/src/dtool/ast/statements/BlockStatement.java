@@ -21,7 +21,7 @@ public class BlockStatement extends Statement implements IScopeNode {
 	
 	public BlockStatement(IStatement[] statements, boolean hasCurlyBraces, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.statements = new ArrayView<IStatement>(statements); parentize(this.statements);
+		this.statements = ArrayView.create(statements); parentizeI(this.statements);
 		this.hasCurlyBraces = hasCurlyBraces;
 	}
 	

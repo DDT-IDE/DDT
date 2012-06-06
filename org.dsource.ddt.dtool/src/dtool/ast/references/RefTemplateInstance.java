@@ -23,7 +23,7 @@ public class RefTemplateInstance extends Reference {
 		assertNotNull(tiargs);
 		initSourceRange(sourceRange);
 		this.refRawTemplate = refRawTemplate; parentize(this.refRawTemplate);
-		this.tiargs = new ArrayView<ASTNeoNode>(tiargs); parentize(this.tiargs);
+		this.tiargs = ArrayView.create(tiargs); parentize(this.tiargs);
 	}
 	
 	@Override

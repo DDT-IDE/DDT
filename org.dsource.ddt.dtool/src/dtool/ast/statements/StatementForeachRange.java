@@ -16,10 +16,10 @@ public class StatementForeachRange extends Statement {
 
 	public StatementForeachRange(IFunctionParameter param, Resolvable lwr, Resolvable upr, IStatement body, boolean reverse, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.param = param; parentize(this.param);
+		this.param = param; parentizeI(this.param);
 		this.lwr = lwr; parentize(this.lwr);
 		this.upr = upr; parentize(this.upr);
-		this.body = body; parentize(this.body);
+		this.body = body; parentizeI(this.body);
 		this.reverse = reverse;
 	}
 

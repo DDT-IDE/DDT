@@ -23,15 +23,9 @@ import dtool.refmodel.ReferenceResolver;
 public class RefModule extends NamedReference {
 	
 	//public String packageName;
-<<<<<<< OURS
 	public final String[] packages;
 	public final String module;
 	
-=======
-	public String[] packages;
-	public String module;
-
->>>>>>> THEIRS
 	public RefModule(String[] packages, String module, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.packages = packages;

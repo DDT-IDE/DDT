@@ -18,7 +18,7 @@ public class StatementOnScope extends Statement {
 	public StatementOnScope(EventType eventType, IStatement st, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.eventType = eventType;
-		this.st = st; parentize(this.st);
+		this.st = st; parentizeI(this.st);
 	}
 
 	@Override

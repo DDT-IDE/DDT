@@ -15,7 +15,7 @@ public class StatementCaseRange extends Statement {
 		initSourceRange(sourceRange);
 		this.expFirst = expFirst; parentize(this.expFirst);
 		this.expLast = expLast; parentize(this.expLast);
-		this.st = st; parentize(this.st);
+		this.st = st; parentizeI(this.st);
 	}
 	
 	@Override

@@ -40,7 +40,6 @@ import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.NodeList;
-import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.statements.BlockStatement;
@@ -78,7 +77,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(ForeachRangeStatement elem) {
 		return endAdapt(
 			new StatementForeachRange(
-				(IFunctionParameter) DescentASTConverter.convertElem(elem.arg, convContext),
+				(IFunctionParameter) DescentASTConverter.convertElem(elem.arg, convContext), // this used to be null b4 refactoring POSSIBLE BUG HERE
 				ExpressionConverter.convert(elem.lwr, convContext),
 				ExpressionConverter.convert(elem.upr, convContext),
 				Statement.convert(elem.body, convContext),
@@ -92,22 +91,29 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(AsmBlock elem) {
 		return endAdapt(
 			new BlockStatement(
-				DescentASTConverter.convertMany(elem.statements, IStatement.class, convContext),
+				convertStatements(elem),
+				true, // TODO: How do we know if it is curly or not?
+				DefinitionConverter.sourceRange(elem)
+			)
+		);
+	}
+	@Override
+	public boolean visit(descent.internal.compiler.parser.CompoundStatement elem) {
+		return endAdapt(
+			new BlockStatement(
+				convertStatements(elem),
 				false, // TODO: How do we know if it is curly or not?
 				DefinitionConverter.sourceRange(elem)
 			)
 		);
 	}
-
-	@Override
-	public boolean visit(descent.internal.compiler.parser.CompoundStatement elem) {
-		return endAdapt(
-			new BlockStatement(
-				DescentASTConverter.convertMany(elem.statements, IStatement.class, convContext),
-				false, // TODO: How do we know if it is curly or not?
-				DefinitionConverter.sourceRange(elem)
-			)
-		);
+	
+	public IStatement[] convertStatements(descent.internal.compiler.parser.CompoundStatement elem) {
+		IStatement[] statements = DescentASTConverter.convertMany(elem.statements, IStatement.class, convContext);
+		for(@SuppressWarnings("unused")	IStatement decl : statements) {
+			// just check class cast
+		}
+		return statements;
 	}
 	
 	@Override
@@ -157,7 +163,8 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(ContinueStatement element) {
 		return endAdapt(
 			new StatementContinue(
-				DefinitionConverter.convertId(element.ident),
+				//element.ident == null ? null : DefinitionConverter.convertId(element.ident), 
+				DefinitionConverter.convertId(element.ident), // BUG HERE (temporary)
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -191,21 +198,17 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(ExpStatement element) {
-		return endAdapt(
-			new StatementExp(
-				ExpressionConverter.convert(element.exp, convContext),
-				element.hasNoSourceRangeInfo() && element.exp != null
-					? DefinitionConverter.sourceRange(element.exp)
-					: DefinitionConverter.sourceRange(element)
-			)
-		);
+		SourceRange sourceRange = element.hasNoSourceRangeInfo() && element.exp != null
+			? DefinitionConverter.sourceRange(element.exp)
+			: DefinitionConverter.sourceRange(element);
+		return endAdapt(new StatementExp(ExpressionConverter.convert(element.exp, convContext), sourceRange));
 	}
 	
 	@Override
 	public boolean visit(ForeachStatement element) {
 		return endAdapt(
 			new StatementForeach(
-				DescentASTConverter.convertMany(element.arguments.toArray(), IFunctionParameter.class, convContext),
+				DescentASTConverter.convertMany(element.arguments.toArray(), IFunctionParameter.class, convContext), /*Used to be null*/ // POSSIBLE BUG HERE
 				ExpressionConverter.convert(element.sourceAggr, convContext),
 				Statement.convert(element.body, convContext),
 				element.op == TOK.TOKforeach_reverse,
@@ -402,14 +405,15 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(Catch element) {
-		IFunctionParameter param = null;
-		if(element.type == null)
+		IFunctionParameter param;
+		if(element.type == null) {
 			param = null;
-		else if(element.ident == null)
+		} else if(element.ident == null) {
 			param = DefinitionConverter.convertNamelessParameter(element.type, convContext);
-		else
+		} else {
 			param = new FunctionParameter(element.type, element.ident, convContext);
-
+		}
+		
 		return endAdapt(
 			new StatementTry.CatchClause(
 				param,

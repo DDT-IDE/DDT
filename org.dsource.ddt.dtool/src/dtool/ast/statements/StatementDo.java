@@ -7,13 +7,13 @@ import dtool.ast.expressions.Resolvable;
 
 public class StatementDo extends Statement {
 
-	public Resolvable exp;
-	public IStatement st;
+	public final Resolvable exp;
+	public final IStatement st;
 
 	public StatementDo(Resolvable exp, IStatement st, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = exp; parentize(this.exp);
-		this.st = st; parentize(this.st);
+		this.st = st; parentizeI(this.st);
 	}
 
 	@Override

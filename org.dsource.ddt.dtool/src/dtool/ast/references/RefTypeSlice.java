@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.TypeSlice;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
@@ -29,7 +30,7 @@ public class RefTypeSlice extends Reference {
 		initSourceRange(sourceRange);
 		this.from = from; parentize(this.from);
 		this.to = to; parentize(this.to);
-		this.slicee = slicee; parentize(this.slicee);
+		this.slicee = slicee; parentize((ASTNeoNode) this.slicee);
 	}
 
 	@Override

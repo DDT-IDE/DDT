@@ -5,16 +5,13 @@ import java.util.List;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.Catch;
 import descent.internal.compiler.parser.TryCatchStatement;
 import descent.internal.compiler.parser.TryFinallyStatement;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IScope;
@@ -29,8 +26,8 @@ public class StatementTry extends Statement {
 
 		public CatchClause(IFunctionParameter param, IStatement body, SourceRange sourceRange) {
 			initSourceRange(sourceRange);
-			this.param = param; parentize(this.param);
-			this.body = body; parentize(this.body);
+			this.param = param; parentizeI(this.param);
+			this.body = body; parentizeI(this.body);
 		}
 
 		@Override

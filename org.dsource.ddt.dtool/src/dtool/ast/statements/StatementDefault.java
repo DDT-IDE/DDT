@@ -4,23 +4,14 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.ArrayView;
 
 public class StatementDefault extends Statement {
 
 	public final IStatement st;
-	public final ArrayView<IStatement> stList;
-	
-	public StatementDefault(IStatement[] stList, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
-		this.stList = new ArrayView<IStatement>(stList); parentize(this.stList);
-		this.st = null;
-	}
 	
 	public StatementDefault(IStatement st, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.st = st; parentize(this.st);
-		this.stList = null;
+		this.st = st; parentize((ASTNeoNode) this.st);
 	}
 
 	@Override

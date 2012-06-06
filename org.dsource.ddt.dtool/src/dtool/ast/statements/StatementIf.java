@@ -14,8 +14,8 @@ public class StatementIf extends Statement {
 	public StatementIf(Resolvable pred, IStatement thenBody, IStatement elseBody, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.pred = pred; parentize(this.pred);
-		this.thenbody = thenBody; parentize(this.thenbody);
-		this.elsebody = elseBody; parentize(this.elsebody);
+		this.thenbody = thenBody; parentizeI(this.thenbody);
+		this.elsebody = elseBody; parentizeI(this.elsebody);
 	}
 
 	@Override

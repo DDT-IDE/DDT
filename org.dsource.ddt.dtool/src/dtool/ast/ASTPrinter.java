@@ -1,6 +1,5 @@
 package dtool.ast;
 
-import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeDepthRecon;
@@ -41,25 +40,15 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 	}
 	
 	/** Util for printing a collection of nodes. */
-	public static String toStringAsElements(ArrayView<ASTNeoNode> nodes, String sep) {
-		
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < nodes.size(); i++) {
-			if(i > 0)
-				sb.append(sep);
-			sb.append(nodes.get(i).toStringAsElement());
-		}
-		return sb.toString();
-	}
-	
-	public final static String toStringAsElements(
-			Collection<? extends ASTNeoNode> nodes, String sep) {
+	public final static String toStringAsElements(Iterable<? extends ASTNeoNode> nodes, String sep) {
 		StringBuilder sb = new StringBuilder();
 		Iterator<? extends ASTNeoNode> iter = nodes.iterator();
 		for (int i = 0; iter.hasNext(); i++) {
-			if(i > 0)
+			ASTNeoNode next = iter.next();
+			if(i > 0) {
 				sb.append(sep);
-			sb.append(iter.next().toStringAsElement());
+			}
+			sb.append(next.toStringAsElement());
 		}
 		return sb.toString();
 	}

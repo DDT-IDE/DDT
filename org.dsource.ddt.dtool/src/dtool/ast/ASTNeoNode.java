@@ -13,6 +13,7 @@ package dtool.ast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
+import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.declarations.NodeList;
@@ -239,6 +240,11 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		parentize(collection, false);
 	}
 	
+	/** Set the parent of the given collection to this.  */
+	protected void parentizeI(ArrayView<? extends IASTNeoNode> collection) {
+		parentize(CoreUtil.<ArrayView<ASTNeoNode>>blindCast(collection), false);
+	}
+	
 	protected void parentize(ArrayView<? extends ASTNeoNode> collection, boolean allowNulls) {
 		if (collection != null) {
 			for (ASTNeoNode node : collection) {
@@ -272,4 +278,10 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 			node.setParent(this);
 		}
 	}
+	
+	/** Set the parent of the given node to this.  */
+	protected void parentizeI(IASTNeoNode node) {
+		parentize((ASTNeoNode) node);
+	}
+	
 }
