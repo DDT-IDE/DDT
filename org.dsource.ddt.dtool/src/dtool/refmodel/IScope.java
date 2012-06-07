@@ -3,7 +3,7 @@ package dtool.refmodel;
 import java.util.Iterator;
 import java.util.List;
 
-import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.IASTNeoNode;
 
 /**
  * A scope is a list of declarations and or statements.
@@ -16,7 +16,7 @@ public interface IScope {
 
 	/** Gets all members of this scope, DefUnit or not. 
 	 * Used to iterate and find DefUnits .*/
-	Iterator<? extends IASTNode> getMembersIterator();
+	Iterator<? extends IASTNeoNode> getMembersIterator();
 	
 	/** Returns the super (as in superclass) scopes of this scope.
 	 * Scopes should be ordered according to priority.

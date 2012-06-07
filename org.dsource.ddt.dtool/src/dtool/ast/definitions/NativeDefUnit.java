@@ -6,7 +6,7 @@ import java.util.List;
 
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.IteratorUtil;
-import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.TokenInfo;
 import dtool.refmodel.IDefUnitReference;
@@ -23,7 +23,7 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 		}
 		
 		@Override
-		public Iterator<? extends IASTNode> getMembersIterator() {
+		public Iterator<? extends ASTNeoNode> getMembersIterator() {
 			// TODO: put intrinsics here?
 			return IteratorUtil.getEMPTY_ITERATOR();
 		}

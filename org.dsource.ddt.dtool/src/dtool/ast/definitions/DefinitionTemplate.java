@@ -8,7 +8,6 @@ import java.util.List;
 import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
-import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.statements.IStatement;
@@ -70,14 +69,13 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	}
 
 	@Override
-	public Iterator<? extends IASTNode> getMembersIterator() {
+	public Iterator<? extends ASTNeoNode> getMembersIterator() {
 		// TODO: check if in a template invocation
 		if(wrapper) {
-			// Go straight to decls member's members
-			Iterator<? extends IASTNode> tplIter = templateParams.iterator();
-			return ChainedIterator.create(tplIter, decls.iterator());
+			// TODO: Go straight to decls member's members
+			return ChainedIterator.create(templateParams.iterator(), decls.iterator());
 		}
-		return new ChainedIterator<ASTNeoNode>(templateParams.iterator(), decls.iterator());
+		return ChainedIterator.create(templateParams.iterator(), decls.iterator());
 	}
 
 }

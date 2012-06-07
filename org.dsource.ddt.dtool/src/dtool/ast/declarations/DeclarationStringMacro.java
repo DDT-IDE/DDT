@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
@@ -31,7 +30,7 @@ public class DeclarationStringMacro extends ASTNeoNode implements IStatement, IN
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
+	public Iterator<? extends ASTNeoNode> getMembersIterator() {
 		// TODO: parse the exp string
 		return IteratorUtil.getEMPTY_ITERATOR();
 	}

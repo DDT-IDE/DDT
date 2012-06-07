@@ -3,9 +3,8 @@ package dtool.ast.statements;
 import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ast.ASTNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.refmodel.IScope;
@@ -37,8 +36,8 @@ public class BlockStatement extends Statement implements IScopeNode {
 	
 	
 	@Override
-	public Iterator<ASTNode> getMembersIterator() {
-		return CoreUtil.<ArrayView<ASTNode>>blindCast(statements).iterator();
+	public Iterator<? extends IASTNeoNode> getMembersIterator() {
+		return statements.iterator();
 	}
 	
 	@Override

@@ -5,8 +5,8 @@ import java.util.List;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
@@ -37,7 +37,7 @@ public class StatementTry extends Statement {
 			visitor.endVisit(this);
 		}
 		@Override
-		public Iterator<? extends IASTNode> getMembersIterator() {
+		public Iterator<? extends IASTNeoNode> getMembersIterator() {
 			if(param != null)
 				return IteratorUtil.singletonIterator(param);
 			return IteratorUtil.getEMPTY_ITERATOR();

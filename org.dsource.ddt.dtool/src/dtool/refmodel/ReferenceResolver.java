@@ -6,6 +6,7 @@ import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.IteratorUtil;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
 import dtool.ast.declarations.ImportContent;
@@ -153,22 +154,21 @@ public class ReferenceResolver {
 	
 
 	private static void findDefUnitInImmediateScope(IScope scope, CommonDefUnitSearch search) {
-		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator());
+		Iterator<IASTNeoNode> iter = IteratorUtil.recast(scope.getMembersIterator());
 		
 		findDefUnits(search, iter, scope.hasSequentialLookup(), false, null);
 	}
 	
 	private static void findDefUnitInSecondaryScope(IScope scope, CommonDefUnitSearch search) {
-		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator());
+		Iterator<IASTNeoNode> iter = IteratorUtil.recast(scope.getMembersIterator());
 
 		IScope thisModule = scope.getModuleScope();
 		findDefUnits(search, iter, scope.hasSequentialLookup(), true, thisModule);
 	}
 
 
-	private static void findDefUnits(CommonDefUnitSearch search,
-			Iterator<? extends IASTNode> iter, boolean isStatementScope, 
-			boolean importsOnly, IScope thisModule) {
+	private static void findDefUnits(CommonDefUnitSearch search, Iterator<? extends IASTNeoNode> iter,
+			boolean isStatementScope, boolean importsOnly, IScope thisModule) {
 		
 		IScope refsModule = search.getReferenceModuleScope();
 		int refOffset = search.refOffset;
@@ -178,8 +178,7 @@ public class ReferenceResolver {
 			
 			if (elem instanceof INonScopedBlock) {
 				INonScopedBlock container = ((INonScopedBlock) elem);
-				findDefUnits(search, container.getMembersIterator(), 
-						isStatementScope, importsOnly, thisModule);
+				findDefUnits(search, container.getMembersIterator(), isStatementScope, importsOnly, thisModule);
 				if(search.isFinished() && search.findOnlyOne)
 					return; // Return if we only want one match in the scope
 			}

@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ast.ASTNode;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -66,7 +66,7 @@ public class TypeStaticArray extends CommonRefNative {
 			return null;
 		}
 		@Override
-		public Iterator<? extends ASTNode> getMembersIterator() {
+		public Iterator<ASTNeoNode> getMembersIterator() {
 			// TODO Auto-generated method stub
 			return null;
 		}

@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
@@ -32,7 +31,7 @@ public class MixinContainer extends ASTNeoNode implements IStatement, INonScoped
 	}
 	
 	@Override
-	public Iterator<ASTNode> getMembersIterator() {
+	public Iterator<ASTNeoNode> getMembersIterator() {
 		return IteratorUtil.getEMPTY_ITERATOR();
 		// TODO: mixin container
 		/*

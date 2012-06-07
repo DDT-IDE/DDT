@@ -6,7 +6,6 @@ import java.util.List;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.TOK;
-import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
@@ -79,7 +78,7 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 		}
 		
 		@Override
-		public Iterator<? extends IASTNode> getMembersIterator() {
+		public Iterator<? extends ASTNeoNode> getMembersIterator() {
 			return IteratorUtil.singletonIterator(defUnit);
 		}
 		

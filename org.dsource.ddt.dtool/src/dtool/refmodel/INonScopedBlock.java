@@ -2,7 +2,7 @@ package dtool.refmodel;
 
 import java.util.Iterator;
 
-import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.ASTNeoNode;
 
 /**
  * Interface for a container node that contains nodes that are part of the same
@@ -14,5 +14,5 @@ public interface INonScopedBlock { // FIXME: some nodes implement this and they 
 	/** Gets the members of this NonScopedBlock.
 	 * Note: It is not guaranteed that the returned nodes direct parent is 
 	 * this NonScopedBlock (due to DeclarationStaticIfIsType). */
-	Iterator<? extends IASTNode> getMembersIterator();
+	Iterator<? extends ASTNeoNode> getMembersIterator();
 }
