@@ -10,15 +10,16 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.util.ArrayView;
 
 public class DefinitionEnum extends Definition implements IScopeNode, IStatement {
 
 	public final ArrayView<EnumMember> members;
 	public final Reference type;
 	
-	public DefinitionEnum(DefUnitDataTuple defunitInfo, PROT prot, EnumMember[] members, Reference reference) {
+	public DefinitionEnum(DefUnitDataTuple defunitInfo, PROT prot, ArrayView<EnumMember> members, Reference reference) {
 		super(defunitInfo, prot);
-		this.members = ArrayView.create(members); parentize(this.members);
+		this.members = members; parentize(this.members);
 		this.type = reference; parentize(this.type);
 	}
 	

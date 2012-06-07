@@ -28,7 +28,6 @@ import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
-import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.DefinitionCtor;
@@ -44,6 +43,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.Statement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.util.ArrayView;
 
 public class DefinitionConverter extends BaseDmdConverter {
 	
@@ -118,7 +118,8 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static Module createModule(descent.internal.compiler.parser.Module elem, ASTConversionContext convContext,
 			String moduleName) {
 		
-		ArrayView<ASTNeoNode> members = DescentASTConverter.convertManyNoNulls(elem.members, convContext);
+		ArrayView<ASTNeoNode> members = 
+				DescentASTConverter.convertManyNoNulls(elem.members, ASTNeoNode.class, convContext);
 		
 		SourceRange sourceRange = sourceRange(elem, false);
 		if(elem.md == null) {
@@ -209,7 +210,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			DefinitionConverter.convertDsymbol(elem, convContext), 
 			elem.prot(),
 			rettype,
-			DescentASTConverter.convertManyToView(elemTypeFunc.parameters, IFunctionParameter.class, convContext).getInternalArray(),
+			DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
 			convertVarArgs(elemTypeFunc.varargs),
 			Statement.convert(elem.frequire, convContext),
 			Statement.convert(elem.fensure, convContext),

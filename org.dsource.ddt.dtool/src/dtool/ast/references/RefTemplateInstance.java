@@ -10,20 +10,20 @@ import dtool.ast.ASTPrinter;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.DefUnit;
+import dtool.util.ArrayView;
 
 public class RefTemplateInstance extends Reference {
 	
 	public final Reference refRawTemplate;
 	public final ArrayView<ASTNeoNode> tiargs;
 	
-	public RefTemplateInstance(Reference refRawTemplate, ASTNeoNode[] tiargs, SourceRange sourceRange) {
+	public RefTemplateInstance(Reference refRawTemplate, ArrayView<ASTNeoNode> tiargs, SourceRange sourceRange) {
 		assertNotNull(refRawTemplate);
 		assertNotNull(tiargs);
 		initSourceRange(sourceRange);
 		this.refRawTemplate = refRawTemplate; parentize(this.refRawTemplate);
-		this.tiargs = ArrayView.create(tiargs); parentize(this.tiargs);
+		this.tiargs = tiargs; parentize(this.tiargs);
 	}
 	
 	@Override

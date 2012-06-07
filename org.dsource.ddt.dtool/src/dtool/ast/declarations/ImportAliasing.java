@@ -21,7 +21,7 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 	public static class ImportAliasingDefUnit extends DefUnit {
 		
 		public ImportAliasing impAlias; // Non-structural Element
-
+		
 		public ImportAliasingDefUnit(DefUnitDataTuple dudt, ImportAliasing impAlias) {
 			super(dudt);
 			this.impAlias = impAlias; parentize(this.impAlias);
@@ -31,12 +31,12 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 		public EArcheType getArcheType() {
 			return EArcheType.Alias; // Maybe should be ImportAlias
 		}
-
+		
 		@Override
 		public IScopeNode getMembersScope() {
 			return impAlias.moduleRef.getTargetScope();
 		}
-
+		
 		@Override
 		public void accept0(IASTNeoVisitor visitor) {
 			boolean children = visitor.visit(this);
@@ -53,7 +53,7 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 		super(refModule, sourceRange);
 		this.aliasDefUnit = new ImportAliasingDefUnit(dudt, this); parentize(this.aliasDefUnit);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -63,7 +63,7 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	@Override
 	public void searchInSecondaryScope(CommonDefUnitSearch options) {
 		// Do nothing. Aliasing imports do not contribute secondary-space DefUnits
@@ -77,7 +77,6 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 	
 	@Override
 	public String toStringAsElement() {
-		return aliasDefUnit.toStringAsElement() 
-		+ " = "+ moduleRef.toStringAsElement() ;
+		return aliasDefUnit.toStringAsElement() + " = "+ moduleRef.toStringAsElement() ;
 	}
 }

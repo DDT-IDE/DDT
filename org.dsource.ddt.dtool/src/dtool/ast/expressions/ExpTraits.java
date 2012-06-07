@@ -4,19 +4,19 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.ArrayView;
+import dtool.util.ArrayView;
 
 public class ExpTraits extends Expression {
-
+	
 	public final ArrayView<ASTNeoNode> args;
 	public final char[] traitsKeyword;
 	
-	public ExpTraits(char[] traitsKeyword, ASTNeoNode[] args, SourceRange sourceRange) {
+	public ExpTraits(char[] traitsKeyword, ArrayView<ASTNeoNode> args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.traitsKeyword = traitsKeyword;
-		this.args = ArrayView.create(args); parentize(this.args);
+		this.args = args; parentize(this.args);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -25,5 +25,5 @@ public class ExpTraits extends Expression {
 		}
 		visitor.endVisit(this);	 
 	}
-
+	
 }

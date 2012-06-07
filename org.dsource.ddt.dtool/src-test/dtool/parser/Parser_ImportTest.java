@@ -37,51 +37,51 @@ public class Parser_ImportTest extends Parser__CommonTest {
 		
 		
 		DeclarationImport child1 = checkImport(module.getChildren()[1], false, false, 1);
-		checkNode(child1.imports[0].moduleRef, "pack.bar");
+		checkNode(child1.imports.get(0).moduleRef, "pack.bar");
 		
 		
 		DeclarationImport child2 = checkImport(module.getChildren()[2], true, false, 1);
-		checkNode(child2.imports[0].moduleRef, "pack");
+		checkNode(child2.imports.get(0).moduleRef, "pack");
 		
 		
 		DeclarationImport child3 = checkImport(module.getChildren()[3], true, true, 3);
-		checkNode(child3.imports[0].moduleRef, "std.xpto");
-		checkNode(child3.imports[1].moduleRef, "pack");
-		checkNode(child3.imports[2].moduleRef, "blah.blah");
+		checkNode(child3.imports.get(0).moduleRef, "std.xpto");
+		checkNode(child3.imports.get(1).moduleRef, "pack");
+		checkNode(child3.imports.get(2).moduleRef, "blah.blah");
 		
 		
 		DeclarationImport child4 = checkImport(module.getChildren()[4], false, false, 2);
-		checkNode(child4.imports[0].moduleRef, "asdf");
-		checkNode(child4.imports[1].moduleRef, "std.foo");
-		checkSelectiveImportFragment(child4.imports[1], "selec1", "selec2");
+		checkNode(child4.imports.get(0).moduleRef, "asdf");
+		checkNode(child4.imports.get(1).moduleRef, "std.foo");
+		checkSelectiveImportFragment(child4.imports.get(1), "selec1", "selec2");
 		
 	}
 	
-	private void checkDefunit(DefUnit module, String name, Integer numChildren) {
+	protected void checkDefunit(DefUnit module, String name, Integer numChildren) {
 		assertEquals(module.getName(), name);
 		assertEquals(module.getChildren().length, numChildren);
 	}
 	
-	private void checkNode(ASTNeoNode module, String name) {
+	protected void checkNode(ASTNeoNode module, String name) {
 		assertEquals(module.toStringAsElement(), name);
 		assertTrue(module.hasNoSourceRangeInfo() == false);
 	}
 	
-	private DeclarationImport checkImport(ASTNeoNode node, boolean isPublic, boolean isStatic, int numChildren) {
+	protected DeclarationImport checkImport(ASTNeoNode node, boolean isPublic, boolean isStatic, int numChildren) {
 		if(isPublic) {
 			node = node.getChildren()[0];
 		}
 		DeclarationImport decImport = downCast(node, DeclarationImport.class);
 		assertEquals(decImport.isStatic, isStatic);
-		assertEquals(decImport.imports.length, numChildren);
+		assertEquals(decImport.imports.size(), numChildren);
 		return decImport;
 	}
 	
-	private void checkSelectiveImportFragment(ImportFragment importFragment, String... array) {
+	protected void checkSelectiveImportFragment(ImportFragment importFragment, String... array) {
 		checkNode(importFragment.moduleRef, "std.foo");
 		
 		ImportSelective decImport = downCast(importFragment, ImportSelective.class);
-		assertEqualArrays(array, strmap(list(decImport.impSelFrags), fnDefUnitToStringAsElement(0)));
+		assertEqualArrays(array, strmap(decImport.impSelFrags, fnDefUnitToStringAsElement(0)));
 	}
 	
 	

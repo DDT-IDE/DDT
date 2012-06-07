@@ -6,13 +6,14 @@ import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.refmodel.IScope;
+import dtool.util.ArrayView;
 
 /**
  * A definition of a struct aggregate.
  */
 public class DefinitionUnion extends DefinitionAggregate {
 	
-	public DefinitionUnion(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] members) {
+	public DefinitionUnion(DefUnitDataTuple dudt, PROT prot, ArrayView<ASTNeoNode> members) {
 		super(dudt, prot, members);
 	}
 	

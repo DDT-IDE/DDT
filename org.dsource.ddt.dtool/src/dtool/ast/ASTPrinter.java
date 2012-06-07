@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeDepthRecon;
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.ast.definitions.ArrayView;
 import dtool.ast.references.RefQualified;
 
 /**
@@ -12,31 +11,14 @@ import dtool.ast.references.RefQualified;
  * DMD AST nodes are printed with a "#" prefix.
  */
 public class ASTPrinter extends ASTNeoUpTreeVisitor {
-
+	
 	/* ===================== Helpers ============================ */
-
-	public static String toStringParamListAsElements(ASTNeoNode[] nodes) {
+	
+	
+	public static String toStringParamListAsElements(Iterable<? extends ASTNeoNode> nodes) {
 		if(nodes == null)
 			return "";
 		return "("+toStringAsElements(nodes, ", ")+")";
-	}
-
-	public static String toStringParamListAsElements(ArrayView<ASTNeoNode> nodes) {
-		if(nodes == null)
-			return "";
-		return "("+toStringAsElements(nodes, ", ")+")";
-	}
-
-	/** Util for printing a collection of nodes. */
-	public static String toStringAsElements(ASTNeoNode[] nodes, String sep) {
-		
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < nodes.length; i++) {
-			if(i > 0)
-				sb.append(sep);
-			sb.append(nodes[i].toStringAsElement());
-		}
-		return sb.toString();
 	}
 	
 	/** Util for printing a collection of nodes. */
@@ -63,7 +45,7 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 	}
 	
 	/* ====================================================== */
-
+	
 	
 	// print source range
 	public boolean printRangeInfo = true;
@@ -75,7 +57,7 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 	public boolean visitChildren = true;
 	// visit children of node type QualifiedName
 	public boolean visitQualifiedNameChildren = false;
-
+	
 	private int indent;
 	private boolean allSiblingsAreLeafs;
 	
@@ -101,15 +83,15 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 		strbuffer.append(str);
 		strbuffer.append("\n");
 	}	
-
+	
 	
 	private void printIndent() {
 		print(melnorme.utilbox.misc.StringUtil.newFilledString(indent, "  "));
 	}
-
+	
 	private void printNodeDecorations(IASTNode node, String str) {
 		int maxdepth = collapseLeafs? TreeDepthRecon.findMaxDepth(node) : -1;
-
+		
 		if(collapseLeafs && maxdepth == 1 && allSiblingsAreLeafs)
 			print("  ");
 		else
@@ -144,6 +126,6 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 	
 	
 	/* ---------------------------------- */
-
+	
 }
 

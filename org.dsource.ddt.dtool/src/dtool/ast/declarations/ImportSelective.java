@@ -1,6 +1,5 @@
 package dtool.ast.declarations;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
@@ -17,6 +16,7 @@ import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.INonScopedBlock;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.ReferenceResolver;
+import dtool.util.ArrayView;
 
 public class ImportSelective extends ImportFragment implements INonScopedBlock {
 	public static interface IImportSelectiveSelection extends IASTNode {
@@ -24,8 +24,8 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 	}
 	
 	public static class ImportSelectiveAlias extends DefUnit 
-		implements IImportSelectiveSelection {
-
+	implements IImportSelectiveSelection {
+		
 		public final RefImportSelection target;
 		
 		public ImportSelectiveAlias(DefUnitDataTuple dudt, RefImportSelection impSelection, SourceRange sourceRange) {
@@ -33,7 +33,7 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 			initSourceRange(sourceRange);
 			this.target = impSelection; parentize(this.target);
 		}
-
+		
 		@Override
 		public void accept0(IASTNeoVisitor visitor) {
 			boolean children = visitor.visit(this);
@@ -43,28 +43,28 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 			}
 			visitor.endVisit(this);		
 		}
-
-
+		
+		
 		@Override
 		public EArcheType getArcheType() {
 			return EArcheType.Alias;
 		}
-
+		
 		@Override
 		public IScopeNode getMembersScope() {
 			return target.getTargetScope();
 		}
 	}
-
 	
-	public ASTNeoNode impSelFrags[];
 	
-	public ImportSelective(RefModule refModule, ASTNeoNode[] frags, SourceRange sourceRange) {
+	public ArrayView<ASTNeoNode> impSelFrags;
+	
+	public ImportSelective(RefModule refModule, ArrayView<ASTNeoNode> frags, SourceRange sourceRange) {
 		super(refModule, sourceRange);
 		this.impSelFrags = frags; parentizeFrags(this.impSelFrags);
 	}
 	
-	public void parentizeFrags(ASTNeoNode[] frags) {
+	public void parentizeFrags(ArrayView<ASTNeoNode> frags) {
 		if (frags != null) {
 			for (ASTNeoNode n : frags) {
 				n.setParent(this);
@@ -85,13 +85,13 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 			TreeVisitor.acceptChildren(visitor, impSelFrags);
 		}
 		visitor.endVisit(this);
-	
+		
 	}
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator() {
-		return Arrays.asList(impSelFrags).iterator();
+		return impSelFrags.iterator();
 	}
-
+	
 	@Override
 	public void searchInSecondaryScope(CommonDefUnitSearch search) {
 		ReferenceResolver.findDefUnitInSelectiveImport(this, search);
@@ -100,13 +100,13 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 	@Override
 	public String toStringAsElement() {
 		String str = "";
-		for (int i = 0; i < impSelFrags.length; i++) {
-			ASTNeoNode fragment = impSelFrags[i];
+		for (int i = 0; i < impSelFrags.size(); i++) {
+			ASTNeoNode fragment = impSelFrags.get(i);
 			if(i > 0)
 				str = str + ", ";
 			str = str + fragment.toStringAsElement();
 		}
 		return moduleRef.toStringAsElement() + " : " + str;
 	}
-
+	
 }

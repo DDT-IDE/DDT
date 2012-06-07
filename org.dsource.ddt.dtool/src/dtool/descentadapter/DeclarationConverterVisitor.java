@@ -2,6 +2,7 @@ package dtool.descentadapter;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AnonDeclaration;
 import descent.internal.compiler.parser.Argument;
@@ -23,7 +24,6 @@ import descent.internal.compiler.parser.Version;
 import descent.internal.compiler.parser.VersionCondition;
 import descent.internal.compiler.parser.VersionSymbol;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.NodeArray;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
@@ -76,6 +76,7 @@ import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.Statement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.util.ArrayView;
 
 /**
  * Converts from DMD's AST to a nicer AST ("Neo AST")
@@ -251,7 +252,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			
 			if(elem.isstatic) {
 				imprtFragment = new ImportStatic(
-					new RefModule(packages, new String(imprt.id.ident), sr),
+					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr),
 					DefinitionConverter.sourceRange(imprt)
 				);
 				//Ignore FQN aliasing for now.
@@ -264,7 +265,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				);
 				imprtFragment = new ImportAliasing(
 					dudt,
-					new RefModule(packages, new String(imprt.id.ident), sr),
+					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr),
 					entireRange
 				);
 			} else if(imprt.names != null) {
@@ -280,12 +281,12 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				}
 				
 				imprtFragment = new ImportSelective(
-					new RefModule(packages, new String(imprt.id.ident), sr),
-					impSelFrags, DefinitionConverter.sourceRange(imprt)
+					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr),
+					ArrayView.create(impSelFrags), DefinitionConverter.sourceRange(imprt)
 				);
 			} else {
 				imprtFragment = new ImportContent(
-					new RefModule(packages, new String(imprt.id.ident), sr),
+					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr),
 					DefinitionConverter.sourceRange(imprt)
 				);
 			}
@@ -296,7 +297,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		
 		boolean isTransitive = false; //isTransitive is adapted in post conversion;
 		return endAdapt(new DeclarationImport(
-				NodeArray.create(imports), elem.isstatic, isTransitive, DefinitionConverter.sourceRange(elem)
+				ArrayView.create(imports), elem.isstatic, isTransitive, DefinitionConverter.sourceRange(elem)
 				)
 		);
 	}
@@ -325,7 +326,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		return endAdapt(
 			new DeclarationPragma(
 				DefinitionConverter.convertId(elem.ident),
-				elem.args != null ? ExpressionConverter.convertMany(elem.args, convContext) : null,
+				ExpressionConverter.convertMany(elem.args, convContext),
 				body,
 				DefinitionConverter.sourceRange(elem)
 			)
@@ -368,14 +369,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			IStatement[] stmts = (stmt == null) ? new IStatement[0] : new IStatement[] { stmt };
 			return endAdapt(
 				new DeclarationUnitTest(
-					new BlockStatement(stmts, false, DefinitionConverter.sourceRange(elem)),
+					new BlockStatement(ArrayView.create(stmts), false, DefinitionConverter.sourceRange(elem)),
 					DefinitionConverter.sourceRange(elem)
 				)
 			);
 		}
 	}
-
-
+	
+	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StaticAssert elem) {
 		return endAdapt(
@@ -423,12 +424,12 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			new DefinitionTemplate(
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				elem.prot(),
-				DescentASTConverter.convertManyNoNulls(elem.members, convContext).getInternalArray(), // TODO simplify
+				DescentASTConverter.convertManyNoNulls(elem.members, ASTNeoNode.class, convContext),
 				DescentASTConverter.convertMany(elem.parameters, TemplateParameter.class, convContext),
 				elem.wrapper
 			)
 		);
-	}	
+	}
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TemplateMixin elem) {
@@ -441,7 +442,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			new DefinitionTypedef(
 				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
 				ReferenceConverter.convertType(elem.sourceBasetype, convContext),
-				Initializer.convert(elem.init, convContext)
+				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext)
 			)
 		);
 	}	
@@ -451,14 +452,16 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		if(elem.ident == null) {
 			return endAdapt(new InvalidSyntaxDeclaration(
 				DefinitionConverter.sourceRange(elem), 
-				ReferenceConverter.convertType(elem.type, convContext),
-				Initializer.convert(elem.init, convContext)
+				ArrayView.create(array(
+						ReferenceConverter.convertType(elem.type, convContext),
+						DescentASTConverter.convertElem(elem.init, Initializer.class, convContext)
+				))
 			));
 		}  else {
 			return endAdapt(new DefinitionVariable(
 				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
 				ReferenceConverter.convertType(elem.type, convContext),
-				Initializer.convert(elem.init, convContext)
+				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext)
 			));
 		}
 	}
@@ -467,7 +470,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		if(elem.ident != null) {
 			return new DefinitionEnum(
 				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
-				DescentASTConverter.convertManyToView(elem.members, EnumMember.class, convContext).getInternalArray(),
+				DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext),
 				ReferenceConverter.convertType(elem.memtype, convContext)
 			);
 		} else {

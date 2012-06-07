@@ -28,5 +28,6 @@ Export-Package: dtool,
  dtool.refmodel,
  dtool.refmodel.pluginadapters,
  dtool.tests;x-friends:="org.dsource.ddt.ide.core,org.dsource.ddt.ide.ui",
+ dtool.util,
  org.ini4j,
  org.ini4j.addon

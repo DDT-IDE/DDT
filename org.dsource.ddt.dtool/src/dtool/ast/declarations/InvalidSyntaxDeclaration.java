@@ -5,19 +5,20 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
+import dtool.util.ArrayView;
 
 public class InvalidSyntaxDeclaration extends ASTNeoNode implements IStatement {
 	
-	public ASTNeoNode[] genericChildren;
+	public ArrayView<ASTNeoNode> genericChildren;
 	
 	public InvalidSyntaxDeclaration(SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.genericChildren = null;
 	}
 	
-	public InvalidSyntaxDeclaration(SourceRange sourceRange, ASTNeoNode... children) {
+	public InvalidSyntaxDeclaration(SourceRange sourceRange, ArrayView<ASTNeoNode> children) {
 		initSourceRange(sourceRange);
-		this.genericChildren = children;
+		this.genericChildren = children; // BUG here parentize(genericChildren);
 	}
 	
 	@Override

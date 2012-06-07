@@ -128,6 +128,7 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
 import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.Statement;
+import dtool.util.ArrayView;
 
 abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
@@ -202,7 +203,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		return endAdapt(
 			new InitializerArray(
 				ExpressionConverter.convertMany(element.index, convContext),
-				Initializer.convertMany(element.value, convContext),
+				DescentASTConverter.convertMany(element.value, Initializer.class, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -233,8 +234,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		
 		return endAdapt(
 			new InitializerStruct(
-				indices,
-				Initializer.convertMany(element.value, convContext),
+				ArrayView.create(indices),
+				DescentASTConverter.convertMany(element.value, Initializer.class, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -250,7 +251,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ArrayExp elem) {
 		Resolvable array = ExpressionConverter.convert(elem.e1, convContext);
-		Resolvable[] args = ExpressionConverter.convertMany(elem.arguments, convContext);
+		ArrayView<Resolvable> args = ExpressionConverter.convertMany(elem.arguments, convContext);
 		return endAdapt(new ExpArrayIndex(array, args, DefinitionConverter.sourceRange(elem)));
 	}
 	
@@ -386,7 +387,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 			new ExpLiteralNewAnonClass(
 				ExpressionConverter.convertMany(element.newargs, convContext),
 				ExpressionConverter.convertMany(element.arguments, convContext),
-				element.cd.sourceBaseclasses != null ? DescentASTConverter.convertMany(element.cd.sourceBaseclasses.toArray(), BaseClass.class, convContext) : null,
+				DescentASTConverter.convertMany(element.cd.sourceBaseclasses, BaseClass.class, convContext),
 				DescentASTConverter.convertMany(element.cd.members, ASTNeoNode.class, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
@@ -395,10 +396,13 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(NewExp element) {
+		Reference type = element.newtype == null ? 
+				new Reference.InvalidSyntaxReference() : 
+				ReferenceConverter.convertType(element.newtype, convContext);
 		return endAdapt(
 			new ExpNew(
 				ExpressionConverter.convertMany(element.newargs, convContext),
-				element.newtype == null ? new Reference.InvalidSyntaxReference() : ReferenceConverter.convertType(element.newtype, convContext),
+				type,
 				ExpressionConverter.convertMany(element.arguments, convContext),
 				DefinitionConverter.sourceRange(element)
 			)

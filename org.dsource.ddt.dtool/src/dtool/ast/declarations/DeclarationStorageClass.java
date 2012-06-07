@@ -8,12 +8,14 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
 import dtool.refmodel.INonScopedBlock;
+import dtool.util.ArrayView;
 
 public final class DeclarationStorageClass extends DeclarationAttrib {
 	
 	public final int stclass; // we assume there is only one storage class flag here
 	
-	public DeclarationStorageClass(int stclass, ASTNeoNode[] decls, boolean hasCurlies, SourceRange sourceRange) {
+	public DeclarationStorageClass(int stclass, ArrayView<ASTNeoNode> decls, boolean hasCurlies,
+			SourceRange sourceRange) {
 		super(new NodeList(decls, hasCurlies), sourceRange);
 		this.stclass = stclass;
 	}

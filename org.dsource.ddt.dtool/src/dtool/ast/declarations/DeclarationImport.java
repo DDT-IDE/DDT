@@ -1,6 +1,5 @@
 package dtool.ast.declarations;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
@@ -11,6 +10,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.INonScopedBlock;
+import dtool.util.ArrayView;
 
 /**
  * An import Declaration.
@@ -19,11 +19,12 @@ import dtool.refmodel.INonScopedBlock;
  */
 public class DeclarationImport extends ASTNeoNode implements INonScopedBlock, IDeclaration {
 	
-	public final ImportFragment[] imports;
+	public final ArrayView<ImportFragment> imports;
 	public final boolean isStatic;
 	public boolean isTransitive; // aka public imports
 	
-	public DeclarationImport(ImportFragment[] imports, boolean isStatic, boolean isTransitive, SourceRange sourceRange) {
+	public DeclarationImport(ArrayView<ImportFragment> imports, boolean isStatic, boolean isTransitive,
+			SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.imports = imports; parentize(this.imports);
 		this.isStatic = isStatic;
@@ -39,15 +40,15 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock, ID
 		visitor.endVisit(this);
 	}
 	
-
+	
 	public static abstract class ImportFragment extends ASTNeoNode {
 		public RefModule moduleRef;
-
+		
 		public ImportFragment(RefModule moduleRef, SourceRange sourceRange) {
 			initSourceRange(sourceRange);
 			this.moduleRef = moduleRef; parentize(this.moduleRef);
 		}
-
+		
 		/** Performs a search in the secondary/background scope.
 		 * Only imports contribute to this secondary namespace. */
 		public abstract void searchInSecondaryScope(CommonDefUnitSearch options);
@@ -56,28 +57,24 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock, ID
 		public String toStringAsElement() {
 			return moduleRef.toStringAsElement();
 		}
-
-	}
-	
-	public ASTNeoNode[] getMembers() {
-		return imports;
+		
 	}
 	
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator() {
-		return Arrays.asList(getMembers()).iterator();
+		return imports.iterator();
 	}
-
+	
 	@Override
 	public String toStringAsElement() {
 		String str = "";
-		for (int i = 0; i < imports.length; i++) {
-			ImportFragment fragment = imports[i];
+		for (int i = 0; i < imports.size(); i++) {
+			ImportFragment fragment = imports.get(i);
 			if(i > 0)
 				str = str + ", ";
 			str = str + fragment.toStringAsElement();
 		}
 		return "[import "+str+"]";
 	}
-
+	
 }

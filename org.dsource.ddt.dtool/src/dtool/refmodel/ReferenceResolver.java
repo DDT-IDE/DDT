@@ -234,7 +234,7 @@ public class ReferenceResolver {
 	
 	private static Module findImporTargetModule(ImportFragment impSelective) {
 		Module refModule = NodeUtil.getParentModule(impSelective);
-		String[] packages = impSelective.moduleRef.packages;
+		String[] packages = impSelective.moduleRef.packages.getInternalArray();
 		String modules = impSelective.moduleRef.module;
 		Module targetModule;
 		targetModule = findModule(refModule, packages, modules);

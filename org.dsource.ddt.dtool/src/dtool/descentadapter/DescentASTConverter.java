@@ -3,13 +3,15 @@ package dtool.descentadapter;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
+import java.util.Iterator;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.Module;
+import dtool.util.ArrayView;
 
 public class DescentASTConverter extends StatementConverterVisitor {
 
@@ -45,58 +47,39 @@ public class DescentASTConverter extends StatementConverterVisitor {
 		return conv.ret;
 	}
 	
-	public static ASTNeoNode[] convertMany(Collection<? extends IASTNode> children, ASTConversionContext convContext) {
-		if(children == null) return null;
-		ASTNeoNode[] rets = new ASTNeoNode[children.size()];
-		convertMany(children.toArray(), rets, convContext);
-		return rets;
-	}
-	
-	public static <T extends IASTNode> T[] convertMany(Collection<? extends IASTNode> children, Class<T> elemClass,
+	@SuppressWarnings("unchecked")
+	public static <T extends IASTNode> T convertElem(ASTNode elem, @SuppressWarnings("unused") Class<T> elemClass,
 			ASTConversionContext convContext) {
-		if(children == null) return null;
-		T[] rets = ArrayUtil.create(children.size(), elemClass);
-		convertMany(children.toArray(), rets, convContext);
-		return rets;
+		return (T) convertElem(elem, convContext);
 	}
 	
-	public static <T extends IASTNode> ArrayView<T> convertManyToView(Collection<? extends IASTNode> children,
+	public static ArrayView<ASTNeoNode> convertMany(Collection<? extends IASTNode> children, 
+			ASTConversionContext convContext) {
+		return convertMany(children, ASTNeoNode.class, convContext);
+	}
+	
+	public static <T extends IASTNode> ArrayView<T> convertMany(Collection<? extends IASTNode> children,
 			Class<T> elemClass, ASTConversionContext convContext) {
 		if(children == null) return null;
-		return ArrayView.create(convertMany(children, elemClass, convContext));
+		T[] rets = ArrayUtil.create(children.size(), elemClass);
+		convertManyIntoArray(children, rets, convContext);
+		return ArrayView.create(rets);
 	}
 	
-	@Deprecated
-	public static ArrayView<ASTNeoNode> convertManyNoNulls(Collection<? extends IASTNode> children, 
-			ASTConversionContext convContext) {
+	public static <T extends IASTNode> ArrayView<T> convertManyNoNulls(Collection<? extends IASTNode> children, 
+			Class<T> elemClass, ASTConversionContext convContext) {
 		if(children == null) return null;
-		ArrayView<ASTNeoNode> res = convertManyToView(children, ASTNeoNode.class, convContext);
-		if(true) {
-			assertTrue(ArrayUtil.contains(res.getInternalArray(), null) == false);
-		}
+		ArrayView<T> res = convertMany(children, elemClass, convContext);
+		assertTrue(res.contains(null) == false);
 		return res;
 	}
 	
-	public static <T extends IASTNode> ArrayView<T> convertManyToView(Object[] children, Class<T> elemClass, 
+	protected static <T extends IASTNode> T[] convertManyIntoArray(Iterable<? extends IASTNode> children, T[] rets, 
 			ASTConversionContext convContext) {
-		if(children == null) return null;
-		return ArrayView.create(convertMany(children, elemClass, convContext));
-	}
-	
-	public static <T extends IASTNode> T[] convertMany(Object[] children, Class<T> elemClass,
-			ASTConversionContext convContext) {
-		if(children == null) return null;
-		T[] rets = ArrayUtil.create(children.length, elemClass);
-		convertMany(children, rets, convContext);
-		return rets;
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected static <T extends IASTNode> T[] convertMany(Object[] children, T[] rets, 
-			ASTConversionContext convContext) {
-		for(int i = 0; i < children.length; ++i) {
-			ASTNode elem = (ASTNode) children[i];
-			rets[i] = (T) convertElem(elem, convContext);
+		Iterator<? extends IASTNode> iterator = children.iterator();
+		for(int i = 0; iterator.hasNext(); ++i) {
+			ASTNode elem = (ASTNode) iterator.next();
+			rets[i] = CoreUtil.blindCast(convertElem(elem, convContext));
 		}
 		return rets;
 	}

@@ -16,6 +16,7 @@ import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.NodeUtil;
+import dtool.util.ArrayView;
 
 /**
  * A definition of a function.
@@ -26,7 +27,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	//public Identifier outId;
 	public descent.internal.compiler.parser.LINK linkage; // ???
 	public final Reference rettype;
-	public TemplateParameter[] templateParams; // ???
+	public final ArrayView<TemplateParameter> templateParams;
 	public final ArrayView<IFunctionParameter> params;
 	public final int varargs;
 	
@@ -36,13 +37,14 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	
 	//public descent.internal.compiler.parser.TypeFunction type;
 	
-	public DefinitionFunction(DefUnitDataTuple defunitData, PROT prot, Reference rettype, IFunctionParameter[] params, int varargs, IStatement frequire, IStatement fensure,
+	public DefinitionFunction(DefUnitDataTuple defunitData, PROT prot, Reference rettype, ArrayView<IFunctionParameter> params, int varargs, IStatement frequire, IStatement fensure,
 			IStatement fbody) {
 		super(defunitData, prot);
 		assertNotNull(rettype);
 		
 		this.rettype = rettype; parentize(this.rettype);
-		this.params = ArrayView.create(params); parentizeI(this.params);
+		this.templateParams = null; // TODO BUG here
+		this.params = params; parentizeI(this.params);
 		this.varargs = varargs;
 		this.frequire = frequire; parentizeI(this.frequire);
 		this.fensure = fensure; parentizeI(this.fensure);

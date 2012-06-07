@@ -35,6 +35,7 @@ import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.descentadapter.ExpressionConverter;
 import dtool.refmodel.IDefUnitReferenceNode;
+import dtool.util.ArrayView;
 
 
 /**
@@ -106,7 +107,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		RefTemplateInstance refTplInstance = createRefTemplateInstance(tplReference, elem.tiargs, sourceRangeTplInst,
 				convContext);
 		if (elem.ident != null) {
-			return new NamedMixin(DefinitionConverter.convertDsymbol(elem, convContext), refTplInstance, convContext, sourceRange);
+			return new NamedMixin(DefinitionConverter.convertDsymbol(elem, convContext), refTplInstance, sourceRange);
 		} else {
 			return new MixinContainer(refTplInstance, sourceRange);
 		}
@@ -193,7 +194,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static RefTemplateInstance createRefTemplateInstance(Reference tplReference,
 			List<ASTDmdNode> tiargs, SourceRange sourceRange, ASTConversionContext convContext) {
-		ASTNeoNode[] tiargsNew = DescentASTConverter.convertMany(tiargs, convContext);
+		ArrayView<ASTNeoNode> tiargsNew = DescentASTConverter.convertMany(tiargs, convContext);
 		return new RefTemplateInstance(tplReference, tiargsNew, sourceRange);
 	}
 	

@@ -134,7 +134,7 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 		descent.internal.compiler.parser.TypeFunction typeFunction = ((descent.internal.compiler.parser.TypeFunction) elem.next);
 		return endAdapt(
 			new TypeDelegate(
-				(Reference) DescentASTConverter.convertElem(elem.rto, convContext),
+				DescentASTConverter.convertElem(elem.rto, Reference.class, convContext),
 				DescentASTConverter.convertMany(typeFunction.parameters, IFunctionParameter.class, convContext),
 				DefinitionConverter.convertVarArgs(typeFunction.varargs),
 				DefinitionConverter.sourceRange(elem)
@@ -152,7 +152,7 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	public static TypeFunction convertFunction(descent.internal.compiler.parser.TypeFunction elem,
 			SourceRange sourceRange, ASTConversionContext convContext) {
 		return new TypeFunction(
-			(Reference) DescentASTConverter.convertElem(elem.next, convContext), 
+			DescentASTConverter.convertElem(elem.next, Reference.class, convContext), 
 			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext), 
 			DefinitionConverter.convertVarArgs(elem.varargs), 
 			elem.linkage,

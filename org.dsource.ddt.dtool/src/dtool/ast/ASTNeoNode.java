@@ -17,11 +17,11 @@ import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.declarations.NodeList;
-import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.Module;
 import dtool.descentadapter.DefinitionConverter;
 import dtool.refmodel.IScope;
 import dtool.refmodel.NodeUtil;
+import dtool.util.ArrayView;
 
 public abstract class ASTNeoNode implements IASTNeoNode {
 	
@@ -252,16 +252,6 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 					node.setParent(this);
 				} else {
 					assertTrue(allowNulls);
-				}
-			}
-		}
-	}
-	
-	protected void parentize(ASTNeoNode[] collection) {
-		if (collection != null) {
-			for (ASTNeoNode node : collection) {
-				if (node != null) {
-					node.setParent(this);
 				}
 			}
 		}

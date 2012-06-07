@@ -15,13 +15,14 @@ import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
 public class TypePointer extends CommonRefNative {
+	
 	public final Reference elemtype;
 	
 	public TypePointer(Reference elemtype, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.elemtype = elemtype; parentize(this.elemtype);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -30,7 +31,7 @@ public class TypePointer extends CommonRefNative {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
 		return DefUnitSearch.wrapResult(IntrinsicPointer.instance);
@@ -40,7 +41,7 @@ public class TypePointer extends CommonRefNative {
 	public String toStringAsElement() {
 		return elemtype.toStringAsElement() + "*";
 	}
-
+	
 	
 	public static class IntrinsicPointer extends NativeDefUnit {
 		public IntrinsicPointer() {
@@ -48,8 +49,8 @@ public class TypePointer extends CommonRefNative {
 		}
 		
 		public static final IntrinsicPointer instance = new IntrinsicPointer();
-
-
+		
+		
 		@Override
 		public IScopeNode getMembersScope() {
 			// TODO Auto-generated method stub

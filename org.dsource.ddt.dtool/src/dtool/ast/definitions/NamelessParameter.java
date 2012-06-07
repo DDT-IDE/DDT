@@ -14,11 +14,11 @@ import dtool.ast.references.Reference;
  * <code> void func(int, int); </code>
  */
 public class NamelessParameter extends ASTNeoNode implements IFunctionParameter {
-
+	
 	public final Reference type;
 	public final int storageClass;
 	public final Resolvable defaultValue;
-
+	
 	public NamelessParameter(Reference type, int storageClass, Resolvable defaultValue, SourceRange sourceRange) {
 		assertNotNull(type);
 		initSourceRange(sourceRange);
@@ -42,17 +42,17 @@ public class NamelessParameter extends ASTNeoNode implements IFunctionParameter 
 	public String toStringAsFunctionSignaturePart() {
 		return type.toStringAsElement();
 	}
-
+	
 	@Override
 	public String toStringAsFunctionSimpleSignaturePart() {
 		return type.toStringAsElement();
 	}
-
+	
 	@Override
 	public String toStringInitializer() {
 		if(defaultValue == null)
 			return null;
 		return defaultValue.toStringAsElement();
 	}
-
+	
 }

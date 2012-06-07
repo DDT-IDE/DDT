@@ -5,12 +5,13 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
+import dtool.util.ArrayView;
 
 public class DeclarationLinkage extends DeclarationAttrib implements IStatement {
 	
 	public final LINK linkage;
 	
-	public DeclarationLinkage(LINK link, ASTNeoNode[] decls, boolean hasCurlies, SourceRange sourceRange) {
+	public DeclarationLinkage(LINK link, ArrayView<ASTNeoNode> decls, boolean hasCurlies, SourceRange sourceRange) {
 		super(new NodeList(decls, hasCurlies), sourceRange);
 		this.linkage = link;
 	}

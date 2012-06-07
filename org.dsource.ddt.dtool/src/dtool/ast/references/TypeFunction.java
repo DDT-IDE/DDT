@@ -9,7 +9,6 @@ import descent.internal.compiler.parser.LINK;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.IFunctionParameter;
@@ -17,6 +16,7 @@ import dtool.ast.definitions.NativeDefUnit;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.util.ArrayView;
 
 /**
  * A function pointer type
@@ -28,11 +28,11 @@ public class TypeFunction extends CommonRefNative {
 	public final int varargs;
 	public final LINK linkage;
 
-	public TypeFunction(Reference retType, IFunctionParameter[] params, int varArgs, LINK linkage,
+	public TypeFunction(Reference retType, ArrayView<IFunctionParameter> params, int varArgs, LINK linkage,
 			SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.rettype = retType; parentize(this.rettype);
-		this.params = ArrayView.create(params); parentizeI(this.params);
+		this.params = params; parentizeI(this.params);
 		this.varargs = varArgs;
 		this.linkage = linkage;
 	}

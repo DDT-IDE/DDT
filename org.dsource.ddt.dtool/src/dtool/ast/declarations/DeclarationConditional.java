@@ -1,9 +1,9 @@
 package dtool.ast.declarations;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
-import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.ChainedIterator;
+import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
@@ -11,8 +11,8 @@ import dtool.refmodel.INonScopedBlock;
 
 public abstract class DeclarationConditional extends ASTNeoNode implements IDeclaration, IStatement, INonScopedBlock {
 	
-	public NodeList thendecls;
-	public NodeList elsedecls;
+	public final NodeList thendecls;
+	public final NodeList elsedecls;
 	
 	public DeclarationConditional() {
 		this.thendecls = null;
@@ -25,20 +25,16 @@ public abstract class DeclarationConditional extends ASTNeoNode implements IDecl
 		this.elsedecls = elseDecls; parentize(elsedecls);
 	}
 	
-	protected ASTNeoNode[] getMembers() {
-		if(thendecls == null && elsedecls == null)
-			return ASTNeoNode.NO_ELEMENTS;
-		if(thendecls == null)
-			return elsedecls.nodes;
-		if(elsedecls == null)
-			return thendecls.nodes;
-		
-		return ArrayUtil.concat(thendecls.nodes, elsedecls.nodes);
-	}
-	
 	@Override
 	public Iterator<ASTNeoNode> getMembersIterator() {
-		return Arrays.asList(getMembers()).iterator();
+		if(thendecls == null && elsedecls == null)
+			return IteratorUtil.getEMPTY_ITERATOR();
+		if(thendecls == null)
+			return elsedecls.nodes.iterator();
+		if(elsedecls == null)
+			return thendecls.nodes.iterator();
+		
+		return new ChainedIterator<ASTNeoNode>(thendecls.nodes.iterator(), elsedecls.nodes.iterator()); 
 	}
 	
 }

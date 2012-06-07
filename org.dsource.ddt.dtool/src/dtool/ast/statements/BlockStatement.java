@@ -3,13 +3,14 @@ package dtool.ast.statements;
 import java.util.Iterator;
 import java.util.List;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.ArrayView;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.util.ArrayView;
 
 /**
  * A compound statement. Allways introduces a new Scope.
@@ -19,9 +20,9 @@ public class BlockStatement extends Statement implements IScopeNode {
 	public ArrayView<IStatement> statements;
 	public boolean hasCurlyBraces; // syntax-structural?
 	
-	public BlockStatement(IStatement[] statements, boolean hasCurlyBraces, SourceRange sourceRange) {
+	public BlockStatement(ArrayView<IStatement> statements, boolean hasCurlyBraces, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.statements = ArrayView.create(statements); parentizeI(this.statements);
+		this.statements = statements; parentizeI(this.statements);
 		this.hasCurlyBraces = hasCurlyBraces;
 	}
 	
@@ -33,25 +34,21 @@ public class BlockStatement extends Statement implements IScopeNode {
 		}
 		visitor.endVisit(this);
 	}
-
-
+	
+	
 	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Iterator<ASTNode> getMembersIterator() {
-		return (Iterator) statements.iterator();
+		return CoreUtil.<ArrayView<ASTNode>>blindCast(statements).iterator();
 	}
+	
 	@Override
 	public List<IScope> getSuperScopes() {
 		return null;
 	}
+	
 	@Override
 	public boolean hasSequentialLookup() {
 		return true;
 	}
 	
-	//@Override
-	/*public IScope getAdaptedScope() {
-		return this;
-	}*/
-
 }

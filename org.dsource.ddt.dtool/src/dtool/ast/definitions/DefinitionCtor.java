@@ -10,6 +10,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.util.ArrayView;
 
 public class DefinitionCtor extends ASTNeoNode implements IScopeNode, ICallableElement {
 	
@@ -32,10 +33,11 @@ public class DefinitionCtor extends ASTNeoNode implements IScopeNode, ICallableE
 	public final IStatement fbody;
 	public final int nameStart;
 	
-	public DefinitionCtor(SpecialFunctionKind kind, IFunctionParameter[] params, int varargs, IStatement fbody, int thisStart, SourceRange sourceRange) {
+	public DefinitionCtor(SpecialFunctionKind kind, ArrayView<IFunctionParameter> params, int varargs,
+			IStatement fbody, int thisStart, SourceRange sourceRange) {
 		initSourceRange(sourceRange);	
 		this.kind = kind;
-		this.params = ArrayView.createFrom(params); parentizeI(this.params);
+		this.params = params; parentizeI(this.params);
 		this.varargs = varargs;
 		this.fbody = fbody; parentizeI(this.fbody);
 		this.nameStart = thisStart;

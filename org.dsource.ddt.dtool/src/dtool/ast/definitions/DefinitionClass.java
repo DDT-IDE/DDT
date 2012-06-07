@@ -8,15 +8,17 @@ import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.refmodel.IScope;
+import dtool.util.ArrayView;
 
 /**
  * A definition of a class aggregate.
  */
 public class DefinitionClass extends DefinitionAggregate {
-
-	public final BaseClass[] baseClasses;
 	
-	public DefinitionClass(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] members, BaseClass[] baseClasses) {
+	public final ArrayView<BaseClass> baseClasses;
+	
+	public DefinitionClass(DefUnitDataTuple dudt, PROT prot, ArrayView<ASTNeoNode> members,
+			ArrayView<BaseClass> baseClasses) {
 		super(dudt, prot, members);
 		this.baseClasses = baseClasses; parentize(this.baseClasses);
 	}
@@ -45,9 +47,9 @@ public class DefinitionClass extends DefinitionAggregate {
 	
 	@Override
 	public List<IScope> getSuperScopes() {
-		if(baseClasses == null || baseClasses.length < 0)
+		if(baseClasses == null || baseClasses.size() < 0)
 			return null;
-
+		
 		List<IScope> scopes = new ArrayList<IScope>();
 		for(BaseClass baseclass: baseClasses) {
 			DefUnit defunit = baseclass.type.findTargetDefUnit();

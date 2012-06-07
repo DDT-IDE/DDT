@@ -1,6 +1,7 @@
 package dtool.descentadapter;
 
-import static melnorme.utilbox.core.CoreUtil.array;
+import java.util.Collections;
+
 import descent.internal.compiler.parser.AsmBlock;
 import descent.internal.compiler.parser.AsmStatement;
 import descent.internal.compiler.parser.BreakStatement;
@@ -40,9 +41,9 @@ import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.NodeList;
+import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
@@ -73,6 +74,7 @@ import dtool.ast.statements.StatementTry.CatchClause;
 import dtool.ast.statements.StatementVolatile;
 import dtool.ast.statements.StatementWhile;
 import dtool.ast.statements.StatementWith;
+import dtool.util.ArrayView;
 
 public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
@@ -111,8 +113,8 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		);
 	}
 	
-	public IStatement[] convertStatements(descent.internal.compiler.parser.CompoundStatement elem) {
-		IStatement[] statements = DescentASTConverter.convertMany(elem.statements, IStatement.class, convContext);
+	public ArrayView<IStatement> convertStatements(descent.internal.compiler.parser.CompoundStatement elem) {
+		ArrayView<IStatement> statements = DescentASTConverter.convertMany(elem.statements, IStatement.class, convContext);
 		for(@SuppressWarnings("unused")	IStatement decl : statements) {
 			// just check class cast
 		}
@@ -211,7 +213,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(ForeachStatement element) {
 		return endAdapt(
 			new StatementForeach(
-				DescentASTConverter.convertMany(element.arguments.toArray(), IFunctionParameter.class, convContext), /*Used to be null*/ // POSSIBLE BUG HERE
+				DescentASTConverter.convertMany(element.arguments, IFunctionParameter.class, convContext), /*Used to be null*/ // POSSIBLE BUG HERE
 				ExpressionConverter.convert(element.sourceAggr, convContext),
 				Statement.convert(element.body, convContext),
 				element.op == TOK.TOKforeach_reverse,
@@ -219,7 +221,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 			)
 		);
 	}
-
+	
 	@Override
 	public boolean visit(ForStatement element) {
 		return endAdapt(
@@ -297,7 +299,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(
 			new DeclarationPragma(
 				DefinitionConverter.convertId(element.ident),
-				element.args != null ? ExpressionConverter.convertMany(element.args, convContext) : null,
+				ExpressionConverter.convertMany(element.args, convContext),
 				body,
 				DefinitionConverter.sourceRange(element)
 			)
@@ -316,16 +318,15 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(ScopeStatement element) {
-		IStatement[] statements = null;
+		ArrayView<IStatement> statements = null;
 		boolean hasCurlyBraces = false;
 		if(element.statement instanceof descent.internal.compiler.parser.CompoundStatement) {
 			descent.internal.compiler.parser.CompoundStatement compoundSt = 
 				(descent.internal.compiler.parser.CompoundStatement) element.statement;
-			statements = DescentASTConverter.convertMany(compoundSt.statements, IStatement.class, 
-					convContext);
+			statements = DescentASTConverter.convertMany(compoundSt.statements, IStatement.class, convContext);
 			hasCurlyBraces = true;
 		} else {
-			statements = DescentASTConverter.convertMany(array(element.statement), IStatement.class, 
+			statements = DescentASTConverter.convertMany(Collections.singleton(element.statement), IStatement.class,
 					convContext);
 		}
 
@@ -383,26 +384,24 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(TryCatchStatement element) {
-		Object[] catches = element.catches.toArray();
 		return endAdapt(
 			new StatementTry(
 				Statement.convert(element.body, convContext),
-				DescentASTConverter.convertMany(catches, CatchClause.class, convContext),
+				DescentASTConverter.convertMany(element.catches, CatchClause.class, convContext),
 				null, 
 				DefinitionConverter.sourceRange(element)
 			)
 		);
 	}
-
+	
 	@Override
 	public boolean visit(TryFinallyStatement element) {
 		if (element.body instanceof TryCatchStatement) {
 			TryCatchStatement tcs = (TryCatchStatement) element.body;
-			Object[] catches = tcs.catches.toArray();
 			return endAdapt(
 				new StatementTry(
 					Statement.convert(tcs.body, convContext),
-					DescentASTConverter.convertMany(catches, CatchClause.class, convContext),
+					DescentASTConverter.convertMany(tcs.catches, CatchClause.class, convContext),
 					Statement.convert(element.finalbody, convContext), 
 					DefinitionConverter.sourceRange(element)
 				)
@@ -411,14 +410,14 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 			return endAdapt(
 				new StatementTry(
 					Statement.convert(element.body, convContext),
-					new CatchClause[0],
+					ArrayView.create(new CatchClause[0]),
 					Statement.convert(element.finalbody, convContext), 
 					DefinitionConverter.sourceRange(element)
 				)
 			);
 		}
 	}
-
+	
 	@Override
 	public boolean visit(VolatileStatement element) {
 		return endAdapt(

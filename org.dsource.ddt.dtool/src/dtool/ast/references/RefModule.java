@@ -16,6 +16,7 @@ import dtool.refmodel.IScopeNode;
 import dtool.refmodel.NodeUtil;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
+import dtool.util.ArrayView;
 
 /** 
  * A module reference (in import declarations only).
@@ -23,10 +24,10 @@ import dtool.refmodel.ReferenceResolver;
 public class RefModule extends NamedReference {
 	
 	//public String packageName;
-	public final String[] packages;
+	public final ArrayView<String> packages;
 	public final String module;
 	
-	public RefModule(String[] packages, String module, SourceRange sourceRange) {
+	public RefModule(ArrayView<String> packages, String module, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.packages = packages;
 		this.module = module;
@@ -45,7 +46,7 @@ public class RefModule extends NamedReference {
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(boolean findOneOnly) {
 		Module originMod = NodeUtil.getParentModule(this);
-		Module targetMod = ReferenceResolver.findModule(originMod, packages, module);
+		Module targetMod = ReferenceResolver.findModule(originMod, packages.getInternalArray(), module);
 		return DefUnitSearch.wrapResult(targetMod);
 	}
 	

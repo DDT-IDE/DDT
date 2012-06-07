@@ -3,17 +3,17 @@ package dtool.ast.expressions;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.ArrayView;
+import dtool.util.ArrayView;
 
 public class InitializerArray extends Initializer {
 	
 	public final ArrayView<Resolvable> indexes;
 	public final ArrayView<Initializer> values;
 	
-	public InitializerArray(Resolvable[] indexes, Initializer[] values, SourceRange sourceRange) {
+	public InitializerArray(ArrayView<Resolvable> indexes, ArrayView<Initializer> values, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.indexes = new ArrayView<Resolvable>(indexes); parentize(this.indexes, true);
-		this.values = new ArrayView<Initializer>(values); parentize(this.values);
+		this.indexes = indexes; parentize(this.indexes, true);
+		this.values = values; parentize(this.values);
 	}
 	
 	@Override

@@ -22,7 +22,7 @@ public class ImportStatic extends ImportFragment {
 	}
 	
 	private String[] getPackageNames() {
-		return moduleRef.packages;
+		return moduleRef.packages.getInternalArray();
 	}
 	
 	public DefUnit getPartialDefUnit() {

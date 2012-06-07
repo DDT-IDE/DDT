@@ -18,6 +18,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.util.ArrayView;
 
 /**
  * D Module.
@@ -46,8 +47,8 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	public static class DeclarationModule extends ASTNeoNode {
 		
-		public DefSymbol moduleName; 
-		public String[] packages; // non-structural element
+		public final DefSymbol moduleName; 
+		public final String[] packages; // non-structural element
 		
 		public DeclarationModule(SourceRange sourceRange, String[] packages, DefSymbol moduleName) {
 			initSourceRange(sourceRange);
@@ -107,12 +108,8 @@ public class Module extends DefUnit implements IScopeNode {
 		super(sourceRange, defSymbol, preComments);
 		defSymbol.module = this;
 		this.md = md;
-		this.members= members;
-		if (this.members != null) {
-			for (ASTNeoNode node : this.members) {
-				node.setParent(this);
-			}
-		}
+		this.members = members;
+		parentize(members);
 	}
 	
 	

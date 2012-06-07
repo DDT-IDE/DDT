@@ -8,7 +8,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.IFunctionParameter;
@@ -16,23 +15,24 @@ import dtool.ast.definitions.NativeDefUnit;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.util.ArrayView;
 
 /**
  * A delegate type;
  */
 public class TypeDelegate extends CommonRefNative {
-
+	
 	public final Reference rettype;
 	public final ArrayView<IFunctionParameter> params;
 	public final int varargs;
 	
-	public TypeDelegate(Reference rettype, IFunctionParameter[] params, int varargs, SourceRange sourceRange) {
+	public TypeDelegate(Reference rettype, ArrayView<IFunctionParameter> params, int varargs, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.rettype = rettype; parentize(this.rettype);
 		this.varargs = varargs;
-		this.params = ArrayView.create(params); parentizeI(this.params);
+		this.params = params; parentizeI(this.params);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -42,7 +42,7 @@ public class TypeDelegate extends CommonRefNative {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
@@ -52,8 +52,8 @@ public class TypeDelegate extends CommonRefNative {
 	@Override
 	public String toStringAsElement() {
 		return Reference.maybeNullReference(rettype).toStringAsElement() 
-		+ " delegate"  
-		+ DefinitionFunction.toStringParametersForSignature(params, varargs);
+				+ " delegate"  
+				+ DefinitionFunction.toStringParametersForSignature(params, varargs);
 	}
 	
 	public static class IntrinsicDelegate extends NativeDefUnit {
@@ -62,8 +62,8 @@ public class TypeDelegate extends CommonRefNative {
 		}
 		
 		public static final IntrinsicDelegate instance = new IntrinsicDelegate();
-
-
+		
+		
 		@Override
 		public IScopeNode getMembersScope() {
 			// TODO Auto-generated method stub

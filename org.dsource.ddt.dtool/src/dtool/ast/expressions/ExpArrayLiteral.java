@@ -3,15 +3,15 @@ package dtool.ast.expressions;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.ArrayView;
+import dtool.util.ArrayView;
 
 public class ExpArrayLiteral extends Expression {
 	
 	public final ArrayView<Resolvable> args;
 	
-	public ExpArrayLiteral(Resolvable[] args, SourceRange sourceRange) {
+	public ExpArrayLiteral(ArrayView<Resolvable> args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.args = ArrayView.create(args); parentize(this.args);
+		this.args = args; parentize(this.args);
 	}
 	
 	public ArrayView<Resolvable> getArgs() {
@@ -26,5 +26,5 @@ public class ExpArrayLiteral extends Expression {
 		}
 		visitor.endVisit(this);	 
 	}
-
+	
 }

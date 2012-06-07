@@ -21,7 +21,6 @@ import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
 import descent.internal.compiler.parser.STC;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
@@ -43,6 +42,7 @@ import dtool.ast.expressions.ExpCall;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
+import dtool.util.ArrayView;
 
 public final class DeeSourceElementProvider extends DeeSourceElementProvider_BaseVisitor {
 	
@@ -347,18 +347,18 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		if(defClass.getName().equals("Object"))
 			return DeeSourceElementProvider.EMPTY_STRING;
 		
-		BaseClass[] baseClasses = defClass.baseClasses;
-		if(baseClasses == null || baseClasses.length == 0) {
+		ArrayView<BaseClass> baseClasses = defClass.baseClasses;
+		if(baseClasses == null || baseClasses.size() == 0) {
 			if(isInterface) {
 				return DeeSourceElementProvider.EMPTY_STRING;
 			} else {
 				return DeeSourceElementProvider.OBJECT_SUPER_CLASS_LIST;
 			}
 		}
-		String[] baseClassesStr = new String[baseClasses.length];
-		for (int i = 0; i < baseClasses.length; i++) {
+		String[] baseClassesStr = new String[baseClasses.size()];
+		for (int i = 0; i < baseClasses.size(); i++) {
 			// There is no way this can work without a FQN, but I don't know what DLTK wants
-			baseClassesStr[i] = baseClasses[i].type.toStringAsElement(); 
+			baseClassesStr[i] = baseClasses.get(i).type.toStringAsElement(); 
 		}
 		return baseClassesStr;
 	}

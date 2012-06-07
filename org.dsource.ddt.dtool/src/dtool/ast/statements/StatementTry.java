@@ -12,6 +12,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.util.ArrayView;
 
 public class StatementTry extends Statement {
 	
@@ -53,10 +54,11 @@ public class StatementTry extends Statement {
 	}
 
 	public final IStatement body;
-	public final CatchClause[] params;
+	public final ArrayView<CatchClause> params;
 	public final IStatement finallybody;
 
-	public StatementTry(IStatement body, CatchClause[] params, IStatement finallyBody, SourceRange sourceRange) {
+	public StatementTry(IStatement body, ArrayView<CatchClause> params, IStatement finallyBody, 
+			SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.body = body; parentizeI(this.body);
 		this.params = params; parentize(this.params);

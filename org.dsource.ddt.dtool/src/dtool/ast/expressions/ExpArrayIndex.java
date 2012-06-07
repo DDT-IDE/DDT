@@ -3,17 +3,17 @@ package dtool.ast.expressions;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.ArrayView;
+import dtool.util.ArrayView;
 
 public class ExpArrayIndex extends Expression {
 	
 	public final Resolvable array;
 	public final ArrayView<Resolvable> args;
 	
-	public ExpArrayIndex(Resolvable array, Resolvable[] args, SourceRange sourceRange) {
+	public ExpArrayIndex(Resolvable array, ArrayView<Resolvable> args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.array = array; parentize(this.array);
-		this.args = ArrayView.create(args); parentize(this.args);
+		this.args = args; parentize(this.args);
 	}
 	
 	@Override

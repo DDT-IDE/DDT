@@ -1,6 +1,7 @@
 package dtool.ast.declarations;
 
-import java.util.Arrays;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
@@ -10,10 +11,11 @@ import dtool.ast.SourceRange;
 import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationAnonMember extends ASTNeoNode implements INonScopedBlock {
-
+	
 	public NodeList body;
-
+	
 	public DeclarationAnonMember(NodeList body, SourceRange sourceRange) {
+		assertNotNull(body);
 		initSourceRange(sourceRange);
 		this.body = body; parentize(this.body);
 	}
@@ -29,7 +31,7 @@ public class DeclarationAnonMember extends ASTNeoNode implements INonScopedBlock
 	
 	@Override
 	public Iterator<ASTNeoNode> getMembersIterator() {
-		return Arrays.asList(body.nodes).iterator();
+		return body.nodes.iterator();
 	}
-
+	
 }

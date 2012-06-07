@@ -14,6 +14,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.util.ArrayView;
 
 /**
  * Note, ATM only valid as a statement in the shorthand syntax for an eponymous template, like class(T) { ...
@@ -24,10 +25,11 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	public final ArrayView<ASTNeoNode> decls;
 	public final boolean wrapper;
 	
-	public DefinitionTemplate(DefUnitDataTuple dudt, PROT prot, ASTNeoNode[] decls, TemplateParameter[] params, boolean wrapper) {
+	public DefinitionTemplate(DefUnitDataTuple dudt, PROT prot, ArrayView<ASTNeoNode> decls,
+			ArrayView<TemplateParameter> params, boolean wrapper) {
 		super(dudt, prot);
-		this.templateParams = new ArrayView<TemplateParameter>(params); parentize(this.templateParams);
-		this.decls = new ArrayView<ASTNeoNode>(decls); parentize(this.decls);
+		this.templateParams = params; parentize(this.templateParams);
+		this.decls = decls; parentize(this.decls);
 		// Must define what it does!
 		// this.wrapper = this.templateParams.size() != 1;
 		this.wrapper = wrapper;

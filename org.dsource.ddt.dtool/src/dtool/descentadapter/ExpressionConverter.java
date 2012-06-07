@@ -26,8 +26,9 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.refmodel.IDefUnitReferenceNode;
+import dtool.util.ArrayView;
 
-public class ExpressionConverter  extends BaseDmdConverter {
+public class ExpressionConverter extends BaseDmdConverter {
 	
 	public static Expression convert(descent.internal.compiler.parser.Expression exp, 
 			ASTConversionContext convContext) {
@@ -44,15 +45,9 @@ public class ExpressionConverter  extends BaseDmdConverter {
 		return newExp;
 	}
 	
-	public static Expression[] convertMany(descent.internal.compiler.parser.Expression[] elements
+	public static ArrayView<Resolvable> convertMany(List<descent.internal.compiler.parser.Expression> elements
 			, ASTConversionContext convContext) {
-		return DescentASTConverter.convertMany(elements, Expression.class, convContext);
-	}
-	
-	public static Expression[] convertMany(List<descent.internal.compiler.parser.Expression> elements
-			, ASTConversionContext convContext) {
-		if(elements == null) return null;
-		return DescentASTConverter.convertMany(elements.toArray(), Expression.class, convContext);
+		return DescentASTConverter.convertMany(elements, Resolvable.class, convContext);
 	}
 	
 	/* ------------------------- */
@@ -60,21 +55,22 @@ public class ExpressionConverter  extends BaseDmdConverter {
 	public static ExpCall createExpCall(CallExp elem, ASTConversionContext convContext) {
 		SourceRange sourceRange = DefinitionConverter.sourceRange(elem);
 		Expression callee = ExpressionConverter.convert(elem.e1, convContext); 
-		Resolvable[] args = ExpressionConverter.convertMany(elem.arguments, convContext);
+		ArrayView<Resolvable> args = ExpressionConverter.convertMany(elem.arguments, convContext);
 		return new ExpCall(callee, args, sourceRange);
 	}
 	
 	public static ExpArrayLiteral createExpArrayLiteral(ArrayLiteralExp elem, ASTConversionContext convContext) {
 		
-		Resolvable[] args = ExpressionConverter.convertMany(elem.elements, convContext);
+		ArrayView<Resolvable> args = ExpressionConverter.convertMany(elem.elements, convContext);
 		
 		SourceRange sourceRange = DefinitionConverter.sourceRange(elem);
 		if(sourceRange == null && DToolBundle.DMDPARSER_PROBLEMS__BUG41) {
-			int last = args.length-1;
+			int last = args.size() - 1;
 			if(last >= 0) {
-				assertTrue(args[0].hasNoSourceRangeInfo() == false);
-				assertTrue(args[last].hasNoSourceRangeInfo() == false);
-				sourceRange = DefinitionConverter.sourceRangeStrict(args[0].getStartPos(), args[last].getEndPos());
+				assertTrue(args.get(0).hasNoSourceRangeInfo() == false);
+				assertTrue(args.get(last).hasNoSourceRangeInfo() == false);
+				sourceRange = DefinitionConverter.sourceRangeStrict(
+						args.get(0).getStartPos(), args.get(last).getEndPos());
 			} else {
 				// We're screwed, can't estimate a source range...
 			}

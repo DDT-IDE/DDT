@@ -7,21 +7,21 @@ import java.util.Iterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
+import dtool.util.ArrayView;
 
 public class ExpCall extends Expression {
 	
 	public final Expression callee;
 	public final ArrayView<Resolvable> args;
 	
-	public ExpCall(Expression callee, Resolvable[] args, SourceRange sourceRange) {
+	public ExpCall(Expression callee, ArrayView<Resolvable> args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.callee = callee; parentize(this.callee);
-		this.args = new ArrayView<Resolvable>(args); parentize(this.args);
+		this.args = args; parentize(this.args);
 	}
 	
 	@Override

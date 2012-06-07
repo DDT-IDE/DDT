@@ -16,15 +16,16 @@ import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
 public class TypeStaticArray extends CommonRefNative {
+	
 	public Reference elemtype;
 	public Resolvable sizeexp;
-
+	
 	public TypeStaticArray(Reference elemtype, Resolvable sizeexp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.elemtype = elemtype; parentize(this.elemtype);
 		this.sizeexp = sizeexp; parentize(this.sizeexp);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -34,7 +35,7 @@ public class TypeStaticArray extends CommonRefNative {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
 		return DefUnitSearch.wrapResult(IntrinsicStaticArray.instance);
@@ -44,7 +45,7 @@ public class TypeStaticArray extends CommonRefNative {
 	public String toStringAsElement() {
 		return elemtype.toStringAsElement() + "["+sizeexp.toStringAsElement()+"]";
 	}
-
+	
 	
 	public static class IntrinsicStaticArray extends NativeDefUnit {
 		public IntrinsicStaticArray() {
@@ -52,8 +53,8 @@ public class TypeStaticArray extends CommonRefNative {
 		}
 		
 		public static final IntrinsicStaticArray instance = new IntrinsicStaticArray();
-
-
+		
+		
 		@Override
 		public IScopeNode getMembersScope() {
 			// TODO Auto-generated method stub

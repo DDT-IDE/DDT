@@ -1,16 +1,16 @@
 package dtool.ast.declarations;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import descent.internal.compiler.parser.CompoundStatement;
 import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.Statement;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.statements.IStatement;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.util.ArrayView;
 
 /**
  * A helper class for AST nodes, 
@@ -18,50 +18,39 @@ import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
  */
 public class NodeList  {
 	
-	public final ASTNeoNode[] nodes;
+	public final ArrayView<ASTNeoNode> nodes;
 	public final boolean hasCurlies; // Accurate detection not implement yet
-
-	public NodeList(ASTNeoNode[] nodes, boolean hasCurlies) {
+	
+	public NodeList(ArrayView<ASTNeoNode> nodes, boolean hasCurlies) {
 		this.nodes = nodes;
 		this.hasCurlies = hasCurlies;
 	}
-
+	
+	public Iterator<ASTNeoNode> getNodeIterator() {
+		return nodes.iterator();
+	}
+	
 	public static NodeList createNodeList(Statement body, ASTConversionContext convContext) {
 		if(body == null)
 			return null;
 		if(body instanceof CompoundStatement) {
 			CompoundStatement cst = (CompoundStatement) body;
-			ASTNeoNode[] neoNodes = DescentASTConverter.convertMany(cst.sourceStatements, convContext);
-			return new NodeList(neoNodes, true);
+			return new NodeList(DescentASTConverter.convertMany(cst.sourceStatements, convContext), true);
 		} else {
-			ASTNeoNode[] neoNodes = new ASTNeoNode[] { DescentASTConverter.convertElem(body, convContext) };
-			return new NodeList(neoNodes, false);
+			return new NodeList(DescentASTConverter.convertMany(Collections.singleton(body), convContext), false);
 		}
 	}
-
+	
 	public static NodeList createNodeList(Collection<Dsymbol> decl, ASTConversionContext convContext) {
 		if(decl == null)
 			return null;
-		ASTNeoNode[] neoNodes = DescentASTConverter.convertMany(decl, convContext);
-		return new NodeList(neoNodes, false);
+		return new NodeList(DescentASTConverter.convertMany(decl, convContext), false);
 	}
 	
-	public static NodeList createNodeList(Collection<IStatement> decls, boolean hasCurlies) {
-		if (decls != null)
-			return new NodeList(decls.toArray(new ASTNeoNode[decls.size()]), hasCurlies);
-		
-		return null;
-	}
-	
-	public static ASTNeoNode[] getNodes(NodeList nodeList) {
+	public static ArrayView<ASTNeoNode> getNodes(NodeList nodeList) {
 		if(nodeList == null)
 			return null;
 		return nodeList.nodes;
 	}
-
-
-	public Iterator<ASTNeoNode> getNodeIterator() {
-		return Arrays.asList(nodes).iterator();
-	}
-
+	
 }
