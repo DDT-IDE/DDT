@@ -23,6 +23,7 @@ import descent.internal.compiler.parser.Version;
 import descent.internal.compiler.parser.VersionCondition;
 import descent.internal.compiler.parser.VersionSymbol;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.NodeArray;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
@@ -294,7 +295,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		assertTrue(imprt == null);
 		
 		boolean isTransitive = false; //isTransitive is adapted in post conversion;
-		return endAdapt(new DeclarationImport(imports, elem.isstatic, isTransitive, DefinitionConverter.sourceRange(elem)));
+		return endAdapt(new DeclarationImport(
+				NodeArray.create(imports), elem.isstatic, isTransitive, DefinitionConverter.sourceRange(elem)
+				)
+		);
 	}
 	
 	@Override
@@ -360,7 +364,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		if (stmt instanceof BlockStatement) {
 			return endAdapt(new DeclarationUnitTest((BlockStatement) stmt, DefinitionConverter.sourceRange(elem)));
 		} else {
-			IStatement[] stmts = new IStatement[] { stmt };
+			// Syntax errors
+			IStatement[] stmts = (stmt == null) ? new IStatement[0] : new IStatement[] { stmt };
 			return endAdapt(
 				new DeclarationUnitTest(
 					new BlockStatement(stmts, false, DefinitionConverter.sourceRange(elem)),
@@ -524,7 +529,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
 			)
 		);
-	}	
+	}
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.UnionDeclaration elem) {
