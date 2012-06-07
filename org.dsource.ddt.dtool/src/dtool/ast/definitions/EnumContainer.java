@@ -6,12 +6,12 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
+import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 import dtool.util.ArrayView;
 
-public class EnumContainer extends ASTNeoNode implements IDeclaration, INonScopedBlock {
+public class EnumContainer extends ASTNeoNode implements IStatement, INonScopedBlock {
 	
 	public final ArrayView<EnumMember> members;
 	public final Reference type;

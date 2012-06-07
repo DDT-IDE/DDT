@@ -11,7 +11,7 @@ import dtool.ast.definitions.Symbol;
  *	version = someident;
  *  debug = someident;   
  */
-public class DeclarationConditionalDefinition extends ASTNeoNode implements IDeclaration {
+public class DeclarationConditionalDefinition extends ASTNeoNode {
 
 	public interface Type {
 		int DEBUG = 9;

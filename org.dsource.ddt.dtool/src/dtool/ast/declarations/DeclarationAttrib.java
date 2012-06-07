@@ -9,7 +9,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.refmodel.INonScopedBlock;
 
-public abstract class DeclarationAttrib extends ASTNeoNode implements INonScopedBlock, IDeclaration {
+public abstract class DeclarationAttrib extends ASTNeoNode implements INonScopedBlock {
 	
 	public final NodeList body;
 	

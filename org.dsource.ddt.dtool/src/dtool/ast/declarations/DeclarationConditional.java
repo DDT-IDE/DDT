@@ -9,7 +9,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public abstract class DeclarationConditional extends ASTNeoNode implements IDeclaration, IStatement, INonScopedBlock {
+public abstract class DeclarationConditional extends ASTNeoNode implements IStatement, INonScopedBlock {
 	
 	public final NodeList thendecls;
 	public final NodeList elsedecls;
