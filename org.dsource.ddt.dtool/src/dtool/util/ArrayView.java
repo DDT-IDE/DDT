@@ -10,18 +10,12 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 
-import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.IASTNeoNode;
 
 /**
  * A simple immutable array collection (RandomAccess, Iterable). 
  */
 public class ArrayView<E> implements Iterable<E>, RandomAccess, Collection<E> {
-	
-	@SuppressWarnings("unchecked")
-	public static <T extends IASTNeoNode> ArrayView<T> createFrom(T[] arr){
-		return (ArrayView<T>) create(arr == null ? ArrayUtil.EMPTY_ARRAY : arr);
-	}
 	
 	public static <T> ArrayView<T> create(T[] arr){
 		return new ArrayView<T>(arr);

@@ -254,21 +254,24 @@ public class DefinitionConverter extends BaseDmdConverter {
 		}
 	}
 	
-	
 	public static DefinitionCtor createDefinitionCtor(CtorDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR, 
-			DescentASTConverter.convertMany(elem.arguments, IFunctionParameter.class, convContext),
+			nullToEmpty(DescentASTConverter.convertMany(elem.arguments, IFunctionParameter.class, convContext)),
 			convertVarArgs(elem.varargs),
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)
 		);
 	}
 	
+	protected static ArrayView<IFunctionParameter> nullToEmpty(ArrayView<IFunctionParameter> arrayView) {
+		return arrayView != null ? arrayView : ArrayView.create(new IFunctionParameter[0]);
+	}
+	
 	public static DefinitionCtor createDefinitionCtor(DtorDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.DESTRUCTOR, 
-			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
+			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
 			0,
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart - 1, DefinitionConverter.sourceRange(elem)
@@ -278,7 +281,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(StaticCtorDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR,
-			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
+			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
 			0,
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)
@@ -288,7 +291,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(StaticDtorDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.DESTRUCTOR,
-			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
+			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
 			0,
 			Statement.convert(elem.fbody, convContext),
 			elem.thisStart - 1, DefinitionConverter.sourceRange(elem)
@@ -298,7 +301,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(NewDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.ALLOCATOR,
-			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
+			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
 			convertVarArgs(elem.varargs),
 			Statement.convert(elem.fbody, convContext),
 			elem.newStart, DefinitionConverter.sourceRange(elem)
@@ -308,7 +311,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(DeleteDeclaration elem, ASTConversionContext convContext) {
 		return new DefinitionCtor(
 			DefinitionCtor.SpecialFunctionKind.DEALLOCATOR,
-			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
+			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
 			0,
 			Statement.convert(elem.fbody, convContext),
 			elem.deleteStart, DefinitionConverter.sourceRange(elem)

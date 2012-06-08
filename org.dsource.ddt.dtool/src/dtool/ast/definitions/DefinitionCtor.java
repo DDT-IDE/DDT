@@ -1,5 +1,7 @@
 package dtool.ast.definitions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,6 +40,7 @@ public class DefinitionCtor extends ASTNeoNode implements IScopeNode, ICallableE
 		initSourceRange(sourceRange);	
 		this.kind = kind;
 		this.params = params; parentizeI(this.params);
+		assertNotNull(this.params);
 		this.varargs = varargs;
 		this.fbody = fbody; parentizeI(this.fbody);
 		this.nameStart = thisStart;
