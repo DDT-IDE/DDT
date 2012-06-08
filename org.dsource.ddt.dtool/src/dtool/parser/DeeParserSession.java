@@ -1,4 +1,4 @@
-package dtool;
+package dtool.parser;
 
 import descent.internal.compiler.parser.Parser;
 import descent.internal.compiler.parser.Token;
@@ -6,14 +6,13 @@ import descent.internal.compiler.parser.ast.IASTNode;
 import descent.internal.compiler.parser.ast.IProblemReporter;
 import dtool.ast.definitions.Module;
 import dtool.descentadapter.DescentASTConverter;
-import dtool.refmodel.ParserAdapter;
 
 public class DeeParserSession {
 	
 	public static DeeParserSession parseSource(String moduleName, String source, int langVersion,
 			IProblemReporter problemReporter) {
 		DeeParserSession deeParserSession = new DeeParserSession(moduleName);
-		deeParserSession.parserAdapter = ParserAdapter.parseSource(source, langVersion, problemReporter);
+		deeParserSession.parserAdapter = DescentParserAdapter.parseSource(source, langVersion, problemReporter);
 		deeParserSession.neoModule = DescentASTConverter.convertModule(deeParserSession.parserAdapter.mod, moduleName);
 		return deeParserSession;
 	}
@@ -21,7 +20,7 @@ public class DeeParserSession {
 	public static DeeParserSession parseWithRecovery(String moduleName, String source, int langVersion,
 			final int offset, Token lastTokenNonWS) {
 		DeeParserSession parseSession = new DeeParserSession(moduleName);
-		parseSession.parserAdapter = ParserAdapter.parseSource(source, langVersion, null);
+		parseSession.parserAdapter = DescentParserAdapter.parseSource(source, langVersion, null);
 		parseSession.parserAdapter.recoverForCompletion(source, offset, lastTokenNonWS);
 		parseSession.neoModule = DescentASTConverter.convertModule(parseSession.parserAdapter.mod, moduleName);
 		return parseSession;
@@ -32,7 +31,7 @@ public class DeeParserSession {
 	}
 	
 	protected final String moduleName;
-	protected ParserAdapter parserAdapter;
+	protected DescentParserAdapter parserAdapter;
 	public Module neoModule;
 	
 	public DeeParserSession(String moduleName) {

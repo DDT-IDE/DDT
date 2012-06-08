@@ -13,7 +13,6 @@ import melnorme.utilbox.misc.ArrayUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
 
-import dtool.DeeParserSession;
 import dtool.ast.ASTChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;

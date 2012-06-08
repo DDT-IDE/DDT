@@ -1,7 +1,6 @@
 package dtool.parser;
 
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.DeeParserSession;
 import dtool.ast.ASTChecker;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;

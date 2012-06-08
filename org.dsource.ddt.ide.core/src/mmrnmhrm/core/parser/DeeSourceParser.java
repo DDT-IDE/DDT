@@ -8,7 +8,7 @@ import org.eclipse.dltk.core.IModelElement;
 
 import descent.core.compiler.IProblem;
 import dtool.DeeNamingRules;
-import dtool.DeeParserSession;
+import dtool.parser.DeeParserSession;
 
 public class DeeSourceParser extends AbstractSourceParser {
 	

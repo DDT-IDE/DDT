@@ -14,7 +14,6 @@ import descent.internal.compiler.parser.TOK;
 import descent.internal.compiler.parser.Token;
 import descent.internal.compiler.parser.ast.TokenUtil;
 import dtool.DeeNamingRules;
-import dtool.DeeParserSession;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -29,6 +28,8 @@ import dtool.ast.references.RefModule;
 import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
+import dtool.parser.DeeParserSession;
+import dtool.parser.DescentParserAdapter;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
@@ -92,7 +93,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		assertTrue(session.errorMsg == null);
 		session.resultCode = ECompletionSessionResults.RESULT_OK;
 		
-		Token tokenList = ParserAdapter.tokenizeSource(source);
+		Token tokenList = DescentParserAdapter.tokenizeSource(source);
 		
 		Token lastTokenNonWS = null;
 		Token lastToken = null;

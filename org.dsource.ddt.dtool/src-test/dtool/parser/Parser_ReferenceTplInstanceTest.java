@@ -4,7 +4,6 @@ package dtool.parser;
 import org.junit.Test;
 
 import dtool.DToolBundle;
-import dtool.DeeParserSession;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.MixinContainer;
 import dtool.ast.definitions.NamedMixin;
