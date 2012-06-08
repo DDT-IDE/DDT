@@ -9,10 +9,12 @@ import java.util.Set;
 
 import org.eclipse.dltk.core.ISourceModule;
 
+import descent.internal.compiler.parser.Parser;
 import descent.internal.compiler.parser.TOK;
 import descent.internal.compiler.parser.Token;
 import descent.internal.compiler.parser.ast.TokenUtil;
 import dtool.DeeNamingRules;
+import dtool.DeeParserSession;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -27,7 +29,6 @@ import dtool.ast.references.RefModule;
 import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
-import dtool.descentadapter.DescentASTConverter;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
@@ -118,11 +119,11 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		}
 		
 		// : Parse source and do syntax error recovery
-		ParserAdapter parserAdapter = ParserAdapter.parseSource(source);
-		parserAdapter.recoverForCompletion(source, offset, lastTokenNonWS);
-		
 		String moduleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
-		Module neoModule = DescentASTConverter.convertModule(parserAdapter.mod, moduleName);
+		DeeParserSession parseSession = DeeParserSession.parseWithRecovery(moduleName, source, Parser.D2, offset,
+				lastTokenNonWS);
+		
+		Module neoModule = parseSession.getParsedModule(); 
 		neoModule.setModuleUnit(moduleUnit);
 		
 		/* ============================================== */
@@ -143,12 +144,12 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			
 			if(node instanceof RefIdentifier) {
 				RefIdentifier refIdent = (RefIdentifier) node;
-				if(!parserAdapter.isQualifiedDotFixSearch) {
+				if(!parseSession.isQualifiedDotFix()) {
 					setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), refIdent.name);
 				}
 			} else if(node instanceof CommonRefQualified) {
 				//CommonRefQualified refQual = (CommonRefQualified) node;
-				assertTrue(!parserAdapter.isQualifiedDotFixSearch);
+				assertTrue(!parseSession.isQualifiedDotFix());
 				
 				if(lastTokenNonWS.value != TOK.TOKdot) {
 					CompletionSession.assignResult(session, ECompletionSessionResults.WEIRD_LOCATION_REFQUAL, 
@@ -162,7 +163,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 				
 				// We need to get exact source cause it may contains spaces, even comments
 				String refModCanonicalName = refMod.toStringAsElement();
-				if(parserAdapter.isQualifiedDotFixSearch) {
+				if(parseSession.isQualifiedDotFix()) {
 					refModCanonicalName = refModCanonicalName.substring(0, refModCanonicalName.length() - 1);
 					refModEndPos = refModEndPos - 1;
 				}
@@ -220,7 +221,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		assertTrue(session.errorMsg == null);
 		return search;
 	}
-	
+
 	private static boolean isInsideNonScopeBlock(ASTNeoNode node, int offset, String sourceStr) {
 		if(!(node instanceof INonScopedBlock)) {
 			return false;

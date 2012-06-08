@@ -4,6 +4,7 @@ package dtool.parser;
 import org.junit.Test;
 
 import dtool.DToolBundle;
+import dtool.DeeParserSession;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.MixinContainer;
 import dtool.ast.definitions.NamedMixin;
@@ -52,7 +53,7 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 		if(fragmentDesc == RefFragmentDesc.TYPE) 
 			return; // Not applicable
 		
-		ParseResult parseResult = parseCode(
+		DeeParserSession parseResult = parseCode(
 			"mixin "+refCodeFragment+";" +
 			"mixin "+refCodeFragment+" myMixin; " +
 			wrapFunction("mixin "+refCodeFragment+";") +
@@ -65,7 +66,7 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 		}
 	}
 	
-	protected void checkCommonMixinsTest(String refCodeFragment, ParseResult parseResult) {
+	protected void checkCommonMixinsTest(String refCodeFragment, DeeParserSession parseResult) {
 		MixinContainer mixin = downCast(parseResult.getChild(0));
 		DefinitionFunction fn = downCast(parseResult.getChild(0+2));
 		checkReference(mixin.type, refCodeFragment);
@@ -75,7 +76,7 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 		checkNamedMixin(refCodeFragment, parseResult);
 	}
 	
-	protected void checkNamedMixin(String refCodeFragment, ParseResult parseResult) {
+	protected void checkNamedMixin(String refCodeFragment, DeeParserSession parseResult) {
 		NamedMixin namedMixin = downCast(parseResult.getChild(1));
 		DefinitionFunction fn = downCast(parseResult.getChild(1+2));
 		checkReference(namedMixin.type, refCodeFragment);
@@ -146,8 +147,8 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 			}
 			
 			@Override
-			protected ParseResult parseCode(String testCode, Boolean expectedSyntaxErrors) {
-				ParseResult parseResult = super.parseCode(testCode, DONT_CHECK_ERRORS);
+			protected DeeParserSession parseCode(String testCode, Boolean expectedSyntaxErrors) {
+				DeeParserSession parseResult = super.parseCode(testCode, DONT_CHECK_ERRORS);
 				if(parseResult.hasSyntaxErrors()){
 					// We don't know if the resulting fragment is valid or not, so just take the word of the parser
 					fragmentDesc = RefFragmentDesc.INVALIDSYNTAX;

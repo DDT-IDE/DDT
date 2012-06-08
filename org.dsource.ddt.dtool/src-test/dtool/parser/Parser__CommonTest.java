@@ -13,16 +13,13 @@ import melnorme.utilbox.misc.ArrayUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
 
-import descent.internal.compiler.parser.ast.IASTNode;
-import descent.internal.compiler.parser.ast.NaiveASTFlattener;
+import dtool.DeeParserSession;
 import dtool.ast.ASTChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
-import dtool.descentadapter.DescentASTConverter;
-import dtool.refmodel.ParserAdapter;
 import dtool.tests.DToolBaseTest;
 
 public abstract class Parser__CommonTest extends DToolBaseTest {
@@ -51,37 +48,16 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		return testParseDo(source, expectErrors, checkAST).neoModule;
 	}
 	
-	public static class ParseResult {
-		public descent.internal.compiler.parser.Module mod;
+	public static DeeParserSession testParseDo(String source, Boolean expectErrors, boolean checkAST) {
+		DeeParserSession parseResult = DeeParserSession.parseSource(source, "_tests_unnamed_");
 		
-		public Module neoModule;
-
-		public boolean hasSyntaxErrors() {
-			return mod.problems.size() != 0;
-		}
-
-		public IASTNode getChild(int ix) {
-			 return neoModule.getChildren()[ix];
-		}
-		
-	}
-	
-	public static ParseResult testParseDo(String source, Boolean expectErrors, boolean checkAST) {
-		ParseResult parseResult = new ParseResult();
-		parseResult.mod = ParserAdapter.parseSource(source).mod;
-		if(checkAST) {
-			parseResult.mod.accept(new NaiveASTFlattener()); // Test NaiveASTFlattener
-		}
 		if(expectErrors != null) {
-			assertTrue((parseResult.mod.problems.size() > 0) == expectErrors, "expectedErrors is not: " + expectErrors);
+			assertTrue((parseResult.hasSyntaxErrors()) == expectErrors, "expectedErrors is not: " + expectErrors);
 		}
-		
-		Module neoModule = DescentASTConverter.convertModule(parseResult.mod, "_tests_unnamed_");
-		if(checkAST && parseResult.mod.problems.size() == 0) {
-			// We rarely get good source ranges with size == 0; 
-			ASTChecker.checkConsistency(neoModule);
+		if(checkAST && !parseResult.hasSyntaxErrors()) {
+			// We rarely get good source ranges with syntax errors; 
+			ASTChecker.checkConsistency(parseResult.neoModule);
 		}
-		parseResult.neoModule = neoModule;
 		return parseResult;
 	}
 	

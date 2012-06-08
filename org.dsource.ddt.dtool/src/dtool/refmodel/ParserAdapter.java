@@ -14,10 +14,6 @@ import descent.internal.compiler.parser.ast.IProblemReporter;
  */
 public class ParserAdapter {
 	
-	public static ParserAdapter parseSource(String str) {
-		return parseSource(str, Parser.D2, null);
-	}
-	
 	public static ParserAdapter parseSource(String source, int apiLevel, IProblemReporter problemReporter) {
 		Parser newparser = new Parser(apiLevel, source);
 		newparser.setProblemReporter(problemReporter);
@@ -34,7 +30,7 @@ public class ParserAdapter {
 	protected String error = null;
 	/** Whether a qualified dot fix was performed. 
 	 * If it was, then a non-prefixed search should be made. */
-	protected boolean isQualifiedDotFixSearch = false;
+	public boolean isQualifiedDotFix = false;
 	
 	public ParserAdapter(Parser parser) {
 		this.parser = parser;
@@ -81,7 +77,7 @@ public class ParserAdapter {
 				String newstr = str.substring(0, offset) + "_" + str.substring(offset, str.length());
 				
 				// Mark this for ahead
-				isQualifiedDotFixSearch = true;
+				isQualifiedDotFix = true;
 				
 				parseModule(newstr);
 				

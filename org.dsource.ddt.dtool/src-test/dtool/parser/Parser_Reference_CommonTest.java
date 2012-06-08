@@ -1,6 +1,7 @@
 package dtool.parser;
 
 import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.DeeParserSession;
 import dtool.ast.ASTChecker;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
@@ -60,17 +61,17 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 	}
 	
 	
-	protected final ParseResult parseCode(String testCode) {
+	protected final DeeParserSession parseCode(String testCode) {
 		return parseCode(testCode, fragmentDesc);
 	}
 
-	protected final ParseResult parseCode(String testCode, RefFragmentDesc fragmentDesc) {
+	protected final DeeParserSession parseCode(String testCode, RefFragmentDesc fragmentDesc) {
 		// If source has errors, don't expect it
 		Boolean expectedErrors = (fragmentDesc.isInvalidSyntax()) ? null : false;
 		return parseCode(testCode, expectedErrors);
 	}
 	
-	protected ParseResult parseCode(String testCode, Boolean expectedErrors) {
+	protected DeeParserSession parseCode(String testCode, Boolean expectedErrors) {
 		return testParseDo(testCode, expectedErrors, true);
 	}
 	
@@ -93,31 +94,31 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 	}
 	
 	protected void testCaseA(final String refCodeFragment) {
-		ParseResult parseResult = parseCode(refCodeFragment+" myvar;");
+		DeeParserSession parseResult = parseCode(refCodeFragment+" myvar;");
 		if(!fragmentDesc.isInvalidSyntax()) {
 			checkTestA(refCodeFragment, parseResult.getChild(0));
 		}
 	}
 	protected void testCaseAF(final String refCodeFragment) {
-		ParseResult parseResult = parseCode(wrapFunction(refCodeFragment+" myvar;"));
+		DeeParserSession parseResult = parseCode(wrapFunction(refCodeFragment+" myvar;"));
 		if(!fragmentDesc.isInvalidSyntax()) {
 			checkTestAF(refCodeFragment, parseResult.getChild(0));
 		}
 	}
 	protected void testCaseExp(final String refCodeFragment) {
-		ParseResult parseResult = parseCode("auto dummy = "+refCodeFragment+" * 2; ");
+		DeeParserSession parseResult = parseCode("auto dummy = "+refCodeFragment+" * 2; ");
 		if(!fragmentDesc.isInvalidSyntax()) {
 			checkTestExp(refCodeFragment, parseResult.getChild(0));
 		}
 	}
 	protected void testCaseFnParam(final String refCodeFragment) {
-		ParseResult parseResult = parseCode("void func("+refCodeFragment+" asParameter) {  }");
+		DeeParserSession parseResult = parseCode("void func("+refCodeFragment+" asParameter) {  }");
 		if(!fragmentDesc.isInvalidSyntax()) {
 			checkTestFnParam(refCodeFragment, parseResult.getChild(0));
 		}
 	}
 	protected void testCaseFnParam2(final String refCodeFragment) {
-		ParseResult parseResult = parseCode("void func("+refCodeFragment+") {  }");
+		DeeParserSession parseResult = parseCode("void func("+refCodeFragment+") {  }");
 		if(!fragmentDesc.isInvalidSyntax()) {
 			checkTestFnParam2(refCodeFragment, parseResult.getChild(0));
 		}
@@ -136,10 +137,9 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 		return "void func() { " + string + " } ";
 	}
 	
-	private final ParseResult parseCodeWithFnWrap(String testCode, Boolean expectedErrors) {
+	private final DeeParserSession parseCodeWithFnWrap(String testCode, Boolean expectedErrors) {
 		parseCode(wrapFunction(testCode), expectedErrors);
-		ParseResult module = parseCode(testCode, expectedErrors);
-		return module;
+		return parseCode(testCode, expectedErrors);
 	}
 	
 	protected void checkReference(Reference ref, String nodeCode) {
@@ -191,13 +191,13 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 			"void func("+refCodeFragment+") {  }" +
 			""
 		;
-		ParseResult parseResult = parseCode(commonTestAggregateString);
+		DeeParserSession parseResult = parseCode(commonTestAggregateString);
 		if(fragmentDesc != RefFragmentDesc.INVALIDSYNTAX) {
 			checkAggregate(refCodeFragment, parseResult);
 		}
 	}
 	
-	protected void checkAggregate(final String refCodeFragment, ParseResult parseResult) {
+	protected void checkAggregate(final String refCodeFragment, DeeParserSession parseResult) {
 		checkTestA(refCodeFragment, parseResult.getChild(0));
 		checkTestAF(refCodeFragment, parseResult.getChild(1));
 		checkTestExp(refCodeFragment, parseResult.getChild(2));
