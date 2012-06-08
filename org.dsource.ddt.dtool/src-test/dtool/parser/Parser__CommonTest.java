@@ -43,12 +43,12 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		return testParse(source, true, false);
 	}
 	
-	public static Module testParse(String source, Boolean expectedErrors) {
-		return testParse(source, expectedErrors, true);
+	public static Module testParse(String source, Boolean expectErrors) {
+		return testParse(source, expectErrors, true);
 	}
 	
-	public static Module testParse(String source, Boolean expectedErrors, boolean checkAST) {
-		return testParseDo(source, expectedErrors, checkAST).neoModule;
+	public static Module testParse(String source, Boolean expectErrors, boolean checkAST) {
+		return testParseDo(source, expectErrors, checkAST).neoModule;
 	}
 	
 	public static class ParseResult {
@@ -66,14 +66,14 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		
 	}
 	
-	public static ParseResult testParseDo(String source, Boolean expectedErrors, boolean checkAST) {
+	public static ParseResult testParseDo(String source, Boolean expectErrors, boolean checkAST) {
 		ParseResult parseResult = new ParseResult();
 		parseResult.mod = ParserAdapter.parseSource(source).mod;
 		if(checkAST) {
 			parseResult.mod.accept(new NaiveASTFlattener()); // Test NaiveASTFlattener
 		}
-		if(expectedErrors != null) {
-			assertTrue((parseResult.mod.problems.size() > 0) == expectedErrors, "expectedErrors is not: " + expectedErrors);
+		if(expectErrors != null) {
+			assertTrue((parseResult.mod.problems.size() > 0) == expectErrors, "expectedErrors is not: " + expectErrors);
 		}
 		
 		Module neoModule = DescentASTConverter.convertModule(parseResult.mod, "_tests_unnamed_");
