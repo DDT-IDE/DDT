@@ -14,7 +14,7 @@ public class InitializerStruct extends Initializer {
 	public InitializerStruct(ArrayView<RefIdentifier> indexes, ArrayView<Initializer> values, 
 			SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.indexes = indexes; parentize(this.indexes);
+		this.indexes = indexes; parentize(this.indexes, true);
 		this.values = values; parentize(this.values);
 	}
 	
