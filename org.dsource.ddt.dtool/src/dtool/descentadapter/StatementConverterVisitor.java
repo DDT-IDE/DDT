@@ -168,8 +168,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(ContinueStatement element) {
 		return endAdapt(
 			new StatementContinue(
-				//element.ident == null ? null : DefinitionConverter.convertId(element.ident), 
-				DefinitionConverter.convertId(element.ident), // BUG HERE (temporary)
+				element.ident == null ? null : DefinitionConverter.convertId(element.ident), 
 				DefinitionConverter.sourceRange(element)
 			)
 		);

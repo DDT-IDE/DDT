@@ -30,7 +30,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 	protected static final String TESTFILESDIR = "parser/";
 	
 	public static Module parseTestFile(String filename) throws CoreException, IOException {
-		return testDtoolParse(readTestResourceFile(TESTFILESDIR+filename));
+		return testDtoolParse(readTestResourceFile(TESTFILESDIR + filename));
 	}
 	
 	public static final String COMMON = "common/";
