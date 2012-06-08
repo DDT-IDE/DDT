@@ -12,7 +12,7 @@ public class InitializerExp extends Initializer {
 		initSourceRange(sourceRange);
 		this.exp = exp; parentize(this.exp);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -21,5 +21,5 @@ public class InitializerExp extends Initializer {
 		}
 		visitor.endVisit(this);	 
 	}
-
+	
 }

@@ -32,6 +32,7 @@ import descent.internal.compiler.parser.DivAssignExp;
 import descent.internal.compiler.parser.DivExp;
 import descent.internal.compiler.parser.DollarExp;
 import descent.internal.compiler.parser.EqualExp;
+import descent.internal.compiler.parser.ErrorExp;
 import descent.internal.compiler.parser.ExpInitializer;
 import descent.internal.compiler.parser.FileExp;
 import descent.internal.compiler.parser.FileInitExp;
@@ -214,7 +215,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		return endAdapt(
 			new InitializerExp(
 				ExpressionConverter.convert(element.exp, convContext),
-				DefinitionConverter.sourceRange(element)
+				DefinitionConverter.sourceRange(element, !(element.exp instanceof ErrorExp))
 			)
 		);
 	}
@@ -364,18 +365,18 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(IntegerExp element) {
-		if (((TypeBasic) element.type).ty == TY.Tbool)
+		if (((TypeBasic) element.type).ty == TY.Tbool) {
 			return endAdapt(
 				new ExpLiteralBool(
 					element.value.intValue() != 0,
 					DefinitionConverter.sourceRange(element)
 				)
 			);
-		else {
+		} else {
 			return endAdapt(
 				new ExpLiteralInteger(
 					element.value != null ? element.value.bigIntegerValue() : null,
-					DefinitionConverter.sourceRange(element)
+					DefinitionConverter.sourceRange(element, !(element instanceof ErrorExp))
 				)
 			);
 		}
