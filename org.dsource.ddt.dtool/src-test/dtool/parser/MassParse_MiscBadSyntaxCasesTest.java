@@ -13,14 +13,13 @@ import dtool.ast.ASTChecker;
 import dtool.tests.DToolTestResources;
 
 @RunWith(Parameterized.class)
-public class MassParse_MiscBadSyntaxCasesTest extends MassParse__CommonTest {
+public class MassParse_MiscBadSyntaxCasesTest extends Parser__FileParseTest {
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		File scanDir = new File(DToolTestResources.getInstance().getResourcesDir(), COMMON + "miscCasesInvalidSyntax");
-		return getParseFileParameterList(scanDir);
+		File scanDir = DToolTestResources.getTestResource(COMMON + "miscCasesInvalidSyntax");
+		return getTestFilesFromFolderAsParameterList(scanDir);
 	}
-	
 	
 	public MassParse_MiscBadSyntaxCasesTest(File file) {
 		super(file);
@@ -31,7 +30,7 @@ public class MassParse_MiscBadSyntaxCasesTest extends MassParse__CommonTest {
 	public void testParseFile() throws IOException {
 		parseFileWithSyntaxErrors();
 	}
-
+	
 	private void parseFileWithSyntaxErrors() {
 		String source = readStringFromFileUnchecked(file);
 		dtool.ast.definitions.Module neoModule = testParseInvalidSyntax(source);

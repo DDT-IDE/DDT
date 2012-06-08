@@ -12,13 +12,12 @@ import org.junit.runners.Parameterized.Parameters;
 import dtool.tests.DToolTestResources;
 
 @RunWith(Parameterized.class)
-public class MassParse_MiscUnsupportedSyntaxCasesTest extends MassParse__CommonTest {
+public class MassParse_MiscUnsupportedSyntaxCasesTest extends Parser__FileParseTest {
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		File resourcesDir = DToolTestResources.getInstance().getResourcesDir();
-		File scanDir = new File(resourcesDir, COMMON + "miscCasesUnsupportedSyntax");
-		return getParseFileParameterList(scanDir);
+		File scanDir = DToolTestResources.getTestResource(COMMON + "miscCasesUnsupportedSyntax");
+		return getTestFilesFromFolderAsParameterList(scanDir);
 	}
 	
 	public MassParse_MiscUnsupportedSyntaxCasesTest(File file) {

@@ -13,7 +13,7 @@ public class MassParse_PhobosOldTest extends MassParse__CommonTest {
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		return getParseFileParameterList(getCommonResource(TESTSRC_PHOBOS1_OLD));
+		return getTestFilesFromFolderAsParameterList(getCommonResource(TESTSRC_PHOBOS1_OLD));
 	}
 	
 	public MassParse_PhobosOldTest(File file) {

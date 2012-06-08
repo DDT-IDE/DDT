@@ -13,7 +13,7 @@ public class MassParse_DruntimePhobos2Test extends MassParse__CommonTest {
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		return getParseFileParameterList(getCommonResource(TESTSRC_DRUNTIME_PHOBOS2));
+		return getTestFilesFromFolderAsParameterList(getCommonResource(TESTSRC_DRUNTIME_PHOBOS2));
 	}
 	
 	public MassParse_DruntimePhobos2Test(File file) {

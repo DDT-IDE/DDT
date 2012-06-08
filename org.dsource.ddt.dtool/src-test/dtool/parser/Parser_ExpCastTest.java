@@ -42,7 +42,7 @@ public class Parser_ExpCastTest extends Parser__CommonTest {
 		
 	}
 	
-	private ExpCast getExpCastFromInit(ASTNeoNode defVariableNode) {
+	protected ExpCast getExpCastFromInit(ASTNeoNode defVariableNode) {
 		DefinitionVariable defVariable = downCast(defVariableNode);
 		return downCast(downCast(defVariable.init, InitializerExp.class).exp, ExpCast.class);
 	}

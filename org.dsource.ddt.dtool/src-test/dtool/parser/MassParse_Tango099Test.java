@@ -14,7 +14,7 @@ public class MassParse_Tango099Test extends MassParse__CommonTest {
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		return getParseFileParameterList(getCommonResource(TESTSRC_TANGO_0_99));
+		return getTestFilesFromFolderAsParameterList(getCommonResource(TESTSRC_TANGO_0_99));
 	}
 	
 	public MassParse_Tango099Test(File file) {

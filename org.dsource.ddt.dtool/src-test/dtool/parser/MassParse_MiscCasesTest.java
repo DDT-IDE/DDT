@@ -12,12 +12,12 @@ import org.junit.runners.Parameterized.Parameters;
 import dtool.tests.DToolTestResources;
 
 @RunWith(Parameterized.class)
-public class MassParse_MiscCasesTest extends MassParse__CommonTest {
+public class MassParse_MiscCasesTest extends Parser__FileParseTest {
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		File scanDir = new File(DToolTestResources.getInstance().getResourcesDir(), COMMON + "miscCases");
-		return getParseFileParameterList(scanDir);
+		File scanFolder = DToolTestResources.getTestResource(COMMON + "miscCases");
+		return getTestFilesFromFolderAsParameterList(scanFolder);
 	}
 	
 	public MassParse_MiscCasesTest(File file) {
