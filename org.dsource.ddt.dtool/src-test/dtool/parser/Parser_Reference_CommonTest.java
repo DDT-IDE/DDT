@@ -5,6 +5,7 @@ import dtool.ast.ASTChecker;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
+import dtool.ast.definitions.Module;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.InfixExpression;
@@ -93,33 +94,33 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 	}
 	
 	protected void testCaseA(final String refCodeFragment) {
-		DeeParserSession parseResult = parseCode(refCodeFragment+" myvar;");
+		Module module = parseCode(refCodeFragment+" myvar;").getParsedModule();
 		if(!fragmentDesc.isInvalidSyntax()) {
-			checkTestA(refCodeFragment, parseResult.getChild(0));
+			checkTestA(refCodeFragment, module.getChildren()[0]);
 		}
 	}
 	protected void testCaseAF(final String refCodeFragment) {
-		DeeParserSession parseResult = parseCode(wrapFunction(refCodeFragment+" myvar;"));
+		Module module = parseCode(wrapFunction(refCodeFragment+" myvar;")).getParsedModule();
 		if(!fragmentDesc.isInvalidSyntax()) {
-			checkTestAF(refCodeFragment, parseResult.getChild(0));
+			checkTestAF(refCodeFragment, module.getChildren()[0]);
 		}
 	}
 	protected void testCaseExp(final String refCodeFragment) {
-		DeeParserSession parseResult = parseCode("auto dummy = "+refCodeFragment+" * 2; ");
+		Module module = parseCode("auto dummy = "+refCodeFragment+" * 2; ").getParsedModule();
 		if(!fragmentDesc.isInvalidSyntax()) {
-			checkTestExp(refCodeFragment, parseResult.getChild(0));
+			checkTestExp(refCodeFragment, module.getChildren()[0]);
 		}
 	}
 	protected void testCaseFnParam(final String refCodeFragment) {
-		DeeParserSession parseResult = parseCode("void func("+refCodeFragment+" asParameter) {  }");
+		Module module = parseCode("void func("+refCodeFragment+" asParameter) {  }").getParsedModule();
 		if(!fragmentDesc.isInvalidSyntax()) {
-			checkTestFnParam(refCodeFragment, parseResult.getChild(0));
+			checkTestFnParam(refCodeFragment, module.getChildren()[0]);
 		}
 	}
 	protected void testCaseFnParam2(final String refCodeFragment) {
-		DeeParserSession parseResult = parseCode("void func("+refCodeFragment+") {  }");
+		Module module = parseCode("void func("+refCodeFragment+") {  }").getParsedModule();
 		if(!fragmentDesc.isInvalidSyntax()) {
-			checkTestFnParam2(refCodeFragment, parseResult.getChild(0));
+			checkTestFnParam2(refCodeFragment, module.getChildren()[0]);
 		}
 	}
 	
@@ -192,16 +193,16 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 		;
 		DeeParserSession parseResult = parseCode(commonTestAggregateString);
 		if(fragmentDesc != RefFragmentDesc.INVALIDSYNTAX) {
-			checkAggregate(refCodeFragment, parseResult);
+			checkAggregate(refCodeFragment, parseResult.getParsedModule());
 		}
 	}
 	
-	protected void checkAggregate(final String refCodeFragment, DeeParserSession parseResult) {
-		checkTestA(refCodeFragment, parseResult.getChild(0));
-		checkTestAF(refCodeFragment, parseResult.getChild(1));
-		checkTestExp(refCodeFragment, parseResult.getChild(2));
-		checkTestFnParam(refCodeFragment, parseResult.getChild(3));
-		checkTestFnParam2(refCodeFragment, parseResult.getChild(4));
+	protected void checkAggregate(final String refCodeFragment, Module module) {
+		checkTestA(refCodeFragment, module.getChildren()[0]);
+		checkTestAF(refCodeFragment, module.getChildren()[1]);
+		checkTestExp(refCodeFragment, module.getChildren()[2]);
+		checkTestFnParam(refCodeFragment, module.getChildren()[3]);
+		checkTestFnParam2(refCodeFragment, module.getChildren()[4]);
 	}
 	
 }

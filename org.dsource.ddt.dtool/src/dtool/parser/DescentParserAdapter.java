@@ -26,8 +26,6 @@ public class DescentParserAdapter {
 	public Module mod;
 	protected Parser parser;
 	
-	/** The error message or null if no error. */
-	protected String error = null;
 	/** Whether a qualified dot fix was performed. 
 	 * If it was, then a non-prefixed search should be made. */
 	public boolean isQualifiedDotFix = false;
@@ -84,11 +82,7 @@ public class DescentParserAdapter {
 				if(mod.problems.size() == 0) {
 					return;
 				}
-				error = "Syntax Errors, cannot complete. (even with dot recovery)";
-				
-			} else {
-				error = "Syntax Errors, cannot complete.";
-			}
+			} 
 		}
 		
 	}

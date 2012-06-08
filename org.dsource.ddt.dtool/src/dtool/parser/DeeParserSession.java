@@ -2,7 +2,6 @@ package dtool.parser;
 
 import descent.internal.compiler.parser.Parser;
 import descent.internal.compiler.parser.Token;
-import descent.internal.compiler.parser.ast.IASTNode;
 import descent.internal.compiler.parser.ast.IProblemReporter;
 import dtool.ast.definitions.Module;
 import dtool.descentadapter.DescentASTConverter;
@@ -52,10 +51,6 @@ public class DeeParserSession {
 	
 	public Module getParsedModule() {
 		return neoModule;
-	}
-	
-	public IASTNode getChild(int ix) {
-		return neoModule.getChildren()[ix];
 	}
 
 }

@@ -93,12 +93,11 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 	}
 	
 	public static DeeModuleDeclaration parsedDeeModule(ISourceModule sourceModule) {
-		IModuleSource source;
 		assertTrue(sourceModule instanceof IModuleSource);
-		source = (IModuleSource) sourceModule;
+		IModuleSource moduleSource = (IModuleSource) sourceModule;
 		
 		DeeSourceParser sourceParser = new DeeSourceParser();
-		DeeModuleDeclaration deeModule = sourceParser.parse(source, null);
+		DeeModuleDeclaration deeModule = sourceParser.parse(moduleSource, null);
 		DeeModuleParsingUtil.parentizeDeeModuleDeclaration(deeModule, sourceModule);
 		return deeModule;
 	}

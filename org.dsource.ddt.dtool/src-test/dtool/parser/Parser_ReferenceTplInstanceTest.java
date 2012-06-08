@@ -6,6 +6,7 @@ import org.junit.Test;
 import dtool.DToolBundle;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.MixinContainer;
+import dtool.ast.definitions.Module;
 import dtool.ast.definitions.NamedMixin;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
@@ -61,23 +62,23 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 		);
 		
 		if(!fragmentDesc.isInvalidSyntax()) {
-			checkCommonMixinsTest(refCodeFragment, parseResult);
+			checkCommonMixinsTest(refCodeFragment, parseResult.getParsedModule());
 		}
 	}
 	
-	protected void checkCommonMixinsTest(String refCodeFragment, DeeParserSession parseResult) {
-		MixinContainer mixin = downCast(parseResult.getChild(0));
-		DefinitionFunction fn = downCast(parseResult.getChild(0+2));
+	protected void checkCommonMixinsTest(String refCodeFragment, Module module) {
+		MixinContainer mixin = downCast(module.getChildren()[0]);
+		DefinitionFunction fn = downCast(module.getChildren()[0+2]);
 		checkReference(mixin.type, refCodeFragment);
 		mixin = downCast(fn.fbody.getChildren()[0]);
 		checkReference(mixin.type, refCodeFragment);
 		
-		checkNamedMixin(refCodeFragment, parseResult);
+		checkNamedMixin(refCodeFragment, module);
 	}
 	
-	protected void checkNamedMixin(String refCodeFragment, DeeParserSession parseResult) {
-		NamedMixin namedMixin = downCast(parseResult.getChild(1));
-		DefinitionFunction fn = downCast(parseResult.getChild(1+2));
+	protected void checkNamedMixin(String refCodeFragment, Module module) {
+		NamedMixin namedMixin = downCast(module.getChildren()[1]);
+		DefinitionFunction fn = downCast(module.getChildren()[1+2]);
 		checkReference(namedMixin.type, refCodeFragment);
 		namedMixin = downCast(fn.fbody.getChildren()[0]);
 		checkReference(namedMixin.type, refCodeFragment);
