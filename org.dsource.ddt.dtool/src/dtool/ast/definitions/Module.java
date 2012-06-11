@@ -21,9 +21,8 @@ import dtool.refmodel.IScopeNode;
 import dtool.util.ArrayView;
 
 /**
- * D Module.
- * Uses the fake name "<undefined>" when a module name is not defined.
- * XXX: Should we infer the module name from the module unit instead?
+ * D Module. 
+ * The top-level AST class, has no parent, is the first and main node of every compilation unit.
  */
 public class Module extends DefUnit implements IScopeNode {
 	
@@ -31,12 +30,8 @@ public class Module extends DefUnit implements IScopeNode {
 		
 		protected Module module;
 		
-		public ModuleDefSymbol(TokenInfo tokenInfo) {
-			super(tokenInfo);
-		}
-		
-		public ModuleDefSymbol(String id) {
-			super(id);
+		public ModuleDefSymbol(String id, SourceRange sourceRange) {
+			super(id, sourceRange);
 		}
 		
 		@Override
@@ -87,22 +82,17 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	public static Module createModule(SourceRange sourceRange, Comment[] comments, String[] packages,
 			TokenInfo defName, SourceRange declRange, ArrayView<ASTNeoNode> members) {
-		ModuleDefSymbol defSymbol = new ModuleDefSymbol(defName);
+		ModuleDefSymbol defSymbol = new ModuleDefSymbol(defName.value, defName.getSourceRange());
 		DeclarationModule md = new DeclarationModule(declRange, packages, defSymbol);
 		return new Module(defSymbol, comments, md, members, sourceRange);
 	}
 	
-	public static Module createModule(SourceRange sourceRange, ArrayView<ASTNeoNode> members, String moduleName) {
-		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
+	public static Module createModuleNoModuleDecl(SourceRange sourceRange, ArrayView<ASTNeoNode> members,
+			String moduleName) {
+		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName, null);
 		return new Module(defSymbol, null, null, members, sourceRange);
 	}
-
-	public static Module createModule(SourceRange sourceRange, ArrayView<ASTNeoNode> members, DeclarationModule md) {
-		ModuleDefSymbol defSymbol = new ModuleDefSymbol(md.moduleName.name);
-		defSymbol.setSourceRange(md.moduleName.getStartPos(), md.moduleName.getEndPos() - md.moduleName.getStartPos());
-		return new Module(defSymbol, null, md, members, sourceRange);
-	}
-
+	
 	protected Module(ModuleDefSymbol defSymbol, Comment[] preComments, DeclarationModule md, 
 			ArrayView<ASTNeoNode> members, SourceRange sourceRange) {
 		super(sourceRange, defSymbol, preComments);

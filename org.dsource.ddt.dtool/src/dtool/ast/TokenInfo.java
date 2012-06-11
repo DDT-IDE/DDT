@@ -29,7 +29,7 @@ public final class TokenInfo {
 		this.offset = -1;
 	}
 	
-	public SourceRange getRange() {
+	public SourceRange getSourceRange() {
 		return new SourceRange(offset, value.length());
 	}
 	

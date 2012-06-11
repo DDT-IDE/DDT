@@ -92,7 +92,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(DebugSymbol elem) {
 		Symbol identifier = elem.ident != null ? 
 				DefinitionConverter.convertId(elem.ident) : 
-				new Symbol(new String(elem.version.value));
+				new Symbol(new String(elem.version.value), DefinitionConverter.sourceRange(elem.version));
 		
 		return endAdapt(
 			new DeclarationConditionalDefinition(
@@ -107,7 +107,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(VersionSymbol elem) {
 		Symbol identifier = elem.ident != null ? 
 				DefinitionConverter.convertId(elem.ident) : 
-				new Symbol(new String(elem.version.value));
+				new Symbol(new String(elem.version.value), DefinitionConverter.sourceRange(elem.version));;
 		
 		return endAdapt(
 			new DeclarationConditionalDefinition(

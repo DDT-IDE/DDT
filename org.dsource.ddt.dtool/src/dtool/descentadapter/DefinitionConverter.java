@@ -54,7 +54,8 @@ public class DefinitionConverter extends BaseDmdConverter {
 	}
 	
 	public static Symbol convertId(IdentifierExp idExp) {
-		return new Symbol(DefinitionConverter.convertIdToken(idExp));
+		TokenInfo idTokenInfo = DefinitionConverter.convertIdToken(idExp);
+		return new Symbol(idTokenInfo.value, idTokenInfo.getSourceRange());
 	}
 	
 	public static DefUnit.DefUnitDataTuple convertDsymbol(Dsymbol elem, ASTConversionContext convContext) {
@@ -123,7 +124,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		
 		SourceRange sourceRange = sourceRange(elem, false);
 		if(elem.md == null) {
-			return Module.createModule(sourceRange, members, moduleName);
+			return Module.createModuleNoModuleDecl(sourceRange, members, moduleName);
 		} else  {
 			TokenInfo defnameInfo = DefinitionConverter.convertIdToken(elem.md.id);
 			SourceRange declRange = sourceRange(elem.md);

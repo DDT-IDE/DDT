@@ -1,7 +1,6 @@
 package dtool.ast.definitions;
 
 import dtool.ast.SourceRange;
-import dtool.ast.TokenInfo;
 
 
 /**
@@ -10,22 +9,13 @@ import dtool.ast.TokenInfo;
  */
 public class DefSymbol extends Symbol {
 	
-	public DefSymbol(TokenInfo tokenInfo) {
-		super(tokenInfo.value, tokenInfo.getRange());
-	}
-	
-	public DefSymbol(TokenInfo id, DefUnit parent) {
-		super(id);
-		setParent(parent);
-	}
-	
 	public DefSymbol(String id,  SourceRange sourceRange, DefUnit parent) {
-		super(id, sourceRange);
+		this(id, sourceRange);
 		setParent(parent);
 	}
 	
-	protected DefSymbol(String id) {
-		super(id, null);
+	protected DefSymbol(String id, SourceRange sourceRange) {
+		super(id, sourceRange);
 	}
 	
 	public DefUnit getDefUnit() {

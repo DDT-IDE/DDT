@@ -31,7 +31,7 @@ public abstract class DefUnit extends ASTNeoNode {
 	}
 	
 	public DefUnit(SourceRange sourceRange, TokenInfo defName, Comment[] comments) {
-		this(sourceRange, defName.value, defName.getRange(), comments);
+		this(sourceRange, defName.value, defName.getSourceRange(), comments);
 	}
 	
 	public DefUnit(SourceRange sourceRange, String defName, SourceRange defNameSourceRange, Comment[] comments) {

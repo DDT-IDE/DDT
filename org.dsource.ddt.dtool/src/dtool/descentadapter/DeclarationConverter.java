@@ -51,15 +51,9 @@ public class DeclarationConverter extends BaseDmdConverter {
 	{
 		if(condition instanceof DVCondition) {
 			DVCondition dvCondition = (DVCondition) condition;
-			Symbol ident;
+			Symbol ident = null;
 			if(dvCondition.ident != null) {
-				ident = new Symbol(new String(dvCondition.ident));
-				SourceRange identSourceRange = DefinitionConverter.sourceRange(dvCondition);
-				if(identSourceRange != null) {
-					ident.setSourceRange(identSourceRange);
-				}
-			} else {
-				ident = null;
+				ident = new Symbol(new String(dvCondition.ident), DefinitionConverter.sourceRange(dvCondition));
 			}
 			boolean isDebug = condition instanceof DebugCondition;
 			assertTrue(isDebug || dvCondition instanceof VersionCondition);
