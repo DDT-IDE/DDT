@@ -9,7 +9,7 @@ import dtool.ast.TokenInfo;
 /** A Symbol is node wrapping an identifier, used only in DefUnits names.*/
 public class Symbol extends ASTNeoNode {
 	
-	public String name;
+	public final String name;
 	
 	public Symbol(TokenInfo symbol) {
 		this(symbol.value, symbol.getRange());

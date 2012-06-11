@@ -31,8 +31,8 @@ public class Module extends DefUnit implements IScopeNode {
 		
 		protected Module module;
 		
-		public ModuleDefSymbol(TokenInfo id) {
-			super(id, null);
+		public ModuleDefSymbol(TokenInfo tokenInfo) {
+			super(tokenInfo);
 		}
 		
 		public ModuleDefSymbol(String id) {
@@ -55,7 +55,7 @@ public class Module extends DefUnit implements IScopeNode {
 			
 			assertNotNull(packages);
 			this.packages = packages;
-			this.moduleName = moduleName; 
+			this.moduleName = moduleName; parentize(moduleName);
 		}
 		
 		@Override
@@ -107,9 +107,8 @@ public class Module extends DefUnit implements IScopeNode {
 			ArrayView<ASTNeoNode> members, SourceRange sourceRange) {
 		super(sourceRange, defSymbol, preComments);
 		defSymbol.module = this;
-		this.md = md;
-		this.members = members;
-		parentize(members);
+		this.md = md; parentize(md);
+		this.members = members; parentize(members);
 	}
 	
 	

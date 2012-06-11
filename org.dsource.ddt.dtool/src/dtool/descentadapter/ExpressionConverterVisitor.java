@@ -230,6 +230,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 				indices[i] = null;
 			} else {
 				indices[i] = (RefIdentifier) expref.ref;
+				indices[i].parent = null; //reset parent
 			}
 		}
 		

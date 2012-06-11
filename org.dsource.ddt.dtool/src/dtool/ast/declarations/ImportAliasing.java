@@ -20,11 +20,11 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 	
 	public static class ImportAliasingDefUnit extends DefUnit {
 		
-		public ImportAliasing impAlias; // Non-structural Element
+		public final ImportAliasing impAlias; // Non-structural Element
 		
 		public ImportAliasingDefUnit(DefUnitDataTuple dudt, ImportAliasing impAlias) {
 			super(dudt);
-			this.impAlias = impAlias; parentize(this.impAlias);
+			this.impAlias = impAlias;
 		}
 		
 		@Override

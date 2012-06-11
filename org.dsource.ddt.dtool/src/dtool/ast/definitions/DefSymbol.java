@@ -10,6 +10,10 @@ import dtool.ast.TokenInfo;
  */
 public class DefSymbol extends Symbol {
 	
+	public DefSymbol(TokenInfo tokenInfo) {
+		super(tokenInfo.value, tokenInfo.getRange());
+	}
+	
 	public DefSymbol(TokenInfo id, DefUnit parent) {
 		super(id);
 		setParent(parent);

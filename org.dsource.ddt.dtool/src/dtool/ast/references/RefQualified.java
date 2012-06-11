@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -17,13 +16,12 @@ import dtool.refmodel.IDefUnitReferenceNode;
  */
 public class RefQualified extends CommonRefQualified {
 	
-	
 	public final IDefUnitReferenceNode qualifier; //Entity or Expression
 	
 	public RefQualified(IDefUnitReferenceNode qualifier, RefIdentifier qualifiedName) {
 		assertNotNull(qualifier);
 		assertNotNull(qualifiedName);
-		this.qualifier = qualifier; parentize((ASTNeoNode) this.qualifier);
+		this.qualifier = qualifier; parentizeI(this.qualifier);
 		this.qualifiedName = qualifiedName; parentize(this.qualifiedName);
 	}
 	

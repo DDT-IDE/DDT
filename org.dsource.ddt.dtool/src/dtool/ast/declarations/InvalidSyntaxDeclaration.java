@@ -9,7 +9,7 @@ import dtool.util.ArrayView;
 
 public class InvalidSyntaxDeclaration extends ASTNeoNode implements IStatement {
 	
-	public ArrayView<ASTNeoNode> genericChildren;
+	public final ArrayView<ASTNeoNode> genericChildren;
 	
 	public InvalidSyntaxDeclaration(SourceRange sourceRange) {
 		initSourceRange(sourceRange);
@@ -18,7 +18,7 @@ public class InvalidSyntaxDeclaration extends ASTNeoNode implements IStatement {
 	
 	public InvalidSyntaxDeclaration(SourceRange sourceRange, ArrayView<ASTNeoNode> children) {
 		initSourceRange(sourceRange);
-		this.genericChildren = children; // BUG here parentize(genericChildren);
+		this.genericChildren = children; parentize(genericChildren, true);
 	}
 	
 	@Override

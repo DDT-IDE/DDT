@@ -9,6 +9,7 @@ import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.ASTNeoHomogenousVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
 import dtool.util.ArrayView;
@@ -36,15 +37,37 @@ public class DescentASTConverter extends StatementConverterVisitor {
 	public static Module convertModule(ASTNode cumodule, String moduleName) {
 		ASTConversionContext convCtx = new ASTConversionContext((descent.internal.compiler.parser.Module) cumodule);
 		Module module = DefinitionConverter.createModule(convCtx.module, convCtx, moduleName);
-		module.accept(new PostConvertionAdapter());
+		module.accept(new ASTNodeParentChecker());
 		return module;
+	}
+	
+	
+	public static class ASTNodeParentChecker extends ASTNeoHomogenousVisitor {
+		
+		private ASTNeoNode parent = null;
+		
+		@Override
+		public boolean preVisit(ASTNeoNode elem) {
+			assertTrue(elem.getParent() == parent);
+			parent = elem; // Set the current expected parent
+			return true;
+		}
+		
+		@Override
+		public void postVisit(ASTNeoNode elem) {
+			parent = elem.getParent(); // Restore previous parent
+		}
+		
 	}
 	
 	public static ASTNeoNode convertElem(ASTNode elem, ASTConversionContext convContext) {
 		if(elem == null) return null;
-		DescentASTConverter conv = new DescentASTConverter(convContext);
-		elem.accept(conv);
-		return conv.ret;
+		return new DescentASTConverter(convContext).doConverElem(elem);
+	}
+	
+	public ASTNeoNode doConverElem(ASTNode elem) {
+		elem.accept(this);
+		return this.ret;
 	}
 	
 	@SuppressWarnings("unchecked")

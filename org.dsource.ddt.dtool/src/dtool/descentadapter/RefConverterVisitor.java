@@ -179,8 +179,12 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeSlice elem) {
-		return endAdapt(new RefTypeSlice(elem, convContext));
+		return endAdapt(new RefTypeSlice(
+				ReferenceConverter.convertType(elem.next, convContext),
+				ExpressionConverter.convert(elem.lwr, convContext),
+				ExpressionConverter.convert(elem.upr, convContext),
+				DefinitionConverter.sourceRange(elem))
+		);
 	}
-
-
+	
 }

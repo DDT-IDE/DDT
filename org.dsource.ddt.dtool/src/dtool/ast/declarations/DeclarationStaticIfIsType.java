@@ -9,7 +9,6 @@ import descent.internal.compiler.parser.TOK;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.Reference;
@@ -26,23 +25,18 @@ import dtool.refmodel.IScopeNode;
  * still return thendecls + elsedecls as normal, bypassing the IsTypeScope.
  */
 public class DeclarationStaticIfIsType extends DeclarationConditional {
-
+	
 	public class IsTypeDefUnit extends DefUnit {
-
-		public IsTypeDefUnit(DefSymbol id) {
-			super(
-				new SourceRange(id.getOffset(), id.getLength()),
-				id.name,
-				new SourceRange(id.getOffset(), id.getLength()),
-				null
-			);
+		
+		public IsTypeDefUnit(String id, SourceRange idSourceRange) {
+			super(idSourceRange, id, idSourceRange, null);
 		}
-
+		
 		@Override
 		public EArcheType getArcheType() {
 			return EArcheType.Alias;
 		}
-
+		
 		@Override
 		public IScopeNode getMembersScope() {
 			if(specType != null)
@@ -50,7 +44,7 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 			else
 				return arg.getTargetScope();
 		}
-
+		
 		@Override
 		public void accept0(IASTNeoVisitor visitor) {
 			if (visitor.visit(this)) {	
@@ -68,7 +62,7 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 			initSourceRange(sourceRange);
 			this.nodelist = nodes; parentize(this.nodelist);
 		}
-
+		
 		@Override
 		public void accept0(IASTNeoVisitor visitor) {
 			if (visitor.visit(this)) {
@@ -95,22 +89,23 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 	}
 	
 	public final IsTypeScope thendeclsScope;
-
+	
 	public final Reference arg;
 	public final IsTypeDefUnit defUnit;
 	public final TOK tok;
 	public final Reference specType;
 	
-	public DeclarationStaticIfIsType(Reference arg, DefSymbol id, TOK tok, Reference specType, NodeList thenDecls, NodeList elseDecls, SourceRange innerRange, SourceRange sourceRange) {
+	
+	public DeclarationStaticIfIsType(Reference arg, String id, SourceRange idSourceRange, TOK tok, Reference specType,
+			NodeList thenDecls, NodeList elseDecls, SourceRange innerRange, SourceRange sourceRange) {
 		super(thenDecls, elseDecls, sourceRange);
 		this.arg = arg; parentize(this.arg);
-		id.setParent(this); // BUG here
-		this.defUnit = new IsTypeDefUnit(id); parentize(this.defUnit);
+		this.defUnit = new IsTypeDefUnit(id, idSourceRange); parentize(this.defUnit);
 		this.tok = tok;
 		this.specType = specType; parentize(this.specType);
-		this.thendeclsScope = new IsTypeScope(this.thendecls, innerRange); parentize(this.thendeclsScope);
+		this.thendeclsScope = new IsTypeScope(this.thendecls, innerRange); parentize(this.thendeclsScope); //BUG here
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -123,5 +118,5 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

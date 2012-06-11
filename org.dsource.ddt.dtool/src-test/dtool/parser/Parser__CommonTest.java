@@ -51,7 +51,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		DeeParserSession parseResult = DeeParserSession.parseSource(source, "_tests_unnamed_");
 		
 		if(expectErrors != null) {
-			assertTrue((parseResult.hasSyntaxErrors()) == expectErrors, "expectedErrors is not: " + expectErrors);
+			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);
 		}
 		if(checkAST && !parseResult.hasSyntaxErrors()) {
 			// We rarely get good source ranges with syntax errors; 

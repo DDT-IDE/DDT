@@ -20,7 +20,6 @@ import dtool.ast.declarations.DeclarationConditionalDV;
 import dtool.ast.declarations.DeclarationStaticIf;
 import dtool.ast.declarations.DeclarationStaticIfIsType;
 import dtool.ast.declarations.NodeList;
-import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.ReferenceConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -77,7 +76,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 			IsExp isExp = ((IsExp) stIfCondition.exp);
 			return new DeclarationStaticIfIsType(
 				ReferenceConverter.convertType(isExp.targ, convContext),
-				new DefSymbol(DefinitionConverter.convertIdToken(isExp.id).value, DefinitionConverter.sourceRange(isExp.id), null),
+				DefinitionConverter.convertIdToken(isExp.id).value, DefinitionConverter.sourceRange(isExp.id),
 				isExp.tok,
 				ReferenceConverter.convertType(isExp.tspec, convContext),
 				thendecls, elsedecls,

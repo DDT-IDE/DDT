@@ -127,8 +127,10 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		return parent;
 	}
 	
-	/** Set the parent of this node. Can be null. */
+	/** Set the parent of this node. Cannot be null. */
 	public void setParent(ASTNeoNode parent) {
+		assertTrue(parent != null);
+		//assertTrue(this.parent == null); // Can only set parent once
 		this.parent = parent;
 	}
 	
@@ -240,11 +242,6 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		parentize(collection, false);
 	}
 	
-	/** Set the parent of the given collection to this.  */
-	protected void parentizeI(ArrayView<? extends IASTNeoNode> collection) {
-		parentize(CoreUtil.<ArrayView<ASTNeoNode>>blindCast(collection), false);
-	}
-	
 	protected void parentize(ArrayView<? extends ASTNeoNode> collection, boolean allowNulls) {
 		if (collection != null) {
 			for (ASTNeoNode node : collection) {
@@ -257,11 +254,6 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		}
 	}
 	
-	protected void parentize(NodeList node) {
-		if (node != null)
-			parentize(node.nodes);
-	}
-	
 	/** Set the parent of the given node to this.  */
 	protected void parentize(ASTNeoNode node) {
 		if (node != null) {
@@ -269,9 +261,19 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		}
 	}
 	
+	protected void parentize(NodeList node) {
+		if (node != null)
+			parentize(node.nodes);
+	}
+	
 	/** Set the parent of the given node to this.  */
 	protected void parentizeI(IASTNeoNode node) {
 		parentize((ASTNeoNode) node);
+	}
+	
+	/** Set the parent of the given collection to this.  */
+	protected void parentizeI(ArrayView<? extends IASTNeoNode> collection) {
+		parentize(CoreUtil.<ArrayView<ASTNeoNode>>blindCast(collection), false);
 	}
 	
 }

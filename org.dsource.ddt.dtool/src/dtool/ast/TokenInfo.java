@@ -12,7 +12,7 @@ package dtool.ast;
 
 
 /**
- * Simple value type representing a string within a larger text range. 
+ * Simple value type representing a string and an associated source range. 
  */
 public final class TokenInfo {
 	
