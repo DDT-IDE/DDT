@@ -14,7 +14,7 @@ public class BaseClass extends ASTNeoNode {
 	
 	public BaseClass(PROT prot, Reference type, SourceRange sourceRange) {
 		this.prot = prot;
-		this.type = type; parentize(this.type);
+		this.type = parentize(type);
 		initSourceRange(sourceRange);
 	}
 	
@@ -26,4 +26,5 @@ public class BaseClass extends ASTNeoNode {
 		}
 		visitor.endVisit(this);	 			
 	}
+	
 }

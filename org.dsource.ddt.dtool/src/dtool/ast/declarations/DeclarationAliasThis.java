@@ -13,7 +13,7 @@ public class DeclarationAliasThis extends ASTNeoNode implements IStatement {
 	
 	public DeclarationAliasThis(RefIdentifier targetDef, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.targetDef = targetDef; parentize(this.targetDef);
+		this.targetDef = parentize(targetDef);
 	}
 	
 	@Override

@@ -6,16 +6,16 @@ import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
 public class StatementCaseRange extends Statement {
-
+	
 	public final Resolvable expFirst;
 	public final Resolvable expLast;
 	public final IStatement st;
 	
 	public StatementCaseRange(Resolvable expFirst, Resolvable expLast, IStatement st, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.expFirst = expFirst; parentize(this.expFirst);
-		this.expLast = expLast; parentize(this.expLast);
-		this.st = st; parentizeI(this.st);
+		this.expFirst = parentize(expFirst);
+		this.expLast = parentize(expLast);
+		this.st = parentizeI(st);
 	}
 	
 	@Override
@@ -28,5 +28,5 @@ public class StatementCaseRange extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

@@ -6,16 +6,16 @@ import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
 public class StatementDo extends Statement {
-
+	
 	public final Resolvable exp;
 	public final IStatement st;
-
+	
 	public StatementDo(Resolvable exp, IStatement st, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
-		this.st = st; parentizeI(this.st);
+		this.exp = parentize(exp);
+		this.st = parentizeI(st);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -25,5 +25,5 @@ public class StatementDo extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

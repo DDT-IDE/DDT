@@ -13,11 +13,8 @@ public class TypeTypeof extends CommonRefNative {
 	public final Expression expression;
 	
 	public TypeTypeof(Expression exp, SourceRange sourceRange) {
-		this.expression = exp;
 		initSourceRange(sourceRange);
-		
-		if (this.expression != null)
-			this.expression.setParent(this);
+		this.expression = parentize(exp);
 	}
 	
 	public TypeTypeof(Expression exp) {

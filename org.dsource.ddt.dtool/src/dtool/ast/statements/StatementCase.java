@@ -12,10 +12,10 @@ public class StatementCase extends Statement {
 	
 	public StatementCase(Resolvable exp, IStatement st, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
-		this.st = st; parentizeI(this.st);
+		this.exp = parentize(exp);
+		this.st = parentizeI(st);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -25,5 +25,5 @@ public class StatementCase extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

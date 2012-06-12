@@ -27,13 +27,12 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	public DefinitionTemplate(DefUnitDataTuple dudt, PROT prot, ArrayView<ASTNeoNode> decls,
 			ArrayView<TemplateParameter> params, boolean wrapper) {
 		super(dudt, prot);
-		this.templateParams = params; parentize(this.templateParams);
-		this.decls = decls; parentize(this.decls);
-		// Must define what it does!
-		// this.wrapper = this.templateParams.size() != 1;
+		this.templateParams = parentize(params);
+		this.decls = parentize(decls);
 		this.wrapper = wrapper;
-		if(wrapper)
+		if(wrapper) {
 			assertTrue(this.decls.size() == 1);
+		}
 	}
 	
 	@Override
@@ -46,12 +45,12 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Template;
 	}
-
+	
 	@Override
 	public IScopeNode getMembersScope() {
 		return this;
@@ -67,7 +66,7 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	public boolean hasSequentialLookup() {
 		return false;
 	}
-
+	
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator() {
 		// TODO: check if in a template invocation
@@ -77,5 +76,5 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 		}
 		return ChainedIterator.create(templateParams.iterator(), decls.iterator());
 	}
-
+	
 }

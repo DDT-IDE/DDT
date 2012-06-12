@@ -6,14 +6,14 @@ import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 
 public class StatementBreak extends Statement {
-
+	
 	public Symbol id;
 	
 	public StatementBreak(Symbol id, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.id = id; parentize(this.id);
+		this.id = parentize(id);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -22,5 +22,5 @@ public class StatementBreak extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

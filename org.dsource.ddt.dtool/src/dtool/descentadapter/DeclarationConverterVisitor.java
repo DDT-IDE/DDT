@@ -24,6 +24,7 @@ import descent.internal.compiler.parser.Version;
 import descent.internal.compiler.parser.VersionCondition;
 import descent.internal.compiler.parser.VersionSymbol;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
@@ -44,7 +45,6 @@ import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelective.ImportSelectiveAlias;
 import dtool.ast.declarations.ImportStatic;
 import dtool.ast.declarations.InvalidSyntaxDeclaration;
-import dtool.ast.declarations.NodeList;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefModifier;
 import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
@@ -71,10 +71,8 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
-import dtool.ast.statements.Statement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.util.ArrayView;
 
@@ -140,7 +138,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(AnonDeclaration node) {
-		NodeList body = NodeList.createNodeList(node.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList(node.decl, convContext);
 		return endAdapt(new DeclarationAnonMember(body, DefinitionConverter.sourceRange(node)));
 	}
 
@@ -183,7 +181,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.AlignDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = NodeList.createNodeList(elem.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
 		return endAdapt(new DeclarationAlign(elem.salign, body, DefinitionConverter.sourceRange(elem)));
 	}
 
@@ -306,7 +304,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.InvariantDeclaration elem) {
 		return endAdapt(
 			new DeclarationInvariant(
-				(BlockStatement) Statement.convert(elem.fbody, convContext),
+				(BlockStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext),
 				DefinitionConverter.sourceRange(elem)
 			)
 		);
@@ -315,14 +313,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.LinkDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = NodeList.createNodeList(elem.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
 		return endAdapt(new DeclarationLinkage(elem.linkage, body, DefinitionConverter.sourceRange(elem)));
 	}
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.PragmaDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = NodeList.createNodeList(elem.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
 		return endAdapt(
 			new DeclarationPragma(
 				DefinitionConverter.convertId(elem.ident),
@@ -336,7 +334,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.ProtDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = NodeList.createNodeList(elem.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
 		return endAdapt(new DeclarationProtection(elem.protection, elem.modifier, body, DefinitionConverter.sourceRange(elem)));
 	}
 
@@ -349,7 +347,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StorageClassDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = NodeList.createNodeList(elem.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
 		return endAdapt(new DeclarationStorageClass(elem.stc, body, DefinitionConverter.sourceRange(elem)));
 	}
 	
@@ -361,7 +359,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.UnitTestDeclaration elem) {
-		IStatement stmt = Statement.convert(elem.fbody, convContext);
+		IStatement stmt = StatementConverterVisitor.convertStatement(elem.fbody, convContext);
 		if (stmt instanceof BlockStatement) {
 			return endAdapt(new DeclarationUnitTest((BlockStatement) stmt, DefinitionConverter.sourceRange(elem)));
 		} else {
@@ -566,7 +564,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.PostBlitDeclaration elem) {
 		return endAdapt(
 			new DefinitionPostBlit(
-				Statement.convert(elem.fbody, convContext),
+				StatementConverterVisitor.convertStatement(elem.fbody, convContext),
 				DefinitionConverter.sourceRange(elem)
 			)
 		);

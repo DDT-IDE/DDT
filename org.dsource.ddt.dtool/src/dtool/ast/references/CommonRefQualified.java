@@ -18,7 +18,11 @@ import dtool.refmodel.ReferenceResolver;
  */
 public abstract class CommonRefQualified extends NamedReference implements IDefUnitReferenceNode {
 	
-	public RefIdentifier qualifiedName;
+	public final RefIdentifier qualifiedName;
+	
+	public CommonRefQualified(RefIdentifier qualifiedName) {
+		this.qualifiedName = parentize(qualifiedName);
+	}
 	
 	/** Return the qualified name (the name reference on the right side). */
 	public RefIdentifier getQualifiedName() {

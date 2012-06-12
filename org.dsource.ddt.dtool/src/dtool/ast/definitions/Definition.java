@@ -3,7 +3,6 @@ package dtool.ast.definitions;
 import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.Modifier;
 import descent.internal.compiler.parser.PROT;
-import dtool.descentadapter.DefinitionConverter;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
@@ -17,11 +16,6 @@ public abstract class Definition extends DefUnit {
 	public final Modifier[] modifiers;
 	public /*final*/ PROT protection; // fixme, should be node
 	public /*final*/ int effectiveModifiers;
-	
-	@Deprecated
-	public Definition(Dsymbol elem, ASTConversionContext convContext) {
-		this(DefinitionConverter.convertDsymbol(elem, convContext), elem.prot());
-	}
 	
 	public Definition(DefUnitDataTuple defunit, PROT prot) {
 		super(defunit);

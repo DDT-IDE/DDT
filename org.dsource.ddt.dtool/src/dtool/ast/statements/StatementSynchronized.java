@@ -6,16 +6,16 @@ import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
 public class StatementSynchronized extends Statement {
-
+	
 	public final Resolvable exp;
 	public final IStatement body;
-
+	
 	public StatementSynchronized(Resolvable exp, IStatement body, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
-		this.body = body; parentizeI(this.body);
+		this.exp = parentize(exp);
+		this.body = parentizeI(body);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -25,5 +25,5 @@ public class StatementSynchronized extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

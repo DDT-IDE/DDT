@@ -6,14 +6,14 @@ import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 
 public class StatementGoto extends Statement {
-
+	
 	public final Symbol label;
 	
 	public StatementGoto(Symbol label, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.label = label; parentize(this.label);
+		this.label = parentize(label);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -22,5 +22,5 @@ public class StatementGoto extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

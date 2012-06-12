@@ -13,14 +13,14 @@ import dtool.refmodel.IScopeNode;
 import dtool.util.ArrayView;
 
 public class DefinitionEnum extends Definition implements IScopeNode, IStatement {
-
+	
 	public final ArrayView<EnumMember> members;
 	public final Reference type;
 	
 	public DefinitionEnum(DefUnitDataTuple defunitInfo, PROT prot, ArrayView<EnumMember> members, Reference reference) {
 		super(defunitInfo, prot);
-		this.members = members; parentize(this.members);
-		this.type = reference; parentize(this.type);
+		this.members = parentize(members);
+		this.type = parentize(reference);
 	}
 	
 	@Override
@@ -32,14 +32,14 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 			TreeVisitor.acceptChildren(visitor, members);
 		}
 		visitor.endVisit(this);
-
+		
 	}
 	
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Enum;
 	}
-
+	
 	@Override
 	public IScopeNode getMembersScope() {
 		return this;
@@ -60,10 +60,10 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	public Iterator<EnumMember> getMembersIterator() {
 		return members.iterator();
 	}
-
+	
 	@Override
 	public String toStringForCodeCompletion() {
 		return getName() + " - " + getModuleScope().toStringAsElement();
 	}
-
+	
 }

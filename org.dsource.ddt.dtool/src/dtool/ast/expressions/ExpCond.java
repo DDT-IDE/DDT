@@ -12,9 +12,9 @@ public class ExpCond extends Expression {
 	
 	public ExpCond(Resolvable predExp, Resolvable trueExp, Resolvable falseExp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.predExp = predExp; parentize(this.predExp);
-		this.trueExp = trueExp; parentize(this.trueExp);
-		this.falseExp = falseExp; parentize(this.falseExp);
+		this.predExp = parentize(predExp);
+		this.trueExp = parentize(trueExp);
+		this.falseExp = parentize(falseExp);
 	}
 	
 	@Override

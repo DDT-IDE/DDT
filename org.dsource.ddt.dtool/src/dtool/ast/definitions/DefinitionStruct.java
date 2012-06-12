@@ -33,5 +33,5 @@ public class DefinitionStruct extends DefinitionAggregate {
 	public List<IScope> getSuperScopes() {
 		return null;
 	}
-
+	
 }

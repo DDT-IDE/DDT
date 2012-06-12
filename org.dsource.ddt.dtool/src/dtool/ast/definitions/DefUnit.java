@@ -12,9 +12,6 @@ import dtool.refmodel.IScopeNode;
  */
 public abstract class DefUnit extends ASTNeoNode {
 	
-	public final Comment[] comments;
-	public final DefSymbol defname;
-	
 	public static final class DefUnitDataTuple {
 		public SourceRange sourceRange;
 		public TokenInfo defName;
@@ -25,6 +22,9 @@ public abstract class DefUnit extends ASTNeoNode {
 			this.comments = comments;
 		}
 	}
+	
+	public final Comment[] comments;
+	public final DefSymbol defname;
 	
 	public DefUnit(DefUnitDataTuple defunit) {
 		this(defunit.sourceRange, defunit.defName, defunit.comments);

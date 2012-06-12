@@ -17,14 +17,14 @@ public class DefinitionAlias extends Definition implements IStatement {
 	
 	public DefinitionAlias(DefUnitDataTuple dudt, PROT prot, Reference target) {
 		super(dudt, prot);
-		this.target = target; parentize(this.target);
+		this.target = parentize(target);
 	}
 	
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Alias;
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -34,7 +34,7 @@ public class DefinitionAlias extends Definition implements IStatement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	@Override
 	public IScopeNode getMembersScope() {
 		return target.getTargetScope();

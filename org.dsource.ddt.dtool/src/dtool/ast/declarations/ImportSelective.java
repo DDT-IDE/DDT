@@ -19,6 +19,7 @@ import dtool.refmodel.ReferenceResolver;
 import dtool.util.ArrayView;
 
 public class ImportSelective extends ImportFragment implements INonScopedBlock {
+	
 	public static interface IImportSelectiveSelection extends IASTNode {
 		//String getTargetName();
 	}
@@ -31,7 +32,7 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 		public ImportSelectiveAlias(DefUnitDataTuple dudt, RefImportSelection impSelection, SourceRange sourceRange) {
 			super(dudt);
 			initSourceRange(sourceRange);
-			this.target = impSelection; parentize(this.target);
+			this.target = parentize(impSelection);
 		}
 		
 		@Override
@@ -43,7 +44,6 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 			}
 			visitor.endVisit(this);		
 		}
-		
 		
 		@Override
 		public EArcheType getArcheType() {
@@ -57,14 +57,14 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 	}
 	
 	
-	public ArrayView<ASTNeoNode> impSelFrags;
+	public final ArrayView<ASTNeoNode> impSelFrags;
 	
 	public ImportSelective(RefModule refModule, ArrayView<ASTNeoNode> frags, SourceRange sourceRange) {
 		super(refModule, sourceRange);
-		this.impSelFrags = frags; parentizeFrags(this.impSelFrags);
+		this.impSelFrags = parentizeFrags(frags);
 	}
 	
-	public void parentizeFrags(ArrayView<ASTNeoNode> frags) {
+	public ArrayView<ASTNeoNode> parentizeFrags(ArrayView<ASTNeoNode> frags) {
 		if (frags != null) {
 			for (ASTNeoNode n : frags) {
 				n.setParent(this);
@@ -75,6 +75,7 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 				}
 			}
 		}
+		return frags;
 	}
 	
 	@Override

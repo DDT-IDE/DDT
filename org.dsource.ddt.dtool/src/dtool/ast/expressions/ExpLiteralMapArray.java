@@ -6,14 +6,14 @@ import dtool.ast.SourceRange;
 import dtool.util.ArrayView;
 
 public class ExpLiteralMapArray extends Expression {
-
+	
 	public final ArrayView<Resolvable> keys;
 	public final ArrayView<Resolvable> values;
 	
 	public ExpLiteralMapArray(ArrayView<Resolvable> keys, ArrayView<Resolvable> values, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.keys = keys; parentize(this.keys);
-		this.values = values; parentize(this.values);
+		this.keys = parentize(keys);
+		this.values = parentize(values);
 	}
 	
 	@Override
@@ -25,5 +25,5 @@ public class ExpLiteralMapArray extends Expression {
 		}
 		visitor.endVisit(this);	 
 	}
-
+	
 }

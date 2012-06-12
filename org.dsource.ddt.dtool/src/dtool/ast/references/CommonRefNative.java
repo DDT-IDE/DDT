@@ -11,4 +11,5 @@ public abstract class CommonRefNative extends Reference {
 			return true;
 		return false;
 	}
+	
 }

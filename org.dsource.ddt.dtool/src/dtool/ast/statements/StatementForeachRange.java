@@ -7,22 +7,22 @@ import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.Resolvable;
 
 public class StatementForeachRange extends Statement {
-
+	
 	public final boolean reverse;
 	public final IFunctionParameter param;
 	public final Resolvable lwr;
 	public final Resolvable upr;
 	public final IStatement body;
-
+	
 	public StatementForeachRange(IFunctionParameter param, Resolvable lwr, Resolvable upr, IStatement body, boolean reverse, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.param = param; parentizeI(this.param);
-		this.lwr = lwr; parentize(this.lwr);
-		this.upr = upr; parentize(this.upr);
-		this.body = body; parentizeI(this.body);
+		this.param = parentizeI(param);
+		this.lwr = parentize(lwr);
+		this.upr = parentize(upr);
+		this.body = parentizeI(body);
 		this.reverse = reverse;
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -34,6 +34,5 @@ public class StatementForeachRange extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }
-

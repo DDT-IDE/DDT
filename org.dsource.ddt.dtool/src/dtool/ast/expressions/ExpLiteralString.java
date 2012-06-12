@@ -9,11 +9,6 @@ public class ExpLiteralString extends Expression {
 	public final char[] charArray;
 	public final String string;
 	
-// TODO: AST CONV: deal with elem.allStringExps
-//		this.strings = new char[elem.strings.size()][];
-//		for (int i = 0; i < elem.strings.size(); i++) {
-//			this.strings[i] = elem.strings.get(i).string;
-//		}
 	public ExpLiteralString(String s, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.string = s;

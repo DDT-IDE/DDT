@@ -146,6 +146,8 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		
 		IType topLevelElement = srcModule.getType("moduleDeclImplicitName");
 		
+		assertTrue(topLevelElement.getNameRange().getOffset() == -1);
+		
 		checkElementExists(srcModule, topLevelElement.getType("Foo"), 
 			EArcheType.Class, "class Foo");
 		checkElementExists(srcModule, topLevelElement.getType("Foo").getMethod("func"), 
@@ -185,7 +187,7 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		testNameSpace(topLevelElement, "", "Foo");
 	}
 	
-	private IType getTopLevelElement(String srcFolder, String folderName, String moduleName) {
+	protected IType getTopLevelElement(String srcFolder, String folderName, String moduleName) {
 		return getSourceModule(srcFolder, folderName+"/"+moduleName+".d").getType(moduleName);
 	}
 	

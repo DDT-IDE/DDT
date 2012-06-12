@@ -67,7 +67,7 @@ public abstract class Reference extends Resolvable {
 	}
 	
 	public abstract Collection<DefUnit> findLookupDefUnits();
-	*/
+	 */
 	
 	@Override
 	public abstract String toStringAsElement();
@@ -75,4 +75,3 @@ public abstract class Reference extends Resolvable {
 	public abstract boolean canMatch(DefUnitDescriptor defunit);
 	
 }
-

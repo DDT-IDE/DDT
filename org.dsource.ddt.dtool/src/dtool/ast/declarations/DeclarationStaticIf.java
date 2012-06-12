@@ -2,6 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
@@ -11,7 +12,7 @@ public class DeclarationStaticIf extends DeclarationConditional {
 	
 	public DeclarationStaticIf(Resolvable exp, NodeList thenDecls, NodeList elseDecls, SourceRange sourceRange) {
 		super(thenDecls, elseDecls, sourceRange);
-		this.exp = exp; parentize(this.exp);
+		this.exp = parentize(exp);
 	}
 	
 	@Override
@@ -19,8 +20,8 @@ public class DeclarationStaticIf extends DeclarationConditional {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, exp);
-			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(thendecls));
-			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(elsedecls));
+			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(thenDecls));
+			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(elseDecls));
 		}
 		visitor.endVisit(this);
 	}

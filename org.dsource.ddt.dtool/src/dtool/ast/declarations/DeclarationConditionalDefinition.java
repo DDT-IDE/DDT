@@ -12,21 +12,21 @@ import dtool.ast.definitions.Symbol;
  *  debug = someident;   
  */
 public class DeclarationConditionalDefinition extends ASTNeoNode {
-
+	
 	public interface Type {
 		int DEBUG = 9;
 		int VERSION = 10;
 	}
-
-	public Symbol identifier;
-	public int conditionalKind;
 	
-	public DeclarationConditionalDefinition(Symbol id, int t, SourceRange sourceRange) {
+	public final Symbol identifier;
+	public final int conditionalKind;
+	
+	public DeclarationConditionalDefinition(Symbol id, int conditionalKind, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.identifier = id; parentize(this.identifier);
-		this.conditionalKind = t;
+		this.identifier = parentize(id);
+		this.conditionalKind = conditionalKind;
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -38,7 +38,7 @@ public class DeclarationConditionalDefinition extends ASTNeoNode {
 	
 	@Override
 	public String toStringAsElement() {
-		return "["+ (conditionalKind == Type.VERSION?"debug":"version") 
-			+ "="+identifier.toStringAsElement()+")]";
+		return "["+ (conditionalKind == Type.VERSION?"debug":"version") + "="+identifier.toStringAsElement()+")]";
 	}
+	
 }

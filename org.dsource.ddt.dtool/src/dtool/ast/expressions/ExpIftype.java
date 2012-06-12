@@ -7,7 +7,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 
 public class ExpIftype extends Expression {
-
+	
 	public final Reference arg;
 	public final TOK tok;
 	public final Reference specType;
@@ -15,10 +15,10 @@ public class ExpIftype extends Expression {
 	public ExpIftype(Reference arg, TOK tok, Reference specType, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.tok = tok;
-		this.arg = arg; parentize(this.arg);
-		this.specType = specType; parentize(specType);
+		this.arg = parentize(arg);
+		this.specType = parentize(specType);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -28,5 +28,5 @@ public class ExpIftype extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

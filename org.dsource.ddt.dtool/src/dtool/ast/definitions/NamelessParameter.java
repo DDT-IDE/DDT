@@ -22,9 +22,9 @@ public class NamelessParameter extends ASTNeoNode implements IFunctionParameter 
 	public NamelessParameter(Reference type, int storageClass, Resolvable defaultValue, SourceRange sourceRange) {
 		assertNotNull(type);
 		initSourceRange(sourceRange);
-		this.type = type; parentize(this.type);
+		this.type = parentize(type);
 		this.storageClass = storageClass;
-		this.defaultValue = defaultValue; parentize(this.defaultValue);
+		this.defaultValue = parentize(defaultValue);
 	}
 	
 	@Override
@@ -36,7 +36,6 @@ public class NamelessParameter extends ASTNeoNode implements IFunctionParameter 
 		}
 		visitor.endVisit(this);	
 	}
-	
 	
 	@Override
 	public String toStringAsFunctionSignaturePart() {

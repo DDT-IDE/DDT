@@ -1,19 +1,18 @@
 package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 
 public class StatementDefault extends Statement {
-
+	
 	public final IStatement st;
 	
 	public StatementDefault(IStatement st, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.st = st; parentize((ASTNeoNode) this.st);
+		this.st = parentizeI(st);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -22,5 +21,5 @@ public class StatementDefault extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

@@ -20,8 +20,8 @@ public class ExpCall extends Expression {
 	
 	public ExpCall(Expression callee, ArrayView<Resolvable> args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.callee = callee; parentize(this.callee);
-		this.args = args; parentize(this.args);
+		this.callee = parentize(callee);
+		this.args = parentize(args);
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class ExpCall extends Expression {
 			return null;		
 		if (defUnit instanceof DefinitionFunction) {
 			DefinitionFunction defOpCallFunc = (DefinitionFunction) defUnit;
-			DefUnit targetDefUnit = defOpCallFunc.rettype.findTargetDefUnit();
+			DefUnit targetDefUnit = defOpCallFunc.retType.findTargetDefUnit();
 			return Collections.singleton(targetDefUnit);
 		}
 		
@@ -51,7 +51,7 @@ public class ExpCall extends Expression {
 			DefUnit defOpCall = iter.next();
 			if (defOpCall instanceof DefinitionFunction) {
 				DefinitionFunction defOpCallFunc = (DefinitionFunction) defOpCall;
-				DefUnit targetDefUnit = defOpCallFunc.rettype.findTargetDefUnit();
+				DefUnit targetDefUnit = defOpCallFunc.retType.findTargetDefUnit();
 				return Collections.singleton(targetDefUnit);
 			}
 		}

@@ -4,11 +4,11 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 
 public class StatementGotoDefault extends Statement {
-
+	
 	public StatementGotoDefault(SourceRange sourceRange) {
 		initSourceRange(sourceRange);		
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -16,5 +16,5 @@ public class StatementGotoDefault extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

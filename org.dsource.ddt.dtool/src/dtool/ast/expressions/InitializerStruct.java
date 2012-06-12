@@ -11,11 +11,10 @@ public class InitializerStruct extends Initializer {
 	public final ArrayView<RefIdentifier> indexes;
 	public final ArrayView<Initializer> values;
 	
-	public InitializerStruct(ArrayView<RefIdentifier> indexes, ArrayView<Initializer> values, 
-			SourceRange sourceRange) {
+	public InitializerStruct(ArrayView<RefIdentifier> indexes, ArrayView<Initializer> values, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.indexes = indexes; parentize(this.indexes, true);
-		this.values = values; parentize(this.values);
+		this.indexes = parentize(indexes, true);
+		this.values = parentize(values);
 	}
 	
 	@Override
@@ -27,5 +26,5 @@ public class InitializerStruct extends Initializer {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

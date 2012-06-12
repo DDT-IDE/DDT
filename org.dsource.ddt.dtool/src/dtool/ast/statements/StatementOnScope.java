@@ -14,13 +14,13 @@ public class StatementOnScope extends Statement {
 	
 	public final IStatement st;
 	public final EventType eventType;
-
+	
 	public StatementOnScope(EventType eventType, IStatement st, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.eventType = eventType;
-		this.st = st; parentizeI(this.st);
+		this.st = parentizeI(st);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -29,5 +29,5 @@ public class StatementOnScope extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

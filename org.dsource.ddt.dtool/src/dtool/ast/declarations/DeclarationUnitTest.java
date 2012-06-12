@@ -7,14 +7,14 @@ import dtool.ast.SourceRange;
 import dtool.ast.statements.BlockStatement;
 
 public class DeclarationUnitTest extends ASTNeoNode {
-
-	public BlockStatement body;
+	
+	public final BlockStatement body;
 	
 	public DeclarationUnitTest(BlockStatement body, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.body = body; parentize(body);
+		this.body = parentize(body);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -23,5 +23,5 @@ public class DeclarationUnitTest extends ASTNeoNode {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

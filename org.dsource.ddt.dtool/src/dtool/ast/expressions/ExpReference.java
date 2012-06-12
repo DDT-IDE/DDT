@@ -19,7 +19,7 @@ public class ExpReference extends Expression {
 	
 	public ExpReference(Reference ref, SourceRange sourceRange) {
 		assertNotNull(ref);
-		this.ref = ref; parentize(this.ref);
+		this.ref = parentize(ref);
 		
 		initSourceRange(sourceRange);
 	}

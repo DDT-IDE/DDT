@@ -17,21 +17,21 @@ import dtool.refmodel.IScopeNode;
 
 public class TypeStaticArray extends CommonRefNative {
 	
-	public Reference elemtype;
-	public Resolvable sizeexp;
+	public final Reference elemType;
+	public final Resolvable sizeExp;
 	
-	public TypeStaticArray(Reference elemtype, Resolvable sizeexp, SourceRange sourceRange) {
+	public TypeStaticArray(Reference elemType, Resolvable sizeExp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.elemtype = elemtype; parentize(this.elemtype);
-		this.sizeexp = sizeexp; parentize(this.sizeexp);
+		this.elemType = parentize(elemType);
+		this.sizeExp = parentize(sizeExp);
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, elemtype);
-			TreeVisitor.acceptChildren(visitor, sizeexp);
+			TreeVisitor.acceptChildren(visitor, elemType);
+			TreeVisitor.acceptChildren(visitor, sizeExp);
 		}
 		visitor.endVisit(this);
 	}
@@ -43,9 +43,8 @@ public class TypeStaticArray extends CommonRefNative {
 	
 	@Override
 	public String toStringAsElement() {
-		return elemtype.toStringAsElement() + "["+sizeexp.toStringAsElement()+"]";
+		return elemType.toStringAsElement() + "["+sizeExp.toStringAsElement()+"]";
 	}
-	
 	
 	public static class IntrinsicStaticArray extends NativeDefUnit {
 		public IntrinsicStaticArray() {

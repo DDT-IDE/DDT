@@ -12,11 +12,13 @@ import dtool.ast.references.RefModule;
 
 public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 	
-	RefModule moduleRef;
-	DefUnit module;
+	protected final RefModule moduleRef;
+	protected final DefUnit module;
 	
-	public PartialPackageDefUnitOfModule(TokenInfo name) {
+	public PartialPackageDefUnitOfModule(TokenInfo name, Module module, RefModule moduleRef) {
 		super(name);
+		this.module = module; // BUG here
+		this.moduleRef = moduleRef;
 	}
 	
 	@Override

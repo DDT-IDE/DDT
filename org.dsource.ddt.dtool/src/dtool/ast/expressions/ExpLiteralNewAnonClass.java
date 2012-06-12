@@ -14,14 +14,13 @@ public class ExpLiteralNewAnonClass extends Expression {
 	public final ArrayView<BaseClass> baseClasses;
 	public final ArrayView<ASTNeoNode> members; 
 	
-	
 	public ExpLiteralNewAnonClass(ArrayView<Resolvable> allocargs, ArrayView<Resolvable> args,
 			ArrayView<BaseClass> baseClasses, ArrayView<ASTNeoNode> members, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.allocargs = allocargs; parentizeI(this.allocargs);
-		this.args = args; parentizeI(this.args);
-		this.baseClasses = baseClasses; parentizeI(this.baseClasses);
-		this.members = members; parentizeI(this.members);
+		this.allocargs = parentizeI(allocargs);
+		this.args = parentizeI(args);
+		this.baseClasses = parentizeI(baseClasses);
+		this.members = parentizeI(members);
 	}
 	
 	@Override

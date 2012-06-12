@@ -7,17 +7,18 @@ import java.util.Iterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationAnonMember extends ASTNeoNode implements INonScopedBlock {
 	
-	public NodeList body;
+	public final NodeList body;
 	
 	public DeclarationAnonMember(NodeList body, SourceRange sourceRange) {
 		assertNotNull(body);
 		initSourceRange(sourceRange);
-		this.body = body; parentize(this.body);
+		this.body = NodeList.parentizeNodeList(body, this);
 	}
 	
 	@Override

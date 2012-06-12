@@ -15,7 +15,6 @@ import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.references.RefReturn;
 import dtool.ast.references.RefTypeSlice;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
 import dtool.ast.references.TypeDelegate;
 import dtool.ast.references.TypeDynArray;
 import dtool.ast.references.TypeFunction;

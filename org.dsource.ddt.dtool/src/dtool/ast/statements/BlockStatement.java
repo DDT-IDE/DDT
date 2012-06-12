@@ -16,12 +16,12 @@ import dtool.util.ArrayView;
  */
 public class BlockStatement extends Statement implements IScopeNode {
 	
-	public ArrayView<IStatement> statements;
+	public final ArrayView<IStatement> statements;
 	public boolean hasCurlyBraces; // syntax-structural?
 	
 	public BlockStatement(ArrayView<IStatement> statements, boolean hasCurlyBraces, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.statements = statements; parentizeI(this.statements);
+		this.statements = parentizeI(statements);
 		this.hasCurlyBraces = hasCurlyBraces;
 	}
 	

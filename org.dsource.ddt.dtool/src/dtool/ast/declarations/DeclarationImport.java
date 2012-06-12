@@ -26,7 +26,7 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 	public DeclarationImport(ArrayView<ImportFragment> imports, boolean isStatic, boolean isTransitive,
 			SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.imports = imports; parentize(this.imports);
+		this.imports = parentize(imports);
 		this.isStatic = isStatic;
 		this.isTransitive = isTransitive;
 	}
@@ -70,8 +70,9 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 		String str = "";
 		for (int i = 0; i < imports.size(); i++) {
 			ImportFragment fragment = imports.get(i);
-			if(i > 0)
+			if(i > 0) {
 				str = str + ", ";
+			}
 			str = str + fragment.toStringAsElement();
 		}
 		return "[import "+str+"]";

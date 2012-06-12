@@ -14,12 +14,12 @@ import dtool.refmodel.INonScopedBlock;
 public class DeclarationStringMacro extends ASTNeoNode implements IStatement, INonScopedBlock {
 	
 	public final Resolvable exp;
-
+	
 	public DeclarationStringMacro(Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
+		this.exp = parentize(exp);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -34,5 +34,5 @@ public class DeclarationStringMacro extends ASTNeoNode implements IStatement, IN
 		// TODO: parse the exp string
 		return IteratorUtil.getEMPTY_ITERATOR();
 	}
-
+	
 }

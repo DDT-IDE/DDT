@@ -10,7 +10,7 @@ public class InitializerExp extends Initializer {
 	
 	public InitializerExp(Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
+		this.exp = parentize(exp);
 	}
 	
 	@Override

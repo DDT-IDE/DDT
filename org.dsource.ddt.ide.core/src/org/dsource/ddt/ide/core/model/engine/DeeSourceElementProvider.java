@@ -369,7 +369,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		setupDefinitionTypeInfo(elem, methodInfo);
 		
 		setupParametersInfo(elem, methodInfo);
-		methodInfo.returnType = typeRefToUIString(elem.rettype);
+		methodInfo.returnType = typeRefToUIString(elem.retType);
 		return methodInfo;
 	}
 	

@@ -23,22 +23,15 @@ public abstract class PartialPackageDefUnit extends DefUnit implements IScopeNod
 		super(null, name, null);
 	}
 	
-	public static PartialPackageDefUnit createPartialDefUnits(
-			String[] packages, RefModule entModule, Module module) {
+	public static PartialPackageDefUnit createPartialDefUnits(String[] packages, RefModule entModule, Module module) {
 		TokenInfo defname = new TokenInfo(packages[0]);
 		if(packages.length == 1 ) {
-			PartialPackageDefUnitOfModule packageDefUnit =  new PartialPackageDefUnitOfModule(defname);
-			packageDefUnit.module = module;
-			packageDefUnit.moduleRef = entModule;
-			return packageDefUnit;
+			return new PartialPackageDefUnitOfModule(defname, module, entModule);
 		} else {
-			PartialPackageDefUnitOfPackage packageDefUnit =  new PartialPackageDefUnitOfPackage(defname);
 			String[] newNames = ArrayUtil.copyOfRange(packages, 1, packages.length);
-			packageDefUnit.child = createPartialDefUnits(newNames, entModule, null);
-			return packageDefUnit;
+			return new PartialPackageDefUnitOfPackage(defname, createPartialDefUnits(newNames, entModule, null));
 		}
 	}
-	
 	
 	@Override
 	public EArcheType getArcheType() {

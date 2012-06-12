@@ -16,25 +16,25 @@ import dtool.refmodel.IScopeNode;
 
 public class TypeMapArray extends CommonRefNative {
 	
-	public final Reference keytype;
-	public final Reference valuetype;
-
+	public final Reference keyType;
+	public final Reference valueType;
+	
 	public TypeMapArray(Reference keyType, Reference valueType, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.keytype = keyType; parentize(this.keytype);
-		this.valuetype = valueType; parentize(this.valuetype);
+		this.keyType = parentize(keyType);
+		this.valueType = parentize(valueType);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, keytype);
-			TreeVisitor.acceptChildren(visitor, valuetype);
+			TreeVisitor.acceptChildren(visitor, keyType);
+			TreeVisitor.acceptChildren(visitor, valueType);
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
 		return DefUnitSearch.wrapResult(IntrinsicMapArray.instance);
@@ -42,7 +42,7 @@ public class TypeMapArray extends CommonRefNative {
 	
 	@Override
 	public String toStringAsElement() {
-		return valuetype.toStringAsElement() + "["+keytype.toStringAsElement()+"]";
+		return valueType.toStringAsElement() + "["+keyType.toStringAsElement()+"]";
 	}
 	
 	public static class IntrinsicMapArray extends NativeDefUnit {
@@ -51,8 +51,8 @@ public class TypeMapArray extends CommonRefNative {
 		}
 		
 		public static final IntrinsicMapArray instance = new IntrinsicMapArray();
-
-
+		
+		
 		@Override
 		public IScopeNode getMembersScope() {
 			// TODO Auto-generated method stub
@@ -69,4 +69,5 @@ public class TypeMapArray extends CommonRefNative {
 			return null;
 		}
 	}
+	
 }

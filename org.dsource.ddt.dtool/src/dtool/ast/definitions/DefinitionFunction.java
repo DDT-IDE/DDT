@@ -26,7 +26,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	
 	//public Identifier outId;
 	public descent.internal.compiler.parser.LINK linkage; // ???
-	public final Reference rettype;
+	public final Reference retType;
 	public final ArrayView<TemplateParameter> templateParams;
 	public final ArrayView<IFunctionParameter> params;
 	public final int varargs;
@@ -37,25 +37,26 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	
 	//public descent.internal.compiler.parser.TypeFunction type;
 	
-	public DefinitionFunction(DefUnitDataTuple defunitData, PROT prot, Reference rettype, ArrayView<IFunctionParameter> params, int varargs, IStatement frequire, IStatement fensure,
+	public DefinitionFunction(DefUnitDataTuple defunitData, PROT prot, Reference retType,
+			ArrayView<IFunctionParameter> params, int varargs, IStatement frequire, IStatement fensure, 
 			IStatement fbody) {
 		super(defunitData, prot);
-		assertNotNull(rettype);
+		assertNotNull(retType);
 		
-		this.rettype = rettype; parentize(this.rettype);
+		this.retType = parentize(retType);
 		this.templateParams = null; // TODO BUG here
-		this.params = params; parentizeI(this.params);
+		this.params = parentizeI(params);
 		this.varargs = varargs;
-		this.frequire = frequire; parentizeI(this.frequire);
-		this.fensure = fensure; parentizeI(this.fensure);
-		this.fbody = fbody; parentizeI(fbody);
+		this.frequire = parentizeI(frequire);
+		this.fensure = parentizeI(fensure);
+		this.fbody = parentizeI(fbody);
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, rettype);
+			TreeVisitor.acceptChildren(visitor, retType);
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, templateParams);
 			TreeVisitor.acceptChildren(visitor, params);
@@ -122,7 +123,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	@Override
 	public String toStringForHoverSignature() {
 		String str = ""
-			+ rettype.toStringAsElement() + " " + getName() 
+			+ retType.toStringAsElement() + " " + getName() 
 			+ ASTPrinter.toStringParamListAsElements(templateParams)
 			+ toStringParametersForSignature(params, varargs);
 		return str;
@@ -134,7 +135,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		return getName()
 			+ ASTPrinter.toStringParamListAsElements(templateParams)
 			+ toStringParametersForSignature(params, varargs) 
-			+ "  " + rettype.toStringAsElement()
+			+ "  " + retType.toStringAsElement()
 			+ " - " + NodeUtil.getOuterDefUnit(this).toStringAsElement();
 	}
 	

@@ -19,10 +19,10 @@ public class RefQualified extends CommonRefQualified {
 	public final IDefUnitReferenceNode qualifier; //Entity or Expression
 	
 	public RefQualified(IDefUnitReferenceNode qualifier, RefIdentifier qualifiedName) {
+		super(qualifiedName);
 		assertNotNull(qualifier);
 		assertNotNull(qualifiedName);
-		this.qualifier = qualifier; parentizeI(this.qualifier);
-		this.qualifiedName = qualifiedName; parentize(this.qualifiedName);
+		this.qualifier = parentizeI(qualifier);
 	}
 	
 	public RefQualified(IDefUnitReferenceNode rootRef, RefIdentifier subRef, SourceRange sourceRange) {

@@ -20,13 +20,13 @@ public class StatementTry extends Statement {
 		
 		public final IFunctionParameter param;
 		public final IStatement body;
-
+		
 		public CatchClause(IFunctionParameter param, IStatement body, SourceRange sourceRange) {
 			initSourceRange(sourceRange);
-			this.param = param; parentizeI(this.param);
-			this.body = body; parentizeI(this.body);
+			this.param = parentizeI(param);
+			this.body = parentizeI(body);
 		}
-
+		
 		@Override
 		public void accept0(IASTNeoVisitor visitor) {
 			boolean children = visitor.visit(this);
@@ -50,30 +50,30 @@ public class StatementTry extends Statement {
 		public boolean hasSequentialLookup() {
 			return false;
 		}
-
+		
 	}
-
+	
 	public final IStatement body;
 	public final ArrayView<CatchClause> params;
-	public final IStatement finallybody;
-
+	public final IStatement finallyBody;
+	
 	public StatementTry(IStatement body, ArrayView<CatchClause> params, IStatement finallyBody, 
 			SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.body = body; parentizeI(this.body);
-		this.params = params; parentize(this.params);
-		this.finallybody = finallyBody; parentizeI(this.finallybody);
+		this.body = parentizeI(body);
+		this.params = parentize(params);
+		this.finallyBody = parentizeI(finallyBody);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, params);
 			TreeVisitor.acceptChildren(visitor, body);
-			TreeVisitor.acceptChildren(visitor, finallybody);
+			TreeVisitor.acceptChildren(visitor, finallyBody);
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

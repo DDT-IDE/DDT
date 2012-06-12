@@ -16,7 +16,6 @@ import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
-import dtool.ast.declarations.NodeList;
 import dtool.ast.definitions.Module;
 import dtool.descentadapter.DefinitionConverter;
 import dtool.refmodel.IScope;
@@ -173,7 +172,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	}
 	
 	
-	public final void accept0(@SuppressWarnings("unused") IASTVisitor visitor) {
+	public static final void accept0(@SuppressWarnings("unused") IASTVisitor visitor) {
 		Assert.fail("NEO AST elements should not use IASTVisitor");
 	}
 	
@@ -188,12 +187,6 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	public Module getModuleNode() {
 		return NodeUtil.getParentModule(this);
 	}
-	
-	@Deprecated
-	public final void convertNode(ASTDmdNode node) {
-		setSourceRange(node);
-	}
-	
 	
 	/* =============== STRING FUNCTIONS =============== */
 	
@@ -237,12 +230,12 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		return "<"+toStringAsElement()+">";
 	}
 	
-	/** Set the parent of the given collection to this.  */
-	protected void parentize(ArrayView<? extends ASTNeoNode> collection) {
-		parentize(collection, false);
+	/** Set the parent of the given collection to the receiver. @return collection */
+	protected <T extends ASTNeoNode> ArrayView<T> parentize(ArrayView<T> collection) {
+		return parentize(collection, false);
 	}
 	
-	protected void parentize(ArrayView<? extends ASTNeoNode> collection, boolean allowNulls) {
+	protected <T extends ASTNeoNode> ArrayView<T> parentize(ArrayView<T> collection, boolean allowNulls) {
 		if (collection != null) {
 			for (ASTNeoNode node : collection) {
 				if(node != null) {
@@ -252,28 +245,25 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 				}
 			}
 		}
+		return collection;
 	}
 	
-	/** Set the parent of the given node to this.  */
-	protected void parentize(ASTNeoNode node) {
+	/** Set the parent of the given node to the receiver. @return node */
+	protected <T extends ASTNeoNode> T parentize(T node) {
 		if (node != null) {
 			node.setParent(this);
 		}
+		return node;
 	}
 	
-	protected void parentize(NodeList node) {
-		if (node != null)
-			parentize(node.nodes);
-	}
-	
-	/** Set the parent of the given node to this.  */
-	protected void parentizeI(IASTNeoNode node) {
+	protected <T extends IASTNeoNode> T parentizeI(T node) {
 		parentize((ASTNeoNode) node);
+		return node;
 	}
 	
-	/** Set the parent of the given collection to this.  */
-	protected void parentizeI(ArrayView<? extends IASTNeoNode> collection) {
+	protected <T extends IASTNeoNode> ArrayView<T> parentizeI(ArrayView<T> collection) {
 		parentize(CoreUtil.<ArrayView<ASTNeoNode>>blindCast(collection), false);
+		return collection;
 	}
 	
 }

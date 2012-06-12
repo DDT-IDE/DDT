@@ -20,7 +20,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	public DefinitionClass(DefUnitDataTuple dudt, PROT prot, ArrayView<ASTNeoNode> members,
 			ArrayView<BaseClass> baseClasses) {
 		super(dudt, prot, members);
-		this.baseClasses = baseClasses; parentize(this.baseClasses);
+		this.baseClasses = parentize(baseClasses);
 	}
 	
 	@Override

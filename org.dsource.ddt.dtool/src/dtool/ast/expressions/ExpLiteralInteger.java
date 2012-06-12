@@ -13,18 +13,18 @@ public class ExpLiteralInteger extends Expression {
 		initSourceRange(sourceRange);
 		this.num = value;
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		visitor.visit(this);
 		visitor.endVisit(this);	 
 	}
-
+	
 	@Override
 	public String toStringAsElement() {
 		if(num == null)
 			return "__<SPECIAL>__";
 		return num.toString();
 	}
-
+	
 }

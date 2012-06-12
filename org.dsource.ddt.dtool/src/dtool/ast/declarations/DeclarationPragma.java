@@ -3,6 +3,7 @@ package dtool.ast.declarations;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Resolvable;
@@ -16,8 +17,8 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	
 	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, NodeList body, SourceRange sourceRange) {
 		super(body, sourceRange);
-		this.ident = id; parentize(this.ident);
-		this.expressions = expressions; parentize(this.expressions);
+		this.ident = parentize(id);
+		this.expressions = parentize(expressions);
 	}
 	
 	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, ArrayView<ASTNeoNode> body,
@@ -42,4 +43,5 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	public String toStringAsElement() {
 		return "[pragma("+ident+",...)]";
 	}
+	
 }

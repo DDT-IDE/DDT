@@ -9,16 +9,16 @@ import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
 
 public class DefinitionTypedef extends Definition implements IStatement {
-
+	
 	public final Reference type;
 	public final Initializer initializer;
 	
 	public DefinitionTypedef(DefUnitDataTuple dudt, PROT prot, Reference type, Initializer initializer) {
 		super(dudt, prot);
-		this.type = type; parentize(this.type);
-		this.initializer = initializer; parentize(this.initializer);
+		this.type = parentize(type);
+		this.initializer = parentize(initializer);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -29,7 +29,7 @@ public class DefinitionTypedef extends Definition implements IStatement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Typedef;
@@ -42,9 +42,7 @@ public class DefinitionTypedef extends Definition implements IStatement {
 	
 	@Override
 	public String toStringForCodeCompletion() {
-		return getName() +" -> "+ type.toStringAsElement() 
-		+" - "+ getModuleScope().toStringAsElement();
+		return getName() +" -> "+ type.toStringAsElement() +" - "+ getModuleScope().toStringAsElement();
 	}
-
-
+	
 }

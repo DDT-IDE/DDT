@@ -40,8 +40,6 @@ import dtool.ast.definitions.Module;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
-import dtool.ast.statements.Statement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.util.ArrayView;
 
@@ -213,9 +211,9 @@ public class DefinitionConverter extends BaseDmdConverter {
 			rettype,
 			DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
 			convertVarArgs(elemTypeFunc.varargs),
-			Statement.convert(elem.frequire, convContext),
-			Statement.convert(elem.fensure, convContext),
-			Statement.convert(elem.fbody, convContext)
+			StatementConverterVisitor.convertStatement(elem.frequire, convContext),
+			StatementConverterVisitor.convertStatement(elem.fensure, convContext),
+			StatementConverterVisitor.convertStatement(elem.fbody, convContext)
 		);
 		
 		return definitionFunction;
@@ -260,7 +258,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR, 
 			nullToEmpty(DescentASTConverter.convertMany(elem.arguments, IFunctionParameter.class, convContext)),
 			convertVarArgs(elem.varargs),
-			Statement.convert(elem.fbody, convContext),
+			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)
 		);
 	}
@@ -274,7 +272,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			DefinitionCtor.SpecialFunctionKind.DESTRUCTOR, 
 			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
 			0,
-			Statement.convert(elem.fbody, convContext),
+			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
 			elem.thisStart - 1, DefinitionConverter.sourceRange(elem)
 		);
 	}
@@ -284,7 +282,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR,
 			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
 			0,
-			Statement.convert(elem.fbody, convContext),
+			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
 			elem.thisStart, DefinitionConverter.sourceRange(elem)
 		);
 	}
@@ -294,7 +292,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			DefinitionCtor.SpecialFunctionKind.DESTRUCTOR,
 			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
 			0,
-			Statement.convert(elem.fbody, convContext),
+			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
 			elem.thisStart - 1, DefinitionConverter.sourceRange(elem)
 		);
 	}
@@ -304,7 +302,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			DefinitionCtor.SpecialFunctionKind.ALLOCATOR,
 			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
 			convertVarArgs(elem.varargs),
-			Statement.convert(elem.fbody, convContext),
+			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
 			elem.newStart, DefinitionConverter.sourceRange(elem)
 		);
 	}
@@ -314,7 +312,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			DefinitionCtor.SpecialFunctionKind.DEALLOCATOR,
 			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
 			0,
-			Statement.convert(elem.fbody, convContext),
+			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
 			elem.deleteStart, DefinitionConverter.sourceRange(elem)
 		);
 	}

@@ -6,14 +6,14 @@ import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
 public class StatementGotoCase extends Statement {
-
+	
 	public Resolvable exp;
 	
 	public StatementGotoCase(Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
+		this.exp = parentize(exp);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -22,5 +22,5 @@ public class StatementGotoCase extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

@@ -45,7 +45,7 @@ public class InfixExpression extends Expression {
 		int POW_ASSIGN = 46;
 		int POW = 47;
 	}
-
+	
 	public final Resolvable leftExp;
 	public final Resolvable rightExp;
 	
@@ -53,9 +53,9 @@ public class InfixExpression extends Expression {
 	
 	public InfixExpression(Resolvable left, int kind, Resolvable right, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.leftExp = left; parentize(this.leftExp);
+		this.leftExp = parentize(left);
 		this.kind = kind; 
-		this.rightExp = right; parentize(this.rightExp);
+		this.rightExp = parentize(right);
 	}
 	
 	@Override
@@ -67,5 +67,5 @@ public class InfixExpression extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

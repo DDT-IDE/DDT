@@ -15,10 +15,10 @@ import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
 public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, IScopeNode {
-
+	
 	/** A module like class, contained all native defunits. */
 	public static class NativesScope implements IScope {
-
+		
 		public NativesScope() {
 		}
 		
@@ -47,7 +47,7 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 		public String toString() {
 			return "<natives>";
 		}
-
+		
 		@Override
 		public String toStringAsElement() {
 			return toString();
@@ -68,7 +68,7 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 	public static final NativesScope nativesScope = new NativesScope();
 	//public static final DefUnit unknown = new NativesScope();
 	public static final IDefUnitReference nullReference = new UndeterminedReference();
-
+	
 	public NativeDefUnit(String name) {
 		super(null, new TokenInfo(name), null);
 		setSourceRange(0, 0); // should we do this?
@@ -94,10 +94,10 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 	}
 	
 	//public abstract IScope getSuperScope();
-
+	
 	@Override
 	public IScope getModuleScope() {
 		return nativesScope;
 	}
-
+	
 }

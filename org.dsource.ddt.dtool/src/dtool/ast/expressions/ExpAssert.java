@@ -11,10 +11,10 @@ public class ExpAssert extends Expression {
 	
 	public ExpAssert(Resolvable exp, Resolvable msg, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
-		this.msg = msg; parentize(this.msg);
+		this.exp = parentize(exp);
+		this.msg = parentize(msg);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);

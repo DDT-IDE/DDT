@@ -2,6 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 
@@ -10,10 +11,11 @@ public class DeclarationConditionalDV extends DeclarationConditional {
 	public final Symbol ident;
 	public final boolean isDebug;
 	
-	public DeclarationConditionalDV(boolean isDebug, Symbol id, NodeList thenDecls, NodeList elseDecls, SourceRange sourceRange) {
+	public DeclarationConditionalDV(boolean isDebug, Symbol id, NodeList thenDecls, NodeList elseDecls,
+			SourceRange sourceRange) {
 		super(thenDecls, elseDecls, sourceRange );
 		this.isDebug = isDebug;
-		this.ident = id; parentize(this.ident);
+		this.ident = parentize(id);
 	}
 	
 	@Override
@@ -21,8 +23,8 @@ public class DeclarationConditionalDV extends DeclarationConditional {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, ident);
-			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(thendecls));
-			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(elsedecls));
+			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(thenDecls));
+			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(elseDecls));
 		}
 		visitor.endVisit(this);
 	}
@@ -35,4 +37,5 @@ public class DeclarationConditionalDV extends DeclarationConditional {
 			return "["+ (isDebug?"debug":"version")+"()]";
 		}
 	}
+	
 }

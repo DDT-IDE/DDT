@@ -7,12 +7,12 @@ import dtool.ast.SourceRange;
 public class StatementVolatile extends Statement {
 	
 	public final IStatement st;
-
+	
 	public StatementVolatile(IStatement st, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.st = st; parentizeI(this.st);
+		this.st = parentizeI(st);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -21,5 +21,5 @@ public class StatementVolatile extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

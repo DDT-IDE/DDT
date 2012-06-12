@@ -22,22 +22,22 @@ import dtool.util.ArrayView;
  */
 public class TypeDelegate extends CommonRefNative {
 	
-	public final Reference rettype;
+	public final Reference retType;
 	public final ArrayView<IFunctionParameter> params;
 	public final int varargs;
 	
-	public TypeDelegate(Reference rettype, ArrayView<IFunctionParameter> params, int varargs, SourceRange sourceRange) {
+	public TypeDelegate(Reference retType, ArrayView<IFunctionParameter> params, int varargs, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.rettype = rettype; parentize(this.rettype);
+		this.retType = parentize(retType);
 		this.varargs = varargs;
-		this.params = params; parentizeI(this.params);
+		this.params = parentizeI(params);
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, rettype);
+			TreeVisitor.acceptChildren(visitor, retType);
 			TreeVisitor.acceptChildren(visitor, params);
 		}
 		visitor.endVisit(this);
@@ -51,7 +51,7 @@ public class TypeDelegate extends CommonRefNative {
 	
 	@Override
 	public String toStringAsElement() {
-		return Reference.maybeNullReference(rettype).toStringAsElement() 
+		return Reference.maybeNullReference(retType).toStringAsElement() 
 				+ " delegate"  
 				+ DefinitionFunction.toStringParametersForSignature(params, varargs);
 	}
@@ -80,4 +80,5 @@ public class TypeDelegate extends CommonRefNative {
 			return null;
 		}
 	}
+	
 }

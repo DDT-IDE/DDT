@@ -8,6 +8,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.TOK;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -60,7 +61,7 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 		
 		public IsTypeScope(NodeList nodes, SourceRange sourceRange) {
 			initSourceRange(sourceRange);
-			this.nodelist = nodes; parentize(this.nodelist);
+			this.nodelist = NodeList.parentizeNodeList(nodes, this);
 		}
 		
 		@Override
@@ -102,8 +103,8 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 		this.arg = arg; parentize(this.arg);
 		this.defUnit = new IsTypeDefUnit(id, idSourceRange); parentize(this.defUnit);
 		this.tok = tok;
-		this.specType = specType; parentize(this.specType);
-		this.thendeclsScope = new IsTypeScope(this.thendecls, innerRange); parentize(this.thendeclsScope); //BUG here
+		this.specType = parentize(specType);
+		this.thendeclsScope = new IsTypeScope(this.thenDecls, innerRange); parentize(this.thendeclsScope); //BUG here
 	}
 	
 	@Override
@@ -114,7 +115,7 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 			TreeVisitor.acceptChildren(visitor, defUnit);
 			TreeVisitor.acceptChildren(visitor, specType);
 			TreeVisitor.acceptChildren(visitor, thendeclsScope);
-			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(elsedecls));
+			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(elseDecls));
 		}
 		visitor.endVisit(this);
 	}

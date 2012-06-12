@@ -6,27 +6,27 @@ import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
 public class StatementIf extends Statement {
-
-	public Resolvable pred;
-	public IStatement thenbody;
-	public IStatement elsebody;
-
+	
+	public final Resolvable pred;
+	public final IStatement thenBody;
+	public final IStatement elseBody;
+	
 	public StatementIf(Resolvable pred, IStatement thenBody, IStatement elseBody, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.pred = pred; parentize(this.pred);
-		this.thenbody = thenBody; parentizeI(this.thenbody);
-		this.elsebody = elseBody; parentizeI(this.elsebody);
+		this.pred = parentize(pred);
+		this.thenBody = parentizeI(thenBody);
+		this.elseBody = parentizeI(elseBody);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, pred);
-			TreeVisitor.acceptChildren(visitor, thenbody);
-			TreeVisitor.acceptChildren(visitor, elsebody);
+			TreeVisitor.acceptChildren(visitor, thenBody);
+			TreeVisitor.acceptChildren(visitor, elseBody);
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

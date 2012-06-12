@@ -20,10 +20,9 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 		super(dudt);
 		// assertNotNull(this.type);
 		this.storageClass = storageClass;
-		this.type = type; parentize(this.type);
-		this.defaultValue = defaultValue; parentize(this.defaultValue);
+		this.type = parentize(type);
+		this.defaultValue = parentize(defaultValue);
 	}
-
 	
 	@Override
 	public EArcheType getArcheType() {
@@ -41,7 +40,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 		}
 		visitor.endVisit(this);	
 	}
-
+	
 	@Override
 	public IScopeNode getMembersScope() {
 		Collection<DefUnit> defunits = type.findTargetDefUnits(true);
@@ -61,7 +60,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 		return getName() + "   " + type.toStringAsElement() + " - "
 				+ NodeUtil.getOuterDefUnit(this).toStringAsElement();
 	}
-
+	
 	@Override
 	public String toStringAsFunctionSignaturePart() {
 		return type.toStringAsElement() + " " + getName();
@@ -71,12 +70,12 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	public String toStringAsFunctionSimpleSignaturePart() {
 		return type.toStringAsElement();
 	}
-
+	
 	@Override
 	public String toStringInitializer() {
 		if(defaultValue == null)
 			return null;
 		return defaultValue.toStringAsElement();
 	}
-
+	
 }

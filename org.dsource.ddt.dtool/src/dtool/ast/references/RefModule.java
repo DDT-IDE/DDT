@@ -23,7 +23,6 @@ import dtool.util.ArrayView;
  */
 public class RefModule extends NamedReference {
 	
-	//public String packageName;
 	public final ArrayView<String> packages;
 	public final String module;
 	
@@ -32,7 +31,7 @@ public class RefModule extends NamedReference {
 		this.packages = packages;
 		this.module = module;
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -42,7 +41,7 @@ public class RefModule extends NamedReference {
 		}
 		visitor.endVisit(this);	
 	}
-
+	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(boolean findOneOnly) {
 		Module originMod = NodeUtil.getParentModule(this);
@@ -51,20 +50,21 @@ public class RefModule extends NamedReference {
 	}
 	
 	public static class LiteModuleDummy extends DefUnit {
+		
 		public LiteModuleDummy(String defname) {
 			super(null, new TokenInfo(defname), null);
 		}
-
+		
 		@Override
 		public EArcheType getArcheType() {
 			return EArcheType.Module;
 		}
-
+		
 		@Override
 		public IScopeNode getMembersScope() {
 			assertFail(); return null;
 		}
-
+		
 		@Override
 		public void accept0(IASTNeoVisitor visitor) {
 			assertFail();
@@ -90,7 +90,7 @@ public class RefModule extends NamedReference {
 	@Override
 	public void doSearch(PrefixDefUnitSearch search) {
 		String prefix = search.searchOptions.searchPrefix;
-
+		
 		Module module = NodeUtil.getParentModule(this);
 		String[] strings = ReferenceResolver.findModules(module, prefix);
 		for (int i = 0; i < strings.length; i++) {
@@ -98,7 +98,6 @@ public class RefModule extends NamedReference {
 			
 			search.addMatch(new LiteModuleDummy(name));		
 		}
-
 	}
 	
 	@Override
@@ -109,5 +108,5 @@ public class RefModule extends NamedReference {
 		else
 			return str + "." + module;
 	}
-
+	
 }

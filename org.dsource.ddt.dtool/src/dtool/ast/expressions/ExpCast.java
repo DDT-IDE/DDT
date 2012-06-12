@@ -12,8 +12,8 @@ public class ExpCast extends Expression {
 	
 	public ExpCast(Expression exp, Reference type, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
-		this.type = type; parentize(this.type);
+		this.exp = parentize(exp);
+		this.type = parentize(type);
 	}
 	
 	@Override

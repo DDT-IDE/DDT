@@ -3,6 +3,7 @@ package dtool.ast.declarations;
 import descent.internal.compiler.parser.LINK;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 import dtool.util.ArrayView;
@@ -15,12 +16,12 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 		super(new NodeList(decls, hasCurlies), sourceRange);
 		this.linkage = link;
 	}
-
+	
 	public DeclarationLinkage(LINK link, NodeList decls, SourceRange sourceRange) {
 		super(decls, sourceRange);
 		this.linkage = link;
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -34,5 +35,5 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	public String toStringAsElement() {
 		return "[extern("+linkage+")]";
 	}
-
+	
 }

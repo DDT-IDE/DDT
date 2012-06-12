@@ -1,22 +1,21 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.refmodel.IDefUnitReferenceNode;
 
 public class ExpSlice extends Expression {
-
+	
 	public final IDefUnitReferenceNode slicee;
 	public final Resolvable from;
 	public final Resolvable to;
 	
 	public ExpSlice(Resolvable slicee, Resolvable from, Resolvable to, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.slicee = slicee; parentize((ASTNeoNode) this.slicee);
-		this.from = from; parentize(this.from);
-		this.to = to; parentize(this.to);
+		this.slicee = parentizeI(slicee);
+		this.from = parentize(from);
+		this.to = parentize(to);
 	}
 	
 	@Override
@@ -29,5 +28,5 @@ public class ExpSlice extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

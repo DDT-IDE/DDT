@@ -5,31 +5,32 @@ import java.util.Iterator;
 import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
 public abstract class DeclarationConditional extends ASTNeoNode implements IStatement, INonScopedBlock {
 	
-	public final NodeList thendecls;
-	public final NodeList elsedecls;
+	public final NodeList thenDecls;
+	public final NodeList elseDecls;
 	
 	public DeclarationConditional(NodeList thenDecls, NodeList elseDecls, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.thendecls = thenDecls; parentize(thenDecls);
-		this.elsedecls = elseDecls; parentize(elsedecls);
+		this.thenDecls = NodeList.parentizeNodeList(thenDecls, this);
+		this.elseDecls = NodeList.parentizeNodeList(elseDecls, this);
 	}
 	
 	@Override
 	public Iterator<ASTNeoNode> getMembersIterator() {
-		if(thendecls == null && elsedecls == null)
+		if(thenDecls == null && elseDecls == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
-		if(thendecls == null)
-			return elsedecls.nodes.iterator();
-		if(elsedecls == null)
-			return thendecls.nodes.iterator();
+		if(thenDecls == null)
+			return elseDecls.nodes.iterator();
+		if(elseDecls == null)
+			return thenDecls.nodes.iterator();
 		
-		return new ChainedIterator<ASTNeoNode>(thendecls.nodes.iterator(), elsedecls.nodes.iterator()); 
+		return new ChainedIterator<ASTNeoNode>(thenDecls.nodes.iterator(), elseDecls.nodes.iterator()); 
 	}
 	
 }

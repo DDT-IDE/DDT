@@ -23,16 +23,16 @@ import dtool.util.ArrayView;
  */
 public class TypeFunction extends CommonRefNative {
 	
-	public final Reference rettype;
+	public final Reference retType;
 	public final ArrayView<IFunctionParameter> params;
 	public final int varargs;
 	public final LINK linkage;
-
+	
 	public TypeFunction(Reference retType, ArrayView<IFunctionParameter> params, int varArgs, LINK linkage,
 			SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.rettype = retType; parentize(this.rettype);
-		this.params = params; parentizeI(this.params);
+		this.retType = parentize(retType);
+		this.params = parentizeI(params);
 		this.varargs = varArgs;
 		this.linkage = linkage;
 	}
@@ -42,7 +42,7 @@ public class TypeFunction extends CommonRefNative {
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, rettype);
+			TreeVisitor.acceptChildren(visitor, retType);
 			TreeVisitor.acceptChildren(visitor, params);
 		}
 		visitor.endVisit(this);
@@ -55,19 +55,19 @@ public class TypeFunction extends CommonRefNative {
 	
 	@Override
 	public String toStringAsElement() {
-		return Reference.maybeNullReference(rettype).toStringAsElement() 
-		+ " function"  
-		+ DefinitionFunction.toStringParametersForSignature(params, varargs);
+		return Reference.maybeNullReference(retType).toStringAsElement() 
+				+ " function"  
+				+ DefinitionFunction.toStringParametersForSignature(params, varargs);
 	}
-
+	
 	
 	public static class IntrinsicFunction extends NativeDefUnit {
 		public IntrinsicFunction() {
 			super("<funtion>");
 		}
-
+		
 		public static final IntrinsicFunction instance = new IntrinsicFunction();
-
+		
 		@Override
 		public IScopeNode getMembersScope() {
 			// TODO Auto-generated method stub

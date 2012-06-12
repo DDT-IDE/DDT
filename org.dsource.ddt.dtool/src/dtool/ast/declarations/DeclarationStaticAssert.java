@@ -8,16 +8,16 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
 
 public class DeclarationStaticAssert extends ASTNeoNode implements IStatement {
-
+	
 	public final Resolvable pred;
 	public final Resolvable msg;
 	
 	public DeclarationStaticAssert(Resolvable pred, Resolvable msg, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.pred = pred; parentize(this.pred);
-		this.msg = msg; parentize(this.msg);
+		this.pred = parentize(pred);
+		this.msg = parentize(msg);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -27,5 +27,5 @@ public class DeclarationStaticAssert extends ASTNeoNode implements IStatement {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

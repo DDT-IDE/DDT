@@ -2,6 +2,7 @@ package dtool.ast.declarations;
 
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.util.ArrayView;
 
@@ -14,11 +15,11 @@ public class DeclarationAlign extends DeclarationAttrib {
 		this.alignnum = align;
 	}
 	
-	public DeclarationAlign(long align, dtool.ast.declarations.NodeList decls, SourceRange sourceRange) {
+	public DeclarationAlign(long align, NodeList decls, SourceRange sourceRange) {
 		super(decls, sourceRange);
 		this.alignnum = align;
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -32,5 +33,5 @@ public class DeclarationAlign extends DeclarationAttrib {
 	public String toStringAsElement() {
 		return "[align("+alignnum+")]";
 	}
-
+	
 }

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
 import dtool.refmodel.INonScopedBlock;
@@ -24,7 +25,7 @@ public final class DeclarationStorageClass extends DeclarationAttrib {
 		super(decls, sourceRange);
 		this.stclass = stclass;
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -39,17 +40,17 @@ public final class DeclarationStorageClass extends DeclarationAttrib {
 		return "[DeclarationModifier]";
 		//return "["+stclass+"]";
 	}
-
+	
 	public void processEffectiveModifiers() {
 		INonScopedBlock block = this;
 		processEffectiveModifiers(block);
 	}
-
+	
 	private void processEffectiveModifiers(INonScopedBlock block) {
 		Iterator<? extends IASTNode> iter = block.getMembersIterator();
 		while(iter.hasNext()) {
 			IASTNode node = iter.next();
-	
+			
 			if(node instanceof Definition) {
 				Definition def = (Definition) node;
 				def.effectiveModifiers |= stclass;
@@ -61,5 +62,5 @@ public final class DeclarationStorageClass extends DeclarationAttrib {
 			}
 		}
 	}
-
+	
 }

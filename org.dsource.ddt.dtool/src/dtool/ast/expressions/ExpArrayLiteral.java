@@ -11,7 +11,7 @@ public class ExpArrayLiteral extends Expression {
 	
 	public ExpArrayLiteral(ArrayView<Resolvable> args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.args = args; parentize(this.args);
+		this.args = parentize(args);
 	}
 	
 	public ArrayView<Resolvable> getArgs() {

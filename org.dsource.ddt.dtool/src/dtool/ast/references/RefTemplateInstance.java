@@ -22,8 +22,8 @@ public class RefTemplateInstance extends Reference {
 		assertNotNull(refRawTemplate);
 		assertNotNull(tiargs);
 		initSourceRange(sourceRange);
-		this.refRawTemplate = refRawTemplate; parentize(this.refRawTemplate);
-		this.tiargs = tiargs; parentize(this.tiargs);
+		this.refRawTemplate = parentize(refRawTemplate);
+		this.tiargs = parentize(tiargs);
 	}
 	
 	@Override

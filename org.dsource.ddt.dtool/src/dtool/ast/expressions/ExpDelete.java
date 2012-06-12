@@ -5,14 +5,14 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 
 public class ExpDelete extends Expression {
-
+	
 	public final Resolvable exp;
 	
 	public ExpDelete(Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
+		this.exp = parentize(exp);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -21,5 +21,5 @@ public class ExpDelete extends Expression {
 		}
 		visitor.endVisit(this);	
 	}
-
+	
 }

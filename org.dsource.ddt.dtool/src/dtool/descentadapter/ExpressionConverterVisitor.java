@@ -127,8 +127,6 @@ import dtool.ast.expressions.PrefixExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
-import dtool.ast.references.ReferenceConverter;
-import dtool.ast.statements.Statement;
 import dtool.util.ArrayView;
 
 abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
@@ -339,9 +337,9 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 				ReferenceConverter.convertType(elemTypeFunc.next, convContext),
 				DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
 				DefinitionConverter.convertVarArgs(elemTypeFunc.varargs),
-				Statement.convert(element.fd.frequire, convContext),
-				Statement.convert(element.fd.fbody, convContext),
-				Statement.convert(element.fd.fensure, convContext),
+				StatementConverterVisitor.convertStatement(element.fd.frequire, convContext),
+				StatementConverterVisitor.convertStatement(element.fd.fbody, convContext),
+				StatementConverterVisitor.convertStatement(element.fd.fensure, convContext),
 				DefinitionConverter.sourceRange(element)
 			) 
 		);
@@ -441,6 +439,11 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(StringExp element) {
+// TODO: AST CONV: deal with elem.allStringExps
+//		this.strings = new char[elem.strings.size()][];
+//		for (int i = 0; i < elem.strings.size(); i++) {
+//			this.strings[i] = elem.strings.get(i).string;
+//		}
 		return endAdapt(new ExpLiteralString(new String(element.string), DefinitionConverter.sourceRange(element)));
 	}
 	

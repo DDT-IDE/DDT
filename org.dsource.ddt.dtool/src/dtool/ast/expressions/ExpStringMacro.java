@@ -5,12 +5,12 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 
 public class ExpStringMacro extends Expression {
-
+	
 	public final Resolvable exp;
-
+	
 	public ExpStringMacro(Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
+		this.exp = parentize(exp);
 	}
 	
 	@Override
@@ -21,5 +21,5 @@ public class ExpStringMacro extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

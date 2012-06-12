@@ -18,7 +18,7 @@ public class InvalidSyntaxDeclaration extends ASTNeoNode implements IStatement {
 	
 	public InvalidSyntaxDeclaration(SourceRange sourceRange, ArrayView<ASTNeoNode> children) {
 		initSourceRange(sourceRange);
-		this.genericChildren = children; parentize(genericChildren, true);
+		this.genericChildren = parentize(children, true);
 	}
 	
 	@Override

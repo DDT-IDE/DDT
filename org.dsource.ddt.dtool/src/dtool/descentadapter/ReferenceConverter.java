@@ -1,4 +1,4 @@
-package dtool.ast.references;
+package dtool.descentadapter;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -29,11 +29,14 @@ import dtool.ast.declarations.InvalidSyntaxDeclaration;
 import dtool.ast.definitions.MixinContainer;
 import dtool.ast.definitions.NamedMixin;
 import dtool.ast.expressions.ExpReference;
-import dtool.descentadapter.BaseDmdConverter;
-import dtool.descentadapter.DefinitionConverter;
-import dtool.descentadapter.DescentASTConverter;
+import dtool.ast.references.CommonRefQualified;
+import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefModuleQualified;
+import dtool.ast.references.RefQualified;
+import dtool.ast.references.RefTemplateInstance;
+import dtool.ast.references.Reference;
+import dtool.ast.references.TypeTypeof;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.descentadapter.ExpressionConverter;
 import dtool.refmodel.IDefUnitReferenceNode;
 import dtool.util.ArrayView;
 

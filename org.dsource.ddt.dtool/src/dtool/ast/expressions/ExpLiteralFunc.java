@@ -1,7 +1,6 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
@@ -11,7 +10,7 @@ import dtool.util.ArrayView;
 
 public class ExpLiteralFunc extends Expression {
 	
-	public final Reference rettype;
+	public final Reference retType;
 	public final ArrayView<IFunctionParameter> params;
 	public final int varargs;
 	
@@ -24,19 +23,19 @@ public class ExpLiteralFunc extends Expression {
 			IStatement fbody, IStatement fensure, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		
-		this.frequire = freq; parentize((ASTNeoNode) this.frequire); 
-		this.fbody = fbody; parentize((ASTNeoNode) this.fbody);
-		this.fensure = fensure; parentize((ASTNeoNode) this.fensure);
-		this.params = params; parentizeI(this.params);
+		this.frequire = parentizeI(freq); 
+		this.fbody = parentizeI(fbody);
+		this.fensure = parentizeI(fensure);
+		this.params = parentizeI(params);
 		this.varargs = varargs;
-		this.rettype = retType; parentize(this.rettype);
+		this.retType = parentize(retType);
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, rettype);
+			TreeVisitor.acceptChildren(visitor, retType);
 			TreeVisitor.acceptChildren(visitor, params);
 			TreeVisitor.acceptChildren(visitor, frequire);
 			TreeVisitor.acceptChildren(visitor, fbody);

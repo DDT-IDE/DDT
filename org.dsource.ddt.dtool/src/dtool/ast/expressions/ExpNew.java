@@ -12,12 +12,11 @@ public class ExpNew extends Expression {
 	public final Reference newtype;
 	public final ArrayView<Resolvable> args;
 	
-	public ExpNew(ArrayView<Resolvable> atorArgs, Reference type, ArrayView<Resolvable> args, 
-			SourceRange sourceRange) {
+	public ExpNew(ArrayView<Resolvable> atorArgs, Reference type, ArrayView<Resolvable> args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.allocargs = atorArgs; parentize(this.allocargs);
-		this.newtype = type; parentize(this.newtype);
-		this.args = args; parentize(this.args);
+		this.allocargs = parentize(atorArgs);
+		this.newtype = parentize(type);
+		this.args = parentize(args);
 	}
 	
 	@Override

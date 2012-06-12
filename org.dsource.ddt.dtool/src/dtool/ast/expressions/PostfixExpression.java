@@ -16,7 +16,7 @@ public class PostfixExpression extends Expression {
 	
 	public PostfixExpression(Resolvable exp, int kind, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
+		this.exp = parentize(exp);
 		this.kind = kind;
 	}
 	
@@ -28,5 +28,5 @@ public class PostfixExpression extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

@@ -14,7 +14,7 @@ public class ExpTraits extends Expression {
 	public ExpTraits(char[] traitsKeyword, ArrayView<ASTNeoNode> args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.traitsKeyword = traitsKeyword;
-		this.args = args; parentize(this.args);
+		this.args = parentize(args);
 	}
 	
 	@Override

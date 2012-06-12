@@ -15,13 +15,14 @@ import dtool.refmodel.IScopeNode;
  * A definition of a variable
  */
 public class DefinitionVariable extends Definition implements IStatement {
+	
 	public final Reference type;
 	public final Initializer init;
-
+	
 	public DefinitionVariable(DefUnitDataTuple dudt, PROT prot, Reference type, Initializer init) {
 		super(dudt, prot);
-		this.type = type; parentize(this.type);
-		this.init = init; parentize(this.init);
+		this.type = parentize(type);
+		this.init = parentize(init);
 	}
 	
 	@Override
@@ -53,7 +54,7 @@ public class DefinitionVariable extends Definition implements IStatement {
 			return type;
 		return NativeDefUnit.nullReference;
 	}
-
+	
 	@Override
 	public IScopeNode getMembersScope() {
 		Collection<DefUnit> defunits = determineType().findTargetDefUnits(true);
@@ -77,8 +78,7 @@ public class DefinitionVariable extends Definition implements IStatement {
 	
 	@Override
 	public String toStringForCodeCompletion() {
-		return defname.toStringAsElement() + "   " + getTypeString() + " - "
-				+ getModuleScope().toStringAsElement();
+		return defname.toStringAsElement() + "   " + getTypeString() + " - " + getModuleScope().toStringAsElement();
 	}
-
+	
 }

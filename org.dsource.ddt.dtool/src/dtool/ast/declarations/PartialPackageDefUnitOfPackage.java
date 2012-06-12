@@ -9,10 +9,11 @@ import dtool.ast.TokenInfo;
 
 public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
 	
-	PartialPackageDefUnit child;
+	protected final PartialPackageDefUnit child;
 	
-	protected PartialPackageDefUnitOfPackage(TokenInfo defname) {
+	protected PartialPackageDefUnitOfPackage(TokenInfo defname, PartialPackageDefUnit child) {
 		super(defname);
+		this.child = child; // BUG here?
 	}
 	
 	@Override
@@ -24,5 +25,5 @@ public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
 	public String toStringAsElement() {
 		return getName() /*+ "." + child.toStringAsElement()*/;
 	}
-
+	
 }

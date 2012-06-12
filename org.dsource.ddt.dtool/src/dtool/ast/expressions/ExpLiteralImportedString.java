@@ -7,12 +7,12 @@ import dtool.ast.SourceRange;
 public class ExpLiteralImportedString extends Expression {
 	
 	final public Resolvable exp; 
-
+	
 	public ExpLiteralImportedString(Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
+		this.exp = parentize(exp);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -21,5 +21,5 @@ public class ExpLiteralImportedString extends Expression {
 		}
 		visitor.endVisit(this);	 
 	}
-
+	
 }

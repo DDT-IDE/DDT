@@ -7,36 +7,36 @@ import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
 
 public class TemplateParamValue extends TemplateParameter {
-
+	
 	public final Reference type;
-	public final Resolvable specvalue;
-	public final Resolvable defaultvalue;
-
+	public final Resolvable specValue;
+	public final Resolvable defaultValue;
+	
 	public TemplateParamValue(DefUnitDataTuple dudt, Reference type, Resolvable specValue, Resolvable defaultValue) {
 		super(dudt);
-		this.type = type; parentize(this.type);
-		this.specvalue = specValue; parentize(this.specvalue);
-		this.defaultvalue = defaultValue; parentize(this.defaultvalue);
+		this.type = parentize(type);
+		this.specValue = parentize(specValue);
+		this.defaultValue = parentize(defaultValue);
 	}
-
+	
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Variable;
 	}
-
+	
 	@Override
 	public IScopeNode getMembersScope() {
 		return type.getTargetScope();
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, type);
 			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, specvalue);
-			TreeVisitor.acceptChildren(visitor, defaultvalue);
+			TreeVisitor.acceptChildren(visitor, specValue);
+			TreeVisitor.acceptChildren(visitor, defaultValue);
 		}
 		visitor.endVisit(this);	
 	}

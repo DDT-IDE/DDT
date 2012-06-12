@@ -12,8 +12,8 @@ public class ExpArrayIndex extends Expression {
 	
 	public ExpArrayIndex(Resolvable array, ArrayView<Resolvable> args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.array = array; parentize(this.array);
-		this.args = args; parentize(this.args);
+		this.array = parentize(array);
+		this.args = parentize(args);
 	}
 	
 	@Override

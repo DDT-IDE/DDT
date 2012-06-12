@@ -12,7 +12,7 @@ public class EnumMember extends DefUnit {
 	
 	public EnumMember(DefUnitDataTuple defunit, Resolvable value) {
 		super(defunit.sourceRange, defunit.defName, defunit.comments);
-		this.value = value; parentize(this.value);
+		this.value = parentize(value);
 	}
 	
 	@Override

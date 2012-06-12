@@ -47,11 +47,11 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 		}
 	}
 	
-	ImportAliasingDefUnit aliasDefUnit;
+	protected final ImportAliasingDefUnit aliasDefUnit;
 	
 	public ImportAliasing(DefUnitDataTuple dudt, RefModule refModule, SourceRange sourceRange) {
 		super(refModule, sourceRange);
-		this.aliasDefUnit = new ImportAliasingDefUnit(dudt, this); parentize(this.aliasDefUnit);
+		this.aliasDefUnit = new ImportAliasingDefUnit(dudt, this); parentize(this.aliasDefUnit); // BUG here? XXX: recheck this
 	}
 	
 	@Override
@@ -79,4 +79,5 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 	public String toStringAsElement() {
 		return aliasDefUnit.toStringAsElement() + " = "+ moduleRef.toStringAsElement() ;
 	}
+	
 }

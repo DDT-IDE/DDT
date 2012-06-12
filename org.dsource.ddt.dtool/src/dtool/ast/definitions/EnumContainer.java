@@ -18,8 +18,8 @@ public class EnumContainer extends ASTNeoNode implements IStatement, INonScopedB
 	
 	public EnumContainer(ArrayView<EnumMember> members, Reference type, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.members = members; parentize(this.members);
-		this.type = type; parentize(this.type);
+		this.members = parentize(members);
+		this.type = parentize(type);
 	}
 	
 	@Override

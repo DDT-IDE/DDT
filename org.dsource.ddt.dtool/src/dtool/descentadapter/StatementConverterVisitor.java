@@ -37,17 +37,15 @@ import descent.internal.compiler.parser.TryFinallyStatement;
 import descent.internal.compiler.parser.VolatileStatement;
 import descent.internal.compiler.parser.WhileStatement;
 import descent.internal.compiler.parser.WithStatement;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
-import dtool.ast.declarations.NodeList;
 import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.references.ReferenceConverter;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
-import dtool.ast.statements.Statement;
 import dtool.ast.statements.StatementAsm;
 import dtool.ast.statements.StatementBreak;
 import dtool.ast.statements.StatementCase;
@@ -74,6 +72,7 @@ import dtool.ast.statements.StatementTry.CatchClause;
 import dtool.ast.statements.StatementVolatile;
 import dtool.ast.statements.StatementWhile;
 import dtool.ast.statements.StatementWith;
+import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.util.ArrayView;
 
 public class StatementConverterVisitor extends ExpressionConverterVisitor {
@@ -85,7 +84,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 				(IFunctionParameter) DescentASTConverter.convertElem(elem.arg, convContext), // this used to be null b4 refactoring POSSIBLE BUG HERE
 				ExpressionConverter.convert(elem.lwr, convContext),
 				ExpressionConverter.convert(elem.upr, convContext),
-				Statement.convert(elem.body, convContext),
+				StatementConverterVisitor.convertStatement(elem.body, convContext),
 				elem.op == TOK.TOKforeach_reverse,
 				DefinitionConverter.sourceRange(elem)
 			)
@@ -141,7 +140,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(
 			new StatementCase(
 				ExpressionConverter.convert(element.exp, convContext),
-				Statement.convert(element.statement, convContext),
+				convertStatement(element.statement, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -153,7 +152,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 			new StatementCaseRange(
 				ExpressionConverter.convert(element.first, convContext),
 				ExpressionConverter.convert(element.last, convContext),
-				Statement.convert(element.statement, convContext),
+				convertStatement(element.statement, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -183,7 +182,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(DefaultStatement element) {
 		return endAdapt(
 			new StatementDefault(
-				Statement.convert(element.statement, convContext),
+				convertStatement(element.statement, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -194,7 +193,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(
 			new StatementDo(
 				ExpressionConverter.convert(element.condition, convContext),
-				Statement.convert(element.body, convContext),
+				convertStatement(element.body, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -214,7 +213,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 			new StatementForeach(
 				DescentASTConverter.convertMany(element.arguments, IFunctionParameter.class, convContext), /*Used to be null*/ // POSSIBLE BUG HERE
 				ExpressionConverter.convert(element.sourceAggr, convContext),
-				Statement.convert(element.body, convContext),
+				convertStatement(element.body, convContext),
 				element.op == TOK.TOKforeach_reverse,
 				DefinitionConverter.sourceRange(element)
 			)
@@ -225,10 +224,10 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(ForStatement element) {
 		return endAdapt(
 			new StatementFor(
-				Statement.convert(element.init, convContext),
+				convertStatement(element.init, convContext),
 				ExpressionConverter.convert(element.condition, convContext),
 				ExpressionConverter.convert(element.increment, convContext),
-				Statement.convert(element.body, convContext),
+				convertStatement(element.body, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -264,8 +263,8 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(
 			new StatementIf(
 				ExpressionConverter.convert(element.condition, convContext),
-				Statement.convert(element.ifbody, convContext),
-				Statement.convert(element.elsebody, convContext),
+				convertStatement(element.ifbody, convContext),
+				convertStatement(element.elsebody, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -286,7 +285,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(
 			new StatementOnScope(
 				StatementOnScope.EventType.ON_EXIT, // TODO: Find out how to access this scope value
-				Statement.convert(element.statement, convContext),
+				convertStatement(element.statement, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -294,7 +293,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(PragmaStatement element) {
-		NodeList body = NodeList.createNodeList(element.body, convContext);
+		NodeList body = DeclarationConverter.createNodeList(element.body, convContext);
 		return endAdapt(
 			new DeclarationPragma(
 				DefinitionConverter.convertId(element.ident),
@@ -354,7 +353,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(
 			new StatementSwitch(
 				ExpressionConverter.convert(element.condition, convContext),
-				Statement.convert(element.body, convContext),
+				convertStatement(element.body, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -365,7 +364,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(
 			new StatementSynchronized(
 				ExpressionConverter.convert(element.exp, convContext),
-				Statement.convert(element.body, convContext),
+				convertStatement(element.body, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -385,7 +384,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(TryCatchStatement element) {
 		return endAdapt(
 			new StatementTry(
-				Statement.convert(element.body, convContext),
+				convertStatement(element.body, convContext),
 				DescentASTConverter.convertMany(element.catches, CatchClause.class, convContext),
 				null, 
 				DefinitionConverter.sourceRange(element)
@@ -399,18 +398,18 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 			TryCatchStatement tcs = (TryCatchStatement) element.body;
 			return endAdapt(
 				new StatementTry(
-					Statement.convert(tcs.body, convContext),
+					convertStatement(tcs.body, convContext),
 					DescentASTConverter.convertMany(tcs.catches, CatchClause.class, convContext),
-					Statement.convert(element.finalbody, convContext), 
+					convertStatement(element.finalbody, convContext), 
 					DefinitionConverter.sourceRange(element)
 				)
 			);
 		} else {
 			return endAdapt(
 				new StatementTry(
-					Statement.convert(element.body, convContext),
+					convertStatement(element.body, convContext),
 					ArrayView.create(new CatchClause[0]),
-					Statement.convert(element.finalbody, convContext), 
+					convertStatement(element.finalbody, convContext), 
 					DefinitionConverter.sourceRange(element)
 				)
 			);
@@ -421,7 +420,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(VolatileStatement element) {
 		return endAdapt(
 			new StatementVolatile(
-				Statement.convert(element.statement, convContext),
+				convertStatement(element.statement, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -432,7 +431,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(
 			new StatementWhile(
 				ExpressionConverter.convert(element.condition, convContext),
-				Statement.convert(element.body, convContext),
+				convertStatement(element.body, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -443,7 +442,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(
 			new StatementWith(
 				ExpressionConverter.convert(element.exp, convContext),
-				Statement.convert(element.body, convContext),
+				convertStatement(element.body, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -473,7 +472,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(
 			new StatementTry.CatchClause(
 				param,
-				Statement.convert(element.handler, convContext),
+				convertStatement(element.handler, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -482,6 +481,10 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	@Override
 	public boolean visit(DeclarationExp elem) {
 		return endAdapt(DescentASTConverter.convertElem(elem.declaration, convContext));
+	}
+
+	public static IStatement convertStatement(descent.internal.compiler.parser.Statement elem, ASTConversionContext convContext) {
+		return DescentASTConverter.convertElem(elem, IStatement.class, convContext);
 	}
 
 }

@@ -18,10 +18,10 @@ public class PrefixExpression extends Expression {
 	}
 	public final int kind;
 	public final Resolvable exp;
-
+	
 	public PrefixExpression(Resolvable exp, int kind, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
+		this.exp = parentize(exp);
 		this.kind = kind;
 	}
 	
@@ -33,5 +33,5 @@ public class PrefixExpression extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 }

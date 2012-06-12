@@ -20,9 +20,9 @@ public class TypeDynArray extends CommonRefNative {
 	
 	public TypeDynArray(Reference elemType, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.elemtype = elemType; parentize(this.elemtype);
+		this.elemtype = parentize(elemType);
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -31,12 +31,12 @@ public class TypeDynArray extends CommonRefNative {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	@Override
 	public String toStringAsElement() {
 		return elemtype.toStringAsElement() + "[]";
 	}
-
+	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
 		return DefUnitSearch.wrapResult(IntrinsicDynArray.instance);
@@ -49,7 +49,7 @@ public class TypeDynArray extends CommonRefNative {
 		}
 		
 		public static final IntrinsicDynArray instance = new IntrinsicDynArray();
-
+		
 		@Override
 		public IScopeNode getMembersScope() {
 			// TODO Auto-generated method stub
@@ -66,4 +66,5 @@ public class TypeDynArray extends CommonRefNative {
 			return null;
 		}
 	}
+	
 }

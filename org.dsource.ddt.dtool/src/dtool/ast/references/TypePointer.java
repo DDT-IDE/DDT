@@ -16,18 +16,18 @@ import dtool.refmodel.IScopeNode;
 
 public class TypePointer extends CommonRefNative {
 	
-	public final Reference elemtype;
+	public final Reference elemType;
 	
-	public TypePointer(Reference elemtype, SourceRange sourceRange) {
+	public TypePointer(Reference elemType, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.elemtype = elemtype; parentize(this.elemtype);
+		this.elemType = parentize(elemType);
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, elemtype);
+			TreeVisitor.acceptChildren(visitor, elemType);
 		}
 		visitor.endVisit(this);
 	}
@@ -39,9 +39,8 @@ public class TypePointer extends CommonRefNative {
 	
 	@Override
 	public String toStringAsElement() {
-		return elemtype.toStringAsElement() + "*";
+		return elemType.toStringAsElement() + "*";
 	}
-	
 	
 	public static class IntrinsicPointer extends NativeDefUnit {
 		public IntrinsicPointer() {
@@ -66,6 +65,6 @@ public class TypePointer extends CommonRefNative {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
 	}
+	
 }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
@@ -16,7 +13,7 @@ public class ImportStatic extends ImportFragment {
 	
 	private PartialPackageDefUnit defunit; // Non-Structural Element
 	//private String[] names; // Non-Structural Element
-
+	
 	public ImportStatic(RefModule refModule, SourceRange sourceRange) {
 		super(refModule, sourceRange);
 	}
@@ -26,21 +23,19 @@ public class ImportStatic extends ImportFragment {
 	}
 	
 	public DefUnit getPartialDefUnit() {
-
 		if(getPackageNames().length == 0 || getPackageNames()[0] == "") {
 			return moduleRef.findTargetDefUnit();
 		}
 		
 		// Do lazy PartialDefUnit creation
 		if(defunit == null) {
-			defunit = PartialPackageDefUnit.createPartialDefUnits(getPackageNames(),
-					moduleRef, null); 
+			defunit = PartialPackageDefUnit.createPartialDefUnits(getPackageNames(), moduleRef, null); 
 		}
 		return defunit;
 	}
 	
-
-
+	
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
@@ -49,11 +44,10 @@ public class ImportStatic extends ImportFragment {
 		}
 		visitor.endVisit(this);
 	}
-
+	
 	@Override
 	public void searchInSecondaryScope(CommonDefUnitSearch search) {
 		ReferenceResolver.findDefUnitInStaticImport(this, search);
 	}
-	
 	
 }

@@ -12,8 +12,8 @@ public class StatementSwitch extends Statement {
 	
 	public StatementSwitch(Resolvable exp, IStatement body, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = exp; parentize(this.exp);
-		this.body = body; parentizeI(body);
+		this.exp = parentize(exp);
+		this.body = parentizeI(body);
 	}
 	
 	@Override

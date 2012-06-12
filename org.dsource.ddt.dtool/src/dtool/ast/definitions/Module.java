@@ -97,8 +97,8 @@ public class Module extends DefUnit implements IScopeNode {
 			ArrayView<ASTNeoNode> members, SourceRange sourceRange) {
 		super(sourceRange, defSymbol, preComments);
 		defSymbol.module = this;
-		this.md = md; parentize(md);
-		this.members = members; parentize(members);
+		this.md = parentize(md);
+		this.members = parentize(members);
 	}
 	
 	
@@ -152,7 +152,7 @@ public class Module extends DefUnit implements IScopeNode {
 	@Override
 	public String toStringAsElement() {
 		if(md == null) {
-			return "<undefined>";
+			return "<undefined>"; // BUG here
 		}
 		return md.toStringAsElement();
 	}

@@ -10,19 +10,18 @@ import dtool.ast.definitions.DefUnit;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.PrefixDefUnitSearch;
 
-public class RefImportSelection extends NamedReference 
-	implements IImportSelectiveSelection {
+public class RefImportSelection extends NamedReference implements IImportSelectiveSelection {
 	
 	public final String name;
 	
-	public ImportSelective impSel; // non structural
+	public ImportSelective impSel; // non-structural member
 	
 	public RefImportSelection(String name, ImportSelective impSel, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.name = name;
-		this.impSel = impSel; parentize(this.impSel);
+		this.impSel = impSel;
 	}
-
+	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		visitor.visit(this);
@@ -50,8 +49,7 @@ public class RefImportSelection extends NamedReference
 	@Override
 	public void doSearch(PrefixDefUnitSearch search) {
 		RefModule refMod = impSel.moduleRef;
-		CommonRefQualified.findDefUnitInMultipleDefUnitScopes(
-				refMod.findTargetDefUnits(false), search);
+		CommonRefQualified.findDefUnitInMultipleDefUnitScopes(refMod.findTargetDefUnits(false), search);
 	}
 	
 }

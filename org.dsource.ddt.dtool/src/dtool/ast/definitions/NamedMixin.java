@@ -13,7 +13,7 @@ public class NamedMixin extends DefUnit implements IStatement {
 	
 	public NamedMixin(DefUnitDataTuple dudt, RefTemplateInstance tplInstance, SourceRange sourceRange) {
 		super(dudt);
-		this.type = tplInstance; parentize(this.type);
+		this.type = parentize(tplInstance);
 		setSourceRange(sourceRange);
 	}
 	

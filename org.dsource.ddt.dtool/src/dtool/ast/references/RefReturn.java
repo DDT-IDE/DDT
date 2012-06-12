@@ -22,13 +22,11 @@ public class RefReturn extends Reference {
 		visitor.endVisit(this);
 	}
 	
-	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
 		// TODO:
 		return null;
 	}
-	
 	
 	@Override
 	public String toStringAsElement() {

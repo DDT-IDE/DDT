@@ -26,5 +26,5 @@ public class DefinitionInterface extends DefinitionClass {
 	public EArcheType getArcheType() {
 		return EArcheType.Interface;
 	}
-
+	
 }
