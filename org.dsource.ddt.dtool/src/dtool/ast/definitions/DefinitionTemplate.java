@@ -9,6 +9,7 @@ import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
@@ -32,6 +33,8 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 		this.wrapper = wrapper;
 		if(wrapper) {
 			assertTrue(this.decls.size() == 1);
+			assertTrue(decls.get(0) instanceof DefUnit || decls.get(0) instanceof DefinitionCtor);
+			// BUG here, need to fix for DefinitionCtor case
 		}
 	}
 	
@@ -68,11 +71,14 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	}
 	
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator() {
+	public Iterator<? extends IASTNeoNode> getMembersIterator() {
 		// TODO: check if in a template invocation
+		// TODO: test this more, redo
 		if(wrapper) {
-			// TODO: Go straight to decls member's members
-			return ChainedIterator.create(templateParams.iterator(), decls.iterator());
+			// Go straight to members of the inner decl
+			IScopeNode scope = ((DefUnit)decls.get(0)).getMembersScope();
+			Iterator<? extends IASTNeoNode> tplIter = templateParams.iterator();
+			return ChainedIterator.create(tplIter, scope.getMembersIterator());
 		}
 		return ChainedIterator.create(templateParams.iterator(), decls.iterator());
 	}
