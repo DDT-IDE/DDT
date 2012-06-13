@@ -11,7 +11,7 @@ public class EnumMember extends DefUnit {
 	public final Resolvable value;
 	
 	public EnumMember(DefUnitDataTuple defunit, Resolvable value) {
-		super(defunit.sourceRange, defunit.defName, defunit.comments);
+		super(defunit);
 		this.value = parentize(value);
 	}
 	

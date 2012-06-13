@@ -7,7 +7,6 @@ import java.util.Collection;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
@@ -52,7 +51,7 @@ public class RefModule extends NamedReference {
 	public static class LiteModuleDummy extends DefUnit {
 		
 		public LiteModuleDummy(String defname) {
-			super(null, new TokenInfo(defname), null);
+			super(defname);
 		}
 		
 		@Override

@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
@@ -15,8 +14,8 @@ public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 	protected final RefModule moduleRef;
 	protected final DefUnit module;
 	
-	public PartialPackageDefUnitOfModule(TokenInfo name, Module module, RefModule moduleRef) {
-		super(name);
+	public PartialPackageDefUnitOfModule(String defName, Module module, RefModule moduleRef) {
+		super(defName);
 		this.module = module; // BUG here
 		this.moduleRef = moduleRef;
 	}

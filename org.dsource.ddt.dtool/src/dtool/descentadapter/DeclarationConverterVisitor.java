@@ -335,7 +335,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.ProtDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
-		return endAdapt(new DeclarationProtection(elem.protection, elem.modifier, body, DefinitionConverter.sourceRange(elem)));
+		return endAdapt(new DeclarationProtection(
+				elem.protection, elem.modifier, body,
+				DefinitionConverter.sourceRange(elem)
+		));
 	}
 
 	@Override

@@ -29,6 +29,10 @@ public final class TokenInfo {
 		this.offset = -1;
 	}
 	
+	public String getString() {
+		return value;
+	}
+	
 	public SourceRange getSourceRange() {
 		return new SourceRange(offset, value.length());
 	}

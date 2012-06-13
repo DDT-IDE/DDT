@@ -1,6 +1,7 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
@@ -27,19 +28,25 @@ public abstract class DefUnit extends ASTNeoNode {
 	public final DefSymbol defname;
 	
 	public DefUnit(DefUnitDataTuple defunit) {
-		this(defunit.sourceRange, defunit.defName, defunit.comments);
-	}
-	
-	public DefUnit(SourceRange sourceRange, TokenInfo defName, Comment[] comments) {
-		this(sourceRange, defName.value, defName.getSourceRange(), comments);
+		this(defunit.sourceRange, defunit.defName.getString(), defunit.defName.getSourceRange(), defunit.comments);
 	}
 	
 	public DefUnit(SourceRange sourceRange, String defName, SourceRange defNameSourceRange, Comment[] comments) {
 		initSourceRange(sourceRange);
 		this.defname = new DefSymbol(defName, defNameSourceRange, this);
 		this.comments = comments;
+		// TODO BUG here?
+//		if(hasSourceRangeInfo()) {
+//			assertTrue(defname.hasSourceRangeInfo());
+//		}
 	}
 	
+	/** Constructor for synthetic defunits. */
+	protected DefUnit(String defName) {
+		this(null, defName, null, null);
+	}
+	
+	/** Constructor for Module defunit. */
 	protected DefUnit(SourceRange sourceRange, DefSymbol defname, Comment[] comments) {
 		initSourceRange(sourceRange);
 		assertNotNull(defname);

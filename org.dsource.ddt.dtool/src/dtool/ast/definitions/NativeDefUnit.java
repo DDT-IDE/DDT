@@ -8,7 +8,6 @@ import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.TokenInfo;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.INativeDefUnit;
 import dtool.refmodel.IScope;
@@ -70,8 +69,7 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 	public static final IDefUnitReference nullReference = new UndeterminedReference();
 	
 	public NativeDefUnit(String name) {
-		super(null, new TokenInfo(name), null);
-		setSourceRange(0, 0); // should we do this?
+		super(name);
 	}
 	
 	@Override

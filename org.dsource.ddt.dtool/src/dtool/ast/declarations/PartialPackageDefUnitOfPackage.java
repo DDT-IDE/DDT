@@ -1,24 +1,26 @@
 package dtool.ast.declarations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Collections;
 import java.util.Iterator;
 
 import dtool.ast.ASTNeoNode;
-import dtool.ast.TokenInfo;
 
 
 public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
 	
-	protected final PartialPackageDefUnit child;
+	protected final PartialPackageDefUnit subPackage; // Non-structural member
 	
-	protected PartialPackageDefUnitOfPackage(TokenInfo defname, PartialPackageDefUnit child) {
-		super(defname);
-		this.child = child; // BUG here?
+	protected PartialPackageDefUnitOfPackage(String defName, PartialPackageDefUnit subPackage) {
+		super(defName);
+		this.subPackage = subPackage;
+		assertNotNull(subPackage);
 	}
 	
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator() {
-		return Collections.singleton(child).iterator();
+		return Collections.singleton(subPackage).iterator();
 	}
 	
 	@Override
