@@ -42,11 +42,12 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 	
 	
 	public static abstract class ImportFragment extends ASTNeoNode {
-		public RefModule moduleRef;
+		
+		public final RefModule moduleRef;
 		
 		public ImportFragment(RefModule moduleRef, SourceRange sourceRange) {
 			initSourceRange(sourceRange);
-			this.moduleRef = moduleRef; parentize(this.moduleRef);
+			this.moduleRef = parentize(moduleRef);
 		}
 		
 		/** Performs a search in the secondary/background scope.

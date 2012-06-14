@@ -20,11 +20,12 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 	
 	public static class ImportAliasingDefUnit extends DefUnit {
 		
-		public final ImportAliasing impAlias; // Non-structural Element
+		public final RefModule targetModule; // Non-structural element
 		
-		public ImportAliasingDefUnit(DefUnitDataTuple dudt, ImportAliasing impAlias) {
+		public ImportAliasingDefUnit(DefUnitDataTuple dudt, RefModule targetModule, ImportAliasing impAlias) {
 			super(dudt);
-			this.impAlias = impAlias;
+			setParent(impAlias);
+			this.targetModule = targetModule;
 		}
 		
 		@Override
@@ -34,7 +35,7 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 		
 		@Override
 		public IScopeNode getMembersScope() {
-			return impAlias.moduleRef.getTargetScope();
+			return targetModule.getTargetScope();
 		}
 		
 		@Override
@@ -47,11 +48,11 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 		}
 	}
 	
-	protected final ImportAliasingDefUnit aliasDefUnit;
+	public final ImportAliasingDefUnit aliasDefUnit;
 	
 	public ImportAliasing(DefUnitDataTuple dudt, RefModule refModule, SourceRange sourceRange) {
 		super(refModule, sourceRange);
-		this.aliasDefUnit = new ImportAliasingDefUnit(dudt, this); parentize(this.aliasDefUnit); // BUG here? XXX: recheck this
+		this.aliasDefUnit = new ImportAliasingDefUnit(dudt, refModule, this);
 	}
 	
 	@Override
