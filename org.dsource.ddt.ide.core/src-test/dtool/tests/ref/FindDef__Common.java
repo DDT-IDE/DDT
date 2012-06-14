@@ -17,11 +17,15 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
+import mmrnmhrm.core.codeassist.DeeScriptProjectModuleResolver;
 import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.core.parser.DeeModelElement_Test;
+import mmrnmhrm.core.parser.DeeSourceParser;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
+import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
@@ -33,7 +37,6 @@ import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
-import dtool.refmodel.ReferenceResolver;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class FindDef__Common {
@@ -53,9 +56,19 @@ public class FindDef__Common {
 		targetModule = sourceModule;
 	}
 	
+	public static DeeModuleDeclaration parsedDeeModule(ISourceModule sourceModule) {
+		assertTrue(sourceModule instanceof IModuleSource);
+		IModuleSource moduleSource = (IModuleSource) sourceModule;
+		
+		DeeSourceParser sourceParser = new DeeSourceParser();
+		DeeModuleDeclaration deeModule = sourceParser.parse(moduleSource, null);
+		DeeModuleParsingUtil.parentizeDeeModuleDeclaration(deeModule, sourceModule);
+		return deeModule;
+	}
+	
 	protected static Module parseNeoModuleNode(String filepath) {
 		ISourceModule sourceModuleDLTK = SampleMainProject.getSourceModule(filepath);
-		return SampleMainProject.parsedDeeModule(sourceModuleDLTK).neoModule;
+		return parsedDeeModule(sourceModuleDLTK).neoModule;
 	}
 	
 	
@@ -75,11 +88,13 @@ public class FindDef__Common {
 	
 	public static void testFindRef(Module srcMod, int offset, Module targetMod, int targetOffset) 
 			throws ModelException {
-		Module newSrcModule = SampleMainProject.parsedDeeModule(srcMod.getModuleUnit()).neoModule;
-		IModuleResolver modResolver = ReferenceResolver.getModResolver();
-		testFindRef2(newSrcModule, offset, targetMod, targetOffset, modResolver);
+		IModuleResolver modResolver = getModuleResolver();
+		testFindRef2(srcMod, offset, targetMod, targetOffset, modResolver);
 	}
 	
+	private static IModuleResolver getModuleResolver() {
+		return new DeeScriptProjectModuleResolver(SampleMainProject.scriptProject);
+	}
 	
 	public static void testFindRef2(Module srcMod, int offset, Module targetMod, int targetOffset,
 			IModuleResolver modResolver) throws ModelException {

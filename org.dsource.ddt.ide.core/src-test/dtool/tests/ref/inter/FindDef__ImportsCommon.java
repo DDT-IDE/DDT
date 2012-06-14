@@ -1,7 +1,5 @@
 package dtool.tests.ref.inter;
 
-import java.io.IOException;
-
 import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.tests.ITestResourcesConstants;
 
@@ -29,22 +27,21 @@ public abstract class FindDef__ImportsCommon extends FindDef__Common {
 		}
 	}
 	
-	public FindDef__ImportsCommon(int offset, int targetOffset, String targetFile)
-			throws IOException, CoreException {
+	public FindDef__ImportsCommon(int offset, int targetOffset, String targetFile) throws CoreException {
 		this(null, offset, targetOffset, targetFile);
 	}
 	
-	public FindDef__ImportsCommon(Module newModule, int defOffset, int refOffset, String targetFile)
-			throws IOException, CoreException {
+	public FindDef__ImportsCommon(Module newModule, int defOffset, int refOffset, String targetFile) 
+			throws CoreException {
 		this.offset = defOffset;
 		this.targetOffset = refOffset;
 		sourceModule = newModule == null ? defaultModule : newModule;
 		targetModule = targetFile == null ? null : getTestModule(targetFile);
 	}
-
+	
 	@Test
 	public void test() throws Exception {
 		testFindRefWithConfiguredValues();
 	}
-
+	
 }

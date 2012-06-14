@@ -33,6 +33,10 @@ public class DLTKModuleResolver implements IModuleResolver {
 		ISourceModule sourceModule = (ISourceModule) sourceRefModule.getModuleUnit();
 		IScriptProject deeproj = sourceModule.getScriptProject();
 		
+		return findModule(packages, modName, deeproj);
+	}
+	
+	protected Module findModule(String[] packages, String modName, IScriptProject deeproj) throws ModelException {
 		if(deeproj == null || deeproj.exists() == false || !isDeeProject(deeproj))
 			return null;
 		
@@ -64,6 +68,10 @@ public class DLTKModuleResolver implements IModuleResolver {
 		ISourceModule sourceModule = (ISourceModule) refSourceModule.getModuleUnit();
 		IScriptProject scriptProject = sourceModule.getScriptProject();
 		
+		return findModules(fqNamePrefix, scriptProject);
+	}
+	
+	protected String[] findModules(String fqNamePrefix, IScriptProject scriptProject) throws ModelException {
 		List<String> strings = new ArrayList<String>();
 		
 		for (IProjectFragment srcFolder : scriptProject.getProjectFragments()) {

@@ -21,7 +21,8 @@ public class FindDef_ImportStatic2Test extends FindDef_ImportStaticTest  {
 		staticTestInit(testSrcFile);
 		defaultModule.getModuleUnit().getBuffer().replace(ix1, 4, "//  ");
 		defaultModule.getModuleUnit().getBuffer().replace(ix2, 4, "    ");
-		defaultModule.getModuleUnit().reconcile(false, null, null);
+		
+		defaultModule = parsedDeeModule(defaultModule.getModuleUnit()).neoModule;
 	}
 	
 	@Parameters

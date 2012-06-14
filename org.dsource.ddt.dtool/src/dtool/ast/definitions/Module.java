@@ -115,6 +115,7 @@ public class Module extends DefUnit implements IScopeNode {
 		}
 		this.moduleUnit = modUnit;
 	}
+	@Deprecated
 	public ISourceModule getModuleUnit() {
 		return (ISourceModule) moduleUnit;
 	}
