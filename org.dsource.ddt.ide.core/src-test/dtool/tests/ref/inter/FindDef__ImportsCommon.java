@@ -22,7 +22,6 @@ public abstract class FindDef__ImportsCommon extends FindDef__Common {
 	protected static Module defaultModule;
 	
 	protected static void staticTestInit(String testSrcFile) {
-		FindDef__Common.staticClassInit(testSrcFile);
 		try {
 			defaultModule = getTestModule(testSrcFile);
 		} catch (CoreException ce) {
@@ -45,7 +44,7 @@ public abstract class FindDef__ImportsCommon extends FindDef__Common {
 
 	@Test
 	public void test() throws Exception {
-		assertFindReF(sourceModule, offset, targetModule, targetOffset);
+		testFindRefWithConfiguredValues();
 	}
 
 }

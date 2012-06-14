@@ -33,16 +33,10 @@ import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.refmodel.ReferenceResolver;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class FindDef__Common {
-	
-	public static int counter = -666;
-	
-	protected static void staticClassInit(String testfile) {
-		counter = -1;
-		System.out.println("======== " + testfile + " ========");
-	}
-	
 	
 	public static String testdataRefsPath(String testfile) {
 		return ITestResourcesConstants.TR_REFS +"/"+ testfile;
@@ -56,7 +50,7 @@ public class FindDef__Common {
 	
 	protected void prepSameModuleTest(String testdataFilePath) {
 		sourceModule = parseNeoModuleNode(testdataFilePath); 
-		targetModule = null;
+		targetModule = sourceModule;
 	}
 	
 	protected static Module parseNeoModuleNode(String filepath) {
@@ -75,17 +69,25 @@ public class FindDef__Common {
 		return source.indexOf(marker);
 	}
 	
+	protected void testFindRefWithConfiguredValues() throws ModelException {
+		testFindRef(sourceModule, offset, targetModule, targetOffset);
+	}
 	
-	public static void assertFindReF(Module srcMod, int offset, Module targetMod, int targetOffset)
+	public static void testFindRef(Module srcMod, int offset, Module targetMod, int targetOffset) 
 			throws ModelException {
-		
-		counter++;
-		
 		Module newSrcModule = SampleMainProject.parsedDeeModule(srcMod.getModuleUnit()).neoModule;
-		ASTNeoNode node = ASTNodeFinder.findElement(newSrcModule, offset);
+		IModuleResolver modResolver = ReferenceResolver.getModResolver();
+		testFindRef2(newSrcModule, offset, targetMod, targetOffset, modResolver);
+	}
+	
+	
+	public static void testFindRef2(Module srcMod, int offset, Module targetMod, int targetOffset,
+			IModuleResolver modResolver) throws ModelException {
+		
+		ASTNeoNode node = ASTNodeFinder.findElement(srcMod, offset);
 		Reference ref = (Reference) node;
 		
-		Collection<DefUnit> defunits = ref.findTargetDefUnits(true);
+		Collection<DefUnit> defunits = ref.findTargetDefUnits(modResolver, true);
 		
 		if(defunits == null || defunits.isEmpty()) {
 			if(targetOffset == -1)

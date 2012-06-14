@@ -1,14 +1,11 @@
 package dtool.tests.ref;
 
-import java.io.IOException;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
 public abstract class FindDef__CommonParameterizedTest extends FindDef__Common {
 	
-	public FindDef__CommonParameterizedTest(int offset, int targetOffset, String testfile) throws IOException, CoreException {
+	public FindDef__CommonParameterizedTest(int offset, int targetOffset, String testfile) {
 		this.offset = offset;
 		this.targetOffset = targetOffset;
 		prepSameModuleTest(testdataRefsPath(testfile));
@@ -16,7 +13,7 @@ public abstract class FindDef__CommonParameterizedTest extends FindDef__Common {
 	
 	@Test
 	public void test() throws ModelException {
-		assertFindReF(sourceModule, offset, sourceModule, targetOffset);
+		testFindRefWithConfiguredValues();
 	}
 	
 }

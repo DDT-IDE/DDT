@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -29,11 +28,6 @@ public class FindDef_DefUnitContainer3Test extends FindDef__CommonParameterizedT
         });
     }
     
-	@BeforeClass
-	public static void classSetup() {
-		staticClassInit(testfile);
-	}
-	
 	public FindDef_DefUnitContainer3Test(int offset, int targetOffset) throws IOException, CoreException {
 		super(offset, targetOffset, testfile);
 	}

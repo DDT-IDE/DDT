@@ -5,14 +5,11 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 // TODO test special defunits (not a priority)
-
-
 @RunWith(Parameterized.class)
 public class FindDef_Targets2Test extends FindDef__CommonParameterizedTest  {
 	
@@ -31,14 +28,8 @@ public class FindDef_Targets2Test extends FindDef__CommonParameterizedTest  {
         });
     }
     
-	@BeforeClass
-	public static void classSetup() {
-		staticClassInit(testfile);
-	}
-	        
 	public FindDef_Targets2Test(int offset, int targetOffset) throws IOException, CoreException  {
 		super(offset, targetOffset, testfile);
 	}
-	  
 
 }

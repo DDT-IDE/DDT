@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.ModelException;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -62,11 +61,6 @@ public class FindDef_TargetsTest extends FindDef__CommonParameterizedTest  {
         });
     }
     
-	@BeforeClass
-	public static void classSetup() {
-		staticClassInit(testfile);
-	}
-	        
 	public FindDef_TargetsTest(int offset, int targetOffset) throws IOException, CoreException  {
 		super(offset, targetOffset, testfile);
 	}
@@ -75,6 +69,5 @@ public class FindDef_TargetsTest extends FindDef__CommonParameterizedTest  {
 	public void test() throws ModelException {
 		super.test();
 	}
-	  
 	
 }
