@@ -29,10 +29,10 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
+import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
-import dtool.refmodel.NodeUtil;
 
 public class FindDef__Common {
 	

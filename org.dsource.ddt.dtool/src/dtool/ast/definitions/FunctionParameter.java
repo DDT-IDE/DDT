@@ -4,10 +4,10 @@ import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeUtil;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.NodeUtil;
 
 // TODO: Need to test this a lot more, especially with many other kinds of parameters
 public class FunctionParameter extends DefUnit implements IFunctionParameter {

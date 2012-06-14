@@ -6,13 +6,13 @@ import java.util.Collection;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.NodeUtil;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
 import dtool.util.ArrayView;

@@ -11,11 +11,11 @@ import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTPrinter;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeUtil;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.NodeUtil;
 import dtool.util.ArrayView;
 
 /**

@@ -32,7 +32,7 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	@Deprecated
 	public DefUnitSearch(String searchName, Reference searchref, int refOffset, boolean findOneOnly) {
 		// TODO: fix modResolverThing
-		super(NodeUtil.getOuterScope(searchref), refOffset, findOneOnly, ReferenceResolver.modResolver);
+		super(ScopeUtil.getOuterScope(searchref), refOffset, findOneOnly, ReferenceResolver.modResolver);
 		this.searchName = searchName;
 		//defunits = new ArrayDeque<DefUnit>(4);
 	}

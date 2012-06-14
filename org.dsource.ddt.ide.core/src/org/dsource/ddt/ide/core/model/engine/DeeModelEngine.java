@@ -24,11 +24,11 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.DeeNamingRules;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
-import dtool.refmodel.NodeUtil;
 
 /**
  * This class manages how to do mapping between definition nodes and ModelElements. 

@@ -5,11 +5,11 @@ import java.util.Collections;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.refmodel.IDefUnitReferenceNode;
-import dtool.refmodel.NodeUtil;
 
 /** An entity reference starting at module scope. 
  * Example: "a = .foo;"

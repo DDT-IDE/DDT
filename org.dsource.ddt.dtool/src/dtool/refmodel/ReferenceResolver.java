@@ -7,6 +7,7 @@ import melnorme.utilbox.misc.IteratorUtil;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoNode;
+import dtool.ast.NodeUtil;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
 import dtool.ast.declarations.ImportContent;
@@ -65,7 +66,7 @@ public class ReferenceResolver {
 			if(search.isFinished())
 				return;
 
-			IScopeNode outerscope = NodeUtil.getOuterScope(scope);
+			IScopeNode outerscope = ScopeUtil.getOuterScope(scope);
 			if(outerscope == null) {
 				Module module = (Module) scope;
 				findDefUnitInModuleDec(module, search);
@@ -259,14 +260,12 @@ public class ReferenceResolver {
 	}
 
 	public static IScopeNode getStartingScope(RefIdentifier refSingle) {
-		IScopeNode scope = NodeUtil.getOuterScope(refSingle);
+		IScopeNode scope = ScopeUtil.getOuterScope(refSingle);
 		if(scope instanceof DefinitionFunction) {
 			// Skip it as this scope can't look into itself
-			scope = NodeUtil.getOuterScope(scope);
-			
+			scope = ScopeUtil.getOuterScope(scope);
 		}
 		return scope;
 	}
-
 
 }

@@ -143,7 +143,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		assertNotNull(node);
 		session.invokeNode = node;
 		PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-		IScopeNode refScope = NodeUtil.getScopeNode(node);
+		IScopeNode refScope = ScopeUtil.getScopeNode(node);
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(searchOptions, refScope, offset, defUnitAccepter,
 				modResolver);
 		
@@ -210,7 +210,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 					break;
 				
 				if(isInsideNonScopeBlock(node, offset, source)) {
-					scope = NodeUtil.getScopeNode(node);
+					scope = ScopeUtil.getScopeNode(node);
 					break;
 				}
 				
@@ -284,7 +284,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		if(node instanceof IScopeNode) {
 			return (IScopeNode) node;
 		} else if(node instanceof Expression) {
-			return NodeUtil.getOuterScope(node);
+			return ScopeUtil.getOuterScope(node);
 		} 
 		return null;
 	}

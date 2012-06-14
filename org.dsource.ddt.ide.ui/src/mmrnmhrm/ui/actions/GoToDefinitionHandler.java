@@ -33,12 +33,12 @@ import dtool.Logg;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.ASTPrinter;
+import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.Reference;
 import dtool.refmodel.INativeDefUnit;
-import dtool.refmodel.NodeUtil;
 
 public class GoToDefinitionHandler extends AbstractHandler  {
 
