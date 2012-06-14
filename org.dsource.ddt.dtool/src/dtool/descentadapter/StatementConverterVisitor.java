@@ -81,7 +81,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(ForeachRangeStatement elem) {
 		return endAdapt(
 			new StatementForeachRange(
-				(IFunctionParameter) DescentASTConverter.convertElem(elem.arg, convContext), // this used to be null b4 refactoring POSSIBLE BUG HERE
+				(IFunctionParameter) DescentASTConverter.convertElem(elem.arg, convContext),
 				ExpressionConverter.convert(elem.lwr, convContext),
 				ExpressionConverter.convert(elem.upr, convContext),
 				StatementConverterVisitor.convertStatement(elem.body, convContext),
@@ -211,7 +211,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(ForeachStatement element) {
 		return endAdapt(
 			new StatementForeach(
-				DescentASTConverter.convertMany(element.arguments, IFunctionParameter.class, convContext), /*Used to be null*/ // POSSIBLE BUG HERE
+				DescentASTConverter.convertMany(element.arguments, IFunctionParameter.class, convContext),
 				ExpressionConverter.convert(element.sourceAggr, convContext),
 				convertStatement(element.body, convContext),
 				element.op == TOK.TOKforeach_reverse,

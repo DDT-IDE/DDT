@@ -35,7 +35,6 @@ public abstract class DefUnit extends ASTNeoNode {
 		initSourceRange(sourceRange);
 		this.defname = new DefSymbol(defName, defNameSourceRange, this);
 		this.comments = comments;
-		// TODO BUG here?
 //		if(hasSourceRangeInfo()) {
 //			assertTrue(defname.hasSourceRangeInfo());
 //		}
