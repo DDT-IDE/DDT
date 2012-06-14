@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.Module;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public abstract class CommonDefUnitSearch {
 
@@ -26,26 +28,49 @@ public abstract class CommonDefUnitSearch {
 	/** The offset of the reference. 
 	 * Used to check availability in statement scopes. */
 	protected final int refOffset;
+	/** Module Resolver */
+	protected final IModuleResolver modResolver;
 	/** Cached value of the reference's module scope. */
 	protected IScope refModuleScope; 
 	/** The scopes that have already been searched */
 	protected ArrayList<IScope> searchedScopes;
 
 
-	public CommonDefUnitSearch(IScopeNode refScope, int refOffset) {
-		this(refScope, refOffset, false);
+	public CommonDefUnitSearch(IScopeNode refScope, int refOffset, IModuleResolver moduleResolver) {
+		this(refScope, refOffset, false, moduleResolver);
 	}
 	
-	public CommonDefUnitSearch(IScopeNode refScope, int refOffset, boolean findOneOnly) { 
+	public CommonDefUnitSearch(IScopeNode refScope, int refOffset, boolean findOneOnly, IModuleResolver moduleResolver) { 
 		this.searchedScopes = new ArrayList<IScope>(4);
 		this.refScope = refScope;
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
+		this.modResolver = moduleResolver;
 	}
 	
-
+	public IModuleResolver getModResolver() {
+		return modResolver;
+	}
+	
+	public String[] resolveModules(Module refSourceModule, String fqNamePrefix) {
+		try {
+			return modResolver.findModules(refSourceModule, fqNamePrefix);
+		} catch (Exception e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	public Module resolveModule(Module sourceRefModule, String[] packages, String module) {
+		try {
+			return modResolver.findModule(sourceRefModule, packages, module);
+		} catch (Exception e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
 	/** Return whether we have already search the given scope or not. */
 	public boolean hasSearched(IScope scope) {
+		// TODO: shit performance here, make it a hash, or sorted search
 		if(searchedScopes.contains(scope))
 			return true;
 		return false;
@@ -78,6 +103,5 @@ public abstract class CommonDefUnitSearch {
 	
 	/** Adds the matched defunit. */
 	public abstract void addMatch(DefUnit defUnit);
-
 
 }

@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
@@ -19,6 +18,7 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
+import dtool.tests.CommonTestUtils;
 import dtool.tests.DToolBaseTest;
 
 public abstract class Parser__CommonTest extends DToolBaseTest {
@@ -28,8 +28,6 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 	public static Module parseTestFile(String filename) throws CoreException, IOException {
 		return testDtoolParse(readTestResourceFile(TESTFILESDIR + filename));
 	}
-	
-	public static final String COMMON = "common/";
 	
 	public static Module testDtoolParse(final String source) {
 		return testParse(source, false, true);
@@ -80,10 +78,6 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		return klass.cast(object);
 	}
 	
-	public static <T> T[] removeLast(T[] array, int count) {
-		return ArrayUtil.removeLast(array, count);
-	}
-	
 	protected static Reference reference(String identifier) {
 		return new RefIdentifier(identifier);
 	}
@@ -93,7 +87,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		if(identifiers.length == 1) {
 			return subRef;
 		} else {
-			return new RefQualified(reference(removeLast(identifiers, 1)), subRef);
+			return new RefQualified(reference(CommonTestUtils.removeLast(identifiers, 1)), subRef);
 		}
 	}
 	

@@ -17,9 +17,9 @@ import descent.internal.compiler.parser.IsExp;
 import descent.internal.compiler.parser.Statement;
 import descent.internal.compiler.parser.StaticIfCondition;
 import descent.internal.compiler.parser.VersionCondition;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
-import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationConditionalDV;
 import dtool.ast.declarations.DeclarationStaticIf;
 import dtool.ast.declarations.DeclarationStaticIfIsType;
@@ -28,7 +28,7 @@ import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 public class DeclarationConverter extends BaseDmdConverter {
 	
-	public static DeclarationConditional convert(ConditionalDeclaration elem, ASTConversionContext convContext) {
+	public static ASTNeoNode convert(ConditionalDeclaration elem, ASTConversionContext convContext) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		DeclarationConverter.doSetParent(elem, elem.elsedecl);
 		NodeList thendecls = DeclarationConverter.createNodeList(elem.decl, convContext); 
@@ -39,7 +39,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 		return createConditional(elem, thendecls, elsedecls, condition, convContext);
 	}
 	
-	public static DeclarationConditional convert(ConditionalStatement elem, ASTConversionContext convContext) {
+	public static ASTNeoNode convert(ConditionalStatement elem, ASTConversionContext convContext) {
 		NodeList thendecls = DeclarationConverter.createNodeList(elem.ifbody, convContext); 
 		NodeList elsedecls = DeclarationConverter.createNodeList(elem.elsebody, convContext);
 
@@ -48,7 +48,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 		return createConditional(elem, thendecls, elsedecls, condition, convContext);
 	}
 	
-	public static DeclarationConditional createConditional(ASTDmdNode elem, NodeList thendecls, NodeList elsedecls, 
+	public static ASTNeoNode createConditional(ASTDmdNode elem, NodeList thendecls, NodeList elsedecls, 
 			Condition condition, ASTConversionContext convContext) 
 	{
 		if(condition instanceof DVCondition) {

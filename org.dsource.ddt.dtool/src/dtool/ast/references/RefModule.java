@@ -91,7 +91,7 @@ public class RefModule extends NamedReference {
 		String prefix = search.searchOptions.searchPrefix;
 		
 		Module module = NodeUtil.getParentModule(this);
-		String[] strings = ReferenceResolver.findModules(module, prefix);
+		String[] strings = search.resolveModules(module, prefix);
 		for (int i = 0; i < strings.length; i++) {
 			String name = strings[i];
 			

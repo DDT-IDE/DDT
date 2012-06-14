@@ -18,7 +18,7 @@ public class NodeList  {
 		this.hasCurlies = hasCurlies;
 	}
 	
-	public Iterator<ASTNeoNode> getNodeIterator() {
+	public Iterator<ASTNeoNode> getNodesIterator() {
 		return nodes.iterator();
 	}
 	

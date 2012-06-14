@@ -1,7 +1,7 @@
 package dtool.refmodel;
 
 public class PrefixSearchOptions {
-
+	
 	public String searchPrefix;
 	public int namePrefixLen;
 	public int rplLen;

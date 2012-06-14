@@ -38,6 +38,7 @@ public class ReferenceResolver {
 	}
 
 	/** Convenience method to call mod resolver. */
+	@Deprecated
 	public static Module findModule(Module refSourceModule, String[] packages, String module) {
 		try {
 			return modResolver.findModule(refSourceModule, packages, module);
@@ -45,16 +46,7 @@ public class ReferenceResolver {
 			throw ExceptionAdapter.unchecked(e);
 		}
 	}
-
-	/** Convenience method to call mod resolver. */
-	public static String[] findModules(Module refSourceModule, String fqName) {
-		try {
-			return modResolver.findModules(refSourceModule, fqName);
-		} catch (Exception e) {
-			throw ExceptionAdapter.unchecked(e);
-		}
-	}
-
+	
 	/* ====================  reference lookup  ==================== */
 	
 	
@@ -88,9 +80,10 @@ public class ReferenceResolver {
 	}
 
 	private static void findDefUnitInObjectIntrinsic(Module originModule, CommonDefUnitSearch search) {
-		Module targetModule = findModule(originModule, EMPTY_PACKAGE, "object");
-		if (targetModule != null)
+		Module targetModule = search.resolveModule(originModule, EMPTY_PACKAGE, "object");
+		if (targetModule != null) {
 			findDefUnitInScope(targetModule, search);
+		}
 	}
 
 	private static void findDefUnitInModuleDec(Module module,

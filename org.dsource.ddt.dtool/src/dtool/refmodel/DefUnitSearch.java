@@ -25,28 +25,17 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	
 
 	@Deprecated
-	public DefUnitSearch(String searchName, Reference searchref,
-			 boolean findOneOnly) {
+	public DefUnitSearch(String searchName, Reference searchref, boolean findOneOnly) {
 		this(searchName, searchref, -1, findOneOnly);
 	}
 	
 	@Deprecated
-	public DefUnitSearch(String searchName, Reference searchref,
-			int refOffset, boolean findOneOnly) {
-		super(NodeUtil.getOuterScope(searchref), refOffset, findOneOnly);
+	public DefUnitSearch(String searchName, Reference searchref, int refOffset, boolean findOneOnly) {
+		// TODO: fix modResolverThing
+		super(NodeUtil.getOuterScope(searchref), refOffset, findOneOnly, ReferenceResolver.modResolver);
 		this.searchName = searchName;
 		//defunits = new ArrayDeque<DefUnit>(4);
 	}
-	
-	// maybe not deprecate
-	@Deprecated
-	public DefUnitSearch(IScopeNode searchScope, String searchName,
-			int refOffset, boolean findOneOnly) {
-		super(searchScope, refOffset, findOneOnly);
-		this.searchName = searchName;
-		//defunits = new ArrayDeque<DefUnit>(4);
-	}
-
 	
 	public Collection<DefUnit> getMatchDefUnits() {
 		return defunits;

@@ -17,6 +17,6 @@ public interface IModuleResolver {
 	
 	/** Determines a list of names of modules whose FQ-name starts with the
 	 * given FQ-name. */
-	String[] findModules(Module refSourceModule, String fqName) throws Exception;
+	String[] findModules(Module refSourceModule, String fqNamePrefix) throws Exception;
  
 }

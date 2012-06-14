@@ -18,6 +18,7 @@ public abstract class DeclarationConditional extends ASTNeoNode implements IStat
 	public DeclarationConditional(NodeList thenDecls, NodeList elseDecls, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.thenDecls = NodeList.parentizeNodeList(thenDecls, this);
+		//assertNotNull(thenDecls);
 		this.elseDecls = NodeList.parentizeNodeList(elseDecls, this);
 	}
 	

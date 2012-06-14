@@ -143,4 +143,8 @@ public class CommonTestUtils {
 		}
 	}
 	
+	public static <T> T[] removeLast(T[] array, int count) {
+		return ArrayUtil.removeLast(array, count);
+	}
+	
 }

@@ -7,6 +7,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.refmodel.IScopeNode;
+import dtool.resolver.CompareDefUnits;
 
 public class CodeCompletion_IntrinsicsTest extends CodeCompletion__Common {
 	
@@ -21,7 +22,7 @@ public class CodeCompletion_IntrinsicsTest extends CodeCompletion__Common {
 	
 	@Test
 	public void test1() throws Exception {
-		checkProposals(
+		CompareDefUnits.checkResults(
 				list(mockDefUnit("Object"), mockDefUnit("ClassInfo"), mockDefUnit("TypeInfo"), mockDefUnit("Error")),
 				array("Error", "ClassInfo"), true);
 	}

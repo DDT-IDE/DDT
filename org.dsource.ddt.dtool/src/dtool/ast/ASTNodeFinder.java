@@ -1,6 +1,5 @@
 package dtool.ast;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.ASTUpTreeVisitor;
@@ -10,7 +9,7 @@ import descent.internal.compiler.parser.ast.IASTNode;
 /**
  * Finds the innermost element whose source range contains the offset.
  * An element is picked between element.startPos (inclusive) and  
- * element.endPos (inclusive).   
+ * element.endPos (inclusive).
  */
 public abstract class ASTNodeFinder<T extends IASTNode> {
 	
@@ -21,25 +20,11 @@ public abstract class ASTNodeFinder<T extends IASTNode> {
 	public ASTNodeFinder() {
 	}
 	
-	public static IASTNode findElementDependingOnASTType(IASTNode root, int offset) {
-		return findElementDependingOnType(root, offset, true);
-	}
-	
-	public static IASTNode findElementDependingOnType(IASTNode root, int offset, boolean inclusiveEnd) {
-		if(root instanceof ASTNeoNode) {
-			return findElement((ASTNeoNode) root, offset, inclusiveEnd);
-		} else if(root instanceof ASTNode) {
-			return findElement((ASTNode) root, offset, inclusiveEnd);
-		} else {
-			throw assertFail();
-		}
-	}
-	
 	public static ASTNode findElement(ASTNode root, int offset) {
 		return findElement(root, offset, true);
 	}
 	
-	protected static ASTNode findElement(final ASTNode root, int offset, boolean inclusiveEnd) {
+	public static ASTNode findElement(final ASTNode root, int offset, boolean inclusiveEnd) {
 		ASTNodeFinder<ASTNode> astNodeFinder = new ASTNodeFinder<ASTNode>() {
 			@Override
 			public void doAcceptOnRoot() {

@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import dtool.contentassist.CompletionSession;
 import dtool.refmodel.PrefixDefUnitSearch;
+import dtool.resolver.DefUnitArrayListCollector;
 
 public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 	

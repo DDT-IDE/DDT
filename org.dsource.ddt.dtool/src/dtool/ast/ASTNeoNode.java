@@ -129,7 +129,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	/** Set the parent of this node. Cannot be null. */
 	public void setParent(ASTNeoNode parent) {
 		assertTrue(parent != null);
-		//assertTrue(this.parent == null); // Can only set parent once
+		assertTrue(this.parent == null); // Can only set parent once
 		this.parent = parent;
 	}
 	

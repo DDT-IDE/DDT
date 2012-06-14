@@ -30,6 +30,7 @@ import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
 import dtool.parser.DeeParserSession;
 import dtool.parser.DescentParserAdapter;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
@@ -38,14 +39,14 @@ import dtool.parser.DescentParserAdapter;
  */
 public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
-	public PrefixSearchOptions searchOptions;
-	private IDefUnitMatchAccepter defUnitAccepter;
+	public final PrefixSearchOptions searchOptions;
+	private final IDefUnitMatchAccepter defUnitAccepter;
 	
-	private Set<String> addedDefUnits = new HashSet<String>();
+	private final Set<String> addedDefUnits = new HashSet<String>();
 	
 	public PrefixDefUnitSearch(PrefixSearchOptions searchOptions, IScopeNode refScope, int refOffset,
-			IDefUnitMatchAccepter defUnitAccepter) {
-		super(refScope, refOffset);
+			IDefUnitMatchAccepter defUnitAccepter, IModuleResolver moduleResolver) {
+		super(refScope, refOffset, moduleResolver);
 		this.searchOptions = searchOptions;
 		this.defUnitAccepter = defUnitAccepter;
 	}
@@ -89,6 +90,14 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	public static PrefixDefUnitSearch doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
 			CompletionSession session, IDefUnitMatchAccepter defUnitAccepter) 
 	{
+		String moduleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
+		return doCompletionSearch2(session, moduleName, source, offset, moduleUnit, ReferenceResolver.modResolver, 
+				defUnitAccepter);
+	}
+	
+	public static PrefixDefUnitSearch doCompletionSearch2(CompletionSession session, String moduleName,
+			String source, final int offset, ISourceModule moduleUnit, IModuleResolver modResolver, IDefUnitMatchAccepter defUnitAccepter) 
+	{
 		assertTrue(offset >= 0 && offset <= source.length());
 		assertTrue(session.errorMsg == null);
 		session.resultCode = ECompletionSessionResults.RESULT_OK;
@@ -120,7 +129,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		}
 		
 		// : Parse source and do syntax error recovery
-		String moduleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
 		DeeParserSession parseSession = DeeParserSession.parseWithRecovery(moduleName, source, Parser.D2, offset,
 				lastTokenNonWS);
 		
@@ -136,8 +144,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		session.invokeNode = node;
 		PrefixSearchOptions searchOptions = new PrefixSearchOptions();
 		IScopeNode refScope = NodeUtil.getScopeNode(node);
-		PrefixDefUnitSearch search;
-		search = new PrefixDefUnitSearch(searchOptions, refScope, offset, defUnitAccepter);
+		PrefixDefUnitSearch search = new PrefixDefUnitSearch(searchOptions, refScope, offset, defUnitAccepter,
+				modResolver);
 		
 		
 		if(node instanceof NamedReference)  {
@@ -304,5 +312,5 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		|| token.value == TOK.TOKwchar
 		;
 	}
-	
+
 }

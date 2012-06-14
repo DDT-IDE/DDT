@@ -20,7 +20,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.tests.ref.cc.CodeCompletion__Common;
+import dtool.resolver.CompareDefUnits;
 import dtool.tests.ref.cc.ICodeCompletionTester;
 
 // Not that this class is run as a JUnit test, so annotated initializers are not run
@@ -63,7 +63,7 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 		
 		List<DefUnit> results = mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>());
 		
-		CodeCompletion__Common.checkProposals(results, expectedProposals, removeObjectIntrinsics);
+		CompareDefUnits.checkResults(results, expectedProposals, removeObjectIntrinsics);
 		
 		checkProposals(repOffset, repLen, prefixLen, proposals);
 	}

@@ -3,6 +3,7 @@ package dtool.ast.declarations;
 import java.util.Iterator;
 import java.util.List;
 
+import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.TOK;
@@ -13,6 +14,8 @@ import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.Reference;
+import dtool.ast.statements.IStatement;
+import dtool.refmodel.INonScopedBlock;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 
@@ -25,12 +28,13 @@ import dtool.refmodel.IScopeNode;
  * DefUnit of the node. However, the {@link #getMembersIterator()} will 
  * still return thendecls + elsedecls as normal, bypassing the IsTypeScope.
  */
-public class DeclarationStaticIfIsType extends DeclarationConditional {
+public class DeclarationStaticIfIsType extends ASTNeoNode implements IStatement, INonScopedBlock {
 	
 	public class IsTypeDefUnit extends DefUnit {
 		
 		public IsTypeDefUnit(String id, SourceRange idSourceRange) {
 			super(idSourceRange, id, idSourceRange, null);
+			setParent(DeclarationStaticIfIsType.this);
 		}
 		
 		@Override
@@ -62,6 +66,7 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 		public IsTypeScope(NodeList nodes, SourceRange sourceRange) {
 			initSourceRange(sourceRange);
 			this.nodelist = NodeList.parentizeNodeList(nodes, this);
+			setParent(DeclarationStaticIfIsType.this);
 		}
 		
 		@Override
@@ -89,22 +94,22 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 		
 	}
 	
-	public final IsTypeScope thendeclsScope;
-	
 	public final Reference arg;
 	public final IsTypeDefUnit defUnit;
 	public final TOK tok;
 	public final Reference specType;
-	
+	public final IsTypeScope thenScope;
+	public final NodeList elseDecls;
 	
 	public DeclarationStaticIfIsType(Reference arg, String id, SourceRange idSourceRange, TOK tok, Reference specType,
 			NodeList thenDecls, NodeList elseDecls, SourceRange innerRange, SourceRange sourceRange) {
-		super(thenDecls, elseDecls, sourceRange);
+		initSourceRange(sourceRange);
 		this.arg = arg; parentize(this.arg);
-		this.defUnit = new IsTypeDefUnit(id, idSourceRange); parentize(this.defUnit);
+		this.defUnit = new IsTypeDefUnit(id, idSourceRange);
 		this.tok = tok;
 		this.specType = parentize(specType);
-		this.thendeclsScope = new IsTypeScope(this.thenDecls, innerRange); parentize(this.thendeclsScope); //BUG here
+		this.thenScope = new IsTypeScope(thenDecls, innerRange);
+		this.elseDecls = NodeList.parentizeNodeList(elseDecls, this);
 	}
 	
 	@Override
@@ -114,10 +119,18 @@ public class DeclarationStaticIfIsType extends DeclarationConditional {
 			TreeVisitor.acceptChildren(visitor, arg);
 			TreeVisitor.acceptChildren(visitor, defUnit);
 			TreeVisitor.acceptChildren(visitor, specType);
-			TreeVisitor.acceptChildren(visitor, thendeclsScope);
+			TreeVisitor.acceptChildren(visitor, thenScope);
 			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(elseDecls));
 		}
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public Iterator<ASTNeoNode> getMembersIterator() {
+		if(elseDecls == null)
+			return thenScope.nodelist.getNodesIterator();
+		
+		return new ChainedIterator<ASTNeoNode>(thenScope.nodelist.getNodesIterator(), elseDecls.getNodesIterator()); 
 	}
 	
 }

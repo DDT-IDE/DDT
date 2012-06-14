@@ -21,6 +21,8 @@ import dtool.tests.MiscFileUtils;
 
 public abstract class Parser__FileParseTest extends Parser__CommonTest {
 	
+	public static final String COMMON = "common/";
+	
 	protected final File file;
 	
 	public Parser__FileParseTest(File file) {
