@@ -6,6 +6,7 @@ import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.refmodel.IScope;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -30,7 +31,7 @@ public class DefinitionStruct extends DefinitionAggregate {
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes() {
+	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 		return null;
 	}
 	

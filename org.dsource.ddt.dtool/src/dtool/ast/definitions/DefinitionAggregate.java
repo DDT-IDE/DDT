@@ -10,6 +10,7 @@ import dtool.ast.ASTPrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -41,12 +42,12 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 		return this;
 	}
 	
 	@Override
-	public Iterator<ASTNeoNode> getMembersIterator() {
+	public Iterator<ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 		if(members == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
 		return members.iterator();

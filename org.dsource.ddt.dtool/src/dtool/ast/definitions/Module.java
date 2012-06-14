@@ -18,6 +18,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -129,12 +130,12 @@ public class Module extends DefUnit implements IScopeNode {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 		return this;
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes() {
+	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 		return null;
 	}
 	
@@ -145,7 +146,7 @@ public class Module extends DefUnit implements IScopeNode {
 	
 	
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator() {
+	public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 		return members.iterator();
 	}
 	

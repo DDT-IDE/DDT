@@ -7,6 +7,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**
  * A definition of an alias.
@@ -36,8 +37,8 @@ public class DefinitionAlias extends Definition implements IStatement {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
-		return target.getTargetScope();
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		return target.getTargetScope(moduleResolver);
 	}
 	
 	

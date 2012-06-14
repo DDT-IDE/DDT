@@ -14,7 +14,7 @@ import dtool.ast.definitions.Module;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.PrefixDefUnitSearch;
-import dtool.refmodel.ReferenceResolver;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /** 
@@ -42,9 +42,14 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findOneOnly) {
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
 		Module originMod = NodeUtil.getParentModule(this);
-		Module targetMod = ReferenceResolver.findModule(originMod, packages.getInternalArray(), module);
+		Module targetMod;
+		try {
+			targetMod = moduleResolver.findModule(originMod, packages.getInternalArray(), module);
+		} catch (Exception e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 		return DefUnitSearch.wrapResult(targetMod);
 	}
 	
@@ -60,7 +65,7 @@ public class RefModule extends NamedReference {
 		}
 		
 		@Override
-		public IScopeNode getMembersScope() {
+		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 			assertFail(); return null;
 		}
 		

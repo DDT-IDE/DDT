@@ -7,6 +7,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.resolver.CompareDefUnits;
 
 public class CodeCompletion_IntrinsicsTest extends CodeCompletion__Common {
@@ -34,7 +35,7 @@ public class CodeCompletion_IntrinsicsTest extends CodeCompletion__Common {
 			}
 			
 			@Override
-			public IScopeNode getMembersScope() {
+			public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 				return null;
 			}
 			

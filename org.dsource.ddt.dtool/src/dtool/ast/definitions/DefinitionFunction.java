@@ -16,6 +16,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -80,13 +81,13 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 		// FIXME
 		return this;
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes() {
+	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 		// TODO: function super
 		return null;
 	}
@@ -97,7 +98,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	}
 	
 	@Override
-	public Iterator<IFunctionParameter> getMembersIterator() {
+	public Iterator<IFunctionParameter> getMembersIterator(IModuleResolver moduleResolver) {
 		return params.iterator();
 	}
 	
@@ -148,7 +149,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 			visitor.endVisit(this);					}
 		
 		@Override
-		public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
+		public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
 			return null;
 		}
 		

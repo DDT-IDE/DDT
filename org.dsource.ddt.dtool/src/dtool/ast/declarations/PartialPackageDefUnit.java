@@ -10,6 +10,7 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**
  * A synthetic DefUnit (not derived from source code), for partial package "definitions" of imports. 
@@ -60,12 +61,12 @@ public abstract class PartialPackageDefUnit extends DefUnit implements IScopeNod
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 		return this;
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes() {
+	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 		return null;
 	}
 	

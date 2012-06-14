@@ -3,6 +3,7 @@ package dtool.ast.definitions;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class TemplateParamAlias extends TemplateParameter {
 	
@@ -16,7 +17,7 @@ public class TemplateParamAlias extends TemplateParameter {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 		// TODO return intrinsic universal
 		return null;
 	}

@@ -8,6 +8,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class ImportStatic extends ImportFragment {
 	
@@ -22,9 +23,9 @@ public class ImportStatic extends ImportFragment {
 		return moduleRef.packages.getInternalArray();
 	}
 	
-	public DefUnit getPartialDefUnit() {
+	public DefUnit getPartialDefUnit(IModuleResolver moduleResolver) {
 		if(getPackageNames().length == 0 || getPackageNames()[0] == "") {
-			return moduleRef.findTargetDefUnit();
+			return moduleRef.findTargetDefUnit(moduleResolver);
 		}
 		
 		// Do lazy PartialDefUnit creation

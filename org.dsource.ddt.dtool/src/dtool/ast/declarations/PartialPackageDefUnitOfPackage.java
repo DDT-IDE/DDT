@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import dtool.ast.ASTNeoNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 
 public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
@@ -19,7 +20,7 @@ public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
 	}
 	
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator() {
+	public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 		return Collections.singleton(subPackage).iterator();
 	}
 	

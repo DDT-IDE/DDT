@@ -1,12 +1,12 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**
  * Abstract class for all AST elements that define a new named entity.
@@ -76,7 +76,7 @@ public abstract class DefUnit extends ASTNeoNode {
 	 * In the case of aggregate like DefUnits the members scope is contained
 	 * in the DefUnit node, but on other cases the scope is somewhere else.
 	 * May be null if the scope is not found. */
-	public abstract IScopeNode getMembersScope();
+	public abstract IScopeNode getMembersScope(IModuleResolver moduleResolver);
 	
 	@Override
 	public String toStringAsElement() {

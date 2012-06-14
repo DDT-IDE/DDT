@@ -6,6 +6,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class NamedMixin extends DefUnit implements IStatement {
 	
@@ -33,8 +34,8 @@ public class NamedMixin extends DefUnit implements IStatement {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
-		return type.getTargetScope();
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		return type.getTargetScope(moduleResolver);
 	}
 	
 }

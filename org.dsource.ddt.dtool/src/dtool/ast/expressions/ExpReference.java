@@ -9,6 +9,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.Reference;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**
  * An Expression wrapping a {@link Reference}
@@ -34,8 +35,8 @@ public class ExpReference extends Expression {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
-		return ref.findTargetDefUnits(findFirstOnly);
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		return ref.findTargetDefUnits(moduleResolver, findFirstOnly);
 	}
 	
 	@Override

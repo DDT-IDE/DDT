@@ -9,6 +9,7 @@ import dtool.ast.definitions.NativeDefUnit;
 import dtool.ast.expressions.Resolvable;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**
  * Common class for entity references.
@@ -40,7 +41,7 @@ public abstract class Reference extends Resolvable {
 		}
 		
 		@Override
-		public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
+		public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
 			return null;
 		}
 		
@@ -54,11 +55,11 @@ public abstract class Reference extends Resolvable {
 	
 	public EReferenceConstraint refConstraint = null;
 	
-	public IScopeNode getTargetScope() {
-		DefUnit defunit = findTargetDefUnit(); 
+	public IScopeNode getTargetScope(IModuleResolver moduleResolver) {
+		DefUnit defunit = findTargetDefUnit(moduleResolver); 
 		if(defunit == null)
 			return null;
-		return defunit.getMembersScope();
+		return defunit.getMembersScope(moduleResolver);
 	}
 	
 	/*public void performSearch(CommonDefUnitSearch search) {

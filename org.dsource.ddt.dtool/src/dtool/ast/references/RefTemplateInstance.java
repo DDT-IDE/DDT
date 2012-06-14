@@ -11,6 +11,7 @@ import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 public class RefTemplateInstance extends Reference {
@@ -42,9 +43,9 @@ public class RefTemplateInstance extends Reference {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findOneOnly) {
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
 		// Not accurate, this will ignore the template parameters:
-		return refRawTemplate.findTargetDefUnits(findOneOnly);
+		return refRawTemplate.findTargetDefUnits(moduleResolver, findOneOnly);
 	}
 	
 	@Override

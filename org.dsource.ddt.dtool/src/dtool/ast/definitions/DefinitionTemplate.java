@@ -14,6 +14,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -55,12 +56,12 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 		return this;
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes() {
+	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 		// TODO: template super scope
 		return null;
 	}
@@ -71,14 +72,14 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	}
 	
 	@Override
-	public Iterator<? extends IASTNeoNode> getMembersIterator() {
+	public Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 		// TODO: check if in a template invocation
 		// TODO: test this more, redo
 		if(wrapper) {
 			// Go straight to members of the inner decl
-			IScopeNode scope = ((DefUnit)decls.get(0)).getMembersScope();
+			IScopeNode scope = ((DefUnit)decls.get(0)).getMembersScope(moduleResolver);
 			Iterator<? extends IASTNeoNode> tplIter = templateParams.iterator();
-			return ChainedIterator.create(tplIter, scope.getMembersIterator());
+			return ChainedIterator.create(tplIter, scope.getMembersIterator(moduleResolver));
 		}
 		return ChainedIterator.create(templateParams.iterator(), decls.iterator());
 	}

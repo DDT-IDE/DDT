@@ -7,6 +7,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class TypeTypeof extends CommonRefNative {
 	
@@ -39,8 +40,8 @@ public class TypeTypeof extends CommonRefNative {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
-		return expression.getType();
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		return expression.getType(moduleResolver);
 	}
 	
 }

@@ -12,6 +12,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 public class StatementTry extends Statement {
@@ -37,13 +38,13 @@ public class StatementTry extends Statement {
 			visitor.endVisit(this);
 		}
 		@Override
-		public Iterator<? extends IASTNeoNode> getMembersIterator() {
+		public Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 			if(param != null)
 				return IteratorUtil.singletonIterator(param);
 			return IteratorUtil.getEMPTY_ITERATOR();
 		}
 		@Override
-		public List<IScope> getSuperScopes() {
+		public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 			return null;
 		}
 		@Override

@@ -15,6 +15,7 @@ import dtool.ast.definitions.NativeDefUnit;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -45,7 +46,7 @@ public class TypeDelegate extends CommonRefNative {
 	
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		return DefUnitSearch.wrapResult(IntrinsicDelegate.instance);
 	}
 	
@@ -65,17 +66,17 @@ public class TypeDelegate extends CommonRefNative {
 		
 		
 		@Override
-		public IScopeNode getMembersScope() {
+		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 		@Override
-		public List<IScope> getSuperScopes() {
+		public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 		@Override
-		public Iterator<ASTNeoNode> getMembersIterator() {
+		public Iterator<ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 			// TODO Auto-generated method stub
 			return null;
 		}

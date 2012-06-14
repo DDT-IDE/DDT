@@ -6,6 +6,7 @@ import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 // TODO review this class
 public class RefReturn extends Reference {
@@ -23,7 +24,7 @@ public class RefReturn extends Reference {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		// TODO:
 		return null;
 	}

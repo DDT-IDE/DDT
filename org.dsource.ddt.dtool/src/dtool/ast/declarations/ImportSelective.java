@@ -16,6 +16,7 @@ import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.INonScopedBlock;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.ReferenceResolver;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 public class ImportSelective extends ImportFragment implements INonScopedBlock {
@@ -51,8 +52,8 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 		}
 		
 		@Override
-		public IScopeNode getMembersScope() {
-			return target.getTargetScope();
+		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+			return target.getTargetScope(moduleResolver);
 		}
 	}
 	

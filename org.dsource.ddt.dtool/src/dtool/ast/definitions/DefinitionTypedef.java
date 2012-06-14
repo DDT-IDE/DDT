@@ -7,6 +7,7 @@ import dtool.ast.expressions.Initializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class DefinitionTypedef extends Definition implements IStatement {
 	
@@ -36,8 +37,8 @@ public class DefinitionTypedef extends Definition implements IStatement {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
-		return type.getTargetScope();
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		return type.getTargetScope(moduleResolver);
 	}
 	
 	@Override

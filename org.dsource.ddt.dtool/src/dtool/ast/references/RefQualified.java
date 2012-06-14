@@ -10,6 +10,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.refmodel.IDefUnitReferenceNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**
  * A normal qualified reference.
@@ -55,8 +56,8 @@ public class RefQualified extends CommonRefQualified {
 	}
 	
 	@Override
-	public Collection<DefUnit> findRootDefUnits() {
-		return qualifier.findTargetDefUnits(false);
+	public Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver) {
+		return qualifier.findTargetDefUnits(moduleResolver, false);
 	}
 	
 }

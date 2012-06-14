@@ -15,6 +15,7 @@ import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.INonScopedBlock;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 	
@@ -34,8 +35,8 @@ public class ImportAliasing extends ImportFragment implements INonScopedBlock {
 		}
 		
 		@Override
-		public IScopeNode getMembersScope() {
-			return targetModule.getTargetScope();
+		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+			return targetModule.getTargetScope(moduleResolver);
 		}
 		
 		@Override

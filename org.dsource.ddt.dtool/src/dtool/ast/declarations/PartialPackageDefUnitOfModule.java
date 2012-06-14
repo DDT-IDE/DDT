@@ -8,6 +8,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 	
@@ -21,12 +22,12 @@ public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 	}
 	
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator() {
+	public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 		if(module != null)
 			return Collections.singleton(module).iterator();
 		else {
 			// Could we cache this result?
-			Module targetModule = (Module) moduleRef.findTargetDefUnit();
+			Module targetModule = (Module) moduleRef.findTargetDefUnit(moduleResolver);
 			if(targetModule != null)
 				return Collections.singleton(targetModule).iterator();
 			return IteratorUtil.getEMPTY_ITERATOR();

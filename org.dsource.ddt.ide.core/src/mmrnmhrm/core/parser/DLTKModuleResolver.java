@@ -31,7 +31,6 @@ public class DLTKModuleResolver implements IModuleResolver {
 	public Module findModule(Module sourceRefModule, String[] packages, String modName) throws CoreException {
 		
 		ISourceModule sourceModule = (ISourceModule) sourceRefModule.getModuleUnit();
-		
 		IScriptProject deeproj = sourceModule.getScriptProject();
 		
 		if(deeproj == null || deeproj.exists() == false || !isDeeProject(deeproj))
@@ -51,7 +50,7 @@ public class DLTKModuleResolver implements IModuleResolver {
 						return modDecl.neoModule;
 					}
 				}
-			}	
+			}
 		}
 		return null;
 	}
@@ -63,7 +62,6 @@ public class DLTKModuleResolver implements IModuleResolver {
 	@Override
 	public String[] findModules(Module refSourceModule, String fqNamePrefix) throws ModelException {
 		ISourceModule sourceModule = (ISourceModule) refSourceModule.getModuleUnit();
-		
 		IScriptProject scriptProject = sourceModule.getScriptProject();
 		
 		List<String> strings = new ArrayList<String>();

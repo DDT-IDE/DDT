@@ -9,6 +9,7 @@ import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.PrefixDefUnitSearch;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class RefImportSelection extends NamedReference implements IImportSelectiveSelection {
 	
@@ -39,8 +40,8 @@ public class RefImportSelection extends NamedReference implements IImportSelecti
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findOneOnly) {
-		DefUnitSearch search = new DefUnitSearch(name, this, findOneOnly);
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
+		DefUnitSearch search = new DefUnitSearch(name, this, findOneOnly, moduleResolver);
 		RefModule refMod = impSel.moduleRef;
 		CommonRefQualified.findDefUnitInMultipleDefUnitScopes(refMod.findTargetDefUnits(findOneOnly), search);
 		return search.getMatchDefUnits();

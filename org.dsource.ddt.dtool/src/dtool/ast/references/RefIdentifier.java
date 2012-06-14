@@ -13,6 +13,7 @@ import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class RefIdentifier extends NamedReference {
 	
@@ -42,8 +43,8 @@ public class RefIdentifier extends NamedReference {
 	
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findOneOnly) {
-		DefUnitSearch search = new DefUnitSearch(name, this, this.getStartPos(), findOneOnly);
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
+		DefUnitSearch search = new DefUnitSearch(name, this, this.getStartPos(), findOneOnly, moduleResolver);
 		doSearchForPossiblyQualifiedSingleRef(search, this);
 		return search.getMatchDefUnits();
 	}

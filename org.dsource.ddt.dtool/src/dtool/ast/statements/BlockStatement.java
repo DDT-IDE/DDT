@@ -9,6 +9,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -36,12 +37,12 @@ public class BlockStatement extends Statement implements IScopeNode {
 	
 	
 	@Override
-	public Iterator<? extends IASTNeoNode> getMembersIterator() {
+	public Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 		return statements.iterator();
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes() {
+	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 		return null;
 	}
 	

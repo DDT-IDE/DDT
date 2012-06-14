@@ -37,6 +37,11 @@ public class ReferenceResolver {
 	public static void initializeEntityResolver(IModuleResolver modResolver) {
 		ReferenceResolver.modResolver = modResolver;
 	}
+	
+	@Deprecated
+	public static IModuleResolver getModResolver() {
+		return modResolver;
+	}
 
 	/** Convenience method to call mod resolver. */
 	@Deprecated
@@ -135,8 +140,8 @@ public class ReferenceResolver {
 			return;
 
 		// Search super scope 
-		if(scope.getSuperScopes() != null) {
-			for(IScope superscope : scope.getSuperScopes()) {
+		if(scope.getSuperScopes(search.modResolver) != null) {
+			for(IScope superscope : scope.getSuperScopes(search.modResolver)) {
 				if(superscope != null)
 					findDefUnitInScope(superscope, search); 
 				if(search.isFinished())
@@ -148,13 +153,13 @@ public class ReferenceResolver {
 	
 
 	private static void findDefUnitInImmediateScope(IScope scope, CommonDefUnitSearch search) {
-		Iterator<IASTNeoNode> iter = IteratorUtil.recast(scope.getMembersIterator());
+		Iterator<IASTNeoNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
 		
 		findDefUnits(search, iter, scope.hasSequentialLookup(), false, null);
 	}
 	
 	private static void findDefUnitInSecondaryScope(IScope scope, CommonDefUnitSearch search) {
-		Iterator<IASTNeoNode> iter = IteratorUtil.recast(scope.getMembersIterator());
+		Iterator<IASTNeoNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
 
 		IScope thisModule = scope.getModuleScope();
 		findDefUnits(search, iter, scope.hasSequentialLookup(), true, thisModule);
@@ -211,11 +216,11 @@ public class ReferenceResolver {
 	/* ====================  import lookup  ==================== */
 
 	public static void findDefUnitInStaticImport(ImportStatic importStatic, CommonDefUnitSearch search) {
-		DefUnit defunit = importStatic.getPartialDefUnit();
+		DefUnit defunit = importStatic.getPartialDefUnit(search.modResolver);
 		if(defunit != null && search.matches(defunit))
 			search.addMatch(defunit);
 	}
-
+	
 	public static void findDefUnitInContentImport(ImportContent impContent, CommonDefUnitSearch search) {
 		findDefUnitInStaticImport(impContent, search);
 		//if(search.isScopeFinished()) return;

@@ -8,6 +8,7 @@ import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.refmodel.IScope;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -46,16 +47,16 @@ public class DefinitionClass extends DefinitionAggregate {
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes() {
+	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 		if(baseClasses == null || baseClasses.size() < 0)
 			return null;
 		
 		List<IScope> scopes = new ArrayList<IScope>();
 		for(BaseClass baseclass: baseClasses) {
-			DefUnit defunit = baseclass.type.findTargetDefUnit();
+			DefUnit defunit = baseclass.type.findTargetDefUnit(); // BUG here
 			if(defunit == null)
 				continue;
-			scopes.add(defunit.getMembersScope());
+			scopes.add(defunit.getMembersScope(moduleResolver));
 		}
 		return scopes;
 		// TODO add Object super scope.

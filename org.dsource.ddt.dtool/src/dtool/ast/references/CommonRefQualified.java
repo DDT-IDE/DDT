@@ -10,6 +10,7 @@ import dtool.refmodel.IDefUnitReferenceNode;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 
 /**
@@ -32,7 +33,7 @@ public abstract class CommonRefQualified extends NamedReference implements IDefU
 	/** maybe null */
 	public abstract IDefUnitReferenceNode getQualifier();
 
-	public abstract Collection<DefUnit> findRootDefUnits();
+	public abstract Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver);
 	
 	@Override
 	public String getReferenceName() {
@@ -41,8 +42,8 @@ public abstract class CommonRefQualified extends NamedReference implements IDefU
 	
 	/** Finds the target defunits of this qualified reference. */
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findOneOnly) {
-		DefUnitSearch search = new DefUnitSearch(qualifiedName.name, this);
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
+		DefUnitSearch search = new DefUnitSearch(qualifiedName.name, this, findOneOnly, moduleResolver);
 		doQualifiedSearch(search, this);
 		return search.getMatchDefUnits();
 	}
@@ -53,7 +54,7 @@ public abstract class CommonRefQualified extends NamedReference implements IDefU
 	}
 	
 	public static void doQualifiedSearch(CommonDefUnitSearch search, CommonRefQualified qref) {
-		Collection<DefUnit> defunits = qref.findRootDefUnits();
+		Collection<DefUnit> defunits = qref.findRootDefUnits(search.getModResolver());
 		findDefUnitInMultipleDefUnitScopes(defunits, search);
 	}
 	
@@ -62,7 +63,7 @@ public abstract class CommonRefQualified extends NamedReference implements IDefU
 			return;
 		
 		for (DefUnit unit : defunits) {
-			IScopeNode scope = unit.getMembersScope();
+			IScopeNode scope = unit.getMembersScope(search.getModResolver());
 			if(scope != null) {
 				ReferenceResolver.findDefUnitInScope(scope, search);
 			}

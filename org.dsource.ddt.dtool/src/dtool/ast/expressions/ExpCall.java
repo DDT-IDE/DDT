@@ -11,6 +11,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 public class ExpCall extends Expression {
@@ -35,23 +36,23 @@ public class ExpCall extends Expression {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
-		DefUnit defUnit = callee.findTargetDefUnit();
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		DefUnit defUnit = callee.findTargetDefUnit(moduleResolver);
 		if(defUnit == null)
 			return null;		
 		if (defUnit instanceof DefinitionFunction) {
 			DefinitionFunction defOpCallFunc = (DefinitionFunction) defUnit;
-			DefUnit targetDefUnit = defOpCallFunc.retType.findTargetDefUnit();
+			DefUnit targetDefUnit = defOpCallFunc.retType.findTargetDefUnit(moduleResolver);
 			return Collections.singleton(targetDefUnit);
 		}
 		
-		DefUnitSearch search = new DefUnitSearch("opCall", null);
-		ReferenceResolver.findDefUnitInScope(defUnit.getMembersScope(), search);
+		DefUnitSearch search = new DefUnitSearch("opCall", null, false, moduleResolver);
+		ReferenceResolver.findDefUnitInScope(defUnit.getMembersScope(moduleResolver), search);
 		for (Iterator<DefUnit> iter = search.getMatchDefUnits().iterator(); iter.hasNext();) {
 			DefUnit defOpCall = iter.next();
 			if (defOpCall instanceof DefinitionFunction) {
 				DefinitionFunction defOpCallFunc = (DefinitionFunction) defOpCall;
-				DefUnit targetDefUnit = defOpCallFunc.retType.findTargetDefUnit();
+				DefUnit targetDefUnit = defOpCallFunc.retType.findTargetDefUnit(moduleResolver);
 				return Collections.singleton(targetDefUnit);
 			}
 		}

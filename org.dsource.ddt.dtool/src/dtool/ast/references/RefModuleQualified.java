@@ -10,6 +10,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.refmodel.IDefUnitReferenceNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /** An entity reference starting at module scope. 
  * Example: "a = .foo;"
@@ -41,7 +42,7 @@ public class RefModuleQualified extends CommonRefQualified {
 	}
 	
 	@Override
-	public Collection<DefUnit> findRootDefUnits() {
+	public Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver) {
 		final Module module = NodeUtil.getParentModule(this);
 		return Collections.singletonList((DefUnit)module);
 	}

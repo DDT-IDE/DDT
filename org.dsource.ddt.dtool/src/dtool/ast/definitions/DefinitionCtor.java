@@ -12,6 +12,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 public class DefinitionCtor extends ASTNeoNode implements IScopeNode, ICallableElement {
@@ -62,12 +63,12 @@ public class DefinitionCtor extends ASTNeoNode implements IScopeNode, ICallableE
 	}
 	
 	@Override
-	public Iterator<IFunctionParameter> getMembersIterator() {
+	public Iterator<IFunctionParameter> getMembersIterator(IModuleResolver moduleResolver) {
 		return params.iterator();
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes() {
+	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 		return null;
 	}
 	

@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class TemplateParamType extends TemplateParameter {
 	
@@ -25,10 +26,10 @@ public class TemplateParamType extends TemplateParameter {
 	 * Can be null
 	 */
 	@Override
-	public IScopeNode getMembersScope() {
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 		if(specType == null)
 			return null;
-		return specType.getTargetScope();
+		return specType.getTargetScope(moduleResolver);
 	}
 	
 	@Override

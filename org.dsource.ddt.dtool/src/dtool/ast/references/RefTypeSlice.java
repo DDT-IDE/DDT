@@ -9,6 +9,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable;
 import dtool.refmodel.IDefUnitReferenceNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class RefTypeSlice extends Reference {
 	
@@ -36,7 +37,7 @@ public class RefTypeSlice extends Reference {
 	
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		// TODO:
 		return null;
 	}

@@ -12,6 +12,7 @@ import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.INativeDefUnit;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, IScopeNode {
 	
@@ -22,7 +23,7 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 		}
 		
 		@Override
-		public Iterator<? extends ASTNeoNode> getMembersIterator() {
+		public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 			// TODO: put intrinsics here?
 			return IteratorUtil.getEMPTY_ITERATOR();
 		}
@@ -33,7 +34,7 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 		}
 		
 		@Override
-		public List<IScope> getSuperScopes() {
+		public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 			return null;
 		}
 		
@@ -55,7 +56,7 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 	
 	private static final class UndeterminedReference implements IDefUnitReference {
 		@Override
-		public Collection<DefUnit> findTargetDefUnits(boolean findFirstOnly) {
+		public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
 			return null;
 		}
 		@Override
@@ -84,7 +85,7 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 	
 	
 	@Override
-	public abstract IScopeNode getMembersScope();
+	public abstract IScopeNode getMembersScope(IModuleResolver moduleResolver);
 	
 	@Override
 	public boolean hasSequentialLookup() {

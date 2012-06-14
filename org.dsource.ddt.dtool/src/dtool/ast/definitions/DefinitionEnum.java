@@ -10,6 +10,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 public class DefinitionEnum extends Definition implements IScopeNode, IStatement {
@@ -41,12 +42,12 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 		return this;
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes() {
+	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -57,7 +58,7 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	}
 	
 	@Override
-	public Iterator<EnumMember> getMembersIterator() {
+	public Iterator<EnumMember> getMembersIterator(IModuleResolver moduleResolver) {
 		return members.iterator();
 	}
 	

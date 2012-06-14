@@ -8,6 +8,7 @@ import dtool.ast.NodeUtil;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 // TODO: Need to test this a lot more, especially with many other kinds of parameters
 public class FunctionParameter extends DefUnit implements IFunctionParameter {
@@ -42,11 +43,11 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
-		Collection<DefUnit> defunits = type.findTargetDefUnits(true);
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		Collection<DefUnit> defunits = type.findTargetDefUnits(true); // BUG here
 		if(defunits == null || defunits.isEmpty())
 			return null;
-		return defunits.iterator().next().getMembersScope();
+		return defunits.iterator().next().getMembersScope(moduleResolver);
 		//return defunit.getMembersScope();
 	}
 	

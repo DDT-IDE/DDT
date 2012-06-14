@@ -10,6 +10,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**
  * A definition of a variable
@@ -56,11 +57,11 @@ public class DefinitionVariable extends Definition implements IStatement {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
-		Collection<DefUnit> defunits = determineType().findTargetDefUnits(true);
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		Collection<DefUnit> defunits = determineType().findTargetDefUnits(moduleResolver, true);
 		if(defunits == null || defunits.isEmpty())
 			return null;
-		return defunits.iterator().next().getMembersScope();
+		return defunits.iterator().next().getMembersScope(moduleResolver);
 		//return defunit.getMembersScope();
 	}
 	

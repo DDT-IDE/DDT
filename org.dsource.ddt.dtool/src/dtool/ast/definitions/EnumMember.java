@@ -5,6 +5,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class EnumMember extends DefUnit {
 	
@@ -31,8 +32,8 @@ public class EnumMember extends DefUnit {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
-		return getType().getTargetScope();
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		return getType().getTargetScope(moduleResolver);
 	}
 	
 	private Reference getType() {

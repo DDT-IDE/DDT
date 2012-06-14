@@ -5,6 +5,7 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class TemplateParamValue extends TemplateParameter {
 	
@@ -25,8 +26,8 @@ public class TemplateParamValue extends TemplateParameter {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope() {
-		return type.getTargetScope();
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		return type.getTargetScope(moduleResolver);
 	}
 	
 	@Override

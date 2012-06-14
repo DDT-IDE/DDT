@@ -18,6 +18,7 @@ import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**
  * Declaration of a static if, with an is type condition, which creates
@@ -43,11 +44,11 @@ public class DeclarationStaticIfIsType extends ASTNeoNode implements IStatement,
 		}
 		
 		@Override
-		public IScopeNode getMembersScope() {
+		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 			if(specType != null)
-				return specType.getTargetScope();
+				return specType.getTargetScope(moduleResolver);
 			else
-				return arg.getTargetScope();
+				return arg.getTargetScope(moduleResolver);
 		}
 		
 		@Override
@@ -78,12 +79,12 @@ public class DeclarationStaticIfIsType extends ASTNeoNode implements IStatement,
 		}
 		
 		@Override
-		public Iterator<? extends ASTNeoNode> getMembersIterator() {
+		public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 			return IteratorUtil.singletonIterator(defUnit);
 		}
 		
 		@Override
-		public List<IScope> getSuperScopes() {
+		public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
 			return null;
 		}
 		
