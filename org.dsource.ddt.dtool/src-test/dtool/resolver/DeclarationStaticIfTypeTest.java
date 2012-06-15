@@ -75,7 +75,7 @@ public class DeclarationStaticIfTypeTest extends Resolver_BaseTest {
 	}
 	
 	protected void checkSingleResult(Reference ref, int marker) {
-		Collection<DefUnit> results = ref.findTargetDefUnits(false);
+		Collection<DefUnit> results = ref.findTargetDefUnits(new NullModuleResolver(), false);
 		assertTrue(results.size() == 1);
 		assertEquals(createArrayList(results).get(0).getOffset(), marker);
 	}

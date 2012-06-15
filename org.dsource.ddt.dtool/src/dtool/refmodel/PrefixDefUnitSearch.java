@@ -13,7 +13,6 @@ import descent.internal.compiler.parser.Parser;
 import descent.internal.compiler.parser.TOK;
 import descent.internal.compiler.parser.Token;
 import descent.internal.compiler.parser.ast.TokenUtil;
-import dtool.DeeNamingRules;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -85,14 +84,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
 	public static interface IDefUnitMatchAccepter {
 		void accept(DefUnit defUnit, PrefixSearchOptions searchOptions);
-	}
-	
-	public static PrefixDefUnitSearch doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
-			CompletionSession session, IDefUnitMatchAccepter defUnitAccepter) 
-	{
-		String moduleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
-		return doCompletionSearch2(session, moduleName, source, offset, moduleUnit, ReferenceResolver.modResolver, 
-				defUnitAccepter);
 	}
 	
 	public static PrefixDefUnitSearch doCompletionSearch2(CompletionSession session, String moduleName,

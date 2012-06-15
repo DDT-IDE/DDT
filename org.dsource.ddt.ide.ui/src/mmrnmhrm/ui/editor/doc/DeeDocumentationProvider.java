@@ -5,11 +5,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import java.io.Reader;
 
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
@@ -79,7 +80,8 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 		ASTNeoNode pickedNode = ASTNodeFinder.findElement(deeModule.neoModule, start, 
 				DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
-		return DeeDocTextHover.getDocInfoForNode(pickedNode);
+		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(member.getScriptProject());
+		return DeeDocTextHover.getDocInfoForNode(pickedNode, moduleResolver);
 	}
 	
 }

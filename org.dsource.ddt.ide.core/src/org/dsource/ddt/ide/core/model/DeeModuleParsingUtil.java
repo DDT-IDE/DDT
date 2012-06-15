@@ -19,6 +19,7 @@ public abstract class DeeModuleParsingUtil {
 	
 	// TODO: investigate if we can get rid of parentizeDeeModuleDeclaration
 	
+	@Deprecated
 	/** If given moduleDeclaration is a DeeModuleDeclaration, parentizes it to given sourceModule and returns it, 
 	 * otherwise return null. */
 	public static DeeModuleDeclaration parentizeDeeModuleDeclaration(

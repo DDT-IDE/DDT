@@ -12,6 +12,7 @@ import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
+import dtool.DeeNamingRules;
 import dtool.ast.definitions.DefUnit;
 import dtool.contentassist.CompletionSession;
 import dtool.refmodel.PrefixDefUnitSearch;
@@ -42,8 +43,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 					requestor.accept(proposal);
 				}
 			};
-			PrefixDefUnitSearch.doCompletionSearch(position, sourceModule, sourceContents, completionSession, 
-					collectorAdapter);
+			doCompletionSearch(position, sourceModule, sourceContents, completionSession, collectorAdapter);
 		} finally {
 			requestor.endReporting();
 		}
@@ -74,6 +74,14 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		}
 		
 		return proposal;
+	}
+	
+	public static PrefixDefUnitSearch doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
+			CompletionSession session, IDefUnitMatchAccepter defUnitAccepter) 
+	{
+		String moduleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
+		return PrefixDefUnitSearch.doCompletionSearch2(session, moduleName, source, offset, moduleUnit,
+				new DeeProjectModuleResolver(moduleUnit), defUnitAccepter);
 	}
 	
 }

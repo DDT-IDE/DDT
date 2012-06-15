@@ -15,6 +15,10 @@ public class DeeProjectModuleResolver extends DLTKModuleResolver {
 		this.scriptProject = scriptProject;
 	}
 	
+	public DeeProjectModuleResolver(ISourceModule sourceModule) {
+		this(sourceModule.getScriptProject());
+	}
+	
 	@Override
 	protected Module findModule(String[] packages, String modName, IScriptProject deeproj) throws ModelException {
 		return super.findModule(packages, modName, this.scriptProject);

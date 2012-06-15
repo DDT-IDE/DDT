@@ -1,6 +1,7 @@
 package dtool.tests.ref.cc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import mmrnmhrm.core.codeassist.DeeCompletionEngine;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
@@ -60,7 +61,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	protected PrefixDefUnitSearch testUnavailableCompletion(int offset, ECompletionSessionResults caResult) 
 			throws ModelException {
 		CompletionSession session = new CompletionSession();
-		PrefixDefUnitSearch search = PrefixDefUnitSearch.doCompletionSearch(offset, srcModule, srcModule.getSource(), 
+		PrefixDefUnitSearch search = DeeCompletionEngine.doCompletionSearch(offset, srcModule, srcModule.getSource(), 
 				session, new DefUnitArrayListCollector());
 		assertTrue(session.resultCode == caResult);
 		return search;
@@ -83,7 +84,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 		DefUnitArrayListCollector defUnitAccepter = new DefUnitArrayListCollector();
 		
 		CompletionSession session = new CompletionSession();
-		PrefixDefUnitSearch completionSearch = PrefixDefUnitSearch.doCompletionSearch(
+		PrefixDefUnitSearch completionSearch = DeeCompletionEngine.doCompletionSearch(
 				repOffset, srcModule, srcModule.getSource(), session, defUnitAccepter);
 		
 		if(expectedProposals == null) {

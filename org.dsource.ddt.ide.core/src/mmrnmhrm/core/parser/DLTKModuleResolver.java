@@ -21,9 +21,7 @@ import dtool.DeeNamingRules;
 import dtool.ast.definitions.Module;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class DLTKModuleResolver implements IModuleResolver {
-	
-	public static final DLTKModuleResolver instance = new DLTKModuleResolver();
+public abstract class DLTKModuleResolver implements IModuleResolver {
 	
 	/** Finds the module with the given package and module name.
 	 * refModule is used to determine which project/build-path to search. */

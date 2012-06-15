@@ -53,7 +53,7 @@ public class DefinitionClass extends DefinitionAggregate {
 		
 		List<IScope> scopes = new ArrayList<IScope>();
 		for(BaseClass baseclass: baseClasses) {
-			DefUnit defunit = baseclass.type.findTargetDefUnit(); // BUG here
+			DefUnit defunit = baseclass.type.findTargetDefUnit(moduleResolver);
 			if(defunit == null)
 				continue;
 			scopes.add(defunit.getMembersScope(moduleResolver));

@@ -30,22 +30,9 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 public class ReferenceResolver {
 	
 	private static final String[] EMPTY_PACKAGE = new String[0];
-	protected static IModuleResolver modResolver;
 
-	// XXX: blergh, remove this singleton design
-	/** Initializes the EntityResolver with a ModuleResolver. */
-	public static void initializeEntityResolver(IModuleResolver modResolver) {
-		ReferenceResolver.modResolver = modResolver;
-	}
-	
-	@Deprecated
-	public static IModuleResolver getModResolver() {
-		return modResolver;
-	}
-
-	/** Convenience method to call mod resolver. */
-	@Deprecated
-	public static Module findModule(Module refSourceModule, String[] packages, String module) {
+	public static Module findModuleUnchecked(IModuleResolver modResolver, Module refSourceModule, String[] packages,
+			String module) {
 		try {
 			return modResolver.findModule(refSourceModule, packages, module);
 		} catch (Exception e) {
@@ -225,24 +212,24 @@ public class ReferenceResolver {
 		findDefUnitInStaticImport(impContent, search);
 		//if(search.isScopeFinished()) return;
 
-		Module targetModule = findImporTargetModule(impContent);
+		Module targetModule = findImporTargetModule(search.modResolver, impContent);
 		if (targetModule != null)
 			findDefUnitInScope(targetModule, search);
 	}
 	
-	private static Module findImporTargetModule(ImportFragment impSelective) {
+	private static Module findImporTargetModule(IModuleResolver modResolver, ImportFragment impSelective) {
 		Module refModule = NodeUtil.getParentModule(impSelective);
 		String[] packages = impSelective.moduleRef.packages.getInternalArray();
 		String modules = impSelective.moduleRef.module;
 		Module targetModule;
-		targetModule = findModule(refModule, packages, modules);
+		targetModule =  findModuleUnchecked(modResolver, refModule, packages, modules);
 		return targetModule;
 	}
 
 	public static void findDefUnitInSelectiveImport(
 			ImportSelective impSelective, CommonDefUnitSearch search) {
 
-		Module targetModule = findImporTargetModule(impSelective);
+		Module targetModule = findImporTargetModule(search.modResolver, impSelective);
 		if (targetModule == null)
 			return;
 			

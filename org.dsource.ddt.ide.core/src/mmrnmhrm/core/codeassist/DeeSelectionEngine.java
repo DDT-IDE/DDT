@@ -47,18 +47,18 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		return select(sourceUnit, offset, 0);
 	}
 	
-	// BM: don't quite understand what param i is used, if anything
+	// BM: param i is something like endOffset-1, due to weird API
 	@Override
 	public IModelElement[] select(IModuleSource sourceUnit, int offset, int i) {
 		ISourceModule sourceModule = (ISourceModule) sourceUnit.getModelElement();
+		IScriptProject scriptProject = sourceModule.getScriptProject();
 		
 		DeeModuleDeclaration deeModule = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
-		ASTNeoNode node = ASTNodeFinder.findElement(deeModule.neoModule, offset, 
-				ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
+		ASTNeoNode node = ASTNodeFinder.findElement(deeModule.neoModule, offset, ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		if(node instanceof DefSymbol) {
 			DefUnit defUnit = ((DefSymbol) node).getDefUnit();
-			IMember modelElement = getModelElement(defUnit, defUnit.getModuleNode(), sourceModule.getScriptProject());
+			IMember modelElement = getModelElement(defUnit, defUnit.getModuleNode(), scriptProject);
 			return modelElement == null ? null : new IModelElement[] { modelElement };
 		}
 		
@@ -67,7 +67,8 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		}
 		Reference ref = (Reference) node;
 		
-		Collection<DefUnit> defunits = ref.findTargetDefUnits(false);
+		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(scriptProject);
+		Collection<DefUnit> defunits = ref.findTargetDefUnits(moduleResolver, false);
 		// We assume namespace Parent is the same
 		if(defunits == null) {
 			return new IModelElement[0];
@@ -75,7 +76,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
 		for (DefUnit defUnit : defunits) {
-			IMember modelElement = getModelElement(defUnit, defUnit.getModuleNode(), sourceModule.getScriptProject());
+			IMember modelElement = getModelElement(defUnit, defUnit.getModuleNode(), scriptProject);
 			if(modelElement != null) {
 				list.add(modelElement);
 			}

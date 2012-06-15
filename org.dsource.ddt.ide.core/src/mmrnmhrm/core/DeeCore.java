@@ -1,13 +1,10 @@
 package mmrnmhrm.core;
 
-import mmrnmhrm.core.parser.DLTKModuleResolver;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleContext;
-
-import dtool.refmodel.ReferenceResolver;
 
 /**
  * Singleton class for D IDE Core.
@@ -44,8 +41,6 @@ public class DeeCore extends LangCore {
 	
 	
 	public void initPlugin() throws CoreException {
-		//EntityResolver.initializeEntityResolver(DeeModel.getRoot());
-		ReferenceResolver.initializeEntityResolver(DLTKModuleResolver.instance);
 		//TypeHierarchy.DEBUG = true;
 		
 		DeeProjectModel.initializeModel();

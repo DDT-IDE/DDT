@@ -2,6 +2,7 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.actions.OperationsManager;
@@ -11,6 +12,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
@@ -76,7 +78,8 @@ public abstract class FindAction extends SelectionDispatchAction {
 			runOperation(defSymbol.getDefUnit());
 		} else if(elem instanceof Reference) {
 			Reference ref = (Reference) elem;
-			DefUnit defunit = ref.findTargetDefUnit();
+			IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
+			DefUnit defunit = ref.findTargetDefUnit(new DeeProjectModuleResolver(scriptProject));
 			if(defunit == null) {
 				OperationsManager.openWarning(getShell(), SEARCH_REFS, 
 				"No DefUnit found when resolving reference.");

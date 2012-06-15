@@ -3,6 +3,8 @@ package mmrnmhrm.core.search;
 import java.util.Collection;
 import java.util.Iterator;
 
+import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+
 import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
@@ -34,7 +36,6 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 		
 		if(matchDeclarations && node instanceof DefUnit) {
 			DefUnit definition = (DefUnit) node;
-			
 			matchDefUnit(definition, sourceModule);
 		}
 		
@@ -53,7 +54,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 		if(!ref.canMatch(defUnitDescriptor))
 			return;
 		
-		Collection<DefUnit> defUnits = ref.findTargetDefUnits(false);
+		Collection<DefUnit> defUnits = ref.findTargetDefUnits(new DeeProjectModuleResolver(sourceModule), false);
 		if(defUnits == null)
 			return;
 		

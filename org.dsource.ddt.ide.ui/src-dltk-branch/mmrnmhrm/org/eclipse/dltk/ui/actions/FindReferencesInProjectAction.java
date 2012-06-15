@@ -56,9 +56,7 @@ public final class FindReferencesInProjectAction extends FindAction {
 		}
 		
 		DeeDefPatternLocator.GLOBAL_param_defunit = defunit;
-		return new PatternQuerySpecification(
-				defunit.getName(), 0, true, getLimitTo(), scope, description);
+		return new PatternQuerySpecification(defunit.getName(), 0, true, getLimitTo(), scope, description);
 	}
-
-
+	
 }

@@ -3,6 +3,8 @@ package mmrnmhrm.core.search;
 import java.util.Collection;
 import java.util.Iterator;
 
+import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 
@@ -21,7 +23,7 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 	
 	public final DefUnit defunit;
 	protected final DefUnitDescriptor defUnitDescriptor;
-
+	
 	public DeeDefPatternLocator(DeeMatchLocator deeMatchLocator) {
 		super(deeMatchLocator, false, true);
 		this.defunit = GLOBAL_param_defunit;
@@ -39,7 +41,7 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 			if(!ref.canMatch(defUnitDescriptor))
 				return true;
 			
-			Collection<DefUnit> defUnits = ref.findTargetDefUnits(false);
+			Collection<DefUnit> defUnits = ref.findTargetDefUnits(new DeeProjectModuleResolver(sourceModule), false);
 			if(defUnits == null)
 				return true;
 			for (Iterator<DefUnit> iter = defUnits.iterator(); iter.hasNext();) {
@@ -52,5 +54,5 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 		}
 		return true;
 	}
-
+	
 }

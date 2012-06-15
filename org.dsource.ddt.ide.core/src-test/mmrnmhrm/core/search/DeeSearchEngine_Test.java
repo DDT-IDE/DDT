@@ -17,10 +17,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.misc.Pair;
+import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -424,11 +425,12 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 	@Test
 	public void testTestData() throws Exception { testTestData$(); }
 	public void testTestData$() throws Exception {
-		ISourceModule module = getModule(searchProj, "srcB", "", "search2");
-		DeeModuleDeclaration deeModuleDecl = DeeModuleParsingUtil.getParsedDeeModule(module);
+		ISourceModule srcModule = getModule(searchProj, "srcB", "", "search2");
+		DeeModuleDeclaration deeModuleDecl = DeeModuleParsingUtil.getParsedDeeModule(srcModule);
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(deeModuleDecl.neoModule.getChildren(), "xxxTestUnboundRef");
-		assertTrue(assertInstance(defUnit, DefinitionVariable.class).type.findTargetDefUnit() == null);
+		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(srcModule.getScriptProject());
+		assertTrue(assertInstance(defUnit, DefinitionVariable.class).type.findTargetDefUnit(mr) == null);
 	}
 	
 	/* ---- En mass test ---- */
@@ -473,7 +475,9 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 			protected void visitNode(ASTNeoNode node, ISourceModule sourceModule) {
 				if(node instanceof Reference) {
 					Reference reference = (Reference) node;
-					Collection<DefUnit> targetDefUnits = reference.findTargetDefUnits(false);
+					
+					DeeProjectModuleResolver mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
+					Collection<DefUnit> targetDefUnits = reference.findTargetDefUnits(mr, false);
 					if(targetDefUnits == null) {
 						return;
 					}
