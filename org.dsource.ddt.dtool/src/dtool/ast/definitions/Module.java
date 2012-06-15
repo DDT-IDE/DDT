@@ -20,6 +20,7 @@ import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
+import dtool.util.NewUtils;
 
 /**
  * D Module. 
@@ -66,7 +67,6 @@ public class Module extends DefUnit implements IScopeNode {
 		
 		@Override
 		public String toStringAsElement() {
-			//String str = ASTPrinter.toStringAsElements(packages, "."); 
 			String str = StringUtil.collToString(packages, ".");
 			if(str.length() == 0) {
 				return moduleName.toStringAsElement();
@@ -102,10 +102,19 @@ public class Module extends DefUnit implements IScopeNode {
 		this.members = parentize(members);
 	}
 	
-	
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Module;
+	}
+	
+	@Override
+	public void accept0(IASTNeoVisitor visitor) {
+		boolean children = visitor.visit(this);
+		if (children) {
+			TreeVisitor.acceptChildren(visitor, md);
+			TreeVisitor.acceptChildren(visitor, members);
+		}
+		visitor.endVisit(this);
 	}
 	
 	public void setModuleUnit(ISourceModule modUnit) {
@@ -118,16 +127,6 @@ public class Module extends DefUnit implements IScopeNode {
 	@Deprecated
 	public ISourceModule getModuleUnit() {
 		return (ISourceModule) moduleUnit;
-	}
-	
-	@Override
-	public void accept0(IASTNeoVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, md);
-			TreeVisitor.acceptChildren(visitor, members);
-		}
-		visitor.endVisit(this);
 	}
 	
 	@Override
@@ -149,6 +148,25 @@ public class Module extends DefUnit implements IScopeNode {
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
 		return members.iterator();
+	}
+	
+	public String getDeclaredQualifiedName() {
+		StringBuilder fullName = new StringBuilder();
+		if(md != null) {
+			for (String packageStr : md.packages) {
+				fullName.append(packageStr);
+				fullName.append(".");
+			}
+		}
+		fullName.append(getName());
+		return fullName.toString();
+	}
+	
+	public String[] getDeclaredPackages() {
+		if(md != null) {
+			return md.packages;
+		}
+		return NewUtils.EMPTY_STRING_ARRAY;
 	}
 	
 	@Override

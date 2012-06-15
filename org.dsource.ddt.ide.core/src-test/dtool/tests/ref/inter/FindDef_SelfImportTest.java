@@ -15,7 +15,7 @@ public class FindDef_SelfImportTest extends FindDef__ImportsCommon  {
 
 	@BeforeClass
 	public static void classSetup() {
-		staticTestInit(testSrcFile);
+		setupDefault(testSrcFile);
 	}
 	
 	@Parameters
@@ -39,10 +39,8 @@ public class FindDef_SelfImportTest extends FindDef__ImportsCommon  {
     }
     
 	
-	public FindDef_SelfImportTest(String srcFile, int defOffset, int refOffset, String targetFile) 
-		throws Exception {
-		super(getTestModule(srcFile), defOffset, refOffset, targetFile);
+	public FindDef_SelfImportTest(String srcFile, int defOffset, int refOffset, String targetFile) throws Exception {
+		super(srcFile, defOffset, refOffset, targetFile);
 	}
-	
 	
 }

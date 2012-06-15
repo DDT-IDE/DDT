@@ -15,7 +15,7 @@ public class GoToDefinitionAction extends AbstractWorkbenchWindowActionDelegate 
 			return;
 		}
 		
-		IEditorPart editor = window.getActivePage().getActiveEditor(); 
+		IEditorPart editor = window.getActivePage().getActiveEditor();
 		GoToDefinitionHandler.executeChecked((ITextEditor) editor, false);
 	}
 	

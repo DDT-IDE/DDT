@@ -9,8 +9,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.ast.definitions.Module;
-
 /**
  * XXX: The code to modify testImportStatic is a bit messy
  */
@@ -22,22 +20,21 @@ public class FindDef_ImportStaticTest extends FindDef__ImportsCommon  {
 	protected static final int ix1, ix2;
 	
 	static {
-		staticTestInit(testSrcFile);
+		setupDefault(testSrcFile);
 		ix1 = getContents(defaultModule).indexOf("/++/", 0);
 		ix2 = getContents(defaultModule).indexOf("/++/", ix1+1);
 	}
 	
 	@BeforeClass
 	public static void classSetup() throws ModelException {
-		staticTestInit(testSrcFile);
-		defaultModule.getModuleUnit().getBuffer().replace(ix1, 4, "    "); 
-		defaultModule.getModuleUnit().getBuffer().replace(ix2, 4, "//  ");
-		defaultModule.getModuleUnit().reconcile(false, null, null);
+		setupDefault(testSrcFile);
+		defaultModule.scriptModule.getBuffer().replace(ix1, 4, "    "); 
+		defaultModule.scriptModule.getBuffer().replace(ix2, 4, "//  ");
 	}
 	
-	private static String getContents(Module module) {
+	private static String getContents(ParseSource module) {
 		try {
-			return module.getModuleUnit().getBuffer().getContents();
+			return module.scriptModule.getBuffer().getContents();
 		} catch (ModelException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

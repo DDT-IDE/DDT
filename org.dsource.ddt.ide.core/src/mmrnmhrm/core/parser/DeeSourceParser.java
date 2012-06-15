@@ -35,6 +35,13 @@ public class DeeSourceParser extends AbstractSourceParser {
 	
 	@Override
 	public DeeModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
+		DeeParserSession deeParserSession = parseToDeeParseResult(input, reporter);
+		DeeModuleDeclaration deeModuleDecl = new DeeModuleDeclaration(deeParserSession.getDMDModule());
+		deeModuleDecl.setNeoModule(deeParserSession.getParsedModule());
+		return deeModuleDecl;
+	}
+	
+	public DeeParserSession parseToDeeParseResult(IModuleSource input, IProblemReporter reporter) {
 		String source = input.getSourceContents();
 		
 		String moduleName = "_unnamedSource_";
@@ -47,9 +54,7 @@ public class DeeSourceParser extends AbstractSourceParser {
 		
 		DeeParserSession deeParserSession = DeeParserSession.parseSource(moduleName, source, langVersion,
 				DescentProblemAdapter.create(reporter));
-		DeeModuleDeclaration deeModuleDecl = new DeeModuleDeclaration(deeParserSession.getDMDModule());
-		deeModuleDecl.setNeoModule(deeParserSession.getParsedModule());
-		return deeModuleDecl;
+		return deeParserSession;
 	}
 	
 }

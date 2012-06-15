@@ -22,6 +22,7 @@ import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
@@ -29,6 +30,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 
 /**
@@ -55,7 +57,8 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 				ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		if(node instanceof DefSymbol) {
-			IMember modelElement = getModelElement(((DefSymbol) node).getDefUnit(), sourceModule);
+			DefUnit defUnit = ((DefSymbol) node).getDefUnit();
+			IMember modelElement = getModelElement(defUnit, defUnit.getModuleNode(), sourceModule.getScriptProject());
 			return modelElement == null ? null : new IModelElement[] { modelElement };
 		}
 		
@@ -72,7 +75,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
 		for (DefUnit defUnit : defunits) {
-			IMember modelElement = getModelElement(defUnit, defUnit.getModuleNode().getModuleUnit());
+			IMember modelElement = getModelElement(defUnit, defUnit.getModuleNode(), sourceModule.getScriptProject());
 			if(modelElement != null) {
 				list.add(modelElement);
 			}
@@ -81,11 +84,12 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		return ArrayUtil.createFrom(list, IModelElement.class);
 	}
 	
-	
-	protected IMember getModelElement(DefUnit defUnit, ISourceModule sourceModule) {
+	protected IMember getModelElement(DefUnit defUnit, Module module, IScriptProject scriptProject) {
+		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(scriptProject);
 		try {
-			return DeeModelEngine.findCorrespondingModelElement(defUnit, sourceModule);
-		} catch(ModelException e) {
+			ISourceModule moduleUnit = mr.findModuleUnit(module);
+			return DeeModelEngine.findCorrespondingModelElement(defUnit, moduleUnit);
+		} catch (ModelException e) {
 			return null;
 		}
 	}

@@ -37,21 +37,29 @@ public class DLTKModuleResolver implements IModuleResolver {
 	}
 	
 	protected Module findModule(String[] packages, String modName, IScriptProject deeproj) throws ModelException {
+		ISourceModule moduleUnit = findModuleUnit(packages, modName, deeproj);
+		if(moduleUnit == null)
+			return null;
+		
+		DeeModuleDeclaration modDecl = DeeModuleParsingUtil.getParsedDeeModule(moduleUnit);
+		return modDecl.neoModule;
+	}
+	
+	public ISourceModule findModuleUnit(String[] packages, String modName, IScriptProject deeproj) 
+			throws ModelException {
 		if(deeproj == null || deeproj.exists() == false || !isDeeProject(deeproj))
 			return null;
 		
-		String fullPackageName = StringUtil.collToString(packages, "/");  
+		String fullPackageName = StringUtil.collToString(packages, "/");
 		
 		for (IProjectFragment srcFolder : deeproj.getProjectFragments()) {
-			
 			IScriptFolder pkgFrag = srcFolder.getScriptFolder(fullPackageName);
 			if(pkgFrag != null && pkgFrag.exists()) {
 				for (int i = 0; i < DeeNamingRules.VALID_EXTENSIONS.length; i++) {
 					String fileext = DeeNamingRules.VALID_EXTENSIONS[i];
 					ISourceModule modUnit = pkgFrag.getSourceModule(modName+fileext);
-					if(DLTKModelUtils.exists(modUnit)) { 
-						DeeModuleDeclaration modDecl = DeeModuleParsingUtil.getParsedDeeModule(modUnit);
-						return modDecl.neoModule;
+					if(DLTKModelUtils.exists(modUnit)) {
+						return modUnit;
 					}
 				}
 			}

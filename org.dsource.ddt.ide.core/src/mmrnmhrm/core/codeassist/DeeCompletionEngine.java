@@ -38,7 +38,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
 				@Override
 				public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
-					CompletionProposal proposal = createProposal(defUnit, position, searchOptions);
+					CompletionProposal proposal = createProposal(defUnit, position, sourceModule, searchOptions);
 					requestor.accept(proposal);
 				}
 			};
@@ -49,7 +49,8 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		}
 	}
 	
-	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset, PrefixSearchOptions searchOptions) {
+	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset, ISourceModule sourceModule,
+			PrefixSearchOptions searchOptions) {
 		String rplStr = defUnit.getName().substring(searchOptions.namePrefixLen);
 		
 		CompletionProposal proposal = createProposal(CompletionProposal.TYPE_REF, ccOffset);
@@ -61,8 +62,9 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		if(defUnit.getModuleNode() != null) {
 			// We need the check above because of synthetic defUnits
 			
-			ISourceModule resultSourceModule = defUnit.getModuleNode().getModuleUnit();
+			DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule.getScriptProject());
 			try {
+				ISourceModule resultSourceModule = moduleResolver.findModuleUnit(defUnit.getModuleNode());
 				IMember me = DeeModelEngine.findCorrespondingModelElement(defUnit, resultSourceModule);
 				proposal.setModelElement(me);
 			} catch(ModelException e) {

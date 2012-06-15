@@ -18,11 +18,10 @@ public class FindDef_ImportStatic2Test extends FindDef_ImportStaticTest  {
 	
 	@BeforeClass
 	public static void classSetup() throws ModelException {
-		staticTestInit(testSrcFile);
-		defaultModule.getModuleUnit().getBuffer().replace(ix1, 4, "//  ");
-		defaultModule.getModuleUnit().getBuffer().replace(ix2, 4, "    ");
-		
-		defaultModule = parsedDeeModule(defaultModule.getModuleUnit()).neoModule;
+		setupDefault(testSrcFile);
+		defaultModule.scriptModule.getBuffer().replace(ix1, 4, "//  ");
+		defaultModule.scriptModule.getBuffer().replace(ix2, 4, "    ");
+		setupDefault(testSrcFile);
 	}
 	
 	@Parameters

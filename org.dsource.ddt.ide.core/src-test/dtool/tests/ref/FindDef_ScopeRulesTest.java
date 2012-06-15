@@ -7,15 +7,17 @@ import org.junit.Test;
 
 public class FindDef_ScopeRulesTest extends FindDef__Common  {
 	
-	static final String testfile = "refScopes.d";
+	protected static final String TEST_FILE = "refScopes.d";
 	
 	@Before
 	public void prepTest() throws CoreException {
-		prepSameModuleTest(testdataRefsPath(testfile));
+		prepSameModuleTest(testdataRefsPath(TEST_FILE));
 	}
 	
 	protected void doTestFindref(String refMarker, String targetMarker) throws ModelException {
-		testFindRef(sourceModule, getMarkerEndOffset(refMarker), sourceModule, getMarkerEndOffset(targetMarker));
+		offset = getMarkerEndOffset(refMarker);
+		targetOffset = getMarkerEndOffset(targetMarker);
+		testFindRefWithConfiguredValues();
 	}
 	
 	@Test 

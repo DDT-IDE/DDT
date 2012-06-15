@@ -1,16 +1,17 @@
 package mmrnmhrm.core.codeassist;
 
 import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.definitions.Module;
 import mmrnmhrm.core.parser.DLTKModuleResolver;
 
-public class DeeScriptProjectModuleResolver extends DLTKModuleResolver {
+public class DeeProjectModuleResolver extends DLTKModuleResolver {
 	
 	protected final IScriptProject scriptProject;
 
-	public DeeScriptProjectModuleResolver(IScriptProject scriptProject) {
+	public DeeProjectModuleResolver(IScriptProject scriptProject) {
 		this.scriptProject = scriptProject;
 	}
 	
@@ -22,6 +23,11 @@ public class DeeScriptProjectModuleResolver extends DLTKModuleResolver {
 	@Override
 	protected String[] findModules(String fqNamePrefix, IScriptProject scriptProject) throws ModelException {
 		return super.findModules(fqNamePrefix, this.scriptProject);
+	}
+	
+	public ISourceModule findModuleUnit(Module module) 
+			throws ModelException {
+		return findModuleUnit(module.getDeclaredPackages(), module.getName(), scriptProject);
 	}
 	
 }

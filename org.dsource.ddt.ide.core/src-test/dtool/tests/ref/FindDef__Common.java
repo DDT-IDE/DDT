@@ -17,15 +17,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
-import mmrnmhrm.core.codeassist.DeeScriptProjectModuleResolver;
+import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.core.parser.DeeModelElement_Test;
 import mmrnmhrm.core.parser.DeeSourceParser;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
@@ -37,6 +35,7 @@ import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.parser.DeeParserSession;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class FindDef__Common {
@@ -45,59 +44,70 @@ public class FindDef__Common {
 		return ITestResourcesConstants.TR_REFS +"/"+ testfile;
 	}
 	
-	protected Module sourceModule;
+	public static class ParseSource {
+		public Module module;
+		public String source;
+		public ISourceModule scriptModule;
+		
+		public ParseSource(Module module, String source, ISourceModule scriptModule) {
+			this.module = module;
+			this.source = source;
+			this.scriptModule = scriptModule;
+		}
+	}
+	
+	protected ParseSource sourceModule;
 	protected int offset;
 	protected Module targetModule;
 	protected int targetOffset;
 	
 	
 	protected void prepSameModuleTest(String testdataFilePath) {
-		sourceModule = parseNeoModuleNode(testdataFilePath); 
-		targetModule = sourceModule;
+		sourceModule = parseTestModule(SampleMainProject.getSourceModule(testdataFilePath));
+		targetModule = sourceModule.module;
 	}
 	
-	public static DeeModuleDeclaration parsedDeeModule(ISourceModule sourceModule) {
+	protected static ParseSource parseTestModule(ISourceModule sourceModule) {
 		assertTrue(sourceModule instanceof IModuleSource);
 		IModuleSource moduleSource = (IModuleSource) sourceModule;
 		
 		DeeSourceParser sourceParser = new DeeSourceParser();
-		DeeModuleDeclaration deeModule = sourceParser.parse(moduleSource, null);
-		DeeModuleParsingUtil.parentizeDeeModuleDeclaration(deeModule, sourceModule);
-		return deeModule;
+		DeeParserSession parseResult = sourceParser.parseToDeeParseResult(moduleSource, null);
+		
+		String source;
+		try {
+			source = sourceModule.getSource();
+		} catch (ModelException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+		ParseSource parseSource = new ParseSource(parseResult.neoModule, source, sourceModule);
+		parseSource.module.setModuleUnit(sourceModule);
+		return parseSource;
 	}
-	
-	protected static Module parseNeoModuleNode(String filepath) {
-		ISourceModule sourceModuleDLTK = SampleMainProject.getSourceModule(filepath);
-		return parsedDeeModule(sourceModuleDLTK).neoModule;
-	}
-	
 	
 	protected int getMarkerEndOffset(String marker) throws ModelException {
-		String source = sourceModule.getModuleUnit().getSource();
+		String source = sourceModule.source;
 		return source.indexOf(marker) + marker.length();
 	}
 	
 	protected int getMarkerStartOffset(String marker) throws ModelException {
-		String source = sourceModule.getModuleUnit().getSource();
+		String source = sourceModule.source;
 		return source.indexOf(marker);
 	}
 	
 	protected void testFindRefWithConfiguredValues() throws ModelException {
-		testFindRef(sourceModule, offset, targetModule, targetOffset);
+		IModuleResolver moduleResolver = getModuleResolver();
+		testFindRef(sourceModule, offset, targetModule, targetOffset, moduleResolver);
 	}
 	
-	public static void testFindRef(Module srcMod, int offset, Module targetMod, int targetOffset) 
-			throws ModelException {
-		IModuleResolver modResolver = getModuleResolver();
-		testFindRef2(srcMod, offset, targetMod, targetOffset, modResolver);
+	protected static IModuleResolver getModuleResolver() {
+		return new DeeProjectModuleResolver(SampleMainProject.scriptProject);
 	}
 	
-	private static IModuleResolver getModuleResolver() {
-		return new DeeScriptProjectModuleResolver(SampleMainProject.scriptProject);
-	}
-	
-	public static void testFindRef2(Module srcMod, int offset, Module targetMod, int targetOffset,
+	public static void testFindRef(ParseSource parseSource, int offset, Module targetMod, int targetOffset,
 			IModuleResolver modResolver) throws ModelException {
+		
+		Module srcMod = parseSource.module;
 		
 		ASTNeoNode node = ASTNodeFinder.findElement(srcMod, offset);
 		Reference ref = (Reference) node;
@@ -114,19 +124,23 @@ public class FindDef__Common {
 		assertNotNull(defunit);
 		
 		Module obtainedModule = NodeUtil.getParentModule(defunit);
-		assertTrue(equalModule(targetMod, obtainedModule),
-				" Find Ref got wrong target module.");
+		assertTrue(equalModule(targetMod, obtainedModule), " Find Ref got wrong target module.");
 		
 		assertTrue(defunit.defname.getStartPos() == targetOffset,
 				" Find Ref went to wrong offset: " + defunit.defname.getStartPos());
 		
 		
-		testDeeSelectionEngine(srcMod, offset, defunit);
+		testDeeSelectionEngine(parseSource.scriptModule, offset, defunit);
 	}
 	
-	public static void testDeeSelectionEngine(Module srcMod, int offset, DefUnit defunit) {
+	protected static boolean equalModule(Module targetMod, Module obtainedModule) {
+		return targetMod == obtainedModule || 
+				targetMod.getDeclaredQualifiedName().equals(obtainedModule.getDeclaredQualifiedName());
+	}
+	
+	public static void testDeeSelectionEngine(ISourceModule moduleUnit, int offset, DefUnit defunit) {
 		DeeSelectionEngine selectionEngine = new DeeSelectionEngine();
-		IModelElement[] select = selectionEngine.select((IModuleSource) srcMod.getModuleUnit(), offset, offset-1);
+		IModelElement[] select = selectionEngine.select((IModuleSource) moduleUnit, offset, offset-1);
 		
 		if(!DeeModelElement_Test.defunitIsReportedAsModelElement(defunit)) {
 			// Hum, Perhaps do this case differently?
@@ -151,10 +165,6 @@ public class FindDef__Common {
 			defunit = NodeUtil.getOuterDefUnit(defunit);
 			modelElement = modelElement.getParent();
 		}
-	}
-	
-	private static boolean equalModule(Module targetMod, Module obtainedModule) {
-		return targetMod == obtainedModule || targetMod.getModuleUnit().equals(obtainedModule.getModuleUnit());
 	}
 	
 }

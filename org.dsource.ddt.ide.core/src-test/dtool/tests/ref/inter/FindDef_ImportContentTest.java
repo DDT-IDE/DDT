@@ -16,7 +16,7 @@ public class FindDef_ImportContentTest extends FindDef__ImportsCommon  {
 
 	@BeforeClass
 	public static void classSetup() {
-		staticTestInit(testSrcFile);
+		setupDefault(testSrcFile);
 	}
 	
 	@Parameters

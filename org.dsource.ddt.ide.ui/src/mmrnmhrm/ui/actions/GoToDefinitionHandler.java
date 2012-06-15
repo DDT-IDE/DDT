@@ -3,9 +3,9 @@ package mmrnmhrm.ui.actions;
 import java.util.Collection;
 
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePlugin;
-import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.editor.DeeEditor;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -17,9 +17,10 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.IExternalSourceModule;
+import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ExternalStorageEditorInput;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
@@ -41,15 +42,12 @@ import dtool.ast.references.Reference;
 import dtool.refmodel.INativeDefUnit;
 
 public class GoToDefinitionHandler extends AbstractHandler  {
-
+	
 	public static final String COMMAND_ID = DeePlugin.EXTENSIONS_IDPREFIX+"commands.openDefinition";
-	public static final ImageDescriptor IMAGE_DESC = 
-			DeePluginImages.getActionImageDescriptor("gotodef.gif", true);
 	private static final String GO_TO_DEFINITION_OPNAME = "Go to Definition";
-
+	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
 		IEditorPart editor = HandlerUtil.getActiveEditorChecked(event);
 		try {
 			executeOperation((ITextEditor) editor, false);
@@ -58,11 +56,9 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		}
 		return null;
 	}
-
-
-
-	public static void executeChecked(final ITextEditor srcEditor,
-			final boolean openNewEditor) {
+	
+	
+	public static void executeChecked(final ITextEditor srcEditor, final boolean openNewEditor) {
 		OperationsManager.executeOperation(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
@@ -70,23 +66,19 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 			}
 		}, GO_TO_DEFINITION_OPNAME);
 	}
-
-	public static void executeOperation(ITextEditor srcEditor,
-			boolean openNewEditor) throws CoreException {
-
+	
+	public static void executeOperation(ITextEditor srcEditor, boolean openNewEditor) throws CoreException {
 		TextSelection sel = EditorUtil.getSelection(srcEditor);
 		int offset = sel.getOffset();
 		
 		executeOperation(srcEditor, openNewEditor, offset);
-
 	}
-
-	public static void executeOperation(ITextEditor editor,
-			boolean openNewEditor, int offset) throws CoreException {
+	
+	public static void executeOperation(ITextEditor editor, boolean openNewEditor, int offset) throws CoreException {
 		IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
-
+		
 		Module neoModule = EditorUtil.getNeoModuleFromEditor(editor);
-
+		
 		ASTNeoNode elem = ASTNodeFinder.findElement(neoModule, offset, false);
 		
 		if(elem == null) {
@@ -95,59 +87,54 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 			return;
 		}
 		Logg.main.println(" Selected Element: " + elem.toStringAsNode(true));
-
+		
 		if(elem instanceof Symbol) {
 			dialogInfo(window.getShell(),
-					"Element is not an entity reference,"
-					+" it's already a definition: " + elem.toStringClassName());
+					"Element is not an entity reference," +" it's already a definition: " + elem.toStringClassName());
 			return;
 		}
 		if(!(elem instanceof Reference)) {
 			dialogInfo(window.getShell(),
 					"Element is not an entity reference: "+ elem.toStringClassName());
 			return;
-		} 
+		}
+		
+		IModelElement element = EditorUtility.getEditorInputModelElement(editor, false);
+		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(element.getScriptProject());
 		
 		// find the target
-		Collection<DefUnit> defunits = ((Reference)elem).findTargetDefUnits(false);
+		Collection<DefUnit> defunits = ((Reference)elem).findTargetDefUnits(moduleResolver, false);
 		
 		if(defunits == null || defunits.size() == 0) {
-			dialogWarning(window.getShell(), 
-					"Definition not found for entity reference: " 
-					+ elem.toStringAsElement());
+			dialogWarning(window.getShell(), "Definition not found for entity reference: " + elem.toStringAsElement());
 			return;
 		}
-
-		Logg.main.println(" Find Definition, found: " 
-				+ ASTPrinter.toStringAsElements(defunits, " ") );
+		
+		Logg.main.println(" Find Definition, found: " + ASTPrinter.toStringAsElements(defunits, " ") );
 		
 		
 		if(defunits.size() > 1) {
-			dialogInfo(window.getShell(), 
-					"Multiple definitions found: \n" 
-					+ ASTPrinter.toStringAsElements(defunits, "\n")
-					+ "\nGoing to the first one.");
+			dialogInfo(window.getShell(), "Multiple definitions found: \n" 
+					+ ASTPrinter.toStringAsElements(defunits, "\n") + "\nGoing to the first one.");
 		} 
-
+		
 		DefUnit defunit = defunits.iterator().next();
 		
 		if(defunit.hasNoSourceRangeInfo()) {
-			dialogError(window.getShell(), "DefUnit " 
-					+defunit.toStringAsElement()+ " has no source range info!");
+			dialogError(window.getShell(), "DefUnit " +defunit.toStringAsElement()+ " has no source range info!");
 			return;
 		} 
 		if(defunit instanceof INativeDefUnit) {
-			dialogInfo(window.getShell(),
-				"DefUnit " +defunit.toStringAsElement()+ " is a language native.");
+			dialogInfo(window.getShell(), "DefUnit " +defunit.toStringAsElement()+ " is a language native.");
 			return;
 		} 
 		
 		ITextEditor targetEditor;
-
+		
 		Module targetModule = NodeUtil.getParentModule(defunit);
-
-		ISourceModule modUnit = (ISourceModule) targetModule.getModuleUnit();
-
+		
+		ISourceModule modUnit = moduleResolver.findModuleUnit(targetModule);
+		
 		if(openNewEditor || neoModule != targetModule) {
 			IWorkbenchPage page = window.getActivePage();
 			// getCorrespondingResource isn't with linked folders 
@@ -160,8 +147,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 				IFile file = (IFile) DeeCore.getWorkspaceRoot().findMember(modUnit.getPath());
 				targetEditor = (ITextEditor) IDE.openEditor(page, file, editorID);
 			} else {
-				throw new CoreException(DeeCore.createErrorStatus(
-						"Don't know how to open editor for: " + modUnit));
+				throw new CoreException(DeeCore.createErrorStatus("Don't know how to open editor for: " + modUnit));
 			}
 		} else {
 			targetEditor = editor;
@@ -169,21 +155,17 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		EditorUtil.setSelection(targetEditor, defunit.defname);
 	}
 	
-
+	
 	private static void dialogError(Shell shell, String msg) {
-		OperationsManager.openError(shell,
-				GO_TO_DEFINITION_OPNAME, msg);
-	}
-
-	static void dialogWarning(Shell shell, String msg) {
-		OperationsManager.openWarning(shell,
-				GO_TO_DEFINITION_OPNAME, msg);
-	}
-
-	static void dialogInfo(Shell shell, String msg) {
-		OperationsManager.openInfo(shell,
-				GO_TO_DEFINITION_OPNAME, msg);
+		OperationsManager.openError(shell, GO_TO_DEFINITION_OPNAME, msg);
 	}
 	
+	static void dialogWarning(Shell shell, String msg) {
+		OperationsManager.openWarning(shell, GO_TO_DEFINITION_OPNAME, msg);
+	}
+	
+	static void dialogInfo(Shell shell, String msg) {
+		OperationsManager.openInfo(shell, GO_TO_DEFINITION_OPNAME, msg);
+	}
 	
 }

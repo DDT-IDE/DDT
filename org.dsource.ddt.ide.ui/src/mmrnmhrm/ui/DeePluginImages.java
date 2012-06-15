@@ -15,7 +15,6 @@ public class DeePluginImages {
 	
 	private DeePluginImages() {} // Don't instantiate
 	
-	
 	public static final IPath ICONS_PATH= new Path("$nl$/icons/");
 	
 	private static final String ACTIONS_PATH = "action16e";
@@ -30,7 +29,6 @@ public class DeePluginImages {
 	private static ImageDescriptor createUnmanaged(String base, String imageName) {
 		return helper.createUnManaged(base, imageName);
 	}
-
 	
 	public static final String ELEM_PACKAGE = createImage(T_OBJ, "dee_package.gif");
 	public static final String ELEM_FILE = createImage(T_OBJ, "dee_file.gif");
@@ -78,6 +76,8 @@ public class DeePluginImages {
 	public static final ImageDescriptor DESC_OVR_DEFAULT = createUnmanaged(T_OVR, "aggregate-default.png");
 	
 	
+	public static final ImageDescriptor OPEN_DEF_DESC = getActionImageDescriptor("gotodef.gif", true);
+	
 	private static String createImage(String base, String imageName) {
 		ImageDescriptor imgDesc = getImageDescriptor(base, imageName, false);
 		if(imgDesc == null) {
@@ -118,5 +118,5 @@ public class DeePluginImages {
 	public static ImageDescriptorRegistry getImageDescriptorRegistry() {
 		return DLTKUIPlugin.getImageDescriptorRegistry();
 	}
-
+	
 }
