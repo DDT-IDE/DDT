@@ -64,7 +64,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 	
 	@Override
 	public void run() {
-		Module neoModule = EditorUtil.getNeoModuleFromEditor(deeEditor);
+		Module neoModule = EditorUtil.getModuleFromEditor(deeEditor);
 
 		TextSelection sel = EditorUtil.getSelection(deeEditor);
 		int offset = sel.getOffset();

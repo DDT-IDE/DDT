@@ -16,7 +16,6 @@ import java.util.Collection;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -53,8 +52,8 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		ISourceModule sourceModule = (ISourceModule) sourceUnit.getModelElement();
 		IScriptProject scriptProject = sourceModule.getScriptProject();
 		
-		DeeModuleDeclaration deeModule = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
-		ASTNeoNode node = ASTNodeFinder.findElement(deeModule.neoModule, offset, ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
+		Module deeModule = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
+		ASTNeoNode node = ASTNodeFinder.findElement(deeModule, offset, ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		if(node instanceof DefSymbol) {
 			DefUnit defUnit = ((DefSymbol) node).getDefUnit();

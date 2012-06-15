@@ -7,9 +7,6 @@ import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-
-import org.eclipse.dltk.core.ISourceModule;
-
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
@@ -75,8 +72,6 @@ public class Module extends DefUnit implements IScopeNode {
 		}
 	}
 	
-	private Object moduleUnit; // The compilation unit/Model Element
-	
 	public final DeclarationModule md;
 	public final ArrayView<ASTNeoNode> members;
 	
@@ -114,10 +109,6 @@ public class Module extends DefUnit implements IScopeNode {
 			TreeVisitor.acceptChildren(visitor, members);
 		}
 		visitor.endVisit(this);
-	}
-	
-	@Deprecated
-	public void setModuleUnit(ISourceModule modUnit) {
 	}
 	
 	@Override

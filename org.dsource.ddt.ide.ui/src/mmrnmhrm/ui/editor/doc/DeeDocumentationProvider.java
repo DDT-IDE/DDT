@@ -9,7 +9,6 @@ import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
@@ -22,6 +21,7 @@ import org.eclipse.dltk.ui.documentation.TextDocumentationResponse;
 
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
+import dtool.ast.definitions.Module;
 
 /**
  * XXX: DLTK: This {@link DeeDocumentationProvider} is disabled (not used at the moment), 
@@ -76,8 +76,8 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 		
 		final int start = range.getOffset();
 		
-		DeeModuleDeclaration deeModule = DeeModuleParsingUtil.getParsedDeeModule(member.getSourceModule());
-		ASTNeoNode pickedNode = ASTNodeFinder.findElement(deeModule.neoModule, start, 
+		Module deeModule = DeeModuleParsingUtil.getParsedDeeModule(member.getSourceModule());
+		ASTNeoNode pickedNode = ASTNodeFinder.findElement(deeModule, start, 
 				DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(member.getScriptProject());

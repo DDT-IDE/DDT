@@ -77,7 +77,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 	public static void executeOperation(ITextEditor editor, boolean openNewEditor, int offset) throws CoreException {
 		IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
 		
-		Module neoModule = EditorUtil.getNeoModuleFromEditor(editor);
+		Module neoModule = EditorUtil.getModuleFromEditor(editor);
 		
 		ASTNeoNode elem = ASTNodeFinder.findElement(neoModule, offset, false);
 		

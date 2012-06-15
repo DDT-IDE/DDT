@@ -68,7 +68,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 	private ASTNeoNode getNodeAtOffset(int offset) {
 		IEditorPart editor = getEditor();
 		assertNotNull(editor);
-		Module module = EditorUtil.getNeoModuleFromEditor(editor);
+		Module module = EditorUtil.getModuleFromEditor(editor);
 		if(module == null)
 			return null;
 		

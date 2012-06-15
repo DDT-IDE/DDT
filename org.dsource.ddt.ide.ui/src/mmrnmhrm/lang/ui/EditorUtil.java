@@ -3,7 +3,6 @@ package mmrnmhrm.lang.ui;
 
 
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
@@ -85,13 +84,13 @@ public class EditorUtil {
 
 	/** Gets a Module from this editor's input, and setups the Module'
 	 * modUnit as the editor's input. */
-	public static Module getNeoModuleFromEditor(IEditorPart textEditor) {
+	public static Module getModuleFromEditor(IEditorPart textEditor) {
 		IModelElement element = EditorUtility.getEditorInputModelElement(textEditor, false);
 		if(!(element instanceof ISourceModule))
 			return null;
 		ISourceModule modUnit = (ISourceModule) element;
-		DeeModuleDeclaration deeModule = DeeModuleParsingUtil.getParsedDeeModule(modUnit);
-		return deeModule == null ? null : deeModule.neoModule;
+		Module module = DeeModuleParsingUtil.getParsedDeeModule(modUnit);
+		return module == null ? null : module;
 	}
 
 }

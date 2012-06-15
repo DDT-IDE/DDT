@@ -7,7 +7,6 @@ import melnorme.swtutil.SWTUtilExt;
 import melnorme.utilbox.tree.IElement;
 
 import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ElementChangedEvent;
@@ -29,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 
 import descent.internal.compiler.parser.ast.ASTNode;
+import dtool.ast.definitions.Module;
 
 /**
  * TODO: DLTK request: we would like {@link #isInnerType()}  to be protected so we can extends
@@ -122,9 +122,9 @@ public class DeeOutlinePage extends ScriptOutlinePage {
 		public Object[] getElements(Object parent) {
 			if(parent instanceof ISourceModule) {
 				ISourceModule sourceModule = (ISourceModule) parent;
-				DeeModuleDeclaration moduleDec = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
-				if(moduleDec != null)
-					return super.getElements(moduleDec.neoModule);
+				Module module = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
+				if(module != null)
+					return super.getElements(module);
 			}
 			return ASTNode.NO_ELEMENTS;
 		}

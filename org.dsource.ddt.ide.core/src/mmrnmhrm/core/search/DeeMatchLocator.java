@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import mmrnmhrm.core.DeeCore;
 
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.core.runtime.CoreException;
@@ -57,13 +56,6 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 		
 		public DeeMatchLocatorParser(MatchLocator locator) {
 			super(locator);
-		}
-		
-		@Override
-		public ModuleDeclaration parse(PossibleMatch possibleMatch) {
-			ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
-			ModuleDeclaration module = super.parse(possibleMatch);
-			return DeeModuleParsingUtil.parentizeDeeModuleDeclaration(module, sourceModule);
 		}
 		
 		@Override

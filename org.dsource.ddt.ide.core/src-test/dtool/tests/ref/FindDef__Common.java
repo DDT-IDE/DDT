@@ -80,9 +80,7 @@ public class FindDef__Common {
 		} catch (ModelException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
-		ParseSource parseSource = new ParseSource(parseResult.neoModule, source, sourceModule);
-		parseSource.module.setModuleUnit(sourceModule);
-		return parseSource;
+		return new ParseSource(parseResult.neoModule, source, sourceModule);
 	}
 	
 	protected int getMarkerEndOffset(String marker) throws ModelException {

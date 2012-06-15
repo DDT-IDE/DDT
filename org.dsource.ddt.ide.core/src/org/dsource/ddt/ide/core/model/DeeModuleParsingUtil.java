@@ -9,27 +9,19 @@ import dtool.ast.definitions.Module;
 
 public abstract class DeeModuleParsingUtil {
 	
-	/** Gets a DeeModuleDeclaration from given sourceModule, either by parsing or retrieving a cached version.
-	 * Parentizes the returned DeeModuleDeclaration
-	 * TODO: define proper behavior for sourceModule is not from a DDT DLTK nature */
-	public static DeeModuleDeclaration getParsedDeeModule(ISourceModule sourceModule) {
+	public static Module getParsedDeeModule(ISourceModule sourceModule) {
 		ModuleDeclaration moduleDeclaration = SourceParserUtil.getModuleDeclaration(sourceModule, null);
-		return parentizeDeeModuleDeclaration(moduleDeclaration, sourceModule);
+		if (moduleDeclaration instanceof DeeModuleDeclaration) {
+			return ((DeeModuleDeclaration) moduleDeclaration).neoModule;
+		}
+		//TODO: consider proper behavior for sourceModule is not from our DLTK nature
+		return null;
 	}
 	
-	// TODO: investigate if we can get rid of parentizeDeeModuleDeclaration
-	
-	@Deprecated
-	/** If given moduleDeclaration is a DeeModuleDeclaration, parentizes it to given sourceModule and returns it, 
-	 * otherwise return null. */
-	public static DeeModuleDeclaration parentizeDeeModuleDeclaration(
-			IModuleDeclaration moduleDeclaration, ISourceModule sourceModule) {
+	public static DeeModuleDeclaration getParsedDeeModuleDecl(ISourceModule sourceModule) {
+		ModuleDeclaration moduleDeclaration = SourceParserUtil.getModuleDeclaration(sourceModule, null);
 		if (moduleDeclaration instanceof DeeModuleDeclaration) {
-			DeeModuleDeclaration deeModuleDecl = (DeeModuleDeclaration) moduleDeclaration;
-			if (deeModuleDecl.neoModule != null) {
-				deeModuleDecl.neoModule.setModuleUnit(sourceModule);
-			}
-			return deeModuleDecl;
+			return (DeeModuleDeclaration) moduleDeclaration;
 		}
 		return null;
 	}

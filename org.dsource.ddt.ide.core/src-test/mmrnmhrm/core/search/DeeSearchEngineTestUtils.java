@@ -7,13 +7,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.StringUtil;
 
 import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
@@ -113,8 +110,8 @@ public class DeeSearchEngineTestUtils {
 		public void visitElementsAndNodes(IModelElement element, int depth) throws ModelException, CoreException {
 			if(element instanceof ISourceModule) {
 				final ISourceModule sourceModule = (ISourceModule) element;
-				DeeModuleDeclaration moduleDec = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
-				moduleDec.neoModule.accept(new ASTNeoHomogenousVisitor() {
+				Module module = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
+				module.accept(new ASTNeoHomogenousVisitor() {
 					@Override
 					public boolean preVisit(ASTNeoNode node) {
 						visitNode(node, sourceModule);

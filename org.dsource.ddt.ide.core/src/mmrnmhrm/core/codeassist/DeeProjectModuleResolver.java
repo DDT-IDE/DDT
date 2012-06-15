@@ -8,7 +8,6 @@ import mmrnmhrm.core.DLTKModelUtils;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IProjectFragment;
@@ -48,8 +47,8 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 		if(moduleUnit == null)
 			return null;
 		
-		DeeModuleDeclaration modDecl = DeeModuleParsingUtil.getParsedDeeModule(moduleUnit);
-		return modDecl.neoModule;
+		Module module = DeeModuleParsingUtil.getParsedDeeModule(moduleUnit);
+		return module;
 	}
 	
 	public ISourceModule findModuleUnit(String[] packages, String modName, IScriptProject deeproj) 
