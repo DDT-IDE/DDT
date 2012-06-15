@@ -35,7 +35,6 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			final ISourceModule sourceModule = (ISourceModule) module.getModelElement();
 			
 			String sourceContents = module.getSourceContents();
-			CompletionSession completionSession = new CompletionSession();
 			IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
 				@Override
 				public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
@@ -43,7 +42,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 					requestor.accept(proposal);
 				}
 			};
-			doCompletionSearch(position, sourceModule, sourceContents, completionSession, collectorAdapter);
+			doCompletionSearch(position, sourceModule, sourceContents, collectorAdapter);
 		} finally {
 			requestor.endReporting();
 		}
@@ -77,11 +76,16 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	}
 	
 	public static PrefixDefUnitSearch doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
-			CompletionSession session, IDefUnitMatchAccepter defUnitAccepter) 
-	{
+			IDefUnitMatchAccepter defUnitAccepter) {
+		CompletionSession session = new CompletionSession();
+		return doCompletionSearch(offset, moduleUnit, source, session, defUnitAccepter);
+	}
+	
+	public static PrefixDefUnitSearch doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
+			CompletionSession session, IDefUnitMatchAccepter defUnitAccepter) {
 		String moduleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
-		return PrefixDefUnitSearch.doCompletionSearch2(session, moduleName, source, offset, moduleUnit,
-				new DeeProjectModuleResolver(moduleUnit), defUnitAccepter);
+		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit);
+		return PrefixDefUnitSearch.doCompletionSearch(session, moduleName, source, offset, mr, defUnitAccepter);
 	}
 	
 }

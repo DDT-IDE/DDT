@@ -1,7 +1,6 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
@@ -117,16 +116,8 @@ public class Module extends DefUnit implements IScopeNode {
 		visitor.endVisit(this);
 	}
 	
-	public void setModuleUnit(ISourceModule modUnit) {
-		//assertTrue(modUnit.exists());
-		if(this.moduleUnit != null) {
-			assertTrue(this.moduleUnit.equals(modUnit));
-		}
-		this.moduleUnit = modUnit;
-	}
 	@Deprecated
-	public ISourceModule getModuleUnit() {
-		return (ISourceModule) moduleUnit;
+	public void setModuleUnit(ISourceModule modUnit) {
 	}
 	
 	@Override

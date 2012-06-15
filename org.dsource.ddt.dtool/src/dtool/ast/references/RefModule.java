@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -43,10 +42,9 @@ public class RefModule extends NamedReference {
 	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
-		Module originMod = NodeUtil.getParentModule(this);
 		Module targetMod;
 		try {
-			targetMod = moduleResolver.findModule(originMod, packages.getInternalArray(), module);
+			targetMod = moduleResolver.findModule(packages.getInternalArray(), module);
 		} catch (Exception e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
@@ -95,8 +93,7 @@ public class RefModule extends NamedReference {
 	public void doSearch(PrefixDefUnitSearch search) {
 		String prefix = search.searchOptions.searchPrefix;
 		
-		Module module = NodeUtil.getParentModule(this);
-		String[] strings = search.resolveModules(module, prefix);
+		String[] strings = search.resolveModules(prefix);
 		for (int i = 0; i < strings.length; i++) {
 			String name = strings[i];
 			

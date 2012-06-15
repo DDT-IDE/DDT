@@ -21,12 +21,12 @@ public class DeclarationStaticIfTypeTest extends Resolver_BaseTest {
 		
 	private final class NullModuleResolver implements IModuleResolver {
 		@Override
-		public String[] findModules(Module refSourceModule, String fqNamePrefix) throws Exception {
+		public String[] findModules(String fqNamePrefix) throws Exception {
 			return null;
 		}
 		
 		@Override
-		public Module findModule(Module sourceRefModule, String[] packages, String module) throws Exception {
+		public Module findModule(String[] packages, String module) throws Exception {
 			return null;
 		}
 	}
@@ -55,8 +55,8 @@ public class DeclarationStaticIfTypeTest extends Resolver_BaseTest {
 		
 		CompletionSession session = new CompletionSession();
 		DefUnitArrayListCollector defUnitAccepter = new DefUnitArrayListCollector();
-		PrefixDefUnitSearch.doCompletionSearch2(session, "_unnamed_", source, 
-				completionMarker, null, new NullModuleResolver(), defUnitAccepter);
+		PrefixDefUnitSearch.doCompletionSearch(session, "_unnamed_", source, 
+				completionMarker, new NullModuleResolver(), defUnitAccepter);
 		
 		CompareDefUnits.checkResults(defUnitAccepter.results,
 			array("foo", "dummy1", "T"

@@ -52,17 +52,17 @@ public abstract class CommonDefUnitSearch {
 		return modResolver;
 	}
 	
-	public String[] resolveModules(Module refSourceModule, String fqNamePrefix) {
+	public String[] resolveModules(String fqNamePrefix) {
 		try {
-			return modResolver.findModules(refSourceModule, fqNamePrefix);
+			return modResolver.findModules(fqNamePrefix);
 		} catch (Exception e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}
 	
-	public Module resolveModule(Module sourceRefModule, String[] packages, String module) {
+	public Module resolveModule(String[] packages, String module) {
 		try {
-			return modResolver.findModule(sourceRefModule, packages, module);
+			return modResolver.findModule(packages, module);
 		} catch (Exception e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

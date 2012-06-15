@@ -7,7 +7,6 @@ import melnorme.utilbox.misc.IteratorUtil;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoNode;
-import dtool.ast.NodeUtil;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.ImportFragment;
 import dtool.ast.declarations.ImportContent;
@@ -31,10 +30,9 @@ public class ReferenceResolver {
 	
 	private static final String[] EMPTY_PACKAGE = new String[0];
 
-	public static Module findModuleUnchecked(IModuleResolver modResolver, Module refSourceModule, String[] packages,
-			String module) {
+	public static Module findModuleUnchecked(IModuleResolver modResolver, String[] packages, String module) {
 		try {
-			return modResolver.findModule(refSourceModule, packages, module);
+			return modResolver.findModule(packages, module);
 		} catch (Exception e) {
 			throw ExceptionAdapter.unchecked(e);
 		}
@@ -62,7 +60,7 @@ public class ReferenceResolver {
 			if(outerscope == null) {
 				Module module = (Module) scope;
 				findDefUnitInModuleDec(module, search);
-				findDefUnitInObjectIntrinsic(module, search);
+				findDefUnitInObjectIntrinsic(search);
 				return;
 			}
 
@@ -71,14 +69,14 @@ public class ReferenceResolver {
 		} while (true);
 		
 	}
-
-	private static void findDefUnitInObjectIntrinsic(Module originModule, CommonDefUnitSearch search) {
-		Module targetModule = search.resolveModule(originModule, EMPTY_PACKAGE, "object");
+	
+	private static void findDefUnitInObjectIntrinsic(CommonDefUnitSearch search) {
+		Module targetModule = search.resolveModule(EMPTY_PACKAGE, "object");
 		if (targetModule != null) {
 			findDefUnitInScope(targetModule, search);
 		}
 	}
-
+	
 	private static void findDefUnitInModuleDec(Module module,
 			CommonDefUnitSearch search) {
 		DeclarationModule decMod = module.md;
@@ -218,14 +216,13 @@ public class ReferenceResolver {
 	}
 	
 	private static Module findImporTargetModule(IModuleResolver modResolver, ImportFragment impSelective) {
-		Module refModule = NodeUtil.getParentModule(impSelective);
 		String[] packages = impSelective.moduleRef.packages.getInternalArray();
 		String modules = impSelective.moduleRef.module;
 		Module targetModule;
-		targetModule =  findModuleUnchecked(modResolver, refModule, packages, modules);
+		targetModule =  findModuleUnchecked(modResolver, packages, modules);
 		return targetModule;
 	}
-
+	
 	public static void findDefUnitInSelectiveImport(
 			ImportSelective impSelective, CommonDefUnitSearch search) {
 

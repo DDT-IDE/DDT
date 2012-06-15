@@ -7,7 +7,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.dltk.core.ISourceModule;
 
 import descent.internal.compiler.parser.Parser;
 import descent.internal.compiler.parser.TOK;
@@ -86,8 +85,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		void accept(DefUnit defUnit, PrefixSearchOptions searchOptions);
 	}
 	
-	public static PrefixDefUnitSearch doCompletionSearch2(CompletionSession session, String moduleName,
-			String source, final int offset, ISourceModule moduleUnit, IModuleResolver modResolver, IDefUnitMatchAccepter defUnitAccepter) 
+	public static PrefixDefUnitSearch doCompletionSearch(CompletionSession session, String moduleName,
+			String source, final int offset, IModuleResolver modResolver, IDefUnitMatchAccepter defUnitAccepter) 
 	{
 		assertTrue(offset >= 0 && offset <= source.length());
 		assertTrue(session.errorMsg == null);
@@ -124,7 +123,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 				lastTokenNonWS);
 		
 		Module neoModule = parseSession.getParsedModule(); 
-		neoModule.setModuleUnit(moduleUnit);
 		
 		/* ============================================== */
 		// : Do actual completion search
