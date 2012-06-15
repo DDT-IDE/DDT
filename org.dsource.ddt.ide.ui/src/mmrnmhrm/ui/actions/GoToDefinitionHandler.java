@@ -12,7 +12,6 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,11 +22,14 @@ import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ExternalStorageEditorInput;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IReusableEditor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.Logg;
@@ -77,9 +79,8 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 	public static void executeOperation(ITextEditor editor, boolean openNewEditor, int offset) throws CoreException {
 		IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
 		
-		Module neoModule = EditorUtil.getModuleFromEditor(editor);
-		
-		ASTNeoNode elem = ASTNodeFinder.findElement(neoModule, offset, false);
+		Module module = EditorUtil.getModuleFromEditor(editor);
+		ASTNeoNode elem = ASTNodeFinder.findElement(module, offset, false);
 		
 		if(elem == null) {
 			dialogWarning(window.getShell(), "No element found at pos: " + offset);
@@ -129,30 +130,45 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 			return;
 		} 
 		
-		ITextEditor targetEditor;
 		
 		Module targetModule = NodeUtil.getParentModule(defunit);
 		
-		ISourceModule modUnit = moduleResolver.findModuleUnit(targetModule);
-		
-		if(openNewEditor || neoModule != targetModule) {
-			IWorkbenchPage page = window.getActivePage();
-			// getCorrespondingResource isn't with linked folders 
-			//IFile file = (IFile) modUnit.getCorrespondingResource();
-			String editorID = DeeEditor.EDITOR_ID;
-			if (modUnit instanceof IExternalSourceModule) {
-				targetEditor = (ITextEditor) IDE.openEditor(page, new ExternalStorageEditorInput(
-						(IStorage) modUnit), editorID);
-			} else if (modUnit instanceof ISourceModule) {
-				IFile file = (IFile) DeeCore.getWorkspaceRoot().findMember(modUnit.getPath());
-				targetEditor = (ITextEditor) IDE.openEditor(page, file, editorID);
-			} else {
-				throw new CoreException(DeeCore.createErrorStatus("Don't know how to open editor for: " + modUnit));
-			}
+		if(targetModule == module) {
+			EditorUtil.setEditorSelection(editor, defunit.defname);
 		} else {
-			targetEditor = editor;
+			ISourceModule targetModUnit = moduleResolver.findModuleUnit(targetModule);
+			
+			IWorkbenchPage page = window.getActivePage();
+			
+			if (targetModUnit instanceof IExternalSourceModule) {
+				IExternalSourceModule externalSourceModule = (IExternalSourceModule) targetModUnit;
+				IEditorInput input = new ExternalStorageEditorInput(externalSourceModule);
+				openEditor(page, input, openNewEditor, editor, defunit);
+			} else if (targetModUnit != null) {
+				IFile file = (IFile) DeeCore.getWorkspaceRoot().findMember(targetModUnit.getPath());
+				IEditorInput input = new FileEditorInput(file);
+				openEditor(page, input, openNewEditor, editor, defunit);
+			} else {
+				throw new CoreException(DeeCore.createErrorStatus(
+						"Don't know how to open editor for: " + targetModUnit));
+			}
 		}
-		EditorUtil.setSelection(targetEditor, defunit.defname);
+	}
+	
+	public static void openEditor(IWorkbenchPage page, IEditorInput input, boolean openNewEditor, ITextEditor editor,
+			DefUnit defunit) throws PartInitException {
+		
+		if(openNewEditor) {
+			int matchFlags = IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT;
+			ITextEditor targetEditor = (ITextEditor) page.openEditor(input, DeeEditor.EDITOR_ID, true, matchFlags);
+			EditorUtil.setEditorSelection(targetEditor, defunit.defname);
+		} else {
+			if(editor instanceof IReusableEditor) {
+				IReusableEditor reusableEditor = (IReusableEditor) editor;
+				reusableEditor.setInput(input);
+				EditorUtil.setEditorSelection(editor, defunit.defname);
+			}
+		}
 	}
 	
 	

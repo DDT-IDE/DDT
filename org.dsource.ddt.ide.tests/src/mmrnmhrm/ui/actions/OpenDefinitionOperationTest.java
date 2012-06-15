@@ -125,7 +125,7 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	}
 	
 	private void doTest(int offset, int result, IProject project, String editorFile) {
-		EditorUtil.setSelection(srcEditor, offset, 0);
+		EditorUtil.setEditorSelection(srcEditor, offset, 0);
 		GoToDefinitionHandler.executeChecked(srcEditor, true);
 		assertTrue(OperationsManager.get().opResult == result, "Got result: " + result);
 		assertCurrentEditorIsEditing(project.getFullPath(), editorFile);

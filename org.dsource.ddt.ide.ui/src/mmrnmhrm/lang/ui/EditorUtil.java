@@ -28,12 +28,12 @@ public class EditorUtil {
 		return (TextSelection) editor.getSelectionProvider().getSelection();
 	}
 	
-	public static void setSelection(ITextEditor textEditor, IASTNode node) {
+	public static void setEditorSelection(ITextEditor textEditor, IASTNode node) {
 		textEditor.getSelectionProvider().setSelection(
 				new TextSelection(node.getStartPos(), node.getLength())); 
 	}
 	
-	public static void setSelection(ITextEditor textEditor, int offset, int length) {
+	public static void setEditorSelection(ITextEditor textEditor, int offset, int length) {
 		textEditor.getSelectionProvider().setSelection(
 				new TextSelection(offset, length)); 
 	}
@@ -65,7 +65,7 @@ public class EditorUtil {
 			int end = element.getLength();
 			try {
 				editor.setHighlightRange(start, end, true);
-				setSelection(editor, start, end);
+				setEditorSelection(editor, start, end);
 			} catch (IllegalArgumentException x) {
 				editor.resetHighlightRange();
 			}
