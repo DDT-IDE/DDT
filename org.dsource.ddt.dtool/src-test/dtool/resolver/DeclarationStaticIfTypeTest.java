@@ -5,7 +5,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
-import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
 import dtool.ast.ASTNodeFinder;
@@ -31,11 +30,11 @@ public class DeclarationStaticIfTypeTest extends Resolver_BaseTest {
 		}
 	}
 	
-	protected int getMarkerEndOffset(String source, String marker) throws ModelException {
+	protected int getMarkerEndOffset(String source, String marker) {
 		return source.indexOf(marker) + marker.length();
 	}
 	
-	protected int getMarkerStartOffset(String source, String marker) throws ModelException {
+	protected int getMarkerStartOffset(String source, String marker) {
 		return source.indexOf(marker);
 	}
 	
@@ -67,8 +66,7 @@ public class DeclarationStaticIfTypeTest extends Resolver_BaseTest {
 		);
 	}
 	
-	protected void testRefResolve(String source, Module module, String refMarker, int markerOfTarget)
-			throws ModelException {
+	protected void testRefResolve(String source, Module module, String refMarker, int markerOfTarget) {
 		int findMarker = getMarkerEndOffset(source, refMarker);
 		Reference ref = (Reference) ASTNodeFinder.findElement(module, findMarker, true);
 		checkSingleResult(ref, markerOfTarget);

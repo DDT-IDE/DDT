@@ -9,7 +9,6 @@ import java.util.Set;
 
 import melnorme.utilbox.core.CoreUtil;
 
-import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
 
 import dtool.ast.ASTChecker;
@@ -25,7 +24,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 	
 	protected static final String TESTFILESDIR = "parser/";
 	
-	public static Module parseTestFile(String filename) throws CoreException, IOException {
+	public static Module parseTestFile(String filename) throws IOException {
 		return testDtoolParse(readTestResourceFile(TESTFILESDIR + filename));
 	}
 	

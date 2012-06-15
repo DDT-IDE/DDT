@@ -1,6 +1,5 @@
 package dtool.parser;
 
-import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
 import dtool.ast.ASTNeoNode;
@@ -18,7 +17,7 @@ public class Parser_ExpCastTest extends Parser__CommonTest {
 	
 	@Test
 	public void testImport() throws Exception { testImport$(); }
-	public void testImport$() throws CoreException {
+	public void testImport$() throws Exception {
 		Module module = testDtoolParse(
 				"int foo = cast(Foo) blah;" +
 				"int foo = cast(pack.Foo) (1+blah);"+

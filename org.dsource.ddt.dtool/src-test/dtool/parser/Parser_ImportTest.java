@@ -3,7 +3,6 @@ package dtool.parser;
 import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsElement;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
 import dtool.ast.ASTNeoNode;
@@ -22,7 +21,7 @@ public class Parser_ImportTest extends Parser__CommonTest {
 	
 	@Test
 	public void testImport() throws Exception { testImport$(); }
-	public void testImport$() throws CoreException {
+	public void testImport$() throws Exception {
 		Module module = testDtoolParse(
 				"module foo;" +
 				"import pack.bar;" +
