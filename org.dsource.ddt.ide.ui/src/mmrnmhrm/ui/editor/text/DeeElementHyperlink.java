@@ -12,6 +12,7 @@ package mmrnmhrm.ui.editor.text;
 
 import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 import mmrnmhrm.ui.actions.OperationsManager;
+import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.Assert;
@@ -54,7 +55,7 @@ public class DeeElementHyperlink implements IHyperlink {
 		OperationsManager.executeOperation(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				GoToDefinitionHandler.executeOperation(fTextEditor, true, offset);
+				GoToDefinitionHandler.executeOperation(fTextEditor, EOpenNewEditor.ALWAYS, offset);
 			}
 		}, "Open Element");
 	}

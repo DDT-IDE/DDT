@@ -17,6 +17,7 @@ import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.SampleNonDeeProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
+import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 import mmrnmhrm.ui.editor.DeeEditor;
 
 import org.dsource.ddt.lang.ui.WorkbenchUtils;
@@ -40,9 +41,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	
-	private static final String TEST_SRCFILE = ITestResourcesConstants.TR_SAMPLE_SRC1 + "/testGoToDefOp.d";
-	private static final String TEST_SRC_TARGETFILE = ITestResourcesConstants.TR_SAMPLE_SRC3 +"/pack/sample.d";
-	private static final String TEST_OUTSRCFILE = ITestResourcesConstants.TR_SRC_OUTSIDE_MODEL + "/testGoToDefOp.d";
+	protected static final String TEST_SRCFILE = ITestResourcesConstants.TR_SAMPLE_SRC1 + "/testGoToDefOp.d";
+	protected static final String TEST_SRC_TARGETFILE = ITestResourcesConstants.TR_SAMPLE_SRC3 +"/pack/sample.d";
+	protected static final String TEST_OUTSRCFILE = ITestResourcesConstants.TR_SRC_OUTSIDE_MODEL + "/testGoToDefOp.d";
 	
 	protected IFile file; 
 	protected IEditorPart editor;
@@ -72,38 +73,35 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	}
 	
 	@Test
-	public void test1() {
-		// find target in same file
+	public void testOpenRef_TargetInSameFile() {
 		doTest(123, IStatus.OK, file.getProject(), TEST_SRCFILE); 
 	}
 	
 	@Test
-	public void test2() {
-		// not found
+	public void testOpenRef_TargetNotFound() {
 		doTest(135, IStatus.WARNING, file.getProject(), TEST_SRCFILE); 
 	}
 	
 	@Test
-	public void test3() {		
-		// already a def
+	public void testOpenRef_OnADefUnit() {		
 		doTest(54, IStatus.INFO, file.getProject(), TEST_SRCFILE); 
 	}
 	
 	@Test
-	public void test4() {
+	public void testOpenRef_TargetInAnotherFile() {
 		// find target in other file
 		doTest(157, IStatus.OK, file.getProject(), TEST_SRC_TARGETFILE); 
 	}
 	
 	@Test
-	public void testOutside() throws CoreException {
+	public void testOpenRef_OriginFileOutsideBuildpath_TargetInSameFile() throws CoreException {
 		IProject project = SampleMainProject.scriptProject.getProject();
 		setupWithFile(project, TEST_OUTSRCFILE);
 		doTest(123, IStatus.OK, project, TEST_OUTSRCFILE);
 	}
 	
 	@Test
-	public void testOutside2() throws CoreException {
+	public void testOpenRef_OriginFileOutsideBuildpath_TargetInAnotherFile() throws CoreException {
 		IProject project = SampleMainProject.scriptProject.getProject();
 		setupWithFile(project, TEST_OUTSRCFILE);
 		doTest(157, IStatus.OK, project, TEST_SRC_TARGETFILE);
@@ -111,33 +109,32 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	
 	
 	@Test
-	public void testReallyOutside() throws CoreException {
+	public void testOpenRef_OriginFileNotOnDProject_TargetInSameFile() throws CoreException {
 		IProject project = SampleNonDeeProject.project;
 		setupWithFile(project, TEST_OUTSRCFILE);
 		doTest(123, IStatus.OK, project, TEST_OUTSRCFILE);
 	}
 	
 	@Test
-	public void testReallyOutside2() throws CoreException {
+	public void testOpenRef_OriginFileNotOnDProject_NotFound() throws CoreException {
 		IProject project = SampleNonDeeProject.project;
 		setupWithFile(project, TEST_OUTSRCFILE);
 		doTest(157, IStatus.WARNING, project, TEST_OUTSRCFILE);
 	}
 	
-	private void doTest(int offset, int result, IProject project, String editorFile) {
+	protected void doTest(int offset, int result, IProject project, String editorFile) {
 		EditorUtil.setEditorSelection(srcEditor, offset, 0);
-		GoToDefinitionHandler.executeChecked(srcEditor, true);
+		GoToDefinitionHandler.executeChecked(srcEditor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS);
 		assertTrue(OperationsManager.get().opResult == result, "Got result: " + result);
 		assertCurrentEditorIsEditing(project.getFullPath(), editorFile);
 	}
 	
-	private void assertCurrentEditorIsEditing(IPath prjpath, String targetpath) {
+	protected void assertCurrentEditorIsEditing(IPath prjpath, String targetpath) {
 		DeeEditor deeEditor;
 		deeEditor = (DeeEditor) WorkbenchUtils.getActivePage().getActiveEditor();
 		IFile editorFile = ((FileEditorInput) deeEditor.getEditorInput()).getFile();
 		IPath path = editorFile.getFullPath();
 		Assert.assertEquals(path, prjpath.append(targetpath));
 	}
-	
 	
 }

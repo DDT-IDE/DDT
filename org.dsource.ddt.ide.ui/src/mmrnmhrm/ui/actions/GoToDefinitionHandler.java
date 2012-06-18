@@ -48,11 +48,13 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 	public static final String COMMAND_ID = DeePlugin.EXTENSIONS_IDPREFIX+"commands.openDefinition";
 	private static final String GO_TO_DEFINITION_OPNAME = "Go to Definition";
 	
+	public static enum EOpenNewEditor { ALWAYS, TRY_REUSING_EXISTING_EDITORS, NEVER }
+	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IEditorPart editor = HandlerUtil.getActiveEditorChecked(event);
 		try {
-			executeOperation((ITextEditor) editor, false);
+			executeOperation((ITextEditor) editor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS);
 		} catch (CoreException ce) {
 			throw new ExecutionException(GO_TO_DEFINITION_OPNAME, ce);
 		}
@@ -60,7 +62,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 	}
 	
 	
-	public static void executeChecked(final ITextEditor srcEditor, final boolean openNewEditor) {
+	public static void executeChecked(final ITextEditor srcEditor, final EOpenNewEditor openNewEditor) {
 		OperationsManager.executeOperation(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
@@ -69,14 +71,15 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		}, GO_TO_DEFINITION_OPNAME);
 	}
 	
-	public static void executeOperation(ITextEditor srcEditor, boolean openNewEditor) throws CoreException {
+	public static void executeOperation(ITextEditor srcEditor, EOpenNewEditor openNewEditor) throws CoreException {
 		TextSelection sel = EditorUtil.getSelection(srcEditor);
 		int offset = sel.getOffset();
 		
 		executeOperation(srcEditor, openNewEditor, offset);
 	}
 	
-	public static void executeOperation(ITextEditor editor, boolean openNewEditor, int offset) throws CoreException {
+	public static void executeOperation(ITextEditor editor, EOpenNewEditor openNewEditor, int offset)
+			throws CoreException {
 		IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
 		
 		Module module = EditorUtil.getModuleFromEditor(editor);
@@ -134,7 +137,8 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		Module targetModule = NodeUtil.getParentModule(defunit);
 		
 		if(targetModule == module) {
-			EditorUtil.setEditorSelection(editor, defunit.defname);
+			IWorkbenchPage page = window.getActivePage();
+			openEditor(page, editor.getEditorInput(), openNewEditor, null, defunit);
 		} else {
 			ISourceModule targetModUnit = moduleResolver.findModuleUnit(targetModule);
 			
@@ -155,32 +159,36 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		}
 	}
 	
-	public static void openEditor(IWorkbenchPage page, IEditorInput input, boolean openNewEditor, ITextEditor editor,
-			DefUnit defunit) throws PartInitException {
-		
-		if(openNewEditor) {
-			int matchFlags = IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT;
-			ITextEditor targetEditor = (ITextEditor) page.openEditor(input, DeeEditor.EDITOR_ID, true, matchFlags);
-			EditorUtil.setEditorSelection(targetEditor, defunit.defname);
-		} else {
-			if(editor instanceof IReusableEditor) {
+	public static void openEditor(IWorkbenchPage page, IEditorInput input, EOpenNewEditor openNewEditor, 
+			ITextEditor editor, DefUnit defunit) throws PartInitException {
+		if(openNewEditor == EOpenNewEditor.NEVER) {
+			if(editor.getEditorInput().equals(input)) {
+				EditorUtil.setEditorSelection(editor, defunit.defname);
+			} else if(editor instanceof IReusableEditor) {
 				IReusableEditor reusableEditor = (IReusableEditor) editor;
 				reusableEditor.setInput(input);
 				EditorUtil.setEditorSelection(editor, defunit.defname);
+			} else {
+				openEditor(page, input, EOpenNewEditor.ALWAYS, editor, defunit);
 			}
+		} else {
+			int matchFlags = openNewEditor == EOpenNewEditor.ALWAYS ? 
+				IWorkbenchPage.MATCH_NONE : IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID;
+			ITextEditor targetEditor = (ITextEditor) page.openEditor(input, DeeEditor.EDITOR_ID, true, matchFlags);
+			EditorUtil.setEditorSelection(targetEditor, defunit.defname);
 		}
 	}
 	
 	
-	private static void dialogError(Shell shell, String msg) {
+	protected static void dialogError(Shell shell, String msg) {
 		OperationsManager.openError(shell, GO_TO_DEFINITION_OPNAME, msg);
 	}
 	
-	static void dialogWarning(Shell shell, String msg) {
+	protected static void dialogWarning(Shell shell, String msg) {
 		OperationsManager.openWarning(shell, GO_TO_DEFINITION_OPNAME, msg);
 	}
 	
-	static void dialogInfo(Shell shell, String msg) {
+	protected static void dialogInfo(Shell shell, String msg) {
 		OperationsManager.openInfo(shell, GO_TO_DEFINITION_OPNAME, msg);
 	}
 	

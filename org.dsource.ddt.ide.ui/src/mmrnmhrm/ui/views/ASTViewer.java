@@ -5,6 +5,7 @@ import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler;
+import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
@@ -318,7 +319,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
-		GoToDefinitionHandler.executeChecked((AbstractTextEditor)fEditor, true);
+		GoToDefinitionHandler.executeChecked((AbstractTextEditor)fEditor, EOpenNewEditor.NEVER);
 	}
 	
 	@Override

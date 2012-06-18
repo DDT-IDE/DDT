@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.actions;
 
 import mmrnmhrm.lang.ui.AbstractWorkbenchWindowActionDelegate;
+import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IEditorPart;
@@ -16,7 +17,7 @@ public class GoToDefinitionAction extends AbstractWorkbenchWindowActionDelegate 
 		}
 		
 		IEditorPart editor = window.getActivePage().getActiveEditor();
-		GoToDefinitionHandler.executeChecked((ITextEditor) editor, false);
+		GoToDefinitionHandler.executeChecked((ITextEditor) editor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS);
 	}
 	
 }

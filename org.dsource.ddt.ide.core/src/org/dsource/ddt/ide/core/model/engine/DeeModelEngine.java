@@ -1,6 +1,7 @@
 package org.dsource.ddt.ide.core.model.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Arrays;
@@ -45,7 +46,8 @@ public class DeeModelEngine {
 	
 	public static IMember searchForModelElement(DefUnit defUnit, ISourceModule sourceModule, boolean returnNonExisting)
 			throws ModelException {
-	
+		assertNotNull(sourceModule);
+		
 		DefUnit parentDefUnit = NodeUtil.getOuterDefUnit(defUnit);
 		
 		if(parentDefUnit == null) {

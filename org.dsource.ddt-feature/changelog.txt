@@ -2,6 +2,9 @@
 
 = DDT Change Log =
 
+== DDT 0.6.1 () ==
+ * Holding Ctrl and clicking over a reference now always opens a new editor set on the reference target.
+
 == DDT 0.6.0 (2012-05-17) ==
  * Fixed bug causing DDT to never load the pre-defined editor Code Templates.
  * Added support for GDC, as well as a generic compiler install. (issue #59)
