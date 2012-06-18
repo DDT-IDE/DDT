@@ -21,6 +21,7 @@ import org.eclipse.dltk.core.ModelException;
 import dtool.ast.ASTNeoHomogenousVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
+import dtool.util.NewUtils;
 
 public class DeeSearchEngineTestUtils {
 	
@@ -37,7 +38,7 @@ public class DeeSearchEngineTestUtils {
 	public static String[] getModelElementFQNameArray(ISourceModule sourceModule) {
 		String fqName = getSourceModuleFQName(sourceModule);
 		if(fqName.isEmpty()) {
-			return DeeModelEngine.EMPTY_STRINGS;
+			return NewUtils.EMPTY_STRING_ARRAY;
 		} else {
 			return fqName.split("\\.");
 		}

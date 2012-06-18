@@ -59,9 +59,9 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		proposal.setExtraInfo(defUnit);
 		
 		if(defUnit.getModuleNode() != null) {
-			// We need the check above because of synthetic defUnits
+			// We need the check above because of synthetic defUnits TODO FIX that
 			
-			DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule.getScriptProject());
+			DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule);
 			try {
 				ISourceModule resultSourceModule = moduleResolver.findModuleUnit(defUnit.getModuleNode());
 				IMember me = DeeModelEngine.findCorrespondingModelElement(defUnit, resultSourceModule);

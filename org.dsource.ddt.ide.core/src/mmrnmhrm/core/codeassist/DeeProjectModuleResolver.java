@@ -1,5 +1,7 @@
 package mmrnmhrm.core.codeassist;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,8 @@ import mmrnmhrm.core.DLTKModelUtils;
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptFolder;
@@ -26,15 +30,16 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 
 	public DeeProjectModuleResolver(IScriptProject scriptProject) {
 		this.scriptProject = scriptProject;
+		assertNotNull(scriptProject);
 	}
 	
 	public DeeProjectModuleResolver(ISourceModule sourceModule) {
 		this(sourceModule.getScriptProject());
 	}
 	
-	
+	/** Shortcut method */
 	public ISourceModule findModuleUnit(Module module) throws ModelException {
-		return findModuleUnit(module.getDeclaredPackages(), module.getName(), scriptProject);
+		return findModuleUnit(scriptProject, module.getDeclaredPackages(), module.getName());
 	}
 	
 	@Override
@@ -43,7 +48,7 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 	}
 	
 	protected Module findModule(String[] packages, String modName, IScriptProject deeproj) throws ModelException {
-		ISourceModule moduleUnit = findModuleUnit(packages, modName, deeproj);
+		ISourceModule moduleUnit = findModuleUnit(deeproj, packages, modName);
 		if(moduleUnit == null)
 			return null;
 		
@@ -51,21 +56,21 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 		return module;
 	}
 	
-	public ISourceModule findModuleUnit(String[] packages, String modName, IScriptProject deeproj) 
+	public static ISourceModule findModuleUnit(IScriptProject deeProject, String[] packages, String moduleName) 
 			throws ModelException {
-		if(deeproj == null || deeproj.exists() == false || !isDeeProject(deeproj))
+		if(deeProject.exists() == false || !isDeeProject(deeProject))
 			return null;
 		
-		String fullPackageName = StringUtil.collToString(packages, "/");
+		IPath packagesPath = new Path(StringUtil.collToString(packages, "/"));
 		
-		for (IProjectFragment srcFolder : deeproj.getProjectFragments()) {
-			IScriptFolder pkgFrag = srcFolder.getScriptFolder(fullPackageName);
-			if(pkgFrag != null && pkgFrag.exists()) {
-				for (int i = 0; i < DeeNamingRules.VALID_EXTENSIONS.length; i++) {
-					String fileext = DeeNamingRules.VALID_EXTENSIONS[i];
-					ISourceModule modUnit = pkgFrag.getSourceModule(modName+fileext);
-					if(DLTKModelUtils.exists(modUnit)) {
-						return modUnit;
+		for (IProjectFragment srcFolder : deeProject.getProjectFragments()) {
+			IScriptFolder scriptFolder = srcFolder.getScriptFolder(packagesPath);
+			
+			if(scriptFolder.exists()) {
+				for (String validExtension : DeeNamingRules.VALID_EXTENSIONS) {
+					ISourceModule sourceModule = scriptFolder.getSourceModule(moduleName + validExtension);
+					if(DLTKModelUtils.exists(sourceModule)) {
+						return sourceModule;
 					}
 				}
 			}

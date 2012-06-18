@@ -3,12 +3,12 @@ package mmrnmhrm.core.search;
 import java.util.Collection;
 import java.util.Iterator;
 
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 
 import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
@@ -46,7 +46,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 		return true;
 	}
 	
-	protected void matchReferences(NamedReference ref, ISourceModule sourceModule) {
+	protected void matchReferences(final NamedReference ref, final ISourceModule sourceModule) {
 		// don't match qualifieds, the match will be made in its children
 		if(ref instanceof CommonRefQualified)
 			return;
@@ -54,39 +54,43 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 		if(!ref.canMatch(defUnitDescriptor))
 			return;
 		
-		Collection<DefUnit> defUnits = ref.findTargetDefUnits(new DeeProjectModuleResolver(sourceModule), false);
+		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule);
+		Collection<DefUnit> defUnits = ref.findTargetDefUnits(moduleResolver, false);
 		if(defUnits == null)
 			return;
 		
 		for (Iterator<DefUnit> iter = defUnits.iterator(); iter.hasNext();) {
-			DefUnit targetdefunit = iter.next();
+			DefUnit targetDefUnit = iter.next();
 			
-			IScriptProject scriptProject = sourceModule.getScriptProject();
-			ISourceModule targetSrcModule = DeeModelEngine.getSourceModule(targetdefunit, scriptProject);
-			
-			IMember targetModelElement = findCorrespondingModelElement(targetdefunit, targetSrcModule);
-			
-			if(modelElement.equals(targetModelElement)) {
-				deeMatchLocator.addMatch(ref, PatternLocator.ACCURATE_MATCH, sourceModule);
-				return;
+			try {
+				ISourceModule targetSrcModule = moduleResolver.findModuleUnit(targetDefUnit.getModuleNode()); 
+				
+				IMember targetModelElement = DeeModelEngine.findCorrespondingModelElement(targetDefUnit, targetSrcModule);
+				
+				if(modelElement.equals(targetModelElement)) {
+					deeMatchLocator.addMatch(ref, PatternLocator.ACCURATE_MATCH, sourceModule);
+					return;
+				}
+
+			} catch (ModelException e) {
+				DeeCore.log(e);
+				continue;
 			}
 		}
 	}
 	
 	protected void matchDefUnit(DefUnit definition, ISourceModule sourceModule) {
-		IMember targetModelElement = findCorrespondingModelElement(definition, sourceModule);
-		
-		if(modelElement.equals(targetModelElement)) {
-			deeMatchLocator.addMatch(definition, PatternLocator.ACCURATE_MATCH, sourceModule);
-		}
-	}
-	
-	protected IMember findCorrespondingModelElement(DefUnit definition, ISourceModule sourceModule){
 		try {
-			return DeeModelEngine.findCorrespondingModelElement(definition, sourceModule);
+			IMember targetModelElement = DeeModelEngine.findCorrespondingModelElement(definition, sourceModule);
+			
+			if(modelElement.equals(targetModelElement)) {
+				deeMatchLocator.addMatch(definition, PatternLocator.ACCURATE_MATCH, sourceModule);
+			}
 		} catch (ModelException e) {
-			return null; // Hum, think about this exception more.
+			DeeCore.log(e);
+			return;
 		}
+		
 	}
 	
 }

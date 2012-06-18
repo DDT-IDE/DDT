@@ -8,23 +8,15 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.DLTKModelUtils;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IProjectFragment;
-import org.eclipse.dltk.core.IScriptFolder;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.DeeNamingRules;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
@@ -37,8 +29,6 @@ import dtool.ast.definitions.Module;
  */
 public class DeeModelEngine {
 	
-	public static final String[] EMPTY_STRINGS = new String[0];
-
 	public static IMember findCorrespondingModelElement(DefUnit defUnit, ISourceModule sourceModule)
 			throws ModelException {
 		return searchForModelElement(defUnit, sourceModule, false);
@@ -159,7 +149,7 @@ public class DeeModelEngine {
 			if(parentDefUnit == null) {
 				assertTrue(defUnitIter instanceof Module);
 				
-				String[] packageNames = getPackageQualification(defUnitIter.getModuleNode());
+				String[] packageNames = defUnitIter.getModuleNode().getDeclaredPackages();
 				qualications.addAll(0, Arrays.asList(packageNames));
 				
 				return qualications;
@@ -172,49 +162,6 @@ public class DeeModelEngine {
 	
 	public static String getPackageName(ISourceModule sourceModule) {
 		return sourceModule.getParent().getElementName().replaceAll("/", ".");
-	}
-	
-	public static String[] getPackageQualification(Module moduleNode) {
-		if(moduleNode.md == null || moduleNode.md.packages == null) {
-			return EMPTY_STRINGS;
-		}
-		return moduleNode.md.packages;
-	}
-	
-	
-	// TODO: test this, consider multiple named source Packages
-	public static ISourceModule getSourceModule(IScriptProject searchProj, String[] pkgName, String moduleName) {
-		try {
-			IProjectFragment[] projectFragments = searchProj.getProjectFragments();
-			for (IProjectFragment prjFragment : projectFragments) {
-				IScriptFolder scriptFolder = prjFragment.getScriptFolder(createPathFromSegments(pkgName));
-				
-				if(scriptFolder.exists()){
-					for (String validExtension : DeeNamingRules.VALID_EXTENSIONS) {
-						ISourceModule sourceModule = scriptFolder.getSourceModule(moduleName + validExtension);
-						if(DLTKModelUtils.exists(sourceModule)){
-							return sourceModule;
-						}
-					}
-				}
-			}
-			return null;
-		} catch (ModelException e) {
-			return null;
-		}
-	}
-	
-	public static ISourceModule getSourceModule(ASTNeoNode node, IScriptProject searchProj) {
-		Module moduleNode = node.getModuleNode();
-		String[] packageQualification = getPackageQualification(moduleNode);
-		String moduleName = moduleNode.getName();
-		
-		return getSourceModule(searchProj, packageQualification, moduleName);
-	}
-	
-	public static IPath createPathFromSegments(String[] pathSegments) {
-		String pathString = StringUtil.collToString(pathSegments, "/") ;
-		return new org.eclipse.core.runtime.Path(pathString);
 	}
 	
 }

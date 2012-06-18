@@ -484,7 +484,8 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 					for (DefUnit defUnit : targetDefUnits) {
 						ArrayList<Integer> nodeTreePath = DeeSearchEngineTestUtils.getNodeTreePath(defUnit);
 						
-						ISourceModule defUnitSrcModule = DeeModelEngine.getSourceModule(defUnit, searchProj);
+						Module moduleNode = defUnit.getModuleNode();
+						ISourceModule defUnitSrcModule = findSourceModule(moduleNode, searchProj);
 						
 						Pair<ISourceModule, ?> key = Pair.create(defUnitSrcModule, nodeTreePath);
 						
@@ -553,6 +554,15 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 				}
 			});
 			
+		}
+	}
+	
+	public static ISourceModule findSourceModule(Module module, IScriptProject searchProj) {
+		try {
+			// TODO: test this, consider multiple named source Packages
+			return new DeeProjectModuleResolver(searchProj).findModuleUnit(module);
+		} catch (ModelException e) {
+			return null;
 		}
 	}
 	

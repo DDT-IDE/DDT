@@ -57,7 +57,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		
 		if(node instanceof DefSymbol) {
 			DefUnit defUnit = ((DefSymbol) node).getDefUnit();
-			IMember modelElement = getModelElement(defUnit, defUnit.getModuleNode(), scriptProject);
+			IMember modelElement = getModelElement(defUnit, scriptProject);
 			return modelElement == null ? null : new IModelElement[] { modelElement };
 		}
 		
@@ -75,7 +75,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
 		for (DefUnit defUnit : defunits) {
-			IMember modelElement = getModelElement(defUnit, defUnit.getModuleNode(), scriptProject);
+			IMember modelElement = getModelElement(defUnit, scriptProject);
 			if(modelElement != null) {
 				list.add(modelElement);
 			}
@@ -84,7 +84,8 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		return ArrayUtil.createFrom(list, IModelElement.class);
 	}
 	
-	protected IMember getModelElement(DefUnit defUnit, Module module, IScriptProject scriptProject) {
+	protected IMember getModelElement(DefUnit defUnit, IScriptProject scriptProject) {
+		Module module = defUnit.getModuleNode();
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(scriptProject);
 		try {
 			ISourceModule moduleUnit = mr.findModuleUnit(module);
