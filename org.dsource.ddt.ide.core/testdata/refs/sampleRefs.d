@@ -1,5 +1,5 @@
 import pack.mod1;
-//import pack.mod2, pack.sample, pack.subpack.mod3; 
+import pack.mod2, pack.sample, pack.subpack.mod3; 
 
 int dummy1 = mod1Var;
 Mod1Class dummy2;
@@ -17,6 +17,9 @@ void func2() {
 	SampleClass.foo++;
 	
 	pack2.foopublic.foopublicImportVar++;
+	pack.subpack.mod3.dummy++;
+	pack.subpackNotExistant.mod3.dummy++;
+	pack.subpack.mod3NotExistant.dummy++;
 }
 
 /*MultipleSelection*/SampleRefsClass xxx;

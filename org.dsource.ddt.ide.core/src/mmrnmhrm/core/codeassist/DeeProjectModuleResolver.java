@@ -1,6 +1,7 @@
 package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.areEqualArrays;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,24 +28,48 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 public class DeeProjectModuleResolver implements IModuleResolver {
 	
 	protected final IScriptProject scriptProject;
-
+	// This is module is searched in addition to modules in buildpath. 
+	// This is used for working copies elements which are outside of buildpath.
+	protected final ISourceModule workingCopySourceModule; 
+	
 	public DeeProjectModuleResolver(IScriptProject scriptProject) {
-		this.scriptProject = scriptProject;
 		assertNotNull(scriptProject);
+		this.scriptProject = scriptProject;
+		workingCopySourceModule = null;
 	}
 	
 	public DeeProjectModuleResolver(ISourceModule sourceModule) {
 		this(sourceModule.getScriptProject());
 	}
 	
+	public DeeProjectModuleResolver(ISourceModule sourceModule, boolean dummy) {
+		assertNotNull(sourceModule.getScriptProject());
+		this.scriptProject = sourceModule.getScriptProject();
+		this.workingCopySourceModule = sourceModule;
+	}
+	
 	/** Shortcut method */
 	public ISourceModule findModuleUnit(Module module) throws ModelException {
-		return findModuleUnit(scriptProject, module.getDeclaredPackages(), module.getName());
+		String[] packages = module.getDeclaredPackages();
+		String moduleName = module.getName();
+		
+		if(workingCopySourceModule != null) {
+			Module wcModule = DeeModuleParsingUtil.getParsedDeeModule(workingCopySourceModule);
+			
+			String wcModuleName = wcModule.getName();
+			String[] wcPackages = wcModule.getDeclaredPackages();
+			
+			if(wcModuleName.equals(moduleName) && areEqualArrays(wcPackages, packages)) {
+				return workingCopySourceModule;
+			}
+		}
+		return findModuleUnit(scriptProject, packages, moduleName);
 	}
 	
 	@Override
-	public Module findModule(String[] packages, String modName) throws CoreException {
-		return findModule(packages, modName, this.scriptProject);
+	public Module findModule(String[] packages, String moduleName) throws CoreException {
+		// possible BUG here
+		return findModule(packages, moduleName, this.scriptProject);
 	}
 	
 	protected Module findModule(String[] packages, String modName, IScriptProject deeproj) throws ModelException {
@@ -78,8 +103,8 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 		return null;
 	}
 	
-	protected static boolean isDeeProject(IScriptProject deeproj) {
-		return deeproj.getLanguageToolkit().getNatureId().equals(DeeLanguageToolkit.NATURE_ID);
+	protected static boolean isDeeProject(IScriptProject scriptProject) {
+		return scriptProject.getLanguageToolkit().getNatureId().equals(DeeLanguageToolkit.NATURE_ID);
 	}
 	
 	@Override

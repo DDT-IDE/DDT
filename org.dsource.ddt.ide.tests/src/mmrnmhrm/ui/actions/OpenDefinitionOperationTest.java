@@ -11,7 +11,9 @@
 
 package mmrnmhrm.ui.actions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import junit.framework.Assert;
+import mmrnmhrm.core.codeassist.OutsideBuildpathTestResources;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
@@ -37,13 +39,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 public class OpenDefinitionOperationTest extends BaseDeeUITest {
-	
-	protected static final String TEST_SRCFILE = ITestResourcesConstants.TR_SAMPLE_SRC1 + "/testGoToDefOp.d";
-	protected static final String TEST_SRC_TARGETFILE = ITestResourcesConstants.TR_SAMPLE_SRC3 +"/pack/sample.d";
-	protected static final String TEST_OUTSRCFILE = ITestResourcesConstants.TR_SRC_OUTSIDE_MODEL + "/testGoToDefOp.d";
 	
 	protected IFile file; 
 	protected IEditorPart editor;
@@ -57,7 +53,7 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	@Before
 	public void setUp() throws Exception {
 		IProject project = SampleMainProject.scriptProject.getProject();
-		setupWithFile(project, TEST_SRCFILE);
+		setupWithFile(project, OutsideBuildpathTestResources.TEST_SRCFILE);
 	}
 	
 	private void setupWithFile(IProject project, String path) throws PartInitException, CoreException {
@@ -74,52 +70,65 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	
 	@Test
 	public void testOpenRef_TargetInSameFile() {
-		doTest(123, IStatus.OK, file.getProject(), TEST_SRCFILE); 
+		int offset = getOffsetForString("Foo foo");
+		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
+	}
+	
+	protected int getOffsetForString(String string) {
+		return srcEditor.getDocumentProvider().getDocument(srcEditor.getEditorInput()).get().indexOf(string);
 	}
 	
 	@Test
 	public void testOpenRef_TargetNotFound() {
-		doTest(135, IStatus.WARNING, file.getProject(), TEST_SRCFILE); 
+		int offset = getOffsetForString("NotFound notfound");
+		doTest(offset, IStatus.WARNING, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
 	}
 	
 	@Test
-	public void testOpenRef_OnADefUnit() {		
-		doTest(54, IStatus.INFO, file.getProject(), TEST_SRCFILE); 
+	public void testOpenRef_OnADefUnit() {
+		int offset = getOffsetForString("Foo {");
+		doTest(offset, IStatus.INFO, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
 	}
 	
 	@Test
 	public void testOpenRef_TargetInAnotherFile() {
+		int offset = getOffsetForString("SampleClass sampleCl");
 		// find target in other file
-		doTest(157, IStatus.OK, file.getProject(), TEST_SRC_TARGETFILE); 
+		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRC_TARGETFILE); 
 	}
 	
 	@Test
 	public void testOpenRef_OriginFileOutsideBuildpath_TargetInSameFile() throws CoreException {
 		IProject project = SampleMainProject.scriptProject.getProject();
-		setupWithFile(project, TEST_OUTSRCFILE);
-		doTest(123, IStatus.OK, project, TEST_OUTSRCFILE);
+		setupWithFile(project, OutsideBuildpathTestResources.TEST_OUTFILE);
+		int offset = getOffsetForString("Foo foo");
+		doTest(offset, IStatus.OK, project, OutsideBuildpathTestResources.TEST_OUTFILE);
 	}
 	
 	@Test
 	public void testOpenRef_OriginFileOutsideBuildpath_TargetInAnotherFile() throws CoreException {
 		IProject project = SampleMainProject.scriptProject.getProject();
-		setupWithFile(project, TEST_OUTSRCFILE);
-		doTest(157, IStatus.OK, project, TEST_SRC_TARGETFILE);
+		setupWithFile(project, OutsideBuildpathTestResources.TEST_OUTFILE);
+		int offset = getOffsetForString("SampleClass sampleCl");
+		doTest(offset, IStatus.OK, project, OutsideBuildpathTestResources.TEST_SRC_TARGETFILE);
 	}
 	
 	
 	@Test
 	public void testOpenRef_OriginFileNotOnDProject_TargetInSameFile() throws CoreException {
 		IProject project = SampleNonDeeProject.project;
-		setupWithFile(project, TEST_OUTSRCFILE);
-		doTest(123, IStatus.OK, project, TEST_OUTSRCFILE);
+		SampleNonDeeProject.project.getProject().getFolder(ITestResourcesConstants.TR_SAMPLE_SRC1).exists();
+		setupWithFile(project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
+		int offset = getOffsetForString("Foo foo");
+		doTest(offset, IStatus.OK, project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 	}
 	
 	@Test
 	public void testOpenRef_OriginFileNotOnDProject_NotFound() throws CoreException {
 		IProject project = SampleNonDeeProject.project;
-		setupWithFile(project, TEST_OUTSRCFILE);
-		doTest(157, IStatus.WARNING, project, TEST_OUTSRCFILE);
+		setupWithFile(project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
+		int offset = getOffsetForString("SampleClass sampleCl");
+		doTest(offset, IStatus.WARNING, project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 	}
 	
 	protected void doTest(int offset, int result, IProject project, String editorFile) {

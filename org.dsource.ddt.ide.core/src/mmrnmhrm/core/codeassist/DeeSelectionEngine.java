@@ -21,7 +21,6 @@ import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
@@ -50,15 +49,18 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 	@Override
 	public IModelElement[] select(IModuleSource sourceUnit, int offset, int i) {
 		ISourceModule sourceModule = (ISourceModule) sourceUnit.getModelElement();
-		IScriptProject scriptProject = sourceModule.getScriptProject();
 		
 		Module deeModule = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
 		ASTNeoNode node = ASTNodeFinder.findElement(deeModule, offset, ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		if(node instanceof DefSymbol) {
 			DefUnit defUnit = ((DefSymbol) node).getDefUnit();
-			IMember modelElement = getModelElement(defUnit, scriptProject);
-			return modelElement == null ? null : new IModelElement[] { modelElement };
+			try {
+				IMember modelElement = DeeModelEngine.findCorrespondingModelElement(defUnit, sourceModule);
+				return modelElement == null ? null : new IModelElement[] { modelElement };
+			} catch (ModelException e) {
+				return null;
+			}
 		}
 		
 		if(!(node instanceof Reference)) {
@@ -66,7 +68,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		}
 		Reference ref = (Reference) node;
 		
-		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(scriptProject);
+		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule, true);
 		Collection<DefUnit> defunits = ref.findTargetDefUnits(moduleResolver, false);
 		// We assume namespace Parent is the same
 		if(defunits == null) {
@@ -75,7 +77,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
 		for (DefUnit defUnit : defunits) {
-			IMember modelElement = getModelElement(defUnit, scriptProject);
+			IMember modelElement = getModelElement(defUnit, moduleResolver);
 			if(modelElement != null) {
 				list.add(modelElement);
 			}
@@ -84,9 +86,11 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		return ArrayUtil.createFrom(list, IModelElement.class);
 	}
 	
-	protected IMember getModelElement(DefUnit defUnit, IScriptProject scriptProject) {
+	protected IMember getModelElement(DefUnit defUnit, DeeProjectModuleResolver mr) {
 		Module module = defUnit.getModuleNode();
-		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(scriptProject);
+		if(module == null) {
+			return null;
+		}
 		try {
 			ISourceModule moduleUnit = mr.findModuleUnit(module);
 			return DeeModelEngine.findCorrespondingModelElement(defUnit, moduleUnit);

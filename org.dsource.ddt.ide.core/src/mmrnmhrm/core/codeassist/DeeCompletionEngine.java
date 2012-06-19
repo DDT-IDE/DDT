@@ -61,11 +61,13 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		if(defUnit.getModuleNode() != null) {
 			// We need the check above because of synthetic defUnits TODO FIX that
 			
-			DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule);
+			DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule, true);
 			try {
-				ISourceModule resultSourceModule = moduleResolver.findModuleUnit(defUnit.getModuleNode());
-				IMember me = DeeModelEngine.findCorrespondingModelElement(defUnit, resultSourceModule);
-				proposal.setModelElement(me);
+				ISourceModule defUnitSourceModule = moduleResolver.findModuleUnit(defUnit.getModuleNode());
+				if(defUnitSourceModule != null) {
+					IMember me = DeeModelEngine.findCorrespondingModelElement(defUnit, defUnitSourceModule);
+					proposal.setModelElement(me);
+				}
 			} catch(ModelException e) {
 				// Just log, don't set model element
 				DeeCore.log(e);

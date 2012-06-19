@@ -11,9 +11,16 @@
 package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static mmrnmhrm.core.codeassist.OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE;
+import static mmrnmhrm.core.codeassist.OutsideBuildpathTestResources.TEST_OUTFILE;
+import static mmrnmhrm.core.codeassist.OutsideBuildpathTestResources.TEST_OUTFILE2;
+import static mmrnmhrm.core.codeassist.OutsideBuildpathTestResources.TEST_OUTFILE3;
+import static mmrnmhrm.core.codeassist.OutsideBuildpathTestResources.TEST_SRCFILE;
+import static mmrnmhrm.core.codeassist.OutsideBuildpathTestResources.TEST_SRC_TARGETFILE;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
+import mmrnmhrm.tests.SampleNonDeeProject;
 
 import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.core.runtime.Path;
@@ -33,14 +40,14 @@ import dtool.tests.DToolTests;
 public class DeeSelectionEngine_Test extends BaseDeeTest implements ITestResourcesConstants {
 	
 	private static final String SAMPLE_REFS = "sampleRefs.d";
-
+	
 	protected static IModelElement selectSingleElement(ISourceModule sourceModule, int offset, int length) {
 		DeeSelectionEngine deeSelectionEngine = new DeeSelectionEngine();
 		IModelElement[] selection = deeSelectionEngine.select((IModuleSource) sourceModule, offset);
 		assertTrue(selection.length <= length);
 		return selection.length > 0 ? selection[0] : null;
 	}
-	
+
 	@Test
 	public void testEngineSelection() throws Exception { testEngineSelection$(); }
 	public void testEngineSelection$() throws Exception {
@@ -75,6 +82,16 @@ public class DeeSelectionEngine_Test extends BaseDeeTest implements ITestResourc
 		
 		checkEngineSelection(srcModule, "class ", null);
 		checkEngineSelection(srcModule, "void ", null);
+		
+		checkEngineSelection(srcModule, "int dummy1", null);
+		
+		checkEngineSelection(srcModule, "pack2.foopublic.", null);
+		checkEngineSelection(srcModule, "pack.subpack.mod3.", null);
+		checkEngineSelection(srcModule,      "subpack.mod3.", null);
+		checkEngineSelection(srcModule, "pack.subpackNotExistant.mod3.", null);
+		checkEngineSelection(srcModule,      "subpackNotExistant.mod3.", null);
+		checkEngineSelection(srcModule, "pack.subpack.mod3NotExistant.", null);
+		checkEngineSelection(srcModule,      "subpack.mod3NotExistant.", null);
 	}
 	
 	protected void checkEngineSelection(ISourceModule srcModule, String nodeSrcKey, IMember expectedElement)
@@ -82,6 +99,7 @@ public class DeeSelectionEngine_Test extends BaseDeeTest implements ITestResourc
 		String source = srcModule.getSource();
 		assertTrue(expectedElement == null || expectedElement.exists());
 		int offset = source.indexOf(nodeSrcKey);
+		assertTrue(offset >= 0);
 		do {
 			IModelElement selectedElement = selectSingleElement(srcModule, offset, 1);
 			assertAreEqual(selectedElement, expectedElement);
@@ -103,7 +121,7 @@ public class DeeSelectionEngine_Test extends BaseDeeTest implements ITestResourc
 					getModuleContainer(srcModule).getType("SampleRefsClass", 3)
 			);
 		}
-
+		
 		checkEngineMultipleSelection(srcModule, "/*MultipleSelection*/", 
 				getModuleContainer(srcModule).getType("SampleRefsClass", 1),
 				getModuleContainer(srcModule).getType("SampleRefsClass", 2),
@@ -132,6 +150,7 @@ public class DeeSelectionEngine_Test extends BaseDeeTest implements ITestResourc
 	}
 	
 	protected IType getModuleContainer(ISourceModule srcModule) throws ModelException {
+		assertTrue(srcModule.exists());
 		return srcModule.getTypes()[0];
 	}
 	
@@ -158,6 +177,36 @@ public class DeeSelectionEngine_Test extends BaseDeeTest implements ITestResourc
 			
 			offset = source.indexOf(srcKey, offset+1);
 		} while(offset != -1);
+	}
+	
+	@Test
+	public void testOutsideOfBuildPath() throws Exception { testOutsideOfBuildPath$(); }
+	public void testOutsideOfBuildPath$() throws Exception {
+		runOutsideTestOnModule(SampleMainProject.getSourceModule(TEST_SRCFILE));
+		runOutsideTestOnModule(SampleMainProject.getSourceModule(TEST_OUTFILE));
+		
+		runOutsideTestOnModule(SampleMainProject.getSourceModule(TEST_OUTFILE2));
+		runOutsideTestOnModule(SampleMainProject.getSourceModule(TEST_OUTFILE3));
+		
+		runOutsideTestOnModule(SampleNonDeeProject.getSourceModule(TEST_NONDEEPROJ_FILE));
+	}
+	
+	protected void runOutsideTestOnModule(ISourceModule srcModule) throws ModelException {
+		srcModule.becomeWorkingCopy(null, null);
+		try {
+			checkEngineSelection(srcModule, "Foo foo", getModuleContainer(srcModule).getType("Foo"));
+			
+			checkEngineSelection(srcModule, "NotFound ", null);
+			
+			if(!srcModule.getScriptProject().exists()) {
+				return;
+			}
+			ISourceModule targetSrcModule = SampleMainProject.getSourceModule(TEST_SRC_TARGETFILE);
+			checkEngineSelection(srcModule, "SampleClass sampleClass", 
+					getModuleContainer(targetSrcModule).getType("SampleClass"));
+		} finally {
+			srcModule.discardWorkingCopy();
+		}
 	}
 	
 }
