@@ -233,12 +233,25 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 		// TODO: test search with homonym methods with different parameters
 	}
 	
+	@Test
+	public void searchOther() throws Exception { searchOther$(); }
+	public void searchOther$() throws Exception {
+		IType mod0 = getElement(searchProj, "srcA", "", "mod0");
+		
+		testSearch(createStringPattern("mod0", IDLTKSearchConstants.TYPE, DECLARATIONS), elementSet(mod0));
+		testNameSearch(createStringPattern("mod0", IDLTKSearchConstants.TYPE, DECLARATIONS), elementSet(mod0));
+		
+		SearchPattern searchPattern = createStringPattern("pack", IDLTKSearchConstants.TYPE, REFERENCES);
+		SearchRequestorResultCollector requestor = executeSearch(searchPattern);
+		// TODO test this more
+	}
+	
 	protected static final int PREFIX_MATCH = SearchPattern.R_PREFIX_MATCH;
 	protected static final int PREFIX_MATCH_CS = SearchPattern.R_PREFIX_MATCH | SearchPattern.R_CASE_SENSITIVE;
 	protected static final int PATTERN_MATCH = SearchPattern.R_PATTERN_MATCH; 
 	protected static final int REGEXP_MATCH = SearchPattern.R_REGEXP_MATCH; // TODO: test this
 	
-		protected void testSearchForElement(IMember element) throws CoreException {
+	protected void testSearchForElement(IMember element) throws CoreException {
 		testSearchForElement(element, false);
 	}
 	

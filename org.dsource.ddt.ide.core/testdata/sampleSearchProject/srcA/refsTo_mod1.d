@@ -17,4 +17,6 @@ void func2() {
 
 void func3() {
 	/*pack.mod1.mod1Func*/mod1Func();
+	pack.mod1.mod1Func(); 
+	{ int pack; } // Required due to other bug/isse to trigger index match
 }

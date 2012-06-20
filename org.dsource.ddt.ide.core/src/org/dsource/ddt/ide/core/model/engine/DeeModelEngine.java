@@ -147,10 +147,12 @@ public class DeeModelEngine {
 			DefUnit parentDefUnit = NodeUtil.getOuterDefUnit(defUnitIter);
 			
 			if(parentDefUnit == null) {
-				assertTrue(defUnitIter instanceof Module);
-				
-				String[] packageNames = defUnitIter.getModuleNode().getDeclaredPackages();
-				qualications.addAll(0, Arrays.asList(packageNames));
+				if((defUnitIter instanceof Module)) {
+					Module module = ((Module) defUnitIter);
+					
+					String[] packageNames = module.getDeclaredPackages();
+					qualications.addAll(0, Arrays.asList(packageNames));
+				}
 				
 				return qualications;
 			} else {
