@@ -117,7 +117,6 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	
 	
 	/** AST node parent, null if the node is the tree root. */
-	// TODO: make this final?
 	public ASTNeoNode parent = null;
 	
 	@Override

@@ -53,7 +53,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	
 	private static RefIdentifier convertToRefIdentifierValid(descent.internal.compiler.parser.IdentifierExp elem) {
-		return convertToRefIdentifier(elem, sourceRangeStrict(elem));
+		return convertToRefIdentifier(elem, sourceRangeStrictOrNotAtAll(elem));
 	}
 	
 	public static RefIdentifier convertToRefIdentifier(descent.internal.compiler.parser.IdentifierExp elem) {
