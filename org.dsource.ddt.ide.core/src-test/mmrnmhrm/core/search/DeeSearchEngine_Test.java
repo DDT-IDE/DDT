@@ -50,6 +50,7 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.tests.MiscNodeUtils;
 
+// TODO consider out of buildpath cases
 public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDLTKSearchConstants {
 	
 	protected class SearchRequestorResultCollector extends SearchRequestor {

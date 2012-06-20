@@ -68,7 +68,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		}
 		Reference ref = (Reference) node;
 		
-		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule, true);
+		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule);
 		Collection<DefUnit> defunits = ref.findTargetDefUnits(moduleResolver, false);
 		// We assume namespace Parent is the same
 		if(defunits == null) {
@@ -77,7 +77,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
 		for (DefUnit defUnit : defunits) {
-			IMember modelElement = getModelElement(defUnit, moduleResolver);
+			IMember modelElement = getModelElement(defUnit, moduleResolver, sourceModule);
 			if(modelElement != null) {
 				list.add(modelElement);
 			}
@@ -86,13 +86,13 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		return ArrayUtil.createFrom(list, IModelElement.class);
 	}
 	
-	protected IMember getModelElement(DefUnit defUnit, DeeProjectModuleResolver mr) {
+	protected IMember getModelElement(DefUnit defUnit, DeeProjectModuleResolver mr, ISourceModule sourceModule) {
 		Module module = defUnit.getModuleNode();
 		if(module == null) {
 			return null;
 		}
 		try {
-			ISourceModule moduleUnit = mr.findModuleUnit(module);
+			ISourceModule moduleUnit = mr.findModuleUnit(module, sourceModule);
 			return DeeModelEngine.findCorrespondingModelElement(defUnit, moduleUnit);
 		} catch (ModelException e) {
 			return null;

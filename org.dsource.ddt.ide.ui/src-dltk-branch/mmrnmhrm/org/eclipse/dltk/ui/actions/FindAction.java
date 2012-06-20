@@ -156,10 +156,11 @@ public abstract class FindAction extends SelectionDispatchAction {
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(scriptProject);
 		
 		boolean isInsideInterpreterEnvironment;
-		if(defunit.getModuleNode() == null) {
+		Module moduleNode = defunit.getModuleNode();
+		if(moduleNode == null) {
 			isInsideInterpreterEnvironment = false;
 		} else {
-			ISourceModule element = mr.findModuleUnit(defunit.getModuleNode());
+			ISourceModule element = mr.findModuleUnit(moduleNode, null);
 			// review this
 			isInsideInterpreterEnvironment = element == null? false : factory.isInsideInterpreter(element);
 		}

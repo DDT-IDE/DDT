@@ -14,6 +14,7 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.DeeNamingRules;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.Module;
 import dtool.contentassist.CompletionSession;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.PrefixDefUnitSearch.IDefUnitMatchAccepter;
@@ -58,12 +59,13 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		proposal.setReplaceRange(ccOffset, ccOffset + searchOptions.rplLen);
 		proposal.setExtraInfo(defUnit);
 		
-		if(defUnit.getModuleNode() != null) {
-			// We need the check above because of synthetic defUnits TODO FIX that
+		Module moduleNode = defUnit.getModuleNode();
+		if(moduleNode != null) {
+			// We need the check above because of synthetic defUnits TODO address this in a different way
 			
-			DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule, true);
+			DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule);
 			try {
-				ISourceModule defUnitSourceModule = moduleResolver.findModuleUnit(defUnit.getModuleNode());
+				ISourceModule defUnitSourceModule = moduleResolver.findModuleUnit(moduleNode, sourceModule);
 				if(defUnitSourceModule != null) {
 					IMember me = DeeModelEngine.findCorrespondingModelElement(defUnit, defUnitSourceModule);
 					proposal.setModelElement(me);

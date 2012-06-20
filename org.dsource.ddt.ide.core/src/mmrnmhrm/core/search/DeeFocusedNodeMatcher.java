@@ -69,6 +69,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 				if(module != null) {
 					ISourceModule targetSrcModule = moduleResolver.findModuleUnit(module); 
 					// TODO: would be nice to have test for module == null path
+					// TODO consider out of buildpath scenario
 					if(targetSrcModule != null) {
 						IMember targetModelElement = 
 								DeeModelEngine.findCorrespondingModelElement(targetDefUnit, targetSrcModule);

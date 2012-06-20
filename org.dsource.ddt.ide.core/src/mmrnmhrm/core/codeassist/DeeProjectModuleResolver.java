@@ -28,28 +28,22 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 public class DeeProjectModuleResolver implements IModuleResolver {
 	
 	protected final IScriptProject scriptProject;
-	// This is module is searched in addition to modules in buildpath. 
-	// This is used for working copies elements which are outside of buildpath.
-	protected final ISourceModule workingCopySourceModule; 
 	
 	public DeeProjectModuleResolver(IScriptProject scriptProject) {
 		assertNotNull(scriptProject);
 		this.scriptProject = scriptProject;
-		workingCopySourceModule = null;
 	}
 	
 	public DeeProjectModuleResolver(ISourceModule sourceModule) {
 		this(sourceModule.getScriptProject());
 	}
 	
-	public DeeProjectModuleResolver(ISourceModule sourceModule, boolean dummy) {
-		assertNotNull(sourceModule.getScriptProject());
-		this.scriptProject = sourceModule.getScriptProject();
-		this.workingCopySourceModule = sourceModule;
-	}
-	
 	/** Shortcut method */
 	public ISourceModule findModuleUnit(Module module) throws ModelException {
+		return findModuleUnit(module, null);
+	}
+	
+	public ISourceModule findModuleUnit(Module module, ISourceModule workingCopySourceModule) throws ModelException {
 		String[] packages = module.getDeclaredPackages();
 		String moduleName = module.getName();
 		
