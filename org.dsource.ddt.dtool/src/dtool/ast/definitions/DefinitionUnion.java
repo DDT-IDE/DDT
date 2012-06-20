@@ -10,12 +10,13 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
- * A definition of a struct aggregate.
+ * A definition of an union aggregate.
  */
 public class DefinitionUnion extends DefinitionAggregate {
 	
-	public DefinitionUnion(DefUnitDataTuple dudt, PROT prot, ArrayView<ASTNeoNode> members) {
-		super(dudt, prot, members);
+	public DefinitionUnion(DefUnitDataTuple dudt, PROT prot, ArrayView<TemplateParameter> tplParams,
+			ArrayView<ASTNeoNode> members) {
+		super(dudt, prot, tplParams, members);
 	}
 	
 	@Override	

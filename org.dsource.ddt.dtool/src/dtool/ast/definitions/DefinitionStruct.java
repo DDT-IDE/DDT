@@ -14,8 +14,9 @@ import dtool.util.ArrayView;
  */
 public class DefinitionStruct extends DefinitionAggregate {
 	
-	public DefinitionStruct(DefUnitDataTuple dudt, PROT prot, ArrayView<ASTNeoNode> members) {
-		super(dudt, prot, members);
+	public DefinitionStruct(DefUnitDataTuple dudt, PROT prot, ArrayView<TemplateParameter> tplParams,
+			ArrayView<ASTNeoNode> members) {
+		super(dudt, prot, tplParams, members);
 	}
 	
 	@Override

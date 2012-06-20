@@ -2,7 +2,6 @@ package dtool.ast.definitions;
 
 import java.util.Iterator;
 
-import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
@@ -12,6 +11,7 @@ import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
+import dtool.util.NewUtils;
 
 /**
  * A definition of a aggregate. 
@@ -28,11 +28,6 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 		this.members = parentize(members);
 	}
 	
-	@Deprecated
-	public DefinitionAggregate(DefUnitDataTuple defunit, PROT prot, ArrayView<ASTNeoNode> members) {
-		this(defunit, prot, null, members);
-	}
-	
 	protected void acceptNodeChildren(IASTNeoVisitor visitor, boolean children) {
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);
@@ -47,10 +42,8 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	}
 	
 	@Override
-	public Iterator<ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
-		if(members == null)
-			return IteratorUtil.getEMPTY_ITERATOR();
-		return members.iterator();
+	public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
+		return NewUtils.getChainedIterator(members, templateParams); 
 	}
 	
 	@Override

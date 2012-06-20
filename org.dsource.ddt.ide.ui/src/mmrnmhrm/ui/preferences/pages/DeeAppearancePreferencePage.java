@@ -10,7 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.swtutil.LayoutUtil;
@@ -48,7 +47,6 @@ import org.eclipse.jface.viewers.TreeNodeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -106,20 +104,6 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			}
 			
 			previewGroup.refreshPreview();
-		}
-	}
-	
-	public static void runPendingUIEvents(Display display) {
-		assertEquals(display, Display.getCurrent());
-		final boolean[] result = new boolean[1];
-		display.asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				result[0] = true;
-			}
-		});
-		while (result[0] == false) {
-			display.readAndDispatch();
 		}
 	}
 	

@@ -4,22 +4,28 @@ package dtool.descentadapter;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.utilbox.core.Assert;
+import descent.internal.compiler.parser.AggregateDeclaration;
 import descent.internal.compiler.parser.AnonDeclaration;
 import descent.internal.compiler.parser.Argument;
 import descent.internal.compiler.parser.AttribDeclaration;
+import descent.internal.compiler.parser.ClassDeclaration;
 import descent.internal.compiler.parser.DebugCondition;
 import descent.internal.compiler.parser.DebugSymbol;
+import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.EnumDeclaration;
 import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.IftypeCondition;
 import descent.internal.compiler.parser.Import;
+import descent.internal.compiler.parser.InterfaceDeclaration;
 import descent.internal.compiler.parser.Modifier;
 import descent.internal.compiler.parser.StaticIfCondition;
+import descent.internal.compiler.parser.StructDeclaration;
 import descent.internal.compiler.parser.TemplateAliasParameter;
 import descent.internal.compiler.parser.TemplateThisParameter;
 import descent.internal.compiler.parser.TemplateTupleParameter;
 import descent.internal.compiler.parser.TemplateTypeParameter;
 import descent.internal.compiler.parser.TemplateValueParameter;
+import descent.internal.compiler.parser.UnionDeclaration;
 import descent.internal.compiler.parser.Version;
 import descent.internal.compiler.parser.VersionCondition;
 import descent.internal.compiler.parser.VersionSymbol;
@@ -421,12 +427,34 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TemplateDeclaration elem) {
+		ArrayView<TemplateParameter> tplParams = 
+				DescentASTConverter.convertMany(elem.parameters, TemplateParameter.class, convContext);
+		
+		if(elem.wrapper && false) { // This code is disabled until we can fix some ref resolver bugs
+			assertTrue(elem.members.size() == 1);
+			Dsymbol dsymbol = elem.members.get(0);
+			if(dsymbol instanceof AggregateDeclaration) {
+				AggregateDeclaration aggrDeclaration = (AggregateDeclaration) dsymbol;
+				assertTrue(aggrDeclaration.templated);
+				
+				if(dsymbol instanceof ClassDeclaration) {
+					return convertClass((ClassDeclaration) dsymbol, tplParams);
+				} else if(dsymbol instanceof InterfaceDeclaration) {  // BUG HERE
+					return convertInterface((InterfaceDeclaration) dsymbol, tplParams);
+				} else if(dsymbol instanceof StructDeclaration) {
+					return convertStruct((StructDeclaration) dsymbol, tplParams);
+				} else if(dsymbol instanceof UnionDeclaration) {
+					return convertUnion((UnionDeclaration) dsymbol, tplParams);
+				}
+			}
+		}
+		
 		return endAdapt(
 			new DefinitionTemplate(
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				elem.prot(),
 				DescentASTConverter.convertManyNoNulls(elem.members, ASTNeoNode.class, convContext),
-				DescentASTConverter.convertMany(elem.parameters, TemplateParameter.class, convContext),
+				tplParams,
 				elem.wrapper
 			)
 		);
@@ -493,43 +521,57 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		return endAdapt(DefinitionConverter.createEnumMember(elem, convContext));
 	}
 
-	/* agregates */
+	/* aggregates */
 	
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.ClassDeclaration elem) {
-		// TODO: where did template Parameters go
-		//if(elem.templateParameters != null)
-		//	this.templateParams = ?? TemplateParameter.convertMany(elem.templateParameters);
-		
+		return convertClass(elem, null);
+	}
+	
+	private boolean convertClass(descent.internal.compiler.parser.ClassDeclaration elem,
+			ArrayView<TemplateParameter> tplParams) {
 		return endAdapt(
 			new DefinitionClass(
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				elem.prot(),
-				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext),
-				DescentASTConverter.convertMany(elem.sourceBaseclasses, BaseClass.class, convContext)
+				tplParams,
+				DescentASTConverter.convertMany(elem.sourceBaseclasses, BaseClass.class, convContext),
+				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
 			)
 		);
-	}	
+	}
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.InterfaceDeclaration elem) {
+		return convertInterface(elem, null);
+	}
+	
+	private boolean convertInterface(descent.internal.compiler.parser.InterfaceDeclaration elem,
+			ArrayView<TemplateParameter> tplParams) {
 		return endAdapt(
 			new DefinitionInterface(
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				elem.prot(),
-				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext),
-				DescentASTConverter.convertMany(elem.sourceBaseclasses, BaseClass.class, convContext)
+				tplParams,
+				DescentASTConverter.convertMany(elem.sourceBaseclasses, BaseClass.class, convContext),
+				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
 			)
 		);
 	}	
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StructDeclaration elem) {
+		return convertStruct(elem, null);
+	}
+	
+	private boolean convertStruct(descent.internal.compiler.parser.StructDeclaration elem,
+			ArrayView<TemplateParameter> tplParams) {
 		return endAdapt(
 			new DefinitionStruct(
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				elem.prot(),
+				tplParams,
 				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
 			)
 		);
@@ -537,14 +579,20 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.UnionDeclaration elem) {
+		return convertUnion(elem, null);
+	}
+	
+	private boolean convertUnion(descent.internal.compiler.parser.UnionDeclaration elem,
+			ArrayView<TemplateParameter> tplParams) {
 		return endAdapt(
 			new DefinitionUnion(
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				elem.prot(),
+				tplParams,
 				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
 			)
 		);
-	}	
+	}
 	
 	
 	/* --- func --- */

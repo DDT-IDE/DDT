@@ -191,7 +191,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	
 	
 	private void refreshViewer() {
-		if(fEditor == null || fSourceModule == null) {
+		if(fEditor == null || fSourceModule == null || fEditor.getDocumentProvider() == null) {
 			setContentDescription("No Editor or SourceModule available");
 			viewer.getControl().setVisible(false);
 			return;

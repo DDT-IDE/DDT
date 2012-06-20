@@ -18,9 +18,9 @@ public class DefinitionClass extends DefinitionAggregate {
 	
 	public final ArrayView<BaseClass> baseClasses;
 	
-	public DefinitionClass(DefUnitDataTuple dudt, PROT prot, ArrayView<ASTNeoNode> members,
-			ArrayView<BaseClass> baseClasses) {
-		super(dudt, prot, members);
+	public DefinitionClass(DefUnitDataTuple dudt, PROT prot, ArrayView<TemplateParameter> tplParams,
+			ArrayView<BaseClass> baseClasses, ArrayView<ASTNeoNode> members) {
+		super(dudt, prot, tplParams, members);
 		this.baseClasses = parentize(baseClasses);
 	}
 	
