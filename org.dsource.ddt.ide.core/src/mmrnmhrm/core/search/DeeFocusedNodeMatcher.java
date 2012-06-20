@@ -16,6 +16,7 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
 
@@ -63,17 +64,23 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 			DefUnit targetDefUnit = iter.next();
 			
 			try {
-				ISourceModule targetSrcModule = moduleResolver.findModuleUnit(targetDefUnit.getModuleNode()); 
-				
-				IMember targetModelElement = DeeModelEngine.findCorrespondingModelElement(targetDefUnit, targetSrcModule);
-				
-				if(modelElement.equals(targetModelElement)) {
-					deeMatchLocator.addMatch(ref, PatternLocator.ACCURATE_MATCH, sourceModule);
-					return;
+				Module module = targetDefUnit.getModuleNode();
+				// TODO: would be nice to have test for module == null path
+				if(module != null) {
+					ISourceModule targetSrcModule = moduleResolver.findModuleUnit(module); 
+					// TODO: would be nice to have test for module == null path
+					if(targetSrcModule != null) {
+						IMember targetModelElement = 
+								DeeModelEngine.findCorrespondingModelElement(targetDefUnit, targetSrcModule);
+						
+						if(modelElement.equals(targetModelElement)) {
+							deeMatchLocator.addMatch(ref, PatternLocator.ACCURATE_MATCH, sourceModule);
+							return;
+						}
+					}
 				}
-
+				
 			} catch (ModelException e) {
-				DeeCore.log(e);
 				continue;
 			}
 		}

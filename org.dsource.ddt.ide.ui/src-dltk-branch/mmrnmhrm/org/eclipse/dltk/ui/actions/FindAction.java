@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
@@ -149,4 +150,20 @@ public abstract class FindAction extends SelectionDispatchAction {
 	String getOperationUnavailableMessage() {
 		return "This operation is not available for the selected element."; 
 	}
+	
+	protected boolean isInsideInterpreterEnv(DefUnit defunit, DLTKSearchScopeFactory factory) throws ModelException {
+		IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
+		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(scriptProject);
+		
+		boolean isInsideInterpreterEnvironment;
+		if(defunit.getModuleNode() == null) {
+			isInsideInterpreterEnvironment = false;
+		} else {
+			ISourceModule element = mr.findModuleUnit(defunit.getModuleNode());
+			// review this
+			isInsideInterpreterEnvironment = element == null? false : factory.isInsideInterpreter(element);
+		}
+		return isInsideInterpreterEnvironment;
+	}
+	
 }

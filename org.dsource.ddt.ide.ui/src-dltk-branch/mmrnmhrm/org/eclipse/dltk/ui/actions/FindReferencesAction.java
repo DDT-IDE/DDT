@@ -47,11 +47,9 @@ public final class FindReferencesAction extends FindAction {
 	@Override
 	protected QuerySpecification createQuery(DefUnit defunit) throws ModelException {
 		DLTKSearchScopeFactory factory = DLTKSearchScopeFactory.getInstance();
-		IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
-		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(scriptProject);
-		ISourceModule element = mr.findModuleUnit(defunit.getModuleNode());
-		boolean isInsideInterpreterEnvironment = factory.isInsideInterpreter(element);
-
+		
+		boolean isInsideInterpreterEnvironment = isInsideInterpreterEnv(defunit, factory);
+		
 		IDLTKSearchScope scope = factory.createWorkspaceScope(isInsideInterpreterEnvironment, getLanguageToolkit());
 		String description = factory.getWorkspaceScopeDescription(isInsideInterpreterEnvironment);
 		
@@ -60,5 +58,5 @@ public final class FindReferencesAction extends FindAction {
 				defunit.getName(), 0, true, getLimitTo(), scope, description);
 		//return new ElementQuerySpecification(element, getLimitTo(), scope, description);
 	}
-
+	
 }

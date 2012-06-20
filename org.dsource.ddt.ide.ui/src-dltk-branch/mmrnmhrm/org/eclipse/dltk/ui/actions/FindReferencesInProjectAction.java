@@ -41,18 +41,16 @@ public final class FindReferencesInProjectAction extends FindAction {
 		ScriptEditor editor= deeEditor;
 		
 		IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
-		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(scriptProject);
-		ISourceModule element = mr.findModuleUnit(defunit.getModuleNode());
 		
 		IDLTKSearchScope scope;
 		String description;
-		boolean isInsideInterpreterEnvironment= factory.isInsideInterpreter(element);
+		boolean isInsideInterpreterEnvironment = isInsideInterpreterEnv(defunit, factory);
 		if (editor != null) {
 			scope= factory.createProjectSearchScope(editor.getEditorInput(), isInsideInterpreterEnvironment);
 			description= factory.getProjectScopeDescription(editor.getEditorInput(), isInsideInterpreterEnvironment);
 		} else {
-			scope= factory.createProjectSearchScope(element.getScriptProject(), isInsideInterpreterEnvironment);
-			description=  factory.getProjectScopeDescription(element.getScriptProject(), isInsideInterpreterEnvironment);
+			scope= factory.createProjectSearchScope(scriptProject, isInsideInterpreterEnvironment);
+			description=  factory.getProjectScopeDescription(scriptProject, isInsideInterpreterEnvironment);
 		}
 		
 		DeeDefPatternLocator.GLOBAL_param_defunit = defunit;
