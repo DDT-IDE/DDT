@@ -499,6 +499,10 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 						ArrayList<Integer> nodeTreePath = DeeSearchEngineTestUtils.getNodeTreePath(defUnit);
 						
 						Module moduleNode = defUnit.getModuleNode();
+						if(moduleNode == null) {
+							continue; // consider this case more
+						}
+							
 						ISourceModule defUnitSrcModule = findSourceModule(moduleNode, searchProj);
 						
 						Pair<ISourceModule, ?> key = Pair.create(defUnitSrcModule, nodeTreePath);
