@@ -1,6 +1,5 @@
 package org.dsource.ddt.ide.core.model;
 
-import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.SourceParserUtil;
@@ -10,7 +9,7 @@ import dtool.ast.definitions.Module;
 public abstract class DeeModuleParsingUtil {
 	
 	public static Module getParsedDeeModule(ISourceModule sourceModule) {
-		ModuleDeclaration moduleDeclaration = SourceParserUtil.getModuleDeclaration(sourceModule, null);
+		IModuleDeclaration moduleDeclaration = SourceParserUtil.parse(sourceModule, null);
 		if (moduleDeclaration instanceof DeeModuleDeclaration) {
 			return ((DeeModuleDeclaration) moduleDeclaration).neoModule;
 		}
@@ -19,7 +18,7 @@ public abstract class DeeModuleParsingUtil {
 	}
 	
 	public static DeeModuleDeclaration getParsedDeeModuleDecl(ISourceModule sourceModule) {
-		ModuleDeclaration moduleDeclaration = SourceParserUtil.getModuleDeclaration(sourceModule, null);
+		IModuleDeclaration moduleDeclaration = SourceParserUtil.parse(sourceModule, null);
 		if (moduleDeclaration instanceof DeeModuleDeclaration) {
 			return (DeeModuleDeclaration) moduleDeclaration;
 		}
@@ -28,7 +27,7 @@ public abstract class DeeModuleParsingUtil {
 	
 	/** Parses the module and returns an AST. Returns null if given module is not the DDT nature. 
 	 * This operation uses caching for the created AST. */
-	public static Module parseAndGetAST(final ISourceModule module) {
+	public static Module parseAndGetAST(ISourceModule module) {
 		IModuleDeclaration moduleDeclaration = SourceParserUtil.parse(module, null);
 		
 		if (moduleDeclaration instanceof DeeModuleDeclaration) {

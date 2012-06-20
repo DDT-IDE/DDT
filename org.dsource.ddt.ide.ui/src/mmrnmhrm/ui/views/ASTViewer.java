@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.views;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
@@ -8,9 +9,10 @@ import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration.EModelStatus;
+import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -31,6 +33,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
@@ -148,10 +151,21 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	
 	@Override
 	public void documentChanged(DocumentEvent event) {
-		refreshViewer();
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				if(!viewer.getTree().isDisposed()) {
+					refreshViewer();
+				}
+			}
+		});
 	}
 	
 	public void setInput(ITextEditor editor) {
+		if(editor == fEditor) {
+			return;
+		}
+		
 		if (fEditor != null && fDocument != null) {
 			fDocument.removeDocumentListener(this);
 		}
@@ -183,6 +197,11 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 			return;
 		}
 		
+		try {
+			fSourceModule.makeConsistent(null);
+		} catch (ModelException e) {
+			DeeCore.log(e);
+		}
 		fDeeModule = DeeModuleParsingUtil.getParsedDeeModuleDecl(fSourceModule);
 		if(fDeeModule == null) {
 			setContentDescription("No DeeModuleUnit available");
