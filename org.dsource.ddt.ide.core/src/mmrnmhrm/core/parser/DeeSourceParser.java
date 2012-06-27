@@ -44,15 +44,15 @@ public class DeeSourceParser extends AbstractSourceParser {
 	public DeeParserSession parseToDeeParseResult(IModuleSource input, IProblemReporter reporter) {
 		String source = input.getSourceContents();
 		
-		String moduleName = "_unnamedSource_";
+		String defaultModuleName = "_unnamedSource_";
 		IModelElement modelElement = input.getModelElement();
 		if(modelElement != null) {
-			moduleName = DeeNamingRules.getModuleNameFromFileName(modelElement.getElementName());
+			defaultModuleName = DeeNamingRules.getModuleNameFromFileName(modelElement.getElementName());
 		}
 		
 		int langVersion = 2; // TODO we should use value from project configured interpreter version
 		
-		DeeParserSession deeParserSession = DeeParserSession.parseSource(moduleName, source, langVersion,
+		DeeParserSession deeParserSession = DeeParserSession.parseSource(defaultModuleName, source, langVersion,
 				DescentProblemAdapter.create(reporter));
 		return deeParserSession;
 	}

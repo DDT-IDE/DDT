@@ -87,9 +87,9 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
 	public static PrefixDefUnitSearch doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
 			CompletionSession session, IDefUnitMatchAccepter defUnitAccepter) {
-		String moduleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
+		String defaultModuleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit);
-		return PrefixDefUnitSearch.doCompletionSearch(session, moduleName, source, offset, mr, defUnitAccepter);
+		return PrefixDefUnitSearch.doCompletionSearch(session, defaultModuleName, source, offset, mr, defUnitAccepter);
 	}
 	
 }

@@ -85,7 +85,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		void accept(DefUnit defUnit, PrefixSearchOptions searchOptions);
 	}
 	
-	public static PrefixDefUnitSearch doCompletionSearch(CompletionSession session, String moduleName,
+	public static PrefixDefUnitSearch doCompletionSearch(CompletionSession session, String defaultModuleName,
 			String source, final int offset, IModuleResolver modResolver, IDefUnitMatchAccepter defUnitAccepter) 
 	{
 		assertTrue(offset >= 0 && offset <= source.length());
@@ -119,8 +119,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		}
 		
 		// : Parse source and do syntax error recovery
-		DeeParserSession parseSession = DeeParserSession.parseWithRecovery(moduleName, source, Parser.D2, offset,
-				lastTokenNonWS);
+		DeeParserSession parseSession = DeeParserSession.parseWithRecovery(defaultModuleName, source, Parser.D2, 
+				offset, lastTokenNonWS);
 		
 		Module neoModule = parseSession.getParsedModule(); 
 		
