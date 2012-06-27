@@ -14,21 +14,8 @@ import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
 import dtool.parser.Parser__CommonTest;
 import dtool.refmodel.PrefixDefUnitSearch;
-import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class DeclarationStaticIfTypeTest extends Resolver_BaseTest {
-		
-	private final class NullModuleResolver implements IModuleResolver {
-		@Override
-		public String[] findModules(String fqNamePrefix) throws Exception {
-			return null;
-		}
-		
-		@Override
-		public Module findModule(String[] packages, String module) throws Exception {
-			return null;
-		}
-	}
 	
 	protected int getMarkerEndOffset(String source, String marker) {
 		return source.indexOf(marker) + marker.length();
@@ -41,7 +28,7 @@ public class DeclarationStaticIfTypeTest extends Resolver_BaseTest {
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		String source = readTestResourceFile("resolving/decl_staticIfIsType_r.d");
+		String source = readResolverTestFile("decl_staticIfIsType_r.d");
 		Module testParse = Parser__CommonTest.testParse(source, true, true);
 		
 		int marker1 = getMarkerEndOffset(source, "/+@marker1+/");
