@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.ast.ASTChecker;
+import dtool.ast.ASTSourceRangeChecker;
 import dtool.tests.DToolTestResources;
 
 @RunWith(Parameterized.class)
@@ -34,7 +34,7 @@ public class MassParse_MiscBadSyntaxCasesTest extends Parser__FileParseTest {
 	private void parseFileWithSyntaxErrors() {
 		String source = readStringFromFileUnchecked(file);
 		dtool.ast.definitions.Module neoModule = testParseInvalidSyntax(source);
-		ASTChecker.checkConsistency(neoModule);
+		ASTSourceRangeChecker.checkConsistency(neoModule);
 	}
 	
 }

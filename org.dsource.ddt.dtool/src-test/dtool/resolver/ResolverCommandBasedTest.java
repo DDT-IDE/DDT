@@ -1,11 +1,18 @@
 package dtool.resolver;
 
-import static dtool.util.NewUtils.createArrayList;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import melnorme.utilbox.core.Predicate;
+import melnorme.utilbox.misc.CollectionUtil;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
@@ -16,6 +23,24 @@ import dtool.refmodel.PrefixDefUnitSearch;
 
 
 public class ResolverCommandBasedTest extends Resolver_BaseTest {
+	
+	protected void splitSourceAndRunTestCommands(String fullSource, String defaultModuleName) throws IOException {
+		while(true) {
+			int offset = fullSource.indexOf("/+_#split");
+			
+			if(offset == -1) {
+				runTestCommands(fullSource, defaultModuleName);
+				break;
+			}
+			
+			String splitSource = fullSource.substring(0, offset);
+			runTestCommands(splitSource, defaultModuleName);
+			
+			offset = fullSource.indexOf("_+/", offset) + 3;
+			fullSource = fullSource.substring(offset);
+		}
+	}
+	
 	
 	protected static int getMarkerOffset(String source, String targetMarkerName) {
 		int targetOffset = -1;
@@ -53,7 +78,7 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 				targetOffset = markerOffset;
 			}
 		}
-		
+		assertTrue(targetOffset != -1);
 		return targetOffset;
 	}
 	
@@ -62,8 +87,8 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 		return source.substring(offset, endIx);
 	}
 	
-	public void runTestCommands(String source) {
-		Module testModule = Parser__CommonTest.testParse(source, true, true);
+	protected void runTestCommands(String source, String defaultModuleName) {
+		Module testModule = Parser__CommonTest.parseSource(source, false, false, defaultModuleName).neoModule;
 		
 		int offset = 0;
 		while(true) {
@@ -86,18 +111,25 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 			commandEndOffset += 2;
 			
 			if(command.equals("find")) {
-				String targetName = paramList;
-				
 				assertTrue(source.charAt(offset) == '@');
 				
-				String markerName = upUntil(source, offset+1, "+/");
-				int targetOffset = getMarkerOffset(source, markerName);
+				ASTNeoNode node = ASTNodeFinder.findElement(testModule, commandEndOffset, true);
+				Reference ref = assertInstance(node, Reference.class);
+				Collection<DefUnit> results = ref.findTargetDefUnits(new NullModuleResolver(), false);
 				
-				
-				Reference ref = (Reference) ASTNodeFinder.findElement(testModule, commandEndOffset, true);
-				checkSingleResult(ref, targetOffset);
-				
-				assertTrue(ref.toStringAsElement().equals(targetName));
+				if(paramList.equals(":null")) {
+					assertTrue(results == null);
+				} else {
+					String markerName = upUntil(source, offset+1, "+/");
+					int targetOffset = markerName.equals(":synthetic") ? -2 : getMarkerOffset(source, markerName);
+					String targetName;
+					if(paramList.equals("=")) {
+						targetName = ref.toStringAsElement();
+						checkSingleResult(results, targetOffset, targetName);
+					} else {
+						throw assertFail();
+					}
+				}
 			} else if(command.equals("complete")) {
 				
 				CompletionSession session = new CompletionSession();
@@ -109,8 +141,9 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 				for (int i = 0; i < expectedResults.length; i++) {
 					expectedResults[i] = expectedResults[i].trim();
 				}
+				List<DefUnit> filteredResults = removeDummyDefinitions(defUnitAccepter.results, "_dummy");
 				
-				CompareDefUnits.checkResults(defUnitAccepter.results, expectedResults, false);
+				CompareDefUnits.checkResults(filteredResults, expectedResults, false);
 				
 			} else {
 				assertFail();
@@ -120,10 +153,32 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 		}
 	}
 	
-	protected void checkSingleResult(Reference ref, int marker) {
-		Collection<DefUnit> results = ref.findTargetDefUnits(new NullModuleResolver(), false);
+	protected List<DefUnit> removeDummyDefinitions(ArrayList<DefUnit> list, final String dummyName) {
+		return CollectionUtil.filter(list, new Predicate<DefUnit>() {
+			
+			@Override
+			public boolean evaluate(DefUnit obj) {
+				return areEqual(obj.getName(), dummyName);
+			}
+		});
+	}
+	
+	protected void checkSingleResult(Collection<DefUnit> results, int expectedOffset, String targetName) {
+		DefUnit defUnit = getSingleElement(results);
+		if(expectedOffset == -2) {
+			assertTrue(defUnit.isSynthetic());
+		} else {
+			assertEquals(defUnit.getOffset(), expectedOffset);
+		}
+		if(targetName != null) {
+			assertEquals(targetName, defUnit.getName());
+		}
+	}
+	
+	public static <T> T getSingleElement(Collection<? extends T> results) {
+		assertNotNull(results);
 		assertTrue(results.size() == 1);
-		assertEquals(createArrayList(results).get(0).getOffset(), marker);
+		return results.iterator().next();
 	}
 	
 }

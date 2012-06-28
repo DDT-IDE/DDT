@@ -11,7 +11,7 @@ import melnorme.utilbox.core.CoreUtil;
 
 import org.junit.Before;
 
-import dtool.ast.ASTChecker;
+import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefIdentifier;
@@ -44,15 +44,28 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		return testParseDo(source, expectErrors, checkAST).neoModule;
 	}
 	
-	public static DeeParserSession testParseDo(String source, Boolean expectErrors, boolean checkAST) {
-		DeeParserSession parseResult = DeeParserSession.parseSource(source, "_tests_unnamed_");
+	public static DeeParserSession testParseDo(String source, Boolean expectErrors) {
+		return testParseDo(source, expectErrors, false);
+	}
+	
+	public static DeeParserSession testParseDo(String source, Boolean expectErrors, boolean checkSourceRanges) {
+		return parseSource(source, expectErrors, checkSourceRanges, "_tests_unnamed_");
+	}
+	
+	public static DeeParserSession parseSource(String source, Boolean expectErrors, String defaultModuleName) {
+		return parseSource(source, expectErrors, false, defaultModuleName);
+	}
+	
+	public static DeeParserSession parseSource(String source, Boolean expectErrors, boolean checkSourceRanges,
+			String defaultModuleName) {
+		DeeParserSession parseResult = DeeParserSession.parseSource(source, defaultModuleName);
 		
 		if(expectErrors != null) {
 			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);
 		}
-		if(checkAST && !parseResult.hasSyntaxErrors()) {
+		if(checkSourceRanges && !parseResult.hasSyntaxErrors()) {
 			// We rarely get good source ranges with syntax errors; 
-			ASTChecker.checkConsistency(parseResult.neoModule);
+			ASTSourceRangeChecker.checkConsistency(parseResult.neoModule);
 		}
 		return parseResult;
 	}

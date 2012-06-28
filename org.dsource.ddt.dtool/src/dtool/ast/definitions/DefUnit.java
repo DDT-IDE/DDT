@@ -57,6 +57,10 @@ public abstract class DefUnit extends ASTNeoNode {
 		return defname.name;
 	}
 	
+	public boolean isSynthetic() {
+		// TODO need to define this properly
+		return getModuleNode() == null;
+	}
 	
 	public String getCombinedDocComments() {
 		if(comments == null || comments.length == 0) {

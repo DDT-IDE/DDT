@@ -1,7 +1,7 @@
 package dtool.parser;
 
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.ast.ASTChecker;
+import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
@@ -72,7 +72,7 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 	}
 	
 	protected DeeParserSession parseCode(String testCode, Boolean expectedErrors) {
-		return testParseDo(testCode, expectedErrors, true);
+		return testParseDo(testCode, expectedErrors);
 	}
 	
 	/** Test the refCodeFragment in a variety of contexts where a ref can appear */
@@ -146,7 +146,7 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 		if(checkToStringAsElement) {
 			assertAreEqual(ref.toStringAsElement(), nodeCode);
 		}
-		ref.accept(new ASTChecker.ASTAssertChecker(ref.getStartPos()));
+		ref.accept(new ASTSourceRangeChecker.ASTAssertChecker(ref.getStartPos()));
 	}
 	
 	protected void checkTestA(final String nodeCode, IASTNode neoNode) {

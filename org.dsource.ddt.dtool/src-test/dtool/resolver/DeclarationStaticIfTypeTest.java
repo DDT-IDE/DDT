@@ -8,7 +8,7 @@ public class DeclarationStaticIfTypeTest extends ResolverCommandBasedTest {
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		String source = readResolverTestFile("decl_staticIfIsType_r.d");
-		runTestCommands(source);
+		runTestCommands(source, "decl_staticIfIsType_r");
 	}
 	
 }

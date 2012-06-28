@@ -9,17 +9,17 @@ import dtool.Logg;
  * Checks for AST validity. Namely:
  * Source range consistency. 
  */
-public class ASTChecker extends ASTNeoHomogenousVisitor {
+public class ASTSourceRangeChecker extends ASTNeoHomogenousVisitor {
 	
 	/** Checks an AST for errors, such as source range errors. */
 	public static void checkConsistency(ASTNeoNode elem){
-		elem.accept(new ASTChecker(elem.getStartPos()));
+		elem.accept(new ASTSourceRangeChecker(elem.getStartPos()));
 	}
 	
 	private int offsetCursor;
 	protected StringBuffer strbuffer;
 	
-	public ASTChecker(int offsetCursor) {
+	public ASTSourceRangeChecker(int offsetCursor) {
 		this.offsetCursor = offsetCursor;
 	}
 	
@@ -70,7 +70,7 @@ public class ASTChecker extends ASTNeoHomogenousVisitor {
 		Logg.astmodel.println(elem.toStringAsNode(true));
 	}
 	
-	public static class ASTAssertChecker extends ASTChecker {
+	public static class ASTAssertChecker extends ASTSourceRangeChecker {
 		
 		public static void checkConsistency(ASTNeoNode elem){
 			elem.accept(new ASTAssertChecker(elem.getStartPos()));
