@@ -11,7 +11,7 @@
 <booleanAttribute key="clearws" value="false"/>
 <booleanAttribute key="clearwslog" value="false"/>
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/DDT"/>
-<booleanAttribute key="default" value="false"/>
+<booleanAttribute key="default" value="true"/>
 <stringAttribute key="featureDefaultLocation" value="workspace"/>
 <stringAttribute key="featurePluginResolution" value="workspace"/>
 <booleanAttribute key="includeOptional" value="true"/>
@@ -23,27 +23,10 @@
 <setAttribute key="selected_features">
 <setEntry value="org.dsource.ddt:default"/>
 <setEntry value="org.eclipse.dltk.core:default"/>
-<setEntry value="org.eclipse.dltk.ruby:default"/>
-<setEntry value="org.eclipse.dltk.tcl:default"/>
-<setEntry value="org.eclipse.emf.codegen.ecore.ui:default"/>
-<setEntry value="org.eclipse.emf.codegen.ecore:default"/>
-<setEntry value="org.eclipse.emf.codegen.ui:default"/>
-<setEntry value="org.eclipse.emf.codegen:default"/>
-<setEntry value="org.eclipse.emf.common.ui:default"/>
-<setEntry value="org.eclipse.emf.common:default"/>
-<setEntry value="org.eclipse.emf.converter:default"/>
-<setEntry value="org.eclipse.emf.databinding.edit:default"/>
-<setEntry value="org.eclipse.emf.databinding:default"/>
-<setEntry value="org.eclipse.emf.ecore.edit:default"/>
-<setEntry value="org.eclipse.emf.ecore.editor:default"/>
 <setEntry value="org.eclipse.emf.ecore:default"/>
-<setEntry value="org.eclipse.emf.edit.ui:default"/>
-<setEntry value="org.eclipse.emf.edit:default"/>
-<setEntry value="org.eclipse.emf.mapping.ecore.editor:default"/>
-<setEntry value="org.eclipse.emf.mapping.ecore:default"/>
-<setEntry value="org.eclipse.emf.mapping.ui:default"/>
-<setEntry value="org.eclipse.emf.mapping:default"/>
-<setEntry value="org.eclipse.emf:default"/>
+<setEntry value="org.eclipse.equinox.p2.core.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.extras.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.rcp.feature:default"/>
 <setEntry value="org.eclipse.equinox.p2.user.ui:default"/>
 <setEntry value="org.eclipse.help:default"/>
 <setEntry value="org.eclipse.platform:default"/>
@@ -54,7 +37,7 @@
 <booleanAttribute key="show_selected_only" value="false"/>
 <stringAttribute key="templateConfig" value="${target_home}\configuration\config.ini"/>
 <booleanAttribute key="tracing" value="false"/>
-<booleanAttribute key="useCustomFeatures" value="true"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfig" value="true"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
 <booleanAttribute key="useProduct" value="true"/>
