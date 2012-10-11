@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.dsource</groupId>
+	<artifactId>ddt-aggregator</artifactId>
+	<version>1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<tycho-version>0.15.0</tycho-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<modules>
+		<module>../descent.compiler</module>
+		<module>org.dsource.ddt.dtool</module>
+		<module>org.dsource.ddt.ide.core</module>
+		<module>org.dsource.ddt.ide.ui</module>
+		<module>org.dsource.ddt-feature</module>
+		<module>org.dsource.ddt-feature-repo</module>
+	</modules>
+	
+	<build>
+		<directory>bin/maven-${project.artifactId}</directory>
+	
+		<plugins>
+			<plugin>
+				<!-- enable tycho build extension -->
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<target>
+						<artifact>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>ddt-aggregator</artifactId>
+							<version>1-SNAPSHOT</version>
+							<classifier>org.dsource.ddt-build/target-platform/DDT-dev</classifier>
+						</artifact>
+					</target>
+
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
