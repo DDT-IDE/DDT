@@ -10,23 +10,10 @@
 		<version>1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.dsource.ddt.dtool</artifactId>
+	<artifactId>org.dsource.ddt.ide.tests</artifactId>
 	<version>0.6.0.qualifier</version>
 	<packaging>eclipse-test-plugin</packaging>
-
-	<properties>
-		<dtool.testsLiteModeOption></dtool.testsLiteModeOption>
-	</properties>
-
-	<profiles>
-		<profile>
-			<id>TestsLiteMode</id>
-			<properties>
-				<dtool.testsLiteModeOption>-DDTool.TestsLiteMode</dtool.testsLiteModeOption>
-			</properties>
-		</profile>
-	</profiles>
-
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -34,7 +21,7 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<argLine>-DDTool.TestResourcesDir=${dtool.testdataDir} -DDTool.TestsWorkingDir=${project.build.directory}/_runtime-tests ${dtool.testsLiteModeOption}</argLine>
+					<useUIHarness>true</useUIHarness>
 				</configuration>
 			</plugin>
 		</plugins>

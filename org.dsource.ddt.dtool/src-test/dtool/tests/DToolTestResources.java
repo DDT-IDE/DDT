@@ -47,6 +47,7 @@ public class DToolTestResources implements IDToolTestConstants {
 			// This is so test can be started from typical Eclipse workspace without setting up VM properties
 			testResourcesDir = "../"+DToolBundle.BUNDLE_ID+"/"+TESTDATA;
 		}
+		System.out.println("testResourcesDir:" + testResourcesDir);
 	}
 	
 	public File getResourcesDir() {

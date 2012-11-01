@@ -12,6 +12,19 @@
 
 	<artifactId>org.dsource.ddt.ide.core</artifactId>
 	<version>0.6.0.qualifier</version>
-	<packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-test-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<argLine>-DDTool.TestResourcesDir=${dtool.testdataDir}</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
