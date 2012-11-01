@@ -1,5 +1,7 @@
 package dtool.tests.ref.inter;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
+
 import java.util.List;
 
 import org.eclipse.dltk.core.ModelException;
@@ -20,7 +22,9 @@ public class FindDef_ImportStatic2Test extends FindDef_ImportStaticTest  {
 	public static void classSetup() throws ModelException {
 		setupDefault(testSrcFile);
 		defaultModule.scriptModule.getBuffer().replace(ix1, 4, "//  ");
+		assertEquals(defaultModule.scriptModule.getBuffer().getText(ix1, 4), "//  ");
 		defaultModule.scriptModule.getBuffer().replace(ix2, 4, "    ");
+		assertEquals(defaultModule.scriptModule.getBuffer().getText(ix2, 4), "    ");
 		setupDefault(testSrcFile);
 	}
 	

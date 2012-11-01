@@ -1,16 +1,21 @@
 package dtool.tests.ref.inter;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
+
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.dltk.core.ModelException;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import dtool.refmodel.pluginadapters.IModuleResolver;
+
 /**
- * XXX: The code to modify testImportStatic is a bit messy
+ * XXX: The code to modify testImportStatic is very messy
  */
 @RunWith(Parameterized.class)
 public class FindDef_ImportStaticTest extends FindDef__ImportsCommon  {
@@ -25,19 +30,22 @@ public class FindDef_ImportStaticTest extends FindDef__ImportsCommon  {
 		ix2 = getContents(defaultModule).indexOf("/++/", ix1+1);
 	}
 	
-	@BeforeClass
-	public static void classSetup() throws ModelException {
-		setupDefault(testSrcFile);
-		defaultModule.scriptModule.getBuffer().replace(ix1, 4, "    "); 
-		defaultModule.scriptModule.getBuffer().replace(ix2, 4, "//  ");
-	}
-	
 	private static String getContents(ParseSource module) {
 		try {
 			return module.scriptModule.getBuffer().getContents();
 		} catch (ModelException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
+	}
+	
+	@BeforeClass
+	public static void classSetup() throws ModelException {
+		setupDefault(testSrcFile);
+		defaultModule.scriptModule.getBuffer().replace(ix1, 4, "    ");
+		assertEquals(defaultModule.scriptModule.getBuffer().getText(ix1, 4), "    ");
+		defaultModule.scriptModule.getBuffer().replace(ix2, 4, "//  ");
+		assertEquals(defaultModule.scriptModule.getBuffer().getText(ix2, 4), "//  ");
+		setupDefault(testSrcFile);
 	}
 	
 	@Parameters
@@ -65,6 +73,14 @@ public class FindDef_ImportStaticTest extends FindDef__ImportsCommon  {
 	
 	public FindDef_ImportStaticTest(int defOffset, int refOffset, String targetFile) throws Exception {
 		super(defOffset, refOffset, targetFile);
+	}
+	
+	@Override
+	@Test
+	public void test() throws Exception {
+		assertEquals(defaultModule.scriptModule.getBuffer().getContents(), sourceModule.source);
+		assertEquals(defaultModule.scriptModule, sourceModule.scriptModule);
+		testFindRefWithConfiguredValues();
 	}
 	
 }
