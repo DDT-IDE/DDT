@@ -52,7 +52,7 @@
 							<groupId>${project.groupId}</groupId>
 							<artifactId>ddt-aggregator</artifactId>
 							<version>1-SNAPSHOT</version>
-							<classifier>org.dsource.ddt-build/target-platform/DDT-dev</classifier>
+							<classifier>org.dsource.ddt-build/target-platform/DDT</classifier>
 						</artifact>
 					</target>
 
