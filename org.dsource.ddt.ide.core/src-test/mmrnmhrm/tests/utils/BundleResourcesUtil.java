@@ -23,13 +23,17 @@ import org.osgi.framework.Bundle;
 
 public class BundleResourcesUtil {
 	
-	public static void copyDirContents(String bundleId, String dirPath, final File targetDir) throws IOException {
+	/***
+	 * Copies the contents of given resourcePath in bundle with given bundleId into targetDir.
+	 * If targetDir doesn't exists, it is created (top level directory only).
+	 */
+	public static void copyDirContents(String bundleId, String resourcePath, final File targetDir) throws IOException {
 		
 		// normalize path with regards to separators
-		final String normalizedBasePath = new Path(dirPath).makeRelative().addTrailingSeparator().toString(); 
+		final String normalizedBasePath = new Path(resourcePath).makeRelative().addTrailingSeparator().toString(); 
 		final Bundle bundle = Platform.getBundle(bundleId);
-		
-		assertNotNull(Platform.getBundle(bundleId).getEntry(normalizedBasePath));
+		assertNotNull(bundle);
+		assertNotNull(bundle.getEntry(normalizedBasePath));
 		
 		BundleResourcesIterator bundleResourcesIter = new BundleResourcesIterator() {
 			@Override
@@ -43,7 +47,7 @@ public class BundleResourcesUtil {
 					System.out.println(srcSubPath);
 					
 					File newFile = new File(targetDir, srcSubPath);
-					newFile.getParentFile().mkdirs(); // Likely not necessary, but do it just in case
+					newFile.getParentFile().mkdir(); // Likely not necessary, but do it just in case
 					newFile.createNewFile();
 					StreamUtil.copyStream(inputStream, new FileOutputStream(newFile));
 				} catch (IOException e) {

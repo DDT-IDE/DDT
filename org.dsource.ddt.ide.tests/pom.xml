@@ -13,7 +13,7 @@
 	<artifactId>org.dsource.ddt.ide.tests</artifactId>
 	<version>0.6.0.qualifier</version>
 	<packaging>eclipse-test-plugin</packaging>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -22,6 +22,13 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<useUIHarness>true</useUIHarness>
+					<dependencies>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.dsource.ddt.ide.core.tests</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+					</dependencies>
 				</configuration>
 			</plugin>
 		</plugins>

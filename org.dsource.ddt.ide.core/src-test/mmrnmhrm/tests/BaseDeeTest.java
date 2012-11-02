@@ -36,6 +36,8 @@ import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
+import dtool.tests.DToolTestResources;
+
 /**
  * Initializes a common Dee test setup:
  * - No autobuild, no DLTK indexer, creates mock compiler installs. 
@@ -88,7 +90,8 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	
 	protected static void setupTestDeeInstalls() {
 		try {
-			DeeCoreTestResources.copyTestFolderContentsFromDeeResource("deeCompilerInstalls", "deeCompilerInstalls");
+			File destFolder = new File(DToolTestResources.getWorkingDir(), "deeCompilerInstalls");
+			DeeCoreTestResources.copyTestFolderContentsFromDeeResource("deeCompilerInstalls", destFolder);
 		} catch(CoreException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

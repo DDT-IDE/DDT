@@ -1,14 +1,16 @@
 package mmrnmhrm.tests;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 import mmrnmhrm.tests.utils.BundleResourcesUtil;
-import mmrnmhrm.tests.utils.ResourceUtils;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 
@@ -19,37 +21,34 @@ public class DeeCoreTestResources {
 	
 	private static final String TESTDATA_BUNDLE_PATH = "testdata/";
 	
-	public static <T extends IContainer> T createSrcFolderFromDeeCoreResource(String resourcePath, T destFolder) 
+	public static void createSrcFolderFromDeeCoreResource(String resourcePath, IContainer destFolder) 
 			throws CoreException {
 		createWorkspaceFolderFromDeeResource(resourcePath, destFolder);
 		ProjectModelUtil.addSourceFolder(destFolder, null);
-		return destFolder;
 	}
 	
-	public static <T extends IContainer> T createWorkspaceFolderFromDeeResource(String resourcePath, T destFolder) 
+	public static void createWorkspaceFolderFromDeeResource(String resourcePath, IContainer destFolder)
 			throws CoreException {
-		String pluginId = DeeCore.PLUGIN_ID;
-		String basePath = DeeCoreTestResources.TESTDATA_BUNDLE_PATH;
-		ResourceUtils.copyBundleDirToWorkspace(pluginId, new Path(basePath).append(resourcePath), destFolder);
-		return destFolder;
+		File destFolder_File = destFolder.getLocation().toFile();
+		copyTestFolderContentsFromDeeResource(resourcePath, destFolder_File);
+		
+		destFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
+		assertTrue(destFolder.exists());
 	}
 	
 	
-	/**
-	 * Copies the contents of a bundle resource folder into the tests working dir 
-	 */
-	public static void copyTestFolderContentsFromDeeResource(String resourcePath, String destFolderPath) throws CoreException {
-		
-		File destFolder = new File(DToolTestResources.getWorkingDir(), destFolderPath);		
-		
+	/** Copies the contents of a test bundle resource folder into given destFolder destination */
+	public static void copyTestFolderContentsFromDeeResource(String resourcePath, File destFolder) 
+			throws CoreException {
+		String pluginId = DeeCore.TESTS_PLUGIN_ID;
+		String bundleResourcePath = new Path(TESTDATA_BUNDLE_PATH).append(resourcePath).toString();
 		try {
-			String resourceBundlePath = new Path(TESTDATA_BUNDLE_PATH).append(resourcePath).toString();
-			BundleResourcesUtil.copyDirContents(DeeCore.PLUGIN_ID, resourceBundlePath, destFolder);
+			BundleResourcesUtil.copyDirContents(pluginId, bundleResourcePath, destFolder);
 		} catch(IOException e) {
-			DeeCore.createCoreException("Error while copying contents of bundle resources to " + destFolder, e);
+			throw DeeCore.createCoreException("Error copying resource contents", e);
 		}
 	}
-
+	
 	public static File getTestResource(String relativePath) {
 		return new File(DToolTestResources.getWorkingDir(), relativePath);
 	}
