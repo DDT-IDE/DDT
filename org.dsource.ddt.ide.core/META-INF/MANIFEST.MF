@@ -6,15 +6,15 @@ Bundle-Version: 0.6.0.qualifier
 Bundle-Vendor: %pluginProvider
 Bundle-Activator: mmrnmhrm.core.DeeCore
 Bundle-Localization: plugin
-Export-Package: dtool.tests.ref.cc;x-friends:="org.dsource.ddt.ide.tests,org.dsource.ddt.ide.ui",
+Export-Package: dtool.tests.ref.cc;x-friends:="org.dsource.ddt.ide.tests",
  mmrnmhrm.core,
  mmrnmhrm.core.build,
  mmrnmhrm.core.codeassist,
  mmrnmhrm.core.launch,
  mmrnmhrm.core.projectmodel,
  mmrnmhrm.core.search,
- mmrnmhrm.tests;x-friends:="org.dsource.ddt.ide.ui",
- mmrnmhrm.tests.utils,
+ mmrnmhrm.tests;x-friends:="org.dsource.ddt.ide.tests",
+ mmrnmhrm.tests.utils;x-friends:="org.dsource.ddt.ide.tests",
  org.dsource.ddt.ide.core,
  org.dsource.ddt.ide.core.model,
  org.dsource.ddt.ide.core.model.engine

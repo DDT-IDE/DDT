@@ -1,6 +1,7 @@
 package mmrnmhrm.tests.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
@@ -26,10 +27,11 @@ public class BundleResourcesUtil {
 		
 		// normalize path with regards to separators
 		final String normalizedBasePath = new Path(dirPath).makeRelative().addTrailingSeparator().toString(); 
-		
 		final Bundle bundle = Platform.getBundle(bundleId);
 		
-		BundleResourcesIterator bundleResourcesPrinter = new BundleResourcesIterator() {
+		assertNotNull(Platform.getBundle(bundleId).getEntry(normalizedBasePath));
+		
+		BundleResourcesIterator bundleResourcesIter = new BundleResourcesIterator() {
 			@Override
 			protected void handleFile(String srcPath) {
 				URL sourceFile = FileLocator.find(bundle, new Path(srcPath), null);
@@ -73,7 +75,7 @@ public class BundleResourcesUtil {
 		};
 		
 		try {
-			bundleResourcesPrinter.traversePath(bundleId, normalizedBasePath);
+			bundleResourcesIter.traversePath(bundleId, normalizedBasePath);
 		} catch (RuntimeException e) {
 			if(e.getCause() instanceof IOException) {
 				throw (IOException) e.getCause();
