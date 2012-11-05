@@ -55,7 +55,6 @@
 							<classifier>org.dsource.ddt-build/target-platform/DDT</classifier>
 						</artifact>
 					</target>
-
 				</configuration>
 			</plugin>
 		</plugins>
