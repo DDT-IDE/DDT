@@ -10,7 +10,7 @@
 		<version>1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.dsource.ddt.ide.tests</artifactId>
+	<artifactId>org.dsource.ddt.ide.ui.tests</artifactId>
 	<version>0.6.0.qualifier</version>
 	<packaging>eclipse-test-plugin</packaging>
 

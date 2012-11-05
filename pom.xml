@@ -25,7 +25,7 @@
 		<module>org.dsource.ddt.ide.core</module>
 		<module>org.dsource.ddt.ide.core.tests</module>
 		<module>org.dsource.ddt.ide.ui</module>
-		<module>org.dsource.ddt.ide.tests</module>
+		<module>org.dsource.ddt.ide.ui.tests</module>
 		<module>org.dsource.ddt-feature</module>
 		<module>org.dsource.ddt-feature-repo</module>
 	</modules>
