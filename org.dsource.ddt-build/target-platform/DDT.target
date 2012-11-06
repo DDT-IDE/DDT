@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
 
-<target name="DDT Target" sequenceNumber="19">
+<target name="DDT Target" sequenceNumber="20">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.ide" version="3.7.2.M20120208-0800"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="3.5.1.v20111216-1653-7P7NFUIFIbaUcU77s0KQWHw5HZTZ"/>
 <unit id="org.eclipse.emf.ecore.feature.group" version="2.7.1.v20120127-1122"/>
 <unit id="org.eclipse.emf.common.feature.group" version="2.7.0.v20120127-1122"/>
 <repository location="http://download.eclipse.org/releases/indigo/"/>
