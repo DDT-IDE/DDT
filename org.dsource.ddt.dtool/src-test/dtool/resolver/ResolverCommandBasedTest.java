@@ -42,46 +42,6 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 	}
 	
 	
-	protected static int getMarkerOffset(String source, String targetMarkerName) {
-		int targetOffset = -1;
-		
-		int offset = 0;
-		while(true) {
-			offset = source.indexOf("/+", offset);
-			if(offset == -1)
-				break;
-			int commentStartOffset = offset;
-			offset += 2;
-			
-			offset = source.indexOf("+/", offset);
-			if(offset == -1)
-				break;
-			offset += 2;
-			
-			String markerName = source.substring(commentStartOffset+2, offset-2);
-			if(markerName.length() < 2) 
-				continue;
-			
-			int markerOffset;
-			if(markerName.charAt(0) == '@') {
-				markerOffset = commentStartOffset;
-				markerName = markerName.substring(1);
-			} else if(markerName.charAt(markerName.length()-1) == '@') {
-				markerOffset = offset;
-				markerName = markerName.substring(0, markerName.length()-1);
-			} else {
-				continue;
-			}
-			
-			if(targetMarkerName.equals(markerName)) {
-				assertTrue(targetOffset == -1); // can only be found once.
-				targetOffset = markerOffset;
-			}
-		}
-		assertTrue(targetOffset != -1);
-		return targetOffset;
-	}
-	
 	protected static String upUntil(String source, int offset, String string) {
 		int endIx = source.indexOf(string, offset);
 		return source.substring(offset, endIx);
@@ -92,6 +52,7 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 		
 		int offset = 0;
 		while(true) {
+			// Look for the test command marker
 			offset = source.indexOf("/+#", offset);
 			
 			if(offset == -1) 
@@ -101,6 +62,7 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 			
 			final int commandOffset = offset;
 			offset = source.indexOf("(", offset);
+			// read the command name and parameter list
 			String command = source.substring(commandOffset, offset);
 			offset += 1;
 			
@@ -112,39 +74,11 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 			
 			if(command.equals("find")) {
 				assertTrue(source.charAt(offset) == '@');
+				String markerName = upUntil(source, offset+1, "+/");
 				
-				ASTNeoNode node = ASTNodeFinder.findElement(testModule, commandEndOffset, true);
-				Reference ref = assertInstance(node, Reference.class);
-				Collection<DefUnit> results = ref.findTargetDefUnits(new NullModuleResolver(), false);
-				
-				if(paramList.equals(":null")) {
-					assertTrue(results == null);
-				} else {
-					String markerName = upUntil(source, offset+1, "+/");
-					int targetOffset = markerName.equals(":synthetic") ? -2 : getMarkerOffset(source, markerName);
-					String targetName;
-					if(paramList.equals("=")) {
-						targetName = ref.toStringAsElement();
-						checkSingleResult(results, targetOffset, targetName);
-					} else {
-						throw assertFail();
-					}
-				}
+				doFindTest(source, testModule, paramList, commandEndOffset, markerName);
 			} else if(command.equals("complete")) {
-				
-				CompletionSession session = new CompletionSession();
-				DefUnitArrayListCollector defUnitAccepter = new DefUnitArrayListCollector();
-				PrefixDefUnitSearch.doCompletionSearch(session, "_unnamed_", source, 
-						commandEndOffset, new NullModuleResolver(), defUnitAccepter);
-				
-				String[] expectedResults = paramList.split(",");
-				for (int i = 0; i < expectedResults.length; i++) {
-					expectedResults[i] = expectedResults[i].trim();
-				}
-				List<DefUnit> filteredResults = removeDummyDefinitions(defUnitAccepter.results, "_dummy");
-				
-				CompareDefUnits.checkResults(filteredResults, expectedResults, false);
-				
+				doCompletionTest(source, paramList, commandEndOffset);
 			} else {
 				assertFail();
 			}
@@ -153,14 +87,24 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 		}
 	}
 	
-	protected List<DefUnit> removeDummyDefinitions(ArrayList<DefUnit> list, final String dummyName) {
-		return CollectionUtil.filter(list, new Predicate<DefUnit>() {
-			
-			@Override
-			public boolean evaluate(DefUnit obj) {
-				return areEqual(obj.getName(), dummyName);
+	protected void doFindTest(String source, Module testModule, String paramList, int commandEndOffset, String markerName) {
+		ASTNeoNode node = ASTNodeFinder.findElement(testModule, commandEndOffset, true);
+		Reference ref = assertInstance(node, Reference.class);
+		Collection<DefUnit> results = ref.findTargetDefUnits(new NullModuleResolver(), false);
+		
+		if(paramList.equals(":null")) {
+			assertTrue(results == null);
+			assertTrue(markerName.isEmpty());
+		} else {
+			int targetOffset = markerName.equals(":synthetic") ? -2 : getMarkerOffset(source, markerName);
+			String targetName;
+			if(paramList.equals("=")) {
+				targetName = ref.toStringAsElement();
+				checkSingleResult(results, targetOffset, targetName);
+			} else {
+				throw assertFail();
 			}
-		});
+		}
 	}
 	
 	protected void checkSingleResult(Collection<DefUnit> results, int expectedOffset, String targetName) {
@@ -179,6 +123,31 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 		assertNotNull(results);
 		assertTrue(results.size() == 1);
 		return results.iterator().next();
+	}
+	
+	protected void doCompletionTest(String source, String paramList, int commandEndOffset) {
+		CompletionSession session = new CompletionSession();
+		DefUnitArrayListCollector defUnitAccepter = new DefUnitArrayListCollector();
+		PrefixDefUnitSearch.doCompletionSearch(session, "_unnamed_", source, 
+				commandEndOffset, new NullModuleResolver(), defUnitAccepter);
+		
+		String[] expectedResults = paramList.split(",");
+		for (int i = 0; i < expectedResults.length; i++) {
+			expectedResults[i] = expectedResults[i].trim();
+		}
+		List<DefUnit> filteredResults = removeDummyDefinitions(defUnitAccepter.results, "_dummy");
+		
+		CompareDefUnits.checkResults(filteredResults, expectedResults, false);
+	}
+	
+	protected List<DefUnit> removeDummyDefinitions(ArrayList<DefUnit> list, final String dummyName) {
+		return CollectionUtil.filter(list, new Predicate<DefUnit>() {
+			
+			@Override
+			public boolean evaluate(DefUnit obj) {
+				return areEqual(obj.getName(), dummyName);
+			}
+		});
 	}
 	
 }
