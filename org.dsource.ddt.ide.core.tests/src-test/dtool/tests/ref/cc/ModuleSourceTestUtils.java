@@ -1,7 +1,5 @@
 package dtool.tests.ref.cc;
 
-import melnorme.utilbox.core.ExceptionAdapter;
-
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;

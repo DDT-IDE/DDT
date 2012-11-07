@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 
 /**
@@ -16,7 +17,7 @@ public class ArrayUtilExt extends ArrayUtil {
 		int size = source.length;
 		if (a.length < size) {
 			// Make a new array of a's runtime type, but my contents:
-			return Arrays.copyOf(source, size, (Class<? extends T[]>) a.getClass());
+			return Arrays.copyOf(source, size, CoreUtil.<Class<? extends T[]>>blindCast(a.getClass()));
 		}
 		System.arraycopy(source, 0, a, 0, size);
 		if (a.length > size) {

@@ -15,6 +15,10 @@ public class DToolBundle {
 	public static final boolean UNSUPPORTED_DMD_FUNCTIONALITY$;
 	// Don't use initializer so that var does not become a compile time constant,
 	// This is just a handy workaroud to avoid certain Eclipse dead code warnings:
-	static { UNSUPPORTED_DMD_FUNCTIONALITY$ = UNSUPPORTED_DMD_FUNCTIONALITY; } 
+	static { UNSUPPORTED_DMD_FUNCTIONALITY$ = false; }
+	
+	// TODO: examine the code commented out with this marker
+	public static final boolean UNIMPLEMENTED_FUNCTIONALITY;
+	static { UNIMPLEMENTED_FUNCTIONALITY = false; }
 	
 }

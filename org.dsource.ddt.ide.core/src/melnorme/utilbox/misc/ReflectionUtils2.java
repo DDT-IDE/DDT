@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import melnorme.utilbox.core.CoreUtil;
+
 /**
  * Miscellaneous very simple utility methods for using reflection. 
  */
@@ -55,7 +57,8 @@ public class ReflectionUtils2 {
 	/** Same as {@link Method#invoke(Object, Object...)} but unchecks the exceptions. */
 	public static <T> T uncheckedInvoke(Object obj, final Method method, Object... args) {
 		try {
-			return (T) method.invoke(obj, args);
+			Object ret = method.invoke(obj, args);
+			return CoreUtil.<T>blindCast(ret);
 		} catch (IllegalArgumentException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		} catch (IllegalAccessException e) {

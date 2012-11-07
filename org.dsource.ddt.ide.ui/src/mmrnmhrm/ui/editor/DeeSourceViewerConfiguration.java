@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Map;
 
+import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistPreference;
@@ -167,7 +168,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	@Override 
 	protected Map<String, ITextEditor> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
-		Map<String, ITextEditor> targets = super.getHyperlinkDetectorTargets(sourceViewer);
+		Map<String, ITextEditor> targets = CoreUtil.downCast(super.getHyperlinkDetectorTargets(sourceViewer));
 		targets.put(DeeHyperlinkDetector.DEE_EDITOR_TARGET, getEditor()); 
 		return targets;
 	}

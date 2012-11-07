@@ -29,6 +29,7 @@ import descent.internal.compiler.parser.UnionDeclaration;
 import descent.internal.compiler.parser.Version;
 import descent.internal.compiler.parser.VersionCondition;
 import descent.internal.compiler.parser.VersionSymbol;
+import dtool.DToolBundle;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
@@ -430,7 +431,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		ArrayView<TemplateParameter> tplParams = 
 				DescentASTConverter.convertMany(elem.parameters, TemplateParameter.class, convContext);
 		
-		if(elem.wrapper && false) { // This code is disabled until we can fix some ref resolver bugs
+		if(elem.wrapper && DToolBundle.UNIMPLEMENTED_FUNCTIONALITY) { 
+			// This code is disabled until we can fix some ref resolver bugs
 			assertTrue(elem.members.size() == 1);
 			Dsymbol dsymbol = elem.members.get(0);
 			if(dsymbol instanceof AggregateDeclaration) {

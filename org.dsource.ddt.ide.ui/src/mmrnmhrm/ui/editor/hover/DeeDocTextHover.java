@@ -18,7 +18,6 @@ import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.editor.doc.DeeDocumentationProvider;
 
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;

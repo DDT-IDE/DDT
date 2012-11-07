@@ -24,6 +24,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import dtool.DToolBundle;
+
 public class DeeEditorSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 	
 	public DeeEditorSmartTypingConfigurationBlock(OverlayPreferenceStore store) {
@@ -35,7 +37,7 @@ public class DeeEditorSmartTypingConfigurationBlock extends AbstractConfiguratio
 	protected void addOverLayKeys(OverlayPreferenceStore store) {
 		List<OverlayKey> keys = new ArrayList<OverlayKey>();
 		
-		if(false) { // TODO implement
+		if(DToolBundle.UNIMPLEMENTED_FUNCTIONALITY) { // TODO implement
 			keys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, 
 					DeeUIPreferenceConstants.AE_CLOSE_STRINGS));
 			keys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, 
@@ -77,7 +79,7 @@ public class DeeEditorSmartTypingConfigurationBlock extends AbstractConfiguratio
 		layout.numColumns = 1;
 		group.setLayout(layout);
 		
-		if(false) {
+		if(DToolBundle.UNIMPLEMENTED_FUNCTIONALITY) {
 		addCheckBox(group,
 				DeePreferencesMessages.LangSmartTypingConfigurationBlock_closeStrings,
 				DeeUIPreferenceConstants.AE_CLOSE_STRINGS, 0);

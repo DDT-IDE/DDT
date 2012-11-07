@@ -12,8 +12,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.refmodel.pluginadapters.IModuleResolver;
-
 /**
  * XXX: The code to modify testImportStatic is very messy
  */
