@@ -38,6 +38,7 @@ import dtool.ast.ASTNodeFinder;
 import dtool.ast.ASTPrinter;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.Reference;
@@ -163,11 +164,11 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 			ITextEditor editor, DefUnit defunit) throws PartInitException {
 		if(openNewEditor == EOpenNewEditor.NEVER) {
 			if(editor.getEditorInput().equals(input)) {
-				EditorUtil.setEditorSelection(editor, defunit.defname);
+				setSelectionOnDefUnit(editor, defunit);
 			} else if(editor instanceof IReusableEditor) {
 				IReusableEditor reusableEditor = (IReusableEditor) editor;
 				reusableEditor.setInput(input);
-				EditorUtil.setEditorSelection(editor, defunit.defname);
+				setSelectionOnDefUnit(editor, defunit);
 			} else {
 				openEditor(page, input, EOpenNewEditor.ALWAYS, editor, defunit);
 			}
@@ -175,7 +176,17 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 			int matchFlags = openNewEditor == EOpenNewEditor.ALWAYS ? 
 				IWorkbenchPage.MATCH_NONE : IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID;
 			ITextEditor targetEditor = (ITextEditor) page.openEditor(input, DeeEditor.EDITOR_ID, true, matchFlags);
-			EditorUtil.setEditorSelection(targetEditor, defunit.defname);
+			setSelectionOnDefUnit(targetEditor, defunit);
+		}
+	}
+	
+	protected static void setSelectionOnDefUnit(ITextEditor editor, DefUnit defunit) {
+		if(defunit.defname.hasSourceRangeInfo()) {
+			EditorUtil.setEditorSelection(editor, defunit.defname);
+		} else {
+			if(defunit.getArcheType() == EArcheType.Module) {
+				EditorUtil.setEditorSelection(editor, 0, 0);
+			}
 		}
 	}
 	

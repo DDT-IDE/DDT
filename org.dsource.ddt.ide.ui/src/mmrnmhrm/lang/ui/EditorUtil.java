@@ -19,6 +19,7 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.definitions.Module;
 
 public class EditorUtil {
@@ -28,16 +29,13 @@ public class EditorUtil {
 		return (TextSelection) editor.getSelectionProvider().getSelection();
 	}
 	
-	public static void setEditorSelection(ITextEditor textEditor, IASTNode node) {
-		textEditor.getSelectionProvider().setSelection(
-				new TextSelection(node.getStartPos(), node.getLength())); 
+	public static void setEditorSelection(ITextEditor textEditor, IASTNeoNode node) {
+		setEditorSelection(textEditor, node.getStartPos(), node.getLength());
 	}
 	
 	public static void setEditorSelection(ITextEditor textEditor, int offset, int length) {
-		textEditor.getSelectionProvider().setSelection(
-				new TextSelection(offset, length)); 
+		textEditor.getSelectionProvider().setSelection(new TextSelection(offset, length)); 
 	}
-
 	
 	public static IEditorPart getActiveEditor() {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
