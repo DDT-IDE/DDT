@@ -26,5 +26,3 @@ alias /+#find(=)@:synthetic+/incorrectPackage _dummy;
 /+#complete(module_tests)+/
 
 alias /+#find(=)@marker1+/module_tests _dummy;
-
-/+#find(module_tests)@marker1+/

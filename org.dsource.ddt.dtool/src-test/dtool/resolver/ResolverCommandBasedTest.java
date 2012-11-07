@@ -78,7 +78,7 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 				
 				doFindTest(source, testModule, paramList, commandEndOffset, markerName);
 			} else if(command.equals("complete")) {
-				doCompletionTest(source, paramList, commandEndOffset);
+				doCompletionTest(source, defaultModuleName, paramList, commandEndOffset);
 			} else {
 				assertFail();
 			}
@@ -125,10 +125,10 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 		return results.iterator().next();
 	}
 	
-	protected void doCompletionTest(String source, String paramList, int commandEndOffset) {
+	protected void doCompletionTest(String source, String defaultModuleName, String paramList, int commandEndOffset) {
 		CompletionSession session = new CompletionSession();
 		DefUnitArrayListCollector defUnitAccepter = new DefUnitArrayListCollector();
-		PrefixDefUnitSearch.doCompletionSearch(session, "_unnamed_", source, 
+		PrefixDefUnitSearch.doCompletionSearch(session, defaultModuleName, source, 
 				commandEndOffset, new NullModuleResolver(), defUnitAccepter);
 		
 		String[] expectedResults = paramList.split(",");

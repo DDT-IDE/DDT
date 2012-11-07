@@ -154,7 +154,7 @@ public class Module extends DefUnit implements IScopeNode {
 	@Override
 	public String toStringAsElement() {
 		if(md == null) {
-			return "<undefined>"; // BUG here
+			return getName();
 		}
 		return md.toStringAsElement();
 	}

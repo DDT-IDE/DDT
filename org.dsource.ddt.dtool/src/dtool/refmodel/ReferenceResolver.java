@@ -99,6 +99,10 @@ public class ReferenceResolver {
 			
 			if(search.matches(defUnit))
 				search.addMatch(defUnit);
+		} else {
+			if(search.matches(module)) {
+				search.addMatch(module);
+			}
 		}
 	}
 
