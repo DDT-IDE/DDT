@@ -44,9 +44,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Creates a status describing an error in this plugin. */
 	public static Status createErrorStatus(String msg, Exception e) {
-		return new Status(IStatus.ERROR, DeeCore.PLUGIN_ID,
-				IModelStatusConstants.INTERNAL_ERROR,
-				msg, e); 
+		return new Status(IStatus.ERROR, DeeCore.PLUGIN_ID, IModelStatusConstants.INTERNAL_ERROR, msg, e); 
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */

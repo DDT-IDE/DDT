@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.actions;
 
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.lang.ui.ExceptionHandler;
+import mmrnmhrm.lang.ui.OperationExceptionHandler;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -10,6 +10,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
 public class OperationsManager {
+
+	private static final String MSG_ERROR_EXECUTING_OPERATION 
+		= "Error executing operation.";
+	private static final String MSG_INTERNAL_ERROR_EXECUTING_OPERATION 
+		= "Internal Error executing operation.";
 
 	public static OperationsManager instance = new OperationsManager();
 	
@@ -62,18 +67,17 @@ public class OperationsManager {
 		try {
 			op.run();
 		} catch (CoreException ce) {
-			ExceptionHandler.handle(ce, opName, "Execution Error");
+			OperationExceptionHandler.handle(ce, opName, MSG_ERROR_EXECUTING_OPERATION);
 			opResult = IStatus.ERROR; 
 			return false;
 		} catch (RuntimeException re) {
 			opResult = IStatus.ERROR;
 			if(handleRuntimeExceptions) {
-				ExceptionHandler.handle(re, opName, 
-						"Program Error (see log for more details)");
+				OperationExceptionHandler.handle(re, opName, MSG_INTERNAL_ERROR_EXECUTING_OPERATION);
 				return false;
 			}
 			throw re;
-		} 
+		}
 		
 		return true;
 	}
@@ -118,8 +122,5 @@ public class OperationsManager {
 		
 		MessageDialog.openError(shell, title, message);
 	}
-
-
-
 	
 }
