@@ -14,6 +14,8 @@ import dtool.tests.MiscFileUtils;
  */
 public abstract class MassParse__CommonTest extends Parser__FileParseTest {
 	
+	public static final String COMMON = "common/";
+	
 	private static final String COMMON_UNPACK = "_common-unpack/";
 	
 	public static final String TESTSRC_DRUNTIME_PHOBOS2 = "druntime_phobos-2.047-src";
