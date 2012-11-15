@@ -16,7 +16,8 @@ public class MassParse_MiscUnsupportedSyntaxCasesTest extends Parser__FileParseT
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		File scanDir = DToolTestResources.getTestResource(COMMON + "miscCasesUnsupportedSyntax");
+		File scanDir = DToolTestResources.getTestResource(
+			MassParse__CommonTest.COMMON + "miscCasesUnsupportedSyntax");
 		return getTestFilesFromFolderAsParameterList(scanDir);
 	}
 	

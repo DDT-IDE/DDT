@@ -17,7 +17,8 @@ public class MassParse_MiscBadSyntaxCasesTest extends Parser__FileParseTest {
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		File scanDir = DToolTestResources.getTestResource(COMMON + "miscCasesInvalidSyntax");
+		File scanDir = DToolTestResources.getTestResource(
+			MassParse__CommonTest.COMMON + "miscCasesInvalidSyntax");
 		return getTestFilesFromFolderAsParameterList(scanDir);
 	}
 	
