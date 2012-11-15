@@ -23,7 +23,7 @@ public class DeeLexerTest extends CommonTestUtils {
 	}
 	
 	public static void runLexerTest(String source, DeeTokens[] deeTokens) {
-		DeeTokenSource deeTokenSource = new DeeTokenSource(source);
+		DeeLexer deeTokenSource = new DeeLexer(source);
 		int readSourceOffset = 0;
 		
 		StringBuilder constructedSource = new StringBuilder();
@@ -39,7 +39,7 @@ public class DeeLexerTest extends CommonTestUtils {
 		assertEquals(source, constructedSource.toString());
 	}
 	
-	public static Token checkToken(DeeTokenSource deeTokenSource, DeeTokens expectedTokenCode, int readOffset) {
+	public static Token checkToken(DeeLexer deeTokenSource, DeeTokens expectedTokenCode, int readOffset) {
 		DeeTokens tokenCode = deeTokenSource.peek();
 		assertTrue(tokenCode == expectedTokenCode);
 		Token token = deeTokenSource.next();

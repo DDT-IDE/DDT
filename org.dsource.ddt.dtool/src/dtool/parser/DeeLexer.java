@@ -1,6 +1,5 @@
 package dtool.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
@@ -9,9 +8,9 @@ import java.util.Arrays;
 import dtool.parser.Token.ErrorToken;
 
 
-public class DeeTokenSource extends CommonTokenSource {
+public class DeeLexer extends CommonTokenSource {
 	
-	public DeeTokenSource(CharSequence source) {
+	public DeeLexer(CharSequence source) {
 		super(source);
 		
 		scanBegginning();
@@ -20,44 +19,61 @@ public class DeeTokenSource extends CommonTokenSource {
 	protected void scanBegginning() {
 		// TODO: UTF BOM's
 		
-		int ch = getInput(tokenStartPos);
+		pos = tokenStartPos;
 		
-		if(ch == '#' && getLA(1) == '!') {
-			// TODO ignore script line
+		if(lookAhead(0) == '#' && lookAhead(1) == '!') {
+			seekToNewline();
+			currentToken = createToken(DeeTokens.SCRIPT_LINE_INTRO);
 		}
 		return;
 	}
 	
-	protected static final DeeTokens[] charRuleCategory;
+	public enum DeeRuleSelection {
+		
+		EOF,
+		
+		EOL,
+		WHITESPACE,
+		
+		SLASH,
+		
+		IDENTIFIER,
+		INTEGER,
+		;
+		
+	}
+	
+	protected static final DeeRuleSelection[] charRuleCategory;
 	
 	static {
-		charRuleCategory = new DeeTokens[ASCII_LIMIT];
+		charRuleCategory = new DeeRuleSelection[ASCII_LIMIT];
 		
-		charRuleCategory[0x00] = DeeTokens.EOF;
-		charRuleCategory[0x1A] = DeeTokens.EOF;
+		charRuleCategory[0x00] = DeeRuleSelection.EOF;
+		charRuleCategory[0x1A] = DeeRuleSelection.EOF;
 		
-		charRuleCategory[0x0D] = DeeTokens.EOL;
-		charRuleCategory[0x0A] = DeeTokens.EOL;
+		charRuleCategory[0x0D] = DeeRuleSelection.EOL;
+		charRuleCategory[0x0A] = DeeRuleSelection.EOL;
 		
-		charRuleCategory[0x20] = DeeTokens.WHITESPACE;
-		charRuleCategory[0x09] = DeeTokens.WHITESPACE;
-		charRuleCategory[0x0B] = DeeTokens.WHITESPACE;
-		charRuleCategory[0x0C] = DeeTokens.WHITESPACE;
+		charRuleCategory[0x20] = DeeRuleSelection.WHITESPACE;
+		charRuleCategory[0x09] = DeeRuleSelection.WHITESPACE;
+		charRuleCategory[0x0B] = DeeRuleSelection.WHITESPACE;
+		charRuleCategory[0x0C] = DeeRuleSelection.WHITESPACE;
 		
-		charRuleCategory['/'] = DeeTokens.DIV_X;
+		charRuleCategory['/'] = DeeRuleSelection.SLASH;
 		
 		Arrays.fill(charRuleCategory, '0', '9'+1, DeeTokens.INTEGER);
 		Arrays.fill(charRuleCategory, 'a', 'z'+1, DeeTokens.IDENTIFIER);
 		Arrays.fill(charRuleCategory, 'A', 'X'+1, DeeTokens.IDENTIFIER);
-		charRuleCategory['_'] = DeeTokens.IDENTIFIER;
+		charRuleCategory['_'] = DeeRuleSelection.IDENTIFIER;
 		
 	}
 	
-	protected Token createToken(DeeTokens tokenCode, int endPos) {
+	@Deprecated
+	public Token createToken(DeeTokens tokenCode, int endPos) {
 		return new Token(tokenCode, source, pos, endPos);
 	}
 	
-	protected Token createToken2(DeeTokens tokenCode) {
+	protected Token createToken(DeeTokens tokenCode) {
 		return new Token(tokenCode, source, tokenStartPos, pos);
 	}
 	
@@ -65,12 +81,12 @@ public class DeeTokenSource extends CommonTokenSource {
 	protected Token parseToken() {
 		pos = tokenStartPos;
 		if(pos >= source.length()) {
-			return createToken(DeeTokens.EOF, pos);
+			return createToken(DeeTokens.EOF);
 		}
 		
 		char ch = source.charAt(pos);
 		
-		DeeTokens ruleCategory = getCharCategory(ch);
+		DeeRuleSelection ruleCategory = getCharCategory(ch);
 		if(ruleCategory == null) {
 			return matchError();
 		}
@@ -79,29 +95,26 @@ public class DeeTokenSource extends CommonTokenSource {
 		case EOF: return matchEOFCharacter();
 		case EOL: return matchEOL();
 		case WHITESPACE: return matchWhiteSpace();
-		case DIV_X: return matchSlashCharacter();
+		case SLASH: return matchSlashCharacter();
 		case INTEGER: return matchInteger();
 		case IDENTIFIER: return matchIdentifier_Like();
-		case ERROR: assertFail();
-		case COMMENT: assertFail();
-		default:
-			throw assertUnreachable();
 		}
+		throw assertUnreachable();
 	}
 	
-	public DeeTokens getCharCategory(int ch) {
+	public DeeRuleSelection getCharCategory(int ch) {
 		if(ch == EOF) {
-			return DeeTokens.EOF;
+			return DeeRuleSelection.EOF;
 		}
 		if(ch > ASCII_LIMIT) {
 			// BM: Hum I'm not sure this Unicode handling is correct according to D.
 			if(Character.isLowSurrogate((char) ch) || Character.isHighSurrogate((char) ch)
 				|| Character.isUnicodeIdentifierPart(ch)
 			) {
-				return DeeTokens.IDENTIFIER;
+				return DeeRuleSelection.IDENTIFIER;
 			}
 		}
-		return charRuleCategory[ch];	
+		return charRuleCategory[ch];
 	}
 	
 	protected Token matchError() {
@@ -109,7 +122,7 @@ public class DeeTokenSource extends CommonTokenSource {
 		
 		while(true) {
 			endPos++;
-			int ch = getInput(endPos);
+			int ch = getCharacter(endPos);
 			if(getCharCategory(ch) == null) {
 				continue;
 			} else {
@@ -123,31 +136,31 @@ public class DeeTokenSource extends CommonTokenSource {
 	}
 	
 	protected Token matchEOFCharacter() {
-		assertTrue(charRuleCategory[getAsciiLA()] == DeeTokens.EOL);
-		int endPos = pos + 1;
-		return createToken(DeeTokens.EOL, endPos);
+		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.EOL);
+		pos++;
+		return createToken(DeeTokens.EOL);
 	}
 	
 	protected Token matchEOL() {
-		assertTrue(charRuleCategory[getAsciiLA()] == DeeTokens.EOL);
-		int endPos = pos + 1;
-		if(getAsciiLA() == 0x0D && getLA(1) == 0x0A) {
-			endPos++;
+		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.EOL);
+		if(lookAheadAscii() == 0x0D && lookAhead(1) == 0x0A) {
+			pos += 2;
+		} else {
+			pos += 1;
 		}
-		return createToken(DeeTokens.EOL, endPos);
+		return createToken(DeeTokens.EOL);
 	}
 	
 	protected Token matchWhiteSpace() {
-		assertTrue(charRuleCategory[getAsciiLA()] == DeeTokens.WHITESPACE);
+		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.WHITESPACE);
 		
-		int endPos = pos;
 		while(true) {
-			endPos++;
-			int ch = getInput(endPos);
-			if(getCharCategory(ch) == DeeTokens.WHITESPACE) {
+			pos++;
+			int ch = lookAhead();
+			if(getCharCategory(ch) == DeeRuleSelection.WHITESPACE) {
 				continue;
 			} else {
-				return createToken(DeeTokens.WHITESPACE, endPos);
+				return createToken(DeeTokens.WHITESPACE);
 			}
 		}
 	}
@@ -156,19 +169,19 @@ public class DeeTokenSource extends CommonTokenSource {
 	protected static final String[] SEEKUNTIL_NLS = { "\r", "\n" };
 	
 	protected Token matchSlashCharacter() {
-		assertTrue(charRuleCategory[getAsciiLA()] == DeeTokens.DIV_X);
+		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.SLASH);
 		
 		pos++;
 		
-		if(getLA() == '*') {
+		if(lookAhead() == '*') {
 			//BUG here //pos++;
 			int result = seekUntil("*/");
 			if(result == 0) {
-				return createToken2(DeeTokens.COMMENT);
+				return createToken(DeeTokens.COMMENT);
 			} else {
 				return createErrorToken(pos, DeeParserMessages.COMMENT_NOT_TERMINATED);
 			}
-		} else if(getLA() == '+') { //BUG here
+		} else if(lookAhead() == '+') { //BUG here
 			//BUG here //pos++;
 			int nestingLevel = 1;
 			do {
@@ -185,52 +198,54 @@ public class DeeTokenSource extends CommonTokenSource {
 			} while (nestingLevel > 0);
 			return createToken(DeeTokens.COMMENT, pos); // BUG here
 			
-		} else if(getLA() == '/') {
+		} else if(lookAhead() == '/') {
 			//BUG here //pos++;
-			int result = seekUntil(SEEKUNTIL_NLS);
-			if(result == 0) {
-				if(getLA() == '\n') {
-					pos++;
-				}
-			}
+			seekToNewline();
 			// Note that EOF is also a valid terminator for this comment
-			return createToken2(DeeTokens.COMMENT);
+			return createToken(DeeTokens.COMMENT);
 		} else {
 			return createToken(DeeTokens.DIV_X, pos); // BUG here
 		}
 	}
 	
+	public final void seekToNewline() {
+		int result = seekUntil(SEEKUNTIL_NLS);
+		if(result == 0) { // "\r"
+			if(lookAhead() == '\n') {
+				pos++;
+			}
+		}
+	}
+	
 	protected Token matchIdentifier_Like() {
-		assertTrue(charRuleCategory[getAsciiLA()] == DeeTokens.IDENTIFIER);
+		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.IDENTIFIER);
 		
-		int endPos = pos;
 		while(true) {
-			endPos++;
-			int ch = getInput(endPos);
+			pos++;
+			int ch = lookAhead();
 			
-			DeeTokens charCategory = getCharCategory(ch);
-			if(charCategory == DeeTokens.IDENTIFIER || charCategory == DeeTokens.INTEGER) {
+			DeeRuleSelection charCategory = getCharCategory(ch);
+			if(charCategory == DeeRuleSelection.IDENTIFIER || charCategory == DeeRuleSelection.INTEGER) {
 				continue;
 			}
 			
-			return createToken(DeeTokens.IDENTIFIER, endPos);
+			return createToken(DeeTokens.IDENTIFIER);
 		}
 	}
 	
 	protected Token matchInteger() {
-		assertTrue(charRuleCategory[getAsciiLA()] == DeeTokens.INTEGER);
+		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.INTEGER);
 		
-		int endPos = pos;
 		while(true) {
-			endPos++;
+			pos++;
 			
-			int ch = getInput(endPos);
+			int ch = lookAhead();
 			
-			if(getCharCategory(ch) == DeeTokens.INTEGER) {
+			if(getCharCategory(ch) == DeeRuleSelection.INTEGER) {
 				continue;
 			}
 			
-			return createToken(DeeTokens.INTEGER, endPos);
+			return createToken(DeeTokens.INTEGER);
 		}
 	}
 	

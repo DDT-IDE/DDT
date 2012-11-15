@@ -7,6 +7,7 @@ public enum DeeTokens {
 	
 	EOL,
 	WHITESPACE,
+	SCRIPT_LINE_INTRO,
 	
 	COMMENT,
 	
@@ -15,9 +16,5 @@ public enum DeeTokens {
 	IDENTIFIER,
 	INTEGER,
 	;
-	
-	public byte getOrdinal() {
-		return (byte) ordinal();
-	}
 	
 }

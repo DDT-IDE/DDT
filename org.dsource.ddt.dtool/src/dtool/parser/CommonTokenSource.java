@@ -45,7 +45,8 @@ public abstract class CommonTokenSource {
 		currentToken = null;
 	}
 	
-	protected final int getInput(int index) {
+	/** Gets the character from absolute position index. */
+	protected final int getCharacter(int index) {
 		if(index >= source.length()) {
 			return -1;
 		}
@@ -53,35 +54,34 @@ public abstract class CommonTokenSource {
 		return source.charAt(index);
 	}
 	
-	protected final int getLA(int offset) {
-		return getInput(pos + offset);
+	protected final int lookAhead(int offset) {
+		return getCharacter(pos + offset);
 	}
 	
-	protected final int getLA() {
-		return getInput(pos);
+	protected final int lookAhead() {
+		return getCharacter(pos);
 	}
 	
-	protected final int getAsciiLA() {
-		int input = getInput(pos);
+	protected final int lookAheadAscii() {
+		int input = getCharacter(pos);
 		assertTrue(input >= 0 && input <= ASCII_LIMIT);
 		return input;
 	}
 	
 	protected abstract Token parseToken();
-
 	
 	/* ------------------------ Helpers ------------------------ */
 	
-	/** Advance position until given string is found, or position reaches EOF.
+	/** Advance position until given string is found, or input reaches EOF.
 	 * Returns 0 if given string was found (position is advanced to end of string), 
 	 * or -1 if EOF was encountered (position is advanced to EOF). */
 	public final int seekUntil(String string) {
 		while(true) {
-			boolean matches = posMatchesSequence(string);
+			boolean matches = inputMatchesSequence(string);
 			if(matches) {
 				pos += string.length();
 				return 0;
-			} else if(getLA(0) == -1) {
+			} else if(lookAhead() == -1) {
 				return -1;
 			} else {
 				pos++;
@@ -89,7 +89,7 @@ public abstract class CommonTokenSource {
 		}
 	}
 	
-	/** Advance position until any of given strings is found, or position reaches EOF.
+	/** Advance position until any of given strings is found, or input reaches EOF.
 	 * Returns the index in given strings array of the matched string (position is advanced to end of string), 
 	 * or -1 if EOF was encountered (position is advanced to EOF). */
 	public final int seekUntil(String[] strings) {
@@ -97,7 +97,7 @@ public abstract class CommonTokenSource {
 			int i = 0;
 			boolean matchesAny = false;
 			for (; i < strings.length; i++) {
-				matchesAny = posMatchesSequence(strings[i]);
+				matchesAny = inputMatchesSequence(strings[i]);
 				if(matchesAny) {
 					break;
 				}
@@ -105,7 +105,7 @@ public abstract class CommonTokenSource {
 			if(matchesAny) {
 				pos += strings[i].length();
 				return i;
-			} else if(getLA(0) == -1) {
+			} else if(lookAhead(0) == -1) {
 				return -1;
 			} else {
 				pos++;
@@ -113,12 +113,12 @@ public abstract class CommonTokenSource {
 		}
 	}
 	
-	/** Returns true if the sequence from current position matches given str. */
-	public final boolean posMatchesSequence(String str) {
-		int length = str.length();
+	/** Returns true if the sequence from current position matches given string. */
+	public final boolean inputMatchesSequence(String string) {
+		int length = string.length();
 		for (int i = 0; i < length; i++) {
-			int ch = getLA(i);
-			if(ch != str.charAt(i)) {
+			int ch = lookAhead(i);
+			if(ch != string.charAt(i)) {
 				return false;
 			}
 		}
