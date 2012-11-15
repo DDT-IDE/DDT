@@ -5,14 +5,16 @@ module module_tests;
 
 alias /+#find(=)@marker1+/module_tests _dummy;
 
-/+_#split  _____________________+//+@marker1+/
+//#SPLIT_SOURCE_TEST _____________________
+/+@marker1+/
 module module_tests_incorrectName;
 
 /+#complete(module_tests_incorrectName)+/
 
 alias /+#find(=)@marker1+/module_tests_incorrectName _dummy;
 
-/+_#split  _____________________+//+@marker1+/
+//#SPLIT_SOURCE_TEST _____________________
+/+@marker1+/
 module incorrectPackage.module_tests;
 
 /+#complete(incorrectPackage)+/
@@ -20,7 +22,8 @@ module incorrectPackage.module_tests;
 alias /+#find(:null)@+/module_tests _dummy;
 alias /+#find(=)@:synthetic+/incorrectPackage _dummy;
 
-/+_#split  _____________________+//+@marker1+/
+//#SPLIT_SOURCE_TEST _____________________
+/+@marker1+/
 // implicit module name
 
 /+#complete(module_tests)+/

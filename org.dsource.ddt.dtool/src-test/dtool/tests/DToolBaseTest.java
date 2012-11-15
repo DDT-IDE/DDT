@@ -54,6 +54,12 @@ public class DToolBaseTest extends CommonTestUtils {
 		}
 	}
 	
+	/* -------------  Source based test   ------------ */
+	
+	public static String[] splitSourceBasedTests(String fileRawSource) {
+		return fileRawSource.split("//#SPLIT_SOURCE_TEST[^\\\r\\\n]*\\\r?\\\n");
+	}
+	
 	/* -------------  Module list stuff   ------------ */
 	
 	protected static ArrayList<File> getDeeModuleList(File folder, boolean recurseDirs) throws IOException {

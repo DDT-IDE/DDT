@@ -25,19 +25,9 @@ import dtool.refmodel.PrefixDefUnitSearch;
 public class ResolverCommandBasedTest extends Resolver_BaseTest {
 	
 	protected void splitSourceAndRunTestCommands(String fullSource, String defaultModuleName) throws IOException {
-		while(true) {
-			int offset = fullSource.indexOf("/+_#split");
-			
-			if(offset == -1) {
-				runTestCommands(fullSource, defaultModuleName);
-				break;
-			}
-			
-			String splitSource = fullSource.substring(0, offset);
+		String[] splitSources = splitSourceBasedTests(fullSource);
+		for (String splitSource : splitSources) {
 			runTestCommands(splitSource, defaultModuleName);
-			
-			offset = fullSource.indexOf("_+/", offset) + 3;
-			fullSource = fullSource.substring(offset);
 		}
 	}
 	
