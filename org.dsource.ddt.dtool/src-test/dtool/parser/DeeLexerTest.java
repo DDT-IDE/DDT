@@ -23,13 +23,13 @@ public class DeeLexerTest extends CommonTestUtils {
 	}
 	
 	public static void runLexerTest(String source, DeeTokens[] deeTokens) {
-		DeeLexer deeTokenSource = new DeeLexer(source);
+		DeeLexer deeLexer = new DeeLexer(source);
 		int readSourceOffset = 0;
 		
 		StringBuilder constructedSource = new StringBuilder();
 		for (int i = 0; i < deeTokens.length; i++) {
 			DeeTokens expectedTokenCode = deeTokens[i];
-			Token token = checkToken(deeTokenSource, expectedTokenCode, readSourceOffset);
+			Token token = checkToken(deeLexer, expectedTokenCode, readSourceOffset);
 			readSourceOffset = token.getEndPos();
 			String sourceSoFar = source.substring(0, readSourceOffset);
 			
@@ -37,15 +37,24 @@ public class DeeLexerTest extends CommonTestUtils {
 			assertTrue(sourceSoFar.contentEquals(constructedSource));
 		}
 		assertEquals(source, constructedSource.toString());
+		checkToken(deeLexer, DeeTokens.EOF, readSourceOffset);
 	}
 	
-	public static Token checkToken(DeeLexer deeTokenSource, DeeTokens expectedTokenCode, int readOffset) {
-		DeeTokens tokenCode = deeTokenSource.peek();
-		assertTrue(tokenCode == expectedTokenCode);
-		Token token = deeTokenSource.next();
+	public static Token checkToken(DeeLexer deeLexer, DeeTokens expectedTokenCode, int readOffset) {
+		DeeTokens tokenCode = deeLexer.peek();
+		if(expectedTokenCode != null) {
+			assertTrue(tokenCode == expectedTokenCode);
+		}
+		Token token = deeLexer.next();
 		assertTrue(token.getTokenCode() == tokenCode);
 		assertTrue(token.getStartPos() == readOffset);
-		assertTrue(token.getEndPos() > token.getStartPos());
+		
+		switch (tokenCode) {
+		case EOF: assertTrue(token.getEndPos() >= token.getStartPos());
+			break;
+		default:
+			assertTrue(token.getEndPos() > token.getStartPos());
+		}
 		return token;
 	}
 	

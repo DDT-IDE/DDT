@@ -1,7 +1,7 @@
   	
 
 /*dfg*/asdf//coment
-123asd/+#LEXERTEST
+123asd/+#LEXERTEST -------------------
 WHITESPACE
 EOL
 EOL

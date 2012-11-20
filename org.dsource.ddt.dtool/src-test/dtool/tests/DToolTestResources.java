@@ -25,7 +25,7 @@ public class DToolTestResources implements IDToolTestConstants {
 	protected static final String TEST_RESOURCES_BASE_DIR_PROPERTY = DToolTests.DTOOL_PREFIX + "TestResourcesDir";
 	protected static final String TEST_RESOURCES_WORKING_DIR_PROPERTY = DToolTests.DTOOL_PREFIX + "TestsWorkingDir";
 	
-	protected static final String TESTDATA = "testdata/";
+	protected static final String TESTDATA = "testdata";
 	
 	protected static DToolTestResources instance;
 	
@@ -93,5 +93,14 @@ public class DToolTestResources implements IDToolTestConstants {
 		}
 		// Maybe use workingDir = "../_runtime-tests" instead
 	}
-
+	
+	public static String resourceFileToString(File file) {
+		if(file.getName().equals(TESTDATA)) {
+			return "#";
+		} else {
+			String parentStr = (file.getParentFile() != null) ? resourceFileToString(file.getParentFile()) : ""; 
+			return parentStr + "/" + file.getName();
+		}
+	}
+	
 }

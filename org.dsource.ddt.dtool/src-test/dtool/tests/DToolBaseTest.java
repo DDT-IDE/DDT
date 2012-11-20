@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,8 @@ import melnorme.utilbox.misc.StringUtil;
 
 
 public class DToolBaseTest extends CommonTestUtils {
+	
+	public static PrintStream testsLogger = System.out;
 	
 	/* -------------  Resources stuff   ------------ */
 	
@@ -56,8 +59,24 @@ public class DToolBaseTest extends CommonTestUtils {
 	
 	/* -------------  Source based test   ------------ */
 	
+	private static final String SPLIT_SOURCE_TEST = "//#SPLIT_SOURCE_TEST";
+
 	public static String[] splitSourceBasedTests(String fileRawSource) {
-		return fileRawSource.split("//#SPLIT_SOURCE_TEST[^\\\r\\\n]*\\\r?\\\n");
+		String[] split = fileRawSource.split(SPLIT_SOURCE_TEST + "[^\\\r\\\n]*\\\r?\\\n");
+		if(fileRawSource.startsWith(SPLIT_SOURCE_TEST)) {
+			assertTrue(split[0].isEmpty());
+			return ArrayUtil.copyOfRange(split, 1, split.length);
+		}
+		return split;
+	}
+	
+	public String[] enteringSourceBasedTest(File file) {
+		String fileSource = readStringFromFileUnchecked(file);
+		String[] splitSourceBasedTests = splitSourceBasedTests(fileSource);
+		
+		testsLogger.println("-- " + getClass().getSimpleName() + 
+			" on file: " + DToolTestResources.resourceFileToString(file) + " ("+splitSourceBasedTests.length+")");
+		return splitSourceBasedTests;
 	}
 	
 	/* -------------  Module list stuff   ------------ */

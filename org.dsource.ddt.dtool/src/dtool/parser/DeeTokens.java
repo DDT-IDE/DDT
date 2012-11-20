@@ -11,7 +11,7 @@ public enum DeeTokens {
 	
 	COMMENT,
 	
-	DIV_X,
+	DIV,
 	
 	IDENTIFIER,
 	INTEGER,

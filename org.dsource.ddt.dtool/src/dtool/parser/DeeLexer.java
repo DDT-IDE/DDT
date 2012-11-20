@@ -37,8 +37,8 @@ public class DeeLexer extends CommonTokenSource {
 		
 		SLASH,
 		
-		IDENTIFIER,
-		INTEGER,
+		ALPHA,
+		DIGIT,
 		;
 		
 	}
@@ -61,16 +61,11 @@ public class DeeLexer extends CommonTokenSource {
 		
 		charRuleCategory['/'] = DeeRuleSelection.SLASH;
 		
-		Arrays.fill(charRuleCategory, '0', '9'+1, DeeTokens.INTEGER);
-		Arrays.fill(charRuleCategory, 'a', 'z'+1, DeeTokens.IDENTIFIER);
-		Arrays.fill(charRuleCategory, 'A', 'X'+1, DeeTokens.IDENTIFIER);
-		charRuleCategory['_'] = DeeRuleSelection.IDENTIFIER;
+		Arrays.fill(charRuleCategory, '0', '9'+1, DeeRuleSelection.DIGIT);
+		Arrays.fill(charRuleCategory, 'a', 'z'+1, DeeRuleSelection.ALPHA);
+		Arrays.fill(charRuleCategory, 'A', 'X'+1, DeeRuleSelection.ALPHA);
+		charRuleCategory['_'] = DeeRuleSelection.ALPHA;
 		
-	}
-	
-	@Deprecated
-	public Token createToken(DeeTokens tokenCode, int endPos) {
-		return new Token(tokenCode, source, pos, endPos);
 	}
 	
 	protected Token createToken(DeeTokens tokenCode) {
@@ -95,9 +90,9 @@ public class DeeLexer extends CommonTokenSource {
 		case EOF: return matchEOFCharacter();
 		case EOL: return matchEOL();
 		case WHITESPACE: return matchWhiteSpace();
-		case SLASH: return matchSlashCharacter();
-		case INTEGER: return matchInteger();
-		case IDENTIFIER: return matchIdentifier_Like();
+		case SLASH: return matchSlashRules();
+		case DIGIT: return matchDigitRules();
+		case ALPHA: return matchAlphaRules();
 		}
 		throw assertUnreachable();
 	}
@@ -111,7 +106,7 @@ public class DeeLexer extends CommonTokenSource {
 			if(Character.isLowSurrogate((char) ch) || Character.isHighSurrogate((char) ch)
 				|| Character.isUnicodeIdentifierPart(ch)
 			) {
-				return DeeRuleSelection.IDENTIFIER;
+				return DeeRuleSelection.ALPHA;
 			}
 		}
 		return charRuleCategory[ch];
@@ -136,9 +131,9 @@ public class DeeLexer extends CommonTokenSource {
 	}
 	
 	protected Token matchEOFCharacter() {
-		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.EOL);
+		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.EOF);
 		pos++;
-		return createToken(DeeTokens.EOL);
+		return createToken(DeeTokens.EOF);
 	}
 	
 	protected Token matchEOL() {
@@ -168,21 +163,21 @@ public class DeeLexer extends CommonTokenSource {
 	protected static final String[] SEEKUNTIL_MULTICOMMENTS = { "+/", "/+" };
 	protected static final String[] SEEKUNTIL_NLS = { "\r", "\n" };
 	
-	protected Token matchSlashCharacter() {
+	protected Token matchSlashRules() {
 		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.SLASH);
 		
 		pos++;
 		
 		if(lookAhead() == '*') {
-			//BUG here //pos++;
+			pos++;
 			int result = seekUntil("*/");
 			if(result == 0) {
 				return createToken(DeeTokens.COMMENT);
 			} else {
 				return createErrorToken(pos, DeeParserMessages.COMMENT_NOT_TERMINATED);
 			}
-		} else if(lookAhead() == '+') { //BUG here
-			//BUG here //pos++;
+		} else if(lookAhead() == '+') {
+			pos++;
 			int nestingLevel = 1;
 			do {
 				int result = seekUntil(SEEKUNTIL_MULTICOMMENTS);
@@ -196,15 +191,15 @@ public class DeeLexer extends CommonTokenSource {
 					return createErrorToken(pos, DeeParserMessages.COMMENTNESTED_NOT_TERMINATED);
 				}
 			} while (nestingLevel > 0);
-			return createToken(DeeTokens.COMMENT, pos); // BUG here
+			return createToken(DeeTokens.COMMENT);
 			
 		} else if(lookAhead() == '/') {
-			//BUG here //pos++;
+			pos++;
 			seekToNewline();
 			// Note that EOF is also a valid terminator for this comment
 			return createToken(DeeTokens.COMMENT);
 		} else {
-			return createToken(DeeTokens.DIV_X, pos); // BUG here
+			return createToken(DeeTokens.DIV);
 		}
 	}
 	
@@ -217,15 +212,15 @@ public class DeeLexer extends CommonTokenSource {
 		}
 	}
 	
-	protected Token matchIdentifier_Like() {
-		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.IDENTIFIER);
+	protected Token matchAlphaRules() {
+		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.ALPHA);
 		
 		while(true) {
 			pos++;
 			int ch = lookAhead();
 			
 			DeeRuleSelection charCategory = getCharCategory(ch);
-			if(charCategory == DeeRuleSelection.IDENTIFIER || charCategory == DeeRuleSelection.INTEGER) {
+			if(charCategory == DeeRuleSelection.ALPHA || charCategory == DeeRuleSelection.DIGIT) {
 				continue;
 			}
 			
@@ -233,15 +228,15 @@ public class DeeLexer extends CommonTokenSource {
 		}
 	}
 	
-	protected Token matchInteger() {
-		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.INTEGER);
+	protected Token matchDigitRules() {
+		assertTrue(charRuleCategory[lookAheadAscii()] == DeeRuleSelection.DIGIT);
 		
 		while(true) {
 			pos++;
 			
 			int ch = lookAhead();
 			
-			if(getCharCategory(ch) == DeeRuleSelection.INTEGER) {
+			if(getCharCategory(ch) == DeeRuleSelection.DIGIT) {
 				continue;
 			}
 			
