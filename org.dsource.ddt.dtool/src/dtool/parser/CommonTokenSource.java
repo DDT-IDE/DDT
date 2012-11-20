@@ -72,23 +72,6 @@ public abstract class CommonTokenSource {
 	
 	/* ------------------------ Helpers ------------------------ */
 	
-	/** Advance position until given string is found, or input reaches EOF.
-	 * Returns 0 if given string was found (position is advanced to end of string), 
-	 * or -1 if EOF was encountered (position is advanced to EOF). */
-	public final int seekUntil(String string) {
-		while(true) {
-			boolean matches = inputMatchesSequence(string);
-			if(matches) {
-				pos += string.length();
-				return 0;
-			} else if(lookAhead() == -1) {
-				return -1;
-			} else {
-				pos++;
-			}
-		}
-	}
-	
 	/** Advance position until any of given strings is found, or input reaches EOF.
 	 * Returns the index in given strings array of the matched string (position is advanced to end of string), 
 	 * or -1 if EOF was encountered (position is advanced to EOF). */
@@ -110,6 +93,37 @@ public abstract class CommonTokenSource {
 			} else {
 				pos++;
 			}
+		}
+	}
+	
+	/** Advance position until given string is found, or input reaches EOF.
+	 * Returns 0 if given string was found (position is advanced to end of string), 
+	 * or -1 if EOF was encountered (position is advanced to EOF). */
+	public final int seekUntil(String string) {
+		while(true) {
+			boolean matches = inputMatchesSequence(string);
+			if(matches) {
+				pos += string.length();
+				return 0;
+			} else if(lookAhead() == -1) {
+				return -1;
+			} else {
+				pos++;
+			}
+		}
+	}
+	
+	// Optimization of previous method
+	public final int seekUntil(char endChar) {
+		while(true) {
+			int ch = lookAhead(0);
+			if(ch == endChar) {
+				pos++; 
+				return 0;
+			} else if(ch == -1) {
+				return -1;
+			}
+			pos++;
 		}
 	}
 	

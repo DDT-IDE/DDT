@@ -11,18 +11,27 @@ public class DeeLexerTest extends CommonTestUtils {
 	@Test
 	public void basicLexerTest() throws Exception { basicLexerTest$(); }
 	public void basicLexerTest$() throws Exception {
-		runLexerTest("  \t", array(DeeTokens.WHITESPACE));
-		runLexerTest("\n", array(DeeTokens.EOL));
-		runLexerTest("/*asd*/", array(DeeTokens.COMMENT));
-		runLexerTest("asdf", array(DeeTokens.IDENTIFIER));
+		testLexerTokenizing("  \t", array(DeeTokens.WHITESPACE));
+		testLexerTokenizing("\n", array(DeeTokens.EOL));
+		testLexerTokenizing("/*asd*/", array(DeeTokens.COMMENT_MULTI));
+		testLexerTokenizing("/+as/+ sadf  +/ d+/", array(DeeTokens.COMMENT_NESTED));
+		testLexerTokenizing("// asdfs", array(DeeTokens.COMMENT_LINE));
 		
-		runLexerTest("  \t\n/*dfg*/asdf"
-			+"//coment\n123asd", 
-			array(DeeTokens.WHITESPACE, DeeTokens.EOL, DeeTokens.COMMENT, DeeTokens.IDENTIFIER, 
-				DeeTokens.COMMENT, DeeTokens.INTEGER, DeeTokens.IDENTIFIER));
+		testLexerTokenizing("`asdfsdaf`", array(DeeTokens.STRING_WYSIWYG));
+		testLexerTokenizing("r\"asdfsdaf\"", array(DeeTokens.STRING_WYSIWYG));
+		testLexerTokenizing("\"asdfsdaf\"d", array(DeeTokens.STRING_DQ));
+		testLexerTokenizing("x\"A0 01 FF\"w", array(DeeTokens.STRING_HEX));
+		
+		//TODO
+		//runLexerTest("q\"(foo(xxx))\"", array(DeeTokens.STRING_DELIM));
+		//runLexerTest("q{(foo(x\"asfdsf\"xx))}", array(DeeTokens.STRING_TOKENS));
+		
+		
+		testLexerTokenizing("asdf", array(DeeTokens.IDENTIFIER));
+		
 	}
 	
-	public static void runLexerTest(String source, DeeTokens[] deeTokens) {
+	public static void testLexerTokenizing(String source, DeeTokens[] deeTokens) {
 		DeeLexer deeLexer = new DeeLexer(source);
 		int readSourceOffset = 0;
 		
@@ -36,8 +45,8 @@ public class DeeLexerTest extends CommonTestUtils {
 			constructedSource.append(token.getSourceValue());
 			assertTrue(sourceSoFar.contentEquals(constructedSource));
 		}
-		assertEquals(source, constructedSource.toString());
 		checkToken(deeLexer, DeeTokens.EOF, readSourceOffset);
+		assertEquals(source, constructedSource.toString());
 	}
 	
 	public static Token checkToken(DeeLexer deeLexer, DeeTokens expectedTokenCode, int readOffset) {

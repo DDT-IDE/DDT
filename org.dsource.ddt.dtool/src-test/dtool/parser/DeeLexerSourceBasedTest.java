@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.regex.Matcher;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -22,6 +23,9 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/lexer-tests";
 	
+	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 28;
+	protected static int splitTestCount = 0; 
+	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
 		return getTestFilesFromFolderAsParameterList(DToolTestResources.getTestResource(TESTFILESDIR));
@@ -35,11 +39,17 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 	}
 	
 	@Test
-	public void runSourceBasedTest() throws IOException {
+	public void runSourceBasedTests() throws IOException {
 		String[] splitSourceBasedTests = enteringSourceBasedTest(file);
 		for (String testString : splitSourceBasedTests) {
+			splitTestCount++;
 			runLexerSourceBasedTest(testString);
 		}
+	}
+	
+	@AfterClass
+	public static void checkTestCount() {
+		assertTrue(splitTestCount == LEXER_SOURCE_BASED_TESTS_COUNT);
 	}
 	
 	public static final String ANY_UNTIL_NEWLINE_REGEX = "[^\\\r\\\n]*\\\r?\\\n";
@@ -57,14 +67,19 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 		
 		DeeTokens[] expectedTokens = new DeeTokens[expectedLines.length-1];
 		for (int i = 0; i < expectedLines.length; i++) {
-			String expectedLine = expectedLines[i].trim();
-			if(expectedLine.endsWith("+/"))
+			String expectedTokenStr = expectedLines[i].trim();
+			if(expectedTokenStr.endsWith("+/"))
 				break;
 			try {
-				if(expectedLine.equals("*")) {
+				if(expectedTokenStr.equals("*")) {
 					expectedTokens[i] = null;
 				} else {
-					DeeTokens expectedToken = DeeTokens.valueOf(expectedLine);
+					if(expectedTokenStr.equals("ID")) {
+						expectedTokenStr = DeeTokens.IDENTIFIER.name();
+					} else if(expectedTokenStr.equals("WS")) {
+						expectedTokenStr = DeeTokens.WHITESPACE.name();
+					}
+					DeeTokens expectedToken = DeeTokens.valueOf(expectedTokenStr);
 					expectedTokens[i] = expectedToken;
 				}
 			} catch(IllegalArgumentException e) {
@@ -73,7 +88,7 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 		}
 		
 		String source = testSource.substring(0, lexerSourceEnd);
-		DeeLexerTest.runLexerTest(source, expectedTokens);
+		DeeLexerTest.testLexerTokenizing(source, expectedTokens);
 	}
 	
 }
