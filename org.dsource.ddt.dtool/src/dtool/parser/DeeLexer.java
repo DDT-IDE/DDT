@@ -30,7 +30,7 @@ public class DeeLexer extends CommonTokenSource {
 	}
 	
 	public enum DeeRuleSelection {
-		NONE,
+		BAD_TOKEN,
 		
 		EOF,
 		
@@ -69,8 +69,8 @@ public class DeeLexer extends CommonTokenSource {
 	protected static final DeeRuleSelection[] startRuleDecider;
 	
 	static {
-		startRuleDecider = new DeeRuleSelection[ASCII_LIMIT];
-		Arrays.fill(startRuleDecider, DeeRuleSelection.NONE);
+		startRuleDecider = new DeeRuleSelection[ASCII_LIMIT+1];
+		Arrays.fill(startRuleDecider, DeeRuleSelection.BAD_TOKEN);
 		
 		startRuleDecider[0x00] = DeeRuleSelection.EOF;
 		startRuleDecider[0x1A] = DeeRuleSelection.EOF;
@@ -138,7 +138,7 @@ public class DeeLexer extends CommonTokenSource {
 		case OPEN_BRACKET: return matchError();
 		case LESS_THAN: return matchError();
 		
-		case NONE: return matchError();
+		case BAD_TOKEN: return matchError();
 		
 		}
 		throw assertUnreachable();
@@ -160,15 +160,14 @@ public class DeeLexer extends CommonTokenSource {
 	}
 	
 	protected Token matchError() {
-		int endPos = pos + 1; // BUG here
-		
+		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.BAD_TOKEN);
 		while(true) {
-			endPos++;
-			int ch = getCharacter(endPos);
-			if(getLexingDecision(ch) == null) {
+			pos++;
+			int ch = lookAhead();
+			if(getLexingDecision(ch) == DeeRuleSelection.BAD_TOKEN) {
 				continue;
 			} else {
-				return createErrorToken(endPos, DeeParserMessages.INVALID_TOKEN);
+				return createErrorToken(pos, DeeParserMessages.INVALID_TOKEN);
 			}
 		}
 	}

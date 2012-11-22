@@ -8,3 +8,12 @@ EOF,
 EOL,
 EOF,
 +/
+//#SPLIT_SOURCE_TEST _________ boundary case
+
+/+  +/
+""
+/+#LEXERTEST
+ERROR,EOL,
+COMMENT_NESTED,EOL,
+STRING_DQ,EOL
++/
