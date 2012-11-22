@@ -56,12 +56,11 @@ public class DeeLexerTest extends CommonTestUtils {
 	}
 	
 	public static Token checkToken(DeeLexer deeLexer, DeeTokens expectedTokenCode, int readOffset) {
-		DeeTokens tokenCode = deeLexer.peekCode();
+		Token token = deeLexer.next();
+		DeeTokens tokenCode = token.getTokenCode();
 		if(expectedTokenCode != null) {
 			assertTrue(tokenCode == expectedTokenCode);
 		}
-		Token token = deeLexer.next();
-		assertTrue(token.getTokenCode() == tokenCode);
 		assertTrue(token.getStartPos() == readOffset);
 		
 		switch (tokenCode) {

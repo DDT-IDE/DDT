@@ -24,7 +24,8 @@ public class DeeLexer extends CommonTokenSource {
 		
 		if(lookAhead(0) == '#' && lookAhead(1) == '!') {
 			seekToNewline();
-			currentToken = createToken(DeeTokens.SCRIPT_LINE_INTRO);
+			// TODO
+			createToken(DeeTokens.SCRIPT_LINE_INTRO);
 		}
 		return;
 	}
@@ -476,7 +477,7 @@ public class DeeLexer extends CommonTokenSource {
 		
 		int nestingLevel = 1;
 		do {
-			Token token = parseAndConsumeToken();
+			Token token = next();
 			if(token.getTokenCode() == DeeTokens.OPEN_BRACE) {
 				nestingLevel++;
 			} else if (token.getTokenCode() == DeeTokens.CLOSE_BRACE) {

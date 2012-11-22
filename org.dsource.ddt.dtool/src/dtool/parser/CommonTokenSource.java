@@ -13,42 +13,17 @@ public abstract class CommonTokenSource {
 	protected int tokenStartPos = 0;
 	protected int pos = -1;
 	
-	protected Token currentToken = null;
-	
 	public CommonTokenSource(CharSequence source) {
 		// Need to investigate how UTF chars are presented to us.
 		this.source = source;
 	}
 	
-	public DeeTokens peekCode() {
-		return peek().getTokenCode();
-	}
-	
-	public Token peek() {
-		scanCurrentToken();
-		return currentToken;
-	}
-	
 	public Token next() { 
-		scanCurrentToken();
-		Token nextToken = currentToken;
-		currentToken = null;
-		tokenStartPos = nextToken.getEndPos();
-		return nextToken;
-	}
-	
-	public Token parseAndConsumeToken() {
 		Token token = parseToken();
+		assertNotNull(token);
+		
 		tokenStartPos = token.getEndPos();
 		return token;
-	}
-	
-	protected void scanCurrentToken() {
-		if(currentToken != null) {
-			return;
-		}
-		currentToken = parseToken();
-		assertNotNull(currentToken);
 	}
 	
 	/** Gets the character from absolute position index. */
