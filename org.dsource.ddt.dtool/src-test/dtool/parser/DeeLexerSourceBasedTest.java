@@ -23,7 +23,7 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/lexer-tests";
 	
-	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 28;
+	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 44;
 	protected static int splitTestCount = 0; 
 	
 	@Parameters
@@ -61,15 +61,14 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 		int index = lexerSourceEnd + LEXERTEST_KEYWORD.length();
 		
 		Matcher matcher = MiscDeeTestUtils.matchRegexp(ANY_UNTIL_NEWLINE_REGEX, testSource, index);
+		String expectedTokensList = testSource.substring(matcher.end());
+		expectedTokensList = expectedTokensList.replaceFirst("(\\\r?\\\n)?\\+/(?s).*", "");
 		
-		String expectedTokensData = testSource.substring(matcher.end());
-		String[] expectedLines = expectedTokensData.split("(\\\r?\\\n)|,");
+		String[] expectedTokensStr = expectedTokensList.split("(,(\\\r?\\\n)?)");
 		
-		DeeTokens[] expectedTokens = new DeeTokens[expectedLines.length-1];
-		for (int i = 0; i < expectedLines.length; i++) {
-			String expectedTokenStr = expectedLines[i].trim();
-			if(expectedTokenStr.endsWith("+/"))
-				break;
+		DeeTokens[] expectedTokens = new DeeTokens[expectedTokensStr.length];
+		for (int i = 0; i < expectedTokensStr.length; i++) {
+			String expectedTokenStr = expectedTokensStr[i].trim();
 			try {
 				if(expectedTokenStr.equals("*")) {
 					expectedTokens[i] = null;

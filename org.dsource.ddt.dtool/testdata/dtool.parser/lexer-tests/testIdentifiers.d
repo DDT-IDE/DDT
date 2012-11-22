@@ -5,10 +5,10 @@ Astart
 _start
 rStart hStart xStart qStart
 /+#LEXERTEST
-ID,EOL
-ID,EOL
-INTEGER,ID,EOL
-ID,EOL
+ID,EOL,
+ID,EOL,
+INTEGER,ID,EOL,
+ID,EOL,
 ID ,WS,ID ,WS,ID ,WS,ID ,EOL
 +/
 

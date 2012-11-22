@@ -1,10 +1,10 @@
 //#SPLIT_SOURCE_TEST _____________________
 /+#LEXERTEST  
-EOF
+EOF,
 +/
 //#SPLIT_SOURCE_TEST _____________________
 
 /+#LEXERTEST --
-EOL  
-EOF
+EOL,
+EOF,
 +/

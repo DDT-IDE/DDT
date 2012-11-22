@@ -22,13 +22,13 @@ public class DeeLexerTest extends CommonTestUtils {
 		testLexerTokenizing("\"asdfsdaf\"d", array(DeeTokens.STRING_DQ));
 		testLexerTokenizing("x\"A0 01 FF\"w", array(DeeTokens.STRING_HEX));
 		
+		testLexerTokenizing("q\"/foo(xxx)/\"", array(DeeTokens.STRING_DELIM));
+		testLexerTokenizing("q\"(foo(xxx))\"", array(DeeTokens.STRING_DELIM));
+		testLexerTokenizing("q\"foo\n(xxx)\nfoo\"", array(DeeTokens.STRING_DELIM));
 		//TODO
-		//runLexerTest("q\"(foo(xxx))\"", array(DeeTokens.STRING_DELIM));
-		//runLexerTest("q{(foo(x\"asfdsf\"xx))}", array(DeeTokens.STRING_TOKENS));
-		
+		//testLexerTokenizing("q{(foo(x\"asfdsf\"xx))}", array(DeeTokens.STRING_TOKENS));
 		
 		testLexerTokenizing("asdf", array(DeeTokens.IDENTIFIER));
-		
 	}
 	
 	public static void testLexerTokenizing(String source, DeeTokens[] deeTokens) {
@@ -42,15 +42,22 @@ public class DeeLexerTest extends CommonTestUtils {
 			readSourceOffset = token.getEndPos();
 			String sourceSoFar = source.substring(0, readSourceOffset);
 			
-			constructedSource.append(token.getSourceValue());
+			String tokenSourceValue = token.getSourceValue();
+			// retest with just the token source to make sure boundaries are correct
+			if(deeTokens.length != 1) {
+				testLexerTokenizing(tokenSourceValue, array(expectedTokenCode));
+			}
+			
+			constructedSource.append(tokenSourceValue);
 			assertTrue(sourceSoFar.contentEquals(constructedSource));
 		}
+		assertTrue(deeLexer.tokenStartPos == source.length());
 		checkToken(deeLexer, DeeTokens.EOF, readSourceOffset);
 		assertEquals(source, constructedSource.toString());
 	}
 	
 	public static Token checkToken(DeeLexer deeLexer, DeeTokens expectedTokenCode, int readOffset) {
-		DeeTokens tokenCode = deeLexer.peek();
+		DeeTokens tokenCode = deeLexer.peekCode();
 		if(expectedTokenCode != null) {
 			assertTrue(tokenCode == expectedTokenCode);
 		}

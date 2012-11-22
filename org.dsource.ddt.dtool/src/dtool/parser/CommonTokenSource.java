@@ -20,9 +20,13 @@ public abstract class CommonTokenSource {
 		this.source = source;
 	}
 	
-	public DeeTokens peek() {
+	public DeeTokens peekCode() {
+		return peek().getTokenCode();
+	}
+	
+	public Token peek() {
 		scanCurrentToken();
-		return currentToken.getTokenCode();
+		return currentToken;
 	}
 	
 	public Token next() { 
@@ -95,10 +99,7 @@ public abstract class CommonTokenSource {
 			}
 		}
 	}
-	
-	/** Advance position until given string is found, or input reaches EOF.
-	 * Returns 0 if given string was found (position is advanced to end of string), 
-	 * or -1 if EOF was encountered (position is advanced to EOF). */
+	/** Optimization of {@link #seekUntil(String[])} method for 1 String */
 	public final int seekUntil(String string) {
 		while(true) {
 			boolean matches = inputMatchesSequence(string);
@@ -112,22 +113,49 @@ public abstract class CommonTokenSource {
 			}
 		}
 	}
-	
-	// Optimization of previous method
+	/** Optimization of {@link #seekUntil(String[])} method for 1 char */
 	public final int seekUntil(char endChar) {
 		while(true) {
 			int ch = lookAhead(0);
+			if(ch == -1) {
+				return -1;
+			}
+			pos++; 
 			if(ch == endChar) {
-				pos++; 
 				return 0;
-			} else if(ch == -1) {
+			}
+		}
+	}
+	/** Optimization of {@link #seekUntil(String[])} method for 2 char */
+	public final int seekUntil(char endChar1, char endChar2) {
+		while(true) {
+			int ch = lookAhead(0);
+			if(ch == -1) {
 				return -1;
 			}
 			pos++;
+			if(ch == endChar1) {
+				return 0;
+			} else if(ch == endChar2) {
+				return 1;
+			} 
 		}
 	}
 	
+	static { assertTrue( ((int)-1) != ((char)-1) ); } // inputMatchesSequence relies on this
+	
 	/** Returns true if the sequence from current position matches given string. */
+	public final boolean inputMatchesSequence(CharSequence string) {
+		int length = string.length();
+		for (int i = 0; i < length; i++) {
+			int ch = lookAhead(i);
+			if(ch != string.charAt(i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	/** Optimization of {@link #inputMatchesSequence(CharSequence)} , since String is final and not an interface */
 	public final boolean inputMatchesSequence(String string) {
 		int length = string.length();
 		for (int i = 0; i < length; i++) {

@@ -2,14 +2,14 @@
 
 
 /+#LEXERTEST#
-EOL
-EOL
-EOL
+EOL,
+EOL,
+EOL,
 +/
 //#SPLIT_SOURCE_TEST _____________________
 
 a
 /+#LEXERTEST#
-EOL
+EOL,
 *,EOL
 +/

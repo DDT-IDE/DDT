@@ -8,4 +8,13 @@ public class DeeParserMessages {
 	
 	public static final String STRING_NOT_TERMINATED = "String not terminated.";
 	
+	public static final String STRING_NOT_TERMINATED__REACHED_EOF = 
+		"String not terminated, found EOF.";
+	public static final String STRING_DELIM_NO_DELIMETER = 
+		"Found EOF when expecting string delimeter.";
+	public static final String STRING_DELIM_NOT_PROPERLY_TERMINATED = 
+		"Expected '\"' after closing delimiter in delimited string.";
+	public static final String STRING_DELIM_ID_NOT_PROPERLY_FORMED = 
+		"Expected newline after identifier of delimited string.";
+	
 }
