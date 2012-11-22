@@ -1,6 +1,6 @@
 //#SPLIT_SOURCE_TEST _____________________
-  /+#LEXERTEST
-WHITESPACE
+  a /+#LEXERTEST
+WHITESPACE,ID,WHITESPACE
 +/
 //#SPLIT_SOURCE_TEST _____________________
  	a	a	

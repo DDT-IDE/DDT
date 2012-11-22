@@ -22,6 +22,8 @@ public enum DeeTokens {
 	STRING_TOKENS,
 	
 	DIV,
+	OPEN_BRACE,
+	CLOSE_BRACE,
 	
 	INTEGER,
 	;

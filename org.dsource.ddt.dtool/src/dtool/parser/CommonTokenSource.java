@@ -32,8 +32,15 @@ public abstract class CommonTokenSource {
 	public Token next() { 
 		scanCurrentToken();
 		Token nextToken = currentToken;
-		consumeCurrentToken();
+		currentToken = null;
+		tokenStartPos = nextToken.getEndPos();
 		return nextToken;
+	}
+	
+	public Token parseAndConsumeToken() {
+		Token token = parseToken();
+		tokenStartPos = token.getEndPos();
+		return token;
 	}
 	
 	protected void scanCurrentToken() {
@@ -42,11 +49,6 @@ public abstract class CommonTokenSource {
 		}
 		currentToken = parseToken();
 		assertNotNull(currentToken);
-	}
-	
-	protected void consumeCurrentToken() {
-		tokenStartPos = currentToken.getEndPos();
-		currentToken = null;
 	}
 	
 	/** Gets the character from absolute position index. */
@@ -79,7 +81,7 @@ public abstract class CommonTokenSource {
 	/** Advance position until any of given strings is found, or input reaches EOF.
 	 * Returns the index in given strings array of the matched string (position is advanced to end of string), 
 	 * or -1 if EOF was encountered (position is advanced to EOF). */
-	public final int seekUntil(String[] strings) {
+	public final int seekUntil(final String[] strings) {
 		while(true) {
 			int i = 0;
 			boolean matchesAny = false;
@@ -129,7 +131,7 @@ public abstract class CommonTokenSource {
 	/** Optimization of {@link #seekUntil(String[])} method for 2 char */
 	public final int seekUntil(char endChar1, char endChar2) {
 		while(true) {
-			int ch = lookAhead(0);
+			int ch = lookAhead();
 			if(ch == -1) {
 				return -1;
 			}
@@ -165,6 +167,26 @@ public abstract class CommonTokenSource {
 			}
 		}
 		return true;
+	}
+	
+	/*---------------------------------------*/
+	
+	public final int seekToNewline() {
+		while(true) {
+			int ch = lookAhead();
+			if(ch == EOF) {
+				return EOF;
+			}
+			pos++;
+			if(ch == '\r') {
+				if(lookAhead() == '\n') {
+					pos++;
+				}
+				return 0;
+			} else if(ch == '\n') {
+				return 0;
+			} 
+		}
 	}
 	
 }

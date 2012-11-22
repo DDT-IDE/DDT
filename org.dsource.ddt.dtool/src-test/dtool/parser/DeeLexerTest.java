@@ -25,8 +25,7 @@ public class DeeLexerTest extends CommonTestUtils {
 		testLexerTokenizing("q\"/foo(xxx)/\"", array(DeeTokens.STRING_DELIM));
 		testLexerTokenizing("q\"(foo(xxx))\"", array(DeeTokens.STRING_DELIM));
 		testLexerTokenizing("q\"foo\n(xxx)\nfoo\"", array(DeeTokens.STRING_DELIM));
-		//TODO
-		//testLexerTokenizing("q{(foo(x\"asfdsf\"xx))}", array(DeeTokens.STRING_TOKENS));
+		testLexerTokenizing("q{ asdf __TIME__  {nest \n braces} }", array(DeeTokens.STRING_TOKENS));
 		
 		testLexerTokenizing("asdf", array(DeeTokens.IDENTIFIER));
 	}

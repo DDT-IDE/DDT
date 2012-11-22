@@ -42,6 +42,7 @@ public class DeeLexer extends CommonTokenSource {
 		OPEN_PARENS,
 		OPEN_BRACKET,
 		OPEN_BRACE,
+		CLOSE_BRACE,
 		LESS_THAN,
 		
 		ALPHA(true, true),
@@ -86,6 +87,7 @@ public class DeeLexer extends CommonTokenSource {
 		
 		startRuleDecider['('] = DeeRuleSelection.OPEN_PARENS;
 		startRuleDecider['{'] = DeeRuleSelection.OPEN_BRACE;
+		startRuleDecider['}'] = DeeRuleSelection.CLOSE_BRACE;
 		startRuleDecider['['] = DeeRuleSelection.OPEN_BRACKET;
 		startRuleDecider['<'] = DeeRuleSelection.LESS_THAN;
 		
@@ -133,7 +135,8 @@ public class DeeLexer extends CommonTokenSource {
 		
 		 //TODO
 		case OPEN_PARENS: return matchError();
-		case OPEN_BRACE:  return matchError();
+		case OPEN_BRACE: return matchSimpleToken(DeeTokens.OPEN_BRACE);
+		case CLOSE_BRACE: return matchSimpleToken(DeeTokens.CLOSE_BRACE);
 		case OPEN_BRACKET: return matchError();
 		case LESS_THAN: return matchError();
 		
@@ -171,6 +174,11 @@ public class DeeLexer extends CommonTokenSource {
 		}
 	}
 	
+	protected Token matchSimpleToken(DeeTokens tokenCode) {
+		pos++;
+		return new Token(tokenCode, source, tokenStartPos, pos);
+	}
+	
 	public ErrorToken createErrorToken(int endPos, String message) {
 		return new Token.ErrorToken(source, tokenStartPos, endPos, message);
 	}
@@ -183,7 +191,7 @@ public class DeeLexer extends CommonTokenSource {
 	
 	protected Token matchEOL() {
 		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.EOL);
-		if(lookAheadAscii() == 0x0D && lookAhead(1) == 0x0A) {
+		if(lookAhead() == 0x0D && lookAhead(1) == 0x0A) {
 			pos += 2;
 		} else {
 			pos += 1;
@@ -261,7 +269,7 @@ public class DeeLexer extends CommonTokenSource {
 			
 		} else if(lookAhead() == '/') {
 			pos++;
-			seekToNewline();
+			seekToNewlineOrEOFRule();
 			// Note that EOF is also a valid terminator for this comment
 			return createToken(DeeTokens.COMMENT_LINE);
 		} else {
@@ -269,14 +277,22 @@ public class DeeLexer extends CommonTokenSource {
 		}
 	}
 	
-	public final int seekToNewline() {
-		int result = seekUntil('\r', '\n');
-		if(result == 0) { // "\r"
-			if(lookAhead() == '\n') {
-				pos++;
+	public final void seekToNewlineOrEOFRule() {
+		while(true) {
+			int ch = lookAhead();
+			if(ch == EOF) {
+				return;
+			}
+			pos++;
+			if(ch == '\r') {
+				if(lookAhead() == '\n') {
+					pos++;
+				}
+				return;
+			} else if(ch == '\n' || getLexingDecision(ch) == DeeRuleSelection.EOF_CHARS) {
+				return;
 			}
 		}
-		return result;
 	}
 	
 	protected Token matchWYSIWYGString() {
@@ -358,11 +374,10 @@ public class DeeLexer extends CommonTokenSource {
 		if(lookAhead(1) == '"') {
 			return matchDelimString();
 		} else if(lookAhead(1) == '{') {
-			// TODO q token string
+			return matchTokenString();
 		} else {
-			
+			return ruleAlphaStart(); 
 		}
-		return ruleAlphaStart(); 
 	}
 	
 	public Token matchDelimString() {
@@ -384,6 +399,34 @@ public class DeeLexer extends CommonTokenSource {
 			} else {
 				return matchSimpleDelimString((char)ch, (char)ch);
 			}
+		}
+	}
+	
+	public Token matchSimpleDelimString(char openDelim, char closeDelim) {
+		assertTrue(lookAhead() == openDelim);
+		pos++;
+		int nestingLevel = 1;
+		
+		do {
+			int result = seekUntil(closeDelim, openDelim);
+			// note, closeDelim can be equal to openDelim, in which case result == 1 should never happen 
+			
+			if(result == 0) { // closeDelim
+				nestingLevel--;
+			} else if(result == 1) { // openDelim
+				nestingLevel++;
+			} else {
+				assertTrue(result == -1);
+				return createErrorToken(pos, DeeParserMessages.STRING_NOT_TERMINATED__REACHED_EOF);
+			}
+		} while (nestingLevel > 0);
+		
+		if(lookAhead() == '"') {
+			pos++;
+			return createToken(DeeTokens.STRING_DELIM);
+		} else {
+			seekUntil('"');
+			return createErrorToken(pos, DeeParserMessages.STRING_DELIM_NOT_PROPERLY_TERMINATED);
 		}
 	}
 	
@@ -425,32 +468,27 @@ public class DeeLexer extends CommonTokenSource {
 		return result;
 	}
 	
-	protected Token matchSimpleDelimString(char openDelim, char closeDelim) {
-		assertTrue(lookAhead() == openDelim);
-		pos++;
-		int nestingLevel = 1;
+	public Token matchTokenString() {
+		pos+=2;
 		
+		int tokenStringStartPos = tokenStartPos;
+		tokenStartPos = pos;
+		
+		int nestingLevel = 1;
 		do {
-			int result = seekUntil(closeDelim, openDelim);
-			// note, closeDelim can be equal to openDelim, in which case result == 1 should never happen 
-			
-			if(result == 0) { // closeDelim
-				nestingLevel--;
-			} else if(result == 1) { // openDelim
+			Token token = parseAndConsumeToken();
+			if(token.getTokenCode() == DeeTokens.OPEN_BRACE) {
 				nestingLevel++;
-			} else {
-				assertTrue(result == -1);
+			} else if (token.getTokenCode() == DeeTokens.CLOSE_BRACE) {
+				nestingLevel--;
+			} else if (token.getTokenCode() == DeeTokens.EOF) {
+				tokenStartPos = tokenStringStartPos;
 				return createErrorToken(pos, DeeParserMessages.STRING_NOT_TERMINATED__REACHED_EOF);
 			}
-		} while (nestingLevel > 0);
+		} while(nestingLevel > 0);
 		
-		if(lookAhead() == '"') {
-			pos++;
-			return createToken(DeeTokens.STRING_DELIM);
-		} else {
-			seekUntil('"');
-			return createErrorToken(pos, DeeParserMessages.STRING_DELIM_NOT_PROPERLY_TERMINATED);
-		}
+		tokenStartPos = tokenStringStartPos;
+		return createToken(DeeTokens.STRING_TOKENS);
 	}
 	
 	protected Token matchDigitRules() {
