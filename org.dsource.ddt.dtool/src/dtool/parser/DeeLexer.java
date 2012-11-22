@@ -33,6 +33,7 @@ public class DeeLexer extends CommonTokenSource {
 		BAD_TOKEN,
 		
 		EOF,
+		EOF_CHARS,
 		
 		EOL,
 		WHITESPACE,
@@ -72,8 +73,8 @@ public class DeeLexer extends CommonTokenSource {
 		startRuleDecider = new DeeRuleSelection[ASCII_LIMIT+1];
 		Arrays.fill(startRuleDecider, DeeRuleSelection.BAD_TOKEN);
 		
-		startRuleDecider[0x00] = DeeRuleSelection.EOF;
-		startRuleDecider[0x1A] = DeeRuleSelection.EOF;
+		startRuleDecider[0x00] = DeeRuleSelection.EOF_CHARS;
+		startRuleDecider[0x1A] = DeeRuleSelection.EOF_CHARS;
 		
 		startRuleDecider[0x0D] = DeeRuleSelection.EOL;
 		startRuleDecider[0x0A] = DeeRuleSelection.EOL;
@@ -109,18 +110,16 @@ public class DeeLexer extends CommonTokenSource {
 	@Override
 	protected Token parseToken() {
 		pos = tokenStartPos;
-		if(pos >= source.length()) {
-			return createToken(DeeTokens.EOF);
-		}
 		
-		char ch = source.charAt(pos);
-		
-		DeeRuleSelection ruleCategory = getLexingDecision(ch);
+		DeeRuleSelection ruleCategory = getLexingDecision(lookAhead());
 		
 		switch (ruleCategory) {
-		case EOF: return matchEOFCharacter();
+		case EOF: return createToken(DeeTokens.EOF);
+		
+		case EOF_CHARS: return matchEOFCharacter();
 		case EOL: return matchEOL();
 		case WHITESPACE: return matchWhiteSpace();
+		
 		case SLASH: return ruleSlashStart();
 		
 		case STRING_ALTWYSIWYG: return matchWYSIWYGString();
@@ -144,7 +143,7 @@ public class DeeLexer extends CommonTokenSource {
 		throw assertUnreachable();
 	}
 	
-	public DeeRuleSelection getLexingDecision(int ch) {
+	public static DeeRuleSelection getLexingDecision(int ch) {
 		if(ch == EOF) {
 			return DeeRuleSelection.EOF;
 		}
@@ -177,7 +176,7 @@ public class DeeLexer extends CommonTokenSource {
 	}
 	
 	protected Token matchEOFCharacter() {
-		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.EOF);
+		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.EOF_CHARS);
 		pos++;
 		return createToken(DeeTokens.EOF);
 	}
@@ -221,7 +220,7 @@ public class DeeLexer extends CommonTokenSource {
 			
 			DeeRuleSelection charCategory = getLexingDecision(ch);
 			// TODO consider UTF, etc.
-			if(charCategory == null || !charCategory.canBeIdentifierPart) {
+			if(!charCategory.canBeIdentifierPart) {
 				break;
 			}
 			pos++;
@@ -373,7 +372,6 @@ public class DeeLexer extends CommonTokenSource {
 		DeeRuleSelection ruleSelection = getLexingDecision(ch); 
 		
 		switch(ruleSelection) {
-		// BUG here, other EOF characters considered
 		case EOF: return createErrorToken(pos, DeeParserMessages.STRING_DELIM_NO_DELIMETER);
 		case OPEN_PARENS: return matchSimpleDelimString('(',')');
 		case OPEN_BRACKET: return matchSimpleDelimString('[',']');
@@ -387,7 +385,6 @@ public class DeeLexer extends CommonTokenSource {
 				return matchSimpleDelimString((char)ch, (char)ch);
 			}
 		}
-		
 	}
 	
 	public Token matchHereDocDelimString() {
