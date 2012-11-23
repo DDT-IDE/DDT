@@ -12,22 +12,6 @@ public class DeeLexer extends CommonTokenSource {
 	
 	public DeeLexer(CharSequence source) {
 		super(source);
-		
-		scanBegginning();
-	}
-
-	protected void scanBegginning() {
-		// TODO: UTF BOM's
-// If the source file does not start with a BOM, then the first character must be less than or equal to U0000007F.
-		
-		pos = tokenStartPos;
-		
-		if(lookAhead(0) == '#' && lookAhead(1) == '!') {
-			seekToNewline();
-			// TODO
-			createToken(DeeTokens.SCRIPT_LINE_INTRO);
-		}
-		return;
 	}
 	
 	public enum DeeRuleSelection {
@@ -39,6 +23,7 @@ public class DeeLexer extends CommonTokenSource {
 		EOL,
 		WHITESPACE,
 		
+		HASH,
 		SLASH,
 		OPEN_PARENS,
 		OPEN_BRACKET,
@@ -93,6 +78,7 @@ public class DeeLexer extends CommonTokenSource {
 		startRuleDecider['<'] = DeeRuleSelection.LESS_THAN;
 		
 		startRuleDecider['/'] = DeeRuleSelection.SLASH;
+		startRuleDecider['#'] = DeeRuleSelection.HASH;
 		
 		Arrays.fill(startRuleDecider, '0', '9'+1, DeeRuleSelection.DIGIT);
 		Arrays.fill(startRuleDecider, 'a', 'z'+1, DeeRuleSelection.ALPHA);
@@ -114,15 +100,16 @@ public class DeeLexer extends CommonTokenSource {
 	protected Token parseToken() {
 		pos = tokenStartPos;
 		
-		DeeRuleSelection ruleCategory = getLexingDecision(lookAhead());
+		DeeRuleSelection ruleDecision = getLexingDecision(lookAhead());
 		
-		switch (ruleCategory) {
+		switch (ruleDecision) {
 		case EOF: return createToken(DeeTokens.EOF);
 		
 		case EOF_CHARS: return matchEOFCharacter();
 		case EOL: return matchEOL();
 		case WHITESPACE: return matchWhiteSpace();
 		
+		case HASH: return ruleHashStart();
 		case SLASH: return ruleSlashStart();
 		
 		case STRING_ALTWYSIWYG: return matchWYSIWYGString();
@@ -152,12 +139,7 @@ public class DeeLexer extends CommonTokenSource {
 			return DeeRuleSelection.EOF;
 		}
 		if(ch > ASCII_LIMIT) {
-			// BM: Hum I'm not sure this Unicode handling is correct according to D.
-			if(Character.isLowSurrogate((char) ch) || Character.isHighSurrogate((char) ch)
-				|| Character.isUnicodeIdentifierPart(ch)
-			) {
-				return DeeRuleSelection.ALPHA;
-			}
+			return DeeRuleSelection.ALPHA;
 		}
 		return startRuleDecider[ch];
 	}
@@ -214,21 +196,32 @@ public class DeeLexer extends CommonTokenSource {
 		}
 	}
 	
+	protected Token ruleHashStart() {
+		if(pos == 0 && lookAhead(1) == '!') {
+			pos += 2;
+			seekToNewline();
+			return createToken(DeeTokens.SCRIPT_LINE_INTRO);
+		} else {
+			pos += 1;
+			assertTrue(pos <= source.length());
+			return createErrorToken(pos, DeeParserMessages.INVALID_TOKEN);
+		}
+	}
+	
 	protected Token ruleAlphaStart() {
-		assertTrue(startRuleDecider[lookAheadAscii()].canBeIdentifierStart);
+		assertTrue(getLexingDecision(lookAhead()).canBeIdentifierStart);
 		pos++;
-		
-		seekIdentifierPartChars(); 
+		// Note, according to D spec, not all non-ASCII characters are valid as identifier characters
+		// but for simplification we ignore that for lexing. 
+		// Perhaps this can be analized later in a lexing semantics phase.
+		seekIdentifierPartChars();
 		return createToken(DeeTokens.IDENTIFIER);
 	}
 	
-	/** Seek position until lookahead is not valid identifier part*/
+	/** Seek position until lookahead is not valid identifier part */
 	public void seekIdentifierPartChars() {
 		do {
-			int ch = lookAhead();
-			
-			DeeRuleSelection charCategory = getLexingDecision(ch);
-			// TODO consider UTF, etc.
+			DeeRuleSelection charCategory = getLexingDecision(lookAhead());
 			if(!charCategory.canBeIdentifierPart) {
 				break;
 			}
