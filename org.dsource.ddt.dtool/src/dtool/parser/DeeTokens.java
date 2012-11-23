@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.parser;
 
 public enum DeeTokens {
@@ -27,6 +37,8 @@ public enum DeeTokens {
 	CLOSE_BRACE,
 	OPEN_BRACKET,
 	CLOSE_BRACKET,
+	
+	CHAR_LITERAL,
 	
 	QUESTION,
 	COMMA,

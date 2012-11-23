@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -24,9 +35,13 @@ public class DeeLexer extends CommonTokenSource {
 		WHITESPACE,
 		
 		HASH,
+		
 		OPEN_PARENS, CLOSE_PARENS,
 		OPEN_BRACE, CLOSE_BRACE,
 		OPEN_BRACKET, CLOSE_BRACKET,
+		
+		ALPHA(true, true),
+		DIGIT(false, true),
 		
 		QUESTION, COMMA, SEMICOLON, COLON, DOLLAR, AT,
 		
@@ -39,14 +54,14 @@ public class DeeLexer extends CommonTokenSource {
 		GREATER_THAN,
 		EXCLAMATION,
 		
-		ALPHA(true, true),
-		DIGIT(false, true),
+		SINGLE_QUOTES,
 		
-		STRING_ALTWYSIWYG,
+		GRAVE_ACCENT,
 		ALPHA_R(true, true),
-		STRING_DOUBLE_QUOTES,
+		DOUBLE_QUOTES,
 		ALPHA_H(true, true),
 		ALPHA_Q(true, true),
+		
 		;
 		private final boolean canBeIdentifierStart;
 		private final boolean canBeIdentifierPart;
@@ -88,6 +103,11 @@ public class DeeLexer extends CommonTokenSource {
 		startRuleDecider['['] = DeeRuleSelection.OPEN_BRACKET;
 		startRuleDecider[']'] = DeeRuleSelection.CLOSE_BRACKET;
 		
+		Arrays.fill(startRuleDecider, '0', '9'+1, DeeRuleSelection.DIGIT);
+		Arrays.fill(startRuleDecider, 'a', 'z'+1, DeeRuleSelection.ALPHA);
+		Arrays.fill(startRuleDecider, 'A', 'Z'+1, DeeRuleSelection.ALPHA);
+		startRuleDecider['_'] = DeeRuleSelection.ALPHA;
+		
 		startRuleDecider['?'] = DeeRuleSelection.QUESTION;
 		startRuleDecider[','] = DeeRuleSelection.COMMA;
 		startRuleDecider[';'] = DeeRuleSelection.SEMICOLON;
@@ -113,15 +133,11 @@ public class DeeLexer extends CommonTokenSource {
 		startRuleDecider['>'] = DeeRuleSelection.GREATER_THAN;
 		startRuleDecider['!'] = DeeRuleSelection.EXCLAMATION;
 		
+		startRuleDecider['\''] = DeeRuleSelection.SINGLE_QUOTES;
 		
-		Arrays.fill(startRuleDecider, '0', '9'+1, DeeRuleSelection.DIGIT);
-		Arrays.fill(startRuleDecider, 'a', 'z'+1, DeeRuleSelection.ALPHA);
-		Arrays.fill(startRuleDecider, 'A', 'Z'+1, DeeRuleSelection.ALPHA);
-		startRuleDecider['_'] = DeeRuleSelection.ALPHA;
-		
-		startRuleDecider['`'] = DeeRuleSelection.STRING_ALTWYSIWYG;
+		startRuleDecider['`'] = DeeRuleSelection.GRAVE_ACCENT;
 		startRuleDecider['r'] = DeeRuleSelection.ALPHA_R;
-		startRuleDecider['"'] = DeeRuleSelection.STRING_DOUBLE_QUOTES;
+		startRuleDecider['"'] = DeeRuleSelection.DOUBLE_QUOTES;
 		startRuleDecider['x'] = DeeRuleSelection.ALPHA_H;
 		startRuleDecider['q'] = DeeRuleSelection.ALPHA_Q;
 	}
@@ -150,9 +166,9 @@ public class DeeLexer extends CommonTokenSource {
 		case HASH: return ruleHashStart();
 		case SLASH: return ruleSlashStart();
 		
-		case STRING_ALTWYSIWYG: return matchWYSIWYGString();
+		case GRAVE_ACCENT: return matchWYSIWYGString();
 		case ALPHA_R: return ruleRStart();
-		case STRING_DOUBLE_QUOTES: return matchString();
+		case DOUBLE_QUOTES: return matchString();
 		case ALPHA_H: return ruleHStart();
 		case ALPHA_Q: return ruleQStart();
 		
@@ -166,6 +182,7 @@ public class DeeLexer extends CommonTokenSource {
 		case OPEN_BRACKET: return createToken(DeeTokens.OPEN_BRACKET, 1);
 		case CLOSE_BRACKET: return createToken(DeeTokens.CLOSE_BRACKET, 1);
 		
+		case SINGLE_QUOTES: return matchCharacterLiteral();
 		case QUESTION: return createToken(DeeTokens.QUESTION, 1);
 		case COMMA: return createToken(DeeTokens.COMMA, 1);
 		case SEMICOLON: return createToken(DeeTokens.SEMICOLON, 1);
@@ -232,7 +249,7 @@ public class DeeLexer extends CommonTokenSource {
 	
 	protected Token matchEOL() {
 		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.EOL);
-		if(lookAhead() == 0x0D && lookAhead(1) == 0x0A) {
+		if(lookAhead() == '\r' && lookAhead(1) == '\n') {
 			pos += 2;
 		} else {
 			pos += 1;
@@ -350,7 +367,7 @@ public class DeeLexer extends CommonTokenSource {
 	}
 	
 	protected Token matchWYSIWYGString() {
-		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.STRING_ALTWYSIWYG);
+		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.GRAVE_ACCENT);
 		return matchVerbatimString('`', DeeTokens.STRING_WYSIWYG);
 	}
 	
@@ -388,7 +405,7 @@ public class DeeLexer extends CommonTokenSource {
 	
 	
 	protected Token matchString() {
-		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.STRING_DOUBLE_QUOTES);
+		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.DOUBLE_QUOTES);
 		
 		pos++;
 		while(true) {
@@ -398,15 +415,16 @@ public class DeeLexer extends CommonTokenSource {
 				pos++;
 				ruleStringPostFix();
 				return createToken(DeeTokens.STRING_DQ);
-			} else if (ch == -1) {
+			} else if (ch == EOF) {
 				// TODO , maybe recover using EOL?
 				return createErrorToken(pos, DeeParserMessages.STRING_NOT_TERMINATED);
 			} else if (ch == '\\') {
-				if (lookAhead(1) == '"') {
-					pos += 2; 
+				if (lookAhead(1) == '"' || lookAhead(1) == '\\') {
+					pos += 2;
 					continue;
 				}
-				// We ignore the other escape sequences rules since they are not important for lexing 
+				// We ignore the other escape sequences rules since they are not important for lexing
+				// see http://dlang.org/lex.html#EscapeSequence
 			}
 			pos++;
 		}
@@ -487,7 +505,7 @@ public class DeeLexer extends CommonTokenSource {
 		int idStartPos = pos;
 		pos++;
 		seekIdentifierPartChars();
-		String hereDocId = source.subSequence(idStartPos, pos).toString(); // Hum, optimization hot spot
+		String hereDocId = source.subSequence(idStartPos, pos).toString(); // Optimization note: allocation here
 		
 		if(getLexingDecision(lookAhead()) != DeeRuleSelection.EOL) {
 			seekHereDocEndDelim(hereDocId);
@@ -544,15 +562,45 @@ public class DeeLexer extends CommonTokenSource {
 		return createToken(DeeTokens.STRING_TOKENS);
 	}
 	
+	protected Token matchCharacterLiteral() {
+		pos++;
+		while(true) {
+			int ch = lookAhead();
+			DeeRuleSelection charCategory = getLexingDecision(ch);
+			
+			if(ch == '\'') {
+				pos++;
+				if(pos == tokenStartPos + 2) {
+					return createErrorToken(pos, DeeParserMessages.CHAR_LITERAL_EMPTY);
+				}
+				
+				return createToken(DeeTokens.CHAR_LITERAL);
+			} else if (charCategory == DeeRuleSelection.EOF) {
+				return createErrorToken(pos, DeeParserMessages.CHAR_LITERAL_NOT_TERMINATED__REACHED_EOF);
+			} else if (charCategory == DeeRuleSelection.EOL) {
+				seekToNewline();
+				return createErrorToken(pos, DeeParserMessages.CHAR_LITERAL_NOT_TERMINATED__REACHED_EOL);
+			} else if (ch == '\\') {
+				if (lookAhead(1) == '\'' || lookAhead(1) == '\\') {
+					pos += 2;
+				} else {
+					pos +=1;
+					continue;
+				}
+				// Again, we ignore the escape sequence rules, 
+			}
+			pos++;
+		}
+	}
+	
 	public final Token ruleDotStart() {
 		if(lookAhead(1) == '.') {
 			if(lookAhead(2) == '.') {
 				return createToken(DeeTokens.TRIPLE_DOT, 3);
 			}
 			return createToken(DeeTokens.DOUBLE_DOT, 2);
-		} else {
-			return createToken(DeeTokens.DOT, 1);
 		}
+		return createToken(DeeTokens.DOT, 1);
 	}
 	
 	protected final Token ruleLessStart() {

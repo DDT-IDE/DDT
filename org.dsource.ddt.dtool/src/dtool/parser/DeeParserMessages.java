@@ -17,4 +17,10 @@ public class DeeParserMessages {
 	public static final String STRING_DELIM_ID_NOT_PROPERLY_FORMED = 
 		"Expected newline after identifier of delimited string.";
 	
+	public static final String CHAR_LITERAL_NOT_TERMINATED__REACHED_EOF = 
+		"Character literal not terminated, found EOF.";
+	public static final String CHAR_LITERAL_NOT_TERMINATED__REACHED_EOL = 
+		"Character literal not terminated, found new line.";
+	public static final String CHAR_LITERAL_EMPTY = 
+		"Character literal is empty, no character specified.";
 }
