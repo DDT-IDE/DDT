@@ -53,6 +53,25 @@ public abstract class CommonTokenSource {
 	
 	/* ------------------------ Helpers ------------------------ */
 	
+	public final Token rule3Choices(char ch1, DeeTokens tk1, char ch2, DeeTokens tk2, DeeTokens tokenElse) {
+		if(lookAhead(1) == ch1) {
+			return new Token(tk1, source, tokenStartPos, pos+2);
+		} else if(lookAhead(1) == ch2) {
+			return new Token(tk2, source, tokenStartPos, pos+2);
+		} else {
+			return new Token(tokenElse, source, tokenStartPos, pos+1);
+		}
+	}
+	
+	public final Token rule2Choices(char ch1, DeeTokens tk1, DeeTokens tokenElse) {
+		if(lookAhead(1) == ch1) {
+			return new Token(tk1, source, tokenStartPos, pos+2);
+		} else {
+			return new Token(tokenElse, source, tokenStartPos, pos+1);
+		}
+	}
+	
+	
 	/** Advance position until any of given strings is found, or input reaches EOF.
 	 * Returns the index in given strings array of the matched string (position is advanced to end of string), 
 	 * or -1 if EOF was encountered (position is advanced to EOF). */

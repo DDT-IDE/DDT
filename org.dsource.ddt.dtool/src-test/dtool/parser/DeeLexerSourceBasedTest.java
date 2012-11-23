@@ -23,7 +23,7 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/lexer-tests";
 	
-	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 63;
+	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 66;
 	protected static int splitTestCount = 0; 
 	
 	@Parameters
@@ -75,7 +75,7 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 				} else {
 					if(expectedTokenStr.equals("ID")) {
 						expectedTokenStr = DeeTokens.IDENTIFIER.name();
-					} else if(expectedTokenStr.equals("WS")) {
+					} else if(expectedTokenStr.equals("WS") || expectedTokenStr.equals("_")) {
 						expectedTokenStr = DeeTokens.WHITESPACE.name();
 					}
 					DeeTokens expectedToken = DeeTokens.valueOf(expectedTokenStr);

@@ -24,21 +24,29 @@ public class DeeLexer extends CommonTokenSource {
 		WHITESPACE,
 		
 		HASH,
-		SLASH,
-		OPEN_PARENS,
-		OPEN_BRACKET,
-		OPEN_BRACE,
-		CLOSE_BRACE,
+		OPEN_PARENS, CLOSE_PARENS,
+		OPEN_BRACE, CLOSE_BRACE,
+		OPEN_BRACKET, CLOSE_BRACKET,
+		
+		QUESTION, COMMA, SEMICOLON, COLON, DOLLAR, AT,
+		
+		MINUS, PLUS, STAR, SLASH, MOD,
+		
+		AMPERSAND, VBAR, CARET, EQUAL, TILDE,
+		DOT,
+		
 		LESS_THAN,
+		GREATER_THAN,
+		EXCLAMATION,
 		
 		ALPHA(true, true),
-		DIGIT(false, true), 
+		DIGIT(false, true),
 		
-		STRING_ALTWYSIWYG, 
+		STRING_ALTWYSIWYG,
 		ALPHA_R(true, true),
 		STRING_DOUBLE_QUOTES,
 		ALPHA_H(true, true),
-		ALPHA_Q(true, true), 
+		ALPHA_Q(true, true),
 		;
 		private final boolean canBeIdentifierStart;
 		private final boolean canBeIdentifierPart;
@@ -71,14 +79,40 @@ public class DeeLexer extends CommonTokenSource {
 		startRuleDecider[0x0B] = DeeRuleSelection.WHITESPACE;
 		startRuleDecider[0x0C] = DeeRuleSelection.WHITESPACE;
 		
+		startRuleDecider['#'] = DeeRuleSelection.HASH;
+
 		startRuleDecider['('] = DeeRuleSelection.OPEN_PARENS;
+		startRuleDecider[')'] = DeeRuleSelection.CLOSE_PARENS;
 		startRuleDecider['{'] = DeeRuleSelection.OPEN_BRACE;
 		startRuleDecider['}'] = DeeRuleSelection.CLOSE_BRACE;
 		startRuleDecider['['] = DeeRuleSelection.OPEN_BRACKET;
-		startRuleDecider['<'] = DeeRuleSelection.LESS_THAN;
+		startRuleDecider[']'] = DeeRuleSelection.CLOSE_BRACKET;
 		
+		startRuleDecider['?'] = DeeRuleSelection.QUESTION;
+		startRuleDecider[','] = DeeRuleSelection.COMMA;
+		startRuleDecider[';'] = DeeRuleSelection.SEMICOLON;
+		startRuleDecider[':'] = DeeRuleSelection.COLON;
+		startRuleDecider['$'] = DeeRuleSelection.DOLLAR;
+		startRuleDecider['@'] = DeeRuleSelection.AT;
+		
+		startRuleDecider['.'] = DeeRuleSelection.DOT;
+		
+		startRuleDecider['-'] = DeeRuleSelection.MINUS;
+		startRuleDecider['+'] = DeeRuleSelection.PLUS;
+		startRuleDecider['*'] = DeeRuleSelection.STAR;
 		startRuleDecider['/'] = DeeRuleSelection.SLASH;
-		startRuleDecider['#'] = DeeRuleSelection.HASH;
+		startRuleDecider['%'] = DeeRuleSelection.MOD;
+		
+		startRuleDecider['&'] = DeeRuleSelection.AMPERSAND;
+		startRuleDecider['|'] = DeeRuleSelection.VBAR;
+		startRuleDecider['^'] = DeeRuleSelection.CARET;
+		startRuleDecider['='] = DeeRuleSelection.EQUAL;
+		startRuleDecider['~'] = DeeRuleSelection.TILDE;
+		
+		startRuleDecider['<'] = DeeRuleSelection.LESS_THAN;
+		startRuleDecider['>'] = DeeRuleSelection.GREATER_THAN;
+		startRuleDecider['!'] = DeeRuleSelection.EXCLAMATION;
+		
 		
 		Arrays.fill(startRuleDecider, '0', '9'+1, DeeRuleSelection.DIGIT);
 		Arrays.fill(startRuleDecider, 'a', 'z'+1, DeeRuleSelection.ALPHA);
@@ -93,6 +127,10 @@ public class DeeLexer extends CommonTokenSource {
 	}
 	
 	protected Token createToken(DeeTokens tokenCode) {
+		return new Token(tokenCode, source, tokenStartPos, pos);
+	}
+	protected Token createToken(DeeTokens tokenCode, int length) {
+		pos = tokenStartPos + length;
 		return new Token(tokenCode, source, tokenStartPos, pos);
 	}
 	
@@ -121,12 +159,38 @@ public class DeeLexer extends CommonTokenSource {
 		case DIGIT: return matchDigitRules();
 		case ALPHA: return ruleAlphaStart();
 		
-		 //TODO
-		case OPEN_PARENS: return matchError();
-		case OPEN_BRACE: return matchSimpleToken(DeeTokens.OPEN_BRACE);
-		case CLOSE_BRACE: return matchSimpleToken(DeeTokens.CLOSE_BRACE);
-		case OPEN_BRACKET: return matchError();
-		case LESS_THAN: return matchError();
+		case OPEN_PARENS: return createToken(DeeTokens.OPEN_PARENS, 1);
+		case CLOSE_PARENS: return createToken(DeeTokens.CLOSE_PARENS, 1);
+		case OPEN_BRACE: return createToken(DeeTokens.OPEN_BRACE, 1);
+		case CLOSE_BRACE: return createToken(DeeTokens.CLOSE_BRACE, 1);
+		case OPEN_BRACKET: return createToken(DeeTokens.OPEN_BRACKET, 1);
+		case CLOSE_BRACKET: return createToken(DeeTokens.CLOSE_BRACKET, 1);
+		
+		case QUESTION: return createToken(DeeTokens.QUESTION, 1);
+		case COMMA: return createToken(DeeTokens.COMMA, 1);
+		case SEMICOLON: return createToken(DeeTokens.SEMICOLON, 1);
+		case COLON: return createToken(DeeTokens.COLON, 1);
+		case DOLLAR: return createToken(DeeTokens.DOLLAR, 1);
+		case AT: return createToken(DeeTokens.AT, 1);
+		
+		case DOT: return ruleDotStart();
+		
+		case PLUS: return rule3Choices('=', DeeTokens.PLUS_ASSIGN, '+', DeeTokens.INCREMENT, DeeTokens.PLUS);
+		case MINUS: return rule3Choices('=', DeeTokens.MINUS_ASSIGN, '-', DeeTokens.DECREMENT, DeeTokens.MINUS);
+		case STAR: return rule2Choices('=', DeeTokens.MULT_ASSIGN, DeeTokens.STAR);
+		case MOD: return rule2Choices('=', DeeTokens.MOD_ASSIGN, DeeTokens.MOD);
+		
+		case AMPERSAND: 
+			return rule3Choices('=', DeeTokens.AND_ASSIGN, '&', DeeTokens.LOGICAL_AND, DeeTokens.AND);
+		case VBAR: 
+			return rule3Choices('=', DeeTokens.OR_ASSIGN, '|', DeeTokens.LOGICAL_OR, DeeTokens.OR);
+		case CARET: return rule2Choices('=', DeeTokens.XOR_ASSIGN, DeeTokens.XOR);
+		case EQUAL: return rule3Choices('=', DeeTokens.EQUALS, '>', DeeTokens.LAMBDA, DeeTokens.ASSIGN);
+		case TILDE: return rule2Choices('=', DeeTokens.CONCAT_ASSIGN, DeeTokens.CONCAT);
+		
+		case LESS_THAN: return ruleLessStart();
+		case GREATER_THAN: return ruleGreaterStart();
+		case EXCLAMATION: return ruleExclamation();
 		
 		case BAD_TOKEN: return matchError();
 		
@@ -157,19 +221,13 @@ public class DeeLexer extends CommonTokenSource {
 		}
 	}
 	
-	protected Token matchSimpleToken(DeeTokens tokenCode) {
-		pos++;
-		return new Token(tokenCode, source, tokenStartPos, pos);
-	}
-	
 	public ErrorToken createErrorToken(int endPos, String message) {
 		return new Token.ErrorToken(source, tokenStartPos, endPos, message);
 	}
 	
 	protected Token matchEOFCharacter() {
 		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.EOF_CHARS);
-		pos++;
-		return createToken(DeeTokens.EOF);
+		return createToken(DeeTokens.EOF, 1);
 	}
 	
 	protected Token matchEOL() {
@@ -203,7 +261,6 @@ public class DeeLexer extends CommonTokenSource {
 			return createToken(DeeTokens.SCRIPT_LINE_INTRO);
 		} else {
 			pos += 1;
-			assertTrue(pos <= source.length());
 			return createErrorToken(pos, DeeParserMessages.INVALID_TOKEN);
 		}
 	}
@@ -266,6 +323,9 @@ public class DeeLexer extends CommonTokenSource {
 			seekToNewlineOrEOFRule();
 			// Note that EOF is also a valid terminator for this comment
 			return createToken(DeeTokens.COMMENT_LINE);
+		} else if(lookAhead() == '=') {
+			pos++;
+			return createToken(DeeTokens.DIV_ASSIGN);
 		} else {
 			return createToken(DeeTokens.DIV);
 		}
@@ -348,7 +408,6 @@ public class DeeLexer extends CommonTokenSource {
 				}
 				// We ignore the other escape sequences rules since they are not important for lexing 
 			}
-			
 			pos++;
 		}
 	}
@@ -483,6 +542,80 @@ public class DeeLexer extends CommonTokenSource {
 		
 		tokenStartPos = tokenStringStartPos;
 		return createToken(DeeTokens.STRING_TOKENS);
+	}
+	
+	public final Token ruleDotStart() {
+		if(lookAhead(1) == '.') {
+			if(lookAhead(2) == '.') {
+				return createToken(DeeTokens.TRIPLE_DOT, 3);
+			}
+			return createToken(DeeTokens.DOUBLE_DOT, 2);
+		} else {
+			return createToken(DeeTokens.DOT, 1);
+		}
+	}
+	
+	protected final Token ruleLessStart() {
+		if(lookAhead(1) == '=') {
+			return createToken(DeeTokens.LESS_EQUAL, 2);
+		} else if(lookAhead(1) == '<') {
+			// <<
+			if(lookAhead(2) == '=') {
+				return createToken(DeeTokens.LEFT_SHIFT_ASSIGN, 3);
+			}
+			return createToken(DeeTokens.LEFT_SHIFT, 2);
+		} else if(lookAhead(1) == '>') {
+			// <>
+			if(lookAhead(2) == '=') {
+				return createToken(DeeTokens.LESS_GREATER_EQUAL, 3);
+			}
+			return createToken(DeeTokens.LESS_GREATER, 2);
+		}
+		return createToken(DeeTokens.LESS_THAN, 1);
+	}
+	
+	protected final Token ruleGreaterStart() {
+		if(lookAhead(1) == '=') {
+			return createToken(DeeTokens.GREATER_EQUAL, 2);
+		} else if(lookAhead(1) == '>') {
+			// >>
+			if(lookAhead(2) == '=') {
+				return createToken(DeeTokens.RIGHT_SHIFT_ASSIGN, 3);
+			} else if(lookAhead(2) == '>') {
+				// >>>
+				if(lookAhead(3) == '=') {
+					return createToken(DeeTokens.TRIPLE_RSHIFT_ASSIGN, 4);
+				} 
+				return createToken(DeeTokens.TRIPLE_RSHIFT, 3);
+			} 
+			return createToken(DeeTokens.RIGHT_SHIFT, 2);
+		} 
+		return createToken(DeeTokens.GREATER_THAN, 1);
+	}
+	
+	protected final Token ruleExclamation() {
+		if(lookAhead(1) == '=') {
+			return createToken(DeeTokens.NOT_EQUAL, 2);
+		} else if(lookAhead(1) == '<') {
+			// !<
+			if(lookAhead(2) == '=') {
+				return createToken(DeeTokens.UNORDERED_G, 3);
+			} else if(lookAhead(2) == '>') {
+				// !<>
+				if(lookAhead(3) == '=') {
+					return createToken(DeeTokens.UNORDERED, 4);
+				} 
+				return createToken(DeeTokens.UNORDERED_E, 3);
+			} 
+			return createToken(DeeTokens.UNORDERED_GE, 2);
+		} else if(lookAhead(1) == '>') {
+			// !>
+			if(lookAhead(2) == '=') {
+				return createToken(DeeTokens.UNORDERED_L, 3);
+			}
+			return createToken(DeeTokens.UNORDERED_LE, 2);
+		}
+		return createToken(DeeTokens.NOT, 1);
 	}
 	
 	protected Token matchDigitRules() {
