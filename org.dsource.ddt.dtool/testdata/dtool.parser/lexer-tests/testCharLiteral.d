@@ -15,6 +15,9 @@ ERROR+/
 //#SPLIT_SOURCE_TEST _____________________
 '/+#LEXERTEST
 ERROR+/
+//#SPLIT_SOURCE_TEST _____________________
+''/+#LEXERTEST
+ERROR,ERROR+/
 //#SPLIT_SOURCE_TEST _____________________ >> oversized char literal, this is invalid but error is pseudo-semantic?
 'aaa'foobar/+#LEXERTEST
 CHAR_LITERAL,ID+/
@@ -35,7 +38,7 @@ CHAR_LITERAL,EOL,
 CHAR_LITERAL,EOL,
 +/
 
-//#SPLIT_SOURCE_TEST _____________________ Char Literal, incomplete
+//#SPLIT_SOURCE_TEST _____________________ Char Literal, incomplete escapes
 '\xF'
 '\u012'
 '\U0123ABC'
@@ -49,6 +52,9 @@ CHAR_LITERAL,EOL,
 //#SPLIT_SOURCE_TEST _______________  escape sequences + EOF
 '\/+#LEXERTEST
 ERROR+/
+//#SPLIT_SOURCE_TEST ________
+'\'/+#LEXERTEST
+ERROR, ERROR+/
 //#SPLIT_SOURCE_TEST ________
 '\x/+#LEXERTEST
 ERROR+/

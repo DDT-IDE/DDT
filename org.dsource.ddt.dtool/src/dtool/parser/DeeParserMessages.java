@@ -23,4 +23,11 @@ public class DeeParserMessages {
 		"Character literal not terminated, found new line.";
 	public static final String CHAR_LITERAL_EMPTY = 
 		"Character literal is empty, no character specified.";
+	
+	public static final String INT_LITERAL_BINARY__INVALID_DIGITS = 
+		"Invalid digits in binary literal";
+	public static final String INT_LITERAL_OCTAL__INVALID_DIGITS = 
+		"Invalid digits in octal literal";
+	public static final String INT_LITERAL__HAS_NO_DIGITS = 
+		"Literal has no digits, only underscores";
 }
