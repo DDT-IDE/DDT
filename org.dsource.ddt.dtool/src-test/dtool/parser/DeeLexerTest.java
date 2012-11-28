@@ -27,7 +27,24 @@ public class DeeLexerTest extends CommonTestUtils {
 		testLexerTokenizing("q\"foo\n(xxx)\nfoo\"", array(DeeTokens.STRING_DELIM));
 		testLexerTokenizing("q{ asdf __TIME__  {nest \n braces} }", array(DeeTokens.STRING_TOKENS));
 		
+		
+		testLexerTokenizing("(){}[]", array(DeeTokens.OPEN_PARENS, DeeTokens.CLOSE_PARENS, 
+			DeeTokens.OPEN_BRACE, DeeTokens.CLOSE_BRACE, DeeTokens.OPEN_BRACKET, DeeTokens.CLOSE_BRACKET));
+
+		testLexerTokenizing("'a'", array(DeeTokens.CHAR_LITERAL));
+		
+		testLexerTokenizing("123", array(DeeTokens.INTEGER));
+		testLexerTokenizing("0b101", array(DeeTokens.INTEGER_BINARY));
+		testLexerTokenizing("01234567", array(DeeTokens.INTEGER_OCTAL));
+		testLexerTokenizing("0x0123456789ABDCEF", array(DeeTokens.INTEGER_HEX));
+		
+		testLexerTokenizing("1234567890.1234567890E123F", array(DeeTokens.FLOAT));
+		testLexerTokenizing("0x0123456789ABDCEFP123f", array(DeeTokens.FLOAT_HEX));
+		
 		testLexerTokenizing("asdf", array(DeeTokens.IDENTIFIER));
+		testLexerTokenizing("final", array(DeeTokens.KW_FINAL));
+		testLexerTokenizing("finally", array(DeeTokens.KW_FINALLY));
+		testLexerTokenizing("finallyx", array(DeeTokens.IDENTIFIER));
 	}
 	
 	public static void testLexerTokenizing(String source, DeeTokens[] deeTokens) {
@@ -62,6 +79,10 @@ public class DeeLexerTest extends CommonTestUtils {
 			assertTrue(tokenCode == expectedTokenCode);
 		}
 		assertTrue(token.getStartPos() == readOffset);
+		assertEquals(deeLexer.source.subSequence(token.getStartPos(), token.getEndPos()), token.getSourceValue());
+		if(tokenCode.getSourceValue() != null) {
+			assertEquals(tokenCode.getSourceValue(), token.getSourceValue());
+		}
 		
 		switch (tokenCode) {
 		case EOF: assertTrue(token.getEndPos() >= token.getStartPos());

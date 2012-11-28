@@ -284,23 +284,37 @@ public class DeeLexer extends CommonTokenSource {
 	
 	protected Token ruleAlphaStart() {
 		assertTrue(getLexingDecision(lookAhead()).canBeIdentifierStart);
-		pos++;
+		
 		// Note, according to D spec, not all non-ASCII characters are valid as identifier characters
 		// but for simplification we ignore that for lexing. 
 		// Perhaps this can be analized later in a lexing semantics phase.
-		seekIdentifierPartChars();
+		boolean asciiOnly = seekIdentifierPartChars();
+		if(!asciiOnly) {
+			return createToken(DeeTokens.IDENTIFIER);
+		}
+		String idValue = source.subSequence(tokenStartPos, pos).toString();
+		DeeTokens keywordToken = DeeLexerKeywordHelper.getKeywordToken(idValue);
+		if(keywordToken != null) {
+			return createToken(keywordToken);
+		}
 		return createToken(DeeTokens.IDENTIFIER);
 	}
 	
 	/** Seek position until lookahead is not valid identifier part */
-	public void seekIdentifierPartChars() {
+	public boolean seekIdentifierPartChars() {
+		boolean asciiOnly = true;
 		do {
-			DeeRuleSelection charCategory = getLexingDecision(lookAhead());
+			int ch = lookAhead();
+			DeeRuleSelection charCategory = getLexingDecision(ch);
 			if(!charCategory.canBeIdentifierPart) {
 				break;
 			}
+			if(ch > ASCII_LIMIT) {
+				asciiOnly = false;
+			}
 			pos++;
 		} while(true);
+		return asciiOnly;
 	}
 	
 	protected static final String[] SEEKUNTIL_MULTICOMMENTS = { "+/", "/+" };
