@@ -13,7 +13,7 @@ package dtool.parser;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-public abstract class CommonTokenSource {
+public abstract class AbstractLexer {
 	
 	protected static final int EOF = -1;
 	
@@ -23,7 +23,7 @@ public abstract class CommonTokenSource {
 	protected int tokenStartPos = 0;
 	protected int pos = -1;
 	
-	public CommonTokenSource(CharSequence source) {
+	public AbstractLexer(CharSequence source) {
 		// Need to investigate how UTF chars are presented to us.
 		this.source = source;
 	}
@@ -35,6 +35,8 @@ public abstract class CommonTokenSource {
 		tokenStartPos = token.getEndPos();
 		return token;
 	}
+	
+	protected abstract Token parseToken();
 	
 	/** Gets the character from absolute position index. */
 	protected final int getCharacter(int index) {
@@ -53,41 +55,14 @@ public abstract class CommonTokenSource {
 		return getCharacter(pos);
 	}
 	
-	protected final int lookAheadAscii() {
-		int input = getCharacter(pos);
-		assertTrue(input >= 0 && input <= ASCII_LIMIT);
-		return input;
-	}
-	
-	protected abstract Token parseToken();
-	
 	/* ------------------------ Helpers ------------------------ */
-	
-	public final Token rule3Choices(char ch1, DeeTokens tk1, char ch2, DeeTokens tk2, DeeTokens tokenElse) {
-		if(lookAhead(1) == ch1) {
-			return new Token(tk1, source, tokenStartPos, pos+2);
-		} else if(lookAhead(1) == ch2) {
-			return new Token(tk2, source, tokenStartPos, pos+2);
-		} else {
-			return new Token(tokenElse, source, tokenStartPos, pos+1);
-		}
-	}
-	
-	public final Token rule2Choices(char ch1, DeeTokens tk1, DeeTokens tokenElse) {
-		if(lookAhead(1) == ch1) {
-			return new Token(tk1, source, tokenStartPos, pos+2);
-		} else {
-			return new Token(tokenElse, source, tokenStartPos, pos+1);
-		}
-	}
-	
 	
 	/** Advance position until any of given strings is found, or input reaches EOF.
 	 * Returns the index in given strings array of the matched string (position is advanced to end of string),
 	 * or -1 if EOF was encountered (position is advanced to EOF).
 	 * If input can match more than one string, priority is given to string with lowest index in given strings,
 	 * so ordering is important. */
-	public final int seekUntil(final String[] strings) {
+	public final int seekTo(final String[] strings) {
 		while(true) {
 			int i = 0;
 			boolean matchesAny = false;
@@ -107,8 +82,8 @@ public abstract class CommonTokenSource {
 			}
 		}
 	}
-	/** Optimization of {@link #seekUntil(String[])} method for 1 String */
-	public final int seekUntil(String string) {
+	/** Optimization of {@link #seekTo(String[])} method for 1 String */
+	public final int seekTo(String string) {
 		while(true) {
 			boolean matches = inputMatchesSequence(string);
 			if(matches) {
@@ -121,8 +96,8 @@ public abstract class CommonTokenSource {
 			}
 		}
 	}
-	/** Optimization of {@link #seekUntil(String[])} method for 1 char */
-	public final int seekUntil(char endChar) {
+	/** Optimization of {@link #seekTo(String[])} method for 1 char */
+	public final int seekTo(char endChar) {
 		while(true) {
 			int ch = lookAhead(0);
 			if(ch == -1) {
@@ -134,12 +109,12 @@ public abstract class CommonTokenSource {
 			}
 		}
 	}
-	/** Optimization of {@link #seekUntil(String[])} method for 2 char */
-	public final int seekUntil(char endChar1, char endChar2) {
+	/** Optimization of {@link #seekTo(String[])} method for 2 char */
+	public final int seekTo(char endChar1, char endChar2) {
 		while(true) {
 			int ch = lookAhead();
-			if(ch == -1) {
-				return -1;
+			if(ch == EOF) {
+				return EOF;
 			}
 			pos++;
 			if(ch == endChar1) {
@@ -149,6 +124,51 @@ public abstract class CommonTokenSource {
 			} 
 		}
 	}
+	
+	public final int seekToNewline() {
+		while(true) {
+			int ch = lookAhead();
+			if(ch == EOF) {
+				return EOF;
+			}
+			pos++;
+			if(ch == '\r') {
+				if(lookAhead() == '\n') {
+					pos++;
+				}
+				return 0;
+			} else if(ch == '\n') {
+				return 0;
+			} 
+		}
+	}
+	
+	/*---------------------------------------*/
+	
+	public final void readNewline() {
+		int result = readNewlineOrEOF();
+		assertTrue(result == 0);
+	}
+	
+	public final int readNewlineOrEOF() {
+		int ch = lookAhead();
+		if(ch == '\r') {
+			pos++;
+			if(lookAhead() == '\n') {
+				pos++;
+			}
+			return 0;
+		} else if(ch == '\n') {
+			pos++;
+			return 0;
+		} else if(ch == EOF){
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+	
+	/*---------------------------------------*/
 	
 	static { assertTrue( ((int)-1) != ((char)-1) ); } // inputMatchesSequence relies on this
 	
@@ -175,23 +195,23 @@ public abstract class CommonTokenSource {
 		return true;
 	}
 	
-	/*---------------------------------------*/
+	/* ------------------------  ------------------------ */
 	
-	public final int seekToNewline() {
-		while(true) {
-			int ch = lookAhead();
-			if(ch == EOF) {
-				return EOF;
-			}
-			pos++;
-			if(ch == '\r') {
-				if(lookAhead() == '\n') {
-					pos++;
-				}
-				return 0;
-			} else if(ch == '\n') {
-				return 0;
-			} 
+	public final Token rule3Choices(char ch1, DeeTokens tk1, char ch2, DeeTokens tk2, DeeTokens tokenElse) {
+		if(lookAhead(1) == ch1) {
+			return new Token(tk1, source, tokenStartPos, pos+2);
+		} else if(lookAhead(1) == ch2) {
+			return new Token(tk2, source, tokenStartPos, pos+2);
+		} else {
+			return new Token(tokenElse, source, tokenStartPos, pos+1);
+		}
+	}
+	
+	public final Token rule2Choices(char ch1, DeeTokens tk1, DeeTokens tokenElse) {
+		if(lookAhead(1) == ch1) {
+			return new Token(tk1, source, tokenStartPos, pos+2);
+		} else {
+			return new Token(tokenElse, source, tokenStartPos, pos+1);
 		}
 	}
 	
