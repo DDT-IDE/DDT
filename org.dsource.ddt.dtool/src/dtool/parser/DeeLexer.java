@@ -651,7 +651,23 @@ public class DeeLexer extends CommonTokenSource {
 			literalType = EInt_Literal_Type.DECIMAL; // Zero literal is a decimal literal.
 		}
 		
-		readIntegerSuffix();
+		boolean hasIntegerSuffix = readIntegerSuffix();
+		
+		if(literalType != EInt_Literal_Type.OCTAL && literalType != EInt_Literal_Type.BINARY 
+			&& hasIntegerSuffix == false) {
+			
+			boolean isHex = literalType == EInt_Literal_Type.HEX;
+			int ch = lookAhead();
+			if(ch == '.') {
+				return matchFloatLiteralFromDecimalMark(isHex);
+			}
+			if(ch == 'f' || ch == 'F' || ch == 'L' || ch == 'i' 
+				|| (isHex && (ch == 'P' || ch == 'p'))
+				|| (!isHex && (ch == 'E' || ch == 'e'))
+				) {
+				return matchFloatLiteralAfterFractionalPart(isHex, false);
+			}
+		}
 		
 		switch (literalType) {
 		case BINARY: return createIntegerToken(DeeTokens.INTEGER_BINARY, invalidDigitFound, hasAtLeastOneDigit);
@@ -675,29 +691,122 @@ public class DeeLexer extends CommonTokenSource {
 		return createToken(deeToken);
 	}
 	
-	public void readIntegerSuffix() {
+	public boolean readIntegerSuffix() {
 		int ch = lookAhead();
 		if(ch == 'L') {
 			pos++;
 			if(lookAhead() == 'u' || lookAhead() == 'U') {
 				pos++;
 			}
+			return true;
 			
 		} else if(ch == 'u' || ch == 'U') {
 			pos++;
 			if(lookAhead() == 'L') {
 				pos++;
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	public static boolean isHexDigit(int ch) {
-		// bug here
 		return (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F');
 	}
 	
+	public Token matchFloatLiteralFromDecimalMark(boolean isHex) {
+		boolean precedingCharIsDot = true;
+		while(true) {
+			pos++;
+			
+			int ch = lookAhead();
+			
+			if(getLexingDecision(ch) == DeeRuleSelection.DIGIT) {
+				precedingCharIsDot = false;
+				continue;
+			}
+			if(isHex && isHexDigit(ch)) {
+				precedingCharIsDot = false;
+				continue;
+			}
+			if((isHex || !precedingCharIsDot) && ch == '_') {  
+				precedingCharIsDot = false;
+				continue;
+			}
+			
+			break;
+		}
+		
+		return matchFloatLiteralAfterFractionalPart(isHex, precedingCharIsDot);
+	}
+	
+	public Token matchFloatLiteralAfterFractionalPart(boolean isHex, boolean precedingCharIsDot) {
+		boolean exponentHasDigits = true;
+		boolean hasExponent = false;
+		
+		int ch = lookAhead();
+		if(	( isHex && (ch == 'P' || ch == 'p')) ||
+			(!isHex && (ch == 'E' || ch == 'e') && !precedingCharIsDot)) {
+			pos++;
+			if(lookAhead() == '+' || lookAhead() == '-') {
+				pos++;
+			}
+			hasExponent = true;
+			exponentHasDigits = readDecimalDigitsOrUnderscore();
+			precedingCharIsDot = false;
+		}
+		
+		ch = lookAhead();
+		if((isHex || !precedingCharIsDot) && (ch == 'f' || ch == 'F' || ch == 'L')) {
+			pos++;
+		}
+		if((isHex || !precedingCharIsDot) && lookAhead() == 'i') {
+			pos++;
+		}
+		
+		if(isHex) {
+			if(hasExponent == false) {
+				return createErrorToken(DeeParserMessages.FLOAT_LITERAL__HEX_HAS_NO_EXP);
+			}
+			if(!exponentHasDigits) {
+				return createErrorToken(DeeParserMessages.FLOAT_LITERAL__EXP_HAS_NO_DIGITS);
+			} else {
+				return createToken(DeeTokens.FLOAT_HEX);
+			}
+		} else {
+			if(!exponentHasDigits) {
+				return createErrorToken(DeeParserMessages.FLOAT_LITERAL__EXP_HAS_NO_DIGITS);
+			} else {
+				return createToken(DeeTokens.FLOAT);
+			}
+		}
+	}
+	
+	public final boolean readDecimalDigitsOrUnderscore() {
+		boolean hasAtLeastOneDigit = false;
+		while(true) {
+			int ch = lookAhead();
+			
+			if(getLexingDecision(ch) == DeeRuleSelection.DIGIT || ch == '_') {
+				pos++;
+				if(ch != '_') {
+					hasAtLeastOneDigit = true;
+				}
+				continue;
+			}
+			break;
+		}
+		return hasAtLeastOneDigit;
+	}
+	
+	
 	public final Token ruleDotStart() {
-		if(lookAhead(1) == '.') {
+		int lookahead_1 = lookAhead(1);
+		if(getLexingDecision(lookahead_1) == DeeRuleSelection.DIGIT) {
+			return matchFloatLiteralFromDecimalMark(false);
+		}
+		
+		if(lookahead_1 == '.') {
 			if(lookAhead(2) == '.') {
 				return createToken(DeeTokens.TRIPLE_DOT, 3);
 			}

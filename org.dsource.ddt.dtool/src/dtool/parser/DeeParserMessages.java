@@ -30,4 +30,10 @@ public class DeeParserMessages {
 		"Invalid digits in octal literal";
 	public static final String INT_LITERAL__HAS_NO_DIGITS = 
 		"Literal has no digits, only underscores";
+	
+	public static final String FLOAT_LITERAL__EXP_HAS_NO_DIGITS = 
+		"Exponent of float literal has no digits.";
+	public static final String FLOAT_LITERAL__HEX_HAS_NO_EXP= 
+		"Hexadecimal float literal has no exponent.";
+
 }
