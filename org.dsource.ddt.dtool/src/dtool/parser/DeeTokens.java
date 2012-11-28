@@ -113,6 +113,8 @@ public enum DeeTokens {
 	KW___VENDOR__("__TIMESTAMP__"),
 	KW___VERSION__("__VERSION__"),
 	
+	SPECIAL_TOKEN_LINE,
+	
 	;
 	protected final String sourceValue;
 	

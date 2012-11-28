@@ -11,6 +11,7 @@
 
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
@@ -242,6 +243,28 @@ public class DeeLexer extends CommonTokenSource {
 		return new Token.ErrorToken(source, tokenStartPos, pos, message);
 	}
 	
+	public boolean consumeRuleCategoryChar(DeeRuleSelection ruleCategory) {
+		DeeRuleSelection lexingDecision = getLexingDecision(lookAhead());
+		if(lexingDecision == ruleCategory) {
+			pos++;
+			return true;
+		}
+		return false;
+	}
+	
+	public int consumeRuleCategoryChars(DeeRuleSelection ruleCategory) {
+		int count = 0;
+		while(true) {
+			DeeRuleSelection lexingDecision = getLexingDecision(lookAhead());
+			if(lexingDecision == ruleCategory) {
+				pos++;
+				count++;
+				continue;
+			}
+			return count;
+		}
+	}
+	
 	protected Token matchEOFCharacter() {
 		assertTrue(startRuleDecider[lookAheadAscii()] == DeeRuleSelection.EOF_CHARS);
 		return createToken(DeeTokens.EOF, 1);
@@ -255,6 +278,29 @@ public class DeeLexer extends CommonTokenSource {
 			pos += 1;
 		}
 		return createToken(DeeTokens.EOL);
+	}
+	
+	public final void readNewline() {
+		int result = readNewlineOrEOF();
+		assertTrue(result == 0);
+	}
+	
+	public final int readNewlineOrEOF() {
+		int ch = lookAhead();
+		if(ch == '\r') {
+			pos++;
+			if(lookAhead() == '\n') {
+				pos++;
+			}
+			return 0;
+		} else if(ch == '\n') {
+			pos++;
+			return 0;
+		} else if(ch == EOF){
+			return 1;
+		} else {
+			return -1;
+		}
 	}
 	
 	protected Token matchWhiteSpace() {
@@ -278,7 +324,7 @@ public class DeeLexer extends CommonTokenSource {
 			return createToken(DeeTokens.SCRIPT_LINE_INTRO);
 		} else {
 			pos += 1;
-			return createErrorToken(DeeParserMessages.INVALID_TOKEN);
+			return ruleHashTokens();
 		}
 	}
 	
@@ -351,7 +397,7 @@ public class DeeLexer extends CommonTokenSource {
 			
 		} else if(lookAhead() == '/') {
 			pos++;
-			seekToNewlineOrEOFRule();
+			seekToNewlineOrEOFCharsRule();
 			// Note that EOF is also a valid terminator for this comment
 			return createToken(DeeTokens.COMMENT_LINE);
 		} else if(lookAhead() == '=') {
@@ -362,7 +408,7 @@ public class DeeLexer extends CommonTokenSource {
 		}
 	}
 	
-	public final void seekToNewlineOrEOFRule() {
+	public final void seekToNewlineOrEOFCharsRule() {
 		while(true) {
 			int ch = lookAhead();
 			if(ch == EOF) {
@@ -890,6 +936,50 @@ public class DeeLexer extends CommonTokenSource {
 			return createToken(DeeTokens.UNORDERED_LE, 2);
 		}
 		return createToken(DeeTokens.NOT, 1);
+	}
+	
+	public Token ruleHashTokens() {
+		if(inputMatchesSequence("line") && getLexingDecision(lookAhead(4)) == DeeRuleSelection.WHITESPACE) {
+			return matchSpecialTokenLine();
+		}
+		seekToNewline();
+		return createErrorToken(DeeParserMessages.SPECIAL_TOKEN_INVALID);
+	}
+	
+	protected static final String[] SEEKUNTIL_DOUBLEQUOTES_OR_NL = { "\"", "\r\n", "\r", "\n", };
+	
+	public Token matchSpecialTokenLine() {
+		pos+=4;
+		
+		if(consumeRuleCategoryChars(DeeRuleSelection.WHITESPACE) == 0) {
+			assertFail();
+		}
+		if(consumeRuleCategoryChars(DeeRuleSelection.DIGIT) == 0) {
+			seekToNewline();
+			return createErrorToken(DeeParserMessages.SPECIAL_TOKEN_LINE_BAD_FORMAT); 
+		}
+		if(consumeRuleCategoryChars(DeeRuleSelection.WHITESPACE) == 0) {
+			// It's ok
+		}
+		
+		if(consumeRuleCategoryChar(DeeRuleSelection.DOUBLE_QUOTES) == false) {
+			return matchEndOf_SpecialTokenLine();
+		}
+		
+		if(seekUntil(SEEKUNTIL_DOUBLEQUOTES_OR_NL) != 0) {
+			return createErrorToken(DeeParserMessages.SPECIAL_TOKEN_LINE_BAD_FORMAT); 
+		}
+		
+		return matchEndOf_SpecialTokenLine();
+	}
+	
+	public Token matchEndOf_SpecialTokenLine() {
+		if(readNewlineOrEOF() == -1) {
+			seekToNewline(); // This is not according to DMD I think.
+			return createErrorToken(DeeParserMessages.SPECIAL_TOKEN_LINE_BAD_FORMAT); 
+		}
+		
+		return createToken(DeeTokens.SPECIAL_TOKEN_LINE);
 	}
 	
 }

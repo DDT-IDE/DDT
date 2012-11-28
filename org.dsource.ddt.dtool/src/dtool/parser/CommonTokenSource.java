@@ -83,8 +83,10 @@ public abstract class CommonTokenSource {
 	
 	
 	/** Advance position until any of given strings is found, or input reaches EOF.
-	 * Returns the index in given strings array of the matched string (position is advanced to end of string), 
-	 * or -1 if EOF was encountered (position is advanced to EOF). */
+	 * Returns the index in given strings array of the matched string (position is advanced to end of string),
+	 * or -1 if EOF was encountered (position is advanced to EOF).
+	 * If input can match more than one string, priority is given to string with lowest index in given strings,
+	 * so ordering is important. */
 	public final int seekUntil(final String[] strings) {
 		while(true) {
 			int i = 0;

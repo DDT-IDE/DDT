@@ -60,7 +60,7 @@ public class DeeLexerTest extends CommonTestUtils {
 			
 			String tokenSourceValue = token.getSourceValue();
 			// retest with just the token source to make sure boundaries are correct
-			if(deeTokens.length != 1) {
+			if(deeTokens.length != 1 && !tokenSourceValue.startsWith("#!")) {
 				testLexerTokenizing(tokenSourceValue, array(expectedTokenCode));
 			}
 			

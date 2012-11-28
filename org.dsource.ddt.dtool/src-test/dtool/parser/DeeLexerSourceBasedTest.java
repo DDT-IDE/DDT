@@ -33,8 +33,8 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/lexer-tests";
 	
-	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 109;
-	protected static int splitTestCount = 0; 
+	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 113;
+	private static int splitTestCount = 0; 
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {

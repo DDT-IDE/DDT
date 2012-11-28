@@ -20,7 +20,7 @@ SCRIPT_LINE_INTRO, ID
  #!/usr/bin
 blah
 /+#LEXERTEST
-WS, ERROR, *,DIV,ID,DIV,*,EOL,
+WS, ERROR,
 ID,EOL
 +/
 

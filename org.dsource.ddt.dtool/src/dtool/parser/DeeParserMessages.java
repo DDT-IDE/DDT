@@ -33,7 +33,13 @@ public class DeeParserMessages {
 	
 	public static final String FLOAT_LITERAL__EXP_HAS_NO_DIGITS = 
 		"Exponent of float literal has no digits.";
-	public static final String FLOAT_LITERAL__HEX_HAS_NO_EXP= 
+	public static final String FLOAT_LITERAL__HEX_HAS_NO_EXP = 
 		"Hexadecimal float literal has no exponent.";
-
+	
+	public static final String SPECIAL_TOKEN_LINE_BAD_FORMAT = 
+		"Invalid format for #line token, must be #line integer [\"filespec\"]\n.";
+	
+	public static final String SPECIAL_TOKEN_INVALID = 
+		"Invalid format for # pragma syntax.";
+	
 }
