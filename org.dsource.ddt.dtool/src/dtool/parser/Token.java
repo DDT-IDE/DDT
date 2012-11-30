@@ -31,9 +31,11 @@ public class Token {
 	public static class ErrorToken extends Token {
 		
 		protected final String errorMessage;
+		protected final DeeTokens originalToken;
 		
-		public ErrorToken(CharSequence source, int start, int end, String errorMessage) {
+		public ErrorToken(CharSequence source, int start, int end, DeeTokens originalToken, String errorMessage) {
 			super(DeeTokens.ERROR, source, start, end);
+			this.originalToken = originalToken;
 			this.errorMessage = errorMessage;
 		}
 		

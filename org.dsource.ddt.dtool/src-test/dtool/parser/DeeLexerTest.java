@@ -1,9 +1,11 @@
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
+import dtool.parser.Token.ErrorToken;
 import dtool.tests.CommonTestUtils;
 
 public class DeeLexerTest extends CommonTestUtils {
@@ -47,50 +49,113 @@ public class DeeLexerTest extends CommonTestUtils {
 		testLexerTokenizing("finallyx", array(DeeTokens.IDENTIFIER));
 	}
 	
+	
 	public static void testLexerTokenizing(String source, DeeTokens[] deeTokens) {
+		TokenChecker[] tokenCheckers = new TokenChecker[deeTokens.length];
+		for (int i = 0; i < deeTokens.length; i++) {
+			tokenCheckers[i] = new TokenChecker(deeTokens[i]);
+		}
+		testLexerTokenizing(source, tokenCheckers);
+	}
+	
+	public static void testLexerTokenizing(String source, TokenChecker[] tokenCheckers) {
 		DeeLexer deeLexer = new DeeLexer(source);
 		int readSourceOffset = 0;
 		
 		StringBuilder constructedSource = new StringBuilder();
-		for (int i = 0; i < deeTokens.length; i++) {
-			DeeTokens expectedTokenCode = deeTokens[i];
-			Token token = checkToken(deeLexer, expectedTokenCode, readSourceOffset);
+		for (int i = 0; i < tokenCheckers.length; i++) {
+			TokenChecker tokenChecker = tokenCheckers[i];
+			Token token = tokenChecker.checkToken(deeLexer, readSourceOffset);
 			readSourceOffset = token.getEndPos();
 			String sourceSoFar = source.substring(0, readSourceOffset);
 			
 			String tokenSourceValue = token.getSourceValue();
 			// retest with just the token source to make sure boundaries are correct
-			if(deeTokens.length != 1 && !tokenSourceValue.startsWith("#!")) {
-				testLexerTokenizing(tokenSourceValue, array(expectedTokenCode));
+			if(tokenCheckers.length != 1 && !tokenSourceValue.startsWith("#!")) {
+				testLexerTokenizing(tokenSourceValue, array(tokenChecker));
 			}
 			
 			constructedSource.append(tokenSourceValue);
 			assertTrue(sourceSoFar.contentEquals(constructedSource));
 		}
 		assertTrue(deeLexer.tokenStartPos == source.length());
-		checkToken(deeLexer, DeeTokens.EOF, readSourceOffset);
+		new TokenChecker(DeeTokens.EOF).checkToken(deeLexer, readSourceOffset);
 		assertEquals(source, constructedSource.toString());
 	}
 	
-	public static Token checkToken(DeeLexer deeLexer, DeeTokens expectedTokenCode, int readOffset) {
-		Token token = deeLexer.next();
-		DeeTokens tokenCode = token.getTokenCode();
-		if(expectedTokenCode != null) {
-			assertTrue(tokenCode == expectedTokenCode);
-		}
-		assertTrue(token.getStartPos() == readOffset);
-		assertEquals(deeLexer.source.subSequence(token.getStartPos(), token.getEndPos()), token.getSourceValue());
-		if(tokenCode.getSourceValue() != null) {
-			assertEquals(tokenCode.getSourceValue(), token.getSourceValue());
+	public static class TokenChecker {
+		
+		public static TokenChecker create(String expectedTokenStr) {
+			try {
+				boolean isError = false;
+				
+				int errorMark = expectedTokenStr.indexOf('!');
+				if(errorMark != -1) {
+					expectedTokenStr = expectedTokenStr.substring(0, errorMark);
+					isError = true;
+				}
+				
+				if(expectedTokenStr.equals("*")) {
+					return new TokenChecker(null, isError);
+				} else {
+					if(expectedTokenStr.equals("ID")) {
+						expectedTokenStr = DeeTokens.IDENTIFIER.name();
+					} else if(expectedTokenStr.equals("WS") || expectedTokenStr.equals("_")) {
+						expectedTokenStr = DeeTokens.WHITESPACE.name();
+					}
+					DeeTokens expectedToken = DeeTokens.valueOf(expectedTokenStr);
+					return new TokenChecker(expectedToken, isError);
+				}
+			} catch(IllegalArgumentException e) {
+				throw assertFail();
+			}
 		}
 		
-		switch (tokenCode) {
-		case EOF: assertTrue(token.getEndPos() >= token.getStartPos());
-			break;
-		default:
-			assertTrue(token.getEndPos() > token.getStartPos());
+		private DeeTokens expectedTokenCode;
+		private boolean isError;
+		
+		public TokenChecker(DeeTokens deeToken) {
+			this(deeToken, false);
 		}
-		return token;
+		
+		public TokenChecker(DeeTokens deeToken, boolean isError) {
+			this.expectedTokenCode = deeToken;
+			this.isError = isError;
+		}
+		
+		public Token checkToken(DeeLexer deeLexer, int readOffset) {
+			Token token = deeLexer.next();
+			DeeTokens tokenCode = token.getTokenCode();
+			
+			if(isError) {
+				assertTrue(token.getTokenCode() == DeeTokens.ERROR);
+				if(expectedTokenCode != null) {
+					DeeTokens originalToken = ((ErrorToken)token).originalToken;
+					assertTrue(originalToken == expectedTokenCode);
+				}
+			} else if(token instanceof ErrorToken){
+				assertTrue(tokenCode == DeeTokens.ERROR);
+				assertTrue(((ErrorToken)token).originalToken == DeeTokens.ERROR);
+			} else {
+				if(expectedTokenCode != null) {
+					assertTrue(tokenCode == expectedTokenCode);
+				}
+			}
+			
+			
+			assertTrue(token.getStartPos() == readOffset);
+			assertEquals(deeLexer.source.subSequence(token.getStartPos(), token.getEndPos()), token.getSourceValue());
+			if(tokenCode.getSourceValue() != null) {
+				assertEquals(tokenCode.getSourceValue(), token.getSourceValue());
+			}
+			
+			if(tokenCode == DeeTokens.EOF) {
+				assertTrue(token.getEndPos() >= token.getStartPos());
+			} else {
+				assertTrue(token.getEndPos() > token.getStartPos());
+			}
+			return token;
+		}
 	}
 	
 }

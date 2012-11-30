@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
@@ -24,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import dtool.parser.DeeLexerTest.TokenChecker;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.MiscDeeTestUtils;
@@ -33,7 +33,7 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/lexer-tests";
 	
-	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 113;
+	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 115;
 	private static int splitTestCount = 0; 
 	
 	@Parameters
@@ -68,35 +68,21 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 	public void runLexerSourceBasedTest(String testSource) {
 		int lexerSourceEnd = testSource.indexOf(LEXERTEST_KEYWORD);
 		assertTrue(lexerSourceEnd != -1);
+		String source = testSource.substring(0, lexerSourceEnd);
+
 		int index = lexerSourceEnd + LEXERTEST_KEYWORD.length();
-		
+
 		Matcher matcher = MiscDeeTestUtils.matchRegexp(ANY_UNTIL_NEWLINE_REGEX, testSource, index);
 		String expectedTokensList = testSource.substring(matcher.end());
 		expectedTokensList = expectedTokensList.replaceFirst("(\\\r?\\\n)?\\+/(?s).*", "");
 		
 		String[] expectedTokensStr = expectedTokensList.split("(,(\\\r?\\\n)?)");
 		
-		DeeTokens[] expectedTokens = new DeeTokens[expectedTokensStr.length];
+		TokenChecker[] expectedTokens = new TokenChecker[expectedTokensStr.length];
 		for (int i = 0; i < expectedTokensStr.length; i++) {
-			String expectedTokenStr = expectedTokensStr[i].trim();
-			try {
-				if(expectedTokenStr.equals("*")) {
-					expectedTokens[i] = null;
-				} else {
-					if(expectedTokenStr.equals("ID")) {
-						expectedTokenStr = DeeTokens.IDENTIFIER.name();
-					} else if(expectedTokenStr.equals("WS") || expectedTokenStr.equals("_")) {
-						expectedTokenStr = DeeTokens.WHITESPACE.name();
-					}
-					DeeTokens expectedToken = DeeTokens.valueOf(expectedTokenStr);
-					expectedTokens[i] = expectedToken;
-				}
-			} catch(IllegalArgumentException e) {
-				assertFail();
-			}
+			expectedTokens[i] = TokenChecker.create(expectedTokensStr[i].trim());
 		}
 		
-		String source = testSource.substring(0, lexerSourceEnd);
 		DeeLexerTest.testLexerTokenizing(source, expectedTokens);
 	}
 	

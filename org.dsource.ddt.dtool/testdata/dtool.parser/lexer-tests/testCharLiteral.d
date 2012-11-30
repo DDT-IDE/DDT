@@ -5,19 +5,19 @@ CHAR_LITERAL,CHAR_LITERAL,EOL
 +/
 //#SPLIT_SOURCE_TEST _____________________ technically this seems to be according to grammar, but DMD rejects it
 '''/+#LEXERTEST
-ERROR,ERROR+/
+CHAR_LITERAL!,CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST _____________________ 
 ''/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST _____________________
 'a/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST _____________________
 '/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST _____________________
 ''/+#LEXERTEST
-ERROR,ERROR+/
+CHAR_LITERAL!,CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST _____________________ >> oversized char literal, this is invalid but error is pseudo-semantic?
 'aaa'foobar/+#LEXERTEST
 CHAR_LITERAL,ID+/
@@ -51,28 +51,28 @@ CHAR_LITERAL,EOL,
 +/
 //#SPLIT_SOURCE_TEST _______________  escape sequences + EOF
 '\/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST ________
 '\'/+#LEXERTEST
-ERROR, ERROR+/
+CHAR_LITERAL!, CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST ________
 '\x/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST ________
 '\u/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST ________
 '\U/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST ________
 '\u012/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST ________
 '\u0123ABC/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST ________
 '\1/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/
 //#SPLIT_SOURCE_TEST ________
 '\&/+#LEXERTEST
-ERROR+/
+CHAR_LITERAL!+/

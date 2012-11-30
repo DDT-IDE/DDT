@@ -20,11 +20,11 @@ SCRIPT_LINE_INTRO, ID
  #!/usr/bin
 blah
 /+#LEXERTEST
-WS, ERROR,
+WS, SPECIAL_TOKEN_LINE!,
 ID,EOL
 +/
 
 //#SPLIT_SOURCE_TEST _____________________
 #/+#LEXERTEST
-ERROR,
+SPECIAL_TOKEN_LINE!,
 +/
