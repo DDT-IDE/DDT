@@ -273,7 +273,13 @@ public class DeeLexer extends AbstractLexer {
 	
 	protected final Token matchEOFCharacter() {
 		assertTrue(getCharCategory(lookAhead()) == CharRuleCategory.EOF_CHARS);
-		return createToken(DeeTokens.EOF, 1);
+		return createEOFToken();
+	}
+	
+	/** EOF token will consist of not only initial EOF marker but everything afterwards
+	 * until true end of file. */
+	public Token createEOFToken() {
+		return createToken(DeeTokens.EOF, source.length() - tokenStartPos);
 	}
 	
 	protected final Token matchEndOfLine() {
@@ -318,6 +324,9 @@ public class DeeLexer extends AbstractLexer {
 		String idValue = source.subSequence(tokenStartPos, pos).toString();
 		DeeTokens keywordToken = DeeLexerKeywordHelper.getKeywordToken(idValue);
 		if(keywordToken != null) {
+			if(keywordToken == DeeTokens.KW___EOF__) {
+				return createEOFToken();
+			}
 			return createToken(keywordToken);
 		}
 		return createToken(DeeTokens.IDENTIFIER);

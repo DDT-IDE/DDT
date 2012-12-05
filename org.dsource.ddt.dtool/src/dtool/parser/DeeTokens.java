@@ -108,9 +108,10 @@ public enum DeeTokens {
 	KW___TRAITS("__traits"),
 	
 	KW___DATE__("__DATE__"),
-	KW___EOF__("__EOF__"),
+	KW___EOF__("__EOF__"), // This token is actually never produced in practice, it gets transformed into EOF
 	KW___TIME__("__TIME__"),
-	KW___VENDOR__("__TIMESTAMP__"),
+	KW___TIMESTAMP__("__TIMESTAMP__"),
+	KW___VENDOR__("__VENDOR__"),
 	KW___VERSION__("__VERSION__"),
 	
 	SPECIAL_TOKEN_LINE,

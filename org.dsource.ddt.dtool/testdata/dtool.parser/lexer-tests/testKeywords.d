@@ -36,7 +36,9 @@ KW_FINAL,WS, ID,WS, KW_FINALLY,WS, ID,WS, EOL
 +/
 
 //#SPLIT_SOURCE_TEST _____________________
-__DATE__ __EOF__ __TIME__ __TIMESTAMP__ __VERSION__
+__DATE__ __TIME__ __TIMESTAMP__ __VENDOR__ __VERSION__
+__EOF__ blah blah
 /+#LEXERTEST
-KW___DATE__, WS,KW___EOF__, WS,KW___TIME__, WS,KW___VENDOR__, WS,KW___VERSION__, EOL,
+KW___DATE__, WS,KW___TIME__, WS,KW___TIMESTAMP__, WS,KW___VENDOR__, WS,KW___VERSION__, EOL,
+EOF,
 +/
