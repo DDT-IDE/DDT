@@ -15,13 +15,13 @@ public enum DeeTokens {
 	EOF,
 	ERROR,
 	
-	EOL,
-	WHITESPACE,
-	SCRIPT_LINE_INTRO,
+	EOL(null, true),
+	WHITESPACE(null, true),
+	SCRIPT_LINE_INTRO(null, true),
 	
-	COMMENT_MULTI,
-	COMMENT_NESTED,
-	COMMENT_LINE,
+	COMMENT_MULTI(null, true),
+	COMMENT_NESTED(null, true),
+	COMMENT_LINE(null, true),
 	
 	IDENTIFIER,
 	
@@ -39,6 +39,9 @@ public enum DeeTokens {
 	CLOSE_BRACKET("]"),
 	
 	CHAR_LITERAL,
+	
+	INTEGER, INTEGER_BINARY, INTEGER_OCTAL, INTEGER_HEX,
+	FLOAT, FLOAT_HEX,
 	
 	QUESTION("?"),
 	COMMA(","),
@@ -70,9 +73,6 @@ public enum DeeTokens {
 	LESS_GREATER("<>"), LESS_GREATER_EQUAL("<>="),
 	UNORDERED_E("!<>"), UNORDERED("!<>="), 
 	UNORDERED_GE("!<"), UNORDERED_G("!<="), UNORDERED_LE("!>"), UNORDERED_L("!>="),
-	
-	INTEGER, INTEGER_BINARY, INTEGER_OCTAL, INTEGER_HEX,
-	FLOAT, FLOAT_HEX,
 	
 	KW_ABSTRACT("abstract"), KW_ALIAS("alias"), KW_ALIGN("align"), 
 	KW_ASM("asm"), KW_ASSERT("assert"), KW_AUTO("auto"),
@@ -108,7 +108,7 @@ public enum DeeTokens {
 	KW___TRAITS("__traits"),
 	
 	KW___DATE__("__DATE__"),
-	KW___EOF__("__EOF__"), // This token is actually never produced in practice, it gets transformed into EOF
+	KW___EOF__("__EOF__"), // This token is actually never returned by the lexer, it gets transformed into EOF
 	KW___TIME__("__TIME__"),
 	KW___TIMESTAMP__("__TIMESTAMP__"),
 	KW___VENDOR__("__VENDOR__"),
@@ -118,12 +118,19 @@ public enum DeeTokens {
 	
 	;
 	protected final String sourceValue;
+	protected final boolean isParserIgnored;
 	
 	private DeeTokens() {
 		this(null);
 	}
+	
 	private DeeTokens(String sourceValue) {
+		this(sourceValue, false);
+	}
+	
+	private DeeTokens(String sourceValue, boolean isParserIgnored) {
 		this.sourceValue = sourceValue;
+		this.isParserIgnored = isParserIgnored;
 	}
 	
 	public final String getSourceValue() {

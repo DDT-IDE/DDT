@@ -29,11 +29,11 @@ import dtool.tests.DToolTestResources;
 import dtool.tests.MiscDeeTestUtils;
 
 @RunWith(Parameterized.class)
-public class DeeLexerSourceBasedTest extends DToolBaseTest {
+public class DeeParserSourceBasedTest extends DToolBaseTest {
 	
-	protected static final String TESTFILESDIR = "dtool.parser/lexer-tests";
+	protected static final String TESTFILESDIR = "dtool.parser/parser-tests";
 	
-	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 118;
+	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 1;
 	private static int splitTestCount = 0;
 	
 	@Parameters
@@ -43,7 +43,7 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 	
 	protected final File file;
 	
-	public DeeLexerSourceBasedTest(File file) {
+	public DeeParserSourceBasedTest(File file) {
 		this.file = file;
 	}
 	
@@ -52,7 +52,7 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 		String[] splitSourceBasedTests = enteringSourceBasedTest(file);
 		for (String testString : splitSourceBasedTests) {
 			splitTestCount++;
-			runLexerSourceBasedTest(testString);
+			runSourceBasedTest(testString);
 		}
 	}
 	
@@ -61,29 +61,11 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 		assertTrue(splitTestCount == LEXER_SOURCE_BASED_TESTS_COUNT);
 	}
 	
-	protected static final String LEXERTEST_KEYWORD = "/+#LEXERTEST";
+	protected static final String LEXERTEST_KEYWORD = "/+#PARSERTEST";
 	public static final String ANY_UNTIL_NEWLINE_REGEX = "[^\\\r\\\n]*\\\r?\\\n";
 	
 	
-	public void runLexerSourceBasedTest(String testSource) {
-		int lexerSourceEnd = testSource.indexOf(LEXERTEST_KEYWORD);
-		assertTrue(lexerSourceEnd != -1);
-		String source = testSource.substring(0, lexerSourceEnd);
-
-		int index = lexerSourceEnd + LEXERTEST_KEYWORD.length();
-
-		Matcher matcher = MiscDeeTestUtils.matchRegexp(ANY_UNTIL_NEWLINE_REGEX, testSource, index);
-		String expectedTokensList = testSource.substring(matcher.end());
-		expectedTokensList = expectedTokensList.replaceFirst("(\\\r?\\\n)?\\+/(?s).*", "");
-		
-		String[] expectedTokensStr = expectedTokensList.split("(,(\\\r?\\\n)?)");
-		
-		TokenChecker[] expectedTokens = new TokenChecker[expectedTokensStr.length];
-		for (int i = 0; i < expectedTokensStr.length; i++) {
-			expectedTokens[i] = TokenChecker.create(expectedTokensStr[i].trim());
-		}
-		
-		DeeLexerTest.testLexerTokenizing(source, expectedTokens);
+	public void runSourceBasedTest(String testSource) {
 	}
 	
 }

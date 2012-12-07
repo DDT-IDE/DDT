@@ -11,6 +11,7 @@ import dtool.Logg;
  */
 public class ASTSourceRangeChecker extends ASTNeoHomogenousVisitor {
 	
+	@Deprecated
 	/** Checks an AST for errors, such as source range errors. */
 	public static void checkConsistency(ASTNeoNode elem){
 		elem.accept(new ASTSourceRangeChecker(elem.getStartPos()));
