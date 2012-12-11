@@ -122,7 +122,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		
 		SourceRange sourceRange = sourceRange(elem, false);
 		if(elem.md == null) {
-			return Module.createModuleNoModuleDecl(sourceRange, members, defaultModuleName);
+			return Module.createModuleNoModuleDecl(sourceRange, defaultModuleName, members);
 		} else  {
 			TokenInfo defnameInfo = DefinitionConverter.convertIdToken(elem.md.id);
 			SourceRange declRange = sourceRange(elem.md);

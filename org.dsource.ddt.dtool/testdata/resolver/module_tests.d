@@ -1,3 +1,4 @@
+//#SPLIT_SOURCE_TEST _____________________
 /+@marker1+/
 module module_tests;
 

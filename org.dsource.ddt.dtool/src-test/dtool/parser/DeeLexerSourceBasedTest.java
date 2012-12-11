@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.regex.Matcher;
 
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -24,12 +23,11 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.parser.DeeLexerTest.TokenChecker;
-import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
-import dtool.tests.MiscDeeTestUtils;
+import dtool.tests.SimpleParser;
 
 @RunWith(Parameterized.class)
-public class DeeLexerSourceBasedTest extends DToolBaseTest {
+public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/lexer-tests";
 	
@@ -49,7 +47,7 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 	
 	@Test
 	public void runSourceBasedTests() throws IOException {
-		String[] splitSourceBasedTests = enteringSourceBasedTest(file);
+		String[] splitSourceBasedTests = getSourceBasedTests(file);
 		for (String testString : splitSourceBasedTests) {
 			splitTestCount++;
 			runLexerSourceBasedTest(testString);
@@ -62,18 +60,17 @@ public class DeeLexerSourceBasedTest extends DToolBaseTest {
 	}
 	
 	protected static final String LEXERTEST_KEYWORD = "/+#LEXERTEST";
-	public static final String ANY_UNTIL_NEWLINE_REGEX = "[^\\\r\\\n]*\\\r?\\\n";
 	
 	
 	public void runLexerSourceBasedTest(String testSource) {
-		int lexerSourceEnd = testSource.indexOf(LEXERTEST_KEYWORD);
-		assertTrue(lexerSourceEnd != -1);
-		String source = testSource.substring(0, lexerSourceEnd);
-
-		int index = lexerSourceEnd + LEXERTEST_KEYWORD.length();
-
-		Matcher matcher = MiscDeeTestUtils.matchRegexp(ANY_UNTIL_NEWLINE_REGEX, testSource, index);
-		String expectedTokensList = testSource.substring(matcher.end());
+		SimpleParser simpleParser = new SimpleParser(testSource);
+		
+		String source = simpleParser.consumeUntil(LEXERTEST_KEYWORD);
+		
+		assertTrue(!simpleParser.lookaheadIsEOF());
+		
+		simpleParser.seekToNewLine();
+		String expectedTokensList = simpleParser.restOfInput();
 		expectedTokensList = expectedTokensList.replaceFirst("(\\\r?\\\n)?\\+/(?s).*", "");
 		
 		String[] expectedTokensStr = expectedTokensList.split("(,(\\\r?\\\n)?)");

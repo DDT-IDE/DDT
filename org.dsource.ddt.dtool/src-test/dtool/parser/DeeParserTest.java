@@ -13,12 +13,15 @@ public class DeeParserTest {
 	@Test
 	public void basicTest() throws Exception { basicTest$(); }
 	public void basicTest$() throws Exception {
-		String source = "module foo;";
-		runParserTest(source);
+		runParserTest("module pack.foo;");
 	}
 	
-	public void runParserTest(String source) {
-		DeeParserResult result = DeeParser.parse(source);
+	public static void runParserTest(String testSource) {
+		runParserTest(testSource, testSource);
+	}
+	
+	public static void runParserTest(String parseSource, String expectedGenSource) {
+		DeeParserResult result = DeeParser.parse(parseSource);
 		
 		Module module = result.module;
 		assertNotNull(module);
@@ -26,40 +29,40 @@ public class DeeParserTest {
 		ASTSourceRangeChecker.ASTAssertChecker.checkConsistency(module);
 		
 		String generatedSource = ASTSourcePrinter.printSource(module);
-		checkSourceEquality(source, generatedSource);
+		checkSourceEquality(expectedGenSource, generatedSource);
 	}
 	
-	public void checkSourceEquality(String source, String generatedSource) {
+	public static void checkSourceEquality(String source, String generatedSource) {
 		DeeLexer originalSourceLexer = new DeeLexer(source);
 		DeeLexer generatedSourceLexer = new DeeLexer(generatedSource);
 		
 		while(true) {
 			Token tok1 = getContentToken(originalSourceLexer, true);
 			Token tok2 = getContentToken(generatedSourceLexer, true);
-			assertEquals(tok1.tokenCode, tok2.tokenCode);
+			assertEquals(tok1.tokenType, tok2.tokenType);
 			assertEquals(tok1.value, tok2.value);
 			
-			if(tok1.tokenCode == DeeTokens.EOF) {
+			if(tok1.tokenType == DeeTokens.EOF) {
 				break;
 			}
 		}
 	}
 	
-	public Token getContentToken(DeeLexer lexer, boolean ignoreComments) {
+	public static Token getContentToken(DeeLexer lexer, boolean ignoreComments) {
 		while(true) {
 			Token token = lexer.next(); 
-			if(!token.tokenCode.isParserIgnored || (!ignoreComments && 
+			if(!token.tokenType.isParserIgnored || (!ignoreComments && 
 				isCommentToken(token))) {
 				return token;
 			}
 		}
-		
 	}
-	public boolean isCommentToken(Token token) {
+	
+	public static boolean isCommentToken(Token token) {
 		return 
-			token.tokenCode == DeeTokens.COMMENT_LINE ||
-			token.tokenCode == DeeTokens.COMMENT_MULTI ||
-			token.tokenCode == DeeTokens.COMMENT_NESTED;
+			token.tokenType == DeeTokens.COMMENT_LINE ||
+			token.tokenType == DeeTokens.COMMENT_MULTI ||
+			token.tokenType == DeeTokens.COMMENT_NESTED;
 	}
 	
 }

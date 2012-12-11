@@ -2,18 +2,18 @@ package dtool.parser;
 
 public class Token {
 	
-	public final DeeTokens tokenCode;
+	public final DeeTokens tokenType;
 	public final int start;
 	public final String value; //TODO, don't store this.
 	
 	public Token(DeeTokens tokenCode, CharSequence source, int start, int end) {
 		this.start = start;
 		this.value = source.subSequence(start, end).toString();
-		this.tokenCode = tokenCode;
+		this.tokenType = tokenCode;
 	}
 	
-	public final DeeTokens getTokenCode() {
-		return tokenCode;
+	public final DeeTokens getTokenType() {
+		return tokenType;
 	}
 	
 	public final int getStartPos() {

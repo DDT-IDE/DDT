@@ -125,10 +125,10 @@ public class DeeLexerTest extends CommonTestUtils {
 		
 		public Token checkToken(DeeLexer deeLexer, int readOffset) {
 			Token token = deeLexer.next();
-			DeeTokens tokenCode = token.getTokenCode();
+			DeeTokens tokenCode = token.getTokenType();
 			
 			if(isError) {
-				assertTrue(token.getTokenCode() == DeeTokens.ERROR);
+				assertTrue(token.getTokenType() == DeeTokens.ERROR);
 				if(expectedTokenCode != null) {
 					DeeTokens originalToken = ((ErrorToken)token).originalToken;
 					assertTrue(originalToken == expectedTokenCode);

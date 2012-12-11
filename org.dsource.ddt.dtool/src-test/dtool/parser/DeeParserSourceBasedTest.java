@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.regex.Matcher;
 
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -23,17 +22,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.parser.DeeLexerTest.TokenChecker;
-import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
-import dtool.tests.MiscDeeTestUtils;
+import dtool.tests.SimpleParser;
 
 @RunWith(Parameterized.class)
-public class DeeParserSourceBasedTest extends DToolBaseTest {
+public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/parser-tests";
 	
-	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 1;
+	private static final int PARSER_SOURCE_BASED_TESTS_COUNT = 5;
 	private static int splitTestCount = 0;
 	
 	@Parameters
@@ -49,7 +46,7 @@ public class DeeParserSourceBasedTest extends DToolBaseTest {
 	
 	@Test
 	public void runSourceBasedTests() throws IOException {
-		String[] splitSourceBasedTests = enteringSourceBasedTest(file);
+		String[] splitSourceBasedTests = getSourceBasedTests(file);
 		for (String testString : splitSourceBasedTests) {
 			splitTestCount++;
 			runSourceBasedTest(testString);
@@ -58,14 +55,23 @@ public class DeeParserSourceBasedTest extends DToolBaseTest {
 	
 	@AfterClass
 	public static void checkTestCount() {
-		assertTrue(splitTestCount == LEXER_SOURCE_BASED_TESTS_COUNT);
+		assertTrue(splitTestCount == PARSER_SOURCE_BASED_TESTS_COUNT);
 	}
 	
-	protected static final String LEXERTEST_KEYWORD = "/+#PARSERTEST";
-	public static final String ANY_UNTIL_NEWLINE_REGEX = "[^\\\r\\\n]*\\\r?\\\n";
-	
+	protected static final String TEST_KEYWORD = "//#PARSERTEST#";
 	
 	public void runSourceBasedTest(String testSource) {
+		SimpleParser simpleParser = new SimpleParser(testSource);
+		
+		String parseSource = simpleParser.consumeUntil(TEST_KEYWORD);
+		String expectedGenSource = parseSource;
+		
+		if(!simpleParser.lookaheadIsEOF()) {
+			simpleParser.seekToNewLine();
+			expectedGenSource = simpleParser.restOfInput(); 
+		}
+		
+		DeeParserTest.runParserTest(parseSource, expectedGenSource);
 	}
 	
 }

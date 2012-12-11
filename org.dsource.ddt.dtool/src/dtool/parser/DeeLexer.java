@@ -598,11 +598,11 @@ public class DeeLexer extends AbstractLexer {
 		int nestingLevel = 1;
 		do {
 			Token token = next();
-			if(token.getTokenCode() == DeeTokens.OPEN_BRACE) {
+			if(token.getTokenType() == DeeTokens.OPEN_BRACE) {
 				nestingLevel++;
-			} else if (token.getTokenCode() == DeeTokens.CLOSE_BRACE) {
+			} else if (token.getTokenType() == DeeTokens.CLOSE_BRACE) {
 				nestingLevel--;
-			} else if (token.getTokenCode() == DeeTokens.EOF) {
+			} else if (token.getTokenType() == DeeTokens.EOF) {
 				tokenStartPos = tokenStringStartPos;
 				return createErrorToken(DeeTokens.STRING_TOKENS, 
 					DeeParserMessages.STRING_NOT_TERMINATED__REACHED_EOF);

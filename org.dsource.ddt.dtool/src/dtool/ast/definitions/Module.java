@@ -82,8 +82,8 @@ public class Module extends DefUnit implements IScopeNode {
 		return new Module(defSymbol, comments, md, members, sourceRange);
 	}
 	
-	public static Module createModuleNoModuleDecl(SourceRange sourceRange, ArrayView<ASTNeoNode> members,
-			String moduleName) {
+	public static Module createModuleNoModuleDecl(SourceRange sourceRange, String moduleName,
+			ArrayView<ASTNeoNode> members) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName, null);
 		return new Module(defSymbol, null, null, members, sourceRange);
 	}
@@ -94,6 +94,7 @@ public class Module extends DefUnit implements IScopeNode {
 		defSymbol.module = this;
 		this.md = parentize(md);
 		this.members = parentize(members);
+		assertNotNull(members);
 	}
 	
 	@Override
