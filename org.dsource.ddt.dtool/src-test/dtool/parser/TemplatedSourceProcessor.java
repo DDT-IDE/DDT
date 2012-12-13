@@ -14,68 +14,101 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import dtool.tests.CommonTestUtils;
+import dtool.tests.AnnotatedSource;
 import dtool.tests.SimpleParser;
+import dtool.tests.AnnotatedSource.MetadataEntry;
 
 /**
  * Generates multiple source cases from a templated source, using a simple markup language. 
  */
-public class TemplatedSourceProcessor extends CommonTestUtils {
+public class TemplatedSourceProcessor {
 	
-	public static void processSource(String unprocessedTestSource, String keyMARKER, ArrayList<String> testsCases) {
-		TemplatedSourceProcessor.processSource(unprocessedTestSource, 0, keyMARKER, testsCases);
+	protected final ArrayList<AnnotatedSource> genCases = new ArrayList<AnnotatedSource>();
+	protected String keyMARKER;
+	
+	public TemplatedSourceProcessor(String keyMARKER) {
+		this.keyMARKER = keyMARKER;
 	}
 	
-	public static void processSource(String unprocessedSource, int offset, String keyMARKER,
-		ArrayList<String> testCases) {
-		SimpleParser testSourceParser = new SimpleParser(unprocessedSource);
+	public static TemplatedSourceProcessor processSource(String unprocessedSource, String keyMARKER) {
+		TemplatedSourceProcessor tsp = new TemplatedSourceProcessor(keyMARKER);
+		tsp.processSource(unprocessedSource);
+		return tsp;
+	}
+	
+	public ArrayList<AnnotatedSource> getGenCases() {
+		return genCases;
+	}
+	
+	public void processSource(String unprocessedSource) {
+		processSourceVariations(unprocessedSource, 0);
+	}
+	
+	public void processSourceVariations(String unprocessedSource, int offset) {
+		SimpleParser sourceParser = new SimpleParser(unprocessedSource);
 		
-		StringBuilder processedSource = new StringBuilder();
-		processedSource.append(testSourceParser.consumeAmount(offset));
+		sourceParser.consumeAmount(offset);
 		
 		while(true) {
-			String sourceBeforeMarker = testSourceParser.consumeUntil(keyMARKER);
-			if(testSourceParser.lookaheadIsEOF()) {
-				testCases.add(processedSource + sourceBeforeMarker);
+			sourceParser.consumeUntil(keyMARKER);
+			
+			if(sourceParser.lookaheadIsEOF()) {
+				// No variations
+				processSourceLinearPhase(unprocessedSource);
 				return;
 			}
+			int offsetBeforeMarker = sourceParser.getSourcePosition();
+			sourceParser.consume(keyMARKER);
 			
-			testSourceParser.consume(keyMARKER);
-			processedSource.append(sourceBeforeMarker);
-			
-			if(testSourceParser.tryConsume(keyMARKER)) { //escaped keyMarker
-				processedSource.append(keyMARKER);
-			} else if(testSourceParser.tryConsumeKeyword("NL")) {
-				List<String> variations = list("\r", "\n", "\r\n");
-				expandSourceCases(processedSource, variations, testSourceParser, keyMARKER, testCases);
+			if(sourceParser.tryConsume(keyMARKER)) { //escaped keyMarker
+				// Reproduce the escaped marker, for second phase
+			} else if(sourceParser.tryConsumeKeyword("EOF")) {
+			} else if(sourceParser.tryConsumeKeyword("NL")) {
+				List<String> variations = Arrays.asList("\r", "\n", "\r\n");
+				expandSourceCases(sourceParser, offsetBeforeMarker, variations);
 				return;
-			} else if(testSourceParser.tryConsume("{")) {
-				ArrayList<String> arguments = readArguments(keyMARKER, testSourceParser);
-				assertTrue(!arguments.isEmpty(), "Need at least one argument");
-				
-				expandSourceCases(processedSource, arguments, testSourceParser, keyMARKER, testCases);
+			} else if(sourceParser.tryConsume("{")) {
+				processExpansionList(sourceParser, offsetBeforeMarker, "}");
 				return;
+			} else if(sourceParser.tryConsume("(")) {
+				processExpansionList(sourceParser, offsetBeforeMarker, ")");
+				return;
+			} else if(sourceParser.tryConsume("@")) {
+				//continue
+			} else if(sourceParser.tryConsume("//")) {
+				sourceParser.seekToNewLine();
+				//continue
+			} else {
+				assertFail();
 			}
 		}
 	}
 	
-	public static void expandSourceCases(StringBuilder processedSourceSB, Iterable<String> variations,
-		SimpleParser testSourceParser, String keyMARKER, ArrayList<String> testCases) {
+	public void processExpansionList(SimpleParser sourceParser, int offsetBeforeMarker, String listEnd) {
+		ArrayList<String> arguments = readArguments(sourceParser, listEnd);
+		assertTrue(!arguments.isEmpty(), "Need at least one argument");
+		
+		expandSourceCases(sourceParser, offsetBeforeMarker, arguments);
+	}
+	
+	public void expandSourceCases(SimpleParser sourceParser, int offsetBeforeMarker, Iterable<String> variations) {
+		String sourceSoFar = sourceParser.getSource().substring(0, offsetBeforeMarker);
+		
 		for (String variation : variations) {
-			String processedSource = processedSourceSB.toString();
-			String fullSource = processedSource + variation + testSourceParser.restOfInput();
-			processSource(fullSource, processedSource.length(), keyMARKER, testCases);
+			String fullSource = sourceSoFar + variation + sourceParser.restOfInput();
+			processSourceVariations(fullSource, sourceSoFar.length());
 		}
 	}
 	
-	public static ArrayList<String> readArguments(String keyMARKER, SimpleParser testSourceParser) {
+	public ArrayList<String> readArguments(SimpleParser testSourceParser, String listEnd) {
 		ArrayList<String> arguments = new ArrayList<String>();
 		
 		String argument = "";
 		while(true) {
-			final String[] ALTERNATIVES = {",", "}", keyMARKER};
+			final String[] ALTERNATIVES = {",", listEnd, keyMARKER};
 			int alt = testSourceParser.consumeUntilAny(ALTERNATIVES);
 			
 			argument = argument + testSourceParser.getLastConsumedString();
@@ -107,6 +140,76 @@ public class TemplatedSourceProcessor extends CommonTestUtils {
 		}
 		
 		return arguments;
+	}
+	
+	public void processSourceLinearPhase(String unprocessedSource) {
+		SimpleParser sourceParser = new SimpleParser(unprocessedSource);
+		
+		ArrayList<MetadataEntry> metadata = new ArrayList<MetadataEntry>();
+		
+		StringBuilder processedSource = new StringBuilder();
+		
+		boolean eofReached = false;
+		
+		while(true) {
+			String sourceBeforeMarker = sourceParser.consumeUntil(keyMARKER);
+			appendSource(processedSource, sourceBeforeMarker, eofReached);
+			
+			if(sourceParser.lookaheadIsEOF()) {
+				addFullyProcessedSource(processedSource.toString(), metadata);
+				return;
+			}
+			
+			sourceParser.consume(keyMARKER);
+			
+			if(sourceParser.tryConsume(keyMARKER)) { //escaped keyMarker
+				appendSource(processedSource, keyMARKER, eofReached);
+			} else if(sourceParser.tryConsumeKeyword("EOF")) {
+				eofReached = true;
+			} else if(sourceParser.tryConsume("//")) {
+				readMetaData(sourceParser, metadata, processedSource, eofReached, true);
+			} else if(sourceParser.tryConsume("@")) {
+				readMetaData(sourceParser, metadata, processedSource, eofReached, false);
+			} else {
+				assertFail();
+			}
+		}
+	}
+	
+	public void readMetaData(SimpleParser sourceParser, ArrayList<MetadataEntry> metadata,
+		StringBuilder processedSource, boolean eofReached, boolean endOfLineFormat) {
+		
+		String name = sourceParser.consumeAlphaNumericUS(false);
+		String extraValue = null;
+		if(sourceParser.tryConsume(":")) { 
+			extraValue = sourceParser.consumeAlphaNumericUS(false);
+		}
+		String sourceValue = null;
+		if(endOfLineFormat) {
+			sourceParser.seekToNewLine();
+			sourceValue = sourceParser.consumeRestOfInput();
+		} else if(sourceParser.tryConsume("{")) {
+			sourceValue = sourceParser.consumeUntil("}");
+			sourceParser.consume("}");
+		}
+		
+		int mdOffset = eofReached ? -1 : processedSource.length();
+		MetadataEntry mde = new MetadataEntry(name, extraValue, sourceValue, mdOffset);
+		metadata.add(mde);
+		
+		if(sourceValue != null) {
+			appendSource(processedSource, sourceValue, eofReached);
+		}
+	}
+	
+	public void appendSource(StringBuilder sb, String string, boolean eofReached) {
+		if(eofReached == false) {
+			sb.append(string);
+		}
+	}
+	
+	protected void addFullyProcessedSource(String source, ArrayList<MetadataEntry> metadata) {
+		genCases.add(new AnnotatedSource(source, metadata));
 	}
 	
 }

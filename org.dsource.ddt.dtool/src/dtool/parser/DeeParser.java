@@ -1,11 +1,18 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.ArrayList;
+
 import melnorme.utilbox.misc.ArrayUtil;
+import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
+import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
+import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
+import dtool.ast.references.RefIdentifier;
 import dtool.util.ArrayView;
 
 public class DeeParser extends AbstractDeeParser {
@@ -24,6 +31,15 @@ public class DeeParser extends AbstractDeeParser {
 		return new DeeParserResult(module);
 	}
 	
+	public TokenInfo tokenInfo(Token idToken) {
+//		if(idToken == null) {
+//			return null;
+//		}
+		assertTrue(idToken.tokenType == DeeTokens.IDENTIFIER);
+		return new TokenInfo(idToken.value, idToken.getStartPos());
+	}
+	
+	
 	/* ----------------------------------------------------------------- */
 	
 	public Module parseModule() {
@@ -32,24 +48,20 @@ public class DeeParser extends AbstractDeeParser {
 		String[] packages = new String[0];
 		
 		Token moduleId = null;
-		if(la.tokenType == DeeTokens.KW_MODULE) {
-			consumeInput();
+		if(tryConsume(DeeTokens.KW_MODULE)) {
 			
 			while(true) {
-				
-				Token id = consumeToken(DeeTokens.IDENTIFIER);
+				Token id = consumeExpectedToken(DeeTokens.IDENTIFIER);
 				if(id == null) {
 					//ERROR RECOVERY
 					consumeInputUntil(DeeTokens.SEMICOLON);
 					break;
 				}
 				
-				if(lookAhead().tokenType == DeeTokens.SEMICOLON) {
+				if(tryConsume(DeeTokens.SEMICOLON)) {
 					moduleId = id;
-					consumeToken(DeeTokens.SEMICOLON);
 					break;
-				} if(lookAhead().tokenType == DeeTokens.DOT) {
-					consumeToken(DeeTokens.DOT);
+				} else if(tryConsume(DeeTokens.DOT)) {
 					packages = ArrayUtil.append(packages, id.value);
 					
 				} else {
@@ -61,27 +73,51 @@ public class DeeParser extends AbstractDeeParser {
 			}
 		}
 		
-		ArrayView<ASTNeoNode> members = ArrayView.create(new ASTNeoNode[0]);
+		ArrayView<ASTNeoNode> members = parseModuleDecls();
 		
 		
 		consumeInputUntil(DeeTokens.EOF);
 		SourceRange modRange = new SourceRange(0, lastToken.getEndPos());
-		SourceRange modDeclRange = new SourceRange(0, lastToken.getEndPos()); //BUG here
+		SourceRange modDeclRange = new SourceRange(0, lastToken.getEndPos()); // BUG here
 		
 		if(moduleId != null) {
 			return Module.createModule(modRange, null, packages, tokenInfo(moduleId), modDeclRange, members);
 		} else {
-			return Module.createModuleNoModuleDecl(modRange, "__tests_undefined", members);
+			return Module.createModuleNoModuleDecl(modRange, "__tests_unnamed", members);
 		}
 		
 	}
 	
-	public TokenInfo tokenInfo(Token idToken) {
-//		if(idToken == null) {
-//			return null;
-//		}
-		assertTrue(idToken.tokenType == DeeTokens.IDENTIFIER);
-		return new TokenInfo(idToken.value, idToken.getStartPos());
+	public ArrayView<ASTNeoNode> parseModuleDecls() {
+		ArrayList<ASTNeoNode> moduleDecls = new ArrayList<ASTNeoNode>();
+		while(true) {
+			ASTNeoNode decl = parseDecl();
+			if(decl == null) { 
+				break;
+			}
+			moduleDecls.add(decl);
+		}
+		
+		return ArrayView.create(ArrayUtil.createFrom(moduleDecls, ASTNeoNode.class));
+	}
+	
+	private ASTNeoNode parseDecl() {
+		DeeTokens la = lookAhead().tokenType;
+		
+		if(la == DeeTokens.KW_VOID || la == DeeTokens.KW_VOID) {
+			Token type = consumeLookAhead();
+			Token id = consumeExpectedToken(DeeTokens.IDENTIFIER);
+			Token end = consumeExpectedToken(DeeTokens.COMMA);
+			
+			RefIdentifier ref = new RefIdentifier(type.value, srFromToken(id)); // bug here
+			
+			return new DefinitionVariable(defUnitCommon(srFromToken(type, end), id, null), null, ref, null);
+		}
+		return null;
+	}
+	
+	public DefUnitDataTuple defUnitCommon(SourceRange sourceRange, Token id, Comment[] comments) {
+		return new DefUnitDataTuple(srFromToken(id), tokenInfo(id), comments);
 	}
 	
 }

@@ -23,6 +23,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.parser.DeeLexerTest.TokenChecker;
+import dtool.tests.AnnotatedSource;
 import dtool.tests.DToolTestResources;
 import dtool.tests.SimpleParser;
 
@@ -47,10 +48,9 @@ public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 	
 	@Test
 	public void runSourceBasedTests() throws IOException {
-		String[] splitSourceBasedTests = getSourceBasedTests(file);
-		for (String testString : splitSourceBasedTests) {
+		for (AnnotatedSource testString : getSourceBasedTests(file)) {
 			splitTestCount++;
-			runLexerSourceBasedTest(testString);
+			runLexerSourceBasedTest(testString.source);
 		}
 	}
 	

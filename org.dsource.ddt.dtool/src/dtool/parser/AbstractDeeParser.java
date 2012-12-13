@@ -1,5 +1,6 @@
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.SourceRange;
 
 public class AbstractDeeParser {
@@ -12,11 +13,11 @@ public class AbstractDeeParser {
 		this.deeLexer = deeLexer;
 	}
 	
-	protected Token getLastToken() {
+	protected final Token getLastToken() {
 		return lastToken;
 	}
 	
-	protected Token lookAhead() {
+	protected final Token lookAhead() {
 		if(tokenAhead != null) {
 			return tokenAhead;
 		}
@@ -29,7 +30,7 @@ public class AbstractDeeParser {
 		}
 	}
 	
-	protected Token consumeInput() {
+	protected final Token consumeInput() {
 		if(tokenAhead == null) {
 			lookAhead();
 		}
@@ -39,22 +40,44 @@ public class AbstractDeeParser {
 		return lastToken;
 	}
 	
-	protected Token consumeToken(DeeTokens expectedToken) {
+	protected final Token consumeLookAhead() {
+		assertNotNull(tokenAhead);
+		
+		lastToken = tokenAhead;
+		tokenAhead = null;
+		return lastToken;
+	}
+	
+	protected final boolean tryConsume(DeeTokens tokenType) {
+		if(lookAhead().tokenType == tokenType) {
+			consumeLookAhead();
+			return true;
+		}
+		return false;
+	}
+	
+	/** Attempt to consume a token of given type.
+	 * If it fails, creates an error using the range of previous token. */
+	protected final Token consumeExpectedToken(DeeTokens expectedTokenType) {
 		Token next = lookAhead();
-		if(next.tokenType == expectedToken) {
-			consumeInput();
+		if(next.tokenType == expectedTokenType) {
+			consumeLookAhead();
 			return next;
 		} else {
+			//
 			Token lastToken = getLastToken();
 			SourceRange sourceRange = srFromToken(lastToken);
-			pushError(DeeParserErrors.ASDF, lastToken.value, expectedToken.name(), sourceRange);
+			pushError(DeeParserErrors.ASDF, lastToken.value, expectedTokenType.name(), sourceRange);
 			return null;
 		}
 	}
 	
 	public static SourceRange srFromToken(Token token) {
-		int startPos = token.getStartPos();
-		return new SourceRange(startPos, token.getEndPos() - startPos);
+		return new SourceRange(token.getStartPos(), token.getLength());
+	}
+	
+	public static SourceRange srFromToken(Token tokStart, Token tokEnd) {
+		return new SourceRange(tokStart.getStartPos(), tokEnd.getLength());
 	}
 	
 	protected void pushError(DeeParserErrors error, String obj1, String obj2, SourceRange sourceRange) {
@@ -66,7 +89,7 @@ public class AbstractDeeParser {
 	protected int consumeInputUntil(DeeTokens token1) {
 		while(true) {
 			consumeInput();
-			if(lastToken.tokenType == token1 || lastToken.tokenType == DeeTokens.EOF) { //BUG here
+			if(lastToken.tokenType == token1 || lastToken.tokenType == DeeTokens.EOF) { // BUG here
 				return 0;
 			}
 			if(lastToken.tokenType == DeeTokens.EOF) {
@@ -78,10 +101,10 @@ public class AbstractDeeParser {
 	protected int consumeInputUntil(DeeTokens token1, DeeTokens token2) {
 		while(true) {
 			consumeInput();
-			if(lastToken.tokenType == token1 || lastToken.tokenType == DeeTokens.EOF) { //BUG here
+			if(lastToken.tokenType == token1 || lastToken.tokenType == DeeTokens.EOF) { // BUG here
 				return 0;
 			}
-			if(lastToken.tokenType == token1 || lastToken.tokenType == DeeTokens.EOF) { //BUG here
+			if(lastToken.tokenType == token1 || lastToken.tokenType == DeeTokens.EOF) { // BUG here
 				return 1;
 			}
 			if(lastToken.tokenType == DeeTokens.EOF) {

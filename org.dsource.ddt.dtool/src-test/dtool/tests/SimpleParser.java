@@ -91,6 +91,10 @@ public class SimpleParser {
 		return source.substring(pos, source.length());
 	}
 	
+	public String consumeRestOfInput() {
+		return consumeAmount(source.length() - pos);
+	}
+	
 	public String consumeUntil(String string) {
 		int startPos = pos;
 		
@@ -164,19 +168,6 @@ public class SimpleParser {
 		}
 	}
 	
-	public String consumeNonWhiteSpace() {
-		seekSpaceChars();
-		String str = readNonWhiteSpace(source, pos);
-		return consumeAmount(str.length());
-	}
-	
-	public int consumeInteger() {
-		seekSpaceChars();
-		String numberStr = readNonWhiteSpace(source, pos);
-		consumeAmount(numberStr.length());
-		return Integer.decode(numberStr);
-	}
-	
 	public static String readNonWhiteSpace(String string, int offset) {
 		int startPos = offset;
 		while(true) {
@@ -187,6 +178,52 @@ public class SimpleParser {
 			offset++;
 		}
 		return string.substring(startPos, offset);
+	}
+	
+	public static String readAlphaNumericUS(String string, int offset) {
+		int startPos = offset;
+		while(true) {
+			int ch = getCharacter(string, offset);
+			if(ch == EOF || !(Character.isLetterOrDigit(ch) || ch == '_')) {
+				break;
+			}
+			offset++;
+		}
+		return string.substring(startPos, offset);
+	}
+	
+	public static String readInteger(String string, int offset) {
+		int startPos = offset;
+		while(true) {
+			int ch = getCharacter(string, offset);
+			if(ch == EOF || !(Character.isDigit(ch))) {
+				break;
+			}
+			offset++;
+		}
+		return string.substring(startPos, offset);
+	}
+	
+	public String consumeNonWhiteSpace() {
+		seekSpaceChars();
+		String str = readNonWhiteSpace(source, pos);
+		return consumeAmount(str.length());
+	}
+	
+	public int consumeInteger() {
+		seekSpaceChars();
+		String numberStr = readInteger(source, pos);
+		consumeAmount(numberStr.length());
+		return Integer.decode(numberStr);
+	}
+	
+	public String consumeAlphaNumericUS(boolean skipSpaces) {
+		if(skipSpaces) {
+			seekSpaceChars();
+		}
+		String str = readAlphaNumericUS(source, pos);
+		consumeAmount(str.length());
+		return str;
 	}
 	
 	public boolean tryConsumeKeyword(String string) {

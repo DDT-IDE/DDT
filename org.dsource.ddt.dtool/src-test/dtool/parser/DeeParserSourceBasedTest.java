@@ -10,10 +10,12 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.AfterClass;
@@ -22,8 +24,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import dtool.tests.AnnotatedSource;
+import dtool.tests.AnnotatedSource.MetadataEntry;
 import dtool.tests.DToolTestResources;
-import dtool.tests.SimpleParser;
 
 @RunWith(Parameterized.class)
 public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
@@ -46,8 +49,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	@Test
 	public void runSourceBasedTests() throws IOException {
-		String[] splitSourceBasedTests = getSourceBasedTests(file);
-		for (String testString : splitSourceBasedTests) {
+		for (AnnotatedSource testString : getSourceBasedTests(file)) {
 			splitTestCount++;
 			runSourceBasedTest(testString);
 		}
@@ -58,17 +60,22 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		assertTrue(splitTestCount == PARSER_SOURCE_BASED_TESTS_COUNT);
 	}
 	
-	protected static final String TEST_KEYWORD = "//#PARSERTEST#";
-	
-	public void runSourceBasedTest(String testSource) {
-		SimpleParser simpleParser = new SimpleParser(testSource);
+	public void runSourceBasedTest(AnnotatedSource testSource) {
+		String parseSource = testSource.source;
+		String expectedGenSource = null;
 		
-		String parseSource = simpleParser.consumeUntil(TEST_KEYWORD);
-		String expectedGenSource = parseSource;
+		ArrayList<String> expectedErrors = new ArrayList<String>();
 		
-		if(!simpleParser.lookaheadIsEOF()) {
-			simpleParser.seekToNewLine();
-			expectedGenSource = simpleParser.restOfInput(); 
+		for (MetadataEntry mde : testSource.metadata) {
+			if(mde.name.equals("AST_EXPECTED")) {
+				assertTrue(expectedGenSource == null);
+				expectedGenSource = mde.associatedSource;
+			} else if(mde.name.equals("error")){
+				// TODO
+				expectedErrors.add(mde.extraValue);
+			} else {
+				assertFail("Unknown metadata");
+			}
 		}
 		
 		DeeParserTest.runParserTest(parseSource, expectedGenSource);

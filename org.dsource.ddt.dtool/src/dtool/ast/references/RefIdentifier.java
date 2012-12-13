@@ -19,6 +19,7 @@ public class RefIdentifier extends NamedReference {
 	
 	public final String name;
 	
+	@Deprecated
 	public RefIdentifier(String name) {
 		assertNotNull(name);
 		assertTrue(name.length() > 0);

@@ -20,6 +20,10 @@ public class Token {
 		return start;
 	}
 	
+	public final int getLength() {
+		return value.length();
+	}
+	
 	public final int getEndPos() {
 		return start + value.length();
 	}

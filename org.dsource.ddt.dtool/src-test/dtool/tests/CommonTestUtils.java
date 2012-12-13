@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -130,7 +131,9 @@ public class CommonTestUtils {
 		return ArrayUtil.map(coll, evalFunction, String.class);
 	}
 	
-	public static <T, RE, C extends Collection<RE>> C mapOut(Collection<T> coll, Function<? super T, ? extends RE> evalFunction, C outColl) {
+	public static <T, RE, C extends Collection<RE>> C mapOut(
+		Collection<T> coll, Function<? super T, ? extends RE> evalFunction, C outColl
+	) {
 		for(T elem : coll) {
 			outColl.add(evalFunction.evaluate(elem));
 		}
@@ -145,6 +148,21 @@ public class CommonTestUtils {
 	
 	public static <T> T[] removeLast(T[] array, int count) {
 		return ArrayUtil.removeLast(array, count);
+	}
+	
+	/* -------- iteration -------- */
+	
+	public static interface Visitor<T> {
+		void visit(T obj);
+	}
+	
+	public static <T, PRED extends Visitor<T>> void visitCollection(Collection<T> coll, PRED... predicates) {
+		Iterator<T> iterator = coll.iterator();
+		assertTrue(coll.size() == predicates.length);
+		for (int i = 0; iterator.hasNext(); i++) {
+			T next = iterator.next();
+			predicates[i].visit(next);
+		}
 	}
 	
 }
