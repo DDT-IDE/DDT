@@ -1,14 +1,20 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.ArrayList;
+
 import dtool.ast.SourceRange;
+import dtool.parser.Token.ErrorToken;
 
 public class AbstractDeeParser {
 	
 	protected final DeeLexer deeLexer;
 	protected Token lastToken = null;
 	protected Token tokenAhead = null;
-
+	protected ArrayList<ParserError> errors = new ArrayList<ParserError>();
+	
 	public AbstractDeeParser(DeeLexer deeLexer) {
 		this.deeLexer = deeLexer;
 	}
@@ -17,13 +23,33 @@ public class AbstractDeeParser {
 		return lastToken;
 	}
 	
+	protected void addError(EDeeParserErrors errorType, SourceRange sourceRange, String errorSource, Object obj2) {
+		errors.add(new ParserError(errorType, sourceRange, errorSource, obj2));
+	}
+	
 	protected final Token lookAhead() {
 		if(tokenAhead != null) {
 			return tokenAhead;
 		}
 		while(true) {
 			Token token = deeLexer.next();
-			if(!token.tokenType.isParserIgnored) { // EOF can not be parser ignored
+			
+			DeeTokens tokenType = token.tokenType;
+			
+			if(tokenType == DeeTokens.ERROR) {
+				ErrorToken errorToken = (ErrorToken) token;
+				if(errorToken.originalToken == DeeTokens.ERROR) {
+					addError(EDeeParserErrors.UNKNOWN_TOKEN, sr(token), token.value, null);
+					continue; // Fetch another token
+				} else {
+					// TODO tests
+					addError(EDeeParserErrors.MALFORMED_TOKEN, sr(token), token.value, 
+						errorToken.errorMessage);
+					tokenType = errorToken.originalToken;
+				}
+			}
+			
+			if(!tokenType.isParserIgnored) { // EOF must not be parser ignored
 				tokenAhead = token;
 				return tokenAhead;
 			}
@@ -59,58 +85,44 @@ public class AbstractDeeParser {
 	/** Attempt to consume a token of given type.
 	 * If it fails, creates an error using the range of previous token. */
 	protected final Token consumeExpectedToken(DeeTokens expectedTokenType) {
-		Token next = lookAhead();
-		if(next.tokenType == expectedTokenType) {
+		Token la = lookAhead();
+		if(la.tokenType == expectedTokenType) {
 			consumeLookAhead();
-			return next;
+			return la;
 		} else {
-			//
-			Token lastToken = getLastToken();
-			SourceRange sourceRange = srFromToken(lastToken);
-			pushError(DeeParserErrors.ASDF, lastToken.value, expectedTokenType.name(), sourceRange);
 			return null;
 		}
 	}
 	
-	public static SourceRange srFromToken(Token token) {
+	public final void recoverStream(DeeTokens expected, DeeTokens terminatingToken) {
+		if(lookAhead().tokenType == terminatingToken) {
+			consumeLookAhead();
+			
+			pushSyntaxErrorBefore(expected, terminatingToken);
+		} else {
+			pushSyntaxErrorAfter();
+			
+			consumeLookAhead();
+		}
+	}
+	
+	public void pushSyntaxErrorBefore(DeeTokens expected, DeeTokens terminatingToken) {
+		assertTrue(lastToken.tokenType == terminatingToken);
+		addError(EDeeParserErrors.EXPECTED_TOKEN_BEFORE, sr(lastToken), 
+			lastToken.value, expected.name());
+	}
+	
+	public void pushSyntaxErrorAfter() {
+		addError(EDeeParserErrors.EXPECTED_OTHER_AFTER, sr(lastToken), 
+			lastToken.value, null);
+	}
+	
+	public static SourceRange sr(Token token) {
 		return new SourceRange(token.getStartPos(), token.getLength());
 	}
 	
 	public static SourceRange srFromToken(Token tokStart, Token tokEnd) {
 		return new SourceRange(tokStart.getStartPos(), tokEnd.getLength());
-	}
-	
-	protected void pushError(DeeParserErrors error, String obj1, String obj2, SourceRange sourceRange) {
-		String message = "Syntax Error on token " + obj1 + 
-			", expected " + obj2 + " after this token";
-		// TODO Auto-generated method stub
-	}
-	
-	protected int consumeInputUntil(DeeTokens token1) {
-		while(true) {
-			consumeInput();
-			if(lastToken.tokenType == token1 || lastToken.tokenType == DeeTokens.EOF) { // BUG here
-				return 0;
-			}
-			if(lastToken.tokenType == DeeTokens.EOF) {
-				return -1;
-			}
-		}
-	}
-	
-	protected int consumeInputUntil(DeeTokens token1, DeeTokens token2) {
-		while(true) {
-			consumeInput();
-			if(lastToken.tokenType == token1 || lastToken.tokenType == DeeTokens.EOF) { // BUG here
-				return 0;
-			}
-			if(lastToken.tokenType == token1 || lastToken.tokenType == DeeTokens.EOF) { // BUG here
-				return 1;
-			}
-			if(lastToken.tokenType == DeeTokens.EOF) {
-				return -1;
-			}
-		}	
 	}
 	
 }

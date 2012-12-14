@@ -101,7 +101,7 @@ public class SourceCaseGeneratorTest extends CommonTestUtils {
 		
 		testProcessSource("## abcdef #//KEY_ONE:value\n=extra value\n blah", "#",
 			
-			checkMD("# abcdef =extra value\n blah", new MetadataEntry("KEY_ONE", "value", "=extra value\n blah", 9))
+			checkMD("# abcdef ", new MetadataEntry("KEY_ONE", "value", "=extra value\n blah", -1))
 		);
 		
 	}

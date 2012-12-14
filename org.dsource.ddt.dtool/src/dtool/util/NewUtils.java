@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.misc.IteratorUtil;
 
@@ -25,6 +26,11 @@ public class NewUtils {
 			return iter1.iterator();
 		
 		return new ChainedIterator<T>(iter1.iterator(), iter2.iterator());
+	}
+	
+	public static <T> T assertNotNull_(T obj) {
+		Assert.AssertNamespace.assertNotNull(obj);
+		return obj;
 	}
 	
 }

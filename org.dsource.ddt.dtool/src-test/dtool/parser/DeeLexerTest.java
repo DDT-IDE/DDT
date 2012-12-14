@@ -98,12 +98,7 @@ public class DeeLexerTest extends CommonTestUtils {
 				if(expectedTokenStr.equals("*")) {
 					return new TokenChecker(null, isError);
 				} else {
-					if(expectedTokenStr.equals("ID")) {
-						expectedTokenStr = DeeTokens.IDENTIFIER.name();
-					} else if(expectedTokenStr.equals("WS") || expectedTokenStr.equals("_")) {
-						expectedTokenStr = DeeTokens.WHITESPACE.name();
-					}
-					DeeTokens expectedToken = DeeTokens.valueOf(expectedTokenStr);
+					DeeTokens expectedToken = DeeTokens.valueOf(transformTokenNameAliases(expectedTokenStr));
 					return new TokenChecker(expectedToken, isError);
 				}
 			} catch(IllegalArgumentException e) {
@@ -156,6 +151,15 @@ public class DeeLexerTest extends CommonTestUtils {
 			}
 			return token;
 		}
+	}
+	
+	public static String transformTokenNameAliases(String expectedTokenName) {
+		if(expectedTokenName.equals("ID")) {
+			expectedTokenName = DeeTokens.IDENTIFIER.name();
+		} else if(expectedTokenName.equals("WS") || expectedTokenName.equals("_")) {
+			expectedTokenName = DeeTokens.WHITESPACE.name();
+		}
+		return expectedTokenName;
 	}
 	
 }

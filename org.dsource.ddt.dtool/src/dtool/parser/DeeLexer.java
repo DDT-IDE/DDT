@@ -157,18 +157,6 @@ public class DeeLexer extends AbstractLexer {
 		return startRuleCharCategory[ch];
 	}
 	
-	protected Token createToken(DeeTokens tokenCode) {
-		return new Token(tokenCode, source, tokenStartPos, pos);
-	}
-	protected Token createToken(DeeTokens tokenCode, int length) {
-		pos = tokenStartPos + length;
-		return new Token(tokenCode, source, tokenStartPos, pos);
-	}
-	
-	protected final ErrorToken createErrorToken(DeeTokens originalToken, String message) {
-		return new Token.ErrorToken(source, tokenStartPos, pos, originalToken, message);
-	}
-	
 	@Override
 	public Token parseToken() {
 		pos = tokenStartPos;

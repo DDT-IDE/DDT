@@ -4,7 +4,7 @@ aaaaaaaaaa
 ID,ERROR,ID,ERROR,ID,EOL 
 +/
 //#SPLIT_SOURCE_TEST __________________
-aaaaa aa/a
+aaaaa aa/a
 /+#LEXERTEST
 ID,ERROR,ID,WS,ERROR,ID,ERROR,ID,DIV,ERROR,ID,EOL 
 +/

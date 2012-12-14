@@ -10,8 +10,10 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import dtool.parser.Token.ErrorToken;
 
 public abstract class AbstractLexer {
 	
@@ -25,7 +27,7 @@ public abstract class AbstractLexer {
 	
 	public AbstractLexer(CharSequence source) {
 		// Need to investigate how UTF chars are presented to us.
-		this.source = source;
+		this.source = assertNotNull_(source);
 	}
 	
 	public Token next() { 
@@ -53,6 +55,21 @@ public abstract class AbstractLexer {
 	
 	protected final int lookAhead() {
 		return getCharacter(pos);
+	}
+	
+	
+	protected final Token createToken(DeeTokens tokenCode) {
+		String value = source.subSequence(tokenStartPos, pos).toString();
+		return new Token(tokenCode, value, tokenStartPos);
+	}
+	protected final Token createToken(DeeTokens tokenCode, int length) {
+		pos = tokenStartPos + length;
+		return createToken(tokenCode);
+	}
+	
+	protected final ErrorToken createErrorToken(DeeTokens originalToken, String message) {
+		String value = source.subSequence(tokenStartPos, pos).toString();
+		return new Token.ErrorToken(value, tokenStartPos, originalToken, message);
 	}
 	
 	/* ------------------------ Helpers ------------------------ */
@@ -199,19 +216,19 @@ public abstract class AbstractLexer {
 	
 	public final Token rule3Choices(char ch1, DeeTokens tk1, char ch2, DeeTokens tk2, DeeTokens tokenElse) {
 		if(lookAhead(1) == ch1) {
-			return new Token(tk1, source, tokenStartPos, pos+2);
+			return createToken(tk1, 2);
 		} else if(lookAhead(1) == ch2) {
-			return new Token(tk2, source, tokenStartPos, pos+2);
+			return createToken(tk2, 2);
 		} else {
-			return new Token(tokenElse, source, tokenStartPos, pos+1);
+			return createToken(tokenElse, 1);
 		}
 	}
 	
 	public final Token rule2Choices(char ch1, DeeTokens tk1, DeeTokens tokenElse) {
 		if(lookAhead(1) == ch1) {
-			return new Token(tk1, source, tokenStartPos, pos+2);
+			return createToken(tk1, 2);
 		} else {
-			return new Token(tokenElse, source, tokenStartPos, pos+1);
+			return createToken(tokenElse, 1);
 		}
 	}
 	

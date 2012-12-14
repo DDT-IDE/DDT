@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import melnorme.utilbox.misc.StringUtil;
+
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +35,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/parser-tests";
 	
-	private static final int PARSER_SOURCE_BASED_TESTS_COUNT = 5;
+	private static final int PARSER_SOURCE_BASED_TESTS_COUNT = 41;
 	private static int splitTestCount = 0;
 	
 	@Parameters
@@ -63,22 +65,47 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	public void runSourceBasedTest(AnnotatedSource testSource) {
 		String parseSource = testSource.source;
 		String expectedGenSource = null;
+		boolean allowAnyErrors = false;
 		
-		ArrayList<String> expectedErrors = new ArrayList<String>();
+		ArrayList<ParserError> expectedErrors = new ArrayList<ParserError>();
 		
 		for (MetadataEntry mde : testSource.metadata) {
 			if(mde.name.equals("AST_EXPECTED")) {
 				assertTrue(expectedGenSource == null);
 				expectedGenSource = mde.associatedSource;
 			} else if(mde.name.equals("error")){
-				// TODO
-				expectedErrors.add(mde.extraValue);
+				expectedErrors.add(decodeError(mde));
+			} else if(mde.name.equals("parser") && mde.extraValue.equals("AllowAnyErrors")){
+				allowAnyErrors = true;
 			} else {
 				assertFail("Unknown metadata");
 			}
 		}
 		
-		DeeParserTest.runParserTest(parseSource, expectedGenSource);
+		if(expectedGenSource == null) {
+			expectedGenSource = parseSource;
+		}
+		
+		DeeParserTest.runParserTest(parseSource, expectedGenSource, expectedErrors, allowAnyErrors);
+	}
+	
+	public ParserError decodeError(MetadataEntry mde) {
+		String errorType = StringUtil.upUntil(mde.extraValue, "_");
+		String errorParam = StringUtil.fromLastIndexOf("_", mde.extraValue);
+		if(errorType.equals("EXP")) {
+			errorParam = DeeLexerTest.transformTokenNameAliases(errorParam);
+			return new ParserError(EDeeParserErrors.EXPECTED_TOKEN_BEFORE, mde.sourceRange, 
+				mde.associatedSource, errorParam);
+		} else if(errorType.equals("SE")) {
+			return new ParserError(EDeeParserErrors.EXPECTED_OTHER_AFTER, mde.sourceRange, null, null);
+		} else if(errorType.equals("UT")) {
+			return new ParserError(EDeeParserErrors.UNKNOWN_TOKEN, mde.sourceRange, null, null);
+		} else if(errorType.equals("IT")) {
+			// TODO errorParam
+			return new ParserError(EDeeParserErrors.MALFORMED_TOKEN, mde.sourceRange, null, null);
+		} else {
+			throw assertFail();
+		}
 	}
 	
 }

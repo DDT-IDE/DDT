@@ -4,12 +4,12 @@ public class Token {
 	
 	public final DeeTokens tokenType;
 	public final int start;
-	public final String value; //TODO, don't store this.
+	public final String value; //TODO, don't store this for certain kinds of nodes
 	
-	public Token(DeeTokens tokenCode, CharSequence source, int start, int end) {
-		this.start = start;
-		this.value = source.subSequence(start, end).toString();
+	public Token(DeeTokens tokenCode, String value, int start) {
 		this.tokenType = tokenCode;
+		this.value = value;
+		this.start = start;
 	}
 	
 	public final DeeTokens getTokenType() {
@@ -37,8 +37,8 @@ public class Token {
 		protected final String errorMessage;
 		protected final DeeTokens originalToken;
 		
-		public ErrorToken(CharSequence source, int start, int end, DeeTokens originalToken, String errorMessage) {
-			super(DeeTokens.ERROR, source, start, end);
+		public ErrorToken(String value, int start, DeeTokens originalToken, String errorMessage) {
+			super(DeeTokens.ERROR, value, start);
 			this.originalToken = originalToken;
 			this.errorMessage = errorMessage;
 		}

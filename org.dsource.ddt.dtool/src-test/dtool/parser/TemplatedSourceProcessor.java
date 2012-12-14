@@ -167,6 +167,7 @@ public class TemplatedSourceProcessor {
 			} else if(sourceParser.tryConsumeKeyword("EOF")) {
 				eofReached = true;
 			} else if(sourceParser.tryConsume("//")) {
+				eofReached = true;
 				readMetaData(sourceParser, metadata, processedSource, eofReached, true);
 			} else if(sourceParser.tryConsume("@")) {
 				readMetaData(sourceParser, metadata, processedSource, eofReached, false);
