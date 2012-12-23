@@ -17,7 +17,7 @@ public abstract class Definition extends DefUnit {
 	public /*final*/ PROT protection; // fixme, should be node
 	public /*final*/ int effectiveModifiers;
 	
-	public Definition(DefUnitDataTuple defunit, PROT prot) {
+	public Definition(DefUnitTuple defunit, PROT prot) {
 		super(defunit);
 		this.protection = prot;
 		this.modifiers = NOMODIFIERS;

@@ -14,7 +14,7 @@ import dtool.util.ArrayView;
  */
 public class DefinitionUnion extends DefinitionAggregate {
 	
-	public DefinitionUnion(DefUnitDataTuple dudt, PROT prot, ArrayView<TemplateParameter> tplParams,
+	public DefinitionUnion(DefUnitTuple dudt, PROT prot, ArrayView<TemplateParameter> tplParams,
 			ArrayView<ASTNeoNode> members) {
 		super(dudt, prot, tplParams, members);
 	}

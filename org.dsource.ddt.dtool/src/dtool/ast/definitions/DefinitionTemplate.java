@@ -26,7 +26,7 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	public final ArrayView<ASTNeoNode> decls;
 	public final boolean wrapper;
 	
-	public DefinitionTemplate(DefUnitDataTuple dudt, PROT prot, ArrayView<ASTNeoNode> decls,
+	public DefinitionTemplate(DefUnitTuple dudt, PROT prot, ArrayView<ASTNeoNode> decls,
 			ArrayView<TemplateParameter> params, boolean wrapper) {
 		super(dudt, prot);
 		this.templateParams = parentize(params);

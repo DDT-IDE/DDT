@@ -38,7 +38,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	
 	//public descent.internal.compiler.parser.TypeFunction type;
 	
-	public DefinitionFunction(DefUnitDataTuple defunitData, PROT prot, Reference retType,
+	public DefinitionFunction(DefUnitTuple defunitData, PROT prot, Reference retType,
 			ArrayView<IFunctionParameter> params, int varargs, IStatement frequire, IStatement fensure, 
 			IStatement fbody) {
 		super(defunitData, prot);

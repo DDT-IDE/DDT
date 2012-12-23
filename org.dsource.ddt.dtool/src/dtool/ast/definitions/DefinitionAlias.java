@@ -16,7 +16,7 @@ public class DefinitionAlias extends Definition implements IStatement {
 	
 	public final Reference target;
 	
-	public DefinitionAlias(DefUnitDataTuple dudt, PROT prot, Reference target) {
+	public DefinitionAlias(DefUnitTuple dudt, PROT prot, Reference target) {
 		super(dudt, prot);
 		this.target = parentize(target);
 	}

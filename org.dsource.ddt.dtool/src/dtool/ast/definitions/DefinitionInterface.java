@@ -10,7 +10,7 @@ import dtool.util.ArrayView;
  */
 public class DefinitionInterface extends DefinitionClass {
 	
-	public DefinitionInterface(DefUnitDataTuple dudt, PROT prot, ArrayView<TemplateParameter> tplParams,
+	public DefinitionInterface(DefUnitTuple dudt, PROT prot, ArrayView<TemplateParameter> tplParams,
 			ArrayView<BaseClass> superClasses, ArrayView<ASTNeoNode> members) {
 		super(dudt, prot, tplParams, superClasses, members);
 	}

@@ -6,7 +6,7 @@ package dtool.ast.definitions;
  */
 public abstract class TemplateParameter extends DefUnit {
 	
-	public TemplateParameter(DefUnitDataTuple dudt) {
+	public TemplateParameter(DefUnitTuple dudt) {
 		super(dudt);
 	}
 	

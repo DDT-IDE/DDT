@@ -13,7 +13,7 @@ public class TemplateParamValue extends TemplateParameter {
 	public final Resolvable specValue;
 	public final Resolvable defaultValue;
 	
-	public TemplateParamValue(DefUnitDataTuple dudt, Reference type, Resolvable specValue, Resolvable defaultValue) {
+	public TemplateParamValue(DefUnitTuple dudt, Reference type, Resolvable specValue, Resolvable defaultValue) {
 		super(dudt);
 		this.type = parentize(type);
 		this.specValue = parentize(specValue);

@@ -11,7 +11,7 @@ public class TemplateParamType extends TemplateParameter {
 	public final Reference specType;
 	public final Reference defaultType;
 	
-	public TemplateParamType(DefUnitDataTuple dudt, Reference specType, Reference defaultType){
+	public TemplateParamType(DefUnitTuple dudt, Reference specType, Reference defaultType){
 		super(dudt);
 		this.specType = parentize(specType);
 		this.defaultType = parentize(defaultType);

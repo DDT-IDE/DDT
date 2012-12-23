@@ -17,7 +17,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	public final int storageClass;
 	public final Resolvable defaultValue;
 	
-	public FunctionParameter(DefUnitDataTuple dudt, int storageClass, Reference type, Resolvable defaultValue) {
+	public FunctionParameter(DefUnitTuple dudt, int storageClass, Reference type, Resolvable defaultValue) {
 		super(dudt);
 		// assertNotNull(this.type);
 		this.storageClass = storageClass;

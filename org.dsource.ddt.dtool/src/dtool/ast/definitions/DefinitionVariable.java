@@ -20,7 +20,7 @@ public class DefinitionVariable extends Definition implements IStatement {
 	public final Reference type;
 	public final Initializer init;
 	
-	public DefinitionVariable(DefUnitDataTuple dudt, PROT prot, Reference type, Initializer init) {
+	public DefinitionVariable(DefUnitTuple dudt, PROT prot, Reference type, Initializer init) {
 		super(dudt, prot);
 		this.type = parentize(type);
 		this.init = parentize(init);

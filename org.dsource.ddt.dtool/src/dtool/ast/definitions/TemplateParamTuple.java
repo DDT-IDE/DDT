@@ -7,7 +7,7 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class TemplateParamTuple extends TemplateParameter {
 	
-	public TemplateParamTuple(DefUnitDataTuple dudt) {
+	public TemplateParamTuple(DefUnitTuple dudt) {
 		super(dudt);
 	}
 	

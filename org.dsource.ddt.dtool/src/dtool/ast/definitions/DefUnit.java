@@ -13,11 +13,11 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  */
 public abstract class DefUnit extends ASTNeoNode {
 	
-	public static final class DefUnitDataTuple {
+	public static final class DefUnitTuple {
 		public SourceRange sourceRange;
 		public TokenInfo defName;
 		public Comment[] comments;
-		public DefUnitDataTuple(SourceRange sourceRange, TokenInfo defName, Comment[] comments) {
+		public DefUnitTuple(SourceRange sourceRange, TokenInfo defName, Comment[] comments) {
 			this.sourceRange = sourceRange;
 			this.defName = defName;
 			this.comments = comments;
@@ -27,7 +27,7 @@ public abstract class DefUnit extends ASTNeoNode {
 	public final Comment[] comments;
 	public final DefSymbol defname;
 	
-	public DefUnit(DefUnitDataTuple defunit) {
+	public DefUnit(DefUnitTuple defunit) {
 		this(defunit.sourceRange, defunit.defName.getString(), defunit.defName.getSourceRange(), defunit.comments);
 	}
 	
