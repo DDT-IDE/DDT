@@ -77,9 +77,12 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	}
 	
 	@SuppressWarnings("restriction")
-	public static void enableDLTKIndexer() {
+	public static void enableDLTKIndexer(boolean waitUntilReady) {
 		IndexManager indexManager = org.eclipse.dltk.internal.core.ModelManager.getModelManager().getIndexManager();
 		indexManager.enable();
+		if(waitUntilReady) {
+			indexManager.waitUntilReady();
+		}
 	}
 	
 	public static final String MOCK_DMD2_INSTALL_NAME = "defaultDMD2Install";

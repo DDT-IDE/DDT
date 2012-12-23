@@ -5,6 +5,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.IOException;
 
+import melnorme.utilbox.misc.StringUtil;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptFolder;
@@ -19,10 +21,7 @@ import org.eclipse.dltk.core.search.indexing.IndexManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.tests.BaseDeeTest;
-
-public abstract class BaseDeeSearchEngineTest extends BaseDeeTest {
+public abstract class BaseDeeSearchEngineTest extends DLTKIndexCheckTest {
 	
 	protected static IProjectFragment getSrcFolder(IScriptProject scriptProject, String folderName) {
 		return scriptProject.getProjectFragment(scriptProject.getProject().getFolder(folderName));
@@ -42,7 +41,7 @@ public abstract class BaseDeeSearchEngineTest extends BaseDeeTest {
 	
 	@BeforeClass
 	public static void setup() {
-		enableDLTKIndexer();
+		enableDLTKIndexer(true);
 	}
 	
 	@AfterClass

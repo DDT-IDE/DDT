@@ -12,13 +12,14 @@
 package mmrnmhrm.core.parser;
 
 
+import mmrnmhrm.core.DeeCore;
+
 import org.dsource.ddt.ide.core.DeeNature;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.engine.DeeSourceElementProvider;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.AbstractSourceElementParser;
-import org.eclipse.dltk.core.DLTKCore;
 
 public class DeeSourceElementParser extends AbstractSourceElementParser {
 	
@@ -41,10 +42,9 @@ public class DeeSourceElementParser extends AbstractSourceElementParser {
 			try {
 				provider.provide(deeModuleDecl);
 //				moduleDeclaration.traverse(requestor);
-			} catch (Exception e) {
-				if (DLTKCore.DEBUG) {
-					e.printStackTrace();
-				}
+			} catch (RuntimeException e) {
+				DeeCore.log(e);
+				throw e;
 			}
 		}
 	}

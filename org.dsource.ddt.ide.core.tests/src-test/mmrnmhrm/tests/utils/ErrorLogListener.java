@@ -18,16 +18,16 @@ public final class ErrorLogListener implements ILogListener {
 	}
 	
 	@Override
-	public void logging(IStatus status, String plugin) {
-		System.err.println(status);
+	public synchronized void logging(IStatus status, String plugin) {
 		if(status.getSeverity() == IStatus.ERROR && errorOccurred == false) {
 			errorOccurred = true;
 			exception = status.getException();
 		}
 	}
 	
-	public void checkErrors() throws Throwable {
+	public synchronized void checkErrors() throws Throwable {
 		if(errorOccurred == true) {
+			reset();
 			throw exception;
 		}
 		assertTrue(errorOccurred == false, "Assertion failed.");
@@ -41,8 +41,8 @@ public final class ErrorLogListener implements ILogListener {
 		uninstall();
 		checkErrors();
 	}
-
-	public void reset() {
+	
+	public synchronized void reset() {
 		errorOccurred = false;
 	}
 	

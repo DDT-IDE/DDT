@@ -14,7 +14,9 @@ package mmrnmhrm.tests;
 import mmrnmhrm.tests.utils.ErrorLogListener;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import dtool.tests.CommonTestUtils;
 
@@ -25,16 +27,26 @@ import dtool.tests.CommonTestUtils;
  */
 public abstract class BaseDeeCoreTest extends CommonTestUtils {
 	
-	protected ErrorLogListener logErrorListener;
+	protected static ErrorLogListener logErrorListener;
+	
+	@BeforeClass
+	public static void setUpExceptionListenerStatic() throws Exception {
+		logErrorListener = ErrorLogListener.createAndInstall();
+	}
+	
+	@AfterClass
+	public static void checkLogErrorListenerStatic() throws Throwable {
+		logErrorListener.checkErrorsAndUninstall();
+	}
 	
 	@Before
-	public void setUpExceptionListener() throws Exception {
-		logErrorListener = ErrorLogListener.createAndInstall();
+	public void setUpExceptionListener() throws Throwable {
+		logErrorListener.checkErrors();
 	}
 	
 	@After
 	public void checkLogErrorListener() throws Throwable {
-		logErrorListener.checkErrorsAndUninstall();
+		logErrorListener.checkErrors();
 	}
 	
 }
