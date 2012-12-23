@@ -4,6 +4,10 @@ import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
+import dtool.ast.declarations.ImportAlias;
+import dtool.ast.declarations.ImportContent;
+import dtool.ast.declarations.ImportSelective;
+import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
@@ -17,6 +21,7 @@ import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
@@ -51,6 +56,17 @@ public interface IASTNeoVisitor {
 	
 	public boolean visit(Module node);
 	public void endVisit(Module node);
+	
+	public boolean visit(DeclarationModule node);
+	public void endVisit(DeclarationModule node);
+	
+	public boolean visit(DeclarationImport node);
+	public void endVisit(DeclarationImport node);
+	
+	public boolean visit(ImportContent node);
+	public boolean visit(ImportAlias node);
+	public boolean visit(ImportSelective node);
+	public boolean visit(ImportSelectiveAlias node);
 	
 	//-- Aggregates
 	public boolean visit(DefinitionStruct node);
@@ -110,8 +126,6 @@ public interface IASTNeoVisitor {
 	public boolean visit(RefTemplateInstance node);
 	
 	/* ---------------------------------- */
-	public boolean visit(DeclarationImport node);
-	public void endVisit(DeclarationImport node);
 	
 	public boolean visit(DeclarationInvariant node);
 	public void endVisit(DeclarationInvariant node);

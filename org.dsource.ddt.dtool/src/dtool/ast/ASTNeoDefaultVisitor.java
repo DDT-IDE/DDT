@@ -14,6 +14,10 @@ import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
+import dtool.ast.declarations.ImportAlias;
+import dtool.ast.declarations.ImportContent;
+import dtool.ast.declarations.ImportSelective;
+import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
@@ -28,6 +32,7 @@ import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.Resolvable;
@@ -67,9 +72,25 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 	}
 	
 	@Override
-	public boolean visit(Module elem) {
-		return true;
-	}
+	public boolean visit(Module elem) { return true; }
+	
+	@Override
+	public boolean visit(DeclarationModule node) { return true; }
+	
+	@Override
+	public final boolean visit(DeclarationImport node) { return true; }
+	
+	@Override
+	public boolean visit(ImportContent node) { return true; }
+	@Override
+	public boolean visit(ImportSelective node) { return true; }
+	@Override
+	public boolean visit(ImportAlias node) { return true; }
+	@Override
+	public boolean visit(ImportSelectiveAlias node) { return true; }
+	
+	/*---*/
+	
 	
 	@Override
 	public boolean visit(DefinitionTemplate elem) {
@@ -161,10 +182,6 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 		return true;
 	}
 	
-	@Override
-	public boolean visit(DeclarationImport elem) {
-		return true;
-	}
 	@Override
 	public boolean visit(DeclarationInvariant elem) {
 		return true;

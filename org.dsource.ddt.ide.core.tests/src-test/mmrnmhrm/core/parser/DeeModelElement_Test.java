@@ -27,8 +27,8 @@ import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
 import dtool.ast.declarations.DeclarationStaticIfIsType;
-import dtool.ast.declarations.ImportAliasing;
-import dtool.ast.declarations.ImportSelective;
+import dtool.ast.declarations.ImportAlias;
+import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.EnumMember;
@@ -206,8 +206,8 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 				defunit instanceof EnumMember ||
 				defunit instanceof TemplateParameter ||
 				defunit instanceof DeclarationStaticIfIsType.IsTypeDefUnit ||
-				defunit instanceof ImportSelective.ImportSelectiveAlias ||
-				defunit instanceof ImportAliasing.ImportAliasingDefUnit;
+				defunit instanceof ImportSelectiveAlias ||
+				defunit instanceof ImportAlias;
 		return !result;
 	}
 	

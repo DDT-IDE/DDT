@@ -7,8 +7,13 @@ import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
+import dtool.ast.declarations.ImportAlias;
+import dtool.ast.declarations.ImportContent;
+import dtool.ast.declarations.ImportSelective;
+import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.Resolvable;
@@ -23,17 +28,16 @@ public abstract class DeeSourceElementProvider_BaseVisitor implements IASTNeoVis
 	
 	@Override
 	public final boolean preVisit(ASTNeoNode elem) {
-		return true; // Default implementation: do nothing
+		return true;
 	}
 	
 	@Override
 	public final void postVisit(ASTNeoNode elem) {
-		// Default implementation: do nothing
 	}
 	
 	@Override
 	public final boolean visit(ASTNeoNode elem) {
-		return true; // Default implementation: do nothing
+		return true; // Default implementation: do nothing, visit children
 	}
 	@Override
 	public void endVisit(ASTNeoNode node) {
@@ -49,8 +53,23 @@ public abstract class DeeSourceElementProvider_BaseVisitor implements IASTNeoVis
 		return true;
 	}
 	@Override
-	public void endVisit(DefUnit node) {
+	public void endVisit(DefUnit node) { }
+	
+	@Override
+	public boolean visit(DeclarationModule node) {
+		return true;
 	}
+	@Override
+	public void endVisit(DeclarationModule node) { }
+	
+	@Override
+	public boolean visit(ImportContent node) { return true; }
+	@Override
+	public boolean visit(ImportSelective node) { return true; }
+	@Override
+	public boolean visit(ImportAlias node) { return true; }
+	@Override
+	public boolean visit(ImportSelectiveAlias node) { return true; }
 	
 	/* ---------------------------------- */
 	

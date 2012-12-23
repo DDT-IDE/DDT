@@ -1,68 +1,36 @@
 package dtool.ast.declarations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.declarations.DeclarationImport.ImportFragment;
-import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.EArcheType;
+import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.INonScopedBlock;
-import dtool.refmodel.IScopeNode;
 import dtool.refmodel.ReferenceResolver;
-import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
-public class ImportSelective extends ImportFragment implements INonScopedBlock {
+public class ImportSelective extends ASTNeoNode implements INonScopedBlock, IImportFragment {
 	
-	public static interface IImportSelectiveSelection extends IASTNode {
+	public static interface IImportSelectiveSelection extends IASTNeoNode {
 		//String getTargetName();
 	}
 	
-	public static class ImportSelectiveAlias extends DefUnit 
-	implements IImportSelectiveSelection {
-		
-		public final RefImportSelection target;
-		
-		public ImportSelectiveAlias(DefUnitDataTuple dudt, RefImportSelection impSelection, SourceRange sourceRange) {
-			super(dudt);
-			initSourceRange(sourceRange);
-			this.target = parentize(impSelection);
-		}
-		
-		@Override
-		public void accept0(IASTNeoVisitor visitor) {
-			boolean children = visitor.visit(this);
-			if (children) {
-				TreeVisitor.acceptChildren(visitor, defname);
-				TreeVisitor.acceptChildren(visitor, target);
-			}
-			visitor.endVisit(this);		
-		}
-		
-		@Override
-		public EArcheType getArcheType() {
-			return EArcheType.Alias;
-		}
-		
-		@Override
-		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
-			return target.getTargetScope(moduleResolver);
-		}
-	}
-	
-	
+	public final IImportFragment fragment;
 	public final ArrayView<ASTNeoNode> impSelFrags;
 	
-	public ImportSelective(RefModule refModule, ArrayView<ASTNeoNode> frags, SourceRange sourceRange) {
-		super(refModule, sourceRange);
+	public ImportSelective(IImportFragment subFragment, ArrayView<ASTNeoNode> frags, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
 		this.impSelFrags = parentizeFrags(frags);
+		this.fragment = parentizeI(subFragment);
 	}
 	
 	public ArrayView<ASTNeoNode> parentizeFrags(ArrayView<ASTNeoNode> frags) {
@@ -73,6 +41,8 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 					((ImportSelectiveAlias) n).target.impSel = this;
 				} else if (n instanceof RefImportSelection) {
 					((RefImportSelection) n).impSel = this;
+				} else {
+					assertFail();
 				}
 			}
 		}
@@ -80,10 +50,15 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 	}
 	
 	@Override
+	public RefModule getModuleRef() {
+		return fragment.getModuleRef();
+	}
+	
+	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, moduleRef);
+			TreeVisitor.acceptChildren(visitor, fragment);
 			TreeVisitor.acceptChildren(visitor, impSelFrags);
 		}
 		visitor.endVisit(this);
@@ -100,15 +75,9 @@ public class ImportSelective extends ImportFragment implements INonScopedBlock {
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		String str = "";
-		for (int i = 0; i < impSelFrags.size(); i++) {
-			ASTNeoNode fragment = impSelFrags.get(i);
-			if(i > 0)
-				str = str + ", ";
-			str = str + fragment.toStringAsElement();
-		}
-		return moduleRef.toStringAsElement() + " : " + str;
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendNode((ASTNeoNode) fragment, " : ");
+		cp.appendNodeList(impSelFrags, ", ");
 	}
 	
 }

@@ -27,6 +27,7 @@ import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 
@@ -49,6 +50,9 @@ public abstract class ASTNeoAbstractVisitor implements IASTNeoVisitor {
 	@Override
 	public void endVisit(Module node) {
 	}
+	
+	@Override
+	public void endVisit(DeclarationModule node) { }
 	
 	@Override
 	public void endVisit(DefinitionStruct node) {

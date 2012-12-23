@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationImport;
-import dtool.ast.declarations.DeclarationImport.ImportFragment;
+import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
@@ -36,24 +36,27 @@ public class Parser_ImportTest extends Parser__CommonTest {
 		
 		
 		DeclarationImport child1 = checkImport(module.getChildren()[1], false, false, 1);
-		checkNode(child1.imports.get(0).moduleRef, "pack.bar");
+		checkImportFragment(child1.imports.get(0), "pack.bar");
 		
 		
 		DeclarationImport child2 = checkImport(module.getChildren()[2], true, false, 1);
-		checkNode(child2.imports.get(0).moduleRef, "pack");
+		checkImportFragment(child2.imports.get(0), "pack");
 		
 		
 		DeclarationImport child3 = checkImport(module.getChildren()[3], true, true, 3);
-		checkNode(child3.imports.get(0).moduleRef, "std.xpto");
-		checkNode(child3.imports.get(1).moduleRef, "pack");
-		checkNode(child3.imports.get(2).moduleRef, "blah.blah");
+		checkImportFragment(child3.imports.get(0), "std.xpto");
+		checkImportFragment(child3.imports.get(1), "pack");
+		checkImportFragment(child3.imports.get(2), "blah.blah");
 		
 		
 		DeclarationImport child4 = checkImport(module.getChildren()[4], false, false, 2);
-		checkNode(child4.imports.get(0).moduleRef, "asdf");
-		checkNode(child4.imports.get(1).moduleRef, "std.foo");
+		checkImportFragment(child4.imports.get(0), "asdf");
+		checkImportFragment(child4.imports.get(1), "std.foo");
 		checkSelectiveImportFragment(child4.imports.get(1), "selec1", "selec2");
 		
+	}
+	public void checkImportFragment(IImportFragment fragment, String name) {
+		checkNode(fragment.getModuleRef(), name);
 	}
 	
 	protected void checkDefunit(DefUnit module, String name, Integer numChildren) {
@@ -76,8 +79,8 @@ public class Parser_ImportTest extends Parser__CommonTest {
 		return decImport;
 	}
 	
-	protected void checkSelectiveImportFragment(ImportFragment importFragment, String... array) {
-		checkNode(importFragment.moduleRef, "std.foo");
+	protected void checkSelectiveImportFragment(IImportFragment importFragment, String... array) {
+		checkNode(importFragment.getModuleRef(), "std.foo");
 		
 		ImportSelective decImport = downCast(importFragment, ImportSelective.class);
 		assertEqualArrays(array, strmap(decImport.impSelFrags, fnDefUnitToStringAsElement(0)));

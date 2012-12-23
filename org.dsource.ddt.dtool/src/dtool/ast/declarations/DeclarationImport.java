@@ -2,8 +2,11 @@ package dtool.ast.declarations;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -19,14 +22,16 @@ import dtool.util.ArrayView;
  */
 public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 	
-	public final ArrayView<ImportFragment> imports;
+	public final ArrayView<IImportFragment> imports;
+	public final ArrayView<ASTNeoNode> imports_asNodes;
 	public final boolean isStatic;
 	public boolean isTransitive; // aka public imports
 	
-	public DeclarationImport(ArrayView<ImportFragment> imports, boolean isStatic, boolean isTransitive,
+	public DeclarationImport(ArrayView<IImportFragment> imports, boolean isStatic, boolean isTransitive,
 			SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.imports = parentize(imports);
+		this.imports = parentizeI(imports);
+		this.imports_asNodes = CoreUtil.<ArrayView<ASTNeoNode>>blindCast(imports);
 		this.isStatic = isStatic;
 		this.isTransitive = isTransitive;
 	}
@@ -40,43 +45,30 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 		visitor.endVisit(this);
 	}
 	
-	
-	public static abstract class ImportFragment extends ASTNeoNode {
-		
-		public final RefModule moduleRef;
-		
-		public ImportFragment(RefModule moduleRef, SourceRange sourceRange) {
-			initSourceRange(sourceRange);
-			this.moduleRef = parentize(moduleRef);
-		}
+	public static interface IImportFragment extends IASTNeoNode {
 		
 		/** Performs a search in the secondary/background scope.
 		 * Only imports contribute to this secondary namespace. */
-		public abstract void searchInSecondaryScope(CommonDefUnitSearch options);
-		
-		@Override
-		public String toStringAsElement() {
-			return moduleRef.toStringAsElement();
-		}
-		
+		public void searchInSecondaryScope(CommonDefUnitSearch options);
+
+		public RefModule getModuleRef();
 	}
 	
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator() {
-		return imports.iterator();
+		return imports_asNodes.iterator();
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		String str = "";
-		for (int i = 0; i < imports.size(); i++) {
-			ImportFragment fragment = imports.get(i);
-			if(i > 0) {
-				str = str + ", ";
-			}
-			str = str + fragment.toStringAsElement();
+	public void toStringAsCode(ASTCodePrinter cp) {
+		// TODO public specifier
+		if(isStatic) {
+			cp.append("static ");
 		}
-		return "[import "+str+"]";
+		
+		cp.append("import ");
+		cp.appendNodeList(imports_asNodes, ", ");
+		cp.append(";");
 	}
 	
 }
