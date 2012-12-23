@@ -2,6 +2,7 @@ package dtool.ast.expressions;
 
 import java.math.BigInteger;
 
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 
@@ -21,10 +22,12 @@ public class ExpLiteralInteger extends Expression {
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		if(num == null)
-			return "__<SPECIAL>__";
-		return num.toString();
+	public void toStringAsCode(ASTCodePrinter cp) {
+		if(num == null) {
+			cp.append("__<SPECIAL>__"); // TODO remove this
+		} else {
+			cp.append(num.toString());
+		}
 	}
 	
 }

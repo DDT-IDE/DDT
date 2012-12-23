@@ -1,10 +1,12 @@
 package dtool.ast.references;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collection;
 
-import melnorme.utilbox.misc.StringUtil;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -26,7 +28,7 @@ public class RefModule extends NamedReference {
 	
 	public RefModule(ArrayView<String> packages, String module, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.packages = packages;
+		this.packages = assertNotNull_(packages);
 		this.module = module;
 	}
 	
@@ -102,12 +104,15 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendList(packages, ".", true);
+		cp.append(module);
+	}
+	
+	@Override
 	public String toStringAsElement() {
-		String str = StringUtil.collToString(packages, ".");
-		if(str.length() == 0)
-			return module;
-		else
-			return str + "." + module;
+		assertNotNull(module);
+		return toStringAsCode();
 	}
 	
 }

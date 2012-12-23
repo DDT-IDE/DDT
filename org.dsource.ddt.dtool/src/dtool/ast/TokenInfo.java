@@ -24,6 +24,7 @@ public final class TokenInfo {
 		this.offset = offset;
 	}
 	
+	@Deprecated
 	public TokenInfo(String name) {
 		this.value = name;
 		this.offset = -1;
@@ -34,7 +35,7 @@ public final class TokenInfo {
 	}
 	
 	public SourceRange getSourceRange() {
-		return new SourceRange(offset, value.length());
+		return new SourceRange(offset, value == null ? 0 : value.length());
 	}
 	
 }

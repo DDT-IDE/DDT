@@ -41,7 +41,7 @@ import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
-import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
+import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.statements.BlockStatement;
@@ -456,7 +456,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		} else if(element.ident == null) {
 			param = DefinitionConverter.convertNamelessParameter(element.type, convContext);
 		} else {
-			DefUnitDataTuple dudt = new DefUnitDataTuple(
+			DefUnitTuple dudt = new DefUnitTuple(
 					new SourceRange(element.type.getStartPos(), element.ident.getEndPos() - element.type.getStartPos()),
 					DefinitionConverter.convertIdToken(element.ident), 
 					null

@@ -11,7 +11,7 @@ import melnorme.utilbox.core.CoreUtil;
 
 import org.junit.Before;
 
-import dtool.ast.ASTSourceRangeChecker;
+import dtool.ast.ASTCommonSourceRangeChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefIdentifier;
@@ -65,7 +65,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		}
 		if(checkSourceRanges && !parseResult.hasSyntaxErrors()) {
 			// We rarely get good source ranges with syntax errors; 
-			ASTSourceRangeChecker.checkConsistency(parseResult.neoModule);
+			ASTCommonSourceRangeChecker.checkConsistency(parseResult.neoModule);
 		}
 		return parseResult;
 	}

@@ -1,4 +1,4 @@
-//#SOURCE_TESTS 39 #
+//#SOURCE_TESTS 42 #
 //#SPLIT_SOURCE_TEST _____________________
 module foo;
 //#SPLIT_SOURCE_TEST _____________________
@@ -27,23 +27,37 @@ module foo.;
 
 
 //#SPLIT_SOURCE_TEST _____________________
-module #@error:EXP_ID{;}
+module #@error:EXP_ID ;
 #//AST_EXPECTED:
 module ;
 
 //#SPLIT_SOURCE_TEST _____________________
-#@error:SE_ID{module}#{,#NL}
+module pack.#@error:EXP_ID ;
+#//AST_EXPECTED:
+module pack.;
+
+//#SPLIT_SOURCE_TEST _____________________
+module #@error:EXP_ID#@error:EXP_SEMICOLON .foo;
+#//AST_EXPECTED:
+module ;
+.foo;
+
+//#SPLIT_SOURCE_TEST _____________________
+module#@error:EXP_ID#@error:EXP_SEMICOLON#{,#NL}
 #//AST_EXPECTED:
 module ;
 
 //#SPLIT_SOURCE_TEST _____________________
-module #@error:SE_SEMICOLON{foo}
+module foo #@error:EXP_SEMICOLON
 #//AST_EXPECTED:
 module foo;
 
-//#SPLIT_SOURCE_TEST _____________________ TODO
-#@error:SE_ID{module} 
-//import blah foo;
+//#SPLIT_SOURCE_TEST _____________________
+module #@error:EXP_ID#@error:EXP_SEMICOLON import #@error:EXP_ID ;
 #//AST_EXPECTED:
-module ;
-//blah foo;
+module ; import ;
+
+//#SPLIT_SOURCE_TEST _____________________
+module #@error:EXP_ID#@error:EXP_SEMICOLON import foo;
+#//AST_EXPECTED:
+module ; import foo;

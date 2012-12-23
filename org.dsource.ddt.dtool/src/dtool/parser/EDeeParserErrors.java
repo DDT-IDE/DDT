@@ -6,9 +6,8 @@ public enum EDeeParserErrors {
 	UNKNOWN_TOKEN,
 	MALFORMED_TOKEN,
 	
-	EXPECTED_TOKEN_BEFORE,
-	EXPECTED_OTHER_AFTER,
+	EXPECTED_TOKEN,
 	
-	SYNTAX_ERROR // Most generic syntax error (unexpected token out of many)
+	TOKEN_SYNTAX_ERROR // Most generic syntax error (unexpected start token)
 	
 }

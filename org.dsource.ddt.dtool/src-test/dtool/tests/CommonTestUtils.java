@@ -140,14 +140,20 @@ public class CommonTestUtils {
 		return outColl;
 	}
 	
+	public static <T> T[] removeLast(T[] array, int count) {
+		return ArrayUtil.removeLast(array, count);
+	}
+	
+	/* -------- misc -------- */
+	
 	public static <T extends Exception> void throwIf(boolean condition, String message) throws RuntimeException {
 		if(condition) {
 			throw new RuntimeException(message);
 		}
 	}
 	
-	public static <T> T[] removeLast(T[] array, int count) {
-		return ArrayUtil.removeLast(array, count);
+	public static String safeToString(Object obj) {
+		return obj == null ? null : obj.toString();
 	}
 	
 	/* -------- iteration -------- */

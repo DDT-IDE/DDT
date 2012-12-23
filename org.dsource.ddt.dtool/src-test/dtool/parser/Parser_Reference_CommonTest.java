@@ -1,7 +1,7 @@
 package dtool.parser;
 
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.ast.ASTSourceRangeChecker;
+import dtool.ast.ASTCommonSourceRangeChecker;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
@@ -146,7 +146,7 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 		if(checkToStringAsElement) {
 			assertAreEqual(ref.toStringAsElement(), nodeCode);
 		}
-		ref.accept(new ASTSourceRangeChecker.ASTAssertChecker(ref.getStartPos()));
+		ref.accept(new ASTCommonSourceRangeChecker.ASTAssertChecker(ref.getStartPos()));
 	}
 	
 	protected void checkTestA(final String nodeCode, IASTNode neoNode) {

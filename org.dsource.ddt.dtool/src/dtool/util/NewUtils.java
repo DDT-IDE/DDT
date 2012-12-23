@@ -3,6 +3,7 @@ package dtool.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.ChainedIterator;
@@ -31,6 +32,17 @@ public class NewUtils {
 	public static <T> T assertNotNull_(T obj) {
 		Assert.AssertNamespace.assertNotNull(obj);
 		return obj;
+	}
+	
+	public static <T> T[] assertNotContainsNull_(T... arr) {
+		for (T elem : arr) {
+			Assert.AssertNamespace.assertNotNull(elem);
+		}
+		return arr;
+	}
+
+	public static <T> T lastElement(List<T> list) {
+		return list.get(list.size()-1);
 	}
 	
 }

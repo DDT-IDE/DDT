@@ -10,7 +10,7 @@ import dtool.ast.references.RefQualified;
  * Simple class for printing the AST in indented tree form.
  * DMD AST nodes are printed with a "#" prefix.
  */
-public class ASTPrinter extends ASTNeoUpTreeVisitor {
+public class ASTPrinter extends ASTNeoHomogenousVisitor {
 	
 	/* ===================== Helpers ============================ */
 	
@@ -112,20 +112,14 @@ public class ASTPrinter extends ASTNeoUpTreeVisitor {
 	
 	/* ====================================================== */
 	
-	/* ---------------- Neo ------------------ */
 	@Override
-	public boolean visit(ASTNeoNode elem) {
-		printNodeDecorations(elem, toStringAsNodePlusExtra(elem) );
+	public boolean preVisit(ASTNeoNode node) {
+		printNodeDecorations(node, toStringAsNodePlusExtra(node) );
+		if(node instanceof RefQualified) {
+			return visitChildren && visitQualifiedNameChildren;
+		}
 		return visitChildren;
 	}
-	
-	public boolean visit(RefQualified elem) {
-		printNodeDecorations(elem, toStringAsNodePlusExtra(elem));
-		return visitChildren && visitQualifiedNameChildren;
-	}
-	
-	
-	/* ---------------------------------- */
 	
 }
 

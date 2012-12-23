@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -77,8 +78,8 @@ public class RefIdentifier extends NamedReference {
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return name;
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(name);
 	}
 	
 }

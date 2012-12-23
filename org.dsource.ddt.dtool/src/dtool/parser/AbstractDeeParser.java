@@ -1,10 +1,11 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import dtool.ast.ASTNeoNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.parser.Token.ErrorToken;
 
@@ -14,6 +15,7 @@ public class AbstractDeeParser {
 	protected Token lastToken = null;
 	protected Token tokenAhead = null;
 	protected ArrayList<ParserError> errors = new ArrayList<ParserError>();
+	protected ArrayList<ParserError> pendingMissingTokenErrors = new ArrayList<ParserError>();
 	
 	public AbstractDeeParser(DeeLexer deeLexer) {
 		this.deeLexer = deeLexer;
@@ -23,18 +25,20 @@ public class AbstractDeeParser {
 		return lastToken;
 	}
 	
-	protected void addError(EDeeParserErrors errorType, SourceRange sourceRange, String errorSource, Object obj2) {
-		errors.add(new ParserError(errorType, sourceRange, errorSource, obj2));
+	protected ParserError addError(EDeeParserErrors errorType, SourceRange sourceRange, String errorSource, Object obj2) {
+		ParserError error = new ParserError(errorType, sourceRange, errorSource, obj2);
+		errors.add(error);
+		return error;
 	}
 	
-	protected final Token lookAhead() {
+	protected final Token lookAheadToken() {
 		if(tokenAhead != null) {
 			return tokenAhead;
 		}
 		while(true) {
 			Token token = deeLexer.next();
 			
-			DeeTokens tokenType = token.tokenType;
+			DeeTokens tokenType = token.type;
 			
 			if(tokenType == DeeTokens.ERROR) {
 				ErrorToken errorToken = (ErrorToken) token;
@@ -56,9 +60,22 @@ public class AbstractDeeParser {
 		}
 	}
 	
+	public DeeTokens lookAhead() {
+		return lookAheadToken().type;
+	}
+	
+	public boolean lookAheadIsType(DeeTokens... tokens) {
+		for (int i = 0; i < tokens.length; i++) {
+			if(lookAhead() == tokens[i]) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	protected final Token consumeInput() {
 		if(tokenAhead == null) {
-			lookAhead();
+			lookAheadToken();
 		}
 		
 		lastToken = tokenAhead;
@@ -68,14 +85,11 @@ public class AbstractDeeParser {
 	
 	protected final Token consumeLookAhead() {
 		assertNotNull(tokenAhead);
-		
-		lastToken = tokenAhead;
-		tokenAhead = null;
-		return lastToken;
+		return consumeInput();
 	}
 	
 	protected final boolean tryConsume(DeeTokens tokenType) {
-		if(lookAhead().tokenType == tokenType) {
+		if(lookAhead() == tokenType) {
 			consumeLookAhead();
 			return true;
 		}
@@ -85,44 +99,48 @@ public class AbstractDeeParser {
 	/** Attempt to consume a token of given type.
 	 * If it fails, creates an error using the range of previous token. */
 	protected final Token consumeExpectedToken(DeeTokens expectedTokenType) {
-		Token la = lookAhead();
-		if(la.tokenType == expectedTokenType) {
-			consumeLookAhead();
-			return la;
+		if(lookAhead() == expectedTokenType) {
+			return consumeLookAhead();
 		} else {
+			reportErrorExpectedToken(DeeTokens.IDENTIFIER);
 			return null;
 		}
 	}
 	
-	public final void recoverStream(DeeTokens expected, DeeTokens terminatingToken) {
-		if(lookAhead().tokenType == terminatingToken) {
-			consumeLookAhead();
-			
-			pushSyntaxErrorBefore(expected, terminatingToken);
-		} else {
-			pushSyntaxErrorAfter();
-			
+	public final void recoverParsing(DeeTokens expected, DeeTokens terminatingToken) {
+		if(lookAhead() == terminatingToken) {
 			consumeLookAhead();
 		}
+		reportErrorExpectedToken(expected);
 	}
 	
-	public void pushSyntaxErrorBefore(DeeTokens expected, DeeTokens terminatingToken) {
-		assertTrue(lastToken.tokenType == terminatingToken);
-		addError(EDeeParserErrors.EXPECTED_TOKEN_BEFORE, sr(lastToken), 
-			lastToken.value, expected.name());
+	public void reportErrorExpectedToken(DeeTokens expected) {
+		ParserError error = addError(EDeeParserErrors.EXPECTED_TOKEN, sr(lastToken), lastToken.value, expected);
+		pendingMissingTokenErrors.add(error);
 	}
 	
-	public void pushSyntaxErrorAfter() {
-		addError(EDeeParserErrors.EXPECTED_OTHER_AFTER, sr(lastToken), 
-			lastToken.value, null);
+	protected final <T extends ASTNeoNode> T connect(T node) {
+		for (ParserError parserError : pendingMissingTokenErrors) {
+			if(parserError.msgObj2 != DeeTokens.IDENTIFIER) {
+				parserError.originNode = node;
+			}
+		}
+		pendingMissingTokenErrors = new ArrayList<ParserError>();
+		return node;
+	}
+	
+	protected final <T extends IASTNeoNode> T connect(T node) {
+		connect((ASTNeoNode) node);
+		return node;
 	}
 	
 	public static SourceRange sr(Token token) {
 		return new SourceRange(token.getStartPos(), token.getLength());
 	}
 	
-	public static SourceRange srFromToken(Token tokStart, Token tokEnd) {
-		return new SourceRange(tokStart.getStartPos(), tokEnd.getLength());
+	public static SourceRange sr(Token tokStart, Token tokEnd) {
+		int length = tokEnd.getEndPos() - tokStart.getStartPos();
+		return new SourceRange(tokStart.getStartPos(), length);
 	}
 	
 }

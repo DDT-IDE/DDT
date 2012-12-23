@@ -2,14 +2,16 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 
 public class ParserError {
 	
-	protected EDeeParserErrors errorType;
-	protected SourceRange sourceRange;
-	protected String msgErrorSource;
-	protected Object msgObj2;
+	protected final EDeeParserErrors errorType;
+	protected final SourceRange sourceRange;
+	protected final String msgErrorSource;
+	protected final Object msgObj2;
+	public ASTNeoNode originNode;
 	
 	public ParserError(EDeeParserErrors errorType, SourceRange sourceRange, String msgErrorSource, Object msgObj2) {
 		this.errorType = assertNotNull_(errorType);
@@ -21,21 +23,22 @@ public class ParserError {
 	public String getUserMessage() {
 		switch (errorType) {
 		case UNKNOWN_TOKEN:
-			return "Invalid token, delete these token characters.";
+			return "Invalid token characters \"" + msgErrorSource + "\", delete these characters.";
 		case MALFORMED_TOKEN:
 			return "XXX";
-		case EXPECTED_OTHER_AFTER:
-			return "Syntax Error on token \"" + msgErrorSource + "\".";
-		case EXPECTED_TOKEN_BEFORE:
-			return "Syntax Error on token \"" + msgErrorSource + "\", missing " + msgObj2 + " before.";
-			
-			default: throw assertFail();
+		case EXPECTED_TOKEN:
+			DeeTokens expToken = (DeeTokens) msgObj2;
+			return "Syntax error on token \"" + msgErrorSource + "\", expected " + expToken + " after.";
+		case TOKEN_SYNTAX_ERROR:
+			return "Unexpected token \"" + msgErrorSource + "\", delete this token.";
 		}
+		throw assertFail();
 	}
 	
 	@Override
 	public String toString() {
-		return "ERROR:" + errorType + sourceRange.toString() + " obj1:" + msgErrorSource + " obj2:" + msgObj2;
+		return "ERROR:" + errorType + sourceRange.toString() + 
+			(msgErrorSource == null ? "" : (" :" + msgErrorSource)) + " obj2:" + msgObj2;
 	}
 	
 }

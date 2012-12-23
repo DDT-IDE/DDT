@@ -1,6 +1,7 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.util.ArrayView;
@@ -24,6 +25,14 @@ public class ExpArrayIndex extends Expression {
 			TreeVisitor.acceptChildren(visitor, args);
 		}
 		visitor.endVisit(this);	 
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendNode(array, "[");
+		/*BUG here TODO finish*/
+//		cp.appendNodeList(args, ",");
+		cp.append("]");
 	}
 	
 }

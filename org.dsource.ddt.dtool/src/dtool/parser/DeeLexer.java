@@ -17,8 +17,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.Arrays;
 
-import dtool.parser.Token.ErrorToken;
-
 
 public class DeeLexer extends AbstractLexer {
 	
@@ -266,7 +264,7 @@ public class DeeLexer extends AbstractLexer {
 	
 	/** EOF token will consist of not only initial EOF marker but everything afterwards
 	 * until true end of file. */
-	public Token createEOFToken() {
+	protected final Token createEOFToken() {
 		return createToken(DeeTokens.EOF, source.length() - tokenStartPos);
 	}
 	
@@ -299,7 +297,7 @@ public class DeeLexer extends AbstractLexer {
 		}
 	}
 	
-	protected Token ruleAlphaStart() {
+	protected final Token ruleAlphaStart() {
 		assertTrue(getCharCategory(lookAhead()).canBeIdentifierStart);
 		
 		// Note, according to D spec, not all non-ASCII characters are valid as identifier characters
@@ -322,7 +320,7 @@ public class DeeLexer extends AbstractLexer {
 	
 	/** Advance position until lookahead is not valid identifier part.
 	 * Returns whether all scanned characters where ASCII or not. */
-	protected boolean readIdentifierPartChars() {
+	protected final boolean readIdentifierPartChars() {
 		boolean asciiOnly = true;
 		do {
 			int ch = lookAhead();

@@ -1,34 +1,36 @@
 package dtool.parser;
 
+import static dtool.util.NewUtils.assertNotNull_;
+
 public class Token {
 	
-	public final DeeTokens tokenType;
+	public final DeeTokens type;
 	public final int start;
 	public final String value; //TODO, don't store this for certain kinds of nodes
 	
 	public Token(DeeTokens tokenCode, String value, int start) {
-		this.tokenType = tokenCode;
+		this.type = assertNotNull_(tokenCode);
 		this.value = value;
 		this.start = start;
 	}
 	
 	public final DeeTokens getTokenType() {
-		return tokenType;
+		return type;
 	}
 	
 	public final int getStartPos() {
 		return start;
 	}
 	
-	public final int getLength() {
+	public int getLength() {
 		return value.length();
 	}
 	
-	public final int getEndPos() {
+	public int getEndPos() {
 		return start + value.length();
 	}
 	
-	public String getSourceValue() {
+	public final String getSourceValue() {
 		return value;
 	}
 	
@@ -42,7 +44,6 @@ public class Token {
 			this.originalToken = originalToken;
 			this.errorMessage = errorMessage;
 		}
-		
 	}
 	
 }

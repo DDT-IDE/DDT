@@ -1,7 +1,6 @@
 package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.Logg;
 
 
@@ -9,18 +8,18 @@ import dtool.Logg;
  * Checks for AST validity. Namely:
  * Source range consistency. 
  */
-public class ASTSourceRangeChecker extends ASTNeoHomogenousVisitor {
+public class ASTCommonSourceRangeChecker extends ASTNeoHomogenousVisitor {
 	
 	@Deprecated
 	/** Checks an AST for errors, such as source range errors. */
 	public static void checkConsistency(ASTNeoNode elem){
-		elem.accept(new ASTSourceRangeChecker(elem.getStartPos()));
+		elem.accept(new ASTCommonSourceRangeChecker(elem.getStartPos()));
 	}
 	
 	private int offsetCursor;
 	protected StringBuffer strbuffer;
 	
-	public ASTSourceRangeChecker(int offsetCursor) {
+	public ASTCommonSourceRangeChecker(int offsetCursor) {
 		this.offsetCursor = offsetCursor;
 	}
 	
@@ -51,27 +50,27 @@ public class ASTSourceRangeChecker extends ASTNeoHomogenousVisitor {
 	
 	/* ====================================================== */
 	
-	protected boolean handleSourceRangeNoInfo(IASTNode elem) {
+	protected boolean handleSourceRangeNoInfo(ASTNeoNode elem) {
 //		assertFail();
 		Logg.astmodel.print("Source range no info on: ");
 		Logg.astmodel.println(elem.toStringAsNode(true));
 		return false;
 	}
 	
-	protected boolean handleSourceRangeStartPosBreach(IASTNode elem) {
+	protected boolean handleSourceRangeStartPosBreach(ASTNeoNode elem) {
 //		assertFail();
 		Logg.astmodel.print("Source range start-pos error on: ");
 		Logg.astmodel.println(elem.toStringAsNode(true));
 		return false;
 	}
 	
-	protected void handleSourceRangeEndPosBreach(IASTNode elem) {
+	protected void handleSourceRangeEndPosBreach(ASTNeoNode elem) {
 //		assertFail();
 		Logg.astmodel.print("Source range end-pos error on: ");
 		Logg.astmodel.println(elem.toStringAsNode(true));
 	}
 	
-	public static class ASTAssertChecker extends ASTSourceRangeChecker {
+	public static class ASTAssertChecker extends ASTCommonSourceRangeChecker {
 		
 		public static void checkConsistency(ASTNeoNode elem){
 			elem.accept(new ASTAssertChecker(elem.getStartPos()));
@@ -82,20 +81,19 @@ public class ASTSourceRangeChecker extends ASTNeoHomogenousVisitor {
 		}
 		
 		@Override
-		protected void handleSourceRangeEndPosBreach(IASTNode elem) {
+		protected void handleSourceRangeEndPosBreach(ASTNeoNode elem) {
 			assertFail();
 		}
 		
 		@Override
-		protected boolean handleSourceRangeNoInfo(IASTNode elem) {
+		protected boolean handleSourceRangeNoInfo(ASTNeoNode elem) {
 			throw assertFail();
 		}
 		
 		@Override
-		protected boolean handleSourceRangeStartPosBreach(IASTNode elem) {
+		protected boolean handleSourceRangeStartPosBreach(ASTNeoNode elem) {
 			throw assertFail();
 		}
 	}
 	
 }
-

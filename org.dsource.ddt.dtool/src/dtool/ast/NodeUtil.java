@@ -29,4 +29,14 @@ public class NodeUtil {
 		return null;
 	}
 	
+	public static boolean isContainedIn(ASTNeoNode node, ASTNeoNode container) {
+		while(node != null) {
+			if(node == container) {
+				return true;
+			}
+			node = node.getParent();
+		}
+		return false;
+	}
+	
 }

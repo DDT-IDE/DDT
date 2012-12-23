@@ -38,7 +38,7 @@ import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAnonMember;
 import dtool.ast.declarations.DeclarationConditionalDefinition;
 import dtool.ast.declarations.DeclarationImport;
-import dtool.ast.declarations.DeclarationImport.ImportFragment;
+import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationPragma;
@@ -46,15 +46,15 @@ import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.DeclarationStorageClass;
 import dtool.ast.declarations.DeclarationUnitTest;
-import dtool.ast.declarations.ImportAliasing;
+import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
-import dtool.ast.declarations.ImportSelective.ImportSelectiveAlias;
+import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.ImportStatic;
 import dtool.ast.declarations.InvalidSyntaxDeclaration;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefModifier;
-import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
+import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
@@ -198,11 +198,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	}
 	
 	// Helper function for the ImportSelective conversion.
-	private static ASTNeoNode createSelectionFragment(IdentifierExp name, IdentifierExp alias, ImportSelective impSel) {
+	private static ASTNeoNode createSelectionFragment(IdentifierExp name, IdentifierExp alias) {
 		assertTrue(!(name.ident.length == 0));
 		RefImportSelection impSelection = new RefImportSelection(
 			new String(name.ident),
-			impSel,
 			DefinitionConverter.sourceRange(name)
 		);
 		
@@ -210,15 +209,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			return impSelection; //implements IImportSelectiveFragment
 		}
 		else {
-			DefUnitDataTuple dudt = new DefUnitDataTuple(
-				DefinitionConverter.sourceRange(alias),
+			DefUnitTuple dudt = new DefUnitTuple(
+				new SourceRange(alias.start, name.getEndPos() - alias.start),
 				DefinitionConverter.convertIdToken(alias),
 				null
 			);
 			
 			return new ImportSelectiveAlias(
-				dudt, impSelection,
-				new SourceRange(alias.start, name.getEndPos() - alias.start)
+				dudt, impSelection
 			);
 		}
 	}
@@ -233,11 +231,11 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		}
 		
 		// Selective import are at the end		
-		ImportFragment[] imports = new ImportFragment[importsNum];
+		IImportFragment[] imports = new IImportFragment[importsNum];
 		imprt = elem;
 		for(int i = 0; i < importsNum; i++, imprt = imprt.next) {
 			
-			ImportFragment imprtFragment = null;
+			IImportFragment imprtFragment = null;
 			
 			// Storing the packages.
 			String[] packages;
@@ -264,36 +262,34 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				//Assert.isTrue(imprt.alias == null);
 			} else if(imprt.aliasId != null) {
 				SourceRange entireRange = DefinitionConverter.sourceRange(imprt);
-				DefUnitDataTuple dudt = new DefUnitDataTuple(
+				DefUnitTuple dudt = new DefUnitTuple(
 					new SourceRange(imprt.aliasId.start, entireRange.getEndPos() - imprt.aliasId.start),
 					DefinitionConverter.convertIdToken(imprt.aliasId), null
 				);
-				imprtFragment = new ImportAliasing(
+				imprtFragment = new ImportAlias(
 					dudt,
-					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr),
-					entireRange
-				);
-			} else if(imprt.names != null) {
-				assertTrue(imprt.names.size() == imprt.aliases.size());
-				assertTrue(imprt.names.size() > 0 );
-				ASTNeoNode[] impSelFrags = new ASTNeoNode[imprt.names.size()];
-				for(int selFragment = 0; selFragment < imprt.names.size(); selFragment++) {
-					impSelFrags[selFragment] = createSelectionFragment(
-						imprt.names.get(selFragment),
-						imprt.aliases.get(selFragment),
-						(ImportSelective) null
-					);
-				}
-				
-				imprtFragment = new ImportSelective(
-					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr),
-					ArrayView.create(impSelFrags), DefinitionConverter.sourceRange(imprt)
+					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr)
 				);
 			} else {
 				imprtFragment = new ImportContent(
-					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr),
-					DefinitionConverter.sourceRange(imprt)
+					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr)
 				);
+				
+				if(imprt.names != null) {
+					assertTrue(imprt.names.size() == imprt.aliases.size());
+					assertTrue(imprt.names.size() > 0 );
+					ASTNeoNode[] impSelFrags = new ASTNeoNode[imprt.names.size()];
+					for(int selFragment = 0; selFragment < imprt.names.size(); selFragment++) {
+						impSelFrags[selFragment] = createSelectionFragment(
+							imprt.names.get(selFragment),
+							imprt.aliases.get(selFragment)
+						);
+					}
+					
+					imprtFragment = new ImportSelective(imprtFragment,
+						ArrayView.create(impSelFrags), DefinitionConverter.sourceRange(imprt)
+					);
+				}
 			}
 			
 			imports[i] = imprtFragment;
@@ -649,7 +645,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(TemplateAliasParameter elem) {
-		DefUnitDataTuple dudt = new DefUnitDataTuple(
+		DefUnitTuple dudt = new DefUnitTuple(
 			DefinitionConverter.sourceRange(elem),
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
@@ -659,7 +655,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(TemplateTupleParameter elem) {
-		DefUnitDataTuple dudt = new DefUnitDataTuple(
+		DefUnitTuple dudt = new DefUnitTuple(
 			DefinitionConverter.sourceRange(elem),
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
@@ -669,7 +665,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(TemplateTypeParameter elem) {
-		DefUnitDataTuple dudt = new DefUnitDataTuple(
+		DefUnitTuple dudt = new DefUnitTuple(
 			DefinitionConverter.sourceRange(elem),
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
@@ -691,7 +687,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(TemplateValueParameter elem) {
-		DefUnitDataTuple dudt = new DefUnitDataTuple(
+		DefUnitTuple dudt = new DefUnitTuple(
 			DefinitionConverter.sourceRange(elem),
 			DefinitionConverter.convertIdToken(elem.ident),
 			null

@@ -29,7 +29,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefUnit.DefUnitDataTuple;
+import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.AutoFunctionReturnReference;
@@ -37,6 +37,7 @@ import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.Reference;
@@ -56,7 +57,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		return new Symbol(idTokenInfo.value, idTokenInfo.getSourceRange());
 	}
 	
-	public static DefUnit.DefUnitDataTuple convertDsymbol(Dsymbol elem, ASTConversionContext convContext) {
+	public static DefUnit.DefUnitTuple convertDsymbol(Dsymbol elem, ASTConversionContext convContext) {
 		SourceRange sourceRange = sourceRange(elem);
 		
 		descent.internal.compiler.parser.Module module = convContext.module;
@@ -105,10 +106,10 @@ public class DefinitionConverter extends BaseDmdConverter {
 		IdentifierExp ident = elem.ident;
 		if(ident == null) {
 			TokenInfo defName = new TokenInfo("<syntax_error>");
-			return new DefUnit.DefUnitDataTuple(sourceRange, defName, newComments);
+			return new DefUnit.DefUnitTuple(sourceRange, defName, newComments);
 		} else {
 			TokenInfo defName = convertIdToken(ident);
-			return new DefUnit.DefUnitDataTuple(sourceRange, defName, newComments);
+			return new DefUnit.DefUnitTuple(sourceRange, defName, newComments);
 		}
 	}
 	
@@ -135,7 +136,8 @@ public class DefinitionConverter extends BaseDmdConverter {
 			
 			// Remove comments of other defunits (DMD parser quirk)
 			Comment[] comments = filterComments(elem, elem.md.start); 
-			return Module.createModule(sourceRange, comments, packages, defnameInfo, declRange, members);
+			DeclarationModule md = new DeclarationModule(declRange, packages, defnameInfo);
+			return new Module(md.getModuleSymbol(), comments, md, members, sourceRange);
 		}
 	}
 	
@@ -157,7 +159,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		assertNotNull(elem.ident);
 		elem.ident.length = elem.ident.ident.length; // Fix a parser source range issue
 		elem.length = Math.max(elem.length, elem.ident.length);
-		DefUnitDataTuple defunitInfo = convertDsymbol(elem, convContext);
+		DefUnitTuple defunitInfo = convertDsymbol(elem, convContext);
 		return new EnumMember(defunitInfo, ExpressionConverter.convert(elem.value, convContext));
 	}
 	
@@ -234,7 +236,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 				} else
 					type = ReferenceConverter.convertType(elem.type, convContext);
 				
-				DefUnitDataTuple dudt = new DefUnitDataTuple(
+				DefUnitTuple dudt = new DefUnitTuple(
 					DefinitionConverter.sourceRange(elem), DefinitionConverter.convertIdToken(elem.ident), null
 				);
 				

@@ -8,7 +8,7 @@ import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.declarations.DeclarationImport;
-import dtool.ast.declarations.DeclarationImport.ImportFragment;
+import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportStatic;
@@ -192,7 +192,7 @@ public class ReferenceResolver {
 				if(!refsModule.equals(thisModule) && !declImport.isTransitive)
 					continue; // Don't consider private imports
 				
-				for (ImportFragment impFrag : declImport.imports) {
+				for (IImportFragment impFrag : declImport.imports) {
 					impFrag.searchInSecondaryScope(search);
 					// continue regardless of search.findOnlyOne because of partial packages
 				}
@@ -219,9 +219,9 @@ public class ReferenceResolver {
 			findDefUnitInScope(targetModule, search);
 	}
 	
-	private static Module findImporTargetModule(IModuleResolver modResolver, ImportFragment impSelective) {
-		String[] packages = impSelective.moduleRef.packages.getInternalArray();
-		String modules = impSelective.moduleRef.module;
+	private static Module findImporTargetModule(IModuleResolver modResolver, IImportFragment impSelective) {
+		String[] packages = impSelective.getModuleRef().packages.getInternalArray();
+		String modules = impSelective.getModuleRef().module;
 		Module targetModule;
 		targetModule =  findModuleUnchecked(modResolver, packages, modules);
 		return targetModule;

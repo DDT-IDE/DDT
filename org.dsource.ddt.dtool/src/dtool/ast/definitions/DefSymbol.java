@@ -1,5 +1,6 @@
 package dtool.ast.definitions;
 
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.SourceRange;
 
 
@@ -22,4 +23,8 @@ public class DefSymbol extends Symbol {
 		return (DefUnit) super.getParent();
 	}
 	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(name);
+	}
 }

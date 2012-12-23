@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
@@ -90,6 +91,10 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		return getEndPos() - getStartPos();
 	}
 	
+	public final SourceRange getSourceRange() {
+		assertTrue(hasSourceRangeInfo());
+		return new SourceRange(getStartPos(), getLength());
+	}
 	
 	/** Sets the source range of this onde to given startPositon and given length */
 	public final void setSourceRange(int startPosition, int length) {
@@ -211,22 +216,28 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	}
 	
 	@Override
-	@Deprecated
 	public final String toString() {
-		//assertFail("ASTNeoNode.toString is for debugging purposes only.");
-		return toStringClassName() +" "+ toStringAsCode();
-		//return ASTPrinter.toStringAsFullNodeTree(this, true);
+		return "#" + toStringClassName() +": "+ toStringAsCode();
 	}
 	
-	/** Returns a simple representation of this node, element-like and for for a line. */
+	/** Returns a simple representation of this node, element-like and for for a line. 
+	 * TODO: need to fix this API */
 	public String toStringAsElement() {
-		return "?";
+		return toStringAsCode();
 	}
 	
-	/** Returns a simple representation of this node (ie. one liner, no members). */
-	protected String toStringAsCode() {
-		return "<"+toStringAsElement()+">";
+	/** Returns a source representation of this node. There must only be one possible representation. */
+	public final String toStringAsCode() {
+		ASTCodePrinter cp = new ASTCodePrinter();
+		toStringAsCode(cp);
+		return cp.toString();
 	}
+	
+	public void toStringAsCode(ASTCodePrinter cp) {
+		throw assertFail();
+	}
+	
+	/* =============== Parenting =============== */
 	
 	/** Set the parent of the given collection to the receiver. @return collection */
 	protected <T extends ASTNeoNode> ArrayView<T> parentize(ArrayView<T> collection) {

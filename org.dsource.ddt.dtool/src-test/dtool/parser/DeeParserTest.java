@@ -1,6 +1,5 @@
 package dtool.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -8,10 +7,11 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.definitions.Module;
+import dtool.parser.Token.ErrorToken;
+import dtool.tests.CommonTestUtils;
 
-public class DeeParserTest {
+public class DeeParserTest extends CommonTestUtils {
 	
 	@Test
 	public void basicTest() throws Exception { basicTest$(); }
@@ -30,47 +30,65 @@ public class DeeParserTest {
 		Module module = result.module;
 		assertNotNull(module);
 		
-		ASTSourceRangeChecker.ASTAssertChecker.checkConsistency(module);
-		
-		String generatedSource = ASTSourcePrinter.printSource(module);
-		checkSourceEquality(generatedSource, expectedGenSource);
+		if(expectedGenSource != null) {
+			String generatedSource = module.toStringAsCode();
+			checkSourceEquality(generatedSource, expectedGenSource);
+		}
 		
 		if(allowAnyErrors == false) {
 			checkParserErrors(result.errors, expectedErrors);
 		}
+		
+		// Check source ranges
+		module.accept(new ASTSourceRangeChecker(parseSource, result.errors));
 	}
 	
 	public static void checkSourceEquality(String generatedSource, String expectedGenSource) {
-		DeeLexer generatedSourceLexer = new DeeLexer(generatedSource);
-		DeeLexer expectedSourceLexer = new DeeLexer(expectedGenSource);
+		checkSourceEquality(generatedSource, expectedGenSource, false);
+	}
+	
+	public static void checkSourceEquality(String source, String expectedSource, boolean ignoreUT) {
+		DeeLexer generatedSourceLexer = new DeeLexer(source);
+		DeeLexer expectedSourceLexer = new DeeLexer(expectedSource);
 		
 		while(true) {
-			Token tok = getContentToken(generatedSourceLexer, true);
-			Token tokExp = getContentToken(expectedSourceLexer, true);
-			assertEquals(tok.tokenType, tokExp.tokenType);
+			Token tok = getContentToken(generatedSourceLexer, true, ignoreUT);
+			Token tokExp = getContentToken(expectedSourceLexer, true, ignoreUT);
+			assertEquals(tok.type, tokExp.type);
 			assertEquals(tok.value, tokExp.value);
 			
-			if(tok.tokenType == DeeTokens.EOF) {
+			if(tok.type == DeeTokens.EOF) {
 				break;
 			}
 		}
 	}
 	
-	public static Token getContentToken(DeeLexer lexer, boolean ignoreComments) {
+	public static Token getContentToken(DeeLexer lexer, boolean ignoreComments, boolean ignoreUT) {
 		while(true) {
-			Token token = lexer.next(); 
-			if(!token.tokenType.isParserIgnored || (!ignoreComments && 
-				isCommentToken(token))) {
-				return token;
+			Token token = lexer.next();
+			if((token.type.isParserIgnored && (ignoreComments || !isCommentToken(token))) 
+				|| (ignoreUT && isUnknownToken(token))) {
+				continue;
+			}
+			return token;
+		}
+	}
+	
+	public static boolean isUnknownToken(Token token) {
+		if(token instanceof ErrorToken) {
+			ErrorToken errorToken = (ErrorToken) token;
+			if(errorToken.originalToken == DeeTokens.ERROR) {
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public static boolean isCommentToken(Token token) {
 		return 
-			token.tokenType == DeeTokens.COMMENT_LINE ||
-			token.tokenType == DeeTokens.COMMENT_MULTI ||
-			token.tokenType == DeeTokens.COMMENT_NESTED;
+			token.type == DeeTokens.COMMENT_LINE ||
+			token.type == DeeTokens.COMMENT_MULTI ||
+			token.type == DeeTokens.COMMENT_NESTED;
 	}
 	
 	public static void checkParserErrors(ArrayList<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {
@@ -81,12 +99,8 @@ public class DeeParserTest {
 			ParserError expError = expectedErrors.get(i);
 			assertEquals(error.errorType, expError.errorType);
 			assertEquals(error.sourceRange, expError.sourceRange);
-			if(expError.msgErrorSource != null) {
-				assertEquals(error.msgErrorSource, expError.msgErrorSource);
-			}
-			if(expError.msgObj2 != null) {
-				assertEquals(error.msgObj2, expError.msgObj2);
-			}
+			assertEquals(error.msgErrorSource, expError.msgErrorSource);
+			assertAreEqual(safeToString(error.msgObj2), safeToString(expError.msgObj2));
 		}
 		assertTrue(resultErrors.size() == expectedErrors.size());
 	}

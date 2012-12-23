@@ -1,11 +1,12 @@
 package dtool.ast.references;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static dtool.util.NewUtils.assertNotNull_;
 
 import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -20,10 +21,8 @@ public class RefQualified extends CommonRefQualified {
 	public final IDefUnitReferenceNode qualifier; //Entity or Expression
 	
 	public RefQualified(IDefUnitReferenceNode qualifier, RefIdentifier qualifiedName) {
-		super(qualifiedName);
-		assertNotNull(qualifier);
-		assertNotNull(qualifiedName);
-		this.qualifier = parentizeI(qualifier);
+		super(assertNotNull_(qualifiedName));
+		this.qualifier = parentizeI(assertNotNull_(qualifier));
 	}
 	
 	public RefQualified(IDefUnitReferenceNode rootRef, RefIdentifier subRef, SourceRange sourceRange) {
@@ -42,8 +41,9 @@ public class RefQualified extends CommonRefQualified {
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return qualifier.toStringAsElement() + "." + qualifiedName.toStringAsElement();
+	public void toStringAsCode(ASTCodePrinter cp) {
+		// TODO, proper use
+		cp.append(qualifier.toStringAsElement(), ".", qualifiedName.toStringAsElement());
 	}
 	
 	public IASTNode getRootAsNode() {

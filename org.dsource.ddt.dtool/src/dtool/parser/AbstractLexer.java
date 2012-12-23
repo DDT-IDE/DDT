@@ -30,7 +30,7 @@ public abstract class AbstractLexer {
 		this.source = assertNotNull_(source);
 	}
 	
-	public Token next() { 
+	public final Token next() { 
 		Token token = parseToken();
 		assertNotNull(token);
 		
@@ -38,10 +38,14 @@ public abstract class AbstractLexer {
 		return token;
 	}
 	
-	protected abstract Token parseToken();
+	public abstract Token parseToken();
+	
+	public final void reset(int newTokenStartPosition) {
+		tokenStartPos = newTokenStartPosition;
+	}
 	
 	/** Gets the character from absolute position index. */
-	protected final int getCharacter(int index) {
+	public final int getCharacter(int index) {
 		if(index >= source.length()) {
 			return -1;
 		}
@@ -79,7 +83,7 @@ public abstract class AbstractLexer {
 	 * or -1 if EOF was encountered (position is advanced to EOF).
 	 * If input can match more than one string, priority is given to string with lowest index in given strings,
 	 * so ordering is important. */
-	public final int seekTo(final String[] strings) {
+	protected final int seekTo(final String[] strings) {
 		while(true) {
 			int i = 0;
 			boolean matchesAny = false;
@@ -100,7 +104,7 @@ public abstract class AbstractLexer {
 		}
 	}
 	/** Optimization of {@link #seekTo(String[])} method for 1 String */
-	public final int seekTo(String string) {
+	protected final int seekTo(String string) {
 		while(true) {
 			boolean matches = inputMatchesSequence(string);
 			if(matches) {
@@ -114,7 +118,7 @@ public abstract class AbstractLexer {
 		}
 	}
 	/** Optimization of {@link #seekTo(String[])} method for 1 char */
-	public final int seekTo(char endChar) {
+	protected final int seekTo(char endChar) {
 		while(true) {
 			int ch = lookAhead(0);
 			if(ch == -1) {
@@ -127,7 +131,7 @@ public abstract class AbstractLexer {
 		}
 	}
 	/** Optimization of {@link #seekTo(String[])} method for 2 char */
-	public final int seekTo(char endChar1, char endChar2) {
+	protected final int seekTo(char endChar1, char endChar2) {
 		while(true) {
 			int ch = lookAhead();
 			if(ch == EOF) {
@@ -142,7 +146,7 @@ public abstract class AbstractLexer {
 		}
 	}
 	
-	public final int seekToNewline() {
+	protected final int seekToNewline() {
 		while(true) {
 			int ch = lookAhead();
 			if(ch == EOF) {
@@ -162,12 +166,12 @@ public abstract class AbstractLexer {
 	
 	/*---------------------------------------*/
 	
-	public final void readNewline() {
+	protected final void readNewline() {
 		int result = readNewlineOrEOF();
 		assertTrue(result == 0);
 	}
 	
-	public final int readNewlineOrEOF() {
+	protected final int readNewlineOrEOF() {
 		int ch = lookAhead();
 		if(ch == '\r') {
 			pos++;
@@ -190,7 +194,7 @@ public abstract class AbstractLexer {
 	static { assertTrue( ((int)-1) != ((char)-1) ); } // inputMatchesSequence relies on this
 	
 	/** Returns true if the sequence from current position matches given string. */
-	public final boolean inputMatchesSequence(CharSequence string) {
+	protected final boolean inputMatchesSequence(CharSequence string) {
 		int length = string.length();
 		for (int i = 0; i < length; i++) {
 			int ch = lookAhead(i);
@@ -201,7 +205,7 @@ public abstract class AbstractLexer {
 		return true;
 	}
 	/** Optimization of {@link #inputMatchesSequence(CharSequence)} , since String is final and not an interface */
-	public final boolean inputMatchesSequence(String string) {
+	protected final boolean inputMatchesSequence(String string) {
 		int length = string.length();
 		for (int i = 0; i < length; i++) {
 			int ch = lookAhead(i);
@@ -214,7 +218,7 @@ public abstract class AbstractLexer {
 	
 	/* ------------------------  ------------------------ */
 	
-	public final Token rule3Choices(char ch1, DeeTokens tk1, char ch2, DeeTokens tk2, DeeTokens tokenElse) {
+	protected final Token rule3Choices(char ch1, DeeTokens tk1, char ch2, DeeTokens tk2, DeeTokens tokenElse) {
 		if(lookAhead(1) == ch1) {
 			return createToken(tk1, 2);
 		} else if(lookAhead(1) == ch2) {
@@ -224,7 +228,7 @@ public abstract class AbstractLexer {
 		}
 	}
 	
-	public final Token rule2Choices(char ch1, DeeTokens tk1, DeeTokens tokenElse) {
+	protected final Token rule2Choices(char ch1, DeeTokens tk1, DeeTokens tokenElse) {
 		if(lookAhead(1) == ch1) {
 			return createToken(tk1, 2);
 		} else {

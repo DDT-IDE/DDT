@@ -1,0 +1,84 @@
+package dtool.ast;
+
+import dtool.util.ArrayView;
+
+public class ASTCodePrinter {
+	
+	public final String ST_SEP = "\n";
+	
+	protected final StringBuilder sb = new StringBuilder();
+	
+	@Override
+	public String toString() {
+		return sb.toString();
+	}
+	
+	public String getPrintedSource() {
+		return sb.toString();
+	}
+	
+	public void append(String string) {
+		if(string != null) {
+			sb.append(string);
+		}
+	}
+	
+	public void append(String... strings) {
+		for (String string : strings) {
+			append(string);
+		}
+	}
+	
+	public void appendNode(ASTNeoNode node) {
+		appendNode(node, null);
+	}
+	
+	public void appendNode(ASTNeoNode node, String sep) {
+		if(node != null) {
+			node.toStringAsCode(this);
+			if(sep != null) {
+				append(sep);
+			}
+		}
+	}
+	
+	public void appendNodeList(ArrayView<? extends ASTNeoNode> members, String sep) {
+		appendNodeList(members, sep, false);
+	}
+	
+	public void appendNodeList(ArrayView<? extends ASTNeoNode> members, String sep, boolean printLastSep) {
+		for (int i = 0; i < members.size(); i++) {
+			ASTNeoNode node = members.get(i);
+			appendNode(node);
+			if(printLastSep || i != members.size() - 1) {
+				sb.append(sep);
+			}
+		}
+	}
+	
+	
+	public void appendList(String[] packages, String sep, boolean printLastSep) {
+		for (int i = 0; i < packages.length; i++) {
+			String string = packages[i];
+			append(string);
+			if(printLastSep || i != packages.length - 1) {
+				sb.append(sep);
+			}
+		}
+	}
+	
+	public void appendList(ArrayView<String> members, String sep, boolean printLastSep) {
+		for (int i = 0; i < members.size(); i++) {
+			String str = members.get(i);
+			append(str);
+			if(printLastSep || i != members.size() - 1) {
+				sb.append(sep);
+			}
+		}
+	}
+	
+	public void appendStatementSep() {
+		append(ST_SEP);
+	}
+	
+}

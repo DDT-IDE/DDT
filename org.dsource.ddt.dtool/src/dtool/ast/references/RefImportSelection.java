@@ -2,6 +2,7 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.ImportSelective;
@@ -17,10 +18,9 @@ public class RefImportSelection extends NamedReference implements IImportSelecti
 	
 	public ImportSelective impSel; // non-structural member
 	
-	public RefImportSelection(String name, ImportSelective impSel, SourceRange sourceRange) {
+	public RefImportSelection(String name, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.name = name;
-		this.impSel = impSel;
 	}
 	
 	@Override
@@ -35,6 +35,11 @@ public class RefImportSelection extends NamedReference implements IImportSelecti
 	}
 	
 	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(name);
+	}
+	
+	@Override
 	public String toStringAsElement() {
 		return name;
 	}
@@ -42,7 +47,7 @@ public class RefImportSelection extends NamedReference implements IImportSelecti
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
 		DefUnitSearch search = new DefUnitSearch(name, this, findOneOnly, moduleResolver);
-		RefModule refMod = impSel.moduleRef;
+		RefModule refMod = impSel.getModuleRef();
 		Collection<DefUnit> targetmodules = refMod.findTargetDefUnits(moduleResolver, findOneOnly);
 		CommonRefQualified.findDefUnitInMultipleDefUnitScopes(targetmodules, search);
 		return search.getMatchDefUnits();
@@ -50,7 +55,7 @@ public class RefImportSelection extends NamedReference implements IImportSelecti
 	
 	@Override
 	public void doSearch(PrefixDefUnitSearch search) {
-		RefModule refMod = impSel.moduleRef;
+		RefModule refMod = impSel.getModuleRef();
 		Collection<DefUnit> targetModules = refMod.findTargetDefUnits(search.getModResolver(), false);
 		CommonRefQualified.findDefUnitInMultipleDefUnitScopes(targetModules, search);
 	}

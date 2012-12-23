@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -42,6 +43,11 @@ public class ExpReference extends Expression {
 	@Override
 	public String toStringAsElement() {
 		return ref.toStringAsElement();
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		ref.toStringAsCode(cp);
 	}
 	
 }
