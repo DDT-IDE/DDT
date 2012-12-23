@@ -19,7 +19,7 @@ import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.definitions.Module;
 import dtool.descentadapter.DefinitionConverter;
-import dtool.refmodel.IScope;
+import dtool.refmodel.INamedScope;
 import dtool.util.ArrayView;
 
 public abstract class ASTNeoNode implements IASTNeoNode {
@@ -183,7 +183,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	public abstract void accept0(IASTNeoVisitor visitor);
 	
 	
-	public IScope getModuleScope() {
+	public INamedScope getModuleScope() {
 		return NodeUtil.getParentModule(this);
 	}
 	

@@ -5,8 +5,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.ASTPrinter;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
@@ -17,7 +17,7 @@ import dtool.util.ArrayView;
 public class RefTemplateInstance extends Reference {
 	
 	public final Reference refRawTemplate;
-	public final ArrayView<ASTNeoNode> tiargs;
+	public final ArrayView<ASTNeoNode> tiargs; //TODO: redo API for args
 	
 	public RefTemplateInstance(Reference refRawTemplate, ArrayView<ASTNeoNode> tiargs, SourceRange sourceRange) {
 		assertNotNull(refRawTemplate);
@@ -50,7 +50,11 @@ public class RefTemplateInstance extends Reference {
 	
 	@Override
 	public String toStringAsElement() {
-		return refRawTemplate.toStringAsElement()  + "!" + ASTPrinter.toStringParamListAsElements(tiargs);
+		ASTCodePrinter cp = new ASTCodePrinter();
+		cp.append(refRawTemplate.toStringAsElement(), "!(");
+		cp.appendNodesAsElements(tiargs, ", ");
+		cp.append(")");
+		return cp.toString();
 	}
 	
 }

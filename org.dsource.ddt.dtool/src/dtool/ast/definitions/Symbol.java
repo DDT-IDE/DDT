@@ -1,6 +1,7 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
@@ -28,8 +29,8 @@ public class Symbol extends ASTNeoNode {
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return name;
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(name);
 	}
 	
 }

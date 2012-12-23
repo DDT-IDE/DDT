@@ -2,6 +2,7 @@ package dtool.tests;
 
 import melnorme.utilbox.core.Function;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.definitions.DefUnit;
 
 
 public class MiscDeeTestUtils {
@@ -15,11 +16,20 @@ public class MiscDeeTestUtils {
 		};
 	}
 	
-	public static Function<ASTNeoNode, String> fnDefUnitToStringAsElement(final int prefixLen) {
+	public static Function<DefUnit, String> fnDefUnitToStringAsElement(final int prefixLen) {
+		return new Function<DefUnit, String>() {
+			@Override
+			public String evaluate(DefUnit obj) {
+				return obj == null ? null : obj.toStringAsElement().substring(prefixLen);
+			}
+		};
+	}
+	
+	public static Function<ASTNeoNode, String> fnDefUnitToStringAsCode() {
 		return new Function<ASTNeoNode, String>() {
 			@Override
 			public String evaluate(ASTNeoNode obj) {
-				return obj == null ? null : obj.toStringAsElement().substring(prefixLen);
+				return obj == null ? null : obj.toStringAsCode();
 			}
 		};
 	}

@@ -33,9 +33,9 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.Logg;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeFinder;
-import dtool.ast.ASTPrinter;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -108,19 +108,20 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(element.getScriptProject());
 		
 		// find the target
-		Collection<DefUnit> defunits = ((Reference)elem).findTargetDefUnits(moduleResolver, false);
+		Reference ref = (Reference)elem;
+		Collection<DefUnit> defunits = ref.findTargetDefUnits(moduleResolver, false);
 		
 		if(defunits == null || defunits.size() == 0) {
-			dialogWarning(window.getShell(), "Definition not found for entity reference: " + elem.toStringAsElement());
+			dialogWarning(window.getShell(), "Definition not found for entity reference: " + ref.toStringAsElement());
 			return;
 		}
 		
-		Logg.main.println(" Find Definition, found: " + ASTPrinter.toStringAsElements(defunits, " ") );
+		Logg.main.println(" Find Definition, found: " + ASTCodePrinter.toStringAsElements(defunits, " ") );
 		
 		
 		if(defunits.size() > 1) {
 			dialogInfo(window.getShell(), "Multiple definitions found: \n" 
-					+ ASTPrinter.toStringAsElements(defunits, "\n") + "\nGoing to the first one.");
+					+ ASTCodePrinter.toStringAsElements(defunits, "\n") + "\nGoing to the first one.");
 		} 
 		
 		DefUnit defunit = defunits.iterator().next();

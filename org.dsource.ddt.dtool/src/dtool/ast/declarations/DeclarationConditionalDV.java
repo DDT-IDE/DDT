@@ -32,7 +32,7 @@ public class DeclarationConditionalDV extends DeclarationConditional {
 	@Override
 	public String toStringAsElement() {
 		if(ident!= null) {
-			return "["+ (isDebug?"debug":"version") + "("+ident.toStringAsElement()+")]";
+			return "["+ (isDebug?"debug":"version") + "("+ident.toStringAsCode()+")]";
 		} else {
 			return "["+ (isDebug?"debug":"version")+"()]";
 		}

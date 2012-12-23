@@ -114,7 +114,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
             if (o1 == null) {
             	assertTrue(o2 == null);
 			} else {
-				assertAreEqual(o1.toStringAsElement(), o2.toStringAsElement());
+				assertAreEqual(o1.toStringAsCode(), o2.toStringAsCode());
 			}
         }
     }

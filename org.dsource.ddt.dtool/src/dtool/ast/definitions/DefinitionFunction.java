@@ -8,7 +8,7 @@ import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
-import dtool.ast.ASTPrinter;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.NodeUtil;
@@ -125,7 +125,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	public String toStringForHoverSignature() {
 		String str = ""
 			+ retType.toStringAsElement() + " " + getName() 
-			+ ASTPrinter.toStringParamListAsElements(templateParams)
+			+ ASTCodePrinter.toStringParamListAsElements(templateParams)
 			+ toStringParametersForSignature(params, varargs);
 		return str;
 	}
@@ -134,7 +134,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	@Override
 	public String toStringForCodeCompletion() {
 		return getName()
-			+ ASTPrinter.toStringParamListAsElements(templateParams)
+			+ ASTCodePrinter.toStringParamListAsElements(templateParams)
 			+ toStringParametersForSignature(params, varargs) 
 			+ "  " + retType.toStringAsElement()
 			+ " - " + NodeUtil.getOuterDefUnit(this).toStringAsElement();

@@ -4,8 +4,8 @@ import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.ASTPrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
@@ -53,9 +53,10 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	
 	@Override
 	public String toStringForHoverSignature() {
-		String str = getModuleScope().toStringAsElement() +"."+ getName()
-				+ ASTPrinter.toStringParamListAsElements(templateParams);
-		return str;
+		ASTCodePrinter cp = new ASTCodePrinter();
+		cp.append(getModuleScope().toStringAsElement(), ".", getName());
+		cp.append(ASTCodePrinter.toStringParamListAsElements(templateParams));
+		return cp.toString();
 	}
 	
 	@Override

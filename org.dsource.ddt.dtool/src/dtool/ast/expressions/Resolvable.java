@@ -19,4 +19,11 @@ public abstract class Resolvable extends ASTNeoNode implements IDefUnitReference
 		return defunits.iterator().next();
 	}
 	
+	/** Returns a simple representation of this node, element-like and for for a line. 
+	 * TODO: need to fix this API */
+	@Override
+	public String toStringAsElement() {
+		return toStringAsCode();
+	}
+	
 }

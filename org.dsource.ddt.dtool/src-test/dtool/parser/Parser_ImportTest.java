@@ -1,6 +1,5 @@
 package dtool.parser;
 
-import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsElement;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
@@ -12,6 +11,8 @@ import dtool.ast.declarations.ImportSelective;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
+import dtool.ast.references.RefModule;
+import dtool.tests.MiscDeeTestUtils;
 
 /**
  * Parser/AST import tests.
@@ -64,8 +65,8 @@ public class Parser_ImportTest extends Parser__CommonTest {
 		assertEquals(module.getChildren().length, numChildren);
 	}
 	
-	protected void checkNode(ASTNeoNode module, String name) {
-		assertEquals(module.toStringAsElement(), name);
+	protected void checkNode(RefModule module, String name) {
+		assertEquals(module.toStringAsCode(), name);
 		assertTrue(module.hasNoSourceRangeInfo() == false);
 	}
 	
@@ -83,7 +84,7 @@ public class Parser_ImportTest extends Parser__CommonTest {
 		checkNode(importFragment.getModuleRef(), "std.foo");
 		
 		ImportSelective decImport = downCast(importFragment, ImportSelective.class);
-		assertEqualArrays(array, strmap(decImport.impSelFrags, fnDefUnitToStringAsElement(0)));
+		assertEqualArrays(array, strmap(decImport.impSelFrags, MiscDeeTestUtils.fnDefUnitToStringAsCode()));
 	}
 	
 	

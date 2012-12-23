@@ -12,6 +12,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
+import dtool.refmodel.INamedScope;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -22,7 +23,7 @@ import dtool.util.NewUtils;
  * D Module. 
  * The top-level AST class, has no parent, is the first and main node of every compilation unit.
  */
-public class Module extends DefUnit implements IScopeNode {
+public class Module extends DefUnit implements IScopeNode, INamedScope {
 	
 	public static class ModuleDefSymbol extends DefSymbol {
 		

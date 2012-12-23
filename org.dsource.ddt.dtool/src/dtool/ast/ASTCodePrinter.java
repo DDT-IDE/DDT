@@ -1,5 +1,8 @@
 package dtool.ast;
 
+import java.util.Iterator;
+
+import dtool.ast.definitions.DefUnit;
 import dtool.util.ArrayView;
 
 public class ASTCodePrinter {
@@ -79,6 +82,40 @@ public class ASTCodePrinter {
 	
 	public void appendStatementSep() {
 		append(ST_SEP);
+	}
+	
+	/* ==== */
+	@Deprecated
+	public static String toStringParamListAsElements(Iterable<? extends DefUnit> nodes) {
+		if(nodes == null)
+			return "";
+		return "("+toStringAsElements(nodes, ", ")+")";
+	}
+	
+	/** Util for printing a collection of nodes. */
+	@Deprecated
+	public final static String toStringAsElements(Iterable<? extends DefUnit> nodes, String sep) {
+		StringBuilder sb = new StringBuilder();
+		Iterator<? extends DefUnit> iter = nodes.iterator();
+		for (int i = 0; iter.hasNext(); i++) {
+			DefUnit next = iter.next();
+			if(i > 0) {
+				sb.append(sep);
+			}
+			sb.append(next.toStringAsElement());
+		}
+		return sb.toString();
+	}
+	
+	public final void appendNodesAsElements(Iterable<? extends ASTNeoNode> nodes, String sep) {
+		Iterator<? extends ASTNeoNode> iter = nodes.iterator();
+		for (int i = 0; iter.hasNext(); i++) {
+			ASTNeoNode next = iter.next();
+			if(i > 0) {
+				sb.append(sep);
+			}
+			sb.append(next.toStringAsElement());
+		}
 	}
 	
 }

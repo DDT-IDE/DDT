@@ -25,14 +25,10 @@ public interface IScope {
 	List<IScope> getSuperScopes(IModuleResolver moduleResolver);
 	
 	/** Gets the module of the scope. Cannot be null. */
-	IScope getModuleScope();
+	INamedScope getModuleScope();
 	
 	/** Returns whether this scope has a sequential lookup, 
 	 * such as statement scopes. */
 	boolean hasSequentialLookup();
 	
-	/** For UI printing */
-	String toStringAsElement();
-
-
 }

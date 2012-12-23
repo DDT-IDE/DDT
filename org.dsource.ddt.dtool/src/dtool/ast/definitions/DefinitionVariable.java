@@ -79,7 +79,7 @@ public class DefinitionVariable extends Definition implements IStatement {
 	
 	@Override
 	public String toStringForCodeCompletion() {
-		return defname.toStringAsElement() + "   " + getTypeString() + " - " + getModuleScope().toStringAsElement();
+		return defname.toStringAsCode() + "   " + getTypeString() + " - " + getModuleScope().toStringAsElement();
 	}
 	
 }
