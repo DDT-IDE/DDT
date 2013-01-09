@@ -86,7 +86,7 @@ import descent.internal.compiler.parser.XorAssignExp;
 import descent.internal.compiler.parser.XorExp;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
-import dtool.ast.declarations.DeclarationStringMacro;
+import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.ExpArrayIndex;
@@ -167,7 +167,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(CompileDeclaration node) {
 		return endAdapt(
-			new DeclarationStringMacro(
+			new DeclarationMixinString(
 				ExpressionConverter.convert(node.exp, convContext),
 				DefinitionConverter.sourceRange(node)
 			)
@@ -187,7 +187,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(CompileStatement node) {
 		return endAdapt(
-			new DeclarationStringMacro(
+			new DeclarationMixinString(
 				ExpressionConverter.convert(node.exp, convContext),
 				DefinitionConverter.sourceRange(node)
 			)

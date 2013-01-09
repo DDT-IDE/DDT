@@ -13,8 +13,11 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
+import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
+import dtool.ast.declarations.DeclarationLinkage;
+import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
@@ -22,6 +25,8 @@ import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
+import dtool.ast.expressions.ExpLiteralString;
+import dtool.ast.expressions.Expression;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.util.ArrayView;
@@ -41,13 +46,9 @@ public class DeeParser extends AbstractDeeParser {
 	
 	public static DeeParserResult parse(String source) {
 		DeeParser deeParser = new DeeParser(source);
-		return deeParser.parseInput();
-	}
-	
-	protected DeeParserResult parseInput() {
-		Module module = parseModule();
-		DeeParserResult parseResult = new DeeParserResult(module, errors);
-		errors = null;
+		Module module = deeParser.parseModule();
+		DeeParserResult parseResult = new DeeParserResult(module, deeParser.errors);
+		deeParser.errors = null;
 		return parseResult;
 	}
 	
@@ -56,7 +57,7 @@ public class DeeParser extends AbstractDeeParser {
 			return null;
 		}
 		assertTrue(idToken.type == DeeTokens.IDENTIFIER);
-		return new TokenInfo(idToken.value, idToken.getStartPos());
+		return new TokenInfo(idToken.tokenSource, idToken.getStartPos());
 	}
 	
 	public Token consumeIdentifier() {
@@ -78,13 +79,13 @@ public class DeeParser extends AbstractDeeParser {
 			
 			@Override
 			public int getEndPos() {
-				return start;
+				return startPos;
 			}
 		};
 	}
 	
 	public static boolean isRecoveredId(Token id) {
-		return id.value == MISSING_ID_NAME;
+		return id.tokenSource == MISSING_ID_NAME;
 	}
 	
 	public SourceRange range(int startPos, int endPos) {
@@ -125,7 +126,7 @@ public class DeeParser extends AbstractDeeParser {
 	public Module parseModule() {
 		DeclarationModule md = parseModuleDeclaration();
 		
-		ArrayView<ASTNeoNode> members = parseModuleDecls();
+		ArrayView<ASTNeoNode> members = parseDeclDefs();
 		assertTrue(lookAhead() == DeeTokens.EOF);
 		assertTrue(lookAheadToken().getEndPos() == deeLexer.source.length());
 		
@@ -154,7 +155,7 @@ public class DeeParser extends AbstractDeeParser {
 				endPos = lastToken.getEndPos();
 				break;
 			} else if(!isRecoveredId(id) && tryConsume(DeeTokens.DOT)) {
-				packagesList.add(id.value);
+				packagesList.add(id.tokenSource);
 				id = null;
 			} else {
 				endPos = id.getEndPos();
@@ -171,10 +172,10 @@ public class DeeParser extends AbstractDeeParser {
 	}
 	
 	
-	public ArrayView<ASTNeoNode> parseModuleDecls() {
+	public ArrayView<ASTNeoNode> parseDeclDefs() {
 		ArrayList<ASTNeoNode> moduleDecls = new ArrayList<ASTNeoNode>();
 		while(true) {
-			ASTNeoNode decl = parseDecl();
+			ASTNeoNode decl = parseDeclaration();
 			if(decl == null) { 
 				break;
 			}
@@ -199,34 +200,23 @@ public class DeeParser extends AbstractDeeParser {
 			return null;
 		}
 		declStart = updateIfNull(declStart, lastToken.getStartPos());
-		int declEnd;
 		
 		ArrayList<IImportFragment> fragments = new ArrayList<IImportFragment>();
 		
-		while(true) {
+		do {
 			IImportFragment fragment = parseImportFragment();
 			assertNotNull(fragment);
 			fragments.add(fragment);
-			
-			if(tryConsume(DeeTokens.COMMA)) {
-				continue;
-			} else if(tryConsume(DeeTokens.SEMICOLON)) {
-				declEnd = lastToken.getEndPos();
-				break;
-			} else {
-				declEnd = fragment.getEndPos();
-				reportErrorExpectedToken(DeeTokens.SEMICOLON);
-				break;
-			}
-		}
+		} while(tryConsume(DeeTokens.COMMA));
 		
-		SourceRange sr = range(declStart, declEnd);
+		consumeExpectedToken(DeeTokens.SEMICOLON);
+		SourceRange sr = range(declStart, getCurrentParserPosition());
 		boolean isTransitive = false;
 		
 		return connect(
 			new DeclarationImport(arrayView(fragments, IImportFragment.class), isStatic, isTransitive, sr));
 	}
-
+	
 	public IImportFragment parseImportFragment() {
 		Token aliasId = null;
 		ArrayList<String> packages = new ArrayList<String>(0);
@@ -236,13 +226,13 @@ public class DeeParser extends AbstractDeeParser {
 			Token id = consumeIdentifier();
 			
 			if(!isRecoveredId(id) && tryConsume(DeeTokens.DOT)) {
-				packages.add(id.value);
+				packages.add(id.tokenSource);
 				firstPackage = firstPackage == null ? id : firstPackage;
 			} else if(packages.isEmpty() && tryConsume(DeeTokens.ASSIGN)) { // BUG here
 				aliasId = id;
 			} else {
 				Token refStartToken = firstPackage != null ? firstPackage : id;
-				RefModule refModule = new RefModule(arrayViewS(packages), id.value, sr(refStartToken, id)); 
+				RefModule refModule = new RefModule(arrayViewS(packages), id.tokenSource, sr(refStartToken, id)); 
 				
 				IImportFragment fragment;
 				if(aliasId == null) {
@@ -272,7 +262,7 @@ public class DeeParser extends AbstractDeeParser {
 				id = consumeIdentifier();
 			} 
 				
-			RefImportSelection refImportSelection = connect(new RefImportSelection(id.value, sr(id)));
+			RefImportSelection refImportSelection = connect(new RefImportSelection(id.tokenSource, sr(id)));
 			if(aliasId == null) {
 				selFragments.add(refImportSelection);
 			} else {
@@ -293,7 +283,9 @@ public class DeeParser extends AbstractDeeParser {
 		return connect(new ImportSelective(fragment, arrayView(selFragments, ASTNeoNode.class), isRange));
 	}
 	
-	public ASTNeoNode parseDecl() {
+	public static String DECLARATION_RULE = "declaration";
+	
+	public ASTNeoNode parseDeclaration() {
 		while(true) {
 			DeeTokens la = lookAhead();
 			
@@ -301,18 +293,96 @@ public class DeeParser extends AbstractDeeParser {
 				return null;
 			}
 			
+			switch (la) {
+			case KW_MIXIN: return parseMixinStringDeclaration();
+			case KW_STATIC: return parseImportDecl(); // TODO
+			case KW_EXTERN: return parseDeclarationExternLinkage();
+			case KW_FINAL:
+			case KW_SYNCHRONIZED:
+			case KW_OVERRIDE:
+			case KW_ABSTRACT:
+			case KW_CONST:
+			case KW_AUTO:
+			case KW_SCOPE:
+			case KW___GSHARED:
+			case KW_SHARED:
+			case KW_IMMUTABLE:
+			case KW_INOUT:
+			// disable
+				
+			case KW_ALIGN:
+			case KW_PRAGMA:
+				
+			case KW_PRIVATE:
+			case KW_PACKAGE:
+			case KW_PROTECTED:
+			case KW_PUBLIC:
+			case KW_EXPORT:
+				
+			default:
+				break;
+			}
+			
 			if(la == DeeTokens.KW_IMPORT || la == DeeTokens.KW_STATIC) {
 				return parseImportDecl();
 			} else if(la == DeeTokens.IDENTIFIER || la == DeeTokens.KW_VOID || la == DeeTokens.KW_INT 
 				|| la == DeeTokens.ASSIGN || la == DeeTokens.DOT) {
 				return MiscDeclaration.parseMiscDeclaration(this);
+			} else if(tryConsume(DeeTokens.SEMICOLON)) {
+				return connect(new DeclarationEmpty(sr(lastToken)));
 			} else {
-				consumeLookAhead();
-				
-				addError(EDeeParserErrors.TOKEN_SYNTAX_ERROR, sr(lastToken), lastToken.value, 
-					"parsing declaration.");
+				reportSyntaxError(lookAheadToken(), DECLARATION_RULE);
+				return connect(MiscDeclaration.parseMiscDeclaration(this));
 			}
 		}
 	}
 	
+	private DeclarationLinkage parseDeclarationExternLinkage() {
+		if(!tryConsume(DeeTokens.KW_EXTERN)) {
+			return null;
+		}
+		
+		if(tryConsume(DeeTokens.OPEN_PARENS)) {
+			consumeIdentifier();
+			consumeExpectedToken(DeeTokens.CLOSE_PARENS);
+		}
+		
+		if(tryConsume(DeeTokens.SEMICOLON)) {
+			
+		} else if(tryConsume(DeeTokens.OPEN_BRACE)) {
+			parseDeclDefs();
+			consumeExpectedToken(DeeTokens.CLOSE_BRACE);
+		} else {
+			parseDeclaration();
+		}
+		return null;
+	}
+	
+	public DeclarationMixinString parseMixinStringDeclaration() {
+		if(!tryConsume(DeeTokens.KW_MIXIN)) {
+			return null;
+		}
+		int declStart = lastToken.getStartPos();
+		Expression exp = null;
+		
+		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
+			// TODO rest BUG here
+			if(tryConsume(DeeTokens.STRING_DQ)) {
+				Token expToken = lastToken;
+				exp = connect(new ExpLiteralString(expToken, sr(expToken)));
+			} else {
+				reportErrorExpectedRule(EXPRESSION_RULE);
+			}
+			consumeExpectedToken(DeeTokens.CLOSE_PARENS);
+		}
+		
+		consumeExpectedToken(DeeTokens.SEMICOLON);
+		int declEnd = lastToken.getEndPos();
+		return connect(new DeclarationMixinString(exp, range(declStart, declEnd)));
+	}
+	
+	// TODO:
+	
+	public static String EXPRESSION_RULE = "expression";
+
 }

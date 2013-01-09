@@ -28,16 +28,18 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.SourceRange;
+import dtool.parser.ParserError.EDeeParserErrors;
 import dtool.tests.AnnotatedSource;
 import dtool.tests.AnnotatedSource.MetadataEntry;
 import dtool.tests.DToolTestResources;
+import dtool.util.NewUtils;
 
 @RunWith(Parameterized.class)
 public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/parser-tests";
 	
-	private static final int PARSER_SOURCE_BASED_TESTS_COUNT = 88;
+	private static final int PARSER_SOURCE_BASED_TESTS_COUNT = 85;
 	private static int splitTestCount = 0;
 	
 	@Parameters
@@ -91,30 +93,48 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	public ParserError decodeError(String parseSource, MetadataEntry mde) {
 		String errorType = StringUtil.upUntil(mde.extraValue, "_");
-		String errorParam = StringUtil.fromLastIndexOf("_", mde.extraValue);
+		String errorParam = NewUtils.fromIndexOf("_", mde.extraValue);
 		
 		DeeLexer deeLexer = new DeeLexer(parseSource);
 		
 		SourceRange errorRange = mde.sourceRange;
 		
-		if(errorType.equals("EXP")) {
-			String expectedTokenStr = DeeLexerTest.transformTokenNameAliases(errorParam);
+		 if(errorType.equals("ITC")) {
+			return new ParserError(EDeeParserErrors.INVALID_TOKEN_CHARACTERS, errorRange, mde.associatedSource, null);
+		} else if(errorType.equals("BT")) {
+			// TODO errorParam
+			return new ParserError(EDeeParserErrors.MALFORMED_TOKEN, errorRange, null, null);
+		} else if(errorType.equals("EXP") || errorType.equals("EXPRULE")) {
 			String errorSource = mde.associatedSource;
 			
 			if(mde.associatedSource == null) {
 				Token lastToken = findLastEffectiveTokenBeforeOffset(mde.sourceRange.getOffset(), deeLexer);
 				errorRange = DeeParser.sr(lastToken);
-				errorSource = lastToken.value;
+				errorSource = lastToken.tokenSource;
 			}
-			return new ParserError(EDeeParserErrors.EXPECTED_TOKEN, errorRange, errorSource, expectedTokenStr);
-		} else if(errorType.equals("UT")) {
-			return new ParserError(EDeeParserErrors.UNKNOWN_TOKEN, errorRange, mde.associatedSource, null);
-		} else if(errorType.equals("IT")) {
-			// TODO errorParam
-			return new ParserError(EDeeParserErrors.MALFORMED_TOKEN, errorRange, null, null);
+			if(errorType.equals("EXP")) {
+				String expectedTokenStr = DeeLexerTest.transformTokenNameAliases(errorParam);
+				return new ParserError(EDeeParserErrors.EXPECTED_TOKEN, errorRange, errorSource, expectedTokenStr);
+			} else { // EXPRULE
+				errorParam = getExpectedRuleName(errorParam);
+				return new ParserError(EDeeParserErrors.EXPECTED_RULE, errorRange, errorSource, errorParam);
+			}
+		} else if(errorType.equals("SE")) {
+			assertNotNull(mde.associatedSource);
+			errorParam = getExpectedRuleName(errorParam);
+			return new ParserError(EDeeParserErrors.SYNTAX_ERROR, errorRange, mde.associatedSource, errorParam);
 		} else {
 			throw assertFail();
 		}
+	}
+	
+	public String getExpectedRuleName(String errorParam) {
+		if(errorParam.equals("decl")) {
+			errorParam = DeeParser.DECLARATION_RULE;
+		} else if(errorParam.equals("exp")) {
+			errorParam = DeeParser.EXPRESSION_RULE;
+		}
+		return errorParam;
 	}
 	
 	public Token findLastEffectiveTokenBeforeOffset(int offset, DeeLexer deeLexer) {
@@ -125,7 +145,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			Token token = deeLexer.next();
 			if(token.getStartPos() >= offset || token.getEndPos() > offset) {
 				assertNotNull(lastNonIgnoredToken);
-				deeLexer.reset(lastNonIgnoredToken.start);
+				deeLexer.reset(lastNonIgnoredToken.startPos);
 				break;
 			}
 			if(token.type.isParserIgnored) {

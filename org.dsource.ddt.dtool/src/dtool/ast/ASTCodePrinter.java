@@ -3,6 +3,7 @@ package dtool.ast;
 import java.util.Iterator;
 
 import dtool.ast.definitions.DefUnit;
+import dtool.parser.Token;
 import dtool.util.ArrayView;
 
 public class ASTCodePrinter {
@@ -18,6 +19,12 @@ public class ASTCodePrinter {
 	
 	public String getPrintedSource() {
 		return sb.toString();
+	}
+	
+	public void append(Token obj) {
+		if(obj != null) {
+			sb.append(obj.tokenSource);
+		}
 	}
 	
 	public void append(String string) {

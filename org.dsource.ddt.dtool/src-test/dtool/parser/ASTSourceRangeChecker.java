@@ -14,9 +14,11 @@ import dtool.ast.ASTNeoAbstractVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeUtil;
 import dtool.ast.declarations.DeclarationConditional;
+import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
+import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -46,6 +48,7 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
+import dtool.parser.ParserError.EDeeParserErrors;
 
 public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 	
@@ -111,9 +114,14 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		public boolean areThereMissingTokenErrorsInNode(ASTNeoNode node) {
 			for (ParserError error : expectedErrors) {
 				
-				if(error.errorType != EDeeParserErrors.EXPECTED_TOKEN || error.msgObj2 == DeeTokens.IDENTIFIER) {
+				if(error.errorType == EDeeParserErrors.MALFORMED_TOKEN || 
+					error.errorType == EDeeParserErrors.INVALID_TOKEN_CHARACTERS ||
+					error.errorType == EDeeParserErrors.SYNTAX_ERROR ||
+					error.errorType == EDeeParserErrors.EXPECTED_RULE ||
+					(error.errorType == EDeeParserErrors.EXPECTED_TOKEN && error.msgObj2 == DeeTokens.IDENTIFIER)) {
 					continue;
 				}
+				
 				assertNotNull(error.originNode);
 				// There is an EXPECTED_TOKEN error in error.originNode
 				if(NodeUtil.isContainedIn(error.originNode, node)) {
@@ -140,8 +148,8 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 			}
 		}
 		
-		/** This test will allow to test if node has a correct source range even in situations where
-		 * {@link #postVisit} cannot test with {@link DeeParserTest#checkSourceEquality }
+		/** This will test if node has a correct source range even in situations where
+		 * {@link #postVisit} cannot do a test using {@link DeeParserTest#checkSourceEquality }
 		 */
 		public boolean reparseCheck(ASTNeoNode reparsedNode, ASTNeoNode node) {
 			assertTrue(reparsedNode != null && nodeRangeSourceParser.lookAhead() == DeeTokens.EOF);
@@ -205,6 +213,12 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		public boolean visit(ImportSelectiveAlias node) {
 			IImportFragment importFragment = parser("foo : " +nodeRangeSource).parseImportFragment();
 			return reparseCheck(assertCast(importFragment, ImportSelective.class).impSelFrags.get(0), node);
+		}
+		
+		@Override
+		public boolean visit(DeclarationEmpty node) {
+			assertEquals(nodeRangeSource, ";");
+			return DONT_VISIT_CHILDREN;
 		}
 		
 		@Override
@@ -315,6 +329,11 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 			return false;
 		}
 		
+		
+		@Override
+		public boolean visit(DeclarationMixinString node) {
+			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseMixinStringDeclaration(), node);
+		}
 		
 		
 		@Override

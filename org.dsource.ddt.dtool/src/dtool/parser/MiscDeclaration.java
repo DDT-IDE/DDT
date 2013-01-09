@@ -39,7 +39,7 @@ public class MiscDeclaration extends ASTNeoNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		for (Token token : tokenList) {
-			cp.append(token.value);
+			cp.append(token.tokenSource);
 		}
 	}
 	

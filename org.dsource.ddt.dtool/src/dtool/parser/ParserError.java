@@ -7,6 +7,17 @@ import dtool.ast.SourceRange;
 
 public class ParserError {
 	
+	public enum EDeeParserErrors {
+		
+		INVALID_TOKEN_CHARACTERS, // Lexer: invalid characters, cannot form token
+		MALFORMED_TOKEN, // Lexer: recovered token has errors // TODO: test
+		
+		EXPECTED_TOKEN, // Syntax error: expected specific token
+		EXPECTED_RULE, // Syntax error: expected valid token for rule
+		SYNTAX_ERROR // Syntax error: unexpected rule in rule start
+		
+	}
+	
 	protected final EDeeParserErrors errorType;
 	protected final SourceRange sourceRange;
 	protected final String msgErrorSource;
@@ -22,15 +33,17 @@ public class ParserError {
 	
 	public String getUserMessage() {
 		switch (errorType) {
-		case UNKNOWN_TOKEN:
+		case INVALID_TOKEN_CHARACTERS:
 			return "Invalid token characters \"" + msgErrorSource + "\", delete these characters.";
 		case MALFORMED_TOKEN:
-			return "XXX";
+			return "Error during tokenization: " + msgErrorSource;
 		case EXPECTED_TOKEN:
 			DeeTokens expToken = (DeeTokens) msgObj2;
 			return "Syntax error on token \"" + msgErrorSource + "\", expected " + expToken + " after.";
-		case TOKEN_SYNTAX_ERROR:
-			return "Unexpected token \"" + msgErrorSource + "\", delete this token.";
+		case EXPECTED_RULE:
+			return "Unexpected token after \"" + msgErrorSource + "\", while trying to parse " + msgObj2 + ".";
+		case SYNTAX_ERROR:
+			return "Unexpected token \"" + msgErrorSource + "\", while trying to parse " + msgObj2 + ".";
 		}
 		throw assertFail();
 	}

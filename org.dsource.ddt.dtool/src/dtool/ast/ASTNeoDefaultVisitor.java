@@ -11,8 +11,10 @@
 package dtool.ast;
 
 import dtool.ast.declarations.DeclarationConditional;
+import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
+import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -88,6 +90,9 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 	public boolean visit(ImportAlias node) { return true; }
 	@Override
 	public boolean visit(ImportSelectiveAlias node) { return true; }
+	
+	@Override
+	public boolean visit(DeclarationEmpty node) { return true; }
 	
 	/*---*/
 	
@@ -181,6 +186,9 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 	public boolean visit(RefTemplateInstance elem) {
 		return true;
 	}
+	
+	@Override
+	public boolean visit(DeclarationMixinString node) { return false; }
 	
 	@Override
 	public boolean visit(DeclarationInvariant elem) {

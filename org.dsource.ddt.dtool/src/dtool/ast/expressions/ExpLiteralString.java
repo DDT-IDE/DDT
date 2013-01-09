@@ -1,18 +1,26 @@
 package dtool.ast.expressions;
 
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
+import dtool.parser.Token;
 
 public class ExpLiteralString extends Expression {
 	
-	char[][] strings;
-	public final char[] charArray;
-	public final String string;
+	public final String stringValue;
+	public final Token stringToken; // TODO
 	
+	@Deprecated
 	public ExpLiteralString(String s, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.string = s;
-		charArray = s.toCharArray();
+		this.stringToken = null;
+		this.stringValue = s;
+	}
+	
+	public ExpLiteralString(Token strinToken, SourceRange sourceRange) {
+		initSourceRange(sourceRange);
+		this.stringToken = strinToken;
+		this.stringValue = null;
 	}
 	
 	@Override
@@ -21,9 +29,15 @@ public class ExpLiteralString extends Expression {
 		visitor.endVisit(this);	 
 	}
 	
+	@Deprecated
 	@Override
 	public String toStringAsElement() {
-		return "\"" + this.string.toString() + "\"";
+		return "\"" + this.stringValue.toString() + "\"";
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(stringToken);
 	}
 	
 }

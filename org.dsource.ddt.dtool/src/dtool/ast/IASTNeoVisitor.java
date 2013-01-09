@@ -1,8 +1,10 @@
 package dtool.ast;
 
 import dtool.ast.declarations.DeclarationConditional;
+import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
+import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -68,6 +70,8 @@ public interface IASTNeoVisitor {
 	public boolean visit(ImportSelective node);
 	public boolean visit(ImportSelectiveAlias node);
 	
+	public boolean visit(DeclarationEmpty node);
+	
 	//-- Aggregates
 	public boolean visit(DefinitionStruct node);
 	public void endVisit(DefinitionStruct node);
@@ -126,6 +130,8 @@ public interface IASTNeoVisitor {
 	public boolean visit(RefTemplateInstance node);
 	
 	/* ---------------------------------- */
+	
+	public boolean visit(DeclarationMixinString node);
 	
 	public boolean visit(DeclarationInvariant node);
 	public void endVisit(DeclarationInvariant node);

@@ -45,4 +45,11 @@ public class NewUtils {
 		return list.get(list.size()-1);
 	}
 	
+	/** @return a substring of given string starting from the end of the first occurrence 
+	 * of given match, or null if no match is found. */
+	public static String fromIndexOf(String match, String string) {
+		int lastIx = string.indexOf(match);
+		return (lastIx == -1) ? null : string.substring(lastIx + match.length());
+	}
+	
 }

@@ -23,7 +23,7 @@ public abstract class AbstractLexer {
 
 	protected final CharSequence source;
 	protected int tokenStartPos = 0;
-	protected int pos = -1;
+	protected int pos = -1; // Temporary variable used internally by scanners
 	
 	public AbstractLexer(CharSequence source) {
 		// Need to investigate how UTF chars are presented to us.
@@ -41,6 +41,7 @@ public abstract class AbstractLexer {
 	public abstract Token parseToken();
 	
 	public final void reset(int newTokenStartPosition) {
+		assertTrue(newTokenStartPosition >= 0 && newTokenStartPosition <= source.length());
 		tokenStartPos = newTokenStartPosition;
 	}
 	
@@ -53,12 +54,16 @@ public abstract class AbstractLexer {
 		return source.charAt(index);
 	}
 	
-	protected final int lookAhead(int offset) {
+	public final int lookAhead(int offset) {
 		return getCharacter(pos + offset);
 	}
 	
-	protected final int lookAhead() {
+	public final int lookAhead() {
 		return getCharacter(pos);
+	}
+	
+	public final int getLexingPosition() {
+		return tokenStartPos;
 	}
 	
 	

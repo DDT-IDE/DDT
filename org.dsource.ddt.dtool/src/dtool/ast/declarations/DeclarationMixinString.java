@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
@@ -11,11 +12,11 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public class DeclarationStringMacro extends ASTNeoNode implements IStatement, INonScopedBlock {
+public class DeclarationMixinString extends ASTNeoNode implements IStatement, INonScopedBlock {
 	
 	public final Resolvable exp;
 	
-	public DeclarationStringMacro(Resolvable exp, SourceRange sourceRange) {
+	public DeclarationMixinString(Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = parentize(exp);
 	}
@@ -33,6 +34,13 @@ public class DeclarationStringMacro extends ASTNeoNode implements IStatement, IN
 	public Iterator<? extends ASTNeoNode> getMembersIterator() {
 		// TODO: parse the exp string
 		return IteratorUtil.getEMPTY_ITERATOR();
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("mixin(");
+		cp.appendNode(exp);
+		cp.append(");");
 	}
 	
 }

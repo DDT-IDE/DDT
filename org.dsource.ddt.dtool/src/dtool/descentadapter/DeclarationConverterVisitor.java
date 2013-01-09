@@ -41,6 +41,7 @@ import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationLinkage;
+import dtool.ast.declarations.DeclarationLinkage.Linkage;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationStaticAssert;
@@ -317,7 +318,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.LinkDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
-		return endAdapt(new DeclarationLinkage(elem.linkage, body, DefinitionConverter.sourceRange(elem)));
+		SourceRange sr = DefinitionConverter.sourceRange(elem);
+		return endAdapt(new DeclarationLinkage(Linkage.fromLINK(elem.linkage), body, sr));
 	}
 
 	@Override

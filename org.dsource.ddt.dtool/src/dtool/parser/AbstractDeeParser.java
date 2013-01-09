@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.SourceRange;
+import dtool.parser.ParserError.EDeeParserErrors;
 import dtool.parser.Token.ErrorToken;
 
 public class AbstractDeeParser {
@@ -25,10 +26,19 @@ public class AbstractDeeParser {
 		return lastToken;
 	}
 	
-	protected ParserError addError(EDeeParserErrors errorType, SourceRange sourceRange, String errorSource, Object obj2) {
+	protected ParserError addError(EDeeParserErrors errorType, SourceRange sourceRange, String errorSource, 
+		Object obj2) {
 		ParserError error = new ParserError(errorType, sourceRange, errorSource, obj2);
 		errors.add(error);
 		return error;
+	}
+	
+	public int getCurrentParserPosition() {
+		if(tokenAhead != null) {
+			return tokenAhead.getStartPos();
+		} else {
+			return deeLexer.getLexingPosition();
+		}
 	}
 	
 	protected final Token lookAheadToken() {
@@ -43,11 +53,11 @@ public class AbstractDeeParser {
 			if(tokenType == DeeTokens.ERROR) {
 				ErrorToken errorToken = (ErrorToken) token;
 				if(errorToken.originalToken == DeeTokens.ERROR) {
-					addError(EDeeParserErrors.UNKNOWN_TOKEN, sr(token), token.value, null);
+					addError(EDeeParserErrors.INVALID_TOKEN_CHARACTERS, sr(token), token.tokenSource, null);
 					continue; // Fetch another token
 				} else {
 					// TODO tests
-					addError(EDeeParserErrors.MALFORMED_TOKEN, sr(token), token.value, 
+					addError(EDeeParserErrors.MALFORMED_TOKEN, sr(token), token.tokenSource, 
 						errorToken.errorMessage);
 					tokenType = errorToken.originalToken;
 				}
@@ -102,7 +112,7 @@ public class AbstractDeeParser {
 		if(lookAhead() == expectedTokenType) {
 			return consumeLookAhead();
 		} else {
-			reportErrorExpectedToken(DeeTokens.IDENTIFIER);
+			reportErrorExpectedToken(expectedTokenType);
 			return null;
 		}
 	}
@@ -115,8 +125,19 @@ public class AbstractDeeParser {
 	}
 	
 	public void reportErrorExpectedToken(DeeTokens expected) {
-		ParserError error = addError(EDeeParserErrors.EXPECTED_TOKEN, sr(lastToken), lastToken.value, expected);
+		String errorSource = lastToken.tokenSource;
+		ParserError error = addError(EDeeParserErrors.EXPECTED_TOKEN, sr(lastToken), errorSource, expected);
 		pendingMissingTokenErrors.add(error);
+	}
+	
+	public void reportErrorExpectedRule(String expectedRule) {
+		String errorSource = lastToken.tokenSource;
+		ParserError error = addError(EDeeParserErrors.EXPECTED_RULE, sr(lastToken), errorSource, expectedRule);
+		pendingMissingTokenErrors.add(error);
+	}
+	
+	public void reportSyntaxError(Token lookAheadToken, String expectedRule) {
+		addError(EDeeParserErrors.SYNTAX_ERROR, sr(lookAheadToken), lookAheadToken.tokenSource, expectedRule);
 	}
 	
 	protected final <T extends ASTNeoNode> T connect(T node) {

@@ -55,7 +55,7 @@ public class DeeParserTest extends CommonTestUtils {
 			Token tok = getContentToken(generatedSourceLexer, true, ignoreUT);
 			Token tokExp = getContentToken(expectedSourceLexer, true, ignoreUT);
 			assertEquals(tok.type, tokExp.type);
-			assertEquals(tok.value, tokExp.value);
+			assertEquals(tok.tokenSource, tokExp.tokenSource);
 			
 			if(tok.type == DeeTokens.EOF) {
 				break;

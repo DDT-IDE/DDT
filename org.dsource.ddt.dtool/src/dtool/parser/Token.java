@@ -5,13 +5,13 @@ import static dtool.util.NewUtils.assertNotNull_;
 public class Token {
 	
 	public final DeeTokens type;
-	public final int start;
-	public final String value; //TODO, don't store this for certain kinds of nodes
+	public final int startPos;
+	public final String tokenSource; //TODO, don't store this for certain kinds of nodes
 	
-	public Token(DeeTokens tokenCode, String value, int start) {
+	public Token(DeeTokens tokenCode, String source, int startPos) {
 		this.type = assertNotNull_(tokenCode);
-		this.value = value;
-		this.start = start;
+		this.tokenSource = source;
+		this.startPos = startPos;
 	}
 	
 	public final DeeTokens getTokenType() {
@@ -19,19 +19,19 @@ public class Token {
 	}
 	
 	public final int getStartPos() {
-		return start;
+		return startPos;
 	}
 	
 	public int getLength() {
-		return value.length();
+		return tokenSource.length();
 	}
 	
 	public int getEndPos() {
-		return start + value.length();
+		return startPos + tokenSource.length();
 	}
 	
 	public final String getSourceValue() {
-		return value;
+		return tokenSource;
 	}
 	
 	public static class ErrorToken extends Token {
