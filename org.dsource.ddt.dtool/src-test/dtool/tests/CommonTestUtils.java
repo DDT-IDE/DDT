@@ -162,11 +162,19 @@ public class CommonTestUtils {
 		void visit(T obj);
 	}
 	
-	public static <T, PRED extends Visitor<T>> void visitCollection(Collection<T> coll, PRED... predicates) {
+	public static <T, PRED extends Visitor<T>> void visitContainer(Collection<T> coll, PRED... predicates) {
 		Iterator<T> iterator = coll.iterator();
 		assertTrue(coll.size() == predicates.length);
 		for (int i = 0; iterator.hasNext(); i++) {
 			T next = iterator.next();
+			predicates[i].visit(next);
+		}
+	}
+	
+	public static <T, PRED extends Visitor<T>> void visitContainer(T[] coll, PRED... predicates) {
+		assertTrue(coll.length == predicates.length);
+		for (int i = 0; i < coll.length; i++) {
+			T next = coll[i];
 			predicates[i].visit(next);
 		}
 	}

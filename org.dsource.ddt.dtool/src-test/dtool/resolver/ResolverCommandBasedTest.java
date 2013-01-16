@@ -21,7 +21,7 @@ import dtool.contentassist.CompletionSession;
 import dtool.parser.DeeSourceBasedTest;
 import dtool.parser.Parser__CommonTest;
 import dtool.refmodel.PrefixDefUnitSearch;
-import dtool.tests.AnnotatedSource;
+import dtool.sourcegen.AnnotatedSource;
 
 
 public class ResolverCommandBasedTest extends Resolver_BaseTest {

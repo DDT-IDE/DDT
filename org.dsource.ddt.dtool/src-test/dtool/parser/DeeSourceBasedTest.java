@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.tests.AnnotatedSource;
+import dtool.sourcegen.AnnotatedSource;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.SimpleParser;

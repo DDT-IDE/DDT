@@ -29,8 +29,8 @@ import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.SourceRange;
 import dtool.parser.ParserError.EDeeParserErrors;
-import dtool.tests.AnnotatedSource;
-import dtool.tests.AnnotatedSource.MetadataEntry;
+import dtool.sourcegen.AnnotatedSource;
+import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.DToolTestResources;
 import dtool.util.NewUtils;
 
@@ -79,9 +79,9 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				expectedGenSource = mde.associatedSource;
 			} else if(mde.name.equals("error")){
 				expectedErrors.add(decodeError(parseSource, mde));
-			} else if(mde.name.equals("parser") && mde.extraValue.equals("AllowAnyErrors")){
+			} else if(mde.name.equals("parser") && mde.value.equals("AllowAnyErrors")){
 				allowAnyErrors = true;
-			} else if(mde.name.equals("parser") && mde.extraValue.equals("DontCheckSourceEquality")){
+			} else if(mde.name.equals("parser") && mde.value.equals("DontCheckSourceEquality")){
 				expectedGenSource = null;
 			} else {
 				assertFail("Unknown metadata");
@@ -92,12 +92,12 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	}
 	
 	public ParserError decodeError(String parseSource, MetadataEntry mde) {
-		String errorType = StringUtil.upUntil(mde.extraValue, "_");
-		String errorParam = NewUtils.fromIndexOf("_", mde.extraValue);
+		String errorType = StringUtil.upUntil(mde.value, "_");
+		String errorParam = NewUtils.fromIndexOf("_", mde.value);
 		
 		DeeLexer deeLexer = new DeeLexer(parseSource);
 		
-		SourceRange errorRange = mde.sourceRange;
+		SourceRange errorRange = mde.getSourceRange();
 		
 		 if(errorType.equals("ITC")) {
 			return new ParserError(EDeeParserErrors.INVALID_TOKEN_CHARACTERS, errorRange, mde.associatedSource, null);
@@ -108,7 +108,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			String errorSource = mde.associatedSource;
 			
 			if(mde.associatedSource == null) {
-				Token lastToken = findLastEffectiveTokenBeforeOffset(mde.sourceRange.getOffset(), deeLexer);
+				Token lastToken = findLastEffectiveTokenBeforeOffset(mde.offset, deeLexer);
 				errorRange = DeeParser.sr(lastToken);
 				errorSource = lastToken.tokenSource;
 			}

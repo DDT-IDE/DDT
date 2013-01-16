@@ -1,7 +1,8 @@
-package dtool.tests;
+package dtool.sourcegen;
 
 import java.util.ArrayList;
 
+import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.SourceRange;
 
 public class AnnotatedSource {
@@ -21,16 +22,30 @@ public class AnnotatedSource {
 	
 	public static class MetadataEntry {
 		public final String name;
-		public final String extraValue;
+		public final String value;
 		public final String associatedSource;
-		public final SourceRange sourceRange;
+		public final  int offset;
 		
 		public MetadataEntry(String name, String extraValue, String associatedSource, int offset) {
 			this.name = name;
-			this.extraValue = extraValue;
+			this.value = extraValue;
 			this.associatedSource = associatedSource;
-			this.sourceRange = new SourceRange(offset, associatedSource == null ? 0 : associatedSource.length());
+			this.offset = offset;
 		}
+		
+		public SourceRange getSourceRange() {
+			return new SourceRange(offset, associatedSource == null ? 0 : associatedSource.length());
+		}
+		
+		@Override
+		public String toString() {
+			return "["+offset+"]" + name + "("+value+")" + associatedSource ;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return source + "\n--------- METADATA: ---------\n" + StringUtil.collToString(metadata, "\n");
 	}
 	
 }

@@ -13,9 +13,9 @@ package dtool.parser;
 
 import org.junit.Test;
 
-import dtool.tests.AnnotatedSource;
+import dtool.sourcegen.AnnotatedSource;
+import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
-import dtool.tests.AnnotatedSource.MetadataEntry;
 
 public class SourceCaseGeneratorTest extends CommonTestUtils {
 	
@@ -23,7 +23,7 @@ public class SourceCaseGeneratorTest extends CommonTestUtils {
 	
 	public void testProcessSource(String source, String marker, GeneratedSourceChecker... checkers) {
 		tsp = TemplatedSourceProcessor.processSource(source, marker);
-		visitCollection(tsp.getGenCases(), checkers);
+		visitContainer(tsp.getGenCases(), checkers);
 	}
 	
 	protected abstract class GeneratedSourceChecker implements Visitor<AnnotatedSource> {} 
@@ -42,9 +42,9 @@ public class SourceCaseGeneratorTest extends CommonTestUtils {
 	
 	protected void checkMetadata(MetadataEntry mde1, MetadataEntry mde2) {
 		assertAreEqual(mde1.name, mde2.name);
-		assertAreEqual(mde1.extraValue, mde2.extraValue);
+		assertAreEqual(mde1.value, mde2.value);
 		assertAreEqual(mde1.associatedSource, mde2.associatedSource);
-		assertAreEqual(mde1.sourceRange, mde2.sourceRange);
+		assertAreEqual(mde1.offset, mde2.offset);
 	}
 	
 	@Test

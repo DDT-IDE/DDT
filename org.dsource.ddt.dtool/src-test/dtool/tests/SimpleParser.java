@@ -17,7 +17,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
  */
 public class SimpleParser {
 	
-	protected static final int EOF = -1;
+	public static final int EOF = -1;
 	
 	protected final String source;
 	protected int pos;
@@ -117,7 +117,7 @@ public class SimpleParser {
 		while(true) {
 			if(lookaheadIsEOF()) {
 				lastToken = source.substring(startPos, pos);
-				return -1;
+				return EOF;
 			}
 			for (int i = 0; i < strings.length; i++) {
 				String alt = strings[i];

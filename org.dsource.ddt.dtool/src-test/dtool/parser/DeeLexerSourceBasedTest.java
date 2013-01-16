@@ -23,7 +23,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.parser.DeeLexerTest.TokenChecker;
-import dtool.tests.AnnotatedSource;
+import dtool.sourcegen.AnnotatedSource;
 import dtool.tests.DToolTestResources;
 import dtool.tests.SimpleParser;
 

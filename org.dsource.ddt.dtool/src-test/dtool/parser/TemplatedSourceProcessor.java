@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import dtool.tests.AnnotatedSource;
+import dtool.sourcegen.AnnotatedSource;
+import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.SimpleParser;
-import dtool.tests.AnnotatedSource.MetadataEntry;
 
 /**
  * Generates multiple source cases from a templated source, using a simple markup language. 
