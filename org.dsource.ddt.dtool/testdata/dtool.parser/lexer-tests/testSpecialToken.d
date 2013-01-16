@@ -1,3 +1,4 @@
+//#SOURCE_TESTS 
 //#SPLIT_SOURCE_TEST ___________________ 
 String#line 6 "foo\bar"
 x;// this is now line 6 of file foo\bar

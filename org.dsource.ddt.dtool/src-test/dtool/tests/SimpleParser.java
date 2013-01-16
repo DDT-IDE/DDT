@@ -43,14 +43,14 @@ public class SimpleParser {
 	}
 	
 	/** Gets the character from absolute position index, or EOF if index exceeds source.length. */
-	protected static int getCharacter(String source, int index) {
+	public static int getCharacter(String source, int index) {
 		if(index >= source.length()) {
 			return EOF;
 		}
 		return source.charAt(index);
 	}
 	
-	protected final int lookAhead(int offset) {
+	public final int lookAhead(int offset) {
 		return getCharacter(source, pos + offset);
 	}
 	

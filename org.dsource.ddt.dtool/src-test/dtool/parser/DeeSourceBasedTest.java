@@ -11,6 +11,7 @@
 package dtool.parser;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.sourcegen.AnnotatedSource;
+import dtool.sourcegen.TemplatedSourceProcessor2;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.SimpleParser;
@@ -35,6 +37,15 @@ public class DeeSourceBasedTest extends DToolBaseTest {
 	}
 	
 	public static AnnotatedSource[] getSourceBasedTestCases(String fileSource) {
+		if(!fileSource.startsWith(KEY_SOURCE_TESTS)) {
+			TemplatedSourceProcessor2 tsp = new TemplatedSourceProcessor2() {
+				@Override
+				protected void reportError(int offset) throws TemplatedSourceException {
+					assertFail();
+				}
+			};
+			return tsp.processSource_unchecked("#", fileSource);
+		}
 		
 		int expectedTestCount = -1;
 		String keywordMarker = null;
@@ -42,8 +53,11 @@ public class DeeSourceBasedTest extends DToolBaseTest {
 		SimpleParser simpleParser = new SimpleParser(fileSource);
 		
 		if(simpleParser.tryConsume(KEY_SOURCE_TESTS)) {
-			expectedTestCount = simpleParser.consumeInteger();
-			keywordMarker = simpleParser.consumeNonWhiteSpace();
+			simpleParser.seekSpaceChars();
+			if(Character.isDigit(simpleParser.lookAhead())) {
+				expectedTestCount = simpleParser.consumeInteger();
+				keywordMarker = simpleParser.consumeNonWhiteSpace();
+			}
 			
 			consumeToNewline(simpleParser);
 		}

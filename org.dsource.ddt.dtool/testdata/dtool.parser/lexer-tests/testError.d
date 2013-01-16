@@ -1,3 +1,4 @@
+//#SOURCE_TESTS 
 //#SPLIT_SOURCE_TEST _____________________ test error tokens
 aaaaaaaaaa
 /+#LEXERTEST

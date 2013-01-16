@@ -1,3 +1,4 @@
+//#SOURCE_TESTS 
 //#SPLIT_SOURCE_TEST _____________________ keywords
 abstract alias align asm assert auto body bool break byte 
 case cast catch cdouble cent cfloat char class const continue creal 

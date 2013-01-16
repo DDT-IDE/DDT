@@ -1,3 +1,4 @@
+//#SOURCE_TESTS 
 //#SPLIT_SOURCE_TEST _____________________
 (){}[]
 ?,;:$@

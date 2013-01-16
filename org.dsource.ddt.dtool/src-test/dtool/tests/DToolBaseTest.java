@@ -21,10 +21,13 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import melnorme.utilbox.core.Function;
+import melnorme.utilbox.core.Predicate;
 import melnorme.utilbox.core.VoidFunction;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.DeeNamingRules_Test;
@@ -95,8 +98,13 @@ public class DToolBaseTest extends CommonTestUtils {
 	}
 	
 	public static Collection<Object[]> getTestFilesFromFolderAsParameterList(File folder) throws IOException {
-		ArrayList<File> deeModuleList = getDeeModuleList(folder, true);
-		
+		return toFnParameterList(getDeeModuleList(folder, true), null);
+	}
+	
+	public static Collection<Object[]> toFnParameterList(List<File> fileList, Predicate<File> filter) {
+		if(filter != null) {
+			fileList = CollectionUtil.filter(fileList, filter);
+		}
 		Function<File, Object[]> arrayWrap = new Function<File, Object[]>() {
 			@Override
 			public Object[] evaluate(File obj) {
@@ -104,7 +112,7 @@ public class DToolBaseTest extends CommonTestUtils {
 			};
 		};
 		
-		return Arrays.asList(ArrayUtil.map(deeModuleList, arrayWrap, Object[].class));
+		return Arrays.asList(ArrayUtil.map(fileList, arrayWrap, Object[].class));
 	}
 	
 }

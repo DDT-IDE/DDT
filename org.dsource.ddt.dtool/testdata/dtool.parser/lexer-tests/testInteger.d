@@ -1,3 +1,4 @@
+//#SOURCE_TESTS 
 //#SPLIT_SOURCE_TEST _____________________ Integer Literals
 123456789    123_45_6789_   123_45__67___
 0 1

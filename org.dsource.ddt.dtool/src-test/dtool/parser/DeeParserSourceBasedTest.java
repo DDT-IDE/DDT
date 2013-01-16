@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static dtool.tests.DToolTestResources.getTestResource;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -19,9 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import melnorme.utilbox.core.Predicate;
 import melnorme.utilbox.misc.StringUtil;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -31,7 +32,6 @@ import dtool.ast.SourceRange;
 import dtool.parser.ParserError.EDeeParserErrors;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.tests.DToolTestResources;
 import dtool.util.NewUtils;
 
 @RunWith(Parameterized.class)
@@ -39,12 +39,17 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/parser-tests";
 	
-	private static final int PARSER_SOURCE_BASED_TESTS_COUNT = 85;
-	private static int splitTestCount = 0;
-	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		return getTestFilesFromFolderAsParameterList(DToolTestResources.getTestResource(TESTFILESDIR));
+		Predicate<File> nameFilter = new Predicate<File>() {
+			@Override
+			public boolean evaluate(File file) {
+				if(file.getName().endsWith("_TODO"))
+					return true;
+				return false;
+			}
+		};
+		return toFnParameterList(getDeeModuleList(getTestResource(TESTFILESDIR), true), nameFilter);
 	}
 	
 	protected final File file;
@@ -55,15 +60,13 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	@Test
 	public void runSourceBasedTests() throws IOException {
-		for (AnnotatedSource testString : getSourceBasedTests(file)) {
-			splitTestCount++;
-			runSourceBasedTest(testString);
-		}
+		runSourceBasedTestFromFile();
 	}
 	
-	@AfterClass
-	public static void checkTestCount() {
-		assertTrue(splitTestCount == PARSER_SOURCE_BASED_TESTS_COUNT);
+	public void runSourceBasedTestFromFile() {
+		for (AnnotatedSource testString : getSourceBasedTests(file)) {
+			runSourceBasedTest(testString);
+		}
 	}
 	
 	public void runSourceBasedTest(AnnotatedSource testSource) {
