@@ -20,6 +20,10 @@ import java.util.RandomAccess;
  */
 public class CopyableListIterator<T> implements ICopyableIterator<T> {
 	
+	public static <U> CopyableListIterator<U> create(List<U> list) {
+		return new CopyableListIterator<U>(list);
+	}
+	
 	protected final List<T> list;
 	protected int index = 0;
 	

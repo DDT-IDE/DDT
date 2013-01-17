@@ -90,7 +90,7 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 			"#:SPLIT _____\ncase1\na#:XPLIT sdfasdf"+
 			"#:SPLIT\n case3\nblahblah\n"
 			,
-			9
+			8
 		);
 	}
 	
@@ -130,6 +130,9 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		);
 		
 		// Syntax errors:
+		testSourceProcessing("#", "> #,", 3); 
+		testSourceProcessing("#", "> #}", 3); 
+		
 		testSourceProcessing("#", "foo #@{", 7); 
 		testSourceProcessing("#", "foo #@==", 6);
 		testSourceProcessing("#", "foo #@!", 7);
@@ -140,10 +143,10 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		testSourceProcessing("#", "foo #@EXPANSION1{12,}(EXP:", 22+3);
 		
 		testSourceProcessing("#", "foo #@EXPANSION1{12#:SPLIT\n}", 19);
-		testSourceProcessing("#", "foo #@EXPANSION1{12#:END:\n}", 21);
+		testSourceProcessing("#", "foo #@EXPANSION1{12#:END:\n}", 20);
 		
 		testSourceProcessing("#", "foo #@EXPANSION1{12}(#:SPLIT\n)", 21);
-		testSourceProcessing("#", "foo #@EXPANSION1{12}(xxx#:END:\n)", 21+3);
+		testSourceProcessing("#", "foo #@EXPANSION1{12}(xxx:END:\n)", 21+3);
 	}
 	
 	@Test
@@ -179,7 +182,7 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		testSourceProcessing("#", "badsyntax #foo(==#:SPLIT\n)", 17);
 		testSourceProcessing("#", "badsyntax #foo(==#:END:", 18);
 		testSourceProcessing("#", "badsyntax #foo(){xxx#:SPLIT\n)", 17+3);
-		testSourceProcessing("#", "badsyntax #foo(){xxx#:END:", 18+3);
+		testSourceProcessing("#", "badsyntax #foo(){xxx#:END:", 17+3+1);
 		
 		
 		//multineLine MD syntax
@@ -274,7 +277,42 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 12)
 			)
 		);
+	}
+	
+	@Test
+	public void testExpansionInMetadata() throws Exception { testExpansionInMetadata$(); }
+	public void testExpansionInMetadata$() throws Exception {
 		
+		testSourceProcessing("#", 
+			"> #@EXPANSION1{var1,var2,var3xxx} #tag(arg1,arg2,arg3){mdsource:#@(EXPANSION1)}",
+			
+			checkMD("> var1 mdsource:var1", new MetadataEntry("tag", "arg1,arg2,arg3", "mdsource:var1", 7)),
+			checkMD("> var2 mdsource:var2", new MetadataEntry("tag", "arg1,arg2,arg3", "mdsource:var2", 7)),
+			checkMD("> var3xxx mdsource:var3xxx", new MetadataEntry("tag", "arg1,arg2,arg3", "mdsource:var3xxx", 10))
+		);
+		
+		testSourceProcessing("#", 
+			"> #tag(arg1){mdsource: #@EXPANSION1{var1,var2,var3xxx} -- #@{A,B,C}(EXPANSION1)}",
+			
+			checkMD("> mdsource: var1 -- A", new MetadataEntry("tag", "arg1", "mdsource: var1 -- A", 2)),
+			checkMD("> mdsource: var2 -- B", new MetadataEntry("tag", "arg1", "mdsource: var2 -- B", 2)),
+			checkMD("> mdsource: var3xxx -- C", new MetadataEntry("tag", "arg1", "mdsource: var3xxx -- C", 2))
+		);
+		
+		
+		testSourceProcessing("#", 
+			"> #tag(arg){mdsource: #@EXPANSION1{var1,var2,var3xxx} -- #nestedMD{nestedMDsrc #@{A,B,C}(EXPANSION1)}}",
+			
+			checkMD("> mdsource: var1 -- nestedMDsrc A", 
+				new MetadataEntry("tag", "arg", "mdsource: var1 -- nestedMDsrc A", 2),
+				new MetadataEntry("nestedMD", null, "nestedMDsrc A", 20)),
+			checkMD("> mdsource: var2 -- nestedMDsrc B", 
+				new MetadataEntry("tag", "arg", "mdsource: var2 -- nestedMDsrc B", 2),
+				new MetadataEntry("nestedMD", null, "nestedMDsrc B", 20)),
+			checkMD("> mdsource: var3xxx -- nestedMDsrc C", 
+				new MetadataEntry("tag", "arg", "mdsource: var3xxx -- nestedMDsrc C", 2),
+				new MetadataEntry("nestedMD", null, "nestedMDsrc C", 23))
+		);
 	}
 	
 	@Test

@@ -185,12 +185,10 @@ public class TemplatedSourceProcessor2 {
 		
 		if(parser.tryConsume(kMARKER)) {
 			return new TspStringElement(kMARKER);
-		} else if(parser.tryConsume(",")) {
-			return new TspStringElement(",");
-		} else if(parser.tryConsume("}")) {
-			return new TspStringElement("}");
-		} else if(parser.tryConsume(":")) {
-			reportError(parser.getSourcePosition());
+		} else if(extraToken1 != null && parser.tryConsume(extraToken1)) {
+			return new TspStringElement(extraToken1);
+		} else if(extraToken2 != null && parser.tryConsume(extraToken2)) {
+			return new TspStringElement(extraToken2);
 		} else if(parser.lookAhead() == '{' || parser.lookAhead() == '@') {
 			return readExpansionCommand(parser); 
 		} else if(Character.isJavaIdentifierStart(parser.lookAhead())) {
@@ -305,12 +303,12 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected class TspMetadataElement extends TspElement {
-		String tag; String value; String associatedSource; boolean outputSource;
+		String tag; String value; Argument associatedElements; boolean outputSource;
 		
-		public TspMetadataElement(String tag, String value, String associatedSource, boolean outputSource) {
+		public TspMetadataElement(String tag, String value, Argument associatedElements, boolean outputSource) {
 			this.tag = tag;
 			this.value = value;
-			this.associatedSource = associatedSource;
+			this.associatedElements = associatedElements;
 			this.outputSource = outputSource;
 		}
 	}
@@ -322,22 +320,38 @@ public class TemplatedSourceProcessor2 {
 		String value = parser.tryConsume("(") ? consumeDelimitedString(parser, ")", false) : null;
 		
 		boolean outputSource = true;
-		String sourceValue = null;
+		Argument sourceValue = null;
 		
-		sourceValue = parser.tryConsume("{") ? consumeDelimitedString(parser, "}", false) : null;
+		sourceValue = parser.tryConsume("{") ? readArgument(parser, "}", false) : null;
 		if(sourceValue == null && parser.tryConsume(":")) {
-			sourceValue = consumeOpenEndedString(parser);
+			sourceValue = readArgument(parser, "#:END", true);
+			if(!parser.lookaheadIsEOF()) {
+				parser.seekToNewLine();
+			}
 			outputSource = false;
 		}
+		
 		return new TspMetadataElement(name, value, sourceValue, outputSource);
 	}
 	
-	protected String consumeOpenEndedString(SimpleParser parser) throws TemplatedSourceException {
-		String string = consumeDelimitedString(parser, "#:END", true);
-		if(!parser.lookaheadIsEOF()) {
-			parser.seekToNewLine();
+	protected Argument readArgument(SimpleParser parser, String listEnd, boolean eofTerminates)
+		throws TemplatedSourceException {
+		Argument argument = new Argument();
+		while(true) {
+			TspElement element = readElementWithExtraTokens(parser, listEnd, listEnd);
+			
+			if(element == null) {
+				if(!eofTerminates) {
+					reportError(parser.getSourcePosition());
+				}
+				break;
+			} else if(element.getElementType() == listEnd) {
+				break;
+			} else {
+				argument.add(element);
+			}
 		}
-		return string;
+		return argument;
 	}
 	
 	protected String consumeDelimitedString(SimpleParser parser, String closeSep, boolean eofTerminates) 
@@ -374,7 +388,8 @@ public class TemplatedSourceProcessor2 {
 	
 	// --------------------- Generation phase --------------------- 
 	
-	protected void processSplitCase(ArrayList<TspElement> sourceElements, boolean isHeader) throws TemplatedSourceException {
+	protected void processSplitCase(ArrayList<TspElement> sourceElements, boolean isHeader) 
+		throws TemplatedSourceException {
 		localExpansions.clear();
 		ProcessingState processingState = new ProcessingState(isHeader);
 		processCaseContents(processingState, new CopyableListIterator<TspElement>(sourceElements));
@@ -382,7 +397,7 @@ public class TemplatedSourceProcessor2 {
 	
 	protected class ProcessingState {
 		protected final boolean isHeaderCase;
-		protected final StringBuilder source = new StringBuilder();
+		protected final StringBuilder sourceSB = new StringBuilder();
 		protected final ArrayList<MetadataEntry> metadata = new ArrayList<MetadataEntry>();
 		protected final Map<String, Integer> activeExpansions = new HashMap<String, Integer>();
 		
@@ -393,14 +408,14 @@ public class TemplatedSourceProcessor2 {
 		public ProcessingState(boolean isHeaderCase, String source, List<MetadataEntry> metadata,
 			Map<String, Integer> activeExpansions) {
 			this.isHeaderCase = isHeaderCase;
-			this.source.append(source);
+			this.sourceSB.append(source);
 			this.metadata.addAll(metadata);
 			this.activeExpansions.putAll(activeExpansions);
 		}
 		
 		@Override
 		public ProcessingState clone() {
-			return new ProcessingState(isHeaderCase, source.toString(), metadata, activeExpansions);
+			return new ProcessingState(isHeaderCase, sourceSB.toString(), metadata, activeExpansions);
 		}
 		
 		public TspExpansionElement getExpansion(String expansionId) {
@@ -438,15 +453,27 @@ public class TemplatedSourceProcessor2 {
 				}
 			} else if(tspElem instanceof TspStringElement) {
 				TspStringElement stringElem = (TspStringElement) tspElem;
-				sourceCase.source.append(stringElem.producedText);
+				sourceCase.sourceSB.append(stringElem.producedText);
 			} else if(tspElem instanceof TspMetadataElement) {
-				TspMetadataElement mdElem = (TspMetadataElement) tspElem;
-				int offset = sourceCase.source.length();
-				MetadataEntry mde = new MetadataEntry(mdElem.tag, mdElem.value, mdElem.associatedSource, offset);
-				sourceCase.metadata.add(mde);
-				if(mdElem.associatedSource != null && mdElem.outputSource) {
-					sourceCase.source.append(mdElem.associatedSource);
+				final TspMetadataElement mdElem = (TspMetadataElement) tspElem;
+				
+				int offset = sourceCase.sourceSB.length();
+				int metadataIx = sourceCase.metadata.size();
+				sourceCase.metadata.add(null); // To be filled later
+				final TspMetadataEndElement mdEndElem = 
+					new TspMetadataEndElement(mdElem, offset, metadataIx);
+				
+				if(mdElem.associatedElements != null) {
+					Argument sourceArgument = mdElem.associatedElements;
+					sourceArgument.add(mdEndElem);
+					
+					ICopyableIterator<TspElement> mdArgIter = CopyableListIterator.create(sourceArgument); 
+					elementStream = ChainedIterator2.create(mdArgIter, elementStream);
+				} else {
+					processMetadataEndElem(sourceCase, mdEndElem);
 				}
+			} else if(tspElem instanceof TspMetadataEndElement) {
+				processMetadataEndElem(sourceCase, (TspMetadataEndElement) tspElem);
 			} else {
 				assertFail();
 			}
@@ -455,9 +482,40 @@ public class TemplatedSourceProcessor2 {
 		addFullyProcessedSourceCase(sourceCase);
 	}
 	
+	public void processMetadataEndElem(ProcessingState sourceCase, TspMetadataEndElement mdEndElem) {
+		int offset = mdEndElem.offset;
+		String associatedSource = null;
+		
+		TspMetadataElement mdElem = mdEndElem.mdElem;
+		if(mdElem.associatedElements != null) {
+			associatedSource = sourceCase.sourceSB.substring(offset, sourceCase.sourceSB.length());
+			
+			if(mdElem.outputSource) {
+				// already done
+			} else {
+				sourceCase.sourceSB.setLength(offset); // Reset sourceBuilder
+			}
+		}
+		
+		MetadataEntry mde = new MetadataEntry(mdElem.tag, mdElem.value, associatedSource, offset);
+		sourceCase.metadata.set(mdEndElem.metadataIx, mde);
+	}
+	
+	protected class TspMetadataEndElement extends TspElement {
+		public final TspMetadataElement mdElem;
+		public final int offset;
+		public final int metadataIx;
+		
+		public TspMetadataEndElement(TspMetadataElement mdElem, int offset, int metadataIx) {
+			this.mdElem = mdElem;
+			this.offset = offset;
+			this.metadataIx = metadataIx;
+		}
+	}
+	
 	protected void addFullyProcessedSourceCase(ProcessingState caseState ) {
 		if(caseState.isHeaderCase == false) {
-			genCases.add(new AnnotatedSource(caseState.source.toString(), caseState.metadata));
+			genCases.add(new AnnotatedSource(caseState.sourceSB.toString(), caseState.metadata));
 		}
 	}
 	
@@ -527,7 +585,7 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected void reportError(ProcessingState sourceCase) throws TemplatedSourceException {
-		reportError(sourceCase.source.length());
+		reportError(sourceCase.sourceSB.length());
 	}
 	
 	protected void processArgument(ProcessingState sourceCase, ICopyableIterator<TspElement> elementStream,
