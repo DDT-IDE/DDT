@@ -277,6 +277,23 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 12)
 			)
 		);
+		
+		// Metadata in header:
+		testSourceProcessing("#",  "#:HEADER ____\n"+"> #@{A,B,C}", 2);
+		
+		// Performance test:
+		AnnotatedSource[] processTemplatedSource = TemplatedSourceProcessor2.processTemplatedSource("#", 
+			"#:HEADER ____\n"+
+			">#@N{X#tag(arg){xxx} #tag2(arg){xxx} #tag3(arg){xxx}}"+
+			" #@N2!{a#@(N),b#@(N),c#@(N),d#@(N),e#@(N),f#@(N)),g#@(N),h#@(N),k#@(N),l#@(N)}"+
+			" #@N3{#@(N2),#@(N2),#@(N2),#@(N2),#@(N2),#@(N2)),#@(N2),#@(N2),#@(N2),#@(N2)}"+
+			" #@N4{#@(N2),#@(N2),#@(N2),#@(N2),#@(N2),#@(N2)),#@(N2),#@(N2),#@(N2),#@(N2)}"+
+			" #@N5{#@(N2),#@(N2),#@(N2),#@(N2),#@(N2),#@(N2)),#@(N2),#@(N2),#@(N2),#@(N2)}"+
+			" #@N6{#@(N2),#@(N2),#@(N2),#@(N2),#@(N2),#@(N2)),#@(N2),#@(N2),#@(N2),#@(N2)}"+
+			" #@N7{#@(N2),#@(N2),#@(N2),#@(N2),#@(N2),#@(N2)),#@(N2),#@(N2),#@(N2),#@(N2)}"+
+			"==");
+		
+		System.out.println(processTemplatedSource.length);
 	}
 	
 	@Test

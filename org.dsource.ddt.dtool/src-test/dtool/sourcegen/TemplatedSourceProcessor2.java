@@ -438,12 +438,13 @@ public class TemplatedSourceProcessor2 {
 		}
 	}
 	
-	protected void processCaseContents(ProcessingState sourceCase, ICopyableIterator<TspElement> elementStream)
+	protected void processCaseContents(ProcessingState sourceCase, ICopyableIterator<TspElement> elementStream) 
 		throws TemplatedSourceException {
 		assertNotNull(sourceCase);
 		
 		while(elementStream.hasNext()) {
 			TspElement tspElem = elementStream.next();
+			elementStream = elementStream.optimizedSelf();
 			
 			if(tspElem instanceof TspExpansionElement) {
 				TspExpansionElement expansionElem = (TspExpansionElement) tspElem;
@@ -469,8 +470,8 @@ public class TemplatedSourceProcessor2 {
 					
 					ICopyableIterator<TspElement> mdArgIter = ChainedIterator2.create(
 						CopyableListIterator.create(sourceArgument),
-						CopyableListIterator.create(Collections.singletonList(mdEndElem))
-						); 
+						CopyableListIterator.create(Collections.<TspElement>singletonList(mdEndElem))
+						);
 					elementStream = ChainedIterator2.create(mdArgIter, elementStream);
 				} else {
 					processMetadataEndElem(sourceCase, mdEndElem);
@@ -533,6 +534,7 @@ public class TemplatedSourceProcessor2 {
 		TspExpansionElement expansionElem) throws TemplatedSourceException {
 		
 		String expansionId = expansionElem.expansionId;
+		checkError(sourceCase.isHeaderCase && expansionId == null, sourceCase);
 		ArrayList<Argument> arguments = expansionElem.arguments;
 		
 		Integer pairedExpansionIx = null;
@@ -566,7 +568,7 @@ public class TemplatedSourceProcessor2 {
 			sourceCase.putExpansion(expansionId, expansionElem);
 		}
 		
-		if(expansionElem.defineOnly && expansionId != null) {
+		if((expansionElem.defineOnly && expansionId != null) || sourceCase.isHeaderCase) {
 			return false;
 		}
 		
@@ -607,7 +609,7 @@ public class TemplatedSourceProcessor2 {
 		
 		ICopyableIterator<TspElement> newElements = (argument == null) ? 
 			elementStream.copyState() : 
-			ChainedIterator2.create(new CopyableListIterator<TspElement>(argument), elementStream.copyState())
+			ChainedIterator2.create(CopyableListIterator.create(argument), elementStream.copyState())
 			;
 		processCaseContents(newState, newElements);
 	}

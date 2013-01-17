@@ -16,24 +16,47 @@ package melnorme.utilbox.misc2;
  * An iterator composed of two sub-iterators, one iterated after the other. 
  * Also supports creating a copy of the current state of iteration.
  */
-public class ChainedIterator2<T> extends ChainedIterator<T> implements ICopyableIterator<T> {
+public class ChainedIterator2<T> extends AbstractIterator<T> implements ICopyableIterator<T> {
 	
-	public static <U> ICopyableIterator<U> create(
-		ICopyableIterator<? extends U> firstIter,
-		ICopyableIterator<? extends U> secondIter) {
+	public static <U> ICopyableIterator<U> create(ICopyableIterator<U> firstIter, ICopyableIterator<U> secondIter) {
 		return new ChainedIterator2<U>(firstIter, secondIter);
 	}
 	
-	public ChainedIterator2(
-		ICopyableIterator<? extends T> firstIter, ICopyableIterator<? extends T> secondIter) {
-		super(firstIter, secondIter);
+	protected ICopyableIterator<T> firstIter;
+	protected final ICopyableIterator<T> secondIter;
+	
+	public ChainedIterator2(ICopyableIterator<T> firstIter, ICopyableIterator<T> secondIter) {
+		this.firstIter = firstIter;
+		this.secondIter = secondIter;
+	}
+	
+	@Override
+	public boolean hasNext() {
+		return firstIter.hasNext() || secondIter.hasNext();
+		
+	}
+	
+	@Override
+	public T next() {
+		if(firstIter.hasNext())
+			return firstIter.next();
+		return secondIter.next();
+		
 	}
 	
 	@Override
 	public ICopyableIterator<T> copyState() {
-		ICopyableIterator<? extends T> firstIter = (ICopyableIterator<? extends T>) this.firstIter;
-		ICopyableIterator<? extends T> secondIter = (ICopyableIterator<? extends T>) this.secondIter;
 		return new ChainedIterator2<T>(firstIter.copyState(), secondIter.copyState());
+	}
+	
+	@Override
+	public ICopyableIterator<T> optimizedSelf() {
+		if(firstIter.hasNext()) {
+			firstIter = firstIter.optimizedSelf();
+			return this;
+		} else {
+			return secondIter.optimizedSelf();
+		}
 	}
 	
 }

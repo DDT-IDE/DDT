@@ -47,13 +47,18 @@ public class CopyableListIterator<T> implements ICopyableIterator<T> {
 	}
 	
 	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
 	public ICopyableIterator<T> copyState() {
 		return new CopyableListIterator<T>(list, index);
 	}
 	
 	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
+	public ICopyableIterator<T> optimizedSelf() {
+		return this;
 	}
 	
 }
