@@ -313,6 +313,23 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 				new MetadataEntry("tag", "arg", "mdsource: var3xxx -- nestedMDsrc C", 2),
 				new MetadataEntry("nestedMD", null, "nestedMDsrc C", 23))
 		);
+		
+		testSourceProcessing("#", 
+			"> #@EXP{AA,B,CCCC} #tag(arg):tagMD: #nestedMD{xxx}",
+			
+			checkMD("> AA ", 
+				new MetadataEntry("tag", "arg", "tagMD: xxx", 5),
+				new MetadataEntry("nestedMD", null, "xxx", 5+7))
+				,
+			checkMD("> B ", 
+				new MetadataEntry("tag", "arg", "tagMD: xxx", 4),
+				new MetadataEntry("nestedMD", null, "xxx", 4+7))
+				,
+			checkMD("> CCCC ", 
+				new MetadataEntry("tag", "arg", "tagMD: xxx", 7),
+				new MetadataEntry("nestedMD", null, "xxx", 7+7)
+				)
+		);
 	}
 	
 	@Test

@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class TemplatedSourceProcessor2 {
 			parser.consumeUntilAny(splitKeywords);
 			String unprocessedCaseSource = parser.getLastConsumedString();
 			
-			processSplitCase(parseSource(unprocessedCaseSource), isHeader);
+			processSplitCaseSource(unprocessedCaseSource, isHeader);
 		} while(!parser.lookaheadIsEOF());
 		
 		return ArrayUtil.createFrom(getGenCases(), AnnotatedSource.class);
@@ -386,10 +387,10 @@ public class TemplatedSourceProcessor2 {
 		return value.toString();
 	}
 	
-	// --------------------- Generation phase --------------------- 
+	// --------------------- Generation phase ---------------------
 	
-	protected void processSplitCase(ArrayList<TspElement> sourceElements, boolean isHeader) 
-		throws TemplatedSourceException {
+	protected void processSplitCaseSource(String unprocessedCaseSource, boolean isHeader) throws TemplatedSourceException {
+		ArrayList<TspElement> sourceElements = parseSource(unprocessedCaseSource);
 		localExpansions.clear();
 		ProcessingState processingState = new ProcessingState(isHeader);
 		processCaseContents(processingState, new CopyableListIterator<TspElement>(sourceElements));
@@ -465,9 +466,11 @@ public class TemplatedSourceProcessor2 {
 				
 				if(mdElem.associatedElements != null) {
 					Argument sourceArgument = mdElem.associatedElements;
-					sourceArgument.add(mdEndElem);
 					
-					ICopyableIterator<TspElement> mdArgIter = CopyableListIterator.create(sourceArgument); 
+					ICopyableIterator<TspElement> mdArgIter = ChainedIterator2.create(
+						CopyableListIterator.create(sourceArgument),
+						CopyableListIterator.create(Collections.singletonList(mdEndElem))
+						); 
 					elementStream = ChainedIterator2.create(mdArgIter, elementStream);
 				} else {
 					processMetadataEndElem(sourceCase, mdEndElem);
@@ -488,7 +491,8 @@ public class TemplatedSourceProcessor2 {
 		
 		TspMetadataElement mdElem = mdEndElem.mdElem;
 		if(mdElem.associatedElements != null) {
-			associatedSource = sourceCase.sourceSB.substring(offset, sourceCase.sourceSB.length());
+			int endOffset = sourceCase.sourceSB.length();
+			associatedSource = sourceCase.sourceSB.substring(offset, endOffset);
 			
 			if(mdElem.outputSource) {
 				// already done
@@ -498,6 +502,7 @@ public class TemplatedSourceProcessor2 {
 		}
 		
 		MetadataEntry mde = new MetadataEntry(mdElem.tag, mdElem.value, associatedSource, offset);
+		assertTrue(sourceCase.metadata.get(mdEndElem.metadataIx) == null);
 		sourceCase.metadata.set(mdEndElem.metadataIx, mde);
 	}
 	
@@ -510,6 +515,11 @@ public class TemplatedSourceProcessor2 {
 			this.mdElem = mdElem;
 			this.offset = offset;
 			this.metadataIx = metadataIx;
+		}
+		
+		@Override
+		public String toString() {
+			return "<MD-END:"+offset+">";
 		}
 	}
 	
