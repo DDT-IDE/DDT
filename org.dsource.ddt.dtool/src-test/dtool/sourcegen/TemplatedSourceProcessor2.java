@@ -533,16 +533,17 @@ public class TemplatedSourceProcessor2 {
 	protected boolean processExpansionElement(ProcessingState sourceCase, ICopyableIterator<TspElement> elementStream,
 		TspExpansionElement expansionElem) throws TemplatedSourceException {
 		
-		String expansionId = expansionElem.expansionId;
+		final String expansionId = expansionElem.expansionId;
 		checkError(sourceCase.isHeaderCase && expansionId == null, sourceCase);
 		ArrayList<Argument> arguments = expansionElem.arguments;
 		
 		Integer pairedExpansionIx = null;
+		TspExpansionElement referredExpansion = null;
 		if(expansionElem.pairedExpansionId != null) {
 			 // Definition-only must not have a paired expansion
 			checkError(expansionElem.defineOnly && expansionId != null, sourceCase);
 			
-			TspExpansionElement referredExpansion = sourceCase.getExpansion(expansionElem.pairedExpansionId);
+			referredExpansion = sourceCase.getExpansion(expansionElem.pairedExpansionId);
 			checkError(referredExpansion == null, sourceCase); // If referred, then it must be defined
 			
 			pairedExpansionIx = sourceCase.activeExpansions.get(expansionElem.pairedExpansionId);
@@ -551,40 +552,43 @@ public class TemplatedSourceProcessor2 {
 				// Paired expansion is not active
 				checkError(arguments != null, sourceCase); // Must be active if expansion has its own arguments
 			}
-			
-			if(arguments == null) {
-				arguments = referredExpansion.arguments;
-			} else {
-				checkError(referredExpansion.arguments.size() != arguments.size(), sourceCase);
-			}
 		}
 		
 		if(expansionId != null) {
-			checkError(arguments == null, sourceCase); // No arguments or pairing present 
 			TspExpansionElement definedExpansionElem = sourceCase.getExpansion(expansionId);
-			if(definedExpansionElem != null && definedExpansionElem != expansionElem) {
-				reportError(sourceCase);
+			
+			if(arguments != null) {
+				checkError(definedExpansionElem != null && definedExpansionElem != expansionElem, sourceCase);
+				sourceCase.putExpansion(expansionId, expansionElem);
+			} else {
+				checkError(definedExpansionElem == null, sourceCase);
+				arguments = definedExpansionElem.arguments;
 			}
-			sourceCase.putExpansion(expansionId, expansionElem);
 		}
 		
 		if((expansionElem.defineOnly && expansionId != null) || sourceCase.isHeaderCase) {
 			return false;
 		}
 		
+		if(referredExpansion != null) {
+			if(arguments == null) {
+				arguments = referredExpansion.arguments;
+			} else {
+				checkError(arguments.size() != referredExpansion.arguments.size(), sourceCase);
+			}
+		}
+		
 		if(pairedExpansionIx != null) {
 			int ix = pairedExpansionIx;
 			processArgument(sourceCase, elementStream, expansionId, arguments.get(ix), ix);
 		} else {
-			if(expansionId == null) {
-				expansionId = expansionElem.pairedExpansionId;
-			}
+			String idToActivate = expansionId != null ? expansionId : expansionElem.pairedExpansionId ;
 			
 			boolean activateOnly = expansionElem.defineOnly;
 			
 			for (int ix = 0; ix < arguments.size(); ix++) {
 				Argument argument = activateOnly ? null : arguments.get(ix);
-				processArgument(sourceCase, elementStream, expansionId, argument, ix);
+				processArgument(sourceCase, elementStream, idToActivate, argument, ix);
 			}
 		}
 		return true;

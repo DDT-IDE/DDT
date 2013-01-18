@@ -24,11 +24,13 @@ import dtool.tests.CommonTestUtils;
 public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 	
 	public void testSourceProcessing(String marker, String source, GeneratedSourceChecker... checkers) {
-		try {
-			visitContainer(TemplatedSourceProcessor2.processTemplatedSource(marker, source), checkers);
-		} catch(TemplatedSourceException e) {
-			assertFail();
-		}
+		TemplatedSourceProcessor2 tsp = new TemplatedSourceProcessor2() { 
+			@Override
+			protected void reportError(int offset) throws TemplatedSourceException {
+				assertFail();
+			};
+		};
+		visitContainer(tsp.processSource_unchecked(marker, source), checkers);
 	}
 	
 	public void testSourceProcessing(String marker, String source, int errorOffset) {
@@ -386,6 +388,19 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		//Error: Mismatched argument count:
 		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@{a}(EXPANSION1)", 7); 
 		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@{a,b,c}(EXPANSION1)", 7);
+		
+		
+		testSourceProcessing("#", 
+			"#@EXP1{var1,var2,var3}"+
+			"#@EXP2!{z1,z2,z3}"+
+			"> #@EXP2(EXP1) -- #@{A,B,C}(EXP1)",
+			
+			checkMD("var1> z1 -- A"),
+			checkMD("var2> z2 -- B"),
+			checkMD("var3> z3 -- C")
+		);
+		
+		// ---
 		
 		testSourceProcessing("#", 
 			"foo #@EXPANSION1{var1 ,var2#,,var3##}==#@EXP1ALT{VAR1,VAR2,VAR3}:EXPANSION1: ||"+
