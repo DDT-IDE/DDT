@@ -24,7 +24,7 @@ public class AnnotatedSource {
 		public final String name;
 		public final String value;
 		public final String associatedSource;
-		public final  int offset;
+		public final int offset;
 		
 		public MetadataEntry(String name, String extraValue, String associatedSource, int offset) {
 			this.name = name;

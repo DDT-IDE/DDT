@@ -43,24 +43,27 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 	}
 	
 	protected abstract class GeneratedSourceChecker implements Visitor<AnnotatedSource> {} 
-	protected GeneratedSourceChecker checkMD(final String source, final MetadataEntry... metadataArray) {
+	protected GeneratedSourceChecker checkMD(final String expSource, final MetadataEntry... expMetadataArray) {
 		return new GeneratedSourceChecker () {
 			@Override
 			public void visit(AnnotatedSource genSource) {
-				assertEquals(genSource.source, source);
-				assertEquals(genSource.metadata.size(), metadataArray.length);
-				for (int i = 0; i < metadataArray.length; i++) {
-					checkMetadata(metadataArray[i], genSource.metadata.get(i));
+				assertEquals(genSource.source, expSource);
+				assertEquals(genSource.metadata.size(), expMetadataArray.length);
+				for (int i = 0; i < expMetadataArray.length; i++) {
+					checkMetadata(genSource.metadata.get(i), expMetadataArray[i]);
 				}
 			}
 		};
 	}
 	
-	protected void checkMetadata(MetadataEntry mde1, MetadataEntry mde2) {
-		assertAreEqual(mde1.name, mde2.name);
-		assertAreEqual(mde1.value, mde2.value);
-		assertAreEqual(mde1.associatedSource, mde2.associatedSource);
-		assertAreEqual(mde1.offset, mde2.offset);
+	public static final String DONT_CHECK = new String("NO_CHECK");
+	
+	protected void checkMetadata(MetadataEntry mde1, MetadataEntry expMde) {
+		assertAreEqual(mde1.name, expMde.name);
+		assertAreEqual(mde1.value, expMde.value);
+		if(expMde.associatedSource != DONT_CHECK)
+			assertAreEqual(mde1.associatedSource, expMde.associatedSource);
+		assertAreEqual(mde1.offset, expMde.offset);
 	}
 	
 	
@@ -630,6 +633,19 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 			checkMD("> ELSE A -- 1 IF", new MetadataEntry("var1", null, null, 13)),
 			checkMD("> ELSE B -- 2 ELSEvar2", new MetadataEntry("var2", null, null, 13)),
 			checkMD("> ELSE C -- 3 ELSE", new MetadataEntry("var3", null, null, 13))
+		);
+		
+		// Test conditional exp when conditional is inside referred MD
+		testSourceProcessing("#", 
+			"#parentMD【> #@{A,B#var(Bactive)} #?var{IF} #?parentMD{parentMDActive}】",
+			
+			checkMD("> A  parentMDActive",
+				new MetadataEntry("parentMD", null, DONT_CHECK, 0)
+			),
+			checkMD("> B IF parentMDActive", 
+				new MetadataEntry("parentMD", null, DONT_CHECK, 0),
+				new MetadataEntry("var", "Bactive", null, 3)
+			)
 		);
 	}
 	

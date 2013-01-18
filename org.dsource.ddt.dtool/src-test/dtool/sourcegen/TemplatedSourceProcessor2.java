@@ -205,7 +205,10 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected class TspExpansionElement extends TspElement {
-		String expansionId; String pairedExpansionId; ArrayList<Argument> arguments; boolean defineOnly;
+		final String expansionId; 
+		final String pairedExpansionId; 
+		final ArrayList<Argument> arguments; 
+		final boolean defineOnly;
 		public TspExpansionElement(String expansionId, String pairedExpansionId, ArrayList<Argument> arguments, 
 			boolean defineOnly) {
 			this.expansionId = expansionId;
@@ -310,7 +313,10 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected class TspMetadataElement extends TspElement {
-		String tag; String value; Argument associatedElements; boolean outputSource;
+		final String tag; 
+		final String value; 
+		final Argument associatedElements; 
+		final boolean outputSource;
 		
 		public TspMetadataElement(String tag, String value, Argument associatedElements, boolean outputSource) {
 			this.tag = tag;
@@ -413,7 +419,9 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected class TspIfElseExpansionElement extends TspElement {
-		String mdConditionId; Argument argIf; Argument argThen;
+		final String mdConditionId; 
+		final Argument argIf; 
+		final Argument argThen;
 		public TspIfElseExpansionElement(String mdConditionId, Argument argIf, Argument argThen) {
 			this.mdConditionId = mdConditionId;
 			this.argIf = argIf;
@@ -500,7 +508,7 @@ public class TemplatedSourceProcessor2 {
 				
 				int offset = sourceCase.sourceSB.length();
 				int metadataIx = sourceCase.metadata.size();
-				sourceCase.metadata.add(null); // To be filled later
+				sourceCase.metadata.add(new TemporaryMetadataEntry(mdElem));
 				final TspMetadataEndElement mdEndElem = 
 					new TspMetadataEndElement(mdElem, offset, metadataIx);
 				
@@ -521,7 +529,7 @@ public class TemplatedSourceProcessor2 {
 				Argument sourceArgument = tspIfElse.argThen;
 				
 				for (MetadataEntry mde : sourceCase.metadata) {
-					if(mde.name.equals(tspIfElse.mdConditionId)) {
+					if(mde != null && mde.name.equals(tspIfElse.mdConditionId)) {
 						sourceArgument = tspIfElse.argIf;
 						break;
 					}
@@ -538,6 +546,29 @@ public class TemplatedSourceProcessor2 {
 		}
 		
 		addFullyProcessedSourceCase(sourceCase);
+	}
+	
+	protected class TemporaryMetadataEntry extends MetadataEntry {
+		public TemporaryMetadataEntry(TspMetadataElement mdElem) {
+			super(mdElem.tag, mdElem.value, null, -1);
+		}
+	}
+	
+	protected class TspMetadataEndElement extends TspElement {
+		public final TspMetadataElement mdElem;
+		public final int offset;
+		public final int metadataIx;
+		
+		public TspMetadataEndElement(TspMetadataElement mdElem, int offset, int metadataIx) {
+			this.mdElem = mdElem;
+			this.offset = offset;
+			this.metadataIx = metadataIx;
+		}
+		
+		@Override
+		public String toString() {
+			return "<MD-END:"+offset+">";
+		}
 	}
 	
 	public void processMetadataEndElem(ProcessingState sourceCase, TspMetadataEndElement mdEndElem) {
@@ -557,25 +588,8 @@ public class TemplatedSourceProcessor2 {
 		}
 		
 		MetadataEntry mde = new MetadataEntry(mdElem.tag, mdElem.value, associatedSource, offset);
-		assertTrue(sourceCase.metadata.get(mdEndElem.metadataIx) == null);
+		assertTrue(sourceCase.metadata.get(mdEndElem.metadataIx) instanceof TemporaryMetadataEntry);
 		sourceCase.metadata.set(mdEndElem.metadataIx, mde);
-	}
-	
-	protected class TspMetadataEndElement extends TspElement {
-		public final TspMetadataElement mdElem;
-		public final int offset;
-		public final int metadataIx;
-		
-		public TspMetadataEndElement(TspMetadataElement mdElem, int offset, int metadataIx) {
-			this.mdElem = mdElem;
-			this.offset = offset;
-			this.metadataIx = metadataIx;
-		}
-		
-		@Override
-		public String toString() {
-			return "<MD-END:"+offset+">";
-		}
 	}
 	
 	protected void addFullyProcessedSourceCase(ProcessingState caseState ) {
