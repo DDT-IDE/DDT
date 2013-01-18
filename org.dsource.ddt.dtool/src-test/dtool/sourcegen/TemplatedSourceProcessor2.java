@@ -50,6 +50,7 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected String kMARKER;
+	protected String[] kMARKER_array;
 	protected final ArrayList<AnnotatedSource> genCases = new ArrayList<AnnotatedSource>();
 	protected final Map<String, TspExpansionElement> globalExpansions = new HashMap<String, TspExpansionElement>();
 	protected Map<String, TspExpansionElement> localExpansions = new HashMap<String, TspExpansionElement>();
@@ -71,30 +72,30 @@ public class TemplatedSourceProcessor2 {
 	public AnnotatedSource[] processSource(String keyMARKER, String fileSource) 
 		throws TemplatedSourceException {
 		this.kMARKER = keyMARKER;
+		this.kMARKER_array = new String[]{ kMARKER };
 		
 		SimpleParser parser = new SimpleParser(fileSource);
 		
-		final String[] splitKeywords = { "#:HEADER", "#:SPLIT"};
+		final String[] splitKeywords = { "#:HEADER", "Ⓗ", "☒", "#:SPLIT", "━━", "▂▂", "▃▃"};
 		
 		do {
 			boolean isHeader = false;
 			
-			do {
-				if(parser.tryConsume(splitKeywords[0])) {
+			int alt = parser.tryConsume(splitKeywords);
+			if(alt != SimpleParser.EOF) {
+				if(alt == 0 || alt == 1 || alt == 2) {
 					isHeader = true;
-				} else if(parser.tryConsume(splitKeywords[1])) {
-				} else {
-					assertTrue(parser.getSourcePosition() == 0);
-					break;
 				}
 				if(!parser.seekToNewLine()) {
 					reportError(parser.getSourcePosition());
 				}
-			} while(false);
+			} else {
+				assertTrue(parser.getSourcePosition() == 0);
+			}
 			
 			parser.consumeUntilAny(splitKeywords);
-			String unprocessedCaseSource = parser.getLastConsumedString();
 			
+			String unprocessedCaseSource = parser.getLastConsumedString();
 			processSplitCaseSource(unprocessedCaseSource, isHeader);
 		} while(!parser.lookaheadIsEOF());
 		
@@ -106,7 +107,7 @@ public class TemplatedSourceProcessor2 {
 		
 		SimpleParser parser = new SimpleParser(unprocessedSource);
 		while(true) {
-			TspElement tspElem = readElement(parser);
+			TspElement tspElem = parseElement(parser);
 			if(tspElem == null) {
 				break;
 			}
@@ -149,48 +150,39 @@ public class TemplatedSourceProcessor2 {
 		}
 	}
 	
-	protected TspElement readElement(SimpleParser parser) throws TemplatedSourceException {
-		return readElementWithExtraTokens(parser, null, null);
+	protected TspElement parseElement(SimpleParser parser) throws TemplatedSourceException {
+		return parseElementWithCustomStarts(parser, kMARKER_array);
 	}
 	
-	protected TspElement readElementWithExtraTokens(SimpleParser parser, String extraToken1, String extraToken2)
+	protected TspElement parseElementWithCustomStarts(SimpleParser parser, String... tokenStarts)
 		throws TemplatedSourceException {
 		if(parser.lookaheadIsEOF()) {
 			return null;
 		}
 		
-		boolean hasExtraTokens = extraToken1 != null; 
-		
-		if(hasExtraTokens) {
-			//Hopefully Java is smart enough to inline this call
-			parser.consumeUntilAny(new String[]{ kMARKER, extraToken1, extraToken2 }); 
-		} else {
-			parser.consumeUntil(kMARKER);
-		}
-		
+		int alt = parser.consumeUntilAny(tokenStarts);
 		final String string = parser.getLastConsumedString();
 		
 		if(!string.isEmpty()) {
 			return new TspStringElement(string);
 		}
 		
-		if(hasExtraTokens) {
-			if(parser.tryConsume(extraToken1)) {
-				return new TspStringElement(parser.getLastConsumedString(), extraToken1);
-			} else if(parser.tryConsume(extraToken2)) {
-				return new TspStringElement(parser.getLastConsumedString(), extraToken2);
-			}
-		}
+		String tokenStart = tokenStarts[alt];
+		parser.consume(tokenStart);
 		
-		parser.consume(kMARKER);
+		if(!tokenStart.equals(kMARKER)) {
+			return new TspStringElement(parser.getLastConsumedString(), tokenStart);
+		}
 		
 		if(parser.tryConsume(kMARKER)) {
 			return new TspStringElement(kMARKER);
-		} else if(extraToken1 != null && parser.tryConsume(extraToken1)) {
-			return new TspStringElement(extraToken1);
-		} else if(extraToken2 != null && parser.tryConsume(extraToken2)) {
-			return new TspStringElement(extraToken2);
-		} else if(parser.lookAhead() == '{' || parser.lookAhead() == '@') {
+		}
+		for (String escapableTokenStart : tokenStarts) {
+			if(parser.tryConsume(escapableTokenStart)) {
+				return new TspStringElement(escapableTokenStart);
+			}
+		}
+		if(parser.lookAhead() == '{' || parser.lookAhead() == '@') {
 			return readExpansionCommand(parser); 
 		} else if(Character.isJavaIdentifierStart(parser.lookAhead())) {
 			return readMetadataElement(parser);
@@ -251,8 +243,11 @@ public class TemplatedSourceProcessor2 {
 		}
 		
 		ArrayList<Argument> arguments = null;
-		if(parser.tryConsume("{")) {
-			arguments = readArgumentList(parser);
+		int alt = parser.tryConsume(OPEN_DELIMS);
+		if(alt != -1) {
+			String closeDelim = CLOSE_DELIMS[alt];
+			String argSep = closeDelim.equals("}") ? "," : "●"; 
+			arguments = readArgumentList(parser, argSep, closeDelim, false);
 		}
 		
 		String pairedExpansionId = null;
@@ -278,28 +273,32 @@ public class TemplatedSourceProcessor2 {
 		return pairedExpansionId;
 	}
 	
-	protected ArrayList<Argument> readArgumentList(SimpleParser parser) throws TemplatedSourceException {
+	protected ArrayList<Argument> readArgumentList(SimpleParser parser, String argumentSep, String listEnd,
+		boolean eofTerminates) throws TemplatedSourceException {
+		assertNotNull(listEnd);
 		ArrayList<Argument> arguments = new ArrayList<Argument>();
-		String argumentSeparator = ",";
-		String listEnd = "}";
 		
 		Argument argument = new Argument();
 		while(true) {
-			TspElement element = readElementWithExtraTokens(parser, argumentSeparator, listEnd);
+			TspElement element = parseElementWithCustomStarts(parser, 
+				(argumentSep != null ? argumentSep : listEnd), listEnd, kMARKER);
+			// The above code may result in a call with duplicate listEnd arguments, that works despite being strange
 			
 			if(element == null) {
-				reportError(parser.getSourcePosition());
-			} else if(element.getElementType() == argumentSeparator) {
-				arguments.add(argument);
-				argument = new Argument();
-			} else if(element.getElementType() == listEnd) {
-				arguments.add(argument);
-				argument = new Argument();
+				if(!eofTerminates) {
+					reportError(parser.getSourcePosition());
+				}
 				break;
+			} else if(element.getElementType() == listEnd) {
+				break;
+			} else if(argumentSep != null && element.getElementType() == argumentSep) {
+				arguments.add(argument);
+				argument = new Argument();
 			} else {
 				argument.add(element);
 			}
 		}
+		arguments.add(argument);
 		return arguments;
 	}
 	
@@ -314,6 +313,9 @@ public class TemplatedSourceProcessor2 {
 		}
 	}
 	
+	protected static final String[] OPEN_DELIMS  = {"{","«","〈","《","「","『","【","〔","〖","〚" };
+	protected static final String[] CLOSE_DELIMS = {"}","»","〉","》","」","』","】","〕","〗","〛"} ;
+	
 	protected TspMetadataElement readMetadataElement(SimpleParser parser) throws TemplatedSourceException {
 		String name = parser.consumeAlphaNumericUS(false);
 		assertTrue(!name.isEmpty());
@@ -323,7 +325,12 @@ public class TemplatedSourceProcessor2 {
 		boolean outputSource = true;
 		Argument sourceValue = null;
 		
-		sourceValue = parser.tryConsume("{") ? readArgument(parser, "}", false) : null;
+		int alt = parser.tryConsume(OPEN_DELIMS);
+		if(alt != -1) {
+			String closeDelim = CLOSE_DELIMS[alt];
+			sourceValue = readArgument(parser, closeDelim, false);
+		}
+		
 		if(sourceValue == null && parser.tryConsume(":")) {
 			sourceValue = readArgument(parser, "#:END", true);
 			if(!parser.lookaheadIsEOF()) {
@@ -337,22 +344,9 @@ public class TemplatedSourceProcessor2 {
 	
 	protected Argument readArgument(SimpleParser parser, String listEnd, boolean eofTerminates)
 		throws TemplatedSourceException {
-		Argument argument = new Argument();
-		while(true) {
-			TspElement element = readElementWithExtraTokens(parser, listEnd, listEnd);
-			
-			if(element == null) {
-				if(!eofTerminates) {
-					reportError(parser.getSourcePosition());
-				}
-				break;
-			} else if(element.getElementType() == listEnd) {
-				break;
-			} else {
-				argument.add(element);
-			}
-		}
-		return argument;
+		ArrayList<Argument> argumentList = readArgumentList(parser, null, listEnd, eofTerminates);
+		assertTrue(argumentList.size() == 1);
+		return argumentList.get(0);
 	}
 	
 	protected String consumeDelimitedString(SimpleParser parser, String closeSep, boolean eofTerminates) 

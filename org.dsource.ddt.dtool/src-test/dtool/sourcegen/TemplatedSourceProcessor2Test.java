@@ -67,11 +67,20 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 	@Test
 	public void testSplit() throws Exception { testSplit$(); }
 	public void testSplit$() throws Exception {
-		 
+		for (String splitMarker : array("#:SPLIT", "━━", "▂▂", "▃▃")) {
+			testSplit(splitMarker);
+		}
+		
+		for (String headerMarker : array("#:HEADER", "Ⓗ━━", "☒▂▂", "Ⓗ▃▃")) {
+			testHeaderSplit(headerMarker, "#:SPLIT", "━━");
+		}
+	}
+	
+	public void testSplit(String splitMarker) {
 		testSourceProcessing("#", 
-			"#:SPLIT ___________________\ncase1\nasdfasdf"+
-			"#:SPLIT comment\ncase ##2\nblahblah\n#:SPLIT comment\r\n"+ 
-			"#:SPLIT\n case ##:3\nblahblah\n"
+			splitMarker+" ___________________\ncase1\nasdfasdf"+
+			splitMarker+" comment\ncase ##2\nblahblah\n#:SPLIT comment\r\n"+ 
+			splitMarker+"\n case ##:3\nblahblah\n"
 			,
 			checkMD("case1\nasdfasdf"),
 			checkMD("case #2\nblahblah\n"),
@@ -82,17 +91,31 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		
 		testSourceProcessing("#", 
 			"case ##1\nasdfasdf"+
-			"#:SPLIT comment\ncase ##2\nblahblah\n"
+				splitMarker+" comment\ncase ##2\nblahblah\n"
 			,
 			checkMD("case #1\nasdfasdf"),
 			checkMD("case #2\nblahblah\n")
 		);
 		
 		testSourceProcessing("#", 
-			"#:SPLIT _____\ncase1\na#:XPLIT sdfasdf"+
-			"#:SPLIT\n case3\nblahblah\n"
+			splitMarker+" _____\ncase1\na#:XPLIT sdfasdf"+
+			splitMarker+"\n case3\nblahblah\n"
 			,
 			8
+		);
+	}
+	
+	public void testHeaderSplit(String headerMarker, String splitMarker1, String splitMarker2) {
+		testSourceProcessing("#", 
+			headerMarker+" ___________________\ncase1\nasdfasdf"+
+			splitMarker1+" comment\ncase ##2\ncase2.\n#:SPLIT comment\r\n"+ 
+			headerMarker+" comment\ncase ##4\nblahblah\n"+splitMarker2+"comment2\r\ncase5"+ 
+			splitMarker1+"\n case ##:6\nxxxxxxx\n"
+			,
+			checkMD("case #2\ncase2.\n"),
+			checkMD(""),
+			checkMD("case5"),
+			checkMD(" case #:6\nxxxxxxx\n")
 		);
 	}
 	
@@ -149,6 +172,33 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		
 		testSourceProcessing("#", "foo #@EXPANSION1{12}(#:SPLIT\n)", 21);
 		testSourceProcessing("#", "foo #@EXPANSION1{12}(xxx:END:\n)", 21+3);
+		
+		
+		for (int i = 0; i < TemplatedSourceProcessor2.OPEN_DELIMS.length; i++) {
+			String openDelim = TemplatedSourceProcessor2.OPEN_DELIMS[i];
+			if(openDelim.equals("{")) 
+				continue;
+			testExpansion_ArgumentDelimiters(openDelim, TemplatedSourceProcessor2.CLOSE_DELIMS[i]);
+		}
+	}
+	
+	public void testExpansion_ArgumentDelimiters(String open, String close) {
+		String source = prepString("asdf #@EXP►,}◙► #◄,last#◙}◄==", open, close);
+		
+		testSourceProcessing("#", source,
+			
+			checkMD(prepString("asdf ,}==", open, close)),
+			checkMD(prepString("asdf ► ◄,last●}==", open, close))
+		);
+		
+		testSourceProcessing("#", prepString("asdf #► ", open, close), 6);
+	}
+	
+	public static String prepString(String source, String openDelim, String closeDelim) {
+		source = source.replaceAll("►", openDelim);
+		source = source.replaceAll("◄", closeDelim);
+		source = source.replaceAll("◙", "●");
+		return source;
 	}
 	
 	@Test
@@ -185,6 +235,20 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		testSourceProcessing("#", "badsyntax #foo(==#:END:", 18);
 		testSourceProcessing("#", "badsyntax #foo(){xxx#:SPLIT\n)", 17+3);
 		testSourceProcessing("#", "badsyntax #foo(){xxx#:END:", 17+3+1);
+		
+		
+		for (int i = 0; i < TemplatedSourceProcessor2.OPEN_DELIMS.length; i++) {
+			String open = TemplatedSourceProcessor2.OPEN_DELIMS[i];
+			String close = TemplatedSourceProcessor2.CLOSE_DELIMS[i];
+			if(open.equals("{")) 
+				continue;
+			
+			testSourceProcessing("#", prepString("asdf #foo(arg)►,}◙► #◄,xxx}◄==", open, close),
+				
+				checkMD(prepString("asdf ,}◙► ◄,xxx}==", open, close), 
+					new MetadataEntry("foo", "arg", prepString(",}◙► ◄,xxx}", open, close), 5))
+			);
+		}
 		
 		
 		//multineLine MD syntax

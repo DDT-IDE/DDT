@@ -80,18 +80,6 @@ public class CommonTestUtils {
 		return elems;
 	}
 	
-	public static int[] array(int... elems) {
-		return elems;
-	}
-	
-	public static Object[] array() {
-		return new Object[0];  // Create empty array
-	}
-	
-	public static String[] arrayString() {
-		return new String[0]; // Create empty array
-	}
-	
 	public static <T> List<T> list(T... elems) {
 		return Arrays.asList(elems);
 	}

@@ -76,6 +76,16 @@ public class SimpleParser {
 		return false;
 	}
 	
+	public final int tryConsume(String... strings) {
+		for (int i = 0; i < strings.length; i++) {
+			String string = strings[i];
+			if(tryConsume(string)) {
+				return i;
+			}
+		}
+		return EOF;
+	}
+	
 	public final void consume(String string) {
 		if(tryConsume(string) == false) {
 			assertFail(); 
