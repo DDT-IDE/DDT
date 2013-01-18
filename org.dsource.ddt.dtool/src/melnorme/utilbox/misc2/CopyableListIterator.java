@@ -11,6 +11,8 @@
 
 package melnorme.utilbox.misc2;
 
+import static dtool.util.NewUtils.assertNotNull_;
+
 import java.util.List;
 import java.util.RandomAccess;
 
@@ -32,7 +34,7 @@ public class CopyableListIterator<T> implements ICopyableIterator<T> {
 	}
 	
 	public CopyableListIterator(List<T> list, int index) {
-		this.list = list;
+		this.list = assertNotNull_(list);
 		this.index = index;
 	}
 	

@@ -601,4 +601,36 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		
 	}
 	
+	@Test
+	public void testIfElseExpansion() throws Exception { testIfElseExpansion$(); }
+	public void testIfElseExpansion$() throws Exception {
+		testSourceProcessing("#", 
+			"> #@{A,B#var(Bactive)} #?var{IF}",
+			
+			checkMD("> A "),
+			checkMD("> B IF", new MetadataEntry("var", "Bactive", null, 3))
+		);
+		
+		testSourceProcessing("#", 
+			"> #@{A,B#var(Bactive)} #?var{IF,ELSE}",
+			
+			checkMD("> A ELSE"),
+			checkMD("> B IF", new MetadataEntry("var", "Bactive", null, 3))
+		);
+		
+		testSourceProcessing("#", "> #?{IF,ELSE, INVALID}", 4);
+		testSourceProcessing("#", "> #@{A ,B #var(Bactive) } #?var{IF,ELSE, INVALID}", 49);
+
+		
+		testSourceProcessing("#", 
+			"#:HEADER ____\n"+"#@EXPANSION1{1#var1,2#var2,3#var3}"+
+			"#:SPLIT\n>#@!(EXPANSION1) #?var1{IF,ELSE} #@{A,B,C}(EXPANSION1) -- #@(EXPANSION1) "+
+			"#?var1{IF,ELSE}#?var2{var2}",
+			
+			checkMD("> ELSE A -- 1 IF", new MetadataEntry("var1", null, null, 13)),
+			checkMD("> ELSE B -- 2 ELSEvar2", new MetadataEntry("var2", null, null, 13)),
+			checkMD("> ELSE C -- 3 ELSE", new MetadataEntry("var3", null, null, 13))
+		);
+	}
+	
 }

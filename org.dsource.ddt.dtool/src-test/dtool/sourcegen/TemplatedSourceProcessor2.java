@@ -184,6 +184,8 @@ public class TemplatedSourceProcessor2 {
 		}
 		if(parser.lookAhead() == '{' || parser.lookAhead() == '@') {
 			return readExpansionCommand(parser); 
+		} else if(parser.lookAhead() == '?') {
+			return readIfElseExpansionCommand(parser); 
 		} else if(Character.isJavaIdentifierStart(parser.lookAhead())) {
 			return readMetadataElement(parser);
 		}
@@ -246,8 +248,7 @@ public class TemplatedSourceProcessor2 {
 		int alt = parser.tryConsume(OPEN_DELIMS);
 		if(alt != -1) {
 			String closeDelim = CLOSE_DELIMS[alt];
-			String argSep = closeDelim.equals("}") ? "," : "●"; 
-			arguments = readArgumentList(parser, argSep, closeDelim, false);
+			arguments = readArgumentList(parser, closeDelim);
 		}
 		
 		String pairedExpansionId = null;
@@ -271,6 +272,12 @@ public class TemplatedSourceProcessor2 {
 		}
 		consumeExpected(parser, closeDelim);
 		return pairedExpansionId;
+	}
+	
+	public ArrayList<Argument> readArgumentList(SimpleParser parser, String closeDelim) 
+		throws TemplatedSourceException {
+		String argSep = closeDelim.equals("}") ? "," : "●"; 
+		return readArgumentList(parser, argSep, closeDelim, false);
 	}
 	
 	protected ArrayList<Argument> readArgumentList(SimpleParser parser, String argumentSep, String listEnd,
@@ -381,6 +388,44 @@ public class TemplatedSourceProcessor2 {
 		return value.toString();
 	}
 	
+	protected TspIfElseExpansionElement readIfElseExpansionCommand(SimpleParser parser) throws TemplatedSourceException {
+		assertTrue(parser.lookAhead() == '?');
+		parser.consume("?");
+		
+		String mdConditionId = emptyToNull(parser.consumeAlphaNumericUS(false));
+		if(mdConditionId == null) {
+			reportError(parser.getSourcePosition());
+		}
+		
+		ArrayList<Argument> arguments = null;
+		int alt = parser.tryConsume(OPEN_DELIMS);
+		if(alt != -1) {
+			arguments = readArgumentList(parser, CLOSE_DELIMS[alt]);
+		} else {
+			reportError(parser.getSourcePosition());
+		}
+		
+		if(arguments.size() > 2) {
+			reportError(parser.getSourcePosition());
+		}
+		Argument argElse = arguments.size() == 1 ? null: arguments.get(1);
+		return new TspIfElseExpansionElement(mdConditionId, arguments.get(0), argElse);
+	}
+	
+	protected class TspIfElseExpansionElement extends TspElement {
+		String mdConditionId; Argument argIf; Argument argThen;
+		public TspIfElseExpansionElement(String mdConditionId, Argument argIf, Argument argThen) {
+			this.mdConditionId = mdConditionId;
+			this.argIf = argIf;
+			this.argThen = argThen;
+		}
+		
+		@Override
+		public String toString() {
+			return "IF?【"+ StringUtil.nullAsEmpty(mdConditionId)+"{"+argIf+","+argThen+"}"+"】";
+		}
+	}
+	
 	// --------------------- Generation phase ---------------------
 	
 	protected void processSplitCaseSource(String unprocessedCaseSource, boolean isHeader) throws TemplatedSourceException {
@@ -465,10 +510,25 @@ public class TemplatedSourceProcessor2 {
 					ICopyableIterator<TspElement> mdArgIter = ChainedIterator2.create(
 						CopyableListIterator.create(sourceArgument),
 						CopyableListIterator.create(Collections.<TspElement>singletonList(mdEndElem))
-						);
+					);
 					elementStream = ChainedIterator2.create(mdArgIter, elementStream);
 				} else {
 					processMetadataEndElem(sourceCase, mdEndElem);
+				}
+			} else if(tspElem instanceof TspIfElseExpansionElement) {
+				TspIfElseExpansionElement tspIfElse = (TspIfElseExpansionElement) tspElem;
+				
+				Argument sourceArgument = tspIfElse.argThen;
+				
+				for (MetadataEntry mde : sourceCase.metadata) {
+					if(mde.name.equals(tspIfElse.mdConditionId)) {
+						sourceArgument = tspIfElse.argIf;
+						break;
+					}
+				}
+				if(sourceArgument != null) {
+					ICopyableIterator<TspElement> mdArgIter = CopyableListIterator.create(sourceArgument);
+					elementStream = ChainedIterator2.create(mdArgIter, elementStream);
 				}
 			} else if(tspElem instanceof TspMetadataEndElement) {
 				processMetadataEndElem(sourceCase, (TspMetadataEndElement) tspElem);
