@@ -430,32 +430,33 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 			checkMD("foo var3#==C")
 		);
 		
+		// Activeness
 		testSourceProcessing("#", 
 			"#@EXPANSION1!{var1,var2,var3}"+
-			"> #@!(EXPANSION1) #@{A,B,C}(EXPANSION1) -- #@(EXPANSION1)",
+			">#@!(EXPANSION1) #@{A,B,C}(EXPANSION1) -- #@(EXPANSION1)",
 			
-			checkMD(">  A -- var1"),
-			checkMD(">  B -- var2"),
-			checkMD(">  C -- var3")
+			checkMD("> A -- var1"),
+			checkMD("> B -- var2"),
+			checkMD("> C -- var3")
 		);
-		
+		testSourceProcessing("#", "#@EXPANSION1!{a,b,c} #@{A,B,C}(EXPANSION1)", 1); // Error: non active ref
+
 		testSourceProcessing("#", 
-			"#@EXPANSION1!{var1,var2#,,var3##}foo ==#@!(EXPANSION1) #@{A,B,C}(EXPANSION1)",
+			"#@EXPANSION1!{var1,var2,var3}==#@!(EXPANSION1) #@{A,B,C}(EXPANSION1)",
 			
-			checkMD("foo == A"),
-			checkMD("foo == B"),
-			checkMD("foo == C")
+			checkMD("== A"),
+			checkMD("== B"),
+			checkMD("== C")
 		);
-		
-		testSourceProcessing("#", "foo #@:EXPANSION1:", 4); // Error: undefined ref
-		testSourceProcessing("#", "foo #@{A,B,C}(EXPANSION1)", 4); // Error: undefined ref
-		testSourceProcessing("#", "foo #@EXPANSION1!{a,b,c}#@{A,B,C}(EXPANSION1)", 4); // Error: non active ref
-		testSourceProcessing("#", "foo #@EXPANSION1{a,b} -- #@EXPANSION1{a,b}", 9); //Error: redefined
 		
 		//Error: Mismatched argument count:
 		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@{a}(EXPANSION1)", 7); 
 		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@{a,b,c}(EXPANSION1)", 7);
 		
+		testSourceProcessing("#", "foo #@:EXPANSION1:", 4); // Error: undefined ref
+		testSourceProcessing("#", "foo #@{A,B,C}(EXPANSION1)", 4); // Error: undefined ref
+		testSourceProcessing("#", "foo #@EXPANSION1{a,b} -- #@EXPANSION1{a,b}", 9); //Error: redefined
+		testSourceProcessing("#", "foo #@EXPANSION1{a,#@EXPANSION1{a,b}}", 4); //Error: redefined
 		
 		testSourceProcessing("#", 
 			"#@EXP1{var1,var2,var3}"+
@@ -470,26 +471,45 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		// ---
 		
 		testSourceProcessing("#", 
-			"foo #@EXPANSION1{var1 ,var2#,,var3##}==#@EXP1ALT{VAR1,VAR2,VAR3}:EXPANSION1: ||"+
-			" #@:EXPANSION1: == #@:EXP1ALT:",
+			"foo #@EXPANSION1{var1,var2,var3}==#@EXP1ALT{VAR1,VAR2,VAR3}(EXPANSION1) ||"+
+			" #@(EXPANSION1) == #@(EXP1ALT)",
 			
-			checkMD("foo var1 ==VAR1 || var1  == VAR1"),
-			checkMD("foo var2,==VAR2 || var2, == VAR2"),
-			checkMD("foo var3#==VAR3 || var3# == VAR3")
+			checkMD("foo var1==VAR1 || var1 == VAR1"),
+			checkMD("foo var2==VAR2 || var2 == VAR2"),
+			checkMD("foo var3==VAR3 || var3 == VAR3")
 		);
 		
 		
 		testSourceProcessing("#", 
-			"foo #@EXPANSION1{var1,var2#,,var3##} == #{a,xxx} -- #@(EXPANSION1)",
+			"foo #@EXPANSION1{var1,var2,var3} == #{a,xxx} -- #@(EXPANSION1)",
 			
 			checkMD("foo var1 == a -- var1"),
 			checkMD("foo var1 == xxx -- var1"),
-			checkMD("foo var2, == a -- var2,"),
-			checkMD("foo var2, == xxx -- var2,"),
-			checkMD("foo var3# == a -- var3#"),
-			checkMD("foo var3# == xxx -- var3#")
+			checkMD("foo var2 == a -- var2"),
+			checkMD("foo var2 == xxx -- var2"),
+			checkMD("foo var3 == a -- var3"),
+			checkMD("foo var3 == xxx -- var3")
 		);
 		
+		//Visibility of referrals:
+		testSourceProcessing("#", ">#@{#@INNER_EXP{A,B,C},#@INNER_EXP{A,B,C}}", 
+			checkMD(">A"),checkMD(">B"),checkMD(">C"),
+			checkMD(">A"),checkMD(">B"),checkMD(">C"));
+		testSourceProcessing("#", "> #@{#@INNER_EXP{A,B,C}, #@(INNER_EXP)}", 3); // Error: undefined ref
+		testSourceProcessing("#", "> #@{#@INNER_EXP{A,B,C}, } #@(INNER_EXP)", 4); // Error: undefined ref
+		
+		// Nesting of expansions
+		testSourceProcessing("#", 
+			">#@EXPA!{A,B,C} #@X{#@(EXPA),x} #@(X)",
+			
+			checkMD("> A A"), checkMD("> B B"), checkMD("> C C"), checkMD("> x x")
+		);
+		
+		testSourceProcessing("#", 
+			"> #@X{#@EXPA{A,B,C},x} #@(X)",
+			
+			checkMD("> A A"), checkMD("> B B"), checkMD("> C C"), checkMD("> x x")
+		);
 	}
 	
 	@Test

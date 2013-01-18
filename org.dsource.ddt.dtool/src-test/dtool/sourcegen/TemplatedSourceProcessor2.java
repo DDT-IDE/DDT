@@ -53,7 +53,6 @@ public class TemplatedSourceProcessor2 {
 	protected String[] kMARKER_array;
 	protected final ArrayList<AnnotatedSource> genCases = new ArrayList<AnnotatedSource>();
 	protected final Map<String, TspExpansionElement> globalExpansions = new HashMap<String, TspExpansionElement>();
-	protected Map<String, TspExpansionElement> localExpansions = new HashMap<String, TspExpansionElement>();
 	
 	public TemplatedSourceProcessor2() { }
 	
@@ -208,18 +207,18 @@ public class TemplatedSourceProcessor2 {
 		final String expansionId; 
 		final String pairedExpansionId; 
 		final ArrayList<Argument> arguments; 
-		final boolean defineOnly;
+		final boolean dontOuputSource;
 		public TspExpansionElement(String expansionId, String pairedExpansionId, ArrayList<Argument> arguments, 
-			boolean defineOnly) {
+			boolean dontOuputSource) {
 			this.expansionId = expansionId;
 			this.pairedExpansionId = pairedExpansionId;
 			this.arguments = arguments;
-			this.defineOnly = defineOnly;
+			this.dontOuputSource = dontOuputSource;
 		}
 		
 		@Override
 		public String toString() {
-			return "EXPANSION["+(defineOnly?"!":"")+
+			return "EXPANSION["+(dontOuputSource?"!":"")+
 				StringUtil.nullAsEmpty(expansionId)+
 				(pairedExpansionId == null ? "" : "("+pairedExpansionId+")")+
 				(arguments == null ? "" : "{"+StringUtil.collToString(arguments, "#,#")+"}")+
@@ -438,7 +437,6 @@ public class TemplatedSourceProcessor2 {
 	
 	protected void processSplitCaseSource(String unprocessedCaseSource, boolean isHeader) throws TemplatedSourceException {
 		ArrayList<TspElement> sourceElements = parseSource(unprocessedCaseSource);
-		localExpansions.clear();
 		ProcessingState processingState = new ProcessingState(isHeader);
 		processCaseContents(processingState, new CopyableListIterator<TspElement>(sourceElements));
 	}
@@ -447,6 +445,8 @@ public class TemplatedSourceProcessor2 {
 		protected final boolean isHeaderCase;
 		protected final StringBuilder sourceSB = new StringBuilder();
 		protected final ArrayList<MetadataEntry> metadata = new ArrayList<MetadataEntry>();
+		protected final Map<String, TspExpansionElement> expansionDefinitions = 
+			new HashMap<String, TspExpansionElement>();
 		protected final Map<String, Integer> activeExpansions = new HashMap<String, Integer>();
 		
 		public ProcessingState(boolean isHeaderCase) {
@@ -454,21 +454,23 @@ public class TemplatedSourceProcessor2 {
 		}
 		
 		public ProcessingState(boolean isHeaderCase, String source, List<MetadataEntry> metadata,
-			Map<String, Integer> activeExpansions) {
+			Map<String, Integer> activeExpansions, Map<String, TspExpansionElement> expansionDefinitions) {
 			this.isHeaderCase = isHeaderCase;
 			this.sourceSB.append(source);
 			this.metadata.addAll(metadata);
 			this.activeExpansions.putAll(activeExpansions);
+			this.expansionDefinitions.putAll(expansionDefinitions);
 		}
 		
 		@Override
 		public ProcessingState clone() {
-			return new ProcessingState(isHeaderCase, sourceSB.toString(), metadata, activeExpansions);
+			String source = sourceSB.toString();
+			return new ProcessingState(isHeaderCase, source, metadata, activeExpansions, expansionDefinitions);
 		}
 		
 		public TspExpansionElement getExpansion(String expansionId) {
 			if(!isHeaderCase) {
-				TspExpansionElement expansionElement = localExpansions.get(expansionId);
+				TspExpansionElement expansionElement = expansionDefinitions.get(expansionId);
 				if(expansionElement != null) {
 					return expansionElement;
 				}
@@ -478,7 +480,7 @@ public class TemplatedSourceProcessor2 {
 		
 		public void putExpansion(String expansionId, TspExpansionElement expansionElement) {
 			if(!isHeaderCase) {
-				localExpansions.put(expansionId, expansionElement);
+				expansionDefinitions.put(expansionId, expansionElement);
 			} else {
 				globalExpansions.put(expansionId, expansionElement);
 			}
@@ -603,13 +605,39 @@ public class TemplatedSourceProcessor2 {
 		
 		final String expansionId = expansionElem.expansionId;
 		checkError(sourceCase.isHeaderCase && expansionId == null, sourceCase);
+		
 		ArrayList<Argument> arguments = expansionElem.arguments;
+		TspExpansionElement definedExpansionElem = null;
+		if(expansionId != null) {
+			definedExpansionElem = sourceCase.getExpansion(expansionId);
+			
+			if(arguments == null) {
+				checkError(definedExpansionElem == null, sourceCase);
+				arguments = definedExpansionElem.arguments;
+			} else {
+				// We allow a "redefinition" if the element is exactly the same
+				checkError(definedExpansionElem != null && definedExpansionElem != expansionElem, sourceCase);
+				sourceCase.putExpansion(expansionId, expansionElem);
+			}
+		}
+		
+		if((expansionElem.dontOuputSource && expansionId != null) || sourceCase.isHeaderCase) {
+			 // Definition-only must not have a paired expansion
+			//XXX: maybe it could, it could make sense as additional feature
+			checkError(expansionElem.pairedExpansionId != null, sourceCase);
+			return false;
+		}
 		
 		Integer pairedExpansionIx = null;
 		TspExpansionElement referredExpansion = null;
-		if(expansionElem.pairedExpansionId != null) {
-			 // Definition-only must not have a paired expansion
-			checkError(expansionElem.defineOnly && expansionId != null, sourceCase);
+		if(expansionElem.pairedExpansionId == null) {
+			if(definedExpansionElem != null) {
+				pairedExpansionIx = sourceCase.activeExpansions.get(expansionId);
+				// The result is usually null, but it can be a valid index in certain situations
+				// where this defined exp has been "redefined"
+			}
+		} else {
+			// Paired expansion referral.
 			
 			referredExpansion = sourceCase.getExpansion(expansionElem.pairedExpansionId);
 			checkError(referredExpansion == null, sourceCase); // If referred, then it must be defined
@@ -617,28 +645,10 @@ public class TemplatedSourceProcessor2 {
 			pairedExpansionIx = sourceCase.activeExpansions.get(expansionElem.pairedExpansionId);
 			
 			if(pairedExpansionIx == null) {
-				// Paired expansion is not active
-				checkError(arguments != null, sourceCase); // Must be active if expansion has its own arguments
+				// Paired expansion is not active, that is only allowed if this expansion has no arguments
+				checkError(arguments != null, sourceCase); 
 			}
-		}
-		
-		if(expansionId != null) {
-			TspExpansionElement definedExpansionElem = sourceCase.getExpansion(expansionId);
 			
-			if(arguments != null) {
-				checkError(definedExpansionElem != null && definedExpansionElem != expansionElem, sourceCase);
-				sourceCase.putExpansion(expansionId, expansionElem);
-			} else {
-				checkError(definedExpansionElem == null, sourceCase);
-				arguments = definedExpansionElem.arguments;
-			}
-		}
-		
-		if((expansionElem.defineOnly && expansionId != null) || sourceCase.isHeaderCase) {
-			return false;
-		}
-		
-		if(referredExpansion != null) {
 			if(arguments == null) {
 				arguments = referredExpansion.arguments;
 			} else {
@@ -650,9 +660,12 @@ public class TemplatedSourceProcessor2 {
 			int ix = pairedExpansionIx;
 			processArgument(sourceCase, elementStream, expansionId, arguments.get(ix), ix);
 		} else {
-			String idToActivate = expansionId != null ? expansionId : expansionElem.pairedExpansionId ;
+			String idToActivate = expansionId != null ? expansionId : expansionElem.pairedExpansionId;
 			
-			boolean activateOnly = expansionElem.defineOnly;
+			boolean activateOnly = expansionElem.dontOuputSource;
+			if(activateOnly) {
+				assertTrue(expansionId == null);
+			}
 			
 			for (int ix = 0; ix < arguments.size(); ix++) {
 				Argument argument = activateOnly ? null : arguments.get(ix);
@@ -676,7 +689,8 @@ public class TemplatedSourceProcessor2 {
 		String expansionId, Argument argument, int index) throws TemplatedSourceException {
 		ProcessingState newState = sourceCase.clone();
 		if(expansionId != null) {
-			newState.activeExpansions.put(expansionId, index);
+			Integer oldValue = newState.activeExpansions.put(expansionId, index);
+			assertTrue(oldValue == null || oldValue == index); 
 		}
 		
 		ICopyableIterator<TspElement> newElements = (argument == null) ? 
