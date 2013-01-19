@@ -1,10 +1,15 @@
 package dtool.ast;
 
+import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
+import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
+import dtool.ast.declarations.DeclarationPragma;
+import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.DeclarationStorageClass;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -71,6 +76,13 @@ public interface IASTNeoVisitor {
 	public boolean visit(ImportSelectiveAlias node);
 	
 	public boolean visit(DeclarationEmpty node);
+	
+	//-- various Declarations
+	public boolean visit(DeclarationLinkage node);
+	public boolean visit(DeclarationAlign node);
+	public boolean visit(DeclarationPragma node);
+	public boolean visit(DeclarationProtection node);
+	public boolean visit(DeclarationStorageClass node);
 	
 	//-- Aggregates
 	public boolean visit(DefinitionStruct node);

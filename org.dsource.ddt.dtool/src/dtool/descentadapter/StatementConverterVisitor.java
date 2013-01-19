@@ -37,8 +37,9 @@ import descent.internal.compiler.parser.TryFinallyStatement;
 import descent.internal.compiler.parser.VolatileStatement;
 import descent.internal.compiler.parser.WhileStatement;
 import descent.internal.compiler.parser.WithStatement;
-import dtool.ast.NodeList;
+import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
@@ -293,12 +294,12 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(PragmaStatement element) {
-		NodeList body = DeclarationConverter.createNodeList(element.body, convContext);
+		NodeList2 body = DeclarationConverter.createNodeList2(element.body, convContext);
 		return endAdapt(
 			new DeclarationPragma(
 				DefinitionConverter.convertId(element.ident),
 				ExpressionConverter.convertMany(element.args, convContext),
-				body,
+				AttribBodySyntax.BRACE_BLOCK, body,
 				DefinitionConverter.sourceRange(element)
 			)
 		);

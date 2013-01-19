@@ -1,6 +1,7 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
@@ -57,6 +58,11 @@ public class ImportStatic extends ASTNeoNode implements IImportFragment {
 	@Override
 	public void searchInSecondaryScope(CommonDefUnitSearch search) {
 		ReferenceResolver.findDefUnitInStaticImport(this, search);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendNode(moduleRef);
 	}
 	
 }

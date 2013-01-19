@@ -1,8 +1,10 @@
 package dtool.ast.definitions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.Modifier;
 import descent.internal.compiler.parser.PROT;
+import dtool.ast.declarations.DeclarationProtection.Protection;
 import dtool.descentadapter.DescentASTConverter;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
@@ -34,6 +36,19 @@ public abstract class Definition extends DefUnit {
 			return PROT.PROTpublic;
 		}
 		return protection;
+	}
+	
+	public static PROT fromProtection(Protection protection) {
+		if(protection == null) 
+			return PROT.PROTundefined;
+		switch(protection) {
+		case PRIVATE: return PROT.PROTprivate;
+		case PACKAGE: return PROT.PROTpackage;
+		case PROTECTED: return PROT.PROTprotected;
+		case PUBLIC: return PROT.PROTpublic;
+		case EXPORT: return PROT.PROTexport;
+		}
+		throw assertUnreachable();
 	}
 	
 }

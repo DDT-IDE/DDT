@@ -10,10 +10,12 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static dtool.parser.DeeParserTest.runParserTest______________________;
 import static dtool.tests.DToolTestResources.getTestResource;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +66,10 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	}
 	
 	public void runSourceBasedTestFromFile() {
-		for (AnnotatedSource testString : getSourceBasedTests(file)) {
+		AnnotatedSource[] sourceBasedTests = getSourceBasedTests(file);
+		for (AnnotatedSource testString : sourceBasedTests) {
+			System.out.println(">> -------------------- Annotated Source test: --------------- <<");
+			System.out.println(testString.source);
 			runSourceBasedTest(testString);
 		}
 	}
@@ -80,6 +85,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			if(mde.name.equals("AST_EXPECTED")) {
 				assertTrue(expectedGenSource == parseSource);
 				expectedGenSource = mde.associatedSource;
+				break; // Dont process any more metadata
 			} else if(mde.name.equals("error")){
 				expectedErrors.add(decodeError(parseSource, mde));
 			} else if(mde.name.equals("parser") && mde.value.equals("AllowAnyErrors")){
@@ -87,11 +93,12 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			} else if(mde.name.equals("parser") && mde.value.equals("DontCheckSourceEquality")){
 				expectedGenSource = null;
 			} else {
-				assertFail("Unknown metadata");
+				if(!areEqual(mde.value, "flag"))
+					assertFail("Unknown metadata");
 			}
 		}
 		
-		DeeParserTest.runParserTest(parseSource, expectedGenSource, expectedErrors, allowAnyErrors);
+		runParserTest______________________(parseSource, expectedGenSource, expectedErrors, allowAnyErrors);
 	}
 	
 	public ParserError decodeError(String parseSource, MetadataEntry mde) {
@@ -107,28 +114,39 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		} else if(errorType.equals("BT")) {
 			// TODO errorParam
 			return new ParserError(EDeeParserErrors.MALFORMED_TOKEN, errorRange, null, null);
-		} else if(errorType.equals("EXP") || errorType.equals("EXPRULE")) {
-			String errorSource = mde.associatedSource;
-			
-			if(mde.associatedSource == null) {
-				Token lastToken = findLastEffectiveTokenBeforeOffset(mde.offset, deeLexer);
-				errorRange = DeeParser.sr(lastToken);
-				errorSource = lastToken.tokenSource;
-			}
-			if(errorType.equals("EXP")) {
-				String expectedTokenStr = DeeLexerTest.transformTokenNameAliases(errorParam);
-				return new ParserError(EDeeParserErrors.EXPECTED_TOKEN, errorRange, errorSource, expectedTokenStr);
-			} else { // EXPRULE
-				errorParam = getExpectedRuleName(errorParam);
-				return new ParserError(EDeeParserErrors.EXPECTED_RULE, errorRange, errorSource, errorParam);
-			}
-		} else if(errorType.equals("SE")) {
-			assertNotNull(mde.associatedSource);
+		} else if(errorType.equals("EXP")) {
+			String expectedTokenStr = DeeLexerTest.transformTokenNameAliases(errorParam);
+			return createErrorFromLastToken(EDeeParserErrors.EXPECTED_TOKEN, mde, deeLexer, expectedTokenStr);
+		} else if(errorType.equals("EXPRULE")) {
 			errorParam = getExpectedRuleName(errorParam);
-			return new ParserError(EDeeParserErrors.SYNTAX_ERROR, errorRange, mde.associatedSource, errorParam);
+			return createErrorFromLastToken(EDeeParserErrors.EXPECTED_RULE, mde, deeLexer, errorParam);
+		} else if(errorType.equals("SE")) {
+			String errorSource = mde.associatedSource;
+			if(errorSource == null) {
+				Token token = findNextEffectiveTokenAfterOffset(mde.offset, deeLexer);
+				errorRange = DeeParser.sr(token);
+				errorSource = token.tokenSource;
+			}
+			errorParam = getExpectedRuleName(errorParam);
+			return new ParserError(EDeeParserErrors.SYNTAX_ERROR, errorRange, errorSource, errorParam);
+		} else if(mde.value.equals("BAD_LINKAGE_ID")) {
+			return createErrorFromLastToken(EDeeParserErrors.INVALID_EXTERN_ID, mde, deeLexer, null);
 		} else {
 			throw assertFail();
 		}
+	}
+	
+	public ParserError createErrorFromLastToken(EDeeParserErrors errorTypeTk, MetadataEntry mde, DeeLexer deeLexer,
+		String errorParam) {
+		String errorSource = mde.associatedSource;
+		SourceRange errorRange = mde.getSourceRange();
+		
+		if(mde.associatedSource == null) {
+			Token lastToken = findLastEffectiveTokenBeforeOffset(mde.offset, deeLexer);
+			errorRange = DeeParser.sr(lastToken);
+			errorSource = lastToken.tokenSource;
+		}
+		return new ParserError(errorTypeTk, errorRange, errorSource, errorParam);
 	}
 	
 	public String getExpectedRuleName(String errorParam) {
@@ -157,6 +175,24 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			lastNonIgnoredToken = token;
 		}
 		return lastNonIgnoredToken;
+	}
+	
+	public Token findNextEffectiveTokenAfterOffset(int offset, DeeLexer deeLexer) {
+		assertTrue(offset <= deeLexer.source.length());
+		
+		while(true) {
+			Token token = deeLexer.next();
+			if(token.type == DeeTokens.EOF) {
+				assertFail();
+			}
+			if(token.type.isParserIgnored) {
+				continue;
+			}
+			if(token.getStartPos() >= offset) {
+				return token;
+			}
+			assertTrue(token.getEndPos() <= offset);
+		}
 	}
 	
 }

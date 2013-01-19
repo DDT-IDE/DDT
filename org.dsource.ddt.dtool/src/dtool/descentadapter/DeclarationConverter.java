@@ -19,12 +19,14 @@ import descent.internal.compiler.parser.StaticIfCondition;
 import descent.internal.compiler.parser.VersionCondition;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList;
+import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationConditionalDV;
 import dtool.ast.declarations.DeclarationStaticIf;
 import dtool.ast.declarations.DeclarationStaticIfIsType;
 import dtool.ast.definitions.Symbol;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.util.ArrayView;
 
 public class DeclarationConverter extends BaseDmdConverter {
 	
@@ -107,10 +109,33 @@ public class DeclarationConverter extends BaseDmdConverter {
 		}
 	}
 	
+	public static NodeList2 createNodeList2(Statement body, ASTConversionContext convContext) {
+		if(body == null)
+			return null;
+		SourceRange sr = null;
+		if(body instanceof CompoundStatement) {
+			CompoundStatement cst = (CompoundStatement) body;
+			return new NodeList2(DescentASTConverter.convertMany(cst.sourceStatements, convContext), sr);
+		} else {
+			return new NodeList2(DescentASTConverter.convertMany(Collections.singleton(body), convContext), sr);
+		}
+	}
+	
 	public static NodeList createNodeList(Collection<Dsymbol> decl, ASTConversionContext convContext) {
 		if(decl == null)
 			return null;
 		return new NodeList(DescentASTConverter.convertMany(decl, convContext), false);
+	}
+	
+	public static NodeList2 createNodeList2(Collection<Dsymbol> decl, ASTConversionContext convContext) {
+		if(decl == null)
+			return null;
+		ArrayView<ASTNeoNode> decls = DescentASTConverter.convertMany(decl, convContext);
+		SourceRange sr = null;
+		if(!decls.isEmpty()) {
+			sr = sourceRangeStrict(decls.get(0).getStartPos(), decls.get(decls.size()-1).getEndPos());
+		}
+		return new NodeList2(decls, sr);
 	}
 	
 }

@@ -2,6 +2,7 @@ package dtool.descentadapter;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AggregateDeclaration;
@@ -17,7 +18,9 @@ import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.IftypeCondition;
 import descent.internal.compiler.parser.Import;
 import descent.internal.compiler.parser.InterfaceDeclaration;
+import descent.internal.compiler.parser.LINK;
 import descent.internal.compiler.parser.Modifier;
+import descent.internal.compiler.parser.PROT;
 import descent.internal.compiler.parser.StaticIfCondition;
 import descent.internal.compiler.parser.StructDeclaration;
 import descent.internal.compiler.parser.TemplateAliasParameter;
@@ -32,10 +35,12 @@ import descent.internal.compiler.parser.VersionSymbol;
 import dtool.DToolBundle;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList;
+import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAnonMember;
+import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationConditionalDefinition;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
@@ -44,6 +49,8 @@ import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationLinkage.Linkage;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.ast.declarations.DeclarationStorageClass.EDeclarationAttribute;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.DeclarationStorageClass;
 import dtool.ast.declarations.DeclarationUnitTest;
@@ -189,8 +196,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.AlignDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
-		return endAdapt(new DeclarationAlign(elem.salign, body, DefinitionConverter.sourceRange(elem)));
+		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		SourceRange sr = DefinitionConverter.sourceRange(elem);
+		return endAdapt(new DeclarationAlign(elem.salign, AttribBodySyntax.COLON, body, sr));
 	}
 
 	@Override
@@ -317,20 +325,34 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.LinkDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
+		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
-		return endAdapt(new DeclarationLinkage(Linkage.fromLINK(elem.linkage), body, sr));
+		Linkage linkage = fromLINK(elem.linkage);
+		return endAdapt(new DeclarationLinkage(linkage, AttribBodySyntax.SINGLE_DECL, body, sr));
 	}
-
+	
+    public static Linkage fromLINK(LINK linkage) {
+    	switch (linkage) {
+    	case LINKdefault: return null;
+    	case LINKd: return Linkage.D;
+    	case LINKc: return Linkage.C;
+    	case LINKcpp: return Linkage.CPP;
+    	case LINKwindows: return Linkage.WINDOWS;
+    	case LINKpascal: return Linkage.PASCAL;
+    	case LINKsystem: return Linkage.SYSTEM;
+		}
+    	throw assertUnreachable();
+    }
+    
 	@Override
 	public boolean visit(descent.internal.compiler.parser.PragmaDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
+		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		return endAdapt(
 			new DeclarationPragma(
 				DefinitionConverter.convertId(elem.ident),
 				ExpressionConverter.convertMany(elem.args, convContext),
-				body,
+				AttribBodySyntax.BRACE_BLOCK, body,
 				DefinitionConverter.sourceRange(elem)
 			)
 		);
@@ -339,13 +361,23 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.ProtDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
+		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		return endAdapt(new DeclarationProtection(
-				elem.protection, elem.modifier, body,
-				DefinitionConverter.sourceRange(elem)
+			fromPROT(elem.protection), AttribBodySyntax.BRACE_BLOCK, body, DefinitionConverter.sourceRange(elem)
 		));
 	}
-
+	
+	public static Protection fromPROT(PROT prot) {
+		switch(prot) {
+		case PROTprivate: return Protection.PRIVATE;
+		case PROTpackage: return Protection.PACKAGE;
+		case PROTprotected: return Protection.PROTECTED;
+		case PROTpublic: return Protection.PUBLIC;
+		case PROTexport: return Protection.EXPORT;
+		default: return null;
+		}
+	}
+	
 	@Override
 	public void endVisit(descent.internal.compiler.parser.ProtDeclaration elem) {
 		DeclarationProtection scDecl = (DeclarationProtection) ret;
@@ -355,8 +387,11 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StorageClassDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = DeclarationConverter.createNodeList(elem.decl, convContext);
-		return endAdapt(new DeclarationStorageClass(elem.stc, body, DefinitionConverter.sourceRange(elem)));
+		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		EDeclarationAttribute declAttrib = EDeclarationAttribute.FINAL; // WRONG, but dont care, deprecated
+		return endAdapt(new DeclarationStorageClass(
+			declAttrib, AttribBodySyntax.BRACE_BLOCK, body, 
+			DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override
@@ -408,7 +443,6 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			)
 		);
 	}
-
 	
 	
 	/*  ---------  DEFINITIONS  --------  */

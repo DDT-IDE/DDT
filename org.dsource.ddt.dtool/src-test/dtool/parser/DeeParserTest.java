@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
 import dtool.parser.Token.ErrorToken;
 import dtool.tests.CommonTestUtils;
@@ -20,30 +21,34 @@ public class DeeParserTest extends CommonTestUtils {
 	}
 	
 	public static void runParserTest(String testSource) {
-		runParserTest(testSource, testSource, new ArrayList<ParserError>(), false);
+		runParserTest______________________(testSource, testSource, new ArrayList<ParserError>(), false);
 	}
 	
-	public static void runParserTest(String parseSource, String expectedGenSource, 
+	public static void runParserTest______________________(String parseSource, String expectedGenSource, 
 		ArrayList<ParserError> expectedErrors, boolean allowAnyErrors) {
+		
 		DeeParserResult result = DeeParser.parse(parseSource);
 		
 		Module module = result.module;
 		assertNotNull(module);
 		
 		if(expectedGenSource != null) {
-			String generatedSource = module.toStringAsCode();
-			checkSourceEquality(generatedSource, expectedGenSource);
+			checkSourceEquality(module, expectedGenSource);
 		}
 		
 		if(allowAnyErrors == false) {
 			checkParserErrors(result.errors, expectedErrors);
+		}
+		if(result.errors.size() == 0) {
+			checkSourceEquality(module, parseSource);
 		}
 		
 		// Check source ranges
 		module.accept(new ASTSourceRangeChecker(parseSource, result.errors));
 	}
 	
-	public static void checkSourceEquality(String generatedSource, String expectedGenSource) {
+	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
+		String generatedSource = node.toStringAsCode();
 		checkSourceEquality(generatedSource, expectedGenSource, false);
 	}
 	

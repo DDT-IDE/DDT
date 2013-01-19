@@ -1,9 +1,9 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NodeList;
+import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Resolvable;
@@ -12,36 +12,41 @@ import dtool.util.ArrayView;
 
 public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	
-	public final Symbol ident;
+	public final Symbol pragmaId;
 	public final ArrayView<Resolvable> expressions;
 	
-	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, NodeList body, SourceRange sourceRange) {
-		super(body, sourceRange);
-		this.ident = parentize(id);
+	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, AttribBodySyntax abs, NodeList2 bodyDecls,
+		SourceRange sr) {
+		super(abs, bodyDecls, sr);
+		this.pragmaId = parentize(id);
 		this.expressions = parentize(expressions);
-	}
-	
-	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, ArrayView<ASTNeoNode> body,
-			boolean hasCurlies, SourceRange sourceRange) {
-		super(new NodeList(body, hasCurlies), sourceRange);
-		this.ident = id; parentize(this.ident);
-		this.expressions = expressions; parentize(this.expressions);
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, ident);
+		if(children) {
+			TreeVisitor.acceptChildren(visitor, pragmaId);
 			TreeVisitor.acceptChildren(visitor, expressions);
-			acceptBodyChildren(visitor);
+			TreeVisitor.acceptChildren(visitor, body);
 		}
 		visitor.endVisit(this);
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return "[pragma("+ident+",...)]";
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("pragma");
+		if(pragmaId != null) {
+			cp.append("(", pragmaId.name);
+			if(expressions != null) {
+				for(Resolvable resolvable : expressions) {
+					cp.append(", ");
+					cp.appendNode(resolvable);
+				}
+			}
+			cp.append(")");
+		}
+		cp.append(" ");
+		toStringAsCode_body(cp);
 	}
-	
 }

@@ -98,6 +98,13 @@ public class AbstractDeeParser {
 		return consumeInput();
 	}
 	
+	protected final Token consumeIf(DeeTokens tokenType) {
+		if(lookAhead() == tokenType) {
+			return consumeLookAhead();
+		}
+		return null;
+	}
+	
 	protected final boolean tryConsume(DeeTokens tokenType) {
 		if(lookAhead() == tokenType) {
 			consumeLookAhead();
@@ -117,22 +124,17 @@ public class AbstractDeeParser {
 		}
 	}
 	
-	public final void recoverParsing(DeeTokens expected, DeeTokens terminatingToken) {
-		if(lookAhead() == terminatingToken) {
-			consumeLookAhead();
-		}
-		reportErrorExpectedToken(expected);
-	}
-	
 	public void reportErrorExpectedToken(DeeTokens expected) {
-		String errorSource = lastToken.tokenSource;
-		ParserError error = addError(EDeeParserErrors.EXPECTED_TOKEN, sr(lastToken), errorSource, expected);
-		pendingMissingTokenErrors.add(error);
+		reportMissingTokenError(EDeeParserErrors.EXPECTED_TOKEN, expected);
 	}
 	
 	public void reportErrorExpectedRule(String expectedRule) {
+		reportMissingTokenError(EDeeParserErrors.EXPECTED_RULE, expectedRule);
+	}
+	
+	public void reportMissingTokenError(EDeeParserErrors parserError, Object msgObj2) {
 		String errorSource = lastToken.tokenSource;
-		ParserError error = addError(EDeeParserErrors.EXPECTED_RULE, sr(lastToken), errorSource, expectedRule);
+		ParserError error = addError(parserError, sr(lastToken), errorSource, msgObj2);
 		pendingMissingTokenErrors.add(error);
 	}
 	

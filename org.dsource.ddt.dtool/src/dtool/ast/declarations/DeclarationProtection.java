@@ -1,43 +1,65 @@
 package dtool.ast.declarations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import java.util.Iterator;
 
-import descent.internal.compiler.parser.Modifier;
-import descent.internal.compiler.parser.PROT;
+import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NodeList;
+import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
+import dtool.parser.DeeTokens;
 import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationProtection extends DeclarationAttrib {
 	
-	public final Modifier modifier;
-	public final PROT prot;
+	public enum Protection {
+	    PRIVATE,
+	    PACKAGE,
+	    PROTECTED,
+	    PUBLIC,
+	    EXPORT,
+	    ;
+		
+		public static Protection fromToken(DeeTokens token) {
+			switch(token) {
+			case KW_PRIVATE: return PRIVATE;
+			case KW_PACKAGE: return PACKAGE;
+			case KW_PROTECTED: return PROTECTED;
+			case KW_PUBLIC: return PUBLIC;
+			case KW_EXPORT: return EXPORT;
+			default: return null;
+			}
+		}
+		
+		public String toStringAsCode() {
+			return toString().toLowerCase();
+		}
+		
+	}
 	
-	public DeclarationProtection(PROT prot, Modifier modifier, NodeList decls, SourceRange sourceRange) {
-		super(decls, sourceRange);
-		this.prot = prot;
-		this.modifier = modifier;
-		assertTrue(PROT.fromTOK(this.modifier.tok) == this.prot);
+	public final Protection protection;
+	
+	public DeclarationProtection(Protection protection, AttribBodySyntax bodySyntax, NodeList2 body, SourceRange sr) {
+		super(bodySyntax, body, sr);
+		this.protection = protection;
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			//TreeVisitor.acceptChildren(visitor, prot);
-			acceptBodyChildren(visitor);
+			TreeVisitor.acceptChildren(visitor, body);
 		}
 		visitor.endVisit(this);
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return "["+modifier+"]";
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(protection.toStringAsCode());
+		cp.append(" ");
+		toStringAsCode_body(cp);
 	}
 	
 	public void processEffectiveModifiers() {
@@ -52,10 +74,10 @@ public class DeclarationProtection extends DeclarationAttrib {
 			
 			if(node instanceof Definition) {
 				Definition def = (Definition) node;
-				def.protection = prot;
+				def.protection = Definition.fromProtection(protection);
 			} else if (node instanceof DeclarationProtection) {
 				// Do not descend, that inner decl take priority
-			} else if (node instanceof DeclarationImport && prot == PROT.PROTpublic) {
+			} else if (node instanceof DeclarationImport && protection == Protection.PUBLIC) {
 				DeclarationImport declImport = (DeclarationImport) node;
 				declImport.isTransitive = true;
 			} else if(node instanceof INonScopedBlock) {

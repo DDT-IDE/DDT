@@ -1,5 +1,6 @@
 package dtool.parser;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.lastElement;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -11,13 +12,22 @@ import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoNode;
+import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
+import dtool.ast.declarations.DeclarationAlign;
+import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationLinkage;
+import dtool.ast.declarations.DeclarationLinkage.Linkage;
 import dtool.ast.declarations.DeclarationMixinString;
+import dtool.ast.declarations.DeclarationPragma;
+import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.ast.declarations.DeclarationStorageClass;
+import dtool.ast.declarations.DeclarationStorageClass.EDeclarationAttribute;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
@@ -25,10 +35,12 @@ import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
+import dtool.parser.ParserError.EDeeParserErrors;
 import dtool.util.ArrayView;
 
 public class DeeParser extends AbstractDeeParser {
@@ -68,10 +80,10 @@ public class DeeParser extends AbstractDeeParser {
 		return id;
 	}
 	
-	public static String MISSING_ID_NAME = "";
+	public static String MISSING_ID_VALUE = "";
 	
 	protected Token missingIdToken(int startPos) {
-		return new Token(DeeTokens.IDENTIFIER, MISSING_ID_NAME, startPos) {
+		return new Token(DeeTokens.IDENTIFIER, MISSING_ID_VALUE, startPos) {
 			@Override
 			public int getLength() {
 				return 0;
@@ -85,7 +97,7 @@ public class DeeParser extends AbstractDeeParser {
 	}
 	
 	public static boolean isRecoveredId(Token id) {
-		return id.tokenSource == MISSING_ID_NAME;
+		return id.tokenSource == MISSING_ID_VALUE;
 	}
 	
 	public SourceRange range(int startPos, int endPos) {
@@ -126,7 +138,7 @@ public class DeeParser extends AbstractDeeParser {
 	public Module parseModule() {
 		DeclarationModule md = parseModuleDeclaration();
 		
-		ArrayView<ASTNeoNode> members = parseDeclDefs();
+		ArrayView<ASTNeoNode> members = parseDeclDefs(null);
 		assertTrue(lookAhead() == DeeTokens.EOF);
 		assertTrue(lookAheadToken().getEndPos() == deeLexer.source.length());
 		
@@ -152,7 +164,7 @@ public class DeeParser extends AbstractDeeParser {
 			id = consumeIdentifier();
 			
 			if(tryConsume(DeeTokens.SEMICOLON)) {
-				endPos = lastToken.getEndPos();
+				endPos = getLastTokenEndPos();
 				break;
 			} else if(!isRecoveredId(id) && tryConsume(DeeTokens.DOT)) {
 				packagesList.add(id.tokenSource);
@@ -172,17 +184,17 @@ public class DeeParser extends AbstractDeeParser {
 	}
 	
 	
-	public ArrayView<ASTNeoNode> parseDeclDefs() {
-		ArrayList<ASTNeoNode> moduleDecls = new ArrayList<ASTNeoNode>();
+	public ArrayView<ASTNeoNode> parseDeclDefs(DeeTokens nodeListTerminator) {
+		ArrayList<ASTNeoNode> declarations = new ArrayList<ASTNeoNode>();
 		while(true) {
-			ASTNeoNode decl = parseDeclaration();
+			ASTNeoNode decl = parseDeclaration(nodeListTerminator);
 			if(decl == null) { 
 				break;
 			}
-			moduleDecls.add(decl);
+			declarations.add(decl);
 		}
 		
-		return ArrayView.create(ArrayUtil.createFrom(moduleDecls, ASTNeoNode.class));
+		return ArrayView.create(ArrayUtil.createFrom(declarations, ASTNeoNode.class));
 	}
 	
 	
@@ -283,42 +295,51 @@ public class DeeParser extends AbstractDeeParser {
 		return connect(new ImportSelective(fragment, arrayView(selFragments, ASTNeoNode.class), isRange));
 	}
 	
+	/* --------------------- DECLARATION --------------------- */
 	public static String DECLARATION_RULE = "declaration";
 	
-	public ASTNeoNode parseDeclaration() {
+	public ASTNeoNode parseDeclaration(DeeTokens nodeListTerminator) {
 		while(true) {
-			DeeTokens la = lookAhead();
+			DeeTokens la = assertNotNull_(lookAhead());
 			
-			if(la == DeeTokens.EOF) {
+			if(la == DeeTokens.EOF || la == nodeListTerminator) {
 				return null;
 			}
 			
 			switch (la) {
 			case KW_MIXIN: return parseMixinStringDeclaration();
-			case KW_STATIC: return parseImportDecl(); // TODO
+			
 			case KW_EXTERN: return parseDeclarationExternLinkage();
-			case KW_FINAL:
-			case KW_SYNCHRONIZED:
-			case KW_OVERRIDE:
-			case KW_ABSTRACT:
-			case KW_CONST:
-			case KW_AUTO:
-			case KW_SCOPE:
-			case KW___GSHARED:
-			case KW_SHARED:
-			case KW_IMMUTABLE:
-			case KW_INOUT:
-			// disable
-				
-			case KW_ALIGN:
+			case KW_ALIGN: return parseDeclarationAlign();
 			case KW_PRAGMA:
 				
-			case KW_PRIVATE:
-			case KW_PACKAGE:
-			case KW_PROTECTED:
-			case KW_PUBLIC:
-			case KW_EXPORT:
+			case KW_STATIC: 
+				if(lookAhead(/*1*/) == DeeTokens.KW_IMPORT) { // TODO 
+					return parseImportDecl();
+				}
+				return parseDeclarationBasicAttrib();
+			case KW_DEPRECATED: return parseDeclarationBasicAttrib();
+			case KW_FINAL: return parseDeclarationBasicAttrib();
+			case KW_SYNCHRONIZED: return parseDeclarationBasicAttrib();
+			case KW_OVERRIDE: return parseDeclarationBasicAttrib();
+			case KW_ABSTRACT: return parseDeclarationBasicAttrib();
+			case KW_CONST: return parseDeclarationBasicAttrib();
+			case KW_SCOPE: return parseDeclarationBasicAttrib();
+			case KW___GSHARED: return parseDeclarationBasicAttrib();
+			case KW_SHARED: return parseDeclarationBasicAttrib();
+			case KW_IMMUTABLE: return parseDeclarationBasicAttrib();
+			case KW_INOUT: return parseDeclarationBasicAttrib();
+			// @disable keywords?
+			
+			
+			case KW_PRIVATE: return parseDeclarationProtection();
+			case KW_PACKAGE: return parseDeclarationProtection();
+			case KW_PROTECTED: return parseDeclarationProtection();
+			case KW_PUBLIC: return parseDeclarationProtection();
+			case KW_EXPORT: return parseDeclarationProtection();
 				
+			case KW_AUTO: // TODO:
+
 			default:
 				break;
 			}
@@ -337,26 +358,178 @@ public class DeeParser extends AbstractDeeParser {
 		}
 	}
 	
-	private DeclarationLinkage parseDeclarationExternLinkage() {
+	public final SourceRange srToLastToken(int declStart) {
+		return range(declStart, getLastTokenEndPos());
+	}
+	
+	public final int getLastTokenEndPos() {
+		return lastToken.getEndPos();
+	}
+	
+	public class AttribParseRule {
+		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
+		public NodeList2 declList;
+		
+		public AttribParseRule parseAttribBody() {
+			DeeTokens bodyListTerminator = null;
+			
+			if(tryConsume(DeeTokens.COLON)) {
+				bodySyntax = AttribBodySyntax.COLON;
+			} else if(tryConsume(DeeTokens.OPEN_BRACE)) {
+				bodySyntax = AttribBodySyntax.BRACE_BLOCK;
+				bodyListTerminator = DeeTokens.CLOSE_BRACE;
+			}
+			declList = parseDeclList(bodyListTerminator);
+			
+			if(bodyListTerminator != null) {
+				consumeExpectedToken(bodyListTerminator);
+			}
+			return this;
+		}
+	}
+	
+	public NodeList2 parseDeclList(DeeTokens bodyListTerminator) {
+		int nodeListStart = getLastTokenEndPos();
+		
+		ArrayView<ASTNeoNode> declDefs = parseDeclDefs(bodyListTerminator);
+		NodeList2 nodeList = new NodeList2(declDefs, srToLastToken(nodeListStart));
+		return nodeList;
+	}
+	
+	public DeclarationLinkage parseDeclarationExternLinkage() {
 		if(!tryConsume(DeeTokens.KW_EXTERN)) {
 			return null;
 		}
+		int declStart = lastToken.getStartPos();
+		
+		Linkage linkage = null;
 		
 		if(tryConsume(DeeTokens.OPEN_PARENS)) {
-			consumeIdentifier();
-			consumeExpectedToken(DeeTokens.CLOSE_PARENS);
+			Token linkageId = consumeIf(DeeTokens.IDENTIFIER);
+			if(linkageId != null) {
+				linkage = Linkage.fromString(linkageId.tokenSource);
+				if(linkage == Linkage.C && tryConsume(DeeTokens.INCREMENT)) {
+					linkage = Linkage.CPP;
+				}
+			}
+			if(linkage == null) {
+				reportMissingTokenError(EDeeParserErrors.INVALID_EXTERN_ID, null);
+			}
+			
+			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null) {
+				SourceRange sr = srToLastToken(declStart);
+				return connect(new DeclarationLinkage(linkage, AttribBodySyntax.SINGLE_DECL, null, sr));
+			}
 		}
 		
-		if(tryConsume(DeeTokens.SEMICOLON)) {
-			
-		} else if(tryConsume(DeeTokens.OPEN_BRACE)) {
-			parseDeclDefs();
-			consumeExpectedToken(DeeTokens.CLOSE_BRACE);
-		} else {
-			parseDeclaration();
-		}
-		return null;
+		AttribParseRule attribPR = new AttribParseRule();
+		attribPR.parseAttribBody();
+		
+		return connect(
+			new DeclarationLinkage(linkage, attribPR.bodySyntax, attribPR.declList, srToLastToken(declStart)));
 	}
+	
+	public DeclarationAlign parseDeclarationAlign() {
+		if(!tryConsume(DeeTokens.KW_ALIGN)) {
+			return null;
+		}
+		int declStart = lastToken.getStartPos();
+		
+		int align = -1;
+		
+		if(tryConsume(DeeTokens.OPEN_PARENS)) {
+			Token alignNum = consumeExpectedToken(DeeTokens.INTEGER);
+			if(alignNum != null) {
+				try {
+					align = Integer.parseInt(alignNum.tokenSource);
+				} catch(NumberFormatException e) {
+					// TODO report error
+				}
+			}
+			
+			Token expectedToken = consumeExpectedToken(DeeTokens.CLOSE_PARENS);
+			if(expectedToken == null) {
+				SourceRange sr = srToLastToken(declStart);
+				return connect(new DeclarationAlign(align, AttribBodySyntax.SINGLE_DECL, null, sr));
+			}
+		}
+		
+		AttribParseRule attribRule = new AttribParseRule();
+		attribRule.parseAttribBody();
+		
+		return connect(
+			new DeclarationAlign(align, attribRule.bodySyntax, attribRule.declList, srToLastToken(declStart)));
+	}
+	
+	public DeclarationPragma parseDeclarationPragma() {
+		if(!tryConsume(DeeTokens.KW_PRAGMA)) {
+			return null;
+		}
+		int declStart = lastToken.getStartPos();
+		
+		Token pragmaId = null;
+		if(tryConsume(DeeTokens.OPEN_PARENS)) {
+			pragmaId = consumeIdentifier();
+			if(!isRecoveredId(pragmaId)) {
+			}
+			
+			// TODO pragma argument list;
+			Token expectedToken = consumeExpectedToken(DeeTokens.CLOSE_PARENS);
+			if(expectedToken == null) {
+				SourceRange sr = srToLastToken(declStart);
+				return connect(new DeclarationPragma(symbol(pragmaId), null, AttribBodySyntax.SINGLE_DECL, null, sr));
+			}
+		}
+		// BUG standalone pragma
+		
+		AttribParseRule apr = new AttribParseRule();
+		apr.parseAttribBody();
+		
+		// BUG here: connect(
+		return new DeclarationPragma(symbol(pragmaId), null, apr.bodySyntax, apr.declList, srToLastToken(declStart));
+	}
+`	
+	public Symbol symbol(Token pragmaId) {
+		// BUG here
+//		return pragmaId == null ? null : new Symbol(pragmaId.tokenSource, sr(pragmaId));
+		return new Symbol(pragmaId.tokenSource, sr(pragmaId));
+	}
+	
+	public DeclarationProtection parseDeclarationProtection() {
+		switch (lookAhead()) {
+		case KW_PRIVATE:
+		case KW_PACKAGE:
+		case KW_PROTECTED:
+		case KW_PUBLIC:
+		case KW_EXPORT: 
+			break;
+		default:
+			return null;
+		}
+		consumeLookAhead();
+		int declStart = lastToken.getStartPos();
+		Protection protection = Protection.fromToken(lastToken.type);
+		
+		AttribParseRule apr = new AttribParseRule().parseAttribBody();
+		// BUG here: connect(
+		return new DeclarationProtection(protection, apr.bodySyntax, apr.declList, srToLastToken(declStart));
+	}
+	
+	public DeclarationStorageClass parseDeclarationBasicAttrib() {
+		EDeclarationAttribute attrib = EDeclarationAttribute.fromToken(lookAhead());
+		if(attrib == null) {
+			return null;
+		}
+		consumeLookAhead();
+		int declStart = lastToken.getStartPos();
+		
+		AttribParseRule apr = new AttribParseRule().parseAttribBody();
+		// BUG here: connect(
+		return new DeclarationStorageClass(attrib, apr.bodySyntax, apr.declList, srToLastToken(declStart));
+	}
+	
+	
+	/* ----------------------------------------- */
 	
 	public DeclarationMixinString parseMixinStringDeclaration() {
 		if(!tryConsume(DeeTokens.KW_MIXIN)) {
@@ -366,7 +539,7 @@ public class DeeParser extends AbstractDeeParser {
 		Expression exp = null;
 		
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
-			// TODO rest BUG here
+			// TODO rest strings BUG here
 			if(tryConsume(DeeTokens.STRING_DQ)) {
 				Token expToken = lastToken;
 				exp = connect(new ExpLiteralString(expToken, sr(expToken)));
@@ -377,8 +550,7 @@ public class DeeParser extends AbstractDeeParser {
 		}
 		
 		consumeExpectedToken(DeeTokens.SEMICOLON);
-		int declEnd = lastToken.getEndPos();
-		return connect(new DeclarationMixinString(exp, range(declStart, declEnd)));
+		return connect(new DeclarationMixinString(exp, srToLastToken(declStart)));
 	}
 	
 	// TODO:

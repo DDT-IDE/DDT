@@ -1,0 +1,7 @@
+//#SOURCE_TESTS 6 #
+#HEADER//
+
+@(3) int a;
+@("string", 7) int b;
+enum Foo;
+@Foo int c;

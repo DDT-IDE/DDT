@@ -2,6 +2,8 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import melnorme.utilbox.misc.StringUtil;
+import descent.core.compiler.Linkage;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 
@@ -14,8 +16,9 @@ public class ParserError {
 		
 		EXPECTED_TOKEN, // Syntax error: expected specific token
 		EXPECTED_RULE, // Syntax error: expected valid token for rule
-		SYNTAX_ERROR // Syntax error: unexpected rule in rule start
+		SYNTAX_ERROR, // Syntax error: unexpected rule in rule start
 		
+		INVALID_EXTERN_ID //Syntax error: specific error for extern declaration
 	}
 	
 	protected final EDeeParserErrors errorType;
@@ -44,6 +47,9 @@ public class ParserError {
 			return "Unexpected token after \"" + msgErrorSource + "\", while trying to parse " + msgObj2 + ".";
 		case SYNTAX_ERROR:
 			return "Unexpected token \"" + msgErrorSource + "\", while trying to parse " + msgObj2 + ".";
+		case INVALID_EXTERN_ID:
+			return "Invalid linkage specifier \"" + msgErrorSource + "\", valid ones are: "+
+				StringUtil.collToString(Linkage.values(), ",") + ".";
 		}
 		throw assertFail();
 	}

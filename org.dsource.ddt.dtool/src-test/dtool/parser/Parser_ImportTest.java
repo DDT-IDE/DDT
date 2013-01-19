@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import org.junit.Test;
 
 import dtool.ast.ASTNeoNode;
+import dtool.ast.NodeList2;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportSelective;
@@ -54,8 +55,8 @@ public class Parser_ImportTest extends Parser__CommonTest {
 		checkImportFragment(child4.imports.get(0), "asdf");
 		checkImportFragment(child4.imports.get(1), "std.foo");
 		checkSelectiveImportFragment(child4.imports.get(1), "selec1", "selec2");
-		
 	}
+	
 	public void checkImportFragment(IImportFragment fragment, String name) {
 		checkNode(fragment.getModuleRef(), name);
 	}
@@ -73,6 +74,10 @@ public class Parser_ImportTest extends Parser__CommonTest {
 	protected DeclarationImport checkImport(ASTNeoNode node, boolean isPublic, boolean isStatic, int numChildren) {
 		if(isPublic) {
 			node = node.getChildren()[0];
+		}
+		if(node instanceof NodeList2) {
+			NodeList2 nodeList2 = (NodeList2) node;
+			node = nodeList2.nodes.get(0);
 		}
 		DeclarationImport decImport = downCast(node, DeclarationImport.class);
 		assertEquals(decImport.isStatic, isStatic);

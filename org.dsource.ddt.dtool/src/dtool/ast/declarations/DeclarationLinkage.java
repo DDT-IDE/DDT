@@ -1,18 +1,16 @@
 package dtool.ast.declarations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import descent.internal.compiler.parser.LINK;
+import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.NodeList;
+import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 
 public class DeclarationLinkage extends DeclarationAttrib implements IStatement {
 	
 	public enum Linkage {
-	    DEFAULT(null),
 	    D("D"),
 	    C("C"),
 	    CPP("C++"),
@@ -24,19 +22,6 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	    
 	    private Linkage(String name) {
 			this.name = name;
-	    }
-	    
-	    public static Linkage fromLINK(LINK linkage) {
-	    	switch (linkage) {
-	    	case LINKdefault: return DEFAULT;
-	    	case LINKd: return D;
-	    	case LINKc: return C;
-	    	case LINKcpp: return CPP;
-	    	case LINKwindows: return WINDOWS;
-	    	case LINKpascal: return PASCAL;
-	    	case LINKsystem: return SYSTEM;
-			}
-	    	throw assertUnreachable();
 	    }
 	    
 	    public static Linkage fromString(String str) {
@@ -53,8 +38,8 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	
 	public final Linkage linkage;
 	
-	public DeclarationLinkage(Linkage linkage, NodeList decls, SourceRange sourceRange) {
-		super(decls, sourceRange);
+	public DeclarationLinkage(Linkage linkage, AttribBodySyntax bodySyntax, NodeList2 decls, SourceRange sr) {
+		super(bodySyntax, decls, sr);
 		this.linkage = linkage;
 	}
 	
@@ -62,18 +47,19 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			acceptBodyChildren(visitor);
+			TreeVisitor.acceptChildren(visitor, body);
 		}
 		visitor.endVisit(this);
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("extern ");
-		if(linkage != Linkage.DEFAULT) {
+		cp.append("extern");
+		if(linkage != null) {
 			cp.append("(", linkage.name, ")");
 		}
-		// TODO:
+		cp.append(" ");
+		toStringAsCode_body(cp);
 	}
 	
 }

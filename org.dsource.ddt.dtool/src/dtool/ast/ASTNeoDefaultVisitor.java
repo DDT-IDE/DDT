@@ -10,11 +10,16 @@
  *******************************************************************************/
 package dtool.ast;
 
+import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
+import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
+import dtool.ast.declarations.DeclarationPragma;
+import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.DeclarationStorageClass;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -33,8 +38,8 @@ import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
-import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.Module.DeclarationModule;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.Resolvable;
@@ -73,30 +78,25 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 		return true;
 	}
 	
-	@Override
-	public boolean visit(Module elem) { return true; }
+	@Override public boolean visit(Module elem) { return true; }
+	@Override public boolean visit(DeclarationModule node) { return true; }
 	
-	@Override
-	public boolean visit(DeclarationModule node) { return true; }
+	@Override public final boolean visit(DeclarationImport node) { return true; }
+	@Override public boolean visit(ImportContent node) { return true; }
+	@Override public boolean visit(ImportSelective node) { return true; }
+	@Override public boolean visit(ImportAlias node) { return true; }
+	@Override public boolean visit(ImportSelectiveAlias node) { return true; }
 	
-	@Override
-	public final boolean visit(DeclarationImport node) { return true; }
+	@Override public boolean visit(DeclarationEmpty node) { return true; }
 	
-	@Override
-	public boolean visit(ImportContent node) { return true; }
-	@Override
-	public boolean visit(ImportSelective node) { return true; }
-	@Override
-	public boolean visit(ImportAlias node) { return true; }
-	@Override
-	public boolean visit(ImportSelectiveAlias node) { return true; }
+	//-- Various Declarations
+	@Override public boolean visit(DeclarationLinkage node) { return true; }
+	@Override public boolean visit(DeclarationAlign node) { return true; }
+	@Override public boolean visit(DeclarationPragma node) { return true; }
+	@Override public boolean visit(DeclarationProtection node) { return true; }
+	@Override public boolean visit(DeclarationStorageClass node) { return true; }
 	
-	@Override
-	public boolean visit(DeclarationEmpty node) { return true; }
-	
-	/*---*/
-	
-	
+	//-- Aggregates
 	@Override
 	public boolean visit(DefinitionTemplate elem) {
 		return true;

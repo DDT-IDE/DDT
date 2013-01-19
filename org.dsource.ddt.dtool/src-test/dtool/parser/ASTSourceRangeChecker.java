@@ -12,13 +12,19 @@ import java.util.ListIterator;
 import dtool.ast.ASTCommonSourceRangeChecker;
 import dtool.ast.ASTNeoAbstractVisitor;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.NodeList2;
 import dtool.ast.NodeUtil;
+import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
+import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
+import dtool.ast.declarations.DeclarationPragma;
+import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.DeclarationStorageClass;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -48,7 +54,6 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
-import dtool.parser.ParserError.EDeeParserErrors;
 
 public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 	
@@ -114,16 +119,19 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		public boolean areThereMissingTokenErrorsInNode(ASTNeoNode node) {
 			for (ParserError error : expectedErrors) {
 				
-				if(error.errorType == EDeeParserErrors.MALFORMED_TOKEN || 
-					error.errorType == EDeeParserErrors.INVALID_TOKEN_CHARACTERS ||
-					error.errorType == EDeeParserErrors.SYNTAX_ERROR ||
-					error.errorType == EDeeParserErrors.EXPECTED_RULE ||
-					(error.errorType == EDeeParserErrors.EXPECTED_TOKEN && error.msgObj2 == DeeTokens.IDENTIFIER)) {
+				switch (error.errorType) {
+				case EXPECTED_TOKEN: if(error.msgObj2 != DeeTokens.IDENTIFIER) break;
+				case MALFORMED_TOKEN:
+				case INVALID_TOKEN_CHARACTERS:
+				case SYNTAX_ERROR:
+				case EXPECTED_RULE:
 					continue;
+				case INVALID_EXTERN_ID: break;
 				}
 				
+				// Then there is an EXPECTED_TOKEN error in error.originNode
 				assertNotNull(error.originNode);
-				// There is an EXPECTED_TOKEN error in error.originNode
+				
 				if(NodeUtil.isContainedIn(error.originNode, node)) {
 					return true;
 				}
@@ -161,6 +169,9 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		public boolean visit(ASTNeoNode node) {
 			if(node instanceof MiscDeclaration) {
 				return reparseCheck(MiscDeclaration.parseMiscDeclaration(nodeRangeSourceParser), node);
+			}
+			if(node instanceof NodeList2) {
+				return reparseCheck(nodeRangeSourceParser.parseDeclList(null), node);
 			}
 			assertFail();
 			return false;
@@ -221,6 +232,29 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 			return DONT_VISIT_CHILDREN;
 		}
 		
+		//-- various Declarations
+		@Override
+		public boolean visit(DeclarationLinkage node) {
+			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationExternLinkage(), node);
+		}
+		@Override
+		public boolean visit(DeclarationAlign node) {
+			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationAlign(), node);
+		}
+		@Override
+		public boolean visit(DeclarationPragma node) {
+			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationPragma(), node);
+		}
+		@Override
+		public boolean visit(DeclarationProtection node) {
+			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationProtection(), node);
+		}
+		@Override
+		public boolean visit(DeclarationStorageClass node) {
+			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationBasicAttrib(), node);
+		}
+		
+		//-- Aggregates
 		@Override
 		public boolean visit(DefinitionStruct node) {
 			assertFail(); // TODO Auto-generated method stub
