@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.core.Predicate;
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Test;
@@ -34,6 +35,7 @@ import dtool.ast.SourceRange;
 import dtool.parser.ParserError.EDeeParserErrors;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
+import dtool.tests.SimpleParser;
 import dtool.util.NewUtils;
 
 @RunWith(Parameterized.class)
@@ -77,7 +79,9 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	public void runSourceBasedTest(AnnotatedSource testSource) {
 		String parseSource = testSource.source;
 		String expectedGenSource = parseSource;
+		NamedNodeElement[] expectedStructure = null;
 		boolean allowAnyErrors = false;
+		boolean ignoreFurtherErrorMDs = false;
 		
 		ArrayList<ParserError> expectedErrors = new ArrayList<ParserError>();
 		
@@ -85,9 +89,14 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			if(mde.name.equals("AST_EXPECTED")) {
 				assertTrue(expectedGenSource == parseSource);
 				expectedGenSource = mde.associatedSource;
-				break; // Dont process any more metadata
+				ignoreFurtherErrorMDs = true;
+			} else if(mde.name.equals("AST_STRUCTURE_EXPECTED")) {
+				assertTrue(expectedGenSource == parseSource);
+				expectedStructure = processExpectedStructure(mde.associatedSource);
 			} else if(mde.name.equals("error")){
-				expectedErrors.add(decodeError(parseSource, mde));
+				if(!ignoreFurtherErrorMDs) {
+					expectedErrors.add(decodeError(parseSource, mde));
+				}
 			} else if(mde.name.equals("parser") && mde.value.equals("AllowAnyErrors")){
 				allowAnyErrors = true;
 			} else if(mde.name.equals("parser") && mde.value.equals("DontCheckSourceEquality")){
@@ -98,7 +107,8 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			}
 		}
 		
-		runParserTest______________________(parseSource, expectedGenSource, expectedErrors, allowAnyErrors);
+		runParserTest______________________(
+			parseSource, expectedGenSource, expectedStructure, expectedErrors, allowAnyErrors);
 	}
 	
 	public ParserError decodeError(String parseSource, MetadataEntry mde) {
@@ -116,33 +126,29 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			return new ParserError(EDeeParserErrors.MALFORMED_TOKEN, errorRange, null, null);
 		} else if(errorType.equals("EXP")) {
 			String expectedTokenStr = DeeLexerTest.transformTokenNameAliases(errorParam);
-			return createErrorFromLastToken(EDeeParserErrors.EXPECTED_TOKEN, mde, deeLexer, expectedTokenStr);
+			return createErrorToken(EDeeParserErrors.EXPECTED_TOKEN, mde, deeLexer, true, expectedTokenStr);
 		} else if(errorType.equals("EXPRULE")) {
 			errorParam = getExpectedRuleName(errorParam);
-			return createErrorFromLastToken(EDeeParserErrors.EXPECTED_RULE, mde, deeLexer, errorParam);
+			return createErrorToken(EDeeParserErrors.EXPECTED_RULE, mde, deeLexer, true, errorParam);
 		} else if(errorType.equals("SE")) {
-			String errorSource = mde.associatedSource;
-			if(errorSource == null) {
-				Token token = findNextEffectiveTokenAfterOffset(mde.offset, deeLexer);
-				errorRange = DeeParser.sr(token);
-				errorSource = token.tokenSource;
-			}
 			errorParam = getExpectedRuleName(errorParam);
-			return new ParserError(EDeeParserErrors.SYNTAX_ERROR, errorRange, errorSource, errorParam);
+			return createErrorToken(EDeeParserErrors.SYNTAX_ERROR, mde, deeLexer, false, errorParam);
 		} else if(mde.value.equals("BAD_LINKAGE_ID")) {
-			return createErrorFromLastToken(EDeeParserErrors.INVALID_EXTERN_ID, mde, deeLexer, null);
+			return createErrorToken(EDeeParserErrors.INVALID_EXTERN_ID, mde, deeLexer, true, null);
 		} else {
 			throw assertFail();
 		}
 	}
 	
-	public ParserError createErrorFromLastToken(EDeeParserErrors errorTypeTk, MetadataEntry mde, DeeLexer deeLexer,
-		String errorParam) {
+	public ParserError createErrorToken(EDeeParserErrors errorTypeTk, MetadataEntry mde, DeeLexer deeLexer,
+		boolean tokenBefore, String errorParam) {
 		String errorSource = mde.associatedSource;
 		SourceRange errorRange = mde.getSourceRange();
 		
 		if(mde.associatedSource == null) {
-			Token lastToken = findLastEffectiveTokenBeforeOffset(mde.offset, deeLexer);
+			Token lastToken = tokenBefore 
+				? findLastEffectiveTokenBeforeOffset(mde.offset, deeLexer)
+				: findNextEffectiveTokenAfterOffset(mde.offset, deeLexer);
 			errorRange = DeeParser.sr(lastToken);
 			errorSource = lastToken.tokenSource;
 		}
@@ -193,6 +199,49 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			}
 			assertTrue(token.getEndPos() <= offset);
 		}
+	}
+	
+	public static class NamedNodeElement {
+		public final String name;
+		public final NamedNodeElement[] children;
+		
+		public NamedNodeElement(String name, NamedNodeElement[] children) {
+			this.name = name;
+			this.children = children;
+		}
+		@Override
+		public String toString() {
+			return name + "(" + StringUtil.collToString(children, " ") + ")";
+		}
+	}
+	
+	protected NamedNodeElement[] processExpectedStructure(String source) {
+		SimpleParser parser = new SimpleParser(source);
+		NamedNodeElement[] namedElements = readNamedElementsList(parser);
+		assertTrue(parser.lookaheadIsEOF());
+		return namedElements;
+	}
+	
+	public static NamedNodeElement[] readNamedElementsList(SimpleParser parser) {
+		ArrayList<NamedNodeElement> elements = new ArrayList<NamedNodeElement>();
+		
+		while(true) {
+			String id = parser.seekWhiteSpace().consumeAlphaNumericUS(true);
+			if(id.isEmpty()) {
+				break;
+			}
+			NamedNodeElement[] children;
+			if(parser.tryConsume("(")) {
+				children = readNamedElementsList(parser);
+				parser.seekWhiteSpace().consume(")");
+			} else {
+				children = new NamedNodeElement[0];
+			}
+			elements.add(new NamedNodeElement(id, children));
+		}
+		assertTrue(parser.lookaheadIsEOF() || parser.lookAhead() == ')');
+		
+		return ArrayUtil.createFrom(elements, NamedNodeElement.class);
 	}
 	
 }

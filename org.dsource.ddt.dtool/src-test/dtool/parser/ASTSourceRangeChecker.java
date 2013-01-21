@@ -24,12 +24,13 @@ import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
-import dtool.ast.declarations.DeclarationStorageClass;
+import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
+import dtool.ast.declarations.InvalidSyntaxDeclaration;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
@@ -173,6 +174,9 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 			if(node instanceof NodeList2) {
 				return reparseCheck(nodeRangeSourceParser.parseDeclList(null), node);
 			}
+			if(node instanceof InvalidSyntaxDeclaration) {
+				return reparseCheck(nodeRangeSourceParser.parseDeclaration(false), node);
+			}
 			assertFail();
 			return false;
 		}
@@ -250,7 +254,7 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationProtection(), node);
 		}
 		@Override
-		public boolean visit(DeclarationStorageClass node) {
+		public boolean visit(DeclarationBasicAttrib node) {
 			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationBasicAttrib(), node);
 		}
 		

@@ -26,12 +26,13 @@ import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationProtection.Protection;
-import dtool.ast.declarations.DeclarationStorageClass;
-import dtool.ast.declarations.DeclarationStorageClass.EDeclarationAttribute;
+import dtool.ast.declarations.DeclarationBasicAttrib;
+import dtool.ast.declarations.DeclarationBasicAttrib.EDeclarationAttribute;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
+import dtool.ast.declarations.InvalidSyntaxDeclaration;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
@@ -187,7 +188,10 @@ public class DeeParser extends AbstractDeeParser {
 	public ArrayView<ASTNeoNode> parseDeclDefs(DeeTokens nodeListTerminator) {
 		ArrayList<ASTNeoNode> declarations = new ArrayList<ASTNeoNode>();
 		while(true) {
-			ASTNeoNode decl = parseDeclaration(nodeListTerminator);
+			if(lookAhead() == nodeListTerminator) {
+				break;
+			}
+			ASTNeoNode decl = parseDeclaration();
 			if(decl == null) { 
 				break;
 			}
@@ -298,11 +302,16 @@ public class DeeParser extends AbstractDeeParser {
 	/* --------------------- DECLARATION --------------------- */
 	public static String DECLARATION_RULE = "declaration";
 	
-	public ASTNeoNode parseDeclaration(DeeTokens nodeListTerminator) {
+	public ASTNeoNode parseDeclaration() {
+		return parseDeclaration(true);
+	}
+	
+	/** This rule always returns a node, except only on EOF. */
+	public ASTNeoNode parseDeclaration(boolean acceptEmptyDecl) {
 		while(true) {
 			DeeTokens la = assertNotNull_(lookAhead());
 			
-			if(la == DeeTokens.EOF || la == nodeListTerminator) {
+			if(la == DeeTokens.EOF) {
 				return null;
 			}
 			
@@ -349,11 +358,12 @@ public class DeeParser extends AbstractDeeParser {
 			} else if(la == DeeTokens.IDENTIFIER || la == DeeTokens.KW_VOID || la == DeeTokens.KW_INT 
 				|| la == DeeTokens.ASSIGN || la == DeeTokens.DOT) {
 				return MiscDeclaration.parseMiscDeclaration(this);
-			} else if(tryConsume(DeeTokens.SEMICOLON)) {
+			} else if(acceptEmptyDecl && tryConsume(DeeTokens.SEMICOLON)) {
 				return connect(new DeclarationEmpty(sr(lastToken)));
 			} else {
-				reportSyntaxError(lookAheadToken(), DECLARATION_RULE);
-				return connect(MiscDeclaration.parseMiscDeclaration(this));
+				Token badToken = consumeLookAhead();
+				reportSyntaxError(DECLARATION_RULE);
+				return connect(new InvalidSyntaxDeclaration(badToken));
 			}
 		}
 	}
@@ -371,19 +381,22 @@ public class DeeParser extends AbstractDeeParser {
 		public NodeList2 declList;
 		
 		public AttribParseRule parseAttribBody() {
-			DeeTokens bodyListTerminator = null;
-			
 			if(tryConsume(DeeTokens.COLON)) {
 				bodySyntax = AttribBodySyntax.COLON;
+				declList = parseDeclList(null);
 			} else if(tryConsume(DeeTokens.OPEN_BRACE)) {
 				bodySyntax = AttribBodySyntax.BRACE_BLOCK;
-				bodyListTerminator = DeeTokens.CLOSE_BRACE;
+				declList = parseDeclList(DeeTokens.CLOSE_BRACE);
+				consumeExpectedToken(DeeTokens.CLOSE_BRACE);
+			} else {
+				ASTNeoNode decl = parseDeclaration(false);
+				if(decl == null) {
+					reportErrorExpectedRule(DECLARATION_RULE);
+				} else {
+					declList = new NodeList2(ArrayView.create(new ASTNeoNode[] {decl}), decl.getSourceRange());
+				}
 			}
-			declList = parseDeclList(bodyListTerminator);
 			
-			if(bodyListTerminator != null) {
-				consumeExpectedToken(bodyListTerminator);
-			}
 			return this;
 		}
 	}
@@ -413,7 +426,7 @@ public class DeeParser extends AbstractDeeParser {
 				}
 			}
 			if(linkage == null) {
-				reportMissingTokenError(EDeeParserErrors.INVALID_EXTERN_ID, null);
+				reportError(EDeeParserErrors.INVALID_EXTERN_ID, null, true);
 			}
 			
 			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null) {
@@ -511,11 +524,11 @@ public class DeeParser extends AbstractDeeParser {
 		Protection protection = Protection.fromToken(lastToken.type);
 		
 		AttribParseRule apr = new AttribParseRule().parseAttribBody();
-		// BUG here: connect(
-		return new DeclarationProtection(protection, apr.bodySyntax, apr.declList, srToLastToken(declStart));
+		return connect(
+			new DeclarationProtection(protection, apr.bodySyntax, apr.declList, srToLastToken(declStart)));
 	}
 	
-	public DeclarationStorageClass parseDeclarationBasicAttrib() {
+	public DeclarationBasicAttrib parseDeclarationBasicAttrib() {
 		EDeclarationAttribute attrib = EDeclarationAttribute.fromToken(lookAhead());
 		if(attrib == null) {
 			return null;
@@ -524,8 +537,8 @@ public class DeeParser extends AbstractDeeParser {
 		int declStart = lastToken.getStartPos();
 		
 		AttribParseRule apr = new AttribParseRule().parseAttribBody();
-		// BUG here: connect(
-		return new DeclarationStorageClass(attrib, apr.bodySyntax, apr.declList, srToLastToken(declStart));
+		return connect(
+			new DeclarationBasicAttrib(attrib, apr.bodySyntax, apr.declList, srToLastToken(declStart)));
 	}
 	
 	

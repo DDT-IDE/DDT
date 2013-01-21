@@ -3,6 +3,9 @@
 extern(C) void foo;
 align (1) int foo;
 
+#AST_STRUCTURE_EXPECTED:
+DeclarationLinkage(MiscDeclaration)
+DeclarationAlign(MiscDeclaration)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 public: 
 int foo;
@@ -10,19 +13,53 @@ void bar;
 extern(C):
 int foo;
 void bar;
+
+#AST_STRUCTURE_EXPECTED:
+DeclarationProtection(
+	MiscDeclaration MiscDeclaration
+	DeclarationLinkage(
+		MiscDeclaration MiscDeclaration
+	)
+)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 final {
-	int foo; 
+	int foo;
 }
-
+static:
+const:
+#AST_STRUCTURE_EXPECTED:
+DeclarationBasicAttrib( MiscDeclaration )
+DeclarationBasicAttrib(
+	DeclarationBasicAttrib
+)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 // Should rule continue or not?
 extern(#error(BAD_LINKAGE_ID)) int bar;
 align(#error(EXP_INTEGER)) int bar;
+
+#AST_STRUCTURE_EXPECTED:
+DeclarationLinkage(MiscDeclaration)
+DeclarationAlign(MiscDeclaration)
+
 #AST_EXPECTED:
 extern int bar;
 align int bar;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ EOF case
+extern(C) #error(EXPRULE_decl)
 
+#AST_STRUCTURE_EXPECTED:
+DeclarationLinkage()
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Empty Declaration case
+extern(C) #error(SE_decl) ;
+
+#AST_STRUCTURE_EXPECTED:
+DeclarationLinkage(InvalidSyntaxDeclaration)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+extern(C) #error(SE_decl) ] int foo;
+
+#AST_STRUCTURE_EXPECTED:
+DeclarationLinkage(InvalidSyntaxDeclaration)
+MiscDeclaration
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 #@LINKAGE_TYPE{C,C++,D,Windows,Pascal,System}
@@ -97,23 +134,17 @@ void bar;
 ●
 #?DECL_BROKEN{#error(SE_decl)} : /* Zero decls */
 ●
-#?DECL_BROKEN{#error(SE_decl)} {} // This will change in the future
+#?DECL_BROKEN{#error(SE_decl)} { #?DECL_BROKEN{#error(SE_decl)} } // This will change in the future
 ●
-#?DECL_BROKEN{#error(SE_decl)}{ // This will change in the future
+#?DECL_BROKEN{#error(SE_decl)} { // This will change in the future
 	int fooX;
 	void bar;
 #?DECL_BROKEN{#error(SE_decl)}}
+●
+/*EMPTY CASE*/ #?DECL_BROKEN{,#error(SE_decl)} ;
 】
+
 #AST_EXPECTED:
 
 #@ATTRIBS_EXP(ATTRIBS) #@(BODY_TYPES)
 
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-
-#@(ATTRIBS) #@BODY_TYPES【
-/*EMPTY CASE*/ #?AST_EXPECTED{,#error(EXPRULE_decl)};
-】
-#AST_EXPECTED:
-
-#@ATTRIBS_EXP(ATTRIBS) #@(BODY_TYPES)

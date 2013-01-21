@@ -1,6 +1,7 @@
 package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
+import dtool.ast.SourceRange;
 
 public class Token {
 	
@@ -28,6 +29,10 @@ public class Token {
 	
 	public int getEndPos() {
 		return startPos + tokenSource.length();
+	}
+	
+	public SourceRange getSourceRange() {
+		return new SourceRange(getStartPos(), getLength());
 	}
 	
 	public final String getSourceValue() {

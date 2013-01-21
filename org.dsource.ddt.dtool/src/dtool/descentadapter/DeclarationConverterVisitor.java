@@ -50,16 +50,16 @@ import dtool.ast.declarations.DeclarationLinkage.Linkage;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationProtection.Protection;
-import dtool.ast.declarations.DeclarationStorageClass.EDeclarationAttribute;
+import dtool.ast.declarations.DeclarationBasicAttrib.EDeclarationAttribute;
 import dtool.ast.declarations.DeclarationStaticAssert;
-import dtool.ast.declarations.DeclarationStorageClass;
+import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.ImportStatic;
-import dtool.ast.declarations.InvalidSyntaxDeclaration;
+import dtool.ast.declarations.InvalidSyntaxDeclaration_Old;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefModifier;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
@@ -389,14 +389,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		EDeclarationAttribute declAttrib = EDeclarationAttribute.FINAL; // WRONG, but dont care, deprecated
-		return endAdapt(new DeclarationStorageClass(
+		return endAdapt(new DeclarationBasicAttrib(
 			declAttrib, AttribBodySyntax.BRACE_BLOCK, body, 
 			DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override
 	public void endVisit(descent.internal.compiler.parser.StorageClassDeclaration elem) {
-		DeclarationStorageClass scDecl = (DeclarationStorageClass) ret;
+		DeclarationBasicAttrib scDecl = (DeclarationBasicAttrib) ret;
 		scDecl.processEffectiveModifiers();
 	}
 
@@ -513,7 +513,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.VarDeclaration elem) {
 		if(elem.ident == null) {
-			return endAdapt(new InvalidSyntaxDeclaration(
+			return endAdapt(new InvalidSyntaxDeclaration_Old(
 				DefinitionConverter.sourceRange(elem), 
 				ArrayView.create(array(
 						ReferenceConverter.convertType(elem.type, convContext),

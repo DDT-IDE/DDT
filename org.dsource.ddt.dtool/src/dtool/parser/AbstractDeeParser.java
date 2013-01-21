@@ -125,21 +125,22 @@ public class AbstractDeeParser {
 	}
 	
 	public void reportErrorExpectedToken(DeeTokens expected) {
-		reportMissingTokenError(EDeeParserErrors.EXPECTED_TOKEN, expected);
+		reportError(EDeeParserErrors.EXPECTED_TOKEN, expected, true);
 	}
 	
 	public void reportErrorExpectedRule(String expectedRule) {
-		reportMissingTokenError(EDeeParserErrors.EXPECTED_RULE, expectedRule);
+		reportError(EDeeParserErrors.EXPECTED_RULE, expectedRule, false);
 	}
 	
-	public void reportMissingTokenError(EDeeParserErrors parserError, Object msgObj2) {
-		String errorSource = lastToken.tokenSource;
-		ParserError error = addError(parserError, sr(lastToken), errorSource, msgObj2);
-		pendingMissingTokenErrors.add(error);
+	public void reportSyntaxError(String expectedRule) {
+		reportError(EDeeParserErrors.SYNTAX_ERROR, expectedRule, false);
 	}
 	
-	public void reportSyntaxError(Token lookAheadToken, String expectedRule) {
-		addError(EDeeParserErrors.SYNTAX_ERROR, sr(lookAheadToken), lookAheadToken.tokenSource, expectedRule);
+	public void reportError(EDeeParserErrors parserError, Object msgObj2, boolean missingToken) {
+		ParserError error = addError(parserError, sr(lastToken), lastToken.tokenSource, msgObj2);
+		if(missingToken) {
+			pendingMissingTokenErrors.add(error);
+		}
 	}
 	
 	protected final <T extends ASTNeoNode> T connect(T node) {
@@ -158,7 +159,7 @@ public class AbstractDeeParser {
 	}
 	
 	public static SourceRange sr(Token token) {
-		return new SourceRange(token.getStartPos(), token.getLength());
+		return token.getSourceRange();
 	}
 	
 	public static SourceRange sr(Token tokStart, Token tokEnd) {

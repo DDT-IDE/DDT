@@ -26,16 +26,14 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	
 	public static final ASTNeoNode[] NO_ELEMENTS = new ASTNeoNode[0]; 
 	
-	protected int sourceStart;
-	protected int sourceEnd;
+	protected int sourceStart = -1;
+	protected int sourceEnd = -1;
 	
-	protected ASTNeoNode(int start, int end) {
-		this.sourceStart = start;
-		this.sourceEnd = end;
+	protected ASTNeoNode(SourceRange sourceRange) {
+		setSourceRange(sourceRange);
 	}
 	
 	public ASTNeoNode() {
-		this(-1, -1);
 	}
 	
 	/** Gets the source range start position. */

@@ -12,7 +12,7 @@ import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
-import dtool.ast.declarations.DeclarationStorageClass;
+import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -72,7 +72,7 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 	@Override public boolean visit(DeclarationAlign node) { return true; }
 	@Override public boolean visit(DeclarationPragma node) { return true; }
 	@Override public boolean visit(DeclarationProtection node) { return true; }
-	@Override public boolean visit(DeclarationStorageClass node) { return true; }
+	@Override public boolean visit(DeclarationBasicAttrib node) { return true; }
 	
 	/* ---------------------------------- */
 	

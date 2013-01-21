@@ -1,33 +1,29 @@
 package dtool.ast.declarations;
 
-import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
-import dtool.util.ArrayView;
+import dtool.parser.Token;
 
 public class InvalidSyntaxDeclaration extends ASTNeoNode implements IStatement {
 	
-	public final ArrayView<ASTNeoNode> genericChildren;
+	public final Token badToken;
 	
-	public InvalidSyntaxDeclaration(SourceRange sourceRange) {
-		initSourceRange(sourceRange);
-		this.genericChildren = null;
-	}
-	
-	public InvalidSyntaxDeclaration(SourceRange sourceRange, ArrayView<ASTNeoNode> children) {
-		initSourceRange(sourceRange);
-		this.genericChildren = parentize(children, true);
+	public InvalidSyntaxDeclaration(Token badToken) {
+		super(badToken.getSourceRange());
+		this.badToken = badToken;
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, genericChildren);
-		}
+		visitor.visit(this);
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(badToken);
 	}
 	
 }

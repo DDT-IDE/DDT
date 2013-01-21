@@ -12,7 +12,7 @@ import dtool.ast.definitions.Definition;
 import dtool.parser.DeeTokens;
 import dtool.refmodel.INonScopedBlock;
 
-public class DeclarationStorageClass extends DeclarationAttrib {
+public class DeclarationBasicAttrib extends DeclarationAttrib {
 	
 	public static enum EDeclarationAttribute {
 		DEPRECATED,
@@ -60,7 +60,7 @@ public class DeclarationStorageClass extends DeclarationAttrib {
 	
 	public final EDeclarationAttribute declAttrib;
 	
-	public DeclarationStorageClass(EDeclarationAttribute declAttrib, AttribBodySyntax abs, NodeList2 decls, 
+	public DeclarationBasicAttrib(EDeclarationAttribute declAttrib, AttribBodySyntax abs, NodeList2 decls, 
 		SourceRange sr) {
 		super(abs, decls, sr);
 		this.declAttrib = declAttrib;

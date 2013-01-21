@@ -5,27 +5,17 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
-import org.junit.Test;
-
 import dtool.ast.ASTNeoNode;
+import dtool.ast.NodeList2;
 import dtool.ast.definitions.Module;
+import dtool.parser.DeeParserSourceBasedTest.NamedNodeElement;
 import dtool.parser.Token.ErrorToken;
 import dtool.tests.CommonTestUtils;
 
 public class DeeParserTest extends CommonTestUtils {
 	
-	@Test
-	public void basicTest() throws Exception { basicTest$(); }
-	public void basicTest$() throws Exception {
-		runParserTest("module pack.foo;");
-	}
-	
-	public static void runParserTest(String testSource) {
-		runParserTest______________________(testSource, testSource, new ArrayList<ParserError>(), false);
-	}
-	
 	public static void runParserTest______________________(String parseSource, String expectedGenSource, 
-		ArrayList<ParserError> expectedErrors, boolean allowAnyErrors) {
+		NamedNodeElement[] expectedStructure, ArrayList<ParserError> expectedErrors, boolean allowAnyErrors) {
 		
 		DeeParserResult result = DeeParser.parse(parseSource);
 		
@@ -34,6 +24,10 @@ public class DeeParserTest extends CommonTestUtils {
 		
 		if(expectedGenSource != null) {
 			checkSourceEquality(module, expectedGenSource);
+		}
+		
+		if(expectedStructure != null) {
+			checkExpectedStructure(module, expectedStructure);
 		}
 		
 		if(allowAnyErrors == false) {
@@ -94,6 +88,28 @@ public class DeeParserTest extends CommonTestUtils {
 			token.type == DeeTokens.COMMENT_LINE ||
 			token.type == DeeTokens.COMMENT_MULTI ||
 			token.type == DeeTokens.COMMENT_NESTED;
+	}
+	
+	public static void checkExpectedStructure(Module module, NamedNodeElement[] expectedStructure) {
+		ASTNeoNode[] children = module.getChildren();
+		checkExpectedStructure(children, expectedStructure, true);
+	}
+	
+	public static void checkExpectedStructure(ASTNeoNode[] children, NamedNodeElement[] expectedStructure,
+		boolean flattenNodeList) {
+		
+		if(flattenNodeList && children.length == 1 && children[0] instanceof NodeList2) {
+			children = children[0].getChildren();
+		}
+		
+		assertTrue(children.length == expectedStructure.length);
+		
+		for (int i = 0; i < expectedStructure.length; i++) {
+			NamedNodeElement namedElement = expectedStructure[i];
+			ASTNeoNode astNode = children[i];
+			assertEquals(astNode.getClass().getSimpleName(), namedElement.name);
+			checkExpectedStructure(astNode.getChildren(), namedElement.children, true);
+		}
 	}
 	
 	public static void checkParserErrors(ArrayList<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {
