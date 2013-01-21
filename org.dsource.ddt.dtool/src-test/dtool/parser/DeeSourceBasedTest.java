@@ -48,17 +48,11 @@ public class DeeSourceBasedTest extends DToolBaseTest {
 		}
 		
 		int expectedTestCount = -1;
-		String keywordMarker = null;
 		
 		SimpleParser simpleParser = new SimpleParser(fileSource);
 		
 		if(simpleParser.tryConsume(KEY_SOURCE_TESTS)) {
 			simpleParser.seekSpaceChars();
-			if(Character.isDigit(simpleParser.lookAhead())) {
-				expectedTestCount = simpleParser.consumeInteger(true);
-				keywordMarker = simpleParser.consumeNonWhiteSpace(true);
-			}
-			
 			consumeToNewline(simpleParser);
 		}
 		
@@ -69,13 +63,8 @@ public class DeeSourceBasedTest extends DToolBaseTest {
 			consumeToNewline(simpleParser);
 			
 			String unprocessedTestSource = simpleParser.consumeUntil(KEY_SPLIT_SOURCE_TEST);
-			if(keywordMarker == null) {
-				// dont process variations
-				testCases.add(new AnnotatedSource(unprocessedTestSource));
-			} else {
-				testCases.addAll(
-					TemplatedSourceProcessor.processSource(unprocessedTestSource, keywordMarker).getGenCases());
-			}
+			// dont process variations
+			testCases.add(new AnnotatedSource(unprocessedTestSource));
 			
 		} while(simpleParser.lookAhead() != -1);
 		
