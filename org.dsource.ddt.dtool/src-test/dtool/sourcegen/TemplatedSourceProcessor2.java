@@ -327,16 +327,23 @@ public class TemplatedSourceProcessor2 {
 		
 		boolean outputSource = true;
 		Argument sourceValue = null;
+		boolean colonSyntaxConsumed = false;
+		
+		if(value == null && parser.lookAhead() == ':') {
+			String id = SimpleParser.readAlphaNumericUS(parser.getSource(), parser.getSourcePosition()+1);
+			if(id.length() != 0) {
+				value = id;
+				parser.consumeAmount(id.length() + 1);
+				colonSyntaxConsumed = true;
+			}
+		}
 		
 		int alt = parser.tryConsume(OPEN_DELIMS);
 		if(alt != -1) {
 			String closeDelim = CLOSE_DELIMS[alt];
 			sourceValue = parseArgument(parser, closeDelim, false);
-		}
-		
-		if(sourceValue == null && parser.tryConsume(":")) {
+		} else if(colonSyntaxConsumed == false && parser.tryConsume(":")) {
 			checkError(parser.tryConsumeNewlineRule() == false, parser);
-			
 			sourceValue = parseArgument(parser, "#:END", true);
 			if(!parser.lookaheadIsEOF()) {
 				parser.seekToNewLine();

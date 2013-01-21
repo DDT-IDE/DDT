@@ -34,8 +34,8 @@ DeclarationBasicAttrib(
 )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 // Should rule continue or not?
-extern(#error(BAD_LINKAGE_ID)) int bar;
-align(#error(EXP_INTEGER)) int bar;
+extern(#error:BAD_LINKAGE_ID) int bar;
+align(#error:EXP_INTEGER) int bar;
 
 #AST_STRUCTURE_EXPECTED:
 DeclarationLinkage(MiscDeclaration)
@@ -147,23 +147,22 @@ auto ??
 #@(ATTRIBS) #@BODY_TYPES【
 int foo1;
 ●
-#?DECL_BROKEN{#error(SE_decl)} :
+#?DECL_BROKEN{#error:SE_decl} :
 int foo2;
 void bar;
 ●
-#?DECL_BROKEN{#error(SE_decl)} : /* Zero decls */
+#?DECL_BROKEN{#error:SE_decl} : /* Zero decls */
 ●
-#?DECL_BROKEN{#error(SE_decl)} { #?DECL_BROKEN{#error(SE_decl)} } // This will change in the future
+#?DECL_BROKEN{#error:SE_decl} { #?DECL_BROKEN{#error:SE_decl} } // This will change in the future
 ●
-#?DECL_BROKEN{#error(SE_decl)} { // This will change in the future
+#?DECL_BROKEN{#error:SE_decl} { // This error happening will change in the future
 	int fooX;
 	void bar;
-#?DECL_BROKEN{#error(SE_decl)}}
+#?DECL_BROKEN{#error:SE_decl}}
 ●
-/*EMPTY DECLARATION*/ #?DECL_BROKEN{,#?PRAGMA{,#error(SE_decl)}} ;
+/*EMPTY DECLARATION*/ #?DECL_BROKEN{,#?PRAGMA{,#error:SE_decl}} ;
 】
 
 #AST_EXPECTED:
 
 #@ATTRIBS_EXP(ATTRIBS) #@(BODY_TYPES)
-

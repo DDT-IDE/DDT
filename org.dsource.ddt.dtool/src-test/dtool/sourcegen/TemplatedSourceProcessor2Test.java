@@ -208,31 +208,39 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 	public void testMetadata() throws Exception { testMetadata$(); }
 	public void testMetadata$() throws Exception {
 		testSourceProcessing("#", "foo1 ## #error_EXP(asfd,3,4){xxx}==",
-			
 			checkMD("foo1 # xxx==", new MetadataEntry("error_EXP", "asfd,3,4", "xxx", 7))
 		);
 		
 		testSourceProcessing("#", 
 			"asdf ## #error(info1)==", 
-					
 			checkMD("asdf # ==", new MetadataEntry("error", "info1", null, 7))
 		);
 		
 		testSourceProcessing("#", 
 			"asdf ## #error==",
-			
 			checkMD("asdf # ==", new MetadataEntry("error", null, null, 7))
 		);
 		
 		testSourceProcessing("#", 
 			"asdf ## #error{xxx}==",
-			
 			checkMD("asdf # xxx==", new MetadataEntry("error", null, "xxx", 7))
 		);
 		
+		
+		testSourceProcessing("#", 
+			"foo1 ## #error_EXP:asfd_ad{xxx}==",
+			checkMD("foo1 # xxx==", new MetadataEntry("error_EXP", "asfd_ad", "xxx", 7))
+		);
+		testSourceProcessing("#", 
+			"asdf ## #error:info1==", 
+			checkMD("asdf # ==", new MetadataEntry("error", "info1", null, 7))
+		);
+		
 		// Syntax errors
-		testSourceProcessing("#", "badsyntax #foo(=={", 18 );
-		testSourceProcessing("#", "badsyntax #foo(==){asdf", 18+5 );
+		testSourceProcessing("#", "badsyntax #foo(=={", 18);
+		testSourceProcessing("#", "badsyntax #foo(==){asdf", 18+5);
+		testSourceProcessing("#", "badsyntax #foo:", 15);
+		testSourceProcessing("#", "badsyntax #foo: ", 15);
 		
 		testSourceProcessing("#", "badsyntax #foo(==#:SPLIT\n)", 17);
 		testSourceProcessing("#", "badsyntax #foo(==#:END:", 18);
