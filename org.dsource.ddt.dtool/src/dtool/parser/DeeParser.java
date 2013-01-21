@@ -337,9 +337,9 @@ public class DeeParser extends AbstractDeeParser {
 			case KW_PROTECTED: return parseDeclarationProtection();
 			case KW_PUBLIC: return parseDeclarationProtection();
 			case KW_EXPORT: return parseDeclarationProtection();
-				
+			
 			case KW_AUTO: // TODO:
-
+				
 			default:
 				break;
 			}
@@ -488,7 +488,7 @@ public class DeeParser extends AbstractDeeParser {
 		// BUG here: connect(
 		return new DeclarationPragma(symbol(pragmaId), null, apr.bodySyntax, apr.declList, srToLastToken(declStart));
 	}
-`	
+	
 	public Symbol symbol(Token pragmaId) {
 		// BUG here
 //		return pragmaId == null ? null : new Symbol(pragmaId.tokenSource, sr(pragmaId));
