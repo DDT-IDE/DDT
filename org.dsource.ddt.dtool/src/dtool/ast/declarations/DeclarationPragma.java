@@ -13,7 +13,7 @@ import dtool.util.ArrayView;
 public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	
 	public final Symbol pragmaId;
-	public final ArrayView<Resolvable> expressions;
+	public final ArrayView<Resolvable> expressions; // TODO
 	
 	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, AttribBodySyntax abs, NodeList2 bodyDecls,
 		SourceRange sr) {
@@ -26,8 +26,9 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if(children) {
-			TreeVisitor.acceptChildren(visitor, pragmaId);
-			TreeVisitor.acceptChildren(visitor, expressions);
+			// TODO, consider whether these should be structural or not
+//			TreeVisitor.acceptChildren(visitor, pragmaId);
+//			TreeVisitor.acceptChildren(visitor, expressions);
 			TreeVisitor.acceptChildren(visitor, body);
 		}
 		visitor.endVisit(this);
@@ -35,18 +36,17 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("pragma");
+		cp.append("pragma(");
 		if(pragmaId != null) {
-			cp.append("(", pragmaId.name);
+			cp.append(pragmaId.name);
 			if(expressions != null) {
 				for(Resolvable resolvable : expressions) {
 					cp.append(", ");
 					cp.appendNode(resolvable);
 				}
 			}
-			cp.append(")");
 		}
-		cp.append(" ");
+		cp.append(") ");
 		toStringAsCode_body(cp);
 	}
 }

@@ -320,7 +320,7 @@ public class DeeParser extends AbstractDeeParser {
 			
 			case KW_EXTERN: return parseDeclarationExternLinkage();
 			case KW_ALIGN: return parseDeclarationAlign();
-			case KW_PRAGMA:
+			case KW_PRAGMA: return parseDeclarationPragma();
 				
 			case KW_STATIC: 
 				if(lookAhead(/*1*/) == DeeTokens.KW_IMPORT) { // TODO 
@@ -380,7 +380,7 @@ public class DeeParser extends AbstractDeeParser {
 		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
 		public NodeList2 declList;
 		
-		public AttribParseRule parseAttribBody() {
+		public AttribParseRule parseAttribBody(boolean accepEmptyDecl) {
 			if(tryConsume(DeeTokens.COLON)) {
 				bodySyntax = AttribBodySyntax.COLON;
 				declList = parseDeclList(null);
@@ -389,7 +389,7 @@ public class DeeParser extends AbstractDeeParser {
 				declList = parseDeclList(DeeTokens.CLOSE_BRACE);
 				consumeExpectedToken(DeeTokens.CLOSE_BRACE);
 			} else {
-				ASTNeoNode decl = parseDeclaration(false);
+				ASTNeoNode decl = parseDeclaration(accepEmptyDecl);
 				if(decl == null) {
 					reportErrorExpectedRule(DECLARATION_RULE);
 				} else {
@@ -436,7 +436,7 @@ public class DeeParser extends AbstractDeeParser {
 		}
 		
 		AttribParseRule attribPR = new AttribParseRule();
-		attribPR.parseAttribBody();
+		attribPR.parseAttribBody(false);
 		
 		return connect(
 			new DeclarationLinkage(linkage, attribPR.bodySyntax, attribPR.declList, srToLastToken(declStart)));
@@ -468,7 +468,7 @@ public class DeeParser extends AbstractDeeParser {
 		}
 		
 		AttribParseRule attribRule = new AttribParseRule();
-		attribRule.parseAttribBody();
+		attribRule.parseAttribBody(false);
 		
 		return connect(
 			new DeclarationAlign(align, attribRule.bodySyntax, attribRule.declList, srToLastToken(declStart)));
@@ -481,10 +481,10 @@ public class DeeParser extends AbstractDeeParser {
 		int declStart = lastToken.getStartPos();
 		
 		Token pragmaId = null;
-		if(tryConsume(DeeTokens.OPEN_PARENS)) {
-			pragmaId = consumeIdentifier();
-			if(!isRecoveredId(pragmaId)) {
-			}
+		AttribParseRule apr = new AttribParseRule();
+		
+		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
+			pragmaId = consumeExpectedToken(DeeTokens.IDENTIFIER);
 			
 			// TODO pragma argument list;
 			Token expectedToken = consumeExpectedToken(DeeTokens.CLOSE_PARENS);
@@ -492,20 +492,16 @@ public class DeeParser extends AbstractDeeParser {
 				SourceRange sr = srToLastToken(declStart);
 				return connect(new DeclarationPragma(symbol(pragmaId), null, AttribBodySyntax.SINGLE_DECL, null, sr));
 			}
-		}
-		// BUG standalone pragma
+			
+			apr.parseAttribBody(true);
+		} 
 		
-		AttribParseRule apr = new AttribParseRule();
-		apr.parseAttribBody();
-		
-		// BUG here: connect(
-		return new DeclarationPragma(symbol(pragmaId), null, apr.bodySyntax, apr.declList, srToLastToken(declStart));
+		return connect(
+			new DeclarationPragma(symbol(pragmaId), null, apr.bodySyntax, apr.declList, srToLastToken(declStart)));
 	}
 	
 	public Symbol symbol(Token pragmaId) {
-		// BUG here
-//		return pragmaId == null ? null : new Symbol(pragmaId.tokenSource, sr(pragmaId));
-		return new Symbol(pragmaId.tokenSource, sr(pragmaId));
+		return pragmaId == null ? null : new Symbol(pragmaId.tokenSource, sr(pragmaId));
 	}
 	
 	public DeclarationProtection parseDeclarationProtection() {
@@ -523,7 +519,7 @@ public class DeeParser extends AbstractDeeParser {
 		int declStart = lastToken.getStartPos();
 		Protection protection = Protection.fromToken(lastToken.type);
 		
-		AttribParseRule apr = new AttribParseRule().parseAttribBody();
+		AttribParseRule apr = new AttribParseRule().parseAttribBody(false);
 		return connect(
 			new DeclarationProtection(protection, apr.bodySyntax, apr.declList, srToLastToken(declStart)));
 	}
@@ -536,7 +532,7 @@ public class DeeParser extends AbstractDeeParser {
 		consumeLookAhead();
 		int declStart = lastToken.getStartPos();
 		
-		AttribParseRule apr = new AttribParseRule().parseAttribBody();
+		AttribParseRule apr = new AttribParseRule().parseAttribBody(false);
 		return connect(
 			new DeclarationBasicAttrib(attrib, apr.bodySyntax, apr.declList, srToLastToken(declStart)));
 	}

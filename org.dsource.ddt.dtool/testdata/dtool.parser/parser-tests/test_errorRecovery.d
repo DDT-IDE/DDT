@@ -2,6 +2,12 @@
 #error(SE_decl){)}
 #error(SE_decl) ]
 #error(SE_decl) }
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ recovery of identifiers:
+import#error(EXP_ID);
+import #error(EXP_ID) ;
+pragma(#error(EXP_ID));
+pragma( #error(EXP_ID) );
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ hum, not sure this is the error recovery behavior
 mixin #error(EXP_OPEN_PARENS) #error(EXP_SEMICOLON)
 mixin #error(EXP_OPEN_PARENS) ;

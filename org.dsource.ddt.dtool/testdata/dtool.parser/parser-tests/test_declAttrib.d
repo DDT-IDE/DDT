@@ -96,6 +96,21 @@ align,
 align(16)
 }
 
+// TODO pragma expression list !
+#@PRAGMA_ATTRIB《
+pragma(foo)●
+pragma #error(EXP_OPEN_PARENS) #DECL_BROKEN(flag) ●
+pragma ( #error(EXP_ID) #error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag) ●
+pragma ( #error(EXP_ID) ) ●
+pragma ( foo2 #error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag) 
+》
+#@PRAGMA_ATTRIB_EXP《
+pragma(foo)●
+pragma() ●
+pragma() ●
+pragma() ●
+pragma(foo2) 
+》
 
 #@SIMPLE_ATTRIBS{
 #@PROT_ATTRIB{private,package,protected,public,export},
@@ -119,9 +134,13 @@ auto ??
 @disable
 
 
-#@ATTRIBS{#@(EXTERN_ATTRIB),#@(ALIGN_ATTRIB),#@(SIMPLE_ATTRIBS)}
-#@ATTRIBS_EXP{#@EXTERN_ATTRIB_EXP(EXTERN_ATTRIB),#@ALIGN_ATTRIB_EXP(ALIGN_ATTRIB),#@(SIMPLE_ATTRIBS)}
-
+#@ATTRIBS{#@(EXTERN_ATTRIB),#@(ALIGN_ATTRIB),#@(PRAGMA_ATTRIB)#PRAGMA(flag),#@(SIMPLE_ATTRIBS)}
+#@ATTRIBS_EXP{
+	#@EXTERN_ATTRIB_EXP(EXTERN_ATTRIB),
+	#@ALIGN_ATTRIB_EXP(ALIGN_ATTRIB),
+	#@PRAGMA_ATTRIB_EXP(PRAGMA_ATTRIB),
+	#@(SIMPLE_ATTRIBS)
+}
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
@@ -141,7 +160,7 @@ void bar;
 	void bar;
 #?DECL_BROKEN{#error(SE_decl)}}
 ●
-/*EMPTY CASE*/ #?DECL_BROKEN{,#error(SE_decl)} ;
+/*EMPTY DECLARATION*/ #?DECL_BROKEN{,#?PRAGMA{,#error(SE_decl)}} ;
 】
 
 #AST_EXPECTED:
