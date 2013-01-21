@@ -255,34 +255,51 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		
 		
 		//multineLine MD syntax
+		
+		testSourceProcessing("#", "multilineMD #error(arg1):", 25);
+		testSourceProcessing("#", "multilineMD #error(arg1): \n", 25);
+		
+		// boundary
 		testSourceProcessing("#", 
-			"multilineMD #error(arg1,arg2,arg3): line1\nline2\nline3\n#:END:\nlineOther4\n",
+			"multilineMD #error(arg1,arg2,arg3):\n",
 			
-			checkMD("multilineMD lineOther4\n", 
-				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 12))
-		);
-		testSourceProcessing("#", 
-			"multilineMD #error(arg1,arg2,arg3):",
-			
-			checkMD("multilineMD ", 
-				new MetadataEntry("error", "arg1,arg2,arg3", "", 12))
+			checkMD("multilineMD ", new MetadataEntry("error", "arg1,arg2,arg3", "", -1))
 		);
 		
+		// #:END delim
 		testSourceProcessing("#", 
-			"multilineMD #error(arg1,arg2,arg3): line1\nline2\nline3\n#:SPLIT:\nlineOther4\n",
+			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2\nline3\n#:END:\nlineOther4\n",
+			
+			checkMD("multilineMD lineOther4\n", 
+				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", -1))
+		);
+		
+		// split interaction
+		testSourceProcessing("#", 
+			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2\nline3\n#:SPLIT:\nlineOther4\n",
 			
 			checkMD("multilineMD ", 
-				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 12)),
+				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", -1)),
 			checkMD("lineOther4\n")
 		);
 		
-		// All toghether
+		// nested MDs
+		testSourceProcessing("#", 
+			"blah before #multiline1:\n blah1\n#multiline2:\n blah2\n#tag(arg1) blah2-cont",
+			
+			checkMD("blah before ", 
+				new MetadataEntry("multiline1", null, " blah1\n", -1),
+				new MetadataEntry("multiline2", null, " blah2\n blah2-cont", -1),
+				new MetadataEntry("tag", "arg1", null, 7))
+		);
+		
+		// All together
 		testSourceProcessing("#", 
 			"foo1 ## #error_EXP(asdf,3,4){xxx}=="+
 			"asdf ## #error(info1)=="+
 			"asdf ## #error=="+
 			"asdf ## #error{xxx}=="+
-			"multilineMD #error(arg1,arg2,arg3): line1\nline2\nline3\n#:END:\nlineOther4\n",
+			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2#tagInMD(blah){xxx}\nline3\n#:END:\nlineOther4\n",
 			
 			checkMD(
 				"foo1 # xxx=="+
@@ -294,7 +311,8 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 				new MetadataEntry("error", "info1", null, 7 +5+7),
 				new MetadataEntry("error", null, null, 7 +5+7 +2+7),
 				new MetadataEntry("error", null, "xxx", 7 +5+7 +2+7 +2+7),
-				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 7 +5+7 +2+7 +2+7 +3+2+12)
+				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2xxx\nline3\n", -1),
+				new MetadataEntry("tagInMD", "blah", "xxx", 12)
 			)
 		);
 	}
@@ -327,7 +345,7 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 			"asdf ## #error=="+
 			"asdf ## #error{xxx}=="+
 			"#:SPLIT ____\n"+
-			"multilineMD #error(arg1,arg2,arg3): line1\nline2\nline3\n#:END:\nlineOther4\n",
+			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2\nline3\n#:END:\nlineOther4\n",
 			
 			checkMD(
 				"foo1 # xxx=="+
@@ -343,7 +361,7 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 			),
 			checkMD(
 				"multilineMD lineOther4\n",
-				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 12)
+				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", -1)
 			)
 		);
 		
@@ -401,19 +419,19 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		);
 		
 		testSourceProcessing("#", 
-			"> #@EXP{AA,B,CCCC} #tag(arg):tagMD: #nestedMD{xxx}",
+			"> #@EXP{AA,B,CCCC} #tag(arg):\ntagMD #nestedMD{xxx}",
 			
 			checkMD("> AA ", 
-				new MetadataEntry("tag", "arg", "tagMD: xxx", 5),
-				new MetadataEntry("nestedMD", null, "xxx", 5+7))
+				new MetadataEntry("tag", "arg", "tagMD xxx", -1),
+				new MetadataEntry("nestedMD", null, "xxx", 6))
 				,
 			checkMD("> B ", 
-				new MetadataEntry("tag", "arg", "tagMD: xxx", 4),
-				new MetadataEntry("nestedMD", null, "xxx", 4+7))
+				new MetadataEntry("tag", "arg", "tagMD xxx", -1),
+				new MetadataEntry("nestedMD", null, "xxx", 6))
 				,
 			checkMD("> CCCC ", 
-				new MetadataEntry("tag", "arg", "tagMD: xxx", 7),
-				new MetadataEntry("nestedMD", null, "xxx", 7+7)
+				new MetadataEntry("tag", "arg", "tagMD xxx", -1),
+				new MetadataEntry("nestedMD", null, "xxx", 6)
 				)
 		);
 	}

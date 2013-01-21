@@ -55,8 +55,8 @@ public class DeeSourceBasedTest extends DToolBaseTest {
 		if(simpleParser.tryConsume(KEY_SOURCE_TESTS)) {
 			simpleParser.seekSpaceChars();
 			if(Character.isDigit(simpleParser.lookAhead())) {
-				expectedTestCount = simpleParser.consumeInteger();
-				keywordMarker = simpleParser.consumeNonWhiteSpace();
+				expectedTestCount = simpleParser.consumeInteger(true);
+				keywordMarker = simpleParser.consumeNonWhiteSpace(true);
 			}
 			
 			consumeToNewline(simpleParser);

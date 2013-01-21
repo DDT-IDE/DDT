@@ -140,7 +140,7 @@ public class SimpleParser {
 		}
 	}
 	
-	public void seekSpaceChars() {
+	public SimpleParser seekSpaceChars() {
 		lastToken = null;
 		while(true) {
 			if(lookaheadIsEOF() || !Character.isSpaceChar(source.charAt(pos))) {
@@ -148,6 +148,18 @@ public class SimpleParser {
 			}
 			pos++;
 		}
+		return this;
+	}
+	
+	public SimpleParser seekWhiteSpace() {
+		lastToken = null;
+		while(true) {
+			if(lookaheadIsEOF() || !Character.isWhitespace(source.charAt(pos))) {
+				break;
+			}
+			pos++;
+		}
+		return this;
 	}
 	
 	public boolean seekToNewLine() {
@@ -176,6 +188,22 @@ public class SimpleParser {
 				return offset;
 			}
 		}
+	}
+	
+	public boolean tryConsumeNewlineRule() {
+		int ch = lookAhead();
+		if(ch == '\r') {
+			if(lookAhead(1) == '\n') {
+				consumeAmount(2);
+				return true;
+			}
+			consumeAmount(1);
+			return true;
+		} else if(ch == '\n') {
+			consumeAmount(1);
+			return true;
+		}
+		return false;
 	}
 	
 	public static String readNonWhiteSpace(String string, int offset) {
@@ -214,14 +242,18 @@ public class SimpleParser {
 		return string.substring(startPos, offset);
 	}
 	
-	public String consumeNonWhiteSpace() {
-		seekSpaceChars();
+	public String consumeNonWhiteSpace(boolean skipSpaces) {
+		if(skipSpaces) {
+			seekSpaceChars();
+		}
 		String str = readNonWhiteSpace(source, pos);
 		return consumeAmount(str.length());
 	}
 	
-	public int consumeInteger() {
-		seekSpaceChars();
+	public int consumeInteger(boolean skipSpaces) {
+		if(skipSpaces) {
+			seekSpaceChars();
+		}
 		String numberStr = readInteger(source, pos);
 		consumeAmount(numberStr.length());
 		return Integer.decode(numberStr);
