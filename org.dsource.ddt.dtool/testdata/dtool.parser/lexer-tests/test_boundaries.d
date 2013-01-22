@@ -1,20 +1,16 @@
-//#SOURCE_TESTS 
-//#SPLIT_SOURCE_TEST _____________________
-/+#LEXERTEST  
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#LEXERTEST:
 EOF,
-+/
-//#SPLIT_SOURCE_TEST _____________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-/+#LEXERTEST --
+#LEXERTEST:
 EOL,
 EOF,
-+/
-//#SPLIT_SOURCE_TEST _________ boundary case
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ boundary case
 
 /+  +/
 ""
-/+#LEXERTEST
+#LEXERTEST:
 ERROR,EOL,
 COMMENT_NESTED,EOL,
 STRING_DQ,EOL
-+/

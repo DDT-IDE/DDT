@@ -1,17 +1,14 @@
-//#SOURCE_TESTS 
-//#SPLIT_SOURCE_TEST _____________________ test error tokens
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test error tokens
 aaaaaaaaaa
-/+#LEXERTEST
+#LEXERTEST:
 ID,ERROR,ID,ERROR,ID,EOL 
-+/
-//#SPLIT_SOURCE_TEST __________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 aaaaa aa/a
-/+#LEXERTEST
+#LEXERTEST:
 ID,ERROR,ID,WS,ERROR,ID,ERROR,ID,DIV,ERROR,ID,EOL 
-+/
-//#SPLIT_SOURCE_TEST _________ boundary case
-/+#LEXERTEST
-ERROR+/
-//#SPLIT_SOURCE_TEST _________ boundary case
-/+#LEXERTEST
-ERROR+/
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ boundary case
+#LEXERTEST:
+ERROR
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ boundary case
+#LEXERTEST:
+ERROR

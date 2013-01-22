@@ -91,6 +91,7 @@ public class DeeLexerTest extends CommonTestUtils {
 				
 				int errorMark = expectedTokenStr.indexOf('!');
 				if(errorMark != -1) {
+					assertTrue(errorMark+1 == expectedTokenStr.length());
 					expectedTokenStr = expectedTokenStr.substring(0, errorMark);
 					isError = true;
 				}

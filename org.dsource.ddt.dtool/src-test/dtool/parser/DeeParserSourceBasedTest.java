@@ -62,16 +62,14 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		this.file = file;
 	}
 	
-	@Test
-	public void runSourceBasedTests() throws IOException {
-		runSourceBasedTestFromFile();
-	}
 	
-	public void runSourceBasedTestFromFile() {
+	@Test
+	public void runSourceBasedTests() throws Exception { runSourceBasedTests$(); }
+	public void runSourceBasedTests$() throws Exception {
 		AnnotatedSource[] sourceBasedTests = getSourceBasedTests(file);
 		for (AnnotatedSource testString : sourceBasedTests) {
-			System.out.println(">> -------------------- Annotated Source test: --------------- <<");
-			System.out.println(testString.source);
+			testsLogger.println(">> ----------- Annotated Source test: ----------- <<");
+			testsLogger.println(testString.source);
 			runSourceBasedTest(testString);
 		}
 	}

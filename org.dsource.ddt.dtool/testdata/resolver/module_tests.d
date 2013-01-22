@@ -1,5 +1,4 @@
-//#SOURCE_TESTS 
-//#SPLIT_SOURCE_TEST _____________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ →◙
 /+@marker1+/
 module module_tests;
 
@@ -7,7 +6,7 @@ module module_tests;
 
 alias /+#find(=)@marker1+/module_tests _dummy;
 
-//#SPLIT_SOURCE_TEST _____________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ →◙
 /+@marker1+/
 module module_tests_incorrectName;
 
@@ -15,7 +14,7 @@ module module_tests_incorrectName;
 
 alias /+#find(=)@marker1+/module_tests_incorrectName _dummy;
 
-//#SPLIT_SOURCE_TEST _____________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ →◙
 /+@marker1+/
 module incorrectPackage.module_tests;
 
@@ -24,7 +23,7 @@ module incorrectPackage.module_tests;
 alias /+#find(:null)@+/module_tests _dummy;
 alias /+#find(=)@:synthetic+/incorrectPackage _dummy;
 
-//#SPLIT_SOURCE_TEST _____________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ →◙
 /+@marker1+/
 // implicit module name
 

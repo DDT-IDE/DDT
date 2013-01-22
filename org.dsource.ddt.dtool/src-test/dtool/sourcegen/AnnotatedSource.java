@@ -1,5 +1,8 @@
 package dtool.sourcegen;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.StringUtil;
@@ -8,15 +11,12 @@ import dtool.ast.SourceRange;
 public class AnnotatedSource {
 	
 	public final String source;
+	public final String originalTemplatedSource;
 	public final ArrayList<AnnotatedSource.MetadataEntry> metadata;
 	
-	public AnnotatedSource(String source) {
+	public AnnotatedSource(String source, String originalTemplatedSource, ArrayList<MetadataEntry> arrayList) {
 		this.source = source;
-		this.metadata = new ArrayList<MetadataEntry>();
-	}
-	
-	public AnnotatedSource(String source, ArrayList<MetadataEntry> arrayList) {
-		this.source = source;
+		this.originalTemplatedSource = originalTemplatedSource;
 		this.metadata = arrayList;
 	}
 	
@@ -46,6 +46,17 @@ public class AnnotatedSource {
 	@Override
 	public String toString() {
 		return source + "\n--------- METADATA: ---------\n" + StringUtil.collToString(metadata, "\n");
+	}
+	
+	public MetadataEntry findMetadata(String name) {
+		MetadataEntry foundMde = null;
+		for (MetadataEntry mde : metadata) {
+			if(areEqual(mde.name, name)) {
+				assertTrue(foundMde == null);
+				foundMde = mde;
+			}
+		}
+		return foundMde;
 	}
 	
 }

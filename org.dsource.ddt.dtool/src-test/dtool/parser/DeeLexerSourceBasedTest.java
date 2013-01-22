@@ -10,13 +10,12 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static dtool.util.NewUtils.assertNotNull_;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,16 +23,13 @@ import org.junit.runners.Parameterized.Parameters;
 
 import dtool.parser.DeeLexerTest.TokenChecker;
 import dtool.sourcegen.AnnotatedSource;
+import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.DToolTestResources;
-import dtool.tests.SimpleParser;
 
 @RunWith(Parameterized.class)
 public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/lexer-tests";
-	
-	private static final int LEXER_SOURCE_BASED_TESTS_COUNT = 118;
-	private static int splitTestCount = 0;
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
@@ -48,39 +44,21 @@ public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 	
 	@Test
 	public void runSourceBasedTests() throws IOException {
-		for (AnnotatedSource testString : getSourceBasedTests(file)) {
-			splitTestCount++;
-			runLexerSourceBasedTest(testString.source);
+		for (AnnotatedSource testCase : getSourceBasedTests(file)) {
+			MetadataEntry lexerTestMde = assertNotNull_(testCase.findMetadata("LEXERTEST"));
+			runLexerSourceBasedTest(testCase.source, assertNotNull_(lexerTestMde.associatedSource));
 		}
 	}
 	
-	@AfterClass
-	public static void checkTestCount() {
-		assertTrue(splitTestCount == LEXER_SOURCE_BASED_TESTS_COUNT);
-	}
-	
-	protected static final String LEXERTEST_KEYWORD = "/+#LEXERTEST";
-	
-	
-	public void runLexerSourceBasedTest(String testSource) {
-		SimpleParser simpleParser = new SimpleParser(testSource);
-		
-		String source = simpleParser.consumeUntil(LEXERTEST_KEYWORD);
-		
-		assertTrue(!simpleParser.lookaheadIsEOF());
-		
-		simpleParser.seekToNewLine();
-		String expectedTokensList = simpleParser.restOfInput();
-		expectedTokensList = expectedTokensList.replaceFirst("(\\\r?\\\n)?\\+/(?s).*", "");
-		
-		String[] expectedTokensStr = expectedTokensList.split("(,(\\\r?\\\n)?)");
+	public void runLexerSourceBasedTest(String testSource, String expectedTokensList) {
+		String[] expectedTokensStr = expectedTokensList.split("(,(\\\r?\\\n)?)\\s*");
 		
 		TokenChecker[] expectedTokens = new TokenChecker[expectedTokensStr.length];
 		for (int i = 0; i < expectedTokensStr.length; i++) {
 			expectedTokens[i] = TokenChecker.create(expectedTokensStr[i].trim());
 		}
 		
-		DeeLexerTest.testLexerTokenizing(source, expectedTokens);
+		DeeLexerTest.testLexerTokenizing(testSource, expectedTokens);
 	}
 	
 }

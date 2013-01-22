@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -60,18 +62,16 @@ public class TemplatedSourceProcessor2 {
 		return genCases;
 	}
 	
-	public AnnotatedSource[] processSource_unchecked(String keyMARKER, String unprocessedSource) {
+	public AnnotatedSource[] processSource_unchecked(String defaultMarker, String unprocessedSource) {
 		try {
-			return processSource(keyMARKER, unprocessedSource);
+			return processSource(defaultMarker, unprocessedSource);
 		} catch(TemplatedSourceException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}
 	
-	public AnnotatedSource[] processSource(String keyMARKER, String fileSource) 
+	public AnnotatedSource[] processSource(String defaultMarker, String fileSource) 
 		throws TemplatedSourceException {
-		this.kMARKER = keyMARKER;
-		this.kMARKER_array = new String[]{ kMARKER };
 		
 		SimpleParser parser = new SimpleParser(fileSource);
 		
@@ -79,6 +79,7 @@ public class TemplatedSourceProcessor2 {
 		
 		do {
 			boolean isHeader = false;
+			String keyMarker = defaultMarker;
 			
 			int alt = parser.tryConsume(splitKeywords);
 			if(alt != SimpleParser.EOF) {
@@ -86,6 +87,10 @@ public class TemplatedSourceProcessor2 {
 					isHeader = true;
 				}
 				checkError(parser.seekToNewLine() == false, parser);
+				Matcher matcher = Pattern.compile("→(.)").matcher(parser.getLastConsumedString());
+				if(matcher.find()) {
+					keyMarker = matcher.group(1);
+				}
 			} else {
 				assertTrue(parser.getSourcePosition() == 0);
 			}
@@ -93,7 +98,7 @@ public class TemplatedSourceProcessor2 {
 			parser.consumeUntilAny(splitKeywords);
 			
 			String unprocessedCaseSource = parser.getLastConsumedString();
-			processSplitCaseSource(unprocessedCaseSource, isHeader);
+			processSplitCaseSource(unprocessedCaseSource, isHeader, keyMarker);
 		} while(!parser.lookaheadIsEOF());
 		
 		return ArrayUtil.createFrom(getGenCases(), AnnotatedSource.class);
@@ -432,27 +437,33 @@ public class TemplatedSourceProcessor2 {
 	
 	// --------------------- Generation phase ---------------------
 	
-	protected void processSplitCaseSource(String caseSource, boolean isHeader) throws TemplatedSourceException {
+	protected void processSplitCaseSource(String caseSource, boolean isHeader, String keyMarker) 
+		throws TemplatedSourceException {
+		this.kMARKER = keyMarker;
+		this.kMARKER_array = new String[]{ keyMarker };
 		ArrayList<TspElement> sourceElements = parseSource(caseSource);
-		ProcessingState processingState = new ProcessingState(isHeader);
+		ProcessingState processingState = new ProcessingState(isHeader, caseSource);
 		processCaseContents(processingState, new CopyableListIterator<TspElement>(sourceElements));
 	}
 	
 	protected class ProcessingState {
 		protected final boolean isHeaderCase;
+		protected final String originalSource;
 		protected StringBuilder sourceSB = new StringBuilder();
 		protected final ArrayList<MetadataEntry> metadata = new ArrayList<MetadataEntry>();
 		protected final Map<String, TspExpansionElement> expansionDefinitions = 
 			new HashMap<String, TspExpansionElement>();
 		protected final Map<String, Integer> activeExpansions = new HashMap<String, Integer>();
 		
-		public ProcessingState(boolean isHeaderCase) {
+		public ProcessingState(boolean isHeaderCase, String originalSource) {
 			this.isHeaderCase = isHeaderCase;
+			this.originalSource = originalSource;
 		}
 		
-		public ProcessingState(boolean isHeaderCase, String source, List<MetadataEntry> metadata,
+		public ProcessingState(boolean isHeaderCase, String originalSrc, String source, List<MetadataEntry> metadata,
 			Map<String, Integer> activeExpansions, Map<String, TspExpansionElement> expansionDefinitions) {
 			this.isHeaderCase = isHeaderCase;
+			this.originalSource = originalSrc;
 			this.sourceSB.append(source);
 			this.metadata.addAll(metadata);
 			this.activeExpansions.putAll(activeExpansions);
@@ -462,7 +473,8 @@ public class TemplatedSourceProcessor2 {
 		@Override
 		public ProcessingState clone() {
 			String source = sourceSB.toString();
-			return new ProcessingState(isHeaderCase, source, metadata, activeExpansions, expansionDefinitions);
+			return new ProcessingState(isHeaderCase, originalSource, source, metadata, activeExpansions,
+				expansionDefinitions);
 		}
 		
 		public TspExpansionElement getExpansion(String expansionId) {
@@ -596,9 +608,10 @@ public class TemplatedSourceProcessor2 {
 		sourceCase.metadata.set(mdEndElem.metadataIx, mde);
 	}
 	
-	protected void addFullyProcessedSourceCase(ProcessingState caseState ) {
+	protected void addFullyProcessedSourceCase(ProcessingState caseState) {
 		if(caseState.isHeaderCase == false) {
-			genCases.add(new AnnotatedSource(caseState.sourceSB.toString(), caseState.metadata));
+			String source = caseState.sourceSB.toString();
+			genCases.add(new AnnotatedSource(source, caseState.originalSource, caseState.metadata));
 		}
 	}
 	

@@ -1,16 +1,13 @@
-//#SOURCE_TESTS 
-//#SPLIT_SOURCE_TEST _____________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 
-/+#LEXERTEST#
+#LEXERTEST:
 EOL,
 EOL,
 EOL,
-+/
-//#SPLIT_SOURCE_TEST _____________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 a
-/+#LEXERTEST#
+#LEXERTEST:
 EOL,
 *,EOL
-+/

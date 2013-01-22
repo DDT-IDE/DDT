@@ -1,5 +1,4 @@
-//#SOURCE_TESTS 
-//#SPLIT_SOURCE_TEST _____________________ Float Literals 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Float Literals 
 1234567890		1234567890.    1234567890.0123456789	.0123456789
 				0123456789.    123_5_78__.1234_678_		.1234567_9
 
@@ -15,7 +14,7 @@
 123E12f		666.E66F	123.123E0123F	.123E123L
 0f			6.F			0.0F			.0L
 
-/+#LEXERTEST
+#LEXERTEST:
 INTEGER,WS,FLOAT,				WS,FLOAT,	WS,FLOAT,	EOL,
 		WS,INTEGER_OCTAL!,DOT,	WS,FLOAT,	WS,FLOAT,	EOL,
 EOL,
@@ -31,23 +30,21 @@ FLOAT,	WS,FLOAT,ID,	WS,FLOAT,	WS,FLOAT,	EOL,
 FLOAT,	WS,FLOAT,ID,	WS,FLOAT,	WS,FLOAT,	EOL,
 FLOAT,	WS,FLOAT,ID,	WS,FLOAT,	WS,FLOAT,	EOL,
 EOL,
-+/
 
-//#SPLIT_SOURCE_TEST _____________________ imaginary variants
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ imaginary variants
 123fi		6.fi		123.123Fi		.123Li
 123E12fi	6.E12fi		123.123E0123Fi	.123E123Li
 0i			6.i			0.0i			.0i
 0E1i		6.e1i		0.0E+1i			.0e-1i
 0fi			6.Fi		0.0Fi			.0Li
-/+#LEXERTEST
+#LEXERTEST:
 FLOAT,		WS,FLOAT,ID,WS,FLOAT,	WS,FLOAT,	EOL,
 FLOAT,		WS,FLOAT,ID,WS,FLOAT,	WS,FLOAT,	EOL,
 FLOAT,		WS,FLOAT,ID,WS,FLOAT,	WS,FLOAT,	EOL,
 FLOAT,		WS,FLOAT,ID,WS,FLOAT,	WS,FLOAT,	EOL,
 FLOAT,		WS,FLOAT,ID,WS,FLOAT,	WS,FLOAT,	EOL,
-+/
 
-//#SPLIT_SOURCE_TEST _____________________ errors
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ errors
 123__._123
 ._123
 123.f
@@ -55,7 +52,7 @@ FLOAT,		WS,FLOAT,ID,WS,FLOAT,	WS,FLOAT,	EOL,
 0123f
 0b01010f
 0b01010.101f
-/+#LEXERTEST
+#LEXERTEST:
 FLOAT, ID, EOL,
 DOT, ID, EOL,
 FLOAT, ID, EOL,
@@ -63,23 +60,19 @@ FLOAT, ID, EOL,
 INTEGER_OCTAL, ID, EOL,
 INTEGER_BINARY, ID, EOL,
 INTEGER_BINARY, FLOAT, EOL,
-+/
-//#SPLIT_SOURCE_TEST _____________________ EXP + unexpected end
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ EXP + unexpected end
 123e_
-123E/+#LEXERTEST
+123E#LEXERTEST:
 FLOAT!, EOL,
 FLOAT!,
-+/
-//#SPLIT_SOURCE_TEST ______________ no exponent
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ no exponent
 123e_f
 123EF
-/+#LEXERTEST
+#LEXERTEST:
 FLOAT!, EOL,
 FLOAT!, EOL,
-+/
 
-
-//#SPLIT_SOURCE_TEST _____________________ Float Literals - HEX
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Float Literals - HEX
 0x1234567890ABCDEFp1	0x1234567890ABCDEF.p1    0x1234567890ABCDEF.0123456789ABCDEFp1	0x.0123456789ABCDEFp1
 						0x0123456789ABCDEF.p0123456789    0x123_5_78__AB._1234_678FF_p1		0x._12AB567_9FFp1
 
@@ -93,7 +86,7 @@ FLOAT!, EOL,
 0x123P12f	0x0578.P12F		0x0123.123P+0123F	0x.123P-123L
 0x0P0f		0x0.P0F		0x0.0P0F		0x.0P+0L
 
-/+#LEXERTEST
+#LEXERTEST:
 FLOAT_HEX,	WS,FLOAT_HEX,	WS,FLOAT_HEX,	WS,FLOAT_HEX,	EOL,
 			WS,FLOAT_HEX,	WS,FLOAT_HEX,	WS,FLOAT_HEX,	EOL,
 EOL,
@@ -107,41 +100,37 @@ EOL,
 FLOAT_HEX,	WS,FLOAT_HEX,	WS,FLOAT_HEX,	WS,FLOAT_HEX,	EOL,
 FLOAT_HEX,	WS,FLOAT_HEX,	WS,FLOAT_HEX,	WS,FLOAT_HEX,	EOL,
 EOL,
-+/
 
-//#SPLIT_SOURCE_TEST _____________________ imaginary variants - hex
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ imaginary variants - hex
 0x123P12fi	0x0.P12fi	0x0123.123P+0123Fi	0x.123p-123Li
 0x0P2i		0x0.p2i		0x0.0P+2i		0x.0p-2i
 0x6i		0x6.i		0x6.0i			0x.6i
-/+#LEXERTEST
+#LEXERTEST:
 FLOAT_HEX,		WS,FLOAT_HEX,	WS,FLOAT_HEX,	WS,FLOAT_HEX,	EOL,
 FLOAT_HEX,		WS,FLOAT_HEX,	WS,FLOAT_HEX,	WS,FLOAT_HEX,	EOL,
 FLOAT_HEX!,		WS,FLOAT_HEX!,	WS,FLOAT_HEX!,	WS,FLOAT_HEX!,	EOL,
-+/
 
-//#SPLIT_SOURCE_TEST _____________________ 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 0x0123456789ABCDEF.p0123456789ABCDEF
-/+#LEXERTEST
+#LEXERTEST:
 FLOAT_HEX, ID, EOL
-+/
-//#SPLIT_SOURCE_TEST _____________________ EXP + unexpected end (HEX)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ EXP + unexpected end (HEX)
 0x123P_
-0x123P/+#LEXERTEST
+0x123P#LEXERTEST:
 FLOAT_HEX!, EOL,
 FLOAT_HEX!,
-+/
-//#SPLIT_SOURCE_TEST ______________ no exponent (HEX)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ no exponent (HEX)
 0x123P_f
 0x123PF
 0x123L
 0x123i
 0x123.L
 0x.123f
-/+#LEXERTEST
+#LEXERTEST:
 FLOAT_HEX!, EOL,
 FLOAT_HEX!, EOL,
 INTEGER_HEX, EOL,
 FLOAT_HEX!, EOL,
 FLOAT_HEX!, EOL,
 FLOAT_HEX!, EOL,
-+/

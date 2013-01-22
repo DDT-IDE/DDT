@@ -1,31 +1,25 @@
-//#SOURCE_TESTS 
-//#SPLIT_SOURCE_TEST _____________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ →◙
 #!/usr/bin blah
 blah
-/+#LEXERTEST
+◙LEXERTEST:
 SCRIPT_LINE_INTRO, ID, EOL
-+/
 
-//#SPLIT_SOURCE_TEST _____________________
-#!/+#LEXERTEST
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ →◙
+#!◙LEXERTEST:
 SCRIPT_LINE_INTRO
-+/
-//#SPLIT_SOURCE_TEST _____________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ →◙
 #!
-blah/+#LEXERTEST
+blah◙LEXERTEST:
 SCRIPT_LINE_INTRO, ID
-+/
 
 
-//#SPLIT_SOURCE_TEST _____________________
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ →◙
  #!/usr/bin
 blah
-/+#LEXERTEST
+◙LEXERTEST:
 WS, SPECIAL_TOKEN_LINE!,
 ID,EOL
-+/
 
-//#SPLIT_SOURCE_TEST _____________________
-#/+#LEXERTEST
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ →◙
+#◙LEXERTEST:
 SPECIAL_TOKEN_LINE!,
-+/

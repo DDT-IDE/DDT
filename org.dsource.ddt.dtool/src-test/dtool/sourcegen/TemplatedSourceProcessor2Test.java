@@ -23,14 +23,14 @@ import dtool.tests.CommonTestUtils;
 
 public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 	
-	public void testSourceProcessing(String marker, String source, GeneratedSourceChecker... checkers) {
+	public void testSourceProcessing(String defaultMarker, String source, GeneratedSourceChecker... checkers) {
 		TemplatedSourceProcessor2 tsp = new TemplatedSourceProcessor2() { 
 			@Override
 			protected void reportError(int offset) throws TemplatedSourceException {
 				assertFail();
 			};
 		};
-		visitContainer(tsp.processSource_unchecked(marker, source), checkers);
+		visitContainer(tsp.processSource_unchecked(defaultMarker, source), checkers);
 	}
 	
 	public void testSourceProcessing(String marker, String source, int errorOffset) {
@@ -105,6 +105,18 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 			splitMarker+"\n case3\nblahblah\n"
 			,
 			8
+		);
+		
+		// Test new key marker
+		testSourceProcessing("#", 
+			splitMarker+" ___________________→◙\ncase1:#NOTMD blah ◙MD"+
+			splitMarker+" comment\ncase2:#MD blah ◙NOTMD#:SPLIT comment\r\n"+ 
+			splitMarker+"→X blah\n case#3:\nblahblahXMD\n"
+			,
+			checkMD("case1:#NOTMD blah ", new MetadataEntry("MD", null, null, 18)),
+			checkMD("case2: blah ◙NOTMD", new MetadataEntry("MD", null, null, 6)),
+			checkMD(""),
+			checkMD(" case#3:\nblahblah\n", new MetadataEntry("MD", null, null, 17))
 		);
 	}
 	

@@ -163,12 +163,11 @@ public class SimpleParser {
 	}
 	
 	public boolean seekToNewLine() {
-		lastToken = null;
 		int newPos = findNewLineEnd(source, pos);
 		if(newPos == EOF) {
 			return false;
 		}
-		pos = newPos;
+		consumeAmount(newPos - pos);
 		return true;
 	}
 	
