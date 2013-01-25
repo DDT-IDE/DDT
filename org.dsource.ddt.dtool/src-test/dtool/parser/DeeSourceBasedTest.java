@@ -22,22 +22,26 @@ import dtool.tests.DToolTestResources;
 
 public class DeeSourceBasedTest extends DToolBaseTest {
 	
-	public AnnotatedSource[] getSourceBasedTests(File file) {
-		AnnotatedSource[] sourceBasedTests = getSourceBasedTestCases(readStringFromFileUnchecked(file));
+	protected static final class TestsTemplateSourceProcessor extends TemplatedSourceProcessor2 {
+		@Override
+		protected void reportError(int offset) throws TemplatedSourceException {
+			assertFail();
+		}
+	}
+	
+	public AnnotatedSource[] getSourceBasedTests(File file, TemplatedSourceProcessor2 commonDefinitions) {
+		TestsTemplateSourceProcessor tsp = new TestsTemplateSourceProcessor();
+		if(commonDefinitions != null) {
+			tsp.addGlobalExpansions(commonDefinitions.getGlobalExpansions());
+		}
+		AnnotatedSource[] sourceBasedTests = tsp.processSource_unchecked("#", readStringFromFileUnchecked(file));
 		testsLogger.println("===>>> " + getClass().getSimpleName() + " on file: " 
 			+ DToolTestResources.resourceFileToString(file) + " ("+sourceBasedTests.length+") <<<===");
 		return sourceBasedTests;
 	}
 	
 	public static AnnotatedSource[] getSourceBasedTestCases(String fileSource) {
-		TemplatedSourceProcessor2 tsp = new TemplatedSourceProcessor2() {
-			@Override
-			protected void reportError(int offset) throws TemplatedSourceException {
-				assertFail();
-			}
-		};
-		return tsp.processSource_unchecked("#", fileSource);
-		
+		return new TestsTemplateSourceProcessor().processSource_unchecked("#", fileSource);
 	}
 	
 }

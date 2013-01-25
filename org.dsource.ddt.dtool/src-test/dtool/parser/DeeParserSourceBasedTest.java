@@ -36,6 +36,7 @@ import dtool.ast.SourceRange;
 import dtool.parser.ParserError.EDeeParserErrors;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
+import dtool.sourcegen.TemplatedSourceProcessor2;
 import dtool.tests.SimpleParser;
 import dtool.util.NewUtils;
 
@@ -44,17 +45,26 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/parser-tests";
 	
+	protected static TemplatedSourceProcessor2 commonDefinitions = new TemplatedSourceProcessor2();;
+	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		Predicate<File> nameFilter = new Predicate<File>() {
+		ArrayList<File> commonHeaderFileList = getDeeModuleList(getTestResource(TESTFILESDIR+"/common"), true);
+		
+		for (File headerFile : commonHeaderFileList) {
+			TemplatedSourceProcessor2 tsp = new TemplatedSourceProcessor2();
+			tsp.processSource_unchecked("#", readStringFromFileUnchecked(headerFile));
+			commonDefinitions.addGlobalExpansions(tsp.getGlobalExpansions());
+		}
+		
+		return toFnParameterList(getDeeModuleList(getTestResource(TESTFILESDIR), true), new Predicate<File>() {
 			@Override
 			public boolean evaluate(File file) {
-				if(file.getName().endsWith("_TODO"))
+				if(file.getName().endsWith("_TODO") || file.getParentFile().getName().equals("common"))
 					return true;
 				return false;
 			}
-		};
-		return toFnParameterList(getDeeModuleList(getTestResource(TESTFILESDIR), true), nameFilter);
+		});
 	}
 	
 	protected final File file;
@@ -63,11 +73,10 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		this.file = file;
 	}
 	
-	
 	@Test
 	public void runSourceBasedTests() throws Exception { runSourceBasedTests$(); }
 	public void runSourceBasedTests$() throws Exception {
-		AnnotatedSource[] sourceBasedTests = getSourceBasedTests(file);
+		AnnotatedSource[] sourceBasedTests = getSourceBasedTests(file, commonDefinitions);
 		for (AnnotatedSource testString : sourceBasedTests) {
 			testsLogger.println(">> ----------- Annotated Source test: ----------- <<");
 			testsLogger.println(testString.source);

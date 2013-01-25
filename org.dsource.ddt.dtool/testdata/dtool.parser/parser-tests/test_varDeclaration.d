@@ -8,14 +8,8 @@ Bar.foo foo = 2;
 DefVariable(RefIdentifier DefSymbol)
 DefVariable(RefPrimitive DefSymbol)
 DefVariable(* DefSymbol InitializerExp(?))
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DefVariable
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@SP_TYPE_REF!《
-	int●
-	Foo●
-	Bar.foo●
-	Bar.foo.Foobar
-》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@(SP_TYPE_REF) fooA;
 #@(SP_TYPE_REF) fooB = 55;

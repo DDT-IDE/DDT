@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,10 +54,21 @@ public class TemplatedSourceProcessor2 {
 	
 	protected String kMARKER;
 	protected String[] kMARKER_array;
-	protected final ArrayList<AnnotatedSource> genCases = new ArrayList<AnnotatedSource>();
 	protected final Map<String, TspExpansionElement> globalExpansions = new HashMap<String, TspExpansionElement>();
+	protected final ArrayList<AnnotatedSource> genCases = new ArrayList<AnnotatedSource>();
 	
 	public TemplatedSourceProcessor2() { }
+	
+	public Map<String, TspExpansionElement> getGlobalExpansions() {
+		return globalExpansions;
+	}
+	
+	public void addGlobalExpansions(Map<String, TspExpansionElement> newGlobalExpansions) {
+		for (Entry<String, TspExpansionElement> entry : newGlobalExpansions.entrySet()) {
+			assertTrue(globalExpansions.containsKey(entry.getKey()) == false);
+			globalExpansions.put(entry.getKey(), entry.getValue());
+		}
+	}
 	
 	public ArrayList<AnnotatedSource> getGenCases() {
 		return genCases;
@@ -630,7 +642,7 @@ public class TemplatedSourceProcessor2 {
 				checkError(definedExpansionElem == null, sourceCase);
 				arguments = definedExpansionElem.arguments;
 			} else {
-				// We allow a "redefinition" if the element is exactly the same
+				// We allow a "redefinition" only if the element is exactly the same
 				checkError(definedExpansionElem != null && definedExpansionElem != expansionElem, sourceCase);
 				sourceCase.putExpansion(expansionId, expansionElem);
 			}
