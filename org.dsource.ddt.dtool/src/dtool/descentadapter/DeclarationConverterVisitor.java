@@ -438,7 +438,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.AliasThis elem) {
 		return endAdapt(
 			new DeclarationAliasThis(
-				new RefIdentifier(new String(elem.ident.ident)),
+				new RefIdentifier(new String(elem.ident.ident), null),
 				DefinitionConverter.sourceRange(elem)
 			)
 		);
@@ -522,9 +522,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			));
 		}  else {
 			return endAdapt(new DefinitionVariable(
-				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
+				DefinitionConverter.convertDsymbol(elem, convContext),
 				ReferenceConverter.convertType(elem.type, convContext),
-				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext)
+				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null
 			));
 		}
 	}

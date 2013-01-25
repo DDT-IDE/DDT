@@ -26,12 +26,17 @@ import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
+import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
+import dtool.ast.expressions.InitializerArray;
+import dtool.ast.expressions.InitializerExp;
+import dtool.ast.expressions.InitializerStruct;
+import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.CommonRefQualified;
@@ -105,6 +110,12 @@ public interface IASTNeoVisitor {
 	
 	public boolean visit(DefinitionVariable node);
 	public void endVisit(DefinitionVariable node);
+	
+	public boolean visit(DefinitionVarFragment node);
+	public boolean visit(InitializerExp node);
+	public boolean visit(InitializerArray node);
+	public boolean visit(InitializerStruct node);
+	public boolean visit(InitializerVoid node);
 	
 	public boolean visit(DefinitionEnum node);
 	public void endVisit(DefinitionEnum node);

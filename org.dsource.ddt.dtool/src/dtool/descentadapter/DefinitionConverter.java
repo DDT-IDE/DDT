@@ -105,7 +105,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		
 		IdentifierExp ident = elem.ident;
 		if(ident == null) {
-			TokenInfo defName = new TokenInfo("<syntax_error>");
+			TokenInfo defName = new TokenInfo(TokenInfo.SYNTAX_ERROR, -1);
 			return new DefUnit.DefUnitTuple(sourceRange, defName, newComments);
 		} else {
 			TokenInfo defName = convertIdToken(ident);

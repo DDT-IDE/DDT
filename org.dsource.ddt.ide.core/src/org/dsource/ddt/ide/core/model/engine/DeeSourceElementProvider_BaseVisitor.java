@@ -19,10 +19,15 @@ import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
+import dtool.ast.expressions.InitializerArray;
+import dtool.ast.expressions.InitializerExp;
+import dtool.ast.expressions.InitializerStruct;
+import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.CommonRefQualified;
@@ -73,6 +78,15 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 	@Override public boolean visit(DeclarationPragma node) { return true; }
 	@Override public boolean visit(DeclarationProtection node) { return true; }
 	@Override public boolean visit(DeclarationBasicAttrib node) { return true; }
+	
+	
+	/* -----------------  Aggregates  ----------------- */
+	
+	@Override public boolean visit(DefinitionVarFragment elem) { return true; }
+	@Override public boolean visit(InitializerExp elem) { return true; }
+	@Override public boolean visit(InitializerArray elem) { return true; }
+	@Override public boolean visit(InitializerStruct elem) { return true; }
+	@Override public boolean visit(InitializerVoid elem) { return true; }
 	
 	/* ---------------------------------- */
 	

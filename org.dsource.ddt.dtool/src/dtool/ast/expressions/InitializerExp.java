@@ -1,6 +1,7 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 
@@ -20,6 +21,11 @@ public class InitializerExp extends Initializer {
 			TreeVisitor.acceptChildren(visitor, exp);
 		}
 		visitor.endVisit(this);	 
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(exp);
 	}
 	
 }

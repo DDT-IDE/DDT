@@ -7,42 +7,27 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.Reference;
-import dtool.ast.statements.IStatement;
-import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
-import dtool.util.ArrayView;
 
 /**
- * A variable definition. 
- * Optionally has multiple symbols defined with the multi-identifier syntax.
- * TODO fragments semantic visibility
+ * A fragment of a variable definition in a multi-identifier variable declaration
  */
-public class DefinitionVariable extends Definition implements IStatement { 
+public class DefinitionVarFragment extends DefUnit {
 	
-	public static ArrayView<DefinitionVarFragment> emptyFrags = ArrayView.create(new DefinitionVarFragment[0]);
-	
-	public final Reference type;
 	public final Initializer init;
-	public final ArrayView<DefinitionVarFragment> fragments;
 	
-	public DefinitionVariable(DefUnitTuple dudt, Reference type, Initializer init, 
-		ArrayView<DefinitionVarFragment> fragments) {
-		super(dudt, null);
-		this.type = parentize(type);
+	public DefinitionVarFragment(DefUnitTuple dudt, Initializer init) {
+		super(dudt);
 		this.init = parentize(init);
-		this.fragments = fragments != null ? parentize(fragments) : emptyFrags;
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, type);
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, init);
-			
-			TreeVisitor.acceptChildren(visitor, fragments);
 		}
 		visitor.endVisit(this);
 	}
@@ -57,40 +42,29 @@ public class DefinitionVariable extends Definition implements IStatement {
 	}
 	
 	public Reference getTypeReference() {
-		return type;
-	}
-	
-	private IDefUnitReference determineType() {
-		if(type != null)
-			return type;
-		return NativeDefUnit.nullReference;
+		return ((DefinitionVariable) getParent()).getTypeReference();
 	}
 	
 	@Override
 	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
-		Collection<DefUnit> defunits = determineType().findTargetDefUnits(moduleResolver, true);
+		Collection<DefUnit> defunits = getTypeReference().findTargetDefUnits(moduleResolver, true);
 		if(defunits == null || defunits.isEmpty())
 			return null;
 		return defunits.iterator().next().getMembersScope(moduleResolver);
 		//return defunit.getMembersScope();
 	}
 	
-	@Deprecated
-	private String getTypeString() {
-		if(type != null)
-			return type.toStringAsElement();
-		return "auto";
-	}
-	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(type, " ");
 		cp.appendNode(defname);
-		cp.appendNode(" = ", init);
-		for (DefinitionVarFragment varFragment : fragments) {
-			cp.appendNode(", ", varFragment);
-		}
-		cp.append(";");
+		cp.appendNode("= ", init);
+	}
+	
+	@Deprecated
+	private String getTypeString() {
+		if(getTypeReference() != null)
+			return getTypeReference().toStringAsElement();
+		return "auto";
 	}
 	
 	@Override

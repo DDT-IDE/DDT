@@ -15,10 +15,9 @@ import #error(EXP_ID)#error(EXP_SEMICOLON) import foo;
 #AST_EXPECTED:
 import ; import foo;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-import foo #error(EXP_SEMICOLON) foo;
+import foo #error(EXP_SEMICOLON) foo foo;
 #AST_EXPECTED:
-import foo; foo;
-
+import foo; foo foo;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO: we could dup case with add of first import in import list
 import #error(EXP_ID) ;
@@ -47,7 +46,7 @@ import        foo, bar2 = pack.foo, bar3 = pack.fooX,        pack.bar.foo;
 
 import #error(EXP_ID) = pack.foo;
 static import foo, #error(EXP_ID) = pack.foo;
-import #error(EXP_ID)#error(EXP_SEMICOLON) int = pack.foo;
+import #error(EXP_ID)#error(EXP_SEMICOLON) int #error(EXP_ID);
 import pack.foo #error(EXP_SEMICOLON) = pack.foo;
 
 import foo = #error(EXP_ID) ;
@@ -57,7 +56,7 @@ import foo = #error(EXP_ID) , #error(EXP_ID) ;
 #AST_EXPECTED:
 import  = pack.foo;
 static import foo,  = pack.foo;
-import ; int = pack.foo;
+import ; int; 
 import pack.foo; = pack.foo;
 
 import foo = ;

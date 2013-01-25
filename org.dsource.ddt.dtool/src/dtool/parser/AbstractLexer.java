@@ -26,7 +26,6 @@ public abstract class AbstractLexer {
 	protected int pos = -1; // Temporary variable used internally by scanners
 	
 	public AbstractLexer(CharSequence source) {
-		// Need to investigate how UTF chars are presented to us.
 		this.source = assertNotNull_(source);
 	}
 	

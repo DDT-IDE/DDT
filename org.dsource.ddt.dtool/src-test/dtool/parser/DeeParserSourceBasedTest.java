@@ -12,6 +12,7 @@ package dtool.parser;
 
 import static dtool.parser.DeeParserTest.runParserTest______________________;
 import static dtool.tests.DToolTestResources.getTestResource;
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -89,7 +90,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				expectedGenSource = mde.associatedSource;
 				ignoreFurtherErrorMDs = true;
 			} else if(mde.name.equals("AST_STRUCTURE_EXPECTED")) {
-				assertTrue(expectedGenSource == parseSource);
+				assertTrue(expectedStructure == null);
 				expectedStructure = processExpectedStructure(mde.associatedSource);
 			} else if(mde.name.equals("error")){
 				if(!ignoreFurtherErrorMDs) {
@@ -100,7 +101,8 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			} else if(mde.name.equals("parser") && mde.value.equals("DontCheckSourceEquality")){
 				expectedGenSource = null;
 			} else {
-				if(!areEqual(mde.value, "flag"))
+				// TODO remove TODO flag
+				if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "TODO")))
 					assertFail("Unknown metadata");
 			}
 		}
@@ -200,16 +202,20 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	}
 	
 	public static class NamedNodeElement {
+		public static final String IGNORE_ALL = "*"; 
+		public static final String IGNORE_NAME = "?";
+		
 		public final String name;
 		public final NamedNodeElement[] children;
 		
 		public NamedNodeElement(String name, NamedNodeElement[] children) {
-			this.name = name;
+			this.name = assertNotNull_(name);
 			this.children = children;
 		}
+		
 		@Override
 		public String toString() {
-			return name + "(" + StringUtil.collToString(children, " ") + ")";
+			return name + (children != null ? ( "("+StringUtil.collToString(children, " ")+")" ) : "");
 		}
 	}
 	
@@ -224,16 +230,27 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		ArrayList<NamedNodeElement> elements = new ArrayList<NamedNodeElement>();
 		
 		while(true) {
-			String id = parser.seekWhiteSpace().consumeAlphaNumericUS(true);
-			if(id.isEmpty()) {
-				break;
-			}
-			NamedNodeElement[] children;
-			if(parser.tryConsume("(")) {
-				children = readNamedElementsList(parser);
-				parser.seekWhiteSpace().consume(")");
+			String id;
+			NamedNodeElement[] children = null;
+			
+			parser.seekWhiteSpace();
+			if(parser.tryConsume("*")) {
+				id = NamedNodeElement.IGNORE_ALL;
 			} else {
-				children = new NamedNodeElement[0];
+				if(parser.tryConsume("?")) {
+					id = NamedNodeElement.IGNORE_NAME;
+				} else {
+					id = parser.consumeAlphaNumericUS(true);
+					if(id.isEmpty()) {
+						break;
+					}
+				}
+				if(parser.tryConsume("(")) {
+					children = readNamedElementsList(parser);
+					parser.seekWhiteSpace().consume(")");
+				} else {
+					children = new NamedNodeElement[0];
+				}
 			}
 			elements.add(new NamedNodeElement(id, children));
 		}

@@ -1,24 +1,24 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic samples
 
-extern(C) void foo;
+extern(C) Foo foo;
 align (1) int foo;
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationLinkage(MiscDeclaration)
-DeclarationAlign(MiscDeclaration)
+DeclarationLinkage(DefinitionVariable(RefIdentifier DefSymbol))
+DeclarationAlign(DefinitionVariable(RefPrimitive DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 public: 
-int foo;
-void bar;
+Foo foo;
+int bar;
 extern(C):
-int foo;
-void bar;
+Foo foo;
+int bar;
 
 #AST_STRUCTURE_EXPECTED:
 DeclarationProtection(
-	MiscDeclaration MiscDeclaration
+	DefinitionVariable(RefIdentifier DefSymbol) DefinitionVariable(RefPrimitive DefSymbol)
 	DeclarationLinkage(
-		MiscDeclaration MiscDeclaration
+		DefinitionVariable(RefIdentifier DefSymbol) DefinitionVariable(RefPrimitive DefSymbol)
 	)
 )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -28,7 +28,7 @@ final {
 static:
 const:
 #AST_STRUCTURE_EXPECTED:
-DeclarationBasicAttrib( MiscDeclaration )
+DeclarationBasicAttrib( DefinitionVariable(RefPrimitive DefSymbol) )
 DeclarationBasicAttrib(
 	DeclarationBasicAttrib
 )
@@ -38,8 +38,8 @@ extern(#error:BAD_LINKAGE_ID) int bar;
 align(#error:EXP_INTEGER) int bar;
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationLinkage(MiscDeclaration)
-DeclarationAlign(MiscDeclaration)
+DeclarationLinkage(DefinitionVariable(RefPrimitive DefSymbol))
+DeclarationAlign(DefinitionVariable(RefPrimitive DefSymbol))
 
 #AST_EXPECTED:
 extern int bar;
@@ -59,7 +59,7 @@ extern(C) #error(SE_decl) ] int foo;
 
 #AST_STRUCTURE_EXPECTED:
 DeclarationLinkage(InvalidSyntaxDeclaration)
-MiscDeclaration
+DefinitionVariable(RefPrimitive DefSymbol)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 #@LINKAGE_TYPE{C,C++,D,Windows,Pascal,System}

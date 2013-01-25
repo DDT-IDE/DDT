@@ -28,25 +28,22 @@ public abstract class DefUnit extends ASTNeoNode {
 	public final DefSymbol defname;
 	
 	public DefUnit(DefUnitTuple defunit) {
-		this(defunit.sourceRange, defunit.defName.getString(), defunit.defName.getSourceRange(), defunit.comments);
+		this(defunit.defName.getString(), defunit.defName.getSourceRange(), defunit.comments, defunit.sourceRange);
 	}
 	
-	public DefUnit(SourceRange sourceRange, String defName, SourceRange defNameSourceRange, Comment[] comments) {
+	public DefUnit(String defName, SourceRange defNameSourceRange, Comment[] comments, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.defname = new DefSymbol(defName, defNameSourceRange, this);
 		this.comments = comments;
-//		if(hasSourceRangeInfo()) {
-//			assertTrue(defname.hasSourceRangeInfo());
-//		}
 	}
 	
 	/** Constructor for synthetic defunits. */
 	protected DefUnit(String defName) {
-		this(null, defName, null, null);
+		this(defName, null, null, null);
 	}
 	
 	/** Constructor for Module defunit. */
-	protected DefUnit(SourceRange sourceRange, DefSymbol defname, Comment[] comments) {
+	protected DefUnit(DefSymbol defname, Comment[] comments, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		assertNotNull(defname);
 		this.defname = defname;

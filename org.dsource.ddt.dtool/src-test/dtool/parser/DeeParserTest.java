@@ -1,10 +1,12 @@
 package dtool.parser;
 
+import static dtool.util.NewUtils.replaceRegexFirstOccurrence;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import dtool.ast.ASTCommonSourceRangeChecker.ASTAssertChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.definitions.Module;
@@ -22,23 +24,21 @@ public class DeeParserTest extends CommonTestUtils {
 		Module module = result.module;
 		assertNotNull(module);
 		
-		if(expectedGenSource != null) {
-			checkSourceEquality(module, expectedGenSource);
-		}
-		
 		if(expectedStructure != null) {
 			checkExpectedStructure(module, expectedStructure);
 		}
 		
-		if(allowAnyErrors == false) {
-			checkParserErrors(result.errors, expectedErrors);
-		}
-		if(result.errors.size() == 0) {
-			checkSourceEquality(module, parseSource);
+		if(expectedGenSource != null) {
+			checkSourceEquality(module, expectedGenSource);
 		}
 		
-		// Check source ranges
-		module.accept(new ASTSourceRangeChecker(parseSource, result.errors));
+		if(result.errors.size() == 0) {
+			checkSourceEquality(module, parseSource);
+		} else if(allowAnyErrors == false) {
+			checkParserErrors(result.errors, expectedErrors);
+		}
+		
+		checkSourceRanges(parseSource, result);
 	}
 	
 	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
@@ -107,7 +107,13 @@ public class DeeParserTest extends CommonTestUtils {
 		for (int i = 0; i < expectedStructure.length; i++) {
 			NamedNodeElement namedElement = expectedStructure[i];
 			ASTNeoNode astNode = children[i];
-			assertEquals(astNode.getClass().getSimpleName(), namedElement.name);
+			if(namedElement.name == NamedNodeElement.IGNORE_ALL) {
+				continue;
+			}
+			if(namedElement.name != NamedNodeElement.IGNORE_NAME) {
+				String expectedName = replaceRegexFirstOccurrence(namedElement.name, "(Def)(Var)", 1, "Definition");
+				assertEquals(astNode.getClass().getSimpleName(), expectedName);
+			}
 			checkExpectedStructure(astNode.getChildren(), namedElement.children, true);
 		}
 	}
@@ -124,6 +130,15 @@ public class DeeParserTest extends CommonTestUtils {
 			assertAreEqual(safeToString(error.msgObj2), safeToString(expError.msgObj2));
 		}
 		assertTrue(resultErrors.size() == expectedErrors.size());
+	}
+	
+	public static void checkSourceRanges(String parseSource, DeeParserResult result) {
+		Module module = result.module;
+		
+		// Check of source ranges
+		module.accept(new ASTSourceRangeChecker(parseSource, result.errors));
+		// Next one should not fail if previous one passed.
+		ASTAssertChecker.checkConsistency(module);
 	}
 	
 }

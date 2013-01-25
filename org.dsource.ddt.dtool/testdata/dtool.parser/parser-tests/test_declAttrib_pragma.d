@@ -3,11 +3,11 @@
 
 pragma(foo) void foo;
 pragma(foo) void foo;
-// pragma(foo, 1, 2) void foo; // TODO
+// pragma(foo, 1, 2) void foo; // TODO expression list
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationPragma(MiscDeclaration)
-DeclarationPragma(MiscDeclaration)
+DeclarationPragma(DefinitionVariable(RefPrimitive DefSymbol))
+DeclarationPragma(DefinitionVariable(RefPrimitive DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 pragma(foo) : 
 int foo;
@@ -18,9 +18,9 @@ pragma(foo) {
 
 #AST_STRUCTURE_EXPECTED:
 DeclarationPragma(
-	MiscDeclaration MiscDeclaration
+	DefinitionVariable(RefPrimitive DefSymbol) DefinitionVariable(RefPrimitive DefSymbol)
 	DeclarationPragma(
-		MiscDeclaration
+		DefinitionVariable(RefPrimitive DefSymbol)
 	)
 )
 

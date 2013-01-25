@@ -1,5 +1,7 @@
 package dtool.ast;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Iterator;
 
 import dtool.ast.definitions.DefUnit;
@@ -39,16 +41,28 @@ public class ASTCodePrinter {
 		}
 	}
 	
+	public void append(ASTNeoNode node) {
+		appendNode(node);
+	}
+	
 	public void appendNode(ASTNeoNode node) {
-		appendNode(node, null);
+		if(node != null) {
+			node.toStringAsCode(this);
+		}
 	}
 	
 	public void appendNode(ASTNeoNode node, String sep) {
 		if(node != null) {
 			node.toStringAsCode(this);
-			if(sep != null) {
-				append(sep);
-			}
+			assertNotNull(sep);
+			append(sep);
+		}
+	}
+	
+	public void appendNode(String prefix, ASTNeoNode node) {
+		if(node != null) {
+			append(prefix);
+			node.toStringAsCode(this);
 		}
 	}
 	

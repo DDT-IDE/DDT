@@ -1,6 +1,5 @@
 package dtool.ast.references;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
@@ -20,15 +19,11 @@ public class RefIdentifier extends NamedReference {
 	
 	public final String name;
 	
-	@Deprecated
-	public RefIdentifier(String name) {
-		assertNotNull(name);
-		assertTrue(name.length() > 0);
-		this.name = name;
-	}
-	
 	public RefIdentifier(String name, SourceRange sourceRange) {
-		this(name);
+		//assertNotNull(name); 
+		// BUG here TODO review use of this.name since the contract has changed and now allows null
+		assertTrue(name == null || name.length() > 0);
+		this.name = name;
 		initSourceRange(sourceRange);
 	}
 	

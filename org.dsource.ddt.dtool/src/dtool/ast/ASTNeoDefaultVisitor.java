@@ -36,12 +36,17 @@ import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
+import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
+import dtool.ast.expressions.InitializerArray;
+import dtool.ast.expressions.InitializerExp;
+import dtool.ast.expressions.InitializerStruct;
+import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.CommonRefQualified;
@@ -122,10 +127,12 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 		return true;
 	}
 	
-	@Override
-	public boolean visit(DefinitionVariable elem) {
-		return true;
-	}
+	@Override public boolean visit(DefinitionVariable elem) { return true; }
+	@Override public boolean visit(DefinitionVarFragment elem) { return true; }
+	@Override public boolean visit(InitializerExp elem) { return true; }
+	@Override public boolean visit(InitializerArray elem) { return true; }
+	@Override public boolean visit(InitializerStruct elem) { return true; }
+	@Override public boolean visit(InitializerVoid elem) { return true; }
 	
 	@Override
 	public boolean visit(DefinitionEnum elem) {

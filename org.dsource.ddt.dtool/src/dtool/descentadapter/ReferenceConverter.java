@@ -63,7 +63,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	private static RefIdentifier convertToRefIdentifier(descent.internal.compiler.parser.IdentifierExp elem,
 			SourceRange sourceRange) {
 		assertTrue(elem.getClass() == IdentifierExp.class && elem.ident.length > 0);
-		RefIdentifier refIdentifier = new RefIdentifier(new String(elem.ident));
+		RefIdentifier refIdentifier = new RefIdentifier(new String(elem.ident), null);
 		if (sourceRange != null) {
 			refIdentifier.setSourceRange(sourceRange);
 		}
@@ -85,7 +85,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static RefIdentifier convert(descent.internal.compiler.parser.TypeBasic elem) {
 		SourceRange srcRange = sourceRange(elem);
-		return (srcRange == null) ? new RefIdentifier(elem.ty.name) : new RefIdentifier(elem.ty.name, srcRange);
+		return (srcRange == null) ? new RefIdentifier(elem.ty.name, null) : new RefIdentifier(elem.ty.name, srcRange);
 	}
 	
 	/* --- Conversion of qualified containers. --- */

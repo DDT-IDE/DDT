@@ -22,7 +22,7 @@ public class MiscDeclaration extends ASTNeoNode {
 			tokenList.add(token);
 		} while(!(token.type == DeeTokens.SEMICOLON || token.type == DeeTokens.EOF));
 		
-		return new MiscDeclaration(tokenList, deeParser.range(startPos, deeParser.lastToken.getEndPos()));
+		return new MiscDeclaration(tokenList, deeParser.srToCursor(startPos));
 	}
 	
 	public MiscDeclaration(ArrayList<Token> tokenList, SourceRange sourceRange) {

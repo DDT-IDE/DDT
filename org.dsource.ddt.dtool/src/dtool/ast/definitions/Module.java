@@ -95,7 +95,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	
 	public Module(ModuleDefSymbol defSymbol, Comment[] preComments, DeclarationModule md, 
 			ArrayView<ASTNeoNode> members, SourceRange sourceRange) {
-		super(sourceRange, defSymbol, preComments);
+		super(defSymbol, preComments, sourceRange);
 		defSymbol.module = this;
 		this.md = parentize(md);
 		this.members = parentize(members);

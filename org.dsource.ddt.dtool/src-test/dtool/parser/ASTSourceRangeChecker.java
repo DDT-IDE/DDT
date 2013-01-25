@@ -1,6 +1,7 @@
 package dtool.parser;
 
 import static dtool.tests.CommonTestUtils.assertCast;
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -42,17 +43,25 @@ import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
+import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
+import dtool.ast.expressions.InitializerArray;
+import dtool.ast.expressions.InitializerExp;
+import dtool.ast.expressions.InitializerStruct;
+import dtool.ast.expressions.InitializerVoid;
+import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
@@ -64,7 +73,7 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 
 	public ASTSourceRangeChecker(String source, ArrayList<ParserError> expectedErrors) {
 		super(0);
-		this.source = source;
+		this.source = assertNotNull_(source);
 		this.expectedErrors = expectedErrors;
 		int tempCursor = 0;
 		for (ParserError parserError : expectedErrors) {
@@ -91,16 +100,19 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 	
 	@Override
 	public boolean preVisit(ASTNeoNode elem) {
-		boolean preVisit = super.preVisit(elem);
+		assertTrue(elem.getStartPos() <= source.length() && elem.getEndPos() <= source.length());
 		
-		if(source !=  null ) {
-			assertTrue(elem.getStartPos() <= source.length() && elem.getEndPos() <= source.length());
-			
-			// Warning, this can have quadratic performance on node depth
-			elem.accept(new ASTReparseCheckSwitcher());
-		}
+		// Warning, this can have quadratic performance on node depth
+		elem.accept(new ASTReparseCheckSwitcher());
 		
-		return preVisit;
+		return super.preVisit(elem);
+	}
+	
+	/* ---------------- Parsing helpers ---------------- */
+	
+	public static Reference parseReference(DeeParser nodeRangeSourceParser) {
+		InvalidSyntaxDeclaration isd = (InvalidSyntaxDeclaration) nodeRangeSourceParser.parseDeclaration();
+		return (Reference) isd.node;
 	}
 	
 	public class ASTReparseCheckSwitcher extends ASTNeoAbstractVisitor {
@@ -111,8 +123,14 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		
 		@Override
 		public boolean preVisit(ASTNeoNode node) {
+			assertTrue(node.hasSourceRangeInfo());
 			nodeRangeSource = source.substring(node.getStartPos(), node.getEndPos()); 
-			nodeRangeSourceParser = new DeeParser(nodeRangeSource);
+			nodeRangeSourceParser = new DeeParser(nodeRangeSource) { 
+				@Override
+				public String toString() {
+					return getSource().toString();
+				}
+			};
 			
 			return true;
 		}
@@ -162,6 +180,7 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		 */
 		public boolean reparseCheck(ASTNeoNode reparsedNode, ASTNeoNode node) {
 			assertTrue(reparsedNode != null && nodeRangeSourceParser.lookAhead() == DeeTokens.EOF);
+			assertTrue(reparsedNode.getClass() == node.getClass());
 			assertEquals(reparsedNode.toStringAsCode(), node.toStringAsCode());
 			return DONT_VISIT_CHILDREN;
 		}
@@ -206,7 +225,7 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		
 		@Override
 		public boolean visit(DeclarationImport node) {
-			return reparseCheck(nodeRangeSourceParser.parseImportDecl(), node);
+			return reparseCheck(nodeRangeSourceParser.parseImportDeclaration(), node);
 		}
 		
 		@Override
@@ -239,23 +258,23 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		//-- various Declarations
 		@Override
 		public boolean visit(DeclarationLinkage node) {
-			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationExternLinkage(), node);
+			return reparseCheck(nodeRangeSourceParser.parseDeclarationExternLinkage(), node);
 		}
 		@Override
 		public boolean visit(DeclarationAlign node) {
-			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationAlign(), node);
+			return reparseCheck(nodeRangeSourceParser.parseDeclarationAlign(), node);
 		}
 		@Override
 		public boolean visit(DeclarationPragma node) {
-			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationPragma(), node);
+			return reparseCheck(nodeRangeSourceParser.parseDeclarationPragma(), node);
 		}
 		@Override
 		public boolean visit(DeclarationProtection node) {
-			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationProtection(), node);
+			return reparseCheck(nodeRangeSourceParser.parseDeclarationProtection(), node);
 		}
 		@Override
 		public boolean visit(DeclarationBasicAttrib node) {
-			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseDeclarationBasicAttrib(), node);
+			return reparseCheck(nodeRangeSourceParser.parseDeclarationBasicAttrib(), node);
 		}
 		
 		//-- Aggregates
@@ -291,8 +310,28 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		
 		@Override
 		public boolean visit(DefinitionVariable node) {
-			assertFail(); // TODO Auto-generated method stub
-			return false;
+			return reparseCheck(nodeRangeSourceParser.parseDeclaration(), node);
+		}
+		@Override
+		public boolean visit(DefinitionVarFragment node) {
+			return reparseCheck(nodeRangeSourceParser.parseVarFragment(), node);
+		}
+		
+		@Override
+		public boolean visit(InitializerExp node) {
+			return reparseCheck(nodeRangeSourceParser.parseInitializer(), node);
+		}
+		@Override
+		public boolean visit(InitializerArray node) {
+			return reparseCheck(nodeRangeSourceParser.parseInitializer(), node);
+		}
+		@Override
+		public boolean visit(InitializerStruct node) {
+			return reparseCheck(nodeRangeSourceParser.parseInitializer(), node);
+		}
+		@Override
+		public boolean visit(InitializerVoid node) {
+			return reparseCheck(nodeRangeSourceParser.parseInitializer(), node);
 		}
 		
 		@Override
@@ -327,6 +366,13 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		
 		@Override
 		public boolean visit(Resolvable node) {
+			if(node instanceof ExpLiteralInteger) {
+				return reparseCheck(nodeRangeSourceParser.parseExpression(), node);
+			}
+			if(node instanceof MissingExpression) {
+				assertEquals("", node.toStringAsCode());
+				return DONT_VISIT_CHILDREN;
+			}
 			assertFail(); // TODO Auto-generated method stub
 			return false;
 		}
@@ -351,14 +397,16 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		
 		@Override
 		public boolean visit(CommonRefQualified node) {
+			if(node instanceof RefQualified) {
+				return reparseCheck(parseReference(nodeRangeSourceParser), node);
+			}
 			assertFail(); // TODO Auto-generated method stub
 			return false;
 		}
 		
 		@Override
 		public boolean visit(RefIdentifier node) {
-			assertFail(); // TODO Auto-generated method stub
-			return false;
+			return reparseCheck(parseReference(nodeRangeSourceParser), node);
 		}
 		
 		@Override
@@ -370,7 +418,7 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		
 		@Override
 		public boolean visit(DeclarationMixinString node) {
-			return reparseCheck((ASTNeoNode) nodeRangeSourceParser.parseMixinStringDeclaration(), node);
+			return reparseCheck(nodeRangeSourceParser.parseMixinStringDeclaration(), node);
 		}
 		
 		

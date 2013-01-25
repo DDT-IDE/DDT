@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.ChainedIterator;
@@ -18,7 +20,8 @@ public class NewUtils {
 		return new ArrayList<T>(coll);
 	}
 	
-	public static <T> Iterator<? extends T> getChainedIterator(Iterable<? extends T> iter1, Iterable<? extends T> iter2) {
+	public static <T> Iterator<? extends T> getChainedIterator(
+		Iterable<? extends T> iter1, Iterable<? extends T> iter2) {
 		if(iter1 == null && iter2 == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
 		if(iter1 == null)
@@ -57,6 +60,21 @@ public class NewUtils {
 			return null;
 		}
 		return string;
+	}
+	
+	public static int updateIfNull(int currentValue, int newValue) {
+		return currentValue == -1 ? newValue : currentValue;
+	}
+	
+	public static String replaceRegexFirstOccurrence(String str, String regex, int regexGroup, String replacement) {
+		Matcher matcher = Pattern.compile(regex).matcher(str);
+		if(matcher.find()) {
+			int matchIx = matcher.start();
+			int matchEndIx = matchIx + matcher.group(regexGroup).length();
+			return str.substring(0, matchIx) + replacement + str.substring(matchEndIx, str.length()); 
+		} else {
+			return str;
+		}
 	}
 	
 }

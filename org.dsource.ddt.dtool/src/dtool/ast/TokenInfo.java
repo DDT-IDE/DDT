@@ -10,24 +10,23 @@
  *******************************************************************************/
 package dtool.ast;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 
 /**
  * Simple value type representing a string and an associated source range. 
  */
 public final class TokenInfo {
 	
-	public String value;
-	public int offset;
+	public static final String SYNTAX_ERROR = "<syntax_error>";
+	
+	public final String value;
+	public final int offset;
 	
 	public TokenInfo(String value, int offset) {
+		assertNotNull(value);
 		this.value = value;
 		this.offset = offset;
-	}
-	
-	@Deprecated
-	public TokenInfo(String name) {
-		this.value = name;
-		this.offset = -1;
 	}
 	
 	public String getString() {
@@ -35,7 +34,8 @@ public final class TokenInfo {
 	}
 	
 	public SourceRange getSourceRange() {
-		return new SourceRange(offset, value == null ? 0 : value.length());
+		return (offset == -1 || value == SYNTAX_ERROR) ? null : 
+			new SourceRange(offset, value.length());
 	}
 	
 }
