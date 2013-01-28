@@ -162,7 +162,11 @@ public class AbstractDeeParser {
 	public static String MISSING_ID_VALUE = "";
 	
 	protected Token missingIdToken(int startPos) {
-		return new Token(DeeTokens.IDENTIFIER, MISSING_ID_VALUE, startPos) {
+		return missingToken(DeeTokens.IDENTIFIER, startPos);
+	}
+	
+	protected Token missingToken(DeeTokens identifier, int startPos) {
+		return new Token(identifier, MISSING_ID_VALUE, startPos) {
 			@Override
 			public int getLength() {
 				return 0;

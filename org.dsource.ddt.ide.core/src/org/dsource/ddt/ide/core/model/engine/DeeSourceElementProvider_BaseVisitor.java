@@ -29,15 +29,22 @@ import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
+import dtool.ast.references.RefTypeDynArray;
+import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
+import dtool.ast.references.TypeDelegate;
+import dtool.ast.references.TypeFunction;
+import dtool.ast.references.TypeMapArray;
+import dtool.ast.references.TypeStaticArray;
+import dtool.ast.references.TypeTypeof;
 
 public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstractVisitor {
 	
@@ -103,19 +110,27 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 		return true;
 	}
 	
-	@Override
-	public final boolean visit(CommonRefNative elem) {
-		return true;
-	}
-	
 	public abstract boolean visit(NamedReference elem);
 	
 	@Override public boolean visit(RefIdentifier elem) { return visit((NamedReference) elem); }
+	@Override public boolean visit(RefImportSelection elem) { return visit((NamedReference) elem); }
 	@Override public boolean visit(RefModuleQualified elem) { return visit((NamedReference) elem); }
 	@Override public boolean visit(RefQualified elem) { return visit((NamedReference) elem); }
 	@Override public boolean visit(RefPrimitive elem) { return visit((NamedReference) elem); }
 	@Override public boolean visit(RefModule elem) { return visit((NamedReference) elem); }
 	
+	@Override public boolean visit(RefTypeDynArray elem) { return true; }
+	@Override public boolean visit(RefTypePointer elem) { return true; }
+	@Override public boolean visit(TypeDelegate elem) { return true; }
+	@Override public boolean visit(TypeFunction elem) { return true; }
+	@Override public boolean visit(TypeMapArray elem) { return true; }
+	@Override public boolean visit(TypeStaticArray elem) { return true; }
+	
+	
+	@Override
+	public final boolean visit(TypeTypeof elem) {
+		return true;
+	}
 	@Override
 	public final boolean visit(RefTemplateInstance elem) {
 		return true;

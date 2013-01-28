@@ -41,6 +41,8 @@ import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAnonMember;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
+import dtool.ast.declarations.DeclarationBasicAttrib;
+import dtool.ast.declarations.DeclarationBasicAttrib.EDeclarationAttribute;
 import dtool.ast.declarations.DeclarationConditionalDefinition;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
@@ -50,9 +52,7 @@ import dtool.ast.declarations.DeclarationLinkage.Linkage;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationProtection.Protection;
-import dtool.ast.declarations.DeclarationBasicAttrib.EDeclarationAttribute;
 import dtool.ast.declarations.DeclarationStaticAssert;
-import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -198,7 +198,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
-		return endAdapt(new DeclarationAlign(elem.salign, AttribBodySyntax.COLON, body, sr));
+		return endAdapt(new DeclarationAlign(null, AttribBodySyntax.COLON, body, sr));
 	}
 
 	@Override

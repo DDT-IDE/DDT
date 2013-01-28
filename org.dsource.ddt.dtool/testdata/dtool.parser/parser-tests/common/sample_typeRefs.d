@@ -6,7 +6,11 @@
 	Foo●
 	.Foo●
 	Bar.foo●
-	Bar.foo.Foobar
+	Bar.foo.Foobar●
+	int*●
+	arrayElem[]●
+	
+	.Bar.foo[]*
 》
 
 #@SPSE_TYPE_REF!《
@@ -14,5 +18,9 @@
 	RefIdentifier●
 	RefModuleQualified(?)●
 	RefQualified(RefIdentifier RefIdentifier)●
-	RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier)
+	RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier)●
+	RefTypePointer(RefPrimitive)●
+	RefTypeDynArray(RefIdentifier)●
+	
+	RefTypePointer(RefTypeDynArray(RefQualified(RefModuleQualified(RefIdentifier) RefIdentifier)))
 》

@@ -22,7 +22,7 @@ public class InvalidSyntaxElement extends ASTNeoNode implements IStatement {
 	public InvalidSyntaxElement(ASTNeoNode node, SourceRange sourceRange) {
 		super(sourceRange);
 		this.badToken = null;
-		this.node = node;
+		this.node = parentize(node);
 	}
 	
 	@Override

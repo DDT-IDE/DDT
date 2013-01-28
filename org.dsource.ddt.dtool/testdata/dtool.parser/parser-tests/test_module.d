@@ -34,7 +34,7 @@ module pack.#error(EXP_ID) ;
 module pack.;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module #error(EXP_ID)#error(EXP_SEMICOLON) .foo;
+module #error(EXP_ID)#error(EXP_SEMICOLON) .foo #error(EXP_ID) ;
 #AST_EXPECTED:
 module ;
 .foo;

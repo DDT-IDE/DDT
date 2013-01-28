@@ -33,17 +33,19 @@ DeclarationBasicAttrib(
 	DeclarationBasicAttrib
 )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-// Should rule continue or not?
 extern(#error:BAD_LINKAGE_ID) int bar;
 align(#error:EXP_INTEGER) int bar;
+align(12 #error:EXP_CLOSE_PARENS int bar;
 
 #AST_STRUCTURE_EXPECTED:
 DeclarationLinkage(DefinitionVariable(RefPrimitive DefSymbol))
-DeclarationAlign(DefinitionVariable(RefPrimitive DefSymbol))
+DeclarationAlign( DefinitionVariable(RefPrimitive DefSymbol) )
+DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 
-#AST_EXPECTED:
+#AST_SOURCE_EXPECTED:
 extern int bar;
-align int bar;
+align() int bar;
+align(12) int bar;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ EOF case
 extern(C) #error(EXPRULE_decl)
 
@@ -91,8 +93,8 @@ align(16#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)
 align,
 align(1),
 align(12),
-align,
-align,
+align(),
+align(),
 align(16)
 }
 
@@ -163,6 +165,6 @@ void bar;
 /*EMPTY DECLARATION*/ #?DECL_BROKEN{,#?PRAGMA{,#error:SE_decl}} ;
 】
 
-#AST_EXPECTED:
+#AST_SOURCE_EXPECTED:
 
 #@ATTRIBS_EXP(ATTRIBS) #@(BODY_TYPES)

@@ -38,14 +38,21 @@ import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
+import dtool.ast.references.RefTypeDynArray;
+import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
+import dtool.ast.references.TypeDelegate;
+import dtool.ast.references.TypeFunction;
+import dtool.ast.references.TypeMapArray;
+import dtool.ast.references.TypeStaticArray;
+import dtool.ast.references.TypeTypeof;
 
 /**
  * The classes that this visitor dispatches to are mostly abstract classes, not concrete ones: 
@@ -144,14 +151,21 @@ public interface IASTNeoVisitor {
 	public boolean visit(Reference node);
 	public void endVisit(Reference node);
 	
-	public boolean visit(CommonRefNative node);
-	
 	public boolean visit(RefIdentifier node);
+	public boolean visit(RefImportSelection node);
 	public boolean visit(RefQualified node);
 	public boolean visit(RefModuleQualified node);
 	public boolean visit(RefPrimitive node);
 	public boolean visit(RefModule node);
 	
+	public boolean visit(RefTypeDynArray node);
+	public boolean visit(RefTypePointer node);
+	public boolean visit(TypeDelegate node);
+	public boolean visit(TypeFunction node);
+	public boolean visit(TypeMapArray node);
+	public boolean visit(TypeStaticArray node);
+	
+	public boolean visit(TypeTypeof node);
 	public boolean visit(RefTemplateInstance node);
 	
 	/* ---------------------------------- */

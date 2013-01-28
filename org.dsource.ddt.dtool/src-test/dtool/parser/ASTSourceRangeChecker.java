@@ -58,14 +58,21 @@ import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.CommonRefNative;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
+import dtool.ast.references.RefTypeDynArray;
+import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
+import dtool.ast.references.TypeDelegate;
+import dtool.ast.references.TypeFunction;
+import dtool.ast.references.TypeMapArray;
+import dtool.ast.references.TypeStaticArray;
+import dtool.ast.references.TypeTypeof;
 
 public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 	
@@ -176,7 +183,7 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		public void postVisit(ASTNeoNode node) {
 			if(!(node instanceof Module)) {
 				if(!areThereMissingTokenErrorsInNode(node)) {
-					DeeParserTest.checkSourceEquality(nodeRangeSource, node.toStringAsCode(), true);
+					DeeParserTest.CheckSourceEquality.check(nodeRangeSource, node.toStringAsCode(), true);
 				}
 			}
 		}
@@ -185,8 +192,12 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		 * {@link #postVisit} cannot do a test using {@link DeeParserTest#checkSourceEquality }
 		 */
 		public boolean reparseCheck(ASTNeoNode reparsedNode, ASTNeoNode node) {
+			return reparseCheck(reparsedNode, node.getClass(), node);
+		}
+		
+		public boolean reparseCheck(ASTNeoNode reparsedNode, Class<? extends ASTNeoNode> klass, ASTNeoNode node) {
 			assertTrue(reparsedNode != null && nodeRangeSourceParser.lookAhead() == DeeTokens.EOF);
-			assertTrue(reparsedNode.getClass() == node.getClass());
+			assertTrue(reparsedNode.getClass() == klass);
 			assertEquals(reparsedNode.toStringAsCode(), node.toStringAsCode());
 			return DONT_VISIT_CHILDREN;
 		}
@@ -393,18 +404,20 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		}
 		
 		@Override
-		public boolean visit(CommonRefNative node) {
-			assertFail(); // TODO Auto-generated method stub
-			return false;
-		}
-		
-		@Override
 		public boolean visit(RefIdentifier node) {
 			if(node.name == null) {
 				assertEquals("", node.toStringAsCode());
 				return DONT_VISIT_CHILDREN;
 			}
 			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		@Override
+		public boolean visit(RefImportSelection node) {
+			if(node.name == null || node.name.equals("")) {
+				assertEquals("", node.toStringAsCode());
+				return DONT_VISIT_CHILDREN;
+			}
+			return reparseCheck(parseReference(nodeRangeSourceParser), RefIdentifier.class, node);
 		}
 		@Override
 		public boolean visit(RefQualified node) {
@@ -424,9 +437,37 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		}
 		
 		@Override
+		public boolean visit(RefTypeDynArray node) {
+			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		@Override
+		public boolean visit(RefTypePointer node) {
+			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		@Override
+		public boolean visit(TypeDelegate node) {
+			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		@Override
+		public boolean visit(TypeFunction node) {
+			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		@Override
+		public boolean visit(TypeMapArray node) {
+			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		@Override
+		public boolean visit(TypeStaticArray node) {
+			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		
+		@Override
+		public boolean visit(TypeTypeof node) {
+			throw assertFail(); // TODO Auto-generated method stub
+		}
+		@Override
 		public boolean visit(RefTemplateInstance node) {
-			assertFail(); // TODO Auto-generated method stub
-			return false;
+			throw assertFail(); // TODO Auto-generated method stub
 		}
 		
 		

@@ -48,6 +48,8 @@ import dtool.ast.references.RefModule;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
+import dtool.ast.references.RefTypeDynArray;
+import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
 import dtool.parser.ParserError.EDeeParserErrors;
 import dtool.util.ArrayView;
@@ -72,6 +74,10 @@ public class DeeParser extends AbstractDeeParser {
 		DeeParserResult parseResult = new DeeParserResult(module, deeParser.errors);
 		deeParser.errors = null;
 		return parseResult;
+	}
+	
+	public String idTokenToString(Token id) {
+		return isMissingId(id) ? null : id.tokenSource;
 	}
 	
 	/* ----------------------------------------------------------------- */
@@ -209,7 +215,7 @@ public class DeeParser extends AbstractDeeParser {
 				id = tryConsumeIdentifier();
 			}
 			
-			RefImportSelection refImportSelection = connect(new RefImportSelection(id.tokenSource, sr(id)));
+			RefImportSelection refImportSelection = connect(new RefImportSelection(idTokenToString(id), sr(id)));
 			if(aliasId == null) {
 				selFragments.add(refImportSelection);
 			} else {
@@ -279,7 +285,7 @@ public class DeeParser extends AbstractDeeParser {
 			case KW_BYTE: case KW_UBYTE: 
 			case KW_SHORT: case KW_USHORT: case KW_INT: case KW_UINT: case KW_LONG: case KW_ULONG: 
 			case KW_CHAR: case KW_WCHAR: case KW_DCHAR: 
-			//case KW_FLOAT: 
+			case KW_FLOAT: 
 			case KW_DOUBLE: case KW_REAL: 
 			case KW_VOID: 
 			case KW_IFLOAT: case KW_IDOUBLE: case KW_IREAL: case KW_CFLOAT: case KW_CDOUBLE: case KW_CREAL: 
@@ -316,7 +322,7 @@ public class DeeParser extends AbstractDeeParser {
 	}
 	
 	protected RefIdentifier refIdentifier(Token id) {
-		return new RefIdentifier(isMissingId(id) ? null : id.tokenSource, sr(id));
+		return new RefIdentifier(idTokenToString(id), sr(id));
 	}
 	
 	protected ASTNeoNode parseDeclaration_RefPrimitiveStart(DeeTokens primitiveType) {
@@ -340,8 +346,7 @@ public class DeeParser extends AbstractDeeParser {
 		if(la == DeeTokens.IDENTIFIER) {
 			Token defId = consumeLookAhead();
 			return parseDefinition_Reference_Identifier(ref, defId);
-		} else if(lookAhead() == DeeTokens.DOT) {
-			consumeLookAhead();
+		} else if(tryConsume(DeeTokens.DOT)) {
 			
 			RefIdentifier qualifiedRef = refIdentifier(tryConsumeIdentifier());
 			ref = new RefQualified(ref, qualifiedRef, srToCursor(ref.getStartPos()));
@@ -349,6 +354,19 @@ public class DeeParser extends AbstractDeeParser {
 				return new InvalidSyntaxElement(ref, ref.getSourceRange());
 			}
 			return parseDeclaration_referenceStart(ref);
+		} else if(tryConsume(DeeTokens.STAR)) {
+			RefTypePointer pointerRef = connect(new RefTypePointer(ref, srToCursor(ref.getStartPos())));
+			return parseDeclaration_referenceStart(pointerRef);
+		} else if(tryConsume(DeeTokens.OPEN_BRACKET)) {
+			if(tryConsume(DeeTokens.CLOSE_BRACKET)) {
+				RefTypeDynArray dynArrayRef = new RefTypeDynArray(ref, srToCursor(ref.getStartPos()));
+				return parseDeclaration_referenceStart(dynArrayRef);
+			} else {
+				reportErrorExpectedToken(DeeTokens.CLOSE_BRACKET);
+				ref = connect(new RefTypeDynArray(ref, srToCursor(ref.getStartPos())));
+				return connect(new InvalidDeclaration(ref, srToCursor(ref.getStartPos())));
+			}
+			
 		} else {
 			reportErrorExpectedToken(DeeTokens.IDENTIFIER);
 			consumeExpectedToken(DeeTokens.SEMICOLON);
@@ -483,17 +501,13 @@ public class DeeParser extends AbstractDeeParser {
 		}
 		int declStart = lastRealToken.getStartPos();
 		
-		int align = -1;
+		Token alignNum = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
 		
 		if(tryConsume(DeeTokens.OPEN_PARENS)) {
-			Token alignNum = consumeExpectedToken(DeeTokens.INTEGER);
-			if(alignNum != null) {
-				try {
-					align = Integer.parseInt(alignNum.tokenSource);
-				} catch(NumberFormatException e) {
-					// TODO report error
-				}
+			alignNum = consumeExpectedToken(DeeTokens.INTEGER);
+			if(alignNum == null) {
+				alignNum = missingToken(DeeTokens.INTEGER, getParserPosition());
 			}
 			
 			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null) {
@@ -503,7 +517,7 @@ public class DeeParser extends AbstractDeeParser {
 			ab.parseAttribBody(false);
 		}
 		
-		return connect(new DeclarationAlign(align, ab.bodySyntax, ab.declList, srToCursor(declStart)));
+		return connect(new DeclarationAlign(alignNum, ab.bodySyntax, ab.declList, srToCursor(declStart)));
 	}
 	
 	public DeclarationPragma parseDeclarationPragma() {

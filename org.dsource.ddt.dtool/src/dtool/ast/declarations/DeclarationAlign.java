@@ -5,12 +5,13 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
+import dtool.parser.Token;
 
 public class DeclarationAlign extends DeclarationAttrib {
 	
-	public final int alignNum; // Negative value means null/invalid;
+	public final Token alignNum;
 	
-	public DeclarationAlign(int alignNum, AttribBodySyntax bodySyntax, NodeList2 decls, SourceRange sr) {
+	public DeclarationAlign(Token alignNum, AttribBodySyntax bodySyntax, NodeList2 decls, SourceRange sr) {
 		super(bodySyntax, decls, sr);
 		this.alignNum = alignNum;
 	}
@@ -27,8 +28,8 @@ public class DeclarationAlign extends DeclarationAttrib {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("align");
-		if(alignNum >= 0) {
-			cp.append("(", String.valueOf(alignNum), ")");
+		if(alignNum != null) {
+			cp.append("(", alignNum.getSourceValue(), ")");
 		}
 		cp.append(" ");
 		toStringAsCode_body(cp);

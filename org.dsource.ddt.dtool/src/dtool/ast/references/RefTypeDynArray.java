@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
@@ -15,41 +16,41 @@ import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class TypePointer extends CommonRefNative {
+public class RefTypeDynArray extends CommonRefNative {
 	
-	public final Reference elemType;
+	public final Reference elemtype;
 	
-	public TypePointer(Reference elemType, SourceRange sourceRange) {
+	public RefTypeDynArray(Reference elemType, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.elemType = parentize(elemType);
+		this.elemtype = parentize(elemType);
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, elemType);
+			TreeVisitor.acceptChildren(visitor, elemtype);
 		}
 		visitor.endVisit(this);
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return DefUnitSearch.wrapResult(IntrinsicPointer.instance);
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendNode(elemtype, "[]");
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return elemType.toStringAsElement() + "*";
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		return DefUnitSearch.wrapResult(IntrinsicDynArray.instance);
 	}
 	
-	public static class IntrinsicPointer extends NativeDefUnit {
-		public IntrinsicPointer() {
-			super("<pointer>");
+	
+	public static class IntrinsicDynArray extends NativeDefUnit {
+		public IntrinsicDynArray() {
+			super("<dynamic-array>");
 		}
 		
-		public static final IntrinsicPointer instance = new IntrinsicPointer();
-		
+		public static final IntrinsicDynArray instance = new IntrinsicDynArray();
 		
 		@Override
 		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {

@@ -13,7 +13,7 @@ public class InvalidDeclaration extends ASTNeoNode implements IStatement {
 	
 	public InvalidDeclaration(ASTNeoNode node, SourceRange sourceRange) {
 		super(sourceRange);
-		this.node = node;
+		this.node = parentize(node);
 	}
 	
 	@Override

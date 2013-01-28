@@ -14,6 +14,7 @@ import dtool.parser.DeeParserSourceBasedTest.NamedNodeElement;
 import dtool.parser.Token.ErrorToken;
 import dtool.tests.CommonTestUtils;
 
+
 public class DeeParserTest extends CommonTestUtils {
 	
 	public static void runParserTest______________________(String parseSource, String expectedGenSource, 
@@ -33,6 +34,7 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 		
 		if(result.errors.size() == 0) {
+			assertTrue(expectedErrors.size() == 0);
 			checkSourceEquality(module, parseSource);
 		} else if(allowAnyErrors == false) {
 			checkParserErrors(result.errors, expectedErrors);
@@ -41,65 +43,17 @@ public class DeeParserTest extends CommonTestUtils {
 		checkSourceRanges(parseSource, result);
 	}
 	
-	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
-		String generatedSource = node.toStringAsCode();
-		checkSourceEquality(generatedSource, expectedGenSource, false);
-	}
-	
-	public static void checkSourceEquality(String source, String expectedSource, boolean ignoreUT) {
-		DeeLexer generatedSourceLexer = new DeeLexer(source);
-		DeeLexer expectedSourceLexer = new DeeLexer(expectedSource);
-		
-		while(true) {
-			Token tok = getContentToken(generatedSourceLexer, true, ignoreUT);
-			Token tokExp = getContentToken(expectedSourceLexer, true, ignoreUT);
-			assertEquals(tok.type, tokExp.type);
-			assertEquals(tok.tokenSource, tokExp.tokenSource);
-			
-			if(tok.type == DeeTokens.EOF) {
-				break;
-			}
-		}
-	}
-	
-	public static Token getContentToken(DeeLexer lexer, boolean ignoreComments, boolean ignoreUT) {
-		while(true) {
-			Token token = lexer.next();
-			if((token.type.isParserIgnored && (ignoreComments || !isCommentToken(token))) 
-				|| (ignoreUT && isUnknownToken(token))) {
-				continue;
-			}
-			return token;
-		}
-	}
-	
-	public static boolean isUnknownToken(Token token) {
-		if(token instanceof ErrorToken) {
-			ErrorToken errorToken = (ErrorToken) token;
-			if(errorToken.originalToken == DeeTokens.ERROR) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public static boolean isCommentToken(Token token) {
-		return 
-			token.type == DeeTokens.COMMENT_LINE ||
-			token.type == DeeTokens.COMMENT_MULTI ||
-			token.type == DeeTokens.COMMENT_NESTED;
-	}
-	
 	public static void checkExpectedStructure(Module module, NamedNodeElement[] expectedStructure) {
 		ASTNeoNode[] children = module.getChildren();
-		checkExpectedStructure(children, expectedStructure, true);
+		checkExpectedStructure(children, module, expectedStructure, true);
 	}
 	
-	public static void checkExpectedStructure(ASTNeoNode[] children, NamedNodeElement[] expectedStructure,
-		boolean flattenNodeList) {
+	public static void checkExpectedStructure(ASTNeoNode[] children, ASTNeoNode parent, 
+		NamedNodeElement[] expectedStructure, boolean flattenNodeList) {
 		
 		if(flattenNodeList && children.length == 1 && children[0] instanceof NodeList2) {
-			children = children[0].getChildren();
+			parent = children[0];
+			children = parent.getChildren();
 		}
 		
 		assertTrue(children.length == expectedStructure.length);
@@ -107,6 +61,8 @@ public class DeeParserTest extends CommonTestUtils {
 		for (int i = 0; i < expectedStructure.length; i++) {
 			NamedNodeElement namedElement = expectedStructure[i];
 			ASTNeoNode astNode = children[i];
+			assertTrue(astNode.getParent() == parent);
+			
 			if(namedElement.name == NamedNodeElement.IGNORE_ALL) {
 				continue;
 			}
@@ -114,8 +70,61 @@ public class DeeParserTest extends CommonTestUtils {
 				String expectedName = replaceRegexFirstOccurrence(namedElement.name, "(Def)(Var)", 1, "Definition");
 				assertEquals(astNode.getClass().getSimpleName(), expectedName);
 			}
-			checkExpectedStructure(astNode.getChildren(), namedElement.children, true);
+			checkExpectedStructure(astNode.getChildren(), astNode, namedElement.children, true);
 		}
+	}
+	
+	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
+		String generatedSource = node.toStringAsCode();
+		CheckSourceEquality.check(generatedSource, expectedGenSource, false);
+	}
+	
+	public static class CheckSourceEquality {
+		
+		public static void check(String source, String expectedSource, boolean ignoreUT) {
+			DeeLexer generatedSourceLexer = new DeeLexer(source);
+			DeeLexer expectedSourceLexer = new DeeLexer(expectedSource);
+			
+			while(true) {
+				Token tok = getContentToken(generatedSourceLexer, true, ignoreUT);
+				Token tokExp = getContentToken(expectedSourceLexer, true, ignoreUT);
+				assertEquals(tok.type, tokExp.type);
+				assertEquals(tok.tokenSource, tokExp.tokenSource);
+				
+				if(tok.type == DeeTokens.EOF) {
+					break;
+				}
+			}
+		}
+		
+		public static Token getContentToken(DeeLexer lexer, boolean ignoreComments, boolean ignoreUT) {
+			while(true) {
+				Token token = lexer.next();
+				if((token.type.isParserIgnored && (ignoreComments || !isCommentToken(token))) 
+					|| (ignoreUT && isUnknownToken(token))) {
+					continue;
+				}
+				return token;
+			}
+		}
+		
+		public static boolean isUnknownToken(Token token) {
+			if(token instanceof ErrorToken) {
+				ErrorToken errorToken = (ErrorToken) token;
+				if(errorToken.originalToken == DeeTokens.ERROR) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		public static boolean isCommentToken(Token token) {
+			return 
+				token.type == DeeTokens.COMMENT_LINE ||
+				token.type == DeeTokens.COMMENT_MULTI ||
+				token.type == DeeTokens.COMMENT_NESTED;
+		}
+		
 	}
 	
 	public static void checkParserErrors(ArrayList<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {

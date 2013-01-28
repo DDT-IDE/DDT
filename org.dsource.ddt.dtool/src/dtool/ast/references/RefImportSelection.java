@@ -12,6 +12,7 @@ import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
+// TODO: retire this element in favor of RefIdentifier?
 public class RefImportSelection extends NamedReference implements IImportSelectiveSelection {
 	
 	public final String name;

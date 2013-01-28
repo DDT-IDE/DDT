@@ -38,7 +38,7 @@ DefVariable(* DefSymbol InitializerExp(?) DefVarFragment(DefSymbol InitializerEx
 #@(SP_TYPE_REF) #@(PRX1) fooE = 112 #error:EXP_SEMICOLON  #@(BREAK)
 #@(SP_TYPE_REF) #@(PRX1) fooF = 112 #error:EXP_SEMICOLON = 666;
 
-#AST_EXPECTED:
+#AST_SOURCE_EXPECTED:
 
 #@(SP_TYPE_REF) #@(PRX1) ;  #@(BREAK)
 #@(SP_TYPE_REF) #@(PRX1) ;
@@ -51,8 +51,8 @@ DefVariable(* DefSymbol InitializerExp(?) DefVarFragment(DefSymbol InitializerEx
 
 #AST_STRUCTURE_EXPECTED:
 
-#?NO_PRX1{InvalidSyntaxElement(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} #@(BREAK_EXP)
-#?NO_PRX1{InvalidSyntaxElement(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} 
+#?NO_PRX1{InvalidDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} #@(BREAK_EXP)
+#?NO_PRX1{InvalidDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} 
 
 DefVariable(* DefSymbol #?NO_PRX1{                  , DefVarFragment(DefSymbol) } ) #@(BREAK_EXP)
 DefVariable(* DefSymbol #?NO_PRX1{InitializerExp(?) , DefVarFragment(DefSymbol InitializerExp(MissingExpression)) }) #@(BREAK_EXP)

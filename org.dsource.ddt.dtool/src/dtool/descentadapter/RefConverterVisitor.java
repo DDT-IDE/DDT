@@ -16,10 +16,10 @@ import dtool.ast.references.RefReturn;
 import dtool.ast.references.RefTypeSlice;
 import dtool.ast.references.Reference;
 import dtool.ast.references.TypeDelegate;
-import dtool.ast.references.TypeDynArray;
+import dtool.ast.references.RefTypeDynArray;
 import dtool.ast.references.TypeFunction;
 import dtool.ast.references.TypeMapArray;
-import dtool.ast.references.TypePointer;
+import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.TypeStaticArray;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
@@ -109,7 +109,7 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeDArray elem) {
 		return endAdapt(
-			new TypeDynArray(
+			new RefTypeDynArray(
 				ReferenceConverter.convertType(elem.next, convContext),
 				DefinitionConverter.sourceRange(elem)
 			)
@@ -164,7 +164,7 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 			descent.internal.compiler.parser.TypeFunction tf = (descent.internal.compiler.parser.TypeFunction) elem.next; 
 			return convertFunction(tf, DefinitionConverter.sourceRange(elem), convContext);
 		} else {
-			return new TypePointer(
+			return new RefTypePointer(
 				ReferenceConverter.convertType(elem.next, convContext),
 				DefinitionConverter.sourceRange(elem)
 			);

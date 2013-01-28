@@ -3,6 +3,10 @@
 #error(SE_decl) ]
 #error(SE_decl) }
 
+#AST_STRUCTURE_EXPECTED:
+InvalidSyntaxElement
+InvalidSyntaxElement
+InvalidSyntaxElement
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo #error(EXP_IDENTIFIER) ;
 #AST_STRUCTURE_EXPECTED:
@@ -51,6 +55,8 @@ mixin(); mixin();
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of  KEYWORD(ARGUMENT) DECL;  format
 extern(C) #error(EXPRULE_decl)
 
+#AST_SOURCE_EXPECTED:
+extern(C)
 #AST_STRUCTURE_EXPECTED:
 DeclarationLinkage()
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
@@ -64,3 +70,29 @@ extern(C) #error(SE_decl) ] int foo;
 #AST_STRUCTURE_EXPECTED:
 DeclarationLinkage(InvalidSyntaxElement)
 DefinitionVariable(? ?)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+// No close brackets/parentheses cause rule to quit parsing.
+align(16                  #error:EXP_CLOSE_PARENS int foo;
+align(16                  #error:EXP_CLOSE_PARENS ;
+align( #error:EXP_INTEGER #error:EXP_CLOSE_PARENS int foo;
+align( #error:EXP_INTEGER ) int bar;
+
+foo[ #error:EXP_CLOSE_BRACKET int dummyB;
+//foo[1 dummyB2; TODO
+//foo[int dummyB2; TODO
+
+#AST_SOURCE_EXPECTED:
+align(16) /*;*/ int foo;
+align(16) /*;*/ ;
+align()   /*;*/ int foo;
+align() int bar;
+
+foo[]; int dummyB;
+
+#AST_STRUCTURE_EXPECTED:
+DeclarationAlign  DefinitionVariable(RefPrimitive DefSymbol)
+DeclarationAlign  DeclarationEmpty
+DeclarationAlign  DefinitionVariable(RefPrimitive DefSymbol)
+DeclarationAlign( DefinitionVariable(RefPrimitive DefSymbol) )
+
+InvalidDeclaration(RefTypeDynArray(RefIdentifier))  DefinitionVariable(RefPrimitive DefSymbol)

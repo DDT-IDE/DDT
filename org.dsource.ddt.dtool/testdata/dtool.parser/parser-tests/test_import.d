@@ -15,14 +15,16 @@ import #error(EXP_ID)#error(EXP_SEMICOLON) import foo;
 #AST_EXPECTED:
 import ; import foo;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-import foo #error(EXP_SEMICOLON) foo foo;
-#AST_EXPECTED:
-import foo; foo foo;
+import foo #error(EXP_SEMICOLON) Bar bar;
+import pack. #error(EXP_ID) , foo;
+#AST_SOURCE_EXPECTED:
+import foo; Bar bar;
+import pack. , foo;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO: we could dup case with add of first import in import list
 import #error(EXP_ID) ;
 import #error(EXP_ID) , foo;
-import #error(EXP_ID)#error(EXP_SEMICOLON) .pack;
+import #error(EXP_ID)#error(EXP_SEMICOLON) .pack #error(EXP_IDENTIFIER);
 import pack. #error(EXP_ID) ;
 import pack. #error(EXP_ID) , foo;
 import foo, #error(EXP_ID) ;
