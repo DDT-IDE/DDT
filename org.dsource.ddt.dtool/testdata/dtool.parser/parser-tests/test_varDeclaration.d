@@ -51,8 +51,8 @@ DefVariable(* DefSymbol InitializerExp(?) DefVarFragment(DefSymbol InitializerEx
 
 #AST_STRUCTURE_EXPECTED:
 
-#?NO_PRX1{InvalidSyntaxDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} #@(BREAK_EXP)
-#?NO_PRX1{InvalidSyntaxDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} 
+#?NO_PRX1{InvalidSyntaxElement(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} #@(BREAK_EXP)
+#?NO_PRX1{InvalidSyntaxElement(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} 
 
 DefVariable(* DefSymbol #?NO_PRX1{                  , DefVarFragment(DefSymbol) } ) #@(BREAK_EXP)
 DefVariable(* DefSymbol #?NO_PRX1{InitializerExp(?) , DefVarFragment(DefSymbol InitializerExp(MissingExpression)) }) #@(BREAK_EXP)

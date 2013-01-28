@@ -16,6 +16,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.NodeUtil;
 import dtool.ast.declarations.DeclarationAlign;
+import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
@@ -25,13 +26,13 @@ import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
-import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
-import dtool.ast.declarations.InvalidSyntaxDeclaration;
+import dtool.ast.declarations.InvalidDeclaration;
+import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionClass;
@@ -58,9 +59,10 @@ import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
-import dtool.ast.references.CommonRefQualified;
-import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefModule;
+import dtool.ast.references.RefModuleQualified;
+import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
@@ -111,8 +113,12 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 	/* ---------------- Parsing helpers ---------------- */
 	
 	public static Reference parseReference(DeeParser nodeRangeSourceParser) {
-		InvalidSyntaxDeclaration isd = (InvalidSyntaxDeclaration) nodeRangeSourceParser.parseDeclaration();
-		return (Reference) isd.node;
+		ASTNeoNode decl = nodeRangeSourceParser.parseDeclaration();
+		if(decl instanceof InvalidSyntaxElement) {
+			return (Reference) assertCast(decl, InvalidSyntaxElement.class).node;
+		} else {
+			return (Reference) assertCast(decl, InvalidDeclaration.class).node;
+		}
 	}
 	
 	public class ASTReparseCheckSwitcher extends ASTNeoAbstractVisitor {
@@ -193,7 +199,10 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 			if(node instanceof NodeList2) {
 				return reparseCheck(nodeRangeSourceParser.parseDeclList(null), node);
 			}
-			if(node instanceof InvalidSyntaxDeclaration) {
+			if(node instanceof InvalidDeclaration) {
+				return reparseCheck(nodeRangeSourceParser.parseDeclaration(false), node);
+			}
+			if(node instanceof InvalidSyntaxElement) {
 				return reparseCheck(nodeRangeSourceParser.parseDeclaration(false), node);
 			}
 			assertFail();
@@ -390,23 +399,28 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		}
 		
 		@Override
-		public boolean visit(NamedReference node) {
-			assertTrue(areThereMissingTokenErrorsInNode(node) == false);
-			return false;
-		}
-		
-		@Override
-		public boolean visit(CommonRefQualified node) {
-			if(node instanceof RefQualified) {
-				return reparseCheck(parseReference(nodeRangeSourceParser), node);
-			}
-			assertFail(); // TODO Auto-generated method stub
-			return false;
-		}
-		
-		@Override
 		public boolean visit(RefIdentifier node) {
+			if(node.name == null) {
+				assertEquals("", node.toStringAsCode());
+				return DONT_VISIT_CHILDREN;
+			}
 			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		@Override
+		public boolean visit(RefQualified node) {
+			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		@Override
+		public boolean visit(RefModuleQualified node) {
+			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		@Override
+		public boolean visit(RefPrimitive node) {
+			return reparseCheck(parseReference(nodeRangeSourceParser), node);
+		}
+		@Override
+		public boolean visit(RefModule node) {
+			return reparseCheck(nodeRangeSourceParser.parseImportFragment().getModuleRef(), node);
 		}
 		
 		@Override

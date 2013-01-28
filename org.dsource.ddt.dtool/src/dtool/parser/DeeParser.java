@@ -29,7 +29,8 @@ import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
-import dtool.ast.declarations.InvalidSyntaxDeclaration;
+import dtool.ast.declarations.InvalidDeclaration;
+import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
@@ -44,6 +45,7 @@ import dtool.ast.expressions.InitializerExp;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
+import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
@@ -238,6 +240,8 @@ public class DeeParser extends AbstractDeeParser {
 			}
 			
 			switch (la) {
+			case KW_IMPORT: return parseImportDeclaration();
+			
 			case KW_MIXIN: return parseMixinStringDeclaration();
 			
 			case KW_EXTERN: return parseDeclarationExternLinkage();
@@ -271,7 +275,7 @@ public class DeeParser extends AbstractDeeParser {
 			
 			case IDENTIFIER: return parseDeclaration_IdStart();
 			
-			case KW_BOOL:  
+			case KW_BOOL: 
 			case KW_BYTE: case KW_UBYTE: 
 			case KW_SHORT: case KW_USHORT: case KW_INT: case KW_UINT: case KW_LONG: case KW_ULONG: 
 			case KW_CHAR: case KW_WCHAR: case KW_DCHAR: 
@@ -281,24 +285,28 @@ public class DeeParser extends AbstractDeeParser {
 			case KW_IFLOAT: case KW_IDOUBLE: case KW_IREAL: case KW_CFLOAT: case KW_CDOUBLE: case KW_CREAL: 
 				return parseDeclaration_RefPrimitiveStart(la);
 			
+			case DOT: return parseDeclaration_DotStart();
+			
 			case KW_AUTO: // TODO:
 				
 			default:
 				break;
 			}
 			
-			if(la == DeeTokens.KW_IMPORT || la == DeeTokens.KW_STATIC) {
-				return parseImportDeclaration();
-			} else if(acceptEmptyDecl && tryConsume(DeeTokens.SEMICOLON)) {
+			if(acceptEmptyDecl && tryConsume(DeeTokens.SEMICOLON)) {
 				return connect(new DeclarationEmpty(srToCursor(lastRealToken)));
-			} else if(la == DeeTokens.ASSIGN || la == DeeTokens.DOT) {
+			} else if(la == DeeTokens.ASSIGN) {
 				return MiscDeclaration.parseMiscDeclaration(this);
 			} else {
 				Token badToken = consumeLookAhead();
 				reportSyntaxError(DECLARATION_RULE);
-				return connect(new InvalidSyntaxDeclaration(badToken));
+				return connect(new InvalidSyntaxElement(badToken));
 			}
 		}
+	}
+	
+	protected InvalidDeclaration invalidSyntaxDeclaration(Reference ref) {
+		return connect(new InvalidDeclaration(ref, srToCursor(ref.getStartPos())));
 	}
 	
 	protected ASTNeoNode parseDeclaration_IdStart() {
@@ -308,13 +316,22 @@ public class DeeParser extends AbstractDeeParser {
 	}
 	
 	protected RefIdentifier refIdentifier(Token id) {
-		return new RefIdentifier(id.tokenSource, sr(id));
+		return new RefIdentifier(isMissingId(id) ? null : id.tokenSource, sr(id));
 	}
 	
 	protected ASTNeoNode parseDeclaration_RefPrimitiveStart(DeeTokens primitiveType) {
-		Token token = consumeLookAhead();
-		assertTrue(token.type == primitiveType);
+		Token token = consumeLookAhead(primitiveType);
 		RefPrimitive ref = new RefPrimitive(token, sr(token));
+		return parseDeclaration_referenceStart(ref);
+	}
+	
+	protected ASTNeoNode parseDeclaration_DotStart() {
+		int startPos = consumeLookAhead(DeeTokens.DOT).getStartPos();
+		Token id = tryConsumeIdentifier();
+		RefModuleQualified ref = new RefModuleQualified(refIdentifier(id), srToCursor(startPos));
+		if(isMissingId(id)) {
+			return new InvalidSyntaxElement(ref, ref.getSourceRange());
+		}
 		return parseDeclaration_referenceStart(ref);
 	}
 	
@@ -328,11 +345,14 @@ public class DeeParser extends AbstractDeeParser {
 			
 			RefIdentifier qualifiedRef = refIdentifier(tryConsumeIdentifier());
 			ref = new RefQualified(ref, qualifiedRef, srToCursor(ref.getStartPos()));
+			if(qualifiedRef.name == null) {
+				return new InvalidSyntaxElement(ref, ref.getSourceRange());
+			}
 			return parseDeclaration_referenceStart(ref);
 		} else {
 			reportErrorExpectedToken(DeeTokens.IDENTIFIER);
 			consumeExpectedToken(DeeTokens.SEMICOLON);
-			return connect(new InvalidSyntaxDeclaration(ref, srToCursor(ref.getStartPos())));
+			return connect(new InvalidDeclaration(ref, srToCursor(ref.getStartPos())));
 		}
 	}
 	

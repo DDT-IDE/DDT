@@ -94,7 +94,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		ArrayList<ParserError> expectedErrors = new ArrayList<ParserError>();
 		
 		for (MetadataEntry mde : testSource.metadata) {
-			if(mde.name.equals("AST_EXPECTED")) {
+			if(mde.name.equals("AST_EXPECTED") || mde.name.equals("AST_SOURCE_EXPECTED")) {
 				assertTrue(expectedGenSource == parseSource);
 				expectedGenSource = mde.associatedSource;
 				ignoreFurtherErrorMDs = true;

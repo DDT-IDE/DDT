@@ -11,6 +11,7 @@
 package dtool.ast;
 
 import dtool.ast.declarations.DeclarationAlign;
+import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
@@ -19,7 +20,6 @@ import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
-import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -49,9 +49,11 @@ import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
-import dtool.ast.references.CommonRefQualified;
-import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefModule;
+import dtool.ast.references.RefModuleQualified;
+import dtool.ast.references.RefPrimitive;
+import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
@@ -174,20 +176,12 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 		return true;
 	}
 	
-	@Override
-	public boolean visit(NamedReference elem) {
-		return true;
-	}
 	
-	@Override
-	public boolean visit(CommonRefQualified elem) {
-		return true;
-	}
-	
-	@Override
-	public boolean visit(RefIdentifier elem) {
-		return true;
-	}
+	@Override public boolean visit(RefIdentifier elem) { return true; }
+	@Override public boolean visit(RefModuleQualified elem) { return true; }
+	@Override public boolean visit(RefQualified elem) { return true; }
+	@Override public boolean visit(RefPrimitive elem) { return true; }
+	@Override public boolean visit(RefModule elem) { return true; }
 	
 	@Override
 	public boolean visit(RefTemplateInstance elem) {

@@ -6,11 +6,11 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo #error(EXP_IDENTIFIER) ;
 #AST_STRUCTURE_EXPECTED:
-InvalidSyntaxDeclaration(?)
+InvalidDeclaration(?)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo #error(EXP_IDENTIFIER) #error(EXP_SEMICOLON)
 #AST_STRUCTURE_EXPECTED:
-InvalidSyntaxDeclaration(?)
+InvalidDeclaration(?)
 #AST_EXPECTED:
 foo ;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of identifiers: ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -57,10 +57,10 @@ DeclarationLinkage()
 extern(C) #error(SE_decl) ;
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationLinkage(InvalidSyntaxDeclaration)
+DeclarationLinkage(InvalidSyntaxElement)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 extern(C) #error(SE_decl) ] int foo;
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationLinkage(InvalidSyntaxDeclaration)
+DeclarationLinkage(InvalidSyntaxElement)
 DefinitionVariable(? ?)

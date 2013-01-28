@@ -118,6 +118,11 @@ public class AbstractDeeParser {
 		return consumeInput();
 	}
 	
+	protected final Token consumeLookAhead(DeeTokens tokenType) {
+		assertTrue(lookAhead() == tokenType);
+		return consumeLookAhead();
+	}
+	
 	/* -- Source consume helpers -- */
 	
 	protected final Token consumeIf(DeeTokens tokenType) {
@@ -168,11 +173,6 @@ public class AbstractDeeParser {
 				return startPos;
 			}
 		};
-	}
-	
-	@Deprecated
-	public static boolean isRecoveredId(Token id) {
-		return id.tokenSource == MISSING_ID_VALUE;
 	}
 	
 	public static boolean isMissingId(Token id) {

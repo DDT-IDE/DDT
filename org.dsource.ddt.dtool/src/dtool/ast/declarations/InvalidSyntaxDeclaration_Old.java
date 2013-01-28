@@ -7,6 +7,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 import dtool.util.ArrayView;
 
+@Deprecated
 public class InvalidSyntaxDeclaration_Old extends ASTNeoNode implements IStatement {
 	
 	public final ArrayView<ASTNeoNode> genericChildren;

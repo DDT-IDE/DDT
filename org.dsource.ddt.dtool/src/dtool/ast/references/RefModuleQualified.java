@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
@@ -35,6 +36,12 @@ public class RefModuleQualified extends CommonRefQualified {
 	public String toStringAsElement() {
 		return "." + qualifiedName.toStringAsElement();
 	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendNode(".", qualifiedName);
+	}
+	
 	
 	@Override
 	public IDefUnitReferenceNode getQualifier() {

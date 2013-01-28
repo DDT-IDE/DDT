@@ -1,6 +1,7 @@
 package dtool.ast;
 
 import dtool.ast.declarations.DeclarationAlign;
+import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
@@ -9,7 +10,6 @@ import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
-import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -39,9 +39,11 @@ import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonRefNative;
-import dtool.ast.references.CommonRefQualified;
-import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefModule;
+import dtool.ast.references.RefModuleQualified;
+import dtool.ast.references.RefPrimitive;
+import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 
@@ -144,11 +146,11 @@ public interface IASTNeoVisitor {
 	
 	public boolean visit(CommonRefNative node);
 	
-	public boolean visit(NamedReference node);
-	
-	public boolean visit(CommonRefQualified node);
-	
 	public boolean visit(RefIdentifier node);
+	public boolean visit(RefQualified node);
+	public boolean visit(RefModuleQualified node);
+	public boolean visit(RefPrimitive node);
+	public boolean visit(RefModule node);
 	
 	public boolean visit(RefTemplateInstance node);
 	

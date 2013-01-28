@@ -53,12 +53,12 @@ DeclarationLinkage()
 extern(C) #error(SE_decl) ;
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationLinkage(InvalidSyntaxDeclaration)
+DeclarationLinkage(InvalidSyntaxElement)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 extern(C) #error(SE_decl) ] int foo;
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationLinkage(InvalidSyntaxDeclaration)
+DeclarationLinkage(InvalidSyntaxElement)
 DefinitionVariable(RefPrimitive DefSymbol)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

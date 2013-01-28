@@ -6,22 +6,13 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
-import dtool.parser.Token;
 
-public class InvalidSyntaxDeclaration extends ASTNeoNode implements IStatement {
+public class InvalidDeclaration extends ASTNeoNode implements IStatement {
 	
-	public final Token badToken;
 	public final ASTNeoNode node;
 	
-	public InvalidSyntaxDeclaration(Token badToken) {
-		super(badToken.getSourceRange());
-		this.badToken = badToken;
-		this.node = null;
-	}
-	
-	public InvalidSyntaxDeclaration(ASTNeoNode node, SourceRange sourceRange) {
+	public InvalidDeclaration(ASTNeoNode node, SourceRange sourceRange) {
 		super(sourceRange);
-		this.badToken = null;
 		this.node = node;
 	}
 	
@@ -36,11 +27,7 @@ public class InvalidSyntaxDeclaration extends ASTNeoNode implements IStatement {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		if(badToken != null) {
-			cp.append(badToken);
-		} else {
-			cp.appendNode(node, ";");
-		}
+		cp.appendNode(node, ";");
 	}
 	
 }
