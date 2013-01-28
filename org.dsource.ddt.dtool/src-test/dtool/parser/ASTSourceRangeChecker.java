@@ -204,9 +204,6 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		
 		@Override
 		public boolean visit(ASTNeoNode node) {
-			if(node instanceof MiscDeclaration) {
-				return reparseCheck(MiscDeclaration.parseMiscDeclaration(nodeRangeSourceParser), node);
-			}
 			if(node instanceof NodeList2) {
 				return reparseCheck(nodeRangeSourceParser.parseDeclList(null), node);
 			}

@@ -36,7 +36,7 @@ DefVariable(* DefSymbol InitializerExp(?) DefVarFragment(DefSymbol InitializerEx
 #@(SP_TYPE_REF) #@(PRX1) fooB = #error:EXPRULE_INITIALIZER #error:EXP_SEMICOLON  #@(BREAK)
 #@(SP_TYPE_REF) #@(PRX1) fooD = #error:EXPRULE_INITIALIZER ;
 #@(SP_TYPE_REF) #@(PRX1) fooE = 112 #error:EXP_SEMICOLON  #@(BREAK)
-#@(SP_TYPE_REF) #@(PRX1) fooF = 112 #error:EXP_SEMICOLON = 666;
+#@(SP_TYPE_REF) #@(PRX1) fooF = 112 #error:EXP_SEMICOLON #error:SE_decl = #error:SE_decl 666;
 
 #AST_SOURCE_EXPECTED:
 
@@ -59,7 +59,7 @@ DefVariable(* DefSymbol #?NO_PRX1{InitializerExp(?) , DefVarFragment(DefSymbol I
 DefVariable(* DefSymbol #?NO_PRX1{InitializerExp(?) , DefVarFragment(DefSymbol InitializerExp(MissingExpression)) })
 DefVariable(* DefSymbol #?NO_PRX1{InitializerExp(?) , DefVarFragment(DefSymbol InitializerExp(ExpLiteralInteger)) }) #@(BREAK_EXP)
 DefVariable(* DefSymbol #?NO_PRX1{InitializerExp(?) , DefVarFragment(DefSymbol InitializerExp(ExpLiteralInteger)) })
-MiscDeclaration
+InvalidSyntaxElement InvalidSyntaxElement DeclarationEmpty
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ C-style decls
 #TODO:
 int foo*;

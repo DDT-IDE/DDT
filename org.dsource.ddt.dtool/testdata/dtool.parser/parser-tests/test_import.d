@@ -46,10 +46,10 @@ import        foo, bar2 = pack.foo, bar3 = pack.fooX,        pack.bar.foo;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-import #error(EXP_ID) = pack.foo;
-static import foo, #error(EXP_ID) = pack.foo;
+import #error(EXP_ID)  = pack.foo;
+static import foo, #error(EXP_ID)  = pack.foo;
 import #error(EXP_ID)#error(EXP_SEMICOLON) int #error(EXP_ID);
-import pack.foo #error(EXP_SEMICOLON) = pack.foo;
+import pack.foo #error(EXP_SEMICOLON) #error(SE_decl)= pack.foo#error(EXP_ID) ;
 
 import foo = #error(EXP_ID) ;
 import foo = #error(EXP_ID)#error(EXP_SEMICOLON) import foo;

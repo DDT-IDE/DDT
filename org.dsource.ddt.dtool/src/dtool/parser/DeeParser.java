@@ -301,8 +301,6 @@ public class DeeParser extends AbstractDeeParser {
 			
 			if(acceptEmptyDecl && tryConsume(DeeTokens.SEMICOLON)) {
 				return connect(new DeclarationEmpty(srToCursor(lastRealToken)));
-			} else if(la == DeeTokens.ASSIGN) {
-				return MiscDeclaration.parseMiscDeclaration(this);
 			} else {
 				Token badToken = consumeLookAhead();
 				reportSyntaxError(DECLARATION_RULE);
