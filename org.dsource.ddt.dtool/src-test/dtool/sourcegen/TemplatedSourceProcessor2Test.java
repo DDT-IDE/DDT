@@ -66,6 +66,7 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		assertAreEqual(mde1.offset, expMde.offset);
 	}
 	
+	/* ------------------------  SPLIT  ------------------------ */
 	
 	@Test
 	public void testSplit() throws Exception { testSplit$(); }
@@ -134,87 +135,7 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		);
 	}
 	
-	@Test
-	public void testExpansion() throws Exception { testExpansion$(); }
-	public void testExpansion$() throws Exception {
-		
-		testSourceProcessing("#", 
-			"asdf ## #{,#},#,,##, ,line}==",
-			
-			checkMD("asdf # =="),
-			checkMD("asdf # }=="),
-			checkMD("asdf # ,=="),
-			checkMD("asdf # #=="),
-			checkMD("asdf #  =="),
-			checkMD("asdf # line==")
-		);
-		
-		testSourceProcessing("#", 
-			"asdf #{,#},## #{a,xxx#}#,},last}==",
-			
-			checkMD("asdf =="),
-			checkMD("asdf }=="),
-			checkMD("asdf # a=="),
-			checkMD("asdf # xxx},=="),
-			checkMD("asdf last==")
-		);
-		
-		testSourceProcessing("#!", 
-			"asdf #ok #!{,#!},#!#! #!{a,xxx#!}#!,},last#}!==",
-			
-			checkMD("asdf #ok !=="),
-			checkMD("asdf #ok }!=="),
-			checkMD("asdf #ok #! a!=="),
-			checkMD("asdf #ok #! xxx},!=="),
-			checkMD("asdf #ok last#!==")
-		);
-		
-		// Syntax errors:
-		testSourceProcessing("#", "> #,", 3); 
-		testSourceProcessing("#", "> #}", 3); 
-		
-		testSourceProcessing("#", "foo #@{", 7); 
-		testSourceProcessing("#", "foo #@==", 6);
-		testSourceProcessing("#", "foo #@!", 7);
-		testSourceProcessing("#", "foo #@EXPANSION1", 16); // no data
-		testSourceProcessing("#", "foo #@EXPANSION1{", 17); 
-		testSourceProcessing("#", "foo #@EXPANSION1{12,}:", 22);
-		testSourceProcessing("#", "foo #@EXPANSION1{12,}:EXP)", 22+3);
-		testSourceProcessing("#", "foo #@EXPANSION1{12,}(EXP:", 22+3);
-		
-		testSourceProcessing("#", "foo #@EXPANSION1{12#:SPLIT\n}", 19);
-		testSourceProcessing("#", "foo #@EXPANSION1{12#:END:\n}", 20);
-		
-		testSourceProcessing("#", "foo #@EXPANSION1{12}(#:SPLIT\n)", 21);
-		testSourceProcessing("#", "foo #@EXPANSION1{12}(xxx:END:\n)", 21+3);
-		
-		
-		for (int i = 0; i < TemplatedSourceProcessor2.OPEN_DELIMS.length; i++) {
-			String openDelim = TemplatedSourceProcessor2.OPEN_DELIMS[i];
-			if(openDelim.equals("{")) 
-				continue;
-			testExpansion_ArgumentDelimiters(openDelim, TemplatedSourceProcessor2.CLOSE_DELIMS[i]);
-		}
-	}
-	
-	public void testExpansion_ArgumentDelimiters(String open, String close) {
-		String source = prepString("asdf #@EXP►,}◙► #◄,last#◙}◄==", open, close);
-		
-		testSourceProcessing("#", source,
-			
-			checkMD(prepString("asdf ,}==", open, close)),
-			checkMD(prepString("asdf ► ◄,last●}==", open, close))
-		);
-		
-		testSourceProcessing("#", prepString("asdf #► ", open, close), 6);
-	}
-	
-	public static String prepString(String source, String openDelim, String closeDelim) {
-		source = source.replaceAll("►", openDelim);
-		source = source.replaceAll("◄", closeDelim);
-		source = source.replaceAll("◙", "●");
-		return source;
-	}
+	/* ------------------------  METADATA  ------------------------ */
 	
 	@Test
 	public void testMetadata() throws Exception { testMetadata$(); }
@@ -337,6 +258,376 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		);
 	}
 	
+	/* ------------------------  EXPANSION  ------------------------ */
+	
+	@Test
+	public void testExpansion() throws Exception { testExpansion$(); }
+	public void testExpansion$() throws Exception {
+		// Basic syntax and escapes
+		
+		testSourceProcessing("#", 
+			"asdf ## #{,#},#,,##, ,line}==",
+			
+			checkMD("asdf # =="),
+			checkMD("asdf # }=="),
+			checkMD("asdf # ,=="),
+			checkMD("asdf # #=="),
+			checkMD("asdf #  =="),
+			checkMD("asdf # line==")
+		);
+		
+		testSourceProcessing("#", 
+			"asdf #{,#},## #{a,xxx#}#,},last}==",
+			
+			checkMD("asdf =="),
+			checkMD("asdf }=="),
+			checkMD("asdf # a=="),
+			checkMD("asdf # xxx},=="),
+			checkMD("asdf last==")
+		);
+		
+		testSourceProcessing("#!", 
+			"asdf #ok #!{,#!},#!#! #!{a,xxx#!}#!,},last#}!==",
+			
+			checkMD("asdf #ok !=="),
+			checkMD("asdf #ok }!=="),
+			checkMD("asdf #ok #! a!=="),
+			checkMD("asdf #ok #! xxx},!=="),
+			checkMD("asdf #ok last#!==")
+		);
+		
+		// Syntax errors:
+		testSourceProcessing("#", "foo #@{", 7); 
+		testSourceProcessing("#", "foo #@==", 6);
+		testSourceProcessing("#", "foo #@!", 7);
+		testSourceProcessing("#", "foo #@EXPANSION1{", 17); 
+		testSourceProcessing("#", "foo #@EXPANSION1(", 17);
+		testSourceProcessing("#", "foo #@EXPANSION1(EXP:", 17+3);
+		testSourceProcessing("#", "foo #@EXPANSION1{12,}(", 22);
+		testSourceProcessing("#", "foo #@EXPANSION1{12,}(EXP:", 22+3);
+
+		testSourceProcessing("#", "foo #@EXPANSION1{12,}:EXP:", checkMD("foo 12:EXP:"), checkMD("foo :EXP:"));
+
+		testSourceProcessing("#", "> #,", 3); 
+		testSourceProcessing("#", "> #}", 3); 
+		
+		
+		testSourceProcessing("#", "foo #@EXPANSION1{12#:SPLIT\n}", 19);
+		testSourceProcessing("#", "foo #@EXPANSION1{12#:END:\n}", 20);
+		
+		testSourceProcessing("#", "foo #@EXPANSION1{12}(#:SPLIT\n)", 21);
+		testSourceProcessing("#", "foo #@EXPANSION1{12}(xxx:END:\n)", 21+3);
+		
+		
+		for (int i = 0; i < TemplatedSourceProcessor2.OPEN_DELIMS.length; i++) {
+			String openDelim = TemplatedSourceProcessor2.OPEN_DELIMS[i];
+			if(openDelim.equals("{")) 
+				continue;
+			testExpansion_ArgumentDelimiters(openDelim, TemplatedSourceProcessor2.CLOSE_DELIMS[i]);
+		}
+	}
+	
+	public void testExpansion_ArgumentDelimiters(String open, String close) {
+		String source = prepString("asdf #@EXP►,}◙► #◄,last#◙}◄==", open, close);
+		
+		testSourceProcessing("#", source,
+			
+			checkMD(prepString("asdf ,}==", open, close)),
+			checkMD(prepString("asdf ► ◄,last●}==", open, close))
+		);
+		testSourceProcessing("#", prepString("asdf #► ", open, close), 6);
+	}
+	
+	public static String prepString(String source, String openDelim, String closeDelim) {
+		source = source.replaceAll("►", openDelim);
+		source = source.replaceAll("◄", closeDelim);
+		source = source.replaceAll("◙", "●");
+		return source;
+	}
+	
+	@Test
+	public void testPairedExpansion() throws Exception { testPairedExpansion$(); }
+	public void testPairedExpansion$() throws Exception {
+		
+		/* BASIC EXPANSION FORMATS:
+		A:  #@{1, 2, 3}         Unnamed-Expansion
+		B:  #@EXP{1, 2, 3}      Definition, Named-Expansion  
+		C:  #@EXP!{1, 2, 3}     Definition only
+		
+		EA: #@{1, 2, 3}(EXP)    Expansion, pairing with active(EXP)
+		EB: #@(EXP)             Expansion with argument referral, pairing with active(EXP) 
+		EC: #@EXP2{1,2,3}(EXP)  Definition, Named-Expansion, pairing with active(EXP)
+		ED: #@EXP2(EXP)         Named-Expansion with argument referral(EXP2), pairing with active(EXP)
+
+		F:  #@EXP               Named-Expansion with argument referral(EXP)
+		G:  #@!(EXP)            Named-Expansion with empty arguments [aka Activation-Only-Expansion]
+		
+		H:  #@EXP!              Unnamed-Expansion with argument referral(EXP)
+		I:  #@EXP!(EXP2)        Unnamed-Expansion with argument referral(EXP), pairing with active(EXP2)
+		
+		*/
+		
+		
+		
+		// A: Unnamed-Expansion
+		testSourceProcessing("#", 
+			"foo #@{var1,var2#,,var3##}==",
+			
+			checkMD("foo var1=="),
+			checkMD("foo var2,=="),
+			checkMD("foo var3#==")
+		);
+		
+		// B: Definition, Named-Expansion -- EA:
+		testSourceProcessing("#", 
+			"foo #@EXPANSION1{var1,var2#,,var3##}==#@{A,B,C}(EXPANSION1)",
+			
+			checkMD("foo var1==A"),
+			checkMD("foo var2,==B"),
+			checkMD("foo var3#==C")
+		);
+		//Error: redefined:
+		testSourceProcessing("#", "foo #@EXPANSION1{a,b} -- #@EXPANSION1{a,b}", 9); 
+		testSourceProcessing("#", "foo #@EXPANSION1{a,#@EXPANSION1{a,b}}", 4);
+		
+		
+		// == C: Definition only ==
+		
+		// C: Basic case 
+		testSourceProcessing("#", "> #@EXPANSION1!{A,B,C} b", 
+			checkMD(">  b"));
+		 // Error: non active ref
+		testSourceProcessing("#", "> #@EXPANSION1!{A,B,C} #@{1,2,3}(EXPANSION1)", 3);
+		
+		// C: -- F:  #@EXP               Named-Expansion with argument referral(EXP)
+		testSourceProcessing("#", 
+			"#@EXPANSION1!{var1,var2,var3}"+
+			"#@EXPANSION1 == #@{A,B,C}(EXPANSION1)",
+			
+			checkMD("var1 == A"),
+			checkMD("var2 == B"),
+			checkMD("var3 == C")
+		);
+		
+		// C: -- G:  #@!(EXP)            Named-Expansion with empty arguments [aka Activation-Only-Expansion]
+		testSourceProcessing("#", 
+			"#@EXPANSION1!{var1,var2,var3}"+
+			">#@!(EXPANSION1) #@{A,B,C}(EXPANSION1) -- #@(EXPANSION1)",
+			
+			checkMD("> A -- var1"),
+			checkMD("> B -- var2"),
+			checkMD("> C -- var3")
+		);
+		
+		//Error: redefined
+		testSourceProcessing("#", "foo #@EXPANSION1!{a,b} -- #@EXPANSION1{a,b}", 8);
+		testSourceProcessing("#", "foo #@EXPANSION1!{a,#@EXPANSION1{a,b}} #@EXPANSION1", 5); 
+		
+		
+		// ============== EA: -- EB: -- EC: -- ED ==============
+		
+		// EA: #@{1, 2, 3}(EXP)   Expansion, pairing with active(EXP)
+		testSourceProcessing("#", 
+			"foo #@EXPANSION1{var1,var2,var3}==#@{A,B,C}(EXPANSION1)",
+			
+			checkMD("foo var1==A"),
+			checkMD("foo var2==B"),
+			checkMD("foo var3==C")
+		);
+		
+		// EB: #@(EXP)             Expansion with argument referral, pairing with active(EXP)
+		testSourceProcessing("#", 
+			"foo #@EXPANSION1{var1,var2,var3}==#@EXP2{VAR1,VAR2,VAR3}(EXPANSION1) ||"+
+			" #@(EXPANSION1) == #@(EXP2)",
+			
+			checkMD("foo var1==VAR1 || var1 == VAR1"),
+			checkMD("foo var2==VAR2 || var2 == VAR2"),
+			checkMD("foo var3==VAR3 || var3 == VAR3")
+		);
+		
+		// EC: #@EXP2{1,2,3}(EXP)  Definition, Named-Expansion, pairing with active(EXP)
+		testSourceProcessing("#", 
+			"foo #@EXPANSION1{var1,var2,var3}==#@EXP2{A,B,C}(EXPANSION1) #@{x,y,z}(EXP2)",
+			
+			checkMD("foo var1==A x"),
+			checkMD("foo var2==B y"),
+			checkMD("foo var3==C z")
+		);
+		
+		//ED: #@EXP2(EXP)         Named-Expansion with argument referral(EXP2), pairing with active(EXP)
+		testSourceProcessing("#", 
+			"#@EXP1{var1,var2,var3}"+ "#@EXP2!{z1,z2,z3}"+
+			"> #@EXP2(EXP1) -- #@{A,B,C}(EXP1)",
+			
+			checkMD("var1> z1 -- A"),
+			checkMD("var2> z2 -- B"),
+			checkMD("var3> z3 -- C")
+		);
+
+		// Error: undefined ref
+		testSourceProcessing("#", "> #@(EXPANSION1)", 2); 
+		testSourceProcessing("#", "> #@{A,B,C}(EXPANSION1)", 2);
+		testSourceProcessing("#", "> #@EXP2{A,B,C}(EXPANSION1)", 2);
+		testSourceProcessing("#",                      "> #@EXP2(EXPANSION1)", 2);
+		testSourceProcessing("#", "#@EXP2!{z1,z2,z3}"+ "> #@EXP2(EXPANSION1)", 2);
+		testSourceProcessing("#", "> #@EXP2", 2);
+		testSourceProcessing("#", "> #@!(EXP2)", 2);
+		//Error: Mismatched argument count:
+		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@{a}(EXPANSION1)", 7); 
+		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@{a,b,c}(EXPANSION1)", 7);
+		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@EXP2{a,b,c}(EXPANSION1)", 7);
+		testSourceProcessing("#", "#@EXP2!{a,b,c}"+ "> #@EXP2(EXPANSION1)", 2);
+		
+		// --- still E*:
+		
+		testSourceProcessing("#", 
+			"foo #@EXPANSION1{var1,var2,var3} == #{a,xxx} -- #@(EXPANSION1)",
+			
+			checkMD("foo var1 == a -- var1"),
+			checkMD("foo var1 == xxx -- var1"),
+			checkMD("foo var2 == a -- var2"),
+			checkMD("foo var2 == xxx -- var2"),
+			checkMD("foo var3 == a -- var3"),
+			checkMD("foo var3 == xxx -- var3")
+		);
+		
+		// ============== Advanced cases ==============
+		
+		// Visibility of referrals:
+		testSourceProcessing("#", ">#@{#@INNER_EXP{A,B,C},#@INNER_EXP{A,B,C}}", 
+			checkMD(">A"),checkMD(">B"),checkMD(">C"),
+			checkMD(">A"),checkMD(">B"),checkMD(">C"));
+		testSourceProcessing("#", "> #@{#@INNER_EXP{A,B,C}, #@(INNER_EXP)}", 3); // Error: undefined ref
+		testSourceProcessing("#", "> #@{#@INNER_EXP{A,B,C}, } #@(INNER_EXP)", 4); // Error: undefined ref
+		
+		// Nesting of expansions
+		testSourceProcessing("#", 
+			">#@EXPA!{A,B,C} #@X{#@(EXPA),x} #@(X)",
+			
+			checkMD("> A A"), checkMD("> B B"), checkMD("> C C"), checkMD("> x x")
+		);
+		
+		testSourceProcessing("#", 
+			"> #@X{#@EXPA{A,B,C},x} #@(X)",
+			
+			checkMD("> A A"), checkMD("> B B"), checkMD("> C C"), checkMD("> x x")
+		);
+	}
+	
+	@Test
+	public void testPairedExpansionWithSplit() throws Exception { testPairedExpansionWithSplit$(); }
+	public void testPairedExpansionWithSplit$() throws Exception {
+		
+		testSourceProcessing("#", 
+			"#:SPLIT ____\n"+"#@EXPANSION1{var1,var2#,,var3##}"+
+			"#:SPLIT\n> #@(EXPANSION1)",
+			2 // Not defined
+		);
+		
+		testSourceProcessing("#", 
+			"#:HEADER ____header____\n"+
+			"#@EXPANSION1{var1,var2,var3}"+
+			"#@EXPANSION2{A,BB,CCC}"+
+			"#:SPLIT ___\n> #@EXPANSION2{xxxA,xxxb,xxxc}",
+			2 // Redefined
+		);
+		
+		
+		testSourceProcessing("#", 
+			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
+			"#:SPLIT\n> #@(EXPANSION1)",
+			
+			checkMD("> var1"),
+			checkMD("> var2"),
+			checkMD("> var3")
+		);
+		
+		testSourceProcessing("#", 
+			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
+			"#:SPLIT\n> #@(EXPANSION1) == #@{A,B,C}(EXPANSION1)",
+			
+			checkMD("> var1 == A"),
+			checkMD("> var2 == B"),
+			checkMD("> var3 == C")
+		);
+		
+		testSourceProcessing("#", 
+			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
+			"#:SPLIT\n> #@(EXPANSION1) == #@(EXPANSION1)",
+			
+			checkMD("> var1 == var1"),
+			checkMD("> var2 == var2"),
+			checkMD("> var3 == var3")
+		);
+		
+		// Activate only
+		testSourceProcessing("#", 
+			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
+			"#:SPLIT\n>#@!(EXPANSION1) #@{A,B,C}(EXPANSION1) -- #@(EXPANSION1)",
+			
+			checkMD("> A -- var1"),
+			checkMD("> B -- var2"),
+			checkMD("> C -- var3")
+		);
+		
+		// Across cases
+		testSourceProcessing("#", 
+			"#:HEADER ____header____\n"+
+			"#@EXPAN_X{X,ZZ}"+
+			"#@EXPANSION1{var1,var2,var3}"+
+			"#:SPLIT ___\n1: #@!(EXPANSION1)#@EXPANSION3{xxxA,xxxB,xxxC}(EXPANSION1) == #@(EXPANSION1)"+
+			"#:SPLIT ___\n2: #@!(EXPANSION1)"+
+			"#@(EXPAN_X) _ #@EXPANSION3{xA,xxB,xxxC}(EXPANSION1) == #@{a,bb}(EXPAN_X)",
+			
+			checkMD("1: xxxA == var1"),
+			checkMD("1: xxxB == var2"),
+			checkMD("1: xxxC == var3"),
+			
+			checkMD("2: X _ xA == a"),
+			checkMD("2: ZZ _ xA == bb"),
+			checkMD("2: X _ xxB == a"),
+			checkMD("2: ZZ _ xxB == bb"),
+			checkMD("2: X _ xxxC == a"),
+			checkMD("2: ZZ _ xxxC == bb")
+		);
+		
+		
+		// Nested
+		testSourceProcessing("#", 
+			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
+			"#:SPLIT\n> #@OUTER{.#@(EXPANSION1).,B} -- #@(EXPANSION1)",
+			
+			checkMD("> .var1. -- var1"),
+			checkMD("> .var2. -- var2"),
+			checkMD("> .var3. -- var3"),
+			checkMD("> B -- var1"), checkMD("> B -- var2"), checkMD("> B -- var3")
+		);
+		
+		testSourceProcessing("#", 
+			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
+			"#:SPLIT\n> #@OUTER{.#@(EXPANSION1).,~#@(EXPANSION1)~} -- #@(EXPANSION1)",
+			
+			checkMD("> .var1. -- var1"),
+			checkMD("> .var2. -- var2"),
+			checkMD("> .var3. -- var3"),
+			checkMD("> ~var1~ -- var1"),
+			checkMD("> ~var2~ -- var2"),
+			checkMD("> ~var3~ -- var3")
+		);
+		
+		testSourceProcessing("#", 
+			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
+			"#:SPLIT\n> #@(EXPANSION1) -- #@OUTER{.#@(EXPANSION1).,B}",
+			
+			checkMD("> var1 -- .var1."), checkMD("> var1 -- B"), 
+			checkMD("> var2 -- .var2."), checkMD("> var2 -- B"),
+			checkMD("> var3 -- .var3."), checkMD("> var3 -- B")
+		);
+		
+	}
+	
+	/* ------------------------  METADATA-EXPANSION interactions ------------------------ */
+	
 	@Test
 	public void testMetadata_Interactions() throws Exception { testMetadata_Interactions$(); }
 	public void testMetadata_Interactions$() throws Exception {
@@ -456,211 +747,7 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		);
 	}
 	
-	@Test
-	public void testPairedExpansion() throws Exception { testPairedExpansion$(); }
-	public void testPairedExpansion$() throws Exception {
-		
-		testSourceProcessing("#", 
-			"foo #@EXPANSION1{var1,var2#,,var3##}==#@{A,B,C}:EXPANSION1:",
-			
-			checkMD("foo var1==A"),
-			checkMD("foo var2,==B"),
-			checkMD("foo var3#==C")
-		);
-		
-		// Activeness
-		testSourceProcessing("#", 
-			"#@EXPANSION1!{var1,var2,var3}"+
-			">#@!(EXPANSION1) #@{A,B,C}(EXPANSION1) -- #@(EXPANSION1)",
-			
-			checkMD("> A -- var1"),
-			checkMD("> B -- var2"),
-			checkMD("> C -- var3")
-		);
-		testSourceProcessing("#", "#@EXPANSION1!{a,b,c} #@{A,B,C}(EXPANSION1)", 1); // Error: non active ref
-
-		testSourceProcessing("#", 
-			"#@EXPANSION1!{var1,var2,var3}==#@!(EXPANSION1) #@{A,B,C}(EXPANSION1)",
-			
-			checkMD("== A"),
-			checkMD("== B"),
-			checkMD("== C")
-		);
-		
-		//Error: Mismatched argument count:
-		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@{a}(EXPANSION1)", 7); 
-		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@{a,b,c}(EXPANSION1)", 7);
-		
-		testSourceProcessing("#", "foo #@:EXPANSION1:", 4); // Error: undefined ref
-		testSourceProcessing("#", "foo #@{A,B,C}(EXPANSION1)", 4); // Error: undefined ref
-		testSourceProcessing("#", "foo #@EXPANSION1{a,b} -- #@EXPANSION1{a,b}", 9); //Error: redefined
-		testSourceProcessing("#", "foo #@EXPANSION1{a,#@EXPANSION1{a,b}}", 4); //Error: redefined
-		
-		testSourceProcessing("#", 
-			"#@EXP1{var1,var2,var3}"+
-			"#@EXP2!{z1,z2,z3}"+
-			"> #@EXP2(EXP1) -- #@{A,B,C}(EXP1)",
-			
-			checkMD("var1> z1 -- A"),
-			checkMD("var2> z2 -- B"),
-			checkMD("var3> z3 -- C")
-		);
-		
-		// ---
-		
-		testSourceProcessing("#", 
-			"foo #@EXPANSION1{var1,var2,var3}==#@EXP1ALT{VAR1,VAR2,VAR3}(EXPANSION1) ||"+
-			" #@(EXPANSION1) == #@(EXP1ALT)",
-			
-			checkMD("foo var1==VAR1 || var1 == VAR1"),
-			checkMD("foo var2==VAR2 || var2 == VAR2"),
-			checkMD("foo var3==VAR3 || var3 == VAR3")
-		);
-		
-		
-		testSourceProcessing("#", 
-			"foo #@EXPANSION1{var1,var2,var3} == #{a,xxx} -- #@(EXPANSION1)",
-			
-			checkMD("foo var1 == a -- var1"),
-			checkMD("foo var1 == xxx -- var1"),
-			checkMD("foo var2 == a -- var2"),
-			checkMD("foo var2 == xxx -- var2"),
-			checkMD("foo var3 == a -- var3"),
-			checkMD("foo var3 == xxx -- var3")
-		);
-		
-		//Visibility of referrals:
-		testSourceProcessing("#", ">#@{#@INNER_EXP{A,B,C},#@INNER_EXP{A,B,C}}", 
-			checkMD(">A"),checkMD(">B"),checkMD(">C"),
-			checkMD(">A"),checkMD(">B"),checkMD(">C"));
-		testSourceProcessing("#", "> #@{#@INNER_EXP{A,B,C}, #@(INNER_EXP)}", 3); // Error: undefined ref
-		testSourceProcessing("#", "> #@{#@INNER_EXP{A,B,C}, } #@(INNER_EXP)", 4); // Error: undefined ref
-		
-		// Nesting of expansions
-		testSourceProcessing("#", 
-			">#@EXPA!{A,B,C} #@X{#@(EXPA),x} #@(X)",
-			
-			checkMD("> A A"), checkMD("> B B"), checkMD("> C C"), checkMD("> x x")
-		);
-		
-		testSourceProcessing("#", 
-			"> #@X{#@EXPA{A,B,C},x} #@(X)",
-			
-			checkMD("> A A"), checkMD("> B B"), checkMD("> C C"), checkMD("> x x")
-		);
-	}
-	
-	@Test
-	public void testPairedExpansionWithSplit() throws Exception { testPairedExpansionWithSplit$(); }
-	public void testPairedExpansionWithSplit$() throws Exception {
-		
-		testSourceProcessing("#", 
-			"#:SPLIT ____\n"+"#@EXPANSION1{var1,var2#,,var3##}"+
-			"#:SPLIT\n> #@(EXPANSION1)",
-			2 // Not defined
-		);
-		
-		testSourceProcessing("#", 
-			"#:HEADER ____header____\n"+
-			"#@EXPANSION1{var1,var2,var3}"+
-			"#@EXPANSION2{A,BB,CCC}"+
-			"#:SPLIT ___\n> #@EXPANSION2{xxxA,xxxb,xxxc}",
-			2 // Redefined
-		);
-		
-		
-		testSourceProcessing("#", 
-			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
-			"#:SPLIT\n> #@(EXPANSION1)",
-			
-			checkMD("> var1"),
-			checkMD("> var2"),
-			checkMD("> var3")
-		);
-		
-		testSourceProcessing("#", 
-			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
-			"#:SPLIT\n> #@(EXPANSION1) == #@{A,B,C}(EXPANSION1)",
-			
-			checkMD("> var1 == A"),
-			checkMD("> var2 == B"),
-			checkMD("> var3 == C")
-		);
-		
-		testSourceProcessing("#", 
-			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
-			"#:SPLIT\n> #@(EXPANSION1) == #@(EXPANSION1)",
-			
-			checkMD("> var1 == var1"),
-			checkMD("> var2 == var2"),
-			checkMD("> var3 == var3")
-		);
-		
-		// Activate only
-		testSourceProcessing("#", 
-			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
-			"#:SPLIT\n>#@!(EXPANSION1) #@{A,B,C}(EXPANSION1) -- #@(EXPANSION1)",
-			
-			checkMD("> A -- var1"),
-			checkMD("> B -- var2"),
-			checkMD("> C -- var3")
-		);
-		
-		// Across cases
-		testSourceProcessing("#", 
-			"#:HEADER ____header____\n"+
-			"#@EXPAN_X{X,ZZ}"+
-			"#@EXPANSION1{var1,var2,var3}"+
-			"#:SPLIT ___\n1: #@!(EXPANSION1)#@EXPANSION3{xxxA,xxxB,xxxC}:EXPANSION1: == #@(EXPANSION1)"+
-			"#:SPLIT ___\n2: #@!(EXPANSION1)"+
-			"#@(EXPAN_X) _ #@EXPANSION3{xA,xxB,xxxC}:EXPANSION1: == #@{a,bb}(EXPAN_X)",
-			
-			checkMD("1: xxxA == var1"),
-			checkMD("1: xxxB == var2"),
-			checkMD("1: xxxC == var3"),
-			
-			checkMD("2: X _ xA == a"),
-			checkMD("2: ZZ _ xA == bb"),
-			checkMD("2: X _ xxB == a"),
-			checkMD("2: ZZ _ xxB == bb"),
-			checkMD("2: X _ xxxC == a"),
-			checkMD("2: ZZ _ xxxC == bb")
-		);
-		
-		
-		// Nested
-		testSourceProcessing("#", 
-			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
-			"#:SPLIT\n> #@OUTER{.#@(EXPANSION1).,B} -- #@(EXPANSION1)",
-			
-			checkMD("> .var1. -- var1"),
-			checkMD("> .var2. -- var2"),
-			checkMD("> .var3. -- var3"),
-			checkMD("> B -- var1"), checkMD("> B -- var2"), checkMD("> B -- var3")
-		);
-		
-		testSourceProcessing("#", 
-			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
-			"#:SPLIT\n> #@OUTER{.#@(EXPANSION1).,~#@(EXPANSION1)~} -- #@(EXPANSION1)",
-			
-			checkMD("> .var1. -- var1"),
-			checkMD("> .var2. -- var2"),
-			checkMD("> .var3. -- var3"),
-			checkMD("> ~var1~ -- var1"),
-			checkMD("> ~var2~ -- var2"),
-			checkMD("> ~var3~ -- var3")
-		);
-		
-		testSourceProcessing("#", 
-			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
-			"#:SPLIT\n> #@(EXPANSION1) -- #@OUTER{.#@(EXPANSION1).,B}",
-			
-			checkMD("> var1 -- .var1."), checkMD("> var1 -- B"), 
-			checkMD("> var2 -- .var2."), checkMD("> var2 -- B"),
-			checkMD("> var3 -- .var3."), checkMD("> var3 -- B")
-		);
-		
-	}
+	/* ------------------------  CONDITIONAL EXPANSION  ------------------------ */
 	
 	@Test
 	public void testIfElseExpansion() throws Exception { testIfElseExpansion$(); }

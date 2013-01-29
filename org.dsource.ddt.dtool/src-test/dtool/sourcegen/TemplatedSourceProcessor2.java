@@ -269,13 +269,11 @@ public class TemplatedSourceProcessor2 {
 		}
 		
 		String pairedExpansionId = null;
-		if(parser.tryConsume(":")) {
-			pairedExpansionId = consumeDelimitedId(parser, ":");
-		} else if(parser.tryConsume("(")) {
+		if(parser.tryConsume("(")) {
 			pairedExpansionId = consumeDelimitedId(parser, ")");
 		}
 		
-		checkError(pairedExpansionId == null && arguments == null, parser);
+		checkError(expansionId == null && pairedExpansionId == null && arguments == null, parser);
 		return new TspExpansionElement(expansionId, pairedExpansionId, arguments, defineOnly);
 	}
 	
