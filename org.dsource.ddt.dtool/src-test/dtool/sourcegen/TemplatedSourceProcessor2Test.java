@@ -362,8 +362,8 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		F:  #@EXP               Named-Expansion with argument referral(EXP)
 		G:  #@!(EXP)            Named-Expansion with empty arguments [aka Activation-Only-Expansion]
 		
-		H:  #@EXP!              Unnamed-Expansion with argument referral(EXP)
-		I:  #@EXP!(EXP2)        Unnamed-Expansion with argument referral(EXP), pairing with active(EXP2)
+		H:  #@^EXP              Unnamed-Expansion with argument referral(EXP)
+		I:  #@^EXP(EXP2)        Unnamed-Expansion with argument referral(EXP), pairing with active(EXP2)
 		
 		*/
 		
@@ -490,6 +490,36 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 			checkMD("foo var3 == a -- var3"),
 			checkMD("foo var3 == xxx -- var3")
 		);
+		
+		// H:  #@^EXP              Unnamed-Expansion with argument referral(EXP)
+		
+		testSourceProcessing("#","> #@^{1,2,3}", 5); // Bad syntax: no name
+		testSourceProcessing("#","> #@^EXP1!{1,2,3}", 2); // Bad syntax: has define only
+		
+		GeneratedSourceChecker[] expectedCasesH = array(
+			checkMD("> var1 -- var1"), checkMD("> var1 -- var2"), checkMD("> var1 -- var3"),
+			checkMD("> var2 -- var1"), checkMD("> var2 -- var2"), checkMD("> var2 -- var3"),
+			checkMD("> var3 -- var1"), checkMD("> var3 -- var2"), checkMD("> var3 -- var3"));
+		
+		testSourceProcessing("#", 
+			"> #@^EXP1{var1,var2,var3} -- #@EXP1", expectedCasesH
+		);
+		testSourceProcessing("#", 
+			"> #@EXP1{var1,var2,var3} -- #@^EXP1", expectedCasesH
+		);
+		
+		// I:  #@^EXP(EXP2)        Unnamed-Expansion with argument referral(EXP), pairing with active(EXP2)
+		testSourceProcessing("#", 
+			"#@EXP1!{var1,var2,var3}"+ "#@EXP2!{1,2,3}"+
+			"> #@EXP1 -- #@EXP2 - #@^EXP1(EXP2)", 
+			
+			checkMD("> var1 -- 1 - var1"), checkMD("> var1 -- 2 - var2"), checkMD("> var1 -- 3 - var3"),
+			checkMD("> var2 -- 1 - var1"), checkMD("> var2 -- 2 - var2"), checkMD("> var2 -- 3 - var3"),
+			checkMD("> var3 -- 1 - var1"), checkMD("> var3 -- 2 - var2"), checkMD("> var3 -- 3 - var3")
+		);
+		
+		testSourceProcessing("#","#@EXP1!{var1,var2,var3}"+ "> #@^EXP1 #@{1,2,3}(EXP1)", 7); // Not Active
+		
 		
 		// ============== Advanced cases ==============
 		

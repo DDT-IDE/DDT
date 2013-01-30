@@ -219,21 +219,24 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected class TspExpansionElement extends TspElement {
-		final String expansionId; 
-		final String pairedExpansionId; 
-		final ArrayList<Argument> arguments; 
-		final boolean dontOuputSource;
+		protected final String expansionId; 
+		protected final String pairedExpansionId; 
+		protected final ArrayList<Argument> arguments; 
+		protected final boolean dontOuputSource;
+		protected final boolean anonymousExpansion;
+		
 		public TspExpansionElement(String expansionId, String pairedExpansionId, ArrayList<Argument> arguments, 
-			boolean dontOuputSource) {
+			boolean anonymousExpansion, boolean dontOuputSource) {
 			this.expansionId = expansionId;
 			this.pairedExpansionId = pairedExpansionId;
 			this.arguments = arguments;
+			this.anonymousExpansion = anonymousExpansion;
 			this.dontOuputSource = dontOuputSource;
 		}
 		
 		@Override
 		public String toString() {
-			return "EXPANSION["+(dontOuputSource?"!":"")+
+			return "EXPANSION["+(anonymousExpansion?"^":"")+(dontOuputSource?"!":"")+
 				StringUtil.nullAsEmpty(expansionId)+
 				(pairedExpansionId == null ? "" : "("+pairedExpansionId+")")+
 				(arguments == null ? "" : "{"+StringUtil.collToString(arguments, "#,#")+"}")+
@@ -254,8 +257,16 @@ public class TemplatedSourceProcessor2 {
 		
 		String expansionId = null;
 		boolean defineOnly = false; 
+		boolean anonymousExpansion = false;
+		
 		if(parser.tryConsume("@")) {
+			if(parser.tryConsume("^")) {
+				anonymousExpansion = true;
+			}
 			expansionId = emptyToNull(parser.consumeAlphaNumericUS(false));
+			if(anonymousExpansion) {
+				checkError(expansionId == null, parser);
+			} 
 			if(parser.tryConsume("!")) {
 				defineOnly = true;
 			}
@@ -274,7 +285,7 @@ public class TemplatedSourceProcessor2 {
 		}
 		
 		checkError(expansionId == null && pairedExpansionId == null && arguments == null, parser);
-		return new TspExpansionElement(expansionId, pairedExpansionId, arguments, defineOnly);
+		return new TspExpansionElement(expansionId, pairedExpansionId, arguments, anonymousExpansion, defineOnly);
 	}
 	
 	protected String consumeDelimitedId(SimpleParser parser, String closeDelim) throws TemplatedSourceException {
@@ -631,6 +642,8 @@ public class TemplatedSourceProcessor2 {
 		final String expansionId = expansionElem.expansionId;
 		checkError(sourceCase.isHeaderCase && expansionId == null, sourceCase);
 		
+		checkError(expansionElem.anonymousExpansion && expansionElem.dontOuputSource, sourceCase);
+		
 		ArrayList<Argument> arguments = expansionElem.arguments;
 		TspExpansionElement definedExpansionElem = null;
 		if(expansionId != null) {
@@ -656,7 +669,7 @@ public class TemplatedSourceProcessor2 {
 		Integer pairedExpansionIx = null;
 		TspExpansionElement referredExpansion = null;
 		if(expansionElem.pairedExpansionId == null) {
-			if(definedExpansionElem != null) {
+			if(definedExpansionElem != null && expansionElem.anonymousExpansion == false) {
 				pairedExpansionIx = sourceCase.activeExpansions.get(expansionId);
 				// The result is usually null, but it can be a valid index in certain situations
 				// where this defined exp has been "redefined"
@@ -681,11 +694,13 @@ public class TemplatedSourceProcessor2 {
 			}
 		}
 		
+		String idToActivate = expansionElem.anonymousExpansion ? null :
+			(expansionId != null ? expansionId : expansionElem.pairedExpansionId);
+		
 		if(pairedExpansionIx != null) {
 			int ix = pairedExpansionIx;
-			processArgument(sourceCase, elementStream, expansionId, arguments.get(ix), ix);
+			processArgument(sourceCase, elementStream, idToActivate, arguments.get(ix), ix);
 		} else {
-			String idToActivate = expansionId != null ? expansionId : expansionElem.pairedExpansionId;
 			
 			boolean activateOnly = expansionElem.dontOuputSource;
 			if(activateOnly) {
