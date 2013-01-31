@@ -87,7 +87,7 @@ public class TemplatedSourceProcessor2 {
 		
 		SimpleParser parser = new SimpleParser(fileSource);
 		
-		final String[] splitKeywords = { "#:HEADER", "Ⓗ", "☒", "#:SPLIT", "━━", "▂▂", "▃▃"};
+		final String[] splitKeywords = { "#:HEADER", "Ⓗ", "#:SPLIT", "━━", "▂▂", "▃▃"};
 		
 		do {
 			boolean isHeader = false;
@@ -95,7 +95,7 @@ public class TemplatedSourceProcessor2 {
 			
 			int alt = parser.tryConsume(splitKeywords);
 			if(alt != SimpleParser.EOF) {
-				if(alt == 0 || alt == 1 || alt == 2) {
+				if(alt == 0 || alt == 1) {
 					isHeader = true;
 				}
 				checkError(parser.seekToNewLine() == false, parser);
@@ -306,18 +306,39 @@ public class TemplatedSourceProcessor2 {
 		assertNotNull(listEnd);
 		ArrayList<Argument> arguments = new ArrayList<Argument>();
 		
+		assertTrue(!eofTerminates || argumentSep == null);
+		
+		boolean uniformArgSyntax = false;
+		if(argumentSep != null && parser.tryConsume("►")) {
+			uniformArgSyntax = true;
+			checkError(parser.tryConsumeNewlineRule() == false, parser);
+		}
+		
 		Argument argument = new Argument();
 		while(true) {
 			TspElement element = parseElementWithCustomStarts(parser, 
 				(argumentSep != null ? argumentSep : listEnd), listEnd, kMARKER);
-			// The above code may result in a call with duplicate listEnd arguments, that works despite being strange
+			// The above code may result in a call with duplicate listEnd arguments, 
+			// that stil works despite looking strange
 			
 			if(element == null) {
 				checkError(!eofTerminates, parser);
+				checkError(uniformArgSyntax, parser);
 				break;
 			} else if(element.getElementType() == listEnd) {
+				checkError(uniformArgSyntax, parser);
 				break;
 			} else if(argumentSep != null && element.getElementType() == argumentSep) {
+				if(uniformArgSyntax) {
+					SimpleParser tempParser = parser.copyState();
+					if(tempParser.seekToNewLine() && 
+						tempParser.getLastConsumedString().trim().isEmpty() &&
+						tempParser.seekWhiteSpace().tryConsume(listEnd)) {
+						parser.resetToPosition(tempParser.getSourcePosition());
+						break;
+					}
+				}
+				
 				arguments.add(argument);
 				argument = new Argument();
 			} else {

@@ -21,7 +21,6 @@ public class SimpleParser {
 	
 	protected final String source;
 	protected int pos;
-	
 	protected String lastToken;
 
 	public SimpleParser(String source) {
@@ -40,6 +39,13 @@ public class SimpleParser {
 	@Override
 	public String toString() {
 		return source.substring(0, pos) + "<--parser-->" + source.substring(pos, source.length());
+	}
+	
+	public SimpleParser copyState() {
+		SimpleParser newParser = new SimpleParser(source);
+		newParser.pos = pos;
+		newParser.lastToken = lastToken;
+		return newParser;
 	}
 	
 	/** Gets the character from absolute position index, or EOF if index exceeds source.length. */
@@ -66,6 +72,11 @@ public class SimpleParser {
 		lastToken = source.substring(pos, pos + length); 
 		pos += length;
 		return lastToken;
+	}
+	
+	public void resetToPosition(int sourcePosition) {
+		pos = sourcePosition;
+		lastToken = null;
 	}
 	
 	public final boolean tryConsume(String string) {
@@ -97,7 +108,7 @@ public class SimpleParser {
 		return lastToken;
 	}
 	
-	public String restOfInput() {
+	public String getRestOfInput() {
 		return source.substring(pos, source.length());
 	}
 	

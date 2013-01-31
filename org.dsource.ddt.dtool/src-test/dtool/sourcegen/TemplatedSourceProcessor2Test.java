@@ -23,13 +23,15 @@ import dtool.tests.CommonTestUtils;
 
 public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 	
+	public static final class TestsTemplateSourceProcessor extends TemplatedSourceProcessor2 {
+		@Override
+		protected void reportError(int offset) throws TemplatedSourceException {
+			assertFail();
+		}
+	}
+	
 	public void testSourceProcessing(String defaultMarker, String source, GeneratedSourceChecker... checkers) {
-		TemplatedSourceProcessor2 tsp = new TemplatedSourceProcessor2() { 
-			@Override
-			protected void reportError(int offset) throws TemplatedSourceException {
-				assertFail();
-			};
-		};
+		TemplatedSourceProcessor2 tsp = new TestsTemplateSourceProcessor();
 		visitContainer(tsp.processSource_unchecked(defaultMarker, source), checkers);
 	}
 	
@@ -56,6 +58,16 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		};
 	}
 	
+	protected GeneratedSourceChecker checkSourceOnly(final String expSource, final int mdSize) {
+		return new GeneratedSourceChecker () {
+			@Override
+			public void visit(AnnotatedSource genSource) {
+				assertEquals(genSource.source, expSource);
+				assertEquals(genSource.metadata.size(), mdSize);
+			}
+		};
+	}
+	
 	public static final String DONT_CHECK = new String("NO_CHECK");
 	
 	protected void checkMetadata(MetadataEntry mde1, MetadataEntry expMde) {
@@ -66,6 +78,38 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		assertAreEqual(mde1.offset, expMde.offset);
 	}
 	
+	/* language features: ---------------------------------------------
+
+#:SPLIT blah blah -----------------
+text
+━━━━━━━━━━━━━━━━━━━━━━━━
+text
+━━━━━━━━━━━━━━━━━━━━━━━━ →◙
+text with custom marker: ◙◙
+Ⓗ━━━━━━━━━━━━━━━━━━━━━━━━
+header1
+#:HEADER ---------------------------
+header2
+▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃
+#metadata(value,value,value){associatedSource}
+
+#metadata(value,value,value)《
+	associated Source
+	associated Source
+》 
+
+#metadata_endlineFormat(value,value,value):
+
+#:END
+
+#@expansion(refIdentifier) 《►
+	arg1●
+	arg2●
+	arg3●
+》 // There is no arg4
+	 
+	 */
+	
 	/* ------------------------  SPLIT  ------------------------ */
 	
 	@Test
@@ -75,7 +119,7 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 			testSplit(splitMarker);
 		}
 		
-		for (String headerMarker : array("#:HEADER", "Ⓗ━━", "☒▂▂", "Ⓗ▃▃")) {
+		for (String headerMarker : array("#:HEADER", "Ⓗ━━", "Ⓗ▃▃")) {
 			testHeaderSplit(headerMarker, "#:SPLIT", "━━");
 		}
 	}
@@ -263,7 +307,7 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 	@Test
 	public void testExpansion() throws Exception { testExpansion$(); }
 	public void testExpansion$() throws Exception {
-		// Basic syntax and escapes
+		// Basic syntax, escapes
 		
 		testSourceProcessing("#", 
 			"asdf ## #{,#},#,,##, ,line}==",
@@ -305,12 +349,34 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 		testSourceProcessing("#", "foo #@EXPANSION1(EXP:", 17+3);
 		testSourceProcessing("#", "foo #@EXPANSION1{12,}(", 22);
 		testSourceProcessing("#", "foo #@EXPANSION1{12,}(EXP:", 22+3);
-
+		
+		
+		// Uniform argument syntax ----
+		testSourceProcessing("#", 
+			"> #@{►\nasd, ,line, \n }==",
+			
+			checkMD("> asd=="),
+			checkMD(">  =="),
+			checkMD("> line==")
+		);
+		
+		testSourceProcessing("#", "> #@{►xxx\nasd, ,line,\n}==", 6);
+		testSourceProcessing("#", "> #@{►\nasd, ,line\n}==", 19);
+		testSourceProcessing("#", "> #@{►\n}==", 8);
+		
+		
+		testSourceProcessing("#", "> #MD(►\nasd, line\n)==", checkSourceOnly("> ==", 1));
+		testSourceProcessing("#", "> #MD{►\nasd, line\n}==", checkSourceOnly("> ►\nasd, line\n==", 1)); 
+		testSourceProcessing("#", "> #MD:\n►asd, line\n ==", 
+			checkMD("> ", new MetadataEntry("MD", null, "►asd, line\n ==", -1)));
+		
+		
+		// Syntax errors: interactions:
+		
 		testSourceProcessing("#", "foo #@EXPANSION1{12,}:EXP:", checkMD("foo 12:EXP:"), checkMD("foo :EXP:"));
 
 		testSourceProcessing("#", "> #,", 3); 
 		testSourceProcessing("#", "> #}", 3); 
-		
 		
 		testSourceProcessing("#", "foo #@EXPANSION1{12#:SPLIT\n}", 19);
 		testSourceProcessing("#", "foo #@EXPANSION1{12#:END:\n}", 20);
