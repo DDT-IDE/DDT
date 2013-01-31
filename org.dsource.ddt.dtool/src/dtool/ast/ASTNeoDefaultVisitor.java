@@ -50,6 +50,7 @@ import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
+import dtool.ast.references.RefIndexing;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
@@ -60,8 +61,6 @@ import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
 import dtool.ast.references.TypeDelegate;
 import dtool.ast.references.TypeFunction;
-import dtool.ast.references.TypeMapArray;
-import dtool.ast.references.TypeStaticArray;
 import dtool.ast.references.TypeTypeof;
 
 public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor implements IASTNeoVisitor {
@@ -189,8 +188,7 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 	@Override public boolean visit(RefTypePointer elem) { return true; }
 	@Override public boolean visit(TypeDelegate elem) { return true; }
 	@Override public boolean visit(TypeFunction elem) { return true; }
-	@Override public boolean visit(TypeMapArray elem) { return true; }
-	@Override public boolean visit(TypeStaticArray elem) { return true; }
+	@Override public boolean visit(RefIndexing elem) { return true; }
 	
 	@Override
 	public boolean visit(TypeTypeof elem) {

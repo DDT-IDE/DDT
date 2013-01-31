@@ -20,11 +20,6 @@ public class RefQualified extends CommonRefQualified {
 	
 	public final IDefUnitReferenceNode qualifier; //Entity or Expression
 	
-	@Deprecated
-	public RefQualified(IDefUnitReferenceNode qualifier, RefIdentifier qualifiedIdRef) {
-		this(qualifier, qualifiedIdRef, null);
-	}
-	
 	public RefQualified(IDefUnitReferenceNode qualifier, RefIdentifier qualifiedIdRef, SourceRange sourceRange) {
 		super(assertNotNull_(qualifiedIdRef));
 		this.qualifier = parentizeI(assertNotNull_(qualifier));

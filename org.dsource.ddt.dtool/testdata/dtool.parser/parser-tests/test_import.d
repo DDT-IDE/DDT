@@ -7,12 +7,11 @@ static import pack.bar.foo;
 import foo, pack.foo, pack.bar.foo;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-import #error(EXP_ID)#error(EXP_SEMICOLON)#AST_EXPECTED:
+import#error(EXP_ID)#error(EXP_SEMICOLON)#AST_SOURCE_EXPECTED:
 import ;
-
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import #error(EXP_ID)#error(EXP_SEMICOLON) import foo;
-#AST_EXPECTED:
+#AST_SOURCE_EXPECTED:
 import ; import foo;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import foo #error(EXP_SEMICOLON) Bar bar;
@@ -58,7 +57,7 @@ import foo = #error(EXP_ID) , #error(EXP_ID) ;
 #AST_EXPECTED:
 import  = pack.foo;
 static import foo,  = pack.foo;
-import ; int; 
+import ; int;
 import pack.foo; = pack.foo;
 
 import foo = ;

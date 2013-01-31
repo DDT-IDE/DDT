@@ -10,7 +10,7 @@ DefVariable(RefModuleQualified(?) DefSymbol)
 . #error:EXP_ID int dummy;
 
 #AST_STRUCTURE_EXPECTED:
-InvalidSyntaxElement( RefModuleQualified(?) )
+InvalidDeclaration( RefModuleQualified(?) )
 DefVariable(RefPrimitive DefSymbol)
 
 #AST_SOURCE_EXPECTED:

@@ -15,7 +15,7 @@ InvalidDeclaration(RefTypePointer(RefIdentifier))
 InvalidDeclaration(RefTypePointer(RefIdentifier))
 #AST_SOURCE_EXPECTED:
 foo* ;
-foo2* ;
+foo2*
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

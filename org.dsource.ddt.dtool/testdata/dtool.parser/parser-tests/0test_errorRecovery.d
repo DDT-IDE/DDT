@@ -7,16 +7,28 @@
 InvalidSyntaxElement
 InvalidSyntaxElement
 InvalidSyntaxElement
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of reference start
 foo #error(EXP_IDENTIFIER) ;
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(?)
+#AST_SOURCE_EXPECTED:
+foo ;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo #error(EXP_IDENTIFIER) #error(EXP_SEMICOLON)
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(?)
-#AST_EXPECTED:
-foo ;
+#AST_SOURCE_EXPECTED:
+foo
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+. #error:EXP_ID int dummy;
+foo. #error:EXP_ID int dummy;
+#AST_STRUCTURE_EXPECTED:
+InvalidDeclaration(RefModuleQualified(?)) DefVariable(RefPrimitive DefSymbol)
+InvalidDeclaration(RefQualified(* ?)) DefVariable(RefPrimitive DefSymbol)
+#AST_SOURCE_EXPECTED:
+.  int dummy;
+foo.  int dummy;
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of identifiers: ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import#error(EXP_ID);
 import #error(EXP_ID) ;
@@ -77,9 +89,9 @@ align(16                  #error:EXP_CLOSE_PARENS ;
 align( #error:EXP_INTEGER #error:EXP_CLOSE_PARENS int foo;
 align( #error:EXP_INTEGER ) int bar;
 
-foo[ #error:EXP_CLOSE_BRACKET int dummyB;
-//foo[1 dummyB2; TODO
-//foo[int dummyB2; TODO
+foo[ #error:EXP_CLOSE_BRACKET public int dummyB1;
+foo[1 #error:EXP_CLOSE_BRACKET   dummyB2 #error:EXP_ID;
+foo[int #error:EXP_CLOSE_BRACKET dummyB3 #error:EXP_ID;
 
 #AST_SOURCE_EXPECTED:
 align(16) /*;*/ int foo;
@@ -87,7 +99,9 @@ align(16) /*;*/ ;
 align()   /*;*/ int foo;
 align() int bar;
 
-foo[]; int dummyB;
+foo[] public int dummyB1;
+foo[1] dummyB2;
+foo[int] dummyB3;
 
 #AST_STRUCTURE_EXPECTED:
 DeclarationAlign  DefinitionVariable(RefPrimitive DefSymbol)
@@ -95,4 +109,6 @@ DeclarationAlign  DeclarationEmpty
 DeclarationAlign  DefinitionVariable(RefPrimitive DefSymbol)
 DeclarationAlign( DefinitionVariable(RefPrimitive DefSymbol) )
 
-InvalidDeclaration(RefTypeDynArray(RefIdentifier))  DefinitionVariable(RefPrimitive DefSymbol)
+InvalidDeclaration(RefTypeDynArray(RefIdentifier))                ?(DefinitionVariable(RefPrimitive DefSymbol))
+InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))  InvalidDeclaration(RefIdentifier)
+InvalidDeclaration(RefIndexing(RefIdentifier RefPrimitive))       InvalidDeclaration(RefIdentifier)

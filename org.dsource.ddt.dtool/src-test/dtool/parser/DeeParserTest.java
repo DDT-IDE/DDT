@@ -1,16 +1,17 @@
 package dtool.parser;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.replaceRegexFirstOccurrence;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTAssertChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.definitions.Module;
-import dtool.parser.DeeParserSourceBasedTest.NamedNodeElement;
 import dtool.parser.Token.ErrorToken;
 import dtool.tests.CommonTestUtils;
 
@@ -41,6 +42,24 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 		
 		checkSourceRanges(parseSource, result);
+	}
+	
+	public static class NamedNodeElement {
+		public static final String IGNORE_ALL = "*"; 
+		public static final String IGNORE_NAME = "?";
+		
+		public final String name;
+		public final NamedNodeElement[] children;
+		
+		public NamedNodeElement(String name, NamedNodeElement[] children) {
+			this.name = assertNotNull_(name);
+			this.children = children;
+		}
+		
+		@Override
+		public String toString() {
+			return name + (children != null ? ( "("+StringUtil.collToString(children, " ")+")" ) : "");
+		}
 	}
 	
 	public static void checkExpectedStructure(Module module, NamedNodeElement[] expectedStructure) {

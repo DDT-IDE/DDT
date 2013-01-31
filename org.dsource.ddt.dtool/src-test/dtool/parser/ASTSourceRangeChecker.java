@@ -60,6 +60,7 @@ import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
+import dtool.ast.references.RefIndexing;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
@@ -70,8 +71,6 @@ import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
 import dtool.ast.references.TypeDelegate;
 import dtool.ast.references.TypeFunction;
-import dtool.ast.references.TypeMapArray;
-import dtool.ast.references.TypeStaticArray;
 import dtool.ast.references.TypeTypeof;
 
 public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
@@ -450,11 +449,7 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 			return reparseCheck(parseReference(nodeRangeSourceParser), node);
 		}
 		@Override
-		public boolean visit(TypeMapArray node) {
-			return reparseCheck(parseReference(nodeRangeSourceParser), node);
-		}
-		@Override
-		public boolean visit(TypeStaticArray node) {
+		public boolean visit(RefIndexing node) {
 			return reparseCheck(parseReference(nodeRangeSourceParser), node);
 		}
 		

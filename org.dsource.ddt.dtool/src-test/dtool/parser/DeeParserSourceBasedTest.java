@@ -12,7 +12,6 @@ package dtool.parser;
 
 import static dtool.parser.DeeParserTest.runParserTest______________________;
 import static dtool.tests.DToolTestResources.getTestResource;
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -33,6 +32,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.SourceRange;
+import dtool.parser.DeeParserTest.NamedNodeElement;
 import dtool.parser.ParserError.EDeeParserErrors;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
@@ -52,7 +52,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		ArrayList<File> commonHeaderFileList = getDeeModuleList(getTestResource(TESTFILESDIR+"/common"), true);
 		
 		for (File headerFile : commonHeaderFileList) {
-			TemplatedSourceProcessor2 tsp = new TemplatedSourceProcessor2();
+			TemplatedSourceProcessor2 tsp = new TestsTemplateSourceProcessor();
 			tsp.processSource_unchecked("#", readStringFromFileUnchecked(headerFile));
 			commonDefinitions.addGlobalExpansions(tsp.getGlobalExpansions());
 		}
@@ -210,24 +210,6 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		}
 	}
 	
-	public static class NamedNodeElement {
-		public static final String IGNORE_ALL = "*"; 
-		public static final String IGNORE_NAME = "?";
-		
-		public final String name;
-		public final NamedNodeElement[] children;
-		
-		public NamedNodeElement(String name, NamedNodeElement[] children) {
-			this.name = assertNotNull_(name);
-			this.children = children;
-		}
-		
-		@Override
-		public String toString() {
-			return name + (children != null ? ( "("+StringUtil.collToString(children, " ")+")" ) : "");
-		}
-	}
-	
 	protected NamedNodeElement[] processExpectedStructure(String source) {
 		SimpleParser parser = new SimpleParser(source);
 		NamedNodeElement[] namedElements = readNamedElementsList(parser);
@@ -253,6 +235,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 					if(id.isEmpty()) {
 						break;
 					}
+					parser.seekWhiteSpace();
 				}
 				if(parser.tryConsume("(")) {
 					children = readNamedElementsList(parser);

@@ -12,14 +12,14 @@ Foo. #error:EXP_ID int dummy;
 FooBar.Bar. #error:EXP_ID int dummy; // Interaction with primitive reference
 
 #AST_STRUCTURE_EXPECTED:
-InvalidSyntaxElement( RefQualified(RefIdentifier RefIdentifier) )
+InvalidDeclaration( RefQualified(RefIdentifier RefIdentifier) )
 DefVariable(RefPrimitive DefSymbol)
-InvalidSyntaxElement( RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier) )
+InvalidDeclaration( RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier) )
 DefVariable(RefPrimitive DefSymbol)
 
 #AST_SOURCE_EXPECTED:
 Foo.  int dummy;
-FooBar.Bar.  int dummy;
+FooBar.Bar.   int dummy;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

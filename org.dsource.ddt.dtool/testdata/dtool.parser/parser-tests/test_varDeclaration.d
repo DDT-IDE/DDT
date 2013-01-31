@@ -40,7 +40,7 @@ DefVariable(* DefSymbol InitializerExp(?) DefVarFragment(DefSymbol InitializerEx
 
 #AST_SOURCE_EXPECTED:
 
-#@(SP_TYPE_REF) #@(PRX1) ;  #@(BREAK)
+#@(SP_TYPE_REF) #@(PRX1) #?NO_PRX1{,;} #@(BREAK)
 #@(SP_TYPE_REF) #@(PRX1) ;
 
 #@(SP_TYPE_REF) #@(PRX1) fooA ;  #@(BREAK)

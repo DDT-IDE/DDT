@@ -42,6 +42,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.expressions.InitializerExp;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
@@ -49,6 +50,7 @@ import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTypeDynArray;
+import dtool.ast.references.RefIndexing;
 import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
 import dtool.parser.ParserError.EDeeParserErrors;
@@ -289,7 +291,7 @@ public class DeeParser extends AbstractDeeParser {
 			case KW_DOUBLE: case KW_REAL: 
 			case KW_VOID: 
 			case KW_IFLOAT: case KW_IDOUBLE: case KW_IREAL: case KW_CFLOAT: case KW_CDOUBLE: case KW_CREAL: 
-				return parseDeclaration_RefPrimitiveStart(la);
+				return parseDeclaration_RefPrimitiveStart();
 			
 			case DOT: return parseDeclaration_DotStart();
 			
@@ -309,67 +311,141 @@ public class DeeParser extends AbstractDeeParser {
 		}
 	}
 	
-	protected InvalidDeclaration invalidSyntaxDeclaration(Reference ref) {
-		return connect(new InvalidDeclaration(ref, srToCursor(ref.getStartPos())));
-	}
+	/* --------------------  reference parsing  --------------------- */
 	
-	protected ASTNeoNode parseDeclaration_IdStart() {
-		Token id = consumeLookAhead();
+	protected RefIdentifier parseRefIdentifier() {
+		Token id = tryConsumeIdentifier();
 		assertTrue(id.type == DeeTokens.IDENTIFIER);
-		return parseDeclaration_referenceStart(refIdentifier(id));
-	}
-	
-	protected RefIdentifier refIdentifier(Token id) {
 		return new RefIdentifier(idTokenToString(id), sr(id));
 	}
 	
-	protected ASTNeoNode parseDeclaration_RefPrimitiveStart(DeeTokens primitiveType) {
+	protected RefPrimitive parseRefPrimitive(DeeTokens primitiveType) {
 		Token token = consumeLookAhead(primitiveType);
-		RefPrimitive ref = new RefPrimitive(token, sr(token));
-		return parseDeclaration_referenceStart(ref);
+		return new RefPrimitive(token, sr(token));
+	}
+	
+	protected RefModuleQualified parseRefModuleQualified() {
+		int startPos = consumeLookAhead(DeeTokens.DOT).getStartPos();
+		return new RefModuleQualified(parseRefIdentifier(), srToCursor(startPos));
+	}
+	
+	protected static class RefParseResult { 
+		public Reference ref;
+		public boolean balanceBroken = false;
+		
+		public RefParseResult(boolean balanceBroken, Reference ref) {
+			this.ref = ref;
+			this.balanceBroken = balanceBroken;
+		}
+		public RefParseResult(Reference ref) {
+			this(false, ref);
+		}
+	}
+	
+	protected RefParseResult parseReference() {
+		DeeTokens la = lookAhead();
+		
+		switch (la) {
+		case DOT: return parseReference_referenceStart(parseRefModuleQualified());
+		case IDENTIFIER: return parseReference_referenceStart(parseRefIdentifier());
+		
+		case KW_BOOL: 
+		case KW_BYTE: case KW_UBYTE: 
+		case KW_SHORT: case KW_USHORT: case KW_INT: case KW_UINT: case KW_LONG: case KW_ULONG: 
+		case KW_CHAR: case KW_WCHAR: case KW_DCHAR: 
+		case KW_FLOAT: case KW_DOUBLE: case KW_REAL: 
+		case KW_VOID: 
+		case KW_IFLOAT: case KW_IDOUBLE: case KW_IREAL: case KW_CFLOAT: case KW_CDOUBLE: case KW_CREAL: 
+			return parseReference_referenceStart(parseRefPrimitive(la));
+		
+		default:
+		return new RefParseResult(null);
+		}
+	}
+	
+	protected RefParseResult parseReference_referenceStart(Reference ref) {
+		if(tryConsume(DeeTokens.DOT)) {
+			RefIdentifier qualifiedId = parseRefIdentifier();
+			ref = connect(new RefQualified(ref, qualifiedId, srToCursor(ref.getStartPos())));
+			if(qualifiedId.name == null) {
+				return new RefParseResult(true, ref);
+			}
+			return parseReference_referenceStart(ref);
+		} else if(tryConsume(DeeTokens.STAR)) {
+			RefTypePointer pointerRef = connect(new RefTypePointer(ref, srToCursor(ref.getStartPos())));
+			return parseReference_referenceStart(pointerRef);
+		} else if(tryConsume(DeeTokens.OPEN_BRACKET)) {
+			if(tryConsume(DeeTokens.CLOSE_BRACKET)) {
+				return parseReference_referenceStart(
+					connect(new RefTypeDynArray(ref, srToCursor(ref.getStartPos()))));
+			} else {
+				Resolvable resolvable = parseReferenceOrExpression();
+				if(consumeExpectedToken(DeeTokens.CLOSE_BRACKET) == null) {
+					// Note: if resolvable == null then this case should always be entered into
+					if(resolvable == null) {
+						ref = new RefTypeDynArray(ref, srToCursor(ref.getStartPos()));
+					} else {
+						ref = new RefIndexing(ref, resolvable, srToCursor(ref.getStartPos()));
+					}
+					return new RefParseResult(true, connect(ref));
+				}
+				assertNotNull(resolvable);
+				return parseReference_referenceStart(
+					new RefIndexing(ref, resolvable, srToCursor(ref.getStartPos())));
+			}
+		} else {
+			return new RefParseResult(ref);
+		}
+	}
+	
+	public Resolvable parseReferenceOrExpression() {
+		DeeTokens la = lookAhead();
+		if(la == DeeTokens.INTEGER) {
+			return parseExpression();
+		} 
+		return parseReference().ref;
+	}
+	
+	/* ----------------------------------------- */
+	
+	protected ASTNeoNode parseDeclaration_IdStart() {
+		return parseDeclaration_referenceAhead();
+	}
+	
+	protected ASTNeoNode parseDeclaration_RefPrimitiveStart() {
+		return parseDeclaration_referenceAhead();
 	}
 	
 	protected ASTNeoNode parseDeclaration_DotStart() {
-		int startPos = consumeLookAhead(DeeTokens.DOT).getStartPos();
-		Token id = tryConsumeIdentifier();
-		RefModuleQualified ref = new RefModuleQualified(refIdentifier(id), srToCursor(startPos));
-		if(isMissingId(id)) {
-			return new InvalidSyntaxElement(ref, ref.getSourceRange());
-		}
-		return parseDeclaration_referenceStart(ref);
+		return parseDeclaration_referenceAhead();
 	}
 	
-	protected ASTNeoNode parseDeclaration_referenceStart(Reference ref) {
-		DeeTokens la = lookAhead();
-		if(la == DeeTokens.IDENTIFIER) {
-			Token defId = consumeLookAhead();
-			return parseDefinition_Reference_Identifier(ref, defId);
-		} else if(tryConsume(DeeTokens.DOT)) {
+	protected ASTNeoNode parseDeclaration_referenceAhead() {
+		RefParseResult refParse = parseReference();
+		Reference ref = refParse.ref;
+		boolean consumedSemiColon = false;
+		
+		if(!refParse.balanceBroken) {
 			
-			RefIdentifier qualifiedRef = refIdentifier(tryConsumeIdentifier());
-			ref = new RefQualified(ref, qualifiedRef, srToCursor(ref.getStartPos()));
-			if(qualifiedRef.name == null) {
-				return new InvalidSyntaxElement(ref, ref.getSourceRange());
-			}
-			return parseDeclaration_referenceStart(ref);
-		} else if(tryConsume(DeeTokens.STAR)) {
-			RefTypePointer pointerRef = connect(new RefTypePointer(ref, srToCursor(ref.getStartPos())));
-			return parseDeclaration_referenceStart(pointerRef);
-		} else if(tryConsume(DeeTokens.OPEN_BRACKET)) {
-			if(tryConsume(DeeTokens.CLOSE_BRACKET)) {
-				RefTypeDynArray dynArrayRef = new RefTypeDynArray(ref, srToCursor(ref.getStartPos()));
-				return parseDeclaration_referenceStart(dynArrayRef);
-			} else {
-				reportErrorExpectedToken(DeeTokens.CLOSE_BRACKET);
-				ref = connect(new RefTypeDynArray(ref, srToCursor(ref.getStartPos())));
-				return connect(new InvalidDeclaration(ref, srToCursor(ref.getStartPos())));
+			if(ref instanceof RefModuleQualified) {
+				if(((RefModuleQualified) ref).qualifiedName.name == null) {
+					return connect(new InvalidDeclaration(ref, false, srToCursor(ref.getStartPos())));
+				}
 			}
 			
-		} else {
-			reportErrorExpectedToken(DeeTokens.IDENTIFIER);
-			consumeExpectedToken(DeeTokens.SEMICOLON);
-			return connect(new InvalidDeclaration(ref, srToCursor(ref.getStartPos())));
+			if(lookAhead() == DeeTokens.IDENTIFIER) {
+				Token defId = consumeLookAhead();
+				return parseDefinition_Reference_Identifier(ref, defId);
+			}  else {
+				reportErrorExpectedToken(DeeTokens.IDENTIFIER);
+				if(consumeExpectedToken(DeeTokens.SEMICOLON) != null) {
+					consumedSemiColon = true;
+				}
+			}
+			
 		}
+		// Balance is broken
+		return connect(new InvalidDeclaration(ref, consumedSemiColon, srToCursor(ref.getStartPos())));
 	}
 	
 	protected static final Comment[] COMMENT_TODO = null;
@@ -428,7 +504,7 @@ public class DeeParser extends AbstractDeeParser {
 	
 	/* ----------------------------------------- */
 	
-	public class AttribBodyParseRule {
+	protected class AttribBodyParseRule {
 		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
 		public NodeList2 declList;
 		
@@ -453,7 +529,7 @@ public class DeeParser extends AbstractDeeParser {
 		}
 	}
 	
-	public NodeList2 parseDeclList(DeeTokens bodyListTerminator) {
+	protected NodeList2 parseDeclList(DeeTokens bodyListTerminator) {
 		int nodeListStart = getLastTokenEndPos();
 		
 		ArrayView<ASTNeoNode> declDefs = parseDeclDefs(bodyListTerminator);

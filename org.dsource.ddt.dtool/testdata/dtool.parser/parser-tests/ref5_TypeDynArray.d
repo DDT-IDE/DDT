@@ -15,21 +15,21 @@ InvalidDeclaration(RefTypeDynArray(RefIdentifier))
 InvalidDeclaration(RefTypeDynArray(RefIdentifier))
 #AST_SOURCE_EXPECTED:
 foo[] ;
-foo2[] ;
+foo2[] 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo[ #error:EXP_CLOSE_BRACKET int dummy ;
+foo[ #error:EXP_CLOSE_BRACKET public int dummy ;
 foo2[ #error:EXP_CLOSE_BRACKET ;
 foo3[ #error:EXP_CLOSE_BRACKET 
 
 #AST_STRUCTURE_EXPECTED:
-InvalidDeclaration(RefTypeDynArray(RefIdentifier)) DefinitionVariable(RefPrimitive DefSymbol)
+InvalidDeclaration(RefTypeDynArray(RefIdentifier)) DeclarationProtection(DefinitionVariable(RefPrimitive DefSymbol))
 InvalidDeclaration(RefTypeDynArray(RefIdentifier))  DeclarationEmpty
 InvalidDeclaration(RefTypeDynArray(RefIdentifier))  
 #AST_SOURCE_EXPECTED:
-foo[] ; int dummy;
-foo2[] ; ;
-foo3[] ;
+foo[]  public int dummy;
+foo2[]  ;
+foo3[] 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

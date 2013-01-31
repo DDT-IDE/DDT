@@ -256,7 +256,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		if (rootReference == null) {
 			refQualified = new RefModuleQualified(singleRef, null);
 		} else {
-			refQualified = new RefQualified(rootReference, singleRef);
+			refQualified = new RefQualified(rootReference, singleRef, null);
 			assertTrue(rootReference.hasNoSourceRangeInfo() == false);
 			assertTrue(rootReference.getStartPos() == startPos);
 		}
