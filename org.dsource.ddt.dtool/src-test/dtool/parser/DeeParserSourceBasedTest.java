@@ -77,10 +77,10 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	public void runSourceBasedTests() throws Exception { runSourceBasedTests$(); }
 	public void runSourceBasedTests$() throws Exception {
 		AnnotatedSource[] sourceBasedTests = getSourceBasedTests(file, commonDefinitions);
-		for (AnnotatedSource testString : sourceBasedTests) {
-			testsLogger.println(">> ----------- Annotated Source test: ----------- <<");
-			testsLogger.println(testString.source);
-			runSourceBasedTest(testString);
+		for (AnnotatedSource testCase : sourceBasedTests) {
+			testsLogger.println(">> ----------- Parser source test: ----------- <<");
+			testsLogger.println(testCase.source);
+			runSourceBasedTest(testCase);
 		}
 	}
 	
@@ -110,7 +110,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			} else if(mde.name.equals("parser") && mde.value.equals("DontCheckSourceEquality")){
 				expectedGenSource = null;
 			} else {
-				// TODO remove TODO flag
+				// TODO remove todo flag
 				if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "TODO")))
 					assertFail("Unknown metadata");
 			}
@@ -130,11 +130,11 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		
 		 if(errorType.equals("ITC")) {
 			return new ParserError(EDeeParserErrors.INVALID_TOKEN_CHARACTERS, errorRange, mde.associatedSource, null);
-		} else if(errorType.equals("BT")) {
+		} else if(errorType.equals("MT")) {
 			// TODO errorParam
 			return new ParserError(EDeeParserErrors.MALFORMED_TOKEN, errorRange, null, null);
 		} else if(errorType.equals("EXP")) {
-			String expectedTokenStr = DeeLexerTest.transformTokenNameAliases(errorParam);
+			String expectedTokenStr = DeeLexerSourceBasedTest.transformTokenNameAliases(errorParam);
 			return createErrorToken(EDeeParserErrors.EXPECTED_TOKEN, mde, deeLexer, true, expectedTokenStr);
 		} else if(errorType.equals("EXPRULE")) {
 			errorParam = getExpectedRuleName(errorParam);

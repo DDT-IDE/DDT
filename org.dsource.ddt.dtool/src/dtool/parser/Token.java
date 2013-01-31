@@ -1,6 +1,7 @@
 package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.SourceRange;
 
 public class Token {
@@ -41,13 +42,17 @@ public class Token {
 	
 	public static class ErrorToken extends Token {
 		
-		protected final String errorMessage;
+		protected final LexerErrorTypes error;
 		protected final DeeTokens originalToken;
 		
-		public ErrorToken(String value, int start, DeeTokens originalToken, String errorMessage) {
+		public ErrorToken(String value, int start, DeeTokens originalToken, LexerErrorTypes error) {
 			super(DeeTokens.ERROR, value, start);
 			this.originalToken = originalToken;
-			this.errorMessage = errorMessage;
+			this.error = error;
+			if(originalToken == DeeTokens.ERROR || error == LexerErrorTypes.INVALID_CHARACTERS) {
+				assertTrue(originalToken == DeeTokens.ERROR);
+				assertTrue(error == LexerErrorTypes.INVALID_CHARACTERS);
+			}
 		}
 	}
 	

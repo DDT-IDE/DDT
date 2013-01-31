@@ -11,10 +11,14 @@
 package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +49,8 @@ public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 	@Test
 	public void runSourceBasedTests() throws IOException {
 		for (AnnotatedSource testCase : getSourceBasedTests(file, null)) {
+			testsLogger.println(">> ----------- Lexer source test: ----------- <<");
+			testsLogger.println(testCase.source);
 			MetadataEntry lexerTestMde = assertNotNull_(testCase.findMetadata("LEXERTEST"));
 			runLexerSourceBasedTest(testCase.source, assertNotNull_(lexerTestMde.associatedSource));
 		}
@@ -55,10 +61,80 @@ public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 		
 		TokenChecker[] expectedTokens = new TokenChecker[expectedTokensStr.length];
 		for (int i = 0; i < expectedTokensStr.length; i++) {
-			expectedTokens[i] = TokenChecker.create(expectedTokensStr[i].trim());
+			expectedTokens[i] = createTokenChecker(expectedTokensStr[i].trim());
 		}
 		
 		DeeLexerTest.testLexerTokenizing(testSource, expectedTokens);
+	}
+	
+	public static TokenChecker createTokenChecker(String expectedTokenStr) {
+		try {
+			LexerErrorTypes expectedError = null;
+			
+			int errorMark = expectedTokenStr.indexOf('!');
+			if(errorMark != -1) {
+				expectedError = parseExpectedError(expectedTokenStr.substring(errorMark+1));
+				expectedTokenStr = expectedTokenStr.substring(0, errorMark);
+			}
+			
+			if(expectedTokenStr.equals("*")) {
+				return new TokenChecker(null, expectedError);
+			} else {
+				DeeTokens expectedToken = DeeTokens.valueOf(transformTokenNameAliases(expectedTokenStr));
+				return new TokenChecker(expectedToken, expectedError);
+			}
+		} catch(IllegalArgumentException e) {
+			throw assertFail();
+		}
+	}
+	
+	public static String transformTokenNameAliases(String expectedTokenName) {
+		if(expectedTokenName.equals("ID")) {
+			expectedTokenName = DeeTokens.IDENTIFIER.name();
+		} else if(expectedTokenName.equals("WS") || expectedTokenName.equals("_")) {
+			expectedTokenName = DeeTokens.WHITESPACE.name();
+		}
+		return expectedTokenName;
+	}
+	
+	protected static final Map<String, LexerErrorTypes> strToErrorType = new HashMap<String, LexerErrorTypes>();
+	
+	static {
+		for (LexerErrorTypes lexerErrorType : LexerErrorTypes.values()) {
+			switch (lexerErrorType) {
+			case INVALID_CHARACTERS: strToErrorType.put("xC", lexerErrorType); break;
+			
+			case COMMENT_NOT_TERMINATED: strToErrorType.put("Cx", lexerErrorType); break;
+			case COMMENTNESTED_NOT_TERMINATED: strToErrorType.put("CNx", lexerErrorType); break;
+			
+			case STRING_NOT_TERMINATED__REACHED_EOF: strToErrorType.put("Sx", lexerErrorType); break;
+			case STRING_DELIM_NO_DELIMETER: strToErrorType.put("SDxD", lexerErrorType); break;
+			case STRING_DELIM_NOT_PROPERLY_TERMINATED: strToErrorType.put("SDx", lexerErrorType); break;
+			case STRING_DELIM_ID_NOT_PROPERLY_FORMED: strToErrorType.put("SDxID", lexerErrorType); break;
+			
+			case CHAR_LITERAL_NOT_TERMINATED__REACHED_EOF: strToErrorType.put("CHxF", lexerErrorType); break;
+			case CHAR_LITERAL_NOT_TERMINATED__REACHED_EOL: strToErrorType.put("CHxL", lexerErrorType); break;
+			case CHAR_LITERAL_EMPTY: strToErrorType.put("CHx0", lexerErrorType); break;
+			
+			case INT_LITERAL_BINARY__INVALID_DIGITS: strToErrorType.put("IBx", lexerErrorType); break;
+			case INT_LITERAL_OCTAL__INVALID_DIGITS: strToErrorType.put("IOx", lexerErrorType); break;
+			case INT_LITERAL__HAS_NO_DIGITS: strToErrorType.put("Ix", lexerErrorType); break;
+			
+			case FLOAT_LITERAL__EXP_HAS_NO_DIGITS: strToErrorType.put("FxD", lexerErrorType); break;
+			case FLOAT_LITERAL__HEX_HAS_NO_EXP: strToErrorType.put("FxE", lexerErrorType); break;
+			
+			case SPECIAL_TOKEN_LINE_BAD_FORMAT: strToErrorType.put("STLx", lexerErrorType); break;
+			case SPECIAL_TOKEN_INVALID: strToErrorType.put("STx", lexerErrorType); break;
+			
+			default:
+				break;
+			}
+		}
+	}
+	
+	public static LexerErrorTypes parseExpectedError(String string) {
+		assertTrue(!string.isEmpty());
+		return assertNotNull_(strToErrorType.get(string));
 	}
 	
 }

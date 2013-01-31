@@ -1,6 +1,5 @@
 package dtool.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
@@ -85,49 +84,29 @@ public class DeeLexerTest extends CommonTestUtils {
 	
 	public static class TokenChecker {
 		
-		public static TokenChecker create(String expectedTokenStr) {
-			try {
-				boolean isError = false;
-				
-				int errorMark = expectedTokenStr.indexOf('!');
-				if(errorMark != -1) {
-					assertTrue(errorMark+1 == expectedTokenStr.length());
-					expectedTokenStr = expectedTokenStr.substring(0, errorMark);
-					isError = true;
-				}
-				
-				if(expectedTokenStr.equals("*")) {
-					return new TokenChecker(null, isError);
-				} else {
-					DeeTokens expectedToken = DeeTokens.valueOf(transformTokenNameAliases(expectedTokenStr));
-					return new TokenChecker(expectedToken, isError);
-				}
-			} catch(IllegalArgumentException e) {
-				throw assertFail();
-			}
-		}
-		
 		private DeeTokens expectedTokenCode;
-		private boolean isError;
+		private LexerErrorTypes expectedError;
 		
 		public TokenChecker(DeeTokens deeToken) {
-			this(deeToken, false);
+			this(deeToken, null);
 		}
 		
-		public TokenChecker(DeeTokens deeToken, boolean isError) {
+		public TokenChecker(DeeTokens deeToken, LexerErrorTypes error) {
 			this.expectedTokenCode = deeToken;
-			this.isError = isError;
+			this.expectedError = error;
 		}
 		
 		public Token checkToken(DeeLexer deeLexer, int readOffset) {
 			Token token = deeLexer.next();
 			DeeTokens tokenCode = token.getTokenType();
 			
-			if(isError) {
+			if(expectedError != null) {
 				assertTrue(token.getTokenType() == DeeTokens.ERROR);
 				if(expectedTokenCode != null) {
-					DeeTokens originalToken = ((ErrorToken)token).originalToken;
+					ErrorToken errorToken = (ErrorToken)token;
+					DeeTokens originalToken = errorToken.originalToken;
 					assertTrue(originalToken == expectedTokenCode);
+					assertTrue(errorToken.error == expectedError);
 				}
 			} else if(token instanceof ErrorToken){
 				assertTrue(tokenCode == DeeTokens.ERROR);
@@ -152,15 +131,6 @@ public class DeeLexerTest extends CommonTestUtils {
 			}
 			return token;
 		}
-	}
-	
-	public static String transformTokenNameAliases(String expectedTokenName) {
-		if(expectedTokenName.equals("ID")) {
-			expectedTokenName = DeeTokens.IDENTIFIER.name();
-		} else if(expectedTokenName.equals("WS") || expectedTokenName.equals("_")) {
-			expectedTokenName = DeeTokens.WHITESPACE.name();
-		}
-		return expectedTokenName;
 	}
 	
 }

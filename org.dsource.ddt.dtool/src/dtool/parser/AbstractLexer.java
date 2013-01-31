@@ -75,9 +75,9 @@ public abstract class AbstractLexer {
 		return createToken(tokenCode);
 	}
 	
-	protected final ErrorToken createErrorToken(DeeTokens originalToken, String message) {
+	protected final ErrorToken createErrorToken(DeeTokens originalToken, LexerErrorTypes errorType) {
 		String value = source.subSequence(tokenStartPos, pos).toString();
-		return new Token.ErrorToken(value, tokenStartPos, originalToken, message);
+		return new Token.ErrorToken(value, tokenStartPos, originalToken, errorType);
 	}
 	
 	/* ------------------------ Helpers ------------------------ */

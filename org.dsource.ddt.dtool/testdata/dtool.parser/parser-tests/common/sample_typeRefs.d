@@ -18,6 +18,12 @@
 	.Bar.foo[]*[123][][1]●
 》
 
+ 	《const●immutable●shared●inout》( )●
+ 	
+ 	
+ 	@(TYPE_REF_SAMPLES)[123]● // TODO assign expressions
+ 	@(TYPE_REF_SAMPLES)[2..12]●
+
 
 #@SPSE_TYPE_REF!《►
 	RefPrimitive●

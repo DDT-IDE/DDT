@@ -17,9 +17,9 @@ SCRIPT_LINE_INTRO, ID
  #!/usr/bin
 blah
 ◙LEXERTEST:
-WS, SPECIAL_TOKEN_LINE!,
+WS, SPECIAL_TOKEN_LINE!STx,
 ID,EOL
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ →◙
 #◙LEXERTEST:
-SPECIAL_TOKEN_LINE!,
+SPECIAL_TOKEN_LINE!STx,

@@ -78,7 +78,7 @@ public class AbstractDeeParser {
 					continue; // Fetch another token
 				} else {
 					// TODO tests
-					addError(EDeeParserErrors.MALFORMED_TOKEN, sr(token), token.tokenSource, errorToken.errorMessage);
+					addError(EDeeParserErrors.MALFORMED_TOKEN, sr(token), token.tokenSource, errorToken.error);
 					tokenType = errorToken.originalToken;
 				}
 			}

@@ -252,7 +252,7 @@ public class DeeLexer extends AbstractLexer {
 			if(getCharCategory(lookAhead()) == CharRuleCategory.BAD_TOKEN) {
 				continue;
 			} else {
-				return createErrorToken(DeeTokens.ERROR, DeeParserMessages.INVALID_TOKEN);
+				return createErrorToken(DeeTokens.ERROR, LexerErrorTypes.INVALID_CHARACTERS);
 			}
 		}
 	}
@@ -349,7 +349,7 @@ public class DeeLexer extends AbstractLexer {
 			if(result == 0) {
 				return createToken(DeeTokens.COMMENT_MULTI);
 			} else {
-				return createErrorToken(DeeTokens.COMMENT_MULTI, DeeParserMessages.COMMENT_NOT_TERMINATED);
+				return createErrorToken(DeeTokens.COMMENT_MULTI, LexerErrorTypes.COMMENT_NOT_TERMINATED);
 			}
 		} else if(lookAhead() == '+') {
 			pos++;
@@ -363,7 +363,7 @@ public class DeeLexer extends AbstractLexer {
 					nestingLevel++;
 				} else {
 					assertTrue(result == -1);
-					return createErrorToken(DeeTokens.COMMENT_NESTED, DeeParserMessages.COMMENTNESTED_NOT_TERMINATED);
+					return createErrorToken(DeeTokens.COMMENT_NESTED, LexerErrorTypes.COMMENTNESTED_NOT_TERMINATED);
 				}
 			} while (nestingLevel > 0);
 			
@@ -414,7 +414,7 @@ public class DeeLexer extends AbstractLexer {
 			return createToken(stringToken);
 		} else {
 			assertTrue(result == -1);
-			return createErrorToken(stringToken, DeeParserMessages.STRING_NOT_TERMINATED__REACHED_EOF);
+			return createErrorToken(stringToken, LexerErrorTypes.STRING_NOT_TERMINATED__REACHED_EOF);
 		}
 	}
 	
@@ -451,7 +451,7 @@ public class DeeLexer extends AbstractLexer {
 				return createToken(DeeTokens.STRING_DQ);
 			} else if(ch == EOF) {
 				// TODO , maybe recover using EOL?
-				return createErrorToken(DeeTokens.STRING_DQ, DeeParserMessages.STRING_NOT_TERMINATED__REACHED_EOF);
+				return createErrorToken(DeeTokens.STRING_DQ, LexerErrorTypes.STRING_NOT_TERMINATED__REACHED_EOF);
 			} else if(ch == '\\') {
 				if (lookAhead(1) == '"' || lookAhead(1) == '\\') {
 					pos += 2;
@@ -494,7 +494,7 @@ public class DeeLexer extends AbstractLexer {
 		CharRuleCategory charCategory = getCharCategory(ch); 
 		
 		switch(charCategory) {
-		case EOF: return createErrorToken(DeeTokens.STRING_DELIM, DeeParserMessages.STRING_DELIM_NO_DELIMETER);
+		case EOF: return createErrorToken(DeeTokens.STRING_DELIM, LexerErrorTypes.STRING_DELIM_NO_DELIMETER);
 		case OPEN_PARENS: return matchSimpleDelimString('(',')');
 		case OPEN_BRACKET: return matchSimpleDelimString('[',']');
 		case OPEN_BRACE: return matchSimpleDelimString('{','}'); 
@@ -524,7 +524,7 @@ public class DeeLexer extends AbstractLexer {
 				nestingLevel++;
 			} else {
 				assertTrue(result == -1);
-				return createErrorToken(DeeTokens.STRING_DELIM, DeeParserMessages.STRING_NOT_TERMINATED__REACHED_EOF);
+				return createErrorToken(DeeTokens.STRING_DELIM, LexerErrorTypes.STRING_NOT_TERMINATED__REACHED_EOF);
 			}
 		} while (nestingLevel > 0);
 		
@@ -533,7 +533,7 @@ public class DeeLexer extends AbstractLexer {
 			return createToken(DeeTokens.STRING_DELIM);
 		} else {
 			seekTo('"');
-			return createErrorToken(DeeTokens.STRING_DELIM, DeeParserMessages.STRING_DELIM_NOT_PROPERLY_TERMINATED);
+			return createErrorToken(DeeTokens.STRING_DELIM, LexerErrorTypes.STRING_DELIM_NOT_PROPERLY_TERMINATED);
 		}
 	}
 	
@@ -545,12 +545,12 @@ public class DeeLexer extends AbstractLexer {
 		
 		if(getCharCategory(lookAhead()) != CharRuleCategory.EOL) {
 			seekHereDocEndDelim(hereDocId);
-			return createErrorToken(DeeTokens.STRING_DELIM, DeeParserMessages.STRING_DELIM_ID_NOT_PROPERLY_FORMED);
+			return createErrorToken(DeeTokens.STRING_DELIM, LexerErrorTypes.STRING_DELIM_ID_NOT_PROPERLY_FORMED);
 		}
 		
 		int result = seekHereDocEndDelim(hereDocId);
 		if(result == -1) {
-			return createErrorToken(DeeTokens.STRING_DELIM, DeeParserMessages.STRING_NOT_TERMINATED__REACHED_EOF);
+			return createErrorToken(DeeTokens.STRING_DELIM, LexerErrorTypes.STRING_NOT_TERMINATED__REACHED_EOF);
 		}
 		assertTrue(result == 0);
 		return createToken(DeeTokens.STRING_DELIM);
@@ -590,8 +590,7 @@ public class DeeLexer extends AbstractLexer {
 				nestingLevel--;
 			} else if (token.getTokenType() == DeeTokens.EOF) {
 				tokenStartPos = tokenStringStartPos;
-				return createErrorToken(DeeTokens.STRING_TOKENS, 
-					DeeParserMessages.STRING_NOT_TERMINATED__REACHED_EOF);
+				return createErrorToken(DeeTokens.STRING_TOKENS, LexerErrorTypes.STRING_NOT_TERMINATED__REACHED_EOF);
 			}
 		} while(nestingLevel > 0);
 		
@@ -609,17 +608,17 @@ public class DeeLexer extends AbstractLexer {
 			if(charCategory == CharRuleCategory.SINGLE_QUOTES) {
 				pos++;
 				if(pos == tokenStartPos + 2) {
-					return createErrorToken(DeeTokens.CHAR_LITERAL, DeeParserMessages.CHAR_LITERAL_EMPTY);
+					return createErrorToken(DeeTokens.CHAR_LITERAL, LexerErrorTypes.CHAR_LITERAL_EMPTY);
 				}
 				
 				return createToken(DeeTokens.CHAR_LITERAL);
 			} else if (charCategory == CharRuleCategory.EOF) {
 				return createErrorToken(DeeTokens.CHAR_LITERAL, 
-					DeeParserMessages.CHAR_LITERAL_NOT_TERMINATED__REACHED_EOF);
+					LexerErrorTypes.CHAR_LITERAL_NOT_TERMINATED__REACHED_EOF);
 			} else if (charCategory == CharRuleCategory.EOL) {
 				seekToNewline();
 				return createErrorToken(DeeTokens.CHAR_LITERAL, 
-					DeeParserMessages.CHAR_LITERAL_NOT_TERMINATED__REACHED_EOL);
+					LexerErrorTypes.CHAR_LITERAL_NOT_TERMINATED__REACHED_EOL);
 			} else if (charCategory == CharRuleCategory.BACKSLASH) {
 				if (lookAhead(1) == '\'' || lookAhead(1) == '\\') {
 					pos += 2;
@@ -718,14 +717,15 @@ public class DeeLexer extends AbstractLexer {
 		throw assertUnreachable();
 	}
 	
-	protected final Token createIntegerToken(DeeTokens deeToken, boolean invalidDigitFound, boolean hasAtLeastOneDigit) {
+	protected final Token createIntegerToken(DeeTokens deeToken, boolean invalidDigitFound, 
+		boolean hasAtLeastOneDigit) {
 		if(!hasAtLeastOneDigit) {
-			return createErrorToken(deeToken, DeeParserMessages.INT_LITERAL__HAS_NO_DIGITS);
+			return createErrorToken(deeToken, LexerErrorTypes.INT_LITERAL__HAS_NO_DIGITS);
 		}
 		if(invalidDigitFound) {
 			return createErrorToken(deeToken, deeToken == DeeTokens.INTEGER_BINARY ? 
-				DeeParserMessages.INT_LITERAL_BINARY__INVALID_DIGITS :
-				DeeParserMessages.INT_LITERAL_OCTAL__INVALID_DIGITS
+				LexerErrorTypes.INT_LITERAL_BINARY__INVALID_DIGITS :
+				LexerErrorTypes.INT_LITERAL_OCTAL__INVALID_DIGITS
 				);
 		}
 		return createToken(deeToken);
@@ -806,16 +806,16 @@ public class DeeLexer extends AbstractLexer {
 		
 		if(isHex) {
 			if(hasExponent == false) {
-				return createErrorToken(DeeTokens.FLOAT_HEX, DeeParserMessages.FLOAT_LITERAL__HEX_HAS_NO_EXP);
+				return createErrorToken(DeeTokens.FLOAT_HEX, LexerErrorTypes.FLOAT_LITERAL__HEX_HAS_NO_EXP);
 			}
 			if(!exponentHasDigits) {
-				return createErrorToken(DeeTokens.FLOAT_HEX, DeeParserMessages.FLOAT_LITERAL__EXP_HAS_NO_DIGITS);
+				return createErrorToken(DeeTokens.FLOAT_HEX, LexerErrorTypes.FLOAT_LITERAL__EXP_HAS_NO_DIGITS);
 			} else {
 				return createToken(DeeTokens.FLOAT_HEX);
 			}
 		} else {
 			if(!exponentHasDigits) {
-				return createErrorToken(DeeTokens.FLOAT, DeeParserMessages.FLOAT_LITERAL__EXP_HAS_NO_DIGITS);
+				return createErrorToken(DeeTokens.FLOAT, LexerErrorTypes.FLOAT_LITERAL__EXP_HAS_NO_DIGITS);
 			} else {
 				return createToken(DeeTokens.FLOAT);
 			}
@@ -931,7 +931,7 @@ public class DeeLexer extends AbstractLexer {
 			return matchSpecialTokenLine();
 		}
 		seekToNewline();
-		return createErrorToken(DeeTokens.SPECIAL_TOKEN_LINE, DeeParserMessages.SPECIAL_TOKEN_INVALID);
+		return createErrorToken(DeeTokens.SPECIAL_TOKEN_LINE, LexerErrorTypes.SPECIAL_TOKEN_INVALID);
 	}
 	
 	protected static final String[] SEEKUNTIL_DOUBLEQUOTES_OR_NL = { "\"", "\r\n", "\r", "\n", };
@@ -944,7 +944,7 @@ public class DeeLexer extends AbstractLexer {
 		}
 		if(consumeRuleCategorySequence(CharRuleCategory.DIGIT) == 0) {
 			seekToNewline();
-			return createErrorToken(DeeTokens.SPECIAL_TOKEN_LINE, DeeParserMessages.SPECIAL_TOKEN_LINE_BAD_FORMAT); 
+			return createErrorToken(DeeTokens.SPECIAL_TOKEN_LINE, LexerErrorTypes.SPECIAL_TOKEN_LINE_BAD_FORMAT); 
 		}
 		if(consumeRuleCategorySequence(CharRuleCategory.WHITESPACE) == 0) {
 			// It's ok
@@ -955,7 +955,7 @@ public class DeeLexer extends AbstractLexer {
 		}
 		
 		if(seekTo(SEEKUNTIL_DOUBLEQUOTES_OR_NL) != 0) {
-			return createErrorToken(DeeTokens.SPECIAL_TOKEN_LINE, DeeParserMessages.SPECIAL_TOKEN_LINE_BAD_FORMAT); 
+			return createErrorToken(DeeTokens.SPECIAL_TOKEN_LINE, LexerErrorTypes.SPECIAL_TOKEN_LINE_BAD_FORMAT); 
 		}
 		
 		return matchSpecialTokenLine_FromLineEnd();
@@ -964,7 +964,7 @@ public class DeeLexer extends AbstractLexer {
 	protected final Token matchSpecialTokenLine_FromLineEnd() {
 		if(readNewlineOrEOF() == -1) {
 			seekToNewline(); // BM: This is not according to DMD I think.
-			return createErrorToken(DeeTokens.SPECIAL_TOKEN_LINE, DeeParserMessages.SPECIAL_TOKEN_LINE_BAD_FORMAT); 
+			return createErrorToken(DeeTokens.SPECIAL_TOKEN_LINE, LexerErrorTypes.SPECIAL_TOKEN_LINE_BAD_FORMAT); 
 		}
 		
 		return createToken(DeeTokens.SPECIAL_TOKEN_LINE);
