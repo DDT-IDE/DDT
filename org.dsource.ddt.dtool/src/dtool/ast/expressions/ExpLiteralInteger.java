@@ -1,18 +1,18 @@
 package dtool.ast.expressions;
 
-import java.math.BigInteger;
-
+import static dtool.util.NewUtils.assertNotNull_;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
+import dtool.parser.Token;
 
 public class ExpLiteralInteger extends Expression {
 	
-	public final BigInteger num;
+	public final Token num;
 	
-	public ExpLiteralInteger(BigInteger value, SourceRange sourceRange) {
+	public ExpLiteralInteger(Token num, SourceRange sourceRange) {
+		this.num = assertNotNull_(num);
 		initSourceRange(sourceRange);
-		this.num = value;
 	}
 	
 	@Override
@@ -23,11 +23,7 @@ public class ExpLiteralInteger extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		if(num == null) {
-			cp.append("__<SPECIAL>__"); // TODO remove this
-		} else {
-			cp.append(num.toString());
-		}
+		cp.append(num);
 	}
 	
 }

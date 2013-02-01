@@ -86,6 +86,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	public void runSourceBasedTest(AnnotatedSource testSource) {
 		String parseSource = testSource.source;
+		String parseRule = null;
 		String expectedGenSource = parseSource;
 		NamedNodeElement[] expectedStructure = null;
 		boolean allowAnyErrors = false;
@@ -109,7 +110,9 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				allowAnyErrors = true;
 			} else if(mde.name.equals("parser") && mde.value.equals("DontCheckSourceEquality")){
 				expectedGenSource = null;
-			} else {
+			} else if(mde.name.equals("PARSE")){
+				parseRule = mde.value;
+			} else{
 				// TODO remove todo flag
 				if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "TODO")))
 					assertFail("Unknown metadata");
@@ -117,7 +120,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		}
 		
 		runParserTest______________________(
-			parseSource, expectedGenSource, expectedStructure, expectedErrors, allowAnyErrors);
+			parseSource, parseRule, expectedGenSource, expectedStructure, expectedErrors, allowAnyErrors);
 	}
 	
 	public ParserError decodeError(String parseSource, MetadataEntry mde) {

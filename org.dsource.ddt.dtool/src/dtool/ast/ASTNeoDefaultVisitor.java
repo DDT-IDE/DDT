@@ -41,8 +41,15 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpArrayLength;
+import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
+import dtool.ast.expressions.ExpLiteralString;
+import dtool.ast.expressions.ExpNull;
+import dtool.ast.expressions.ExpSuper;
+import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
@@ -190,6 +197,26 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 	@Override public boolean visit(TypeFunction elem) { return true; }
 	@Override public boolean visit(RefIndexing elem) { return true; }
 	
+	/* ---------------------------------- */
+	@Override public boolean visit(ExpThis elem) { return true; }
+	@Override public boolean visit(ExpSuper elem) { return true; }
+	@Override public boolean visit(ExpNull elem) { return true; }
+	@Override public boolean visit(ExpArrayLength elem) { return true; }
+	@Override public boolean visit(ExpLiteralBool elem) { return true; }
+	@Override public boolean visit(ExpLiteralInteger elem) { return true; }
+	@Override public boolean visit(ExpLiteralString elem) { return true; }
+	
+	@Override
+	public boolean visit(ExpLiteralFunc elem) {
+		return true;
+	}
+	
+	@Override
+	public boolean visit(ExpLiteralNewAnonClass elem) {
+		return true;
+	}
+
+	/* ---------------------------------- */
 	@Override
 	public boolean visit(TypeTypeof elem) {
 		return true;
@@ -215,14 +242,8 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 		return true;
 	}
 	
-	@Override
-	public boolean visit(ExpLiteralFunc elem) {
-		return true;
-	}
-	@Override
-	public boolean visit(ExpLiteralNewAnonClass elem) {
-		return true;
-	}
+	
+	
 
 	
 }

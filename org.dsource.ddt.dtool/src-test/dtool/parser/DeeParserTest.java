@@ -2,6 +2,7 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.replaceRegexFirstOccurrence;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -17,26 +18,38 @@ import dtool.tests.CommonTestUtils;
 
 
 public class DeeParserTest extends CommonTestUtils {
+
+	public static DeeParserResult parse(String source, String parseRule) {
+		DeeParser deeParser = new DeeParser(source);
+		if(parseRule == null) {
+			return new DeeParserResult(deeParser.parseModule(), deeParser.errors);
+		} else if(parseRule.equals("EXPRESSION")){
+			return new DeeParserResult(deeParser.parseExpression(), deeParser.errors);
+		} else {
+			throw assertFail();
+		}
+	}
 	
-	public static void runParserTest______________________(String parseSource, String expectedGenSource, 
+	public static void runParserTest______________________(
+		String parseSource, String parseRule, String expectedGenSource, 
 		NamedNodeElement[] expectedStructure, ArrayList<ParserError> expectedErrors, boolean allowAnyErrors) {
 		
-		DeeParserResult result = DeeParser.parse(parseSource);
+		DeeParserResult result = parse(parseSource, parseRule);
 		
-		Module module = result.module;
-		assertNotNull(module);
+		ASTNeoNode mainNode = result.node;
+		assertNotNull(mainNode);
 		
 		if(expectedStructure != null) {
-			checkExpectedStructure(module, expectedStructure);
+			checkExpectedStructure(mainNode, expectedStructure);
 		}
 		
 		if(expectedGenSource != null) {
-			checkSourceEquality(module, expectedGenSource);
+			checkSourceEquality(mainNode, expectedGenSource);
 		}
 		
 		if(result.errors.size() == 0) {
 			assertTrue(expectedErrors.size() == 0);
-			checkSourceEquality(module, parseSource);
+			checkSourceEquality(mainNode, parseSource);
 		} else if(allowAnyErrors == false) {
 			checkParserErrors(result.errors, expectedErrors);
 		}
@@ -62,9 +75,15 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 	}
 	
-	public static void checkExpectedStructure(Module module, NamedNodeElement[] expectedStructure) {
-		ASTNeoNode[] children = module.getChildren();
-		checkExpectedStructure(children, module, expectedStructure, true);
+	public static void checkExpectedStructure(ASTNeoNode parent, NamedNodeElement[] expectedStructure) {
+		ASTNeoNode[] children;
+		if(parent instanceof Module) {
+			children = parent.getChildren();
+		} else {
+			children = array(parent);
+			parent = null;
+		}
+		checkExpectedStructure(children, parent, expectedStructure, true);
 	}
 	
 	public static void checkExpectedStructure(ASTNeoNode[] children, ASTNeoNode parent, 
@@ -161,12 +180,12 @@ public class DeeParserTest extends CommonTestUtils {
 	}
 	
 	public static void checkSourceRanges(String parseSource, DeeParserResult result) {
-		Module module = result.module;
+		ASTNeoNode node = result.node;
 		
 		// Check of source ranges
-		module.accept(new ASTSourceRangeChecker(parseSource, result.errors));
+		node.accept(new ASTSourceRangeChecker(parseSource, result.errors));
 		// Next one should not fail if previous one passed.
-		ASTAssertChecker.checkConsistency(module);
+		ASTAssertChecker.checkConsistency(node);
 	}
 	
 }

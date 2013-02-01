@@ -11,6 +11,7 @@
 package dtool.parser;
 
 
+import static dtool.tests.DToolTestResources.resourceFileToString;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.io.File;
@@ -18,7 +19,6 @@ import java.io.File;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.TemplatedSourceProcessor2;
 import dtool.tests.DToolBaseTest;
-import dtool.tests.DToolTestResources;
 
 public class DeeSourceBasedTest extends DToolBaseTest {
 	
@@ -34,9 +34,9 @@ public class DeeSourceBasedTest extends DToolBaseTest {
 		if(commonDefinitions != null) {
 			tsp.addGlobalExpansions(commonDefinitions.getGlobalExpansions());
 		}
+		testsLogger.print("===>>> " + getClass().getSimpleName() + " on file: " + resourceFileToString(file));
 		AnnotatedSource[] sourceBasedTests = tsp.processSource_unchecked("#", readStringFromFileUnchecked(file));
-		testsLogger.println("===>>> " + getClass().getSimpleName() + " on file: " 
-			+ DToolTestResources.resourceFileToString(file) + " ("+sourceBasedTests.length+") <<<===");
+		testsLogger.println(" ("+sourceBasedTests.length+") <<<===");
 		return sourceBasedTests;
 	}
 	

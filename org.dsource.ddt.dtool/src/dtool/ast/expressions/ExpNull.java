@@ -1,11 +1,12 @@
 package dtool.ast.expressions;
 
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 
-public class ExpLiteralNull extends Expression {
+public class ExpNull extends Expression {
 	
-	public ExpLiteralNull(SourceRange sourceRange) {
+	public ExpNull(SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 	}
 	
@@ -16,8 +17,8 @@ public class ExpLiteralNull extends Expression {
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return "null";
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("null");
 	}
 	
 }

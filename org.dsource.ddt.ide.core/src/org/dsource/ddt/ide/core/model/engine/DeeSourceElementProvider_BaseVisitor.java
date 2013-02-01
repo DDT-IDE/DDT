@@ -22,8 +22,15 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpArrayLength;
+import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
+import dtool.ast.expressions.ExpLiteralString;
+import dtool.ast.expressions.ExpNull;
+import dtool.ast.expressions.ExpSuper;
+import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
@@ -137,9 +144,28 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 	
 	/* ---------------------------------- */
 	
+	@Override public boolean visit(ExpThis elem) { return true; }
+	@Override public boolean visit(ExpSuper elem) { return true; }
+	@Override public boolean visit(ExpNull elem) { return true; }
+	@Override public boolean visit(ExpArrayLength elem) { return true; }
+	@Override public boolean visit(ExpLiteralBool elem) { return true; }
+	@Override public boolean visit(ExpLiteralInteger elem) { return true; }
+	@Override public boolean visit(ExpLiteralString elem) { return true; }
+	
+	@Override
+	public final boolean visit(ExpLiteralFunc elem) {
+		return true;
+	}
+	
+	@Override
+	public final boolean visit(ExpLiteralNewAnonClass elem) {
+		return true;
+	}
+	
+	/* ---------------------------------- */
+	
 	@Override
 	public boolean visit(DeclarationMixinString node) { return true; }
-
 	
 	@Override
 	public final boolean visit(DeclarationInvariant elem) {
@@ -152,16 +178,6 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 	}
 	@Override
 	public final boolean visit(DeclarationConditional elem) {
-		return true;
-	}
-	
-	@Override
-	public final boolean visit(ExpLiteralFunc elem) {
-		return true;
-	}
-	
-	@Override
-	public final boolean visit(ExpLiteralNewAnonClass elem) {
 		return true;
 	}
 	

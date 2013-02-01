@@ -38,11 +38,10 @@ DefVariable(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)) DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@(SP_TYPE_REF)[12] dummy; //TODO Exp samples
+#@SP_TYPE_REF[#@SP_EXP] dummy;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefIndexing(#@SPSE_TYPE_REF(SP_TYPE_REF) ExpLiteralInteger) DefSymbol)
-
+DefVariable(RefIndexing(#@SPSE_TYPE_REF(SP_TYPE_REF) #@SPSE_EXP(SP_EXP)) DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo1[#@(SP_TYPE_REF)   #error:EXP_CLOSE_BRACKET public int dummy ;
@@ -59,16 +58,15 @@ foo2[#@(SP_TYPE_REF)] ;
 foo3[#@(SP_TYPE_REF)] 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo1[11   #error:EXP_CLOSE_BRACKET public int dummy ;
-foo2[22   #error:EXP_CLOSE_BRACKET ;
-foo3[33   #error:EXP_CLOSE_BRACKET 
-//TODO Expression samples
+foo1[#@SP_EXP   #error:EXP_CLOSE_BRACKET public int dummy ;
+foo2[#@SP_EXP   #error:EXP_CLOSE_BRACKET ;
+foo3[#@SP_EXP   #error:EXP_CLOSE_BRACKET 
 
 #AST_STRUCTURE_EXPECTED:
-InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))  ?(DefinitionVariable(RefPrimitive DefSymbol))
-InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))  DeclarationEmpty
-InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))  
+InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_EXP(SP_EXP)))  ?(DefinitionVariable(RefPrimitive DefSymbol))
+InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_EXP(SP_EXP)))  DeclarationEmpty
+InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_EXP(SP_EXP)))  
 #AST_SOURCE_EXPECTED:
-foo1[11]  public int dummy;
-foo2[22]  ;
-foo3[33] 
+foo1[#@SP_EXP]  public int dummy;
+foo2[#@SP_EXP]  ;
+foo3[#@SP_EXP] 

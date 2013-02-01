@@ -4,7 +4,6 @@ import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
@@ -36,21 +35,26 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpArrayLength;
+import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralString;
+import dtool.ast.expressions.ExpNull;
+import dtool.ast.expressions.ExpSuper;
+import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.Expression;
-import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.expressions.InitializerExp;
+import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
+import dtool.ast.references.RefIndexing;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTypeDynArray;
-import dtool.ast.references.RefIndexing;
 import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
 import dtool.parser.ParserError.EDeeParserErrors;
@@ -73,9 +77,7 @@ public class DeeParser extends AbstractDeeParser {
 	public static DeeParserResult parse(String source) {
 		DeeParser deeParser = new DeeParser(source);
 		Module module = deeParser.parseModule();
-		DeeParserResult parseResult = new DeeParserResult(module, deeParser.errors);
-		deeParser.errors = null;
-		return parseResult;
+		return new DeeParserResult(module, deeParser.errors);
 	}
 	
 	public String idTokenToString(Token id) {
@@ -359,7 +361,7 @@ public class DeeParser extends AbstractDeeParser {
 			return parseReference_referenceStart(parseRefPrimitive(la));
 		
 		default:
-		return new RefParseResult(null);
+		return null;
 		}
 	}
 	
@@ -399,11 +401,47 @@ public class DeeParser extends AbstractDeeParser {
 	}
 	
 	public Resolvable parseReferenceOrExpression() {
-		DeeTokens la = lookAhead();
-		if(la == DeeTokens.INTEGER) {
-			return parseExpression();
-		} 
-		return parseReference().ref;
+		RefParseResult refResult = parseReference();
+		if(refResult != null) {
+			return refResult.ref;
+		}
+		return parseExpression();
+	}
+	
+	/* ----------------------------------------- */
+	public static String EXPRESSION_RULE = "expression";
+	
+	public Expression parseExpression() {
+		switch (lookAhead()) {
+		case INTEGER: case INTEGER_BINARY: case INTEGER_HEX: case INTEGER_OCTAL:{
+			Token token = consumeLookAhead();
+			return new ExpLiteralInteger(token, srToCursor(lastRealToken));
+		}
+		case KW_TRUE: case KW_FALSE: {
+			Token token = consumeLookAhead();
+			return new ExpLiteralBool(token.type == DeeTokens.KW_TRUE, srToCursor(lastRealToken));
+		}
+		case KW_THIS:
+			consumeLookAhead();
+			return new ExpThis(srToCursor(lastRealToken));
+		case KW_SUPER:
+			consumeLookAhead();
+			return new ExpSuper(srToCursor(lastRealToken));
+		case KW_NULL:
+			consumeLookAhead();
+			return new ExpNull(srToCursor(lastRealToken));
+		case DOLLAR:
+			consumeLookAhead();
+			return new ExpArrayLength(srToCursor(lastRealToken));
+		case KW___LINE__:
+			consumeLookAhead();
+			return new ExpLiteralInteger(lastRealToken, srToCursor(lastRealToken));
+		case KW___FILE__:
+			consumeLookAhead();
+			return new ExpLiteralString(lastRealToken, srToCursor(lastRealToken));
+		default:
+			return null;
+		}
 	}
 	
 	/* ----------------------------------------- */
@@ -483,24 +521,17 @@ public class DeeParser extends AbstractDeeParser {
 		return new DefinitionVarFragment(defUnitRaw(srToCursor(fragId), fragId), init);
 	}
 	
+	public static final String INITIALIZER_RULE = "INITIALIZER";
 	
 	public Initializer parseInitializer() {
-		Expression exp;
-		if(lookAhead() == DeeTokens.INTEGER) {
-			exp = parseExpression();
-		} else {
-			reportErrorExpectedRule("INITIALIZER"); //TODO constant
+		Expression exp = parseExpression();
+		if(exp == null) {
+			reportErrorExpectedRule(INITIALIZER_RULE);
 			exp = new MissingExpression(srToCursor(lastRealToken.getEndPos()));
 		}
 		return new InitializerExp(exp, exp.getSourceRange());
 	}
 	
-	/* ----------------------------------------- */
-	// TODO expression rule
-	public ExpLiteralInteger parseExpression() {
-		tryConsume(DeeTokens.INTEGER);
-		return new ExpLiteralInteger(new BigInteger(lastRealToken.tokenSource), srToCursor(lastRealToken));
-	}
 	
 	/* ----------------------------------------- */
 	
@@ -664,11 +695,8 @@ public class DeeParser extends AbstractDeeParser {
 		Expression exp = null;
 		
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
-			// TODO rest strings BUG here
-			if(tryConsume(DeeTokens.STRING_DQ)) {
-				Token expToken = lastRealToken;
-				exp = connect(new ExpLiteralString(expToken, sr(expToken)));
-			} else {
+			exp = parseExpression();
+			if(exp == null) {
 				reportErrorExpectedRule(EXPRESSION_RULE);
 			}
 			consumeExpectedToken(DeeTokens.CLOSE_PARENS);
@@ -678,8 +706,4 @@ public class DeeParser extends AbstractDeeParser {
 		return connect(new DeclarationMixinString(exp, srToCursor(declStart)));
 	}
 	
-	// TODO:
-	
-	public static String EXPRESSION_RULE = "expression";
-
 }

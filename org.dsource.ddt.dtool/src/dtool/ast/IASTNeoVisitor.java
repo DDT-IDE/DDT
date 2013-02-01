@@ -31,8 +31,15 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpArrayLength;
+import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
+import dtool.ast.expressions.ExpLiteralString;
+import dtool.ast.expressions.ExpNull;
+import dtool.ast.expressions.ExpSuper;
+import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
@@ -168,6 +175,19 @@ public interface IASTNeoVisitor {
 	
 	/* ---------------------------------- */
 	
+	public boolean visit(ExpThis node);
+	public boolean visit(ExpSuper node);
+	public boolean visit(ExpNull node);
+	public boolean visit(ExpArrayLength node);
+	public boolean visit(ExpLiteralBool node);
+	public boolean visit(ExpLiteralInteger node);
+	public boolean visit(ExpLiteralString node);
+	
+	public boolean visit(ExpLiteralFunc node);
+	public boolean visit(ExpLiteralNewAnonClass node);
+	
+	/* ---------------------------------- */
+	
 	public boolean visit(DeclarationMixinString node);
 	
 	public boolean visit(DeclarationInvariant node);
@@ -179,8 +199,5 @@ public interface IASTNeoVisitor {
 	
 	public boolean visit(DeclarationConditional node);
 	public void endVisit(DeclarationConditional node);
-	
-	public boolean visit(ExpLiteralFunc node);
-	public boolean visit(ExpLiteralNewAnonClass node);
 	
 }

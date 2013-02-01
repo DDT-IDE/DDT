@@ -1,5 +1,6 @@
 package dtool.ast.expressions;
 
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
 
@@ -8,8 +9,8 @@ public class ExpLiteralBool extends Expression {
 	public final boolean value;
 	
 	public ExpLiteralBool(boolean value, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
 		this.value = value;
+		initSourceRange(sourceRange);
 	}
 	
 	@Override
@@ -19,8 +20,8 @@ public class ExpLiteralBool extends Expression {
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return String.valueOf(value);
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(value ? "true" : "false");
 	}
 	
 }

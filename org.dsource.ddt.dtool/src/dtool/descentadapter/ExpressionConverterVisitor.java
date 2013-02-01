@@ -104,7 +104,7 @@ import dtool.ast.expressions.ExpLiteralImportedString;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralMapArray;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
-import dtool.ast.expressions.ExpLiteralNull;
+import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpLiteralReal;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNew;
@@ -127,6 +127,8 @@ import dtool.ast.expressions.PrefixExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
+import dtool.parser.DeeTokens;
+import dtool.parser.Token;
 import dtool.util.ArrayView;
 
 abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
@@ -373,8 +375,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 			);
 		} else {
 			return endAdapt(
-				new ExpLiteralInteger(
-					element.value != null ? element.value.bigIntegerValue() : null,
+				new ExpLiteralInteger(new Token(DeeTokens.INTEGER, 
+					new String(element.str != null ? element.str : "".toCharArray()), element.getStart()),
 					DefinitionConverter.sourceRange(element, !(element instanceof ErrorExp))
 				)
 			);
@@ -411,7 +413,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(NullExp element) {
-		return endAdapt(new ExpLiteralNull(DefinitionConverter.sourceRange(element)));
+		return endAdapt(new ExpNull(DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override
@@ -444,10 +446,11 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 //		for (int i = 0; i < elem.strings.size(); i++) {
 //			this.strings[i] = elem.strings.get(i).string;
 //		}
-		return endAdapt(new ExpLiteralString(new String(element.string), DefinitionConverter.sourceRange(element)));
+		return endAdapt(new ExpLiteralString(makeToken(DeeTokens.STRING_DQ, 
+			element.sourceString != null ? element.sourceString : "".toCharArray(), 
+			element.getStartPos()), DefinitionConverter.sourceRange(element)));
 	}
 	
-
 	@Override
 	public boolean visit(SuperExp element) {
 		return endAdapt(new ExpSuper(DefinitionConverter.sourceRange(element)));

@@ -7,32 +7,17 @@ import dtool.parser.Token;
 
 public class ExpLiteralString extends Expression {
 	
-	public final String stringValue;
-	public final Token stringToken; // TODO
+	public final Token stringToken; // TODO: this can be multiple tokens?
 	
-	@Deprecated
-	public ExpLiteralString(String s, SourceRange sourceRange) {
+	public ExpLiteralString(Token stringToken, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.stringToken = null;
-		this.stringValue = s;
-	}
-	
-	public ExpLiteralString(Token strinToken, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
-		this.stringToken = strinToken;
-		this.stringValue = null;
+		this.stringToken = stringToken;
 	}
 	
 	@Override
 	public void accept0(IASTNeoVisitor visitor) {
 		visitor.visit(this);
 		visitor.endVisit(this);	 
-	}
-	
-	@Deprecated
-	@Override
-	public String toStringAsElement() {
-		return "\"" + this.stringValue.toString() + "\"";
 	}
 	
 	@Override

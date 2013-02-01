@@ -2,15 +2,15 @@ package dtool.parser;
 
 import java.util.ArrayList;
 
-import dtool.ast.definitions.Module;
+import dtool.ast.ASTNeoNode;
 
 public class DeeParserResult {
 	
-	public final Module module;
+	public final ASTNeoNode node;
 	public final ArrayList<ParserError> errors;
 	
-	public DeeParserResult(Module module, ArrayList<ParserError> errors) {
-		this.module = module;
+	public DeeParserResult(ASTNeoNode node, ArrayList<ParserError> errors) {
+		this.node = node;
 		this.errors = errors;
 	}
 	

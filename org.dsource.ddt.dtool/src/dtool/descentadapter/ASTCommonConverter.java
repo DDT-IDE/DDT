@@ -5,6 +5,8 @@ import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.parser.DeeTokens;
+import dtool.parser.Token;
 
 /**
  * This class is a mixin. 
@@ -46,6 +48,10 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	protected boolean assertFailHandledDirectly() {
 		Assert.fail("This class is not converted directly by the visitor. ");
 		return true;
+	}
+	
+	public static Token makeToken(DeeTokens tokenType, char[] source, int offset) {
+		return new Token(tokenType, new String(source), offset);
 	}
 	
 }
