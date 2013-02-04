@@ -33,6 +33,8 @@ import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpLiteralBool;
+import dtool.ast.expressions.ExpLiteralChar;
+import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
@@ -182,6 +184,8 @@ public interface IASTNeoVisitor {
 	public boolean visit(ExpLiteralBool node);
 	public boolean visit(ExpLiteralInteger node);
 	public boolean visit(ExpLiteralString node);
+	public boolean visit(ExpLiteralChar node);
+	public boolean visit(ExpLiteralFloat node);
 	
 	public boolean visit(ExpLiteralFunc node);
 	public boolean visit(ExpLiteralNewAnonClass node);

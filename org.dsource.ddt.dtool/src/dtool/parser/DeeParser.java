@@ -37,7 +37,9 @@ import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpLiteralBool;
+import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralInteger;
+import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpSuper;
@@ -252,7 +254,7 @@ public class DeeParser extends AbstractDeeParser {
 			switch (la) {
 			case KW_IMPORT: return parseImportDeclaration();
 			
-			case KW_MIXIN: return parseMixinStringDeclaration();
+			case KW_MIXIN: return parseDeclarationMixinString();
 			
 			case KW_EXTERN: return parseDeclarationExternLinkage();
 			case KW_ALIGN: return parseDeclarationAlign();
@@ -413,10 +415,6 @@ public class DeeParser extends AbstractDeeParser {
 	
 	public Expression parseExpression() {
 		switch (lookAhead()) {
-		case INTEGER: case INTEGER_BINARY: case INTEGER_HEX: case INTEGER_OCTAL:{
-			Token token = consumeLookAhead();
-			return new ExpLiteralInteger(token, srToCursor(lastRealToken));
-		}
 		case KW_TRUE: case KW_FALSE: {
 			Token token = consumeLookAhead();
 			return new ExpLiteralBool(token.type == DeeTokens.KW_TRUE, srToCursor(lastRealToken));
@@ -434,14 +432,51 @@ public class DeeParser extends AbstractDeeParser {
 			consumeLookAhead();
 			return new ExpArrayLength(srToCursor(lastRealToken));
 		case KW___LINE__:
-			consumeLookAhead();
-			return new ExpLiteralInteger(lastRealToken, srToCursor(lastRealToken));
+			return new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastRealToken));
 		case KW___FILE__:
-			consumeLookAhead();
-			return new ExpLiteralString(lastRealToken, srToCursor(lastRealToken));
+			return new ExpLiteralString(consumeLookAhead(), srToCursor(lastRealToken));
+		case INTEGER: case INTEGER_BINARY: case INTEGER_HEX: case INTEGER_OCTAL:
+			return connectLiteral(new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastRealToken)));
+		case CHAR_LITERAL: 
+			return connectLiteral(new ExpLiteralChar(consumeLookAhead(), srToCursor(lastRealToken)));
+		case FLOAT: case FLOAT_HEX:
+			return connectLiteral(new ExpLiteralFloat(consumeLookAhead(), srToCursor(lastRealToken)));
+		case STRING_WYSIWYG: case STRING_DQ: case STRING_HEX: case STRING_DELIM: case STRING_TOKENS:
+			return parseStringLiteral();
 		default:
 			return null;
 		}
+	}
+	
+	public Expression parseStringLiteral() {
+		ArrayList<Token> stringTokens = new ArrayList<Token>();
+		while(lookAhead() == DeeTokens.STRING_WYSIWYG 
+			|| lookAhead() == DeeTokens.STRING_DQ
+			|| lookAhead() == DeeTokens.STRING_HEX
+			|| lookAhead() == DeeTokens.STRING_DELIM
+			|| lookAhead() == DeeTokens.STRING_TOKENS) {
+			Token string = consumeLookAhead();
+			stringTokens.add(string);
+		}
+		Token[] tokenStrings = ArrayUtil.createFrom(stringTokens, Token.class);
+		return connectLiteral(new ExpLiteralString(tokenStrings, srToCursor(tokenStrings[0])));
+	}
+	
+	protected Expression connectLiteral(ExpLiteralFloat expLiteralFloat) {
+		return expLiteralFloat;
+	}
+	protected Expression connectLiteral(ExpLiteralChar expLiteralChar) {
+		if(expLiteralChar.ch.tokenSource.length() > 3) {
+			// REFACTOR THIS?
+			reportError(EDeeParserErrors.MALFORMED_TOKEN, LexerErrorTypes.CHAR_LITERAL_SIZE_GREATER_THAN_ONE, false);
+		}
+		return expLiteralChar;
+	}
+	protected Expression connectLiteral(ExpLiteralInteger expLiteralInteger) {
+		return expLiteralInteger;
+	}
+	protected Expression connectLiteral(ExpLiteralString expLiteralString) {
+		return expLiteralString;
 	}
 	
 	/* ----------------------------------------- */
@@ -482,7 +517,7 @@ public class DeeParser extends AbstractDeeParser {
 			}
 			
 		}
-		// Balance is broken
+		// else: Balance is broken
 		return connect(new InvalidDeclaration(ref, consumedSemiColon, srToCursor(ref.getStartPos())));
 	}
 	
@@ -687,7 +722,7 @@ public class DeeParser extends AbstractDeeParser {
 	
 	/* ----------------------------------------- */
 	
-	public DeclarationMixinString parseMixinStringDeclaration() {
+	public DeclarationMixinString parseDeclarationMixinString() {
 		if(!tryConsume(DeeTokens.KW_MIXIN)) {
 			return null;
 		}

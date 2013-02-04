@@ -73,13 +73,12 @@ public class AbstractDeeParser {
 			
 			if(tokenType == DeeTokens.ERROR) {
 				ErrorToken errorToken = (ErrorToken) token;
-				if(errorToken.originalToken == DeeTokens.ERROR) {
+				if(errorToken.originalTokenType == DeeTokens.ERROR) {
 					addError(EDeeParserErrors.INVALID_TOKEN_CHARACTERS, sr(token), token.tokenSource, null);
 					continue; // Fetch another token
 				} else {
-					// TODO tests
 					addError(EDeeParserErrors.MALFORMED_TOKEN, sr(token), token.tokenSource, errorToken.error);
-					tokenType = errorToken.originalToken;
+					tokenType = errorToken.originalTokenType;
 				}
 			}
 			
@@ -91,7 +90,7 @@ public class AbstractDeeParser {
 	}
 	
 	public DeeTokens lookAhead() {
-		return lookAheadToken().type;
+		return lookAheadToken().getEffectiveType();
 	}
 	
 	public boolean lookAheadIsType(DeeTokens... tokens) {

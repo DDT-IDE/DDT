@@ -23,7 +23,7 @@ mixin(); );
 #AST_STRUCTURE_EXPECTED:
 DeclarationMixinString()
 DeclarationMixinString()
-DeclarationMixinString() InvalidDeclaration()
+DeclarationMixinString() InvalidSyntaxElement() DeclarationEmpty
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 mixin ( #error:EXPRULE_exp );

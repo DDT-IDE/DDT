@@ -51,7 +51,7 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	}
 	
 	public static Token makeToken(DeeTokens tokenType, char[] source, int offset) {
-		return new Token(tokenType, new String(source), offset);
+		return new Token(tokenType, source == null ? "" : new String(source), offset);
 	}
 	
 }

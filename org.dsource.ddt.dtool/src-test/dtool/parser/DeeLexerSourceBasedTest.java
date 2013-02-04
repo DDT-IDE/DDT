@@ -49,8 +49,6 @@ public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 	@Test
 	public void runSourceBasedTests() throws IOException {
 		for (AnnotatedSource testCase : getSourceBasedTests(file, null)) {
-			testsLogger.println(">> ----------- Lexer source test: ----------- <<");
-			testsLogger.println(testCase.source);
 			MetadataEntry lexerTestMde = assertNotNull_(testCase.findMetadata("LEXERTEST"));
 			runLexerSourceBasedTest(testCase.source, assertNotNull_(lexerTestMde.associatedSource));
 		}
@@ -115,6 +113,7 @@ public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 			case CHAR_LITERAL_NOT_TERMINATED__REACHED_EOF: strToErrorType.put("CHxF", lexerErrorType); break;
 			case CHAR_LITERAL_NOT_TERMINATED__REACHED_EOL: strToErrorType.put("CHxL", lexerErrorType); break;
 			case CHAR_LITERAL_EMPTY: strToErrorType.put("CHx0", lexerErrorType); break;
+			case CHAR_LITERAL_SIZE_GREATER_THAN_ONE: strToErrorType.put("CH_L", lexerErrorType); break;
 			
 			case INT_LITERAL_BINARY__INVALID_DIGITS: strToErrorType.put("IBx", lexerErrorType); break;
 			case INT_LITERAL_OCTAL__INVALID_DIGITS: strToErrorType.put("IOx", lexerErrorType); break;
@@ -127,7 +126,7 @@ public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 			case SPECIAL_TOKEN_INVALID: strToErrorType.put("STx", lexerErrorType); break;
 			
 			default:
-				break;
+				assertFail();
 			}
 		}
 	}

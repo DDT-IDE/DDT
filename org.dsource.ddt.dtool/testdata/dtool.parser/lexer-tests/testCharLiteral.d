@@ -17,7 +17,7 @@ CHAR_LITERAL!CHxF
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ''#LEXERTEST:
 CHAR_LITERAL!CHxL,CHAR_LITERAL!CHxF
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ >> oversized char literal, this is invalid but error is pseudo-semantic?
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ >> oversized char literal, this is invalid but error is post-lexer?
 'aaa'foobar#LEXERTEST:
 CHAR_LITERAL,ID
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Char Literal

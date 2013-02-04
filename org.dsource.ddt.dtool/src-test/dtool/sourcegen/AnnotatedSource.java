@@ -59,4 +59,15 @@ public class AnnotatedSource {
 		return foundMde;
 	}
 	
+	public MetadataEntry findMetadata(String name, String value) {
+		MetadataEntry foundMde = null;
+		for (MetadataEntry mde : metadata) {
+			if(areEqual(mde.name, name) && areEqual(mde.value, value)) {
+				assertTrue(foundMde == null);
+				foundMde = mde;
+			}
+		}
+		return foundMde;
+	}
+	
 }

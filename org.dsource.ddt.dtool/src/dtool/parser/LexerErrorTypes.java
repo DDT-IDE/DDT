@@ -26,6 +26,11 @@ public enum LexerErrorTypes {
 	
 	SPECIAL_TOKEN_LINE_BAD_FORMAT("Invalid format for #line token, must be #line integer [\"filespec\"]\n."),
 	SPECIAL_TOKEN_INVALID("Invalid format for # pragma syntax."),
+	
+	/* --------------------- The following errors are reported after lexing --------------------- */
+	
+	CHAR_LITERAL_SIZE_GREATER_THAN_ONE("Character literal has more than one character.");
+	
 	;
 	public final String message;
 	private LexerErrorTypes(String message) {

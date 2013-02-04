@@ -104,13 +104,13 @@ public class DeeLexerTest extends CommonTestUtils {
 				assertTrue(token.getTokenType() == DeeTokens.ERROR);
 				if(expectedTokenCode != null) {
 					ErrorToken errorToken = (ErrorToken)token;
-					DeeTokens originalToken = errorToken.originalToken;
+					DeeTokens originalToken = errorToken.originalTokenType;
 					assertTrue(originalToken == expectedTokenCode);
 					assertTrue(errorToken.error == expectedError);
 				}
 			} else if(token instanceof ErrorToken){
 				assertTrue(tokenCode == DeeTokens.ERROR);
-				assertTrue(((ErrorToken)token).originalToken == DeeTokens.ERROR);
+				assertTrue(((ErrorToken)token).originalTokenType == DeeTokens.ERROR);
 			} else {
 				if(expectedTokenCode != null) {
 					assertTrue(tokenCode == expectedTokenCode);

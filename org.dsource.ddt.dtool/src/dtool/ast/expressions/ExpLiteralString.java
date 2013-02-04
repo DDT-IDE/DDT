@@ -7,11 +7,15 @@ import dtool.parser.Token;
 
 public class ExpLiteralString extends Expression {
 	
-	public final Token stringToken; // TODO: this can be multiple tokens?
+	public final Token[] stringTokens;
 	
 	public ExpLiteralString(Token stringToken, SourceRange sourceRange) {
+		this(new Token[] { stringToken }, sourceRange);
+	}
+	
+	public ExpLiteralString(Token[] stringToken, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.stringToken = stringToken;
+		this.stringTokens = stringToken;
 	}
 	
 	@Override
@@ -22,7 +26,9 @@ public class ExpLiteralString extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(stringToken);
+		for (Token stringToken : stringTokens) {
+			cp.append(stringToken);
+		}
 	}
 	
 }

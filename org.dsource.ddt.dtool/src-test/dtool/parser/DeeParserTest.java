@@ -149,7 +149,7 @@ public class DeeParserTest extends CommonTestUtils {
 		public static boolean isUnknownToken(Token token) {
 			if(token instanceof ErrorToken) {
 				ErrorToken errorToken = (ErrorToken) token;
-				if(errorToken.originalToken == DeeTokens.ERROR) {
+				if(errorToken.originalTokenType == DeeTokens.ERROR) {
 					return true;
 				}
 			}

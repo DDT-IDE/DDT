@@ -24,6 +24,8 @@ import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpLiteralBool;
+import dtool.ast.expressions.ExpLiteralChar;
+import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
@@ -151,6 +153,8 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 	@Override public boolean visit(ExpLiteralBool elem) { return true; }
 	@Override public boolean visit(ExpLiteralInteger elem) { return true; }
 	@Override public boolean visit(ExpLiteralString elem) { return true; }
+	@Override public boolean visit(ExpLiteralFloat elem) { return true; }
+	@Override public boolean visit(ExpLiteralChar elem) { return true; }
 	
 	@Override
 	public final boolean visit(ExpLiteralFunc elem) {

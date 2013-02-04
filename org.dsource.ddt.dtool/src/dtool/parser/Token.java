@@ -40,19 +40,28 @@ public class Token {
 		return tokenSource;
 	}
 	
+	public DeeTokens getEffectiveType() {
+		return type;
+	}
+	
 	public static class ErrorToken extends Token {
 		
 		protected final LexerErrorTypes error;
-		protected final DeeTokens originalToken;
+		protected final DeeTokens originalTokenType;
 		
-		public ErrorToken(String value, int start, DeeTokens originalToken, LexerErrorTypes error) {
+		public ErrorToken(String value, int start, DeeTokens originalType, LexerErrorTypes error) {
 			super(DeeTokens.ERROR, value, start);
-			this.originalToken = originalToken;
+			this.originalTokenType = originalType;
 			this.error = error;
-			if(originalToken == DeeTokens.ERROR || error == LexerErrorTypes.INVALID_CHARACTERS) {
-				assertTrue(originalToken == DeeTokens.ERROR);
+			if(originalType == DeeTokens.ERROR || error == LexerErrorTypes.INVALID_CHARACTERS) {
+				assertTrue(originalType == DeeTokens.ERROR);
 				assertTrue(error == LexerErrorTypes.INVALID_CHARACTERS);
 			}
+		}
+		
+		@Override
+		public DeeTokens getEffectiveType() {
+			return originalTokenType;
 		}
 	}
 	

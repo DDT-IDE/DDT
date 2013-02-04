@@ -51,6 +51,8 @@ import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpLiteralBool;
+import dtool.ast.expressions.ExpLiteralChar;
+import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
@@ -481,6 +483,10 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		public boolean visit(ExpLiteralInteger node) { return reparseCheck(nrsParser.parseExpression(), node); }
 		@Override
 		public boolean visit(ExpLiteralString node) { return reparseCheck(nrsParser.parseExpression(), node); }
+		@Override
+		public boolean visit(ExpLiteralFloat node) { return reparseCheck(nrsParser.parseExpression(), node); }
+		@Override
+		public boolean visit(ExpLiteralChar node) { return reparseCheck(nrsParser.parseExpression(), node); }
 		
 		@Override
 		public boolean visit(ExpLiteralFunc node) {
@@ -498,7 +504,7 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		
 		@Override
 		public boolean visit(DeclarationMixinString node) {
-			return reparseCheck(nrsParser.parseMixinStringDeclaration(), node);
+			return reparseCheck(nrsParser.parseDeclarationMixinString(), node);
 		}
 		
 		

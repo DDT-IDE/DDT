@@ -1,10 +1,10 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#error(SE_decl){)}
+#error(SE_decl){)} ;
 #error(SE_decl) ]
 #error(SE_decl) }
 
 #AST_STRUCTURE_EXPECTED:
-InvalidSyntaxElement
+InvalidSyntaxElement DeclarationEmpty
 InvalidSyntaxElement
 InvalidSyntaxElement
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of reference start

@@ -99,15 +99,15 @@ import dtool.ast.expressions.ExpDelete;
 import dtool.ast.expressions.ExpDollar;
 import dtool.ast.expressions.ExpIftype;
 import dtool.ast.expressions.ExpLiteralBool;
+import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralFunc;
 import dtool.ast.expressions.ExpLiteralImportedString;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralMapArray;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
-import dtool.ast.expressions.ExpNull;
-import dtool.ast.expressions.ExpLiteralReal;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNew;
+import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSlice;
 import dtool.ast.expressions.ExpStringMacro;
@@ -128,7 +128,6 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
 import dtool.parser.DeeTokens;
-import dtool.parser.Token;
 import dtool.util.ArrayView;
 
 abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
@@ -375,8 +374,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 			);
 		} else {
 			return endAdapt(
-				new ExpLiteralInteger(new Token(DeeTokens.INTEGER, 
-					new String(element.str != null ? element.str : "".toCharArray()), element.getStart()),
+				new ExpLiteralInteger(makeToken(DeeTokens.INTEGER, element.str, element.getStart()),
 					DefinitionConverter.sourceRange(element, !(element instanceof ErrorExp))
 				)
 			);
@@ -418,8 +416,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(RealExp element) {
-		double doubleValue = element.value != null ? element.value.doubleValue() : Double.NaN;
-		return endAdapt(new ExpLiteralReal(doubleValue, DefinitionConverter.sourceRange(element)));
+		return endAdapt(new ExpLiteralFloat(makeToken(DeeTokens.FLOAT, element.str, element.getStartPos()), 
+			DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override
@@ -446,8 +444,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 //		for (int i = 0; i < elem.strings.size(); i++) {
 //			this.strings[i] = elem.strings.get(i).string;
 //		}
-		return endAdapt(new ExpLiteralString(makeToken(DeeTokens.STRING_DQ, 
-			element.sourceString != null ? element.sourceString : "".toCharArray(), 
+		return endAdapt(new ExpLiteralString(makeToken(DeeTokens.STRING_DQ, element.sourceString, 
 			element.getStartPos()), DefinitionConverter.sourceRange(element)));
 	}
 	

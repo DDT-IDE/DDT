@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import melnorme.utilbox.core.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -77,9 +78,19 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	public void runSourceBasedTests() throws Exception { runSourceBasedTests$(); }
 	public void runSourceBasedTests$() throws Exception {
 		AnnotatedSource[] sourceBasedTests = getSourceBasedTests(file, commonDefinitions);
+		HashSet<String> printSources = new HashSet<String>();
+		
 		for (AnnotatedSource testCase : sourceBasedTests) {
-			testsLogger.println(">> ----------- Parser source test: ----------- <<");
-			testsLogger.println(testCase.source);
+			
+			if(testCase.findMetadata("comment", "NO_STDOUT") == null) {
+				testsLogger.println(">> ----------- Parser source test: ----------- <<");
+				testsLogger.println(testCase.source.replaceFirst("^\\s*", ""));
+			} 
+			else if(!printSources.contains(testCase.originalTemplatedSource)){
+				printSources.add(testCase.originalTemplatedSource);
+				testsLogger.println(">> ----------- Parser source test (TEMPLATE): ----------- <<");
+				testsLogger.println(testCase.originalTemplatedSource);
+			}
 			runSourceBasedTest(testCase);
 		}
 	}
@@ -102,7 +113,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			} else if(mde.name.equals("AST_STRUCTURE_EXPECTED")) {
 				assertTrue(expectedStructure == null);
 				expectedStructure = processExpectedStructure(mde.associatedSource);
-			} else if(mde.name.equals("error")){
+			} else if(mde.name.equals("error") || mde.name.equals("ERROR")){
 				if(!ignoreFurtherErrorMDs) {
 					expectedErrors.add(decodeError(parseSource, mde));
 				}
@@ -114,7 +125,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				parseRule = mde.value;
 			} else{
 				// TODO remove todo flag
-				if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "TODO")))
+				if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "comment")))
 					assertFail("Unknown metadata");
 			}
 		}
@@ -133,9 +144,9 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		
 		 if(errorType.equals("ITC")) {
 			return new ParserError(EDeeParserErrors.INVALID_TOKEN_CHARACTERS, errorRange, mde.associatedSource, null);
-		} else if(errorType.equals("MT")) {
-			// TODO errorParam
-			return new ParserError(EDeeParserErrors.MALFORMED_TOKEN, errorRange, null, null);
+		} else if(errorType.equals("MT") || errorType.equals("MTC")) {
+			errorParam = DeeLexerSourceBasedTest.parseExpectedError(errorParam).toString();
+			return createErrorToken(EDeeParserErrors.MALFORMED_TOKEN, mde, deeLexer, true, errorParam);
 		} else if(errorType.equals("EXP")) {
 			String expectedTokenStr = DeeLexerSourceBasedTest.transformTokenNameAliases(errorParam);
 			return createErrorToken(EDeeParserErrors.EXPECTED_TOKEN, mde, deeLexer, true, expectedTokenStr);
@@ -182,7 +193,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		Token lastNonIgnoredToken = null;
 		while(true) {
 			Token token = deeLexer.next();
-			if(token.getStartPos() >= offset || token.getEndPos() > offset) {
+			if(token.getStartPos() >= offset) {
 				assertNotNull(lastNonIgnoredToken);
 				deeLexer.reset(lastNonIgnoredToken.startPos);
 				break;
