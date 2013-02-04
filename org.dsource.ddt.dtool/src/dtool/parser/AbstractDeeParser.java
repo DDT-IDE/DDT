@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
-
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoNode;
@@ -15,7 +14,6 @@ import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.parser.ParserError.EDeeParserErrors;
-import dtool.parser.Token.ErrorToken;
 import dtool.util.ArrayView;
 
 /**
@@ -56,12 +54,17 @@ public class AbstractDeeParser {
 	}
 	
 	protected ParserError addError(EDeeParserErrors errorType, SourceRange sourceRange, String errorSource, 
-		Object obj2) {
-		ParserError error = new ParserError(errorType, sourceRange, errorSource, obj2);
+		Object msgData) {
+		ParserError error = new ParserError(errorType, sourceRange, errorSource, msgData);
 		errors.add(error);
 		return error;
 	}
 	
+	protected ParserError addError(EDeeParserErrors parserError, Token errorToken, Object msgData) {
+		return addError(parserError, sr(errorToken), errorToken.tokenSource, msgData);
+	}
+	
+	static{ assertTrue(DeeTokens.EOF.isParserIgnored == false); }
 	protected final Token lookAheadToken() {
 		if(tokenAhead != null) {
 			return tokenAhead;
@@ -69,28 +72,28 @@ public class AbstractDeeParser {
 		while(true) {
 			Token token = deeLexer.next();
 			
-			DeeTokens tokenType = token.type;
+			DeeTokens tokenType = token.getTokenType();
 			
-			if(tokenType == DeeTokens.ERROR) {
-				ErrorToken errorToken = (ErrorToken) token;
-				if(errorToken.originalTokenType == DeeTokens.ERROR) {
-					addError(EDeeParserErrors.INVALID_TOKEN_CHARACTERS, sr(token), token.tokenSource, null);
-					continue; // Fetch another token
+			if(tokenType.isParserIgnored) {
+				if(tokenType == DeeTokens.INVALID_TOKEN) {
+					addError(EDeeParserErrors.INVALID_TOKEN_CHARACTERS, token, null);
 				} else {
-					addError(EDeeParserErrors.MALFORMED_TOKEN, sr(token), token.tokenSource, errorToken.error);
-					tokenType = errorToken.originalTokenType;
+					consumeToken(token);
 				}
+				continue;
 			}
 			
-			if(!tokenType.isParserIgnored) { // EOF must not be parser ignored
-				tokenAhead = token;
-				return tokenAhead;
-			}
+			tokenAhead = token;
+			return tokenAhead;
 		}
 	}
 	
+	public void consumeToken(Token token) {
+		DeeTokenSemantics.checkTokenErrors(token, this);
+	}
+	
 	public DeeTokens lookAhead() {
-		return lookAheadToken().getEffectiveType();
+		return lookAheadToken().getTokenType();
 	}
 	
 	public boolean lookAheadIsType(DeeTokens... tokens) {
@@ -107,6 +110,7 @@ public class AbstractDeeParser {
 			lookAheadToken();
 		}
 		
+		consumeToken(tokenAhead);
 		lastRealToken = tokenAhead;
 		tokenAhead = null;
 		return lastRealToken;
@@ -196,16 +200,15 @@ public class AbstractDeeParser {
 		reportError(EDeeParserErrors.SYNTAX_ERROR, expectedRule, false);
 	}
 	
-	protected void reportError(EDeeParserErrors parserError, Object msgObj2, boolean missingToken) {
-		ParserError error = addError(parserError, sr(lastRealToken), lastRealToken.tokenSource, msgObj2);
+	protected void reportError(EDeeParserErrors parserError, Object msgData, boolean missingToken) {
+		ParserError error = addError(parserError, lastRealToken, msgData);
 		if(missingToken) {
 			pendingMissingTokenErrors.add(error);
 		}
 	}
-	
 	protected final <T extends ASTNeoNode> T connect(T node) {
 		for (ParserError parserError : pendingMissingTokenErrors) {
-			if(parserError.msgObj2 != DeeTokens.IDENTIFIER) {
+			if(parserError.msgData != DeeTokens.IDENTIFIER) {
 				parserError.originNode = node;
 			}
 		}

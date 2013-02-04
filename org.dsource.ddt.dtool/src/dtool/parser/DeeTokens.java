@@ -13,7 +13,7 @@ package dtool.parser;
 public enum DeeTokens {
 	
 	EOF,
-	ERROR,
+	INVALID_TOKEN(null, true),
 	
 	EOL(null, true),
 	WHITESPACE(null, true),

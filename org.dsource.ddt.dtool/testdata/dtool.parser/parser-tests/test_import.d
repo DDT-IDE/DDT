@@ -142,4 +142,4 @@ import p.f : elAlias = , sel2;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ attempt all error combinations ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import #{,foo,bar =, foo:}#{:,=,foo :,foo: elem = }#{,;}
 #parser(AllowAnyErrors)
-#parser(DontCheckSourceEquality)
+#AST_SOURCE_EXPECTED(NoCheck)

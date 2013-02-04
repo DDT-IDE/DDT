@@ -12,7 +12,7 @@ public class ParserError {
 	public enum EDeeParserErrors {
 		
 		INVALID_TOKEN_CHARACTERS, // Lexer: invalid characters, cannot form token
-		MALFORMED_TOKEN, // Lexer: recovered token has errors // TODO: test
+		MALFORMED_TOKEN, // Lexer: recovered token has errors
 		
 		EXPECTED_TOKEN, // Syntax error: expected specific token
 		EXPECTED_RULE, // Syntax error: expected valid token for rule
@@ -24,31 +24,31 @@ public class ParserError {
 	protected final EDeeParserErrors errorType;
 	protected final SourceRange sourceRange;
 	protected final String msgErrorSource;
-	protected final Object msgObj2;
+	protected final Object msgData;
 	public ASTNeoNode originNode;
 	
-	public ParserError(EDeeParserErrors errorType, SourceRange sourceRange, String msgErrorSource, Object msgObj2) {
+	public ParserError(EDeeParserErrors errorType, SourceRange sourceRange, String msgErrorSource, Object msgData) {
 		this.errorType = assertNotNull_(errorType);
 		this.sourceRange = assertNotNull_(sourceRange);
 		this.msgErrorSource = msgErrorSource;
-		this.msgObj2 = msgObj2;
+		this.msgData = msgData;
 	}
 	
 	public String getUserMessage() {
-		switch (errorType) {
+		switch(errorType) {
 		case INVALID_TOKEN_CHARACTERS:
 			return "Invalid token characters \"" + msgErrorSource + "\", delete these characters.";
 		case MALFORMED_TOKEN:
 			return "Error during tokenization: " + msgErrorSource;
 		case EXPECTED_TOKEN:
-			DeeTokens expToken = (DeeTokens) msgObj2;
+			DeeTokens expToken = (DeeTokens) msgData;
 			return "Syntax error on token \"" + msgErrorSource + "\", expected " + expToken + " after.";
 		case EXPECTED_RULE:
-			return "Unexpected token after \"" + msgErrorSource + "\", while trying to parse " + msgObj2 + ".";
+			return "Unexpected token after \"" + msgErrorSource + "\", while trying to parse " + msgData + ".";
 		case SYNTAX_ERROR:
-			return "Unexpected token \"" + msgErrorSource + "\", while trying to parse " + msgObj2 + ".";
+			return "Unexpected token \"" + msgErrorSource + "\", while trying to parse " + msgData + ".";
 		case INVALID_EXTERN_ID:
-			return "Invalid linkage specifier \"" + msgErrorSource + "\", valid ones are: "+
+			return "Invalid linkage specifier \"" + msgErrorSource + "\", valid ones are: " +
 				StringUtil.collToString(Linkage.values(), ",") + ".";
 		}
 		throw assertFail();
@@ -56,8 +56,8 @@ public class ParserError {
 	
 	@Override
 	public String toString() {
-		return "ERROR:" + errorType + sourceRange.toString() + 
-			(msgErrorSource == null ? "" : (" :" + msgErrorSource)) + " obj2:" + msgObj2;
+		return "ERROR:" + errorType + sourceRange.toString() +
+			(msgErrorSource == null ? "" : (" :" + msgErrorSource)) + " obj2:" + msgData;
 	}
 	
 }

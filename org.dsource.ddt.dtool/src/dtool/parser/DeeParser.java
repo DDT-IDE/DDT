@@ -436,11 +436,11 @@ public class DeeParser extends AbstractDeeParser {
 		case KW___FILE__:
 			return new ExpLiteralString(consumeLookAhead(), srToCursor(lastRealToken));
 		case INTEGER: case INTEGER_BINARY: case INTEGER_HEX: case INTEGER_OCTAL:
-			return connectLiteral(new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastRealToken)));
+			return connect(new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastRealToken)));
 		case CHAR_LITERAL: 
-			return connectLiteral(new ExpLiteralChar(consumeLookAhead(), srToCursor(lastRealToken)));
+			return connect(new ExpLiteralChar(consumeLookAhead(), srToCursor(lastRealToken)));
 		case FLOAT: case FLOAT_HEX:
-			return connectLiteral(new ExpLiteralFloat(consumeLookAhead(), srToCursor(lastRealToken)));
+			return connect(new ExpLiteralFloat(consumeLookAhead(), srToCursor(lastRealToken)));
 		case STRING_WYSIWYG: case STRING_DQ: case STRING_HEX: case STRING_DELIM: case STRING_TOKENS:
 			return parseStringLiteral();
 		default:
@@ -459,24 +459,7 @@ public class DeeParser extends AbstractDeeParser {
 			stringTokens.add(string);
 		}
 		Token[] tokenStrings = ArrayUtil.createFrom(stringTokens, Token.class);
-		return connectLiteral(new ExpLiteralString(tokenStrings, srToCursor(tokenStrings[0])));
-	}
-	
-	protected Expression connectLiteral(ExpLiteralFloat expLiteralFloat) {
-		return expLiteralFloat;
-	}
-	protected Expression connectLiteral(ExpLiteralChar expLiteralChar) {
-		if(expLiteralChar.ch.tokenSource.length() > 3) {
-			// REFACTOR THIS?
-			reportError(EDeeParserErrors.MALFORMED_TOKEN, LexerErrorTypes.CHAR_LITERAL_SIZE_GREATER_THAN_ONE, false);
-		}
-		return expLiteralChar;
-	}
-	protected Expression connectLiteral(ExpLiteralInteger expLiteralInteger) {
-		return expLiteralInteger;
-	}
-	protected Expression connectLiteral(ExpLiteralString expLiteralString) {
-		return expLiteralString;
+		return connect(new ExpLiteralString(tokenStrings, srToCursor(tokenStrings[0])));
 	}
 	
 	/* ----------------------------------------- */

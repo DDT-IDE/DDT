@@ -4,7 +4,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
-import dtool.parser.Token.ErrorToken;
 import dtool.tests.CommonTestUtils;
 
 public class DeeLexerTest extends CommonTestUtils {
@@ -84,42 +83,37 @@ public class DeeLexerTest extends CommonTestUtils {
 	
 	public static class TokenChecker {
 		
-		private DeeTokens expectedTokenCode;
+		private DeeTokens expectedTokenType;
 		private LexerErrorTypes expectedError;
 		
 		public TokenChecker(DeeTokens deeToken) {
 			this(deeToken, null);
 		}
 		
-		public TokenChecker(DeeTokens deeToken, LexerErrorTypes error) {
-			this.expectedTokenCode = deeToken;
+		public TokenChecker(DeeTokens tokenType, LexerErrorTypes error) {
+			this.expectedTokenType = tokenType;
 			this.expectedError = error;
+			if(tokenType == DeeTokens.INVALID_TOKEN) {
+				assertTrue(expectedError == null);
+				this.expectedError = LexerErrorTypes.INVALID_CHARACTERS;
+			}
 		}
 		
 		public Token checkToken(DeeLexer deeLexer, int readOffset) {
 			Token token = deeLexer.next();
-			DeeTokens tokenCode = token.getTokenType();
 			
-			if(expectedError != null) {
-				assertTrue(token.getTokenType() == DeeTokens.ERROR);
-				if(expectedTokenCode != null) {
-					ErrorToken errorToken = (ErrorToken)token;
-					DeeTokens originalToken = errorToken.originalTokenType;
-					assertTrue(originalToken == expectedTokenCode);
-					assertTrue(errorToken.error == expectedError);
-				}
-			} else if(token instanceof ErrorToken){
-				assertTrue(tokenCode == DeeTokens.ERROR);
-				assertTrue(((ErrorToken)token).originalTokenType == DeeTokens.ERROR);
+			if(expectedTokenType != null) {
+				assertTrue(token.getTokenType() == expectedTokenType);
 			} else {
-				if(expectedTokenCode != null) {
-					assertTrue(tokenCode == expectedTokenCode);
-				}
+				assertTrue(expectedError == null);
 			}
 			
+			assertTrue(token.getError() == expectedError);
 			
 			assertTrue(token.getStartPos() == readOffset);
 			assertEquals(deeLexer.source.subSequence(token.getStartPos(), token.getEndPos()), token.getSourceValue());
+			
+			DeeTokens tokenCode = token.getTokenType();
 			if(tokenCode.getSourceValue() != null) {
 				assertEquals(tokenCode.getSourceValue(), token.getSourceValue());
 			}

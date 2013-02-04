@@ -106,8 +106,9 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		ArrayList<ParserError> expectedErrors = new ArrayList<ParserError>();
 		
 		for (MetadataEntry mde : testSource.metadata) {
-			if(mde.name.equals("AST_EXPECTED") || mde.name.equals("AST_SOURCE_EXPECTED")) {
+			if(mde.name.equals("AST_SOURCE_EXPECTED") || mde.name.equals("AST_EXPECTED")) {
 				assertTrue(expectedGenSource == parseSource);
+				assertTrue(mde.associatedSource != null || mde.value.equals("NoCheck"));
 				expectedGenSource = mde.associatedSource;
 				ignoreFurtherErrorMDs = true;
 			} else if(mde.name.equals("AST_STRUCTURE_EXPECTED")) {
@@ -119,14 +120,12 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				}
 			} else if(mde.name.equals("parser") && mde.value.equals("AllowAnyErrors")){
 				allowAnyErrors = true;
-			} else if(mde.name.equals("parser") && mde.value.equals("DontCheckSourceEquality")){
-				expectedGenSource = null;
 			} else if(mde.name.equals("PARSE")){
 				parseRule = mde.value;
-			} else{
-				// TODO remove todo flag
-				if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "comment")))
+			} else {
+				if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "comment"))) {
 					assertFail("Unknown metadata");
+				}
 			}
 		}
 		
@@ -153,9 +152,10 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		} else if(errorType.equals("EXPRULE")) {
 			errorParam = getExpectedRuleName(errorParam);
 			return createErrorToken(EDeeParserErrors.EXPECTED_RULE, mde, deeLexer, true, errorParam);
-		} else if(errorType.equals("SE")) {
+		} else if(errorType.equals("SE") || errorType.equals("<SE")) {
 			errorParam = getExpectedRuleName(errorParam);
-			return createErrorToken(EDeeParserErrors.SYNTAX_ERROR, mde, deeLexer, false, errorParam);
+			boolean tokenBefore = errorType.equals("<SE");
+			return createErrorToken(EDeeParserErrors.SYNTAX_ERROR, mde, deeLexer, tokenBefore, errorParam);
 		} else if(mde.value.equals("BAD_LINKAGE_ID")) {
 			return createErrorToken(EDeeParserErrors.INVALID_EXTERN_ID, mde, deeLexer, true, null);
 		} else {

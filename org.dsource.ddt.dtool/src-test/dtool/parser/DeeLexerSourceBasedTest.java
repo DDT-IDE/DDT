@@ -88,9 +88,11 @@ public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 	
 	public static String transformTokenNameAliases(String expectedTokenName) {
 		if(expectedTokenName.equals("ID")) {
-			expectedTokenName = DeeTokens.IDENTIFIER.name();
+			return DeeTokens.IDENTIFIER.name();
 		} else if(expectedTokenName.equals("WS") || expectedTokenName.equals("_")) {
-			expectedTokenName = DeeTokens.WHITESPACE.name();
+			return DeeTokens.WHITESPACE.name();
+		} else if(expectedTokenName.equals("ERROR")) {
+			return DeeTokens.INVALID_TOKEN.name();
 		}
 		return expectedTokenName;
 	}

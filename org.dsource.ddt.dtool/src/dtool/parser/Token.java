@@ -8,7 +8,7 @@ public class Token {
 	
 	public final DeeTokens type;
 	public final int startPos;
-	public final String tokenSource; //TODO, don't store this for certain kinds of nodes
+	public final String tokenSource;
 	
 	public Token(DeeTokens tokenCode, String source, int startPos) {
 		this.type = assertNotNull_(tokenCode);
@@ -40,28 +40,26 @@ public class Token {
 		return tokenSource;
 	}
 	
-	public DeeTokens getEffectiveType() {
-		return type;
+	public LexerErrorTypes getError() {
+		return null;
 	}
 	
 	public static class ErrorToken extends Token {
 		
 		protected final LexerErrorTypes error;
-		protected final DeeTokens originalTokenType;
 		
 		public ErrorToken(String value, int start, DeeTokens originalType, LexerErrorTypes error) {
-			super(DeeTokens.ERROR, value, start);
-			this.originalTokenType = originalType;
+			super(originalType, value, start);
 			this.error = error;
-			if(originalType == DeeTokens.ERROR || error == LexerErrorTypes.INVALID_CHARACTERS) {
-				assertTrue(originalType == DeeTokens.ERROR);
+			if(originalType == DeeTokens.INVALID_TOKEN || error == LexerErrorTypes.INVALID_CHARACTERS) {
+				assertTrue(originalType == DeeTokens.INVALID_TOKEN);
 				assertTrue(error == LexerErrorTypes.INVALID_CHARACTERS);
 			}
 		}
 		
 		@Override
-		public DeeTokens getEffectiveType() {
-			return originalTokenType;
+		public LexerErrorTypes getError() {
+			return error;
 		}
 	}
 	

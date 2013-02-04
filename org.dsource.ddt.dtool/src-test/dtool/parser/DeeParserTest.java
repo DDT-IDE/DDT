@@ -13,7 +13,6 @@ import dtool.ast.ASTCommonSourceRangeChecker.ASTAssertChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.definitions.Module;
-import dtool.parser.Token.ErrorToken;
 import dtool.tests.CommonTestUtils;
 
 
@@ -138,22 +137,14 @@ public class DeeParserTest extends CommonTestUtils {
 		public static Token getContentToken(DeeLexer lexer, boolean ignoreComments, boolean ignoreUT) {
 			while(true) {
 				Token token = lexer.next();
-				if((token.type.isParserIgnored && (ignoreComments || !isCommentToken(token))) 
-					|| (ignoreUT && isUnknownToken(token))) {
+				if(token.type.isParserIgnored 
+					&& (ignoreComments || !isCommentToken(token)
+					&& (ignoreUT || !(token.getTokenType() == DeeTokens.INVALID_TOKEN))) 
+					) {
 					continue;
 				}
 				return token;
 			}
-		}
-		
-		public static boolean isUnknownToken(Token token) {
-			if(token instanceof ErrorToken) {
-				ErrorToken errorToken = (ErrorToken) token;
-				if(errorToken.originalTokenType == DeeTokens.ERROR) {
-					return true;
-				}
-			}
-			return false;
 		}
 		
 		public static boolean isCommentToken(Token token) {
@@ -174,7 +165,7 @@ public class DeeParserTest extends CommonTestUtils {
 			assertEquals(error.errorType, expError.errorType);
 			assertEquals(error.sourceRange, expError.sourceRange);
 			assertEquals(error.msgErrorSource, expError.msgErrorSource);
-			assertAreEqual(safeToString(error.msgObj2), safeToString(expError.msgObj2));
+			assertAreEqual(safeToString(error.msgData), safeToString(expError.msgData));
 		}
 		assertTrue(resultErrors.size() == expectedErrors.size());
 	}

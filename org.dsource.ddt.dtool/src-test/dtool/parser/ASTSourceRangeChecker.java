@@ -159,7 +159,7 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 			for (ParserError error : expectedErrors) {
 				
 				switch (error.errorType) {
-				case EXPECTED_TOKEN: if(error.msgObj2 != DeeTokens.IDENTIFIER) break;
+				case EXPECTED_TOKEN: if(error.msgData != DeeTokens.IDENTIFIER) break;
 				case MALFORMED_TOKEN:
 				case INVALID_TOKEN_CHARACTERS:
 				case SYNTAX_ERROR:

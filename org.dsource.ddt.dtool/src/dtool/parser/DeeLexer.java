@@ -252,7 +252,7 @@ public class DeeLexer extends AbstractLexer {
 			if(getCharCategory(lookAhead()) == CharRuleCategory.BAD_TOKEN) {
 				continue;
 			} else {
-				return createErrorToken(DeeTokens.ERROR, LexerErrorTypes.INVALID_CHARACTERS);
+				return createErrorToken(DeeTokens.INVALID_TOKEN, LexerErrorTypes.INVALID_CHARACTERS);
 			}
 		}
 	}
@@ -584,11 +584,11 @@ public class DeeLexer extends AbstractLexer {
 		int nestingLevel = 1;
 		do {
 			Token token = next();
-			if(token.getTokenType() == DeeTokens.OPEN_BRACE) {
+			if(token.type == DeeTokens.OPEN_BRACE) {
 				nestingLevel++;
-			} else if (token.getTokenType() == DeeTokens.CLOSE_BRACE) {
+			} else if (token.type == DeeTokens.CLOSE_BRACE) {
 				nestingLevel--;
-			} else if (token.getTokenType() == DeeTokens.EOF) {
+			} else if (token.type == DeeTokens.EOF) {
 				tokenStartPos = tokenStringStartPos;
 				return createErrorToken(DeeTokens.STRING_TOKENS, LexerErrorTypes.STRING_NOT_TERMINATED__REACHED_EOF);
 			}

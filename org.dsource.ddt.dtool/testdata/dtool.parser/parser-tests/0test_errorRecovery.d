@@ -62,7 +62,7 @@ DefinitionVariable(? DefSymbol InitializerExp(MissingExpression))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of  KEYWORD(ARGUMENT);  format
 mixin #error(EXP_OPEN_PARENS) #error(EXP_SEMICOLON)
 mixin #error(EXP_OPEN_PARENS) ;
-#AST_EXPECTED:
+#AST_SOURCE_EXPECTED:
 mixin(); mixin(); 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of  KEYWORD(ARGUMENT) DECL;  format
 extern(C) #error(EXPRULE_decl)
