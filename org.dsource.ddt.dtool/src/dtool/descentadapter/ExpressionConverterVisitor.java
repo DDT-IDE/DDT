@@ -374,7 +374,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 			);
 		} else {
 			return endAdapt(
-				new ExpLiteralInteger(makeToken(DeeTokens.INTEGER, element.str, element.getStart()),
+				new ExpLiteralInteger(makeToken(DeeTokens.INTEGER_DECIMAL, element.str, element.getStart()),
 					DefinitionConverter.sourceRange(element, !(element instanceof ErrorExp))
 				)
 			);
@@ -416,7 +416,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(RealExp element) {
-		return endAdapt(new ExpLiteralFloat(makeToken(DeeTokens.FLOAT, element.str, element.getStartPos()), 
+		return endAdapt(new ExpLiteralFloat(makeToken(DeeTokens.FLOAT_DECIMAL, element.str, element.getStartPos()), 
 			DefinitionConverter.sourceRange(element)));
 	}
 	

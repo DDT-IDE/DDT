@@ -34,7 +34,7 @@ DeclarationBasicAttrib(
 )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 extern(#error:BAD_LINKAGE_ID) int bar;
-align(#error:EXP_INTEGER) int bar;
+align(#error:EXP_INTEGER_DECIMAL) int bar;
 align(12 #error:EXP_CLOSE_PARENS int bar;
 
 #AST_STRUCTURE_EXPECTED:
@@ -85,8 +85,8 @@ extern(C++)
 align●
 align(1)●
 align(12)●
-align(#error(EXP_INTEGER)) ●
-align(#error(EXP_INTEGER)#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)●
+align(#error(EXP_INTEGER_DECIMAL)) ●
+align(#error(EXP_INTEGER_DECIMAL)#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)●
 align(16#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)
 》
 #@ALIGN_ATTRIB_EXP{

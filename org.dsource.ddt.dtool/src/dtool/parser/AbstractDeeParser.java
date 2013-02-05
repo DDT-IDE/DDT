@@ -72,7 +72,7 @@ public class AbstractDeeParser {
 		while(true) {
 			Token token = deeLexer.next();
 			
-			DeeTokens tokenType = token.getTokenType();
+			DeeTokens tokenType = token.type;
 			
 			if(tokenType.isParserIgnored) {
 				if(tokenType == DeeTokens.INVALID_TOKEN) {
@@ -93,7 +93,7 @@ public class AbstractDeeParser {
 	}
 	
 	public DeeTokens lookAhead() {
-		return lookAheadToken().getTokenType();
+		return lookAheadToken().getRawTokenType();
 	}
 	
 	public boolean lookAheadIsType(DeeTokens... tokens) {

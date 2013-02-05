@@ -86,8 +86,8 @@ DefinitionVariable(? ?)
 // No close brackets/parentheses cause rule to quit parsing.
 align(16                  #error:EXP_CLOSE_PARENS int foo;
 align(16                  #error:EXP_CLOSE_PARENS ;
-align( #error:EXP_INTEGER #error:EXP_CLOSE_PARENS int foo;
-align( #error:EXP_INTEGER ) int bar;
+align( #error:EXP_INTEGER_DECIMAL #error:EXP_CLOSE_PARENS int foo;
+align( #error:EXP_INTEGER_DECIMAL ) int bar;
 
 foo[ #error:EXP_CLOSE_BRACKET public int dummyB1;
 foo[1 #error:EXP_CLOSE_BRACKET   dummyB2 #error:EXP_ID;

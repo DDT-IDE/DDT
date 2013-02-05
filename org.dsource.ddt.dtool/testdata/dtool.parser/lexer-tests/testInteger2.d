@@ -3,7 +3,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@《0●1●123456789●123_45_6789_●123_45__67___》#@INTEGER_SUFFIX
 #LEXERTEST:
-INTEGER, EOL,
+INTEGER_DECIMAL, EOL,
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 _123
@@ -12,7 +12,7 @@ _123
 #LEXERTEST:
 ID, EOL,
 INTEGER_OCTAL!IOx, EOL,
-INTEGER, ID, EOL,
+INTEGER_DECIMAL, ID, EOL,
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ binary
 #@《0b0110●0b0●0B1●0B_01__10__》#@INTEGER_SUFFIX

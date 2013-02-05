@@ -31,14 +31,14 @@ public class DeeLexerTest extends CommonTestUtils {
 		testLexerTokenizing("(){}[]", array(DeeTokens.OPEN_PARENS, DeeTokens.CLOSE_PARENS, 
 			DeeTokens.OPEN_BRACE, DeeTokens.CLOSE_BRACE, DeeTokens.OPEN_BRACKET, DeeTokens.CLOSE_BRACKET));
 
-		testLexerTokenizing("'a'", array(DeeTokens.CHAR_LITERAL));
+		testLexerTokenizing("'a'", array(DeeTokens.CHARACTER));
 		
-		testLexerTokenizing("123", array(DeeTokens.INTEGER));
+		testLexerTokenizing("123", array(DeeTokens.INTEGER_DECIMAL));
 		testLexerTokenizing("0b101", array(DeeTokens.INTEGER_BINARY));
 		testLexerTokenizing("01234567", array(DeeTokens.INTEGER_OCTAL));
 		testLexerTokenizing("0x0123456789ABDCEF", array(DeeTokens.INTEGER_HEX));
 		
-		testLexerTokenizing("1234567890.1234567890E123F", array(DeeTokens.FLOAT));
+		testLexerTokenizing("1234567890.1234567890E123F", array(DeeTokens.FLOAT_DECIMAL));
 		testLexerTokenizing("0x0123456789ABDCEFP123f", array(DeeTokens.FLOAT_HEX));
 		
 		testLexerTokenizing("asdf", array(DeeTokens.IDENTIFIER));
@@ -103,7 +103,7 @@ public class DeeLexerTest extends CommonTestUtils {
 			Token token = deeLexer.next();
 			
 			if(expectedTokenType != null) {
-				assertTrue(token.getTokenType() == expectedTokenType);
+				assertTrue(token.getRawTokenType() == expectedTokenType);
 			} else {
 				assertTrue(expectedError == null);
 			}
@@ -113,7 +113,7 @@ public class DeeLexerTest extends CommonTestUtils {
 			assertTrue(token.getStartPos() == readOffset);
 			assertEquals(deeLexer.source.subSequence(token.getStartPos(), token.getEndPos()), token.getSourceValue());
 			
-			DeeTokens tokenCode = token.getTokenType();
+			DeeTokens tokenCode = token.getRawTokenType();
 			if(tokenCode.getSourceValue() != null) {
 				assertEquals(tokenCode.getSourceValue(), token.getSourceValue());
 			}

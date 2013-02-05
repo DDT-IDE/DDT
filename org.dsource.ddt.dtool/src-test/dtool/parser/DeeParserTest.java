@@ -138,22 +138,14 @@ public class DeeParserTest extends CommonTestUtils {
 			while(true) {
 				Token token = lexer.next();
 				if(token.type.isParserIgnored 
-					&& (ignoreComments || !isCommentToken(token)
-					&& (ignoreUT || !(token.getTokenType() == DeeTokens.INVALID_TOKEN))) 
+					&& (ignoreComments || !(token.type.getGroupingToken() == DeeTokens.COMMENT)
+					&& (ignoreUT || !(token.type == DeeTokens.INVALID_TOKEN))) 
 					) {
 					continue;
 				}
 				return token;
 			}
 		}
-		
-		public static boolean isCommentToken(Token token) {
-			return 
-				token.type == DeeTokens.COMMENT_LINE ||
-				token.type == DeeTokens.COMMENT_MULTI ||
-				token.type == DeeTokens.COMMENT_NESTED;
-		}
-		
 	}
 	
 	public static void checkParserErrors(ArrayList<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {

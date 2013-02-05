@@ -12,7 +12,7 @@ public class DeeTokenSemantics {
 		
 		// Check token content validity  TODO: strings, unicode escapes, HTML entities, etc.
 		switch (token.type) {
-		case CHAR_LITERAL:
+		case CHARACTER:
 			if(token.tokenSource.length() > 3) {
 				parser.addError(EDeeParserErrors.MALFORMED_TOKEN, token, 
 					LexerErrorTypes.CHAR_LITERAL_SIZE_GREATER_THAN_ONE);

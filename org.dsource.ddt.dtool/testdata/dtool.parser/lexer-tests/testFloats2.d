@@ -8,11 +8,11 @@
 #@^NUMS.#@^NUMSX●.#@^NUMSX●#@^NUMS#NO_DECIMAL●
 》#@《#@《fi●F●i●#?NO_DECIMAL{Fi,L}》●#@{E1,e012,E+1,e-1,E+0,e-0_12__,E-_012}#@《●F●fi●i●Li》》
 #LEXERTEST:
-FLOAT, EOL
+FLOAT_DEC, EOL
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ decimal dot with no numbers following
 #@^NUMS.#LEXERTEST:
 
-FLOAT
+FLOAT_DEC
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ errors
 123__._123
 ._123
@@ -22,18 +22,18 @@ FLOAT
 0b01010f
 0b01010.101f
 #LEXERTEST:
-FLOAT, ID, EOL,
+FLOAT_DEC, ID, EOL,
 DOT, ID, EOL,
-FLOAT, ID, EOL,
-FLOAT, ID, EOL,
+FLOAT_DEC, ID, EOL,
+FLOAT_DEC, ID, EOL,
 INTEGER_OCTAL, ID, EOL,
 INTEGER_BINARY, ID, EOL,
-INTEGER_BINARY, FLOAT, EOL,
+INTEGER_BINARY, FLOAT_DEC, EOL,
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Exponent, no digits
 #@(F_SP1)e_#@{f,F,}
 #@(F_SP1)E#@{f,F,}#LEXERTEST:
-FLOAT!FxD, EOL,
-FLOAT!FxD,
+FLOAT_DEC!FxD, EOL,
+FLOAT_DEC!FxD,
 
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Float Literals - HEX

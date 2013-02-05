@@ -16,7 +16,7 @@ public class Token {
 		this.startPos = startPos;
 	}
 	
-	public final DeeTokens getTokenType() {
+	public final DeeTokens getRawTokenType() {
 		return type;
 	}
 	

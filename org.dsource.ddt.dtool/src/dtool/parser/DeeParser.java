@@ -86,6 +86,11 @@ public class DeeParser extends AbstractDeeParser {
 		return isMissingId(id) ? null : id.tokenSource;
 	}
 	
+	public DeeTokens lookAheadGrouped() {
+		DeeTokens tokenType = lookAheadToken().type.getGroupingToken();
+		return tokenType;
+	}
+	
 	/* ----------------------------------------------------------------- */
 	
 	public Module parseModule() {
@@ -245,7 +250,7 @@ public class DeeParser extends AbstractDeeParser {
 	/** This rule always returns a node, except only on EOF where it returns null. */
 	public ASTNeoNode parseDeclaration(boolean acceptEmptyDecl) {
 		while(true) {
-			DeeTokens la = assertNotNull_(lookAhead());
+			DeeTokens la = assertNotNull_(lookAheadGrouped());
 			
 			if(la == DeeTokens.EOF) {
 				return null;
@@ -259,48 +264,20 @@ public class DeeParser extends AbstractDeeParser {
 			case KW_EXTERN: return parseDeclarationExternLinkage();
 			case KW_ALIGN: return parseDeclarationAlign();
 			case KW_PRAGMA: return parseDeclarationPragma();
-				
-			case KW_STATIC: 
-				if(lookAhead(/*1*/) == DeeTokens.KW_IMPORT) { // TODO 
+			case PROTECTION_KW: return parseDeclarationProtection();
+			case ATTRIBUTE_KW: 
+				if(lookAhead() == DeeTokens.KW_STATIC && lookAhead(/*1 TODO*/) == DeeTokens.KW_IMPORT) { 
 					return parseImportDeclaration();
 				}
 				return parseDeclarationBasicAttrib();
-			case KW_DEPRECATED: return parseDeclarationBasicAttrib();
-			case KW_FINAL: return parseDeclarationBasicAttrib();
-			case KW_SYNCHRONIZED: return parseDeclarationBasicAttrib();
-			case KW_OVERRIDE: return parseDeclarationBasicAttrib();
-			case KW_ABSTRACT: return parseDeclarationBasicAttrib();
-			case KW_CONST: return parseDeclarationBasicAttrib();
-			case KW_SCOPE: return parseDeclarationBasicAttrib();
-			case KW___GSHARED: return parseDeclarationBasicAttrib();
-			case KW_SHARED: return parseDeclarationBasicAttrib();
-			case KW_IMMUTABLE: return parseDeclarationBasicAttrib();
-			case KW_INOUT: return parseDeclarationBasicAttrib();
-			// @disable keywords?
-			
-			
-			case KW_PRIVATE: return parseDeclarationProtection();
-			case KW_PACKAGE: return parseDeclarationProtection();
-			case KW_PROTECTED: return parseDeclarationProtection();
-			case KW_PUBLIC: return parseDeclarationProtection();
-			case KW_EXPORT: return parseDeclarationProtection();
+			// @disable keyword?
+			case KW_AUTO: // TODO:
+				break;
 			
 			case IDENTIFIER: return parseDeclaration_IdStart();
-			
-			case KW_BOOL: 
-			case KW_BYTE: case KW_UBYTE: 
-			case KW_SHORT: case KW_USHORT: case KW_INT: case KW_UINT: case KW_LONG: case KW_ULONG: 
-			case KW_CHAR: case KW_WCHAR: case KW_DCHAR: 
-			case KW_FLOAT: 
-			case KW_DOUBLE: case KW_REAL: 
-			case KW_VOID: 
-			case KW_IFLOAT: case KW_IDOUBLE: case KW_IREAL: case KW_CFLOAT: case KW_CDOUBLE: case KW_CREAL: 
-				return parseDeclaration_RefPrimitiveStart();
-			
+			case PRIMITIVE_KW: return parseDeclaration_RefPrimitiveStart();
 			case DOT: return parseDeclaration_DotStart();
 			
-			case KW_AUTO: // TODO:
-				
 			default:
 				break;
 			}
@@ -319,7 +296,7 @@ public class DeeParser extends AbstractDeeParser {
 	
 	protected RefIdentifier parseRefIdentifier() {
 		Token id = tryConsumeIdentifier();
-		assertTrue(id.type == DeeTokens.IDENTIFIER);
+		assertTrue(id.getRawTokenType() == DeeTokens.IDENTIFIER);
 		return new RefIdentifier(idTokenToString(id), sr(id));
 	}
 	
@@ -347,20 +324,12 @@ public class DeeParser extends AbstractDeeParser {
 	}
 	
 	protected RefParseResult parseReference() {
-		DeeTokens la = lookAhead();
+		DeeTokens la = lookAheadGrouped();
 		
 		switch (la) {
 		case DOT: return parseReference_referenceStart(parseRefModuleQualified());
 		case IDENTIFIER: return parseReference_referenceStart(parseRefIdentifier());
-		
-		case KW_BOOL: 
-		case KW_BYTE: case KW_UBYTE: 
-		case KW_SHORT: case KW_USHORT: case KW_INT: case KW_UINT: case KW_LONG: case KW_ULONG: 
-		case KW_CHAR: case KW_WCHAR: case KW_DCHAR: 
-		case KW_FLOAT: case KW_DOUBLE: case KW_REAL: 
-		case KW_VOID: 
-		case KW_IFLOAT: case KW_IDOUBLE: case KW_IREAL: case KW_CFLOAT: case KW_CDOUBLE: case KW_CREAL: 
-			return parseReference_referenceStart(parseRefPrimitive(la));
+		case PRIMITIVE_KW: return parseReference_referenceStart(parseRefPrimitive(lookAhead()));
 		
 		default:
 		return null;
@@ -414,7 +383,7 @@ public class DeeParser extends AbstractDeeParser {
 	public static String EXPRESSION_RULE = "expression";
 	
 	public Expression parseExpression() {
-		switch (lookAhead()) {
+		switch (lookAheadGrouped()) {
 		case KW_TRUE: case KW_FALSE: {
 			Token token = consumeLookAhead();
 			return new ExpLiteralBool(token.type == DeeTokens.KW_TRUE, srToCursor(lastRealToken));
@@ -435,13 +404,13 @@ public class DeeParser extends AbstractDeeParser {
 			return new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastRealToken));
 		case KW___FILE__:
 			return new ExpLiteralString(consumeLookAhead(), srToCursor(lastRealToken));
-		case INTEGER: case INTEGER_BINARY: case INTEGER_HEX: case INTEGER_OCTAL:
+		case INTEGER:
 			return connect(new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastRealToken)));
-		case CHAR_LITERAL: 
+		case CHARACTER: 
 			return connect(new ExpLiteralChar(consumeLookAhead(), srToCursor(lastRealToken)));
-		case FLOAT: case FLOAT_HEX:
+		case FLOAT:
 			return connect(new ExpLiteralFloat(consumeLookAhead(), srToCursor(lastRealToken)));
-		case STRING_WYSIWYG: case STRING_DQ: case STRING_HEX: case STRING_DELIM: case STRING_TOKENS:
+		case STRING:
 			return parseStringLiteral();
 		default:
 			return null;
@@ -450,11 +419,8 @@ public class DeeParser extends AbstractDeeParser {
 	
 	public Expression parseStringLiteral() {
 		ArrayList<Token> stringTokens = new ArrayList<Token>();
-		while(lookAhead() == DeeTokens.STRING_WYSIWYG 
-			|| lookAhead() == DeeTokens.STRING_DQ
-			|| lookAhead() == DeeTokens.STRING_HEX
-			|| lookAhead() == DeeTokens.STRING_DELIM
-			|| lookAhead() == DeeTokens.STRING_TOKENS) {
+		
+		while(lookAheadGrouped() == DeeTokens.STRING) {
 			Token string = consumeLookAhead();
 			stringTokens.add(string);
 		}
@@ -628,9 +594,9 @@ public class DeeParser extends AbstractDeeParser {
 		AttribBodyParseRule ab = new AttribBodyParseRule();
 		
 		if(tryConsume(DeeTokens.OPEN_PARENS)) {
-			alignNum = consumeExpectedToken(DeeTokens.INTEGER);
+			alignNum = consumeExpectedToken(DeeTokens.INTEGER_DECIMAL);
 			if(alignNum == null) {
-				alignNum = missingToken(DeeTokens.INTEGER, getParserPosition());
+				alignNum = missingToken(DeeTokens.INTEGER_DECIMAL, getParserPosition());
 			}
 			
 			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null) {
@@ -671,19 +637,12 @@ public class DeeParser extends AbstractDeeParser {
 	}
 	
 	public DeclarationProtection parseDeclarationProtection() {
-		switch (lookAhead()) {
-		case KW_PRIVATE:
-		case KW_PACKAGE:
-		case KW_PROTECTED:
-		case KW_PUBLIC:
-		case KW_EXPORT: 
-			break;
-		default:
+		if(lookAheadGrouped() != DeeTokens.PROTECTION_KW) {
 			return null;
 		}
 		consumeLookAhead();
 		int declStart = lastRealToken.getStartPos();
-		Protection protection = Protection.fromToken(lastRealToken.type);
+		Protection protection = Protection.fromToken(lastRealToken.getRawTokenType());
 		
 		AttribBodyParseRule ab = new AttribBodyParseRule().parseAttribBody(false);
 		return connect(

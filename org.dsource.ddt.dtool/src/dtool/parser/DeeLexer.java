@@ -608,16 +608,16 @@ public class DeeLexer extends AbstractLexer {
 			if(charCategory == CharRuleCategory.SINGLE_QUOTES) {
 				pos++;
 				if(pos == tokenStartPos + 2) {
-					return createErrorToken(DeeTokens.CHAR_LITERAL, LexerErrorTypes.CHAR_LITERAL_EMPTY);
+					return createErrorToken(DeeTokens.CHARACTER, LexerErrorTypes.CHAR_LITERAL_EMPTY);
 				}
 				
-				return createToken(DeeTokens.CHAR_LITERAL);
+				return createToken(DeeTokens.CHARACTER);
 			} else if (charCategory == CharRuleCategory.EOF) {
-				return createErrorToken(DeeTokens.CHAR_LITERAL, 
+				return createErrorToken(DeeTokens.CHARACTER, 
 					LexerErrorTypes.CHAR_LITERAL_NOT_TERMINATED__REACHED_EOF);
 			} else if (charCategory == CharRuleCategory.EOL) {
 				seekToNewline();
-				return createErrorToken(DeeTokens.CHAR_LITERAL, 
+				return createErrorToken(DeeTokens.CHARACTER, 
 					LexerErrorTypes.CHAR_LITERAL_NOT_TERMINATED__REACHED_EOL);
 			} else if (charCategory == CharRuleCategory.BACKSLASH) {
 				if (lookAhead(1) == '\'' || lookAhead(1) == '\\') {
@@ -711,7 +711,7 @@ public class DeeLexer extends AbstractLexer {
 		switch (literalType) {
 		case BINARY: return createIntegerToken(DeeTokens.INTEGER_BINARY, invalidDigitFound, hasAtLeastOneDigit);
 		case OCTAL: return createIntegerToken(DeeTokens.INTEGER_OCTAL, invalidDigitFound, hasAtLeastOneDigit);
-		case DECIMAL: return createToken(DeeTokens.INTEGER);
+		case DECIMAL: return createToken(DeeTokens.INTEGER_DECIMAL);
 		case HEX: return createIntegerToken(DeeTokens.INTEGER_HEX, false, hasAtLeastOneDigit);
 		}
 		throw assertUnreachable();
@@ -815,9 +815,9 @@ public class DeeLexer extends AbstractLexer {
 			}
 		} else {
 			if(!exponentHasDigits) {
-				return createErrorToken(DeeTokens.FLOAT, LexerErrorTypes.FLOAT_LITERAL__EXP_HAS_NO_DIGITS);
+				return createErrorToken(DeeTokens.FLOAT_DECIMAL, LexerErrorTypes.FLOAT_LITERAL__EXP_HAS_NO_DIGITS);
 			} else {
-				return createToken(DeeTokens.FLOAT);
+				return createToken(DeeTokens.FLOAT_DECIMAL);
 			}
 		}
 	}

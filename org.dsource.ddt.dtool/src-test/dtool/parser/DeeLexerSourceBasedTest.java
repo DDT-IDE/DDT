@@ -93,6 +93,10 @@ public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 			return DeeTokens.WHITESPACE.name();
 		} else if(expectedTokenName.equals("ERROR")) {
 			return DeeTokens.INVALID_TOKEN.name();
+		} else if(expectedTokenName.equals("CHAR_LITERAL")) {
+			return DeeTokens.CHARACTER.name();
+		} else if(expectedTokenName.equals("FLOAT_DEC")) {
+			return DeeTokens.FLOAT_DECIMAL.name();
 		}
 		return expectedTokenName;
 	}
