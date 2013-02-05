@@ -114,10 +114,6 @@ public class DeeLexerTest extends CommonTestUtils {
 			assertEquals(deeLexer.source.subSequence(token.getStartPos(), token.getEndPos()), token.getSourceValue());
 			
 			DeeTokens tokenCode = token.getRawTokenType();
-			if(tokenCode.getSourceValue() != null) {
-				assertEquals(tokenCode.getSourceValue(), token.getSourceValue());
-			}
-			
 			if(tokenCode == DeeTokens.EOF) {
 				assertTrue(token.getEndPos() >= token.getStartPos());
 			} else {

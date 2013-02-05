@@ -206,7 +206,7 @@ public class DeeLexer extends AbstractLexer {
 			return rule3Choices('=', DeeTokens.AND_ASSIGN, '&', DeeTokens.LOGICAL_AND, DeeTokens.AND);
 		case VBAR: 
 			return rule3Choices('=', DeeTokens.OR_ASSIGN, '|', DeeTokens.LOGICAL_OR, DeeTokens.OR);
-		case CARET: return rule2Choices('=', DeeTokens.XOR_ASSIGN, DeeTokens.XOR);
+		case CARET: return ruleCaretStart();
 		case EQUAL: return rule3Choices('=', DeeTokens.EQUALS, '>', DeeTokens.LAMBDA, DeeTokens.ASSIGN);
 		case TILDE: return rule2Choices('=', DeeTokens.CONCAT_ASSIGN, DeeTokens.CONCAT);
 		
@@ -855,6 +855,18 @@ public class DeeLexer extends AbstractLexer {
 			return createToken(DeeTokens.DOUBLE_DOT, 2);
 		}
 		return createToken(DeeTokens.DOT, 1);
+	}
+	
+	protected final Token ruleCaretStart() {
+		assertTrue(getCharCategory(lookAhead()) == CharRuleCategory.CARET);
+		
+		if(lookAhead(1) == '^') {
+			if(lookAhead(2) == '=') {
+				return createToken(DeeTokens.POW_ASSIGN, 3);
+			}
+			return createToken(DeeTokens.POW, 2);
+		} else 
+			return rule2Choices('=', DeeTokens.XOR_ASSIGN, DeeTokens.XOR); 
 	}
 	
 	protected final Token ruleLessStart() {

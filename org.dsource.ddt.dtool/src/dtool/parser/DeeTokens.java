@@ -70,7 +70,8 @@ public enum DeeTokens {
 	PLUS("+"), PLUS_ASSIGN("+="), INCREMENT("++"),	
 	DIV("/"), DIV_ASSIGN("/="), 
 	STAR("*"), MULT_ASSIGN("*="), 
-	MOD("%"), MOD_ASSIGN("%="), 
+	MOD("%"), MOD_ASSIGN("%="),
+	POW("^^"), POW_ASSIGN("^^="), 
 	
 	AND("&"), AND_ASSIGN("&="), LOGICAL_AND("&&"), OR("|"), OR_ASSIGN("|="), LOGICAL_OR("||"), 
 	XOR("^"), XOR_ASSIGN("^="),

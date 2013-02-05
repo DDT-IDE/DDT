@@ -1,6 +1,7 @@
 package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.SourceRange;
 
@@ -10,10 +11,13 @@ public class Token {
 	public final int startPos;
 	public final String tokenSource;
 	
-	public Token(DeeTokens tokenCode, String source, int startPos) {
-		this.type = assertNotNull_(tokenCode);
+	public Token(DeeTokens tokenType, String source, int startPos) {
+		this.type = assertNotNull_(tokenType);
 		this.tokenSource = source;
 		this.startPos = startPos;
+		if(tokenType.getSourceValue() != null) {
+			assertEquals(tokenType.getSourceValue(), tokenSource);
+		}
 	}
 	
 	public final DeeTokens getRawTokenType() {
