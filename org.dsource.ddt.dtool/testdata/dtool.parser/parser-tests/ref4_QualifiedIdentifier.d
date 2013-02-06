@@ -23,7 +23,7 @@ FooBar.Bar.   int dummy;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@(SP_TYPE_REF).foo dummy;
+#@SP_TYPE_REF•.foo dummy;
 
 #AST_STRUCTURE_EXPECTED:
 DefVariable(RefQualified(#@SPSE_TYPE_REF(SP_TYPE_REF) RefIdentifier) DefSymbol)

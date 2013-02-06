@@ -11,7 +11,7 @@ module pack.bar.foo;
 ,
 ,}
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ various error cases
-module#{, ,#@(NL)}#{,;}#AST_EXPECTED:
+module#{, ,#@NL}#{,;}#AST_EXPECTED:
 #parser:AllowAnyErrors
 module ;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -40,7 +40,7 @@ module ;
 .foo;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module#error(EXP_ID)#error(EXP_SEMICOLON)#{,#@(NL)}
+module#error(EXP_ID)#error(EXP_SEMICOLON)#{,#@NL}
 #AST_EXPECTED:
 module ;
 

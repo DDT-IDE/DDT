@@ -66,7 +66,7 @@ DefinitionVariable(RefPrimitive DefSymbol)
 
 #@LINKAGE_TYPE{C,C++,D,Windows,Pascal,System}
 #@EXTERN_ATTRIB《
-extern(#@(LINKAGE_TYPE))●
+extern(#@LINKAGE_TYPE)●
 extern(Xpto #error(BAD_LINKAGE_ID) )●
 extern(#error(BAD_LINKAGE_ID))●
 extern(#error(BAD_LINKAGE_ID)#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)●
@@ -74,7 +74,7 @@ extern(C++#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)
 》
 
 #@EXTERN_ATTRIB_EXP{
-extern(#@(LINKAGE_TYPE)),
+extern(#@LINKAGE_TYPE),
 extern,
 extern,
 extern,
@@ -136,17 +136,17 @@ auto ??
 @disable
 
 
-#@ATTRIBS{#@(EXTERN_ATTRIB),#@(ALIGN_ATTRIB),#@(PRAGMA_ATTRIB)#PRAGMA(flag),#@(SIMPLE_ATTRIBS)}
+#@ATTRIBS{#@EXTERN_ATTRIB,#@ALIGN_ATTRIB,#@PRAGMA_ATTRIB#PRAGMA(flag),#@SIMPLE_ATTRIBS}
 #@ATTRIBS_EXP{
 	#@EXTERN_ATTRIB_EXP(EXTERN_ATTRIB),
 	#@ALIGN_ATTRIB_EXP(ALIGN_ATTRIB),
 	#@PRAGMA_ATTRIB_EXP(PRAGMA_ATTRIB),
-	#@(SIMPLE_ATTRIBS)
+	#@SIMPLE_ATTRIBS
 }
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@(ATTRIBS) #@BODY_TYPES【
+#@ATTRIBS #@BODY_TYPES【
 int foo1;
 ●
 #?DECL_BROKEN{#error:SE_decl} :
@@ -162,9 +162,9 @@ void bar;
 	void bar;
 #?DECL_BROKEN{#error:SE_decl}}
 ●
-/*EMPTY DECLARATION*/ #?DECL_BROKEN{,#?PRAGMA{,#error:SE_decl}} ;
+/*EMPTY DECLARATION*/ #?DECL_BROKEN!{#?PRAGMA!{#error:SE_decl}} ;
 】
 
 #AST_SOURCE_EXPECTED:
 
-#@ATTRIBS_EXP(ATTRIBS) #@(BODY_TYPES)
+#@ATTRIBS_EXP(ATTRIBS) #@BODY_TYPES
