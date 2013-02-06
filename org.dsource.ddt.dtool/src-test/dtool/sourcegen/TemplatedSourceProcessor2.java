@@ -268,6 +268,7 @@ public class TemplatedSourceProcessor2 {
 				checkError(expansionId == null, parser);
 			} 
 			if(parser.tryConsume("!")) {
+				checkError(anonymousExpansion, parser);
 				defineOnly = true;
 			}
 		}
@@ -278,11 +279,15 @@ public class TemplatedSourceProcessor2 {
 			String closeDelim = CLOSE_DELIMS[alt];
 			arguments = parseArgumentList(parser, closeDelim);
 		}
+		checkError(defineOnly && arguments == null, parser);
 		
 		String pairedExpansionId = null;
 		if(parser.tryConsume("(")) {
 			pairedExpansionId = consumeDelimitedId(parser, ")");
 		}
+		
+		// This is just an optional separator, useful when expansion only has an id, like: #@EXP•BLA
+		parser.tryConsume("•"); 
 		
 		checkError(expansionId == null && pairedExpansionId == null && arguments == null, parser);
 		return new TspExpansionElement(expansionId, pairedExpansionId, arguments, anonymousExpansion, defineOnly);
@@ -664,6 +669,7 @@ public class TemplatedSourceProcessor2 {
 		checkError(sourceCase.isHeaderCase && expansionId == null, sourceCase);
 		
 		checkError(expansionElem.anonymousExpansion && expansionElem.dontOuputSource, sourceCase);
+		checkError(expansionElem.expansionId == null && expansionElem.arguments == null, sourceCase);
 		
 		ArrayList<Argument> arguments = expansionElem.arguments;
 		TspExpansionElement definedExpansionElem = null;
@@ -703,34 +709,18 @@ public class TemplatedSourceProcessor2 {
 			
 			pairedExpansionIx = sourceCase.activeExpansions.get(expansionElem.pairedExpansionId);
 			
-			if(pairedExpansionIx == null) {
-				// Paired expansion is not active, that is only allowed if this expansion has no arguments
-				checkError(arguments != null, sourceCase); 
-			}
-			
-			if(arguments == null) {
-				arguments = referredExpansion.arguments;
-			} else {
-				checkError(arguments.size() != referredExpansion.arguments.size(), sourceCase);
-			}
+			checkError(arguments.size() != referredExpansion.arguments.size(), sourceCase);
 		}
 		
-		String idToActivate = expansionElem.anonymousExpansion ? null :
-			(expansionId != null ? expansionId : expansionElem.pairedExpansionId);
+		String idToActivate = expansionElem.anonymousExpansion ? null : expansionId;
+		String pairedIdToActivate = expansionElem.pairedExpansionId;
 		
 		if(pairedExpansionIx != null) {
 			int ix = pairedExpansionIx;
-			processArgument(sourceCase, elementStream, idToActivate, arguments.get(ix), ix);
+			processArgument(sourceCase, elementStream, idToActivate, pairedIdToActivate, arguments.get(ix), ix);
 		} else {
-			
-			boolean activateOnly = expansionElem.dontOuputSource;
-			if(activateOnly) {
-				assertTrue(expansionId == null);
-			}
-			
 			for (int ix = 0; ix < arguments.size(); ix++) {
-				Argument argument = activateOnly ? null : arguments.get(ix);
-				processArgument(sourceCase, elementStream, idToActivate, argument, ix);
+				processArgument(sourceCase, elementStream, idToActivate, pairedIdToActivate, arguments.get(ix), ix);
 			}
 		}
 		return true;
@@ -747,18 +737,23 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected void processArgument(ProcessingState sourceCase, ICopyableIterator<TspElement> elementStream,
-		String expansionId, Argument argument, int index) throws TemplatedSourceException {
+		String expansionId, String pairingId, Argument argument, int index) throws TemplatedSourceException {
 		ProcessingState newState = sourceCase.clone();
-		if(expansionId != null) {
-			Integer oldValue = newState.activeExpansions.put(expansionId, index);
-			assertTrue(oldValue == null || oldValue == index); 
-		}
+		activateId(newState, expansionId, index);
+		activateId(newState, pairingId, index);
 		
 		ICopyableIterator<TspElement> newElements = (argument == null) ? 
 			elementStream.copyState() : 
 			ChainedIterator2.create(CopyableListIterator.create(argument), elementStream.copyState())
 			;
 		processCaseContents(newState, newElements);
+	}
+	
+	public void activateId(ProcessingState newState, String expansionId, int index) {
+		if(expansionId != null) {
+			Integer oldValue = newState.activeExpansions.put(expansionId, index);
+			assertTrue(oldValue == null || oldValue == index); 
+		}
 	}
 	
 }

@@ -37,10 +37,10 @@ ExpLiteralFloat
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 
 #@《►
-#@(F_SP1)e_●
-#@(F_SP1)E●
-#@(HF_SP1x)P_●
-#@(HF_SP1x)P●
+#@F_SP1•e_●
+#@F_SP1•E●
+#@HF_SP1x•P_●
+#@HF_SP1x•P●
 》#@{f,F,}#error(MT_FxD)
 
 #AST_STRUCTURE_EXPECTED:

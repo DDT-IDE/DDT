@@ -30,8 +30,8 @@ INTEGER_OCTAL, ID, EOL,
 INTEGER_BINARY, ID, EOL,
 INTEGER_BINARY, FLOAT_DEC, EOL,
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Exponent, no digits
-#@(F_SP1)e_#@{f,F,}
-#@(F_SP1)E#@{f,F,}#LEXERTEST:
+#@F_SP1•e_#@{f,F,}
+#@F_SP1•E#@{f,F,}#LEXERTEST:
 FLOAT_DEC!FxD, EOL,
 FLOAT_DEC!FxD,
 
@@ -53,14 +53,14 @@ FLOAT_HEX
 FLOAT_HEX, ID, EOL
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ HEX - Exponent, no digits
-#@(HF_SP1x)P_#@{f,F,}
-#@(HF_SP1x)P#@{f,F,}#LEXERTEST:
+#@HF_SP1x•P_#@{f,F,}
+#@HF_SP1x•P#@{f,F,}#LEXERTEST:
 FLOAT_HEX!FxD, EOL,
 FLOAT_HEX!FxD,
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ HEX - no exponent
-#@(HF_SP1)L
-#@(HF_SP1x)i
-#@(HF_SP1).L
+#@HF_SP1•L
+#@HF_SP1x•i
+#@HF_SP1•.L
 #LEXERTEST:
 INTEGER_HEX, EOL,
 FLOAT_HEX!FxE, EOL,
