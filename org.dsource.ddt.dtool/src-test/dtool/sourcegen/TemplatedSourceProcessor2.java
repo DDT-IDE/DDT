@@ -136,8 +136,8 @@ public class TemplatedSourceProcessor2 {
 	
 	protected class TspStringElement extends TspElement {
 		public static final String RAW_TEXT = "TextElement";
-		protected final String producedText;
-		protected final String elemType;
+		public final String producedText;
+		public final String elemType;
 		
 		protected TspStringElement(String source) {
 			this(source, RAW_TEXT);
@@ -157,7 +157,7 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected class TspCommand extends TspElement {
-		protected final String command;
+		public final String command;
 		
 		protected TspCommand(String command) {
 			this.command = assertNotNull_(command);
@@ -219,11 +219,11 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected class TspExpansionElement extends TspElement {
-		protected final String expansionId; 
-		protected final String pairedExpansionId; 
-		protected final ArrayList<Argument> arguments; 
-		protected final boolean dontOuputSource;
-		protected final boolean anonymousExpansion;
+		public final String expansionId; 
+		public final String pairedExpansionId; 
+		public final ArrayList<Argument> arguments; 
+		public final boolean dontOuputSource;
+		public final boolean anonymousExpansion;
 		
 		public TspExpansionElement(String expansionId, String pairedExpansionId, ArrayList<Argument> arguments, 
 			boolean anonymousExpansion, boolean dontOuputSource) {
@@ -355,10 +355,10 @@ public class TemplatedSourceProcessor2 {
 	}
 	
 	protected class TspMetadataElement extends TspElement {
-		final String tag; 
-		final String value; 
-		final Argument associatedElements; 
-		final boolean outputSource;
+		public final String tag; 
+		public final String value; 
+		public final Argument associatedElements; 
+		public final boolean outputSource;
 		
 		public TspMetadataElement(String tag, String value, Argument associatedElements, boolean outputSource) {
 			this.tag = tag;
@@ -452,6 +452,8 @@ public class TemplatedSourceProcessor2 {
 		String mdConditionId = emptyToNull(parser.consumeAlphaNumericUS(false));
 		checkError(mdConditionId == null, parser);
 		
+		boolean invert = parser.tryConsume("!");
+		
 		ArrayList<Argument> arguments = null;
 		int alt = parser.tryConsume(OPEN_DELIMS);
 		if(alt == -1) {
@@ -463,22 +465,25 @@ public class TemplatedSourceProcessor2 {
 		checkError(arguments.size() > 2, parser);
 		
 		Argument argElse = arguments.size() == 1 ? null: arguments.get(1);
-		return new TspIfElseExpansionElement(mdConditionId, arguments.get(0), argElse);
+		return new TspIfElseExpansionElement(mdConditionId, invert, arguments.get(0), argElse);
 	}
 	
 	protected class TspIfElseExpansionElement extends TspElement {
-		final String mdConditionId; 
-		final Argument argIf; 
-		final Argument argThen;
-		public TspIfElseExpansionElement(String mdConditionId, Argument argIf, Argument argThen) {
+		public final String mdConditionId; 
+		public final boolean invert;
+		public final Argument argThen; 
+		public final Argument argElse;
+		
+		public TspIfElseExpansionElement(String mdConditionId, boolean invert, Argument argThen, Argument argElse) {
 			this.mdConditionId = mdConditionId;
-			this.argIf = argIf;
+			this.invert = invert;
 			this.argThen = argThen;
+			this.argElse = argElse;
 		}
 		
 		@Override
 		public String toString() {
-			return "IF?【"+ StringUtil.nullAsEmpty(mdConditionId)+"{"+argIf+","+argThen+"}"+"】";
+			return "IF?【"+ StringUtil.nullAsEmpty(mdConditionId)+"{"+argThen+","+argElse+"}"+"】";
 		}
 	}
 	
@@ -588,11 +593,11 @@ public class TemplatedSourceProcessor2 {
 			} else if(tspElem instanceof TspIfElseExpansionElement) {
 				TspIfElseExpansionElement tspIfElse = (TspIfElseExpansionElement) tspElem;
 				
-				Argument sourceArgument = tspIfElse.argThen;
+				Argument sourceArgument = tspIfElse.invert ? tspIfElse.argThen : tspIfElse.argElse;
 				
 				for (MetadataEntry mde : sourceCase.metadata) {
 					if(mde != null && mde.name.equals(tspIfElse.mdConditionId)) {
-						sourceArgument = tspIfElse.argIf;
+						sourceArgument = tspIfElse.invert ? tspIfElse.argElse : tspIfElse.argThen;
 						break;
 					}
 				}

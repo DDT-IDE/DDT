@@ -852,17 +852,17 @@ header2
 	public void testIfElseExpansion() throws Exception { testIfElseExpansion$(); }
 	public void testIfElseExpansion$() throws Exception {
 		testSourceProcessing("#", 
-			"> #@{A,B#var(Bactive)} #?var{THEN}",
+			"> #@{A,B#var(Bactive)} #?var{THEN}-#?var!{NOT_THEN}",
 			
-			checkMD("> A "),
-			checkMD("> B THEN", new MetadataEntry("var", "Bactive", null, 3))
+			checkMD("> A -NOT_THEN"),
+			checkMD("> B THEN-", new MetadataEntry("var", "Bactive", null, 3))
 		);
 		
 		testSourceProcessing("#", 
-			"> #@{A,B#var(Bactive)} #?var{THEN,ELSE}",
+			"> #@{A,B#var(Bactive)} #?var{THEN,ELSE}-#?var!{NOT_THEN,NOT_ELSE}",
 			
-			checkMD("> A ELSE"),
-			checkMD("> B THEN", new MetadataEntry("var", "Bactive", null, 3))
+			checkMD("> A ELSE-NOT_THEN"),
+			checkMD("> B THEN-NOT_ELSE", new MetadataEntry("var", "Bactive", null, 3))
 		);
 		
 		testSourceProcessing("#", "> #?{THEN,ELSE, INVALID}", 4);
