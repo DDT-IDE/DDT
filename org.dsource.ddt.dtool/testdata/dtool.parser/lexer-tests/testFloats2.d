@@ -4,9 +4,11 @@
 
 #@F_SP1《123●123.45●2_535●0.123●.897》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@《►
-#@^NUMS.#@^NUMSX●.#@^NUMSX●#@^NUMS#NO_DECIMAL●
-》#@《#@《fi●F●i●#?NO_DECIMAL{Fi,L}》●#@{E1,e012,E+1,e-1,E+0,e-0_12__,E-_012}#@《●F●fi●i●Li》》
+#@《
+►#@^NUMS.#@^NUMSX●
+►.#@^NUMSX●
+►#@^NUMS#NO_DECIMAL●
+¤》#@《#@《fi●F●i●#?NO_DECIMAL{Fi,L}》●#@{E1,e012,E+1,e-1,E+0,e-0_12__,E-_012}#@《●F●fi●i●Li》》
 #LEXERTEST:
 FLOAT_DEC, EOL
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ decimal dot with no numbers following
@@ -42,9 +44,12 @@ FLOAT_DEC!FxD,
 #@HF_SP1《0x123●0x25_AD_3F●0x0》
 #@HF_SP1x《#@^HF_SP1●0x123.45●0x0.123●0x.897》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@《►
-0x#@^HNUMS.#@^HNUMS●0x.#@^HNUMS●0x#@^HNUMS●0x#@^HNUMS.●
-》#@{P1,p012,P+1,p-1,P+0,p-0_12__,P-_012}#@《●f●Fi●L●i》#LEXERTEST:
+#@《
+►0x#@^HNUMS.#@^HNUMS●
+►0x.#@^HNUMS●
+►0x#@^HNUMS●
+►0x#@^HNUMS.●
+¤》#@{P1,p012,P+1,p-1,P+0,p-0_12__,P-_012}#@《●f●Fi●L●i》#LEXERTEST:
 
 FLOAT_HEX
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 

@@ -66,70 +66,70 @@ DefinitionVariable(RefPrimitive DefSymbol)
 
 #@LINKAGE_TYPE{C,C++,D,Windows,Pascal,System}
 #@EXTERN_ATTRIB《
-extern(#@LINKAGE_TYPE)●
-extern(Xpto #error(BAD_LINKAGE_ID) )●
-extern(#error(BAD_LINKAGE_ID))●
-extern(#error(BAD_LINKAGE_ID)#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)●
-extern(C++#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)
-》
+ ►extern(#@LINKAGE_TYPE)●
+ ►extern(Xpto #error(BAD_LINKAGE_ID) )●
+ ►extern(#error(BAD_LINKAGE_ID))●
+ ►extern(#error(BAD_LINKAGE_ID)#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)●
+ ►extern(C++#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)●
+¤》
 
 #@EXTERN_ATTRIB_EXP{
-extern(#@LINKAGE_TYPE),
-extern,
-extern,
-extern,
-extern(C++)
-}
+ extern(#@LINKAGE_TYPE),
+ extern,
+ extern,
+ extern,
+ extern(C++),
+¤}
 
 #@ALIGN_ATTRIB《
-align●
-align(1)●
-align(12)●
-align(#error(EXP_INTEGER_DECIMAL)) ●
-align(#error(EXP_INTEGER_DECIMAL)#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)●
-align(16#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)
-》
+ ►align●
+ ►align(1)●
+ ►align(12)●
+ ►align(#error(EXP_INTEGER_DECIMAL)) ●
+ ►align(#error(EXP_INTEGER_DECIMAL)#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)●
+ ►align(16#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)●
+¤》
 #@ALIGN_ATTRIB_EXP{
 align,
 align(1),
 align(12),
 align(),
 align(),
-align(16)
-}
+align(16),
+¤}
 
 // TODO pragma expression list !
 #@PRAGMA_ATTRIB《
-pragma(foo)●
-pragma #error(EXP_OPEN_PARENS) #DECL_BROKEN(flag) ●
-pragma ( #error(EXP_ID) #error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag) ●
-pragma ( #error(EXP_ID) ) ●
-pragma ( foo2 #error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag) 
-》
+ ►pragma(foo)●
+ ►pragma #error(EXP_OPEN_PARENS) #DECL_BROKEN(flag) ●
+ ►pragma ( #error(EXP_ID) #error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag) ●
+ ►pragma ( #error(EXP_ID) ) ●
+ ►pragma ( foo2 #error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag) ● 
+¤》
 #@PRAGMA_ATTRIB_EXP《
 pragma(foo)●
 pragma() ●
 pragma() ●
 pragma() ●
-pragma(foo2) 
-》
+pragma(foo2) ●
+¤》
 
-#@SIMPLE_ATTRIBS{
-#@PROT_ATTRIB{private,package,protected,public,export},
-deprecated,
-static,
-extern,
-final,
-synchronized,
-override,
-abstract,
-const,
-scope,
-__gshared,
-shared,
-immutable,
-inout
-}
+#@SIMPLE_ATTRIBS《
+ ►#@PROT_ATTRIB{private,package,protected,public,export}●
+ ►deprecated●
+ ►static●
+ ►extern●
+ ►final●
+ ►synchronized●
+ ►override●
+ ►abstract●
+ ►const●
+ ►scope●
+ ►__gshared●
+ ►shared●
+ ►immutable●
+ ►inout●
+¤》
 
 TODO:
 auto ??
@@ -147,23 +147,23 @@ auto ??
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 #@ATTRIBS #@BODY_TYPES【
-int foo1;
-●
-#?DECL_BROKEN{#error:SE_decl} :
-int foo2;
-void bar;
-●
-#?DECL_BROKEN{#error:SE_decl} : /* Zero decls */
-●
-#?DECL_BROKEN{#error:SE_decl} { #?DECL_BROKEN{#error:SE_decl} } // This will change in the future
-●
-#?DECL_BROKEN{#error:SE_decl} { // This error happening will change in the future
+►int foo1;●
+
+►#?DECL_BROKEN{#error:SE_decl} :
+    int foo2;
+    void bar;●
+
+►#?DECL_BROKEN{#error:SE_decl} : /* Zero decls */●
+
+►#?DECL_BROKEN{#error:SE_decl} { #?DECL_BROKEN{#error:SE_decl} } // This will change in the future●
+
+►#?DECL_BROKEN{#error:SE_decl} { // This error happening will change in the future
 	int fooX;
 	void bar;
-#?DECL_BROKEN{#error:SE_decl}}
-●
-/*EMPTY DECLARATION*/ #?DECL_BROKEN!{#?PRAGMA!{#error:SE_decl}} ;
-】
+#?DECL_BROKEN{#error:SE_decl}}●
+
+►/*EMPTY DECLARATION*/ #?DECL_BROKEN!{#?PRAGMA!{#error:SE_decl}} ;●
+¤】
 
 #AST_SOURCE_EXPECTED:
 

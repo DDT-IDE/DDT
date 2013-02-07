@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -80,20 +81,24 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	public void runSourceBasedTests$() throws Exception {
 		AnnotatedSource[] sourceBasedTests = getSourceBasedTests(file, commonDefinitions);
 		HashSet<String> printSources = new HashSet<String>();
+		Pattern trimStartNewlines = Pattern.compile("(^(\\n|\\r\\n)*)|((\\n|\\r\\n)*$)");
 		
 		for (AnnotatedSource testCase : sourceBasedTests) {
 			
 			if(testCase.findMetadata("comment", "NO_STDOUT") == null) {
-				testsLogger.println(">> ----------- Parser source test: ----------- <<");
-				testsLogger.println(testCase.source.replaceFirst("^\\s*", ""));
+				if(!printSources.contains(testCase.originalTemplatedSource)) {
+					testsLogger.println(">> ----------- Parser source test: ----------- <<");
+				}
+				testsLogger.println(trimStartNewlines.matcher(testCase.source).replaceAll(""));
 			} 
 			else if(!printSources.contains(testCase.originalTemplatedSource)){
-				printSources.add(testCase.originalTemplatedSource);
 				testsLogger.println(">> ----------- Parser source test (TEMPLATE): ----------- <<");
 				testsLogger.println(testCase.originalTemplatedSource);
 			}
+			printSources.add(testCase.originalTemplatedSource);
 			runSourceBasedTest(testCase);
 		}
+		testsLogger.println();
 	}
 	
 	public void runSourceBasedTest(AnnotatedSource testSource) {
@@ -109,8 +114,13 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		for (MetadataEntry mde : testSource.metadata) {
 			if(mde.name.equals("AST_SOURCE_EXPECTED") || mde.name.equals("AST_EXPECTED")) {
 				assertTrue(expectedGenSource == parseSource);
-				assertTrue(mde.associatedSource != null || mde.value.equals("NoCheck"));
-				expectedGenSource = mde.associatedSource;
+				if(mde.value != null && mde.value.equals("NoCheck")) {
+					assertTrue(mde.associatedSource == null || mde.associatedSource.trim().isEmpty());
+					expectedGenSource = null;
+				} else {
+					assertTrue(mde.associatedSource != null);
+					expectedGenSource = mde.associatedSource;
+				}
 				ignoreFurtherErrorMDs = true;
 			} else if(mde.name.equals("AST_STRUCTURE_EXPECTED")) {
 				assertTrue(expectedStructure == null);

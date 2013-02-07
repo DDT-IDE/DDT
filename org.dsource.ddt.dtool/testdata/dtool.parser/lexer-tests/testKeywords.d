@@ -39,3 +39,9 @@ __EOF__ blah blah
 #LEXERTEST:
 KW___DATE__, WS,KW___TIME__, WS,KW___TIMESTAMP__, WS,KW___VENDOR__, WS,KW___VERSION__, EOL,
 EOF,
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+!is
+!in
+#LEXERTEST:
+NOT, KW_IS, EOL,
+NOT, KW_IN, EOL,

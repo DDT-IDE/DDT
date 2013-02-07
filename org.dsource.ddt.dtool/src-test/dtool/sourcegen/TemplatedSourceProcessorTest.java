@@ -567,12 +567,13 @@ header2
 		);
 		
 		testSourceProcessing("#", "> #@{xxx, b ,text\n¤}==", 19);
+		testSourceProcessing("#", "> #@{xxx, b ,\n¤ }==", 16);
 		
 		// Uniform argument separator syntax ----
 		testSourceProcessing("#", 
 			"> #@{►\nasd,► ,line}==",
 			
-			checkMD("> asd=="),
+			checkMD("> \nasd=="),
 			checkMD(">  =="),
 			checkMD("> line==")
 		);
@@ -584,14 +585,15 @@ header2
 			checkMD(">   line==")
 		);
 		
-		testSourceProcessing("#", "> #@{ text ►abc\ndef, ,line,\n}==", 6);
+		testSourceProcessing("#", "> #@{ text ►abc\ndef, ,line,\n}==", 12);
+		testSourceProcessing("#", "> #@{ ►  ►abc\ndef, ,line,\n}==", 10);
 		
 		// Uniform argument separator syntax -- in metadata
 		
 		testSourceProcessing("#", "> #MD(►xyz, line\n){ ►ABC,line}==", 
 			checkSourceOnly("> ABC,line==", 1)); 
 		testSourceProcessing("#", "> #MD:\n►asd, line\n ==", 
-			checkMD("> ", new MetadataEntry("MD", null, "►asd, line\n ==", -1)));
+			checkMD("> ", new MetadataEntry("MD", null, "asd, line\n ==", -1)));
 		
 		
 		// Syntax errors: interactions:

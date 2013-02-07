@@ -15,33 +15,35 @@ ExpLiteralFloat
 #@HF_SP1x《#@^HF_SP1●0x123.45●0x0.123●0x.897》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(EXPRESSION)#@《►
+#PARSE(EXPRESSION) #comment(NO_STDOUT)
+#@《
 
-#@《►
-#@^NUMS.#@^NUMSX●.#@^NUMSX●#@^NUMS#NO_DECIMAL(flag)●
-》#@《#@《fi●F●i●#?NO_DECIMAL{Fi,L}》●#@{E1,e012,E+1,e-1,E+0,e-0_12__,E-_012}#@《●F●fi●i●Li》》●
+  ►#@《
+    ►#@^NUMS.#@^NUMSX●
+    ►.#@^NUMSX●
+    ►#@^NUMS#NO_DECIMAL(flag)●
+  ¤》#@《#@《fi●F●i●#?NO_DECIMAL{Fi,L}》●#@{E1,e012,E+1,e-1,E+0,e-0_12__,E-_012}#@《●F●fi●i●Li》》●
 
-#@^NUMS.●
+  ►#@^NUMS.●
 
-#@《►
-0x#@^HNUMS.#@^HNUMS●0x.#@^HNUMS●0x#@^HNUMS●0x#@^HNUMS.●
-》#@{P1,p012,P+1,p-1,P+0,p-0_12__,P-_012}#@《●fi●F●L●i》●
+  ►#@《
+    ►0x#@^HNUMS.#@^HNUMS●
+    ►0x.#@^HNUMS●
+    ►0x#@^HNUMS●
+    ►0x#@^HNUMS.●
+  ¤》#@{P1,p012,P+1,p-1,P+0,p-0_12__,P-_012}#@《●fi●F●L●i》●
 
-
-》
-
-#comment(NO_STDOUT)
-#AST_STRUCTURE_EXPECTED:
+¤》#AST_STRUCTURE_EXPECTED:
 ExpLiteralFloat
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 
-#@《►
-#@F_SP1•e_●
-#@F_SP1•E●
-#@HF_SP1x•P_●
-#@HF_SP1x•P●
-》#@{f,F,}#error(MT_FxD)
+#@《
+  ►#@F_SP1•e_●
+  ►#@F_SP1•E●
+  ►#@HF_SP1x•P_●
+  ►#@HF_SP1x•P●
+¤》#@{f,F,}#error(MT_FxD)
 
 #AST_STRUCTURE_EXPECTED:
 ExpLiteralFloat

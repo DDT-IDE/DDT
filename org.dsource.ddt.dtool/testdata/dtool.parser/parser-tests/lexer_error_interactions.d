@@ -2,7 +2,7 @@
 
 TODO: refactor these code samples?
 
-#@LEXER_ERRORS《►
+#@LEXER_ERRORS《
 ''#error(MT_CHx0)●
 'a#error(MT_CHxF)●
 '#error(MT_CHxF)●
@@ -23,7 +23,7 @@ r" asdf \x\f /* #ERROR(MT_Sx)●
 q"/asdf/ asdfd" #ERROR(MT_SDx)●
 q"xx asdf 
 xx"#ERROR(MT_SDxID)●
-》
+¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 int foo #error(EXP_SEMICOLON) #@LEXER_ERRORS#error(<SE_decl)#comment(EOF):

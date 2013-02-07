@@ -13,10 +13,10 @@ InfixExpression(ExpLiteralInteger InfixExpression(ExpLiteralString ExpLiteralInt
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@INT_OR_MISSING《►
-#?AST_STRUCTURE_EXPECTED!【123●Integer】●
-#?AST_STRUCTURE_EXPECTED!【#error(EXPRULE_exp)●】●
-》
+#@INT_OR_MISSING《
+  ►#?AST_STRUCTURE_EXPECTED!【123●Integer】●
+  ►#?AST_STRUCTURE_EXPECTED!【#error(EXPRULE_exp)●】●
+¤》
 
 #@ASSIGN《=●+=●-=●*=●/=●%=●&=●|=●^=●~=●<<=●>>=●>>>=●^^=》
 #@COND《 ? #@《"middleExp"》 :》
@@ -25,31 +25,31 @@ InfixExpression(ExpLiteralInteger InfixExpression(ExpLiteralString ExpLiteralInt
 #@ADD《+●-●~》
 #@MUL《*●/●%》
 
-#@OP《►
-#@ASSIGN  #RIGHT_ASSOC(flag)●
-#@COND  #RIGHT_ASSOC(flag)#COND(flag)●
-||●
-&&●
-|●
-^●
-&●
-#@SHIFT●
-#@ADD●
-#@MUL●
-》
+#@OP《
+  ►#@ASSIGN  #RIGHT_ASSOC(flag)●
+  ►#@COND  #RIGHT_ASSOC(flag)#COND(flag)●
+  ►||●
+  ►&&●
+  ►|●
+  ►^●
+  ►&●
+  ►#@SHIFT●
+  ►#@ADD●
+  ►#@MUL●
+¤》
 
-#@OP_HI《►
-,●
-#@ASSIGN●
-#@COND#COND_HI(flag)●
-||●
-&&●
-|●
-^●
-#@CMP●
-#@SHIFT●
-#@ADD●
-》(OP)
+#@OP_HI《
+  ►,●
+  ►#@ASSIGN●
+  ►#@COND#COND_HI(flag)●
+  ►||●
+  ►&&●
+  ►|●
+  ►^●
+  ►#@CMP●
+  ►#@SHIFT●
+  ►#@ADD●
+¤》(OP)
 
 #@INFIX_EXP{#?COND《ExpConditional●InfixExpression》}
 #@INFIX_EXP_HI{#?COND_HI《ExpConditional●InfixExpression》}

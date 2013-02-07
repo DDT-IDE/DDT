@@ -47,7 +47,9 @@ public class TemplateSourceProcessorParser {
 	}
 	
 	protected static abstract class TspElement {
-		public String getElementType() { return null; };
+		public static String DEFAULT_TYPE = "DEFAULT";
+		public String getElementType() { return DEFAULT_TYPE; };
+		public String getSource() { return null; };
 	}
 	
 	protected class TspStringElement extends TspElement {
@@ -67,16 +69,8 @@ public class TemplateSourceProcessorParser {
 			return elemType;
 		}
 		@Override
-		public String toString() {
+		public String getSource() {
 			return producedText;
-		}
-	}
-	
-	protected class TspCommand extends TspElement {
-		public final String command;
-		
-		protected TspCommand(String command) {
-			this.command = assertNotNull_(command);
 		}
 	}
 	
@@ -222,52 +216,74 @@ public class TemplateSourceProcessorParser {
 		return parseArgumentList(parser, argSep, closeDelim, false);
 	}
 	
-	protected ArrayList<Argument> parseArgumentList(SimpleParser parser, String argumentSep, String listEnd,
-		boolean eofTerminates) throws TemplatedSourceException {
+	protected ArrayList<Argument> parseArgumentList(
+		SimpleParser parser, final String argSeparator, final String listEnd, boolean eofTerminates
+	) throws TemplatedSourceException {
 		assertNotNull(listEnd);
+		assertTrue(!eofTerminates || argSeparator == null);
+		
+		final String listEndPrefix = "¤";
+		final String argStart = "►";
+		final String[] tokenStarts = eofTerminates ? 
+			new String[] { argStart, listEnd, kMARKER } : 
+			argSeparator != null ?
+			new String[] { argStart, argSeparator, listEndPrefix, listEnd, kMARKER } :
+			new String[] { argStart, listEndPrefix, listEnd, kMARKER };
+		
+		boolean ignoreLastArgListEnd = false;
+		boolean argumentStartFound = false;
+		
 		ArrayList<Argument> arguments = new ArrayList<Argument>();
-		
-		assertTrue(!eofTerminates || argumentSep == null);
-		
-		boolean uniformArgSyntax = false;
-		if(argumentSep != null && parser.tryConsume("►")) {
-			uniformArgSyntax = true;
-			checkError(parser.tryConsumeNewlineRule() == false, parser);
-		}
-		
 		Argument argument = new Argument();
 		while(true) {
-			TspElement element = parseElementWithCustomStarts(parser, 
-				(argumentSep != null ? argumentSep : listEnd), listEnd, kMARKER);
-			// The above code may result in a call with duplicate listEnd arguments, 
-			// that stil works despite looking strange
+			TspElement element = parseElementWithCustomStarts(parser, tokenStarts);
+			
+			if(element != null && element.getElementType() == listEnd) {
+				break;
+			}
+			checkError(ignoreLastArgListEnd, parser);
 			
 			if(element == null) {
 				checkError(!eofTerminates, parser);
-				checkError(uniformArgSyntax, parser);
 				break;
-			} else if(element.getElementType() == listEnd) {
-				checkError(uniformArgSyntax, parser);
-				break;
-			} else if(argumentSep != null && element.getElementType() == argumentSep) {
-				if(uniformArgSyntax) {
-					SimpleParser tempParser = parser.copyState();
-					if(tempParser.seekToNewLine() && 
-						tempParser.getLastConsumedString().trim().isEmpty() &&
-						tempParser.seekWhiteSpace().tryConsume(listEnd)) {
-						parser.resetToPosition(tempParser.getSourcePosition());
-						break;
-					}
-				}
+			} 
+			if(element.getElementType() == argStart) {
+				checkError(argumentStartFound || !argumentIsWhiteSpaceOnly(argument), parser);
+				argumentStartFound = true;
 				
+				argument = new Argument();
+			} else if(element.getElementType() == listEndPrefix) {
+				checkError(argumentStartFound || !argumentIsWhiteSpaceOnly(argument), parser);
+				ignoreLastArgListEnd = true;
+				argument = null;
+			} else if(element.getElementType() == argSeparator) {
 				arguments.add(argument);
+				argumentStartFound = false;
+				
 				argument = new Argument();
 			} else {
 				argument.add(element);
 			}
 		}
-		arguments.add(argument);
+		
+		if(!ignoreLastArgListEnd) {
+			assertNotNull(argument);
+			arguments.add(argument);
+		} else {
+			assertTrue(argument == null);
+		}
 		return arguments;
+	}
+	
+	protected boolean argumentIsWhiteSpaceOnly(Argument argument) {
+		if(argument.size() != 0) {
+			if(argument.size() == 1) {
+				String argSource = argument.get(0).getSource();
+				return(argSource != null && argSource.trim().isEmpty());
+			} 
+			return false;
+		}
+		return true;
 	}
 	
 	protected class TspMetadataElement extends TspElement {
