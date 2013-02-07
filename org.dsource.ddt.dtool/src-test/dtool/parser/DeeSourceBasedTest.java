@@ -17,19 +17,19 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import java.io.File;
 
 import dtool.sourcegen.AnnotatedSource;
-import dtool.sourcegen.TemplatedSourceProcessor2;
+import dtool.sourcegen.TemplatedSourceProcessor;
 import dtool.tests.DToolBaseTest;
 
 public class DeeSourceBasedTest extends DToolBaseTest {
 	
-	protected static final class TestsTemplateSourceProcessor extends TemplatedSourceProcessor2 {
+	protected static final class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
 		@Override
 		protected void reportError(int offset) throws TemplatedSourceException {
 			assertFail();
 		}
 	}
 	
-	public AnnotatedSource[] getSourceBasedTests(File file, TemplatedSourceProcessor2 commonDefinitions) {
+	public AnnotatedSource[] getSourceBasedTests(File file, TemplatedSourceProcessor commonDefinitions) {
 		TestsTemplateSourceProcessor tsp = new TestsTemplateSourceProcessor();
 		if(commonDefinitions != null) {
 			tsp.addGlobalExpansions(commonDefinitions.getGlobalExpansions());

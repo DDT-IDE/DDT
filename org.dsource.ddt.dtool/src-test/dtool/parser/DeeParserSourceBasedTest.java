@@ -38,7 +38,7 @@ import dtool.parser.DeeParserTest.NamedNodeElement;
 import dtool.parser.ParserError.EDeeParserErrors;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.sourcegen.TemplatedSourceProcessor2;
+import dtool.sourcegen.TemplatedSourceProcessor;
 import dtool.tests.SimpleParser;
 import dtool.util.NewUtils;
 
@@ -47,14 +47,14 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/parser-tests";
 	
-	protected static TemplatedSourceProcessor2 commonDefinitions = new TemplatedSourceProcessor2();;
+	protected static TemplatedSourceProcessor commonDefinitions = new TemplatedSourceProcessor();;
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
 		ArrayList<File> commonHeaderFileList = getDeeModuleList(getTestResource(TESTFILESDIR+"/common"), true);
 		
 		for (File headerFile : commonHeaderFileList) {
-			TemplatedSourceProcessor2 tsp = new TestsTemplateSourceProcessor();
+			TemplatedSourceProcessor tsp = new TestsTemplateSourceProcessor();
 			tsp.processSource_unchecked("#", readStringFromFileUnchecked(headerFile));
 			commonDefinitions.addGlobalExpansions(tsp.getGlobalExpansions());
 		}

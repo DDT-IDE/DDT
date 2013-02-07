@@ -14,16 +14,15 @@ package dtool.sourcegen;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-
 import org.junit.Test;
 
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.sourcegen.TemplatedSourceProcessor2.TemplatedSourceException;
+import dtool.sourcegen.TemplateSourceProcessorParser.TemplatedSourceException;
 import dtool.tests.CommonTestUtils;
 
-public class TemplatedSourceProcessor2Test extends CommonTestUtils {
+public class TemplatedSourceProcessorTest extends CommonTestUtils {
 	
-	public static final class TestsTemplateSourceProcessor extends TemplatedSourceProcessor2 {
+	public static final class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
 		@Override
 		protected void reportError(int offset) throws TemplatedSourceException {
 			assertFail();
@@ -31,13 +30,13 @@ public class TemplatedSourceProcessor2Test extends CommonTestUtils {
 	}
 	
 	public void testSourceProcessing(String defaultMarker, String source, GeneratedSourceChecker... checkers) {
-		TemplatedSourceProcessor2 tsp = new TestsTemplateSourceProcessor();
+		TemplatedSourceProcessor tsp = new TestsTemplateSourceProcessor();
 		visitContainer(tsp.processSource_unchecked(defaultMarker, source), checkers);
 	}
 	
 	public void testSourceProcessing(String marker, String source, int errorOffset) {
 		try {
-			TemplatedSourceProcessor2.processTemplatedSource(marker, source);
+			TemplatedSourceProcessor.processTemplatedSource(marker, source);
 			assertFail();
 		} catch(TemplatedSourceException tse) {
 			assertTrue(tse.errorOffset == errorOffset);
@@ -225,9 +224,9 @@ header2
 		testSourceProcessing("#", "badsyntax #foo(){xxx#:END:", 17+3+1);
 		
 		
-		for (int i = 0; i < TemplatedSourceProcessor2.OPEN_DELIMS.length; i++) {
-			String open = TemplatedSourceProcessor2.OPEN_DELIMS[i];
-			String close = TemplatedSourceProcessor2.CLOSE_DELIMS[i];
+		for (int i = 0; i < TemplatedSourceProcessor.OPEN_DELIMS.length; i++) {
+			String open = TemplatedSourceProcessor.OPEN_DELIMS[i];
+			String close = TemplatedSourceProcessor.CLOSE_DELIMS[i];
 			if(open.equals("{")) 
 				continue;
 			
@@ -557,22 +556,40 @@ header2
 			checkMD("asdf #ok last#!==")
 		);
 		
-		// Uniform argument syntax ----
+		// Uniform list close syntax ----
+		
 		testSourceProcessing("#", 
-			"> #@{►\nasd, ,line, \n }==",
+			"> #@{A,B,C,\n ¤}==",
+			
+			checkMD("> A=="),
+			checkMD("> B=="),
+			checkMD("> C==")
+		);
+		
+		testSourceProcessing("#", "> #@{xxx, b ,text\n¤}==", 19);
+		
+		// Uniform argument separator syntax ----
+		testSourceProcessing("#", 
+			"> #@{►\nasd,► ,line}==",
 			
 			checkMD("> asd=="),
 			checkMD(">  =="),
 			checkMD("> line==")
 		);
+		testSourceProcessing("#", 
+			"> #@《   ►\nasdf●  ► ●  line》==",
+			
+			checkMD("> \nasdf=="),
+			checkMD(">  =="),
+			checkMD(">   line==")
+		);
 		
-		testSourceProcessing("#", "> #@{►xxx\nasd, ,line,\n}==", 6);
-		testSourceProcessing("#", "> #@{►\nasd, ,line\n}==", 19);
-		testSourceProcessing("#", "> #@{►\n}==", 8);
+		testSourceProcessing("#", "> #@{ text ►abc\ndef, ,line,\n}==", 6);
 		
+		// Uniform argument separator syntax -- in metadata
 		
-		testSourceProcessing("#", "> #MD(►\nasd, line\n)==", checkSourceOnly("> ==", 1));
-		testSourceProcessing("#", "> #MD{►\nasd, line\n}==", checkSourceOnly("> ►\nasd, line\n==", 1)); 
+		testSourceProcessing("#", "> #MD(►xyz, line\n){ ►ABC,line}==", 
+			checkSourceOnly("> ABC,line==", 1)); 
 		testSourceProcessing("#", "> #MD:\n►asd, line\n ==", 
 			checkMD("> ", new MetadataEntry("MD", null, "►asd, line\n ==", -1)));
 		
@@ -591,11 +608,11 @@ header2
 		testSourceProcessing("#", "foo #@EXPANSION1{12}(xxx:END:\n)", 21+3);
 		
 		
-		for (int i = 0; i < TemplatedSourceProcessor2.OPEN_DELIMS.length; i++) {
-			String openDelim = TemplatedSourceProcessor2.OPEN_DELIMS[i];
+		for (int i = 0; i < TemplatedSourceProcessor.OPEN_DELIMS.length; i++) {
+			String openDelim = TemplatedSourceProcessor.OPEN_DELIMS[i];
 			if(openDelim.equals("{")) 
 				continue;
-			String close = TemplatedSourceProcessor2.CLOSE_DELIMS[i];
+			String close = TemplatedSourceProcessor.CLOSE_DELIMS[i];
 			
 			testSourceProcessing("#", prepString("asdf #@EXP►,}◙► #◄,last#◙}◄==", openDelim, close),
 				
@@ -779,7 +796,7 @@ header2
 		testSourceProcessing("#",  "#:HEADER ____\n"+"> #@{A,B,C}", 2);
 		
 		// Performance test:
-		AnnotatedSource[] processTemplatedSource = TemplatedSourceProcessor2.processTemplatedSource("#", 
+		AnnotatedSource[] processTemplatedSource = TemplatedSourceProcessor.processTemplatedSource("#", 
 			"#:HEADER ____\n"+
 			">#@N{X#tag(arg){xxx} #tag2(arg){xxx} #tag3(arg){xxx}}"+
 			" #@N2!{a#@(N),b#@(N),c#@(N),d#@(N),e#@(N),f#@(N)),g#@(N),h#@(N),k#@(N),l#@(N)}"+
