@@ -12,6 +12,7 @@ package dtool.parser;
 
 import static dtool.parser.DeeParserTest.runParserTest______________________;
 import static dtool.tests.DToolTestResources.getTestResource;
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -158,6 +159,10 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			return createErrorToken(EDeeParserErrors.SYNTAX_ERROR, mde, deeLexer, tokenBefore, errorParam);
 		} else if(mde.value.equals("BAD_LINKAGE_ID")) {
 			return createErrorToken(EDeeParserErrors.INVALID_EXTERN_ID, mde, deeLexer, true, null);
+		} else if(errorType.equals("REQPARENS")) {
+			String errorSource = assertNotNull_(mde.associatedSource);
+			errorParam = errorParam == null ? DeeParserTest.DONT_CHECK : errorParam;
+			return new ParserError(EDeeParserErrors.EXP_MUST_HAVE_PARENTHESES, errorRange, errorSource, errorParam);
 		} else {
 			throw assertFail();
 		}

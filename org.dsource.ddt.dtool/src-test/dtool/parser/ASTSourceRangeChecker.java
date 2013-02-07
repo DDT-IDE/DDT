@@ -50,6 +50,7 @@ import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
+import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
@@ -60,11 +61,15 @@ import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
+import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.InfixExpression;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.MissingExpression;
+import dtool.ast.expressions.PostfixExpression;
+import dtool.ast.expressions.PrefixExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -164,6 +169,7 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 				case INVALID_TOKEN_CHARACTERS:
 				case SYNTAX_ERROR:
 				case EXPECTED_RULE:
+				case EXP_MUST_HAVE_PARENTHESES:
 					continue;
 				case INVALID_EXTERN_ID: break;
 				}
@@ -469,24 +475,24 @@ public class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		
 		/* ---------------------------------- */
 		
-		@Override
-		public boolean visit(ExpThis node) { return reparseCheck(nrsParser.parseExpression(), node); }
-		@Override
-		public boolean visit(ExpSuper node) { return reparseCheck(nrsParser.parseExpression(), node); }
-		@Override
-		public boolean visit(ExpNull node) { return reparseCheck(nrsParser.parseExpression(), node); }
-		@Override
-		public boolean visit(ExpArrayLength node) { return reparseCheck(nrsParser.parseExpression(), node); }
-		@Override
-		public boolean visit(ExpLiteralBool node) { return reparseCheck(nrsParser.parseExpression(), node); }
-		@Override
-		public boolean visit(ExpLiteralInteger node) { return reparseCheck(nrsParser.parseExpression(), node); }
-		@Override
-		public boolean visit(ExpLiteralString node) { return reparseCheck(nrsParser.parseExpression(), node); }
-		@Override
-		public boolean visit(ExpLiteralFloat node) { return reparseCheck(nrsParser.parseExpression(), node); }
-		@Override
-		public boolean visit(ExpLiteralChar node) { return reparseCheck(nrsParser.parseExpression(), node); }
+		public boolean expressionReparseCheck(Expression node) {
+			return reparseCheck(nrsParser.parseExpression(), node);
+		}
+		@Override public boolean visit(ExpThis node) { return expressionReparseCheck(node); }
+		
+		@Override public boolean visit(ExpSuper node) { return expressionReparseCheck(node); }
+		@Override public boolean visit(ExpNull node) { return expressionReparseCheck(node); }
+		@Override public boolean visit(ExpArrayLength node) { return expressionReparseCheck(node); }
+		@Override public boolean visit(ExpLiteralBool node) { return expressionReparseCheck(node); }
+		@Override public boolean visit(ExpLiteralInteger node) { return expressionReparseCheck(node); }
+		@Override public boolean visit(ExpLiteralString node) { return expressionReparseCheck(node); }
+		@Override public boolean visit(ExpLiteralFloat node) { return expressionReparseCheck(node); }
+		@Override public boolean visit(ExpLiteralChar node) { return expressionReparseCheck(node); }
+		
+		@Override public boolean visit(InfixExpression node) { return expressionReparseCheck(node); }
+		@Override public boolean visit(ExpConditional node) { return expressionReparseCheck(node); }
+		@Override public boolean visit(PrefixExpression node) { return expressionReparseCheck(node); }
+		@Override public boolean visit(PostfixExpression node) { return expressionReparseCheck(node); }
 		
 		@Override
 		public boolean visit(ExpLiteralFunc node) {

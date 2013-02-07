@@ -1,5 +1,6 @@
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -33,8 +34,12 @@ public class AbstractDeeParser {
 		this.deeLexer = deeLexer;
 	}
 	
-	protected CharSequence getSource() {
+	public CharSequence getSource() {
 		return deeLexer.source;
+	}
+	
+	public String getSource(SourceRange sourceRange) {
+		return getSource().subSequence(sourceRange.getStartPos(), sourceRange.getEndPos()).toString();
 	}
 	
 	protected final Token getLastToken() {
@@ -53,15 +58,19 @@ public class AbstractDeeParser {
 		}
 	}
 	
-	protected ParserError addError(EDeeParserErrors errorType, SourceRange sourceRange, String errorSource, 
-		Object msgData) {
-		ParserError error = new ParserError(errorType, sourceRange, errorSource, msgData);
+	protected ParserError addError(EDeeParserErrors errorType, SourceRange sr, String errorSource, Object msgData) {
+		assertEquals(getSource(sr), errorSource);
+		ParserError error = new ParserError(errorType, sr, errorSource, msgData);
 		errors.add(error);
 		return error;
 	}
 	
-	protected ParserError addError(EDeeParserErrors parserError, Token errorToken, Object msgData) {
-		return addError(parserError, sr(errorToken), errorToken.tokenSource, msgData);
+	protected ParserError addError(EDeeParserErrors errorType, Token errorToken, Object msgData) {
+		return addError(errorType, sr(errorToken), errorToken.tokenSource, msgData);
+	}
+	
+	protected ParserError addError(EDeeParserErrors errorType, SourceRange sourceRange, Object msgData) {
+		return addError(errorType, sourceRange, getSource(sourceRange), msgData);
 	}
 	
 	static{ assertTrue(DeeTokens.EOF.isParserIgnored == false); }
@@ -221,6 +230,12 @@ public class AbstractDeeParser {
 		return node;
 	}
 	
+	protected static final <T extends ASTNeoNode> T konnect(T node) {
+		// TODO: remove this after putting test
+		/*BUG here*/
+		return node;
+	}
+	
 	/* ---- Node creation helpers ---- */
 	
 	public static SourceRange srStartToEnd(int startPos, int endPos) {
@@ -237,8 +252,12 @@ public class AbstractDeeParser {
 		return srStartToEnd(declStart, getParserPosition());
 	}
 	
-	public final SourceRange srToCursor(Token tokenStart) {
-		return srToCursor(tokenStart.getStartPos());
+	public final SourceRange srToCursor(Token startToken) {
+		return srToCursor(startToken.getStartPos());
+	}
+	
+	public final SourceRange srToCursor(ASTNeoNode startNode) {
+		return srToCursor(startNode.getStartPos());
 	}
 	
 	public TokenInfo tokenInfo(Token idToken) {

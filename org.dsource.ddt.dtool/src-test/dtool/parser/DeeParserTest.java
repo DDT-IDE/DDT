@@ -13,17 +13,25 @@ import dtool.ast.ASTCommonSourceRangeChecker.ASTAssertChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.definitions.Module;
+import dtool.ast.expressions.ExpLiteralBool;
+import dtool.ast.expressions.ExpLiteralFloat;
+import dtool.ast.expressions.ExpLiteralInteger;
+import dtool.ast.expressions.ExpLiteralString;
 import dtool.tests.CommonTestUtils;
 
 
 public class DeeParserTest extends CommonTestUtils {
-
+	
+	public static final String DONT_CHECK = "#DONTCHECK";
+	
 	public static DeeParserResult parse(String source, String parseRule) {
 		DeeParser deeParser = new DeeParser(source);
 		if(parseRule == null) {
 			return new DeeParserResult(deeParser.parseModule(), deeParser.errors);
 		} else if(parseRule.equals("EXPRESSION")){
-			return new DeeParserResult(deeParser.parseExpression(), deeParser.errors);
+			DeeParserResult deeParserResult = new DeeParserResult(deeParser.parseExpression(), deeParser.errors);
+			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
+			return deeParserResult;
 		} else {
 			throw assertFail();
 		}
@@ -70,7 +78,8 @@ public class DeeParserTest extends CommonTestUtils {
 		
 		@Override
 		public String toString() {
-			return name + (children != null ? ( "("+StringUtil.collToString(children, " ")+")" ) : "");
+			boolean hasChildren = children != null && children.length > 0;
+			return name + (hasChildren ? "("+StringUtil.collToString(children, " ")+")" : "");
 		}
 	}
 	
@@ -104,11 +113,25 @@ public class DeeParserTest extends CommonTestUtils {
 				continue;
 			}
 			if(namedElement.name != NamedNodeElement.IGNORE_NAME) {
-				String expectedName = replaceRegexFirstOccurrence(namedElement.name, "(Def)(Var)", 1, "Definition");
+				String expectedName = getExpectedNameAliases(namedElement.name);
 				assertEquals(astNode.getClass().getSimpleName(), expectedName);
 			}
 			checkExpectedStructure(astNode.getChildren(), astNode, namedElement.children, true);
 		}
+	}
+	
+	public static String getExpectedNameAliases(String expectedNameRaw) {
+		if(expectedNameRaw.equals("Bool")) {
+			return ExpLiteralBool.class.getSimpleName();
+		} else if(expectedNameRaw.equals("Integer")) {
+			return ExpLiteralInteger.class.getSimpleName();
+		} else if(expectedNameRaw.equals("Float")) {
+			return ExpLiteralFloat.class.getSimpleName();
+		} else if(expectedNameRaw.equals("String")) {
+			return ExpLiteralString.class.getSimpleName();
+		} 
+		
+		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var)", 1, "Definition");
 	}
 	
 	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
@@ -157,7 +180,9 @@ public class DeeParserTest extends CommonTestUtils {
 			assertEquals(error.errorType, expError.errorType);
 			assertEquals(error.sourceRange, expError.sourceRange);
 			assertEquals(error.msgErrorSource, expError.msgErrorSource);
-			assertAreEqual(safeToString(error.msgData), safeToString(expError.msgData));
+			if(expError.msgData != DONT_CHECK) {
+				assertAreEqual(safeToString(error.msgData), safeToString(expError.msgData));
+			}
 		}
 		assertTrue(resultErrors.size() == expectedErrors.size());
 	}

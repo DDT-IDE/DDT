@@ -32,6 +32,7 @@ import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
+import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
@@ -42,10 +43,13 @@ import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
+import dtool.ast.expressions.InfixExpression;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
+import dtool.ast.expressions.PostfixExpression;
+import dtool.ast.expressions.PrefixExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -186,6 +190,11 @@ public interface IASTNeoVisitor {
 	public boolean visit(ExpLiteralString node);
 	public boolean visit(ExpLiteralChar node);
 	public boolean visit(ExpLiteralFloat node);
+	
+	public boolean visit(InfixExpression node);
+	public boolean visit(ExpConditional node);
+	public boolean visit(PrefixExpression node);
+	public boolean visit(PostfixExpression node);
 	
 	public boolean visit(ExpLiteralFunc node);
 	public boolean visit(ExpLiteralNewAnonClass node);

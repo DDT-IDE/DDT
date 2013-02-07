@@ -674,6 +674,7 @@ public class TemplatedSourceProcessor2 {
 		checkError(sourceCase.isHeaderCase && expansionId == null, sourceCase);
 		
 		checkError(expansionElem.anonymousExpansion && expansionElem.dontOuputSource, sourceCase);
+		checkError(expansionElem.expansionId == null && expansionElem.dontOuputSource, sourceCase);
 		checkError(expansionElem.expansionId == null && expansionElem.arguments == null, sourceCase);
 		
 		ArrayList<Argument> arguments = expansionElem.arguments;
@@ -689,13 +690,6 @@ public class TemplatedSourceProcessor2 {
 				checkError(definedExpansionElem != null && definedExpansionElem != expansionElem, sourceCase);
 				sourceCase.putExpansion(expansionId, expansionElem);
 			}
-		}
-		
-		if((expansionElem.dontOuputSource && expansionId != null) || sourceCase.isHeaderCase) {
-			 // Definition-only must not have a paired expansion
-			//XXX: maybe it could, it could make sense as additional feature
-			checkError(expansionElem.pairedExpansionId != null, sourceCase);
-			return false;
 		}
 		
 		Integer pairedExpansionIx = null;
@@ -715,6 +709,11 @@ public class TemplatedSourceProcessor2 {
 			pairedExpansionIx = sourceCase.activeExpansions.get(expansionElem.pairedExpansionId);
 			
 			checkError(arguments.size() != referredExpansion.arguments.size(), sourceCase);
+		}
+		
+		if(expansionElem.dontOuputSource || sourceCase.isHeaderCase) {
+			// TODO : situation here where there is a pairedExpansionId has no testcases
+			return false;
 		}
 		
 		String idToActivate = expansionElem.anonymousExpansion ? null : expansionId;

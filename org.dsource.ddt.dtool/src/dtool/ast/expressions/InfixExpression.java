@@ -1,61 +1,132 @@
 package dtool.ast.expressions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
+import dtool.parser.DeeTokens;
 
+/**
+ * An infix binary expression.
+ */
 public class InfixExpression extends Expression {
 	
-	// XXX: AST: link this with token ?
-	public interface Type {
+	/**
+	 * Infix operations types (not just binary expressions)
+	 * The ordering of these elements is important as it defines precedence (lower to higher)
+	 */
+	public static enum InfixOpType {
+		COMMA(DeeTokens.COMMA),
 		
-		int MUL = 11;
-		int DIV = 12;
-		int MOD = 13;
-		int ADD = 14;
-		int MIN = 15;
-		int CAT = 16;
-		int SHIFT_LEFT = 17;
-		int SHIFT_RIGHT = 18;
-		int UNSIGNED_SHIFT_RIGHT = 19;
-		int CMP = 20;
-		int IN = 21;
-		int EQUAL = 22;
-		int IDENTITY = 23;
-		int AND = 24;
-		int XOR = 25;
-		int OR = 26;
-		int AND_AND = 27;
-		int OR_OR = 28;
-		int ASSIGN = 30;
-		int ADD_ASSIGN = 31;
-		int MIN_ASSIGN = 32;
-		int MUL_ASSIGN = 33;
-		int DIV_ASSIGN = 34;
-		int MOD_ASSIGN = 35;
-		int AND_ASSIGN = 36;
-		int OR_ASSIGN = 37;
-		int XOR_ASSIGN = 38;
-		int SHIFT_LEFT_ASSIGN = 39;
-		int SHIFT_RIGHT_ASSIGN = 40;
-		int UNSIGNED_SHIFT_RIGHT_ASSIGN = 41;
-		int CAT_ASSIGN = 42;
-		int COMMA = 44;
-		int NOT_IDENTITY = 45;
-		int POW_ASSIGN = 46;
-		int POW = 47;
+		ASSIGN(DeeTokens.ASSIGN),
+		MINUS_ASSIGN(        ASSIGN, DeeTokens.MINUS_ASSIGN),
+		PLUS_ASSIGN(         ASSIGN, DeeTokens.PLUS_ASSIGN), 
+		DIV_ASSIGN(          ASSIGN, DeeTokens.DIV_ASSIGN), 
+		MULT_ASSIGN(         ASSIGN, DeeTokens.MULT_ASSIGN), 
+		MOD_ASSIGN(          ASSIGN, DeeTokens.MOD_ASSIGN), 
+		POW_ASSIGN(          ASSIGN, DeeTokens.POW_ASSIGN),
+		AND_ASSIGN(          ASSIGN, DeeTokens.AND_ASSIGN), 
+		OR_ASSIGN(           ASSIGN, DeeTokens.OR_ASSIGN), 
+		XOR_ASSIGN(          ASSIGN, DeeTokens.XOR_ASSIGN), 
+		CONCAT_ASSIGN(       ASSIGN, DeeTokens.CONCAT_ASSIGN),
+		LEFT_SHIFT_ASSIGN(   ASSIGN, DeeTokens.LEFT_SHIFT_ASSIGN),
+		RIGHT_SHIFT_ASSIGN(  ASSIGN, DeeTokens.RIGHT_SHIFT_ASSIGN), 
+		TRIPLE_RSHIFT_ASSIGN(ASSIGN, DeeTokens.TRIPLE_RSHIFT_ASSIGN),
+		
+		CONDITIONAL(DeeTokens.QUESTION),
+		
+		LOGICAL_OR(DeeTokens.LOGICAL_OR),
+		
+		LOGICAL_AND(DeeTokens.LOGICAL_AND),
+		
+		OR(DeeTokens.OR),
+		
+		XOR(DeeTokens.XOR),
+		
+		AND(DeeTokens.AND),
+		
+		EQUALS(DeeTokens.EQUALS),
+		NOT_EQUAL(    EQUALS, DeeTokens.NOT_EQUAL),
+		IS(           EQUALS, DeeTokens.KW_IS), 
+		NOT_IS(       EQUALS, "!is"),
+		IN(           EQUALS, DeeTokens.KW_IN),
+		NOT_IN(       EQUALS, "!in"),
+		LESS_THAN(    EQUALS, DeeTokens.LESS_THAN),
+		LESS_EQUAL(   EQUALS, DeeTokens.LESS_EQUAL), 
+		GREATER_THAN( EQUALS, DeeTokens.GREATER_THAN), 
+		GREATER_EQUAL(EQUALS, DeeTokens.GREATER_EQUAL),
+		LESS_GREATER( EQUALS, DeeTokens.LESS_GREATER), 
+		LESS_GREATER_EQUAL(EQUALS, DeeTokens.LESS_GREATER_EQUAL),
+		UNORDERED_E(  EQUALS, DeeTokens.UNORDERED_E), 
+		UNORDERED(    EQUALS, DeeTokens.UNORDERED),
+		UNORDERED_GE( EQUALS, DeeTokens.UNORDERED_GE), 
+		UNORDERED_G(  EQUALS, DeeTokens.UNORDERED_G), 
+		UNORDERED_LE( EQUALS, DeeTokens.UNORDERED_LE), 
+		UNORDERED_L(  EQUALS, DeeTokens.UNORDERED_L),
+		
+		SHIFT(DeeTokens.LEFT_SHIFT),  
+		RIGHT_SHIFT(    SHIFT, DeeTokens.RIGHT_SHIFT),
+		UNSIGNED_RSHIFT(SHIFT, DeeTokens.TRIPLE_RSHIFT),
+		
+		ADD(DeeTokens.PLUS),
+		MINUS( ADD, DeeTokens.MINUS),
+		CONCAT(ADD, DeeTokens.CONCAT),
+		
+		MUL(DeeTokens.STAR),
+		DIV(MUL, DeeTokens.DIV),
+		MOD(MUL, DeeTokens.MOD),
+		
+		NULL(null, (String) null), // Special entry that doesn't represent any infix operator
+		;
+		
+		public final InfixOpType category;
+		public final String sourceValue;
+		public final int precedence;
+		
+		InfixOpType(InfixOpType category, String sourceValue) {
+			this.category = category == null ? this : category;
+			this.precedence = category == null ? Holder.precedenceCounter++ : category.precedence;
+			this.sourceValue = sourceValue;
+		}
+		
+		InfixOpType(InfixOpType category, DeeTokens tokenType) {
+			this(category, tokenType.getSourceValue());
+			int ix = tokenType.ordinal();
+			assertTrue(Holder.mapping[ix] == null);
+			Holder.mapping[ix] = this;
+		}
+		
+		InfixOpType(DeeTokens tokenType) {
+			this(null, tokenType);
+		}
+		
+		protected static class Holder {
+			private static int precedenceCounter = 1;
+			private static final InfixOpType[] mapping = new InfixOpType[DeeTokens.values().length];
+		}
+		
+		public static InfixOpType tokenToInfixOpType(DeeTokens gla) {
+			return Holder.mapping[gla.ordinal()];
+		}
+	
 	}
 	
 	public final Resolvable leftExp;
 	public final Resolvable rightExp;
+	public final InfixOpType kind;
 	
-	public final int kind;
-	
-	public InfixExpression(Resolvable left, int kind, Resolvable right, SourceRange sourceRange) {
+	public InfixExpression(Resolvable left, InfixOpType kind, Resolvable right, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.leftExp = parentize(left);
-		this.kind = kind; 
+		this.kind = kind;
+		assertTrue(this.kind != InfixOpType.NULL);
 		this.rightExp = parentize(right);
+	}
+	
+	@Deprecated
+	public InfixExpression(Resolvable left, DeeTokens kind, Resolvable right, SourceRange sourceRange) {
+		this(left, InfixOpType.tokenToInfixOpType(kind), right, sourceRange);
 	}
 	
 	@Override
@@ -66,6 +137,13 @@ public class InfixExpression extends Expression {
 			TreeVisitor.acceptChildren(visitor, rightExp);
 		}
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(leftExp);
+		cp.append(" ", kind.sourceValue, " "); // Some operators have alpha so we need spaces to sep.
+		cp.append(rightExp);
 	}
 	
 }

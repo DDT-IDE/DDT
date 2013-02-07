@@ -75,19 +75,20 @@ public enum DeeTokens {
 	
 	AND("&"), AND_ASSIGN("&="), LOGICAL_AND("&&"), OR("|"), OR_ASSIGN("|="), LOGICAL_OR("||"), 
 	XOR("^"), XOR_ASSIGN("^="),
-	ASSIGN("="), EQUALS("=="),
 	CONCAT("~"), CONCAT_ASSIGN("~="),
 	
 	LAMBDA("=>"),
 	
+	ASSIGN("="), EQUALS("=="),
 	NOT("!"), NOT_EQUAL("!="),
-	LESS_THAN("<"), LESS_EQUAL("<="), GREATER_THAN(">"), GREATER_EQUAL(">="),
 	
-	LEFT_SHIFT("<<"), LEFT_SHIFT_ASSIGN("<<="), RIGHT_SHIFT(">>"), RIGHT_SHIFT_ASSIGN(">>="), 
-	TRIPLE_RSHIFT(">>>"), TRIPLE_RSHIFT_ASSIGN(">>>="),
+	LESS_THAN("<"), LESS_EQUAL("<="), GREATER_THAN(">"), GREATER_EQUAL(">="),
 	LESS_GREATER("<>"), LESS_GREATER_EQUAL("<>="),
 	UNORDERED_E("!<>"), UNORDERED("!<>="), 
 	UNORDERED_GE("!<"), UNORDERED_G("!<="), UNORDERED_LE("!>"), UNORDERED_L("!>="),
+	
+	LEFT_SHIFT("<<"), LEFT_SHIFT_ASSIGN("<<="), RIGHT_SHIFT(">>"), RIGHT_SHIFT_ASSIGN(">>="), 
+	TRIPLE_RSHIFT(">>>"), TRIPLE_RSHIFT_ASSIGN(">>>="),
 	
 	
 	PRIMITIVE_KW(),

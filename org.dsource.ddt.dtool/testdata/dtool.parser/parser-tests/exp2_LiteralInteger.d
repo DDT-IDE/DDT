@@ -5,7 +5,9 @@
 #AST_STRUCTURE_EXPECTED:
 ExpLiteralInteger
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)#@《►
+#PARSE(EXPRESSION) #comment(NO_STDOUT)
+
+#@《►
 #@《0●1●123456789●123_45_6789_●123_45__67___》●
 #@《0b0110●0b0●0B1●0B_01__10__》●
 0b_#error(MT_Ix)●

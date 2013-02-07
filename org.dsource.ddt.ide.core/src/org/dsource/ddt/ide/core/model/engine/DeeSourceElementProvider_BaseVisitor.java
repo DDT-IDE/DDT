@@ -23,6 +23,7 @@ import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
+import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
@@ -33,10 +34,13 @@ import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
+import dtool.ast.expressions.InfixExpression;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
+import dtool.ast.expressions.PostfixExpression;
+import dtool.ast.expressions.PrefixExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
@@ -155,6 +159,11 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstrac
 	@Override public boolean visit(ExpLiteralString elem) { return true; }
 	@Override public boolean visit(ExpLiteralFloat elem) { return true; }
 	@Override public boolean visit(ExpLiteralChar elem) { return true; }
+	
+	@Override public boolean visit(InfixExpression elem) { return true; }
+	@Override public boolean visit(ExpConditional elem) { return true; }
+	@Override public boolean visit(PrefixExpression elem) { return true; }
+	@Override public boolean visit(PostfixExpression elem) { return true; }
 	
 	@Override
 	public final boolean visit(ExpLiteralFunc elem) {

@@ -3,6 +3,7 @@ package dtool.parser;
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 
@@ -36,15 +37,18 @@ import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
+import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
-import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralFloat;
+import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.InfixExpression;
+import dtool.ast.expressions.InfixExpression.InfixOpType;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
@@ -383,6 +387,146 @@ public class DeeParser extends AbstractDeeParser {
 	public static String EXPRESSION_RULE = "expression";
 	
 	public Expression parseExpression() {
+		return parseExpression(0);
+	}
+	
+	protected Expression parseExpression(int precedenceLimit) {
+		Expression leftExpression = parseUnaryExpression();
+		if(leftExpression == null)
+			return null;
+		
+		return parseExpression_ExpStart(leftExpression, precedenceLimit);
+	}
+	
+	public Expression parseAssignExpression() {
+		return parseExpression(InfixOpType.ASSIGN.precedence);
+	}
+	
+	protected Expression parseExpression_ExpStart(final Expression leftExp, int precedenceLimit) {
+		DeeTokens gla = lookAheadGrouped();
+		
+		/*BUG here*/
+		// TODO: !is●in●!in●
+		
+		InfixOpType infixOp = InfixOpType.tokenToInfixOpType(gla);
+		if(infixOp == null) {
+			/*BUG here*/
+			if(tryConsume(DeeTokens.NOT)) {
+				if(lookAhead() == DeeTokens.KW_IS) {
+					infixOp = InfixOpType.NOT_IS;
+				}
+				/*BUG here*/
+				if(lookAhead() == DeeTokens.KW_IN) {
+					infixOp = InfixOpType.NOT_IN;
+				}
+			}
+		}
+		if(infixOp == null) {
+			return leftExp;
+		}
+		
+		Expression infixExp = null;
+		switch (infixOp.category) {
+		case COMMA:
+			infixExp = parseInfixOperator(leftExp, infixOp, precedenceLimit, InfixOpType.COMMA);
+			break;
+		case ASSIGN:
+			infixExp = parseInfixOperator(leftExp, infixOp, precedenceLimit, InfixOpType.ASSIGN);
+			break;
+		case CONDITIONAL:
+			infixExp = parseInfixOperator(leftExp, infixOp, precedenceLimit, InfixOpType.CONDITIONAL);
+			break;
+		case LOGICAL_OR:
+			infixExp = parseInfixOperator(leftExp, infixOp,precedenceLimit, InfixOpType.LOGICAL_AND);
+			break;
+		case LOGICAL_AND: 
+			infixExp = parseInfixOperator(leftExp, infixOp,precedenceLimit, InfixOpType.OR);
+			break;
+		case OR:
+			infixExp = parseInfixOperator(leftExp, infixOp,precedenceLimit, InfixOpType.XOR);
+			break;
+		case XOR:
+			infixExp = parseInfixOperator(leftExp, infixOp, precedenceLimit, InfixOpType.AND);
+			break;
+		case AND:
+			infixExp = parseInfixOperator(leftExp, infixOp, precedenceLimit, InfixOpType.EQUALS);
+			break;
+		case EQUALS:
+			infixExp = parseInfixOperator(leftExp, infixOp, precedenceLimit, InfixOpType.SHIFT);
+			break;
+		case SHIFT:
+			infixExp = parseInfixOperator(leftExp, infixOp, precedenceLimit, InfixOpType.ADD);
+			break;
+		case ADD:
+			infixExp = parseInfixOperator(leftExp, infixOp, precedenceLimit, InfixOpType.MUL);
+			break;
+		case MUL:
+			infixExp = parseInfixOperator(leftExp, infixOp, precedenceLimit, InfixOpType.NULL);
+			break;
+		default:
+			assertUnreachable();
+		}
+		if(infixExp == null) {
+			return leftExp;
+		}
+		
+		return parseExpression_ExpStart(infixExp, precedenceLimit);
+	}
+	
+	public Expression parseInfixOperator(Expression leftExp, InfixOpType op, int precedenceLimit, 
+		InfixOpType rightExpLimitToken) {
+		
+		// If lower precedence it cant be parsed to right expression, 
+		// instead this expression must become left children of new parent
+		if(op.precedence < precedenceLimit) 
+			return null;
+		
+		consumeLookAhead();
+		checkValidAssociativity(leftExp, op);
+		
+		Expression middleExp = null;
+		Expression rightExp = null;
+		
+		parsing: {
+			if(op == InfixOpType.CONDITIONAL) {
+				middleExp = parseExpression();
+				if(middleExp == null) {
+					reportErrorExpectedRule(EXPRESSION_RULE);
+				}
+				if(consumeExpectedToken(DeeTokens.COLON) == null) {
+					break parsing;
+				}
+			}
+			
+			rightExp = parseExpression(rightExpLimitToken.precedence);
+			if(rightExp == null) {
+				reportErrorExpectedRule(EXPRESSION_RULE);
+				break parsing;
+			}
+			checkValidAssociativity(rightExp, op);
+		}
+		
+		if(op == InfixOpType.CONDITIONAL) {
+			return connect(new ExpConditional(leftExp, middleExp, rightExp, srToCursor(leftExp)));
+		}
+		/*BUG here fix source ranges*/
+		return konnect(new InfixExpression(leftExp, op, rightExp, srToCursor(leftExp)));
+	}
+	
+	protected void checkValidAssociativity(Expression exp, InfixOpType op) {
+		// Check for some syntax situations which are technically not allowed by the grammar:
+		switch (op.category) {
+		case OR: case XOR: case AND: case EQUALS:
+			if(exp instanceof InfixExpression) {
+				if(((InfixExpression) exp).kind.category == InfixOpType.EQUALS) {
+					addError(EDeeParserErrors.EXP_MUST_HAVE_PARENTHESES, exp.getSourceRange(), op.sourceValue);
+				}
+			}
+		default: break;
+		}
+	}
+	
+	public Expression parseUnaryExpression() {
 		switch (lookAheadGrouped()) {
 		case KW_TRUE: case KW_FALSE: {
 			Token token = consumeLookAhead();
@@ -494,28 +638,26 @@ public class DeeParser extends AbstractDeeParser {
 	}
 	
 	public DefinitionVarFragment parseVarFragment() {
-		Token fragId = tryConsumeIdentifier();
 		Initializer init = null;
+		Token fragId = tryConsumeIdentifier();
 		if(!isMissingId(fragId)) {
 			if(tryConsume(DeeTokens.ASSIGN)){ 
 				init = parseInitializer();
 			}
 		}
-		/*BUG here connect*/
-		return new DefinitionVarFragment(defUnitRaw(srToCursor(fragId), fragId), init);
+		return connect(new DefinitionVarFragment(defUnitRaw(srToCursor(fragId), fragId), init));
 	}
 	
 	public static final String INITIALIZER_RULE = "INITIALIZER";
 	
 	public Initializer parseInitializer() {
-		Expression exp = parseExpression();
+		Expression exp = parseAssignExpression();
 		if(exp == null) {
 			reportErrorExpectedRule(INITIALIZER_RULE);
 			exp = new MissingExpression(srToCursor(lastRealToken.getEndPos()));
 		}
 		return new InitializerExp(exp, exp.getSourceRange());
 	}
-	
 	
 	/* ----------------------------------------- */
 	

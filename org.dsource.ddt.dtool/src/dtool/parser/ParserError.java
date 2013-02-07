@@ -18,7 +18,8 @@ public class ParserError {
 		EXPECTED_RULE, // Syntax error: expected valid token for rule
 		SYNTAX_ERROR, // Syntax error: unexpected rule in rule start
 		
-		INVALID_EXTERN_ID //Syntax error: specific error for extern declaration
+		INVALID_EXTERN_ID, //Syntax error: specific error for extern declaration
+		EXP_MUST_HAVE_PARENTHESES, //Syntax error: exp must have parentheses to parse
 	}
 	
 	protected final EDeeParserErrors errorType;
@@ -50,6 +51,8 @@ public class ParserError {
 		case INVALID_EXTERN_ID:
 			return "Invalid linkage specifier \"" + msgErrorSource + "\", valid ones are: " +
 				StringUtil.collToString(Linkage.values(), ",") + ".";
+		case EXP_MUST_HAVE_PARENTHESES:
+			return "Error " + msgErrorSource + " must be parenthesized when next to operator: " + msgData + ".";
 		}
 		throw assertFail();
 	}
