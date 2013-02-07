@@ -8,10 +8,10 @@ DeclarationMixinString(ExpLiteralString)
 DeclarationMixinString(ExpLiteralInteger)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-mixin(#@SP_EXP);
+mixin(#@EXP_ANY);
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationMixinString(#@SPSE_EXP(SP_EXP))
+DeclarationMixinString(#@EXP_ANY)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 mixin #error:EXP_OPEN_PARENS #error:EXP_SEMICOLON
 mixin #error:EXP_OPEN_PARENS ;
@@ -37,15 +37,15 @@ mixin();
 mixin();
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-mixin(#@SP_EXP #error:EXP_CLOSE_PARENS ;
-mixin(#@SP_EXP #error:EXP_CLOSE_PARENS #error:EXP_SEMICOLON
-mixin(#@SP_EXP ) #error:EXP_SEMICOLON
+mixin(#@EXP_ANY #error:EXP_CLOSE_PARENS ;
+mixin(#@EXP_ANY #error:EXP_CLOSE_PARENS #error:EXP_SEMICOLON
+mixin(#@EXP_ANY ) #error:EXP_SEMICOLON
 #AST_SOURCE_EXPECTED:
-mixin(#@SP_EXP);
-mixin(#@SP_EXP);
-mixin(#@SP_EXP);
+mixin(#@EXP_ANY);
+mixin(#@EXP_ANY);
+mixin(#@EXP_ANY);
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationMixinString(#@SPSE_EXP(SP_EXP))
-DeclarationMixinString(#@SPSE_EXP(SP_EXP))
-DeclarationMixinString(#@SPSE_EXP(SP_EXP))
+DeclarationMixinString(#@EXP_ANY)
+DeclarationMixinString(#@EXP_ANY)
+DeclarationMixinString(#@EXP_ANY)

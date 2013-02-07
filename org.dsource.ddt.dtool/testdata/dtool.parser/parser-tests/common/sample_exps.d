@@ -1,34 +1,12 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-
-#@SP_EXP《►
-	#@LIT_KEYWORDS《this●super●null●true●false●$●__FILE__●__LINE__》●
-	'"'●
-	12●123_45Lu●
-	123.0F●.456E12●0x25_AD_3FP+1●
-	
-	"abc"●r"inline"q{ TOKEN string }`sfds`●
-》
-
-#@LIT_KEYWORDS_EXP《
-ExpThis●ExpSuper●ExpNull●ExpLiteralBool●ExpLiteralBool●ExpArrayLength●ExpLiteralString●ExpLiteralInteger》
-
-#@SPSE_EXP!《►
-	#@LIT_KEYWORDS_EXP(LIT_KEYWORDS)●
-	ExpLiteralChar●
-	ExpLiteralInteger●ExpLiteralInteger●
-	ExpLiteralFloat●ExpLiteralFloat●ExpLiteralFloat●
-	ExpLiteralString●ExpLiteralString●
-	
-》
-
 ---TODO
 
 	foo●
 	
 	RefIdentifier●
 
-#@EXP_OROR《►
+#@EXP_UNARY《►
 #?AST_STRUCTURE_EXPECTED!【this●ExpThis】●
 #?AST_STRUCTURE_EXPECTED!【super●ExpSuper】●
 #?AST_STRUCTURE_EXPECTED!【null●ExpNull】●
@@ -42,12 +20,24 @@ ExpThis●ExpSuper●ExpNull●ExpLiteralBool●ExpLiteralBool●ExpArrayLength�
 
 #?AST_STRUCTURE_EXPECTED!【__FILE__●ExpLiteralString】●
 #?AST_STRUCTURE_EXPECTED!【__LINE__●ExpLiteralInteger】●
-
 》
 
-#@EXP_《►
-#@EXP_NEW●
+#@EXP_OROR《►
+#@EXP_UNARY●
+#?AST_STRUCTURE_EXPECTED!【4 / 6●InfixExpression】●
+#?AST_STRUCTURE_EXPECTED!【1 + 2●InfixExpression】●
+#?AST_STRUCTURE_EXPECTED!【1 << 16●InfixExpression】●
+#?AST_STRUCTURE_EXPECTED!【0xFF & 123●InfixExpression】●
+#?AST_STRUCTURE_EXPECTED!【0xFF | 0xAA●InfixExpression】●
+#?AST_STRUCTURE_EXPECTED!【1 > 2 && 3●InfixExpression】●
+#?AST_STRUCTURE_EXPECTED!【2 || 3 < 4●InfixExpression】●
 》
+
+TODO composite expression
+
+TODO
+#?AST_STRUCTURE_EXPECTED!【foo !is null●ExpLiteralInteger】●
+#?AST_STRUCTURE_EXPECTED!【foo !in [12, 123]●ExpLiteralInteger】●
 
 #@EXP_CONDITIONAL《►
 #@EXP_OROR●
@@ -67,5 +57,4 @@ ExpThis●ExpSuper●ExpNull●ExpLiteralBool●ExpLiteralBool●ExpArrayLength�
 #@EXP_ANY《►
 #@EXP_COMMA●
 》
-
 

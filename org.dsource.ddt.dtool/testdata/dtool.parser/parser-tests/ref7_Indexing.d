@@ -17,12 +17,12 @@ DefVariable(RefIndexing(RefIndexing(RefPrimitive ExpLiteralInteger) ExpLiteralIn
 foo[int] #error:EXP_ID ;
 foo[4] #error:EXP_ID ;
 
-#AST_STRUCTURE_EXPECTED:
-InvalidDeclaration(RefIndexing(RefIdentifier RefPrimitive))
-InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))
 #AST_SOURCE_EXPECTED:
 foo[int] ;
 foo[4] ;
+#AST_STRUCTURE_EXPECTED:
+InvalidDeclaration(RefIndexing(RefIdentifier RefPrimitive))
+InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
@@ -38,35 +38,35 @@ DefVariable(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)) DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@SP_TYPE_REF[#@SP_EXP] dummy;
+#@SP_TYPE_REF[#@EXP_ANY] dummy;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefIndexing(#@SPSE_TYPE_REF(SP_TYPE_REF) #@SPSE_EXP(SP_EXP)) DefSymbol)
+DefVariable(RefIndexing(#@SPSE_TYPE_REF(SP_TYPE_REF) #@EXP_ANY) DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo1[#@SP_TYPE_REF   #error:EXP_CLOSE_BRACKET public int dummy ;
 foo2[#@SP_TYPE_REF   #error:EXP_CLOSE_BRACKET ;
 foo3[#@SP_TYPE_REF   #error:EXP_CLOSE_BRACKET 
 
-#AST_STRUCTURE_EXPECTED:
-InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)))  ?(DefinitionVariable(RefPrimitive ?))
-InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)))  DeclarationEmpty
-InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)))
 #AST_SOURCE_EXPECTED:
 foo1[#@SP_TYPE_REF] public int dummy;
 foo2[#@SP_TYPE_REF] ;
 foo3[#@SP_TYPE_REF] 
+#AST_STRUCTURE_EXPECTED:
+InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)))  ?(DefinitionVariable(RefPrimitive ?))
+InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)))  DeclarationEmpty
+InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo1[#@SP_EXP   #error:EXP_CLOSE_BRACKET public int dummy ;
-foo2[#@SP_EXP   #error:EXP_CLOSE_BRACKET ;
-foo3[#@SP_EXP   #error:EXP_CLOSE_BRACKET 
+foo1[#@EXP_ANY   #error:EXP_CLOSE_BRACKET public int dummy ;
+foo2[#@EXP_ANY   #error:EXP_CLOSE_BRACKET ;
+foo3[#@EXP_ANY   #error:EXP_CLOSE_BRACKET 
 
-#AST_STRUCTURE_EXPECTED:
-InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_EXP(SP_EXP)))  ?(DefinitionVariable(RefPrimitive DefSymbol))
-InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_EXP(SP_EXP)))  DeclarationEmpty
-InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_EXP(SP_EXP)))  
 #AST_SOURCE_EXPECTED:
-foo1[#@SP_EXP]  public int dummy;
-foo2[#@SP_EXP]  ;
-foo3[#@SP_EXP] 
+foo1[#@EXP_ANY]  public int dummy;
+foo2[#@EXP_ANY]  ;
+foo3[#@EXP_ANY] 
+#AST_STRUCTURE_EXPECTED:
+InvalidDeclaration(RefIndexing(RefIdentifier #@EXP_ANY))  ?(DefinitionVariable(RefPrimitive DefSymbol))
+InvalidDeclaration(RefIndexing(RefIdentifier #@EXP_ANY))  DeclarationEmpty
+InvalidDeclaration(RefIndexing(RefIdentifier #@EXP_ANY))  
