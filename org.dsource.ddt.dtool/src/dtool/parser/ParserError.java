@@ -9,7 +9,7 @@ import dtool.ast.SourceRange;
 
 public class ParserError {
 	
-	public enum EDeeParserErrors {
+	public enum ParserErrorTypes {
 		
 		INVALID_TOKEN_CHARACTERS, // Lexer: invalid characters, cannot form token
 		MALFORMED_TOKEN, // Lexer: recovered token has errors
@@ -22,13 +22,13 @@ public class ParserError {
 		EXP_MUST_HAVE_PARENTHESES, //Syntax error: exp must have parentheses to parse
 	}
 	
-	protected final EDeeParserErrors errorType;
+	protected final ParserErrorTypes errorType;
 	protected final SourceRange sourceRange;
 	protected final String msgErrorSource;
 	protected final Object msgData;
 	public ASTNeoNode originNode;
 	
-	public ParserError(EDeeParserErrors errorType, SourceRange sourceRange, String msgErrorSource, Object msgData) {
+	public ParserError(ParserErrorTypes errorType, SourceRange sourceRange, String msgErrorSource, Object msgData) {
 		this.errorType = assertNotNull_(errorType);
 		this.sourceRange = assertNotNull_(sourceRange);
 		this.msgErrorSource = msgErrorSource;

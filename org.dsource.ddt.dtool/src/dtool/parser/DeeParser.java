@@ -31,6 +31,7 @@ import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.InvalidDeclaration;
 import dtool.ast.declarations.InvalidSyntaxElement;
+import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
@@ -63,17 +64,14 @@ import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTypeDynArray;
 import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
-import dtool.parser.ParserError.EDeeParserErrors;
+import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
 
-public class DeeParser extends AbstractDeeParser {
-	
-	private static final Token BEGIN_OF_SOURCE = new Token(DeeTokens.WHITESPACE, "", 0);
+public class DeeParser extends AbstractParser {
 	
 	public DeeParser(String source) {
 		super(new DeeLexer(source));
-		lastRealToken = BEGIN_OF_SOURCE;
 	}
 	
 	public DeeParser(DeeLexer deeLexer) {
@@ -90,6 +88,14 @@ public class DeeParser extends AbstractDeeParser {
 		return isMissingId(id) ? null : id.tokenSource;
 	}
 	
+	public DefUnitTuple defUnitTuple(SourceRange sourceRange, Token id, Comment[] comments) {
+		return new DefUnitTuple(sourceRange, tokenInfo(id), comments);
+	}
+	
+	public DefUnitTuple defUnitRaw(SourceRange sourceRange, Token id) {
+		return defUnitTuple(sourceRange, id, null);
+	}
+	
 	public DeeTokens lookAheadGrouped() {
 		DeeTokens tokenType = lookAheadToken().type.getGroupingToken();
 		return tokenType;
@@ -102,9 +108,9 @@ public class DeeParser extends AbstractDeeParser {
 		
 		ArrayView<ASTNeoNode> members = parseDeclDefs(null);
 		assertTrue(lookAhead() == DeeTokens.EOF);
-		assertTrue(lookAheadToken().getEndPos() == deeLexer.source.length());
+		assertTrue(lookAheadToken().getEndPos() == lexer.source.length());
 		
-		SourceRange modRange = new SourceRange(0, deeLexer.source.length());
+		SourceRange modRange = new SourceRange(0, lexer.source.length());
 		
 		if(md != null) {
 			return new Module(md.getModuleSymbol(), null, md, members, modRange);
@@ -164,13 +170,13 @@ public class DeeParser extends AbstractDeeParser {
 		
 		if(tryConsume(DeeTokens.KW_STATIC)) { // BUG here
 			isStatic = true;
-			declStart = lastRealToken.getStartPos();
+			declStart = lastLexElement.getStartPos();
 		}
 		
 		if(!tryConsume(DeeTokens.KW_IMPORT)) {
 			return null;
 		}
-		declStart = NewUtils.updateIfNull(declStart, lastRealToken.getStartPos());
+		declStart = NewUtils.updateIfNull(declStart, lastLexElement.getStartPos());
 		
 		ArrayList<IImportFragment> fragments = new ArrayList<IImportFragment>();
 		do {
@@ -287,7 +293,7 @@ public class DeeParser extends AbstractDeeParser {
 			}
 			
 			if(acceptEmptyDecl && tryConsume(DeeTokens.SEMICOLON)) {
-				return connect(new DeclarationEmpty(srToCursor(lastRealToken)));
+				return connect(new DeclarationEmpty(srToCursor(lastLexElement)));
 			} else {
 				Token badToken = consumeLookAhead();
 				reportSyntaxError(DECLARATION_RULE);
@@ -300,7 +306,7 @@ public class DeeParser extends AbstractDeeParser {
 	
 	protected RefIdentifier parseRefIdentifier() {
 		Token id = tryConsumeIdentifier();
-		assertTrue(id.getRawTokenType() == DeeTokens.IDENTIFIER);
+		assertTrue(id.type == DeeTokens.IDENTIFIER);
 		return new RefIdentifier(idTokenToString(id), sr(id));
 	}
 	
@@ -405,22 +411,15 @@ public class DeeParser extends AbstractDeeParser {
 	protected Expression parseExpression_ExpStart(final Expression leftExp, int precedenceLimit) {
 		DeeTokens gla = lookAheadGrouped();
 		
-		/*BUG here*/
-		// TODO: !is●in●!in●
-		
 		InfixOpType infixOp = InfixOpType.tokenToInfixOpType(gla);
-		if(infixOp == null) {
-			/*BUG here*/
-			if(tryConsume(DeeTokens.NOT)) {
-				if(lookAhead() == DeeTokens.KW_IS) {
-					infixOp = InfixOpType.NOT_IS;
-				}
-				/*BUG here*/
-				if(lookAhead() == DeeTokens.KW_IN) {
-					infixOp = InfixOpType.NOT_IN;
-				}
+		if(lookAhead() == DeeTokens.NOT) {
+			if(lookAheadElement(1).getType() == DeeTokens.KW_IS) {
+				infixOp = InfixOpType.NOT_IS;
+			} else if(lookAheadElement(1).getType() == DeeTokens.KW_IN) {
+				infixOp = InfixOpType.NOT_IN;
 			}
 		}
+		
 		if(infixOp == null) {
 			return leftExp;
 		}
@@ -482,6 +481,9 @@ public class DeeParser extends AbstractDeeParser {
 			return null;
 		
 		consumeLookAhead();
+		if(op == InfixOpType.NOT_IS || op == InfixOpType.NOT_IN) {
+			consumeLookAhead(); // consume second infix token
+		}
 		checkValidAssociativity(leftExp, op);
 		
 		Expression middleExp = null;
@@ -519,7 +521,7 @@ public class DeeParser extends AbstractDeeParser {
 		case OR: case XOR: case AND: case EQUALS:
 			if(exp instanceof InfixExpression) {
 				if(((InfixExpression) exp).kind.category == InfixOpType.EQUALS) {
-					addError(EDeeParserErrors.EXP_MUST_HAVE_PARENTHESES, exp.getSourceRange(), op.sourceValue);
+					addError(ParserErrorTypes.EXP_MUST_HAVE_PARENTHESES, exp.getSourceRange(), op.sourceValue);
 				}
 			}
 		default: break;
@@ -530,30 +532,30 @@ public class DeeParser extends AbstractDeeParser {
 		switch (lookAheadGrouped()) {
 		case KW_TRUE: case KW_FALSE: {
 			Token token = consumeLookAhead();
-			return new ExpLiteralBool(token.type == DeeTokens.KW_TRUE, srToCursor(lastRealToken));
+			return new ExpLiteralBool(token.type == DeeTokens.KW_TRUE, srToCursor(lastLexElement));
 		}
 		case KW_THIS:
 			consumeLookAhead();
-			return new ExpThis(srToCursor(lastRealToken));
+			return new ExpThis(srToCursor(lastLexElement));
 		case KW_SUPER:
 			consumeLookAhead();
-			return new ExpSuper(srToCursor(lastRealToken));
+			return new ExpSuper(srToCursor(lastLexElement));
 		case KW_NULL:
 			consumeLookAhead();
-			return new ExpNull(srToCursor(lastRealToken));
+			return new ExpNull(srToCursor(lastLexElement));
 		case DOLLAR:
 			consumeLookAhead();
-			return new ExpArrayLength(srToCursor(lastRealToken));
+			return new ExpArrayLength(srToCursor(lastLexElement));
 		case KW___LINE__:
-			return new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastRealToken));
+			return new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastLexElement));
 		case KW___FILE__:
-			return new ExpLiteralString(consumeLookAhead(), srToCursor(lastRealToken));
+			return new ExpLiteralString(consumeLookAhead(), srToCursor(lastLexElement));
 		case INTEGER:
-			return connect(new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastRealToken)));
+			return connect(new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastLexElement)));
 		case CHARACTER: 
-			return connect(new ExpLiteralChar(consumeLookAhead(), srToCursor(lastRealToken)));
+			return connect(new ExpLiteralChar(consumeLookAhead(), srToCursor(lastLexElement)));
 		case FLOAT:
-			return connect(new ExpLiteralFloat(consumeLookAhead(), srToCursor(lastRealToken)));
+			return connect(new ExpLiteralFloat(consumeLookAhead(), srToCursor(lastLexElement)));
 		case STRING:
 			return parseStringLiteral();
 		default:
@@ -654,7 +656,7 @@ public class DeeParser extends AbstractDeeParser {
 		Expression exp = parseAssignExpression();
 		if(exp == null) {
 			reportErrorExpectedRule(INITIALIZER_RULE);
-			exp = new MissingExpression(srToCursor(lastRealToken.getEndPos()));
+			exp = new MissingExpression(srToCursor(lastLexElement.getEndPos()));
 		}
 		return new InitializerExp(exp, exp.getSourceRange());
 	}
@@ -698,7 +700,7 @@ public class DeeParser extends AbstractDeeParser {
 		if(!tryConsume(DeeTokens.KW_EXTERN)) {
 			return null;
 		}
-		int declStart = lastRealToken.getStartPos();
+		int declStart = lastLexElement.getStartPos();
 		
 		Linkage linkage = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
@@ -712,7 +714,7 @@ public class DeeParser extends AbstractDeeParser {
 				}
 			}
 			if(linkage == null) {
-				reportError(EDeeParserErrors.INVALID_EXTERN_ID, null, true);
+				reportError(ParserErrorTypes.INVALID_EXTERN_ID, null, true);
 			}
 			
 			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null) {
@@ -730,7 +732,7 @@ public class DeeParser extends AbstractDeeParser {
 		if(!tryConsume(DeeTokens.KW_ALIGN)) {
 			return null;
 		}
-		int declStart = lastRealToken.getStartPos();
+		int declStart = lastLexElement.getStartPos();
 		
 		Token alignNum = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
@@ -755,7 +757,7 @@ public class DeeParser extends AbstractDeeParser {
 		if(!tryConsume(DeeTokens.KW_PRAGMA)) {
 			return null;
 		}
-		int declStart = lastRealToken.getStartPos();
+		int declStart = lastLexElement.getStartPos();
 		
 		Token pragmaId = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
@@ -783,12 +785,11 @@ public class DeeParser extends AbstractDeeParser {
 			return null;
 		}
 		consumeLookAhead();
-		int declStart = lastRealToken.getStartPos();
-		Protection protection = Protection.fromToken(lastRealToken.getRawTokenType());
+		int declStart = lastLexElement.getStartPos();
+		Protection protection = DeeTokenSemantics.getProtectionFromToken(lastLexElement.getType());
 		
 		AttribBodyParseRule ab = new AttribBodyParseRule().parseAttribBody(false);
-		return connect(
-			new DeclarationProtection(protection, ab.bodySyntax, ab.declList, srToCursor(declStart)));
+		return connect(new DeclarationProtection(protection, ab.bodySyntax, ab.declList, srToCursor(declStart)));
 	}
 	
 	public DeclarationBasicAttrib parseDeclarationBasicAttrib() {
@@ -797,7 +798,7 @@ public class DeeParser extends AbstractDeeParser {
 			return null;
 		}
 		consumeLookAhead();
-		int declStart = lastRealToken.getStartPos();
+		int declStart = lastLexElement.getStartPos();
 		
 		AttribBodyParseRule apr = new AttribBodyParseRule().parseAttribBody(false);
 		return connect(new DeclarationBasicAttrib(attrib, apr.bodySyntax, apr.declList, srToCursor(declStart)));
@@ -810,7 +811,7 @@ public class DeeParser extends AbstractDeeParser {
 		if(!tryConsume(DeeTokens.KW_MIXIN)) {
 			return null;
 		}
-		int declStart = lastRealToken.getStartPos();
+		int declStart = lastLexElement.getStartPos();
 		Expression exp = null;
 		
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {

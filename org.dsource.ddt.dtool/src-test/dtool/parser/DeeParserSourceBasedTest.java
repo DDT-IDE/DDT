@@ -36,7 +36,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.SourceRange;
 import dtool.parser.DeeParserTest.NamedNodeElement;
-import dtool.parser.ParserError.EDeeParserErrors;
+import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessor;
@@ -153,32 +153,32 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		SourceRange errorRange = mde.getSourceRange();
 		
 		 if(errorType.equals("ITC")) {
-			return new ParserError(EDeeParserErrors.INVALID_TOKEN_CHARACTERS, errorRange, mde.associatedSource, null);
+			return new ParserError(ParserErrorTypes.INVALID_TOKEN_CHARACTERS, errorRange, mde.associatedSource, null);
 		} else if(errorType.equals("MT") || errorType.equals("MTC")) {
 			errorParam = DeeLexerSourceBasedTest.parseExpectedError(errorParam).toString();
-			return createErrorToken(EDeeParserErrors.MALFORMED_TOKEN, mde, deeLexer, true, errorParam);
+			return createErrorToken(ParserErrorTypes.MALFORMED_TOKEN, mde, deeLexer, true, errorParam);
 		} else if(errorType.equals("EXP")) {
 			String expectedTokenStr = DeeLexerSourceBasedTest.transformTokenNameAliases(errorParam);
-			return createErrorToken(EDeeParserErrors.EXPECTED_TOKEN, mde, deeLexer, true, expectedTokenStr);
+			return createErrorToken(ParserErrorTypes.EXPECTED_TOKEN, mde, deeLexer, true, expectedTokenStr);
 		} else if(errorType.equals("EXPRULE")) {
 			errorParam = getExpectedRuleName(errorParam);
-			return createErrorToken(EDeeParserErrors.EXPECTED_RULE, mde, deeLexer, true, errorParam);
+			return createErrorToken(ParserErrorTypes.EXPECTED_RULE, mde, deeLexer, true, errorParam);
 		} else if(errorType.equals("SE") || errorType.equals("<SE")) {
 			errorParam = getExpectedRuleName(errorParam);
 			boolean tokenBefore = errorType.equals("<SE");
-			return createErrorToken(EDeeParserErrors.SYNTAX_ERROR, mde, deeLexer, tokenBefore, errorParam);
+			return createErrorToken(ParserErrorTypes.SYNTAX_ERROR, mde, deeLexer, tokenBefore, errorParam);
 		} else if(mde.value.equals("BAD_LINKAGE_ID")) {
-			return createErrorToken(EDeeParserErrors.INVALID_EXTERN_ID, mde, deeLexer, true, null);
+			return createErrorToken(ParserErrorTypes.INVALID_EXTERN_ID, mde, deeLexer, true, null);
 		} else if(errorType.equals("REQPARENS")) {
 			String errorSource = assertNotNull_(mde.associatedSource);
 			errorParam = errorParam == null ? DeeParserTest.DONT_CHECK : errorParam;
-			return new ParserError(EDeeParserErrors.EXP_MUST_HAVE_PARENTHESES, errorRange, errorSource, errorParam);
+			return new ParserError(ParserErrorTypes.EXP_MUST_HAVE_PARENTHESES, errorRange, errorSource, errorParam);
 		} else {
 			throw assertFail();
 		}
 	}
 	
-	public ParserError createErrorToken(EDeeParserErrors errorTypeTk, MetadataEntry mde, DeeLexer deeLexer,
+	public ParserError createErrorToken(ParserErrorTypes errorTypeTk, MetadataEntry mde, DeeLexer deeLexer,
 		boolean tokenBefore, String errorParam) {
 		String errorSource = mde.associatedSource;
 		SourceRange errorRange = mde.getSourceRange();

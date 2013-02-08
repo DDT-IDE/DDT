@@ -103,7 +103,7 @@ public class DeeLexerTest extends CommonTestUtils {
 			Token token = deeLexer.next();
 			
 			if(expectedTokenType != null) {
-				assertTrue(token.getRawTokenType() == expectedTokenType);
+				assertTrue(token.type == expectedTokenType);
 			} else {
 				assertTrue(expectedError == null);
 			}

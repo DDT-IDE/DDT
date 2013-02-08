@@ -1,41 +1,75 @@
+/*******************************************************************************
+ * Copyright (c) 2013, 2013 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import descent.internal.compiler.parser.Comment;
+import melnorme.utilbox.misc2.ArrayListDeque;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
-import dtool.ast.definitions.DefUnit.DefUnitTuple;
-import dtool.parser.ParserError.EDeeParserErrors;
+import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
 /**
- * Basic parser functionality. 
+ * Basic parser functionality.
+ * Maintains a queue of lookahead elements from the parser.
+ * Holds an error list data; 
  */
-public class AbstractDeeParser {
+public class AbstractParser {
 	
-	protected final DeeLexer deeLexer;
+	public static class LexElement {
+		
+		public final Token[] ignoredPrecedingTokens;
+		public final Token token;
+		
+		public LexElement(Token[] ignoredPrecedingTokens, Token token) {
+			this.ignoredPrecedingTokens = ignoredPrecedingTokens;
+			this.token = token;
+		}
+		
+		public final int getStartPos() {
+			return token.getStartPos();
+		}
+		
+		public final int getEndPos() {
+			return token.getEndPos();
+		}
+		
+		public final DeeTokens getType() {
+			return token.type;
+		}
+		
+	}
 	
-	protected Token tokenAhead = null;
-	protected Token lastRealToken = null;
+	protected final AbstractLexer lexer;
+	
+	protected ArrayListDeque<LexElement> lookAheadQueue = new ArrayListDeque<AbstractParser.LexElement>();
+	protected LexElement lastLexElement = new LexElement(null, new Token(DeeTokens.WHITESPACE, "", 0));
 	
 	protected ArrayList<ParserError> errors = new ArrayList<ParserError>();
 	protected ArrayList<ParserError> pendingMissingTokenErrors = new ArrayList<ParserError>();
 	
-	public AbstractDeeParser(DeeLexer deeLexer) {
-		this.deeLexer = deeLexer;
+	public AbstractParser(AbstractLexer deeLexer) {
+		this.lexer = deeLexer;
 	}
 	
-	public CharSequence getSource() {
-		return deeLexer.source;
+	public String getSource() {
+		return lexer.getSource();
 	}
 	
 	public String getSource(SourceRange sourceRange) {
@@ -43,67 +77,109 @@ public class AbstractDeeParser {
 	}
 	
 	protected final Token getLastToken() {
-		return lastRealToken;
+		return lastLexElement.token;
 	}
 	
 	public final int getLastTokenEndPos() {
-		return lastRealToken.getEndPos();
+		return lastLexElement.token.getEndPos();
 	}
 	
-	public int getParserPosition() {
-		if(tokenAhead != null) {
-			return tokenAhead.getStartPos();
-		} else {
-			return deeLexer.getLexingPosition();
+	static{ assertTrue(DeeTokens.EOF.isParserIgnored == false); }
+	
+	public final LexElement lookAheadElement(int laIndex) {
+		assertTrue(laIndex >= 0);
+		
+		while(lookAheadQueue.size() <= laIndex) {
+			LexElement newLexElement = produceLexElement();
+			lookAheadQueue.add(newLexElement);
+		}
+		
+		return lookAheadQueue.get(laIndex);
+	}
+	
+	public final LexElement produceLexElement() {
+		// TODO minor optimize this?
+		ArrayList<Token> ignoredTokens = new ArrayList<Token>(1);
+		while(true) {
+			Token token = lexer.next();
+			
+			DeeTokens tokenType = token.type;
+			
+			if(tokenType.isParserIgnored) {
+				consumeToken(token);
+				ignoredTokens.add(token);
+				continue;
+			}
+			return new LexElement(ArrayUtil.createFrom(ignoredTokens, Token.class), token);
 		}
 	}
 	
-	protected ParserError addError(EDeeParserErrors errorType, SourceRange sr, String errorSource, Object msgData) {
+	public void consumeToken(Token token) {
+		if(token.type == DeeTokens.INVALID_TOKEN) {
+			addError(ParserErrorTypes.INVALID_TOKEN_CHARACTERS, token, null);
+		} else {
+			DeeTokenSemantics.checkTokenErrors(token, this);
+		}
+	}
+	
+	public final LexElement lookAheadElement() {
+		return lookAheadElement(0);
+	}
+	
+	public final Token lookAheadToken() {
+		return lookAheadElement(0).token;
+	}
+	
+	public final DeeTokens lookAhead() {
+		return lookAheadElement(0).token.getRawTokenType();
+	}
+	
+	@Deprecated
+	// XXX: need to fix this
+	public int getParserPosition() {
+		if(lookAheadQueue.size() == 0) {
+			return lexer.getLexingPosition();
+		}
+		return lookAheadElement().token.getStartPos();
+	}
+	
+	protected final Token consumeInput() {
+		LexElement laElem = lookAheadElement(); // Ensure there is at least one element in queue
+		
+		consumeToken(laElem.token);
+		lastLexElement = laElem;
+		lookAheadQueue.removeFirst();
+		return laElem.token;
+	}
+	
+	protected final Token consumeLookAhead() {
+		return consumeInput();
+	}
+	
+	protected final Token consumeLookAhead(DeeTokens tokenType) {
+		assertTrue(lookAhead() == tokenType);
+		return consumeLookAhead();
+	}
+	
+	/* ---- Basic error functionality ---- */
+	
+	protected ParserError addError(ParserErrorTypes errorType, SourceRange sr, String errorSource, Object msgData) {
 		assertEquals(getSource(sr), errorSource);
 		ParserError error = new ParserError(errorType, sr, errorSource, msgData);
 		errors.add(error);
 		return error;
 	}
 	
-	protected ParserError addError(EDeeParserErrors errorType, Token errorToken, Object msgData) {
+	protected ParserError addError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
 		return addError(errorType, sr(errorToken), errorToken.tokenSource, msgData);
 	}
 	
-	protected ParserError addError(EDeeParserErrors errorType, SourceRange sourceRange, Object msgData) {
+	protected ParserError addError(ParserErrorTypes errorType, SourceRange sourceRange, Object msgData) {
 		return addError(errorType, sourceRange, getSource(sourceRange), msgData);
 	}
 	
-	static{ assertTrue(DeeTokens.EOF.isParserIgnored == false); }
-	protected final Token lookAheadToken() {
-		if(tokenAhead != null) {
-			return tokenAhead;
-		}
-		while(true) {
-			Token token = deeLexer.next();
-			
-			DeeTokens tokenType = token.type;
-			
-			if(tokenType.isParserIgnored) {
-				if(tokenType == DeeTokens.INVALID_TOKEN) {
-					addError(EDeeParserErrors.INVALID_TOKEN_CHARACTERS, token, null);
-				} else {
-					consumeToken(token);
-				}
-				continue;
-			}
-			
-			tokenAhead = token;
-			return tokenAhead;
-		}
-	}
 	
-	public void consumeToken(Token token) {
-		DeeTokenSemantics.checkTokenErrors(token, this);
-	}
-	
-	public DeeTokens lookAhead() {
-		return lookAheadToken().getRawTokenType();
-	}
+	/* ---- Input consume helpers ---- */
 	
 	public boolean lookAheadIsType(DeeTokens... tokens) {
 		for (int i = 0; i < tokens.length; i++) {
@@ -113,29 +189,6 @@ public class AbstractDeeParser {
 		}
 		return false;
 	}
-	
-	protected final Token consumeInput() {
-		if(tokenAhead == null) {
-			lookAheadToken();
-		}
-		
-		consumeToken(tokenAhead);
-		lastRealToken = tokenAhead;
-		tokenAhead = null;
-		return lastRealToken;
-	}
-	
-	protected final Token consumeLookAhead() {
-		assertNotNull(tokenAhead);
-		return consumeInput();
-	}
-	
-	protected final Token consumeLookAhead(DeeTokens tokenType) {
-		assertTrue(lookAhead() == tokenType);
-		return consumeLookAhead();
-	}
-	
-	/* -- Source consume helpers -- */
 	
 	protected final Token consumeIf(DeeTokens tokenType) {
 		if(lookAhead() == tokenType) {
@@ -198,19 +251,19 @@ public class AbstractDeeParser {
 	/* ---- error helpers ---- */
 	
 	protected void reportErrorExpectedToken(DeeTokens expected) {
-		reportError(EDeeParserErrors.EXPECTED_TOKEN, expected, true);
+		reportError(ParserErrorTypes.EXPECTED_TOKEN, expected, true);
 	}
 	
 	protected void reportErrorExpectedRule(String expectedRule) {
-		reportError(EDeeParserErrors.EXPECTED_RULE, expectedRule, false);
+		reportError(ParserErrorTypes.EXPECTED_RULE, expectedRule, false);
 	}
 	
 	protected void reportSyntaxError(String expectedRule) {
-		reportError(EDeeParserErrors.SYNTAX_ERROR, expectedRule, false);
+		reportError(ParserErrorTypes.SYNTAX_ERROR, expectedRule, false);
 	}
 	
-	protected void reportError(EDeeParserErrors parserError, Object msgData, boolean missingToken) {
-		ParserError error = addError(parserError, lastRealToken, msgData);
+	protected void reportError(ParserErrorTypes parserError, Object msgData, boolean missingToken) {
+		ParserError error = addError(parserError, lastLexElement.token, msgData);
 		if(missingToken) {
 			pendingMissingTokenErrors.add(error);
 		}
@@ -252,6 +305,10 @@ public class AbstractDeeParser {
 		return srStartToEnd(declStart, getParserPosition());
 	}
 	
+	public final SourceRange srToCursor(LexElement startElement) {
+		return srToCursor(startElement.getStartPos());
+	}
+	
 	public final SourceRange srToCursor(Token startToken) {
 		return srToCursor(startToken.getStartPos());
 	}
@@ -266,14 +323,6 @@ public class AbstractDeeParser {
 		}
 		assertTrue(idToken.type == DeeTokens.IDENTIFIER);
 		return new TokenInfo(idToken.tokenSource, idToken.getStartPos());
-	}
-	
-	public DefUnitTuple defUnitTuple(SourceRange sourceRange, Token id, Comment[] comments) {
-		return new DefUnitTuple(sourceRange, tokenInfo(id), comments);
-	}
-	
-	public DefUnitTuple defUnitRaw(SourceRange sourceRange, Token id) {
-		return defUnitTuple(sourceRange, id, null);
 	}
 	
 	public static <T extends IASTNeoNode> ArrayView<T> arrayView(Collection<? extends T> list, Class<T> cpType) {

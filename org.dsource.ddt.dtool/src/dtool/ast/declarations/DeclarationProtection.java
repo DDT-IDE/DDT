@@ -9,7 +9,6 @@ import dtool.ast.IASTNeoVisitor;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
-import dtool.parser.DeeTokens;
 import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationProtection extends DeclarationAttrib {
@@ -21,17 +20,6 @@ public class DeclarationProtection extends DeclarationAttrib {
 	    PUBLIC,
 	    EXPORT,
 	    ;
-		
-		public static Protection fromToken(DeeTokens token) {
-			switch(token) {
-			case KW_PRIVATE: return PRIVATE;
-			case KW_PACKAGE: return PACKAGE;
-			case KW_PROTECTED: return PROTECTED;
-			case KW_PUBLIC: return PUBLIC;
-			case KW_EXPORT: return EXPORT;
-			default: return null;
-			}
-		}
 		
 		public String toStringAsCode() {
 			return toString().toLowerCase();

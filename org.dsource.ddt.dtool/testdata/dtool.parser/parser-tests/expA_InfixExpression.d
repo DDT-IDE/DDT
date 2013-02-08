@@ -20,7 +20,7 @@ InfixExpression(ExpLiteralInteger InfixExpression(ExpLiteralString ExpLiteralInt
 
 #@ASSIGN《=●+=●-=●*=●/=●%=●&=●|=●^=●~=●<<=●>>=●>>>=●^^=》
 #@COND《 ? #@《"middleExp"》 :》
-#@CMP《==●!=●is●<●<=●>●>=●<>●<>=●!<>●!<>=●!<●!<=●!>●!>=》
+#@CMP《==●!=●is●!is●in●!in●<●<=●>●>=●<>●<>=●!<>●!<>=●!<●!<=●!>●!>=》
 #@SHIFT《<<●>>●>>>》
 #@ADD《+●-●~》
 #@MUL《*●/●%》

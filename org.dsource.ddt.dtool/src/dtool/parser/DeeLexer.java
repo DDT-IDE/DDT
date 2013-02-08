@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 public class DeeLexer extends AbstractLexer {
 	
-	public DeeLexer(CharSequence source) {
+	public DeeLexer(String source) {
 		super(source);
 	}
 	

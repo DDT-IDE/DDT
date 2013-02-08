@@ -1,12 +1,13 @@
 package dtool.parser;
 
-import dtool.parser.ParserError.EDeeParserErrors;
+import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.parser.ParserError.ParserErrorTypes;
 
 public class DeeTokenSemantics {
 	
-	public static void checkTokenErrors(Token token, AbstractDeeParser parser) {
+	public static void checkTokenErrors(Token token, AbstractParser parser) {
 		if(token.getError() != null) {
-			parser.addError(EDeeParserErrors.MALFORMED_TOKEN, token, token.getError());
+			parser.addError(ParserErrorTypes.MALFORMED_TOKEN, token, token.getError());
 			return;
 		} //else
 		
@@ -14,12 +15,23 @@ public class DeeTokenSemantics {
 		switch (token.type) {
 		case CHARACTER:
 			if(token.tokenSource.length() > 3) {
-				parser.addError(EDeeParserErrors.MALFORMED_TOKEN, token, 
+				parser.addError(ParserErrorTypes.MALFORMED_TOKEN, token, 
 					LexerErrorTypes.CHAR_LITERAL_SIZE_GREATER_THAN_ONE);
 			}
 			break;
 		default:
 			break;
+		}
+	}
+	
+	public static Protection getProtectionFromToken(DeeTokens token) {
+		switch(token) {
+		case KW_PRIVATE: return Protection.PRIVATE;
+		case KW_PACKAGE: return Protection.PACKAGE;
+		case KW_PROTECTED: return Protection.PROTECTED;
+		case KW_PUBLIC: return Protection.PUBLIC;
+		case KW_EXPORT: return Protection.EXPORT;
+		default: return null;
 		}
 	}
 	

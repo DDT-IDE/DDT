@@ -21,12 +21,26 @@ public abstract class AbstractLexer {
 	
 	protected static final short ASCII_LIMIT = 127;
 
-	protected final CharSequence source;
+	protected final String source;
 	protected int tokenStartPos = 0;
-	protected int pos = -1; // Temporary variable used internally by scanners
+	// BM: maybe pos should function param instead of global variable
+	protected int pos = tokenStartPos; // Temporary variable used internally by scanners 
 	
-	public AbstractLexer(CharSequence source) {
+	public AbstractLexer(String source) {
 		this.source = assertNotNull_(source);
+	}
+	
+	public final String getSource() {
+		return source;
+	}
+	
+	public final int getLexingPosition() {
+		return tokenStartPos;
+	}
+	
+	public boolean lookAheadIsEOF() {
+		assertTrue(pos == tokenStartPos);
+		return (tokenStartPos >= source.length());
 	}
 	
 	public final Token next() { 
@@ -53,16 +67,12 @@ public abstract class AbstractLexer {
 		return source.charAt(index);
 	}
 	
-	public final int lookAhead(int offset) {
+	protected final int lookAhead(int offset) {
 		return getCharacter(pos + offset);
 	}
 	
-	public final int lookAhead() {
+	protected final int lookAhead() {
 		return getCharacter(pos);
-	}
-	
-	public final int getLexingPosition() {
-		return tokenStartPos;
 	}
 	
 	
