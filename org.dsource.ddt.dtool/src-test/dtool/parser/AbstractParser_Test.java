@@ -30,8 +30,7 @@ public class AbstractParser_Test extends CommonTestUtils {
 	public void testInit() throws Exception { testInit$(); }
 	public void testInit$() throws Exception {
 		AbstractParser parser = new AbstractParser(new AbstractLexerExtension("abcdefgh"));
-		assertEquals(parser.getLastToken().getSourceRange() , new SourceRange(0, 0));
-		assertEquals(parser.getLastTokenEndPos(), 0);
+		assertEquals(parser.lastLexElement.token.getSourceRange() , new SourceRange(0, 0));
 		
 		assertTrue(parser.lookAheadQueue.size() == 0);
 	}
@@ -74,6 +73,21 @@ public class AbstractParser_Test extends CommonTestUtils {
 		assertTrue(parser.lookAheadQueue.size() == 2);
 		assertEquals(parser.lookAheadElement(0).token.type, DeeTokens.EOF);
 		assertEquals(parser.lookAheadElement(1).token.type, DeeTokens.EOF);
+	}
+	
+	@Test
+	public void testConsumeWhiteSpace() throws Exception { testConsumeWhiteSpace$(); }
+	public void testConsumeWhiteSpace$() throws Exception {
+		AbstractParser parser = new AbstractParser(new AbstractLexerExtension("abcd  efgh"));
+		
+		assertEquals(parser.lookAheadElement(2).token.tokenSource, "ef");
+		parser.consumeIgnoredTokens();
+		
+		parser.consumeInput();
+		parser.consumeInput();
+		assertEquals(parser.lookAheadElement(0).token.tokenSource, "ef");
+		parser.consumeIgnoredTokens();
+		assertEquals(parser.lookAheadElement(0).token.tokenSource, "ef");
 	}
 	
 }

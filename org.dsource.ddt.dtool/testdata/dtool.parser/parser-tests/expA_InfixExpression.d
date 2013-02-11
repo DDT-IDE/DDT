@@ -80,33 +80,33 @@ InfixExpression(ExpLiteralInteger InfixExpression(ExpLiteralString ExpLiteralInt
 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Special case for '==' and other compare ops
-#PARSE(EXPRESSION)	 #error(REQPARENS)《this  #@CMP   "abc"    》#@CMP  #@INT_OR_MISSING
+#PARSE(EXPRESSION)	 #error(REQPARENS)《this  #@CMP   "abc"》    #@CMP  #@INT_OR_MISSING
 #AST_STRUCTURE_EXPECTED:
 InfixExpression(InfixExpression(ExpThis  String)  #@INT_OR_MISSING)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)	 #error(REQPARENS_&)《this  #@CMP /*OP*/ "abc"    》&   #@INT_OR_MISSING
+#PARSE(EXPRESSION)	 #error(REQPARENS_&)《this  #@CMP /*OP*/ "abc"》/*blah*/    &   #@INT_OR_MISSING
 #AST_STRUCTURE_EXPECTED:
 InfixExpression(InfixExpression(ExpThis String)  #@INT_OR_MISSING)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION) 	 this    &   #error(REQPARENS_&)《"abc"  #@CMP /*OP*/  123
-》#AST_STRUCTURE_EXPECTED:
+#PARSE(EXPRESSION) 	 this    &   #error(REQPARENS_&)《"abc"  #@CMP /*OP*/  123》
+#AST_STRUCTURE_EXPECTED:
 InfixExpression(ExpThis  InfixExpression(String Integer))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test error with == next to |●^●&
 #PARSE(EXPRESSION) 
-#@〔1 &●〕  #error(REQPARENS)《1 == 2 》#@〔|●^●&〕  #error(REQPARENS)《2 <= 3》#@〔|●^●&〕   this
+#@〔1 &●〕  #error(REQPARENS)《1 == 2》 #@〔|●^●&〕  #error(REQPARENS)《2 <= 3》#@〔|●^●&〕   this
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(EXPRESSION) 
-         #error(REQPARENS_^)《1 == 2 》^  #error(REQPARENS_&)《2 <= 3》&   this
+         #error(REQPARENS_^)《1 == 2》 ^  #error(REQPARENS_&)《2 <= 3》&   this
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(EXPRESSION) 
-         #error(REQPARENS_|)《1 == 2 》|  #error(REQPARENS_&)《2 <= 3》&   this
+         #error(REQPARENS_|)《1 == 2》 |  #error(REQPARENS_&)《2 <= 3》  &   this
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test order of errors
 #PARSE(EXPRESSION) 
-#error(REQPARENS)《1 == 123 》| #@《 #error:ITC{} 123 ● #error(EXPRULE_exp)》  
+#error(REQPARENS)《1 == 123》 | #@《 #error:ITC{} 123 ● #error(EXPRULE_exp)》  
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

@@ -13,4 +13,18 @@ package dtool.ast;
 
 public class ASTNeoHomogenousVisitor extends ASTNeoDefaultVisitor implements IASTNeoVisitor {
 	
+	public void traverse(ASTNeoNode node) {
+		node.accept(this);
+	}
+	
+	@Override
+	public boolean preVisit(ASTNeoNode node) {
+		genericVisit(node);
+		return true;
+	}
+	
+	@SuppressWarnings("unused") 
+	public void genericVisit(ASTNeoNode node) {
+	}
+	
 }

@@ -1,5 +1,6 @@
 package dtool.tests;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Function;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.DefUnit;
@@ -32,6 +33,11 @@ public class MiscDeeTestUtils {
 				return obj == null ? null : obj.toStringAsCode();
 			}
 		};
+	}
+	
+	public static ASTNeoNode getSingleChild(ASTNeoNode[] array) {
+		assertTrue(array != null && array.length == 1);
+		return array[0];
 	}
 	
 }

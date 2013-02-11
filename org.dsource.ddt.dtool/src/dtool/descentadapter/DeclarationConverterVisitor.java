@@ -57,6 +57,7 @@ import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
+import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.ImportStatic;
 import dtool.ast.declarations.InvalidSyntaxDeclaration_Old;
@@ -207,7 +208,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	}
 	
 	// Helper function for the ImportSelective conversion.
-	private static ASTNeoNode createSelectionFragment(IdentifierExp name, IdentifierExp alias) {
+	private static IImportSelectiveSelection createSelectionFragment(IdentifierExp name, IdentifierExp alias) {
 		assertTrue(!(name.ident.length == 0));
 		RefImportSelection impSelection = new RefImportSelection(
 			new String(name.ident),
@@ -225,7 +226,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			);
 			
 			return new ImportSelectiveAlias(
-				dudt, impSelection
+				dudt, impSelection, dudt.sourceRange
 			);
 		}
 	}
@@ -277,7 +278,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				);
 				imprtFragment = new ImportAlias(
 					dudt,
-					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr)
+					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr),
+					null
 				);
 			} else {
 				imprtFragment = new ImportContent(
@@ -287,7 +289,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				if(imprt.names != null) {
 					assertTrue(imprt.names.size() == imprt.aliases.size());
 					assertTrue(imprt.names.size() > 0 );
-					ASTNeoNode[] impSelFrags = new ASTNeoNode[imprt.names.size()];
+					IImportSelectiveSelection[] impSelFrags = new IImportSelectiveSelection[imprt.names.size()];
 					for(int selFragment = 0; selFragment < imprt.names.size(); selFragment++) {
 						impSelFrags[selFragment] = createSelectionFragment(
 							imprt.names.get(selFragment),
@@ -524,7 +526,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			return endAdapt(new DefinitionVariable(
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				ReferenceConverter.convertType(elem.type, convContext),
-				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null
+				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null, null
 			));
 		}
 	}

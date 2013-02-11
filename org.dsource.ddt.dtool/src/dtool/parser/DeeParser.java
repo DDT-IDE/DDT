@@ -25,6 +25,7 @@ import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
@@ -84,16 +85,17 @@ public class DeeParser extends AbstractParser {
 		return new DeeParserResult(module, deeParser.errors);
 	}
 	
-	public String idTokenToString(Token id) {
-		return isMissingId(id) ? null : id.tokenSource;
+	public String idTokenToString(LexElement id) {
+		return id.isMissingElement() ? null : id.token.tokenSource;
 	}
 	
-	public DefUnitTuple defUnitTuple(SourceRange sourceRange, Token id, Comment[] comments) {
-		return new DefUnitTuple(sourceRange, tokenInfo(id), comments);
+	// TODO: comments
+	public DefUnitTuple defUnitNoComments(LexElement id) {
+		return defUnitTuple(id, null);
 	}
 	
-	public DefUnitTuple defUnitRaw(SourceRange sourceRange, Token id) {
-		return defUnitTuple(sourceRange, id, null);
+	public DefUnitTuple defUnitTuple(LexElement id, Comment[] comments) {
+		return new DefUnitTuple(null, id, comments);
 	}
 	
 	public DeeTokens lookAheadGrouped() {
@@ -123,15 +125,16 @@ public class DeeParser extends AbstractParser {
 		if(!tryConsume(DeeTokens.KW_MODULE)) {
 			return null;
 		}
+		int declStart = lastLexElement.getStartPos();
 		
 		ArrayList<String> packagesList = new ArrayList<String>(0);
-		Token moduleId;
+		LexElement moduleId;
 		
 		while(true) {
-			Token id = tryConsumeIdentifier();
+			LexElement id = tryConsumeIdentifier();
 			
-			if(!isMissingId(id) && tryConsume(DeeTokens.DOT)) {
-				packagesList.add(id.tokenSource);
+			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
+				packagesList.add(id.token.tokenSource);
 				id = null;
 			} else {
 				consumeExpectedToken(DeeTokens.SEMICOLON);
@@ -142,8 +145,8 @@ public class DeeParser extends AbstractParser {
 		assertNotNull(moduleId);
 		
 		String[] packages = ArrayUtil.createFrom(packagesList, String.class);
-		SourceRange modDeclRange = srToCursor(0); // BUG here on 0 ?
-		return connect(new DeclarationModule(modDeclRange, packages, tokenInfo(moduleId)));
+		SourceRange modDeclRange = srToCursor(declStart);
+		return connect(new DeclarationModule(packages, moduleId.token, modDeclRange));
 	}
 	
 	
@@ -194,26 +197,26 @@ public class DeeParser extends AbstractParser {
 	}
 	
 	public IImportFragment parseImportFragment() {
-		Token aliasId = null;
+		LexElement aliasId = null;
 		ArrayList<String> packages = new ArrayList<String>(0);
 		int refModuleStartPos = -1;
 		
 		while(true) {
-			Token id = tryConsumeIdentifier();
+			LexElement id = tryConsumeIdentifier();
 			refModuleStartPos = refModuleStartPos == -1 ? id.getStartPos() : refModuleStartPos;
 			
-			if(!isMissingId(id) && tryConsume(DeeTokens.DOT)) {
-				packages.add(id.tokenSource);
+			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
+				packages.add(id.token.tokenSource);
 			} else if(packages.isEmpty() && tryConsume(DeeTokens.ASSIGN)) { // BUG here
 				aliasId = id;
 				refModuleStartPos = -1;
 			} else {
 				RefModule refModule = 
-					new RefModule(arrayViewS(packages), id.tokenSource, srToCursor(refModuleStartPos)); 
+					konnect(new RefModule(arrayViewS(packages), id.token.tokenSource, srToCursor(refModuleStartPos))); 
 				
 				IImportFragment fragment = (aliasId == null) ? 
 					connect(new ImportContent(refModule)) : 
-					connect(new ImportAlias(defUnitRaw(srToCursor(aliasId.getStartPos()), aliasId), refModule));
+					connect(new ImportAlias(defUnitNoComments(aliasId), refModule, srToCursor(aliasId.getStartPos())));
 				
 				if(tryConsume(DeeTokens.COLON)) {
 					return parseSelectiveModuleImport(fragment);
@@ -225,29 +228,36 @@ public class DeeParser extends AbstractParser {
 	}
 	
 	public ImportSelective parseSelectiveModuleImport(IImportFragment fragment) {
-		ArrayList<ASTNeoNode> selFragments = new ArrayList<ASTNeoNode>();
+		ArrayList<IImportSelectiveSelection> selFragments = new ArrayList<IImportSelectiveSelection>();
 		
 		do {
-			Token aliasId = null;
-			Token id = tryConsumeIdentifier();
-			
-			if(tryConsume(DeeTokens.ASSIGN)){ // BUG here
-				aliasId = id;
-				id = tryConsumeIdentifier();
-			}
-			
-			RefImportSelection refImportSelection = connect(new RefImportSelection(idTokenToString(id), sr(id)));
-			if(aliasId == null) {
-				selFragments.add(refImportSelection);
-			} else {
-				selFragments.add(connect(new ImportSelectiveAlias(
-					defUnitTuple(srToCursor(aliasId), aliasId, null), refImportSelection)));
-			}
+			IImportSelectiveSelection importSelSelection = parseImportSelectiveSelection();
+			selFragments.add(importSelSelection);
 			
 		} while(tryConsume(DeeTokens.COMMA));
 		
 		SourceRange isRange = srToCursor(fragment.getStartPos());
-		return connect(new ImportSelective(fragment, arrayView(selFragments, ASTNeoNode.class), isRange));
+		return connect(
+			new ImportSelective(fragment, arrayView(selFragments, IImportSelectiveSelection.class), isRange));
+	}
+	
+	public IImportSelectiveSelection parseImportSelectiveSelection() {
+		LexElement aliasId = null;
+		LexElement id = tryConsumeIdentifier();
+		
+		if(tryConsume(DeeTokens.ASSIGN)){ // BUG here
+			aliasId = id;
+			id = tryConsumeIdentifier();
+		}
+		
+		RefImportSelection refImportSelection = connect(new RefImportSelection(idTokenToString(id), sr(id.token)));
+		
+		if(aliasId == null) {
+			return refImportSelection;
+		} else {
+			return connect(
+				new ImportSelectiveAlias(defUnitNoComments(aliasId), refImportSelection, srToCursor(aliasId)));
+		}
 	}
 	
 	/* --------------------- DECLARATION --------------------- */
@@ -305,19 +315,19 @@ public class DeeParser extends AbstractParser {
 	/* --------------------  reference parsing  --------------------- */
 	
 	protected RefIdentifier parseRefIdentifier() {
-		Token id = tryConsumeIdentifier();
-		assertTrue(id.type == DeeTokens.IDENTIFIER);
-		return new RefIdentifier(idTokenToString(id), sr(id));
+		LexElement id = tryConsumeIdentifier();
+		assertTrue(id.token.type == DeeTokens.IDENTIFIER);
+		return connect(new RefIdentifier(idTokenToString(id), sr(id.token)));
 	}
 	
 	protected RefPrimitive parseRefPrimitive(DeeTokens primitiveType) {
 		Token token = consumeLookAhead(primitiveType);
-		return new RefPrimitive(token, sr(token));
+		return connect(new RefPrimitive(token, sr(token)));
 	}
 	
 	protected RefModuleQualified parseRefModuleQualified() {
 		int startPos = consumeLookAhead(DeeTokens.DOT).getStartPos();
-		return new RefModuleQualified(parseRefIdentifier(), srToCursor(startPos));
+		return connect(new RefModuleQualified(parseRefIdentifier(), srToCursor(startPos)));
 	}
 	
 	protected static class RefParseResult { 
@@ -511,8 +521,8 @@ public class DeeParser extends AbstractParser {
 		if(op == InfixOpType.CONDITIONAL) {
 			return connect(new ExpConditional(leftExp, middleExp, rightExp, srToCursor(leftExp)));
 		}
-		/*BUG here fix source ranges*/
-		return konnect(new InfixExpression(leftExp, op, rightExp, srToCursor(leftExp)));
+		
+		return connect(new InfixExpression(leftExp, op, rightExp, srToCursor(leftExp)));
 	}
 	
 	protected void checkValidAssociativity(Expression exp, InfixOpType op) {
@@ -602,13 +612,14 @@ public class DeeParser extends AbstractParser {
 			}
 			
 			if(lookAhead() == DeeTokens.IDENTIFIER) {
-				Token defId = consumeLookAhead();
+				LexElement defId = consumeInput();
 				return parseDefinition_Reference_Identifier(ref, defId);
 			}  else {
 				reportErrorExpectedToken(DeeTokens.IDENTIFIER);
 				if(consumeExpectedToken(DeeTokens.SEMICOLON) != null) {
 					consumedSemiColon = true;
 				}
+				return connect(new InvalidDeclaration(ref, consumedSemiColon, srToCursor(ref.getStartPos())));
 			}
 			
 		}
@@ -616,9 +627,7 @@ public class DeeParser extends AbstractParser {
 		return connect(new InvalidDeclaration(ref, consumedSemiColon, srToCursor(ref.getStartPos())));
 	}
 	
-	protected static final Comment[] COMMENT_TODO = null;
-
-	protected ASTNeoNode parseDefinition_Reference_Identifier(Reference ref, Token defId) {
+	protected ASTNeoNode parseDefinition_Reference_Identifier(Reference ref, LexElement defId) {
 		ArrayList<DefinitionVarFragment> fragments = new ArrayList<DefinitionVarFragment>();
 		Initializer init = null;
 		
@@ -634,20 +643,20 @@ public class DeeParser extends AbstractParser {
 		consumeExpectedToken(DeeTokens.SEMICOLON);
 		
 		return connect(
-			new DefinitionVariable(defUnitTuple(srToCursor(ref.getStartPos()), defId, COMMENT_TODO), ref, init, 
-				arrayView(fragments, DefinitionVarFragment.class))
+			new DefinitionVariable(defUnitNoComments(defId), ref, init, 
+				arrayView(fragments, DefinitionVarFragment.class), srToCursor(ref.getStartPos()))
 		);
 	}
 	
 	public DefinitionVarFragment parseVarFragment() {
 		Initializer init = null;
-		Token fragId = tryConsumeIdentifier();
-		if(!isMissingId(fragId)) {
+		LexElement fragId = tryConsumeIdentifier();
+		if(!fragId.isMissingElement()) {
 			if(tryConsume(DeeTokens.ASSIGN)){ 
 				init = parseInitializer();
 			}
 		}
-		return connect(new DefinitionVarFragment(defUnitRaw(srToCursor(fragId), fragId), init));
+		return connect(new DefinitionVarFragment(defUnitNoComments(fragId), init, srToCursor(fragId)));
 	}
 	
 	public static final String INITIALIZER_RULE = "INITIALIZER";
@@ -656,7 +665,9 @@ public class DeeParser extends AbstractParser {
 		Expression exp = parseAssignExpression();
 		if(exp == null) {
 			reportErrorExpectedRule(INITIALIZER_RULE);
-			exp = new MissingExpression(srToCursor(lastLexElement.getEndPos()));
+			int elemStart = getParserPosition();
+			consumeIgnoredTokens(DeeTokens.INTEGER, true); // Make lastLexElement be marked as missing
+			exp = connect(new MissingExpression(srToCursor(elemStart)));
 		}
 		return new InitializerExp(exp, exp.getSourceRange());
 	}
@@ -667,7 +678,7 @@ public class DeeParser extends AbstractParser {
 		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
 		public NodeList2 declList;
 		
-		public AttribBodyParseRule parseAttribBody(boolean accepEmptyDecl) {
+		public AttribBodyParseRule parseAttribBody(boolean acceptEmptyDecl) {
 			if(tryConsume(DeeTokens.COLON)) {
 				bodySyntax = AttribBodySyntax.COLON;
 				declList = parseDeclList(null);
@@ -676,11 +687,13 @@ public class DeeParser extends AbstractParser {
 				declList = parseDeclList(DeeTokens.CLOSE_BRACE);
 				consumeExpectedToken(DeeTokens.CLOSE_BRACE);
 			} else {
-				ASTNeoNode decl = parseDeclaration(accepEmptyDecl);
+				ASTNeoNode decl = parseDeclaration(acceptEmptyDecl);
 				if(decl == null) {
 					reportErrorExpectedRule(DECLARATION_RULE);
+					return null;
 				} else {
-					declList = new NodeList2(ArrayView.create(new ASTNeoNode[] {decl}), decl.getSourceRange());
+					declList = connect(
+						new NodeList2(ArrayView.create(new ASTNeoNode[] {decl}), decl.getSourceRange()));
 				}
 			}
 			
@@ -689,11 +702,11 @@ public class DeeParser extends AbstractParser {
 	}
 	
 	protected NodeList2 parseDeclList(DeeTokens bodyListTerminator) {
-		int nodeListStart = getLastTokenEndPos();
+		int nodeListStart = getParserPosition();
 		
 		ArrayView<ASTNeoNode> declDefs = parseDeclDefs(bodyListTerminator);
-		NodeList2 nodeList = new NodeList2(declDefs, srToCursor(nodeListStart));
-		return nodeList;
+		consumeIgnoredTokens();
+		return connect(new NodeList2(declDefs, srToCursor(nodeListStart)));
 	}
 	
 	public DeclarationLinkage parseDeclarationExternLinkage() {
@@ -738,10 +751,7 @@ public class DeeParser extends AbstractParser {
 		AttribBodyParseRule ab = new AttribBodyParseRule();
 		
 		if(tryConsume(DeeTokens.OPEN_PARENS)) {
-			alignNum = consumeExpectedToken(DeeTokens.INTEGER_DECIMAL);
-			if(alignNum == null) {
-				alignNum = missingToken(DeeTokens.INTEGER_DECIMAL, getParserPosition());
-			}
+			alignNum = consumeExpectedToken(DeeTokens.INTEGER_DECIMAL, true).token;
 			
 			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null) {
 				ab.parseAttribBody(false);
@@ -759,25 +769,25 @@ public class DeeParser extends AbstractParser {
 		}
 		int declStart = lastLexElement.getStartPos();
 		
-		Token pragmaId = null;
+		Symbol pragmaId = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
 		
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
-			pragmaId = consumeExpectedToken(DeeTokens.IDENTIFIER);
+			pragmaId = parseSymbol();
 			
 			// TODO pragma argument list;
-			Token expectedToken = consumeExpectedToken(DeeTokens.CLOSE_PARENS);
-			if(expectedToken != null) {
+			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null) {
 				ab.parseAttribBody(true);
 			}
 		}
 		
-		SourceRange sr = srToCursor(declStart);
-		return connect(new DeclarationPragma(symbol(pragmaId), null, ab.bodySyntax, ab.declList, sr));
+		return connect(
+			new DeclarationPragma(pragmaId, null, ab.bodySyntax, ab.declList, srToCursor(declStart)));
 	}
-	
-	public Symbol symbol(Token pragmaId) {
-		return pragmaId == null ? null : new Symbol(pragmaId.tokenSource, sr(pragmaId));
+
+	public Symbol parseSymbol() {
+		LexElement id = consumeExpectedToken(DeeTokens.IDENTIFIER, true);
+		return connect(new Symbol(id.token.tokenSource, sr(id.token)));
 	}
 	
 	public DeclarationProtection parseDeclarationProtection() {

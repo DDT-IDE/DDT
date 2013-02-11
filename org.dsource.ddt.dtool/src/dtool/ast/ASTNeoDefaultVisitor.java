@@ -257,8 +257,4 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 		return true;
 	}
 	
-	
-	
-
-	
 }

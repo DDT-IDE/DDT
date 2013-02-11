@@ -16,8 +16,8 @@ public class ASTCommonSourceRangeChecker extends ASTNeoHomogenousVisitor {
 		elem.accept(new ASTCommonSourceRangeChecker(elem.getStartPos()));
 	}
 	
-	private int offsetCursor;
-	protected StringBuffer strbuffer;
+	protected int offsetCursor;
+	protected int depth = 0;
 	
 	public ASTCommonSourceRangeChecker(int offsetCursor) {
 		this.offsetCursor = offsetCursor;
@@ -25,18 +25,24 @@ public class ASTCommonSourceRangeChecker extends ASTNeoHomogenousVisitor {
 	
 	@Override
 	public boolean preVisit(ASTNeoNode elem) {
+		depth++;
 		if(elem.hasNoSourceRangeInfo()) {
 			return handleSourceRangeNoInfo(elem);
 		} else if(elem.getOffset() < offsetCursor) {
 			return handleSourceRangeStartPosBreach(elem);
 		} else {
 			offsetCursor = elem.getOffset();
-			return true; // Go to children
+			return visitChildrenAfterPreVisitOk(); // Go to children
 		}
+	}
+	
+	public boolean visitChildrenAfterPreVisitOk() {
+		return true;
 	}
 	
 	@Override
 	public void postVisit(ASTNeoNode elem) {
+		depth--;
 		if(elem.hasNoSourceRangeInfo()) {
 			return;
 		} else if(elem.getEndPos() < offsetCursor) {
@@ -70,13 +76,18 @@ public class ASTCommonSourceRangeChecker extends ASTNeoHomogenousVisitor {
 		Logg.astmodel.println(elem.toStringAsNode(true));
 	}
 	
-	public static class ASTAssertChecker extends ASTCommonSourceRangeChecker {
+	public static class ASTSourceRangeChecker extends ASTCommonSourceRangeChecker {
 		
 		public static void checkConsistency(ASTNeoNode elem){
-			elem.accept(new ASTAssertChecker(elem.getStartPos()));
+			new ASTSourceRangeChecker(elem);
 		}
 		
-		public ASTAssertChecker(int offsetCursor) {
+		public ASTSourceRangeChecker(ASTNeoNode elem) {
+			super(elem.getStartPos());
+			elem.accept(this);
+		}
+		
+		public ASTSourceRangeChecker(int offsetCursor) {
 			super(offsetCursor);
 		}
 		

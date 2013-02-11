@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 /**
  * Simple value type representing a string and an associated source range. 
  */
+@Deprecated
 public final class TokenInfo {
 	
 	public static final String SYNTAX_ERROR = "<syntax_error>";

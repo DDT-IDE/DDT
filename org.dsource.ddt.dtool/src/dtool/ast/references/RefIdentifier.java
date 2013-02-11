@@ -21,7 +21,7 @@ public class RefIdentifier extends NamedReference {
 	
 	public RefIdentifier(String name, SourceRange sourceRange) {
 		//assertNotNull(name); 
-		// BUG here TODO review use of this.name since the contract has changed and now allows null
+		// BUG here TODO review reference and usage of this.name since the contract has now changed to allow null
 		assertTrue(name == null || name.length() > 0);
 		this.name = name;
 		initSourceRange(sourceRange);

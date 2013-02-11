@@ -3,6 +3,7 @@ package dtool.ast.declarations;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -15,9 +16,10 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 		
 	public final RefModule moduleRef;
 	
-	public ImportAlias(DefUnitTuple dudt, RefModule refModule) {
+	public ImportAlias(DefUnitTuple dudt, RefModule refModule, SourceRange sourceRange) {
 		super(dudt);
 		this.moduleRef = parentize(refModule);
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

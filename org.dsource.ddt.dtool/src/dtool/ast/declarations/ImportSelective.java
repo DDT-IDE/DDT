@@ -4,6 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
@@ -27,16 +28,17 @@ public class ImportSelective extends ASTNeoNode implements INonScopedBlock, IImp
 	public final IImportFragment fragment;
 	public final ArrayView<ASTNeoNode> impSelFrags;
 	
-	public ImportSelective(IImportFragment subFragment, ArrayView<ASTNeoNode> frags, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
-		this.impSelFrags = parentizeFrags(frags);
+	public ImportSelective(IImportFragment subFragment, ArrayView<IImportSelectiveSelection> frags, 
+		SourceRange sourceRange) {
+		this.impSelFrags = CoreUtil.<ArrayView<ASTNeoNode>>blindCast(parentizeFrags(frags));
 		this.fragment = parentizeI(subFragment);
+		initSourceRange(sourceRange);
 	}
 	
-	public ArrayView<ASTNeoNode> parentizeFrags(ArrayView<ASTNeoNode> frags) {
+	public ArrayView<IImportSelectiveSelection> parentizeFrags(ArrayView<IImportSelectiveSelection> frags) {
 		if (frags != null) {
-			for (ASTNeoNode n : frags) {
-				n.setParent(this);
+			for (IImportSelectiveSelection n : frags) {
+				((ASTNeoNode) n).setParent(this);
 				if (n instanceof ImportSelectiveAlias) {
 					((ImportSelectiveAlias) n).target.impSel = this;
 				} else if (n instanceof RefImportSelection) {

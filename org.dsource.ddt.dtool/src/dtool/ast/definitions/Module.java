@@ -11,7 +11,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.TokenInfo;
+import dtool.parser.Token;
 import dtool.refmodel.INamedScope;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -44,13 +44,13 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		public final DefSymbol moduleName; 
 		public final String[] packages; // non-structural element
 		
-		public DeclarationModule(SourceRange sourceRange, String[] packages, TokenInfo moduleDefUnit) {
-			initSourceRange(sourceRange);
-			
+		public DeclarationModule(String[] packages, Token moduleDefUnit, SourceRange sourceRange) {
 			assertNotNull(packages);
 			this.packages = packages;
-			this.moduleName = new ModuleDefSymbol(moduleDefUnit.value, moduleDefUnit.getSourceRange());
+			this.moduleName = new ModuleDefSymbol(moduleDefUnit.tokenSource, moduleDefUnit.getSourceRange());
 			parentize(moduleName);
+			
+			initSourceRange(sourceRange);
 		}
 		
 		public ModuleDefSymbol getModuleSymbol() {

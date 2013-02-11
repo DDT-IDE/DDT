@@ -42,6 +42,8 @@ import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.Reference;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.parser.DeeTokens;
+import dtool.parser.Token;
 import dtool.util.ArrayView;
 
 public class DefinitionConverter extends BaseDmdConverter {
@@ -50,6 +52,12 @@ public class DefinitionConverter extends BaseDmdConverter {
 		assertTrue(id.getClass() == IdentifierExp.class);
 		assertTrue(id.hasNoSourceRangeInfo() || id.getLength() == id.ident.length);
 		return new TokenInfo(new String(id.ident), id.getStartPos());
+	}
+	
+	public static Token convertIdToken2(IdentifierExp id) {
+		assertTrue(id.getClass() == IdentifierExp.class);
+		assertTrue(id.hasNoSourceRangeInfo() || id.getLength() == id.ident.length);
+		return new Token(DeeTokens.IDENTIFIER, new String(id.ident), id.getStartPos());
 	}
 	
 	public static Symbol convertId(IdentifierExp idExp) {
@@ -125,7 +133,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		if(elem.md == null) {
 			return Module.createModuleNoModuleDecl(sourceRange, defaultModuleName, members);
 		} else  {
-			TokenInfo defnameInfo = DefinitionConverter.convertIdToken(elem.md.id);
+			Token defnameInfo = DefinitionConverter.convertIdToken2(elem.md.id);
 			SourceRange declRange = sourceRange(elem.md);
 			
 			String[] packages = ArrayUtil.newSameSize(elem.md.packages, String.class);
@@ -136,7 +144,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			
 			// Remove comments of other defunits (DMD parser quirk)
 			Comment[] comments = filterComments(elem, elem.md.start); 
-			DeclarationModule md = new DeclarationModule(declRange, packages, defnameInfo);
+			DeclarationModule md = new DeclarationModule(packages, defnameInfo, declRange);
 			return new Module(md.getModuleSymbol(), comments, md, members, sourceRange);
 		}
 	}

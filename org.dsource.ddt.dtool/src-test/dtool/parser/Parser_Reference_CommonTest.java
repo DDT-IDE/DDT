@@ -146,7 +146,7 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 		if(checkToStringAsElement) {
 			assertAreEqual(ref.toStringAsElement(), nodeCode);
 		}
-		ref.accept(new ASTCommonSourceRangeChecker.ASTAssertChecker(ref.getStartPos()));
+		ref.accept(new ASTCommonSourceRangeChecker.ASTSourceRangeChecker(ref.getStartPos()));
 	}
 	
 	protected void checkTestA(final String nodeCode, IASTNode neoNode) {

@@ -5,6 +5,7 @@ import java.util.Collection;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -27,11 +28,12 @@ public class DefinitionVariable extends Definition implements IStatement {
 	public final ArrayView<DefinitionVarFragment> fragments;
 	
 	public DefinitionVariable(DefUnitTuple dudt, Reference type, Initializer init, 
-		ArrayView<DefinitionVarFragment> fragments) {
+		ArrayView<DefinitionVarFragment> fragments, SourceRange sourceRange) {
 		super(dudt, null);
 		this.type = parentize(type);
 		this.init = parentize(init);
 		this.fragments = fragments != null ? parentize(fragments) : emptyFrags;
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

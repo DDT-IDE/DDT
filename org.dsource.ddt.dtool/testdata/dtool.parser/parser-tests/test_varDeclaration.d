@@ -11,9 +11,9 @@ DefVariable(* DefSymbol InitializerExp(?))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@SP_TYPE_REF fooA;
-#@SP_TYPE_REF fooB = 55;
+#@SP_TYPE_REF fooB = 55 ;
 #@SP_TYPE_REF fooC = 1, foo2    , foo3 = 3;
-Bar.Foo[]     fooD    , foo2 = 2, foo3;
+Bar.Foo[]     fooD    , foo2 = 2 , foo3;
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:

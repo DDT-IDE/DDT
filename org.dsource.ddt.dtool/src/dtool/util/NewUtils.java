@@ -55,6 +55,13 @@ public class NewUtils {
 		return (lastIx == -1) ? null : string.substring(lastIx + match.length());
 	}
 	
+	public static <T> T[] emptyToNull(T[] array) {
+		if(array == null || array.length == 0) {
+			return null;
+		}
+		return array;
+	}
+	
 	public static String emptyToNull(String string) {
 		if(string.isEmpty()) {
 			return null;

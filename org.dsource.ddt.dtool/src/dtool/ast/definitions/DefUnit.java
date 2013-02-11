@@ -5,6 +5,7 @@ import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
+import dtool.parser.AbstractParser.LexElement;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
@@ -15,11 +16,21 @@ public abstract class DefUnit extends ASTNeoNode {
 	
 	public static final class DefUnitTuple {
 		public SourceRange sourceRange;
-		public TokenInfo defName;
+		public String name;
+		public SourceRange nameSourceRange;
 		public Comment[] comments;
+		
 		public DefUnitTuple(SourceRange sourceRange, TokenInfo defName, Comment[] comments) {
 			this.sourceRange = sourceRange;
-			this.defName = defName;
+			this.name = defName.getString();
+			this.nameSourceRange = defName.getSourceRange();
+			this.comments = comments;
+		}
+		
+		public DefUnitTuple(SourceRange sourceRange, LexElement id, Comment[] comments) {
+			this.sourceRange = sourceRange;
+			this.name = id.token.getSourceValue();
+			this.nameSourceRange = id.token.getSourceRange();
 			this.comments = comments;
 		}
 	}
@@ -28,7 +39,7 @@ public abstract class DefUnit extends ASTNeoNode {
 	public final DefSymbol defname;
 	
 	public DefUnit(DefUnitTuple defunit) {
-		this(defunit.defName.getString(), defunit.defName.getSourceRange(), defunit.comments, defunit.sourceRange);
+		this(defunit.name, defunit.nameSourceRange, defunit.comments, defunit.sourceRange);
 	}
 	
 	public DefUnit(String defName, SourceRange defNameSourceRange, Comment[] comments, SourceRange sourceRange) {
