@@ -41,35 +41,35 @@ public class AbstractParser_Test extends CommonTestUtils {
 		AbstractParser parser = new AbstractParser(new TestsInstrumentedLexer("abcd  efgh"));
 		assertTrue(parser.lookAheadQueue.size() == 0);
 		
-		assertEquals(parser.lookAheadElement(0).token.tokenSource, "ab");
+		assertEquals(parser.lookAheadElement(0).token.source, "ab");
 		assertTrue(parser.lookAheadQueue.size() == 1);
-		assertEquals(parser.lookAheadElement(1).token.tokenSource, "cd");
+		assertEquals(parser.lookAheadElement(1).token.source, "cd");
 		assertTrue(parser.lookAheadQueue.size() == 2);
-		assertEquals(parser.lookAheadElement(3).token.tokenSource, "gh");
+		assertEquals(parser.lookAheadElement(3).token.source, "gh");
 		assertEquals(parser.lookAheadElement(4).token.type, DeeTokens.EOF);
 		assertTrue(parser.lookAheadQueue.size() == 5);
 		parser.consumeLookAhead();
 		
-		assertEquals(parser.lastLexElement.token.tokenSource, "ab");
+		assertEquals(parser.lastLexElement.token.source, "ab");
 		assertTrue(parser.lookAheadQueue.size() == 4);
-		assertEquals(parser.lookAheadElement(2).token.tokenSource, "gh");
-		assertEquals(parser.lookAheadElement(0).token.tokenSource, "cd");
-		assertEquals(parser.lookAheadElement(1).token.tokenSource, "ef");
+		assertEquals(parser.lookAheadElement(2).token.source, "gh");
+		assertEquals(parser.lookAheadElement(0).token.source, "cd");
+		assertEquals(parser.lookAheadElement(1).token.source, "ef");
 		assertEquals(parser.lookAheadElement(1).ignoredPrecedingTokens.length, 2);
 		assertEquals(parser.lookAheadElement(3).token.type, DeeTokens.EOF);
 
 		parser.consumeLookAhead();
 		assertTrue(parser.lookAheadQueue.size() == 3);
-		assertEquals(parser.lastLexElement.token.tokenSource, "cd");
-		assertEquals(parser.lookAheadElement(0).token.tokenSource, "ef");
-		assertEquals(parser.lookAheadElement(1).token.tokenSource, "gh");
+		assertEquals(parser.lastLexElement.token.source, "cd");
+		assertEquals(parser.lookAheadElement(0).token.source, "ef");
+		assertEquals(parser.lookAheadElement(1).token.source, "gh");
 		assertEquals(parser.lookAheadElement(2).token.type, DeeTokens.EOF);
 		assertEquals(parser.lookAheadElement(3).token.type, DeeTokens.EOF);
 		assertTrue(parser.lookAheadQueue.size() == 4);
 		
 		parser.consumeLookAhead();
 		parser.consumeLookAhead();
-		assertEquals(parser.lastLexElement.token.tokenSource, "gh");
+		assertEquals(parser.lastLexElement.token.source, "gh");
 		assertTrue(parser.lookAheadQueue.size() == 2);
 		assertEquals(parser.lookAheadElement(0).token.type, DeeTokens.EOF);
 		assertEquals(parser.lookAheadElement(1).token.type, DeeTokens.EOF);
@@ -80,7 +80,7 @@ public class AbstractParser_Test extends CommonTestUtils {
 	public void testConsumeWhiteSpace$() throws Exception {
 		AbstractParser parser = new AbstractParser(new TestsInstrumentedLexer("abcd  efgh"));
 		
-		assertEquals(parser.lookAheadElement(2).token.tokenSource, "ef");
+		assertEquals(parser.lookAheadElement(2).token.source, "ef");
 		assertTrue(parser.lastNonMissingLexElement == parser.lastLexElement);
 		assertTrue(parser.lastNonMissingLexElement.isMissingElement() == false);
 		parser.consumeIgnoredTokens();
@@ -89,14 +89,14 @@ public class AbstractParser_Test extends CommonTestUtils {
 		
 		parser.consumeInput();
 		parser.consumeInput();
-		assertEquals(parser.lookAheadElement(0).token.tokenSource, "ef");
+		assertEquals(parser.lookAheadElement(0).token.source, "ef");
 		parser.consumeIgnoredTokens();
 		assertTrue(parser.lastNonMissingLexElement == parser.lastLexElement);
 		assertTrue(parser.lastNonMissingLexElement.isMissingElement() == false);
 		
 		assertTrue(parser.lookAheadElement().getStartPos() == 6);
 		
-		assertEquals(parser.lookAheadElement(0).token.tokenSource, "ef");
+		assertEquals(parser.lookAheadElement(0).token.source, "ef");
 	}
 	
 }

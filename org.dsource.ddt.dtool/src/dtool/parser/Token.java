@@ -9,14 +9,14 @@ public class Token {
 	
 	public final DeeTokens type;
 	public final int startPos;
-	public final String tokenSource;
+	public final String source;
 	
 	public Token(DeeTokens tokenType, String source, int startPos) {
 		this.type = assertNotNull_(tokenType);
-		this.tokenSource = source;
+		this.source = source;
 		this.startPos = startPos;
 		if(tokenType.getSourceValue() != null) {
-			assertEquals(tokenType.getSourceValue(), tokenSource);
+			assertEquals(tokenType.getSourceValue(), source);
 		}
 	}
 	
@@ -29,11 +29,11 @@ public class Token {
 	}
 	
 	public int getLength() {
-		return tokenSource.length();
+		return source.length();
 	}
 	
 	public int getEndPos() {
-		return startPos + tokenSource.length();
+		return startPos + source.length();
 	}
 	
 	public SourceRange getSourceRange() {
@@ -41,7 +41,7 @@ public class Token {
 	}
 	
 	public final String getSourceValue() {
-		return tokenSource;
+		return source;
 	}
 	
 	public LexerErrorTypes getError() {

@@ -86,7 +86,7 @@ public class DeeParser extends AbstractParser {
 	}
 	
 	public String idTokenToString(LexElement id) {
-		return id.isMissingElement() ? null : id.token.tokenSource;
+		return id.isMissingElement() ? null : id.token.source;
 	}
 	
 	// TODO: comments
@@ -133,7 +133,7 @@ public class DeeParser extends AbstractParser {
 			LexElement id = tryConsumeIdentifier();
 			
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
-				packagesList.add(id.token.tokenSource);
+				packagesList.add(id.token.source);
 				id = null;
 			} else {
 				consumeExpectedToken(DeeTokens.SEMICOLON);
@@ -205,13 +205,13 @@ public class DeeParser extends AbstractParser {
 			refModuleStartPos = refModuleStartPos == -1 ? id.getStartPos() : refModuleStartPos;
 			
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
-				packages.add(id.token.tokenSource);
+				packages.add(id.token.source);
 			} else if(packages.isEmpty() && tryConsume(DeeTokens.ASSIGN)) { // BUG here
 				aliasId = id;
 				refModuleStartPos = -1;
 			} else {
 				RefModule refModule = 
-					konnect(new RefModule(arrayViewS(packages), id.token.tokenSource, srToCursor(refModuleStartPos))); 
+					konnect(new RefModule(arrayViewS(packages), id.token.source, srToCursor(refModuleStartPos))); 
 				
 				IImportFragment fragment = (aliasId == null) ? 
 					connect(new ImportContent(refModule)) : 
@@ -720,7 +720,7 @@ public class DeeParser extends AbstractParser {
 		if(tryConsume(DeeTokens.OPEN_PARENS)) {
 			Token linkageId = consumeIf(DeeTokens.IDENTIFIER);
 			if(linkageId != null) {
-				linkage = Linkage.fromString(linkageId.tokenSource);
+				linkage = Linkage.fromString(linkageId.source);
 				if(linkage == Linkage.C && tryConsume(DeeTokens.INCREMENT)) {
 					linkage = Linkage.CPP;
 				}
@@ -786,7 +786,7 @@ public class DeeParser extends AbstractParser {
 
 	public Symbol parseSymbol() {
 		LexElement id = consumeExpectedToken(DeeTokens.IDENTIFIER, true);
-		return connect(new Symbol(id.token.tokenSource, sr(id.token)));
+		return connect(new Symbol(id.token.source, sr(id.token)));
 	}
 	
 	public DeclarationProtection parseDeclarationProtection() {

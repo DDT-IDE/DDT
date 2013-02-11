@@ -25,7 +25,7 @@ public class ASTCodePrinter {
 	
 	public void append(Token obj) {
 		if(obj != null) {
-			sb.append(obj.tokenSource);
+			sb.append(obj.source);
 		}
 	}
 	

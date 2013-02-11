@@ -47,7 +47,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		public DeclarationModule(String[] packages, Token moduleDefUnit, SourceRange sourceRange) {
 			assertNotNull(packages);
 			this.packages = packages;
-			this.moduleName = new ModuleDefSymbol(moduleDefUnit.tokenSource, moduleDefUnit.getSourceRange());
+			this.moduleName = new ModuleDefSymbol(moduleDefUnit.source, moduleDefUnit.getSourceRange());
 			parentize(moduleName);
 			
 			initSourceRange(sourceRange);

@@ -215,7 +215,7 @@ public class AbstractParser {
 	}
 	
 	protected ParserError addError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
-		return addError(errorType, sr(errorToken), errorToken.tokenSource, msgData);
+		return addError(errorType, sr(errorToken), errorToken.source, msgData);
 	}
 	
 	protected ParserError addError(ParserErrorTypes errorType, SourceRange sourceRange, Object msgData) {

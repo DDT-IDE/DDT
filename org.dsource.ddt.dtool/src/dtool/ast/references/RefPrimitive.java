@@ -26,7 +26,7 @@ public class RefPrimitive extends NamedReference {
 	
 	@Override
 	public String getReferenceName() {
-		return primitive.tokenSource;
+		return primitive.source;
 	}
 	
 	@Override
