@@ -102,9 +102,12 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	}
 	
 	public void runSourceBasedTest(AnnotatedSource testSource) {
+		final String DEFAULT_VALUE = "##DEFAULT VALUE";
+		
 		String parseSource = testSource.source;
 		String parseRule = null;
-		String expectedGenSource = parseSource;
+		String expectedGenSource = DEFAULT_VALUE;
+		String defaultExpectedGenSource = parseSource;
 		NamedNodeElement[] expectedStructure = null;
 		boolean allowAnyErrors = false;
 		boolean ignoreFurtherErrorMDs = false;
@@ -113,7 +116,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		
 		for (MetadataEntry mde : testSource.metadata) {
 			if(mde.name.equals("AST_SOURCE_EXPECTED") || mde.name.equals("AST_EXPECTED")) {
-				assertTrue(expectedGenSource == parseSource);
+				assertTrue(expectedGenSource == DEFAULT_VALUE);
 				if(mde.value != null && mde.value.equals("NoCheck")) {
 					assertTrue(mde.associatedSource == null || mde.associatedSource.trim().isEmpty());
 					expectedGenSource = null;
@@ -127,7 +130,12 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				expectedStructure = processExpectedStructure(mde.associatedSource);
 			} else if(mde.name.equals("error") || mde.name.equals("ERROR")){
 				if(!ignoreFurtherErrorMDs) {
-					expectedErrors.add(decodeError(parseSource, mde));
+					ParserError error = decodeError(parseSource, mde);
+					expectedErrors.add(error);
+					if(error.errorType == ParserErrorTypes.INVALID_TOKEN_CHARACTERS) {
+						defaultExpectedGenSource = NewUtils.removeRange(defaultExpectedGenSource, 
+							error.sourceRange.getOffset(), error.sourceRange.getEndPos());
+					}
 				}
 			} else if(mde.name.equals("parser") && mde.value.equals("AllowAnyErrors")){
 				allowAnyErrors = true;
@@ -140,6 +148,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			}
 		}
 		
+		expectedGenSource = (expectedGenSource == DEFAULT_VALUE) ? defaultExpectedGenSource : expectedGenSource;
 		runParserTest______________________(
 			parseSource, parseRule, expectedGenSource, expectedStructure, expectedErrors, allowAnyErrors);
 	}

@@ -84,4 +84,8 @@ public class NewUtils {
 		}
 	}
 	
+	public static String removeRange(String string, int startIndex, int endIndex) {
+		return string.substring(0, startIndex) + string.substring(endIndex, string.length());
+	}
+	
 }
