@@ -577,6 +577,7 @@ public class DeeParser extends AbstractParser {
 		case PLUS:
 		case NOT:
 		case CONCAT:
+		case KW_DELETE:
 			Token prefixExpToken = consumeLookAhead();
 			PrefixOpType prefixOpType = PrefixOpType.tokenToPrefixOpType(prefixExpToken.type);
 			Expression exp = parseUnaryExpression();

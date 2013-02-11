@@ -16,7 +16,7 @@ PrefixExpression(PrefixExpression(String))
   ►#?AST_STRUCTURE_EXPECTED!【#error(EXPRULE_exp)●】●
 ¤》
 
-#@OP《&●++●--●*●-●+●!●~》
+#@OP《&●++●--●*●-●+●!●~●delete》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)    #@OP #@^OP  #@INT_OR_MISSING

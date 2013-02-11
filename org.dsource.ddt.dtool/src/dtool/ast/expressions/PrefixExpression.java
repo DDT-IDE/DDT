@@ -18,6 +18,8 @@ public class PrefixExpression extends Expression {
 		POSITIVE(DeeTokens.PLUS),
 		NOT(DeeTokens.NOT),
 		COMPLEMENT(DeeTokens.CONCAT),
+		
+		DELETE(DeeTokens.KW_DELETE),
 		;
 		
 		public final DeeTokens token;
@@ -32,7 +34,9 @@ public class PrefixExpression extends Expression {
 		private static PrefixOpType[] initMapping(PrefixOpType[] tokenEnum) {
 			PrefixOpType[] mappingArray = new PrefixOpType[DeeTokens.values().length];
 			for (PrefixOpType prefixOpType : tokenEnum) {
-				mappingArray[prefixOpType.token.ordinal()] = prefixOpType;
+				int ix = prefixOpType.token.ordinal();
+				assertTrue(mappingArray[ix] == null);
+				mappingArray[ix] = prefixOpType;
 			}
 			return mappingArray;
 		}

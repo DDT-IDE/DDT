@@ -95,7 +95,6 @@ import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpCast;
 import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpDefaultInit;
-import dtool.ast.expressions.ExpDelete;
 import dtool.ast.expressions.ExpDollar;
 import dtool.ast.expressions.ExpIftype;
 import dtool.ast.expressions.ExpLiteralBool;
@@ -124,6 +123,7 @@ import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.PostfixExpression;
 import dtool.ast.expressions.PrefixExpression;
+import dtool.ast.expressions.PrefixExpression.PrefixOpType;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
@@ -297,7 +297,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(DeleteExp element) {
 		return endAdapt(
-			new ExpDelete(
+			new PrefixExpression(
+				PrefixOpType.DELETE,
 				ExpressionConverter.convert(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
