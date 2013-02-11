@@ -69,9 +69,9 @@ InfixExpression(ExpLiteralInteger InfixExpression(ExpLiteralString ExpLiteralInt
 #AST_STRUCTURE_EXPECTED:
 #@INFIX_EXP_HI•(#@INFIX_EXP•(ExpThis #@MIDDLE_EXP String)  #@MIDDLE_EXP_HI  #@INT_OR_MISSING)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)	 this   #@OP /*OP*/  #@INT_OR_MISSING   #@OP_HI(OP)  123
+#PARSE(EXPRESSION)	 this   #@OP /*OP*/  "xxx"   #@OP_HI(OP)  123
 #AST_STRUCTURE_EXPECTED:
-#@INFIX_EXP_HI•(#@INFIX_EXP•(ExpThis #@MIDDLE_EXP #@INT_OR_MISSING)  #@MIDDLE_EXP_HI  Integer)
+#@INFIX_EXP_HI•(#@INFIX_EXP•(ExpThis #@MIDDLE_EXP  String)  #@MIDDLE_EXP_HI  Integer)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 	 this #@OP_HI(OP) "abc"  #@OP  /*OP*/  123
@@ -118,12 +118,19 @@ InfixExpression(
   ExpSuper
 )
 
-
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 	this && 1 + 2 == 5*5  ||  super
 #AST_STRUCTURE_EXPECTED:
 InfixExpression(
   InfixExpression(ExpThis InfixExpression(* *)) 
+  ExpSuper
+)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION) 	this && 1 ==  #error(EXPRULE_exp)  ||  super
+#AST_STRUCTURE_EXPECTED:
+InfixExpression(
+  InfixExpression(ExpThis InfixExpression(Integer)) 
   ExpSuper
 )
 

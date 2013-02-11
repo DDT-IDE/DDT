@@ -25,10 +25,10 @@ import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationProtection.Protection;
-import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
+import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.InvalidDeclaration;
 import dtool.ast.declarations.InvalidSyntaxElement;
@@ -54,6 +54,8 @@ import dtool.ast.expressions.InfixExpression.InfixOpType;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
+import dtool.ast.expressions.PrefixExpression;
+import dtool.ast.expressions.PrefixExpression.PrefixOpType;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -567,6 +569,21 @@ public class DeeParser extends AbstractParser {
 			return connect(new ExpLiteralFloat(consumeLookAhead(), srToCursor(lastLexElement)));
 		case STRING:
 			return parseStringLiteral();
+		case AND:
+		case INCREMENT:
+		case DECREMENT:
+		case STAR:
+		case MINUS:
+		case PLUS:
+		case NOT:
+		case CONCAT:
+			Token prefixExpToken = consumeLookAhead();
+			PrefixOpType prefixOpType = PrefixOpType.tokenToPrefixOpType(prefixExpToken.type);
+			Expression exp = parseUnaryExpression();
+			if(exp == null) {
+				reportErrorExpectedRule(EXPRESSION_RULE);
+			}
+			return connect(new PrefixExpression(prefixOpType, exp, srToCursor(prefixExpToken)));
 		default:
 			return null;
 		}

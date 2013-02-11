@@ -106,10 +106,10 @@ public class InfixExpression extends Expression {
 			private static final InfixOpType[] mapping = new InfixOpType[DeeTokens.values().length];
 		}
 		
-		public static InfixOpType tokenToInfixOpType(DeeTokens gla) {
-			return Holder.mapping[gla.ordinal()];
+		public static InfixOpType tokenToInfixOpType(DeeTokens token) {
+			return Holder.mapping[token.ordinal()];
 		}
-	
+		
 	}
 	
 	public final Resolvable leftExp;
