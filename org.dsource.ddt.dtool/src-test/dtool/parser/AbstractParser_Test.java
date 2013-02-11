@@ -9,8 +9,8 @@ import dtool.tests.CommonTestUtils;
 
 public class AbstractParser_Test extends CommonTestUtils {
 	
-	protected final class AbstractLexerExtension extends AbstractLexer {
-		private AbstractLexerExtension(String source) {
+	protected final class TestsInstrumentedLexer extends AbstractLexer {
+		private TestsInstrumentedLexer(String source) {
 			super(source);
 		}
 		
@@ -29,7 +29,7 @@ public class AbstractParser_Test extends CommonTestUtils {
 	@Test
 	public void testInit() throws Exception { testInit$(); }
 	public void testInit$() throws Exception {
-		AbstractParser parser = new AbstractParser(new AbstractLexerExtension("abcdefgh"));
+		AbstractParser parser = new AbstractParser(new TestsInstrumentedLexer("abcdefgh"));
 		assertEquals(parser.lastLexElement.token.getSourceRange() , new SourceRange(0, 0));
 		
 		assertTrue(parser.lookAheadQueue.size() == 0);
@@ -38,7 +38,7 @@ public class AbstractParser_Test extends CommonTestUtils {
 	@Test
 	public void testLookAheadQueue() throws Exception { testLookAheadQueue$(); }
 	public void testLookAheadQueue$() throws Exception {
-		AbstractParser parser = new AbstractParser(new AbstractLexerExtension("abcd  efgh"));
+		AbstractParser parser = new AbstractParser(new TestsInstrumentedLexer("abcd  efgh"));
 		assertTrue(parser.lookAheadQueue.size() == 0);
 		
 		assertEquals(parser.lookAheadElement(0).token.tokenSource, "ab");
@@ -78,15 +78,24 @@ public class AbstractParser_Test extends CommonTestUtils {
 	@Test
 	public void testConsumeWhiteSpace() throws Exception { testConsumeWhiteSpace$(); }
 	public void testConsumeWhiteSpace$() throws Exception {
-		AbstractParser parser = new AbstractParser(new AbstractLexerExtension("abcd  efgh"));
+		AbstractParser parser = new AbstractParser(new TestsInstrumentedLexer("abcd  efgh"));
 		
 		assertEquals(parser.lookAheadElement(2).token.tokenSource, "ef");
+		assertTrue(parser.lastNonMissingLexElement == parser.lastLexElement);
+		assertTrue(parser.lastNonMissingLexElement.isMissingElement() == false);
 		parser.consumeIgnoredTokens();
+		assertTrue(parser.lastNonMissingLexElement == parser.lastLexElement);
+		assertTrue(parser.lastNonMissingLexElement.isMissingElement() == false);
 		
 		parser.consumeInput();
 		parser.consumeInput();
 		assertEquals(parser.lookAheadElement(0).token.tokenSource, "ef");
 		parser.consumeIgnoredTokens();
+		assertTrue(parser.lastNonMissingLexElement == parser.lastLexElement);
+		assertTrue(parser.lastNonMissingLexElement.isMissingElement() == false);
+		
+		assertTrue(parser.lookAheadElement().getStartPos() == 6);
+		
 		assertEquals(parser.lookAheadElement(0).token.tokenSource, "ef");
 	}
 	

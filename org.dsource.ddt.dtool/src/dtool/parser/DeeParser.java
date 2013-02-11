@@ -99,8 +99,7 @@ public class DeeParser extends AbstractParser {
 	}
 	
 	public DeeTokens lookAheadGrouped() {
-		DeeTokens tokenType = lookAheadToken().type.getGroupingToken();
-		return tokenType;
+		return lookAheadToken().type.getGroupingToken();
 	}
 	
 	/* ----------------------------------------------------------------- */
@@ -666,7 +665,7 @@ public class DeeParser extends AbstractParser {
 		if(exp == null) {
 			reportErrorExpectedRule(INITIALIZER_RULE);
 			int elemStart = getParserPosition();
-			consumeIgnoredTokens(DeeTokens.INTEGER, true); // Make lastLexElement be marked as missing
+			consumeIgnoredTokens(DeeTokens.INTEGER, true);
 			exp = connect(new MissingExpression(srToCursor(elemStart)));
 		}
 		return new InitializerExp(exp, exp.getSourceRange());

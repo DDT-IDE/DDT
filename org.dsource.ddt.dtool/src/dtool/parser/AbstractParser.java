@@ -32,81 +32,12 @@ import dtool.util.ArrayView;
  */
 public class AbstractParser {
 	
-	public static class LexElement {
-		
-		public final Token[] ignoredPrecedingTokens;
-		public final Token token;
-		
-		public LexElement(Token[] ignoredPrecedingTokens, Token token) {
-			this.ignoredPrecedingTokens = ignoredPrecedingTokens;
-			this.token = assertNotNull_(token);
-		}
-		
-		public LexElement(Token[] ignoredPrecedingTokens) {
-			this.ignoredPrecedingTokens = ignoredPrecedingTokens;
-			this.token = null;
-		}
-		
-		public LexElement(Token[] ignoredPrecedingTokens, DeeTokens expectedToken, int lookAheadStart) {
-			this.ignoredPrecedingTokens = ignoredPrecedingTokens;
-			this.token = new MissingToken(expectedToken, lookAheadStart);
-		}
-		
-		public boolean isMissingElement() {
-			return token.tokenSource == MISSING_ID_VALUE;
-		}
-		
-		public SourceRange getSourceRange() {
-			return token.getSourceRange();
-		}
-		
-		public final int getStartPos() {
-			return token.getStartPos();
-		}
-		
-		public final int getEndPos() {
-			return token.getEndPos();
-		}
-		
-		public final DeeTokens getType() {
-			assertTrue(isMissingElement() == false);
-			return token.type;
-		}
-		
-		public int getFullRangeStartPos() {
-			assertTrue(isMissingElement() == false);
-			if(ignoredPrecedingTokens != null && ignoredPrecedingTokens.length > 0) {
-				return ignoredPrecedingTokens[0].getStartPos();
-			}
-			return token.getStartPos();
-		}
-		
-		public static String MISSING_ID_VALUE = "";
-		
-		protected static class MissingToken extends Token {
-			public MissingToken(DeeTokens tokenType, int startPos) {
-				super(tokenType, MISSING_ID_VALUE, startPos);
-			}
-			
-			@Override
-			public int getLength() {
-				return 0;
-			}
-			
-			@Override
-			public int getEndPos() {
-				return startPos;
-			}
-		}
-
-	}
-	
 	protected final AbstractLexer lexer;
 	
 	protected ArrayListDeque<LexElement> lookAheadQueue = new ArrayListDeque<AbstractParser.LexElement>();
 	protected LexElement lastLexElement = new LexElement(null, new Token(DeeTokens.WHITESPACE, "", 0));
 	// This initialization is important for some error reporting:
-	protected LexElement lastRealLexElement = lastLexElement; 
+	protected LexElement lastNonMissingLexElement = lastLexElement; 
 	
 	protected ArrayList<ParserError> errors = new ArrayList<ParserError>();
 	protected ArrayList<ParserError> pendingMissingTokenErrors = new ArrayList<ParserError>();
@@ -154,6 +85,67 @@ public class AbstractParser {
 		}
 	}
 	
+	public static class LexElement {
+		
+		public final Token[] ignoredPrecedingTokens;
+		public final Token token;
+		
+		public LexElement(Token[] ignoredPrecedingTokens, Token token) {
+			this.ignoredPrecedingTokens = ignoredPrecedingTokens;
+			this.token = assertNotNull_(token);
+		}
+		
+		public LexElement(Token[] ignoredPrecedingTokens, DeeTokens expectedToken, int lookAheadStart) {
+			this.ignoredPrecedingTokens = ignoredPrecedingTokens;
+			this.token = new MissingToken(expectedToken, lookAheadStart);
+		}
+		
+		public boolean isMissingElement() {
+			return token instanceof MissingToken;
+		}
+		
+		public SourceRange getSourceRange() {
+			return token.getSourceRange();
+		}
+		
+		public final int getStartPos() {
+			return token.getStartPos();
+		}
+		
+		public final int getEndPos() {
+			return token.getEndPos();
+		}
+		
+		public final DeeTokens getType() {
+			return token.type;
+		}
+		
+		public int getFullRangeStartPos() {
+			assertTrue(isMissingElement() == false);
+			if(ignoredPrecedingTokens != null && ignoredPrecedingTokens.length > 0) {
+				return ignoredPrecedingTokens[0].getStartPos();
+			}
+			return token.getStartPos();
+		}
+		
+		protected static class MissingToken extends Token {
+			public MissingToken(DeeTokens tokenType, int startPos) {
+				super(tokenType, "", startPos);
+			}
+			
+			@Override
+			public int getLength() {
+				return 0;
+			}
+			
+			@Override
+			public int getEndPos() {
+				return startPos;
+			}
+		}
+
+	}
+	
 	public void analyzeToken(Token token) {
 		if(token.type == DeeTokens.INVALID_TOKEN) {
 			addError(ParserErrorTypes.INVALID_TOKEN_CHARACTERS, token, null);
@@ -182,7 +174,7 @@ public class AbstractParser {
 		LexElement laElem = lookAheadElement(); // Ensure there is at least one element in queue
 		
 		analyzeToken(laElem.token);
-		lastRealLexElement = lastLexElement = laElem;
+		lastNonMissingLexElement = lastLexElement = laElem;
 		lookAheadQueue.removeFirst();
 		return laElem;
 	}
@@ -207,8 +199,6 @@ public class AbstractParser {
 			// Missing element will consume whitetokens ahead
 			int lookAheadStart = lookAheadElement().getStartPos();
 			lastLexElement = new LexElement(la.ignoredPrecedingTokens, expectedToken, lookAheadStart);
-		} else {
-			lastLexElement = new LexElement(la.ignoredPrecedingTokens);
 		}
 		lookAheadQueue.set(0, new LexElement(null, la.token));
 		
@@ -291,7 +281,7 @@ public class AbstractParser {
 	}
 	
 	protected void reportError(ParserErrorTypes parserError, Object msgData, boolean missingToken) {
-		ParserError error = addError(parserError, lastRealLexElement.token, msgData);
+		ParserError error = addError(parserError, lastNonMissingLexElement.token, msgData);
 		if(missingToken) {
 			pendingMissingTokenErrors.add(error);
 		}

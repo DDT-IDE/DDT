@@ -142,23 +142,27 @@ public class ASTReparseCheckSwitcher extends ASTNeoAbstractVisitor {
 		
 		assertTrue(reparsedNode.getEndPos() == nssParser.lookAheadElement().getStartPos());
 		
+		assertTrue(nssParser.lastLexElement.getType().isParserIgnored == false);
+		
 		if(node instanceof DeclarationAttrib) {
 			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
 			if(declAttrib.bodySyntax == AttribBodySyntax.COLON) {
 				consumesTrailingWhiteSpace = true;
 			}
 		}
-		
 		if(!consumesTrailingWhiteSpace) {
-			assertTrue(nssParser.lastLexElement.token != null);
-			// but it can be missing token
+			// Check that there is no trailing whitespace in the range
+			assertTrue(nssParser.lastLexElement.getEndPos() == nssParser.lookAheadElement().getStartPos());
+			
 			if(nssParser.lastLexElement.isMissingElement()) {
 				consumesTrailingWhiteSpace = true;
 			}
-		} 
+		}
+		
 		if(consumesTrailingWhiteSpace) {
-			DeeParser afterNodeParser = new DeeParser(source.substring(node.getEndPos()));
-			assertTrue(emptyToNull(afterNodeParser.lookAheadElement().ignoredPrecedingTokens) == null);
+			// Check that the range contains all possible whitespace
+			DeeParser afterNodeRangeParser = new DeeParser(source.substring(node.getEndPos()));
+			assertTrue(emptyToNull(afterNodeRangeParser.lookAheadElement().ignoredPrecedingTokens) == null);
 		}
 		
 		// TODO check errors are the same?
