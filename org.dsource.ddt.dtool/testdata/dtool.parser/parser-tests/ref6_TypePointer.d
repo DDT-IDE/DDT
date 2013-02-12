@@ -19,9 +19,9 @@ foo2*
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@SP_TYPE_REF•* dummy;
+#@TYPE_REFS•* dummy;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefTypePointer(#@SPSE_TYPE_REF(SP_TYPE_REF)) DefSymbol)
+DefVariable(RefTypePointer(#@TYPE_REFS) DefSymbol)
 
 

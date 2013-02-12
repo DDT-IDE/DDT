@@ -26,36 +26,36 @@ InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@SP_TYPE_REF[int] dummy1;
-Foo[#@SP_TYPE_REF] dummy2;
+#@TYPE_REFS[int] dummy1;
+Foo[#@TYPE_REFS] dummy2;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefIndexing(#@SPSE_TYPE_REF(SP_TYPE_REF) RefPrimitive) DefSymbol)
-DefVariable(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)) DefSymbol)
+DefVariable(RefIndexing(#@TYPE_REFS RefPrimitive) DefSymbol)
+DefVariable(RefIndexing(RefIdentifier #@TYPE_REFS) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@^SP_TYPE_REF[#@^SP_TYPE_REF] dummy1;
+#@^TYPE_REFS[#@^TYPE_REFS] dummy1;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@SP_TYPE_REF[#@EXP_ANY] dummy;
+#@TYPE_REFS[#@EXP_ANY] dummy;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefIndexing(#@SPSE_TYPE_REF(SP_TYPE_REF) #@EXP_ANY) DefSymbol)
+DefVariable(RefIndexing(#@TYPE_REFS #@EXP_ANY) DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo1[#@SP_TYPE_REF   #error:EXP_CLOSE_BRACKET public int dummy ;
-foo2[#@SP_TYPE_REF   #error:EXP_CLOSE_BRACKET ;
-foo3[#@SP_TYPE_REF   #error:EXP_CLOSE_BRACKET 
+foo1[#@TYPE_REFS   #error:EXP_CLOSE_BRACKET public int dummy ;
+foo2[#@TYPE_REFS   #error:EXP_CLOSE_BRACKET ;
+foo3[#@TYPE_REFS   #error:EXP_CLOSE_BRACKET 
 
 #AST_SOURCE_EXPECTED:
-foo1[#@SP_TYPE_REF] public int dummy;
-foo2[#@SP_TYPE_REF] ;
-foo3[#@SP_TYPE_REF] 
+foo1[#@TYPE_REFS] public int dummy;
+foo2[#@TYPE_REFS] ;
+foo3[#@TYPE_REFS] 
 #AST_STRUCTURE_EXPECTED:
-InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)))  ?(DefinitionVariable(RefPrimitive ?))
-InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)))  DeclarationEmpty
-InvalidDeclaration(RefIndexing(RefIdentifier #@SPSE_TYPE_REF(SP_TYPE_REF)))
+InvalidDeclaration(RefIndexing(RefIdentifier #@TYPE_REFS))  ?(DefinitionVariable(RefPrimitive ?))
+InvalidDeclaration(RefIndexing(RefIdentifier #@TYPE_REFS))  DeclarationEmpty
+InvalidDeclaration(RefIndexing(RefIdentifier #@TYPE_REFS))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo1[#@EXP_ANY   #error:EXP_CLOSE_BRACKET public int dummy ;

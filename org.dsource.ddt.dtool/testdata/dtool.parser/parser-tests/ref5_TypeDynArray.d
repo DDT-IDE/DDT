@@ -33,10 +33,10 @@ foo3[]
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@SP_TYPE_REF•[] dummy;
+#@TYPE_REFS•[] dummy;
 
-#@SP_TYPE_REF•[][] dummy2;
+#@TYPE_REFS•[][] dummy2;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefTypeDynArray(#@SPSE_TYPE_REF(SP_TYPE_REF)) DefSymbol)
-DefVariable(RefTypeDynArray(RefTypeDynArray(#@SPSE_TYPE_REF(SP_TYPE_REF))) DefSymbol)
+DefVariable(RefTypeDynArray(#@TYPE_REFS) DefSymbol)
+DefVariable(RefTypeDynArray(RefTypeDynArray(#@TYPE_REFS)) DefSymbol)
