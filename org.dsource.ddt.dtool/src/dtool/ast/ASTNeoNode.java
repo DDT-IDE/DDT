@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ASTDmdNode;
-import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.definitions.Module;
 import dtool.descentadapter.DefinitionConverter;
 import dtool.refmodel.INamedScope;
@@ -146,7 +145,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	
 	@Override
 	public ASTNeoNode[] getChildren() {
-		return (ASTNeoNode[]) ASTNeoChildrenCollector.getChildrenArray(this);
+		return (ASTNeoNode[]) ASTChildrenCollector.getChildrenArray(this);
 	}
 	
 	@Override
@@ -160,7 +159,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	 * This is a temporary adapting solution.
 	 */
 	@Override
-	public final void accept(IASTNeoVisitor visitor) {
+	public final void accept(IASTVisitor visitor) {
 		assertNotNull(visitor);
 		
 		// begin with the generic pre-visit
@@ -172,13 +171,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		visitor.postVisit(this);
 	}
 	
-	
-	public static final void accept0(@SuppressWarnings("unused") IASTVisitor visitor) {
-		Assert.fail("NEO AST elements should not use IASTVisitor");
-	}
-	
-	// Neo AST elements use ASTNeoVisitor
-	public abstract void accept0(IASTNeoVisitor visitor);
+	public abstract void accept0(IASTVisitor visitor);
 	
 	
 	public INamedScope getModuleScope() {

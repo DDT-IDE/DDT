@@ -2,7 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
@@ -23,7 +23,7 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if(children) {
 			// TODO, consider whether these should be structural or not

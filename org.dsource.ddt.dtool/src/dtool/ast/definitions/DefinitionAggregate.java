@@ -6,7 +6,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -28,7 +28,7 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 		this.members = parentize(members);
 	}
 	
-	protected void acceptNodeChildren(IASTNeoVisitor visitor, boolean children) {
+	protected void acceptNodeChildren(IASTVisitor visitor, boolean children) {
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, templateParams);

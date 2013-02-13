@@ -1,7 +1,7 @@
 package org.dsource.ddt.ide.core.model.engine;
 
 
-import dtool.ast.ASTNeoAbstractVisitor;
+import dtool.ast.ASTAbstractVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationBasicAttrib;
@@ -59,7 +59,7 @@ import dtool.ast.references.TypeDelegate;
 import dtool.ast.references.TypeFunction;
 import dtool.ast.references.TypeTypeof;
 
-public abstract class DeeSourceElementProvider_BaseVisitor extends ASTNeoAbstractVisitor {
+public abstract class DeeSourceElementProvider_BaseVisitor extends ASTAbstractVisitor {
 	
 	@Override
 	public final boolean preVisit(ASTNeoNode elem) {

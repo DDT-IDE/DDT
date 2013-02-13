@@ -2,7 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
@@ -22,7 +22,7 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);

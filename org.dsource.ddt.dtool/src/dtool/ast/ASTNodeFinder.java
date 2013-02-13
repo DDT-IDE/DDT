@@ -47,7 +47,7 @@ public abstract class ASTNodeFinder<T extends IASTNode> {
 		ASTNodeFinder<ASTNeoNode> astNodeFinder = new ASTNodeFinder<ASTNeoNode>() {
 			@Override
 			public void doAcceptOnRoot() {
-				root.accept(new ASTNeoHomogenousVisitor() {
+				root.accept(new ASTHomogenousVisitor() {
 					@Override
 					public boolean preVisit(ASTNeoNode node) {
 						return visitNode(node);

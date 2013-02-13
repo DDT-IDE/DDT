@@ -2,7 +2,7 @@ package dtool.ast.definitions;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -21,7 +21,7 @@ public class DefinitionTypedef extends Definition implements IStatement {
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);

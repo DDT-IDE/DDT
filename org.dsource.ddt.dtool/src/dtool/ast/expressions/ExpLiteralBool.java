@@ -1,7 +1,7 @@
 package dtool.ast.expressions;
 
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 
 public class ExpLiteralBool extends Expression {
@@ -14,7 +14,7 @@ public class ExpLiteralBool extends Expression {
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		visitor.visit(this);
 		visitor.endVisit(this);	
 	}

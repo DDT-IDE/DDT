@@ -14,6 +14,6 @@ import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.IVisitable;
 import descent.internal.compiler.parser.ast.IASTNode;
 
-public interface IASTNeoNode extends IASTNode, IElement, IVisitable<IASTNeoVisitor> {
+public interface IASTNeoNode extends IASTNode, IElement, IVisitable<IASTVisitor> {
 	
 }

@@ -8,7 +8,7 @@ import dtool.Logg;
  * Checks for AST validity. Namely:
  * Source range consistency. 
  */
-public class ASTCommonSourceRangeChecker extends ASTNeoHomogenousVisitor {
+public class ASTCommonSourceRangeChecker extends ASTHomogenousVisitor {
 	
 	@Deprecated
 	/** Checks an AST for errors, such as source range errors. */

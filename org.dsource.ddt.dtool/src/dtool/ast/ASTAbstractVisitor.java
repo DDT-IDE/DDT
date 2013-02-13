@@ -33,11 +33,11 @@ import dtool.ast.references.Reference;
 
 /**
  * An Abstract visitor with default implementation for just the endVisit methods.
- * This is an utility class that is safer than {@link ASTNeoDefaultVisitor} when modifications to 
+ * This is an utility class that is safer than {@link ASTDefaultVisitor} when modifications to 
  * the AST hierarchy happen, because subclass will still have a compiler error when 
- * new visit methods are added (unlike {@link ASTNeoDefaultVisitor} 
+ * new visit methods are added (unlike {@link ASTDefaultVisitor} 
  */
-public abstract class ASTNeoAbstractVisitor implements IASTNeoVisitor {
+public abstract class ASTAbstractVisitor implements IASTVisitor {
 	
 	@Override
 	public void endVisit(ASTNeoNode node) {

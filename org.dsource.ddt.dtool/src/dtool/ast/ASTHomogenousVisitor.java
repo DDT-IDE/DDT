@@ -11,7 +11,7 @@
 package dtool.ast;
 
 
-public class ASTNeoHomogenousVisitor extends ASTNeoDefaultVisitor implements IASTNeoVisitor {
+public class ASTHomogenousVisitor extends ASTDefaultVisitor implements IASTVisitor {
 	
 	public void traverse(ASTNeoNode node) {
 		node.accept(this);

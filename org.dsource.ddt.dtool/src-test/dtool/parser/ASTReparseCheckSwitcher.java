@@ -9,7 +9,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
-import dtool.ast.ASTNeoAbstractVisitor;
+import dtool.ast.ASTAbstractVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
@@ -87,7 +87,7 @@ import dtool.ast.references.TypeDelegate;
 import dtool.ast.references.TypeFunction;
 import dtool.ast.references.TypeTypeof;
 
-public class ASTReparseCheckSwitcher extends ASTNeoAbstractVisitor {
+public class ASTReparseCheckSwitcher extends ASTAbstractVisitor {
 	
 	public static void check(ASTNeoNode node, String parseSource, Collection<ParserError> errors) {
 		// Warning, this check has quadratic performance on node depth

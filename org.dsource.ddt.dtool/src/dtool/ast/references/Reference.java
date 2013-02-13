@@ -3,7 +3,7 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import dtool.ast.DefUnitDescriptor;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
 import dtool.ast.expressions.Resolvable;
@@ -46,7 +46,7 @@ public abstract class Reference extends Resolvable {
 		}
 		
 		@Override
-		public void accept0(IASTNeoVisitor visitor) {
+		public void accept0(IASTVisitor visitor) {
 			visitor.visit(this);
 			visitor.endVisit(this);	 			
 		}

@@ -2,7 +2,7 @@ package dtool.ast.definitions;
 
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.util.ArrayView;
 
 /**
@@ -16,7 +16,7 @@ public class DefinitionInterface extends DefinitionClass {
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		acceptNodeChildren(visitor, children);
 		visitor.endVisit(this);

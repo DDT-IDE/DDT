@@ -3,7 +3,7 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
@@ -25,7 +25,7 @@ public class RefImportSelection extends NamedReference implements IImportSelecti
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		visitor.visit(this);
 		visitor.endVisit(this);
 	}

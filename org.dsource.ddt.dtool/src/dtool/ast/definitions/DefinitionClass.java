@@ -6,7 +6,7 @@ import java.util.List;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.refmodel.IScope;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -25,7 +25,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		acceptNodeChildren(visitor, children);
 		visitor.endVisit(this);
@@ -37,7 +37,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	}
 	
 	@Override
-	protected void acceptNodeChildren(IASTNeoVisitor visitor, boolean children) {
+	protected void acceptNodeChildren(IASTVisitor visitor, boolean children) {
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, templateParams);

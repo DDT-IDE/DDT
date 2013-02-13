@@ -4,7 +4,7 @@ import java.util.List;
 
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.refmodel.IScope;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -20,7 +20,7 @@ public class DefinitionStruct extends DefinitionAggregate {
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		acceptNodeChildren(visitor, children);
 		visitor.endVisit(this);

@@ -7,7 +7,7 @@ import java.util.List;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.INamedScope;
 import dtool.refmodel.INativeDefUnit;
@@ -80,7 +80,7 @@ public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, I
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		Assert.fail("Intrinsics do not suppport accept.");
 	}
 	

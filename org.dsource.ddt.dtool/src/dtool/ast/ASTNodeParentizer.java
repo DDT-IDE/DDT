@@ -5,7 +5,7 @@ package dtool.ast;
  * Sets parent entries in the tree nodes, using homogenous Visitor.
  * Assumes a neo AST. 
  */
-public class ASTNodeParentizer extends ASTNeoHomogenousVisitor {
+public class ASTNodeParentizer extends ASTHomogenousVisitor {
 	
 	private ASTNeoNode parent = null;
 	

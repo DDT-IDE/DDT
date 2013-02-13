@@ -7,7 +7,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -33,7 +33,7 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
 			//TreeVisitor.acceptChildren(visitor, root);
@@ -70,7 +70,7 @@ public class RefModule extends NamedReference {
 		}
 		
 		@Override
-		public void accept0(IASTNeoVisitor visitor) {
+		public void accept0(IASTVisitor visitor) {
 			assertFail();
 		}
 		

@@ -72,7 +72,7 @@ import dtool.ast.references.TypeTypeof;
  * it doesn't dispatch only to the leaves of the AST hierarchy. This is because it is not necessary to do so, 
  * at the moment.
  */
-public interface IASTNeoVisitor {
+public interface IASTVisitor {
 	
 	/** Returns whether to proceed with type-specific dispatch visit. 
 	 * Note: if false, it implies children will not be visited. */

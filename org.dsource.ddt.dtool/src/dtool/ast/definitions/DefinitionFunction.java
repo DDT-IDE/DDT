@@ -10,7 +10,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.DefUnitDescriptor;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -54,7 +54,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	}
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, retType);
@@ -142,7 +142,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	
 	public static final class AutoFunctionReturnReference extends Reference {
 		@Override
-		public void accept0(IASTNeoVisitor visitor) {
+		public void accept0(IASTVisitor visitor) {
 			boolean children = visitor.visit(this);
 			if (children) {
 			}

@@ -8,7 +8,7 @@ import melnorme.utilbox.tree.IVisitable;
 /**
  * Uses a Visitor to collect a node's children.
  */
-public class ASTNeoChildrenCollector extends ASTNeoHomogenousVisitor {
+public class ASTChildrenCollector extends ASTHomogenousVisitor {
 	
 	private boolean visitingParent = true;
 	private List<ASTNeoNode> childrenLst;
@@ -17,8 +17,8 @@ public class ASTNeoChildrenCollector extends ASTNeoHomogenousVisitor {
 		return getChildrenList(elem).toArray(ASTNeoNode.NO_ELEMENTS);
 	}
 	
-	public static List<ASTNeoNode> getChildrenList(IVisitable<? super IASTNeoVisitor> elem){
-		ASTNeoChildrenCollector collector = new ASTNeoChildrenCollector();
+	public static List<ASTNeoNode> getChildrenList(IVisitable<? super IASTVisitor> elem){
+		ASTChildrenCollector collector = new ASTChildrenCollector();
 		collector.childrenLst = new ArrayList<ASTNeoNode>();
 		elem.accept(collector);
 		return collector.childrenLst;

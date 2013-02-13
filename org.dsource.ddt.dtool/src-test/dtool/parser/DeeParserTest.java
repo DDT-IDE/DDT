@@ -11,7 +11,7 @@ import java.util.Collection;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
-import dtool.ast.ASTNeoHomogenousVisitor;
+import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.NodeUtil;
@@ -142,7 +142,7 @@ public class DeeParserTest extends CommonTestUtils {
 		// Check consistency of source ranges (no overlapping ranges)
 		ASTSourceRangeChecker.checkConsistency(topNode);
 		
-		new ASTNeoHomogenousVisitor() {
+		new ASTHomogenousVisitor() {
 			@Override
 			public void genericVisit(ASTNeoNode node) {
 				checkNodeSourceRange(node, source, result.errors);

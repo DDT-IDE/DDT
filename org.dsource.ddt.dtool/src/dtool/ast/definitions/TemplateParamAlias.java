@@ -1,7 +1,7 @@
 package dtool.ast.definitions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
@@ -24,7 +24,7 @@ public class TemplateParamAlias extends TemplateParameter {
 	
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);

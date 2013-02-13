@@ -77,7 +77,7 @@ import dtool.ast.references.TypeDelegate;
 import dtool.ast.references.TypeFunction;
 import dtool.ast.references.TypeTypeof;
 
-public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor implements IASTNeoVisitor {
+public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IASTVisitor {
 	
 	@Override
 	public boolean preVisit(ASTNeoNode node) {

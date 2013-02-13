@@ -9,7 +9,7 @@ import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.ast.ASTNeoHomogenousVisitor;
+import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
 import dtool.util.ArrayView;
@@ -42,7 +42,7 @@ public class DescentASTConverter extends StatementConverterVisitor {
 	}
 	
 	
-	public static class ASTNodeParentChecker extends ASTNeoHomogenousVisitor {
+	public static class ASTNodeParentChecker extends ASTHomogenousVisitor {
 		
 		private ASTNeoNode parent = null;
 		

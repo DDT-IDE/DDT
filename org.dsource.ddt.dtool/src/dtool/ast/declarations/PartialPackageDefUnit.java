@@ -3,7 +3,7 @@ package dtool.ast.declarations;
 import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.ast.IASTNeoVisitor;
+import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
@@ -52,7 +52,7 @@ public abstract class PartialPackageDefUnit extends DefUnit implements IScopeNod
 	
 	
 	@Override
-	public void accept0(IASTNeoVisitor visitor) {
+	public void accept0(IASTVisitor visitor) {
 	}
 	
 	@Override

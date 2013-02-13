@@ -19,7 +19,7 @@ import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Region;
 
-import dtool.ast.ASTNeoDefaultVisitor;
+import dtool.ast.ASTDefaultVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationConditionalDV;
@@ -78,7 +78,7 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 			ISourceModule sourceModule = (ISourceModule) content.getModelElement();
 			Module deeModule = DeeModuleParsingUtil.parseAndGetAST(sourceModule);
 			if (deeModule != null) {
-				deeModule.accept(new ASTNeoDefaultVisitor() {
+				deeModule.accept(new ASTDefaultVisitor() {
 					
 					@Override
 					public boolean visit(DefinitionStruct elem) {
