@@ -7,6 +7,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -30,6 +31,11 @@ public class RefModule extends NamedReference {
 		initSourceRange(sourceRange);
 		this.packages = assertNotNull_(packages);
 		this.module = module;
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.REF_MODULE;
 	}
 	
 	@Override

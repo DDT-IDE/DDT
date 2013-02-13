@@ -4,6 +4,7 @@ import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
@@ -17,6 +18,11 @@ public class InvalidDeclaration extends ASTNeoNode implements IStatement {
 		this.node = parentize(assertNotNull_(node));
 		this.consumedSemiColon = consumedSemiColon;
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DECL_INVALID;
 	}
 	
 	@Override

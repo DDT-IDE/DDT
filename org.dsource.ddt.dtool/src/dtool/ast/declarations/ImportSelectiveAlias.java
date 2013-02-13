@@ -2,6 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
@@ -19,6 +20,11 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 		super(dudt);
 		this.target = parentize(impSelection);
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.IMPORT_SELECTIVE_ALIAS;
 	}
 	
 	@Override

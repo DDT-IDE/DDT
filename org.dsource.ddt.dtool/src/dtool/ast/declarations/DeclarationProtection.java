@@ -5,6 +5,7 @@ import java.util.Iterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
@@ -24,7 +25,6 @@ public class DeclarationProtection extends DeclarationAttrib {
 		public String toStringAsCode() {
 			return toString().toLowerCase();
 		}
-		
 	}
 	
 	public final Protection protection;
@@ -32,6 +32,11 @@ public class DeclarationProtection extends DeclarationAttrib {
 	public DeclarationProtection(Protection protection, AttribBodySyntax bodySyntax, NodeList2 body, SourceRange sr) {
 		super(bodySyntax, body, sr);
 		this.protection = protection;
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DECL_PROTECTION;
 	}
 	
 	@Override

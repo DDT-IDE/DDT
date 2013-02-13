@@ -6,7 +6,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpCast;
-import dtool.ast.expressions.InfixExpression;
+import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.InitializerExp;
 
 /**
@@ -30,11 +30,11 @@ public class Parser_ExpCastTest extends Parser__CommonTest {
 		
 		ExpCast expCast1 = getExpCastFromInit(module.getChildren()[1]);
 		assertEquals(expCast1.type.toStringAsElement(), "pack.Foo");
-		assertCast(expCast1.exp, InfixExpression.class);
+		assertCast(expCast1.exp, ExpInfix.class);
 		
 		DefinitionVariable child2 = downCast(module.getChildren()[2]);
 		ExpCast expCast2 = downCast(downCast(downCast(child2.init, InitializerExp.class).exp, 
-				InfixExpression.class).leftExp, ExpCast.class); 
+				ExpInfix.class).leftExp, ExpCast.class); 
 			
 		assertEquals(expCast2.type.toStringAsElement(), "Foo");
 		assertEquals(expCast2.exp.toStringAsElement(), "1");

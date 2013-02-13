@@ -44,13 +44,13 @@ import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
-import dtool.ast.expressions.InfixExpression;
+import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
-import dtool.ast.expressions.PostfixExpression;
-import dtool.ast.expressions.PrefixExpression;
+import dtool.ast.expressions.ExpPostfix;
+import dtool.ast.expressions.ExpPrefix;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -194,9 +194,9 @@ public interface IASTVisitor {
 	
 	public boolean visit(ExpReference node);
 	
-	public boolean visit(PrefixExpression node);
-	public boolean visit(PostfixExpression node);
-	public boolean visit(InfixExpression node);
+	public boolean visit(ExpPrefix node);
+	public boolean visit(ExpPostfix node);
+	public boolean visit(ExpInfix node);
 	public boolean visit(ExpConditional node);
 	
 	public boolean visit(ExpLiteralFunc node);

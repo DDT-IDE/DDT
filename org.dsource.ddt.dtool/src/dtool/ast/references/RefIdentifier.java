@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -25,6 +26,11 @@ public class RefIdentifier extends NamedReference {
 		assertTrue(name == null || name.length() > 0);
 		this.name = name;
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.REF_IDENTIFIER;
 	}
 	
 	@Override

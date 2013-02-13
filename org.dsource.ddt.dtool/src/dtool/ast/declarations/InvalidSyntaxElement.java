@@ -3,6 +3,7 @@ package dtool.ast.declarations;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
@@ -23,6 +24,11 @@ public class InvalidSyntaxElement extends ASTNeoNode implements IStatement {
 		super(sourceRange);
 		this.badToken = null;
 		this.node = parentize(node);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.INVALID_SYNTAX;
 	}
 	
 	@Override

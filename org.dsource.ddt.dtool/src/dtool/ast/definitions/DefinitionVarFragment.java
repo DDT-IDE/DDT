@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.expressions.Initializer;
@@ -22,6 +23,11 @@ public class DefinitionVarFragment extends DefUnit {
 		super(dudt);
 		this.init = parentize(init);
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DEFINITION_VAR_FRAGMENT;
 	}
 	
 	@Override

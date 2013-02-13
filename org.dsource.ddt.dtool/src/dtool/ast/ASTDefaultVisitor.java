@@ -54,13 +54,13 @@ import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
-import dtool.ast.expressions.InfixExpression;
+import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
-import dtool.ast.expressions.PostfixExpression;
-import dtool.ast.expressions.PrefixExpression;
+import dtool.ast.expressions.ExpPostfix;
+import dtool.ast.expressions.ExpPrefix;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -217,9 +217,9 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	
 	@Override public boolean visit(ExpReference elem) { return true; }
 	
-	@Override public boolean visit(PrefixExpression elem) { return true; }
-	@Override public boolean visit(PostfixExpression elem) { return true; }
-	@Override public boolean visit(InfixExpression elem) { return true; }
+	@Override public boolean visit(ExpPrefix elem) { return true; }
+	@Override public boolean visit(ExpPostfix elem) { return true; }
+	@Override public boolean visit(ExpInfix elem) { return true; }
 	@Override public boolean visit(ExpConditional elem) { return true; }
 	
 	@Override

@@ -115,15 +115,15 @@ import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.ExpTraits;
 import dtool.ast.expressions.ExpTypeid;
 import dtool.ast.expressions.Expression;
-import dtool.ast.expressions.InfixExpression;
+import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
-import dtool.ast.expressions.PostfixExpression;
-import dtool.ast.expressions.PrefixExpression;
-import dtool.ast.expressions.PrefixExpression.PrefixOpType;
+import dtool.ast.expressions.ExpPostfix;
+import dtool.ast.expressions.ExpPrefix;
+import dtool.ast.expressions.ExpPrefix.PrefixOpType;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
@@ -297,7 +297,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(DeleteExp element) {
 		return endAdapt(
-			new PrefixExpression(
+			new ExpPrefix(
 				PrefixOpType.DELETE,
 				ExpressionConverter.convert(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
@@ -486,8 +486,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(AddrExp element) {
 		return endAdapt(
-			new PrefixExpression(
-				PrefixExpression.PrefixOpType.ADDRESS,
+			new ExpPrefix(
+				ExpPrefix.PrefixOpType.ADDRESS,
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
@@ -497,8 +497,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ComExp element) {
 		return endAdapt(
-			new PrefixExpression(
-				PrefixExpression.PrefixOpType.COMPLEMENT,
+			new ExpPrefix(
+				ExpPrefix.PrefixOpType.COMPLEMENT,
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
@@ -508,8 +508,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(NegExp element) {
 		return endAdapt(
-			new PrefixExpression(
-				PrefixExpression.PrefixOpType.NEGATIVE,
+			new ExpPrefix(
+				ExpPrefix.PrefixOpType.NEGATIVE,
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
@@ -519,8 +519,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(NotExp element) {
 		return endAdapt(
-			new PrefixExpression(
-				PrefixExpression.PrefixOpType.NOT,
+			new ExpPrefix(
+				ExpPrefix.PrefixOpType.NOT,
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
@@ -537,13 +537,13 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	public boolean visit(PostExp node) {
 		int type = 0;
 		switch (node.op) {
-		case TOKplusplus: type = PostfixExpression.Type.POST_INCREMENT; break;
-		case TOKminusminus: type = PostfixExpression.Type.POST_DECREMENT; break;
+		case TOKplusplus: type = ExpPostfix.Type.POST_INCREMENT; break;
+		case TOKminusminus: type = ExpPostfix.Type.POST_DECREMENT; break;
 		default: Assert.fail();
 		}
 		
 		return endAdapt(
-			new PostfixExpression(
+			new ExpPostfix(
 				(Resolvable) DescentASTConverter.convertElem(node.e1, convContext),
 				type,
 				DefinitionConverter.sourceRange(node)
@@ -554,8 +554,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(PtrExp element) {
 		return endAdapt(
-			new PrefixExpression(
-				PrefixExpression.PrefixOpType.POINTER,
+			new ExpPrefix(
+				ExpPrefix.PrefixOpType.POINTER,
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
@@ -565,8 +565,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(UAddExp element) {
 		return endAdapt(
-			new PrefixExpression(
-				PrefixExpression.PrefixOpType.POSITIVE,
+			new ExpPrefix(
+				ExpPrefix.PrefixOpType.POSITIVE,
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
@@ -585,8 +585,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		Resolvable exp1 = (Resolvable) DescentASTConverter.convertElem(element.e1, convContext);
 		SourceRange sourceRange = DefinitionConverter.sourceRange(element);
 		Resolvable newelem = element.isPreIncrement
-				? new PrefixExpression(PrefixExpression.PrefixOpType.PRE_INCREMENT, exp1, sourceRange)
-				: new InfixExpression(
+				? new ExpPrefix(ExpPrefix.PrefixOpType.PRE_INCREMENT, exp1, sourceRange)
+				: new ExpInfix(
 					exp1,
 					DeeTokens.PLUS_ASSIGN,
 					(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -601,8 +601,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		Resolvable exp1 = (Resolvable) DescentASTConverter.convertElem(element.e1, convContext);
 		SourceRange sourceRange = DefinitionConverter.sourceRange(element);
 		Resolvable newelem = element.isPreDecrement
-				? new PrefixExpression(PrefixExpression.PrefixOpType.PRE_DECREMENT, exp1, sourceRange)
-				: new InfixExpression(
+				? new ExpPrefix(ExpPrefix.PrefixOpType.PRE_DECREMENT, exp1, sourceRange)
+				: new ExpInfix(
 					exp1, 
 					DeeTokens.MINUS_ASSIGN,
 					(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -615,7 +615,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(AddExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.PLUS,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -627,7 +627,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(AndAndExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.LOGICAL_AND,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -639,7 +639,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(AndAssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.AND_ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -651,7 +651,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(AndExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.AND,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -663,7 +663,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(AssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -675,7 +675,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(CatAssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.CONCAT_ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -687,7 +687,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(CatExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.CONCAT,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -699,7 +699,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(CmpExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.EQUALS,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -711,7 +711,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(CommaExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.COMMA,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -723,7 +723,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(DivAssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.DIV_ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -735,7 +735,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(DivExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.DIV,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -747,7 +747,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(EqualExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -761,7 +761,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		Assert.isTrue(element.op == TOK.TOKis || element.op == TOK.TOKnotis);
 		
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				element.op == TOK.TOKis ? DeeTokens.KW_IS : DeeTokens.KW_IS,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -773,7 +773,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(InExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.KW_IN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -785,7 +785,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(MinExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.MINUS,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -797,7 +797,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ModAssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.MOD_ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -809,7 +809,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ModExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.MOD,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -821,7 +821,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(MulAssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.MULT_ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -833,7 +833,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(MulExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.STAR,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -845,7 +845,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(OrAssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.OR_ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -857,7 +857,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(OrExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.OR,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -869,7 +869,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(OrOrExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.LOGICAL_OR,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -881,7 +881,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ShlAssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.LEFT_SHIFT_ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -893,7 +893,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ShlExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.LEFT_SHIFT,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -905,7 +905,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ShrAssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.RIGHT_SHIFT_ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -917,7 +917,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ShrExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.RIGHT_SHIFT,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -929,7 +929,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(UshrAssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.TRIPLE_RSHIFT_ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -941,7 +941,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(UshrExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.TRIPLE_RSHIFT,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -953,7 +953,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(XorAssignExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.XOR_ASSIGN,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
@@ -965,7 +965,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(XorExp element) {
 		return endAdapt(
-			new InfixExpression(
+			new ExpInfix(
 				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
 				DeeTokens.XOR,
 				(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),

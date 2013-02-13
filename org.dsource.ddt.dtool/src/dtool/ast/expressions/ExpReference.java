@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -24,6 +25,11 @@ public class ExpReference extends Expression {
 		this.ref = parentize(ref);
 		
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_REFERENCE;
 	}
 	
 	@Override

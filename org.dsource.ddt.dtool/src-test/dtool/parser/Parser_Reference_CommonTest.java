@@ -8,7 +8,7 @@ import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.expressions.ExpReference;
-import dtool.ast.expressions.InfixExpression;
+import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.references.Reference;
 
@@ -161,7 +161,7 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 	protected void checkTestExp(final String nodeCode, IASTNode neoNode) {
 		DefinitionVariable child = downCast(neoNode);
 		ExpReference expReference = downCast(
-			downCast(downCast(child.init, InitializerExp.class).exp, InfixExpression.class).leftExp
+			downCast(downCast(child.init, InitializerExp.class).exp, ExpInfix.class).leftExp
 		, ExpReference.class);
 		checkReference(expReference.ref, nodeCode);
 	}

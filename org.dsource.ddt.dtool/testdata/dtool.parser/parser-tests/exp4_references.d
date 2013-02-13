@@ -29,8 +29,8 @@ ExpReference(RefQualified(RefIndexing(? ?) RefIdentifier))
 #@《
   ►ExpReference(RefIdentifier)●
   ►ExpReference(RefPrimitive)●
-  ►InfixExpression(ExpReference(RefPrimitive))●
-  ►InfixExpression(ExpReference(RefIdentifier))●
+  ►ExpInfix(ExpReference(RefPrimitive))●
+  ►ExpInfix(ExpReference(RefIdentifier))●
   ►ExpReference(RefTypeDynArray(?))●
   ►ExpReference(RefIndexing(? ?))●
   ►ExpReference(RefIndexing(? ?))●

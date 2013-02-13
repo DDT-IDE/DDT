@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.expressions.Initializer;
@@ -34,6 +35,11 @@ public class DefinitionVariable extends Definition implements IStatement {
 		this.init = parentize(init);
 		this.fragments = fragments != null ? parentize(fragments) : emptyFrags;
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DEFINITION_VARIABLE;
 	}
 	
 	@Override

@@ -39,13 +39,13 @@
 
 #@EXP_OROR《
   ►#@EXP_UNARY●
-  ►#?AST_STRUCTURE_EXPECTED!【4 / 6●InfixExpression(? ?)】●
-  ►#?AST_STRUCTURE_EXPECTED!【1 + 2●InfixExpression(? ?)】●
-  ►#?AST_STRUCTURE_EXPECTED!【1 << 16●InfixExpression(? ?)】●
-  ►#?AST_STRUCTURE_EXPECTED!【0xFF & 123●InfixExpression(? ?)】●
-  ►#?AST_STRUCTURE_EXPECTED!【0xFF | 0xAA●InfixExpression(? ?)】●
-  ►#?AST_STRUCTURE_EXPECTED!【1 > "2" && 3●InfixExpression(InfixExpression(? String) ?)】●
-  ►#?AST_STRUCTURE_EXPECTED!【2 || "3" < 4●InfixExpression(? InfixExpression(String ?))】●
+  ►#?AST_STRUCTURE_EXPECTED!【4 / 6●ExpInfix(? ?)】●
+  ►#?AST_STRUCTURE_EXPECTED!【1 + 2●ExpInfix(? ?)】●
+  ►#?AST_STRUCTURE_EXPECTED!【1 << 16●ExpInfix(? ?)】●
+  ►#?AST_STRUCTURE_EXPECTED!【0xFF & 123●ExpInfix(? ?)】●
+  ►#?AST_STRUCTURE_EXPECTED!【0xFF | 0xAA●ExpInfix(? ?)】●
+  ►#?AST_STRUCTURE_EXPECTED!【1 > "2" && 3●ExpInfix(ExpInfix(? String) ?)】●
+  ►#?AST_STRUCTURE_EXPECTED!【2 || "3" < 4●ExpInfix(? ExpInfix(String ?))】●
 ¤》
 
 #@EXP_CONDITIONAL《
@@ -55,12 +55,12 @@
 
 #@EXP_ASSIGN《
   ►#@EXP_CONDITIONAL●
-  ►#?AST_STRUCTURE_EXPECTED!【this = super += null●InfixExpression(ExpThis InfixExpression(ExpSuper ExpNull))】●
+  ►#?AST_STRUCTURE_EXPECTED!【this = super += null●ExpInfix(ExpThis ExpInfix(ExpSuper ExpNull))】●
 ¤》
 
 #@EXP_COMMA《
   ►#@EXP_ASSIGN●
-  ►#?AST_STRUCTURE_EXPECTED!【12,"asd"●InfixExpression(Integer String)】●
+  ►#?AST_STRUCTURE_EXPECTED!【12,"asd"●ExpInfix(Integer String)】●
 ¤》
 
 #@EXP_ANY《#@EXP_COMMA》

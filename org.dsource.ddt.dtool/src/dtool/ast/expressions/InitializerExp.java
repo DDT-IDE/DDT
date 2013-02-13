@@ -2,6 +2,7 @@ package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 
@@ -12,6 +13,11 @@ public class InitializerExp extends Initializer {
 	public InitializerExp(Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = parentize(exp);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.INITIALIZER_EXP;
 	}
 	
 	@Override

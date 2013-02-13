@@ -5,6 +5,7 @@ import java.util.Iterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
@@ -64,6 +65,11 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 		SourceRange sr) {
 		super(abs, decls, sr);
 		this.declAttrib = declAttrib;
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DECL_BASIC_ATTRIB;
 	}
 	
 	@Override

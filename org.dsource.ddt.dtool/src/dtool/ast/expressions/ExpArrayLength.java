@@ -1,6 +1,7 @@
 package dtool.ast.expressions;
 
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 
@@ -11,6 +12,11 @@ public class ExpArrayLength extends Expression {
 	
 	public ExpArrayLength(SourceRange sourceRange) {
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_ARRAY_LENGTH;
 	}
 	
 	@Override

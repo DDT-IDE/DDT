@@ -2,6 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
@@ -11,6 +12,11 @@ public class ImportContent extends ImportStatic {
 	
 	public ImportContent(RefModule refModule) {
 		super(refModule, refModule.getSourceRange());
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.IMPORT_CONTENT;
 	}
 	
 	@Override

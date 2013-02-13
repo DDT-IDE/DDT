@@ -3,6 +3,7 @@ package dtool.ast.expressions;
 import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 
@@ -17,6 +18,11 @@ public class ExpConditional extends Expression {
 		this.condExp = parentize(assertNotNull_(condExp));
 		this.thenExp = parentize(thenExp);
 		this.elseExp = parentize(elseExp); 
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_CONDITIONAL;
 	}
 	
 	@Override

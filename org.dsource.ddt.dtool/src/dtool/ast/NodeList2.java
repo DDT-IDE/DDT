@@ -14,6 +14,11 @@ public class NodeList2 extends ASTNeoNode {
 	}
 	
 	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.NODE_LIST;
+	}
+	
+	@Override
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {

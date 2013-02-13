@@ -3,11 +3,11 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 1 , "abc"
 #AST_STRUCTURE_EXPECTED:
-InfixExpression(ExpLiteralInteger ExpLiteralString)
+ExpInfix(ExpLiteralInteger ExpLiteralString)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 1 , "abc", 123
 #AST_STRUCTURE_EXPECTED:
-InfixExpression(ExpLiteralInteger InfixExpression(ExpLiteralString ExpLiteralInteger))
+ExpInfix(ExpLiteralInteger ExpInfix(ExpLiteralString ExpLiteralInteger))
 
 
 
@@ -51,8 +51,8 @@ InfixExpression(ExpLiteralInteger InfixExpression(ExpLiteralString ExpLiteralInt
   ►#@ADD●
 ¤》(OP)
 
-#@INFIX_EXP{#?COND《ExpConditional●InfixExpression》}
-#@INFIX_EXP_HI{#?COND_HI《ExpConditional●InfixExpression》}
+#@INFIX_EXP{#?COND《ExpConditional●ExpInfix》}
+#@INFIX_EXP_HI{#?COND_HI《ExpConditional●ExpInfix》}
 
 #@MIDDLE_EXP{#?COND{String}}
 #@MIDDLE_EXP_HI{#?COND_HI{String}}
@@ -79,16 +79,16 @@ InfixExpression(ExpLiteralInteger InfixExpression(ExpLiteralString ExpLiteralInt
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Special case for '==' and other compare ops
 #PARSE(EXPRESSION)	 #error(REQPARENS)《this  #@CMP   "abc"》    #@CMP  #@INT_OR_MISSING
 #AST_STRUCTURE_EXPECTED:
-InfixExpression(InfixExpression(ExpThis  String)  #@INT_OR_MISSING)
+ExpInfix(ExpInfix(ExpThis  String)  #@INT_OR_MISSING)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)	 #error(REQPARENS_&)《this  #@CMP /*OP*/ "abc"》/*blah*/    &   #@INT_OR_MISSING
 #AST_STRUCTURE_EXPECTED:
-InfixExpression(InfixExpression(ExpThis String)  #@INT_OR_MISSING)
+ExpInfix(ExpInfix(ExpThis String)  #@INT_OR_MISSING)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 	 this    &   #error(REQPARENS_&)《"abc"  #@CMP /*OP*/  123》
 #AST_STRUCTURE_EXPECTED:
-InfixExpression(ExpThis  InfixExpression(String Integer))
+ExpInfix(ExpThis  ExpInfix(String Integer))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test error with == next to |●^●&
 #PARSE(EXPRESSION) 
@@ -110,32 +110,32 @@ InfixExpression(ExpThis  InfixExpression(String Integer))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 	this && "abc" == 123  #@《||●&&●,》  super
 #AST_STRUCTURE_EXPECTED:
-InfixExpression(
-  InfixExpression(ExpThis InfixExpression(String Integer)) 
+ExpInfix(
+  ExpInfix(ExpThis ExpInfix(String Integer)) 
   ExpSuper
 )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 	this && 1 + 2 == 5*5  ||  super
 #AST_STRUCTURE_EXPECTED:
-InfixExpression(
-  InfixExpression(ExpThis InfixExpression(* *)) 
+ExpInfix(
+  ExpInfix(ExpThis ExpInfix(* *)) 
   ExpSuper
 )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 	this && 1 ==  #error(EXPRULE_exp)  ||  super
 #AST_STRUCTURE_EXPECTED:
-InfixExpression(
-  InfixExpression(ExpThis InfixExpression(Integer)) 
+ExpInfix(
+  ExpInfix(ExpThis ExpInfix(Integer)) 
   ExpSuper
 )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 	this || "abc" == 123  &&  super
 #AST_STRUCTURE_EXPECTED:
-InfixExpression(
+ExpInfix(
   ExpThis
-  InfixExpression(InfixExpression(String Integer) ExpSuper) 
+  ExpInfix(ExpInfix(String Integer) ExpSuper) 
 )
 

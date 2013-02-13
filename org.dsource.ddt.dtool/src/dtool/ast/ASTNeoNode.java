@@ -143,6 +143,10 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		return 0; 
 	}
 	
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.OTHER;
+	}
+	
 	@Override
 	public ASTNeoNode[] getChildren() {
 		return (ASTNeoNode[]) ASTChildrenCollector.getChildrenArray(this);

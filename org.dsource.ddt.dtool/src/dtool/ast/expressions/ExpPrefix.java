@@ -3,11 +3,12 @@ package dtool.ast.expressions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.parser.DeeTokens;
 
-public class PrefixExpression extends Expression {
+public class ExpPrefix extends Expression {
 	
 	public static enum PrefixOpType {
 		ADDRESS(DeeTokens.AND),
@@ -50,10 +51,15 @@ public class PrefixExpression extends Expression {
 	public final PrefixOpType kind;
 	public final Resolvable exp;
 	
-	public PrefixExpression(PrefixOpType kind, Resolvable exp, SourceRange sourceRange) {
+	public ExpPrefix(PrefixOpType kind, Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = parentize(exp);
 		this.kind = kind;
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_PREFIX;
 	}
 	
 	@Override

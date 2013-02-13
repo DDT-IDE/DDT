@@ -2,6 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
@@ -14,6 +15,11 @@ public class DeclarationAlign extends DeclarationAttrib {
 	public DeclarationAlign(Token alignNum, AttribBodySyntax bodySyntax, NodeList2 decls, SourceRange sr) {
 		super(bodySyntax, decls, sr);
 		this.alignNum = alignNum;
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DECL_ALIGN;
 	}
 	
 	@Override

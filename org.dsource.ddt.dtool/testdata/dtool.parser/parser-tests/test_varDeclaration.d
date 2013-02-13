@@ -77,8 +77,8 @@ DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? Initial
 
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? InitializerExp(Integer))】) 
 #@BREAK_EXP
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(InfixExpression(Integer String))●
-		DefVarFragment(? InitializerExp(InfixExpression(Integer String)))】)
+DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(Integer String))●
+		DefVarFragment(? InitializerExp(ExpInfix(Integer String)))】)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors (with multiple exp)
 
@@ -95,8 +95,8 @@ DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(InfixExpression(Integer Strin
 
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(#@EXP_ASSIGN)●DefVarFragment(? InitializerExp(#@EXP_ASSIGN))】) 
 #@BREAK_EXP
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(InfixExpression(#@EXP_CONDITIONAL String))●
-		DefVarFragment(? InitializerExp(InfixExpression(#@EXP_CONDITIONAL String)))】)
+DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(#@EXP_CONDITIONAL String))●
+		DefVarFragment(? InitializerExp(ExpInfix(#@EXP_CONDITIONAL String)))】)
 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ C-style decls

@@ -50,13 +50,13 @@ import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.Expression;
-import dtool.ast.expressions.InfixExpression;
-import dtool.ast.expressions.InfixExpression.InfixOpType;
+import dtool.ast.expressions.ExpInfix;
+import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
-import dtool.ast.expressions.PrefixExpression;
-import dtool.ast.expressions.PrefixExpression.PrefixOpType;
+import dtool.ast.expressions.ExpPrefix;
+import dtool.ast.expressions.ExpPrefix.PrefixOpType;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -537,15 +537,15 @@ public class DeeParser extends AbstractParser {
 			return connect(new ExpConditional(leftExp, middleExp, rightExp, srToCursor(leftExp)));
 		}
 		
-		return connect(new InfixExpression(leftExp, op, rightExp, srToCursor(leftExp)));
+		return connect(new ExpInfix(leftExp, op, rightExp, srToCursor(leftExp)));
 	}
 	
 	protected void checkValidAssociativity(Expression exp, InfixOpType op) {
 		// Check for some syntax situations which are technically not allowed by the grammar:
 		switch (op.category) {
 		case OR: case XOR: case AND: case EQUALS:
-			if(exp instanceof InfixExpression) {
-				if(((InfixExpression) exp).kind.category == InfixOpType.EQUALS) {
+			if(exp instanceof ExpInfix) {
+				if(((ExpInfix) exp).kind.category == InfixOpType.EQUALS) {
 					addError(ParserErrorTypes.EXP_MUST_HAVE_PARENTHESES, exp.getSourceRange(), op.sourceValue);
 				}
 			}
@@ -600,7 +600,7 @@ public class DeeParser extends AbstractParser {
 			if(exp == null) {
 				reportErrorExpectedRule(EXPRESSION_RULE);
 			}
-			return connect(new PrefixExpression(prefixOpType, exp, srToCursor(prefixExpToken)));
+			return connect(new ExpPrefix(prefixOpType, exp, srToCursor(prefixExpToken)));
 		default:
 			Reference ref = parseReference(true);
 			if(ref != null) {
@@ -619,18 +619,20 @@ public class DeeParser extends AbstractParser {
 	}
 	
 	protected static boolean isBuiltinTypeRef(Reference ref) {
-		if(ref instanceof RefPrimitive
-			|| ref instanceof RefTypeDynArray
-			|| ref instanceof RefTypePointer) {
+		switch (ref.getNodeType()) {
+		case REF_PRIMITIVE:
+		case REF_TYPE_DYN_ARRAY:
+		case REF_TYPE_POINTER:
 			return true;
+		case REF_INDEXING:
+		RefIndexing refIndexing = (RefIndexing) ref;
+		Resolvable indexParam = refIndexing.indexParam;
+		return isBuiltinTypeRef(refIndexing.elemType) ||
+			((indexParam instanceof Reference) && isBuiltinTypeRef((Reference) indexParam));
+		
+		default:
+			return false;
 		}
-		if(ref instanceof RefIndexing) {
-			RefIndexing refIndexing = (RefIndexing) ref;
-			Resolvable indexParam = refIndexing.indexParam;
-			return isBuiltinTypeRef(refIndexing.elemType) ||
-				((indexParam instanceof Reference) && isBuiltinTypeRef((Reference) indexParam));
-		}
-		return false;
 	}
 	
 	public Expression parseStringLiteral() {

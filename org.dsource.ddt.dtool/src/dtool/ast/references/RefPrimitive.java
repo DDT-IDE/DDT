@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -22,6 +23,11 @@ public class RefPrimitive extends NamedReference {
 	public RefPrimitive(Token primitiveToken, SourceRange sourceRange) {
 		this.primitive = primitiveToken;
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.REF_PRIMITIVE;
 	}
 	
 	@Override

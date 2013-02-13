@@ -6,6 +6,7 @@ import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
@@ -34,6 +35,11 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 		this.imports_asNodes = CoreUtil.<ArrayView<ASTNeoNode>>blindCast(imports);
 		this.isStatic = isStatic;
 		this.isTransitive = isTransitive;
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DECL_IMPORT;
 	}
 	
 	@Override

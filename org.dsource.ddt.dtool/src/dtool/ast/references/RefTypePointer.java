@@ -7,6 +7,7 @@ import java.util.List;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -23,6 +24,11 @@ public class RefTypePointer extends CommonRefNative {
 	public RefTypePointer(Reference elemType, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.elemType = parentize(elemType);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.REF_TYPE_POINTER;
 	}
 	
 	@Override

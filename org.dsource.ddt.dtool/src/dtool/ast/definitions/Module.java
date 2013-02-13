@@ -9,6 +9,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.parser.Token;
@@ -58,6 +59,11 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		}
 		
 		@Override
+		public ASTNodeTypes getNodeType() {
+			return ASTNodeTypes.DECL_MODULE;
+		}
+		
+		@Override
 		public void accept0(IASTVisitor visitor) {
 			boolean children = visitor.visit(this);
 			if (children) {
@@ -100,6 +106,11 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		this.md = parentize(md);
 		this.members = parentize(members);
 		assertNotNull(members);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.MODULE;
 	}
 	
 	@Override

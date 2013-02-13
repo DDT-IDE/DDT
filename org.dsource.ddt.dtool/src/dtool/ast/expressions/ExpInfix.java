@@ -3,6 +3,7 @@ package dtool.ast.expressions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.parser.DeeTokens;
@@ -10,7 +11,7 @@ import dtool.parser.DeeTokens;
 /**
  * An infix binary expression.
  */
-public class InfixExpression extends Expression {
+public class ExpInfix extends Expression {
 	
 	/**
 	 * Infix operations types (not just binary expressions)
@@ -116,7 +117,7 @@ public class InfixExpression extends Expression {
 	public final Resolvable rightExp;
 	public final InfixOpType kind;
 	
-	public InfixExpression(Resolvable left, InfixOpType kind, Resolvable right, SourceRange sourceRange) {
+	public ExpInfix(Resolvable left, InfixOpType kind, Resolvable right, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.leftExp = parentize(left);
 		this.kind = kind;
@@ -124,8 +125,13 @@ public class InfixExpression extends Expression {
 		this.rightExp = parentize(right);
 	}
 	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_INFIX;
+	}
+	
 	@Deprecated
-	public InfixExpression(Resolvable left, DeeTokens kind, Resolvable right, SourceRange sourceRange) {
+	public ExpInfix(Resolvable left, DeeTokens kind, Resolvable right, SourceRange sourceRange) {
 		this(left, InfixOpType.tokenToInfixOpType(kind), right, sourceRange);
 	}
 	

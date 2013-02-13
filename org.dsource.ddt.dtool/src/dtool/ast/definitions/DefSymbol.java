@@ -1,6 +1,7 @@
 package dtool.ast.definitions;
 
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.SourceRange;
 
 
@@ -17,6 +18,11 @@ public class DefSymbol extends Symbol {
 	
 	protected DefSymbol(String id, SourceRange sourceRange) {
 		super(id, sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.SYMBOL;
 	}
 	
 	public DefUnit getDefUnit() {

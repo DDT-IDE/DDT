@@ -2,6 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
@@ -20,6 +21,11 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 		super(abs, bodyDecls, sr);
 		this.pragmaId = parentize(id);
 		this.expressions = parentize(expressions);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DECL_PRAGMA;
 	}
 	
 	@Override

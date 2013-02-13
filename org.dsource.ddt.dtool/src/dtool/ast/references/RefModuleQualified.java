@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
@@ -21,6 +22,11 @@ public class RefModuleQualified extends CommonRefQualified {
 	public RefModuleQualified(RefIdentifier subref, SourceRange sourceRange) {
 		super(subref);
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.REF_MODULE_QUALIFIED;
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package dtool.ast.expressions;
 
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 
@@ -8,6 +9,11 @@ public class ExpSuper extends Expression {
 	
 	public ExpSuper(SourceRange sourceRange) {
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_SUPER;
 	}
 	
 	@Override

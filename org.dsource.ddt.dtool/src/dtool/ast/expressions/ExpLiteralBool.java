@@ -1,6 +1,7 @@
 package dtool.ast.expressions;
 
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 
@@ -11,6 +12,11 @@ public class ExpLiteralBool extends Expression {
 	public ExpLiteralBool(boolean value, SourceRange sourceRange) {
 		this.value = value;
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_LITERAL_BOOL;
 	}
 	
 	@Override

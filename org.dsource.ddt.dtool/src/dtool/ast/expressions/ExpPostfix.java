@@ -1,10 +1,11 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 
-public class PostfixExpression extends Expression {
+public class ExpPostfix extends Expression {
 	
 	public interface Type {
 		int POST_INCREMENT = 9;
@@ -14,10 +15,15 @@ public class PostfixExpression extends Expression {
 	public final int kind;
 	public final Resolvable exp;
 	
-	public PostfixExpression(Resolvable exp, int kind, SourceRange sourceRange) {
+	public ExpPostfix(Resolvable exp, int kind, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = parentize(exp);
 		this.kind = kind;
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_POSTFIX;
 	}
 	
 	@Override

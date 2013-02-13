@@ -3,6 +3,7 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.ImportSelective;
@@ -22,6 +23,11 @@ public class RefImportSelection extends NamedReference implements IImportSelecti
 	public RefImportSelection(String name, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.name = name;
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.REF_IMPORT_SELECTION;
 	}
 	
 	@Override

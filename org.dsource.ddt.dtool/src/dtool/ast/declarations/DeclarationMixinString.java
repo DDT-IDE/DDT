@@ -6,6 +6,7 @@ import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
@@ -19,6 +20,11 @@ public class DeclarationMixinString extends ASTNeoNode implements IStatement, IN
 	public DeclarationMixinString(Resolvable exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = parentize(exp);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DECL_MIXIN_STRING;
 	}
 	
 	@Override

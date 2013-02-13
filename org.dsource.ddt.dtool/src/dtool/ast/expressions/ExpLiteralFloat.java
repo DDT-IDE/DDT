@@ -2,6 +2,7 @@ package dtool.ast.expressions;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.parser.Token;
@@ -13,6 +14,11 @@ public class ExpLiteralFloat extends Expression {
 	public ExpLiteralFloat(Token floatNum, SourceRange sourceRange) {
 		this.floatNum = assertNotNull_(floatNum);
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_LITERAL_FLOAT;
 	}
 	
 	@Override

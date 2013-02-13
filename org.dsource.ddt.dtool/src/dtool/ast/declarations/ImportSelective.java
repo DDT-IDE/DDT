@@ -8,6 +8,7 @@ import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
@@ -33,6 +34,11 @@ public class ImportSelective extends ASTNeoNode implements INonScopedBlock, IImp
 		this.impSelFrags = CoreUtil.<ArrayView<ASTNeoNode>>blindCast(parentizeFrags(frags));
 		this.fragment = parentizeI(subFragment);
 		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.IMPORT_SELECTIVE;
 	}
 	
 	public ArrayView<IImportSelectiveSelection> parentizeFrags(ArrayView<IImportSelectiveSelection> frags) {
