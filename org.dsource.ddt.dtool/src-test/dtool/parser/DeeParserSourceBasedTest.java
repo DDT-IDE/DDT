@@ -182,6 +182,9 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			String errorSource = assertNotNull_(mde.associatedSource);
 			errorParam = errorParam == null ? DeeParserTest.DONT_CHECK : errorParam;
 			return new ParserError(ParserErrorTypes.EXP_MUST_HAVE_PARENTHESES, errorRange, errorSource, errorParam);
+		} else if(mde.value.equals("TYPE_AS_EXP_VALUE")) {
+			String errorSource = assertNotNull_(mde.associatedSource);
+			return new ParserError(ParserErrorTypes.TYPE_USED_AS_EXP_VALUE, errorRange, errorSource, null);
 		} else {
 			throw assertFail();
 		}

@@ -68,16 +68,13 @@ InfixExpression(ExpLiteralInteger InfixExpression(ExpLiteralString ExpLiteralInt
 #PARSE(EXPRESSION)	 this   #@OP /*OP*/  "abc"  #@OP_HI(OP)   #@INT_OR_MISSING
 #AST_STRUCTURE_EXPECTED:
 #@INFIX_EXP_HI•(#@INFIX_EXP•(ExpThis #@MIDDLE_EXP String)  #@MIDDLE_EXP_HI  #@INT_OR_MISSING)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)	 this   #@OP /*OP*/  "xxx"   #@OP_HI(OP)  123
-#AST_STRUCTURE_EXPECTED:
-#@INFIX_EXP_HI•(#@INFIX_EXP•(ExpThis #@MIDDLE_EXP  String)  #@MIDDLE_EXP_HI  Integer)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION) 	 this #@OP_HI(OP) "abc"  #@OP  /*OP*/  123
+#PARSE(EXPRESSION) 	 this #@OP_HI(OP) #@EXP_UNARY_WITHREFS  #@OP  /*OP*/  123
 #AST_STRUCTURE_EXPECTED:
-#@INFIX_EXP_HI•(ExpThis  #@MIDDLE_EXP_HI  #@INFIX_EXP•(String #@MIDDLE_EXP ExpLiteralInteger))
+#@INFIX_EXP_HI•(ExpThis  #@MIDDLE_EXP_HI  #@INFIX_EXP•(#@EXP_UNARY_WITHREFS #@MIDDLE_EXP ExpLiteralInteger))
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Special case for '==' and other compare ops
 #PARSE(EXPRESSION)	 #error(REQPARENS)《this  #@CMP   "abc"》    #@CMP  #@INT_OR_MISSING

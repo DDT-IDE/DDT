@@ -59,6 +59,7 @@ import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
+import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.Expression;
@@ -464,10 +465,12 @@ public class ASTReparseCheckSwitcher extends ASTNeoAbstractVisitor {
 	@Override public boolean visit(ExpLiteralFloat node) { return expressionReparseCheck(node); }
 	@Override public boolean visit(ExpLiteralChar node) { return expressionReparseCheck(node); }
 	
-	@Override public boolean visit(InfixExpression node) { return expressionReparseCheck(node); }
-	@Override public boolean visit(ExpConditional node) { return expressionReparseCheck(node); }
+	@Override public boolean visit(ExpReference node) { return expressionReparseCheck(node); }
+	
 	@Override public boolean visit(PrefixExpression node) { return expressionReparseCheck(node); }
 	@Override public boolean visit(PostfixExpression node) { return expressionReparseCheck(node); }
+	@Override public boolean visit(InfixExpression node) { return expressionReparseCheck(node); }
+	@Override public boolean visit(ExpConditional node) { return expressionReparseCheck(node); }
 	
 	@Override
 	public boolean visit(ExpLiteralFunc node) {

@@ -20,6 +20,21 @@
   
   ►#?AST_STRUCTURE_EXPECTED!【__FILE__●ExpLiteralString】●
   ►#?AST_STRUCTURE_EXPECTED!【__LINE__●ExpLiteralInteger】●
+  
+¤》
+
+#@EXP_UNARY_REFS《
+  ►#@EXP_UNARY●
+  ►#?AST_STRUCTURE_EXPECTED!【foo●ExpReference(RefIdentifier)】●
+  
+  ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int》●ExpReference(RefPrimitive)】●
+  ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int[]》●ExpReference(RefTypeDynArray(RefPrimitive))】●
+  ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int[foo]》●ExpReference(RefIndexing(RefPrimitive ?))】●
+¤》
+  
+#@EXP_UNARY_WITHREFS《
+  ►#@EXP_UNARY●
+  ►#@EXP_UNARY_REFS●
 ¤》
 
 #@EXP_OROR《
@@ -32,12 +47,6 @@
   ►#?AST_STRUCTURE_EXPECTED!【1 > "2" && 3●InfixExpression(InfixExpression(? String) ?)】●
   ►#?AST_STRUCTURE_EXPECTED!【2 || "3" < 4●InfixExpression(? InfixExpression(String ?))】●
 ¤》
-
-TODO composite expression
-
-TODO
-#?AST_STRUCTURE_EXPECTED!【foo !is null●ExpLiteralInteger】●
-#?AST_STRUCTURE_EXPECTED!【foo !in [12, 123]●ExpLiteralInteger】●
 
 #@EXP_CONDITIONAL《
   ►#@EXP_OROR●
@@ -55,4 +64,3 @@ TODO
 ¤》
 
 #@EXP_ANY《#@EXP_COMMA》
-

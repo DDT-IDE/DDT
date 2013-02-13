@@ -46,6 +46,7 @@ import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
+import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.Expression;
@@ -332,8 +333,8 @@ public class DeeParser extends AbstractParser {
 	}
 	
 	protected static class RefParseResult { 
-		public Reference ref;
-		public boolean balanceBroken = false;
+		public final Reference ref;
+		public final boolean balanceBroken;
 		
 		public RefParseResult(boolean balanceBroken, Reference ref) {
 			this.ref = ref;
@@ -344,34 +345,48 @@ public class DeeParser extends AbstractParser {
 		}
 	}
 	
-	protected RefParseResult parseReference() {
+	public Reference parseReference() {
+		return parseReference_extraInfo(false).ref;
+	}
+	
+	public Reference parseReference(boolean expressionContext) {
+		return parseReference_extraInfo(expressionContext).ref;
+	}
+	
+	protected RefParseResult parseReference_extraInfo(boolean parsingExp) {
 		DeeTokens la = lookAheadGrouped();
 		
 		switch (la) {
-		case DOT: return parseReference_referenceStart(parseRefModuleQualified());
-		case IDENTIFIER: return parseReference_referenceStart(parseRefIdentifier());
-		case PRIMITIVE_KW: return parseReference_referenceStart(parseRefPrimitive(lookAhead()));
+		case DOT: return parseReference_referenceStart(parseRefModuleQualified(), parsingExp);
+		case IDENTIFIER: return parseReference_referenceStart(parseRefIdentifier(), parsingExp);
+		case PRIMITIVE_KW: return parseReference_referenceStart(parseRefPrimitive(lookAhead()), parsingExp);
 		
 		default:
-		return null;
+		return new RefParseResult(null);
 		}
 	}
 	
-	protected RefParseResult parseReference_referenceStart(Reference ref) {
-		if(tryConsume(DeeTokens.DOT)) {
+	protected RefParseResult parseReference_referenceStart(Reference ref, boolean parsingExp) {
+		if(lookAhead() == DeeTokens.STAR) {
+			if(parsingExp) {
+				// Star is multiply infix operator, dont parse as pointer ref
+				return new RefParseResult(ref);
+			}
+			consumeLookAhead();
+			
+			RefTypePointer pointerRef = connect(new RefTypePointer(ref, srToCursor(ref.getStartPos())));
+			return parseReference_referenceStart(pointerRef, parsingExp);
+		} else if(tryConsume(DeeTokens.DOT)) {
 			RefIdentifier qualifiedId = parseRefIdentifier();
 			ref = connect(new RefQualified(ref, qualifiedId, srToCursor(ref.getStartPos())));
 			if(qualifiedId.name == null) {
 				return new RefParseResult(true, ref);
 			}
-			return parseReference_referenceStart(ref);
-		} else if(tryConsume(DeeTokens.STAR)) {
-			RefTypePointer pointerRef = connect(new RefTypePointer(ref, srToCursor(ref.getStartPos())));
-			return parseReference_referenceStart(pointerRef);
+			return parseReference_referenceStart(ref, parsingExp);
 		} else if(tryConsume(DeeTokens.OPEN_BRACKET)) {
 			if(tryConsume(DeeTokens.CLOSE_BRACKET)) {
-				return parseReference_referenceStart(
-					connect(new RefTypeDynArray(ref, srToCursor(ref.getStartPos()))));
+				RefTypeDynArray dynArrayRef = connect(new RefTypeDynArray(ref, srToCursor(ref.getStartPos())));
+				return parseReference_referenceStart(dynArrayRef, parsingExp);
 			} else {
 				Resolvable resolvable = parseReferenceOrExpression();
 				if(consumeExpectedToken(DeeTokens.CLOSE_BRACKET) == null) {
@@ -384,18 +399,17 @@ public class DeeParser extends AbstractParser {
 					return new RefParseResult(true, connect(ref));
 				}
 				assertNotNull(resolvable);
-				return parseReference_referenceStart(
-					new RefIndexing(ref, resolvable, srToCursor(ref.getStartPos())));
+				RefIndexing refIndexing = new RefIndexing(ref, resolvable, srToCursor(ref.getStartPos()));
+				return parseReference_referenceStart(refIndexing, parsingExp);
 			}
-		} else {
-			return new RefParseResult(ref);
 		}
+		return new RefParseResult(ref);
 	}
 	
 	public Resolvable parseReferenceOrExpression() {
-		RefParseResult refResult = parseReference();
-		if(refResult != null) {
-			return refResult.ref;
+		Reference ref = parseReference(); /*BUG here*/
+		if(ref != null) {
+			return ref;
 		}
 		return parseExpression();
 	}
@@ -557,6 +571,7 @@ public class DeeParser extends AbstractParser {
 		case DOLLAR:
 			consumeLookAhead();
 			return new ExpArrayLength(srToCursor(lastLexElement));
+			
 		case KW___LINE__:
 			return new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastLexElement));
 		case KW___FILE__:
@@ -569,6 +584,7 @@ public class DeeParser extends AbstractParser {
 			return connect(new ExpLiteralFloat(consumeLookAhead(), srToCursor(lastLexElement)));
 		case STRING:
 			return parseStringLiteral();
+			
 		case AND:
 		case INCREMENT:
 		case DECREMENT:
@@ -586,8 +602,35 @@ public class DeeParser extends AbstractParser {
 			}
 			return connect(new PrefixExpression(prefixOpType, exp, srToCursor(prefixExpToken)));
 		default:
+			Reference ref = parseReference(true);
+			if(ref != null) {
+				return attachExpReference(new ExpReference(ref, ref.getSourceRange()));
+			}
 			return null;
 		}
+	}
+	
+	protected Expression attachExpReference(ExpReference expReference) {
+		Reference ref = expReference.ref;
+		if(isBuiltinTypeRef(ref)) {
+			addError(ParserErrorTypes.TYPE_USED_AS_EXP_VALUE, ref.getSourceRange(), null);
+		}
+		return expReference;
+	}
+	
+	protected static boolean isBuiltinTypeRef(Reference ref) {
+		if(ref instanceof RefPrimitive
+			|| ref instanceof RefTypeDynArray
+			|| ref instanceof RefTypePointer) {
+			return true;
+		}
+		if(ref instanceof RefIndexing) {
+			RefIndexing refIndexing = (RefIndexing) ref;
+			Resolvable indexParam = refIndexing.indexParam;
+			return isBuiltinTypeRef(refIndexing.elemType) ||
+				((indexParam instanceof Reference) && isBuiltinTypeRef((Reference) indexParam));
+		}
+		return false;
 	}
 	
 	public Expression parseStringLiteral() {
@@ -616,7 +659,7 @@ public class DeeParser extends AbstractParser {
 	}
 	
 	protected ASTNeoNode parseDeclaration_referenceAhead() {
-		RefParseResult refParse = parseReference();
+		RefParseResult refParse = parseReference_extraInfo(false);
 		Reference ref = refParse.ref;
 		boolean consumedSemiColon = false;
 		

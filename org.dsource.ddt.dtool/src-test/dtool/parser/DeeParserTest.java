@@ -185,6 +185,7 @@ public class DeeParserTest extends CommonTestUtils {
 			case SYNTAX_ERROR:
 			case EXPECTED_RULE:
 			case EXP_MUST_HAVE_PARENTHESES:
+			case TYPE_USED_AS_EXP_VALUE:
 				continue;
 			case INVALID_EXTERN_ID: break;
 			}

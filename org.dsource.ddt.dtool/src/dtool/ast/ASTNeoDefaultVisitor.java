@@ -51,6 +51,7 @@ import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
+import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.InfixExpression;
@@ -214,10 +215,12 @@ public abstract class ASTNeoDefaultVisitor extends ASTNeoAbstractVisitor impleme
 	@Override public boolean visit(ExpLiteralFloat elem) { return true; }
 	@Override public boolean visit(ExpLiteralChar elem) { return true; }
 	
-	@Override public boolean visit(InfixExpression elem) { return true; }
-	@Override public boolean visit(ExpConditional elem) { return true; }
+	@Override public boolean visit(ExpReference elem) { return true; }
+	
 	@Override public boolean visit(PrefixExpression elem) { return true; }
 	@Override public boolean visit(PostfixExpression elem) { return true; }
+	@Override public boolean visit(InfixExpression elem) { return true; }
+	@Override public boolean visit(ExpConditional elem) { return true; }
 	
 	@Override
 	public boolean visit(ExpLiteralFunc elem) {

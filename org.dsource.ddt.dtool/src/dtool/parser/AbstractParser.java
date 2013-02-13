@@ -34,7 +34,7 @@ public class AbstractParser {
 	
 	protected final AbstractLexer lexer;
 	
-	protected ArrayListDeque<LexElement> lookAheadQueue = new ArrayListDeque<AbstractParser.LexElement>();
+	protected final ArrayListDeque<LexElement> lookAheadQueue = new ArrayListDeque<AbstractParser.LexElement>();
 	protected LexElement lastLexElement = new LexElement(null, new Token(DeeTokens.WHITESPACE, "", 0));
 	// This initialization is important for some error reporting:
 	protected LexElement lastNonMissingLexElement = lastLexElement; 
@@ -215,7 +215,9 @@ public class AbstractParser {
 	}
 	
 	protected ParserError addError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
-		return addError(errorType, sr(errorToken), errorToken.source, msgData);
+		SourceRange sourceRange = errorToken.getSourceRange();
+		assertEquals(errorToken.source, getSource(sourceRange));
+		return addError(errorType, sourceRange, msgData);
 	}
 	
 	protected ParserError addError(ParserErrorTypes errorType, SourceRange sourceRange, Object msgData) {

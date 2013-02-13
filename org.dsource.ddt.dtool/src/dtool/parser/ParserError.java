@@ -14,12 +14,13 @@ public class ParserError {
 		INVALID_TOKEN_CHARACTERS, // Lexer: invalid characters, cannot form token
 		MALFORMED_TOKEN, // Lexer: recovered token has errors
 		
-		EXPECTED_TOKEN, // Syntax error: expected specific token
-		EXPECTED_RULE, // Syntax error: expected valid token for rule
-		SYNTAX_ERROR, // Syntax error: unexpected rule in rule start
+		EXPECTED_TOKEN, // expected specific token
+		EXPECTED_RULE, // expected valid token for rule
+		SYNTAX_ERROR, // unexpected rule in rule start
 		
-		INVALID_EXTERN_ID, //Syntax error: specific error for extern declaration
-		EXP_MUST_HAVE_PARENTHESES, //Syntax error: exp must have parentheses to parse
+		INVALID_EXTERN_ID, // specific error for extern declaration argument
+		EXP_MUST_HAVE_PARENTHESES, // expression must have parentheses to parse
+		TYPE_USED_AS_EXP_VALUE, // a built-in type is used as an expression value 
 	}
 	
 	protected final ParserErrorTypes errorType;
@@ -52,7 +53,9 @@ public class ParserError {
 			return "Invalid linkage specifier \"" + msgErrorSource + "\", valid ones are: " +
 				StringUtil.collToString(Linkage.values(), ",") + ".";
 		case EXP_MUST_HAVE_PARENTHESES:
-			return "Error " + msgErrorSource + " must be parenthesized when next to operator: " + msgData + ".";
+			return "Expression " + msgErrorSource + " must be parenthesized when next to operator: " + msgData + ".";
+		case TYPE_USED_AS_EXP_VALUE:
+			return "The type " + msgErrorSource + " cannot be used as an expression value.";
 		}
 		throw assertFail();
 	}
