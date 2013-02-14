@@ -20,7 +20,7 @@ import descent.internal.compiler.parser.CallExp;
 import dtool.DToolBundle;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
-import dtool.ast.expressions.ExpArrayLiteral;
+import dtool.ast.expressions.ExpLiteralArray;
 import dtool.ast.expressions.ExpCall;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
@@ -61,9 +61,9 @@ public class ExpressionConverter extends BaseDmdConverter {
 		return new ExpCall(callee, args, sourceRange);
 	}
 	
-	public static ExpArrayLiteral createExpArrayLiteral(ArrayLiteralExp elem, ASTConversionContext convContext) {
+	public static ExpLiteralArray createExpArrayLiteral(ArrayLiteralExp elem, ASTConversionContext convContext) {
 		
-		ArrayView<Resolvable> args = ExpressionConverter.convertMany(elem.elements, convContext);
+		ArrayView<Expression> args = DescentASTConverter.convertMany(elem.elements, Expression.class, convContext);
 		
 		SourceRange sourceRange = DefinitionConverter.sourceRange(elem);
 		if(sourceRange == null && DToolBundle.DMDPARSER_PROBLEMS__BUG41) {
@@ -78,7 +78,7 @@ public class ExpressionConverter extends BaseDmdConverter {
 			}
 		}
 		
-		return new ExpArrayLiteral(args, sourceRange);
+		return new ExpLiteralArray(args, sourceRange);
 	}
 	
 }

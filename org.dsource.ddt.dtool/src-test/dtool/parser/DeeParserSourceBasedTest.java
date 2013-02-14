@@ -104,10 +104,9 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	public void runSourceBasedTest(AnnotatedSource testSource) {
 		final String DEFAULT_VALUE = "##DEFAULT VALUE";
 		
-		String parseSource = testSource.source;
+		final String parseSource = testSource.source;
 		String parseRule = null;
 		String expectedGenSource = DEFAULT_VALUE;
-		String defaultExpectedGenSource = parseSource;
 		NamedNodeElement[] expectedStructure = null;
 		boolean allowAnyErrors = false;
 		boolean ignoreFurtherErrorMDs = false;
@@ -132,10 +131,6 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				if(!ignoreFurtherErrorMDs) {
 					ParserError error = decodeError(parseSource, mde);
 					expectedErrors.add(error);
-					if(error.errorType == ParserErrorTypes.INVALID_TOKEN_CHARACTERS) {
-						defaultExpectedGenSource = NewUtils.removeRange(defaultExpectedGenSource, 
-							error.sourceRange.getOffset(), error.sourceRange.getEndPos());
-					}
 				}
 			} else if(mde.name.equals("parser") && mde.value.equals("AllowAnyErrors")){
 				allowAnyErrors = true;
@@ -148,7 +143,33 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			}
 		}
 		
-		expectedGenSource = (expectedGenSource == DEFAULT_VALUE) ? defaultExpectedGenSource : expectedGenSource;
+		if(expectedGenSource == DEFAULT_VALUE) {
+			expectedGenSource = parseSource;
+			
+			int modifyOffset = expectedGenSource.length();
+			// Iterate in reverse error order, this should work, assuming the range substitution occurs in order
+				
+			for (int i = expectedErrors.size()-1; i >= 0; i--) {
+				ParserError error = expectedErrors.get(i);
+				
+				if(error.errorType == ParserErrorTypes.INVALID_TOKEN_CHARACTERS) {
+					assertTrue(modifyOffset >= error.sourceRange.getEndPos());
+					modifyOffset = error.sourceRange.getStartPos(); 
+					expectedGenSource = NewUtils.removeRange(expectedGenSource, 
+						error.sourceRange.getStartPos(), error.sourceRange.getEndPos());
+				}
+				if(error.errorType == ParserErrorTypes.EXPECTED_TOKEN) {
+					assertTrue(modifyOffset >= error.sourceRange.getEndPos());
+					modifyOffset = error.sourceRange.getEndPos(); 
+					
+					DeeTokens expectedToken = DeeTokens.valueOf(error.msgData.toString());
+					String rpl = expectedToken.getSourceValue() == null ? "" : expectedToken.getSourceValue();
+					expectedGenSource = NewUtils.replaceRange(expectedGenSource, 
+						error.sourceRange.getEndPos(), error.sourceRange.getEndPos(), rpl);
+				}
+			}
+			
+		}
 		runParserTest______________________(
 			parseSource, parseRule, expectedGenSource, expectedStructure, expectedErrors, allowAnyErrors);
 	}

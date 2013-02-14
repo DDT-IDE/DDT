@@ -8,6 +8,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
@@ -15,16 +16,13 @@ import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.NodeUtil;
-import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralString;
-import dtool.ast.expressions.MissingExpression;
-import dtool.ast.references.RefIdentifier;
-import dtool.ast.references.RefModule;
 import dtool.tests.CommonTestUtils;
+import dtool.tests.DToolTests;
 
 
 public class DeeParserTest extends CommonTestUtils {
@@ -35,7 +33,7 @@ public class DeeParserTest extends CommonTestUtils {
 		DeeParser deeParser = new DeeTestsParser(source);
 		if(parseRule == null) {
 			return new DeeParserResult(deeParser.parseModule(), deeParser.errors);
-		} else if(parseRule.equals("EXPRESSION")){
+		} else if(parseRule.equals("EXPRESSION")) {
 			DeeParserResult deeParserResult = new DeeParserResult(deeParser.parseExpression(), deeParser.errors);
 			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
 			return deeParserResult;
@@ -45,7 +43,7 @@ public class DeeParserTest extends CommonTestUtils {
 	}
 	
 	public static void runParserTest______________________(
-		String parseSource, String parseRule, String expectedGenSource, 
+		String parseSource, String parseRule, String expectedGenSource,
 		NamedNodeElement[] expectedStructure, ArrayList<ParserError> expectedErrors, boolean allowAnyErrors) {
 		
 		DeeParserResult result = parse(parseSource, parseRule);
@@ -110,18 +108,17 @@ public class DeeParserTest extends CommonTestUtils {
 		public static Token getContentToken(DeeLexer lexer, boolean ignoreComments, boolean ignoreUT) {
 			while(true) {
 				Token token = lexer.next();
-				if(!token.type.isParserIgnored 
+				if(!token.type.isParserIgnored
 					|| (!ignoreComments && token.type.getGroupingToken() == DeeTokens.COMMENT)
-					|| (!ignoreUT && token.type == DeeTokens.INVALID_TOKEN) 
-				) {
+					|| (!ignoreUT && token.type == DeeTokens.INVALID_TOKEN)) {
 					return token;
-				}  
+				}
 			}
 		}
 	}
 	
 	public static void checkParserErrors(ArrayList<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {
-		for (int i = 0; i < resultErrors.size(); i++) {
+		for(int i = 0; i < resultErrors.size(); i++) {
 			ParserError error = resultErrors.get(i);
 			
 			assertTrue(i < expectedErrors.size());
@@ -142,15 +139,17 @@ public class DeeParserTest extends CommonTestUtils {
 		// Check consistency of source ranges (no overlapping ranges)
 		ASTSourceRangeChecker.checkConsistency(topNode);
 		
-		new ASTHomogenousVisitor() {
-			@Override
-			public void genericVisit(ASTNeoNode node) {
-				checkNodeSourceRange(node, source, result.errors);
-			};
-		}.traverse(topNode);
+		if(DToolTests.TESTS_LITE_MODE == false) {
+			new ASTHomogenousVisitor() {
+				@Override
+				public void genericVisit(ASTNeoNode node) {
+					checkNodeSourceRange(node, source, result.errors);
+				};
+			}.traverse(topNode);
+		}
 	}
 	
-	public static void checkNodeSourceRange(ASTNeoNode node, final String fullSource, Collection<ParserError> errors) {
+	public static void checkNodeSourceRange(ASTNeoNode node, final String fullSource, List<ParserError> errors) {
 		assertTrue(node.hasSourceRangeInfo());
 		assertTrue(node.getStartPos() <= fullSource.length() && node.getEndPos() <= fullSource.length());
 		
@@ -167,19 +166,18 @@ public class DeeParserTest extends CommonTestUtils {
 			String nodeSnippedSource = fullSource.substring(node.getStartPos(), node.getEndPos());
 			DeeParserTest.CheckSourceEquality.check(nodeSnippedSource, node.toStringAsCode(), true);
 		}
-		ASTReparseCheckSwitcher.check(node, fullSource, errors);
-	}
-	
-	public static boolean isLeafNodeThatCanBeEmpty(ASTNeoNode node) {
-		return node instanceof MissingExpression || node instanceof DefSymbol
-			|| node instanceof RefIdentifier  || node instanceof RefModule;
+		
+		// Warning, this check has quadratic performance on node depth
+		new ASTReparseCheckSwitcher(fullSource).doCheck(node);
 	}
 	
 	protected static boolean areThereMissingTokenErrorsInNode(ASTNeoNode node, Collection<ParserError> errors) {
-		for (ParserError error : errors) {
+		for(ParserError error : errors) {
 			
-			switch (error.errorType) {
-			case EXPECTED_TOKEN: if(error.msgData != DeeTokens.IDENTIFIER) break;
+			switch(error.errorType) {
+			case EXPECTED_TOKEN:
+				if(error.msgData != DeeTokens.IDENTIFIER)
+					break;
 			case MALFORMED_TOKEN:
 			case INVALID_TOKEN_CHARACTERS:
 			case SYNTAX_ERROR:
@@ -187,7 +185,8 @@ public class DeeParserTest extends CommonTestUtils {
 			case EXP_MUST_HAVE_PARENTHESES:
 			case TYPE_USED_AS_EXP_VALUE:
 				continue;
-			case INVALID_EXTERN_ID: break;
+			case INVALID_EXTERN_ID:
+				break;
 			}
 			
 			// Then there is an EXPECTED_TOKEN error in error.originNode
@@ -206,7 +205,7 @@ public class DeeParserTest extends CommonTestUtils {
 	/* ============= Structure Checkers ============= */
 	
 	public static class NamedNodeElement {
-		public static final String IGNORE_ALL = "*"; 
+		public static final String IGNORE_ALL = "*";
 		public static final String IGNORE_NAME = "?";
 		
 		public final String name;
@@ -220,7 +219,7 @@ public class DeeParserTest extends CommonTestUtils {
 		@Override
 		public String toString() {
 			boolean hasChildren = children != null && children.length > 0;
-			return name + (hasChildren ? "("+StringUtil.collToString(children, " ")+")" : "");
+			return name + (hasChildren ? "(" + StringUtil.collToString(children, " ") + ")" : "");
 		}
 	}
 	
@@ -235,7 +234,7 @@ public class DeeParserTest extends CommonTestUtils {
 		checkExpectedStructure(children, parent, expectedStructure, true);
 	}
 	
-	public static void checkExpectedStructure(ASTNeoNode[] children, ASTNeoNode parent, 
+	public static void checkExpectedStructure(ASTNeoNode[] children, ASTNeoNode parent,
 		NamedNodeElement[] expectedStructure, boolean flattenNodeList) {
 		
 		if(flattenNodeList && children.length == 1 && children[0] instanceof NodeList2) {
@@ -245,7 +244,7 @@ public class DeeParserTest extends CommonTestUtils {
 		
 		assertTrue(children.length == expectedStructure.length);
 		
-		for (int i = 0; i < expectedStructure.length; i++) {
+		for(int i = 0; i < expectedStructure.length; i++) {
 			NamedNodeElement namedElement = expectedStructure[i];
 			ASTNeoNode astNode = children[i];
 			assertTrue(astNode.getParent() == parent);
@@ -270,7 +269,7 @@ public class DeeParserTest extends CommonTestUtils {
 			return ExpLiteralFloat.class.getSimpleName();
 		} else if(expectedNameRaw.equals("String")) {
 			return ExpLiteralString.class.getSimpleName();
-		} 
+		}
 		
 		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var)", 1, "Definition");
 	}

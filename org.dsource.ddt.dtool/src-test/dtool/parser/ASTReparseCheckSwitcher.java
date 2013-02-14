@@ -6,9 +6,6 @@ import static dtool.util.NewUtils.emptyToNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -22,22 +19,16 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.references.Reference;
+import dtool.parser.AbstractParser.LexElement;
 
 public class ASTReparseCheckSwitcher {
 	
-	public static void check(ASTNeoNode node, String parseSource, Collection<ParserError> errors) {
-		// Warning, this check has quadratic performance on node depth
-		new ASTReparseCheckSwitcher(parseSource, errors).doCheck(node);
-	}
-	
 	protected static final Void VOID = null;
 	
-	protected final String source;
-	protected final Collection<ParserError> expectedErrors;
+	protected final String originalSource;
 	
-	public ASTReparseCheckSwitcher(String source, Collection<ParserError> expectedErrors) {
-		this.source = assertNotNull_(source);
-		this.expectedErrors = expectedErrors;
+	public ASTReparseCheckSwitcher(String source) {
+		this.originalSource = assertNotNull_(source);
 	}
 	
 	protected String nodeSnippedSource;
@@ -45,7 +36,7 @@ public class ASTReparseCheckSwitcher {
 	
 	public Void doCheck(ASTNeoNode node) {
 		// prep for type specific switch
-		nodeSnippedSource = source.substring(node.getStartPos(), node.getEndPos());
+		nodeSnippedSource = originalSource.substring(node.getStartPos(), node.getEndPos());
 		nssParser = new DeeParser(nodeSnippedSource);
 		
 		switch (node.getNodeType()) {
@@ -60,7 +51,7 @@ public class ASTReparseCheckSwitcher {
 		
 		case MODULE:
 			Module module = (Module) node;
-			assertTrue(module.getStartPos() == 0 && module.getEndPos() == source.length());
+			assertTrue(module.getStartPos() == 0 && module.getEndPos() == originalSource.length());
 			return VOID;
 		case DECL_MODULE:
 			return reparseCheck(nssParser.parseModuleDeclaration(), node);
@@ -143,6 +134,8 @@ public class ASTReparseCheckSwitcher {
 		case EXP_LITERAL_STRING:
 		case EXP_LITERAL_CHAR:
 		case EXP_LITERAL_FLOAT:
+			
+		case EXP_LITERAL_ARRAY:
 		
 		case EXP_REFERENCE:
 		
@@ -186,7 +179,7 @@ public class ASTReparseCheckSwitcher {
 	}
 	
 	public Void reparseCheck(ASTNeoNode reparsedNode, Class<? extends ASTNeoNode> klass, ASTNeoNode node,
-		boolean consumesTrailingWhiteSpace
+		boolean consumesSurroundingWhiteSpace
 	) {
 		// Must have consumed all input
 		assertTrue(reparsedNode != null && nssParser.lookAhead() == DeeTokens.EOF);
@@ -197,32 +190,59 @@ public class ASTReparseCheckSwitcher {
 		
 		assertTrue(reparsedNode.getEndPos() == nssParser.lookAheadElement().getStartPos());
 		
-		assertTrue(nssParser.lastLexElement.getType().isParserIgnored == false);
+		assertTrue(nssParser.lastLexElement.getType().isParserIgnored == false
+			|| nssParser.lastLexElement.getEndPos() == 0);
 		
 		if(node instanceof DeclarationAttrib) {
 			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
 			if(declAttrib.bodySyntax == AttribBodySyntax.COLON) {
-				consumesTrailingWhiteSpace = true;
+				consumesSurroundingWhiteSpace = true;
 			}
 		}
-		if(!consumesTrailingWhiteSpace) {
+		if(!consumesSurroundingWhiteSpace) {
 			// Check that there is no trailing whitespace in the range
-			assertTrue(nssParser.lastLexElement.getEndPos() == nssParser.lookAheadElement().getStartPos());
+			assertTrue(lastElementInRange(nssParser).getEndPos() == nssParser.getSource().length());
+			assertTrue(firstElementInRange(nssParser).ignoredPrecedingTokens == null);
 			
 			if(nssParser.lastLexElement.isMissingElement()) {
-				consumesTrailingWhiteSpace = true;
+				consumesSurroundingWhiteSpace = true;
 			}
 		}
 		
-		if(consumesTrailingWhiteSpace) {
+		if(consumesSurroundingWhiteSpace) {
 			// Check that the range contains all possible whitespace
-			DeeParser afterNodeRangeParser = new DeeParser(source.substring(node.getEndPos()));
-			assertTrue(emptyToNull(afterNodeRangeParser.lookAheadElement().ignoredPrecedingTokens) == null);
+			assertTrue(elementAfterSnippedRange(node).getStartPos() == 0);
+			assertTrue(elementBeforeSnippedRange(node).getEndPos() == node.getStartPos());
 		}
 		
 		// TODO check errors are the same?
 		checkNodeEquality(reparsedNode, node);
 		return VOID;
+	}
+	
+	public LexElement elementAfterSnippedRange(ASTNeoNode node) {
+		DeeParser afterNodeRangeParser = new DeeParser(originalSource.substring(node.getEndPos()));
+		LexElement lookAheadElement = afterNodeRangeParser.lookAheadElement();
+		return lookAheadElement;
+	}
+	
+	public LexElement elementBeforeSnippedRange(ASTNeoNode node) {
+		DeeParser beforeNodeRangeParser = new DeeParser(originalSource.substring(0, node.getStartPos()));
+		while(beforeNodeRangeParser.lookAhead() != DeeTokens.EOF) {
+			beforeNodeRangeParser.consumeInput();
+		}
+		return beforeNodeRangeParser.lookAheadElement();
+	}
+	
+	public LexElement firstElementInRange(DeeParser parser) {
+		return (new DeeParser(parser.getSource())).lookAheadElement();
+	}
+	
+	public LexElement lastElementInRange(AbstractParser parser) {
+		assertTrue(parser.lastLexElement.getType().isParserIgnored == false);
+		assertTrue(parser.lastLexElement == parser.lastNonMissingLexElement
+			|| nssParser.lastLexElement.isMissingElement());
+		return parser.lastLexElement;
 	}
 	
 	public void checkNodeEquality(ASTNeoNode reparsedNode, ASTNeoNode node) {

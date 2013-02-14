@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.tests;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 /** 
@@ -24,7 +25,7 @@ public class SimpleParser {
 	protected String lastToken;
 
 	public SimpleParser(String source) {
-		this.source = source;
+		this.source = assertNotNull_(source);
 		this.pos = 0;
 	}
 	

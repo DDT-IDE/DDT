@@ -14,12 +14,13 @@
   ►#?AST_STRUCTURE_EXPECTED!【false●ExpLiteralBool】●
   ►#?AST_STRUCTURE_EXPECTED!【$●ExpArrayLength】●
   ►#?AST_STRUCTURE_EXPECTED!【'"'●ExpLiteralChar】●
-  ►#?AST_STRUCTURE_EXPECTED!【#@X《12●123_45Lu》●ExpLiteralInteger】●
-  ►#?AST_STRUCTURE_EXPECTED!【#@X《123.0F●.456E12●0x25_AD_3FP+1》●ExpLiteralFloat】●
-  ►#?AST_STRUCTURE_EXPECTED!【#@X《"abc"●r"inline"q{ TOKEN string }`sfds`》●ExpLiteralString】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@X《12●123_45Lu》●Integer】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@X《123.0F●.456E12●0x25_AD_3FP+1》●Float】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@X《"abc"●r"inline"q{ TOKEN string }`sfds`》●String】●
   
   ►#?AST_STRUCTURE_EXPECTED!【__FILE__●ExpLiteralString】●
   ►#?AST_STRUCTURE_EXPECTED!【__LINE__●ExpLiteralInteger】●
+  ►#?AST_STRUCTURE_EXPECTED!【 [1, .456E12, 0x25_AD_3FP+1] ●ExpLiteralArray(Integer Float Float)】●
   
 ¤》
 

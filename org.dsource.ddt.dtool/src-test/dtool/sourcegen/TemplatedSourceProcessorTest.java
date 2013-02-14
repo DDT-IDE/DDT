@@ -886,7 +886,7 @@ header2
 		
 		testSourceProcessing("#", "> #?{THEN,ELSE, INVALID}", 4);
 		testSourceProcessing("#", "> #@{A ,B #var(Bactive) } #?var{THEN,ELSE, INVALID}", 51);
-
+		
 		
 		testSourceProcessing("#", 
 			"#:HEADER ____\n"+"#@EXPANSION1{1#var1,2#var2,3#var3}"+

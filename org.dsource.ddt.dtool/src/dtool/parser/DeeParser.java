@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAlign;
@@ -40,6 +41,7 @@ import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpConditional;
+import dtool.ast.expressions.ExpLiteralArray;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
@@ -433,6 +435,19 @@ public class DeeParser extends AbstractParser {
 		return parseExpression(InfixOpType.ASSIGN.precedence);
 	}
 	
+	public Expression parseAssignExpressionWithMissingExp(boolean reportMissingExpError) {
+		int nodeStart = lastLexElement.getEndPos();
+		
+		Expression expAssign = parseAssignExpression();
+		if(expAssign == null) {
+			if(reportMissingExpError) {
+				reportError(ParserErrorTypes.EXPECTED_RULE, EXPRESSION_RULE, false);
+			}
+			expAssign = new MissingExpression(srToCursor(nodeStart));
+		}
+		return expAssign;
+	}
+	
 	protected Expression parseExpression_ExpStart(final Expression leftExp, int precedenceLimit) {
 		DeeTokens gla = lookAheadGrouped();
 		
@@ -601,6 +616,9 @@ public class DeeParser extends AbstractParser {
 				reportErrorExpectedRule(EXPRESSION_RULE);
 			}
 			return connect(new ExpPrefix(prefixOpType, exp, srToCursor(prefixExpToken)));
+			
+		case OPEN_BRACKET:
+			return parseArrayLiteral();
 		default:
 			Reference ref = parseReference(true);
 			if(ref != null) {
@@ -644,6 +662,38 @@ public class DeeParser extends AbstractParser {
 		}
 		Token[] tokenStrings = ArrayUtil.createFrom(stringTokens, Token.class);
 		return connect(new ExpLiteralString(tokenStrings, srToCursor(tokenStrings[0])));
+	}
+	
+	public ExpLiteralArray parseArrayLiteral() {
+		if(tryConsume(DeeTokens.OPEN_BRACKET) == false)
+			return null;
+		int nodeStart = lastLexElement.getStartPos();
+		
+		ArrayList<Expression> elements = new ArrayList<Expression>();
+		boolean first = true;
+		
+		while(true) {
+			Expression expAssign = parseAssignExpressionWithMissingExp(false);
+			
+			if(expAssign.getNodeType() == ASTNodeTypes.MISSING_EXPRESSION) {
+				if(first) {
+					consumeExpectedToken(DeeTokens.CLOSE_BRACKET);
+					break;
+				} else {
+					reportError(ParserErrorTypes.EXPECTED_RULE, EXPRESSION_RULE, false);
+				}
+			}
+			elements.add(expAssign);
+			first = false;
+			
+			if(tryConsume(DeeTokens.COMMA)) {
+				continue;
+			}
+			consumeExpectedToken(DeeTokens.CLOSE_BRACKET);
+			break;
+		}
+		
+		return connect(new ExpLiteralArray(arrayView(elements, Expression.class), srToCursor(nodeStart)));
 	}
 	
 	/* ----------------------------------------- */
@@ -728,10 +778,11 @@ public class DeeParser extends AbstractParser {
 		if(exp == null) {
 			reportErrorExpectedRule(INITIALIZER_RULE);
 			int elemStart = getParserPosition();
+			// Advance parser position, mark the advanced range as missing element:
 			consumeIgnoredTokens(DeeTokens.INTEGER, true);
 			exp = connect(new MissingExpression(srToCursor(elemStart)));
 		}
-		return new InitializerExp(exp, exp.getSourceRange());
+		return connect(new InitializerExp(exp, exp.getSourceRange()));
 	}
 	
 	/* ----------------------------------------- */

@@ -24,6 +24,7 @@ import dtool.ast.IASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
+import dtool.util.NewUtils;
 
 /**
  * Basic parser functionality.
@@ -81,7 +82,7 @@ public class AbstractParser {
 				ignoredTokens.add(token);
 				continue;
 			}
-			return new LexElement(ArrayUtil.createFrom(ignoredTokens, Token.class), token);
+			return new LexElement(NewUtils.toArray(ignoredTokens, Token.class), token);
 		}
 	}
 	

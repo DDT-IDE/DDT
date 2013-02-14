@@ -1,5 +1,8 @@
 package dtool.util;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -48,6 +51,13 @@ public class NewUtils {
 		return list.get(list.size()-1);
 	}
 	
+	public static <T> T[] toArray(Collection<? extends T> list, Class<T> cpType) {
+		if(list == null) {
+			return null;
+		}
+		return list.toArray((T[])Array.newInstance(cpType, list.size()));
+	}
+	
 	/** @return a substring of given string starting from the end of the first occurrence 
 	 * of given match, or null if no match is found. */
 	public static String fromIndexOf(String match, String string) {
@@ -86,6 +96,11 @@ public class NewUtils {
 	
 	public static String removeRange(String string, int startIndex, int endIndex) {
 		return string.substring(0, startIndex) + string.substring(endIndex, string.length());
+	}
+	
+	public static String replaceRange(String string, int startIndex, int endIndex, String repl) {
+		assertTrue(startIndex >= 0 && startIndex <= endIndex && endIndex <= string.length());
+		return string.substring(0, startIndex) + repl + string.substring(endIndex, string.length());
 	}
 	
 }
