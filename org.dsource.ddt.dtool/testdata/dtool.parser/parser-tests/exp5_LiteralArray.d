@@ -22,6 +22,6 @@ ExpLiteralArray( #@《Integer●#@EXP_ASSIGN》(EXP1) #@《MissingExpression●I
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-[ #@EXP3《  ● #@EXP_ASSIGN 》  #@《]●#error(EXP_CLOSE_BRACKET)》  
+[ #@EXP0《  /*MISSING*/ ● #@EXP_ASSIGN ● #error(EXPRULE_exp) , 123》  #@《]●#error(EXP_CLOSE_BRACKET)》  
 #AST_STRUCTURE_EXPECTED:
-ExpLiteralArray( #@《●#@EXP_ASSIGN》(EXP3)  )
+ExpLiteralArray( #@《●#@EXP_ASSIGN●MissingExpression Integer》(EXP0)  )

@@ -18,6 +18,7 @@ import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
+import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.references.Reference;
 import dtool.parser.AbstractParser.LexElement;
 
@@ -136,6 +137,7 @@ public class ASTReparseCheckSwitcher {
 		case EXP_LITERAL_FLOAT:
 			
 		case EXP_LITERAL_ARRAY:
+		case EXP_LITERAL_MAPARRAY:
 		
 		case EXP_REFERENCE:
 		
@@ -144,6 +146,12 @@ public class ASTReparseCheckSwitcher {
 		case EXP_INFIX:
 		case EXP_CONDITIONAL:
 			return expressionReparseCheck((Expression) node);
+		case MAPARRAY_ENTRY:
+			MapArrayLiteralKeyValue mapArrayEntry = (MapArrayLiteralKeyValue) node;
+			assertEquals(mapArrayEntry.getSourceRange(),
+				SourceRange.srStartToEnd(mapArrayEntry.key.getStartPos(),
+					(mapArrayEntry.value == null ? mapArrayEntry.key : mapArrayEntry.value).getEndPos()));
+			return VOID;
 			
 		default:
 			throw assertFail();

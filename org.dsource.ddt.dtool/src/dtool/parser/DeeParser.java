@@ -46,6 +46,8 @@ import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
+import dtool.ast.expressions.ExpLiteralMapArray;
+import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpReference;
@@ -664,27 +666,46 @@ public class DeeParser extends AbstractParser {
 		return connect(new ExpLiteralString(tokenStrings, srToCursor(tokenStrings[0])));
 	}
 	
-	public ExpLiteralArray parseArrayLiteral() {
+	public Expression parseArrayLiteral() {
 		if(tryConsume(DeeTokens.OPEN_BRACKET) == false)
 			return null;
 		int nodeStart = lastLexElement.getStartPos();
 		
 		ArrayList<Expression> elements = new ArrayList<Expression>();
-		boolean first = true;
+		ArrayList<MapArrayLiteralKeyValue> mapElements = null;
+		
+		boolean firstElement = true;
 		
 		while(true) {
-			Expression expAssign = parseAssignExpressionWithMissingExp(false);
-			
-			if(expAssign.getNodeType() == ASTNodeTypes.MISSING_EXPRESSION) {
-				if(first) {
-					consumeExpectedToken(DeeTokens.CLOSE_BRACKET);
-					break;
-				} else {
-					reportError(ParserErrorTypes.EXPECTED_RULE, EXPRESSION_RULE, false);
+			Expression exp1 = parseAssignExpressionWithMissingExp(!firstElement);
+			Expression exp2 = null;
+			if(firstElement) {
+				if(exp1.getNodeType() == ASTNodeTypes.MISSING_EXPRESSION) {
+					if(lookAhead() == DeeTokens.COMMA || lookAhead() == DeeTokens.COLON) {
+						reportError(ParserErrorTypes.EXPECTED_RULE, EXPRESSION_RULE, false);
+					} else {
+						consumeExpectedToken(DeeTokens.CLOSE_BRACKET);
+						break;
+					}
+				}
+				if(tryConsume(DeeTokens.COLON)) {
+					exp2 = parseAssignExpressionWithMissingExp(true);
+					mapElements = new ArrayList<MapArrayLiteralKeyValue>();
+				}
+			} else {
+				if(mapElements != null ) {
+					if(consumeExpectedToken(DeeTokens.COLON) != null) {
+						exp2 = parseAssignExpressionWithMissingExp(true);
+					}
 				}
 			}
-			elements.add(expAssign);
-			first = false;
+			firstElement = false;
+			
+			if(mapElements == null ) {
+				elements.add(exp1);
+			} else {
+				mapElements.add(connect(new MapArrayLiteralKeyValue(exp1, exp2, srToCursor(exp1.getStartPos()))));
+			}
 			
 			if(tryConsume(DeeTokens.COMMA)) {
 				continue;
@@ -693,7 +714,12 @@ public class DeeParser extends AbstractParser {
 			break;
 		}
 		
-		return connect(new ExpLiteralArray(arrayView(elements, Expression.class), srToCursor(nodeStart)));
+		if(mapElements == null ) {
+			return connect(new ExpLiteralArray(arrayView(elements, Expression.class), srToCursor(nodeStart)));
+		} else {
+			return connect(
+				new ExpLiteralMapArray(arrayView(mapElements, MapArrayLiteralKeyValue.class), srToCursor(nodeStart)));
+		}
 	}
 	
 	/* ----------------------------------------- */

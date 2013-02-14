@@ -1,29 +1,80 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.util.ArrayView;
 
 public class ExpLiteralMapArray extends Expression {
 	
-	public final ArrayView<Resolvable> keys;
-	public final ArrayView<Resolvable> values;
+	public final ArrayView<MapArrayLiteralKeyValue> entries;
 	
-	public ExpLiteralMapArray(ArrayView<Resolvable> keys, ArrayView<Resolvable> values, SourceRange sourceRange) {
+	public ExpLiteralMapArray(ArrayView<MapArrayLiteralKeyValue> entries, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.keys = parentize(keys);
-		this.values = parentize(values);
+		this.entries = parentize(entries);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_LITERAL_MAPARRAY;
 	}
 	
 	@Override
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, keys);
-			TreeVisitor.acceptChildren(visitor, values);
+			TreeVisitor.acceptChildren(visitor, entries);
 		}
 		visitor.endVisit(this);	 
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("[ ");
+		for (int i = 0; i < entries.size(); i++) {
+			if(i != 0) {
+				cp.append(", ");
+			}
+			cp.append(entries.get(i));
+		}
+		cp.append(" ]");
+	}
+	
+	
+	public static class MapArrayLiteralKeyValue extends ASTNeoNode {
+		public final Expression key;
+		public final Expression value;
+		
+		public MapArrayLiteralKeyValue(Expression key, Expression value, SourceRange sourceRange) {
+			initSourceRange(sourceRange);
+			this.key = parentize(key);
+			this.value = parentize(value);
+		}
+		
+		@Override
+		public ASTNodeTypes getNodeType() {
+			return ASTNodeTypes.MAPARRAY_ENTRY;
+		}
+		
+		@Override
+		public void accept0(IASTVisitor visitor) {
+			boolean children = visitor.visit(this);
+			if (children) {
+				TreeVisitor.acceptChildren(visitor, key);
+				TreeVisitor.acceptChildren(visitor, value);
+			}
+			visitor.endVisit(this);	 
+		}
+		
+		@Override
+		public void toStringAsCode(ASTCodePrinter cp) {
+			cp.append(key);
+			cp.append(" : ");
+			cp.append(value);
+		}
 	}
 	
 }

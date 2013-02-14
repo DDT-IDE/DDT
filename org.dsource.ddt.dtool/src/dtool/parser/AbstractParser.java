@@ -312,17 +312,12 @@ public class AbstractParser {
 	
 	/* ---- Node creation helpers ---- */
 	
-	public static SourceRange srStartToEnd(int startPos, int endPos) {
-		assertTrue(startPos >= 0 && endPos >= startPos);
-		return new SourceRange(startPos, endPos - startPos);
-	}
-	
 	public static SourceRange sr(Token token) {
 		return token.getSourceRange();
 	}
 	
 	public final SourceRange srToCursor(int declStart) {
-		return srStartToEnd(declStart, getParserPosition());
+		return SourceRange.srStartToEnd(declStart, getParserPosition());
 	}
 	
 	public final SourceRange srToCursor(LexElement startElement) {

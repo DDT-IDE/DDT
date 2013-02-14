@@ -158,8 +158,9 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		Assert.isTrue(node.keys.size() == node.values.size());
 		return endAdapt(
 			new ExpLiteralMapArray(
-				DescentASTConverter.convertMany(node.keys, Resolvable.class, convContext),
-				DescentASTConverter.convertMany(node.values, Resolvable.class, convContext),
+				/*DescentASTConverter.convertMany(node.keys, Resolvable.class, convContext),*/
+				/*DescentASTConverter.convertMany(node.values, Resolvable.class, convContext),*/
+				 null,
 				DefinitionConverter.sourceRange(node)
 			)
 		);

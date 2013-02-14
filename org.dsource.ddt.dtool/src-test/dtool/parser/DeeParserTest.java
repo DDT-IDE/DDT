@@ -21,6 +21,7 @@ import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralString;
+import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.tests.CommonTestUtils;
 import dtool.tests.DToolTests;
 
@@ -269,6 +270,8 @@ public class DeeParserTest extends CommonTestUtils {
 			return ExpLiteralFloat.class.getSimpleName();
 		} else if(expectedNameRaw.equals("String")) {
 			return ExpLiteralString.class.getSimpleName();
+		} else if(expectedNameRaw.equals("MapEntry")) {
+			return MapArrayLiteralKeyValue.class.getSimpleName();
 		}
 		
 		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var)", 1, "Definition");

@@ -1,11 +1,5 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
----TODO
-
-	foo●
-	
-	RefIdentifier●
-
 #@EXP_UNARY《
   ►#?AST_STRUCTURE_EXPECTED!【this●ExpThis】●
   ►#?AST_STRUCTURE_EXPECTED!【super●ExpSuper】●
@@ -21,11 +15,12 @@
   ►#?AST_STRUCTURE_EXPECTED!【__FILE__●ExpLiteralString】●
   ►#?AST_STRUCTURE_EXPECTED!【__LINE__●ExpLiteralInteger】●
   ►#?AST_STRUCTURE_EXPECTED!【 [1, .456E12, 0x25_AD_3FP+1] ●ExpLiteralArray(Integer Float Float)】●
+  ►#?AST_STRUCTURE_EXPECTED!【 [12345 : true, 66.6 : false, "asdfd" : "false"]●
+  ExpLiteralMapArray(MapEntry(Integer Bool) MapEntry(Float Bool) MapEntry(String String))】●
   
 ¤》
 
 #@EXP_UNARY_REFS《
-  ►#@EXP_UNARY●
   ►#?AST_STRUCTURE_EXPECTED!【foo●ExpReference(RefIdentifier)】●
   
   ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int》●ExpReference(RefPrimitive)】●

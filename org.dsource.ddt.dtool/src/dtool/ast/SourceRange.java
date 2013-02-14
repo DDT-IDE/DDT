@@ -16,6 +16,11 @@ public final class SourceRange {
 		this.length = length;
 	}
 	
+	public static SourceRange srStartToEnd(int startPos, int endPos) {
+		assertTrue(startPos >= 0 && endPos >= startPos);
+		return new SourceRange(startPos, endPos - startPos);
+	}
+	
 	public final int getOffset() {
 		return offset;
 	}
@@ -45,4 +50,5 @@ public final class SourceRange {
 		SourceRange other = downCast(obj);
 		return this.offset == other.offset && this.length == other.length;
 	}
+	
 }
