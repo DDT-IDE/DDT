@@ -1,22 +1,29 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 
-public class ExpTypeidX extends Expression {
+public class ExpTypeId extends Expression {
 	
 	public final Reference typeArgument;
 	public final Expression expressionArgument;
 	
-	public ExpTypeidX(Reference typeArgument, SourceRange sourceRange) {
+	public ExpTypeId(Reference typeArgument, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.typeArgument = parentize(typeArgument);
 		this.expressionArgument = null;
 	}
 	
-	public ExpTypeidX(Expression expressionArgument, SourceRange sourceRange) {
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_TYPEID;
+	}
+	
+	public ExpTypeId(Expression expressionArgument, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.typeArgument = null;
 		this.expressionArgument = parentize(expressionArgument);
@@ -33,6 +40,16 @@ public class ExpTypeidX extends Expression {
 			TreeVisitor.acceptChildren(visitor, getArgument());
 		}
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("typeid");
+		Resolvable argument = getArgument();
+		if(argument != null) {
+			cp.appendNode("(", argument);
+			cp.append(")");
+		}
 	}
 	
 }
