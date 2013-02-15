@@ -23,6 +23,9 @@
   ►#?AST_STRUCTURE_EXPECTED!【import("testdata/samples.txt")●ExpImportString(String)】●
   
 ¤》
+#@EXP_UNARY__LITE《
+  ►#?AST_STRUCTURE_EXPECTED!【42●Integer】●
+¤》
 
 #@EXP_UNARY_REFS《
   ►#?AST_STRUCTURE_EXPECTED!【foo●ExpReference(RefIdentifier)】●
@@ -36,6 +39,10 @@
   ►#@EXP_UNARY●
   ►#@EXP_UNARY_REFS●
 ¤》
+#@EXP_UNARY_WITHREFS__LITE《
+  ►#?AST_STRUCTURE_EXPECTED!【42●Integer】●
+  ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int[foo]》●ExpReference(RefIndexing(RefPrimitive ?))】●
+¤》
 
 #@EXP_OROR《
   ►#@EXP_UNARY●
@@ -46,15 +53,34 @@
   ►#?AST_STRUCTURE_EXPECTED!【0xFF | 0xAA●ExpInfix(? ?)】●
   ►#?AST_STRUCTURE_EXPECTED!【1 > "2" && 3●ExpInfix(ExpInfix(? String) ?)】●
   ►#?AST_STRUCTURE_EXPECTED!【2 || "3" < 4●ExpInfix(? ExpInfix(String ?))】●
+  
+  ►#@EXP_OROR__LITE●
+¤》
+#@EXP_OROR__LITE《
+  ►#?AST_STRUCTURE_EXPECTED!【2 ~ [1, 0xFF, "3"] == null ~ [123 : "entry"] || assert(2 < "four" + length)●
+ExpInfix(
+  ExpInfix(
+    ExpInfix(Integer ExpLiteralArray(* * *))  
+    ExpInfix(ExpNull ExpLiteralMapArray(*))
+  )
+  ExpAssert(ExpInfix(Integer ExpInfix(String ExpReference(RefIdentifier))))
+)】●
 ¤》
 
 #@EXP_CONDITIONAL《
   ►#@EXP_OROR●
+  ►#@EXP_CONDITIONAL__LITE●
+¤》
+#@EXP_CONDITIONAL__LITE《
   ►#?AST_STRUCTURE_EXPECTED!【false ? 123 : 456●ExpConditional(Bool Integer Integer)】●
 ¤》
 
 #@EXP_ASSIGN《
   ►#@EXP_CONDITIONAL●
+  ►#?AST_STRUCTURE_EXPECTED!【this = super += null●ExpInfix(ExpThis ExpInfix(ExpSuper ExpNull))】●
+¤》
+#@EXP_ASSIGN__LITE《
+  ►#@EXP_CONDITIONAL__LITE●
   ►#?AST_STRUCTURE_EXPECTED!【this = super += null●ExpInfix(ExpThis ExpInfix(ExpSuper ExpNull))】●
 ¤》
 
@@ -64,3 +90,7 @@
 ¤》
 
 #@EXP_ANY《#@EXP_COMMA》
+#@EXP_ANY__LITE《
+  ►#@EXP_ASSIGN__LITE●
+  ►#?AST_STRUCTURE_EXPECTED!【this = super += null●ExpInfix(ExpThis ExpInfix(ExpSuper ExpNull))】●
+¤》

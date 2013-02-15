@@ -235,7 +235,7 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 		}
 	}
 	
-	protected class TspMetadataEndElement extends TspElement {
+	protected static class TspMetadataEndElement extends TspElement {
 		public final TspMetadataElement mdElem;
 		public final StringBuilder originalSB;
 		public final int metadataIx;

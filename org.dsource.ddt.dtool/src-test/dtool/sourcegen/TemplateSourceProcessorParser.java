@@ -52,7 +52,7 @@ public class TemplateSourceProcessorParser {
 		public String getSource() { return null; };
 	}
 	
-	protected class TspStringElement extends TspElement {
+	public static class TspStringElement extends TspElement {
 		public static final String RAW_TEXT = "TextElement";
 		public final String producedText;
 		public final String elemType;
@@ -128,7 +128,7 @@ public class TemplateSourceProcessorParser {
 		}
 	}
 	
-	protected class TspExpansionElement extends TspElement {
+	public static class TspExpansionElement extends TspElement {
 		public final String expansionId; 
 		public final String pairedExpansionId; 
 		public final ArrayList<Argument> arguments; 
@@ -286,7 +286,7 @@ public class TemplateSourceProcessorParser {
 		return true;
 	}
 	
-	protected class TspMetadataElement extends TspElement {
+	public static class TspMetadataElement extends TspElement {
 		public final String tag; 
 		public final String value; 
 		public final Argument associatedElements; 
@@ -400,7 +400,7 @@ public class TemplateSourceProcessorParser {
 		return new TspIfElseExpansionElement(mdConditionId, invert, arguments.get(0), argElse);
 	}
 	
-	protected class TspIfElseExpansionElement extends TspElement {
+	public static class TspIfElseExpansionElement extends TspElement {
 		public final String mdConditionId; 
 		public final boolean invert;
 		public final Argument argThen; 
