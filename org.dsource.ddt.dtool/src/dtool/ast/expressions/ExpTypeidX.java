@@ -5,18 +5,18 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 
-public class ExpTypeid extends Expression {
+public class ExpTypeidX extends Expression {
 	
 	public final Reference typeArgument;
 	public final Expression expressionArgument;
 	
-	public ExpTypeid(Reference typeArgument, SourceRange sourceRange) {
+	public ExpTypeidX(Reference typeArgument, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.typeArgument = parentize(typeArgument);
 		this.expressionArgument = null;
 	}
 	
-	public ExpTypeid(Expression expressionArgument, SourceRange sourceRange) {
+	public ExpTypeidX(Expression expressionArgument, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.typeArgument = null;
 		this.expressionArgument = parentize(expressionArgument);

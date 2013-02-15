@@ -113,7 +113,7 @@ import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.ExpTraits;
-import dtool.ast.expressions.ExpTypeid;
+import dtool.ast.expressions.ExpTypeidX;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.Initializer;
@@ -465,11 +465,11 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		assertTrue(element.typeidType != null || element.argumentExp__DDT_ADDITION != null);
 		return endAdapt(
 			element.typeidType != null
-			? new ExpTypeid(
+			? new ExpTypeidX(
 				ReferenceConverter.convertType(element.typeidType, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
-			: new ExpTypeid(
+			: new ExpTypeidX(
 				ExpressionConverter.convert(element.argumentExp__DDT_ADDITION, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
