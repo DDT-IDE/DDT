@@ -33,8 +33,8 @@ DefVariable(* DefSymbol InitializerExp(*) DefVarFragment(DefSymbol) DefVarFragme
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@PRX1!《#NO_PRX1(flag)●xxx,》
-#@BREAK!《import ruleBREAK;》
-#@BREAK_EXP!《DeclarationImport(*)》
+#@BREAK!《align int ruleBREAK;》
+#@BREAK_EXP!《DeclarationAlign(*)》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
 

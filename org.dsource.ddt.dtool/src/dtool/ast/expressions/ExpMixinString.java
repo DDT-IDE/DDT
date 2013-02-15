@@ -6,15 +6,13 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 
-public class ExpAssert extends Expression {
+public class ExpMixinString extends Expression {
 	
 	public final Expression exp;
-	public final Expression msg;
 	
-	public ExpAssert(Expression exp, Expression msg, SourceRange sourceRange) {
+	public ExpMixinString(Expression exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = parentize(exp);
-		this.msg = parentize(msg);
 	}
 	
 	@Override
@@ -27,17 +25,15 @@ public class ExpAssert extends Expression {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, exp);
-			TreeVisitor.acceptChildren(visitor, msg);
 		}
 		visitor.endVisit(this);
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("assert");
+		cp.append("mixin");
 		if(exp != null) {
 			cp.appendNode("(", exp);
-			cp.appendNode(",", msg);
 			cp.append(")");
 		}
 	}

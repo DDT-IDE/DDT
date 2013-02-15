@@ -100,7 +100,7 @@ import dtool.ast.expressions.ExpIftype;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralFunc;
-import dtool.ast.expressions.ExpLiteralImportedString;
+import dtool.ast.expressions.ExpImportString;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralMapArray;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
@@ -109,7 +109,7 @@ import dtool.ast.expressions.ExpNew;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSlice;
-import dtool.ast.expressions.ExpStringMacro;
+import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.ExpTraits;
@@ -135,7 +135,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(FileExp node) {
 		return endAdapt(
-			new ExpLiteralImportedString(
+			new ExpImportString(
 				ExpressionConverter.convert(node.e1, convContext),
 				DefinitionConverter.sourceRange(node)
 			)
@@ -179,7 +179,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(CompileExp node) {
 		return endAdapt(
-			new ExpStringMacro(
+			new ExpMixinString(
 				ExpressionConverter.convert(node.e1, convContext),
 				DefinitionConverter.sourceRange(node)	
 			)

@@ -40,15 +40,18 @@ import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
+import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpLiteralArray;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
+import dtool.ast.expressions.ExpImportString;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralMapArray;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpLiteralString;
+import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
@@ -131,7 +134,7 @@ public class DeeParser extends AbstractParser {
 		if(!tryConsume(DeeTokens.KW_MODULE)) {
 			return null;
 		}
-		int declStart = lastLexElement.getStartPos();
+		int nodeStart = lastLexElement.getStartPos();
 		
 		ArrayList<String> packagesList = new ArrayList<String>(0);
 		LexElement moduleId;
@@ -151,7 +154,7 @@ public class DeeParser extends AbstractParser {
 		assertNotNull(moduleId);
 		
 		String[] packages = ArrayUtil.createFrom(packagesList, String.class);
-		SourceRange modDeclRange = srToCursor(declStart);
+		SourceRange modDeclRange = srToCursor(nodeStart);
 		return connect(new DeclarationModule(packages, moduleId.token, modDeclRange));
 	}
 	
@@ -175,17 +178,17 @@ public class DeeParser extends AbstractParser {
 	
 	public DeclarationImport parseImportDeclaration() {
 		boolean isStatic = false;
-		int declStart = -1;
+		int nodeStart = -1;
 		
 		if(tryConsume(DeeTokens.KW_STATIC)) { // BUG here
 			isStatic = true;
-			declStart = lastLexElement.getStartPos();
+			nodeStart = lastLexElement.getStartPos();
 		}
 		
 		if(!tryConsume(DeeTokens.KW_IMPORT)) {
 			return null;
 		}
-		declStart = NewUtils.updateIfNull(declStart, lastLexElement.getStartPos());
+		nodeStart = NewUtils.updateIfNull(nodeStart, lastLexElement.getStartPos());
 		
 		ArrayList<IImportFragment> fragments = new ArrayList<IImportFragment>();
 		do {
@@ -195,7 +198,7 @@ public class DeeParser extends AbstractParser {
 		} while(tryConsume(DeeTokens.COMMA));
 		
 		consumeExpectedToken(DeeTokens.SEMICOLON);
-		SourceRange sr = srToCursor(declStart);
+		SourceRange sr = srToCursor(nodeStart);
 		boolean isTransitive = false;
 		
 		return connect(
@@ -205,20 +208,20 @@ public class DeeParser extends AbstractParser {
 	public IImportFragment parseImportFragment() {
 		LexElement aliasId = null;
 		ArrayList<String> packages = new ArrayList<String>(0);
-		int refModuleStartPos = -1;
+		int nodeStartPos = -1;
 		
 		while(true) {
 			LexElement id = tryConsumeIdentifier();
-			refModuleStartPos = refModuleStartPos == -1 ? id.getStartPos() : refModuleStartPos;
+			nodeStartPos = nodeStartPos == -1 ? id.getStartPos() : nodeStartPos;
 			
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
 				packages.add(id.token.source);
 			} else if(packages.isEmpty() && tryConsume(DeeTokens.ASSIGN)) { // BUG here
 				aliasId = id;
-				refModuleStartPos = -1;
+				nodeStartPos = -1;
 			} else {
 				RefModule refModule = 
-					konnect(new RefModule(arrayViewS(packages), id.token.source, srToCursor(refModuleStartPos))); 
+					konnect(new RefModule(arrayViewS(packages), id.token.source, srToCursor(nodeStartPos))); 
 				
 				IImportFragment fragment = (aliasId == null) ? 
 					connect(new ImportContent(refModule)) : 
@@ -621,6 +624,12 @@ public class DeeParser extends AbstractParser {
 			
 		case OPEN_BRACKET:
 			return parseArrayLiteral();
+		case KW_ASSERT:
+			return parseAssertExp();
+		case KW_MIXIN:
+			return parseMixinExp();
+		case KW_IMPORT:
+			return parseImportExp();
 		default:
 			Reference ref = parseReference(true);
 			if(ref != null) {
@@ -720,6 +729,51 @@ public class DeeParser extends AbstractParser {
 			return connect(
 				new ExpLiteralMapArray(arrayView(mapElements, MapArrayLiteralKeyValue.class), srToCursor(nodeStart)));
 		}
+	}
+	
+	public ExpAssert parseAssertExp() {
+		if(tryConsume(DeeTokens.KW_ASSERT) == false)
+			return null;
+		
+		int nodeStart = lastLexElement.getStartPos();
+		Expression exp = null;
+		Expression msg = null;
+		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
+			exp = parseAssignExpressionWithMissingExp(true);
+			if(tryConsume(DeeTokens.COMMA)) {
+				msg = parseAssignExpressionWithMissingExp(true);
+			}
+			consumeExpectedToken(DeeTokens.CLOSE_PARENS);
+		}
+		
+		return connect(new ExpAssert(exp, msg, srToCursor(nodeStart)));
+	}
+	
+	public ExpImportString parseImportExp() {
+		if(tryConsume(DeeTokens.KW_IMPORT) == false)
+			return null;
+		
+		int nodeStart = lastLexElement.getStartPos();
+		Expression exp = parseExpWithParens();
+		return connect(new ExpImportString(exp, srToCursor(nodeStart)));
+	}
+	
+	public ExpMixinString parseMixinExp() {
+		if(tryConsume(DeeTokens.KW_MIXIN) == false)
+			return null;
+		
+		int nodeStart = lastLexElement.getStartPos();
+		Expression exp = parseExpWithParens();
+		return connect(new ExpMixinString(exp, srToCursor(nodeStart)));
+	}
+	
+	protected Expression parseExpWithParens() {
+		Expression exp = null;
+		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
+			exp = parseAssignExpressionWithMissingExp(true);
+			consumeExpectedToken(DeeTokens.CLOSE_PARENS);
+		}
+		return exp;
 	}
 	
 	/* ----------------------------------------- */

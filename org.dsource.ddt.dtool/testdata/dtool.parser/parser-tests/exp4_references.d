@@ -5,6 +5,11 @@ foo
 ExpReference(RefIdentifier)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
+#error(TYPE_AS_EXP_VALUE)《int》
+#AST_STRUCTURE_EXPECTED:
+ExpReference(RefPrimitive)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)
 int.init
 #AST_STRUCTURE_EXPECTED:
 ExpReference(RefQualified(RefPrimitive RefIdentifier))

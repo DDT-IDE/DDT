@@ -18,7 +18,7 @@ ExpLiteralArray()
 [ 7 : true, 
 #@KEY_EXP《#@EXP_ASSIGN : #@EXP_ASSIGN●#@EXP_ASSIGN : #error(EXPRULE_exp) ●#@EXP_ASSIGN #error(EXP_COLON)●
   /*MISSING_BOTH*/ #error(EXPRULE_exp) : #error(EXPRULE_exp) ●/*MISSING_ENTRY*/ #error(EXPRULE_exp) #error(EXP_COLON)
-  》    
+  》
 #@《]●#error(EXP_CLOSE_BRACKET)》  
 #AST_STRUCTURE_EXPECTED:
 ExpLiteralMapArray( 

@@ -134,7 +134,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	}
 	
 	
-	/******************************/
+	/* ------------------------------------------------------------ */
 	
 	/** All Neo nodes return the same type 
 	 * (until a need arise for otherwise). */

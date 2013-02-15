@@ -140,6 +140,10 @@ public class ASTReparseCheckSwitcher {
 		case EXP_LITERAL_MAPARRAY:
 		
 		case EXP_REFERENCE:
+			
+		case EXP_ASSERT:
+		case EXP_MIXIN_STRING:
+		case EXP_IMPORT_STRING:
 		
 		case EXP_PREFIX:
 		case EXP_POSTFIX:

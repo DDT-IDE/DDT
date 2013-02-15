@@ -70,9 +70,20 @@ public class DeeParserTest extends CommonTestUtils {
 		checkNodeTreeSourceRanges(result, parseSource);
 	}
 	
+	protected static final class DeeTestsLexer extends DeeLexer {
+		public DeeTestsLexer(String source) {
+			super(source);
+		}
+		
+		@Override
+		public String toString() {
+			return source.substring(0, pos) + "<---parser--->" + source.substring(pos, source.length());
+		}
+	}
+	
 	protected static final class DeeTestsParser extends DeeParser {
 		private DeeTestsParser(String source) {
-			super(source);
+			super(new DeeTestsLexer(source));
 		}
 		
 		@Override

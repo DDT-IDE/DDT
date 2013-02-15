@@ -6,20 +6,18 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 
-public class ExpAssert extends Expression {
+public class ExpImportString extends Expression {
 	
-	public final Expression exp;
-	public final Expression msg;
+	final public Expression exp; 
 	
-	public ExpAssert(Expression exp, Expression msg, SourceRange sourceRange) {
+	public ExpImportString(Expression exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = parentize(exp);
-		this.msg = parentize(msg);
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.EXP_MIXIN_STRING;
+		return ASTNodeTypes.EXP_IMPORT_STRING;
 	}
 	
 	@Override
@@ -27,17 +25,15 @@ public class ExpAssert extends Expression {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, exp);
-			TreeVisitor.acceptChildren(visitor, msg);
 		}
-		visitor.endVisit(this);
+		visitor.endVisit(this);	 
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("assert");
+		cp.append("import");
 		if(exp != null) {
 			cp.appendNode("(", exp);
-			cp.appendNode(",", msg);
 			cp.append(")");
 		}
 	}
