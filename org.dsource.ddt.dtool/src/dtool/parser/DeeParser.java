@@ -49,6 +49,7 @@ import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpImportString;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralMapArray;
+import dtool.ast.expressions.ExpParentheses;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpMixinString;
@@ -440,10 +441,14 @@ public class DeeParser extends AbstractParser {
 		return parseExpression(InfixOpType.ASSIGN.precedence);
 	}
 	
-	public Expression parseAssignExpressionWithMissingExp(boolean reportMissingExpError) {
+	public Expression parseExpressionWithMissingExp(boolean reportMissingExpError) {
+		return parseExpressionWithMissingExp(0, reportMissingExpError);
+	}
+	
+	public Expression parseExpressionWithMissingExp(int precedenceLimit, boolean reportMissingExpError) {
 		int nodeStart = lastLexElement.getEndPos();
 		
-		Expression expAssign = parseAssignExpression();
+		Expression expAssign = parseExpression(precedenceLimit);
 		if(expAssign == null) {
 			if(reportMissingExpError) {
 				reportError(ParserErrorTypes.EXPECTED_RULE, EXPRESSION_RULE, false);
@@ -451,6 +456,10 @@ public class DeeParser extends AbstractParser {
 			expAssign = new MissingExpression(srToCursor(nodeStart));
 		}
 		return expAssign;
+	}
+	
+	public Expression parseAssignExpressionWithMissingExp(boolean reportMissingExpError) {
+		return parseExpressionWithMissingExp(InfixOpType.ASSIGN.precedence, reportMissingExpError);
 	}
 	
 	protected Expression parseExpression_ExpStart(final Expression leftExp, int precedenceLimit) {
@@ -622,6 +631,8 @@ public class DeeParser extends AbstractParser {
 			}
 			return connect(new ExpPrefix(prefixOpType, exp, srToCursor(prefixExpToken)));
 			
+		case OPEN_PARENS:
+			return parseParenthesesExp();
 		case OPEN_BRACKET:
 			return parseArrayLiteral();
 		case KW_ASSERT:
@@ -729,6 +740,16 @@ public class DeeParser extends AbstractParser {
 			return connect(
 				new ExpLiteralMapArray(arrayView(mapElements, MapArrayLiteralKeyValue.class), srToCursor(nodeStart)));
 		}
+	}
+	
+	public Expression parseParenthesesExp() {
+		if(!tryConsume(DeeTokens.OPEN_PARENS))
+			return null;
+		int nodeStart = lastLexElement.getStartPos();
+		
+		Expression exp = parseExpressionWithMissingExp(true);
+		consumeExpectedToken(DeeTokens.CLOSE_PARENS);
+		return connect(new ExpParentheses(exp, srToCursor(nodeStart)));
 	}
 	
 	public ExpAssert parseAssertExp() {
