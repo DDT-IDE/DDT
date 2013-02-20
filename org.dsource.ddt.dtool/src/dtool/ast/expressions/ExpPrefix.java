@@ -14,7 +14,7 @@ public class ExpPrefix extends Expression {
 		ADDRESS(DeeTokens.AND),
 		PRE_INCREMENT(DeeTokens.INCREMENT),
 		PRE_DECREMENT(DeeTokens.DECREMENT),
-		POINTER(DeeTokens.STAR),
+		REFERENCE(DeeTokens.STAR),
 		NEGATIVE(DeeTokens.MINUS),
 		POSITIVE(DeeTokens.PLUS),
 		NOT(DeeTokens.NOT),
@@ -49,9 +49,9 @@ public class ExpPrefix extends Expression {
 	}
 	
 	public final PrefixOpType kind;
-	public final Resolvable exp;
+	public final Expression exp;
 	
-	public ExpPrefix(PrefixOpType kind, Resolvable exp, SourceRange sourceRange) {
+	public ExpPrefix(PrefixOpType kind, Expression exp, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = parentize(exp);
 		this.kind = kind;

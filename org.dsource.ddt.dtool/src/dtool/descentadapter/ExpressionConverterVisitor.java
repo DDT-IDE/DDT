@@ -489,7 +489,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		return endAdapt(
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.ADDRESS,
-				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				ExpressionConverter.convert(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -500,7 +500,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		return endAdapt(
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.COMPLEMENT,
-				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				ExpressionConverter.convert(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -511,7 +511,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		return endAdapt(
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.NEGATIVE,
-				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				ExpressionConverter.convert(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -522,7 +522,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		return endAdapt(
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.NOT,
-				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				ExpressionConverter.convert(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -556,8 +556,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	public boolean visit(PtrExp element) {
 		return endAdapt(
 			new ExpPrefix(
-				ExpPrefix.PrefixOpType.POINTER,
-				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				ExpPrefix.PrefixOpType.REFERENCE,
+				ExpressionConverter.convert(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -568,7 +568,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		return endAdapt(
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.POSITIVE,
-				(Resolvable) DescentASTConverter.convertElem(element.e1, convContext),
+				ExpressionConverter.convert(element.e1, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);
@@ -583,14 +583,14 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 
 	@Override
 	public boolean visit(AddAssignExp element) {
-		Resolvable exp1 = (Resolvable) DescentASTConverter.convertElem(element.e1, convContext);
+		Expression exp1 = ExpressionConverter.convert(element.e1, convContext);
 		SourceRange sourceRange = DefinitionConverter.sourceRange(element);
 		Resolvable newelem = element.isPreIncrement
 				? new ExpPrefix(ExpPrefix.PrefixOpType.PRE_INCREMENT, exp1, sourceRange)
 				: new ExpInfix(
 					exp1,
 					DeeTokens.PLUS_ASSIGN,
-					(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+					ExpressionConverter.convert(element.e2, convContext),
 					sourceRange
 				);
 		return endAdapt(newelem);
@@ -599,14 +599,14 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 
 	@Override
 	public boolean visit(MinAssignExp element) {
-		Resolvable exp1 = (Resolvable) DescentASTConverter.convertElem(element.e1, convContext);
+		Expression exp1 = ExpressionConverter.convert(element.e1, convContext);
 		SourceRange sourceRange = DefinitionConverter.sourceRange(element);
 		Resolvable newelem = element.isPreDecrement
 				? new ExpPrefix(ExpPrefix.PrefixOpType.PRE_DECREMENT, exp1, sourceRange)
 				: new ExpInfix(
 					exp1, 
 					DeeTokens.MINUS_ASSIGN,
-					(Resolvable) DescentASTConverter.convertElem(element.e2, convContext),
+					ExpressionConverter.convert(element.e2, convContext),
 					sourceRange
 				);
 		return endAdapt(newelem);

@@ -45,3 +45,26 @@ ExpReference(RefQualified(RefIndexing(? ?) RefIdentifier))
 #PARSE(EXPRESSION) #@EXP_UNARY_REFS
 #AST_STRUCTURE_EXPECTED:
 #@EXP_UNARY_REFS
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)
+foo * #error(TYPE_AS_EXP_VALUE)《int》*.init
+
+#AST_STRUCTURE_EXPECTED:
+ExpInfix(ExpInfix(ExpReference(RefIdentifier)  ExpReference(RefPrimitive))  ExpReference(RefModuleQualified(?)))
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)
+7 * #error(TYPE_AS_EXP_VALUE)《int》 ** .init
+
+#AST_STRUCTURE_EXPECTED:
+ExpInfix(
+  ExpInfix(Integer ExpReference(RefPrimitive))  
+  ExpPrefix(ExpReference(RefModuleQualified(?)))
+)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)
+7 + foo * * #error(EXPRULE_exp)
+
+#AST_STRUCTURE_EXPECTED:
+ExpInfix(Integer  ExpInfix(ExpReference(RefIdentifier)  ExpPrefix()))

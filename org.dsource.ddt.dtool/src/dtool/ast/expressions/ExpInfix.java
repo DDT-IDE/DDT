@@ -113,11 +113,11 @@ public class ExpInfix extends Expression {
 		
 	}
 	
-	public final Resolvable leftExp;
-	public final Resolvable rightExp;
+	public final Expression leftExp;
+	public final Expression rightExp;
 	public final InfixOpType kind;
 	
-	public ExpInfix(Resolvable left, InfixOpType kind, Resolvable right, SourceRange sourceRange) {
+	public ExpInfix(Expression left, InfixOpType kind, Expression right, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.leftExp = parentize(left);
 		this.kind = kind;
@@ -132,7 +132,7 @@ public class ExpInfix extends Expression {
 	
 	@Deprecated
 	public ExpInfix(Resolvable left, DeeTokens kind, Resolvable right, SourceRange sourceRange) {
-		this(left, InfixOpType.tokenToInfixOpType(kind), right, sourceRange);
+		this((Expression) left, InfixOpType.tokenToInfixOpType(kind), (Expression) right, sourceRange);
 	}
 	
 	@Override

@@ -126,21 +126,46 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		return parent;
 	}
 	
-	/** Set the parent of this node. Cannot be null. */
+	/** Set the parent of this node. Cannot be null. Cannot set parent twice without explicitly detaching. */
 	public void setParent(ASTNeoNode parent) {
 		assertTrue(parent != null);
-		assertTrue(this.parent == null); // Can only set parent once
+		assertTrue(this.parent == null);
 		this.parent = parent;
 	}
 	
+	public void detachFromParent() {
+		this.parent = null;
+	}
+	
+	protected Object data; /* Custom field to store various sorts of data */
+	
+	public Object getData() {
+		return data;
+	}
+	
+	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */
+	public void setData(Object data) {
+		assertTrue(data != null);
+		assertTrue(this.data == null); 
+		this.data = data;
+	}
+	
+	/** Set the data of this node. Cannot be null. */
+	public void resetData(Object data) {
+		this.data = data;
+	}
+	
+	/** Removes the data of this node. Checks that the previous data class was exactly the same as given klass. */
+	public void removeData(Class<?> klass) {
+		assertTrue(data.getClass() == klass);
+		this.data = null;
+	}
 	
 	/* ------------------------------------------------------------ */
 	
-	/** All Neo nodes return the same type 
-	 * (until a need arise for otherwise). */
 	@Override
 	public int getElementType() {
-		return 0; 
+		return getNodeType().ordinal(); 
 	}
 	
 	public ASTNodeTypes getNodeType() {
@@ -149,7 +174,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	
 	@Override
 	public ASTNeoNode[] getChildren() {
-		return (ASTNeoNode[]) ASTChildrenCollector.getChildrenArray(this);
+		return ASTChildrenCollector.getChildrenArray(this);
 	}
 	
 	@Override
@@ -158,10 +183,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		return getChildren().length > 0;
 	}
 	
-	/**
-	 * Same as ASTNode.accept but makes sub-elements accept0 use ASTNeoVisitor.
-	 * This is a temporary adapting solution.
-	 */
+	/** Accept a visitor into this node. */
 	@Override
 	public final void accept(IASTVisitor visitor) {
 		assertNotNull(visitor);

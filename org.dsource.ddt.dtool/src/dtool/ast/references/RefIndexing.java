@@ -24,12 +24,12 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 public class RefIndexing extends Reference {
 	
 	public final Reference elemType;
-	public final Resolvable indexParam;
+	public final Resolvable indexArg;
 	
-	public RefIndexing(Reference keyType, Resolvable indexParam, SourceRange sourceRange) {
+	public RefIndexing(Reference keyType, Resolvable indexArg, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.elemType = parentize(keyType);
-		this.indexParam = parentize(indexParam);
+		this.indexArg = parentize(indexArg);
 	}
 	
 	@Override
@@ -42,7 +42,7 @@ public class RefIndexing extends Reference {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, elemType);
-			TreeVisitor.acceptChildren(visitor, indexParam);
+			TreeVisitor.acceptChildren(visitor, indexArg);
 		}
 		visitor.endVisit(this);
 	}
@@ -50,7 +50,7 @@ public class RefIndexing extends Reference {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(elemType);
-		cp.appendNode("[", indexParam);
+		cp.appendNode("[", indexArg);
 		cp.append("]");
 	}
 	

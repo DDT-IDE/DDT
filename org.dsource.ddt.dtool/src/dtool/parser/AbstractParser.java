@@ -289,6 +289,9 @@ public class AbstractParser {
 			pendingMissingTokenErrors.add(error);
 		}
 	}
+	
+	public static Object PARSED_STATUS = new String("NODE_STATUS:PARSED");
+	
 	protected <T extends ASTNeoNode> T connect(T node) {
 		for (ParserError parserError : pendingMissingTokenErrors) {
 			if(parserError.msgData != DeeTokens.IDENTIFIER) {
@@ -296,6 +299,8 @@ public class AbstractParser {
 			}
 		}
 		pendingMissingTokenErrors = new ArrayList<ParserError>();
+		
+		node.setData(PARSED_STATUS);
 		return node;
 	}
 	
@@ -304,16 +309,14 @@ public class AbstractParser {
 		return node;
 	}
 	
-	protected static final <T extends ASTNeoNode> T konnect(T node) {
-		// TODO: remove this after putting test
-		/*BUG here*/
-		return node;
-	}
-	
 	/* ---- Node creation helpers ---- */
 	
 	public static SourceRange sr(Token token) {
 		return token.getSourceRange();
+	}
+	
+	public static SourceRange srNodeStart(ASTNeoNode startNode, int endPos) {
+		return SourceRange.srStartToEnd(startNode.getStartPos(), endPos);
 	}
 	
 	public final SourceRange srToCursor(int declStart) {
@@ -332,12 +335,18 @@ public class AbstractParser {
 		return srToCursor(startNode.getStartPos());
 	}
 	
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends ASTNeoNode> ArrayView<T> arrayView(T element) {
+		return ArrayView.create((T[]) new ASTNeoNode[] { element } );
+	}
+	
 	public static <T extends IASTNeoNode> ArrayView<T> arrayView(Collection<? extends T> list, Class<T> cpType) {
 		return ArrayView.create(ArrayUtil.createFrom(list, cpType));
 	}
 	
-	public static ArrayView<ASTNeoNode> arrayView(Collection<? extends ASTNeoNode> list) {
-		return ArrayView.create(ArrayUtil.createFrom(list, ASTNeoNode.class));
+	public static <T extends ASTNeoNode> ArrayView<T> arrayView(Collection<? extends T> list) {
+		return ArrayView.create((T[]) ArrayUtil.createFrom(list, ASTNeoNode.class));
 	}
 	
 	public static ArrayView<String> arrayViewS(Collection<String> list) {

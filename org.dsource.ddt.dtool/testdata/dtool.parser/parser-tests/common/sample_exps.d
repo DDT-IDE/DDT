@@ -18,6 +18,8 @@
   ►#?AST_STRUCTURE_EXPECTED!【 [12345 : true, 66.6 : false, "asdfd" : "false"]●
   ExpLiteralMapArray(MapEntry(Integer Bool) MapEntry(Float Bool) MapEntry(String String))】●
   
+  ►#?AST_STRUCTURE_EXPECTED!【(123 ,"asd")●ExpParentheses(ExpInfix(Integer String))】●
+  
   ►#?AST_STRUCTURE_EXPECTED!【assert(2 + 2 == true, "error")●ExpAssert(* String)】●
   ►#?AST_STRUCTURE_EXPECTED!【mixin("2 + " ~ "2")●ExpMixinString(*)】●
   ►#?AST_STRUCTURE_EXPECTED!【import("testdata/samples.txt")●ExpImportString(String)】●
@@ -33,12 +35,10 @@
   ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int》●ExpReference(RefPrimitive)】●
   ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int[]》●ExpReference(RefTypeDynArray(RefPrimitive))】●
   ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int[foo]》●ExpReference(RefIndexing(RefPrimitive ?))】●
+
 ¤》
   
-#@EXP_UNARY_WITHREFS《
-  ►#@EXP_UNARY●
-  ►#@EXP_UNARY_REFS●
-¤》
+#@EXP_UNARY_WITHREFS《#@EXP_UNARY●#@EXP_UNARY_REFS》
 #@EXP_UNARY_WITHREFS__LITE《
   ►#?AST_STRUCTURE_EXPECTED!【42●Integer】●
   ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int[foo]》●ExpReference(RefIndexing(RefPrimitive ?))】●
@@ -53,6 +53,7 @@
   ►#?AST_STRUCTURE_EXPECTED!【0xFF | 0xAA●ExpInfix(? ?)】●
   ►#?AST_STRUCTURE_EXPECTED!【1 > "2" && 3●ExpInfix(ExpInfix(? String) ?)】●
   ►#?AST_STRUCTURE_EXPECTED!【2 || "3" < 4●ExpInfix(? ExpInfix(String ?))】●
+  ►#?AST_STRUCTURE_EXPECTED!【foo *** ptr ●ExpInfix(ExpReference(?) ExpPrefix(ExpPrefix(ExpReference(RefIdentifier))) )】●
   
   ►#@EXP_OROR__LITE●
 ¤》
@@ -67,20 +68,13 @@ ExpInfix(
 )】●
 ¤》
 
-#@EXP_CONDITIONAL《
-  ►#@EXP_OROR●
-  ►#@EXP_CONDITIONAL__LITE●
-¤》
+#@EXP_CONDITIONAL《#@EXP_OROR●#@EXP_CONDITIONAL__LITE》
 #@EXP_CONDITIONAL__LITE《
   ►#?AST_STRUCTURE_EXPECTED!【false ? 123 : 456●ExpConditional(Bool Integer Integer)】●
 ¤》
 
-#@EXP_ASSIGN《
-  ►#@EXP_CONDITIONAL●
-  ►#?AST_STRUCTURE_EXPECTED!【this = super += null●ExpInfix(ExpThis ExpInfix(ExpSuper ExpNull))】●
-¤》
+#@EXP_ASSIGN《#@EXP_CONDITIONAL●#@EXP_ASSIGN__LITE》
 #@EXP_ASSIGN__LITE《
-  ►#@EXP_CONDITIONAL__LITE●
   ►#?AST_STRUCTURE_EXPECTED!【this = super += null●ExpInfix(ExpThis ExpInfix(ExpSuper ExpNull))】●
 ¤》
 
@@ -92,5 +86,12 @@ ExpInfix(
 #@EXP_ANY《#@EXP_COMMA》
 #@EXP_ANY__LITE《
   ►#@EXP_ASSIGN__LITE●
-  ►#?AST_STRUCTURE_EXPECTED!【this = super += null●ExpInfix(ExpThis ExpInfix(ExpSuper ExpNull))】●
+  ►#?AST_STRUCTURE_EXPECTED!【12,"asd"●ExpInfix(Integer String)】●
 ¤》
+
+TODO :
+  ►#?AST_STRUCTURE_EXPECTED!【foo**[bar*]* #error●
+ExpInfix(
+  ExpInfix(ExpReference(?) #@《ExpLiteralMapArray(*)●ExpLiteralArray(Integer Integer)》(X) ) 
+)】●
+

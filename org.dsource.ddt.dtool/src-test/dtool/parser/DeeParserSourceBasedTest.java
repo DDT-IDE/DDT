@@ -128,6 +128,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		
 		final String parseSource = testSource.source;
 		String parseRule = null;
+		String expectedRemainingSource = null;
 		String expectedGenSource = DEFAULT_VALUE;
 		NamedNodeElement[] expectedStructure = null;
 		boolean allowAnyErrors = false;
@@ -158,6 +159,9 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				allowAnyErrors = true;
 			} else if(mde.name.equals("PARSE")){
 				parseRule = mde.value;
+				if(mde.associatedSource != null) {
+					expectedRemainingSource = parseSource.substring(mde.getSourceRange().getEndPos());
+				}
 			} else {
 				if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "comment"))) {
 					assertFail("Unknown metadata");
@@ -166,7 +170,8 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		}
 		
 		if(expectedGenSource == DEFAULT_VALUE) {
-			expectedGenSource = parseSource;
+			int remainingLen = expectedRemainingSource == null ? 0 : expectedRemainingSource.length();
+			expectedGenSource = parseSource.substring(0, parseSource.length() - remainingLen); 
 			
 			int modifyOffset = expectedGenSource.length();
 			// Iterate in reverse error order, this should work, assuming the range substitution occurs in order
@@ -193,7 +198,8 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			
 		}
 		runParserTest______________________(
-			parseSource, parseRule, expectedGenSource, expectedStructure, expectedErrors, allowAnyErrors);
+			parseSource, parseRule, expectedRemainingSource, expectedGenSource, expectedStructure, 
+			expectedErrors, allowAnyErrors);
 	}
 	
 	public ParserError decodeError(String parseSource, MetadataEntry mde) {

@@ -16,6 +16,7 @@ import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.NodeUtil;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
@@ -27,77 +28,6 @@ import dtool.tests.DToolTests;
 
 
 public class DeeParserTest extends CommonTestUtils {
-	
-	public static final String DONT_CHECK = "#DONTCHECK";
-	
-	public static DeeParserResult parse(String source, String parseRule) {
-		DeeParser deeParser = new DeeTestsParser(source);
-		if(parseRule == null) {
-			return new DeeParserResult(deeParser.parseModule(), deeParser.errors);
-		} else if(parseRule.equals("EXPRESSION")) {
-			DeeParserResult deeParserResult = new DeeParserResult(deeParser.parseExpression(), deeParser.errors);
-			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
-			return deeParserResult;
-		} else {
-			throw assertFail();
-		}
-	}
-	
-	public static void runParserTest______________________(
-		String parseSource, String parseRule, String expectedGenSource,
-		NamedNodeElement[] expectedStructure, ArrayList<ParserError> expectedErrors, boolean allowAnyErrors) {
-		
-		DeeParserResult result = parse(parseSource, parseRule);
-		
-		ASTNeoNode mainNode = result.node;
-		assertNotNull(mainNode);
-		
-		if(expectedStructure != null) {
-			checkExpectedStructure(mainNode, expectedStructure);
-		}
-		
-		if(expectedGenSource != null) {
-			checkSourceEquality(mainNode, expectedGenSource);
-		}
-		
-		if(result.errors.size() == 0) {
-			assertTrue(expectedErrors.size() == 0);
-			checkSourceEquality(mainNode, parseSource);
-		} else if(allowAnyErrors == false) {
-			checkParserErrors(result.errors, expectedErrors);
-		}
-		
-		checkNodeTreeSourceRanges(result, parseSource);
-	}
-	
-	protected static final class DeeTestsLexer extends DeeLexer {
-		public DeeTestsLexer(String source) {
-			super(source);
-		}
-		
-		@Override
-		public String toString() {
-			return source.substring(0, pos) + "<---parser--->" + source.substring(pos, source.length());
-		}
-	}
-	
-	protected static final class DeeTestsParser extends DeeParser {
-		private DeeTestsParser(String source) {
-			super(new DeeTestsLexer(source));
-		}
-		
-		@Override
-		protected <T extends ASTNeoNode> T connect(T node) {
-			super.connect(node);
-			checkNodeSourceRange(node, getSource(), errors);
-			return node;
-		}
-	}
-	
-	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
-		String generatedSource = node.toStringAsCode();
-		CheckSourceEquality.check(generatedSource, expectedGenSource, false);
-	}
 	
 	public static class CheckSourceEquality {
 		
@@ -128,6 +58,164 @@ public class DeeParserTest extends CommonTestUtils {
 			}
 		}
 	}
+	
+	public static final class DeeTestsLexer extends DeeLexer {
+		public DeeTestsLexer(String source) {
+			super(source);
+		}
+		
+		@Override
+		public String toString() {
+			return source.substring(0, pos) + "<---parser--->" + source.substring(pos, source.length());
+		}
+	}
+	
+	protected static final class DeeTestsParser extends DeeParser {
+		private DeeTestsParser(String source) {
+			super(new DeeTestsLexer(source));
+		}
+		
+		@Override
+		protected <T extends ASTNeoNode> T connect(T node) {
+			super.connect(node);
+			checkNodeSourceRange(node, getSource(), errors);
+			return node;
+		}
+	}
+	
+	public static void runParserTest______________________(
+		String parseSource, String parseRule, String expectedRemainingSource, String expectedGenSource,
+		NamedNodeElement[] expectedStructure, ArrayList<ParserError> expectedErrors, boolean allowAnyErrors) {
+		
+		DeeParserResult result;
+		DeeParser deeParser = new DeeTestsParser(parseSource);
+		if(parseRule == null) {
+			result = new DeeParserResult(deeParser.parseModule(), deeParser.errors);
+		} else if(parseRule.equals("EXPRESSION")) {
+			result = new DeeParserResult(deeParser.parseExpression(), deeParser.errors);
+			if(expectedRemainingSource == null) {
+				assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
+			} else {
+				String remainingSource = deeParser.getSource().substring(deeParser.getParserPosition());
+				CheckSourceEquality.check(remainingSource, expectedRemainingSource, false);
+			}
+		} else {
+			throw assertFail();
+		}
+		
+		ASTNeoNode mainNode = assertNotNull_(result.node);
+		
+		checkBasicStructure(array(mainNode), null);
+		if(expectedStructure != null) {
+			checkExpectedStructure(mainNode, expectedStructure);
+		}
+		
+		if(expectedGenSource != null) {
+			checkSourceEquality(mainNode, expectedGenSource);
+		}
+		
+		if(result.errors.size() == 0) {
+			assertTrue(expectedErrors.size() == 0);
+			checkSourceEquality(mainNode, parseSource);
+		} else if(allowAnyErrors == false) {
+			checkParserErrors(result.errors, expectedErrors);
+		}
+		
+		checkNodeTreeSourceRanges(result, parseSource);
+	}
+	
+	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
+		String generatedSource = node.toStringAsCode();
+		CheckSourceEquality.check(generatedSource, expectedGenSource, false);
+	}
+	
+	/* ============= Structure Checkers ============= */
+	
+	public static void checkBasicStructure(ASTNeoNode[] children, ASTNeoNode parent) {
+		for (ASTNeoNode astNode : children) {
+			assertTrue(astNode.getParent() == parent);
+			if(!(astNode instanceof DefSymbol)) {
+				// TODO fix this above
+				assertTrue(astNode.getData() == DeeParser.PARSED_STATUS);
+			}
+			checkBasicStructure(astNode.getChildren(), astNode);
+		}
+	}
+	
+	public static class NamedNodeElement {
+		public static final String IGNORE_ALL = "*";
+		public static final String IGNORE_NAME = "?";
+		
+		public final String name;
+		public final NamedNodeElement[] children;
+		
+		public NamedNodeElement(String name, NamedNodeElement[] children) {
+			this.name = assertNotNull_(name);
+			this.children = children;
+		}
+		
+		@Override
+		public String toString() {
+			boolean hasChildren = children != null && children.length > 0;
+			return name + (hasChildren ? "(" + StringUtil.collToString(children, " ") + ")" : "");
+		}
+	}
+	
+	public static void checkExpectedStructure(ASTNeoNode parent, NamedNodeElement[] expectedStructure) {
+		ASTNeoNode[] children;
+		if(parent instanceof Module) {
+			children = parent.getChildren();
+		} else {
+			children = array(parent);
+			parent = null;
+		}
+		checkExpectedStructure(children, parent, expectedStructure, true);
+	}
+	
+	public static void checkExpectedStructure(ASTNeoNode[] children, ASTNeoNode parent,
+		NamedNodeElement[] expectedStructure, boolean flattenNodeList) {
+		
+		if(flattenNodeList && children.length == 1 && children[0] instanceof NodeList2) {
+			parent = children[0];
+			children = parent.getChildren();
+		}
+		
+		assertTrue(children.length == expectedStructure.length);
+		
+		for(int i = 0; i < expectedStructure.length; i++) {
+			NamedNodeElement namedElement = expectedStructure[i];
+			ASTNeoNode astNode = children[i];
+			
+			if(namedElement.name == NamedNodeElement.IGNORE_ALL) {
+				continue;
+			}
+			if(namedElement.name != NamedNodeElement.IGNORE_NAME) {
+				String expectedName = getExpectedNameAliases(namedElement.name);
+				assertEquals(astNode.getClass().getSimpleName(), expectedName);
+			}
+			checkExpectedStructure(astNode.getChildren(), astNode, namedElement.children, true);
+		}
+	}
+	
+	public static String getExpectedNameAliases(String expectedNameRaw) {
+		if(expectedNameRaw.equals("Bool")) {
+			return ExpLiteralBool.class.getSimpleName();
+		} else if(expectedNameRaw.equals("Integer")) {
+			return ExpLiteralInteger.class.getSimpleName();
+		} else if(expectedNameRaw.equals("Float")) {
+			return ExpLiteralFloat.class.getSimpleName();
+		} else if(expectedNameRaw.equals("String")) {
+			return ExpLiteralString.class.getSimpleName();
+		} else if(expectedNameRaw.equals("MapEntry")) {
+			return MapArrayLiteralKeyValue.class.getSimpleName();
+		}
+		
+		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var)", 1, "Definition");
+	}
+	
+	/* ============= Error and Source Range Checkers ============= */
+	
+	public static final String DONT_CHECK = "#DONTCHECK";
 	
 	public static void checkParserErrors(ArrayList<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {
 		for(int i = 0; i < resultErrors.size(); i++) {
@@ -214,78 +302,6 @@ public class DeeParserTest extends CommonTestUtils {
 		return false;
 	}
 	
-	/* ============= Structure Checkers ============= */
-	
-	public static class NamedNodeElement {
-		public static final String IGNORE_ALL = "*";
-		public static final String IGNORE_NAME = "?";
-		
-		public final String name;
-		public final NamedNodeElement[] children;
-		
-		public NamedNodeElement(String name, NamedNodeElement[] children) {
-			this.name = assertNotNull_(name);
-			this.children = children;
-		}
-		
-		@Override
-		public String toString() {
-			boolean hasChildren = children != null && children.length > 0;
-			return name + (hasChildren ? "(" + StringUtil.collToString(children, " ") + ")" : "");
-		}
-	}
-	
-	public static void checkExpectedStructure(ASTNeoNode parent, NamedNodeElement[] expectedStructure) {
-		ASTNeoNode[] children;
-		if(parent instanceof Module) {
-			children = parent.getChildren();
-		} else {
-			children = array(parent);
-			parent = null;
-		}
-		checkExpectedStructure(children, parent, expectedStructure, true);
-	}
-	
-	public static void checkExpectedStructure(ASTNeoNode[] children, ASTNeoNode parent,
-		NamedNodeElement[] expectedStructure, boolean flattenNodeList) {
-		
-		if(flattenNodeList && children.length == 1 && children[0] instanceof NodeList2) {
-			parent = children[0];
-			children = parent.getChildren();
-		}
-		
-		assertTrue(children.length == expectedStructure.length);
-		
-		for(int i = 0; i < expectedStructure.length; i++) {
-			NamedNodeElement namedElement = expectedStructure[i];
-			ASTNeoNode astNode = children[i];
-			assertTrue(astNode.getParent() == parent);
-			
-			if(namedElement.name == NamedNodeElement.IGNORE_ALL) {
-				continue;
-			}
-			if(namedElement.name != NamedNodeElement.IGNORE_NAME) {
-				String expectedName = getExpectedNameAliases(namedElement.name);
-				assertEquals(astNode.getClass().getSimpleName(), expectedName);
-			}
-			checkExpectedStructure(astNode.getChildren(), astNode, namedElement.children, true);
-		}
-	}
-	
-	public static String getExpectedNameAliases(String expectedNameRaw) {
-		if(expectedNameRaw.equals("Bool")) {
-			return ExpLiteralBool.class.getSimpleName();
-		} else if(expectedNameRaw.equals("Integer")) {
-			return ExpLiteralInteger.class.getSimpleName();
-		} else if(expectedNameRaw.equals("Float")) {
-			return ExpLiteralFloat.class.getSimpleName();
-		} else if(expectedNameRaw.equals("String")) {
-			return ExpLiteralString.class.getSimpleName();
-		} else if(expectedNameRaw.equals("MapEntry")) {
-			return MapArrayLiteralKeyValue.class.getSimpleName();
-		}
-		
-		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var)", 1, "Definition");
-	}
+
 	
 }

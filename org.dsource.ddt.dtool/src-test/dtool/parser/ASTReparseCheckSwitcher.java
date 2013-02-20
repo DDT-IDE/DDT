@@ -38,7 +38,7 @@ public class ASTReparseCheckSwitcher {
 	public Void doCheck(ASTNeoNode node) {
 		// prep for type specific switch
 		nodeSnippedSource = originalSource.substring(node.getStartPos(), node.getEndPos());
-		nssParser = new DeeParser(nodeSnippedSource);
+		nssParser = new DeeParser(new DeeParserTest.DeeTestsLexer(nodeSnippedSource));
 		
 		switch (node.getNodeType()) {
 		
@@ -145,19 +145,19 @@ public class ASTReparseCheckSwitcher {
 		case EXP_ASSERT:
 		case EXP_MIXIN_STRING:
 		case EXP_IMPORT_STRING:
+		case EXP_TYPEID:
 		
 		case EXP_PREFIX:
 		case EXP_POSTFIX:
 		case EXP_INFIX:
 		case EXP_CONDITIONAL:
-			return expressionReparseCheck((Expression) node);
+			return reparseCheck(nssParser.parseExpression(), (Expression) node);
 		case MAPARRAY_ENTRY:
 			MapArrayLiteralKeyValue mapArrayEntry = (MapArrayLiteralKeyValue) node;
 			assertEquals(mapArrayEntry.getSourceRange(),
 				SourceRange.srStartToEnd(mapArrayEntry.key.getStartPos(),
 					(mapArrayEntry.value == null ? mapArrayEntry.key : mapArrayEntry.value).getEndPos()));
 			return VOID;
-			
 		default:
 			throw assertFail();
 		}
@@ -174,11 +174,6 @@ public class ASTReparseCheckSwitcher {
 			return null;
 		}
 	}
-	
-	public Void expressionReparseCheck(Expression node) {
-		return reparseCheck(nssParser.parseExpression(), node);
-	}
-
 	
 	/** This will test if node has a correct source range even in situations where
 	 * {@link #postVisit} cannot do a test using {@link DeeParserTest#checkSourceEquality }
@@ -260,6 +255,7 @@ public class ASTReparseCheckSwitcher {
 	
 	public void checkNodeEquality(ASTNeoNode reparsedNode, ASTNeoNode node) {
 		// We check the nodes are semantically equal by comparing the toStringAsCode
+		// TODO: use a more accurate equals method?
 		assertEquals(reparsedNode.toStringAsCode(), node.toStringAsCode());
 	}
 	
