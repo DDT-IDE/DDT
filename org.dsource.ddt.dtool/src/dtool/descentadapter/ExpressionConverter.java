@@ -57,7 +57,7 @@ public class ExpressionConverter extends BaseDmdConverter {
 	public static ExpCall createExpCall(CallExp elem, ASTConversionContext convContext) {
 		SourceRange sourceRange = DefinitionConverter.sourceRange(elem);
 		Expression callee = ExpressionConverter.convert(elem.e1, convContext); 
-		ArrayView<Resolvable> args = ExpressionConverter.convertMany(elem.arguments, convContext);
+		ArrayView<Expression> args = DescentASTConverter.convertMany(elem.arguments, Expression.class, convContext);
 		return new ExpCall(callee, args, sourceRange);
 	}
 	

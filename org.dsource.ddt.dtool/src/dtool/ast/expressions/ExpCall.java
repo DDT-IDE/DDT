@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -17,12 +19,17 @@ import dtool.util.ArrayView;
 public class ExpCall extends Expression {
 	
 	public final Expression callee;
-	public final ArrayView<Resolvable> args;
+	public final ArrayView<Expression> args;
 	
-	public ExpCall(Expression callee, ArrayView<Resolvable> args, SourceRange sourceRange) {
+	public ExpCall(Expression callee, ArrayView<Expression> args, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.callee = parentize(callee);
 		this.args = parentize(args);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_CALL;
 	}
 	
 	@Override
@@ -33,6 +40,14 @@ public class ExpCall extends Expression {
 			TreeVisitor.acceptChildren(visitor, args);
 		}
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(callee);
+		cp.append("( ");
+		cp.appendNodeList(args, ", ", false);
+		cp.append(" )");
 	}
 	
 	@Override

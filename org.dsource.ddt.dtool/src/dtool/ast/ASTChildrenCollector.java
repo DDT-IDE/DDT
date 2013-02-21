@@ -3,6 +3,7 @@ package dtool.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.tree.IVisitable;
 
 /**
@@ -14,7 +15,7 @@ public class ASTChildrenCollector extends ASTHomogenousVisitor {
 	private List<ASTNeoNode> childrenLst;
 	
 	public static ASTNeoNode[] getChildrenArray(ASTNeoNode elem){
-		return getChildrenList(elem).toArray(ASTNeoNode.NO_ELEMENTS);
+		return ArrayUtil.createFrom(getChildrenList(elem), ASTNeoNode.class);
 	}
 	
 	public static List<ASTNeoNode> getChildrenList(IVisitable<? super IASTVisitor> elem){

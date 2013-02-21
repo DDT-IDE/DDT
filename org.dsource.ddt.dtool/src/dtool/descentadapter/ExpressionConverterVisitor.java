@@ -89,7 +89,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.expressions.ExpArrayIndex;
+import dtool.ast.expressions.ExpIndex;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpCast;
@@ -252,9 +252,9 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	/* ===================== Special ===================== */
 	@Override
 	public boolean visit(ArrayExp elem) {
-		Resolvable array = ExpressionConverter.convert(elem.e1, convContext);
-		ArrayView<Resolvable> args = ExpressionConverter.convertMany(elem.arguments, convContext);
-		return endAdapt(new ExpArrayIndex(array, args, DefinitionConverter.sourceRange(elem)));
+		Expression array = ExpressionConverter.convert(elem.e1, convContext);
+		ArrayView<Expression> args = DescentASTConverter.convertMany(elem.arguments, Expression.class, convContext);
+		return endAdapt(new ExpIndex(array, args, DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override

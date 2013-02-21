@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2011 IBM Corporation and others.
+ * Copyright (c) 2013, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,20 +11,30 @@
 package dtool.ast;
 
 
-public class ASTHomogenousVisitor extends ASTDefaultVisitor implements IASTVisitor {
+/**
+ * By default, visits a node's children only up to a defined depth;
+ */
+public class ASTChildrenVisitor extends ASTDefaultVisitor {
 	
-	public void traverse(ASTNeoNode node) {
-		node.accept(this);
-	}
+	protected int maxDepth = 1;
+	protected int depth = 0; 
 	
 	@Override
 	public boolean preVisit(ASTNeoNode node) {
-		genericVisit(node);
-		return true;
+		depth++;
+		if(depth != 1) {
+			geneticChildrenVisit(node);
+		}
+		return depth <= maxDepth;
+	}
+	
+	@Override
+	public void postVisit(ASTNeoNode node) {
+		depth--;
 	}
 	
 	@SuppressWarnings("unused") 
-	public void genericVisit(ASTNeoNode node) {
+	protected void geneticChildrenVisit(ASTNeoNode child) {
 	}
 	
 }

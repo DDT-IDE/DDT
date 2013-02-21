@@ -24,24 +24,34 @@
   ►#?AST_STRUCTURE_EXPECTED!【mixin("2 + " ~ "2")●ExpMixinString(*)】●
   ►#?AST_STRUCTURE_EXPECTED!【import("testdata/samples.txt")●ExpImportString(String)】●
   
+  ►#?AST_STRUCTURE_EXPECTED!【foo(1, 3)●             ExpCall(#@ExpIdentifier Integer Integer)】●
+  ►#?AST_STRUCTURE_EXPECTED!【*foo[]●      ExpPrefix(ExpSlice(#@ExpIdentifier))】●
+  ►#?AST_STRUCTURE_EXPECTED!【!foo[[123]]● ExpPrefix(ExpIndex(#@ExpIdentifier ExpLiteralArray(?)))】●
+  ►#?AST_STRUCTURE_EXPECTED!【foo[12 .. [123]]●      ExpSlice(#@ExpIdentifier Integer ExpLiteralArray(?))】●
 ¤》
 #@EXP_UNARY__LITE《
   ►#?AST_STRUCTURE_EXPECTED!【42●Integer】●
 ¤》
 
-#@EXP_UNARY_REFS《
-  ►#?AST_STRUCTURE_EXPECTED!【foo●ExpReference(RefIdentifier)】●
-  
-  ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int》●ExpReference(RefPrimitive)】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int[]》●ExpReference(RefTypeDynArray(RefPrimitive))】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int[foo]》●ExpReference(RefIndexing(RefPrimitive ?))】●
 
+#@TYPE_EXP《#error(TYPE_AS_EXP_VALUE){int}》
+
+#@EXP_UNARY_REFS《
+  ►#?AST_STRUCTURE_EXPECTED!【  foo● ExpReference(RefIdentifier)】●
+  ►#?AST_STRUCTURE_EXPECTED!【  #@TYPE_EXP● ExpReference(RefPrimitive)】●
+  ►#?AST_STRUCTURE_EXPECTED!【  #@TYPE_EXP*#error(EXPRULE_exp)● ExpInfix(ExpReference(RefPrimitive))】●
+  ►#?AST_STRUCTURE_EXPECTED!【  foo * #error(EXPRULE_exp)● ExpInfix(ExpReference(RefIdentifier))】●
+
+  ►#?AST_STRUCTURE_EXPECTED!【  foo[]● ExpSlice(ExpReference(RefIdentifier))】●
+  ►#?AST_STRUCTURE_EXPECTED!【  #@TYPE_EXP []● ExpSlice(ExpReference(RefPrimitive))】●
+  ►#?AST_STRUCTURE_EXPECTED!【  foo[ #@TYPE_EXP ]● ExpIndex(ExpReference(RefIdentifier) ExpReference(RefPrimitive))】●
+  ►#?AST_STRUCTURE_EXPECTED!【  #@TYPE_EXP [foo]● ExpIndex(ExpReference(RefPrimitive) ExpReference(RefIdentifier))】●
 ¤》
   
 #@EXP_UNARY_WITHREFS《#@EXP_UNARY●#@EXP_UNARY_REFS》
 #@EXP_UNARY_WITHREFS__LITE《
   ►#?AST_STRUCTURE_EXPECTED!【42●Integer】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)《int[foo]》●ExpReference(RefIndexing(RefPrimitive ?))】●
+  ►#?AST_STRUCTURE_EXPECTED!【  #@TYPE_EXP [foo]● ExpIndex(ExpReference(RefPrimitive) ExpReference(RefIdentifier))】●
 ¤》
 
 #@EXP_OROR《

@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc2.ArrayListDeque;
+import dtool.ast.ASTChildrenVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.SourceRange;
@@ -292,7 +293,7 @@ public class AbstractParser {
 	
 	public static Object PARSED_STATUS = new String("NODE_STATUS:PARSED");
 	
-	protected <T extends ASTNeoNode> T connect(T node) {
+	protected <T extends ASTNeoNode> T connect(final T node) {
 		for (ParserError parserError : pendingMissingTokenErrors) {
 			if(parserError.msgData != DeeTokens.IDENTIFIER) {
 				parserError.originNode = node;
@@ -301,6 +302,13 @@ public class AbstractParser {
 		pendingMissingTokenErrors = new ArrayList<ParserError>();
 		
 		node.setData(PARSED_STATUS);
+		node.accept(new ASTChildrenVisitor() {
+			@Override
+			protected void geneticChildrenVisit(ASTNeoNode child) {
+				assertTrue(child.getParent() == node);
+				assertTrue(child.getData() == PARSED_STATUS);
+			}
+		});
 		return node;
 	}
 	

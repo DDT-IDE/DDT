@@ -70,9 +70,9 @@ ExpInfix(ExpLiteralInteger ExpInfix(ExpLiteralString ExpLiteralInteger))
 #@INFIX_EXP_HI•(#@INFIX_EXP•(ExpThis #@MIDDLE_EXP String)  #@MIDDLE_EXP_HI  #@INT_OR_MISSING)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION) 	 this #@OP_HI(OP) #@EXP_UNARY_WITHREFS  #@OP  /*OP*/  123
+#PARSE(EXPRESSION) 	 this #@OP_HI(OP) #@EXP_UNARY  #@OP  /*OP*/  123
 #AST_STRUCTURE_EXPECTED:
-#@INFIX_EXP_HI•(ExpThis  #@MIDDLE_EXP_HI  #@INFIX_EXP•(#@EXP_UNARY_WITHREFS #@MIDDLE_EXP ExpLiteralInteger))
+#@INFIX_EXP_HI•(ExpThis  #@MIDDLE_EXP_HI  #@INFIX_EXP•(#@EXP_UNARY #@MIDDLE_EXP ExpLiteralInteger))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

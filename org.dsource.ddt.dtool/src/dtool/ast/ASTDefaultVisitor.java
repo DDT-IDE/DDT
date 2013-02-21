@@ -43,6 +43,7 @@ import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpConditional;
+import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
@@ -51,16 +52,15 @@ import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
+import dtool.ast.expressions.ExpPostfix;
+import dtool.ast.expressions.ExpPrefix;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
-import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
-import dtool.ast.expressions.ExpPostfix;
-import dtool.ast.expressions.ExpPrefix;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -96,16 +96,16 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	}
 	
 	@Override
-	public boolean visit(Symbol elem) {
+	public boolean visit(Symbol node) {
 		return true;
 	}
 	
 	@Override
-	public boolean visit(DefUnit elem) {
+	public boolean visit(DefUnit node) {
 		return true;
 	}
 	
-	@Override public boolean visit(Module elem) { return true; }
+	@Override public boolean visit(Module node) { return true; }
 	@Override public boolean visit(DeclarationModule node) { return true; }
 	
 	@Override public final boolean visit(DeclarationImport node) { return true; }
@@ -125,54 +125,54 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	
 	//-- Aggregates
 	@Override
-	public boolean visit(DefinitionTemplate elem) {
+	public boolean visit(DefinitionTemplate node) {
 		return true;
 	}
 	
 	@Override
-	public boolean visit(DefinitionStruct elem) {
+	public boolean visit(DefinitionStruct node) {
 		return true;
 	}
 	
 	@Override
-	public boolean visit(DefinitionUnion elem) {
+	public boolean visit(DefinitionUnion node) {
 		return true;
 	}
 	
 	@Override
-	public boolean visit(DefinitionClass elem) {
+	public boolean visit(DefinitionClass node) {
 		return true;
 	}
 	
 	@Override
-	public boolean visit(DefinitionInterface elem) {
+	public boolean visit(DefinitionInterface node) {
 		return true;
 	}
 	
-	@Override public boolean visit(DefinitionVariable elem) { return true; }
-	@Override public boolean visit(DefinitionVarFragment elem) { return true; }
-	@Override public boolean visit(InitializerExp elem) { return true; }
-	@Override public boolean visit(InitializerArray elem) { return true; }
-	@Override public boolean visit(InitializerStruct elem) { return true; }
-	@Override public boolean visit(InitializerVoid elem) { return true; }
+	@Override public boolean visit(DefinitionVariable node) { return true; }
+	@Override public boolean visit(DefinitionVarFragment node) { return true; }
+	@Override public boolean visit(InitializerExp node) { return true; }
+	@Override public boolean visit(InitializerArray node) { return true; }
+	@Override public boolean visit(InitializerStruct node) { return true; }
+	@Override public boolean visit(InitializerVoid node) { return true; }
 	
 	@Override
-	public boolean visit(DefinitionEnum elem) {
-		return true;
-	}
-	
-	@Override
-	public boolean visit(DefinitionTypedef elem) {
+	public boolean visit(DefinitionEnum node) {
 		return true;
 	}
 	
 	@Override
-	public boolean visit(DefinitionAlias elem) {
+	public boolean visit(DefinitionTypedef node) {
 		return true;
 	}
 	
 	@Override
-	public boolean visit(DefinitionFunction elem) {
+	public boolean visit(DefinitionAlias node) {
+		return true;
+	}
+	
+	@Override
+	public boolean visit(DefinitionFunction node) {
 		return true;
 	}
 	
@@ -182,63 +182,63 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	}
 	
 	@Override
-	public boolean visit(Resolvable elem) {
+	public boolean visit(Resolvable node) {
 		return true;
 	}
 	
 	@Override
-	public boolean visit(Reference elem) {
+	public boolean visit(Reference node) {
 		return true;
 	}
 	
-	@Override public boolean visit(RefIdentifier elem) { return true; }
-	@Override public boolean visit(RefImportSelection elem) { return true; }
-	@Override public boolean visit(RefModuleQualified elem) { return true; }
-	@Override public boolean visit(RefQualified elem) { return true; }
-	@Override public boolean visit(RefPrimitive elem) { return true; }
-	@Override public boolean visit(RefModule elem) { return true; }
+	@Override public boolean visit(RefIdentifier node) { return true; }
+	@Override public boolean visit(RefImportSelection node) { return true; }
+	@Override public boolean visit(RefModuleQualified node) { return true; }
+	@Override public boolean visit(RefQualified node) { return true; }
+	@Override public boolean visit(RefPrimitive node) { return true; }
+	@Override public boolean visit(RefModule node) { return true; }
 	
-	@Override public boolean visit(RefTypeDynArray elem) { return true; }
-	@Override public boolean visit(RefTypePointer elem) { return true; }
-	@Override public boolean visit(TypeDelegate elem) { return true; }
-	@Override public boolean visit(TypeFunction elem) { return true; }
-	@Override public boolean visit(RefIndexing elem) { return true; }
+	@Override public boolean visit(RefTypeDynArray node) { return true; }
+	@Override public boolean visit(RefTypePointer node) { return true; }
+	@Override public boolean visit(TypeDelegate node) { return true; }
+	@Override public boolean visit(TypeFunction node) { return true; }
+	@Override public boolean visit(RefIndexing node) { return true; }
 	
 	/* ---------------------------------- */
-	@Override public boolean visit(ExpThis elem) { return true; }
-	@Override public boolean visit(ExpSuper elem) { return true; }
-	@Override public boolean visit(ExpNull elem) { return true; }
-	@Override public boolean visit(ExpArrayLength elem) { return true; }
-	@Override public boolean visit(ExpLiteralBool elem) { return true; }
-	@Override public boolean visit(ExpLiteralInteger elem) { return true; }
-	@Override public boolean visit(ExpLiteralString elem) { return true; }
-	@Override public boolean visit(ExpLiteralFloat elem) { return true; }
-	@Override public boolean visit(ExpLiteralChar elem) { return true; }
+	@Override public boolean visit(ExpThis node) { return true; }
+	@Override public boolean visit(ExpSuper node) { return true; }
+	@Override public boolean visit(ExpNull node) { return true; }
+	@Override public boolean visit(ExpArrayLength node) { return true; }
+	@Override public boolean visit(ExpLiteralBool node) { return true; }
+	@Override public boolean visit(ExpLiteralInteger node) { return true; }
+	@Override public boolean visit(ExpLiteralString node) { return true; }
+	@Override public boolean visit(ExpLiteralFloat node) { return true; }
+	@Override public boolean visit(ExpLiteralChar node) { return true; }
 	
-	@Override public boolean visit(ExpReference elem) { return true; }
+	@Override public boolean visit(ExpReference node) { return true; }
 	
-	@Override public boolean visit(ExpPrefix elem) { return true; }
-	@Override public boolean visit(ExpPostfix elem) { return true; }
-	@Override public boolean visit(ExpInfix elem) { return true; }
-	@Override public boolean visit(ExpConditional elem) { return true; }
+	@Override public boolean visit(ExpPrefix node) { return true; }
+	@Override public boolean visit(ExpPostfix node) { return true; }
+	@Override public boolean visit(ExpInfix node) { return true; }
+	@Override public boolean visit(ExpConditional node) { return true; }
 	
 	@Override
-	public boolean visit(ExpLiteralFunc elem) {
+	public boolean visit(ExpLiteralFunc node) {
 		return true;
 	}
 	
 	@Override
-	public boolean visit(ExpLiteralNewAnonClass elem) {
+	public boolean visit(ExpLiteralNewAnonClass node) {
 		return true;
 	}
 
 	/* ---------------------------------- */
 	@Override
-	public boolean visit(TypeTypeof elem) {
+	public boolean visit(TypeTypeof node) {
 		return true;
 	}
 	@Override
-	public boolean visit(RefTemplateInstance elem) {
+	public boolean visit(RefTemplateInstance node) {
 		return true;
 	}
 	
@@ -248,15 +248,15 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	}
 	
 	@Override
-	public boolean visit(DeclarationInvariant elem) {
+	public boolean visit(DeclarationInvariant node) {
 		return true;
 	}
 	@Override
-	public boolean visit(DeclarationUnitTest elem) {
+	public boolean visit(DeclarationUnitTest node) {
 		return true;
 	}
 	@Override
-	public boolean visit(DeclarationConditional elem) {
+	public boolean visit(DeclarationConditional node) {
 		return true;
 	}
 	

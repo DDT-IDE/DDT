@@ -12,6 +12,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
+import dtool.parser.DeeParser;
 import dtool.parser.Token;
 import dtool.refmodel.INamedScope;
 import dtool.refmodel.IScope;
@@ -49,6 +50,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 			assertNotNull(packages);
 			this.packages = packages;
 			this.moduleName = new ModuleDefSymbol(moduleDefUnit.source, moduleDefUnit.getSourceRange());
+			this.moduleName.setData(DeeParser.PARSED_STATUS);
 			parentize(moduleName);
 			
 			initSourceRange(sourceRange);

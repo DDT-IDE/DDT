@@ -10,38 +10,26 @@ ExpReference(RefIdentifier)
 ExpReference(RefPrimitive)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-int.init
-#AST_STRUCTURE_EXPECTED:
-ExpReference(RefQualified(RefPrimitive RefIdentifier))
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)
-Foo[int].bar
-#AST_STRUCTURE_EXPECTED:
-ExpReference(RefQualified(RefIndexing(? ?) RefIdentifier))
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ RawType - Should this be an error?
-#PARSE(EXPRESSION)
-#@LIT_KEYWORDS《
-►                          foo●
-►#error(TYPE_AS_EXP_VALUE)《int》●
-►#error(TYPE_AS_EXP_VALUE)《char》*#error(EXPRULE_exp)●
-►                          foo* #error(EXPRULE_exp)●
-►#error(TYPE_AS_EXP_VALUE)《foo[]》●
-►#error(TYPE_AS_EXP_VALUE)《foo[int]》●
-►#error(TYPE_AS_EXP_VALUE)《int[foo]》●
+#@PREFIX!《
+  ►#?AST_STRUCTURE_EXPECTED!【int●RefPrimitive】●
 ¤》
+#@PREFIX_TODO!《
+  ►#?AST_STRUCTURE_EXPECTED!【int●RefPrimitive】●
+  ►#?AST_STRUCTURE_EXPECTED!【(int)●ExpParentheses(RefPrimitive)】●
+  ►#?AST_STRUCTURE_EXPECTED!【(Foo[int])●RefIndexing(RefIdentifier RefPrimitive)】●
+  ►#?AST_STRUCTURE_EXPECTED!【(Foo[foo*])●RefIndexing(RefIdentifier ?)】●
+¤》
+#@PREFIX.init
 #AST_STRUCTURE_EXPECTED:
-#@《
-  ►ExpReference(RefIdentifier)●
-  ►ExpReference(RefPrimitive)●
-  ►ExpInfix(ExpReference(RefPrimitive))●
-  ►ExpInfix(ExpReference(RefIdentifier))●
-  ►ExpReference(RefTypeDynArray(?))●
-  ►ExpReference(RefIndexing(? ?))●
-  ►ExpReference(RefIndexing(? ?))●
-¤》(LIT_KEYWORDS)
+ExpReference(RefQualified(#@PREFIX RefIdentifier))
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Invalid D syntax (TODO report error
+#PARSE(EXPRESSION)
+Foo[int].init
+#AST_STRUCTURE_EXPECTED:
+ExpReference(RefQualified(RefIndexing(RefIdentifier RefPrimitive) RefIdentifier))
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ This tests valid references that are being parse as expressions
 #PARSE(EXPRESSION) #@EXP_UNARY_REFS
 #AST_STRUCTURE_EXPECTED:
 #@EXP_UNARY_REFS

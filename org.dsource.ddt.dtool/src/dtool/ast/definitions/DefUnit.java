@@ -5,6 +5,7 @@ import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
+import dtool.parser.DeeParser;
 import dtool.parser.AbstractParser.LexElement;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -45,6 +46,7 @@ public abstract class DefUnit extends ASTNeoNode {
 	public DefUnit(String defName, SourceRange defNameSourceRange, Comment[] comments, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.defname = new DefSymbol(defName, defNameSourceRange, this);
+		this.defname.setData(DeeParser.PARSED_STATUS);
 		this.comments = comments;
 	}
 	

@@ -4,107 +4,88 @@ typeid( 7 * #error(TYPE_AS_EXP_VALUE)《int》 )
 #AST_STRUCTURE_EXPECTED:
 ExpTypeId(  ExpInfix(Integer ExpReference(RefPrimitive))  )
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)
-typeid(foo *** #@X《foo●#error(TYPE_AS_EXP_VALUE){int}》)
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  ExpInfix(* ExpPrefix(ExpPrefix(ExpReference(#@《RefIdentifier●RefPrimitive》(X) ))) )  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-typeid(foo * * * #@X《 ● [foo*]》 )
+#@TYPE_EXP [foo]
 #AST_STRUCTURE_EXPECTED:
-ExpTypeId( #@《●RefIndexing(》(X) 
-  RefTypePointer(RefTypePointer(RefTypePointer(RefIdentifier))) 
-  #@《●RefTypePointer(RefIdentifier) )》(X)
+ExpIndex(ExpReference(RefPrimitive) ExpReference(RefIdentifier))
+
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+// various ref_or_exp prefixes , there are lots of corner cases to test
+
+// Simple prefix:
+#@PREFIX_S《
+  ►#?AST_STRUCTURE_EXPECTED!【dai ● RefIdentifier】● 
+  ►#?AST_STRUCTURE_EXPECTED!【dai* ● RefTypePointer(RefIdentifier)】 ●
+  ►#?AST_STRUCTURE_EXPECTED!【dai[] ● RefTypeDynArray(RefIdentifier) 】●
+¤》
+ 
+// These prefixes are ambiguous as to whether to parse as ref or exp
+#@AMBIG_PREFIX《
+  ►#?AST_STRUCTURE_EXPECTED!【dai ● RefIdentifier】● 
+  ►#?AST_STRUCTURE_EXPECTED!【dai* #INFIX(flag)● RefTypePointer(RefIdentifier)】 ●
+  ►#?AST_STRUCTURE_EXPECTED!【dai[] ● RefTypeDynArray(RefIdentifier) 】●
+  
+  ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[7 /*EXP*/]● RefIndexing(#@PREFIX_S Integer) 】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo /*AMBIG*/]● RefIndexing(#@PREFIX_S RefIdentifier)】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo*[]/*AMBIG*/]● RefIndexing(#@PREFIX_S 
+    RefTypeDynArray(RefTypePointer(RefIdentifier))) 】●
+
+  ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo[1, 2]/*EXP*/]●RefIndexing(#@PREFIX_S ExpIndex(* Integer Integer))】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo*[1, 2]/*EXP*/]●RefIndexing(#@PREFIX_S ExpInfix(* ?(Integer Integer)))】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo*[2 : #@NO_EXP]/*EXP*/]●RefIndexing(#@PREFIX_S ExpInfix(* *))】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo[bar]/*AMBIG*/]●RefIndexing(#@PREFIX_S RefIndexing(* *))】●
+¤》
+
+// These prefixes make the rule parse as ref
+#@REF_PREFIX《
+  ►#?AST_STRUCTURE_EXPECTED!【int●RefPrimitive】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo*/*REF*/]● RefIndexing(#@PREFIX_S RefTypePointer(RefIdentifier))】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[int/*REF*/]● RefIndexing(#@PREFIX_S RefPrimitive)】●
+
+  ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo*[int]/*REF*/]●RefIndexing(#@PREFIX_S RefIndexing(* *))】●
+¤》
+
+// These suffix parts make the rule parse as exp
+#@EXP_SUFFIX《
+  ►#?AST_STRUCTURE_EXPECTED!【*foo●ExpInfix(* #?INFIX【ExpPrefix(*)●#@ExpIdentifier】)】●
+  ►#?AST_STRUCTURE_EXPECTED!【*#@TYPE_EXP●ExpInfix(* #?INFIX【ExpPrefix(*)●ExpReference(RefPrimitive)】)】●
+  
+  ►#?AST_STRUCTURE_EXPECTED!【[foo , 2] * []●ExpInfix(* ExpLiteralArray)】●
+  ►#?AST_STRUCTURE_EXPECTED!【[#@NO_EXP ,2] * #@NULL_EXP●ExpInfix(* #@NULL_EXP)】●
+  ►#?AST_STRUCTURE_EXPECTED!【*[foo: #@NO_EXP] * [foo]●ExpInfix(* ExpLiteralArray(#@ExpIdentifier))】●
+  
+  ►#?AST_STRUCTURE_EXPECTED!【#?INFIX【[7/*INFIX FIX*/]●】  (1, 2)* []●ExpInfix(* ExpLiteralArray)】●
+  ►#?AST_STRUCTURE_EXPECTED!【#?INFIX【[7/*INFIX FIX*/]●】  [foo .. 2] * []●ExpInfix(* ExpLiteralArray)】●
+  
+¤》
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test ROE to reference, decided at various points during parsing
+#PARSE(EXPRESSION)
+typeid(#@AMBIG_OR_REF《#@AMBIG_PREFIX●#@REF_PREFIX》   #@REF_END《 ● *● * * ● [foo*] ●[]》 )
+#AST_STRUCTURE_EXPECTED:
+ExpTypeId( 
+  #@《 ●RefTypePointer(●RefTypePointer(RefTypePointer(●RefIndexing(●RefTypeDynArray(》(REF_END) 
+  #@AMBIG_OR_REF 
+  #@《●)●))●RefTypePointer(RefIdentifier) )●)》(REF_END)
 )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test ROE to reference, with exp extra
 #PARSE(EXPRESSION)
-typeid(foo[])
+typeid(#@REF_PREFIX #@REST《 ● * #parser(IgnoreRest) #error(EXP_CLOSE_PARENS) 42 》 )
 #AST_STRUCTURE_EXPECTED:
-ExpTypeId(RefTypeDynArray(RefIdentifier))
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)
-typeid(foo[7*7])  // TODO
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(RefIndexing(RefIdentifier ExpInfix(Integer Integer)))
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ambiguous refOrExp
-#PARSE(EXPRESSION)
-typeid(foo * [])
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  RefTypeDynArray(RefTypePointer(RefIdentifier) )  )
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)
-typeid(foo *[1*bar]* zee)
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  ExpInfix(
-  ExpInfix(ExpReference(?) ExpLiteralArray(ExpInfix(* *)) ) 
-  ExpReference(?)
-))
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)
-typeid(foo *[1*bar]* )
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  RefTypePointer(RefIndexing( RefTypePointer(RefIdentifier) ExpInfix(* *) )) )
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ambiguous refOrExp
-#PARSE(EXPRESSION)
-typeid(foo * [6])
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  RefIndexing(RefTypePointer(RefIdentifier) Integer)  )
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ambiguous refOrExp
-#PARSE(EXPRESSION)
-typeid( foo*[xxx]*[bar * [6]] )
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  RefIndexing(
-  RefTypePointer(RefIndexing(RefTypePointer(RefIdentifier)  RefIdentifier))
-  RefIndexing(RefTypePointer(RefIdentifier) Integer)
-))
-
-Ⓗ▂▂▂▂▂▂▂
-#@NO_EXP《#?AST_STRUCTURE_EXPECTED!【/*MISSING_EXP*/ #error(EXPRULE_exp)●MissingExpression】》
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ array literal turing the parsing into exp
-#PARSE(EXPRESSION)
-typeid(foo * #@X《[bar:bar]●[1,2]●[ #@NO_EXP ,2]》  * #@Z《#error(EXPRULE_exp)●[bar*#error(EXPRULE_exp)]》   )
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  ExpInfix(
-  ExpInfix(ExpReference(?) 
-    #@《ExpLiteralMapArray(*)●ExpLiteralArray(Integer Integer)●ExpLiteralArray(#@NO_EXP Integer)》(X) ) 
-  #@《  ●ExpLiteralArray(ExpInfix(ExpReference(RefIdentifier)))》(Z)
-))
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ array literal turing the parsing into ref
-#PARSE(EXPRESSION)【
-typeid(foo *[bar*]* #error(EXP_CLOSE_PARENS) 】 zee )
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  RefTypePointer(RefIndexing( RefTypePointer(RefIdentifier) RefTypePointer(RefIdentifier) )) )
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ref primitive turing the parsing into ref
-#PARSE(EXPRESSION)【
-typeid(int * #error(EXP_CLOSE_PARENS) 】 bar )
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  RefTypePointer(RefPrimitive)  )
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ref primitive turing the parsing into ref  -- *under array literal*
-#PARSE(EXPRESSION)【
-typeid(foo * [int * #error(EXP_CLOSE_BRACKET) #error(EXP_CLOSE_PARENS) 】 bar ] )
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  RefIndexing( RefTypePointer(RefIdentifier) RefTypePointer(RefPrimitive) )  )
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ array literal turing the parsing into ref  -- *under array literal*
-#PARSE(EXPRESSION)
-typeid(foo * [bar * [zee *]] )
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId(  RefIndexing( 
-  RefTypePointer(RefIdentifier) 
-  RefIndexing(RefTypePointer(RefIdentifier) RefTypePointer(RefIdentifier)) )
+ExpTypeId( 
+  #@《 ●RefTypePointer( 》(REST) #@REF_PREFIX #@《 ●) 》(REST)
 )
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test ROE to expression, decided in middle or end
+#PARSE(EXPRESSION)
+typeid(#@AMBIG_PREFIX #@EXP_SUFFIX )
+#AST_STRUCTURE_EXPECTED:
+ExpTypeId( #@EXP_SUFFIX )
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test op category mismatch
 #PARSE(EXPRESSION)
 typeid(foo / * #error(EXPRULE_exp) )
 #AST_STRUCTURE_EXPECTED:
 ExpTypeId(  ExpInfix(ExpReference(?) ExpPrefix() )  )
-
 
