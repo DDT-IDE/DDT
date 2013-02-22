@@ -28,7 +28,8 @@
   ►#?AST_STRUCTURE_EXPECTED!【*foo[]●      ExpPrefix(ExpSlice(#@ExpIdentifier))】●
   ►#?AST_STRUCTURE_EXPECTED!【!foo[[123]]● ExpPrefix(ExpIndex(#@ExpIdentifier ExpLiteralArray(?)))】●
   ►#?AST_STRUCTURE_EXPECTED!【foo[12 .. [123]]●      ExpSlice(#@ExpIdentifier Integer ExpLiteralArray(?))】●
-  ►#?AST_STRUCTURE_EXPECTED!【foo++●             ExpPostfix(#@ExpIdentifier)】●
+  ►#?AST_STRUCTURE_EXPECTED!【foo++●                 ExpPostfix(#@ExpIdentifier)】●
+  ►#?AST_STRUCTURE_EXPECTED!【123 ^^ exp●            ExpInfix(Integer #@ExpIdentifier)】●
   
 ¤》
 #@EXP_UNARY__LITE《

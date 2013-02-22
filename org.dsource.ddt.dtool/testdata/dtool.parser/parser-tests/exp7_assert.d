@@ -11,8 +11,7 @@ ExpAssert(#@EXP_ASSIGN String)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-assert( #@EXP1《 #@EXP_ASSIGN,●#error(EXPRULE_exp),●》 #@EXP2《#@EXP_ASSIGN●#error(EXPRULE_exp)》  
-#@《)●#error(EXP_CLOSE_PARENS)》
+assert( #@EXP1《 #@EXP_ASSIGN,●#error(EXPRULE_exp),●》 #@EXP2《#@EXP_ASSIGN●#error(EXPRULE_exp)》   #@PaCLOSE_OR_NO
 #AST_STRUCTURE_EXPECTED:
 ExpAssert(#@《 #@EXP_ASSIGN ● MissingExpression ●》(EXP1) #@《#@EXP_ASSIGN●MissingExpression》(EXP2) )
 

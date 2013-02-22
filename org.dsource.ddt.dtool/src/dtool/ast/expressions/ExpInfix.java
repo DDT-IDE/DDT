@@ -78,6 +78,8 @@ public class ExpInfix extends Expression {
 		DIV(MUL, DeeTokens.DIV),
 		MOD(MUL, DeeTokens.MOD),
 		
+		POW(DeeTokens.POW),
+		
 		NULL(null, (String) null), // Special entry that doesn't represent any infix operator
 		;
 		

@@ -11,7 +11,7 @@ ExpMixinString( #@EXP_ASSIGN )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-mixin( #@EXP1《#@EXP_ASSIGN●#error(EXPRULE_exp)》  #@《)●#error(EXP_CLOSE_PARENS)》
+mixin( #@EXP1《#@EXP_ASSIGN●#error(EXPRULE_exp)》 #@PaCLOSE_OR_NO
 #AST_STRUCTURE_EXPECTED:
 ExpMixinString( #@《#@EXP_ASSIGN●MissingExpression》(EXP1)  )
 
@@ -36,7 +36,7 @@ ExpImportString( #@EXP_ASSIGN )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-import( #@EXP1《#@EXP_ASSIGN●#error(EXPRULE_exp)》  #@《)●#error(EXP_CLOSE_PARENS)》
+import( #@EXP1《#@EXP_ASSIGN●#error(EXPRULE_exp)》  #@PaCLOSE_OR_NO
 #AST_STRUCTURE_EXPECTED:
 ExpImportString( #@《#@EXP_ASSIGN●MissingExpression》(EXP1)  )
 

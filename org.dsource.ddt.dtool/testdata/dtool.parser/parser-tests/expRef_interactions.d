@@ -58,6 +58,9 @@ ExpIndex(ExpReference(RefPrimitive) ExpReference(RefIdentifier))
   ►#?AST_STRUCTURE_EXPECTED!【#?INFIX【[7/*INFIX FIX*/]●】  (1, 2)* []●ExpInfix(* ExpLiteralArray)】●
   ►#?AST_STRUCTURE_EXPECTED!【#?INFIX【[7/*INFIX FIX*/]●】  [foo .. 2] * []●ExpInfix(* ExpLiteralArray)】●
   
+  ►#?AST_STRUCTURE_EXPECTED!【[] ++ ●*】●
+  ►#?AST_STRUCTURE_EXPECTED!【[] ^^ 123 ●*】●
+  
 ¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test ROE to reference, decided at various points during parsing

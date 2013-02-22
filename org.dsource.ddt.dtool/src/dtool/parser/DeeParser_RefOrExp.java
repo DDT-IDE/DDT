@@ -375,6 +375,10 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			}
 			return parsePostfixExpression(refOrExp.getExp(), refOrExp.canBeRef());
 		}
+		case POW: {
+			updateRefOrExpToExpression(canBeRef, exp, false);
+			return expConnect(parseInfixOperator(exp, InfixOpType.POW, InfixOpType.NULL, false).getExp());
+		}
 		default:
 			return refOrExp(canBeRef, exp);
 		}
