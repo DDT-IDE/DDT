@@ -33,7 +33,9 @@ import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpParentheses;
 import dtool.ast.expressions.ExpPrefix;
+import dtool.ast.expressions.ExpPostfix.PostfixOpType;
 import dtool.ast.expressions.ExpPrefix.PrefixOpType;
+import dtool.ast.expressions.ExpPostfix;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSlice;
 import dtool.ast.expressions.ExpSuper;
@@ -53,13 +55,13 @@ import dtool.ast.references.Reference;
 import dtool.parser.ParserError.ParserErrorTypes;
 
 
-public class DeeParser_ImplRefOrExp extends AbstractParser {
+public class DeeParser_RefOrExp extends AbstractParser {
 	
-	public DeeParser_ImplRefOrExp(String source) {
+	public DeeParser_RefOrExp(String source) {
 		super(new DeeLexer(source));
 	}
 	
-	public DeeParser_ImplRefOrExp(DeeLexer deeLexer) {
+	public DeeParser_RefOrExp(DeeLexer deeLexer) {
 		super(deeLexer);
 	}
 	
@@ -259,7 +261,7 @@ public class DeeParser_ImplRefOrExp extends AbstractParser {
 	protected RefOrExpParse refOrExpConnect(RefOrExpMode mode, Expression exp, LexElement afterStarOp) {
 		assertNotNull(mode);
 		if(mode == RefOrExpMode.EXP) {
-			if(exp.getData() != DeeParser_ImplDecls.PARSED_STATUS) {
+			if(exp.getData() != DeeParser_Decls.PARSED_STATUS) {
 				exp = connect(exp);
 			}
 		} else { // This means the node must go through conversion process
@@ -356,6 +358,12 @@ public class DeeParser_ImplRefOrExp extends AbstractParser {
 	
 	public RefOrExpParse parsePostfixExpression(Expression exp, boolean canBeRef) {
 		switch (lookAheadGrouped()) {
+		case DECREMENT:
+		case INCREMENT: {
+			updateRefOrExpToExpression(canBeRef, exp, false);
+			RefOrExpParse refOrExp = expConnect(parsePostfixExpression(exp));
+			return parsePostfixExpression(refOrExp.getExp(), false);
+		}
 		case OPEN_PARENS: {
 			updateRefOrExpToExpression(canBeRef, exp, false);
 			RefOrExpParse refOrExp = expConnect(parseCallExpression(exp));
@@ -582,6 +590,12 @@ public class DeeParser_ImplRefOrExp extends AbstractParser {
 			new ExpLiteralArray(arrayView(elements), srToCursor(nodeStart));
 	}
 	
+	public ExpPostfix parsePostfixExpression(Expression exp) {
+		Token op = consumeLookAhead();
+		ExpPostfix expPostfix = new ExpPostfix(exp, PostfixOpType.tokenToPrefixOpType(op.type), srToCursor(exp));
+		return expPostfix;
+	}
+	
 	protected RefOrExpParse parseReferenceOrExpression_ExpStart(int precedenceLimit, final Expression leftExp, 
 		boolean canBeRef) {
 		DeeTokens gla = lookAheadGrouped();
@@ -754,7 +768,7 @@ public class DeeParser_ImplRefOrExp extends AbstractParser {
 				default:
 					throw assertFail();
 				}
-				node.setData(DeeParser_ImplDecls.PARSED_STATUS);
+				node.setData(DeeParser_Decls.PARSED_STATUS);
 				return true;
 			}
 		});
@@ -843,7 +857,7 @@ public class DeeParser_ImplRefOrExp extends AbstractParser {
 			// argument can only be interpreted as reference
 			indexArg = ((ExpReference) indexArgExp).ref;
 			indexArg.detachFromParent();
-		} else if(indexArgExp.getData() == DeeParser_ImplDecls.PARSED_STATUS) {
+		} else if(indexArgExp.getData() == DeeParser_Decls.PARSED_STATUS) {
 			// argument can only be interpreted as expression
 			indexArg = indexArgExp;
 			indexArg.detachFromParent();

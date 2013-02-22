@@ -48,13 +48,13 @@ import dtool.ast.references.Reference;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
-public class DeeParser_ImplDecls extends DeeParser_ImplRefOrExp {
+public class DeeParser_Decls extends DeeParser_RefOrExp {
 	
-	public DeeParser_ImplDecls(String source) {
+	public DeeParser_Decls(String source) {
 		super(new DeeLexer(source));
 	}
 	
-	public DeeParser_ImplDecls(DeeLexer deeLexer) {
+	public DeeParser_Decls(DeeLexer deeLexer) {
 		super(deeLexer);
 	}
 	

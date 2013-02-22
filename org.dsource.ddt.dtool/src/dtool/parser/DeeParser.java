@@ -2,7 +2,7 @@ package dtool.parser;
 
 import dtool.ast.definitions.Module;
 
-public class DeeParser extends DeeParser_ImplDecls {
+public class DeeParser extends DeeParser_Decls {
 	
 	public DeeParser(String source) {
 		super(new DeeLexer(source));

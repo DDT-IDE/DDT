@@ -123,6 +123,7 @@ import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.ExpPostfix;
 import dtool.ast.expressions.ExpPrefix;
+import dtool.ast.expressions.ExpPostfix.PostfixOpType;
 import dtool.ast.expressions.ExpPrefix.PrefixOpType;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
@@ -538,15 +539,15 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	public boolean visit(PostExp node) {
 		int type = 0;
 		switch (node.op) {
-		case TOKplusplus: type = ExpPostfix.Type.POST_INCREMENT; break;
-		case TOKminusminus: type = ExpPostfix.Type.POST_DECREMENT; break;
+		case TOKplusplus: type = 1; break;
+		case TOKminusminus: type = 1; break;
 		default: Assert.fail();
 		}
 		
 		return endAdapt(
 			new ExpPostfix(
 				(Resolvable) DescentASTConverter.convertElem(node.e1, convContext),
-				type,
+				PostfixOpType.POST_DECREMENT,
 				DefinitionConverter.sourceRange(node)
 			)
 		);
