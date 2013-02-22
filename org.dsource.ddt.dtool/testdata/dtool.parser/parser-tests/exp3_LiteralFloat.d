@@ -5,11 +5,13 @@
 ExpLiteralFloat
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Float Literals (most code is copy paste from lexer tests)
 #@NUMS《0●1●345●1234567890●123_5_78__●1234567_9》
+#@NUMS__LITE《1234567890》
 #@NUMSX《#@^NUMS●0123456789》
 
 #@F_SP1《123●123.45●2_535●0.123●.897》
 
 #@HNUMS《0●1●345●1234567890ABCDEF●0123456789ABCDEF●123_4567_9●_0●__123__》
+#@HNUMS__LITE《1234567890ABCDEF》
 
 #@HF_SP1《0x123●0x25_AD_3F●0x0》
 #@HF_SP1x《#@^HF_SP1●0x123.45●0x0.123●0x.897》

@@ -13,26 +13,48 @@ package dtool.parser;
 
 import static dtool.tests.DToolTestResources.resourceFileToString;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
+import java.util.Map;
 
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.TemplatedSourceProcessor;
+import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
 import dtool.tests.DToolBaseTest;
+import dtool.tests.DToolTests;
 
 public class DeeSourceBasedTest extends DToolBaseTest {
 	
-	protected static final class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
+	protected static class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
 		@Override
 		protected void reportError(int offset) throws TemplatedSourceException {
 			assertFail();
 		}
+		
+		@Override
+		protected void putExpansion(ProcessingState sourceCase, String expansionId, TspExpansionElement expansionElem) {
+			sourceCase.putExpansion(expansionId, expansionElem);
+			
+			if(DToolTests.TESTS_LITE_MODE) {
+				String name = expansionId;
+				if(name != null && name.endsWith("__LITE")) { 
+					name = name.replace("__LITE", "");
+					TspExpansionElement value = expansionElem;
+					TspExpansionElement newElem = new TspExpansionElement(name, 
+						value.pairedExpansionId, value.arguments, value.anonymousExpansion, value.dontOuputSource);
+					assertTrue(sourceCase.getExpansion(name) != null);
+					sourceCase.putExpansion(name, newElem);
+				}
+			}
+		}
+		
 	}
 	
-	public AnnotatedSource[] getSourceBasedTests(File file, TemplatedSourceProcessor commonDefinitions) {
+	public AnnotatedSource[] getSourceBasedTests(File file, Map<String, TspExpansionElement> commonDefinitions) {
 		TestsTemplateSourceProcessor tsp = new TestsTemplateSourceProcessor();
 		if(commonDefinitions != null) {
-			tsp.addGlobalExpansions(commonDefinitions.getGlobalExpansions());
+			tsp.addGlobalExpansions(commonDefinitions);
 		}
 		testsLogger.print("===>>> " + getClass().getSimpleName() + " on file: " + resourceFileToString(file));
 		AnnotatedSource[] sourceBasedTests = tsp.processSource_unchecked("#", readStringFromFileUnchecked(file));

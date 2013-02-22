@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +28,7 @@ import melnorme.utilbox.misc2.CopyableListIterator;
 import melnorme.utilbox.misc2.ICopyableIterator;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.SimpleParser;
+import dtool.util.NewUtils;
 
 /**
  * Generates multiple source cases from a templated source, using an embedded markup language. 
@@ -51,10 +51,7 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 	}
 	
 	public void addGlobalExpansions(Map<String, TspExpansionElement> newGlobalExpansions) {
-		for (Entry<String, TspExpansionElement> entry : newGlobalExpansions.entrySet()) {
-			assertTrue(globalExpansions.containsKey(entry.getKey()) == false);
-			globalExpansions.put(entry.getKey(), entry.getValue());
-		}
+		NewUtils.addNew(globalExpansions, newGlobalExpansions);
 	}
 	
 	public ArrayList<AnnotatedSource> getGenCases() {
@@ -302,7 +299,7 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 			} else {
 				// We allow a "redefinition" only if the element is exactly the same
 				checkError(definedExpansionElem != null && definedExpansionElem != expansionElem, sourceCase);
-				sourceCase.putExpansion(expansionId, expansionElem);
+				putExpansion(sourceCase, expansionId, expansionElem);
 			}
 		}
 		
@@ -346,6 +343,11 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 			}
 		}
 		return true;
+	}
+	
+	protected void putExpansion(ProcessingState sourceCase, final String expansionId, 
+		TspExpansionElement expansionElem) {
+		sourceCase.putExpansion(expansionId, expansionElem);
 	}
 	
 	protected void checkError(boolean errorCondition, ProcessingState sourceCase) throws TemplatedSourceException {

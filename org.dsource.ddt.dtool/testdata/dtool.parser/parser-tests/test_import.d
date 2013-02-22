@@ -45,7 +45,10 @@ DeclarationImport(ImportAlias(DefSymbol RefModule) ImportAlias(DefSymbol RefModu
   ►#?AST_STRUCTURE_EXPECTED!【aldef = #error(EXP_ID)●ImportAlias(DefSymbol RefModule)】●
   ►#?AST_STRUCTURE_EXPECTED!【aldef = pack.foo●ImportAlias(DefSymbol RefModule)】●
   ►#?AST_STRUCTURE_EXPECTED!【aldef = pack.#error(EXP_ID)●ImportAlias(DefSymbol RefModule)】●
-
+¤》
+#@ID_OR_NO__LITE《
+  ►#?AST_STRUCTURE_EXPECTED!【foo●ImportContent(RefModule)】●
+  ►#?AST_STRUCTURE_EXPECTED!【aldef = foo●ImportAlias(DefSymbol RefModule)】●
 ¤》
 
 #@EXTRA_ARG_OR_NO《
@@ -110,9 +113,12 @@ DeclarationImport(ImportSelective(ImportAlias(DefSymbol RefModule)
 ¤》
 
 #@SELIMPORT_END《
+  ►#@SELIMPORT_END__LITE●
+  ►#?AST_STRUCTURE_EXPECTED!【, #@^SELID_OR_NO(END_ID) ; ● #@^SELID_OR_NO(END_ID)】●
+¤》
+#@SELIMPORT_END__LITE《
   ►#?AST_STRUCTURE_EXPECTED!【;● 】●
   ►#?AST_STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON)● 】●
-  ►#?AST_STRUCTURE_EXPECTED!【, #@^SELID_OR_NO(END_ID) ; ● #@^SELID_OR_NO(END_ID)】●
 ¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂

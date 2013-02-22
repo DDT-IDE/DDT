@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,6 +103,13 @@ public class NewUtils {
 	public static String replaceRange(String string, int startIndex, int endIndex, String repl) {
 		assertTrue(startIndex >= 0 && startIndex <= endIndex && endIndex <= string.length());
 		return string.substring(0, startIndex) + repl + string.substring(endIndex, string.length());
+	}
+	
+	public static <T, U> void addNew(Map<T, U> map, Map<? extends T, ? extends U> newGlobalExpansions) {
+		for (Entry<? extends T, ? extends U> entry : newGlobalExpansions.entrySet()) {
+			assertTrue(map.containsKey(entry.getKey()) == false);
+			map.put(entry.getKey(), entry.getValue());
+		}
 	}
 	
 }

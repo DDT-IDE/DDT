@@ -22,9 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.Predicate;
@@ -43,7 +43,6 @@ import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
 import dtool.sourcegen.TemplatedSourceProcessor;
-import dtool.tests.DToolTests;
 import dtool.tests.SimpleParser;
 import dtool.util.NewUtils;
 
@@ -52,7 +51,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "dtool.parser/parser-tests";
 	
-	protected static TemplatedSourceProcessor commonDefinitions = new TemplatedSourceProcessor();;
+	protected static Map<String, TspExpansionElement> commonDefinitions = new HashMap<String, TspExpansionElement>();
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
@@ -61,11 +60,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		for (File headerFile : commonHeaderFileList) {
 			TemplatedSourceProcessor tsp = new TestsTemplateSourceProcessor();
 			tsp.processSource_unchecked("#", readStringFromFileUnchecked(headerFile));
-			commonDefinitions.addGlobalExpansions(tsp.getGlobalExpansions());
-			
-			if(DToolTests.TESTS_LITE_MODE) {
-				replaceDefinitionsWithLiteVersion(commonDefinitions.getGlobalExpansions());
-			}
+			NewUtils.addNew(commonDefinitions, tsp.getGlobalExpansions());
 		}
 		
 		return toFnParameterList(getDeeModuleList(getTestResource(TESTFILESDIR), true), new Predicate<File>() {
@@ -76,20 +71,6 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				return false;
 			}
 		});
-	}
-	
-	public static void replaceDefinitionsWithLiteVersion(Map<String, TspExpansionElement> expansions) {
-		for (Entry<String, TspExpansionElement> entry : expansions.entrySet()) {
-			String name = entry.getValue().expansionId;
-			if(name != null && name.endsWith("__LITE")) { 
-				name = name.replace("__LITE", "");
-				TspExpansionElement value = entry.getValue();
-				TspExpansionElement newElem = new TspExpansionElement(name, 
-					value.pairedExpansionId, value.arguments, value.anonymousExpansion, value.dontOuputSource);
-				assertTrue(expansions.get(name) != null);
-				expansions.put(name, newElem);
-			}
-		}
 	}
 	
 	protected final File file;
