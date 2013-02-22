@@ -93,14 +93,16 @@ public class DeeParserTest extends CommonTestUtils {
 			result = new DeeParserResult(deeParser.parseModule(), deeParser.errors);
 		} else if(parseRule.equals("EXPRESSION")) {
 			result = new DeeParserResult(deeParser.parseExpression(), deeParser.errors);
-			if(expectedRemainingSource == null) {
-				assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
-			} else {
-				String remainingSource = deeParser.getSource().substring(deeParser.getParserPosition());
-				CheckSourceEquality.check(remainingSource, expectedRemainingSource, false);
-			}
+		} else if(parseRule.equals("DeclarationImport")) {
+			result = new DeeParserResult(deeParser.parseImportDeclaration(), deeParser.errors);
 		} else {
 			throw assertFail();
+		}
+		if(expectedRemainingSource == null) {
+			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
+		} else {
+			String remainingSource = deeParser.getSource().substring(deeParser.getParserPosition());
+			CheckSourceEquality.check(remainingSource, expectedRemainingSource, false);
 		}
 		
 		ASTNeoNode mainNode = assertNotNull_(result.node);

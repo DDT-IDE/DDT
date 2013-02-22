@@ -353,6 +353,10 @@ public class AbstractParser {
 		return ArrayView.create(ArrayUtil.createFrom(list, cpType));
 	}
 	
+	public static <T extends IASTNeoNode> ArrayView<T> arrayViewI(Collection<? extends T> list) {
+		return ArrayView.create((T[]) ArrayUtil.createFrom(list, IASTNeoNode.class));
+	}
+	
 	public static <T extends ASTNeoNode> ArrayView<T> arrayView(Collection<? extends T> list) {
 		return ArrayView.create((T[]) ArrayUtil.createFrom(list, ASTNeoNode.class));
 	}

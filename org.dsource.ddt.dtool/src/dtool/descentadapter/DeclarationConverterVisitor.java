@@ -307,9 +307,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		}
 		assertTrue(imprt == null);
 		
-		boolean isTransitive = false; //isTransitive is adapted in post conversion;
 		return endAdapt(new DeclarationImport(
-				ArrayView.create(imports), elem.isstatic, isTransitive, DefinitionConverter.sourceRange(elem)
+			elem.isstatic, ArrayView.create(imports), DefinitionConverter.sourceRange(elem)
 				)
 		);
 	}

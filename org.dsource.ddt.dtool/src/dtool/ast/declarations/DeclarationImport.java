@@ -28,13 +28,12 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 	public final boolean isStatic;
 	public boolean isTransitive; // aka public imports
 	
-	public DeclarationImport(ArrayView<IImportFragment> imports, boolean isStatic, boolean isTransitive,
-			SourceRange sourceRange) {
+	public DeclarationImport(boolean isStatic, ArrayView<IImportFragment> imports, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.imports = parentizeI(imports);
 		this.imports_asNodes = CoreUtil.<ArrayView<ASTNeoNode>>blindCast(imports);
 		this.isStatic = isStatic;
-		this.isTransitive = isTransitive;
+		this.isTransitive = false; // TODO, should be determine by surronding analysis
 	}
 	
 	@Override
@@ -67,7 +66,6 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		// TODO public specifier
 		if(isStatic) {
 			cp.append("static ");
 		}

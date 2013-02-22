@@ -34,6 +34,3 @@ RefIndexing(
 
  	《const●immutable●shared●inout》( )●
  	
- 	@(TYPE_REF_SAMPLES)[123/* TODO assign expressions*/]●
- 	@(TYPE_REF_SAMPLES)[2..12]●
-

@@ -47,7 +47,6 @@ import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.Reference;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
-import dtool.util.NewUtils;
 
 public class DeeParser_ImplDecls extends DeeParser_ImplRefOrExp {
 	
@@ -139,15 +138,16 @@ public class DeeParser_ImplDecls extends DeeParser_ImplRefOrExp {
 		boolean isStatic = false;
 		int nodeStart = -1;
 		
-		if(tryConsume(DeeTokens.KW_STATIC)) { // BUG here
-			isStatic = true;
+		if(tryConsume(DeeTokens.KW_IMPORT)) {
 			nodeStart = lastLexElement.getStartPos();
-		}
-		
-		if(!tryConsume(DeeTokens.KW_IMPORT)) {
+		} else if(lookAhead() == DeeTokens.KW_STATIC && lookAheadElement(1).getType() == DeeTokens.KW_IMPORT) {
+			isStatic = true;
+			consumeLookAhead(DeeTokens.KW_STATIC);
+			nodeStart = lastLexElement.getStartPos();
+			consumeLookAhead(DeeTokens.KW_IMPORT);
+		} else {
 			return null;
 		}
-		nodeStart = NewUtils.updateIfNull(nodeStart, lastLexElement.getStartPos());
 		
 		ArrayList<IImportFragment> fragments = new ArrayList<IImportFragment>();
 		do {
@@ -158,33 +158,35 @@ public class DeeParser_ImplDecls extends DeeParser_ImplRefOrExp {
 		
 		consumeExpectedToken(DeeTokens.SEMICOLON);
 		SourceRange sr = srToCursor(nodeStart);
-		boolean isTransitive = false;
 		
-		return connect(
-			new DeclarationImport(arrayView(fragments, IImportFragment.class), isStatic, isTransitive, sr));
+		return connect(new DeclarationImport(isStatic, arrayViewI(fragments), sr));
 	}
 	
 	public IImportFragment parseImportFragment() {
 		LexElement aliasId = null;
 		ArrayList<String> packages = new ArrayList<String>(0);
-		int nodeStartPos = -1;
+		int refModuleStartPos = -1;
+		
+		if(lookAhead() == DeeTokens.IDENTIFIER && lookAheadElement(1).getType() == DeeTokens.ASSIGN
+			|| lookAhead() == DeeTokens.ASSIGN) {
+			aliasId = tryConsumeIdentifier();
+			consumeLookAhead(DeeTokens.ASSIGN);
+		}
 		
 		while(true) {
 			LexElement id = tryConsumeIdentifier();
-			nodeStartPos = nodeStartPos == -1 ? id.getStartPos() : nodeStartPos;
+			refModuleStartPos = refModuleStartPos == -1 ? id.getStartPos() : refModuleStartPos;
 			
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
 				packages.add(id.token.source);
-			} else if(packages.isEmpty() && tryConsume(DeeTokens.ASSIGN)) { // BUG here
-				aliasId = id;
-				nodeStartPos = -1;
 			} else {
 				RefModule refModule = 
-					connect(new RefModule(arrayViewS(packages), id.token.source, srToCursor(nodeStartPos))); 
+					connect(new RefModule(arrayViewS(packages), id.token.source, srToCursor(refModuleStartPos))); 
 				
-				IImportFragment fragment = (aliasId == null) ? 
-					connect(new ImportContent(refModule)) : 
-					connect(new ImportAlias(defUnitNoComments(aliasId), refModule, srToCursor(aliasId.getStartPos())));
+				IImportFragment fragment = connect( (aliasId == null) ? 
+					new ImportContent(refModule) : 
+					new ImportAlias(defUnitNoComments(aliasId), refModule, srToCursor(aliasId.getStartPos()))
+				);
 				
 				if(tryConsume(DeeTokens.COLON)) {
 					return parseSelectiveModuleImport(fragment);
@@ -212,7 +214,7 @@ public class DeeParser_ImplDecls extends DeeParser_ImplRefOrExp {
 		LexElement aliasId = null;
 		LexElement id = tryConsumeIdentifier();
 		
-		if(tryConsume(DeeTokens.ASSIGN)){ // BUG here
+		if(tryConsume(DeeTokens.ASSIGN)){
 			aliasId = id;
 			id = tryConsumeIdentifier();
 		}
@@ -222,8 +224,8 @@ public class DeeParser_ImplDecls extends DeeParser_ImplRefOrExp {
 		if(aliasId == null) {
 			return refImportSelection;
 		} else {
-			return connect(
-				new ImportSelectiveAlias(defUnitNoComments(aliasId), refImportSelection, srToCursor(aliasId)));
+			DefUnitTuple aliasIdDefUnit = defUnitNoComments(aliasId);
+			return connect(new ImportSelectiveAlias(aliasIdDefUnit, refImportSelection, srToCursor(aliasId)));
 		}
 	}
 	
@@ -253,7 +255,7 @@ public class DeeParser_ImplDecls extends DeeParser_ImplRefOrExp {
 			case KW_PRAGMA: return parseDeclarationPragma();
 			case PROTECTION_KW: return parseDeclarationProtection();
 			case ATTRIBUTE_KW: 
-				if(lookAhead() == DeeTokens.KW_STATIC && lookAhead(/*1 TODO*/) == DeeTokens.KW_IMPORT) { 
+				if(lookAhead() == DeeTokens.KW_STATIC && lookAheadElement(1).getType() == DeeTokens.KW_IMPORT) { 
 					return parseImportDeclaration();
 				}
 				return parseDeclarationBasicAttrib();

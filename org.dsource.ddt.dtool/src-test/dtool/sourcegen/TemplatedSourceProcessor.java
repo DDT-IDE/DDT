@@ -318,15 +318,19 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 			// Paired expansion referral.
 			
 			referredExpansion = sourceCase.getExpansion(expansionElem.pairedExpansionId);
-			checkError(referredExpansion == null, sourceCase); // If referred, then it must be defined
+			if(expansionElem.anonymousExpansion) {
+				// TODO: this situation has no test cases that test it 
+				// allow activating a referred expansion that is no defied.
+			} else {
+				checkError(referredExpansion == null, sourceCase); // If referred, then it must be defined
+				checkError(arguments.size() != referredExpansion.arguments.size(), sourceCase);
+			}
 			
 			pairedExpansionIx = sourceCase.activeExpansions.get(expansionElem.pairedExpansionId);
-			
-			checkError(arguments.size() != referredExpansion.arguments.size(), sourceCase);
 		}
 		
 		if(expansionElem.dontOuputSource || sourceCase.isHeaderCase) {
-			// TODO : situation here where there is a pairedExpansionId has no testcases
+			// TODO:  situation where there is a pairedExpansionId has no test cases that test it
 			return false;
 		}
 		
