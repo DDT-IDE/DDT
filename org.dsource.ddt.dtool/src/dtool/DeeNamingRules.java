@@ -47,7 +47,7 @@ public class DeeNamingRules {
 	}
 	
 	private static boolean isValidDFileExtension(CharSequence fileExt) {
-		return DEE_FILE_EXTENSION.contentEquals(fileExt) || DEE_HEADERFILE_EXTENSION.contentEquals(fileExt);
+		return DEE_FILE_EXTENSION.equalsIgnoreCase(fileExt.toString()) || DEE_HEADERFILE_EXTENSION.equalsIgnoreCase(fileExt.toString());
 	}
 	
 	public static boolean isValidPackagePathName(String pathname) {
