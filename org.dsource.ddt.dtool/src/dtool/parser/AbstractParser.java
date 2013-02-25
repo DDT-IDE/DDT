@@ -257,6 +257,11 @@ public class AbstractParser {
 		return consumeExpectedToken(expectedTokenType, false);
 	}
 	
+	protected final LexElement createExpectedToken(DeeTokens expectedTokenType) {
+		assertTrue(lookAhead() != expectedTokenType);
+		return consumeIgnoredTokens(expectedTokenType, true);
+	}
+	
 	protected final LexElement consumeExpectedToken(DeeTokens expectedTokenType, boolean createMissingToken) {
 		if(lookAhead() == expectedTokenType) {
 			return consumeInput();
@@ -343,25 +348,21 @@ public class AbstractParser {
 		return srToCursor(startNode.getStartPos());
 	}
 	
-	
-	@SuppressWarnings("unchecked")
-	public static <T extends ASTNeoNode> ArrayView<T> arrayView(T element) {
-		return ArrayView.create((T[]) new ASTNeoNode[] { element } );
-	}
-	
-	public static <T extends IASTNeoNode> ArrayView<T> arrayView(Collection<? extends T> list, Class<T> cpType) {
-		return ArrayView.create(ArrayUtil.createFrom(list, cpType));
-	}
-	
 	public static <T extends IASTNeoNode> ArrayView<T> arrayViewI(Collection<? extends T> list) {
+		if(list == null)
+			return null;
 		return ArrayView.create((T[]) ArrayUtil.createFrom(list, IASTNeoNode.class));
 	}
 	
 	public static <T extends ASTNeoNode> ArrayView<T> arrayView(Collection<? extends T> list) {
+		if(list == null)
+			return null;
 		return ArrayView.create((T[]) ArrayUtil.createFrom(list, ASTNeoNode.class));
 	}
 	
 	public static ArrayView<String> arrayViewS(Collection<String> list) {
+		if(list == null)
+			return null;
 		return ArrayView.create(ArrayUtil.createFrom(list, String.class));
 	}
 	

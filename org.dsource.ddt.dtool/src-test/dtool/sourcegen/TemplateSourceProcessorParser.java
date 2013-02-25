@@ -327,7 +327,8 @@ public class TemplateSourceProcessorParser {
 			String closeDelim = CLOSE_DELIMS[alt];
 			sourceValue = parseArgument(parser, closeDelim, false);
 		} else if(colonSyntaxConsumed == false && parser.tryConsume(":")) {
-			checkError(parser.tryConsumeNewlineRule() == false, parser);
+			//checkError(parser.tryConsumeNewlineRule() == false, parser);
+			parser.tryConsumeNewlineRule();
 			sourceValue = parseArgument(parser, "#:END", true);
 			if(!parser.lookaheadIsEOF()) {
 				parser.seekToNewLine();

@@ -15,10 +15,11 @@ import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
-import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.parser.AbstractParser.LexElement;
 
@@ -33,20 +34,18 @@ public class ASTReparseCheckSwitcher {
 	}
 	
 	protected String nodeSnippedSource;
-	protected DeeParser nssParser;
+	protected DeeParser snippedParser;
 	
 	public Void doCheck(ASTNeoNode node) {
-		// prep for type specific switch
-		nodeSnippedSource = originalSource.substring(node.getStartPos(), node.getEndPos());
-		nssParser = new DeeParser(new DeeParserTest.DeeTestsLexer(nodeSnippedSource));
+		prepNodeSnipedParser(node);
 		
 		switch (node.getNodeType()) {
 		
 		case SYMBOL:
 			if(node instanceof DefSymbol) {
-				return reparseCheck(nssParser.parseSymbol(), Symbol.class, node, false);
+				return reparseCheck(snippedParser.parseSymbol(), Symbol.class, node, false);
 			}
-			return reparseCheck(nssParser.parseSymbol(), node);
+			return reparseCheck(snippedParser.parseSymbol(), node);
 		case DEF_UNIT:
 			assertFail();
 		
@@ -55,24 +54,24 @@ public class ASTReparseCheckSwitcher {
 			assertTrue(module.getStartPos() == 0 && module.getEndPos() == originalSource.length());
 			return VOID;
 		case DECL_MODULE:
-			return reparseCheck(nssParser.parseModuleDeclaration(), node);
+			return reparseCheck(snippedParser.parseModuleDeclaration(), node);
 		case DECL_IMPORT:
-			return reparseCheck(nssParser.parseImportDeclaration(), node);
+			return reparseCheck(snippedParser.parseImportDeclaration(), node);
 		case IMPORT_CONTENT:
-			return reparseCheck((ASTNeoNode) nssParser.parseImportFragment(), node);
+			return reparseCheck((ASTNeoNode) snippedParser.parseImportFragment(), node);
 		case IMPORT_ALIAS:
-			return reparseCheck((ASTNeoNode) nssParser.parseImportFragment(), node);
+			return reparseCheck((ASTNeoNode) snippedParser.parseImportFragment(), node);
 		case IMPORT_SELECTIVE:
-			return reparseCheck((ASTNeoNode) nssParser.parseImportFragment(), node);
+			return reparseCheck((ASTNeoNode) snippedParser.parseImportFragment(), node);
 		case IMPORT_SELECTIVE_ALIAS:
-			return reparseCheck((ASTNeoNode) nssParser.parseImportSelectiveSelection(), node);
+			return reparseCheck((ASTNeoNode) snippedParser.parseImportSelectiveSelection(), node);
 		
 		case DECL_EMTPY:
-			return reparseCheck(nssParser.parseDeclaration(), node);
+			return reparseCheck(snippedParser.parseDeclaration(), node);
 		case DECL_INVALID:
-			return reparseCheck(nssParser.parseDeclaration(false), node);
+			return reparseCheck(snippedParser.parseDeclaration(false), node);
 		case INVALID_SYNTAX:
-			return reparseCheck(nssParser.parseDeclaration(false), node);
+			return reparseCheck(snippedParser.parseDeclaration(false), node);
 		case NODE_LIST: 
 			// Dont reparse Nodelist since there are two kinds of this (single and multi) 
 			// and we dont know which one to parse TODO
@@ -80,38 +79,39 @@ public class ASTReparseCheckSwitcher {
 			
 		//-- various Declarations
 		case DECL_LINKAGE:
-			return reparseCheck(nssParser.parseDeclarationExternLinkage(), node);
+			return reparseCheck(snippedParser.parseDeclarationExternLinkage(), node);
 		case DECL_ALIGN:
-			return reparseCheck(nssParser.parseDeclarationAlign(), node);
+			return reparseCheck(snippedParser.parseDeclarationAlign(), node);
 		case DECL_PRAGMA:
-			return reparseCheck(nssParser.parseDeclarationPragma(), node);
+			return reparseCheck(snippedParser.parseDeclarationPragma(), node);
 		case DECL_PROTECTION:
-			return reparseCheck(nssParser.parseDeclarationProtection(), node);
+			return reparseCheck(snippedParser.parseDeclarationProtection(), node);
 		case DECL_BASIC_ATTRIB:
-			return reparseCheck(nssParser.parseDeclarationBasicAttrib(), node);
+			return reparseCheck(snippedParser.parseDeclarationBasicAttrib(), node);
 		
 		
 		case DECL_MIXIN_STRING:
-			return reparseCheck(nssParser.parseDeclarationMixinString(), node);
+			return reparseCheck(snippedParser.parseDeclarationMixinString(), node);
 		
 		/* ---------------------------------- */
 		
 		case DEFINITION_VARIABLE:
-			return reparseCheck(nssParser.parseDeclaration(), node);
+			return reparseCheck(snippedParser.parseDeclaration(), node);
 		case DEFINITION_VAR_FRAGMENT:
-			return reparseCheck(nssParser.parseVarFragment(), node);
+			return reparseCheck(snippedParser.parseVarFragment(), node);
 		case INITIALIZER_EXP:
 			InitializerExp initializerExp = (InitializerExp) node;
-			return reparseCheck(nssParser.parseInitializer(), node, initializerExp.exp instanceof MissingExpression);
+			Resolvable initExpExp = initializerExp.exp;
+			return reparseCheck(snippedParser.parseInitializer(), node, initExpExp instanceof MissingExpression);
 		
 		/* ---------------------------------- */
 		
 		case REF_IMPORT_SELECTION:
-			return reparseCheck((ASTNeoNode) nssParser.parseImportSelectiveSelection(), node, false);
+			return reparseCheck((ASTNeoNode) snippedParser.parseImportSelectiveSelection(), node, false);
 		case REF_MODULE:
-			return reparseCheck(nssParser.parseImportFragment().getModuleRef(), node);
+			return reparseCheck(snippedParser.parseImportFragment().getModuleRef(), node);
 		case REF_IDENTIFIER:
-			return reparseCheck(nssParser.parseRefIdentifier(), node);
+			return reparseCheck(snippedParser.parseRefIdentifier(), node);
 		
 		case REF_QUALIFIED:
 		case REF_MODULE_QUALIFIED:
@@ -119,7 +119,7 @@ public class ASTReparseCheckSwitcher {
 		case REF_TYPE_DYN_ARRAY:
 		case REF_TYPE_POINTER:
 		case REF_INDEXING:
-			return reparseCheck(parseReference(nssParser), node);
+			return reparseCheck(parseReference(snippedParser), node);
 		
 		/* ---------------------------------- */
 		
@@ -150,12 +150,13 @@ public class ASTReparseCheckSwitcher {
 		case EXP_INDEX:
 		case EXP_SLICE:
 		case EXP_CALL:
-			
+		
 		case EXP_PREFIX:
+		case EXP_NEW:
 		case EXP_POSTFIX:
 		case EXP_INFIX:
 		case EXP_CONDITIONAL:
-			return reparseCheck(nssParser.parseExpression(), (Expression) node);
+			return reparseCheck(snippedParser.parseExpression(), (Expression) node);
 		case MAPARRAY_ENTRY:
 			MapArrayLiteralKeyValue mapArrayEntry = (MapArrayLiteralKeyValue) node;
 			assertEquals(mapArrayEntry.getSourceRange(),
@@ -165,6 +166,11 @@ public class ASTReparseCheckSwitcher {
 		default:
 			throw assertFail();
 		}
+	}
+	
+	public void prepNodeSnipedParser(ASTNeoNode node) {
+		nodeSnippedSource = originalSource.substring(node.getStartPos(), node.getEndPos());
+		snippedParser = new DeeParser(new DeeParserTest.DeeTestsLexer(nodeSnippedSource));
 	}
 	
 	protected static Reference parseReference(DeeParser nodeRangeSourceParser) {
@@ -190,20 +196,20 @@ public class ASTReparseCheckSwitcher {
 		return reparseCheck(reparsedNode, node.getClass(), node, consumesTrailingWhiteSpace);
 	}
 	
-	public Void reparseCheck(ASTNeoNode reparsedNode, Class<? extends ASTNeoNode> klass, ASTNeoNode node,
+	public Void reparseCheck(ASTNeoNode reparsedNode, Class<? extends ASTNeoNode> klass, final ASTNeoNode node,
 		boolean consumesSurroundingWhiteSpace
 	) {
 		// Must have consumed all input
-		assertTrue(reparsedNode != null && nssParser.lookAhead() == DeeTokens.EOF);
-		assertTrue(emptyToNull(nssParser.lookAheadElement().ignoredPrecedingTokens) == null);
+		assertTrue(reparsedNode != null && snippedParser.lookAhead() == DeeTokens.EOF);
+		assertTrue(emptyToNull(snippedParser.lookAheadElement().ignoredPrecedingTokens) == null);
 		
 		assertEquals(reparsedNode.getSourceRange(), new SourceRange(0, nodeSnippedSource.length()) );
 		assertTrue(reparsedNode.getClass() == klass);
 		
-		assertTrue(reparsedNode.getEndPos() == nssParser.lookAheadElement().getStartPos());
+		assertTrue(reparsedNode.getEndPos() == snippedParser.lookAheadElement().getStartPos());
 		
-		assertTrue(nssParser.lastLexElement.getType().isParserIgnored == false
-			|| nssParser.lastLexElement.getEndPos() == 0);
+		assertTrue(snippedParser.lastLexElement.getType().isParserIgnored == false
+			|| snippedParser.lastLexElement.getEndPos() == 0);
 		
 		if(node instanceof DeclarationAttrib) {
 			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
@@ -213,10 +219,10 @@ public class ASTReparseCheckSwitcher {
 		}
 		if(!consumesSurroundingWhiteSpace) {
 			// Check that there is no trailing whitespace in the range
-			assertTrue(lastElementInRange(nssParser).getEndPos() == nssParser.getSource().length());
-			assertTrue(firstElementInRange(nssParser).ignoredPrecedingTokens == null);
+			assertTrue(lastElementInRange(snippedParser).getEndPos() == snippedParser.getSource().length());
+			assertTrue(firstElementInRange(snippedParser).ignoredPrecedingTokens == null);
 			
-			if(nssParser.lastLexElement.isMissingElement()) {
+			if(snippedParser.lastLexElement.isMissingElement()) {
 				consumesSurroundingWhiteSpace = true;
 			}
 		}
@@ -253,7 +259,7 @@ public class ASTReparseCheckSwitcher {
 	public LexElement lastElementInRange(AbstractParser parser) {
 		assertTrue(parser.lastLexElement.getType().isParserIgnored == false);
 		assertTrue(parser.lastLexElement == parser.lastNonMissingLexElement
-			|| nssParser.lastLexElement.isMissingElement());
+			|| snippedParser.lastLexElement.isMissingElement());
 		return parser.lastLexElement;
 	}
 	

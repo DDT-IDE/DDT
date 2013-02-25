@@ -215,8 +215,6 @@ header2
 		// Syntax errors
 		testSourceProcessing("#", "badsyntax #foo(=={", 18);
 		testSourceProcessing("#", "badsyntax #foo(==){asdf", 18+5);
-		testSourceProcessing("#", "badsyntax #foo:", 15);
-		testSourceProcessing("#", "badsyntax #foo: ", 15);
 		
 		testSourceProcessing("#", "badsyntax #foo(==#:SPLIT\n)", 17);
 		testSourceProcessing("#", "badsyntax #foo(==#:END:", 18);
@@ -240,8 +238,11 @@ header2
 		
 		//multineLine MD syntax
 		
-		testSourceProcessing("#", "multilineMD #error(arg1):", 25);
-		testSourceProcessing("#", "multilineMD #error(arg1): \n", 25);
+		testSourceProcessing("#", 
+			"multilineMD #error(arg1,arg2,arg3): blah",
+			
+			checkMD("multilineMD ", new MetadataEntry("error", "arg1,arg2,arg3", " blah", -1))
+		);
 		
 		// boundary
 		testSourceProcessing("#", 

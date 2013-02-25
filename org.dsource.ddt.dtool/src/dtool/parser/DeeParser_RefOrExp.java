@@ -30,6 +30,7 @@ import dtool.ast.expressions.ExpLiteralMapArray;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpMixinString;
+import dtool.ast.expressions.ExpNew;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpParentheses;
 import dtool.ast.expressions.ExpPrefix;
@@ -79,7 +80,11 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	
 	protected RefIdentifier parseRefIdentifier() {
 		LexElement id = tryConsumeIdentifier();
-		assertTrue(id.token.type == DeeTokens.IDENTIFIER);
+		return connect(new RefIdentifier(idTokenToString(id), sr(id.token)));
+	}
+	
+	protected RefIdentifier createMissingRefIdentifier() {
+		LexElement id = createExpectedToken(DeeTokens.IDENTIFIER);
 		return connect(new RefIdentifier(idTokenToString(id), sr(id.token)));
 	}
 	
@@ -106,8 +111,19 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		}
 	}
 	
+	public static String REFERENCE_RULE = "reference";
+	
 	public Reference parseReference() {
 		return parseReference_begin(false).ref;
+	}
+	
+	public Reference parseReference_WithMissing() {
+		Reference ref = parseReference();
+		if(ref == null) {
+			reportErrorExpectedRule(REFERENCE_RULE);
+			return createMissingRefIdentifier();
+		}
+		return ref;
 	}
 	
 	public Reference parseReference(boolean expressionContext) {
@@ -384,7 +400,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		}
 	}
 	
-	public RefOrExpParse parsePrefixExpression(boolean canBeRef, boolean isRefOrExpStart) {
+	protected RefOrExpParse parsePrefixExpression(boolean canBeRef, boolean isRefOrExpStart) {
 		switch (lookAheadGrouped()) {
 		case KW_TRUE: case KW_FALSE: {
 			Token token = consumeLookAhead();
@@ -463,6 +479,8 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			return expConnect(parseImportExp());
 		case KW_TYPEID:
 			return expConnect(parseTypeIdExp());
+		case KW_NEW:
+			return expConnect(parseNewExp());
 		default:
 			Reference ref = parseReference(true);
 			if(ref == null) {
@@ -889,12 +907,23 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	protected ExpCall parseCallExpression(Expression callee) {
 		consumeLookAhead(DeeTokens.OPEN_PARENS);
 		
-		ArrayList<Expression> args = parseArgumentList(DeeTokens.COMMA, DeeTokens.CLOSE_PARENS);
-		return connect(new ExpCall(callee, arrayView(args), srToCursor(callee)));
+		ArgumentListParseResult argsResult = parseArgumentList(DeeTokens.COMMA, DeeTokens.CLOSE_PARENS);
+		return connect(new ExpCall(callee, arrayView(argsResult.list), srToCursor(callee)));
 	}
 	
-	protected ArrayList<Expression> parseArgumentList(DeeTokens tokenSEPARATOR, DeeTokens tokenLISTCLOSE) {
+	public static class ArgumentListParseResult {
+		public final ArrayList<Expression> list;
+		public final boolean properlyTerminated;
+		
+		public ArgumentListParseResult(ArrayList<Expression> argList, boolean properlyTerminated) {
+			this.list = argList;
+			this.properlyTerminated = properlyTerminated;
+		}
+	}
+	
+	protected ArgumentListParseResult parseArgumentList(DeeTokens tokenSEPARATOR, DeeTokens tokenLISTCLOSE) {
 		ArrayList<Expression> args = new ArrayList<Expression>();
+		boolean properlyTerminated;
 		boolean first = true;
 		while(true) {
 			Expression arg = parseAssignExpression_toMissing(!first);
@@ -903,7 +932,8 @@ public class DeeParser_RefOrExp extends AbstractParser {
 				if(lookAhead() == tokenSEPARATOR) {
 					reportError(ParserErrorTypes.EXPECTED_RULE, EXPRESSION_RULE, false);
 				} else {
-					consumeExpectedToken(tokenLISTCLOSE);
+					properlyTerminated = consumeExpectedToken(tokenLISTCLOSE) != null;
+					properlyTerminated = true; /*BUG here*/
 					break;
 				}
 			}
@@ -914,10 +944,10 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			if(tryConsume(tokenSEPARATOR)) {
 				continue;
 			}
-			consumeExpectedToken(tokenLISTCLOSE);
+			properlyTerminated = consumeExpectedToken(tokenLISTCLOSE) != null;
 			break;
 		}
-		return args;
+		return new ArgumentListParseResult(args, properlyTerminated);
 	}
 	
 	public Expression parseParenthesesExp() {
@@ -953,7 +983,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			return null;
 		
 		int nodeStart = lastLexElement.getStartPos();
-		Expression exp = parseExpWithParens();
+		Expression exp = parseAssignExpressionWithParens();
 		return connect(new ExpImportString(exp, srToCursor(nodeStart)));
 	}
 	
@@ -962,11 +992,11 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			return null;
 		
 		int nodeStart = lastLexElement.getStartPos();
-		Expression exp = parseExpWithParens();
+		Expression exp = parseAssignExpressionWithParens();
 		return connect(new ExpMixinString(exp, srToCursor(nodeStart)));
 	}
 	
-	protected Expression parseExpWithParens() {
+	protected Expression parseAssignExpressionWithParens() {
 		Expression exp = null;
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
 			exp = parseAssignExpression_toMissing(true);
@@ -998,5 +1028,35 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		}
 		return connect(new ExpTypeId(exp, srToCursor(nodeStart)));
 	}
-
+	
+	public ExpNew parseNewExp() {
+		if(!tryConsume(DeeTokens.KW_NEW))
+			return null;
+		
+		int nodeStart = lastLexElement.getStartPos();
+		
+		ArrayList<Expression> allocArgs = null;
+		Reference type = null;
+		ArrayList<Expression> args = null;
+		
+		parsing: {
+			if(tryConsume(DeeTokens.OPEN_PARENS)) {
+				ArgumentListParseResult allocArgsResult = parseArgumentList(DeeTokens.COMMA, DeeTokens.CLOSE_PARENS);
+				allocArgs = allocArgsResult.list;
+				if(!allocArgsResult.properlyTerminated) {
+					break parsing;
+				}
+			}
+			type = parseReference_WithMissing();
+			if(lastLexElement.isMissingElement()) {
+				break parsing;
+			}
+			if(tryConsume(DeeTokens.OPEN_PARENS)) {
+				args = parseArgumentList(DeeTokens.COMMA, DeeTokens.CLOSE_PARENS).list;
+			}
+		}
+		
+		return connect(new ExpNew(arrayView(allocArgs), type, arrayView(args), srToCursor(nodeStart)));
+	}
+	
 }

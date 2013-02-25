@@ -45,9 +45,7 @@ public class ExpCall extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(callee);
-		cp.append("( ");
-		cp.appendNodeList(args, ", ", false);
-		cp.append(" )");
+		cp.appendArgList("(", args, ", " , ")"); 
 	}
 	
 	@Override

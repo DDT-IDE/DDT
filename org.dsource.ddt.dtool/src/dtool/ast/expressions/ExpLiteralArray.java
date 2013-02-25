@@ -32,9 +32,7 @@ public class ExpLiteralArray extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("[ ");
-		cp.appendNodeList(elements, ", ", false);
-		cp.append(" ]");
+		cp.appendArgList("[ ", elements, ", " , " ]");
 	}
 	
 }

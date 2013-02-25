@@ -404,9 +404,9 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 				ReferenceConverter.convertType(element.newtype, convContext);
 		return endAdapt(
 			new ExpNew(
-				ExpressionConverter.convertMany(element.newargs, convContext),
+				DescentASTConverter.convertMany(element.newargs, Expression.class, convContext),
 				type,
-				ExpressionConverter.convertMany(element.arguments, convContext),
+				DescentASTConverter.convertMany(element.arguments, Expression.class, convContext),
 				DefinitionConverter.sourceRange(element)
 			)
 		);

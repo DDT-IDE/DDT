@@ -242,6 +242,8 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			errorParam = DeeParser.DECLARATION_RULE;
 		} else if(errorParam.equals("exp")) {
 			errorParam = DeeParser.EXPRESSION_RULE;
+		} else if(errorParam.equals("ref")) {
+			errorParam = DeeParser.REFERENCE_RULE;
 		}
 		return errorParam;
 	}

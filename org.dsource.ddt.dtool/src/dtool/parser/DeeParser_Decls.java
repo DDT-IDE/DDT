@@ -207,7 +207,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		} while(tryConsume(DeeTokens.COMMA));
 		
 		SourceRange sr = srToCursor(fragment.getStartPos());
-		return connect(new ImportSelective(fragment, arrayView(selFragments, IImportSelectiveSelection.class), sr));
+		return connect(new ImportSelective(fragment, arrayViewI(selFragments), sr));
 	}
 	
 	public IImportSelectiveSelection parseImportSelectiveSelection() {

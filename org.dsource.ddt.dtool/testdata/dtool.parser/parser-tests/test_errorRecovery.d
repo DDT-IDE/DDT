@@ -51,13 +51,7 @@ DefinitionVariable(? DefSymbol DefVarFragment(?))
 DeclarationImport(ImportSelective(ImportContent(?) RefImportSelection RefImportSelection))
 DefinitionVariable(? DefSymbol InitializerExp(MissingExpression) DefVarFragment(?))
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of expressions: ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-var xx = #error:EXPRULE_INITIALIZER ;
 
-// TODO rest of expressions
-
-#AST_STRUCTURE_EXPECTED:
-DefinitionVariable(? DefSymbol InitializerExp(MissingExpression))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of  KEYWORD(ARGUMENT);  format
 mixin #error(EXP_OPEN_PARENS) #error(EXP_SEMICOLON)
@@ -112,3 +106,19 @@ DeclarationAlign( DefinitionVariable(RefPrimitive DefSymbol) )
 InvalidDeclaration(RefTypeDynArray(RefIdentifier))                ?(DefinitionVariable(RefPrimitive DefSymbol))
 InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))  InvalidDeclaration(RefIdentifier)
 InvalidDeclaration(RefIndexing(RefIdentifier RefPrimitive))       InvalidDeclaration(RefIdentifier)
+
+
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of expressions: ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  var Initializer
+var xx = #error:EXPRULE_INITIALIZER ;
+
+#AST_STRUCTURE_EXPECTED:
+DefinitionVariable(? DefSymbol InitializerExp(MissingExpression))
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+// I'm not sure this is the best behavior though:
+// Should a broken exp parsing break all other pending exp rule parsing? 
+#PARSE(EXPRESSION)
+            new  (foo)  #error(EXPRULE_ref)  (123) 
+#AST_STRUCTURE_EXPECTED: 
+ExpCall( ExpNew( #@ExpIdentifier RefIdentifier )   Integer  )

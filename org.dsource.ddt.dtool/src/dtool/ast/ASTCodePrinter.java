@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Iterator;
 
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.expressions.Expression;
 import dtool.parser.Token;
 import dtool.util.ArrayView;
 
@@ -137,6 +138,22 @@ public class ASTCodePrinter {
 			}
 			sb.append(next.toStringAsElement());
 		}
+	}
+	
+	public boolean appendArgList(String open, ArrayView<Expression> args, String sep, String close) {
+		return appendArgList(open, args, sep, close, null);
+	}
+	
+	public boolean appendArgList(String open, ArrayView<Expression> args, String sep, String close, String spacing) {
+		if(args != null) {
+			append(open);
+			appendNodeList(args, sep);
+			append(close);
+			return true;
+		} else {
+			append(spacing);
+		}
+		return false;
 	}
 	
 }
