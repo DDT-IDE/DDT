@@ -1,25 +1,22 @@
 package dtool;
 
+import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.utilbox.misc.StringUtil;
-import descent.core.JavaConventions_Common;
 
 /**
- * XXX: keep an eye on {@link JavaConventions_Common}
- * Also, lots of stuff here breaks on UTF32 supplementary characters
+ * Some stuff here breaks on UTF32 supplementary characters (we don't care much)
  */
 public class DeeNamingRules {
 	
 	private static final String DEE_FILE_EXTENSION = ".d";
 	private static final String DEE_HEADERFILE_EXTENSION = ".di";
-	public static final String[] VALID_EXTENSIONS = new String[] {
-		".d", ".di"
-	};
+	public static final String[] VALID_EXTENSIONS = array(DEE_FILE_EXTENSION, DEE_HEADERFILE_EXTENSION);
 	
-	public static boolean isValidDIdentifier(CharSequence name) {
+	public static boolean isValidDIdentifier(String name) {
 		return name.length() > 0 && validDIdentifierLength(name) == name.length();
 	}
 	
-	public static int validDIdentifierLength(CharSequence name) {
+	public static int validDIdentifierLength(String name) {
 		int pos = 0;
 		int length = name.length();
 		if(length == 0)
@@ -37,17 +34,17 @@ public class DeeNamingRules {
 	}
 	
 	
-	public static boolean isValidCompilationUnitName(CharSequence name) {
+	public static boolean isValidCompilationUnitName(String name) {
 		int offset = validDIdentifierLength(name);
 		if(offset == 0) 
 			return false;
 		
-		CharSequence fileExt = name.subSequence(offset, name.length());
+		String fileExt = name.substring(offset, name.length());
 		return isValidDFileExtension(fileExt);
 	}
 	
-	private static boolean isValidDFileExtension(CharSequence fileExt) {
-		return DEE_FILE_EXTENSION.contentEquals(fileExt) || DEE_HEADERFILE_EXTENSION.contentEquals(fileExt);
+	private static boolean isValidDFileExtension(String fileExt) {
+		return DEE_FILE_EXTENSION.equals(fileExt) || DEE_HEADERFILE_EXTENSION.equals(fileExt);
 	}
 	
 	public static boolean isValidPackagePathName(String pathname) {
@@ -62,7 +59,7 @@ public class DeeNamingRules {
 		return true;
 	}
 	
-	public static boolean isValidPackageNamePart(CharSequence partname) {
+	public static boolean isValidPackageNamePart(String partname) {
 		return isValidDIdentifier(partname);
 	}
 	
