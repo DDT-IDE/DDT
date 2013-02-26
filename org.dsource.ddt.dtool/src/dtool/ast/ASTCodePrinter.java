@@ -67,6 +67,14 @@ public class ASTCodePrinter {
 		}
 	}
 	
+	public void appendNode(String prefix, ASTNeoNode node, String suffix) {
+		if(node != null) {
+			append(prefix);
+			node.toStringAsCode(this);
+			append(suffix);
+		}
+	}
+	
 	public void appendNodeList(ArrayView<? extends ASTNeoNode> members, String sep) {
 		appendNodeList(members, sep, false);
 	}

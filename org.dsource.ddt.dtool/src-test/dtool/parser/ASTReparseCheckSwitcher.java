@@ -153,6 +153,9 @@ public class ASTReparseCheckSwitcher {
 		
 		case EXP_PREFIX:
 		case EXP_NEW:
+		case EXP_CAST:
+		case EXP_CAST_QUAL:
+
 		case EXP_POSTFIX:
 		case EXP_INFIX:
 		case EXP_CONDITIONAL:

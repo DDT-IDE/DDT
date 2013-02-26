@@ -107,18 +107,20 @@ InvalidDeclaration(RefTypeDynArray(RefIdentifier))                ?(DefinitionVa
 InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))  InvalidDeclaration(RefIdentifier)
 InvalidDeclaration(RefIndexing(RefIdentifier RefPrimitive))       InvalidDeclaration(RefIdentifier)
 
-
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of expressions: ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  var Initializer
 var xx = #error:EXPRULE_INITIALIZER ;
 
 #AST_STRUCTURE_EXPECTED:
 DefinitionVariable(? DefSymbol InitializerExp(MissingExpression))
-
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of expressions: ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+The current policy for recovery of expression parsing is to 
+not quit expression parsing call stack when a syntax errors occurs.
+ 
+(XXX: Review this in the future, may not be best policy)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-// I'm not sure this is the best behavior though:
-// Should a broken exp parsing break all other pending exp rule parsing? 
-#PARSE(EXPRESSION)
-            new  (foo)  #error(EXPRULE_ref)  (123) 
-#AST_STRUCTURE_EXPECTED: 
-ExpCall( ExpNew( #@ExpIdentifier RefIdentifier )   Integer  )
+#PARSE(EXPRESSION)        new   (foo)  #@MISSING_REF  (123) 
+#AST_STRUCTURE_EXPECTED:  ExpCall( ExpNew( #@ExpIdentifier  #@MISSING_REF ) Integer)  
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)        new  ( #@EXP_ASSIGN__LITE #error(EXP_CLOSE_PARENS)  #parser(IgnoreRest) foo (456)
+#AST_STRUCTURE_EXPECTED:  ExpNew( #@EXP_ASSIGN__LITE )
+  

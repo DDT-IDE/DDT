@@ -32,7 +32,6 @@ public class ExpParentheses extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode("(", exp);
-		cp.append(")");
+		cp.appendNode("(", exp, ")");
 	}
 }

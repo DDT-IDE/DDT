@@ -30,6 +30,8 @@
   ►#?AST_STRUCTURE_EXPECTED!【foo[12 .. [123]]●      ExpSlice(#@ExpIdentifier Integer ExpLiteralArray(?))】●
   ►#?AST_STRUCTURE_EXPECTED!【foo++●                 ExpPostfix(#@ExpIdentifier)】●
   ►#?AST_STRUCTURE_EXPECTED!【123 ^^ exp●            ExpInfix(Integer #@ExpIdentifier)】●
+  ►#?AST_STRUCTURE_EXPECTED!【new(123, foo) .bar.Foo(+1, foo[123])●ExpNew(? #@ExpIdentifier RefQualified(* *) * *)】●
+  ►#?AST_STRUCTURE_EXPECTED!【cast(Foo) foo●         ExpCast(RefIdentifier #@ExpIdentifier)】●
   
 ¤》
 #@EXP_UNARY__LITE《

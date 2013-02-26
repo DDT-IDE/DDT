@@ -284,7 +284,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	public boolean visit(CastExp elem) {
 		Expression exp = ExpressionConverter.convert(elem.sourceE1, convContext);
 		Reference type = ReferenceConverter.convertType(elem.sourceTo, convContext);
-		return endAdapt(new ExpCast(exp, type, DefinitionConverter.sourceRange(elem)));
+		return endAdapt(new ExpCast(type, exp, DefinitionConverter.sourceRange(elem)));
 	}
 	
 	@Override

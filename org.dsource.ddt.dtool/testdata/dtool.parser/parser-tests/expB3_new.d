@@ -34,16 +34,11 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 #AST_STRUCTURE_EXPECTED: ExpNew(  #@EXP_ASSIGN__LITE  RefIndexing( #@TYPE_REFS #@EXP_ASSIGN__LITE )  )
 #comment(NO_STDOUT)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Error cases
-// I'm not sure this is the best behavior though:
-// Should a broken exp parsing break all other pending exp rule parsing? 
-#PARSE(EXPRESSION)         new     #@ARGLIST  #error(EXPRULE_ref)  (123) 
-#AST_STRUCTURE_EXPECTED: 
-ExpCall(                   ExpNew( #@ARGLIST  RefIdentifier )  Integer  )
+#PARSE(EXPRESSION)        new     #@ARGLIST  #@MISSING_REF  (123) 
+#AST_STRUCTURE_EXPECTED:  ExpCall( ExpNew( #@ARGLIST  #@MISSING_REF ) Integer)  
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)         new  (#@ARG1 #@EXP_ASSIGN #error(EXP_CLOSE_PARENS)  #parser(IgnoreRest) foo (456)
-#AST_STRUCTURE_EXPECTED: ExpNew( #@ARG1 #@EXP_ASSIGN )
-
+#PARSE(EXPRESSION)        new  (#@ARG1 #@EXP_ASSIGN #error(EXP_CLOSE_PARENS)  #parser(IgnoreRest) foo (456)
+#AST_STRUCTURE_EXPECTED:  ExpNew( #@ARG1 #@EXP_ASSIGN )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)          new  #error(EXPRULE_ref)  [789]
-#AST_STRUCTURE_EXPECTED: 
-ExpIndex(                   ExpNew( RefIdentifier )  Integer  )
+#PARSE(EXPRESSION)        new     #@MISSING_REF   [789]
+#AST_STRUCTURE_EXPECTED:  ExpIndex(ExpNew( #@MISSING_REF ) Integer)  

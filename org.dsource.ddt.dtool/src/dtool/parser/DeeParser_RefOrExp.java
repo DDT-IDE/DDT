@@ -26,6 +26,9 @@ import dtool.ast.SourceRange;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpCall;
+import dtool.ast.expressions.ExpCast;
+import dtool.ast.expressions.ExpCastQual;
+import dtool.ast.expressions.ExpCastQual.CastQualifiers;
 import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpImportString;
 import dtool.ast.expressions.ExpIndex;
@@ -43,10 +46,10 @@ import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.expressions.ExpNew;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpParentheses;
-import dtool.ast.expressions.ExpPrefix;
-import dtool.ast.expressions.ExpPostfix.PostfixOpType;
-import dtool.ast.expressions.ExpPrefix.PrefixOpType;
 import dtool.ast.expressions.ExpPostfix;
+import dtool.ast.expressions.ExpPostfix.PostfixOpType;
+import dtool.ast.expressions.ExpPrefix;
+import dtool.ast.expressions.ExpPrefix.PrefixOpType;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSlice;
 import dtool.ast.expressions.ExpSuper;
@@ -127,10 +130,12 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return parseReference_begin(false).ref;
 	}
 	
-	public Reference parseReference_WithMissing() {
+	public Reference parseReference_WithMissing(boolean reportMissingError) {
 		Reference ref = parseReference();
 		if(ref == null) {
-			reportErrorExpectedRule(REFERENCE_RULE);
+			if(reportMissingError) {
+				reportErrorExpectedRule(REFERENCE_RULE);
+			}
 			return createMissingRefIdentifier();
 		}
 		return ref;
@@ -207,15 +212,15 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return nullExpToMissing(parseExpression(), reportMissingExpError);
 	}
 	
-	protected Expression nullExpToMissing(Expression expAssign, boolean reportMissingExpError) {
-		if(expAssign == null) {
+	protected Expression nullExpToMissing(Expression exp, boolean reportMissingExpError) {
+		if(exp == null) {
 			if(reportMissingExpError) {
 				reportError(ParserErrorTypes.EXPECTED_RULE, EXPRESSION_RULE, false);
 			}
 			int nodeStart = lastLexElement.getEndPos();
-			expAssign = connect(new MissingExpression(srToCursor(nodeStart)));
+			exp = connect(new MissingExpression(srToCursor(nodeStart)));
 		}
-		return expAssign;
+		return exp;
 	}
 	
 	public Expression parseAssignExpression() {
@@ -235,10 +240,12 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	protected static class RefOrExpParse {
 		
 		public final RefOrExpMode mode;
+		public final boolean breakRule;
 		private final Expression exp;
 		
-		public RefOrExpParse(RefOrExpMode mode, Expression exp) {
+		public RefOrExpParse(RefOrExpMode mode, boolean breakRule, Expression exp) {
 			this.mode = mode;
+			this.breakRule = breakRule;
 			this.exp = exp;
 			assertTrue((mode == null) == (exp == null));
 			if(exp != null) {
@@ -249,6 +256,10 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		public boolean canBeRef() {
 			assertTrue(mode != null && mode != RefOrExpMode.REF);
 			return mode == RefOrExpMode.REF_OR_EXP;
+		}
+		
+		public boolean shouldStopRule() {
+			return mode == null || mode == RefOrExpMode.REF || breakRule;
 		}
 		
 		public Expression getExp() {
@@ -264,12 +275,12 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		
 	}
 	
-	protected RefOrExpParse refOrExp(RefOrExpMode mode, Expression exp) {
-		return new RefOrExpParse(mode, exp);
+	protected RefOrExpParse refOrExp(RefOrExpMode mode, boolean breakRule, Expression exp) {
+		return new RefOrExpParse(mode, breakRule, exp);
 	}
 	
-	protected RefOrExpParse refOrExp(boolean canBeRef, Expression exp) {
-		return refOrExp(canBeRef ? RefOrExpMode.REF_OR_EXP : RefOrExpMode.EXP, exp);
+	protected RefOrExpParse refOrExp(boolean canBeRef, boolean breakRule, Expression exp) {
+		return refOrExp(canBeRef ? RefOrExpMode.REF_OR_EXP : RefOrExpMode.EXP, breakRule, exp);
 	}
 	
 	protected RefOrExpParse expConnect(Expression exp) {
@@ -297,7 +308,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 				exp.setData(mode);
 			}
 		}
-		return new RefOrExpParse(mode, exp);
+		return new RefOrExpParse(mode, false, exp);
 	}
 	
 	protected boolean updateRefOrExpToExpression(boolean canBeRef, Expression leftExp, boolean newCanBeRef) {
@@ -362,27 +373,30 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	
 	protected RefOrExpParse parseReferenceOrExpression(int precedenceLimit, boolean canBeRef, boolean isRoEStart) {
 		RefOrExpParse refOrExp = parseUnaryExpression(canBeRef, isRoEStart);
-		
-		if(refOrExp.mode == null || refOrExp.mode == RefOrExpMode.REF) {
+		if(refOrExp.shouldStopRule()) {
 			return refOrExp;
 		}
 		
 		return parseReferenceOrExpression_ExpStart(precedenceLimit, refOrExp.getExp(), refOrExp.canBeRef());
 	}
 	
-	public RefOrExpParse parseUnaryExpression(boolean canBeRef) {
+	public Expression parseUnaryExpression() {
+		return parseUnaryExpression(false).exp;
+	}
+	
+	protected RefOrExpParse parseUnaryExpression(boolean canBeRef) {
 		return parseUnaryExpression(canBeRef, false);
 	}
 	
-	public RefOrExpParse parseUnaryExpression(boolean canBeRef, boolean isRefOrExpStart) {
+	protected RefOrExpParse parseUnaryExpression(boolean canBeRef, boolean isRefOrExpStart) {
 		RefOrExpParse prefixExp = parsePrefixExpression(canBeRef, isRefOrExpStart);
-		if(prefixExp.mode == null || prefixExp.mode == RefOrExpMode.REF)
+		if(prefixExp.shouldStopRule())
 			return prefixExp;
 		
 		return parsePostfixExpression(prefixExp.getExp(), prefixExp.canBeRef());
 	}
 	
-	public RefOrExpParse parsePostfixExpression(Expression exp, boolean canBeRef) {
+	protected RefOrExpParse parsePostfixExpression(Expression exp, boolean canBeRef) {
 		switch (lookAheadGrouped()) {
 		case DECREMENT:
 		case INCREMENT: {
@@ -403,10 +417,10 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		}
 		case POW: {
 			updateRefOrExpToExpression(canBeRef, exp, false);
-			return expConnect(parseInfixOperator(exp, InfixOpType.POW, InfixOpType.NULL, false).getExp());
+			return parseInfixOperator(exp, InfixOpType.POW, InfixOpType.NULL, false);
 		}
 		default:
-			return refOrExp(canBeRef, exp);
+			return refOrExp(canBeRef, false, exp);
 		}
 	}
 	
@@ -490,11 +504,13 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		case KW_TYPEID:
 			return expConnect(parseTypeIdExp());
 		case KW_NEW:
-			return expConnect(parseNewExp());
+			return parseNewExp();
+		case KW_CAST:
+			return parseCastExpression();
 		default:
-			Reference ref = parseReference(true);
+			Reference ref = parseReference(true); /*BUG here breakRule from ref*/
 			if(ref == null) {
-				return refOrExp(null, null);
+				return refOrExp(null, false, null);
 			}
 			
 			if(isBuiltinTypeRef(ref)) {
@@ -529,7 +545,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	
 	protected RefOrExpParse parseBracketList(Expression calleeExp, boolean canBeRef) {
 		if(tryConsume(DeeTokens.OPEN_BRACKET) == false)
-			return refOrExp(null, null);
+			return refOrExp(null, false, null);
 		int nodeStart = lastLexElement.getStartPos();
 		
 		final boolean isExpIndexing = calleeExp != null;
@@ -624,73 +640,72 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	
 	public ExpPostfix parsePostfixExpression(Expression exp) {
 		Token op = consumeLookAhead();
-		ExpPostfix expPostfix = new ExpPostfix(exp, PostfixOpType.tokenToPrefixOpType(op.type), srToCursor(exp));
-		return expPostfix;
+		return new ExpPostfix(exp, PostfixOpType.tokenToPrefixOpType(op.type), srToCursor(exp));
 	}
 	
 	protected RefOrExpParse parseReferenceOrExpression_ExpStart(int precedenceLimit, final Expression leftExp, 
 		boolean canBeRef) {
 		DeeTokens gla = lookAheadGrouped();
 		
-		InfixOpType infixOp = InfixOpType.tokenToInfixOpType(gla);
+		InfixOpType infixOpLA = InfixOpType.tokenToInfixOpType(gla);
 		if(lookAhead() == DeeTokens.NOT) {
 			if(lookAheadElement(1).getType() == DeeTokens.KW_IS) {
-				infixOp = InfixOpType.NOT_IS;
+				infixOpLA = InfixOpType.NOT_IS;
 			} else if(lookAheadElement(1).getType() == DeeTokens.KW_IN) {
-				infixOp = InfixOpType.NOT_IN;
+				infixOpLA = InfixOpType.NOT_IN;
 			}
 		}
 		
-		if(infixOp == null) {
-			return refOrExp(canBeRef, leftExp);
+		if(infixOpLA == null) {
+			return refOrExp(canBeRef, false, leftExp);
 		}
 		
 		// If lower precedence it can't be parsed to right expression, 
 		// instead this expression must become left children of new parent
-		if(infixOp.precedence < precedenceLimit) 
-			return refOrExp(canBeRef, leftExp);
+		if(infixOpLA.precedence < precedenceLimit) 
+			return refOrExp(canBeRef, false, leftExp);
 		
-		if(infixOp != InfixOpType.MUL) {
+		if(infixOpLA != InfixOpType.MUL) {
 			canBeRef = updateRefOrExpToExpression(canBeRef, leftExp, false);
 		}
 		
 		Expression newLeftExp = null;
-		switch (infixOp.category) {
+		switch (infixOpLA.category) {
 		case COMMA:
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.COMMA);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.COMMA);
 			break;
 		case ASSIGN:
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.ASSIGN);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.ASSIGN);
 			break;
 		case CONDITIONAL:
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.CONDITIONAL);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.CONDITIONAL);
 			break;
 		case LOGICAL_OR:
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.LOGICAL_AND);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.LOGICAL_AND);
 			break;
 		case LOGICAL_AND: 
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.OR);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.OR);
 			break;
 		case OR:
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.XOR);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.XOR);
 			break;
 		case XOR:
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.AND);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.AND);
 			break;
 		case AND:
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.EQUALS);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.EQUALS);
 			break;
 		case EQUALS:
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.SHIFT);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.SHIFT);
 			break;
 		case SHIFT:
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.ADD);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.ADD);
 			break;
 		case ADD:
-			newLeftExp = parseInfixOperator(leftExp, infixOp, InfixOpType.MUL);
+			newLeftExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.MUL);
 			break;
 		case MUL:
-			RefOrExpParse refOrExp = parseInfixOperator(leftExp, infixOp, InfixOpType.NULL, canBeRef);
+			RefOrExpParse refOrExp = parseInfixOperator(leftExp, infixOpLA, InfixOpType.NULL, canBeRef);
 			if(refOrExp.mode == RefOrExpMode.REF) {
 				return refOrExp;
 			}
@@ -1038,7 +1053,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return connect(new ExpTypeId(exp, srToCursor(nodeStart)));
 	}
 	
-	public ExpNew parseNewExp() {
+	public RefOrExpParse parseNewExp() {
 		if(!tryConsume(DeeTokens.KW_NEW))
 			return null;
 		
@@ -1056,7 +1071,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 					break parsing;
 				}
 			}
-			type = parseReference_WithMissing();
+			type = parseReference_WithMissing(true);
 			if(lastLexElement.isMissingElement()) {
 				break parsing;
 			}
@@ -1065,7 +1080,65 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			}
 		}
 		
-		return connect(new ExpNew(arrayView(allocArgs), type, arrayView(args), srToCursor(nodeStart)));
+		return expConnect(new ExpNew(arrayView(allocArgs), type, arrayView(args), srToCursor(nodeStart)));
+	}
+	
+	public RefOrExpParse parseCastExpression() {
+		if(!tryConsume(DeeTokens.KW_CAST))
+			return null;
+		
+		int nodeStart = lastLexElement.getStartPos();
+		
+		Reference type = null;
+		CastQualifiers qualifier = null;
+		Expression exp = null;
+		
+		parsing: {
+			if(consumeExpectedToken(DeeTokens.OPEN_PARENS) == null)
+				break parsing;
+			
+			qualifier = parseQualifier();
+			if(qualifier == null) {
+				type = parseReference_WithMissing(false);
+			}
+			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null)
+				break parsing;
+			
+			exp = nullExpToMissing(parseUnaryExpression(), true);
+		}
+		
+		if(qualifier != null) {
+			return expConnect(new ExpCastQual(qualifier, exp, srToCursor(nodeStart)));
+		} else {
+			return expConnect(new ExpCast(type, exp, srToCursor(nodeStart)));
+		}
+	}
+	
+	public CastQualifiers parseQualifier() {
+		switch (lookAhead()) {
+		case KW_CONST:
+			consumeInput();
+			if(tryConsume(DeeTokens.KW_SHARED))
+				return CastQualifiers.CONST_SHARED;
+			return CastQualifiers.CONST;
+		case KW_INOUT:
+			consumeInput();
+			if(tryConsume(DeeTokens.KW_SHARED))
+				return CastQualifiers.INOUT_SHARED;
+			return CastQualifiers.INOUT;
+		case KW_SHARED:
+			consumeInput();
+			if(tryConsume(DeeTokens.KW_CONST))
+				return CastQualifiers.SHARED_CONST;
+			if(tryConsume(DeeTokens.KW_INOUT))
+				return CastQualifiers.SHARED_INOUT;
+			return CastQualifiers.SHARED;
+		case KW_IMMUTABLE:
+			consumeInput();
+			return CastQualifiers.IMMUTABLE;
+		default:
+			return null;
+		}
 	}
 	
 }
