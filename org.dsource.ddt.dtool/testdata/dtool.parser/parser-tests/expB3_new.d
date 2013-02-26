@@ -11,34 +11,34 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
   ►#?AST_STRUCTURE_EXPECTED!【#@NO_EXP , ● #@NO_EXP】●
   ► ●
 ¤》
-#@ARGEND《
-  ►#?AST_STRUCTURE_EXPECTED!【, #@EXP_ASSIGN ● #@EXP_ASSIGN】● 
-  ►#?AST_STRUCTURE_EXPECTED!【, #@NO_EXP ● #@NO_EXP】●
-  ► ●
-¤》
-#@NEW_ARG《
-  ►#?AST_STRUCTURE_EXPECTED!【( #@ARG1 #@EXP_ASSIGN #@ARGEND )● #@ARG1 #@EXP_ASSIGN #@ARGEND】● 
+#@ARGLIST《
+  ►#?AST_STRUCTURE_EXPECTED!【( #@ARG1 #@EXP_ASSIGN )● #@ARG1 #@EXP_ASSIGN 】● 
+  ►#?AST_STRUCTURE_EXPECTED!【( #@EXP_ASSIGN__LITE , #@NO_EXP )● #@EXP_ASSIGN__LITE #@NO_EXP】● 
+  ►#?AST_STRUCTURE_EXPECTED!【( #@NO_EXP , #@NO_EXP )● #@NO_EXP #@NO_EXP】● 
+  ►#?AST_STRUCTURE_EXPECTED!【( #@NO_EXP , #@EXP_ASSIGN__LITE , #@NO_EXP )● #@NO_EXP #@EXP_ASSIGN__LITE #@NO_EXP】● 
   ►#?AST_STRUCTURE_EXPECTED!【()● 】●
-  ►#?AST_STRUCTURE_EXPECTED!【● 】●
 ¤》
-#@END《
-  ►#?AST_STRUCTURE_EXPECTED!【( #@ARG1 #@EXP_ASSIGN #@ARGEND )● #@ARG1 #@EXP_ASSIGN #@ARGEND】● 
-  ►#?AST_STRUCTURE_EXPECTED!【() ● 】●
-  ►#?AST_STRUCTURE_EXPECTED!【 /* Nothing after Type*/ ● 】●
-¤》
+#@ALLOC_ARG《#@ARGLIST●►#?AST_STRUCTURE_EXPECTED!【 /*No alloc args*/● 】》
+#@CTOR_ARG《#@ARGLIST●►#?AST_STRUCTURE_EXPECTED!【 /*No ctor args*/● 】》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)       new     #@NEW_ARG  #@TYPE_REFS  #@END
-#AST_STRUCTURE_EXPECTED: ExpNew( #@NEW_ARG  #@TYPE_REFS  #@END )
+#PARSE(EXPRESSION)       new     #@ALLOC_ARG  #@TYPE_REFS  (sample)
+#AST_STRUCTURE_EXPECTED: ExpNew( #@ALLOC_ARG  #@TYPE_REFS  #@ExpIdentifier )
+#comment(NO_STDOUT)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)       new     #@NEW_ARG  #@TYPE_REFS  [ #@EXP_ASSIGN ]
-#AST_STRUCTURE_EXPECTED: ExpNew( #@NEW_ARG  RefIndexing( #@TYPE_REFS #@EXP_ASSIGN )  )
+#PARSE(EXPRESSION)       new     ( #@EXP_ASSIGN__LITE )  #@TYPE_REFS  #@CTOR_ARG
+#AST_STRUCTURE_EXPECTED: ExpNew(  #@EXP_ASSIGN__LITE  #@TYPE_REFS  #@CTOR_ARG )
+#comment(NO_STDOUT)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)       new     ( #@EXP_ASSIGN__LITE )  #@TYPE_REFS  [ #@EXP_ASSIGN__LITE ]
+#AST_STRUCTURE_EXPECTED: ExpNew(  #@EXP_ASSIGN__LITE  RefIndexing( #@TYPE_REFS #@EXP_ASSIGN__LITE )  )
+#comment(NO_STDOUT)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Error cases
 // I'm not sure this is the best behavior though:
 // Should a broken exp parsing break all other pending exp rule parsing? 
-#PARSE(EXPRESSION)         new  ( #@ARG1 #@EXP_ASSIGN #@ARGEND )  #error(EXPRULE_ref)  (123) 
+#PARSE(EXPRESSION)         new     #@ARGLIST  #error(EXPRULE_ref)  (123) 
 #AST_STRUCTURE_EXPECTED: 
-ExpCall(                   ExpNew( #@ARG1 #@EXP_ASSIGN #@ARGEND  RefIdentifier )  Integer  )
+ExpCall(                   ExpNew( #@ARGLIST  RefIdentifier )  Integer  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)         new  (#@ARG1 #@EXP_ASSIGN #error(EXP_CLOSE_PARENS)  #parser(IgnoreRest) foo (456)
 #AST_STRUCTURE_EXPECTED: ExpNew( #@ARG1 #@EXP_ASSIGN )

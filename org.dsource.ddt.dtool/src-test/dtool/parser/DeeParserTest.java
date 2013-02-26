@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2013, 2013 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
@@ -12,7 +22,6 @@ import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
-import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.NodeUtil;
@@ -21,10 +30,9 @@ import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
-import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
+import dtool.ast.expressions.ExpLiteralString;
 import dtool.tests.CommonTestUtils;
-import dtool.tests.DToolTests;
 
 
 public class DeeParserTest extends CommonTestUtils {
@@ -70,8 +78,8 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 	}
 	
-	protected static final class DeeTestsParser extends DeeParser {
-		private DeeTestsParser(String source) {
+	public static final class DeeTestsParser extends DeeParser {
+		public DeeTestsParser(String source) {
 			super(new DeeTestsLexer(source));
 		}
 		
@@ -104,7 +112,6 @@ public class DeeParserTest extends CommonTestUtils {
 			String remainingSource = deeParser.getSource().substring(deeParser.getParserPosition());
 			CheckSourceEquality.check(remainingSource, expectedRemainingSource, false);
 		}
-		
 		ASTNeoNode mainNode = assertNotNull_(result.node);
 		
 		checkBasicStructure(array(mainNode), null);
@@ -123,7 +130,8 @@ public class DeeParserTest extends CommonTestUtils {
 			checkParserErrors(result.errors, expectedErrors);
 		}
 		
-		checkNodeTreeSourceRanges(result, parseSource);
+		// Check consistency of source ranges (no overlapping ranges)
+		ASTSourceRangeChecker.checkConsistency(mainNode);
 	}
 	
 	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
@@ -235,20 +243,11 @@ public class DeeParserTest extends CommonTestUtils {
 		assertTrue(resultErrors.size() == expectedErrors.size());
 	}
 	
-	public static void checkNodeTreeSourceRanges(final DeeParserResult result, final String source) {
+	public static void checkNodeTreeSourceRanges(final DeeParserResult result) {
 		ASTNeoNode topNode = result.node;
 		
 		// Check consistency of source ranges (no overlapping ranges)
 		ASTSourceRangeChecker.checkConsistency(topNode);
-		
-		if(DToolTests.TESTS_LITE_MODE == false) {
-			new ASTHomogenousVisitor() {
-				@Override
-				public void genericVisit(ASTNeoNode node) {
-					checkNodeSourceRange(node, source, result.errors);
-				};
-			}.traverse(topNode);
-		}
 	}
 	
 	public static void checkNodeSourceRange(ASTNeoNode node, final String fullSource, List<ParserError> errors) {
@@ -303,7 +302,5 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 		return false;
 	}
-	
-
 	
 }
