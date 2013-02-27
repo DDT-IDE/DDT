@@ -1,9 +1,9 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Integer Literals
 #@INTEGER_SUFFIX{,L,Lu,LU,u,U}
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@《0●1●123456789●123_45_6789_●123_45__67___》#@INTEGER_SUFFIX
+#@《0●1●123456789●123_45_6789_●123_45__67___》#@INTEGER_SUFFIX#@《notsuffixId》
 #LEXERTEST:
-INTEGER_DECIMAL, EOL,
+INTEGER_DECIMAL, ID, EOL,
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 _123

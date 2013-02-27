@@ -57,7 +57,7 @@ public class DeeLexerTest extends CommonTestUtils {
 	}
 	
 	public static void testLexerTokenizing(String source, TokenChecker[] tokenCheckers) {
-		DeeLexer deeLexer = new DeeLexer(source);
+		DeeLexer deeLexer = new DeeParserTest.DeeTestsLexer(source);
 		int readSourceOffset = 0;
 		
 		StringBuilder constructedSource = new StringBuilder();

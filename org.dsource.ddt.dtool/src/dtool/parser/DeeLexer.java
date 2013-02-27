@@ -698,7 +698,7 @@ public class DeeLexer extends AbstractLexer {
 			boolean isHex = literalType == EInt_Literal_Type.HEX;
 			int ch = lookAhead();
 			if(ch == '.') {
-				return matchFloatLiteral_FromDecimalMark(isHex);
+				return matchFloatLiteral_FromDecimalPoint(isHex);
 			}
 			if(ch == 'f' || ch == 'F' || ch == 'L' || ch == 'i' 
 				|| (isHex && (ch == 'P' || ch == 'p'))
@@ -754,7 +754,7 @@ public class DeeLexer extends AbstractLexer {
 		return (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F');
 	}
 	
-	protected final Token matchFloatLiteral_FromDecimalMark(boolean isHex) {
+	protected final Token matchFloatLiteral_FromDecimalPoint(boolean isHex) {
 		boolean precedingCharIsDot = true;
 		while(true) {
 			pos++;
@@ -817,6 +817,11 @@ public class DeeLexer extends AbstractLexer {
 			if(!exponentHasDigits) {
 				return createErrorToken(DeeTokens.FLOAT_DECIMAL, LexerErrorTypes.FLOAT_LITERAL__EXP_HAS_NO_DIGITS);
 			} else {
+				if(precedingCharIsDot && getCharCategory(lookAhead()).canBeIdentifierStart) {
+					pos--; // Don't consume dot as part of the float if ahead can be identifier
+					assertTrue(lookAhead() == '.');
+					return createToken(DeeTokens.INTEGER_DECIMAL);
+				}
 				return createToken(DeeTokens.FLOAT_DECIMAL);
 			}
 		}
@@ -845,7 +850,7 @@ public class DeeLexer extends AbstractLexer {
 		
 		int lookahead_1 = lookAhead(1);
 		if(getCharCategory(lookahead_1) == CharRuleCategory.DIGIT) {
-			return matchFloatLiteral_FromDecimalMark(false);
+			return matchFloatLiteral_FromDecimalPoint(false);
 		}
 		
 		if(lookahead_1 == '.') {
