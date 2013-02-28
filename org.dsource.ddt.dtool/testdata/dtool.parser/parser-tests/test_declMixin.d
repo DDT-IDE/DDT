@@ -37,15 +37,12 @@ mixin();
 mixin();
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-mixin(#@EXP_ANY #error:EXP_CLOSE_PARENS ;
-mixin(#@EXP_ANY #error:EXP_CLOSE_PARENS #error:EXP_SEMICOLON
-mixin(#@EXP_ANY ) #error:EXP_SEMICOLON
-#AST_SOURCE_EXPECTED:
-mixin(#@EXP_ANY);
-mixin(#@EXP_ANY);
-mixin(#@EXP_ANY);
-
+mixin(#@EXP_ASSIGN__NO_PENDING #error:EXP_CLOSE_PARENS ;
+mixin(#@EXP_ASSIGN__NO_PENDING #error:EXP_CLOSE_PARENS #error:EXP_SEMICOLON
 #AST_STRUCTURE_EXPECTED:
-DeclarationMixinString(#@EXP_ANY)
-DeclarationMixinString(#@EXP_ANY)
+DeclarationMixinString(#@EXP_ASSIGN__NO_PENDING)
+DeclarationMixinString(#@EXP_ASSIGN__NO_PENDING)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+mixin(#@EXP_ANY ) #error:EXP_SEMICOLON
+#AST_STRUCTURE_EXPECTED:
 DeclarationMixinString(#@EXP_ANY)

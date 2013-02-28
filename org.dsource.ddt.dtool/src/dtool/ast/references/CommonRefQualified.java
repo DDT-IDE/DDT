@@ -3,10 +3,11 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
+import dtool.ast.IASTNeoNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.DefUnitSearch;
-import dtool.refmodel.IDefUnitReferenceNode;
+import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
@@ -17,7 +18,9 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  * Common class for qualified references 
  * There are two: normal qualified references and Module qualified references.
  */
-public abstract class CommonRefQualified extends NamedReference implements IDefUnitReferenceNode {
+public abstract class CommonRefQualified extends NamedReference {
+	
+	public static interface IQualifierNode extends IDefUnitReference, IASTNeoNode { }
 	
 	public final RefIdentifier qualifiedName;
 	
@@ -31,8 +34,8 @@ public abstract class CommonRefQualified extends NamedReference implements IDefU
 	}
 	
 	/** maybe null */
-	public abstract IDefUnitReferenceNode getQualifier();
-
+	public abstract IQualifierNode getQualifier();
+	
 	public abstract Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver);
 	
 	@Override

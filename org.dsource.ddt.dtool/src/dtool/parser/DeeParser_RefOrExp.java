@@ -160,24 +160,29 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	
 	protected RefParseResult parseReference_ReferenceStart(Reference leftRef, boolean parsingExp) {
 		// Star is multiply infix operator, dont parse as pointer ref
-		if(!parsingExp && tryConsume(DeeTokens.STAR)) {
-			RefTypePointer pointerRef = connect(new RefTypePointer(leftRef, srToCursor(leftRef.getStartPos())));
-			return parseReference_ReferenceStart(pointerRef, parsingExp);
-			
-		} else if(tryConsume(DeeTokens.DOT)) {
+		if(tryConsume(DeeTokens.DOT)) {
 			RefIdentifier qualifiedId = parseRefIdentifier();
+			switch (leftRef.getNodeType()) {
+				default: break; 
+				case REF_TYPE_DYN_ARRAY: case REF_TYPE_POINTER: case REF_INDEXING:
+					addError(ParserErrorTypes.INVALID_QUALIFIER, leftRef.getSourceRange(), null);
+			}
 			leftRef = connect(new RefQualified(leftRef, qualifiedId, srToCursor(leftRef.getStartPos())));
 			if(qualifiedId.name == null) {
 				return new RefParseResult(true, leftRef);
 			}
 			return parseReference_ReferenceStart(leftRef, parsingExp);
 			
+		} else if(!parsingExp && tryConsume(DeeTokens.STAR)) {
+			RefTypePointer pointerRef = connect(new RefTypePointer(leftRef, srToCursor(leftRef.getStartPos())));
+			return parseReference_ReferenceStart(pointerRef, parsingExp);
+			
 		} else if(!parsingExp && tryConsume(DeeTokens.OPEN_BRACKET)) {
 			if(tryConsume(DeeTokens.CLOSE_BRACKET)) {
 				RefTypeDynArray dynArrayRef = connect(new RefTypeDynArray(leftRef, srToCursor(leftRef.getStartPos())));
 				return parseReference_ReferenceStart(dynArrayRef, parsingExp);
 			} else {
-				Resolvable resolvable = parseReferenceOrExpression();
+				Resolvable resolvable = parseReferenceOrExpression(true);
 				if(consumeExpectedToken(DeeTokens.CLOSE_BRACKET) == null) {
 					// Note: if resolvable == null then this case should always be entered into
 					if(resolvable == null) {
@@ -205,7 +210,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	}
 	
 	protected Expression parseExpression(int precedenceLimit) {
-		return parseReferenceOrExpression(precedenceLimit, false, true).getExp_NoRuleContinue();
+		return parseReferenceStartOrExpression(precedenceLimit, false, true).getExp_NoRuleContinue();
 	}
 	
 	public Expression parseExpression_ToMissing(boolean reportMissingExpError) {
@@ -231,8 +236,40 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return nullExpToMissing(parseAssignExpression(), reportMissingExpError);
 	}
 	
-	public Resolvable parseReferenceOrExpression() {
-		return parseReferenceOrExpression_full(0, true).resolvable;
+	protected Resolvable parseReferenceOrExpression(boolean ambiguousToRef) {
+		RefOrExpFullResult refOrExp = parseReferenceOrExpression_full(0);
+		if(refOrExp.mode == RefOrExpMode.REF_OR_EXP) {
+			if(ambiguousToRef) {
+				return convertRefOrExpToReference(refOrExp.getExpression());
+			} else {
+				return convertRefOrExpToExpression(refOrExp.getExpression());
+			}
+		}
+		return refOrExp.resolvable;
+	}
+	
+	protected RefOrExpFullResult parseReferenceOrExpression_full(int precedenceLimit) {
+		// canBeRef will indicate whether the expression parsed so far could also have been parsed as a reference.
+		// It is essential that every function call checks and updates the value of this variable before
+		// consuming additional tokens from the stream.
+		
+		RefOrExpParse refOrExp = parseReferenceStartOrExpression(precedenceLimit, true, true);
+		if(refOrExp.mode == null)
+			return new RefOrExpFullResult(null, null);
+		
+		if(refOrExp.mode == RefOrExpMode.EXP) {
+			return new RefOrExpFullResult(RefOrExpMode.EXP, refOrExp.getExp());
+		} else if(refOrExp.mode == RefOrExpMode.REF ) {
+			// The expression we parse should actually have been parsed as a reference, so convert it:
+			Reference startRef = convertRefOrExpToReference(refOrExp.getExp_NoRuleContinue());
+			// And resume parsing as ref
+			Reference ref = parseReference_ReferenceStart(startRef, false).ref;
+			return new RefOrExpFullResult(RefOrExpMode.REF, ref);
+		} else {
+			// Ambiguous RoE must not leave refs ahead (otherwise it should have been part of ambiguous)
+			assertTrue(parseReference_ReferenceStart(null, false).ref == null); 
+			return new RefOrExpFullResult(RefOrExpMode.REF_OR_EXP, refOrExp.getExp());
+		}
 	}
 	
 	public static enum RefOrExpMode { REF, EXP, REF_OR_EXP }
@@ -344,40 +381,18 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			return (Reference) resolvable;
 		}
 	}
-
-	public RefOrExpFullResult parseReferenceOrExpression_full(int precedenceLimit, boolean ambiguousToRef) {
-		// canBeRef will indicate whether the expression parsed so far could also have been parsed as a reference.
-		// It is essential that every function call checks and updates the value of this variable before
-		// consuming additional tokens from the stream.
-		
-		RefOrExpParse refOrExp = parseReferenceOrExpression(precedenceLimit, true, true);
-		if(refOrExp.mode == null)
-			return new RefOrExpFullResult(null, null);
-		
-		if(refOrExp.mode == RefOrExpMode.EXP) {
-			return new RefOrExpFullResult(RefOrExpMode.EXP, refOrExp.getExp());
-		} else if(refOrExp.mode == RefOrExpMode.REF || ambiguousToRef) {
-			// The expression we parse should actually have been parsed as a reference, so convert it:
-			Reference startRef = convertRefOrExpToReference(refOrExp.getExp_NoRuleContinue());
-			// And resume parsing as ref
-			Reference ref = parseReference_ReferenceStart(startRef, false).ref;
-			return new RefOrExpFullResult(RefOrExpMode.REF, ref);
-		} else {
-			return new RefOrExpFullResult(RefOrExpMode.REF_OR_EXP, refOrExp.getExp());
-		}
+	
+	protected RefOrExpParse parseReferenceStartOrExpression_notAtStart(int precedenceLimit, boolean canBeRef) {
+		return parseReferenceStartOrExpression(precedenceLimit, canBeRef, false);
 	}
 	
-	protected RefOrExpParse parseReferenceOrExpression_notStart(int precedenceLimit, boolean canBeRef) {
-		return parseReferenceOrExpression(precedenceLimit, canBeRef, false);
-	}
-	
-	protected RefOrExpParse parseReferenceOrExpression(int precedenceLimit, boolean canBeRef, boolean isRoEStart) {
-		RefOrExpParse refOrExp = parseUnaryExpression(canBeRef, isRoEStart);
+	protected RefOrExpParse parseReferenceStartOrExpression(int precedenceLimit, boolean canBeRef, boolean isAtStart) {
+		RefOrExpParse refOrExp = parseUnaryExpression(canBeRef, isAtStart);
 		if(refOrExp.shouldStopRule()) {
 			return refOrExp;
 		}
 		
-		return parseReferenceOrExpression_ExpStart(precedenceLimit, refOrExp.getExp(), refOrExp.canBeRef());
+		return parseReferenceStartOrExpression_RoEStart(precedenceLimit, refOrExp.getExp(), refOrExp.canBeRef());
 	}
 	
 	public Expression parseUnaryExpression() {
@@ -418,6 +433,14 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		case POW: {
 			updateRefOrExpToExpression(canBeRef, exp, false);
 			return parseInfixOperator(exp, InfixOpType.POW, InfixOpType.NULL, false);
+		}
+		case DOT: {
+			assertTrue(canBeRef == false); // Because exp argument should be unambiguously an expression
+			consumeLookAhead();
+			RefIdentifier qualifiedId = parseRefIdentifier();
+			Reference ref = connect(new RefQualified(exp, qualifiedId, srToCursor(exp.getStartPos())));
+			ref = parseReference_ReferenceStart(ref, true).ref; // continue parsing exp even with balance broken
+			return parsePostfixExpression(connect(new ExpReference(ref, ref.getSourceRange())), false);
 		}
 		default:
 			return refOrExp(canBeRef, false, exp);
@@ -496,15 +519,15 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		case OPEN_BRACKET:
 			return parseArrayLiteral(canBeRef);
 		case KW_ASSERT:
-			return expConnect(parseAssertExp());
+			return expConnect(parseAssertExpression());
 		case KW_MIXIN:
-			return expConnect(parseMixinExp());
+			return expConnect(parseMixinExpression());
 		case KW_IMPORT:
-			return expConnect(parseImportExp());
+			return expConnect(parseImportExpression());
 		case KW_TYPEID:
-			return expConnect(parseTypeIdExp());
+			return expConnect(parseTypeIdExpression());
 		case KW_NEW:
-			return parseNewExp();
+			return parseNewExpression();
 		case KW_CAST:
 			return parseCastExpression();
 		default:
@@ -563,7 +586,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			
 			if(firstElement) {
 				if(canBeRef) {
-					RefOrExpFullResult refOrExp = parseReferenceOrExpression_full(InfixOpType.ASSIGN.precedence, false);
+					RefOrExpFullResult refOrExp = parseReferenceOrExpression_full(InfixOpType.ASSIGN.precedence);
 					if(refOrExp.isReference()) {
 						elements.add(refConnect(new ExpReference(refOrExp.getReference(), null)).exp);
 						consumeExpectedToken(DeeTokens.CLOSE_BRACKET);
@@ -643,7 +666,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return new ExpPostfix(exp, PostfixOpType.tokenToPrefixOpType(op.type), srToCursor(exp));
 	}
 	
-	protected RefOrExpParse parseReferenceOrExpression_ExpStart(int precedenceLimit, final Expression leftExp, 
+	protected RefOrExpParse parseReferenceStartOrExpression_RoEStart(int precedenceLimit, final Expression leftExp, 
 		boolean canBeRef) {
 		DeeTokens gla = lookAheadGrouped();
 		
@@ -717,7 +740,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			assertUnreachable();
 		}
 		assertTrue(newLeftExp != null);
-		return parseReferenceOrExpression_ExpStart(precedenceLimit, newLeftExp, canBeRef);
+		return parseReferenceStartOrExpression_RoEStart(precedenceLimit, newLeftExp, canBeRef);
 	}
 	
 	public Expression parseInfixOperator(Expression leftExp, InfixOpType op, InfixOpType rightExpLimitToken) {
@@ -755,7 +778,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 				}
 			}
 			
-			RefOrExpParse rightExpResult = parseReferenceOrExpression_notStart(rightExpLimit.precedence, canBeRef);
+			RefOrExpParse rightExpResult = parseReferenceStartOrExpression_notAtStart(rightExpLimit.precedence, canBeRef);
 			mode = rightExpResult.mode;
 			
 			if(rightExpResult.mode == null) {
@@ -979,12 +1002,21 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			return null;
 		int nodeStart = lastLexElement.getStartPos();
 		
-		Expression exp = parseExpression_ToMissing(true);
-		consumeExpectedToken(DeeTokens.CLOSE_PARENS);
-		return connect(new ExpParentheses(exp, srToCursor(nodeStart)));
+		Resolvable resolvable = parseReferenceOrExpression(false);
+		if(resolvable == null) {
+			resolvable = nullExpToMissing((Expression) resolvable, true);
+		}
+		
+		if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null) {
+			if(resolvable instanceof Reference && lookAhead() != DeeTokens.DOT) {
+				addError(ParserErrorTypes.TYPE_USED_AS_EXP_VALUE, resolvable.getSourceRange(), null);
+			}
+		}
+		
+		return connect(new ExpParentheses(resolvable, srToCursor(nodeStart)));
 	}
 	
-	public ExpAssert parseAssertExp() {
+	public ExpAssert parseAssertExpression() {
 		if(tryConsume(DeeTokens.KW_ASSERT) == false)
 			return null;
 		
@@ -1002,7 +1034,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return connect(new ExpAssert(exp, msg, srToCursor(nodeStart)));
 	}
 	
-	public ExpImportString parseImportExp() {
+	public ExpImportString parseImportExpression() {
 		if(tryConsume(DeeTokens.KW_IMPORT) == false)
 			return null;
 		
@@ -1011,7 +1043,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return connect(new ExpImportString(exp, srToCursor(nodeStart)));
 	}
 	
-	public ExpMixinString parseMixinExp() {
+	public ExpMixinString parseMixinExpression() {
 		if(tryConsume(DeeTokens.KW_MIXIN) == false)
 			return null;
 		
@@ -1029,7 +1061,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return exp;
 	}
 	
-	public ExpTypeId parseTypeIdExp() {
+	public ExpTypeId parseTypeIdExpression() {
 		if(tryConsume(DeeTokens.KW_TYPEID) == false)
 			return null;
 		
@@ -1037,7 +1069,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		Reference ref = null;
 		Expression exp = null;
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
-			Resolvable resolvable = parseReferenceOrExpression();
+			Resolvable resolvable = parseReferenceOrExpression(true);
 			if(resolvable == null) {
 				exp = parseExpression_ToMissing(true);
 			} else if(resolvable instanceof Reference) {
@@ -1053,7 +1085,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return connect(new ExpTypeId(exp, srToCursor(nodeStart)));
 	}
 	
-	public RefOrExpParse parseNewExp() {
+	public RefOrExpParse parseNewExpression() {
 		if(!tryConsume(DeeTokens.KW_NEW))
 			return null;
 		

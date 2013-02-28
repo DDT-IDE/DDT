@@ -9,11 +9,11 @@ import dtool.ast.SourceRange;
 
 public class ExpParentheses extends Expression {
 	
-	public final Expression exp;
+	public final Resolvable resolvable;
 	
-	public ExpParentheses(Expression exp, SourceRange sourceRange) {
+	public ExpParentheses(Resolvable resolvable, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.exp = parentize(assertNotNull_(exp));
+		this.resolvable = parentize(assertNotNull_(resolvable));
 	}
 	
 	@Override
@@ -25,13 +25,13 @@ public class ExpParentheses extends Expression {
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, exp);
+			TreeVisitor.acceptChildren(visitor, resolvable);
 		}
 		visitor.endVisit(this);
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode("(", exp, ")");
+		cp.appendNode("(", resolvable, ")");
 	}
 }

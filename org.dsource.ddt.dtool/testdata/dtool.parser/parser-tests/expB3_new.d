@@ -4,7 +4,6 @@
 ExpNew(RefIdentifier Integer #@ExpIdentifier)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@EXP_OR_NO《#@EXP_ASSIGN●#@NO_EXP》
 
 #@ARG1《
   ►#?AST_STRUCTURE_EXPECTED!【#@EXP_ASSIGN , ● #@EXP_ASSIGN】● 
@@ -36,9 +35,9 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Error cases
 #PARSE(EXPRESSION)        new     #@ARGLIST  #@MISSING_REF  (123) 
 #AST_STRUCTURE_EXPECTED:  ExpCall( ExpNew( #@ARGLIST  #@MISSING_REF ) Integer)  
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)        new  (#@ARG1 #@EXP_ASSIGN #error(EXP_CLOSE_PARENS)  #parser(IgnoreRest) foo (456)
-#AST_STRUCTURE_EXPECTED:  ExpNew( #@ARG1 #@EXP_ASSIGN )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ (note that ARG1 expansion gets messed up because of EXP_ASSIGN__NO_PENDING)
+#PARSE(EXPRESSION)        new  (#@ARG1 #@EXP_ASSIGN__NO_PENDING #error(EXP_CLOSE_PARENS)  #parser(IgnoreRest) foo (456)
+#AST_STRUCTURE_EXPECTED:  ExpNew( #@《*●#@NO_EXP● 》(ARG1) #@EXP_ASSIGN__NO_PENDING )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)        new     #@MISSING_REF   [789]
 #AST_STRUCTURE_EXPECTED:  ExpIndex(ExpNew( #@MISSING_REF ) Integer)  

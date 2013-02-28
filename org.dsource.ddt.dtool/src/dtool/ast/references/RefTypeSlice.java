@@ -8,16 +8,15 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable;
-import dtool.refmodel.IDefUnitReferenceNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class RefTypeSlice extends Reference {
 	
-	public final IDefUnitReferenceNode slicee;
+	public final Resolvable slicee;
 	public final Resolvable from;
 	public final Resolvable to;
 	
-	public RefTypeSlice(IDefUnitReferenceNode slicee, Resolvable from, Resolvable to, SourceRange sourceRange) {
+	public RefTypeSlice(Resolvable slicee, Resolvable from, Resolvable to, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.slicee = parentizeI(slicee);
 		this.from = parentize(from);

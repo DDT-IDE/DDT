@@ -1,12 +1,9 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-typeid( #@EXP1《#@EXP_ANY●#@TYPE_REFS●#error(EXPRULE_exp)》  #@《)●#error(EXP_CLOSE_PARENS)》
+typeid( #@CONTENT《#@EXPS__NO_REFS__NO_AMBIGS●#@TYPE_REFS●#@NO_EXP》  #@PaCLOSE_OR_NO
 #AST_STRUCTURE_EXPECTED:
-ExpTypeId( #@《#@EXP_ANY●#@TYPE_REFS●MissingExpression》(EXP1)  )
+ExpTypeId( #@CONTENT  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)
-typeid #error(EXP_OPEN_PARENS)
-#AST_SOURCE_EXPECTED:
-typeid
-#AST_STRUCTURE_EXPECTED:
-ExpTypeId()
+#PARSE(EXPRESSION)       typeid #error(EXP_OPEN_PARENS)
+#AST_SOURCE_EXPECTED:    typeid
+#AST_STRUCTURE_EXPECTED: ExpTypeId()

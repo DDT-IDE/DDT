@@ -217,7 +217,10 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		} else if(mde.value.equals("TYPE_AS_EXP_VALUE")) {
 			String errorSource = assertNotNull_(mde.associatedSource);
 			return new ParserError(ParserErrorTypes.TYPE_USED_AS_EXP_VALUE, errorRange, errorSource, null);
-		} else {
+		} else if(mde.value.equals("INV_QUALIFIER")) {
+			String errorSource = assertNotNull_(mde.associatedSource);
+			return new ParserError(ParserErrorTypes.INVALID_QUALIFIER, errorRange, errorSource, null);
+		} else{
 			throw assertFail();
 		}
 	}

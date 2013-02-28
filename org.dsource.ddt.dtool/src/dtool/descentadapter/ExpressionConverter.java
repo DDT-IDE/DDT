@@ -20,13 +20,13 @@ import descent.internal.compiler.parser.CallExp;
 import dtool.DToolBundle;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
-import dtool.ast.expressions.ExpLiteralArray;
 import dtool.ast.expressions.ExpCall;
+import dtool.ast.expressions.ExpLiteralArray;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.CommonRefQualified.IQualifierNode;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.refmodel.IDefUnitReferenceNode;
 import dtool.util.ArrayView;
 
 public class ExpressionConverter extends BaseDmdConverter {
@@ -37,9 +37,9 @@ public class ExpressionConverter extends BaseDmdConverter {
 		return downCast(DescentASTConverter.convertElem(exp, convContext), Expression.class);
 	}
 	
-	public static IDefUnitReferenceNode convert2(descent.internal.compiler.parser.Expression exp, 
+	public static IQualifierNode convert2(descent.internal.compiler.parser.Expression exp, 
 			ASTConversionContext convContext) {
-		IDefUnitReferenceNode newExp = convert(exp, convContext);
+		IQualifierNode newExp = convert(exp, convContext);
 		if (newExp instanceof ExpReference) {
 			newExp = downCast(newExp, ExpReference.class).ref;
 			((ASTNeoNode) newExp).parent = null;

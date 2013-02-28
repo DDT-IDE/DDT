@@ -2,6 +2,7 @@ package dtool.ast;
 
 
 public enum ASTNodeTypes {
+	@Deprecated
 	OTHER,
 	
 	SYMBOL,

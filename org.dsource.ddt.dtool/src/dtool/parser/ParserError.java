@@ -30,7 +30,8 @@ public class ParserError {
 		
 		INVALID_EXTERN_ID, // specific error for extern declaration argument
 		EXP_MUST_HAVE_PARENTHESES, // expression must have parentheses to parse
-		TYPE_USED_AS_EXP_VALUE, // a built-in type is used as an expression value 
+		TYPE_USED_AS_EXP_VALUE, // a built-in type is used as an expression value
+		INVALID_QUALIFIER, // A composite built in type is used as qualifier in qualified ref
 	}
 	
 	protected final ParserErrorTypes errorType;
@@ -66,6 +67,8 @@ public class ParserError {
 			return "Expression " + msgErrorSource + " must be parenthesized when next to operator: " + msgData + ".";
 		case TYPE_USED_AS_EXP_VALUE:
 			return "The type " + msgErrorSource + " cannot be used as an expression value.";
+		case INVALID_QUALIFIER:
+			return "The type " + msgErrorSource + " cannot directly be used as a qualifier in qualified reference.";
 		}
 		throw assertFail();
 	}
@@ -73,7 +76,7 @@ public class ParserError {
 	@Override
 	public String toString() {
 		return "ERROR:" + errorType + sourceRange.toString() +
-			(msgErrorSource == null ? "" : (" :" + msgErrorSource)) + " obj2:" + msgData;
+			(msgErrorSource == null ? "" : ("【"+msgErrorSource+"】")) + "("+msgData+")";
 	}
 	
 }

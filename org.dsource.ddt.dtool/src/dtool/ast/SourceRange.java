@@ -39,7 +39,7 @@ public final class SourceRange {
 	
 	@Override
 	public final String toString() {
-		return "[" + offset + ":" + length + "]";
+		return "[" + offset + "+" + length + "]";
 	}
 	
 	@Override

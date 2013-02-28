@@ -1,6 +1,5 @@
 package dtool.parser;
 
-import static dtool.tests.CommonTestUtils.assertCast;
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.emptyToNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
@@ -10,17 +9,16 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
-import dtool.ast.declarations.InvalidDeclaration;
-import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
+import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.Reference;
+import dtool.ast.references.RefQualified;
 import dtool.parser.AbstractParser.LexElement;
 
 public class ASTReparseCheckSwitcher {
@@ -113,13 +111,20 @@ public class ASTReparseCheckSwitcher {
 		case REF_IDENTIFIER:
 			return reparseCheck(snippedParser.parseRefIdentifier(), node);
 		
-		case REF_QUALIFIED:
+		case REF_QUALIFIED: {
+			RefQualified refQual = (RefQualified) node;
+			if(RefQualified.getRootNode(refQual) instanceof Expression) {
+				return reparseCheck(((ExpReference) snippedParser.parseExpression()).ref, node);
+			} else {
+				return reparseCheck(snippedParser.parseReference(), node);
+			}
+		}
 		case REF_MODULE_QUALIFIED:
 		case REF_PRIMITIVE:
 		case REF_TYPE_DYN_ARRAY:
 		case REF_TYPE_POINTER:
 		case REF_INDEXING:
-			return reparseCheck(parseReference(snippedParser), node);
+			return reparseCheck(snippedParser.parseReference(), node);
 		
 		/* ---------------------------------- */
 		
@@ -174,18 +179,6 @@ public class ASTReparseCheckSwitcher {
 	public void prepNodeSnipedParser(ASTNeoNode node) {
 		nodeSnippedSource = originalSource.substring(node.getStartPos(), node.getEndPos());
 		snippedParser = new DeeParser(new DeeParserTest.DeeTestsLexer(nodeSnippedSource));
-	}
-	
-	protected static Reference parseReference(DeeParser nodeRangeSourceParser) {
-		ASTNeoNode decl = nodeRangeSourceParser.parseDeclaration();
-		if(decl instanceof InvalidSyntaxElement) {
-			return (Reference) assertCast(decl, InvalidSyntaxElement.class).node;
-		} else if(decl instanceof InvalidDeclaration) {
-			return (Reference) assertCast(decl, InvalidDeclaration.class).node;
-		} else {
-			assertTrue(decl == null);
-			return null;
-		}
 	}
 	
 	/** This will test if node has a correct source range even in situations where

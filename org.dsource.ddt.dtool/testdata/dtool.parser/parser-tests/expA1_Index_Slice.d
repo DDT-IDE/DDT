@@ -38,11 +38,6 @@ ExpIndex( #@INDEXEE #@EXP_ASSIGN )
 #AST_STRUCTURE_EXPECTED:
 ExpSlice( #@INDEXEE Integer #@ExpIdentifier )
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  TODO
-#PARSE(EXPRESSION) #@INDEXEE [123 .. bar #error(EXP_CLOSE_BRACKET) #parser(IgnoreRest) , 123 .. bar]
-#AST_STRUCTURE_EXPECTED:
-ExpSlice( #@INDEXEE Integer #@ExpIdentifier )
-
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) #@INDEXEE [#@EXP_OR_NO .. #@EXP_OR_NO #@BkCLOSE_OR_NO
 #AST_STRUCTURE_EXPECTED:

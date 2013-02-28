@@ -5,7 +5,10 @@ import java.util.Collection;
 import dtool.ast.definitions.DefUnit;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-/** A reference to a DefUnit. */
+/** 
+ * A reference to a DefUnit.
+ * TODO rename to IResolvable? 
+ * */
 public interface IDefUnitReference {
 	
 	/** Finds the DefUnits matching this reference. 

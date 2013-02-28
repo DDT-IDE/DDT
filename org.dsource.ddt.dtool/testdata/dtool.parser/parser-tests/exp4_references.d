@@ -23,12 +23,6 @@ ExpReference(RefPrimitive)
 #AST_STRUCTURE_EXPECTED:
 ExpReference(RefQualified(#@PREFIX RefIdentifier))
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Invalid D syntax (TODO report error
-#PARSE(EXPRESSION)
-Foo[int].init
-#AST_STRUCTURE_EXPECTED:
-ExpReference(RefQualified(RefIndexing(RefIdentifier RefPrimitive) RefIdentifier))
-
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ This tests valid references that are being parse as expressions
 #PARSE(EXPRESSION) #@EXP_UNARY_REFS
 #AST_STRUCTURE_EXPECTED:

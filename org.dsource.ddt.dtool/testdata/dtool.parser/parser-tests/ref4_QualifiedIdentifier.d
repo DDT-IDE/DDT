@@ -16,15 +16,14 @@ InvalidDeclaration( RefQualified(RefIdentifier RefIdentifier) )
 DefVariable(RefPrimitive DefSymbol)
 InvalidDeclaration( RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier) )
 DefVariable(RefPrimitive DefSymbol)
-
-#AST_SOURCE_EXPECTED:
-Foo.  int dummy;
-FooBar.Bar.   int dummy;
-
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-
-#@TYPE_REFS•.foo dummy;
+#@TYPE_REFS_QUALIFIER•.foo dummy;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefQualified(#@TYPE_REFS RefIdentifier) DefSymbol)
+DefVariable(RefQualified(#@TYPE_REFS_QUALIFIER RefIdentifier) DefSymbol)
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#error(INV_QUALIFIER)【#@TYPE_REFS_INVALID_QUALIFIER】.foo dummy;
+
+#AST_STRUCTURE_EXPECTED:
+DefVariable(RefQualified(#@TYPE_REFS_INVALID_QUALIFIER RefIdentifier) DefSymbol)

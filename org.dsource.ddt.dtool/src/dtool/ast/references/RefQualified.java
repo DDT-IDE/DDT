@@ -7,11 +7,11 @@ import java.util.Collection;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
-import dtool.refmodel.IDefUnitReferenceNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**
@@ -19,9 +19,9 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  */
 public class RefQualified extends CommonRefQualified {
 	
-	public final IDefUnitReferenceNode qualifier; //Entity or Expression
+	public final IQualifierNode qualifier;
 	
-	public RefQualified(IDefUnitReferenceNode qualifier, RefIdentifier qualifiedIdRef, SourceRange sourceRange) {
+	public RefQualified(IQualifierNode qualifier, RefIdentifier qualifiedIdRef, SourceRange sourceRange) {
 		super(assertNotNull_(qualifiedIdRef));
 		this.qualifier = parentizeI(assertNotNull_(qualifier));
 		initSourceRange(sourceRange);
@@ -44,8 +44,8 @@ public class RefQualified extends CommonRefQualified {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		// TODO, proper use
-		cp.append(qualifier.toStringAsElement(), ".", qualifiedName.toStringAsElement());
+		cp.appendNode((ASTNeoNode) qualifier);
+		cp.appendNode(" . ", qualifiedName);
 	}
 	
 	public IASTNode getRootAsNode() {
@@ -53,13 +53,20 @@ public class RefQualified extends CommonRefQualified {
 	}
 	
 	@Override
-	public IDefUnitReferenceNode getQualifier() {
+	public IQualifierNode getQualifier() {
 		return qualifier;
 	}
 	
 	@Override
 	public Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver) {
 		return qualifier.findTargetDefUnits(moduleResolver, false);
+	}
+	
+	public static IQualifierNode getRootNode(IQualifierNode ref) {
+		if(ref instanceof RefQualified) {
+			return getRootNode(((RefQualified) ref).qualifier);
+		}
+		return ref;
 	}
 	
 }

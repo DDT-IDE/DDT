@@ -13,11 +13,11 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
+import dtool.ast.references.CommonRefQualified.IQualifierNode;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 import dtool.ast.references.TypeTypeof;
-import dtool.refmodel.IDefUnitReferenceNode;
 
 public class Parser_ReferenceTypeOfTest extends Parser_Reference_CommonTest {
 	
@@ -151,7 +151,7 @@ public class Parser_ReferenceTypeOfTest extends Parser_Reference_CommonTest {
 			@Override
 			protected void checkReference(Reference topRef, String nodeCode) {
 				assertAreEqual(topRef.toStringAsElement(), nodeCode);
-				IDefUnitReferenceNode ref_obj = getRootRef(topRef);
+				IQualifierNode ref_obj = getRootRef(topRef);
 				assertTrue(ref_obj instanceof TypeTypeof);
 				TypeTypeof ref = downCast(ref_obj);
 				assertAreEqual(ref.toStringAsElement(), "typeof("+typeofArgCode+")");
@@ -162,7 +162,7 @@ public class Parser_ReferenceTypeOfTest extends Parser_Reference_CommonTest {
 		test.runCommonTest(nodeCodeString);
 	}
 	
-	protected static IDefUnitReferenceNode getRootRef(IDefUnitReferenceNode root) {
+	protected static IQualifierNode getRootRef(IQualifierNode root) {
 		if(root instanceof RefQualified) {
 			return getRootRef(downCast(root, RefQualified.class).qualifier);
 		}

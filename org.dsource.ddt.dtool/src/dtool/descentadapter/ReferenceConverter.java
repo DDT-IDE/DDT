@@ -30,6 +30,7 @@ import dtool.ast.definitions.MixinContainer;
 import dtool.ast.definitions.NamedMixin;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.CommonRefQualified;
+import dtool.ast.references.CommonRefQualified.IQualifierNode;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefQualified;
@@ -37,7 +38,6 @@ import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 import dtool.ast.references.TypeTypeof;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.refmodel.IDefUnitReferenceNode;
 import dtool.util.ArrayView;
 
 
@@ -285,7 +285,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			assertTrue(convContext.module.hasSyntaxErrors());
 			assertTrue(rootExpression.hasNoSourceRangeInfo() == false);
 			// Ignore subExp
-			IDefUnitReferenceNode rootRef = ExpressionConverter.convert2(rootExpression, convContext);
+			IQualifierNode rootRef = ExpressionConverter.convert2(rootExpression, convContext);
 			return (Reference) rootRef;
 		} 
 		
@@ -336,7 +336,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			refModuleQual.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
 			return refModuleQual;
 		} else {
-			IDefUnitReferenceNode rootRef = ExpressionConverter.convert2(rootIdentifierExp, convContext);
+			IQualifierNode rootRef = ExpressionConverter.convert2(rootIdentifierExp, convContext);
 			
 			if(rootRef.hasNoSourceRangeInfo() && !DToolBundle.BUGS_MODE){
 				if(!DToolBundle.DMDPARSER_PROBLEMS__BUG41) {

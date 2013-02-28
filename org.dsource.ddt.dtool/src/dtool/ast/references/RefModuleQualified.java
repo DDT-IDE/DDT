@@ -11,7 +11,6 @@ import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.refmodel.IDefUnitReferenceNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /** An entity reference starting at module scope. 
@@ -50,7 +49,7 @@ public class RefModuleQualified extends CommonRefQualified {
 	
 	
 	@Override
-	public IDefUnitReferenceNode getQualifier() {
+	public IQualifierNode getQualifier() {
 		return null;
 	}
 	

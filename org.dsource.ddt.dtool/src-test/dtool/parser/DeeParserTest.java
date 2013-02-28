@@ -285,6 +285,7 @@ public class DeeParserTest extends CommonTestUtils {
 			case EXPECTED_RULE:
 			case EXP_MUST_HAVE_PARENTHESES:
 			case TYPE_USED_AS_EXP_VALUE:
+			case INVALID_QUALIFIER:
 				continue;
 			case INVALID_EXTERN_ID:
 				break;

@@ -17,9 +17,6 @@ DefVariable(RefIndexing(RefIndexing(RefPrimitive ExpLiteralInteger) ExpLiteralIn
 foo[int] #error:EXP_ID ;
 foo[4] #error:EXP_ID ;
 
-#AST_SOURCE_EXPECTED:
-foo[int] ;
-foo[4] ;
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(RefIndexing(RefIdentifier RefPrimitive))
 InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))
@@ -38,35 +35,26 @@ DefVariable(RefIndexing(RefIdentifier #@TYPE_REFS) DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@TYPE_REFS[#@EXP_ANY] dummy;
+#@TYPE_REFS[#@EXPS__NO_REFS__NO_AMBIGS] dummy;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefIndexing(#@TYPE_REFS #@EXP_ANY) DefSymbol)
-
+DefVariable(RefIndexing(#@TYPE_REFS #@EXPS__NO_REFS__NO_AMBIGS) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo1[#@TYPE_REFS   #error:EXP_CLOSE_BRACKET public int dummy ;
 foo2[#@TYPE_REFS   #error:EXP_CLOSE_BRACKET ;
 foo3[#@TYPE_REFS   #error:EXP_CLOSE_BRACKET 
 
-#AST_SOURCE_EXPECTED:
-foo1[#@TYPE_REFS] public int dummy;
-foo2[#@TYPE_REFS] ;
-foo3[#@TYPE_REFS] 
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(RefIndexing(RefIdentifier #@TYPE_REFS))  ?(DefinitionVariable(RefPrimitive ?))
 InvalidDeclaration(RefIndexing(RefIdentifier #@TYPE_REFS))  DeclarationEmpty
 InvalidDeclaration(RefIndexing(RefIdentifier #@TYPE_REFS))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo1[#@EXP_ANY   #error:EXP_CLOSE_BRACKET public int dummy ;
-foo2[#@EXP_ANY   #error:EXP_CLOSE_BRACKET ;
-foo3[#@EXP_ANY   #error:EXP_CLOSE_BRACKET 
+foo1[#@EXPS__NO_REFS__NO_AMBIGS   #error:EXP_CLOSE_BRACKET public int dummy ;
+foo2[#@EXPS__NO_REFS__NO_AMBIGS   #error:EXP_CLOSE_BRACKET ;
+foo3[#@EXPS__NO_REFS__NO_AMBIGS   #error:EXP_CLOSE_BRACKET 
 
-#AST_SOURCE_EXPECTED:
-foo1[#@EXP_ANY]  public int dummy;
-foo2[#@EXP_ANY]  ;
-foo3[#@EXP_ANY] 
 #AST_STRUCTURE_EXPECTED:
-InvalidDeclaration(RefIndexing(RefIdentifier #@EXP_ANY))  ?(DefinitionVariable(RefPrimitive DefSymbol))
-InvalidDeclaration(RefIndexing(RefIdentifier #@EXP_ANY))  DeclarationEmpty
-InvalidDeclaration(RefIndexing(RefIdentifier #@EXP_ANY))  
+InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_REFS__NO_AMBIGS))  ?(DefinitionVariable(RefPrimitive DefSymbol))
+InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_REFS__NO_AMBIGS))  DeclarationEmpty
+InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_REFS__NO_AMBIGS))  

@@ -1,13 +1,24 @@
 package dtool.ast.expressions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.Collection;
 
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.DefUnit;
-import dtool.refmodel.IDefUnitReferenceNode;
+import dtool.ast.references.CommonRefQualified.IQualifierNode;
+import dtool.ast.references.Reference;
+import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public abstract class Resolvable extends ASTNeoNode implements IDefUnitReferenceNode {
+/**
+ * A {@link Resolvable} is either an {@link Reference} or {@link Expression}
+ */
+public abstract class Resolvable extends ASTNeoNode implements IDefUnitReference, IQualifierNode {
+	
+	public Resolvable() {
+		assertTrue(this instanceof Reference || this instanceof Expression);
+	}
 	
 	@Override
 	public abstract Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly);

@@ -5,10 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.refmodel.IDefUnitReferenceNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public abstract class Expression extends Resolvable implements IDefUnitReferenceNode {
+public abstract class Expression extends Resolvable {
 	
 	// deprecate
 	public Collection<DefUnit> getType(IModuleResolver moduleResolver) {
