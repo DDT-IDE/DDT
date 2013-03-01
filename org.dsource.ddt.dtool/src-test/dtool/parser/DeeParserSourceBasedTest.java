@@ -220,6 +220,9 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		} else if(mde.value.equals("INV_QUALIFIER")) {
 			String errorSource = assertNotNull_(mde.associatedSource);
 			return new ParserError(ParserErrorTypes.INVALID_QUALIFIER, errorRange, errorSource, null);
+		} else if(mde.value.equals("NO_TPL_SINGLE_ARG")) {
+			String errorSource = assertNotNull_(mde.associatedSource);
+			return new ParserError(ParserErrorTypes.NO_CHAINED_TPL_SINGLE_ARG, errorRange, errorSource, null);
 		} else{
 			throw assertFail();
 		}
@@ -247,6 +250,10 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			errorParam = DeeParser.EXPRESSION_RULE;
 		} else if(errorParam.equals("ref")) {
 			errorParam = DeeParser.REFERENCE_RULE;
+		} else if(errorParam.equals("RoE")) {
+			errorParam = DeeParser.REF_OR_EXP_RULE;
+		} else if(errorParam.equals("TplArg")) {
+			errorParam = DeeParser.TEMPLATE_SINGLE_ARG;
 		}
 		return errorParam;
 	}

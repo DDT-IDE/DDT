@@ -5,8 +5,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Collection;
 
 import dtool.ast.ASTNeoNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.references.CommonRefQualified.IQualifierNode;
+import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -14,7 +15,15 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 /**
  * A {@link Resolvable} is either an {@link Reference} or {@link Expression}
  */
-public abstract class Resolvable extends ASTNeoNode implements IDefUnitReference, IQualifierNode {
+public abstract class Resolvable extends ASTNeoNode implements IDefUnitReference {
+	
+	/** Marker interface for nodes that can appear as qualifier in {@link RefQualified}. 
+	 * Must be a {@link Resolvable}. */
+	public interface IQualifierNode extends IDefUnitReference, IASTNeoNode { }
+	
+	/** Marker interface for nodes that can appear as template references in template instance. 
+	 * Must be a {@link Reference}.*/
+	public interface ITemplateRefNode extends IASTNeoNode { }
 	
 	public Resolvable() {
 		assertTrue(this instanceof Reference || this instanceof Expression);
@@ -28,13 +37,6 @@ public abstract class Resolvable extends ASTNeoNode implements IDefUnitReference
 		if(defunits == null || defunits.isEmpty())
 			return null;
 		return defunits.iterator().next();
-	}
-	
-	/** Returns a simple representation of this node, element-like and for for a line. 
-	 * TODO: need to fix this API */
-	@Override
-	public String toStringAsElement() {
-		return toStringAsCode();
 	}
 	
 }

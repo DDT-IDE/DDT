@@ -50,8 +50,7 @@ public class RefIndexing extends Reference {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(elemType);
-		cp.appendNode("[", indexArg);
-		cp.append("]");
+		cp.appendNode("[", indexArg, "]");
 	}
 	
 	@Override

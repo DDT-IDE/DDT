@@ -38,19 +38,9 @@ public class RefModuleQualified extends CommonRefQualified {
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return "." + qualifiedName.toStringAsElement();
-	}
-	
-	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(".", qualifiedName);
-	}
-	
-	
-	@Override
-	public IQualifierNode getQualifier() {
-		return null;
+		cp.append(".");
+		cp.appendNodeNullAlt(qualifiedName, "/*MISSING*/");
 	}
 	
 	@Override

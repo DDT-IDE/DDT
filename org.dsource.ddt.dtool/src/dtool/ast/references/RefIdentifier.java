@@ -69,7 +69,7 @@ public class RefIdentifier extends NamedReference {
 				CommonRefQualified.doQualifiedSearch(search, parent);
 				return;
 			} else {
-				assertTrue(parent.getQualifier() == refSingle);
+				assertTrue(((RefQualified)parent).qualifier == refSingle);
 				// continue using outer scope as the lookup
 			}
 		}

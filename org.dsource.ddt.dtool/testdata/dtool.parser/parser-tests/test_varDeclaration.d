@@ -69,12 +69,7 @@ DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? Initial
 #@TYPE_REFS #@PRX1 fooF = 112 = "666";
 
 #comment(NO_STDOUT)
-#AST_SOURCE_EXPECTED:
-#@TYPE_REFS #@PRX1 fooE = 112 ;  #@BREAK
-#@TYPE_REFS #@PRX1 fooF = 112 = "666";
-
 #AST_STRUCTURE_EXPECTED:
-
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? InitializerExp(Integer))】) 
 #@BREAK_EXP
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(Integer String))●
@@ -83,11 +78,6 @@ DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(Integer String))●
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors (with multiple exp)
 
 #@TYPE_REFS #@PRX1 fooE = #@EXP_ASSIGN #error:EXP_SEMICOLON  #@BREAK
-#@TYPE_REFS #@PRX1 fooF = #@EXP_CONDITIONAL = "666";
-
-#AST_SOURCE_EXPECTED:
-
-#@TYPE_REFS #@PRX1 fooE = #@EXP_ASSIGN ;  #@BREAK
 #@TYPE_REFS #@PRX1 fooF = #@EXP_CONDITIONAL = "666";
 
 #comment(NO_STDOUT)

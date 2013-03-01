@@ -45,11 +45,7 @@ public class ExpTypeId extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("typeid");
-		Resolvable argument = getArgument();
-		if(argument != null) {
-			cp.appendNode("(", argument);
-			cp.append(")");
-		}
+		cp.appendNode("(", getArgument(), ")");
 	}
 	
 }

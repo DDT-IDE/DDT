@@ -5,7 +5,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Iterator;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.expressions.Expression;
 import dtool.parser.Token;
 import dtool.util.ArrayView;
 
@@ -49,6 +48,14 @@ public class ASTCodePrinter {
 	public void appendNode(ASTNeoNode node) {
 		if(node != null) {
 			node.toStringAsCode(this);
+		}
+	}
+	
+	public void appendNodeNullAlt(ASTNeoNode node, String nullAlt) {
+		if(node != null) {
+			node.toStringAsCode(this);
+		} else {
+			append(nullAlt);
 		}
 	}
 	
@@ -110,10 +117,6 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendStatementSep() {
-		append(ST_SEP);
-	}
-	
 	/* ==== */
 	@Deprecated
 	public static String toStringParamListAsElements(Iterable<? extends DefUnit> nodes) {
@@ -137,29 +140,19 @@ public class ASTCodePrinter {
 		return sb.toString();
 	}
 	
-	public final void appendNodesAsElements(Iterable<? extends ASTNeoNode> nodes, String sep) {
-		Iterator<? extends ASTNeoNode> iter = nodes.iterator();
-		for (int i = 0; iter.hasNext(); i++) {
-			ASTNeoNode next = iter.next();
-			if(i > 0) {
-				sb.append(sep);
-			}
-			sb.append(next.toStringAsElement());
-		}
-	}
-	
-	public boolean appendArgList(String open, ArrayView<Expression> args, String sep, String close) {
+	public boolean appendArgList(String open, ArrayView<? extends ASTNeoNode> args, String sep, String close) {
 		return appendArgList(open, args, sep, close, null);
 	}
 	
-	public boolean appendArgList(String open, ArrayView<Expression> args, String sep, String close, String spacing) {
+	public boolean appendArgList(String open, ArrayView<? extends ASTNeoNode> args, String sep, String close, 
+		String spacingIfArgsNull) {
 		if(args != null) {
 			append(open);
 			appendNodeList(args, sep);
 			append(close);
 			return true;
 		} else {
-			append(spacing);
+			append(spacingIfArgsNull);
 		}
 		return false;
 	}

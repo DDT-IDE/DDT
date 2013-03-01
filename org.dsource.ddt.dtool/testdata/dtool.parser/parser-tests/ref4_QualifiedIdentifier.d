@@ -17,13 +17,9 @@ DefVariable(RefPrimitive DefSymbol)
 InvalidDeclaration( RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier) )
 DefVariable(RefPrimitive DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_REFS_QUALIFIER•.foo dummy;
-
-#AST_STRUCTURE_EXPECTED:
-DefVariable(RefQualified(#@TYPE_REFS_QUALIFIER RefIdentifier) DefSymbol)
+#PARSE(REFERENCE)        #@TYPE_REFS_QUALIFIER•.foo
+#AST_STRUCTURE_EXPECTED: RefQualified(#@TYPE_REFS_QUALIFIER RefIdentifier)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#error(INV_QUALIFIER)【#@TYPE_REFS_INVALID_QUALIFIER】.foo dummy;
-
-#AST_STRUCTURE_EXPECTED:
-DefVariable(RefQualified(#@TYPE_REFS_INVALID_QUALIFIER RefIdentifier) DefSymbol)
+#PARSE(REFERENCE)        #error(INV_QUALIFIER)【#@TYPE_REFS_INVALID_QUALIFIER】  #parser(IgnoreRest) .foo dummy;
+#AST_STRUCTURE_EXPECTED: #@TYPE_REFS_INVALID_QUALIFIER

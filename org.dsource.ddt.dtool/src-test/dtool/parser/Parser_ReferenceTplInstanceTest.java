@@ -36,11 +36,11 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 		super.checkReference(ref, nodeCode);
 		RefTemplateInstance refTplInst = downCast(ref, RefTemplateInstance.class);
 		if(checkToStringAsElement) {
-			assertEquals(refTplInst.refRawTemplate.toStringAsElement(), rawTplName);
+			assertEquals(refTplInst.tplRef.toStringAsElement(), rawTplName);
 		}
-		checkEqualAsElement(refTplInst.tiargs.getInternalArray(), args);
-		checkParent(refTplInst, refTplInst.refRawTemplate);
-		checkParent(refTplInst, refTplInst.tiargs.getInternalArray());
+		checkEqualAsElement(refTplInst.tplArgs.getInternalArray(), args);
+		checkParent(refTplInst, refTplInst.tplRef);
+		checkParent(refTplInst, refTplInst.tplArgs.getInternalArray());
 	}
 	
 	@Override

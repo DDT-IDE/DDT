@@ -240,7 +240,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	/* --------------------- DECLARATION --------------------- */
-	public static String DECLARATION_RULE = "declaration";
+	public static String DECLARATION_RULE = "Declaration";
 	
 	public ASTNeoNode parseDeclaration() {
 		return parseDeclaration(true);

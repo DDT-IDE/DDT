@@ -1,10 +1,8 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-#@EXP_DISCARD_CASE《
-  ►#?AST_STRUCTURE_EXPECTED!【666/*NoCase*/●Integer】●
-¤》
+#@EXP_DISCARD_CASE《#?AST_STRUCTURE_EXPECTED!【666/*NoCase*/●Integer】》
 
-#@EXP_PRIMARY_APPENDABLE《
+#@EXP_PRIMARY_SIMPLE《
   ►#?AST_STRUCTURE_EXPECTED!【this●ExpThis】●
   ►#?AST_STRUCTURE_EXPECTED!【super●ExpSuper】●
   ►#?AST_STRUCTURE_EXPECTED!【null●ExpNull】●
@@ -18,6 +16,11 @@
   
   ►#?AST_STRUCTURE_EXPECTED!【__FILE__●ExpLiteralString】●
   ►#?AST_STRUCTURE_EXPECTED!【__LINE__●ExpLiteralInteger】●
+¤》
+
+#@EXP_PRIMARY_APPENDABLE《
+  ►#@EXP_PRIMARY_SIMPLE●
+  
   ►#?AST_STRUCTURE_EXPECTED!【 [1, .456E12, 0x25_AD_3FP+1] ●ExpLiteralArray(Integer Float Float)】●
   ►#?AST_STRUCTURE_EXPECTED!【 [12345 : true, 66.6 : false, "asdfd" : "false"]●
   ExpLiteralMapArray(MapEntry(Integer Bool) MapEntry(Float Bool) MapEntry(String String))】●
@@ -131,8 +134,9 @@ ExpInfix(
 
 #@EXP_ANY《#@EXP_COMMA》
 
+#@EXP_ASSIGN__NO_REFS__NO_AMBIGS《 #EXP__NO_AMBIGS(flag)#EXP__NO_REFS(flag) #@EXP_ASSIGN 》
 #@EXP_ASSIGN__NO_REFS《 #EXP__NO_REFS(flag) #@EXP_ASSIGN 》
-#@EXPS__NO_REFS__NO_AMBIGS《 #EXP__NO_AMBIGS(flag)#EXP__NO_REFS(flag) #@EXP_ANY 》
+#@EXPS__NO_REFS__NO_AMBIGS《 #EXP__NO_REFS(flag)#EXP__NO_AMBIGS(flag) #@EXP_ANY 》
 #@EXPS__NO_REFS《 #EXP__NO_REFS(flag) #@EXP_ANY 》
 
 // TODO This is not as precise, we would only want to exclude snippets ending in *, 

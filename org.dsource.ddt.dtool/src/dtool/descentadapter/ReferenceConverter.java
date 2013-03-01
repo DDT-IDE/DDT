@@ -8,6 +8,7 @@ import static melnorme.utilbox.core.CoreUtil.downCast;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ASTDmdNode;
 import descent.internal.compiler.parser.DotIdExp;
 import descent.internal.compiler.parser.DotTemplateInstanceExp;
@@ -29,8 +30,10 @@ import dtool.ast.declarations.InvalidSyntaxDeclaration_Old;
 import dtool.ast.definitions.MixinContainer;
 import dtool.ast.definitions.NamedMixin;
 import dtool.ast.expressions.ExpReference;
+import dtool.ast.expressions.Resolvable;
+import dtool.ast.expressions.Resolvable.IQualifierNode;
+import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.ast.references.CommonRefQualified;
-import dtool.ast.references.CommonRefQualified.IQualifierNode;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefQualified;
@@ -197,8 +200,9 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static RefTemplateInstance createRefTemplateInstance(Reference tplReference,
 			List<ASTDmdNode> tiargs, SourceRange sourceRange, ASTConversionContext convContext) {
-		ArrayView<ASTNeoNode> tiargsNew = DescentASTConverter.convertMany(tiargs, convContext);
-		return new RefTemplateInstance(tplReference, tiargsNew, sourceRange);
+		ArrayView<Resolvable> tiargsNew = CoreUtil.blindCast(
+			DescentASTConverter.convertMany(tiargs, ASTNeoNode.class, convContext));
+		return new RefTemplateInstance((ITemplateRefNode) tplReference, null, tiargsNew, sourceRange);
 	}
 	
 	
@@ -256,7 +260,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		if (rootReference == null) {
 			refQualified = new RefModuleQualified(singleRef, null);
 		} else {
-			refQualified = new RefQualified(rootReference, singleRef, null);
+			refQualified = new RefQualified((IQualifierNode) rootReference, singleRef, null);
 			assertTrue(rootReference.hasNoSourceRangeInfo() == false);
 			assertTrue(rootReference.getStartPos() == startPos);
 		}
@@ -285,8 +289,8 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			assertTrue(convContext.module.hasSyntaxErrors());
 			assertTrue(rootExpression.hasNoSourceRangeInfo() == false);
 			// Ignore subExp
-			IQualifierNode rootRef = ExpressionConverter.convert2(rootExpression, convContext);
-			return (Reference) rootRef;
+			Reference rootRef = (Reference) ExpressionConverter.convert2(rootExpression, convContext);
+			return rootRef;
 		} 
 		
 		if(DToolBundle.UNSUPPORTED_DMD_CONTRACTS) {
@@ -336,7 +340,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			refModuleQual.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
 			return refModuleQual;
 		} else {
-			IQualifierNode rootRef = ExpressionConverter.convert2(rootIdentifierExp, convContext);
+			Resolvable rootRef = ExpressionConverter.convert2(rootIdentifierExp, convContext);
 			
 			if(rootRef.hasNoSourceRangeInfo() && !DToolBundle.BUGS_MODE){
 				if(!DToolBundle.DMDPARSER_PROBLEMS__BUG41) {
@@ -361,7 +365,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			RefQualified refQualified = new RefQualified(rootRef, subName, topSourceRange);
 			if(refQualified.hasNoSourceRangeInfo() == false || DToolBundle.DMDPARSER_PROBLEMS__BUG41 == false) {
 				// Correct some DMD missing ranges 
-				int newStartPos = refQualified.getQualifier().getStartPos();
+				int newStartPos = refQualified.qualifier.getStartPos();
 				refQualified.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
 			} else {
 				 // Try a less accurate estimation:

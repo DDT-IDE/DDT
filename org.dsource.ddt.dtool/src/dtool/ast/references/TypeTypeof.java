@@ -3,13 +3,15 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class TypeTypeof extends CommonRefNative {
+public class TypeTypeof extends CommonRefNative implements IQualifierNode {
 	
 	public final Expression expression;
 	
@@ -35,8 +37,9 @@ public class TypeTypeof extends CommonRefNative {
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return "typeof(" + expression.toStringAsElement() +")";
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("typeof");
+		cp.appendNode("(", expression, ")");
 	}
 	
 	@Override

@@ -14,6 +14,7 @@ import org.junit.Before;
 import dtool.ast.ASTCommonSourceRangeChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
+import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
@@ -99,7 +100,8 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		if(identifiers.length == 1) {
 			return subRef;
 		} else {
-			return new RefQualified(reference(CommonTestUtils.removeLast(identifiers, 1)), subRef, null);
+			return new RefQualified(
+				(IQualifierNode) reference(CommonTestUtils.removeLast(identifiers, 1)), subRef, null);
 		}
 	}
 	

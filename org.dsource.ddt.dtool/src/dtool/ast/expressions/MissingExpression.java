@@ -28,7 +28,7 @@ public class MissingExpression extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		// Print nothing
+		cp.append("/*MissingExp*/");
 	}
 	
 }

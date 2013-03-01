@@ -95,7 +95,6 @@ import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpCast;
 import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpDefaultInit;
-import dtool.ast.expressions.ExpDollar;
 import dtool.ast.expressions.ExpIftype;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
@@ -309,7 +308,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(DollarExp element) {
-		return endAdapt(new ExpDollar(DefinitionConverter.sourceRange(element)));
+		return endAdapt(new ExpArrayLength(DefinitionConverter.sourceRange(element)));
 	}
 	
 	@Override

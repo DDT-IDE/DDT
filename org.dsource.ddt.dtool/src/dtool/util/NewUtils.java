@@ -18,6 +18,20 @@ import melnorme.utilbox.misc.IteratorUtil;
 
 public class NewUtils {
 	
+	/** Asserts that given object is null or an instance of given klass. Returns casted object. */
+	@SuppressWarnings("unchecked")
+	public static <T> T assertCast(Object object, Class<T> klass) {
+		assertTrue(object == null || klass.isInstance(object));
+		return (T) object;
+	}
+	
+	/** Asserts that given object an instance of given klass. Returns casted object. */
+	@SuppressWarnings("unchecked")
+	public static <T> T assertInstance(Object object, Class<T> klass) {
+		assertTrue(klass.isInstance(object));
+		return (T) object;
+	}
+	
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
 	
 	/** Shortcut for creating a new {@link ArrayList} */
@@ -79,6 +93,11 @@ public class NewUtils {
 			return null;
 		}
 		return string;
+	}
+	
+	/** Returns true if one, and only one of the given objects is null. */
+	public static boolean exactlyOneIsNull(Object objA, Object objB) {
+		return (objA == null) != (objB == null);
 	}
 	
 	public static int updateIfNull(int currentValue, int newValue) {

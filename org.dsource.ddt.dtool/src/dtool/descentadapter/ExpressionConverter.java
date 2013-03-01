@@ -25,7 +25,6 @@ import dtool.ast.expressions.ExpLiteralArray;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.CommonRefQualified.IQualifierNode;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.util.ArrayView;
 
@@ -37,9 +36,9 @@ public class ExpressionConverter extends BaseDmdConverter {
 		return downCast(DescentASTConverter.convertElem(exp, convContext), Expression.class);
 	}
 	
-	public static IQualifierNode convert2(descent.internal.compiler.parser.Expression exp, 
+	public static Resolvable convert2(descent.internal.compiler.parser.Expression exp, 
 			ASTConversionContext convContext) {
-		IQualifierNode newExp = convert(exp, convContext);
+		Resolvable newExp = convert(exp, convContext);
 		if (newExp instanceof ExpReference) {
 			newExp = downCast(newExp, ExpReference.class).ref;
 			((ASTNeoNode) newExp).parent = null;

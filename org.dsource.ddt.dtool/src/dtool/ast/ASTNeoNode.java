@@ -234,7 +234,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	
 	@Override
 	public final String toString() {
-		return "#" + toStringClassName() +": "+ toStringAsCode();
+		return "#" + toStringClassName() +"【"+toStringAsCode()+"】";
 	}
 	
 	/** Returns a simple representation of this node, element-like and for for a line. 

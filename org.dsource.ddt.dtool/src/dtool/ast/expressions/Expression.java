@@ -5,9 +5,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public abstract class Expression extends Resolvable {
+public abstract class Expression extends Resolvable implements IQualifierNode {
 	
 	// deprecate
 	public Collection<DefUnit> getType(IModuleResolver moduleResolver) {

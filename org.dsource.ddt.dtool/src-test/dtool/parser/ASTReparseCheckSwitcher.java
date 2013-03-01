@@ -124,12 +124,13 @@ public class ASTReparseCheckSwitcher {
 		case REF_TYPE_DYN_ARRAY:
 		case REF_TYPE_POINTER:
 		case REF_INDEXING:
+		case REF_TEMPLATE_INSTANCE:
 			return reparseCheck(snippedParser.parseReference(), node);
 		
 		/* ---------------------------------- */
 		
 		case MISSING_EXPRESSION:
-			assertEquals("", node.toStringAsCode());
+			DeeParserTest.checkSourceEquality(node, "");
 			return VOID;
 		case EXP_THIS:
 		case EXP_SUPER:

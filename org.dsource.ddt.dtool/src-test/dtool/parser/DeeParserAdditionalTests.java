@@ -28,10 +28,10 @@ public class DeeParserAdditionalTests extends CommonTestUtils {
 		assertTrue(parseArgumentList("()").properlyTerminated == true);
 	}
 	
-	public ArgumentListParseResult parseArgumentList(String source) {
+	public ArgumentListParseResult<?> parseArgumentList(String source) {
 		DeeTestsParser parser = new DeeTestsParser(source);
 		parser.consumeLookAhead(DeeTokens.OPEN_PARENS);
-		return parser.parseArgumentList(DeeTokens.COMMA, DeeTokens.CLOSE_PARENS);
+		return parser.parseExpArgumentList(DeeTokens.CLOSE_PARENS);
 	}
 	
 }

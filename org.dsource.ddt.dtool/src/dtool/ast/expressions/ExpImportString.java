@@ -32,9 +32,6 @@ public class ExpImportString extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("import");
-		if(exp != null) {
-			cp.appendNode("(", exp);
-			cp.append(")");
-		}
+		cp.appendNode("(", exp, ")");
 	}
 }

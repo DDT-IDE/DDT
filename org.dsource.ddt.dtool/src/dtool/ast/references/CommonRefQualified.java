@@ -3,11 +3,9 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import dtool.ast.IASTNeoNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.DefUnitSearch;
-import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
@@ -20,8 +18,6 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  */
 public abstract class CommonRefQualified extends NamedReference {
 	
-	public static interface IQualifierNode extends IDefUnitReference, IASTNeoNode { }
-	
 	public final RefIdentifier qualifiedName;
 	
 	public CommonRefQualified(RefIdentifier qualifiedName) {
@@ -32,9 +28,6 @@ public abstract class CommonRefQualified extends NamedReference {
 	public RefIdentifier getQualifiedName() {
 		return qualifiedName;
 	}
-	
-	/** maybe null */
-	public abstract IQualifierNode getQualifier();
 	
 	public abstract Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver);
 	

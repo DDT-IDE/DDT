@@ -39,7 +39,10 @@
 #AST_STRUCTURE_EXPECTED: ExpInfix(  ExpReference(RefQualified(#@QUALIFIERS RefIdentifier)) Integer  )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test wich qualifier applies to RefQualified in the case of a missing parentheses
+#PARSE(EXPRESSION) (#error(INV_QUALIFIER)【int[]】 #error(EXP_CLOSE_PARENS) .init 
+#AST_STRUCTURE_EXPECTED:
+ExpReference(RefQualified( ExpParentheses(RefTypeDynArray(RefPrimitive))   RefIdentifier))
+Ⓗ▂▂// alternate behavior for previous case 
 #PARSE(EXPRESSION) (#error(INV_QUALIFIER)【int[]】 .init #error(EXP_CLOSE_PARENS)
-//ExpReference(RefQualified( ExpParentheses(ExpReference(RefTypeDynArray(RefPrimitive)))   RefIdentifier))
 #AST_STRUCTURE_EXPECTED:
 ExpParentheses(  RefQualified(RefTypeDynArray(RefPrimitive) RefIdentifier)  ) 

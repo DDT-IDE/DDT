@@ -40,17 +40,21 @@ public class DeeParserTest extends CommonTestUtils {
 	public static class CheckSourceEquality {
 		
 		public static void check(String source, String expectedSource, boolean ignoreUT) {
+			assertTrue(sourceHasEqualParsing(source, expectedSource, ignoreUT));
+		}
+		
+		public static boolean sourceHasEqualParsing(String source, String expectedSource, boolean ignoreUT) {
 			DeeLexer generatedSourceLexer = new DeeLexer(source);
 			DeeLexer expectedSourceLexer = new DeeLexer(expectedSource);
 			
 			while(true) {
 				Token tok = getContentToken(generatedSourceLexer, true, ignoreUT);
 				Token tokExp = getContentToken(expectedSourceLexer, true, ignoreUT);
-				assertEquals(tok.type, tokExp.type);
-				assertEquals(tok.source, tokExp.source);
+				if(!(tok.type.equals(tokExp.type) && tok.source.equals(tokExp.source))) 
+					return false;
 				
 				if(tok.type == DeeTokens.EOF) {
-					break;
+					return true;
 				}
 			}
 		}
@@ -99,8 +103,10 @@ public class DeeParserTest extends CommonTestUtils {
 		DeeParser deeParser = new DeeTestsParser(parseSource);
 		if(parseRule == null) {
 			result = new DeeParserResult(deeParser.parseModule(), deeParser.errors);
-		} else if(parseRule.equals("EXPRESSION")) {
+		} else if(parseRule.equalsIgnoreCase(DeeParser.EXPRESSION_RULE)) {
 			result = new DeeParserResult(deeParser.parseExpression(), deeParser.errors);
+		} else if(parseRule.equalsIgnoreCase(DeeParser.REFERENCE_RULE)) {
+			result = new DeeParserResult(deeParser.parseReference(), deeParser.errors);
 		} else if(parseRule.equals("DeclarationImport")) {
 			result = new DeeParserResult(deeParser.parseImportDeclaration(), deeParser.errors);
 		} else {
@@ -109,8 +115,9 @@ public class DeeParserTest extends CommonTestUtils {
 		if(expectedRemainingSource == null) {
 			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
 		} else {
-			String remainingSource = deeParser.getSource().substring(deeParser.getParserPosition());
+			String remainingSource = parseSource.substring(deeParser.getParserPosition());
 			CheckSourceEquality.check(remainingSource, expectedRemainingSource, false);
+			parseSource = parseSource.substring(0, deeParser.getParserPosition());
 		}
 		ASTNeoNode mainNode = assertNotNull_(result.node);
 		
@@ -286,11 +293,12 @@ public class DeeParserTest extends CommonTestUtils {
 			case EXP_MUST_HAVE_PARENTHESES:
 			case TYPE_USED_AS_EXP_VALUE:
 			case INVALID_QUALIFIER:
+			case NO_CHAINED_TPL_SINGLE_ARG:
 				continue;
 			case INVALID_EXTERN_ID:
 				break;
 			}
-			
+			// TODO
 			// Then there is an EXPECTED_TOKEN error in error.originNode
 			assertNotNull(error.originNode);
 			

@@ -11,8 +11,6 @@ InvalidSyntaxElement
 foo #error(EXP_IDENTIFIER) ;
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(?)
-#AST_SOURCE_EXPECTED:
-foo ;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo #error(EXP_IDENTIFIER) #error(EXP_SEMICOLON)
 #AST_STRUCTURE_EXPECTED:
@@ -39,7 +37,6 @@ pragma( #error(EXP_ID) );
 
 import foo, #error:EXP_ID ;
 int    foo, #error:EXP_ID ;
-//int[]foo;
 
 import foo : #error:EXP_ID , foo2 ;
 int    foo = #error:EXPRULE_INITIALIZER , foo2 ;
@@ -50,8 +47,6 @@ DefinitionVariable(? DefSymbol DefVarFragment(?))
 
 DeclarationImport(ImportSelective(ImportContent(?) RefImportSelection RefImportSelection))
 DefinitionVariable(? DefSymbol InitializerExp(MissingExpression) DefVarFragment(?))
-
-
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of  KEYWORD(ARGUMENT);  format
 mixin #error(EXP_OPEN_PARENS) #error(EXP_SEMICOLON)

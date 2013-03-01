@@ -28,10 +28,12 @@ public class ParserError {
 		EXPECTED_RULE, // expected valid token for rule
 		SYNTAX_ERROR, // unexpected rule in rule start
 		
-		INVALID_EXTERN_ID, // specific error for extern declaration argument
-		EXP_MUST_HAVE_PARENTHESES, // expression must have parentheses to parse
-		TYPE_USED_AS_EXP_VALUE, // a built-in type is used as an expression value
-		INVALID_QUALIFIER, // A composite built in type is used as qualifier in qualified ref
+		INVALID_EXTERN_ID,
+		EXP_MUST_HAVE_PARENTHESES, 
+		TYPE_USED_AS_EXP_VALUE, 
+		INVALID_QUALIFIER, 
+		NO_CHAINED_TPL_SINGLE_ARG,
+		
 	}
 	
 	protected final ParserErrorTypes errorType;
@@ -69,6 +71,9 @@ public class ParserError {
 			return "The type " + msgErrorSource + " cannot be used as an expression value.";
 		case INVALID_QUALIFIER:
 			return "The type " + msgErrorSource + " cannot directly be used as a qualifier in qualified reference.";
+		case NO_CHAINED_TPL_SINGLE_ARG:
+			return "The template '!' single argument " + msgErrorSource + 
+				" cannot be used next to other template '!' single arguments.";
 		}
 		throw assertFail();
 	}

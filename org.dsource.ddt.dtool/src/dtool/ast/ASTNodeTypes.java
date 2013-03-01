@@ -52,8 +52,8 @@ public enum ASTNodeTypes {
 	REF_TYPE_DYN_ARRAY,
 	REF_TYPE_POINTER,
 	
-	
 	REF_INDEXING,
+	REF_TEMPLATE_INSTANCE,
 	
 	
 	/* ---------------------------------- */

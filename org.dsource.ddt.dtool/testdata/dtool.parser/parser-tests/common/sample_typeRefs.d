@@ -7,7 +7,18 @@
   ►#?AST_STRUCTURE_EXPECTED!【.Foo●RefModuleQualified(?)】●
   ►#?AST_STRUCTURE_EXPECTED!【Bar.foo●RefQualified(RefIdentifier RefIdentifier)】●
   ►#?AST_STRUCTURE_EXPECTED!【Bar.foo.Foobar●RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier)】●
+  
+  ►#?AST_STRUCTURE_EXPECTED!【Bar.foo!(foo = 123, xpto, foo[foo* ] )●
+RefTemplateInstance(
+  RefQualified(RefIdentifier RefIdentifier)
+  ExpInfix(#@ExpIdentifier Integer)
+  RefIdentifier
+  RefIndexing(RefIdentifier RefTypePointer(RefIdentifier))
+)】●
 ¤》
+
+// TODO : #error(EXP_CLOSE_BRACKET) above
+
 
 // These type refs can be used as qualifiers wihtout disrupting parser flow, but are not valid qualifier
 #@TYPE_REFS_INVALID_QUALIFIER《
@@ -19,7 +30,11 @@
   ►#?AST_STRUCTURE_EXPECTED!【arrayElem[Boo.foo]●RefIndexing(RefIdentifier RefQualified(RefIdentifier RefIdentifier))】●
 ¤》
 
-#@TYPE_REFS《
+#@TYPE_REFS__TPL_SINGLE_ARG《
+  ►#?AST_STRUCTURE_EXPECTED!【bar. foo!this●RefTemplateInstance(RefQualified(RefIdentifier ?) ExpThis)】●
+  ►#?AST_STRUCTURE_EXPECTED!【.bar.foo! arg●RefTemplateInstance(RefQualified(RefModuleQualified(?) ?) RefIdentifier)】●
+¤》
+#@TYPE_REFS__CLEAN《
   ►#@TYPE_REFS_QUALIFIER●
   ►#@TYPE_REFS_INVALID_QUALIFIER●
   
@@ -35,6 +50,8 @@ RefIndexing(
 
   ►#@TYPE_REFS__LITE●
 ¤》
+
+#@TYPE_REFS《#@TYPE_REFS__CLEAN●#@TYPE_REFS__TPL_SINGLE_ARG》
 #@TYPE_REFS__LITE《
   ►#?AST_STRUCTURE_EXPECTED!【Bar.foo[.x[12]][Bar.foo*]#NOT_QUAL(flag)●
 RefIndexing(

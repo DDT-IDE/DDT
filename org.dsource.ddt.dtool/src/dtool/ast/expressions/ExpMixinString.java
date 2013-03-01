@@ -32,9 +32,6 @@ public class ExpMixinString extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("mixin");
-		if(exp != null) {
-			cp.appendNode("(", exp);
-			cp.append(")");
-		}
+		cp.appendNode("(", exp, ")");
 	}
 }
