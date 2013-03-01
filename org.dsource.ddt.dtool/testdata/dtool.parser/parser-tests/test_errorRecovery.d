@@ -12,20 +12,16 @@ foo #error(EXP_IDENTIFIER) ;
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(?)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo #error(EXP_IDENTIFIER) #error(EXP_SEMICOLON)
+foo #error(EXP_IDENTIFIER) #@INVALID_DECL__NO_SEMICOLON
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(?)
-#AST_SOURCE_EXPECTED:
-foo
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 . #error:EXP_ID int dummy;
 foo. #error:EXP_ID int dummy;
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(RefModuleQualified(?)) DefVariable(RefPrimitive DefSymbol)
 InvalidDeclaration(RefQualified(* ?)) DefVariable(RefPrimitive DefSymbol)
-#AST_SOURCE_EXPECTED:
-.  int dummy;
-foo.  int dummy;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of identifiers: ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import#error(EXP_ID);
@@ -52,12 +48,11 @@ DefinitionVariable(? DefSymbol InitializerExp(MissingExpression) DefVarFragment(
 mixin #error(EXP_OPEN_PARENS) #error(EXP_SEMICOLON)
 mixin #error(EXP_OPEN_PARENS) ;
 #AST_SOURCE_EXPECTED:
-mixin(); mixin(); 
+mixin() ;
+mixin() ;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of  KEYWORD(ARGUMENT) DECL;  format
 extern(C) #error(EXPRULE_decl)
 
-#AST_SOURCE_EXPECTED:
-extern(C)
 #AST_STRUCTURE_EXPECTED:
 DeclarationLinkage()
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
@@ -81,16 +76,6 @@ align( #error:EXP_INTEGER_DECIMAL ) int bar;
 foo[ #error:EXP_CLOSE_BRACKET public int dummyB1;
 foo[1 #error:EXP_CLOSE_BRACKET   dummyB2 #error:EXP_ID;
 foo[int #error:EXP_CLOSE_BRACKET dummyB3 #error:EXP_ID;
-
-#AST_SOURCE_EXPECTED:
-align(16) /*;*/ int foo;
-align(16) /*;*/ ;
-align()   /*;*/ int foo;
-align() int bar;
-
-foo[] public int dummyB1;
-foo[1] dummyB2;
-foo[int] dummyB3;
 
 #AST_STRUCTURE_EXPECTED:
 DeclarationAlign  DefinitionVariable(RefPrimitive DefSymbol)

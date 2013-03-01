@@ -325,7 +325,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 				return parseDefinition_Reference_Identifier(ref, defId);
 			}  else {
 				reportErrorExpectedToken(DeeTokens.IDENTIFIER);
-				if(consumeExpectedToken(DeeTokens.SEMICOLON) != null) {
+				if(tryConsume(DeeTokens.SEMICOLON)) {
 					consumedSemiColon = true;
 				}
 				return connect(new InvalidDeclaration(ref, consumedSemiColon, srToCursor(ref.getStartPos())));
@@ -423,18 +423,21 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		int declStart = lastLexElement.getStartPos();
 		
-		Linkage linkage = null;
+		String linkageStr = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
 		
 		if(tryConsume(DeeTokens.OPEN_PARENS)) {
-			Token linkageId = consumeIf(DeeTokens.IDENTIFIER);
-			if(linkageId != null) {
-				linkage = Linkage.fromString(linkageId.source);
-				if(linkage == Linkage.C && tryConsume(DeeTokens.INCREMENT)) {
-					linkage = Linkage.CPP;
+			linkageStr = "";
+			
+			Token linkageToken = consumeIf(DeeTokens.IDENTIFIER);
+			if(linkageToken != null ) {
+				linkageStr = linkageToken.source;
+				if(linkageStr.equals("C") && tryConsume(DeeTokens.INCREMENT)) {
+					linkageStr = Linkage.CPP.name;
 				}
 			}
-			if(linkage == null) {
+			
+			if(Linkage.fromString(linkageStr) == null) {
 				reportError(ParserErrorTypes.INVALID_EXTERN_ID, null, true);
 			}
 			
@@ -445,8 +448,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			ab.parseAttribBody(false);
 		}
 		
-		return connect(
-			new DeclarationLinkage(linkage, ab.bodySyntax, ab.declList, srToCursor(declStart)));
+		return connect(new DeclarationLinkage(linkageStr, ab.bodySyntax, ab.declList, srToCursor(declStart)));
 	}
 	
 	public DeclarationAlign parseDeclarationAlign() {

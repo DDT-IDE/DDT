@@ -30,11 +30,6 @@ mixin ( #error:EXPRULE_exp );
 mixin ( #error:EXPRULE_exp #error:EXP_CLOSE_PARENS ; import foo;
 mixin ( #error:EXPRULE_exp ) #error:EXP_SEMICOLON
 mixin ( #error:EXPRULE_exp #error:EXP_CLOSE_PARENS #error:EXP_SEMICOLON
-#AST_SOURCE_EXPECTED:
-mixin();
-mixin(); import foo;
-mixin();
-mixin();
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 mixin(#@EXP_ASSIGN__NO_PENDING #error:EXP_CLOSE_PARENS ;

@@ -13,6 +13,7 @@ package dtool.parser;
 import static dtool.parser.DeeParserTest.runParserTest______________________;
 import static dtool.tests.DToolTestResources.getTestResource;
 import static dtool.util.NewUtils.assertNotNull_;
+import static dtool.util.NewUtils.replaceRange;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -108,6 +109,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		final String DEFAULT_VALUE = "##DEFAULT VALUE";
 		
 		final String parseSource = testSource.source;
+		String correctedParseSource = parseSource;
 		String parseRule = null;
 		String expectedRemainingSource = null;
 		String expectedGenSource = DEFAULT_VALUE;
@@ -118,7 +120,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		ArrayList<ParserError> expectedErrors = new ArrayList<ParserError>();
 		
 		for (MetadataEntry mde : testSource.metadata) {
-			if(mde.name.equals("AST_SOURCE_EXPECTED") || mde.name.equals("AST_EXPECTED")) {
+			if(mde.name.equals("AST_SOURCE_EXPECTED")) {
 				assertTrue(expectedGenSource == DEFAULT_VALUE);
 				if(mde.value != null && mde.value.equals("NoCheck")) {
 					assertTrue(mde.associatedSource == null || mde.associatedSource.trim().isEmpty());
@@ -132,8 +134,13 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				assertTrue(expectedStructure == null);
 				expectedStructure = processExpectedStructure(mde.associatedSource);
 			} else if(mde.name.equals("error") || mde.name.equals("ERROR")){
-				if(!ignoreFurtherErrorMDs) {
-					ParserError error = decodeError(parseSource, mde);
+				if(mde.value.equals("!")) {
+					// This error is used for genSourceOnly
+					assertTrue(mde.offset != -1);
+					SourceRange sr = mde.getSourceRange();
+					correctedParseSource = replaceRange(correctedParseSource, sr.getStartPos(), sr.getEndPos(), " ");
+				} else if(!ignoreFurtherErrorMDs) {
+					ParserError error = decodeError(correctedParseSource, mde);
 					expectedErrors.add(error);
 				}
 			} else if(mde.name.equals("parser") && mde.value.equals("AllowAnyErrors")){
@@ -158,7 +165,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			
 			int modifyOffset = expectedGenSource.length();
 			// Iterate in reverse error order, this should work, assuming the range substitution occurs in order
-				
+			
 			for (int i = expectedErrors.size()-1; i >= 0; i--) {
 				ParserError error = expectedErrors.get(i);
 				
@@ -181,7 +188,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			
 		}
 		runParserTest______________________(
-			parseSource, parseRule, expectedRemainingSource, expectedGenSource, expectedStructure, 
+			correctedParseSource, parseRule, expectedRemainingSource, expectedGenSource, expectedStructure, 
 			expectedErrors, allowAnyErrors);
 	}
 	

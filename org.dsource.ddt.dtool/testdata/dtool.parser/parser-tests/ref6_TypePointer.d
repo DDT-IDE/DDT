@@ -8,14 +8,11 @@ DefVariable(RefTypePointer(RefTypePointer(RefPrimitive))  DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo* #error:EXP_ID ;
-foo2* #error:EXP_ID #error:EXP_SEMICOLON
+foo2* #error:EXP_ID #@INVALID_DECL__NO_SEMICOLON
 
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(RefTypePointer(RefIdentifier))
 InvalidDeclaration(RefTypePointer(RefIdentifier))
-#AST_SOURCE_EXPECTED:
-foo* ;
-foo2*
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

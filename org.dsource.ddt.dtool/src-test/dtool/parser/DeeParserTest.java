@@ -117,7 +117,7 @@ public class DeeParserTest extends CommonTestUtils {
 		} else {
 			String remainingSource = parseSource.substring(deeParser.getParserPosition());
 			CheckSourceEquality.check(remainingSource, expectedRemainingSource, false);
-			parseSource = parseSource.substring(0, deeParser.getParserPosition());
+			parseSource = parseSource.substring(0, parseSource.length() - expectedRemainingSource.length());
 		}
 		ASTNeoNode mainNode = assertNotNull_(result.node);
 		
@@ -132,7 +132,7 @@ public class DeeParserTest extends CommonTestUtils {
 		
 		if(result.errors.size() == 0) {
 			assertTrue(expectedErrors.size() == 0);
-			checkSourceEquality(mainNode, parseSource);
+			assertTrue(parseSource.equals(expectedGenSource));
 		} else if(allowAnyErrors == false) {
 			checkParserErrors(result.errors, expectedErrors);
 		}

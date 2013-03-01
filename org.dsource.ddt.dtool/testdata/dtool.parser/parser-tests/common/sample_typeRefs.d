@@ -8,7 +8,7 @@
   ►#?AST_STRUCTURE_EXPECTED!【Bar.foo●RefQualified(RefIdentifier RefIdentifier)】●
   ►#?AST_STRUCTURE_EXPECTED!【Bar.foo.Foobar●RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier)】●
   
-  ►#?AST_STRUCTURE_EXPECTED!【Bar.foo!(foo = 123, xpto, foo[foo* ] )●
+  ►#?AST_STRUCTURE_EXPECTED!【Bar.foo!(foo = 123, xpto, foo[foo* #error(EXP_CLOSE_BRACKET) )●
 RefTemplateInstance(
   RefQualified(RefIdentifier RefIdentifier)
   ExpInfix(#@ExpIdentifier Integer)
@@ -16,9 +16,6 @@ RefTemplateInstance(
   RefIndexing(RefIdentifier RefTypePointer(RefIdentifier))
 )】●
 ¤》
-
-// TODO : #error(EXP_CLOSE_BRACKET) above
-
 
 // These type refs can be used as qualifiers wihtout disrupting parser flow, but are not valid qualifier
 #@TYPE_REFS_INVALID_QUALIFIER《

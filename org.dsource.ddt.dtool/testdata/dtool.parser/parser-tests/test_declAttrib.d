@@ -42,10 +42,6 @@ DeclarationLinkage(DefinitionVariable(RefPrimitive DefSymbol))
 DeclarationAlign( DefinitionVariable(RefPrimitive DefSymbol) )
 DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 
-#AST_SOURCE_EXPECTED:
-extern int bar;
-align() int bar;
-align(12) int bar;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ EOF case
 extern(C) #error(EXPRULE_decl)
 
@@ -67,51 +63,28 @@ DefinitionVariable(RefPrimitive DefSymbol)
 #@LINKAGE_TYPE{C,C++,D,Windows,Pascal,System}
 #@EXTERN_ATTRIB《
  ►extern(#@LINKAGE_TYPE)●
- ►extern(Xpto #error(BAD_LINKAGE_ID) )●
+ ►extern (Xpto #error(BAD_LINKAGE_ID) )●
  ►extern(#error(BAD_LINKAGE_ID))●
  ►extern(#error(BAD_LINKAGE_ID)#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)●
  ►extern(C++#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)●
 ¤》
-
-#@EXTERN_ATTRIB_EXP{
- extern(#@LINKAGE_TYPE),
- extern,
- extern,
- extern,
- extern(C++),
-¤}
 
 #@ALIGN_ATTRIB《
  ►align●
  ►align(1)●
  ►align(12)●
  ►align(#error(EXP_INTEGER_DECIMAL)) ●
- ►align(#error(EXP_INTEGER_DECIMAL)#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)●
+ ►align(#error(EXP_INTEGER_DECIMAL)#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)●
  ►align(16#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)●
 ¤》
-#@ALIGN_ATTRIB_EXP{
-align,
-align(1),
-align(12),
-align(),
-align(),
-align(16),
-¤}
 
 // TODO pragma expression list !
 #@PRAGMA_ATTRIB《
  ►pragma(foo)●
- ►pragma #error(EXP_OPEN_PARENS) #DECL_BROKEN(flag) ●
+ ►pragma #error(EXP_OPEN_PARENS) #error(!)【)】 #DECL_BROKEN(flag)●
  ►pragma ( #error(EXP_ID) #error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag) ●
  ►pragma ( #error(EXP_ID) ) ●
  ►pragma ( foo2 #error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag) ● 
-¤》
-#@PRAGMA_ATTRIB_EXP《
-pragma(foo)●
-pragma() ●
-pragma() ●
-pragma() ●
-pragma(foo2) ●
 ¤》
 
 #@SIMPLE_ATTRIBS《
@@ -137,12 +110,6 @@ auto ??
 
 
 #@ATTRIBS{#@EXTERN_ATTRIB,#@ALIGN_ATTRIB,#@PRAGMA_ATTRIB#PRAGMA(flag),#@SIMPLE_ATTRIBS}
-#@ATTRIBS_EXP{
-	#@EXTERN_ATTRIB_EXP(EXTERN_ATTRIB),
-	#@ALIGN_ATTRIB_EXP(ALIGN_ATTRIB),
-	#@PRAGMA_ATTRIB_EXP(PRAGMA_ATTRIB),
-	#@SIMPLE_ATTRIBS
-}
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
@@ -164,7 +131,3 @@ auto ??
 
 ►/*EMPTY DECLARATION*/ #?DECL_BROKEN!{#?PRAGMA!{#error:SE_decl}} ;●
 ¤】
-
-#AST_SOURCE_EXPECTED:
-
-#@ATTRIBS_EXP(ATTRIBS) #@BODY_TYPES

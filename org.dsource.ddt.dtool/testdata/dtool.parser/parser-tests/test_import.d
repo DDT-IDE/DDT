@@ -21,8 +21,6 @@ import ;
 DeclarationImport(ImportContent(RefModule))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import #error(EXP_ID)#error(EXP_SEMICOLON) import foo;
-#AST_SOURCE_EXPECTED:
-import ; import foo;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import bar1 = foo, bar2 = pack.foo;
@@ -30,7 +28,6 @@ import bar1 = foo, bar2 = pack.foo;
 #AST_STRUCTURE_EXPECTED:
 DeclarationImport(ImportAlias(DefSymbol RefModule) ImportAlias(DefSymbol RefModule))
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Import Content and Import Alias
-#@SEMICOLON_OR_NO《#error(EXP_SEMICOLON)●;》
 
 #@ID_OR_NO《
   ►#?AST_STRUCTURE_EXPECTED!【foo●ImportContent(RefModule)】●

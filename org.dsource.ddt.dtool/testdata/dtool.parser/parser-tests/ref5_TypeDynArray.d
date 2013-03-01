@@ -8,14 +8,11 @@ DefVariable(RefTypeDynArray(RefTypeDynArray(RefPrimitive))  DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo[] #error:EXP_ID ;
-foo2[] #error:EXP_ID #error:EXP_SEMICOLON
+foo2[] #error:EXP_ID #@INVALID_DECL__NO_SEMICOLON
 
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(RefTypeDynArray(RefIdentifier))
 InvalidDeclaration(RefTypeDynArray(RefIdentifier))
-#AST_SOURCE_EXPECTED:
-foo[] ;
-foo2[] 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo[ #error:EXP_CLOSE_BRACKET public int dummy ;
@@ -26,10 +23,7 @@ foo3[ #error:EXP_CLOSE_BRACKET
 InvalidDeclaration(RefTypeDynArray(RefIdentifier)) DeclarationProtection(DefinitionVariable(RefPrimitive DefSymbol))
 InvalidDeclaration(RefTypeDynArray(RefIdentifier))  DeclarationEmpty
 InvalidDeclaration(RefTypeDynArray(RefIdentifier))  
-#AST_SOURCE_EXPECTED:
-foo[]  public int dummy;
-foo2[]  ;
-foo3[] 
+
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

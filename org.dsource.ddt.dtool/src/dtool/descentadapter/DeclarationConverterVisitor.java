@@ -329,7 +329,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
 		Linkage linkage = fromLINK(elem.linkage);
-		return endAdapt(new DeclarationLinkage(linkage, AttribBodySyntax.SINGLE_DECL, body, sr));
+		return endAdapt(new DeclarationLinkage(linkage.name, AttribBodySyntax.SINGLE_DECL, body, sr));
 	}
 	
     public static Linkage fromLINK(LINK linkage) {

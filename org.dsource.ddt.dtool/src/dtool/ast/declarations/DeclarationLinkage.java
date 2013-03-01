@@ -19,7 +19,7 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	    PASCAL("Pascal"),
 	    SYSTEM("System");
 	    
-	    protected String name;
+	    public String name;
 	    
 	    private Linkage(String name) {
 			this.name = name;
@@ -37,11 +37,13 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	    
 	}
 	
+	public final String linkageName;
 	public final Linkage linkage;
 	
-	public DeclarationLinkage(Linkage linkage, AttribBodySyntax bodySyntax, NodeList2 decls, SourceRange sr) {
+	public DeclarationLinkage(String linkageName, AttribBodySyntax bodySyntax, NodeList2 decls, SourceRange sr) {
 		super(bodySyntax, decls, sr);
-		this.linkage = linkage;
+		this.linkageName = linkageName;
+		this.linkage = Linkage.fromString(linkageName);
 	}
 	
 	@Override
@@ -61,8 +63,8 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("extern");
-		if(linkage != null) {
-			cp.append("(", linkage.name, ")");
+		if(linkageName != null) {
+			cp.append("(", linkageName, ")");
 		}
 		cp.append(" ");
 		toStringAsCode_body(cp);
