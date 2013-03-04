@@ -21,63 +21,8 @@ import dtool.ast.references.RefTypeof;
 
 public class Parser_ReferenceTypeOfTest extends Parser_Reference_CommonTest {
 	
-	protected static Pattern markerPattern = Pattern.compile("/\\+\\[([^+]*)\\]\\+/");
-	protected HashMap<String, Integer> markers = new HashMap<String, Integer>();
-
-	protected String m(String str) {
-		return "/+[" + str + "]+/";
-	}
-	
-	protected String processMarkers(String source, boolean removeAllMarkers) {
-		markers.clear();
-		Matcher matcher = markerPattern.matcher(source);
-		int offsetDelta = 0; // Keeps track of a delta for markers that are to be removed
-		while(matcher.find()) {
-			String markerId = matcher.group(1);
-			assertTrue(!markers.containsKey(markerId));
-			markers.put(markerId, matcher.start() - offsetDelta);
-			if(removeAllMarkers) {
-				offsetDelta += matcher.end() - matcher.start();
-			}
-		}
-		
-		if(removeAllMarkers) {
-			source = matcher.replaceAll("");
-		}
-		
-		return source;
-	}
-	
-	protected Module markSourceAndParse(String preSource, boolean removeAllMarkers) {
-		String source = processMarkers(preSource, removeAllMarkers);
-		return testDtoolParse(source);
-	}
-	
 	protected String argCodeString;
 	
-	
-	@Test
-	public void testBasic() throws Exception { testBasic$(); }
-	public void testBasic$() throws Exception {
-		String m1 = m("M1");
-		String mr = m("R");
-		String mr$ = m("R$");
-		String m2 = m("M2");
-		String source = m1+"typeof("+mr+"foo"+mr$+")"+m2+" dummy;";
-		Module module = markSourceAndParse(source, true);
-		
-		DefinitionVariable child = downCast(module.getChildren()[0]);
-		RefTypeof refTypeOf = downCast(child.type);
-		
-		checkRange(refTypeOf, "M1", "M2");
-		checkRange(refTypeOf.expression, "R", "R$");
-//		checkReference(refTypeOf, nodeCodeString);
-	}
-	
-	private void checkRange(ASTNeoNode node, String startPosMarker, String endPosMarker) {
-		assertEquals(node.getStartPos(), markers.get(startPosMarker));
-		assertEquals(node.getEndPos(), markers.get(endPosMarker));
-	}
 	
 	/*-----------------------------------*/
 	

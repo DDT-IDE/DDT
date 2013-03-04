@@ -38,7 +38,7 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 	}
 	
 	protected void runTestCommands(String source, String defaultModuleName) {
-		Module testModule = Parser__CommonTest.parseSource(source, false, false, defaultModuleName).neoModule;
+		Module testModule = Parser__CommonTest.parseSource(source, false, false, defaultModuleName).module;
 		
 		int offset = 0;
 		while(true) {

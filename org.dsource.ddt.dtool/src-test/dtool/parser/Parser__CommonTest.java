@@ -42,7 +42,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 	}
 	
 	public static Module testParse(String source, Boolean expectErrors, boolean checkAST) {
-		return testParseDo(source, expectErrors, checkAST).neoModule;
+		return testParseDo(source, expectErrors, checkAST).module;
 	}
 	
 	public static DeeParserSession testParseDo(String source, Boolean expectErrors) {
@@ -66,7 +66,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		}
 		if(checkSourceRanges && !parseResult.hasSyntaxErrors()) {
 			// We rarely get good source ranges with syntax errors; 
-			ASTCommonSourceRangeChecker.checkConsistency(parseResult.neoModule);
+			ASTCommonSourceRangeChecker.checkConsistency(parseResult.module);
 		}
 		return parseResult;
 	}

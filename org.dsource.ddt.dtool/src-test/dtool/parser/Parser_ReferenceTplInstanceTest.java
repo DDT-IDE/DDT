@@ -53,7 +53,7 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 		if(fragmentDesc == RefFragmentDesc.TYPE) 
 			return; // Not applicable
 		
-		DeeParserSession parseResult = parseCode(
+		DeeParserResult parseResult = parseCode(
 			"mixin "+refCodeFragment+";" +
 			"mixin "+refCodeFragment+" myMixin; " +
 			wrapFunction("mixin "+refCodeFragment+";") +
@@ -147,8 +147,8 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 			}
 			
 			@Override
-			protected DeeParserSession parseCode(String testCode, Boolean expectedSyntaxErrors) {
-				DeeParserSession parseResult = super.parseCode(testCode, DONT_CHECK_ERRORS);
+			protected DeeParserResult parseCode(String testCode, Boolean expectedSyntaxErrors) {
+				DeeParserResult parseResult = super.parseCode(testCode, DONT_CHECK_ERRORS);
 				if(parseResult.hasSyntaxErrors()){
 					// We don't know if the resulting fragment is valid or not, so just take the word of the parser
 					fragmentDesc = RefFragmentDesc.INVALIDSYNTAX;

@@ -6,24 +6,21 @@ import descent.internal.compiler.parser.ast.IProblemReporter;
 import dtool.ast.definitions.Module;
 import dtool.descentadapter.DescentASTConverter;
 
-public class DeeParserSession {
+public class DeeParserSession extends DeeParserResult {
 	
 	public static DeeParserSession parseSource(String defaultModuleName, String source, int langVersion,
 			IProblemReporter problemReporter) {
-		DeeParserSession deeParserSession = new DeeParserSession(defaultModuleName);
-		deeParserSession.parserAdapter = DescentParserAdapter.parseSource(source, langVersion, problemReporter);
-		deeParserSession.neoModule = DescentASTConverter.convertModule(deeParserSession.parserAdapter.mod, 
-				defaultModuleName);
-		return deeParserSession;
+		DescentParserAdapter parserAdapter = DescentParserAdapter.parseSource(source, langVersion, problemReporter);
+		Module module = DescentASTConverter.convertModule(parserAdapter.mod, defaultModuleName);
+		return new DeeParserSession(module, defaultModuleName, parserAdapter);
 	}
 	
 	public static DeeParserSession parseWithRecovery(String defaultModuleName, String source, int langVersion,
 			final int offset, Token lastTokenNonWS) {
-		DeeParserSession parseSession = new DeeParserSession(defaultModuleName);
-		parseSession.parserAdapter = DescentParserAdapter.parseSource(source, langVersion, null);
-		parseSession.parserAdapter.recoverForCompletion(source, offset, lastTokenNonWS);
-		parseSession.neoModule = DescentASTConverter.convertModule(parseSession.parserAdapter.mod, defaultModuleName);
-		return parseSession;
+		DescentParserAdapter parserAdapter = DescentParserAdapter.parseSource(source, langVersion, null);
+		parserAdapter.recoverForCompletion(source, offset, lastTokenNonWS);
+		Module module = DescentASTConverter.convertModule(parserAdapter.mod, defaultModuleName);
+		return new DeeParserSession(module, defaultModuleName, parserAdapter);
 	}
 	
 	public static DeeParserSession parseSource(String source, String defaultModuleName) {
@@ -31,13 +28,16 @@ public class DeeParserSession {
 	}
 	
 	protected final String defaultModuleName;
-	protected DescentParserAdapter parserAdapter;
-	public Module neoModule;
+	protected final DescentParserAdapter parserAdapter;
 	
-	public DeeParserSession(String defaultModuleName) {
+	public DeeParserSession(Module module,  String defaultModuleName, 
+		DescentParserAdapter parserAdapter) {
+		super(module, null);
 		this.defaultModuleName = defaultModuleName;
+		this.parserAdapter = parserAdapter;
 	}
 	
+	@Override
 	public boolean hasSyntaxErrors() {
 		return parserAdapter.mod.problems.size() != 0;
 	}
@@ -50,8 +50,4 @@ public class DeeParserSession {
 		return parserAdapter.mod;
 	}
 	
-	public Module getParsedModule() {
-		return neoModule;
-	}
-
 }

@@ -61,17 +61,17 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 	}
 	
 	
-	protected final DeeParserSession parseCode(String testCode) {
+	protected final DeeParserResult parseCode(String testCode) {
 		return parseCode(testCode, fragmentDesc);
 	}
 
-	protected final DeeParserSession parseCode(String testCode, RefFragmentDesc fragmentDesc) {
+	protected final DeeParserResult parseCode(String testCode, RefFragmentDesc fragmentDesc) {
 		// If source has errors, don't expect it
 		Boolean expectedErrors = (fragmentDesc.isInvalidSyntax()) ? null : false;
 		return parseCode(testCode, expectedErrors);
 	}
 	
-	protected DeeParserSession parseCode(String testCode, Boolean expectedErrors) {
+	protected DeeParserResult parseCode(String testCode, Boolean expectedErrors) {
 		return testParseDo(testCode, expectedErrors);
 	}
 	
@@ -137,7 +137,7 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 		return "void func() { " + string + " } ";
 	}
 	
-	private final DeeParserSession parseCodeWithFnWrap(String testCode, Boolean expectedErrors) {
+	private final DeeParserResult parseCodeWithFnWrap(String testCode, Boolean expectedErrors) {
 		parseCode(wrapFunction(testCode), expectedErrors);
 		return parseCode(testCode, expectedErrors);
 	}
@@ -191,7 +191,7 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 			"void func("+refCodeFragment+") {  }" +
 			""
 		;
-		DeeParserSession parseResult = parseCode(commonTestAggregateString);
+		DeeParserResult parseResult = parseCode(commonTestAggregateString);
 		if(fragmentDesc != RefFragmentDesc.INVALIDSYNTAX) {
 			checkAggregate(refCodeFragment, parseResult.getParsedModule());
 		}
