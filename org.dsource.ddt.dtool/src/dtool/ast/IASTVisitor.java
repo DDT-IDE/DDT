@@ -65,7 +65,7 @@ import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
 import dtool.ast.references.TypeDelegate;
 import dtool.ast.references.TypeFunction;
-import dtool.ast.references.TypeTypeof;
+import dtool.ast.references.RefTypeof;
 
 /**
  * The classes that this visitor dispatches to are mostly abstract classes, not concrete ones: 
@@ -177,7 +177,7 @@ public interface IASTVisitor {
 	public boolean visit(TypeFunction node);
 	public boolean visit(RefIndexing node);
 	
-	public boolean visit(TypeTypeof node);
+	public boolean visit(RefTypeof node);
 	public boolean visit(RefTemplateInstance node);
 	
 	/* ---------------------------------- */

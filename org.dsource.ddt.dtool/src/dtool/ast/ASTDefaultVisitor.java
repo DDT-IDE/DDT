@@ -75,7 +75,7 @@ import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
 import dtool.ast.references.TypeDelegate;
 import dtool.ast.references.TypeFunction;
-import dtool.ast.references.TypeTypeof;
+import dtool.ast.references.RefTypeof;
 
 public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IASTVisitor {
 	
@@ -204,6 +204,9 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	@Override public boolean visit(TypeFunction node) { return true; }
 	@Override public boolean visit(RefIndexing node) { return true; }
 	
+	@Override public boolean visit(RefTypeof node) { return true; }
+	@Override public boolean visit(RefTemplateInstance node) { return true; }
+	
 	/* ---------------------------------- */
 	@Override public boolean visit(ExpThis node) { return true; }
 	@Override public boolean visit(ExpSuper node) { return true; }
@@ -233,14 +236,6 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	}
 
 	/* ---------------------------------- */
-	@Override
-	public boolean visit(TypeTypeof node) {
-		return true;
-	}
-	@Override
-	public boolean visit(RefTemplateInstance node) {
-		return true;
-	}
 	
 	@Override
 	public boolean visit(DeclarationMixinString node) {

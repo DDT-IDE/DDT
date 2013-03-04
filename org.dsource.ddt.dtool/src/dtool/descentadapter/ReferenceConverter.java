@@ -39,7 +39,7 @@ import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
-import dtool.ast.references.TypeTypeof;
+import dtool.ast.references.RefTypeof;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.util.ArrayView;
 
@@ -140,7 +140,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			int typeofRefEndPos = elem.exp.getEndPos()+1; // Estimate the endPos
 			sourceRange = new SourceRange(elem.getOffset(), typeofRefEndPos - elem.getOffset());
 		}
-		Reference rootRef = new TypeTypeof(ExpressionConverter.convert(elem.exp, convContext), sourceRange);
+		Reference rootRef = new RefTypeof(ExpressionConverter.convert(elem.exp, convContext), sourceRange);
 		return createReferenceFromIdents(elem, rootRef, convContext);
 	}
 	

@@ -58,19 +58,22 @@
   ►#?AST_STRUCTURE_EXPECTED!【 (int[]).init●ExpReference(RefQualified(ExpParentheses(RefTypeDynArray(*)) ?))】●
   ►#?AST_STRUCTURE_EXPECTED!【 (.foo).bar.xxx●ExpReference(RefQualified(RefQualified(ExpParentheses(*) ?) ?))】●
   
-  ►#?AST_STRUCTURE_EXPECTED!【  #@TYPE_AS_EXP* #@NULL_EXP● ExpInfix(ExpReference(RefPrimitive) #@NULL_EXP)】●
-  ►#?AST_STRUCTURE_EXPECTED!【  foo * #@NULL_EXP● ExpInfix(ExpReference(RefIdentifier) #@NULL_EXP)】●
+  ►#?EXP__NO_PENDING_MISSING【#@EXP_DISCARD_CASE●
+    ►#?AST_STRUCTURE_EXPECTED!【  #@TYPE_AS_EXP* #@NULL_EXP● ExpInfix(ExpReference(RefPrimitive) #@NULL_EXP)】】●
+  ►#?EXP__NO_PENDING_MISSING【#@EXP_DISCARD_CASE●
+    ►#?AST_STRUCTURE_EXPECTED!【  foo * #@NULL_EXP● ExpInfix(ExpReference(RefIdentifier) #@NULL_EXP)】】●
 
   ►#?AST_STRUCTURE_EXPECTED!【  foo[]● ExpSlice(ExpReference(RefIdentifier))】●
   ►#?AST_STRUCTURE_EXPECTED!【  #@TYPE_AS_EXP []● ExpSlice(ExpReference(RefPrimitive))】●
   ►#?AST_STRUCTURE_EXPECTED!【  foo[ #@TYPE_AS_EXP ]● ExpIndex(ExpReference(RefIdentifier) ExpReference(RefPrimitive))】●
   ►#?AST_STRUCTURE_EXPECTED!【  #@TYPE_AS_EXP [foo]● ExpIndex(ExpReference(RefPrimitive) ExpReference(RefIdentifier))】●
 
-  ►#?AST_STRUCTURE_EXPECTED!【foo**[bar*#@NULL_EXP]* #@NULL_EXP●
+  ►#?EXP__NO_PENDING_MISSING【#@EXP_DISCARD_CASE●
+    ►#?AST_STRUCTURE_EXPECTED!【foo**[bar*#@NULL_EXP]* #@NULL_EXP●
 ExpInfix(
   ExpInfix(  #@ExpIdentifier  ExpPrefix(ExpLiteralArray(ExpInfix(#@ExpIdentifier #@NULL_EXP)))  )
   #@NULL_EXP 
-)】●
+)】】●
 ¤》
 
 #@EXP_UNARY《
@@ -133,6 +136,9 @@ ExpInfix(
 
 
 #@EXP_ANY《#@EXP_COMMA》
+#@EXP_ANY__LITE《#@EXP_OROR__LITE》
+
+#@EXP_NO_PENDING《 #EXP__NO_PENDING_MISSING(flag) #@EXP_ANY 》
 
 #@EXP_ASSIGN__NO_REFS__NO_AMBIGS《 #EXP__NO_AMBIGS(flag)#EXP__NO_REFS(flag) #@EXP_ASSIGN 》
 #@EXP_ASSIGN__NO_REFS《 #EXP__NO_REFS(flag) #@EXP_ASSIGN 》

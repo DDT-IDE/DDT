@@ -17,7 +17,7 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
-import dtool.ast.references.TypeTypeof;
+import dtool.ast.references.RefTypeof;
 
 public class Parser_ReferenceTypeOfTest extends Parser_Reference_CommonTest {
 	
@@ -67,7 +67,7 @@ public class Parser_ReferenceTypeOfTest extends Parser_Reference_CommonTest {
 		Module module = markSourceAndParse(source, true);
 		
 		DefinitionVariable child = downCast(module.getChildren()[0]);
-		TypeTypeof refTypeOf = downCast(child.type);
+		RefTypeof refTypeOf = downCast(child.type);
 		
 		checkRange(refTypeOf, "M1", "M2");
 		checkRange(refTypeOf.expression, "R", "R$");
@@ -89,8 +89,8 @@ public class Parser_ReferenceTypeOfTest extends Parser_Reference_CommonTest {
 	@Override
 	protected void checkReference(Reference ref, String nodeCode) {
 		super.checkReference(ref, nodeCode);
-		assertTrue(ref instanceof TypeTypeof);
-		Expression expression = downCast(ref, TypeTypeof.class).expression;
+		assertTrue(ref instanceof RefTypeof);
+		Expression expression = downCast(ref, RefTypeof.class).expression;
 		assertEquals(expression.toStringAsElement(), argCodeString);
 	}
 	
@@ -132,8 +132,8 @@ public class Parser_ReferenceTypeOfTest extends Parser_Reference_CommonTest {
 			@Override
 			protected void checkReference(Reference ref, String nodeCode) {
 				assertAreEqual(ref.toStringAsElement(), nodeCode);
-				assertTrue(ref instanceof TypeTypeof);
-				Expression expression = downCast(ref, TypeTypeof.class).expression;
+				assertTrue(ref instanceof RefTypeof);
+				Expression expression = downCast(ref, RefTypeof.class).expression;
 				super.checkReference(downCast(expression, ExpReference.class).ref, typeofArgumentCode);
 			}
 		};
@@ -152,8 +152,8 @@ public class Parser_ReferenceTypeOfTest extends Parser_Reference_CommonTest {
 			protected void checkReference(Reference topRef, String nodeCode) {
 				assertAreEqual(topRef.toStringAsElement(), nodeCode);
 				Resolvable ref_obj = getRootRef(topRef);
-				assertTrue(ref_obj instanceof TypeTypeof);
-				TypeTypeof ref = downCast(ref_obj);
+				assertTrue(ref_obj instanceof RefTypeof);
+				RefTypeof ref = downCast(ref_obj);
 				assertAreEqual(ref.toStringAsElement(), "typeof("+typeofArgCode+")");
 				Expression expression = ref.expression;
 				assertEquals(downCast(expression, ExpReference.class).ref.toStringAsElement(), typeofArgCode);

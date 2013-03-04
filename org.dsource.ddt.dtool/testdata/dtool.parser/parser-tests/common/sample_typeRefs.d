@@ -15,6 +15,7 @@ RefTemplateInstance(
   RefIdentifier
   RefIndexing(RefIdentifier RefTypePointer(RefIdentifier))
 )】●
+  ►#?AST_STRUCTURE_EXPECTED!【typeof(Bar.foo)●RefTypeof(ExpReference(RefQualified(RefIdentifier RefIdentifier)))】●
 ¤》
 
 // These type refs can be used as qualifiers wihtout disrupting parser flow, but are not valid qualifier
@@ -74,6 +75,8 @@ TODO
 // These references unambiguously parse as ref
 #@REFS_UNAMBIG《
   ►#?AST_STRUCTURE_EXPECTED!【int●RefPrimitive】●
+  ►#?AST_STRUCTURE_EXPECTED!【typeof(foo)●RefTypeof(ExpReference(RefIdentifier))】●
+  
   ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo*/*REF*/]● RefIndexing(#@PREFIX_S RefTypePointer(RefIdentifier))】●
   ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[int/*REF*/]● RefIndexing(#@PREFIX_S RefPrimitive)】●
 

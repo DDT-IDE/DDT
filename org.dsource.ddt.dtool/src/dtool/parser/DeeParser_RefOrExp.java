@@ -68,6 +68,7 @@ import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.RefTypeDynArray;
 import dtool.ast.references.RefTypePointer;
+import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
 import dtool.parser.ParserError.ParserErrorTypes;
 
@@ -94,39 +95,6 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	
 	/* --------------------  reference parsing  --------------------- */
 	
-	protected RefIdentifier parseRefIdentifier() {
-		LexElement id = tryConsumeIdentifier();
-		return connect(new RefIdentifier(idTokenToString(id), sr(id.token)));
-	}
-	
-	protected RefIdentifier createMissingRefIdentifier() {
-		LexElement id = createExpectedToken(DeeTokens.IDENTIFIER);
-		return connect(new RefIdentifier(idTokenToString(id), sr(id.token)));
-	}
-	
-	protected RefPrimitive parseRefPrimitive(DeeTokens primitiveType) {
-		Token token = consumeLookAhead(primitiveType);
-		return connect(new RefPrimitive(token, sr(token)));
-	}
-	
-	protected RefModuleQualified parseRefModuleQualified() {
-		int startPos = consumeLookAhead(DeeTokens.DOT).getStartPos();
-		return connect(new RefModuleQualified(parseRefIdentifier(), srToCursor(startPos)));
-	}
-	
-	protected static class RefParseResult { 
-		public final Reference ref;
-		public final boolean balanceBroken;
-		
-		public RefParseResult(boolean balanceBroken, Reference ref) {
-			this.ref = ref;
-			this.balanceBroken = balanceBroken;
-		}
-		public RefParseResult(Reference ref) {
-			this(false, ref);
-		}
-	}
-	
 	public static String REFERENCE_RULE = "Reference";
 	
 	public Reference parseReference() {
@@ -148,6 +116,57 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return parseReference_begin(expressionContext).ref;
 	}
 	
+	protected RefIdentifier parseRefIdentifier() {
+		LexElement id = tryConsumeIdentifier();
+		return connect(new RefIdentifier(idTokenToString(id), sr(id.token)));
+	}
+	
+	protected RefIdentifier createMissingRefIdentifier() {
+		LexElement id = createExpectedToken(DeeTokens.IDENTIFIER);
+		return connect(new RefIdentifier(idTokenToString(id), sr(id.token)));
+	}
+	
+	protected RefPrimitive parseRefPrimitive(DeeTokens primitiveType) {
+		Token token = consumeLookAhead(primitiveType);
+		return connect(new RefPrimitive(token, sr(token)));
+	}
+	
+	public RefModuleQualified parseRefModuleQualified() {
+		int startPos = consumeLookAhead(DeeTokens.DOT).getStartPos();
+		return connect(new RefModuleQualified(parseRefIdentifier(), srToCursor(startPos)));
+	}
+	
+	protected static class RefParseResult { 
+		public final Reference ref;
+		public final boolean balanceBroken;
+		
+		public RefParseResult(boolean balanceBroken, Reference ref) {
+			this.ref = ref;
+			this.balanceBroken = balanceBroken;
+		}
+		public RefParseResult(Reference ref) {
+			this(false, ref);
+		}
+	}
+	
+	protected RefParseResult parseRefTypeof() {
+		if(!tryConsume(DeeTokens.KW_TYPEOF))
+			return null;
+		int nodeStart = lastLexElement.getStartPos();
+		
+		Expression exp = null;
+		boolean balanceBroken = true;
+		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
+			if(tryConsume(DeeTokens.KW_RETURN)) {
+				exp = new RefTypeof.ExpRefReturn(lastLexElement.getSourceRange());
+			} else {
+				exp = parseExpression_ToMissing(true);
+			}
+			balanceBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
+		}
+		return new RefParseResult(balanceBroken, connect(new RefTypeof(exp, srToCursor(nodeStart))));
+	}
+	
 	protected RefParseResult parseReference_begin(boolean parsingExp) {
 		DeeTokens la = lookAheadGrouped();
 		
@@ -155,13 +174,22 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		case DOT: return parseReference_ReferenceStart(parseRefModuleQualified(), parsingExp);
 		case IDENTIFIER: return parseReference_ReferenceStart(parseRefIdentifier(), parsingExp);
 		case PRIMITIVE_KW: return parseReference_ReferenceStart(parseRefPrimitive(lookAhead()), parsingExp);
-		
+		case KW_TYPEOF: {
+			RefParseResult refTypeof = parseRefTypeof();
+			if(refTypeof.balanceBroken) 
+				return refTypeof;
+			return parseReference_ReferenceStart(refTypeof.ref, parsingExp);
+		}
 		default:
-		return new RefParseResult(null);
+			return new RefParseResult(null);
 		}
 	}
 	
 	protected RefParseResult parseReference_ReferenceStart(Reference leftRef, boolean parsingExp) {
+		assertNotNull(leftRef);
+		return parseReference_ReferenceStart_do(leftRef, parsingExp);
+	}
+	protected RefParseResult parseReference_ReferenceStart_do(Reference leftRef, boolean parsingExp) {
 		boolean balanceBroken = false;
 		
 		// Star is multiply infix operator, dont parse as pointer ref
@@ -313,7 +341,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			return new RefOrExpFullResult(RefOrExpMode.REF, ref);
 		} else {
 			// Ambiguous RoE must not leave refs ahead (otherwise it should have been part of ambiguous)
-			assertTrue(parseReference_ReferenceStart(null, false).ref == null); 
+			assertTrue(parseReference_ReferenceStart_do(null, false).ref == null); 
 			return new RefOrExpFullResult(RefOrExpMode.REF_OR_EXP, refOrExp.getExp());
 		}
 	}
@@ -613,7 +641,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			}
 			
 			RefOrExpMode mode = canBeRef && isRefOrExpStart ? RefOrExpMode.REF_OR_EXP : RefOrExpMode.EXP;
-			if(isBuiltinTypeRef(ref)) {
+			if(parsesAsTypeRef(ref)) {
 				if(canBeRef && isRefOrExpStart) {
 					mode = RefOrExpMode.REF;
 				} else {
@@ -624,9 +652,11 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		}
 	}
 	
-	protected static boolean isBuiltinTypeRef(Reference ref) {
+	/** Returns true if the given ref can only be a reference to a type (due to the parsed grammar rules). */
+	protected static boolean parsesAsTypeRef(Reference ref) {
 		switch (ref.getNodeType()) {
 		case REF_PRIMITIVE:
+		case REF_TYPEOF:
 			return true;
 		case REF_TYPE_DYN_ARRAY:
 		case REF_INDEXING:

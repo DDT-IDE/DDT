@@ -4,27 +4,54 @@ import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
+import dtool.ast.expressions.Resolvable.ITemplateRefNode;
+import dtool.parser.AbstractParser;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class TypeTypeof extends CommonRefNative implements IQualifierNode {
+public class RefTypeof extends CommonRefNative implements IQualifierNode, ITemplateRefNode /*BUG here*/ {
 	
 	public final Expression expression;
 	
-	public TypeTypeof(Expression exp, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public RefTypeof(Expression exp, SourceRange sourceRange) {
 		this.expression = parentize(exp);
+		if(exp instanceof ExpRefReturn) {
+			exp.setData(AbstractParser.PARSED_STATUS);
+		}
+		initSourceRange(sourceRange);
 	}
 	
-	public TypeTypeof(Expression exp) {
-		this.expression = exp;
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.REF_TYPEOF;
+	}
+	
+	public static class ExpRefReturn extends Expression {
 		
-		if (this.expression != null)
-			this.expression.setParent(this);
+		public ExpRefReturn(SourceRange sourceRange) {
+			initSourceRange(sourceRange);
+		}
+		
+		@Override
+		public ASTNodeTypes getNodeType() {
+			return ASTNodeTypes.EXP_REF_RETURN;
+		}
+		
+		@Override
+		public void accept0(IASTVisitor visitor) {
+			visitor.visit(this);
+			visitor.endVisit(this);
+		}
+		
+		@Override
+		public void toStringAsCode(ASTCodePrinter cp) {
+			cp.append("return");
+		}
 	}
 	
 	@Override

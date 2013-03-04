@@ -273,12 +273,13 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			case KW_AUTO: // TODO:
 				break;
 			
-			case IDENTIFIER: return parseDeclaration_IdStart();
-			case PRIMITIVE_KW: return parseDeclaration_RefPrimitiveStart();
-			case DOT: return parseDeclaration_DotStart();
-			
 			default:
 				break;
+			}
+			
+			RefParseResult startRef = parseReference_begin(false);
+			if(startRef.ref != null) {
+				return parseDeclaration_ReferenceStart(startRef);
 			}
 			
 			if(acceptEmptyDecl && tryConsume(DeeTokens.SEMICOLON)) {
@@ -295,20 +296,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	/* ----------------------------------------- */
 	
-	protected ASTNeoNode parseDeclaration_IdStart() {
-		return parseDeclaration_referenceAhead();
-	}
-	
-	protected ASTNeoNode parseDeclaration_RefPrimitiveStart() {
-		return parseDeclaration_referenceAhead();
-	}
-	
-	protected ASTNeoNode parseDeclaration_DotStart() {
-		return parseDeclaration_referenceAhead();
-	}
-	
-	protected ASTNeoNode parseDeclaration_referenceAhead() {
-		RefParseResult refParse = parseReference_begin(false);
+	protected ASTNeoNode parseDeclaration_ReferenceStart(RefParseResult refParse) {
 		Reference ref = refParse.ref;
 		boolean consumedSemiColon = false;
 		

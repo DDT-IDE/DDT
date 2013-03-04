@@ -57,7 +57,7 @@ import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
 import dtool.ast.references.TypeDelegate;
 import dtool.ast.references.TypeFunction;
-import dtool.ast.references.TypeTypeof;
+import dtool.ast.references.RefTypeof;
 
 public abstract class DeeSourceElementProvider_BaseVisitor extends ASTAbstractVisitor {
 	
@@ -138,16 +138,8 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTAbstractVi
 	@Override public boolean visit(TypeFunction elem) { return true; }
 	@Override public boolean visit(RefIndexing elem) { return true; }
 	
-	
-	@Override
-	public final boolean visit(TypeTypeof elem) {
-		return true;
-	}
-	@Override
-	public final boolean visit(RefTemplateInstance elem) {
-		return true;
-	}
-	
+	@Override public final boolean visit(RefTypeof elem) { return true; }
+	@Override public final boolean visit(RefTemplateInstance elem) { return true; }
 	
 	/* ---------------------------------- */
 	

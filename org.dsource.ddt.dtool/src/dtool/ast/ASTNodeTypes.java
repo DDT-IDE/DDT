@@ -54,11 +54,13 @@ public enum ASTNodeTypes {
 	
 	REF_INDEXING,
 	REF_TEMPLATE_INSTANCE,
+	REF_TYPEOF,
 	
 	
 	/* ---------------------------------- */
 	
 	MISSING_EXPRESSION,
+	EXP_REF_RETURN,
 	
 	EXP_THIS,
 	EXP_SUPER,

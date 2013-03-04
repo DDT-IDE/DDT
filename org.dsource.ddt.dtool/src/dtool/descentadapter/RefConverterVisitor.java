@@ -13,10 +13,10 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.references.RefIndexing;
-import dtool.ast.references.RefReturn;
 import dtool.ast.references.RefTypeDynArray;
 import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.RefTypeSlice;
+import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
 import dtool.ast.references.TypeDelegate;
 import dtool.ast.references.TypeFunction;
@@ -90,7 +90,7 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeReturn elem) {
-		return endAdapt(new RefReturn(DefinitionConverter.sourceRange(elem)));
+		return endAdapt(new RefTypeof(new RefTypeof.ExpRefReturn(null), DefinitionConverter.sourceRange(elem)));
 	}
 	
 	
