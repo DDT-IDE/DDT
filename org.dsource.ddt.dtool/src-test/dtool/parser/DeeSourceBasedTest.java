@@ -33,14 +33,14 @@ public class DeeSourceBasedTest extends DToolBaseTest {
 		}
 		
 		@Override
-		protected void putExpansion(ProcessingState sourceCase, String expansionId, TspExpansionElement expansionElem) {
-			sourceCase.putExpansion(expansionId, expansionElem);
+		protected void putExpansion(ProcessingState sourceCase, String expansionId, TspExpansionElement expansion) {
+			sourceCase.putExpansion(expansionId, expansion);
 			
 			if(DToolTests.TESTS_LITE_MODE) {
 				String name = expansionId;
 				if(name != null && name.endsWith("__LITE")) { 
 					name = name.replace("__LITE", "");
-					TspExpansionElement value = expansionElem;
+					TspExpansionElement value = expansion;
 					TspExpansionElement newElem = new TspExpansionElement(name, 
 						value.pairedExpansionId, value.arguments, value.anonymousExpansion, value.dontOuputSource);
 					assertTrue(sourceCase.getExpansion(name) != null);
