@@ -17,6 +17,7 @@ RefTemplateInstance(
 ¤》
 #@TYPE_REFS_QUALIFIER__DOT_ONLY《
   ►#?AST_STRUCTURE_EXPECTED!【int●RefPrimitive】●
+  ►#?AST_STRUCTURE_EXPECTED!【const(foo)●RefTypeModifier(RefIdentifier)】●
   ►#?AST_STRUCTURE_EXPECTED!【typeof(Bar.foo)●RefTypeof(ExpReference(RefQualified(RefIdentifier RefIdentifier)))】●
 ¤》
 #@TYPE_REFS_QUALIFIER《#@TYPE_REFS_QUALIFIER__ANY●#@TYPE_REFS_QUALIFIER__DOT_ONLY》

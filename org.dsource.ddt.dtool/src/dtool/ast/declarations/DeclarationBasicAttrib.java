@@ -15,9 +15,10 @@ import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationBasicAttrib extends DeclarationAttrib {
 	
-	public static enum EDeclarationAttribute {
+	public static enum AttributeKinds {
 		DEPRECATED,
-		STATIC, 
+		STATIC,
+		EXTERN,
 		FINAL,
 		SYNCHRONIZED,
 		OVERRIDE,
@@ -30,10 +31,11 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 		INOUT,
 		;
 		
-		public static EDeclarationAttribute fromToken(DeeTokens token) {
+		public static AttributeKinds fromToken(DeeTokens token) {
 			switch (token) {
 			case KW_DEPRECATED: return DEPRECATED;
 			case KW_STATIC: return STATIC;
+			case KW_EXTERN: return EXTERN;
 			case KW_FINAL: return FINAL;
 			case KW_SYNCHRONIZED: return SYNCHRONIZED;
 			case KW_OVERRIDE: return OVERRIDE;
@@ -59,9 +61,9 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 		}
 	}
 	
-	public final EDeclarationAttribute declAttrib;
+	public final AttributeKinds declAttrib;
 	
-	public DeclarationBasicAttrib(EDeclarationAttribute declAttrib, AttribBodySyntax abs, NodeList2 decls, 
+	public DeclarationBasicAttrib(AttributeKinds declAttrib, AttribBodySyntax abs, NodeList2 decls, 
 		SourceRange sr) {
 		super(abs, decls, sr);
 		this.declAttrib = declAttrib;

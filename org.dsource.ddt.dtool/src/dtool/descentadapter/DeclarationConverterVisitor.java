@@ -42,7 +42,7 @@ import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAnonMember;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationBasicAttrib;
-import dtool.ast.declarations.DeclarationBasicAttrib.EDeclarationAttribute;
+import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
 import dtool.ast.declarations.DeclarationConditionalDefinition;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
@@ -389,7 +389,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.StorageClassDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
-		EDeclarationAttribute declAttrib = EDeclarationAttribute.FINAL; // WRONG, but dont care, deprecated
+		AttributeKinds declAttrib = AttributeKinds.FINAL; // WRONG, but dont care, deprecated
 		return endAdapt(new DeclarationBasicAttrib(
 			declAttrib, AttribBodySyntax.BRACE_BLOCK, body, 
 			DefinitionConverter.sourceRange(elem)));

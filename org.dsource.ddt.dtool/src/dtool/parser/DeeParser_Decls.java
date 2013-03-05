@@ -24,7 +24,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationBasicAttrib;
-import dtool.ast.declarations.DeclarationBasicAttrib.EDeclarationAttribute;
+import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
@@ -146,15 +146,11 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public DeclarationImport parseImportDeclaration() {
 		boolean isStatic = false;
-		int nodeStart = -1;
+		int nodeStart = lookAheadElement().getStartPos();
 		
 		if(tryConsume(DeeTokens.KW_IMPORT)) {
-			nodeStart = lastLexElement.getStartPos();
-		} else if(lookAhead() == DeeTokens.KW_STATIC && lookAheadElement(1).getType() == DeeTokens.KW_IMPORT) {
+		} else if(tryConsume(DeeTokens.KW_STATIC, DeeTokens.KW_IMPORT)) {
 			isStatic = true;
-			consumeLookAhead(DeeTokens.KW_STATIC);
-			nodeStart = lastLexElement.getStartPos();
-			consumeLookAhead(DeeTokens.KW_IMPORT);
 		} else {
 			return null;
 		}
@@ -177,7 +173,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		ArrayList<String> packages = new ArrayList<String>(0);
 		int refModuleStartPos = -1;
 		
-		if(lookAhead() == DeeTokens.IDENTIFIER && lookAheadElement(1).getType() == DeeTokens.ASSIGN
+		if(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.ASSIGN
 			|| lookAhead() == DeeTokens.ASSIGN) {
 			aliasId = tryConsumeIdentifier();
 			consumeLookAhead(DeeTokens.ASSIGN);
@@ -260,13 +256,20 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			
 			case KW_MIXIN: return parseDeclarationMixinString();
 			
-			case KW_EXTERN: return parseDeclarationExternLinkage();
 			case KW_ALIGN: return parseDeclarationAlign();
 			case KW_PRAGMA: return parseDeclarationPragma();
 			case PROTECTION_KW: return parseDeclarationProtection();
+			case KW_EXTERN:
+				if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
+					return parseDeclarationExternLinkage();
+				}
+				// else fall-through to attrib
 			case ATTRIBUTE_KW: 
-				if(lookAhead() == DeeTokens.KW_STATIC && lookAheadElement(1).getType() == DeeTokens.KW_IMPORT) { 
+				if(lookAhead() == DeeTokens.KW_STATIC && lookAhead(1) == DeeTokens.KW_IMPORT) { 
 					return parseImportDeclaration();
+				}
+				if(isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
+					break; // go to parseReference
 				}
 				return parseDeclarationBasicAttrib();
 			// @disable keyword?
@@ -386,13 +389,11 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 				ASTNeoNode decl = parseDeclaration(acceptEmptyDecl);
 				if(decl == null) {
 					reportErrorExpectedRule(DECLARATION_RULE);
-					return null;
 				} else {
 					declList = connect(
 						new NodeList2(ArrayView.create(new ASTNeoNode[] {decl}), decl.getSourceRange()));
 				}
 			}
-			
 			return this;
 		}
 	}
@@ -501,7 +502,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public DeclarationBasicAttrib parseDeclarationBasicAttrib() {
-		EDeclarationAttribute attrib = EDeclarationAttribute.fromToken(lookAhead());
+		AttributeKinds attrib = AttributeKinds.fromToken(lookAhead());
 		if(attrib == null) {
 			return null;
 		}

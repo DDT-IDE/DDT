@@ -5,6 +5,7 @@
 
 
 #@NO_ROE《#?AST_STRUCTURE_EXPECTED!【/*MISSING_RoE*/ #error(EXPRULE_RoE)●MissingExpression】》
+#@NO_REF《#?AST_STRUCTURE_EXPECTED!【/*MISSING_REF*/ #error(EXPRULE_ref)● RefIdentifier】》
 
 #@MISSING_REF《#?AST_STRUCTURE_EXPECTED!【/*MISSING_REF*/ #error(EXPRULE_ref)● RefIdentifier】》
 

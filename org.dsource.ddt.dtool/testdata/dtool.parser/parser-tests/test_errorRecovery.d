@@ -44,13 +44,13 @@ DefinitionVariable(? DefSymbol DefVarFragment(?))
 DeclarationImport(ImportSelective(ImportContent(?) RefImportSelection RefImportSelection))
 DefinitionVariable(? DefSymbol InitializerExp(MissingExpression) DefVarFragment(?))
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of  KEYWORD(ARGUMENT);  format
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of syntax:  KEYWORD(ARGUMENT);
 mixin #error(EXP_OPEN_PARENS) #error(EXP_SEMICOLON)
 mixin #error(EXP_OPEN_PARENS) ;
 #AST_SOURCE_EXPECTED:
 mixin() ;
 mixin() ;
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of  KEYWORD(ARGUMENT) DECL;  format
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of syntax:  KEYWORD(ARGUMENT) DECL;
 extern(C) #error(EXPRULE_decl)
 
 #AST_STRUCTURE_EXPECTED:

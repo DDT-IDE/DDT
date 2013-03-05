@@ -126,6 +126,7 @@ public class ASTReparseCheckSwitcher {
 		case REF_INDEXING:
 		case REF_TEMPLATE_INSTANCE:
 		case REF_TYPEOF:
+		case REF_MODIFIER:
 			return reparseCheck(snippedParser.parseReference(), node);
 		
 		/* ---------------------------------- */

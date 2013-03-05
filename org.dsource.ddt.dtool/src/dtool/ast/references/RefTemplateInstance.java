@@ -44,16 +44,6 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	}
 	
 	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(tplRef, "!");
-		if(isSingleArgSyntax()) {
-			cp.append(singleArg);
-		} else {
-			cp.appendArgList("(", tplArgs, ", ", ")");
-		}
-	}
-	
-	@Override
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
@@ -62,6 +52,16 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 			TreeVisitor.acceptChildren(visitor, tplArgs);
 		}
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendNode(tplRef, "!");
+		if(isSingleArgSyntax()) {
+			cp.append(singleArg);
+		} else {
+			cp.appendArgList("(", tplArgs, ", ", ")");
+		}
 	}
 	
 	@Override

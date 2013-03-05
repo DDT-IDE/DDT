@@ -55,6 +55,7 @@ public enum ASTNodeTypes {
 	REF_INDEXING,
 	REF_TEMPLATE_INSTANCE,
 	REF_TYPEOF,
+	REF_MODIFIER,
 	
 	
 	/* ---------------------------------- */

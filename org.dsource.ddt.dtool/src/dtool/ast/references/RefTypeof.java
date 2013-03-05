@@ -5,6 +5,7 @@ import java.util.Collection;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
+import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
@@ -13,7 +14,7 @@ import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.parser.AbstractParser;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class RefTypeof extends CommonRefNative implements IQualifierNode {
+public class RefTypeof extends Reference implements IQualifierNode {
 	
 	public final Expression expression;
 	
@@ -71,6 +72,11 @@ public class RefTypeof extends CommonRefNative implements IQualifierNode {
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		return expression.getType(moduleResolver);
+	}
+	
+	@Override
+	public boolean canMatch(DefUnitDescriptor defunit) {
+		return false;
 	}
 	
 }

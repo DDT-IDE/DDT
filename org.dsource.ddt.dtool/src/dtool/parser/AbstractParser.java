@@ -168,6 +168,10 @@ public class AbstractParser {
 		return lookAheadElement(0).token.getRawTokenType();
 	}
 	
+	public final DeeTokens lookAhead(int laIndex) {
+		return lookAheadElement(laIndex).token.getRawTokenType();
+	}
+	
 	public int getParserPosition() {
 		return lookAheadElement().getFullRangeStartPos();
 	}
@@ -247,7 +251,16 @@ public class AbstractParser {
 	
 	protected final boolean tryConsume(DeeTokens tokenType) {
 		if(lookAhead() == tokenType) {
-			consumeLookAhead();
+			consumeInput();
+			return true;
+		}
+		return false;
+	}
+	
+	protected final boolean tryConsume(DeeTokens tokenType, DeeTokens tokenType2) {
+		if(lookAhead() == tokenType && lookAhead(1) == tokenType2) {
+			consumeInput();
+			consumeInput();
 			return true;
 		}
 		return false;
