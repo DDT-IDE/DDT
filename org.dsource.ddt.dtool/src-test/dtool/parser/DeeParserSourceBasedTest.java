@@ -50,13 +50,13 @@ import dtool.util.NewUtils;
 @RunWith(Parameterized.class)
 public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
-	protected static final String TESTFILESDIR = "dtool.parser/parser-tests";
+	protected static final String TESTFILESDIR = "dtool.parser/";
 	
 	protected static Map<String, TspExpansionElement> commonDefinitions = new HashMap<String, TspExpansionElement>();
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {
-		ArrayList<File> commonHeaderFileList = getDeeModuleList(getTestResource(TESTFILESDIR+"/common"), true);
+		ArrayList<File> commonHeaderFileList = getDeeModuleList(getTestResource(TESTFILESDIR+"/_common"), true);
 		
 		for (File headerFile : commonHeaderFileList) {
 			TemplatedSourceProcessor tsp = new TestsTemplateSourceProcessor();
@@ -67,7 +67,9 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		return toFnParameterList(getDeeModuleList(getTestResource(TESTFILESDIR), true), new Predicate<File>() {
 			@Override
 			public boolean evaluate(File file) {
-				if(file.getName().endsWith("_TODO") || file.getParentFile().getName().equals("common"))
+				if(file.getName().endsWith("_TODO") 
+					|| file.getParentFile().getName().equals("_common")
+					|| file.getName().endsWith(".d") == false)
 					return true;
 				return false;
 			}

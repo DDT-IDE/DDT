@@ -3,10 +3,6 @@ Stuff to check:
 IsType
 
 
-TEST: Imports; 
-
-
-Definition / DSymbol modifiers
 
 
 DefUnit : WTF is postDdoc ?? and recheck comments
@@ -14,7 +10,6 @@ DefUnit : WTF is postDdoc ?? and recheck comments
 DeclarationAttrib : comments hack
 
 Module comments
-
 
 
 TemplateThisParameter

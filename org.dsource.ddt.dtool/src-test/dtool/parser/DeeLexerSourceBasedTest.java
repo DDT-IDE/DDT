@@ -33,7 +33,7 @@ import dtool.tests.DToolTestResources;
 @RunWith(Parameterized.class)
 public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 	
-	protected static final String TESTFILESDIR = "dtool.parser/lexer-tests";
+	protected static final String TESTFILESDIR = "dtool-lexer";
 	
 	@Parameters
 	public static Collection<Object[]> filesToParse() throws IOException {

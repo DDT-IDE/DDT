@@ -280,7 +280,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 				break;
 			}
 			
-			RefParseResult startRef = parseReference_begin(false);
+			RefParseResult startRef = parseReference_begin(false); // BasicType + BasicType2 in spec
 			if(startRef.ref != null) {
 				return parseDeclaration_ReferenceStart(startRef);
 			}
