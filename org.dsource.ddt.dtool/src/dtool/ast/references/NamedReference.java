@@ -2,14 +2,13 @@ package dtool.ast.references;
 
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
-import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.refmodel.PrefixDefUnitSearch;
 
 /** 
  * A reference based on an identifier. These references also 
  * allow doing a search based on their lookup rules.
  */
-public abstract class NamedReference extends Reference implements IQualifierNode, ITemplateRefNode /*BUG here*/ {
+public abstract class NamedReference extends Reference implements IQualifierNode {
 	
 	/** Perform a search using the lookup rules of this reference. */
 	public abstract void doSearch(PrefixDefUnitSearch search);

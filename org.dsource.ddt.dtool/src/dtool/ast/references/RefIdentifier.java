@@ -9,6 +9,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScopeNode;
@@ -16,7 +17,7 @@ import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class RefIdentifier extends NamedReference {
+public class RefIdentifier extends NamedReference implements ITemplateRefNode {
 	
 	public final String name;
 	

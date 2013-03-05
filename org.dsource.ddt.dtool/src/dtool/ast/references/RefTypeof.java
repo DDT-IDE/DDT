@@ -10,11 +10,10 @@ import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
-import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.parser.AbstractParser;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class RefTypeof extends CommonRefNative implements IQualifierNode, ITemplateRefNode /*BUG here*/ {
+public class RefTypeof extends CommonRefNative implements IQualifierNode {
 	
 	public final Expression expression;
 	

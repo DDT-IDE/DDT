@@ -4,6 +4,7 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScopeNode;
@@ -16,7 +17,7 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  * Common class for qualified references 
  * There are two: normal qualified references and Module qualified references.
  */
-public abstract class CommonRefQualified extends NamedReference {
+public abstract class CommonRefQualified extends NamedReference implements ITemplateRefNode {
 	
 	public final RefIdentifier qualifiedName;
 	

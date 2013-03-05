@@ -1,8 +1,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
 // These type refs can always be used as qualifiers
-#@TYPE_REFS_QUALIFIER《
-  ►#?AST_STRUCTURE_EXPECTED!【int●RefPrimitive】●
+#@TYPE_REFS_QUALIFIER__ANY《
   ►#?AST_STRUCTURE_EXPECTED!【Foo●RefIdentifier】●
   ►#?AST_STRUCTURE_EXPECTED!【.Foo●RefModuleQualified(?)】●
   ►#?AST_STRUCTURE_EXPECTED!【Bar.foo●RefQualified(RefIdentifier RefIdentifier)】●
@@ -15,8 +14,12 @@ RefTemplateInstance(
   RefIdentifier
   RefIndexing(RefIdentifier RefTypePointer(RefIdentifier))
 )】●
+¤》
+#@TYPE_REFS_QUALIFIER__DOT_ONLY《
+  ►#?AST_STRUCTURE_EXPECTED!【int●RefPrimitive】●
   ►#?AST_STRUCTURE_EXPECTED!【typeof(Bar.foo)●RefTypeof(ExpReference(RefQualified(RefIdentifier RefIdentifier)))】●
 ¤》
+#@TYPE_REFS_QUALIFIER《#@TYPE_REFS_QUALIFIER__ANY●#@TYPE_REFS_QUALIFIER__DOT_ONLY》
 
 // These type refs can be used as qualifiers wihtout disrupting parser flow, but are not valid qualifier
 #@TYPE_REFS_INVALID_QUALIFIER《

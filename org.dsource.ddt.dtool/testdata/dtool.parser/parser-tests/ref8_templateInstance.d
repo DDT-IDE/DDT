@@ -33,12 +33,15 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 ¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(REFERENCE)        #@TYPE_REFS_QUALIFIER #@TPL_ARGLIST
-#AST_STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS_QUALIFIER #@TPL_ARGLIST)
+#PARSE(REFERENCE)                            #@TYPE_REFS_QUALIFIER__ANY #@TPL_ARGLIST
+#AST_STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS_QUALIFIER__ANY #@TPL_ARGLIST)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ indexing cannot be template start
 #PARSE(REFERENCE)        #@TYPE_REFS_INVALID_QUALIFIER #parser(IgnoreRest) !this
 #AST_STRUCTURE_EXPECTED: #@TYPE_REFS_INVALID_QUALIFIER
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(REFERENCE)        #@TYPE_REFS_QUALIFIER__DOT_ONLY #parser(IgnoreRest) !this
+#AST_STRUCTURE_EXPECTED: #@TYPE_REFS_QUALIFIER__DOT_ONLY
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ tpl single arg
 #PARSE(REFERENCE)        #error(NO_TPL_SINGLE_ARG)【#@TYPE_REFS__TPL_SINGLE_ARG】 ! #@SINGLE_ARG

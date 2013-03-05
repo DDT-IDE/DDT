@@ -204,7 +204,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			leftRef = connect(new RefQualified(qualifier, qualifiedId, srToCursor(leftRef.getStartPos())));
 			balanceBroken = qualifiedId.name == null;
 			
-		} else if(lookAhead() == DeeTokens.NOT && leftRef instanceof ITemplateRefNode){ // template instance
+		} else if(lookAhead() == DeeTokens.NOT && isValidTemplateReferenceSyntax(leftRef)){ // template instance
 			consumeLookAhead();
 			
 			ITemplateRefNode tplRef = (ITemplateRefNode) leftRef;
@@ -256,6 +256,10 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		if(balanceBroken)
 			return new RefParseResult(true, leftRef);
 		return parseReference_ReferenceStart(leftRef, parsingExp);
+	}
+	
+	public boolean isValidTemplateReferenceSyntax(Reference leftRef) {
+		return leftRef instanceof ITemplateRefNode;
 	}
 	
 	/* ----------------------------------------- */
