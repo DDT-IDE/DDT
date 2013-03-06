@@ -137,15 +137,16 @@ public class DefinitionConverter extends BaseDmdConverter {
 			Token defnameInfo = DefinitionConverter.convertIdToken2(elem.md.id);
 			SourceRange declRange = sourceRange(elem.md);
 			
-			String[] packages = ArrayUtil.newSameSize(elem.md.packages, String.class);
+			Token[] packages = ArrayUtil.newSameSize(elem.md.packages, Token.class);
 			
 			for (int i = 0; i < packages.length; i++) {
-				packages[i] = new String(elem.md.packages.get(i).ident);
+				IdentifierExp packageId = elem.md.packages.get(i);
+				packages[i] = new Token(DeeTokens.IDENTIFIER, new String(packageId.ident), packageId.start);
 			}
 			
 			// Remove comments of other defunits (DMD parser quirk)
 			Comment[] comments = filterComments(elem, elem.md.start); 
-			DeclarationModule md = new DeclarationModule(packages, defnameInfo, declRange);
+			DeclarationModule md = new DeclarationModule(ArrayView.create(packages), defnameInfo, declRange);
 			return new Module(md.getModuleSymbol(), comments, md, members, sourceRange);
 		}
 	}

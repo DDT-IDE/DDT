@@ -18,7 +18,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
@@ -45,8 +44,8 @@ import dtool.ast.declarations.InvalidDeclaration;
 import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.definitions.CStyleVarArgsParameter;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
-import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
@@ -117,14 +116,14 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		int nodeStart = lastLexElement.getStartPos();
 		
-		ArrayList<String> packagesList = new ArrayList<String>(0);
+		ArrayList<Token> packagesList = new ArrayList<Token>(0);
 		LexElement moduleId;
 		
 		while(true) {
 			LexElement id = consumeExpectedIdentifier();
 			
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
-				packagesList.add(id.token.source);
+				packagesList.add(id.token);
 				id = null;
 			} else {
 				consumeExpectedToken(DeeTokens.SEMICOLON);
@@ -134,9 +133,8 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		assertNotNull(moduleId);
 		
-		String[] packages = ArrayUtil.createFrom(packagesList, String.class);
 		SourceRange modDeclRange = srToCursor(nodeStart);
-		return connect(new DeclarationModule(packages, moduleId.token, modDeclRange));
+		return connect(new DeclarationModule(arrayViewG(packagesList), moduleId.token, modDeclRange));
 	}
 	
 	
@@ -183,7 +181,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public IImportFragment parseImportFragment() {
 		LexElement aliasId = null;
-		ArrayList<String> packages = new ArrayList<String>(0);
+		ArrayList<Token> packages = new ArrayList<Token>(0);
 		int refModuleStartPos = -1;
 		
 		if(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.ASSIGN
@@ -197,7 +195,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			refModuleStartPos = refModuleStartPos == -1 ? id.getStartPos() : refModuleStartPos;
 			
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
-				packages.add(id.token.source);
+				packages.add(id.token);
 			} else {
 				RefModule refModule = 
 					connect(new RefModule(arrayViewG(packages), id.token.source, srToCursor(refModuleStartPos))); 

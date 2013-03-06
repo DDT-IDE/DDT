@@ -132,28 +132,6 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	@Deprecated
-	public void appendStringList(String[] packages, String sep, boolean printLastSep) {
-		for (int i = 0; i < packages.length; i++) {
-			String string = packages[i];
-			append(string);
-			if(printLastSep || i != packages.length - 1) {
-				sb.append(sep);
-			}
-		}
-	}
-	
-	@Deprecated
-	public void appendStringList(ArrayView<String> list, String sep, boolean printLastSep) {
-		for (int i = 0; i < list.size(); i++) {
-			String str = list.get(i);
-			append(str);
-			if(printLastSep || i != list.size() - 1) {
-				sb.append(sep);
-			}
-		}
-	}
-	
 	/* ==== */
 	@Deprecated
 	public static String toStringParamListAsElements(Iterable<? extends DefUnit> nodes) {

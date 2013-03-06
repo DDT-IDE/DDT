@@ -1,5 +1,6 @@
 package dtool.ast.definitions;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Iterator;
@@ -11,6 +12,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
 import dtool.parser.DeeParser;
 import dtool.parser.Token;
@@ -43,12 +45,13 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	
 	public static class DeclarationModule extends ASTNeoNode {
 		
+		public final ArrayView<Token> packageList;
+		public final String[] packages; // Old API
 		public final DefSymbol moduleName; 
-		public final String[] packages; // non-structural element
 		
-		public DeclarationModule(String[] packages, Token moduleDefUnit, SourceRange sourceRange) {
-			assertNotNull(packages);
-			this.packages = packages;
+		public DeclarationModule(ArrayView<Token> packageList, Token moduleDefUnit, SourceRange sourceRange) {
+			this.packageList = assertNotNull_(packageList);
+			this.packages = NodeUtil.tokenArrayToStringArray(packageList);
 			this.moduleName = new ModuleDefSymbol(moduleDefUnit.source, moduleDefUnit.getSourceRange());
 			this.moduleName.setData(DeeParser.PARSED_STATUS);
 			parentize(moduleName);
@@ -78,7 +81,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
 			cp.append("module ");
-			cp.appendStringList(packages, ".", true);
+			cp.appendList(packageList, ".", true);
 			cp.append(moduleName.name);
 			cp.append(";");
 		}
@@ -86,7 +89,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		@Override
 		public String toStringAsElement() {
 			ASTCodePrinter cp = new ASTCodePrinter();
-			cp.appendStringList(packages, ".", true);
+			cp.appendList(packageList, ".", true);
 			cp.append(moduleName.name);
 			return cp.toString();
 		}

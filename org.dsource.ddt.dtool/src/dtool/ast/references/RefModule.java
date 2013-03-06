@@ -9,10 +9,12 @@ import java.util.Collection;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
+import dtool.parser.Token;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.PrefixDefUnitSearch;
@@ -24,14 +26,17 @@ import dtool.util.ArrayView;
  */
 public class RefModule extends NamedReference {
 	
-	public final ArrayView<String> packages;
+	public final ArrayView<Token> packageList;
+	public final ArrayView<String> packages; // Old API, refactor?
 	public final String module;
 	
-	public RefModule(ArrayView<String> packages, String module, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
-		this.packages = assertNotNull_(packages);
+	public RefModule(ArrayView<Token> packageList, String module, SourceRange sourceRange) {
+		this.packageList = assertNotNull_(packageList);
+		this.packages = ArrayView.create(NodeUtil.tokenArrayToStringArray(packageList));
 		this.module = module;
+		initSourceRange(sourceRange);
 	}
+	
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
@@ -40,12 +45,14 @@ public class RefModule extends NamedReference {
 	
 	@Override
 	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			//TreeVisitor.acceptChildren(visitor, root);
-			//TreeVisitor.acceptChildren(visitor, subent);
-		}
+		visitor.visit(this);
 		visitor.endVisit(this);	
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendList(packageList, ".", true);
+		cp.append(module);
 	}
 	
 	@Override
@@ -107,12 +114,6 @@ public class RefModule extends NamedReference {
 			
 			search.addMatch(new LiteModuleDummy(name));		
 		}
-	}
-	
-	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendStringList(packages, ".", true);
-		cp.append(module);
 	}
 	
 	@Override

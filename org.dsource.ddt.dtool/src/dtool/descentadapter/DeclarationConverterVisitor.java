@@ -90,6 +90,8 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
+import dtool.parser.DeeTokens;
+import dtool.parser.Token;
 import dtool.util.ArrayView;
 
 /**
@@ -248,16 +250,16 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			IImportFragment imprtFragment = null;
 			
 			// Storing the packages.
-			String[] packages;
+			Token[] packages;
 			SourceRange sr;
 			if (imprt.packages == null) {
-				packages = new String[0];
+				packages = new Token[0];
 				sr = DefinitionConverter.sourceRange(imprt.id);
 			} else {
-				packages = new String[imprt.packages.size()];
+				packages = new Token[imprt.packages.size()];
 				int idx = 0;
 				for (IdentifierExp ie : imprt.packages) {
-					packages[idx++] = new String(ie.ident);
+					packages[idx++] = new Token(DeeTokens.IDENTIFIER, new String(ie.ident), ie.start) ;
 				}
 				int startPos = imprt.packages.get(0).getStartPos();
 				sr = new SourceRange(startPos, imprt.id.getEndPos() - startPos);
