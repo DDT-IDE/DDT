@@ -7,7 +7,7 @@ Bar.foo foo = 2;
 #AST_STRUCTURE_EXPECTED:
 DefVariable(RefIdentifier DefSymbol)
 DefVariable(RefPrimitive DefSymbol)
-DefVariable(* DefSymbol InitializerExp(?))
+DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol InitializerExp(?))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@TYPE_REFS fooA;

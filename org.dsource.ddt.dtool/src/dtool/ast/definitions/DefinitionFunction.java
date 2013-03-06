@@ -19,6 +19,8 @@ import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BodyStatement;
 import dtool.ast.statements.IStatement;
+import dtool.parser.DeeTokens;
+import dtool.parser.ISourceRepresentation;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -30,33 +32,34 @@ import dtool.util.ArrayView;
  */
 public class DefinitionFunction extends Definition implements IScopeNode, IStatement, ICallableElement {
 	
-	//public Identifier outId;
 	public final Reference retType;
 	public final ArrayView<TemplateParameter> templateParams;
 	public final ArrayView<IFunctionParameter> params;
-	public final ArrayView<ASTNeoNode> params_asNodes;
+	public final ArrayView<FunctionAttributes> fnAttributes;
 	
 	public final IStatement frequire;
 	public final BodyStatement fnBody;
 	public final IStatement fensure;
 	
-	//public descent.internal.compiler.parser.TypeFunction type;
-	
 	public DefinitionFunction(DefUnitTuple defunitData, PROT prot, Reference retType,
-			ArrayView<IFunctionParameter> params, IStatement frequire, IStatement fensure, 
-			BodyStatement fbody, SourceRange sourceRange) {
+			ArrayView<IFunctionParameter> params, ArrayView<FunctionAttributes> fnAttributes, 
+			IStatement frequire, IStatement fensure, BodyStatement fbody, SourceRange sourceRange) {
 		super(defunitData, prot);
 		assertNotNull(retType);
 		
 		this.retType = parentize(retType);
 		this.templateParams = null; // TODO BUG here
 		this.params = parentizeI(params);
-		this.params_asNodes = CoreUtil.blindCast(params);
+		this.fnAttributes = fnAttributes;
 		this.frequire = parentizeI(frequire);
 		this.fensure = parentizeI(fensure);
 		this.fnBody = parentizeI(fbody);
 		
 		initSourceRange(sourceRange);
+	}
+	
+	public ArrayView<ASTNeoNode> getParams_asNodes() {
+		return CoreUtil.blindCast(params);
 	}
 	
 	@Override
@@ -84,8 +87,59 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNode(retType, " ");
 		cp.append(defname);
-		cp.appendArgList("(", params_asNodes, ",", ")");
+		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
+		cp.appendList(fnAttributes, " ", false);
 		cp.appendNode(fnBody);
+	}
+	
+	public static enum FunctionAttributes implements ISourceRepresentation {
+		CONST(DeeTokens.KW_CONST.getSourceValue()), 
+		IMMUTABLE(DeeTokens.KW_IMMUTABLE.getSourceValue()), 
+		INOUT(DeeTokens.KW_INOUT.getSourceValue()), 
+		SHARED(DeeTokens.KW_SHARED.getSourceValue()),
+		
+		PURE(DeeTokens.KW_PURE.getSourceValue()),
+		NOTHROW(DeeTokens.KW_NOTHROW.getSourceValue()),
+		
+		AT_PROPERTY("@property"),
+		AT_SAFE("@safe"),
+		AT_TRUSTED("@trusted"),
+		AT_SYSTEM("@system"),
+		AT_DISABLE("@disable"),
+		;
+		public final String sourceValue;
+		
+		private FunctionAttributes(String sourceValue) {
+			this.sourceValue = sourceValue;
+		}
+		
+		@Override
+		public String getSourceValue() {
+			return sourceValue;
+		}
+		
+		public static FunctionAttributes fromToken(DeeTokens token) {
+			switch (token) {
+			case KW_CONST: return CONST;
+			case KW_IMMUTABLE: return IMMUTABLE;
+			case KW_INOUT: return INOUT;
+			case KW_SHARED: return SHARED;
+			case KW_PURE: return PURE;
+			case KW_NOTHROW: return NOTHROW;
+			
+			default: return null;
+			}
+		}
+		
+		//This could be slightly optimized with a hash table
+		public static FunctionAttributes fromCustomAttribId(String customAttribName) {
+			if(customAttribName.equals("property")) return AT_PROPERTY;
+			if(customAttribName.equals("safe")) return AT_SAFE;
+			if(customAttribName.equals("trusted")) return AT_TRUSTED;
+			if(customAttribName.equals("system")) return AT_SYSTEM;
+			if(customAttribName.equals("disable")) return AT_DISABLE;
+			return null;
+		}
 	}
 	
 	@Override

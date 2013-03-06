@@ -78,7 +78,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
 			cp.append("module ");
-			cp.appendList(packages, ".", true);
+			cp.appendStringList(packages, ".", true);
 			cp.append(moduleName.name);
 			cp.append(";");
 		}
@@ -86,7 +86,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		@Override
 		public String toStringAsElement() {
 			ASTCodePrinter cp = new ASTCodePrinter();
-			cp.appendList(packages, ".", true);
+			cp.appendStringList(packages, ".", true);
 			cp.append(moduleName.name);
 			return cp.toString();
 		}

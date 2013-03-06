@@ -111,7 +111,7 @@ public class RefModule extends NamedReference {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendList(packages, ".", true);
+		cp.appendStringList(packages, ".", true);
 		cp.append(module);
 	}
 	

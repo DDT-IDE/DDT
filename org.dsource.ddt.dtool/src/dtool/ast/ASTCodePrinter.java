@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Iterator;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.parser.Token;
+import dtool.parser.ISourceRepresentation;
 import dtool.util.ArrayView;
 
 public class ASTCodePrinter {
@@ -23,9 +23,9 @@ public class ASTCodePrinter {
 		return sb.toString();
 	}
 	
-	public void append(Token obj) {
+	public void append(ISourceRepresentation obj) {
 		if(obj != null) {
-			sb.append(obj.source);
+			sb.append(obj.getSourceValue());
 		}
 	}
 	
@@ -89,6 +89,18 @@ public class ASTCodePrinter {
 		}
 	}
 	
+	public void appendList(ArrayView<? extends ISourceRepresentation> list, String sep, boolean printLastSep) {
+		if(list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				ISourceRepresentation obj = list.get(i);
+				append(obj.getSourceValue());
+				if(printLastSep || i != list.size() - 1) {
+					sb.append(sep);
+				}
+			}
+		}
+	}
+	
 	public void appendNodeList(ArrayView<? extends ASTNeoNode> members, String sep) {
 		appendNodeList(members, sep, false);
 	}
@@ -103,8 +115,25 @@ public class ASTCodePrinter {
 		}
 	}
 	
+	public boolean appendNodeList(String open, ArrayView<? extends ASTNeoNode> args, String sep, String close) {
+		return appendNodeList(open, args, sep, close, null);
+	}
 	
-	public void appendList(String[] packages, String sep, boolean printLastSep) {
+	public boolean appendNodeList(String open, ArrayView<? extends ASTNeoNode> args, String sep, String close, 
+		String spacingIfArgsNull) {
+		if(args != null) {
+			append(open);
+			appendNodeList(args, sep);
+			append(close);
+			return true;
+		} else {
+			append(spacingIfArgsNull);
+			return false;
+		}
+	}
+	
+	@Deprecated
+	public void appendStringList(String[] packages, String sep, boolean printLastSep) {
 		for (int i = 0; i < packages.length; i++) {
 			String string = packages[i];
 			append(string);
@@ -114,11 +143,12 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendList(ArrayView<String> members, String sep, boolean printLastSep) {
-		for (int i = 0; i < members.size(); i++) {
-			String str = members.get(i);
+	@Deprecated
+	public void appendStringList(ArrayView<String> list, String sep, boolean printLastSep) {
+		for (int i = 0; i < list.size(); i++) {
+			String str = list.get(i);
 			append(str);
-			if(printLastSep || i != members.size() - 1) {
+			if(printLastSep || i != list.size() - 1) {
 				sb.append(sep);
 			}
 		}
@@ -145,23 +175,6 @@ public class ASTCodePrinter {
 			sb.append(next.toStringAsElement());
 		}
 		return sb.toString();
-	}
-	
-	public boolean appendArgList(String open, ArrayView<? extends ASTNeoNode> args, String sep, String close) {
-		return appendArgList(open, args, sep, close, null);
-	}
-	
-	public boolean appendArgList(String open, ArrayView<? extends ASTNeoNode> args, String sep, String close, 
-		String spacingIfArgsNull) {
-		if(args != null) {
-			append(open);
-			appendNodeList(args, sep);
-			append(close);
-			return true;
-		} else {
-			append(spacingIfArgsNull);
-		}
-		return false;
 	}
 	
 }

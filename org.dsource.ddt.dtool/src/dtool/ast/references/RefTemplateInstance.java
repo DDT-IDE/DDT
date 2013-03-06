@@ -60,7 +60,7 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 		if(isSingleArgSyntax()) {
 			cp.append(singleArg);
 		} else {
-			cp.appendArgList("(", tplArgs, ", ", ")");
+			cp.appendNodeList("(", tplArgs, ", ", ")");
 		}
 	}
 	

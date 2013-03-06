@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
@@ -44,6 +45,7 @@ import dtool.ast.declarations.InvalidDeclaration;
 import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.definitions.CStyleVarArgsParameter;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
+import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
@@ -67,6 +69,7 @@ import dtool.ast.statements.EmptyBodyStatement;
 import dtool.ast.statements.IStatement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
+import dtool.util.NewUtils;
 
 public class DeeParser_Decls extends DeeParser_RefOrExp {
 	
@@ -382,10 +385,15 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public static final ParseRuleDescription RULE_BODY = new ParseRuleDescription("Body");
 	
+	/**
+	 * Parse a function from this point:
+	 * http://dlang.org/declaration.html#DeclaratorSuffix
+	 */
 	protected DefinitionFunction parseDefinitionFunction_Reference_Identifier(Reference retType, LexElement defId) {
 		consumeLookAhead(DeeTokens.OPEN_PARENS);
 		
 		ArgumentListParseResult<IFunctionParameter> params = null;
+		ArrayView<FunctionAttributes> fnAttributes = null;
 		IStatement frequire = null;
 		BodyStatement fbody = null;
 		IStatement fensure = null;
@@ -395,6 +403,8 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(params.parseBroken) {
 				break parsing;
 			}
+			
+			fnAttributes = parseFunctionAttributes();
 			
 			if(tryConsume(DeeTokens.SEMICOLON)) { 
 				fbody = connect(new EmptyBodyStatement(sr(lastLexElement.token)));
@@ -406,7 +416,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		
 		return connect(new DefinitionFunction(defUnitNoComments(defId), null,retType, arrayViewI(params.list), 
-			frequire, fensure, fbody, srToCursor(retType)));
+			fnAttributes, frequire, fensure, fbody, srToCursor(retType)));
 	}
 	
 	protected ArgumentListParseResult<IFunctionParameter> parseFunctionParams() {
@@ -489,14 +499,42 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 	}
 	
+	protected ArrayView<FunctionAttributes> parseFunctionAttributes() {
+		ArrayList<FunctionAttributes> attributes = null;
+		
+		while(true) {
+			FunctionAttributes attrib = FunctionAttributes.fromToken(lookAhead());
+			if(attrib != null) {
+				consumeLookAhead();
+			} else {
+				if(lookAhead() == DeeTokens.AT && lookAhead(1) == DeeTokens.IDENTIFIER) {
+					attrib = FunctionAttributes.fromCustomAttribId(lookAheadElement(1).token.source);
+					if(attrib != null) {
+						consumeLookAhead();
+						consumeLookAhead();
+					}
+				}
+				if(attrib == null)
+					break;
+			}
+			attributes = NewUtils.lazyInitArrayList(attributes);
+			attributes.add(attrib);
+		}
+		return arrayViewG(attributes);
+	}
+	
 	public BodyStatement parseBlockStatement() {
 		if(!tryConsume(DeeTokens.OPEN_BRACE))
 			return null;
 		int nodeStart = lastLexElement.getStartPos();
-		
-		ArrayList<IStatement> body = new ArrayList<IStatement>();
+		ArrayView<IStatement> body = parseStatements();
 		consumeExpectedToken(DeeTokens.CLOSE_BRACE); 
-		return connect(new BlockStatement(arrayViewI(body), true, srToCursor(nodeStart)));
+		return connect(new BlockStatement(body, true, srToCursor(nodeStart)));
+	}
+	
+	private ArrayView<IStatement> parseStatements() {
+		// TODO
+		return CoreUtil.blindCast(parseDeclDefs(DeeTokens.CLOSE_BRACE));
 	}
 	
 	/* ----------------------------------------- */

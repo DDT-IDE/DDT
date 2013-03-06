@@ -199,9 +199,9 @@ public class DeeParserTest extends CommonTestUtils {
 			children = parent.getChildren();
 		}
 		
-		assertTrue(children.length == expectedStructure.length);
+		assertTrue(children.length <= expectedStructure.length);
 		
-		for(int i = 0; i < expectedStructure.length; i++) {
+		for(int i = 0; i < children.length; i++) {
 			NamedNodeElement namedElement = expectedStructure[i];
 			ASTNeoNode astNode = children[i];
 			
@@ -214,6 +214,7 @@ public class DeeParserTest extends CommonTestUtils {
 			}
 			checkExpectedStructure(astNode.getChildren(), astNode, namedElement.children, true);
 		}
+		assertTrue(children.length == expectedStructure.length);
 	}
 	
 	public static String getExpectedNameAliases(String expectedNameRaw) {

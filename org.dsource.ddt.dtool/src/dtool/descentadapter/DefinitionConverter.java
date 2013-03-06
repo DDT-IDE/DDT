@@ -224,6 +224,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			elem.prot(),
 			rettype,
 			DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
+			null,
 			StatementConverterVisitor.convertStatement(elem.frequire, convContext),
 			StatementConverterVisitor.convertStatement(elem.fensure, convContext),
 			(BodyStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext),

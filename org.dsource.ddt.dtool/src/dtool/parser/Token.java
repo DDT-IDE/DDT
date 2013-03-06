@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.SourceRange;
 
-public class Token {
+public class Token implements ISourceRepresentation {
 	
 	public final DeeTokens type;
 	public final int startPos;
@@ -40,6 +40,7 @@ public class Token {
 		return new SourceRange(getStartPos(), getLength());
 	}
 	
+	@Override
 	public final String getSourceValue() {
 		return source;
 	}

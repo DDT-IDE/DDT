@@ -148,8 +148,13 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			} else if(mde.name.equals("parser") && mde.value.equals("AllowAnyErrors")){
 				allowAnyErrors = true;
 			} else if(mde.name.equals("parser") && mde.value.equals("IgnoreRest")){
-				expectedRemainingSource = parseSource.substring(mde.getSourceRange().getEndPos());
-				ignoreFurtherErrorMDs = true;
+				int endPos = mde.getSourceRange().getEndPos();
+				if(expectedRemainingSource == null) {
+					expectedRemainingSource = parseSource.substring(endPos);
+					ignoreFurtherErrorMDs = true;
+				} else {
+					assertTrue(expectedRemainingSource.length() >= parseSource.length() - endPos);
+				}
 			} else if(mde.name.equals("PARSE")){
 				parseRule = mde.value;
 				if(mde.associatedSource != null) {
