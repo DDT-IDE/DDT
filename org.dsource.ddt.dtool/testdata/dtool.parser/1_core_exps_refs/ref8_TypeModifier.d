@@ -12,7 +12,7 @@ DefVariable(RefTypeModifier(RefIdentifier) DefSymbol)
 #@ARG_CONTENT_CLEAN《
   ►#@TYPE_REFS● 
 ¤》
-#@BASE《const●immutable●shared●inout》
+#@BASE《#@TYPE_MODIFIERS》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@BASE•( #@ARG_CONTENT_OR_NO ) dummy;

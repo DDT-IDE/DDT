@@ -21,24 +21,6 @@ public enum ASTNodeTypes {
 	INVALID_SYNTAX,
 	NODE_LIST,
 	
-	//-- various Declarations
-	DECL_LINKAGE,
-	DECL_ALIGN,
-	DECL_PRAGMA,
-	DECL_PROTECTION,
-	DECL_BASIC_ATTRIB,
-	
-	DECL_MIXIN_STRING,
-	
-	/* ---------------------------------- */
-	
-	DEFINITION_VARIABLE,
-	DEFINITION_VAR_FRAGMENT,
-	INITIALIZER_EXP,
-//	INITIALIZER_ARRAY,
-//	INITIALIZER_STRUCT,
-//	INITIALIZER_VOID,
-
 	
 	/* ---------------------------------- */
 	
@@ -97,7 +79,32 @@ public enum ASTNodeTypes {
 	EXP_INFIX,
 	EXP_CONDITIONAL,
 	
+	/* -------------------  Declarations  ------------------- */
+	DECL_LINKAGE,
+	DECL_ALIGN,
+	DECL_PRAGMA,
+	DECL_PROTECTION,
+	DECL_BASIC_ATTRIB,
+	
+	DECL_MIXIN_STRING,
+	
 	/* ---------------------------------- */
+	
+	DEFINITION_VARIABLE,
+	DEFINITION_VAR_FRAGMENT,
+	INITIALIZER_EXP,
+//	INITIALIZER_ARRAY,
+//	INITIALIZER_STRUCT,
+//	INITIALIZER_VOID,
+	DEFINITION_FUNCTION,
+	FUNCTION_PARAMETER,
+	NAMELESS_PARAMETER,
+	VAR_ARGS_PARAMETER,
+	
+	/* -------------------  Statements  ------------------- */
+	
+	STATEMENT_EMTPY_BODY,
+	BLOCK_STATEMENT,
 	
 	;
 }

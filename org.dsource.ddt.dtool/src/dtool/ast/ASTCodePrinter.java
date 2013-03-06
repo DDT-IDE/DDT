@@ -41,6 +41,13 @@ public class ASTCodePrinter {
 		}
 	}
 	
+	public void append(boolean condition, String string) {
+		if(condition) {
+			assertNotNull(string);
+			sb.append(string);
+		}
+	}
+	
 	public void append(ASTNeoNode node) {
 		appendNode(node);
 	}

@@ -75,32 +75,6 @@ public class ASTReparseCheckSwitcher {
 			// and we dont know which one to parse TODO
 			return VOID;
 			
-		//-- various Declarations
-		case DECL_LINKAGE:
-			return reparseCheck(snippedParser.parseDeclarationExternLinkage(), node);
-		case DECL_ALIGN:
-			return reparseCheck(snippedParser.parseDeclarationAlign(), node);
-		case DECL_PRAGMA:
-			return reparseCheck(snippedParser.parseDeclarationPragma(), node);
-		case DECL_PROTECTION:
-			return reparseCheck(snippedParser.parseDeclarationProtection(), node);
-		case DECL_BASIC_ATTRIB:
-			return reparseCheck(snippedParser.parseDeclarationBasicAttrib(), node);
-		
-		
-		case DECL_MIXIN_STRING:
-			return reparseCheck(snippedParser.parseDeclarationMixinString(), node);
-		
-		/* ---------------------------------- */
-		
-		case DEFINITION_VARIABLE:
-			return reparseCheck(snippedParser.parseDeclaration(), node);
-		case DEFINITION_VAR_FRAGMENT:
-			return reparseCheck(snippedParser.parseVarFragment(), node);
-		case INITIALIZER_EXP:
-			InitializerExp initializerExp = (InitializerExp) node;
-			Resolvable initExpExp = initializerExp.exp;
-			return reparseCheck(snippedParser.parseInitializer(), node, initExpExp instanceof MissingExpression);
 		
 		/* ---------------------------------- */
 		
@@ -132,11 +106,9 @@ public class ASTReparseCheckSwitcher {
 		/* ---------------------------------- */
 		
 		case MISSING_EXPRESSION:
-			DeeParserTest.checkSourceEquality(node, "");
-			return VOID;
+			return simpleReparseCheck(node, "");
 		case EXP_REF_RETURN:
-			DeeParserTest.checkSourceEquality(node, "return");
-			return VOID;
+			return simpleReparseCheck(node, "return");
 		case EXP_THIS:
 		case EXP_SUPER:
 		case EXP_NULL:
@@ -177,9 +149,60 @@ public class ASTReparseCheckSwitcher {
 				SourceRange.srStartToEnd(mapArrayEntry.key.getStartPos(),
 					(mapArrayEntry.value == null ? mapArrayEntry.key : mapArrayEntry.value).getEndPos()));
 			return VOID;
+			
+		/* -------------------  Declarations  ------------------- */
+		case DECL_LINKAGE:
+			return reparseCheck(snippedParser.parseDeclarationExternLinkage(), node);
+		case DECL_ALIGN:
+			return reparseCheck(snippedParser.parseDeclarationAlign(), node);
+		case DECL_PRAGMA:
+			return reparseCheck(snippedParser.parseDeclarationPragma(), node);
+		case DECL_PROTECTION:
+			return reparseCheck(snippedParser.parseDeclarationProtection(), node);
+		case DECL_BASIC_ATTRIB:
+			return reparseCheck(snippedParser.parseDeclarationBasicAttrib(), node);
+		
+		
+		case DECL_MIXIN_STRING:
+			return reparseCheck(snippedParser.parseDeclarationMixinString(), node);
+		
+		/* ---------------------------------- */
+		
+		case DEFINITION_VARIABLE:
+			return reparseCheck(snippedParser.parseDeclaration(), node);
+		case DEFINITION_VAR_FRAGMENT:
+			return reparseCheck(snippedParser.parseVarFragment(), node);
+		case INITIALIZER_EXP:
+			InitializerExp initializerExp = (InitializerExp) node;
+			Resolvable initExpExp = initializerExp.exp;
+			return reparseCheck(snippedParser.parseInitializer(), node, initExpExp instanceof MissingExpression);
+	
+		case DEFINITION_FUNCTION:
+			return reparseCheck(snippedParser.parseDeclaration(), node);
+		case FUNCTION_PARAMETER:
+			return reparseCheck((ASTNeoNode) snippedParser.parseFunctionParameter(), node);
+		case NAMELESS_PARAMETER:
+			ASTNeoNode fnParam = (ASTNeoNode) snippedParser.parseFunctionParameter();
+			if(fnParam == null) {
+				return simpleReparseCheck(node, "");
+			}
+			return reparseCheck(fnParam, node);
+		case VAR_ARGS_PARAMETER:
+			return simpleReparseCheck(node, "...");
+		case STATEMENT_EMTPY_BODY:
+			return simpleReparseCheck(node, ";");
+			
+		case BLOCK_STATEMENT:
+			return reparseCheck(snippedParser.parseBlockStatement(), node);
+			
 		default:
 			throw assertFail();
 		}
+	}
+	
+	public Void simpleReparseCheck(ASTNeoNode node, String expectedCode) {
+		DeeParserTest.checkSourceEquality(node, expectedCode);
+		return VOID;
 	}
 	
 	public void prepNodeSnipedParser(ASTNeoNode node) {

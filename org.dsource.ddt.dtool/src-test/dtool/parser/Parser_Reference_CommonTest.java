@@ -155,7 +155,7 @@ public abstract class Parser_Reference_CommonTest extends Parser__CommonTest {
 	}
 	protected void checkTestAF(final String nodeCode, IASTNode neoNode) {
 		DefinitionFunction fn = downCast(neoNode);
-		checkTestA(nodeCode, fn.fbody.getChildren()[0]);
+		checkTestA(nodeCode, fn.fnBody.getChildren()[0]);
 	}
 	
 	protected void checkTestExp(final String nodeCode, IASTNode neoNode) {

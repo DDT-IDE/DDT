@@ -58,7 +58,7 @@ public class TypeFunction extends CommonRefNative {
 	public String toStringAsElement() {
 		return Reference.maybeNullReference(retType).toStringAsElement() 
 				+ " function"  
-				+ DefinitionFunction.toStringParametersForSignature(params, varargs);
+				+ DefinitionFunction.toStringParametersForSignature(params/*, varargs*/);
 	}
 	
 	

@@ -458,15 +458,16 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 			param = DefinitionConverter.convertNamelessParameter(element.type, convContext);
 		} else {
 			DefUnitTuple dudt = new DefUnitTuple(
-					new SourceRange(element.type.getStartPos(), element.ident.getEndPos() - element.type.getStartPos()),
-					DefinitionConverter.convertIdToken(element.ident), 
-					null
+				new SourceRange(element.type.getStartPos(), element.ident.getEndPos() - element.type.getStartPos()),
+				DefinitionConverter.convertIdToken(element.ident), 
+				null
 			);
 			
 			param = new FunctionParameter(
-				dudt, 0,
-				ReferenceConverter.convertType(element.type, convContext),
-				null
+				null, 
+				ReferenceConverter.convertType(element.type, convContext), 
+				dudt,
+				null, false, null
 			);
 		}
 		

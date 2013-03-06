@@ -1,12 +1,15 @@
 package dtool.ast.definitions;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
-import dtool.ast.expressions.Resolvable;
+import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.util.ArrayView;
 
 
 /** 
@@ -15,16 +18,23 @@ import dtool.ast.references.Reference;
  */
 public class NamelessParameter extends ASTNeoNode implements IFunctionParameter {
 	
+	public final FnParameterAttributes paramAttribs;
 	public final Reference type;
-	public final int storageClass;
-	public final Resolvable defaultValue;
+	public final Expression defaultValue;
+	public final boolean isVariadic;
 	
-	public NamelessParameter(Reference type, int storageClass, Resolvable defaultValue, SourceRange sourceRange) {
-		assertNotNull(type);
-		initSourceRange(sourceRange);
-		this.type = parentize(type);
-		this.storageClass = storageClass;
+	public NamelessParameter(ArrayView<FunctionParamAttribKinds> attribList, Reference type, Expression defaultValue, 
+		boolean isVariadic, SourceRange sourceRange) {
+		this.paramAttribs = FnParameterAttributes.create(attribList); 
+		this.type = parentize(assertNotNull_(type));
 		this.defaultValue = parentize(defaultValue);
+		this.isVariadic = isVariadic;
+		initSourceRange(sourceRange);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.NAMELESS_PARAMETER;
 	}
 	
 	@Override
@@ -35,6 +45,19 @@ public class NamelessParameter extends ASTNeoNode implements IFunctionParameter 
 			TreeVisitor.acceptChildren(visitor, defaultValue);
 		}
 		visitor.endVisit(this);	
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		paramAttribs.toStringAsCode(cp);
+		cp.append(type);
+		cp.appendNode(" = ", defaultValue);
+		cp.append(isVariadic, "...");
+	}
+	
+	@Override
+	public boolean isVariadic() {
+		return isVariadic;
 	}
 	
 	@Override

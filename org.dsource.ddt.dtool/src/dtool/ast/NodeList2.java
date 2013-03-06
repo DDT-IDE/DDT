@@ -29,9 +29,7 @@ public class NodeList2 extends ASTNeoNode {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		for (ASTNeoNode node : nodes) {
-			cp.appendNode(node, "\n");
-		}
+		cp.appendNodeList(nodes, "\n", true);
 	}
 	
 }

@@ -95,7 +95,7 @@ public class SimpleParser {
 				return i;
 			}
 		}
-		return EOF;
+		return -1;
 	}
 	
 	public final void consume(String string) {

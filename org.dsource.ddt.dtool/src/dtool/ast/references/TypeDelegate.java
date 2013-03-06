@@ -54,7 +54,7 @@ public class TypeDelegate extends CommonRefNative {
 	public String toStringAsElement() {
 		return Reference.maybeNullReference(retType).toStringAsElement() 
 				+ " delegate"  
-				+ DefinitionFunction.toStringParametersForSignature(params, varargs);
+				+ DefinitionFunction.toStringParametersForSignature(params/*, varargs*/);
 	}
 	
 	public static class IntrinsicDelegate extends NativeDefUnit {

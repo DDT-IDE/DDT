@@ -35,7 +35,7 @@ import foo, #error:EXP_ID ;
 int    foo, #error:EXP_ID ;
 
 import foo : #error:EXP_ID , foo2 ;
-int    foo = #error:EXPRULE_INITIALIZER , foo2 ;
+int    foo = #error:EXPRULE_Initializer , foo2 ;
 
 #AST_STRUCTURE_EXPECTED:
 DeclarationImport(ImportContent(?) ImportContent(?))
@@ -88,7 +88,7 @@ InvalidDeclaration(RefIndexing(RefIdentifier ExpLiteralInteger))  InvalidDeclara
 InvalidDeclaration(RefIndexing(RefIdentifier RefPrimitive))       InvalidDeclaration(RefIdentifier)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  var Initializer
-var xx = #error:EXPRULE_INITIALIZER ;
+var xx = #error:EXPRULE_Initializer ;
 
 #AST_STRUCTURE_EXPECTED:
 DefinitionVariable(? DefSymbol InitializerExp(MissingExpression))

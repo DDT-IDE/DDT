@@ -41,6 +41,7 @@ import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.Reference;
+import dtool.ast.statements.BodyStatement;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.parser.DeeTokens;
 import dtool.parser.Token;
@@ -172,18 +173,21 @@ public class DefinitionConverter extends BaseDmdConverter {
 	}
 	
 	public static NamelessParameter convertNamelessParameter(Type type, ASTConversionContext convContext) {
-		return new NamelessParameter(ReferenceConverter.convertType(type, convContext), 0, null, sourceRange(type));
+		return new NamelessParameter(null,
+			ReferenceConverter.convertType(type, convContext), null, false, sourceRange(type));
 	}
 
 	public static NamelessParameter convertNamelessParameter(Argument elem, IdentifierExp ident,
 			@SuppressWarnings("unused") ASTConversionContext convContext) {
 		assertTrue(!(ident instanceof TemplateInstanceWrapper));
-		return new NamelessParameter(ReferenceConverter.convertToRefIdentifier(ident), 0, null, sourceRange(elem));
+		return new NamelessParameter(null,
+			ReferenceConverter.convertToRefIdentifier(ident), null, false, sourceRange(elem));
 	}
 
 	public static NamelessParameter convertNamelessParameter(Argument elem, ASTConversionContext convContext) {
-		return new NamelessParameter(ReferenceConverter.convertType(elem.type, convContext), elem.storageClass, 
-				ExpressionConverter.convert(elem.defaultArg, convContext), sourceRange(elem));
+		return new NamelessParameter(null, 
+			ReferenceConverter.convertType(elem.type, convContext),  
+				ExpressionConverter.convert(elem.defaultArg, convContext), false, sourceRange(elem));
 	}
 	
 	public static boolean isSingleSymbolDeclaration(ASTDmdNode parent) {
@@ -220,10 +224,10 @@ public class DefinitionConverter extends BaseDmdConverter {
 			elem.prot(),
 			rettype,
 			DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
-			convertVarArgs(elemTypeFunc.varargs),
 			StatementConverterVisitor.convertStatement(elem.frequire, convContext),
 			StatementConverterVisitor.convertStatement(elem.fensure, convContext),
-			StatementConverterVisitor.convertStatement(elem.fbody, convContext)
+			(BodyStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext),
+			null
 		);
 		
 		return definitionFunction;
@@ -249,10 +253,11 @@ public class DefinitionConverter extends BaseDmdConverter {
 				);
 				
 				return new FunctionParameter(
-					dudt, 
-					elem.storageClass,
+					null, 
 					type,
-					ExpressionConverter.convert(elem.defaultArg, convContext)
+					dudt,
+					ExpressionConverter.convert(elem.defaultArg, convContext),
+					false, null
 				);
 			} else {
 				// strange case, likely from a syntax error

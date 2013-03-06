@@ -1,33 +1,43 @@
 package dtool.ast.definitions;
 
+import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
-import dtool.ast.expressions.Resolvable;
+import dtool.ast.SourceRange;
+import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.util.ArrayView;
 
-// TODO: Need to test this a lot more, especially with many other kinds of parameters
 public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	
+	public final FnParameterAttributes paramAttribs;
 	public final Reference type;
-	public final int storageClass;
-	public final Resolvable defaultValue;
+	public final Expression defaultValue;
+	public final boolean isVariadic;
 	
-	public FunctionParameter(DefUnitTuple dudt, int storageClass, Reference type, Resolvable defaultValue) {
+	public FunctionParameter(ArrayView<FunctionParamAttribKinds> attribList, Reference type, DefUnitTuple dudt, 
+		Expression defaultValue, boolean isVariadic, SourceRange sourceRange) {
 		super(dudt);
-		// assertNotNull(this.type);
-		this.storageClass = storageClass;
-		this.type = parentize(type);
+		this.paramAttribs = FnParameterAttributes.create(attribList);
+		this.type = parentize(assertNotNull_(type));
 		this.defaultValue = parentize(defaultValue);
+		assertTrue(!isVariadic || defaultValue == null);
+		this.isVariadic = isVariadic;
+		initSourceRange(sourceRange);
 	}
 	
 	@Override
-	public EArcheType getArcheType() {
-		return EArcheType.Variable;
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.FUNCTION_PARAMETER;
 	}
 	
 	@Override
@@ -40,6 +50,25 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 			TreeVisitor.acceptChildren(visitor, defaultValue);
 		}
 		visitor.endVisit(this);	
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		paramAttribs.toStringAsCode(cp);
+		cp.appendNode(type, " ");
+		cp.append(defname);
+		cp.appendNode(" = ", defaultValue);
+		cp.append(isVariadic, "...");
+	}
+	
+	@Override
+	public boolean isVariadic() {
+		return isVariadic;
+	}
+	
+	@Override
+	public EArcheType getArcheType() {
+		return EArcheType.Variable;
 	}
 	
 	@Override

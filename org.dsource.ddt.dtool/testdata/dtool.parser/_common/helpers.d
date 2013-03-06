@@ -13,12 +13,16 @@
 #@BkCLOSE_OR_NO【]●#error(EXP_CLOSE_BRACKET) /*No close sq bracket */ 】
 #@BrCLOSE_OR_NO【}●#error(EXP_CLOSE_BRACE) /*No close brace */ 】
 
-#@SEMICOLON_OR_NO【#error(EXP_SEMICOLON)●;】
+#@SEMICOLON_OR_NO【;●#error(EXP_SEMICOLON)】
 #@INVALID_DECL__NO_SEMICOLON【】
-
 
 #@ARG_OR_NO《
   ►#?AST_STRUCTURE_EXPECTED!【#@EXP_ASSIGN__LITE , ● #@EXP_ASSIGN__LITE】● 
   ►#?AST_STRUCTURE_EXPECTED!【#@NO_EXP , ● #@NO_EXP】● 
   ►#?AST_STRUCTURE_EXPECTED!【/* NO EXTRA ARG */ ● 】●
 ¤》
+
+#@TYPE_MODIFIERS《const●immutable●shared●inout》
+
+
+#@EB《►#?AST_STRUCTURE_EXPECTED!【; ● EmptyBodyStatement 】》

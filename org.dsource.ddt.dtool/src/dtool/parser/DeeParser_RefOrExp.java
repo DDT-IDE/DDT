@@ -62,13 +62,13 @@ import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefIndexing;
-import dtool.ast.references.RefTypeModifier;
-import dtool.ast.references.RefTypeModifier.TypeModifierKinds;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.RefTypeDynArray;
+import dtool.ast.references.RefTypeModifier;
+import dtool.ast.references.RefTypeModifier.TypeModifierKinds;
 import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
@@ -97,21 +97,23 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	
 	/* --------------------  reference parsing  --------------------- */
 	
-	public static String REFERENCE_RULE = "Reference";
+	public static ParseRuleDescription RULE_REFERENCE = new ParseRuleDescription("Reference");
 	
 	public Reference parseReference() {
 		return parseReference_begin(false).ref;
 	}
 	
-	public Reference parseReference_WithMissing(boolean reportMissingError) {
+	public Reference parseReference_ToMissing(boolean reportMissingError) {
 		Reference ref = parseReference();
-		if(ref == null) {
-			if(reportMissingError) {
-				reportErrorExpectedRule(REFERENCE_RULE);
-			}
-			return createMissingRefIdentifier();
+		return ref != null ? ref : createMissingReference(reportMissingError);
+	}
+	
+	public Reference createMissingReference(boolean reportMissingError) {
+		if(reportMissingError) {
+			reportErrorExpectedRule(RULE_REFERENCE);
 		}
-		return ref;
+		LexElement id = createExpectedToken(DeeTokens.IDENTIFIER);
+		return connect(new RefIdentifier(idTokenToString(id), sr(id.token)));
 	}
 	
 	public Reference parseReference(boolean expressionContext) {
@@ -125,10 +127,15 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		public RefParseResult(boolean balanceBroken, Reference ref) {
 			this.ref = ref;
 			this.balanceBroken = balanceBroken;
+			assertTrue(!(balanceBroken && ref == null));
 		}
 		public RefParseResult(Reference ref) {
 			this(false, ref);
 		}
+	}
+	
+	protected RefParseResult parseReference_begin() {
+		return parseReference_begin(false);
 	}
 	
 	protected RefParseResult parseReference_begin(boolean parsingExp) {
@@ -164,7 +171,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	}
 	
 	protected RefIdentifier parseRefIdentifier() {
-		LexElement id = tryConsumeIdentifier();
+		LexElement id = consumeExpectedIdentifier();
 		return connect(new RefIdentifier(idTokenToString(id), sr(id.token)));
 	}
 	
@@ -209,7 +216,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		Reference ref = null;
 		boolean balanceBroken = true;
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
-			ref = parseReference_WithMissing(true); 
+			ref = parseReference_ToMissing(true); 
 			balanceBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
 		}
 		return new RefParseResult(balanceBroken, connect(new RefTypeModifier(modKind, ref, srToCursor(nodeStart))));
@@ -261,7 +268,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 				} else {
 					singleArg = parseSimpleLiteral();
 					if(singleArg == null) {
-						singleArg = createMissingExpression(true, TEMPLATE_SINGLE_ARG); 
+						singleArg = createMissingExpression(true, RULE_TPL_SINGLE_ARG); 
 					}
 				}
 			}
@@ -294,10 +301,10 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	
 	/* ----------------------------------------- */
 	
-	public static String EXPRESSION_RULE = "Expression";
-	public static String REF_OR_EXP_RULE = "Reference or Expression";
+	public static ParseRuleDescription RULE_EXPRESSION = new ParseRuleDescription("Expression");
+	public static ParseRuleDescription RULE_REF_OR_EXP = new ParseRuleDescription("Reference or Expression");
 	
-	public static String TEMPLATE_SINGLE_ARG = "TemplateSingleArgument";
+	public static ParseRuleDescription RULE_TPL_SINGLE_ARG = new ParseRuleDescription("TemplateSingleArgument");
 	
 	public static int ANY_OPERATOR = 0;
 
@@ -342,15 +349,15 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	}
 	
 	protected Expression nullExpToMissing(Expression exp, boolean reportMissingExpError) {
-		return exp != null ? exp : createMissingExpression(reportMissingExpError, EXPRESSION_RULE);
+		return exp != null ? exp : createMissingExpression(reportMissingExpError, RULE_EXPRESSION);
 	}
 	protected Resolvable nullRoEToMissing(Resolvable exp, boolean reportMissingExpError) {
-		return exp != null ? exp : createMissingExpression(reportMissingExpError, REF_OR_EXP_RULE);
+		return exp != null ? exp : createMissingExpression(reportMissingExpError, RULE_REF_OR_EXP);
 	}
 	
-	protected Expression createMissingExpression(boolean reportMissingExpError, String expectedRule) {
+	protected Expression createMissingExpression(boolean reportMissingExpError, ParseRuleDescription expectedRule) {
 		if(reportMissingExpError) {
-			reportError(ParserErrorTypes.EXPECTED_RULE, expectedRule, false);
+			reportErrorExpectedRule(expectedRule);
 		}
 		int nodeStart = lastLexElement.getEndPos();
 		return connect(new MissingExpression(srToCursor(nodeStart)));
@@ -646,7 +653,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 				canBeRef = false;
 				RefOrExpParse refOrExp = parseUnaryExpression(canBeRef);
 				if(refOrExp.mode == null) {
-					reportErrorExpectedRule(EXPRESSION_RULE);
+					reportErrorExpectedRule(RULE_EXPRESSION);
 				}
 				
 				return expConnect(new ExpPrefix(prefixOpType, refOrExp.exp, srToCursor(prefixExpToken)));
@@ -881,7 +888,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			if(opType == InfixOpType.CONDITIONAL) {
 				middleExp = parseExpression();
 				if(middleExp == null) {
-					reportErrorExpectedRule(EXPRESSION_RULE);
+					reportErrorExpectedRule(RULE_EXPRESSION);
 				}
 				if(consumeExpectedToken(DeeTokens.COLON) == null) {
 					break parsing;
@@ -895,7 +902,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 				if(roeResult.mode == RefOrExpMode.REF_OR_EXP) {
 					roeResult.mode = RefOrExpMode.REF;
 				} else {
-					reportErrorExpectedRule(EXPRESSION_RULE);
+					reportErrorExpectedRule(RULE_EXPRESSION);
 				}
 			} else {
 				roeResult.updateRefOrExpToExpression(rightExpResult.mode != RefOrExpMode.EXP, leftExp);
@@ -1213,7 +1220,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 					break parsing;
 				}
 			}
-			type = parseReference_WithMissing(true);
+			type = parseReference_ToMissing(true);
 			if(lastLexElement.isMissingElement()) {
 				break parsing;
 			}
@@ -1241,7 +1248,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			
 			qualifier = parseCastQualifier();
 			if(qualifier == null) {
-				type = parseReference_WithMissing(false);
+				type = parseReference_ToMissing(false);
 			}
 			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null)
 				break parsing;

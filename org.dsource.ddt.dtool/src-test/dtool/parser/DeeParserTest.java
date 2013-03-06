@@ -103,10 +103,12 @@ public class DeeParserTest extends CommonTestUtils {
 		DeeParser deeParser = new DeeTestsParser(parseSource);
 		if(parseRule == null) {
 			result = new DeeParserResult(deeParser.parseModule(), deeParser.errors);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.EXPRESSION_RULE)) {
+		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_EXPRESSION.name)) {
 			result = new DeeParserResult(deeParser.parseExpression(), deeParser.errors);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.REFERENCE_RULE)) {
+		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_REFERENCE.name)) {
 			result = new DeeParserResult(deeParser.parseReference(), deeParser.errors);
+		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_DECLARATION.name)) {
+			result = new DeeParserResult(deeParser.parseDeclaration(), deeParser.errors);
 		} else if(parseRule.equals("DeclarationImport")) {
 			result = new DeeParserResult(deeParser.parseImportDeclaration(), deeParser.errors);
 		} else {
@@ -227,7 +229,7 @@ public class DeeParserTest extends CommonTestUtils {
 			return MapArrayLiteralKeyValue.class.getSimpleName();
 		}
 		
-		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var)", 1, "Definition");
+		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var|Function)", 1, "Definition");
 	}
 	
 	/* ============= Error and Source Range Checkers ============= */

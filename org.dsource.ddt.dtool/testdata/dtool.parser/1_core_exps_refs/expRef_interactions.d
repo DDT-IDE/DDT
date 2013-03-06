@@ -19,7 +19,7 @@ ExpTypeId(
   #@《●)●))●RefTypePointer(RefIdentifier) )●)》(REF_END)
 )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test ROE to reference, with exp extra
-#PARSE(EXPRESSION)        typeid(#@REFS_UNAMBIG #@REST《 ● * #parser(IgnoreRest) #error(EXP_CLOSE_PARENS) 42 》 )
+#PARSE(EXPRESSION)        typeid(#@REFS_UNAMBIG #@REST《 ● * #error(EXP_CLOSE_PARENS) #parser(IgnoreRest) 42 》 )
 #AST_STRUCTURE_EXPECTED:
 ExpTypeId( 
   #@《 ●RefTypePointer( 》(REST) #@REFS_UNAMBIG #@《 ●) 》(REST)

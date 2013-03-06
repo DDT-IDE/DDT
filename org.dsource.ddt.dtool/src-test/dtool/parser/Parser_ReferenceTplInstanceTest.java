@@ -70,7 +70,7 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 		MixinContainer mixin = downCast(module.getChildren()[0]);
 		DefinitionFunction fn = downCast(module.getChildren()[0+2]);
 		checkReference(mixin.type, refCodeFragment);
-		mixin = downCast(fn.fbody.getChildren()[0]);
+		mixin = downCast(fn.fnBody.getChildren()[0]);
 		checkReference(mixin.type, refCodeFragment);
 		
 		checkNamedMixin(refCodeFragment, module);
@@ -80,7 +80,7 @@ public class Parser_ReferenceTplInstanceTest extends Parser_Reference_CommonTest
 		NamedMixin namedMixin = downCast(module.getChildren()[1]);
 		DefinitionFunction fn = downCast(module.getChildren()[1+2]);
 		checkReference(namedMixin.type, refCodeFragment);
-		namedMixin = downCast(fn.fbody.getChildren()[0]);
+		namedMixin = downCast(fn.fnBody.getChildren()[0]);
 		checkReference(namedMixin.type, refCodeFragment);
 	}
 	

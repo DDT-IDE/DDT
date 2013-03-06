@@ -194,11 +194,11 @@ public class AbstractParser {
 		return consumeLookAhead();
 	}
 	
-	public LexElement consumeIgnoredTokens() {
-		return consumeIgnoredTokens(null, false);
+	public LexElement consumeIgnoreTokens() {
+		return consumeIgnoreTokens(null, false);
 	}
 	
-	public LexElement consumeIgnoredTokens(DeeTokens expectedToken, boolean createMissingElement) {
+	public LexElement consumeIgnoreTokens(DeeTokens expectedToken, boolean createMissingElement) {
 		LexElement la = lookAheadElement();
 		
 		if(createMissingElement) {
@@ -243,10 +243,11 @@ public class AbstractParser {
 	}
 	
 	protected final Token consumeIf(DeeTokens tokenType) {
-		if(lookAhead() == tokenType) {
-			return consumeLookAhead();
-		}
-		return null;
+		return lookAhead() == tokenType ? consumeLookAhead() : null;
+	}
+	
+	protected final LexElement consumeElementIf(DeeTokens tokenType) {
+		return lookAhead() == tokenType ? consumeInput() : null;
 	}
 	
 	protected final boolean tryConsume(DeeTokens tokenType) {
@@ -272,7 +273,7 @@ public class AbstractParser {
 	
 	protected final LexElement createExpectedToken(DeeTokens expectedTokenType) {
 		assertTrue(lookAhead() != expectedTokenType);
-		return consumeIgnoredTokens(expectedTokenType, true);
+		return consumeIgnoreTokens(expectedTokenType, true);
 	}
 	
 	protected final LexElement consumeExpectedToken(DeeTokens expectedTokenType, boolean createMissingToken) {
@@ -280,11 +281,11 @@ public class AbstractParser {
 			return consumeInput();
 		} else {
 			reportErrorExpectedToken(expectedTokenType);
-			return createMissingToken ? consumeIgnoredTokens(expectedTokenType, true) : null;
+			return createMissingToken ? consumeIgnoreTokens(expectedTokenType, true) : null;
 		}
 	}
 	
-	protected LexElement tryConsumeIdentifier() {
+	protected LexElement consumeExpectedIdentifier() {
 		return consumeExpectedToken(DeeTokens.IDENTIFIER, true);
 	}
 	
@@ -294,12 +295,20 @@ public class AbstractParser {
 		reportError(ParserErrorTypes.EXPECTED_TOKEN, expected, true);
 	}
 	
-	protected void reportErrorExpectedRule(String expectedRule) {
-		reportError(ParserErrorTypes.EXPECTED_RULE, expectedRule, false);
+	public static class ParseRuleDescription {
+		public final String name;
+		
+		public ParseRuleDescription(String name) {
+			this.name = name;
+		}
 	}
 	
-	protected void reportSyntaxError(String expectedRule) {
-		reportError(ParserErrorTypes.SYNTAX_ERROR, expectedRule, false);
+	protected void reportErrorExpectedRule(ParseRuleDescription expectedRule) {
+		reportError(ParserErrorTypes.EXPECTED_RULE, expectedRule.name, false);
+	}
+	
+	protected void reportSyntaxError(ParseRuleDescription expectedRule) {
+		reportError(ParserErrorTypes.SYNTAX_ERROR, expectedRule.name, false);
 	}
 	
 	protected void reportError(ParserErrorTypes parserError, Object msgData, boolean missingToken) {
@@ -373,10 +382,10 @@ public class AbstractParser {
 		return ArrayView.create((T[]) ArrayUtil.createFrom(list, ASTNeoNode.class));
 	}
 	
-	public static ArrayView<String> arrayViewS(Collection<String> list) {
+	public static <T> ArrayView<T> arrayViewG(Collection<? extends T> list) {
 		if(list == null)
 			return null;
-		return ArrayView.create(ArrayUtil.createFrom(list, String.class));
+		return ArrayView.create((T[]) ArrayUtil.createFrom(list, Object.class));
 	}
 	
 }

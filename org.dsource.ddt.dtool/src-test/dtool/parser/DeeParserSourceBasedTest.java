@@ -149,6 +149,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				allowAnyErrors = true;
 			} else if(mde.name.equals("parser") && mde.value.equals("IgnoreRest")){
 				expectedRemainingSource = parseSource.substring(mde.getSourceRange().getEndPos());
+				ignoreFurtherErrorMDs = true;
 			} else if(mde.name.equals("PARSE")){
 				parseRule = mde.value;
 				if(mde.associatedSource != null) {
@@ -254,15 +255,15 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	
 	public String getExpectedRuleName(String errorParam) {
 		if(errorParam.equals("decl")) {
-			errorParam = DeeParser.DECLARATION_RULE;
+			errorParam = DeeParser.RULE_DECLARATION.name;
 		} else if(errorParam.equals("exp")) {
-			errorParam = DeeParser.EXPRESSION_RULE;
+			errorParam = DeeParser.RULE_EXPRESSION.name;
 		} else if(errorParam.equals("ref")) {
-			errorParam = DeeParser.REFERENCE_RULE;
+			errorParam = DeeParser.RULE_REFERENCE.name;
 		} else if(errorParam.equals("RoE")) {
-			errorParam = DeeParser.REF_OR_EXP_RULE;
+			errorParam = DeeParser.RULE_REF_OR_EXP.name;
 		} else if(errorParam.equals("TplArg")) {
-			errorParam = DeeParser.TEMPLATE_SINGLE_ARG;
+			errorParam = DeeParser.RULE_TPL_SINGLE_ARG.name;
 		}
 		return errorParam;
 	}
@@ -307,7 +308,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 	protected NamedNodeElement[] processExpectedStructure(String source) {
 		SimpleParser parser = new SimpleParser(source);
 		NamedNodeElement[] namedElements = readNamedElementsList(parser);
-		assertTrue(parser.lookaheadIsEOF());
+		assertTrue(parser.lookaheadIsEOF() || parser.lookAhead() == '$');
 		return namedElements;
 	}
 	
@@ -333,15 +334,14 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				}
 				if(parser.tryConsume("(")) {
 					children = readNamedElementsList(parser);
-					parser.seekWhiteSpace().consume(")");
+					parser.seekWhiteSpace();
+					assertTrue(parser.tryConsume(")") || parser.lookAhead() == '$');
 				} else {
 					children = new NamedNodeElement[0];
 				}
 			}
 			elements.add(new NamedNodeElement(id, children));
 		}
-		assertTrue(parser.lookaheadIsEOF() || parser.lookAhead() == ')');
-		
 		return ArrayUtil.createFrom(elements, NamedNodeElement.class);
 	}
 	

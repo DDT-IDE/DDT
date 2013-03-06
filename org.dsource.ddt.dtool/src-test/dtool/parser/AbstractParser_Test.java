@@ -83,14 +83,14 @@ public class AbstractParser_Test extends CommonTestUtils {
 		assertEquals(parser.lookAheadElement(2).token.source, "ef");
 		assertTrue(parser.lastNonMissingLexElement == parser.lastLexElement);
 		assertTrue(parser.lastNonMissingLexElement.isMissingElement() == false);
-		parser.consumeIgnoredTokens();
+		parser.consumeIgnoreTokens();
 		assertTrue(parser.lastNonMissingLexElement == parser.lastLexElement);
 		assertTrue(parser.lastNonMissingLexElement.isMissingElement() == false);
 		
 		parser.consumeInput();
 		parser.consumeInput();
 		assertEquals(parser.lookAheadElement(0).token.source, "ef");
-		parser.consumeIgnoredTokens();
+		parser.consumeIgnoreTokens();
 		assertTrue(parser.lastNonMissingLexElement == parser.lastLexElement);
 		assertTrue(parser.lastNonMissingLexElement.isMissingElement() == false);
 		

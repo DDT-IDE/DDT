@@ -1,9 +1,15 @@
 package dtool.ast.statements;
 
+import static dtool.util.NewUtils.assertNotNull_;
+
 import java.util.Iterator;
 import java.util.List;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
@@ -15,26 +21,40 @@ import dtool.util.ArrayView;
 /**
  * A compound statement. Allways introduces a new Scope.
  */
-public class BlockStatement extends Statement implements IScopeNode {
+public class BlockStatement extends BodyStatement implements IScopeNode {
 	
 	public final ArrayView<IStatement> statements;
-	public boolean hasCurlyBraces; // syntax-structural?
+	public final boolean hasCurlyBraces;
 	
 	public BlockStatement(ArrayView<IStatement> statements, boolean hasCurlyBraces, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.statements = parentizeI(statements);
+		this.statements = parentizeI(assertNotNull_(statements));
 		this.hasCurlyBraces = hasCurlyBraces;
+	}
+	
+	public final ArrayView<ASTNeoNode> getStatements_asNodes() {
+		return CoreUtil.<ArrayView<ASTNeoNode>>blindCast(statements);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.BLOCK_STATEMENT;
 	}
 	
 	@Override
 	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
+		if (visitor.visit(this)) {
 			TreeVisitor.acceptChildren(visitor, statements);
 		}
 		visitor.endVisit(this);
 	}
 	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(hasCurlyBraces, "{\n");
+		cp.appendNodeList(getStatements_asNodes(), "\n", true);
+		cp.append(hasCurlyBraces, "}\n");
+	}
 	
 	@Override
 	public Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {

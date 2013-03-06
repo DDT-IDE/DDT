@@ -131,4 +131,11 @@ public class NewUtils {
 		}
 	}
 	
+	public static <T> ArrayList<T> lazyInitArrayList(ArrayList<T> arrayList) {
+		if(arrayList == null) {
+			return new ArrayList<T>();
+		}
+		return arrayList;
+	}
+	
 }

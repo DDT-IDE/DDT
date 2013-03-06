@@ -42,8 +42,8 @@ DefVariable(* DefSymbol InitializerExp(*) DefVarFragment(DefSymbol) DefVarFragme
 #@TYPE_REFS #@PRX1 #error:EXP_IDENTIFIER ;
 
 #@TYPE_REFS #@PRX1 fooA #error:EXP_SEMICOLON  #@BREAK
-#@TYPE_REFS #@PRX1 fooB = #error:EXPRULE_INITIALIZER #error:EXP_SEMICOLON  #@BREAK
-#@TYPE_REFS #@PRX1 fooD = #error:EXPRULE_INITIALIZER ;
+#@TYPE_REFS #@PRX1 fooB = #error:EXPRULE_Initializer #error:EXP_SEMICOLON  #@BREAK
+#@TYPE_REFS #@PRX1 fooD = #error:EXPRULE_Initializer ;
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:

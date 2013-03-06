@@ -58,3 +58,12 @@ foo3[#@EXPS__NO_REFS__NO_AMBIGS   #error:EXP_CLOSE_BRACKET
 InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_REFS__NO_AMBIGS))  ?(DefinitionVariable(RefPrimitive DefSymbol))
 InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_REFS__NO_AMBIGS))  DeclarationEmpty
 InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_REFS__NO_AMBIGS))  
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+foo1[ #error:EXP_CLOSE_BRACKET public int dummy ;
+foo2[ #error:EXP_CLOSE_BRACKET ;
+foo3[ #error:EXP_CLOSE_BRACKET 
+
+#AST_STRUCTURE_EXPECTED:
+InvalidDeclaration(RefTypeDynArray(RefIdentifier))  DeclarationProtection(DefinitionVariable(* *))
+InvalidDeclaration(RefTypeDynArray(RefIdentifier))  DeclarationEmpty
+InvalidDeclaration(RefTypeDynArray(RefIdentifier))  
