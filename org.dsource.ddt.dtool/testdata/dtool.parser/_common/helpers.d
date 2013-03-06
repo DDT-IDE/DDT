@@ -3,6 +3,8 @@
   #@NO_EXP《#?AST_STRUCTURE_EXPECTED!【/*MISSING_EXP*/ #error(EXPRULE_exp)●MissingExpression】》
 #@NULL_EXP《#?AST_STRUCTURE_EXPECTED!【/*MISSING_EXP*/ #error(EXPRULE_exp)● 】》
 
+#@NO_ID《#?AST_STRUCTURE_EXPECTED!【/*MISSING_ID*/ #error(EXP_ID)●RefIdentifier】》
+
 
 #@NO_ROE《#?AST_STRUCTURE_EXPECTED!【/*MISSING_RoE*/ #error(EXPRULE_RoE)●MissingExpression】》
 #@NO_REF《#?AST_STRUCTURE_EXPECTED!【/*MISSING_REF*/ #error(EXPRULE_ref)● RefIdentifier】》

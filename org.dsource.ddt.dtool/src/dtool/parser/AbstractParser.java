@@ -233,15 +233,6 @@ public class AbstractParser {
 	
 	/* ---- Input consume helpers ---- */
 	
-	public boolean lookAheadIsType(DeeTokens... tokens) {
-		for (int i = 0; i < tokens.length; i++) {
-			if(lookAhead() == tokens[i]) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	protected final Token consumeIf(DeeTokens tokenType) {
 		return lookAhead() == tokenType ? consumeLookAhead() : null;
 	}

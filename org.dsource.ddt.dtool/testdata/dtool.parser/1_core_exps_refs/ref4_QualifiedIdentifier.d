@@ -16,6 +16,10 @@ InvalidDeclaration( RefQualified(RefIdentifier RefIdentifier) )
 DefVariable(RefPrimitive DefSymbol)
 InvalidDeclaration( RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier) )
 DefVariable(RefPrimitive DefSymbol)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(REFERENCE)         foo. #@NO_ID #parser(IgnoreRest) .bar
+#AST_STRUCTURE_EXPECTED:  RefQualified(RefIdentifier #@NO_ID)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)        #@TYPE_REFS_QUALIFIER•.foo
 #AST_STRUCTURE_EXPECTED: RefQualified(#@TYPE_REFS_QUALIFIER RefIdentifier)

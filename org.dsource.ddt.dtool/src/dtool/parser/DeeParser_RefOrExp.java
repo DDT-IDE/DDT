@@ -122,12 +122,12 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	
 	protected static class RefParseResult { 
 		public final Reference ref;
-		public final boolean balanceBroken;
+		public final boolean parseBroken;
 		
-		public RefParseResult(boolean balanceBroken, Reference ref) {
+		public RefParseResult(boolean parseBroken, Reference ref) {
 			this.ref = ref;
-			this.balanceBroken = balanceBroken;
-			assertTrue(!(balanceBroken && ref == null));
+			this.parseBroken = parseBroken;
+			assertTrue(!(parseBroken && ref == null));
 		}
 		public RefParseResult(Reference ref) {
 			this(false, ref);
@@ -145,20 +145,20 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			return parseReference_ReferenceStart(parseRefPrimitive(lookAhead()), parsingExp);
 		}
 		switch (lookAhead()) {
-		case DOT: return parseReference_ReferenceStart(parseRefModuleQualified(), parsingExp);
+		case DOT: refParseResult = parseRefModuleQualified_do(); break;
 		case IDENTIFIER: return parseReference_ReferenceStart(parseRefIdentifier(), parsingExp);
 		
-		case KW_TYPEOF: refParseResult = parseRefTypeof(); break;
+		case KW_TYPEOF: refParseResult = parseRefTypeof_do(); break;
 		
-		case KW_CONST: refParseResult = parseRefTypeModifier(TypeModifierKinds.CONST); break;
-		case KW_IMMUTABLE: refParseResult = parseRefTypeModifier(TypeModifierKinds.IMMUTABLE); break;
-		case KW_SHARED: refParseResult = parseRefTypeModifier(TypeModifierKinds.SHARED); break;
-		case KW_INOUT: refParseResult = parseRefTypeModifier(TypeModifierKinds.INOUT); break;
+		case KW_CONST: refParseResult = parseRefTypeModifier_do(TypeModifierKinds.CONST); break;
+		case KW_IMMUTABLE: refParseResult = parseRefTypeModifier_do(TypeModifierKinds.IMMUTABLE); break;
+		case KW_SHARED: refParseResult = parseRefTypeModifier_do(TypeModifierKinds.SHARED); break;
+		case KW_INOUT: refParseResult = parseRefTypeModifier_do(TypeModifierKinds.INOUT); break;
 		default:
 			return new RefParseResult(null);
 		}
 		
-		if(refParseResult.balanceBroken) 
+		if(refParseResult.parseBroken) 
 			return refParseResult;
 		return parseReference_ReferenceStart(refParseResult.ref, parsingExp);
 	}
@@ -186,40 +186,49 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	}
 	
 	public RefModuleQualified parseRefModuleQualified() {
-		int startPos = consumeLookAhead(DeeTokens.DOT).getStartPos();
-		return connect(new RefModuleQualified(parseRefIdentifier(), srToCursor(startPos)));
+		return (RefModuleQualified) parseRefModuleQualified_do().ref;
 	}
 	
-	protected RefParseResult parseRefTypeof() {
+	protected RefParseResult parseRefModuleQualified_do() {
+		if(!tryConsume(DeeTokens.DOT))
+			return new RefParseResult(null);
+		int nodeStart = lastLexElement.getStartPos();
+		
+		boolean parseBroken = lookAhead() != DeeTokens.IDENTIFIER;
+		RefIdentifier id = parseRefIdentifier();
+		return new RefParseResult(parseBroken, connect(new RefModuleQualified(id, srToCursor(nodeStart))));
+	}
+	
+	protected RefParseResult parseRefTypeof_do() {
 		if(!tryConsume(DeeTokens.KW_TYPEOF))
 			return null;
 		int nodeStart = lastLexElement.getStartPos();
 		
 		Expression exp = null;
-		boolean balanceBroken = true;
+		boolean parseBroken = true;
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
 			if(tryConsume(DeeTokens.KW_RETURN)) {
 				exp = new RefTypeof.ExpRefReturn(lastLexElement.getSourceRange());
 			} else {
 				exp = parseExpression_ToMissing(true);
 			}
-			balanceBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
+			parseBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
 		}
-		return new RefParseResult(balanceBroken, connect(new RefTypeof(exp, srToCursor(nodeStart))));
+		return new RefParseResult(parseBroken, connect(new RefTypeof(exp, srToCursor(nodeStart))));
 	}
 	
-	protected RefParseResult parseRefTypeModifier(TypeModifierKinds modKind) {
+	protected RefParseResult parseRefTypeModifier_do(TypeModifierKinds modKind) {
 		assertTrue(lookAhead().sourceValue.equals(modKind.sourceValue));
 		consumeInput();
 		int nodeStart = lastLexElement.getStartPos();
 		
 		Reference ref = null;
-		boolean balanceBroken = true;
+		boolean parseBroken = true;
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
 			ref = parseReference_ToMissing(true); 
-			balanceBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
+			parseBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
 		}
-		return new RefParseResult(balanceBroken, connect(new RefTypeModifier(modKind, ref, srToCursor(nodeStart))));
+		return new RefParseResult(parseBroken, connect(new RefTypeModifier(modKind, ref, srToCursor(nodeStart))));
 	}
 	
 	protected RefParseResult parseReference_ReferenceStart(Reference leftRef, boolean parsingExp) {
@@ -227,7 +236,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return parseReference_ReferenceStart_do(leftRef, parsingExp);
 	}
 	protected RefParseResult parseReference_ReferenceStart_do(Reference leftRef, boolean parsingExp) {
-		boolean balanceBroken = false;
+		boolean parseBroken = false;
 		
 		// Star is multiply infix operator, dont parse as pointer ref
 		if(lookAhead() == DeeTokens.DOT) {
@@ -235,11 +244,11 @@ public class DeeParser_RefOrExp extends AbstractParser {
 				addError(ParserErrorTypes.INVALID_QUALIFIER, leftRef.getSourceRange(), null);
 				return new RefParseResult(leftRef);
 			}
-			consumeLookAhead();
 			IQualifierNode qualifier = (IQualifierNode) leftRef;
+			consumeLookAhead();
+			parseBroken = lookAhead() != DeeTokens.IDENTIFIER;
 			RefIdentifier qualifiedId = parseRefIdentifier();
 			leftRef = connect(new RefQualified(qualifier, qualifiedId, srToCursor(leftRef.getStartPos())));
-			balanceBroken = qualifiedId.name == null;
 			
 		} else if(lookAhead() == DeeTokens.NOT && isValidTemplateReferenceSyntax(leftRef)){ // template instance
 			consumeLookAhead();
@@ -252,7 +261,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 				ArgumentListParseResult<Resolvable> argList = 
 					parseArgumentList(true, DeeTokens.COMMA, DeeTokens.CLOSE_PARENS);
 				tplArgs = argList.list;
-				balanceBroken = !argList.properlyTerminated;
+				parseBroken = argList.parseBroken;
 			} else {
 				if(leftRef instanceof RefTemplateInstance) {
 					RefTemplateInstance refTplInstance = (RefTemplateInstance) leftRef;
@@ -279,7 +288,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			
 		} else if(!parsingExp && tryConsume(DeeTokens.OPEN_BRACKET)) {
 			Resolvable resolvable = parseReferenceOrExpression(true);
-			balanceBroken = consumeExpectedToken(DeeTokens.CLOSE_BRACKET) == null;
+			parseBroken = consumeExpectedToken(DeeTokens.CLOSE_BRACKET) == null;
 			
 			if(resolvable == null) {
 				leftRef = connect(new RefTypeDynArray(leftRef, srToCursor(leftRef.getStartPos())));
@@ -290,7 +299,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		} else {
 			return new RefParseResult(leftRef);
 		}
-		if(balanceBroken)
+		if(parseBroken)
 			return new RefParseResult(true, leftRef);
 		return parseReference_ReferenceStart(leftRef, parsingExp);
 	}
@@ -1079,12 +1088,12 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	}
 	
 	public static class ArgumentListParseResult<T> {
+		public final boolean parseBroken;
 		public final ArrayList<T> list;
-		public final boolean properlyTerminated;
 		
-		public ArgumentListParseResult(ArrayList<T> argList, boolean properlyTerminated) {
+		public ArgumentListParseResult(boolean properlyTerminated, ArrayList<T> argList) {
+			this.parseBroken = !properlyTerminated;
 			this.list = argList;
-			this.properlyTerminated = properlyTerminated;
 		}
 	}
 	
@@ -1113,7 +1122,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			break;
 		}
 		boolean properlyTerminated = consumeExpectedToken(tokenLISTCLOSE) != null;
-		return new ArgumentListParseResult<Resolvable>(args, properlyTerminated);
+		return new ArgumentListParseResult<Resolvable>(properlyTerminated, args);
 	}
 	
 	public Expression parseParenthesesExp() {
@@ -1216,7 +1225,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
 				ArgumentListParseResult<Expression> allocArgsResult = parseExpArgumentList(DeeTokens.CLOSE_PARENS);
 				allocArgs = allocArgsResult.list;
-				if(!allocArgsResult.properlyTerminated) {
+				if(allocArgsResult.parseBroken) {
 					break parsing;
 				}
 			}

@@ -60,7 +60,6 @@ import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
-import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.BodyStatement;
@@ -315,13 +314,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		Reference ref = refParse.ref;
 		boolean consumedSemiColon = false;
 		
-		if(!refParse.balanceBroken) {
-			// XXX: WTF: ?
-			if(ref instanceof RefModuleQualified) {
-				if(((RefModuleQualified) ref).qualifiedName.name == null) {
-					return connect(new InvalidDeclaration(ref, false, srToCursor(ref.getStartPos())));
-				}
-			}
+		if(!refParse.parseBroken) {
 			
 			if(lookAhead() == DeeTokens.IDENTIFIER) {
 				LexElement defId = consumeInput();
@@ -399,7 +392,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		parsing: {
 			params = parseFunctionParams();
-			if(params.properlyTerminated == false) {
+			if(params.parseBroken) {
 				break parsing;
 			}
 			
@@ -442,7 +435,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			break;
 		}
 		boolean properlyTerminated = consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null;
-		return new ArgumentListParseResult<IFunctionParameter>(params, properlyTerminated);
+		return new ArgumentListParseResult<IFunctionParameter>(properlyTerminated, params);
 	}
 	
 	public IFunctionParameter parseFunctionParameter() {
@@ -469,7 +462,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		parsing: {
 			RefParseResult refResult = parseReference_begin();
 			ref = refResult.ref;
-			if(refResult.balanceBroken)
+			if(refResult.parseBroken)
 				break parsing;
 			
 			if(ref == null) {
