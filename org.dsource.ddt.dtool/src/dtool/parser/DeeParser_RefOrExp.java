@@ -91,6 +91,28 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return lookAheadToken().type.getGroupingToken();
 	}
 	
+	public static class RuleParseResult<T>  {
+		public final boolean parseBroken;
+		public final T result;
+		
+		public RuleParseResult(boolean parseBroken, T result) {
+			this.parseBroken = parseBroken;
+			this.result = result;
+		}
+	}
+	
+	public static <T> RuleParseResult<T> parseResult(boolean parseBroken, T result) {
+		return new RuleParseResult<T>(parseBroken, result);
+	}
+	
+	public <T extends ASTNeoNode> RuleParseResult<T> connectResult(boolean parseBroken, T result) {
+		return new RuleParseResult<T>(parseBroken, connect(result));
+	}
+	
+	public <T> RuleParseResult<T> nullResult() {
+		return new RuleParseResult<T>(false, null);
+	}
+	
 	public String idTokenToString(LexElement id) {
 		return id.isMissingElement() ? null : id.token.source;
 	}
@@ -1087,12 +1109,11 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		return connect(new ExpCall(callee, arrayView(args), srToCursor(callee)));
 	}
 	
-	public static class ArgumentListParseResult<T> {
-		public final boolean parseBroken;
+	public static class ArgumentListParseResult<T> extends RuleParseResult<ArrayList<T>> {
 		public final ArrayList<T> list;
 		
 		public ArgumentListParseResult(boolean properlyTerminated, ArrayList<T> argList) {
-			this.parseBroken = !properlyTerminated;
+			super(!properlyTerminated, argList);
 			this.list = argList;
 		}
 	}

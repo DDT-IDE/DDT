@@ -3,6 +3,7 @@ package dtool.parser;
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import dtool.ast.ISourceRepresentation;
 import dtool.ast.SourceRange;
 
 public class Token implements ISourceRepresentation {

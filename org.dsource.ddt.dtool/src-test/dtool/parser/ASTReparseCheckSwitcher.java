@@ -6,6 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
@@ -189,11 +190,17 @@ public class ASTReparseCheckSwitcher {
 			return reparseCheck(fnParam, node);
 		case VAR_ARGS_PARAMETER:
 			return simpleReparseCheck(node, "...");
+			
+		/* -------------------  Statements  ------------------- */
+		case BLOCK_STATEMENT:
+			return reparseCheck(snippedParser.parseBlockStatement_toMissing().result, node);
 		case STATEMENT_EMTPY_BODY:
 			return simpleReparseCheck(node, ";");
-			
-		case BLOCK_STATEMENT:
-			return reparseCheck(snippedParser.parseBlockStatement(), node);
+		case FUNCTION_BODY:
+		case IN_OUT_FUNCTION_BODY:
+			return reparseCheck(snippedParser.parseFunctionBody(), node);
+		case FUNCTION_BODY_OUT_BLOCK:
+			return reparseCheck(snippedParser.parseOutBlock().result, node);
 			
 		default:
 			throw assertFail();
@@ -213,8 +220,8 @@ public class ASTReparseCheckSwitcher {
 	/** This will test if node has a correct source range even in situations where
 	 * {@link #postVisit} cannot do a test using {@link DeeParserTest#checkSourceEquality }
 	 */
-	public Void reparseCheck(ASTNeoNode reparsedNode, ASTNeoNode node) {
-		return reparseCheck(reparsedNode, node.getClass(), node, false);
+	public Void reparseCheck(IASTNeoNode reparsedNode, ASTNeoNode node) {
+		return reparseCheck((ASTNeoNode) reparsedNode, node.getClass(), node, false);
 	}
 	
 	public Void reparseCheck(ASTNeoNode reparsedNode, ASTNeoNode node, boolean consumesTrailingWhiteSpace) {

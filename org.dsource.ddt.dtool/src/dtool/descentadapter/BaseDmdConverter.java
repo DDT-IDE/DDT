@@ -35,7 +35,7 @@ public class BaseDmdConverter {
 	}
 	
 	public static SourceRange sourceRangeStrictOrNotAtAll(IASTNode node) {
-		if(!(node.getStartPos() >= 0 || node.getLength() > 0)) {
+		if(node == null || !(node.getStartPos() >= 0 || node.getLength() > 0)) {
 			return null;
 		}
 		return new SourceRange(node.getStartPos(), node.getLength());

@@ -103,8 +103,10 @@ public enum ASTNodeTypes {
 	
 	/* -------------------  Statements  ------------------- */
 	
-	STATEMENT_EMTPY_BODY,
 	BLOCK_STATEMENT,
-	
+	STATEMENT_EMTPY_BODY,
+	FUNCTION_BODY,
+	IN_OUT_FUNCTION_BODY,
+	FUNCTION_BODY_OUT_BLOCK,
 	;
 }

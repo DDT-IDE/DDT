@@ -10,13 +10,17 @@ DefFunction(? DefSymbol
 )
 DefFunction(RefPrimitive DefSymbol CStyleVarArgsParameter #@EB)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@PARAMS_SAMPLE《
-  ►#?AST_STRUCTURE_EXPECTED!【 .Bar.Baz baz, const Foo.Foobar foo = 2, auto Foo foo● 
+#@PARAMS_SAMPLE《#?AST_STRUCTURE_EXPECTED!【 .Bar.Baz baz, const Foo.Foobar foo = 2● 
   FunctionParameter(RefQualified(RefModuleQualified(?) RefIdentifier) DefSymbol)
   FunctionParameter(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
-  FunctionParameter(RefIdentifier DefSymbol)
-】●
-¤》
+】》
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+inout(xpto) foo( #@PARAMS_SAMPLE ) nothrow body { int foo; }
+inout(xpto) foo( #@PARAMS_SAMPLE ) in {int foo; } out(result) { } body { int foo; }
+#AST_STRUCTURE_EXPECTED:
+DefFunction( RefTypeModifier(?) DefSymbol #@PARAMS_SAMPLE FunctionBody(*) )
+DefFunction( RefTypeModifier(?) DefSymbol #@PARAMS_SAMPLE InOutFunctionBody(* FunctionBodyOutBlock(Symbol *) *))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@TYPE_REFS foo(#@PARAMS_SAMPLE) #@SAMPLE_BLOCK_ST
@@ -24,8 +28,9 @@ DefFunction(RefPrimitive DefSymbol CStyleVarArgsParameter #@EB)
 #AST_STRUCTURE_EXPECTED:
 DefFunction(#@TYPE_REFS DefSymbol #@PARAMS_SAMPLE #@SAMPLE_BLOCK_ST )
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 0 args
-#@BREAK《#parser(IgnoreRest)》
+
+Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ 0 args
+#@BREAK《 #?AST_STRUCTURE_EXPECTED!【#parser(IgnoreRest)● $ 】  》
 
 #@FN_SAMPLE_AFTER_PARAM《
   ►#?AST_STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS) #@BREAK { }●】●
@@ -38,11 +43,11 @@ const(foo) foo( #@FN_SAMPLE_AFTER_PARAM
 #AST_STRUCTURE_EXPECTED:
 DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_SAMPLE_AFTER_PARAM )
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 1 args
+Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ 1 args
 
 #@PARAM_ATTRIB_X《auto●#@TYPE_MODIFIERS●final●in●lazy●out●ref●scope●in lazy ref ●const inout●const lazy shared》
 #@PARAM_ATTRIB《/*NONE*/●#@PARAM_ATTRIB_X》
-#@BREAK_Pr《#error(EXP_CLOSE_PARENS) #parser(IgnoreRest)》
+#@BREAK_Pr《 #?AST_STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS) #parser(IgnoreRest)● $ 】  》
 
 #@ARG_LAST《
   ►#?AST_STRUCTURE_EXPECTED!【#@PARAM_ATTRIB #@TYPE_REFS foo ●FunctionParameter(#@TYPE_REFS DefSymbol)】●
@@ -66,7 +71,7 @@ DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_SAMPLE_AFTER_PARAM )
 #PARSE(DECLARATION)       const(foo) foo( #@ARG_LAST #@FN_SAMPLE_AFTER_PARAM
 #AST_STRUCTURE_EXPECTED:
 DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@ARG_LAST #@FN_SAMPLE_AFTER_PARAM)
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 2+ args
+Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ 2+ args
 #@ARG_START《
   ►#?AST_STRUCTURE_EXPECTED!【const in char foo        ,●FunctionParameter(RefPrimitive DefSymbol)】●
   ►#?AST_STRUCTURE_EXPECTED!【const in char            ,●NamelessParameter(RefPrimitive )】●
@@ -82,19 +87,66 @@ DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@ARG_LAST #@FN_SAMPLE_AFTE
 #AST_STRUCTURE_EXPECTED:
 DefFunction( RefTypeModifier(?) DefSymbol #@ARG_START #@PARAMS_SAMPLE #@FN_SAMPLE_AFTER_PARAM )
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Function Body Attributes
-#@FN_ATTRIB《#@TYPE_MODIFIERS●nothrow●pure●@property●@safe●@trusted●@system●@disable●
-@property @safe● nothrow @property pure @safe @disable》
+Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function  Attributes
+#@FN_ATTRIB《#@TYPE_MODIFIERS●nothrow●pure●@property●@safe●@trusted●@system●@disable● 
+►@property @safe●nothrow @property pure @safe @disable》
+
+#@NO_BODY《#error(EXPRULE_Body) #@BREAK》
 
 #@FN_ATTRIBS_END《
   ►#?AST_STRUCTURE_EXPECTED!【#@FN_ATTRIB ;                    ● #@EB】●
   ►#?AST_STRUCTURE_EXPECTED!【#@FN_ATTRIB #@SAMPLE_BLOCK_ST    ● #@SAMPLE_BLOCK_ST】●
-  ►#?AST_STRUCTURE_EXPECTED!【#@FN_ATTRIB #error(EXPRULE_Body) ● 】●  
+  ►#?AST_STRUCTURE_EXPECTED!【#@FN_ATTRIB #error(EXPRULE_Body) ● 】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@FN_ATTRIB body {} ● FunctionBody(*)】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@FN_ATTRIB in {} body {} ● InOutFunctionBody(* *)】●  
+  ►#?AST_STRUCTURE_EXPECTED!【#@FN_ATTRIB out(foo) {} body {} ● InOutFunctionBody(* *)】●
   
-  ►#?AST_STRUCTURE_EXPECTED!【 #error(EXPRULE_Body) #@BREAK @invalidProperty  { }● 】●
-  ►#?AST_STRUCTURE_EXPECTED!【 #error(EXPRULE_Body) #@BREAK ref               { }● 】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@FN_ATTRIB #@NO_BODY #@BREAK @invalidProperty  { }● 】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@NO_BODY #@BREAK ref               { }● 】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)       inout(foo) foo( #@PARAMS_SAMPLE ) #@FN_ATTRIBS_END
 #AST_STRUCTURE_EXPECTED:
 DefFunction( RefTypeModifier(?) DefSymbol #@PARAMS_SAMPLE #@FN_ATTRIBS_END )
+
+Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function Body
+#@BLK《                   ►#?AST_STRUCTURE_EXPECTED!【 { /*TODO statement*/ } ● BlockStatement 】● ¤》
+#@NO_BLOCK《       ►#?AST_STRUCTURE_EXPECTED!【 #error(EXPRULE_Block) #@BREAK● BlockStatement $ 】● ¤》
+#@NO_PARENS《     ►#?AST_STRUCTURE_EXPECTED!【 #error(EXP_OPEN_PARENS)【】 #@BREAK● $ 】● ¤》
+
+#@IN_BLOCKS《
+ ►#?AST_STRUCTURE_EXPECTED!【 in #@BLK● #@BLK】●  
+ ►#?AST_STRUCTURE_EXPECTED!【 in #@NO_BLOCK● #@NO_BLOCK 】●
+¤》
+#@OUT_BLOCKS《
+ ►#?AST_STRUCTURE_EXPECTED!【 out(foo) #@BLK●      FunctionBodyOutBlock(Symbol #@BLK )】●  
+ ►#?AST_STRUCTURE_EXPECTED!【 out(foo) #@NO_BLOCK● FunctionBodyOutBlock(Symbol #@NO_BLOCK )】●
+ 
+ ►#?AST_STRUCTURE_EXPECTED!【 out(foo #@BREAK_Pr● FunctionBodyOutBlock(Symbol $ )】●
+ ►#?AST_STRUCTURE_EXPECTED!【 out(#@NO_ID #@BREAK_Pr● FunctionBodyOutBlock(Symbol $ )】●
+ ►#?AST_STRUCTURE_EXPECTED!【 out#@NO_PARENS #@BREAK● FunctionBodyOutBlock(   $ )】●
+¤》
+
+#@AFTER_PARAM《  /**/ ● nothrow 》
+#@OUT_BLOCK《►#?AST_STRUCTURE_EXPECTED!【 out(foo) #@BLK●      FunctionBodyOutBlock(Symbol #@BLK )】●¤》
+ 
+#@FN_BODY_END《
+ ►#?AST_STRUCTURE_EXPECTED!【 ;                 ● #@EB】●
+ ►#?AST_STRUCTURE_EXPECTED!【 #@SAMPLE_BLOCK_ST ● #@SAMPLE_BLOCK_ST】●
+ ►#?AST_STRUCTURE_EXPECTED!【 body #@BLK        ● FunctionBody( #@BLK )】●
+ ►#?AST_STRUCTURE_EXPECTED!【 body #@NO_BLOCK /**/● FunctionBody( #@NO_BLOCK )】●
+ 
+ ►#?AST_STRUCTURE_EXPECTED!【  #@IN_BLOCKS body #@BLK             ●InOutFunctionBody( #@IN_BLOCKS #@BLK )】●
+ ►#?AST_STRUCTURE_EXPECTED!【  #@IN_BLOCKS #@OUT_BLOCKS body #@BLK●InOutFunctionBody( #@IN_BLOCKS #@OUT_BLOCKS #@BLK )】●
+ ►#?AST_STRUCTURE_EXPECTED!【  #@OUT_BLOCKS body #@BLK            ●InOutFunctionBody( #@OUT_BLOCKS #@BLK )】●
+ ►#?AST_STRUCTURE_EXPECTED!【  #@OUT_BLOCKS #@IN_BLOCKS body #@BLK●InOutFunctionBody( #@OUT_BLOCKS #@IN_BLOCKS #@BLK )】●
+ 
+ ►#?AST_STRUCTURE_EXPECTED!【  in #@BLK   #@NO_BODY  #@BLK              ●InOutFunctionBody( #@BLK #@NO_BODY )】●
+ ►#?AST_STRUCTURE_EXPECTED!【  in #@BLK   #@NO_BODY  in #@BLK body #@BLK●InOutFunctionBody( #@BLK #@NO_BODY )】●
+ ►#?AST_STRUCTURE_EXPECTED!【#@OUT_BLOCK #@NO_BODY  #@BLK            ●InOutFunctionBody( #@OUT_BLOCK #@NO_BODY )】●
+ ►#?AST_STRUCTURE_EXPECTED!【#@OUT_BLOCK #@NO_BODY  #@OUT_BLOCK #@BLK●InOutFunctionBody( #@OUT_BLOCK #@NO_BODY )】●
+¤》
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)       inout(xpto) foo( #@PARAMS_SAMPLE ) #@AFTER_PARAM #@FN_BODY_END
+#AST_STRUCTURE_EXPECTED:
+DefFunction( RefTypeModifier(?) DefSymbol #@PARAMS_SAMPLE #@FN_BODY_END )

@@ -27,4 +27,4 @@
 #@TYPE_MODIFIERS《const●immutable●shared●inout》
 
 
-#@EB《►#?AST_STRUCTURE_EXPECTED!【; ● EmptyBodyStatement 】》
+#@EB《#?AST_STRUCTURE_EXPECTED!【; ● EmptyBodyStatement 】》

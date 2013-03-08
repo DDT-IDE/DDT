@@ -148,5 +148,5 @@ ExpInfix(
 // TODO This is not as precise, we would only want to exclude snippets ending in *, 
 // such that with a suffix they could be parsed as exp. 
 #@EXP_ASSIGN__NO_PENDING《 #EXP__NO_REFS(flag) #@EXP_ASSIGN 》   
-#@EXP_UNARY__NO_PENDING《  ►#?AST_STRUCTURE_EXPECTED!【/*UNARY_NO_PENDING*/】#EXP__NO_REFS(flag)#@EXP_UNARY 》
+#@EXP_UNARY__NO_PENDING《  #?AST_STRUCTURE_EXPECTED!【/*UNARY_NO_PENDING*/】#EXP__NO_REFS(flag)#@EXP_UNARY 》
 

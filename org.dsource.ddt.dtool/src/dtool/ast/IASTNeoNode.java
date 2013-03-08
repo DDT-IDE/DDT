@@ -14,6 +14,11 @@ import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.IVisitable;
 import descent.internal.compiler.parser.ast.IASTNode;
 
+/**
+ * Interface for {@link ASTNeoNode} objects. No other class can implement. 
+ */
 public interface IASTNeoNode extends IASTNode, IElement, IVisitable<IASTVisitor> {
+	
+	public void toStringAsCode(ASTCodePrinter astCodePrinter);
 	
 }

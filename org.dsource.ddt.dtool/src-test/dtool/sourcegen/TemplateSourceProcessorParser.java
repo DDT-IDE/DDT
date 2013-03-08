@@ -230,7 +230,7 @@ public class TemplateSourceProcessorParser {
 			new String[] { argStart, argSeparator, listEndPrefix, listEnd, kMARKER } :
 			new String[] { argStart, listEndPrefix, listEnd, kMARKER };
 		
-		boolean ignoreLastArgListEnd = false;
+		boolean ignoreLastArg = false;
 		boolean argumentStartFound = false;
 		
 		ArrayList<Argument> arguments = new ArrayList<Argument>();
@@ -241,7 +241,7 @@ public class TemplateSourceProcessorParser {
 			if(element != null && element.getElementType() == listEnd) {
 				break;
 			}
-			checkError(ignoreLastArgListEnd, parser);
+			checkError(ignoreLastArg, parser);
 			
 			if(element == null) {
 				checkError(!eofTerminates, parser);
@@ -254,7 +254,7 @@ public class TemplateSourceProcessorParser {
 				argument = new Argument();
 			} else if(element.getElementType() == listEndPrefix) {
 				checkError(argumentStartFound || !argumentIsWhiteSpaceOnly(argument), parser);
-				ignoreLastArgListEnd = true;
+				ignoreLastArg = true;
 				argument = null;
 			} else if(element.getElementType() == argSeparator) {
 				arguments.add(argument);
@@ -266,11 +266,10 @@ public class TemplateSourceProcessorParser {
 			}
 		}
 		
-		if(!ignoreLastArgListEnd) {
-			assertNotNull(argument);
-			arguments.add(argument);
-		} else {
+		if(ignoreLastArg) {
 			assertTrue(argument == null);
+		} else {
+			arguments.add(assertNotNull_(argument));
 		}
 		return arguments;
 	}

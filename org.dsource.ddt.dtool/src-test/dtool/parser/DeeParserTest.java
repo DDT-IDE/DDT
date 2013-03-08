@@ -96,11 +96,13 @@ public class DeeParserTest extends CommonTestUtils {
 	}
 	
 	public static void runParserTest______________________(
-		String parseSource, String parseRule, String expectedRemainingSource, String expectedGenSource,
-		NamedNodeElement[] expectedStructure, ArrayList<ParserError> expectedErrors, boolean allowAnyErrors) {
+		final String fullParseSource, final String parseRule, final String expectedRemainingSource, 
+		final String expectedGenSource, final NamedNodeElement[] expectedStructure, final 
+		ArrayList<ParserError> expectedErrors, final boolean allowAnyErrors) {
 		
+		String parseSource = fullParseSource;
 		DeeParserResult result;
-		DeeParser deeParser = new DeeTestsParser(parseSource);
+		DeeParser deeParser = new DeeTestsParser(fullParseSource);
 		if(parseRule == null) {
 			result = new DeeParserResult(deeParser.parseModule(), deeParser.errors);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_EXPRESSION.name)) {
@@ -117,9 +119,9 @@ public class DeeParserTest extends CommonTestUtils {
 		if(expectedRemainingSource == null) {
 			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
 		} else {
-			String remainingSource = parseSource.substring(deeParser.getParserPosition());
+			String remainingSource = fullParseSource.substring(deeParser.getParserPosition());
 			CheckSourceEquality.check(remainingSource, expectedRemainingSource, false);
-			parseSource = parseSource.substring(0, parseSource.length() - expectedRemainingSource.length());
+			parseSource = fullParseSource.substring(0, fullParseSource.length() - expectedRemainingSource.length());
 		}
 		ASTNeoNode mainNode = assertNotNull_(result.node);
 		

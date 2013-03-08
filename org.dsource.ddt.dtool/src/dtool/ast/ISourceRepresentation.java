@@ -1,4 +1,4 @@
-package dtool.parser;
+package dtool.ast;
 
 /**
  * Interface for an object that holds a simple String corresponding to source code.

@@ -43,12 +43,12 @@ public class ImportSelective extends ASTNeoNode implements INonScopedBlock, IImp
 	
 	public ArrayView<IImportSelectiveSelection> parentizeFrags(ArrayView<IImportSelectiveSelection> frags) {
 		if (frags != null) {
-			for (IImportSelectiveSelection n : frags) {
-				((ASTNeoNode) n).setParent(this);
-				if (n instanceof ImportSelectiveAlias) {
-					((ImportSelectiveAlias) n).target.impSel = this;
-				} else if (n instanceof RefImportSelection) {
-					((RefImportSelection) n).impSel = this;
+			for (IImportSelectiveSelection selection : frags) {
+				((ASTNeoNode) selection).setParent(this);
+				if (selection instanceof ImportSelectiveAlias) {
+					((ImportSelectiveAlias) selection).target.impSel = this;
+				} else if (selection instanceof RefImportSelection) {
+					((RefImportSelection) selection).impSel = this;
 				} else {
 					assertFail();
 				}
@@ -84,7 +84,7 @@ public class ImportSelective extends ASTNeoNode implements INonScopedBlock, IImp
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode((ASTNeoNode) fragment, " : ");
+		cp.appendNode(fragment, " : ");
 		cp.appendNodeList(impSelFrags, ", ");
 	}
 	

@@ -250,6 +250,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		return cp.toString();
 	}
 	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		throw assertFail();
 	}

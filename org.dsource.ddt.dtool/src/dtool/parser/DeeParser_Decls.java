@@ -63,9 +63,12 @@ import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
-import dtool.ast.statements.BodyStatement;
 import dtool.ast.statements.EmptyBodyStatement;
+import dtool.ast.statements.FunctionBody;
+import dtool.ast.statements.FunctionBodyOutBlock;
+import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
+import dtool.ast.statements.InOutFunctionBody;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
@@ -287,7 +290,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			// @disable keyword?
 			case KW_AUTO: // TODO:
 				break;
-			
+				
 			default:
 				break;
 			}
@@ -382,6 +385,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public static final ParseRuleDescription RULE_BODY = new ParseRuleDescription("Body");
+	public static final ParseRuleDescription RULE_BLOCK = new ParseRuleDescription("Block");
 	
 	/**
 	 * Parse a function from this point:
@@ -392,9 +396,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		ArgumentListParseResult<IFunctionParameter> params = null;
 		ArrayView<FunctionAttributes> fnAttributes = null;
-		IStatement frequire = null;
-		BodyStatement fbody = null;
-		IStatement fensure = null;
+		IFunctionBody fnBody = null;
 		
 		parsing: {
 			params = parseFunctionParams();
@@ -405,16 +407,14 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			fnAttributes = parseFunctionAttributes();
 			
 			if(tryConsume(DeeTokens.SEMICOLON)) { 
-				fbody = connect(new EmptyBodyStatement(sr(lastLexElement.token)));
-			} else if(lookAhead() == DeeTokens.OPEN_BRACE){
-				fbody = assertNotNull_(parseBlockStatement());
+				fnBody = connect(new EmptyBodyStatement(sr(lastLexElement.token)));
 			} else {
-				reportErrorExpectedRule(RULE_BODY);
+				fnBody = parseFunctionBody();
 			}
 		}
 		
 		return connect(new DefinitionFunction(defUnitNoComments(defId), null,retType, arrayViewI(params.list), 
-			fnAttributes, frequire, fensure, fbody, srToCursor(retType)));
+			fnAttributes, fnBody, srToCursor(retType)));
 	}
 	
 	protected ArgumentListParseResult<IFunctionParameter> parseFunctionParams() {
@@ -433,7 +433,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			params.add(arg);
 			first = false;
-
+			
 			if(arg.isVariadic()) {
 				break;
 			}
@@ -521,18 +521,120 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		return arrayViewG(attributes);
 	}
 	
-	public BodyStatement parseBlockStatement() {
+	protected IFunctionBody parseFunctionBody() {
+		RuleParseResult<BlockStatement> blockResult = parseBlockStatement_do();
+		if(blockResult.result != null)
+			return blockResult.result;
+		
+		int nodeStart;
+		if(lookAhead() == DeeTokens.KW_IN || lookAhead() == DeeTokens.KW_OUT || lookAhead() == DeeTokens.KW_BODY) {
+			nodeStart = lookAheadElement().getStartPos();
+		} else {
+			nodeStart = lastLexElement.getEndPos(); // It will be missing element
+		}
+		
+		boolean isOutIn = false;
+		BlockStatement inBlock = null;
+		FunctionBodyOutBlock outBlock = null;
+		BlockStatement bodyBlock = null;
+		
+		parsing: {
+			if(tryConsume(DeeTokens.KW_IN)) {
+				blockResult = parseBlockStatement_toMissing();
+				inBlock = blockResult.result;
+				if(blockResult.parseBroken) 
+					break parsing;
+				
+				if(lookAhead() == DeeTokens.KW_OUT) {
+					RuleParseResult<FunctionBodyOutBlock> outBlockResult = parseOutBlock();
+					outBlock = outBlockResult.result;
+					if(outBlockResult.parseBroken)
+						break parsing;
+				}
+			} else if(lookAhead() == DeeTokens.KW_OUT) {
+				isOutIn = true;
+				
+				RuleParseResult<FunctionBodyOutBlock> outBlockResult = parseOutBlock();
+				outBlock = outBlockResult.result;
+				if(outBlockResult.parseBroken)
+					break parsing;
+				
+				if(tryConsume(DeeTokens.KW_IN)) {
+					blockResult = parseBlockStatement_toMissing();
+					inBlock = blockResult.result;
+					if(blockResult.parseBroken) 
+						break parsing;
+				}
+			}
+			
+			if(tryConsume(DeeTokens.KW_BODY)) {
+				bodyBlock = parseBlockStatement_toMissing().result;
+			}
+			if(bodyBlock == null) {
+				reportErrorExpectedRule(RULE_BODY);
+			}
+		}
+		
+		if(inBlock == null && outBlock == null) {
+			if(bodyBlock == null) {
+				return null;
+			}
+			return connect(new FunctionBody(bodyBlock, srToCursor(nodeStart)));
+		}
+		return connect(new InOutFunctionBody(isOutIn, inBlock, outBlock, bodyBlock, srToCursor(nodeStart)));
+	}
+	
+	protected BlockStatement createMissingBlock(boolean reportMissingExpError, ParseRuleDescription expectedRule) {
+		if(reportMissingExpError) {
+			reportErrorExpectedRule(expectedRule);
+		}
+		int nodeStart = lastLexElement.getEndPos();
+		return connect(new BlockStatement(srToCursor(nodeStart)));
+	}
+	
+	protected RuleParseResult<BlockStatement> parseBlockStatement_toMissing() {
+		RuleParseResult<BlockStatement> block = parseBlockStatement_do();
+		if(block.result == null) {
+			return parseResult(true, createMissingBlock(true, RULE_BLOCK));
+		}
+		return block;
+	}
+	protected RuleParseResult<BlockStatement> parseBlockStatement_do() {
 		if(!tryConsume(DeeTokens.OPEN_BRACE))
-			return null;
+			return nullResult(); 
 		int nodeStart = lastLexElement.getStartPos();
+		
 		ArrayView<IStatement> body = parseStatements();
-		consumeExpectedToken(DeeTokens.CLOSE_BRACE); 
-		return connect(new BlockStatement(body, true, srToCursor(nodeStart)));
+		boolean parseBroken = consumeExpectedToken(DeeTokens.CLOSE_BRACE) == null; 
+		return connectResult(parseBroken, new BlockStatement(body, true, srToCursor(nodeStart)));
 	}
 	
 	private ArrayView<IStatement> parseStatements() {
 		// TODO
 		return CoreUtil.blindCast(parseDeclDefs(DeeTokens.CLOSE_BRACE));
+	}
+	
+	protected RuleParseResult<FunctionBodyOutBlock> parseOutBlock() {
+		if(!tryConsume(DeeTokens.KW_OUT))
+			return nullResult();
+		int nodeStart = lastLexElement.getStartPos();
+		
+		boolean parseBroken = true;
+		Symbol id = null;
+		BlockStatement block = null;
+		parsing: {
+			if(consumeExpectedToken(DeeTokens.OPEN_PARENS) == null)
+				break parsing;
+			id = parseSymbol();
+			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null)
+				break parsing;
+			
+			RuleParseResult<BlockStatement> blockResult = parseBlockStatement_toMissing();
+			block = blockResult.result;
+			parseBroken = blockResult.parseBroken;
+		}
+		
+		return connectResult(parseBroken, new FunctionBodyOutBlock(id, block, srToCursor(nodeStart)));
 	}
 	
 	/* ----------------------------------------- */
@@ -647,9 +749,9 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		return connect(
 			new DeclarationPragma(pragmaId, null, ab.bodySyntax, ab.declList, srToCursor(declStart)));
 	}
-
+	
 	public Symbol parseSymbol() {
-		LexElement id = consumeExpectedToken(DeeTokens.IDENTIFIER, true);
+		LexElement id = consumeExpectedIdentifier();
 		return connect(new Symbol(id.token.source, sr(id.token)));
 	}
 	

@@ -21,18 +21,25 @@ import dtool.util.ArrayView;
 /**
  * A compound statement. Allways introduces a new Scope.
  */
-public class BlockStatement extends BodyStatement implements IScopeNode {
+public class BlockStatement extends Statement implements IScopeNode, IFunctionBody {
 	
 	public final ArrayView<IStatement> statements;
 	public final boolean hasCurlyBraces;
 	
 	public BlockStatement(ArrayView<IStatement> statements, boolean hasCurlyBraces, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
 		this.statements = parentizeI(assertNotNull_(statements));
 		this.hasCurlyBraces = hasCurlyBraces;
+		initSourceRange(sourceRange);
 	}
 	
-	public final ArrayView<ASTNeoNode> getStatements_asNodes() {
+	/** This represents a missing block */
+	public BlockStatement(SourceRange sourceRange) {
+		this.statements = null;
+		this.hasCurlyBraces = false;
+		initSourceRange(sourceRange);
+	}
+	
+	public final ArrayView<ASTNeoNode> statements_asNodes() {
 		return CoreUtil.<ArrayView<ASTNeoNode>>blindCast(statements);
 	}
 	
@@ -51,9 +58,9 @@ public class BlockStatement extends BodyStatement implements IScopeNode {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(hasCurlyBraces, "{\n");
-		cp.appendNodeList(getStatements_asNodes(), "\n", true);
-		cp.append(hasCurlyBraces, "}\n");
+		cp.append(hasCurlyBraces, "{");
+		cp.appendNodeList("\n", statements_asNodes(), "\n", "\n", " ");
+		cp.append(hasCurlyBraces, "}");
 	}
 	
 	@Override

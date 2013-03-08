@@ -14,13 +14,13 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
+import dtool.ast.ISourceRepresentation;
 import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
-import dtool.ast.statements.BodyStatement;
+import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
 import dtool.parser.DeeTokens;
-import dtool.parser.ISourceRepresentation;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -36,14 +36,11 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	public final ArrayView<TemplateParameter> templateParams;
 	public final ArrayView<IFunctionParameter> params;
 	public final ArrayView<FunctionAttributes> fnAttributes;
-	
-	public final IStatement frequire;
-	public final BodyStatement fnBody;
-	public final IStatement fensure;
+	public final IFunctionBody fnBody;
 	
 	public DefinitionFunction(DefUnitTuple defunitData, PROT prot, Reference retType,
 			ArrayView<IFunctionParameter> params, ArrayView<FunctionAttributes> fnAttributes, 
-			IStatement frequire, IStatement fensure, BodyStatement fbody, SourceRange sourceRange) {
+			IFunctionBody fnBody, SourceRange sourceRange) {
 		super(defunitData, prot);
 		assertNotNull(retType);
 		
@@ -51,9 +48,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		this.templateParams = null; // TODO BUG here
 		this.params = parentizeI(params);
 		this.fnAttributes = fnAttributes;
-		this.frequire = parentizeI(frequire);
-		this.fensure = parentizeI(fensure);
-		this.fnBody = parentizeI(fbody);
+		this.fnBody = parentizeI(fnBody);
 		
 		initSourceRange(sourceRange);
 	}
@@ -75,10 +70,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, templateParams);
 			TreeVisitor.acceptChildren(visitor, params);
-			//TreeVisitor.acceptChildren(visitor, type);
-			TreeVisitor.acceptChildren(visitor, frequire);
 			TreeVisitor.acceptChildren(visitor, fnBody);
-			TreeVisitor.acceptChildren(visitor, fensure);
 		}
 		visitor.endVisit(this);
 	}
@@ -86,9 +78,9 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNode(retType, " ");
-		cp.append(defname);
+		cp.appendNode(defname);
 		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
-		cp.appendList(fnAttributes, " ", false);
+		cp.appendList(fnAttributes, " ", true);
 		cp.appendNode(fnBody);
 	}
 	

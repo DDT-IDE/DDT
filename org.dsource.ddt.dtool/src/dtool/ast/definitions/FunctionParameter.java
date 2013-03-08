@@ -56,7 +56,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		paramAttribs.toStringAsCode(cp);
 		cp.appendNode(type, " ");
-		cp.append(defname);
+		cp.appendNode(defname);
 		cp.appendNode(" = ", defaultValue);
 		cp.append(isVariadic, "...");
 	}

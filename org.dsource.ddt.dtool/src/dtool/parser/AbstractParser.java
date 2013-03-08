@@ -37,7 +37,7 @@ public class AbstractParser {
 	protected final AbstractLexer lexer;
 	
 	protected final ArrayListDeque<LexElement> lookAheadQueue = new ArrayListDeque<AbstractParser.LexElement>();
-	protected LexElement lastLexElement = new LexElement(null, new Token(DeeTokens.WHITESPACE, "", 0));
+	protected LexElement lastLexElement = new LexElement(null, new Token(DeeTokens.EOF, "", 0));
 	// This initialization is important for some error reporting:
 	protected LexElement lastNonMissingLexElement = lastLexElement; 
 	

@@ -18,6 +18,7 @@ import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.DtorDeclaration;
 import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.NewDeclaration;
+import descent.internal.compiler.parser.PROT;
 import descent.internal.compiler.parser.StaticCtorDeclaration;
 import descent.internal.compiler.parser.StaticDtorDeclaration;
 import descent.internal.compiler.parser.TemplateInstanceWrapper;
@@ -33,6 +34,7 @@ import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.AutoFunctionReturnReference;
+import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
@@ -41,7 +43,11 @@ import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.Reference;
-import dtool.ast.statements.BodyStatement;
+import dtool.ast.statements.BlockStatement;
+import dtool.ast.statements.FunctionBody;
+import dtool.ast.statements.IFunctionBody;
+import dtool.ast.statements.IStatement;
+import dtool.ast.statements.InOutFunctionBody;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.parser.DeeTokens;
 import dtool.parser.Token;
@@ -220,7 +226,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 				new AutoFunctionReturnReference() : 
 				ReferenceConverter.convertType(elemTypeFunc.next, convContext);
 		
-		DefinitionFunction definitionFunction = new DefinitionFunction(
+		DefinitionFunction definitionFunction = createDefFunction(
 			DefinitionConverter.convertDsymbol(elem, convContext), 
 			elem.prot(),
 			rettype,
@@ -228,11 +234,28 @@ public class DefinitionConverter extends BaseDmdConverter {
 			null,
 			StatementConverterVisitor.convertStatement(elem.frequire, convContext),
 			StatementConverterVisitor.convertStatement(elem.fensure, convContext),
-			(BodyStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext),
+			(BlockStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext),
 			null
 		);
 		
 		return definitionFunction;
+	}
+	
+	public static DefinitionFunction createDefFunction(DefUnitTuple defunitData, PROT prot, Reference retType,
+		ArrayView<IFunctionParameter> params, ArrayView<FunctionAttributes> fnAttributes, 
+		IStatement frequire, IStatement fensure, BlockStatement fbody, SourceRange sourceRange) {
+		IFunctionBody fnBody;
+		if(frequire == null && fensure == null) {
+			if(fbody == null) {
+				fnBody = null;
+			} else {
+				fnBody = fbody;
+			}
+		} else {
+			/*WATHEVAR*/
+			fnBody = new InOutFunctionBody(false, null, null, fbody, null);
+		}
+		return new DefinitionFunction(defunitData, prot, retType, params, fnAttributes, fnBody, sourceRange);
 	}
 	
 	public static int convertVarArgs(int varargs) {
