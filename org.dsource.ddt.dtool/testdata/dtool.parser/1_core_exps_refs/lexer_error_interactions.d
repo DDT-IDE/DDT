@@ -28,9 +28,6 @@ xx"#ERROR(MT_SDxID)●
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 int foo #error(EXP_SEMICOLON) #@LEXER_ERRORS#error(<SE_decl)#comment(EOF):
 
-#AST_SOURCE_EXPECTED:
-int foo; #@LEXER_ERRORS#comment(EOF):
-
 #AST_STRUCTURE_EXPECTED:
 DefVariable(? ?) InvalidSyntaxElement 
 

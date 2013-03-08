@@ -173,7 +173,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				if(error.errorType == ParserErrorTypes.EXPECTED_TOKEN) {
 					String rpl;
 					if(mde.sourceValue != null) {
-						assertTrue(mde.sourceWasIncluded == false);
+						assertTrue(mde.sourceWasIncluded == false || mde.sourceValue.isEmpty());
 						rpl = mde.sourceValue;
 					} else {
 						DeeTokens expectedToken = DeeTokens.valueOf(error.msgData.toString());

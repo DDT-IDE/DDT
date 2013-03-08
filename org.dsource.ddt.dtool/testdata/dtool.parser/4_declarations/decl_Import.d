@@ -15,8 +15,8 @@ DeclarationImport(ImportContent(RefModule))
 DeclarationImport(ImportContent(RefModule) ImportContent(RefModule) ImportContent(RefModule))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-import#error(EXP_ID)#error(EXP_SEMICOLON)#AST_SOURCE_EXPECTED:
-import ;
+import#error(EXP_ID)#error(EXP_SEMICOLON)#comment(EOF):
+
 #AST_STRUCTURE_EXPECTED:
 DeclarationImport(ImportContent(RefModule))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂

@@ -17,8 +17,6 @@ ExpAssert(#@《 #@EXP_ASSIGN ● MissingExpression ●》(EXP1) #@《#@EXP_ASSIG
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-assert #error(EXP_OPEN_PARENS)
-#AST_SOURCE_EXPECTED:
-assert
+assert #error(EXP_OPEN_PARENS)【】
 #AST_STRUCTURE_EXPECTED:
 ExpAssert()

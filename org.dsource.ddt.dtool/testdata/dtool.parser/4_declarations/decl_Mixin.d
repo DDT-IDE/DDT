@@ -13,13 +13,9 @@ mixin(#@EXP_ANY);
 #AST_STRUCTURE_EXPECTED:
 DeclarationMixinString(#@EXP_ANY)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-mixin #error:EXP_OPEN_PARENS #error:EXP_SEMICOLON
-mixin #error:EXP_OPEN_PARENS ;
-mixin #error:EXP_OPEN_PARENS #error:EXP_SEMICOLON #error:SE_decl ) ;
-#AST_SOURCE_EXPECTED:
-mixin();
-mixin();
-mixin(); );
+mixin #error:EXP_OPEN_PARENS¤【()】 #error:EXP_SEMICOLON
+mixin #error:EXP_OPEN_PARENS¤【()】 ;
+mixin #error:EXP_OPEN_PARENS¤【()】 #error:EXP_SEMICOLON #error:SE_decl ) ;
 #AST_STRUCTURE_EXPECTED:
 DeclarationMixinString()
 DeclarationMixinString()

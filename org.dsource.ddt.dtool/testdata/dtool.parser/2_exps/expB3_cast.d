@@ -30,9 +30,8 @@ ExpCastQual( #@ExpIdentifier )
 #PARSE(EXPRESSION)       cast   ( #@TYPE_REFS #error(EXP_CLOSE_PARENS) #parser(IgnoreRest) foo  
 #AST_STRUCTURE_EXPECTED: ExpCast( #@TYPE_REFS )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)       cast   ( #@CAST_QUAL1 #error(EXP_OPEN_PARENS) #error(EXP_CLOSE_PARENS) #parser(IgnoreRest) foo  
+#PARSE(EXPRESSION)       cast( #@CAST_QUAL1 #error(EXP_OPEN_PARENS)【】 #error(EXP_CLOSE_PARENS) #parser(IgnoreRest) foo
 #AST_STRUCTURE_EXPECTED: ExpCast( RefTypeModifier() )
-#AST_SOURCE_EXPECTED:    cast   ( #@CAST_QUAL1 )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)       cast   ( #@CAST_QUAL2 #error(EXP_CLOSE_PARENS) #parser(IgnoreRest) foo  
 #AST_STRUCTURE_EXPECTED: ExpCastQual( )
@@ -41,6 +40,5 @@ ExpCastQual( #@ExpIdentifier )
 #PARSE(EXPRESSION)       cast   (  #error(EXP_CLOSE_PARENS) / 7  
 #AST_STRUCTURE_EXPECTED: ExpInfix(ExpCast( #@MISSING_REF ) Integer) 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)       cast   #error(EXP_OPEN_PARENS) / 7
+#PARSE(EXPRESSION)       cast #error(EXP_OPEN_PARENS)【】 / 7
 #AST_STRUCTURE_EXPECTED: ExpInfix(ExpCast( )               Integer) 
-#AST_SOURCE_EXPECTED:    cast / 7

@@ -41,8 +41,6 @@ typeof( #@NO_EXP #error:EXP_CLOSE_PARENS
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(RefTypeof(#@NO_EXP) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-typeof #error:EXP_OPEN_PARENS
+typeof #error(EXP_OPEN_PARENS)【】
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(RefTypeof)
-#AST_SOURCE_EXPECTED:
-typeof

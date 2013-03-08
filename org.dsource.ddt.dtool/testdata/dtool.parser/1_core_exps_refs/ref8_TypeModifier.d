@@ -37,5 +37,3 @@ InvalidDeclaration(RefTypeModifier(#@NO_REF) )
 #@BASE #error:EXPRULE_decl
 #AST_STRUCTURE_EXPECTED:
 DeclarationBasicAttrib()
-#AST_SOURCE_EXPECTED:
-#@BASE

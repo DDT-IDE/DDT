@@ -4,6 +4,6 @@
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-module #error:ITC{}foo#error:ITC{}; 
+module #error(ITC){}foo#error(ITC){}; 
 #AST_SOURCE_EXPECTED:
 module foo;

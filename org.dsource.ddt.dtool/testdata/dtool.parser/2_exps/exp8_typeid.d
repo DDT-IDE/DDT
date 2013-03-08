@@ -4,6 +4,5 @@ typeid( #@CONTENT《#@EXPS__NO_REFS__NO_AMBIGS●#@TYPE_REFS●#@NO_ROE》  #@Pa
 #AST_STRUCTURE_EXPECTED:
 ExpTypeId( #@CONTENT  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)       typeid #error(EXP_OPEN_PARENS)
-#AST_SOURCE_EXPECTED:    typeid
+#PARSE(EXPRESSION)       typeid #error(EXP_OPEN_PARENS)【】
 #AST_STRUCTURE_EXPECTED: ExpTypeId()

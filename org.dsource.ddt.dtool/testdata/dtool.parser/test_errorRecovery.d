@@ -45,11 +45,8 @@ DeclarationImport(ImportSelective(ImportContent(?) RefImportSelection RefImportS
 DefinitionVariable(? DefSymbol InitializerExp(MissingExpression) DefVarFragment(?))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of syntax:  KEYWORD(ARGUMENT);
-mixin #error(EXP_OPEN_PARENS) #error(EXP_SEMICOLON)
-mixin #error(EXP_OPEN_PARENS) ;
-#AST_SOURCE_EXPECTED:
-mixin() ;
-mixin() ;
+mixin #error(EXP_OPEN_PARENS)¤【()】 #error(EXP_SEMICOLON)
+mixin #error(EXP_OPEN_PARENS)¤【()】 ;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of syntax:  KEYWORD(ARGUMENT) DECL;
 extern(C) #error(EXPRULE_decl)
 #AST_STRUCTURE_EXPECTED:

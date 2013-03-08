@@ -17,9 +17,7 @@ ExpMixinString( #@《#@EXP_ASSIGN●MissingExpression》(EXP1)  )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-mixin #error(EXP_OPEN_PARENS)
-#AST_SOURCE_EXPECTED:
-mixin
+mixin #error(EXP_OPEN_PARENS)【】
 #AST_STRUCTURE_EXPECTED:
 ExpMixinString()
 
@@ -42,8 +40,6 @@ ExpImportString( #@《#@EXP_ASSIGN●MissingExpression》(EXP1)  )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-import #error(EXP_OPEN_PARENS)
-#AST_SOURCE_EXPECTED:
-import
+import #error(EXP_OPEN_PARENS)【】
 #AST_STRUCTURE_EXPECTED:
 ExpImportString()
