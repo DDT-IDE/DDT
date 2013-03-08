@@ -115,12 +115,15 @@ public class NewUtils {
 		}
 	}
 	
-	public static String removeRange(String string, int startIndex, int endIndex) {
+	public static String removeRange(String string, int startIndex, int length) {
+		int endIndex = startIndex + length;
+		assertTrue(startIndex >= 0 && length >= 0 && endIndex <= string.length());
 		return string.substring(0, startIndex) + string.substring(endIndex, string.length());
 	}
 	
-	public static String replaceRange(String string, int startIndex, int endIndex, String repl) {
-		assertTrue(startIndex >= 0 && startIndex <= endIndex && endIndex <= string.length());
+	public static String replaceRange(String string, int startIndex, int length, String repl) {
+		int endIndex = startIndex + length;
+		assertTrue(startIndex >= 0 && length >= 0 && endIndex <= string.length());
 		return string.substring(0, startIndex) + repl + string.substring(endIndex, string.length());
 	}
 	

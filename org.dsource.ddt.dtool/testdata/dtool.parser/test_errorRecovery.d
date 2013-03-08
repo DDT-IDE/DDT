@@ -1,5 +1,5 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#error(SE_decl){)} ;
+#error(SE_decl) ) ;
 #error(SE_decl) ]
 #error(SE_decl) }
 
@@ -52,17 +52,14 @@ mixin() ;
 mixin() ;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :recovery of syntax:  KEYWORD(ARGUMENT) DECL;
 extern(C) #error(EXPRULE_decl)
-
 #AST_STRUCTURE_EXPECTED:
 DeclarationLinkage()
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 extern(C) #error(SE_decl) ;
-
 #AST_STRUCTURE_EXPECTED:
 DeclarationLinkage(InvalidSyntaxElement)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 extern(C) #error(SE_decl) ] int foo;
-
 #AST_STRUCTURE_EXPECTED:
 DeclarationLinkage(InvalidSyntaxElement)
 DefinitionVariable(? ?)

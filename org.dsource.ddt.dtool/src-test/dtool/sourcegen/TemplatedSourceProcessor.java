@@ -112,7 +112,8 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 	protected class ProcessingState {
 		protected final boolean isHeaderCase;
 		protected final String originalSource;
-		protected StringBuilder sourceSB = new StringBuilder();
+		protected final StringBuilder originalSourceSB = new StringBuilder();
+		protected StringBuilder sourceSB = originalSourceSB;
 		protected final ArrayList<MetadataEntry> metadata = new ArrayList<MetadataEntry>();
 		protected final Map<String, TspExpansionElement> expansionDefinitions = 
 			new HashMap<String, TspExpansionElement>();
@@ -138,6 +139,10 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 			String source = sourceSB.toString();
 			return new ProcessingState(isHeaderCase, originalSource, source, metadata, activeExpansions,
 				expansionDefinitions);
+		}
+		
+		public boolean isTopMostSourceOutput() {
+			return sourceSB == originalSourceSB;
 		}
 		
 		public TspExpansionElement getExpansion(String expansionId) {
@@ -228,7 +233,7 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 	
 	protected class TemporaryMetadataEntry extends MetadataEntry {
 		public TemporaryMetadataEntry(TspMetadataElement mdElem) {
-			super(mdElem.tag, mdElem.value, null, -1);
+			super(mdElem.tag, mdElem.value, null, -1, false);
 		}
 	}
 	
@@ -262,11 +267,14 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 			} else {
 				associatedSource = sourceCase.sourceSB.toString();
 				sourceCase.sourceSB = mdEndElem.originalSB; // Restore original source output
-				offset = -1;
 			}
 		}
+		boolean sourceWasIncluded = mdElem.outputSource;
+		if(!sourceCase.isTopMostSourceOutput()) {
+			offset = -1; 
+		}
 		
-		MetadataEntry mde = new MetadataEntry(mdElem.tag, mdElem.value, associatedSource, offset);
+		MetadataEntry mde = new MetadataEntry(mdElem.tag, mdElem.value, associatedSource, offset, sourceWasIncluded);
 		assertTrue(sourceCase.metadata.get(mdEndElem.metadataIx) instanceof TemporaryMetadataEntry);
 		sourceCase.metadata.set(mdEndElem.metadataIx, mde);
 	}

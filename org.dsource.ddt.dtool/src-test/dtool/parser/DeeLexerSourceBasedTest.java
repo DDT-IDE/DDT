@@ -51,7 +51,7 @@ public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
 	public void runLexerSourceBaseTests$() throws Exception {
 		for (AnnotatedSource testCase : getSourceBasedTests(file, null)) {
 			MetadataEntry lexerTestMde = assertNotNull_(testCase.findMetadata("LEXERTEST"));
-			runLexerSourceBasedTest(testCase.source, assertNotNull_(lexerTestMde.associatedSource));
+			runLexerSourceBasedTest(testCase.source, assertNotNull_(lexerTestMde.sourceValue));
 		}
 	}
 	

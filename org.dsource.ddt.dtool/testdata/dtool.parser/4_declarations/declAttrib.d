@@ -134,13 +134,13 @@ auto ??
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ATTRIBS_BAL_BROKEN《 
- ►extern(#error(BAD_LINKAGE_ID)#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)●
- ►extern(C++#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)●
- ►align(#error(EXP_INTEGER_DECIMAL)#error(EXP_CLOSE_PARENS)#DECL_BROKEN(flag)●
- ►align(16#error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag)●
- ►pragma #error(EXP_OPEN_PARENS) #error(!)【)】 #DECL_BROKEN(flag)●
- ►pragma ( #error(EXP_ID) #error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag) ●
- ►pragma ( foo2 #error(EXP_CLOSE_PARENS) #DECL_BROKEN(flag) ● 
+ ►extern(#error(BAD_LINKAGE_ID)#error(EXP_CLOSE_PARENS)●
+ ►extern(C++#error(EXP_CLOSE_PARENS)●
+ ►align(#error(EXP_INTEGER_DECIMAL)#error(EXP_CLOSE_PARENS)●
+ ►align(16#error(EXP_CLOSE_PARENS) ●
+ ►pragma #error(EXP_OPEN_PARENS)¤【()】●
+ ►pragma ( #error(EXP_ID) #error(EXP_CLOSE_PARENS)  ●
+ ►pragma ( foo2 #error(EXP_CLOSE_PARENS)  ● 
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

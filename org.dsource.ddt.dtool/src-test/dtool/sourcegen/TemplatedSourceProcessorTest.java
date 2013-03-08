@@ -72,8 +72,8 @@ public class TemplatedSourceProcessorTest extends CommonTestUtils {
 	protected void checkMetadata(MetadataEntry mde1, MetadataEntry expMde) {
 		assertAreEqual(mde1.name, expMde.name);
 		assertAreEqual(mde1.value, expMde.value);
-		if(expMde.associatedSource != DONT_CHECK)
-			assertAreEqual(mde1.associatedSource, expMde.associatedSource);
+		if(expMde.sourceValue != DONT_CHECK)
+			assertAreEqual(mde1.sourceValue, expMde.sourceValue);
 		assertAreEqual(mde1.offset, expMde.offset);
 	}
 	
@@ -81,16 +81,17 @@ public class TemplatedSourceProcessorTest extends CommonTestUtils {
 
 #:SPLIT blah blah -----------------
 text
-━━━━━━━━━━━━━━━━━━━━━━━━
+#:HEADER ---------------------------
+header2
+━━━━━━━━━━━━━━━━━━━━━━━━ other split syntax
 text
 ━━━━━━━━━━━━━━━━━━━━━━━━ →◙
 text with custom marker: ◙◙
-Ⓗ━━━━━━━━━━━━━━━━━━━━━━━━
+Ⓗ━━━━━━━━━━━━━━━━━━━━━━━━ other header syntax
 header1
-#:HEADER ---------------------------
-header2
-▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃
+▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Metadata:
 #metadata(value,value,value){associatedSource}
+#metadata(value,value,value)¤【sourceValueNotIncluded】
 
 #metadata(value,value,value)《
 	associated Source
@@ -98,14 +99,20 @@ header2
 》 
 
 #metadata_endlineFormat(value,value,value):
+  blah blah
+#:END:
 
-#:END
+#metadata(value,value,value){not part of MD}
 
-#@expansion(refIdentifier) 《►
-	arg1●
-	arg2●
-	arg3●
-》 // There is no arg4
+▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃  Expansion
+#@expansion(refIdentifier) 《
+	►arg1●
+	►arg2●
+	►arg3●
+¤》 // There is no arg4
+	 
+#@EXP_ID•SOURCE_NOT_PART_OF_EXP_ID 	 
+	 
 	 
 	 */
 	
@@ -201,7 +208,13 @@ header2
 			"asdf ## #error{xxx}==",
 			checkMD("asdf # xxx==", new MetadataEntry("error", null, "xxx", 7))
 		);
-		
+		// Source not included
+		testSourceProcessing("#", 
+			"asdf ## #error¤{xxx}==",
+			checkMD("asdf # ==", new MetadataEntry("error", null, "xxx", 7))
+		);		
+		testSourceProcessing("#", "badsyntax #foo()¤", 17);
+		testSourceProcessing("#", "badsyntax #fooxx¤", 17);
 		
 		testSourceProcessing("#", 
 			"foo1 ## #error_EXP:asfd_ad{xxx}==",
@@ -241,22 +254,28 @@ header2
 		testSourceProcessing("#", 
 			"multilineMD #error(arg1,arg2,arg3): blah",
 			
-			checkMD("multilineMD ", new MetadataEntry("error", "arg1,arg2,arg3", " blah", -1))
+			checkMD("multilineMD ", new MetadataEntry("error", "arg1,arg2,arg3", " blah", 12))
 		);
 		
 		// boundary
 		testSourceProcessing("#", 
-			"multilineMD #error(arg1,arg2,arg3):\n",
+			"multilineMD---#error(arg1,arg2,arg3):\n",
 			
-			checkMD("multilineMD ", new MetadataEntry("error", "arg1,arg2,arg3", "", -1))
+			checkMD("multilineMD---", new MetadataEntry("error", "arg1,arg2,arg3", "", 14))
 		);
 		
-		// #:END delim
+		// #:END: delim
 		testSourceProcessing("#", 
-			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2\nline3\n#:END:\nlineOther4\n",
+			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2\nline3\n#:END:lineOther4\n",
 			
 			checkMD("multilineMD lineOther4\n", 
-				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", -1))
+				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 12))
+		);
+		testSourceProcessing("#", 
+			"multilineMD #error(arg1,arg2,arg3):line0\nline1\nline2\nline3#:END:afterEnd\nlineOther4\n",
+			
+			checkMD("multilineMD afterEnd\nlineOther4\n", 
+				new MetadataEntry("error", "arg1,arg2,arg3", "line0\nline1\nline2\nline3", 12))
 		);
 		
 		// split interaction
@@ -264,18 +283,18 @@ header2
 			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2\nline3\n#:SPLIT:\nlineOther4\n",
 			
 			checkMD("multilineMD ", 
-				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", -1)),
+				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 12)),
 			checkMD("lineOther4\n")
 		);
 		
 		// nested MDs
 		testSourceProcessing("#", 
-			"blah before #multiline1:\n blah1\n#multiline2:\n blah2\n#tag(arg1) blah2-cont",
+			"xxx#multiline1:\n xxxxA\n#multiline2:\n xxB\n#tag(arg1) blah2-cont",
 			
-			checkMD("blah before ", 
-				new MetadataEntry("multiline1", null, " blah1\n", -1),
-				new MetadataEntry("multiline2", null, " blah2\n blah2-cont", -1),
-				new MetadataEntry("tag", "arg1", null, 7))
+			checkMD("xxx", 
+				new MetadataEntry("multiline1", null, " xxxxA\n", 3),
+				new MetadataEntry("multiline2", null, " xxB\n blah2-cont", -1),
+				new MetadataEntry("tag", "arg1", null, -1))
 		);
 		
 		// All together
@@ -284,7 +303,7 @@ header2
 			"asdf ## #error(info1)=="+
 			"asdf ## #error=="+
 			"asdf ## #error{xxx}=="+
-			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2#tagInMD(blah){xxx}\nline3\n#:END:\nlineOther4\n",
+			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2#tagInMD(blah){xxx}\nline3\n#:END:lineOther4\n",
 			
 			checkMD(
 				"foo1 # xxx=="+
@@ -296,8 +315,8 @@ header2
 				new MetadataEntry("error", "info1", null, 7 +5+7),
 				new MetadataEntry("error", null, null, 7 +5+7 +2+7),
 				new MetadataEntry("error", null, "xxx", 7 +5+7 +2+7 +2+7),
-				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2xxx\nline3\n", -1),
-				new MetadataEntry("tagInMD", "blah", "xxx", 12)
+				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2xxx\nline3\n", 7 +5+7 +2+7 +2+7 +3+2+12),
+				new MetadataEntry("tagInMD", "blah", "xxx", -1)
 			)
 		);
 	}
@@ -594,7 +613,7 @@ header2
 		testSourceProcessing("#", "> #MD(►xyz, line\n){ ►ABC,line}==", 
 			checkSourceOnly("> ABC,line==", 1)); 
 		testSourceProcessing("#", "> #MD:\n►asd, line\n ==", 
-			checkMD("> ", new MetadataEntry("MD", null, "asd, line\n ==", -1)));
+			checkMD("> ", new MetadataEntry("MD", null, "asd, line\n ==", 2)));
 		
 		
 		// Syntax errors: interactions:
@@ -775,7 +794,7 @@ header2
 			"asdf ## #error=="+
 			"asdf ## #error{xxx}=="+
 			"#:SPLIT ____\n"+
-			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2\nline3\n#:END:\nlineOther4\n",
+			"multilineMD #error(arg1,arg2,arg3):\n line1\nline2\nline3\n#:END:lineOther4\n",
 			
 			checkMD(
 				"foo1 # xxx=="+
@@ -791,7 +810,7 @@ header2
 			),
 			checkMD(
 				"multilineMD lineOther4\n",
-				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", -1)
+				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 12)
 			)
 		);
 		
@@ -852,16 +871,16 @@ header2
 			"> #@EXP{AA,B,CCCC} #tag(arg):\ntagMD #nestedMD{xxx}",
 			
 			checkMD("> AA ", 
-				new MetadataEntry("tag", "arg", "tagMD xxx", -1),
-				new MetadataEntry("nestedMD", null, "xxx", 6))
+				new MetadataEntry("tag", "arg", "tagMD xxx", 5),
+				new MetadataEntry("nestedMD", null, "xxx", -1))
 				,
 			checkMD("> B ", 
-				new MetadataEntry("tag", "arg", "tagMD xxx", -1),
-				new MetadataEntry("nestedMD", null, "xxx", 6))
+				new MetadataEntry("tag", "arg", "tagMD xxx", 4),
+				new MetadataEntry("nestedMD", null, "xxx", -1))
 				,
 			checkMD("> CCCC ", 
-				new MetadataEntry("tag", "arg", "tagMD xxx", -1),
-				new MetadataEntry("nestedMD", null, "xxx", 6)
+				new MetadataEntry("tag", "arg", "tagMD xxx", 7),
+				new MetadataEntry("nestedMD", null, "xxx", -1)
 				)
 		);
 	}

@@ -309,7 +309,6 @@ public class TemplateSourceProcessorParser {
 		
 		String value = parser.tryConsume("(") ? consumeDelimitedString(parser, ")", false) : null;
 		
-		boolean outputSource = true;
 		Argument sourceValue = null;
 		boolean colonSyntaxConsumed = false;
 		
@@ -322,6 +321,8 @@ public class TemplateSourceProcessorParser {
 			}
 		}
 		
+		boolean outputSource = parser.tryConsume("¤") == false;
+		
 		int alt = parser.tryConsume(OPEN_DELIMS);
 		if(alt != -1) {
 			String closeDelim = CLOSE_DELIMS[alt];
@@ -329,12 +330,10 @@ public class TemplateSourceProcessorParser {
 		} else if(colonSyntaxConsumed == false && parser.tryConsume(":")) {
 			//checkError(parser.tryConsumeNewlineRule() == false, parser);
 			parser.tryConsumeNewlineRule();
-			sourceValue = parseArgument(parser, "#:END", true);
-			if(!parser.lookaheadIsEOF()) {
-				parser.seekToNewLine();
-			}
+			sourceValue = parseArgument(parser, "#:END:", true);
 			outputSource = false;
 		}
+		checkError(outputSource == false && sourceValue == null, parser);
 		
 		return new TspMetadataElement(name, value, sourceValue, outputSource);
 	}

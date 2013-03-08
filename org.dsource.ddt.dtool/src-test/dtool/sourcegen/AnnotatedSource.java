@@ -23,23 +23,35 @@ public class AnnotatedSource {
 	public static class MetadataEntry {
 		public final String name;
 		public final String value;
-		public final String associatedSource;
 		public final int offset;
+		public final String sourceValue;
+		public boolean sourceWasIncluded;
 		
 		public MetadataEntry(String name, String extraValue, String associatedSource, int offset) {
+			this(name, extraValue, associatedSource, offset, true);
+		}
+		
+		public MetadataEntry(String name, String extraValue, String mdSource, int offset, boolean sourceWasIncluded) {
 			this.name = name;
 			this.value = extraValue;
-			this.associatedSource = associatedSource;
+			this.sourceValue = mdSource;
 			this.offset = offset;
+			this.sourceWasIncluded = sourceWasIncluded;
 		}
 		
 		public SourceRange getSourceRange() {
-			return new SourceRange(offset, associatedSource == null ? 0 : associatedSource.length());
+			return new SourceRange(offset, sourceValue == null ? 0 : sourceValue.length());
+		}
+		
+		public int getOffsetFromNoLength() {
+			assertTrue(offset >= 0);
+			assertTrue(sourceValue == null);
+			return offset;
 		}
 		
 		@Override
 		public String toString() {
-			return "["+offset+"]" + name + "("+value+")" + associatedSource ;
+			return "["+offset+"]" + name + "("+value+")" + sourceValue ;
 		}
 	}
 	
