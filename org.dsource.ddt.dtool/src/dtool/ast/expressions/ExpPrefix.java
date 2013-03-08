@@ -73,8 +73,8 @@ public class ExpPrefix extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(kind.token.getSourceValue(), " ");
-		cp.append(exp);
+		cp.appendStrings(kind.token.getSourceValue(), " ");
+		cp.appendNode(exp);
 	}
 	
 }

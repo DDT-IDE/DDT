@@ -32,15 +32,10 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 	}
 	
 	public void toStringAsCode_body(ASTCodePrinter cp) {
-		if(bodySyntax == AttribBodySyntax.COLON) {
-			cp.append(" :\n");
-		} else if(bodySyntax == AttribBodySyntax.BRACE_BLOCK) {
-			cp.append(" {\n");
-		}
+		cp.append(bodySyntax == AttribBodySyntax.COLON, " :\n");
+		cp.append(bodySyntax == AttribBodySyntax.BRACE_BLOCK, " {\n");
 		cp.appendNode(body);
-		if(bodySyntax == AttribBodySyntax.BRACE_BLOCK) {
-			cp.append("}");
-		}
+		cp.append(bodySyntax == AttribBodySyntax.BRACE_BLOCK, "}");
 	}
 	
 }

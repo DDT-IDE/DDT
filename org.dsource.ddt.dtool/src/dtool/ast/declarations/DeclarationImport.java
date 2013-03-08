@@ -24,16 +24,18 @@ import dtool.util.ArrayView;
 public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 	
 	public final ArrayView<IImportFragment> imports;
-	public final ArrayView<ASTNeoNode> imports_asNodes;
 	public final boolean isStatic;
 	public boolean isTransitive; // aka public imports
 	
 	public DeclarationImport(boolean isStatic, ArrayView<IImportFragment> imports, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.imports = parentizeI(imports);
-		this.imports_asNodes = CoreUtil.<ArrayView<ASTNeoNode>>blindCast(imports);
 		this.isStatic = isStatic;
-		this.isTransitive = false; // TODO, should be determine by surronding analysis
+		this.isTransitive = false; // TODO, should be determined by surronding analysis
+	}
+	
+	public final ArrayView<ASTNeoNode> imports_asNodes() {
+		return CoreUtil.<ArrayView<ASTNeoNode>>blindCast(imports);
 	}
 	
 	@Override
@@ -61,17 +63,15 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 	
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator() {
-		return imports_asNodes.iterator();
+		return imports_asNodes().iterator();
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		if(isStatic) {
-			cp.append("static ");
-		}
+		cp.append(isStatic, "static ");
 		
 		cp.append("import ");
-		cp.appendNodeList(imports_asNodes, ", ");
+		cp.appendNodeList(imports_asNodes(), ", ");
 		cp.append(";");
 	}
 	

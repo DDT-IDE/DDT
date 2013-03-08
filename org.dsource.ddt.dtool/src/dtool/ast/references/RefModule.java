@@ -27,7 +27,7 @@ import dtool.util.ArrayView;
 public class RefModule extends NamedReference {
 	
 	public final ArrayView<Token> packageList;
-	public final ArrayView<String> packages; // Old API, refactor?
+	public final ArrayView<String> packages; // TODO: Old API, refactor?
 	public final String module;
 	
 	public RefModule(ArrayView<Token> packageList, String module, SourceRange sourceRange) {

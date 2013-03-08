@@ -7,6 +7,7 @@ import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.ISourceRepresentation;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
@@ -15,7 +16,7 @@ import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationBasicAttrib extends DeclarationAttrib {
 	
-	public static enum AttributeKinds {
+	public static enum AttributeKinds implements ISourceRepresentation {
 		DEPRECATED,
 		STATIC,
 		EXTERN,
@@ -56,7 +57,8 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 			return 2 >> ordinal();
 		}
 		
-		public String toStringAsCode() {
+		@Override
+		public String getSourceValue() {
 			return toString().toLowerCase();
 		}
 	}
@@ -85,7 +87,7 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(declAttrib.toStringAsCode(), " ");
+		cp.appendStrings(declAttrib.getSourceValue(), " ");
 		toStringAsCode_body(cp);
 	}
 	

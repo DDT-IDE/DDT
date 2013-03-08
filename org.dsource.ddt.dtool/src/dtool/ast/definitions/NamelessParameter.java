@@ -50,7 +50,7 @@ public class NamelessParameter extends ASTNeoNode implements IFunctionParameter 
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		paramAttribs.toStringAsCode(cp);
-		cp.append(type);
+		cp.appendNode(type);
 		cp.appendNode(" = ", defaultValue);
 		cp.append(isVariadic, "...");
 	}

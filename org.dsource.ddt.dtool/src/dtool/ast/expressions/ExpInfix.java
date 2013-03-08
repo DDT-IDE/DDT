@@ -149,9 +149,9 @@ public class ExpInfix extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(leftExp);
-		cp.append(" ", kind.sourceValue, " "); // Some operators have alpha so we need spaces to sep.
-		cp.append(rightExp);
+		cp.appendNode(leftExp);
+		cp.appendStrings(" ", kind.sourceValue, " "); // Some operators have alpha so we need spaces to sep.
+		cp.appendNode(rightExp);
 	}
 	
 }

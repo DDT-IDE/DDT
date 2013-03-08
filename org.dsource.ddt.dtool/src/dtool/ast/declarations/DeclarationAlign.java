@@ -35,7 +35,7 @@ public class DeclarationAlign extends DeclarationAttrib {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("align");
 		if(alignNum != null) {
-			cp.append("(", alignNum.getSourceValue(), ")");
+			cp.appendStrings("(", alignNum.getSourceValue(), ")");
 		}
 		cp.append(" ");
 		toStringAsCode_body(cp);

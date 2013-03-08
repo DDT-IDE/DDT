@@ -53,7 +53,7 @@ public class ExpReference extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		ref.toStringAsCode(cp);
+		cp.appendNode(ref);
 	}
 	
 }

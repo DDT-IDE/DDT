@@ -49,7 +49,7 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(getName(), " = ");
+		cp.appendStrings(getName(), " = ");
 		cp.appendNode(target);
 	}
 	

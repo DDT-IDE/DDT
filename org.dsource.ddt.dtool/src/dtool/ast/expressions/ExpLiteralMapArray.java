@@ -1,5 +1,6 @@
 package dtool.ast.expressions;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
@@ -14,7 +15,7 @@ public class ExpLiteralMapArray extends Expression {
 	
 	public ExpLiteralMapArray(ArrayView<MapArrayLiteralKeyValue> entries, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
-		this.entries = parentize(entries);
+		this.entries = parentize(assertNotNull_(entries));
 	}
 	
 	@Override
@@ -34,12 +35,7 @@ public class ExpLiteralMapArray extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("[ ");
-		for (int i = 0; i < entries.size(); i++) {
-			if(i != 0) {
-				cp.append(", ");
-			}
-			cp.append(entries.get(i));
-		}
+		cp.appendNodeList(entries, ", ");
 		cp.append(" ]");
 	}
 	
@@ -71,9 +67,9 @@ public class ExpLiteralMapArray extends Expression {
 		
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.append(key);
+			cp.appendNode(key);
 			cp.append(" : ");
-			cp.append(value);
+			cp.appendNode(value);
 		}
 	}
 	

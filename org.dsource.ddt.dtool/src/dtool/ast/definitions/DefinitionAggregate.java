@@ -54,7 +54,7 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	@Override
 	public String toStringForHoverSignature() {
 		ASTCodePrinter cp = new ASTCodePrinter();
-		cp.append(getModuleScope().toStringAsElement(), ".", getName());
+		cp.appendStrings(getModuleScope().toStringAsElement(), ".", getName());
 		cp.append(ASTCodePrinter.toStringParamListAsElements(templateParams));
 		return cp.toString();
 	}

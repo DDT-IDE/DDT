@@ -11,18 +11,23 @@ import dtool.ast.SourceRange;
 public class ExpCastQual extends Expression {
 	
 	public static enum CastQualifiers {
-		 CONST,
-		 CONST_SHARED,
-		 INOUT,
-		 INOUT_SHARED,
-		 SHARED,
-		 SHARED_CONST,
-		 SHARED_INOUT,
-		 IMMUTABLE,
-		 ;
-
+		CONST("const"),
+		CONST_SHARED("const shared"),
+		INOUT("inout"),
+		INOUT_SHARED("inout shared"),
+		SHARED("shared"),
+		SHARED_CONST("shared const"),
+		SHARED_INOUT("shared inout"),
+		IMMUTABLE("immutable"),
+		;
+		
+		private String sourceValue;
+		
+		private CastQualifiers(String sourceValue) {
+			this.sourceValue = sourceValue;
+		}
 		public String toStringAsCode() {
-			return toString().toLowerCase().replace("_", " ");
+			return sourceValue;
 		}
 	}
 	
@@ -53,8 +58,8 @@ public class ExpCastQual extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("cast");
-		cp.append("(", castQualifier.toStringAsCode(), ")");
-		cp.append(exp);
+		cp.appendStrings("(", castQualifier.toStringAsCode(), ")");
+		cp.appendNode(exp);
 	}
 	
 }

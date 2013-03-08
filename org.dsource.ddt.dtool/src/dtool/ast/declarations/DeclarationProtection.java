@@ -7,6 +7,7 @@ import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.ISourceRepresentation;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
@@ -14,7 +15,7 @@ import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationProtection extends DeclarationAttrib {
 	
-	public enum Protection {
+	public enum Protection implements ISourceRepresentation {
 	    PRIVATE,
 	    PACKAGE,
 	    PROTECTED,
@@ -22,7 +23,8 @@ public class DeclarationProtection extends DeclarationAttrib {
 	    EXPORT,
 	    ;
 		
-		public String toStringAsCode() {
+		@Override
+		public String getSourceValue() {
 			return toString().toLowerCase();
 		}
 	}
@@ -50,7 +52,7 @@ public class DeclarationProtection extends DeclarationAttrib {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(protection.toStringAsCode());
+		cp.append(protection);
 		cp.append(" ");
 		toStringAsCode_body(cp);
 	}

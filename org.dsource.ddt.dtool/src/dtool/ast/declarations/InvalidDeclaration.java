@@ -37,9 +37,7 @@ public class InvalidDeclaration extends ASTNeoNode implements IStatement {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNode(node);
-		if(consumedSemiColon) {
-			cp.append(";");
-		}
+		cp.append(consumedSemiColon, ";");
 	}
 	
 }

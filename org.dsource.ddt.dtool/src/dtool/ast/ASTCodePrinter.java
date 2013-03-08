@@ -34,7 +34,7 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void append(String... strings) {
+	public void appendStrings(String... strings) {
 		for (String string : strings) {
 			append(string);
 		}
@@ -44,13 +44,6 @@ public class ASTCodePrinter {
 		if(condition) {
 			assertNotNull(string);
 			sb.append(string);
-		}
-	}
-	
-	@Deprecated
-	public void append(IASTNeoNode node) {
-		if(node != null) {
-			node.toStringAsCode(this);
 		}
 	}
 	

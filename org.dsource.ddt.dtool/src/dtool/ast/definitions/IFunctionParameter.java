@@ -67,7 +67,7 @@ public interface IFunctionParameter extends IASTNeoNode {
 		
 		public void toStringAsCode(ASTCodePrinter cp) {
 			for (FunctionParamAttribKinds attribKind : attribs) {
-				cp.append(attribKind.getSourceValue(), " ");
+				cp.appendStrings(attribKind.getSourceValue(), " ");
 			}
 		}
 		

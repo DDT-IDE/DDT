@@ -53,7 +53,7 @@ public class ExpPostfix extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(exp);
+		cp.appendNode(exp);
 		cp.append(kind.token.getSourceValue());
 	}
 	

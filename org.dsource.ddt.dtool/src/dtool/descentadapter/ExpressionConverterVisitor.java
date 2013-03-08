@@ -160,7 +160,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 			new ExpLiteralMapArray(
 				/*DescentASTConverter.convertMany(node.keys, Resolvable.class, convContext),*/
 				/*DescentASTConverter.convertMany(node.values, Resolvable.class, convContext),*/
-				 null,
+				ArrayView.create(new ExpLiteralMapArray.MapArrayLiteralKeyValue[0]) ,
 				DefinitionConverter.sourceRange(node)
 			)
 		);

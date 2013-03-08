@@ -58,7 +58,7 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNode(tplRef, "!");
 		if(isSingleArgSyntax()) {
-			cp.append(singleArg);
+			cp.appendNode(singleArg);
 		} else {
 			cp.appendNodeList("(", tplArgs, ", ", ")");
 		}

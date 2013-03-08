@@ -37,7 +37,7 @@ public class ExpCast extends Expression {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("cast");
 		cp.appendNode("(", type, ")");
-		cp.append(exp);
+		cp.appendNode(exp);
 	}
 	
 }

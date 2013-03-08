@@ -31,7 +31,7 @@ public class InitializerExp extends Initializer {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(exp);
+		cp.appendNode(exp);
 	}
 	
 }

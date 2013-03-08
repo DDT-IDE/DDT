@@ -64,7 +64,7 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("extern");
 		if(linkageName != null) {
-			cp.append("(", linkageName, ")");
+			cp.appendStrings("(", linkageName, ")");
 		}
 		cp.append(" ");
 		toStringAsCode_body(cp);
