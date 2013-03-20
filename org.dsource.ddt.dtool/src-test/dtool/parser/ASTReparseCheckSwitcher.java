@@ -68,9 +68,9 @@ public class ASTReparseCheckSwitcher {
 		case DECL_EMTPY:
 			return reparseCheck(snippedParser.parseDeclaration(), node);
 		case DECL_INVALID:
-			return reparseCheck(snippedParser.parseDeclaration(false), node);
+			return reparseCheck(snippedParser.parseDeclaration(), node);
 		case INVALID_SYNTAX:
-			return reparseCheck(snippedParser.parseDeclaration(false), node);
+			return reparseCheck(snippedParser.parseDeclaration(), node);
 		case NODE_LIST: 
 			// Dont reparse Nodelist since there are two kinds of this (single and multi) 
 			// and we dont know which one to parse TODO
@@ -172,7 +172,9 @@ public class ASTReparseCheckSwitcher {
 		case DEFINITION_VARIABLE:
 			return reparseCheck(snippedParser.parseDeclaration(), node);
 		case DEFINITION_VAR_FRAGMENT:
-			return reparseCheck(snippedParser.parseVarFragment(), node);
+			return reparseCheck(snippedParser.parseVarFragment(false), node);
+		case DEFINITION_AUTO_VARIABLE:
+			return reparseCheck(snippedParser.parseDeclaration(true, true), node);
 		case INITIALIZER_EXP:
 			InitializerExp initializerExp = (InitializerExp) node;
 			Resolvable initExpExp = initializerExp.exp;

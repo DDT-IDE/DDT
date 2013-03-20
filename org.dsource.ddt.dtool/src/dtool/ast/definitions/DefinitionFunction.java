@@ -202,13 +202,13 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 			+ " - " + NodeUtil.getOuterDefUnit(this).toStringAsElement();
 	}
 	
+	// TODO
 	public static final class AutoFunctionReturnReference extends Reference {
 		@Override
 		public void accept0(IASTVisitor visitor) {
-			boolean children = visitor.visit(this);
-			if (children) {
-			}
-			visitor.endVisit(this);					}
+			visitor.visit(this);
+			visitor.endVisit(this);
+		}
 		
 		@Override
 		public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {

@@ -113,19 +113,22 @@ public enum DeeTokens {
 	KW_EXPORT("export",       PROTECTION_KW),
 	
 	ATTRIBUTE_KW(),
-	KW_STATIC("static",             ATTRIBUTE_KW), 
-	KW_DEPRECATED("deprecated",     ATTRIBUTE_KW), 
-	KW_FINAL("final",               ATTRIBUTE_KW), 
-	KW_SYNCHRONIZED("synchronized", ATTRIBUTE_KW),
-	KW_OVERRIDE("override",         ATTRIBUTE_KW), 
 	KW_ABSTRACT("abstract",         ATTRIBUTE_KW),
-	KW_SCOPE("scope",               ATTRIBUTE_KW), 
-	KW___GSHARED("__gshared",       ATTRIBUTE_KW), 
-	KW_SHARED("shared",             ATTRIBUTE_KW),
 	
-	KW_INOUT("inout",               ATTRIBUTE_KW), 
 	KW_CONST("const",               ATTRIBUTE_KW),
 	KW_IMMUTABLE("immutable",       ATTRIBUTE_KW),
+	KW_INOUT("inout",               ATTRIBUTE_KW), 
+	KW_SHARED("shared",             ATTRIBUTE_KW),
+	
+	KW_DEPRECATED("deprecated",     ATTRIBUTE_KW), 
+	KW_FINAL("final",               ATTRIBUTE_KW), 
+	KW_NOTHROW("nothrow",           ATTRIBUTE_KW), 
+	KW_OVERRIDE("override",         ATTRIBUTE_KW), 
+	KW_PURE("pure",                 ATTRIBUTE_KW), 
+	KW___GSHARED("__gshared",       ATTRIBUTE_KW), 
+	KW_SCOPE("scope",               ATTRIBUTE_KW), 
+	KW_STATIC("static",             ATTRIBUTE_KW), 
+	KW_SYNCHRONIZED("synchronized", ATTRIBUTE_KW),
 	
 	
 	KW_ALIAS("alias"), KW_ALIGN("align"), 
@@ -142,9 +145,8 @@ public enum DeeTokens {
 	KW_IN("in"), KW_INTERFACE("interface"), KW_INVARIANT("invariant"), 
 	KW_IS("is"), KW_LAZY("lazy"),
 	KW_MACRO("macro"), KW_MIXIN("mixin"), KW_MODULE("module"), 
-	KW_NEW("new"), KW_NOTHROW("nothrow"), KW_NULL("null"), KW_OUT("out"), 
+	KW_NEW("new"), KW_NULL("null"), KW_OUT("out"), 
 	KW_PRAGMA("pragma"), 
-	KW_PURE("pure"),
 	KW_REF("ref"), KW_RETURN("return"), 
 	
 	KW_STRUCT("struct"), KW_SUPER("super"), KW_SWITCH("switch"), 

@@ -8,7 +8,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.expressions.Initializer;
-import dtool.ast.references.Reference;
+import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
@@ -49,7 +49,7 @@ public class DefinitionVarFragment extends DefUnit {
 		return init;
 	}
 	
-	public Reference getTypeReference() {
+	public IDefUnitReference getTypeReference() {
 		return ((DefinitionVariable) getParent()).getTypeReference();
 	}
 	

@@ -1,9 +1,11 @@
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic samples
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic cases
 
+static int foo;
 extern(C) Foo foo;
 align (1) int foo;
 
 #AST_STRUCTURE_EXPECTED:
+DeclarationBasicAttrib(DefinitionVariable(RefPrimitive DefSymbol))
 DeclarationLinkage(DefinitionVariable(RefIdentifier DefSymbol))
 DeclarationAlign(DefinitionVariable(RefPrimitive DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -42,44 +44,8 @@ DeclarationLinkage(DefinitionVariable(RefPrimitive DefSymbol))
 DeclarationAlign( DefinitionVariable(RefPrimitive DefSymbol) )
 DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ EOF case
-extern(C) #error(EXPRULE_decl)
-
-#AST_STRUCTURE_EXPECTED:
-DeclarationLinkage()
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Empty Declaration case
-extern(C) #error(SE_decl) ;
-
-#AST_STRUCTURE_EXPECTED:
-DeclarationLinkage(InvalidSyntaxElement)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-extern(C) #error(SE_decl) ] int foo;
-
-#AST_STRUCTURE_EXPECTED:
-DeclarationLinkage(InvalidSyntaxElement)
-DefinitionVariable(RefPrimitive DefSymbol)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@SIMPLE_ATTRIBS《
- ►#?AST_STRUCTURE_EXPECTED!【#@PROT_ATTRIB{private,package,protected,public,export}● DeclarationProtection 】●
-
- ►#?AST_STRUCTURE_EXPECTED!【deprecated●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【static●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【extern●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【final●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【synchronized●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【override●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【abstract●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【const●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【scope●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【__gshared●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【shared●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【immutable●DeclarationBasicAttrib】●
- ►#?AST_STRUCTURE_EXPECTED!【inout●DeclarationBasicAttrib】●
-¤》
-TODO ABOVE:
-auto ??
-@disable
 
 #@LINKAGE_TYPE{C,C++,D,Windows,Pascal,System}
 #@EXTERN_ATTRIB《
@@ -102,35 +68,39 @@ auto ??
 ¤》
 
 #@ATTRIBS《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIBS》
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@ATTRIBS #@BODY_TYPES《
-►int foo1;●
-
-► :
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@ATTRIBS int foo1;
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( DefinitionVariable(* *) )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@ATTRIBS /**/ :
     int foo2;
-    void bar;●
-
-► : /* Zero decls */●
-► { } ●
-► { 
+    void bar;
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( DefinitionVariable(* *) DefinitionVariable(* *) )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@ATTRIBS /**/ : /* Zero decls */
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@ATTRIBS /**/ { } 
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@ATTRIBS { 
 	int fooX;
 	void bar;
-}●
+}
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( DefinitionVariable(* *) DefinitionVariable(* *) )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( DeclarationEmpty )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@ATTRIBS /*EOF case*/ #error(EXPRULE_decl)
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@ATTRIBS #error(SE_decl) ] int foo;
 
-►/*EMPTY DECLARATION*/ #?PRAGMA!【#error:SE_decl】 ;●
-► #error(EXPRULE_decl)●
-¤》 /*-----*/
-#AST_STRUCTURE_EXPECTED:
-#@ATTRIBS ( #@《
-►DefinitionVariable(* *)●
-►DefinitionVariable(* *) DefinitionVariable(* *)●
-►●
-►●
-►DefinitionVariable(* *) DefinitionVariable(* *)●
-► #?PRAGMA!【InvalidSyntaxElement●DeclarationEmpty】 ●
-► ●
-¤》(BODY_TYPES) )
+#AST_STRUCTURE_EXPECTED: 
+#@ATTRIBS (InvalidSyntaxElement)
+DefinitionVariable(RefPrimitive DefSymbol)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ATTRIBS_BAL_BROKEN《 

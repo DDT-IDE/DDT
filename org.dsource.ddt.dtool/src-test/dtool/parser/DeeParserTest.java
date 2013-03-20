@@ -232,7 +232,7 @@ public class DeeParserTest extends CommonTestUtils {
 			return MapArrayLiteralKeyValue.class.getSimpleName();
 		}
 		
-		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var|Function)", 1, "Definition");
+		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var|AutoVar|Function)", 1, "Definition");
 	}
 	
 	/* ============= Error and Source Range Checkers ============= */

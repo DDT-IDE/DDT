@@ -1,4 +1,4 @@
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic samples
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic cases
 
 Foo foo;
 int xx;
@@ -42,8 +42,8 @@ DefVariable(* DefSymbol InitializerExp(*) DefVarFragment(DefSymbol) DefVarFragme
 #@TYPE_REFS #@PRX1 #error:EXP_IDENTIFIER ;
 
 #@TYPE_REFS #@PRX1 fooA #error:EXP_SEMICOLON  #@BREAK
-#@TYPE_REFS #@PRX1 fooB = #error:EXPRULE_Initializer #error:EXP_SEMICOLON  #@BREAK
-#@TYPE_REFS #@PRX1 fooD = #error:EXPRULE_Initializer ;
+#@TYPE_REFS #@PRX1 fooB = #@NO_INIT #error:EXP_SEMICOLON  #@BREAK
+#@TYPE_REFS #@PRX1 fooD = #@NO_INIT ;
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:
@@ -51,8 +51,8 @@ DefVariable(* DefSymbol InitializerExp(*) DefVarFragment(DefSymbol) DefVarFragme
 #?NO_PRX1{InvalidDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} 
 
 DefVariable(* DefSymbol #?NO_PRX1【●                 DefVarFragment(DefSymbol)】 ) #@BREAK_EXP
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? InitializerExp(MissingExpression))】) #@BREAK_EXP
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? InitializerExp(MissingExpression))】)
+DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? #@NO_INIT)】) #@BREAK_EXP
+DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? #@NO_INIT)】)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
 
@@ -78,7 +78,6 @@ DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(#@EXP_ASSIGN)●DefVarFragmen
 #@BREAK_EXP
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(#@EXP_CONDITIONAL String))●
 		DefVarFragment(? InitializerExp(ExpInfix(#@EXP_CONDITIONAL String)))】)
-
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ C-style decls
 #comment(TODO):

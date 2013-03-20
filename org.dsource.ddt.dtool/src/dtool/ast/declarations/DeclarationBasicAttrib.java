@@ -17,36 +17,48 @@ import dtool.refmodel.INonScopedBlock;
 public class DeclarationBasicAttrib extends DeclarationAttrib {
 	
 	public static enum AttributeKinds implements ISourceRepresentation {
-		DEPRECATED,
-		STATIC,
-		EXTERN,
-		FINAL,
-		SYNCHRONIZED,
-		OVERRIDE,
 		ABSTRACT,
+		AUTO,
+		
 		CONST,
-		SCOPE,
-		__GSHARED,
-		SHARED,
 		IMMUTABLE,
 		INOUT,
+		SHARED,
+		
+		DEPRECATED,
+		ENUM,
+		EXTERN,
+		FINAL,
+		NOTHROW,
+		OVERRIDE,
+		PURE,
+		__GSHARED,
+		SCOPE,
+		STATIC,
+		SYNCHRONIZED,
 		;
 		
 		public static AttributeKinds fromToken(DeeTokens token) {
 			switch (token) {
-			case KW_DEPRECATED: return DEPRECATED;
-			case KW_STATIC: return STATIC;
-			case KW_EXTERN: return EXTERN;
-			case KW_FINAL: return FINAL;
-			case KW_SYNCHRONIZED: return SYNCHRONIZED;
-			case KW_OVERRIDE: return OVERRIDE;
 			case KW_ABSTRACT: return ABSTRACT;
+			case KW_AUTO: return AUTO;
+			
 			case KW_CONST: return CONST;
-			case KW_SCOPE: return SCOPE;
-			case KW___GSHARED: return __GSHARED;
-			case KW_SHARED: return SHARED;
 			case KW_IMMUTABLE: return IMMUTABLE;
 			case KW_INOUT: return INOUT;
+			case KW_SHARED: return SHARED;
+			
+			case KW_DEPRECATED: return DEPRECATED;
+			case KW_ENUM: return ENUM;
+			case KW_EXTERN: return EXTERN;
+			case KW_FINAL: return FINAL;
+			case KW_NOTHROW: return NOTHROW;
+			case KW_OVERRIDE: return OVERRIDE;
+			case KW_PURE: return PURE;
+			case KW___GSHARED: return __GSHARED;
+			case KW_SCOPE: return SCOPE;
+			case KW_STATIC: return STATIC;
+			case KW_SYNCHRONIZED: return SYNCHRONIZED;
 			default:
 				return null;
 			}

@@ -1,5 +1,7 @@
 package dtool.ast.definitions;
 
+import static dtool.util.NewUtils.assertNotNull_;
+
 import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
@@ -17,12 +19,12 @@ import dtool.util.ArrayView;
 
 /**
  * A variable definition. 
- * Optionally has multiple symbols defined with the multi-identifier syntax.
+ * Optionally has multiple variables defined with the multi-identifier syntax.
  * TODO fragments semantic visibility
  */
 public class DefinitionVariable extends Definition implements IStatement { 
 	
-	public static ArrayView<DefinitionVarFragment> emptyFrags = ArrayView.create(new DefinitionVarFragment[0]);
+	public static final ArrayView<DefinitionVarFragment> NO_FRAGMENTS = ArrayView.create(new DefinitionVarFragment[0]);
 	
 	public final Reference type;
 	public final Initializer init;
@@ -30,16 +32,36 @@ public class DefinitionVariable extends Definition implements IStatement {
 	
 	public DefinitionVariable(DefUnitTuple dudt, Reference type, Initializer init, 
 		ArrayView<DefinitionVarFragment> fragments, SourceRange sourceRange) {
+		this(dudt, assertNotNull_(type), init, fragments, sourceRange, false);
+	}
+	
+	protected DefinitionVariable(DefUnitTuple dudt, Reference type, Initializer init,
+		ArrayView<DefinitionVarFragment> fragments, SourceRange sourceRange, @SuppressWarnings("unused") boolean dummy)
+	{
 		super(dudt, null);
 		this.type = parentize(type);
 		this.init = parentize(init);
-		this.fragments = fragments != null ? parentize(fragments) : emptyFrags;
+		this.fragments = fragments != null ? parentize(fragments) : NO_FRAGMENTS;
 		initSourceRange(sourceRange);
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.DEFINITION_VARIABLE;
+	}
+	
+	public static class DefinitionAutoVariable extends DefinitionVariable {
+		
+		public DefinitionAutoVariable(DefUnitTuple dudt, Initializer init, ArrayView<DefinitionVarFragment> fragments, 
+			SourceRange sourceRange) {
+			super(dudt, null, init, fragments, sourceRange, false);
+		}
+		
+		@Override
+		public ASTNodeTypes getNodeType() {
+			return ASTNodeTypes.DEFINITION_AUTO_VARIABLE;
+		}
+		
 	}
 	
 	@Override
@@ -60,18 +82,14 @@ public class DefinitionVariable extends Definition implements IStatement {
 		return EArcheType.Variable;
 	}
 	
-	public Initializer getInitializer() {
-		return init;
-	}
-	
-	public Reference getTypeReference() {
-		return type;
+	public IDefUnitReference getTypeReference() {
+		return determineType();
 	}
 	
 	private IDefUnitReference determineType() {
 		if(type != null)
 			return type;
-		return NativeDefUnit.nullReference;
+		return NativeDefUnit.nullReference; // TODO: auto references
 	}
 	
 	@Override

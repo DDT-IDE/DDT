@@ -1,13 +1,13 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ExpIdentifier【ExpReference(RefIdentifier)】
-  #@NO_EXP《#?AST_STRUCTURE_EXPECTED!【/*MISSING_EXP*/ #error(EXPRULE_exp)●MissingExpression】》
-#@NULL_EXP《#?AST_STRUCTURE_EXPECTED!【/*MISSING_EXP*/ #error(EXPRULE_exp)● 】》
+  #@NO_EXP《#?AST_STRUCTURE_EXPECTED!【/*MISSING:Exp*/ #error(EXPRULE_exp)●MissingExpression】》
+#@NULL_EXP《#?AST_STRUCTURE_EXPECTED!【/*MISSING:Exp*/ #error(EXPRULE_exp)● 】》
 
 #@NO_ID《#?AST_STRUCTURE_EXPECTED!【/*MISSING_ID*/ #error(EXP_ID)●RefIdentifier】》
 
-
-#@NO_ROE《#?AST_STRUCTURE_EXPECTED!【/*MISSING_RoE*/ #error(EXPRULE_RoE)●MissingExpression】》
-#@NO_REF《#?AST_STRUCTURE_EXPECTED!【/*MISSING_REF*/ #error(EXPRULE_ref)● RefIdentifier】》
+#@NO_ROE《#?AST_STRUCTURE_EXPECTED!【/*MISSING:RoE*/ #error(EXPRULE_RoE)● MissingExpression】》
+#@NO_REF《#?AST_STRUCTURE_EXPECTED!【/*MISSING:Ref*/ #error(EXPRULE_ref)● RefIdentifier】》
+#@NO_INIT《#?AST_STRUCTURE_EXPECTED!【/*MISSING:Init*/ #error(EXPRULE_Initializer)● InitializerExp(MissingExpression)】》
 
 #@MISSING_REF《#?AST_STRUCTURE_EXPECTED!【/*MISSING_REF*/ #error(EXPRULE_ref)● RefIdentifier】》
 

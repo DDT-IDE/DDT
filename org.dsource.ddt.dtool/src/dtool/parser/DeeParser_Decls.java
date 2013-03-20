@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAlign;
@@ -48,6 +49,7 @@ import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.IFunctionParameter.FunctionParamAttribKinds;
@@ -254,116 +256,136 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	public static ParseRuleDescription RULE_DECLARATION = new ParseRuleDescription("Declaration");
 	
 	public ASTNeoNode parseDeclaration() {
-		return parseDeclaration(true);
+		return parseDeclaration(true, false);
 	}
 	
 	/** This rule always returns a node, except only on EOF where it returns null. */
-	public ASTNeoNode parseDeclaration(boolean acceptEmptyDecl) {
-		while(true) {
-			DeeTokens la = assertNotNull_(lookAheadGrouped());
+	public ASTNeoNode parseDeclaration(boolean acceptEmptyDecl, boolean precedingIsSTCAttrib) {
+		DeeTokens laGrouped = assertNotNull_(lookAheadGrouped());
+		
+		if(laGrouped == DeeTokens.EOF) {
+			return null;
+		}
+		
+		switch (laGrouped) {
+		case KW_IMPORT: return parseImportDeclaration();
+		
+		case KW_MIXIN: return parseDeclarationMixinString();
+		
+		case KW_ALIGN: return parseDeclarationAlign();
+		case KW_PRAGMA: return parseDeclarationPragma();
+		case PROTECTION_KW: return parseDeclarationProtection();
+		case KW_EXTERN:
+			if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
+				return parseDeclarationExternLinkage();
+			}
+			return parseDeclarationBasicAttrib();
+		case ATTRIBUTE_KW: 
+			if(lookAhead() == DeeTokens.KW_STATIC && lookAhead(1) == DeeTokens.KW_IMPORT) { 
+				return parseImportDeclaration();
+			}
+			if(isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
+				break; // go to parseReference
+			}
+			return parseDeclarationBasicAttrib();
+		case AT:
+			// TODO:
 			
-			if(la == DeeTokens.EOF) {
-				return null;
+//				if((lookAhead(1) == DeeTokens.IDENTIFIER)) {
+//					LexElement atId = lookAheadElement(1);
+//					if(isSpecialAtToken(atId)) {
+//						return parseDeclarationBasicAttrib();
+//					}
+//				}
+			break;
+		case KW_AUTO:
+		case KW_ENUM:
+			return parseDeclarationBasicAttrib();
+			
+		default:
+			break;
+		}
+		
+		RefParseResult startRef = parseReference_begin(false); // This parses (BasicType + BasicType2) of spec
+		if(startRef.ref != null) {
+			Reference ref = startRef.ref;
+			
+			if(startRef.parseBroken) {
+				return connect(new InvalidDeclaration(ref, false, srToCursor(ref.getStartPos())));
 			}
 			
-			switch (la) {
-			case KW_IMPORT: return parseImportDeclaration();
-			
-			case KW_MIXIN: return parseDeclarationMixinString();
-			
-			case KW_ALIGN: return parseDeclarationAlign();
-			case KW_PRAGMA: return parseDeclarationPragma();
-			case PROTECTION_KW: return parseDeclarationProtection();
-			case KW_EXTERN:
-				if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
-					return parseDeclarationExternLinkage();
-				}
-				// else fall-through to attrib
-			case ATTRIBUTE_KW: 
-				if(lookAhead() == DeeTokens.KW_STATIC && lookAhead(1) == DeeTokens.KW_IMPORT) { 
-					return parseImportDeclaration();
-				}
-				if(isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
-					break; // go to parseReference
-				}
-				return parseDeclarationBasicAttrib();
-			// @disable keyword?
-			case KW_AUTO: // TODO:
-				break;
-				
-			default:
-				break;
+			if(precedingIsSTCAttrib &&
+				ref.getNodeType() == ASTNodeTypes.REF_IDENTIFIER && lookAhead(0) != DeeTokens.IDENTIFIER) {
+				LexElement id = lastLexElement; // Parse as auto declaration instead
+				return parseDefinitionVariable_Reference_Identifier(null, id);
 			}
 			
-			RefParseResult startRef = parseReference_begin(false); // BasicType + BasicType2 in spec
-			if(startRef.ref != null) {
-				return parseDeclaration_ReferenceStart(startRef);
-			}
-			
-			if(acceptEmptyDecl && tryConsume(DeeTokens.SEMICOLON)) {
-				return connect(new DeclarationEmpty(srToCursor(lastLexElement)));
-			} else {
-				Token badToken = consumeLookAhead();
+			return parseDeclaration_referenceStart(ref);
+		}
+		
+		if(tryConsume(DeeTokens.SEMICOLON)) {
+			if(!acceptEmptyDecl) {
 				reportSyntaxError(RULE_DECLARATION);
-				return connect(new InvalidSyntaxElement(badToken));
 			}
+			return connect(new DeclarationEmpty(srToCursor(lastLexElement)));
+		} else {
+			Token badToken = consumeLookAhead();
+			reportSyntaxError(RULE_DECLARATION);
+			return connect(new InvalidSyntaxElement(badToken));
 		}
 	}
 	
-	
-	
 	/* ----------------------------------------- */
 	
-	protected ASTNeoNode parseDeclaration_ReferenceStart(RefParseResult refParse) {
-		Reference ref = refParse.ref;
+	protected ASTNeoNode parseDeclaration_referenceStart(Reference ref) {
 		boolean consumedSemiColon = false;
 		
-		if(!refParse.parseBroken) {
+		if(lookAhead() == DeeTokens.IDENTIFIER) {
+			LexElement defId = consumeInput();
 			
-			if(lookAhead() == DeeTokens.IDENTIFIER) {
-				LexElement defId = consumeInput();
-				
-				if(lookAhead() == DeeTokens.OPEN_PARENS) {
-					return parseDefinitionFunction_Reference_Identifier(ref, defId);
-				}
-				
-				return parseDefinitionVariable_Reference_Identifier(ref, defId);
-			}  else {
-				reportErrorExpectedToken(DeeTokens.IDENTIFIER);
-				if(tryConsume(DeeTokens.SEMICOLON)) {
-					consumedSemiColon = true;
-				}
-				return connect(new InvalidDeclaration(ref, consumedSemiColon, srToCursor(ref.getStartPos())));
+			if(lookAhead() == DeeTokens.OPEN_PARENS) {
+				return parseDefinitionFunction_Reference_Identifier(ref, defId);
 			}
 			
+			return parseDefinitionVariable_Reference_Identifier(ref, defId);
+		} else {
+			reportErrorExpectedToken(DeeTokens.IDENTIFIER);
+			if(tryConsume(DeeTokens.SEMICOLON)) {
+				consumedSemiColon = true;
+			}
+			return connect(new InvalidDeclaration(ref, consumedSemiColon, srToCursor(ref.getStartPos())));
 		}
-		// else: Balance is broken
-		return connect(new InvalidDeclaration(ref, consumedSemiColon, srToCursor(ref.getStartPos())));
 	}
 	
 	protected DefinitionVariable parseDefinitionVariable_Reference_Identifier(Reference ref, LexElement defId) {
 		ArrayList<DefinitionVarFragment> fragments = new ArrayList<DefinitionVarFragment>();
 		Initializer init = null;
 		
-		if(tryConsume(DeeTokens.ASSIGN)){ 
+		boolean isAutoRef = ref == null;
+		
+		if(attemptConsume(DeeTokens.ASSIGN, isAutoRef)){ 
 			init = parseInitializer();
 		}
 		
 		while(tryConsume(DeeTokens.COMMA)) {
-			DefinitionVarFragment defVarFragment = parseVarFragment();
+			DefinitionVarFragment defVarFragment = parseVarFragment(isAutoRef);
 			fragments.add(defVarFragment);
 		}
 		consumeExpectedToken(DeeTokens.SEMICOLON);
 		
+		if(ref == null) {
+			SourceRange sr = srToCursor(defId.getStartPos());
+			return connect(new DefinitionAutoVariable(defUnitNoComments(defId), init, arrayView(fragments), sr));
+		}
 		SourceRange sr = srToCursor(ref.getStartPos());
 		return connect(new DefinitionVariable(defUnitNoComments(defId), ref, init, arrayView(fragments), sr));
 	}
 	
-	public DefinitionVarFragment parseVarFragment() {
+	protected DefinitionVarFragment parseVarFragment(boolean isAutoRef) {
 		Initializer init = null;
 		LexElement fragId = consumeExpectedIdentifier();
 		if(!fragId.isMissingElement()) {
-			if(tryConsume(DeeTokens.ASSIGN)){ 
+			if(attemptConsume(DeeTokens.ASSIGN, isAutoRef)){ 
 				init = parseInitializer();
 			}
 		}
@@ -643,7 +665,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
 		public NodeList2 declList;
 		
-		public AttribBodyParseRule parseAttribBody(boolean acceptEmptyDecl) {
+		public AttribBodyParseRule parseAttribBody(boolean acceptEmptyDecl, boolean enablesAutoDecl) {
 			if(tryConsume(DeeTokens.COLON)) {
 				bodySyntax = AttribBodySyntax.COLON;
 				declList = parseDeclList(null);
@@ -652,7 +674,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 				declList = parseDeclList(DeeTokens.CLOSE_BRACE);
 				consumeExpectedToken(DeeTokens.CLOSE_BRACE);
 			} else {
-				ASTNeoNode decl = parseDeclaration(acceptEmptyDecl);
+				ASTNeoNode decl = parseDeclaration(acceptEmptyDecl, enablesAutoDecl);
 				if(decl == null) {
 					reportErrorExpectedRule(RULE_DECLARATION);
 				} else {
@@ -681,26 +703,26 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		String linkageStr = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
 		
-		if(tryConsume(DeeTokens.OPEN_PARENS)) {
-			linkageStr = "";
-			
-			Token linkageToken = consumeIf(DeeTokens.IDENTIFIER);
-			if(linkageToken != null ) {
-				linkageStr = linkageToken.source;
-				if(linkageStr.equals("C") && tryConsume(DeeTokens.INCREMENT)) {
-					linkageStr = Linkage.CPP.name;
+		parsing: {
+			if(tryConsume(DeeTokens.OPEN_PARENS)) {
+				linkageStr = "";
+				
+				Token linkageToken = consumeIf(DeeTokens.IDENTIFIER);
+				if(linkageToken != null ) {
+					linkageStr = linkageToken.source;
+					if(linkageStr.equals("C") && tryConsume(DeeTokens.INCREMENT)) {
+						linkageStr = Linkage.CPP.name;
+					}
 				}
+				
+				if(Linkage.fromString(linkageStr) == null) {
+					reportError(ParserErrorTypes.INVALID_EXTERN_ID, null, true);
+				}
+				
+				if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null)
+					break parsing;
 			}
-			
-			if(Linkage.fromString(linkageStr) == null) {
-				reportError(ParserErrorTypes.INVALID_EXTERN_ID, null, true);
-			}
-			
-			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null) {
-				ab.parseAttribBody(false);
-			}
-		} else {
-			ab.parseAttribBody(false);
+			ab.parseAttribBody(false, false);
 		}
 		
 		return connect(new DeclarationLinkage(linkageStr, ab.bodySyntax, ab.declList, srToCursor(declStart)));
@@ -715,14 +737,14 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		Token alignNum = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
 		
-		if(tryConsume(DeeTokens.OPEN_PARENS)) {
-			alignNum = consumeExpectedToken(DeeTokens.INTEGER_DECIMAL, true).token;
-			
-			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null) {
-				ab.parseAttribBody(false);
+		parsing: {
+			if(tryConsume(DeeTokens.OPEN_PARENS)) {
+				alignNum = consumeExpectedToken(DeeTokens.INTEGER_DECIMAL, true).token;
+				
+				if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null) 
+					break parsing;
 			}
-		} else {
-			ab.parseAttribBody(false);
+			ab.parseAttribBody(false, false);
 		}
 		
 		return connect(new DeclarationAlign(alignNum, ab.bodySyntax, ab.declList, srToCursor(declStart)));
@@ -742,7 +764,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			
 			// TODO pragma argument list;
 			if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null) {
-				ab.parseAttribBody(true);
+				ab.parseAttribBody(true, false);
 			}
 		}
 		
@@ -763,7 +785,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		int declStart = lastLexElement.getStartPos();
 		Protection protection = DeeTokenSemantics.getProtectionFromToken(lastLexElement.getType());
 		
-		AttribBodyParseRule ab = new AttribBodyParseRule().parseAttribBody(false);
+		AttribBodyParseRule ab = new AttribBodyParseRule().parseAttribBody(false, true);
 		return connect(new DeclarationProtection(protection, ab.bodySyntax, ab.declList, srToCursor(declStart)));
 	}
 	
@@ -775,10 +797,9 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		consumeLookAhead();
 		int declStart = lastLexElement.getStartPos();
 		
-		AttribBodyParseRule apr = new AttribBodyParseRule().parseAttribBody(false);
+		AttribBodyParseRule apr = new AttribBodyParseRule().parseAttribBody(false, true);
 		return connect(new DeclarationBasicAttrib(attrib, apr.bodySyntax, apr.declList, srToCursor(declStart)));
 	}
-	
 	
 	/* ----------------------------------------- */
 	

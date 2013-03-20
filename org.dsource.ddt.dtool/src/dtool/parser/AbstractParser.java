@@ -249,6 +249,14 @@ public class AbstractParser {
 		return false;
 	}
 	
+	protected final boolean attemptConsume(DeeTokens tokenType, boolean isExpected) {
+		boolean consumed = tryConsume(tokenType);
+		if(!consumed && isExpected) {
+			reportErrorExpectedToken(tokenType);
+		}
+		return consumed;
+	}
+	
 	protected final boolean tryConsume(DeeTokens tokenType, DeeTokens tokenType2) {
 		if(lookAhead() == tokenType && lookAhead(1) == tokenType2) {
 			consumeInput();

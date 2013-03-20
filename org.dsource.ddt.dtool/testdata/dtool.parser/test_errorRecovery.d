@@ -54,7 +54,7 @@ DeclarationLinkage()
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 extern(C) #error(SE_decl) ;
 #AST_STRUCTURE_EXPECTED:
-DeclarationLinkage(InvalidSyntaxElement)
+DeclarationLinkage(DeclarationEmpty)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 extern(C) #error(SE_decl) ] int foo;
 #AST_STRUCTURE_EXPECTED:
