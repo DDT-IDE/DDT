@@ -17,7 +17,7 @@ DefVariable(RefPrimitive DefSymbol)
 InvalidDeclaration( RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier) )
 DefVariable(RefPrimitive DefSymbol)
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test rule break with stuff like foo..bar
 #PARSE(REFERENCE)         foo. #@NO_ID #parser(IgnoreRest) .bar
 #AST_STRUCTURE_EXPECTED:  RefQualified(RefIdentifier #@NO_ID)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂

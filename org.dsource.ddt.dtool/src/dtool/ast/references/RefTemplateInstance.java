@@ -22,14 +22,14 @@ import dtool.util.ArrayView;
 public class RefTemplateInstance extends Reference implements IQualifierNode, ITemplateRefNode {
 	
 	public final Reference tplRef;
-	public final Resolvable singleArg;
+	public final Resolvable tplSingleArg;
 	public final ArrayView<Resolvable> tplArgs;
 	
-	public RefTemplateInstance(ITemplateRefNode tplRef, Resolvable singleArg, ArrayView<Resolvable> tplArgs, 
+	public RefTemplateInstance(ITemplateRefNode tplRef, Resolvable tplSingleArg, ArrayView<Resolvable> tplArgs, 
 		SourceRange sourceRange) {
 		this.tplRef = parentizeI(assertInstance(tplRef, Reference.class));
-		assertTrue(exactlyOneIsNull(singleArg, tplArgs));
-		this.singleArg = parentize(singleArg);
+		assertTrue(exactlyOneIsNull(tplSingleArg, tplArgs));
+		this.tplSingleArg = parentize(tplSingleArg);
 		this.tplArgs = parentize(tplArgs);
 		initSourceRange(sourceRange);
 	}
@@ -40,7 +40,7 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	}
 	
 	public boolean isSingleArgSyntax() {
-		return singleArg != null;
+		return tplSingleArg != null;
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, tplRef);
-			TreeVisitor.acceptChildren(visitor, singleArg);
+			TreeVisitor.acceptChildren(visitor, tplSingleArg);
 			TreeVisitor.acceptChildren(visitor, tplArgs);
 		}
 		visitor.endVisit(this);
@@ -58,7 +58,7 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNode(tplRef, "!");
 		if(isSingleArgSyntax()) {
-			cp.appendNode(singleArg);
+			cp.appendNode(tplSingleArg);
 		} else {
 			cp.appendNodeList("(", tplArgs, ", ", ")");
 		}

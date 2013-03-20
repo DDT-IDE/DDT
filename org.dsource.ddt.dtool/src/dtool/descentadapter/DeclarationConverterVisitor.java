@@ -523,10 +523,18 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 						DescentASTConverter.convertElem(elem.init, Initializer.class, convContext)
 				))
 			));
-		}  else {
+		} 
+		
+		Reference typeRef = ReferenceConverter.convertType(elem.type, convContext);
+		if(typeRef == null) {
+			return endAdapt(new DefinitionVariable.DefinitionAutoVariable(
+				DefinitionConverter.convertDsymbol(elem, convContext),
+				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null, null
+			));
+		} else {
 			return endAdapt(new DefinitionVariable(
 				DefinitionConverter.convertDsymbol(elem, convContext),
-				ReferenceConverter.convertType(elem.type, convContext),
+				typeRef,
 				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null, null
 			));
 		}

@@ -7,6 +7,10 @@
   ►#?AST_STRUCTURE_EXPECTED!【Bar.foo●RefQualified(RefIdentifier RefIdentifier)】●
   ►#?AST_STRUCTURE_EXPECTED!【Bar.foo.Foobar●RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier)】●
   
+  ►#?AST_STRUCTURE_EXPECTED!【typeof(Bar.foo).foo●RefQualified(RefTypeof(?(RefQualified(? ?))) RefIdentifier)】●
+  
+  ►#?AST_STRUCTURE_EXPECTED!【typeof(Bar.foo).tpl!(Bar)●RefTemplateInstance(* ?)】●
+  
   ►#?AST_STRUCTURE_EXPECTED!【Bar.foo!(foo = 123, xpto, foo[foo* #error(EXP_CLOSE_BRACKET) )●
 RefTemplateInstance(
   RefQualified(RefIdentifier RefIdentifier)
@@ -36,6 +40,7 @@ RefTemplateInstance(
   ►#?AST_STRUCTURE_EXPECTED!【bar. foo!this●RefTemplateInstance(RefQualified(RefIdentifier ?) ExpThis)】●
   ►#?AST_STRUCTURE_EXPECTED!【.bar.foo! arg●RefTemplateInstance(RefQualified(RefModuleQualified(?) ?) RefIdentifier)】●
 ¤》
+
 #@TYPE_REFS__CLEAN《
   ►#@TYPE_REFS_QUALIFIER●
   ►#@TYPE_REFS_INVALID_QUALIFIER●

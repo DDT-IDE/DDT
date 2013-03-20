@@ -11,6 +11,6 @@ DefVariable(RefModuleQualified(?) DefSymbol)
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration( RefModuleQualified(?) )
 DefVariable(RefPrimitive DefSymbol)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test rule break with stuff like ..foo
 #PARSE(REFERENCE)         . #@NO_ID #parser(IgnoreRest) .foo
 #AST_STRUCTURE_EXPECTED:  RefModuleQualified(#@NO_ID)
