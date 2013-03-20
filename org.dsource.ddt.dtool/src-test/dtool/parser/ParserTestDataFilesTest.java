@@ -14,7 +14,10 @@ import org.junit.runners.Parameterized.Parameters;
 
 import dtool.tests.DToolTestResources;
 
+// TODO retire this
+
 @RunWith(Parameterized.class)
+@Deprecated
 public class ParserTestDataFilesTest extends Parser__FileParseTest {
 	
 	private static final String SPLIT_MARKER = "/+__ ";

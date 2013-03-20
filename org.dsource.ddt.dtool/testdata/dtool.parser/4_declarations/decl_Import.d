@@ -7,12 +7,12 @@ DeclarationImport(ImportContent(RefModule))
 import pack.foo;
 import pack.bar.foo;
 static import pack.bar.foo;
-import foo, pack.foo, pack.bar.foo;
+public static import foo, pack.foo, pack.bar.foo;
 #AST_STRUCTURE_EXPECTED:
 DeclarationImport(ImportContent(RefModule))
 DeclarationImport(ImportContent(RefModule))
 DeclarationImport(ImportContent(RefModule))
-DeclarationImport(ImportContent(RefModule) ImportContent(RefModule) ImportContent(RefModule))
+DeclarationProtection( DeclarationImport(ImportContent(RefModule) ImportContent(RefModule) ImportContent(RefModule)) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import#error(EXP_ID)#error(EXP_SEMICOLON)#comment(EOF):
