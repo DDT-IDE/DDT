@@ -2,15 +2,12 @@ package dtool.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.RandomAccess;
-
-import dtool.ast.IASTNeoNode;
 
 /**
  * A simple immutable array collection (RandomAccess, Iterable). 
@@ -26,19 +23,6 @@ public class ArrayView<E> implements Iterable<E>, RandomAccess, Collection<E> {
 	public ArrayView(E[] array) {
 		assertNotNull(array);
 		this.array = array;
-	}
-	
-	/** @return The *internal* array backing this {@link ArrayView}. Clients must not modify this array! */
-	public final E[] getInternalArray() {
-		return array;
-	}
-	
-	/** @return this same array safely cast to a paremeterization with a super type parameter */
-	@SuppressWarnings({ "unchecked" })
-	public <U extends IASTNeoNode> ArrayView<U> upcast(Class<U> klass) {
-		assertTrue(klass.isAssignableFrom(array.getClass())); // Unfortunately we can't do this check with generics,
-		// see http://stackoverflow.com/questions/10809234/substitute-for-illegal-lower-bounds-on-a-generic-java-methodl
-		return (ArrayView<U>) this;
 	}
 	
 	@Override

@@ -20,6 +20,7 @@ import dtool.refmodel.IScopeNode;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
+import dtool.util.ArrayViewExt;
 
 /** 
  * A module reference (in import declarations only).
@@ -27,12 +28,12 @@ import dtool.util.ArrayView;
 public class RefModule extends NamedReference {
 	
 	public final ArrayView<Token> packageList;
-	public final ArrayView<String> packages; // TODO: Old API, refactor?
+	public final ArrayViewExt<String> packages; // TODO: Old API, refactor?
 	public final String module;
 	
 	public RefModule(ArrayView<Token> packageList, String module, SourceRange sourceRange) {
 		this.packageList = assertNotNull_(packageList);
-		this.packages = ArrayView.create(NodeUtil.tokenArrayToStringArray(packageList));
+		this.packages = ArrayViewExt.create(NodeUtil.tokenArrayToStringArray(packageList));
 		this.module = module;
 		initSourceRange(sourceRange);
 	}
