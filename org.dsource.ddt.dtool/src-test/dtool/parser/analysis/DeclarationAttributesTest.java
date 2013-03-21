@@ -10,6 +10,7 @@ import org.junit.Test;
 import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
 import dtool.ast.declarations.DeclarationProtection.Protection;
 import dtool.ast.definitions.Definition;
+import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
 import dtool.tests.CommonTestUtils;
 
@@ -39,7 +40,8 @@ public class DeclarationAttributesTest extends CommonTestUtils {
 	}
 	
 	public Definition getDefToTest(String source, String name, int... treePath) {
-		Definition def = assertCast(getNodeFromTreePath(DeeParser.parse(source).module, treePath), Definition.class);
+		Module module = DeeParser.parseSource(source).module;
+		Definition def = assertCast(getNodeFromTreePath(module, treePath), Definition.class);
 		assertEquals(def.getName(), name);
 		return def;
 	}

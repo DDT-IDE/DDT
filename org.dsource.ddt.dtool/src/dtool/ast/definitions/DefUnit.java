@@ -6,7 +6,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.parser.DeeParser;
-import dtool.parser.AbstractParser.LexElement;
+import dtool.parser.LexElement;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 

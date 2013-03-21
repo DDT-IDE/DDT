@@ -20,7 +20,6 @@ import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefQualified;
-import dtool.parser.AbstractParser.LexElement;
 
 public class ASTReparseCheckSwitcher {
 	
@@ -241,9 +240,11 @@ public class ASTReparseCheckSwitcher {
 		assertTrue(reparsedNode.getClass() == klass);
 		
 		assertTrue(reparsedNode.getEndPos() == snippedParser.lookAheadElement().getStartPos());
-		
-		assertTrue(snippedParser.lastLexElement.getType().isParserIgnored == false
-			|| snippedParser.lastLexElement.getEndPos() == 0);
+
+		assertTrue(
+			snippedParser.lastLexElement().isMissingElement() ||
+			snippedParser.lastLexElement().getType().isParserIgnored == false ||
+			snippedParser.lastLexElement().getEndPos() == 0);
 		
 		if(node instanceof DeclarationAttrib) {
 			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
@@ -256,7 +257,7 @@ public class ASTReparseCheckSwitcher {
 			assertTrue(lastElementInRange(snippedParser).getEndPos() == snippedParser.getSource().length());
 			assertTrue(firstElementInRange(snippedParser).ignoredPrecedingTokens == null);
 			
-			if(snippedParser.lastLexElement.isMissingElement()) {
+			if(snippedParser.lastLexElement().isMissingElement()) {
 				consumesSurroundingWhiteSpace = true;
 			}
 		}
@@ -291,10 +292,10 @@ public class ASTReparseCheckSwitcher {
 	}
 	
 	public LexElement lastElementInRange(AbstractParser parser) {
-		assertTrue(parser.lastLexElement.getType().isParserIgnored == false);
-		assertTrue(parser.lastLexElement == parser.lastNonMissingLexElement
-			|| snippedParser.lastLexElement.isMissingElement());
-		return parser.lastLexElement;
+		LexElement lastLexElement = snippedParser.lastLexElement();
+		assertTrue(lastLexElement.isMissingElement() || lastLexElement.getType().isParserIgnored == false);
+		assertTrue(lastLexElement == parser.lastNonMissingLexElement() || lastLexElement.isMissingElement());
+		return parser.lastLexElement();
 	}
 	
 	public void checkNodeEquality(ASTNeoNode reparsedNode, ASTNeoNode node) {

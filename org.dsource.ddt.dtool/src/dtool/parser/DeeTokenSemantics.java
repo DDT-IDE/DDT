@@ -6,10 +6,15 @@ import dtool.parser.ParserError.ParserErrorTypes;
 public class DeeTokenSemantics {
 	
 	public static void checkTokenErrors(Token token, AbstractParser parser) {
+		if(token.type == DeeTokens.INVALID_TOKEN) {
+			parser.addError(ParserErrorTypes.INVALID_TOKEN_CHARACTERS, token, null);
+			return;
+		}
+		
 		if(token.getError() != null) {
 			parser.addError(ParserErrorTypes.MALFORMED_TOKEN, token, token.getError());
 			return;
-		} //else
+		}
 		
 		// Check token content validity  TODO: strings, unicode escapes, HTML entities, etc.
 		switch (token.type) {

@@ -77,12 +77,8 @@ import dtool.util.NewUtils;
 
 public class DeeParser_Decls extends DeeParser_RefOrExp {
 	
-	public DeeParser_Decls(String source) {
-		super(new DeeLexer(source));
-	}
-	
-	public DeeParser_Decls(DeeLexer deeLexer) {
-		super(deeLexer);
+	public DeeParser_Decls(LexerElementSource lexSource) {
+		super(lexSource);
 	}
 	
 	/* ----------------------------------------------------------------- */
@@ -104,9 +100,10 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		ArrayView<ASTNeoNode> members = parseDeclDefs(null);
 		assertTrue(lookAhead() == DeeTokens.EOF);
-		assertTrue(lookAheadToken().getEndPos() == lexer.source.length());
+		consumeIgnoreTokens(); // Ensure pending whitespace is consumed as well
+		assertTrue(lookAheadElement().getFullRangeStartPos() == getSource().length());
 		
-		SourceRange modRange = new SourceRange(0, lexer.source.length());
+		SourceRange modRange = new SourceRange(0, getSource().length());
 		
 		if(md != null) {
 			return connect(new Module(md.getModuleSymbol(), null, md, members, modRange));
@@ -119,7 +116,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(!tryConsume(DeeTokens.KW_MODULE)) {
 			return null;
 		}
-		int nodeStart = lastLexElement.getStartPos();
+		int nodeStart = lastLexElement().getStartPos();
 		
 		ArrayList<Token> packagesList = new ArrayList<Token>(0);
 		LexElement moduleId;
@@ -316,7 +313,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			
 			if(precedingIsSTCAttrib &&
 				ref.getNodeType() == ASTNodeTypes.REF_IDENTIFIER && lookAhead(0) != DeeTokens.IDENTIFIER) {
-				LexElement id = lastLexElement; // Parse as auto declaration instead
+				LexElement id = lastLexElement(); // Parse as auto declaration instead
 				return parseDefinitionVariable_Reference_Identifier(null, id);
 			}
 			
@@ -327,7 +324,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(!acceptEmptyDecl) {
 				reportSyntaxError(RULE_DECLARATION);
 			}
-			return connect(new DeclarationEmpty(srToCursor(lastLexElement)));
+			return connect(new DeclarationEmpty(srToCursor(lastLexElement())));
 		} else {
 			Token badToken = consumeLookAhead();
 			reportSyntaxError(RULE_DECLARATION);
@@ -400,7 +397,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			reportErrorExpectedRule(RULE_INITIALIZER);
 			int elemStart = getParserPosition();
 			// Advance parser position, mark the advanced range as missing element:
-			consumeIgnoreTokens(DeeTokens.INTEGER, true);
+			consumeIgnoreTokens(DeeTokens.INTEGER);
 			exp = connect(new MissingExpression(srToCursor(elemStart)));
 		}
 		return connect(new InitializerExp(exp, exp.getSourceRange()));
@@ -429,7 +426,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			fnAttributes = parseFunctionAttributes();
 			
 			if(tryConsume(DeeTokens.SEMICOLON)) { 
-				fnBody = connect(new EmptyBodyStatement(sr(lastLexElement.token)));
+				fnBody = connect(new EmptyBodyStatement(sr(lastLexElement().token)));
 			} else {
 				fnBody = parseFunctionBody();
 			}
@@ -470,7 +467,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public IFunctionParameter parseFunctionParameter() {
 		if(tryConsume(DeeTokens.TRIPLE_DOT)) {
-			return connect(new CStyleVarArgsParameter(sr(lastLexElement.token)));
+			return connect(new CStyleVarArgsParameter(sr(lastLexElement().token)));
 		}
 		int nodeStart = lookAheadElement().getStartPos();
 		
@@ -552,7 +549,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(lookAhead() == DeeTokens.KW_IN || lookAhead() == DeeTokens.KW_OUT || lookAhead() == DeeTokens.KW_BODY) {
 			nodeStart = lookAheadElement().getStartPos();
 		} else {
-			nodeStart = lastLexElement.getEndPos(); // It will be missing element
+			nodeStart = lastLexElement().getEndPos(); // It will be missing element
 		}
 		
 		boolean isOutIn = false;
@@ -610,7 +607,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(reportMissingExpError) {
 			reportErrorExpectedRule(expectedRule);
 		}
-		int nodeStart = lastLexElement.getEndPos();
+		int nodeStart = lastLexElement().getEndPos();
 		return connect(new BlockStatement(srToCursor(nodeStart)));
 	}
 	
@@ -624,7 +621,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	protected RuleParseResult<BlockStatement> parseBlockStatement_do() {
 		if(!tryConsume(DeeTokens.OPEN_BRACE))
 			return nullResult(); 
-		int nodeStart = lastLexElement.getStartPos();
+		int nodeStart = lastLexElement().getStartPos();
 		
 		ArrayView<IStatement> body = parseStatements();
 		boolean parseBroken = consumeExpectedToken(DeeTokens.CLOSE_BRACE) == null; 
@@ -639,7 +636,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 	protected RuleParseResult<FunctionBodyOutBlock> parseOutBlock() {
 		if(!tryConsume(DeeTokens.KW_OUT))
 			return nullResult();
-		int nodeStart = lastLexElement.getStartPos();
+		int nodeStart = lastLexElement().getStartPos();
 		
 		boolean parseBroken = true;
 		Symbol id = null;
@@ -698,7 +695,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(!tryConsume(DeeTokens.KW_EXTERN)) {
 			return null;
 		}
-		int declStart = lastLexElement.getStartPos();
+		int declStart = lastLexElement().getStartPos();
 		
 		String linkageStr = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
@@ -732,7 +729,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(!tryConsume(DeeTokens.KW_ALIGN)) {
 			return null;
 		}
-		int declStart = lastLexElement.getStartPos();
+		int declStart = lastLexElement().getStartPos();
 		
 		Token alignNum = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
@@ -754,7 +751,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(!tryConsume(DeeTokens.KW_PRAGMA)) {
 			return null;
 		}
-		int declStart = lastLexElement.getStartPos();
+		int declStart = lastLexElement().getStartPos();
 		
 		Symbol pragmaId = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
@@ -782,8 +779,8 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			return null;
 		}
 		consumeLookAhead();
-		int declStart = lastLexElement.getStartPos();
-		Protection protection = DeeTokenSemantics.getProtectionFromToken(lastLexElement.getType());
+		int declStart = lastLexElement().getStartPos();
+		Protection protection = DeeTokenSemantics.getProtectionFromToken(lastLexElement().getType());
 		
 		AttribBodyParseRule ab = new AttribBodyParseRule().parseAttribBody(false, true);
 		return connect(new DeclarationProtection(protection, ab.bodySyntax, ab.declList, srToCursor(declStart)));
@@ -795,7 +792,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 			return null;
 		}
 		consumeLookAhead();
-		int declStart = lastLexElement.getStartPos();
+		int declStart = lastLexElement().getStartPos();
 		
 		AttribBodyParseRule apr = new AttribBodyParseRule().parseAttribBody(false, true);
 		return connect(new DeclarationBasicAttrib(attrib, apr.bodySyntax, apr.declList, srToCursor(declStart)));
@@ -807,7 +804,7 @@ public class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(!tryConsume(DeeTokens.KW_MIXIN)) {
 			return null;
 		}
-		int declStart = lastLexElement.getStartPos();
+		int declStart = lastLexElement().getStartPos();
 		Expression exp = null;
 		
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {

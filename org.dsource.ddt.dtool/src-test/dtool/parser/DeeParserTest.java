@@ -12,7 +12,6 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.replaceRegexFirstOccurrence;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -101,21 +100,9 @@ public class DeeParserTest extends CommonTestUtils {
 		ArrayList<ParserError> expectedErrors, final boolean allowAnyErrors) {
 		
 		String parseSource = fullParseSource;
-		DeeParserResult result;
 		DeeParser deeParser = new DeeTestsParser(fullParseSource);
-		if(parseRule == null) {
-			result = new DeeParserResult(deeParser.parseModule(), deeParser.errors);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_EXPRESSION.name)) {
-			result = new DeeParserResult(deeParser.parseExpression(), deeParser.errors);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_REFERENCE.name)) {
-			result = new DeeParserResult(deeParser.parseReference(), deeParser.errors);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_DECLARATION.name)) {
-			result = new DeeParserResult(deeParser.parseDeclaration(), deeParser.errors);
-		} else if(parseRule.equals("DeclarationImport")) {
-			result = new DeeParserResult(deeParser.parseImportDeclaration(), deeParser.errors);
-		} else {
-			throw assertFail();
-		}
+		DeeParserResult result = deeParser.parseUsingRule(parseRule);
+		
 		if(expectedRemainingSource == null) {
 			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
 		} else {
