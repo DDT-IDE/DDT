@@ -38,17 +38,17 @@ public class DeeParserTest extends CommonTestUtils {
 	
 	public static class CheckSourceEquality {
 		
-		public static void check(String source, String expectedSource, boolean ignoreUT) {
-			assertTrue(sourceHasEqualParsing(source, expectedSource, ignoreUT));
+		public static void check(String source, String expectedSource) {
+			assertTrue(sourceHasEqualParsing(source, expectedSource));
 		}
 		
-		public static boolean sourceHasEqualParsing(String source, String expectedSource, boolean ignoreUT) {
+		public static boolean sourceHasEqualParsing(String source, String expectedSource) {
 			DeeLexer generatedSourceLexer = new DeeLexer(source);
 			DeeLexer expectedSourceLexer = new DeeLexer(expectedSource);
 			
 			while(true) {
-				Token tok = getContentToken(generatedSourceLexer, true, ignoreUT);
-				Token tokExp = getContentToken(expectedSourceLexer, true, ignoreUT);
+				Token tok = getContentToken(generatedSourceLexer, true);
+				Token tokExp = getContentToken(expectedSourceLexer, true);
 				if(!(tok.type.equals(tokExp.type) && tok.source.equals(tokExp.source))) 
 					return false;
 				
@@ -58,12 +58,11 @@ public class DeeParserTest extends CommonTestUtils {
 			}
 		}
 		
-		public static Token getContentToken(DeeLexer lexer, boolean ignoreComments, boolean ignoreUT) {
+		public static Token getContentToken(DeeLexer lexer, boolean ignoreComments) {
 			while(true) {
 				Token token = lexer.next();
 				if(!token.type.isParserIgnored
-					|| (!ignoreComments && token.type.getGroupingToken() == DeeTokens.COMMENT)
-					|| (!ignoreUT && token.type == DeeTokens.INVALID_TOKEN)) {
+					|| (!ignoreComments && token.type.getGroupingToken() == DeeTokens.COMMENT)) {
 					return token;
 				}
 			}
@@ -107,7 +106,7 @@ public class DeeParserTest extends CommonTestUtils {
 			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
 		} else {
 			String remainingSource = fullParseSource.substring(deeParser.getParserPosition());
-			CheckSourceEquality.check(remainingSource, expectedRemainingSource, false);
+			CheckSourceEquality.check(remainingSource, expectedRemainingSource);
 			parseSource = fullParseSource.substring(0, fullParseSource.length() - expectedRemainingSource.length());
 		}
 		ASTNeoNode mainNode = assertNotNull_(result.node);
@@ -133,8 +132,7 @@ public class DeeParserTest extends CommonTestUtils {
 	}
 	
 	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
-		String generatedSource = node.toStringAsCode();
-		CheckSourceEquality.check(generatedSource, expectedGenSource, false);
+		CheckSourceEquality.check(node.toStringAsCode(), expectedGenSource);
 	}
 	
 	/* ============= Structure Checkers ============= */
@@ -264,7 +262,7 @@ public class DeeParserTest extends CommonTestUtils {
 		// These checks can be computationally expensive. They make parsing quadratic on node depth.
 		if(!areThereMissingTokenErrorsInNode(node, errors)) {
 			String nodeSnippedSource = fullSource.substring(node.getStartPos(), node.getEndPos());
-			DeeParserTest.CheckSourceEquality.check(nodeSnippedSource, node.toStringAsCode(), true);
+			DeeParserTest.CheckSourceEquality.check(nodeSnippedSource, node.toStringAsCode());
 		}
 		
 		// Warning, this check has quadratic performance on node depth
