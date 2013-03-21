@@ -383,8 +383,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public void endVisit(descent.internal.compiler.parser.ProtDeclaration elem) {
-		DeclarationProtection scDecl = (DeclarationProtection) ret;
-		scDecl.processEffectiveModifiers();
+//		DeclarationProtection scDecl = (DeclarationProtection) ret;
+//		scDecl.localAnalysis();
 	}
 
 	@Override
@@ -399,8 +399,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public void endVisit(descent.internal.compiler.parser.StorageClassDeclaration elem) {
-		DeclarationBasicAttrib scDecl = (DeclarationBasicAttrib) ret;
-		scDecl.processEffectiveModifiers();
+//		DeclarationBasicAttrib scDecl = (DeclarationBasicAttrib) ret;
+//		scDecl.processEffectiveModifiers();
 	}
 
 	@Override

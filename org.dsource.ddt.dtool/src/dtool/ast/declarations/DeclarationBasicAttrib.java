@@ -64,11 +64,6 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 			}
 		}
 		
-		// TODO review usage of this
-		public int getBitForBitFlag() {
-			return 2 >> ordinal();
-		}
-		
 		@Override
 		public String getSourceValue() {
 			return toString().toLowerCase();
@@ -81,6 +76,8 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 		SourceRange sr) {
 		super(abs, decls, sr);
 		this.declAttrib = declAttrib;
+		
+		localAnalysis();
 	}
 	
 	@Override
@@ -103,24 +100,20 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 		toStringAsCode_body(cp);
 	}
 	
-	public void processEffectiveModifiers() {
-		INonScopedBlock block = this;
-		processEffectiveModifiers(block);
+	public void localAnalysis() {
+		applyAttributes(this);
 	}
 	
-	private void processEffectiveModifiers(INonScopedBlock block) {
+	protected void applyAttributes(INonScopedBlock block) {
 		Iterator<? extends IASTNode> iter = block.getMembersIterator();
 		while(iter.hasNext()) {
 			IASTNode node = iter.next();
 			
 			if(node instanceof Definition) {
 				Definition def = (Definition) node;
-				def.effectiveModifiers |= declAttrib.getBitForBitFlag();
-			} /*else if (node instanceof DeclarationImport && stclass == STC.STCstatic) {
-				DeclarationImport declImport = (DeclarationImport) node;
-				declImport.isStatic = true;
-			} */else if(node instanceof INonScopedBlock) {
-				processEffectiveModifiers((INonScopedBlock) node);
+				def.setAttribute(this);
+			} else if(node instanceof INonScopedBlock) {
+				applyAttributes((INonScopedBlock) node);
 			}
 		}
 	}

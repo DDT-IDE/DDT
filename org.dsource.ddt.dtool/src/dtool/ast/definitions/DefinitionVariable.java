@@ -38,7 +38,7 @@ public class DefinitionVariable extends Definition implements IStatement {
 	protected DefinitionVariable(DefUnitTuple dudt, Reference type, Initializer init,
 		ArrayView<DefinitionVarFragment> fragments, SourceRange sourceRange, @SuppressWarnings("unused") boolean dummy)
 	{
-		super(dudt, null);
+		super(dudt);
 		this.type = parentize(type);
 		this.init = parentize(init);
 		this.fragments = fragments != null ? parentize(fragments) : NO_FRAGMENTS;

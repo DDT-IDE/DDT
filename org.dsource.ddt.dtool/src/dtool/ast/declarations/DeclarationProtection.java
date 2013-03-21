@@ -22,7 +22,7 @@ public class DeclarationProtection extends DeclarationAttrib {
 	    PUBLIC,
 	    EXPORT,
 	    ;
-		
+	    
 		@Override
 		public String getSourceValue() {
 			return toString().toLowerCase();
@@ -34,6 +34,8 @@ public class DeclarationProtection extends DeclarationAttrib {
 	public DeclarationProtection(Protection protection, AttribBodySyntax bodySyntax, NodeList2 body, SourceRange sr) {
 		super(bodySyntax, body, sr);
 		this.protection = protection;
+		
+		localAnalysis();
 	}
 	
 	@Override
@@ -57,26 +59,25 @@ public class DeclarationProtection extends DeclarationAttrib {
 		toStringAsCode_body(cp);
 	}
 	
-	public void processEffectiveModifiers() {
-		INonScopedBlock block = this;
-		processEffectiveModifiers(block);
+	public void localAnalysis() {
+		applyAttributes(this);
 	}
 	
-	private void processEffectiveModifiers(INonScopedBlock block) {
+	protected void applyAttributes(INonScopedBlock block) {
 		Iterator<? extends IASTNode> iter = block.getMembersIterator();
 		while(iter.hasNext()) {
 			IASTNode node = iter.next();
 			
 			if(node instanceof Definition) {
 				Definition def = (Definition) node;
-				def.protection = Definition.fromProtection(protection);
+				def.setProtection(protection);
 			} else if (node instanceof DeclarationProtection) {
 				// Do not descend, that inner decl take priority
 			} else if (node instanceof DeclarationImport && protection == Protection.PUBLIC) {
 				DeclarationImport declImport = (DeclarationImport) node;
 				declImport.isTransitive = true;
 			} else if(node instanceof INonScopedBlock) {
-				processEffectiveModifiers((INonScopedBlock) node);
+				applyAttributes((INonScopedBlock) node);
 			}
 		}
 	}

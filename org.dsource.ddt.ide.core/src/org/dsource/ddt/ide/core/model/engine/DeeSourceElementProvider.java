@@ -19,8 +19,8 @@ import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
-import descent.internal.compiler.parser.STC;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
@@ -266,30 +266,16 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	protected static int getDeclarationModifiersFlags(Definition elem) {
 		int modifiers = 0;
 		
-		modifiers = addBitFlag(elem.effectiveModifiers, STC.STCabstract, modifiers, Modifiers.AccAbstract);
-		modifiers = addBitFlag(elem.effectiveModifiers, STC.STCconst, modifiers, Modifiers.AccConst);
-		modifiers = addBitFlag(elem.effectiveModifiers, STC.STCfinal, modifiers, Modifiers.AccFinal);
-		modifiers = addBitFlag(elem.effectiveModifiers, STC.STCstatic, modifiers, Modifiers.AccStatic);
-/*		
-		for (int i = 0; i < elem.modifiers.length; i++) {
-			Modifier mod = elem.modifiers[i];
-			if(mod.tok.value.equals(TOK.TOKabstract))
-				modifiers |= Modifiers.AccAbstract; 
-			if(mod.tok.value.equals(TOK.TOKconst))
-				modifiers |= Modifiers.AccConst; 
-			if(mod.tok.value.equals(TOK.TOKfinal))
-				modifiers |= Modifiers.AccFinal; 
-			if(mod.tok.value.equals(TOK.TOKstatic))
-				modifiers |= Modifiers.AccStatic; 
-//			if(mod.tok.value.equals(TOK.TOKabstract))
-//				modifiers |= Modifiers.AccAbstract; 
-				
-		}*/
+		modifiers = addBitFlag(elem, AttributeKinds.ABSTRACT, modifiers, Modifiers.AccAbstract);
+		modifiers = addBitFlag(elem, AttributeKinds.CONST, modifiers, Modifiers.AccConst);
+		modifiers = addBitFlag(elem, AttributeKinds.FINAL, modifiers, Modifiers.AccFinal);
+		modifiers = addBitFlag(elem, AttributeKinds.STATIC, modifiers, Modifiers.AccStatic);
+		
 		return modifiers;
 	}
 	
-	private static int addBitFlag(int effectiveModifiers, int conditionFlag, int modifiers, int modifierFlag) {
-		if((effectiveModifiers & conditionFlag) != 0) {
+	protected static int addBitFlag(Definition def, AttributeKinds attrib, int modifiers, int modifierFlag) {
+		if(def.hasAttribute(attrib)) {
 			modifiers |= modifierFlag;
 		}
 		return modifiers;
@@ -299,11 +285,11 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		int flags = 0;
 		
 		switch(elem.getEffectiveProtection()) {
-		case PROTprivate: flags |= Modifiers.AccPrivate; break;
-		case PROTpublic: flags |= Modifiers.AccPublic; break;
-		case PROTprotected: flags |= Modifiers.AccProtected; break;
-		case PROTpackage: flags |= DeeModelConstants.FLAG_PROTECTION_PACKAGE; break;
-		case PROTexport: flags |= DeeModelConstants.FLAG_PROTECTION_EXPORT; break;
+		case PRIVATE: flags |= Modifiers.AccPrivate; break;
+		case PUBLIC: flags |= Modifiers.AccPublic; break;
+		case PROTECTED: flags |= Modifiers.AccProtected; break;
+		case PACKAGE: flags |= DeeModelConstants.FLAG_PROTECTION_PACKAGE; break;
+		case EXPORT: flags |= DeeModelConstants.FLAG_PROTECTION_EXPORT; break;
 		
 		default: flags |= Modifiers.AccPublic;
 		}
