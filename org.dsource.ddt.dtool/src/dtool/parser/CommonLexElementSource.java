@@ -7,6 +7,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
  */
 public abstract class CommonLexElementSource {
 	
+	public abstract String getSource();
+	
 	public abstract LexElement lookAheadElement(int laIndex);
 	
 	public final LexElement lookAheadElement() {
@@ -28,6 +30,10 @@ public abstract class CommonLexElementSource {
 	public int getParserPosition() {
 		return lookAheadElement().getFullRangeStartPos();
 	}
+	
+	protected abstract LexElement lastLexElement();
+	
+	protected abstract LexElement lastNonMissingLexElement();
 	
 	protected abstract LexElement consumeInput();
 	

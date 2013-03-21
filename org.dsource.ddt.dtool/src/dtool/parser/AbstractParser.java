@@ -19,6 +19,7 @@ import java.util.Collection;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTChildrenVisitor;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTSemantics;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.parser.ParserError.ParserErrorTypes;
@@ -29,81 +30,33 @@ import dtool.util.ArrayView;
  * Maintains a queue of lookahead elements from the parser.
  * Holds an error list data; 
  */
-public class AbstractParser extends CommonLexElementSource {
+public abstract class AbstractParser extends CommonLexElementSource {
 	
-	protected final LexerElementSource lexSource;
-	
-	protected final ArrayList<ParserError> errors = new ArrayList<ParserError>();
 	protected final ArrayList<ParserError> pendingMissingTokenErrors = new ArrayList<ParserError>();
-	
-	public AbstractParser(LexerElementSource lexSource) {
-		this.lexSource = lexSource;
-	}
-	
-	public String getSource() {
-		return lexSource.getSource();
-	}
-	
-	@Override
-	public LexElement lookAheadElement(int laIndex) {
-		return lexSource.lookAheadElement(laIndex);
-	}
-	
-	protected LexElement lastLexElement() {
-		return lexSource.lastLexElement;
-	}
-	
-	protected LexElement lastNonMissingLexElement() {
-		return lexSource.lastNonMissingLexElement;
-	}
-	
-	// Consume methods of lexSource should not be called directly because we need to make sure
-	// analyzeConsumedElement is called
-	
-	@Override
-	protected final LexElement consumeInput() {
-		LexElement consumedElement = lexSource.consumeInput();
-		analyzeIgnoredTokens(consumedElement);
-		DeeTokenSemantics.checkTokenErrors(consumedElement.token, this);
-		return consumedElement;
-	}
-	
-	@Override
-	public LexElement consumeIgnoreTokens(DeeTokens expectedToken) {
-		LexElement consumedElement = lexSource.consumeIgnoreTokens(expectedToken);
-		analyzeIgnoredTokens(consumedElement);
-		return consumedElement;
-	}
-	
-	protected void analyzeIgnoredTokens(LexElement lastLexElement) {
-		if(lastLexElement.ignoredPrecedingTokens != null) {
-			for (Token ignoredToken : lastLexElement.ignoredPrecedingTokens) {
-				DeeTokenSemantics.checkTokenErrors(ignoredToken, this);
-			}
-		}
-	}
 	
 	/* ---- Basic error functionality ---- */
 	
+	protected abstract void submitError(ParserError error);
+	
 	protected ParserError addError(ParserErrorTypes errorType, SourceRange sr, String errorSource, Object msgData) {
-		assertEquals(getSource(sr), errorSource);
+		assertEquals(getSubString(getSource(), sr), errorSource);
 		ParserError error = new ParserError(errorType, sr, errorSource, msgData);
-		errors.add(error);
+		submitError(error);
 		return error;
 	}
 	
 	protected ParserError addError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
 		SourceRange sourceRange = errorToken.getSourceRange();
-		assertEquals(errorToken.source, getSource(sourceRange));
+		assertEquals(errorToken.source, getSubString(getSource(), sourceRange));
 		return addError(errorType, sourceRange, msgData);
 	}
 	
 	protected ParserError addError(ParserErrorTypes errorType, SourceRange sourceRange, Object msgData) {
-		return addError(errorType, sourceRange, getSource(sourceRange), msgData);
+		return addError(errorType, sourceRange, getSubString(getSource(), sourceRange), msgData);
 	}
 	
-	public String getSource(SourceRange sourceRange) {
-		return getSource().subSequence(sourceRange.getStartPos(), sourceRange.getEndPos()).toString();
+	public static String getSubString(String string, SourceRange sourceRange) {
+		return string.subSequence(sourceRange.getStartPos(), sourceRange.getEndPos()).toString();
 	}
 	
 	/* ---- Input consume helpers ---- */
@@ -159,7 +112,7 @@ public class AbstractParser extends CommonLexElementSource {
 		}
 	}
 	
-	protected LexElement consumeExpectedIdentifier() {
+	protected final LexElement consumeExpectedIdentifier() {
 		return consumeExpectedToken(DeeTokens.IDENTIFIER, true);
 	}
 	
@@ -192,8 +145,6 @@ public class AbstractParser extends CommonLexElementSource {
 		}
 	}
 	
-	public static Object PARSED_STATUS = new String("NODE_STATUS:PARSED");
-	
 	protected <T extends ASTNeoNode> T connect(final T node) {
 		for (ParserError parserError : pendingMissingTokenErrors) {
 			if(parserError.msgData != DeeTokens.IDENTIFIER) {
@@ -202,12 +153,12 @@ public class AbstractParser extends CommonLexElementSource {
 		}
 		pendingMissingTokenErrors.clear();
 		
-		node.setData(PARSED_STATUS);
+		node.setData(ASTSemantics.PARSED_STATUS);
 		node.accept(new ASTChildrenVisitor() {
 			@Override
 			protected void geneticChildrenVisit(ASTNeoNode child) {
 				assertTrue(child.getParent() == node);
-				assertTrue(child.getData() == PARSED_STATUS);
+				assertTrue(child.getData() == ASTSemantics.PARSED_STATUS);
 			}
 		});
 		return node;

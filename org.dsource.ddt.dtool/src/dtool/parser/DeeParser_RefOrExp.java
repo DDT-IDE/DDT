@@ -22,6 +22,7 @@ import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTDefaultVisitor;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTSemantics;
 import dtool.ast.SourceRange;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
@@ -75,11 +76,7 @@ import dtool.ast.references.Reference;
 import dtool.parser.ParserError.ParserErrorTypes;
 
 
-public class DeeParser_RefOrExp extends AbstractParser {
-	
-	public DeeParser_RefOrExp(LexerElementSource lexSource) {
-		super(lexSource);
-	}
+public abstract class DeeParser_RefOrExp extends AbstractParser {
 	
 	/* ----------------------------------------------------------------- */
 	
@@ -428,7 +425,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			this.exp = exp;
 			assertTrue((mode == null) == (exp == null));
 			if(exp != null) {
-				assertTrue((exp.getData() == PARSED_STATUS) == (mode == RefOrExpMode.EXP));
+				assertTrue((exp.getData() == ASTSemantics.PARSED_STATUS) == (mode == RefOrExpMode.EXP));
 			}
 		}
 		
@@ -506,7 +503,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 	protected RefOrExpParse refOrExpConnect(RefOrExpMode mode, Expression exp, LexElement afterStarOp) {
 		assertNotNull(mode);
 		if(mode == RefOrExpMode.EXP) {
-			if(exp.getData() != DeeParser_Decls.PARSED_STATUS) {
+			if(exp.getData() != ASTSemantics.PARSED_STATUS) {
 				exp = connect(exp);
 			}
 		} else { // This means the node must go through conversion process
@@ -527,7 +524,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			this.mode = mode;
 			this.resolvable = resolvable;
 			if(resolvable != null) {
-				assertTrue((resolvable.getData() == PARSED_STATUS) == (mode != RefOrExpMode.REF_OR_EXP));
+				assertTrue((resolvable.getData() == ASTSemantics.PARSED_STATUS) == (mode != RefOrExpMode.REF_OR_EXP));
 			}
 		}
 		
@@ -967,7 +964,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 		exp.accept(new ASTDefaultVisitor() {
 			@Override
 			public boolean preVisit(ASTNeoNode node) {
-				if(node.getData() == PARSED_STATUS) {
+				if(node.getData() == ASTSemantics.PARSED_STATUS) {
 					return false;
 				}
 				switch (node.getNodeType()) {
@@ -984,7 +981,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 				default:
 					throw assertFail();
 				}
-				node.setData(DeeParser_Decls.PARSED_STATUS);
+				node.setData(ASTSemantics.PARSED_STATUS);
 				return true;
 			}
 		});
@@ -1073,7 +1070,7 @@ public class DeeParser_RefOrExp extends AbstractParser {
 			// argument can only be interpreted as reference
 			indexArg = ((ExpReference) indexArgExp).ref;
 			indexArg.detachFromParent();
-		} else if(indexArgExp.getData() == DeeParser_Decls.PARSED_STATUS) {
+		} else if(indexArgExp.getData() == ASTSemantics.PARSED_STATUS) {
 			// argument can only be interpreted as expression
 			indexArg = indexArgExp;
 			indexArg.detachFromParent();

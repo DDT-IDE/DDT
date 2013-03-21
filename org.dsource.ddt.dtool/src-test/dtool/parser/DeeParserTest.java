@@ -22,6 +22,7 @@ import java.util.List;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTSemantics;
 import dtool.ast.NodeList2;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefSymbol;
@@ -142,7 +143,7 @@ public class DeeParserTest extends CommonTestUtils {
 			assertTrue(astNode.getParent() == parent);
 			if(!(astNode instanceof DefSymbol)) {
 				// TODO fix this above
-				assertTrue(astNode.getData() == DeeParser.PARSED_STATUS);
+				assertTrue(astNode.getData() == ASTSemantics.PARSED_STATUS);
 			}
 			checkBasicStructure(astNode.getChildren(), astNode);
 		}

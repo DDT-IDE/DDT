@@ -11,10 +11,10 @@ import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
+import dtool.ast.ASTSemantics;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
-import dtool.parser.DeeParser;
 import dtool.parser.Token;
 import dtool.refmodel.INamedScope;
 import dtool.refmodel.IScope;
@@ -53,7 +53,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 			this.packageList = assertNotNull_(packageList);
 			this.packages = NodeUtil.tokenArrayToStringArray(packageList);
 			this.moduleName = new ModuleDefSymbol(moduleDefUnit.source, moduleDefUnit.getSourceRange());
-			this.moduleName.setData(DeeParser.PARSED_STATUS);
+			this.moduleName.setData(ASTSemantics.PARSED_STATUS);
 			parentize(moduleName);
 			
 			initSourceRange(sourceRange);

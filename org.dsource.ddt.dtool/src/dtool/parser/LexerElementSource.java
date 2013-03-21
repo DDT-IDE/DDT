@@ -30,10 +30,15 @@ public class LexerElementSource extends CommonLexElementSource {
 	// This initialization is important for some error reporting:
 	protected LexElement lastNonMissingLexElement = lastLexElement;
 	
+	public LexerElementSource(String source) {
+		this.lexer = new DeeLexer(source);
+	}
+	
 	public LexerElementSource(AbstractLexer deeLexer) {
 		this.lexer = deeLexer;
 	}
 	
+	@Override
 	public String getSource() {
 		return lexer.getSource();
 	}
@@ -80,7 +85,7 @@ public class LexerElementSource extends CommonLexElementSource {
 	}
 	
 	@Override
-	public LexElement consumeIgnoreTokens(DeeTokens expectedToken) {
+	public final LexElement consumeIgnoreTokens(DeeTokens expectedToken) {
 		LexElement la = lookAheadElement();
 		
 		// Missing element will consume whitetokens ahead
@@ -95,6 +100,16 @@ public class LexerElementSource extends CommonLexElementSource {
 	
 	protected void lexElementConsumed(@SuppressWarnings("unused") LexElement lastLexElement) {
 		// Default implementation
+	}
+	
+	@Override
+	protected LexElement lastLexElement() {
+		return lastLexElement;
+	}
+	
+	@Override
+	protected LexElement lastNonMissingLexElement() {
+		return lastNonMissingLexElement;
 	}
 	
 }

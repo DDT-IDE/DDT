@@ -11,24 +11,17 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
+import java.util.ArrayList;
+
 import dtool.ast.definitions.Module;
 
 /**
  * Concrete D Parser class
+ * 
+ * XXX: BM: this code is a bit convoluted and strange, we use inheritance just for the sake of namespace importing
  */
 public class DeeParser extends DeeParser_Decls {
-	
-	public DeeParser(String source) {
-		this(new DeeLexer(source));
-	}
-	
-	public DeeParser(DeeLexer deeLexer) {
-		super(new LexerElementSource(deeLexer));
-	}
-	
-	public DeeParser(LexerElementSource lexSource) {
-		super(lexSource);
-	}
 	
 	public static DeeParserResult parseSource(String source) {
 		DeeParser deeParser = new DeeParser(source);
@@ -52,6 +45,66 @@ public class DeeParser extends DeeParser_Decls {
 			throw assertFail();
 		}
 		return result;
+	}
+	
+	
+	protected final LexerElementSource lexSource;
+	protected final ArrayList<ParserError> errors = new ArrayList<ParserError>();
+	
+	public DeeParser(String source) {
+		this(new DeeLexer(source));
+	}
+	
+	public DeeParser(DeeLexer deeLexer) {
+		lexSource = new LexerElementSource(deeLexer);
+	}
+	
+	@Override
+	protected void submitError(ParserError error) {
+		errors.add(error);
+	}
+	
+	@Override
+	public String getSource() {
+		return lexSource.getSource();
+	}
+	
+	@Override
+	public LexElement lookAheadElement(int laIndex) {
+		return lexSource.lookAheadElement(laIndex);
+	}
+	
+	@Override
+	protected LexElement lastLexElement() {
+		return lexSource.lastLexElement;
+	}
+	
+	@Override
+	protected LexElement lastNonMissingLexElement() {
+		return lexSource.lastNonMissingLexElement;
+	}
+	
+	@Override
+	protected final LexElement consumeInput() {
+		LexElement consumedElement = lexSource.consumeInput();
+		analyzeIgnoredTokens(consumedElement);
+		DeeTokenSemantics.checkTokenErrors(consumedElement.token, this);
+		return consumedElement;
+	}
+	
+	@Override
+	public LexElement consumeIgnoreTokens(DeeTokens expectedToken) {
+		LexElement consumedElement = lexSource.consumeIgnoreTokens(expectedToken);
+		analyzeIgnoredTokens(consumedElement);
+		return consumedElement;
+	}
+	
+	protected void analyzeIgnoredTokens(LexElement lastLexElement) {
+		if(lastLexElement.ignoredPrecedingTokens != null) {
+			for (Token ignoredToken : lastLexElement.ignoredPrecedingTokens) {
+				DeeTokenSemantics.checkTokenErrors(ignoredToken, this);
+			}
+		}
 	}
 	
 }

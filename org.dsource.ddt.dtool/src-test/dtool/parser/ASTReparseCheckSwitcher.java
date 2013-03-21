@@ -255,7 +255,7 @@ public class ASTReparseCheckSwitcher {
 		if(!consumesSurroundingWhiteSpace) {
 			// Check that there is no trailing whitespace in the range
 			assertTrue(lastElementInRange(snippedParser).getEndPos() == snippedParser.getSource().length());
-			assertTrue(firstElementInRange(snippedParser).ignoredPrecedingTokens == null);
+			assertTrue(firstElementInRange(snippedParser.getSource()).ignoredPrecedingTokens == null);
 			
 			if(snippedParser.lastLexElement().isMissingElement()) {
 				consumesSurroundingWhiteSpace = true;
@@ -274,21 +274,22 @@ public class ASTReparseCheckSwitcher {
 	}
 	
 	public LexElement elementAfterSnippedRange(ASTNeoNode node) {
-		DeeParser afterNodeRangeParser = new DeeParser(originalSource.substring(node.getEndPos()));
+		LexerElementSource afterNodeRangeParser = new LexerElementSource(originalSource.substring(node.getEndPos()));
 		LexElement lookAheadElement = afterNodeRangeParser.lookAheadElement();
 		return lookAheadElement;
 	}
 	
 	public LexElement elementBeforeSnippedRange(ASTNeoNode node) {
-		DeeParser beforeNodeRangeParser = new DeeParser(originalSource.substring(0, node.getStartPos()));
-		while(beforeNodeRangeParser.lookAhead() != DeeTokens.EOF) {
-			beforeNodeRangeParser.consumeInput();
+		String beforeSource = originalSource.substring(0, node.getStartPos());
+		LexerElementSource beforeNodeRangeLexer = new LexerElementSource(beforeSource);
+		while(beforeNodeRangeLexer.lookAhead() != DeeTokens.EOF) {
+			beforeNodeRangeLexer.consumeInput();
 		}
-		return beforeNodeRangeParser.lookAheadElement();
+		return beforeNodeRangeLexer.lookAheadElement();
 	}
 	
-	public LexElement firstElementInRange(DeeParser parser) {
-		return (new DeeParser(parser.getSource())).lookAheadElement();
+	public LexElement firstElementInRange(String source) {
+		return (new LexerElementSource(source)).lookAheadElement();
 	}
 	
 	public LexElement lastElementInRange(AbstractParser parser) {

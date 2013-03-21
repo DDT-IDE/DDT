@@ -75,11 +75,7 @@ import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
 
-public class DeeParser_Decls extends DeeParser_RefOrExp {
-	
-	public DeeParser_Decls(LexerElementSource lexSource) {
-		super(lexSource);
-	}
+public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	/* ----------------------------------------------------------------- */
 	
