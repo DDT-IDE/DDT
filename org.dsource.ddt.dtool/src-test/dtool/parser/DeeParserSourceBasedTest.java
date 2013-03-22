@@ -70,7 +70,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 			public boolean evaluate(File file) {
 				if(file.getName().endsWith("_TODO") 
 					|| file.getParentFile().getName().equals("_common")
-					|| file.getName().endsWith(".d") == false)
+					|| (file.getName().endsWith(".d") || file.getName().endsWith(".tsp") ) == false)
 					return true;
 				return false;
 			}
