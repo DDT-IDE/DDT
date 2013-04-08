@@ -177,7 +177,7 @@ public class DeeLexer extends AbstractLexer {
 		case ALPHA_H: return ruleHStart();
 		case ALPHA_Q: return ruleQStart();
 		
-		case DIGIT: return matchDigitRules();
+		case DIGIT: return ruleDigitStart();
 		case ALPHA: return ruleAlphaStart();
 		
 		case OPEN_PARENS: return createToken(DeeTokens.OPEN_PARENS, 1);
@@ -262,8 +262,7 @@ public class DeeLexer extends AbstractLexer {
 		return createEOFToken();
 	}
 	
-	/** EOF token will consist of not only initial EOF marker but everything afterwards
-	 * until true end of file. */
+	/** EOF token will consist of not only initial EOF marker but everything afterwards until true end of file. */
 	protected final Token createEOFToken() {
 		return createToken(DeeTokens.EOF, source.length() - tokenStartPos);
 	}
@@ -635,7 +634,7 @@ public class DeeLexer extends AbstractLexer {
 		BINARY, OCTAL, DECIMAL, HEX
 	}
 	
-	protected final Token matchDigitRules() {
+	protected final Token ruleDigitStart() {
 		assertTrue(getCharCategory(lookAhead()) == CharRuleCategory.DIGIT);
 		
 		EInt_Literal_Type literalType = EInt_Literal_Type.DECIMAL;
@@ -697,7 +696,8 @@ public class DeeLexer extends AbstractLexer {
 			
 			boolean isHex = literalType == EInt_Literal_Type.HEX;
 			int ch = lookAhead();
-			if(ch == '.') {
+			// Watch out for special spec exception for stuff like "1..2" :
+			if(ch == '.' && lookAhead(1) != '.') { 
 				return matchFloatLiteral_FromDecimalPoint(isHex);
 			}
 			if(ch == 'f' || ch == 'F' || ch == 'L' || ch == 'i' 
