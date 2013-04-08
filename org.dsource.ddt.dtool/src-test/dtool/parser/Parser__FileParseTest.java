@@ -12,7 +12,7 @@ public abstract class Parser__FileParseTest extends Parser__CommonTest {
 	
 	protected final File file;
 	
-	public Parser__FileParseTest(File file) {
+	public Parser__FileParseTest(@SuppressWarnings("unused") String testDescription, File file) {
 		this.file = file;
 		assertTrue(file.isFile());
 	}

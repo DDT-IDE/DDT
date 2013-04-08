@@ -14,15 +14,14 @@ import dtool.tests.DToolTestResources;
 @RunWith(Parameterized.class)
 public class MassParse_MiscUnsupportedSyntaxCasesTest extends Parser__FileParseTest {
 	
-	@Parameters
+	@Parameters(name="{index}: {0}")
 	public static Collection<Object[]> filesToParse() throws IOException {
-		File scanDir = DToolTestResources.getTestResource(
-			MassParse__CommonTest.COMMON + "miscCasesUnsupportedSyntax");
-		return getTestFilesFromFolderAsParameterList(scanDir);
+		File scanDir = DToolTestResources.getTestResource(MassParse__CommonTest.COMMON + "miscCasesUnsupportedSyntax");
+		return getTestFilesFromFolderAsParameterList(scanDir, true);
 	}
 	
-	public MassParse_MiscUnsupportedSyntaxCasesTest(File file) {
-		super(file);
+	public MassParse_MiscUnsupportedSyntaxCasesTest(String testDescription, File file) {
+		super(testDescription, file);
 	}
 	
 	@Test

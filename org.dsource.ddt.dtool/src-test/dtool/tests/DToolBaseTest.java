@@ -97,18 +97,25 @@ public class DToolBaseTest extends CommonTestUtils {
 		return fileList;
 	}
 	
-	public static Collection<Object[]> getTestFilesFromFolderAsParameterList(File folder) throws IOException {
-		return toFnParameterList(getDeeModuleList(folder, true), null);
+	public static Collection<Object[]> getTestFilesFromFolderAsParameterList(File folder, boolean includeDescription) 
+		throws IOException {
+		return toParameterList(getDeeModuleList(folder, true), null, includeDescription);
 	}
 	
-	public static Collection<Object[]> toFnParameterList(List<File> fileList, Predicate<File> filter) {
+	public static Collection<Object[]> toParameterList(List<File> fileList, Predicate<File> filter, 
+		final boolean includeDescription) {
 		if(filter != null) {
 			fileList = CollectionUtil.filter(fileList, filter);
 		}
+		
 		Function<File, Object[]> arrayWrap = new Function<File, Object[]>() {
 			@Override
-			public Object[] evaluate(File obj) {
-				return new Object[] { obj };
+			public Object[] evaluate(File file) {
+				if(includeDescription) {
+					return new Object[] { file.getName(), file };
+				} else {
+					return new Object[] { file };
+				}
 			};
 		};
 		

@@ -446,7 +446,11 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		}
 	}
 	
-	/* ============================ RefOrExp ============================ */
+	/* ============================ TypeOrExp ============================ */
+	
+	// This approach to parsing Type references or Expressions is quite complicated and messy,
+	// and probably not worth it (even thought it parses linearly)
+	// Better would be an approach based on rule deciders and backtracking. 
 	
 	public static final Expression DUMMY_EXP = new MissingExpression(null) {{ setData(ASTSemantics.PARSED_STATUS);}};
 	
@@ -603,8 +607,8 @@ protected class ParseRule_TypeOrExp {
 		return parseInfixOperators(precedenceLimit, unaryExp);
 	}
 	
-	protected Expression parseUnaryExpression(boolean isRefOrExpStart) {
-		Expression prefixExp = parsePrefixExpression(isRefOrExpStart);
+	protected Expression parseUnaryExpression(boolean isTypeOrExpStart) {
+		Expression prefixExp = parsePrefixExpression(isTypeOrExpStart);
 		if(shouldReturnToParseRuleTopLevel(prefixExp)) {
 			return prefixExp;
 		}
@@ -1037,9 +1041,9 @@ protected class ParseRule_TypeOrExp {
 		
 	}
 	
-} /* ---------------- ParseRule_RefOrExp END----------------*/
+} /* ---------------- ParseRule_TypeOrExp END----------------*/
 	
-	/* ---------------- ParseRule_RefOrExp utils: ----------------*/
+	/* ---------------- ParseRule_TypeOrExp utils: ----------------*/
 	
 	/** Returns true if the given ref can only be a reference to a type (due to the parsed grammar rules). */
 	protected static boolean parsesAsTypeRef(Reference ref) {
@@ -1340,7 +1344,7 @@ protected class ParseRule_TypeOrExp {
 		return connect(new RefIndexing(leftRef, indexArg, srNodeStart(leftRef, exp.getEndPos())));
 	}
 	
-	/* ---------------- ParseRule_RefOrExp End of utils ----------------*/
+	/* ---------------- ParseRule_TypeOrExp End of utils ----------------*/
 	
 	public Expression parseUnaryExpression() {
 		Expression exp = new ParseRule_TypeOrExp().parseUnaryExpression(true);
@@ -1421,19 +1425,19 @@ protected class ParseRule_TypeOrExp {
 	protected ArgumentListParseResult<Expression> parseExpArgumentList(DeeTokens tokenLISTCLOSE) {
 		return CoreUtil.blindCast(parseArgumentList(false, DeeTokens.COMMA, tokenLISTCLOSE));
 	}
-	protected ArgumentListParseResult<Resolvable> parseArgumentList(boolean parseRefOrExp, 
+	protected ArgumentListParseResult<Resolvable> parseArgumentList(boolean parseTypeOrExp, 
 		DeeTokens tokenSEPARATOR, DeeTokens tokenLISTCLOSE) {
 		
 		ArrayList<Resolvable> args = new ArrayList<Resolvable>();
 		
 		boolean first = true;
 		while(true) {
-			Resolvable arg = (parseRefOrExp ? parseTypeOrAssignExpression(true) : parseAssignExpression()).node;
+			Resolvable arg = (parseTypeOrExp ? parseTypeOrAssignExpression(true) : parseAssignExpression()).node;
 			
 			if(first && arg == null && lookAhead() != tokenSEPARATOR) {
 				break;
 			}
-			arg = parseRefOrExp ? nullTypeOrExpToMissing(arg) : nullExpToMissing((Expression) arg);
+			arg = parseTypeOrExp ? nullTypeOrExpToMissing(arg) : nullExpToMissing((Expression) arg);
 			args.add(arg);
 			first = false;
 			

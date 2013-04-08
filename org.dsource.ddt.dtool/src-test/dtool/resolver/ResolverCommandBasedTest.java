@@ -18,7 +18,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
-import dtool.parser.DeeSourceBasedTest;
+import dtool.parser.DeeTemplatedSourceBasedTest;
 import dtool.parser.Parser__CommonTest;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.sourcegen.AnnotatedSource;
@@ -27,7 +27,7 @@ import dtool.sourcegen.AnnotatedSource;
 public class ResolverCommandBasedTest extends Resolver_BaseTest {
 	
 	protected void splitSourceAndRunTestCommands(String fullSource, String defaultModuleName) throws IOException {
-		for (AnnotatedSource splitSource : DeeSourceBasedTest.getSourceBasedTestCases(fullSource)) {
+		for (AnnotatedSource splitSource : DeeTemplatedSourceBasedTest.getSourceBasedTestCases(fullSource)) {
 			runTestCommands(splitSource.source, defaultModuleName);
 		}
 	}

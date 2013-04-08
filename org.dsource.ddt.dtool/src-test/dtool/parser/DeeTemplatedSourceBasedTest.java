@@ -21,10 +21,13 @@ import java.util.Map;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.TemplatedSourceProcessor;
 import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
-import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTests;
 
-public class DeeSourceBasedTest extends DToolBaseTest {
+public abstract class DeeTemplatedSourceBasedTest extends DeeFilesBasedTest {
+	
+	public DeeTemplatedSourceBasedTest(String testDescription, File file) {
+		super(testDescription, file);
+	}
 	
 	protected static class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
 		@Override

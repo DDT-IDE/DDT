@@ -27,13 +27,13 @@ public class ParserTestDataFilesTest extends Parser__FileParseTest {
 	private static final String UNSUPPORTED_INVALID = " UNSUPPORTED_INVALID ";
 	
 	
-	@Parameters
+	@Parameters(name="{index}: {0}")
 	public static Collection<Object[]> filesToParse() throws IOException {
-		return getTestFilesFromFolderAsParameterList(DToolTestResources.getTestResource(TESTFILESDIR));
+		return getTestFilesFromFolderAsParameterList(DToolTestResources.getTestResource(TESTFILESDIR), true);
 	}
 	
-	public ParserTestDataFilesTest(File file) {
-		super(file);
+	public ParserTestDataFilesTest(String testDescription, File file) {
+		super(testDescription, file);
 	}
 	
 	@Test

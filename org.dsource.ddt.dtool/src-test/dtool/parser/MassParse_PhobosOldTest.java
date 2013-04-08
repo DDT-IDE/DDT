@@ -11,13 +11,13 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class MassParse_PhobosOldTest extends MassParse__CommonTest {
 	
-	@Parameters
+	@Parameters(name="{index}: {0}")
 	public static Collection<Object[]> filesToParse() throws IOException {
-		return getTestFilesFromFolderAsParameterList(getCommonResource(TESTSRC_PHOBOS1_OLD));
+		return getTestFilesFromFolderAsParameterList(getCommonResource(TESTSRC_PHOBOS1_OLD), true);
 	}
 	
-	public MassParse_PhobosOldTest(File file) {
-		super(file);
+	public MassParse_PhobosOldTest(String testDescription, File file) {
+		super(testDescription, file);
 	}
 	
 	@Override

@@ -52,8 +52,8 @@ public abstract class MassParse__CommonTest extends Parser__FileParseTest {
 	
 	/* ------------------------------------ */
 	
-	public MassParse__CommonTest(File file) {
-		super(file);
+	public MassParse__CommonTest(String testDescription, File file) {
+		super(testDescription, file);
 	}
 	
 }

@@ -31,19 +31,17 @@ import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.DToolTestResources;
 
 @RunWith(Parameterized.class)
-public class DeeLexerSourceBasedTest extends DeeSourceBasedTest {
+public class DeeLexerSourceBasedTest extends DeeTemplatedSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "dtool-lexer";
 	
-	@Parameters
+	@Parameters(name="{index}: {0}")
 	public static Collection<Object[]> filesToParse() throws IOException {
-		return getTestFilesFromFolderAsParameterList(DToolTestResources.getTestResource(TESTFILESDIR));
+		return getTestFilesFromFolderAsParameterList(DToolTestResources.getTestResource(TESTFILESDIR), true);
 	}
 	
-	protected final File file;
-	
-	public DeeLexerSourceBasedTest(File file) {
-		this.file = file;
+	public DeeLexerSourceBasedTest(String testDescription, File file) {
+		super(testDescription, file);
 	}
 	
 	@Test

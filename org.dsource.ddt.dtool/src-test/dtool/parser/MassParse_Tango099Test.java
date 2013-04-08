@@ -11,14 +11,13 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class MassParse_Tango099Test extends MassParse__CommonTest {
 	
-	
-	@Parameters
+	@Parameters(name="{index}: {0}")
 	public static Collection<Object[]> filesToParse() throws IOException {
-		return getTestFilesFromFolderAsParameterList(getCommonResource(TESTSRC_TANGO_0_99));
+		return getTestFilesFromFolderAsParameterList(getCommonResource(TESTSRC_TANGO_0_99), true);
 	}
 	
-	public MassParse_Tango099Test(File file) {
-		super(file);
+	public MassParse_Tango099Test(String testDescription, File file) {
+		super(testDescription, file);
 	}
 	
 	@Override

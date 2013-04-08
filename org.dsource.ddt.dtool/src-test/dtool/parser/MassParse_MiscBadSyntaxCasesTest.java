@@ -15,15 +15,14 @@ import dtool.tests.DToolTestResources;
 @RunWith(Parameterized.class)
 public class MassParse_MiscBadSyntaxCasesTest extends Parser__FileParseTest {
 	
-	@Parameters
+	@Parameters(name="{index}: {0}")
 	public static Collection<Object[]> filesToParse() throws IOException {
-		File scanDir = DToolTestResources.getTestResource(
-			MassParse__CommonTest.COMMON + "miscCasesInvalidSyntax");
-		return getTestFilesFromFolderAsParameterList(scanDir);
+		File scanDir = DToolTestResources.getTestResource(MassParse__CommonTest.COMMON + "miscCasesInvalidSyntax");
+		return getTestFilesFromFolderAsParameterList(scanDir, true);
 	}
 	
-	public MassParse_MiscBadSyntaxCasesTest(File file) {
-		super(file);
+	public MassParse_MiscBadSyntaxCasesTest(String testDescription, File file) {
+		super(testDescription, file);
 	}
 	
 	@Test
