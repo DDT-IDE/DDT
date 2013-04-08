@@ -9,11 +9,13 @@ import dtool.ast.SourceRange;
 
 public class ExpParentheses extends Expression {
 	
+	public final boolean isDotAfterParensSyntax;
 	public final Resolvable resolvable;
 	
-	public ExpParentheses(Resolvable resolvable, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpParentheses(boolean isDotAfterParensSyntax, Resolvable resolvable, SourceRange sourceRange) {
+		this.isDotAfterParensSyntax = isDotAfterParensSyntax;
 		this.resolvable = parentize(assertNotNull_(resolvable));
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

@@ -42,7 +42,7 @@ import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
-import dtool.ast.expressions.ExpPostfix;
+import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.ast.expressions.ExpPrefix;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
@@ -195,7 +195,7 @@ public interface IASTVisitor {
 	public boolean visit(ExpReference node);
 	
 	public boolean visit(ExpPrefix node);
-	public boolean visit(ExpPostfix node);
+	public boolean visit(ExpPostfixOperator node);
 	public boolean visit(ExpInfix node);
 	public boolean visit(ExpConditional node);
 	

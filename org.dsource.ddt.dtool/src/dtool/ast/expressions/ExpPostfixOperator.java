@@ -8,7 +8,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.parser.DeeTokens;
 
-public class ExpPostfix extends Expression {
+public class ExpPostfixOperator extends Expression {
 	
 	public static enum PostfixOpType {
 		POST_INCREMENT(DeeTokens.INCREMENT),
@@ -31,7 +31,7 @@ public class ExpPostfix extends Expression {
 	public final PostfixOpType kind;
 	public final Resolvable exp;
 	
-	public ExpPostfix(Resolvable exp, PostfixOpType kind, SourceRange sourceRange) {
+	public ExpPostfixOperator(Resolvable exp, PostfixOpType kind, SourceRange sourceRange) {
 		initSourceRange(sourceRange);
 		this.exp = parentize(exp);
 		this.kind = kind;
@@ -39,7 +39,7 @@ public class ExpPostfix extends Expression {
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.EXP_POSTFIX;
+		return ASTNodeTypes.EXP_POSTFIX_OP;
 	}
 	
 	@Override

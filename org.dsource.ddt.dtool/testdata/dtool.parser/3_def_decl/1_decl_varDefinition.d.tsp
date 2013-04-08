@@ -33,49 +33,48 @@ DefVariable(* DefSymbol InitializerExp(*) DefVarFragment(DefSymbol) DefVarFragme
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@PRX1!《#NO_PRX1(flag)●xxx,》
-#@BREAK!《align int ruleBREAK;》
-#@BREAK_EXP!《DeclarationAlign(*)》
+#@SEPARATOR!《 #?AST_STRUCTURE_EXPECTED!【align int ruleBREAK;● DeclarationAlign(*)】 》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
 
-#@TYPE_REFS #@PRX1 #error:EXP_IDENTIFIER #?NO_PRX1{,#error:EXP_SEMICOLON} #@BREAK
+#@TYPE_REFS #@PRX1 #error:EXP_IDENTIFIER #?NO_PRX1{,#error:EXP_SEMICOLON} #@SEPARATOR
 #@TYPE_REFS #@PRX1 #error:EXP_IDENTIFIER ;
 
-#@TYPE_REFS #@PRX1 fooA #error:EXP_SEMICOLON  #@BREAK
-#@TYPE_REFS #@PRX1 fooB = #@NO_INIT #error:EXP_SEMICOLON  #@BREAK
+#@TYPE_REFS #@PRX1 fooA #error:EXP_SEMICOLON  #@SEPARATOR
+#@TYPE_REFS #@PRX1 fooB = #@NO_INIT #error:EXP_SEMICOLON  #@SEPARATOR
 #@TYPE_REFS #@PRX1 fooD = #@NO_INIT ;
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:
-#?NO_PRX1{InvalidDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} #@BREAK_EXP
+#?NO_PRX1{InvalidDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} #@SEPARATOR
 #?NO_PRX1{InvalidDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} 
 
-DefVariable(* DefSymbol #?NO_PRX1【●                 DefVarFragment(DefSymbol)】 ) #@BREAK_EXP
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? #@NO_INIT)】) #@BREAK_EXP
+DefVariable(* DefSymbol #?NO_PRX1【●                 DefVarFragment(DefSymbol)】 ) #@SEPARATOR
+DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? #@NO_INIT)】) #@SEPARATOR
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? #@NO_INIT)】)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
 
-#@TYPE_REFS #@PRX1 fooE = 112 #error:EXP_SEMICOLON  #@BREAK
+#@TYPE_REFS #@PRX1 fooE = 112 #error:EXP_SEMICOLON  #@SEPARATOR
 #@TYPE_REFS #@PRX1 fooF = 112 = "666";
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? InitializerExp(Integer))】) 
-#@BREAK_EXP
+#@SEPARATOR
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(Integer String))●
 		DefVarFragment(? InitializerExp(ExpInfix(Integer String)))】)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors (with multiple exp)
 
-#@TYPE_REFS #@PRX1 fooE = #@EXP_ASSIGN #error:EXP_SEMICOLON  #@BREAK
-#@TYPE_REFS #@PRX1 fooF = #@EXP_CONDITIONAL = "666";
+#@TYPE_REFS #@PRX1 fooE = #EXP__NO_BREAKING_EXPS(flag) #@EXP_ASSIGN #error:EXP_SEMICOLON  #@SEPARATOR
+#@TYPE_REFS #@PRX1 fooF = #EXP__NO_BREAKING_EXPS(flag) #@EXP_CONDITIONAL = "666";
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:
 
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(#@EXP_ASSIGN)●DefVarFragment(? InitializerExp(#@EXP_ASSIGN))】) 
-#@BREAK_EXP
+#@SEPARATOR
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(#@EXP_CONDITIONAL String))●
 		DefVarFragment(? InitializerExp(ExpInfix(#@EXP_CONDITIONAL String)))】)
 

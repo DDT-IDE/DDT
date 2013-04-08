@@ -21,18 +21,20 @@ public abstract class DefUnit extends ASTNeoNode {
 		public SourceRange nameSourceRange;
 		public Comment[] comments;
 		
-		public DefUnitTuple(SourceRange sourceRange, TokenInfo defName, Comment[] comments) {
-			this.sourceRange = sourceRange;
-			this.name = defName.getString();
-			this.nameSourceRange = defName.getSourceRange();
+		public DefUnitTuple(Comment[] comments, String name, SourceRange nameSourceRange, 
+			@Deprecated SourceRange sourceRange) {
 			this.comments = comments;
+			this.name = name;
+			this.nameSourceRange = nameSourceRange;
+			this.sourceRange = sourceRange;
+		}
+		
+		public DefUnitTuple(SourceRange sourceRange, TokenInfo defName, Comment[] comments) {
+			this(comments, defName.getString(), defName.getSourceRange(), sourceRange);
 		}
 		
 		public DefUnitTuple(SourceRange sourceRange, LexElement id, Comment[] comments) {
-			this.sourceRange = sourceRange;
-			this.name = id.token.getSourceValue();
-			this.nameSourceRange = id.token.getSourceRange();
-			this.comments = comments;
+			this(comments, id.getSourceValue(), id.getSourceRange(), sourceRange);
 		}
 	}
 	

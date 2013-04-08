@@ -467,7 +467,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 				null, 
 				ReferenceConverter.convertType(element.type, convContext), 
 				dudt,
-				null, false, null
+				null, false
 			);
 		}
 		

@@ -12,12 +12,16 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.replaceRegexFirstOccurrence;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
@@ -25,13 +29,19 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTSemantics;
 import dtool.ast.NodeList2;
 import dtool.ast.NodeUtil;
-import dtool.ast.definitions.DefSymbol;
+import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
+import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpLiteralString;
+import dtool.parser.DeeParserResult.ParserErrorComparator;
+import dtool.parser.DeeParser_Decls.ParseRule_Parameters.AmbiguousParameter;
+import dtool.parser.DeeParser_Decls.TplOrFnMode;
+import dtool.parser.ParserError.ParserErrorTypes;
+import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
 
 
@@ -39,19 +49,26 @@ public class DeeParserTest extends CommonTestUtils {
 	
 	public static class CheckSourceEquality {
 		
-		public static void check(String source, String expectedSource) {
-			assertTrue(sourceHasEqualParsing(source, expectedSource));
+		public static void assertCheck(String source, String expectedSource) {
+			checkSourceIsEquivalent(source, expectedSource, true);
+		}
+		public static boolean check(String source, String expectedSource) {
+			return checkSourceIsEquivalent(source, expectedSource, false);
 		}
 		
-		public static boolean sourceHasEqualParsing(String source, String expectedSource) {
+		public static boolean checkSourceIsEquivalent(String source, String expectedSource, boolean failOnUnequal) {
 			DeeLexer generatedSourceLexer = new DeeLexer(source);
 			DeeLexer expectedSourceLexer = new DeeLexer(expectedSource);
 			
 			while(true) {
 				Token tok = getContentToken(generatedSourceLexer, true);
 				Token tokExp = getContentToken(expectedSourceLexer, true);
-				if(!(tok.type.equals(tokExp.type) && tok.source.equals(tokExp.source))) 
+				if(tok.type.equals(tokExp.type) && tok.source.equals(tokExp.source)) {
+				} else if(failOnUnequal) {
+					assertFail();
+				} else {
 					return false;
+				}
 				
 				if(tok.type == DeeTokens.EOF) {
 					return true;
@@ -68,6 +85,52 @@ public class DeeParserTest extends CommonTestUtils {
 				}
 			}
 		}
+	}
+	
+	public static void runParserTest______________________(
+		final String fullParseSource, final String parseRule, final String expectedRemainingSource, 
+		final String expectedGenSource, final NamedNodeElement[] expectedStructure, final 
+		ArrayList<ParserError> expectedErrors, final boolean allowAnyErrors, 
+		HashMap<String, MetadataEntry> additionalMetadata) {
+		
+		String parseSource = fullParseSource;
+		DeeTestsParser deeParser = new DeeTestsParser(fullParseSource);
+		DeeParserResult result = parseUsingRule(parseRule, deeParser);
+		
+		if(expectedRemainingSource == null) {
+			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
+		} else {
+			String remainingSource = fullParseSource.substring(deeParser.getParserPosition());
+			CheckSourceEquality.assertCheck(remainingSource, expectedRemainingSource);
+			parseSource = fullParseSource.substring(0, fullParseSource.length() - expectedRemainingSource.length());
+		}
+		ASTNeoNode mainNode = assertNotNull_(result.node);
+		
+		checkBasicStructure(array(mainNode), null);
+		if(expectedStructure != null) {
+			checkExpectedStructure(mainNode, expectedStructure);
+		}
+		
+		String expectedSource = expectedGenSource;
+		if(result.errors.size() == 0) {
+			assertTrue(expectedErrors.size() == 0);
+			if(expectedGenSource == null) {
+				expectedSource = parseSource;
+			} else {
+				assertTrue(parseSource.equals(expectedGenSource));
+			}
+		} else if(allowAnyErrors == false) {
+			checkParserErrors(result.errors, expectedErrors);
+		}
+		
+		if(expectedGenSource != null) {
+			checkSourceEquality(mainNode, expectedSource);
+		}
+		
+		// Check consistency of source ranges (no overlapping ranges)
+		ASTSourceRangeChecker.checkConsistency(mainNode);
+		
+		runAdditionalTests(result, additionalMetadata);
 	}
 	
 	public static final class DeeTestsLexer extends DeeLexer {
@@ -89,51 +152,18 @@ public class DeeParserTest extends CommonTestUtils {
 		@Override
 		protected <T extends ASTNeoNode> T connect(T node) {
 			super.connect(node);
-			checkNodeSourceRange(node, getSource(), errors);
+			checkNodeSourceRange(node, getSource());
+			
+			// Run additional tests on the node just parsed
+			// These might include node/rule specific tests
+			runNodeParsingChecks(node, getSource(), errors);
 			return node;
 		}
 	}
 	
-	public static void runParserTest______________________(
-		final String fullParseSource, final String parseRule, final String expectedRemainingSource, 
-		final String expectedGenSource, final NamedNodeElement[] expectedStructure, final 
-		ArrayList<ParserError> expectedErrors, final boolean allowAnyErrors) {
-		
-		String parseSource = fullParseSource;
-		DeeParser deeParser = new DeeTestsParser(fullParseSource);
-		DeeParserResult result = deeParser.parseUsingRule(parseRule);
-		
-		if(expectedRemainingSource == null) {
-			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
-		} else {
-			String remainingSource = fullParseSource.substring(deeParser.getParserPosition());
-			CheckSourceEquality.check(remainingSource, expectedRemainingSource);
-			parseSource = fullParseSource.substring(0, fullParseSource.length() - expectedRemainingSource.length());
-		}
-		ASTNeoNode mainNode = assertNotNull_(result.node);
-		
-		checkBasicStructure(array(mainNode), null);
-		if(expectedStructure != null) {
-			checkExpectedStructure(mainNode, expectedStructure);
-		}
-		
-		if(expectedGenSource != null) {
-			checkSourceEquality(mainNode, expectedGenSource);
-		}
-		
-		if(result.errors.size() == 0) {
-			assertTrue(expectedErrors.size() == 0);
-			assertTrue(parseSource.equals(expectedGenSource));
-		} else if(allowAnyErrors == false) {
-			checkParserErrors(result.errors, expectedErrors);
-		}
-		
-		// Check consistency of source ranges (no overlapping ranges)
-		ASTSourceRangeChecker.checkConsistency(mainNode);
-	}
 	
 	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
-		CheckSourceEquality.check(node.toStringAsCode(), expectedGenSource);
+		CheckSourceEquality.assertCheck(node.toStringAsCode(), expectedGenSource);
 	}
 	
 	/* ============= Structure Checkers ============= */
@@ -141,10 +171,7 @@ public class DeeParserTest extends CommonTestUtils {
 	public static void checkBasicStructure(ASTNeoNode[] children, ASTNeoNode parent) {
 		for (ASTNeoNode astNode : children) {
 			assertTrue(astNode.getParent() == parent);
-			if(!(astNode instanceof DefSymbol)) {
-				// TODO fix this above
-				assertTrue(astNode.getData() == ASTSemantics.PARSED_STATUS);
-			}
+			assertTrue(astNode.getData() == ASTSemantics.PARSED_STATUS);
 			checkBasicStructure(astNode.getChildren(), astNode);
 		}
 	}
@@ -216,6 +243,8 @@ public class DeeParserTest extends CommonTestUtils {
 			return ExpLiteralString.class.getSimpleName();
 		} else if(expectedNameRaw.equals("MapEntry")) {
 			return MapArrayLiteralKeyValue.class.getSimpleName();
+		} else if(expectedNameRaw.equals("ExpPostfix") || expectedNameRaw.equals("ExpPostfixOp")) {
+			return ExpPostfixOperator.class.getSimpleName();
 		}
 		
 		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var|AutoVar|Function)", 1, "Definition");
@@ -226,6 +255,8 @@ public class DeeParserTest extends CommonTestUtils {
 	public static final String DONT_CHECK = "#DONTCHECK";
 	
 	public static void checkParserErrors(ArrayList<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {
+		Collections.sort(expectedErrors, new ParserErrorComparator());
+		
 		for(int i = 0; i < resultErrors.size(); i++) {
 			ParserError error = resultErrors.get(i);
 			
@@ -248,7 +279,7 @@ public class DeeParserTest extends CommonTestUtils {
 		ASTSourceRangeChecker.checkConsistency(topNode);
 	}
 	
-	public static void checkNodeSourceRange(ASTNeoNode node, final String fullSource, List<ParserError> errors) {
+	public static void checkNodeSourceRange(ASTNeoNode node, final String fullSource) {
 		assertTrue(node.hasSourceRangeInfo());
 		assertTrue(node.getStartPos() <= fullSource.length() && node.getEndPos() <= fullSource.length());
 		
@@ -258,16 +289,27 @@ public class DeeParserTest extends CommonTestUtils {
 			public boolean visitChildrenAfterPreVisitOk() {
 				return depth < 2;
 			}
+			
+			@SuppressWarnings("unused")
+			@Override
+			protected void handleSourceRangeStartPosBreach(ASTNeoNode elem) {
+				String nodeStr = NodeUtil.getSubString(fullSource, elem.getSourceRange());
+				String parentStr = NodeUtil.getSubString(fullSource, elem.getParent().getSourceRange());
+				super.handleSourceRangeStartPosBreach(elem);
+				return;
+			}
 		};
-		
+	}
+	
+	public static void runNodeParsingChecks(ASTNeoNode node, final String fullSource, List<ParserError> errors) {
 		// These checks can be computationally expensive. They make parsing quadratic on node depth.
 		if(!areThereMissingTokenErrorsInNode(node, errors)) {
 			String nodeSnippedSource = fullSource.substring(node.getStartPos(), node.getEndPos());
-			DeeParserTest.CheckSourceEquality.check(nodeSnippedSource, node.toStringAsCode());
+			DeeParserTest.CheckSourceEquality.assertCheck(nodeSnippedSource, node.toStringAsCode());
 		}
 		
 		// Warning, this check has quadratic performance on node depth
-		new ASTReparseCheckSwitcher(fullSource).doCheck(node);
+		new ASTNodeReparseCheck(fullSource).doCheck(node);
 	}
 	
 	protected static boolean areThereMissingTokenErrorsInNode(ASTNeoNode node, Collection<ParserError> errors) {
@@ -301,6 +343,50 @@ public class DeeParserTest extends CommonTestUtils {
 			}
 		}
 		return false;
+	}
+	
+	/* ---------------- Rule specific tests ---------------- */
+	
+	public static DeeParserResult parseUsingRule(final String parseRule, DeeTestsParser deeParser) {
+		if(parseRule != null && parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
+			DeeParserResult result = deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
+			DeeParserResult result2 = parseRule.equalsIgnoreCase("EXPRESSION_ToE") ?
+				new DeeParser(deeParser.getSource()).parseUsingRule("TypeOrExp") :
+				new DeeParser(deeParser.getSource()).parseUsingRule("ExpOrType");
+			if(result.errors.size() >= 1) {
+				ParserError lastError = result.errors.get(result.errors.size()-1);
+				if(lastError.errorType == ParserErrorTypes.TYPE_USED_AS_EXP_VALUE &&
+					CheckSourceEquality.check(result.node.toStringAsCode(), lastError.msgErrorSource)) {
+					result2.errors.add(lastError);
+				}
+			}
+			ASTNodeReparseCheck.checkNodeEquality(result.node, result2.node);
+			assertEquals(result.errors, result2.errors);
+			return result;
+		}
+		return deeParser.parseUsingRule(parseRule);
+	}
+	
+	public static void runAdditionalTests(DeeParserResult result, HashMap<String, MetadataEntry> additionalMetadata) {
+		MetadataEntry fnParamTest = additionalMetadata.remove("FN_PARAMETER_TEST");
+		if(fnParamTest != null) {
+			String source = result.source.substring(fnParamTest.offset);
+			DeeTestsParser parser = new DeeTestsParser(source);
+			Object parameter = parser.new ParseRule_Parameters(TplOrFnMode.AMBIG).parseParameter();
+			if(additionalMetadata.remove("FN_ONLY") != null) {
+				assertTrue(parameter instanceof IFunctionParameter);
+			} else {
+				assertTrue(parameter instanceof AmbiguousParameter);
+			}
+		}
+		MetadataEntry ruleBreakTest = additionalMetadata.remove("RULE_BROKEN");
+		if(additionalMetadata.remove("IGNORE_BREAK_TEST") == null) {
+			assertTrue(result.ruleBroken == (ruleBreakTest != null));
+		}
+		
+		for (Entry<String, MetadataEntry> mde : additionalMetadata.entrySet()) {
+			assertEquals(mde.getValue().value, "flag");
+		}
 	}
 	
 }

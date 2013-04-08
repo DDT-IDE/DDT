@@ -134,13 +134,20 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	}
 	
 	public void detachFromParent() {
+		this.parent.resetData(null);
 		this.parent = null;
 	}
 	
-	protected Object data; /* Custom field to store various sorts of data */
+	protected Object data; /* Custom field to store various kinds of data */
 	
 	public Object getData() {
 		return data;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getData(Class<T> klass) {
+		assertTrue(klass.isAssignableFrom(data.getClass()));
+		return (T) data;
 	}
 	
 	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */
@@ -234,7 +241,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	
 	@Override
 	public final String toString() {
-		return "#" + toStringClassName() +"【"+toStringAsCode()+"】";
+		return "#" + toStringClassName() + (":" + getData()) +"【"+toStringAsCode()+"】";
 	}
 	
 	/** Returns a simple representation of this node, element-like and for for a line. 

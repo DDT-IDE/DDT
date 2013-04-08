@@ -4,7 +4,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.util.ArrayView;
 
 public class ExpIndex extends Expression {
@@ -12,8 +11,7 @@ public class ExpIndex extends Expression {
 	public final Expression indexee;
 	public final ArrayView<Expression> args;
 	
-	public ExpIndex(Expression indexee, ArrayView<Expression> args, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpIndex(Expression indexee, ArrayView<Expression> args) {
 		this.indexee = parentize(indexee);
 		this.args = parentize(args);
 	}

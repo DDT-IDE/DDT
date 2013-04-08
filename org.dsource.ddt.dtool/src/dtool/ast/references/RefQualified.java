@@ -12,6 +12,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.ExpLiteralInteger;
+import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
@@ -21,17 +22,12 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 public class RefQualified extends CommonRefQualified {
 	
 	public final Resolvable qualifier;
+	public final boolean isExpressionQualifier;
 	
 	public RefQualified(IQualifierNode qualifier, RefIdentifier qualifiedIdRef, SourceRange sourceRange) {
 		super(assertNotNull_(qualifiedIdRef));
 		this.qualifier = parentizeI(assertInstance(qualifier, Resolvable.class));
-		initSourceRange(sourceRange);
-	}
-	
-	@Deprecated
-	public RefQualified(Resolvable qualifier, RefIdentifier qualifiedIdRef, SourceRange sourceRange) {
-		super(assertNotNull_(qualifiedIdRef));
-		this.qualifier = parentizeI(assertInstance(qualifier, Resolvable.class));
+		this.isExpressionQualifier = isExpressionQualifier(qualifier);
 		initSourceRange(sourceRange);
 	}
 	
@@ -61,11 +57,9 @@ public class RefQualified extends CommonRefQualified {
 		return qualifier.findTargetDefUnits(moduleResolver, false);
 	}
 	
-	public static Resolvable getRootNode(Resolvable ref) {
-		if(ref instanceof RefQualified) {
-			return getRootNode(((RefQualified) ref).qualifier);
-		}
-		return ref;
+	public static boolean isExpressionQualifier(IQualifierNode qualifier) {
+		return qualifier instanceof Expression || 
+			((qualifier instanceof RefQualified) && ((RefQualified) qualifier).isExpressionQualifier);
 	}
 	
 }

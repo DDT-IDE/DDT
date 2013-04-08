@@ -12,6 +12,7 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.StringUtil.collToString;
 import dtool.ast.SourceRange;
 
 /**
@@ -34,6 +35,10 @@ public class LexElement {
 	
 	public boolean isMissingElement() {
 		return token instanceof LexElement.MissingToken;
+	}
+	
+	public String getSourceValue() {
+		return token.getSourceValue();
 	}
 	
 	public SourceRange getSourceRange() {
@@ -74,6 +79,17 @@ public class LexElement {
 		public int getEndPos() {
 			return startPos;
 		}
+		
+		@Override
+		public String toString() {
+			return "◙";
+		}
+	}
+	
+	@Override
+	public String toString() {
+		String prefix = ignoredPrecedingTokens != null ? "【"+collToString(ignoredPrecedingTokens, "●")+"】" : "";
+		return prefix + token;
 	}
 	
 }

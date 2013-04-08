@@ -24,8 +24,8 @@ public class DeeParserAdditionalTests extends CommonTestUtils {
 	@Test
 	public void testArgList() throws Exception { testArgList$(); }
 	public void testArgList$() throws Exception {
-		assertTrue(parseArgumentList("(").parseBroken == true);
-		assertTrue(parseArgumentList("()").parseBroken == false);
+		assertTrue(parseArgumentList("(").ruleBroken == true);
+		assertTrue(parseArgumentList("()").ruleBroken == false);
 	}
 	
 	public ArgumentListParseResult<?> parseArgumentList(String source) {

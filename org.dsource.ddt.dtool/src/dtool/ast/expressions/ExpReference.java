@@ -27,6 +27,10 @@ public class ExpReference extends Expression {
 		initSourceRange(sourceRange);
 	}
 	
+	public ExpReference(Reference ref) {
+		this(ref, ref.getSourceRange());
+	}
+	
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.EXP_REFERENCE;

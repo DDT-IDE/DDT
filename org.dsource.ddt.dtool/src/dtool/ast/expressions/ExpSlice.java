@@ -13,16 +13,16 @@ public class ExpSlice extends Expression {
 	public final Expression from;
 	public final Expression to;
 	
-	public ExpSlice(Expression slicee, Expression from, Expression to, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpSlice(Expression slicee, Expression from, Expression to) {
 		this.slicee = parentizeI(slicee);
 		this.from = parentize(from);
 		this.to = parentize(to);
 		assertTrue((to == null) || (from != null));
 	}
 	
-	public ExpSlice(Expression slicee,SourceRange sourceRange) {
-		this(slicee, null, null, sourceRange);
+	public ExpSlice(Expression slicee, SourceRange sourceRange) {
+		this(slicee, null, null);
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

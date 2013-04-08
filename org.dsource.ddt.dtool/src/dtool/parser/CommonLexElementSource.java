@@ -28,7 +28,8 @@ public abstract class CommonLexElementSource {
 	}
 	
 	public int getParserPosition() {
-		return lookAheadElement().getFullRangeStartPos();
+		assertTrue(lastLexElement().getEndPos() == lookAheadElement().getFullRangeStartPos());
+		return lastLexElement().getEndPos();
 	}
 	
 	protected abstract LexElement lastLexElement();

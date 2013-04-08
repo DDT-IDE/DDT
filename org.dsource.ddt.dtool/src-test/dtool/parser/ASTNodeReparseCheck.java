@@ -1,5 +1,6 @@
 package dtool.parser;
 
+import static dtool.util.NewUtils.assertCast;
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.emptyToNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
@@ -14,20 +15,27 @@ import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
+import dtool.ast.expressions.ExpParentheses;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefQualified;
+import dtool.parser.AbstractParser.CommonRuleResult;
+import dtool.parser.DeeParserTest.CheckSourceEquality;
+import dtool.parser.DeeParser_Decls.ParseRule_Parameters.AmbiguousParameter;
+import dtool.parser.DeeParser_Decls.TplOrFnMode;
+import dtool.tests.DToolTests;
 
-public class ASTReparseCheckSwitcher {
+public class ASTNodeReparseCheck {
 	
 	protected static final Void VOID = null;
 	
 	protected final String originalSource;
 	
-	public ASTReparseCheckSwitcher(String source) {
+	public ASTNodeReparseCheck(String source) {
 		this.originalSource = assertNotNull_(source);
 	}
 	
@@ -35,7 +43,12 @@ public class ASTReparseCheckSwitcher {
 	protected DeeParser snippedParser;
 	
 	public Void doCheck(ASTNeoNode node) {
-		prepNodeSnipedParser(node);
+		
+		if(DToolTests.TESTS_LITE_MODE) {
+			return VOID;
+		}
+		
+		prepSnippedParser(node);
 		
 		switch (node.getNodeType()) {
 		
@@ -79,18 +92,19 @@ public class ASTReparseCheckSwitcher {
 		/* ---------------------------------- */
 		
 		case REF_IMPORT_SELECTION:
-			return reparseCheck((ASTNeoNode) snippedParser.parseImportSelectiveSelection(), node, false);
+			return reparseCheck((ASTNeoNode) snippedParser.parseImportSelectiveSelection(), node);
 		case REF_MODULE:
 			return reparseCheck(snippedParser.parseImportFragment().getModuleRef(), node);
-		case REF_IDENTIFIER:
-			return reparseCheck(snippedParser.parseRefIdentifier(), node);
-		
+		case REF_IDENTIFIER: {
+			RefIdentifier refId = (RefIdentifier) node;
+			return reparseCheck(snippedParser.parseRefIdentifier(), node, refId.name == null);
+		}
 		case REF_QUALIFIED: {
 			RefQualified refQual = (RefQualified) node;
-			if(RefQualified.getRootNode(refQual) instanceof Expression) {
-				return reparseCheck(((ExpReference) snippedParser.parseExpression()).ref, node);
+			if(refQual.isExpressionQualifier) {
+				return reparseCheck(((ExpReference) snippedParser.parseExpression().node).ref, node);
 			} else {
-				return reparseCheck(snippedParser.parseReference(), node);
+				return reparseCheck(snippedParser.parseTypeReference(), node);
 			}
 		}
 		case REF_MODULE_QUALIFIED:
@@ -100,8 +114,11 @@ public class ASTReparseCheckSwitcher {
 		case REF_INDEXING:
 		case REF_TEMPLATE_INSTANCE:
 		case REF_TYPEOF:
-		case REF_MODIFIER:
-			return reparseCheck(snippedParser.parseReference(), node);
+		case REF_MODIFIER: {
+			reparseCheck(snippedParser.parseTypeReference(), node);
+			reparseCheck(snippedParser.parseTypeOrExpression(true), node);
+			return VOID;
+		}
 		
 		/* ---------------------------------- */
 		
@@ -122,9 +139,6 @@ public class ASTReparseCheckSwitcher {
 		case EXP_LITERAL_ARRAY:
 		case EXP_LITERAL_MAPARRAY:
 		
-		case EXP_REFERENCE:
-		case EXP_PARENTHESES:
-		
 		case EXP_ASSERT:
 		case EXP_MIXIN_STRING:
 		case EXP_IMPORT_STRING:
@@ -139,10 +153,34 @@ public class ASTReparseCheckSwitcher {
 		case EXP_CAST:
 		case EXP_CAST_QUAL:
 
-		case EXP_POSTFIX:
+		case EXP_POSTFIX_OP:
 		case EXP_INFIX:
 		case EXP_CONDITIONAL:
-			return reparseCheck(snippedParser.parseExpression(), (Expression) node);
+			return reparseCheck(snippedParser.parseExpression(), node);
+		case EXP_PARENTHESES: {
+			ExpParentheses expParentheses = (ExpParentheses) node;
+			if(expParentheses.isDotAfterParensSyntax) {
+				prepSnippedParser(snippedSource(node) + ".foo");
+				Expression reparsedFix = snippedParser.parseExpression().node;
+				RefQualified ref = (RefQualified) (assertCast(reparsedFix, ExpReference.class)).ref;
+				// Dont do full check
+				checkNodeEquality(ref.qualifier, node);
+				// TODO
+				//return reparseCheck(ref.qualifier, node);
+				return VOID;
+			} else {
+				return reparseCheck(snippedParser.parseExpression(), node);
+			}
+		}
+		case EXP_REFERENCE: {
+			Resolvable reparsed = snippedParser.parseTypeOrExpression(true).node;
+			if(reparsed instanceof ExpReference) {
+				reparsed = ((ExpReference) reparsed).ref;
+			}
+			reparseCheck(reparsed, ((ExpReference) node).ref);
+			return VOID;
+		}
+		
 		case MAPARRAY_ENTRY:
 			MapArrayLiteralKeyValue mapArrayEntry = (MapArrayLiteralKeyValue) node;
 			assertEquals(mapArrayEntry.getSourceRange(),
@@ -178,30 +216,32 @@ public class ASTReparseCheckSwitcher {
 			InitializerExp initializerExp = (InitializerExp) node;
 			Resolvable initExpExp = initializerExp.exp;
 			return reparseCheck(snippedParser.parseInitializer(), node, initExpExp instanceof MissingExpression);
-	
+			
 		case DEFINITION_FUNCTION:
 			return reparseCheck(snippedParser.parseDeclaration(), node);
 		case FUNCTION_PARAMETER:
-			return reparseCheck((ASTNeoNode) snippedParser.parseFunctionParameter(), node);
 		case NAMELESS_PARAMETER:
-			ASTNeoNode fnParam = (ASTNeoNode) snippedParser.parseFunctionParameter();
-			if(fnParam == null) {
-				return simpleReparseCheck(node, "");
-			}
-			return reparseCheck(fnParam, node);
 		case VAR_ARGS_PARAMETER:
-			return simpleReparseCheck(node, "...");
+			return functionParamReparseCheck(node);
+			//return simpleReparseCheck(node, "...");
+			
+		case TEMPLATE_TYPE_PARAM:
+		case TEMPLATE_VALUE_PARAM:
+		case TEMPLATE_ALIAS_PARAM:
+		case TEMPLATE_TUPLE_PARAM:
+		case TEMPLATE_THIS_PARAM:
+			return templateParamReparseCheck(node);
 			
 		/* -------------------  Statements  ------------------- */
 		case BLOCK_STATEMENT:
-			return reparseCheck(snippedParser.parseBlockStatement_toMissing().result, node);
+			return reparseCheck(snippedParser.parseBlockStatement_toMissing().node, node);
 		case STATEMENT_EMTPY_BODY:
 			return simpleReparseCheck(node, ";");
 		case FUNCTION_BODY:
 		case IN_OUT_FUNCTION_BODY:
 			return reparseCheck(snippedParser.parseFunctionBody(), node);
 		case FUNCTION_BODY_OUT_BLOCK:
-			return reparseCheck(snippedParser.parseOutBlock().result, node);
+			return reparseCheck(snippedParser.parseOutBlock().node, node);
 			
 		default:
 			throw assertFail();
@@ -213,14 +253,62 @@ public class ASTReparseCheckSwitcher {
 		return VOID;
 	}
 	
-	public void prepNodeSnipedParser(ASTNeoNode node) {
-		nodeSnippedSource = originalSource.substring(node.getStartPos(), node.getEndPos());
-		snippedParser = new DeeParser(new DeeParserTest.DeeTestsLexer(nodeSnippedSource));
+	protected Void functionParamReparseCheck(ASTNeoNode node) {
+		return testParameter(node, true, (ASTNeoNode) resetSnippedParser().parseFunctionParameter());
 	}
 	
-	/** This will test if node has a correct source range even in situations where
-	 * {@link #postVisit} cannot do a test using {@link DeeParserTest#checkSourceEquality }
-	 */
+	protected Void templateParamReparseCheck(ASTNeoNode node) {
+		return testParameter(node, false, snippedParser.parseTemplateParameter());
+	}
+	
+	protected Void testParameter(ASTNeoNode node, boolean isFunction, ASTNeoNode reparsedNonAmbig) {
+		reparseCheck(reparsedNonAmbig, node);
+		
+		Object fromAmbig = snippedParser.new ParseRule_Parameters(TplOrFnMode.AMBIG).parseParameter();
+		boolean isAmbig = false;
+		if(fromAmbig instanceof AmbiguousParameter) {
+			isAmbig = true;
+			AmbiguousParameter ambiguousParameter = (AmbiguousParameter) fromAmbig;
+			fromAmbig = isFunction ? ambiguousParameter.convertToFunction() : ambiguousParameter.convertToTemplate(); 
+		}
+		checkNodeEquality((ASTNeoNode) fromAmbig, node);
+		resetSnippedParser();
+		
+		ASTNeoNode paramParsedTheOtherWay = isFunction ? 
+			snippedParser.parseTemplateParameter() : (ASTNeoNode) snippedParser.parseFunctionParameter();
+		
+		assertTrue(allSourceParsedCorrectly() ? isAmbig : true);
+		if(allSourceParsedCorrectly()) {
+			CheckSourceEquality.assertCheck(paramParsedTheOtherWay.toStringAsCode(), node.toStringAsCode());
+		}
+		resetSnippedParser();
+		return VOID;
+	}
+	
+	public boolean allSourceParsedCorrectly() {
+		return snippedParser.lookAhead() == DeeTokens.EOF && snippedParser.errors.isEmpty();
+	}
+	
+	public void prepSnippedParser(ASTNeoNode node) {
+		prepSnippedParser(snippedSource(node));
+	}
+	
+	public String snippedSource(ASTNeoNode node) {
+		return originalSource.substring(node.getStartPos(), node.getEndPos());
+	}
+	
+	public void prepSnippedParser(String snippedSource) {
+		nodeSnippedSource = snippedSource;
+		resetSnippedParser();
+	}
+	
+	public DeeParser resetSnippedParser() {
+		return snippedParser = new DeeParser(new DeeParserTest.DeeTestsLexer(nodeSnippedSource));
+	}
+	
+	public Void reparseCheck(CommonRuleResult result, ASTNeoNode node) {
+		return reparseCheck(result.getNode(), node);
+	}
 	public Void reparseCheck(IASTNeoNode reparsedNode, ASTNeoNode node) {
 		return reparseCheck((ASTNeoNode) reparsedNode, node.getClass(), node, false);
 	}
@@ -229,18 +317,26 @@ public class ASTReparseCheckSwitcher {
 		return reparseCheck(reparsedNode, node.getClass(), node, consumesTrailingWhiteSpace);
 	}
 	
+	/** This will test if node has a correct source range even in situations where
+	 * {@link #postVisit} cannot do a test using {@link DeeParserTest#checkSourceEquality }
+	 */
 	public Void reparseCheck(ASTNeoNode reparsedNode, Class<? extends ASTNeoNode> klass, final ASTNeoNode node,
 		boolean consumesSurroundingWhiteSpace
 	) {
+		assertTrue(reparsedNode != null);
+		// TODO check errors are the same?
+		checkNodeEquality(reparsedNode, node);
+		assertTrue(reparsedNode.getClass() == klass);
+		
+		// Check source ranges:
 		// Must have consumed all input
-		assertTrue(reparsedNode != null && snippedParser.lookAhead() == DeeTokens.EOF);
+		assertTrue(snippedParser.lookAhead() == DeeTokens.EOF);
 		assertTrue(emptyToNull(snippedParser.lookAheadElement().ignoredPrecedingTokens) == null);
 		
 		assertEquals(reparsedNode.getSourceRange(), new SourceRange(0, nodeSnippedSource.length()) );
-		assertTrue(reparsedNode.getClass() == klass);
 		
 		assertTrue(reparsedNode.getEndPos() == snippedParser.lookAheadElement().getStartPos());
-
+		
 		assertTrue(
 			snippedParser.lastLexElement().isMissingElement() ||
 			snippedParser.lastLexElement().getType().isParserIgnored == false ||
@@ -268,8 +364,7 @@ public class ASTReparseCheckSwitcher {
 			assertTrue(elementBeforeSnippedRange(node).getEndPos() == node.getStartPos());
 		}
 		
-		// TODO check errors are the same?
-		checkNodeEquality(reparsedNode, node);
+		resetSnippedParser();
 		return VOID;
 	}
 	
@@ -299,7 +394,7 @@ public class ASTReparseCheckSwitcher {
 		return parser.lastLexElement();
 	}
 	
-	public void checkNodeEquality(ASTNeoNode reparsedNode, ASTNeoNode node) {
+	public static void checkNodeEquality(ASTNeoNode reparsedNode, ASTNeoNode node) {
 		// We check the nodes are semantically equal by comparing the toStringAsCode
 		// TODO: use a more accurate equals method?
 		assertEquals(reparsedNode.toStringAsCode(), node.toStringAsCode());

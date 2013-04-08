@@ -40,7 +40,7 @@ import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
-import dtool.ast.expressions.ExpPostfix;
+import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.ast.expressions.ExpPrefix;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.NamedReference;
@@ -156,7 +156,7 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTAbstractVi
 	@Override public boolean visit(ExpReference elem) { return true; }
 	
 	@Override public boolean visit(ExpPrefix elem) { return true; }
-	@Override public boolean visit(ExpPostfix elem) { return true; }
+	@Override public boolean visit(ExpPostfixOperator elem) { return true; }
 	@Override public boolean visit(ExpInfix elem) { return true; }
 	@Override public boolean visit(ExpConditional elem) { return true; }
 	

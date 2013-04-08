@@ -56,9 +56,9 @@ public class DeeSourceBasedTest extends DToolBaseTest {
 		if(commonDefinitions != null) {
 			tsp.addGlobalExpansions(commonDefinitions);
 		}
-		testsLogger.print("===>>> " + getClass().getSimpleName() + " on file: " + resourceFileToString(file));
+		testsLogger.print(">>>====== " + getClass().getSimpleName() + " on: " + resourceFileToString(file));
 		AnnotatedSource[] sourceBasedTests = tsp.processSource_unchecked("#", readStringFromFileUnchecked(file));
-		testsLogger.println(" ("+sourceBasedTests.length+") <<<===");
+		testsLogger.println(" ("+sourceBasedTests.length+") ======<<<");
 		return sourceBasedTests;
 	}
 	

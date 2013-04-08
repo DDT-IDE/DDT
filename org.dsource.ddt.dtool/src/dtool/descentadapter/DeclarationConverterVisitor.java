@@ -77,10 +77,10 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EnumContainer;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.definitions.TemplateParamAlias;
-import dtool.ast.definitions.TemplateParamTuple;
-import dtool.ast.definitions.TemplateParamType;
-import dtool.ast.definitions.TemplateParamValue;
+import dtool.ast.definitions.TemplateAliasParam;
+import dtool.ast.definitions.TemplateTupleParam;
+import dtool.ast.definitions.TemplateTypeParam;
+import dtool.ast.definitions.TemplateValueParam;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.RefIdentifier;
@@ -697,7 +697,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
 		);
-		return endAdapt(new TemplateParamAlias(dudt));
+		return endAdapt(new TemplateAliasParam(dudt, null, null));
 	}
 	
 	@Override
@@ -707,7 +707,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
 		);
-		return endAdapt(new TemplateParamTuple(dudt));
+		return endAdapt(new TemplateTupleParam(dudt));
 	}
 	
 	@Override
@@ -718,7 +718,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			null
 		);
 		return endAdapt(
-			new TemplateParamType(
+			new TemplateTypeParam(
 				dudt,
 				ReferenceConverter.convertType(elem.specType, convContext),
 				ReferenceConverter.convertType(elem.defaultType, convContext)
@@ -740,7 +740,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			null
 		);
 		return endAdapt(
-			new TemplateParamValue(
+			new TemplateValueParam(
 				dudt,
 				ReferenceConverter.convertType(elem.valType, convContext),
 				ExpressionConverter.convert(elem.specValue, convContext),

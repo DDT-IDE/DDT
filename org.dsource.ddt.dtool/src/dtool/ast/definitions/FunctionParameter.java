@@ -10,7 +10,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
@@ -25,14 +24,13 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	public final boolean isVariadic;
 	
 	public FunctionParameter(ArrayView<FunctionParamAttribKinds> attribList, Reference type, DefUnitTuple dudt, 
-		Expression defaultValue, boolean isVariadic, SourceRange sourceRange) {
+		Expression defaultValue, boolean isVariadic) {
 		super(dudt);
 		this.paramAttribs = FnParameterAttributes.create(attribList);
 		this.type = parentize(assertNotNull_(type));
 		this.defaultValue = parentize(defaultValue);
 		assertTrue(!isVariadic || defaultValue == null);
 		this.isVariadic = isVariadic;
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.SourceRange;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.parser.DeeTokens;
 import dtool.parser.Token;
@@ -31,6 +32,12 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 		return true;
 	}
 	
+	protected <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {
+		if(sourceRange != null) {
+			node.setSourceRange(sourceRange);
+		}
+		return node;
+	}
 	
 	/* ---- common adaptors ---- */
 	

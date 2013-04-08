@@ -180,21 +180,21 @@ public class DefinitionConverter extends BaseDmdConverter {
 	}
 	
 	public static NamelessParameter convertNamelessParameter(Type type, ASTConversionContext convContext) {
-		return new NamelessParameter(null,
-			ReferenceConverter.convertType(type, convContext), null, false, sourceRange(type));
+		return connect(sourceRange(type), new NamelessParameter(null,
+			ReferenceConverter.convertType(type, convContext), null, false));
 	}
 
 	public static NamelessParameter convertNamelessParameter(Argument elem, IdentifierExp ident,
 			@SuppressWarnings("unused") ASTConversionContext convContext) {
 		assertTrue(!(ident instanceof TemplateInstanceWrapper));
-		return new NamelessParameter(null,
-			ReferenceConverter.convertToRefIdentifier(ident), null, false, sourceRange(elem));
+		return connect(sourceRange(elem), 
+			new NamelessParameter(null, ReferenceConverter.convertToRefIdentifier(ident), null, false));
 	}
 
 	public static NamelessParameter convertNamelessParameter(Argument elem, ASTConversionContext convContext) {
-		return new NamelessParameter(null, 
+		return connect(sourceRange(elem), new NamelessParameter(null, 
 			ReferenceConverter.convertType(elem.type, convContext),  
-				ExpressionConverter.convert(elem.defaultArg, convContext), false, sourceRange(elem));
+			ExpressionConverter.convert(elem.defaultArg, convContext), false));
 	}
 	
 	public static boolean isSingleSymbolDeclaration(ASTDmdNode parent) {
@@ -255,7 +255,8 @@ public class DefinitionConverter extends BaseDmdConverter {
 			/*WATHEVAR*/
 			fnBody = new InOutFunctionBody(false, null, null, fbody, null);
 		}
-		return new DefinitionFunction(defunitData, prot, retType, params, fnAttributes, fnBody, sourceRange);
+		return connect(sourceRange, 
+			new DefinitionFunction(defunitData, null, retType, params, fnAttributes, null, fnBody));
 	}
 	
 	public static int convertVarArgs(int varargs) {
@@ -282,7 +283,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 					type,
 					dudt,
 					ExpressionConverter.convert(elem.defaultArg, convContext),
-					false, null
+					false
 				);
 			} else {
 				// strange case, likely from a syntax error

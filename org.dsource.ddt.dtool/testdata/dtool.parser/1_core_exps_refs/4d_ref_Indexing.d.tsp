@@ -35,10 +35,10 @@ DefVariable(RefIndexing(RefIdentifier #@TYPE_REFS) DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@TYPE_REFS[#@EXPS__NO_REFS__NO_AMBIGS] dummy;
+#@TYPE_REFS[#@EXPS__NO_POSSIBLE_REFS] dummy;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefIndexing(#@TYPE_REFS #@EXPS__NO_REFS__NO_AMBIGS) DefSymbol)
+DefVariable(RefIndexing(#@TYPE_REFS #@EXPS__NO_POSSIBLE_REFS) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo1[#@TYPE_REFS   #error:EXP_CLOSE_BRACKET public int dummy ;
 foo2[#@TYPE_REFS   #error:EXP_CLOSE_BRACKET ;
@@ -50,14 +50,14 @@ InvalidDeclaration(RefIndexing(RefIdentifier #@TYPE_REFS))  DeclarationEmpty
 InvalidDeclaration(RefIndexing(RefIdentifier #@TYPE_REFS))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo1[#@EXPS__NO_REFS__NO_AMBIGS   #error:EXP_CLOSE_BRACKET public int dummy ;
-foo2[#@EXPS__NO_REFS__NO_AMBIGS   #error:EXP_CLOSE_BRACKET ;
-foo3[#@EXPS__NO_REFS__NO_AMBIGS   #error:EXP_CLOSE_BRACKET 
+foo1[#@EXPS__NO_POSSIBLE_REFS   #error:EXP_CLOSE_BRACKET public int dummy ;
+foo2[#@EXPS__NO_POSSIBLE_REFS   #error:EXP_CLOSE_BRACKET ;
+foo3[#@EXPS__NO_POSSIBLE_REFS   #error:EXP_CLOSE_BRACKET 
 
 #AST_STRUCTURE_EXPECTED:
-InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_REFS__NO_AMBIGS))  ?(DefinitionVariable(RefPrimitive DefSymbol))
-InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_REFS__NO_AMBIGS))  DeclarationEmpty
-InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_REFS__NO_AMBIGS))  
+InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_POSSIBLE_REFS))  ?(DefinitionVariable(RefPrimitive DefSymbol))
+InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_POSSIBLE_REFS))  DeclarationEmpty
+InvalidDeclaration(RefIndexing(RefIdentifier #@EXPS__NO_POSSIBLE_REFS))  
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo1[ #error:EXP_CLOSE_BRACKET public int dummy ;
 foo2[ #error:EXP_CLOSE_BRACKET ;

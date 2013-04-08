@@ -5,7 +5,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.parser.DeeTokens;
 
 /**
@@ -119,8 +118,7 @@ public class ExpInfix extends Expression {
 	public final Expression rightExp;
 	public final InfixOpType kind;
 	
-	public ExpInfix(Expression left, InfixOpType kind, Expression right, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpInfix(Expression left, InfixOpType kind, Expression right) {
 		this.leftExp = parentize(left);
 		this.kind = kind;
 		assertTrue(this.kind != InfixOpType.NULL);
@@ -130,11 +128,6 @@ public class ExpInfix extends Expression {
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.EXP_INFIX;
-	}
-	
-	@Deprecated
-	public ExpInfix(Resolvable left, DeeTokens kind, Resolvable right, SourceRange sourceRange) {
-		this((Expression) left, InfixOpType.tokenToInfixOpType(kind), (Expression) right, sourceRange);
 	}
 	
 	@Override

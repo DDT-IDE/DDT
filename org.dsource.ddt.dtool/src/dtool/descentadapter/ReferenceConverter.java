@@ -38,8 +38,8 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
-import dtool.ast.references.Reference;
 import dtool.ast.references.RefTypeof;
+import dtool.ast.references.Reference;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.util.ArrayView;
 
@@ -362,7 +362,10 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 					assertTrue(topSourceRange.getStartPos() == rootRef.getStartPos());
 			}
 			
-			RefQualified refQualified = new RefQualified(rootRef, subName, topSourceRange);
+			if(!(rootRef instanceof IQualifierNode)) {
+				rootRef = new ExpReference((Reference) rootRef);
+			}
+			RefQualified refQualified = new RefQualified((IQualifierNode) rootRef, subName, topSourceRange);
 			if(refQualified.hasNoSourceRangeInfo() == false || DToolBundle.DMDPARSER_PROBLEMS__BUG41 == false) {
 				// Correct some DMD missing ranges 
 				int newStartPos = refQualified.qualifier.getStartPos();
@@ -382,28 +385,28 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static ExpReference createExpReference(IdentifierExp elem) {
 		RefIdentifier ref = ReferenceConverter.convertToRefIdentifier(elem);
-		return new ExpReference(ref, sourceRange(elem));
+		return connect(sourceRange(elem), new ExpReference(ref, null));
 	}
 	
 	public static ExpReference createExpReference(TypeExp elem, ASTConversionContext convContext) {
 		Reference ref = ReferenceConverter.convertType(elem.type, convContext);
-		return new ExpReference(ref, sourceRange(elem));
+		return connect(sourceRange(elem), new ExpReference(ref, null));
 	}
 	
 	public static ExpReference createExpReference(DotIdExp elem, ASTConversionContext convContext) {
 		Reference ref = ReferenceConverter.convertDotIdexp(elem, convContext);
 		// use ref as source range, not elem cause it is sometimes wrong
-		return new ExpReference(ref, sourceRange(ref));
+		return connect(sourceRange(elem), new ExpReference(ref, null));
 	}
 	
 	public static ExpReference createExpReference(DotTemplateInstanceExp elem, ASTConversionContext convContext) {
 		Reference ref = ReferenceConverter.convertDotTemplateIdExp(elem, convContext);
-		return new ExpReference(ref, sourceRange(elem));
+		return connect(sourceRange(elem), new ExpReference(ref, null));
 	}
 	
 	public static ExpReference createExpReference(ScopeExp elem, ASTConversionContext convContext) {
 		Reference ref = (Reference) DescentASTConverter.convertElem(elem.sds, convContext);
-		return new ExpReference(ref, sourceRange(elem));
+		return connect(sourceRange(elem), new ExpReference(ref, null));
 	}
 	
 }

@@ -50,6 +50,11 @@ public class Token implements ISourceRepresentation {
 		return null;
 	}
 	
+	@Override
+	public String toString() {
+		return type +"►"+ source;
+	}
+	
 	public static class ErrorToken extends Token {
 		
 		protected final LexerErrorTypes error;

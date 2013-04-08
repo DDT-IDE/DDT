@@ -90,22 +90,34 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		HashSet<String> printSources = new HashSet<String>();
 		Pattern trimStartNewlines = Pattern.compile("(^(\\n|\\r\\n)*)|((\\n|\\r\\n)*$)");
 		
+		int originalTemplateChildCount = -1;
 		for (AnnotatedSource testCase : sourceBasedTests) {
 			
-			if(testCase.findMetadata("comment", "NO_STDOUT") == null) {
-				if(!printSources.contains(testCase.originalTemplatedSource)) {
-					testsLogger.println(">> ----------- Parser source test: ----------- <<");
+			boolean stdOutTestSource = testCase.findMetadata("comment", "NO_STDOUT") == null;
+			if(!printSources.contains(testCase.originalTemplatedSource)) {
+				printCaseEnd(originalTemplateChildCount);
+				originalTemplateChildCount = 0;
+				testsLogger.println(">> ----------- Parser tests TEMPLATE ("+file.getName()+") : ----------- <<");
+				testsLogger.print(testCase.originalTemplatedSource);
+				if(stdOutTestSource) {
+					testsLogger.println(" ----------- Parser source tests: ----------- ");
 				}
+			}
+			if(stdOutTestSource) {
 				testsLogger.println(trimStartNewlines.matcher(testCase.source).replaceAll(""));
-			} 
-			else if(!printSources.contains(testCase.originalTemplatedSource)){
-				testsLogger.println(">> ----------- Parser source test (TEMPLATE): ----------- <<");
-				testsLogger.println(testCase.originalTemplatedSource);
 			}
 			printSources.add(testCase.originalTemplatedSource);
 			runSourceBasedTest(testCase);
+			originalTemplateChildCount++;
 		}
+		printCaseEnd(originalTemplateChildCount);
 		testsLogger.println();
+	}
+	
+	public void printCaseEnd(int originalTemplateChildCount) {
+		if(originalTemplateChildCount > 10 && originalTemplateChildCount != -1) {
+			testsLogger.println("<< ^^^ Previous case count: " + originalTemplateChildCount);
+		}
 	}
 	
 	public static void checkOffsetInvariant(AnnotatedSource testSource) {
@@ -135,6 +147,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		int modifyDelta = 0;
 		
 		ArrayList<ParserError> expectedErrors = new ArrayList<ParserError>();
+		HashMap<String, MetadataEntry> additionalMetadata = new HashMap<String, MetadataEntry>();
 		
 		for (MetadataEntry mde : testSource.metadata) {
 			if(mde.name.equals("AST_SOURCE_EXPECTED")) {
@@ -188,8 +201,12 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 				
 			} else if(mde.name.equals("parser") && mde.value.equals("AllowAnyErrors")){
 				allowAnyErrors = true;
+			} else if(mde.value.equals("test")){
+				additionalMetadata.put(mde.name, mde);
 			} else {
-				if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "comment"))) {
+				if(areEqual(mde.value, "flag")) {
+					additionalMetadata.put(mde.name, mde);
+				} else if(!areEqual(mde.name, "comment")) {
 					assertFail("Unknown metadata");
 				}
 			}
@@ -201,7 +218,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		
 		runParserTest______________________(
 			parseSource, parseRule, expectedRemainingSource, expectedGenSource, expectedStructure, 
-			expectedErrors, allowAnyErrors);
+			expectedErrors, allowAnyErrors, additionalMetadata);
 	}
 	
 	public ParserError decodeError(String parseSource, MetadataEntry mde) {
@@ -266,7 +283,7 @@ public class DeeParserSourceBasedTest extends DeeSourceBasedTest {
 		} else if(errorParam.equals("ref")) {
 			errorParam = DeeParser.RULE_REFERENCE.name;
 		} else if(errorParam.equals("RoE")) {
-			errorParam = DeeParser.RULE_REF_OR_EXP.name;
+			errorParam = DeeParser.RULE_TYPE_OR_EXP.name;
 		} else if(errorParam.equals("TplArg")) {
 			errorParam = DeeParser.RULE_TPL_SINGLE_ARG.name;
 		}

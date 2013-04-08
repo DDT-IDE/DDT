@@ -21,6 +21,7 @@ import dtool.ast.ASTChildrenVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTSemantics;
 import dtool.ast.IASTNeoNode;
+import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
@@ -32,32 +33,71 @@ import dtool.util.ArrayView;
  */
 public abstract class AbstractParser extends CommonLexElementSource {
 	
+	public static class ParseRuleDescription {
+		public final String name;
+		
+		public ParseRuleDescription(String name) {
+			this.name = name;
+		}
+	}
+	
+	// TODO: alternative mechanism for broken rule checking
+	public static abstract class CommonRuleResult {
+		
+		public final boolean ruleBroken; // Indicates if rule was terminated properly
+		
+		public CommonRuleResult(boolean ruleBroken) {
+			this.ruleBroken = ruleBroken;
+		}
+		
+		public abstract ASTNeoNode getNode();
+		
+	}
+	
+	public static class NodeResult<T extends ASTNeoNode> extends CommonRuleResult {
+		
+		protected final T node;
+		
+		public NodeResult(boolean ruleBroken, T result) {
+			super(ruleBroken);
+			this.node = result;
+			assertTrue(!(ruleBroken && result == null));
+		}
+		
+		@SuppressWarnings("unchecked")
+		protected final <SUPER_OF_T extends ASTNeoNode> NodeResult<SUPER_OF_T> upcastParam() {
+			return (NodeResult<SUPER_OF_T>) this;
+		}
+		
+		@Override
+		public final T getNode() {
+			return node;
+		}
+		
+		public final T getNode_NoBrokenCheck() {
+			return node;
+		}
+		
+		protected static <T extends ASTNeoNode> NodeResult<T> create(boolean ruleBroken, T node) {
+			return new NodeResult<T>(ruleBroken, node);
+		}
+		
+	}
+	
 	protected final ArrayList<ParserError> pendingMissingTokenErrors = new ArrayList<ParserError>();
 	
 	/* ---- Basic error functionality ---- */
 	
 	protected abstract void submitError(ParserError error);
 	
-	protected ParserError addError(ParserErrorTypes errorType, SourceRange sr, String errorSource, Object msgData) {
-		assertEquals(getSubString(getSource(), sr), errorSource);
-		ParserError error = new ParserError(errorType, sr, errorSource, msgData);
+	protected ParserError addError(ParserError error) {
 		submitError(error);
 		return error;
 	}
 	
-	protected ParserError addError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
-		SourceRange sourceRange = errorToken.getSourceRange();
-		assertEquals(errorToken.source, getSubString(getSource(), sourceRange));
-		return addError(errorType, sourceRange, msgData);
-	}
+	public abstract void setEnabled(boolean enabled);
 	
-	protected ParserError addError(ParserErrorTypes errorType, SourceRange sourceRange, Object msgData) {
-		return addError(errorType, sourceRange, getSubString(getSource(), sourceRange), msgData);
-	}
-	
-	public static String getSubString(String string, SourceRange sourceRange) {
-		return string.subSequence(sourceRange.getStartPos(), sourceRange.getEndPos()).toString();
-	}
+	public abstract boolean isEnabled();
 	
 	/* ---- Input consume helpers ---- */
 	
@@ -80,7 +120,7 @@ public abstract class AbstractParser extends CommonLexElementSource {
 	protected final boolean attemptConsume(DeeTokens tokenType, boolean isExpected) {
 		boolean consumed = tryConsume(tokenType);
 		if(!consumed && isExpected) {
-			reportErrorExpectedToken(tokenType);
+			addExpectedTokenError(tokenType);
 		}
 		return consumed;
 	}
@@ -107,7 +147,7 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		if(lookAhead() == expectedTokenType) {
 			return consumeInput();
 		} else {
-			reportErrorExpectedToken(expectedTokenType);
+			addExpectedTokenError(expectedTokenType);
 			return createMissingToken ? consumeIgnoreTokens(expectedTokenType) : null;
 		}
 	}
@@ -118,31 +158,68 @@ public abstract class AbstractParser extends CommonLexElementSource {
 	
 	/* ---- error helpers ---- */
 	
-	protected void reportErrorExpectedToken(DeeTokens expected) {
-		reportError(ParserErrorTypes.EXPECTED_TOKEN, expected, true);
+	protected ParserError createError(ParserErrorTypes errorType, SourceRange sr, Object msgData) {
+		String errorSource = NodeUtil.getSubString(getSource(), sr); 
+		return new ParserError(errorType, sr, errorSource, msgData);
 	}
 	
-	public static class ParseRuleDescription {
-		public final String name;
-		
-		public ParseRuleDescription(String name) {
-			this.name = name;
-		}
+	protected ParserError createError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
+		SourceRange sourceRange = errorToken.getSourceRange();
+		assertEquals(errorToken.source, NodeUtil.getSubString(getSource(), sourceRange));
+		return createError(errorType, sourceRange, msgData);
 	}
 	
-	protected void reportErrorExpectedRule(ParseRuleDescription expectedRule) {
-		reportError(ParserErrorTypes.EXPECTED_RULE, expectedRule.name, false);
+	protected ParserError createErrorOnLastToken(ParserErrorTypes parserError, Object msgData) {
+		return createError(parserError, lastNonMissingLexElement().token, msgData);
 	}
 	
-	protected void reportSyntaxError(ParseRuleDescription expectedRule) {
-		reportError(ParserErrorTypes.SYNTAX_ERROR, expectedRule.name, false);
+	protected ParserError addError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
+		return addError(createError(errorType, errorToken, msgData));
 	}
 	
-	protected void reportError(ParserErrorTypes parserError, Object msgData, boolean missingToken) {
-		ParserError error = addError(parserError, lastNonMissingLexElement().token, msgData);
+	protected ParserError addError(ParserErrorTypes errorType, SourceRange sourceRange, Object msgData) {
+		return addError(createError(errorType, sourceRange, msgData));
+	}
+	
+	protected ParserError addExpectedTokenError(DeeTokens expected) {
+		return addErrorWithMissingtoken(ParserErrorTypes.EXPECTED_TOKEN, expected, true);
+	}
+	
+	protected ParserError addErrorWithMissingtoken(ParserErrorTypes errorType, Object msgData, boolean missingToken) {
+		ParserError error = addError(createErrorOnLastToken(errorType, msgData));
 		if(missingToken) {
 			pendingMissingTokenErrors.add(error);
 		}
+		return error;
+	}
+	
+	protected void reportErrorExpectedRule(ParseRuleDescription expectedRule) {
+		addError(createErrorOnLastToken(ParserErrorTypes.EXPECTED_RULE, expectedRule.name));
+	}
+	
+	protected void reportSyntaxError(ParseRuleDescription expectedRule) {
+		addError(createErrorOnLastToken(ParserErrorTypes.SYNTAX_ERROR, expectedRule.name));
+	}
+	
+	/* ------------  Parsing helpers  ------------ */
+	
+	protected static <T extends ASTNeoNode> NodeResult<T> ruleNullResult() {
+		return NodeResult.create(false, null);
+	}
+	
+	protected static <T extends ASTNeoNode> NodeResult<T> ruleResult(T node) {
+		return NodeResult.create(false, node);
+	}
+	protected static <T extends ASTNeoNode> NodeResult<T> ruleResult(boolean ruleBroken, T node) {
+		return NodeResult.create(ruleBroken, node);
+	}
+	
+	protected final <T extends ASTNeoNode> NodeResult<T> connectResult(boolean ruleBroken, T node) {
+		return ruleResult(ruleBroken, connect(node));
+	}
+	
+	protected static <T extends ASTNeoNode> T getResult(NodeResult<T> nodeResult) {
+		return nodeResult == null ? null : nodeResult.node;
 	}
 	
 	protected <T extends ASTNeoNode> T connect(final T node) {
@@ -158,9 +235,23 @@ public abstract class AbstractParser extends CommonLexElementSource {
 			@Override
 			protected void geneticChildrenVisit(ASTNeoNode child) {
 				assertTrue(child.getParent() == node);
-				assertTrue(child.getData() == ASTSemantics.PARSED_STATUS);
+				assertTrue(isParsedStatus(child));
 			}
 		});
+		return node;
+	}
+	
+	public boolean isParsedStatus(ASTNeoNode node) {
+		return node.getData() == ASTSemantics.PARSED_STATUS;
+	}
+	
+	protected <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {
+		node.setSourceRange(sourceRange);
+		return connect(node);
+	}
+	
+	protected <T extends ASTNeoNode> T init(SourceRange sourceRange, T node) {
+		node.setSourceRange(sourceRange);
 		return node;
 	}
 	
@@ -173,6 +264,10 @@ public abstract class AbstractParser extends CommonLexElementSource {
 	
 	public static SourceRange sr(Token token) {
 		return token.getSourceRange();
+	}
+	
+	public static SourceRange srAt(int offset) {
+		return new SourceRange(offset, 0);
 	}
 	
 	public static SourceRange srNodeStart(ASTNeoNode startNode, int endPos) {

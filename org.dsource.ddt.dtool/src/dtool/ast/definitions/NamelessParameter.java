@@ -6,7 +6,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.util.ArrayView;
@@ -24,12 +23,11 @@ public class NamelessParameter extends ASTNeoNode implements IFunctionParameter 
 	public final boolean isVariadic;
 	
 	public NamelessParameter(ArrayView<FunctionParamAttribKinds> attribList, Reference type, Expression defaultValue, 
-		boolean isVariadic, SourceRange sourceRange) {
+		boolean isVariadic) {
 		this.paramAttribs = FnParameterAttributes.create(attribList); 
 		this.type = parentize(assertNotNull_(type));
 		this.defaultValue = parentize(defaultValue);
 		this.isVariadic = isVariadic;
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

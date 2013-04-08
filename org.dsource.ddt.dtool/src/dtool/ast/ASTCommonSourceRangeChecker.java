@@ -29,11 +29,11 @@ public class ASTCommonSourceRangeChecker extends ASTHomogenousVisitor {
 		if(elem.hasNoSourceRangeInfo()) {
 			return handleSourceRangeNoInfo(elem);
 		} else if(elem.getOffset() < offsetCursor) {
-			return handleSourceRangeStartPosBreach(elem);
-		} else {
-			offsetCursor = elem.getOffset();
-			return visitChildrenAfterPreVisitOk(); // Go to children
+			handleSourceRangeStartPosBreach(elem);
+			return false;
 		}
+		offsetCursor = elem.getOffset();
+		return visitChildrenAfterPreVisitOk(); // Go to children
 	}
 	
 	public boolean visitChildrenAfterPreVisitOk() {
@@ -63,11 +63,10 @@ public class ASTCommonSourceRangeChecker extends ASTHomogenousVisitor {
 		return false;
 	}
 	
-	protected boolean handleSourceRangeStartPosBreach(ASTNeoNode elem) {
+	protected void handleSourceRangeStartPosBreach(ASTNeoNode elem) {
 //		assertFail();
 		Logg.astmodel.print("Source range start-pos error on: ");
 		Logg.astmodel.println(elem.toStringAsNode(true));
-		return false;
 	}
 	
 	protected void handleSourceRangeEndPosBreach(ASTNeoNode elem) {
@@ -102,7 +101,7 @@ public class ASTCommonSourceRangeChecker extends ASTHomogenousVisitor {
 		}
 		
 		@Override
-		protected boolean handleSourceRangeStartPosBreach(ASTNeoNode elem) {
+		protected void handleSourceRangeStartPosBreach(ASTNeoNode elem) {
 			throw assertFail();
 		}
 	}

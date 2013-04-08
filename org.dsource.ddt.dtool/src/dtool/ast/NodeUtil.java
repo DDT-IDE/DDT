@@ -49,4 +49,8 @@ public class NodeUtil {
 		return stringArray;
 	}
 	
+	public static String getSubString(String string, SourceRange sourceRange) {
+		return string.subSequence(sourceRange.getStartPos(), sourceRange.getEndPos()).toString();
+	}
+	
 }

@@ -1,6 +1,5 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-
 123
 #AST_STRUCTURE_EXPECTED:
 ExpLiteralInteger

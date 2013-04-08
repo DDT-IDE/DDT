@@ -8,7 +8,6 @@ import java.util.List;
 
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
@@ -16,7 +15,8 @@ import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
 import dtool.ast.ISourceRepresentation;
 import dtool.ast.NodeUtil;
-import dtool.ast.SourceRange;
+import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
@@ -33,24 +33,25 @@ import dtool.util.ArrayView;
 public class DefinitionFunction extends Definition implements IScopeNode, IStatement, ICallableElement {
 	
 	public final Reference retType;
-	public final ArrayView<TemplateParameter> templateParams;
+	public final ArrayView<TemplateParameter> tplParams;
 	public final ArrayView<IFunctionParameter> params;
 	public final ArrayView<FunctionAttributes> fnAttributes;
+	public final Expression tplConstraint;
 	public final IFunctionBody fnBody;
 	
-	public DefinitionFunction(DefUnitTuple defunitData, PROT prot, Reference retType,
+	public DefinitionFunction(DefUnitTuple defunitData, ArrayView<TemplateParameter> tplParams, Reference retType,
 			ArrayView<IFunctionParameter> params, ArrayView<FunctionAttributes> fnAttributes, 
-			IFunctionBody fnBody, SourceRange sourceRange) {
-		super(defunitData, prot);
+			Expression tplConstraint, IFunctionBody fnBody) {
+		super(defunitData);
 		assertNotNull(retType);
 		
 		this.retType = parentize(retType);
-		this.templateParams = null; // TODO BUG here
+		
+		this.tplParams = parentize(tplParams);
 		this.params = parentizeI(params);
 		this.fnAttributes = fnAttributes;
+		this.tplConstraint = parentize(tplConstraint);
 		this.fnBody = parentizeI(fnBody);
-		
-		initSourceRange(sourceRange);
 	}
 	
 	public ArrayView<ASTNeoNode> getParams_asNodes() {
@@ -68,8 +69,9 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, retType);
 			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, templateParams);
+			TreeVisitor.acceptChildren(visitor, tplParams);
 			TreeVisitor.acceptChildren(visitor, params);
+			TreeVisitor.acceptChildren(visitor, tplConstraint);
 			TreeVisitor.acceptChildren(visitor, fnBody);
 		}
 		visitor.endVisit(this);
@@ -79,8 +81,14 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNode(retType, " ");
 		cp.appendNode(defname);
+		cp.appendNodeList("(", tplParams, ",", ") ");
 		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
 		cp.appendList(fnAttributes, " ", true);
+		if(tplConstraint instanceof MissingParenthesesExpression) {
+			cp.appendNode("if", tplConstraint);
+		} else {
+			cp.appendNode("if(", tplConstraint, ")");
+		}
 		cp.appendNode(fnBody);
 	}
 	
@@ -187,7 +195,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	public String toStringForHoverSignature() {
 		String str = ""
 			+ retType.toStringAsElement() + " " + getName() 
-			+ ASTCodePrinter.toStringParamListAsElements(templateParams)
+			+ ASTCodePrinter.toStringParamListAsElements(tplParams)
 			+ toStringParametersForSignature(params);
 		return str;
 	}
@@ -196,7 +204,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	@Override
 	public String toStringForCodeCompletion() {
 		return getName()
-			+ ASTCodePrinter.toStringParamListAsElements(templateParams)
+			+ ASTCodePrinter.toStringParamListAsElements(tplParams)
 			+ toStringParametersForSignature(params) 
 			+ "  " + retType.toStringAsElement()
 			+ " - " + NodeUtil.getOuterDefUnit(this).toStringAsElement();

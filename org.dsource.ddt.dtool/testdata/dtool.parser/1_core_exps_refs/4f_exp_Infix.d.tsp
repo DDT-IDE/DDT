@@ -9,12 +9,11 @@ ExpInfix(ExpLiteralInteger ExpLiteralString)
 #AST_STRUCTURE_EXPECTED:
 ExpInfix(ExpLiteralInteger ExpInfix(ExpLiteralString ExpLiteralInteger))
 
-
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 #@INT_OR_MISSING《
   ►#?AST_STRUCTURE_EXPECTED!【123●Integer】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(EXPRULE_exp)●】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@NO_EXP #@BREAK●#@NO_EXP #@BREAK】●
 ¤》
 
 #@ASSIGN《=●+=●-=●*=●/=●%=●&=●|=●^=●~=●<<=●>>=●>>>=●^^=》
@@ -64,7 +63,7 @@ ExpInfix(ExpLiteralInteger ExpInfix(ExpLiteralString ExpLiteralInteger))
 	(#@INFIX_EXP•(ExpThis #@MIDDLE_EXP String)  #@MIDDLE_EXP  #@INT_OR_MISSING)》
 	
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)	 this   #@OP /*OP*/  "abc"  #@OP_HI(OP)   #@INT_OR_MISSING
+#PARSE(EXPRESSION)	 this   #@OP /*OP*/  "def"  #@OP_HI(OP)   #@INT_OR_MISSING
 #AST_STRUCTURE_EXPECTED:
 #@INFIX_EXP_HI•(#@INFIX_EXP•(ExpThis #@MIDDLE_EXP String)  #@MIDDLE_EXP_HI  #@INT_OR_MISSING)
 
@@ -100,8 +99,7 @@ ExpInfix(ExpThis  ExpInfix(String Integer))
          #error(REQPARENS_|)《1 == 2》 |  #error(REQPARENS_&)《2 <= 3》  &   this
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test order of errors
-#PARSE(EXPRESSION) 
-#error(REQPARENS)《1 == 123》 | #@《 #error:ITC{} 123 ● #error(EXPRULE_exp)》  
+#PARSE(EXPRESSION)   #error(REQPARENS)《1 == 123》 | #@《 #error:ITC{} 123 ● #@NO_EXP #@BREAK》  
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
@@ -122,12 +120,11 @@ ExpInfix(
 )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION) 	this && 1 ==  #error(EXPRULE_exp)  ||  super
+#PARSE(EXPRESSION) 	this && 1 ==  #@NO_EXP  #@BREAK ||  super
 #AST_STRUCTURE_EXPECTED:
-ExpInfix(
-  ExpInfix(ExpThis ExpInfix(Integer)) 
+  ExpInfix(ExpThis ExpInfix(Integer #@NO_EXP)) 
+  #@BREAK
   ExpSuper
-)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) 	this || "abc" == 123  &&  super

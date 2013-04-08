@@ -92,8 +92,8 @@ not quit expression parsing call stack when a syntax errors occurs.
  
 (XXX: Review this in the future, may not be best policy)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)        new   (foo)  #@MISSING_REF  (123) 
-#AST_STRUCTURE_EXPECTED:  ExpCall( ExpNew( #@ExpIdentifier  #@MISSING_REF ) Integer)  
+#PARSE(EXPRESSION)        new   (foo)  #@NO_REF  (123) 
+#AST_STRUCTURE_EXPECTED:  ExpCall( ExpNew( #@ExpIdentifier  #@NO_REF ) Integer)  
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)        new  ( #@EXP_ASSIGN__LITE #error(EXP_CLOSE_PARENS)  #parser(IgnoreRest) foo (456)
 #AST_STRUCTURE_EXPECTED:  ExpNew( #@EXP_ASSIGN__LITE )

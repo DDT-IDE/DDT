@@ -11,45 +11,52 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
-
-import dtool.ast.definitions.Module;
 
 /**
  * Concrete D Parser class
  * 
- * XXX: BM: this code is a bit convoluted and strange, we use inheritance just for the sake of namespace importing
  */
+// XXX: BM: this code is a bit convoluted and strange, we use inheritance just for the sake of namespace importing
 public class DeeParser extends DeeParser_Decls {
 	
 	public static DeeParserResult parseSource(String source) {
 		DeeParser deeParser = new DeeParser(source);
-		Module module = deeParser.parseModule();
-		return new DeeParserResult(module, deeParser.errors);
+		return new DeeParserResult(deeParser.parseModule(), deeParser);
 	}
 	
+	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule) {
+		return parseUsingRule(parseRule.name);
+	}
 	public DeeParserResult parseUsingRule(String parseRule) {
 		DeeParserResult result;
 		if(parseRule == null) {
-			result = new DeeParserResult(parseModule(), this.errors);
+			result = new DeeParserResult(parseModule(), this);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_EXPRESSION.name)) {
-			result = new DeeParserResult(parseExpression(), this.errors);
+			result = new DeeParserResult(parseExpression(), this);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_REFERENCE.name)) {
-			result = new DeeParserResult(parseReference(), this.errors);
+			result = new DeeParserResult(parseTypeReference(), this);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_DECLARATION.name)) {
-			result = new DeeParserResult(parseDeclaration(), this.errors);
+			result = new DeeParserResult(parseDeclaration(), this);
+		} else if(parseRule.equals(RULE_TYPE_OR_EXP) || parseRule.equalsIgnoreCase("TypeOrExp") ) {
+			result = new DeeParserResult(parseTypeOrExpression(true), this);
+		} else if(parseRule.equalsIgnoreCase("ExpOrType") ) {
+			result = new DeeParserResult(parseExpressionOrType(), this);
 		} else if(parseRule.equals("DeclarationImport")) {
-			result = new DeeParserResult(parseImportDeclaration(), this.errors);
+			result = new DeeParserResult(parseImportDeclaration(), this);
 		} else {
 			throw assertFail();
 		}
+		assertTrue(enabled);
 		return result;
 	}
 	
 	
-	protected final LexerElementSource lexSource;
-	protected final ArrayList<ParserError> errors = new ArrayList<ParserError>();
+	protected LexerElementSource lexSource;
+	protected ArrayList<ParserError> errors = new ArrayList<ParserError>();
+	protected boolean enabled = true;
 	
 	public DeeParser(String source) {
 		this(new DeeLexer(source));
@@ -64,29 +71,55 @@ public class DeeParser extends DeeParser_Decls {
 		errors.add(error);
 	}
 	
+	public LexerElementSource getEnabledLexSource() {
+		assertTrue(enabled);
+		return lexSource;
+	}
+	
+	protected LexerElementSource getLexSource() {
+		return lexSource;
+	}
+	
 	@Override
 	public String getSource() {
-		return lexSource.getSource();
+		return getLexSource().getSource();
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		assertTrue(this.enabled == !enabled);
+		this.enabled = enabled;
+	}
+	
+	@Override
+	public boolean isEnabled() { // There should be no reason to use this other than for contract checks only
+		return enabled;
+	}
+	
+	@Override
+	public int getParserPosition() {
+		assertTrue(lastLexElement().getEndPos() == getLexSource().lookAheadElement().getFullRangeStartPos());
+		return lastLexElement().getEndPos();
 	}
 	
 	@Override
 	public LexElement lookAheadElement(int laIndex) {
-		return lexSource.lookAheadElement(laIndex);
+		return getEnabledLexSource().lookAheadElement(laIndex);
 	}
 	
 	@Override
 	protected LexElement lastLexElement() {
-		return lexSource.lastLexElement;
+		return getLexSource().lastLexElement;
 	}
 	
 	@Override
 	protected LexElement lastNonMissingLexElement() {
-		return lexSource.lastNonMissingLexElement;
+		return getLexSource().lastNonMissingLexElement;
 	}
 	
 	@Override
 	protected final LexElement consumeInput() {
-		LexElement consumedElement = lexSource.consumeInput();
+		LexElement consumedElement = getEnabledLexSource().consumeInput();
 		analyzeIgnoredTokens(consumedElement);
 		DeeTokenSemantics.checkTokenErrors(consumedElement.token, this);
 		return consumedElement;
@@ -94,7 +127,7 @@ public class DeeParser extends DeeParser_Decls {
 	
 	@Override
 	public LexElement consumeIgnoreTokens(DeeTokens expectedToken) {
-		LexElement consumedElement = lexSource.consumeIgnoreTokens(expectedToken);
+		LexElement consumedElement = getEnabledLexSource().consumeIgnoreTokens(expectedToken);
 		analyzeIgnoredTokens(consumedElement);
 		return consumedElement;
 	}

@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +140,23 @@ public class NewUtils {
 			return new ArrayList<T>();
 		}
 		return arrayList;
+	}
+	
+	/**
+	 * Compares two strings according to the contract of {@link Comparator#compare(Object, Object)}
+	 * Allows null values.
+	 */
+	public static int compareStrings(String str1, String str2) {
+		if(str1 == str2) {
+			return 0;
+		}
+		if(str1 == null && str2 != null) {
+			return -1;
+		}
+		if(str2 == null && str1 != null) {
+			return 1;
+		}
+		return str1.compareTo(str2);
 	}
 	
 }

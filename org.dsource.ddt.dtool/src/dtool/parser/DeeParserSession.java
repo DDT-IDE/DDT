@@ -30,9 +30,8 @@ public class DeeParserSession extends DeeParserResult {
 	protected final String defaultModuleName;
 	protected final DescentParserAdapter parserAdapter;
 	
-	public DeeParserSession(Module module,  String defaultModuleName, 
-		DescentParserAdapter parserAdapter) {
-		super(module, null);
+	public DeeParserSession(Module module, String defaultModuleName, DescentParserAdapter parserAdapter) {
+		super(null, module, false, null);
 		this.defaultModuleName = defaultModuleName;
 		this.parserAdapter = parserAdapter;
 	}

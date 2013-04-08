@@ -52,7 +52,7 @@ import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
-import dtool.ast.expressions.ExpPostfix;
+import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.ast.expressions.ExpPrefix;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
@@ -221,7 +221,7 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	@Override public boolean visit(ExpReference node) { return true; }
 	
 	@Override public boolean visit(ExpPrefix node) { return true; }
-	@Override public boolean visit(ExpPostfix node) { return true; }
+	@Override public boolean visit(ExpPostfixOperator node) { return true; }
 	@Override public boolean visit(ExpInfix node) { return true; }
 	@Override public boolean visit(ExpConditional node) { return true; }
 	

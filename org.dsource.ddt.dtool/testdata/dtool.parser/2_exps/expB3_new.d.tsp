@@ -34,11 +34,11 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 #AST_STRUCTURE_EXPECTED: ExpNew(  #@EXP_ASSIGN__LITE  RefIndexing( #@TYPE_REFS #@EXP_ASSIGN__LITE )  )
 #comment(NO_STDOUT)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Error cases
-#PARSE(EXPRESSION)        new     #@ARGLIST  #@MISSING_REF  (123) 
-#AST_STRUCTURE_EXPECTED:  ExpCall( ExpNew( #@ARGLIST  #@MISSING_REF ) Integer)  
+#PARSE(EXPRESSION)        new     #@ARGLIST  #@NO_REF  (123) 
+#AST_STRUCTURE_EXPECTED:  ExpCall( ExpNew( #@ARGLIST  #@NO_REF ) Integer)  
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ (note that ARG1 expansion gets messed up because of EXP_ASSIGN__NO_PENDING)
 #PARSE(EXPRESSION)        new  (#@ARG1 #@EXP_ASSIGN__NO_PENDING #error(EXP_CLOSE_PARENS)  #parser(IgnoreRest) foo (456)
 #AST_STRUCTURE_EXPECTED:  ExpNew( #@《*●#@NO_EXP● 》(ARG1) #@EXP_ASSIGN__NO_PENDING )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)        new     #@MISSING_REF   [789]
-#AST_STRUCTURE_EXPECTED:  ExpIndex(ExpNew( #@MISSING_REF ) Integer)  
+#PARSE(EXPRESSION)        new     #@NO_REF   [789]
+#AST_STRUCTURE_EXPECTED:  ExpIndex(ExpNew( #@NO_REF ) Integer)  

@@ -178,6 +178,7 @@ public class TemplateSourceProcessorParser {
 				checkError(expansionId == null, parser);
 			} 
 			if(parser.tryConsume("!")) {
+				checkError(expansionId == null, parser); // No test case for this
 				checkError(anonymousExpansion, parser);
 				defineOnly = true;
 			}

@@ -4,7 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
 
 
-public final class SourceRange {
+public final class SourceRange implements Comparable<SourceRange> {
 	
 	private final int offset;
 	private final int length;
@@ -49,6 +49,14 @@ public final class SourceRange {
 		
 		SourceRange other = downCast(obj);
 		return this.offset == other.offset && this.length == other.length;
+	}
+	
+	@Override
+	public int compareTo(SourceRange other) {
+		if(offset == other.offset) {
+			return length - other.length;
+		}
+		return offset - other.offset;
 	}
 	
 }

@@ -12,12 +12,13 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.utilbox.misc.StringUtil;
 import descent.core.compiler.Linkage;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 
-public class ParserError {
+public final class ParserError {
 	
 	public enum ParserErrorTypes {
 		
@@ -47,6 +48,16 @@ public class ParserError {
 		this.sourceRange = assertNotNull_(sourceRange);
 		this.msgErrorSource = msgErrorSource;
 		this.msgData = msgData;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof ParserError))
+			return false;
+		
+		ParserError other = (ParserError) obj;
+		return errorType == other.errorType && areEqual(sourceRange, other.sourceRange) 
+			&& areEqual(msgErrorSource, other.msgErrorSource) && areEqual(msgData, other.msgData);
 	}
 	
 	public String getUserMessage() {
