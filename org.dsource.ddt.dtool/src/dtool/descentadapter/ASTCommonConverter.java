@@ -4,10 +4,12 @@ import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.parser.DeeTokens;
 import dtool.parser.Token;
+import dtool.util.ArrayView;
 
 /**
  * This class is a mixin. 
@@ -59,6 +61,11 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	
 	public static Token makeToken(DeeTokens tokenType, char[] source, int offset) {
 		return new Token(tokenType, source == null ? "" : new String(source), offset);
+	}
+	
+	
+	public NodeList2 createNodeList(ArrayView<ASTNeoNode> elems) {
+		return new NodeList2(elems, null);
 	}
 	
 }

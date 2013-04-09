@@ -50,8 +50,22 @@ public abstract class AbstractParser extends CommonLexElementSource {
 			this.ruleBroken = ruleBroken;
 		}
 		
-		public abstract ASTNeoNode getNode();
+	}
+	
+	public static class RuleResult<T> extends CommonRuleResult {
+		public final T result;
 		
+		public RuleResult(boolean parseBroken, T result) {
+			super(parseBroken);
+			this.result = result;
+		}
+		
+	}
+	
+	public static class NodeListParseResult<T> extends RuleResult<ArrayList<T>> {
+		public NodeListParseResult(boolean properlyTerminated, ArrayList<T> argList) {
+			super(!properlyTerminated, argList);
+		}
 	}
 	
 	public static class NodeResult<T extends ASTNeoNode> extends CommonRuleResult {
@@ -69,7 +83,6 @@ public abstract class AbstractParser extends CommonLexElementSource {
 			return (NodeResult<SUPER_OF_T>) this;
 		}
 		
-		@Override
 		public final T getNode() {
 			return node;
 		}
@@ -78,11 +91,27 @@ public abstract class AbstractParser extends CommonLexElementSource {
 			return node;
 		}
 		
-		protected static <T extends ASTNeoNode> NodeResult<T> create(boolean ruleBroken, T node) {
-			return new NodeResult<T>(ruleBroken, node);
-		}
-		
 	}
+	
+	protected static <T extends ASTNeoNode> NodeResult<T> nullResult() {
+		return new NodeResult<T>(false, null);
+	}
+	
+	protected static <T extends ASTNeoNode> NodeResult<T> nodeResult(T node) {
+		return new NodeResult<T>(false, node);
+	}
+	protected static <T extends ASTNeoNode> NodeResult<T> nodeResult(boolean ruleBroken, T node) {
+		return new NodeResult<T>(ruleBroken, node);
+	}
+	
+	protected static <T> RuleResult<T> ruleResult(boolean ruleBroken, T resultElem) {
+		return new RuleResult<T>(ruleBroken, resultElem);
+	}
+	
+	protected static <T extends ASTNeoNode> T getResult(NodeResult<T> nodeResult) {
+		return nodeResult == null ? null : nodeResult.node;
+	}
+	
 	
 	protected final ArrayList<ParserError> pendingMissingTokenErrors = new ArrayList<ParserError>();
 	
@@ -203,23 +232,8 @@ public abstract class AbstractParser extends CommonLexElementSource {
 	
 	/* ------------  Parsing helpers  ------------ */
 	
-	protected static <T extends ASTNeoNode> NodeResult<T> ruleNullResult() {
-		return NodeResult.create(false, null);
-	}
-	
-	protected static <T extends ASTNeoNode> NodeResult<T> ruleResult(T node) {
-		return NodeResult.create(false, node);
-	}
-	protected static <T extends ASTNeoNode> NodeResult<T> ruleResult(boolean ruleBroken, T node) {
-		return NodeResult.create(ruleBroken, node);
-	}
-	
 	protected final <T extends ASTNeoNode> NodeResult<T> connectResult(boolean ruleBroken, T node) {
-		return ruleResult(ruleBroken, connect(node));
-	}
-	
-	protected static <T extends ASTNeoNode> T getResult(NodeResult<T> nodeResult) {
-		return nodeResult == null ? null : nodeResult.node;
+		return nodeResult(ruleBroken, connect(node));
 	}
 	
 	protected <T extends ASTNeoNode> T connect(final T node) {
@@ -235,14 +249,10 @@ public abstract class AbstractParser extends CommonLexElementSource {
 			@Override
 			protected void geneticChildrenVisit(ASTNeoNode child) {
 				assertTrue(child.getParent() == node);
-				assertTrue(isParsedStatus(child));
+				assertTrue(child.isParsedStatus());
 			}
 		});
 		return node;
-	}
-	
-	public boolean isParsedStatus(ASTNeoNode node) {
-		return node.getData() == ASTSemantics.PARSED_STATUS;
 	}
 	
 	protected <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {

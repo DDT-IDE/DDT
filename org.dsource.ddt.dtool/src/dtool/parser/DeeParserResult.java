@@ -18,7 +18,7 @@ import java.util.Comparator;
 
 import dtool.ast.ASTNeoNode;
 import dtool.ast.definitions.Module;
-import dtool.parser.AbstractParser.CommonRuleResult;
+import dtool.parser.AbstractParser.NodeResult;
 import dtool.util.NewUtils;
 
 public class DeeParserResult {
@@ -29,7 +29,7 @@ public class DeeParserResult {
 	public final Module module;
 	public final ArrayList<ParserError> errors;
 	
-	public DeeParserResult(CommonRuleResult result, DeeParser parser) {
+	public DeeParserResult(NodeResult<? extends ASTNeoNode> result, DeeParser parser) {
 		this(parser.getSource(), result.getNode(), result.ruleBroken, parser.errors);
 	}
 	

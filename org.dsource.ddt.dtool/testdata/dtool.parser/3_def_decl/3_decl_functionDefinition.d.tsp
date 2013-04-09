@@ -107,16 +107,15 @@ DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_ARG1 #@SAMPLE_BLOCK_ST
 DefFunction( RefTypeModifier(?) DefSymbol #@ARG_START #@PARAMS_SAMPLE #@FN_AFTER_PARAM )
 
 
-▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Template 0 args
-#PARSE(DECLARATION)  const(foo) tplFunc0() ( #@FN_AFTER_PARAM
+Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Template args
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template 0 args
+#PARSE(DECLARATION)  const(foo) tplFunc() ( #@FN_AFTER_PARAM
 #AST_STRUCTURE_EXPECTED:
 DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_AFTER_PARAM )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)       Foo tplFuncS( #@TPL_PARAMS_SAMPLE1 ) #error(EXP_OPEN_PARENS)【】 #@BREAK #@SAMPLE_BLOCK_ST
+#PARSE(DECLARATION)       Foo tplFunc( #@TPL_PARAMS_SAMPLE1 ) #error(EXP_OPEN_PARENS)【】 #@BREAK #@SAMPLE_BLOCK_ST
 #AST_STRUCTURE_EXPECTED:
 DefFunction(RefIdentifier DefSymbol #@TPL_PARAMS_SAMPLE1 #@BREAK #@SAMPLE_BLOCK_ST )
-
-Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Template args
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)       Foo tplFunc( #@TPLARGS ) ( #@PARAMS_SAMPLE ) #@SAMPLE_BLOCK_ST
 #AST_STRUCTURE_EXPECTED:
@@ -145,13 +144,11 @@ DefFunction(RefIdentifier DefSymbol #@TPLARGS #@PARAMS_SAMPLE #@SAMPLE_BLOCK_ST 
 DefFunction( RefTypeModifier(?) DefSymbol #@PARAMS_SAMPLE #@FN_ATTRIBS_END )
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function Template constraint
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)       Foo funcTplConstraint( ) ( #@PARAMS_SAMPLE )  #@FN_FROM_CONSTRAINT
-#AST_STRUCTURE_EXPECTED:
-DefFunction(RefIdentifier DefSymbol #@PARAMS_SAMPLE #@FN_FROM_CONSTRAINT  )
+#PARSE(DECLARATION)       Foo funcTplConstraint( ) ( #@PARAMS_SAMPLE )  #@TPL_CONSTRAINT #@SAMPLE_BLOCK_ST
+#AST_STRUCTURE_EXPECTED:  DefFunction(? DefSymbol #@PARAMS_SAMPLE #@TPL_CONSTRAINT #@SAMPLE_BLOCK_ST  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  /* needs tpl args to parse from if constraint */
-#PARSE(DECLARATION)      Foo funcTplConstraint ( #@PARAMS_SAMPLE ) #@NO_BODY #@BREAK  #@FN_FROM_CONSTRAINT
-#AST_STRUCTURE_EXPECTED:
-DefFunction(RefIdentifier DefSymbol #@PARAMS_SAMPLE #@NO_BODY #@BREAK  )
+#PARSE(DECLARATION)       Foo funcTplConstraint ( #@PARAMS_SAMPLE ) #@NO_BODY #@BREAK  #@TPL_CONSTRAINT #@SAMPLE_BLOCK_ST
+#AST_STRUCTURE_EXPECTED:  DefFunction(RefIdentifier DefSymbol #@PARAMS_SAMPLE #@NO_BODY #@BREAK  )
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function Body
 #@BLK《                   ►#?AST_STRUCTURE_EXPECTED!【 { /*TODO statement*/ } ● BlockStatement 】● ¤》

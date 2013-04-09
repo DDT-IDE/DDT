@@ -7,10 +7,13 @@ import java.util.List;
 
 import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.PROT;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeList2;
+import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -22,21 +25,29 @@ import dtool.util.ArrayView;
  */
 public class DefinitionTemplate extends Definition implements IScopeNode, IStatement {
 	
-	public final ArrayView<TemplateParameter> templateParams; 
-	public final ArrayView<ASTNeoNode> decls;
+	public final ArrayView<TemplateParameter> tplParams;
+	public final Expression tplConstraint;
+	public final NodeList2 decls;
 	public final boolean wrapper;
 	
-	public DefinitionTemplate(DefUnitTuple dudt, PROT prot, ArrayView<ASTNeoNode> decls,
-			ArrayView<TemplateParameter> params, boolean wrapper) {
-		super(dudt, prot);
-		this.templateParams = parentize(params);
+	public DefinitionTemplate(DefUnitTuple dudt, ArrayView<TemplateParameter> tplParams, Expression tplConstraint, 
+		NodeList2 decls) {
+		super(dudt);
+		this.tplParams = parentize(tplParams);
+		this.tplConstraint = parentize(tplConstraint);
 		this.decls = parentize(decls);
-		this.wrapper = wrapper;
+		
+		this.wrapper = false; // TODO: determine this
 		if(wrapper) {
-			assertTrue(this.decls.size() == 1);
-			assertTrue(decls.get(0) instanceof DefUnit || decls.get(0) instanceof DefinitionCtor);
+			assertTrue(this.decls.nodes.size() == 1);
+			assertTrue(decls.nodes.get(0) instanceof DefUnit || decls.nodes.get(0) instanceof DefinitionCtor);
 			// BUG here, need to fix for DefinitionCtor case
 		}
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DEFINITION_TEMPLATE;
 	}
 	
 	@Override
@@ -44,10 +55,28 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, templateParams);
+			TreeVisitor.acceptChildren(visitor, tplParams);
+			TreeVisitor.acceptChildren(visitor, tplConstraint);
 			TreeVisitor.acceptChildren(visitor, decls);
 		}
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("template ");
+		cp.appendNode(defname);
+		cp.appendNodeList("(", tplParams, ",", ") ");
+		tplConstraintToStringAsCode(cp, tplConstraint);
+		cp.appendNode("{\n", decls, "}");
+	}
+	
+	public static void tplConstraintToStringAsCode(ASTCodePrinter cp, Expression tplConstraint) {
+		if(tplConstraint instanceof MissingParenthesesExpression) {
+			cp.appendNode("if", tplConstraint);
+		} else {
+			cp.appendNode("if(", tplConstraint, ")");
+		}
 	}
 	
 	@Override
@@ -77,11 +106,11 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 		// TODO: test this more, redo
 		if(wrapper) {
 			// Go straight to members of the inner decl
-			IScopeNode scope = ((DefUnit)decls.get(0)).getMembersScope(moduleResolver);
-			Iterator<? extends IASTNeoNode> tplIter = templateParams.iterator();
+			IScopeNode scope = ((DefUnit)decls.nodes.get(0)).getMembersScope(moduleResolver);
+			Iterator<? extends IASTNeoNode> tplIter = tplParams.iterator();
 			return ChainedIterator.create(tplIter, scope.getMembersIterator(moduleResolver));
 		}
-		return ChainedIterator.create(templateParams.iterator(), decls.iterator());
+		return ChainedIterator.create(tplParams.iterator(), decls.nodes.iterator());
 	}
 	
 }

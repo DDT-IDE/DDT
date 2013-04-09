@@ -78,10 +78,10 @@ import dtool.ast.definitions.EnumContainer;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.TemplateAliasParam;
+import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.definitions.TemplateTupleParam;
 import dtool.ast.definitions.TemplateTypeParam;
 import dtool.ast.definitions.TemplateValueParam;
-import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -489,10 +489,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		return endAdapt(
 			new DefinitionTemplate(
 				DefinitionConverter.convertDsymbol(elem, convContext),
-				elem.prot(),
-				DescentASTConverter.convertManyNoNulls(elem.members, ASTNeoNode.class, convContext),
 				tplParams,
-				elem.wrapper
+				null,
+				createNodeList(DescentASTConverter.convertManyNoNulls(elem.members, ASTNeoNode.class, convContext))
 			)
 		);
 	}

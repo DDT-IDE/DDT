@@ -86,28 +86,14 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return lookAheadToken().type.getGroupingToken();
 	}
 	
-	public static class RuleParseResult<T> extends CommonRuleResult {
-		public final T result;
-		
-		public RuleParseResult(boolean parseBroken, T result) {
-			super(parseBroken);
-			this.result = result;
-		}
-		
-		@Override
-		public ASTNeoNode getNode() {
-			return null;
-		}
-	}
-	
 	public String idTokenToString(LexElement id) {
 		return id.isMissingElement() ? null : id.token.source;
 	}
 	
 	/* --------------------  reference parsing  --------------------- */
 	
-	public static ParseRuleDescription RULE_REFERENCE = new ParseRuleDescription("Reference");
-	public static ParseRuleDescription RULE_TPL_SINGLE_ARG = new ParseRuleDescription("TemplateSingleArgument");
+	public static final ParseRuleDescription RULE_REFERENCE = new ParseRuleDescription("Reference");
+	public static final ParseRuleDescription RULE_TPL_SINGLE_ARG = new ParseRuleDescription("TemplateSingleArgument");
 	
 	public NodeResult<Reference> parseTypeReference() {
 		return parseTypeReference_do(false);
@@ -123,7 +109,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	public NodeResult<Reference> nullRefToMissing(boolean reportMissingError, NodeResult<Reference> refResult) {
 		return refResult != null && refResult.node != null ? 
 			refResult : 
-			ruleResult(false, createMissingTypeReference(reportMissingError));
+			nodeResult(false, createMissingTypeReference(reportMissingError));
 	}
 	
 	public Reference createMissingTypeReference(boolean reportMissingError) {
@@ -151,7 +137,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		case KW_SHARED: refParseResult = parseRefTypeModifier_do(TypeModifierKinds.SHARED); break;
 		case KW_INOUT: refParseResult = parseRefTypeModifier_do(TypeModifierKinds.INOUT); break;
 		default:
-			return ruleNullResult();
+			return nullResult();
 		}
 		
 		if(refParseResult.ruleBroken) 
@@ -189,7 +175,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	
 	protected NodeResult<RefModuleQualified> parseRefModuleQualified_do() {
 		if(!tryConsume(DeeTokens.DOT))
-			return ruleNullResult();
+			return nullResult();
 		int nodeStart = lastLexElement().getStartPos();
 		
 		boolean parseBroken = lookAhead() != DeeTokens.IDENTIFIER;
@@ -239,7 +225,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		// Star is multiply infix operator, dont parse as pointer ref
 		if(lookAhead() == DeeTokens.DOT) {
 			if(leftRef instanceof IQualifierNode == false) {
-				return ruleResult(leftRef);
+				return nodeResult(leftRef);
 			}
 			IQualifierNode qualifier = (IQualifierNode) leftRef;
 			assertTrue(!RefQualified.isExpressionQualifier(qualifier));
@@ -256,9 +242,9 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 			Resolvable singleArg = null;
 			
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				ArgumentListParseResult<Resolvable> argList = 
+				NodeListParseResult<Resolvable> argList = 
 					parseArgumentList(true, DeeTokens.COMMA, DeeTokens.CLOSE_PARENS);
-				tplArgs = argList.list;
+				tplArgs = argList.result;
 				parseBroken = argList.ruleBroken;
 			} else {
 				if(leftRef instanceof RefTemplateInstance) {
@@ -295,10 +281,10 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 			}
 			
 		} else {
-			return ruleResult(leftRef);
+			return nodeResult(leftRef);
 		}
 		if(parseBroken)
-			return ruleResult(true, leftRef);
+			return nodeResult(true, leftRef);
 		return parseReference_ReferenceStart(leftRef, parsingExp);
 	}
 	
@@ -308,10 +294,10 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	
 	/* --------------------- EXPRESSIONS --------------------- */
 	
-	public static ParseRuleDescription RULE_EXPRESSION = new ParseRuleDescription("Expression");
-	public static ParseRuleDescription RULE_TYPE_OR_EXP = new ParseRuleDescription("Reference or Expression");
+	public static final ParseRuleDescription RULE_EXPRESSION = new ParseRuleDescription("Expression");
+	public static final ParseRuleDescription RULE_TYPE_OR_EXP = new ParseRuleDescription("Reference or Expression");
 	
-	public static InfixOpType ANY_OPERATOR = InfixOpType.COMMA;
+	public static final InfixOpType ANY_OPERATOR = InfixOpType.COMMA;
 	
 	public NodeResult<Expression> parseExpression() {
 		return parseExpression(ANY_OPERATOR);
@@ -538,7 +524,7 @@ protected class ParseRule_TypeOrExp {
 	}
 	protected Expression typeOrExpConnect(LexElement afterStarOp, Expression exp) {
 		if(mode == TypeOrExpStatus.EXP) {
-			if(!isParsedStatus(exp)) {
+			if(!exp.isParsedStatus()) {
 				exp = connect(exp);
 			}
 		} else {
@@ -823,7 +809,7 @@ protected class ParseRule_TypeOrExp {
 		protected ParseRule_InfixOperatorExp(Expression leftExp) {
 			this.leftExp = leftExp;
 			assertNotNull(leftExp);
-			assertTrue(isParsedStatus(leftExp) || getTypeOrExpStatus(leftExp).canBeType());
+			assertTrue(leftExp.isParsedStatus() || getTypeOrExpStatus(leftExp).canBeType());
 		}
 		
 		public Expression parseInfixOperator(final InfixOpType opType) {
@@ -881,7 +867,7 @@ protected class ParseRule_TypeOrExp {
 				return expConnect(new ExpConditional(leftExp, middleExp, rightExp, srToCursor(leftExp)));
 			}
 			
-			assertTrue(!(isParsedStatus(leftExp) && mode == TypeOrExpStatus.EXP_WITH_PENDING_TYPE));
+			assertTrue(!(leftExp.isParsedStatus() && mode == TypeOrExpStatus.EXP_WITH_PENDING_TYPE));
 			return typeOrExpConnect(afterStarOp, init(srToCursor(leftExp), new ExpInfix(leftExp, opType, rightExp)));
 		}
 		
@@ -900,7 +886,7 @@ protected class ParseRule_TypeOrExp {
 		
 		@Override
 		public void modeUpdatedToExp() {
-			if(rightExp == null || isParsedStatus(rightExp)) {
+			if(rightExp == null || rightExp.isParsedStatus()) {
 				leftExp = convertTypeOrExpToExpression(leftExp); 
 			}
 		}
@@ -922,7 +908,7 @@ protected class ParseRule_TypeOrExp {
 		
 		public ParseRule_BracketList(Expression calleeExp) {
 			this.calleeExp = calleeExp;
-			assertTrue(calleeExp == null || isParsedStatus(calleeExp) || getTypeOrExpStatus(calleeExp).canBeType());
+			assertTrue(calleeExp == null || calleeExp.isParsedStatus() || getTypeOrExpStatus(calleeExp).canBeType());
 		}
 		
 		protected Expression doParse() {
@@ -1115,7 +1101,7 @@ protected class ParseRule_TypeOrExp {
 		
 		public NodeResult<Reference> toReference() {
 			assertTrue(mode != TypeOrExpStatus.EXP);
-			return NodeResult.create(definiteRuleBroken, convertTypeOrExpToReference(exp));
+			return nodeResult(definiteRuleBroken, convertTypeOrExpToReference(exp));
 		}
 		
 		public NodeResult<Expression> toExpression() {
@@ -1125,7 +1111,7 @@ protected class ParseRule_TypeOrExp {
 		protected <T extends ASTNeoNode> NodeResult<T> expResult(T result) {
 			boolean additionalBreaks = mode == TypeOrExpStatus.TYPE_OR_EXP_WITH_MISSING_RIGHT
 				|| (result instanceof ExpReference && ((ExpReference) result).ref instanceof RefTypePointer);
-			return NodeResult.create(definiteRuleBroken || additionalBreaks, result);
+			return nodeResult(definiteRuleBroken || additionalBreaks, result);
 		}
 		
 		public NodeResult<Resolvable> toFinalResult(boolean ambiguousToRef) {
@@ -1134,7 +1120,7 @@ protected class ParseRule_TypeOrExp {
 			if(result instanceof Expression) {
 				return expResult(result);
 			}
-			return NodeResult.create(definiteRuleBroken, result);
+			return nodeResult(definiteRuleBroken, result);
 		}
 	}
 	
@@ -1167,7 +1153,7 @@ protected class ParseRule_TypeOrExp {
 		if(exp == null) {
 			return refOnTheLeft;
 		}
-		if(isParsedStatus(exp)) {
+		if(exp.isParsedStatus()) {
 			assertTrue(refOnTheLeft == null);
 			return exp;
 		}
@@ -1314,7 +1300,7 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	protected Expression convertTypeOrExpToExpression_noChange(Expression exp) {
-		assertTrue(exp == null || isParsedStatus(exp) || getTypeOrExpStatus(exp).canBeExp());
+		assertTrue(exp == null || exp.isParsedStatus() || getTypeOrExpStatus(exp).canBeExp());
 		Expression converted = assertCast(convertTypeOrExp(null, exp, false), Expression.class);
 		assertTrue(converted == exp);
 		return converted;
@@ -1332,7 +1318,7 @@ protected class ParseRule_TypeOrExp {
 	
 	public Reference convertToRefIndexing(Reference leftRef, Expression exp, Expression indexArgExp) {
 		Resolvable indexArg;
-		if(isParsedStatus(indexArgExp)) {
+		if(indexArgExp.isParsedStatus()) {
 			// argument can only be interpreted as expression
 			indexArg = indexArgExp;
 		} else if(getTypeOrExpStatus(indexArgExp).canBeType()) {
@@ -1409,23 +1395,14 @@ protected class ParseRule_TypeOrExp {
 	protected ExpCall parseCallExpression(Expression callee) {
 		consumeLookAhead(DeeTokens.OPEN_PARENS);
 		
-		ArrayList<Expression> args = parseExpArgumentList(DeeTokens.CLOSE_PARENS).list;
+		ArrayList<Expression> args = parseExpArgumentList(DeeTokens.CLOSE_PARENS).result;
 		return connect(new ExpCall(callee, arrayView(args), srToCursor(callee)));
 	}
 	
-	public static class ArgumentListParseResult<T> extends RuleParseResult<ArrayList<T>> {
-		public final ArrayList<T> list;
-		
-		public ArgumentListParseResult(boolean properlyTerminated, ArrayList<T> argList) {
-			super(!properlyTerminated, argList);
-			this.list = argList;
-		}
-	}
-	
-	protected ArgumentListParseResult<Expression> parseExpArgumentList(DeeTokens tokenLISTCLOSE) {
+	protected NodeListParseResult<Expression> parseExpArgumentList(DeeTokens tokenLISTCLOSE) {
 		return CoreUtil.blindCast(parseArgumentList(false, DeeTokens.COMMA, tokenLISTCLOSE));
 	}
-	protected ArgumentListParseResult<Resolvable> parseArgumentList(boolean parseTypeOrExp, 
+	protected NodeListParseResult<Resolvable> parseArgumentList(boolean parseTypeOrExp, 
 		DeeTokens tokenSEPARATOR, DeeTokens tokenLISTCLOSE) {
 		
 		ArrayList<Resolvable> args = new ArrayList<Resolvable>();
@@ -1447,7 +1424,7 @@ protected class ParseRule_TypeOrExp {
 			break;
 		}
 		boolean properlyTerminated = consumeExpectedToken(tokenLISTCLOSE) != null;
-		return new ArgumentListParseResult<Resolvable>(properlyTerminated, args);
+		return new NodeListParseResult<Resolvable>(properlyTerminated, args);
 	}
 	
 	public NodeResult<ExpParentheses> parseParenthesesExp() {
@@ -1513,21 +1490,19 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	protected Expression parseParensWithExpression() {
-		return new ParseRule_ExpressionAroundParentheses(false).exp;
+		return parseExpressionAroundParentheses(false).node; // TODO: check break
 	}
 	
-	protected class ParseRule_ExpressionAroundParentheses {
-		protected Expression exp = null;
-		protected boolean parseBroken = false;
-		
-		public ParseRule_ExpressionAroundParentheses(boolean createMissingPlaceholder) {
-			if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
-				exp = parseExpression_toMissing();
-				parseBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
-			} else if(createMissingPlaceholder) {
-				exp = connect(new MissingParenthesesExpression(srToCursor(getParserPosition())));
-			}
+	public NodeResult<Expression> parseExpressionAroundParentheses(boolean createMissing) {
+		Expression exp = null;
+		boolean ruleBroken = false;
+		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
+			exp = parseExpression_toMissing();
+			ruleBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
+		} else if(createMissing) {
+			exp = new MissingParenthesesExpression(srToCursor(getParserPosition()));
 		}
+		return nodeResult(ruleBroken, exp);
 	}
 	
 	public ExpTypeId parseTypeIdExpression() {
@@ -1564,8 +1539,8 @@ protected class ParseRule_TypeOrExp {
 		
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				ArgumentListParseResult<Expression> allocArgsResult = parseExpArgumentList(DeeTokens.CLOSE_PARENS);
-				allocArgs = allocArgsResult.list;
+				NodeListParseResult<Expression> allocArgsResult = parseExpArgumentList(DeeTokens.CLOSE_PARENS);
+				allocArgs = allocArgsResult.result;
 				if(allocArgsResult.ruleBroken) {
 					break parsing;
 				}
@@ -1575,7 +1550,7 @@ protected class ParseRule_TypeOrExp {
 				break parsing;
 			}
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				args = parseExpArgumentList(DeeTokens.CLOSE_PARENS).list;
+				args = parseExpArgumentList(DeeTokens.CLOSE_PARENS).result;
 			}
 		}
 		

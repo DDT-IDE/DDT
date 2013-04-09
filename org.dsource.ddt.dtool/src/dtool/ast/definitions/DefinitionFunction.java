@@ -16,7 +16,6 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.ISourceRepresentation;
 import dtool.ast.NodeUtil;
 import dtool.ast.expressions.Expression;
-import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
@@ -84,11 +83,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		cp.appendNodeList("(", tplParams, ",", ") ");
 		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
 		cp.appendList(fnAttributes, " ", true);
-		if(tplConstraint instanceof MissingParenthesesExpression) {
-			cp.appendNode("if", tplConstraint);
-		} else {
-			cp.appendNode("if(", tplConstraint, ")");
-		}
+		DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
 		cp.appendNode(fnBody);
 	}
 	

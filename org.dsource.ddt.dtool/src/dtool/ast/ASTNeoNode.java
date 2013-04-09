@@ -168,6 +168,10 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		this.data = null;
 	}
 	
+	public boolean isParsedStatus() {
+		return getData() == ASTSemantics.PARSED_STATUS;
+	}
+	
 	/* ------------------------------------------------------------ */
 	
 	@Override
@@ -241,7 +245,8 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	
 	@Override
 	public final String toString() {
-		return "#" + toStringClassName() + (":" + getData()) +"【"+toStringAsCode()+"】";
+		String suffix = isParsedStatus() ? "#" : ":" + getData();
+		return toStringClassName() + suffix +"【"+toStringAsCode()+"】";
 	}
 	
 	/** Returns a simple representation of this node, element-like and for for a line. 

@@ -23,7 +23,7 @@ import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefQualified;
-import dtool.parser.AbstractParser.CommonRuleResult;
+import dtool.parser.AbstractParser.NodeResult;
 import dtool.parser.DeeParserTest.CheckSourceEquality;
 import dtool.parser.DeeParser_Decls.ParseRule_Parameters.AmbiguousParameter;
 import dtool.parser.DeeParser_Decls.TplOrFnMode;
@@ -225,6 +225,9 @@ public class ASTNodeReparseCheck {
 			return functionParamReparseCheck(node);
 			//return simpleReparseCheck(node, "...");
 			
+		case DEFINITION_TEMPLATE:
+			return reparseCheck(snippedParser.parseTemplateDefinition(), node);
+			
 		case TEMPLATE_TYPE_PARAM:
 		case TEMPLATE_VALUE_PARAM:
 		case TEMPLATE_ALIAS_PARAM:
@@ -306,7 +309,7 @@ public class ASTNodeReparseCheck {
 		return snippedParser = new DeeParser(new DeeParserTest.DeeTestsLexer(nodeSnippedSource));
 	}
 	
-	public Void reparseCheck(CommonRuleResult result, ASTNeoNode node) {
+	public Void reparseCheck(NodeResult<? extends ASTNeoNode> result, ASTNeoNode node) {
 		return reparseCheck(result.getNode(), node);
 	}
 	public Void reparseCheck(IASTNeoNode reparsedNode, ASTNeoNode node) {
