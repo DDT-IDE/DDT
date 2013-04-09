@@ -16,9 +16,9 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 	public static enum AttribBodySyntax { SINGLE_DECL, BRACE_BLOCK, COLON }
 	
 	public final AttribBodySyntax bodySyntax;
-	public final NodeList2 body;
+	public final ASTNeoNode body; // Note: can be NodeList
 	
-	public DeclarationAttrib(AttribBodySyntax bodySyntax, NodeList2 bodyDecls, SourceRange sr) {
+	public DeclarationAttrib(AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls, SourceRange sr) {
 		this.bodySyntax = assertNotNull_(bodySyntax);
 		this.body = parentize(bodyDecls);
 		initSourceRange(sr);
@@ -28,7 +28,10 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 	public Iterator<ASTNeoNode> getMembersIterator() {
 		if(body == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
-		return body.nodes.iterator();
+		if(body instanceof NodeList2) {
+			return ((NodeList2) body).nodes.iterator();
+		}
+		return IteratorUtil.singletonIterator(body);
 	}
 	
 	public void toStringAsCode_body(ASTCodePrinter cp) {

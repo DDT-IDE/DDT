@@ -10,30 +10,26 @@ DeclarationLinkage(DefinitionVariable(RefIdentifier DefSymbol))
 DeclarationAlign(DefinitionVariable(RefPrimitive DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 public: 
-Foo foo;
-int bar;
+#@DECLS_SAMPLE
 extern(C):
-Foo foo;
-int bar;
+#@DECLS_SAMPLE
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationProtection(
-	DefinitionVariable(RefIdentifier DefSymbol) DefinitionVariable(RefPrimitive DefSymbol)
-	DeclarationLinkage(
-		DefinitionVariable(RefIdentifier DefSymbol) DefinitionVariable(RefPrimitive DefSymbol)
-	)
-)
+DeclarationProtection(NodeList2(
+	#@DECLS_SAMPLE
+	DeclarationLinkage(NodeList2( #@DECLS_SAMPLE ))
+))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 final {
-	int foo;
+	#@DECLS_SAMPLE
 }
 static:
 const:
 #AST_STRUCTURE_EXPECTED:
-DeclarationBasicAttrib( DefinitionVariable(RefPrimitive DefSymbol) )
-DeclarationBasicAttrib(
-	DeclarationBasicAttrib
-)
+DeclarationBasicAttrib(NodeList2( #@DECLS_SAMPLE )) 
+DeclarationBasicAttrib(NodeList2(
+	DeclarationBasicAttrib(NodeList2())
+))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 extern(#error:BAD_LINKAGE_ID) int bar;
 align(#error:EXP_INTEGER_DECIMAL) int bar;
@@ -74,21 +70,19 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #AST_STRUCTURE_EXPECTED: #@ATTRIBS ( DefinitionVariable(* *) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ :
-    int foo2;
-    void bar;
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( DefinitionVariable(* *) DefinitionVariable(* *) )
+#@DECLS_SAMPLE
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ : /* Zero decls */
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( )
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ { } 
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( )
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS { 
-	int fooX;
-	void bar;
+#@DECLS_SAMPLE
 }
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( DefinitionVariable(* *) DefinitionVariable(* *) )
+#AST_STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
 #AST_STRUCTURE_EXPECTED: #@ATTRIBS ( DeclarationEmpty )

@@ -10,19 +10,13 @@ DeclarationPragma(DefinitionVariable(RefPrimitive DefSymbol))
 DeclarationPragma(DefinitionVariable(RefPrimitive DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 pragma(foo) : 
-int foo;
-void bar;
+#@DECLS_SAMPLE
 pragma(foo) {
-	int foo;
+	#@DECLS_SAMPLE
 }
 
 #AST_STRUCTURE_EXPECTED:
-DeclarationPragma(
-	DefinitionVariable(RefPrimitive DefSymbol) DefinitionVariable(RefPrimitive DefSymbol)
-	DeclarationPragma(
-		DefinitionVariable(RefPrimitive DefSymbol)
-	)
-)
+DeclarationPragma(NodeList2( #@DECLS_SAMPLE DeclarationPragma(NodeList2( #@DECLS_SAMPLE )) ))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

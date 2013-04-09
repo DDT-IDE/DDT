@@ -2,9 +2,9 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.parser.Token;
 
@@ -12,8 +12,8 @@ public class DeclarationAlign extends DeclarationAttrib {
 	
 	public final Token alignNum;
 	
-	public DeclarationAlign(Token alignNum, AttribBodySyntax bodySyntax, NodeList2 decls, SourceRange sr) {
-		super(bodySyntax, decls, sr);
+	public DeclarationAlign(Token alignNum, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls, SourceRange sr) {
+		super(bodySyntax, bodyDecls, sr);
 		this.alignNum = alignNum;
 	}
 	

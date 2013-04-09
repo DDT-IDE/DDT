@@ -5,10 +5,10 @@ import java.util.Iterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.ISourceRepresentation;
-import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
 import dtool.parser.DeeTokens;
@@ -72,9 +72,9 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 	
 	public final AttributeKinds declAttrib;
 	
-	public DeclarationBasicAttrib(AttributeKinds declAttrib, AttribBodySyntax abs, NodeList2 decls, 
+	public DeclarationBasicAttrib(AttributeKinds declAttrib, AttribBodySyntax abs, ASTNeoNode bodyDecls, 
 		SourceRange sr) {
-		super(abs, decls, sr);
+		super(abs, bodyDecls, sr);
 		this.declAttrib = declAttrib;
 		
 		localAnalysis();

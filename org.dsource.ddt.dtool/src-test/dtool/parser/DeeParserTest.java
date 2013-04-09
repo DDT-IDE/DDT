@@ -27,16 +27,15 @@ import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTSemantics;
-import dtool.ast.NodeList2;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
-import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpLiteralString;
+import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.parser.DeeParserResult.ParserErrorComparator;
 import dtool.parser.DeeParser_Decls.ParseRule_Parameters.AmbiguousParameter;
 import dtool.parser.DeeParser_Decls.TplOrFnMode;
@@ -196,24 +195,18 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 	}
 	
-	public static void checkExpectedStructure(ASTNeoNode parent, NamedNodeElement[] expectedStructure) {
+	public static void checkExpectedStructure(ASTNeoNode node, NamedNodeElement[] expectedStructure) {
 		ASTNeoNode[] children;
-		if(parent instanceof Module) {
-			children = parent.getChildren();
+		if(node instanceof Module) {
+			children = node.getChildren();
 		} else {
-			children = array(parent);
-			parent = null;
+			children = array(node);
+			node = null;
 		}
-		checkExpectedStructure(children, parent, expectedStructure, true);
+		checkExpectedStructure_do(children, expectedStructure);
 	}
 	
-	public static void checkExpectedStructure(ASTNeoNode[] children, ASTNeoNode parent,
-		NamedNodeElement[] expectedStructure, boolean flattenNodeList) {
-		
-		if(flattenNodeList && children.length == 1 && children[0] instanceof NodeList2) {
-			parent = children[0];
-			children = parent.getChildren();
-		}
+	public static void checkExpectedStructure_do(ASTNeoNode[] children, NamedNodeElement[] expectedStructure) {
 		
 		assertTrue(children.length <= expectedStructure.length);
 		
@@ -228,7 +221,7 @@ public class DeeParserTest extends CommonTestUtils {
 				String expectedName = getExpectedNameAliases(namedElement.name);
 				assertEquals(astNode.getClass().getSimpleName(), expectedName);
 			}
-			checkExpectedStructure(astNode.getChildren(), astNode, namedElement.children, true);
+			checkExpectedStructure_do(astNode.getChildren(), namedElement.children);
 		}
 		assertTrue(children.length == expectedStructure.length);
 	}

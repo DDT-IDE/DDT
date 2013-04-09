@@ -1500,7 +1500,7 @@ protected class ParseRule_TypeOrExp {
 			exp = parseExpression_toMissing();
 			ruleBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
 		} else if(createMissing) {
-			exp = new MissingParenthesesExpression(srToCursor(getParserPosition()));
+			exp = connect(new MissingParenthesesExpression(srToCursor(getParserPosition())));
 		}
 		return nodeResult(ruleBroken, exp);
 	}

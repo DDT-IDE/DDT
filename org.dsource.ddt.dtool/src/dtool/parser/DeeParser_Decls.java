@@ -981,7 +981,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	protected class AttribBodyParseRule {
 		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
-		public NodeList2 declList;
+		public ASTNeoNode declList;
 		
 		public AttribBodyParseRule parseAttribBody(boolean acceptEmptyDecl, boolean enablesAutoDecl) {
 			if(tryConsume(DeeTokens.COLON)) {
@@ -992,12 +992,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				declList = parseDeclList(DeeTokens.CLOSE_BRACE);
 				consumeExpectedToken(DeeTokens.CLOSE_BRACE);
 			} else {
-				ASTNeoNode decl = getResult(parseDeclaration(acceptEmptyDecl, enablesAutoDecl));
-				if(decl == null) {
+				declList = getResult(parseDeclaration(acceptEmptyDecl, enablesAutoDecl));
+				if(declList == null) {
 					reportErrorExpectedRule(RULE_DECLARATION);
-				} else {
-					declList = connect(
-						new NodeList2(ArrayView.create(new ASTNeoNode[] {decl}), decl.getSourceRange()));
 				}
 			}
 			return this;
