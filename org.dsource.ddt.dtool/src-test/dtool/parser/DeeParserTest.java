@@ -87,6 +87,7 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 	}
 	
+	// The funky name here is to help locate this function in stack traces during debugging
 	public static void runParserTest______________________(
 		final String fullParseSource, final String parseRule, final String expectedRemainingSource, 
 		final String expectedGenSource, final NamedNodeElement[] expectedStructure, final 

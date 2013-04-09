@@ -19,42 +19,17 @@ import java.io.File;
 import java.util.Map;
 
 import dtool.sourcegen.AnnotatedSource;
-import dtool.sourcegen.TemplatedSourceProcessor;
 import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
+import dtool.sourcegen.TemplatedSourceProcessor;
 import dtool.tests.DToolTests;
 
 public abstract class DeeTemplatedSourceBasedTest extends DeeFilesBasedTest {
 	
-	public DeeTemplatedSourceBasedTest(String testDescription, File file) {
-		super(testDescription, file);
+	public DeeTemplatedSourceBasedTest(String testUIDescription, File file) {
+		super(testUIDescription, file);
 	}
 	
-	protected static class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
-		@Override
-		protected void reportError(int offset) throws TemplatedSourceException {
-			assertFail();
-		}
-		
-		@Override
-		protected void putExpansion(ProcessingState sourceCase, String expansionId, TspExpansionElement expansion) {
-			sourceCase.putExpansion(expansionId, expansion);
-			
-			if(DToolTests.TESTS_LITE_MODE) {
-				String name = expansionId;
-				if(name != null && name.endsWith("__LITE")) { 
-					name = name.replace("__LITE", "");
-					TspExpansionElement value = expansion;
-					TspExpansionElement newElem = new TspExpansionElement(name, 
-						value.pairedExpansionId, value.arguments, value.anonymousExpansion, value.dontOuputSource);
-					assertTrue(sourceCase.getExpansion(name) != null);
-					sourceCase.putExpansion(name, newElem);
-				}
-			}
-		}
-		
-	}
-	
-	public AnnotatedSource[] getSourceBasedTests(File file, Map<String, TspExpansionElement> commonDefinitions) {
+	public AnnotatedSource[] getSourceBasedTests(Map<String, TspExpansionElement> commonDefinitions) {
 		TestsTemplateSourceProcessor tsp = new TestsTemplateSourceProcessor();
 		if(commonDefinitions != null) {
 			tsp.addGlobalExpansions(commonDefinitions);
@@ -67,6 +42,35 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFilesBasedTest {
 	
 	public static AnnotatedSource[] getSourceBasedTestCases(String fileSource) {
 		return new TestsTemplateSourceProcessor().processSource_unchecked("#", fileSource);
+	}
+	
+	protected static class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
+		@Override
+		protected void reportError(int offset) throws TemplatedSourceException {
+			assertFail();
+		}
+		
+		@Override
+		protected void putExpansion(ProcessingState sourceCase, String expansionId, TspExpansionElement expansion) {
+			addExpansion(sourceCase, expansionId, expansion);
+			
+			if(DToolTests.TESTS_LITE_MODE) {
+				String name = expansionId;
+				if(name != null && name.endsWith("__LITE")) { 
+					name = name.replace("__LITE", "");
+					TspExpansionElement value = expansion;
+					TspExpansionElement newElem = new TspExpansionElement(name, 
+						value.pairedExpansionId, value.arguments, value.anonymousExpansion, value.dontOuputSource);
+					assertTrue(sourceCase.getExpansion(name) != null);
+					addExpansion(sourceCase, name, newElem);
+				}
+			}
+			
+		}
+		
+		public void addExpansion(ProcessingState sourceCase, String expansionId, TspExpansionElement expansion) {
+			sourceCase.putExpansion(expansionId, expansion);
+		}
 	}
 	
 }

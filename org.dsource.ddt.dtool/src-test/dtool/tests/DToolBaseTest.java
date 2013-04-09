@@ -24,10 +24,8 @@ import java.util.Collection;
 import java.util.List;
 
 import melnorme.utilbox.core.Function;
-import melnorme.utilbox.core.Predicate;
 import melnorme.utilbox.core.VoidFunction;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.DeeNamingRules_Test;
@@ -61,6 +59,9 @@ public class DToolBaseTest extends CommonTestUtils {
 	
 	/* -------------  Module list stuff   ------------ */
 	
+	protected static ArrayList<File> getDeeModuleList(File folder) throws IOException {
+		return getDeeModuleList(folder, true);
+	}
 	protected static ArrayList<File> getDeeModuleList(File folder, boolean recurseDirs) throws IOException {
 		return getDeeModuleList(folder, recurseDirs, false);
 	}
@@ -99,15 +100,10 @@ public class DToolBaseTest extends CommonTestUtils {
 	
 	public static Collection<Object[]> getTestFilesFromFolderAsParameterList(File folder, boolean includeDescription) 
 		throws IOException {
-		return toParameterList(getDeeModuleList(folder, true), null, includeDescription);
+		return toParameterList(includeDescription, getDeeModuleList(folder));
 	}
 	
-	public static Collection<Object[]> toParameterList(List<File> fileList, Predicate<File> filter, 
-		final boolean includeDescription) {
-		if(filter != null) {
-			fileList = CollectionUtil.filter(fileList, filter);
-		}
-		
+	public static Collection<Object[]> toParameterList(final boolean includeDescription, List<File> fileList) {
 		Function<File, Object[]> arrayWrap = new Function<File, Object[]>() {
 			@Override
 			public Object[] evaluate(File file) {

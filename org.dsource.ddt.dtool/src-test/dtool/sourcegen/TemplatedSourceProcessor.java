@@ -109,15 +109,16 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 	
 	// --------------------- Generation phase ---------------------
 	
-	protected class ProcessingState {
-		protected final boolean isHeaderCase;
-		protected final String originalSource;
+	public class ProcessingState {
+		
+		public final boolean isHeaderCase;
+		public final String originalSource;
 		protected final StringBuilder originalSourceSB = new StringBuilder();
 		protected StringBuilder sourceSB = originalSourceSB;
-		protected final ArrayList<MetadataEntry> metadata = new ArrayList<MetadataEntry>();
-		protected final Map<String, TspExpansionElement> expansionDefinitions = 
+		public final ArrayList<MetadataEntry> metadata = new ArrayList<MetadataEntry>();
+		public final Map<String, TspExpansionElement> expansionDefinitions = 
 			new HashMap<String, TspExpansionElement>();
-		protected final Map<String, Integer> activeExpansions = new HashMap<String, Integer>();
+		public final Map<String, Integer> activeExpansions = new HashMap<String, Integer>();
 		
 		public ProcessingState(boolean isHeaderCase, String originalSource) {
 			this.isHeaderCase = isHeaderCase;

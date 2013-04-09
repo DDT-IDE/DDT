@@ -12,11 +12,6 @@ DeclarationAttrib : comments hack
 Module comments
 
 
-TemplateThisParameter
-
-http://www.digitalmars.com/d/2.0/template.html#TemplateThisParameter
-
-
 
 Ref return:
 

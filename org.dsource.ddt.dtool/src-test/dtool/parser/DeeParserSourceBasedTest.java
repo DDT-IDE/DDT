@@ -19,6 +19,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.utilbox.misc.CollectionUtil.filter;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -33,6 +35,7 @@ import melnorme.utilbox.core.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -55,36 +58,55 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 	
 	protected static Map<String, TspExpansionElement> commonDefinitions = new HashMap<String, TspExpansionElement>();
 	
-	@Parameters(name="{index}: {0}")
-	public static Collection<Object[]> filesToParse() throws IOException {
-		ArrayList<File> commonHeaderFileList = getDeeModuleList(getTestResource(TESTFILESDIR+"/_common"), true);
+	@BeforeClass
+	public static void initCommonDefinitions() throws IOException {
+		List<File> commonDefsFileList = getDeeModuleList(getTestResource(TESTFILESDIR));
+		commonDefsFileList = filter(commonDefsFileList, new ParserTestFilesFilter(){{filterHeaders = false;}});
 		
-		for (File headerFile : commonHeaderFileList) {
-			TemplatedSourceProcessor tsp = new TestsTemplateSourceProcessor();
+		testsLogger.println(">>>>>>============ " + DeeParserSourceBasedTest.class.getSimpleName() 
+			+ " COMMON DEFINITIONS FILES: ============" );
+		for (File headerFile : commonDefsFileList) {
+			testsLogger.println(headerFile);
+			TemplatedSourceProcessor tsp = new TestsTemplateSourceProcessor() {
+				@Override
+				protected void addFullyProcessedSourceCase(ProcessingState caseState) {
+					assertTrue(caseState.isHeaderCase);
+				}
+			};
 			tsp.processSource_unchecked("#", readStringFromFileUnchecked(headerFile));
+			assertTrue(tsp.getGenCases().size() == 0);
 			NewUtils.addNew(commonDefinitions, tsp.getGlobalExpansions());
 		}
-		
-		return toParameterList(getDeeModuleList(getTestResource(TESTFILESDIR), true), new Predicate<File>() {
-			@Override
-			public boolean evaluate(File file) {
-				if(file.getName().endsWith("_TODO") 
-					|| file.getParentFile().getName().equals("_common")
-					|| (file.getName().endsWith(".d") || file.getName().endsWith(".tsp") ) == false)
-					return true;
-				return false;
-			}
-		}, true);
+		testsLogger.println("<<<<<<" );
 	}
 	
-	public DeeParserSourceBasedTest(String testDescription, File file) {
-		super(testDescription, file);
+	@Parameters(name="{index}: {0}")
+	public static Collection<Object[]> filesToParse() throws IOException {
+		return toParameterList(true,
+			filter(getDeeModuleList(getTestResource(TESTFILESDIR)), new ParserTestFilesFilter()));
+	}
+	
+	protected static class ParserTestFilesFilter implements Predicate<File> {
+		boolean filterHeaders = true;
+		@Override
+		public boolean evaluate(File file) {
+			if(file.getName().endsWith("_TODO")) return true;
+			if(file.getParentFile().getName().equals("0_common")) return filterHeaders;
+			if(file.getName().contains(".export.")) return filterHeaders;
+			if(file.getName().endsWith(".tsp")) return !filterHeaders;
+			throw assertFail();
+		}
+	}
+	
+	
+	public DeeParserSourceBasedTest(String testUIDescription, File file) {
+		super(testUIDescription, file);
 	}
 	
 	@Test
 	public void runSourceBasedTests() throws Exception { runSourceBasedTests$(); }
 	public void runSourceBasedTests$() throws Exception {
-		AnnotatedSource[] sourceBasedTests = getSourceBasedTests(file, commonDefinitions);
+		AnnotatedSource[] sourceBasedTests = getSourceBasedTests(commonDefinitions);
 		HashSet<String> printSources = new HashSet<String>();
 		Pattern trimStartNewlines = Pattern.compile("(^(\\n|\\r\\n)*)|((\\n|\\r\\n)*$)");
 		
@@ -105,6 +127,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 				testsLogger.println(trimStartNewlines.matcher(testCase.source).replaceAll(""));
 			}
 			printSources.add(testCase.originalTemplatedSource);
+			
 			runSourceBasedTest(testCase);
 			originalTemplateChildCount++;
 		}

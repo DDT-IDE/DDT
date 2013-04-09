@@ -9,7 +9,7 @@ public class DeeFilesBasedTest extends DToolBaseTest {
 	
 	protected final File file;
 	
-	public DeeFilesBasedTest(@SuppressWarnings("unused") String testDescription, File file) {
+	public DeeFilesBasedTest(@SuppressWarnings("unused") String testUIDescription, File file) {
 		this.file = file;
 	}
 	
