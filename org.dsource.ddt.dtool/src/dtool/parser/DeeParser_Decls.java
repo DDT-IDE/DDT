@@ -182,7 +182,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		switch (laGrouped) {
 		case KW_IMPORT: return parseImportDeclaration();
 		
-		case KW_MIXIN: return nodeResult(parseDeclarationMixinString());
 		
 		case KW_ALIGN: return nodeResult(parseDeclarationAlign());
 		case KW_PRAGMA: return nodeResult(parseDeclarationPragma());
@@ -214,9 +213,16 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		case KW_ENUM:
 			return nodeResult(parseDeclarationBasicAttrib());
 			
-		case KW_TEMPLATE:
+		case KW_TEMPLATE: 
 			return parseTemplateDefinition();
-			
+		case KW_MIXIN: 
+			if(lookAhead(1) == DeeTokens.KW_TEMPLATE) {
+				return parseTemplateDefinition();
+			}
+			if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
+				return nodeResult(parseDeclarationMixinString());
+			}
+			return nodeResult(parseDeclarationMixinString()); // TODO
 		default:
 			break;
 		}
@@ -843,9 +849,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public NodeResult<DefinitionTemplate> parseTemplateDefinition() {
-		if(!tryConsume(DeeTokens.KW_TEMPLATE))
+		int nodeStart = lookAheadElement().getStartPos();
+		boolean isMixin = false;
+		if(tryConsume(DeeTokens.KW_MIXIN, DeeTokens.KW_TEMPLATE)) {
+			isMixin = true;
+		} else if(!tryConsume(DeeTokens.KW_TEMPLATE)) {
 			return null;
-		int nodeStart = lastLexElement().getStartPos();
+		}
 		
 		ArrayView<TemplateParameter> tplParams = null;
 		Expression tplConstraint = null;
@@ -871,7 +881,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		
 		return nodeResult(ruleBroken, connect(srToCursor(nodeStart),
-			new DefinitionTemplate(defUnitNoComments(defId), tplParams, tplConstraint, declBody)));
+			new DefinitionTemplate(isMixin, defUnitNoComments(defId), tplParams, tplConstraint, declBody)));
 	}
 	
 	public RuleResult<NodeList2> parseDeclarationBlock(boolean required) {

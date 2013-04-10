@@ -488,6 +488,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		
 		return endAdapt(
 			new DefinitionTemplate(
+				false,
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				tplParams,
 				null,

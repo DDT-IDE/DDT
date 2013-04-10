@@ -25,14 +25,17 @@ import dtool.util.ArrayView;
  */
 public class DefinitionTemplate extends Definition implements IScopeNode, IStatement {
 	
+	public final boolean isMixin;
 	public final ArrayView<TemplateParameter> tplParams;
 	public final Expression tplConstraint;
 	public final NodeList2 decls;
+	
 	public final boolean wrapper;
 	
-	public DefinitionTemplate(DefUnitTuple dudt, ArrayView<TemplateParameter> tplParams, Expression tplConstraint, 
-		NodeList2 decls) {
+	public DefinitionTemplate(boolean isMixin, DefUnitTuple dudt, ArrayView<TemplateParameter> tplParams, 
+		Expression tplConstraint, NodeList2 decls) {
 		super(dudt);
+		this.isMixin = isMixin;
 		this.tplParams = parentize(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
 		this.decls = parentize(decls);
@@ -64,6 +67,7 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(isMixin, "mixin ");
 		cp.append("template ");
 		cp.appendNode(defname);
 		cp.appendNodeList("(", tplParams, ",", ") ");
