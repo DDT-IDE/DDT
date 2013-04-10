@@ -39,6 +39,7 @@ public enum ASTNodeTypes {
 	REF_TYPEOF,
 	REF_MODIFIER,
 	
+	REF_AUTO_RETURN,
 	
 	/* ---------------------------------- */
 	

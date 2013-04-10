@@ -165,7 +165,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	}
 	
 	protected RefPrimitive parseRefPrimitive(DeeTokens primitiveType) {
-		Token token = consumeLookAhead(primitiveType);
+		Token token = consumeLookAhead(primitiveType).token;
 		return connect(new RefPrimitive(token, sr(token)));
 	}
 	

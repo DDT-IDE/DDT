@@ -49,6 +49,7 @@ import dtool.ast.definitions.CStyleVarArgsParameter;
 import dtool.ast.definitions.DeclarationMixin;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionFunction.AutoReturnReference;
 import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionVarFragment;
@@ -212,6 +213,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 //				}
 			break;
 		case KW_AUTO:
+			if(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.OPEN_PARENS) {
+				return parseAutoReturnFunction();
+			}
 		case KW_ENUM:
 			return nodeResult(parseDeclarationBasicAttrib());
 			
@@ -276,6 +280,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			return connectResult(false, new InvalidDeclaration(ref, consumedSemiColon, srToCursor(ref.getStartPos())));
 		}
+	}
+	
+	protected NodeResult<? extends ASTNeoNode> parseAutoReturnFunction() {
+		LexElement autoToken = consumeLookAhead(DeeTokens.KW_AUTO);
+		AutoReturnReference autoReturn = connect(init(sr(autoToken.token), new AutoReturnReference()));
+		LexElement id = consumeLookAhead(DeeTokens.IDENTIFIER);
+		return parseDefinitionFunction_Reference_Identifier(autoReturn, id);
 	}
 	
 	/* ----------------------------------------- */
@@ -395,8 +406,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 		}
 		
-		return connectResult(parseBroken, init(srToCursor(retType), new DefinitionFunction(defUnitNoComments(defId), 
-			tplParams, retType, fnParams, fnAttributes, tplConstraint, fnBody)));
+		return connectResult(parseBroken, srToCursor(retType.getStartPos(), new DefinitionFunction(
+			defUnitNoComments(defId), tplParams, retType, fnParams, fnAttributes, tplConstraint, fnBody)));
 	}
 	
 	protected static enum TplOrFnMode { TPL, FN, AMBIG }

@@ -7,6 +7,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -42,7 +43,9 @@ public class ASTNodeReparseCheck {
 	protected String nodeSnippedSource;
 	protected DeeParser snippedParser;
 	
+	@SuppressWarnings("deprecation")
 	public Void doCheck(ASTNeoNode node) {
+		assertTrue(node.getNodeType() != ASTNodeTypes.OTHER);
 		
 		if(DToolTests.TESTS_LITE_MODE) {
 			return VOID;
@@ -119,6 +122,8 @@ public class ASTNodeReparseCheck {
 			reparseCheck(snippedParser.parseTypeOrExpression(true), node);
 			return VOID;
 		}
+		case REF_AUTO_RETURN:
+			return simpleReparseCheck(node, "auto");
 		
 		/* ---------------------------------- */
 		

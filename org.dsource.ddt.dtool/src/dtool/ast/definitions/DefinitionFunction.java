@@ -87,6 +87,37 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		cp.appendNode(fnBody);
 	}
 	
+	public static final class AutoReturnReference extends Reference {
+		
+		public AutoReturnReference() {}
+		
+		@Override
+		public ASTNodeTypes getNodeType() {
+			return ASTNodeTypes.REF_AUTO_RETURN;
+		}
+		
+		@Override
+		public void accept0(IASTVisitor visitor) {
+			visitor.visit(this);
+			visitor.endVisit(this);
+		}
+		
+		@Override
+		public void toStringAsCode(ASTCodePrinter cp) {
+			cp.append("auto");
+		}
+		
+		@Override
+		public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+			return null;
+		}
+		
+		@Override
+		public boolean canMatch(DefUnitDescriptor defunit) {
+			return false;
+		}
+	}
+	
 	public static enum FunctionAttributes implements ISourceRepresentation {
 		CONST(DeeTokens.KW_CONST.getSourceValue()), 
 		IMMUTABLE(DeeTokens.KW_IMMUTABLE.getSourceValue()), 
@@ -203,30 +234,6 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 			+ toStringParametersForSignature(params) 
 			+ "  " + retType.toStringAsElement()
 			+ " - " + NodeUtil.getOuterDefUnit(this).toStringAsElement();
-	}
-	
-	// TODO
-	public static final class AutoFunctionReturnReference extends Reference {
-		@Override
-		public void accept0(IASTVisitor visitor) {
-			visitor.visit(this);
-			visitor.endVisit(this);
-		}
-		
-		@Override
-		public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
-			return null;
-		}
-		
-		@Override
-		public String toStringAsElement() {
-			return "auto";
-		}
-		
-		@Override
-		public boolean canMatch(DefUnitDescriptor defunit) {
-			return false;
-		}
 	}
 	
 }

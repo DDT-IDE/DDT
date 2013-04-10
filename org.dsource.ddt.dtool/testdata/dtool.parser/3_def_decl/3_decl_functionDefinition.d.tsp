@@ -31,10 +31,14 @@ DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS_SAMPLE1 #@PARAMS_SAMPLE F
 DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS_SAMPLE1 #@PARAMS_SAMPLE #@EXP_ANY__LITE FunctionBody(*) )
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃
-▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ test return type
+Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ return type reference
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@TYPE_REFS__NO_BROKEN func(#@PARAMS_SAMPLE) #@SAMPLE_BLOCK_ST
 #STRUCTURE_EXPECTED:
 DefFunction(#@TYPE_REFS__NO_BROKEN DefSymbol #@PARAMS_SAMPLE #@SAMPLE_BLOCK_ST )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ auto ref
+#PARSE(DECLARATION)  auto func(#@PARAMS_SAMPLE) #@SAMPLE_BLOCK_ST 
+#STRUCTURE_EXPECTED: DefFunction(AutoReturnReference DefSymbol #@PARAMS_SAMPLE #@SAMPLE_BLOCK_ST )
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ 0 args
 

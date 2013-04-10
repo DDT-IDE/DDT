@@ -33,7 +33,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionFunction;
-import dtool.ast.definitions.DefinitionFunction.AutoFunctionReturnReference;
+import dtool.ast.definitions.DefinitionFunction.AutoReturnReference;
 import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.FunctionParameter;
@@ -223,7 +223,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		Assert.isTrue(elem.parameters == null);
 		
 		Reference rettype = (elemTypeFunc.next == null) ? 
-				new AutoFunctionReturnReference() : 
+				new AutoReturnReference() : 
 				ReferenceConverter.convertType(elemTypeFunc.next, convContext);
 		
 		DefinitionFunction definitionFunction = createDefFunction(

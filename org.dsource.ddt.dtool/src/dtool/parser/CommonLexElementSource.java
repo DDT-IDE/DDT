@@ -42,9 +42,9 @@ public abstract class CommonLexElementSource {
 		return consumeInput().token;
 	}
 	
-	protected final Token consumeLookAhead(DeeTokens tokenType) {
+	protected final LexElement consumeLookAhead(DeeTokens tokenType) {
 		assertTrue(lookAhead() == tokenType);
-		return consumeLookAhead();
+		return consumeInput();
 	}
 	
 	public abstract LexElement consumeIgnoreTokens(DeeTokens expectedToken);
