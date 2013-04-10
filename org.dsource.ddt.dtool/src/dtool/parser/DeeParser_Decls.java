@@ -214,7 +214,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			break;
 		case KW_AUTO:
 			if(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.OPEN_PARENS) {
-				return parseAutoReturnFunction();
+				return matchAutoReturnFunction();
 			}
 		case KW_ENUM:
 			return nodeResult(parseDeclarationBasicAttrib());
@@ -282,7 +282,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 	}
 	
-	protected NodeResult<? extends ASTNeoNode> parseAutoReturnFunction() {
+	protected NodeResult<? extends ASTNeoNode> matchAutoReturnFunction() {
 		LexElement autoToken = consumeLookAhead(DeeTokens.KW_AUTO);
 		AutoReturnReference autoReturn = connect(init(sr(autoToken.token), new AutoReturnReference()));
 		LexElement id = consumeLookAhead(DeeTokens.IDENTIFIER);
@@ -464,7 +464,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			
 			if(mode != TplOrFnMode.FN && lookAhead() == DeeTokens.KW_ALIAS) {
 				setMode(TplOrFnMode.TPL);
-				return parseTemplateAliasParameter();
+				return matchTemplateAliasParameter();
 			}
 			
 			if(mode != TplOrFnMode.FN && tryConsume(DeeTokens.KW_THIS)) {
@@ -665,7 +665,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 	}
 	
-	protected ASTNeoNode parseTemplateAliasParameter() {
+	protected ASTNeoNode matchTemplateAliasParameter() {
 		int nodeStart = lookAheadElement().getStartPos();
 		consumeLookAhead(DeeTokens.KW_ALIAS);
 		
@@ -912,8 +912,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	/* -------------------- Plain declarations -------------------- */
 	
 	public NodeResult<DeclarationImport> parseImportDeclaration() {
-		boolean isStatic = false;
 		int nodeStart = lookAheadElement().getStartPos();
+		boolean isStatic = false;
 		
 		if(tryConsume(DeeTokens.KW_IMPORT)) {
 		} else if(tryConsume(DeeTokens.KW_STATIC, DeeTokens.KW_IMPORT)) {

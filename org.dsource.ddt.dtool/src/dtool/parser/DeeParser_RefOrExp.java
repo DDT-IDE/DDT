@@ -124,7 +124,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		NodeResult<? extends Reference> refParseResult;
 		
 		if(lookAheadGrouped() == DeeTokens.PRIMITIVE_KW) {
-			return parseReference_ReferenceStart(parseRefPrimitive(lookAhead()), parsingExp);
+			return parseReference_ReferenceStart(matchRefPrimitive(lookAhead()), parsingExp);
 		}
 		switch (lookAhead()) {
 		case DOT: refParseResult = parseRefModuleQualified_do(); break;
@@ -132,10 +132,10 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		
 		case KW_TYPEOF: refParseResult = parseRefTypeof_do(); break;
 		
-		case KW_CONST: refParseResult = parseRefTypeModifier_do(TypeModifierKinds.CONST); break;
-		case KW_IMMUTABLE: refParseResult = parseRefTypeModifier_do(TypeModifierKinds.IMMUTABLE); break;
-		case KW_SHARED: refParseResult = parseRefTypeModifier_do(TypeModifierKinds.SHARED); break;
-		case KW_INOUT: refParseResult = parseRefTypeModifier_do(TypeModifierKinds.INOUT); break;
+		case KW_CONST: refParseResult = matchRefTypeModifier_do(TypeModifierKinds.CONST); break;
+		case KW_IMMUTABLE: refParseResult = matchRefTypeModifier_do(TypeModifierKinds.IMMUTABLE); break;
+		case KW_SHARED: refParseResult = matchRefTypeModifier_do(TypeModifierKinds.SHARED); break;
+		case KW_INOUT: refParseResult = matchRefTypeModifier_do(TypeModifierKinds.INOUT); break;
 		default:
 			return nullResult();
 		}
@@ -164,7 +164,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return new RefIdentifier(idTokenToString(id), srToCursor(nodeStart));
 	}
 	
-	protected RefPrimitive parseRefPrimitive(DeeTokens primitiveType) {
+	protected RefPrimitive matchRefPrimitive(DeeTokens primitiveType) {
 		Token token = consumeLookAhead(primitiveType).token;
 		return connect(new RefPrimitive(token, sr(token)));
 	}
@@ -201,7 +201,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return connectResult(parseBroken, new RefTypeof(exp, srToCursor(nodeStart)));
 	}
 	
-	protected NodeResult<RefTypeModifier> parseRefTypeModifier_do(TypeModifierKinds modKind) {
+	protected NodeResult<RefTypeModifier> matchRefTypeModifier_do(TypeModifierKinds modKind) {
 		assertTrue(lookAhead().sourceValue.equals(modKind.sourceValue));
 		consumeInput();
 		int nodeStart = lastLexElement().getStartPos();
@@ -255,7 +255,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 				}
 				
 				if(lookAheadGrouped() == DeeTokens.PRIMITIVE_KW) {
-					singleArg = parseRefPrimitive(lookAhead());	
+					singleArg = matchRefPrimitive(lookAhead());	
 				} else if(lookAheadGrouped() == DeeTokens.IDENTIFIER) { 
 					singleArg = parseRefIdentifier();
 				} else {
@@ -689,14 +689,14 @@ protected class ParseRule_TypeOrExp {
 			if(mode == TypeOrExpStatus.TYPE)
 				return resultConvertTypeThenContinueExpParse(exp);
 			exp = convertTypeOrExpToExpression(exp);
-			exp = expConnect(parsePostfixOpExpression(exp));
+			exp = expConnect(matchPostfixOpExpression(exp));
 			return parsePostfixExpression(exp);
 		}
 		case OPEN_PARENS: {
 			if(mode == TypeOrExpStatus.TYPE)
 				return resultConvertTypeThenContinueExpParse(exp);
 			exp = convertTypeOrExpToExpression(exp);
-			exp = expConnect(parseCallExpression(exp));
+			exp = expConnect(matchCallExpression(exp));
 			return parsePostfixExpression(exp);
 		}
 		case POW: {
@@ -912,7 +912,6 @@ protected class ParseRule_TypeOrExp {
 		}
 		
 		protected Expression doParse() {
-			
 			if(tryConsume(DeeTokens.OPEN_BRACKET) == false)
 				return null;
 			int nodeStart = lastLexElement().getStartPos();
@@ -1387,12 +1386,12 @@ protected class ParseRule_TypeOrExp {
 		return connect(new ExpLiteralString(tokenStrings, srToCursor(tokenStrings[0])));
 	}
 	
-	protected ExpPostfixOperator parsePostfixOpExpression(Expression exp) {
+	protected ExpPostfixOperator matchPostfixOpExpression(Expression exp) {
 		Token op = consumeLookAhead();
 		return new ExpPostfixOperator(exp, PostfixOpType.tokenToPrefixOpType(op.type), srToCursor(exp));
 	}
 	
-	protected ExpCall parseCallExpression(Expression callee) {
+	protected ExpCall matchCallExpression(Expression callee) {
 		consumeLookAhead(DeeTokens.OPEN_PARENS);
 		
 		ArrayList<Expression> args = parseExpArgumentList(DeeTokens.CLOSE_PARENS).result;
