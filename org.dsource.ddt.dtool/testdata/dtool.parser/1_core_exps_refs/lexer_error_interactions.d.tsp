@@ -28,11 +28,11 @@ xx"#ERROR(MT_SDxID)●
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 int foo #error(EXP_SEMICOLON) #@LEXER_ERRORS#error(<SE_decl)#comment(EOF):
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DefVariable(? ?) InvalidSyntaxElement 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@LEXER_ERRORS#error(<SE_decl)#comment(EOF):
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 InvalidSyntaxElement

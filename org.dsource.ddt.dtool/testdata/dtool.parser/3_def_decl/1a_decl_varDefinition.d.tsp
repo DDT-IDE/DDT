@@ -4,7 +4,7 @@ Foo foo;
 int xx;
 Bar.foo foo = 2;
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DefVariable(RefIdentifier DefSymbol)
 DefVariable(RefPrimitive DefSymbol)
 DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol InitializerExp(?))
@@ -16,7 +16,7 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol InitializerExp(?
 Bar.Foo[]     fooD    , foo2 = 2 , foo3;
 
 #comment(NO_STDOUT)
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol)
 DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol InitializerExp(?))
 DefVariable(* DefSymbol InitializerExp(?) DefVarFragment(DefSymbol) DefVarFragment(DefSymbol InitializerExp(?)))
@@ -27,13 +27,13 @@ DefVariable(* DefSymbol                   DefVarFragment(DefSymbol InitializerEx
 #@TYPE_REFS__NO_BROKEN fooC = #@^EXP_ASSIGN, foo2    , foo3 = #@EXP_ASSIGN;
 
 #comment(NO_STDOUT)
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DefVariable(* DefSymbol InitializerExp(#@EXP_ASSIGN))
 DefVariable(* DefSymbol InitializerExp(*) DefVarFragment(DefSymbol) DefVarFragment(? InitializerExp(#@EXP_ASSIGN)))
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@PRX1!《#NO_PRX1(flag)●xxx,》
-#@SEPARATOR!《 #?AST_STRUCTURE_EXPECTED!【align int ruleBREAK;● DeclarationAlign(*)】 》
+#@SEPARATOR!《 #?STRUCTURE_EXPECTED!【align int ruleBREAK;● DeclarationAlign(*)】 》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
 
@@ -45,7 +45,7 @@ DefVariable(* DefSymbol InitializerExp(*) DefVarFragment(DefSymbol) DefVarFragme
 #@TYPE_REFS__NO_BROKEN #@PRX1 fooD = #@NO_INIT ;
 
 #comment(NO_STDOUT)
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 #?NO_PRX1{InvalidDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} #@SEPARATOR
 #?NO_PRX1{InvalidDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} 
 
@@ -59,7 +59,7 @@ DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? #@NO_IN
 #@TYPE_REFS__NO_BROKEN #@PRX1 fooF = 112 = "666";
 
 #comment(NO_STDOUT)
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? InitializerExp(Integer))】) 
 #@SEPARATOR
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(Integer String))●
@@ -71,7 +71,7 @@ DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(Integer String))●
 #@TYPE_REFS__NO_BROKEN #@PRX1 fooF = #EXP__NO_BREAKING_EXPS(flag) #@EXP_CONDITIONAL = "666";
 
 #comment(NO_STDOUT)
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 
 DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(#@EXP_ASSIGN)●DefVarFragment(? InitializerExp(#@EXP_ASSIGN))】) 
 #@SEPARATOR
@@ -84,5 +84,5 @@ C style decls
 int foo*;
 int[int] foo* = 2, foo2    , foo3 = 3;
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 

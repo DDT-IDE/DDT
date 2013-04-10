@@ -188,7 +188,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 					calcExpectedSource = calcExpectedSource.substring(0, pos + modifyDelta);
 					ignoreFurtherErrorMDs = true;
 				}
-			} else if(mde.name.equals("AST_STRUCTURE_EXPECTED")) {
+			} else if(mde.name.equals("STRUCTURE_EXPECTED")) {
 				assertTrue(expectedStructure == null);
 				expectedStructure = parseExpectedStructure(mde.sourceValue);
 			} else if(mde.name.equals("error") || mde.name.equals("ERROR")){
@@ -220,9 +220,9 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 					modifyDelta += rpl.length();
 				}
 				
-			} else if(mde.name.equals("parser") && mde.value.equals("AllowAnyErrors")){
+			} else if(mde.name.equals("parser") && areEqual(mde.value, "AllowAnyErrors")){
 				allowAnyErrors = true;
-			} else if(mde.value.equals("test")){
+			} else if(areEqual(mde.value, "test")){
 				additionalMetadata.put(mde.name, mde);
 			} else {
 				if(areEqual(mde.value, "flag")) {

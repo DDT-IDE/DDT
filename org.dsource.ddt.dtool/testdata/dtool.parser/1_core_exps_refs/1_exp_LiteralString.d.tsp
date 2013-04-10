@@ -1,7 +1,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
 "abc"
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 ExpLiteralString
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
@@ -53,5 +53,5 @@ EOS" q{ string 6 } ●
 #@STRINGS_UNTERMINATED●
 ¤》#comment(EOF):
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 ExpLiteralString

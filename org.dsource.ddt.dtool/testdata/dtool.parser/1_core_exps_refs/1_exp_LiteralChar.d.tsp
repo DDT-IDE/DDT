@@ -1,7 +1,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
 '"'
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 ExpLiteralChar
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
@@ -24,5 +24,5 @@ ExpLiteralChar
 ►'\#error(MTC_CHxF)●
 ¤》#comment(EOF):
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 ExpLiteralChar

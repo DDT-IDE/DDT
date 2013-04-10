@@ -1,14 +1,14 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import foo;
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationImport(ImportContent(RefModule))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import pack.foo;
 import pack.bar.foo;
 static import pack.bar.foo;
 public static import foo, pack.foo, pack.bar.foo;
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationImport(ImportContent(RefModule))
 DeclarationImport(ImportContent(RefModule))
 DeclarationImport(ImportContent(RefModule))
@@ -17,7 +17,7 @@ DeclarationProtection( DeclarationImport(ImportContent(RefModule) ImportContent(
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import#error(EXP_ID)#error(EXP_SEMICOLON)#comment(EOF):
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationImport(ImportContent(RefModule))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import #error(EXP_ID)#error(EXP_SEMICOLON) import foo;
@@ -25,56 +25,56 @@ import #error(EXP_ID)#error(EXP_SEMICOLON) import foo;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import bar1 = foo, bar2 = pack.foo;
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationImport(ImportAlias(DefSymbol RefModule) ImportAlias(DefSymbol RefModule))
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Import Content and Import Alias
 
 #@ID_OR_NO《
-  ►#?AST_STRUCTURE_EXPECTED!【foo●ImportContent(RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(EXP_ID)●ImportContent(RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【pack.foo●ImportContent(RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【pack.#error(EXP_ID)●ImportContent(RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【pack.foo.bar●ImportContent(RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【pack.foo.bar.#error(EXP_ID)●ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【foo●ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_ID)●ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【pack.foo●ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【pack.#error(EXP_ID)●ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【pack.foo.bar●ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【pack.foo.bar.#error(EXP_ID)●ImportContent(RefModule)】●
 
-  ►#?AST_STRUCTURE_EXPECTED!【aldef = foo●ImportAlias(DefSymbol RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(EXP_ID) = foo●ImportAlias(DefSymbol RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【aldef = #error(EXP_ID)●ImportAlias(DefSymbol RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【aldef = pack.foo●ImportAlias(DefSymbol RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【aldef = pack.#error(EXP_ID)●ImportAlias(DefSymbol RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【aldef = foo●ImportAlias(DefSymbol RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_ID) = foo●ImportAlias(DefSymbol RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【aldef = #error(EXP_ID)●ImportAlias(DefSymbol RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【aldef = pack.foo●ImportAlias(DefSymbol RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【aldef = pack.#error(EXP_ID)●ImportAlias(DefSymbol RefModule)】●
 ¤》
 #@ID_OR_NO__LITE《
-  ►#?AST_STRUCTURE_EXPECTED!【foo●ImportContent(RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【aldef = foo●ImportAlias(DefSymbol RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【foo●ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【aldef = foo●ImportAlias(DefSymbol RefModule)】●
 ¤》
 
 #@EXTRA_ARG_OR_NO《
-  ►#?AST_STRUCTURE_EXPECTED!【/*NoStartArg*/ ● 】●
-  ►#?AST_STRUCTURE_EXPECTED!【dai ,●ImportContent(RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(EXP_ID) ,●ImportContent(RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【pack.dai ,●ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【/*NoStartArg*/ ● 】●
+  ►#?STRUCTURE_EXPECTED!【dai ,●ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_ID) ,●ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【pack.dai ,●ImportContent(RefModule)】●
 
-  ►#?AST_STRUCTURE_EXPECTED!【aldef = pack.dai ,●ImportAlias(DefSymbol RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【aldef = pack.dai ,●ImportAlias(DefSymbol RefModule)】●
 ¤》
 
 #@IMPORT_END《
-  ►#?AST_STRUCTURE_EXPECTED!【;● 】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON)● 】●
-  ►#?AST_STRUCTURE_EXPECTED!【, #@^ID_OR_NO(END_ID) ;● #@^ID_OR_NO(END_ID)】●
+  ►#?STRUCTURE_EXPECTED!【;● 】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON)● 】●
+  ►#?STRUCTURE_EXPECTED!【, #@^ID_OR_NO(END_ID) ;● #@^ID_OR_NO(END_ID)】●
 ¤》
 
 #@END_IGNORE!《#error(EXP_SEMICOLON) #parser(IgnoreRest)》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import #@EXTRA_ARG_OR_NO #@ID_OR_NO #@IMPORT_END  
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationImport(#@EXTRA_ARG_OR_NO #@ID_OR_NO #@IMPORT_END)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DeclarationImport)  import #@EXTRA_ARG_OR_NO #@END_REP_TEST《
-  ►#?AST_STRUCTURE_EXPECTED!【foo #@END_IGNORE dummy;● ImportContent(RefModule)】●
-  ►#?AST_STRUCTURE_EXPECTED!【ali = foo #@END_IGNORE = dummy;●ImportAlias(DefSymbol RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【foo #@END_IGNORE dummy;● ImportContent(RefModule)】●
+  ►#?STRUCTURE_EXPECTED!【ali = foo #@END_IGNORE = dummy;●ImportAlias(DefSymbol RefModule)】●
 ¤》
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationImport(#@EXTRA_ARG_OR_NO #@END_REP_TEST )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
@@ -83,7 +83,7 @@ DeclarationImport(#@EXTRA_ARG_OR_NO #@END_REP_TEST )
 
 static import ali = foo : elem1, ren = elem2, elem3;
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationImport(ImportSelective(ImportAlias(DefSymbol RefModule) 
   RefImportSelection ImportSelectiveAlias(DefSymbol RefImportSelection) RefImportSelection
 ))
@@ -93,41 +93,41 @@ DeclarationImport(ImportSelective(ImportAlias(DefSymbol RefModule)
 
 
 #@SELID_OR_NO《
-  ►#?AST_STRUCTURE_EXPECTED!【sel●RefImportSelection】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(EXP_ID)●RefImportSelection】●
+  ►#?STRUCTURE_EXPECTED!【sel●RefImportSelection】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_ID)●RefImportSelection】●
 
-  ►#?AST_STRUCTURE_EXPECTED!【aldef = sel●ImportSelectiveAlias(DefSymbol RefImportSelection)】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(EXP_ID) = sel●ImportSelectiveAlias(DefSymbol RefImportSelection)】●
-  ►#?AST_STRUCTURE_EXPECTED!【aldef = #error(EXP_ID)●ImportSelectiveAlias(DefSymbol RefImportSelection)】●
+  ►#?STRUCTURE_EXPECTED!【aldef = sel●ImportSelectiveAlias(DefSymbol RefImportSelection)】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_ID) = sel●ImportSelectiveAlias(DefSymbol RefImportSelection)】●
+  ►#?STRUCTURE_EXPECTED!【aldef = #error(EXP_ID)●ImportSelectiveAlias(DefSymbol RefImportSelection)】●
 ¤》
 
 #@SELID_EXTRA_OR_NO《
-  ►#?AST_STRUCTURE_EXPECTED!【/*NoExtra*/ ● 】●
-  ►#?AST_STRUCTURE_EXPECTED!【dai ,● RefImportSelection】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(EXP_ID) ,●RefImportSelection】●
+  ►#?STRUCTURE_EXPECTED!【/*NoExtra*/ ● 】●
+  ►#?STRUCTURE_EXPECTED!【dai ,● RefImportSelection】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_ID) ,●RefImportSelection】●
 
-  ►#?AST_STRUCTURE_EXPECTED!【aldef = mod ,●ImportSelectiveAlias(DefSymbol RefImportSelection)】●
+  ►#?STRUCTURE_EXPECTED!【aldef = mod ,●ImportSelectiveAlias(DefSymbol RefImportSelection)】●
 ¤》
 
 #@SELIMPORT_END《
   ►#@SELIMPORT_END__LITE●
-  ►#?AST_STRUCTURE_EXPECTED!【, #@^SELID_OR_NO(END_ID) ; ● #@^SELID_OR_NO(END_ID)】●
+  ►#?STRUCTURE_EXPECTED!【, #@^SELID_OR_NO(END_ID) ; ● #@^SELID_OR_NO(END_ID)】●
 ¤》
 #@SELIMPORT_END__LITE《
-  ►#?AST_STRUCTURE_EXPECTED!【;● 】●
-  ►#?AST_STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON)● 】●
+  ►#?STRUCTURE_EXPECTED!【;● 】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON)● 】●
 ¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import #@ID_OR_NO : #@SELID_EXTRA_OR_NO #@SELID_OR_NO #@SELIMPORT_END
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationImport(ImportSelective( #@ID_OR_NO #@SELID_EXTRA_OR_NO #@SELID_OR_NO #@SELIMPORT_END ))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DeclarationImport)  import foo : #@SELID_EXTRA_OR_NO #@END_REP_TEST《
-  ►#?AST_STRUCTURE_EXPECTED!【foo       #@END_IGNORE dummy;  ● RefImportSelection】●
-  ►#?AST_STRUCTURE_EXPECTED!【foo       #@END_IGNORE : dummy;● RefImportSelection】●
-  ►#?AST_STRUCTURE_EXPECTED!【ali = foo #@END_IGNORE = dummy;● ImportSelectiveAlias(DefSymbol RefImportSelection)】●
+  ►#?STRUCTURE_EXPECTED!【foo       #@END_IGNORE dummy;  ● RefImportSelection】●
+  ►#?STRUCTURE_EXPECTED!【foo       #@END_IGNORE : dummy;● RefImportSelection】●
+  ►#?STRUCTURE_EXPECTED!【ali = foo #@END_IGNORE = dummy;● ImportSelectiveAlias(DefSymbol RefImportSelection)】●
 ¤》
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationImport(ImportSelective(ImportContent(RefModule) #@SELID_EXTRA_OR_NO #@END_REP_TEST ))

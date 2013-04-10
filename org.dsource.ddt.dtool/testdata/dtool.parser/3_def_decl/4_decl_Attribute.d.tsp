@@ -4,7 +4,7 @@ static int foo;
 extern(C) Foo foo;
 align (1) int foo;
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationBasicAttrib(DefinitionVariable(RefPrimitive DefSymbol))
 DeclarationLinkage(DefinitionVariable(RefIdentifier DefSymbol))
 DeclarationAlign(DefinitionVariable(RefPrimitive DefSymbol))
@@ -14,7 +14,7 @@ public:
 extern(C):
 #@DECLS_SAMPLE
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationProtection(NodeList2(
 	#@DECLS_SAMPLE
 	DeclarationLinkage(NodeList2( #@DECLS_SAMPLE ))
@@ -25,7 +25,7 @@ final {
 }
 static:
 const:
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationBasicAttrib(NodeList2( #@DECLS_SAMPLE )) 
 DeclarationBasicAttrib(NodeList2(
 	DeclarationBasicAttrib(NodeList2())
@@ -35,7 +35,7 @@ extern(#error:BAD_LINKAGE_ID) int bar;
 align(#error:EXP_INTEGER_DECIMAL) int bar;
 align(12 #error:EXP_CLOSE_PARENS int bar;
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 DeclarationLinkage(DefinitionVariable(RefPrimitive DefSymbol))
 DeclarationAlign( DefinitionVariable(RefPrimitive DefSymbol) )
 DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
@@ -45,54 +45,54 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 
 #@LINKAGE_TYPE{C,C++,D,Windows,Pascal,System}
 #@EXTERN_ATTRIB《
- ►#?AST_STRUCTURE_EXPECTED!【extern(#@LINKAGE_TYPE)● DeclarationLinkage 】●
- ►#?AST_STRUCTURE_EXPECTED!【extern (Xpto #error(BAD_LINKAGE_ID) )● DeclarationLinkage 】●
- ►#?AST_STRUCTURE_EXPECTED!【extern(#error(BAD_LINKAGE_ID))● DeclarationLinkage 】●
+ ►#?STRUCTURE_EXPECTED!【extern(#@LINKAGE_TYPE)● DeclarationLinkage 】●
+ ►#?STRUCTURE_EXPECTED!【extern (Xpto #error(BAD_LINKAGE_ID) )● DeclarationLinkage 】●
+ ►#?STRUCTURE_EXPECTED!【extern(#error(BAD_LINKAGE_ID))● DeclarationLinkage 】●
 ¤》
 
 #@ALIGN_ATTRIB《
- ►#?AST_STRUCTURE_EXPECTED!【align● DeclarationAlign 】●
- ►#?AST_STRUCTURE_EXPECTED!【align(1)● DeclarationAlign 】●
- ►#?AST_STRUCTURE_EXPECTED!【align(12)● DeclarationAlign 】●
- ►#?AST_STRUCTURE_EXPECTED!【align(#error(EXP_INTEGER_DECIMAL)) ● DeclarationAlign 】●
+ ►#?STRUCTURE_EXPECTED!【align● DeclarationAlign 】●
+ ►#?STRUCTURE_EXPECTED!【align(1)● DeclarationAlign 】●
+ ►#?STRUCTURE_EXPECTED!【align(12)● DeclarationAlign 】●
+ ►#?STRUCTURE_EXPECTED!【align(#error(EXP_INTEGER_DECIMAL)) ● DeclarationAlign 】●
 ¤》
 
 // TODO pragma expression list !
 #@PRAGMA_ATTRIB《
- ►#?AST_STRUCTURE_EXPECTED!【pragma(foo)● DeclarationPragma 】●
- ►#?AST_STRUCTURE_EXPECTED!【pragma ( #error(EXP_ID) )● DeclarationPragma 】●
+ ►#?STRUCTURE_EXPECTED!【pragma(foo)● DeclarationPragma 】●
+ ►#?STRUCTURE_EXPECTED!【pragma ( #error(EXP_ID) )● DeclarationPragma 】●
 ¤》
 
 #@ATTRIBS《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIBS》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS int foo1;
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( DefinitionVariable(* *) )
+#STRUCTURE_EXPECTED: #@ATTRIBS ( DefinitionVariable(* *) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ :
 #@DECLS_SAMPLE
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( #@DECLS_SAMPLE ))
+#STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ : /* Zero decls */
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( ))
+#STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ { } 
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( ))
+#STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS { 
 #@DECLS_SAMPLE
 }
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( #@DECLS_SAMPLE ))
+#STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( DeclarationEmpty )
+#STRUCTURE_EXPECTED: #@ATTRIBS ( DeclarationEmpty )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /*EOF case*/ #error(EXPRULE_decl)
-#AST_STRUCTURE_EXPECTED: #@ATTRIBS ( )
+#STRUCTURE_EXPECTED: #@ATTRIBS ( )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS #error(SE_decl) ] int foo;
 
-#AST_STRUCTURE_EXPECTED: 
+#STRUCTURE_EXPECTED: 
 #@ATTRIBS (InvalidSyntaxElement)
 DefinitionVariable(RefPrimitive DefSymbol)
 

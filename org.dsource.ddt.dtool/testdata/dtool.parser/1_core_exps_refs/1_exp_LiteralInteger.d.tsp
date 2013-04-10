@@ -1,7 +1,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
 123
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 ExpLiteralInteger
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION) #comment(NO_STDOUT)
@@ -18,5 +18,5 @@ ExpLiteralInteger
 ►0x_#error(MT_Ix)●
 ¤》#@INTEGER_SUFFIX{,L,Lu,LU,u,U}
 
-#AST_STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED:
 ExpLiteralInteger
