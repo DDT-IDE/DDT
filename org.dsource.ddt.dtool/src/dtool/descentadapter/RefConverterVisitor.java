@@ -18,8 +18,7 @@ import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.RefTypeSlice;
 import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
-import dtool.ast.references.TypeDelegate;
-import dtool.ast.references.TypeFunction;
+import dtool.ast.references.RefTypeFunction;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 /**
@@ -130,14 +129,14 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeDelegate elem) {
 		descent.internal.compiler.parser.TypeFunction typeFunction = ((descent.internal.compiler.parser.TypeFunction) elem.next);
-		return endAdapt(
-			new TypeDelegate(
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
+			new RefTypeFunction(
 				DescentASTConverter.convertElem(elem.rto, Reference.class, convContext),
+				true,
 				DescentASTConverter.convertMany(typeFunction.parameters, IFunctionParameter.class, convContext),
-				DefinitionConverter.convertVarArgs(typeFunction.varargs),
-				DefinitionConverter.sourceRange(elem)
+				null
 			)
-		);
+		));
 	}
 	
 	@Override
@@ -147,15 +146,15 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 		);
 	}
 	
-	public static TypeFunction convertFunction(descent.internal.compiler.parser.TypeFunction elem,
+	public static RefTypeFunction convertFunction(descent.internal.compiler.parser.TypeFunction elem,
 			SourceRange sourceRange, ASTConversionContext convContext) {
-		return new TypeFunction(
-			DescentASTConverter.convertElem(elem.next, Reference.class, convContext), 
-			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext), 
-			DefinitionConverter.convertVarArgs(elem.varargs), 
-			elem.linkage,
-			sourceRange
-		);
+		return connect(sourceRange,
+			new RefTypeFunction(
+			DescentASTConverter.convertElem(elem.next, Reference.class, convContext),
+			false,
+			DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext),
+			null
+		));
 	}
 	
 	public static ASTNeoNode convertTypePointer(descent.internal.compiler.parser.TypePointer elem, ASTConversionContext convContext) {

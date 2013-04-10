@@ -70,6 +70,7 @@ import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.RefTypeDynArray;
+import dtool.ast.references.RefTypeFunction;
 import dtool.ast.references.RefTypeModifier;
 import dtool.ast.references.RefTypeModifier.TypeModifierKinds;
 import dtool.ast.references.RefTypePointer;
@@ -280,6 +281,10 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 				leftRef = connect(new RefIndexing(leftRef, resolvable, srToCursor(leftRef.getStartPos())));
 			}
 			
+		} else if(tryConsume(DeeTokens.KW_FUNCTION) || tryConsume(DeeTokens.KW_DELEGATE)) {
+			NodeResult<RefTypeFunction> refTypeFunction = matchRefTypeFunction_afterReturnType(leftRef);
+			parseBroken = refTypeFunction.ruleBroken;
+			leftRef = refTypeFunction.node;
 		} else {
 			return nodeResult(leftRef);
 		}
@@ -287,6 +292,8 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 			return nodeResult(true, leftRef);
 		return parseReference_ReferenceStart(leftRef, parsingExp);
 	}
+	
+	public abstract NodeResult<RefTypeFunction> matchRefTypeFunction_afterReturnType(Reference retType);
 	
 	public boolean isValidTemplateReferenceSyntax(Reference leftRef) {
 		return leftRef instanceof ITemplateRefNode;
@@ -1041,6 +1048,7 @@ protected class ParseRule_TypeOrExp {
 		case REF_PRIMITIVE:
 		case REF_TYPEOF:
 		case REF_MODIFIER:
+		case REF_TYPE_FUNCTION:
 			return true;
 			
 		case REF_TYPE_DYN_ARRAY:

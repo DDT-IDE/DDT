@@ -62,10 +62,9 @@ import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.RefTypeDynArray;
 import dtool.ast.references.RefTypePointer;
-import dtool.ast.references.Reference;
-import dtool.ast.references.TypeDelegate;
-import dtool.ast.references.TypeFunction;
 import dtool.ast.references.RefTypeof;
+import dtool.ast.references.Reference;
+import dtool.ast.references.RefTypeFunction;
 
 /**
  * The classes that this visitor dispatches to are mostly abstract classes, not concrete ones: 
@@ -173,8 +172,7 @@ public interface IASTVisitor {
 	
 	public boolean visit(RefTypeDynArray node);
 	public boolean visit(RefTypePointer node);
-	public boolean visit(TypeDelegate node);
-	public boolean visit(TypeFunction node);
+	public boolean visit(RefTypeFunction node);
 	public boolean visit(RefIndexing node);
 	
 	public boolean visit(RefTypeof node);

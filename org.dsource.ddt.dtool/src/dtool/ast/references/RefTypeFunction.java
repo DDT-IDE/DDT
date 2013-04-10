@@ -4,13 +4,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.LINK;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.NativeDefUnit;
 import dtool.refmodel.DefUnitSearch;
@@ -22,22 +24,29 @@ import dtool.util.ArrayView;
 /**
  * A function pointer type
  */
-public class TypeFunction extends CommonRefNative {
+public class RefTypeFunction extends CommonRefNative {
 	
 	public final Reference retType;
+	public final boolean isDelegate;
 	public final ArrayView<IFunctionParameter> params;
-	public final int varargs;
-	public final LINK linkage;
+	public final ArrayView<FunctionAttributes> fnAttributes;
 	
-	public TypeFunction(Reference retType, ArrayView<IFunctionParameter> params, int varArgs, LINK linkage,
-			SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public RefTypeFunction(Reference retType, boolean isDelegate, ArrayView<IFunctionParameter> params, 
+		ArrayView<FunctionAttributes> fnAttributes) {
 		this.retType = parentize(retType);
+		this.isDelegate = isDelegate;
 		this.params = parentizeI(params);
-		this.varargs = varArgs;
-		this.linkage = linkage;
+		this.fnAttributes = fnAttributes;
 	}
 	
+	public ArrayView<ASTNeoNode> getParams_asNodes() {
+		return CoreUtil.blindCast(params);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.REF_TYPE_FUNCTION;
+	}
 	
 	@Override
 	public void accept0(IASTVisitor visitor) {
@@ -47,6 +56,14 @@ public class TypeFunction extends CommonRefNative {
 			TreeVisitor.acceptChildren(visitor, params);
 		}
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendNode(retType, " ");
+		cp.append(isDelegate ? "delegate" : "function");
+		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
+		cp.appendList(fnAttributes, " ", true);
 	}
 	
 	@Override

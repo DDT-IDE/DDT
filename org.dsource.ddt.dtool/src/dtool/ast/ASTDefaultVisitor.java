@@ -72,10 +72,9 @@ import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.RefTypeDynArray;
 import dtool.ast.references.RefTypePointer;
-import dtool.ast.references.Reference;
-import dtool.ast.references.TypeDelegate;
-import dtool.ast.references.TypeFunction;
 import dtool.ast.references.RefTypeof;
+import dtool.ast.references.Reference;
+import dtool.ast.references.RefTypeFunction;
 
 public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IASTVisitor {
 	
@@ -200,8 +199,7 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	
 	@Override public boolean visit(RefTypeDynArray node) { return true; }
 	@Override public boolean visit(RefTypePointer node) { return true; }
-	@Override public boolean visit(TypeDelegate node) { return true; }
-	@Override public boolean visit(TypeFunction node) { return true; }
+	@Override public boolean visit(RefTypeFunction node) { return true; }
 	@Override public boolean visit(RefIndexing node) { return true; }
 	
 	@Override public boolean visit(RefTypeof node) { return true; }

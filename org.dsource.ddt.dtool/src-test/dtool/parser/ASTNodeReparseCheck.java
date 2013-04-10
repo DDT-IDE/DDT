@@ -112,14 +112,15 @@ public class ASTNodeReparseCheck {
 		}
 		case REF_MODULE_QUALIFIED:
 		case REF_PRIMITIVE:
+			
 		case REF_TYPE_DYN_ARRAY:
 		case REF_TYPE_POINTER:
 		case REF_INDEXING:
+		case REF_TYPE_FUNCTION:
 		case REF_TEMPLATE_INSTANCE:
 		case REF_TYPEOF:
 		case REF_MODIFIER: {
 			reparseCheck(snippedParser.parseTypeReference(), node);
-			reparseCheck(snippedParser.parseTypeOrExpression(true), node);
 			return VOID;
 		}
 		case REF_AUTO_RETURN:

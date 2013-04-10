@@ -97,6 +97,8 @@ RefTemplateInstance(
   ►#?STRUCTURE_EXPECTED!【int * *●RefTypePointer(RefTypePointer(RefPrimitive))】】●
    ►#?TYPE__NO_PENDING_MISSING【#@REF_DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int * **●RefTypePointer(RefTypePointer(RefTypePointer(RefPrimitive)))】】●
+
+  ►#?STRUCTURE_EXPECTED!【int function(inout int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
 ¤》
 #@TYPEREFS_UNAMBIG__NO_PENDING《#TYPE__NO_PENDING_MISSING(flag)#@TYPEREFS_UNAMBIG》
 
@@ -139,8 +141,7 @@ for performance reasons, to keep the number of cases low.
   ►#?STRUCTURE_EXPECTED!【dai[bar*] *[foo][bar]●RefIndexing(RefIndexing(RefTypePointer(*) ?) RefIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【dai[bar] ***●RefTypePointer(RefTypePointer(RefTypePointer(RefIndexing(? ?))))】●
   
-  ►#?STRUCTURE_EXPECTED!【foo**[bar* /++/] *●
-   RefTypePointer(RefIndexing(RefTypePointer(RefTypePointer(RefIdentifier)) RefTypePointer(RefIdentifier) ))】●
+  ►#?STRUCTURE_EXPECTED!【int function(inout int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
 ¤》
 #@TYPE_REFS__NO_BROKEN__LITE《
   ►#?STRUCTURE_EXPECTED!【.Bar.foo●RefQualified(RefModuleQualified(?) RefIdentifier)】●

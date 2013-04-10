@@ -34,7 +34,7 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 		return true;
 	}
 	
-	protected <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {
+	protected static <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {
 		if(sourceRange != null) {
 			node.setSourceRange(sourceRange);
 		}

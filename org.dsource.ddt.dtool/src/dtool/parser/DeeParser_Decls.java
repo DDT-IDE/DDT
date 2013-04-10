@@ -78,6 +78,7 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
+import dtool.ast.references.RefTypeFunction;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.EmptyBodyStatement;
@@ -908,7 +909,28 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		boolean ruleBroken = consumeExpectedToken(DeeTokens.CLOSE_BRACE) == null;
 		return ruleResult(ruleBroken, declBody);
 	}
-
+	
+	@Override
+	public NodeResult<RefTypeFunction> matchRefTypeFunction_afterReturnType(Reference retType) {
+		boolean isDelegate = lastLexElement().token.type == DeeTokens.KW_DELEGATE;
+		
+		ArrayView<IFunctionParameter> fnParams = null;
+		ArrayView<FunctionAttributes> fnAttributes = null;
+		
+		boolean ruleBroken = true;
+		parsing: {
+			ParseRule_Parameters fnParamsResult = parseFunctionParameters();
+			fnParams = fnParamsResult.getAsFunctionParameters();
+			if(!fnParamsResult.properlyTerminated) break parsing;
+			
+			fnAttributes = parseFunctionAttributes();
+			ruleBroken = false;	
+		}
+		
+		return connectResult(ruleBroken, srToCursor(retType.getStartPos(), 
+			new RefTypeFunction(retType, isDelegate, fnParams, fnAttributes)));
+	}
+	
 	/* -------------------- Plain declarations -------------------- */
 	
 	public NodeResult<DeclarationImport> parseImportDeclaration() {

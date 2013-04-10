@@ -24,6 +24,7 @@ import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpConditional;
+import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
@@ -32,16 +33,15 @@ import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
+import dtool.ast.expressions.ExpPostfixOperator;
+import dtool.ast.expressions.ExpPrefix;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
-import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerVoid;
-import dtool.ast.expressions.ExpPostfixOperator;
-import dtool.ast.expressions.ExpPrefix;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
@@ -54,10 +54,9 @@ import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.RefTypeDynArray;
 import dtool.ast.references.RefTypePointer;
-import dtool.ast.references.Reference;
-import dtool.ast.references.TypeDelegate;
-import dtool.ast.references.TypeFunction;
 import dtool.ast.references.RefTypeof;
+import dtool.ast.references.Reference;
+import dtool.ast.references.RefTypeFunction;
 
 public abstract class DeeSourceElementProvider_BaseVisitor extends ASTAbstractVisitor {
 	
@@ -134,8 +133,7 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTAbstractVi
 	
 	@Override public boolean visit(RefTypeDynArray elem) { return true; }
 	@Override public boolean visit(RefTypePointer elem) { return true; }
-	@Override public boolean visit(TypeDelegate elem) { return true; }
-	@Override public boolean visit(TypeFunction elem) { return true; }
+	@Override public boolean visit(RefTypeFunction elem) { return true; }
 	@Override public boolean visit(RefIndexing elem) { return true; }
 	
 	@Override public final boolean visit(RefTypeof elem) { return true; }
