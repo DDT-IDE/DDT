@@ -6,34 +6,33 @@ DefVariable(RefTypeModifier(RefIdentifier) DefSymbol)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ARG_CONTENT_OR_NO《
-  ►#@TYPE_REFS●
+  ►#NO_BROKEN_PARENS(flag) #@TYPE_REFS●
   ►#@NO_REF●
 ¤》
 #@ARG_CONTENT_CLEAN《
   ►#@TYPE_REFS● 
 ¤》
-#@BASE《#@TYPE_MODIFIERS》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@BASE•( #@ARG_CONTENT_OR_NO ) dummy;
+#@TYPE_MODIFIERS•( #@ARG_CONTENT_OR_NO ) dummy;
 
 #AST_STRUCTURE_EXPECTED:
 DefVariable(RefTypeModifier(#@ARG_CONTENT_OR_NO) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@BASE•( int ).foo dummy;
+#@TYPE_MODIFIERS•( int ).foo dummy;
 
 #AST_STRUCTURE_EXPECTED:
 DefVariable(RefQualified( RefTypeModifier( RefPrimitive ) RefIdentifier ) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@BASE ( #@ARG_CONTENT_CLEAN #error:EXP_CLOSE_PARENS   declBroken #error:EXP_ID ;
+#@TYPE_MODIFIERS ( #@ARG_CONTENT_CLEAN #error:EXP_CLOSE_PARENS   declBroken #error:EXP_ID ;
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(RefTypeModifier(#@ARG_CONTENT_CLEAN))     InvalidDeclaration(RefIdentifier)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@BASE ( #@NO_REF #error:EXP_CLOSE_PARENS
+#@TYPE_MODIFIERS ( #@NO_REF #error:EXP_CLOSE_PARENS
 #AST_STRUCTURE_EXPECTED:
 InvalidDeclaration(RefTypeModifier(#@NO_REF) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@BASE #error:EXPRULE_decl
+#@TYPE_MODIFIERS #error:EXPRULE_decl
 #AST_STRUCTURE_EXPECTED:
 DeclarationBasicAttrib()

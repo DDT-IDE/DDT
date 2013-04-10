@@ -10,21 +10,21 @@ DefVariable(RefPrimitive DefSymbol)
 DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol InitializerExp(?))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_REFS fooA;
-#@TYPE_REFS fooB = 55 ;
-#@TYPE_REFS fooC = 1, foo2    , foo3 = 3;
+#@TYPE_REFS__NO_BROKEN fooA;
+#@TYPE_REFS__NO_BROKEN fooB = 55 ;
+#@TYPE_REFS__NO_BROKEN fooC = 1, foo2    , foo3 = 3;
 Bar.Foo[]     fooD    , foo2 = 2 , foo3;
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:
-DefVariable(#@TYPE_REFS DefSymbol)
-DefVariable(#@TYPE_REFS DefSymbol InitializerExp(?))
+DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol)
+DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol InitializerExp(?))
 DefVariable(* DefSymbol InitializerExp(?) DefVarFragment(DefSymbol) DefVarFragment(DefSymbol InitializerExp(?)))
 DefVariable(* DefSymbol                   DefVarFragment(DefSymbol InitializerExp(?)) DefVarFragment(DefSymbol))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_REFS fooB = #@EXP_ASSIGN;
-#@TYPE_REFS fooC = #@^EXP_ASSIGN, foo2    , foo3 = #@EXP_ASSIGN;
+#@TYPE_REFS__NO_BROKEN fooB = #@EXP_ASSIGN;
+#@TYPE_REFS__NO_BROKEN fooC = #@^EXP_ASSIGN, foo2    , foo3 = #@EXP_ASSIGN;
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:
@@ -37,12 +37,12 @@ DefVariable(* DefSymbol InitializerExp(*) DefVarFragment(DefSymbol) DefVarFragme
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
 
-#@TYPE_REFS #@PRX1 #error:EXP_IDENTIFIER #?NO_PRX1{,#error:EXP_SEMICOLON} #@SEPARATOR
-#@TYPE_REFS #@PRX1 #error:EXP_IDENTIFIER ;
+#@TYPE_REFS__NO_BROKEN #@PRX1 #error:EXP_IDENTIFIER #?NO_PRX1{,#error:EXP_SEMICOLON} #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN #@PRX1 #error:EXP_IDENTIFIER ;
 
-#@TYPE_REFS #@PRX1 fooA #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS #@PRX1 fooB = #@NO_INIT #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS #@PRX1 fooD = #@NO_INIT ;
+#@TYPE_REFS__NO_BROKEN #@PRX1 fooA #error:EXP_SEMICOLON  #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN #@PRX1 fooB = #@NO_INIT #error:EXP_SEMICOLON  #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN #@PRX1 fooD = #@NO_INIT ;
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:
@@ -55,8 +55,8 @@ DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? #@NO_IN
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
 
-#@TYPE_REFS #@PRX1 fooE = 112 #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS #@PRX1 fooF = 112 = "666";
+#@TYPE_REFS__NO_BROKEN #@PRX1 fooE = 112 #error:EXP_SEMICOLON  #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN #@PRX1 fooF = 112 = "666";
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:
@@ -67,8 +67,8 @@ DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(Integer String))●
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors (with multiple exp)
 
-#@TYPE_REFS #@PRX1 fooE = #EXP__NO_BREAKING_EXPS(flag) #@EXP_ASSIGN #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS #@PRX1 fooF = #EXP__NO_BREAKING_EXPS(flag) #@EXP_CONDITIONAL = "666";
+#@TYPE_REFS__NO_BROKEN #@PRX1 fooE = #EXP__NO_BREAKING_EXPS(flag) #@EXP_ASSIGN #error:EXP_SEMICOLON  #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN #@PRX1 fooF = #EXP__NO_BREAKING_EXPS(flag) #@EXP_CONDITIONAL = "666";
 
 #comment(NO_STDOUT)
 #AST_STRUCTURE_EXPECTED:

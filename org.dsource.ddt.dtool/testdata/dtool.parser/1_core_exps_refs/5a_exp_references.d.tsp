@@ -21,10 +21,10 @@
 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Should not parse template instance
-#PARSE(EXPRESSION)        (foo).bar  #@PARSE_RULE_END ! (asdf)
+#PARSE(EXPRESSION)        (foo).bar  #@IGNORE_REST ! (asdf)
 #AST_STRUCTURE_EXPECTED:  ExpReference(RefQualified(* *))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Should not parse template instance
-#PARSE(EXPRESSION)        (foo).bar.bar  #@PARSE_RULE_END ! this
+#PARSE(EXPRESSION)        (foo).bar.bar  #@IGNORE_REST ! this
 #AST_STRUCTURE_EXPECTED:  ExpReference(RefQualified(* *))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ special case test precedence limit bug

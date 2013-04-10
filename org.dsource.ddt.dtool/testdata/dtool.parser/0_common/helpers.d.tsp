@@ -11,19 +11,18 @@
 #@NO_REF《#?AST_STRUCTURE_EXPECTED!【/*MISSING:Ref*/ #error(EXPRULE_ref)● RefIdentifier】》
 #@NO_INIT《#?AST_STRUCTURE_EXPECTED!【/*MISSING:Init*/ #error(EXPRULE_Initializer)● InitializerExp(MissingExpression)】》
 
-#@TYPE_REFS_ORNO《#@TYPE_REFS●#@NO_REF》
-
 #@PaCLOSE_OR_NO【)●#error(EXP_CLOSE_PARENS) /*No close parens */ 】
 #@BkCLOSE_OR_NO【]●#error(EXP_CLOSE_BRACKET) /*No close sq bracket */ 】
 #@BrCLOSE_OR_NO【}●#error(EXP_CLOSE_BRACE) /*No close brace */ 】
 
 #@PaCLOSE_OR_BREAK【)●#error(EXP_CLOSE_PARENS) /*No close parens */ #@BREAK】
 #@BkCLOSE_OR_BREAK【]●#error(EXP_CLOSE_BRACKET) /*No close sq bracket */ #@BREAK】
+#@BRACKET_CLOSE_OR_BREAK【]●#error(EXP_CLOSE_BRACKET) /*No close sq bracket */ #@BREAK】
 #@BrCLOSE_OR_BREAK【}●#error(EXP_CLOSE_BRACE) /*No close brace */ #@BREAK】
 
 
 #@BREAK《 #?AST_STRUCTURE_EXPECTED!【#parser(IgnoreRest) #RULE_BROKEN(test)● $ 】  》
-#@PARSE_RULE_END《 #?AST_STRUCTURE_EXPECTED!【#parser(IgnoreRest) ● $ 】  》
+#@IGNORE_REST《 #?AST_STRUCTURE_EXPECTED!【#parser(IgnoreRest) ● $ 】  》
 
 #@SEMICOLON_OR_NO【;●#error(EXP_SEMICOLON)】
 #@INVALID_DECL__NO_SEMICOLON【】

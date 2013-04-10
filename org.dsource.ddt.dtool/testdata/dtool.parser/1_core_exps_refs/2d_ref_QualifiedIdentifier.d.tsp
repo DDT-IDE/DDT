@@ -18,5 +18,5 @@ DefVariable(RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier
 #AST_STRUCTURE_EXPECTED:  RefQualified(RefIdentifier #@NO_ID)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(REFERENCE)        #@TYPE_REFS__INVALID_QUALIFIER #@PARSE_RULE_END .foo
+#PARSE(REFERENCE)        #@TYPE_REFS__INVALID_QUALIFIER #@IGNORE_REST .foo
 #AST_STRUCTURE_EXPECTED: #@TYPE_REFS__INVALID_QUALIFIER

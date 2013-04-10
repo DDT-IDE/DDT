@@ -28,10 +28,10 @@ DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(?) DefVarFragme
 #@SIMPLE_ATTRIBS ( DefVariable(RefIdentifier DefSymbol ) )
 #@SIMPLE_ATTRIBS ( DefVariable(RefIdentifier DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) DefVarFragment(DefSymbol) ) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@SIMPLE_ATTRIBS #@TYPE_REFS fooC = #@EXP_ASSIGN__LITE, fooC2;
+#@SIMPLE_ATTRIBS #@TYPE_REFS__NO_BROKEN fooC = #@EXP_ASSIGN__LITE, fooC2;
 
 #AST_STRUCTURE_EXPECTED:
-#@SIMPLE_ATTRIBS ( DefVariable(#@TYPE_REFS DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) DefVarFragment(DefSymbol) ) )
+#@SIMPLE_ATTRIBS ( DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) DefVarFragment(DefSymbol) ) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test composite attribs dont make auto decl
 extern(C) foo #error(EXP_IDENTIFIER) ;

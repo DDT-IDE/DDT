@@ -10,8 +10,8 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@ARG《 #@TYPE_REFS ● #@EXP_ASSIGN__NO_POSSIBLE_REFS ● 》
-#@ARG_OR_MISS《 #@TYPE_REFS ● #@EXP_ASSIGN__NO_POSSIBLE_REFS ● #@NO_ROE》
+#@ARG《 #NO_BROKEN_PARENS(flag) #@TYPE_REFS ● #@EXP_ASSIGN__NO_POSSIBLE_REFS ● 》
+#@ARG_OR_MISS《 #NO_BROKEN_PARENS(flag) #@TYPE_REFS ● #@EXP_ASSIGN__NO_POSSIBLE_REFS ● #@NO_ROE》
 
 #@ARG_COMMA《
   ►#?AST_STRUCTURE_EXPECTED!【#@EXP_ASSIGN__LITE , ● #@EXP_ASSIGN__LITE】● 
@@ -23,7 +23,7 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
   ►#?AST_STRUCTURE_EXPECTED!【!( #@ARG #@PaCLOSE_OR_BREAK ● #@ARG】●
   
   ►#?AST_STRUCTURE_EXPECTED!【!(#@ARG_COMMA #@ARG_OR_MISS #@PaCLOSE_OR_BREAK● #@ARG_COMMA #@ARG_OR_MISS】●
-  ►#?AST_STRUCTURE_EXPECTED!【!(#@ARG_COMMA #@ARG_OR_MISS, #@ARG_OR_MISS #@PaCLOSE_OR_BREAK● * * #@ARG_OR_MISS】●
+  ►#?AST_STRUCTURE_EXPECTED!【!(#@ARG_COMMA #@ARG_COMMA #@ARG_OR_MISS #@PaCLOSE_OR_BREAK● * * #@ARG_OR_MISS】●
 
   ►#?AST_STRUCTURE_EXPECTED!【! #@SINGLE_ARG ● #@SINGLE_ARG 】●
 ¤》
@@ -37,10 +37,10 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 #AST_STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__QUALIFIER_ANY #@TPL_ARGLIST)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ indexing cannot be template start
-#PARSE(REFERENCE)        #@TYPE_REFS__INVALID_QUALIFIER #@PARSE_RULE_END !this
+#PARSE(REFERENCE)        #@TYPE_REFS__INVALID_QUALIFIER #@IGNORE_REST !this
 #AST_STRUCTURE_EXPECTED: #@TYPE_REFS__INVALID_QUALIFIER
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(REFERENCE)        #@TYPE_REFS__QUALIFIER_DOT_ONLY #@PARSE_RULE_END !this
+#PARSE(REFERENCE)        #@TYPE_REFS__QUALIFIER_DOT_ONLY #@IGNORE_REST !this
 #AST_STRUCTURE_EXPECTED: #@TYPE_REFS__QUALIFIER_DOT_ONLY
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ tpl single arg

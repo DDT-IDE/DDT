@@ -203,6 +203,8 @@ public class ASTNodeReparseCheck {
 		
 		case DECL_MIXIN_STRING:
 			return reparseCheck(snippedParser.parseDeclarationMixinString(), node);
+		case DECL_MIXIN:
+			return reparseCheck(snippedParser.parseDeclarationMixin(), node);
 		
 		/* ---------------------------------- */
 		
@@ -234,6 +236,9 @@ public class ASTNodeReparseCheck {
 		case TEMPLATE_TUPLE_PARAM:
 		case TEMPLATE_THIS_PARAM:
 			return templateParamReparseCheck(node);
+			
+		case NAMED_MIXIN:
+			return reparseCheck(snippedParser.parseDeclarationMixin(), node);
 			
 		/* -------------------  Statements  ------------------- */
 		case BLOCK_STATEMENT:

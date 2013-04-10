@@ -4,29 +4,41 @@ import java.util.Iterator;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
-import dtool.ast.references.RefTemplateInstance;
+import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public class MixinContainer extends ASTNeoNode implements IStatement, INonScopedBlock {
+public class DeclarationMixin extends ASTNeoNode implements IStatement, INonScopedBlock {
 	
-	public final RefTemplateInstance type;
+	public final Reference templateInstance;
 	
-	public MixinContainer(RefTemplateInstance typeref, SourceRange neoSourceRange) {
-		initSourceRange(neoSourceRange);
-		this.type = parentize(typeref);
+	public DeclarationMixin(Reference templateInstance) {
+		this.templateInstance = parentize(templateInstance);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DECL_MIXIN;
 	}
 	
 	@Override
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, type);
+			TreeVisitor.acceptChildren(visitor, templateInstance);
 		}
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("mixin ");
+		cp.appendNode(templateInstance);
+		cp.append(";");
 	}
 	
 	@Override
@@ -40,4 +52,5 @@ public class MixinContainer extends ASTNeoNode implements IStatement, INonScoped
 		return (Iterator) defunit.getMembersScope().getMembersIterator();
 		 */
 	}
+	
 }

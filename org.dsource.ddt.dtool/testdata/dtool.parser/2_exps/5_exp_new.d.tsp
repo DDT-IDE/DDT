@@ -22,16 +22,16 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 #@CTOR_ARG《#@ARGLIST●►#?AST_STRUCTURE_EXPECTED!【 /*No ctor args*/● 】》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)       new     #@ALLOC_ARG  #@TYPE_REFS  (sample)
-#AST_STRUCTURE_EXPECTED: ExpNew( #@ALLOC_ARG  #@TYPE_REFS  #@ExpIdentifier )
+#PARSE(EXPRESSION)       new     #@ALLOC_ARG  #@TYPE_REFS__NO_BROKEN  (sample)
+#AST_STRUCTURE_EXPECTED: ExpNew( #@ALLOC_ARG  #@TYPE_REFS__NO_BROKEN  #@ExpIdentifier )
 #comment(NO_STDOUT)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)       new     ( #@EXP_ASSIGN__LITE )  #@TYPE_REFS  #@CTOR_ARG
-#AST_STRUCTURE_EXPECTED: ExpNew(  #@EXP_ASSIGN__LITE  #@TYPE_REFS  #@CTOR_ARG )
+#PARSE(EXPRESSION)       new   ( #@EXP_ASSIGN__LITE ) #@TYPE_REFS__NO_BROKEN  #@CTOR_ARG
+#AST_STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE   #@TYPE_REFS__NO_BROKEN  #@CTOR_ARG )
 #comment(NO_STDOUT)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)       new     ( #@EXP_ASSIGN__LITE )  #@TYPE_REFS  [ #@EXP_ASSIGN__LITE ]
-#AST_STRUCTURE_EXPECTED: ExpNew(  #@EXP_ASSIGN__LITE  RefIndexing( #@TYPE_REFS #@EXP_ASSIGN__LITE )  )
+#PARSE(EXPRESSION)       new   ( #@EXP_ASSIGN__LITE ) #@TYPE_REFS__NO_BROKEN  [ #@EXP_ASSIGN__LITE ]
+#AST_STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE  RefIndexing( #@TYPE_REFS__NO_BROKEN #@EXP_ASSIGN__LITE )  )
 #comment(NO_STDOUT)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Error cases
 #PARSE(EXPRESSION)        new     #@ARGLIST  #@NO_REF  (123) 

@@ -37,15 +37,15 @@ RefTemplateInstance(
 // ----------------------------------------------------
 
 // Simple prefix helper:
-#@PREFIX_S_UNARY《
+#@_PREFIX_S_UNARY《
   ►#?AST_STRUCTURE_EXPECTED!【dai ● RefIdentifier】● 
   ►#?AST_STRUCTURE_EXPECTED!【dai[] ● RefTypeDynArray(RefIdentifier) 】●
 ¤》
-#@PREFIX_S_ALL《
-  ►#@PREFIX_S_UNARY● 
+#@_PREFIX_S_ALL《
+  ►#@_PREFIX_S_UNARY● 
   ►#?AST_STRUCTURE_EXPECTED!【dai* ● RefTypePointer(RefIdentifier)】●
 ¤》
-#@DEFINE_PREFIX_S_UNARY《#@PREFIX_S!【#@PREFIX_S_UNARY】》
+#@DEFINE_PREFIX_S_UNARY《#@PREFIX_S!【#@_PREFIX_S_UNARY】》
 
 // These source snippets are ambiguous as to whether to parse as ref or exp (they can parse as both)
 =====> #@TYPEREFS_AMBIG《
@@ -77,7 +77,7 @@ RefTemplateInstance(
   ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo*[2 : #@NO_EXP]/*EXP*/]●RefIndexing(#@PREFIX_S ExpInfix(* *))】●
   ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo[bar]/*AMBIG*/]●RefIndexing(#@PREFIX_S RefIndexing(* *))】●
 ¤》
-#@TYPEREFS_AMBIG__BASE《#@PREFIX_S!《#@PREFIX_S_ALL》#@TYPEREFS_AMBIG__CUSTOM_PREFIX》
+#@TYPEREFS_AMBIG__BASE《#@PREFIX_S!《#@_PREFIX_S_ALL》#@TYPEREFS_AMBIG__CUSTOM_PREFIX》
 #@TYPEREFS_AMBIG__INVALID_QUALIFIER《#@DEFINE_PREFIX_S_UNARY#@TYPEREFS_AMBIG__CUSTOM_PREFIX》
 
 
@@ -105,7 +105,7 @@ RefTemplateInstance(
   ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[int /+REF+/]● RefIndexing(#@PREFIX_S RefPrimitive)】●
   ►#?AST_STRUCTURE_EXPECTED!【#@PREFIX_S[foo*[int]/+REF+/]●RefIndexing(#@PREFIX_S RefIndexing(* *))】●
 ¤》
-#@TYPEREFS_UNAMBIG__BASE《#@PREFIX_S!《#@PREFIX_S_ALL》#@TYPEREFS_UNAMBIG__CUSTOM_PREFIX》
+#@TYPEREFS_UNAMBIG__BASE《#@PREFIX_S!《#@_PREFIX_S_ALL》#@TYPEREFS_UNAMBIG__CUSTOM_PREFIX》
 #@TYPEREFS_UNAMBIG__INVALID_QUALIFIER《#@DEFINE_PREFIX_S_UNARY#@TYPEREFS_UNAMBIG__CUSTOM_PREFIX》
 
 //---------------------------------------------------------
@@ -120,7 +120,7 @@ RefTemplateInstance(
 We don't use TYPEREFS_AMBIG__INVALID_QUALIFIER or TYPEREFS_UNAMBIG__INVALID_QUALIFIER in TYPE_REFS
 for performance reasons, to keep the number of cases low.
 
-#@TYPE_REFS《
+#@TYPE_REFS__NO_BROKEN《
   ►#@TYPE_REFS__QUALIFIER_ANY●
   ►#@TYPE_REFS__TPL_SINGLE_ARG●
   ►#@TYPE_REFS__QUALIFIER_DOT_ONLY●
@@ -141,10 +141,24 @@ for performance reasons, to keep the number of cases low.
   
   ►#?AST_STRUCTURE_EXPECTED!【foo**[bar* /++/] *●
    RefTypePointer(RefIndexing(RefTypePointer(RefTypePointer(RefIdentifier)) RefTypePointer(RefIdentifier) ))】●
-
-  ►#@TYPE_REFS__LITE●
+¤》
+#@TYPE_REFS__NO_BROKEN__LITE《
+  ►#?AST_STRUCTURE_EXPECTED!【.Bar.foo●RefQualified(RefModuleQualified(?) RefIdentifier)】●
 ¤》
 
+#@TYPE_REFS__BROKEN《
+   ►#?NO_BROKEN_BRACKETS【#@REF_DISCARD_CASE●
+  ►#?AST_STRUCTURE_EXPECTED!【arrayElem[foo #error(EXP_CLOSE_BRACKET)●RefIndexing(RefIdentifier RefIdentifier)】】●
+
+   ►#?NO_BROKEN_PARENS【#@REF_DISCARD_CASE●
+  ►#?AST_STRUCTURE_EXPECTED!【typeof("abc" #error(EXP_CLOSE_PARENS)●RefTypeof(String)】】●
+¤》
+
+#@TYPE_REFS《
+  ►#@TYPE_REFS__NO_BROKEN●
+  ►#@TYPE_REFS__BROKEN●
+¤》
 #@TYPE_REFS__LITE《
-  ►#?AST_STRUCTURE_EXPECTED!【.Bar.foo●RefQualified(RefModuleQualified(?) RefIdentifier)】●
+  ►#@TYPE_REFS__NO_BROKEN__LITE●
+  ►#@TYPE_REFS__BROKEN●
 ¤》

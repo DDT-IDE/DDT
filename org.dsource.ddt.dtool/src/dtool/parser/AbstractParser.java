@@ -230,47 +230,12 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		addError(createErrorOnLastToken(ParserErrorTypes.SYNTAX_ERROR, expectedRule.name));
 	}
 	
-	/* ------------  Parsing helpers  ------------ */
-	
-	protected final <T extends ASTNeoNode> NodeResult<T> connectResult(boolean ruleBroken, T node) {
-		return nodeResult(ruleBroken, connect(node));
-	}
-	
-	protected <T extends ASTNeoNode> T connect(final T node) {
-		for (ParserError parserError : pendingMissingTokenErrors) {
-			if(parserError.msgData != DeeTokens.IDENTIFIER) {
-				parserError.originNode = node;
-			}
-		}
-		pendingMissingTokenErrors.clear();
-		
-		node.setData(ASTSemantics.PARSED_STATUS);
-		node.accept(new ASTChildrenVisitor() {
-			@Override
-			protected void geneticChildrenVisit(ASTNeoNode child) {
-				assertTrue(child.getParent() == node);
-				assertTrue(child.isParsedStatus());
-			}
-		});
-		return node;
-	}
-	
-	protected <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {
-		node.setSourceRange(sourceRange);
-		return connect(node);
-	}
-	
-	protected <T extends ASTNeoNode> T init(SourceRange sourceRange, T node) {
-		node.setSourceRange(sourceRange);
-		return node;
-	}
-	
-	protected final <T extends IASTNeoNode> T connect(T node) {
-		connect((ASTNeoNode) node);
-		return node;
-	}
-	
 	/* ---- Node creation helpers ---- */
+	
+	public final <T extends ASTNeoNode> T srToCursor(int declStart, T node) {
+		node.setSourceRange(declStart, getParserPosition() - declStart);
+		return node;
+	}
 	
 	public static SourceRange sr(Token token) {
 		return token.getSourceRange();
@@ -316,6 +281,46 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		if(list == null)
 			return null;
 		return ArrayView.create((T[]) ArrayUtil.createFrom(list, Object.class));
+	}
+
+	/* ------------  Parsing helpers  ------------ */
+	
+	protected final <T extends ASTNeoNode> NodeResult<T> connectResult(boolean ruleBroken, T node) {
+		return nodeResult(ruleBroken, connect(node));
+	}
+	
+	protected <T extends ASTNeoNode> T connect(final T node) {
+		for (ParserError parserError : pendingMissingTokenErrors) {
+			if(parserError.msgData != DeeTokens.IDENTIFIER) {
+				parserError.originNode = node;
+			}
+		}
+		pendingMissingTokenErrors.clear();
+		
+		node.setData(ASTSemantics.PARSED_STATUS);
+		node.accept(new ASTChildrenVisitor() {
+			@Override
+			protected void geneticChildrenVisit(ASTNeoNode child) {
+				assertTrue(child.getParent() == node);
+				assertTrue(child.isParsedStatus());
+			}
+		});
+		return node;
+	}
+	
+	protected <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {
+		node.setSourceRange(sourceRange);
+		return connect(node);
+	}
+	
+	protected <T extends ASTNeoNode> T init(SourceRange sourceRange, T node) {
+		node.setSourceRange(sourceRange);
+		return node;
+	}
+	
+	protected final <T extends IASTNeoNode> T connect(T node) {
+		connect((ASTNeoNode) node);
+		return node;
 	}
 	
 }

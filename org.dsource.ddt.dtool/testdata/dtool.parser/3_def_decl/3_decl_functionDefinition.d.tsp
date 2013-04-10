@@ -32,9 +32,9 @@ DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS_SAMPLE1 #@PARAMS_SAMPLE #
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃
 ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ test return type
-#PARSE(DECLARATION)       #@TYPE_REFS func(#@PARAMS_SAMPLE) #@SAMPLE_BLOCK_ST
+#PARSE(DECLARATION)       #@TYPE_REFS__NO_BROKEN func(#@PARAMS_SAMPLE) #@SAMPLE_BLOCK_ST
 #AST_STRUCTURE_EXPECTED:
-DefFunction(#@TYPE_REFS DefSymbol #@PARAMS_SAMPLE #@SAMPLE_BLOCK_ST )
+DefFunction(#@TYPE_REFS__NO_BROKEN DefSymbol #@PARAMS_SAMPLE #@SAMPLE_BLOCK_ST )
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ 0 args
 
@@ -56,10 +56,10 @@ DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_AFTER_PARAM )
 #@PARAM_ATTRIB_SAMP《/*NONE*/●const #FN_ONLY(flag)●in #FN_ONLY(flag)●lazy shared #FN_ONLY(flag)》
 
 // We want the "Foo" case to be tested even in LITE mode as it's a very relevant case 
-#@TYPE_REFS_X《#@TYPE_REFS●#?AST_STRUCTURE_EXPECTED!【Foo #TYPE_REF_CAN_PARSE_AS_ID(flag)● RefIdentifier】》
+#@TYPE_REFS_X《#@TYPE_REFS__NO_BROKEN●#?AST_STRUCTURE_EXPECTED!【Foo #TYPE_REF_CAN_PARSE_AS_ID(flag)● RefIdentifier】》
 
 #@FN_ARG_BASE《
-  ►#?AST_STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@TYPE_REFS foo ●          FunctionParameter(#@TYPE_REFS DefSymbol)】●
+  ►#?AST_STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@TYPE_REFS__NO_BROKEN foo ●          FunctionParameter(#@TYPE_REFS__NO_BROKEN DefSymbol)】●
   ►#?AST_STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo foo ... #FN_ONLY(flag)●FunctionParameter(RefIdentifier DefSymbol)】●
   ►#?AST_STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo foo = #@EXP_ASSIGN●    FunctionParameter(RefIdentifier DefSymbol #@EXP_ASSIGN)】●
   ►#?AST_STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@TYPE_REFS_X     #?TYPE_REF_CAN_PARSE_AS_ID!【#FN_ONLY(flag)】●NamelessParameter(#@TYPE_REFS_X)】●

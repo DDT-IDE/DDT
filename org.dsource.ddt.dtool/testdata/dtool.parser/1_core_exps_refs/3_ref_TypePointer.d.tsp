@@ -16,9 +16,9 @@ InvalidDeclaration(RefTypePointer(RefIdentifier))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@TYPE_REFS•* dummy;
+#@TYPE_REFS__NO_BROKEN•* dummy;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefTypePointer(#@TYPE_REFS) DefSymbol)
+DefVariable(RefTypePointer(#@TYPE_REFS__NO_BROKEN) DefSymbol)
 
 

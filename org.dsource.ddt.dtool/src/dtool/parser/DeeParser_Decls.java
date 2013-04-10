@@ -46,6 +46,7 @@ import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.InvalidDeclaration;
 import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.definitions.CStyleVarArgsParameter;
+import dtool.ast.definitions.DeclarationMixin;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
@@ -58,6 +59,7 @@ import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.IFunctionParameter.FunctionParamAttribKinds;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
+import dtool.ast.definitions.NamedMixinDeclaration;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.TemplateAliasParam;
@@ -222,7 +224,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
 				return nodeResult(parseDeclarationMixinString());
 			}
-			return nodeResult(parseDeclarationMixinString()); // TODO
+			return nodeResult(parseDeclarationMixin());
 		default:
 			break;
 		}
@@ -1136,15 +1138,32 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		Expression exp = null;
 		
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
-			exp = parseExpression().getNode_NoBrokenCheck();
-			if(exp == null) {
-				reportErrorExpectedRule(RULE_EXPRESSION);
-			}
+			exp = parseExpression_toMissing();
 			consumeExpectedToken(DeeTokens.CLOSE_PARENS);
 		}
 		
 		consumeExpectedToken(DeeTokens.SEMICOLON);
 		return connect(new DeclarationMixinString(exp, srToCursor(declStart)));
+	}
+	
+	public ASTNeoNode parseDeclarationMixin() {
+		if(!tryConsume(DeeTokens.KW_MIXIN)) {
+			return null;
+		}
+		int declStart = lastLexElement().getStartPos();
+		
+		NodeResult<Reference> tplInstanceResult = parseTypeReference_ToMissing(true);
+		Reference tplInstance = tplInstanceResult.node;
+		LexElement id = null;
+		if(!tplInstanceResult.ruleBroken) {
+			id = consumeElementIf(DeeTokens.IDENTIFIER);	
+		}
+		
+		consumeExpectedToken(DeeTokens.SEMICOLON);
+		if(id == null) {
+			return connect(srToCursor(declStart, new DeclarationMixin(tplInstance)));
+		}
+		return connect(srToCursor(declStart, new NamedMixinDeclaration(tplInstance, defUnitNoComments(id))));
 	}
 	
 }

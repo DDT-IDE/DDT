@@ -87,6 +87,7 @@ public enum ASTNodeTypes {
 	DECL_BASIC_ATTRIB,
 	
 	DECL_MIXIN_STRING,
+	DECL_MIXIN,
 	
 	/* ---------------------------------- */
 	
@@ -108,6 +109,8 @@ public enum ASTNodeTypes {
 	TEMPLATE_ALIAS_PARAM,
 	TEMPLATE_TUPLE_PARAM,
 	TEMPLATE_THIS_PARAM,
+	
+	NAMED_MIXIN,
 	
 	/* -------------------  Statements  ------------------- */
 	

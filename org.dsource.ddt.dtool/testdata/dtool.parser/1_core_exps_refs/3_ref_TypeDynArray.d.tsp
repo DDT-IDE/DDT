@@ -27,10 +27,9 @@ InvalidDeclaration(RefTypeDynArray(RefIdentifier))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@TYPE_REFS•[] dummy;
-
-#@TYPE_REFS•[][] dummy2;
+#@TYPE_REFS__NO_BROKEN•[] dummy;
+#@TYPE_REFS__NO_BROKEN•[][] dummy2;
 
 #AST_STRUCTURE_EXPECTED:
-DefVariable(RefTypeDynArray(#@TYPE_REFS) DefSymbol)
-DefVariable(RefTypeDynArray(RefTypeDynArray(#@TYPE_REFS)) DefSymbol)
+DefVariable(RefTypeDynArray(#@TYPE_REFS__NO_BROKEN) DefSymbol)
+DefVariable(RefTypeDynArray(RefTypeDynArray(#@TYPE_REFS__NO_BROKEN)) DefSymbol)
