@@ -1,10 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
+Bundle-Vendor: %pluginProvider
 Bundle-SymbolicName: org.dsource.ddt.ide.ui;singleton:=true
 Bundle-Version: 0.6.0.qualifier
 Bundle-Activator: mmrnmhrm.ui.DeePlugin
 Bundle-Localization: plugin
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.dsource.ddt.ide.core;bundle-version="[0.6.0,0.6.1)",
  org.eclipse.core.resources;bundle-version="3.6.0",
  org.eclipse.core.expressions;bundle-version="3.4.0",
@@ -25,6 +28,3 @@ Require-Bundle: org.dsource.ddt.ide.core;bundle-version="[0.6.0,0.6.1)",
  org.eclipse.ui.console;bundle-version="3.5.0",
  org.eclipse.search;bundle-version="3.6.0",
  org.eclipse.debug.ui;bundle-version="3.6.0"
-Bundle-ActivationPolicy: lazy
-Bundle-Vendor: %pluginProvider
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6

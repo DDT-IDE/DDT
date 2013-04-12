@@ -10,11 +10,13 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho-version>0.16.0</tycho-version>
+		<tycho-version>0.17.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
+
+		<ddt.targetPlatform>org.dsource.ddt-build/target-platform/DDT</ddt.targetPlatform>
 
 		<dtool.testdataDir>${parentBaseDir}/org.dsource.ddt.dtool/testdata</dtool.testdataDir>
 	</properties>
@@ -73,11 +75,19 @@
 
 		<plugins>
 			<plugin>
-				<!-- enable tycho build extension -->
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<optimize>true</optimize>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -90,7 +100,7 @@
 							<groupId>${project.groupId}</groupId>
 							<artifactId>ddt-aggregator</artifactId>
 							<version>1-SNAPSHOT</version>
-							<classifier>org.dsource.ddt-build/target-platform/DDT</classifier>
+							<classifier>${ddt.targetPlatform}</classifier>
 						</artifact>
 					</target>
 				</configuration>

@@ -4,7 +4,7 @@ Bundle-Name: org.dsource.ddt.ide.core Tests
 Bundle-SymbolicName: org.dsource.ddt.ide.core.tests;singleton:=true
 Bundle-Version: 0.6.0.qualifier
 Fragment-Host: org.dsource.ddt.ide.core;bundle-version="0.6.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.0"
 Bundle-ClassPath: .
 Export-Package: dtool.tests.ref.cc;x-friends:="org.dsource.ddt.ide.ui",
