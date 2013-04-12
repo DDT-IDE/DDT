@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
 import dtool.ast.ASTNeoNode;
@@ -48,20 +49,21 @@ public class DeeParserTest extends CommonTestUtils {
 	
 	public static class CheckSourceEquality {
 		
-		public static void assertCheck(String source, String expectedSource) {
-			checkSourceIsEquivalent(source, expectedSource, true);
+		public static void assertCheck(String source, String expectedSource, DeeTokens... additionalIgnores) {
+			check(source, expectedSource, true, additionalIgnores);
 		}
 		public static boolean check(String source, String expectedSource) {
-			return checkSourceIsEquivalent(source, expectedSource, false);
+			return check(source, expectedSource, false);
 		}
 		
-		public static boolean checkSourceIsEquivalent(String source, String expectedSource, boolean failOnUnequal) {
+		public static boolean check(String source, String expectedSource, boolean failOnUnequal, 
+			DeeTokens... additionalIgnores) {
 			DeeLexer generatedSourceLexer = new DeeLexer(source);
 			DeeLexer expectedSourceLexer = new DeeLexer(expectedSource);
 			
 			while(true) {
-				Token tok = getContentToken(generatedSourceLexer, true);
-				Token tokExp = getContentToken(expectedSourceLexer, true);
+				Token tok = getContentToken(generatedSourceLexer, true, additionalIgnores);
+				Token tokExp = getContentToken(expectedSourceLexer, true, additionalIgnores);
 				if(tok.type.equals(tokExp.type) && tok.source.equals(tokExp.source)) {
 				} else if(failOnUnequal) {
 					assertFail();
@@ -75,26 +77,26 @@ public class DeeParserTest extends CommonTestUtils {
 			}
 		}
 		
-		public static Token getContentToken(DeeLexer lexer, boolean ignoreComments) {
+		public static Token getContentToken(DeeLexer lexer, boolean ignoreComments, DeeTokens... additionalIgnores) {
 			while(true) {
 				Token token = lexer.next();
-				if(!token.type.isParserIgnored
-					|| (!ignoreComments && token.type.getGroupingToken() == DeeTokens.COMMENT)) {
-					return token;
-				}
+				DeeTokens type = token.type;
+				if((type.isParserIgnored && (type.getGroupingToken() != DeeTokens.COMMENT || ignoreComments)) 
+					|| (ArrayUtil.contains(additionalIgnores, type)))
+					continue;
+				return token;
 			}
 		}
 	}
 	
 	// The funky name here is to help locate this function in stack traces during debugging
-	public static void runParserTest______________________(
+	public void runParserTest______________________(
 		final String fullParseSource, final String parseRule, final String expectedRemainingSource, 
-		final String expectedGenSource, final NamedNodeElement[] expectedStructure, final 
-		ArrayList<ParserError> expectedErrors, final boolean allowAnyErrors, 
-		HashMap<String, MetadataEntry> additionalMetadata) {
+		final String expectedPrintedSource, final NamedNodeElement[] expectedStructure, final 
+		ArrayList<ParserError> expectedErrors, HashMap<String, MetadataEntry> additionalMetadata) {
 		
 		String parseSource = fullParseSource;
-		DeeTestsParser deeParser = new DeeTestsParser(fullParseSource);
+		DeeTestsFullChecksParser deeParser = new DeeTestsFullChecksParser(fullParseSource);
 		DeeParserResult result = parseUsingRule(parseRule, deeParser);
 		
 		if(expectedRemainingSource == null) {
@@ -106,25 +108,19 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 		ASTNeoNode mainNode = assertNotNull_(result.node);
 		
-		checkBasicStructure(array(mainNode), null);
+		checkBasicStructureContracts(array(mainNode), null);
+		
 		if(expectedStructure != null) {
 			checkExpectedStructure(mainNode, expectedStructure);
 		}
 		
-		String expectedSource = expectedGenSource;
-		if(result.errors.size() == 0) {
-			assertTrue(expectedErrors.size() == 0);
-			if(expectedGenSource == null) {
-				expectedSource = parseSource;
-			} else {
-				assertTrue(parseSource.equals(expectedGenSource));
-			}
-		} else if(allowAnyErrors == false) {
+		if(expectedErrors != null) {
 			checkParserErrors(result.errors, expectedErrors);
 		}
 		
-		if(expectedGenSource != null) {
-			checkSourceEquality(mainNode, expectedSource);
+		assertTrue(result.errors.size() == 0 ? parseSource.equals(expectedPrintedSource) : true);
+		if(expectedPrintedSource != null) {
+			CheckSourceEquality.assertCheck(mainNode.toStringAsCode(), expectedPrintedSource);
 		}
 		
 		// Check consistency of source ranges (no overlapping ranges)
@@ -144,8 +140,8 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 	}
 	
-	public static final class DeeTestsParser extends DeeParser {
-		public DeeTestsParser(String source) {
+	public static class DeeTestsFullChecksParser extends DeeParser {
+		public DeeTestsFullChecksParser(String source) {
 			super(new DeeTestsLexer(source));
 		}
 		
@@ -162,17 +158,13 @@ public class DeeParserTest extends CommonTestUtils {
 	}
 	
 	
-	public static void checkSourceEquality(ASTNeoNode node, String expectedGenSource) {
-		CheckSourceEquality.assertCheck(node.toStringAsCode(), expectedGenSource);
-	}
-	
 	/* ============= Structure Checkers ============= */
 	
-	public static void checkBasicStructure(ASTNeoNode[] children, ASTNeoNode parent) {
+	public static void checkBasicStructureContracts(ASTNeoNode[] children, ASTNeoNode parent) {
 		for (ASTNeoNode astNode : children) {
 			assertTrue(astNode.getParent() == parent);
 			assertTrue(astNode.getData() == ASTSemantics.PARSED_STATUS);
-			checkBasicStructure(astNode.getChildren(), astNode);
+			checkBasicStructureContracts(astNode.getChildren(), astNode);
 		}
 	}
 	
@@ -295,45 +287,41 @@ public class DeeParserTest extends CommonTestUtils {
 		};
 	}
 	
+	public static final DeeTokens[] structuralControlTokens = array(
+		DeeTokens.OPEN_PARENS, DeeTokens.CLOSE_PARENS,
+		DeeTokens.OPEN_BRACE, DeeTokens.CLOSE_BRACE,
+		DeeTokens.OPEN_BRACKET, DeeTokens.CLOSE_BRACKET,
+		DeeTokens.COLON,
+		DeeTokens.SEMICOLON
+		);
+	
+	// These checks can be computationally expensive. They make parsing quadratic on node depth.
 	public static void runNodeParsingChecks(ASTNeoNode node, final String fullSource, List<ParserError> errors) {
-		// These checks can be computationally expensive. They make parsing quadratic on node depth.
+		String nodeSnippedSource = fullSource.substring(node.getStartPos(), node.getEndPos());
 		if(!areThereMissingTokenErrorsInNode(node, errors)) {
-			String nodeSnippedSource = fullSource.substring(node.getStartPos(), node.getEndPos());
-			DeeParserTest.CheckSourceEquality.assertCheck(nodeSnippedSource, node.toStringAsCode());
+			CheckSourceEquality.assertCheck(nodeSnippedSource, node.toStringAsCode());
+		} else {
+			CheckSourceEquality.assertCheck(nodeSnippedSource, node.toStringAsCode(), structuralControlTokens);
 		}
 		
-		// Warning, this check has quadratic performance on node depth
 		new ASTNodeReparseCheck(fullSource).doCheck(node);
 	}
 	
 	protected static boolean areThereMissingTokenErrorsInNode(ASTNeoNode node, Collection<ParserError> errors) {
 		for(ParserError error : errors) {
 			
-			switch(error.errorType) {
-			case EXPECTED_TOKEN:
-				if(error.msgData != DeeTokens.IDENTIFIER)
-					break;
-			case MALFORMED_TOKEN:
-			case INVALID_TOKEN_CHARACTERS:
-			case SYNTAX_ERROR:
-			case EXPECTED_RULE:
-			case EXP_MUST_HAVE_PARENTHESES:
-			case TYPE_USED_AS_EXP_VALUE:
-			case INVALID_QUALIFIER:
-			case NO_CHAINED_TPL_SINGLE_ARG:
+			if(!(error.errorType == ParserErrorTypes.INVALID_EXTERN_ID || 
+				(error.errorType == ParserErrorTypes.EXPECTED_TOKEN && error.msgData != DeeTokens.IDENTIFIER))) {
 				continue;
-			case INVALID_EXTERN_ID:
-				break;
 			}
-			// TODO
-			// Then there is an EXPECTED_TOKEN error in error.originNode
+			
 			assertNotNull(error.originNode);
 			
 			if(NodeUtil.isContainedIn(error.originNode, node)) {
 				return true;
 			}
 			if(error.sourceRange.getStartPos() >= node.getEndPos()) {
-				return false;
+				break; // No point in search remaining errors
 			}
 		}
 		return false;
@@ -341,7 +329,7 @@ public class DeeParserTest extends CommonTestUtils {
 	
 	/* ---------------- Rule specific tests ---------------- */
 	
-	public static DeeParserResult parseUsingRule(final String parseRule, DeeTestsParser deeParser) {
+	public static DeeParserResult parseUsingRule(final String parseRule, DeeTestsFullChecksParser deeParser) {
 		if(parseRule != null && parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
 			DeeParserResult result = deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
 			DeeParserResult result2 = parseRule.equalsIgnoreCase("EXPRESSION_ToE") ?
@@ -365,7 +353,7 @@ public class DeeParserTest extends CommonTestUtils {
 		MetadataEntry fnParamTest = additionalMetadata.remove("FN_PARAMETER_TEST");
 		if(fnParamTest != null) {
 			String source = result.source.substring(fnParamTest.offset);
-			DeeTestsParser parser = new DeeTestsParser(source);
+			DeeParser parser = new DeeParser(source);
 			Object parameter = parser.new ParseRule_Parameters(TplOrFnMode.AMBIG).parseParameter();
 			if(additionalMetadata.remove("FN_ONLY") != null) {
 				assertTrue(parameter instanceof IFunctionParameter);

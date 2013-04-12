@@ -18,7 +18,7 @@ import descent.core.compiler.Linkage;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 
-public final class ParserError {
+public class ParserError {
 	
 	public enum ParserErrorTypes {
 		

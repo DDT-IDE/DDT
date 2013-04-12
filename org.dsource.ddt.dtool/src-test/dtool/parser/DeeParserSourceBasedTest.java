@@ -10,9 +10,9 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.parser.DeeParserTest.runParserTest______________________;
 import static dtool.tests.DToolTestResources.getTestResource;
 import static dtool.util.NewUtils.assertNotNull_;
+import static dtool.util.NewUtils.isValidStringRange;
 import static dtool.util.NewUtils.removeRange;
 import static dtool.util.NewUtils.replaceRange;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.BeforeClass;
@@ -151,32 +152,42 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		}
 	}
 	
+	public static class ParserErrorExt extends ParserError {
+		public String sourceCorrectionForMissingTokens;
+		
+		public ParserErrorExt(ParserError error, String correctionForMissingTokens) {
+			super(error.errorType, error.sourceRange, error.msgErrorSource, error.msgData);
+			this.sourceCorrectionForMissingTokens = correctionForMissingTokens;
+		}
+		
+	}
+	
 	public void runSourceBasedTest(AnnotatedSource testSource) {
 		checkOffsetInvariant(testSource);
 		
 		final String DEFAULT_VALUE = "##DEFAULT VALUE";
 		
-		final String parseSource = testSource.source;
-		String parseRule = null;
+		final String fullSource = testSource.source;
+		String parsedSource = fullSource;
 		String expectedRemainingSource = null;
-		String expectedGenSource = DEFAULT_VALUE;
+		String parseRule = null;
+		
+		String expectedPrintedSource = DEFAULT_VALUE;
 		NamedNodeElement[] expectedStructure = null;
 		boolean allowAnyErrors = false;
 		boolean ignoreFurtherErrorMDs = false;
 		
-		String calcExpectedSource = parseSource;
-		int modifyDelta = 0;
-		
 		ArrayList<ParserError> expectedErrors = new ArrayList<ParserError>();
 		HashMap<String, MetadataEntry> additionalMetadata = new HashMap<String, MetadataEntry>();
+		List<ParserErrorExt> errorCorrectionMetadata = new ArrayList<ParserErrorExt>();
 		
 		for (MetadataEntry mde : testSource.metadata) {
 			if(mde.name.equals("AST_SOURCE_EXPECTED")) {
-				assertTrue(expectedGenSource == DEFAULT_VALUE);
+				assertTrue(expectedPrintedSource == DEFAULT_VALUE);
 				if(areEqual(mde.value, "NoCheck")) {
-					expectedGenSource = null;
+					expectedPrintedSource = null;
 				} else {
-					expectedGenSource = assertNotNull_(mde.sourceValue);
+					expectedPrintedSource = assertNotNull_(mde.sourceValue);
 				}
 				ignoreFurtherErrorMDs = true;
 			} else if(mde.name.equals("PARSE")){
@@ -184,8 +195,8 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			} else if(mde.name.equals("parser") && areEqual(mde.value, "IgnoreRest")){
 				int pos = mde.getOffsetFromNoLength();
 				if(expectedRemainingSource == null) {
-					expectedRemainingSource = parseSource.substring(pos);
-					calcExpectedSource = calcExpectedSource.substring(0, pos + modifyDelta);
+					parsedSource = fullSource.substring(0, pos);
+					expectedRemainingSource = fullSource.substring(pos);
 					ignoreFurtherErrorMDs = true;
 				}
 			} else if(mde.name.equals("STRUCTURE_EXPECTED")) {
@@ -195,29 +206,16 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 				if(ignoreFurtherErrorMDs) 
 					continue;
 				
-				ParserError error = decodeError(parseSource, mde);
+				ParserError error = decodeError(fullSource, mde);
 				expectedErrors.add(error);
 				
-				SourceRange sr = mde.getSourceRange();
-				int offset = sr.getOffset(); 
-				if(error.errorType == ParserErrorTypes.INVALID_TOKEN_CHARACTERS) {
-					calcExpectedSource = removeRange(calcExpectedSource, offset + modifyDelta, sr.getLength());
-					modifyDelta -= sr.getLength();
-				}
-				if(error.errorType == ParserErrorTypes.EXPECTED_TOKEN) {
-					String rpl;
+				if(getErrorTypeFromMDE(mde) == ParserErrorTypes.INVALID_TOKEN_CHARACTERS) {
+					errorCorrectionMetadata.add(new ParserErrorExt(error, null));
+				} else if(getErrorTypeFromMDE(mde) == ParserErrorTypes.EXPECTED_TOKEN) {
 					if(mde.sourceValue != null) {
 						assertTrue(mde.sourceWasIncluded == false || mde.sourceValue.isEmpty());
-						rpl = mde.sourceValue;
-					} else {
-						DeeTokens expectedToken = DeeTokens.valueOf(error.msgData.toString());
-						if(expectedToken.getSourceValue() == null) 
-							continue;
-						rpl = expectedToken.getSourceValue();
 					}
-					
-					calcExpectedSource = replaceRange(calcExpectedSource, offset + modifyDelta, 0, rpl);
-					modifyDelta += rpl.length();
+					errorCorrectionMetadata.add(new ParserErrorExt(error, mde.sourceValue));
 				}
 				
 			} else if(mde.name.equals("parser") && areEqual(mde.value, "AllowAnyErrors")){
@@ -233,60 +231,121 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			}
 		}
 		
-		if(expectedGenSource == DEFAULT_VALUE) {
-			expectedGenSource = calcExpectedSource;
+		// Do error correction for toStringAsCode
+		if(expectedPrintedSource == DEFAULT_VALUE) {
+			expectedPrintedSource = calcExpectedToStringAsCode(parsedSource, errorCorrectionMetadata);
 		}
 		
-		runParserTest______________________(
-			parseSource, parseRule, expectedRemainingSource, expectedGenSource, expectedStructure, 
-			expectedErrors, allowAnyErrors, additionalMetadata);
+		if(allowAnyErrors) {
+			expectedErrors = null;
+		}
+		
+		new DeeParserTest().runParserTest______________________(
+			fullSource, parseRule, expectedRemainingSource, expectedPrintedSource, expectedStructure, 
+			expectedErrors, additionalMetadata);
 	}
 	
-	public ParserError decodeError(String parseSource, MetadataEntry mde) {
+	public static String calcExpectedToStringAsCode(String parseSource, List<ParserErrorExt> errorInfo) {
+		int modifyDelta = 0;
+		
+		String correctedParseSource = parseSource;
+		for (ParserErrorExt error : errorInfo) {
+			if(error.errorType == ParserErrorTypes.INVALID_TOKEN_CHARACTERS) {
+				SourceRange sr = error.sourceRange;
+				int offset = sr.getOffset() + modifyDelta;
+				assertTrue(isValidStringRange(correctedParseSource, offset, sr.getLength()));
+				correctedParseSource = removeRange(correctedParseSource, offset , sr.getLength());
+				modifyDelta -= sr.getLength();
+			}
+			if(error.errorType == ParserErrorTypes.EXPECTED_TOKEN) {
+				
+				String rpl = error.sourceCorrectionForMissingTokens;
+				if(rpl == null) {
+					DeeTokens expectedToken = (DeeTokens) error.msgData;
+					if(expectedToken.getSourceValue() == null) 
+						continue;
+					rpl = expectedToken.getSourceValue();
+				}
+				
+				int offset = error.sourceRange.getEndPos() + modifyDelta;
+				assertTrue(isValidStringRange(correctedParseSource, offset, 0));
+				correctedParseSource = replaceRange(correctedParseSource, offset, 0, rpl);
+				modifyDelta += rpl.length();
+			}
+		}
+		return correctedParseSource;
+	}
+
+	@SuppressWarnings("unchecked") // Not necessary with Java7
+	protected static final Map<String,ParserErrorTypes> errorNameToType = NewUtils.initMap(
+		Pair.create("ITC", ParserErrorTypes.INVALID_TOKEN_CHARACTERS),
+		Pair.create("MT", ParserErrorTypes.MALFORMED_TOKEN),
+		Pair.create("MTC", ParserErrorTypes.MALFORMED_TOKEN),
+		Pair.create("EXP", ParserErrorTypes.EXPECTED_TOKEN),
+		Pair.create("EXPRULE", ParserErrorTypes.EXPECTED_RULE),
+		Pair.create("SE", ParserErrorTypes.SYNTAX_ERROR),
+		Pair.create("<SE", ParserErrorTypes.SYNTAX_ERROR),
+		Pair.create("BAD_LINKAGE_ID", ParserErrorTypes.INVALID_EXTERN_ID),
+		Pair.create("REQPARENS", ParserErrorTypes.EXP_MUST_HAVE_PARENTHESES),
+		Pair.create("TYPE_AS_EXP_VALUE", ParserErrorTypes.TYPE_USED_AS_EXP_VALUE),
+		Pair.create("INV_QUALIFIER", ParserErrorTypes.INVALID_QUALIFIER),
+		Pair.create("NO_TPL_SINGLE_ARG", ParserErrorTypes.NO_CHAINED_TPL_SINGLE_ARG)
+	);
+	
+	public static ParserErrorTypes getErrorTypeFromMDE(MetadataEntry mde) {
+		ParserErrorTypes result = errorNameToType.get(mde.value);
+		if(result != null) {
+			return result;
+		}
 		String errorType = StringUtil.upUntil(mde.value, "_");
+		return assertNotNull_(errorNameToType.get(errorType));
+	}
+	
+	public static ParserError decodeError(String parseSource, MetadataEntry mde) {
+		String errorTypeStr = StringUtil.upUntil(mde.value, "_");
 		String errorParam = NewUtils.fromIndexOf("_", mde.value);
 		
-		DeeLexer deeLexer = new DeeLexer(parseSource);
+		DeeLexer deeLexer = new DeeLexer(parseSource); // TODO: save tokenization
 		
 		SourceRange errorRange = mde.getSourceRange();
+		String errorSource = null;
 		
-		if(errorType.equals("ITC")) {
+		ParserErrorTypes errorType = getErrorTypeFromMDE(mde);
+		switch (errorType) {
+		case INVALID_TOKEN_CHARACTERS:
 			return new ParserError(ParserErrorTypes.INVALID_TOKEN_CHARACTERS, errorRange, mde.sourceValue, null);
-		} else if(errorType.equals("MT") || errorType.equals("MTC")) {
+		case MALFORMED_TOKEN:
 			errorParam = DeeLexerSourceBasedTest.parseExpectedError(errorParam).toString();
 			return createErrorToken(ParserErrorTypes.MALFORMED_TOKEN, mde, deeLexer, true, errorParam);
-		} else if(errorType.equals("EXP")) {
+		case EXPECTED_TOKEN:
 			String expectedTokenStr = DeeLexerSourceBasedTest.transformTokenNameAliases(errorParam);
-			return createErrorToken(ParserErrorTypes.EXPECTED_TOKEN, mde, deeLexer, true, expectedTokenStr);
-		} else if(errorType.equals("EXPRULE")) {
+			DeeTokens expectedToken = DeeTokens.valueOf(expectedTokenStr);
+			return createErrorToken(ParserErrorTypes.EXPECTED_TOKEN, mde, deeLexer, true, expectedToken);
+		case EXPECTED_RULE:
 			errorParam = getExpectedRuleName(errorParam);
 			return createErrorToken(ParserErrorTypes.EXPECTED_RULE, mde, deeLexer, true, errorParam);
-		} else if(errorType.equals("SE") || errorType.equals("<SE")) {
+		case SYNTAX_ERROR:
 			errorParam = getExpectedRuleName(errorParam);
-			boolean tokenBefore = errorType.equals("<SE");
+			boolean tokenBefore = errorTypeStr.equals("<SE");
 			return createErrorToken(ParserErrorTypes.SYNTAX_ERROR, mde, deeLexer, tokenBefore, errorParam);
-		} else if(mde.value.equals("BAD_LINKAGE_ID")) {
+		case INVALID_EXTERN_ID:
 			return createErrorToken(ParserErrorTypes.INVALID_EXTERN_ID, mde, deeLexer, true, null);
-		} else if(errorType.equals("REQPARENS")) {
-			String errorSource = assertNotNull_(mde.sourceValue);
+		case EXP_MUST_HAVE_PARENTHESES: 
 			errorParam = errorParam == null ? DeeParserTest.DONT_CHECK : errorParam;
-			return new ParserError(ParserErrorTypes.EXP_MUST_HAVE_PARENTHESES, errorRange, errorSource, errorParam);
-		} else if(mde.value.equals("TYPE_AS_EXP_VALUE")) {
-			String errorSource = assertNotNull_(mde.sourceValue);
-			return new ParserError(ParserErrorTypes.TYPE_USED_AS_EXP_VALUE, errorRange, errorSource, null);
-		} else if(mde.value.equals("INV_QUALIFIER")) {
-			String errorSource = assertNotNull_(mde.sourceValue);
-			return new ParserError(ParserErrorTypes.INVALID_QUALIFIER, errorRange, errorSource, null);
-		} else if(mde.value.equals("NO_TPL_SINGLE_ARG")) {
-			String errorSource = assertNotNull_(mde.sourceValue);
-			return new ParserError(ParserErrorTypes.NO_CHAINED_TPL_SINGLE_ARG, errorRange, errorSource, null);
-		} else{
+			errorSource = assertNotNull_(mde.sourceValue);
+			return new ParserError(errorType, errorRange, errorSource, errorParam);
+		case TYPE_USED_AS_EXP_VALUE:
+		case INVALID_QUALIFIER:
+		case NO_CHAINED_TPL_SINGLE_ARG:
+			errorSource = assertNotNull_(mde.sourceValue);
+			return new ParserError(errorType, errorRange, errorSource, null);
+		default:
 			throw assertFail();
 		}
 	}
 	
-	public ParserError createErrorToken(ParserErrorTypes errorTypeTk, MetadataEntry mde, DeeLexer deeLexer,
-		boolean tokenBefore, String errorParam) {
+	public static ParserError createErrorToken(ParserErrorTypes errorTypeTk, MetadataEntry mde, DeeLexer deeLexer,
+		boolean tokenBefore, Object errorParam) {
 		Token lastToken = tokenBefore 
 			? findLastEffectiveTokenBeforeOffset(mde.offset, deeLexer)
 			: findNextEffectiveTokenAfterOffset(mde.offset, deeLexer);
@@ -296,7 +355,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		return new ParserError(errorTypeTk, errorRange, errorSource, errorParam);
 	}
 	
-	public String getExpectedRuleName(String errorParam) {
+	public static String getExpectedRuleName(String errorParam) {
 		if(errorParam.equals("decl")) {
 			errorParam = DeeParser.RULE_DECLARATION.name;
 		} else if(errorParam.equals("exp")) {
@@ -311,7 +370,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		return errorParam;
 	}
 	
-	public Token findLastEffectiveTokenBeforeOffset(int offset, DeeLexer deeLexer) {
+	public static Token findLastEffectiveTokenBeforeOffset(int offset, DeeLexer deeLexer) {
 		assertTrue(offset <= deeLexer.source.length());
 		
 		Token lastNonIgnoredToken = null;
@@ -330,7 +389,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		return lastNonIgnoredToken;
 	}
 	
-	public Token findNextEffectiveTokenAfterOffset(int offset, DeeLexer deeLexer) {
+	public static Token findNextEffectiveTokenAfterOffset(int offset, DeeLexer deeLexer) {
 		assertTrue(offset <= deeLexer.source.length());
 		
 		while(true) {

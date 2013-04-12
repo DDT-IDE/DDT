@@ -263,7 +263,7 @@ public class ASTNodeReparseCheck {
 	}
 	
 	public Void simpleReparseCheck(ASTNeoNode node, String expectedCode) {
-		DeeParserTest.checkSourceEquality(node, expectedCode);
+		CheckSourceEquality.assertCheck(node.toStringAsCode(), expectedCode);
 		return VOID;
 	}
 	

@@ -6,6 +6,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.misc.IteratorUtil;
+import melnorme.utilbox.misc.Pair;
 
 public class NewUtils {
 	
@@ -116,15 +118,23 @@ public class NewUtils {
 		}
 	}
 	
+	public static String subStringFromEnd(String string, int length) {
+		return string.substring(0, string.length() - length);
+	}
+	
+	public static boolean isValidStringRange(String string, int startIndex, int length) {
+		return startIndex >= 0 && length >= 0 && startIndex + length <= string.length();
+	}
+	
 	public static String removeRange(String string, int startIndex, int length) {
+		assertTrue(isValidStringRange(string, startIndex, length));
 		int endIndex = startIndex + length;
-		assertTrue(startIndex >= 0 && length >= 0 && endIndex <= string.length());
 		return string.substring(0, startIndex) + string.substring(endIndex, string.length());
 	}
 	
 	public static String replaceRange(String string, int startIndex, int length, String repl) {
+		assertTrue(isValidStringRange(string, startIndex, length));
 		int endIndex = startIndex + length;
-		assertTrue(startIndex >= 0 && length >= 0 && endIndex <= string.length());
 		return string.substring(0, startIndex) + repl + string.substring(endIndex, string.length());
 	}
 	
@@ -157,6 +167,14 @@ public class NewUtils {
 			return 1;
 		}
 		return str1.compareTo(str2);
+	}
+	
+	public static <K, V> HashMap<K, V> initMap(Pair<K, V>... entries) {
+		HashMap<K, V> hashMap = new HashMap<K, V>();
+		for (Pair<K,V> pair : entries) {
+			hashMap.put(pair.getFirst(), pair.getSecond());
+		}
+		return hashMap;
 	}
 	
 }
