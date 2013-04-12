@@ -27,8 +27,7 @@ public class DeeEditorContentAssistConfigurationBlock extends CodeAssistConfigur
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	protected void getOverlayKeys(@SuppressWarnings("rawtypes") ArrayList overlayKeys) {
+	protected void getOverlayKeys(ArrayList overlayKeys) {
 		super.getOverlayKeys(overlayKeys);
 		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.STRING,

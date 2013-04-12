@@ -130,8 +130,6 @@ public class DeeLexerSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			case SPECIAL_TOKEN_LINE_BAD_FORMAT: strToErrorType.put("STLx", lexerErrorType); break;
 			case SPECIAL_TOKEN_INVALID: strToErrorType.put("STx", lexerErrorType); break;
 			
-			default:
-				assertFail();
 			}
 		}
 	}

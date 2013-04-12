@@ -257,9 +257,9 @@ public class ASTNodeReparseCheck {
 		case FUNCTION_BODY_OUT_BLOCK:
 			return reparseCheck(snippedParser.parseOutBlock().node, node);
 			
-		default:
-			throw assertFail();
+		case OTHER: break;
 		}
+		throw assertFail();
 	}
 	
 	public Void simpleReparseCheck(ASTNeoNode node, String expectedCode) {

@@ -76,14 +76,17 @@ public class CommonTestUtils {
 	
 	/* -------------------------- */
 	
+	@SafeVarargs
 	public static <T> T[] array(T... elems) {
 		return elems;
 	}
 	
+	@SafeVarargs
 	public static <T> List<T> list(T... elems) {
 		return Arrays.asList(elems);
 	}
 	
+	@SafeVarargs
 	public static <T> HashSet<T> hashSet(T... elems) {
 		return new HashSet<T>(Arrays.asList(elems));
 	}
@@ -150,6 +153,7 @@ public class CommonTestUtils {
 		void visit(T obj);
 	}
 	
+	@SafeVarargs
 	public static <T, PRED extends Visitor<T>> void visitContainer(Collection<T> coll, PRED... predicates) {
 		Iterator<T> iterator = coll.iterator();
 		assertTrue(coll.size() == predicates.length);
@@ -159,6 +163,7 @@ public class CommonTestUtils {
 		}
 	}
 	
+	@SafeVarargs
 	public static <T, PRED extends Visitor<T>> void visitContainer(T[] coll, PRED... predicates) {
 		assertTrue(coll.length == predicates.length);
 		for (int i = 0; i < coll.length; i++) {

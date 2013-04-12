@@ -788,9 +788,8 @@ protected class ParseRule_TypeOrExp {
 		case ADD: return InfixOpType.MUL;
 		case MUL: return InfixOpType.NULL;
 		case POW: return InfixOpType.NULL;
-		default:
-			throw assertUnreachable();
 		}
+		throw assertUnreachable();
 	}
 	
 	protected abstract class TypeOrExpRule_Common {

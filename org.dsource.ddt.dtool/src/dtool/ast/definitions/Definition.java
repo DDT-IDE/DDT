@@ -57,8 +57,8 @@ public abstract class Definition extends DefUnit {
 		case PROTECTED: return 0x3;
 		case PUBLIC: return 0x4;
 		case EXPORT: return 0x5;
-		default: throw assertUnreachable();
 		}
+		throw assertUnreachable();
 	}
 	
 	public static int getBitMaskForBasicAttribute(AttributeKinds basicAttrib) {

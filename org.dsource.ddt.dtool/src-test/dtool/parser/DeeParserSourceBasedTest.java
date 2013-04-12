@@ -275,8 +275,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		}
 		return correctedParseSource;
 	}
-
-	@SuppressWarnings("unchecked") // Not necessary with Java7
+	
 	protected static final Map<String,ParserErrorTypes> errorNameToType = NewUtils.initMap(
 		Pair.create("ITC", ParserErrorTypes.INVALID_TOKEN_CHARACTERS),
 		Pair.create("MT", ParserErrorTypes.MALFORMED_TOKEN),
@@ -339,9 +338,8 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		case NO_CHAINED_TPL_SINGLE_ARG:
 			errorSource = assertNotNull_(mde.sourceValue);
 			return new ParserError(errorType, errorRange, errorSource, null);
-		default:
-			throw assertFail();
 		}
+		throw assertFail();
 	}
 	
 	public static ParserError createErrorToken(ParserErrorTypes errorTypeTk, MetadataEntry mde, DeeLexer deeLexer,

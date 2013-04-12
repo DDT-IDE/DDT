@@ -148,7 +148,7 @@ public abstract class FakeMember implements IMember {
 	}
 	
 	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+	public Object getAdapter(Class adapter) {
 		throw assertFail();
 	}
 	

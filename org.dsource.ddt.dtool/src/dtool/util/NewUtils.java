@@ -59,6 +59,7 @@ public class NewUtils {
 		return obj;
 	}
 	
+	@SafeVarargs
 	public static <T> T[] assertNotContainsNull_(T... arr) {
 		for (T elem : arr) {
 			Assert.AssertNamespace.assertNotNull(elem);
@@ -169,6 +170,7 @@ public class NewUtils {
 		return str1.compareTo(str2);
 	}
 	
+	@SafeVarargs
 	public static <K, V> HashMap<K, V> initMap(Pair<K, V>... entries) {
 		HashMap<K, V> hashMap = new HashMap<K, V>();
 		for (Pair<K,V> pair : entries) {
