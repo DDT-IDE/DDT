@@ -12,7 +12,7 @@ foo #error(EXP_IDENTIFIER) ;
 #STRUCTURE_EXPECTED:
 InvalidDeclaration(?)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo #error(EXP_IDENTIFIER) #@INVALID_DECL__NO_SEMICOLON
+foo #error(EXP_IDENTIFIER) #@INVALID_DECL__NO_SEMICOLON【】
 #STRUCTURE_EXPECTED:
 InvalidDeclaration(?)
 

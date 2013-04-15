@@ -55,3 +55,54 @@ function/template interactions - param default convert
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Function attributes
 #@FN_ATTRIB《#@TYPE_MODIFIERS●nothrow●pure●@property●@safe●@trusted●@system●@disable● 
 ►@property @safe●nothrow @property pure @safe @disable》
+
+#@FN_ATTRIB__SAMPLE《
+ ►#?STRUCTURE_EXPECTED!【 /*no fn attrib*/ ● 】●  
+ ►#?STRUCTURE_EXPECTED!【 nothrow ● 】●  
+ ►#?STRUCTURE_EXPECTED!【 @safe const● 】●
+¤》
+
+Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function Body
+
+#@NO_BODY《#error(EXPRULE_Body) #@BREAK》
+#@EMPTY_BODY《#?STRUCTURE_EXPECTED!【; ● EmptyBodyStatement 】》
+
+#@IN_BLOCKS《
+ ►#?STRUCTURE_EXPECTED!【 in #@BLK_ST● #@BLK_ST】●  
+ ►#?STRUCTURE_EXPECTED!【 in #@NO_BLOCK_ST● #@NO_BLOCK_ST 】●
+¤》
+#@OUT_BLOCKS《
+ ►#?STRUCTURE_EXPECTED!【 out(foo) #@BLK_ST●      FunctionBodyOutBlock(Symbol #@BLK_ST )】●  
+ ►#?STRUCTURE_EXPECTED!【 out(foo) #@NO_BLOCK_ST● FunctionBodyOutBlock(Symbol #@NO_BLOCK_ST )】●
+ 
+ ►#?STRUCTURE_EXPECTED!【 out(foo #@BREAK_Pr● FunctionBodyOutBlock(Symbol $ )】●
+ ►#?STRUCTURE_EXPECTED!【 out(#@NO_ID #@BREAK_Pr● FunctionBodyOutBlock(Symbol $ )】●
+ ►#?STRUCTURE_EXPECTED!【 out #error(EXP_OPEN_PARENS)【】 #@BREAK● FunctionBodyOutBlock(   $ )】●
+¤》
+
+#@OUT_BLOCK《►#?STRUCTURE_EXPECTED!【 out(foo) #@BLK_ST●      FunctionBodyOutBlock(Symbol #@BLK_ST )】●¤》
+ 
+#@FN_BODY《
+ ►#@NO_BODY●
+ ►#@EMPTY_BODY●
+ ►#@SAMPLE_BLOCK_ST●
+ ►#@BROKEN_BLOCK_ST●
+ 
+ ►#?STRUCTURE_EXPECTED!【 { #error(EXP_CLOSE_BRACE) #@BREAK ● BlockStatement $】●
+ ►#?STRUCTURE_EXPECTED!【 body #@BLK_ST        ● FunctionBody( #@BLK_ST )】●
+ ►#?STRUCTURE_EXPECTED!【 body #@NO_BLOCK_ST /**/● FunctionBody( #@NO_BLOCK_ST )】●
+ 
+ ►#?STRUCTURE_EXPECTED!【  #@IN_BLOCKS body #@BLK_ST             ●InOutFunctionBody( #@IN_BLOCKS #@BLK_ST )】●
+ ►#?STRUCTURE_EXPECTED!【  #@IN_BLOCKS #@OUT_BLOCKS body #@BLK_ST●InOutFunctionBody( #@IN_BLOCKS #@OUT_BLOCKS #@BLK_ST )】●
+ ►#?STRUCTURE_EXPECTED!【  #@OUT_BLOCKS body #@BLK_ST            ●InOutFunctionBody( #@OUT_BLOCKS #@BLK_ST )】●
+ ►#?STRUCTURE_EXPECTED!【  #@OUT_BLOCKS #@IN_BLOCKS body #@BLK_ST●InOutFunctionBody( #@OUT_BLOCKS #@IN_BLOCKS #@BLK_ST )】●
+ 
+ ►#?STRUCTURE_EXPECTED!【  in #@BLK_ST   #@NO_BODY  #@BLK_ST                 ●InOutFunctionBody( #@BLK_ST #@NO_BODY )】●
+ ►#?STRUCTURE_EXPECTED!【  in #@BLK_ST   #@NO_BODY  in #@BLK_ST body #@BLK_ST●InOutFunctionBody( #@BLK_ST #@NO_BODY )】●
+ ►#?STRUCTURE_EXPECTED!【#@OUT_BLOCK #@NO_BODY  #@BLK_ST            ●InOutFunctionBody( #@OUT_BLOCK #@NO_BODY )】●
+ ►#?STRUCTURE_EXPECTED!【#@OUT_BLOCK #@NO_BODY  #@OUT_BLOCK #@BLK_ST●InOutFunctionBody( #@OUT_BLOCK #@NO_BODY )】●
+¤》
+
+#@FN_BODY__SAMPLE《
+ ►#?STRUCTURE_EXPECTED!【  #@IN_BLOCKS body #@BLK_ST             ●InOutFunctionBody( #@IN_BLOCKS #@BLK_ST )】●
+¤》

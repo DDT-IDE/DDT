@@ -47,7 +47,7 @@ import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
-import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpFunctionLiteral;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
@@ -224,7 +224,7 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	@Override public boolean visit(ExpConditional node) { return true; }
 	
 	@Override
-	public boolean visit(ExpLiteralFunc node) {
+	public boolean visit(ExpFunctionLiteral node) {
 		return true;
 	}
 	

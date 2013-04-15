@@ -44,7 +44,6 @@ import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
-import dtool.ast.statements.FunctionBody;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.InOutFunctionBody;

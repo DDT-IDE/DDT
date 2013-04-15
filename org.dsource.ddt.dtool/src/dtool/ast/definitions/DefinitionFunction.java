@@ -53,7 +53,7 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 		this.fnBody = parentizeI(fnBody);
 	}
 	
-	public ArrayView<ASTNeoNode> getParams_asNodes() {
+	public final ArrayView<ASTNeoNode> getParams_asNodes() {
 		return CoreUtil.blindCast(params);
 	}
 	

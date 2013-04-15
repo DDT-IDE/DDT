@@ -12,3 +12,10 @@ BlockStatement(
   )
 )】●
 ¤》
+
+// Consider merging BLK_ST and SAMPLE_BLOCK_ST
+#@BLK_ST《                   ►#?STRUCTURE_EXPECTED!【 { Foo foo; } ● BlockStatement(DefVariable(RefIdentifier DefSymbol))】》
+#@NO_BLOCK_ST《       ►#?STRUCTURE_EXPECTED!【 #error(EXPRULE_Block) ● BlockStatement 】》
+#@BROKEN_BLOCK_ST《 ►#?STRUCTURE_EXPECTED!【 { Foo foo; #error(EXP_CLOSE_BRACE) #@BREAK● 
+   BlockStatement(DefVariable(? ?)) $】》
+

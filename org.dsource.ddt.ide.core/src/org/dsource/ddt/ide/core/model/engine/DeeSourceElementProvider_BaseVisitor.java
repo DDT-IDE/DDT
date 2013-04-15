@@ -28,7 +28,7 @@ import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
-import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpFunctionLiteral;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
@@ -159,7 +159,7 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTAbstractVi
 	@Override public boolean visit(ExpConditional elem) { return true; }
 	
 	@Override
-	public final boolean visit(ExpLiteralFunc elem) {
+	public final boolean visit(ExpFunctionLiteral elem) {
 		return true;
 	}
 	

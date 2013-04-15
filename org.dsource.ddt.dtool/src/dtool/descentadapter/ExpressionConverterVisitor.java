@@ -101,7 +101,7 @@ import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
-import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpFunctionLiteral;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralMapArray;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
@@ -128,6 +128,10 @@ import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
+import dtool.ast.statements.BlockStatement;
+import dtool.ast.statements.IFunctionBody;
+import dtool.ast.statements.IStatement;
+import dtool.ast.statements.InOutFunctionBody;
 import dtool.parser.DeeTokens;
 import dtool.util.ArrayView;
 
@@ -336,16 +340,31 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	public boolean visit(FuncExp element) {
 		TypeFunction elemTypeFunc = (TypeFunction) element.fd.type;
 		
-		return endAdapt(
-			new ExpLiteralFunc(
+		IStatement frequire = StatementConverterVisitor.convertStatement(element.fd.frequire, convContext);
+		IStatement fensure = StatementConverterVisitor.convertStatement(element.fd.fensure, convContext);
+		BlockStatement fbody = (BlockStatement) 
+			StatementConverterVisitor.convertStatement(element.fd.fbody, convContext);
+		
+		IFunctionBody fnBody;
+		if(frequire == null && fensure == null) {
+			if(fbody == null) {
+				fnBody = null;
+			} else {
+				fnBody =  fbody;
+			}
+		} else {
+			/*WATHEVAR*/
+			fnBody = new InOutFunctionBody(false, null, null, fbody, null);
+		}
+		
+		return endAdapt(connect(DefinitionConverter.sourceRange(element), 
+			new ExpFunctionLiteral(
+				Boolean.TRUE,
 				ReferenceConverter.convertType(elemTypeFunc.next, convContext),
 				DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
-				DefinitionConverter.convertVarArgs(elemTypeFunc.varargs),
-				StatementConverterVisitor.convertStatement(element.fd.frequire, convContext),
-				StatementConverterVisitor.convertStatement(element.fd.fbody, convContext),
-				StatementConverterVisitor.convertStatement(element.fd.fensure, convContext),
-				DefinitionConverter.sourceRange(element)
-			) 
+				null,
+				fnBody
+			)) 
 		);
 	}
 	

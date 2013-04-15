@@ -37,7 +37,7 @@ import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
-import dtool.ast.expressions.ExpLiteralFunc;
+import dtool.ast.expressions.ExpFunctionLiteral;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
@@ -197,7 +197,7 @@ public interface IASTVisitor {
 	public boolean visit(ExpInfix node);
 	public boolean visit(ExpConditional node);
 	
-	public boolean visit(ExpLiteralFunc node);
+	public boolean visit(ExpFunctionLiteral node);
 	public boolean visit(ExpLiteralNewAnonClass node);
 	
 	/* ---------------------------------- */

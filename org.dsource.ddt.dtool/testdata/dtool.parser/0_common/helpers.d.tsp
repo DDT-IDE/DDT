@@ -25,9 +25,7 @@
 #@IGNORE_REST《 #?STRUCTURE_EXPECTED!【#parser(IgnoreRest) ● $ 】  》
 
 #@SEMICOLON_OR_NO【;●#error(EXP_SEMICOLON)】
-#@INVALID_DECL__NO_SEMICOLON【】
 
 #@TYPE_MODIFIERS《const●immutable●shared●inout》
 
-#@EB《#?STRUCTURE_EXPECTED!【; ● EmptyBodyStatement 】》
 

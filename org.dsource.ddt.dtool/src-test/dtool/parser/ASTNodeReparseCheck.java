@@ -60,6 +60,8 @@ public class ASTNodeReparseCheck {
 				return reparseCheck(snippedParser.parseSymbol(), Symbol.class, node, false);
 			}
 			return reparseCheck(snippedParser.parseSymbol(), node);
+		
+		case SIMPLE_LAMBDA_DEFUNIT:
 		case DEF_UNIT:
 			assertFail();
 		
@@ -144,6 +146,10 @@ public class ASTNodeReparseCheck {
 			
 		case EXP_LITERAL_ARRAY:
 		case EXP_LITERAL_MAPARRAY:
+			
+		case EXP_FUNCTION_LITERAL:
+		case EXP_LAMBDA:
+		case EXP_SIMPLE_LAMBDA:
 		
 		case EXP_ASSERT:
 		case EXP_MIXIN_STRING:

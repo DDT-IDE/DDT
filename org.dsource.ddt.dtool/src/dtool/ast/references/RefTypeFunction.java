@@ -39,7 +39,7 @@ public class RefTypeFunction extends CommonRefNative {
 		this.fnAttributes = fnAttributes;
 	}
 	
-	public ArrayView<ASTNeoNode> getParams_asNodes() {
+	public final ArrayView<ASTNeoNode> getParams_asNodes() {
 		return CoreUtil.blindCast(params);
 	}
 	
