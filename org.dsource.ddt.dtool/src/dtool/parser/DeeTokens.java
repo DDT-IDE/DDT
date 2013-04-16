@@ -173,12 +173,12 @@ public enum DeeTokens {
 	;
 	
 	protected final String sourceValue;
-	protected final boolean isParserIgnored;
+	protected final boolean isSubChannel; // Flag for tokens like whitespace and comments, that are mostly ignored
 	protected final DeeTokens groupToken;
 	
-	private DeeTokens(String sourceValue, boolean isParserIgnored, DeeTokens groupToken) {
+	private DeeTokens(String sourceValue, boolean isSubChannel, DeeTokens groupToken) {
 		this.sourceValue = sourceValue;
-		this.isParserIgnored = isParserIgnored;
+		this.isSubChannel = isSubChannel;
 		this.groupToken = groupToken;
 	}
 	
@@ -195,7 +195,7 @@ public enum DeeTokens {
 	}
 	
 	private DeeTokens(DeeTokens groupToken) {
-		this(null, groupToken.isParserIgnored, groupToken);
+		this(null, groupToken.isSubChannel, groupToken);
 	}
 	
 	private DeeTokens(String sourceValue, DeeTokens groupToken) {

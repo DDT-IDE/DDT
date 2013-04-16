@@ -56,20 +56,23 @@ public class DeeParser extends DeeParser_Decls {
 	}
 	
 	
-	protected final CommonLexElementSource lexSource;
-	protected ArrayList<ParserError> errors = new ArrayList<ParserError>();
+	protected final String source;
+	protected final ArrayList<ParserError> errors = new ArrayList<ParserError>();
+	protected final LexElementSource lexSource;
 	protected boolean enabled = true;
-	
-	public DeeParser(CommonLexElementSource lexSource) {
-		this.lexSource = lexSource;
-	}
 	
 	public DeeParser(String source) {
 		this(new DeeLexer(source));
 	}
 	
 	public DeeParser(DeeLexer deeLexer) {
-		this(new LexerElementSource(deeLexer));
+		this.source = deeLexer.getSource();
+		this.lexSource = new LexElementSource(new DeeLexElementProducer().produceLexTokens(deeLexer));
+	}
+	
+	@Override
+	public String getSource() {
+		return source;
 	}
 	
 	@Override
@@ -77,18 +80,22 @@ public class DeeParser extends DeeParser_Decls {
 		errors.add(error);
 	}
 	
-	public CommonLexElementSource getEnabledLexSource() {
+	public final class DeeLexElementProducer extends LexElementProducer {
+		
+		@Override
+		protected void tokenCreated(Token token) {
+			DeeTokenSemantics.checkTokenErrors(token, DeeParser.this);
+		}
+		
+	}
+	
+	public LexElementSource getEnabledLexSource() {
 		assertTrue(enabled);
 		return lexSource;
 	}
 	
-	protected CommonLexElementSource getLexSource() {
+	protected LexElementSource getLexSource() {
 		return lexSource;
-	}
-	
-	@Override
-	public String getSource() {
-		return getLexSource().getSource();
 	}
 	
 	@Override
@@ -119,25 +126,12 @@ public class DeeParser extends DeeParser_Decls {
 	
 	@Override
 	protected final LexElement consumeInput() {
-		LexElement consumedElement = getEnabledLexSource().consumeInput();
-		analyzeIgnoredTokens(consumedElement);
-		DeeTokenSemantics.checkTokenErrors(consumedElement.token, this);
-		return consumedElement;
+		return getEnabledLexSource().consumeInput();
 	}
 	
 	@Override
-	public MissingLexElement consumeIgnoreTokens() {
-		MissingLexElement consumedElement = getEnabledLexSource().consumeIgnoreTokens();
-		analyzeIgnoredTokens(consumedElement);
-		return consumedElement;
-	}
-	
-	protected void analyzeIgnoredTokens(BaseLexElement lastLexElement) {
-		if(lastLexElement.ignoredPrecedingTokens != null) {
-			for (Token ignoredToken : lastLexElement.ignoredPrecedingTokens) {
-				DeeTokenSemantics.checkTokenErrors(ignoredToken, this);
-			}
-		}
+	public MissingLexElement consumeSubChannelTokens() {
+		return getEnabledLexSource().consumeSubChannelTokens();
 	}
 	
 }

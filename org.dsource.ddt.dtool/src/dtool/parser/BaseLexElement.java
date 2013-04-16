@@ -20,10 +20,10 @@ import dtool.parser.LexElement.MissingLexElement;
  */
 public abstract class BaseLexElement {
 	
-	protected final Token[] ignoredPrecedingTokens;
+	protected final Token[] precedingSubChannelTokens;
 	
 	public BaseLexElement(Token[] ignoredPrecedingTokens) {
-		this.ignoredPrecedingTokens = ignoredPrecedingTokens;
+		this.precedingSubChannelTokens = ignoredPrecedingTokens;
 	}
 	
 	public abstract boolean isMissingElement();
@@ -44,15 +44,15 @@ public abstract class BaseLexElement {
 	public abstract SourceRange getSourceRange();
 	
 	public final int getFullRangeStartPos() {
-		if(ignoredPrecedingTokens != null && ignoredPrecedingTokens.length > 0) {
-			return ignoredPrecedingTokens[0].getStartPos();
+		if(precedingSubChannelTokens != null && precedingSubChannelTokens.length > 0) {
+			return precedingSubChannelTokens[0].getStartPos();
 		}
 		return getStartPos();
 	}
 	
 	@Override
 	public String toString() {
-		return ignoredPrecedingTokens != null ? "【"+collToString(ignoredPrecedingTokens, "●")+"】" : "";
+		return precedingSubChannelTokens != null ? "【"+collToString(precedingSubChannelTokens, "●")+"】" : "";
 	}
 	
 }

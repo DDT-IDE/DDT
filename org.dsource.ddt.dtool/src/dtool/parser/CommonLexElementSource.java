@@ -21,11 +21,11 @@ public abstract class CommonLexElementSource {
 	}
 	
 	public final DeeTokens lookAhead() {
-		return lookAheadElement(0).token.getRawTokenType();
+		return lookAheadElement(0).token.getTokenType();
 	}
 	
 	public final DeeTokens lookAhead(int laIndex) {
-		return lookAheadElement(laIndex).token.getRawTokenType();
+		return lookAheadElement(laIndex).token.getTokenType();
 	}
 	
 	public abstract int getLexPosition();
@@ -43,6 +43,6 @@ public abstract class CommonLexElementSource {
 		return consumeInput();
 	}
 	
-	public abstract MissingLexElement consumeIgnoreTokens();
+	public abstract MissingLexElement consumeSubChannelTokens();
 	
 }

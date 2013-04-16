@@ -21,8 +21,12 @@ public class Token implements ISourceRepresentation {
 		}
 	}
 	
-	public final DeeTokens getRawTokenType() {
+	public final DeeTokens getTokenType() {
 		return type;
+	}
+	
+	public final boolean isSubChannelToken() {
+		return type.isSubChannel;
 	}
 	
 	public final int getStartPos() {

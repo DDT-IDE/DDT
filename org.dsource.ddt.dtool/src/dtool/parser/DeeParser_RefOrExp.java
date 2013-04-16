@@ -374,7 +374,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		boolean consumeIgnoreTokens) {
 		int nodeStart = getLexPosition();
 		if(consumeIgnoreTokens) {
-			consumeIgnoreTokens();
+			consumeSubChannelTokens();
 		}
 		MissingExpression missingExp = srToPosition(nodeStart, new MissingExpression());
 		if(expectedRule != null) {

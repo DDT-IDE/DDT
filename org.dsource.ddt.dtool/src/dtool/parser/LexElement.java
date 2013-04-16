@@ -21,10 +21,10 @@ public class LexElement extends BaseLexElement {
 	
 	public final Token token;
 	
-	public LexElement(Token[] ignoredPrecedingTokens, Token token) {
-		super(ignoredPrecedingTokens);
+	public LexElement(Token[] precedingSubChannelTokens, Token token) {
+		super(precedingSubChannelTokens);
 		this.token = assertNotNull_(token);
-		assertTrue(ignoredPrecedingTokens == null || ignoredPrecedingTokens.length > 0);
+		assertTrue(precedingSubChannelTokens == null || precedingSubChannelTokens.length > 0);
 	}
 	
 	@Override
@@ -55,6 +55,10 @@ public class LexElement extends BaseLexElement {
 	@Override
 	public final SourceRange getSourceRange() {
 		return token.getSourceRange();
+	}
+	
+	public final boolean isEOF() {
+		return token.type == DeeTokens.EOF;
 	}
 	
 	@Override

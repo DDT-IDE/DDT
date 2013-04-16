@@ -379,7 +379,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 				deeLexer.reset(lastNonIgnoredToken.startPos);
 				break;
 			}
-			if(token.type.isParserIgnored) {
+			if(token.isSubChannelToken()) {
 				continue;
 			}
 			lastNonIgnoredToken = token;
@@ -395,7 +395,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			if(token.type == DeeTokens.EOF) {
 				assertFail();
 			}
-			if(token.type.isParserIgnored) {
+			if(token.isSubChannelToken()) {
 				continue;
 			}
 			if(token.getStartPos() >= offset) {

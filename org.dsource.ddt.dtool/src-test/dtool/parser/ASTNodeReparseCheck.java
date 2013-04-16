@@ -353,9 +353,8 @@ public class ASTNodeReparseCheck {
 	{
 		// Must have consumed all input
 		assertTrue(snippedParser.lookAhead() == DeeTokens.EOF);
-		assertTrue(snippedParser.lookAheadElement().ignoredPrecedingTokens == null);
 		assertTrue(snippedParser.getLexPosition() == snippedParser.getSource().length());
-
+		
 		assertNotNull_(reparsedNode);
 		assertTrue(reparsedNode.getClass() == klass);
 		checkNodeEquality(reparsedNode, nodeUnderTest);
@@ -365,7 +364,7 @@ public class ASTNodeReparseCheck {
 		assertEquals(new SourceRange(0, nodeSnippedSource.length()), reparsedNode.getSourceRange());
 		
 		LexElement firstLexElement = firstLexElementInSource(snippedParser.getSource());
-		assertTrue(firstLexElement.ignoredPrecedingTokens == null || firstLexElement.token.type == DeeTokens.EOF);
+		assertTrue(firstLexElement.precedingSubChannelTokens == null || firstLexElement.token.type == DeeTokens.EOF);
 		
 		if(consumesAllTrailingWhiteSpace) {
 			// Check that the range contains all possible whitespace
@@ -377,7 +376,7 @@ public class ASTNodeReparseCheck {
 	}
 	
 	public static LexElement firstLexElementInSource(String source) {
-		return LexerElementSource.produceLexElement(new DeeLexer(source));
+		return new LexElementProducer().produceLexElement(new DeeLexer(source));
 	}
 	
 	public LexElement lexElementAfterSnippedRange(ASTNeoNode node) {

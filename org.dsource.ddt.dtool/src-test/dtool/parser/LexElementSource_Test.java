@@ -22,6 +22,9 @@ public class LexElementSource_Test extends CommonTestUtils {
 			if(lookAhead() == ' ') {
 				return createToken(DeeTokens.WHITESPACE, 1);
 			}
+			if(lookAhead() == 'X') {
+				createToken(DeeTokens.IDENTIFIER, 1);
+			}
 			return createToken(DeeTokens.IDENTIFIER, 2);
 		}
 	}
@@ -29,49 +32,46 @@ public class LexElementSource_Test extends CommonTestUtils {
 	@Test
 	public void testInit() throws Exception { testInit$(); }
 	public void testInit$() throws Exception {
-		LexerElementSource lexSource = new LexerElementSource(new TestsInstrumentedLexer("abcdefgh"));
+		LexElementSource lexSource = LexElementProducer.createFromLexer(new TestsInstrumentedLexer("abcdefgh"));
 		
-		assertEquals(lexSource.lastLexElement.token.getSourceRange() , new SourceRange(0, 0));
+		assertEquals(lexSource.lastLexElement.token.getSourceRange(), new SourceRange(0, 0));
 		
-		assertTrue(lexSource.lookAheadQueue.size() == 0);
+		assertTrue(lexSource.lexElementList.size() == 5);
+		assertEquals(lexSource.lookAheadElement(4).token.type, DeeTokens.EOF);
+		assertEquals(lexSource.lookAheadElement(5).token.type, DeeTokens.EOF); // Test index beyond first EOF
 	}
 	
 	@Test
-	public void testLookAheadQueue() throws Exception { testLookAheadQueue$(); }
-	public void testLookAheadQueue$() throws Exception {
-		LexerElementSource lexSource = new LexerElementSource(new TestsInstrumentedLexer("abcd  efgh"));
-		assertTrue(lexSource.lookAheadQueue.size() == 0);
+	public void testElementList() throws Exception { testElementList$(); }
+	public void testElementList$() throws Exception {
+		
+		LexElementSource lexSource = LexElementProducer.createFromLexer(new TestsInstrumentedLexer("abcd  efgh"));
+		assertTrue(lexSource.lexElementList.size() == 5);
 		
 		assertEquals(lexSource.lookAheadElement(0).token.source, "ab");
-		assertTrue(lexSource.lookAheadQueue.size() == 1);
 		assertEquals(lexSource.lookAheadElement(1).token.source, "cd");
-		assertTrue(lexSource.lookAheadQueue.size() == 2);
 		assertEquals(lexSource.lookAheadElement(3).token.source, "gh");
 		assertEquals(lexSource.lookAheadElement(4).token.type, DeeTokens.EOF);
-		assertTrue(lexSource.lookAheadQueue.size() == 5);
-		lexSource.consumeLookAhead();
+		lexSource.consumeInput();
 		
 		assertEquals(lexSource.lastLexElement().token.source, "ab");
-		assertTrue(lexSource.lookAheadQueue.size() == 4);
-		assertEquals(lexSource.lookAheadElement(2).token.source, "gh");
 		assertEquals(lexSource.lookAheadElement(0).token.source, "cd");
 		assertEquals(lexSource.lookAheadElement(1).token.source, "ef");
-		assertEquals(lexSource.lookAheadElement(1).ignoredPrecedingTokens.length, 2);
+		assertEquals(lexSource.lookAheadElement(1).precedingSubChannelTokens.length, 2);
+		assertEquals(lexSource.lookAheadElement(2).token.source, "gh");
 		assertEquals(lexSource.lookAheadElement(3).token.type, DeeTokens.EOF);
 
-		lexSource.consumeLookAhead();
-		assertTrue(lexSource.lookAheadQueue.size() == 3);
+		lexSource.consumeInput();
 		assertEquals(lexSource.lastLexElement().token.source, "cd");
+		assertEquals(lexSource.getLexPosition(), 4);
 		assertEquals(lexSource.lookAheadElement(0).token.source, "ef");
 		assertEquals(lexSource.lookAheadElement(1).token.source, "gh");
 		assertEquals(lexSource.lookAheadElement(2).token.type, DeeTokens.EOF);
-		assertEquals(lexSource.lookAheadElement(3).token.type, DeeTokens.EOF);
-		assertTrue(lexSource.lookAheadQueue.size() == 4);
+		assertEquals(lexSource.lookAheadElement(3).token.type, DeeTokens.EOF); // Test index beyond first EOF
 		
-		lexSource.consumeLookAhead();
-		lexSource.consumeLookAhead();
+		lexSource.consumeInput();
+		lexSource.consumeInput();
 		assertEquals(lexSource.lastLexElement().token.source, "gh");
-		assertTrue(lexSource.lookAheadQueue.size() == 2);
 		assertEquals(lexSource.lookAheadElement(0).token.type, DeeTokens.EOF);
 		assertEquals(lexSource.lookAheadElement(1).token.type, DeeTokens.EOF);
 	}
@@ -79,24 +79,20 @@ public class LexElementSource_Test extends CommonTestUtils {
 	@Test
 	public void testConsumeWhiteSpace() throws Exception { testConsumeWhiteSpace$(); }
 	public void testConsumeWhiteSpace$() throws Exception {
-		LexerElementSource lexSource = new LexerElementSource(new TestsInstrumentedLexer("abcd  efgh"));
+		LexElementSource lexSource = LexElementProducer.createFromLexer(new TestsInstrumentedLexer("abcd  efgh")); 
+		
+		lexSource.consumeSubChannelTokens();
+		assertTrue(lexSource.getLexPosition() == 0);
 		
 		assertEquals(lexSource.lookAheadElement(2).token.source, "ef");
-		assertTrue(lexSource.lastLexElement.isMissingElement() == false);
-		lexSource.consumeIgnoreTokens();
-		assertTrue(lexSource.getLexPosition() == 0);
-		assertTrue(lexSource.lastLexElement.isMissingElement() == false);
-		
 		lexSource.consumeInput();
 		lexSource.consumeInput();
 		assertEquals(lexSource.lookAheadElement(0).token.source, "ef");
 		assertTrue(lexSource.getLexPosition() == 4);
-		lexSource.consumeIgnoreTokens();
+		lexSource.consumeSubChannelTokens();
 		assertTrue(lexSource.getLexPosition() == 6);
-		assertTrue(lexSource.lastLexElement.isMissingElement() == false);
 		
-		assertTrue(lexSource.lookAheadElement().getStartPos() == 6);
-		
+		assertEquals(lexSource.lookAheadElement(0).getStartPos(), 6);
 		assertEquals(lexSource.lookAheadElement(0).token.source, "ef");
 	}
 	

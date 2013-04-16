@@ -81,7 +81,7 @@ public class DeeParserTest extends CommonTestUtils {
 			while(true) {
 				Token token = lexer.next();
 				DeeTokens type = token.type;
-				if((type.isParserIgnored && (type.getGroupingToken() != DeeTokens.COMMENT || ignoreComments)) 
+				if((type.isSubChannel && (type.getGroupingToken() != DeeTokens.COMMENT || ignoreComments)) 
 					|| (ArrayUtil.contains(additionalIgnores, type)))
 					continue;
 				return token;

@@ -113,8 +113,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		ArrayView<ASTNeoNode> members = parseDeclDefs(null);
 		assertTrue(lookAhead() == DeeTokens.EOF);
-		consumeIgnoreTokens(); // Ensure pending whitespace is consumed as well
-		assertTrue(lookAheadElement().getFullRangeStartPos() == getSource().length());
+		consumeSubChannelTokens(); // Ensure pending whitespace is consumed as well
+		assertTrue(getLexPosition() == getSource().length());
 		
 		SourceRange modRange = new SourceRange(0, getSource().length());
 		
@@ -337,7 +337,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(exp == null) {
 			reportErrorExpectedRule(RULE_INITIALIZER);
 			// Advance parser position, mark the advanced range as missing element:
-			MissingLexElement missingLexElement = consumeIgnoreTokens();
+			MissingLexElement missingLexElement = consumeSubChannelTokens();
 			exp = connect(srEffective(missingLexElement, new MissingExpression()));
 		}
 		return connect(srBounds(exp, new InitializerExp(exp)));
@@ -1050,7 +1050,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		int nodeListStart = getLexPosition();
 		
 		ArrayView<ASTNeoNode> declDefs = parseDeclDefs(bodyListTerminator);
-		consumeIgnoreTokens();
+		consumeSubChannelTokens();
 		return connect(srToPosition(nodeListStart, new NodeList2(declDefs)));
 	}
 	

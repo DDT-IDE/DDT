@@ -173,7 +173,7 @@ public abstract class AbstractParser extends CommonLexElementSource {
 	protected final BaseLexElement consumeExpectedToken(DeeTokens expectedTokenType, boolean createMissingToken) {
 		BaseLexElement result = consumeExpectedToken(expectedTokenType);
 		if(result == null && createMissingToken) {
-			return consumeIgnoreTokens();
+			return consumeSubChannelTokens();
 		}
 		return result;
 	}
@@ -184,7 +184,7 @@ public abstract class AbstractParser extends CommonLexElementSource {
 	
 	protected final MissingLexElement createExpectedToken(DeeTokens expectedTokenType) {
 		assertTrue(lookAhead() != expectedTokenType);
-		return consumeIgnoreTokens();
+		return consumeSubChannelTokens();
 	}
 	
 	/* ---- error helpers ---- */
