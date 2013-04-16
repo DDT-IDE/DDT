@@ -304,7 +304,7 @@ public class DeeParserTest extends CommonTestUtils {
 			CheckSourceEquality.assertCheck(nodeSnippedSource, node.toStringAsCode(), structuralControlTokens);
 		}
 		
-		new ASTNodeReparseCheck(fullSource).doCheck(node);
+		new ASTNodeReparseCheck(fullSource, node).doCheck();
 	}
 	
 	protected static boolean areThereMissingTokenErrorsInNode(ASTNeoNode node, Collection<ParserError> errors) {
