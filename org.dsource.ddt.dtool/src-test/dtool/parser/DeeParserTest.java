@@ -102,7 +102,7 @@ public class DeeParserTest extends CommonTestUtils {
 		if(expectedRemainingSource == null) {
 			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
 		} else {
-			String remainingSource = fullParseSource.substring(deeParser.getParserPosition());
+			String remainingSource = fullParseSource.substring(deeParser.getLexPosition());
 			CheckSourceEquality.assertCheck(remainingSource, expectedRemainingSource);
 			parseSource = fullParseSource.substring(0, fullParseSource.length() - expectedRemainingSource.length());
 		}

@@ -3,7 +3,6 @@ package dtool.ast.expressions;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 /** 
  * This class represents a syntax error where an expression was expected.
@@ -11,8 +10,7 @@ import dtool.ast.SourceRange;
  */
 public class MissingExpression extends Expression {
 	
-	public MissingExpression(SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public MissingExpression() {
 	}
 	
 	@Override

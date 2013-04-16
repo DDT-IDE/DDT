@@ -1,6 +1,7 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import dtool.parser.LexElement.MissingLexElement;
 
 /**
  * Abstract class with common util methods for LexElement sources. 
@@ -27,14 +28,9 @@ public abstract class CommonLexElementSource {
 		return lookAheadElement(laIndex).token.getRawTokenType();
 	}
 	
-	public int getParserPosition() {
-		assertTrue(lastLexElement().getEndPos() == lookAheadElement().getFullRangeStartPos());
-		return lastLexElement().getEndPos();
-	}
+	public abstract int getLexPosition();
 	
 	protected abstract LexElement lastLexElement();
-	
-	protected abstract LexElement lastNonMissingLexElement();
 	
 	protected abstract LexElement consumeInput();
 	
@@ -47,10 +43,10 @@ public abstract class CommonLexElementSource {
 		return consumeInput();
 	}
 	
-	public abstract LexElement consumeIgnoreTokens(DeeTokens expectedToken);
+	public abstract MissingLexElement consumeIgnoreTokens(DeeTokens expectedToken);
 	
-	public final LexElement consumeIgnoreTokens() {
-		return consumeIgnoreTokens(null);
+	public final void consumeIgnoreTokens() {
+		consumeIgnoreTokens(null);
 	}
 	
 }

@@ -7,7 +7,6 @@ import java.util.Collection;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.refmodel.CommonDefUnitSearch;
@@ -21,12 +20,11 @@ public class RefIdentifier extends NamedReference implements ITemplateRefNode {
 	
 	public final String name;
 	
-	public RefIdentifier(String name, SourceRange sourceRange) {
+	public RefIdentifier(String name) {
 		//assertNotNull(name); 
 		// BUG here TODO review reference and usage of this.name since the contract has now changed to allow null
 		assertTrue(name == null || name.length() > 0);
 		this.name = name;
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

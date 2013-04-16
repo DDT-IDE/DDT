@@ -6,7 +6,6 @@ import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList;
-import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
@@ -15,8 +14,7 @@ public abstract class DeclarationConditional extends ASTNeoNode implements IStat
 	public final NodeList thenDecls;
 	public final NodeList elseDecls;
 	
-	public DeclarationConditional(NodeList thenDecls, NodeList elseDecls, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public DeclarationConditional(NodeList thenDecls, NodeList elseDecls) {
 		this.thenDecls = NodeList.parentizeNodeList(thenDecls, this);
 		//assertNotNull(thenDecls);
 		this.elseDecls = NodeList.parentizeNodeList(elseDecls, this);

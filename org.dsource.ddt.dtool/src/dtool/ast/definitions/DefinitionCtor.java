@@ -8,7 +8,6 @@ import java.util.List;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -37,9 +36,8 @@ public class DefinitionCtor extends ASTNeoNode implements IScopeNode, ICallableE
 	public final int nameStart;
 	
 	public DefinitionCtor(SpecialFunctionKind kind, ArrayView<IFunctionParameter> params, int varargs,
-			IStatement fbody, int thisStart, SourceRange sourceRange) {
+			IStatement fbody, int thisStart) {
 		assertNotNull(params);
-		initSourceRange(sourceRange);	
 		this.kind = kind;
 		this.params = parentizeI(params);
 		this.varargs = varargs;

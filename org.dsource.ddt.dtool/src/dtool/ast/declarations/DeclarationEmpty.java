@@ -4,13 +4,11 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 
 public class DeclarationEmpty extends ASTNeoNode implements IStatement {
 	
-	public DeclarationEmpty(SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public DeclarationEmpty() {
 	}
 	
 	@Override

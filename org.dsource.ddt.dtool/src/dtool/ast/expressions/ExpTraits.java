@@ -3,7 +3,6 @@ package dtool.ast.expressions;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.util.ArrayView;
 
 public class ExpTraits extends Expression {
@@ -11,8 +10,7 @@ public class ExpTraits extends Expression {
 	public final ArrayView<ASTNeoNode> args;
 	public final char[] traitsKeyword;
 	
-	public ExpTraits(char[] traitsKeyword, ArrayView<ASTNeoNode> args, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpTraits(char[] traitsKeyword, ArrayView<ASTNeoNode> args) {
 		this.traitsKeyword = traitsKeyword;
 		this.args = parentize(args);
 	}

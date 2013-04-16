@@ -26,23 +26,20 @@ public class LexElement {
 	public LexElement(Token[] ignoredPrecedingTokens, Token token) {
 		this.ignoredPrecedingTokens = ignoredPrecedingTokens;
 		this.token = assertNotNull_(token);
+		assertTrue(ignoredPrecedingTokens == null || ignoredPrecedingTokens.length > 0);
 	}
 	
-	public LexElement(Token[] ignoredPrecedingTokens, DeeTokens expectedToken, int lookAheadStart) {
-		this.ignoredPrecedingTokens = ignoredPrecedingTokens;
-		this.token = new MissingToken(expectedToken, lookAheadStart);
-	}
-	
-	public boolean isMissingElement() {
+	public final boolean isMissingElement() {
 		return token instanceof LexElement.MissingToken;
 	}
 	
-	public String getSourceValue() {
-		return token.getSourceValue();
+	public final DeeTokens getType() {
+		assertTrue(!isMissingElement());
+		return token.type;
 	}
 	
-	public SourceRange getSourceRange() {
-		return token.getSourceRange();
+	public final String getSourceValue() {
+		return token.getSourceValue();
 	}
 	
 	public final int getStartPos() {
@@ -53,16 +50,24 @@ public class LexElement {
 		return token.getEndPos();
 	}
 	
-	public final DeeTokens getType() {
-		return token.type;
+	public final SourceRange getSourceRange() {
+		return token.getSourceRange();
 	}
 	
-	public int getFullRangeStartPos() {
-		assertTrue(isMissingElement() == false);
+	public final int getFullRangeStartPos() {
 		if(ignoredPrecedingTokens != null && ignoredPrecedingTokens.length > 0) {
 			return ignoredPrecedingTokens[0].getStartPos();
 		}
 		return token.getStartPos();
+	}
+	
+	
+	public static class MissingLexElement extends LexElement {
+		
+		public MissingLexElement(Token[] ignoredPrecedingTokens, DeeTokens expectedToken, int lookAheadStart) {
+			super(ignoredPrecedingTokens, new MissingToken(expectedToken, lookAheadStart));
+		}
+		
 	}
 	
 	protected static class MissingToken extends Token {

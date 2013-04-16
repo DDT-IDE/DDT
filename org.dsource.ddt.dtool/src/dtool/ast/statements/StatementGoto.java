@@ -2,15 +2,13 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 
 public class StatementGoto extends Statement {
 	
 	public final Symbol label;
 	
-	public StatementGoto(Symbol label, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public StatementGoto(Symbol label) {
 		this.label = parentize(label);
 	}
 	

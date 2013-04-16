@@ -12,7 +12,6 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -26,17 +25,15 @@ public class BlockStatement extends Statement implements IScopeNode, IFunctionBo
 	public final ArrayView<IStatement> statements;
 	public final boolean hasCurlyBraces;
 	
-	public BlockStatement(ArrayView<IStatement> statements, boolean hasCurlyBraces, SourceRange sourceRange) {
+	public BlockStatement(ArrayView<IStatement> statements, boolean hasCurlyBraces) {
 		this.statements = parentizeI(assertNotNull_(statements));
 		this.hasCurlyBraces = hasCurlyBraces;
-		initSourceRange(sourceRange);
 	}
 	
 	/** This represents a missing block */
-	public BlockStatement(SourceRange sourceRange) {
+	public BlockStatement() {
 		this.statements = null;
 		this.hasCurlyBraces = false;
-		initSourceRange(sourceRange);
 	}
 	
 	public final ArrayView<ASTNeoNode> statements_asNodes() {

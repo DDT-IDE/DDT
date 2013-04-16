@@ -11,7 +11,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
@@ -25,13 +24,11 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	public final Resolvable tplSingleArg;
 	public final ArrayView<Resolvable> tplArgs;
 	
-	public RefTemplateInstance(ITemplateRefNode tplRef, Resolvable tplSingleArg, ArrayView<Resolvable> tplArgs, 
-		SourceRange sourceRange) {
+	public RefTemplateInstance(ITemplateRefNode tplRef, Resolvable tplSingleArg, ArrayView<Resolvable> tplArgs) {
 		this.tplRef = parentizeI(assertInstance(tplRef, Reference.class));
 		assertTrue(exactlyOneIsNull(tplSingleArg, tplArgs));
 		this.tplSingleArg = parentize(tplSingleArg);
 		this.tplArgs = parentize(tplArgs);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

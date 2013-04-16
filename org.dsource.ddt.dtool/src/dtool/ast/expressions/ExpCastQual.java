@@ -6,7 +6,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class ExpCastQual extends Expression {
 	
@@ -34,8 +33,7 @@ public class ExpCastQual extends Expression {
 	public final CastQualifiers castQualifier;
 	public final Resolvable exp;
 	
-	public ExpCastQual(CastQualifiers castQualifier, Expression exp, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpCastQual(CastQualifiers castQualifier, Expression exp) {
 		this.castQualifier = assertNotNull_(castQualifier);
 		this.exp = parentize(exp);
 		assertTrue(exp == null || castQualifier != null);

@@ -3,7 +3,6 @@ package dtool.ast.declarations;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 
 public class DeclarationConditionalDV extends DeclarationConditional {
@@ -11,9 +10,8 @@ public class DeclarationConditionalDV extends DeclarationConditional {
 	public final Symbol ident;
 	public final boolean isDebug;
 	
-	public DeclarationConditionalDV(boolean isDebug, Symbol id, NodeList thenDecls, NodeList elseDecls,
-			SourceRange sourceRange) {
-		super(thenDecls, elseDecls, sourceRange );
+	public DeclarationConditionalDV(boolean isDebug, Symbol id, NodeList thenDecls, NodeList elseDecls) {
+		super(thenDecls, elseDecls);
 		this.isDebug = isDebug;
 		this.ident = parentize(id);
 	}

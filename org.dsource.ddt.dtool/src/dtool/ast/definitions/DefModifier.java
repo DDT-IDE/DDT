@@ -3,14 +3,13 @@ package dtool.ast.definitions;
 import descent.internal.compiler.parser.TOK;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
+@Deprecated
 public class DefModifier extends ASTNeoNode {
 	
 	public final TOK tok;
 	
-	public DefModifier(TOK tok, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public DefModifier(TOK tok) {
 		this.tok = tok;
 	}
 	

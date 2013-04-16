@@ -5,10 +5,8 @@ import java.util.Collection;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.ASTSemantics;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
@@ -18,12 +16,8 @@ public class RefTypeof extends Reference implements IQualifierNode {
 	
 	public final Expression expression;
 	
-	public RefTypeof(Expression exp, SourceRange sourceRange) {
+	public RefTypeof(Expression exp) {
 		this.expression = parentize(exp);
-		if(exp instanceof ExpRefReturn) {
-			exp.setData(ASTSemantics.PARSED_STATUS);
-		}
-		initSourceRange(sourceRange);
 	}
 	
 	@Override
@@ -33,9 +27,7 @@ public class RefTypeof extends Reference implements IQualifierNode {
 	
 	public static class ExpRefReturn extends Expression {
 		
-		public ExpRefReturn(SourceRange sourceRange) {
-			initSourceRange(sourceRange);
-		}
+		public ExpRefReturn() {}
 		
 		@Override
 		public ASTNodeTypes getNodeType() {

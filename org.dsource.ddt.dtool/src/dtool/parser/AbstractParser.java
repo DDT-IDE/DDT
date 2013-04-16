@@ -10,14 +10,13 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.ast.ASTChildrenVisitor;
+import dtool.ast.ASTDirectChildrenVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTSemantics;
 import dtool.ast.IASTNeoNode;
@@ -112,10 +111,9 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		return nodeResult == null ? null : nodeResult.node;
 	}
 	
+	/* ---- Basic error functionality ---- */
 	
 	protected final ArrayList<ParserError> pendingMissingTokenErrors = new ArrayList<ParserError>();
-	
-	/* ---- Basic error functionality ---- */
 	
 	protected abstract void submitError(ParserError error);
 	
@@ -169,7 +167,7 @@ public abstract class AbstractParser extends CommonLexElementSource {
 	
 	protected final LexElement createExpectedToken(DeeTokens expectedTokenType) {
 		assertTrue(lookAhead() != expectedTokenType);
-		return consumeIgnoreTokens(expectedTokenType);
+		return consumeIgnoreTokens(null);
 	}
 	
 	protected final LexElement consumeExpectedToken(DeeTokens expectedTokenType, boolean createMissingToken) {
@@ -192,18 +190,12 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		return new ParserError(errorType, sr, errorSource, msgData);
 	}
 	
-	protected ParserError createError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
-		SourceRange sourceRange = errorToken.getSourceRange();
-		assertEquals(errorToken.source, NodeUtil.getSubString(getSource(), sourceRange));
-		return createError(errorType, sourceRange, msgData);
-	}
-	
 	protected ParserError createErrorOnLastToken(ParserErrorTypes parserError, Object msgData) {
-		return createError(parserError, lastNonMissingLexElement().token, msgData);
+		return createError(parserError, lastLexElement().getSourceRange(), msgData);
 	}
 	
 	protected ParserError addError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
-		return addError(createError(errorType, errorToken, msgData));
+		return addError(createError(errorType, errorToken.getSourceRange(), msgData));
 	}
 	
 	protected ParserError addError(ParserErrorTypes errorType, SourceRange sourceRange, Object msgData) {
@@ -230,16 +222,43 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		addError(createErrorOnLastToken(ParserErrorTypes.SYNTAX_ERROR, expectedRule.name));
 	}
 	
-	/* ---- Node creation helpers ---- */
+
+	/* ------------  Parsing helpers  ------------ */
 	
-	public final <T extends ASTNeoNode> T srToCursor(int declStart, T node) {
-		node.setSourceRange(declStart, getParserPosition() - declStart);
+	protected final <T extends ASTNeoNode> NodeResult<T> connectResult(boolean ruleBroken, T node) {
+		return nodeResult(ruleBroken, connect(node));
+	}
+	
+	protected <T extends ASTNeoNode> T connect(final T node) {
+		for (ParserError parserError : pendingMissingTokenErrors) {
+			if(parserError.msgData != DeeTokens.IDENTIFIER) {
+				parserError.originNode = node;
+			}
+		}
+		pendingMissingTokenErrors.clear();
+		
+		node.setData(ASTSemantics.PARSED_STATUS);
+		node.accept(new ASTDirectChildrenVisitor() {
+			@Override
+			protected void geneticChildrenVisit(ASTNeoNode child) {
+				assertTrue(child.getParent() == node);
+				assertTrue(child.isParsedStatus());
+			}
+		});
 		return node;
 	}
 	
-	public static SourceRange sr(Token token) {
-		return token.getSourceRange();
+	protected <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {
+		node.setSourceRange(sourceRange);
+		return connect(node);
 	}
+	
+	protected final <T extends IASTNeoNode> T connect(T node) {
+		connect((ASTNeoNode) node);
+		return node;
+	}
+	
+	/* ---- Source range helpers ---- */
 	
 	public static SourceRange srAt(int offset) {
 		return new SourceRange(offset, 0);
@@ -249,21 +268,45 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		return SourceRange.srStartToEnd(startNode.getStartPos(), endPos);
 	}
 	
-	public final SourceRange srToCursor(int declStart) {
-		return SourceRange.srStartToEnd(declStart, getParserPosition());
+	public static <T extends ASTNeoNode> T sr(LexElement lexElement, T node) {
+		node.setSourceRange(lexElement.getStartPos(), lexElement.getEndPos() - lexElement.getStartPos());
+		return node;
 	}
 	
-	public final SourceRange srToCursor(LexElement startElement) {
-		return srToCursor(startElement.getStartPos());
+	public static <T extends ASTNeoNode> T srEffective(LexElement lexElement, T node) {
+		int startPos = lexElement.isMissingElement() ? lexElement.getFullRangeStartPos() : lexElement.getStartPos();
+		node.setSourceRange(startPos, lexElement.getEndPos() - startPos);
+		return node;
 	}
 	
-	public final SourceRange srToCursor(Token startToken) {
-		return srToCursor(startToken.getStartPos());
+	public final <T extends ASTNeoNode> T srToPosition(int declStart, T node) {
+		node.setSourceRange(declStart, getLexPosition() - declStart);
+		return node;
 	}
 	
-	public final SourceRange srToCursor(ASTNeoNode startNode) {
-		return srToCursor(startNode.getStartPos());
+	public final <T extends ASTNeoNode> T srToPosition(LexElement start, T node) {
+		int declStart = start.getStartPos();
+		node.setSourceRange(declStart, getLexPosition() - declStart);
+		return node;
 	}
+	
+	public final <T extends ASTNeoNode> T srToPosition(ASTNeoNode left, T node) {
+		assertTrue(left.hasSourceRangeInfo() && !node.hasSourceRangeInfo());
+		assertTrue(!node.isParsedStatus());
+		return srToPosition(left.getStartPos(), node);
+	}
+	
+	public static <T extends ASTNeoNode> T srBounds(ASTNeoNode left, ASTNeoNode right, T node) {
+		int startPos = left.getStartPos();
+		node.setSourceRange(startPos, right.getEndPos() - startPos);
+		return node;
+	}
+	
+	public static <T extends ASTNeoNode> T srBounds(ASTNeoNode wrappedNode, T node) {
+		return srBounds(wrappedNode, wrappedNode, node);
+	}
+	
+	/* ---- Collection creation helpers ---- */
 	
 	public static <T extends IASTNeoNode> ArrayView<T> arrayViewI(Collection<? extends T> list) {
 		if(list == null)
@@ -281,46 +324,6 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		if(list == null)
 			return null;
 		return ArrayView.create((T[]) ArrayUtil.createFrom(list, Object.class));
-	}
-
-	/* ------------  Parsing helpers  ------------ */
-	
-	protected final <T extends ASTNeoNode> NodeResult<T> connectResult(boolean ruleBroken, T node) {
-		return nodeResult(ruleBroken, connect(node));
-	}
-	
-	protected <T extends ASTNeoNode> T connect(final T node) {
-		for (ParserError parserError : pendingMissingTokenErrors) {
-			if(parserError.msgData != DeeTokens.IDENTIFIER) {
-				parserError.originNode = node;
-			}
-		}
-		pendingMissingTokenErrors.clear();
-		
-		node.setData(ASTSemantics.PARSED_STATUS);
-		node.accept(new ASTChildrenVisitor() {
-			@Override
-			protected void geneticChildrenVisit(ASTNeoNode child) {
-				assertTrue(child.getParent() == node);
-				assertTrue(child.isParsedStatus());
-			}
-		});
-		return node;
-	}
-	
-	protected <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {
-		node.setSourceRange(sourceRange);
-		return connect(node);
-	}
-	
-	protected <T extends ASTNeoNode> T init(SourceRange sourceRange, T node) {
-		node.setSourceRange(sourceRange);
-		return node;
-	}
-	
-	protected final <T extends IASTNeoNode> T connect(T node) {
-		connect((ASTNeoNode) node);
-		return node;
 	}
 	
 }

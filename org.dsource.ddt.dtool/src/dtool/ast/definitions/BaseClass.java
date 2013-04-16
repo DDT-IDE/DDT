@@ -4,7 +4,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 
 public class BaseClass extends ASTNeoNode {
@@ -12,10 +11,9 @@ public class BaseClass extends ASTNeoNode {
 	public final PROT prot;
 	public final Reference type;
 	
-	public BaseClass(PROT prot, Reference type, SourceRange sourceRange) {
+	public BaseClass(PROT prot, Reference type) {
 		this.prot = prot;
 		this.type = parentize(type);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

@@ -348,7 +348,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			? findLastEffectiveTokenBeforeOffset(mde.offset, deeLexer)
 			: findNextEffectiveTokenAfterOffset(mde.offset, deeLexer);
 			
-		SourceRange errorRange = AbstractParser.sr(lastToken);
+		SourceRange errorRange = lastToken.getSourceRange();
 		String errorSource = lastToken.source;
 		return new ParserError(errorTypeTk, errorRange, errorSource, errorParam);
 	}

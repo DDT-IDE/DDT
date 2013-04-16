@@ -6,18 +6,16 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class FunctionBody extends ASTNeoNode implements IFunctionBody {
 	
 	public final BlockStatement bodyBlock;
 	
-	public FunctionBody(BlockStatement bodyBlock, SourceRange sourceRange) {
+	public FunctionBody(BlockStatement bodyBlock) {
 		this.bodyBlock = parentize(assertNotNull_(bodyBlock));
-		initSourceRange(sourceRange);
 	}
 	
-	protected FunctionBody(BlockStatement bodyBlock) {
+	protected FunctionBody(BlockStatement bodyBlock, @SuppressWarnings("unused") boolean dummy) {
 		this.bodyBlock = parentize(bodyBlock);
 	}
 	

@@ -1,12 +1,10 @@
 package dtool.ast.expressions;
 
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class InitializerVoid extends Initializer {
 	
-	public InitializerVoid(SourceRange sourceRange) {
-		initSourceRange(sourceRange);		
+	public InitializerVoid() {
 	}
 	
 	@Override

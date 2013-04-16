@@ -3,13 +3,11 @@ package dtool.ast.statements;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 // XXX: Should this be a statement as well??
 public class EmptyBodyStatement extends Statement implements IFunctionBody, IStatement {
 	
-	public EmptyBodyStatement(SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public EmptyBodyStatement() {
 	}
 	
 	@Override

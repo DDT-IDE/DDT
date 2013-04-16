@@ -3,15 +3,13 @@ package dtool.ast.declarations;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.statements.BlockStatement;
 
 public class DeclarationInvariant extends ASTNeoNode {
 	
 	public final BlockStatement body;
 	
-	public DeclarationInvariant(BlockStatement body, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public DeclarationInvariant(BlockStatement body) {
 		this.body = parentize(body);
 	}
 	

@@ -57,7 +57,7 @@ public class ExpressionConverter extends BaseDmdConverter {
 		SourceRange sourceRange = DefinitionConverter.sourceRange(elem);
 		Expression callee = ExpressionConverter.convert(elem.e1, convContext); 
 		ArrayView<Expression> args = DescentASTConverter.convertMany(elem.arguments, Expression.class, convContext);
-		return new ExpCall(callee, args, sourceRange);
+		return connect(sourceRange, new ExpCall(callee, args));
 	}
 	
 	public static ExpLiteralArray createExpArrayLiteral(ArrayLiteralExp elem, ASTConversionContext convContext) {
@@ -77,7 +77,7 @@ public class ExpressionConverter extends BaseDmdConverter {
 			}
 		}
 		
-		return new ExpLiteralArray(args, sourceRange);
+		return connect(sourceRange, new ExpLiteralArray(args));
 	}
 	
 }

@@ -8,7 +8,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -30,19 +29,18 @@ public class DefinitionVariable extends Definition implements IStatement {
 	public final Initializer init;
 	public final ArrayView<DefinitionVarFragment> fragments;
 	
-	public DefinitionVariable(DefUnitTuple dudt, Reference type, Initializer init, 
-		ArrayView<DefinitionVarFragment> fragments, SourceRange sourceRange) {
-		this(dudt, assertNotNull_(type), init, fragments, sourceRange, false);
+	public DefinitionVariable(DefUnitTuple dudt, Reference type, Initializer init,
+		ArrayView<DefinitionVarFragment> fragments) {
+		this(dudt, assertNotNull_(type), init, fragments, false);
 	}
 	
 	protected DefinitionVariable(DefUnitTuple dudt, Reference type, Initializer init,
-		ArrayView<DefinitionVarFragment> fragments, SourceRange sourceRange, @SuppressWarnings("unused") boolean dummy)
+		ArrayView<DefinitionVarFragment> fragments, @SuppressWarnings("unused") boolean dummy)
 	{
 		super(dudt);
 		this.type = parentize(type);
 		this.init = parentize(init);
 		this.fragments = fragments != null ? parentize(fragments) : NO_FRAGMENTS;
-		initSourceRange(sourceRange);
 	}
 	
 	@Override
@@ -52,9 +50,9 @@ public class DefinitionVariable extends Definition implements IStatement {
 	
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
-		public DefinitionAutoVariable(DefUnitTuple dudt, Initializer init, ArrayView<DefinitionVarFragment> fragments, 
-			SourceRange sourceRange) {
-			super(dudt, null, init, fragments, sourceRange, false);
+		public DefinitionAutoVariable(DefUnitTuple dudt, Initializer init, 
+			ArrayView<DefinitionVarFragment> fragments) {
+			super(dudt, null, init, fragments, false);
 		}
 		
 		@Override

@@ -80,35 +80,32 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(ForeachRangeStatement elem) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(elem), 
 			new StatementForeachRange(
 				(IFunctionParameter) DescentASTConverter.convertElem(elem.arg, convContext),
 				ExpressionConverter.convert(elem.lwr, convContext),
 				ExpressionConverter.convert(elem.upr, convContext),
 				StatementConverterVisitor.convertStatement(elem.body, convContext),
-				elem.op == TOK.TOKforeach_reverse,
-				DefinitionConverter.sourceRange(elem)
+				elem.op == TOK.TOKforeach_reverse
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(AsmBlock elem) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(elem),
 			new BlockStatement(
 				convertStatements(elem),
-				true, // TODO: How do we know if it is curly or not?
-				DefinitionConverter.sourceRange(elem)
+				true // TODO: How do we know if it is curly or not?
 			)
 		);
 	}
 	@Override
 	public boolean visit(descent.internal.compiler.parser.CompoundStatement elem) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(elem),
 			new BlockStatement(
 				convertStatements(elem),
-				false, // TODO: How do we know if it is curly or not?
-				DefinitionConverter.sourceRange(elem)
+				false // TODO: How do we know if it is curly or not?
 			)
 		);
 	}
@@ -123,38 +120,35 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(AsmStatement element) {
-		return endAdapt(new StatementAsm(DefinitionConverter.sourceRange(element)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(element), new StatementAsm()));
 	}
 	
 	@Override
 	public boolean visit(BreakStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementBreak(
-				element.ident == null ? null : DefinitionConverter.convertId(element.ident),
-				DefinitionConverter.sourceRange(element)
+				element.ident == null ? null : DefinitionConverter.convertId(element.ident)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(CaseStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementCase(
 				ExpressionConverter.convert(element.exp, convContext),
-				convertStatement(element.statement, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.statement, convContext)
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(CaseRangeStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementCaseRange(
 				ExpressionConverter.convert(element.first, convContext),
 				ExpressionConverter.convert(element.last, convContext),
-				convertStatement(element.statement, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.statement, convContext)
 			)
 		);
 	}
@@ -166,10 +160,9 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(ContinueStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementContinue(
-				element.ident == null ? null : DefinitionConverter.convertId(element.ident), 
-				DefinitionConverter.sourceRange(element)
+				element.ident == null ? null : DefinitionConverter.convertId(element.ident)
 			)
 		);
 	}
@@ -181,21 +174,19 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 	@Override
 	public boolean visit(DefaultStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementDefault(
-				convertStatement(element.statement, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.statement, convContext)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(DoStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementDo(
 				ExpressionConverter.convert(element.condition, convContext),
-				convertStatement(element.body, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.body, convContext)
 			)
 		);
 	}
@@ -205,89 +196,83 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		SourceRange sourceRange = element.hasNoSourceRangeInfo() && element.exp != null
 			? DefinitionConverter.sourceRange(element.exp)
 			: DefinitionConverter.sourceRange(element);
-		return endAdapt(new StatementExp(ExpressionConverter.convert(element.exp, convContext), sourceRange));
+		return endAdapt(sourceRange,
+			new StatementExp(ExpressionConverter.convert(element.exp, convContext)));
 	}
 	
 	@Override
 	public boolean visit(ForeachStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementForeach(
 				DescentASTConverter.convertMany(element.arguments, IFunctionParameter.class, convContext),
 				ExpressionConverter.convert(element.sourceAggr, convContext),
 				convertStatement(element.body, convContext),
-				element.op == TOK.TOKforeach_reverse,
-				DefinitionConverter.sourceRange(element)
+				element.op == TOK.TOKforeach_reverse
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(ForStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementFor(
 				convertStatement(element.init, convContext),
 				ExpressionConverter.convert(element.condition, convContext),
 				ExpressionConverter.convert(element.increment, convContext),
-				convertStatement(element.body, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.body, convContext)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(GotoCaseStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementGotoCase(
-				ExpressionConverter.convert(element.exp, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.exp, convContext)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(GotoDefaultStatement element) {
-		return endAdapt(new StatementGotoDefault(DefinitionConverter.sourceRange(element)));
+		return endAdapt(DefinitionConverter.sourceRange(element), new StatementGotoDefault());
 	}
 
 	@Override
 	public boolean visit(GotoStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementGoto(
-				DefinitionConverter.convertId(element.ident),
-				DefinitionConverter.sourceRange(element)
+				DefinitionConverter.convertId(element.ident)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(IfStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementIf(
 				ExpressionConverter.convert(element.condition, convContext),
 				convertStatement(element.ifbody, convContext),
-				convertStatement(element.elsebody, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.elsebody, convContext)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(LabelStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementLabel(
-				DefinitionConverter.convertId(element.ident),
-				DefinitionConverter.sourceRange(element)
+				DefinitionConverter.convertId(element.ident)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(OnScopeStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementOnScope(
 				StatementOnScope.EventType.ON_EXIT, // TODO: Find out how to access this scope value
-				convertStatement(element.statement, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.statement, convContext)
 			)
 		);
 	}
@@ -295,22 +280,20 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	@Override
 	public boolean visit(PragmaStatement element) {
 		NodeList2 body = DeclarationConverter.createNodeList2(element.body, convContext);
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new DeclarationPragma(
 				DefinitionConverter.convertId(element.ident),
 				ExpressionConverter.convertMany(element.args, convContext),
-				AttribBodySyntax.BRACE_BLOCK, body,
-				DefinitionConverter.sourceRange(element)
+				AttribBodySyntax.BRACE_BLOCK, body
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(ReturnStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementReturn(
-				ExpressionConverter.convert(element.exp, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.exp, convContext)
 			)
 		);
 	}
@@ -329,66 +312,60 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 					convContext);
 		}
 
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new BlockStatement(
 				statements,
-				hasCurlyBraces,
-				DefinitionConverter.sourceRange(element)
+				hasCurlyBraces
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(StaticAssertStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new DeclarationStaticAssert(
 				ExpressionConverter.convert(element.sa.exp, convContext),
-				ExpressionConverter.convert(element.sa.msg, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.sa.msg, convContext)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(SwitchStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementSwitch(
 				ExpressionConverter.convert(element.condition, convContext),
-				convertStatement(element.body, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.body, convContext)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(SynchronizedStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementSynchronized(
 				ExpressionConverter.convert(element.exp, convContext),
-				convertStatement(element.body, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.body, convContext)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(ThrowStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementThrow(
-				ExpressionConverter.convert(element.exp, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.exp, convContext)
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(TryCatchStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementTry(
 				convertStatement(element.body, convContext),
 				DescentASTConverter.convertMany(element.catches, CatchClause.class, convContext),
-				null, 
-				DefinitionConverter.sourceRange(element)
+				null
 			)
 		);
 	}
@@ -397,21 +374,19 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(TryFinallyStatement element) {
 		if (element.body instanceof TryCatchStatement) {
 			TryCatchStatement tcs = (TryCatchStatement) element.body;
-			return endAdapt(
+			return endAdapt(DefinitionConverter.sourceRange(element),
 				new StatementTry(
 					convertStatement(tcs.body, convContext),
 					DescentASTConverter.convertMany(tcs.catches, CatchClause.class, convContext),
-					convertStatement(element.finalbody, convContext), 
-					DefinitionConverter.sourceRange(element)
+					convertStatement(element.finalbody, convContext)
 				)
 			);
 		} else {
-			return endAdapt(
+			return endAdapt(DefinitionConverter.sourceRange(element),
 				new StatementTry(
 					convertStatement(element.body, convContext),
 					ArrayView.create(new CatchClause[0]),
-					convertStatement(element.finalbody, convContext), 
-					DefinitionConverter.sourceRange(element)
+					convertStatement(element.finalbody, convContext)
 				)
 			);
 		}
@@ -419,32 +394,29 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(VolatileStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementVolatile(
-				convertStatement(element.statement, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.statement, convContext)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(WhileStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementWhile(
 				ExpressionConverter.convert(element.condition, convContext),
-				convertStatement(element.body, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.body, convContext)
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(WithStatement element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementWith(
 				ExpressionConverter.convert(element.exp, convContext),
-				convertStatement(element.body, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.body, convContext)
 			)
 		);
 	}
@@ -471,11 +443,10 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 			);
 		}
 		
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementTry.CatchClause(
 				param,
-				convertStatement(element.handler, convContext),
-				DefinitionConverter.sourceRange(element)
+				convertStatement(element.handler, convContext)
 			)
 		);
 	}

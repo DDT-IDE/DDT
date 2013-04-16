@@ -8,9 +8,8 @@ public class NodeList2 extends ASTNeoNode {
 	
 	public final ArrayView<ASTNeoNode> nodes;
 	
-	public NodeList2(ArrayView<ASTNeoNode> nodes, SourceRange sr) {
+	public NodeList2(ArrayView<ASTNeoNode> nodes) {
 		this.nodes = assertNotNull_(parentize(nodes));
-		initSourceRange(sr);
 	}
 	
 	@Override

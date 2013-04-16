@@ -12,11 +12,11 @@ package dtool.ast;
 
 
 /**
- * By default, visits a node's children only up to a defined depth;
+ * Util Visitor to visit node's direct children.
  */
-public class ASTChildrenVisitor extends ASTDefaultVisitor {
+public class ASTDirectChildrenVisitor extends ASTDefaultVisitor {
 	
-	protected int maxDepth = 1;
+	protected final int maxDepth = 1;
 	protected int depth = 0; 
 	
 	@Override

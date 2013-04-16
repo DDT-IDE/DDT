@@ -2,7 +2,6 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.Resolvable;
 import dtool.util.ArrayView;
@@ -15,8 +14,7 @@ public class StatementForeach extends Statement {
 	public final IStatement body;
 	
 	public StatementForeach(ArrayView<IFunctionParameter> params, Resolvable iterable, IStatement body,
-			boolean reverse, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+			boolean reverse) {
 		this.params = parentizeI(params);
 		this.iterable = parentize(iterable);
 		this.body = parentizeI(body);

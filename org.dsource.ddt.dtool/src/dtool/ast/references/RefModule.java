@@ -10,7 +10,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
@@ -31,11 +30,10 @@ public class RefModule extends NamedReference {
 	public final ArrayViewExt<String> packages; // TODO: Old API, refactor?
 	public final String module;
 	
-	public RefModule(ArrayView<Token> packageList, String module, SourceRange sourceRange) {
+	public RefModule(ArrayView<Token> packageList, String module) {
 		this.packageList = assertNotNull_(packageList);
 		this.packages = ArrayViewExt.create(NodeUtil.tokenArrayToStringArray(packageList));
 		this.module = module;
-		initSourceRange(sourceRange);
 	}
 	
 	

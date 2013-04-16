@@ -2,14 +2,12 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class StatementVolatile extends Statement {
 	
 	public final IStatement st;
 	
-	public StatementVolatile(IStatement st, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public StatementVolatile(IStatement st) {
 		this.st = parentizeI(st);
 	}
 	

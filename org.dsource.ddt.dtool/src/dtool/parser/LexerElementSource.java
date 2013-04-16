@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc2.ArrayListDeque;
+import dtool.parser.LexElement.MissingLexElement;
 import dtool.util.NewUtils;
 
 /**
@@ -27,8 +28,7 @@ public class LexerElementSource extends CommonLexElementSource {
 	
 	protected final ArrayListDeque<LexElement> lookAheadQueue = new ArrayListDeque<LexElement>();
 	protected LexElement lastLexElement = new LexElement(null, new Token(DeeTokens.EOF, "", 0));
-	// This initialization is important for some error reporting:
-	protected LexElement lastNonMissingLexElement = lastLexElement;
+	protected int lexPosition = 0;
 	
 	public LexerElementSource(String source) {
 		this.lexer = new DeeLexer(source);
@@ -48,7 +48,7 @@ public class LexerElementSource extends CommonLexElementSource {
 		assertTrue(laIndex >= 0);
 		
 		while(lookAheadQueue.size() <= laIndex) {
-			LexElement newLexElement = produceLexElement();
+			LexElement newLexElement = produceLexElement(lexer);
 			lookAheadQueue.add(newLexElement);
 		}
 		
@@ -57,7 +57,7 @@ public class LexerElementSource extends CommonLexElementSource {
 	
 	static{ assertTrue(DeeTokens.EOF.isParserIgnored == false); }
 	
-	public final LexElement produceLexElement() {
+	public static LexElement produceLexElement(AbstractLexer lexer) {
 		ArrayList<Token> ignoredTokens = null;
 		while(true) {
 			Token token = lexer.next();
@@ -78,24 +78,32 @@ public class LexerElementSource extends CommonLexElementSource {
 	protected final LexElement consumeInput() {
 		LexElement laElem = lookAheadElement(0); // Ensure there is at least one element in queue
 		
-		lastNonMissingLexElement = lastLexElement = laElem;
+		lastLexElement = laElem;
 		lookAheadQueue.removeFirst();
+		lexPosition = lastLexElement.getEndPos();
 		lexElementConsumed(lastLexElement);
 		return lastLexElement;
 	}
 	
 	@Override
-	public final LexElement consumeIgnoreTokens(DeeTokens expectedToken) {
+	public int getLexPosition() {
+		return lexPosition;
+	}
+	
+	@Override
+	public final MissingLexElement consumeIgnoreTokens(DeeTokens expectedToken) {
 		LexElement la = lookAheadElement();
 		
 		// Missing element will consume whitetokens ahead
 		expectedToken = expectedToken == null ? DeeTokens.WHITESPACE : expectedToken;
 		int lookAheadStart = la.getStartPos();
-		lastLexElement = new LexElement(la.ignoredPrecedingTokens, expectedToken, lookAheadStart);
+		MissingLexElement missingLexElement = 
+			new MissingLexElement(la.ignoredPrecedingTokens, expectedToken, lookAheadStart);
+		lexPosition = missingLexElement.getEndPos();
 		lookAheadQueue.set(0, new LexElement(null, la.token));
 		
-		lexElementConsumed(lastLexElement);
-		return lastLexElement;
+		lexElementConsumed(missingLexElement);
+		return missingLexElement;
 	}
 	
 	protected void lexElementConsumed(@SuppressWarnings("unused") LexElement lastLexElement) {
@@ -105,11 +113,6 @@ public class LexerElementSource extends CommonLexElementSource {
 	@Override
 	protected LexElement lastLexElement() {
 		return lastLexElement;
-	}
-	
-	@Override
-	protected LexElement lastNonMissingLexElement() {
-		return lastNonMissingLexElement;
 	}
 	
 }

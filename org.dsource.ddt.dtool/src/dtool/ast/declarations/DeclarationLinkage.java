@@ -6,7 +6,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 
 public class DeclarationLinkage extends DeclarationAttrib implements IStatement {
@@ -40,8 +39,8 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	public final String linkageName;
 	public final Linkage linkage;
 	
-	public DeclarationLinkage(String linkageName, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls, SourceRange sr) {
-		super(bodySyntax, bodyDecls, sr);
+	public DeclarationLinkage(String linkageName, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls) {
+		super(bodySyntax, bodyDecls);
 		this.linkageName = linkageName;
 		this.linkage = Linkage.fromString(linkageName);
 	}

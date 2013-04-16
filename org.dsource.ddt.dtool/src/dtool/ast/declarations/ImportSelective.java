@@ -11,7 +11,6 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
@@ -29,11 +28,9 @@ public class ImportSelective extends ASTNeoNode implements INonScopedBlock, IImp
 	public final IImportFragment fragment;
 	public final ArrayView<ASTNeoNode> impSelFrags;
 	
-	public ImportSelective(IImportFragment subFragment, ArrayView<IImportSelectiveSelection> frags, 
-		SourceRange sourceRange) {
+	public ImportSelective(IImportFragment subFragment, ArrayView<IImportSelectiveSelection> frags) {
 		this.impSelFrags = CoreUtil.<ArrayView<ASTNeoNode>>blindCast(parentizeFrags(frags));
 		this.fragment = parentizeI(subFragment);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

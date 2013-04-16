@@ -9,7 +9,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.Expression;
@@ -24,11 +23,10 @@ public class RefQualified extends CommonRefQualified {
 	public final Resolvable qualifier;
 	public final boolean isExpressionQualifier;
 	
-	public RefQualified(IQualifierNode qualifier, RefIdentifier qualifiedIdRef, SourceRange sourceRange) {
+	public RefQualified(IQualifierNode qualifier, RefIdentifier qualifiedIdRef) {
 		super(assertNotNull_(qualifiedIdRef));
 		this.qualifier = parentizeI(assertInstance(qualifier, Resolvable.class));
 		this.isExpressionQualifier = isExpressionQualifier(qualifier);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

@@ -4,14 +4,12 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class ExpImportString extends Expression {
 	
 	final public Expression exp; 
 	
-	public ExpImportString(Expression exp, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpImportString(Expression exp) {
 		this.exp = parentize(exp);
 	}
 	

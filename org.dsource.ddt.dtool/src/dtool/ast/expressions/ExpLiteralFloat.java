@@ -4,16 +4,14 @@ import static dtool.util.NewUtils.assertNotNull_;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.parser.Token;
 
 public class ExpLiteralFloat extends Expression {
 	
 	public final Token floatNum;
 	
-	public ExpLiteralFloat(Token floatNum, SourceRange sourceRange) {
+	public ExpLiteralFloat(Token floatNum) {
 		this.floatNum = assertNotNull_(floatNum);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

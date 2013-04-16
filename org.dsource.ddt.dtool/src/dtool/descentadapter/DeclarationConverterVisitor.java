@@ -108,30 +108,29 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(DebugSymbol elem) {
 		Symbol identifier = elem.ident != null ? 
 				DefinitionConverter.convertId(elem.ident) : 
-				new Symbol(new String(elem.version.value), DefinitionConverter.sourceRange(elem.version));
+				connect(DefinitionConverter.sourceRange(elem.version), new Symbol(new String(elem.version.value)))
+				;
 		
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
 			new DeclarationConditionalDefinition(
 				identifier,
-				DeclarationConditionalDefinition.Type.DEBUG,
-				DefinitionConverter.sourceRange(elem)
+				DeclarationConditionalDefinition.Type.DEBUG
 			)
-		);
+		));
 	}
 	
 	@Override
 	public boolean visit(VersionSymbol elem) {
 		Symbol identifier = elem.ident != null ? 
 				DefinitionConverter.convertId(elem.ident) : 
-				new Symbol(new String(elem.version.value), DefinitionConverter.sourceRange(elem.version));;
+				connect(DefinitionConverter.sourceRange(elem.version), new Symbol(new String(elem.version.value)));
 		
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
 			new DeclarationConditionalDefinition(
 				identifier,
-				DeclarationConditionalDefinition.Type.VERSION,
-				DefinitionConverter.sourceRange(elem)
+				DeclarationConditionalDefinition.Type.VERSION
 			)
-		);
+		));
 	}
 	
 	@Override
@@ -157,7 +156,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(AnonDeclaration node) {
 		NodeList body = DeclarationConverter.createNodeList(node.decl, convContext);
-		return endAdapt(new DeclarationAnonMember(body, DefinitionConverter.sourceRange(node)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(node), new DeclarationAnonMember(body)));
 	}
 
 	@Override
@@ -167,7 +166,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(Modifier node) {
-		return endAdapt(new DefModifier(node.tok, DefinitionConverter.sourceRange(node)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(node), new DefModifier(node.tok)));
 	}
 
 	/*  =======================================================  */
@@ -179,11 +178,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.BaseClass elem) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem.hasNoSourceRangeInfo() ? elem.type : elem), 
 			new BaseClass(
 				elem.protection,
-				ReferenceConverter.convertType(elem.type, convContext),
-				DefinitionConverter.sourceRange(elem.hasNoSourceRangeInfo() ? elem.type : elem)
+				ReferenceConverter.convertType(elem.type, convContext))
 			)
 		);
 	}
@@ -201,7 +199,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
-		return endAdapt(new DeclarationAlign(null, AttribBodySyntax.COLON, body, sr));
+		return endAdapt(connect(sr, new DeclarationAlign(null, AttribBodySyntax.COLON, body)));
 	}
 
 	@Override
@@ -212,9 +210,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	// Helper function for the ImportSelective conversion.
 	private static IImportSelectiveSelection createSelectionFragment(IdentifierExp name, IdentifierExp alias) {
 		assertTrue(!(name.ident.length == 0));
-		RefImportSelection impSelection = new RefImportSelection(
-			new String(name.ident),
-			DefinitionConverter.sourceRange(name)
+		RefImportSelection impSelection = connect(DefinitionConverter.sourceRange(name), new RefImportSelection(
+			new String(name.ident))
 		);
 		
 		if(alias == null) {
@@ -227,9 +224,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				null
 			);
 			
-			return new ImportSelectiveAlias(
-				dudt, impSelection, dudt.sourceRange
-			);
+			return connect(dudt.sourceRange, new ImportSelectiveAlias(dudt, impSelection));
 		}
 	}
 	
@@ -266,10 +261,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			}
 			
 			if(elem.isstatic) {
-				imprtFragment = new ImportStatic(
-					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr),
-					DefinitionConverter.sourceRange(imprt)
-				);
+				imprtFragment = connect(DefinitionConverter.sourceRange(imprt),  
+					new ImportStatic(
+					connect(sr, new RefModule(ArrayView.create(packages), new String(imprt.id.ident)))
+				));
 				//Ignore FQN aliasing for now.
 				//Assert.isTrue(imprt.alias == null);
 			} else if(imprt.aliasId != null) {
@@ -280,13 +275,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				);
 				imprtFragment = new ImportAlias(
 					dudt,
-					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr),
-					null
+					connect(sr, new RefModule(ArrayView.create(packages), new String(imprt.id.ident)))
 				);
 			} else {
-				imprtFragment = new ImportContent(
-					new RefModule(ArrayView.create(packages), new String(imprt.id.ident), sr)
+				ImportContent importContent;
+				imprtFragment = importContent = new ImportContent(
+					connect(sr, new RefModule(ArrayView.create(packages), new String(imprt.id.ident)))
 				);
+				importContent.initSourceRange(importContent.moduleRef.getSourceRange());
 				
 				if(imprt.names != null) {
 					assertTrue(imprt.names.size() == imprt.aliases.size());
@@ -299,9 +295,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 						);
 					}
 					
-					imprtFragment = new ImportSelective(imprtFragment,
-						ArrayView.create(impSelFrags), DefinitionConverter.sourceRange(imprt)
-					);
+					imprtFragment = connect(DefinitionConverter.sourceRange(imprt), 
+						new ImportSelective(imprtFragment, ArrayView.create(impSelFrags)
+					));
 				}
 			}
 			
@@ -309,20 +305,17 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		}
 		assertTrue(imprt == null);
 		
-		return endAdapt(new DeclarationImport(
-			elem.isstatic, ArrayView.create(imports), DefinitionConverter.sourceRange(elem)
-				)
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem), new DeclarationImport(
+			elem.isstatic, ArrayView.create(imports)))
 		);
 	}
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.InvariantDeclaration elem) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
 			new DeclarationInvariant(
-				(BlockStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext),
-				DefinitionConverter.sourceRange(elem)
-			)
-		);
+				(BlockStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext))
+		));
 	}
 
 	@Override
@@ -331,7 +324,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
 		Linkage linkage = fromLINK(elem.linkage);
-		return endAdapt(new DeclarationLinkage(linkage.name, AttribBodySyntax.SINGLE_DECL, body, sr));
+		return endAdapt(connect(sr, new DeclarationLinkage(linkage.name, AttribBodySyntax.SINGLE_DECL, body)));
 	}
 	
     public static Linkage fromLINK(LINK linkage) {
@@ -351,23 +344,21 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.PragmaDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
 			new DeclarationPragma(
 				DefinitionConverter.convertId(elem.ident),
 				ExpressionConverter.convertMany(elem.args, convContext),
-				AttribBodySyntax.BRACE_BLOCK, body,
-				DefinitionConverter.sourceRange(elem)
+				AttribBodySyntax.BRACE_BLOCK, body
 			)
-		);
+		));
 	}
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.ProtDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
-		return endAdapt(new DeclarationProtection(
-			fromPROT(elem.protection), AttribBodySyntax.BRACE_BLOCK, body, DefinitionConverter.sourceRange(elem)
-		));
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem), new DeclarationProtection(
+			fromPROT(elem.protection), AttribBodySyntax.BRACE_BLOCK, body)));
 	}
 	
 	public static Protection fromPROT(PROT prot) {
@@ -392,9 +383,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		AttributeKinds declAttrib = AttributeKinds.FINAL; // WRONG, but dont care, deprecated
-		return endAdapt(new DeclarationBasicAttrib(
-			declAttrib, AttribBodySyntax.BRACE_BLOCK, body, 
-			DefinitionConverter.sourceRange(elem)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
+			new DeclarationBasicAttrib(declAttrib, AttribBodySyntax.BRACE_BLOCK, body)));
 	}
 	
 	@Override
@@ -407,14 +397,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.UnitTestDeclaration elem) {
 		IStatement stmt = StatementConverterVisitor.convertStatement(elem.fbody, convContext);
 		if (stmt instanceof BlockStatement) {
-			return endAdapt(new DeclarationUnitTest((BlockStatement) stmt, DefinitionConverter.sourceRange(elem)));
+			return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
+				new DeclarationUnitTest((BlockStatement) stmt)));
 		} else {
 			// Syntax errors
 			IStatement[] stmts = (stmt == null) ? new IStatement[0] : new IStatement[] { stmt };
-			return endAdapt(
+			return endAdapt(connect(DefinitionConverter.sourceRange(elem),
 				new DeclarationUnitTest(
-					new BlockStatement(ArrayView.create(stmts), false, DefinitionConverter.sourceRange(elem)),
-					DefinitionConverter.sourceRange(elem)
+					connect(DefinitionConverter.sourceRange(elem), new BlockStatement(ArrayView.create(stmts), false)))
 				)
 			);
 		}
@@ -423,11 +413,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StaticAssert elem) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
 			new DeclarationStaticAssert(
 				ExpressionConverter.convert(elem.exp, convContext),
-				ExpressionConverter.convert(elem.msg, convContext),
-				DefinitionConverter.sourceRange(elem)
+				ExpressionConverter.convert(elem.msg, convContext))
 			)
 		);
 	}
@@ -439,10 +428,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.AliasThis elem) {
-		return endAdapt(
-			new DeclarationAliasThis(
-				new RefIdentifier(new String(elem.ident.ident), null),
-				DefinitionConverter.sourceRange(elem)
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
+			new DeclarationAliasThis(new RefIdentifier(new String(elem.ident.ident)))
 			)
 		);
 	}
@@ -529,13 +516,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		if(typeRef == null) {
 			return endAdapt(new DefinitionVariable.DefinitionAutoVariable(
 				DefinitionConverter.convertDsymbol(elem, convContext),
-				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null, null
+				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null
 			));
 		} else {
 			return endAdapt(new DefinitionVariable(
 				DefinitionConverter.convertDsymbol(elem, convContext),
 				typeRef,
-				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null, null
+				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null
 			));
 		}
 	}
@@ -548,11 +535,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				ReferenceConverter.convertType(elem.memtype, convContext)
 			);
 		} else {
-			return new EnumContainer(
+			return connect(DefinitionConverter.sourceRange(elem), new EnumContainer(
 				DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext),
-				ReferenceConverter.convertType(elem.memtype, convContext),
-				DefinitionConverter.sourceRange(elem)
-			);
+				ReferenceConverter.convertType(elem.memtype, convContext)
+			));
 		}
 	}
 	
@@ -658,10 +644,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	}
 	@Override
 	public boolean visit(descent.internal.compiler.parser.PostBlitDeclaration elem) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
 			new DefinitionPostBlit(
-				StatementConverterVisitor.convertStatement(elem.fbody, convContext),
-				DefinitionConverter.sourceRange(elem)
+				StatementConverterVisitor.convertStatement(elem.fbody, convContext))
 			)
 		);
 	}

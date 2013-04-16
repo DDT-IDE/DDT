@@ -139,21 +139,19 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(FileExp node) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(node),
 			new ExpImportString(
-				ExpressionConverter.convert(node.e1, convContext),
-				DefinitionConverter.sourceRange(node)
-			)
+				ExpressionConverter.convert(node.e1, convContext)
+			))
 		);
 	}
 	
 	@Override
 	public boolean visit(TraitsExp node) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(node),
 			new ExpTraits(
 				node.ident.ident,
-				DescentASTConverter.convertMany(node.args, ASTNeoNode.class, convContext),
-				DefinitionConverter.sourceRange(node)
+				DescentASTConverter.convertMany(node.args, ASTNeoNode.class, convContext))
 			)
 		);
 	}
@@ -161,42 +159,38 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(AssocArrayLiteralExp node) {
 		Assert.isTrue(node.keys.size() == node.values.size());
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(node), 
 			new ExpLiteralMapArray(
 				/*DescentASTConverter.convertMany(node.keys, Resolvable.class, convContext),*/
 				/*DescentASTConverter.convertMany(node.values, Resolvable.class, convContext),*/
-				ArrayView.create(new ExpLiteralMapArray.MapArrayLiteralKeyValue[0]) ,
-				DefinitionConverter.sourceRange(node)
+				ArrayView.create(new ExpLiteralMapArray.MapArrayLiteralKeyValue[0])
 			)
-		);
+		));
 	}
-
+	
 	@Override
 	public boolean visit(CompileDeclaration node) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(node),
 			new DeclarationMixinString(
-				ExpressionConverter.convert(node.exp, convContext),
-				DefinitionConverter.sourceRange(node)
+				ExpressionConverter.convert(node.exp, convContext))
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(CompileExp node) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(node),
 			new ExpMixinString(
-				ExpressionConverter.convert(node.e1, convContext),
-				DefinitionConverter.sourceRange(node)	
+				ExpressionConverter.convert(node.e1, convContext))
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(CompileStatement node) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(node),
 			new DeclarationMixinString(
-				ExpressionConverter.convert(node.exp, convContext),
-				DefinitionConverter.sourceRange(node)
+				ExpressionConverter.convert(node.exp, convContext))
 			)
 		);
 	}
@@ -206,21 +200,19 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(ArrayInitializer element) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(element),
 			new InitializerArray(
 				ExpressionConverter.convertMany(element.index, convContext),
-				DescentASTConverter.convertMany(element.value, Initializer.class, convContext),
-				DefinitionConverter.sourceRange(element)
+				DescentASTConverter.convertMany(element.value, Initializer.class, convContext))
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(ExpInitializer element) {
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(element, !(element.exp instanceof ErrorExp)),
 			new InitializerExp(
-				ExpressionConverter.convert(element.exp, convContext),
-				DefinitionConverter.sourceRange(element, !(element.exp instanceof ErrorExp))
+				ExpressionConverter.convert(element.exp, convContext))
 			)
 		);
 	}
@@ -239,18 +231,17 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 			}
 		}
 		
-		return endAdapt(
+		return endAdapt(connect(DefinitionConverter.sourceRange(element),
 			new InitializerStruct(
 				ArrayView.create(indices),
-				DescentASTConverter.convertMany(element.value, Initializer.class, convContext),
-				DefinitionConverter.sourceRange(element)
+				DescentASTConverter.convertMany(element.value, Initializer.class, convContext))
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(VoidInitializer element) {
-		return endAdapt(new InitializerVoid(DefinitionConverter.sourceRange(element)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(element), new InitializerVoid()));
 	}
 
 	
@@ -264,7 +255,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(ArrayLengthExp element) {
-		return endAdapt(new ExpArrayLength(DefinitionConverter.sourceRange(element)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(element), new ExpArrayLength()));
 	}
 	
 	@Override
@@ -276,7 +267,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	public boolean visit(AssertExp elem) {
 		Expression exp = ExpressionConverter.convert(elem.e1, convContext);
 		Expression msg = ExpressionConverter.convert(elem.msg, convContext);
-		return endAdapt(new ExpAssert(exp, msg, DefinitionConverter.sourceRange(elem)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem), new ExpAssert(exp, msg)));
 	}
 	
 	@Override
@@ -288,7 +279,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	public boolean visit(CastExp elem) {
 		Expression exp = ExpressionConverter.convert(elem.sourceE1, convContext);
 		Reference type = ReferenceConverter.convertType(elem.sourceTo, convContext);
-		return endAdapt(new ExpCast(type, exp, DefinitionConverter.sourceRange(elem)));
+		return endAdapt(DefinitionConverter.sourceRange(elem), new ExpCast(type, exp));
 	}
 	
 	@Override
@@ -297,41 +288,39 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		Resolvable trueExp = ExpressionConverter.convert(elem.e1, convContext);
 		Resolvable falseExp = ExpressionConverter.convert(elem.e2, convContext); 
 		
-		return endAdapt(new ExpConditional(predExp, trueExp, falseExp, DefinitionConverter.sourceRange(elem)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
+				new ExpConditional(predExp, trueExp, falseExp)));
 	}
 	
 	@Override
 	public boolean visit(DeleteExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpPrefix(
 				PrefixOpType.DELETE,
-				ExpressionConverter.convert(element.e1, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.e1, convContext)
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(DollarExp element) {
-		return endAdapt(new ExpArrayLength(DefinitionConverter.sourceRange(element)));
+		return endAdapt(DefinitionConverter.sourceRange(element), new ExpArrayLength());
 	}
 	
 	@Override
 	public boolean visit(FileInitExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpDefaultInit(
-				ExpDefaultInit.DefaultInit.FILE,
-				DefinitionConverter.sourceRange(element)
+				ExpDefaultInit.DefaultInit.FILE
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(LineInitExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpDefaultInit(
-				ExpDefaultInit.DefaultInit.LINE,
-				DefinitionConverter.sourceRange(element)
+				ExpDefaultInit.DefaultInit.LINE
 			)
 		);
 	}
@@ -354,7 +343,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 			}
 		} else {
 			/*WATHEVAR*/
-			fnBody = new InOutFunctionBody(false, null, null, fbody, null);
+			fnBody = new InOutFunctionBody(false, null, null, fbody);
 		}
 		
 		return endAdapt(connect(DefinitionConverter.sourceRange(element), 
@@ -375,12 +364,11 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(IsExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpIftype(
 				ReferenceConverter.convertType(element.targ, convContext),
 				element.tok,
-				ReferenceConverter.convertType(element.tspec, convContext),
-				DefinitionConverter.sourceRange(element)
+				ReferenceConverter.convertType(element.tspec, convContext)
 			)
 		);
 	}
@@ -388,16 +376,14 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(IntegerExp element) {
 		if (((TypeBasic) element.type).ty == TY.Tbool) {
-			return endAdapt(
+			return endAdapt(DefinitionConverter.sourceRange(element),
 				new ExpLiteralBool(
-					element.value.intValue() != 0,
-					DefinitionConverter.sourceRange(element)
+					element.value.intValue() != 0
 				)
 			);
 		} else {
-			return endAdapt(
-				new ExpLiteralInteger(makeToken(DeeTokens.INTEGER_DECIMAL, element.str, element.getStart()),
-					DefinitionConverter.sourceRange(element, !(element instanceof ErrorExp))
+			return endAdapt(DefinitionConverter.sourceRange(element, !(element instanceof ErrorExp)),
+				new ExpLiteralInteger(makeToken(DeeTokens.INTEGER_DECIMAL, element.str, element.getStart())
 				)
 			);
 		}
@@ -405,13 +391,12 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(NewAnonClassExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpLiteralNewAnonClass(
 				ExpressionConverter.convertMany(element.newargs, convContext),
 				ExpressionConverter.convertMany(element.arguments, convContext),
 				DescentASTConverter.convertMany(element.cd.sourceBaseclasses, BaseClass.class, convContext),
-				DescentASTConverter.convertMany(element.cd.members, ASTNeoNode.class, convContext),
-				DefinitionConverter.sourceRange(element)
+				DescentASTConverter.convertMany(element.cd.members, ASTNeoNode.class, convContext)
 			)
 		);
 	}
@@ -421,25 +406,24 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		Reference type = element.newtype == null ? 
 				new Reference.InvalidSyntaxReference() : 
 				ReferenceConverter.convertType(element.newtype, convContext);
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpNew(
 				DescentASTConverter.convertMany(element.newargs, Expression.class, convContext),
 				type,
-				DescentASTConverter.convertMany(element.arguments, Expression.class, convContext),
-				DefinitionConverter.sourceRange(element)
+				DescentASTConverter.convertMany(element.arguments, Expression.class, convContext)
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(NullExp element) {
-		return endAdapt(new ExpNull(DefinitionConverter.sourceRange(element)));
+		return endAdapt(DefinitionConverter.sourceRange(element), new ExpNull());
 	}
 	
 	@Override
 	public boolean visit(RealExp element) {
-		return endAdapt(new ExpLiteralFloat(makeToken(DeeTokens.FLOAT_DECIMAL, element.str, element.getStartPos()), 
-			DefinitionConverter.sourceRange(element)));
+		return endAdapt(DefinitionConverter.sourceRange(element), 
+			new ExpLiteralFloat(makeToken(DeeTokens.FLOAT_DECIMAL, element.str, element.getStartPos())));
 	}
 	
 	@Override
@@ -465,32 +449,30 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 //		for (int i = 0; i < elem.strings.size(); i++) {
 //			this.strings[i] = elem.strings.get(i).string;
 //		}
-		return endAdapt(new ExpLiteralString(makeToken(DeeTokens.STRING_DQ, element.sourceString, 
-			element.getStartPos()), DefinitionConverter.sourceRange(element)));
+		return endAdapt(DefinitionConverter.sourceRange(element),
+			new ExpLiteralString(makeToken(DeeTokens.STRING_DQ, element.sourceString, element.getStartPos())));
 	}
 	
 	@Override
 	public boolean visit(SuperExp element) {
-		return endAdapt(new ExpSuper(DefinitionConverter.sourceRange(element)));
+		return endAdapt(DefinitionConverter.sourceRange(element), new ExpSuper());
 	}
 	
 	@Override
 	public boolean visit(ThisExp element) {
-		return endAdapt(new ExpThis(DefinitionConverter.sourceRange(element)));
+		return endAdapt(DefinitionConverter.sourceRange(element), new ExpThis());
 	}
 	
 	@Override
 	public boolean visit(TypeidExp element) {
 		assertTrue(element.typeidType != null || element.argumentExp__DDT_ADDITION != null);
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element), 
 			element.typeidType != null
 			? new ExpTypeId(
-				ReferenceConverter.convertType(element.typeidType, convContext),
-				DefinitionConverter.sourceRange(element)
+				ReferenceConverter.convertType(element.typeidType, convContext)
 			)
 			: new ExpTypeId(
-				ExpressionConverter.convert(element.argumentExp__DDT_ADDITION, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.argumentExp__DDT_ADDITION, convContext)
 			)
 		);
 	}	
@@ -505,44 +487,40 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(AddrExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.ADDRESS,
-				ExpressionConverter.convert(element.e1, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.e1, convContext)
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(ComExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.COMPLEMENT,
-				ExpressionConverter.convert(element.e1, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.e1, convContext)
 			)
 		);
 	}	
 	
 	@Override
 	public boolean visit(NegExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.NEGATIVE,
-				ExpressionConverter.convert(element.e1, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.e1, convContext)
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(NotExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.NOT,
-				ExpressionConverter.convert(element.e1, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.e1, convContext)
 			)
 		);
 	}	
@@ -562,33 +540,30 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		default: Assert.fail();
 		}
 		
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(node),
 			new ExpPostfixOperator(
 				(Resolvable) DescentASTConverter.convertElem(node.e1, convContext),
-				PostfixOpType.POST_DECREMENT,
-				DefinitionConverter.sourceRange(node)
+				PostfixOpType.POST_DECREMENT
 			)
 		);
 	}
 
 	@Override
 	public boolean visit(PtrExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.REFERENCE,
-				ExpressionConverter.convert(element.e1, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.e1, convContext)
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(UAddExp element) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpPrefix(
 				ExpPrefix.PrefixOpType.POSITIVE,
-				ExpressionConverter.convert(element.e1, convContext),
-				DefinitionConverter.sourceRange(element)
+				ExpressionConverter.convert(element.e1, convContext)
 			)
 		);
 	}	
@@ -610,7 +585,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		Expression exp1 = ExpressionConverter.convert(element.e1, convContext);
 		SourceRange sourceRange = DefinitionConverter.sourceRange(element);
 		Resolvable newelem = element.isPreIncrement
-				? new ExpPrefix(ExpPrefix.PrefixOpType.PRE_INCREMENT, exp1, sourceRange)
+				? connect(sourceRange, new ExpPrefix(ExpPrefix.PrefixOpType.PRE_INCREMENT, exp1))
 				: newExpInfix(
 					exp1,
 					DeeTokens.PLUS_ASSIGN,
@@ -626,7 +601,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		Expression exp1 = ExpressionConverter.convert(element.e1, convContext);
 		SourceRange sourceRange = DefinitionConverter.sourceRange(element);
 		Resolvable newelem = element.isPreDecrement
-				? new ExpPrefix(ExpPrefix.PrefixOpType.PRE_DECREMENT, exp1, sourceRange)
+				? connect(sourceRange, new ExpPrefix(ExpPrefix.PrefixOpType.PRE_DECREMENT, exp1))
 				: newExpInfix(
 					exp1, 
 					DeeTokens.MINUS_ASSIGN,

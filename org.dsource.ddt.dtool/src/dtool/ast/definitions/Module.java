@@ -49,14 +49,12 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		public final String[] packages; // Old API
 		public final DefSymbol moduleName; 
 		
-		public DeclarationModule(ArrayView<Token> packageList, Token moduleDefUnit, SourceRange sourceRange) {
+		public DeclarationModule(ArrayView<Token> packageList, Token moduleDefUnit) {
 			this.packageList = assertNotNull_(packageList);
 			this.packages = NodeUtil.tokenArrayToStringArray(packageList);
 			this.moduleName = new ModuleDefSymbol(moduleDefUnit.source, moduleDefUnit.getSourceRange());
 			this.moduleName.setData(ASTSemantics.PARSED_STATUS);
 			parentize(moduleName);
-			
-			initSourceRange(sourceRange);
 		}
 		
 		public ModuleDefSymbol getModuleSymbol() {

@@ -3,12 +3,10 @@ package dtool.ast.expressions;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class ExpNull extends Expression {
 	
-	public ExpNull(SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpNull() {
 	}
 	
 	@Override

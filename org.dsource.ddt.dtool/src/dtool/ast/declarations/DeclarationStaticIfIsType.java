@@ -64,8 +64,7 @@ public class DeclarationStaticIfIsType extends ASTNeoNode implements IStatement,
 		
 		public final NodeList nodelist;
 		
-		public IsTypeScope(NodeList nodes, SourceRange sourceRange) {
-			initSourceRange(sourceRange);
+		public IsTypeScope(NodeList nodes) {
 			this.nodelist = NodeList.parentizeNodeList(nodes, this);
 			setParent(DeclarationStaticIfIsType.this);
 		}
@@ -103,13 +102,13 @@ public class DeclarationStaticIfIsType extends ASTNeoNode implements IStatement,
 	public final NodeList elseDecls;
 	
 	public DeclarationStaticIfIsType(Reference arg, String id, SourceRange idSourceRange, TOK tok, Reference specType,
-			NodeList thenDecls, NodeList elseDecls, SourceRange innerRange, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+			NodeList thenDecls, NodeList elseDecls, SourceRange innerRange) {
 		this.arg = arg; parentize(this.arg);
 		this.defUnit = new IsTypeDefUnit(id, idSourceRange);
 		this.tok = tok;
 		this.specType = parentize(specType);
-		this.thenScope = new IsTypeScope(thenDecls, innerRange);
+		this.thenScope = new IsTypeScope(thenDecls);
+		this.thenScope.setSourceRange(innerRange);
 		this.elseDecls = NodeList.parentizeNodeList(elseDecls, this);
 	}
 	

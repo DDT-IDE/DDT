@@ -4,7 +4,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class InOutFunctionBody extends FunctionBody implements IFunctionBody {
 	
@@ -13,12 +12,11 @@ public class InOutFunctionBody extends FunctionBody implements IFunctionBody {
 	public final FunctionBodyOutBlock outBlock;
 	
 	public InOutFunctionBody(boolean isOutIn, BlockStatement inBlock, FunctionBodyOutBlock outBlock, 
-		BlockStatement bodyBlock, SourceRange sourceRange) {
-		super(bodyBlock);
+		BlockStatement bodyBlock) {
+		super(bodyBlock, false);
 		this.isOutIn = isOutIn;
 		this.inBlock = parentize(inBlock);
 		this.outBlock = parentize(outBlock);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

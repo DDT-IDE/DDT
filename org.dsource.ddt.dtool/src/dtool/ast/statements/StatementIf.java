@@ -2,7 +2,6 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
 public class StatementIf extends Statement {
@@ -11,8 +10,7 @@ public class StatementIf extends Statement {
 	public final IStatement thenBody;
 	public final IStatement elseBody;
 	
-	public StatementIf(Resolvable pred, IStatement thenBody, IStatement elseBody, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public StatementIf(Resolvable pred, IStatement thenBody, IStatement elseBody) {
 		this.pred = parentize(pred);
 		this.thenBody = parentizeI(thenBody);
 		this.elseBody = parentizeI(elseBody);

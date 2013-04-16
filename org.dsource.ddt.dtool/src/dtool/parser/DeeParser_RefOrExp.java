@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.ast.ASTChildrenVisitor;
+import dtool.ast.ASTDirectChildrenVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTSemantics;
 import dtool.ast.SourceRange;
@@ -117,8 +117,17 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		if(reportMissingError) {
 			reportErrorExpectedRule(RULE_REFERENCE);
 		}
-		LexElement id = createExpectedToken(DeeTokens.IDENTIFIER);
-		return connect(new RefIdentifier(idTokenToString(id), sr(id.token)));
+		SourceRange sourceRange = createExpectedToken(DeeTokens.IDENTIFIER).getSourceRange();
+		return createMissingTypeReferenceNode(sourceRange);
+	}
+	public Reference createMissingTypeReferenceNode(SourceRange sourceRange) {
+		RefIdentifier refMissing = new RefIdentifier(null);
+		assertTrue(isMissing(refMissing));
+		return connect(sourceRange, refMissing);
+	}
+	
+	public static boolean isMissing(Reference ref) {
+		return (ref instanceof RefIdentifier) && ((RefIdentifier) ref).name == null;
 	}
 	
 	protected NodeResult<Reference> parseTypeReference_do(boolean parsingExp) {
@@ -154,20 +163,13 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	}
 	
 	protected RefIdentifier parseRefIdentifier() {
-		LexElement id = consumeExpectedToken(DeeTokens.IDENTIFIER);
-		return connect(
-			id != null ? new RefIdentifier(idTokenToString(id), sr(id.token)) : createMissingRefIdentifier());
-	}
-	
-	protected RefIdentifier createMissingRefIdentifier() {
-		int nodeStart = lastLexElement().getEndPos();
-		LexElement id = createExpectedToken(DeeTokens.IDENTIFIER);
-		return new RefIdentifier(idTokenToString(id), srToCursor(nodeStart));
+		LexElement id = consumeExpectedToken(DeeTokens.IDENTIFIER, true);
+		return connect(srEffective(id, new RefIdentifier(idTokenToString(id))));
 	}
 	
 	protected RefPrimitive matchRefPrimitive(DeeTokens primitiveType) {
-		Token token = consumeLookAhead(primitiveType).token;
-		return connect(new RefPrimitive(token, sr(token)));
+		LexElement primitive = consumeLookAhead(primitiveType);
+		return connect(sr(primitive, new RefPrimitive(primitive.token)));
 	}
 	
 	public RefModuleQualified parseRefModuleQualified() {
@@ -181,7 +183,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		
 		boolean parseBroken = lookAhead() != DeeTokens.IDENTIFIER;
 		RefIdentifier id = parseRefIdentifier();
-		return connectResult(parseBroken, new RefModuleQualified(id, srToCursor(nodeStart)));
+		return connectResult(parseBroken, srToPosition(nodeStart, new RefModuleQualified(id)));
 	}
 	
 	protected NodeResult<RefTypeof> parseRefTypeof_do() {
@@ -193,13 +195,13 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		boolean parseBroken = true;
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) != null) {
 			if(tryConsume(DeeTokens.KW_RETURN)) {
-				exp = new RefTypeof.ExpRefReturn(lastLexElement().getSourceRange());
+				exp = connect(sr(lastLexElement(), new RefTypeof.ExpRefReturn()));
 			} else {
 				exp = parseExpression_toMissing();
 			}
 			parseBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
 		}
-		return connectResult(parseBroken, new RefTypeof(exp, srToCursor(nodeStart)));
+		return connectResult(parseBroken, srToPosition(nodeStart, new RefTypeof(exp)));
 	}
 	
 	protected NodeResult<RefTypeModifier> matchRefTypeModifier_do(TypeModifierKinds modKind) {
@@ -213,7 +215,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 			ref = parseTypeReference_ToMissing(true).getNode_NoBrokenCheck(); 
 			parseBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
 		}
-		return connectResult(parseBroken, new RefTypeModifier(modKind, ref, srToCursor(nodeStart)));
+		return connectResult(parseBroken, srToPosition(nodeStart, new RefTypeModifier(modKind, ref)));
 	}
 	
 	protected NodeResult<Reference> parseReference_ReferenceStart(Reference leftRef, boolean parsingExp) {
@@ -233,7 +235,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 			consumeLookAhead();
 			parseBroken = lookAhead() != DeeTokens.IDENTIFIER;
 			RefIdentifier qualifiedId = parseRefIdentifier();
-			leftRef = connect(new RefQualified(qualifier, qualifiedId, srToCursor(leftRef.getStartPos())));
+			leftRef = connect(srToPosition(leftRef, new RefQualified(qualifier, qualifiedId)));
 			
 		} else if(lookAhead() == DeeTokens.NOT && isValidTemplateReferenceSyntax(leftRef)){ // template instance
 			consumeLookAhead();
@@ -266,19 +268,19 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 					}
 				}
 			}
-			leftRef = connect(new RefTemplateInstance(tplRef, singleArg, arrayView(tplArgs), srToCursor(leftRef)));
+			leftRef = connect(srToPosition(leftRef, new RefTemplateInstance(tplRef, singleArg, arrayView(tplArgs))));
 			
 		} else if(!parsingExp && tryConsume(DeeTokens.STAR)) {
-			leftRef = connect(new RefTypePointer(leftRef, srToCursor(leftRef.getStartPos())));
+			leftRef = connect(srToPosition(leftRef, new RefTypePointer(leftRef)));
 			
 		} else if(!parsingExp && tryConsume(DeeTokens.OPEN_BRACKET)) {
 			Resolvable resolvable = parseTypeOrExpression(true).node;
 			parseBroken = consumeExpectedToken(DeeTokens.CLOSE_BRACKET) == null;
 			
 			if(resolvable == null) {
-				leftRef = connect(new RefTypeDynArray(leftRef, srToCursor(leftRef.getStartPos())));
+				leftRef = connect(srToPosition(leftRef, new RefTypeDynArray(leftRef)));
 			} else {
-				leftRef = connect(new RefIndexing(leftRef, resolvable, srToCursor(leftRef.getStartPos())));
+				leftRef = connect(srToPosition(leftRef, new RefIndexing(leftRef, resolvable)));
 			}
 			
 		} else if(tryConsume(DeeTokens.KW_FUNCTION) || tryConsume(DeeTokens.KW_DELEGATE)) {
@@ -370,14 +372,14 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	
 	public MissingExpression createTypeOrExpMissingExp(TypeOrExpStatus mode, ParseRuleDescription expectedRule,
 		boolean consumeIgnoreTokens) {
-		int nodeStart = lastLexElement().getEndPos();
+		int nodeStart = getLexPosition();
 		if(consumeIgnoreTokens) {
-			consumeIgnoreTokens(null);
+			consumeIgnoreTokens();
 		}
-		MissingExpression missingExp = new MissingExpression(srToCursor(nodeStart));
+		MissingExpression missingExp = srToPosition(nodeStart, new MissingExpression());
 		if(expectedRule != null) {
 			ParserError error = createErrorOnLastToken(ParserErrorTypes.EXPECTED_RULE, expectedRule.name);
-			assertTrue(error.sourceRange.equals(lastNonMissingLexElement().getSourceRange()));
+			assertTrue(error.sourceRange.equals(lastLexElement().getSourceRange()));
 			if(mode == TypeOrExpStatus.EXP) {
 				addError(error);
 			}
@@ -385,16 +387,22 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		if(mode == TypeOrExpStatus.EXP) {
 			return connect(missingExp);
 		} else {
-			return connectRefData(mode, lastNonMissingLexElement(), missingExp);
+			return connectRefData(mode, lastLexElement(), missingExp);
 		}
+	}
+	
+	public boolean isMissing(Expression exp) {
+		return exp == null || exp instanceof MissingExpression;
 	}
 	
 	protected void addErrorTypeAsExpValue(Reference reference) {
 		addError(ParserErrorTypes.TYPE_USED_AS_EXP_VALUE, reference.getSourceRange(), null);
 	}
 	
-	public boolean isMissing(Expression exp) {
-		return exp == null || exp instanceof MissingExpression;
+	protected ExpReference createExpReference(Reference ref) {
+		ExpReference node = new ExpReference(ref);
+		node.setSourceRange(ref.getSourceRange());
+		return node;
 	}
 	
 	public static enum TypeOrExpStatus { 
@@ -445,7 +453,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	// and probably not worth it (even thought it parses linearly)
 	// Better would be an approach based on rule deciders and backtracking. 
 	
-	public static final Expression DUMMY_EXP = new MissingExpression(null) {{ setData(ASTSemantics.PARSED_STATUS);}};
+	public static final Expression DUMMY_EXP = new MissingExpression() {{ setData(ASTSemantics.PARSED_STATUS);}};
 	
 protected class ParseRule_TypeOrExp {
 	
@@ -640,7 +648,7 @@ protected class ParseRule_TypeOrExp {
 					addErrorTypeAsExpValue(ref);
 				}
 			}
-			return typeOrExpConnect(new ExpReference(ref), ruleBroken);
+			return typeOrExpConnect(createExpReference(ref), ruleBroken);
 		case AND:
 		case INCREMENT:
 		case DECREMENT:
@@ -650,11 +658,11 @@ protected class ParseRule_TypeOrExp {
 		case NOT:
 		case CONCAT:
 		case KW_DELETE: {
-			Token prefixExpToken = consumeLookAhead();
-			PrefixOpType prefixOpType = PrefixOpType.tokenToPrefixOpType(prefixExpToken.type);
+			LexElement prefixExpOpToken = consumeInput();
+			PrefixOpType prefixOpType = PrefixOpType.tokenToPrefixOpType(prefixExpOpToken.getType());
 			LexElement opAheadInfo = lookAheadElement();
 			
-			if(prefixExpToken.type != DeeTokens.STAR || isTypeOrExpStart || !mode.canBeType()) {
+			if(prefixExpOpToken.getType() != DeeTokens.STAR || isTypeOrExpStart || !mode.canBeType()) {
 				updateTypeOrExpMode(TypeOrExpStatus.EXP);
 			}
 			Expression exp = parseUnaryExpression(false);
@@ -662,7 +670,7 @@ protected class ParseRule_TypeOrExp {
 				exp = enterTypeOrExpMissingRightExpMode();
 			}
 			
-			return typeOrExpConnect(opAheadInfo, new ExpPrefix(prefixOpType, exp, srToCursor(prefixExpToken)));
+			return typeOrExpConnect(opAheadInfo, srToPosition(prefixExpOpToken, new ExpPrefix(prefixOpType, exp)));
 		}
 		case OPEN_PARENS:
 			return expConnect(parseParenthesesExp());
@@ -735,9 +743,9 @@ protected class ParseRule_TypeOrExp {
 			}
 			consumeLookAhead();
 			RefIdentifier qualifiedId = parseRefIdentifier();
-			Reference ref = connect(new RefQualified(qualifier, qualifiedId, srToCursor(qualifier.getStartPos())));
+			Reference ref = connect(srToPosition(qualifier.getStartPos(), new RefQualified(qualifier, qualifiedId)));
 			updateTypeOrExpMode(TypeOrExpStatus.EXP);
-			return parsePostfixExpression(connect(new ExpReference(ref)));
+			return parsePostfixExpression(connect(createExpReference(ref)));
 		}
 		default:
 			return exp;
@@ -871,11 +879,11 @@ protected class ParseRule_TypeOrExp {
 			}
 			
 			if(opType == InfixOpType.CONDITIONAL) {
-				return expConnect(new ExpConditional(leftExp, middleExp, rightExp, srToCursor(leftExp)));
+				return expConnect(srToPosition(leftExp, new ExpConditional(leftExp, middleExp, rightExp)));
 			}
 			
 			assertTrue(!(leftExp.isParsedStatus() && mode == TypeOrExpStatus.EXP_WITH_PENDING_TYPE));
-			return typeOrExpConnect(afterStarOp, init(srToCursor(leftExp), new ExpInfix(leftExp, opType, rightExp)));
+			return typeOrExpConnect(afterStarOp, srToPosition(leftExp, new ExpInfix(leftExp, opType, rightExp)));
 		}
 		
 		protected void checkValidAssociativity(Expression exp, InfixOpType op) {
@@ -950,7 +958,7 @@ protected class ParseRule_TypeOrExp {
 					if(isMissing(firstArg) && lookAhead() != DeeTokens.COMMA && lookAhead() != secondLA) {
 						if(isExpIndexing) {
 							setParseBroken(consumeExpectedToken(DeeTokens.CLOSE_BRACKET) == null);
-							return typeOrExpConnect(new ExpSlice(calleeExp, srToCursor(calleeExp)));
+							return typeOrExpConnect(srToPosition(calleeExp, new ExpSlice(calleeExp)));
 						}
 						break; // Empty array literal
 					}
@@ -975,8 +983,7 @@ protected class ParseRule_TypeOrExp {
 							calleeExp.setSourcePosition(nodeStart, nodeStart); // range won't matter in the end.
 						}
 						
-						return typeOrExpBracketList(
-							init(srToCursor(calleeExp), new ExpSlice(calleeExp, firstArg, exp2)));
+						return typeOrExpBracketList(srToPosition(calleeExp, new ExpSlice(calleeExp, firstArg, exp2)));
 					}
 					exp1 = firstArg;
 				} else {
@@ -994,7 +1001,7 @@ protected class ParseRule_TypeOrExp {
 				if(mapElements == null ) {
 					elements.add(exp1);
 				} else {
-					mapElements.add(connect(new MapArrayLiteralKeyValue(exp1, exp2, srToCursor(exp1.getStartPos()))));
+					mapElements.add(connect(srToPosition(exp1, new MapArrayLiteralKeyValue(exp1, exp2))));
 				}
 				
 				if(tryConsume(DeeTokens.COMMA)) {
@@ -1007,12 +1014,12 @@ protected class ParseRule_TypeOrExp {
 			
 			if(calleeExp == null) {
 				if(mapElements != null ) {
-					return expConnect(new ExpLiteralMapArray(arrayView(mapElements), srToCursor(nodeStart)));
+					return expConnect(srToPosition(nodeStart, new ExpLiteralMapArray(arrayView(mapElements))));
 				} else {
-					return typeOrExpBracketList(new ExpLiteralArray(arrayView(elements), srToCursor(nodeStart)));
+					return typeOrExpBracketList(srToPosition(nodeStart, new ExpLiteralArray(arrayView(elements))));
 				}
 			}
-			return typeOrExpBracketList(init(srToCursor(calleeExp), new ExpIndex(calleeExp, arrayView(elements))));
+			return typeOrExpBracketList(srToPosition(calleeExp, new ExpIndex(calleeExp, arrayView(elements))));
 		}
 		
 		@Override
@@ -1066,7 +1073,7 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	public Expression wrapReferenceForTypeOrExpParse(Reference ref) {
-		return connectRefData(TypeOrExpStatus.TYPE, null, new ExpReference(ref));
+		return connectRefData(TypeOrExpStatus.TYPE, null, createExpReference(ref));
 	}
 	
 	protected static TypeOrExpStatus getTypeOrExpStatus(Expression exp) {
@@ -1141,7 +1148,7 @@ protected class ParseRule_TypeOrExp {
 			if(reportError) {
 				addErrorTypeAsExpValue(reference);
 			}
-			return connect(new ExpReference(reference));
+			return connect(createExpReference(reference));
 		}
 		return (Expression) resolvable;
 	}
@@ -1179,7 +1186,7 @@ protected class ParseRule_TypeOrExp {
 					return refOnTheLeft;
 				} else {
 					addError(ParserErrorTypes.EXPECTED_RULE, errorSourceRange, RULE_REFERENCE.name);
-					return connect(new RefIdentifier(null, exp.getSourceRange()));  
+					return createMissingTypeReferenceNode(exp.getSourceRange());
 				}
 			}
 			
@@ -1215,7 +1222,7 @@ protected class ParseRule_TypeOrExp {
 			refOnTheLeft = convertTypeOrExpToReference(refOnTheLeft, detachParent(expInfix.leftExp));
 			
 			SourceRange sr = srNodeStart(refOnTheLeft, sourceRangeInfo.getFullRangeStartPos());
-			refOnTheLeft = connect(new RefTypePointer(refOnTheLeft, sr));
+			refOnTheLeft = connect(sr, new RefTypePointer(refOnTheLeft));
 			
 			return convertTypeOrExp(refOnTheLeft, expInfix.rightExp, toRef);
 		}
@@ -1234,7 +1241,7 @@ protected class ParseRule_TypeOrExp {
 			LexElement afterStarToken = assertNotNull_(expPrefix.getData(TypeOrExpData.class).tokenInfo);
 			SourceRange sr = srNodeStart(refOnTheLeft, afterStarToken.getFullRangeStartPos());
 			
-			refOnTheLeft = connect(sr, new RefTypePointer(refOnTheLeft, null));
+			refOnTheLeft = connect(sr, new RefTypePointer(refOnTheLeft));
 			return convertTypeOrExp(refOnTheLeft, expPrefix.exp, toRef);
 		}
 		case EXP_SLICE: {
@@ -1248,7 +1255,7 @@ protected class ParseRule_TypeOrExp {
 				assertTrue(expSlice.from == null && expSlice.to == null);
 				
 				refOnTheLeft = convertTypeOrExpToReference(refOnTheLeft, detachParent(expSlice.slicee));
-				return connect(new RefTypeDynArray(refOnTheLeft, srNodeStart(refOnTheLeft, expSlice.getEndPos())));
+				return connect(srNodeStart(refOnTheLeft, expSlice.getEndPos()), new RefTypeDynArray(refOnTheLeft));
 			} else {
 				refOnTheLeft = convertTypeOrExpToReference(refOnTheLeft, detachParent(expSlice.slicee));
 				Expression expSlicee = resolvableToExp(true, refOnTheLeft);
@@ -1290,7 +1297,7 @@ protected class ParseRule_TypeOrExp {
 			assertTrue(refOnTheLeft != null);
 			
 			if(expLiteralArray.elements.size() == 0) {
-				return connect(srNodeStart(refOnTheLeft, exp.getEndPos()), new RefTypeDynArray(refOnTheLeft, null));
+				return connect(srNodeStart(refOnTheLeft, exp.getEndPos()), new RefTypeDynArray(refOnTheLeft));
 			} else {
 				detachParent(expLiteralArray.elements.get(0));
 				return convertToRefIndexing(refOnTheLeft, expLiteralArray, expLiteralArray.elements.get(0));
@@ -1314,7 +1321,7 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	public Expression detachParent(Expression exp) {
-		exp.getParent().accept(new ASTChildrenVisitor() {
+		exp.getParent().accept(new ASTDirectChildrenVisitor() {
 			@Override
 			protected void geneticChildrenVisit(ASTNeoNode child) {
 				child.detachFromParent();
@@ -1334,7 +1341,7 @@ protected class ParseRule_TypeOrExp {
 			throw assertFail();
 		}
 		
-		return connect(new RefIndexing(leftRef, indexArg, srNodeStart(leftRef, exp.getEndPos())));
+		return connect(srBounds(leftRef, exp, new RefIndexing(leftRef, indexArg)));
 	}
 	
 	/* ---------------- ParseRule_TypeOrExp End of utils ----------------*/
@@ -1352,30 +1359,35 @@ protected class ParseRule_TypeOrExp {
 		switch (lookAheadGrouped()) {
 		case KW_TRUE: case KW_FALSE:
 			Token token = consumeLookAhead();
-			return connect(new ExpLiteralBool(token.type == DeeTokens.KW_TRUE, srToCursor(lastLexElement())));
+			return connect(srToPosition(lastLexElement(), new ExpLiteralBool(token.type == DeeTokens.KW_TRUE)));
 		case KW_THIS:
 			consumeLookAhead();
-			return connect(new ExpThis(srToCursor(lastLexElement())));
+			return connect(srToPosition(lastLexElement(), new ExpThis()));
 		case KW_SUPER:
 			consumeLookAhead();
-			return connect(new ExpSuper(srToCursor(lastLexElement())));
+			return connect(srToPosition(lastLexElement(), new ExpSuper()));
 		case KW_NULL:
 			consumeLookAhead();
-			return connect(new ExpNull(srToCursor(lastLexElement())));
+			return connect(srToPosition(lastLexElement(), new ExpNull()));
 		case DOLLAR:
 			consumeLookAhead();
-			return connect(new ExpArrayLength(srToCursor(lastLexElement())));
+			return connect(srToPosition(lastLexElement(), new ExpArrayLength()));
 			
 		case KW___LINE__:
-			return connect(new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastLexElement())));
+			consumeLookAhead();
+			return connect(srToPosition(lastLexElement(), new ExpLiteralInteger(lastLexElement().token)));
 		case KW___FILE__:
-			return connect(new ExpLiteralString(consumeLookAhead(), srToCursor(lastLexElement())));
+			consumeLookAhead();
+			return connect(srToPosition(lastLexElement(), new ExpLiteralString(lastLexElement().token)));
 		case INTEGER:
-			return connect(new ExpLiteralInteger(consumeLookAhead(), srToCursor(lastLexElement())));
+			consumeLookAhead();
+			return connect(srToPosition(lastLexElement(), new ExpLiteralInteger(lastLexElement().token)));
 		case CHARACTER: 
-			return connect(new ExpLiteralChar(consumeLookAhead(), srToCursor(lastLexElement())));
+			consumeLookAhead();
+			return connect(srToPosition(lastLexElement(), new ExpLiteralChar(lastLexElement().token)));
 		case FLOAT:
-			return connect(new ExpLiteralFloat(consumeLookAhead(), srToCursor(lastLexElement())));
+			consumeLookAhead();
+			return connect(srToPosition(lastLexElement(), new ExpLiteralFloat(lastLexElement().token)));
 		case STRING:
 			return parseStringLiteral();
 		default:
@@ -1391,19 +1403,19 @@ protected class ParseRule_TypeOrExp {
 			stringTokens.add(string);
 		}
 		Token[] tokenStrings = ArrayUtil.createFrom(stringTokens, Token.class);
-		return connect(new ExpLiteralString(tokenStrings, srToCursor(tokenStrings[0])));
+		return connect(srToPosition(tokenStrings[0].getStartPos(), new ExpLiteralString(tokenStrings)));
 	}
 	
 	protected ExpPostfixOperator matchPostfixOpExpression(Expression exp) {
 		Token op = consumeLookAhead();
-		return new ExpPostfixOperator(exp, PostfixOpType.tokenToPrefixOpType(op.type), srToCursor(exp));
+		return srToPosition(exp, new ExpPostfixOperator(exp, PostfixOpType.tokenToPrefixOpType(op.type)));
 	}
 	
 	protected ExpCall matchCallExpression(Expression callee) {
 		consumeLookAhead(DeeTokens.OPEN_PARENS);
 		
 		ArrayList<Expression> args = parseExpArgumentList(DeeTokens.CLOSE_PARENS).result;
-		return connect(new ExpCall(callee, arrayView(args), srToCursor(callee)));
+		return connect(srToPosition(callee, new ExpCall(callee, arrayView(args))));
 	}
 	
 	protected NodeListParseResult<Expression> parseExpArgumentList(DeeTokens tokenLISTCLOSE) {
@@ -1457,7 +1469,7 @@ protected class ParseRule_TypeOrExp {
 		boolean ruleBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
 		
 		return connectResult(ruleBroken, 
-			new ExpParentheses(isDotAfterParensSyntax, resolvable, srToCursor(nodeStart)));
+			srToPosition(nodeStart, new ExpParentheses(isDotAfterParensSyntax, resolvable)));
 	}
 	
 	public ExpAssert parseAssertExpression() {
@@ -1475,7 +1487,7 @@ protected class ParseRule_TypeOrExp {
 			consumeExpectedToken(DeeTokens.CLOSE_PARENS);
 		}
 		
-		return connect(new ExpAssert(exp, msg, srToCursor(nodeStart)));
+		return connect(srToPosition(nodeStart, new ExpAssert(exp, msg)));
 	}
 	
 	public ExpImportString parseImportExpression() {
@@ -1484,7 +1496,7 @@ protected class ParseRule_TypeOrExp {
 		
 		int nodeStart = lastLexElement().getStartPos();
 		Expression exp = parseParensWithExpression();
-		return connect(new ExpImportString(exp, srToCursor(nodeStart)));
+		return connect(srToPosition(nodeStart, new ExpImportString(exp)));
 	}
 	
 	public ExpMixinString parseMixinExpression() {
@@ -1493,7 +1505,7 @@ protected class ParseRule_TypeOrExp {
 		
 		int nodeStart = lastLexElement().getStartPos();
 		Expression exp = parseParensWithExpression();
-		return connect(new ExpMixinString(exp, srToCursor(nodeStart)));
+		return connect(srToPosition(nodeStart, new ExpMixinString(exp)));
 	}
 	
 	protected Expression parseParensWithExpression() {
@@ -1507,7 +1519,7 @@ protected class ParseRule_TypeOrExp {
 			exp = parseExpression_toMissing();
 			ruleBroken = consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null;
 		} else if(createMissing) {
-			exp = connect(new MissingParenthesesExpression(srToCursor(getParserPosition())));
+			exp = connect(srToPosition(getLexPosition(), new MissingParenthesesExpression()));
 		}
 		return nodeResult(ruleBroken, exp);
 	}
@@ -1529,9 +1541,9 @@ protected class ParseRule_TypeOrExp {
 			consumeExpectedToken(DeeTokens.CLOSE_PARENS);
 		}
 		if(ref != null) {
-			return connect(new ExpTypeId(ref, srToCursor(nodeStart)));
+			return connect(srToPosition(nodeStart, new ExpTypeId(ref)));
 		}
-		return connect(new ExpTypeId(exp, srToCursor(nodeStart)));
+		return connect(srToPosition(nodeStart, new ExpTypeId(exp)));
 	}
 	
 	public Expression parseNewExpression() {
@@ -1553,7 +1565,7 @@ protected class ParseRule_TypeOrExp {
 				}
 			}
 			type = parseTypeReference_ToMissing(true).getNode();
-			if(lastLexElement().isMissingElement()) {
+			if(isMissing(type)) {
 				break parsing;
 			}
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
@@ -1561,7 +1573,7 @@ protected class ParseRule_TypeOrExp {
 			}
 		}
 		
-		return connect(new ExpNew(arrayView(allocArgs), type, arrayView(args), srToCursor(nodeStart)));
+		return connect(srToPosition(nodeStart, new ExpNew(arrayView(allocArgs), type, arrayView(args))));
 	}
 	
 	public Expression parseCastExpression() {
@@ -1590,9 +1602,9 @@ protected class ParseRule_TypeOrExp {
 		}
 		
 		if(qualifier != null) {
-			return connect(new ExpCastQual(qualifier, exp, srToCursor(nodeStart)));
+			return connect(srToPosition(nodeStart, new ExpCastQual(qualifier, exp)));
 		} else {
-			return connect(new ExpCast(type, exp, srToCursor(nodeStart)));
+			return connect(srToPosition(nodeStart, new ExpCast(type, exp)));
 		}
 	}
 	

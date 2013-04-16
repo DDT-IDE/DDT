@@ -17,7 +17,8 @@ public class DefSymbol extends Symbol {
 	}
 	
 	protected DefSymbol(String id, SourceRange sourceRange) {
-		super(id, sourceRange);
+		super(id);
+		initSourceRange(sourceRange);
 	}
 	
 	@Override

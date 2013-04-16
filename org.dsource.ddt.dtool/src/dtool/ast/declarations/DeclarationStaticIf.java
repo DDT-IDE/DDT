@@ -3,15 +3,14 @@ package dtool.ast.declarations;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
 public class DeclarationStaticIf extends DeclarationConditional {
 	
 	public final Resolvable exp;
 	
-	public DeclarationStaticIf(Resolvable exp, NodeList thenDecls, NodeList elseDecls, SourceRange sourceRange) {
-		super(thenDecls, elseDecls, sourceRange);
+	public DeclarationStaticIf(Resolvable exp, NodeList thenDecls, NodeList elseDecls) {
+		super(thenDecls, elseDecls);
 		this.exp = parentize(exp);
 	}
 	

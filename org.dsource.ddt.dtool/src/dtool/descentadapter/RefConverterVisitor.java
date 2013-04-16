@@ -89,38 +89,36 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeReturn elem) {
-		return endAdapt(new RefTypeof(new RefTypeof.ExpRefReturn(null), DefinitionConverter.sourceRange(elem)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
+			new RefTypeof(new RefTypeof.ExpRefReturn())));
 	}
 	
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeAArray elem) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(elem),
 			new RefIndexing(
 				ReferenceConverter.convertType(elem.index, convContext),
-				ReferenceConverter.convertType(elem.next, convContext),
-				DefinitionConverter.sourceRange(elem)
+				ReferenceConverter.convertType(elem.next, convContext)
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeDArray elem) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(elem),
 			new RefTypeDynArray(
-				ReferenceConverter.convertType(elem.next, convContext),
-				DefinitionConverter.sourceRange(elem)
+				ReferenceConverter.convertType(elem.next, convContext)
 			)
 		);
 	}
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeSArray elem) {
-		return endAdapt(
+		return endAdapt(DefinitionConverter.sourceRange(elem),
 			new RefIndexing(
 				ReferenceConverter.convertType(elem.next, convContext),
-				ExpressionConverter.convert(elem.dim, convContext),
-				DefinitionConverter.sourceRange(elem)
+				ExpressionConverter.convert(elem.dim, convContext)
 			)
 		);
 	}
@@ -157,15 +155,15 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 		));
 	}
 	
-	public static ASTNeoNode convertTypePointer(descent.internal.compiler.parser.TypePointer elem, ASTConversionContext convContext) {
+	public static ASTNeoNode convertTypePointer(descent.internal.compiler.parser.TypePointer elem, 
+		ASTConversionContext convContext) {
 		if(elem.next instanceof descent.internal.compiler.parser.TypeFunction) {
 			descent.internal.compiler.parser.TypeFunction tf = (descent.internal.compiler.parser.TypeFunction) elem.next; 
 			return convertFunction(tf, DefinitionConverter.sourceRange(elem), convContext);
 		} else {
-			return new RefTypePointer(
-				ReferenceConverter.convertType(elem.next, convContext),
-				DefinitionConverter.sourceRange(elem)
-			);
+			return connect(DefinitionConverter.sourceRange(elem),  
+				new RefTypePointer(ReferenceConverter.convertType(elem.next, convContext)
+			));
 		}
 	}
 	
@@ -176,11 +174,11 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeSlice elem) {
-		return endAdapt(new RefTypeSlice(
+		return endAdapt(DefinitionConverter.sourceRange(elem), 
+			new RefTypeSlice(
 				ReferenceConverter.convertType(elem.next, convContext),
 				ExpressionConverter.convert(elem.lwr, convContext),
-				ExpressionConverter.convert(elem.upr, convContext),
-				DefinitionConverter.sourceRange(elem))
+				ExpressionConverter.convert(elem.upr, convContext))
 		);
 	}
 	

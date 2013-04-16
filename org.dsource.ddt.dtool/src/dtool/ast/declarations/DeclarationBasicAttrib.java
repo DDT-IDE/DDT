@@ -9,7 +9,6 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.ISourceRepresentation;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
 import dtool.parser.DeeTokens;
 import dtool.refmodel.INonScopedBlock;
@@ -72,9 +71,8 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 	
 	public final AttributeKinds declAttrib;
 	
-	public DeclarationBasicAttrib(AttributeKinds declAttrib, AttribBodySyntax abs, ASTNeoNode bodyDecls, 
-		SourceRange sr) {
-		super(abs, bodyDecls, sr);
+	public DeclarationBasicAttrib(AttributeKinds declAttrib, AttribBodySyntax abs, ASTNeoNode bodyDecls) {
+		super(abs, bodyDecls);
 		this.declAttrib = declAttrib;
 		
 		localAnalysis();

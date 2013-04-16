@@ -4,14 +4,12 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class ExpMixinString extends Expression {
 	
 	public final Expression exp;
 	
-	public ExpMixinString(Expression exp, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpMixinString(Expression exp) {
 		this.exp = parentize(exp);
 	}
 	

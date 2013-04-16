@@ -5,7 +5,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
@@ -16,9 +15,9 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	public final Symbol pragmaId;
 	public final ArrayView<Resolvable> expressions; // TODO
 	
-	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, AttribBodySyntax abs, ASTNeoNode bodyDecls,
-		SourceRange sr) {
-		super(abs, bodyDecls, sr);
+	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, AttribBodySyntax abs, 
+		ASTNeoNode bodyDecls) {
+		super(abs, bodyDecls);
 		this.pragmaId = parentize(id);
 		this.expressions = parentize(expressions);
 	}

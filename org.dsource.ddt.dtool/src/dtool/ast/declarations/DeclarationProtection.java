@@ -9,7 +9,6 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.ISourceRepresentation;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.Definition;
 import dtool.refmodel.INonScopedBlock;
 
@@ -31,9 +30,8 @@ public class DeclarationProtection extends DeclarationAttrib {
 	
 	public final Protection protection;
 	
-	public DeclarationProtection(Protection protection, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls, 
-		SourceRange sr) {
-		super(bodySyntax, bodyDecls, sr);
+	public DeclarationProtection(Protection protection, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls) {
+		super(bodySyntax, bodyDecls);
 		this.protection = protection;
 		
 		localAnalysis();

@@ -4,7 +4,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.references.RefIndexing;
 import dtool.ast.references.Reference;
 import dtool.util.ArrayView;
@@ -22,12 +21,10 @@ public class ExpNew extends Expression {
 	public final Reference newtype;
 	public final ArrayView<Expression> args;
 	
-	public ExpNew(ArrayView<Expression> atorArgs, Reference type, ArrayView<Expression> args, 
-		SourceRange sourceRange) {
+	public ExpNew(ArrayView<Expression> atorArgs, Reference type, ArrayView<Expression> args) {
 		this.allocArgs = parentize(atorArgs);
 		this.newtype = parentize(type);
 		this.args = parentize(args);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

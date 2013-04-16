@@ -8,16 +8,14 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
-import dtool.ast.SourceRange;
 import dtool.refmodel.INonScopedBlock;
 
 public class DeclarationAnonMember extends ASTNeoNode implements INonScopedBlock {
 	
 	public final NodeList body;
 	
-	public DeclarationAnonMember(NodeList body, SourceRange sourceRange) {
+	public DeclarationAnonMember(NodeList body) {
 		assertNotNull(body);
-		initSourceRange(sourceRange);
 		this.body = NodeList.parentizeNodeList(body, this);
 	}
 	

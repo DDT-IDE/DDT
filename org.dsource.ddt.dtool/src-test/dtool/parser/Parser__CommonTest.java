@@ -92,16 +92,16 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 	}
 	
 	protected static Reference reference(String identifier) {
-		return new RefIdentifier(identifier, null);
+		return new RefIdentifier(identifier);
 	}
 	
 	protected static Reference reference(String... identifiers) {
-		RefIdentifier subRef = new RefIdentifier(identifiers[identifiers.length-1], null);
+		RefIdentifier subRef = new RefIdentifier(identifiers[identifiers.length-1]);
 		if(identifiers.length == 1) {
 			return subRef;
 		} else {
 			return new RefQualified(
-				(IQualifierNode) reference(CommonTestUtils.removeLast(identifiers, 1)), subRef, null);
+				(IQualifierNode) reference(CommonTestUtils.removeLast(identifiers, 1)), subRef);
 		}
 	}
 	

@@ -3,7 +3,6 @@ package dtool.ast.declarations;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
 
@@ -12,8 +11,7 @@ public class DeclarationStaticAssert extends ASTNeoNode implements IStatement {
 	public final Resolvable pred;
 	public final Resolvable msg;
 	
-	public DeclarationStaticAssert(Resolvable pred, Resolvable msg, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public DeclarationStaticAssert(Resolvable pred, Resolvable msg) {
 		this.pred = parentize(pred);
 		this.msg = parentize(msg);
 	}

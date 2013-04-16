@@ -3,15 +3,13 @@ package dtool.ast.definitions;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 
 public class DefinitionPostBlit extends ASTNeoNode {
 	
 	public final IStatement fbody;
 	
-	public DefinitionPostBlit(IStatement fbody, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public DefinitionPostBlit(IStatement fbody) {
 		this.fbody = parentizeI(fbody);
 	}
 	

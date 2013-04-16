@@ -6,7 +6,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.statements.IStatement;
 
 public class InvalidDeclaration extends ASTNeoNode implements IStatement {
@@ -14,10 +13,9 @@ public class InvalidDeclaration extends ASTNeoNode implements IStatement {
 	public final ASTNeoNode node;
 	public final boolean consumedSemiColon;
 	
-	public InvalidDeclaration(ASTNeoNode node, boolean consumedSemiColon, SourceRange sourceRange) {
+	public InvalidDeclaration(ASTNeoNode node, boolean consumedSemiColon) {
 		this.node = parentize(assertNotNull_(node));
 		this.consumedSemiColon = consumedSemiColon;
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

@@ -6,7 +6,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Initializer;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
@@ -19,10 +18,9 @@ public class DefinitionVarFragment extends DefUnit {
 	
 	public final Initializer init;
 	
-	public DefinitionVarFragment(DefUnitTuple dudt, Initializer init, SourceRange sourceRange) {
+	public DefinitionVarFragment(DefUnitTuple dudt, Initializer init) {
 		super(dudt);
 		this.init = parentize(init);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

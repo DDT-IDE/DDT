@@ -5,7 +5,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class ExpConditional extends Expression {
 	
@@ -13,8 +12,7 @@ public class ExpConditional extends Expression {
 	public final Resolvable thenExp;
 	public final Resolvable elseExp;
 	
-	public ExpConditional(Resolvable condExp, Resolvable thenExp, Resolvable elseExp, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpConditional(Resolvable condExp, Resolvable thenExp, Resolvable elseExp) {
 		this.condExp = parentize(assertNotNull_(condExp));
 		this.thenExp = parentize(thenExp);
 		this.elseExp = parentize(elseExp); 

@@ -5,7 +5,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.parser.DeeTokens;
 
 public class ExpPrefix extends Expression {
@@ -51,8 +50,7 @@ public class ExpPrefix extends Expression {
 	public final PrefixOpType kind;
 	public final Expression exp;
 	
-	public ExpPrefix(PrefixOpType kind, Expression exp, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpPrefix(PrefixOpType kind, Expression exp) {
 		this.exp = parentize(exp);
 		this.kind = kind;
 	}

@@ -57,36 +57,36 @@ public class DeclarationConverter extends BaseDmdConverter {
 			DVCondition dvCondition = (DVCondition) condition;
 			Symbol ident = null;
 			if(dvCondition.ident != null) {
-				ident = new Symbol(new String(dvCondition.ident), DefinitionConverter.sourceRange(dvCondition));
+				ident = connect(DefinitionConverter.sourceRange(dvCondition), 
+					new Symbol(new String(dvCondition.ident)));
 			}
 			boolean isDebug = condition instanceof DebugCondition;
 			assertTrue(isDebug || dvCondition instanceof VersionCondition);
 			
-			return new DeclarationConditionalDV(
+			return connect(DefinitionConverter.sourceRange(elem), new DeclarationConditionalDV(
 				isDebug,
 				ident,
-				thendecls, elsedecls,
-				DefinitionConverter.sourceRange(elem)
-			);
+				thendecls, elsedecls
+			));
 		}
 		StaticIfCondition stIfCondition = (StaticIfCondition) condition;
 		if(stIfCondition.exp instanceof IsExp && ((IsExp) stIfCondition.exp).id != null) {
 			IsExp isExp = ((IsExp) stIfCondition.exp);
-			return new DeclarationStaticIfIsType(
+			return connect(DefinitionConverter.sourceRange(elem),
+				new DeclarationStaticIfIsType(
 				ReferenceConverter.convertType(isExp.targ, convContext),
 				DefinitionConverter.convertIdToken(isExp.id).value, DefinitionConverter.sourceRange(isExp.id),
 				isExp.tok,
 				ReferenceConverter.convertType(isExp.tspec, convContext),
 				thendecls, elsedecls,
-				new SourceRange(isExp.getStartPos(), elem.getEndPos() - isExp.getStartPos()),
-				DefinitionConverter.sourceRange(elem)
-			);
+				new SourceRange(isExp.getStartPos(), elem.getEndPos() - isExp.getStartPos())
+			));
 		} else {
-			return new DeclarationStaticIf(
+			return connect(DefinitionConverter.sourceRange(elem),
+				new DeclarationStaticIf(
 				ExpressionConverter.convert(stIfCondition.exp, convContext),
-				thendecls, elsedecls,
-				DefinitionConverter.sourceRange(elem)
-			);
+				thendecls, elsedecls
+			));
 		}
 	}
 	
@@ -115,9 +115,9 @@ public class DeclarationConverter extends BaseDmdConverter {
 		SourceRange sr = null;
 		if(body instanceof CompoundStatement) {
 			CompoundStatement cst = (CompoundStatement) body;
-			return new NodeList2(DescentASTConverter.convertMany(cst.sourceStatements, convContext), sr);
+			return connect(sr, new NodeList2(DescentASTConverter.convertMany(cst.sourceStatements, convContext)));
 		} else {
-			return new NodeList2(DescentASTConverter.convertMany(Collections.singleton(body), convContext), sr);
+			return connect(sr, new NodeList2(DescentASTConverter.convertMany(Collections.singleton(body), convContext)));
 		}
 	}
 	
@@ -135,7 +135,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 		if(!decls.isEmpty()) {
 			sr = sourceRangeStrict(decls.get(0).getStartPos(), decls.get(decls.size()-1).getEndPos());
 		}
-		return new NodeList2(decls, sr);
+		return connect(sr, new NodeList2(decls));
 	}
 	
 }

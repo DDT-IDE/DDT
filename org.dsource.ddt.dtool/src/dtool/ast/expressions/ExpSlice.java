@@ -5,7 +5,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class ExpSlice extends Expression {
 	
@@ -20,9 +19,8 @@ public class ExpSlice extends Expression {
 		assertTrue((to == null) || (from != null));
 	}
 	
-	public ExpSlice(Expression slicee, SourceRange sourceRange) {
+	public ExpSlice(Expression slicee) {
 		this(slicee, null, null);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

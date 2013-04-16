@@ -3,7 +3,6 @@ package dtool.ast.expressions;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 /** 
  * This class represents a syntax error where an expression delimited by paranthesis was expected.
@@ -11,8 +10,7 @@ import dtool.ast.SourceRange;
  */
 public class MissingParenthesesExpression extends Expression {
 	
-	public MissingParenthesesExpression(SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public MissingParenthesesExpression() {
 	}
 	
 	@Override

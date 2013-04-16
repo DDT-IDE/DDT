@@ -3,7 +3,6 @@ package dtool.ast.expressions;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.TOK;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 
 public class ExpIftype extends Expression {
@@ -12,8 +11,7 @@ public class ExpIftype extends Expression {
 	public final TOK tok;
 	public final Reference specType;
 	
-	public ExpIftype(Reference arg, TOK tok, Reference specType, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpIftype(Reference arg, TOK tok, Reference specType) {
 		this.tok = tok;
 		this.arg = parentize(arg);
 		this.specType = parentize(specType);

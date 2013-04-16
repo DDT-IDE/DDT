@@ -2,7 +2,6 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.Resolvable;
 
@@ -14,8 +13,8 @@ public class StatementForeachRange extends Statement {
 	public final Resolvable upr;
 	public final IStatement body;
 	
-	public StatementForeachRange(IFunctionParameter param, Resolvable lwr, Resolvable upr, IStatement body, boolean reverse, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public StatementForeachRange(IFunctionParameter param, Resolvable lwr, Resolvable upr, IStatement body, 
+		boolean reverse) {
 		this.param = parentizeI(param);
 		this.lwr = parentize(lwr);
 		this.upr = parentize(upr);

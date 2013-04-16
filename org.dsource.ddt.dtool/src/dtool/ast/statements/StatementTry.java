@@ -8,7 +8,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -22,8 +21,7 @@ public class StatementTry extends Statement {
 		public final IFunctionParameter param;
 		public final IStatement body;
 		
-		public CatchClause(IFunctionParameter param, IStatement body, SourceRange sourceRange) {
-			initSourceRange(sourceRange);
+		public CatchClause(IFunctionParameter param, IStatement body) {
 			this.param = parentizeI(param);
 			this.body = parentizeI(body);
 		}
@@ -58,9 +56,7 @@ public class StatementTry extends Statement {
 	public final ArrayView<CatchClause> params;
 	public final IStatement finallyBody;
 	
-	public StatementTry(IStatement body, ArrayView<CatchClause> params, IStatement finallyBody, 
-			SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public StatementTry(IStatement body, ArrayView<CatchClause> params, IStatement finallyBody) {
 		this.body = parentizeI(body);
 		this.params = parentize(params);
 		this.finallyBody = parentizeI(finallyBody);

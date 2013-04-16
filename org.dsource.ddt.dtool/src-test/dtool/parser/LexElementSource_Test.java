@@ -51,7 +51,7 @@ public class LexElementSource_Test extends CommonTestUtils {
 		assertTrue(lexSource.lookAheadQueue.size() == 5);
 		lexSource.consumeLookAhead();
 		
-		assertEquals(lexSource.lastLexElement.token.source, "ab");
+		assertEquals(lexSource.lastLexElement().token.source, "ab");
 		assertTrue(lexSource.lookAheadQueue.size() == 4);
 		assertEquals(lexSource.lookAheadElement(2).token.source, "gh");
 		assertEquals(lexSource.lookAheadElement(0).token.source, "cd");
@@ -61,7 +61,7 @@ public class LexElementSource_Test extends CommonTestUtils {
 
 		lexSource.consumeLookAhead();
 		assertTrue(lexSource.lookAheadQueue.size() == 3);
-		assertEquals(lexSource.lastLexElement.token.source, "cd");
+		assertEquals(lexSource.lastLexElement().token.source, "cd");
 		assertEquals(lexSource.lookAheadElement(0).token.source, "ef");
 		assertEquals(lexSource.lookAheadElement(1).token.source, "gh");
 		assertEquals(lexSource.lookAheadElement(2).token.type, DeeTokens.EOF);
@@ -70,7 +70,7 @@ public class LexElementSource_Test extends CommonTestUtils {
 		
 		lexSource.consumeLookAhead();
 		lexSource.consumeLookAhead();
-		assertEquals(lexSource.lastLexElement.token.source, "gh");
+		assertEquals(lexSource.lastLexElement().token.source, "gh");
 		assertTrue(lexSource.lookAheadQueue.size() == 2);
 		assertEquals(lexSource.lookAheadElement(0).token.type, DeeTokens.EOF);
 		assertEquals(lexSource.lookAheadElement(1).token.type, DeeTokens.EOF);
@@ -82,18 +82,18 @@ public class LexElementSource_Test extends CommonTestUtils {
 		LexerElementSource lexSource = new LexerElementSource(new TestsInstrumentedLexer("abcd  efgh"));
 		
 		assertEquals(lexSource.lookAheadElement(2).token.source, "ef");
-		assertTrue(lexSource.lastNonMissingLexElement == lexSource.lastLexElement);
-		assertTrue(lexSource.lastNonMissingLexElement.isMissingElement() == false);
+		assertTrue(lexSource.lastLexElement.isMissingElement() == false);
 		lexSource.consumeIgnoreTokens();
-		assertTrue(lexSource.lastLexElement.isMissingElement() == true);
-		assertTrue(lexSource.lastNonMissingLexElement.isMissingElement() == false);
+		assertTrue(lexSource.getLexPosition() == 0);
+		assertTrue(lexSource.lastLexElement.isMissingElement() == false);
 		
 		lexSource.consumeInput();
 		lexSource.consumeInput();
 		assertEquals(lexSource.lookAheadElement(0).token.source, "ef");
+		assertTrue(lexSource.getLexPosition() == 4);
 		lexSource.consumeIgnoreTokens();
-		assertTrue(lexSource.lastLexElement.isMissingElement() == true);
-		assertTrue(lexSource.lastNonMissingLexElement.isMissingElement() == false);
+		assertTrue(lexSource.getLexPosition() == 6);
+		assertTrue(lexSource.lastLexElement.isMissingElement() == false);
 		
 		assertTrue(lexSource.lookAheadElement().getStartPos() == 6);
 		

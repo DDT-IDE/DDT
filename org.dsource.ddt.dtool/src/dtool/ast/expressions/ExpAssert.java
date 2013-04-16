@@ -4,15 +4,13 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class ExpAssert extends Expression {
 	
 	public final Expression exp;
 	public final Expression msg;
 	
-	public ExpAssert(Expression exp, Expression msg, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpAssert(Expression exp, Expression msg) {
 		this.exp = parentize(exp);
 		this.msg = parentize(msg);
 	}

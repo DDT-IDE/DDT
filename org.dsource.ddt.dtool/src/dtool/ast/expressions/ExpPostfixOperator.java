@@ -5,7 +5,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.parser.DeeTokens;
 
 public class ExpPostfixOperator extends Expression {
@@ -31,8 +30,7 @@ public class ExpPostfixOperator extends Expression {
 	public final PostfixOpType kind;
 	public final Resolvable exp;
 	
-	public ExpPostfixOperator(Resolvable exp, PostfixOpType kind, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpPostfixOperator(Resolvable exp, PostfixOpType kind) {
 		this.exp = parentize(exp);
 		this.kind = kind;
 	}

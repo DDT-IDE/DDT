@@ -11,7 +11,7 @@ import dtool.refmodel.ReferenceResolver;
 public class ImportContent extends ImportStatic {
 	
 	public ImportContent(RefModule refModule) {
-		super(refModule, refModule.getSourceRange());
+		super(refModule);
 	}
 	
 	@Override

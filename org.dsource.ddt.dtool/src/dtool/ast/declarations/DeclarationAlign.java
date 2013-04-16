@@ -5,15 +5,14 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.parser.Token;
 
 public class DeclarationAlign extends DeclarationAttrib {
 	
 	public final Token alignNum;
 	
-	public DeclarationAlign(Token alignNum, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls, SourceRange sr) {
-		super(bodySyntax, bodyDecls, sr);
+	public DeclarationAlign(Token alignNum, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls) {
+		super(bodySyntax, bodyDecls);
 		this.alignNum = alignNum;
 	}
 	

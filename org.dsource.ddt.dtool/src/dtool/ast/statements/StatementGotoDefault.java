@@ -1,12 +1,10 @@
 package dtool.ast.statements;
 
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class StatementGotoDefault extends Statement {
 	
-	public StatementGotoDefault(SourceRange sourceRange) {
-		initSourceRange(sourceRange);		
+	public StatementGotoDefault() {
 	}
 	
 	@Override

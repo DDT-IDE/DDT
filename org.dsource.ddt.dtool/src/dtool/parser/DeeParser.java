@@ -15,6 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import dtool.parser.LexElement.MissingLexElement;
+
 /**
  * Concrete D Parser class
  * 
@@ -54,16 +56,20 @@ public class DeeParser extends DeeParser_Decls {
 	}
 	
 	
-	protected LexerElementSource lexSource;
+	protected final CommonLexElementSource lexSource;
 	protected ArrayList<ParserError> errors = new ArrayList<ParserError>();
 	protected boolean enabled = true;
+	
+	public DeeParser(CommonLexElementSource lexSource) {
+		this.lexSource = lexSource;
+	}
 	
 	public DeeParser(String source) {
 		this(new DeeLexer(source));
 	}
 	
 	public DeeParser(DeeLexer deeLexer) {
-		lexSource = new LexerElementSource(deeLexer);
+		this(new LexerElementSource(deeLexer));
 	}
 	
 	@Override
@@ -71,12 +77,12 @@ public class DeeParser extends DeeParser_Decls {
 		errors.add(error);
 	}
 	
-	public LexerElementSource getEnabledLexSource() {
+	public CommonLexElementSource getEnabledLexSource() {
 		assertTrue(enabled);
 		return lexSource;
 	}
 	
-	protected LexerElementSource getLexSource() {
+	protected CommonLexElementSource getLexSource() {
 		return lexSource;
 	}
 	
@@ -97,9 +103,8 @@ public class DeeParser extends DeeParser_Decls {
 	}
 	
 	@Override
-	public int getParserPosition() {
-		assertTrue(lastLexElement().getEndPos() == getLexSource().lookAheadElement().getFullRangeStartPos());
-		return lastLexElement().getEndPos();
+	public int getLexPosition() {
+		return getLexSource().getLexPosition();
 	}
 	
 	@Override
@@ -109,12 +114,7 @@ public class DeeParser extends DeeParser_Decls {
 	
 	@Override
 	protected LexElement lastLexElement() {
-		return getLexSource().lastLexElement;
-	}
-	
-	@Override
-	protected LexElement lastNonMissingLexElement() {
-		return getLexSource().lastNonMissingLexElement;
+		return getLexSource().lastLexElement();
 	}
 	
 	@Override
@@ -126,8 +126,8 @@ public class DeeParser extends DeeParser_Decls {
 	}
 	
 	@Override
-	public LexElement consumeIgnoreTokens(DeeTokens expectedToken) {
-		LexElement consumedElement = getEnabledLexSource().consumeIgnoreTokens(expectedToken);
+	public MissingLexElement consumeIgnoreTokens(DeeTokens expectedToken) {
+		MissingLexElement consumedElement = getEnabledLexSource().consumeIgnoreTokens(expectedToken);
 		analyzeIgnoredTokens(consumedElement);
 		return consumedElement;
 	}

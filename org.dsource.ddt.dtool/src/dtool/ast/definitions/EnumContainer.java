@@ -5,7 +5,6 @@ import java.util.Iterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
@@ -16,8 +15,7 @@ public class EnumContainer extends ASTNeoNode implements IStatement, INonScopedB
 	public final ArrayView<EnumMember> members;
 	public final Reference type;
 	
-	public EnumContainer(ArrayView<EnumMember> members, Reference type, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public EnumContainer(ArrayView<EnumMember> members, Reference type) {
 		this.members = parentize(members);
 		this.type = parentize(type);
 	}

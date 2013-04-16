@@ -4,16 +4,14 @@ import static dtool.util.NewUtils.assertNotNull_;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.parser.Token;
 
 public class ExpLiteralChar extends Expression {
 	
 	public final Token ch;
 	
-	public ExpLiteralChar(Token num, SourceRange sourceRange) {
+	public ExpLiteralChar(Token num) {
 		this.ch = assertNotNull_(num);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

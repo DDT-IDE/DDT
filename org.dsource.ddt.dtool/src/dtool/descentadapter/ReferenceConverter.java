@@ -66,7 +66,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	private static RefIdentifier convertToRefIdentifier(descent.internal.compiler.parser.IdentifierExp elem,
 			SourceRange sourceRange) {
 		assertTrue(elem.getClass() == IdentifierExp.class && elem.ident.length > 0);
-		RefIdentifier refIdentifier = new RefIdentifier(new String(elem.ident), null);
+		RefIdentifier refIdentifier = new RefIdentifier(new String(elem.ident));
 		if (sourceRange != null) {
 			refIdentifier.setSourceRange(sourceRange);
 		}
@@ -88,7 +88,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static RefIdentifier convert(descent.internal.compiler.parser.TypeBasic elem) {
 		SourceRange srcRange = sourceRange(elem);
-		return (srcRange == null) ? new RefIdentifier(elem.ty.name, null) : new RefIdentifier(elem.ty.name, srcRange);
+		return connect(srcRange, new RefIdentifier(elem.ty.name));
 	}
 	
 	/* --- Conversion of qualified containers. --- */
@@ -142,7 +142,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			int typeofRefEndPos = elem.exp.getEndPos()+1; // Estimate the endPos
 			sourceRange = new SourceRange(elem.getOffset(), typeofRefEndPos - elem.getOffset());
 		}
-		Reference rootRef = new RefTypeof(ExpressionConverter.convert(elem.exp, convContext), sourceRange);
+		Reference rootRef = connect(sourceRange, new RefTypeof(ExpressionConverter.convert(elem.exp, convContext)));
 		return createReferenceFromIdents(elem, rootRef, convContext);
 	}
 	
@@ -204,7 +204,8 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			List<ASTDmdNode> tiargs, SourceRange sourceRange, ASTConversionContext convContext) {
 		ArrayView<Resolvable> tiargsNew = CoreUtil.blindCast(
 			DescentASTConverter.convertMany(tiargs, ASTNeoNode.class, convContext));
-		return new RefTemplateInstance((ITemplateRefNode) tplReference, null, tiargsNew, sourceRange);
+		return connect(sourceRange,  
+			new RefTemplateInstance((ITemplateRefNode) tplReference, null, tiargsNew));
 	}
 	
 	
@@ -260,9 +261,9 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			rootReference = convertFromIdents(startPos, null, rootRef, noRootRef, idents, lastIx, convContext);
 		}
 		if (rootReference == null) {
-			refQualified = new RefModuleQualified(singleRef, null);
+			refQualified = new RefModuleQualified(singleRef);
 		} else {
-			refQualified = new RefQualified((IQualifierNode) rootReference, singleRef, null);
+			refQualified = new RefQualified((IQualifierNode) rootReference, singleRef);
 			assertTrue(rootReference.hasNoSourceRangeInfo() == false);
 			assertTrue(rootReference.getStartPos() == startPos);
 		}
@@ -336,7 +337,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		
 		if(rootIdentifierExp instanceof IdentifierExp && downCast(rootIdentifierExp, IdentifierExp.class).length == 0) {
 			assertTrue((topSourceRange == null && rootIdentifierExp.hasNoSourceRangeInfo()) == false);
-			RefModuleQualified refModuleQual = new RefModuleQualified(subName, null);
+			RefModuleQualified refModuleQual = new RefModuleQualified(subName);
 			
 			int newStartPos = (topSourceRange == null) ? rootIdentifierExp.getStartPos() : topSourceRange.getStartPos();
 			refModuleQual.setSourceRange(sourceRangeStrict(newStartPos, newEndPos));
@@ -365,9 +366,10 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			}
 			
 			if(!(rootRef instanceof IQualifierNode)) {
-				rootRef = new ExpReference((Reference) rootRef);
+				rootRef = connect(sourceRange(rootRef), new ExpReference((Reference) rootRef));
 			}
-			RefQualified refQualified = new RefQualified((IQualifierNode) rootRef, subName, topSourceRange);
+			RefQualified refQualified = new RefQualified((IQualifierNode) rootRef, subName);
+			refQualified.initSourceRange(topSourceRange);
 			if(refQualified.hasNoSourceRangeInfo() == false || DToolBundle.DMDPARSER_PROBLEMS__BUG41 == false) {
 				// Correct some DMD missing ranges 
 				int newStartPos = refQualified.qualifier.getStartPos();
@@ -387,28 +389,28 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static ExpReference createExpReference(IdentifierExp elem) {
 		RefIdentifier ref = ReferenceConverter.convertToRefIdentifier(elem);
-		return connect(sourceRange(elem), new ExpReference(ref, null));
+		return connect(sourceRange(elem), new ExpReference(ref));
 	}
 	
 	public static ExpReference createExpReference(TypeExp elem, ASTConversionContext convContext) {
 		Reference ref = ReferenceConverter.convertType(elem.type, convContext);
-		return connect(sourceRange(elem), new ExpReference(ref, null));
+		return connect(sourceRange(elem), new ExpReference(ref));
 	}
 	
 	public static ExpReference createExpReference(DotIdExp elem, ASTConversionContext convContext) {
 		Reference ref = ReferenceConverter.convertDotIdexp(elem, convContext);
 		// use ref as source range, not elem cause it is sometimes wrong
-		return connect(sourceRange(elem), new ExpReference(ref, null));
+		return connect(sourceRange(elem), new ExpReference(ref));
 	}
 	
 	public static ExpReference createExpReference(DotTemplateInstanceExp elem, ASTConversionContext convContext) {
 		Reference ref = ReferenceConverter.convertDotTemplateIdExp(elem, convContext);
-		return connect(sourceRange(elem), new ExpReference(ref, null));
+		return connect(sourceRange(elem), new ExpReference(ref));
 	}
 	
 	public static ExpReference createExpReference(ScopeExp elem, ASTConversionContext convContext) {
 		Reference ref = (Reference) DescentASTConverter.convertElem(elem.sds, convContext);
-		return connect(sourceRange(elem), new ExpReference(ref, null));
+		return connect(sourceRange(elem), new ExpReference(ref));
 	}
 	
 }

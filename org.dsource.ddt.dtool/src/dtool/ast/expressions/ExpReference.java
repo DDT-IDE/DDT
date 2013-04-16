@@ -8,7 +8,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.Reference;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -20,15 +19,9 @@ public class ExpReference extends Expression {
 	
 	public final Reference ref;
 	
-	public ExpReference(Reference ref, SourceRange sourceRange) {
+	public ExpReference(Reference ref) {
 		assertNotNull(ref);
 		this.ref = parentize(ref);
-		
-		initSourceRange(sourceRange);
-	}
-	
-	public ExpReference(Reference ref) {
-		this(ref, ref.getSourceRange());
 	}
 	
 	@Override

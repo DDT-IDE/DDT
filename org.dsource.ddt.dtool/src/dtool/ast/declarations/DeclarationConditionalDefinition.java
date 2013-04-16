@@ -3,7 +3,6 @@ package dtool.ast.declarations;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 
 /**
@@ -21,8 +20,7 @@ public class DeclarationConditionalDefinition extends ASTNeoNode {
 	public final Symbol identifier;
 	public final int conditionalKind;
 	
-	public DeclarationConditionalDefinition(Symbol id, int conditionalKind, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public DeclarationConditionalDefinition(Symbol id, int conditionalKind) {
 		this.identifier = parentize(id);
 		this.conditionalKind = conditionalKind;
 	}

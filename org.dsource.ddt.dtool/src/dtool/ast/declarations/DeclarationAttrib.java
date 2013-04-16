@@ -8,7 +8,6 @@ import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
-import dtool.ast.SourceRange;
 import dtool.refmodel.INonScopedBlock;
 
 public abstract class DeclarationAttrib extends ASTNeoNode implements INonScopedBlock {
@@ -18,10 +17,9 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 	public final AttribBodySyntax bodySyntax;
 	public final ASTNeoNode body; // Note: can be NodeList
 	
-	public DeclarationAttrib(AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls, SourceRange sr) {
+	public DeclarationAttrib(AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls) {
 		this.bodySyntax = assertNotNull_(bodySyntax);
 		this.body = parentize(bodyDecls);
-		initSourceRange(sr);
 	}
 	
 	@Override

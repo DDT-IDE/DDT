@@ -111,7 +111,8 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 		initSourceRange(DefinitionConverter.sourceRange(elem));
 	}
 	
-	protected final void initSourceRange(SourceRange sourceRange) {
+	@Deprecated
+	public final void initSourceRange(SourceRange sourceRange) {
 		if(sourceRange != null) {
 			setSourceRange(sourceRange);
 		}

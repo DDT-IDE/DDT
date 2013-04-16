@@ -3,15 +3,13 @@ package dtool.ast.expressions;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 /**
  * The dollar operator, only valid inside an indexing.
  */
 public class ExpArrayLength extends Expression {
 	
-	public ExpArrayLength(SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpArrayLength() {
 	}
 	
 	@Override

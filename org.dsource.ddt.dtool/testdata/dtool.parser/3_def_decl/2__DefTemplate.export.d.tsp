@@ -44,6 +44,7 @@
   ►#?STRUCTURE_EXPECTED!【TUPLE ...●TemplateTupleParam(DefSymbol)】●
   
   ►#?STRUCTURE_EXPECTED!【this THIS●TemplateThisParam(DefSymbol)】●
+  ►#?STRUCTURE_EXPECTED!【this #@NO_ID●TemplateThisParam(DefSymbol)】●
 ¤》
 
 #@TPLARGS《

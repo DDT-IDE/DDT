@@ -5,7 +5,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 
 public class FunctionBodyOutBlock extends ASTNeoNode {
@@ -13,10 +12,9 @@ public class FunctionBodyOutBlock extends ASTNeoNode {
 	public final Symbol result; // TODO convert this to DefUnit
 	public final BlockStatement block;
 	
-	public FunctionBodyOutBlock(Symbol result, BlockStatement block, SourceRange sourceRange) {
+	public FunctionBodyOutBlock(Symbol result, BlockStatement block) {
 		this.result = parentize(result);
 		this.block = parentize(block);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

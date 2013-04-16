@@ -4,7 +4,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 
 /** 
@@ -13,8 +12,7 @@ import dtool.ast.SourceRange;
  */
 public class CStyleVarArgsParameter extends ASTNeoNode implements IFunctionParameter {
 	
-	public CStyleVarArgsParameter(SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public CStyleVarArgsParameter() {
 	}
 	
 	@Override

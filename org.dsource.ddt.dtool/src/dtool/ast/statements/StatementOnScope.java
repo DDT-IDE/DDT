@@ -2,7 +2,6 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class StatementOnScope extends Statement {
 	
@@ -15,8 +14,7 @@ public class StatementOnScope extends Statement {
 	public final IStatement st;
 	public final EventType eventType;
 	
-	public StatementOnScope(EventType eventType, IStatement st, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public StatementOnScope(EventType eventType, IStatement st) {
 		this.eventType = eventType;
 		this.st = parentizeI(st);
 	}

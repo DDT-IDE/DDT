@@ -5,17 +5,15 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 /** A Symbol is node wrapping an identifier. */
 public class Symbol extends ASTNeoNode {
 	
 	public final String name;
 	
-	public Symbol(String name, SourceRange sourceRange) {
+	public Symbol(String name) {
 		assertNotNull(name);
 		this.name = name;
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

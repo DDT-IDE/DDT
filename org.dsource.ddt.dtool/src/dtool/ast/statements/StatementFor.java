@@ -2,7 +2,6 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
 public class StatementFor extends Statement {
@@ -12,8 +11,7 @@ public class StatementFor extends Statement {
 	public final Resolvable inc;
 	public final IStatement body;
 	
-	public StatementFor(IStatement init, Resolvable cond, Resolvable inc, IStatement body, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public StatementFor(IStatement init, Resolvable cond, Resolvable inc, IStatement body) {
 		this.init = parentizeI(init);
 		this.cond = parentize(cond);
 		this.inc = parentize(inc);

@@ -9,7 +9,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.parser.DeeTokens;
@@ -33,10 +32,9 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	public final TypeModifierKinds modifier;
 	public final Reference ref;
 	
-	public RefTypeModifier(TypeModifierKinds modifier, Reference ref, SourceRange sourceRange) {
+	public RefTypeModifier(TypeModifierKinds modifier, Reference ref) {
 		this.modifier = assertNotNull_(modifier);
 		this.ref = parentize(ref);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

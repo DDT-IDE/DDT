@@ -4,7 +4,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
@@ -20,8 +19,7 @@ public class ImportStatic extends ASTNeoNode implements IImportFragment {
 	private PartialPackageDefUnit defunit; // Non-Structural Element
 	//private String[] names; // Non-Structural Element
 	
-	public ImportStatic(RefModule refModule, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ImportStatic(RefModule refModule) {
 		this.moduleRef = parentize(refModule);
 	}
 	

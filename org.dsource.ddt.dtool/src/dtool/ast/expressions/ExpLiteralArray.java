@@ -4,15 +4,13 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.util.ArrayView;
 
 public class ExpLiteralArray extends Expression {
 	
 	public final ArrayView<Expression> elements;
 	
-	public ExpLiteralArray(ArrayView<Expression> elements, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpLiteralArray(ArrayView<Expression> elements) {
 		this.elements = parentize(elements);
 	}
 	

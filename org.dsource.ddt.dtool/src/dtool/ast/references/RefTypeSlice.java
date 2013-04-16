@@ -5,7 +5,6 @@ import java.util.Collection;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -16,8 +15,7 @@ public class RefTypeSlice extends Reference {
 	public final Resolvable from;
 	public final Resolvable to;
 	
-	public RefTypeSlice(Resolvable slicee, Resolvable from, Resolvable to, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public RefTypeSlice(Resolvable slicee, Resolvable from, Resolvable to) {
 		this.slicee = parentizeI(slicee);
 		this.from = parentize(from);
 		this.to = parentize(to);

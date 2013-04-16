@@ -4,7 +4,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 
 public class ExpTypeId extends Expression {
@@ -12,8 +11,7 @@ public class ExpTypeId extends Expression {
 	public final Reference typeArgument;
 	public final Expression expressionArgument;
 	
-	public ExpTypeId(Reference typeArgument, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpTypeId(Reference typeArgument) {
 		this.typeArgument = parentize(typeArgument);
 		this.expressionArgument = null;
 	}
@@ -23,8 +21,7 @@ public class ExpTypeId extends Expression {
 		return ASTNodeTypes.EXP_TYPEID;
 	}
 	
-	public ExpTypeId(Expression expressionArgument, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpTypeId(Expression expressionArgument) {
 		this.typeArgument = null;
 		this.expressionArgument = parentize(expressionArgument);
 	}

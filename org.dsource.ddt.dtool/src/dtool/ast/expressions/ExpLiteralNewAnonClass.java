@@ -3,7 +3,6 @@ package dtool.ast.expressions;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.BaseClass;
 import dtool.util.ArrayView;
 
@@ -15,8 +14,7 @@ public class ExpLiteralNewAnonClass extends Expression {
 	public final ArrayView<ASTNeoNode> members; 
 	
 	public ExpLiteralNewAnonClass(ArrayView<Resolvable> allocargs, ArrayView<Resolvable> args,
-			ArrayView<BaseClass> baseClasses, ArrayView<ASTNeoNode> members, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+			ArrayView<BaseClass> baseClasses, ArrayView<ASTNeoNode> members) {
 		this.allocargs = parentizeI(allocargs);
 		this.args = parentizeI(args);
 		this.baseClasses = parentizeI(baseClasses);

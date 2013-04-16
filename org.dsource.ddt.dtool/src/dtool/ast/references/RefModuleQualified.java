@@ -8,7 +8,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -18,9 +17,8 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  */
 public class RefModuleQualified extends CommonRefQualified {
 	
-	public RefModuleQualified(RefIdentifier subref, SourceRange sourceRange) {
+	public RefModuleQualified(RefIdentifier subref) {
 		super(subref);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

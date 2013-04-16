@@ -3,7 +3,6 @@ package dtool.ast.declarations;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.statements.IStatement;
 
@@ -11,8 +10,7 @@ public class DeclarationAliasThis extends ASTNeoNode implements IStatement {
 	
 	public final RefIdentifier targetDef;
 	
-	public DeclarationAliasThis(RefIdentifier targetDef, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public DeclarationAliasThis(RefIdentifier targetDef) {
 		this.targetDef = parentize(targetDef);
 	}
 	

@@ -47,6 +47,13 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 		ret = newelem;
 		return false;
 	}
+	protected boolean endAdapt(SourceRange sourceRange, ASTNeoNode newelem) {
+		if(sourceRange != null) {
+			newelem.setSourceRange(sourceRange);
+		}
+		ret = newelem;
+		return false;
+	}
 	
 	protected boolean assertFailFAKENODE() {
 		Assert.fail("Fake Node"); return false;
@@ -65,7 +72,7 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	
 	
 	public NodeList2 createNodeList(ArrayView<ASTNeoNode> elems) {
-		return new NodeList2(elems, null);
+		return new NodeList2(elems);
 	}
 	
 }

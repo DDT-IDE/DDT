@@ -27,7 +27,7 @@ public class ExpFunctionLiteral extends Expression {
 		this.retType = parentize(retType);
 		this.params = parentizeI(params);
 		this.fnAttributes = fnAttributes;
-		this.fnBody = fnBody;
+		this.fnBody = parentizeI(fnBody);
 	}
 	
 	public final ArrayView<ASTNeoNode> getParams_asNodes() {

@@ -2,7 +2,6 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertCast;
 import static dtool.util.NewUtils.assertNotNull_;
-import static dtool.util.NewUtils.emptyToNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -34,10 +33,10 @@ public class ASTNodeReparseCheck {
 	
 	protected static final Void VOID = null;
 	
-	protected final String originalSource;
+	protected final String fullSource;
 	
 	public ASTNodeReparseCheck(String source) {
-		this.originalSource = assertNotNull_(source);
+		this.fullSource = assertNotNull_(source);
 	}
 	
 	protected String nodeSnippedSource;
@@ -67,7 +66,7 @@ public class ASTNodeReparseCheck {
 		
 		case MODULE:
 			Module module = (Module) node;
-			assertTrue(module.getStartPos() == 0 && module.getEndPos() == originalSource.length());
+			assertTrue(module.getStartPos() == 0 && module.getEndPos() == fullSource.length());
 			return VOID;
 		case DECL_MODULE:
 			return reparseCheck(snippedParser.parseModuleDeclaration(), node);
@@ -102,7 +101,7 @@ public class ASTNodeReparseCheck {
 			return reparseCheck(snippedParser.parseImportFragment().getModuleRef(), node);
 		case REF_IDENTIFIER: {
 			RefIdentifier refId = (RefIdentifier) node;
-			return reparseCheck(snippedParser.parseRefIdentifier(), node, refId.name == null);
+			return reparseCheck(snippedParser.parseRefIdentifier(), node, DeeParser.isMissing(refId));
 		}
 		case REF_QUALIFIED: {
 			RefQualified refQual = (RefQualified) node;
@@ -314,7 +313,7 @@ public class ASTNodeReparseCheck {
 	}
 	
 	public String snippedSource(ASTNeoNode node) {
-		return originalSource.substring(node.getStartPos(), node.getEndPos());
+		return fullSource.substring(node.getStartPos(), node.getEndPos());
 	}
 	
 	public void prepSnippedParser(String snippedSource) {
@@ -330,7 +329,18 @@ public class ASTNodeReparseCheck {
 		return reparseCheck(result.getNode(), node);
 	}
 	public Void reparseCheck(IASTNeoNode reparsedNode, ASTNeoNode node) {
-		return reparseCheck((ASTNeoNode) reparsedNode, node.getClass(), node, false);
+		boolean consumesTrailingWhiteSpace = consumeTrailingWhiteSpace(node);
+		return reparseCheck((ASTNeoNode) reparsedNode, node.getClass(), node, consumesTrailingWhiteSpace);
+	}
+	
+	public boolean consumeTrailingWhiteSpace(final ASTNeoNode node) {
+		if(node instanceof DeclarationAttrib) {
+			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
+			if(declAttrib.bodySyntax == AttribBodySyntax.COLON) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public Void reparseCheck(ASTNeoNode reparsedNode, ASTNeoNode node, boolean consumesTrailingWhiteSpace) {
@@ -341,77 +351,39 @@ public class ASTNodeReparseCheck {
 	 * {@link #postVisit} cannot do a test using {@link DeeParserTest#checkSourceEquality }
 	 */
 	public Void reparseCheck(ASTNeoNode reparsedNode, Class<? extends ASTNeoNode> klass, final ASTNeoNode node,
-		boolean consumesSurroundingWhiteSpace
-	) {
-		assertTrue(reparsedNode != null);
-		// TODO check errors are the same?
-		checkNodeEquality(reparsedNode, node);
-		assertTrue(reparsedNode.getClass() == klass);
-		
-		// Check source ranges:
+		boolean consumesAllTrailingWhiteSpace)
+	{
 		// Must have consumed all input
 		assertTrue(snippedParser.lookAhead() == DeeTokens.EOF);
-		assertTrue(emptyToNull(snippedParser.lookAheadElement().ignoredPrecedingTokens) == null);
+		assertTrue(snippedParser.lookAheadElement().ignoredPrecedingTokens == null);
+		assertTrue(snippedParser.getLexPosition() == snippedParser.getSource().length());
+
+		assertNotNull_(reparsedNode);
+		assertTrue(reparsedNode.getClass() == klass);
+		checkNodeEquality(reparsedNode, node);
+		// TODO check errors are the same?
 		
-		assertEquals(reparsedNode.getSourceRange(), new SourceRange(0, nodeSnippedSource.length()) );
+		// Check source ranges:
+		assertEquals(new SourceRange(0, nodeSnippedSource.length()), reparsedNode.getSourceRange());
 		
-		assertTrue(reparsedNode.getEndPos() == snippedParser.lookAheadElement().getStartPos());
+		LexElement firstLexElement = firstLexElementInSource(snippedParser.getSource());
+		assertTrue(firstLexElement.ignoredPrecedingTokens == null || firstLexElement.getType() == DeeTokens.EOF);
 		
-		assertTrue(
-			snippedParser.lastLexElement().isMissingElement() ||
-			snippedParser.lastLexElement().getType().isParserIgnored == false ||
-			snippedParser.lastLexElement().getEndPos() == 0);
-		
-		if(node instanceof DeclarationAttrib) {
-			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
-			if(declAttrib.bodySyntax == AttribBodySyntax.COLON) {
-				consumesSurroundingWhiteSpace = true;
-			}
-		}
-		if(!consumesSurroundingWhiteSpace) {
-			// Check that there is no trailing whitespace in the range
-			assertTrue(lastElementInRange(snippedParser).getEndPos() == snippedParser.getSource().length());
-			assertTrue(firstElementInRange(snippedParser.getSource()).ignoredPrecedingTokens == null);
-			
-			if(snippedParser.lastLexElement().isMissingElement()) {
-				consumesSurroundingWhiteSpace = true;
-			}
-		}
-		
-		if(consumesSurroundingWhiteSpace) {
+		if(consumesAllTrailingWhiteSpace) {
 			// Check that the range contains all possible whitespace
-			assertTrue(elementAfterSnippedRange(node).getStartPos() == 0);
-			assertTrue(elementBeforeSnippedRange(node).getEndPos() == node.getStartPos());
+			assertTrue(lexElementAfterSnippedRange(node).getStartPos() == 0);
 		}
 		
 		resetSnippedParser();
 		return VOID;
 	}
 	
-	public LexElement elementAfterSnippedRange(ASTNeoNode node) {
-		LexerElementSource afterNodeRangeParser = new LexerElementSource(originalSource.substring(node.getEndPos()));
-		LexElement lookAheadElement = afterNodeRangeParser.lookAheadElement();
-		return lookAheadElement;
+	public static LexElement firstLexElementInSource(String source) {
+		return LexerElementSource.produceLexElement(new DeeLexer(source));
 	}
 	
-	public LexElement elementBeforeSnippedRange(ASTNeoNode node) {
-		String beforeSource = originalSource.substring(0, node.getStartPos());
-		LexerElementSource beforeNodeRangeLexer = new LexerElementSource(beforeSource);
-		while(beforeNodeRangeLexer.lookAhead() != DeeTokens.EOF) {
-			beforeNodeRangeLexer.consumeInput();
-		}
-		return beforeNodeRangeLexer.lookAheadElement();
-	}
-	
-	public LexElement firstElementInRange(String source) {
-		return (new LexerElementSource(source)).lookAheadElement();
-	}
-	
-	public LexElement lastElementInRange(AbstractParser parser) {
-		LexElement lastLexElement = snippedParser.lastLexElement();
-		assertTrue(lastLexElement.isMissingElement() || lastLexElement.getType().isParserIgnored == false);
-		assertTrue(lastLexElement == parser.lastNonMissingLexElement() || lastLexElement.isMissingElement());
-		return parser.lastLexElement();
+	public LexElement lexElementAfterSnippedRange(ASTNeoNode node) {
+		return firstLexElementInSource(fullSource.substring(node.getEndPos()));
 	}
 	
 	public static void checkNodeEquality(ASTNeoNode reparsedNode, ASTNeoNode node) {

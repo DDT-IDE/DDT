@@ -9,7 +9,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
 import dtool.refmodel.DefUnitSearch;
@@ -21,8 +20,7 @@ public class RefTypePointer extends CommonRefNative {
 	
 	public final Reference elemType;
 	
-	public RefTypePointer(Reference elemType, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public RefTypePointer(Reference elemType) {
 		this.elemType = parentize(elemType);
 	}
 	

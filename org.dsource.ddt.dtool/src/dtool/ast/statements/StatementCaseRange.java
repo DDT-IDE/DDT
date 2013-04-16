@@ -2,7 +2,6 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 
 public class StatementCaseRange extends Statement {
@@ -11,8 +10,7 @@ public class StatementCaseRange extends Statement {
 	public final Resolvable expLast;
 	public final IStatement st;
 	
-	public StatementCaseRange(Resolvable expFirst, Resolvable expLast, IStatement st, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public StatementCaseRange(Resolvable expFirst, Resolvable expLast, IStatement st) {
 		this.expFirst = parentize(expFirst);
 		this.expLast = parentize(expLast);
 		this.st = parentizeI(st);

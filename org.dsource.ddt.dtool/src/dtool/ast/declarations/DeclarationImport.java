@@ -9,7 +9,6 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
@@ -27,8 +26,7 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 	public final boolean isStatic;
 	public boolean isTransitive; // aka public imports
 	
-	public DeclarationImport(boolean isStatic, ArrayView<IImportFragment> imports, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public DeclarationImport(boolean isStatic, ArrayView<IImportFragment> imports) {
 		this.imports = parentizeI(imports);
 		this.isStatic = isStatic;
 		this.isTransitive = false; // TODO, should be determined by surronding analysis

@@ -7,7 +7,6 @@ import java.util.Collection;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.parser.Token;
 import dtool.refmodel.DefUnitSearch;
@@ -20,9 +19,8 @@ public class RefPrimitive extends NamedReference {
 	
 	public final Token primitive;
 	
-	public RefPrimitive(Token primitiveToken, SourceRange sourceRange) {
+	public RefPrimitive(Token primitiveToken) {
 		this.primitive = primitiveToken;
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

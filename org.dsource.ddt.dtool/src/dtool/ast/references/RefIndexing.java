@@ -9,7 +9,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -26,8 +25,7 @@ public class RefIndexing extends Reference {
 	public final Reference elemType;
 	public final Resolvable indexArg;
 	
-	public RefIndexing(Reference keyType, Resolvable indexArg, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public RefIndexing(Reference keyType, Resolvable indexArg) {
 		this.elemType = parentize(keyType);
 		this.indexArg = parentize(indexArg);
 	}

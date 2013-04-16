@@ -3,15 +3,13 @@ package dtool.ast.expressions;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class ExpLiteralBool extends Expression {
 	
 	public final boolean value;
 	
-	public ExpLiteralBool(boolean value, SourceRange sourceRange) {
+	public ExpLiteralBool(boolean value) {
 		this.value = value;
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

@@ -4,7 +4,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -16,10 +15,9 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	
 	public final RefImportSelection target;
 	
-	public ImportSelectiveAlias(DefUnitTuple dudt, RefImportSelection impSelection, SourceRange sourceRange) {
+	public ImportSelectiveAlias(DefUnitTuple dudt, RefImportSelection impSelection) {
 		super(dudt);
 		this.target = parentize(impSelection);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

@@ -2,15 +2,13 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.Symbol;
 
 public class StatementBreak extends Statement {
 	
 	public Symbol id;
 	
-	public StatementBreak(Symbol id, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public StatementBreak(Symbol id) {
 		this.id = parentize(id);
 	}
 	

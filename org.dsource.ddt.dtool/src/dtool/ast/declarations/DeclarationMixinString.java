@@ -8,7 +8,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
@@ -17,8 +16,7 @@ public class DeclarationMixinString extends ASTNeoNode implements IStatement, IN
 	
 	public final Resolvable exp;
 	
-	public DeclarationMixinString(Resolvable exp, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public DeclarationMixinString(Resolvable exp) {
 		this.exp = parentize(exp);
 	}
 	

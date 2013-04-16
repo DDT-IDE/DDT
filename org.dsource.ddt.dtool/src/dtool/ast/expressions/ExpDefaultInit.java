@@ -1,7 +1,6 @@
 package dtool.ast.expressions;
 
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 
 public class ExpDefaultInit extends Expression {
 	
@@ -11,8 +10,7 @@ public class ExpDefaultInit extends Expression {
 	}
 	public final DefaultInit defInit;
 	
-	public ExpDefaultInit(DefaultInit defInit, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
+	public ExpDefaultInit(DefaultInit defInit) {
 		this.defInit = defInit;
 	}
 	
