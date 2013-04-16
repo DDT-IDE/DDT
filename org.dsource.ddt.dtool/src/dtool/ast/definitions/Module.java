@@ -15,6 +15,7 @@ import dtool.ast.ASTSemantics;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
+import dtool.parser.BaseLexElement;
 import dtool.parser.Token;
 import dtool.refmodel.INamedScope;
 import dtool.refmodel.IScope;
@@ -49,10 +50,10 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		public final String[] packages; // Old API
 		public final DefSymbol moduleName; 
 		
-		public DeclarationModule(ArrayView<Token> packageList, Token moduleDefUnit) {
+		public DeclarationModule(ArrayView<Token> packageList, BaseLexElement moduleDefUnit) {
 			this.packageList = assertNotNull_(packageList);
 			this.packages = NodeUtil.tokenArrayToStringArray(packageList);
-			this.moduleName = new ModuleDefSymbol(moduleDefUnit.source, moduleDefUnit.getSourceRange());
+			this.moduleName = new ModuleDefSymbol(moduleDefUnit.getSourceValue(), moduleDefUnit.getSourceRange());
 			this.moduleName.setData(ASTSemantics.PARSED_STATUS);
 			parentize(moduleName);
 		}

@@ -91,14 +91,12 @@ public class LexerElementSource extends CommonLexElementSource {
 	}
 	
 	@Override
-	public final MissingLexElement consumeIgnoreTokens(DeeTokens expectedToken) {
+	public final MissingLexElement consumeIgnoreTokens() {
 		LexElement la = lookAheadElement();
 		
 		// Missing element will consume whitetokens ahead
-		expectedToken = expectedToken == null ? DeeTokens.WHITESPACE : expectedToken;
 		int lookAheadStart = la.getStartPos();
-		MissingLexElement missingLexElement = 
-			new MissingLexElement(la.ignoredPrecedingTokens, expectedToken, lookAheadStart);
+		MissingLexElement missingLexElement = new MissingLexElement(la.ignoredPrecedingTokens, lookAheadStart);
 		lexPosition = missingLexElement.getEndPos();
 		lookAheadQueue.set(0, new LexElement(null, la.token));
 		
@@ -106,7 +104,7 @@ public class LexerElementSource extends CommonLexElementSource {
 		return missingLexElement;
 	}
 	
-	protected void lexElementConsumed(@SuppressWarnings("unused") LexElement lastLexElement) {
+	protected void lexElementConsumed(@SuppressWarnings("unused") BaseLexElement lastLexElement) {
 		// Default implementation
 	}
 	

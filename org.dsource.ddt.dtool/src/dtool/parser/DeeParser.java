@@ -126,13 +126,13 @@ public class DeeParser extends DeeParser_Decls {
 	}
 	
 	@Override
-	public MissingLexElement consumeIgnoreTokens(DeeTokens expectedToken) {
-		MissingLexElement consumedElement = getEnabledLexSource().consumeIgnoreTokens(expectedToken);
+	public MissingLexElement consumeIgnoreTokens() {
+		MissingLexElement consumedElement = getEnabledLexSource().consumeIgnoreTokens();
 		analyzeIgnoredTokens(consumedElement);
 		return consumedElement;
 	}
 	
-	protected void analyzeIgnoredTokens(LexElement lastLexElement) {
+	protected void analyzeIgnoredTokens(BaseLexElement lastLexElement) {
 		if(lastLexElement.ignoredPrecedingTokens != null) {
 			for (Token ignoredToken : lastLexElement.ignoredPrecedingTokens) {
 				DeeTokenSemantics.checkTokenErrors(ignoredToken, this);

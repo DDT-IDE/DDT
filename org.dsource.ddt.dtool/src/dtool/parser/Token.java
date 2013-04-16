@@ -29,15 +29,15 @@ public class Token implements ISourceRepresentation {
 		return startPos;
 	}
 	
-	public int getLength() {
+	public final int getLength() {
 		return source.length();
 	}
 	
-	public int getEndPos() {
+	public final int getEndPos() {
 		return startPos + source.length();
 	}
 	
-	public SourceRange getSourceRange() {
+	public final SourceRange getSourceRange() {
 		return new SourceRange(getStartPos(), getLength());
 	}
 	

@@ -5,13 +5,12 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.parser.Token;
 
 public class DeclarationAlign extends DeclarationAttrib {
 	
-	public final Token alignNum;
+	public final String alignNum;
 	
-	public DeclarationAlign(Token alignNum, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls) {
+	public DeclarationAlign(String alignNum, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls) {
 		super(bodySyntax, bodyDecls);
 		this.alignNum = alignNum;
 	}
@@ -34,7 +33,7 @@ public class DeclarationAlign extends DeclarationAttrib {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("align");
 		if(alignNum != null) {
-			cp.appendStrings("(", alignNum.getSourceValue(), ")");
+			cp.appendStrings("(", alignNum, ")");
 		}
 		cp.append(" ");
 		toStringAsCode_body(cp);

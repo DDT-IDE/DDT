@@ -97,11 +97,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	/* ----------------------------------------------------------------- */
 	
 	// TODO: comments
-	public DefUnitTuple defUnitNoComments(LexElement id) {
+	public DefUnitTuple defUnitNoComments(BaseLexElement id) {
 		return defUnitTuple(id, null);
 	}
 	
-	public DefUnitTuple defUnitTuple(LexElement id, Comment[] comments) {
+	public DefUnitTuple defUnitTuple(BaseLexElement id, Comment[] comments) {
 		return new DefUnitTuple(comments, id.getSourceValue(), id.getSourceRange(), null);
 	}
 	
@@ -132,13 +132,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		int nodeStart = lastLexElement().getStartPos();
 		
 		ArrayList<Token> packagesList = new ArrayList<Token>(0);
-		LexElement moduleId;
+		BaseLexElement moduleId;
 		
 		while(true) {
-			LexElement id = consumeExpectedIdentifier();
+			BaseLexElement id = consumeExpectedIdentifier();
 			
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
-				packagesList.add(id.token);
+				packagesList.add(id.getToken());
 				id = null;
 			} else {
 				consumeExpectedToken(DeeTokens.SEMICOLON);
@@ -148,7 +148,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		assertNotNull(moduleId);
 		
-		return connect(srToPosition(nodeStart, new DeclarationModule(arrayViewG(packagesList), moduleId.token)));
+		return connect(srToPosition(nodeStart, new DeclarationModule(arrayViewG(packagesList), moduleId)));
 	}
 	
 	public ArrayView<ASTNeoNode> parseDeclDefs(DeeTokens nodeListTerminator) {
@@ -321,7 +321,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	protected DefinitionVarFragment parseVarFragment(boolean isAutoRef) {
 		Initializer init = null;
-		LexElement fragId = consumeExpectedIdentifier();
+		BaseLexElement fragId = consumeExpectedIdentifier();
 		if(!fragId.isMissingElement()) {
 			if(attemptConsume(DeeTokens.ASSIGN, isAutoRef)){ 
 				init = parseInitializer();
@@ -337,7 +337,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(exp == null) {
 			reportErrorExpectedRule(RULE_INITIALIZER);
 			// Advance parser position, mark the advanced range as missing element:
-			MissingLexElement missingLexElement = consumeIgnoreTokens(null);
+			MissingLexElement missingLexElement = consumeIgnoreTokens();
 			exp = connect(srEffective(missingLexElement, new MissingExpression()));
 		}
 		return connect(srBounds(exp, new InitializerExp(exp)));
@@ -471,7 +471,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			
 			if(mode != TplOrFnMode.FN && tryConsume(DeeTokens.KW_THIS)) {
 				setMode(TplOrFnMode.TPL);
-				LexElement id = consumeExpectedIdentifier();
+				BaseLexElement id = consumeExpectedIdentifier();
 				return connect(srToPosition(nodeStart, new TemplateThisParam(defUnitTuple(id, null))));
 			}
 			
@@ -497,7 +497,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			ArrayList<FunctionParamAttribKinds> attribs;
 			
 			Reference ref;
-			LexElement id = null;
+			BaseLexElement id = null;
 			Reference typeSpecialization = null;
 			Expression valueSpecialization = null;
 			TypeOrExpResult paramDefault = new TypeOrExpResult(null, null);
@@ -671,7 +671,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		int nodeStart = lookAheadElement().getStartPos();
 		consumeLookAhead(DeeTokens.KW_ALIAS);
 		
-		LexElement id = null;
+		BaseLexElement id = null;
 		Resolvable init = null;
 		Resolvable specialization = null;
 		
@@ -876,7 +876,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		Expression tplConstraint = null;
 		NodeList2 declBody = null;
 		
-		LexElement defId = consumeExpectedIdentifier();
+		BaseLexElement defId = consumeExpectedIdentifier();
 		
 		boolean ruleBroken = true;
 		parsing: {
@@ -958,7 +958,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public IImportFragment parseImportFragment() {
-		LexElement aliasId = null;
+		BaseLexElement aliasId = null;
 		ArrayList<Token> packages = new ArrayList<Token>(0);
 		int refModuleStartPos = -1;
 		
@@ -969,14 +969,14 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		
 		while(true) {
-			LexElement id = consumeExpectedIdentifier();
+			BaseLexElement id = consumeExpectedIdentifier();
 			refModuleStartPos = refModuleStartPos == -1 ? id.getStartPos() : refModuleStartPos;
 			
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
-				packages.add(id.token);
+				packages.add(id.getToken());
 			} else {
 				RefModule refModule = 
-					connect(srToPosition(refModuleStartPos, new RefModule(arrayViewG(packages), id.token.source))); 
+					connect(srToPosition(refModuleStartPos, new RefModule(arrayViewG(packages), id.getSourceValue())));
 				
 				IImportFragment fragment = connect( (aliasId == null) ? 
 					srBounds(refModule, new ImportContent(refModule)) : 
@@ -1005,8 +1005,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public IImportSelectiveSelection parseImportSelectiveSelection() {
-		LexElement aliasId = null;
-		LexElement id = consumeExpectedIdentifier();
+		BaseLexElement aliasId = null;
+		BaseLexElement id = consumeExpectedIdentifier();
 		
 		if(tryConsume(DeeTokens.ASSIGN)){
 			aliasId = id;
@@ -1094,12 +1094,12 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		int declStart = lastLexElement().getStartPos();
 		
-		Token alignNum = null;
+		String alignNum = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
 		
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				alignNum = consumeExpectedToken(DeeTokens.INTEGER_DECIMAL, true).token;
+				alignNum = consumeExpectedToken(DeeTokens.INTEGER_DECIMAL, true).getSourceValue();
 				
 				if(consumeExpectedToken(DeeTokens.CLOSE_PARENS) == null) 
 					break parsing;
@@ -1132,8 +1132,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public Symbol parseSymbol() {
-		LexElement id = consumeExpectedIdentifier();
-		return connect(sr(id, new Symbol(id.token.source)));
+		BaseLexElement id = consumeExpectedIdentifier();
+		return connect(sr(id, new Symbol(id.getSourceValue())));
 	}
 	
 	public DeclarationProtection parseDeclarationProtection() {
@@ -1142,7 +1142,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		LexElement protElement = consumeInput();
 		int declStart = lastLexElement().getStartPos();
-		Protection protection = DeeTokenSemantics.getProtectionFromToken(protElement.getType());
+		Protection protection = DeeTokenSemantics.getProtectionFromToken(protElement.token.type);
 		
 		AttribBodyParseRule ab = new AttribBodyParseRule().parseAttribBody(false, true);
 		return connect(srToPosition(declStart, new DeclarationProtection(protection, ab.bodySyntax, ab.declList)));

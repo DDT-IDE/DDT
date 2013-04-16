@@ -43,10 +43,6 @@ public abstract class CommonLexElementSource {
 		return consumeInput();
 	}
 	
-	public abstract MissingLexElement consumeIgnoreTokens(DeeTokens expectedToken);
-	
-	public final void consumeIgnoreTokens() {
-		consumeIgnoreTokens(null);
-	}
+	public abstract MissingLexElement consumeIgnoreTokens();
 	
 }

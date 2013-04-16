@@ -22,6 +22,7 @@ import dtool.ast.ASTSemantics;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
+import dtool.parser.LexElement.MissingLexElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
@@ -162,25 +163,28 @@ public abstract class AbstractParser extends CommonLexElementSource {
 	}
 	
 	protected final LexElement consumeExpectedToken(DeeTokens expectedTokenType) {
-		return consumeExpectedToken(expectedTokenType, false);
-	}
-	
-	protected final LexElement createExpectedToken(DeeTokens expectedTokenType) {
-		assertTrue(lookAhead() != expectedTokenType);
-		return consumeIgnoreTokens(null);
-	}
-	
-	protected final LexElement consumeExpectedToken(DeeTokens expectedTokenType, boolean createMissingToken) {
 		if(lookAhead() == expectedTokenType) {
-			return consumeInput();
-		} else {
-			addExpectedTokenError(expectedTokenType);
-			return createMissingToken ? consumeIgnoreTokens(expectedTokenType) : null;
+			return consumeInput(); 
 		}
+		addExpectedTokenError(expectedTokenType);
+		return null;
 	}
 	
-	protected final LexElement consumeExpectedIdentifier() {
+	protected final BaseLexElement consumeExpectedToken(DeeTokens expectedTokenType, boolean createMissingToken) {
+		BaseLexElement result = consumeExpectedToken(expectedTokenType);
+		if(result == null && createMissingToken) {
+			return consumeIgnoreTokens();
+		}
+		return result;
+	}
+	
+	protected final BaseLexElement consumeExpectedIdentifier() {
 		return consumeExpectedToken(DeeTokens.IDENTIFIER, true);
+	}
+	
+	protected final MissingLexElement createExpectedToken(DeeTokens expectedTokenType) {
+		assertTrue(lookAhead() != expectedTokenType);
+		return consumeIgnoreTokens();
 	}
 	
 	/* ---- error helpers ---- */
@@ -268,12 +272,12 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		return SourceRange.srStartToEnd(startNode.getStartPos(), endPos);
 	}
 	
-	public static <T extends ASTNeoNode> T sr(LexElement lexElement, T node) {
+	public static <T extends ASTNeoNode> T sr(BaseLexElement lexElement, T node) {
 		node.setSourceRange(lexElement.getStartPos(), lexElement.getEndPos() - lexElement.getStartPos());
 		return node;
 	}
 	
-	public static <T extends ASTNeoNode> T srEffective(LexElement lexElement, T node) {
+	public static <T extends ASTNeoNode> T srEffective(BaseLexElement lexElement, T node) {
 		int startPos = lexElement.isMissingElement() ? lexElement.getFullRangeStartPos() : lexElement.getStartPos();
 		node.setSourceRange(startPos, lexElement.getEndPos() - startPos);
 		return node;
@@ -284,7 +288,7 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		return node;
 	}
 	
-	public final <T extends ASTNeoNode> T srToPosition(LexElement start, T node) {
+	public final <T extends ASTNeoNode> T srToPosition(BaseLexElement start, T node) {
 		int declStart = start.getStartPos();
 		node.setSourceRange(declStart, getLexPosition() - declStart);
 		return node;

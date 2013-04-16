@@ -12,89 +12,101 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.misc.StringUtil.collToString;
 import dtool.ast.SourceRange;
 
 /**
  * Parser lexing element with a main token and optional ignored channel tokens preceding it.
  */
-public class LexElement {
+public class LexElement extends BaseLexElement {
 	
-	public final Token[] ignoredPrecedingTokens;
 	public final Token token;
 	
 	public LexElement(Token[] ignoredPrecedingTokens, Token token) {
-		this.ignoredPrecedingTokens = ignoredPrecedingTokens;
+		super(ignoredPrecedingTokens);
 		this.token = assertNotNull_(token);
 		assertTrue(ignoredPrecedingTokens == null || ignoredPrecedingTokens.length > 0);
 	}
 	
+	@Override
 	public final boolean isMissingElement() {
-		return token instanceof LexElement.MissingToken;
+		return false;
 	}
 	
-	public final DeeTokens getType() {
-		assertTrue(!isMissingElement());
-		return token.type;
+	@Override
+	public final Token getToken(boolean failOnMissing) {
+		return token;
 	}
 	
+	@Override
 	public final String getSourceValue() {
 		return token.getSourceValue();
 	}
 	
+	@Override
 	public final int getStartPos() {
 		return token.getStartPos();
 	}
 	
+	@Override
 	public final int getEndPos() {
 		return token.getEndPos();
 	}
 	
+	@Override
 	public final SourceRange getSourceRange() {
 		return token.getSourceRange();
 	}
 	
-	public final int getFullRangeStartPos() {
-		if(ignoredPrecedingTokens != null && ignoredPrecedingTokens.length > 0) {
-			return ignoredPrecedingTokens[0].getStartPos();
-		}
-		return token.getStartPos();
+	@Override
+	public String toString() {
+		return super.toString() + token.toString();
 	}
 	
-	
-	public static class MissingLexElement extends LexElement {
+	public final static class MissingLexElement extends BaseLexElement {
 		
-		public MissingLexElement(Token[] ignoredPrecedingTokens, DeeTokens expectedToken, int lookAheadStart) {
-			super(ignoredPrecedingTokens, new MissingToken(expectedToken, lookAheadStart));
-		}
+		public final int startPos;
 		
-	}
-	
-	protected static class MissingToken extends Token {
-		public MissingToken(DeeTokens tokenType, int startPos) {
-			super(tokenType, "", startPos);
+		public MissingLexElement(Token[] ignoredPrecedingTokens, int lookAheadStart) {
+			super(ignoredPrecedingTokens);
+			this.startPos = lookAheadStart;
 		}
 		
 		@Override
-		public int getLength() {
-			return 0;
+		public final boolean isMissingElement() {
+			return true;
 		}
 		
 		@Override
-		public int getEndPos() {
+		public final Token getToken(boolean failOnMissing) {
+			assertTrue(!failOnMissing);
+			return null;
+		}
+		
+		@Override
+		public final String getSourceValue() {
+			return "";
+		}
+		
+		@Override
+		public final int getStartPos() {
 			return startPos;
 		}
 		
 		@Override
-		public String toString() {
-			return "◙";
+		public final int getEndPos() {
+			return startPos;
 		}
-	}
-	
-	@Override
-	public String toString() {
-		String prefix = ignoredPrecedingTokens != null ? "【"+collToString(ignoredPrecedingTokens, "●")+"】" : "";
-		return prefix + token;
+		
+		@Override
+		public final SourceRange getSourceRange() {
+			return SourceRange.srStartToEnd(startPos, startPos);
+		}
+		
+		@Override
+		public String toString() {
+			return super.toString() + "◙";
+		}
+		
 	}
 	
 }

@@ -49,6 +49,7 @@ import dtool.ast.statements.IStatement;
 import dtool.ast.statements.InOutFunctionBody;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.parser.DeeTokens;
+import dtool.parser.LexElement;
 import dtool.parser.Token;
 import dtool.util.ArrayView;
 
@@ -139,7 +140,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		if(elem.md == null) {
 			return Module.createModuleNoModuleDecl(sourceRange, defaultModuleName, members);
 		} else  {
-			Token defnameInfo = DefinitionConverter.convertIdToken2(elem.md.id);
+			LexElement defnameInfo = new LexElement(null, DefinitionConverter.convertIdToken2(elem.md.id));
 			SourceRange declRange = sourceRange(elem.md);
 			
 			Token[] packages = ArrayUtil.newSameSize(elem.md.packages, Token.class);

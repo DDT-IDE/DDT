@@ -367,7 +367,7 @@ public class ASTNodeReparseCheck {
 		assertEquals(new SourceRange(0, nodeSnippedSource.length()), reparsedNode.getSourceRange());
 		
 		LexElement firstLexElement = firstLexElementInSource(snippedParser.getSource());
-		assertTrue(firstLexElement.ignoredPrecedingTokens == null || firstLexElement.getType() == DeeTokens.EOF);
+		assertTrue(firstLexElement.ignoredPrecedingTokens == null || firstLexElement.token.type == DeeTokens.EOF);
 		
 		if(consumesAllTrailingWhiteSpace) {
 			// Check that the range contains all possible whitespace

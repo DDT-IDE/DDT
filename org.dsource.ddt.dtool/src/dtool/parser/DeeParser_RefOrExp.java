@@ -87,8 +87,8 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return lookAheadToken().type.getGroupingToken();
 	}
 	
-	public String idTokenToString(LexElement id) {
-		return id.isMissingElement() ? null : id.token.source;
+	public String idTokenToString(BaseLexElement id) {
+		return id.isMissingElement() ? null : id.getSourceValue();
 	}
 	
 	/* --------------------  reference parsing  --------------------- */
@@ -163,7 +163,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	}
 	
 	protected RefIdentifier parseRefIdentifier() {
-		LexElement id = consumeExpectedToken(DeeTokens.IDENTIFIER, true);
+		BaseLexElement id = consumeExpectedToken(DeeTokens.IDENTIFIER, true);
 		return connect(srEffective(id, new RefIdentifier(idTokenToString(id))));
 	}
 	
@@ -659,10 +659,10 @@ protected class ParseRule_TypeOrExp {
 		case CONCAT:
 		case KW_DELETE: {
 			LexElement prefixExpOpToken = consumeInput();
-			PrefixOpType prefixOpType = PrefixOpType.tokenToPrefixOpType(prefixExpOpToken.getType());
+			PrefixOpType prefixOpType = PrefixOpType.tokenToPrefixOpType(prefixExpOpToken.token.type);
 			LexElement opAheadInfo = lookAheadElement();
 			
-			if(prefixExpOpToken.getType() != DeeTokens.STAR || isTypeOrExpStart || !mode.canBeType()) {
+			if(prefixExpOpToken.token.type != DeeTokens.STAR || isTypeOrExpStart || !mode.canBeType()) {
 				updateTypeOrExpMode(TypeOrExpStatus.EXP);
 			}
 			Expression exp = parseUnaryExpression(false);
@@ -841,7 +841,7 @@ protected class ParseRule_TypeOrExp {
 				
 				checkValidAssociativity(leftExp, opType);
 			} else {
-				assertTrue(lastLexElement().getType() == DeeTokens.STAR);
+				assertTrue(lastLexElement().token.type == DeeTokens.STAR);
 				afterStarOp = lookAheadElement();
 			}
 			
