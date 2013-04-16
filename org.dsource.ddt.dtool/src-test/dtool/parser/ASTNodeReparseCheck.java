@@ -24,7 +24,7 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefQualified;
 import dtool.parser.AbstractParser.NodeResult;
-import dtool.parser.DeeParserTest.CheckSourceEquality;
+import dtool.parser.SourceEquivalenceChecker;
 import dtool.parser.DeeParser_Decls.ParseRule_Parameters.AmbiguousParameter;
 import dtool.parser.DeeParser_Decls.TplOrFnMode;
 import dtool.tests.DToolTests;
@@ -266,7 +266,7 @@ public class ASTNodeReparseCheck {
 	}
 	
 	public Void simpleReparseCheck(String expectedCode) {
-		CheckSourceEquality.assertCheck(nodeUnderTest.toStringAsCode(), expectedCode);
+		SourceEquivalenceChecker.assertCheck(nodeUnderTest.toStringAsCode(), expectedCode);
 		return VOID;
 	}
 	
@@ -296,7 +296,8 @@ public class ASTNodeReparseCheck {
 		
 		assertTrue(allSourceParsedCorrectly() ? isAmbig : true);
 		if(allSourceParsedCorrectly()) {
-			CheckSourceEquality.assertCheck(paramParsedTheOtherWay.toStringAsCode(), nodeUnderTest.toStringAsCode());
+			String expectedSource = nodeUnderTest.toStringAsCode();
+			SourceEquivalenceChecker.assertCheck(paramParsedTheOtherWay.toStringAsCode(), expectedSource);
 		}
 		resetSnippedParser();
 		return VOID;

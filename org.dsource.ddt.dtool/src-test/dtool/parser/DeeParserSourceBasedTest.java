@@ -16,13 +16,13 @@ import static dtool.util.NewUtils.isValidStringRange;
 import static dtool.util.NewUtils.removeRange;
 import static dtool.util.NewUtils.replaceRange;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.misc.CollectionUtil.filter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,6 +49,7 @@ import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
 import dtool.sourcegen.TemplatedSourceProcessor;
+import dtool.tests.DToolTests;
 import dtool.tests.SimpleParser;
 import dtool.util.NewUtils;
 
@@ -114,17 +115,19 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		int originalTemplateChildCount = -1;
 		for (AnnotatedSource testCase : sourceBasedTests) {
 			
-			boolean stdOutTestSource = testCase.findMetadata("comment", "NO_STDOUT") == null;
+			boolean printTestCaseSource = testCase.findMetadata("comment", "NO_STDOUT") == null 
+				&& DToolTests.TESTS_LITE_MODE;
+			
 			if(!printSources.contains(testCase.originalTemplatedSource)) {
 				printCaseEnd(originalTemplateChildCount);
 				originalTemplateChildCount = 0;
 				testsLogger.println(">> ----------- Parser tests TEMPLATE ("+file.getName()+") : ----------- <<");
 				testsLogger.print(testCase.originalTemplatedSource);
-				if(stdOutTestSource) {
+				if(printTestCaseSource) {
 					testsLogger.println(" ----------- Parser source tests: ----------- ");
 				}
 			}
-			if(stdOutTestSource) {
+			if(printTestCaseSource) {
 				testsLogger.println(trimStartNewlines.matcher(testCase.source).replaceAll(""));
 			}
 			printSources.add(testCase.originalTemplatedSource);
@@ -168,6 +171,8 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		final String DEFAULT_VALUE = "##DEFAULT VALUE";
 		
 		final String fullSource = testSource.source;
+		final LexElementSource lexSource = new DeeParser(fullSource).lexSource;
+		
 		String parsedSource = fullSource;
 		String expectedRemainingSource = null;
 		String parseRule = null;
@@ -206,7 +211,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 				if(ignoreFurtherErrorMDs) 
 					continue;
 				
-				ParserError error = decodeError(fullSource, mde);
+				ParserError error = decodeError(lexSource, mde);
 				expectedErrors.add(error);
 				
 				if(getErrorTypeFromMDE(mde) == ParserErrorTypes.INVALID_TOKEN_CHARACTERS) {
@@ -240,9 +245,8 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			expectedErrors = null;
 		}
 		
-		new DeeParserTest().runParserTest______________________(
-			fullSource, parseRule, expectedRemainingSource, expectedPrintedSource, expectedStructure, 
-			expectedErrors, additionalMetadata);
+		new DeeParserTest(fullSource).runParserTest______________________(parseRule, expectedRemainingSource, 
+			expectedPrintedSource, expectedStructure, expectedErrors, additionalMetadata);
 	}
 	
 	public static String calcExpectedToStringAsCode(String parseSource, List<ParserErrorExt> errorInfo) {
@@ -300,11 +304,9 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		return assertNotNull_(errorNameToType.get(errorType));
 	}
 	
-	public static ParserError decodeError(String parseSource, MetadataEntry mde) {
+	public static ParserError decodeError(LexElementSource lexSource, MetadataEntry mde) {
 		String errorTypeStr = StringUtil.upUntil(mde.value, "_");
 		String errorParam = NewUtils.fromIndexOf("_", mde.value);
-		
-		DeeLexer deeLexer = new DeeLexer(parseSource); // TODO: save tokenization
 		
 		SourceRange errorRange = mde.getSourceRange();
 		String errorSource = null;
@@ -315,20 +317,20 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			return new ParserError(ParserErrorTypes.INVALID_TOKEN_CHARACTERS, errorRange, mde.sourceValue, null);
 		case MALFORMED_TOKEN:
 			errorParam = DeeLexerSourceBasedTest.parseExpectedError(errorParam).toString();
-			return createErrorToken(ParserErrorTypes.MALFORMED_TOKEN, mde, deeLexer, true, errorParam);
+			return createErrorToken(ParserErrorTypes.MALFORMED_TOKEN, mde, lexSource, true, errorParam);
 		case EXPECTED_TOKEN:
 			String expectedTokenStr = DeeLexerSourceBasedTest.transformTokenNameAliases(errorParam);
 			DeeTokens expectedToken = DeeTokens.valueOf(expectedTokenStr);
-			return createErrorToken(ParserErrorTypes.EXPECTED_TOKEN, mde, deeLexer, true, expectedToken);
+			return createErrorToken(ParserErrorTypes.EXPECTED_TOKEN, mde, lexSource, true, expectedToken);
 		case EXPECTED_RULE:
 			errorParam = getExpectedRuleName(errorParam);
-			return createErrorToken(ParserErrorTypes.EXPECTED_RULE, mde, deeLexer, true, errorParam);
+			return createErrorToken(ParserErrorTypes.EXPECTED_RULE, mde, lexSource, true, errorParam);
 		case SYNTAX_ERROR:
 			errorParam = getExpectedRuleName(errorParam);
 			boolean tokenBefore = errorTypeStr.equals("<SE");
-			return createErrorToken(ParserErrorTypes.SYNTAX_ERROR, mde, deeLexer, tokenBefore, errorParam);
+			return createErrorToken(ParserErrorTypes.SYNTAX_ERROR, mde, lexSource, tokenBefore, errorParam);
 		case INVALID_EXTERN_ID:
-			return createErrorToken(ParserErrorTypes.INVALID_EXTERN_ID, mde, deeLexer, true, null);
+			return createErrorToken(ParserErrorTypes.INVALID_EXTERN_ID, mde, lexSource, true, null);
 		case EXP_MUST_HAVE_PARENTHESES: 
 			errorParam = errorParam == null ? DeeParserTest.DONT_CHECK : errorParam;
 			errorSource = assertNotNull_(mde.sourceValue);
@@ -342,11 +344,11 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		throw assertFail();
 	}
 	
-	public static ParserError createErrorToken(ParserErrorTypes errorTypeTk, MetadataEntry mde, DeeLexer deeLexer,
-		boolean tokenBefore, Object errorParam) {
+	public static ParserError createErrorToken(ParserErrorTypes errorTypeTk, MetadataEntry mde, 
+		LexElementSource lexSource, boolean tokenBefore, Object errorParam) {
 		Token lastToken = tokenBefore 
-			? findLastEffectiveTokenBeforeOffset(mde.offset, deeLexer)
-			: findNextEffectiveTokenAfterOffset(mde.offset, deeLexer);
+			? findLastEffectiveTokenBeforeOffset(mde.offset, lexSource)
+			: findNextEffectiveTokenAfterOffset(mde.offset, lexSource);
 			
 		SourceRange errorRange = lastToken.getSourceRange();
 		String errorSource = lastToken.source;
@@ -368,41 +370,31 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		return errorParam;
 	}
 	
-	public static Token findLastEffectiveTokenBeforeOffset(int offset, DeeLexer deeLexer) {
-		assertTrue(offset <= deeLexer.source.length());
+	public static Token findLastEffectiveTokenBeforeOffset(int offset, LexElementSource lexSource) {
+		AbstractList<LexElement> lexElementList = lexSource.lexElementList;
+		assertTrue(offset > 0 && offset <= lexElementList.get(lexElementList.size()-1).getEndPos());
 		
-		Token lastNonIgnoredToken = null;
-		while(true) {
-			Token token = deeLexer.next();
-			if(token.getStartPos() >= offset) {
-				assertNotNull(lastNonIgnoredToken);
-				deeLexer.reset(lastNonIgnoredToken.startPos);
+		LexElement lastLexElement = null;
+		for (LexElement lexElement : lexElementList) {
+			if(lexElement.getStartPos() >= offset)
 				break;
-			}
-			if(token.isSubChannelToken()) {
-				continue;
-			}
-			lastNonIgnoredToken = token;
+			lastLexElement = lexElement;
 		}
-		return lastNonIgnoredToken;
+		return lastLexElement == null ? null : lastLexElement.token;
 	}
 	
-	public static Token findNextEffectiveTokenAfterOffset(int offset, DeeLexer deeLexer) {
-		assertTrue(offset <= deeLexer.source.length());
+	public static Token findNextEffectiveTokenAfterOffset(int offset, LexElementSource lexSource) {
+		AbstractList<LexElement> lexElementList = lexSource.lexElementList;
 		
-		while(true) {
-			Token token = deeLexer.next();
-			if(token.type == DeeTokens.EOF) {
+		for (LexElement lexElement : lexElementList) {
+			if(lexElement.isEOF()) {
 				assertFail();
 			}
-			if(token.isSubChannelToken()) {
-				continue;
+			if(lexElement.getStartPos() >= offset) {
+				return lexElement.token;
 			}
-			if(token.getStartPos() >= offset) {
-				return token;
-			}
-			assertTrue(token.getEndPos() <= offset);
 		}
+		throw assertFail();
 	}
 	
 	protected NamedNodeElement[] parseExpectedStructure(String source) {
