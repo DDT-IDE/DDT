@@ -36,8 +36,8 @@ import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.parser.DeeParserResult.ParserErrorComparator;
-import dtool.parser.DeeParser_Decls.ParseRule_Parameters.AmbiguousParameter;
-import dtool.parser.DeeParser_Decls.TplOrFnMode;
+import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
+import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
@@ -316,7 +316,7 @@ public class DeeParserTest extends CommonTestUtils {
 		if(fnParamTest != null) {
 			String source = result.source.substring(fnParamTest.offset);
 			DeeParser parser = new DeeParser(source);
-			Object parameter = parser.new ParseRule_Parameters(TplOrFnMode.AMBIG).parseParameter();
+			Object parameter = new DeeParser_RuleParameters(parser, TplOrFnMode.AMBIG).parseParameter();
 			if(additionalMetadata.remove("FN_ONLY") != null) {
 				assertTrue(parameter instanceof IFunctionParameter);
 			} else {

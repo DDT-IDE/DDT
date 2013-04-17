@@ -68,16 +68,17 @@ public class DeeParser extends DeeParser_Decls {
 	public DeeParser(DeeLexer deeLexer) {
 		this.source = deeLexer.getSource();
 		this.lexSource = new LexElementSource(new DeeLexElementProducer().produceLexTokens(deeLexer));
+		this.pendingMissingTokenErrors = new ArrayList<>(4);
 	}
 	
 	@Override
-	public String getSource() {
+	protected final DeeParser getDeeParser() {
+		return this;
+	}
+	
+	@Override
+	public final String getSource() {
 		return source;
-	}
-	
-	@Override
-	protected void submitError(ParserError error) {
-		errors.add(error);
 	}
 	
 	public final class DeeLexElementProducer extends LexElementProducer {
@@ -120,12 +121,12 @@ public class DeeParser extends DeeParser_Decls {
 	}
 	
 	@Override
-	protected LexElement lastLexElement() {
+	public LexElement lastLexElement() {
 		return getLexSource().lastLexElement();
 	}
 	
 	@Override
-	protected final LexElement consumeInput() {
+	public final LexElement consumeInput() {
 		return getEnabledLexSource().consumeInput();
 	}
 	
@@ -134,4 +135,8 @@ public class DeeParser extends DeeParser_Decls {
 		return getEnabledLexSource().consumeSubChannelTokens();
 	}
 	
+	@Override
+	protected void submitError(ParserError error) {
+		errors.add(error);
+	}
 }

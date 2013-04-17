@@ -27,11 +27,102 @@ import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
 /**
- * Basic parser functionality.
- * Maintains a queue of lookahead elements from the parser.
- * Holds an error list data; 
+ * Basic parsing functionality.
  */
-public abstract class AbstractParser extends CommonLexElementSource {
+public abstract class AbstractParser {
+	
+	protected abstract DeeParser getDeeParser();
+	
+	/* ---- Core functionality ---- */
+	
+	public abstract String getSource();
+	
+	public abstract LexElement lookAheadElement(int laIndex);
+	
+	public abstract int getLexPosition();
+	
+	public abstract LexElement lastLexElement();
+	
+	public abstract LexElement consumeInput();
+	
+	public abstract MissingLexElement consumeSubChannelTokens();
+	
+	public abstract void setEnabled(boolean enabled);
+	
+	public abstract boolean isEnabled();
+	
+	/* ---- core error functionality ---- */
+	
+	protected ArrayList<ParserError> pendingMissingTokenErrors;
+	
+	protected abstract void submitError(ParserError error);
+	
+	protected ParserError addError(ParserError error) {
+		submitError(error);
+		return error;
+	}
+	
+	/* ---- Lookahead and consume helpers ---- */
+	
+	public final LexElement lookAheadElement() {
+		return lookAheadElement(0);
+	}
+	
+	public final Token lookAheadToken() {
+		return lookAheadElement(0).token;
+	}
+	
+	public final DeeTokens lookAhead() {
+		return lookAheadElement(0).token.getTokenType();
+	}
+	
+	public final DeeTokens lookAhead(int laIndex) {
+		return lookAheadElement(laIndex).token.getTokenType();
+	}
+	
+	public final Token consumeLookAhead() {
+		return consumeInput().token;
+	}
+	
+	public final LexElement consumeLookAhead(DeeTokens tokenType) {
+		assertTrue(lookAhead() == tokenType);
+		return consumeInput();
+	}
+	
+	protected final Token consumeIf(DeeTokens tokenType) {
+		return lookAhead() == tokenType ? consumeLookAhead() : null;
+	}
+	
+	protected final LexElement consumeElementIf(DeeTokens tokenType) {
+		return lookAhead() == tokenType ? consumeInput() : null;
+	}
+	
+	protected final boolean tryConsume(DeeTokens tokenType) {
+		if(lookAhead() == tokenType) {
+			consumeInput();
+			return true;
+		}
+		return false;
+	}
+	
+	protected final boolean attemptConsume(DeeTokens tokenType, boolean isExpected) {
+		boolean consumed = tryConsume(tokenType);
+		if(!consumed && isExpected) {
+			addExpectedTokenError(tokenType);
+		}
+		return consumed;
+	}
+	
+	protected final boolean tryConsume(DeeTokens tokenType, DeeTokens tokenType2) {
+		if(lookAhead() == tokenType && lookAhead(1) == tokenType2) {
+			consumeInput();
+			consumeInput();
+			return true;
+		}
+		return false;
+	}
+	
+	/* ----  ---- */
 	
 	public static class ParseRuleDescription {
 		public final String name;
@@ -40,6 +131,74 @@ public abstract class AbstractParser extends CommonLexElementSource {
 			this.name = name;
 		}
 	}
+	
+	/* ---- error helpers ---- */
+	
+	protected ParserError createError(ParserErrorTypes errorType, SourceRange sr, Object msgData) {
+		String errorSource = NodeUtil.getSubString(getSource(), sr); 
+		return new ParserError(errorType, sr, errorSource, msgData);
+	}
+	
+	protected ParserError createErrorOnLastToken(ParserErrorTypes parserError, Object msgData) {
+		return createError(parserError, lastLexElement().getSourceRange(), msgData);
+	}
+	
+	protected ParserError addError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
+		return addError(createError(errorType, errorToken.getSourceRange(), msgData));
+	}
+	
+	protected ParserError addError(ParserErrorTypes errorType, SourceRange sourceRange, Object msgData) {
+		return addError(createError(errorType, sourceRange, msgData));
+	}
+	
+	protected ParserError addExpectedTokenError(DeeTokens expected) {
+		return addErrorWithMissingtoken(ParserErrorTypes.EXPECTED_TOKEN, expected, true);
+	}
+	
+	protected ParserError addErrorWithMissingtoken(ParserErrorTypes errorType, Object msgData, boolean missingToken) {
+		ParserError error = addError(createErrorOnLastToken(errorType, msgData));
+		if(missingToken) {
+			pendingMissingTokenErrors.add(error);
+		}
+		return error;
+	}
+	
+	protected void reportErrorExpectedRule(ParseRuleDescription expectedRule) {
+		addError(createErrorOnLastToken(ParserErrorTypes.EXPECTED_RULE, expectedRule.name));
+	}
+	
+	protected void reportSyntaxError(ParseRuleDescription expectedRule) {
+		addError(createErrorOnLastToken(ParserErrorTypes.SYNTAX_ERROR, expectedRule.name));
+	}
+	
+	/* ---- Additional input consume helpers ---- */
+	
+	protected final LexElement consumeExpectedToken(DeeTokens expectedTokenType) {
+		if(lookAhead() == expectedTokenType) {
+			return consumeInput(); 
+		}
+		addExpectedTokenError(expectedTokenType);
+		return null;
+	}
+	
+	protected final BaseLexElement consumeExpectedToken(DeeTokens expectedTokenType, boolean createMissingToken) {
+		BaseLexElement result = consumeExpectedToken(expectedTokenType);
+		if(result == null && createMissingToken) {
+			return consumeSubChannelTokens();
+		}
+		return result;
+	}
+	
+	protected final BaseLexElement consumeExpectedIdentifier() {
+		return consumeExpectedToken(DeeTokens.IDENTIFIER, true);
+	}
+	
+	protected final MissingLexElement createExpectedToken(DeeTokens expectedTokenType) {
+		assertTrue(lookAhead() != expectedTokenType);
+		return consumeSubChannelTokens();
+	}
+	
+	/* ---- Result helpers ---- */
 	
 	// TODO: alternative mechanism for broken rule checking
 	public static abstract class CommonRuleResult {
@@ -112,134 +271,21 @@ public abstract class AbstractParser extends CommonLexElementSource {
 		return nodeResult == null ? null : nodeResult.node;
 	}
 	
-	/* ---- Basic error functionality ---- */
-	
-	protected final ArrayList<ParserError> pendingMissingTokenErrors = new ArrayList<ParserError>();
-	
-	protected abstract void submitError(ParserError error);
-	
-	protected ParserError addError(ParserError error) {
-		submitError(error);
-		return error;
-	}
-	
-	public abstract void setEnabled(boolean enabled);
-	
-	public abstract boolean isEnabled();
-	
-	/* ---- Input consume helpers ---- */
-	
-	protected final Token consumeIf(DeeTokens tokenType) {
-		return lookAhead() == tokenType ? consumeLookAhead() : null;
-	}
-	
-	protected final LexElement consumeElementIf(DeeTokens tokenType) {
-		return lookAhead() == tokenType ? consumeInput() : null;
-	}
-	
-	protected final boolean tryConsume(DeeTokens tokenType) {
-		if(lookAhead() == tokenType) {
-			consumeInput();
-			return true;
-		}
-		return false;
-	}
-	
-	protected final boolean attemptConsume(DeeTokens tokenType, boolean isExpected) {
-		boolean consumed = tryConsume(tokenType);
-		if(!consumed && isExpected) {
-			addExpectedTokenError(tokenType);
-		}
-		return consumed;
-	}
-	
-	protected final boolean tryConsume(DeeTokens tokenType, DeeTokens tokenType2) {
-		if(lookAhead() == tokenType && lookAhead(1) == tokenType2) {
-			consumeInput();
-			consumeInput();
-			return true;
-		}
-		return false;
-	}
-	
-	protected final LexElement consumeExpectedToken(DeeTokens expectedTokenType) {
-		if(lookAhead() == expectedTokenType) {
-			return consumeInput(); 
-		}
-		addExpectedTokenError(expectedTokenType);
-		return null;
-	}
-	
-	protected final BaseLexElement consumeExpectedToken(DeeTokens expectedTokenType, boolean createMissingToken) {
-		BaseLexElement result = consumeExpectedToken(expectedTokenType);
-		if(result == null && createMissingToken) {
-			return consumeSubChannelTokens();
-		}
-		return result;
-	}
-	
-	protected final BaseLexElement consumeExpectedIdentifier() {
-		return consumeExpectedToken(DeeTokens.IDENTIFIER, true);
-	}
-	
-	protected final MissingLexElement createExpectedToken(DeeTokens expectedTokenType) {
-		assertTrue(lookAhead() != expectedTokenType);
-		return consumeSubChannelTokens();
-	}
-	
-	/* ---- error helpers ---- */
-	
-	protected ParserError createError(ParserErrorTypes errorType, SourceRange sr, Object msgData) {
-		String errorSource = NodeUtil.getSubString(getSource(), sr); 
-		return new ParserError(errorType, sr, errorSource, msgData);
-	}
-	
-	protected ParserError createErrorOnLastToken(ParserErrorTypes parserError, Object msgData) {
-		return createError(parserError, lastLexElement().getSourceRange(), msgData);
-	}
-	
-	protected ParserError addError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
-		return addError(createError(errorType, errorToken.getSourceRange(), msgData));
-	}
-	
-	protected ParserError addError(ParserErrorTypes errorType, SourceRange sourceRange, Object msgData) {
-		return addError(createError(errorType, sourceRange, msgData));
-	}
-	
-	protected ParserError addExpectedTokenError(DeeTokens expected) {
-		return addErrorWithMissingtoken(ParserErrorTypes.EXPECTED_TOKEN, expected, true);
-	}
-	
-	protected ParserError addErrorWithMissingtoken(ParserErrorTypes errorType, Object msgData, boolean missingToken) {
-		ParserError error = addError(createErrorOnLastToken(errorType, msgData));
-		if(missingToken) {
-			pendingMissingTokenErrors.add(error);
-		}
-		return error;
-	}
-	
-	protected void reportErrorExpectedRule(ParseRuleDescription expectedRule) {
-		addError(createErrorOnLastToken(ParserErrorTypes.EXPECTED_RULE, expectedRule.name));
-	}
-	
-	protected void reportSyntaxError(ParseRuleDescription expectedRule) {
-		addError(createErrorOnLastToken(ParserErrorTypes.SYNTAX_ERROR, expectedRule.name));
-	}
-	
-
-	/* ------------  Parsing helpers  ------------ */
+	/* ------------  Node finalization  ------------ */
 	
 	protected final <T extends ASTNeoNode> NodeResult<T> connectResult(boolean ruleBroken, T node) {
 		return nodeResult(ruleBroken, connect(node));
 	}
 	
 	protected <T extends ASTNeoNode> T connect(final T node) {
-		for (ParserError parserError : pendingMissingTokenErrors) {
-			if(parserError.msgData != DeeTokens.IDENTIFIER) {
-				parserError.originNode = node;
+		if(pendingMissingTokenErrors != null) {
+			for (ParserError parserError : pendingMissingTokenErrors) {
+				if(parserError.msgData != DeeTokens.IDENTIFIER) {
+					parserError.originNode = node;
+				}
 			}
+			pendingMissingTokenErrors.clear();
 		}
-		pendingMissingTokenErrors.clear();
 		
 		node.setData(ASTSemantics.PARSED_STATUS);
 		node.accept(new ASTDirectChildrenVisitor() {

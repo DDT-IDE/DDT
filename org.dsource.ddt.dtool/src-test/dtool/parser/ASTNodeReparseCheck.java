@@ -24,9 +24,8 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefQualified;
 import dtool.parser.AbstractParser.NodeResult;
-import dtool.parser.SourceEquivalenceChecker;
-import dtool.parser.DeeParser_Decls.ParseRule_Parameters.AmbiguousParameter;
-import dtool.parser.DeeParser_Decls.TplOrFnMode;
+import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
+import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.tests.DToolTests;
 
 public class ASTNodeReparseCheck {
@@ -281,7 +280,7 @@ public class ASTNodeReparseCheck {
 	protected Void testParameter(boolean isFunction, ASTNeoNode reparsedNonAmbig) {
 		reparseCheck(reparsedNonAmbig);
 		
-		Object fromAmbig = snippedParser.new ParseRule_Parameters(TplOrFnMode.AMBIG).parseParameter();
+		Object fromAmbig = new DeeParser_RuleParameters(snippedParser, TplOrFnMode.AMBIG).parseParameter();
 		boolean isAmbig = false;
 		if(fromAmbig instanceof AmbiguousParameter) {
 			isAmbig = true;
