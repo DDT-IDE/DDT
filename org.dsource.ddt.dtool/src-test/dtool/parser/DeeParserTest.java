@@ -29,6 +29,7 @@ import dtool.ast.ASTSemantics;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
@@ -203,6 +204,8 @@ public class DeeParserTest extends CommonTestUtils {
 			return MapArrayLiteralKeyValue.class.getSimpleName();
 		} else if(expectedNameRaw.equals("ExpPostfix") || expectedNameRaw.equals("ExpPostfixOp")) {
 			return ExpPostfixOperator.class.getSimpleName();
+		} else if(expectedNameRaw.equals("AliasFragment")) {
+			return DefinitionAliasFragment.class.getSimpleName();
 		}
 		
 		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var|AutoVar|Function)", 1, "Definition");

@@ -64,7 +64,7 @@ import dtool.ast.declarations.InvalidSyntaxDeclaration_Old;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefModifier;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
-import dtool.ast.definitions.DefinitionAlias;
+import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionInterface;
@@ -429,7 +429,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.AliasThis elem) {
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
-			new DeclarationAliasThis(new RefIdentifier(new String(elem.ident.ident)))
+			new DeclarationAliasThis(false, new RefIdentifier(new String(elem.ident.ident)))
 			)
 		);
 	}
@@ -440,8 +440,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public final boolean visit(descent.internal.compiler.parser.AliasDeclaration elem) {
 		return endAdapt(
-			new DefinitionAlias(
-				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
+			new DefinitionAliasDecl(
+				DefinitionConverter.convertDsymbol(elem, convContext),
 				(Reference) DescentASTConverter.convertElem(elem.type, convContext)
 			)
 		);

@@ -15,7 +15,7 @@ import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionAlias;
+import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionEnum;
@@ -27,6 +27,7 @@ import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
@@ -39,85 +40,45 @@ import dtool.ast.references.Reference;
  */
 public abstract class ASTAbstractVisitor implements IASTVisitor {
 	
-	@Override
-	public void endVisit(ASTNeoNode node) {
-	}
+	@Override public void endVisit(ASTNeoNode node) {}
 	
-	@Override
-	public void endVisit(DefUnit node) {
-	}
+	@Override public void endVisit(DefUnit node) {}
 	
-	@Override
-	public void endVisit(Module node) {
-	}
+	@Override public void endVisit(Module node) {}
 	
-	@Override
-	public void endVisit(DeclarationModule node) { }
+	@Override public void endVisit(DeclarationModule node) { }
 	
-	@Override
-	public void endVisit(DefinitionStruct node) {
-	}
-	@Override
-	public void endVisit(DefinitionUnion node) {
-	}
-	@Override
-	public void endVisit(DefinitionClass node) {
-	}
+	@Override public void endVisit(DefinitionStruct node) {}
+	@Override public void endVisit(DefinitionUnion node) {}
+	@Override public void endVisit(DefinitionClass node) {}
 	
-	@Override
-	public void endVisit(DefinitionInterface node) {
-	}
+	@Override public void endVisit(DefinitionInterface node) {}
 	
-	@Override
-	public void endVisit(DefinitionTemplate node) {
-	}
+	@Override public void endVisit(DefinitionTemplate node) {}
 	
-	@Override
-	public void endVisit(DefinitionVariable elem) {
-	}
+	@Override public void endVisit(DefinitionVariable node) {}
 	
-	@Override
-	public void endVisit(DefinitionEnum elem) {
-	}
+	@Override public void endVisit(DefinitionEnum node) {}
 	
-	@Override
-	public void endVisit(DefinitionTypedef elem) {
-	}
+	@Override public void endVisit(DefinitionTypedef node) {}
 	
-	@Override
-	public void endVisit(DefinitionAlias elem) {
-	}
+	@Override public void endVisit(DefinitionAliasDecl node) { }
+	@Override public void endVisit(DefinitionAliasFragment node) { }
 	
-	@Override
-	public void endVisit(DefinitionFunction elem) {
-	}
+	@Override public void endVisit(DefinitionFunction node) { }
 	
-	@Override
-	public void endVisit(DefinitionCtor elem) {
-	}
+	@Override public void endVisit(DefinitionCtor node) {}
 	
-	@Override
-	public void endVisit(Resolvable node) {
-	}
+	@Override public void endVisit(Resolvable node) {}
 	
-	@Override
-	public void endVisit(Reference node) {
-	}
+	@Override public void endVisit(Reference node) {}
 	
-	@Override
-	public void endVisit(DeclarationImport elem) {
-	}
+	@Override public void endVisit(DeclarationImport node) {}
 	
-	@Override
-	public void endVisit(DeclarationInvariant elem) {
-	}
+	@Override public void endVisit(DeclarationInvariant node) {}
 	
-	@Override
-	public void endVisit(DeclarationUnitTest elem) {
-	}
+	@Override public void endVisit(DeclarationUnitTest node) {}
 	
-	@Override
-	public void endVisit(DeclarationConditional elem) {
-	}
+	@Override public void endVisit(DeclarationConditional node) {}
 	
 }

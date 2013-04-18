@@ -1,19 +1,13 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ExpIdentifier【ExpReference(RefIdentifier)】
-  #@NO_EXP《#?STRUCTURE_EXPECTED!【/*MISSING:Exp*/ #error(EXPRULE_exp)●MissingExpression】》
- #@NO_EXPx《#?STRUCTURE_EXPECTED!【/*MISSING:Exp*/ #error(EXPRULE_exp)●】》 //DEPRECATED TODO, should be NO_EXP
-#@NULL_EXP《#?STRUCTURE_EXPECTED!【/*No exp here*/ ● 】》
 
 #@NO_ID《#?STRUCTURE_EXPECTED!【/*MISSING:ID*/ #error(EXP_ID)●RefIdentifier】》
 #@NO_DEFID《#?STRUCTURE_EXPECTED!【/*MISSING:DefID*/ #error(EXP_ID)●DefSymbol】》
 
-#@NO_ROE《#?STRUCTURE_EXPECTED!【/*MISSING:RoE*/ #error(EXPRULE_RoE)● MissingExpression】》
-#@NO_REF《#?STRUCTURE_EXPECTED!【/*MISSING:Ref*/ #error(EXPRULE_ref)● RefIdentifier】》
-#@NO_INIT《#?STRUCTURE_EXPECTED!【/*MISSING:Init*/ #error(EXPRULE_Initializer)● InitializerExp(MissingExpression)】》
-
-#@PaCLOSE_OR_NO【)●#error(EXP_CLOSE_PARENS) /*No close parens */ 】
-#@BkCLOSE_OR_NO【]●#error(EXP_CLOSE_BRACKET) /*No close sq bracket */ 】
-#@BrCLOSE_OR_NO【}●#error(EXP_CLOSE_BRACE) /*No close brace */ 】
+#@PaCLOSE_OR_NO【)●#error(EXP_CLOSE_PARENS) /* No ) */】
+#@BkCLOSE_OR_NO【]●#error(EXP_CLOSE_BRACKET) /* No ] */】
+#@BrCLOSE_OR_NO【}●#error(EXP_CLOSE_BRACE) /* No } */】
+#@SEMICOLON_OR_NO【;●#error(EXP_SEMICOLON) /* No ; */】
 
 #@PaCLOSE_OR_BREAK《
   ►#?STRUCTURE_EXPECTED!【)●】●
@@ -24,15 +18,32 @@
 #@BrCLOSE_OR_BREAK《
   ►#?STRUCTURE_EXPECTED!【}●】●
   ►#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACE) /*No close brace */●】 #@BREAK》
-
+#@SEMICOLON_OR_BREAK《
+  ►#?STRUCTURE_EXPECTED!【;●】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON) /*No required ; */●】 #@BREAK》
 #@BRACKET_CLOSE_OR_BREAK《#@BkCLOSE_OR_BREAK》
-
 
 #@BREAK《 #?STRUCTURE_EXPECTED!【#parser(IgnoreRest) #RULE_BROKEN(test)● $ 】  》
 #@IGNORE_REST《 #?STRUCTURE_EXPECTED!【#parser(IgnoreRest) ● $ 】  》
 
-#@SEMICOLON_OR_NO【;●#error(EXP_SEMICOLON)】
 
-#@TYPE_MODIFIERS《const●immutable●shared●inout》
+  #@NO_EXP《#?STRUCTURE_EXPECTED!【/*MISSING:Exp*/ #error(EXPRULE_exp)●MissingExpression】》
+#@NULL_EXP《#?STRUCTURE_EXPECTED!【/*No exp here*/ ● 】》
+
+#@NO_ROE《#?STRUCTURE_EXPECTED!【/*MISSING:RoE*/ #error(EXPRULE_RoE)● MissingExpression】》
+#@NO_REF《#?STRUCTURE_EXPECTED!【/*MISSING:Ref*/ #error(EXPRULE_ref)● RefIdentifier】》
+#@NO_INIT《#?STRUCTURE_EXPECTED!【/*MISSING:Init*/ #error(EXPRULE_Initializer)● InitializerExp(MissingExpression)】》
 
 
+#@TYPEREFS_ANY《#@TYPE_REFS●#@NO_REF》
+#@TYPEREFS_ANY__LITE《#@TYPE_REFS__LITE●#@NO_REF》
+
+#@TYPEREFS_NB《#@TYPE_REFS__NO_BROKEN》
+#@TYPEREFS_NB__LITE《#@TYPE_REFS__NO_BROKEN__LITE》
+
+#@TYPEREFS_NB_ANY《#@TYPE_REFS__NO_BROKEN●#@NO_REF》
+#@TYPEREFS_NB_ANY__LITE《#@TYPE_REFS__NO_BROKEN__LITE●#@NO_REF》
+
+
+#@EXP_COND_ORNO《#@EXP_COND●#@NO_EXP》
+#@EXP_COND_ORNO__LITE《#@EXP_COND__LITE●#@NO_EXP》

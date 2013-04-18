@@ -11,15 +11,3 @@ DeclarationAttrib : comments hack
 
 Module comments
 
-
-
-Ref return:
-
-auto foo(int i)
-{
-    return i + 3;  // return type is inferred to be int
-}
-
-Alias This:
-
-http://www.digitalmars.com/d/2.0/class.html#AliasThis

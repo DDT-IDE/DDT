@@ -16,7 +16,7 @@ import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionAlias;
+import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionEnum;
@@ -29,6 +29,7 @@ import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
@@ -144,8 +145,11 @@ public interface IASTVisitor {
 	public boolean visit(DefinitionTypedef node);
 	public void endVisit(DefinitionTypedef node);
 	
-	public boolean visit(DefinitionAlias node);
-	public void endVisit(DefinitionAlias node);
+	public boolean visit(DefinitionAliasDecl node);
+	public void endVisit(DefinitionAliasDecl node);
+	
+	public boolean visit(DefinitionAliasFragment node);
+	public void endVisit(DefinitionAliasFragment node);
 	
 	public boolean visit(DefinitionFunction node);
 	public void endVisit(DefinitionFunction node);

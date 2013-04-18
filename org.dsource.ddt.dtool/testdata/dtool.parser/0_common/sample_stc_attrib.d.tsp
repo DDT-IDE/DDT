@@ -1,5 +1,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
+#@TYPE_MODIFIERS《const●immutable●shared●inout》
+
 #@SIMPLE_ATTRIBS《
  ►#?STRUCTURE_EXPECTED!【#@PROT_ATTRIB{private,package,protected,public,export}● DeclarationProtection 】●
 

@@ -25,6 +25,7 @@ import dtool.ast.ASTDirectChildrenVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTSemantics;
 import dtool.ast.SourceRange;
+import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.ExpArrayLength;
@@ -419,6 +420,16 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		ExpReference node = new ExpReference(ref);
 		node.setSourceRange(ref.getSourceRange());
 		return node;
+	}
+	
+	public static boolean couldHaveBeenParsedAsId(Reference ref) {
+		return ref instanceof RefIdentifier;
+	}
+	
+	public static DefUnitTuple convertRefIdToDef(Reference ref) {
+		assertTrue(couldHaveBeenParsedAsId(ref));
+		RefIdentifier refId = (RefIdentifier) ref;
+		return new DefUnitTuple(null, refId.name == null ? "" : refId.name, ref.getSourceRange(), null);
 	}
 	
 	public static enum TypeOrExpStatus { 

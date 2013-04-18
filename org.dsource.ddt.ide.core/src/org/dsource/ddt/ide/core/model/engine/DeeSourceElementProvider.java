@@ -24,7 +24,7 @@ import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
 import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
-import dtool.ast.definitions.DefinitionAlias;
+import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionEnum;
@@ -38,6 +38,7 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.ICallableElement;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.expressions.ExpCall;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.NamedReference;
@@ -179,13 +180,24 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	
 	@Override
-	public boolean visit(DefinitionAlias node) {
+	public boolean visit(DefinitionAliasDecl node) {
 		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
 		return true;
 	}
 	@Override
-	public void endVisit(DefinitionAlias node) {
+	public void endVisit(DefinitionAliasDecl node) {
 		requestor.exitType(getDeclarationEndforNode(node));
+	}
+	
+	@Override
+	public boolean visit(DefinitionAliasFragment node) {
+		// TODO: DefinitionAliasFragment element type
+		//requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionAliasFragment node) {
+		//requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
 	/* ---------------------------------- */

@@ -32,7 +32,6 @@ import dtool.ast.definitions.TemplateTypeParam;
 import dtool.ast.definitions.TemplateValueParam;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.Expression;
-import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
 import dtool.parser.AbstractParserRule.AbstractDecidingParserRule;
 import dtool.util.ArrayView;
@@ -243,16 +242,6 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 			}
 		}
 		
-	}
-	
-	public static boolean couldHaveBeenParsedAsId(Reference ref) {
-		return ref instanceof RefIdentifier;
-	}
-	
-	public static DefUnitTuple convertRefIdToDef(Reference ref) {
-		assertTrue(couldHaveBeenParsedAsId(ref));
-		RefIdentifier refId = (RefIdentifier) ref;
-		return new DefUnitTuple(null, refId.name == null ? "" : refId.name, ref.getSourceRange(), null);
 	}
 	
 	protected void setMode(TplOrFnMode newMode) {

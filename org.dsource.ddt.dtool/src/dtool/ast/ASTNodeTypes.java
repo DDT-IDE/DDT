@@ -95,6 +95,7 @@ public enum ASTNodeTypes {
 	
 	DECL_MIXIN_STRING,
 	DECL_MIXIN,
+	DECL_ALIAS_THIS,
 	
 	/* ---------------------------------- */
 	
@@ -118,6 +119,10 @@ public enum ASTNodeTypes {
 	TEMPLATE_THIS_PARAM,
 	
 	NAMED_MIXIN,
+	
+	DEFINITION_ALIAS_DECL,
+	DEFINITION_ALIAS,
+	DEFINITION_ALIAS_FRAGMENT,
 	
 	/* -------------------  Statements  ------------------- */
 	

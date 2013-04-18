@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Image;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.PartialPackageDefUnit;
-import dtool.ast.definitions.DefinitionAlias;
+import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
@@ -51,6 +51,7 @@ public class DeeElementImageProvider {
 	}
 	
 	private static String getNodeImageDescriptorKey(ASTNeoNode node) {
+		// TODO refactor using getNodeType
 		if(node instanceof DeclarationImport) { 
 			return DeePluginImages.NODE_IMPORT;
 		} else if(node instanceof DeclarationModule 
@@ -60,7 +61,7 @@ public class DeeElementImageProvider {
 			return DeePluginImages.NODE_MODULE_DEC;
 		} else if (node instanceof Reference) {
 			return DeePluginImages.NODE_REF;
-		} else if (node instanceof DefinitionAlias) {
+		} else if (node instanceof DefinitionAliasDecl) {
 			return DeePluginImages.ENT_ALIAS;
 		} else if(node instanceof DefinitionTemplate) {
 			return DeePluginImages.ENT_TEMPLATE;

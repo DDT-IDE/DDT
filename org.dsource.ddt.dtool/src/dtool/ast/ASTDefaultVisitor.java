@@ -26,7 +26,7 @@ import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionAlias;
+import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionCtor;
 import dtool.ast.definitions.DefinitionEnum;
@@ -39,6 +39,7 @@ import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
@@ -165,15 +166,10 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 		return true;
 	}
 	
-	@Override
-	public boolean visit(DefinitionAlias node) {
-		return true;
-	}
+	@Override public boolean visit(DefinitionAliasDecl node) { return true; }
+	@Override public boolean visit(DefinitionAliasFragment node) { return true; }
 	
-	@Override
-	public boolean visit(DefinitionFunction node) {
-		return true;
-	}
+	@Override public boolean visit(DefinitionFunction node) { return true; }
 	
 	@Override
 	public boolean visit(DefinitionCtor node) {

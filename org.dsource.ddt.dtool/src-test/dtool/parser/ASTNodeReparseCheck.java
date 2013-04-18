@@ -20,6 +20,7 @@ import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
+import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefQualified;
@@ -131,7 +132,10 @@ public class ASTNodeReparseCheck {
 		/* ---------------------------------- */
 		
 		case MISSING_EXPRESSION:
-			return simpleReparseCheck("");
+			if(nodeUnderTest instanceof MissingParenthesesExpression) {
+				return reparseCheck(snippedParser.parseExpressionAroundParentheses(true));
+			}
+			return reparseCheck(snippedParser.parseExpression_toMissing());
 		case EXP_REF_RETURN:
 			return simpleReparseCheck("return");
 		case EXP_THIS:
@@ -197,22 +201,16 @@ public class ASTNodeReparseCheck {
 			return VOID;
 			
 		/* -------------------  Declarations  ------------------- */
-		case DECL_LINKAGE:
-			return reparseCheck(snippedParser.parseDeclarationExternLinkage());
-		case DECL_ALIGN:
-			return reparseCheck(snippedParser.parseDeclarationAlign());
-		case DECL_PRAGMA:
-			return reparseCheck(snippedParser.parseDeclarationPragma());
-		case DECL_PROTECTION:
-			return reparseCheck(snippedParser.parseDeclarationProtection());
-		case DECL_BASIC_ATTRIB:
-			return reparseCheck(snippedParser.parseDeclarationBasicAttrib());
+		case DECL_LINKAGE: return reparseCheck(snippedParser.parseDeclarationExternLinkage());
+		case DECL_ALIGN: return reparseCheck(snippedParser.parseDeclarationAlign());
+		case DECL_PRAGMA: return reparseCheck(snippedParser.parseDeclarationPragma());
+		case DECL_PROTECTION: return reparseCheck(snippedParser.parseDeclarationProtection());
+		case DECL_BASIC_ATTRIB: return reparseCheck(snippedParser.parseDeclarationBasicAttrib());
 		
+		case DECL_MIXIN_STRING: return reparseCheck(snippedParser.parseDeclarationMixinString());
+		case DECL_MIXIN: return reparseCheck(snippedParser.parseDeclarationMixin());
 		
-		case DECL_MIXIN_STRING:
-			return reparseCheck(snippedParser.parseDeclarationMixinString());
-		case DECL_MIXIN:
-			return reparseCheck(snippedParser.parseDeclarationMixin());
+		case DECL_ALIAS_THIS: return reparseCheck(snippedParser.parseDeclarationAliasThis()); 
 		
 		/* ---------------------------------- */
 		
@@ -247,6 +245,11 @@ public class ASTNodeReparseCheck {
 			
 		case NAMED_MIXIN:
 			return reparseCheck(snippedParser.parseDeclarationMixin());
+		case DEFINITION_ALIAS:
+		case DEFINITION_ALIAS_DECL:
+			return reparseCheck(snippedParser.parseAliasDefinition());
+		case DEFINITION_ALIAS_FRAGMENT:
+			return reparseCheck(snippedParser.parseAliasFragment());
 			
 		/* -------------------  Statements  ------------------- */
 		case BLOCK_STATEMENT:
@@ -337,6 +340,9 @@ public class ASTNodeReparseCheck {
 			if(declAttrib.bodySyntax == AttribBodySyntax.COLON) {
 				return true;
 			}
+		}
+		if(node instanceof MissingExpression) {
+			//return true; // TODO, require TypeOrExp parse changes
 		}
 		return false;
 	}

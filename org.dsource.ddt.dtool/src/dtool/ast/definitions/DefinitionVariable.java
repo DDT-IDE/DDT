@@ -48,6 +48,7 @@ public class DefinitionVariable extends Definition implements IStatement {
 		return ASTNodeTypes.DEFINITION_VARIABLE;
 	}
 	
+	// TODO refactor this into own class?
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
 		public DefinitionAutoVariable(DefUnitTuple dudt, Initializer init, 

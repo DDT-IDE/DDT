@@ -37,22 +37,39 @@ DefVariable(* DefSymbol InitializerExp(*) DefVarFragment(DefSymbol) DefVarFragme
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
 
-#@TYPE_REFS__NO_BROKEN #@PRX1 #error:EXP_IDENTIFIER #?NO_PRX1{,#error:EXP_SEMICOLON} #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN #@PRX1 #error:EXP_IDENTIFIER ;
+#@TYPE_REFS__NO_BROKEN #error:EXP_IDENTIFIER #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN #error:EXP_IDENTIFIER ;
 
-#@TYPE_REFS__NO_BROKEN #@PRX1 fooA #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN #@PRX1 fooB = #@NO_INIT #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN #@PRX1 fooD = #@NO_INIT ;
+#@TYPE_REFS__NO_BROKEN fooA #error:EXP_SEMICOLON  #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN fooB = #@NO_INIT #error:EXP_SEMICOLON  #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN fooD = #@NO_INIT ;
 
 #comment(NO_STDOUT)
 #STRUCTURE_EXPECTED:
-#?NO_PRX1{InvalidDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} #@SEPARATOR
-#?NO_PRX1{InvalidDeclaration(*) ,  DefVariable(* DefSymbol DefVarFragment(?))} 
+InvalidDeclaration(*) #@SEPARATOR
+InvalidDeclaration(*)
 
-DefVariable(* DefSymbol #?NO_PRX1【●                 DefVarFragment(DefSymbol)】 ) #@SEPARATOR
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? #@NO_INIT)】) #@SEPARATOR
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? #@NO_INIT)】)
+DefVariable(* DefSymbol  ) #@SEPARATOR
+DefVariable(* DefSymbol InitializerExp(?)) #@SEPARATOR
+DefVariable(* DefSymbol InitializerExp(?))
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors with fragment
+
+#@TYPE_REFS__NO_BROKEN__LITE xxx, #error:EXP_IDENTIFIER #error:EXP_SEMICOLON #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN__LITE xxx, #error:EXP_IDENTIFIER ;
+
+#@TYPE_REFS__NO_BROKEN__LITE xxx, fooA #error:EXP_SEMICOLON  #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN__LITE xxx, fooB = #@NO_INIT #error:EXP_SEMICOLON  #@SEPARATOR
+#@TYPE_REFS__NO_BROKEN__LITE xxx, fooD = #@NO_INIT ;
+
+#comment(NO_STDOUT)
+#STRUCTURE_EXPECTED:
+DefVariable(#@TYPE_REFS__NO_BROKEN__LITE DefSymbol DefVarFragment(?)) #@SEPARATOR
+DefVariable(#@TYPE_REFS__NO_BROKEN__LITE DefSymbol DefVarFragment(?)) 
+
+DefVariable(#@TYPE_REFS__NO_BROKEN__LITE DefSymbol DefVarFragment(DefSymbol) ) #@SEPARATOR
+DefVariable(#@TYPE_REFS__NO_BROKEN__LITE DefSymbol DefVarFragment(? #@NO_INIT)) #@SEPARATOR
+DefVariable(#@TYPE_REFS__NO_BROKEN__LITE DefSymbol DefVarFragment(? #@NO_INIT))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
 
 #@TYPE_REFS__NO_BROKEN #@PRX1 fooE = 112 #error:EXP_SEMICOLON  #@SEPARATOR

@@ -22,6 +22,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationBasicAttrib;
@@ -44,6 +45,9 @@ import dtool.ast.declarations.InvalidDeclaration;
 import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.definitions.DeclarationMixin;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
+import dtool.ast.definitions.DefinitionAlias;
+import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
+import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.AutoReturnReference;
 import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
@@ -64,6 +68,7 @@ import dtool.ast.expressions.Initializer;
 import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.RefTypeFunction;
@@ -75,8 +80,8 @@ import dtool.ast.statements.FunctionBodyOutBlock;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.InOutFunctionBody;
-import dtool.parser.LexElement.MissingLexElement;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
+import dtool.parser.LexElement.MissingLexElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
@@ -94,6 +99,12 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return new DefUnitTuple(comments, id.getSourceValue(), id.getSourceRange(), null);
 	}
 	
+	public BaseLexElement nullIdToMissingDefId(BaseLexElement id) {
+		if(id == null) {
+			return createExpectedToken(DeeTokens.IDENTIFIER);
+		}
+		return id;
+	}
 	
 	/* ----------------------------------------------------------------- */
 	
@@ -219,6 +230,12 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				return nodeResult(parseDeclarationMixinString());
 			}
 			return nodeResult(parseDeclarationMixin());
+		case KW_ALIAS:
+			if(lookAhead(1) == DeeTokens.KW_THIS ||  
+				(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.KW_THIS)) {
+				return parseDeclarationAliasThis();
+			}
+			return parseAliasDefinition();
 		default:
 			break;
 		}
@@ -669,6 +686,103 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		return connectResult(ruleBroken, srToPosition(retType, 
 			new RefTypeFunction(retType, isDelegate, fnParams, fnAttributes)));
+	}
+	
+	public NodeResult<? extends ASTNeoNode> parseAliasDefinition() {
+		if(!tryConsume(DeeTokens.KW_ALIAS)) {
+			return nullResult();
+		}
+		int nodeStart = lastLexElement().getStartPos();
+		
+		if(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.ASSIGN) {
+			return parseDefinitionAlias_atFragmentStart();
+		}
+		
+		Reference ref = null;
+		BaseLexElement id = null;
+		
+		parsing: {
+			LexElementSource savedState = thisParser().getEnabledLexSource().saveState();
+			
+			NodeResult<Reference> refResult = parseTypeReference();
+			ref = refResult.node;
+			if(ref == null) {
+				return parseDefinitionAlias_atFragmentStart(); // Return error as if trying to parse DefinitionAlias
+			}
+			
+			if(refResult.ruleBroken) break parsing;
+			
+			if(lookAhead() != DeeTokens.IDENTIFIER && couldHaveBeenParsedAsId(ref)) {
+				thisParser().getEnabledLexSource().resetState(savedState);
+				return parseDefinitionAlias_atFragmentStart(); // Return error as if trying to parse DefinitionAlias
+			} else {
+				id = consumeExpectedIdentifier();
+			}
+		}
+		id = nullIdToMissingDefId(id);
+		
+		boolean ruleBroken = consumeExpectedToken(DeeTokens.SEMICOLON) == null;
+		return connectResult(ruleBroken, srToPosition(nodeStart, 
+			new DefinitionAliasDecl(defUnitNoComments(id), ref)));
+	}
+	
+	protected NodeResult<DefinitionAlias> parseDefinitionAlias_atFragmentStart() {
+		int nodeStart = lastLexElement().getStartPos();
+		
+		ArrayList<DefinitionAliasFragment> fragments = new ArrayList<>();
+		
+		while(true) {
+			DefinitionAliasFragment fragment = parseAliasFragment();
+			fragments.add(fragment);
+			
+			if(!tryConsume(DeeTokens.COMMA)) {
+				break;
+			}
+		}
+		
+		boolean ruleBroken = consumeExpectedToken(DeeTokens.SEMICOLON) == null;
+		return connectResult(ruleBroken, srToPosition(nodeStart, new DefinitionAlias(arrayView(fragments))));
+	}
+	
+	public DefinitionAliasFragment parseAliasFragment() {
+		BaseLexElement id = null;
+		Reference ref = null;
+		
+		parsing: {
+			id = consumeExpectedIdentifier();
+			if(id.isMissingElement()) break parsing;
+			
+			if(consumeExpectedToken(DeeTokens.ASSIGN) == null) break parsing;
+			
+			NodeResult<Reference> refResult = parseTypeReference_ToMissing();
+			ref = refResult.node;
+		}
+		return connect(srToPosition(id, new DefinitionAliasFragment(defUnitNoComments(id), ref)));
+	}
+	
+	protected NodeResult<DeclarationAliasThis> parseDeclarationAliasThis() {
+		if(!tryConsume(DeeTokens.KW_ALIAS)) {
+			return nullResult();
+		}
+		int nodeStart = lastLexElement().getStartPos();
+		
+		boolean isAssignSyntax = false;
+		RefIdentifier refId = null;
+		
+		parsing:
+		if(tryConsume(DeeTokens.KW_THIS)) {
+			isAssignSyntax = true;
+			
+			if(consumeExpectedToken(DeeTokens.ASSIGN) == null) break parsing;
+			
+			refId = parseRefIdentifier();
+		} else {
+			refId = parseRefIdentifier();
+			consumeExpectedToken(DeeTokens.KW_THIS);
+		}
+		
+		boolean ruleBroken = consumeExpectedToken(DeeTokens.SEMICOLON) == null;
+		return connectResult(ruleBroken, srToPosition(nodeStart, new DeclarationAliasThis(isAssignSyntax, refId)));
 	}
 	
 	/* -------------------- Plain declarations -------------------- */

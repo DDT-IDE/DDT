@@ -61,9 +61,15 @@ public class AnnotatedSource {
 	}
 	
 	public MetadataEntry findMetadata(String name) {
+		return findMetadata(name, true);
+	}
+	public MetadataEntry findMetadata(String name, boolean requireUnique) {
 		MetadataEntry foundMde = null;
 		for (MetadataEntry mde : metadata) {
 			if(areEqual(mde.name, name)) {
+				if(!requireUnique){
+					return mde;
+				}
 				assertTrue(foundMde == null);
 				foundMde = mde;
 			}
