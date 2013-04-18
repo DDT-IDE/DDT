@@ -224,6 +224,8 @@ public class ASTNodeReparseCheck {
 			InitializerExp initializerExp = (InitializerExp) nodeUnderTest;
 			Resolvable initExpExp = initializerExp.exp;
 			return reparseCheck(snippedParser.parseInitializer(), initExpExp instanceof MissingExpression);
+		case INITIALIZER_VOID:
+			return reparseCheck(snippedParser.parseInitializer());
 			
 		case DEFINITION_FUNCTION:
 			return reparseCheck(snippedParser.parseDeclaration());

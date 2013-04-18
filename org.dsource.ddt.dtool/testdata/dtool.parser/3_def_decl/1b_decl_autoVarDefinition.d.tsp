@@ -1,9 +1,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic cases
-
 auto foo = 2;
 static bar = foo;
 auto xa = 456, xb = 123;
-
 #STRUCTURE_EXPECTED:
 DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(Integer)) )
 DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(#@ExpIdentifier)) )

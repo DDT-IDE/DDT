@@ -13,87 +13,40 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol InitializerExp(?
 #@TYPE_REFS__NO_BROKEN fooA;
 #@TYPE_REFS__NO_BROKEN fooB = 55 ;
 #@TYPE_REFS__NO_BROKEN fooC = 1, foo2    , foo3 = 3;
-Bar.Foo[]     fooD    , foo2 = 2 , foo3;
 
-#comment(NO_STDOUT)
 #STRUCTURE_EXPECTED:
 DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol)
 DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol InitializerExp(?))
-DefVariable(* DefSymbol InitializerExp(?) DefVarFragment(DefSymbol) DefVarFragment(DefSymbol InitializerExp(?)))
-DefVariable(* DefSymbol                   DefVarFragment(DefSymbol InitializerExp(?)) DefVarFragment(DefSymbol))
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_REFS__NO_BROKEN fooB = #@EXP_ASSIGN;
-#@TYPE_REFS__NO_BROKEN fooC = #@EXP_ASSIGN, foo2    , foo3 = #@EXP_ASSIGN;
-
-#comment(NO_STDOUT)
-#STRUCTURE_EXPECTED:
-DefVariable(* DefSymbol InitializerExp(#@EXP_ASSIGN))
-DefVariable(* DefSymbol InitializerExp(*) DefVarFragment(DefSymbol) DefVarFragment(? InitializerExp(#@EXP_ASSIGN)))
+DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol InitializerExp(?) DefVarFragment(DefSymbol) DefVarFragment(DefSymbol InitializerExp(?)))
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@PRX1!《#NO_PRX1(flag)●xxx,》
-#@SEPARATOR!《 #?STRUCTURE_EXPECTED!【align int ruleBREAK;● DeclarationAlign(*)】 》
+#@INITIALIZERS《
+  ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN●InitializerExp(#@EXP_ASSIGN)】●
+  ►#?STRUCTURE_EXPECTED!【void●InitializerVoid】●
+  ►#@NO_INIT●
+¤》
+#@PREFIX《
+  ►#?STRUCTURE_EXPECTED!【prefix,  ●DefSymbol 】●
+  ►#?STRUCTURE_EXPECTED!【prefix = 123,  ●DefSymbol InitializerExp(Integer) 】●
+  ►#?STRUCTURE_EXPECTED!【prefix = 123,  prf2 = 123,●DefSymbol InitializerExp(?) DefVarFragment(* InitializerExp(*)) 】●
+  ►#?STRUCTURE_EXPECTED!【prefix, #@NO_ID, ●DefSymbol DefVarFragment(#@NO_DEFID) 】●
+¤》
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)   #@TYPE_REFS__NO_BROKEN fooB #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)   #@TYPE_REFS__NO_BROKEN #@NO_ID ;
+#STRUCTURE_EXPECTED:  InvalidDeclaration(#@TYPE_REFS__NO_BROKEN)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)   #@TYPE_REFS__NO_BROKEN #@NO_ID #@BREAK
+#STRUCTURE_EXPECTED:  InvalidDeclaration(#@TYPE_REFS__NO_BROKEN)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)   #@TYPEREFS_NB__LITE fooB = #@INITIALIZERS #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  DefVariable(#@TYPEREFS_NB__LITE DefSymbol #@INITIALIZERS)
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
-
-#@TYPE_REFS__NO_BROKEN #error:EXP_IDENTIFIER #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN #error:EXP_IDENTIFIER ;
-
-#@TYPE_REFS__NO_BROKEN fooA #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN fooB = #@NO_INIT #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN fooD = #@NO_INIT ;
-
-#comment(NO_STDOUT)
-#STRUCTURE_EXPECTED:
-InvalidDeclaration(*) #@SEPARATOR
-InvalidDeclaration(*)
-
-DefVariable(* DefSymbol  ) #@SEPARATOR
-DefVariable(* DefSymbol InitializerExp(?)) #@SEPARATOR
-DefVariable(* DefSymbol InitializerExp(?))
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors with fragment
-
-#@TYPE_REFS__NO_BROKEN__LITE xxx, #error:EXP_IDENTIFIER #error:EXP_SEMICOLON #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN__LITE xxx, #error:EXP_IDENTIFIER ;
-
-#@TYPE_REFS__NO_BROKEN__LITE xxx, fooA #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN__LITE xxx, fooB = #@NO_INIT #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN__LITE xxx, fooD = #@NO_INIT ;
-
-#comment(NO_STDOUT)
-#STRUCTURE_EXPECTED:
-DefVariable(#@TYPE_REFS__NO_BROKEN__LITE DefSymbol DefVarFragment(?)) #@SEPARATOR
-DefVariable(#@TYPE_REFS__NO_BROKEN__LITE DefSymbol DefVarFragment(?)) 
-
-DefVariable(#@TYPE_REFS__NO_BROKEN__LITE DefSymbol DefVarFragment(DefSymbol) ) #@SEPARATOR
-DefVariable(#@TYPE_REFS__NO_BROKEN__LITE DefSymbol DefVarFragment(? #@NO_INIT)) #@SEPARATOR
-DefVariable(#@TYPE_REFS__NO_BROKEN__LITE DefSymbol DefVarFragment(? #@NO_INIT))
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors
-
-#@TYPE_REFS__NO_BROKEN #@PRX1 fooE = 112 #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN #@PRX1 fooF = 112 = "666";
-
-#comment(NO_STDOUT)
-#STRUCTURE_EXPECTED:
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(?)●DefVarFragment(? InitializerExp(Integer))】) 
-#@SEPARATOR
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(Integer String))●
-		DefVarFragment(? InitializerExp(ExpInfix(Integer String)))】)
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Errors (with multiple exp)
-
-#@TYPE_REFS__NO_BROKEN #@PRX1 fooE = #EXP__NO_BREAKING_EXPS(flag) #@EXP_ASSIGN #error:EXP_SEMICOLON  #@SEPARATOR
-#@TYPE_REFS__NO_BROKEN #@PRX1 fooF = #EXP__NO_BREAKING_EXPS(flag) #@EXP_CONDITIONAL = "666";
-
-#comment(NO_STDOUT)
-#STRUCTURE_EXPECTED:
-
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(#@EXP_ASSIGN)●DefVarFragment(? InitializerExp(#@EXP_ASSIGN))】) 
-#@SEPARATOR
-DefVariable(* DefSymbol #?NO_PRX1【InitializerExp(ExpInfix(#@EXP_CONDITIONAL String))●
-		DefVarFragment(? InitializerExp(ExpInfix(#@EXP_CONDITIONAL String)))】)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)              #@TYPEREFS_NB__LITE #@PREFIX fooB = #@INITIALIZERS #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED: DefVariable(#@TYPEREFS_NB__LITE #@PREFIX DefVarFragment(DefSymbol #@INITIALIZERS))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ C-style decls
 #comment(TODO):

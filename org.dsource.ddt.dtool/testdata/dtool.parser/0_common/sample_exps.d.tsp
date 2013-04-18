@@ -85,7 +85,7 @@ EXP__NO_UNAMBIG_REFS : exclude cases that can only be cleanly parsed as refs
 
    ►#?EXP__NO_BREAKING_EXPS【#:DISCARD_CASE●
    ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE● 
-  ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【void *】 #EXP_RULE_BROKEN(flag)● ExpReference(RefTypePointer(RefPrimitive))】】】●
+  ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【float *】 #EXP_RULE_BROKEN(flag)● ExpReference(RefTypePointer(RefPrimitive))】】】●
   
    ►#?EXP__NO_BREAKING_EXPS【#:DISCARD_CASE●
    ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●

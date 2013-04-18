@@ -7,9 +7,9 @@ import dtool.ast.IASTVisitor;
 
 public class InitializerExp extends Initializer {
 	
-	public final Resolvable exp;
+	public final Expression exp;
 	
-	public InitializerExp(Resolvable exp) {
+	public InitializerExp(Expression exp) {
 		this.exp = parentize(exp);
 	}
 	
