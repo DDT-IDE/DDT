@@ -112,6 +112,8 @@ header1
 ¤》 // There is no arg4
 	 
 #@EXP_ID•SOURCE_NOT_PART_OF_EXP_ID 	 
+▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ other:
+#:DISCARD_CASE
 	 
 	 
 	 */
@@ -152,7 +154,7 @@ header1
 		);
 		
 		testSourceProcessing("#", 
-			splitMarker+" _____\ncase1\na#:XPLIT sdfasdf"+
+			splitMarker+" _____\ncase1\na#=XPLIT sdfasdf"+
 			splitMarker+"\n case3\nblahblah\n"
 			,
 			8
@@ -232,7 +234,7 @@ header1
 		testSourceProcessing("#", "badsyntax #foo(==#:SPLIT\n)", 17);
 		testSourceProcessing("#", "badsyntax #foo(==#:END:", 18);
 		testSourceProcessing("#", "badsyntax #foo(){xxx#:SPLIT\n)", 17+3);
-		testSourceProcessing("#", "badsyntax #foo(){xxx#:END:", 17+3+1);
+		testSourceProcessing("#", "badsyntax #foo(){xxx#:END:", 17+3+2+3);
 		
 		
 		for (int i = 0; i < TemplatedSourceProcessor.OPEN_DELIMS.length; i++) {
@@ -624,7 +626,7 @@ header1
 		testSourceProcessing("#", "> #}", 3); 
 		
 		testSourceProcessing("#", "foo #@EXPANSION1{12#:SPLIT\n}", 19);
-		testSourceProcessing("#", "foo #@EXPANSION1{12#:END:\n}", 20);
+		testSourceProcessing("#", "foo #@EXPANSION1{12#:END:\n}", 20+4);
 		
 		testSourceProcessing("#", "foo #@EXPANSION1{12}(#:SPLIT\n)", 21);
 		testSourceProcessing("#", "foo #@EXPANSION1{12}(xxx:END:\n)", 21+3);
@@ -650,6 +652,26 @@ header1
 		source = source.replaceAll("◄", closeDelim);
 		source = source.replaceAll("◙", "●");
 		return source;
+	}
+	
+	@Test
+	public void testDiscard() throws Exception { testDiscard$(); }
+	public void testDiscard$() throws Exception {
+		
+		testSourceProcessing("#", "> #@{A,B #:DISCARD_CASE ,C}==",
+			
+			checkMD("> A=="), 
+			checkMD("> C==")
+		);
+		
+		testSourceProcessing("#", "Ⓗ━━\n  #@FOO《A● B #:DISCARD_CASE ●-C-》 ━━\n> #@FOO<",
+			
+			checkMD("> A<"), 
+			checkMD("> -C-<")
+		);
+		
+		// discard only existing case
+		testSourceProcessing("#", "> #:DISCARD_CASE ==");
 	}
 	
 	@Test

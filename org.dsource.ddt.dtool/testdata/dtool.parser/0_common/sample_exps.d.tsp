@@ -1,7 +1,5 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-#@EXP_DISCARD_CASE《#?STRUCTURE_EXPECTED!【666/*NoCase*/●Integer】》
-
 #@TYPE_AS_EXP《#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【int】●ExpReference(RefPrimitive)】》
  #@INT_AS_EXP《#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【int】●ExpReference(RefPrimitive)】》
 
@@ -41,9 +39,9 @@
   ►#?STRUCTURE_EXPECTED!【 (.foo).bar.xxx●ExpReference(RefQualified(?(RefQualified(ExpParentheses(*) ?)) ?))】●
   
   
-  ►#?EXP__NO_AMBIGS【#@EXP_DISCARD_CASE●
+  ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
     ►#?STRUCTURE_EXPECTED!【foo[]●                 ExpSlice(#@ExpIdentifier)】 】●
-  ►#?EXP__NO_AMBIGS【#@EXP_DISCARD_CASE●
+  ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
     ►#?STRUCTURE_EXPECTED!【foo[[123]]●            ExpIndex(#@ExpIdentifier ExpLiteralArray(?))】】●
   
   ►#?STRUCTURE_EXPECTED!【 foo[].init●ExpReference(RefQualified(ExpSlice(#@ExpIdentifier) RefIdentifier))】●
@@ -56,41 +54,41 @@ EXP__NO_PENDING_MISSING : exclude cases that could have been parsed further if a
 EXP__NO_UNAMBIG_REFS : exclude cases that can only be cleanly parsed as refs
 
 #@EXP_UNARY_REFS《
-   ►#?EXP__NO_AMBIGS【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【  foo● ExpReference(RefIdentifier)】 】●
-   ►#?EXP__NO_UNAMBIG_REFS【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【  #@INT_AS_EXP● #@INT_AS_EXP 】 】●
-   ►#?EXP__NO_AMBIGS【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
 
   ►#?STRUCTURE_EXPECTED!【  .foo● ExpReference(RefModuleQualified(RefIdentifier))】 】●
-   ►#?EXP__NO_AMBIGS【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【  .foo.bar● ExpReference(RefQualified(RefModuleQualified(?) RefIdentifier))】 】●
   
-   ►#?EXP__NO_AMBIGS【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【 foo!(int)●ExpReference(RefTemplateInstance(RefIdentifier RefPrimitive) )】 】●
   
-   ►#?EXP__NO_AMBIGS【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【foo[]● ExpSlice(#@ExpIdentifier)】】●
   
-   ►#?EXP__NO_UNAMBIG_REFS【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【int []】● ExpReference(RefTypeDynArray(RefPrimitive))】】●
-   ►#?EXP__NO_UNAMBIG_REFS【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【foo[int]】●ExpReference(RefIndexing(RefIdentifier RefPrimitive))】】●
-   ►#?EXP__NO_UNAMBIG_REFS【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【int[foo]】●ExpReference(RefIndexing(RefPrimitive RefIdentifier))】】●
 ¤》
 
 #@EXP_NON_UNARY_REFS《
-   ►#?EXP__NO_BREAKING_EXPS【#@EXP_DISCARD_CASE●
-   ►#?EXP__NO_AMBIGS【#@EXP_DISCARD_CASE● 
+   ►#?EXP__NO_BREAKING_EXPS【#:DISCARD_CASE●
+   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE● 
   ►#?STRUCTURE_EXPECTED!【foo * #@NO_EXP #EXP_RULE_BROKEN(flag)● ExpInfix(ExpReference(RefIdentifier) #@NO_EXP)】】】●
 
-   ►#?EXP__NO_BREAKING_EXPS【#@EXP_DISCARD_CASE●
-   ►#?EXP__NO_UNAMBIG_REFS【#@EXP_DISCARD_CASE● 
+   ►#?EXP__NO_BREAKING_EXPS【#:DISCARD_CASE●
+   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE● 
   ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【void *】 #EXP_RULE_BROKEN(flag)● ExpReference(RefTypePointer(RefPrimitive))】】】●
   
-   ►#?EXP__NO_BREAKING_EXPS【#@EXP_DISCARD_CASE●
-   ►#?EXP__NO_UNAMBIG_REFS【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_BREAKING_EXPS【#:DISCARD_CASE●
+   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【 #error(TYPE_AS_EXP_VALUE)【foo**[bar* /++/] *】  #EXP_RULE_BROKEN(flag)●
   ExpReference(
    RefTypePointer(RefIndexing(RefTypePointer(RefTypePointer(RefIdentifier)) RefTypePointer(RefIdentifier) ))
@@ -99,7 +97,7 @@ EXP__NO_UNAMBIG_REFS : exclude cases that can only be cleanly parsed as refs
 
 #@EXP_REFS《
   ►#@EXP_UNARY_REFS●
-   ►#?EXP__NO_PENDING_MISSING【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_PENDING_MISSING【#:DISCARD_CASE●
   ►#@EXP_NON_UNARY_REFS】●
 ¤》
 
@@ -125,7 +123,7 @@ EXP__NO_UNAMBIG_REFS : exclude cases that can only be cleanly parsed as refs
 
 #@EXP_OROR《
   ►#@EXP_UNARY●
-   ►#?EXP__NO_PENDING_MISSING【#@EXP_DISCARD_CASE●
+   ►#?EXP__NO_PENDING_MISSING【#:DISCARD_CASE●
   ►#@EXP_NON_UNARY_REFS】●
   
   ►#?STRUCTURE_EXPECTED!【4 / 6●ExpInfix(? ?)】●

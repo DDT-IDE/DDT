@@ -13,8 +13,6 @@
 // We want the "Foo" case to be tested even in LITE mode as it's a very relevant case 
 #@TYPE_REFS_X《#@TYPE_REFS__NO_BROKEN●#?STRUCTURE_EXPECTED!【Foo #TYPE_REF_CAN_PARSE_AS_ID(flag)● RefIdentifier】》
 
-#@FN_PARAM_DISCARD《#?STRUCTURE_EXPECTED!【/*DISCARD*/●】》
-
 #@FN_PARAM_BASE《
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@TYPE_REFS__NO_BROKEN foo ●FunctionParameter(#@TYPE_REFS__NO_BROKEN DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo foo ... #FN_ONLY(flag) ●FunctionParameter(RefIdentifier DefSymbol)】●
@@ -27,14 +25,14 @@
   
   ►#?STRUCTURE_EXPECTED!【#@TYPE_MODIFIERS (long) #FN_ONLY(flag)●NamelessParameter(RefTypeModifier(RefPrimitive))】●
 
- ►#?FN_PARAM__NO_BROKEN【#@FN_PARAM_DISCARD●
+ ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB #@NO_REF #@BREAK_Pr ... #FN_ONLY(flag)●NamelessParameter(#@NO_REF) $】】●
- ►#?FN_PARAM__NO_BROKEN【#@FN_PARAM_DISCARD●
+ ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB #@NO_REF #@BREAK_Pr = 2 #FN_ONLY(flag)●NamelessParameter(#@NO_REF) $】】●
   
- ►#?FN_PARAM__NO_BROKEN【#@FN_PARAM_DISCARD● 
+ ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE● 
   ►#?STRUCTURE_EXPECTED!【const int foo ... #@BREAK_Pr = 2 #FN_ONLY(flag)●FunctionParameter(RefPrimitive DefSymbol) $】】●
- ►#?FN_PARAM__NO_BROKEN【#@FN_PARAM_DISCARD●
+ ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int[#error(EXP_CLOSE_BRACKET) #@BREAK_Pr ... ●NamelessParameter(RefTypeDynArray(*)) $】】●
 ¤》
 function/template interactions - param default convert

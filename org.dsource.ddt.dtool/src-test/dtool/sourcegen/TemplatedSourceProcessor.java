@@ -224,6 +224,10 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 				}
 			} else if(tspElem instanceof TspMetadataEndElement) {
 				processMetadataEndElem(sourceCase, (TspMetadataEndElement) tspElem);
+			} else if(tspElem instanceof TspCommandElement) {
+				TspCommandElement tspCommandElement = (TspCommandElement) tspElem;
+				assertTrue(tspCommandElement.name.equals(TspCommandElement.DISCARD_CASE));
+				return;
 			} else {
 				assertFail();
 			}

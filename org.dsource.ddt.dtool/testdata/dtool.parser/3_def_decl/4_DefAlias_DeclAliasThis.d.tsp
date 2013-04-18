@@ -6,7 +6,7 @@
 #STRUCTURE_EXPECTED:  DefinitionAlias(AliasFragment(DefSymbol RefTypeDynArray(RefIdentifier)))
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_REFS__NB__NO_SINGLE_ID《#@TYPEREFS_NB #?TYPE_REF_CAN_PARSE_AS_ID【#DISCARD_TEST_CASE】》
+#@TYPE_REFS__NB__NO_SINGLE_ID《#@TYPEREFS_NB #?TYPE_REF_CAN_PARSE_AS_ID【#:DISCARD_CASE】》
 
 #@FRAG_PREFIX《
   ►#?STRUCTURE_EXPECTED!【/*No fragment*/● 】●

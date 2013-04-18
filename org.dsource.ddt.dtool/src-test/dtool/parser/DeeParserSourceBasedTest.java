@@ -114,9 +114,6 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		int originalTemplateChildCount = -1;
 		for (AnnotatedSource testCase : sourceBasedTests) {
 			
-			if(testCase.findMetadata("DISCARD_TEST_CASE", false) != null)
-				continue;
-			
 			boolean printTestCaseSource = testCase.findMetadata("comment", "NO_STDOUT") == null;
 			
 			if(!printSources.contains(testCase.originalTemplatedSource)) {

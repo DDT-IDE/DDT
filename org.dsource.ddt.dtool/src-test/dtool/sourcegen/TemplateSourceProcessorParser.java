@@ -112,6 +112,8 @@ public class TemplateSourceProcessorParser {
 			return parseIfElseExpansionCommand(parser); 
 		} else if(Character.isJavaIdentifierStart(parser.lookAhead())) {
 			return parseMetadataElement(parser);
+		} if(parser.lookAhead() == ':') {
+			return parseCommandElement(parser); 
 		}
 		
 		reportError(parser.getSourcePosition());
@@ -376,9 +378,28 @@ public class TemplateSourceProcessorParser {
 		return value.toString();
 	}
 	
+	protected static class TspCommandElement extends TspElement {
+		
+		public static final String DISCARD_CASE = "DISCARD_CASE";
+		
+		public final String name; 
+		
+		public TspCommandElement(String name) {
+			this.name = name;
+		}
+	}
+	
+	protected TspCommandElement parseCommandElement(SimpleParser parser) throws TemplatedSourceException {
+		parser.consume(":");
+		String name = parser.consumeAlphaNumericUS(false);
+		checkError(name.isEmpty(), parser);
+		checkError(!name.equals(TspCommandElement.DISCARD_CASE), parser);
+		
+		return new TspCommandElement(name);
+	}
+	
 	protected TspIfElseExpansionElement parseIfElseExpansionCommand(SimpleParser parser) 
 		throws TemplatedSourceException {
-		assertTrue(parser.lookAhead() == '?');
 		parser.consume("?");
 		
 		String mdConditionId = emptyToNull(parser.consumeAlphaNumericUS(false));

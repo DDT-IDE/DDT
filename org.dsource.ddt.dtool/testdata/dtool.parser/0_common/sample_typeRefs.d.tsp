@@ -1,7 +1,5 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-#@REF_DISCARD_CASE《#?STRUCTURE_EXPECTED!【float●RefPrimitive】》
-
 // These type refs can always be used as qualifiers
 #@TYPE_REFS__QUALIFIER_ANY《
   ►#?STRUCTURE_EXPECTED!【Foo #TYPE_REF_CAN_PARSE_AS_ID(flag) ●RefIdentifier】●
@@ -91,11 +89,11 @@ RefTemplateInstance(
   ►#?STRUCTURE_EXPECTED!【int * *[foo]●RefIndexing(RefTypePointer(RefTypePointer(RefPrimitive)) RefIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【int *[foo][bar]●RefIndexing(RefIndexing(RefTypePointer(RefPrimitive) ?) RefIdentifier)】●
 
-   ►#?TYPE__NO_PENDING_MISSING【#@REF_DISCARD_CASE●
+   ►#?TYPE__NO_PENDING_MISSING【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int *●RefTypePointer(RefPrimitive)】】●
-   ►#?TYPE__NO_PENDING_MISSING【#@REF_DISCARD_CASE●
+   ►#?TYPE__NO_PENDING_MISSING【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int * *●RefTypePointer(RefTypePointer(RefPrimitive))】】●
-   ►#?TYPE__NO_PENDING_MISSING【#@REF_DISCARD_CASE●
+   ►#?TYPE__NO_PENDING_MISSING【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int * **●RefTypePointer(RefTypePointer(RefTypePointer(RefPrimitive)))】】●
 
   ►#?STRUCTURE_EXPECTED!【int function(inout int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
@@ -148,10 +146,10 @@ for performance reasons, to keep the number of cases low.
 ¤》
 
 #@TYPE_REFS__BROKEN《
-   ►#?NO_BROKEN_BRACKETS【#@REF_DISCARD_CASE●
+   ►#?NO_BROKEN_BRACKETS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【arrayElem[foo #error(EXP_CLOSE_BRACKET)●RefIndexing(RefIdentifier RefIdentifier)】】●
 
-   ►#?NO_BROKEN_PARENS【#@REF_DISCARD_CASE●
+   ►#?NO_BROKEN_PARENS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【typeof("abc" #error(EXP_CLOSE_PARENS)●RefTypeof(String)】】●
 ¤》
 
