@@ -1,0 +1,85 @@
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#@LAMBDA_BODY《
+  ►#?STRUCTURE_EXPECTED!【=> #@EXP_ASSIGN #?EXP_RULE_BROKEN【#@BREAK】● #@EXP_ASSIGN 】● 
+  ►#?STRUCTURE_EXPECTED!【=> #@NO_EXP #@BREAK● #@NO_EXP】●
+¤》
+#@LAMBDA_BODY__SAMPLE《
+  ►#?STRUCTURE_EXPECTED!【=> #@EXP_ASSIGN__LITE● #@EXP_ASSIGN__LITE 】● 
+¤》
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ identifier => lambda syntax
+#PARSE(EXPRESSION)    foo #@LAMBDA_BODY
+#STRUCTURE_EXPECTED:  ExpSimpleLambda(ExpSimpleLambdaDefUnit(DefSymbol)  #@LAMBDA_BODY)
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#@FLAG_AS_BROKEN_TEST《#test(IGNORE_BREAK_CHECK) #parser(AllowAnyErrors) #AST_SOURCE_EXPECTED(NoCheck) #IGNORE_BREAK_FLAG_CHECK(test)》
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)   #@FN_BLOCK_BODY
+#STRUCTURE_EXPECTED: 
+ ExpFunctionLiteral( #@FN_BLOCK_BODY )
+ 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test params
+#PARSE(EXPRESSION)   (#@FN_PARAMS__NO_BROKEN) #@FN_ATTRIB__SAMPLE #@FN_BLOCK_BODY__SAMPLE
+#STRUCTURE_EXPECTED: 
+   ExpFunctionLiteral(#@FN_PARAMS__NO_BROKEN  #@FN_ATTRIB__SAMPLE #@FN_BLOCK_BODY__SAMPLE)
+
+Ⓗ▂▂▂▂▂▂▂▂▂▂ // test commented out 
+#PARSE(EXPRESSION)   (#@FN_PARAMS__NO_BROKEN) #@FN_ATTRIB__SAMPLE #@LAMBDA_BODY__SAMPLE
+#STRUCTURE_EXPECTED: 
+            ExpLambda(#@FN_PARAMS__NO_BROKEN  #@FN_ATTRIB__SAMPLE #@LAMBDA_BODY__SAMPLE)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  "shot in the dark" test
+#PARSE(EXPRESSION)   (#@FN_PARAMS  #@FN_BLOCK_BODY__SAMPLE #@FLAG_AS_BROKEN_TEST 
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)   (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB  #@FN_BLOCK_BODY__SAMPLE
+#STRUCTURE_EXPECTED: 
+   ExpFunctionLiteral(#@FN_PARAMS_SAMPLE  #@FN_ATTRIB  #@FN_BLOCK_BODY__SAMPLE)
+▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)   (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB  #@LAMBDA_BODY__SAMPLE
+#STRUCTURE_EXPECTED: 
+            ExpLambda(#@FN_PARAMS_SAMPLE  #@FN_ATTRIB  #@LAMBDA_BODY__SAMPLE)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)   (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB__SAMPLE  #@FN_BLOCK_BODY
+#STRUCTURE_EXPECTED: 
+   ExpFunctionLiteral(#@FN_PARAMS_SAMPLE  #@FN_ATTRIB__SAMPLE  #@FN_BLOCK_BODY)
+▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)   (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB__SAMPLE  #@LAMBDA_BODY
+#STRUCTURE_EXPECTED: 
+            ExpLambda(#@FN_PARAMS_SAMPLE  #@FN_ATTRIB__SAMPLE  #@LAMBDA_BODY)
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test that 'in' and 'body' don't parse as FunctionBody (even though grammar says it should)           
+▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(EXPRESSION)   #@BREAK  in {} #@FLAG_AS_BROKEN_TEST
+▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(EXPRESSION)   #@BREAK  body {} #@FLAG_AS_BROKEN_TEST
+▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(EXPRESSION)   (#@FN_PARAMS_SAMPLE) nothrow  in {}
+#STRUCTURE_EXPECTED: ExpInfix( ExpFunctionLiteral(#@FN_PARAMS_SAMPLE) ExpFunctionLiteral(*) )
+▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(EXPRESSION)   (#@FN_PARAMS_SAMPLE) in {} #@FLAG_AS_BROKEN_TEST
+#STRUCTURE_EXPECTED: ExpParentheses(*)
+▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)   (#@FN_PARAMS_SAMPLE) body {} #@FLAG_AS_BROKEN_TEST 
+#STRUCTURE_EXPECTED: ExpParentheses(*)
+
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ with the function/delegate keyword
+#@FN_KEYWORD《function●delegate》
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(EXPRESSION)   #@FN_KEYWORD #error(EXP_OPEN_PARENS)【】 #@BREAK
+#STRUCTURE_EXPECTED: ExpFunctionLiteral()
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(EXPRESSION)   #@FN_KEYWORD ( #error(EXP_CLOSE_PARENS) #@BREAK
+#STRUCTURE_EXPECTED: ExpFunctionLiteral()
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(EXPRESSION)   #@FN_KEYWORD (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB__SAMPLE  #@FN_BLOCK_BODY__SAMPLE
+#STRUCTURE_EXPECTED: 
+ExpFunctionLiteral(                #@FN_PARAMS_SAMPLE  #@FN_ATTRIB__SAMPLE  #@FN_BLOCK_BODY__SAMPLE)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ with typeref
+#PARSE(EXPRESSION)   #@FN_KEYWORD #@TYPE_REFS__NO_BROKEN #error(EXP_OPEN_PARENS)【】 #@BREAK
+#STRUCTURE_EXPECTED: 
+               ExpFunctionLiteral(#@TYPE_REFS__NO_BROKEN)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(EXPRESSION)   #@FN_KEYWORD #@TYPE_REFS__NO_BROKEN__LITE (#@FN_PARAMS_SAMPLE #@PaCLOSE_OR_BREAK #@FN_ATTRIB__SAMPLE #@FN_BLOCK_BODY__SAMPLE
+#STRUCTURE_EXPECTED: 
+               ExpFunctionLiteral(#@TYPE_REFS__NO_BROKEN__LITE  #@FN_PARAMS_SAMPLE #@PaCLOSE_OR_BREAK #@FN_ATTRIB__SAMPLE #@FN_BLOCK_BODY__SAMPLE)

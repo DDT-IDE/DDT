@@ -426,23 +426,28 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	protected final DeeParser_RuleParameters parseParameters() {
-		return new DeeParser_RuleParameters(getDeeParser(), TplOrFnMode.AMBIG).doParse();
+		return new DeeParser_RuleParameters(thisParser(), TplOrFnMode.AMBIG).parse();
 	}
 	
 	protected final DeeParser_RuleParameters parseFunctionParameters() {
-		return new DeeParser_RuleParameters(getDeeParser(), TplOrFnMode.FN).doParse();
+		return new DeeParser_RuleParameters(thisParser(), TplOrFnMode.FN).parse();
+	}
+	
+	protected final DeeParser_RuleParameters isFunctionParameters() {
+		// TODO: optimize unnecessary processing and object creation when in this decider mode
+		return new DeeParser_RuleParameters(thisParser(), TplOrFnMode.FN).parseDeciderMode();
 	}
 	
 	protected final DeeParser_RuleParameters parseTemplateParameters() {
-		return new DeeParser_RuleParameters(getDeeParser(), TplOrFnMode.TPL).doParse();
+		return new DeeParser_RuleParameters(thisParser(), TplOrFnMode.TPL).parse();
 	}
 	
 	public IFunctionParameter parseFunctionParameter() {
-		return (IFunctionParameter) new DeeParser_RuleParameters(getDeeParser(), TplOrFnMode.FN).parseParameter();
+		return (IFunctionParameter) new DeeParser_RuleParameters(thisParser(), TplOrFnMode.FN).parseParameter();
 	}
 	
 	public TemplateParameter parseTemplateParameter() {
-		return (TemplateParameter) new DeeParser_RuleParameters(getDeeParser(), TplOrFnMode.TPL).parseParameter();
+		return (TemplateParameter) new DeeParser_RuleParameters(thisParser(), TplOrFnMode.TPL).parseParameter();
 	}
 	
 	protected ArrayView<FunctionAttributes> parseFunctionAttributes() {

@@ -49,7 +49,6 @@ import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
 import dtool.sourcegen.TemplatedSourceProcessor;
-import dtool.tests.DToolTests;
 import dtool.tests.SimpleParser;
 import dtool.util.NewUtils;
 
@@ -115,8 +114,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		int originalTemplateChildCount = -1;
 		for (AnnotatedSource testCase : sourceBasedTests) {
 			
-			boolean printTestCaseSource = testCase.findMetadata("comment", "NO_STDOUT") == null 
-				&& DToolTests.TESTS_LITE_MODE;
+			boolean printTestCaseSource = testCase.findMetadata("comment", "NO_STDOUT") == null;
 			
 			if(!printSources.contains(testCase.originalTemplatedSource)) {
 				printCaseEnd(originalTemplateChildCount);
@@ -225,6 +223,8 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 				
 			} else if(mde.name.equals("parser") && areEqual(mde.value, "AllowAnyErrors")){
 				allowAnyErrors = true;
+			} else if(mde.name.equals("test") && areEqual(mde.value, "IGNORE_BREAK_CHECK")){
+				expectedRemainingSource = DeeParserTest.DONT_CHECK;
 			} else if(areEqual(mde.value, "test")){
 				additionalMetadata.put(mde.name, mde);
 			} else {
@@ -374,7 +374,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		AbstractList<LexElement> lexElementList = lexSource.lexElementList;
 		assertTrue(offset > 0 && offset <= lexElementList.get(lexElementList.size()-1).getEndPos());
 		
-		LexElement lastLexElement = null;
+		LexElement lastLexElement = LexElementSource.START_TOKEN;
 		for (LexElement lexElement : lexElementList) {
 			if(lexElement.getStartPos() >= offset)
 				break;

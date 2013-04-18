@@ -24,7 +24,7 @@ DefVariable(* DefSymbol                   DefVarFragment(DefSymbol InitializerEx
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@TYPE_REFS__NO_BROKEN fooB = #@EXP_ASSIGN;
-#@TYPE_REFS__NO_BROKEN fooC = #@^EXP_ASSIGN, foo2    , foo3 = #@EXP_ASSIGN;
+#@TYPE_REFS__NO_BROKEN fooC = #@EXP_ASSIGN, foo2    , foo3 = #@EXP_ASSIGN;
 
 #comment(NO_STDOUT)
 #STRUCTURE_EXPECTED:

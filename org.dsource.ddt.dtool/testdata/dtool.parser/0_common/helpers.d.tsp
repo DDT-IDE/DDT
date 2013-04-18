@@ -15,10 +15,17 @@
 #@BkCLOSE_OR_NO【]●#error(EXP_CLOSE_BRACKET) /*No close sq bracket */ 】
 #@BrCLOSE_OR_NO【}●#error(EXP_CLOSE_BRACE) /*No close brace */ 】
 
-#@PaCLOSE_OR_BREAK【)●#error(EXP_CLOSE_PARENS) /*No close parens */ #@BREAK】
-#@BkCLOSE_OR_BREAK【]●#error(EXP_CLOSE_BRACKET) /*No close sq bracket */ #@BREAK】
-#@BRACKET_CLOSE_OR_BREAK【]●#error(EXP_CLOSE_BRACKET) /*No close sq bracket */ #@BREAK】
-#@BrCLOSE_OR_BREAK【}●#error(EXP_CLOSE_BRACE) /*No close brace */ #@BREAK】
+#@PaCLOSE_OR_BREAK《
+  ►#?STRUCTURE_EXPECTED!【)●】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS) /*No close parens */●】 #@BREAK》
+#@BkCLOSE_OR_BREAK《
+  ►#?STRUCTURE_EXPECTED!【]●】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACKET) /*No close sq bracket */●】 #@BREAK》
+#@BrCLOSE_OR_BREAK《
+  ►#?STRUCTURE_EXPECTED!【}●】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACE) /*No close brace */●】 #@BREAK》
+
+#@BRACKET_CLOSE_OR_BREAK《#@BkCLOSE_OR_BREAK》
 
 
 #@BREAK《 #?STRUCTURE_EXPECTED!【#parser(IgnoreRest) #RULE_BROKEN(test)● $ 】  》

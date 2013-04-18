@@ -19,16 +19,12 @@ RefTypeFunction(RefTypeDynArray(?) )
 #STRUCTURE_EXPECTED:
 RefTypeFunction(RefTypeModifier(RefIdentifier) )
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  1 param
-#PARSE(REFERENCE)     bar[] function ( #FN_PARAMETER_TEST(test) #@FN_PARAM_SINGLE ) 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  1+ param
+#PARSE(REFERENCE)     bar[] #@FN_KEYWORD ( #FN_PARAMETER_TEST(test) #@FN_PARAMS ) 
 #STRUCTURE_EXPECTED:
-RefTypeFunction(RefTypeDynArray(?) #@FN_PARAM_SINGLE )
+RefTypeFunction(RefTypeDynArray(?) #@FN_PARAMS )
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 2+ params
-#PARSE(REFERENCE)     bar[] #@FN_KEYWORD ( #@FN_PARAMS ) 
-#STRUCTURE_EXPECTED:
-RefTypeFunction( RefTypeDynArray(?) #@FN_PARAMS )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ fn attributes
-#PARSE(REFERENCE)     bar[] #@FN_KEYWORD ( #@FN_PARAMS ) #@FN_ATTRIB
+#PARSE(REFERENCE)     bar[] delegate ( #@FN_PARAMS_SAMPLE ) #@FN_ATTRIB
 #STRUCTURE_EXPECTED:
-RefTypeFunction( RefTypeDynArray(?) #@FN_PARAMS )
+RefTypeFunction( RefTypeDynArray(?) #@FN_PARAMS_SAMPLE )

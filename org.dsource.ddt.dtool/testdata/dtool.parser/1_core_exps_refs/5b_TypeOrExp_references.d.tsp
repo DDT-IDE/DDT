@@ -86,7 +86,7 @@
   RefIndexing(RefTypePointer(#@UNAMBIG_NO_PENDING) RefIdentifier)) Integer Integer) #@ALT_PREFIX_END 
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test ambiguous to exp
- #@IGNORE_BREAK《 #IGNORE_BREAK_TEST(test)》
+ #@IGNORE_BREAK《 #IGNORE_BREAK_FLAG_CHECK(test)》
  
 #@AMBIG_TO_EXP《
   ►#?STRUCTURE_EXPECTED!【#@TYPEREFS_AMBIG *foo●ExpInfix(* #?INFIX【ExpPrefix(*)●#@ExpIdentifier】)】●

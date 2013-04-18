@@ -22,8 +22,10 @@ import dtool.parser.LexElement.MissingLexElement;
  */
 public class LexElementSource {
 	
+	public static final LexElement START_TOKEN = new LexElement(null, new Token(DeeTokens.EOF, "", 0));
+	
 	protected final AbstractList<LexElement> lexElementList; // Immutable
-	protected LexElement lastLexElement = new LexElement(null, new Token(DeeTokens.EOF, "", 0));
+	protected LexElement lastLexElement = START_TOKEN;
 	protected int elementListPosition = 0;
 	protected int lexSourcePosition = 0;
 	

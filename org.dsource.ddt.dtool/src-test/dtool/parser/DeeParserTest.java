@@ -45,6 +45,8 @@ import dtool.tests.CommonTestUtils;
 
 public class DeeParserTest extends CommonTestUtils {
 	
+	public static final String DONT_CHECK = "#DONTCHECK";
+	
 	protected final String fullSource;
 	
 	public DeeParserTest(String fullSource) {
@@ -61,16 +63,20 @@ public class DeeParserTest extends CommonTestUtils {
 		String parsedSource = fullSource;
 		DeeParserResult result = parseUsingRule(parseRule, deeParser);
 		
-		if(expectedRemainingSource == null) {
+		if(expectedRemainingSource == DeeParserTest.DONT_CHECK) {
+			parsedSource = fullSource.substring(0, deeParser.getLexPosition());
+		} else if(expectedRemainingSource == null) {
 			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
 		} else {
 			String remainingSource = fullSource.substring(deeParser.getLexPosition());
 			SourceEquivalenceChecker.assertCheck(remainingSource, expectedRemainingSource);
 			parsedSource = fullSource.substring(0, fullSource.length() - expectedRemainingSource.length());
 		}
-		ASTNeoNode mainNode = assertNotNull_(result.node);
+		ASTNeoNode mainNode = result.node; // a null result may make sense in some tests
 		
-		checkBasicStructureContracts(array(mainNode), null);
+		if(mainNode != null) {
+			checkBasicStructureContracts(array(mainNode), null);
+		}
 		
 		if(expectedStructure != null) {
 			checkExpectedStructure(mainNode, expectedStructure);
@@ -80,13 +86,17 @@ public class DeeParserTest extends CommonTestUtils {
 			checkParserErrors(result.errors, expectedErrors);
 		}
 		
-		assertTrue(result.errors.size() == 0 ? parsedSource.equals(expectedPrintedSource) : true);
 		if(expectedPrintedSource != null) {
-			SourceEquivalenceChecker.assertCheck(mainNode.toStringAsCode(), expectedPrintedSource);
+			assertTrue(result.errors.size() == 0 ? parsedSource.equals(expectedPrintedSource) : true);
+			
+			String nodePrintedSource = mainNode == null ? "" : mainNode.toStringAsCode();
+			SourceEquivalenceChecker.assertCheck(nodePrintedSource, expectedPrintedSource);
 		}
 		
 		// Check consistency of source ranges (no overlapping ranges)
-		ASTSourceRangeChecker.checkConsistency(mainNode);
+		if(mainNode != null) {
+			ASTSourceRangeChecker.checkConsistency(mainNode);
+		}
 		
 		runAdditionalTests(result, additionalMetadata);
 	}
@@ -199,8 +209,6 @@ public class DeeParserTest extends CommonTestUtils {
 	}
 	
 	/* ============= Error and Source Range Checkers ============= */
-	
-	public static final String DONT_CHECK = "#DONTCHECK";
 	
 	public static void checkParserErrors(ArrayList<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {
 		Collections.sort(expectedErrors, new ParserErrorComparator());
@@ -324,7 +332,7 @@ public class DeeParserTest extends CommonTestUtils {
 			}
 		}
 		MetadataEntry ruleBreakTest = additionalMetadata.remove("RULE_BROKEN");
-		if(additionalMetadata.remove("IGNORE_BREAK_TEST") == null) {
+		if(additionalMetadata.remove("IGNORE_BREAK_FLAG_CHECK") == null) {
 			assertTrue(result.ruleBroken == (ruleBreakTest != null));
 		}
 		

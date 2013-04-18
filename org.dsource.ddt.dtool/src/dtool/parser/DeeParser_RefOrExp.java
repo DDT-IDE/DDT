@@ -25,6 +25,8 @@ import dtool.ast.ASTDirectChildrenVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTSemantics;
 import dtool.ast.SourceRange;
+import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
+import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpCall;
@@ -32,10 +34,12 @@ import dtool.ast.expressions.ExpCast;
 import dtool.ast.expressions.ExpCastQual;
 import dtool.ast.expressions.ExpCastQual.CastQualifiers;
 import dtool.ast.expressions.ExpConditional;
+import dtool.ast.expressions.ExpFunctionLiteral;
 import dtool.ast.expressions.ExpImportString;
 import dtool.ast.expressions.ExpIndex;
 import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
+import dtool.ast.expressions.ExpLambda;
 import dtool.ast.expressions.ExpLiteralArray;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
@@ -53,6 +57,7 @@ import dtool.ast.expressions.ExpPostfixOperator.PostfixOpType;
 import dtool.ast.expressions.ExpPrefix;
 import dtool.ast.expressions.ExpPrefix.PrefixOpType;
 import dtool.ast.expressions.ExpReference;
+import dtool.ast.expressions.ExpSimpleLambda;
 import dtool.ast.expressions.ExpSlice;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
@@ -76,7 +81,9 @@ import dtool.ast.references.RefTypeModifier.TypeModifierKinds;
 import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
+import dtool.ast.statements.IFunctionBody;
 import dtool.parser.ParserError.ParserErrorTypes;
+import dtool.util.ArrayView;
 
 
 public abstract class DeeParser_RefOrExp extends AbstractParser {
@@ -329,6 +336,15 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	
 	public Expression parseAssignExpression_toMissing() {
 		return nullExpToMissing(parseAssignExpression().node);
+	}
+	
+	public NodeResult<Expression> parseAssignExpression_Rule(boolean breakOnMissing, boolean createMissingNode) {
+		NodeResult<Expression> expResult = parseAssignExpression();
+		if(expResult.node != null) {
+			return expResult;
+		}
+		return nodeResult(expResult.ruleBroken || breakOnMissing,
+			createMissingNode ? createMissingExpression(RULE_EXPRESSION, true) : expResult.node);
 	}
 	
 	public NodeResult<Resolvable> parseExpressionOrType() {
@@ -627,28 +643,19 @@ protected class ParseRule_TypeOrExp {
 		}
 		
 		switch (lookAheadGrouped()) {
-		default:
-			NodeResult<Reference> typeRefResult = parseTypeReference_do(true);
-			boolean ruleBroken = typeRefResult.ruleBroken;
-			Reference ref = typeRefResult.getNode();
-			if(ref == null) {
-				return null; // TODO: option to return missing?
-			}
-			
-			// Initialize mode
-			if(isTypeOrExpStart) { 
-				updateTypeOrExpMode(TypeOrExpStatus.TYPE_OR_EXP);
-			} else {
-				updateTypeOrExpMode(TypeOrExpStatus.EXP);
-			}
-			if(parsesAsTypeRef(ref)) {
-				if(mode.canBeType()) {
-					updateTypeOrExpMode(TypeOrExpStatus.TYPE); // Begginning of Type ref
-				} else {
-					addErrorTypeAsExpValue(ref);
-				}
-			}
-			return typeOrExpConnect(createExpReference(ref), ruleBroken);
+		//TODO test for brokenness for rest of rules
+		case KW_ASSERT:
+			return expConnect(parseAssertExpression());
+		case KW_MIXIN:
+			return expConnect(parseMixinExpression());
+		case KW_IMPORT:
+			return expConnect(parseImportExpression());
+		case KW_TYPEID:
+			return expConnect(parseTypeIdExpression());
+		case KW_NEW:
+			return expConnect(parseNewExpression());
+		case KW_CAST:
+			return expConnect(parseCastExpression());
 		case AND:
 		case INCREMENT:
 		case DECREMENT:
@@ -673,25 +680,45 @@ protected class ParseRule_TypeOrExp {
 			return typeOrExpConnect(opAheadInfo, srToPosition(prefixExpOpToken, new ExpPrefix(prefixOpType, exp)));
 		}
 		case OPEN_PARENS:
-			return expConnect(parseParenthesesExp());
+			return expConnect(matchParenthesesStart());
+			
+		case OPEN_BRACE:
+			return expConnect(matchFunctionLiteral_atFunctionBody(lookAheadElement(), null, null, null, null));
+		case KW_FUNCTION:
+		case KW_DELEGATE:
+			return expConnect(matchFunctionLiteral());
+			
 		case OPEN_BRACKET:
 			if(isTypeOrExpStart) {
 				updateTypeOrExpMode(TypeOrExpStatus.EXP);
 			}
 			return parseBracketList(null);
-			//TODO test for brokenness for rest of rules
-		case KW_ASSERT:
-			return expConnect(parseAssertExpression());
-		case KW_MIXIN:
-			return expConnect(parseMixinExpression());
-		case KW_IMPORT:
-			return expConnect(parseImportExpression());
-		case KW_TYPEID:
-			return expConnect(parseTypeIdExpression());
-		case KW_NEW:
-			return expConnect(parseNewExpression());
-		case KW_CAST:
-			return expConnect(parseCastExpression());
+		case IDENTIFIER:
+			if(lookAhead(1) == DeeTokens.LAMBDA) {
+				return expConnect(matchSimpleLambdaLiteral());
+			} // else fallthrough to TypeReference:
+		default:
+			NodeResult<Reference> typeRefResult = parseTypeReference_do(true);
+			boolean ruleBroken = typeRefResult.ruleBroken;
+			Reference ref = typeRefResult.getNode();
+			if(ref == null) {
+				return null; // TODO: option to return missing?
+			}
+			
+			// Initialize mode
+			if(isTypeOrExpStart) { 
+				updateTypeOrExpMode(TypeOrExpStatus.TYPE_OR_EXP);
+			} else {
+				updateTypeOrExpMode(TypeOrExpStatus.EXP);
+			}
+			if(parsesAsTypeRef(ref)) {
+				if(mode.canBeType()) {
+					updateTypeOrExpMode(TypeOrExpStatus.TYPE); // Begginning of Type ref
+				} else {
+					addErrorTypeAsExpValue(ref);
+				}
+			}
+			return typeOrExpConnect(createExpReference(ref), ruleBroken);
 		}
 	}
 	
@@ -1444,6 +1471,88 @@ protected class ParseRule_TypeOrExp {
 		}
 		boolean properlyTerminated = consumeExpectedToken(tokenLISTCLOSE) != null;
 		return new NodeListParseResult<Resolvable>(properlyTerminated, args);
+	}
+	
+	protected NodeResult<? extends Expression> matchParenthesesStart() {
+		assertTrue(lookAhead() == DeeTokens.OPEN_PARENS);
+		LexElement startToken = lookAheadElement();
+		
+		DeeParser_RuleParameters fnParametersRule = thisParser().isFunctionParameters();
+		
+		if(fnParametersRule.properlyTerminated) {
+			ArrayView<FunctionAttributes> fnAttributes = thisParser().parseFunctionAttributes();
+			
+			if(lookAhead() == DeeTokens.OPEN_BRACE || lookAhead() == DeeTokens.LAMBDA || fnAttributes != null) {
+				fnParametersRule.acceptDeciderResult();
+				ArrayView<IFunctionParameter> fnParams = fnParametersRule.getAsFunctionParameters();
+				
+				if(lookAhead() == DeeTokens.LAMBDA) {
+					return matchLambdaLiteral_atBody(startToken, fnParams, fnAttributes);
+				}
+				
+				return matchFunctionLiteral_atFunctionBody(startToken, null, null, fnParams, fnAttributes);
+			}
+		}
+		
+		fnParametersRule.discardDeciderResult();
+		return parseParenthesesExp();
+	}
+	
+	protected NodeResult<ExpLambda> matchLambdaLiteral_atBody(LexElement startToken,
+		ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes) 
+	{
+		consumeLookAhead(DeeTokens.LAMBDA);
+		
+		NodeResult<Expression> bodyExp = parseAssignExpression_Rule(true, true); 
+		
+		return connectResult(bodyExp.ruleBroken, srToPosition(startToken, 
+			new ExpLambda(fnParams, fnAttributes, bodyExp.node)));
+	}
+	
+	protected NodeResult<ExpSimpleLambda> matchSimpleLambdaLiteral() {
+		LexElement id = consumeLookAhead(DeeTokens.IDENTIFIER);
+		consumeLookAhead(DeeTokens.LAMBDA);
+		
+		NodeResult<Expression> bodyExp = parseAssignExpression_Rule(true, true);
+		
+		return connectResult(bodyExp.ruleBroken, srToPosition(id,
+			new ExpSimpleLambda(thisParser().defUnitNoComments(id), bodyExp.node)));
+	}
+	
+	public NodeResult<ExpFunctionLiteral> matchFunctionLiteral() {
+		assertTrue(lookAhead() == DeeTokens.KW_FUNCTION || lookAhead() == DeeTokens.KW_DELEGATE);
+		LexElement startToken = lookAheadElement();
+		consumeInput();
+		boolean isFunctionKeyword = lastLexElement().token.type == DeeTokens.KW_FUNCTION;
+		
+		Reference retType = parseTypeReference().node;
+		
+		DeeParser_RuleParameters fnParametersRule = thisParser().parseFunctionParameters();
+		ArrayView<IFunctionParameter> fnParams = fnParametersRule.getAsFunctionParameters();
+		ArrayView<FunctionAttributes> fnAttributes = null;
+		
+		parsing: {
+			if(!fnParametersRule.properlyTerminated) {
+				break parsing;
+			}
+			fnAttributes = thisParser().parseFunctionAttributes();
+			
+			return matchFunctionLiteral_atFunctionBody(startToken, isFunctionKeyword, retType, fnParams, 
+				fnAttributes);
+		}
+		
+		return connectResult(true, srToPosition(startToken, 
+			new ExpFunctionLiteral(isFunctionKeyword, retType, fnParams, fnAttributes, null)));
+	}
+	
+	protected NodeResult<ExpFunctionLiteral> matchFunctionLiteral_atFunctionBody(LexElement startToken,
+		Boolean isFunctionKeyword, Reference retType, ArrayView<IFunctionParameter> fnParams,
+		ArrayView<FunctionAttributes> fnAttributes) 
+	{
+		NodeResult<? extends IFunctionBody> fnBody = thisParser().parseBlockStatement(false, false);
+		
+		return connectResult(fnBody.ruleBroken, srToPosition(startToken, 
+			new ExpFunctionLiteral(isFunctionKeyword, retType, fnParams, fnAttributes, fnBody.node)));
 	}
 	
 	public NodeResult<ExpParentheses> parseParenthesesExp() {

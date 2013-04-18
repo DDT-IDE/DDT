@@ -31,7 +31,7 @@ import dtool.util.ArrayView;
  */
 public abstract class AbstractParser {
 	
-	protected abstract DeeParser getDeeParser();
+	protected abstract DeeParser thisParser();
 	
 	/* ---- Core functionality ---- */
 	

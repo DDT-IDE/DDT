@@ -57,9 +57,9 @@ public class DeeParser extends DeeParser_Decls {
 	
 	
 	protected final String source;
-	protected final ArrayList<ParserError> errors = new ArrayList<ParserError>();
-	protected final LexElementSource lexSource;
-	protected boolean enabled = true;
+	protected ArrayList<ParserError> errors;
+	protected LexElementSource lexSource;
+	protected boolean enabled;
 	
 	public DeeParser(String source) {
 		this(new DeeLexer(source));
@@ -67,12 +67,15 @@ public class DeeParser extends DeeParser_Decls {
 	
 	public DeeParser(DeeLexer deeLexer) {
 		this.source = deeLexer.getSource();
+		this.errors = new ArrayList<>();
 		this.lexSource = new LexElementSource(new DeeLexElementProducer().produceLexTokens(deeLexer));
+		this.enabled = true;
+		
 		this.pendingMissingTokenErrors = new ArrayList<>(4);
 	}
 	
 	@Override
-	protected final DeeParser getDeeParser() {
+	protected final DeeParser thisParser() {
 		return this;
 	}
 	

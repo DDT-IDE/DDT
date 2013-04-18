@@ -1,5 +1,9 @@
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.ArrayList;
+
 import dtool.parser.LexElement.MissingLexElement;
 
 public class AbstractParserRule extends DeeParser_Decls {
@@ -12,13 +16,13 @@ public class AbstractParserRule extends DeeParser_Decls {
 	}
 	
 	@Override
-	protected DeeParser getDeeParser() {
+	protected DeeParser thisParser() {
 		return parser;
 	}
 	
 	@Override
-	protected void submitError(ParserError error) {
-		parser.submitError(error);
+	public String getSource() {
+		return parser.getSource();
 	}
 	
 	@Override
@@ -32,11 +36,6 @@ public class AbstractParserRule extends DeeParser_Decls {
 	}
 	
 	@Override
-	public String getSource() {
-		return parser.getSource();
-	}
-	
-	@Override
 	public LexElement lookAheadElement(int laIndex) {
 		return parser.lookAheadElement(laIndex);
 	}
@@ -47,11 +46,6 @@ public class AbstractParserRule extends DeeParser_Decls {
 	}
 	
 	@Override
-	public LexElement lastLexElement() {
-		return parser.lastLexElement();
-	}
-	
-	@Override
 	public LexElement consumeInput() {
 		return parser.consumeInput();
 	}
@@ -59,6 +53,60 @@ public class AbstractParserRule extends DeeParser_Decls {
 	@Override
 	public MissingLexElement consumeSubChannelTokens() {
 		return parser.consumeSubChannelTokens();
+	}
+	
+	@Override
+	public LexElement lastLexElement() {
+		return parser.lastLexElement();
+	}
+	
+	@Override
+	protected void submitError(ParserError error) {
+		parser.submitError(error);
+	}
+	
+	public static abstract class AbstractDecidingParserRule<T> extends AbstractParserRule {
+		
+		protected ArrayList<ParserError> ruleErrors = null;
+		protected LexElementSource savedState = null;
+		
+		public AbstractDecidingParserRule(DeeParser parser) {
+			super(parser);
+		}
+		
+		public abstract T parse();
+		
+		public T parseDeciderMode() {
+			ruleErrors = new ArrayList<>();
+			savedState = parser.getEnabledLexSource().saveState();
+			return parse();
+		}
+		
+		public boolean isDeciderMode() {
+			return ruleErrors != null;
+		}
+		
+		@Override
+		protected void submitError(ParserError error) {
+			if(ruleErrors == null) {
+				super.submitError(error);
+			} else {
+				ruleErrors.add(error);
+			}
+		}
+		
+		public void acceptDeciderResult() {
+			assertNotNull(ruleErrors);
+			for (ParserError error : ruleErrors) {
+				parser.submitError(error);
+			}
+			ruleErrors = null;
+		}
+		
+		public void discardDeciderResult() {
+			parser.getEnabledLexSource().resetState(savedState);
+		}
+		
 	}
 	
 }

@@ -8,6 +8,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.IFunctionParameter;
+import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.util.ArrayView;
 
 /**
@@ -16,16 +17,19 @@ import dtool.util.ArrayView;
  */
 public class ExpLambda extends Expression {
 	
-	public final ArrayView<IFunctionParameter> params;
+	public final ArrayView<IFunctionParameter> fnParams;
+	public final ArrayView<FunctionAttributes> fnAttributes;
 	public final Expression bodyExpression;
 	
-	public ExpLambda(ArrayView<IFunctionParameter> params, Expression bodyExpression) {
-		this.params = assertNotNull_(parentizeI(params));
-		this.bodyExpression = bodyExpression;
+	public ExpLambda(ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 
+		Expression bodyExpression) {
+		this.fnParams = assertNotNull_(parentizeI(fnParams));
+		this.fnAttributes = fnAttributes;
+		this.bodyExpression = parentize(bodyExpression);
 	}
 	
 	public final ArrayView<ASTNeoNode> getParams_asNodes() {
-		return CoreUtil.blindCast(params);
+		return CoreUtil.blindCast(fnParams);
 	}
 	
 	@Override
@@ -37,7 +41,7 @@ public class ExpLambda extends Expression {
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, params);
+			TreeVisitor.acceptChildren(visitor, fnParams);
 			TreeVisitor.acceptChildren(visitor, bodyExpression);
 		}
 		visitor.endVisit(this);	 
@@ -46,8 +50,9 @@ public class ExpLambda extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
+		cp.appendList(fnAttributes, " ", true);
 		cp.append(" => ");
-		cp.appendNode(bodyExpression, ";");
+		cp.appendNode(bodyExpression);
 	}
 	
 }

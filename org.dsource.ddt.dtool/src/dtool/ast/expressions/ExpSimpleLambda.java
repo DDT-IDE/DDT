@@ -1,9 +1,9 @@
 package dtool.ast.expressions;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
+import dtool.ast.ASTSemantics;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
@@ -21,7 +21,9 @@ public class ExpSimpleLambda extends Expression {
 	public final Expression bodyExpression;
 	
 	public ExpSimpleLambda(DefUnitTuple defunitData, Expression bodyExpression) {
-		this.simpleLambdaDefUnit = parentize(assertNotNull_(new ExpSimpleLambdaDefUnit(defunitData)));
+		this.simpleLambdaDefUnit = parentize(new ExpSimpleLambdaDefUnit(defunitData));
+		this.simpleLambdaDefUnit.setData(ASTSemantics.PARSED_STATUS);
+		this.simpleLambdaDefUnit.setSourceRange(defunitData.nameSourceRange);
 		this.bodyExpression = parentize(bodyExpression);
 	}
 	
@@ -43,7 +45,7 @@ public class ExpSimpleLambda extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNode(simpleLambdaDefUnit, " => ");
-		cp.appendNode(bodyExpression); // /*BUG here*/
+		cp.appendNode(bodyExpression);
 	}
 	
 	public static class ExpSimpleLambdaDefUnit extends DefUnit {

@@ -34,16 +34,17 @@ import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
+import dtool.parser.AbstractParserRule.AbstractDecidingParserRule;
 import dtool.util.ArrayView;
 
 /** Helper class to parse function and template parameters */
-public final class DeeParser_RuleParameters extends AbstractParserRule {
+public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<DeeParser_RuleParameters> {
 	
 	protected static enum TplOrFnMode { TPL, FN, AMBIG }
 	
 	public TplOrFnMode mode;
 	public ArrayList<Object> params;
-	public boolean properlyTerminated;
+	public boolean properlyTerminated = false; // break on missing
 	
 	public DeeParser_RuleParameters(DeeParser deeParser, TplOrFnMode mode) {
 		super(deeParser);
@@ -54,7 +55,8 @@ public final class DeeParser_RuleParameters extends AbstractParserRule {
 		return mode == TplOrFnMode.AMBIG;
 	}
 	
-	protected DeeParser_RuleParameters doParse() {
+	@Override
+	public DeeParser_RuleParameters parse() {
 		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) == null)
 			return this;
 		params = new ArrayList<Object>();

@@ -45,16 +45,10 @@ DefFunction(#@TYPE_REFS__NO_BROKEN DefSymbol #@FN_PARAMS_SAMPLE #@SAMPLE_BLOCK_S
 #STRUCTURE_EXPECTED:
 DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_AFTER_PARAM )
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  1 param
-#PARSE(DECLARATION)   const(foo) func1( #FN_PARAMETER_TEST(test) #@FN_PARAM_SINGLE ) #@SAMPLE_BLOCK_ST
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  1+ param
+#PARSE(DECLARATION)   const(foo) func1( #FN_PARAMETER_TEST(test) #@FN_PARAMS ) #@SAMPLE_BLOCK_ST
 #STRUCTURE_EXPECTED:
-DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_PARAM_SINGLE #@SAMPLE_BLOCK_ST)
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 2+ params
-#PARSE(DECLARATION)   const(foo) func2( #@FN_PARAMS ) #@SAMPLE_BLOCK_ST
-#STRUCTURE_EXPECTED:
-DefFunction( RefTypeModifier(?) DefSymbol #@FN_PARAMS #@SAMPLE_BLOCK_ST )
-
+DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_PARAMS #@SAMPLE_BLOCK_ST)
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Template args
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template 0 args
@@ -98,6 +92,6 @@ DefFunction( RefTypeModifier(?) DefSymbol #@FN_PARAMS_SAMPLE #@FN_ATTRIBS_END )
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function Body
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   inout(xpto) funcBody( #@FN_PARAMS_SAMPLE ) #@FN_ATTRIB__SAMPLE #@FN_BODY
+#PARSE(DECLARATION)   inout(xpto) funcBody( #@FN_PARAMS_SAMPLE ) #@FN_ATTRIB__SAMPLE #@FNDEF_BODY
 #STRUCTURE_EXPECTED:
-DefFunction( RefTypeModifier(?) DefSymbol   #@FN_PARAMS_SAMPLE   #@FN_ATTRIB__SAMPLE #@FN_BODY )
+DefFunction( RefTypeModifier(?) DefSymbol   #@FN_PARAMS_SAMPLE   #@FN_ATTRIB__SAMPLE #@FNDEF_BODY )

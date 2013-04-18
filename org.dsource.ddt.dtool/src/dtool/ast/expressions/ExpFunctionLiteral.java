@@ -16,22 +16,22 @@ public class ExpFunctionLiteral extends Expression {
 	
 	public final Boolean isFunctionKeyword;
 	public final Reference retType;
-	public final ArrayView<IFunctionParameter> params;
+	public final ArrayView<IFunctionParameter> fnParams;
 	public final ArrayView<FunctionAttributes> fnAttributes;
 	public final IFunctionBody fnBody;
 	
 	
-	public ExpFunctionLiteral(Boolean isFunctionKeyword, Reference retType, ArrayView<IFunctionParameter> params,
+	public ExpFunctionLiteral(Boolean isFunctionKeyword, Reference retType, ArrayView<IFunctionParameter> fnParams,
 		ArrayView<FunctionAttributes> fnAttributes, IFunctionBody fnBody) {
 		this.isFunctionKeyword = isFunctionKeyword;
 		this.retType = parentize(retType);
-		this.params = parentizeI(params);
+		this.fnParams = parentizeI(fnParams);
 		this.fnAttributes = fnAttributes;
 		this.fnBody = parentizeI(fnBody);
 	}
 	
 	public final ArrayView<ASTNeoNode> getParams_asNodes() {
-		return CoreUtil.blindCast(params);
+		return CoreUtil.blindCast(fnParams);
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class ExpFunctionLiteral extends Expression {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, retType);
-			TreeVisitor.acceptChildren(visitor, params);
+			TreeVisitor.acceptChildren(visitor, fnParams);
 			TreeVisitor.acceptChildren(visitor, fnBody);
 		}
 		visitor.endVisit(this);	 
@@ -56,6 +56,7 @@ public class ExpFunctionLiteral extends Expression {
 		cp.append(isFunctionKeyword == Boolean.FALSE, "delegate ");
 		cp.appendNode(retType);
 		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
+		cp.appendList(fnAttributes, " ", true);
 		cp.appendNode(fnBody);
 	}
 	
