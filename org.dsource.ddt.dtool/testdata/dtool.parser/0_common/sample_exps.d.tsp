@@ -20,9 +20,9 @@
 #@EXP_POSTFIX《
   ►#@EXP_PRIMARY_SIMPLE●
   
-  ►#?STRUCTURE_EXPECTED!【 [123] ●ExpLiteralArray(Integer)】●
-  ►#?STRUCTURE_EXPECTED!【 [1, .456E12, 0x25_AD_3FP+1] ●ExpLiteralArray(Integer Float Float)】●
-  ►#?STRUCTURE_EXPECTED!【 [12345 : true, 66.6 : false, "asdfd" : "false"]●
+  ►#?STRUCTURE_EXPECTED!【#EXP_ARRAY_LITERAL(flag) [123] ●ExpLiteralArray(Integer)】●
+  ►#?STRUCTURE_EXPECTED!【#EXP_ARRAY_LITERAL(flag) [1, .456E12, 0x25_AD_3FP+1] ●ExpLiteralArray(Integer Float Float)】●
+  ►#?STRUCTURE_EXPECTED!【#EXP_ARRAY_LITERAL(flag) [12345 : true, 66.6 : false, "asdfd" : "false"]●
   ExpLiteralMapArray(MapEntry(Integer Bool) MapEntry(Float Bool) MapEntry(String String))】●
   
   ►#?STRUCTURE_EXPECTED!【(123 ,"asd")●ExpParentheses(ExpInfix(Integer String))】●
@@ -30,6 +30,12 @@
   ►#?STRUCTURE_EXPECTED!【assert(2 + 2 == true, "error")●ExpAssert(* String)】●
   ►#?STRUCTURE_EXPECTED!【mixin("2 + " ~ "2")●ExpMixinString(*)】●
   ►#?STRUCTURE_EXPECTED!【import("testdata/samples.txt")●ExpImportString(String)】●
+  
+  ►#?STRUCTURE_EXPECTED!【function(int a) { /*return; TODO: */ } ●ExpFunctionLiteral(* *) 】●
+  ►#?STRUCTURE_EXPECTED!【{ /*foo : 123; TODO*/ ; }●ExpFunctionLiteral(*)】●
+  ►#?STRUCTURE_EXPECTED!【(int a, ...) { /*foo : 123;*/ }●ExpFunctionLiteral(* * *)】●
+  
+  
   
   ►#?STRUCTURE_EXPECTED!【foo(1, 3)●             ExpCall(#@ExpIdentifier Integer Integer)】●
   ►#?STRUCTURE_EXPECTED!【foo[12 .. [123]]●      ExpSlice(#@ExpIdentifier Integer ExpLiteralArray(?))】●
@@ -152,7 +158,12 @@ ExpInfix(
 #@EXP_COND《#@EXP_CONDITIONAL》
 #@EXP_COND__LITE《#@EXP_CONDITIONAL__LITE》
 
-#@EXP_ASSIGN《#@EXP_CONDITIONAL●#@EXP_ASSIGN__LITE》
+Lambda expression is here because it's right side is an "open-ended" parsing of assign expression
+#@EXP_ASSIGN《
+  ►#@EXP_CONDITIONAL●
+  ►#@EXP_ASSIGN__LITE●
+  ►#?STRUCTURE_EXPECTED!【foo => foo + 2●ExpSimpleLambda(ExpSimpleLambdaDefUnit(DefSymbol) ExpInfix(* *))】●
+¤》
 #@EXP_ASSIGN__LITE《
   ►#?STRUCTURE_EXPECTED!【this = super += null●ExpInfix(ExpThis ExpInfix(ExpSuper ExpNull))】●
 ¤》

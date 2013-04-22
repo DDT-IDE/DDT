@@ -358,6 +358,8 @@ public abstract class AbstractParser {
 	
 	/* ---- Collection creation helpers ---- */
 	
+	// TODO: optimize some of this arrayView creation
+	
 	public static <T extends IASTNeoNode> ArrayView<T> arrayViewI(Collection<? extends T> list) {
 		if(list == null)
 			return null;

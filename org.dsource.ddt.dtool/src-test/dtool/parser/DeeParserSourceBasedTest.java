@@ -93,7 +93,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		public boolean evaluate(File file) {
 			if(file.getName().endsWith("_TODO")) return true;
 			if(file.getParentFile().getName().equals("0_common")) return filterHeaders;
-			if(file.getName().contains(".export.")) return filterHeaders;
+			if(file.getName().contains(".export.") || file.getName().contains(".EXPORT.")) return filterHeaders;
 			if(file.getName().endsWith(".tsp")) return !filterHeaders;
 			throw assertFail();
 		}

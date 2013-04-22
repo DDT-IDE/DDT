@@ -46,6 +46,10 @@ public class DeeParser extends DeeParser_Decls {
 			result = new DeeParserResult(parseTypeOrExpression(true), this);
 		} else if(parseRule.equalsIgnoreCase("ExpOrType") ) {
 			result = new DeeParserResult(parseExpressionOrType(), this);
+		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_INITIALIZER.name)) {
+			result = new DeeParserResult(parseInitializer(), this);
+		} else if(parseRule.equalsIgnoreCase("INIT_STRUCT")) {
+			result = new DeeParserResult(parseStructInitializer(), this);
 		} else if(parseRule.equals("DeclarationImport")) {
 			result = new DeeParserResult(parseImportDeclaration(), this);
 		} else {
@@ -142,4 +146,29 @@ public class DeeParser extends DeeParser_Decls {
 	protected void submitError(ParserError error) {
 		errors.add(error);
 	}
+	
+	public DeeParserState enterBacktrackableMode() {
+		DeeParserState parserState = new DeeParserState();
+		parserState.errors = errors;
+		parserState.lexSource = getEnabledLexSource().saveState();
+		errors = new ArrayList<>(); // reset current errors
+		return parserState;
+	}
+	
+	public void restoreOriginalState(DeeParserState savedState) {
+		this.errors = savedState.errors;
+		this.lexSource.resetState(savedState.lexSource);
+	}
+	
+	public void acceptCurrentState(DeeParserState savedState) {
+		this.errors.addAll(savedState.errors);
+	}
+	
+	public class DeeParserState {
+		
+		protected ArrayList<ParserError> errors;
+		protected LexElementSource lexSource;
+		
+	}
+	
 }

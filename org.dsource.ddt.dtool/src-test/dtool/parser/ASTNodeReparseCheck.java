@@ -18,12 +18,16 @@ import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpParentheses;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.InitializerArray.ArrayInitEntry;
 import dtool.ast.expressions.InitializerExp;
+import dtool.ast.expressions.InitializerStruct.StructInitEntry;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefQualified;
+import dtool.ast.references.Reference;
 import dtool.parser.AbstractParser.NodeResult;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
@@ -223,9 +227,16 @@ public class ASTNodeReparseCheck {
 		case INITIALIZER_EXP:
 			InitializerExp initializerExp = (InitializerExp) nodeUnderTest;
 			Resolvable initExpExp = initializerExp.exp;
-			return reparseCheck(snippedParser.parseInitializer(), initExpExp instanceof MissingExpression);
+			return reparseCheck(snippedParser.parseInitializer().node, initExpExp instanceof MissingExpression);
 		case INITIALIZER_VOID:
+		case INITIALIZER_ARRAY:
 			return reparseCheck(snippedParser.parseInitializer());
+		case INITIALIZER_STRUCT:
+			return reparseCheck(snippedParser.parseStructInitializer());
+		case STRUCT_INIT_ENTRY:
+			return reparseCheck(snippedParser.parseStructInitEntry(false));
+		case ARRAY_INIT_ENTRY:
+			return reparseCheck(snippedParser.parseArrayInitEntry(false));
 			
 		case DEFINITION_FUNCTION:
 			return reparseCheck(snippedParser.parseDeclaration());
@@ -336,19 +347,6 @@ public class ASTNodeReparseCheck {
 		return reparseCheck((ASTNeoNode) reparsedNode, nodeUnderTest.getClass(), consumesTrailingWhiteSpace);
 	}
 	
-	public boolean consumeTrailingWhiteSpace(final ASTNeoNode node) {
-		if(node instanceof DeclarationAttrib) {
-			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
-			if(declAttrib.bodySyntax == AttribBodySyntax.COLON) {
-				return true;
-			}
-		}
-		if(node instanceof MissingExpression) {
-			//return true; // TODO, require TypeOrExp parse changes
-		}
-		return false;
-	}
-	
 	public Void reparseCheck(ASTNeoNode reparsedNode, boolean consumesTrailingWhiteSpace) {
 		return reparseCheck(reparsedNode, nodeUnderTest.getClass(), consumesTrailingWhiteSpace);
 	}
@@ -372,7 +370,8 @@ public class ASTNodeReparseCheck {
 		assertEquals(new SourceRange(0, nodeSnippedSource.length()), reparsedNode.getSourceRange());
 		
 		LexElement firstLexElement = firstLexElementInSource(snippedParser.getSource());
-		assertTrue(firstLexElement.precedingSubChannelTokens == null || firstLexElement.token.type == DeeTokens.EOF);
+		assertTrue(firstLexElement.precedingSubChannelTokens == null
+			|| canBeginWithEmptySpace(nodeUnderTest));
 		
 		if(consumesAllTrailingWhiteSpace) {
 			// Check that the range contains all possible whitespace
@@ -381,6 +380,36 @@ public class ASTNodeReparseCheck {
 		
 		resetSnippedParser();
 		return VOID;
+	}
+	
+	public static boolean consumeTrailingWhiteSpace(final ASTNeoNode node) {
+		if(node instanceof DeclarationAttrib) {
+			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
+			if(declAttrib.bodySyntax == AttribBodySyntax.COLON) {
+				return true;
+			}
+		}
+		if(node instanceof MissingExpression) {
+			//return true; // TODO, require TypeOrExp parse changes
+		}
+		return false;
+	}
+	
+	public static boolean canBeginWithEmptySpace(final ASTNeoNode node) {
+		if(node instanceof RefIdentifier || node instanceof RefImportSelection) {
+			return DeeParser.isMissing((Reference) node);
+		} else if(node instanceof MissingExpression) {
+			return true;
+		} else if(node instanceof InitializerExp) {
+			return ((InitializerExp) node).exp instanceof MissingExpression;
+		} else if(node instanceof StructInitEntry) {
+			StructInitEntry initEntry = (StructInitEntry) node;
+			return canBeginWithEmptySpace(initEntry.member != null ? initEntry.member : initEntry.value);
+		} else if(node instanceof ArrayInitEntry) {
+			ArrayInitEntry initEntry = (ArrayInitEntry) node;
+			return canBeginWithEmptySpace(initEntry.index != null ? initEntry.index : initEntry.value);
+		}
+		return false;
 	}
 	
 	public static LexElement firstLexElementInSource(String source) {

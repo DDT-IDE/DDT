@@ -70,6 +70,7 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefIndexing;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
@@ -135,7 +136,8 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	}
 	
 	public static boolean isMissing(Reference ref) {
-		return (ref instanceof RefIdentifier) && ((RefIdentifier) ref).name == null;
+		return ((ref instanceof RefIdentifier) && ((RefIdentifier) ref).name == null)
+			|| ((ref instanceof RefImportSelection) && ((RefImportSelection) ref).name == null);
 	}
 	
 	protected NodeResult<Reference> parseTypeReference_do(boolean parsingExp) {
@@ -272,7 +274,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 				} else {
 					singleArg = parseSimpleLiteral();
 					if(singleArg == null) {
-						singleArg = createMissingExpression(RULE_TPL_SINGLE_ARG, true); 
+						singleArg = createMissingExpression(RULE_TPL_SINGLE_ARG); 
 					}
 				}
 			}
@@ -339,13 +341,14 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return nullExpToMissing(parseAssignExpression().node);
 	}
 	
-	public NodeResult<Expression> parseAssignExpression_Rule(boolean breakOnMissing, boolean createMissingNode) {
+	public NodeResult<Expression> parseAssignExpression_Rule(boolean breakOnMissing, 
+		ParseRuleDescription expectedRule) {
 		NodeResult<Expression> expResult = parseAssignExpression();
 		if(expResult.node != null) {
 			return expResult;
 		}
-		return nodeResult(expResult.ruleBroken || breakOnMissing,
-			createMissingNode ? createMissingExpression(RULE_EXPRESSION, true) : expResult.node);
+		Expression missingNode = expectedRule != null ? createMissingExpression(expectedRule) : null;
+		return nodeResult(expResult.ruleBroken || breakOnMissing, missingNode);
 	}
 	
 	public NodeResult<Resolvable> parseExpressionOrType() {
@@ -369,10 +372,14 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	}
 	
 	protected Expression nullExpToMissing(Expression exp) {
-		return exp != null ? exp : createMissingExpression(RULE_EXPRESSION, true);
+		return exp != null ? exp : createMissingExpression(RULE_EXPRESSION);
 	}
 	protected Resolvable nullTypeOrExpToMissing(Resolvable exp) {
-		return exp != null ? exp : createMissingExpression(RULE_TYPE_OR_EXP, true);
+		return exp != null ? exp : createMissingExpression(RULE_TYPE_OR_EXP);
+	}
+	
+	protected Expression createMissingExpression(ParseRuleDescription expectedRule) {
+		return createTypeOrExpMissingExp(TypeOrExpStatus.EXP, expectedRule, true);
 	}
 	
 	protected Expression createMissingExpression(ParseRuleDescription expectedRule, boolean consumeIgnoreTokens) {
@@ -1514,7 +1521,7 @@ protected class ParseRule_TypeOrExp {
 	{
 		consumeLookAhead(DeeTokens.LAMBDA);
 		
-		NodeResult<Expression> bodyExp = parseAssignExpression_Rule(true, true); 
+		NodeResult<Expression> bodyExp = parseAssignExpression_Rule(true, RULE_EXPRESSION); 
 		
 		return connectResult(bodyExp.ruleBroken, srToPosition(startToken, 
 			new ExpLambda(fnParams, fnAttributes, bodyExp.node)));
@@ -1524,7 +1531,7 @@ protected class ParseRule_TypeOrExp {
 		LexElement id = consumeLookAhead(DeeTokens.IDENTIFIER);
 		consumeLookAhead(DeeTokens.LAMBDA);
 		
-		NodeResult<Expression> bodyExp = parseAssignExpression_Rule(true, true);
+		NodeResult<Expression> bodyExp = parseAssignExpression_Rule(true, RULE_EXPRESSION);
 		
 		return connectResult(bodyExp.ruleBroken, srToPosition(id,
 			new ExpSimpleLambda(thisParser().defUnitNoComments(id), bodyExp.node)));

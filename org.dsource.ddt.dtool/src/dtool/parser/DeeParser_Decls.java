@@ -65,9 +65,12 @@ import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Initializer;
+import dtool.ast.expressions.InitializerArray;
+import dtool.ast.expressions.InitializerArray.ArrayInitEntry;
 import dtool.ast.expressions.InitializerExp;
+import dtool.ast.expressions.InitializerStruct;
+import dtool.ast.expressions.InitializerStruct.StructInitEntry;
 import dtool.ast.expressions.InitializerVoid;
-import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -81,8 +84,8 @@ import dtool.ast.statements.FunctionBodyOutBlock;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.InOutFunctionBody;
+import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
-import dtool.parser.LexElement.MissingLexElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
@@ -306,7 +309,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		boolean isAutoRef = ref == null;
 		
 		if(attemptConsume(DeeTokens.ASSIGN, isAutoRef)){ 
-			init = parseInitializer();
+			init = parseInitializer().node;
 		}
 		
 		while(tryConsume(DeeTokens.COMMA)) {
@@ -316,7 +319,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		boolean ruleBroken = consumeExpectedToken(DeeTokens.SEMICOLON) == null;
 		
 		if(ref == null) {
-			return connectResult(ruleBroken, srToPosition(defId.getStartPos(), 
+			return connectResult(false /*TODO*/, srToPosition(defId.getStartPos(), 
 				new DefinitionAutoVariable(defUnitNoComments(defId), init, arrayView(fragments))));
 		}
 		
@@ -329,7 +332,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		BaseLexElement fragId = consumeExpectedIdentifier();
 		if(!fragId.isMissingElement()) {
 			if(attemptConsume(DeeTokens.ASSIGN, isAutoRef)){ 
-				init = parseInitializer();
+				init = parseInitializer().node;
 			}
 		}
 		return connect(srToPosition(fragId, new DefinitionVarFragment(defUnitNoComments(fragId), init)));
@@ -337,19 +340,148 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public static final ParseRuleDescription RULE_INITIALIZER = new ParseRuleDescription("Initializer");
 	
-	public Initializer parseInitializer() {
+	public NodeResult<? extends Initializer> parseInitializer() {
 		if(tryConsume(DeeTokens.KW_VOID)) {
-			return connect(srToPosition(lastLexElement(), new InitializerVoid()));
+			return connectResult(false, srToPosition(lastLexElement(), new InitializerVoid()));
 		}
 		
-		Expression exp = parseAssignExpression().node;
-		if(exp == null) {
-			reportErrorExpectedRule(RULE_INITIALIZER);
-			// Advance parser position, mark the advanced range as missing element:
-			MissingLexElement missingLexElement = consumeSubChannelTokens();
-			exp = connect(srEffective(missingLexElement, new MissingExpression()));
+		return parseNonVoidInitializer(true);
+	}
+	
+	public NodeResult<? extends Initializer> parseNonVoidInitializer(boolean createMissing) {
+		if(lookAhead() == DeeTokens.OPEN_BRACKET) {
+			return parseArrayInitializer();
 		}
-		return connect(srBounds(exp, new InitializerExp(exp)));
+		if(lookAhead() == DeeTokens.OPEN_BRACE) {
+			DeeParserState savedParserState = thisParser().enterBacktrackableMode();
+			NodeResult<InitializerStruct> structInitResult = parseStructInitializer();
+			
+			if(!structInitResult.ruleBroken) {
+				thisParser().acceptCurrentState(savedParserState);
+				return structInitResult;
+			} else {
+				thisParser().restoreOriginalState(savedParserState);
+			}
+		}
+		
+		NodeResult<Expression> expResult = parseAssignExpression_Rule(createMissing, 
+			createMissing ? RULE_INITIALIZER : null);
+		Expression exp = expResult.node;
+		if(exp == null) {
+			return nullResult();
+		}
+		return connectResult(expResult.ruleBroken, (srBounds(exp, new InitializerExp(exp))));
+	}
+	
+	public NodeResult<InitializerArray> parseArrayInitializer() {
+		if(!tryConsume(DeeTokens.OPEN_BRACKET))
+			return nullResult();
+		int start = lastLexElement().getStartPos();
+		
+		ArrayList<ArrayInitEntry> entries = new ArrayList<>();
+		
+		boolean endingComma = false;
+		boolean broken = true;
+		
+		while(true) {
+			if(tryConsume(DeeTokens.CLOSE_BRACKET)) {
+				broken = false;
+				break;
+			}
+			
+			ArrayInitEntry initEntry = parseArrayInitEntry(lookAhead() != DeeTokens.COMMA);
+			if(initEntry != null) {
+				entries.add(initEntry);
+				endingComma = false;
+			}
+			
+			if(tryConsume(DeeTokens.COMMA)) {
+				endingComma = true;
+				continue;
+			}
+			if(lookAhead() != DeeTokens.CLOSE_BRACKET) {
+				addExpectedTokenError(DeeTokens.CLOSE_BRACKET);
+				break;
+			}
+		}
+		
+		return connectResult(broken, srToPosition(start, new InitializerArray(arrayView(entries), endingComma)));
+	}
+	
+	public NodeResult<InitializerStruct> parseStructInitializer() {
+		if(!tryConsume(DeeTokens.OPEN_BRACE))
+			return nullResult();
+		int start = lastLexElement().getStartPos();
+		
+		ArrayList<StructInitEntry> entries = new ArrayList<>();
+		
+		boolean endingComma = false;
+		boolean broken = true;
+		
+		while(true) {
+			if(tryConsume(DeeTokens.CLOSE_BRACE)) {
+				broken = false;
+				break;
+			}
+			
+			StructInitEntry initEntry = parseStructInitEntry(lookAhead() != DeeTokens.COMMA);
+			if(initEntry != null) {
+				entries.add(initEntry);
+				endingComma = false;
+			}
+			
+			if(tryConsume(DeeTokens.COMMA)) {
+				endingComma = true;
+				continue;
+			}
+			if(lookAhead() != DeeTokens.CLOSE_BRACE) {
+				addExpectedTokenError(DeeTokens.CLOSE_BRACE);
+				break;
+			}
+		}
+		
+		return connectResult(broken, srToPosition(start, new InitializerStruct(arrayView(entries), endingComma)));
+	}
+	
+	public ArrayInitEntry parseArrayInitEntry(boolean nullIfMissing) {
+		Expression index = null;
+		Initializer initializer = null;
+		
+		if(lookAhead() == DeeTokens.COLON) {
+			index = parseAssignExpression_toMissing();
+			consumeLookAhead(DeeTokens.COLON);
+			initializer = parseNonVoidInitializer(true).node;
+		} else {
+			initializer = parseNonVoidInitializer(!nullIfMissing).node;
+			
+			if(initializer == null)
+				return null;
+			
+			if(initializer instanceof InitializerExp && lookAhead() == DeeTokens.COLON) {
+				index = ((InitializerExp) initializer).exp;
+				index.detachFromParent();
+				consumeLookAhead(DeeTokens.COLON);
+				initializer = parseNonVoidInitializer(true).node;
+			}
+		}
+		
+		ASTNeoNode startNode = index != null ? index : initializer;
+		return connect(srToPosition(startNode, new ArrayInitEntry(index, initializer)));
+	}
+
+	protected StructInitEntry parseStructInitEntry(boolean nullIfMissing) {
+		RefIdentifier member = null;
+		if(lookAhead() == DeeTokens.COLON || 
+			(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.COLON)) {
+			member = parseRefIdentifier();
+			consumeLookAhead(DeeTokens.COLON);
+		}
+		Initializer init = parseNonVoidInitializer(!nullIfMissing || member != null).node;
+		if(init == null)
+			return null;
+		
+		ASTNeoNode startNode = member != null ? member : init;
+		return connect(srToPosition(startNode, new StructInitEntry(member, init)));
 	}
 	
 	public static final ParseRuleDescription RULE_BODY = new ParseRuleDescription("Body");
@@ -705,7 +837,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		BaseLexElement id = null;
 		
 		parsing: {
-			LexElementSource savedState = thisParser().getEnabledLexSource().saveState();
+			DeeParserState savedParserState = thisParser().enterBacktrackableMode();
 			
 			NodeResult<Reference> refResult = parseTypeReference();
 			ref = refResult.node;
@@ -716,9 +848,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(refResult.ruleBroken) break parsing;
 			
 			if(lookAhead() != DeeTokens.IDENTIFIER && couldHaveBeenParsedAsId(ref)) {
-				thisParser().getEnabledLexSource().resetState(savedState);
+				thisParser().restoreOriginalState(savedParserState);
 				return parseDefinitionAlias_atFragmentStart(); // Return error as if trying to parse DefinitionAlias
 			} else {
+				thisParser().acceptCurrentState(savedParserState);
 				id = consumeExpectedIdentifier();
 			}
 		}

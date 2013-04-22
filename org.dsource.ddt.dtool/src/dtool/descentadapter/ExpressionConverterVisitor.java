@@ -121,9 +121,9 @@ import dtool.ast.expressions.ExpTraits;
 import dtool.ast.expressions.ExpTypeId;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Initializer;
-import dtool.ast.expressions.InitializerArray;
+import dtool.ast.expressions.InitializerArray_Old;
 import dtool.ast.expressions.InitializerExp;
-import dtool.ast.expressions.InitializerStruct;
+import dtool.ast.expressions.InitializerStruct_Old;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
@@ -201,7 +201,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ArrayInitializer element) {
 		return endAdapt(connect(DefinitionConverter.sourceRange(element),
-			new InitializerArray(
+			new InitializerArray_Old(
 				ExpressionConverter.convertMany(element.index, convContext),
 				DescentASTConverter.convertMany(element.value, Initializer.class, convContext))
 			)
@@ -232,7 +232,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		}
 		
 		return endAdapt(connect(DefinitionConverter.sourceRange(element),
-			new InitializerStruct(
+			new InitializerStruct_Old(
 				ArrayView.create(indices),
 				DescentASTConverter.convertMany(element.value, Initializer.class, convContext))
 			)
