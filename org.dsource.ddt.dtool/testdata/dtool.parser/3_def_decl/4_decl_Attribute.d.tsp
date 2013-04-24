@@ -45,55 +45,58 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 
 #@LINKAGE_TYPE{C,C++,D,Windows,Pascal,System}
 #@EXTERN_ATTRIB《
- ►#?STRUCTURE_EXPECTED!【extern(#@LINKAGE_TYPE)● DeclarationLinkage 】●
- ►#?STRUCTURE_EXPECTED!【extern (Xpto #error(BAD_LINKAGE_ID) )● DeclarationLinkage 】●
- ►#?STRUCTURE_EXPECTED!【extern(#error(BAD_LINKAGE_ID))● DeclarationLinkage 】●
+ ►#?STRUCTURE_EXPECTED!【extern(#@LINKAGE_TYPE)● DeclarationLinkage( 】●
+ ►#?STRUCTURE_EXPECTED!【extern (Xpto #error(BAD_LINKAGE_ID) )● DeclarationLinkage( 】●
+ ►#?STRUCTURE_EXPECTED!【extern(#error(BAD_LINKAGE_ID))● DeclarationLinkage( 】●
 ¤》
 
 #@ALIGN_ATTRIB《
- ►#?STRUCTURE_EXPECTED!【align● DeclarationAlign 】●
- ►#?STRUCTURE_EXPECTED!【align(1)● DeclarationAlign 】●
- ►#?STRUCTURE_EXPECTED!【align(12)● DeclarationAlign 】●
- ►#?STRUCTURE_EXPECTED!【align(#error(EXP_INTEGER_DECIMAL)) ● DeclarationAlign 】●
+ ►#?STRUCTURE_EXPECTED!【align● DeclarationAlign( 】●
+ ►#?STRUCTURE_EXPECTED!【align(1)● DeclarationAlign( 】●
+ ►#?STRUCTURE_EXPECTED!【align(12)● DeclarationAlign( 】●
+ ►#?STRUCTURE_EXPECTED!【align(#error(EXP_INTEGER_DECIMAL)) ● DeclarationAlign( 】●
 ¤》
 
 // TODO pragma expression list !
 #@PRAGMA_ATTRIB《
- ►#?STRUCTURE_EXPECTED!【pragma(foo)● DeclarationPragma 】●
- ►#?STRUCTURE_EXPECTED!【pragma ( #error(EXP_ID) )● DeclarationPragma 】●
+ ►#?STRUCTURE_EXPECTED!【pragma(foo)● DeclarationPragma(Symbol 】●
+ ►#?STRUCTURE_EXPECTED!【pragma ( #error(EXP_ID) )● DeclarationPragma(Symbol 】●
 ¤》
 
-#@ATTRIBS《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIBS》
+#@SIMPLE_ATTRIB《
+  ►#?STRUCTURE_EXPECTED!【#@SIMPLE_ATTRIBS●#@SIMPLE_ATTRIBS (】●
+¤》
+
+#@ATTRIBS《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIB》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS int foo1;
-#STRUCTURE_EXPECTED: #@ATTRIBS ( DefinitionVariable(* *) )
+#STRUCTURE_EXPECTED: #@ATTRIBS DefinitionVariable(* *) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ :
 #@DECLS_SAMPLE
-#STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( #@DECLS_SAMPLE ))
+#STRUCTURE_EXPECTED: #@ATTRIBS NodeList2( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ : /* Zero decls */
-#STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( ))
+#STRUCTURE_EXPECTED: #@ATTRIBS NodeList2( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ { } 
-#STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( ))
+#STRUCTURE_EXPECTED: #@ATTRIBS NodeList2( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS { 
 #@DECLS_SAMPLE
 }
-#STRUCTURE_EXPECTED: #@ATTRIBS (NodeList2( #@DECLS_SAMPLE ))
+#STRUCTURE_EXPECTED: #@ATTRIBS NodeList2( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
-#STRUCTURE_EXPECTED: #@ATTRIBS ( DeclarationEmpty )
+#STRUCTURE_EXPECTED: #@ATTRIBS  DeclarationEmpty )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /*EOF case*/ #error(EXPRULE_decl)
-#STRUCTURE_EXPECTED: #@ATTRIBS ( )
+#STRUCTURE_EXPECTED: #@ATTRIBS  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS #error(SE_decl) ] int foo;
 
-#STRUCTURE_EXPECTED: 
-#@ATTRIBS (InvalidSyntaxElement)
+#STRUCTURE_EXPECTED: #@ATTRIBS InvalidSyntaxElement)
 DefinitionVariable(RefPrimitive DefSymbol)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
