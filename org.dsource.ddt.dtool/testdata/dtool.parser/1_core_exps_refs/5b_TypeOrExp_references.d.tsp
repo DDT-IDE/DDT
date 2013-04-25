@@ -1,5 +1,5 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test possible refs under TypeOrExp parse
-#PARSE(TypeOrExp)     #@CAN_BE_REF《#@TYPEREFS_AMBIG●#@TYPEREFS_UNAMBIG》
+#PARSE(TypeOrExp)     #@CAN_BE_REF《#@TYPEREFS_AMBIG●#@TYPEREFS_UNAMBIG》 #?TYPE_IS_BROKEN{#@BREAK}
 #STRUCTURE_EXPECTED:  #@CAN_BE_REF
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  special cases
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -109,7 +109,7 @@
   ►#?STRUCTURE_EXPECTED!【#@TYPEREFS_AMBIG [] ^^ 123 ● * 】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test ROE to expression, decided in middle or end
-#PARSE(EXPRESSION_ToE) #@AMBIG_TO_EXP #@IGNORE_BREAK
+#PARSE(EXPRESSION_ToE) #@AMBIG_TO_EXP #?TYPE_IS_BROKEN{#:DISCARD_CASE} #@IGNORE_BREAK
 #STRUCTURE_EXPECTED:   #@AMBIG_TO_EXP
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂

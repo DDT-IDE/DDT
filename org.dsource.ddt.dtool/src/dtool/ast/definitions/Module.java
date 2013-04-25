@@ -11,7 +11,6 @@ import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.ASTSemantics;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
@@ -34,8 +33,8 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		
 		protected Module module;
 		
-		public ModuleDefSymbol(String id, SourceRange sourceRange) {
-			super(id, sourceRange);
+		public ModuleDefSymbol(String id) {
+			super(id);
 		}
 		
 		@Override
@@ -53,8 +52,9 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		public DeclarationModule(ArrayView<Token> packageList, BaseLexElement moduleDefUnit) {
 			this.packageList = assertNotNull_(packageList);
 			this.packages = NodeUtil.tokenArrayToStringArray(packageList);
-			this.moduleName = new ModuleDefSymbol(moduleDefUnit.getSourceValue(), moduleDefUnit.getSourceRange());
-			this.moduleName.setData(ASTSemantics.PARSED_STATUS);
+			this.moduleName = new ModuleDefSymbol(moduleDefUnit.getSourceValue());
+			this.moduleName.setSourceRange(moduleDefUnit.getSourceRange());
+			this.moduleName.setParsedStatus();
 			parentize(moduleName);
 		}
 		
@@ -96,7 +96,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	
 	public static Module createModuleNoModuleDecl(SourceRange sourceRange, String moduleName,
 		ArrayView<ASTNeoNode> members) {
-		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName, null);
+		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
 		return new Module(defSymbol, null, null, members, sourceRange);
 	}
 	

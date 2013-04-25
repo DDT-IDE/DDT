@@ -32,7 +32,7 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 		boolean children = visitor.visit(this);
 		if(children) {
 			// TODO, consider whether these should be structural or not
-//			TreeVisitor.acceptChildren(visitor, pragmaId);
+			TreeVisitor.acceptChildren(visitor, pragmaId);
 //			TreeVisitor.acceptChildren(visitor, expressions);
 			TreeVisitor.acceptChildren(visitor, body);
 		}

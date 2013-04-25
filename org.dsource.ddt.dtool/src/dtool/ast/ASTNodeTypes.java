@@ -6,7 +6,6 @@ public enum ASTNodeTypes {
 	OTHER,
 	
 	SYMBOL,
-	DEF_UNIT,
 	
 	MODULE,
 	DECL_MODULE,

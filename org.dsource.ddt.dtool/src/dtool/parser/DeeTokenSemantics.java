@@ -1,18 +1,20 @@
 package dtool.parser;
 
+import java.util.List;
+
 import dtool.ast.declarations.DeclarationProtection.Protection;
 import dtool.parser.ParserError.ParserErrorTypes;
 
 public class DeeTokenSemantics {
 	
-	public static void checkTokenErrors(Token token, AbstractParser parser) {
+	public static void checkTokenErrors(Token token, List<ParserError> lexerErrors) {
 		if(token.type == DeeTokens.INVALID_TOKEN) {
-			parser.addError(ParserErrorTypes.INVALID_TOKEN_CHARACTERS, token, null);
+			lexerErrors.add(createError(ParserErrorTypes.INVALID_TOKEN_CHARACTERS, token, null));
 			return;
 		}
 		
 		if(token.getError() != null) {
-			parser.addError(ParserErrorTypes.MALFORMED_TOKEN, token, token.getError());
+			lexerErrors.add(createError(ParserErrorTypes.MALFORMED_TOKEN, token, token.getError()));
 			return;
 		}
 		
@@ -20,13 +22,17 @@ public class DeeTokenSemantics {
 		switch (token.type) {
 		case CHARACTER:
 			if(token.source.length() > 3) {
-				parser.addError(ParserErrorTypes.MALFORMED_TOKEN, token, 
-					LexerErrorTypes.CHAR_LITERAL_SIZE_GREATER_THAN_ONE);
+				lexerErrors.add(createError(ParserErrorTypes.MALFORMED_TOKEN, token, 
+					LexerErrorTypes.CHAR_LITERAL_SIZE_GREATER_THAN_ONE));
 			}
 			break;
 		default:
 			break;
 		}
+	}
+	
+	public static ParserError createError(ParserErrorTypes errorType, Token token, Object msgData) {
+		return new ParserError(errorType, token.getSourceRange(), token.getSourceValue(), msgData);
 	}
 	
 	public static Protection getProtectionFromToken(DeeTokens token) {

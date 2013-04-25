@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.CStyleVarArgsParameter;
-import dtool.ast.definitions.DefUnit.DefUnitTuple;
+import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.IFunctionParameter.FunctionParamAttribKinds;
@@ -43,7 +43,6 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 	
 	public TplOrFnMode mode;
 	public ArrayList<Object> params;
-	public boolean properlyTerminated = false; // break on missing
 	
 	public DeeParser_RuleParameters(DeeParser deeParser, TplOrFnMode mode) {
 		super(deeParser);
@@ -55,8 +54,8 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 	}
 	
 	@Override
-	public DeeParser_RuleParameters parse() {
-		if(consumeExpectedToken(DeeTokens.OPEN_PARENS) == null)
+	public DeeParser_RuleParameters parse(ParseHelper parse) {
+		if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false)
 			return this;
 		params = new ArrayList<Object>();
 		
@@ -75,7 +74,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 			}
 			break;
 		}
-		properlyTerminated = consumeExpectedToken(DeeTokens.CLOSE_PARENS) != null;
+		parse.consumeRequired(DeeTokens.CLOSE_PARENS);
 		return this;
 	}
 	
@@ -83,11 +82,11 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 		return parseParameter(false);
 	}
 	public Object parseParameter(boolean returnNullOnMissing) {
-		int nodeStart = lookAheadElement().getStartPos();
+		ParseHelper parse = new ParseHelper(lookAheadElement());
 		
 		if(mode != TplOrFnMode.TPL && tryConsume(DeeTokens.TRIPLE_DOT)) {
 			setMode(TplOrFnMode.FN);
-			return connect(sr(lastLexElement(), new CStyleVarArgsParameter()));
+			return parse.conclude(new CStyleVarArgsParameter());
 		}
 		
 		if(mode != TplOrFnMode.FN && lookAhead() == DeeTokens.KW_ALIAS) {
@@ -97,8 +96,8 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 		
 		if(mode != TplOrFnMode.FN && tryConsume(DeeTokens.KW_THIS)) {
 			setMode(TplOrFnMode.TPL);
-			BaseLexElement id = consumeExpectedIdentifier();
-			return connect(srToPosition(nodeStart, new TemplateThisParam(defUnitTuple(id, null))));
+			ProtoDefSymbol defId = parseDefId();
+			return parse.conclude(new TemplateThisParam(defId));
 		}
 		
 		ArrayList<FunctionParamAttribKinds> attribs = null;
@@ -115,7 +114,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 			}
 		}
 		
-		return new AmbiguousParameter().parseAmbiguousParam(returnNullOnMissing, nodeStart, attribs);
+		return new AmbiguousParameter().parseAmbiguousParam(returnNullOnMissing, parse.nodeStart, attribs);
 	}
 	
 	protected class AmbiguousParameter {
@@ -123,7 +122,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 		ArrayList<FunctionParamAttribKinds> attribs;
 		
 		Reference ref;
-		BaseLexElement id = null;
+		ProtoDefSymbol defId = null;
 		Reference typeSpecialization = null;
 		Expression valueSpecialization = null;
 		TypeOrExpResult paramDefault = new TypeOrExpResult(null, null);
@@ -154,20 +153,21 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 					break parsing;
 				}
 				
-				id = consumeElementIf(DeeTokens.IDENTIFIER);
-				if(id == null) {
+				if(lookAhead() == DeeTokens.IDENTIFIER) {
+					defId = parseDefId(); 
+				} else {
 					if(!couldHaveBeenParsedAsId(ref)) {
 						if(mode != TplOrFnMode.TPL) {
 							setMode(TplOrFnMode.FN); // Can only be NamelessParam
 						} else {
-							id = consumeExpectedToken(DeeTokens.IDENTIFIER, true);
+							defId = parseDefId(); // will create a missing defId;
 						}
 					}
 				}
 				
-				if((id == null) || (id != null && mode != TplOrFnMode.TPL) ) {
+				if((defId == null) || (defId != null && mode != TplOrFnMode.TPL) ) {
 					if(tryConsume(DeeTokens.TRIPLE_DOT)) {
-						if(id != null) {
+						if(defId != null) {
 							setMode(TplOrFnMode.FN); //FunctionParameter
 						}
 						isVariadic = true;
@@ -177,7 +177,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 				
 				if(mode != TplOrFnMode.FN && tryConsume(DeeTokens.COLON)) {
 					setMode(TplOrFnMode.TPL); // TemplateTypeParam or TemplateValueParam
-					if(id == null) { 
+					if(defId == null) { 
 						typeSpecialization = parseTypeReference_ToMissing().node;
 					} else {
 						valueSpecialization = parseExpression_toMissing(InfixOpType.CONDITIONAL);
@@ -187,7 +187,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 					if(mode == TplOrFnMode.FN) {
 						paramDefault = new TypeOrExpResult(TypeOrExpStatus.EXP, parseAssignExpression_toMissing());
 					} else if(mode == TplOrFnMode.TPL) {
-						if(id == null) {
+						if(defId == null) {
 							paramDefault = new TypeOrExpResult(TypeOrExpStatus.TYPE, 
 								wrapReferenceForTypeOrExpParse(parseTypeReference_ToMissing().node));
 						} else {
@@ -199,14 +199,14 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 						if(paramDefault.isNull()) {
 							TypeOrExpStatus toeMode = TypeOrExpStatus.TYPE_OR_EXP;
 							paramDefault = new TypeOrExpResult(toeMode, createTypeOrExpMissingExp(toeMode, true));
-						} else if(paramDefault.mode == TypeOrExpStatus.EXP && id == null) {
+						} else if(paramDefault.mode == TypeOrExpStatus.EXP && defId == null) {
 							setMode(TplOrFnMode.FN); //NamelessParameter
 						}
 					}
 				}
 			}
 			
-			assertTrue(id == null ? valueSpecialization == null : typeSpecialization == null);
+			assertTrue(defId == null ? valueSpecialization == null : typeSpecialization == null);
 			
 			sr = SourceRange.srStartToEnd(nodeStart, getLexPosition());
 			switch (mode) { default: throw assertUnreachable();
@@ -217,28 +217,24 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 		}
 		
 		public IFunctionParameter convertToFunction() {
-			if(id == null) {
-				return connect(sr, 
+			if(defId == null) {
+				return conclude(sr,
 					new NamelessParameter(arrayViewG(attribs), ref, paramDefault.toExpression().node, isVariadic));
-			} else {
-				return connect(sr,
-					new FunctionParameter(arrayViewG(attribs), ref, defUnitNoComments(id), 
-						paramDefault.toExpression().node, isVariadic));
 			}
+			return conclude(sr,
+				new FunctionParameter(arrayViewG(attribs), ref, defId, paramDefault.toExpression().node, isVariadic));
 		}
 		
 		public TemplateParameter convertToTemplate() {
-			if(id == null && couldHaveBeenParsedAsId(ref)) {
-				return connect(sr, isVariadic ?  
-					new TemplateTupleParam(convertRefIdToDef(ref)) :
-					new TemplateTypeParam(convertRefIdToDef(ref), typeSpecialization, 
-						paramDefault.toReference().node));
+			if(defId == null && couldHaveBeenParsedAsId(ref)) {
+				defId = convertRefIdToDef(ref);
+				return conclude(sr, isVariadic ?  
+					new TemplateTupleParam(defId) :
+					new TemplateTypeParam(defId, typeSpecialization, paramDefault.toReference().node));
 			} else {
-				DefUnitTuple defUnitNoComments = id != null ? defUnitNoComments(id) 
-					: new DefUnitTuple(null, "", srAt(ref.getEndPos()), null);
-				return connect(sr,
-					new TemplateValueParam(defUnitNoComments, ref, valueSpecialization,
-						paramDefault.toExpression().node));
+				defId = defId != null ? defId : new ProtoDefSymbol("", srAt(ref.getEndPos()), null);
+				return conclude(sr, 
+					new TemplateValueParam(defId, ref, valueSpecialization, paramDefault.toExpression().node));
 			}
 		}
 		

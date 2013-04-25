@@ -162,7 +162,7 @@ Lambda expression is here because it's right side is an "open-ended" parsing of 
 #@EXP_ASSIGN《
   ►#@EXP_CONDITIONAL●
   ►#@EXP_ASSIGN__LITE●
-  ►#?STRUCTURE_EXPECTED!【foo => foo + 2●ExpSimpleLambda(ExpSimpleLambdaDefUnit(DefSymbol) ExpInfix(* *))】●
+  ►#?STRUCTURE_EXPECTED!【foo => foo + 2●ExpSimpleLambda(SimpleLambdaDefUnit(DefSymbol) ExpInfix(* *))】●
 ¤》
 #@EXP_ASSIGN__LITE《
   ►#?STRUCTURE_EXPECTED!【this = super += null●ExpInfix(ExpThis ExpInfix(ExpSuper ExpNull))】●

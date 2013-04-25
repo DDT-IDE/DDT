@@ -21,8 +21,8 @@ public abstract class Definition extends DefUnit {
 		this.defAttributesBitMask = 0;
 	}
 	
-	public Definition(DefUnitTuple defunit) {
-		super(defunit);
+	public Definition(ProtoDefSymbol defId) {
+		super(defId);
 		this.defAttributesBitMask = 0;
 	}
 	

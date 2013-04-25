@@ -49,7 +49,7 @@ RefTemplateInstance(
 =====> #@TYPEREFS_AMBIG《
   ►#@TYPE_REFS__QUALIFIER_ANY●
   ►#@TYPE_REFS__TPL_SINGLE_ARG●
-  ►#@TYPEREFS_AMBIG__BASE●
+  ►#@_TYPEREFS_AMBIG__BASE●
   
   ►#?STRUCTURE_EXPECTED!【dai* #INFIX(flag)● RefTypePointer(RefIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【dai *[]●RefTypeDynArray(RefTypePointer(RefIdentifier))】●
@@ -61,11 +61,15 @@ RefTemplateInstance(
   ►#?STRUCTURE_EXPECTED!【dai*** #INFIX(flag)●RefTypePointer(RefTypePointer(RefTypePointer(?)))】●
 ¤》
 
-#@TYPEREFS_AMBIG__CUSTOM_PREFIX《
-  ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[]● RefTypeDynArray(#@PREFIX_S) 】●
+#@_TYPEREFS_AMBIG__CUSTOM_PREFIX《
+  ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[ ]● RefTypeDynArray(#@PREFIX_S) 】●
+   ►#?TYPE__NO_PENDING【#:DISCARD_CASE●
+  ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[#error(EXP_CLOSE_BRACKET)● RefTypeDynArray(#@PREFIX_S) 】】#TYPE_IS_BROKEN(flag)●
   
   ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[7 /*EXP*/]● RefIndexing(#@PREFIX_S Integer) 】●
-  ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[foo /*AMBIG*/]● RefIndexing(#@PREFIX_S RefIdentifier)】●
+  ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[foo /*AMBIG*/ ]● RefIndexing(#@PREFIX_S RefIdentifier)】●
+   ►#?TYPE__NO_PENDING【#:DISCARD_CASE●
+  ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[foo#error(EXP_CLOSE_BRACKET)● RefIndexing(#@PREFIX_S RefIdentifier)】】#TYPE_IS_BROKEN(flag)●
   ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[foo /*AMBIG*/][]● RefTypeDynArray(RefIndexing(#@PREFIX_S RefIdentifier))】●
   ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[foo*[]/*AMBIG*/]● RefIndexing(#@PREFIX_S 
     RefTypeDynArray(RefTypePointer(RefIdentifier))) 】●
@@ -75,38 +79,40 @@ RefTemplateInstance(
   ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[foo*[2 : #@NO_EXP]/*EXP*/]●RefIndexing(#@PREFIX_S ExpInfix(* *))】●
   ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[foo[bar]/*AMBIG*/]●RefIndexing(#@PREFIX_S RefIndexing(* *))】●
 ¤》
-#@TYPEREFS_AMBIG__BASE《#@PREFIX_S!《#@_PREFIX_S_ALL》#@TYPEREFS_AMBIG__CUSTOM_PREFIX》
-#@TYPEREFS_AMBIG__INVALID_QUALIFIER《#@DEFINE_PREFIX_S_UNARY#@TYPEREFS_AMBIG__CUSTOM_PREFIX》
+#@_TYPEREFS_AMBIG__BASE《#@PREFIX_S!《#@_PREFIX_S_ALL》#@_TYPEREFS_AMBIG__CUSTOM_PREFIX》
+#@TYPEREFS_AMBIG__INVALID_QUALIFIER《#TYPE__NO_PENDING(flag)#@DEFINE_PREFIX_S_UNARY#@_TYPEREFS_AMBIG__CUSTOM_PREFIX》
 
 
 // These references unambiguously parse as ref
 =====> #@TYPEREFS_UNAMBIG《
   ►#@TYPE_REFS__QUALIFIER_DOT_ONLY●
   
-  ►#@TYPEREFS_UNAMBIG__BASE●
+  ►#@_TYPEREFS_UNAMBIG__BASE●
   ►#?STRUCTURE_EXPECTED!【int *[]●RefTypeDynArray(RefTypePointer(RefPrimitive))】●
   ►#?STRUCTURE_EXPECTED!【int *[foo]●RefIndexing(RefTypePointer(RefPrimitive) RefIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【int * *[foo]●RefIndexing(RefTypePointer(RefTypePointer(RefPrimitive)) RefIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【int *[foo][bar]●RefIndexing(RefIndexing(RefTypePointer(RefPrimitive) ?) RefIdentifier)】●
 
-   ►#?TYPE__NO_PENDING_MISSING【#:DISCARD_CASE●
+   ►#?TYPE__NO_PENDING【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int *●RefTypePointer(RefPrimitive)】】●
-   ►#?TYPE__NO_PENDING_MISSING【#:DISCARD_CASE●
+   ►#?TYPE__NO_PENDING【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int * *●RefTypePointer(RefTypePointer(RefPrimitive))】】●
-   ►#?TYPE__NO_PENDING_MISSING【#:DISCARD_CASE●
+   ►#?TYPE__NO_PENDING【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int * **●RefTypePointer(RefTypePointer(RefTypePointer(RefPrimitive)))】】●
 
   ►#?STRUCTURE_EXPECTED!【int function(inout int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
 ¤》
-#@TYPEREFS_UNAMBIG__NO_PENDING《#TYPE__NO_PENDING_MISSING(flag)#@TYPEREFS_UNAMBIG》
+#@TYPEREFS_UNAMBIG__NO_PENDING《#TYPE__NO_PENDING(flag)#@TYPEREFS_UNAMBIG》
 
-#@TYPEREFS_UNAMBIG__CUSTOM_PREFIX《
+#@_TYPEREFS_UNAMBIG__CUSTOM_PREFIX《
   ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[foo*/+AMBIG_TO_REF+/]● RefIndexing(#@PREFIX_S RefTypePointer(RefIdentifier))】●
-  ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[int /+REF+/]● RefIndexing(#@PREFIX_S RefPrimitive)】●
+  ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[int /+REF+/ ]● RefIndexing(#@PREFIX_S RefPrimitive)】●
   ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[foo*[int]/+REF+/]●RefIndexing(#@PREFIX_S RefIndexing(* *))】●
+   ►#?TYPE__NO_PENDING【#:DISCARD_CASE●
+  ►#?STRUCTURE_EXPECTED!【#@PREFIX_S[foo*[int]#error(EXP_CLOSE_BRACKET)●RefIndexing(#@PREFIX_S RefIndexing(* *))】】#TYPE_IS_BROKEN(flag)●
 ¤》
-#@TYPEREFS_UNAMBIG__BASE《#@PREFIX_S!《#@_PREFIX_S_ALL》#@TYPEREFS_UNAMBIG__CUSTOM_PREFIX》
-#@TYPEREFS_UNAMBIG__INVALID_QUALIFIER《#@DEFINE_PREFIX_S_UNARY#@TYPEREFS_UNAMBIG__CUSTOM_PREFIX》
+#@_TYPEREFS_UNAMBIG__BASE《#@PREFIX_S!《#@_PREFIX_S_ALL》#@_TYPEREFS_UNAMBIG__CUSTOM_PREFIX》
+#@TYPEREFS_UNAMBIG__INVALID_QUALIFIER《#TYPE__NO_PENDING(flag)#@DEFINE_PREFIX_S_UNARY#@_TYPEREFS_UNAMBIG__CUSTOM_PREFIX》
 
 //---------------------------------------------------------
 // These refs cannot be used in type refs as qualifiers by neither qualified or template instance refs

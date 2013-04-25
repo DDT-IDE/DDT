@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
-import dtool.parser.AbstractParser.NodeListParseResult;
+import dtool.parser.AbstractParser.ParseHelper;
 import dtool.tests.CommonTestUtils;
 
 
@@ -23,14 +23,16 @@ public class DeeParserAdditionalTests extends CommonTestUtils {
 	@Test
 	public void testArgList() throws Exception { testArgList$(); }
 	public void testArgList$() throws Exception {
-		assertTrue(parseArgumentList("(").ruleBroken == true);
+		assertTrue(parseArgumentList("(").ruleBroken);
 		assertTrue(parseArgumentList("()").ruleBroken == false);
 	}
 	
-	public NodeListParseResult<?> parseArgumentList(String source) {
+	public ParseHelper parseArgumentList(String source) {
 		DeeParser parser = new DeeParser(source);
 		parser.consumeLookAhead(DeeTokens.OPEN_PARENS);
-		return parser.parseExpArgumentList(DeeTokens.CLOSE_PARENS);
+		ParseHelper parse = parser.new ParseHelper();
+		parser.parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
+		return parse;
 	}
 	
 }

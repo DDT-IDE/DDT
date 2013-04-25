@@ -15,8 +15,8 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	
 	public final RefImportSelection target;
 	
-	public ImportSelectiveAlias(DefUnitTuple dudt, RefImportSelection impSelection) {
-		super(dudt);
+	public ImportSelectiveAlias(ProtoDefSymbol defId, RefImportSelection impSelection) {
+		super(defId);
 		this.target = parentize(impSelection);
 	}
 	

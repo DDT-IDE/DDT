@@ -29,15 +29,15 @@ public class DefinitionVariable extends Definition implements IStatement {
 	public final Initializer init;
 	public final ArrayView<DefinitionVarFragment> fragments;
 	
-	public DefinitionVariable(DefUnitTuple dudt, Reference type, Initializer init,
+	public DefinitionVariable(ProtoDefSymbol defId, Reference type, Initializer init,
 		ArrayView<DefinitionVarFragment> fragments) {
-		this(dudt, assertNotNull_(type), init, fragments, false);
+		this(defId, assertNotNull_(type), init, fragments, false);
 	}
 	
-	protected DefinitionVariable(DefUnitTuple dudt, Reference type, Initializer init,
+	protected DefinitionVariable(ProtoDefSymbol defId, Reference type, Initializer init,
 		ArrayView<DefinitionVarFragment> fragments, @SuppressWarnings("unused") boolean dummy)
 	{
-		super(dudt);
+		super(defId);
 		this.type = parentize(type);
 		this.init = parentize(init);
 		this.fragments = fragments != null ? parentize(fragments) : NO_FRAGMENTS;
@@ -51,9 +51,9 @@ public class DefinitionVariable extends Definition implements IStatement {
 	// TODO refactor this into own class?
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
-		public DefinitionAutoVariable(DefUnitTuple dudt, Initializer init, 
+		public DefinitionAutoVariable(ProtoDefSymbol defId, Initializer init, 
 			ArrayView<DefinitionVarFragment> fragments) {
-			super(dudt, null, init, fragments, false);
+			super(defId, null, init, fragments, false);
 		}
 		
 		@Override

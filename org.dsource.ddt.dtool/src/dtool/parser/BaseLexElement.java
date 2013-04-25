@@ -50,6 +50,8 @@ public abstract class BaseLexElement {
 		return getStartPos();
 	}
 	
+	public abstract ParserError getError();
+	
 	@Override
 	public String toString() {
 		return precedingSubChannelTokens != null ? "【"+collToString(precedingSubChannelTokens, "●")+"】" : "";

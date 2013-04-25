@@ -38,10 +38,10 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	public final Expression tplConstraint;
 	public final IFunctionBody fnBody;
 	
-	public DefinitionFunction(DefUnitTuple defunitData, ArrayView<TemplateParameter> tplParams, Reference retType,
+	public DefinitionFunction(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams, Reference retType,
 			ArrayView<IFunctionParameter> params, ArrayView<FunctionAttributes> fnAttributes, 
 			Expression tplConstraint, IFunctionBody fnBody) {
-		super(defunitData);
+		super(defId);
 		assertNotNull(retType);
 		
 		this.retType = parentize(retType);

@@ -41,7 +41,6 @@ public class ParserError {
 	protected final SourceRange sourceRange;
 	protected final String msgErrorSource;
 	protected final Object msgData;
-	public ASTNeoNode originNode;
 	
 	public ParserError(ParserErrorTypes errorType, SourceRange sourceRange, String msgErrorSource, Object msgData) {
 		this.errorType = assertNotNull_(errorType);

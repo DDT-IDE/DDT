@@ -18,8 +18,8 @@ public class DefinitionVarFragment extends DefUnit {
 	
 	public final Initializer init;
 	
-	public DefinitionVarFragment(DefUnitTuple dudt, Initializer init) {
-		super(dudt);
+	public DefinitionVarFragment(ProtoDefSymbol defId, Initializer init) {
+		super(defId);
 		this.init = parentize(init);
 	}
 	

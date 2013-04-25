@@ -9,8 +9,8 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class TemplateTupleParam extends TemplateParameter {
 	
-	public TemplateTupleParam(DefUnitTuple dudt) {
-		super(dudt);
+	public TemplateTupleParam(ProtoDefSymbol defId) {
+		super(defId);
 	}
 	
 	@Override

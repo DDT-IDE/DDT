@@ -32,9 +32,9 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	
 	public final boolean wrapper;
 	
-	public DefinitionTemplate(boolean isMixin, DefUnitTuple dudt, ArrayView<TemplateParameter> tplParams, 
+	public DefinitionTemplate(boolean isMixin, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams, 
 		Expression tplConstraint, NodeList2 decls) {
-		super(dudt);
+		super(defId);
 		this.isMixin = isMixin;
 		this.tplParams = parentize(tplParams);
 		this.tplConstraint = parentize(tplConstraint);

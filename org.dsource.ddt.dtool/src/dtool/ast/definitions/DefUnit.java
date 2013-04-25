@@ -3,10 +3,10 @@ package dtool.ast.definitions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.ASTSemantics;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.parser.LexElement;
+import dtool.parser.ParserError;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
@@ -15,17 +15,41 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  */
 public abstract class DefUnit extends ASTNeoNode {
 	
-	public static final class DefUnitTuple {
-		public SourceRange sourceRange;
-		public String name;
-		public SourceRange nameSourceRange;
-		public Comment[] comments;
+	public static class ProtoDefSymbol {
+		public final String name;
+		public final SourceRange nameSourceRange;
+		public final ParserError error;
+		
+		public ProtoDefSymbol(String name, SourceRange nameSourceRange, ParserError error) {
+			this.name = name;
+			this.nameSourceRange = nameSourceRange;
+			this.error = error;
+		}
+
+		public boolean isMissing() {
+			return error != null;
+		}
+		
+		public int getStartPos() {
+			return nameSourceRange.getStartPos();
+		}
+	}
+	
+	@Deprecated
+	public static final class DefUnitTuple extends ProtoDefSymbol {
+		public final SourceRange sourceRange;
+		public final Comment[] comments;
+		
+		public DefUnitTuple(Comment[] comments, String name, SourceRange nameSourceRange, ParserError error) {
+			super(name, nameSourceRange, error);
+			this.comments = comments;
+			this.sourceRange = null;
+		}
 		
 		public DefUnitTuple(Comment[] comments, String name, SourceRange nameSourceRange, 
 			@Deprecated SourceRange sourceRange) {
+			super(name, nameSourceRange, null);
 			this.comments = comments;
-			this.name = name;
-			this.nameSourceRange = nameSourceRange;
 			this.sourceRange = sourceRange;
 		}
 		
@@ -42,19 +66,29 @@ public abstract class DefUnit extends ASTNeoNode {
 	public final DefSymbol defname;
 	
 	public DefUnit(DefUnitTuple defunit) {
-		this(defunit.name, defunit.nameSourceRange, defunit.comments, defunit.sourceRange);
+		this(defunit.name, defunit.nameSourceRange, defunit.comments, defunit.sourceRange, defunit.error);
 	}
 	
-	public DefUnit(String defName, SourceRange defNameSourceRange, Comment[] comments, SourceRange sourceRange) {
+	public DefUnit(ProtoDefSymbol defId) {
+		this(defId.name, defId.nameSourceRange, null, null, defId.error);
+	}
+	
+	public DefUnit(String defName, SourceRange defNameSourceRange, Comment[] comments, SourceRange sourceRange, 
+		ParserError error) {
 		initSourceRange(sourceRange);
-		this.defname = new DefSymbol(defName, defNameSourceRange, this);
-		this.defname.setData(ASTSemantics.PARSED_STATUS);
+		this.defname = new DefSymbol(defName, this);
+		this.defname.setSourceRange(defNameSourceRange);
+		if(error == null) {
+			this.defname.setParsedStatus();
+		} else {
+			this.defname.setParsedStatusWithErrors(error);
+		}
 		this.comments = comments;
 	}
 	
 	/** Constructor for synthetic defunits. */
 	protected DefUnit(String defName) {
-		this(defName, null, null, null);
+		this(defName, null, null, null, null);
 	}
 	
 	/** Constructor for Module defunit. */

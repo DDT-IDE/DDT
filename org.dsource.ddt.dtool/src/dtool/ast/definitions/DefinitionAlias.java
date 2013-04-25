@@ -53,8 +53,8 @@ public class DefinitionAlias extends ASTNeoNode implements IStatement {
 		
 		public final Reference target;
 		
-		public DefinitionAliasFragment(DefUnitTuple defunitData, Reference target) {
-			super(defunitData);
+		public DefinitionAliasFragment(ProtoDefSymbol defId, Reference target) {
+			super(defId);
 			this.target = parentize(target);
 		}
 		

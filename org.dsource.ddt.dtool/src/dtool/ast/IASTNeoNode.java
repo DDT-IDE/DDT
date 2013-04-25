@@ -21,4 +21,6 @@ public interface IASTNeoNode extends IASTNode, IElement, IVisitable<IASTVisitor>
 	
 	public void toStringAsCode(ASTCodePrinter astCodePrinter);
 	
+	public ASTNeoNode asNode();
+	
 }

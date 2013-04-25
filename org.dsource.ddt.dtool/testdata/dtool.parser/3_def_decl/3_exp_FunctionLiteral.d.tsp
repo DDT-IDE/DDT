@@ -9,7 +9,7 @@
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ identifier => lambda syntax
 #PARSE(EXPRESSION)    foo #@LAMBDA_BODY
-#STRUCTURE_EXPECTED:  ExpSimpleLambda(ExpSimpleLambdaDefUnit(DefSymbol)  #@LAMBDA_BODY)
+#STRUCTURE_EXPECTED:  ExpSimpleLambda(SimpleLambdaDefUnit(DefSymbol)  #@LAMBDA_BODY)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@FLAG_AS_BROKEN_TEST《#test(IGNORE_BREAK_CHECK) #parser(AllowAnyErrors) #AST_SOURCE_EXPECTED(NoCheck) #IGNORE_BREAK_FLAG_CHECK(test)》
 

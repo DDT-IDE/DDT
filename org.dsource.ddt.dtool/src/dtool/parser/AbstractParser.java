@@ -12,16 +12,14 @@ package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.ast.ASTDirectChildrenVisitor;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.ASTSemantics;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
+import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.parser.LexElement.MissingLexElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
@@ -51,17 +49,6 @@ public abstract class AbstractParser {
 	
 	public abstract boolean isEnabled();
 	
-	/* ---- core error functionality ---- */
-	
-	protected ArrayList<ParserError> pendingMissingTokenErrors;
-	
-	protected abstract void submitError(ParserError error);
-	
-	protected ParserError addError(ParserError error) {
-		submitError(error);
-		return error;
-	}
-	
 	/* ---- Lookahead and consume helpers ---- */
 	
 	public final LexElement lookAheadElement() {
@@ -89,11 +76,7 @@ public abstract class AbstractParser {
 		return consumeInput();
 	}
 	
-	protected final Token consumeIf(DeeTokens tokenType) {
-		return lookAhead() == tokenType ? consumeLookAhead() : null;
-	}
-	
-	protected final LexElement consumeElementIf(DeeTokens tokenType) {
+	protected final LexElement consumeIf(DeeTokens tokenType) {
 		return lookAhead() == tokenType ? consumeInput() : null;
 	}
 	
@@ -103,14 +86,6 @@ public abstract class AbstractParser {
 			return true;
 		}
 		return false;
-	}
-	
-	protected final boolean attemptConsume(DeeTokens tokenType, boolean isExpected) {
-		boolean consumed = tryConsume(tokenType);
-		if(!consumed && isExpected) {
-			addExpectedTokenError(tokenType);
-		}
-		return consumed;
 	}
 	
 	protected final boolean tryConsume(DeeTokens tokenType, DeeTokens tokenType2) {
@@ -139,63 +114,24 @@ public abstract class AbstractParser {
 		return new ParserError(errorType, sr, errorSource, msgData);
 	}
 	
+	protected ParserError createError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
+		return createError(errorType, errorToken.getSourceRange(), msgData);
+	}
+	
 	protected ParserError createErrorOnLastToken(ParserErrorTypes parserError, Object msgData) {
 		return createError(parserError, lastLexElement().getSourceRange(), msgData);
 	}
 	
-	protected ParserError addError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
-		return addError(createError(errorType, errorToken.getSourceRange(), msgData));
+	protected ParserError createExpectedTokenError(DeeTokens expected) {
+		return createErrorOnLastToken(ParserErrorTypes.EXPECTED_TOKEN, expected);
 	}
 	
-	protected ParserError addError(ParserErrorTypes errorType, SourceRange sourceRange, Object msgData) {
-		return addError(createError(errorType, sourceRange, msgData));
+	protected ParserError createErrorExpectedRule(ParseRuleDescription expectedRule) {
+		return createErrorOnLastToken(ParserErrorTypes.EXPECTED_RULE, expectedRule.name);
 	}
 	
-	protected ParserError addExpectedTokenError(DeeTokens expected) {
-		return addErrorWithMissingtoken(ParserErrorTypes.EXPECTED_TOKEN, expected, true);
-	}
-	
-	protected ParserError addErrorWithMissingtoken(ParserErrorTypes errorType, Object msgData, boolean missingToken) {
-		ParserError error = addError(createErrorOnLastToken(errorType, msgData));
-		if(missingToken) {
-			pendingMissingTokenErrors.add(error);
-		}
-		return error;
-	}
-	
-	protected void reportErrorExpectedRule(ParseRuleDescription expectedRule) {
-		addError(createErrorOnLastToken(ParserErrorTypes.EXPECTED_RULE, expectedRule.name));
-	}
-	
-	protected void reportSyntaxError(ParseRuleDescription expectedRule) {
-		addError(createErrorOnLastToken(ParserErrorTypes.SYNTAX_ERROR, expectedRule.name));
-	}
-	
-	/* ---- Additional input consume helpers ---- */
-	
-	protected final LexElement consumeExpectedToken(DeeTokens expectedTokenType) {
-		if(lookAhead() == expectedTokenType) {
-			return consumeInput(); 
-		}
-		addExpectedTokenError(expectedTokenType);
-		return null;
-	}
-	
-	protected final BaseLexElement consumeExpectedToken(DeeTokens expectedTokenType, boolean createMissingToken) {
-		BaseLexElement result = consumeExpectedToken(expectedTokenType);
-		if(result == null && createMissingToken) {
-			return consumeSubChannelTokens();
-		}
-		return result;
-	}
-	
-	protected final BaseLexElement consumeExpectedIdentifier() {
-		return consumeExpectedToken(DeeTokens.IDENTIFIER, true);
-	}
-	
-	protected final MissingLexElement createExpectedToken(DeeTokens expectedTokenType) {
-		assertTrue(lookAhead() != expectedTokenType);
-		return consumeSubChannelTokens();
+	protected ParserError createSyntaxError(ParseRuleDescription expectedRule) {
+		return createErrorOnLastToken(ParserErrorTypes.SYNTAX_ERROR, expectedRule.name);
 	}
 	
 	/* ---- Result helpers ---- */
@@ -209,22 +145,6 @@ public abstract class AbstractParser {
 			this.ruleBroken = ruleBroken;
 		}
 		
-	}
-	
-	public static class RuleResult<T> extends CommonRuleResult {
-		public final T result;
-		
-		public RuleResult(boolean parseBroken, T result) {
-			super(parseBroken);
-			this.result = result;
-		}
-		
-	}
-	
-	public static class NodeListParseResult<T> extends RuleResult<ArrayList<T>> {
-		public NodeListParseResult(boolean properlyTerminated, ArrayList<T> argList) {
-			super(!properlyTerminated, argList);
-		}
 	}
 	
 	public static class NodeResult<T extends ASTNeoNode> extends CommonRuleResult {
@@ -256,57 +176,180 @@ public abstract class AbstractParser {
 		return new NodeResult<T>(false, null);
 	}
 	
-	protected static <T extends ASTNeoNode> NodeResult<T> nodeResult(T node) {
+	protected static <T extends ASTNeoNode> NodeResult<T> result(T node) {
 		return new NodeResult<T>(false, node);
 	}
-	protected static <T extends ASTNeoNode> NodeResult<T> nodeResult(boolean ruleBroken, T node) {
+	protected static <T extends ASTNeoNode> NodeResult<T> result(boolean ruleBroken, T node) {
 		return new NodeResult<T>(ruleBroken, node);
 	}
 	
-	protected static <T> RuleResult<T> ruleResult(boolean ruleBroken, T resultElem) {
-		return new RuleResult<T>(ruleBroken, resultElem);
+	/* ---- Additional input consume helpers ---- */
+	
+	protected final BaseLexElement consumeExpectedContentToken(DeeTokens expectedTokenType) {
+		if(lookAhead() == expectedTokenType) {
+			return consumeInput();
+		} else {
+			ParserError error = createExpectedTokenError(expectedTokenType);
+			MissingLexElement missingToken = consumeSubChannelTokens();
+			missingToken.error = error;
+			return missingToken;
+		}
 	}
 	
-	protected static <T extends ASTNeoNode> T getResult(NodeResult<T> nodeResult) {
-		return nodeResult == null ? null : nodeResult.node;
+	protected final MissingLexElement createExpectedToken(DeeTokens expectedTokenType) {
+		assertTrue(lookAhead() != expectedTokenType);
+		return consumeSubChannelTokens();
 	}
 	
 	/* ------------  Node finalization  ------------ */
 	
-	protected final <T extends ASTNeoNode> NodeResult<T> connectResult(boolean ruleBroken, T node) {
-		return nodeResult(ruleBroken, connect(node));
+	protected final <T extends ASTNeoNode> NodeResult<T> resultConclude(boolean ruleBroken, T node) {
+		return result(ruleBroken, conclude(node));
 	}
 	
-	protected <T extends ASTNeoNode> T connect(final T node) {
-		if(pendingMissingTokenErrors != null) {
-			for (ParserError parserError : pendingMissingTokenErrors) {
-				if(parserError.msgData != DeeTokens.IDENTIFIER) {
-					parserError.originNode = node;
-				}
-			}
-			pendingMissingTokenErrors.clear();
+	protected final <T extends ASTNeoNode> T conclude(SourceRange sr, T node) {
+		node.setSourceRange(sr);
+		return concludeDo(null, null, node);
+	}
+	
+	protected final <T extends ASTNeoNode> T conclude(T node) {
+		return concludeDo(null, null, node);
+	}
+	protected final <T extends ASTNeoNode> T conclude(ParserError error, final T node) {
+		return concludeDo(error, null, node);
+	}
+	protected final <T extends ASTNeoNode> T concludeDo(ParserError error1, ParserError error2, final T node) {
+		if(error1 == null) {
+			assertTrue(error2 == null);
+			node.setParsedStatus();
+		} else if(error2 == null) {
+			node.setParsedStatusWithErrors(error1);
+		} else {
+			node.setParsedStatusWithErrors(error1, error2);
+		}
+		nodeConcluded(node);
+		return node;
+	}
+	
+	@SuppressWarnings("unused")
+	protected void nodeConcluded(final ASTNeoNode node) {
+	}
+	
+	/** Temporary node parsing helper class. Designed to be used once per node about to parsed. 
+	 * Also intended to have its allocation elided by means of escape analysis optimization,
+	 * therefore (in most circumstances) instances of this class should only be assigned to local variables.
+	 */ 
+	public class ParseHelper {
+		
+		protected int nodeStart;
+		protected ParserError error1 = null;
+		protected ParserError error2 = null;
+		protected boolean ruleBroken = false;
+		
+		public ParseHelper(int nodeStart) {
+			this.nodeStart = nodeStart;
 		}
 		
-		node.setData(ASTSemantics.PARSED_STATUS);
-		node.accept(new ASTDirectChildrenVisitor() {
-			@Override
-			protected void geneticChildrenVisit(ASTNeoNode child) {
-				assertTrue(child.getParent() == node);
-				assertTrue(child.isParsedStatus());
+		public ParseHelper(LexElement token) {
+			this(token.getStartPos());
+		}
+		
+		public ParseHelper() {
+			this(lastLexElement());
+		}
+		
+		public ParseHelper(ASTNeoNode startNode) {
+			this(startNode.getStartPos());
+		}
+		
+		public void startPosition(int nodeStart) {
+			assertTrue(nodeStart == -1);
+			this.nodeStart = nodeStart;
+		}
+		
+		public <T extends ASTNeoNode> T initRange(T node) {
+			assertTrue(node.hasNoSourceRangeInfo());
+			return srToPosition(nodeStart, node);
+		}
+		
+		public final boolean consumeRequired(DeeTokens expectedTokenType) {
+			return consumeExpected(expectedTokenType, true);
+		}
+		
+		public final boolean consumeExpected(DeeTokens expectedTokenType) {
+			return consumeExpected(expectedTokenType, false);
+		}
+		
+		public final boolean consumeExpected(DeeTokens expectedTokenType, boolean breaksRule) {
+			if(lookAhead() == expectedTokenType) {
+				consumeInput();
+				return true;
 			}
-		});
-		return node;
+			store(createExpectedTokenError(expectedTokenType));
+			ruleBroken = breaksRule;
+			return false;
+		}
+		
+		public BaseLexElement consumeExpectedIdentifier() {
+			BaseLexElement token = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
+			if(token.getError() != null) {
+				store(token.getError());
+			}
+			return token;
+		}
+		
+		public ProtoDefSymbol storeResult(ProtoDefSymbol defId) {
+			ruleBroken = defId.isMissing();
+			return defId;
+		}
+		
+		public <T extends ASTNeoNode> T storeResult(NodeResult<T> nodeResult) {
+			ruleBroken = nodeResult.ruleBroken;
+			return nodeResult.node;
+		}
+		
+		protected final ParserError storeBreakError(ParserError error) {
+			ruleBroken = error != null;
+			return store(error);
+		}
+		
+		protected final ParserError store(ParserError error) {
+			assertTrue(error2 == null);
+			if(error1 == null) {
+				error1 = error;
+			} else {
+				error2 = error;
+			}
+			return error;
+		}
+		
+		public <T extends ASTNeoNode> T conclude(T node) {
+			initRange(node);
+			nodeStart = -1;
+			return concludeDo(error1, error2, node);
+		}
+		
+		public final <T extends ASTNeoNode> NodeResult<T> resultConclude(T node) {
+			return result(ruleBroken, conclude(node));
+		}
+
 	}
 	
-	protected <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {
-		node.setSourceRange(sourceRange);
-		return connect(node);
+	public class SingleTokenParse {
+		protected BaseLexElement lexToken;
+		protected ParserError error = null;
+		
+		public SingleTokenParse(DeeTokens expectedToken) {
+			lexToken = consumeExpectedContentToken(expectedToken);
+			error = lexToken.getError();
+		}
+		
+		public <T extends ASTNeoNode> T conclude(T node) {
+			srBounds(lexToken.getStartPos(), lexToken.getEndPos(), node);
+			return concludeDo(error, null, node);
+		}
 	}
 	
-	protected final <T extends IASTNeoNode> T connect(T node) {
-		connect((ASTNeoNode) node);
-		return node;
-	}
 	
 	/* ---- Source range helpers ---- */
 	
@@ -314,11 +357,22 @@ public abstract class AbstractParser {
 		return new SourceRange(offset, 0);
 	}
 	
-	public static SourceRange srNodeStart(ASTNeoNode startNode, int endPos) {
-		return SourceRange.srStartToEnd(startNode.getStartPos(), endPos);
+	public static <T extends ASTNeoNode> T srBounds(int startPos, int endPos, T node) {
+		node.setSourceRange(startPos, endPos - startPos);
+		return node;
 	}
 	
-	public static <T extends ASTNeoNode> T sr(BaseLexElement lexElement, T node) {
+	public static <T extends ASTNeoNode> T srBounds(ASTNeoNode left, ASTNeoNode right, T node) {
+		int startPos = left.getStartPos();
+		int endPos = right.getEndPos();
+		return srBounds(startPos, endPos, node);
+	}
+	
+	public static <T extends ASTNeoNode> T srBounds(ASTNeoNode wrappedNode, T node) {
+		return srBounds(wrappedNode, wrappedNode, node);
+	}
+	
+	public static <T extends ASTNeoNode> T srOf(BaseLexElement lexElement, T node) {
 		node.setSourceRange(lexElement.getStartPos(), lexElement.getEndPos() - lexElement.getStartPos());
 		return node;
 	}
@@ -329,8 +383,8 @@ public abstract class AbstractParser {
 		return node;
 	}
 	
-	public final <T extends ASTNeoNode> T srToPosition(int declStart, T node) {
-		node.setSourceRange(declStart, getLexPosition() - declStart);
+	public final <T extends ASTNeoNode> T srToPosition(int nodeStart, T node) {
+		node.setSourceRange(nodeStart, getLexPosition() - nodeStart);
 		return node;
 	}
 	
@@ -344,16 +398,6 @@ public abstract class AbstractParser {
 		assertTrue(left.hasSourceRangeInfo() && !node.hasSourceRangeInfo());
 		assertTrue(!node.isParsedStatus());
 		return srToPosition(left.getStartPos(), node);
-	}
-	
-	public static <T extends ASTNeoNode> T srBounds(ASTNeoNode left, ASTNeoNode right, T node) {
-		int startPos = left.getStartPos();
-		node.setSourceRange(startPos, right.getEndPos() - startPos);
-		return node;
-	}
-	
-	public static <T extends ASTNeoNode> T srBounds(ASTNeoNode wrappedNode, T node) {
-		return srBounds(wrappedNode, wrappedNode, node);
 	}
 	
 	/* ---- Collection creation helpers ---- */

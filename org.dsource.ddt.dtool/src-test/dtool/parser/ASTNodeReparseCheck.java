@@ -8,6 +8,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
+import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
@@ -23,12 +24,13 @@ import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct.StructInitEntry;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.MissingParenthesesExpression;
-import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
+import dtool.ast.statements.BlockStatement;
 import dtool.parser.AbstractParser.NodeResult;
+import dtool.parser.AbstractParser.ParseHelper;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.tests.DToolTests;
@@ -48,9 +50,98 @@ public class ASTNodeReparseCheck {
 	protected String nodeSnippedSource;
 	protected DeeParser snippedParser;
 	
+	
+	public Void basicSourceRangeCheck() {
+		
+		LexElement firstLexElement = firstLexElementInSource(fullSource.substring(nodeUnderTest.getStartPos()));
+		assertTrue(firstLexElement.precedingSubChannelTokens == null || canBeginWithEmptySpace(nodeUnderTest));
+		
+		if(nodeConsumesTrailingWhiteSpace(nodeUnderTest)) {
+			// Check that the range contains all possible whitespace
+			assertTrue(lexElementAfterSnippedRange(nodeUnderTest).getStartPos() == 0);
+		}
+		
+		return VOID;
+	}
+	
+	public static LexElement firstLexElementInSource(String source) {
+		return new LexElementProducer().produceLexElement(new DeeLexer(source));
+	}
+	
+	public LexElement lexElementAfterSnippedRange(ASTNeoNode node) {
+		return firstLexElementInSource(fullSource.substring(node.getEndPos()));
+	}
+	
+	public static boolean canBeginWithEmptySpace(final ASTNeoNode node) {
+		if(node instanceof Module) {
+			return true;
+		}
+		else if(node instanceof NodeList2) {
+			return true;
+		}
+		else if(node instanceof RefIdentifier || node instanceof RefImportSelection) {
+			return DeeParser.isMissing((Reference) node);
+		} 
+		else if(node instanceof MissingExpression) {
+			return true;
+		} 
+		else if(node instanceof InitializerExp) {
+			return ((InitializerExp) node).exp instanceof MissingExpression;
+		} 
+		else if(node instanceof StructInitEntry) {
+			StructInitEntry initEntry = (StructInitEntry) node;
+			return canBeginWithEmptySpace(initEntry.member != null ? initEntry.member : initEntry.value);
+		} 
+		else if(node instanceof ArrayInitEntry) {
+			ArrayInitEntry initEntry = (ArrayInitEntry) node;
+			return canBeginWithEmptySpace(initEntry.index != null ? initEntry.index : initEntry.value);
+		}
+		else if(node instanceof MapArrayLiteralKeyValue) {
+			MapArrayLiteralKeyValue mapArrayEntry = (MapArrayLiteralKeyValue) node;
+			return canBeginWithEmptySpace(mapArrayEntry.key);
+		}
+		else if(node instanceof MissingParenthesesExpression) {
+			return true;
+		}
+		else if(node instanceof BlockStatement) {
+			BlockStatement blockStatement = (BlockStatement) node;
+			return blockStatement.statements == null;
+		}
+		
+		return false;
+	}
+	
+	
+	public static boolean nodeConsumesTrailingWhiteSpace(final ASTNeoNode node) {
+		if(node instanceof DeclarationAttrib) {
+			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
+			if(declAttrib.bodySyntax == AttribBodySyntax.COLON) {
+				return true;
+			}
+		}
+		if(node instanceof MissingExpression) {
+			//return true; // TODO, require TypeOrExp parse changes
+		}
+		if(node instanceof RefIdentifier) {
+			RefIdentifier refId = (RefIdentifier) node;
+			return DeeParser.isMissing(refId); 
+		}
+		if(node instanceof InitializerExp) {
+			InitializerExp initializerExp = (InitializerExp) node;
+			return initializerExp.exp instanceof MissingExpression;
+		}
+		if(node instanceof DefSymbol) {
+			return false;
+		}
+		
+		return false;
+	}
+	
 	@SuppressWarnings("deprecation")
 	public Void doCheck() {
 		assertTrue(nodeUnderTest.getNodeType() != ASTNodeTypes.OTHER);
+		
+		basicSourceRangeCheck();
 		
 		if(DToolTests.TESTS_LITE_MODE) {
 			return VOID;
@@ -62,13 +153,12 @@ public class ASTNodeReparseCheck {
 		
 		case SYMBOL:
 			if(nodeUnderTest instanceof DefSymbol) {
-				return reparseCheck(snippedParser.parseSymbol(), Symbol.class, false);
+				return reparseCheck(snippedParser.parseSymbol(), Symbol.class);
 			}
 			return reparseCheck(snippedParser.parseSymbol());
 		
 		case SIMPLE_LAMBDA_DEFUNIT:
-		case DEF_UNIT:
-			assertFail();
+			return VOID; // dont reparse test
 		
 		case MODULE:
 			Module module = (Module) nodeUnderTest;
@@ -106,8 +196,7 @@ public class ASTNodeReparseCheck {
 		case REF_MODULE:
 			return reparseCheck(snippedParser.parseImportFragment().getModuleRef());
 		case REF_IDENTIFIER: {
-			RefIdentifier refId = (RefIdentifier) nodeUnderTest;
-			return reparseCheck(snippedParser.parseRefIdentifier(), DeeParser.isMissing(refId));
+			return reparseCheck(snippedParser.parseRefIdentifier());
 		}
 		case REF_QUALIFIED: {
 			RefQualified refQual = (RefQualified) nodeUnderTest;
@@ -137,7 +226,8 @@ public class ASTNodeReparseCheck {
 		
 		case MISSING_EXPRESSION:
 			if(nodeUnderTest instanceof MissingParenthesesExpression) {
-				return reparseCheck(snippedParser.parseExpressionAroundParentheses(true));
+				ParseHelper parse = snippedParser.new ParseHelper();
+				return reparseCheck(snippedParser.parseExpressionAroundParentheses(parse, true));
 			}
 			return reparseCheck(snippedParser.parseExpression_toMissing());
 		case EXP_REF_RETURN:
@@ -225,9 +315,7 @@ public class ASTNodeReparseCheck {
 		case DEFINITION_AUTO_VARIABLE:
 			return reparseCheck(snippedParser.parseDeclaration(true, true));
 		case INITIALIZER_EXP:
-			InitializerExp initializerExp = (InitializerExp) nodeUnderTest;
-			Resolvable initExpExp = initializerExp.exp;
-			return reparseCheck(snippedParser.parseInitializer().node, initExpExp instanceof MissingExpression);
+			return reparseCheck(snippedParser.parseInitializer().node);
 		case INITIALIZER_VOID:
 		case INITIALIZER_ARRAY:
 			return reparseCheck(snippedParser.parseInitializer());
@@ -280,13 +368,40 @@ public class ASTNodeReparseCheck {
 		throw assertFail();
 	}
 	
+	
+	public static void checkNodeEquality(ASTNeoNode reparsedNode, ASTNeoNode node) {
+		// We check the nodes are semantically equal by comparing the toStringAsCode
+		// TODO: use a more accurate equals method?
+		assertEquals(reparsedNode.toStringAsCode(), node.toStringAsCode());
+	}
+	
+	public void prepSnippedParser(ASTNeoNode node) {
+		prepSnippedParser(snippedSource(node));
+	}
+	
+	public String snippedSource(ASTNeoNode node) {
+		return fullSource.substring(node.getStartPos(), node.getEndPos());
+	}
+	
+	public void prepSnippedParser(String snippedSource) {
+		nodeSnippedSource = snippedSource;
+		resetSnippedParser();
+	}
+	
+	public DeeParser resetSnippedParser() {
+		return snippedParser = new DeeParser(new DeeParserTest.DeeTestsLexer(nodeSnippedSource));
+	}
+
+	
+
+	
 	public Void simpleReparseCheck(String expectedCode) {
 		SourceEquivalenceChecker.assertCheck(nodeUnderTest.toStringAsCode(), expectedCode);
 		return VOID;
 	}
 	
 	protected Void functionParamReparseCheck() {
-		return testParameter(true, (ASTNeoNode) resetSnippedParser().parseFunctionParameter());
+		return testParameter(true, snippedParser.parseFunctionParameter().asNode());
 	}
 	
 	protected Void templateParamReparseCheck() {
@@ -309,8 +424,10 @@ public class ASTNodeReparseCheck {
 		ASTNeoNode paramParsedTheOtherWay = isFunction ? 
 			snippedParser.parseTemplateParameter() : (ASTNeoNode) snippedParser.parseFunctionParameter();
 		
-		assertTrue(allSourceParsedCorrectly() ? isAmbig : true);
-		if(allSourceParsedCorrectly()) {
+		boolean hasFullyParsedCorrectly = allSourceParsedCorrectly(snippedParser, paramParsedTheOtherWay);
+		
+		assertTrue(hasFullyParsedCorrectly ? isAmbig : true);
+		if(hasFullyParsedCorrectly) {
 			String expectedSource = nodeUnderTest.toStringAsCode();
 			SourceEquivalenceChecker.assertCheck(paramParsedTheOtherWay.toStringAsCode(), expectedSource);
 		}
@@ -318,44 +435,21 @@ public class ASTNodeReparseCheck {
 		return VOID;
 	}
 	
-	public boolean allSourceParsedCorrectly() {
-		return snippedParser.lookAhead() == DeeTokens.EOF && snippedParser.errors.isEmpty();
-	}
-	
-	public void prepSnippedParser(ASTNeoNode node) {
-		prepSnippedParser(snippedSource(node));
-	}
-	
-	public String snippedSource(ASTNeoNode node) {
-		return fullSource.substring(node.getStartPos(), node.getEndPos());
-	}
-	
-	public void prepSnippedParser(String snippedSource) {
-		nodeSnippedSource = snippedSource;
-		resetSnippedParser();
-	}
-	
-	public DeeParser resetSnippedParser() {
-		return snippedParser = new DeeParser(new DeeParserTest.DeeTestsLexer(nodeSnippedSource));
+	public boolean allSourceParsedCorrectly(DeeParser parser, ASTNeoNode resultNode) {
+		return parser.lookAhead() == DeeTokens.EOF && resultNode.getData().hasErrors();
 	}
 	
 	public Void reparseCheck(NodeResult<? extends ASTNeoNode> result) {
 		return reparseCheck(result.getNode());
 	}
 	public Void reparseCheck(IASTNeoNode reparsedNode) {
-		boolean consumesTrailingWhiteSpace = consumeTrailingWhiteSpace(nodeUnderTest);
-		return reparseCheck((ASTNeoNode) reparsedNode, nodeUnderTest.getClass(), consumesTrailingWhiteSpace);
-	}
-	
-	public Void reparseCheck(ASTNeoNode reparsedNode, boolean consumesTrailingWhiteSpace) {
-		return reparseCheck(reparsedNode, nodeUnderTest.getClass(), consumesTrailingWhiteSpace);
+		return reparseCheck(reparsedNode.asNode(), nodeUnderTest.getClass());
 	}
 	
 	/** This will test if node has a correct source range even in situations where
 	 * {@link #postVisit} cannot do a test using {@link DeeParserTest#checkSourceEquality }
 	 */
-	public Void reparseCheck(ASTNeoNode reparsedNode, Class<? extends ASTNeoNode> klass, 
-		boolean consumesAllTrailingWhiteSpace)
+	public Void reparseCheck(ASTNeoNode reparsedNode, Class<? extends ASTNeoNode> klass)
 	{
 		// Must have consumed all input
 		assertTrue(snippedParser.lookAhead() == DeeTokens.EOF);
@@ -363,67 +457,13 @@ public class ASTNodeReparseCheck {
 		
 		assertNotNull_(reparsedNode);
 		assertTrue(reparsedNode.getClass() == klass);
-		checkNodeEquality(reparsedNode, nodeUnderTest);
-		// TODO check errors are the same?
-		
 		// Check source ranges:
 		assertEquals(new SourceRange(0, nodeSnippedSource.length()), reparsedNode.getSourceRange());
-		
-		LexElement firstLexElement = firstLexElementInSource(snippedParser.getSource());
-		assertTrue(firstLexElement.precedingSubChannelTokens == null
-			|| canBeginWithEmptySpace(nodeUnderTest));
-		
-		if(consumesAllTrailingWhiteSpace) {
-			// Check that the range contains all possible whitespace
-			assertTrue(lexElementAfterSnippedRange(nodeUnderTest).getStartPos() == 0);
-		}
-		
+		checkNodeEquality(reparsedNode, nodeUnderTest);
+		// TODO check errors are the same?
+
 		resetSnippedParser();
 		return VOID;
-	}
-	
-	public static boolean consumeTrailingWhiteSpace(final ASTNeoNode node) {
-		if(node instanceof DeclarationAttrib) {
-			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
-			if(declAttrib.bodySyntax == AttribBodySyntax.COLON) {
-				return true;
-			}
-		}
-		if(node instanceof MissingExpression) {
-			//return true; // TODO, require TypeOrExp parse changes
-		}
-		return false;
-	}
-	
-	public static boolean canBeginWithEmptySpace(final ASTNeoNode node) {
-		if(node instanceof RefIdentifier || node instanceof RefImportSelection) {
-			return DeeParser.isMissing((Reference) node);
-		} else if(node instanceof MissingExpression) {
-			return true;
-		} else if(node instanceof InitializerExp) {
-			return ((InitializerExp) node).exp instanceof MissingExpression;
-		} else if(node instanceof StructInitEntry) {
-			StructInitEntry initEntry = (StructInitEntry) node;
-			return canBeginWithEmptySpace(initEntry.member != null ? initEntry.member : initEntry.value);
-		} else if(node instanceof ArrayInitEntry) {
-			ArrayInitEntry initEntry = (ArrayInitEntry) node;
-			return canBeginWithEmptySpace(initEntry.index != null ? initEntry.index : initEntry.value);
-		}
-		return false;
-	}
-	
-	public static LexElement firstLexElementInSource(String source) {
-		return new LexElementProducer().produceLexElement(new DeeLexer(source));
-	}
-	
-	public LexElement lexElementAfterSnippedRange(ASTNeoNode node) {
-		return firstLexElementInSource(fullSource.substring(node.getEndPos()));
-	}
-	
-	public static void checkNodeEquality(ASTNeoNode reparsedNode, ASTNeoNode node) {
-		// We check the nodes are semantically equal by comparing the toStringAsCode
-		// TODO: use a more accurate equals method?
-		assertEquals(reparsedNode.toStringAsCode(), node.toStringAsCode());
 	}
 	
 }

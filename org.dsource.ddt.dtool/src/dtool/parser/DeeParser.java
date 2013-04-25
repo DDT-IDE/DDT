@@ -61,8 +61,8 @@ public class DeeParser extends DeeParser_Decls {
 	
 	
 	protected final String source;
-	protected ArrayList<ParserError> errors;
 	protected LexElementSource lexSource;
+	protected ArrayList<ParserError> lexerErrors = new ArrayList<>();
 	protected boolean enabled;
 	
 	public DeeParser(String source) {
@@ -71,11 +71,8 @@ public class DeeParser extends DeeParser_Decls {
 	
 	public DeeParser(DeeLexer deeLexer) {
 		this.source = deeLexer.getSource();
-		this.errors = new ArrayList<>();
 		this.lexSource = new LexElementSource(new DeeLexElementProducer().produceLexTokens(deeLexer));
 		this.enabled = true;
-		
-		this.pendingMissingTokenErrors = new ArrayList<>(4);
 	}
 	
 	@Override
@@ -92,7 +89,7 @@ public class DeeParser extends DeeParser_Decls {
 		
 		@Override
 		protected void tokenCreated(Token token) {
-			DeeTokenSemantics.checkTokenErrors(token, DeeParser.this);
+			DeeTokenSemantics.checkTokenErrors(token, lexerErrors);
 		}
 		
 	}
@@ -142,26 +139,14 @@ public class DeeParser extends DeeParser_Decls {
 		return getEnabledLexSource().consumeSubChannelTokens();
 	}
 	
-	@Override
-	protected void submitError(ParserError error) {
-		errors.add(error);
-	}
-	
 	public DeeParserState enterBacktrackableMode() {
 		DeeParserState parserState = new DeeParserState();
-		parserState.errors = errors;
 		parserState.lexSource = getEnabledLexSource().saveState();
-		errors = new ArrayList<>(); // reset current errors
 		return parserState;
 	}
 	
 	public void restoreOriginalState(DeeParserState savedState) {
-		this.errors = savedState.errors;
 		this.lexSource.resetState(savedState.lexSource);
-	}
-	
-	public void acceptCurrentState(DeeParserState savedState) {
-		this.errors.addAll(savedState.errors);
 	}
 	
 	public class DeeParserState {

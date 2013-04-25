@@ -16,8 +16,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ASTDmdNode;
+import dtool.ast.NodeData.ParsedNodeDataWithErrors;
 import dtool.ast.definitions.Module;
 import dtool.descentadapter.DefinitionConverter;
+import dtool.parser.ParserError;
 import dtool.refmodel.INamedScope;
 import dtool.util.ArrayView;
 
@@ -28,11 +30,12 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	protected int sourceStart = -1;
 	protected int sourceEnd = -1;
 	
-	protected ASTNeoNode(SourceRange sourceRange) {
-		setSourceRange(sourceRange);
+	public ASTNeoNode() {
 	}
 	
-	public ASTNeoNode() {
+	@Override
+	public final ASTNeoNode asNode() {
+		return this;
 	}
 	
 	/** Gets the source range start position. */
@@ -135,13 +138,13 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	}
 	
 	public void detachFromParent() {
-		this.parent.resetData(null);
+		this.parent.data = null; // Note, parent becomes an invalid node after this.
 		this.parent = null;
 	}
 	
-	protected Object data; /* Custom field to store various kinds of data */
+	protected NodeData data = NodeData.CREATED_STATUS; /* Custom field to store various kinds of data */
 	
-	public Object getData() {
+	public NodeData getData() {
 		return data;
 	}
 	
@@ -152,25 +155,32 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	}
 	
 	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */
-	public void setData(Object data) {
+	public void setData(NodeData data) {
 		assertTrue(data != null);
-		assertTrue(this.data == null); 
+		assertTrue(this.data == NodeData.CREATED_STATUS); 
 		this.data = data;
+		this.data.attachedToNode(this);
 	}
 	
-	/** Set the data of this node. Cannot be null. */
-	public void resetData(Object data) {
-		this.data = data;
+	/** Removes the data of this node. Checks that the previous data class was exactly the same as given klass. 
+	 * @return the previous data. */
+	public <T extends NodeData> T removeData(Class<T> klass) {
+		assertTrue(klass.isAssignableFrom(data.getClass()));
+		T oldData = klass.cast(data);
+		this.data = NodeData.CREATED_STATUS;
+		return oldData;
 	}
 	
-	/** Removes the data of this node. Checks that the previous data class was exactly the same as given klass. */
-	public void removeData(Class<?> klass) {
-		assertTrue(data.getClass() == klass);
-		this.data = null;
+	public void setParsedStatus() {
+		setData(NodeData.DEFAULT_PARSED_STATUS);
+	}
+	
+	public void setParsedStatusWithErrors(ParserError... errors) {
+		setData(new ParsedNodeDataWithErrors(errors));
 	}
 	
 	public boolean isParsedStatus() {
-		return getData() == ASTSemantics.PARSED_STATUS;
+		return getData().isParsedStatus();
 	}
 	
 	/* ------------------------------------------------------------ */

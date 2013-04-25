@@ -13,8 +13,8 @@ public class TemplateAliasParam extends TemplateParameter {
 	public final Resolvable specializationValue;
 	public final Resolvable defaultValue;
 	
-	public TemplateAliasParam(DefUnitTuple dudt, Resolvable specializationValue, Resolvable defaultValue){
-		super(dudt);
+	public TemplateAliasParam(ProtoDefSymbol defId, Resolvable specializationValue, Resolvable defaultValue){
+		super(defId);
 		this.specializationValue = parentize(specializationValue);
 		this.defaultValue = parentize(defaultValue);
 	}

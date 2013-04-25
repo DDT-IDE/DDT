@@ -2,7 +2,6 @@ package dtool.ast.definitions;
 
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.SourceRange;
 
 
 /**
@@ -11,14 +10,13 @@ import dtool.ast.SourceRange;
  */
 public class DefSymbol extends Symbol {
 	
-	public DefSymbol(String id,  SourceRange sourceRange, DefUnit parent) {
-		this(id, sourceRange);
+	public DefSymbol(String id, DefUnit parent) {
+		this(id);
 		setParent(parent);
 	}
 	
-	protected DefSymbol(String id, SourceRange sourceRange) {
+	protected DefSymbol(String id) {
 		super(id);
-		initSourceRange(sourceRange);
 	}
 	
 	@Override

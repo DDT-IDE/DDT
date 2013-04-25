@@ -16,8 +16,8 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 		
 	public final RefModule moduleRef;
 	
-	public ImportAlias(DefUnitTuple dudt, RefModule refModule) {
-		super(dudt);
+	public ImportAlias(ProtoDefSymbol defId, RefModule refModule) {
+		super(defId);
 		this.moduleRef = parentize(refModule);
 	}
 	

@@ -12,24 +12,20 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.replaceRegexFirstOccurrence;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.ASTSemantics;
 import dtool.ast.NodeUtil;
+import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
-import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
@@ -119,14 +115,12 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 		
 		@Override
-		protected <T extends ASTNeoNode> T connect(T node) {
-			super.connect(node);
+		protected void nodeConcluded(ASTNeoNode node) {
 			checkNodeSourceRange(node, getSource());
 			
 			// Run additional tests on the node just parsed
 			// These might include node/rule specific tests
-			runNodeParsingChecks(node, getSource(), errors);
-			return node;
+			runNodeParsingChecks(node, getSource());
 		}
 	}
 	
@@ -136,7 +130,7 @@ public class DeeParserTest extends CommonTestUtils {
 	public static void checkBasicStructureContracts(ASTNeoNode[] children, ASTNeoNode parent) {
 		for (ASTNeoNode astNode : children) {
 			assertTrue(astNode.getParent() == parent);
-			assertTrue(astNode.getData() == ASTSemantics.PARSED_STATUS);
+			assertTrue(astNode.isParsedStatus());
 			checkBasicStructureContracts(astNode.getChildren(), astNode);
 		}
 	}
@@ -269,9 +263,9 @@ public class DeeParserTest extends CommonTestUtils {
 		);
 	
 	// These checks can be computationally expensive. They make parsing quadratic on node depth.
-	public static void runNodeParsingChecks(ASTNeoNode node, final String fullSource, List<ParserError> errors) {
+	public static void runNodeParsingChecks(ASTNeoNode node, final String fullSource) {
 		String nodeSnippedSource = fullSource.substring(node.getStartPos(), node.getEndPos());
-		if(!areThereMissingTokenErrorsInNode(node, errors)) {
+		if(!areThereMissingTokenErrorsInNode(node)) {
 			SourceEquivalenceChecker.assertCheck(nodeSnippedSource, node.toStringAsCode());
 		} else {
 			SourceEquivalenceChecker.assertCheck(nodeSnippedSource, node.toStringAsCode(), structuralControlTokens);
@@ -280,21 +274,12 @@ public class DeeParserTest extends CommonTestUtils {
 		new ASTNodeReparseCheck(fullSource, node).doCheck();
 	}
 	
-	protected static boolean areThereMissingTokenErrorsInNode(ASTNeoNode node, Collection<ParserError> errors) {
-		for(ParserError error : errors) {
-			
-			if(!(error.errorType == ParserErrorTypes.INVALID_EXTERN_ID || 
-				(error.errorType == ParserErrorTypes.EXPECTED_TOKEN && error.msgData != DeeTokens.IDENTIFIER))) {
-				continue;
-			}
-			
-			assertNotNull(error.originNode);
-			
-			if(NodeUtil.isContainedIn(error.originNode, node)) {
+	protected static boolean areThereMissingTokenErrorsInNode(ASTNeoNode node) {
+		ArrayList<ParserError> nodeErrors = DeeParserResult.collectErrors(new ArrayList<ParserError>(), node);
+		for(ParserError error : nodeErrors) {
+			if(error.errorType == ParserErrorTypes.INVALID_EXTERN_ID || 
+				(error.errorType == ParserErrorTypes.EXPECTED_TOKEN && error.msgData != DeeTokens.IDENTIFIER)) {
 				return true;
-			}
-			if(error.sourceRange.getStartPos() >= node.getEndPos()) {
-				break; // No point in search remaining errors
 			}
 		}
 		return false;
@@ -322,7 +307,8 @@ public class DeeParserTest extends CommonTestUtils {
 		return deeParser.parseUsingRule(parseRule);
 	}
 	
-	public static void runAdditionalTests(DeeParserResult result, HashMap<String, MetadataEntry> additionalMetadata) {
+	public static void runAdditionalTests(final DeeParserResult result, HashMap<String, 
+		MetadataEntry> additionalMetadata) {
 		MetadataEntry fnParamTest = additionalMetadata.remove("FN_PARAMETER_TEST");
 		if(fnParamTest != null) {
 			String source = result.source.substring(fnParamTest.offset);

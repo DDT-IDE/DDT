@@ -19,7 +19,7 @@ pragma(msg) foo #error(EXP_IDENTIFIER) ;
 #STRUCTURE_EXPECTED:
 DeclarationLinkage( InvalidDeclaration(RefIdentifier) )
 DeclarationAlign( InvalidDeclaration(RefIdentifier) )
-DeclarationPragma( InvalidDeclaration(RefIdentifier) )
+DeclarationPragma(Symbol InvalidDeclaration(RefIdentifier) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@SIMPLE_ATTRIBS fooB = #@EXP_ASSIGN__LITE;

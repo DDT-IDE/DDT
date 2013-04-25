@@ -62,6 +62,11 @@ public class LexElement extends BaseLexElement {
 	}
 	
 	@Override
+	public ParserError getError() {
+		return null;
+	}
+	
+	@Override
 	public String toString() {
 		return super.toString() + token.toString();
 	}
@@ -69,6 +74,7 @@ public class LexElement extends BaseLexElement {
 	public final static class MissingLexElement extends BaseLexElement {
 		
 		public final int startPos;
+		public ParserError error;
 		
 		public MissingLexElement(Token[] ignoredPrecedingTokens, int lookAheadStart) {
 			super(ignoredPrecedingTokens);
@@ -104,6 +110,11 @@ public class LexElement extends BaseLexElement {
 		@Override
 		public final SourceRange getSourceRange() {
 			return SourceRange.srStartToEnd(startPos, startPos);
+		}
+		
+		@Override
+		public ParserError getError() {
+			return error;
 		}
 		
 		@Override

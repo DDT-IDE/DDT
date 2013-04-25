@@ -23,9 +23,9 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	public final Expression defaultValue;
 	public final boolean isVariadic;
 	
-	public FunctionParameter(ArrayView<FunctionParamAttribKinds> attribList, Reference type, DefUnitTuple dudt, 
+	public FunctionParameter(ArrayView<FunctionParamAttribKinds> attribList, Reference type, ProtoDefSymbol defId, 
 		Expression defaultValue, boolean isVariadic) {
-		super(dudt);
+		super(defId);
 		this.paramAttribs = FnParameterAttributes.create(attribList);
 		this.type = parentize(assertNotNull_(type));
 		this.defaultValue = parentize(defaultValue);

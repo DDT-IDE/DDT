@@ -13,8 +13,8 @@ public class TemplateTypeParam extends TemplateParameter {
 	public final Reference specializationType;
 	public final Reference defaultType;
 	
-	public TemplateTypeParam(DefUnitTuple dudt, Reference specializationType, Reference defaultType){
-		super(dudt);
+	public TemplateTypeParam(ProtoDefSymbol defId, Reference specializationType, Reference defaultType){
+		super(defId);
 		this.specializationType = parentize(specializationType);
 		this.defaultType = parentize(defaultType);
 	}

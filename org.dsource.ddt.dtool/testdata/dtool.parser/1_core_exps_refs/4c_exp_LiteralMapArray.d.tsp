@@ -10,31 +10,24 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
 [ 7 : true, #@KEY_EXP《
-►#@EXP_ASSIGN : #@EXP_ASSIGN●
-►#@EXP_ASSIGN : #error(EXPRULE_exp) ●
-►#@EXP_ASSIGN #error(EXP_COLON)●
-►/*MISSING_BOTH*/ #error(EXPRULE_exp) : #error(EXPRULE_exp) ●
-►/*MISSING_ENTRY*/ #error(EXPRULE_exp) #error(EXP_COLON) ●
+►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN : #@EXP_ASSIGN●#@EXP_ASSIGN #@EXP_ASSIGN】●
+►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN : #@NO_EXP ●#@EXP_ASSIGN #@NO_EXP】●
+►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN #error(EXP_COLON)●#@EXP_ASSIGN】●
+►#?STRUCTURE_EXPECTED!【/*MISSING_BOTH*/  #@NO_EXP : #@NO_EXP ●#@NO_EXP #@NO_EXP】●
+►#?STRUCTURE_EXPECTED!【/*MISSING_ENTRY*/ #@NO_EXP #error(EXP_COLON) ●#@NO_EXP】●
 ¤》  #@BkCLOSE_OR_BREAK  
 #STRUCTURE_EXPECTED:
 ExpLiteralMapArray( 
   MapEntry(Integer Bool) 
-  MapEntry(#@《
-    #@EXP_ASSIGN #@EXP_ASSIGN●
-    #@EXP_ASSIGN MissingExpression ●
-    #@EXP_ASSIGN● 
-    MissingExpression MissingExpression ●
-    MissingExpression
-    》(KEY_EXP) ) 
+  MapEntry(#@KEY_EXP) 
 )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)
-[ #@KEY_EXP《#@EXP_ASSIGN : #@EXP_ASSIGN●#@EXP_ASSIGN : #error(EXPRULE_exp) ●
-  /*MISSING_BOTH*/ #error(EXPRULE_exp) : #error(EXPRULE_exp) 
-》   #@BkCLOSE_OR_BREAK  
+[ #@KEY_EXP《
+►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN : #@EXP_ASSIGN●#@EXP_ASSIGN #@EXP_ASSIGN】●
+►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN : #@NO_EXP ●#@EXP_ASSIGN #@NO_EXP】●
+►#?STRUCTURE_EXPECTED!【/*MISSING_BOTH*/ #@NO_EXP : #@NO_EXP ●#@NO_EXP #@NO_EXP】●
+¤》   #@BkCLOSE_OR_BREAK  
 #STRUCTURE_EXPECTED:
-ExpLiteralMapArray( 
-  MapEntry(#@《#@EXP_ASSIGN #@EXP_ASSIGN●#@EXP_ASSIGN MissingExpression ● 
-    MissingExpression MissingExpression 》(KEY_EXP) ) 
-)
+ExpLiteralMapArray( MapEntry(#@KEY_EXP ) )
 

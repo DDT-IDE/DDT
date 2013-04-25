@@ -20,8 +20,8 @@ public class DefinitionAliasDecl extends Definition implements IStatement {
 	
 	public final Reference target;
 	
-	public DefinitionAliasDecl(DefUnitTuple dudt, Reference target) {
-		super(dudt);
+	public DefinitionAliasDecl(ProtoDefSymbol defId, Reference target) {
+		super(defId);
 		this.target = parentize(target);
 	}
 	

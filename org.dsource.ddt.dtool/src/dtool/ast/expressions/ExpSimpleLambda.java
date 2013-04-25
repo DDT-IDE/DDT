@@ -3,10 +3,8 @@ package dtool.ast.expressions;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.ASTSemantics;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.EArcheType;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -17,13 +15,11 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  */
 public class ExpSimpleLambda extends Expression {
 	
-	public final ExpSimpleLambdaDefUnit simpleLambdaDefUnit;
+	public final SimpleLambdaDefUnit simpleLambdaDefUnit;
 	public final Expression bodyExpression;
 	
-	public ExpSimpleLambda(DefUnitTuple defunitData, Expression bodyExpression) {
-		this.simpleLambdaDefUnit = parentize(new ExpSimpleLambdaDefUnit(defunitData));
-		this.simpleLambdaDefUnit.setData(ASTSemantics.PARSED_STATUS);
-		this.simpleLambdaDefUnit.setSourceRange(defunitData.nameSourceRange);
+	public ExpSimpleLambda(SimpleLambdaDefUnit simpleLambdaDefUnit, Expression bodyExpression) {
+		this.simpleLambdaDefUnit = parentize(simpleLambdaDefUnit);
 		this.bodyExpression = parentize(bodyExpression);
 	}
 	
@@ -48,10 +44,10 @@ public class ExpSimpleLambda extends Expression {
 		cp.appendNode(bodyExpression);
 	}
 	
-	public static class ExpSimpleLambdaDefUnit extends DefUnit {
+	public static class SimpleLambdaDefUnit extends DefUnit {
 		
-		public ExpSimpleLambdaDefUnit(DefUnitTuple defunit) {
-			super(defunit);
+		public SimpleLambdaDefUnit(ProtoDefSymbol defId) {
+			super(defId);
 		}
 		
 		@Override

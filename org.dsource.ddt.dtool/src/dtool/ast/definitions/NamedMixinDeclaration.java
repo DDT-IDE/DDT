@@ -13,8 +13,8 @@ public class NamedMixinDeclaration extends DefUnit implements IStatement {
 	
 	public final Reference templateInstance;
 	
-	public NamedMixinDeclaration(Reference templateInstance, DefUnitTuple dudt) {
-		super(dudt);
+	public NamedMixinDeclaration(Reference templateInstance, ProtoDefSymbol defId) {
+		super(defId);
 		this.templateInstance = parentize(templateInstance);
 	}
 	

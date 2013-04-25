@@ -1,9 +1,6 @@
 package dtool.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.ArrayList;
-
+import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.LexElement.MissingLexElement;
 
 public class AbstractParserRule extends DeeParser_Decls {
@@ -12,7 +9,6 @@ public class AbstractParserRule extends DeeParser_Decls {
 	
 	public AbstractParserRule(DeeParser parser) {
 		this.parser = parser;
-		this.pendingMissingTokenErrors = parser.pendingMissingTokenErrors;
 	}
 	
 	@Override
@@ -60,51 +56,31 @@ public class AbstractParserRule extends DeeParser_Decls {
 		return parser.lastLexElement();
 	}
 	
-	@Override
-	protected void submitError(ParserError error) {
-		parser.submitError(error);
-	}
-	
 	public static abstract class AbstractDecidingParserRule<T> extends AbstractParserRule {
 		
-		protected ArrayList<ParserError> ruleErrors = null;
-		protected LexElementSource savedState = null;
+		protected DeeParserState savedParserState;
 		
 		public AbstractDecidingParserRule(DeeParser parser) {
 			super(parser);
 		}
 		
-		public abstract T parse();
+		public abstract T parse(ParseHelper parse);
 		
-		public T parseDeciderMode() {
-			ruleErrors = new ArrayList<>();
-			savedState = parser.getEnabledLexSource().saveState();
-			return parse();
+		public T parseDeciderMode(ParseHelper parse) {
+			savedParserState = parser.enterBacktrackableMode();
+			return parse(parse);
 		}
 		
 		public boolean isDeciderMode() {
-			return ruleErrors != null;
-		}
-		
-		@Override
-		protected void submitError(ParserError error) {
-			if(ruleErrors == null) {
-				super.submitError(error);
-			} else {
-				ruleErrors.add(error);
-			}
+			return savedParserState != null;
 		}
 		
 		public void acceptDeciderResult() {
-			assertNotNull(ruleErrors);
-			for (ParserError error : ruleErrors) {
-				parser.submitError(error);
-			}
-			ruleErrors = null;
+			savedParserState = null;
 		}
 		
 		public void discardDeciderResult() {
-			parser.getEnabledLexSource().resetState(savedState);
+			parser.restoreOriginalState(savedParserState);
 		}
 		
 	}

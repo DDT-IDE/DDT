@@ -179,4 +179,13 @@ public class NewUtils {
 		return hashMap;
 	}
 	
+	public static <T> Iterable<T> iteratorAsIterable(final Iterator<T> iter) {
+		return new Iterable<T>() {
+			@Override
+			public Iterator<T> iterator() {
+				return iter;
+			}
+		};
+	}
+	
 }
