@@ -224,7 +224,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				null
 			);
 			
-			return connect(dudt.sourceRange, new ImportSelectiveAlias(dudt, impSelection));
+			return connect(dudt.sourceRange, new ImportSelectiveAlias(dudt.defSymbol, impSelection));
 		}
 	}
 	
@@ -273,10 +273,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 					new SourceRange(imprt.aliasId.start, entireRange.getEndPos() - imprt.aliasId.start),
 					DefinitionConverter.convertIdToken(imprt.aliasId), null
 				);
-				imprtFragment = new ImportAlias(
-					dudt,
+				imprtFragment = connect(dudt.sourceRange, new ImportAlias(
+					dudt.defSymbol,
 					connect(sr, new RefModule(ArrayView.create(packages), new String(imprt.id.ident)))
-				);
+				));
 			} else {
 				ImportContent importContent;
 				imprtFragment = importContent = new ImportContent(
@@ -439,9 +439,11 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public final boolean visit(descent.internal.compiler.parser.AliasDeclaration elem) {
-		return endAdapt(
+
+		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
+		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionAliasDecl(
-				DefinitionConverter.convertDsymbol(elem, convContext),
+				convertDsymbol.defSymbol,
 				(Reference) DescentASTConverter.convertElem(elem.type, convContext)
 			)
 		);
@@ -473,10 +475,11 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			}
 		}
 		
-		return endAdapt(
+		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
+		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionTemplate(
 				false,
-				DefinitionConverter.convertDsymbol(elem, convContext),
+				convertDsymbol.defSymbol,
 				tplParams,
 				null,
 				createNodeList(DescentASTConverter.convertManyNoNulls(elem.members, ASTNeoNode.class, convContext))
@@ -514,13 +517,17 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		
 		Reference typeRef = ReferenceConverter.convertType(elem.type, convContext);
 		if(typeRef == null) {
-			return endAdapt(new DefinitionVariable.DefinitionAutoVariable(
-				DefinitionConverter.convertDsymbol(elem, convContext),
+			DefUnitTuple defUnitInfo = DefinitionConverter.convertDsymbol(elem, convContext);
+			return endAdapt(defUnitInfo.sourceRange,
+				new DefinitionVariable.DefinitionAutoVariable(
+				defUnitInfo.defSymbol,
 				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null
 			));
 		} else {
-			return endAdapt(new DefinitionVariable(
-				DefinitionConverter.convertDsymbol(elem, convContext),
+			DefUnitTuple defUnitInfo = DefinitionConverter.convertDsymbol(elem, convContext);
+			return endAdapt(defUnitInfo.sourceRange, 
+				new DefinitionVariable(
+				defUnitInfo.defSymbol,
 				typeRef,
 				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null
 			));
@@ -682,7 +689,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
 		);
-		return endAdapt(new TemplateAliasParam(dudt, null, null));
+		return endAdapt(dudt.sourceRange, new TemplateAliasParam(dudt.defSymbol, null, null));
 	}
 	
 	@Override
@@ -692,7 +699,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
 		);
-		return endAdapt(new TemplateTupleParam(dudt));
+		return endAdapt(dudt.sourceRange, new TemplateTupleParam(dudt.defSymbol));
 	}
 	
 	@Override
@@ -702,9 +709,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
 		);
-		return endAdapt(
+		return endAdapt(dudt.sourceRange,
 			new TemplateTypeParam(
-				dudt,
+				dudt.defSymbol,
 				ReferenceConverter.convertType(elem.specType, convContext),
 				ReferenceConverter.convertType(elem.defaultType, convContext)
 			)
@@ -724,9 +731,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefinitionConverter.convertIdToken(elem.ident),
 			null
 		);
-		return endAdapt(
+		return endAdapt(dudt.sourceRange,
 			new TemplateValueParam(
-				dudt,
+				dudt.defSymbol,
 				ReferenceConverter.convertType(elem.valType, convContext),
 				ExpressionConverter.convert(elem.specValue, convContext),
 				ExpressionConverter.convert(elem.defaultValue, convContext)

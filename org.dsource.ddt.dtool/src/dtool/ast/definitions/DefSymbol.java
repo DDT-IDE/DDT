@@ -1,6 +1,8 @@
 package dtool.ast.definitions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 
 
@@ -10,12 +12,7 @@ import dtool.ast.ASTNodeTypes;
  */
 public class DefSymbol extends Symbol {
 	
-	public DefSymbol(String id, DefUnit parent) {
-		this(id);
-		setParent(parent);
-	}
-	
-	protected DefSymbol(String id) {
+	public DefSymbol(String id) {
 		super(id);
 	}
 	
@@ -24,8 +21,18 @@ public class DefSymbol extends Symbol {
 		return ASTNodeTypes.SYMBOL;
 	}
 	
+	@Override
+	public void setParent(ASTNeoNode parent) {
+		checkParent(parent);
+		super.setParent(parent);
+	}
+	
+	public void checkParent(ASTNeoNode parent) {
+		assertTrue(parent instanceof DefUnit);
+	}
+	
 	public DefUnit getDefUnit() {
-		return (DefUnit) super.getParent();
+		return (DefUnit) getParent();
 	}
 	
 	@Override

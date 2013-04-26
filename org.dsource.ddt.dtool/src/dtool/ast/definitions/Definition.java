@@ -3,7 +3,6 @@ package dtool.ast.definitions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import descent.internal.compiler.parser.PROT;
 import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
 import dtool.ast.declarations.DeclarationProtection.Protection;
@@ -14,12 +13,6 @@ import dtool.ast.declarations.DeclarationProtection.Protection;
 public abstract class Definition extends DefUnit {
 	
 	protected int defAttributesBitMask;
-	
-	@Deprecated
-	public Definition(DefUnitTuple defunit, PROT prot) {
-		super(defunit);
-		this.defAttributesBitMask = 0;
-	}
 	
 	public Definition(ProtoDefSymbol defId) {
 		super(defId);

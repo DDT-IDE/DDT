@@ -15,7 +15,8 @@ public class DefinitionTypedef extends Definition implements IStatement {
 	public final Initializer initializer;
 	
 	public DefinitionTypedef(DefUnitTuple dudt, PROT prot, Reference type, Initializer initializer) {
-		super(dudt, prot);
+		super(dudt.defSymbol);
+		initSourceRange(dudt.sourceRange);
 		this.type = parentize(type);
 		this.initializer = parentize(initializer);
 	}

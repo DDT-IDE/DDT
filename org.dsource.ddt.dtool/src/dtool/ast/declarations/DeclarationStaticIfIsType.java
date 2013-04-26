@@ -34,7 +34,8 @@ public class DeclarationStaticIfIsType extends ASTNeoNode implements IStatement,
 	public class IsTypeDefUnit extends DefUnit {
 		
 		public IsTypeDefUnit(String id, SourceRange idSourceRange) {
-			super(id, idSourceRange, null, idSourceRange, null);
+			super(new ProtoDefSymbol(id, idSourceRange, null));
+			initSourceRange(idSourceRange);
 			setParent(DeclarationStaticIfIsType.this);
 		}
 		

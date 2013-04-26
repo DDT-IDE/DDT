@@ -73,7 +73,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	}
 	
 	public static DefUnit.DefUnitTuple convertDsymbol(Dsymbol elem, ASTConversionContext convContext) {
-		SourceRange sourceRange = sourceRange(elem);
+		final SourceRange sourceRange = sourceRange(elem);
 		
 		descent.internal.compiler.parser.Module module = convContext.module;
 		
@@ -138,7 +138,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		
 		SourceRange sourceRange = sourceRange(elem, false);
 		if(elem.md == null) {
-			return Module.createModuleNoModuleDecl(sourceRange, defaultModuleName, members);
+			return connect(sourceRange, Module.createModuleNoModuleDecl(defaultModuleName, members));
 		} else  {
 			LexElement defnameInfo = new LexElement(null, DefinitionConverter.convertIdToken2(elem.md.id));
 			SourceRange declRange = sourceRange(elem.md);
@@ -153,7 +153,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			// Remove comments of other defunits (DMD parser quirk)
 			Comment[] comments = filterComments(elem, elem.md.start); 
 			DeclarationModule md = connect(declRange, new DeclarationModule(ArrayView.create(packages), defnameInfo));
-			return new Module(md.getModuleSymbol(), comments, md, members, sourceRange);
+			return connect(sourceRange, new Module(md.getModuleSymbol(), comments, md, members));
 		}
 	}
 	
@@ -234,8 +234,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			null,
 			StatementConverterVisitor.convertStatement(elem.frequire, convContext),
 			StatementConverterVisitor.convertStatement(elem.fensure, convContext),
-			(BlockStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext),
-			null
+			(BlockStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext)
 		);
 		
 		return definitionFunction;
@@ -243,7 +242,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	
 	public static DefinitionFunction createDefFunction(DefUnitTuple defunitData, PROT prot, Reference retType,
 		ArrayView<IFunctionParameter> params, ArrayView<FunctionAttributes> fnAttributes, 
-		IStatement frequire, IStatement fensure, BlockStatement fbody, SourceRange sourceRange) {
+		IStatement frequire, IStatement fensure, BlockStatement fbody) {
 		IFunctionBody fnBody;
 		if(frequire == null && fensure == null) {
 			if(fbody == null) {
@@ -255,8 +254,8 @@ public class DefinitionConverter extends BaseDmdConverter {
 			/*WATHEVAR*/
 			fnBody = new InOutFunctionBody(false, null, null, fbody);
 		}
-		return connect(sourceRange, 
-			new DefinitionFunction(defunitData, null, retType, params, fnAttributes, null, fnBody));
+		return connect(defunitData.sourceRange, 
+			new DefinitionFunction(defunitData.defSymbol, null, retType, params, fnAttributes, null, fnBody));
 	}
 	
 	public static int convertVarArgs(int varargs) {
@@ -278,13 +277,14 @@ public class DefinitionConverter extends BaseDmdConverter {
 					DefinitionConverter.sourceRange(elem), DefinitionConverter.convertIdToken(elem.ident), null
 				);
 				
-				return new FunctionParameter(
+				return connect(dudt.sourceRange, 
+					new FunctionParameter(
 					null, 
 					type,
-					dudt,
+					dudt.defSymbol,
 					ExpressionConverter.convert(elem.defaultArg, convContext),
 					false
-				);
+				));
 			} else {
 				// strange case, likely from a syntax error
 				return convertNamelessParameter(elem, elem.ident, convContext);

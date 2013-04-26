@@ -123,9 +123,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		SourceRange modRange = new SourceRange(0, getSource().length());
 		
 		if(md != null) {
-			return resultConclude(false, new Module(md.getModuleSymbol(), null, md, members, modRange));
+			return result(false, conclude(modRange, new Module(md.getModuleSymbol(), null, md, members)));
 		} else {
-			return resultConclude(false, Module.createModuleNoModuleDecl(modRange, "__unnamed"/*BUG here*/, members));
+			return result(false, conclude(modRange, Module.createModuleNoModuleDecl("_unnamed"/*BUG here*/, members)));
 		}
 	}
 	

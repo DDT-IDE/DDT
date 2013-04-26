@@ -19,7 +19,8 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	public final Reference type;
 	
 	public DefinitionEnum(DefUnitTuple defunitInfo, PROT prot, ArrayView<EnumMember> members, Reference reference) {
-		super(defunitInfo, prot);
+		super(defunitInfo.defSymbol);
+		initSourceRange(defunitInfo.sourceRange);
 		this.members = parentize(members);
 		this.type = parentize(reference);
 	}

@@ -435,12 +435,12 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 				null
 			);
 			
-			param = new FunctionParameter(
+			param = connect(dudt.sourceRange, new FunctionParameter(
 				null, 
 				ReferenceConverter.convertType(element.type, convContext), 
-				dudt,
+				dudt.defSymbol,
 				null, false
-			);
+			));
 		}
 		
 		return endAdapt(DefinitionConverter.sourceRange(element),

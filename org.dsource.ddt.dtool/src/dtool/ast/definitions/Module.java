@@ -41,6 +41,10 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		public DefUnit getDefUnit() {
 			return module;
 		}
+		
+		@Override
+		public void checkParent(ASTNeoNode parent) {
+		}
 	}
 	
 	public static class DeclarationModule extends ASTNeoNode {
@@ -94,18 +98,17 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		}
 	}
 	
-	public static Module createModuleNoModuleDecl(SourceRange sourceRange, String moduleName,
-		ArrayView<ASTNeoNode> members) {
+	public static Module createModuleNoModuleDecl(String moduleName, ArrayView<ASTNeoNode> members) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
-		return new Module(defSymbol, null, null, members, sourceRange);
+		return new Module(defSymbol, null, null, members);
 	}
 	
 	public final DeclarationModule md;
 	public final ArrayView<ASTNeoNode> members;
 	
 	public Module(ModuleDefSymbol defSymbol, Comment[] preComments, DeclarationModule md, 
-			ArrayView<ASTNeoNode> members, SourceRange sourceRange) {
-		super(defSymbol, preComments, sourceRange);
+			ArrayView<ASTNeoNode> members) {
+		super(defSymbol, preComments, false);
 		defSymbol.module = this;
 		this.md = parentize(md);
 		this.members = parentize(members);

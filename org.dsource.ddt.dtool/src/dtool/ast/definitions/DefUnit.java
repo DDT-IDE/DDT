@@ -5,7 +5,6 @@ import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
-import dtool.parser.LexElement;
 import dtool.parser.ParserError;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -36,19 +35,14 @@ public abstract class DefUnit extends ASTNeoNode {
 	}
 	
 	@Deprecated
-	public static final class DefUnitTuple extends ProtoDefSymbol {
+	public static final class DefUnitTuple {
 		public final SourceRange sourceRange;
 		public final Comment[] comments;
-		
-		public DefUnitTuple(Comment[] comments, String name, SourceRange nameSourceRange, ParserError error) {
-			super(name, nameSourceRange, error);
-			this.comments = comments;
-			this.sourceRange = null;
-		}
+		public final ProtoDefSymbol defSymbol;
 		
 		public DefUnitTuple(Comment[] comments, String name, SourceRange nameSourceRange, 
 			@Deprecated SourceRange sourceRange) {
-			super(name, nameSourceRange, null);
+			this.defSymbol = new ProtoDefSymbol(name, nameSourceRange, null);
 			this.comments = comments;
 			this.sourceRange = sourceRange;
 		}
@@ -57,46 +51,39 @@ public abstract class DefUnit extends ASTNeoNode {
 			this(comments, defName.getString(), defName.getSourceRange(), sourceRange);
 		}
 		
-		public DefUnitTuple(SourceRange sourceRange, LexElement id, Comment[] comments) {
-			this(comments, id.getSourceValue(), id.getSourceRange(), sourceRange);
-		}
 	}
 	
 	public final Comment[] comments;
-	public final DefSymbol defname;
+	public final DefSymbol defname; // This may not be a child of DefUnit
 	
-	public DefUnit(DefUnitTuple defunit) {
-		this(defunit.name, defunit.nameSourceRange, defunit.comments, defunit.sourceRange, defunit.error);
+	protected DefUnit(DefSymbol defname, Comment[] comments) {
+		this(defname, comments, true);
 	}
 	
-	public DefUnit(ProtoDefSymbol defId) {
-		this(defId.name, defId.nameSourceRange, null, null, defId.error);
-	}
-	
-	public DefUnit(String defName, SourceRange defNameSourceRange, Comment[] comments, SourceRange sourceRange, 
-		ParserError error) {
-		initSourceRange(sourceRange);
-		this.defname = new DefSymbol(defName, this);
-		this.defname.setSourceRange(defNameSourceRange);
-		if(error == null) {
-			this.defname.setParsedStatus();
-		} else {
-			this.defname.setParsedStatusWithErrors(error);
-		}
+	protected DefUnit(DefSymbol defname, Comment[] comments, boolean defIdIsChild) {
+		assertNotNull(defname);
+		this.defname = defIdIsChild ? parentize(defname) : defname;
 		this.comments = comments;
+	}
+	
+	public DefUnit(ProtoDefSymbol defIdTuple) {
+		this(createDefId(defIdTuple), null /*TODO comments*/);
+	}
+	
+	public static DefSymbol createDefId(ProtoDefSymbol defIdTuple) {
+		DefSymbol defId = new DefSymbol(defIdTuple.name);
+		defId.initSourceRange(defIdTuple.nameSourceRange);
+		if(defIdTuple.error == null) {
+			defId.setParsedStatus();
+		} else {
+			defId.setParsedStatusWithErrors(defIdTuple.error);
+		}
+		return defId;
 	}
 	
 	/** Constructor for synthetic defunits. */
 	protected DefUnit(String defName) {
-		this(defName, null, null, null, null);
-	}
-	
-	/** Constructor for Module defunit. */
-	protected DefUnit(DefSymbol defname, Comment[] comments, SourceRange sourceRange) {
-		initSourceRange(sourceRange);
-		assertNotNull(defname);
-		this.defname = defname;
-		this.comments = comments;
+		this(new ProtoDefSymbol(defName, null, null));
 	}
 	
 	public String getName() {

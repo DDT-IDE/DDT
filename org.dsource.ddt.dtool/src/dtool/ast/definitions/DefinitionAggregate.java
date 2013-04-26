@@ -23,7 +23,8 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	
 	public DefinitionAggregate(DefUnitTuple defunit, PROT prot, ArrayView<TemplateParameter> templateParams,
 			ArrayView<ASTNeoNode> members) {
-		super(defunit, prot);
+		super(defunit.defSymbol);
+		initSourceRange(defunit.sourceRange);
 		this.templateParams = parentize(templateParams);
 		this.members = parentize(members);
 	}

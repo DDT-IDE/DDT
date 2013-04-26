@@ -20,7 +20,7 @@ import dtool.DToolBundle;
 
 
 
-public class DToolTestResources implements IDToolTestConstants {
+public class DToolTestResources {
 	
 	protected static final String TEST_RESOURCES_BASE_DIR_PROPERTY = DToolTests.DTOOL_PREFIX + "TestResourcesDir";
 	protected static final String TEST_RESOURCES_WORKING_DIR_PROPERTY = DToolTests.DTOOL_PREFIX + "TestsWorkingDir";
