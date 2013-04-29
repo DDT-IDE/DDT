@@ -306,12 +306,12 @@ public abstract class AbstractParser {
 			return defId;
 		}
 		
-		public <T extends ASTNeoNode> T storeResult(NodeResult<T> nodeResult) {
+		public <T extends ASTNeoNode> T checkResult(NodeResult<T> nodeResult) {
 			ruleBroken = nodeResult.ruleBroken;
 			return nodeResult.node;
 		}
 		
-		public <T extends ASTNeoNode> T subRule(NodeResult<T> nodeResult, ParseRuleDescription expectedRule) {
+		public <T extends ASTNeoNode> T requiredResult(NodeResult<T> nodeResult, ParseRuleDescription expectedRule) {
 			if(nodeResult.node == null) {
 				storeBreakError(createErrorExpectedRule(expectedRule));
 				return null;

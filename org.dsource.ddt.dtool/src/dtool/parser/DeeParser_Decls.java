@@ -565,7 +565,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(tryConsume(DeeTokens.SEMICOLON)) { 
 				fnBody = conclude(srOf(lastLexElement(), new EmptyBodyStatement()));
 			} else {
-				fnBody = parse.subRule(parseFunctionBody(), RULE_BODY);
+				fnBody = parse.requiredResult(parseFunctionBody(), RULE_BODY);
 			}
 		}
 		
@@ -671,27 +671,27 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		parsing: {
 			if(tryConsume(DeeTokens.KW_IN)) {
-				inBlock = parse.storeResult(parseBlockStatement_toMissing(false));
+				inBlock = parse.checkResult(parseBlockStatement_toMissing(false));
 				if(parse.ruleBroken) break parsing;
 				
 				if(lookAhead() == DeeTokens.KW_OUT) {
-					outBlock = parse.storeResult(parseOutBlock());
+					outBlock = parse.checkResult(parseOutBlock());
 					if(parse.ruleBroken) break parsing;
 				}
 			} else if(lookAhead() == DeeTokens.KW_OUT) {
 				isOutIn = true;
 				
-				outBlock = parse.storeResult(parseOutBlock());
+				outBlock = parse.checkResult(parseOutBlock());
 				if(parse.ruleBroken) break parsing;
 				
 				if(tryConsume(DeeTokens.KW_IN)) {
-					inBlock = parse.storeResult(parseBlockStatement_toMissing(false));
+					inBlock = parse.checkResult(parseBlockStatement_toMissing(false));
 					if(parse.ruleBroken) break parsing;
 				}
 			}
 			
 			if(tryConsume(DeeTokens.KW_BODY)) {
-				bodyBlock = parse.storeResult(parseBlockStatement_toMissing(false));
+				bodyBlock = parse.checkResult(parseBlockStatement_toMissing(false));
 			} else {
 				parse.storeBreakError(createErrorExpectedRule(RULE_BODY));
 			}
@@ -754,7 +754,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false)
 				break parsing;
 			
-			block = parse.storeResult(parseBlockStatement_toMissing(false));
+			block = parse.checkResult(parseBlockStatement_toMissing(false));
 		}
 		
 		return parse.resultConclude(new FunctionBodyOutBlock(id, block));
@@ -924,13 +924,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		parsing : {
 			if(tryConsume(DeeTokens.COLON)) {
-				type = parse.storeResult(parseTypeReference_ToMissing());
+				type = parse.checkResult(parseTypeReference_ToMissing());
 				if(parse.ruleBroken) break parsing;
 			}
 			if(tryConsume(DeeTokens.SEMICOLON)) {
 				body = concludeNode(srOf(lastLexElement(), new DefinitionEnum.NoEnumBody()));
 			} else {
-				body = parse.subRule(parseEnumBody(), RULE_ENUM_BODY);
+				body = parse.requiredResult(parseEnumBody(), RULE_ENUM_BODY);
 			}
 		}
 		return parse.resultConclude(new DefinitionEnum(defId, type, body));
@@ -945,10 +945,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		parsing : {
 			if(tryConsume(DeeTokens.COLON)) {
-				type = parse.storeResult(parseTypeReference_ToMissing());
+				type = parse.checkResult(parseTypeReference_ToMissing());
 				if(parse.ruleBroken) break parsing;
 			}
-			body = parse.subRule(parseEnumBody(), RULE_ENUM_BODY);
+			body = parse.requiredResult(parseEnumBody(), RULE_ENUM_BODY);
 		}
 		return parse.resultConclude(new DeclarationEnum(type, body));
 	}
@@ -975,7 +975,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			ProtoDefSymbol defId = null;
 			Expression value = null;
 			
-			type = parse.storeResult(parseTypeReference());
+			type = parse.checkResult(parseTypeReference());
 			
 			if(lookAhead() == DeeTokens.IDENTIFIER) {
 				defId = parseDefId();
@@ -1112,7 +1112,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				declList = parseDeclList(DeeTokens.CLOSE_BRACE);
 				parse.consumeRequired(DeeTokens.CLOSE_BRACE);
 			} else {
-				declList = parse.subRule(parseDeclaration(acceptEmptyDecl, enablesAutoDecl), RULE_DECLARATION);
+				declList = parse.requiredResult(parseDeclaration(acceptEmptyDecl, enablesAutoDecl), RULE_DECLARATION);
 			}
 			return this;
 		}

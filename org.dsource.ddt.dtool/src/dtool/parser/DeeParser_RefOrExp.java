@@ -1551,7 +1551,7 @@ protected class ParseRule_TypeOrExp {
 				
 				if(tryConsume(DeeTokens.LAMBDA)) {
 					
-					Expression bodyExp = parse.storeResult(parseAssignExpression_Rule(true, RULE_EXPRESSION));
+					Expression bodyExp = parse.checkResult(parseAssignExpression_Rule(true, RULE_EXPRESSION));
 					return parse.resultConclude(new ExpLambda(fnParams, fnAttributes, bodyExp));
 				}
 				
@@ -1568,7 +1568,7 @@ protected class ParseRule_TypeOrExp {
 		consumeLookAhead(DeeTokens.LAMBDA);
 		
 		ParseHelper parse = new ParseHelper(defId.getStartPos());
-		Expression bodyExp = parse.storeResult(parseAssignExpression_Rule(true, RULE_EXPRESSION));
+		Expression bodyExp = parse.checkResult(parseAssignExpression_Rule(true, RULE_EXPRESSION));
 		
 		SimpleLambdaDefUnit lambdaDefId = conclude(defId.nameSourceRange, new SimpleLambdaDefUnit(defId));
 		return parse.resultConclude(new ExpSimpleLambda(lambdaDefId, bodyExp));
