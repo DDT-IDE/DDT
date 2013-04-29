@@ -4,6 +4,7 @@ import static dtool.util.NewUtils.assertNotNull_;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
@@ -27,7 +28,7 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 		if(body == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
 		if(body instanceof NodeList2) {
-			return ((NodeList2) body).nodes.iterator();
+			return CoreUtil.<NodeList2<ASTNeoNode>>blindCast(body).nodes.iterator();
 		}
 		return IteratorUtil.singletonIterator(body);
 	}

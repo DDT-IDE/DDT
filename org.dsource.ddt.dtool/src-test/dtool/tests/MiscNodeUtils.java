@@ -1,6 +1,7 @@
 package dtool.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList2;
@@ -29,7 +30,7 @@ public class MiscNodeUtils {
 			
 			ASTNeoNode[] children = node.getChildren();
 			if(ignoreNodeList && children.length == 1 && children[0] instanceof NodeList2) {
-				children = ((NodeList2) children[0]).getChildren();
+				children = CoreUtil.<NodeList2<ASTNeoNode>>blindCast(children[0]).getChildren();
 			}
 			
 			assertTrue(children.length > childIx);

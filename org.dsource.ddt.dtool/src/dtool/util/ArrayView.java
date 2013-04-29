@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 
+import melnorme.utilbox.core.CoreUtil;
+
 /**
  * A simple immutable array collection (RandomAccess, Iterable). 
  */
@@ -23,6 +25,10 @@ public class ArrayView<E> implements Iterable<E>, RandomAccess, Collection<E> {
 	public ArrayView(E[] array) {
 		assertNotNull(array);
 		this.array = array;
+	}
+	
+	public final <T> ArrayView<T> upcastTypeParameter() {
+		return CoreUtil.<ArrayView<T>>blindCast(this);
 	}
 	
 	@Override

@@ -16,7 +16,7 @@ pragma(foo) {
 }
 
 #STRUCTURE_EXPECTED:
-DeclarationPragma(Symbol NodeList2( #@DECLS_SAMPLE DeclarationPragma(Symbol NodeList2( #@DECLS_SAMPLE )) ))
+DeclarationPragma(Symbol DeclList( #@DECLS_SAMPLE DeclarationPragma(Symbol DeclList( #@DECLS_SAMPLE )) ))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

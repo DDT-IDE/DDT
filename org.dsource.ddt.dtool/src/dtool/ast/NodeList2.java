@@ -1,15 +1,19 @@
 package dtool.ast;
 
 import static dtool.util.NewUtils.assertNotNull_;
+
+import java.util.Iterator;
+
+import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.util.ArrayView;
 
-public class NodeList2 extends ASTNeoNode {
+public class NodeList2<E extends ASTNeoNode> extends ASTNeoNode {
 	
-	public final ArrayView<ASTNeoNode> nodes;
+	public final ArrayView<E> nodes;
 	
-	public NodeList2(ArrayView<ASTNeoNode> nodes) {
-		this.nodes = assertNotNull_(parentize(nodes));
+	public NodeList2(ArrayView<E> nodes) {
+		this.nodes = parentize(assertNotNull_(nodes));
 	}
 	
 	@Override
@@ -29,6 +33,10 @@ public class NodeList2 extends ASTNeoNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNodeList(nodes, "\n", true);
+	}
+	
+	public static Iterator<? extends ASTNeoNode> getMembersIterator(NodeList2<? extends ASTNeoNode> body) {
+		return body == null ? IteratorUtil.<ASTNeoNode>getEMPTY_ITERATOR() : body.nodes.iterator();
 	}
 	
 }

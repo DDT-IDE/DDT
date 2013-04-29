@@ -482,7 +482,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				convertDsymbol.defSymbol,
 				tplParams,
 				null,
-				createNodeList(DescentASTConverter.convertManyNoNulls(elem.members, ASTNeoNode.class, convContext))
+				createDeclList(DescentASTConverter.convertManyNoNulls(elem.members, ASTNeoNode.class, convContext))
 			)
 		);
 	}
@@ -536,11 +536,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	public static ASTNeoNode convertEnumDecl(EnumDeclaration elem, ASTConversionContext convContext) {
 		if(elem.ident != null) {
-			return new DefinitionEnum(
-				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
-				DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext),
-				ReferenceConverter.convertType(elem.memtype, convContext)
-			);
+			DefUnitTuple defUnitTuple = DefinitionConverter.convertDsymbol(elem, convContext);
+			return connect(defUnitTuple.sourceRange, 
+				new DefinitionEnum(
+				defUnitTuple.defSymbol,
+				ReferenceConverter.convertType(elem.memtype, convContext),
+				new DefinitionEnum.EnumBody(DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext), false)
+			));
 		} else {
 			return connect(DefinitionConverter.sourceRange(elem), new EnumContainer(
 				DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext),

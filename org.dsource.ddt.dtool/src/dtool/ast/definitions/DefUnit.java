@@ -71,6 +71,7 @@ public abstract class DefUnit extends ASTNeoNode {
 	}
 	
 	public static DefSymbol createDefId(ProtoDefSymbol defIdTuple) {
+		assertNotNull(defIdTuple);
 		DefSymbol defId = new DefSymbol(defIdTuple.name);
 		defId.initSourceRange(defIdTuple.nameSourceRange);
 		if(defIdTuple.error == null) {

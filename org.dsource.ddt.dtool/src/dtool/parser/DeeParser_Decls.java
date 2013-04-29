@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.NodeList2;
+import dtool.ast.DeclList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
@@ -42,11 +42,14 @@ import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.InvalidDeclaration;
 import dtool.ast.declarations.InvalidSyntaxElement;
+import dtool.ast.definitions.DeclarationEnum;
 import dtool.ast.definitions.DeclarationMixin;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasDecl;
+import dtool.ast.definitions.DefinitionEnum;
+import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.AutoReturnReference;
 import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
@@ -54,6 +57,7 @@ import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
+import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
@@ -109,6 +113,52 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		return defId;
 	}
+	
+	/* -----------------------  Some helpers  ----------------------- */
+	
+	public abstract class ElementListParseHelper<T extends ASTNeoNode> extends ParseHelper {
+		
+		public ArrayView<T> members; 
+		public boolean hasEndingSep = false;
+		
+		public ElementListParseHelper() {
+			nodeStart = -1;
+		}
+		
+		public void parseList(DeeTokens tkOPEN, DeeTokens tkSEP, DeeTokens tkCLOSE) {
+			ParseHelper parse = this;
+			if(!tryConsume(tkOPEN)) {
+				parse.ruleBroken = true;
+				return;
+			}
+			setStartPosition(lastLexElement().getStartPos());
+			ArrayList<T> membersList = new ArrayList<T>();
+			
+			while(true) {
+				if(tryConsume(tkCLOSE))
+					break;
+				
+				T entry = parseMember(lookAhead() == tkSEP);
+				if(entry != null) {
+					membersList.add(entry);
+					hasEndingSep = false;
+				}
+				
+				if(tryConsume(tkSEP)) {
+					hasEndingSep = true;
+					continue;
+				} else {
+					parse.consumeRequired(tkCLOSE);
+					break;
+				}
+			}
+			members = arrayView(membersList);
+		}
+		
+		protected abstract T parseMember(boolean createMissing);
+		
+	}
+	
 	
 	/* ----------------------------------------------------------------- */
 	
@@ -221,7 +271,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.OPEN_PARENS) {
 				return matchAutoReturnFunction();
 			}
+			return result(parseDeclarationBasicAttrib());
 		case KW_ENUM:
+			if((lookAhead(1) == DeeTokens.COLON || lookAhead(1) == DeeTokens.OPEN_BRACE))
+				return matchDeclarationEnum();
+			if( (lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.COLON) ||
+				(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.OPEN_BRACE) ||
+				(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.SEMICOLON) || 
+				(lookAhead(1) == DeeTokens.SEMICOLON))
+				return matchDefinitionEnum();
 			return result(parseDeclarationBasicAttrib());
 			
 		case KW_TEMPLATE: 
@@ -383,108 +441,70 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public NodeResult<InitializerArray> parseArrayInitializer() {
-		if(!tryConsume(DeeTokens.OPEN_BRACKET))
+		ParseArrayInitEntry listParse = new ParseArrayInitEntry();
+		listParse.parseList(DeeTokens.OPEN_BRACKET, DeeTokens.COMMA, DeeTokens.CLOSE_BRACKET);
+		if(listParse.members == null)
 			return nullResult();
-		ParseHelper parse = new ParseHelper();
 		
-		ArrayList<ArrayInitEntry> entries = new ArrayList<>();
-		boolean endingComma = false;
+		return listParse.resultConclude(new InitializerArray(arrayView(listParse.members), listParse.hasEndingSep));
+	}
+	
+	public class ParseArrayInitEntry extends ElementListParseHelper<ArrayInitEntry> {
 		
-		if(tryConsume(DeeTokens.CLOSE_BRACKET)) {
+		@Override
+		protected ArrayInitEntry parseMember(boolean createMissing) {
+			Expression index = null;
+			Initializer initializer = null;
 			
-		} else while(true) {
-			
-			ArrayInitEntry initEntry = parseArrayInitEntry(lookAhead() != DeeTokens.COMMA);
-			if(initEntry != null) {
-				entries.add(initEntry);
-				endingComma = false;
+			if(lookAhead() == DeeTokens.COLON) {
+				index = parseAssignExpression_toMissing();
+				consumeLookAhead(DeeTokens.COLON);
+				initializer = parseNonVoidInitializer(true).node;
+			} else {
+				initializer = parseNonVoidInitializer(createMissing).node;
+				
+				if(initializer == null)
+					return null;
+				
+				if(initializer instanceof InitializerExp && lookAhead() == DeeTokens.COLON) {
+					index = ((InitializerExp) initializer).exp;
+					index.detachFromParent();
+					consumeLookAhead(DeeTokens.COLON);
+					initializer = parseNonVoidInitializer(true).node;
+				}
 			}
 			
-			if(tryConsume(DeeTokens.COMMA)) {
-				endingComma = true;
-				if(tryConsume(DeeTokens.CLOSE_BRACE)) {
-					break;
-				} 
-				continue;
-			}
-			parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
-			break;
+			ASTNeoNode startNode = index != null ? index : initializer;
+			return concludeNode(srToPosition(startNode, new ArrayInitEntry(index, initializer)));
 		}
-		
-		return parse.resultConclude(new InitializerArray(arrayView(entries), endingComma));
 	}
 	
 	public NodeResult<InitializerStruct> parseStructInitializer() {
-		if(!tryConsume(DeeTokens.OPEN_BRACE))
+		ParseStructInitEntry listParse = new ParseStructInitEntry();
+		listParse.parseList(DeeTokens.OPEN_BRACE, DeeTokens.COMMA, DeeTokens.CLOSE_BRACE);
+		if(listParse.members == null)
 			return nullResult();
-		ParseHelper parse = new ParseHelper();
 		
-		ArrayList<StructInitEntry> entries = new ArrayList<>();
-		boolean endingComma = false;
-
-		if(tryConsume(DeeTokens.CLOSE_BRACE)) {
-			
-		} else while(true) {
-			
-			StructInitEntry initEntry = parseStructInitEntry(lookAhead() != DeeTokens.COMMA);
-			if(initEntry != null) {
-				entries.add(initEntry);
-				endingComma = false;
-			}
-			
-			if(tryConsume(DeeTokens.COMMA)) {
-				endingComma = true;
-				if(tryConsume(DeeTokens.CLOSE_BRACE)) {
-					break;
-				} 
-				continue;
-			}
-			parse.consumeRequired(DeeTokens.CLOSE_BRACE);
-			break;
-		}
-		
-		return parse.resultConclude(new InitializerStruct(arrayView(entries), endingComma));
+		return listParse.resultConclude(new InitializerStruct(arrayView(listParse.members), listParse.hasEndingSep));
 	}
 	
-	public ArrayInitEntry parseArrayInitEntry(boolean nullIfMissing) {
-		Expression index = null;
-		Initializer initializer = null;
+	public class ParseStructInitEntry extends ElementListParseHelper<StructInitEntry> {
 		
-		if(lookAhead() == DeeTokens.COLON) {
-			index = parseAssignExpression_toMissing();
-			consumeLookAhead(DeeTokens.COLON);
-			initializer = parseNonVoidInitializer(true).node;
-		} else {
-			initializer = parseNonVoidInitializer(!nullIfMissing).node;
-			
-			if(initializer == null)
+		@Override
+		protected StructInitEntry parseMember(boolean createMissing) {
+			RefIdentifier member = null;
+			if(lookAhead() == DeeTokens.COLON || 
+				(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.COLON)) {
+				member = parseRefIdentifier();
+				consumeLookAhead(DeeTokens.COLON);
+			}
+			Initializer init = parseNonVoidInitializer(createMissing || member != null).node;
+			if(init == null)
 				return null;
 			
-			if(initializer instanceof InitializerExp && lookAhead() == DeeTokens.COLON) {
-				index = ((InitializerExp) initializer).exp;
-				index.detachFromParent();
-				consumeLookAhead(DeeTokens.COLON);
-				initializer = parseNonVoidInitializer(true).node;
-			}
+			ASTNeoNode startNode = member != null ? member : init;
+			return concludeNode(srToPosition(startNode, new StructInitEntry(member, init)));
 		}
-		
-		ASTNeoNode startNode = index != null ? index : initializer;
-		return conclude(srToPosition(startNode, new ArrayInitEntry(index, initializer)));
-	}
-
-	protected StructInitEntry parseStructInitEntry(boolean nullIfMissing) {
-		RefIdentifier member = null;
-		if(lookAhead() == DeeTokens.COLON || 
-			(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.COLON)) {
-			member = parseRefIdentifier();
-			consumeLookAhead(DeeTokens.COLON);
-		}
-		Initializer init = parseNonVoidInitializer(!nullIfMissing || member != null).node;
-		if(init == null)
-			return null;
-		
-		ASTNeoNode startNode = member != null ? member : init;
-		return conclude(srToPosition(startNode, new StructInitEntry(member, init)));
 	}
 	
 	public static final ParseRuleDescription RULE_BODY = new ParseRuleDescription("Body");
@@ -545,12 +565,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(tryConsume(DeeTokens.SEMICOLON)) { 
 				fnBody = conclude(srOf(lastLexElement(), new EmptyBodyStatement()));
 			} else {
-				NodeResult<? extends IFunctionBody> resultFunctionBody = parseFunctionBody();
-				fnBody = parse.storeResult(resultFunctionBody);
-				if(fnBody == null) {
-					parse.ruleBroken = true;
-					parse.storeBreakError(createErrorExpectedRule(RULE_BODY));
-				}
+				fnBody = parse.subRule(parseFunctionBody(), RULE_BODY);
 			}
 		}
 		
@@ -644,9 +659,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		ParseHelper parse = new ParseHelper(-1);
 		if(lookAhead() == DeeTokens.KW_IN || lookAhead() == DeeTokens.KW_OUT || lookAhead() == DeeTokens.KW_BODY) {
-			parse.nodeStart = lookAheadElement().getStartPos();
+			parse.setStartPosition(lookAheadElement().getStartPos());
 		} else {
-			parse.nodeStart = getLexPosition(); // It will be missing element
+			parse.setStartPosition(getLexPosition()); // It will be missing element
 		}
 		
 		boolean isOutIn = false;
@@ -677,10 +692,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			
 			if(tryConsume(DeeTokens.KW_BODY)) {
 				bodyBlock = parse.storeResult(parseBlockStatement_toMissing(false));
-			}
-			if(bodyBlock == null) {
-				parse.store(createErrorExpectedRule(RULE_BODY));
-				parse.ruleBroken = true;
+			} else {
+				parse.storeBreakError(createErrorExpectedRule(RULE_BODY));
 			}
 		}
 		
@@ -759,7 +772,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		ProtoDefSymbol defId = null;
 		ArrayView<TemplateParameter> tplParams = null;
 		Expression tplConstraint = null;
-		NodeList2 declBody = null;
+		DeclList declBody = null;
 		
 		parsing: {
 			defId = parse.storeResult(parseDefId());
@@ -777,12 +790,12 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new DefinitionTemplate(isMixin, defId, tplParams, tplConstraint, declBody));
 	}
 	
-	public NodeList2 parseDeclarationBlock(ParseHelper parse, boolean required) {
+	public DeclList parseDeclarationBlock(ParseHelper parse, boolean required) {
 		if(!tryConsume(DeeTokens.OPEN_BRACE)) {
 			parse.store(required ? createErrorExpectedRule(RULE_BLOCK) : null);
 			return null;
 		}
-		NodeList2 declBody = parseDeclList(DeeTokens.CLOSE_BRACE);
+		DeclList declBody = parseDeclList(DeeTokens.CLOSE_BRACE);
 		parse.consumeRequired(DeeTokens.CLOSE_BRACE);
 		return declBody;
 	}
@@ -901,6 +914,91 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new DeclarationAliasThis(isAssignSyntax, refId));
 	}
 	
+	protected NodeResult<DefinitionEnum> matchDefinitionEnum() {
+		consumeLookAhead(DeeTokens.KW_ENUM);
+		ParseHelper parse = new ParseHelper();
+		
+		ProtoDefSymbol defId = parseDefId();
+		Reference type = null;
+		EnumBody body = null;
+		
+		parsing : {
+			if(tryConsume(DeeTokens.COLON)) {
+				type = parse.storeResult(parseTypeReference_ToMissing());
+				if(parse.ruleBroken) break parsing;
+			}
+			if(tryConsume(DeeTokens.SEMICOLON)) {
+				body = concludeNode(srOf(lastLexElement(), new DefinitionEnum.NoEnumBody()));
+			} else {
+				body = parse.subRule(parseEnumBody(), RULE_ENUM_BODY);
+			}
+		}
+		return parse.resultConclude(new DefinitionEnum(defId, type, body));
+	}
+	
+	protected NodeResult<DeclarationEnum> matchDeclarationEnum() {
+		consumeLookAhead(DeeTokens.KW_ENUM);
+		ParseHelper parse = new ParseHelper();
+		
+		Reference type = null;
+		EnumBody body = null;
+		
+		parsing : {
+			if(tryConsume(DeeTokens.COLON)) {
+				type = parse.storeResult(parseTypeReference_ToMissing());
+				if(parse.ruleBroken) break parsing;
+			}
+			body = parse.subRule(parseEnumBody(), RULE_ENUM_BODY);
+		}
+		return parse.resultConclude(new DeclarationEnum(type, body));
+	}
+	
+	public static final ParseRuleDescription RULE_ENUM_BODY = new ParseRuleDescription("EnumBody");
+	
+	public NodeResult<EnumBody> parseEnumBody() {
+		ParseEnumMember parse = new ParseEnumMember();
+		parse.parseList(DeeTokens.OPEN_BRACE, DeeTokens.COMMA, DeeTokens.CLOSE_BRACE);
+		if(parse.members == null) {
+			return nullResult();
+		}
+		
+		return parse.resultConclude(new EnumBody(arrayView(parse.members), parse.hasEndingSep));
+	}
+	
+	public class ParseEnumMember extends ElementListParseHelper<EnumMember> {
+
+		@Override
+		protected EnumMember parseMember(boolean createMissing) {
+			ParseHelper parse = new ParseHelper(-1);
+			
+			Reference type;
+			ProtoDefSymbol defId = null;
+			Expression value = null;
+			
+			type = parse.storeResult(parseTypeReference());
+			
+			if(lookAhead() == DeeTokens.IDENTIFIER) {
+				defId = parseDefId();
+			} else if(couldHaveBeenParsedAsId(type)) {
+				defId = convertRefIdToDef(type);
+				type = null;
+			} else {
+				if(type == null && !createMissing) {
+					return null;
+				}
+				defId = parseDefId();
+			}
+
+			if(tryConsume(DeeTokens.ASSIGN)) {
+				value = parseAssignExpression_toMissing();
+			}
+			
+			parse.setStartPosition(type != null ? type.getStartPos() : defId.getStartPos());
+			return parse.conclude(new EnumMember(type, defId, value));
+		}
+		
+	}
+	
 	/* -------------------- Plain declarations -------------------- */
 	
 	public NodeResult<DeclarationImport> parseImportDeclaration() {
@@ -961,7 +1059,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
 				packages.add(id.getToken());
 			} else {
-				parse.nodeStart = packages.size() > 0 ? packages.get(0).getStartPos() : id.getStartPos();
+				parse.setStartPosition(packages.size() > 0 ? packages.get(0).getStartPos() : id.getStartPos());
 				return parse.conclude(new RefModule(arrayViewG(packages), id.getSourceValue()));
 			}
 		}
@@ -1014,21 +1112,18 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				declList = parseDeclList(DeeTokens.CLOSE_BRACE);
 				parse.consumeRequired(DeeTokens.CLOSE_BRACE);
 			} else {
-				declList = parseDeclaration(acceptEmptyDecl, enablesAutoDecl).node;
-				if(declList == null) {
-					parse.storeBreakError(createErrorExpectedRule(RULE_DECLARATION));
-				}
+				declList = parse.subRule(parseDeclaration(acceptEmptyDecl, enablesAutoDecl), RULE_DECLARATION);
 			}
 			return this;
 		}
 	}
 	
-	protected NodeList2 parseDeclList(DeeTokens bodyListTerminator) {
+	protected DeclList parseDeclList(DeeTokens bodyListTerminator) {
 		ParseHelper parse = new ParseHelper(getLexPosition());
 		
 		ArrayView<ASTNeoNode> declDefs = parseDeclDefs(bodyListTerminator);
 		consumeSubChannelTokens();
-		return parse.conclude(new NodeList2(declDefs));
+		return parse.conclude(new DeclList(declDefs));
 	}
 	
 	public DeclarationLinkage parseDeclarationExternLinkage() {

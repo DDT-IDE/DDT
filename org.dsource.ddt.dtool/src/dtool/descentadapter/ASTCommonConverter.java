@@ -4,6 +4,7 @@ import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.DeclList;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -71,8 +72,13 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	}
 	
 	
-	public NodeList2 createNodeList(ArrayView<ASTNeoNode> elems) {
-		return new NodeList2(elems);
+	public NodeList2<ASTNeoNode> createNodeList(ArrayView<ASTNeoNode> elems) {
+		return new NodeList2<ASTNeoNode>(elems);
 	}
+	
+	public DeclList createDeclList(ArrayView<ASTNeoNode> elems) {
+		return new DeclList(elems);
+	}
+
 	
 }

@@ -15,6 +15,7 @@ import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.definitions.DefinitionEnum.NoEnumBody;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpParentheses;
 import dtool.ast.expressions.ExpReference;
@@ -322,9 +323,9 @@ public class ASTNodeReparseCheck {
 		case INITIALIZER_STRUCT:
 			return reparseCheck(snippedParser.parseStructInitializer());
 		case STRUCT_INIT_ENTRY:
-			return reparseCheck(snippedParser.parseStructInitEntry(false));
+			return reparseCheck(snippedParser.new ParseStructInitEntry().parseMember(true));
 		case ARRAY_INIT_ENTRY:
-			return reparseCheck(snippedParser.parseArrayInitEntry(false));
+			return reparseCheck(snippedParser.new ParseArrayInitEntry().parseMember(true));
 			
 		case DEFINITION_FUNCTION:
 			return reparseCheck(snippedParser.parseDeclaration());
@@ -333,6 +334,15 @@ public class ASTNodeReparseCheck {
 		case VAR_ARGS_PARAMETER:
 			return functionParamReparseCheck();
 			//return simpleReparseCheck(node, "...");
+		case DEFINITION_ENUM:
+			return reparseCheck(snippedParser.matchDefinitionEnum());
+		case DECLARATION_ENUM:
+			return reparseCheck(snippedParser.matchDeclarationEnum());
+		case ENUM_BODY:
+			if(nodeUnderTest instanceof NoEnumBody) return VOID;
+			return reparseCheck(snippedParser.parseEnumBody());
+		case ENUM_MEMBER:
+			return reparseCheck(snippedParser.new ParseEnumMember().parseMember(true));
 			
 		case DEFINITION_TEMPLATE:
 			return reparseCheck(snippedParser.parseTemplateDefinition());
@@ -443,6 +453,7 @@ public class ASTNodeReparseCheck {
 		return reparseCheck(result.getNode());
 	}
 	public Void reparseCheck(IASTNeoNode reparsedNode) {
+		assertNotNull_(reparsedNode);
 		return reparseCheck(reparsedNode.asNode(), nodeUnderTest.getClass());
 	}
 	

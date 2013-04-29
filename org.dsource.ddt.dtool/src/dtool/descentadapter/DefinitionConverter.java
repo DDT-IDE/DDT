@@ -176,7 +176,8 @@ public class DefinitionConverter extends BaseDmdConverter {
 		elem.ident.length = elem.ident.ident.length; // Fix a parser source range issue
 		elem.length = Math.max(elem.length, elem.ident.length);
 		DefUnitTuple defunitInfo = convertDsymbol(elem, convContext);
-		return new EnumMember(defunitInfo, ExpressionConverter.convert(elem.value, convContext));
+		return connect(defunitInfo.sourceRange, 
+			new EnumMember(null, defunitInfo.defSymbol, ExpressionConverter.convert(elem.value, convContext)));
 	}
 	
 	public static NamelessParameter convertNamelessParameter(Type type, ASTConversionContext convContext) {

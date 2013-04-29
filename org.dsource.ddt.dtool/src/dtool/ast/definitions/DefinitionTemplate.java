@@ -9,9 +9,9 @@ import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
+import dtool.ast.DeclList;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeList2;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
@@ -28,12 +28,12 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	public final boolean isMixin;
 	public final ArrayView<TemplateParameter> tplParams;
 	public final Expression tplConstraint;
-	public final NodeList2 decls;
+	public final DeclList decls;
 	
 	public final boolean wrapper;
 	
 	public DefinitionTemplate(boolean isMixin, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams, 
-		Expression tplConstraint, NodeList2 decls) {
+		Expression tplConstraint, DeclList decls) {
 		super(defId);
 		this.isMixin = isMixin;
 		this.tplParams = parentize(tplParams);
@@ -106,6 +106,7 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	
 	@Override
 	public Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
+		// BUG in accessing decls
 		// TODO: check if in a template invocation
 		// TODO: test this more, redo
 		if(wrapper) {

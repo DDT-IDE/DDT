@@ -1,11 +1,15 @@
 package dtool.ast.definitions;
 
+import static dtool.util.NewUtils.assertNotNull_;
+
 import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.PROT;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeList2;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
@@ -15,14 +19,18 @@ import dtool.util.ArrayView;
 
 public class DefinitionEnum extends Definition implements IScopeNode, IStatement {
 	
-	public final ArrayView<EnumMember> members;
 	public final Reference type;
+	public final EnumBody body;
 	
-	public DefinitionEnum(DefUnitTuple defunitInfo, PROT prot, ArrayView<EnumMember> members, Reference reference) {
-		super(defunitInfo.defSymbol);
-		initSourceRange(defunitInfo.sourceRange);
-		this.members = parentize(members);
-		this.type = parentize(reference);
+	public DefinitionEnum(ProtoDefSymbol defId, Reference type, EnumBody body) {
+		super(assertNotNull_(defId));
+		this.type = parentize(type);
+		this.body = parentize(body);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DEFINITION_ENUM;
 	}
 	
 	@Override
@@ -31,10 +39,59 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, type);
-			TreeVisitor.acceptChildren(visitor, members);
+			TreeVisitor.acceptChildren(visitor, body);
 		}
 		visitor.endVisit(this);
 		
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("enum ");
+		cp.appendNode(defname, " ");
+		cp.appendNode(": ", type);
+		cp.appendNode(body);
+	}
+	
+	public static class EnumBody extends NodeList2<EnumMember> {
+		
+		public final boolean hasEndingComma;
+
+		public EnumBody(ArrayView<EnumMember> nodes, boolean endingComma) {
+			super(nodes);
+			this.hasEndingComma = endingComma;
+		}
+		
+		@Override
+		public ASTNodeTypes getNodeType() {
+			return ASTNodeTypes.ENUM_BODY;
+		}
+		
+		@Override
+		public void toStringAsCode(ASTCodePrinter cp) {
+			cp.append("{");
+			cp.appendNodeList(nodes, ", ", hasEndingComma);
+			cp.append("}");
+		}
+	}
+	
+	public static class NoEnumBody extends EnumBody {
+		
+		public static ArrayView<EnumMember> NULL_DECLS = ArrayView.create(new EnumMember[0]);
+		
+		public NoEnumBody() {
+			super(NULL_DECLS, false);
+		}
+		
+		@Override
+		public ASTNodeTypes getNodeType() {
+			return ASTNodeTypes.ENUM_BODY;
+		}
+		
+		@Override
+		public void toStringAsCode(ASTCodePrinter cp) {
+			cp.append(";");
+		}
 	}
 	
 	@Override
@@ -60,7 +117,7 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	
 	@Override
 	public Iterator<EnumMember> getMembersIterator(IModuleResolver moduleResolver) {
-		return members.iterator();
+		return body.nodes.iterator();
 	}
 	
 	@Override

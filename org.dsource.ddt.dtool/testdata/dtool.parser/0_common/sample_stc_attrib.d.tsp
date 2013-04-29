@@ -15,8 +15,6 @@
  
  ►#?STRUCTURE_EXPECTED!【deprecated●DeclarationBasicAttrib】●
  
- ►#?STRUCTURE_EXPECTED!【enum●DeclarationBasicAttrib】●
- 
  ►#?STRUCTURE_EXPECTED!【extern●DeclarationBasicAttrib】●
  ►#?STRUCTURE_EXPECTED!【final●DeclarationBasicAttrib】●
  ►#?STRUCTURE_EXPECTED!【nothrow●DeclarationBasicAttrib】●
@@ -26,11 +24,9 @@
  ►#?STRUCTURE_EXPECTED!【scope●DeclarationBasicAttrib】●
  ►#?STRUCTURE_EXPECTED!【static●DeclarationBasicAttrib】●
  ►#?STRUCTURE_EXPECTED!【synchronized●DeclarationBasicAttrib】●
- 
 ¤》
 
-// These cannot be used in multi-declaration attrib declaration: TODO
-#@SIMPLE_ATTRIBS_EXTRA《
+#@SIMPLE_ATTRIBS_ENUM《
  ►#?STRUCTURE_EXPECTED!【enum●DeclarationBasicAttrib】●
 ¤》
 

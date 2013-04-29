@@ -212,6 +212,9 @@ public abstract class AbstractParser {
 		return concludeDo(null, null, node);
 	}
 	
+	protected final <T extends ASTNeoNode> T concludeNode(T node) {
+		return concludeDo(null, null, node);
+	}
 	protected final <T extends ASTNeoNode> T conclude(T node) {
 		return concludeDo(null, null, node);
 	}
@@ -262,8 +265,8 @@ public abstract class AbstractParser {
 			this(startNode.getStartPos());
 		}
 		
-		public void startPosition(int nodeStart) {
-			assertTrue(nodeStart == -1);
+		public void setStartPosition(int nodeStart) {
+			assertTrue(this.nodeStart == -1);
 			this.nodeStart = nodeStart;
 		}
 		
@@ -304,6 +307,15 @@ public abstract class AbstractParser {
 		}
 		
 		public <T extends ASTNeoNode> T storeResult(NodeResult<T> nodeResult) {
+			ruleBroken = nodeResult.ruleBroken;
+			return nodeResult.node;
+		}
+		
+		public <T extends ASTNeoNode> T subRule(NodeResult<T> nodeResult, ParseRuleDescription expectedRule) {
+			if(nodeResult.node == null) {
+				storeBreakError(createErrorExpectedRule(expectedRule));
+				return null;
+			}
 			ruleBroken = nodeResult.ruleBroken;
 			return nodeResult.node;
 		}

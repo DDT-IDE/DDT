@@ -15,9 +15,9 @@ extern(C):
 #@DECLS_SAMPLE
 
 #STRUCTURE_EXPECTED:
-DeclarationProtection(NodeList2(
+DeclarationProtection(DeclList(
 	#@DECLS_SAMPLE
-	DeclarationLinkage(NodeList2( #@DECLS_SAMPLE ))
+	DeclarationLinkage(DeclList( #@DECLS_SAMPLE ))
 ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 final {
@@ -26,9 +26,9 @@ final {
 static:
 const:
 #STRUCTURE_EXPECTED:
-DeclarationBasicAttrib(NodeList2( #@DECLS_SAMPLE )) 
-DeclarationBasicAttrib(NodeList2(
-	DeclarationBasicAttrib(NodeList2())
+DeclarationBasicAttrib(DeclList( #@DECLS_SAMPLE )) 
+DeclarationBasicAttrib(DeclList(
+	DeclarationBasicAttrib(DeclList())
 ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 extern(#error:BAD_LINKAGE_ID) int bar;
@@ -66,33 +66,37 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #@SIMPLE_ATTRIB《
   ►#?STRUCTURE_EXPECTED!【#@SIMPLE_ATTRIBS●#@SIMPLE_ATTRIBS (】●
 ¤》
+#@ENUM_ATTRIB《
+  ►#?STRUCTURE_EXPECTED!【#@SIMPLE_ATTRIBS_ENUM●#@SIMPLE_ATTRIBS_ENUM (】●
+¤》
 
 #@ATTRIBS《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIB》
+#@ATTRIBS_WITH_ENUM《#@ATTRIBS●#@ENUM_ATTRIB》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS int foo1;
-#STRUCTURE_EXPECTED: #@ATTRIBS DefinitionVariable(* *) )
+#@ATTRIBS_WITH_ENUM int foo1;
+#STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM DefinitionVariable(* *) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ :
 #@DECLS_SAMPLE
-#STRUCTURE_EXPECTED: #@ATTRIBS NodeList2( #@DECLS_SAMPLE ))
+#STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ : /* Zero decls */
-#STRUCTURE_EXPECTED: #@ATTRIBS NodeList2( ))
+#STRUCTURE_EXPECTED: #@ATTRIBS DeclList( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /**/ { } 
-#STRUCTURE_EXPECTED: #@ATTRIBS NodeList2( ))
+#STRUCTURE_EXPECTED: #@ATTRIBS DeclList( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS { 
 #@DECLS_SAMPLE
 }
-#STRUCTURE_EXPECTED: #@ATTRIBS NodeList2( #@DECLS_SAMPLE ))
+#STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
 #STRUCTURE_EXPECTED: #@ATTRIBS  DeclarationEmpty )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS /*EOF case*/ #error(EXPRULE_decl)
-#STRUCTURE_EXPECTED: #@ATTRIBS  )
+#@ATTRIBS_WITH_ENUM /*EOF case*/ #error(EXPRULE_decl)
+#STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS #error(SE_decl) ] int foo;
 
