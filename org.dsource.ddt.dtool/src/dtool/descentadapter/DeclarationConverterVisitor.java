@@ -61,7 +61,6 @@ import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.ImportStatic;
 import dtool.ast.declarations.InvalidSyntaxDeclaration_Old;
-import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefModifier;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionAliasDecl;
@@ -179,10 +178,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.BaseClass elem) {
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem.hasNoSourceRangeInfo() ? elem.type : elem), 
-			new BaseClass(
-				elem.protection,
-				ReferenceConverter.convertType(elem.type, convContext))
-			)
+			ReferenceConverter.convertType(elem.type, convContext))
 		);
 	}
 	
@@ -571,13 +567,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	private boolean convertClass(descent.internal.compiler.parser.ClassDeclaration elem,
 			ArrayView<TemplateParameter> tplParams) {
-		return endAdapt(
+		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
+		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionClass(
-				DefinitionConverter.convertDsymbol(elem, convContext),
-				elem.prot(),
+				convertDsymbol.defSymbol,
 				tplParams,
-				DescentASTConverter.convertMany(elem.sourceBaseclasses, BaseClass.class, convContext),
-				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
+				null,
+				DescentASTConverter.convertMany(elem.sourceBaseclasses, Reference.class, convContext),
+				createDeclList(DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext))
 			)
 		);
 	}
@@ -589,13 +586,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	private boolean convertInterface(descent.internal.compiler.parser.InterfaceDeclaration elem,
 			ArrayView<TemplateParameter> tplParams) {
-		return endAdapt(
+		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
+		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionInterface(
-				DefinitionConverter.convertDsymbol(elem, convContext),
-				elem.prot(),
+				convertDsymbol.defSymbol,
 				tplParams,
-				DescentASTConverter.convertMany(elem.sourceBaseclasses, BaseClass.class, convContext),
-				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
+				null,
+				DescentASTConverter.convertMany(elem.sourceBaseclasses, Reference.class, convContext),
+				createDeclList(DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext))
 			)
 		);
 	}	
@@ -607,12 +605,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	private boolean convertStruct(descent.internal.compiler.parser.StructDeclaration elem,
 			ArrayView<TemplateParameter> tplParams) {
-		return endAdapt(
+		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
+		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionStruct(
-				DefinitionConverter.convertDsymbol(elem, convContext),
-				elem.prot(),
+				convertDsymbol.defSymbol,
 				tplParams,
-				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
+				null,
+				createDeclList(DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext))
 			)
 		);
 	}
@@ -624,12 +623,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	private boolean convertUnion(descent.internal.compiler.parser.UnionDeclaration elem,
 			ArrayView<TemplateParameter> tplParams) {
-		return endAdapt(
+		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
+		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionUnion(
-				DefinitionConverter.convertDsymbol(elem, convContext),
-				elem.prot(),
+				convertDsymbol.defSymbol,
 				tplParams,
-				DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext)
+				null,
+				createDeclList(DescentASTConverter.convertMany(elem.members, ASTNeoNode.class, convContext))
 			)
 		);
 	}

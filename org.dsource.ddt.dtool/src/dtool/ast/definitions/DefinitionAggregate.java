@@ -3,10 +3,11 @@ package dtool.ast.definitions;
 import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.PROT;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.DeclList;
 import dtool.ast.IASTVisitor;
+import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -18,22 +19,34 @@ import dtool.util.NewUtils;
  */
 public abstract class DefinitionAggregate extends Definition implements IScopeNode, IStatement {
 	
-	public final ArrayView<TemplateParameter> templateParams; 
-	public final ArrayView<ASTNeoNode> members; // can be null. (bodyless aggregates)
+	public final ArrayView<TemplateParameter> tplParams;
+	public final Expression tplConstraint;
+	public final DeclList decls;
 	
-	public DefinitionAggregate(DefUnitTuple defunit, PROT prot, ArrayView<TemplateParameter> templateParams,
-			ArrayView<ASTNeoNode> members) {
-		super(defunit.defSymbol);
-		initSourceRange(defunit.sourceRange);
-		this.templateParams = parentize(templateParams);
-		this.members = parentize(members);
+	public DefinitionAggregate(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+		Expression tplConstraint, DeclList decls) {
+		super(defId);
+		this.tplParams = parentize(tplParams);
+		this.tplConstraint = parentize(tplConstraint);
+		this.decls = parentize(decls);
 	}
 	
 	protected void acceptNodeChildren(IASTVisitor visitor, boolean children) {
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, templateParams);
-			TreeVisitor.acceptChildren(visitor, members);
+			TreeVisitor.acceptChildren(visitor, tplParams);
+			TreeVisitor.acceptChildren(visitor, tplConstraint);
+			TreeVisitor.acceptChildren(visitor, decls);
+		}
+	}
+	
+	public void aggregateToStringAsCode(ASTCodePrinter cp, String keyword, boolean printDecls) {
+		cp.append(keyword);
+		cp.appendNode(defname, " ");
+		cp.appendNodeList("(", tplParams, ",", ") ");
+		DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
+		if(printDecls) {
+			cp.appendNode("{\n", decls, "}");
 		}
 	}
 	
@@ -44,7 +57,7 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
-		return NewUtils.getChainedIterator(members, templateParams); 
+		return NewUtils.getChainedIterator(decls.nodes /*NPE BUG here*/, tplParams); 
 	}
 	
 	@Override
@@ -56,7 +69,7 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	public String toStringForHoverSignature() {
 		ASTCodePrinter cp = new ASTCodePrinter();
 		cp.appendStrings(getModuleScope().toStringAsElement(), ".", getName());
-		cp.append(ASTCodePrinter.toStringParamListAsElements(templateParams));
+		cp.append(ASTCodePrinter.toStringParamListAsElements(tplParams));
 		return cp.toString();
 	}
 	

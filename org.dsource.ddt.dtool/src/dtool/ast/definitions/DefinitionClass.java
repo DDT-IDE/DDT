@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.PROT;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
+import dtool.ast.DeclList;
 import dtool.ast.IASTVisitor;
+import dtool.ast.expressions.Expression;
+import dtool.ast.references.Reference;
 import dtool.refmodel.IScope;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -16,12 +19,17 @@ import dtool.util.ArrayView;
  */
 public class DefinitionClass extends DefinitionAggregate {
 	
-	public final ArrayView<BaseClass> baseClasses;
+	public final ArrayView<Reference> baseClasses;
 	
-	public DefinitionClass(DefUnitTuple dudt, PROT prot, ArrayView<TemplateParameter> tplParams,
-			ArrayView<BaseClass> baseClasses, ArrayView<ASTNeoNode> members) {
-		super(dudt, prot, tplParams, members);
+	public DefinitionClass(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+		Expression tplConstraint, ArrayView<Reference> baseClasses, DeclList decls) {
+		super(defId, tplParams, tplConstraint, decls);
 		this.baseClasses = parentize(baseClasses);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DEFINITION_CLASS;
 	}
 	
 	@Override
@@ -29,6 +37,17 @@ public class DefinitionClass extends DefinitionAggregate {
 		boolean children = visitor.visit(this);
 		acceptNodeChildren(visitor, children);
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		classLikeToStringAsCode(cp, "class ");
+	}
+	
+	public void classLikeToStringAsCode(ASTCodePrinter cp, String keyword) {
+		aggregateToStringAsCode(cp, keyword, false);
+		cp.appendNodeList(": ", baseClasses, ",", " ");
+		cp.appendNode("{\n", decls, "}");
 	}
 	
 	@Override
@@ -40,9 +59,10 @@ public class DefinitionClass extends DefinitionAggregate {
 	protected void acceptNodeChildren(IASTVisitor visitor, boolean children) {
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, templateParams);
+			TreeVisitor.acceptChildren(visitor, tplParams);
+			TreeVisitor.acceptChildren(visitor, tplConstraint);
 			TreeVisitor.acceptChildren(visitor, baseClasses);
-			TreeVisitor.acceptChildren(visitor, members);
+			TreeVisitor.acceptChildren(visitor, decls);
 		}
 	}
 	
@@ -52,8 +72,8 @@ public class DefinitionClass extends DefinitionAggregate {
 			return null;
 		
 		List<IScope> scopes = new ArrayList<IScope>();
-		for(BaseClass baseclass: baseClasses) {
-			DefUnit defunit = baseclass.type.findTargetDefUnit(moduleResolver);
+		for(Reference baseclass: baseClasses) {
+			DefUnit defunit = baseclass.findTargetDefUnit(moduleResolver);
 			if(defunit == null)
 				continue;
 			scopes.add(defunit.getMembersScope(moduleResolver));

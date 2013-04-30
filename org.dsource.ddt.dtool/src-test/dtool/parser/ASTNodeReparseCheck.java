@@ -335,15 +335,24 @@ public class ASTNodeReparseCheck {
 			return functionParamReparseCheck();
 			//return simpleReparseCheck(node, "...");
 		case DEFINITION_ENUM:
-			return reparseCheck(snippedParser.matchDefinitionEnum());
+			return reparseCheck(snippedParser.parseDefinitionEnum_start());
 		case DECLARATION_ENUM:
-			return reparseCheck(snippedParser.matchDeclarationEnum());
+			return reparseCheck(snippedParser.parseDeclarationEnum_start());
 		case ENUM_BODY:
 			if(nodeUnderTest instanceof NoEnumBody) return VOID;
 			return reparseCheck(snippedParser.parseEnumBody());
 		case ENUM_MEMBER:
 			return reparseCheck(snippedParser.new ParseEnumMember().parseMember(true));
-			
+
+		case DEFINITION_STRUCT:
+			return reparseCheck(snippedParser.parseDefinitionStruct());
+		case DEFINITION_UNION:
+			return reparseCheck(snippedParser.parseDefinitionUnion());
+		case DEFINITION_CLASS:
+			return reparseCheck(snippedParser.parseDefinitionClass());
+		case DEFINITION_INTERFACE:
+			return reparseCheck(snippedParser.parseDefinitionInterface());
+
 		case DEFINITION_TEMPLATE:
 			return reparseCheck(snippedParser.parseTemplateDefinition());
 			

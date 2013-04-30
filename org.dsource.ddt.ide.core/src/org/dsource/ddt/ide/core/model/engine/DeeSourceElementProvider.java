@@ -21,9 +21,9 @@ import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
 import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
-import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
+import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionCtor;
@@ -38,7 +38,6 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.ICallableElement;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
-import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.expressions.ExpCall;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.NamedReference;
@@ -345,7 +344,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		if(defClass.getName().equals("Object"))
 			return DeeSourceElementProvider.EMPTY_STRING;
 		
-		ArrayView<BaseClass> baseClasses = defClass.baseClasses;
+		ArrayView<Reference> baseClasses = defClass.baseClasses;
 		if(baseClasses == null || baseClasses.size() == 0) {
 			if(isInterface) {
 				return DeeSourceElementProvider.EMPTY_STRING;
@@ -356,7 +355,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		String[] baseClassesStr = new String[baseClasses.size()];
 		for (int i = 0; i < baseClasses.size(); i++) {
 			// There is no way this can work without a FQN, but I don't know what DLTK wants
-			baseClassesStr[i] = baseClasses.get(i).type.toStringAsElement(); 
+			baseClassesStr[i] = baseClasses.get(i).toStringAsElement(); 
 		}
 		return baseClassesStr;
 	}

@@ -12,6 +12,14 @@
   TemplateThisParam(DefSymbol)
 】》
 
+#@TPL_PARAMS__SAMPLE《#?STRUCTURE_EXPECTED!【
+  ►(int R = 1, T = bar, alias A1 : 1+2)●
+  
+  TemplateValueParam(RefPrimitive DefSymbol Integer)
+  TemplateTypeParam(DefSymbol RefIdentifier)
+  TemplateAliasParam(DefSymbol ExpInfix(? ?))
+】》
+
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template args
 
 #@_TYPE_OR_EXP《#@TYPE_REFS__NO_BROKEN ● #@EXP_COND__NO_POSSIBLE_REFS ● #@NO_ROE》
@@ -51,9 +59,23 @@
 ¤》
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template constraint
-#@TPL_CONSTRAINT《
+#@TPL_CONSTRAINT__SAMPLES《
   ►#?STRUCTURE_EXPECTED!【if #error(EXP_OPEN_PARENS)【】● MissingParenthesesExpression】●
   ►#?STRUCTURE_EXPECTED!【if(#@NO_EXP)● #@NO_EXP】●
-  ►#?STRUCTURE_EXPECTED!【if(#@EXP_ANY)● #@EXP_ANY 】●
+  ►#?STRUCTURE_EXPECTED!【if(#@EXP_ANY__LITE)● #@EXP_ANY__LITE】●
   ►#?STRUCTURE_EXPECTED!【if(#@EXP_ANY__LITE #error(EXP_CLOSE_PARENS) #@BREAK● #@EXP_ANY__LITE #@BREAK】●
+¤》
+
+#@TPL_CONSTRAINT《
+  ►#@TPL_CONSTRAINT__SAMPLES●
+  ►#?STRUCTURE_EXPECTED!【if(#@EXP_ANY)● #@EXP_ANY 】●
+¤》
+
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#@TPL_AGGREGATE_TESTER《
+  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE ● #@TPL_PARAMS__SAMPLE】●
+  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE #@TPL_CONSTRAINT__SAMPLES●#@TPL_PARAMS__SAMPLE #@TPL_CONSTRAINT__SAMPLES】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_OPEN_BRACE)【】 #@BREAK if(#@NO_EXP)● #@BREAK #@NO_EXP】●
+  ►#?STRUCTURE_EXPECTED!【(T : int = bar #@NO_ClosePARENS #@BREAK●
+    TemplateTypeParam(DefSymbol RefPrimitive RefIdentifier) #@BREAK】●
 ¤》

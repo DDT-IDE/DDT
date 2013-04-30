@@ -149,25 +149,25 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		NodeResult<? extends Reference> refParseResult;
 		
 		if(lookAheadGrouped() == DeeTokens.PRIMITIVE_KW) {
-			return parseReference_ReferenceStart(matchRefPrimitive(lookAhead()), parsingExp);
+			return parseReference_referenceStart(parseRefPrimitive_start(lookAhead()), parsingExp);
 		}
 		switch (lookAhead()) {
-		case DOT: refParseResult = parseRefModuleQualified_do(); break;
-		case IDENTIFIER: return parseReference_ReferenceStart(parseRefIdentifier(), parsingExp);
+		case DOT: refParseResult = parseRefModuleQualified(); break;
+		case IDENTIFIER: return parseReference_referenceStart(parseRefIdentifier(), parsingExp);
 		
-		case KW_TYPEOF: refParseResult = parseRefTypeof_do(); break;
+		case KW_TYPEOF: refParseResult = parseRefTypeof(); break;
 		
-		case KW_CONST: refParseResult = matchRefTypeModifier_do(TypeModifierKinds.CONST); break;
-		case KW_IMMUTABLE: refParseResult = matchRefTypeModifier_do(TypeModifierKinds.IMMUTABLE); break;
-		case KW_SHARED: refParseResult = matchRefTypeModifier_do(TypeModifierKinds.SHARED); break;
-		case KW_INOUT: refParseResult = matchRefTypeModifier_do(TypeModifierKinds.INOUT); break;
+		case KW_CONST: refParseResult = parseRefTypeModifier_start(TypeModifierKinds.CONST); break;
+		case KW_IMMUTABLE: refParseResult = parseRefTypeModifier_start(TypeModifierKinds.IMMUTABLE); break;
+		case KW_SHARED: refParseResult = parseRefTypeModifier_start(TypeModifierKinds.SHARED); break;
+		case KW_INOUT: refParseResult = parseRefTypeModifier_start(TypeModifierKinds.INOUT); break;
 		default:
 			return nullResult();
 		}
 		
 		if(refParseResult.ruleBroken) 
-			return refParseResult.<Reference>upcastParam();
-		return parseReference_ReferenceStart(refParseResult.node, parsingExp);
+			return refParseResult.<Reference>upcastTypeParam();
+		return parseReference_referenceStart(refParseResult.node, parsingExp);
 	}
 	
 	protected boolean isTypeModifier(DeeTokens lookAhead) {
@@ -177,21 +177,17 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		}
 	}
 	
-	protected RefIdentifier parseRefIdentifier() {
+	public RefIdentifier parseRefIdentifier() {
 		BaseLexElement id = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
 		return conclude(id.getError(), srEffective(id, new RefIdentifier(idTokenToString(id))));
 	}
 	
-	protected RefPrimitive matchRefPrimitive(DeeTokens primitiveType) {
+	protected RefPrimitive parseRefPrimitive_start(DeeTokens primitiveType) {
 		LexElement primitive = consumeLookAhead(primitiveType);
 		return conclude(srOf(primitive, new RefPrimitive(primitive.token)));
 	}
 	
-	public RefModuleQualified parseRefModuleQualified() {
-		return (RefModuleQualified) parseRefModuleQualified_do().node;
-	}
-	
-	protected NodeResult<RefModuleQualified> parseRefModuleQualified_do() {
+	public NodeResult<RefModuleQualified> parseRefModuleQualified() {
 		if(!tryConsume(DeeTokens.DOT))
 			return nullResult();
 		int nodeStart = lastLexElement().getStartPos();
@@ -200,7 +196,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return resultConclude(isMissing(id), srToPosition(nodeStart, new RefModuleQualified(id)));
 	}
 	
-	protected NodeResult<RefTypeof> parseRefTypeof_do() {
+	public NodeResult<RefTypeof> parseRefTypeof() {
 		if(!tryConsume(DeeTokens.KW_TYPEOF))
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -217,7 +213,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return parse.resultConclude(new RefTypeof(exp));
 	}
 	
-	protected NodeResult<RefTypeModifier> matchRefTypeModifier_do(TypeModifierKinds modKind) {
+	protected NodeResult<RefTypeModifier> parseRefTypeModifier_start(TypeModifierKinds modKind) {
 		assertTrue(lookAhead().sourceValue.equals(modKind.sourceValue));
 		consumeInput();
 		ParseHelper parse = new ParseHelper();
@@ -230,11 +226,11 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return parse.resultConclude(new RefTypeModifier(modKind, ref));
 	}
 	
-	protected NodeResult<Reference> parseReference_ReferenceStart(Reference leftRef, boolean parsingExp) {
+	protected NodeResult<Reference> parseReference_referenceStart(Reference leftRef, boolean parsingExp) {
 		assertNotNull(leftRef);
-		return parseReference_ReferenceStart_do(leftRef, parsingExp);
+		return parseReference_referenceStart_do(leftRef, parsingExp);
 	}
-	protected NodeResult<Reference> parseReference_ReferenceStart_do(Reference leftRef, boolean parsingExp) {
+	protected NodeResult<Reference> parseReference_referenceStart_do(Reference leftRef, boolean parsingExp) {
 		boolean parseBroken = false;
 		
 		// Star is multiply infix operator, dont parse as pointer ref
@@ -270,7 +266,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 				}
 				
 				if(lookAheadGrouped() == DeeTokens.PRIMITIVE_KW) {
-					singleArg = matchRefPrimitive(lookAhead());	
+					singleArg = parseRefPrimitive_start(lookAhead());	
 				} else if(lookAheadGrouped() == DeeTokens.IDENTIFIER) { 
 					singleArg = parseRefIdentifier();
 				} else {
@@ -300,7 +296,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 			parseBroken = parse.ruleBroken;
 			
 		} else if(tryConsume(DeeTokens.KW_FUNCTION) || tryConsume(DeeTokens.KW_DELEGATE)) {
-			NodeResult<RefTypeFunction> refTypeFunction = matchRefTypeFunction_afterReturnType(leftRef);
+			NodeResult<RefTypeFunction> refTypeFunction = parseRefTypeFunction_afterReturnType(leftRef);
 			parseBroken = refTypeFunction.ruleBroken;
 			leftRef = refTypeFunction.node;
 		} else {
@@ -308,10 +304,10 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		}
 		if(parseBroken)
 			return result(true, leftRef);
-		return parseReference_ReferenceStart(leftRef, parsingExp);
+		return parseReference_referenceStart(leftRef, parsingExp);
 	}
 	
-	public abstract NodeResult<RefTypeFunction> matchRefTypeFunction_afterReturnType(Reference retType);
+	public abstract NodeResult<RefTypeFunction> parseRefTypeFunction_afterReturnType(Reference retType);
 	
 	public boolean isValidTemplateReferenceSyntax(Reference leftRef) {
 		return leftRef instanceof ITemplateRefNode;
@@ -640,7 +636,7 @@ protected class ParseRule_TypeOrExp {
 			// Check we actually parsed everything we should have
 			if(mode.canBeType()) {
 				boolean needsExpContext = precedenceLimit.precedence > InfixOpType.MUL.precedence;
-				assertTrue(parseReference_ReferenceStart_do(null, needsExpContext).getNode_NoBrokenCheck() == null);
+				assertTrue(parseReference_referenceStart_do(null, needsExpContext).getNode_NoBrokenCheck() == null);
 			}
 			if(mode.canBeExp()) {
 				assertTrue(parsePostfixExpression(DUMMY_EXP) == DUMMY_EXP);
@@ -735,7 +731,7 @@ protected class ParseRule_TypeOrExp {
 		}
 		case KW_FUNCTION:
 		case KW_DELEGATE:
-			return expConnect(matchFunctionLiteral());
+			return expConnect(parseFunctionLiteral_start());
 			
 		case OPEN_BRACKET:
 			if(isTypeOrExpStart) {
@@ -744,7 +740,7 @@ protected class ParseRule_TypeOrExp {
 			return parseBracketList(null);
 		case IDENTIFIER:
 			if(lookAhead(1) == DeeTokens.LAMBDA) {
-				return expConnect(matchSimpleLambdaLiteral());
+				return expConnect(parseSimpleLambdaLiteral_start());
 			} // else fallthrough to TypeReference:
 		default:
 			NodeResult<Reference> typeRefResult = parseTypeReference_do(true);
@@ -781,14 +777,14 @@ protected class ParseRule_TypeOrExp {
 			if(mode == TypeOrExpStatus.TYPE)
 				return resultConvertTypeThenContinueExpParse(exp);
 			exp = convertTypeOrExpToExpression(exp);
-			exp = expConnect(matchPostfixOpExpression(exp));
+			exp = expConnect(parsePostfixOpExpression_atOperator(exp));
 			return parsePostfixExpression(exp);
 		}
 		case OPEN_PARENS: {
 			if(mode == TypeOrExpStatus.TYPE)
 				return resultConvertTypeThenContinueExpParse(exp);
 			exp = convertTypeOrExpToExpression(exp);
-			exp = expConnect(matchCallExpression(exp));
+			exp = expConnect(parseCallExpression_atParenthesis(exp));
 			return parsePostfixExpression(exp);
 		}
 		case POW: {
@@ -1494,12 +1490,12 @@ protected class ParseRule_TypeOrExp {
 		return conclude(srToPosition(tokenStrings[0].getStartPos(), new ExpLiteralString(tokenStrings)));
 	}
 	
-	protected ExpPostfixOperator matchPostfixOpExpression(Expression exp) {
+	protected ExpPostfixOperator parsePostfixOpExpression_atOperator(Expression exp) {
 		Token op = consumeLookAhead();
 		return srToPosition(exp, new ExpPostfixOperator(exp, PostfixOpType.tokenToPrefixOpType(op.type)));
 	}
 	
-	protected ExpCall matchCallExpression(Expression callee) {
+	protected ExpCall parseCallExpression_atParenthesis(Expression callee) {
 		consumeLookAhead(DeeTokens.OPEN_PARENS);
 		
 		ParseHelper parse = new ParseHelper(callee);
@@ -1563,7 +1559,7 @@ protected class ParseRule_TypeOrExp {
 		return parseParenthesesExp();
 	}
 	
-	protected NodeResult<ExpSimpleLambda> matchSimpleLambdaLiteral() {
+	protected NodeResult<ExpSimpleLambda> parseSimpleLambdaLiteral_start() {
 		ProtoDefSymbol defId = thisParser().parseDefId();
 		consumeLookAhead(DeeTokens.LAMBDA);
 		
@@ -1574,7 +1570,7 @@ protected class ParseRule_TypeOrExp {
 		return parse.resultConclude(new ExpSimpleLambda(lambdaDefId, bodyExp));
 	}
 	
-	public NodeResult<ExpFunctionLiteral> matchFunctionLiteral() {
+	public NodeResult<ExpFunctionLiteral> parseFunctionLiteral_start() {
 		assertTrue(lookAhead() == DeeTokens.KW_FUNCTION || lookAhead() == DeeTokens.KW_DELEGATE);
 		consumeInput();
 		boolean isFunctionKeyword = lastLexElement().token.type == DeeTokens.KW_FUNCTION;
@@ -1586,7 +1582,7 @@ protected class ParseRule_TypeOrExp {
 		ArrayView<FunctionAttributes> fnAttributes = null;
 		
 		parsing: {
-			fnParams = thisParser().parseFunctionParameters(parse).getAsFunctionParameters();
+			fnParams = thisParser().parseFunctionParameters(parse);
 			if(parse.ruleBroken) break parsing;
 			
 			fnAttributes = thisParser().parseFunctionAttributes();

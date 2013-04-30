@@ -1,8 +1,11 @@
 package dtool.ast.definitions;
 
-import descent.internal.compiler.parser.PROT;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
+import dtool.ast.DeclList;
 import dtool.ast.IASTVisitor;
+import dtool.ast.expressions.Expression;
+import dtool.ast.references.Reference;
 import dtool.util.ArrayView;
 
 /**
@@ -10,9 +13,14 @@ import dtool.util.ArrayView;
  */
 public class DefinitionInterface extends DefinitionClass {
 	
-	public DefinitionInterface(DefUnitTuple dudt, PROT prot, ArrayView<TemplateParameter> tplParams,
-			ArrayView<BaseClass> superClasses, ArrayView<ASTNeoNode> members) {
-		super(dudt, prot, tplParams, superClasses, members);
+	public DefinitionInterface(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+		Expression tplConstraint, ArrayView<Reference> baseClasses, DeclList decls) {
+		super(defId, tplParams, tplConstraint, baseClasses, decls);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DEFINITION_INTERFACE;
 	}
 	
 	@Override
@@ -20,6 +28,11 @@ public class DefinitionInterface extends DefinitionClass {
 		boolean children = visitor.visit(this);
 		acceptNodeChildren(visitor, children);
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		classLikeToStringAsCode(cp, "interface ");
 	}
 	
 	@Override

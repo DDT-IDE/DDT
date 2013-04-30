@@ -2,9 +2,11 @@ package dtool.ast.definitions;
 
 import java.util.List;
 
-import descent.internal.compiler.parser.PROT;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
+import dtool.ast.DeclList;
 import dtool.ast.IASTVisitor;
+import dtool.ast.expressions.Expression;
 import dtool.refmodel.IScope;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -14,9 +16,14 @@ import dtool.util.ArrayView;
  */
 public class DefinitionStruct extends DefinitionAggregate {
 	
-	public DefinitionStruct(DefUnitTuple dudt, PROT prot, ArrayView<TemplateParameter> tplParams,
-			ArrayView<ASTNeoNode> members) {
-		super(dudt, prot, tplParams, members);
+	public DefinitionStruct(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+		Expression tplConstraint, DeclList decls) {
+		super(defId, tplParams, tplConstraint, decls);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DEFINITION_STRUCT;
 	}
 	
 	@Override
@@ -24,6 +31,11 @@ public class DefinitionStruct extends DefinitionAggregate {
 		boolean children = visitor.visit(this);
 		acceptNodeChildren(visitor, children);
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		aggregateToStringAsCode(cp, "struct ", true);
 	}
 	
 	@Override

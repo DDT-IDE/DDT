@@ -158,7 +158,7 @@ public abstract class AbstractParser {
 		}
 		
 		@SuppressWarnings("unchecked")
-		protected final <SUPER_OF_T extends ASTNeoNode> NodeResult<SUPER_OF_T> upcastParam() {
+		protected final <SUPER_OF_T extends ASTNeoNode> NodeResult<SUPER_OF_T> upcastTypeParam() {
 			return (NodeResult<SUPER_OF_T>) this;
 		}
 		
@@ -276,20 +276,22 @@ public abstract class AbstractParser {
 		}
 		
 		public final boolean consumeRequired(DeeTokens expectedTokenType) {
-			return consumeExpected(expectedTokenType, true);
+			return consume(expectedTokenType, false, true);
 		}
 		
 		public final boolean consumeExpected(DeeTokens expectedTokenType) {
-			return consumeExpected(expectedTokenType, false);
+			return consume(expectedTokenType, false, false);
 		}
 		
-		public final boolean consumeExpected(DeeTokens expectedTokenType, boolean breaksRule) {
+		public final boolean consume(DeeTokens expectedTokenType, boolean isOptional, boolean breaksRule) {
 			if(lookAhead() == expectedTokenType) {
 				consumeInput();
 				return true;
 			}
-			store(createExpectedTokenError(expectedTokenType));
-			ruleBroken = breaksRule;
+			if(isOptional == false) {
+				store(createExpectedTokenError(expectedTokenType));
+				ruleBroken = breaksRule;
+			}
 			return false;
 		}
 		
@@ -301,7 +303,7 @@ public abstract class AbstractParser {
 			return token;
 		}
 		
-		public ProtoDefSymbol storeResult(ProtoDefSymbol defId) {
+		public ProtoDefSymbol checkResult(ProtoDefSymbol defId) {
 			ruleBroken = defId.isMissing();
 			return defId;
 		}

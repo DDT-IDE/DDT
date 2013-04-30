@@ -55,7 +55,11 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 	
 	@Override
 	public DeeParser_RuleParameters parse(ParseHelper parse) {
-		if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false)
+		return parse(parse, false);
+	}
+	
+	public DeeParser_RuleParameters parse(ParseHelper parse, boolean isOptional) {
+		if(parse.consume(DeeTokens.OPEN_PARENS, isOptional, true) == false)
 			return this;
 		params = new ArrayList<Object>();
 		
@@ -91,7 +95,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 		
 		if(mode != TplOrFnMode.FN && lookAhead() == DeeTokens.KW_ALIAS) {
 			setMode(TplOrFnMode.TPL);
-			return matchTemplateAliasParameter();
+			return parseTemplateAliasParameter_start();
 		}
 		
 		if(mode != TplOrFnMode.FN && tryConsume(DeeTokens.KW_THIS)) {
