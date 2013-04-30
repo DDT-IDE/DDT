@@ -11,7 +11,7 @@
 #@FRAG_PREFIX《
   ►#?STRUCTURE_EXPECTED!【/*No fragment*/● 】●
   ►#?STRUCTURE_EXPECTED!【 aliasDef /*No =*/ #error(EXP_ASSIGN)【】 ,● AliasFragment(DefSymbol) 】●
-  ►#?STRUCTURE_EXPECTED!【 aliasDef = #@TYPEREFS_NB_ANY__LITE ,● AliasFragment(DefSymbol #@TYPEREFS_NB_ANY__LITE)】●
+  ►#?STRUCTURE_EXPECTED!【 aliasDef = #@TYPEREFS_NB_ORNO__LITE ,● AliasFragment(DefSymbol #@TYPEREFS_NB_ORNO__LITE)】●
 ¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
@@ -21,8 +21,8 @@
 #PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef #error(EXP_ASSIGN)【】 #@SEMICOLON_OR_BREAK 
 #STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef = #@TYPEREFS_ANY #@SEMICOLON_OR_BREAK 
-#STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol #@TYPEREFS_ANY))
+#PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef = #@TYPEREFS_ORNO #@SEMICOLON_OR_BREAK 
+#STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol #@TYPEREFS_ORNO))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Decl syntax
 #PARSE(DECLARATION)   alias #@TYPE_REFS__NB__NO_SINGLE_ID #@NO_DEFID  #@SEMICOLON_OR_BREAK 

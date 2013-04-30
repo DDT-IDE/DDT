@@ -10,11 +10,8 @@ DeclarationMixinString(ExpLiteralInteger)
 #STRUCTURE_EXPECTED:  DeclarationMixin(#@NO_REF)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   mixin ( #@NO_EXP #@PaCLOSE_OR_NO #@SEMICOLON_OR_NO
-#STRUCTURE_EXPECTED:  DeclarationMixinString(#@NO_EXP)
+#PARSE(DECLARATION)   mixin ( #@EXP_ANY_ORNO__LITE #@PaCLOSE_OR_NO #@SEMICOLON_OR_NO
+#STRUCTURE_EXPECTED:  DeclarationMixinString(#@EXP_ANY_ORNO__LITE)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   mixin ( #@EXP_ANY__LITE #@PaCLOSE_OR_NO #@SEMICOLON_OR_NO
-#STRUCTURE_EXPECTED:  DeclarationMixinString(#@EXP_ANY__LITE)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   mixin(#@EXP_ANY);
-#STRUCTURE_EXPECTED:  DeclarationMixinString(#@EXP_ANY)
+#PARSE(DECLARATION)   mixin(#@EXP_ANY_ORNO);
+#STRUCTURE_EXPECTED:  DeclarationMixinString(#@EXP_ANY_ORNO)

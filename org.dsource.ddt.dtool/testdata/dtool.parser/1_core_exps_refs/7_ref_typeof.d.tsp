@@ -12,8 +12,7 @@ DefVariable(RefTypeof(ExpRefReturn) DefSymbol)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ARG_CONTENT_OR_NO《
-  ►#@EXP_ANY●
-  ►#@NO_EXP●
+  ►#@EXP_ANY_ORNO●
   ►#?STRUCTURE_EXPECTED!【 #error(TYPE_AS_EXP_VALUE)《typeof(foo)》●ExpReference(RefTypeof(*))】●
   ►#?STRUCTURE_EXPECTED!【 return ● ExpRefReturn】●
 ¤》

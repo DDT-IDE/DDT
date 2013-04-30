@@ -27,9 +27,9 @@
 
 #@TPLARG_1《
   ►#?STRUCTURE_EXPECTED!【foo●TemplateTypeParam(DefSymbol)】●
-  ►#?STRUCTURE_EXPECTED!【foo : #@TYPEREFS_NB_ANY●TemplateTypeParam(DefSymbol #@TYPEREFS_NB_ANY)】●
-  ►#?STRUCTURE_EXPECTED!【foo = #@TYPEREFS_NB_ANY●TemplateTypeParam(DefSymbol #@TYPEREFS_NB_ANY)】●
-  ►#?STRUCTURE_EXPECTED!【foo : #@TYPEREFS_NB_ANY__LITE = #@TYPEREFS_NB_ANY●TemplateTypeParam(DefSymbol #@TYPEREFS_NB_ANY__LITE #@TYPEREFS_NB_ANY)】●
+  ►#?STRUCTURE_EXPECTED!【foo : #@TYPEREFS_NB_ORNO●TemplateTypeParam(DefSymbol #@TYPEREFS_NB_ORNO)】●
+  ►#?STRUCTURE_EXPECTED!【foo = #@TYPEREFS_NB_ORNO●TemplateTypeParam(DefSymbol #@TYPEREFS_NB_ORNO)】●
+  ►#?STRUCTURE_EXPECTED!【foo : #@TYPEREFS_NB_ORNO__LITE = #@TYPEREFS_NB_ORNO●TemplateTypeParam(DefSymbol #@TYPEREFS_NB_ORNO__LITE #@TYPEREFS_NB_ORNO)】●
 
   ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__NO_BROKEN foo●TemplateValueParam(#@TYPE_REFS__NO_BROKEN DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【foo[ #error(EXP_CLOSE_BRACKET)●TemplateValueParam(RefTypeDynArray(?) DefSymbol)】●
@@ -61,8 +61,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template constraint
 #@TPL_CONSTRAINT__SAMPLES《
   ►#?STRUCTURE_EXPECTED!【if #error(EXP_OPEN_PARENS)【】● MissingParenthesesExpression】●
-  ►#?STRUCTURE_EXPECTED!【if(#@NO_EXP)● #@NO_EXP】●
-  ►#?STRUCTURE_EXPECTED!【if(#@EXP_ANY__LITE)● #@EXP_ANY__LITE】●
+  ►#?STRUCTURE_EXPECTED!【if(#@EXP_ANY_ORNO__LITE)● #@EXP_ANY_ORNO__LITE】●
   ►#?STRUCTURE_EXPECTED!【if(#@EXP_ANY__LITE #error(EXP_CLOSE_PARENS) #@BREAK● #@EXP_ANY__LITE #@BREAK】●
 ¤》
 
