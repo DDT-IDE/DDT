@@ -23,6 +23,7 @@ import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTDirectChildrenVisitor;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.DeclList;
 import dtool.ast.NodeData.PreParseNodeData;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
@@ -51,6 +52,7 @@ import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.expressions.ExpNew;
+import dtool.ast.expressions.ExpNewAnonClass;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpParentheses;
 import dtool.ast.expressions.ExpPostfixOperator;
@@ -85,6 +87,7 @@ import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
+import dtool.parser.DeeParser_Decls.ElementListParseHelper;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
@@ -110,17 +113,19 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return parseTypeReference_do(false);
 	}
 	
-	public NodeResult<Reference> parseTypeReference_ToMissing(boolean reportMissingError) {
-		return nullRefToMissing(reportMissingError, parseTypeReference());
-	}
-	public NodeResult<Reference> parseTypeReference_ToMissing() {
-		return nullRefToMissing(true, parseTypeReference());
+	public NodeResult<Reference> parseTypeReference(boolean createMissing, boolean reportMissingError) {
+		NodeResult<Reference> typeRef = parseTypeReference();
+		if((typeRef == null || typeRef.node == null) && createMissing) {
+			return result(false, createMissingTypeReference(reportMissingError));
+		}
+		return typeRef;
 	}
 	
-	public NodeResult<Reference> nullRefToMissing(boolean reportMissingError, NodeResult<Reference> refResult) {
-		return refResult != null && refResult.node != null ? 
-			refResult : 
-			result(false, createMissingTypeReference(reportMissingError));
+	public NodeResult<Reference> parseTypeReference_ToMissing() {
+		return parseTypeReference_ToMissing(true);
+	}
+	public NodeResult<Reference> parseTypeReference_ToMissing(boolean reportMissingError) {
+		return parseTypeReference(true, reportMissingError);
 	}
 	
 	public Reference createMissingTypeReference(boolean reportMissingError) {
@@ -1496,9 +1501,8 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	protected ExpCall parseCallExpression_atParenthesis(Expression callee) {
-		consumeLookAhead(DeeTokens.OPEN_PARENS);
-		
 		ParseHelper parse = new ParseHelper(callee);
+		consumeLookAhead(DeeTokens.OPEN_PARENS);
 		ArrayList<Expression> args = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
 		return parse.conclude(new ExpCall(callee, arrayView(args)));
 	}
@@ -1703,9 +1707,9 @@ protected class ParseRule_TypeOrExp {
 		return parse.conclude(new ExpTypeId(exp));
 	}
 	
-	public Expression parseNewExpression() {
+	public NodeResult<? extends Expression> parseNewExpression() {
 		if(!tryConsume(DeeTokens.KW_NEW))
-			return null;
+			return nullResult();
 		ParseHelper parse = new ParseHelper();
 		
 		ArrayList<Expression> allocArgs = null;
@@ -1715,20 +1719,43 @@ protected class ParseRule_TypeOrExp {
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
 				allocArgs = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
-				if(parse.ruleBroken) {
-					break parsing;
-				}
 			}
+			if(tryConsume(DeeTokens.KW_CLASS)) {
+				return parseNewAnonClassExpression_afterClassKeyword(parse, allocArgs);
+			}
+			if(parse.ruleBroken) break parsing;
+			
 			type = parseTypeReference_ToMissing(true).getNode();
-			if(isMissing(type)) {
-				break parsing;
-			}
+			if(isMissing(type)) break parsing;
+			
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
 				args = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
 			}
 		}
 		
-		return parse.conclude(new ExpNew(arrayView(allocArgs), type, arrayView(args)));
+		return parse.resultConclude(new ExpNew(arrayView(allocArgs), type, arrayView(args)));
+	}
+	
+	protected NodeResult<ExpNewAnonClass> parseNewAnonClassExpression_afterClassKeyword(ParseHelper parse, 
+		ArrayList<Expression> allocArgs) {
+		parse.ruleBroken = false;
+		
+		ArrayView<Expression> args = null;
+		ElementListParseHelper<Reference> baseClasses = thisParser().new TypeReferenceListParse();
+		DeclList declBody = null;
+		
+		parsing: {
+			if(tryConsume(DeeTokens.OPEN_PARENS)) {
+				args = arrayView(parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS));
+				if(parse.ruleBroken) break parsing;
+			}
+			
+			baseClasses.parseSimpleList(true, DeeTokens.COMMA);
+			
+			declBody = thisParser().parseDeclarationBlock(parse);
+		}
+		
+		return parse.resultConclude(new ExpNewAnonClass(arrayView(allocArgs), args, baseClasses.members, declBody));
 	}
 	
 	public Expression parseCastExpression() {

@@ -261,6 +261,7 @@ public class ASTNodeReparseCheck {
 		
 		case EXP_PREFIX:
 		case EXP_NEW:
+		case EXP_NEW_ANON_CLASS:
 		case EXP_CAST:
 		case EXP_CAST_QUAL:
 
@@ -323,9 +324,9 @@ public class ASTNodeReparseCheck {
 		case INITIALIZER_STRUCT:
 			return reparseCheck(snippedParser.parseStructInitializer());
 		case STRUCT_INIT_ENTRY:
-			return reparseCheck(snippedParser.new ParseStructInitEntry().parseMember(true));
+			return reparseCheck(snippedParser.new ParseStructInitEntry().parseElement(true));
 		case ARRAY_INIT_ENTRY:
-			return reparseCheck(snippedParser.new ParseArrayInitEntry().parseMember(true));
+			return reparseCheck(snippedParser.new ParseArrayInitEntry().parseElement(true));
 			
 		case DEFINITION_FUNCTION:
 			return reparseCheck(snippedParser.parseDeclaration());
@@ -342,7 +343,7 @@ public class ASTNodeReparseCheck {
 			if(nodeUnderTest instanceof NoEnumBody) return VOID;
 			return reparseCheck(snippedParser.parseEnumBody());
 		case ENUM_MEMBER:
-			return reparseCheck(snippedParser.new ParseEnumMember().parseMember(true));
+			return reparseCheck(snippedParser.new ParseEnumMember().parseElement(true));
 
 		case DEFINITION_STRUCT:
 			return reparseCheck(snippedParser.parseDefinitionStruct());

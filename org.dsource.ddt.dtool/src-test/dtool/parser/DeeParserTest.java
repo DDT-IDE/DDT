@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import melnorme.utilbox.misc.StringUtil;
@@ -54,7 +55,7 @@ public class DeeParserTest extends CommonTestUtils {
 	public void runParserTest______________________(
 		final String parseRule, final String expectedRemainingSource, 
 		final String expectedPrintedSource, final NamedNodeElement[] expectedStructure, final 
-		ArrayList<ParserError> expectedErrors, HashMap<String, MetadataEntry> additionalMetadata) {
+		ArrayList<ParserError> expectedErrors, Map<String, MetadataEntry> additionalMetadata) {
 		
 		final DeeTestsFullChecksParser deeParser = new DeeTestsFullChecksParser(fullSource);
 		String parsedSource = fullSource;
@@ -307,25 +308,27 @@ public class DeeParserTest extends CommonTestUtils {
 		return deeParser.parseUsingRule(parseRule);
 	}
 	
-	public static void runAdditionalTests(final DeeParserResult result, HashMap<String, 
-		MetadataEntry> additionalMetadata) {
-		MetadataEntry fnParamTest = additionalMetadata.remove("FN_PARAMETER_TEST");
+	public static void runAdditionalTests(final DeeParserResult result, 
+		Map<String, MetadataEntry> additionalMetaDataOriginal) {
+		Map<String, MetadataEntry> additionalMD = new HashMap<>(additionalMetaDataOriginal);
+		
+		MetadataEntry fnParamTest = additionalMD.remove("FN_PARAMETER_TEST");
 		if(fnParamTest != null) {
 			String source = result.source.substring(fnParamTest.offset);
 			DeeParser parser = new DeeParser(source);
 			Object parameter = new DeeParser_RuleParameters(parser, TplOrFnMode.AMBIG).parseParameter();
-			if(additionalMetadata.remove("FN_ONLY") != null) {
+			if(additionalMD.remove("FN_ONLY") != null) {
 				assertTrue(parameter instanceof IFunctionParameter);
 			} else {
 				assertTrue(parameter instanceof AmbiguousParameter);
 			}
 		}
-		MetadataEntry ruleBreakTest = additionalMetadata.remove("RULE_BROKEN");
-		if(additionalMetadata.remove("IGNORE_BREAK_FLAG_CHECK") == null) {
+		MetadataEntry ruleBreakTest = additionalMD.remove("RULE_BROKEN");
+		if(additionalMD.remove("IGNORE_BREAK_FLAG_CHECK") == null) {
 			assertTrue(result.ruleBroken == (ruleBreakTest != null));
 		}
 		
-		for (Entry<String, MetadataEntry> mde : additionalMetadata.entrySet()) {
+		for (Entry<String, MetadataEntry> mde : additionalMD.entrySet()) {
 			assertEquals(mde.getValue().value, "flag");
 		}
 	}

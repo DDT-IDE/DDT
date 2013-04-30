@@ -79,6 +79,7 @@ public enum ASTNodeTypes {
 	
 	EXP_PREFIX,
 	EXP_NEW,
+	EXP_NEW_ANON_CLASS,
 	EXP_CAST,
 	EXP_CAST_QUAL,
 	EXP_POSTFIX_OP,

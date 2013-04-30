@@ -23,4 +23,7 @@ public interface IASTNeoNode extends IASTNode, IElement, IVisitable<IASTVisitor>
 	
 	public ASTNeoNode asNode();
 	
+	@Override
+	public ASTNeoNode getParent();
+	
 }

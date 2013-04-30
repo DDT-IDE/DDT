@@ -175,7 +175,7 @@ Lambda expression is here because it's right side is an "open-ended" parsing of 
 
 
 #@EXP_ANY《#@EXP_COMMA》
-#@EXP_ANY__LITE《#@EXP_OROR__LITE》
+#@EXP_ANY__LITE《#@EXP_COMMA__LITE》
 
 #@EXP_NO_PENDING《 #EXP__NO_PENDING_MISSING(flag) #@EXP_ANY 》
 

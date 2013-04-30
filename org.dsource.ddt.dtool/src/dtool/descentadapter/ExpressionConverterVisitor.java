@@ -87,13 +87,13 @@ import descent.internal.compiler.parser.XorExp;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationMixinString;
-import dtool.ast.definitions.BaseClass;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpCast;
 import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpDefaultInit;
+import dtool.ast.expressions.ExpFunctionLiteral;
 import dtool.ast.expressions.ExpIftype;
 import dtool.ast.expressions.ExpImportString;
 import dtool.ast.expressions.ExpIndex;
@@ -101,13 +101,12 @@ import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
-import dtool.ast.expressions.ExpFunctionLiteral;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralMapArray;
-import dtool.ast.expressions.ExpLiteralNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.expressions.ExpNew;
+import dtool.ast.expressions.ExpNewAnonClass;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.ast.expressions.ExpPostfixOperator.PostfixOpType;
@@ -392,11 +391,11 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(NewAnonClassExp element) {
 		return endAdapt(DefinitionConverter.sourceRange(element),
-			new ExpLiteralNewAnonClass(
-				ExpressionConverter.convertMany(element.newargs, convContext),
-				ExpressionConverter.convertMany(element.arguments, convContext),
-				DescentASTConverter.convertMany(element.cd.sourceBaseclasses, BaseClass.class, convContext),
-				DescentASTConverter.convertMany(element.cd.members, ASTNeoNode.class, convContext)
+			new ExpNewAnonClass(
+				DescentASTConverter.convertMany(element.newargs, Expression.class, convContext),
+				DescentASTConverter.convertMany(element.arguments, Expression.class, convContext),
+				DescentASTConverter.convertMany(element.cd.sourceBaseclasses, Reference.class, convContext),
+				createDeclList(DescentASTConverter.convertMany(element.cd.members, ASTNeoNode.class, convContext))
 			)
 		);
 	}

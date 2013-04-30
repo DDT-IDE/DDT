@@ -50,7 +50,7 @@ import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
-import dtool.ast.expressions.ExpLiteralNewAnonClass;
+import dtool.ast.expressions.ExpNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpPostfixOperator;
@@ -217,7 +217,7 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	}
 	
 	@Override
-	public boolean visit(ExpLiteralNewAnonClass node) {
+	public boolean visit(ExpNewAnonClass node) {
 		return true;
 	}
 

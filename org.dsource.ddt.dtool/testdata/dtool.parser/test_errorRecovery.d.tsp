@@ -58,6 +58,6 @@ DefinitionVariable(? DefSymbol InitializerExp(MissingExpression))
 #PARSE(EXPRESSION)    new   (foo)  #@NO_REF  (123) 
 #STRUCTURE_EXPECTED:  ExpCall( ExpNew( #@ExpIdentifier  #@NO_REF ) Integer)  
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    new  ( #@EXP_ASSIGN__LITE #error(EXP_CLOSE_PARENS)  #parser(IgnoreRest) foo (456)
+#PARSE(EXPRESSION)    new  ( #@EXP_ASSIGN__LITE #error(EXP_CLOSE_PARENS)  #@BREAK foo (456)
 #STRUCTURE_EXPECTED:  ExpNew( #@EXP_ASSIGN__LITE )
   

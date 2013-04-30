@@ -24,7 +24,7 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 #PARSE(EXPRESSION)   new     #@ALLOC_ARG  #@TYPEREFS_NB  (sample)
 #STRUCTURE_EXPECTED: ExpNew( #@ALLOC_ARG  #@TYPEREFS_NB  #@ExpIdentifier )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ (note that ARG1 expansion gets messed up because of EXP_ASSIGN__NO_PENDING)
-#PARSE(EXPRESSION)   new     (#@ARG1 #@EXP_ASSIGN__NO_PENDING #error(EXP_CLOSE_PARENS)  #parser(IgnoreRest) foo (456)
+#PARSE(EXPRESSION)   new     (#@ARG1 #@EXP_ASSIGN__NO_PENDING #error(EXP_CLOSE_PARENS)  #@BREAK foo (456)
 #STRUCTURE_EXPECTED: ExpNew( #@《*●#@NO_EXP● 》(ARG1) #@EXP_ASSIGN__NO_PENDING )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   new     #@ARGLIST  #@NO_REF  (123) 
@@ -33,10 +33,9 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 #@CTOR_ARG《
   ►#?STRUCTURE_EXPECTED!【 /*No ctor args*/● 】● 
   ►#@ARGLIST● 
-  ►#?STRUCTURE_EXPECTED!【( #@NO_ClosePARENS ● 】●
-  ►#?STRUCTURE_EXPECTED!【( #@EXP_ASSIGN__LITE , #@NO_EXP #@NO_ClosePARENS  ● #@EXP_ASSIGN__LITE #@NO_EXP】● 
+  ►#?STRUCTURE_EXPECTED!【( #@NO_ClosePARENS #@BREAK ● 】●
+  ►#?STRUCTURE_EXPECTED!【( #@EXP_ASSIGN__LITE , #@NO_EXP #@NO_ClosePARENS #@BREAK ● #@EXP_ASSIGN__LITE #@NO_EXP】● 
 ¤》
-//TODO but #@BREAK in two cases above
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREFS_NB  #@CTOR_ARG
 #STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE   #@TYPEREFS_NB  #@CTOR_ARG )

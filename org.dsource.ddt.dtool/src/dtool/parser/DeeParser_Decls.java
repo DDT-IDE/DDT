@@ -147,14 +147,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				return;
 			}
 			setStartPosition(lastLexElement().getStartPos());
+			
 			ArrayList<T> membersList = new ArrayList<T>();
 			
+			boolean requireElement = false;
 			while(true) {
-				boolean canCloselist = !hasEndingSep || hasEndingSep && canHaveEndingSep;
-				if(canCloselist && tryConsume(tkCLOSE))
+				if(requireElement == false && tryConsume(tkCLOSE))
 					break;
 				
-				T entry = parseMember(canHaveEndingSep == false || lookAhead() == tkSEP);
+				T entry = parseElement(requireElement || lookAhead() == tkSEP);
 				if(entry != null) {
 					membersList.add(entry);
 					hasEndingSep = false;
@@ -162,21 +163,33 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				
 				if(tryConsume(tkSEP)) {
 					hasEndingSep = true;
+					requireElement = !canHaveEndingSep;
 					continue;
 				} else {
-					if(tkCLOSE != null) {
-						parse.consumeRequired(tkCLOSE);
-					}
+					parse.consumeRequired(tkCLOSE);
 					break;
 				}
 			}
 			members = arrayView(membersList);
 		}
 		
-		protected abstract T parseMember(boolean createMissing);
+		public void parseSimpleList(boolean canBeEmpty, DeeTokens tkSEP) {
+			ArrayList<T> membersList = new ArrayList<T>();
+			
+			do {
+				T entry = parseElement(!canBeEmpty || lookAhead() == tkSEP);
+				if(entry != null) {
+					membersList.add(entry);
+				}
+				canBeEmpty = false; // after first element next elements become require
+			} while(tryConsume(tkSEP));
+			
+			members = arrayView(membersList);
+		}
+		
+		protected abstract T parseElement(boolean createMissing);
 		
 	}
-	
 	
 	/* ----------------------------------------------------------------- */
 	
@@ -478,7 +491,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public class ParseArrayInitEntry extends ElementListParseHelper<ArrayInitEntry> {
 		@Override
-		protected ArrayInitEntry parseMember(boolean createMissing) {
+		protected ArrayInitEntry parseElement(boolean createMissing) {
 			Expression index = null;
 			Initializer initializer = null;
 			
@@ -516,7 +529,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public class ParseStructInitEntry extends ElementListParseHelper<StructInitEntry> {
 		@Override
-		protected StructInitEntry parseMember(boolean createMissing) {
+		protected StructInitEntry parseElement(boolean createMissing) {
 			RefIdentifier member = null;
 			if(lookAhead() == DeeTokens.COLON || 
 				(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.COLON)) {
@@ -1008,7 +1021,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	public class ParseEnumMember extends ElementListParseHelper<EnumMember> {
 
 		@Override
-		protected EnumMember parseMember(boolean createMissing) {
+		protected EnumMember parseElement(boolean createMissing) {
 			ParseHelper parse = new ParseHelper(-1);
 			
 			Reference type;
@@ -1073,17 +1086,14 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		boolean isClass = lastLexElement().token.type == DeeTokens.KW_CLASS;
 		AggregateDefinitionParse adp = new AggregateDefinitionParse();
 		
-		ElementListParseHelper<Reference> baseClasses = new ElementListParseHelper<Reference>() {
-			@Override
-			protected Reference parseMember(boolean createMissing) {
-				return parseTypeReference_ToMissing().node;
-			}
-		};
+		ElementListParseHelper<Reference> baseClasses = new TypeReferenceListParse();
 		parsing: {
 			adp.parseAggregate(false, true);
 			if(adp.ruleBroken) break parsing;
-				
-			baseClasses.parseList(false, DeeTokens.COLON, DeeTokens.COMMA, null, false);
+			
+			if(tryConsume(DeeTokens.COLON)) {
+				baseClasses.parseSimpleList(false, DeeTokens.COMMA);
+			}
 			
 			adp.declBody = parseDeclarationBlock(adp);
 		}
@@ -1092,6 +1102,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			new DefinitionClass(adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, adp.declBody) :
 			new DefinitionInterface(adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, adp.declBody)
 		);
+	}
+	
+	public class TypeReferenceListParse extends ElementListParseHelper<Reference> {
+		@Override
+		protected Reference parseElement(boolean createMissing) {
+			return parseTypeReference(createMissing, true).node;
+		}
 	}
 	
 	/* -------------------- Plain declarations -------------------- */

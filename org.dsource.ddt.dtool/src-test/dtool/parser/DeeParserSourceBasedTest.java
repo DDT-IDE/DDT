@@ -15,6 +15,7 @@ import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.isValidStringRange;
 import static dtool.util.NewUtils.removeRange;
 import static dtool.util.NewUtils.replaceRange;
+import static java.util.Collections.unmodifiableMap;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -246,7 +248,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		}
 		
 		new DeeParserTest(fullSource).runParserTest______________________(parseRule, expectedRemainingSource, 
-			expectedPrintedSource, expectedStructure, expectedErrors, additionalMetadata);
+			expectedPrintedSource, expectedStructure, expectedErrors, unmodifiableMap(additionalMetadata));
 	}
 	
 	public static String calcExpectedToStringAsCode(String parseSource, List<ParserErrorExt> errorInfo) {

@@ -77,7 +77,7 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	}
 	
 	public DeclList createDeclList(ArrayView<ASTNeoNode> elems) {
-		return new DeclList(elems);
+		return elems == null ? null : new DeclList(elems);
 	}
 
 	

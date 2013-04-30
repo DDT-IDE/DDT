@@ -32,7 +32,7 @@ import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpFunctionLiteral;
-import dtool.ast.expressions.ExpLiteralNewAnonClass;
+import dtool.ast.expressions.ExpNewAnonClass;
 
 public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	
@@ -120,7 +120,7 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 					}
 					
 					@Override
-					public boolean visit(ExpLiteralNewAnonClass elem) {
+					public boolean visit(ExpNewAnonClass elem) {
 						reportBlock(elem, DeeFoldingBlockKind.ANONCLASSES, collapseAnonClasses);
 						return true;
 					}
