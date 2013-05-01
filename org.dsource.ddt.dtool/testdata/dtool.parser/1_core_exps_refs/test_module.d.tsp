@@ -7,29 +7,21 @@ module pack.foo;
 module pack.bar.foo;
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@NL{
-,
-,}
+Note that NL here has different kinds of newlines (\n\r, \n , \r)
+#@NL【
+●
+●】
+#@SEMICOLON_OR_NO【;●#error(EXP_SEMICOLON) /* No ; */】
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ various error cases
-module#{, ,#@NL}#error(EXP_ID)#@SEMICOLON_OR_NO#comment(EOF):
+module#@【● ●#@NL】#error(EXP_ID)#@SEMICOLON_OR_NO#comment(EOF):
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module#{ ,   }foo.bar.#error(EXP_ID)#@SEMICOLON_OR_NO#comment(EOF):
+module foo #@SEMICOLON_OR_NO
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module#{ ,   }foo.#error(EXP_ID)#@SEMICOLON_OR_NO#comment(EOF):
-
+module foo.#error(EXP_ID)#@SEMICOLON_OR_NO
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module pack.#error(EXP_ID) ;
+module foo.bar.#error(EXP_ID)#@SEMICOLON_OR_NO
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module #error(EXP_ID)#error(EXP_SEMICOLON) .foo #error(EXP_ID) ;
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module foo #error(EXP_SEMICOLON)
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module #error(EXP_ID)#error(EXP_SEMICOLON) import #error(EXP_ID) ;
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module #error(EXP_ID)#error(EXP_SEMICOLON) import foo;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ declDefs errors (basic)
 module pack.bar.foo;

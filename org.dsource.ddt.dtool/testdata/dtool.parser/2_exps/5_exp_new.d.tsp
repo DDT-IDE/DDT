@@ -40,8 +40,8 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 #PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREFS_NB  #@CTOR_ARG
 #STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE   #@TYPEREFS_NB  #@CTOR_ARG )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPE_REFS__NO_BROKEN  [ #@EXP_ASSIGN__LITE ]
-#STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE  RefIndexing( #@TYPE_REFS__NO_BROKEN #@EXP_ASSIGN__LITE )  )
+#PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREFS_NB  [ #@EXP_ASSIGN__LITE ]
+#STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE  RefIndexing( #@TYPEREFS_NB #@EXP_ASSIGN__LITE )  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   new     #@NO_REF   [789]
 #STRUCTURE_EXPECTED: ExpIndex(ExpNew( #@NO_REF ) Integer)  

@@ -74,28 +74,25 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #@ATTRIBS_WITH_ENUM《#@ATTRIBS●#@ENUM_ATTRIB》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS_WITH_ENUM int foo1;
+#PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM int foo;
 #STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM DefinitionVariable(* *) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS /**/ :
-#@DECLS_SAMPLE
+#PARSE(DECLARATION)  #@ATTRIBS /**/ : #@DECLS_SAMPLE
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS /**/ : /* Zero decls */
+#PARSE(DECLARATION)  #@ATTRIBS /**/ : /* Zero decls */
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS /**/ { } 
+#PARSE(DECLARATION)  #@ATTRIBS /**/ { #@BRACE_OR_BREAK 
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS { 
-#@DECLS_SAMPLE
-}
+#PARSE(DECLARATION)  #@ATTRIBS { #@DECLS_SAMPLE #@BRACE_OR_BREAK
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
+#PARSE(DECLARATION)  #@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
 #STRUCTURE_EXPECTED: #@ATTRIBS  DeclarationEmpty )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS_WITH_ENUM /*EOF case*/ #error(EXPRULE_decl)
+#PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM /*EOF case*/ #error(EXPRULE_decl) #@BREAK
 #STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ATTRIBS #error(SE_decl) ] int foo;

@@ -236,24 +236,19 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return parseReference_referenceStart_do(leftRef, parsingExp);
 	}
 	protected NodeResult<Reference> parseReference_referenceStart_do(Reference leftRef, boolean parsingExp) {
-		boolean parseBroken = false;
+		ParseHelper parse = new ParseHelper(leftRef == null ? -1 : leftRef.getStartPos());
 		
 		// Star is multiply infix operator, dont parse as pointer ref
-		if(lookAhead() == DeeTokens.DOT) {
-			if(leftRef instanceof IQualifierNode == false) {
-				return result(leftRef);
-			}
+		if(lookAhead() == DeeTokens.DOT && leftRef instanceof IQualifierNode) {
 			IQualifierNode qualifier = (IQualifierNode) leftRef;
 			assertTrue(!RefQualified.isExpressionQualifier(qualifier));
 			consumeLookAhead();
-			parseBroken = lookAhead() != DeeTokens.IDENTIFIER;
 			RefIdentifier qualifiedId = parseRefIdentifier();
-			leftRef = conclude(srToPosition(leftRef, new RefQualified(qualifier, qualifiedId)));
+			parse.ruleBroken = isMissing(qualifiedId);
+			leftRef = parse.conclude(new RefQualified(qualifier, qualifiedId));
 			
 		} else if(lookAhead() == DeeTokens.NOT && isValidTemplateReferenceSyntax(leftRef)){ // template instance
 			consumeLookAhead();
-			
-			ParseHelper parse = new ParseHelper(leftRef.getStartPos());
 			
 			ITemplateRefNode tplRef = (ITemplateRefNode) leftRef;
 			ArrayList<Resolvable> tplArgs = null;
@@ -281,14 +276,12 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 					}
 				}
 			}
-			parseBroken = parse.ruleBroken;
 			leftRef = parse.conclude(new RefTemplateInstance(tplRef, singleArg, arrayView(tplArgs)));
 			
 		} else if(!parsingExp && tryConsume(DeeTokens.STAR)) {
 			leftRef = conclude(srToPosition(leftRef, new RefTypePointer(leftRef)));
 			
 		} else if(!parsingExp && tryConsume(DeeTokens.OPEN_BRACKET)) {
-			ParseHelper parse = new ParseHelper(leftRef);
 			
 			Resolvable resolvable = parseTypeOrExpression(true).node;
 			parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
@@ -298,16 +291,13 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 			} else {
 				leftRef = parse.conclude(new RefIndexing(leftRef, resolvable));
 			}
-			parseBroken = parse.ruleBroken;
 			
 		} else if(tryConsume(DeeTokens.KW_FUNCTION) || tryConsume(DeeTokens.KW_DELEGATE)) {
-			NodeResult<RefTypeFunction> refTypeFunction = parseRefTypeFunction_afterReturnType(leftRef);
-			parseBroken = refTypeFunction.ruleBroken;
-			leftRef = refTypeFunction.node;
+			leftRef = parse.checkResult(parseRefTypeFunction_afterReturnType(leftRef));
 		} else {
-			return result(leftRef);
+			return result(false, leftRef);
 		}
-		if(parseBroken)
+		if(parse.ruleBroken)
 			return result(true, leftRef);
 		return parseReference_referenceStart(leftRef, parsingExp);
 	}
@@ -1516,7 +1506,7 @@ protected class ParseRule_TypeOrExp {
 		ArrayList<Resolvable> args = new ArrayList<Resolvable>();
 		
 		boolean first = true;
-		while(true) {
+		do {
 			Resolvable arg = (parseTypeOrExp ? parseTypeOrAssignExpression(true) : parseAssignExpression()).node;
 			
 			if(first && arg == null && lookAhead() != tokenSEPARATOR) {
@@ -1525,12 +1515,7 @@ protected class ParseRule_TypeOrExp {
 			arg = parseTypeOrExp ? nullTypeOrExpToMissing(arg) : nullExpToMissing((Expression) arg);
 			args.add(arg);
 			first = false;
-			
-			if(tryConsume(tokenSEPARATOR)) {
-				continue;
-			}
-			break;
-		}
+		} while(tryConsume(tokenSEPARATOR));
 		
 		parse.consumeRequired(tokenLISTCLOSE);
 		return new ArrayList<Resolvable>(args);

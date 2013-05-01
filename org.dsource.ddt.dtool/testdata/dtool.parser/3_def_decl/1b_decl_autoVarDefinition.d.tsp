@@ -39,10 +39,10 @@ DeclarationPragma(Symbol InvalidDeclaration(RefIdentifier) )
   ►#?STRUCTURE_EXPECTED!【bar #@AUTO_INIT ● DefVarFragment(DefSymbol #@AUTO_INIT)】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@AUTO_START foo #@AUTO_INIT #@SEMICOLON_OR_NO
+#PARSE(DECLARATION)   #@AUTO_START foo #@AUTO_INIT #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@AUTO_INIT ) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   auto foo = #@INITIALIZERS__SAMPLE , #@AUTO_FRAG #@SEMICOLON_OR_NO
+#PARSE(DECLARATION)   auto foo = #@INITIALIZERS__SAMPLE , #@AUTO_FRAG #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@INITIALIZERS__SAMPLE #@AUTO_FRAG ) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   auto foo = #@INITIALIZERS__SAMPLE , foo2 #error(EXP_ASSIGN)【】 , #@AUTO_FRAG ;

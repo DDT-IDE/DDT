@@ -6,7 +6,7 @@
 #STRUCTURE_EXPECTED:  DefinitionTemplate(DefSymbol #@TPL_PARAMS_SAMPLE1 #@DECLS_BLOCK__SAMPLE )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ (duplicate test case, here for clarity)
-#PARSE(DECLARATION)   mixin #@NO_REF #error(EXP_SEMICOLON)
+#PARSE(DECLARATION)   mixin #@NO_REF #error(EXP_SEMICOLON) #@BREAK
 #STRUCTURE_EXPECTED:  DeclarationMixin(#@NO_REF)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@MIXIN_PRF template #error(EXP_ID) #@BREAK

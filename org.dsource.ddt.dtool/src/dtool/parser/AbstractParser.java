@@ -175,10 +175,6 @@ public abstract class AbstractParser {
 	protected static <T extends ASTNeoNode> NodeResult<T> nullResult() {
 		return new NodeResult<T>(false, null);
 	}
-	
-	protected static <T extends ASTNeoNode> NodeResult<T> result(T node) {
-		return new NodeResult<T>(false, node);
-	}
 	protected static <T extends ASTNeoNode> NodeResult<T> result(boolean ruleBroken, T node) {
 		return new NodeResult<T>(ruleBroken, node);
 	}
