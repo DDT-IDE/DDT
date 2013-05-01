@@ -22,7 +22,7 @@
   ►#?STRUCTURE_EXPECTED!【int[foo #@NO_CloseBRACKET #@DECLS_BLOCK__SAMPLE ● RefIndexing(RefPrimitive RefIdentifier) #@DECLS_BLOCK__SAMPLE】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ duplicate test for clarity
-#PARSE(EXPRESSION)    new (#@ARGS__SAMPLE) #@NO_REF
+#PARSE(EXPRESSION)    new (#@ARGS__SAMPLE) #@NO_REF #@BREAK
 #STRUCTURE_EXPECTED:  ExpNew( #@ARGS__SAMPLE #@NO_REF )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(EXPRESSION)    new #@ALLOC_ARGS class #@DECLS_BLOCK__SAMPLE

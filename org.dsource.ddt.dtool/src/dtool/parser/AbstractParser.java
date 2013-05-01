@@ -136,7 +136,6 @@ public abstract class AbstractParser {
 	
 	/* ---- Result helpers ---- */
 	
-	// TODO: alternative mechanism for broken rule checking
 	public static abstract class CommonRuleResult {
 		
 		public final boolean ruleBroken; // Indicates if rule was terminated properly
@@ -160,14 +159,6 @@ public abstract class AbstractParser {
 		@SuppressWarnings("unchecked")
 		protected final <SUPER_OF_T extends ASTNeoNode> NodeResult<SUPER_OF_T> upcastTypeParam() {
 			return (NodeResult<SUPER_OF_T>) this;
-		}
-		
-		public final T getNode() {
-			return node;
-		}
-		
-		public final T getNode_NoBrokenCheck() {
-			return node;
 		}
 		
 	}

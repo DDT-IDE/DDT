@@ -31,7 +31,7 @@ public class DeeParserResult {
 	public final ArrayList<ParserError> errors;
 	
 	public DeeParserResult(NodeResult<? extends ASTNeoNode> result, DeeParser parser) {
-		this(parser.getSource(), result.getNode(), result.ruleBroken, parser.lexerErrors);
+		this(parser.getSource(), result.node, result.ruleBroken, parser.lexerErrors);
 		parser.lexerErrors = null;
 	}
 	

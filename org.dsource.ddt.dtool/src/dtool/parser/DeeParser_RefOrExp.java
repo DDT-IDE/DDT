@@ -225,7 +225,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		
 		Reference ref = null;
 		if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
-			ref = parseTypeReference_ToMissing(true).getNode_NoBrokenCheck(); 
+			ref = parseTypeReference_ToMissing(true).node; 
 			parse.consumeRequired(DeeTokens.CLOSE_PARENS);
 		}
 		return parse.resultConclude(new RefTypeModifier(modKind, ref));
@@ -631,7 +631,7 @@ protected class ParseRule_TypeOrExp {
 			// Check we actually parsed everything we should have
 			if(mode.canBeType()) {
 				boolean needsExpContext = precedenceLimit.precedence > InfixOpType.MUL.precedence;
-				assertTrue(parseReference_referenceStart_do(null, needsExpContext).getNode_NoBrokenCheck() == null);
+				assertTrue(parseReference_referenceStart_do(null, needsExpContext).node == null);
 			}
 			if(mode.canBeExp()) {
 				assertTrue(parsePostfixExpression(DUMMY_EXP) == DUMMY_EXP);
@@ -739,7 +739,7 @@ protected class ParseRule_TypeOrExp {
 		default:
 			NodeResult<Reference> typeRefResult = parseTypeReference_do(true);
 			boolean ruleBroken = typeRefResult.ruleBroken;
-			Reference ref = typeRefResult.getNode();
+			Reference ref = typeRefResult.node;
 			if(ref == null) {
 				return null; // TODO: option to return missing?
 			}
@@ -934,7 +934,7 @@ protected class ParseRule_TypeOrExp {
 				if(mode == TypeOrExpStatus.EXP) {
 					NodeResult<Expression> expResult = parseExpression(rightExpPrecedence);
 					setParseBroken(expResult.ruleBroken);
-					rightExp = expResult.getNode();
+					rightExp = expResult.node;
 				} else {
 					rightExp = parseTypeOrExpression_start(rightExpPrecedence, false);
 				}
@@ -1604,9 +1604,9 @@ protected class ParseRule_TypeOrExp {
 		
 		boolean isDotAfterParensSyntax = lookAhead() == DeeTokens.CLOSE_PARENS && lookAhead(1) == DeeTokens.DOT;
 		if(isDotAfterParensSyntax) {
-			resolvable = arg.toFinalResult(true).getNode_NoBrokenCheck();
+			resolvable = arg.toFinalResult(true).node;
 		} else {
-			resolvable = arg.toFinalResult(false).getNode_NoBrokenCheck();
+			resolvable = arg.toFinalResult(false).node;
 			if(resolvable instanceof Reference) {
 				parse.store(createErrorTypeAsExpValue((Reference) resolvable));
 			}
@@ -1679,7 +1679,7 @@ protected class ParseRule_TypeOrExp {
 		Expression exp = null;
 		
 		if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
-			Resolvable resolvable = nullTypeOrExpToMissing(parseTypeOrExpression(true).getNode_NoBrokenCheck());
+			Resolvable resolvable = nullTypeOrExpToMissing(parseTypeOrExpression(true).node);
 			if(resolvable instanceof Reference) {
 				ref = (Reference) resolvable;
 			} else {
@@ -1711,8 +1711,9 @@ protected class ParseRule_TypeOrExp {
 			}
 			if(parse.ruleBroken) break parsing;
 			
-			type = parseTypeReference_ToMissing(true).getNode();
-			if(isMissing(type)) break parsing;
+			type = parseTypeReference_ToMissing(true).node;
+			parse.ruleBroken = isMissing(type);
+			if(parse.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
 				args = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
@@ -1759,7 +1760,7 @@ protected class ParseRule_TypeOrExp {
 			
 			qualifier = parseCastQualifier();
 			if(qualifier == null) {
-				type = parseTypeReference_ToMissing(false).getNode_NoBrokenCheck();
+				type = parseTypeReference_ToMissing(false).node;
 			}
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false)
 				break parsing;

@@ -55,8 +55,8 @@ DefinitionVariable(? DefSymbol InitializerExp(MissingExpression))
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of expressions: 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    new   (foo)  #@NO_REF  (123) 
-#STRUCTURE_EXPECTED:  ExpCall( ExpNew( #@ExpIdentifier  #@NO_REF ) Integer)  
+#PARSE(EXPRESSION)    new   (foo)  #@NO_REF  #@BREAK (123) 
+#STRUCTURE_EXPECTED:  ExpNew( #@ExpIdentifier  #@NO_REF )  
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)    new  ( #@EXP_ASSIGN__LITE #error(EXP_CLOSE_PARENS)  #@BREAK foo (456)
 #STRUCTURE_EXPECTED:  ExpNew( #@EXP_ASSIGN__LITE )

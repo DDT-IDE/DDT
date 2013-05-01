@@ -27,8 +27,8 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 #PARSE(EXPRESSION)   new     (#@ARG1 #@EXP_ASSIGN__NO_PENDING #error(EXP_CLOSE_PARENS)  #@BREAK foo (456)
 #STRUCTURE_EXPECTED: ExpNew( #@《*●#@NO_EXP● 》(ARG1) #@EXP_ASSIGN__NO_PENDING )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new     #@ARGLIST  #@NO_REF  (123) 
-#STRUCTURE_EXPECTED: ExpCall( ExpNew( #@ARGLIST  #@NO_REF ) Integer)  
+#PARSE(EXPRESSION)   new     #@ARGLIST  #@NO_REF #@BREAK (123) 
+#STRUCTURE_EXPECTED: ExpNew( #@ARGLIST  #@NO_REF )  
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@CTOR_ARG《
   ►#?STRUCTURE_EXPECTED!【 /*No ctor args*/● 】● 
@@ -43,8 +43,8 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 #PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREFS_NB  [ #@EXP_ASSIGN__LITE ]
 #STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE  RefIndexing( #@TYPEREFS_NB #@EXP_ASSIGN__LITE )  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new     #@NO_REF   [789]
-#STRUCTURE_EXPECTED: ExpIndex(ExpNew( #@NO_REF ) Integer)  
+#PARSE(EXPRESSION)   new     #@NO_REF  #@BREAK [789]
+#STRUCTURE_EXPECTED: ExpNew( #@NO_REF )  
 
 
 

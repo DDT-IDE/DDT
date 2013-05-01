@@ -460,7 +460,7 @@ public class ASTNodeReparseCheck {
 	}
 	
 	public Void reparseCheck(NodeResult<? extends ASTNeoNode> result) {
-		return reparseCheck(result.getNode());
+		return reparseCheck(result.node);
 	}
 	public Void reparseCheck(IASTNeoNode reparsedNode) {
 		assertNotNull_(reparsedNode);
