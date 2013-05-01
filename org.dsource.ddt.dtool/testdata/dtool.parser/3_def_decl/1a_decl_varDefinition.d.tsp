@@ -15,13 +15,13 @@ DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol InitializerExp(?) DefVarFragment(De
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test array initializer
 
-#@BRACKET_END《#@《●,》 #@BRACKET_OR_BREAK》
+#@BRACKET_END《#@《●,》 #@CLOSEBRACKET_OR_BREAK》
 #@ARRAY_INIT_PREFIX《
   ►#?STRUCTURE_EXPECTED!【#@INIT_NONVOID__SAMPLE, ●ArrayInitEntry(#@INIT_NONVOID__SAMPLE)】●
   ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN_ORNO__LITE : #@INIT_NONVOID__SAMPLE, ●ArrayInitEntry(#@EXP_ASSIGN_ORNO__LITE #@INIT_NONVOID__SAMPLE)】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
-#PARSE(INITIALIZER)   [ #@BRACKET_OR_BREAK
+#PARSE(INITIALIZER)   [ #@CLOSEBRACKET_OR_BREAK
 #STRUCTURE_EXPECTED:  InitializerArray()
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
 #PARSE(INITIALIZER)   [ #@NO_INIT ,]
@@ -38,7 +38,7 @@ DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol InitializerExp(?) DefVarFragment(De
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test struct initializer
 
-#@BRACE_END《#@《●,》 #@BRACE_OR_BREAK》
+#@BRACE_END《#@《●,》 #@CLOSEBRACE_OR_BREAK》
 #@REFID_OR_NO《
   ►#?STRUCTURE_EXPECTED!【foo● RefIdentifier】●
   ►#?STRUCTURE_EXPECTED!【#@NO_ID● #@NO_ID】●
@@ -48,7 +48,7 @@ DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol InitializerExp(?) DefVarFragment(De
   ►#?STRUCTURE_EXPECTED!【#@REFID_OR_NO : #@INIT_NONVOID__SAMPLE, ●StructInitEntry(#@REFID_OR_NO #@INIT_NONVOID__SAMPLE)】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
-#PARSE(INIT_STRUCT)   {  #@BRACE_OR_BREAK
+#PARSE(INIT_STRUCT)   {  #@CLOSEBRACE_OR_BREAK
 #STRUCTURE_EXPECTED:  InitializerStruct()
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
 #PARSE(INIT_STRUCT)   {  #@NO_INIT ,}

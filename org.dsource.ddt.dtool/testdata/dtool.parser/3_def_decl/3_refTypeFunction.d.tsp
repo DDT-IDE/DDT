@@ -15,7 +15,7 @@ RefTypeFunction(#@TYPE_REFS__NO_BROKEN #@FN_PARAMS_SAMPLE )
 #STRUCTURE_EXPECTED: 
 RefTypeFunction(RefTypeDynArray(?) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  0 param
-#PARSE(REFERENCE)     const(foo) #@FN_KEYWORD ( #@PaCLOSE_OR_BREAK 
+#PARSE(REFERENCE)     const(foo) #@FN_KEYWORD ( #@CLOSEPARENS_OR_BREAK 
 #STRUCTURE_EXPECTED:
 RefTypeFunction(RefTypeModifier(RefIdentifier) )
 

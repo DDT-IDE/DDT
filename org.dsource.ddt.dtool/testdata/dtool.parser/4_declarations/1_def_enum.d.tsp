@@ -29,14 +29,14 @@ DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumM
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
 #@ENUM_BODY《
-  ►#?STRUCTURE_EXPECTED!【{ #@BrCLOSE_OR_BREAK ● EnumBody()】●
+  ►#?STRUCTURE_EXPECTED!【{ #@CLOSEBRACE_OR_BREAK ● EnumBody()】●
   ►#@ENUM_BODY__SAMPLE●
   ►#?STRUCTURE_EXPECTED!【 #?EnumDecl【 #?NoBaseType【#:DISCARD_CASE】 #error(EXPRULE_EnumBody) #@BREAK ●】 ; ● #?EnumDecl!【NoEnumBody】】●
   ►#?STRUCTURE_EXPECTED!【 #?NoBaseType【#:DISCARD_CASE】 #error(EXPRULE_EnumBody) #@BREAK    ● #@BREAK】●
-  ►#?STRUCTURE_EXPECTED!【{ A, B , C #@BrCLOSE_OR_BREAK● EnumBody(EnumMember(?) EnumMember(?) EnumMember(?) )】●
-  ►#?STRUCTURE_EXPECTED!【{ A = 3, B , #@BrCLOSE_OR_BREAK ● EnumBody(EnumMember(DefSymbol Integer) EnumMember(?) )】●
+  ►#?STRUCTURE_EXPECTED!【{ A, B , C #@CLOSEBRACE_OR_BREAK● EnumBody(EnumMember(?) EnumMember(?) EnumMember(?) )】●
+  ►#?STRUCTURE_EXPECTED!【{ A = 3, B , #@CLOSEBRACE_OR_BREAK ● EnumBody(EnumMember(DefSymbol Integer) EnumMember(?) )】●
   ►#?STRUCTURE_EXPECTED!【{ A, B = #@EXP_ASSIGN ,}● EnumBody(EnumMember(DefSymbol) EnumMember(DefSymbol #@EXP_ASSIGN) )】●
-  ►#?STRUCTURE_EXPECTED!【{ #@NO_DEFID, #@BrCLOSE_OR_BREAK ● EnumBody(EnumMember(#@NO_DEFID))】●
+  ►#?STRUCTURE_EXPECTED!【{ #@NO_DEFID, #@CLOSEBRACE_OR_BREAK ● EnumBody(EnumMember(#@NO_DEFID))】●
   ►#?STRUCTURE_EXPECTED!【{ #@TYPEREFS_NB A = "asd", } ● EnumBody(EnumMember(#@TYPEREFS_NB DefSymbol String) )】●
   ►#?STRUCTURE_EXPECTED!【{int[foo #error(EXP_CLOSE_BRACKET) A = "asd", B} ● EnumBody(EnumMember(RefIndexing(? ?) DefSymbol String) EnumMember(?) )】●
   ►#?STRUCTURE_EXPECTED!【{int[foo] #@NO_DEFID = "asd", } ● EnumBody(EnumMember(RefIndexing(? ?) #@NO_DEFID String) )】●

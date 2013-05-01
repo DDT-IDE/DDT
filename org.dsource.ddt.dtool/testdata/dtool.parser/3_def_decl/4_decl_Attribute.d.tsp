@@ -83,10 +83,10 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #PARSE(DECLARATION)  #@ATTRIBS /**/ : /* Zero decls */
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS /**/ { #@BRACE_OR_BREAK 
+#PARSE(DECLARATION)  #@ATTRIBS /**/ { #@CLOSEBRACE_OR_BREAK 
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS { #@DECLS_SAMPLE #@BRACE_OR_BREAK
+#PARSE(DECLARATION)  #@ATTRIBS { #@DECLS_SAMPLE #@CLOSEBRACE_OR_BREAK
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECLS_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
