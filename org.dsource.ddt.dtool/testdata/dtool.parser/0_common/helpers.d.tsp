@@ -1,9 +1,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ExpIdentifier【ExpReference(RefIdentifier)】
 
-#@PaCLOSE_OR_NO【)●#error(EXP_CLOSE_PARENS) /* No ) */】
-#@BkCLOSE_OR_NO【]●#error(EXP_CLOSE_BRACKET) /* No ] */】
-#@BrCLOSE_OR_NO【}●#error(EXP_CLOSE_BRACE) /* No } */】
+#@CLOSEPARENS_OR_NO【)●#error(EXP_CLOSE_PARENS) /* No ) */】
 
  #@NO_ClosePARENS《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS)  /*No close brace */】 》
   #@NO_CloseBRACE《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACE)  /*No close bracket*/】 》

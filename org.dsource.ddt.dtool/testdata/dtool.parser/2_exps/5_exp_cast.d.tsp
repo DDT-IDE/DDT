@@ -27,18 +27,18 @@ ExpCastQual( #@ExpIdentifier )
 #PARSE(EXPRESSION)   #@CAST_START  #@UNEXP_OR_NO
 #STRUCTURE_EXPECTED: #@CAST_START  #@UNEXP_OR_NO )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   cast   ( #NO_BROKEN_PARENS(flag)#@TYPE_REFS #error(EXP_CLOSE_PARENS) #parser(IgnoreRest) foo  
+#PARSE(EXPRESSION)   cast #error(EXP_OPEN_PARENS)【】 #@BREAK
+#STRUCTURE_EXPECTED: ExpCast( )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)   cast (  #error(EXP_CLOSE_PARENS) #@BREAK / 7  
+#STRUCTURE_EXPECTED: ExpCast( #@NO_REF ) 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)   cast ( #NO_BROKEN_PARENS(flag)#@TYPE_REFS #error(EXP_CLOSE_PARENS) #@BREAK foo  
 #STRUCTURE_EXPECTED: ExpCast( #@TYPE_REFS )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   cast( #@CAST_QUAL1 #error(EXP_OPEN_PARENS)【】 #error(EXP_CLOSE_PARENS) #parser(IgnoreRest) foo
+#PARSE(EXPRESSION)   cast ( #@CAST_QUAL1 #error(EXP_OPEN_PARENS)【】 #error(EXP_CLOSE_PARENS) #@BREAK foo
 #STRUCTURE_EXPECTED: ExpCast( RefTypeModifier() )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   cast   ( #@CAST_QUAL2 #error(EXP_CLOSE_PARENS) #parser(IgnoreRest) foo  
+#PARSE(EXPRESSION)   cast ( #@CAST_QUAL2 #error(EXP_CLOSE_PARENS) #@BREAK foo  
 #STRUCTURE_EXPECTED: ExpCastQual( )
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   cast   (  #error(EXP_CLOSE_PARENS) / 7  
-#STRUCTURE_EXPECTED: ExpInfix(ExpCast( #@NO_REF ) Integer) 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   cast #error(EXP_OPEN_PARENS)【】 / 7
-#STRUCTURE_EXPECTED: ExpInfix(ExpCast( )               Integer) 

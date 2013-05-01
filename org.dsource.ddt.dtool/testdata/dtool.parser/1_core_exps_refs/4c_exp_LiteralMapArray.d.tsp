@@ -1,11 +1,8 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    [1 : "asdf", "2" : foo, 66 : "66"]
+#PARSE(EXPRESSION)    [1 : "asdf", "2" : foo, 66 : "66" ]
 #STRUCTURE_EXPECTED:  ExpLiteralMapArray(MapEntry(Integer String) MapEntry(String *) MapEntry(Integer String))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    [ 7 : "asdf", "2" : foo #error(EXP_CLOSE_BRACKET) #@BREAK
-#STRUCTURE_EXPECTED:  ExpLiteralMapArray(MapEntry(Integer String) MapEntry(String *) )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    [ #error(EXP_CLOSE_BRACKET) #@BREAK 
+#PARSE(EXPRESSION)    [ #@CLOSEBRACKET_OR_BREAK
 #STRUCTURE_EXPECTED:  ExpLiteralArray()
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)

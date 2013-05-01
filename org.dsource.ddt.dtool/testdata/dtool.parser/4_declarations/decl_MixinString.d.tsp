@@ -10,7 +10,7 @@ DeclarationMixinString(ExpLiteralInteger)
 #STRUCTURE_EXPECTED:  DeclarationMixin(#@NO_REF)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   mixin ( #@EXP_ANY_ORNO__LITE #@PaCLOSE_OR_NO #@SEMICOLON_OR_BREAK
+#PARSE(DECLARATION)   mixin ( #@EXP_ANY_ORNO__LITE #@CLOSEPARENS_OR_NO #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DeclarationMixinString(#@EXP_ANY_ORNO__LITE)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   mixin(#@EXP_ANY_ORNO);

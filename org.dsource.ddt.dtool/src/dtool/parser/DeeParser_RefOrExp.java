@@ -681,7 +681,6 @@ protected class ParseRule_TypeOrExp {
 		}
 		
 		switch (lookAheadGrouped()) {
-		//TODO test for brokenness for rest of rules
 		case KW_ASSERT:
 			return expConnect(parseAssertExpression());
 		case KW_MIXIN:
@@ -775,19 +774,21 @@ protected class ParseRule_TypeOrExp {
 			exp = expConnect(parsePostfixOpExpression_atOperator(exp));
 			return parsePostfixExpression(exp);
 		}
-		case OPEN_PARENS: {
-			if(mode == TypeOrExpStatus.TYPE)
-				return resultConvertTypeThenContinueExpParse(exp);
-			exp = convertTypeOrExpToExpression(exp);
-			exp = expConnect(parseCallExpression_atParenthesis(exp));
-			return parsePostfixExpression(exp);
-		}
 		case POW: {
 			if(mode == TypeOrExpStatus.TYPE)
 				return resultConvertTypeThenContinueExpParse(exp);
 			exp = convertTypeOrExpToExpression(exp);
 			updateTypeOrExpMode(TypeOrExpStatus.EXP);
 			return new ParseRule_InfixOperatorExp(exp).parseInfixOperator(InfixOpType.POW);
+		}
+		case OPEN_PARENS: {
+			if(mode == TypeOrExpStatus.TYPE)
+				return resultConvertTypeThenContinueExpParse(exp);
+			exp = convertTypeOrExpToExpression(exp);
+			exp = expConnect(parseCallExpression_atParenthesis(exp));
+			if(shouldReturnToParseRuleTopLevel(exp))
+				return exp;
+			return parsePostfixExpression(exp);
 		}
 		case OPEN_BRACKET: {
 			exp = parseBracketList(exp);
@@ -1490,11 +1491,11 @@ protected class ParseRule_TypeOrExp {
 		return srToPosition(exp, new ExpPostfixOperator(exp, PostfixOpType.tokenToPrefixOpType(op.type)));
 	}
 	
-	protected ExpCall parseCallExpression_atParenthesis(Expression callee) {
+	protected NodeResult<ExpCall> parseCallExpression_atParenthesis(Expression callee) {
 		ParseHelper parse = new ParseHelper(callee);
 		consumeLookAhead(DeeTokens.OPEN_PARENS);
 		ArrayList<Expression> args = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
-		return parse.conclude(new ExpCall(callee, arrayView(args)));
+		return parse.resultConclude(new ExpCall(callee, arrayView(args)));
 	}
 	
 	protected ArrayList<Expression> parseExpArgumentList(ParseHelper parse, DeeTokens tokenLISTCLOSE) {
@@ -1618,7 +1619,7 @@ protected class ParseRule_TypeOrExp {
 		return parse.resultConclude(new ExpParentheses(isDotAfterParensSyntax, resolvable));
 	}
 	
-	public ExpAssert parseAssertExpression() {
+	public NodeResult<ExpAssert> parseAssertExpression() {
 		if(tryConsume(DeeTokens.KW_ASSERT) == false)
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1633,25 +1634,25 @@ protected class ParseRule_TypeOrExp {
 			parse.consumeRequired(DeeTokens.CLOSE_PARENS);
 		}
 		
-		return parse.conclude(new ExpAssert(exp, msg));
+		return parse.resultConclude(new ExpAssert(exp, msg));
 	}
 	
-	public ExpImportString parseImportExpression() {
+	public NodeResult<ExpImportString> parseImportExpression() {
 		if(tryConsume(DeeTokens.KW_IMPORT) == false)
 			return null;
 		ParseHelper parse = new ParseHelper();
 		
 		Expression expParentheses = parseExpressionAroundParentheses(parse, false);
-		return parse.conclude(new ExpImportString(expParentheses));
+		return parse.resultConclude(new ExpImportString(expParentheses));
 	}
 	
-	public ExpMixinString parseMixinExpression() {
+	public NodeResult<ExpMixinString> parseMixinExpression() {
 		if(tryConsume(DeeTokens.KW_MIXIN) == false)
 			return null;
 		ParseHelper parse = new ParseHelper();
 		
 		Expression expParentheses = parseExpressionAroundParentheses(parse, false);
-		return parse.conclude(new ExpMixinString(expParentheses));
+		return parse.resultConclude(new ExpMixinString(expParentheses));
 	}
 	
 	public Expression parseExpressionAroundParentheses(ParseHelper parse, boolean createMissing) {
@@ -1669,7 +1670,7 @@ protected class ParseRule_TypeOrExp {
 		return exp;
 	}
 	
-	public ExpTypeId parseTypeIdExpression() {
+	public NodeResult<ExpTypeId> parseTypeIdExpression() {
 		if(tryConsume(DeeTokens.KW_TYPEID) == false)
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1687,9 +1688,9 @@ protected class ParseRule_TypeOrExp {
 			parse.consumeRequired(DeeTokens.CLOSE_PARENS);
 		}
 		if(ref != null) {
-			return parse.conclude(new ExpTypeId(ref));
+			return parse.resultConclude(new ExpTypeId(ref));
 		}
-		return parse.conclude(new ExpTypeId(exp));
+		return parse.resultConclude(new ExpTypeId(exp));
 	}
 	
 	public NodeResult<? extends Expression> parseNewExpression() {
@@ -1743,7 +1744,7 @@ protected class ParseRule_TypeOrExp {
 		return parse.resultConclude(new ExpNewAnonClass(arrayView(allocArgs), args, baseClasses.members, declBody));
 	}
 	
-	public Expression parseCastExpression() {
+	public NodeResult<? extends Expression> parseCastExpression() {
 		if(!tryConsume(DeeTokens.KW_CAST))
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1768,9 +1769,9 @@ protected class ParseRule_TypeOrExp {
 		}
 		
 		if(qualifier != null) {
-			return parse.conclude(new ExpCastQual(qualifier, exp));
+			return parse.resultConclude(new ExpCastQual(qualifier, exp));
 		} else {
-			return parse.conclude(new ExpCast(type, exp));
+			return parse.resultConclude(new ExpCast(type, exp));
 		}
 	}
 	
