@@ -104,17 +104,17 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	/* ----------------------------------------------------------------- */
 	
-	public ProtoDefSymbol defSymbol(BaseLexElement id) {
+	public static ProtoDefSymbol defSymbol(BaseLexElement id) {
 		// possible bug here, should be srEffectiveRange
 		return new ProtoDefSymbol(id.getSourceValue(), id.getSourceRange(), id.getError());
 	}
 	
-	public ProtoDefSymbol parseDefId() {
+	public final ProtoDefSymbol parseDefId() {
 		BaseLexElement defId = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
 		return defSymbol(defId);
 	}
 	
-	public ProtoDefSymbol nullIdToMissingDefId(ProtoDefSymbol defId) {
+	public final ProtoDefSymbol nullIdToMissingDefId(ProtoDefSymbol defId) {
 		if(defId == null) {
 			return defSymbol(createExpectedToken(DeeTokens.IDENTIFIER));
 		}
@@ -809,7 +809,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		} else if(!tryConsume(DeeTokens.KW_TEMPLATE)) {
 			return null;
 		}
-		adp.parseAggregate(true, false);
+		adp.parseAggregate(true, true, false);
 		
 		return adp.resultConclude(
 			new DefinitionTemplate(isMixin, adp.defId, adp.tplParams, adp.tplConstraint, adp.declBody));
@@ -822,14 +822,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		protected Expression tplConstraint = null;
 		protected DeclList declBody = null;
 		
-		void parseAggregate() {
-			parseAggregate(true, true);
-		}
-		void parseAggregate(boolean parseDeclBody, boolean tplParamsIsOptional) {
+		void parseAggregate(boolean requiresDefId, boolean parseDeclBody, boolean tplParamsIsOptional) {
 			ParseHelper parse = this;
 			
 			parsing: {
-				defId = parse.checkResult(parseDefId());
+				if(!requiresDefId && lookAhead() != DeeTokens.IDENTIFIER) {
+					defId = nullIdToMissingDefId(null);
+				} else {
+					defId = parse.checkResult(parseDefId());
+				}
 				if(parse.ruleBroken) break parsing;
 				
 				tplParams = parseTemplateParameters(parse, tplParamsIsOptional);
@@ -1069,7 +1070,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		boolean isStruct = lastLexElement().token.type == DeeTokens.KW_STRUCT;
 		AggregateDefinitionParse adp = new AggregateDefinitionParse();
-		adp.parseAggregate();
+		adp.parseAggregate(false, true, true);
 		
 		return adp.resultConclude(isStruct ?
 			new DefinitionStruct(adp.defId, adp.tplParams, adp.tplConstraint, adp.declBody) :
@@ -1092,7 +1093,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		ElementListParseHelper<Reference> baseClasses = new TypeReferenceListParse();
 		parsing: {
-			adp.parseAggregate(false, true);
+			adp.parseAggregate(true, false, true);
 			if(adp.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.COLON)) {
