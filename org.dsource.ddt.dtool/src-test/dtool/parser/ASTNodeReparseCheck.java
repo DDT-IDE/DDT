@@ -306,7 +306,11 @@ public class ASTNodeReparseCheck {
 		case DECL_MIXIN_STRING: return reparseCheck(snippedParser.parseDeclarationMixinString());
 		case DECL_MIXIN: return reparseCheck(snippedParser.parseDeclarationMixin());
 		
-		case DECL_ALIAS_THIS: return reparseCheck(snippedParser.parseDeclarationAliasThis()); 
+		case DECL_ALIAS_THIS: return reparseCheck(snippedParser.parseDeclarationAliasThis());
+		
+		case DECLARATION_INVARIANT: return reparseCheck(snippedParser.parseDeclarationInvariant_start());
+		case DECLARATION_ALLOC_DEALLOC: return reparseCheck(snippedParser.parseDeclarationAllocators());
+
 		
 		/* ---------------------------------- */
 		

@@ -6,13 +6,16 @@
 #@LAMBDA_BODY__SAMPLE《
   ►#?STRUCTURE_EXPECTED!【=> #@EXP_ASSIGN__LITE● #@EXP_ASSIGN__LITE 】● 
 ¤》
-
+#@FN_BLOCK_BODY《
+ ►#@ST_BLOCK__SAMPLE●
+ ►#@BROKEN_ST_BLOCK●
+¤》
+#@FN_BLOCK_BODY__SAMPLE《#@ST_BLOCK__SAMPLE》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ identifier => lambda syntax
 #PARSE(EXPRESSION)    foo #@LAMBDA_BODY
 #STRUCTURE_EXPECTED:  ExpSimpleLambda(SimpleLambdaDefUnit(DefSymbol)  #@LAMBDA_BODY)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@FLAG_AS_BROKEN_TEST《#test(IGNORE_BREAK_CHECK) #parser(AllowAnyErrors) #AST_SOURCE_EXPECTED(NoCheck) #IGNORE_BREAK_FLAG_CHECK(test)》
-
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   #@FN_BLOCK_BODY
 #STRUCTURE_EXPECTED: 
@@ -68,6 +71,7 @@
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ with the function/delegate keyword
 #@FN_KEYWORD《function●delegate》
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(EXPRESSION)   #@FN_KEYWORD #error(EXP_OPEN_PARENS)【】 #@BREAK
 #STRUCTURE_EXPECTED: ExpFunctionLiteral()
@@ -87,6 +91,6 @@ ExpFunctionLiteral(                #@FN_PARAMS_SAMPLE  #@FN_ATTRIB__SAMPLE  #@FN
 #STRUCTURE_EXPECTED: 
                ExpFunctionLiteral(#@TYPEREFS_NB__LITE  #@FN_PARAMS_SAMPLE #@CLOSEPARENS_OR_BREAK #@FN_ATTRIB__SAMPLE #@FN_BLOCK_BODY__SAMPLE)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(EXPRESSION)   #@FN_KEYWORD #@TYPEREFS_NB__LITE (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB__SAMPLE #@NO_BLOCK_ST
+#PARSE(EXPRESSION)   #@FN_KEYWORD #@TYPEREFS_NB__LITE (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB__SAMPLE #@NO_ST_BLOCK
 #STRUCTURE_EXPECTED: 
-               ExpFunctionLiteral(#@TYPEREFS_NB__LITE  #@FN_PARAMS_SAMPLE  #@FN_ATTRIB__SAMPLE #@NO_BLOCK_ST)
+               ExpFunctionLiteral(#@TYPEREFS_NB__LITE  #@FN_PARAMS_SAMPLE  #@FN_ATTRIB__SAMPLE #@NO_ST_BLOCK)

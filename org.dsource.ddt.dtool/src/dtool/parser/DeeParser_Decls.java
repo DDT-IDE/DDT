@@ -29,11 +29,13 @@ import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
+import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationLinkage.Linkage;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationProtection.Protection;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -338,6 +340,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				return parseDeclarationAliasThis();
 			}
 			return parseAliasDefinition();
+		case KW_INVARIANT:
+			return parseDeclarationInvariant_start();
+		case KW_NEW:
+		case KW_DELETE:
+			return parseDeclarationAllocators();
 		default:
 			break;
 		}
@@ -544,7 +551,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 	}
 	
-	public static final ParseRuleDescription RULE_BODY = new ParseRuleDescription("Body");
+	public static final ParseRuleDescription RULE_FN_BODY = new ParseRuleDescription("FnBody");
 	
 	/**
 	 * Parse a function from this point:
@@ -570,7 +577,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			} else if(firstParams.mode == TplOrFnMode.TPL) {
 				tplParams = firstParams.getAsTemplateParameters();
 			}
-			
 			if(parse.ruleBroken) {
 				if(firstParams.isAmbiguous()) {
 					fnParams = firstParams.toFunctionParameters();
@@ -579,7 +585,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			
 			if(firstParams.isAmbiguous() && lookAhead() == DeeTokens.OPEN_PARENS) {
-				/*BUG here*/
 				tplParams = firstParams.toTemplateParameters();
 			}
 			
@@ -601,7 +606,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(tryConsume(DeeTokens.SEMICOLON)) { 
 				fnBody = conclude(srOf(lastLexElement(), new EmptyBodyStatement()));
 			} else {
-				fnBody = parse.requiredResult(parseFunctionBody(), RULE_BODY);
+				fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
 			}
 		}
 		
@@ -730,7 +735,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(tryConsume(DeeTokens.KW_BODY)) {
 				bodyBlock = parse.checkResult(parseBlockStatement_toMissing(false));
 			} else {
-				parse.storeBreakError(createErrorExpectedRule(RULE_BODY));
+				parse.storeBreakError(createErrorExpectedRule(RULE_FN_BODY));
 			}
 		}
 		
@@ -1377,4 +1382,36 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 	}
 	
+	public NodeResult<DeclarationInvariant> parseDeclarationInvariant_start() {
+		consumeLookAhead(DeeTokens.KW_INVARIANT);
+		ParseHelper parse = new ParseHelper();
+		
+		BlockStatement body = null;
+		parsing: {
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) break parsing;
+			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
+			body = parse.checkResult(parseBlockStatement_toMissing(true));
+		}
+		
+		return parse.resultConclude(new DeclarationInvariant(body));
+	}
+	
+	public NodeResult<DeclarationSpecialFunction> parseDeclarationAllocators() {
+		if((tryConsume(DeeTokens.KW_NEW) || tryConsume(DeeTokens.KW_DELETE)) == false)
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		boolean isNew = lastLexElement().token.type == DeeTokens.KW_NEW;
+		ArrayView<IFunctionParameter> params = null;
+		IFunctionBody fnBody = null;
+		
+		parsing: {
+			params = parseFunctionParameters(parse);
+			if(parse.ruleBroken) break parsing;
+			
+			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
+		}
+		
+		return parse.resultConclude(new DeclarationSpecialFunction(isNew, params, fnBody));
+	}
 }

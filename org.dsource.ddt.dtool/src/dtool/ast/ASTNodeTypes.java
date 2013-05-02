@@ -97,6 +97,9 @@ public enum ASTNodeTypes {
 	DECL_MIXIN,
 	DECL_ALIAS_THIS,
 	
+	DECLARATION_INVARIANT,
+	DECLARATION_ALLOC_DEALLOC,
+	
 	/* ---------------------------------- */
 	
 	DEFINITION_VARIABLE,

@@ -1,9 +1,4 @@
-TODO
-  ►#?STRUCTURE_EXPECTED!【{ invariant() #@BLK_ST /* TODOclass alloc/dealloc */ }●DeclList( DeclarationInvariant(#@BLK_ST))】●
-  
   
  TODO: TODO:
   ►#?STRUCTURE_EXPECTED!【{ this(this) #@FN_BODY__SAMPLE }● 】●
-  ►#?STRUCTURE_EXPECTED!【{ new(uint size) #@FN_BODY__SAMPLE }● 】●
-  ►#?STRUCTURE_EXPECTED!【{ delete(void *p) #@FN_BODY__SAMPLE }● 】●
   

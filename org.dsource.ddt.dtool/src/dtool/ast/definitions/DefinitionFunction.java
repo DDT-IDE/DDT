@@ -27,7 +27,6 @@ import dtool.util.ArrayView;
 
 /**
  * A definition of a function.
- * TODO: special funcs
  */
 public class DefinitionFunction extends Definition implements IScopeNode, IStatement, ICallableElement {
 	
