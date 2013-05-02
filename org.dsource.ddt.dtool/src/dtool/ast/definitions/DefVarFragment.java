@@ -14,11 +14,11 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 /**
  * A fragment of a variable definition in a multi-identifier variable declaration
  */
-public class DefinitionVarFragment extends DefUnit {
+public class DefVarFragment extends DefUnit {
 	
 	public final Initializer init;
 	
-	public DefinitionVarFragment(ProtoDefSymbol defId, Initializer init) {
+	public DefVarFragment(ProtoDefSymbol defId, Initializer init) {
 		super(defId);
 		this.init = parentize(init);
 	}

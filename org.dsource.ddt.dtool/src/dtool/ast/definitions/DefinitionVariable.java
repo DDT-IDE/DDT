@@ -23,19 +23,19 @@ import dtool.util.ArrayView;
  */
 public class DefinitionVariable extends Definition implements IStatement { 
 	
-	public static final ArrayView<DefinitionVarFragment> NO_FRAGMENTS = ArrayView.create(new DefinitionVarFragment[0]);
+	public static final ArrayView<DefVarFragment> NO_FRAGMENTS = ArrayView.create(new DefVarFragment[0]);
 	
 	public final Reference type;
 	public final Initializer init;
-	public final ArrayView<DefinitionVarFragment> fragments;
+	public final ArrayView<DefVarFragment> fragments;
 	
 	public DefinitionVariable(ProtoDefSymbol defId, Reference type, Initializer init,
-		ArrayView<DefinitionVarFragment> fragments) {
+		ArrayView<DefVarFragment> fragments) {
 		this(defId, assertNotNull_(type), init, fragments, false);
 	}
 	
 	protected DefinitionVariable(ProtoDefSymbol defId, Reference type, Initializer init,
-		ArrayView<DefinitionVarFragment> fragments, @SuppressWarnings("unused") boolean dummy)
+		ArrayView<DefVarFragment> fragments, @SuppressWarnings("unused") boolean dummy)
 	{
 		super(defId);
 		this.type = parentize(type);
@@ -52,7 +52,7 @@ public class DefinitionVariable extends Definition implements IStatement {
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
 		public DefinitionAutoVariable(ProtoDefSymbol defId, Initializer init, 
-			ArrayView<DefinitionVarFragment> fragments) {
+			ArrayView<DefVarFragment> fragments) {
 			super(defId, null, init, fragments, false);
 		}
 		
@@ -112,7 +112,7 @@ public class DefinitionVariable extends Definition implements IStatement {
 		cp.appendNode(type, " ");
 		cp.appendNode(defname);
 		cp.appendNode(" = ", init);
-		for (DefinitionVarFragment varFragment : fragments) {
+		for (DefVarFragment varFragment : fragments) {
 			cp.appendNode(", ", varFragment);
 		}
 		cp.append(";");

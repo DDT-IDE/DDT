@@ -29,7 +29,7 @@ import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
-import dtool.ast.definitions.DefinitionVarFragment;
+import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
@@ -131,7 +131,7 @@ public interface IASTVisitor {
 	public boolean visit(DefinitionVariable node);
 	public void endVisit(DefinitionVariable node);
 	
-	public boolean visit(DefinitionVarFragment node);
+	public boolean visit(DefVarFragment node);
 	
 	public boolean visit(DefinitionEnum node);
 	public void endVisit(DefinitionEnum node);

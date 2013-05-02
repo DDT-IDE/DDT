@@ -1,6 +1,7 @@
 package dtool.descentadapter;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.array;
@@ -49,6 +50,7 @@ import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationLinkage.Linkage;
+import dtool.ast.declarations.DeclarationPostBlit;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationProtection.Protection;
@@ -61,13 +63,11 @@ import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.ImportStatic;
 import dtool.ast.declarations.InvalidSyntaxDeclaration_Old;
-import dtool.ast.definitions.DefModifier;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionInterface;
-import dtool.ast.definitions.DefinitionPostBlit;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
@@ -165,7 +165,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(Modifier node) {
-		return endAdapt(connect(DefinitionConverter.sourceRange(node), new DefModifier(node.tok)));
+		throw assertFail();
 	}
 
 	/*  =======================================================  */
@@ -654,8 +654,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.PostBlitDeclaration elem) {
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
-			new DefinitionPostBlit(
-				StatementConverterVisitor.convertStatement(elem.fbody, convContext))
+			new DeclarationPostBlit(
+				DefinitionConverter.convertFnBody(elem, convContext)
+				)
 			)
 		);
 	}

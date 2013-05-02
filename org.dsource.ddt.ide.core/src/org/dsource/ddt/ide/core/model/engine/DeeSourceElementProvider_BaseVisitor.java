@@ -19,7 +19,7 @@ import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionVarFragment;
+import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
@@ -100,7 +100,7 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTAbstractVi
 	
 	/* -----------------  Aggregates  ----------------- */
 	
-	@Override public boolean visit(DefinitionVarFragment elem) { return true; }
+	@Override public boolean visit(DefVarFragment elem) { return true; }
 	
 	/* ---------------------------------- */
 	

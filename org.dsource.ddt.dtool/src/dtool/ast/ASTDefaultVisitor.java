@@ -39,7 +39,7 @@ import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
-import dtool.ast.definitions.DefinitionVarFragment;
+import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
@@ -148,7 +148,7 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	}
 	
 	@Override public boolean visit(DefinitionVariable node) { return true; }
-	@Override public boolean visit(DefinitionVarFragment node) { return true; }
+	@Override public boolean visit(DefVarFragment node) { return true; }
 	
 	@Override
 	public boolean visit(DefinitionEnum node) {

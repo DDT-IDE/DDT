@@ -13,11 +13,11 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  * Declaration of a template mixin with an associated identifier:
  * http://dlang.org/template-mixin.html#TemplateMixinDeclaration (with MixinIdentifier)
  */
-public class NamedMixinDeclaration extends DefUnit implements IStatement {
+public class DefinitionNamedMixin extends DefUnit implements IStatement {
 	
 	public final Reference templateInstance;
 	
-	public NamedMixinDeclaration(Reference templateInstance, ProtoDefSymbol defId) {
+	public DefinitionNamedMixin(Reference templateInstance, ProtoDefSymbol defId) {
 		super(defId);
 		this.templateInstance = parentize(templateInstance);
 	}

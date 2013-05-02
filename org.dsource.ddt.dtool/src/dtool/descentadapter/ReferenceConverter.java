@@ -29,7 +29,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.declarations.InvalidSyntaxDeclaration_Old;
 import dtool.ast.definitions.DeclarationMixin;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
-import dtool.ast.definitions.NamedMixinDeclaration;
+import dtool.ast.definitions.DefinitionNamedMixin;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
@@ -116,7 +116,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		if (elem.ident != null) {
 			DefUnitTuple defUnit = DefinitionConverter.convertDsymbol(elem, convContext);
 			return connect(sourceRange,
-				new NamedMixinDeclaration(refTplInstance, defUnit.defSymbol));
+				new DefinitionNamedMixin(refTplInstance, defUnit.defSymbol));
 		} else {
 			return connect(sourceRange,
 				new DeclarationMixin(refTplInstance));

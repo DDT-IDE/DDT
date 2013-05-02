@@ -66,7 +66,7 @@ import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionUnion;
-import dtool.ast.definitions.DefinitionVarFragment;
+import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
 import dtool.ast.definitions.EnumMember;
@@ -74,7 +74,7 @@ import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
-import dtool.ast.definitions.NamedMixinDeclaration;
+import dtool.ast.definitions.DefinitionNamedMixin;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.TemplateAliasParam;
 import dtool.ast.definitions.TemplateParameter;
@@ -432,7 +432,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	protected NodeResult<? extends DefinitionVariable> parseDefinitionVariable_afterIdentifier(
 		Reference ref, LexElement defId) 
 	{
-		ArrayList<DefinitionVarFragment> fragments = new ArrayList<DefinitionVarFragment>();
+		ArrayList<DefVarFragment> fragments = new ArrayList<>();
 		Initializer init = null;
 		
 		final boolean isAutoRef = ref == null;
@@ -445,7 +445,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		
 		while(tryConsume(DeeTokens.COMMA)) {
-			DefinitionVarFragment defVarFragment = parseVarFragment(isAutoRef);
+			DefVarFragment defVarFragment = parseVarFragment(isAutoRef);
 			fragments.add(defVarFragment);
 		}
 		parse.consumeRequired(DeeTokens.SEMICOLON);
@@ -457,7 +457,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new DefinitionVariable(defSymbol(defId), ref, init, arrayView(fragments)));
 	}
 	
-	protected DefinitionVarFragment parseVarFragment(boolean isAutoRef) {
+	protected DefVarFragment parseVarFragment(boolean isAutoRef) {
 		ProtoDefSymbol fragId = parseDefId();
 		ParseHelper parse = new ParseHelper(fragId.getStartPos());
 		Initializer init = null;
@@ -469,7 +469,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				parse.store(createExpectedTokenError(DeeTokens.ASSIGN));
 			}
 		}
-		return parse.conclude(new DefinitionVarFragment(fragId, init));
+		return parse.conclude(new DefVarFragment(fragId, init));
 	}
 	
 	public static final ParseRuleDescription RULE_INITIALIZER = new ParseRuleDescription("Initializer");
@@ -1416,7 +1416,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(!tplInstanceResult.ruleBroken && lookAhead() == DeeTokens.IDENTIFIER) {
 			ProtoDefSymbol defId = parseDefId();
 			parse.consumeRequired(DeeTokens.SEMICOLON);
-			return parse.resultConclude(new NamedMixinDeclaration(tplInstance, defId));
+			return parse.resultConclude(new DefinitionNamedMixin(tplInstance, defId));
 		} else {
 			parse.consumeRequired(DeeTokens.SEMICOLON);
 			return parse.resultConclude(new DeclarationMixin(tplInstance));
