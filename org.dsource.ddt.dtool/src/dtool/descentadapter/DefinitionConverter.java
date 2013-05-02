@@ -34,10 +34,9 @@ import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
-import dtool.ast.definitions.DefinitionCtor;
+import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.AutoReturnReference;
-import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
@@ -233,9 +232,9 @@ public class DefinitionConverter extends BaseDmdConverter {
 		DefUnitTuple defunitData = DefinitionConverter.convertDsymbol(elem, convContext);
 		return connect(defunitData.sourceRange, 
 			new DefinitionFunction(
+				rettype, 
 				defunitData.defSymbol, 
 				null, 
-				rettype, 
 				DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext), 
 				null, 
 				null, 
@@ -302,13 +301,16 @@ public class DefinitionConverter extends BaseDmdConverter {
 		}
 	}
 	
-	public static DefinitionCtor createDefinitionCtor(CtorDeclaration elem, ASTConversionContext convContext) {
+	public static DefinitionConstructor createDefinitionCtor(CtorDeclaration elem, ASTConversionContext convContext) {
 		return connect(DefinitionConverter.sourceRange(elem),  
-			new DefinitionCtor(
-			nullToEmpty(DescentASTConverter.convertMany(elem.arguments, IFunctionParameter.class, convContext)),
-			convertVarArgs(elem.varargs),
-			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
-			elem.thisStart)
+			new DefinitionConstructor(
+				new DefUnit.ProtoDefSymbol("this", new SourceRange(elem.thisStart, "this".length()), null),
+				null,
+				nullToEmpty(DescentASTConverter.convertMany(elem.arguments, IFunctionParameter.class, convContext)),
+				null,
+				null,
+				convertFnBody(elem, convContext)
+			)
 		);
 	}
 	

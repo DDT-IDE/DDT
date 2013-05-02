@@ -9,6 +9,10 @@ import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
+/**
+ * Declaration of a template mixin with an associated identifier:
+ * http://dlang.org/template-mixin.html#TemplateMixinDeclaration (with MixinIdentifier)
+ */
 public class NamedMixinDeclaration extends DefUnit implements IStatement {
 	
 	public final Reference templateInstance;

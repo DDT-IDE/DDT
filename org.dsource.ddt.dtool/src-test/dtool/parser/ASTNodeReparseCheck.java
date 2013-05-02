@@ -335,6 +335,7 @@ public class ASTNodeReparseCheck {
 			return reparseCheck(snippedParser.new ParseArrayInitEntry().parseElement(true));
 			
 		case DEFINITION_FUNCTION:
+		case DEFINITION_CONSTRUCTOR:
 			return reparseCheck(snippedParser.parseDeclaration());
 		case FUNCTION_PARAMETER:
 		case NAMELESS_PARAMETER:

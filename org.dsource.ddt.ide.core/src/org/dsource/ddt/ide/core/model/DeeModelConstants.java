@@ -13,16 +13,17 @@ public interface DeeModelConstants {
 	public static final int FLAG_KIND_TEMPLATE =	0x05 << Modifiers.USER_MODIFIER;
 	public static final int FLAG_KIND_ALIAS =		0x06 << Modifiers.USER_MODIFIER;
 	public static final int FLAG_KIND_TYPEDEF =		0x07 << Modifiers.USER_MODIFIER;
-	// The following are somewhat redundant with org.eclipse.dltk.core.IModelElement.getElementType()
 	public static final int FLAG_KIND_FUNCTION =	0x0A << Modifiers.USER_MODIFIER; 
+	public static final int FLAG_KIND_CONSTRUCTOR =	0x0B << Modifiers.USER_MODIFIER; 
 	public static final int FLAG_KIND_VARIABLE =	0x0D << Modifiers.USER_MODIFIER;
 	// we used 4 bits in total
 	public static final int FLAGMASK_KIND = 0x0F << Modifiers.USER_MODIFIER;
 	
-	public static final int FLAG_CONSTRUCTOR = 1 << Modifiers.USER_MODIFIER + 4; 
 	public static final int FLAG_TEMPLATED = 1 << Modifiers.USER_MODIFIER + 7; // Not used yet
-	// Indicates an export or package protection attribute 
-	public static final int FLAG_ALT_PROTECTION = 1 << Modifiers.USER_MODIFIER + 8; 
+	
+	// Modifier flag for protection flag that indicates an export or package protection attribute: 
+	public static final int FLAG_ALT_PROTECTION = 1 << Modifiers.USER_MODIFIER + 8;
+	
 	public static final int FLAG_PROTECTION_PRIVATE =	Modifiers.AccPrivate;
 	public static final int FLAG_PROTECTION_PACKAGE =	Modifiers.AccPrivate | FLAG_ALT_PROTECTION;
 	public static final int FLAG_PROTECTION_PROTECTED =	Modifiers.AccProtected;

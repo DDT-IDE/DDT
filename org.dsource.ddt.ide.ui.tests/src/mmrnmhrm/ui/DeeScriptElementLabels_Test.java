@@ -75,7 +75,7 @@ public class DeeScriptElementLabels_Test extends BaseDeeTest implements ITestRes
 		
 		checkLabel(getChild(topLevelElement.getType("Class"), "methodB"), qualification + "Class.methodB()");
 		checkLabel(getChild(topLevelElement.getType("Class"), "this"), qualification + "Class.this(int)");
-		checkLabel(getChild(topLevelElement.getType("Class"), "~this"), qualification + "Class.~this()");
+//		checkLabel(getChild(topLevelElement.getType("Class"), "~this"), qualification + "Class.~this()");
 		
 //		checkLabel(getChild(getChild(topLevelElement, "functionFoo"), "fooLocalVar"), 
 //				qualification + "functionFoo(int).fooLocalVar");

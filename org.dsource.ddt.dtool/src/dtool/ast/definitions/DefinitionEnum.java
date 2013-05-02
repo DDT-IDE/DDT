@@ -117,7 +117,7 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	
 	@Override
 	public Iterator<EnumMember> getMembersIterator(IModuleResolver moduleResolver) {
-		return body.nodes.iterator();
+		return body.nodes.iterator(); /*BUG here NPE*/
 	}
 	
 	@Override

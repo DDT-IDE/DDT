@@ -79,12 +79,15 @@ DefFunction(RefIdentifier DefSymbol #@TPLARGS #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAM
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   inout(Foo) funcAttrib( #@FN_PARAMS_SAMPLE ) #@FN_ATTRIBS_END
-#STRUCTURE_EXPECTED:
-DefFunction( RefTypeModifier(?) DefSymbol #@FN_PARAMS_SAMPLE #@FN_ATTRIBS_END )
+#STRUCTURE_EXPECTED:  DefFunction(* DefSymbol #@FN_PARAMS_SAMPLE #@FN_ATTRIBS_END )
+
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function Template constraint
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   Foo funcTplConstraint( ) ( #@FN_PARAMS_SAMPLE )  #@TPL_CONSTRAINT #@ST_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED:  DefFunction(? DefSymbol #@FN_PARAMS_SAMPLE #@TPL_CONSTRAINT #@ST_BLOCK__SAMPLE  )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)   Foo funcTplConstraint( ) ( #@FN_PARAMS_SAMPLE ) #@FN_ATTRIB__SAMPLE #@TPL_CONSTRAINT__SAMPLES #@ST_BLOCK__SAMPLE
+#STRUCTURE_EXPECTED:  DefFunction(? DefSymbol #@FN_PARAMS_SAMPLE  #@FN_ATTRIB__SAMPLE #@TPL_CONSTRAINT__SAMPLES #@ST_BLOCK__SAMPLE  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  /* needs tpl args to parse from if constraint */
 #PARSE(DECLARATION)   Foo funcTplConstraint ( #@FN_PARAMS_SAMPLE ) #@NO_BODY #@BREAK  #@TPL_CONSTRAINT #@ST_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED:  DefFunction(RefIdentifier DefSymbol #@FN_PARAMS_SAMPLE #@NO_BODY #@BREAK  )

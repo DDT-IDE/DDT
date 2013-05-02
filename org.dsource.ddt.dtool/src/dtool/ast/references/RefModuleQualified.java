@@ -38,7 +38,7 @@ public class RefModuleQualified extends CommonRefQualified {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(".");
-		cp.appendNodeNullAlt(qualifiedName, "/*MISSING*/");
+		cp.appendNodeOrNullAlt(qualifiedName, "/*MISSING*/");
 	}
 	
 	@Override

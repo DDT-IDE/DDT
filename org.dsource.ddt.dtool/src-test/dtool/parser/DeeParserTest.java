@@ -203,7 +203,8 @@ public class DeeParserTest extends CommonTestUtils {
 			return DefinitionAliasFragment.class.getSimpleName();
 		}
 		
-		return replaceRegexFirstOccurrence(expectedNameRaw, "(Def)(Var|AutoVar|Function)", 1, "Definition");
+		return replaceRegexFirstOccurrence(expectedNameRaw, 
+			"(Def)(Var|AutoVar|Function|Constructor)", 1, "Definition");
 	}
 	
 	/* ============= Error and Source Range Checkers ============= */

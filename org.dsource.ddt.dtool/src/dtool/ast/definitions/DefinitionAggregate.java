@@ -57,7 +57,7 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
-		return NewUtils.getChainedIterator(decls.nodes /*NPE BUG here*/, tplParams); 
+		return NewUtils.getChainedIterator(decls.nodes /*NPE BUG here*/, tplParams);
 	}
 	
 	@Override

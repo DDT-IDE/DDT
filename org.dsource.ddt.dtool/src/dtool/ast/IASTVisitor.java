@@ -1,6 +1,7 @@
 package dtool.ast;
 
 import dtool.ast.declarations.DeclarationAlign;
+import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationEmpty;
@@ -10,6 +11,7 @@ import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -19,7 +21,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
-import dtool.ast.definitions.DefinitionCtor;
+import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
@@ -147,8 +149,8 @@ public interface IASTVisitor {
 	public void endVisit(DefinitionFunction node);
 	
 	//--
-	public boolean visit(DefinitionCtor node);
-	public void endVisit(DefinitionCtor node);
+	public boolean visit(DefinitionConstructor node);
+	public void endVisit(DefinitionConstructor node);
 	
 	
 	/* ---------------------------------- */
@@ -203,11 +205,15 @@ public interface IASTVisitor {
 	public boolean visit(DeclarationInvariant node);
 	public void endVisit(DeclarationInvariant node);
 	
-	
 	public boolean visit(DeclarationUnitTest node);
 	public void endVisit(DeclarationUnitTest node);
 	
 	public boolean visit(DeclarationConditional node);
 	public void endVisit(DeclarationConditional node);
 	
+	public boolean visit(DeclarationSpecialFunction node);
+	public void endVisit(DeclarationSpecialFunction node);
+	
+	public boolean visit(DeclarationAllocatorFunction node);
+	public void endVisit(DeclarationAllocatorFunction node);
 }

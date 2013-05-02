@@ -27,7 +27,7 @@ import dtool.ast.DeclList;
 import dtool.ast.NodeData.PreParseNodeData;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
-import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
+import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;

@@ -6,6 +6,7 @@ public enum EArcheType {
 	
 	Variable,
 	Function,
+	Constructor,
 	
 	//Native,
 	Class(true),

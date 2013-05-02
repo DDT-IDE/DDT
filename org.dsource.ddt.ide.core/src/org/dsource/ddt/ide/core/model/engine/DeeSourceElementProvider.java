@@ -20,13 +20,15 @@ import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
 import dtool.ast.ASTNeoNode;
+import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
+import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
-import dtool.ast.definitions.DefinitionCtor;
+import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
@@ -79,21 +81,6 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	@Override
 	public boolean visit(Module node) {
 		requestor.enterType(createTypeInfoForModule(node));
-//		DeclarationModule md = node.md;
-//		String pkgName = "";
-//		if(md != null) {
-//			for (int i = 0; i < md.packages.length; i++) {
-//				String id = md.packages[i];
-//				if(i == 0) {
-//					pkgName = pkgName + id.toString();
-//				} else {
-//					pkgName = pkgName + "." + id.toString();
-//				}
-//			}
-//			requestor.acceptPackage(md.getStartPos(), md.getEndPos()-1, pkgName.toCharArray());
-//		} else {
-//			//requestor.acceptPackage(0, 0-1, "".toCharArray());
-//		}
 		return true;
 	}
 	
@@ -212,13 +199,32 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	
 	@Override
-	public boolean visit(DefinitionCtor node) {
+	public boolean visit(DefinitionConstructor node) {
 		requestor.enterMethod(createConstructorInfo(node));
 		return true;
 	}
 	@Override
-	public void endVisit(DefinitionCtor node) {
+	public void endVisit(DefinitionConstructor node) {
 		requestor.exitMethod(getDeclarationEndforNode(node));
+	}
+	
+	@Override
+	public boolean visit(DeclarationSpecialFunction node) {
+		// TODO
+		return true;
+	}
+	
+	@Override
+	public void endVisit(DeclarationSpecialFunction node) {
+	}
+	
+	@Override
+	public boolean visit(DeclarationAllocatorFunction node) {
+		// TODO
+		return true;
+	}
+	@Override
+	public void endVisit(DeclarationAllocatorFunction node) {
 	}
 	
 	/* ---------------------------------- */
@@ -228,7 +234,6 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		requestor.enterField(createFieldInfo(node));
 		return true;
 	}
-	
 	@Override
 	public void endVisit(DefinitionVariable node) {
 		requestor.exitField(getDeclarationEndforNode(node));
@@ -370,17 +375,11 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		return methodInfo;
 	}
 	
-	protected static ISourceElementRequestor.MethodInfo createConstructorInfo(DefinitionCtor elem) {
+	protected static ISourceElementRequestor.MethodInfo createConstructorInfo(DefinitionConstructor elem) {
 		ISourceElementRequestor.MethodInfo elemInfo = new ISourceElementRequestor.MethodInfo();
-		//setupDefUnitTypeInfo(elem, elemInfo);
-		elemInfo.declarationStart = elem.getStartPos();
-		elemInfo.name = "this";
-		elemInfo.nameSourceStart = elem.nameStart;
-		elemInfo.nameSourceEnd = elem.nameStart + "this".length() - 1; 
-		
-		elemInfo.modifiers |= DeeModelConstants.FLAG_KIND_FUNCTION;
-		elemInfo.modifiers |= DeeModelConstants.FLAG_CONSTRUCTOR;
-		elemInfo.isConstructor = true; // for purposes of ModelElements, any kind of *ctor is marked as a constructor
+		setupDefUnitTypeInfo(elem, elemInfo, DeeModelConstants.FLAG_KIND_CONSTRUCTOR);
+		setupDefinitionTypeInfo(elem, elemInfo);
+		elemInfo.isConstructor = true;
 		
 		setupParametersInfo(elem, elemInfo);
 		return elemInfo;

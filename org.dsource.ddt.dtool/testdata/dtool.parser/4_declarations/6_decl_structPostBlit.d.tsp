@@ -1,10 +1,10 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO will be construct in future 
-#PARSE(DECLARATION)   #error(SE_decl) this  #@BREAK
-#STRUCTURE_EXPECTED:  InvalidSyntaxElement
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO will be construct in futur
-#PARSE(DECLARATION)   #error(SE_decl) this #@BREAK (  #@BREAK
-#STRUCTURE_EXPECTED:  InvalidSyntaxElement
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  duplicate case, for clarity
+#PARSE(DECLARATION)   this #error(EXP_OPEN_PARENS)【】 #@BREAK
+#STRUCTURE_EXPECTED:  DefConstructor(DefSymbol)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ duplicate case, for clarity
+#PARSE(DECLARATION)   this ( #error(EXP_CLOSE_PARENS) #@BREAK
+#STRUCTURE_EXPECTED:  DefConstructor(DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   this(this #error(EXP_CLOSE_PARENS) #@BREAK
 #STRUCTURE_EXPECTED:  DeclarationPostBlit()

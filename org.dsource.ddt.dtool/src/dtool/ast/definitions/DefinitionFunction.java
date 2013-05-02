@@ -1,26 +1,19 @@
 package dtool.ast.definitions;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static dtool.util.NewUtils.assertNotNull_;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
-import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.ISourceRepresentation;
 import dtool.ast.NodeUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
-import dtool.parser.DeeTokens;
-import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -28,32 +21,15 @@ import dtool.util.ArrayView;
 /**
  * A definition of a function.
  */
-public class DefinitionFunction extends Definition implements IScopeNode, IStatement, ICallableElement {
+public class DefinitionFunction extends CommonFunctionDefinition implements IScopeNode, IStatement {
 	
 	public final Reference retType;
-	public final ArrayView<TemplateParameter> tplParams;
-	public final ArrayView<IFunctionParameter> params;
-	public final ArrayView<FunctionAttributes> fnAttributes;
-	public final Expression tplConstraint;
-	public final IFunctionBody fnBody;
 	
-	public DefinitionFunction(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams, Reference retType,
-			ArrayView<IFunctionParameter> params, ArrayView<FunctionAttributes> fnAttributes, 
+	public DefinitionFunction(Reference retType, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+			ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 
 			Expression tplConstraint, IFunctionBody fnBody) {
-		super(defId);
-		assertNotNull(retType);
-		
-		this.retType = parentize(retType);
-		
-		this.tplParams = parentize(tplParams);
-		this.params = parentizeI(params);
-		this.fnAttributes = fnAttributes;
-		this.tplConstraint = parentize(tplConstraint);
-		this.fnBody = parentizeI(fnBody);
-	}
-	
-	public final ArrayView<ASTNeoNode> getParams_asNodes() {
-		return CoreUtil.blindCast(params);
+		super(defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
+		this.retType = parentize(assertNotNull_(retType));
 	}
 	
 	@Override
@@ -78,12 +54,12 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNode(retType, " ");
-		cp.appendNode(defname);
-		cp.appendNodeList("(", tplParams, ",", ") ");
-		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
-		cp.appendList(fnAttributes, " ", true);
-		DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
-		cp.appendNode(fnBody);
+		toStringAsCode_fromDefId(cp);
+	}
+	
+	@Override
+	public EArcheType getArcheType() {
+		return EArcheType.Function;
 	}
 	
 	public static final class AutoReturnReference extends Reference {
@@ -116,89 +92,6 @@ public class DefinitionFunction extends Definition implements IScopeNode, IState
 			return false;
 		}
 	}
-	
-	public static enum FunctionAttributes implements ISourceRepresentation {
-		CONST(DeeTokens.KW_CONST.getSourceValue()), 
-		IMMUTABLE(DeeTokens.KW_IMMUTABLE.getSourceValue()), 
-		INOUT(DeeTokens.KW_INOUT.getSourceValue()), 
-		SHARED(DeeTokens.KW_SHARED.getSourceValue()),
-		
-		PURE(DeeTokens.KW_PURE.getSourceValue()),
-		NOTHROW(DeeTokens.KW_NOTHROW.getSourceValue()),
-		
-		AT_PROPERTY("@property"),
-		AT_SAFE("@safe"),
-		AT_TRUSTED("@trusted"),
-		AT_SYSTEM("@system"),
-		AT_DISABLE("@disable"),
-		;
-		public final String sourceValue;
-		
-		private FunctionAttributes(String sourceValue) {
-			this.sourceValue = sourceValue;
-		}
-		
-		@Override
-		public String getSourceValue() {
-			return sourceValue;
-		}
-		
-		public static FunctionAttributes fromToken(DeeTokens token) {
-			switch (token) {
-			case KW_CONST: return CONST;
-			case KW_IMMUTABLE: return IMMUTABLE;
-			case KW_INOUT: return INOUT;
-			case KW_SHARED: return SHARED;
-			case KW_PURE: return PURE;
-			case KW_NOTHROW: return NOTHROW;
-			
-			default: return null;
-			}
-		}
-		
-		//This could be slightly optimized with a hash table
-		public static FunctionAttributes fromCustomAttribId(String customAttribName) {
-			if(customAttribName.equals("property")) return AT_PROPERTY;
-			if(customAttribName.equals("safe")) return AT_SAFE;
-			if(customAttribName.equals("trusted")) return AT_TRUSTED;
-			if(customAttribName.equals("system")) return AT_SYSTEM;
-			if(customAttribName.equals("disable")) return AT_DISABLE;
-			return null;
-		}
-	}
-	
-	@Override
-	public EArcheType getArcheType() {
-		return EArcheType.Function;
-	}
-	
-	@Override
-	public ArrayView<IFunctionParameter> getParameters() {
-		return params;
-	}
-	
-	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
-		// FIXME
-		return this;
-	}
-	
-	@Override
-	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-		// TODO: function super
-		return null;
-	}
-	
-	@Override
-	public boolean hasSequentialLookup() {
-		return false;
-	}
-	
-	@Override
-	public Iterator<IFunctionParameter> getMembersIterator(IModuleResolver moduleResolver) {
-		return params.iterator();
-	}
-	
 	
 	public static String toStringParametersForSignature(ArrayView<IFunctionParameter> params) {
 		String strParams = "(";

@@ -11,6 +11,7 @@
 package dtool.ast;
 
 import dtool.ast.declarations.DeclarationAlign;
+import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationEmpty;
@@ -20,6 +21,7 @@ import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
@@ -29,7 +31,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
-import dtool.ast.definitions.DefinitionCtor;
+import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
@@ -164,7 +166,7 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	@Override public boolean visit(DefinitionFunction node) { return true; }
 	
 	@Override
-	public boolean visit(DefinitionCtor node) {
+	public boolean visit(DefinitionConstructor node) {
 		return true;
 	}
 	
@@ -211,15 +213,9 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	@Override public boolean visit(ExpInfix node) { return true; }
 	@Override public boolean visit(ExpConditional node) { return true; }
 	
-	@Override
-	public boolean visit(ExpFunctionLiteral node) {
-		return true;
-	}
+	@Override public boolean visit(ExpFunctionLiteral node) { return true; }
 	
-	@Override
-	public boolean visit(ExpNewAnonClass node) {
-		return true;
-	}
+	@Override public boolean visit(ExpNewAnonClass node) { return true; }
 
 	/* ---------------------------------- */
 	
@@ -228,17 +224,15 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 		return true;
 	}
 	
-	@Override
-	public boolean visit(DeclarationInvariant node) {
-		return true;
-	}
-	@Override
-	public boolean visit(DeclarationUnitTest node) {
-		return true;
-	}
+	@Override public boolean visit(DeclarationInvariant node) { return true; }
+	@Override public boolean visit(DeclarationUnitTest node) { return true; }
+	
 	@Override
 	public boolean visit(DeclarationConditional node) {
 		return true;
 	}
+	
+	@Override public boolean visit(DeclarationSpecialFunction node) { return true; }
+	@Override public boolean visit(DeclarationAllocatorFunction node) { return true; }
 	
 }

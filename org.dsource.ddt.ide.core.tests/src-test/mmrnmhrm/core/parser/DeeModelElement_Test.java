@@ -89,18 +89,18 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		
 		
 		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("this"), 
-				EArcheType.Function, "/*this*/", "this(int ");
-		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("~this"), 
-				EArcheType.Function, "/*~this*/", "~this()");
-		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("new"), 
-				EArcheType.Function, "/*new*/", "new()");
-		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("delete"), 
-				EArcheType.Function, "/*delete*/", "delete()");
+				EArcheType.Constructor, "/*this*/", "this(int ");
+//		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("~this"), 
+//				EArcheType.Function, "/*~this*/", "~this()");
+//		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("new"), 
+//				EArcheType.Function, "/*new*/", "new()");
+//		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("delete"), 
+//				EArcheType.Function, "/*delete*/", "delete()");
 		
-		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("this"), 
-				EArcheType.Function, "/*static this*/", "static /*static this*/ this()");
-		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("~this"), 
-				EArcheType.Function, "/*static ~this*/", "static /*static ~this*/ ~this()");
+//		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("this"), 
+//				EArcheType.Function, "/*static this*/", "static /*static this*/ this()");
+//		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("~this"), 
+//				EArcheType.Function, "/*static ~this*/", "static /*static ~this*/ ~this()");
 		
 	}
 	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, 
@@ -122,7 +122,6 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		assertTrue(element.getNameRange().getOffset() == nameOffset);
 		assertTrue(element.getNameRange().getLength() == element.getElementName().length());
 		
-		assertTrue(DeeModelElementUtil.getCorrectedElementFlags(element, element.getFlags()) == element.getFlags());
 		assertTrue(DeeModelElementUtil.elementFlagsToArcheType(element.getFlags()) == archeType);
 		if(element instanceof IMethod) {
 			IMethod method = (IMethod) element;

@@ -12,6 +12,11 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
+/**
+ * Declaration of a template mixin with no name:
+ * http://dlang.org/template-mixin.html#TemplateMixinDeclaration
+ * (without MixinIdentifier)
+ */
 public class DeclarationMixin extends ASTNeoNode implements IStatement, INonScopedBlock {
 	
 	public final Reference templateInstance;

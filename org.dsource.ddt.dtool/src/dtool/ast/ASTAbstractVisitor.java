@@ -10,14 +10,16 @@
  *******************************************************************************/
 package dtool.ast;
 
+import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationConditional;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
+import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
-import dtool.ast.definitions.DefinitionCtor;
+import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
@@ -67,7 +69,7 @@ public abstract class ASTAbstractVisitor implements IASTVisitor {
 	
 	@Override public void endVisit(DefinitionFunction node) { }
 	
-	@Override public void endVisit(DefinitionCtor node) {}
+	@Override public void endVisit(DefinitionConstructor node) {}
 	
 	@Override public void endVisit(Resolvable node) {}
 	
@@ -80,5 +82,8 @@ public abstract class ASTAbstractVisitor implements IASTVisitor {
 	@Override public void endVisit(DeclarationUnitTest node) {}
 	
 	@Override public void endVisit(DeclarationConditional node) {}
+	
+	@Override public void endVisit(DeclarationSpecialFunction node) {}
+	@Override public void endVisit(DeclarationAllocatorFunction node) {}
 	
 }

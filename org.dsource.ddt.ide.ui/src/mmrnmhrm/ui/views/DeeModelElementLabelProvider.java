@@ -80,8 +80,8 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			DeeCore.logError(e);
 			return getIDEInternalErrorImageDescriptor();
 		}
-		// correct element flags in case it is used by some fake ModelElement
-		elementFlags = DeeModelElementUtil.getCorrectedElementFlags(member, elementFlags);
+//		// correct element flags in case it is used by some fake ModelElement
+//		elementFlags = DeeModelElementUtil.getCorrectedElementFlags(member, elementFlags);
 		return getImageDescriptor(elementFlags, imageSize);
 	}
 	
@@ -102,14 +102,14 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			prot = DeeModelElementUtil.elementFlagsToProtection(elementFlags, null);
 		}
 		
-		int imageFlags = getImageFlags(archetype, elementFlags);
+		int imageFlags = getImageAdornmentFlags(elementFlags);
 		return new DeeElementImageDescriptor(baseImage, imageFlags, prot, imageSize);
 	}
 	
-	protected int getImageFlags(EArcheType archeType, int modifiers) {
+	protected int getImageAdornmentFlags(int modifiers) {
 		int imageFlags = 0;
 		
-		if (archeType == EArcheType.Function && DeeModelElementUtil.isConstructor(modifiers)) {
+		if (DeeModelElementUtil.isConstructor(modifiers)) {
 			imageFlags |= ScriptElementImageDescriptor.CONSTRUCTOR; // TODO: this should be its own base image
 		}
 		
@@ -155,6 +155,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			}
 			
 		case Function:
+		case Constructor:
 			if(iconStyle != ElementIconsStyle.JDTLIKE) {
 				return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_FUNCTION);
 			}
@@ -186,9 +187,14 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_ALIAS);
 		case Typedef:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_TYPEDEF);
-		default:
-			throw assertFail();
+		case EnumMember:
+		case Mixin:
+		case Tuple:
+		case TypeParameter:
+			throw assertFail(); //The above are not reported as elements
 		}
+		throw assertFail();
+		
 	}
 	
 }

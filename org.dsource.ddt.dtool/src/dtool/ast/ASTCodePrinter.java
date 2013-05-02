@@ -53,7 +53,7 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendNodeNullAlt(IASTNeoNode node, String nullAlt) {
+	public void appendNodeOrNullAlt(IASTNeoNode node, String nullAlt) {
 		if(node != null) {
 			node.toStringAsCode(this);
 		} else {

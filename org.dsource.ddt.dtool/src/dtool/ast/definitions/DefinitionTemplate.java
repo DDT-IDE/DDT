@@ -21,7 +21,8 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
- * Note, ATM only valid as a statement in the shorthand syntax for an eponymous template, like class(T) { ...
+ * Definition of a template.
+ * http://dlang.org/template.html#TemplateDeclaration
  */
 public class DefinitionTemplate extends Definition implements IScopeNode, IStatement {
 	
@@ -43,8 +44,7 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 		this.wrapper = false; // TODO: determine this
 		if(wrapper) {
 			assertTrue(this.decls.nodes.size() == 1);
-			assertTrue(decls.nodes.get(0) instanceof DefUnit || decls.nodes.get(0) instanceof DefinitionCtor);
-			// BUG here, need to fix for DefinitionCtor case
+			assertTrue(decls.nodes.get(0) instanceof DefUnit);
 		}
 	}
 	

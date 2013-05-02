@@ -23,6 +23,7 @@ import dtool.ast.DeclList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
+import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
@@ -32,15 +33,14 @@ import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationLinkage.Linkage;
-import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPostBlit;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
-import dtool.ast.declarations.DeclarationAllocatorFunction;
-import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
+import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
@@ -56,11 +56,12 @@ import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
+import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.AutoReturnReference;
-import dtool.ast.definitions.DefinitionFunction.FunctionAttributes;
+import dtool.ast.definitions.CommonFunctionDefinition;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
@@ -69,6 +70,7 @@ import dtool.ast.definitions.DefinitionVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
 import dtool.ast.definitions.EnumMember;
+import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
@@ -362,7 +364,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		case KW_THIS:
 			if(lookAhead(1) == DeeTokens.OPEN_PARENS && lookAhead(2) == DeeTokens.KW_THIS)
 				return parseDeclarationPostBlit_start();
-			break;
+			return parseDefinitionConstructor();
 		default:
 			break;
 		}
@@ -569,7 +571,14 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 	}
 	
-	public static final ParseRuleDescription RULE_FN_BODY = new ParseRuleDescription("FnBody");
+	protected NodeResult<DefinitionConstructor> parseDefinitionConstructor() {
+		if(tryConsume(DeeTokens.KW_THIS) == false) {
+			return nullResult();
+		}
+		ParseHelper parse = new ParseHelper();
+		ProtoDefSymbol defId = defSymbol(lastLexElement()); // TODO: mark this as special DefSymbol
+		return parse_FunctionLike(null, defId, parse).upcastTypeParam();
+	}
 	
 	/**
 	 * Parse a function from this point:
@@ -580,6 +589,12 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		assertTrue(defId.isMissingElement() == false);
 		
 		ParseHelper parse = new ParseHelper(retType.getStartPos());
+		
+		return parse_FunctionLike(retType, defSymbol(defId), parse).upcastTypeParam();
+	}
+	
+	protected NodeResult<? extends CommonFunctionDefinition> parse_FunctionLike(Reference retType, 
+		ProtoDefSymbol defId, ParseHelper parse) {
 		
 		ArrayView<IFunctionParameter> fnParams = null;
 		ArrayView<TemplateParameter> tplParams = null;
@@ -628,8 +643,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 		}
 		
+		if(retType == null) {
+			return parse.resultConclude(new DefinitionConstructor(
+				defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
+		}
+		
 		return parse.resultConclude(new DefinitionFunction(
-			defSymbol(defId), tplParams, retType, fnParams, fnAttributes, tplConstraint, fnBody));
+			retType, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 	}
 	
 	protected ASTNeoNode parseTemplateAliasParameter_start() {
@@ -711,6 +731,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		return parseExpressionAroundParentheses(parse, true);
 	}
+	
+	public static final ParseRuleDescription RULE_FN_BODY = new ParseRuleDescription("FnBody");
 	
 	protected NodeResult<? extends IFunctionBody> parseFunctionBody() {
 		NodeResult<BlockStatement> blockResult = parseBlockStatement(false, false);
