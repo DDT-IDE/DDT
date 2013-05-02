@@ -374,9 +374,9 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		ISourceElementRequestor.MethodInfo elemInfo = new ISourceElementRequestor.MethodInfo();
 		//setupDefUnitTypeInfo(elem, elemInfo);
 		elemInfo.declarationStart = elem.getStartPos();
-		elemInfo.name = elem.kind.specialName;
+		elemInfo.name = "this";
 		elemInfo.nameSourceStart = elem.nameStart;
-		elemInfo.nameSourceEnd = elem.nameStart + elem.kind.specialName.length() - 1; 
+		elemInfo.nameSourceEnd = elem.nameStart + "this".length() - 1; 
 		
 		elemInfo.modifiers |= DeeModelConstants.FLAG_KIND_FUNCTION;
 		elemInfo.modifiers |= DeeModelConstants.FLAG_CONSTRUCTOR;

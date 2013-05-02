@@ -29,6 +29,9 @@ import descent.internal.compiler.parser.ast.ASTNode;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
+import dtool.ast.declarations.DeclarationAllocatorFunction;
+import dtool.ast.declarations.DeclarationSpecialFunction;
+import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionCtor;
@@ -227,23 +230,28 @@ public class DefinitionConverter extends BaseDmdConverter {
 				new AutoReturnReference() : 
 				ReferenceConverter.convertType(elemTypeFunc.next, convContext);
 		
-		DefinitionFunction definitionFunction = createDefFunction(
-			DefinitionConverter.convertDsymbol(elem, convContext), 
-			elem.prot(),
-			rettype,
-			DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
-			null,
-			StatementConverterVisitor.convertStatement(elem.frequire, convContext),
-			StatementConverterVisitor.convertStatement(elem.fensure, convContext),
-			(BlockStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext)
-		);
-		
-		return definitionFunction;
+		DefUnitTuple defunitData = DefinitionConverter.convertDsymbol(elem, convContext);
+		return connect(defunitData.sourceRange, 
+			new DefinitionFunction(
+				defunitData.defSymbol, 
+				null, 
+				rettype, 
+				DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext), 
+				null, 
+				null, 
+				convertFnBody(elem, convContext)
+		));
+	}
+
+	public static IFunctionBody convertFnBody(descent.internal.compiler.parser.FuncDeclaration elem,
+		ASTConversionContext convContext) {
+		return convertFnBody(
+			StatementConverterVisitor.convertStatement(elem.frequire, convContext), 
+			StatementConverterVisitor.convertStatement(elem.fensure, convContext), 
+			(BlockStatement) StatementConverterVisitor.convertStatement(elem.fbody, convContext));
 	}
 	
-	public static DefinitionFunction createDefFunction(DefUnitTuple defunitData, PROT prot, Reference retType,
-		ArrayView<IFunctionParameter> params, ArrayView<FunctionAttributes> fnAttributes, 
-		IStatement frequire, IStatement fensure, BlockStatement fbody) {
+	public static IFunctionBody convertFnBody(IStatement frequire, IStatement fensure, BlockStatement fbody) {
 		IFunctionBody fnBody;
 		if(frequire == null && fensure == null) {
 			if(fbody == null) {
@@ -255,8 +263,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			/*WATHEVAR*/
 			fnBody = new InOutFunctionBody(false, null, null, fbody);
 		}
-		return connect(defunitData.sourceRange, 
-			new DefinitionFunction(defunitData.defSymbol, null, retType, params, fnAttributes, null, fnBody));
+		return fnBody;
 	}
 	
 	public static int convertVarArgs(int varargs) {
@@ -298,7 +305,6 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionCtor createDefinitionCtor(CtorDeclaration elem, ASTConversionContext convContext) {
 		return connect(DefinitionConverter.sourceRange(elem),  
 			new DefinitionCtor(
-			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR, 
 			nullToEmpty(DescentASTConverter.convertMany(elem.arguments, IFunctionParameter.class, convContext)),
 			convertVarArgs(elem.varargs),
 			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
@@ -310,54 +316,50 @@ public class DefinitionConverter extends BaseDmdConverter {
 		return arrayView != null ? arrayView : ArrayView.create(new IFunctionParameter[0]);
 	}
 	
-	public static DefinitionCtor createDefinitionCtor(DtorDeclaration elem, ASTConversionContext convContext) {
-		return connect(DefinitionConverter.sourceRange(elem), new DefinitionCtor(
-			DefinitionCtor.SpecialFunctionKind.DESTRUCTOR, 
-			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
-			0,
-			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
-			elem.thisStart - 1)
+	public static DeclarationSpecialFunction createDefinitionCtor(DtorDeclaration elem, 
+		ASTConversionContext convContext) {
+		return connect(DefinitionConverter.sourceRange(elem), new DeclarationSpecialFunction(
+			SpecialFunctionKind.STATIC_DESTRUCTOR,
+			convertFnBody(elem, convContext)
+			)
 		);
 	}
 	
-	public static DefinitionCtor createDefinitionCtor(StaticCtorDeclaration elem, ASTConversionContext convContext) {
-		return connect(DefinitionConverter.sourceRange(elem), new DefinitionCtor(
-			DefinitionCtor.SpecialFunctionKind.CONSTRUCTOR,
-			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
-			0,
-			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
-			elem.thisStart)
+	public static DeclarationSpecialFunction createDefinitionCtor(StaticCtorDeclaration elem, 
+		ASTConversionContext convContext) {
+		return connect(DefinitionConverter.sourceRange(elem), new DeclarationSpecialFunction(
+			SpecialFunctionKind.STATIC_CONSTRUCTOR,
+			convertFnBody(elem, convContext)
+			)
 		);
 	}
 	
-	public static DefinitionCtor createDefinitionCtor(StaticDtorDeclaration elem, ASTConversionContext convContext) {
-		return connect(DefinitionConverter.sourceRange(elem), new DefinitionCtor(
-			DefinitionCtor.SpecialFunctionKind.DESTRUCTOR,
-			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
-			0,
-			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
-			elem.thisStart - 1)
+	public static DeclarationSpecialFunction createDefinitionCtor(StaticDtorDeclaration elem, 
+		ASTConversionContext convContext) {
+		return connect(DefinitionConverter.sourceRange(elem), new DeclarationSpecialFunction(
+			DeclarationSpecialFunction.SpecialFunctionKind.STATIC_DESTRUCTOR,
+			convertFnBody(elem, convContext)
+			)
 		);
 	}
 	
-	public static DefinitionCtor createDefinitionCtor(NewDeclaration elem, ASTConversionContext convContext) {
-		return connect(DefinitionConverter.sourceRange(elem), new DefinitionCtor(
-			DefinitionCtor.SpecialFunctionKind.ALLOCATOR,
+	public static DeclarationAllocatorFunction createDefinitionCtor(NewDeclaration elem, ASTConversionContext convContext) {
+		return connect(DefinitionConverter.sourceRange(elem), new DeclarationAllocatorFunction(
+			true,
 			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
-			convertVarArgs(elem.varargs),
-			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
-			elem.newStart)
+			convertFnBody(elem, convContext)
+			)
 		);
 	}
 	
-	public static DefinitionCtor createDefinitionCtor(DeleteDeclaration elem, ASTConversionContext convContext) {
-		return connect(DefinitionConverter.sourceRange(elem), new DefinitionCtor(
-			DefinitionCtor.SpecialFunctionKind.DEALLOCATOR,
+	public static DeclarationAllocatorFunction createDefinitionCtor(DeleteDeclaration elem, 
+		ASTConversionContext convContext) {
+		return connect(DefinitionConverter.sourceRange(elem),
+			new DeclarationAllocatorFunction(
+			false,
 			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),
-			0,
-			StatementConverterVisitor.convertStatement(elem.fbody, convContext),
-			elem.deleteStart)
-		);
+			convertFnBody(elem, convContext)
+		));
 	}
 	
 }

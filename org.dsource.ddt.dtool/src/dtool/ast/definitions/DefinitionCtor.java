@@ -16,29 +16,14 @@ import dtool.util.ArrayView;
 
 public class DefinitionCtor extends ASTNeoNode implements IScopeNode, ICallableElement {
 	
-	public static enum SpecialFunctionKind {
-		CONSTRUCTOR("this"),
-		DESTRUCTOR("~this"),
-		ALLOCATOR("new"),
-		DEALLOCATOR("delete"),
-		;
-		public final String specialName;
-		
-		private SpecialFunctionKind(String specialName) {
-			this.specialName = specialName;
-		}
-	}
-	
-	public final SpecialFunctionKind kind; // whether it is a constructor or destructor
 	public final ArrayView<IFunctionParameter> params;
 	public final int varargs;
 	public final IStatement fbody;
 	public final int nameStart;
 	
-	public DefinitionCtor(SpecialFunctionKind kind, ArrayView<IFunctionParameter> params, int varargs,
+	public DefinitionCtor(ArrayView<IFunctionParameter> params, int varargs,
 			IStatement fbody, int thisStart) {
 		assertNotNull(params);
-		this.kind = kind;
 		this.params = parentizeI(params);
 		this.varargs = varargs;
 		this.fbody = parentizeI(fbody);
