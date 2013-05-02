@@ -7,6 +7,10 @@
 InvalidSyntaxElement DeclarationEmpty
 InvalidSyntaxElement
 InvalidSyntaxElement
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)   #error(SE_decl) while #@BREAK (true) ; 
+#STRUCTURE_EXPECTED:  InvalidSyntaxElement
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of reference start in declaration
 foo #error(EXP_IDENTIFIER) ;
 #STRUCTURE_EXPECTED:

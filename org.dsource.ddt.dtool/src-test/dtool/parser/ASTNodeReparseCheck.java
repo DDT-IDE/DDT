@@ -310,7 +310,7 @@ public class ASTNodeReparseCheck {
 		
 		case DECLARATION_INVARIANT: return reparseCheck(snippedParser.parseDeclarationInvariant_start());
 		case DECLARATION_ALLOC_DEALLOC: return reparseCheck(snippedParser.parseDeclarationAllocators());
-
+		case DECLARATION_POST_BLIT: return reparseCheck(snippedParser.parseDeclarationPostBlit_start());
 		
 		/* ---------------------------------- */
 		

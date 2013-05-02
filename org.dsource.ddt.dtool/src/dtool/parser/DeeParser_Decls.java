@@ -33,6 +33,7 @@ import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationLinkage.Linkage;
 import dtool.ast.declarations.DeclarationMixinString;
+import dtool.ast.declarations.DeclarationPostBlit;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationSpecialFunction;
@@ -345,6 +346,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		case KW_NEW:
 		case KW_DELETE:
 			return parseDeclarationAllocators();
+		case KW_THIS:
+			if(lookAhead(1) == DeeTokens.OPEN_PARENS && lookAhead(2) == DeeTokens.KW_THIS)
+				return parseDeclarationPostBlit_start();
 		default:
 			break;
 		}
@@ -375,7 +379,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		} else {
 			Token badToken = consumeLookAhead();
 			ParseHelper parse = new ParseHelper();
-			parse.store(createSyntaxError(RULE_DECLARATION));
+			parse.storeBreakError(createSyntaxError(RULE_DECLARATION));
 			return parse.resultConclude(new InvalidSyntaxElement(badToken));
 		}
 	}
@@ -1395,6 +1399,22 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		
 		return parse.resultConclude(new DeclarationInvariant(body));
+	}
+	
+	public NodeResult<DeclarationPostBlit> parseDeclarationPostBlit_start() {
+		consumeLookAhead(DeeTokens.KW_THIS);
+		ParseHelper parse = new ParseHelper();
+		
+		IFunctionBody fnBody = null;
+		parsing: {
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) break parsing;
+			parse.consumeExpected(DeeTokens.KW_THIS);
+			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
+			
+			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
+		}
+		
+		return parse.resultConclude(new DeclarationPostBlit(fnBody));
 	}
 	
 	public NodeResult<DeclarationSpecialFunction> parseDeclarationAllocators() {

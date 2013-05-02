@@ -99,6 +99,7 @@ public enum ASTNodeTypes {
 	
 	DECLARATION_INVARIANT,
 	DECLARATION_ALLOC_DEALLOC,
+	DECLARATION_POST_BLIT,
 	
 	/* ---------------------------------- */
 	
