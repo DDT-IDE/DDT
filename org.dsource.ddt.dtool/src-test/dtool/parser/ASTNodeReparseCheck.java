@@ -309,8 +309,10 @@ public class ASTNodeReparseCheck {
 		case DECL_ALIAS_THIS: return reparseCheck(snippedParser.parseDeclarationAliasThis());
 		
 		case DECLARATION_INVARIANT: return reparseCheck(snippedParser.parseDeclarationInvariant_start());
-		case DECLARATION_ALLOC_DEALLOC: return reparseCheck(snippedParser.parseDeclarationAllocators());
+		case DECLARATION_UNITEST: return reparseCheck(snippedParser.parseDeclarationUnitTest_start());
+		case DECLARATION_ALLOCATOR_FUNCTION: return reparseCheck(snippedParser.parseDeclarationAllocatorFucntions());
 		case DECLARATION_POST_BLIT: return reparseCheck(snippedParser.parseDeclarationPostBlit_start());
+		case DECLARATION_SPECIAL_FUNCTION: return reparseCheck(snippedParser.parseDeclarationSpecialFunction());
 		
 		/* ---------------------------------- */
 		

@@ -1,46 +1,52 @@
 package dtool.ast.declarations;
 
-import melnorme.utilbox.core.CoreUtil;
+import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.statements.IFunctionBody;
-import dtool.util.ArrayView;
 
-/**
- * Declaration of special function like elements, like allocator/deallocator:
- * http://dlang.org/class.html#ClassAllocator
- * http://dlang.org/class.html#ClassDeallocator
- */
 public class DeclarationSpecialFunction extends ASTNeoNode {
 	
-	public final boolean isNew;
-	public final ArrayView<IFunctionParameter> params;
-	public final IFunctionBody fnBody;
-	
-	public DeclarationSpecialFunction(boolean isNew, ArrayView<IFunctionParameter> params, IFunctionBody fnBody) {
-		this.isNew = isNew;
-		this.params = parentizeI(params);
-		this.fnBody = parentizeI(fnBody);
+	public static enum SpecialFunctionKind {
+		POST_BLIT("this(this)"),
+		
+		DESTRUCTOR("~this()"),
+		STATIC_CONSTRUCTOR("static this()"),
+		STATIC_DESTRUCTOR("static ~this()"),
+		SHARED_STATIC_CONSTRUCTOR("shared static this()"),
+		SHARED_STATIC_DESTRUCTOR("shared static ~this()"),
+		;
+		public final String sourceValue;
+		
+		private SpecialFunctionKind(String sourceValue) {
+			this.sourceValue = sourceValue;
+		}
+		
+		public String toStringAsCode() {
+			return sourceValue;
+		}
 	}
 	
-	public final ArrayView<ASTNeoNode> getParams_asNodes() {
-		return CoreUtil.blindCast(params);
+	public final SpecialFunctionKind kind;
+	public final IFunctionBody fnBody;
+	
+	public DeclarationSpecialFunction(SpecialFunctionKind kind, IFunctionBody fnBody) {
+		this.kind = assertNotNull_(kind);
+		this.fnBody = parentizeI(fnBody);
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECLARATION_ALLOC_DEALLOC;
+		return ASTNodeTypes.DECLARATION_SPECIAL_FUNCTION;
 	}
 	
 	@Override
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, params);
 			TreeVisitor.acceptChildren(visitor, fnBody);
 		}
 		visitor.endVisit(this);
@@ -48,8 +54,7 @@ public class DeclarationSpecialFunction extends ASTNeoNode {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(isNew ? "new" : "delete");
-		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
+		cp.append(kind.toStringAsCode());
 		cp.appendNode(fnBody);
 	}
 	

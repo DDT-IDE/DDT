@@ -10,4 +10,5 @@
  ►#@ST_BLOCK__SAMPLE●
  ►#@NO_ST_BLOCK #@BREAK●
  ►#@BROKEN_ST_BLOCK●
+ ►#?STRUCTURE_EXPECTED!【 #error(EXPRULE_Block) #@BREAK body {} ● BlockStatement #@BREAK 】●
 ¤》

@@ -32,12 +32,15 @@ import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationLinkage;
 import dtool.ast.declarations.DeclarationLinkage.Linkage;
+import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPostBlit;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
-import dtool.ast.declarations.DeclarationSpecialFunction;
+import dtool.ast.declarations.DeclarationAllocatorFunction;
+import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
@@ -271,6 +274,14 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return nullResult();
 		}
 		
+		if( lookAhead() == DeeTokens.CONCAT || 
+			lookAhead() == DeeTokens.KW_STATIC || 
+			lookAhead() == DeeTokens.KW_SHARED) {
+			NodeResult<? extends ASTNeoNode> declSpecialFunction = parseDeclarationSpecialFunction();
+			if(declSpecialFunction != null)
+				return declSpecialFunction;
+		}
+		
 		switch (laGrouped) {
 		case KW_IMPORT: return parseImportDeclaration();
 		
@@ -343,12 +354,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return parseAliasDefinition();
 		case KW_INVARIANT:
 			return parseDeclarationInvariant_start();
+		case KW_UNITTEST:
+			return parseDeclarationUnitTest_start();
 		case KW_NEW:
 		case KW_DELETE:
-			return parseDeclarationAllocators();
+			return parseDeclarationAllocatorFucntions();
 		case KW_THIS:
 			if(lookAhead(1) == DeeTokens.OPEN_PARENS && lookAhead(2) == DeeTokens.KW_THIS)
 				return parseDeclarationPostBlit_start();
+			break;
 		default:
 			break;
 		}
@@ -752,8 +766,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new InOutFunctionBody(isOutIn, inBlock, outBlock, bodyBlock));
 	}
 	
-	protected BlockStatement createMissingBlock(boolean reportMissingExpError, ParseRuleDescription expectedRule) {
-		ParserError error = reportMissingExpError ? createErrorExpectedRule(expectedRule) : null;
+	protected BlockStatement createMissingBlock(ParseRuleDescription expectedRule) {
+		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
 		int nodeStart = getLexPosition();
 		return conclude(error, srToPosition(nodeStart, new BlockStatement()));
 	}
@@ -770,7 +784,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	protected NodeResult<BlockStatement> parseBlockStatement(boolean createMissing, boolean brokenIfMissing) {
 		if(!tryConsume(DeeTokens.OPEN_BRACE)) {
 			if(createMissing) {
-				return result(brokenIfMissing, createMissingBlock(true, RULE_BLOCK));
+				return result(brokenIfMissing, createMissingBlock(RULE_BLOCK));
 			}
 			return nullResult(); 
 		}
@@ -1401,6 +1415,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new DeclarationInvariant(body));
 	}
 	
+	public NodeResult<DeclarationUnitTest> parseDeclarationUnitTest_start() {
+		consumeLookAhead(DeeTokens.KW_UNITTEST);
+		ParseHelper parse = new ParseHelper();
+		
+		BlockStatement body = parse.checkResult(parseBlockStatement_toMissing(true));
+		
+		return parse.resultConclude(new DeclarationUnitTest(body));
+	}
+	
 	public NodeResult<DeclarationPostBlit> parseDeclarationPostBlit_start() {
 		consumeLookAhead(DeeTokens.KW_THIS);
 		ParseHelper parse = new ParseHelper();
@@ -1417,7 +1440,37 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new DeclarationPostBlit(fnBody));
 	}
 	
-	public NodeResult<DeclarationSpecialFunction> parseDeclarationAllocators() {
+	public NodeResult<DeclarationSpecialFunction> parseDeclarationSpecialFunction() {
+		ParseHelper parse = new ParseHelper(lookAheadElement().getStartPos());
+		
+		SpecialFunctionKind kind = null;
+		if(tryConsume(DeeTokens.CONCAT, DeeTokens.KW_THIS)) {
+			kind = SpecialFunctionKind.DESTRUCTOR;
+		} else if(tryConsume(DeeTokens.KW_STATIC, DeeTokens.KW_THIS)) {
+			kind = SpecialFunctionKind.STATIC_CONSTRUCTOR;
+		} else if(tryConsume(DeeTokens.KW_STATIC, DeeTokens.CONCAT, DeeTokens.KW_THIS)) {
+			kind = SpecialFunctionKind.STATIC_DESTRUCTOR;
+		} else if(tryConsume(DeeTokens.KW_SHARED, DeeTokens.KW_STATIC, DeeTokens.KW_THIS)) {
+			kind = SpecialFunctionKind.SHARED_STATIC_CONSTRUCTOR;
+		} else if(tryConsume(DeeTokens.KW_SHARED, DeeTokens.KW_STATIC, DeeTokens.CONCAT)) {
+			parse.consumeExpected(DeeTokens.KW_THIS);
+			kind = SpecialFunctionKind.SHARED_STATIC_DESTRUCTOR;
+		}
+		if(kind == null)
+			return null;
+		
+		IFunctionBody fnBody = null;
+		parsing: {
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) break parsing;
+			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
+			
+			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
+		}
+		
+		return parse.resultConclude(new DeclarationSpecialFunction(kind, fnBody));
+	}
+	
+	public NodeResult<DeclarationAllocatorFunction> parseDeclarationAllocatorFucntions() {
 		if((tryConsume(DeeTokens.KW_NEW) || tryConsume(DeeTokens.KW_DELETE)) == false)
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
@@ -1433,6 +1486,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
 		}
 		
-		return parse.resultConclude(new DeclarationSpecialFunction(isNew, params, fnBody));
+		return parse.resultConclude(new DeclarationAllocatorFunction(isNew, params, fnBody));
 	}
 }

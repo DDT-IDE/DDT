@@ -87,9 +87,17 @@ public abstract class AbstractParser {
 		}
 		return false;
 	}
-	
 	protected final boolean tryConsume(DeeTokens tokenType, DeeTokens tokenType2) {
 		if(lookAhead() == tokenType && lookAhead(1) == tokenType2) {
+			consumeInput();
+			consumeInput();
+			return true;
+		}
+		return false;
+	}
+	protected final boolean tryConsume(DeeTokens tokenType, DeeTokens tokenType2, DeeTokens tokenType3) {
+		if(lookAhead() == tokenType && lookAhead(1) == tokenType2 && lookAhead(2) == tokenType3) {
+			consumeInput();
 			consumeInput();
 			consumeInput();
 			return true;
