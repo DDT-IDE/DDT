@@ -20,7 +20,7 @@ public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
 	@Test
 	public void test1() throws Exception {
 		testComputeProposals(getMarkerStartOffset("/+@CC1+/"), 0, true,
-				"IfTypeDefUnit",
+				//"IfTypeDefUnit",
 				"parameter",
 				"tplFunc(asdf.qwer parameter)",
 				"TplNestedClass",

@@ -26,13 +26,11 @@ DefVariable(RefQualified( RefTypeModifier( RefPrimitive ) RefIdentifier ) DefSym
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@TYPE_MODIFIERS ( #@ARG_CONTENT_CLEAN #error:EXP_CLOSE_PARENS   declBroken #error:EXP_ID ;
 #STRUCTURE_EXPECTED:
-InvalidDeclaration(RefTypeModifier(#@ARG_CONTENT_CLEAN))     InvalidDeclaration(RefIdentifier)
+IncompleteDeclaration(RefTypeModifier(#@ARG_CONTENT_CLEAN))     IncompleteDeclaration(RefIdentifier)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS ( #@NO_REF #error:EXP_CLOSE_PARENS
-#STRUCTURE_EXPECTED:
-InvalidDeclaration(RefTypeModifier(#@NO_REF) )
+#@TYPE_MODIFIERS     ( #@NO_REF #error(EXP_CLOSE_PARENS)
+#STRUCTURE_EXPECTED: IncompleteDeclaration(RefTypeModifier(#@NO_REF) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS #error:EXPRULE_decl
-#STRUCTURE_EXPECTED:
-DeclarationBasicAttrib()
+#@TYPE_MODIFIERS #@NO_DECLorBLOCK 
+#STRUCTURE_EXPECTED: DeclarationBasicAttrib(#@NO_DECLorBLOCK)

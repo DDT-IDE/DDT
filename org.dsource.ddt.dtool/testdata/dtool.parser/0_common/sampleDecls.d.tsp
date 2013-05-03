@@ -12,13 +12,23 @@
 #@DECLS_BLOCK__SAMPLE《#?STRUCTURE_EXPECTED!【 { #@DECL_LIST_SAMPLE } ● DeclList(#@DECL_LIST_SAMPLE)】》
 
 
-#@NO_DECLS_BLOCK《
-  ►#?STRUCTURE_EXPECTED!【#error(EXP_OPEN_BRACE)【】 ● 】●
+#@NO_DECLorBLOCK《
+  ►#?STRUCTURE_EXPECTED!【#error(EXPRULE_DeclOrBlock)● MissingDeclaration】●
 ¤》
 
 #@DECLS_BLOCK《
   ►#?STRUCTURE_EXPECTED!【#@NO_DECLS_BLOCK #@BREAK ● #@BREAK 】●
+  ►#@DECLS_BLOCK__NO_MISSING●
+¤》
+#@NO_DECLS_BLOCK《
+  ►#?STRUCTURE_EXPECTED!【#error(EXP_OPEN_BRACE)【】 ● 】●
+¤》
+
+#@DECLS_BLOCK__NO_MISSING《
   ►#?STRUCTURE_EXPECTED!【{ } ● DeclList( )】●
-  ►#?STRUCTURE_EXPECTED!【{ int foo; #@NO_CloseBRACE #@BREAK ●DeclList( DefinitionVariable(? DefSymbol) #@BREAK )】●
   ►#?STRUCTURE_EXPECTED!【#@DECLS_BLOCK__SAMPLE●#@DECLS_BLOCK__SAMPLE】●
+  ►#@DECLS_BLOCK__BROKEN●
+¤》
+#@DECLS_BLOCK__BROKEN《
+  ►#?STRUCTURE_EXPECTED!【{ int foo; #@NO_CloseBRACE #@BREAK ●DeclList( DefinitionVariable(? DefSymbol) #@BREAK )】●
 ¤》

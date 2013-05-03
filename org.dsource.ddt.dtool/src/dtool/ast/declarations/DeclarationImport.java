@@ -38,7 +38,7 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECL_IMPORT;
+		return ASTNodeTypes.DECLARATION_IMPORT;
 	}
 	
 	@Override

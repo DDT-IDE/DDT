@@ -4,32 +4,49 @@ import java.util.Iterator;
 
 import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.misc.IteratorUtil;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.NodeList;
+import dtool.ast.NodeList2;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public abstract class AbstractConditionalDeclaration extends ASTNeoNode implements IStatement, INonScopedBlock {
+public abstract class AbstractConditionalDeclaration extends DeclarationAttrib implements IStatement, INonScopedBlock {
 	
-	public final NodeList thenDecls;
-	public final NodeList elseDecls;
+	// Note: value can be an integer or keyword
+	public static class VersionSymbol extends Symbol {
+		public VersionSymbol(String value) {
+			super(value);
+		}
+	}
 	
-	public AbstractConditionalDeclaration(NodeList thenDecls, NodeList elseDecls) {
-		this.thenDecls = NodeList.parentizeNodeList(thenDecls, this);
-		//assertNotNull(thenDecls);
-		this.elseDecls = NodeList.parentizeNodeList(elseDecls, this);
+	public final ASTNeoNode elseBody;
+	
+	public AbstractConditionalDeclaration(AttribBodySyntax bodySyntax, ASTNeoNode thenDecls, ASTNeoNode elseDecls) {
+		super(bodySyntax, thenDecls);
+		this.elseBody = parentize(elseDecls);
 	}
 	
 	@Override
-	public Iterator<ASTNeoNode> getMembersIterator() {
-		if(thenDecls == null && elseDecls == null)
+	public Iterator<? extends ASTNeoNode> getMembersIterator() {
+		if(body == null && elseBody == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
-		if(thenDecls == null)
-			return elseDecls.nodes.iterator();
-		if(elseDecls == null)
-			return thenDecls.nodes.iterator();
+		if(elseBody == null)
+			return getBodyIterator(body);
+		if(body == null)
+			return getBodyIterator(elseBody);
 		
-		return new ChainedIterator<ASTNeoNode>(thenDecls.nodes.iterator(), elseDecls.nodes.iterator()); 
+		return new ChainedIterator<ASTNeoNode>(getBodyIterator(body), getBodyIterator(elseBody)); 
+	}
+	
+	public void toStringAsCodeBodyAndElseBody(ASTCodePrinter cp) {
+		toStringAsCode_body(cp);
+		if(elseBody != null) {
+			cp.append("else ");
+			cp.append(elseBody instanceof NodeList2, "{\n");
+			cp.appendNode(elseBody);
+			cp.append(elseBody instanceof NodeList2, "}");
+		}
 	}
 	
 }

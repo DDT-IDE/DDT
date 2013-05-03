@@ -1,39 +1,44 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeList;
-import dtool.ast.definitions.Symbol;
 
 public class DeclarationDebugVersion extends AbstractConditionalDeclaration {
 	
-	public final Symbol ident;
 	public final boolean isDebug;
+	public final VersionSymbol value;
 	
-	public DeclarationDebugVersion(boolean isDebug, Symbol id, NodeList thenDecls, NodeList elseDecls) {
-		super(thenDecls, elseDecls);
+	public DeclarationDebugVersion(boolean isDebug, VersionSymbol value, AttribBodySyntax bodySyntax, 
+		ASTNeoNode thenBody, ASTNeoNode elseBody) {
+		super(bodySyntax, thenBody, elseBody);
 		this.isDebug = isDebug;
-		this.ident = parentize(id);
+		this.value = parentize(value);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DECLARATION_DEBUG_VERSION;
 	}
 	
 	@Override
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, ident);
-			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(thenDecls));
-			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(elseDecls));
+			TreeVisitor.acceptChildren(visitor, value);
+			TreeVisitor.acceptChildren(visitor, body);
+			TreeVisitor.acceptChildren(visitor, elseBody);
 		}
 		visitor.endVisit(this);
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		if(ident!= null) {
-			return "["+ (isDebug?"debug":"version") + "("+ident.toStringAsCode()+")]";
-		} else {
-			return "["+ (isDebug?"debug":"version")+"()]";
-		}
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(isDebug ? "debug " : "version ");
+		cp.appendNode("(", value, ")");
+		toStringAsCodeBodyAndElseBody(cp);
 	}
 	
 }

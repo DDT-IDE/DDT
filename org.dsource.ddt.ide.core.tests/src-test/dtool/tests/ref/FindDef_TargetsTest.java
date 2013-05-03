@@ -51,7 +51,7 @@ public class FindDef_TargetsTest extends FindDef__CommonParameterizedTest  {
                 {1181, 1145},
                 {1189, 1152},
                 
-                {1233, 1214}, 
+                //{1233, 1214}, 
                 
                 // agreggate templates
                 {1272, 1267},

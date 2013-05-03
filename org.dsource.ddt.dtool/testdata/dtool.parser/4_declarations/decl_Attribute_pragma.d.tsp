@@ -21,10 +21,9 @@ DeclarationPragma(Symbol DeclList( #@DECL_LIST_SAMPLE DeclarationPragma(Symbol D
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ EOF case
-pragma(foo) #error(EXPRULE_decl)
+pragma(foo) #@NO_DECLorBLOCK
 
-#STRUCTURE_EXPECTED:
-DeclarationPragma(Symbol)
+#STRUCTURE_EXPECTED: DeclarationPragma(Symbol #@NO_DECLorBLOCK)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Empty Declaration case
 pragma(foo) ;
 

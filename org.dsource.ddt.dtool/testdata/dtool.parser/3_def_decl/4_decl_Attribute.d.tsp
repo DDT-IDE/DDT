@@ -73,9 +73,8 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #@ATTRIBS《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIB》
 #@ATTRIBS_WITH_ENUM《#@ATTRIBS●#@ENUM_ATTRIB》
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM int foo;
-#STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM DefinitionVariable(* *) )
+// TODO: should have attribs sample:
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS /**/ : #@DECL_LIST_SAMPLE
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECL_LIST_SAMPLE ))
@@ -89,16 +88,21 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #PARSE(DECLARATION)  #@ATTRIBS { #@DECL_LIST_SAMPLE #@CLOSEBRACE_OR_BREAK
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECL_LIST_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM int foo;
+#STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM DefinitionVariable(* *) )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
 #STRUCTURE_EXPECTED: #@ATTRIBS  DeclarationEmpty )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM /*EOF case*/ #error(EXPRULE_decl) #@BREAK
-#STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM  )
+#PARSE(DECLARATION)  #@ATTRIBS /*Invalid Decl */ #@NO_DECLorBLOCK #@BREAK else ;
+#STRUCTURE_EXPECTED: #@ATTRIBS  #@NO_DECLorBLOCK )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS #error(SE_decl) ] int foo;
-
-#STRUCTURE_EXPECTED: #@ATTRIBS InvalidSyntaxElement)
-DefinitionVariable(RefPrimitive DefSymbol)
+#PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM /*EOF case*/ #@NO_DECLorBLOCK #@BREAK
+#STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM  #@NO_DECLorBLOCK )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@ATTRIBS #@NO_DECLorBLOCK #error(SE_decl) ] int foo;
+#STRUCTURE_EXPECTED: 
+#@ATTRIBS #@NO_DECLorBLOCK ) InvalidSyntaxElement DefinitionVariable(RefPrimitive DefSymbol)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ATTRIBS_BAL_BROKEN《 

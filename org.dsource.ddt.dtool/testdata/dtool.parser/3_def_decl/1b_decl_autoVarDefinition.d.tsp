@@ -17,9 +17,9 @@ extern(C) foo #error(EXP_IDENTIFIER) ;
 align foo #error(EXP_IDENTIFIER) ;
 pragma(msg) foo #error(EXP_IDENTIFIER) ;
 #STRUCTURE_EXPECTED:
-DeclarationLinkage( InvalidDeclaration(RefIdentifier) )
-DeclarationAlign( InvalidDeclaration(RefIdentifier) )
-DeclarationPragma(Symbol InvalidDeclaration(RefIdentifier) )
+DeclarationLinkage( IncompleteDeclaration(RefIdentifier) )
+DeclarationAlign( IncompleteDeclaration(RefIdentifier) )
+DeclarationPragma(Symbol IncompleteDeclaration(RefIdentifier) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@SIMPLE_ATTRIBS fooB = #@EXP_ASSIGN__LITE;

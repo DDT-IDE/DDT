@@ -13,7 +13,6 @@ import descent.internal.compiler.parser.ConditionalStatement;
 import descent.internal.compiler.parser.DVCondition;
 import descent.internal.compiler.parser.DebugCondition;
 import descent.internal.compiler.parser.Dsymbol;
-import descent.internal.compiler.parser.IsExp;
 import descent.internal.compiler.parser.Statement;
 import descent.internal.compiler.parser.StaticIfCondition;
 import descent.internal.compiler.parser.VersionCondition;
@@ -21,10 +20,11 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.AbstractConditionalDeclaration;
+import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
+import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationDebugVersion;
 import dtool.ast.declarations.DeclarationStaticIf;
-import dtool.ast.declarations.DeclarationStaticIfIsType;
-import dtool.ast.definitions.Symbol;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.util.ArrayView;
 
@@ -33,8 +33,8 @@ public class DeclarationConverter extends BaseDmdConverter {
 	public static ASTNeoNode convert(ConditionalDeclaration elem, ASTConversionContext convContext) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		DeclarationConverter.doSetParent(elem, elem.elsedecl);
-		NodeList thendecls = DeclarationConverter.createNodeList(elem.decl, convContext); 
-		NodeList elsedecls = DeclarationConverter.createNodeList(elem.elsedecl, convContext);
+		NodeList2 thendecls = DeclarationConverter.createNodeList2(elem.decl, convContext); 
+		NodeList2 elsedecls = DeclarationConverter.createNodeList2(elem.elsedecl, convContext);
 		
 		//assertTrue(!(thendecls == null && elsedecls == null));
 		Condition condition = elem.condition;
@@ -42,23 +42,23 @@ public class DeclarationConverter extends BaseDmdConverter {
 	}
 	
 	public static ASTNeoNode convert(ConditionalStatement elem, ASTConversionContext convContext) {
-		NodeList thendecls = DeclarationConverter.createNodeList(elem.ifbody, convContext); 
-		NodeList elsedecls = DeclarationConverter.createNodeList(elem.elsebody, convContext);
-
+		NodeList2 thendecls = DeclarationConverter.createNodeList2(elem.ifbody, convContext); 
+		NodeList2 elsedecls = DeclarationConverter.createNodeList2(elem.elsebody, convContext);
+		
 		//assertTrue(!(thendecls == null && elsedecls == null));
 		Condition condition = elem.condition;
 		return createConditional(elem, thendecls, elsedecls, condition, convContext);
 	}
 	
-	public static ASTNeoNode createConditional(ASTDmdNode elem, NodeList thendecls, NodeList elsedecls, 
+	public static ASTNeoNode createConditional(ASTDmdNode elem, NodeList2 thendecls, NodeList2 elsedecls, 
 			Condition condition, ASTConversionContext convContext) 
 	{
 		if(condition instanceof DVCondition) {
 			DVCondition dvCondition = (DVCondition) condition;
-			Symbol ident = null;
+			VersionSymbol ident = null;
 			if(dvCondition.ident != null) {
 				ident = connect(DefinitionConverter.sourceRange(dvCondition), 
-					new Symbol(new String(dvCondition.ident)));
+					new AbstractConditionalDeclaration.VersionSymbol(new String(dvCondition.ident)));
 			}
 			boolean isDebug = condition instanceof DebugCondition;
 			assertTrue(isDebug || dvCondition instanceof VersionCondition);
@@ -66,28 +66,33 @@ public class DeclarationConverter extends BaseDmdConverter {
 			return connect(DefinitionConverter.sourceRange(elem), new DeclarationDebugVersion(
 				isDebug,
 				ident,
-				thendecls, elsedecls
+				AttribBodySyntax.BRACE_BLOCK,
+				thendecls, 
+				elsedecls
 			));
 		}
 		StaticIfCondition stIfCondition = (StaticIfCondition) condition;
-		if(stIfCondition.exp instanceof IsExp && ((IsExp) stIfCondition.exp).id != null) {
-			IsExp isExp = ((IsExp) stIfCondition.exp);
-			return connect(DefinitionConverter.sourceRange(elem),
-				new DeclarationStaticIfIsType(
-				ReferenceConverter.convertType(isExp.targ, convContext),
-				DefinitionConverter.convertIdToken(isExp.id).value, DefinitionConverter.sourceRange(isExp.id),
-				isExp.tok,
-				ReferenceConverter.convertType(isExp.tspec, convContext),
-				thendecls, elsedecls,
-				new SourceRange(isExp.getStartPos(), elem.getEndPos() - isExp.getStartPos())
-			));
-		} else {
+		// Disable DeclarationStaticIfIsType creation
+//		if(false && stIfCondition.exp instanceof IsExp && ((IsExp) stIfCondition.exp).id != null) {
+//			IsExp isExp = ((IsExp) stIfCondition.exp);
+//			return connect(DefinitionConverter.sourceRange(elem),
+//				new DeclarationStaticIfIsType(
+//				ReferenceConverter.convertType(isExp.targ, convContext),
+//				DefinitionConverter.convertIdToken(isExp.id).value, DefinitionConverter.sourceRange(isExp.id),
+//				isExp.tok,
+//				ReferenceConverter.convertType(isExp.tspec, convContext),
+//				thendecls, elsedecls,
+//				new SourceRange(isExp.getStartPos(), elem.getEndPos() - isExp.getStartPos())
+//			));
+//		} else {
 			return connect(DefinitionConverter.sourceRange(elem),
 				new DeclarationStaticIf(
 				ExpressionConverter.convert(stIfCondition.exp, convContext),
-				thendecls, elsedecls
+				AttribBodySyntax.BRACE_BLOCK,
+				thendecls, 
+				elsedecls
 			));
-		}
+//		}
 	}
 	
 	public static void doSetParent(ASTDmdNode parent, Collection<Dsymbol> children) {

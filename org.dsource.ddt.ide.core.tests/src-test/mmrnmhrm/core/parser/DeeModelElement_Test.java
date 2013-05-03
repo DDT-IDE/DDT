@@ -11,8 +11,6 @@
 package mmrnmhrm.core.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.ModelElementTestUtils;
@@ -26,7 +24,6 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
-import dtool.ast.declarations.DeclarationStaticIfIsType;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
@@ -204,7 +201,6 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 				defunit instanceof FunctionParameter || 
 				defunit instanceof EnumMember ||
 				defunit instanceof TemplateParameter ||
-				defunit instanceof DeclarationStaticIfIsType.IsTypeDefUnit ||
 				defunit instanceof ImportSelectiveAlias ||
 				defunit instanceof ImportAlias;
 		return !result;

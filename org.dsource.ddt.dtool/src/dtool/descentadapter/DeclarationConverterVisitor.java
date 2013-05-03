@@ -32,12 +32,13 @@ import descent.internal.compiler.parser.TemplateValueParameter;
 import descent.internal.compiler.parser.UnionDeclaration;
 import descent.internal.compiler.parser.Version;
 import descent.internal.compiler.parser.VersionCondition;
-import descent.internal.compiler.parser.VersionSymbol;
 import dtool.DToolBundle;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.AbstractConditionalDeclaration;
+import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAnonMember;
@@ -75,7 +76,6 @@ import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EnumContainer;
 import dtool.ast.definitions.EnumMember;
-import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.TemplateAliasParam;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.definitions.TemplateTupleParam;
@@ -105,29 +105,35 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	
 	@Override
 	public boolean visit(DebugSymbol elem) {
-		Symbol identifier = elem.ident != null ? 
-				DefinitionConverter.convertId(elem.ident) : 
-				connect(DefinitionConverter.sourceRange(elem.version), new Symbol(new String(elem.version.value)))
-				;
+		VersionSymbol identifier =
+			elem.ident != null ?
+				connect(DefinitionConverter.sourceRange(elem.ident), 
+					new VersionSymbol(DefinitionConverter.convertId(elem.ident).name)) : 
+				connect(DefinitionConverter.sourceRange(elem.version), 
+					new VersionSymbol(new String(elem.version.value)))
+			;
 		
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
 			new DeclarationDebugVersionSpec(
-				identifier,
-				DeclarationDebugVersionSpec.Type.DEBUG
+				true,
+				identifier
 			)
 		));
 	}
 	
 	@Override
-	public boolean visit(VersionSymbol elem) {
-		Symbol identifier = elem.ident != null ? 
-				DefinitionConverter.convertId(elem.ident) : 
-				connect(DefinitionConverter.sourceRange(elem.version), new Symbol(new String(elem.version.value)));
+	public boolean visit(descent.internal.compiler.parser.VersionSymbol elem) {
+		VersionSymbol identifier = elem.ident != null ?
+				connect(DefinitionConverter.sourceRange(elem.ident), 
+					new VersionSymbol(DefinitionConverter.convertId(elem.ident).name)) : 
+				connect(DefinitionConverter.sourceRange(elem.version), 
+					new VersionSymbol(new String(elem.version.value)))
+			;
 		
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
 			new DeclarationDebugVersionSpec(
-				identifier,
-				DeclarationDebugVersionSpec.Type.VERSION
+				false,
+				identifier
 			)
 		));
 	}

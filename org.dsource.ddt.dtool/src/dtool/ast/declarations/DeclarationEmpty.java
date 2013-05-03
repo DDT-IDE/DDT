@@ -13,7 +13,7 @@ public class DeclarationEmpty extends ASTNeoNode implements IStatement {
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECL_EMTPY;
+		return ASTNodeTypes.DECLARATION_EMTPY;
 	}
 	
 	@Override

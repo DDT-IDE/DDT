@@ -1,17 +1,25 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeList;
-import dtool.ast.expressions.Resolvable;
+import dtool.ast.expressions.Expression;
 
 public class DeclarationStaticIf extends AbstractConditionalDeclaration {
 	
-	public final Resolvable exp;
+	public final Expression exp;
 	
-	public DeclarationStaticIf(Resolvable exp, NodeList thenDecls, NodeList elseDecls) {
-		super(thenDecls, elseDecls);
+	public DeclarationStaticIf(Expression exp, AttribBodySyntax bodySyntax, ASTNeoNode thenBody, 
+		ASTNeoNode elseBody) {
+		super(bodySyntax, thenBody, elseBody);
 		this.exp = parentize(exp);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.DECLARATION_STATIC_IF;
 	}
 	
 	@Override
@@ -19,15 +27,17 @@ public class DeclarationStaticIf extends AbstractConditionalDeclaration {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, exp);
-			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(thenDecls));
-			TreeVisitor.acceptChildren(visitor, NodeList.getNodes(elseDecls));
+			TreeVisitor.acceptChildren(visitor, body);
+			TreeVisitor.acceptChildren(visitor, elseBody);
 		}
 		visitor.endVisit(this);
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return "[static if("+"..."+")]";
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("static if ");
+		cp.appendNode("(", exp, ")");
+		toStringAsCodeBodyAndElseBody(cp);
 	}
 	
 }

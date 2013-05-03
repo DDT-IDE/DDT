@@ -34,13 +34,13 @@ DefVariable(RefQualified( RefTypeof( Integer ) RefIdentifier ) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 typeof ( #@ARG_CONTENT_CLEAN #error:EXP_CLOSE_PARENS   declBroken #error:EXP_ID ;
 #STRUCTURE_EXPECTED:
-InvalidDeclaration(RefTypeof(#@ARG_CONTENT_CLEAN))     InvalidDeclaration(RefIdentifier)
+IncompleteDeclaration(RefTypeof(#@ARG_CONTENT_CLEAN))     IncompleteDeclaration(RefIdentifier)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 typeof( #@NO_EXP #error:EXP_CLOSE_PARENS
 #STRUCTURE_EXPECTED:
-InvalidDeclaration(RefTypeof(#@NO_EXP) )
+IncompleteDeclaration(RefTypeof(#@NO_EXP) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 typeof #error(EXP_OPEN_PARENS)【】
 #STRUCTURE_EXPECTED:
-InvalidDeclaration(RefTypeof)
+IncompleteDeclaration(RefTypeof)

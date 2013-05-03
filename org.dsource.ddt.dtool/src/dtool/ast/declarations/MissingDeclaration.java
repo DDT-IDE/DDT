@@ -5,32 +5,25 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
-import dtool.parser.Token;
 
-public class InvalidSyntaxElement extends ASTNeoNode implements IStatement {
+public class MissingDeclaration extends ASTNeoNode implements IStatement {
 	
-	public final Token badToken;
-	
-	public InvalidSyntaxElement(Token badToken) {
-		this.badToken = badToken;
+	public MissingDeclaration() {
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.INVALID_SYNTAX;
+		return ASTNodeTypes.MISSING_DECLARATION;
 	}
 	
 	@Override
 	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-		}
+		visitor.visit(this);
 		visitor.endVisit(this);
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(badToken);
 	}
 	
 }

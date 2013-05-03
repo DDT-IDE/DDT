@@ -10,12 +10,13 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.DefSymbol;
+import dtool.ast.definitions.DefinitionEnum.NoEnumBody;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.definitions.DefinitionEnum.NoEnumBody;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpParentheses;
 import dtool.ast.expressions.ExpReference;
@@ -152,11 +153,20 @@ public class ASTNodeReparseCheck {
 		
 		switch (nodeUnderTest.getNodeType()) {
 		
+		case MISSING_DECLARATION:
+			return VOID;
+		case NODE_LIST: 
+			return VOID; // Don't reparse this node
+		
 		case SYMBOL:
 			if(nodeUnderTest instanceof DefSymbol) {
-				return reparseCheck(snippedParser.parseSymbol(), Symbol.class);
+				return reparseCheck(snippedParser.parseIdSymbol(), Symbol.class);
 			}
-			return reparseCheck(snippedParser.parseSymbol());
+			if(nodeUnderTest instanceof VersionSymbol) {
+				return VOID;
+			}
+			
+			return reparseCheck(snippedParser.parseIdSymbol());
 		
 		case SIMPLE_LAMBDA_DEFUNIT:
 			return VOID; // dont reparse test
@@ -165,9 +175,9 @@ public class ASTNodeReparseCheck {
 			Module module = (Module) nodeUnderTest;
 			assertTrue(module.getStartPos() == 0 && module.getEndPos() == fullSource.length());
 			return VOID;
-		case DECL_MODULE:
+		case DECLARATION_MODULE:
 			return reparseCheck(snippedParser.parseModuleDeclaration());
-		case DECL_IMPORT:
+		case DECLARATION_IMPORT:
 			return reparseCheck(snippedParser.parseDeclarationImport());
 		case IMPORT_CONTENT:
 			return reparseCheck((ASTNeoNode) snippedParser.parseImportFragment());
@@ -178,17 +188,12 @@ public class ASTNodeReparseCheck {
 		case IMPORT_SELECTIVE_ALIAS:
 			return reparseCheck((ASTNeoNode) snippedParser.parseImportSelectiveSelection());
 		
-		case DECL_EMTPY:
-			return reparseCheck(snippedParser.parseDeclaration());
-		case DECL_INVALID:
-			return reparseCheck(snippedParser.parseDeclaration());
+		case DECLARATION_EMTPY:
+			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
+		case INCOMPLETE_DECLARATION:
+			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
 		case INVALID_SYNTAX:
-			return reparseCheck(snippedParser.parseDeclaration());
-		case NODE_LIST: 
-			// Dont reparse Nodelist since there are two kinds of this (single and multi) 
-			// and we dont know which one to parse TODO
-			return VOID;
-			
+			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
 		
 		/* ---------------------------------- */
 		
@@ -313,12 +318,15 @@ public class ASTNodeReparseCheck {
 		case DECLARATION_ALLOCATOR_FUNCTION: return reparseCheck(snippedParser.parseDeclarationAllocatorFucntions());
 		case DECLARATION_POST_BLIT: return reparseCheck(snippedParser.parseDeclarationPostBlit_start());
 		case DECLARATION_SPECIAL_FUNCTION: return reparseCheck(snippedParser.parseDeclarationSpecialFunction());
+		case DECLARATION_DEBUG_VERSION_SPEC: return reparseCheck(snippedParser.parseDeclarationDebugVersionSpec());
+		case DECLARATION_DEBUG_VERSION: return reparseCheck(snippedParser.parseDeclarationDebugVersion());
+		case DECLARATION_STATIC_IF: return reparseCheck(snippedParser.parseDeclarationStaticIf());
 		case DECLARATION_STATIC_ASSERT: return reparseCheck(snippedParser.parseDeclarationStaticAssert());
 		
 		/* ---------------------------------- */
 		
 		case DEFINITION_VARIABLE:
-			return reparseCheck(snippedParser.parseDeclaration());
+			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
 		case DEFINITION_VAR_FRAGMENT:
 			return reparseCheck(snippedParser.parseVarFragment(false));
 		case DEFINITION_AUTO_VARIABLE:
@@ -337,7 +345,7 @@ public class ASTNodeReparseCheck {
 			
 		case DEFINITION_FUNCTION:
 		case DEFINITION_CONSTRUCTOR:
-			return reparseCheck(snippedParser.parseDeclaration());
+			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
 		case FUNCTION_PARAMETER:
 		case NAMELESS_PARAMETER:
 		case VAR_ARGS_PARAMETER:

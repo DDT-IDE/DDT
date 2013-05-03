@@ -67,5 +67,5 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo!(var[] #error(EXP_CLOSE_PARENS) dummy #error(EXP_ID);
 #STRUCTURE_EXPECTED: 
-InvalidDeclaration(RefTemplateInstance(RefIdentifier RefTypeDynArray(*)))
-InvalidDeclaration(RefIdentifier)
+IncompleteDeclaration(RefTemplateInstance(RefIdentifier RefTypeDynArray(*)))
+IncompleteDeclaration(RefIdentifier)

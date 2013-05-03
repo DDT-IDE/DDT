@@ -324,6 +324,24 @@ header1
 	}
 	
 	/* ------------------------  EXPANSION  ------------------------ */
+
+	/** BASIC EXPANSION FORMATS:
+	A:  #@{1, 2, 3}         Unnamed-Expansion
+	B:  #@EXP{1, 2, 3}      Definition, Named-Expansion  
+	C:  #@EXP!{1, 2, 3}     Definition only
+	
+	F:  #@EXP               Named-Expansion with argument referral(EXP)
+	G:  #@EXP!              NO LONGER VALID
+	
+	EA: #@{1, 2, 3}(EXP)    Expansion, pairing with active(EXP)
+	EB: #@(EXP)             NO LONGER VALID
+	EC: #@EXP2{1,2,3}(EXP)  Definition, Named-Expansion, pairing with active(EXP)
+	ED: #@EXP2(EXP)         Named-Expansion with argument referral(EXP2), pairing with active(EXP)
+	
+	H:  #@^EXP              Unnamed-Expansion with argument referral(EXP)
+	I:  #@^EXP(EXP2)        Unnamed-Expansion with argument referral(EXP), pairing with active(EXP2)
+	
+	*/
 	
 	@Test
 	public void testExpansionSyntax() throws Exception { testExpansionSyntax$(); }
@@ -360,26 +378,6 @@ header1
 	@Test
 	public void testExpansion() throws Exception { testExpansion$(); }
 	public void testExpansion$() throws Exception {
-		
-		/* BASIC EXPANSION FORMATS:
-		A:  #@{1, 2, 3}         Unnamed-Expansion
-		B:  #@EXP{1, 2, 3}      Definition, Named-Expansion  
-		C:  #@EXP!{1, 2, 3}     Definition only
-		
-		F:  #@EXP               Named-Expansion with argument referral(EXP)
-		G:  #@EXP!              NO LONGER VALID
-		
-		EA: #@{1, 2, 3}(EXP)    Expansion, pairing with active(EXP)
-		EB: #@(EXP)             NO LONGER VALID
-		EC: #@EXP2{1,2,3}(EXP)  Definition, Named-Expansion, pairing with active(EXP)
-		ED: #@EXP2(EXP)         Named-Expansion with argument referral(EXP2), pairing with active(EXP)
-		
-		H:  #@^EXP              Unnamed-Expansion with argument referral(EXP)
-		I:  #@^EXP(EXP2)        Unnamed-Expansion with argument referral(EXP), pairing with active(EXP2)
-		
-		*/
-		
-		
 		
 		// A: Unnamed-Expansion
 		testSourceProcessing("#", 

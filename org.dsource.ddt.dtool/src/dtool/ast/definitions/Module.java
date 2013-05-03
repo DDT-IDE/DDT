@@ -68,7 +68,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		
 		@Override
 		public ASTNodeTypes getNodeType() {
-			return ASTNodeTypes.DECL_MODULE;
+			return ASTNodeTypes.DECLARATION_MODULE;
 		}
 		
 		@Override
