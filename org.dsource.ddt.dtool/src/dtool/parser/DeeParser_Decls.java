@@ -273,7 +273,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	public NodeResult<?> parseDeclaration_withInvalid() {
 		NodeResult<?> declaration = parseDeclaration(true, false);
 		if(declaration.node == null && lookAhead() != DeeTokens.EOF) {
-			Token badToken = consumeLookAhead();
+			Token badToken = consumeLookAhead().token;
 			ParseHelper parse = new ParseHelper();
 			parse.storeBreakError(createSyntaxError(RULE_DECLARATION));
 			return parse.resultConclude(new InvalidSyntaxElement(badToken));
@@ -430,7 +430,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	protected NodeResult<? extends ASTNeoNode> parseDeclaration_referenceStart(Reference ref) {
 		assertNotNull(ref);
 		if(lookAhead() == DeeTokens.IDENTIFIER) {
-			LexElement defId = consumeInput();
+			LexElement defId = consumeLookAhead();
 			
 			if(lookAhead() == DeeTokens.OPEN_PARENS) {
 				return parseDefinitionFunction_afterIdentifier(ref, defId);
@@ -1408,7 +1408,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(lookAheadGrouped() != DeeTokens.PROTECTION_KW) {
 			return null;
 		}
-		LexElement protElement = consumeInput();
+		LexElement protElement = consumeLookAhead();
 		ParseHelper parse = new ParseHelper();
 		Protection protection = DeeTokenSemantics.getProtectionFromToken(protElement.token.type);
 		
@@ -1469,7 +1469,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		parsing: {
 			if(parse.consume(DeeTokens.OPEN_PARENS, isDebug, true)) {
 				if(lookAhead() == DeeTokens.KW_ASSERT || lookAhead() == DeeTokens.KW_UNITTEST) {
-					value = createVersionSymbol(consumeInput());
+					value = createVersionSymbol(consumeLookAhead());
 				} else {
 					value = parseConditionalValue(isDebug, parse);
 				}
@@ -1511,7 +1511,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	protected VersionSymbol parseConditionalValue(boolean isDebug, ParseHelper parse) {
 		if(lookAhead() == DeeTokens.IDENTIFIER || lookAheadGrouped() == DeeTokens.INTEGER) {
-			return createVersionSymbol(consumeInput());
+			return createVersionSymbol(consumeLookAhead());
 		} else { 
 			parse.store(createErrorExpectedRule(isDebug ? RULE_DEBUG_ARG : RULE_VERSION_ARG));
 			return createVersionSymbol(consumeSubChannelTokens());

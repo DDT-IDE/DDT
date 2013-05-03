@@ -42,8 +42,8 @@ public class AbstractParserRule extends DeeParser_Decls {
 	}
 	
 	@Override
-	public LexElement consumeInput() {
-		return parser.consumeInput();
+	public LexElement consumeLookAhead() {
+		return parser.consumeLookAhead();
 	}
 	
 	@Override

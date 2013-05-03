@@ -41,7 +41,7 @@ public abstract class AbstractParser {
 	
 	public abstract LexElement lastLexElement();
 	
-	public abstract LexElement consumeInput();
+	public abstract LexElement consumeLookAhead();
 	
 	public abstract MissingLexElement consumeSubChannelTokens();
 	
@@ -67,39 +67,35 @@ public abstract class AbstractParser {
 		return lookAheadElement(laIndex).token.getTokenType();
 	}
 	
-	public final Token consumeLookAhead() {
-		return consumeInput().token;
-	}
-	
 	public final LexElement consumeLookAhead(DeeTokens tokenType) {
 		assertTrue(lookAhead() == tokenType);
-		return consumeInput();
+		return consumeLookAhead();
 	}
 	
 	protected final LexElement consumeIf(DeeTokens tokenType) {
-		return lookAhead() == tokenType ? consumeInput() : null;
+		return lookAhead() == tokenType ? consumeLookAhead() : null;
 	}
 	
 	protected final boolean tryConsume(DeeTokens tokenType) {
 		if(lookAhead() == tokenType) {
-			consumeInput();
+			consumeLookAhead();
 			return true;
 		}
 		return false;
 	}
 	protected final boolean tryConsume(DeeTokens tokenType, DeeTokens tokenType2) {
 		if(lookAhead() == tokenType && lookAhead(1) == tokenType2) {
-			consumeInput();
-			consumeInput();
+			consumeLookAhead();
+			consumeLookAhead();
 			return true;
 		}
 		return false;
 	}
 	protected final boolean tryConsume(DeeTokens tokenType, DeeTokens tokenType2, DeeTokens tokenType3) {
 		if(lookAhead() == tokenType && lookAhead(1) == tokenType2 && lookAhead(2) == tokenType3) {
-			consumeInput();
-			consumeInput();
-			consumeInput();
+			consumeLookAhead();
+			consumeLookAhead();
+			consumeLookAhead();
 			return true;
 		}
 		return false;
@@ -182,7 +178,7 @@ public abstract class AbstractParser {
 	
 	protected final BaseLexElement consumeExpectedContentToken(DeeTokens expectedTokenType) {
 		if(lookAhead() == expectedTokenType) {
-			return consumeInput();
+			return consumeLookAhead();
 		} else {
 			ParserError error = createExpectedTokenError(expectedTokenType);
 			MissingLexElement missingToken = consumeSubChannelTokens();
@@ -280,7 +276,7 @@ public abstract class AbstractParser {
 		
 		public final boolean consume(DeeTokens expectedTokenType, boolean isOptional, boolean breaksRule) {
 			if(lookAhead() == expectedTokenType) {
-				consumeInput();
+				consumeLookAhead();
 				return true;
 			}
 			if(isOptional == false) {

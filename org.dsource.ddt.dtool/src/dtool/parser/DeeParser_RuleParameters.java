@@ -112,7 +112,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 					break;
 				
 				setMode(TplOrFnMode.FN);
-				consumeInput();
+				consumeLookAhead();
 				attribs = lazyInitArrayList(attribs);
 				attribs.add(paramAttrib);
 			}

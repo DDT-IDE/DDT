@@ -220,7 +220,7 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	
 	protected NodeResult<RefTypeModifier> parseRefTypeModifier_start(TypeModifierKinds modKind) {
 		assertTrue(lookAhead().sourceValue.equals(modKind.sourceValue));
-		consumeInput();
+		consumeLookAhead();
 		ParseHelper parse = new ParseHelper();
 		
 		Reference ref = null;
@@ -702,7 +702,7 @@ protected class ParseRule_TypeOrExp {
 		case NOT:
 		case CONCAT:
 		case KW_DELETE: {
-			LexElement prefixExpOpToken = consumeInput();
+			LexElement prefixExpOpToken = consumeLookAhead();
 			PrefixOpType prefixOpType = PrefixOpType.tokenToPrefixOpType(prefixExpOpToken.token.type);
 			LexElement opAheadInfo = lookAheadElement();
 			
@@ -1438,7 +1438,7 @@ protected class ParseRule_TypeOrExp {
 	public Expression parseSimpleLiteral() {
 		switch (lookAheadGrouped()) {
 		case KW_TRUE: case KW_FALSE:
-			Token token = consumeLookAhead();
+			Token token = consumeLookAhead().token;
 			return conclude(srOf(lastLexElement(), new ExpLiteralBool(token.type == DeeTokens.KW_TRUE)));
 		case KW_THIS:
 			consumeLookAhead();
@@ -1479,7 +1479,7 @@ protected class ParseRule_TypeOrExp {
 		ArrayList<Token> stringTokens = new ArrayList<Token>();
 		
 		while(lookAheadGrouped() == DeeTokens.STRING) {
-			Token string = consumeLookAhead();
+			Token string = consumeLookAhead().token;
 			stringTokens.add(string);
 		}
 		Token[] tokenStrings = ArrayUtil.createFrom(stringTokens, Token.class);
@@ -1487,7 +1487,7 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	protected ExpPostfixOperator parsePostfixOpExpression_atOperator(Expression exp) {
-		Token op = consumeLookAhead();
+		Token op = consumeLookAhead().token;
 		return srToPosition(exp, new ExpPostfixOperator(exp, PostfixOpType.tokenToPrefixOpType(op.type)));
 	}
 	
@@ -1562,7 +1562,7 @@ protected class ParseRule_TypeOrExp {
 	
 	public NodeResult<ExpFunctionLiteral> parseFunctionLiteral_start() {
 		assertTrue(lookAhead() == DeeTokens.KW_FUNCTION || lookAhead() == DeeTokens.KW_DELEGATE);
-		consumeInput();
+		consumeLookAhead();
 		boolean isFunctionKeyword = lastLexElement().token.type == DeeTokens.KW_FUNCTION;
 		ParseHelper parse = new ParseHelper();
 		
@@ -1788,7 +1788,7 @@ protected class ParseRule_TypeOrExp {
 			return parseCastQualifier(DeeTokens.KW_INOUT, CastQualifiers.SHARED_INOUT, CastQualifiers.SHARED);
 		case KW_IMMUTABLE:
 			if(lookAhead(1) == DeeTokens.CLOSE_PARENS) {
-				consumeInput();
+				consumeLookAhead();
 				return CastQualifiers.IMMUTABLE;
 			}
 		default: return null;
@@ -1797,11 +1797,11 @@ protected class ParseRule_TypeOrExp {
 	
 	public CastQualifiers parseCastQualifier(DeeTokens token1, CastQualifiers altDouble, CastQualifiers altSingle) {
 		if(lookAhead(1) == token1) {
-			consumeInput();
-			consumeInput();
+			consumeLookAhead();
+			consumeLookAhead();
 			return altDouble;
 		} else if(lookAhead(1) == DeeTokens.CLOSE_PARENS) {
-			consumeInput();
+			consumeLookAhead();
 			return altSingle;
 		} else {
 			return null;

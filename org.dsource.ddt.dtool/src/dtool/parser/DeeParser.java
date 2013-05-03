@@ -130,7 +130,7 @@ public class DeeParser extends DeeParser_Decls {
 	}
 	
 	@Override
-	public final LexElement consumeInput() {
+	public final LexElement consumeLookAhead() {
 		return getEnabledLexSource().consumeInput();
 	}
 	
