@@ -5,7 +5,7 @@ import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.DeclList;
-import dtool.ast.NodeList2;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.parser.DeeTokens;
@@ -72,8 +72,8 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	}
 	
 	
-	public NodeList2<ASTNeoNode> createNodeList(ArrayView<ASTNeoNode> elems) {
-		return new NodeList2<ASTNeoNode>(elems);
+	public NodeList<ASTNeoNode> createNodeList(ArrayView<ASTNeoNode> elems) {
+		return new NodeList<ASTNeoNode>(elems);
 	}
 	
 	public DeclList createDeclList(ArrayView<ASTNeoNode> elems) {

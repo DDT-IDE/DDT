@@ -26,9 +26,8 @@ import descent.internal.compiler.parser.TypeQualified;
 import dtool.DToolBundle;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
-import dtool.ast.declarations.InvalidSyntaxDeclaration_Old;
+import dtool.ast.declarations.MissingDeclaration;
 import dtool.ast.definitions.DeclarationMixin;
-import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionNamedMixin;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Resolvable;
@@ -105,7 +104,8 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		if(idents == null) {
 			assertTrue(convContext.hasSyntaxErrors());
 			assertTrue(elem.ident == null);
-			return new InvalidSyntaxDeclaration_Old(DefinitionConverter.sourceRange(elem));
+			return connect(DefinitionConverter.sourceRange(elem), 
+				new MissingDeclaration());
 		}
 		SourceRange sourceRange = sourceRangeStrict(elem);
 		

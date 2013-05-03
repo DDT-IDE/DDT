@@ -6,6 +6,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.descentadapter.DefUnitTuple;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 

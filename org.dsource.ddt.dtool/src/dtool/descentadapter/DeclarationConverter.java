@@ -18,7 +18,6 @@ import descent.internal.compiler.parser.StaticIfCondition;
 import descent.internal.compiler.parser.VersionCondition;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList;
-import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
@@ -33,8 +32,8 @@ public class DeclarationConverter extends BaseDmdConverter {
 	public static ASTNeoNode convert(ConditionalDeclaration elem, ASTConversionContext convContext) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		DeclarationConverter.doSetParent(elem, elem.elsedecl);
-		NodeList2 thendecls = DeclarationConverter.createNodeList2(elem.decl, convContext); 
-		NodeList2 elsedecls = DeclarationConverter.createNodeList2(elem.elsedecl, convContext);
+		NodeList thendecls = DeclarationConverter.createNodeList2(elem.decl, convContext); 
+		NodeList elsedecls = DeclarationConverter.createNodeList2(elem.elsedecl, convContext);
 		
 		//assertTrue(!(thendecls == null && elsedecls == null));
 		Condition condition = elem.condition;
@@ -42,15 +41,15 @@ public class DeclarationConverter extends BaseDmdConverter {
 	}
 	
 	public static ASTNeoNode convert(ConditionalStatement elem, ASTConversionContext convContext) {
-		NodeList2 thendecls = DeclarationConverter.createNodeList2(elem.ifbody, convContext); 
-		NodeList2 elsedecls = DeclarationConverter.createNodeList2(elem.elsebody, convContext);
+		NodeList thendecls = DeclarationConverter.createNodeList2(elem.ifbody, convContext); 
+		NodeList elsedecls = DeclarationConverter.createNodeList2(elem.elsebody, convContext);
 		
 		//assertTrue(!(thendecls == null && elsedecls == null));
 		Condition condition = elem.condition;
 		return createConditional(elem, thendecls, elsedecls, condition, convContext);
 	}
 	
-	public static ASTNeoNode createConditional(ASTDmdNode elem, NodeList2 thendecls, NodeList2 elsedecls, 
+	public static ASTNeoNode createConditional(ASTDmdNode elem, NodeList thendecls, NodeList elsedecls, 
 			Condition condition, ASTConversionContext convContext) 
 	{
 		if(condition instanceof DVCondition) {
@@ -103,36 +102,19 @@ public class DeclarationConverter extends BaseDmdConverter {
 		}
 	}
 	
-	public static NodeList createNodeList(Statement body, ASTConversionContext convContext) {
-		if(body == null)
-			return null;
-		if(body instanceof CompoundStatement) {
-			CompoundStatement cst = (CompoundStatement) body;
-			return new NodeList(DescentASTConverter.convertMany(cst.sourceStatements, convContext), true);
-		} else {
-			return new NodeList(DescentASTConverter.convertMany(Collections.singleton(body), convContext), false);
-		}
-	}
-	
-	public static NodeList2 createNodeList2(Statement body, ASTConversionContext convContext) {
+	public static NodeList createNodeList2(Statement body, ASTConversionContext convContext) {
 		if(body == null)
 			return null;
 		SourceRange sr = null;
 		if(body instanceof CompoundStatement) {
 			CompoundStatement cst = (CompoundStatement) body;
-			return connect(sr, new NodeList2(DescentASTConverter.convertMany(cst.sourceStatements, convContext)));
+			return connect(sr, new NodeList(DescentASTConverter.convertMany(cst.sourceStatements, convContext)));
 		} else {
-			return connect(sr, new NodeList2(DescentASTConverter.convertMany(Collections.singleton(body), convContext)));
+			return connect(sr, new NodeList(DescentASTConverter.convertMany(Collections.singleton(body), convContext)));
 		}
 	}
 	
-	public static NodeList createNodeList(Collection<Dsymbol> decl, ASTConversionContext convContext) {
-		if(decl == null)
-			return null;
-		return new NodeList(DescentASTConverter.convertMany(decl, convContext), false);
-	}
-	
-	public static NodeList2 createNodeList2(Collection<Dsymbol> decl, ASTConversionContext convContext) {
+	public static NodeList createNodeList2(Collection<Dsymbol> decl, ASTConversionContext convContext) {
 		if(decl == null)
 			return null;
 		ArrayView<ASTNeoNode> decls = DescentASTConverter.convertMany(decl, convContext);
@@ -140,7 +122,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 		if(!decls.isEmpty()) {
 			sr = sourceRangeStrict(decls.get(0).getStartPos(), decls.get(decls.size()-1).getEndPos());
 		}
-		return connect(sr, new NodeList2(decls));
+		return connect(sr, new NodeList(decls));
 	}
 	
 }

@@ -8,7 +8,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
-import dtool.ast.NodeList2;
+import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -78,7 +78,7 @@ public class ASTNodeReparseCheck {
 		if(node instanceof Module) {
 			return true;
 		}
-		else if(node instanceof NodeList2) {
+		else if(node instanceof NodeList) {
 			return true;
 		}
 		else if(node instanceof RefIdentifier || node instanceof RefImportSelection) {

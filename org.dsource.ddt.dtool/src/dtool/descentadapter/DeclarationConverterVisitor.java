@@ -4,7 +4,6 @@ package dtool.descentadapter;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AggregateDeclaration;
 import descent.internal.compiler.parser.AnonDeclaration;
@@ -34,14 +33,12 @@ import descent.internal.compiler.parser.Version;
 import descent.internal.compiler.parser.VersionCondition;
 import dtool.DToolBundle;
 import dtool.ast.ASTNeoNode;
+import dtool.ast.DeclList;
 import dtool.ast.NodeList;
-import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
-import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
-import dtool.ast.declarations.DeclarationAnonMember;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
@@ -60,11 +57,12 @@ import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
+import dtool.ast.declarations.MissingDeclaration;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.ImportStatic;
-import dtool.ast.declarations.InvalidSyntaxDeclaration_Old;
-import dtool.ast.definitions.DefUnit.DefUnitTuple;
+import dtool.ast.declarations.IncompleteDeclaration;
+import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
@@ -160,8 +158,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(AnonDeclaration node) {
-		NodeList body = DeclarationConverter.createNodeList(node.decl, convContext);
-		return endAdapt(connect(DefinitionConverter.sourceRange(node), new DeclarationAnonMember(body)));
+		DeclList body = createDeclList(DescentASTConverter.convertMany(node.decl, ASTNeoNode.class, convContext));
+		return endAdapt(connect(DefinitionConverter.sourceRange(node), 
+			new DefinitionStruct(new ProtoDefSymbol("", null, null), null, null, body)));
 	}
 
 	@Override
@@ -199,7 +198,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.AlignDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
 		return endAdapt(connect(sr, new DeclarationAlign(null, AttribBodySyntax.COLON, body)));
 	}
@@ -323,7 +322,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.LinkDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
 		Linkage linkage = fromLINK(elem.linkage);
 		return endAdapt(connect(sr, new DeclarationLinkage(linkage.name, AttribBodySyntax.SINGLE_DECL, body)));
@@ -345,7 +344,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.PragmaDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
 			new DeclarationPragma(
 				DefinitionConverter.convertId(elem.ident),
@@ -358,7 +357,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.ProtDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem), new DeclarationProtection(
 			fromPROT(elem.protection), AttribBodySyntax.BRACE_BLOCK, body)));
 	}
@@ -383,7 +382,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StorageClassDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList2 body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		NodeList body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		AttributeKinds declAttrib = AttributeKinds.FINAL; // WRONG, but dont care, deprecated
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
 			new DeclarationBasicAttrib(declAttrib, AttribBodySyntax.BRACE_BLOCK, body)));
@@ -508,13 +507,15 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.VarDeclaration elem) {
 		if(elem.ident == null) {
-			return endAdapt(new InvalidSyntaxDeclaration_Old(
-				DefinitionConverter.sourceRange(elem), 
-				ArrayView.create(array(
-						ReferenceConverter.convertType(elem.type, convContext),
-						DescentASTConverter.convertElem(elem.init, Initializer.class, convContext)
-				))
-			));
+//			return endAdapt(new InvalidSyntaxDeclaration_Old(
+//				DefinitionConverter.sourceRange(elem), 
+//				ArrayView.create(array(
+//						ReferenceConverter.convertType(elem.type, convContext),
+//						DescentASTConverter.convertElem(elem.init, Initializer.class, convContext)
+//				))
+//			));
+			return endAdapt(DefinitionConverter.sourceRange(elem),
+				new MissingDeclaration());
 		} 
 		
 		Reference typeRef = ReferenceConverter.convertType(elem.type, convContext);

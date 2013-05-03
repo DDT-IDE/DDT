@@ -9,7 +9,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeList2;
+import dtool.ast.NodeList;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
@@ -53,7 +53,7 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 		cp.appendNode(body);
 	}
 	
-	public static class EnumBody extends NodeList2<EnumMember> {
+	public static class EnumBody extends NodeList<EnumMember> {
 		
 		public final boolean hasEndingComma;
 

@@ -7,7 +7,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeList2;
+import dtool.ast.NodeList;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -48,7 +48,7 @@ public class DeclarationEnum extends ASTNeoNode implements IStatement, INonScope
 
 	@Override
 	public Iterator<? extends ASTNeoNode> getMembersIterator() {
-		return NodeList2.getMembersIterator(body);
+		return NodeList.getMembersIterator(body);
 	}
 	
 	

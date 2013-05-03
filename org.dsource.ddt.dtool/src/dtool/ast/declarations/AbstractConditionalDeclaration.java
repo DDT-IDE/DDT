@@ -6,7 +6,7 @@ import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.NodeList2;
+import dtool.ast.DeclList;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
@@ -43,9 +43,9 @@ public abstract class AbstractConditionalDeclaration extends DeclarationAttrib i
 		toStringAsCode_body(cp);
 		if(elseBody != null) {
 			cp.append("else ");
-			cp.append(elseBody instanceof NodeList2, "{\n");
+			cp.append(elseBody instanceof DeclList, "{\n");
 			cp.appendNode(elseBody);
-			cp.append(elseBody instanceof NodeList2, "}");
+			cp.append(elseBody instanceof DeclList, "}");
 		}
 	}
 	

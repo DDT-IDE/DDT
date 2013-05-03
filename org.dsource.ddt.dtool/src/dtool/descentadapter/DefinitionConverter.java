@@ -33,7 +33,6 @@ import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefUnit.DefUnitTuple;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.AutoReturnReference;
@@ -74,7 +73,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		return connect(idTokenInfo.getSourceRange(), new Symbol(idTokenInfo.value));
 	}
 	
-	public static DefUnit.DefUnitTuple convertDsymbol(Dsymbol elem, ASTConversionContext convContext) {
+	public static DefUnitTuple convertDsymbol(Dsymbol elem, ASTConversionContext convContext) {
 		final SourceRange sourceRange = sourceRange(elem);
 		
 		descent.internal.compiler.parser.Module module = convContext.module;
@@ -123,10 +122,10 @@ public class DefinitionConverter extends BaseDmdConverter {
 		IdentifierExp ident = elem.ident;
 		if(ident == null) {
 			TokenInfo defName = new TokenInfo(TokenInfo.SYNTAX_ERROR, -1);
-			return new DefUnit.DefUnitTuple(sourceRange, defName, newComments);
+			return new DefUnitTuple(sourceRange, defName, newComments);
 		} else {
 			TokenInfo defName = convertIdToken(ident);
-			return new DefUnit.DefUnitTuple(sourceRange, defName, newComments);
+			return new DefUnitTuple(sourceRange, defName, newComments);
 		}
 	}
 	

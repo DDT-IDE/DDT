@@ -1,36 +1,42 @@
 package dtool.ast;
 
+import static dtool.util.NewUtils.assertNotNull_;
+
 import java.util.Iterator;
 
+import melnorme.utilbox.misc.IteratorUtil;
+import melnorme.utilbox.tree.TreeVisitor;
 import dtool.util.ArrayView;
 
-/**
- * A helper class for AST nodes, 
- * used for holding a list of declarations or statements.
- */
-public class NodeList  {
+public class NodeList<E extends ASTNeoNode> extends ASTNeoNode {
 	
-	public final ArrayView<ASTNeoNode> nodes;
-	public final boolean hasCurlies; // Accurate detection not implement yet
+	public final ArrayView<E> nodes;
 	
-	public NodeList(ArrayView<ASTNeoNode> nodes, boolean hasCurlies) {
-		this.nodes = nodes;
-		this.hasCurlies = hasCurlies;
+	public NodeList(ArrayView<E> nodes) {
+		this.nodes = parentize(assertNotNull_(nodes));
 	}
 	
-	public Iterator<ASTNeoNode> getNodesIterator() {
-		return nodes.iterator();
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.NODE_LIST;
 	}
 	
-	public static NodeList parentizeNodeList(NodeList nodeList, ASTNeoNode parent) {
-		parent.parentize(getNodes(nodeList));
-		return nodeList;
+	@Override
+	public void accept0(IASTVisitor visitor) {
+		boolean children = visitor.visit(this);
+		if (children) {
+			TreeVisitor.acceptChildren(visitor, nodes);
+		}
+		visitor.endVisit(this);
 	}
 	
-	public static ArrayView<ASTNeoNode> getNodes(NodeList nodeList) {
-		if(nodeList == null)
-			return null;
-		return nodeList.nodes;
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendNodeList(nodes, "\n", true);
+	}
+	
+	public static Iterator<? extends ASTNeoNode> getMembersIterator(NodeList<? extends ASTNeoNode> body) {
+		return body == null ? IteratorUtil.<ASTNeoNode>getEMPTY_ITERATOR() : body.nodes.iterator();
 	}
 	
 }

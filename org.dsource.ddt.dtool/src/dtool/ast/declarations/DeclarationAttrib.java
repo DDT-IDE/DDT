@@ -7,7 +7,7 @@ import java.util.Iterator;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.NodeList2;
+import dtool.ast.DeclList;
 import dtool.refmodel.INonScopedBlock;
 
 public abstract class DeclarationAttrib extends ASTNeoNode implements INonScopedBlock {
@@ -15,7 +15,7 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 	public static enum AttribBodySyntax { SINGLE_DECL, BRACE_BLOCK, COLON }
 	
 	public final AttribBodySyntax bodySyntax;
-	public final ASTNeoNode body; // Note: can be NodeList
+	public final ASTNeoNode body; // Note: can be DeclList
 	
 	public DeclarationAttrib(AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls) {
 		this.bodySyntax = assertNotNull_(bodySyntax);
@@ -30,8 +30,8 @@ public abstract class DeclarationAttrib extends ASTNeoNode implements INonScoped
 	public static Iterator<? extends ASTNeoNode> getBodyIterator(ASTNeoNode body) {
 		if(body == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
-		if(body instanceof NodeList2<?>) {
-			return ((NodeList2<?>) body).nodes.iterator();
+		if(body instanceof DeclList) {
+			return ((DeclList) body).nodes.iterator();
 		}
 		return IteratorUtil.singletonIterator(body);
 	}
