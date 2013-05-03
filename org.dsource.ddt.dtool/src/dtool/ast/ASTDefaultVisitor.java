@@ -13,7 +13,7 @@ package dtool.ast;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationBasicAttrib;
-import dtool.ast.declarations.DeclarationConditional;
+import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
@@ -228,7 +228,7 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	@Override public boolean visit(DeclarationUnitTest node) { return true; }
 	
 	@Override
-	public boolean visit(DeclarationConditional node) {
+	public boolean visit(AbstractConditionalDeclaration node) {
 		return true;
 	}
 	

@@ -22,7 +22,7 @@ public class DeclarationMixinString extends ASTNeoNode implements IStatement, IN
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECL_MIXIN_STRING;
+		return ASTNodeTypes.DECLARATION_MIXIN_STRING;
 	}
 	
 	@Override

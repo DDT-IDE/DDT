@@ -5,12 +5,12 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
 import dtool.ast.definitions.Symbol;
 
-public class DeclarationConditionalDV extends DeclarationConditional {
+public class DeclarationDebugVersion extends AbstractConditionalDeclaration {
 	
 	public final Symbol ident;
 	public final boolean isDebug;
 	
-	public DeclarationConditionalDV(boolean isDebug, Symbol id, NodeList thenDecls, NodeList elseDecls) {
+	public DeclarationDebugVersion(boolean isDebug, Symbol id, NodeList thenDecls, NodeList elseDecls) {
 		super(thenDecls, elseDecls);
 		this.isDebug = isDebug;
 		this.ident = parentize(id);

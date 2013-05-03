@@ -11,7 +11,7 @@
 package dtool.ast;
 
 import dtool.ast.declarations.DeclarationAllocatorFunction;
-import dtool.ast.declarations.DeclarationConditional;
+import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationSpecialFunction;
@@ -81,7 +81,7 @@ public abstract class ASTAbstractVisitor implements IASTVisitor {
 	
 	@Override public void endVisit(DeclarationUnitTest node) {}
 	
-	@Override public void endVisit(DeclarationConditional node) {}
+	@Override public void endVisit(AbstractConditionalDeclaration node) {}
 	
 	@Override public void endVisit(DeclarationSpecialFunction node) {}
 	@Override public void endVisit(DeclarationAllocatorFunction node) {}

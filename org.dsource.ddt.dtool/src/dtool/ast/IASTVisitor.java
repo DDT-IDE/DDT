@@ -3,7 +3,7 @@ package dtool.ast;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationBasicAttrib;
-import dtool.ast.declarations.DeclarationConditional;
+import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
@@ -208,8 +208,8 @@ public interface IASTVisitor {
 	public boolean visit(DeclarationUnitTest node);
 	public void endVisit(DeclarationUnitTest node);
 	
-	public boolean visit(DeclarationConditional node);
-	public void endVisit(DeclarationConditional node);
+	public boolean visit(AbstractConditionalDeclaration node);
+	public void endVisit(AbstractConditionalDeclaration node);
 	
 	public boolean visit(DeclarationSpecialFunction node);
 	public void endVisit(DeclarationSpecialFunction node);

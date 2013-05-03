@@ -17,7 +17,7 @@ public class DeclarationAlign extends DeclarationAttrib {
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECL_ALIGN;
+		return ASTNodeTypes.DECLARATION_ALIGN;
 	}
 	
 	@Override

@@ -168,7 +168,7 @@ public class ASTNodeReparseCheck {
 		case DECL_MODULE:
 			return reparseCheck(snippedParser.parseModuleDeclaration());
 		case DECL_IMPORT:
-			return reparseCheck(snippedParser.parseImportDeclaration());
+			return reparseCheck(snippedParser.parseDeclarationImport());
 		case IMPORT_CONTENT:
 			return reparseCheck((ASTNeoNode) snippedParser.parseImportFragment());
 		case IMPORT_ALIAS:
@@ -297,22 +297,23 @@ public class ASTNodeReparseCheck {
 			return VOID;
 			
 		/* -------------------  Declarations  ------------------- */
-		case DECL_LINKAGE: return reparseCheck(snippedParser.parseDeclarationExternLinkage());
-		case DECL_ALIGN: return reparseCheck(snippedParser.parseDeclarationAlign());
-		case DECL_PRAGMA: return reparseCheck(snippedParser.parseDeclarationPragma());
-		case DECL_PROTECTION: return reparseCheck(snippedParser.parseDeclarationProtection());
-		case DECL_BASIC_ATTRIB: return reparseCheck(snippedParser.parseDeclarationBasicAttrib());
+		case DECLARATION_LINKAGE: return reparseCheck(snippedParser.parseDeclarationExternLinkage());
+		case DECLARATION_ALIGN: return reparseCheck(snippedParser.parseDeclarationAlign());
+		case DECLARATION_PRAGMA: return reparseCheck(snippedParser.parseDeclarationPragma());
+		case DECLARATION_PROTECTION: return reparseCheck(snippedParser.parseDeclarationProtection());
+		case DECLARATION_BASIC_ATTRIB: return reparseCheck(snippedParser.parseDeclarationBasicAttrib());
 		
-		case DECL_MIXIN_STRING: return reparseCheck(snippedParser.parseDeclarationMixinString());
-		case DECL_MIXIN: return reparseCheck(snippedParser.parseDeclarationMixin());
+		case DECLARATION_MIXIN_STRING: return reparseCheck(snippedParser.parseDeclarationMixinString());
+		case DECLARATION_MIXIN: return reparseCheck(snippedParser.parseDeclarationMixin());
 		
-		case DECL_ALIAS_THIS: return reparseCheck(snippedParser.parseDeclarationAliasThis());
+		case DECLARATION_ALIAS_THIS: return reparseCheck(snippedParser.parseDeclarationAliasThis());
 		
 		case DECLARATION_INVARIANT: return reparseCheck(snippedParser.parseDeclarationInvariant_start());
 		case DECLARATION_UNITEST: return reparseCheck(snippedParser.parseDeclarationUnitTest_start());
 		case DECLARATION_ALLOCATOR_FUNCTION: return reparseCheck(snippedParser.parseDeclarationAllocatorFucntions());
 		case DECLARATION_POST_BLIT: return reparseCheck(snippedParser.parseDeclarationPostBlit_start());
 		case DECLARATION_SPECIAL_FUNCTION: return reparseCheck(snippedParser.parseDeclarationSpecialFunction());
+		case DECLARATION_STATIC_ASSERT: return reparseCheck(snippedParser.parseDeclarationStaticAssert());
 		
 		/* ---------------------------------- */
 		

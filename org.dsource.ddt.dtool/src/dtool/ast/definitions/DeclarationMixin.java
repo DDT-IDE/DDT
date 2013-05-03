@@ -27,7 +27,7 @@ public class DeclarationMixin extends ASTNeoNode implements IStatement, INonScop
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECL_MIXIN;
+		return ASTNodeTypes.DECLARATION_MIXIN;
 	}
 	
 	@Override

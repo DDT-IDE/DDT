@@ -80,7 +80,7 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECL_BASIC_ATTRIB;
+		return ASTNodeTypes.DECLARATION_BASIC_ATTRIB;
 	}
 	
 	@Override

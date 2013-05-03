@@ -9,12 +9,12 @@ import dtool.ast.NodeList;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public abstract class DeclarationConditional extends ASTNeoNode implements IStatement, INonScopedBlock {
+public abstract class AbstractConditionalDeclaration extends ASTNeoNode implements IStatement, INonScopedBlock {
 	
 	public final NodeList thenDecls;
 	public final NodeList elseDecls;
 	
-	public DeclarationConditional(NodeList thenDecls, NodeList elseDecls) {
+	public AbstractConditionalDeclaration(NodeList thenDecls, NodeList elseDecls) {
 		this.thenDecls = NodeList.parentizeNodeList(thenDecls, this);
 		//assertNotNull(thenDecls);
 		this.elseDecls = NodeList.parentizeNodeList(elseDecls, this);

@@ -5,7 +5,7 @@ import dtool.ast.ASTAbstractVisitor;
 import dtool.ast.ASTNeoNode;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationBasicAttrib;
-import dtool.ast.declarations.DeclarationConditional;
+import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
@@ -175,7 +175,7 @@ public abstract class DeeSourceElementProvider_BaseVisitor extends ASTAbstractVi
 		return true;
 	}
 	@Override
-	public final boolean visit(DeclarationConditional elem) {
+	public final boolean visit(AbstractConditionalDeclaration elem) {
 		return true;
 	}
 	

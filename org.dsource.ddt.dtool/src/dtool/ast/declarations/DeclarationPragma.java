@@ -24,7 +24,7 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECL_PRAGMA;
+		return ASTNodeTypes.DECLARATION_PRAGMA;
 	}
 	
 	@Override

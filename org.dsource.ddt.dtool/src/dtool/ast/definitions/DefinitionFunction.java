@@ -21,7 +21,7 @@ import dtool.util.ArrayView;
 /**
  * A definition of a function.
  */
-public class DefinitionFunction extends CommonFunctionDefinition implements IScopeNode, IStatement {
+public class DefinitionFunction extends AbstractFunctionDefinition implements IScopeNode, IStatement {
 	
 	public final Reference retType;
 	

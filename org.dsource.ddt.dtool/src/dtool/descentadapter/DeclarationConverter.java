@@ -21,7 +21,7 @@ import dtool.ast.ASTNeoNode;
 import dtool.ast.NodeList;
 import dtool.ast.NodeList2;
 import dtool.ast.SourceRange;
-import dtool.ast.declarations.DeclarationConditionalDV;
+import dtool.ast.declarations.DeclarationDebugVersion;
 import dtool.ast.declarations.DeclarationStaticIf;
 import dtool.ast.declarations.DeclarationStaticIfIsType;
 import dtool.ast.definitions.Symbol;
@@ -63,7 +63,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 			boolean isDebug = condition instanceof DebugCondition;
 			assertTrue(isDebug || dvCondition instanceof VersionCondition);
 			
-			return connect(DefinitionConverter.sourceRange(elem), new DeclarationConditionalDV(
+			return connect(DefinitionConverter.sourceRange(elem), new DeclarationDebugVersion(
 				isDebug,
 				ident,
 				thendecls, elsedecls

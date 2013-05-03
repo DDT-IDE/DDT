@@ -5,7 +5,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
 import dtool.ast.expressions.Resolvable;
 
-public class DeclarationStaticIf extends DeclarationConditional {
+public class DeclarationStaticIf extends AbstractConditionalDeclaration {
 	
 	public final Resolvable exp;
 	

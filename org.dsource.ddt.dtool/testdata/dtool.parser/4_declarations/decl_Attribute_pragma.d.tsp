@@ -10,13 +10,13 @@ DeclarationPragma(Symbol DefinitionVariable(RefPrimitive DefSymbol))
 DeclarationPragma(Symbol DefinitionVariable(RefPrimitive DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 pragma(foo) : 
-#@DECLS_SAMPLE
+#@DECL_LIST_SAMPLE
 pragma(foo) {
-	#@DECLS_SAMPLE
+	#@DECL_LIST_SAMPLE
 }
 
 #STRUCTURE_EXPECTED:
-DeclarationPragma(Symbol DeclList( #@DECLS_SAMPLE DeclarationPragma(Symbol DeclList( #@DECLS_SAMPLE )) ))
+DeclarationPragma(Symbol DeclList( #@DECL_LIST_SAMPLE DeclarationPragma(Symbol DeclList( #@DECL_LIST_SAMPLE )) ))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 

@@ -23,7 +23,7 @@ public class DeclarationAliasThis extends ASTNeoNode implements IStatement {
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECL_ALIAS_THIS;
+		return ASTNodeTypes.DECLARATION_ALIAS_THIS;
 	}
 	
 	@Override

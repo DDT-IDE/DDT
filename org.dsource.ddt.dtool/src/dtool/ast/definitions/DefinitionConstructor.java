@@ -18,7 +18,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.util.ArrayView;
 
-public class DefinitionConstructor extends CommonFunctionDefinition {
+public class DefinitionConstructor extends AbstractFunctionDefinition {
 	
 	public DefinitionConstructor(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
 		ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 

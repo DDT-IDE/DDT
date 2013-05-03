@@ -47,7 +47,7 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECL_LINKAGE;
+		return ASTNodeTypes.DECLARATION_LINKAGE;
 	}
 	
 	@Override

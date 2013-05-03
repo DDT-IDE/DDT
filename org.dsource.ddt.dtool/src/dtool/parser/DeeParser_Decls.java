@@ -37,6 +37,7 @@ import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPostBlit;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.DeclarationProtection.Protection;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
@@ -61,7 +62,7 @@ import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionFunction.AutoReturnReference;
-import dtool.ast.definitions.CommonFunctionDefinition;
+import dtool.ast.definitions.AbstractFunctionDefinition;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
@@ -285,7 +286,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		
 		switch (laGrouped) {
-		case KW_IMPORT: return parseImportDeclaration();
+		case KW_IMPORT: return parseDeclarationImport();
 		
 		
 		case KW_ALIGN: return parseDeclarationAlign();
@@ -298,7 +299,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return parseDeclarationBasicAttrib();
 		case ATTRIBUTE_KW: 
 			if(lookAhead() == DeeTokens.KW_STATIC && lookAhead(1) == DeeTokens.KW_IMPORT) { 
-				return parseImportDeclaration();
+				return parseDeclarationImport();
+			}
+			if(lookAhead() == DeeTokens.KW_STATIC && lookAhead(1) == DeeTokens.KW_ASSERT) { 
+				return parseDeclarationStaticAssert();
 			}
 			if(isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
 				break; // go to parseReference
@@ -593,7 +597,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse_FunctionLike(retType, defSymbol(defId), parse).upcastTypeParam();
 	}
 	
-	protected NodeResult<? extends CommonFunctionDefinition> parse_FunctionLike(Reference retType, 
+	protected NodeResult<? extends AbstractFunctionDefinition> parse_FunctionLike(Reference retType, 
 		ProtoDefSymbol defId, ParseHelper parse) {
 		
 		ArrayView<IFunctionParameter> fnParams = null;
@@ -1158,7 +1162,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	/* -------------------- Plain declarations -------------------- */
 	
-	public NodeResult<DeclarationImport> parseImportDeclaration() {
+	public NodeResult<DeclarationImport> parseDeclarationImport() {
 		ParseHelper parse = new ParseHelper(lookAheadElement().getStartPos());
 		
 		boolean isStatic = false;
@@ -1510,4 +1514,27 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		return parse.resultConclude(new DeclarationAllocatorFunction(isNew, params, fnBody));
 	}
+	
+	public NodeResult<DeclarationStaticAssert> parseDeclarationStaticAssert() {
+		ParseHelper parse = new ParseHelper(lookAheadElement());
+		if(!tryConsume(DeeTokens.KW_STATIC, DeeTokens.KW_ASSERT)) 
+			return null;
+		
+		Expression pred = null;
+		Expression msg = null;
+		
+		if(parse.consumeExpected(DeeTokens.OPEN_PARENS)) {
+			
+			pred = parseAssignExpression_toMissing();
+			if(tryConsume(DeeTokens.COMMA)) {
+				msg = parseAssignExpression_toMissing();
+			}
+			
+			parse.consumeExpected(DeeTokens.CLOSE_PARENS);
+		}
+		parse.consumeRequired(DeeTokens.SEMICOLON);
+		
+		return parse.resultConclude(new DeclarationStaticAssert(pred, msg));
+	}
+	
 }

@@ -21,8 +21,8 @@ import org.eclipse.jface.text.Region;
 
 import dtool.ast.ASTDefaultVisitor;
 import dtool.ast.ASTNeoNode;
-import dtool.ast.declarations.DeclarationConditional;
-import dtool.ast.declarations.DeclarationConditionalDV;
+import dtool.ast.declarations.AbstractConditionalDeclaration;
+import dtool.ast.declarations.DeclarationDebugVersion;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionFunction;
@@ -132,8 +132,8 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 					}
 					
 					@Override
-					public boolean visit(DeclarationConditional elem) {
-						if(elem instanceof DeclarationConditionalDV) {
+					public boolean visit(AbstractConditionalDeclaration elem) {
+						if(elem instanceof DeclarationDebugVersion) {
 							reportBlock(elem, DeeFoldingBlockKind.CONDITIONALS, collapseConditionals);
 						}
 						return true;

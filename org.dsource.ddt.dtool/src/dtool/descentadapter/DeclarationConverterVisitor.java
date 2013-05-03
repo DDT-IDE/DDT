@@ -44,7 +44,7 @@ import dtool.ast.declarations.DeclarationAnonMember;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
-import dtool.ast.declarations.DeclarationConditionalDefinition;
+import dtool.ast.declarations.DeclarationDebugVersionSpec;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
@@ -111,9 +111,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				;
 		
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
-			new DeclarationConditionalDefinition(
+			new DeclarationDebugVersionSpec(
 				identifier,
-				DeclarationConditionalDefinition.Type.DEBUG
+				DeclarationDebugVersionSpec.Type.DEBUG
 			)
 		));
 	}
@@ -125,9 +125,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				connect(DefinitionConverter.sourceRange(elem.version), new Symbol(new String(elem.version.value)));
 		
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
-			new DeclarationConditionalDefinition(
+			new DeclarationDebugVersionSpec(
 				identifier,
-				DeclarationConditionalDefinition.Type.VERSION
+				DeclarationDebugVersionSpec.Type.VERSION
 			)
 		));
 	}

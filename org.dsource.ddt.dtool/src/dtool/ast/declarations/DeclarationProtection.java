@@ -39,7 +39,7 @@ public class DeclarationProtection extends DeclarationAttrib {
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECL_PROTECTION;
+		return ASTNodeTypes.DECLARATION_PROTECTION;
 	}
 	
 	@Override

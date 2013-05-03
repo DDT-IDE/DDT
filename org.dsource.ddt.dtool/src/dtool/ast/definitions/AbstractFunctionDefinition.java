@@ -24,7 +24,7 @@ import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
-public abstract class CommonFunctionDefinition extends Definition implements ICallableElement, IScopeNode {
+public abstract class AbstractFunctionDefinition extends Definition implements ICallableElement, IScopeNode {
 	
 	public final ArrayView<TemplateParameter> tplParams;
 	public final ArrayView<IFunctionParameter> params;
@@ -32,7 +32,7 @@ public abstract class CommonFunctionDefinition extends Definition implements ICa
 	public final Expression tplConstraint;
 	public final IFunctionBody fnBody;
 	
-	public CommonFunctionDefinition(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public AbstractFunctionDefinition(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
 			ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 
 			Expression tplConstraint, IFunctionBody fnBody) {
 		super(defId);

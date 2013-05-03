@@ -10,23 +10,23 @@ DeclarationLinkage(DefinitionVariable(RefIdentifier DefSymbol))
 DeclarationAlign(DefinitionVariable(RefPrimitive DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 public: 
-#@DECLS_SAMPLE
+#@DECL_LIST_SAMPLE
 extern(C):
-#@DECLS_SAMPLE
+#@DECL_LIST_SAMPLE
 
 #STRUCTURE_EXPECTED:
 DeclarationProtection(DeclList(
-	#@DECLS_SAMPLE
-	DeclarationLinkage(DeclList( #@DECLS_SAMPLE ))
+	#@DECL_LIST_SAMPLE
+	DeclarationLinkage(DeclList( #@DECL_LIST_SAMPLE ))
 ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 final {
-	#@DECLS_SAMPLE
+	#@DECL_LIST_SAMPLE
 }
 static:
 const:
 #STRUCTURE_EXPECTED:
-DeclarationBasicAttrib(DeclList( #@DECLS_SAMPLE )) 
+DeclarationBasicAttrib(DeclList( #@DECL_LIST_SAMPLE )) 
 DeclarationBasicAttrib(DeclList(
 	DeclarationBasicAttrib(DeclList())
 ))
@@ -77,8 +77,8 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM int foo;
 #STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM DefinitionVariable(* *) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS /**/ : #@DECLS_SAMPLE
-#STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECLS_SAMPLE ))
+#PARSE(DECLARATION)  #@ATTRIBS /**/ : #@DECL_LIST_SAMPLE
+#STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECL_LIST_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS /**/ : /* Zero decls */
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( ))
@@ -86,8 +86,8 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #PARSE(DECLARATION)  #@ATTRIBS /**/ { #@CLOSEBRACE_OR_BREAK 
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS { #@DECLS_SAMPLE #@CLOSEBRACE_OR_BREAK
-#STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECLS_SAMPLE ))
+#PARSE(DECLARATION)  #@ATTRIBS { #@DECL_LIST_SAMPLE #@CLOSEBRACE_OR_BREAK
+#STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECL_LIST_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
 #STRUCTURE_EXPECTED: #@ATTRIBS  DeclarationEmpty )

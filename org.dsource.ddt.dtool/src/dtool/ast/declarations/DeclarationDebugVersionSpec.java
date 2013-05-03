@@ -10,7 +10,7 @@ import dtool.ast.definitions.Symbol;
  *	version = someident;
  *  debug = someident;   
  */
-public class DeclarationConditionalDefinition extends ASTNeoNode {
+public class DeclarationDebugVersionSpec extends ASTNeoNode {
 	
 	public interface Type {
 		int DEBUG = 9;
@@ -20,7 +20,7 @@ public class DeclarationConditionalDefinition extends ASTNeoNode {
 	public final Symbol identifier;
 	public final int conditionalKind;
 	
-	public DeclarationConditionalDefinition(Symbol id, int conditionalKind) {
+	public DeclarationDebugVersionSpec(Symbol id, int conditionalKind) {
 		this.identifier = parentize(id);
 		this.conditionalKind = conditionalKind;
 	}
