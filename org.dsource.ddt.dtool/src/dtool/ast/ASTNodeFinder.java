@@ -1,8 +1,6 @@
 package dtool.ast;
 
 import melnorme.utilbox.core.Assert;
-import descent.internal.compiler.parser.ast.ASTNode;
-import descent.internal.compiler.parser.ast.ASTUpTreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
 
 
@@ -28,28 +26,9 @@ public abstract class ASTNodeFinder<T extends IASTNode> {
 		ASTNodeFinder<ASTNode> astNodeFinder = new ASTNodeFinder<ASTNode>() {
 			@Override
 			public void doAcceptOnRoot() {
-				root.accept(new ASTUpTreeVisitor() {
-					@Override
-					public boolean visit(ASTNode node) {
-						return visitNode(node);
-					}
-				});
-			}
-		};
-		return astNodeFinder.doFindElementInAST(root, offset, inclusiveEnd);
-	}
-	
-	public static ASTNeoNode findElement(ASTNeoNode root, int offset) {
-		return findElement(root, offset, true);
-	}
-	
-	public static ASTNeoNode findElement(final ASTNeoNode root, int offset, boolean inclusiveEnd) {
-		ASTNodeFinder<ASTNeoNode> astNodeFinder = new ASTNodeFinder<ASTNeoNode>() {
-			@Override
-			public void doAcceptOnRoot() {
 				root.accept(new ASTHomogenousVisitor() {
 					@Override
-					public boolean preVisit(ASTNeoNode node) {
+					public boolean preVisit(ASTNode node) {
 						return visitNode(node);
 					}
 				});

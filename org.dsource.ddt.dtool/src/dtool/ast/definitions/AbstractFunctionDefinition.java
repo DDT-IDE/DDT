@@ -16,7 +16,7 @@ import java.util.List;
 
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.refmodel.IScope;
@@ -44,7 +44,7 @@ public abstract class AbstractFunctionDefinition extends Definition implements I
 		this.fnBody = parentizeI(fnBody);
 	}
 	
-	public final ArrayView<ASTNeoNode> getParams_asNodes() {
+	public final ArrayView<ASTNode> getParams_asNodes() {
 		return CoreUtil.blindCast(params);
 	}
 	

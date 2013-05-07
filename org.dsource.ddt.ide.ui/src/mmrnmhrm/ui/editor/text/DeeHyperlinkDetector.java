@@ -10,7 +10,7 @@ import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.references.Reference;
 
@@ -24,8 +24,8 @@ public class DeeHyperlinkDetector extends AbstractHyperlinkDetector {
 			return null;
 
 		ITextEditor textEditor= (ITextEditor)getAdapter(ITextEditor.class);
-		ASTNeoNode module = EditorUtil.getModuleFromEditor(textEditor);
-		ASTNeoNode selNode = ASTNodeFinder.findElement(module, region.getOffset(), false);
+		ASTNode module = EditorUtil.getModuleFromEditor(textEditor);
+		ASTNode selNode = ASTNodeFinder.findElement(module, region.getOffset(), false);
 		if(!(selNode instanceof Reference))
 			return null;
 		

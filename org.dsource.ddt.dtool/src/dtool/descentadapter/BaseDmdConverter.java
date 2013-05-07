@@ -2,7 +2,7 @@ package dtool.descentadapter;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 
 
@@ -49,7 +49,7 @@ public class BaseDmdConverter {
 		return new SourceRange(startPos, length);
 	}
 	
-	protected static <T extends ASTNeoNode> T connect(SourceRange sr, T node) {
+	protected static <T extends ASTNode> T connect(SourceRange sr, T node) {
 		if(sr != null) {
 			node.setSourceRange(sr);
 		}

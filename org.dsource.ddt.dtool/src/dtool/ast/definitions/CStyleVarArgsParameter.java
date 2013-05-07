@@ -1,7 +1,7 @@
 package dtool.ast.definitions;
 
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 
@@ -10,7 +10,7 @@ import dtool.ast.IASTVisitor;
  * C-style var args paramater, as in: <br>
  * <code> ... </code>
  */
-public class CStyleVarArgsParameter extends ASTNeoNode implements IFunctionParameter {
+public class CStyleVarArgsParameter extends ASTNode implements IFunctionParameter {
 	
 	public CStyleVarArgsParameter() {
 	}

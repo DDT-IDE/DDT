@@ -1,16 +1,16 @@
 package dtool.ast.expressions;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.util.ArrayView;
 
 public class ExpTraits extends Expression {
 	
-	public final ArrayView<ASTNeoNode> args;
+	public final ArrayView<ASTNode> args;
 	public final char[] traitsKeyword;
 	
-	public ExpTraits(char[] traitsKeyword, ArrayView<ASTNeoNode> args) {
+	public ExpTraits(char[] traitsKeyword, ArrayView<ASTNode> args) {
 		this.traitsKeyword = traitsKeyword;
 		this.args = parentize(args);
 	}

@@ -18,7 +18,7 @@ import java.util.List;
 import descent.internal.compiler.parser.ArrayLiteralExp;
 import descent.internal.compiler.parser.CallExp;
 import dtool.DToolBundle;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 import dtool.ast.expressions.ExpCall;
 import dtool.ast.expressions.ExpLiteralArray;
@@ -41,7 +41,7 @@ public class ExpressionConverter extends BaseDmdConverter {
 		Resolvable newExp = convert(exp, convContext);
 		if (newExp instanceof ExpReference) {
 			newExp = downCast(newExp, ExpReference.class).ref;
-			((ASTNeoNode) newExp).parent = null;
+			((ASTNode) newExp).parent = null;
 		}
 		return newExp;
 	}

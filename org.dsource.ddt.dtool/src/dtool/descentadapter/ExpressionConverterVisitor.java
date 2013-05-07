@@ -84,7 +84,7 @@ import descent.internal.compiler.parser.UshrExp;
 import descent.internal.compiler.parser.VoidInitializer;
 import descent.internal.compiler.parser.XorAssignExp;
 import descent.internal.compiler.parser.XorExp;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.definitions.IFunctionParameter;
@@ -150,7 +150,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		return endAdapt(connect(DefinitionConverter.sourceRange(node),
 			new ExpTraits(
 				node.ident.ident,
-				DescentASTConverter.convertMany(node.args, ASTNeoNode.class, convContext))
+				DescentASTConverter.convertMany(node.args, ASTNode.class, convContext))
 			)
 		);
 	}
@@ -395,7 +395,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 				DescentASTConverter.convertMany(element.newargs, Expression.class, convContext),
 				DescentASTConverter.convertMany(element.arguments, Expression.class, convContext),
 				DescentASTConverter.convertMany(element.cd.sourceBaseclasses, Reference.class, convContext),
-				createDeclList(DescentASTConverter.convertMany(element.cd.members, ASTNeoNode.class, convContext))
+				createDeclList(DescentASTConverter.convertMany(element.cd.members, ASTNode.class, convContext))
 			)
 		);
 	}

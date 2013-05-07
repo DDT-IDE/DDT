@@ -2,12 +2,12 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 
 /** A Symbol is node wrapping an identifier. */
-public class Symbol extends ASTNeoNode {
+public class Symbol extends ASTNode {
 	
 	public final String name;
 	

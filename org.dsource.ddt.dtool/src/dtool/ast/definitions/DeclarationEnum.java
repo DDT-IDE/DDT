@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
@@ -13,7 +13,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public class DeclarationEnum extends ASTNeoNode implements IStatement, INonScopedBlock {
+public class DeclarationEnum extends ASTNode implements IStatement, INonScopedBlock {
 	
 	public final Reference type;
 	public final EnumBody body;
@@ -47,7 +47,7 @@ public class DeclarationEnum extends ASTNeoNode implements IStatement, INonScope
 	}
 
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator() {
+	public Iterator<? extends ASTNode> getMembersIterator() {
 		return NodeList.getMembersIterator(body);
 	}
 	

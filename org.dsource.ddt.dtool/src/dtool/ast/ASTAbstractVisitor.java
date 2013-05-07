@@ -42,7 +42,7 @@ import dtool.ast.references.Reference;
  */
 public abstract class ASTAbstractVisitor implements IASTVisitor {
 	
-	@Override public void endVisit(ASTNeoNode node) {}
+	@Override public void endVisit(ASTNode node) {}
 	
 	@Override public void endVisit(DefUnit node) {}
 	

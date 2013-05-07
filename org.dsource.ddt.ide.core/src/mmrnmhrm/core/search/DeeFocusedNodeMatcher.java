@@ -13,7 +13,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
@@ -33,7 +33,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 	}
 	
 	@Override
-	public boolean match(ASTNeoNode node, ISourceModule sourceModule) {
+	public boolean match(ASTNode node, ISourceModule sourceModule) {
 		
 		if(matchDeclarations && node instanceof DefUnit) {
 			DefUnit definition = (DefUnit) node;

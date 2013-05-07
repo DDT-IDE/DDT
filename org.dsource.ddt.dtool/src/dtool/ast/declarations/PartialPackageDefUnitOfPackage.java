@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Collections;
 import java.util.Iterator;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 
@@ -20,7 +20,7 @@ public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
 	}
 	
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
+	public Iterator<? extends ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
 		return Collections.singleton(subPackage).iterator();
 	}
 	

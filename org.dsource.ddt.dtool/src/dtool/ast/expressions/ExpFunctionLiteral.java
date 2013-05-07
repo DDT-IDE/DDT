@@ -3,7 +3,7 @@ package dtool.ast.expressions;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.FunctionAttributes;
@@ -30,7 +30,7 @@ public class ExpFunctionLiteral extends Expression {
 		this.fnBody = parentizeI(fnBody);
 	}
 	
-	public final ArrayView<ASTNeoNode> getParams_asNodes() {
+	public final ArrayView<ASTNode> getParams_asNodes() {
 		return CoreUtil.blindCast(fnParams);
 	}
 	

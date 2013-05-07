@@ -2,12 +2,12 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.BlockStatement;
 
-public class DeclarationUnitTest extends ASTNeoNode {
+public class DeclarationUnitTest extends ASTNode {
 	
 	public final BlockStatement body;
 	

@@ -3,7 +3,7 @@ package dtool.ast.declarations;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.IFunctionParameter;
@@ -15,7 +15,7 @@ import dtool.util.ArrayView;
  * http://dlang.org/class.html#ClassAllocator
  * http://dlang.org/class.html#ClassDeallocator
  */
-public class DeclarationAllocatorFunction extends ASTNeoNode {
+public class DeclarationAllocatorFunction extends ASTNode {
 	
 	public final boolean isNew;
 	public final ArrayView<IFunctionParameter> params;
@@ -27,7 +27,7 @@ public class DeclarationAllocatorFunction extends ASTNeoNode {
 		this.fnBody = parentizeI(fnBody);
 	}
 	
-	public final ArrayView<ASTNeoNode> getParams_asNodes() {
+	public final ArrayView<ASTNode> getParams_asNodes() {
 		return CoreUtil.blindCast(params);
 	}
 	

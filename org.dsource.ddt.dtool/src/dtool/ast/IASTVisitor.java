@@ -74,11 +74,11 @@ public interface IASTVisitor {
 	
 	/** Returns whether to proceed with type-specific dispatch visit. 
 	 * Note: if false, it implies children will not be visited. */
-	public boolean preVisit(ASTNeoNode node);
-	public void postVisit(ASTNeoNode node);
+	public boolean preVisit(ASTNode node);
+	public void postVisit(ASTNode node);
 	
-	public boolean visit(ASTNeoNode node);
-	public void endVisit(ASTNeoNode node);
+	public boolean visit(ASTNode node);
+	public void endVisit(ASTNode node);
 	
 	/* ---------------------------------- */
 	public boolean visit(Symbol node);

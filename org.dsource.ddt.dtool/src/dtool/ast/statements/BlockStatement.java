@@ -8,7 +8,7 @@ import java.util.List;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
@@ -36,8 +36,8 @@ public class BlockStatement extends Statement implements IScopeNode, IFunctionBo
 		this.hasCurlyBraces = false;
 	}
 	
-	public final ArrayView<ASTNeoNode> statements_asNodes() {
-		return CoreUtil.<ArrayView<ASTNeoNode>>blindCast(statements);
+	public final ArrayView<ASTNode> statements_asNodes() {
+		return CoreUtil.<ArrayView<ASTNode>>blindCast(statements);
 	}
 	
 	@Override

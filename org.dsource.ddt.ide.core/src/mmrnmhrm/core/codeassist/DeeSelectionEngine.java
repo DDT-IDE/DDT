@@ -24,7 +24,7 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
@@ -51,7 +51,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		ISourceModule sourceModule = (ISourceModule) sourceUnit.getModelElement();
 		
 		Module deeModule = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
-		ASTNeoNode node = ASTNodeFinder.findElement(deeModule, offset, ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
+		ASTNode node = ASTNodeFinder.findElement(deeModule, offset, ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		if(node instanceof DefSymbol) {
 			DefUnit defUnit = ((DefSymbol) node).getDefUnit();

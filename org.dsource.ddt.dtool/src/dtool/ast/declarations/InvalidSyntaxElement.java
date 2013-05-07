@@ -1,13 +1,13 @@
 package dtool.ast.declarations;
 
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
 
-public class InvalidSyntaxElement extends ASTNeoNode implements IStatement {
+public class InvalidSyntaxElement extends ASTNode implements IStatement {
 	
 	public final Token badToken;
 	

@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.DeclList;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
@@ -56,7 +56,7 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	}
 	
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
+	public Iterator<? extends ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
 		return NewUtils.getChainedIterator(decls.nodes /*NPE BUG here*/, tplParams);
 	}
 	

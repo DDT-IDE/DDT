@@ -6,7 +6,7 @@ import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
@@ -67,7 +67,7 @@ public class RefTypePointer extends CommonRefNative {
 			return null;
 		}
 		@Override
-		public Iterator<ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
+		public Iterator<ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
 			// TODO Auto-generated method stub
 			return null;
 		}

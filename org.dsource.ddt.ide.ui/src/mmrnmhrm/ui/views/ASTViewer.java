@@ -50,10 +50,10 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
+import dtool.ast.ASTNodeFinderOld;
 
 
 /**
@@ -224,10 +224,11 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	}
 	
 	public static IASTNode findElementDependingOnType(IASTNode root, int offset, boolean inclusiveEnd) {
-		if(root instanceof ASTNeoNode) {
-			return ASTNodeFinder.findElement((ASTNeoNode) root, offset, inclusiveEnd);
-		} else if(root instanceof ASTNode) {
+		if(root instanceof ASTNode) {
 			return ASTNodeFinder.findElement((ASTNode) root, offset, inclusiveEnd);
+		} else if(root instanceof descent.internal.compiler.parser.ast.ASTNode) {
+			return ASTNodeFinderOld.findElement(
+				(descent.internal.compiler.parser.ast.ASTNode) root, offset, inclusiveEnd);
 		} else {
 			throw assertFail();
 		}

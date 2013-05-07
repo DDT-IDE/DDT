@@ -2,7 +2,7 @@ package dtool.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Function;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 
 
@@ -26,16 +26,16 @@ public class MiscDeeTestUtils {
 		};
 	}
 	
-	public static Function<ASTNeoNode, String> fnDefUnitToStringAsCode() {
-		return new Function<ASTNeoNode, String>() {
+	public static Function<ASTNode, String> fnDefUnitToStringAsCode() {
+		return new Function<ASTNode, String>() {
 			@Override
-			public String evaluate(ASTNeoNode obj) {
+			public String evaluate(ASTNode obj) {
 				return obj == null ? null : obj.toStringAsCode();
 			}
 		};
 	}
 	
-	public static ASTNeoNode getSingleChild(ASTNeoNode[] array) {
+	public static ASTNode getSingleChild(ASTNode[] array) {
 		assertTrue(array != null && array.length == 1);
 		return array[0];
 	}

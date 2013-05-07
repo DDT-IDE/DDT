@@ -3,7 +3,7 @@ package dtool.ast.definitions;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.Reference;
@@ -20,7 +20,7 @@ import dtool.util.ArrayView;
  * 
  * @see http://dlang.org/declaration.html#AliasDeclaration
  */
-public class DefinitionAlias extends ASTNeoNode implements IStatement {
+public class DefinitionAlias extends ASTNode implements IStatement {
 	
 	public final ArrayView<DefinitionAliasFragment> aliasFragments;
 

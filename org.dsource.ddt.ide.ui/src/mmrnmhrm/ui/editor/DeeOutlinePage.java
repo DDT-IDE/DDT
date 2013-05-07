@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 
-import descent.internal.compiler.parser.ast.ASTNode;
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
 
 /**

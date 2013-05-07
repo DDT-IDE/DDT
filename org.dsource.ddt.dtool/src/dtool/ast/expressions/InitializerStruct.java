@@ -3,7 +3,7 @@ package dtool.ast.expressions;
 import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.RefIdentifier;
@@ -40,7 +40,7 @@ public class InitializerStruct extends Initializer {
 		cp.append("}");
 	}
 	
-	public static class StructInitEntry extends ASTNeoNode {
+	public static class StructInitEntry extends ASTNode {
 		public final RefIdentifier member;
 		public final Initializer value;
 		

@@ -3,11 +3,11 @@ package dtool.ast.statements;
 import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 
-public class FunctionBody extends ASTNeoNode implements IFunctionBody {
+public class FunctionBody extends ASTNode implements IFunctionBody {
 	
 	public final BlockStatement bodyBlock;
 	

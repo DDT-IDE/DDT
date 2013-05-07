@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.IFunctionParameter;
@@ -70,7 +70,7 @@ public class DeeParserTest extends CommonTestUtils {
 			SourceEquivalenceChecker.assertCheck(remainingSource, expectedRemainingSource);
 			parsedSource = fullSource.substring(0, fullSource.length() - expectedRemainingSource.length());
 		}
-		ASTNeoNode mainNode = result.node; // a null result may make sense in some tests
+		ASTNode mainNode = result.node; // a null result may make sense in some tests
 		
 		if(mainNode != null) {
 			checkBasicStructureContracts(array(mainNode), null);
@@ -116,7 +116,7 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 		
 		@Override
-		protected void nodeConcluded(ASTNeoNode node) {
+		protected void nodeConcluded(ASTNode node) {
 			checkNodeSourceRange(node, getSource());
 			
 			// Run additional tests on the node just parsed
@@ -128,8 +128,8 @@ public class DeeParserTest extends CommonTestUtils {
 	
 	/* ============= Structure Checkers ============= */
 	
-	public static void checkBasicStructureContracts(ASTNeoNode[] children, ASTNeoNode parent) {
-		for (ASTNeoNode astNode : children) {
+	public static void checkBasicStructureContracts(ASTNode[] children, ASTNode parent) {
+		for (ASTNode astNode : children) {
 			assertTrue(astNode.getParent() == parent);
 			assertTrue(astNode.isParsedStatus());
 			checkBasicStructureContracts(astNode.getChildren(), astNode);
@@ -155,8 +155,8 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 	}
 	
-	public static void checkExpectedStructure(ASTNeoNode node, NamedNodeElement[] expectedStructure) {
-		ASTNeoNode[] children;
+	public static void checkExpectedStructure(ASTNode node, NamedNodeElement[] expectedStructure) {
+		ASTNode[] children;
 		if(node instanceof Module) {
 			children = node.getChildren();
 		} else {
@@ -166,13 +166,13 @@ public class DeeParserTest extends CommonTestUtils {
 		checkExpectedStructure_do(children, expectedStructure);
 	}
 	
-	public static void checkExpectedStructure_do(ASTNeoNode[] children, NamedNodeElement[] expectedStructure) {
+	public static void checkExpectedStructure_do(ASTNode[] children, NamedNodeElement[] expectedStructure) {
 		
 		assertTrue(children.length <= expectedStructure.length);
 		
 		for(int i = 0; i < children.length; i++) {
 			NamedNodeElement namedElement = expectedStructure[i];
-			ASTNeoNode astNode = children[i];
+			ASTNode astNode = children[i];
 			
 			if(namedElement.name == NamedNodeElement.IGNORE_ALL) {
 				continue;
@@ -228,13 +228,13 @@ public class DeeParserTest extends CommonTestUtils {
 	}
 	
 	public static void checkNodeTreeSourceRanges(final DeeParserResult result) {
-		ASTNeoNode topNode = result.node;
+		ASTNode topNode = result.node;
 		
 		// Check consistency of source ranges (no overlapping ranges)
 		ASTSourceRangeChecker.checkConsistency(topNode);
 	}
 	
-	public static void checkNodeSourceRange(ASTNeoNode node, final String fullSource) {
+	public static void checkNodeSourceRange(ASTNode node, final String fullSource) {
 		assertTrue(node.hasSourceRangeInfo());
 		assertTrue(node.getStartPos() <= fullSource.length() && node.getEndPos() <= fullSource.length());
 		
@@ -247,7 +247,7 @@ public class DeeParserTest extends CommonTestUtils {
 			
 			@SuppressWarnings("unused")
 			@Override
-			protected void handleSourceRangeStartPosBreach(ASTNeoNode elem) {
+			protected void handleSourceRangeStartPosBreach(ASTNode elem) {
 				String nodeStr = NodeUtil.getSubString(fullSource, elem.getSourceRange());
 				String parentStr = NodeUtil.getSubString(fullSource, elem.getParent().getSourceRange());
 				super.handleSourceRangeStartPosBreach(elem);
@@ -265,7 +265,7 @@ public class DeeParserTest extends CommonTestUtils {
 		);
 	
 	// These checks can be computationally expensive. They make parsing quadratic on node depth.
-	public static void runNodeParsingChecks(ASTNeoNode node, final String fullSource) {
+	public static void runNodeParsingChecks(ASTNode node, final String fullSource) {
 		String nodeSnippedSource = fullSource.substring(node.getStartPos(), node.getEndPos());
 		if(!areThereMissingTokenErrorsInNode(node)) {
 			SourceEquivalenceChecker.assertCheck(nodeSnippedSource, node.toStringAsCode());
@@ -276,7 +276,7 @@ public class DeeParserTest extends CommonTestUtils {
 		new ASTNodeReparseCheck(fullSource, node).doCheck();
 	}
 	
-	protected static boolean areThereMissingTokenErrorsInNode(ASTNeoNode node) {
+	protected static boolean areThereMissingTokenErrorsInNode(ASTNode node) {
 		ArrayList<ParserError> nodeErrors = DeeParserResult.collectErrors(new ArrayList<ParserError>(), node);
 		for(ParserError error : nodeErrors) {
 			if(error.errorType == ParserErrorTypes.INVALID_EXTERN_ID || 

@@ -2,7 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
@@ -12,7 +12,7 @@ import dtool.refmodel.ReferenceResolver;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 // TODO merge this with ImportContent
-public class ImportStatic extends ASTNeoNode implements IImportFragment {
+public class ImportStatic extends ASTNode implements IImportFragment {
 	
 	public final RefModule moduleRef;
 	

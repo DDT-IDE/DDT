@@ -5,7 +5,7 @@ import java.util.List;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.IFunctionParameter;
@@ -16,7 +16,7 @@ import dtool.util.ArrayView;
 
 public class StatementTry extends Statement {
 	
-	public static class CatchClause extends ASTNeoNode implements IScopeNode {
+	public static class CatchClause extends ASTNode implements IScopeNode {
 		
 		public final IFunctionParameter param;
 		public final IStatement body;

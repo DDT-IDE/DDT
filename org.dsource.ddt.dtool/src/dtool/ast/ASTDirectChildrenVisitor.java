@@ -20,7 +20,7 @@ public class ASTDirectChildrenVisitor extends ASTDefaultVisitor {
 	protected int depth = 0; 
 	
 	@Override
-	public boolean preVisit(ASTNeoNode node) {
+	public boolean preVisit(ASTNode node) {
 		depth++;
 		if(depth != 1) {
 			geneticChildrenVisit(node);
@@ -29,12 +29,12 @@ public class ASTDirectChildrenVisitor extends ASTDefaultVisitor {
 	}
 	
 	@Override
-	public void postVisit(ASTNeoNode node) {
+	public void postVisit(ASTNode node) {
 		depth--;
 	}
 	
 	@SuppressWarnings("unused") 
-	protected void geneticChildrenVisit(ASTNeoNode child) {
+	protected void geneticChildrenVisit(ASTNode child) {
 	}
 	
 }

@@ -25,7 +25,7 @@ import org.eclipse.dltk.core.search.matching.MatchLocatorParser;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 import org.eclipse.dltk.core.search.matching.PossibleMatch;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 
@@ -134,7 +134,7 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 		}
 	}
 	
-	public void addMatch(ASTNeoNode node, int accLevel, ISourceModule sourceModule) {
+	public void addMatch(ASTNode node, int accLevel, ISourceModule sourceModule) {
 		DefUnit defUnit = (node instanceof DefUnit) ? (DefUnit) node : NodeUtil.getOuterDefUnit(node);
 		IModelElement enclosingType;
 		try {

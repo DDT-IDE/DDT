@@ -2,7 +2,6 @@ package dtool.descentadapter;
 
 import descent.internal.compiler.parser.*;
 import descent.internal.compiler.parser.Package;
-import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.ASTRangeLessNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
@@ -230,11 +229,11 @@ public abstract class CoreConverterVisitor extends ASTCommonConverter {
 	}
 	
 	@Override
-	public boolean visit(ASTNode elem) {
+	public boolean visit(descent.internal.compiler.parser.ast.ASTNode elem) {
 		return assertFailABSTRACT_NODE();
 	}
 	@Override
-	public void endVisit(ASTNode node) {
+	public void endVisit(descent.internal.compiler.parser.ast.ASTNode node) {
 	}
 	
 	@Override

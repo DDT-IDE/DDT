@@ -9,7 +9,7 @@ import java.util.List;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
@@ -43,11 +43,11 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		}
 		
 		@Override
-		public void checkParent(ASTNeoNode parent) {
+		public void checkParent(ASTNode parent) {
 		}
 	}
 	
-	public static class DeclarationModule extends ASTNeoNode {
+	public static class DeclarationModule extends ASTNode {
 		
 		public final ArrayView<Token> packageList;
 		public final String[] packages; // Old API
@@ -98,16 +98,16 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		}
 	}
 	
-	public static Module createModuleNoModuleDecl(String moduleName, ArrayView<ASTNeoNode> members) {
+	public static Module createModuleNoModuleDecl(String moduleName, ArrayView<ASTNode> members) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
 		return new Module(defSymbol, null, null, members);
 	}
 	
 	public final DeclarationModule md;
-	public final ArrayView<ASTNeoNode> members;
+	public final ArrayView<ASTNode> members;
 	
 	public Module(ModuleDefSymbol defSymbol, Comment[] preComments, DeclarationModule md, 
-			ArrayView<ASTNeoNode> members) {
+			ArrayView<ASTNode> members) {
 		super(defSymbol, preComments, false);
 		defSymbol.module = this;
 		this.md = parentize(md);
@@ -152,7 +152,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	
 	
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
+	public Iterator<? extends ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
 		return members.iterator();
 	}
 	

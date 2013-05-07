@@ -12,7 +12,7 @@ import melnorme.utilbox.core.CoreUtil;
 import org.junit.Before;
 
 import dtool.ast.ASTCommonSourceRangeChecker;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.references.RefIdentifier;
@@ -105,13 +105,13 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		}
 	}
 	
-	public static void checkEqualAsElement(ASTNeoNode[] a, ASTNeoNode[] a2) {
+	public static void checkEqualAsElement(ASTNode[] a, ASTNode[] a2) {
         int length = a.length;
         assertTrue(a2.length == length);
 
         for (int i=0; i<length; i++) {
-            ASTNeoNode o1 = a[i];
-            ASTNeoNode o2 = a2[i];
+            ASTNode o1 = a[i];
+            ASTNode o2 = a2[i];
             
             if (o1 == null) {
             	assertTrue(o2 == null);
@@ -121,8 +121,8 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
         }
     }
 	
-	public static void checkParent(ASTNeoNode parent, ASTNeoNode... nodes) {
-		for (ASTNeoNode child : nodes) {
+	public static void checkParent(ASTNode parent, ASTNode... nodes) {
+		for (ASTNode child : nodes) {
 			assertTrue(child.getParent() == parent);
 		}
 	}

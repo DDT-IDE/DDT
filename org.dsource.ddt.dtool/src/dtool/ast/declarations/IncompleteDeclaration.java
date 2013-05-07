@@ -3,17 +3,17 @@ package dtool.ast.declarations;
 import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
 
-public class IncompleteDeclaration extends ASTNeoNode implements IStatement {
+public class IncompleteDeclaration extends ASTNode implements IStatement {
 	
-	public final ASTNeoNode node;
+	public final ASTNode node;
 	public final boolean consumedSemiColon;
 	
-	public IncompleteDeclaration(ASTNeoNode node, boolean consumedSemiColon) {
+	public IncompleteDeclaration(ASTNode node, boolean consumedSemiColon) {
 		this.node = parentize(assertNotNull_(node));
 		this.consumedSemiColon = consumedSemiColon;
 	}

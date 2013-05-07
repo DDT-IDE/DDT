@@ -78,18 +78,18 @@ import dtool.ast.references.Reference;
 public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IASTVisitor {
 	
 	@Override
-	public boolean preVisit(ASTNeoNode node) {
+	public boolean preVisit(ASTNode node) {
 		return true;
 	}
 	
 	@Override
-	public void postVisit(ASTNeoNode node) {
+	public void postVisit(ASTNode node) {
 	}
 	
 	/* -------------------- */
 	
 	@Override
-	public boolean visit(ASTNeoNode node) {
+	public boolean visit(ASTNode node) {
 		return true;
 	}
 	

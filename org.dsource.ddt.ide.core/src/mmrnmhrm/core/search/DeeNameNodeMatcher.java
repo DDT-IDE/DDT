@@ -11,7 +11,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
@@ -39,7 +39,7 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 	
 	
 	@Override
-	public boolean match(ASTNeoNode node, ISourceModule sourceModule) {
+	public boolean match(ASTNode node, ISourceModule sourceModule) {
 		if(matchDeclarations) {
 			if(node instanceof DefUnit) {
 				matchDefUnit((DefUnit) node, sourceModule);

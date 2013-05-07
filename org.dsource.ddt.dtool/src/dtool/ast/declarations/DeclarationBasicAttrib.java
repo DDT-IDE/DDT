@@ -5,7 +5,7 @@ import java.util.Iterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.ISourceRepresentation;
@@ -71,7 +71,7 @@ public class DeclarationBasicAttrib extends DeclarationAttrib {
 	
 	public final AttributeKinds declAttrib;
 	
-	public DeclarationBasicAttrib(AttributeKinds declAttrib, AttribBodySyntax abs, ASTNeoNode bodyDecls) {
+	public DeclarationBasicAttrib(AttributeKinds declAttrib, AttribBodySyntax abs, ASTNode bodyDecls) {
 		super(abs, bodyDecls);
 		this.declAttrib = declAttrib;
 		

@@ -24,7 +24,7 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
@@ -40,9 +40,9 @@ public class DeeDocTextHover extends AbstractTextHover {
 	
 	public static class NodeRegion implements IRegion {
 		
-		public ASTNeoNode node;
+		public ASTNode node;
 		
-		public NodeRegion(ASTNeoNode node) {
+		public NodeRegion(ASTNode node) {
 			this.node = node;
 		}
 		
@@ -64,7 +64,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 		assertNotNull(textEditor);
 	}
 	
-	private ASTNeoNode getNodeAtOffset(int offset) {
+	private ASTNode getNodeAtOffset(int offset) {
 		IEditorPart editor = getEditor();
 		assertNotNull(editor);
 		Module module = EditorUtil.getModuleFromEditor(editor);
@@ -76,7 +76,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 	
 	@Override
 	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
-		ASTNeoNode node = getNodeAtOffset(offset);
+		ASTNode node = getNodeAtOffset(offset);
 		if(node == null)
 			return null;
 		
@@ -89,7 +89,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 	
 	@Override
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
-		ASTNeoNode node;
+		ASTNode node;
 		if(hoverRegion instanceof NodeRegion) {
 			node = ((NodeRegion) hoverRegion).node;
 		} else {
@@ -106,7 +106,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 		return null;
 	}
 	
-	public static String getDocInfoForNode(ASTNeoNode node, DeeProjectModuleResolver moduleResolver) {
+	public static String getDocInfoForNode(ASTNode node, DeeProjectModuleResolver moduleResolver) {
 		if(node instanceof DefSymbol) {
 			DefUnit defUnit = ((DefSymbol) node).getDefUnit();
 			return HoverUtil.getDefUnitHoverInfoWithDeeDoc(defUnit);

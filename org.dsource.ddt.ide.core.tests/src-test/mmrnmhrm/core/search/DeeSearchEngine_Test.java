@@ -43,7 +43,7 @@ import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.internal.core.search.matching.FieldPattern;
 import org.junit.Test;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
@@ -458,7 +458,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 			}
 			
 			@Override
-			protected void visitNode(ASTNeoNode node, ISourceModule sourceModule) {
+			protected void visitNode(ASTNode node, ISourceModule sourceModule) {
 				if(node instanceof DefUnit) {
 					// All DefUnits must be searchable
 					DefUnit defUnit = (DefUnit) node;
@@ -485,7 +485,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 		
 		new DeeSearchEngineTestUtils.ElementsAndDefUnitVisitor() {
 			@Override
-			protected void visitNode(ASTNeoNode node, ISourceModule sourceModule) {
+			protected void visitNode(ASTNode node, ISourceModule sourceModule) {
 				if(node instanceof Reference) {
 					Reference reference = (Reference) node;
 					
@@ -524,7 +524,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 			ArrayList<Integer> nodeTreePath = blindCast(key.getSecond());
 			
 			Module deeModule = DeeModuleParsingUtil.parseAndGetAST(sourceModule);
-			ASTNeoNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModule, nodeTreePath);
+			ASTNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModule, nodeTreePath);
 			
 			final DefUnit defUnit = (DefUnit) node;
 			final HashSet<Reference> expectedReferences = defUnitToReferencesMap.get(key);

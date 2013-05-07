@@ -20,7 +20,7 @@ public abstract class NodeData {
 	}
 	
 	@SuppressWarnings("unused")
-	public void attachedToNode( ASTNeoNode node) {
+	public void attachedToNode( ASTNode node) {
 	}
 	
 	public static NodeData CREATED_STATUS = new PreParseNodeData() {
@@ -58,11 +58,11 @@ public abstract class NodeData {
 		}
 		
 		@Override
-		public void attachedToNode(final ASTNeoNode node) {
+		public void attachedToNode(final ASTNode node) {
 			// Ensure children are also in parsed status
 			node.accept(new ASTDirectChildrenVisitor() {
 				@Override
-				protected void geneticChildrenVisit(ASTNeoNode child) {
+				protected void geneticChildrenVisit(ASTNode child) {
 					assertTrue(child.getParent() == node);
 					assertTrue(child.isParsedStatus());
 				}

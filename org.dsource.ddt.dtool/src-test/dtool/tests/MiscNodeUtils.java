@@ -3,7 +3,7 @@ package dtool.tests;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.NodeList;
 import dtool.ast.definitions.DefUnit;
 
@@ -21,14 +21,14 @@ public class MiscNodeUtils {
 		return null;
 	}
 	
-	public static ASTNeoNode getNodeFromTreePath(ASTNeoNode node, int... treePath) {
+	public static ASTNode getNodeFromTreePath(ASTNode node, int... treePath) {
 		return getNodeFromTreePath(node, true, treePath);
 	}
-	public static ASTNeoNode getNodeFromTreePath(ASTNeoNode node, boolean ignoreNodeList, int... treePath) {
+	public static ASTNode getNodeFromTreePath(ASTNode node, boolean ignoreNodeList, int... treePath) {
 		for (int pathIx = 0; pathIx < treePath.length; pathIx++) {
 			int childIx = treePath[pathIx];
 			
-			ASTNeoNode[] children = node.getChildren();
+			ASTNode[] children = node.getChildren();
 			if(ignoreNodeList && children.length == 1 && children[0] instanceof NodeList) {
 				children = ((NodeList<?>)children[0]).getChildren();
 			}

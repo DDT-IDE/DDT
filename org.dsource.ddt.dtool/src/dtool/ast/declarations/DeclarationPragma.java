@@ -2,7 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.Symbol;
@@ -16,7 +16,7 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	public final ArrayView<Resolvable> expressions; // TODO
 	
 	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, AttribBodySyntax abs, 
-		ASTNeoNode bodyDecls) {
+		ASTNode bodyDecls) {
 		super(abs, bodyDecls);
 		this.pragmaId = parentize(id);
 		this.expressions = parentize(expressions);

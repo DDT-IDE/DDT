@@ -7,7 +7,7 @@ import java.util.Iterator;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
@@ -19,17 +19,17 @@ import dtool.refmodel.INonScopedBlock;
 import dtool.refmodel.ReferenceResolver;
 import dtool.util.ArrayView;
 
-public class ImportSelective extends ASTNeoNode implements INonScopedBlock, IImportFragment {
+public class ImportSelective extends ASTNode implements INonScopedBlock, IImportFragment {
 	
 	public static interface IImportSelectiveSelection extends IASTNeoNode {
 		//String getTargetName();
 	}
 	
 	public final IImportFragment fragment;
-	public final ArrayView<ASTNeoNode> impSelFrags;
+	public final ArrayView<ASTNode> impSelFrags;
 	
 	public ImportSelective(IImportFragment subFragment, ArrayView<IImportSelectiveSelection> frags) {
-		this.impSelFrags = CoreUtil.<ArrayView<ASTNeoNode>>blindCast(parentizeFrags(frags));
+		this.impSelFrags = CoreUtil.<ArrayView<ASTNode>>blindCast(parentizeFrags(frags));
 		this.fragment = parentizeI(subFragment);
 	}
 	
@@ -41,7 +41,7 @@ public class ImportSelective extends ASTNeoNode implements INonScopedBlock, IImp
 	public ArrayView<IImportSelectiveSelection> parentizeFrags(ArrayView<IImportSelectiveSelection> frags) {
 		if (frags != null) {
 			for (IImportSelectiveSelection selection : frags) {
-				((ASTNeoNode) selection).setParent(this);
+				((ASTNode) selection).setParent(this);
 				if (selection instanceof ImportSelectiveAlias) {
 					((ImportSelectiveAlias) selection).target.impSel = this;
 				} else if (selection instanceof RefImportSelection) {
@@ -70,7 +70,7 @@ public class ImportSelective extends ASTNeoNode implements INonScopedBlock, IImp
 		
 	}
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator() {
+	public Iterator<? extends ASTNode> getMembersIterator() {
 		return impSelFrags.iterator();
 	}
 	

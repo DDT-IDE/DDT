@@ -5,7 +5,7 @@ import java.util.Iterator;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.IteratorUtil;
 import descent.internal.compiler.parser.ast.IASTNode;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
@@ -178,7 +178,7 @@ public class ReferenceResolver {
 				 * there are source range errors. */ 
 				continue;
 			}
-
+			
 			if(!importsOnly && elem instanceof DefUnit) {
 				DefUnit defunit = (DefUnit) elem;
 				if(search.matches(defunit)) {
@@ -234,7 +234,7 @@ public class ReferenceResolver {
 		if (targetModule == null)
 			return;
 			
-		for(ASTNeoNode impSelFrag: impSelective.impSelFrags) {
+		for(ASTNode impSelFrag: impSelective.impSelFrags) {
 			if(impSelFrag instanceof RefImportSelection) {
 				String name;
 				name = ((RefImportSelection) impSelFrag).name;

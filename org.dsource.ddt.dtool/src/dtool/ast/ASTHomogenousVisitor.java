@@ -14,12 +14,12 @@ package dtool.ast;
 public abstract class ASTHomogenousVisitor extends ASTDefaultVisitor implements IASTVisitor {
 	
 	@Override
-	public boolean preVisit(ASTNeoNode node) {
+	public boolean preVisit(ASTNode node) {
 		return true;
 	}
 	
 	@Override
-	public void postVisit(ASTNeoNode node) {
+	public void postVisit(ASTNode node) {
 	}
 	
 }

@@ -8,7 +8,7 @@ import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.CommonRefQualified;
@@ -31,7 +31,7 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 	}
 	
 	@Override
-	public boolean match(ASTNeoNode node, ISourceModule sourceModule) {
+	public boolean match(ASTNode node, ISourceModule sourceModule) {
 		if(node instanceof Reference) {
 			// don't match qualifieds, the match will be made in its children
 			if(node instanceof CommonRefQualified)

@@ -7,17 +7,17 @@ package dtool.ast;
  */
 public class ASTNodeParentizer extends ASTHomogenousVisitor {
 	
-	private ASTNeoNode parent = null;
+	private ASTNode parent = null;
 	
 	@Override
-	public boolean preVisit(ASTNeoNode elem) {
+	public boolean preVisit(ASTNode elem) {
 		elem.setParent(parent); // Set parent to current parent
 		parent = elem; // Set as new parent
 		return true;
 	}
 	
 	@Override
-	public void postVisit(ASTNeoNode elem) {
+	public void postVisit(ASTNode elem) {
 		parent = elem.getParent(); // Restore previous parent
 	}
 	

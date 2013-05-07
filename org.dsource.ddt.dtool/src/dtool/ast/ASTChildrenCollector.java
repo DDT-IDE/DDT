@@ -12,22 +12,22 @@ import melnorme.utilbox.tree.IVisitable;
 public class ASTChildrenCollector extends ASTHomogenousVisitor {
 	
 	private boolean visitingParent = true;
-	private List<ASTNeoNode> childrenLst;
+	private List<ASTNode> childrenLst;
 	
-	public static ASTNeoNode[] getChildrenArray(ASTNeoNode elem){
-		return ArrayUtil.createFrom(getChildrenList(elem), ASTNeoNode.class);
+	public static ASTNode[] getChildrenArray(ASTNode elem){
+		return ArrayUtil.createFrom(getChildrenList(elem), ASTNode.class);
 	}
 	
-	public static List<ASTNeoNode> getChildrenList(IVisitable<? super IASTVisitor> elem){
+	public static List<ASTNode> getChildrenList(IVisitable<? super IASTVisitor> elem){
 		ASTChildrenCollector collector = new ASTChildrenCollector();
-		collector.childrenLst = new ArrayList<ASTNeoNode>();
+		collector.childrenLst = new ArrayList<ASTNode>();
 		elem.accept(collector);
 		return collector.childrenLst;
 	}
 	
 	
 	@Override
-	public boolean preVisit(ASTNeoNode node) {
+	public boolean preVisit(ASTNode node) {
 		if(visitingParent == true) {
 			visitingParent = false;
 			return true; // visit children
@@ -39,7 +39,7 @@ public class ASTChildrenCollector extends ASTHomogenousVisitor {
 	}
 	
 	@Override
-	public void postVisit(ASTNeoNode node) {
+	public void postVisit(ASTNode node) {
 		// Do nothing
 	}
 }

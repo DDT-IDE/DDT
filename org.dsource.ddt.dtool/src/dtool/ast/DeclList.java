@@ -2,9 +2,9 @@ package dtool.ast;
 
 import dtool.util.ArrayView;
 
-public class DeclList extends NodeList<ASTNeoNode> {
+public class DeclList extends NodeList<ASTNode> {
 	
-	public DeclList(ArrayView<ASTNeoNode> nodes) {
+	public DeclList(ArrayView<ASTNode> nodes) {
 		super(nodes);
 	}
 	

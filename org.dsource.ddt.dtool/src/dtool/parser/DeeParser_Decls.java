@@ -17,7 +17,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import melnorme.utilbox.core.CoreUtil;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.DeclList;
 import dtool.ast.SourceRange;
@@ -141,7 +141,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	/* -----------------------  Some helpers  ----------------------- */
 	
-	public abstract class ElementListParseHelper<T extends ASTNeoNode> extends ParseHelper {
+	public abstract class ElementListParseHelper<T extends ASTNode> extends ParseHelper {
 		
 		public ArrayView<T> members; 
 		public boolean hasEndingSep = false;
@@ -210,7 +210,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	public AbstractParser.NodeResult<Module> parseModule() {
 		DeclarationModule md = parseModuleDeclaration();
 		
-		ArrayView<ASTNeoNode> members = parseDeclDefs(null);
+		ArrayView<ASTNode> members = parseDeclDefs(null);
 		assertTrue(lookAhead() == DeeTokens.EOF);
 		consumeSubChannelTokens(); // Ensure pending whitespace is consumed as well
 		assertTrue(getLexPosition() == getSource().length());
@@ -250,13 +250,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.conclude(new DeclarationModule(arrayViewG(packagesList), moduleId));
 	}
 	
-	public ArrayView<ASTNeoNode> parseDeclDefs(DeeTokens nodeListTerminator) {
-		ArrayList<ASTNeoNode> declarations = new ArrayList<ASTNeoNode>();
+	public ArrayView<ASTNode> parseDeclDefs(DeeTokens nodeListTerminator) {
+		ArrayList<ASTNode> declarations = new ArrayList<>();
 		while(true) {
 			if(lookAhead() == nodeListTerminator) {
 				break;
 			}
-			ASTNeoNode decl = parseDeclaration_withInvalid().node;
+			ASTNode decl = parseDeclaration_withInvalid().node;
 			if(decl == null) { 
 				break;
 			}
@@ -282,7 +282,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	/** This rule always returns a node, except only on EOF where it returns null. */
-	public NodeResult<? extends ASTNeoNode> parseDeclaration(boolean acceptEmptyDecl, boolean precedingIsSTCAttrib) {
+	public NodeResult<? extends ASTNode> parseDeclaration(boolean acceptEmptyDecl, boolean precedingIsSTCAttrib) {
 		DeeTokens laGrouped = assertNotNull_(lookAheadGrouped());
 		
 		if(laGrouped == DeeTokens.EOF) {
@@ -292,7 +292,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if( lookAhead() == DeeTokens.CONCAT || 
 			lookAhead() == DeeTokens.KW_STATIC || 
 			lookAhead() == DeeTokens.KW_SHARED) {
-			NodeResult<? extends ASTNeoNode> declSpecialFunction = parseDeclarationSpecialFunction();
+			NodeResult<? extends ASTNode> declSpecialFunction = parseDeclarationSpecialFunction();
 			if(declSpecialFunction != null)
 				return declSpecialFunction;
 		}
@@ -427,7 +427,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return nullResult();
 	}
 	
-	protected NodeResult<? extends ASTNeoNode> parseDeclaration_referenceStart(Reference ref) {
+	protected NodeResult<? extends ASTNode> parseDeclaration_referenceStart(Reference ref) {
 		assertNotNull(ref);
 		if(lookAhead() == DeeTokens.IDENTIFIER) {
 			LexElement defId = consumeLookAhead();
@@ -446,7 +446,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 	}
 	
-	protected NodeResult<? extends ASTNeoNode> parseAutoReturnFunction_start() {
+	protected NodeResult<? extends ASTNode> parseAutoReturnFunction_start() {
 		LexElement autoToken = consumeLookAhead(DeeTokens.KW_AUTO);
 		AutoReturnReference autoReturn = conclude(srOf(autoToken, new AutoReturnReference()));
 		LexElement id = consumeLookAhead(DeeTokens.IDENTIFIER);
@@ -566,7 +566,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				}
 			}
 			
-			ASTNeoNode startNode = index != null ? index : initializer;
+			ASTNode startNode = index != null ? index : initializer;
 			return concludeNode(srToPosition(startNode, new ArrayInitEntry(index, initializer)));
 		}
 	}
@@ -593,7 +593,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(init == null)
 				return null;
 			
-			ASTNeoNode startNode = member != null ? member : init;
+			ASTNode startNode = member != null ? member : init;
 			return concludeNode(srToPosition(startNode, new StructInitEntry(member, init)));
 		}
 	}
@@ -679,7 +679,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			retType, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 	}
 	
-	protected ASTNeoNode parseTemplateAliasParameter_start() {
+	protected ASTNode parseTemplateAliasParameter_start() {
 		consumeLookAhead(DeeTokens.KW_ALIAS);
 		ParseHelper parse = new ParseHelper();
 		
@@ -943,7 +943,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new RefTypeFunction(retType, isDelegate, fnParams, fnAttributes));
 	}
 	
-	public NodeResult<? extends ASTNeoNode> parseAliasDefinition() {
+	public NodeResult<? extends ASTNode> parseAliasDefinition() {
 		if(!tryConsume(DeeTokens.KW_ALIAS))
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
@@ -1286,7 +1286,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	protected class AttribBodyParseRule {
 		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
-		public ASTNeoNode declList;
+		public ASTNode declList;
 		
 		public AttribBodyParseRule parseAttribBody(ParseHelper parse, boolean acceptEmptyDecl, 
 			boolean enablesAutoDecl) {
@@ -1318,7 +1318,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	protected DeclList parseDeclList(DeeTokens bodyListTerminator) {
 		ParseHelper parse = new ParseHelper(getLexPosition());
 		
-		ArrayView<ASTNeoNode> declDefs = parseDeclDefs(bodyListTerminator);
+		ArrayView<ASTNode> declDefs = parseDeclDefs(bodyListTerminator);
 		consumeSubChannelTokens();
 		return parse.conclude(new DeclList(declDefs));
 	}
@@ -1435,7 +1435,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		Expression exp = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
-		ASTNeoNode elseBody = null;
+		ASTNode elseBody = null;
 		
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
@@ -1464,7 +1464,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		VersionSymbol value = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
-		ASTNeoNode elseBody = null;
+		ASTNode elseBody = null;
 		
 		parsing: {
 			if(parse.consume(DeeTokens.OPEN_PARENS, isDebug, true)) {
@@ -1537,7 +1537,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new DeclarationMixinString(exp));
 	}
 	
-	public NodeResult<? extends ASTNeoNode> parseDeclarationMixin() {
+	public NodeResult<? extends ASTNode> parseDeclarationMixin() {
 		if(!tryConsume(DeeTokens.KW_MIXIN))
 			return null;
 		ParseHelper parse = new ParseHelper();

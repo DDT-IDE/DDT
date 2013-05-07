@@ -2,7 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
@@ -10,7 +10,7 @@ import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 /**
  * Debug/Version specification declaration
  */
-public class DeclarationDebugVersionSpec extends ASTNeoNode {
+public class DeclarationDebugVersionSpec extends ASTNode {
 	
 	public final boolean isDebug;
 	public final VersionSymbol value;

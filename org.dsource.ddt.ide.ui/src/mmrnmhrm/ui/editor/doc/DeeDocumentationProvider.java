@@ -19,7 +19,7 @@ import org.eclipse.dltk.ui.documentation.IScriptDocumentationProvider;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationProviderExtension2;
 import org.eclipse.dltk.ui.documentation.TextDocumentationResponse;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.Module;
 
@@ -77,7 +77,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 		final int start = range.getOffset();
 		
 		Module deeModule = DeeModuleParsingUtil.getParsedDeeModule(member.getSourceModule());
-		ASTNeoNode pickedNode = ASTNodeFinder.findElement(deeModule, start, 
+		ASTNode pickedNode = ASTNodeFinder.findElement(deeModule, start, 
 				DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
 		
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(member.getScriptProject());

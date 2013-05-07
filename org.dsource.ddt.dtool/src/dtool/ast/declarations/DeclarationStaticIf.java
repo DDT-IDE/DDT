@@ -2,7 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
@@ -11,8 +11,8 @@ public class DeclarationStaticIf extends AbstractConditionalDeclaration {
 	
 	public final Expression exp;
 	
-	public DeclarationStaticIf(Expression exp, AttribBodySyntax bodySyntax, ASTNeoNode thenBody, 
-		ASTNeoNode elseBody) {
+	public DeclarationStaticIf(Expression exp, AttribBodySyntax bodySyntax, ASTNode thenBody, 
+		ASTNode elseBody) {
 		super(bodySyntax, thenBody, elseBody);
 		this.exp = parentize(exp);
 	}

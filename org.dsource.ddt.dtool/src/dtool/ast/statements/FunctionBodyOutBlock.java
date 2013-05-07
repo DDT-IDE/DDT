@@ -2,12 +2,12 @@ package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.Symbol;
 
-public class FunctionBodyOutBlock extends ASTNeoNode {
+public class FunctionBodyOutBlock extends ASTNode {
 	
 	public final Symbol result; // TODO convert this to DefUnit
 	public final BlockStatement block;

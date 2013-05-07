@@ -7,10 +7,9 @@ import java.util.Iterator;
 
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
-import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTHomogenousVisitor;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.util.ArrayView;
 
@@ -34,7 +33,8 @@ public class DescentASTConverter extends StatementConverterVisitor {
 	}
 	
 	
-	public static Module convertModule(ASTNode cumodule, String defaultModuleName) {
+	public static Module convertModule(descent.internal.compiler.parser.ast.ASTNode cumodule, 
+		String defaultModuleName) {
 		ASTConversionContext convCtx = new ASTConversionContext((descent.internal.compiler.parser.Module) cumodule);
 		Module module = DefinitionConverter.createModule(convCtx.module, convCtx, defaultModuleName);
 		module.accept(new ASTNodeParentChecker());
@@ -44,41 +44,43 @@ public class DescentASTConverter extends StatementConverterVisitor {
 	
 	public static class ASTNodeParentChecker extends ASTHomogenousVisitor {
 		
-		private ASTNeoNode parent = null;
+		private ASTNode parent = null;
 		
 		@Override
-		public boolean preVisit(ASTNeoNode elem) {
+		public boolean preVisit(ASTNode elem) {
 			assertTrue(elem.getParent() == parent);
 			parent = elem; // Set the current expected parent
 			return true;
 		}
 		
 		@Override
-		public void postVisit(ASTNeoNode elem) {
+		public void postVisit(ASTNode elem) {
 			parent = elem.getParent(); // Restore previous parent
 		}
 		
 	}
 	
-	public static ASTNeoNode convertElem(ASTNode elem, ASTConversionContext convContext) {
+	public static ASTNode convertElem(descent.internal.compiler.parser.ast.ASTNode elem, 
+		ASTConversionContext convContext) {
 		if(elem == null) return null;
 		return new DescentASTConverter(convContext).doConverElem(elem);
 	}
 	
-	public ASTNeoNode doConverElem(ASTNode elem) {
+	public ASTNode doConverElem(descent.internal.compiler.parser.ast.ASTNode elem) {
 		elem.accept(this);
 		return this.ret;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T extends IASTNode> T convertElem(ASTNode elem, @SuppressWarnings("unused") Class<T> elemClass,
+	public static <T extends IASTNode> T convertElem(descent.internal.compiler.parser.ast.ASTNode elem, 
+		@SuppressWarnings("unused") Class<T> elemClass,
 			ASTConversionContext convContext) {
 		return (T) convertElem(elem, convContext);
 	}
 	
-	public static ArrayView<ASTNeoNode> convertMany(Collection<? extends IASTNode> children, 
+	public static ArrayView<ASTNode> convertMany(Collection<? extends IASTNode> children, 
 			ASTConversionContext convContext) {
-		return convertMany(children, ASTNeoNode.class, convContext);
+		return convertMany(children, ASTNode.class, convContext);
 	}
 	
 	public static <T extends IASTNode> ArrayView<T> convertMany(Collection<? extends IASTNode> children,
@@ -101,7 +103,8 @@ public class DescentASTConverter extends StatementConverterVisitor {
 			ASTConversionContext convContext) {
 		Iterator<? extends IASTNode> iterator = children.iterator();
 		for(int i = 0; iterator.hasNext(); ++i) {
-			ASTNode elem = (ASTNode) iterator.next();
+			descent.internal.compiler.parser.ast.ASTNode elem = 
+				(descent.internal.compiler.parser.ast.ASTNode) iterator.next();
 			rets[i] = CoreUtil.blindCast(convertElem(elem, convContext));
 		}
 		return rets;

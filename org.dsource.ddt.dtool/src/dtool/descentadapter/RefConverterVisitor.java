@@ -9,7 +9,7 @@ import descent.internal.compiler.parser.FuncLiteralDeclaration;
 import descent.internal.compiler.parser.TemplateInstanceWrapper;
 import descent.internal.compiler.parser.TypeExp;
 import descent.internal.compiler.parser.TypeInstance;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.references.RefIndexing;
@@ -155,7 +155,7 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 		));
 	}
 	
-	public static ASTNeoNode convertTypePointer(descent.internal.compiler.parser.TypePointer elem, 
+	public static ASTNode convertTypePointer(descent.internal.compiler.parser.TypePointer elem, 
 		ASTConversionContext convContext) {
 		if(elem.next instanceof descent.internal.compiler.parser.TypeFunction) {
 			descent.internal.compiler.parser.TypeFunction tf = (descent.internal.compiler.parser.TypeFunction) elem.next; 

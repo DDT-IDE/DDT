@@ -24,7 +24,7 @@ import descent.internal.compiler.parser.TypeIdentifier;
 import descent.internal.compiler.parser.TypeInstance;
 import descent.internal.compiler.parser.TypeQualified;
 import dtool.DToolBundle;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.MissingDeclaration;
 import dtool.ast.definitions.DeclarationMixin;
@@ -93,7 +93,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	/* --- Conversion of qualified containers. --- */
 
-	public static ASTNeoNode convertMixinInstance(TemplateMixin elem, ASTConversionContext convContext) {
+	public static ASTNode convertMixinInstance(TemplateMixin elem, ASTConversionContext convContext) {
 		int startPosRef = elem.typeStart;
 		int endPosRef = elem.typeStart + elem.typeLength;
 		Identifiers idents = elem.idents;
@@ -205,7 +205,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	public static RefTemplateInstance createRefTemplateInstance(Reference tplReference,
 			List<ASTDmdNode> tiargs, SourceRange sourceRange, ASTConversionContext convContext) {
 		ArrayView<Resolvable> tiargsNew = CoreUtil.blindCast(
-			DescentASTConverter.convertMany(tiargs, ASTNeoNode.class, convContext));
+			DescentASTConverter.convertMany(tiargs, ASTNode.class, convContext));
 		return connect(sourceRange,  
 			new RefTemplateInstance((ITemplateRefNode) tplReference, null, tiargsNew));
 	}
@@ -351,7 +351,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 				if(!DToolBundle.DMDPARSER_PROBLEMS__BUG41) {
 					assertTrue(topSourceRange != null);
 				}
-				ASTNeoNode rootRefAsNode = blindCast(rootRef);
+				ASTNode rootRefAsNode = blindCast(rootRef);
 				if(topSourceRange != null) {
 					// Estimate a range
 					rootRefAsNode.setSourcePosition(topSourceRange.getStartPos(), subName.getStartPos()-1);

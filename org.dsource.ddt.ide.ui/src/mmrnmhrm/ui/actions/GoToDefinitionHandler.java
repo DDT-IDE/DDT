@@ -34,7 +34,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.Logg;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
@@ -84,7 +84,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
 		
 		Module module = EditorUtil.getModuleFromEditor(editor);
-		ASTNeoNode elem = ASTNodeFinder.findElement(module, offset, false);
+		ASTNode elem = ASTNodeFinder.findElement(module, offset, false);
 		
 		if(elem == null) {
 			dialogWarning(window.getShell(), "No element found at pos: " + offset);

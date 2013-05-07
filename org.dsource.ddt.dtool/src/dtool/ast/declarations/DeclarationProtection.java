@@ -5,7 +5,7 @@ import java.util.Iterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.ISourceRepresentation;
@@ -30,7 +30,7 @@ public class DeclarationProtection extends DeclarationAttrib {
 	
 	public final Protection protection;
 	
-	public DeclarationProtection(Protection protection, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls) {
+	public DeclarationProtection(Protection protection, AttribBodySyntax bodySyntax, ASTNode bodyDecls) {
 		super(bodySyntax, bodyDecls);
 		this.protection = protection;
 		

@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.utilbox.misc.StringUtil;
 import descent.core.compiler.Linkage;
-import dtool.ast.ASTNeoNode;
 import dtool.ast.SourceRange;
 
 public class ParserError {

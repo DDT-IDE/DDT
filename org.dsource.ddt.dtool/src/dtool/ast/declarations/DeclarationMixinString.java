@@ -5,14 +5,14 @@ import java.util.Iterator;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public class DeclarationMixinString extends ASTNeoNode implements IStatement, INonScopedBlock {
+public class DeclarationMixinString extends ASTNode implements IStatement, INonScopedBlock {
 	
 	public final Resolvable exp;
 	
@@ -35,7 +35,7 @@ public class DeclarationMixinString extends ASTNeoNode implements IStatement, IN
 	}
 	
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator() {
+	public Iterator<? extends ASTNode> getMembersIterator() {
 		// TODO: parse the exp string
 		return IteratorUtil.getEMPTY_ITERATOR();
 	}

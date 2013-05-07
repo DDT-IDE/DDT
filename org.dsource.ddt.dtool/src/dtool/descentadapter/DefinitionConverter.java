@@ -18,15 +18,13 @@ import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.DtorDeclaration;
 import descent.internal.compiler.parser.IdentifierExp;
 import descent.internal.compiler.parser.NewDeclaration;
-import descent.internal.compiler.parser.PROT;
 import descent.internal.compiler.parser.StaticCtorDeclaration;
 import descent.internal.compiler.parser.StaticDtorDeclaration;
 import descent.internal.compiler.parser.TemplateInstanceWrapper;
 import descent.internal.compiler.parser.Type;
 import descent.internal.compiler.parser.TypeBasic;
 import descent.internal.compiler.parser.TypeFunction;
-import descent.internal.compiler.parser.ast.ASTNode;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
@@ -134,8 +132,8 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static Module createModule(descent.internal.compiler.parser.Module elem, ASTConversionContext convContext,
 			String defaultModuleName) {
 		
-		ArrayView<ASTNeoNode> members = 
-				DescentASTConverter.convertManyNoNulls(elem.members, ASTNeoNode.class, convContext);
+		ArrayView<ASTNode> members = 
+				DescentASTConverter.convertManyNoNulls(elem.members, ASTNode.class, convContext);
 		
 		SourceRange sourceRange = sourceRange(elem, false);
 		if(elem.md == null) {
@@ -204,7 +202,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 			return false;
 		}
 		int length = 0;
-		for(ASTNode child : parent.getChildren()) {
+		for(descent.internal.compiler.parser.ast.ASTNode child : parent.getChildren()) {
 			if(child instanceof Dsymbol) {
 				length++;
 				if(length > 1) {
@@ -269,7 +267,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		return varargs;
 	}
 	
-	public static ASTNeoNode convertFunctionParameter(Argument elem, ASTConversionContext convContext) {
+	public static ASTNode convertFunctionParameter(Argument elem, ASTConversionContext convContext) {
 		if(elem.ident != null) {
 			if(elem.type != null) {
 				Reference type;

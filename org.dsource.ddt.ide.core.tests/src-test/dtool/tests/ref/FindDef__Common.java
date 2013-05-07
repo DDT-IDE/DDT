@@ -29,7 +29,7 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
@@ -107,7 +107,7 @@ public class FindDef__Common {
 		
 		Module srcMod = parseSource.module;
 		
-		ASTNeoNode node = ASTNodeFinder.findElement(srcMod, offset);
+		ASTNode node = ASTNodeFinder.findElement(srcMod, offset);
 		Reference ref = (Reference) node;
 		
 		Collection<DefUnit> defunits = ref.findTargetDefUnits(modResolver, true);

@@ -19,7 +19,7 @@ import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
 import dtool.ast.declarations.DeclarationSpecialFunction;
@@ -89,7 +89,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
-	protected static int getDeclarationEndforNode(ASTNeoNode node) {
+	protected static int getDeclarationEndforNode(ASTNode node) {
 		return node.getEndPos() - 1;
 	}
 	
@@ -243,7 +243,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	public boolean visit(NamedReference elem) {
 		Reference topReference = elem;
 		
-		ASTNeoNode parent = topReference.getParent();
+		ASTNode parent = topReference.getParent();
 		if(parent instanceof ExpReference) {
 			parent = parent.getParent();
 		}

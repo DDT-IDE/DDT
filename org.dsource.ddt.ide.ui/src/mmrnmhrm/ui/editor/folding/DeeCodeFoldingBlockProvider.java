@@ -20,7 +20,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Region;
 
 import dtool.ast.ASTDefaultVisitor;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.DeclarationDebugVersion;
 import dtool.ast.declarations.DeclarationUnitTest;
@@ -144,7 +144,7 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 		}
 	}
 	
-	protected void reportBlock(ASTNeoNode node, DeeFoldingBlockKind foldingBlockKind, boolean collapse) {
+	protected void reportBlock(ASTNode node, DeeFoldingBlockKind foldingBlockKind, boolean collapse) {
 		if(node.hasSourceRangeInfo()) {
 			Region region = new Region(node.getStartPos(), node.getLength());
 			///  XXX: BM: DLTK, do we understand the full consequences of giving region as a key? 

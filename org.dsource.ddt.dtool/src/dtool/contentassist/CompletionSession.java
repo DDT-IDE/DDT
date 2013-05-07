@@ -1,6 +1,6 @@
 package dtool.contentassist;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 
 public class CompletionSession {
 	
@@ -16,7 +16,7 @@ public class CompletionSession {
 	
 	public ECompletionSessionResults resultCode = null;
 	public String errorMsg = null;
-	public ASTNeoNode invokeNode;
+	public ASTNode invokeNode;
 	
 	public static void assignResult(CompletionSession session, ECompletionSessionResults resultCode, String errorMsg) {
 		session.resultCode = resultCode;

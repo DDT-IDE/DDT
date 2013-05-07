@@ -12,7 +12,7 @@ import java.util.List;
 
 import melnorme.utilbox.core.Predicate;
 import melnorme.utilbox.misc.CollectionUtil;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
@@ -78,7 +78,7 @@ public class ResolverCommandBasedTest extends Resolver_BaseTest {
 	}
 	
 	protected void doFindTest(String source, Module testModule, String paramList, int commandEndOffset, String markerName) {
-		ASTNeoNode node = ASTNodeFinder.findElement(testModule, commandEndOffset, true);
+		ASTNode node = ASTNodeFinder.findElement(testModule, commandEndOffset, true);
 		Reference ref = assertInstance(node, Reference.class);
 		Collection<DefUnit> results = ref.findTargetDefUnits(new NullModuleResolver(), false);
 		

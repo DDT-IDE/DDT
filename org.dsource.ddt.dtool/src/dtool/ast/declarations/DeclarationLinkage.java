@@ -3,7 +3,7 @@ package dtool.ast.declarations;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
@@ -39,7 +39,7 @@ public class DeclarationLinkage extends DeclarationAttrib implements IStatement 
 	public final String linkageName;
 	public final Linkage linkage;
 	
-	public DeclarationLinkage(String linkageName, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls) {
+	public DeclarationLinkage(String linkageName, AttribBodySyntax bodySyntax, ASTNode bodyDecls) {
 		super(bodySyntax, bodyDecls);
 		this.linkageName = linkageName;
 		this.linkage = Linkage.fromString(linkageName);

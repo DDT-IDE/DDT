@@ -2,7 +2,7 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import descent.internal.compiler.parser.Comment;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 import dtool.parser.ParserError;
 import dtool.refmodel.IScopeNode;
@@ -11,7 +11,7 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 /**
  * Abstract class for all AST elements that define a new named entity.
  */
-public abstract class DefUnit extends ASTNeoNode {
+public abstract class DefUnit extends ASTNode {
 	
 	public static class ProtoDefSymbol {
 		public final String name;

@@ -1,12 +1,12 @@
 package dtool.ast.declarations;
 
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
 
-public class DeclarationEmpty extends ASTNeoNode implements IStatement {
+public class DeclarationEmpty extends ASTNode implements IStatement {
 	
 	public DeclarationEmpty() {
 	}

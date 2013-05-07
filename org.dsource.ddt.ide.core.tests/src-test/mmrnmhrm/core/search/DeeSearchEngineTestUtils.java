@@ -19,7 +19,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.ASTHomogenousVisitor;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.util.NewUtils;
 
@@ -73,18 +73,18 @@ public class DeeSearchEngineTestUtils {
 		return (ISourceModule) element.getAncestor(IModelElement.SOURCE_MODULE);
 	}
 	
-	public static ArrayList<Integer> getNodeTreePath(ASTNeoNode node) {
+	public static ArrayList<Integer> getNodeTreePath(ASTNode node) {
 
-		ASTNeoNode parent = node.getParent();
+		ASTNode parent = node.getParent();
 		if(parent == null) {
 			return new ArrayList<Integer>();
 		}
 		
 		ArrayList<Integer> parentPath = getNodeTreePath(parent);
 		
-		ASTNeoNode[] children = parent.getChildren();
+		ASTNode[] children = parent.getChildren();
 		for (int ix = 0; ix < children.length; ix++) {
-			ASTNeoNode child = children[ix];
+			ASTNode child = children[ix];
 			if(node == child) {
 				parentPath.add(ix);
 				assertTrue(getNodeFromPath(node.getModuleNode(), parentPath) == node);
@@ -94,11 +94,11 @@ public class DeeSearchEngineTestUtils {
 		throw assertFail();
 	}
 	
-	public static ASTNeoNode getNodeFromPath(ASTNeoNode node, ArrayList<Integer> nodeTreePath) {
+	public static ASTNode getNodeFromPath(ASTNode node, ArrayList<Integer> nodeTreePath) {
 		return getNodeFromPath(node, nodeTreePath, 0);
 	}
 	
-	private static ASTNeoNode getNodeFromPath(ASTNeoNode node, ArrayList<Integer> nodeTreePath, int treePathIx) {
+	private static ASTNode getNodeFromPath(ASTNode node, ArrayList<Integer> nodeTreePath, int treePathIx) {
 		if(nodeTreePath.size() == treePathIx) {
 			return node;
 		}
@@ -114,7 +114,7 @@ public class DeeSearchEngineTestUtils {
 				Module module = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
 				module.accept(new ASTHomogenousVisitor() {
 					@Override
-					public boolean preVisit(ASTNeoNode node) {
+					public boolean preVisit(ASTNode node) {
 						visitNode(node, sourceModule);
 						return true;
 					}
@@ -137,7 +137,7 @@ public class DeeSearchEngineTestUtils {
 		}
 		
 		@SuppressWarnings("unused")
-		protected void visitNode(ASTNeoNode node, ISourceModule sourceModule) {
+		protected void visitNode(ASTNode node, ISourceModule sourceModule) {
 		}
 		
 		@SuppressWarnings("unused")

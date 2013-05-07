@@ -6,7 +6,7 @@ import mmrnmhrm.ui.DeePluginImages;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.DefinitionAliasDecl;
@@ -27,8 +27,8 @@ import dtool.ast.references.RefModule.LiteModuleDummy;
 public class DeeElementImageProvider {
 	
 	public static Image getElementImage(IElement element) {
-		if (element instanceof ASTNeoNode) {
-			return getNodeImage((ASTNeoNode) element);
+		if (element instanceof ASTNode) {
+			return getNodeImage((ASTNode) element);
 		} /*else if(element instanceof DeePackageFragment) {
 			return getImage(DeePluginImages.ELEM_PACKAGE);
 		} else if(element instanceof CompilationUnit) {
@@ -42,15 +42,15 @@ public class DeeElementImageProvider {
 	}
 	
 	
-	public static Image getNodeImage(ASTNeoNode node) {
+	public static Image getNodeImage(ASTNode node) {
 		return DeePluginImages.getManagedImage(getNodeImageDescriptorKey(node));
 	}
 	
-	public static ImageDescriptor getNodeImageDescriptor(ASTNeoNode node) {
+	public static ImageDescriptor getNodeImageDescriptor(ASTNode node) {
 		return DeePluginImages.getManagedDescriptor(getNodeImageDescriptorKey(node));
 	}
 	
-	private static String getNodeImageDescriptorKey(ASTNeoNode node) {
+	private static String getNodeImageDescriptorKey(ASTNode node) {
 		// TODO refactor using getNodeType
 		if(node instanceof DeclarationImport) { 
 			return DeePluginImages.NODE_IMPORT;
@@ -83,7 +83,7 @@ public class DeeElementImageProvider {
 			return DeePluginImages.ENT_TYPEDEF;
 		} else if(node instanceof DefinitionEnum) {
 			return DeePluginImages.ENT_ENUM;
-		} else if(!(node instanceof ASTNeoNode)) {
+		} else if(!(node instanceof ASTNode)) {
 			return DeePluginImages.NODE_OLDAST;
 		} else {
 			return DeePluginImages.NODE_OTHER;

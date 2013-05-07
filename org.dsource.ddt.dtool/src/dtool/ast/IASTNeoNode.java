@@ -15,15 +15,15 @@ import melnorme.utilbox.tree.IVisitable;
 import descent.internal.compiler.parser.ast.IASTNode;
 
 /**
- * Interface for {@link ASTNeoNode} objects. No other class can implement. 
+ * Interface for {@link ASTNode} objects. No other class can implement. 
  */
 public interface IASTNeoNode extends IASTNode, IElement, IVisitable<IASTVisitor> {
 	
 	public void toStringAsCode(ASTCodePrinter astCodePrinter);
 	
-	public ASTNeoNode asNode();
+	public ASTNode asNode();
 	
 	@Override
-	public ASTNeoNode getParent();
+	public ASTNode getParent();
 	
 }

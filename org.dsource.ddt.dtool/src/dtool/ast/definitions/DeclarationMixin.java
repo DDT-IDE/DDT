@@ -5,7 +5,7 @@ import java.util.Iterator;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.Reference;
@@ -17,7 +17,7 @@ import dtool.refmodel.INonScopedBlock;
  * http://dlang.org/template-mixin.html#TemplateMixinDeclaration
  * (without MixinIdentifier)
  */
-public class DeclarationMixin extends ASTNeoNode implements IStatement, INonScopedBlock {
+public class DeclarationMixin extends ASTNode implements IStatement, INonScopedBlock {
 	
 	public final Reference templateInstance;
 	
@@ -47,7 +47,7 @@ public class DeclarationMixin extends ASTNeoNode implements IStatement, INonScop
 	}
 	
 	@Override
-	public Iterator<ASTNeoNode> getMembersIterator() {
+	public Iterator<ASTNode> getMembersIterator() {
 		return IteratorUtil.getEMPTY_ITERATOR();
 		// TODO: mixin container
 		/*

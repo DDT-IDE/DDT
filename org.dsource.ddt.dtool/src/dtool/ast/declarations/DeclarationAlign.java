@@ -2,7 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 
@@ -10,7 +10,7 @@ public class DeclarationAlign extends DeclarationAttrib {
 	
 	public final String alignNum;
 	
-	public DeclarationAlign(String alignNum, AttribBodySyntax bodySyntax, ASTNeoNode bodyDecls) {
+	public DeclarationAlign(String alignNum, AttribBodySyntax bodySyntax, ASTNode bodyDecls) {
 		super(bodySyntax, bodyDecls);
 		this.alignNum = alignNum;
 	}

@@ -1,9 +1,8 @@
 package dtool.descentadapter;
 
 import melnorme.utilbox.core.Assert;
-import descent.internal.compiler.parser.ast.ASTNode;
 import descent.internal.compiler.parser.ast.IASTVisitor;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.DeclList;
 import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
@@ -20,22 +19,22 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	
 	protected ASTConversionContext convContext;
 	
-	ASTNeoNode ret = null;
+	ASTNode ret = null;
 	
-	ASTNeoNode convert(ASTNode elem) {
+	ASTNode convert(descent.internal.compiler.parser.ast.ASTNode elem) {
 		elem.accept(this);
 		return ret;
 	}
 	
 	@Override
-	public void postVisit(ASTNode elem) {
+	public void postVisit(descent.internal.compiler.parser.ast.ASTNode elem) {
 	}
 	@Override
-	public boolean preVisit(ASTNode elem) {
+	public boolean preVisit(descent.internal.compiler.parser.ast.ASTNode elem) {
 		return true;
 	}
 	
-	protected static <T extends ASTNeoNode> T connect(SourceRange sourceRange, T node) {
+	protected static <T extends ASTNode> T connect(SourceRange sourceRange, T node) {
 		if(sourceRange != null) {
 			node.setSourceRange(sourceRange);
 		}
@@ -44,11 +43,11 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	
 	/* ---- common adaptors ---- */
 	
-	protected boolean endAdapt(ASTNeoNode newelem) {
+	protected boolean endAdapt(ASTNode newelem) {
 		ret = newelem;
 		return false;
 	}
-	protected boolean endAdapt(SourceRange sourceRange, ASTNeoNode newelem) {
+	protected boolean endAdapt(SourceRange sourceRange, ASTNode newelem) {
 		if(sourceRange != null) {
 			newelem.setSourceRange(sourceRange);
 		}
@@ -72,11 +71,11 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 	}
 	
 	
-	public NodeList<ASTNeoNode> createNodeList(ArrayView<ASTNeoNode> elems) {
-		return new NodeList<ASTNeoNode>(elems);
+	public NodeList<ASTNode> createNodeList(ArrayView<ASTNode> elems) {
+		return new NodeList<ASTNode>(elems);
 	}
 	
-	public DeclList createDeclList(ArrayView<ASTNeoNode> elems) {
+	public DeclList createDeclList(ArrayView<ASTNode> elems) {
 		return elems == null ? null : new DeclList(elems);
 	}
 

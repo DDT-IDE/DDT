@@ -12,7 +12,7 @@ import descent.internal.compiler.parser.Parser;
 import descent.internal.compiler.parser.TOK;
 import descent.internal.compiler.parser.Token;
 import descent.internal.compiler.parser.ast.TokenUtil;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.definitions.DefUnit;
@@ -128,7 +128,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		// : Do actual completion search
 		
 		
-		ASTNeoNode node = ASTNodeFinder.findElement(neoModule, offset);
+		ASTNode node = ASTNodeFinder.findElement(neoModule, offset);
 		assertNotNull(node);
 		session.invokeNode = node;
 		PrefixSearchOptions searchOptions = new PrefixSearchOptions();
@@ -221,7 +221,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		return search;
 	}
 
-	private static boolean isInsideNonScopeBlock(ASTNeoNode node, int offset, String sourceStr) {
+	private static boolean isInsideNonScopeBlock(ASTNode node, int offset, String sourceStr) {
 		if(!(node instanceof INonScopedBlock)) {
 			return false;
 		}
@@ -269,7 +269,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		searchOptions.rplLen = rplLen;
 	}
 	
-	private static IScopeNode isValidCompletionScope(ASTNeoNode node) {
+	private static IScopeNode isValidCompletionScope(ASTNode node) {
 		if(node instanceof IScopeNode) {
 			return (IScopeNode) node;
 		} else if(node instanceof Expression) {

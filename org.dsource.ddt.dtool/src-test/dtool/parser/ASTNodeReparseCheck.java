@@ -5,7 +5,7 @@ import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.NodeList;
@@ -42,9 +42,9 @@ public class ASTNodeReparseCheck {
 	protected static final Void VOID = null;
 	
 	protected final String fullSource;
-	protected final ASTNeoNode nodeUnderTest;
+	protected final ASTNode nodeUnderTest;
 	
-	public ASTNodeReparseCheck(String source, ASTNeoNode node) {
+	public ASTNodeReparseCheck(String source, ASTNode node) {
 		this.fullSource = assertNotNull_(source);
 		this.nodeUnderTest = node;
 	}
@@ -70,11 +70,11 @@ public class ASTNodeReparseCheck {
 		return new LexElementProducer().produceLexElement(new DeeLexer(source));
 	}
 	
-	public LexElement lexElementAfterSnippedRange(ASTNeoNode node) {
+	public LexElement lexElementAfterSnippedRange(ASTNode node) {
 		return firstLexElementInSource(fullSource.substring(node.getEndPos()));
 	}
 	
-	public static boolean canBeginWithEmptySpace(final ASTNeoNode node) {
+	public static boolean canBeginWithEmptySpace(final ASTNode node) {
 		if(node instanceof Module) {
 			return true;
 		}
@@ -114,7 +114,7 @@ public class ASTNodeReparseCheck {
 	}
 	
 	
-	public static boolean nodeConsumesTrailingWhiteSpace(final ASTNeoNode node) {
+	public static boolean nodeConsumesTrailingWhiteSpace(final ASTNode node) {
 		if(node instanceof DeclarationAttrib) {
 			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
 			if(declAttrib.bodySyntax == AttribBodySyntax.COLON) {
@@ -180,13 +180,13 @@ public class ASTNodeReparseCheck {
 		case DECLARATION_IMPORT:
 			return reparseCheck(snippedParser.parseDeclarationImport());
 		case IMPORT_CONTENT:
-			return reparseCheck((ASTNeoNode) snippedParser.parseImportFragment());
+			return reparseCheck((ASTNode) snippedParser.parseImportFragment());
 		case IMPORT_ALIAS:
-			return reparseCheck((ASTNeoNode) snippedParser.parseImportFragment());
+			return reparseCheck((ASTNode) snippedParser.parseImportFragment());
 		case IMPORT_SELECTIVE:
-			return reparseCheck((ASTNeoNode) snippedParser.parseImportFragment());
+			return reparseCheck((ASTNode) snippedParser.parseImportFragment());
 		case IMPORT_SELECTIVE_ALIAS:
-			return reparseCheck((ASTNeoNode) snippedParser.parseImportSelectiveSelection());
+			return reparseCheck((ASTNode) snippedParser.parseImportSelectiveSelection());
 		
 		case DECLARATION_EMTPY:
 			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
@@ -198,7 +198,7 @@ public class ASTNodeReparseCheck {
 		/* ---------------------------------- */
 		
 		case REF_IMPORT_SELECTION:
-			return reparseCheck((ASTNeoNode) snippedParser.parseImportSelectiveSelection());
+			return reparseCheck((ASTNode) snippedParser.parseImportSelectiveSelection());
 		case REF_MODULE:
 			return reparseCheck(snippedParser.parseImportFragment().getModuleRef());
 		case REF_IDENTIFIER: {
@@ -405,17 +405,17 @@ public class ASTNodeReparseCheck {
 	}
 	
 	
-	public static void checkNodeEquality(ASTNeoNode reparsedNode, ASTNeoNode node) {
+	public static void checkNodeEquality(ASTNode reparsedNode, ASTNode node) {
 		// We check the nodes are semantically equal by comparing the toStringAsCode
 		// TODO: use a more accurate equals method?
 		assertEquals(reparsedNode.toStringAsCode(), node.toStringAsCode());
 	}
 	
-	public void prepSnippedParser(ASTNeoNode node) {
+	public void prepSnippedParser(ASTNode node) {
 		prepSnippedParser(snippedSource(node));
 	}
 	
-	public String snippedSource(ASTNeoNode node) {
+	public String snippedSource(ASTNode node) {
 		return fullSource.substring(node.getStartPos(), node.getEndPos());
 	}
 	
@@ -444,7 +444,7 @@ public class ASTNodeReparseCheck {
 		return testParameter(false, snippedParser.parseTemplateParameter());
 	}
 	
-	protected Void testParameter(boolean isFunction, ASTNeoNode reparsedNonAmbig) {
+	protected Void testParameter(boolean isFunction, ASTNode reparsedNonAmbig) {
 		reparseCheck(reparsedNonAmbig);
 		
 		Object fromAmbig = new DeeParser_RuleParameters(snippedParser, TplOrFnMode.AMBIG).parseParameter();
@@ -454,11 +454,11 @@ public class ASTNodeReparseCheck {
 			AmbiguousParameter ambiguousParameter = (AmbiguousParameter) fromAmbig;
 			fromAmbig = isFunction ? ambiguousParameter.convertToFunction() : ambiguousParameter.convertToTemplate(); 
 		}
-		checkNodeEquality((ASTNeoNode) fromAmbig, nodeUnderTest);
+		checkNodeEquality((ASTNode) fromAmbig, nodeUnderTest);
 		resetSnippedParser();
 		
-		ASTNeoNode paramParsedTheOtherWay = isFunction ? 
-			snippedParser.parseTemplateParameter() : (ASTNeoNode) snippedParser.parseFunctionParameter();
+		ASTNode paramParsedTheOtherWay = isFunction ? 
+			snippedParser.parseTemplateParameter() : (ASTNode) snippedParser.parseFunctionParameter();
 		
 		boolean hasFullyParsedCorrectly = allSourceParsedCorrectly(snippedParser, paramParsedTheOtherWay);
 		
@@ -471,11 +471,11 @@ public class ASTNodeReparseCheck {
 		return VOID;
 	}
 	
-	public boolean allSourceParsedCorrectly(DeeParser parser, ASTNeoNode resultNode) {
+	public boolean allSourceParsedCorrectly(DeeParser parser, ASTNode resultNode) {
 		return parser.lookAhead() == DeeTokens.EOF && resultNode.getData().hasErrors();
 	}
 	
-	public Void reparseCheck(NodeResult<? extends ASTNeoNode> result) {
+	public Void reparseCheck(NodeResult<? extends ASTNode> result) {
 		return reparseCheck(result.node);
 	}
 	public Void reparseCheck(IASTNeoNode reparsedNode) {
@@ -486,7 +486,7 @@ public class ASTNodeReparseCheck {
 	/** This will test if node has a correct source range even in situations where
 	 * {@link #postVisit} cannot do a test using {@link DeeParserTest#checkSourceEquality }
 	 */
-	public Void reparseCheck(ASTNeoNode reparsedNode, Class<? extends ASTNeoNode> klass)
+	public Void reparseCheck(ASTNode reparsedNode, Class<? extends ASTNode> klass)
 	{
 		// Must have consumed all input
 		assertTrue(snippedParser.lookAhead() == DeeTokens.EOF);

@@ -2,7 +2,7 @@ package org.dsource.ddt.ide.core.model.engine;
 
 
 import dtool.ast.ASTAbstractVisitor;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.AbstractConditionalDeclaration;
@@ -57,16 +57,16 @@ import dtool.ast.references.Reference;
 public abstract class DeeSourceElementProvider_BaseVisitor extends ASTAbstractVisitor {
 	
 	@Override
-	public final boolean preVisit(ASTNeoNode elem) {
+	public final boolean preVisit(ASTNode elem) {
 		return true;
 	}
 	
 	@Override
-	public final void postVisit(ASTNeoNode elem) {
+	public final void postVisit(ASTNode elem) {
 	}
 	
 	@Override
-	public final boolean visit(ASTNeoNode elem) {
+	public final boolean visit(ASTNode elem) {
 		return true; // Default implementation: do nothing, visit children
 	}
 	

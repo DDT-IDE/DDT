@@ -2,7 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 
@@ -12,7 +12,7 @@ public class DeclarationDebugVersion extends AbstractConditionalDeclaration {
 	public final VersionSymbol value;
 	
 	public DeclarationDebugVersion(boolean isDebug, VersionSymbol value, AttribBodySyntax bodySyntax, 
-		ASTNeoNode thenBody, ASTNeoNode elseBody) {
+		ASTNode thenBody, ASTNode elseBody) {
 		super(bodySyntax, thenBody, elseBody);
 		this.isDebug = isDebug;
 		this.value = parentize(value);

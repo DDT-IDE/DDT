@@ -34,7 +34,7 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
@@ -69,11 +69,11 @@ public abstract class FindAction extends SelectionDispatchAction {
 
 		TextSelection sel = EditorUtil.getSelection(deeEditor);
 		int offset = sel.getOffset();
-		ASTNeoNode elem = ASTNodeFinder.findElement(neoModule, offset, false);
+		ASTNode elem = ASTNodeFinder.findElement(neoModule, offset, false);
 		run(elem);
 	}
 
-	private void run(ASTNeoNode elem) {
+	private void run(ASTNode elem) {
 		if(elem instanceof DefSymbol) {
 			DefSymbol defSymbol = (DefSymbol) elem;
 			runOperation(defSymbol.getDefUnit());

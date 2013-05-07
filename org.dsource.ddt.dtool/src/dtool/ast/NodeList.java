@@ -8,7 +8,7 @@ import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.util.ArrayView;
 
-public class NodeList<E extends ASTNeoNode> extends ASTNeoNode {
+public class NodeList<E extends ASTNode> extends ASTNode {
 	
 	public final ArrayView<E> nodes;
 	
@@ -35,8 +35,8 @@ public class NodeList<E extends ASTNeoNode> extends ASTNeoNode {
 		cp.appendNodeList(nodes, "\n", true);
 	}
 	
-	public static Iterator<? extends ASTNeoNode> getMembersIterator(NodeList<? extends ASTNeoNode> body) {
-		return body == null ? IteratorUtil.<ASTNeoNode>getEMPTY_ITERATOR() : body.nodes.iterator();
+	public static Iterator<? extends ASTNode> getMembersIterator(NodeList<? extends ASTNode> body) {
+		return body == null ? IteratorUtil.<ASTNode>getEMPTY_ITERATOR() : body.nodes.iterator();
 	}
 	
 }

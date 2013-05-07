@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTDirectChildrenVisitor;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.DeclList;
 import dtool.ast.NodeData.PreParseNodeData;
 import dtool.ast.SourceRange;
@@ -1199,7 +1199,7 @@ protected class ParseRule_TypeOrExp {
 			return expResult(convertTypeOrExpToExpression(exp));
 		}
 
-		protected <T extends ASTNeoNode> NodeResult<T> expResult(T result) {
+		protected <T extends ASTNode> NodeResult<T> expResult(T result) {
 			boolean additionalBreaks = mode == TypeOrExpStatus.TYPE_OR_EXP_WITH_MISSING_RIGHT
 				|| (result instanceof ExpReference && ((ExpReference) result).ref instanceof RefTypePointer);
 			return result(definiteRuleBroken || additionalBreaks, result);
@@ -1386,7 +1386,7 @@ protected class ParseRule_TypeOrExp {
 		return concludeDo(oldData.error1, oldData.error2, exp);
 	}
 	
-	public <T extends ASTNeoNode> T concludeToE(TypeOrExpData oldData, Resolvable starNode, int nodeEndPos, T node) {
+	public <T extends ASTNode> T concludeToE(TypeOrExpData oldData, Resolvable starNode, int nodeEndPos, T node) {
 		return concludeDo(oldData.error1, oldData.error2, srBounds(starNode.getStartPos(), nodeEndPos, node));
 	}
 	
@@ -1401,7 +1401,7 @@ protected class ParseRule_TypeOrExp {
 		TypeOrExpData oldData = exp.removeData(TypeOrExpData.class);
 		exp.accept(new ASTDirectChildrenVisitor() {
 			@Override
-			protected void geneticChildrenVisit(ASTNeoNode child) {
+			protected void geneticChildrenVisit(ASTNode child) {
 				child.detachFromParent();
 			}
 		});

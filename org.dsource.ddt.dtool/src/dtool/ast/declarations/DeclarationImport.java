@@ -5,7 +5,7 @@ import java.util.Iterator;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
@@ -20,7 +20,7 @@ import dtool.util.ArrayView;
  * This is considered an INonScopedBlock because it might contain aliasing
  * imports and selective imports, which are primary-space {@link DefUnit}s.
  */
-public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
+public class DeclarationImport extends ASTNode implements INonScopedBlock {
 	
 	public final ArrayView<IImportFragment> imports;
 	public final boolean isStatic;
@@ -32,8 +32,8 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 		this.isTransitive = false; // TODO, should be determined by surronding analysis
 	}
 	
-	public final ArrayView<ASTNeoNode> imports_asNodes() {
-		return CoreUtil.<ArrayView<ASTNeoNode>>blindCast(imports);
+	public final ArrayView<ASTNode> imports_asNodes() {
+		return CoreUtil.<ArrayView<ASTNode>>blindCast(imports);
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public class DeclarationImport extends ASTNeoNode implements INonScopedBlock {
 	}
 	
 	@Override
-	public Iterator<? extends ASTNeoNode> getMembersIterator() {
+	public Iterator<? extends ASTNode> getMembersIterator() {
 		return imports_asNodes().iterator();
 	}
 	

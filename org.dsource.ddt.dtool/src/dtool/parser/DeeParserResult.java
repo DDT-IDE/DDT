@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import dtool.ast.ASTHomogenousVisitor;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.parser.AbstractParser.NodeResult;
 import dtool.util.NewUtils;
@@ -25,17 +25,17 @@ import dtool.util.NewUtils;
 public class DeeParserResult {
 	
 	public final String source;
-	public final ASTNeoNode node;
+	public final ASTNode node;
 	public final boolean ruleBroken;
 	public final Module module;
 	public final ArrayList<ParserError> errors;
 	
-	public DeeParserResult(NodeResult<? extends ASTNeoNode> result, DeeParser parser) {
+	public DeeParserResult(NodeResult<? extends ASTNode> result, DeeParser parser) {
 		this(parser.getSource(), result.node, result.ruleBroken, parser.lexerErrors);
 		parser.lexerErrors = null;
 	}
 	
-	public DeeParserResult(String source, ASTNeoNode node, boolean ruleBroken, ArrayList<ParserError> lexerErrors) {
+	public DeeParserResult(String source, ASTNode node, boolean ruleBroken, ArrayList<ParserError> lexerErrors) {
 		this.source = source;
 		this.node = node;
 		this.ruleBroken = ruleBroken;
@@ -53,11 +53,11 @@ public class DeeParserResult {
 	}
 	
 	// TODO: this could be optimized
-	protected static ArrayList<ParserError> collectErrors(final ArrayList<ParserError> errors, ASTNeoNode node) {
+	protected static ArrayList<ParserError> collectErrors(final ArrayList<ParserError> errors, ASTNode node) {
 		if(node != null) {
 			node.accept(new ASTHomogenousVisitor() {
 				@Override
-				public void postVisit(ASTNeoNode node) {
+				public void postVisit(ASTNode node) {
 					for (ParserError parserError : node.getData().getNodeErrors()) {
 						errors.add(parserError);
 					}

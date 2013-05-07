@@ -3,7 +3,7 @@ package dtool.ast.expressions;
 import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.util.ArrayView;
@@ -38,7 +38,7 @@ public class ExpLiteralMapArray extends Expression {
 	}
 	
 	
-	public static class MapArrayLiteralKeyValue extends ASTNeoNode {
+	public static class MapArrayLiteralKeyValue extends ASTNode {
 		public final Expression key;
 		public final Expression value;
 		

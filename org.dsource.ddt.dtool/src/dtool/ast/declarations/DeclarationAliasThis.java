@@ -2,7 +2,7 @@ package dtool.ast.declarations;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.RefIdentifier;
@@ -11,7 +11,7 @@ import dtool.ast.statements.IStatement;
 /**
  * @see http://dlang.org/declaration.html#AliasThisDeclaration
  */
-public class DeclarationAliasThis extends ASTNeoNode implements IStatement {
+public class DeclarationAliasThis extends ASTNode implements IStatement {
 	
 	public final boolean isAssignSyntax;
 	public final RefIdentifier targetMember;

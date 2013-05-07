@@ -9,7 +9,7 @@ import dtool.util.ArrayView;
 public class NodeUtil {
 
 	/** Gets the module of the given ASTNode. */
-	public static Module getParentModule(ASTNeoNode elem) {
+	public static Module getParentModule(ASTNode elem) {
 		// Search for module elem
 		while((elem instanceof Module) == false) {
 			if(elem == null)
@@ -21,7 +21,7 @@ public class NodeUtil {
 	}
 	
 	/** @return the outermost DefUnit starting from given node (non-inclusive), or null if not found. */
-	public static DefUnit getOuterDefUnit(ASTNeoNode node) {
+	public static DefUnit getOuterDefUnit(ASTNode node) {
 		IElement elem = node.getParent();
 		while(elem != null) {
 			if (elem instanceof DefUnit)
@@ -31,7 +31,7 @@ public class NodeUtil {
 		return null;
 	}
 	
-	public static boolean isContainedIn(ASTNeoNode node, ASTNeoNode container) {
+	public static boolean isContainedIn(ASTNode node, ASTNode container) {
 		while(node != null) {
 			if(node == container) {
 				return true;

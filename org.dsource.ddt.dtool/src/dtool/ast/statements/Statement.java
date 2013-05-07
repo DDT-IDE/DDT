@@ -1,7 +1,7 @@
 package dtool.ast.statements;
 
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 
-public abstract class Statement extends ASTNeoNode implements IStatement {
+public abstract class Statement extends ASTNode implements IStatement {
 	
 }

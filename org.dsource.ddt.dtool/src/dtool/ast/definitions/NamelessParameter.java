@@ -3,7 +3,7 @@ package dtool.ast.definitions;
 import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
@@ -15,7 +15,7 @@ import dtool.util.ArrayView;
  * A nameless function parameter, such as in: <br>
  * <code> void func(int, int); </code>
  */
-public class NamelessParameter extends ASTNeoNode implements IFunctionParameter {
+public class NamelessParameter extends ASTNode implements IFunctionParameter {
 	
 	public final FnParameterAttributes paramAttribs;
 	public final Reference type;

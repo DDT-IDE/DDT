@@ -23,18 +23,18 @@ import dtool.parser.ParserError;
 import dtool.refmodel.INamedScope;
 import dtool.util.ArrayView;
 
-public abstract class ASTNeoNode implements IASTNeoNode {
+public abstract class ASTNode implements IASTNeoNode {
 	
-	public static final ASTNeoNode[] NO_ELEMENTS = new ASTNeoNode[0]; 
+	public static final ASTNode[] NO_ELEMENTS = new ASTNode[0]; 
 	
 	protected int sourceStart = -1;
 	protected int sourceEnd = -1;
 	
-	public ASTNeoNode() {
+	public ASTNode() {
 	}
 	
 	@Override
-	public final ASTNeoNode asNode() {
+	public final ASTNode asNode() {
 		return this;
 	}
 	
@@ -123,15 +123,15 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	
 	
 	/** AST node parent, null if the node is the tree root. */
-	public ASTNeoNode parent = null;
+	public ASTNode parent = null;
 	
 	@Override
-	public ASTNeoNode getParent() {
+	public ASTNode getParent() {
 		return parent;
 	}
 	
 	/** Set the parent of this node. Cannot be null. Cannot set parent twice without explicitly detaching. */
-	public void setParent(ASTNeoNode parent) {
+	public void setParent(ASTNode parent) {
 		assertTrue(parent != null);
 		assertTrue(this.parent == null);
 		this.parent = parent;
@@ -195,7 +195,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	}
 	
 	@Override
-	public ASTNeoNode[] getChildren() {
+	public ASTNode[] getChildren() {
 		return ASTChildrenCollector.getChildrenArray(this);
 	}
 	
@@ -281,13 +281,13 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	/* =============== Parenting =============== */
 	
 	/** Set the parent of the given collection to the receiver. @return collection */
-	protected <T extends ASTNeoNode> ArrayView<T> parentize(ArrayView<T> collection) {
+	protected <T extends ASTNode> ArrayView<T> parentize(ArrayView<T> collection) {
 		return parentize(collection, false);
 	}
 	
-	protected <T extends ASTNeoNode> ArrayView<T> parentize(ArrayView<T> collection, boolean allowNulls) {
+	protected <T extends ASTNode> ArrayView<T> parentize(ArrayView<T> collection, boolean allowNulls) {
 		if (collection != null) {
-			for (ASTNeoNode node : collection) {
+			for (ASTNode node : collection) {
 				if(node != null) {
 					node.setParent(this);
 				} else {
@@ -299,7 +299,7 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	}
 	
 	/** Set the parent of the given node to the receiver. @return node */
-	protected <T extends ASTNeoNode> T parentize(T node) {
+	protected <T extends ASTNode> T parentize(T node) {
 		if (node != null) {
 			node.setParent(this);
 		}
@@ -307,12 +307,12 @@ public abstract class ASTNeoNode implements IASTNeoNode {
 	}
 	
 	protected <T extends IASTNeoNode> T parentizeI(T node) {
-		parentize((ASTNeoNode) node);
+		parentize((ASTNode) node);
 		return node;
 	}
 	
 	protected <T extends IASTNeoNode> ArrayView<T> parentizeI(ArrayView<T> collection) {
-		parentize(CoreUtil.<ArrayView<ASTNeoNode>>blindCast(collection), false);
+		parentize(CoreUtil.<ArrayView<ASTNode>>blindCast(collection), false);
 		return collection;
 	}
 	

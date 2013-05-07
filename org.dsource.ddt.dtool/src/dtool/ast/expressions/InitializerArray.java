@@ -3,7 +3,7 @@ package dtool.ast.expressions;
 import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.util.ArrayView;
@@ -39,7 +39,7 @@ public class InitializerArray extends Initializer {
 		cp.append("]");
 	}
 	
-	public static class ArrayInitEntry extends ASTNeoNode {
+	public static class ArrayInitEntry extends ASTNode {
 		public final Expression index;
 		public final Initializer value;
 		

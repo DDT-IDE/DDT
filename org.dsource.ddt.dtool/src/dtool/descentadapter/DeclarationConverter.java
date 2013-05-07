@@ -16,7 +16,7 @@ import descent.internal.compiler.parser.Dsymbol;
 import descent.internal.compiler.parser.Statement;
 import descent.internal.compiler.parser.StaticIfCondition;
 import descent.internal.compiler.parser.VersionCondition;
-import dtool.ast.ASTNeoNode;
+import dtool.ast.ASTNode;
 import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration;
@@ -29,7 +29,7 @@ import dtool.util.ArrayView;
 
 public class DeclarationConverter extends BaseDmdConverter {
 	
-	public static ASTNeoNode convert(ConditionalDeclaration elem, ASTConversionContext convContext) {
+	public static ASTNode convert(ConditionalDeclaration elem, ASTConversionContext convContext) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		DeclarationConverter.doSetParent(elem, elem.elsedecl);
 		NodeList thendecls = DeclarationConverter.createNodeList2(elem.decl, convContext); 
@@ -40,7 +40,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 		return createConditional(elem, thendecls, elsedecls, condition, convContext);
 	}
 	
-	public static ASTNeoNode convert(ConditionalStatement elem, ASTConversionContext convContext) {
+	public static ASTNode convert(ConditionalStatement elem, ASTConversionContext convContext) {
 		NodeList thendecls = DeclarationConverter.createNodeList2(elem.ifbody, convContext); 
 		NodeList elsedecls = DeclarationConverter.createNodeList2(elem.elsebody, convContext);
 		
@@ -49,7 +49,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 		return createConditional(elem, thendecls, elsedecls, condition, convContext);
 	}
 	
-	public static ASTNeoNode createConditional(ASTDmdNode elem, NodeList thendecls, NodeList elsedecls, 
+	public static ASTNode createConditional(ASTDmdNode elem, NodeList thendecls, NodeList elsedecls, 
 			Condition condition, ASTConversionContext convContext) 
 	{
 		if(condition instanceof DVCondition) {
@@ -117,7 +117,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 	public static NodeList createNodeList2(Collection<Dsymbol> decl, ASTConversionContext convContext) {
 		if(decl == null)
 			return null;
-		ArrayView<ASTNeoNode> decls = DescentASTConverter.convertMany(decl, convContext);
+		ArrayView<ASTNode> decls = DescentASTConverter.convertMany(decl, convContext);
 		SourceRange sr = null;
 		if(!decls.isEmpty()) {
 			sr = sourceRangeStrict(decls.get(0).getStartPos(), decls.get(decls.size()-1).getEndPos());
