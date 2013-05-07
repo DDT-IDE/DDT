@@ -76,9 +76,7 @@ public class DeeParserTest extends CommonTestUtils {
 			checkBasicStructureContracts(array(mainNode), null);
 		}
 		
-		if(expectedStructure != null) {
-			checkExpectedStructure(mainNode, expectedStructure);
-		}
+		checkExpectedStructure(mainNode, expectedStructure);
 		
 		if(expectedErrors != null) {
 			checkParserErrors(result.errors, expectedErrors);
@@ -156,13 +154,13 @@ public class DeeParserTest extends CommonTestUtils {
 	}
 	
 	public static void checkExpectedStructure(ASTNode node, NamedNodeElement[] expectedStructure) {
-		ASTNode[] children;
-		if(node instanceof Module) {
-			children = node.getChildren();
-		} else {
-			children = array(node);
-			node = null;
+		if(expectedStructure == null) {
+			return; // Don't check structure
+		} else if(expectedStructure.length == 0) {
+			assertTrue(node == null);
+			return;
 		}
+		ASTNode[] children = node instanceof Module ? node.getChildren() : array(node);
 		checkExpectedStructure_do(children, expectedStructure);
 	}
 	

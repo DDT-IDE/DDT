@@ -22,7 +22,7 @@ import dtool.parser.LexElement.MissingLexElement;
  * 
  */
 // XXX: BM: this code is a bit convoluted and strange, we use inheritance just for the sake of namespace importing
-public class DeeParser extends DeeParser_Decls {
+public class DeeParser extends DeeParser_Statements {
 	
 	public static DeeParserResult parseSource(String source) {
 		DeeParser deeParser = new DeeParser(source);
@@ -48,6 +48,8 @@ public class DeeParser extends DeeParser_Decls {
 			result = new DeeParserResult(parseExpressionOrType(), this);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_INITIALIZER.name)) {
 			result = new DeeParserResult(parseInitializer(), this);
+		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_STATEMENT.name)) {
+			result = new DeeParserResult(parseStatement(), this);
 		} else if(parseRule.equalsIgnoreCase("INIT_STRUCT")) {
 			result = new DeeParserResult(parseStructInitializer(), this);
 		} else if(parseRule.equals("DeclarationImport")) {

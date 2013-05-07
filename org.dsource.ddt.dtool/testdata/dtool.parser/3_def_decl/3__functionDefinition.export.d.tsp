@@ -76,16 +76,16 @@ function/template interactions - param default convert
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function Body
 
 #@NO_BODY《#error(EXPRULE_FnBody) #@BREAK》
-#@EMPTY_BODY《#?STRUCTURE_EXPECTED!【; ● EmptyBodyStatement 】》
+#@EMPTY_BODY《#?STRUCTURE_EXPECTED!【; ● EmptyStatement 】》
 
-  #@ST_BLOCK《#@ST_BLOCK__SAMPLE》
+#@Sp_ST_BLOCK《#@ST_BLOCK__SAMPLE》
 
 #@IN_BLOCKS《
- ►#?STRUCTURE_EXPECTED!【in #@ST_BLOCK● #@ST_BLOCK】●  
+ ►#?STRUCTURE_EXPECTED!【in #@Sp_ST_BLOCK● #@Sp_ST_BLOCK】●  
  ►#?STRUCTURE_EXPECTED!【in #@NO_ST_BLOCK● #@NO_ST_BLOCK 】●
 ¤》
 #@OUT_BLOCKS《
- ►#?STRUCTURE_EXPECTED!【out(foo) #@ST_BLOCK●      FunctionBodyOutBlock(Symbol #@ST_BLOCK )】●  
+ ►#?STRUCTURE_EXPECTED!【out(foo) #@Sp_ST_BLOCK● FunctionBodyOutBlock(Symbol #@Sp_ST_BLOCK )】●  
  ►#?STRUCTURE_EXPECTED!【out(foo) #@NO_ST_BLOCK● FunctionBodyOutBlock(Symbol #@NO_ST_BLOCK )】●
  
  ►#?STRUCTURE_EXPECTED!【out(foo #@BREAK_Pr● FunctionBodyOutBlock(Symbol $ )】●
@@ -103,21 +103,21 @@ function/template interactions - param default convert
  ►#@ST_BLOCK__SAMPLE●
  ►#@BROKEN_ST_BLOCK●
  
- ►#?STRUCTURE_EXPECTED!【body #@ST_BLOCK        ● FunctionBody( #@ST_BLOCK )】●
+ ►#?STRUCTURE_EXPECTED!【body #@Sp_ST_BLOCK     ● FunctionBody( #@Sp_ST_BLOCK )】●
  ►#?STRUCTURE_EXPECTED!【body #@NO_ST_BLOCK /**/● FunctionBody( #@NO_ST_BLOCK )】●
  
- ►#?STRUCTURE_EXPECTED!【#@IN_BLOCKS body #@ST_BLOCK             ●InOutFunctionBody( #@IN_BLOCKS #@ST_BLOCK )】●
- ►#?STRUCTURE_EXPECTED!【#@IN_BLOCKS #@OUT_BLOCKS body #@ST_BLOCK●InOutFunctionBody( #@IN_BLOCKS #@OUT_BLOCKS #@ST_BLOCK )】●
- ►#?STRUCTURE_EXPECTED!【#@OUT_BLOCKS body #@ST_BLOCK            ●InOutFunctionBody( #@OUT_BLOCKS #@ST_BLOCK )】●
- ►#?STRUCTURE_EXPECTED!【#@OUT_BLOCKS #@IN_BLOCKS body #@ST_BLOCK●InOutFunctionBody( #@OUT_BLOCKS #@IN_BLOCKS #@ST_BLOCK )】●
+ ►#?STRUCTURE_EXPECTED!【#@IN_BLOCKS body #@Sp_ST_BLOCK             ●InOutFunctionBody( #@IN_BLOCKS #@Sp_ST_BLOCK )】●
+ ►#?STRUCTURE_EXPECTED!【#@IN_BLOCKS #@OUT_BLOCKS body #@Sp_ST_BLOCK●InOutFunctionBody( #@IN_BLOCKS #@OUT_BLOCKS #@Sp_ST_BLOCK )】●
+ ►#?STRUCTURE_EXPECTED!【#@OUT_BLOCKS body #@Sp_ST_BLOCK            ●InOutFunctionBody( #@OUT_BLOCKS #@Sp_ST_BLOCK )】●
+ ►#?STRUCTURE_EXPECTED!【#@OUT_BLOCKS #@IN_BLOCKS body #@Sp_ST_BLOCK●InOutFunctionBody( #@OUT_BLOCKS #@IN_BLOCKS #@Sp_ST_BLOCK )】●
  
- ►#?STRUCTURE_EXPECTED!【in     #@ST_BLOCK #@NO_BODY     #@ST_BLOCK                ●InOutFunctionBody( #@ST_BLOCK #@NO_BODY )】●
- ►#?STRUCTURE_EXPECTED!【in     #@ST_BLOCK #@NO_BODY  in #@ST_BLOCK body #@ST_BLOCK●InOutFunctionBody( #@ST_BLOCK #@NO_BODY )】●
- ►#?STRUCTURE_EXPECTED!【out(f) #@ST_BLOCK #@NO_BODY         #@ST_BLOCK ●InOutFunctionBody( FunctionBodyOutBlock(Symbol #@ST_BLOCK) #@NO_BODY )】●
- ►#?STRUCTURE_EXPECTED!【out(f) #@ST_BLOCK #@NO_BODY  out(f) #@ST_BLOCK ●InOutFunctionBody( FunctionBodyOutBlock(Symbol #@ST_BLOCK) #@NO_BODY )】●
+ ►#?STRUCTURE_EXPECTED!【in     #@Sp_ST_BLOCK #@NO_BODY     #@Sp_ST_BLOCK  ●InOutFunctionBody( #@Sp_ST_BLOCK #@NO_BODY )】●
+ ►#?STRUCTURE_EXPECTED!【in     #@Sp_ST_BLOCK #@NO_BODY  in #@Sp_ST_BLOCK  ●InOutFunctionBody( #@Sp_ST_BLOCK #@NO_BODY )】●
+ ►#?STRUCTURE_EXPECTED!【out(f) #@Sp_ST_BLOCK #@NO_BODY         #@Sp_ST_BLOCK ●InOutFunctionBody( FunctionBodyOutBlock(Symbol #@Sp_ST_BLOCK) #@NO_BODY )】●
+ ►#?STRUCTURE_EXPECTED!【out(f) #@Sp_ST_BLOCK #@NO_BODY  out(f) #@Sp_ST_BLOCK ●InOutFunctionBody( FunctionBodyOutBlock(Symbol #@Sp_ST_BLOCK) #@NO_BODY )】●
 ¤》
 #@FN_BODY__SAMPLE《
- ►#?STRUCTURE_EXPECTED!【  #@IN_BLOCKS body #@ST_BLOCK             ●InOutFunctionBody( #@IN_BLOCKS #@ST_BLOCK )】●
+ ►#?STRUCTURE_EXPECTED!【  #@IN_BLOCKS body #@Sp_ST_BLOCK             ●InOutFunctionBody( #@IN_BLOCKS #@Sp_ST_BLOCK )】●
 ¤》
 
 #@FN_BODY__SIMPLE_TESTER《

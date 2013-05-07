@@ -96,8 +96,7 @@ DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol InitializerExp(?) DefVarFragment(De
 #PARSE(DECLARATION)              #@TYPEREFS_NB__LITE #@PREFIX fooB = #@INITIALIZERS #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED: DefVariable(#@TYPEREFS_NB__LITE #@PREFIX DefVarFragment(DefSymbol #@INITIALIZERS))
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ C-style decls (deprecated)
-#comment(TODO):
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ C-style decls (deprecated) TODO
 C style decls
 int foo*;
 int[int] foo* = 2, foo2    , foo3 = 3;

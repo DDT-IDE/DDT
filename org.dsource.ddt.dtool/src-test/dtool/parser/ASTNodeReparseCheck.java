@@ -351,6 +351,12 @@ public class ASTNodeReparseCheck {
 		case VAR_ARGS_PARAMETER:
 			return functionParamReparseCheck();
 			//return simpleReparseCheck(node, "...");
+		case FUNCTION_BODY:
+		case IN_OUT_FUNCTION_BODY:
+			return reparseCheck(snippedParser.parseFunctionBody());
+		case FUNCTION_BODY_OUT_BLOCK:
+			return reparseCheck(snippedParser.parseOutBlock().node);
+			
 		case DEFINITION_ENUM:
 			return reparseCheck(snippedParser.parseDefinitionEnum_start());
 		case DECLARATION_ENUM:
@@ -391,13 +397,10 @@ public class ASTNodeReparseCheck {
 		/* -------------------  Statements  ------------------- */
 		case BLOCK_STATEMENT:
 			return reparseCheck(snippedParser.parseBlockStatement_toMissing().node);
-		case STATEMENT_EMTPY_BODY:
+		case EMPTY_STATEMENT:
 			return simpleReparseCheck(";");
-		case FUNCTION_BODY:
-		case IN_OUT_FUNCTION_BODY:
-			return reparseCheck(snippedParser.parseFunctionBody());
-		case FUNCTION_BODY_OUT_BLOCK:
-			return reparseCheck(snippedParser.parseOutBlock().node);
+		case STATEMENT_LABEL:
+			return reparseCheck(snippedParser.parseStatementLabel_start().node);
 			
 		case OTHER: break;
 		}

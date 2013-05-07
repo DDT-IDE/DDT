@@ -4,15 +4,14 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 
-// XXX: Should this be a statement as well??
-public class EmptyBodyStatement extends Statement implements IFunctionBody, IStatement {
+public class EmptyStatement extends Statement implements IFunctionBody, IStatement {
 	
-	public EmptyBodyStatement() {
+	public EmptyStatement() {
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.STATEMENT_EMTPY_BODY;
+		return ASTNodeTypes.EMPTY_STATEMENT;
 	}
 	
 	@Override

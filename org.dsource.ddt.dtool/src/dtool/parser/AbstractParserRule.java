@@ -3,7 +3,7 @@ package dtool.parser;
 import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.LexElement.MissingLexElement;
 
-public class AbstractParserRule extends DeeParser_Decls {
+public class AbstractParserRule extends DeeParser_Statements {
 	
 	protected final DeeParser parser;
 	

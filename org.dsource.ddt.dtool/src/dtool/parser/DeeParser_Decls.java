@@ -49,11 +49,11 @@ import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
-import dtool.ast.declarations.MissingDeclaration;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.IncompleteDeclaration;
 import dtool.ast.declarations.InvalidSyntaxElement;
+import dtool.ast.declarations.MissingDeclaration;
 import dtool.ast.definitions.AbstractFunctionDefinition;
 import dtool.ast.definitions.DeclarationEnum;
 import dtool.ast.definitions.DeclarationMixin;
@@ -100,7 +100,7 @@ import dtool.ast.references.RefModule;
 import dtool.ast.references.RefTypeFunction;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
-import dtool.ast.statements.EmptyBodyStatement;
+import dtool.ast.statements.EmptyStatement;
 import dtool.ast.statements.FunctionBody;
 import dtool.ast.statements.FunctionBodyOutBlock;
 import dtool.ast.statements.IFunctionBody;
@@ -133,11 +133,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return defId;
 	}
 	
-	
-	protected ArrayView<IStatement> parseStatements() {
-		// TODO parse statements
-		return CoreUtil.blindCast(parseDeclDefs(DeeTokens.CLOSE_BRACE));
-	}
 	
 	/* -----------------------  Some helpers  ----------------------- */
 	
@@ -281,8 +276,18 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return declaration;
 	}
 	
+	protected NodeResult<? extends IStatement> parseStatementDeclaration() {
+		NodeResult<? extends ASTNode> decl = parseDeclaration(false, false, true);
+		assertTrue(decl.node == null || decl.node instanceof IStatement);
+		return CoreUtil.blindCast(decl);
+	}
+	
 	/** This rule always returns a node, except only on EOF where it returns null. */
 	public NodeResult<? extends ASTNode> parseDeclaration(boolean acceptEmptyDecl, boolean precedingIsSTCAttrib) {
+		return parseDeclaration(acceptEmptyDecl, precedingIsSTCAttrib, false);
+	}
+	public NodeResult<? extends ASTNode> parseDeclaration(boolean acceptEmptyDecl, boolean precedingIsSTCAttrib,
+		boolean statementsOnly) {
 		DeeTokens laGrouped = assertNotNull_(lookAheadGrouped());
 		
 		if(laGrouped == DeeTokens.EOF) {
@@ -664,7 +669,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			
 			if(tryConsume(DeeTokens.SEMICOLON)) { 
-				fnBody = conclude(srOf(lastLexElement(), new EmptyBodyStatement()));
+				fnBody = conclude(srOf(lastLexElement(), new EmptyStatement()));
 			} else {
 				fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
 			}
@@ -828,22 +833,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parseBlockStatement(true, brokenIfMissing);
 	}
 	
-	public static final ParseRuleDescription RULE_BLOCK = new ParseRuleDescription("Block");
-	
-	protected NodeResult<BlockStatement> parseBlockStatement(boolean createMissing, boolean brokenIfMissing) {
-		if(!tryConsume(DeeTokens.OPEN_BRACE)) {
-			if(createMissing) {
-				return result(brokenIfMissing, createMissingBlock(RULE_BLOCK));
-			}
-			return nullResult(); 
-		}
-		ParseHelper parse = new ParseHelper();
-		
-		ArrayView<IStatement> body = parseStatements();
-		parse.consumeRequired(DeeTokens.CLOSE_BRACE);
-		
-		return parse.resultConclude(new BlockStatement(body, true));
-	}
+	protected abstract NodeResult<BlockStatement> parseBlockStatement(boolean createMissing, boolean brokenIfMissing);
 	
 	protected NodeResult<FunctionBodyOutBlock> parseOutBlock() {
 		if(!tryConsume(DeeTokens.KW_OUT))
@@ -1401,6 +1391,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public Symbol parseIdSymbol() {
 		BaseLexElement token = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
+		return createIdSymbol(token);
+	}
+	public Symbol createIdSymbol(BaseLexElement token) {
 		return conclude(token.getError(), srOf(token, new Symbol(token.getSourceValue())));
 	}
 	
