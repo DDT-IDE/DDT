@@ -33,8 +33,8 @@ public class ExpIndex extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(indexee);
-		cp.appendNodeList("[", args, ", " , "]");
+		cp.append(indexee);
+		cp.appendList("[", args, ", " , "]");
 	}
 	
 }

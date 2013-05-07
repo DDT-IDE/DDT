@@ -43,7 +43,7 @@ public class DeclarationMixinString extends ASTNode implements IStatement, INonS
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("mixin(");
-		cp.appendNode(exp);
+		cp.append(exp);
 		cp.append(");");
 	}
 	

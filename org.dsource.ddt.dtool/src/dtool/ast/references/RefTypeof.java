@@ -58,7 +58,7 @@ public class RefTypeof extends Reference implements IQualifierNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("typeof");
-		cp.appendNode("(", expression, ")");
+		cp.append("(", expression, ")");
 	}
 	
 	@Override

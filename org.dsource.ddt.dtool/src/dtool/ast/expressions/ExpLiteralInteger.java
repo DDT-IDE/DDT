@@ -27,7 +27,7 @@ public class ExpLiteralInteger extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(num);
+		cp.appendToken(num);
 	}
 	
 }

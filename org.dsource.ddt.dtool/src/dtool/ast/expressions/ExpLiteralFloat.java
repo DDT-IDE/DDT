@@ -27,7 +27,7 @@ public class ExpLiteralFloat extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(floatNum);
+		cp.appendToken(floatNum);
 	}
 	
 }

@@ -48,8 +48,8 @@ public class NamelessParameter extends ASTNode implements IFunctionParameter {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		paramAttribs.toStringAsCode(cp);
-		cp.appendNode(type);
-		cp.appendNode(" = ", defaultValue);
+		cp.append(type);
+		cp.append(" = ", defaultValue);
 		cp.append(isVariadic, "...");
 	}
 	

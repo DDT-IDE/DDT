@@ -38,9 +38,9 @@ public class EnumMember extends DefUnit {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(type, " ");
-		cp.appendNode(defname);
-		cp.appendNode(" = ", value);
+		cp.append(type, " ");
+		cp.append(defname);
+		cp.append(" = ", value);
 	}
 	
 	@Override

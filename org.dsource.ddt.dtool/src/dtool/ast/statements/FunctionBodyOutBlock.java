@@ -34,8 +34,8 @@ public class FunctionBodyOutBlock extends ASTNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("out");
-		cp.appendNode("(", result, ")");
-		cp.appendNode(block);
+		cp.append("(", result, ")");
+		cp.append(block);
 	}
 	
 }

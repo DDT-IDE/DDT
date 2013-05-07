@@ -57,7 +57,7 @@ public class RefPrimitive extends NamedReference {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(primitive);
+		cp.appendToken(primitive);
 	}
 	
 }

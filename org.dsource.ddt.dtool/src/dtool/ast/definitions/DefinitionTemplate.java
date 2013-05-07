@@ -69,17 +69,17 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IState
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(isMixin, "mixin ");
 		cp.append("template ");
-		cp.appendNode(defname, " ");
-		cp.appendNodeList("(", tplParams, ",", ") ");
+		cp.append(defname, " ");
+		cp.appendList("(", tplParams, ",", ") ");
 		tplConstraintToStringAsCode(cp, tplConstraint);
-		cp.appendNode("{\n", decls, "}");
+		cp.append("{\n", decls, "}");
 	}
 	
 	public static void tplConstraintToStringAsCode(ASTCodePrinter cp, Expression tplConstraint) {
 		if(tplConstraint instanceof MissingParenthesesExpression) {
-			cp.appendNode("if", tplConstraint);
+			cp.append("if", tplConstraint);
 		} else {
-			cp.appendNode("if(", tplConstraint, ")");
+			cp.append("if(", tplConstraint, ")");
 		}
 	}
 	

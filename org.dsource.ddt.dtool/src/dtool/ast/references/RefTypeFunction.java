@@ -60,10 +60,10 @@ public class RefTypeFunction extends CommonRefNative {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(retType, " ");
+		cp.append(retType, " ");
 		cp.append(isDelegate ? "delegate" : "function");
-		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
-		cp.appendList(fnAttributes, " ", true);
+		cp.appendList("(", getParams_asNodes(), ",", ") ");
+		cp.appendTokenList(fnAttributes, " ", true);
 	}
 	
 	@Override

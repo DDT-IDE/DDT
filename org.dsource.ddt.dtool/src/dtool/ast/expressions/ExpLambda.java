@@ -49,10 +49,10 @@ public class ExpLambda extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
-		cp.appendList(fnAttributes, " ", true);
+		cp.appendList("(", getParams_asNodes(), ",", ") ");
+		cp.appendTokenList(fnAttributes, " ", true);
 		cp.append(" => ");
-		cp.appendNode(bodyExpression);
+		cp.append(bodyExpression);
 	}
 	
 }

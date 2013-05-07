@@ -46,7 +46,7 @@ public class RefQualified extends CommonRefQualified {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(qualifier, qualifier instanceof ExpLiteralInteger ? " ." : ".");
+		cp.append(qualifier, qualifier instanceof ExpLiteralInteger ? " ." : ".");
 		cp.appendNodeOrNullAlt(qualifiedName, "/*MISSING*/");
 	}
 	

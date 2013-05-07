@@ -29,7 +29,7 @@ public class TemplateTupleParam extends TemplateParameter {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(defname);
+		cp.append(defname);
 		cp.append("...");
 	}
 	

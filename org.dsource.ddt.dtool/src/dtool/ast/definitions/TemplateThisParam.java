@@ -29,7 +29,7 @@ public class TemplateThisParam extends TemplateParameter {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode("this ", defname);
+		cp.append("this ", defname);
 	}
 	
 	@Override

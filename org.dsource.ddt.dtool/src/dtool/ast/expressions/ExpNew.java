@@ -46,9 +46,9 @@ public class ExpNew extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("new");
-		cp.appendNodeList("(", allocArgs, ", ", ")", " "); 
-		cp.appendNode(newtype);
-		cp.appendNodeList("(", args, ", ", ")", " ");
+		cp.appendList("(", allocArgs, ", ", ")", " "); 
+		cp.append(newtype);
+		cp.appendList("(", args, ", ", ")", " ");
 	}
 	
 }

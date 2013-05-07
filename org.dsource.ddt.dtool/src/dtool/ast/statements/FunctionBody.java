@@ -34,7 +34,7 @@ public class FunctionBody extends ASTNode implements IFunctionBody {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode("body", bodyBlock);
+		cp.append("body", bodyBlock);
 	}
 	
 }

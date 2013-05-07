@@ -46,7 +46,7 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 			cp.append(pragmaId.name);
 			if(expressions != null) {
 				cp.append(", ");
-				cp.appendNodeList(expressions, ", ");
+				cp.appendList(expressions, ", ");
 			}
 		}
 		cp.append(") ");

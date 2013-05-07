@@ -43,10 +43,10 @@ public class TemplateValueParam extends TemplateParameter {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(type, " ");
-		cp.appendNode(defname);
-		cp.appendNode(" : ", specializationValue);
-		cp.appendNode(" = ", defaultValue);
+		cp.append(type, " ");
+		cp.append(defname);
+		cp.append(" : ", specializationValue);
+		cp.append(" = ", defaultValue);
 	}
 	
 	@Override

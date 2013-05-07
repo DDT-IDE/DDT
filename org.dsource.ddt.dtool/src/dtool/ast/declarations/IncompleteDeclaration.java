@@ -34,7 +34,7 @@ public class IncompleteDeclaration extends ASTNode implements IStatement {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(node);
+		cp.append(node);
 		cp.append(consumedSemiColon, ";");
 	}
 	

@@ -37,7 +37,7 @@ public class DeclarationDebugVersionSpec extends ASTNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(isDebug ? "debug = " : "version = ");
-		cp.appendNode(value);
+		cp.append(value);
 		cp.append(";");
 	}
 	

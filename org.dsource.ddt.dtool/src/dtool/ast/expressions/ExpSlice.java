@@ -41,10 +41,10 @@ public class ExpSlice extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(slicee, "[");
+		cp.append(slicee, "[");
 		if(from != null) {
-			cp.appendNode(from);
-			cp.appendNode(" .. ", to);
+			cp.append(from);
+			cp.append(" .. ", to);
 		}
 		cp.append("]");
 	}

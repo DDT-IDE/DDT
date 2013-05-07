@@ -51,7 +51,7 @@ public class ExpPostfixOperator extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(exp);
+		cp.append(exp);
 		cp.append(kind.token.getSourceValue());
 	}
 	

@@ -36,8 +36,8 @@ public class DeclarationStaticAssert extends ASTNode implements IStatement {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("static assert(");
-		cp.appendNode(pred);
-		cp.appendNode(", ", msg);
+		cp.append(pred);
+		cp.append(", ", msg);
 		cp.append(");");
 	}
 	

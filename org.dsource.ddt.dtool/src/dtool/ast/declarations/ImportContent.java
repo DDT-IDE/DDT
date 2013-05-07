@@ -35,7 +35,7 @@ public class ImportContent extends ImportStatic {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(moduleRef);
+		cp.append(moduleRef);
 	}
 	
 }

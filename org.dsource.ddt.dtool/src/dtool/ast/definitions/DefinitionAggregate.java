@@ -42,11 +42,11 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	
 	public void aggregateToStringAsCode(ASTCodePrinter cp, String keyword, boolean printDecls) {
 		cp.append(keyword);
-		cp.appendNode(defname, " ");
-		cp.appendNodeList("(", tplParams, ",", ") ");
+		cp.append(defname, " ");
+		cp.appendList("(", tplParams, ",", ") ");
 		DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
 		if(printDecls) {
-			cp.appendNode("{\n", decls, "}");
+			cp.append("{\n", decls, "}");
 		}
 	}
 	

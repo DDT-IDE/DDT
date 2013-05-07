@@ -39,7 +39,7 @@ public abstract class DeclarationAttrib extends ASTNode implements INonScopedBlo
 	public void toStringAsCode_body(ASTCodePrinter cp) {
 		cp.append(bodySyntax == AttribBodySyntax.COLON, " :\n");
 		cp.append(bodySyntax == AttribBodySyntax.BRACE_BLOCK, " {\n");
-		cp.appendNode(body);
+		cp.append(body);
 		cp.append(bodySyntax == AttribBodySyntax.BRACE_BLOCK, "}");
 	}
 	

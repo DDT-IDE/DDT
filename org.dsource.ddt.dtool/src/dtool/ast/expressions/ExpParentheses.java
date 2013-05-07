@@ -32,6 +32,6 @@ public class ExpParentheses extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode("(", resolvable, ")");
+		cp.append("(", resolvable, ")");
 	}
 }

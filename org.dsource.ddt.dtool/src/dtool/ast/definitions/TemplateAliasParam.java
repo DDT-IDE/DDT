@@ -38,9 +38,9 @@ public class TemplateAliasParam extends TemplateParameter {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("alias ");
-		cp.appendNode(defname);
-		cp.appendNode(" : ", specializationValue);
-		cp.appendNode(" = ", defaultValue);
+		cp.append(defname);
+		cp.append(" : ", specializationValue);
+		cp.append(" = ", defaultValue);
 	}
 	
 	@Override

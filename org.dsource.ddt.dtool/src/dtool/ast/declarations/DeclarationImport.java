@@ -69,7 +69,7 @@ public class DeclarationImport extends ASTNode implements INonScopedBlock {
 		cp.append(isStatic, "static ");
 		
 		cp.append("import ");
-		cp.appendNodeList(imports_asNodes(), ", ");
+		cp.appendList(imports_asNodes(), ", ");
 		cp.append(";");
 	}
 	

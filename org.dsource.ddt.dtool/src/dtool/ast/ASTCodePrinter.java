@@ -22,7 +22,7 @@ public class ASTCodePrinter {
 		return sb.toString();
 	}
 	
-	public void append(ISourceRepresentation obj) {
+	public void appendToken(ISourceRepresentation obj) {
 		if(obj != null) {
 			sb.append(obj.getSourceValue());
 		}
@@ -47,9 +47,32 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendNode(IASTNeoNode node) {
+	public void append(IASTNeoNode node) {
 		if(node != null) {
 			node.toStringAsCode(this);
+		}
+	}
+	
+	public void append(IASTNeoNode node, String sep) {
+		if(node != null) {
+			node.toStringAsCode(this);
+			assertNotNull(sep);
+			append(sep);
+		}
+	}
+	
+	public void append(String prefix, IASTNeoNode node) {
+		if(node != null) {
+			append(prefix);
+			node.toStringAsCode(this);
+		}
+	}
+	
+	public void append(String prefix, IASTNeoNode node, String suffix) {
+		if(node != null) {
+			append(prefix);
+			node.toStringAsCode(this);
+			append(suffix);
 		}
 	}
 	
@@ -61,30 +84,7 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendNode(IASTNeoNode node, String sep) {
-		if(node != null) {
-			node.toStringAsCode(this);
-			assertNotNull(sep);
-			append(sep);
-		}
-	}
-	
-	public void appendNode(String prefix, IASTNeoNode node) {
-		if(node != null) {
-			append(prefix);
-			node.toStringAsCode(this);
-		}
-	}
-	
-	public void appendNode(String prefix, IASTNeoNode node, String suffix) {
-		if(node != null) {
-			append(prefix);
-			node.toStringAsCode(this);
-			append(suffix);
-		}
-	}
-	
-	public void appendList(ArrayView<? extends ISourceRepresentation> list, String sep, boolean printLastSep) {
+	public void appendTokenList(ArrayView<? extends ISourceRepresentation> list, String sep, boolean printLastSep) {
 		if(list != null) {
 			for (int i = 0; i < list.size(); i++) {
 				ISourceRepresentation obj = list.get(i);
@@ -96,15 +96,15 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendNodeList(ArrayView<? extends IASTNeoNode> list, String sep) {
-		appendNodeList(list, sep, false);
+	public void appendList(ArrayView<? extends IASTNeoNode> list, String sep) {
+		appendList(list, sep, false);
 	}
 	
-	public void appendNodeList(ArrayView<? extends IASTNeoNode> list, String sep, boolean printLastSep) {
+	public void appendList(ArrayView<? extends IASTNeoNode> list, String sep, boolean printLastSep) {
 		if(list != null) {
 			for (int i = 0; i < list.size(); i++) {
 				IASTNeoNode node = list.get(i);
-				appendNode(node);
+				append(node);
 				if(printLastSep || i != list.size() - 1) {
 					sb.append(sep);
 				}
@@ -112,15 +112,15 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public boolean appendNodeList(String open, ArrayView<? extends IASTNeoNode> args, String sep, String close) {
-		return appendNodeList(open, args, sep, close, null);
+	public boolean appendList(String open, ArrayView<? extends IASTNeoNode> args, String sep, String close) {
+		return appendList(open, args, sep, close, null);
 	}
 	
-	public boolean appendNodeList(String open, ArrayView<? extends IASTNeoNode> args, String sep, String close, 
+	public boolean appendList(String open, ArrayView<? extends IASTNeoNode> args, String sep, String close, 
 		String spacingIfArgsNull) {
 		if(args != null) {
 			append(open);
-			appendNodeList(args, sep);
+			appendList(args, sep);
 			append(close);
 			return true;
 		} else {

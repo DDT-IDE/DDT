@@ -43,8 +43,8 @@ public class DefinitionAliasDecl extends Definition implements IStatement {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("alias ");
-		cp.appendNode(target, " ");
-		cp.appendNode(defname);
+		cp.append(target, " ");
+		cp.append(defname);
 		cp.append(";");
 	}
 	

@@ -36,10 +36,10 @@ public class ExpConditional extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(condExp, "?");
-		cp.appendNode(thenExp);
+		cp.append(condExp, "?");
+		cp.append(thenExp);
 		cp.append(":");
-		cp.appendNode(elseExp);
+		cp.append(elseExp);
 	}
 	
 }

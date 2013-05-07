@@ -43,12 +43,12 @@ public class ExpNewAnonClass extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("new ");
-		cp.appendNodeList("(", allocArgs, ",", ")");
+		cp.appendList("(", allocArgs, ",", ")");
 		cp.append("class");
-		cp.appendNodeList("(", args, ",", ")");
+		cp.appendList("(", args, ",", ")");
 		cp.append(" ");
-		cp.appendNodeList(baseClasses, ",");
-		cp.appendNode("{\n", declBody, "}");
+		cp.appendList(baseClasses, ",");
+		cp.append("{\n", declBody, "}");
 	}
 	
 }

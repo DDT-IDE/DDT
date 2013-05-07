@@ -32,7 +32,7 @@ public class NodeList<E extends ASTNode> extends ASTNode {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNodeList(nodes, "\n", true);
+		cp.appendList(nodes, "\n", true);
 	}
 	
 	public static Iterator<? extends ASTNode> getMembersIterator(NodeList<? extends ASTNode> body) {

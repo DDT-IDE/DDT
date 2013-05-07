@@ -42,8 +42,8 @@ public class DeclarationEnum extends ASTNode implements IStatement, INonScopedBl
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("enum ");
-		cp.appendNode(": ", type);
-		cp.appendNode(body);
+		cp.append(": ", type);
+		cp.append(body);
 	}
 
 	@Override

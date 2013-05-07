@@ -49,8 +49,8 @@ public class DeclarationAllocatorFunction extends ASTNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(isNew ? "new" : "delete");
-		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
-		cp.appendNode(fnBody);
+		cp.appendList("(", getParams_asNodes(), ",", ") ");
+		cp.append(fnBody);
 	}
 	
 }

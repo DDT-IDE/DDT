@@ -60,7 +60,7 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendStrings(getName(), " = ");
-		cp.appendNode(moduleRef);
+		cp.append(moduleRef);
 	}
 	
 }

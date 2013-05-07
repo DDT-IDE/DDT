@@ -53,7 +53,7 @@ public class DeclarationProtection extends DeclarationAttrib {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(protection);
+		cp.appendToken(protection);
 		cp.append(" ");
 		toStringAsCode_body(cp);
 	}

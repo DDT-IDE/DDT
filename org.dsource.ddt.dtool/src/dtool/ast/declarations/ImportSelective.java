@@ -81,8 +81,8 @@ public class ImportSelective extends ASTNode implements INonScopedBlock, IImport
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(fragment, " : ");
-		cp.appendNodeList(impSelFrags, ", ");
+		cp.append(fragment, " : ");
+		cp.appendList(impSelFrags, ", ");
 	}
 	
 }

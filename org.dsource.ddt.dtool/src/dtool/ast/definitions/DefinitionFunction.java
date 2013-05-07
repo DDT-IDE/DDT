@@ -53,7 +53,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(retType, " ");
+		cp.append(retType, " ");
 		toStringAsCode_fromDefId(cp);
 	}
 	

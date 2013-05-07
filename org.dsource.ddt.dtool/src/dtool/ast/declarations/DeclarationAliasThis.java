@@ -40,9 +40,9 @@ public class DeclarationAliasThis extends ASTNode implements IStatement {
 		cp.append("alias ");
 		if(isAssignSyntax) {
 			cp.append("this");
-			cp.appendNode(" = ", targetMember);
+			cp.append(" = ", targetMember);
 		} else {
-			cp.appendNode(targetMember);
+			cp.append(targetMember);
 			cp.append(" this");
 		}
 		cp.append(";");

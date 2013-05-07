@@ -37,9 +37,9 @@ public class TemplateTypeParam extends TemplateParameter {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(defname);
-		cp.appendNode(" : ", specializationType);
-		cp.appendNode(" = ", defaultType);
+		cp.append(defname);
+		cp.append(" : ", specializationType);
+		cp.append(" = ", defaultType);
 	}
 	
 	@Override

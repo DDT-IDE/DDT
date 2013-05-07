@@ -40,7 +40,7 @@ public class RefTypeDynArray extends CommonRefNative {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(elemtype, "[]");
+		cp.append(elemtype, "[]");
 	}
 	
 	@Override

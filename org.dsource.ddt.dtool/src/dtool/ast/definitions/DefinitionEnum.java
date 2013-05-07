@@ -48,9 +48,9 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("enum ");
-		cp.appendNode(defname, " ");
-		cp.appendNode(": ", type);
-		cp.appendNode(body);
+		cp.append(defname, " ");
+		cp.append(": ", type);
+		cp.append(body);
 	}
 	
 	public static class EnumBody extends NodeList<EnumMember> {
@@ -70,7 +70,7 @@ public class DefinitionEnum extends Definition implements IScopeNode, IStatement
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
 			cp.append("{");
-			cp.appendNodeList(nodes, ", ", hasEndingComma);
+			cp.appendList(nodes, ", ", hasEndingComma);
 			cp.append("}");
 		}
 	}

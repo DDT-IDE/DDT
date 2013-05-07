@@ -54,7 +54,7 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(modifier.sourceValue);
-		cp.appendNode("(", ref, ")");
+		cp.append("(", ref, ")");
 	}
 	
 	@Override

@@ -35,7 +35,7 @@ public class InitializerArray extends Initializer {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("[");
-		cp.appendNodeList(entries, ", ", hasEndingComma);
+		cp.appendList(entries, ", ", hasEndingComma);
 		cp.append("]");
 	}
 	
@@ -65,8 +65,8 @@ public class InitializerArray extends Initializer {
 		
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.appendNode(index, " : ");
-			cp.appendNode(value);
+			cp.append(index, " : ");
+			cp.append(value);
 		}
 	}
 	

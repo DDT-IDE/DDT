@@ -32,7 +32,7 @@ public class DeclarationUnitTest extends ASTNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("unittest ");
-		cp.appendNode(body);
+		cp.append(body);
 	}
 	
 }

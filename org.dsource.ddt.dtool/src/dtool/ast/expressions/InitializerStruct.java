@@ -36,7 +36,7 @@ public class InitializerStruct extends Initializer {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("{");
-		cp.appendNodeList(entries, ", ", hasEndingComma);
+		cp.appendList(entries, ", ", hasEndingComma);
 		cp.append("}");
 	}
 	
@@ -66,8 +66,8 @@ public class InitializerStruct extends Initializer {
 		
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.appendNode(member, " : ");
-			cp.appendNode(value);
+			cp.append(member, " : ");
+			cp.append(value);
 		}
 	}
 	

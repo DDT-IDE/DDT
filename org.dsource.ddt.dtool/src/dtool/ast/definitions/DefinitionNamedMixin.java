@@ -40,8 +40,8 @@ public class DefinitionNamedMixin extends DefUnit implements IStatement {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("mixin ");
-		cp.appendNode(templateInstance, " ");
-		cp.appendNode(defname);
+		cp.append(templateInstance, " ");
+		cp.append(defname);
 		cp.append(";");
 	}
 	

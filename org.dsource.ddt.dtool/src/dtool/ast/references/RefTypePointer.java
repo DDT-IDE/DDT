@@ -45,7 +45,7 @@ public class RefTypePointer extends CommonRefNative {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(elemType, "*");
+		cp.append(elemType, "*");
 	}
 	
 	public static class IntrinsicPointer extends NativeDefUnit {

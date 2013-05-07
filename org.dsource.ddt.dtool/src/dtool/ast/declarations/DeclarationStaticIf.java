@@ -36,7 +36,7 @@ public class DeclarationStaticIf extends AbstractConditionalDeclaration {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("static if ");
-		cp.appendNode("(", exp, ")");
+		cp.append("(", exp, ")");
 		toStringAsCodeBodyAndElseBody(cp);
 	}
 	

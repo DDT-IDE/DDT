@@ -55,7 +55,7 @@ public class DeclarationSpecialFunction extends ASTNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(kind.toStringAsCode());
-		cp.appendNode(fnBody);
+		cp.append(fnBody);
 	}
 	
 }

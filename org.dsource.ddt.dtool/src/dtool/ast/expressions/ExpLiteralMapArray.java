@@ -33,7 +33,7 @@ public class ExpLiteralMapArray extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("[ ");
-		cp.appendNodeList(entries, ", ");
+		cp.appendList(entries, ", ");
 		cp.append(" ]");
 	}
 	
@@ -64,9 +64,9 @@ public class ExpLiteralMapArray extends Expression {
 		
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.appendNode(key);
+			cp.append(key);
 			cp.append(" : ");
-			cp.appendNode(value);
+			cp.append(value);
 		}
 	}
 	

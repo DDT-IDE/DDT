@@ -46,8 +46,8 @@ public class DefinitionClass extends DefinitionAggregate {
 	
 	public void classLikeToStringAsCode(ASTCodePrinter cp, String keyword) {
 		aggregateToStringAsCode(cp, keyword, false);
-		cp.appendNodeList(": ", baseClasses, ",", " ");
-		cp.appendNode("{\n", decls, "}");
+		cp.appendList(": ", baseClasses, ",", " ");
+		cp.append("{\n", decls, "}");
 	}
 	
 	@Override

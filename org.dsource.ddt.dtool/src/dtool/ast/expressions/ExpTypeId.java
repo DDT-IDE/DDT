@@ -42,7 +42,7 @@ public class ExpTypeId extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("typeid");
-		cp.appendNode("(", getArgument(), ")");
+		cp.append("(", getArgument(), ")");
 	}
 	
 }

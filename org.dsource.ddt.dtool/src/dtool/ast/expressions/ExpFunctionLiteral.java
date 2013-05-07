@@ -54,10 +54,10 @@ public class ExpFunctionLiteral extends Expression {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(isFunctionKeyword == Boolean.TRUE, "function ");
 		cp.append(isFunctionKeyword == Boolean.FALSE, "delegate ");
-		cp.appendNode(retType);
-		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
-		cp.appendList(fnAttributes, " ", true);
-		cp.appendNode(fnBody);
+		cp.append(retType);
+		cp.appendList("(", getParams_asNodes(), ",", ") ");
+		cp.appendTokenList(fnAttributes, " ", true);
+		cp.append(fnBody);
 	}
 	
 }

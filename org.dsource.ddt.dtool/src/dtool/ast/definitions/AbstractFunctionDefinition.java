@@ -54,10 +54,10 @@ public abstract class AbstractFunctionDefinition extends Definition implements I
 	}
 	
 	public void toStringAsCode_fromDefId(ASTCodePrinter cp) {
-		cp.appendNode(defname);
-		cp.appendNodeList("(", tplParams, ",", ") ");
-		cp.appendNodeList("(", getParams_asNodes(), ",", ") ");
-		cp.appendList(fnAttributes, " ", true);
+		cp.append(defname);
+		cp.appendList("(", tplParams, ",", ") ");
+		cp.appendList("(", getParams_asNodes(), ",", ") ");
+		cp.appendTokenList(fnAttributes, " ", true);
 		DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
 		cp.appendNodeOrNullAlt(fnBody, " ");
 	}

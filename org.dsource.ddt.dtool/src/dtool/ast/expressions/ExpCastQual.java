@@ -57,7 +57,7 @@ public class ExpCastQual extends Expression {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("cast");
 		cp.appendStrings("(", castQualifier.toStringAsCode(), ")");
-		cp.appendNode(exp);
+		cp.append(exp);
 	}
 	
 }

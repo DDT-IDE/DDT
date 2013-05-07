@@ -45,7 +45,7 @@ public class DefinitionAlias extends ASTNode implements IStatement {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("alias ");
-		cp.appendNodeList(aliasFragments, ", ", false);
+		cp.appendList(aliasFragments, ", ", false);
 		cp.append(";");
 	}
 	
@@ -75,8 +75,8 @@ public class DefinitionAlias extends ASTNode implements IStatement {
 		
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.appendNode(defname);
-			cp.appendNode(" = ", target);
+			cp.append(defname);
+			cp.append(" = ", target);
 		}
 		
 		@Override

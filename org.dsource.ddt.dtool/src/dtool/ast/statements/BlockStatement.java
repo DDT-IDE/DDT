@@ -56,7 +56,7 @@ public class BlockStatement extends Statement implements IScopeNode, IFunctionBo
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(hasCurlyBraces, "{");
-		cp.appendNodeList("\n", statements_asNodes(), "\n", "\n", " ");
+		cp.appendList("\n", statements_asNodes(), "\n", "\n", " ");
 		cp.append(hasCurlyBraces, "}");
 	}
 	

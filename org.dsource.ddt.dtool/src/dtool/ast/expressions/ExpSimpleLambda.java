@@ -40,8 +40,8 @@ public class ExpSimpleLambda extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(simpleLambdaDefUnit, " => ");
-		cp.appendNode(bodyExpression);
+		cp.append(simpleLambdaDefUnit, " => ");
+		cp.append(bodyExpression);
 	}
 	
 	public static class SimpleLambdaDefUnit extends DefUnit {
@@ -66,7 +66,7 @@ public class ExpSimpleLambda extends Expression {
 		
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.appendNode(defname);
+			cp.append(defname);
 		}
 		
 		@Override

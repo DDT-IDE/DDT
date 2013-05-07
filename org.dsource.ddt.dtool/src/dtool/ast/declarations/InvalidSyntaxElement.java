@@ -30,7 +30,7 @@ public class InvalidSyntaxElement extends ASTNode implements IStatement {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(badToken);
+		cp.appendToken(badToken);
 	}
 	
 }

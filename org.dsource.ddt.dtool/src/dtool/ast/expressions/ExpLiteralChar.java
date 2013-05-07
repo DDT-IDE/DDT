@@ -27,7 +27,7 @@ public class ExpLiteralChar extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(ch);
+		cp.appendToken(ch);
 	}
 	
 }

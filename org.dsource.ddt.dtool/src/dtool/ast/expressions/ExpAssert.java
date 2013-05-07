@@ -34,8 +34,8 @@ public class ExpAssert extends Expression {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("assert");
 		if(exp != null) {
-			cp.appendNode("(", exp);
-			cp.appendNode(",", msg);
+			cp.append("(", exp);
+			cp.append(",", msg);
 			cp.append(")");
 		}
 	}

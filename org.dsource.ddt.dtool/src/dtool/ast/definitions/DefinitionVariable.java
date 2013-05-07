@@ -109,11 +109,11 @@ public class DefinitionVariable extends Definition implements IStatement {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(type, " ");
-		cp.appendNode(defname);
-		cp.appendNode(" = ", init);
+		cp.append(type, " ");
+		cp.append(defname);
+		cp.append(" = ", init);
 		for (DefVarFragment varFragment : fragments) {
-			cp.appendNode(", ", varFragment);
+			cp.append(", ", varFragment);
 		}
 		cp.append(";");
 	}

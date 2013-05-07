@@ -32,7 +32,7 @@ public class DeclarationInvariant extends ASTNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("invariant() ");
-		cp.appendNode(body);
+		cp.append(body);
 	}
 	
 }

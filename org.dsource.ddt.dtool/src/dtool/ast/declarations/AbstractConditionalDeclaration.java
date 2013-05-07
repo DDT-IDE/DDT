@@ -44,7 +44,7 @@ public abstract class AbstractConditionalDeclaration extends DeclarationAttrib i
 		if(elseBody != null) {
 			cp.append("else ");
 			cp.append(elseBody instanceof DeclList, "{\n");
-			cp.appendNode(elseBody);
+			cp.append(elseBody);
 			cp.append(elseBody instanceof DeclList, "}");
 		}
 	}

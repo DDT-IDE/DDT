@@ -1,5 +1,6 @@
 package dtool.ast.expressions;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
@@ -51,8 +52,8 @@ public class ExpPrefix extends Expression {
 	public final Expression exp;
 	
 	public ExpPrefix(PrefixOpType kind, Expression exp) {
+		this.kind = assertNotNull_(kind);
 		this.exp = parentize(exp);
-		this.kind = kind;
 	}
 	
 	@Override
@@ -72,7 +73,7 @@ public class ExpPrefix extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendStrings(kind.token.getSourceValue(), " ");
-		cp.appendNode(exp);
+		cp.append(exp);
 	}
 	
 }

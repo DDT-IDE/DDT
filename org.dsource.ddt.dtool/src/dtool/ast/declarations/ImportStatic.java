@@ -60,7 +60,7 @@ public class ImportStatic extends ASTNode implements IImportFragment {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(moduleRef);
+		cp.append(moduleRef);
 	}
 	
 }

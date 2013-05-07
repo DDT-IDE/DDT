@@ -31,7 +31,7 @@ public class ExpLiteralString extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		for (Token stringToken : stringTokens) {
-			cp.append(stringToken);
+			cp.appendToken(stringToken);
 		}
 	}
 	

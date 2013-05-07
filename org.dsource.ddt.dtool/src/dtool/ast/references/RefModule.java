@@ -50,7 +50,7 @@ public class RefModule extends NamedReference {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendList(packageList, ".", true);
+		cp.appendTokenList(packageList, ".", true);
 		cp.append(module);
 	}
 	

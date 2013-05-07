@@ -37,13 +37,13 @@ public class InOutFunctionBody extends FunctionBody implements IFunctionBody {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		if(isOutIn) {
-			cp.appendNode(outBlock);
-			cp.appendNode("in", inBlock);
+			cp.append(outBlock);
+			cp.append("in", inBlock);
 		} else {
-			cp.appendNode("in", inBlock);
-			cp.appendNode(outBlock);
+			cp.append("in", inBlock);
+			cp.append(outBlock);
 		}
-		cp.appendNode("body", bodyBlock);
+		cp.append("body", bodyBlock);
 	}
 	
 }

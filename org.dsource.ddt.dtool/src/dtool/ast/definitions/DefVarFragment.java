@@ -62,8 +62,8 @@ public class DefVarFragment extends DefUnit {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendNode(defname);
-		cp.appendNode("= ", init);
+		cp.append(defname);
+		cp.append("= ", init);
 	}
 	
 	@Deprecated
