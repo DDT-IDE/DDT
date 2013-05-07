@@ -7,7 +7,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.BlockStatement;
 
-public class DeclarationUnitTest extends ASTNode {
+public class DeclarationUnitTest extends ASTNode implements IDeclaration {
 	
 	public final BlockStatement body;
 	

@@ -5,6 +5,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
@@ -16,7 +17,7 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  * 
  * @see http://dlang.org/declaration.html#AliasDeclaration
  */
-public class DefinitionAliasDecl extends Definition implements IStatement {
+public class DefinitionAliasDecl extends Definition implements IDeclaration, IStatement {
 	
 	public final Reference target;
 	

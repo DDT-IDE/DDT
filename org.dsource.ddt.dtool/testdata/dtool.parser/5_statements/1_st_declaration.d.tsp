@@ -11,3 +11,64 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(STATEMENT)    struct MyStruct #@DECLS_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED: DefinitionStruct(DefSymbol #@DECLS_BLOCK__SAMPLE)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
+#PARSE(STATEMENT)    class MyClass : basetype #@DECLS_BLOCK__SAMPLE
+#STRUCTURE_EXPECTED: DefinitionClass(DefSymbol RefIdentifier #@DECLS_BLOCK__SAMPLE )
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
+#PARSE(STATEMENT)    enum MyEnum : basetype { A , B }
+#STRUCTURE_EXPECTED: DefinitionEnum(DefSymbol RefIdentifier EnumBody(EnumMember(DefSymbol) EnumMember(DefSymbol)) )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
+#PARSE(STATEMENT)    enum : int[] { A = 2 , float B }
+#STRUCTURE_EXPECTED: DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumMember(RefPrimitive DefSymbol)) )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)    enum i = 4;
+#STRUCTURE_EXPECTED: DeclarationBasicAttrib(DefinitionAutoVariable(DefSymbol InitializerExp(?)))
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
+#PARSE(DECLARATION)   alias foo[] aliasDef; 
+#STRUCTURE_EXPECTED:  DefinitionAliasDecl(RefTypeDynArray(RefIdentifier)  DefSymbol)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)   alias memberId this; 
+#STRUCTURE_EXPECTED:  DeclarationAliasThis(RefIdentifier)
+
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)  #error(SE_Statement) public #@BREAK  { void foo ; }
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)    pragma(foo) void foo;
+#STRUCTURE_EXPECTED: DeclarationPragma(Symbol DefinitionVariable(RefPrimitive DefSymbol))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)  #error(SE_Statement) extern #@BREAK  (C) { void foo ; }
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib
+#PARSE(STATEMENT) const { void foo ; }
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)    static import pack.bar.foo;
+#STRUCTURE_EXPECTED: DeclarationImport(ImportContent(RefModule))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)    static assert ( #@EXP_ASSIGN__LITE) ;
+#STRUCTURE_EXPECTED: DeclarationStaticAssert(#@EXP_ASSIGN__LITE)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  TODO static if, conditionals
+#PARSE(STATEMENT)   static #error(EXPRULE_DeclOrBlock) #@BREAK if ( #@EXP_ASSIGN__LITE)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  TODO static if, conditionals
+#PARSE(STATEMENT)  #error(SE_Statement) version #@BREAK  (unix) { } else { } 
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)     #@MIXIN_PRF《#?STRUCTURE_EXPECTED!【mixin ●】 ●/++/》 template tpl() #@DECLS_BLOCK__SAMPLE
+#STRUCTURE_EXPECTED:  DefinitionTemplate(DefSymbol #@DECLS_BLOCK__SAMPLE )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)     mixin("int foo");
+#STRUCTURE_EXPECTED:  DeclarationMixinString(ExpLiteralString)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)     mixin #@TYPE_REFS__LITE ;
+#STRUCTURE_EXPECTED:  DeclarationMixin(#@TYPE_REFS__LITE)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)     mixin #@TYPEREFS_NB__LITE defid ;
+#STRUCTURE_EXPECTED:  DefinitionNamedMixin(#@TYPEREFS_NB__LITE DefSymbol)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)  #error(SE_Statement) invariant #@BREAK () #@ST_BLOCK__SAMPLE
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)  #error(SE_Statement) unittest #@BREAK #@ST_BLOCK__SAMPLE
+

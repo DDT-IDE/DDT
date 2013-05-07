@@ -8,7 +8,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 
-public class DeclarationStaticAssert extends ASTNode implements IStatement {
+public class DeclarationStaticAssert extends ASTNode implements IDeclaration, IStatement {
 	
 	public final Expression pred;
 	public final Expression msg;

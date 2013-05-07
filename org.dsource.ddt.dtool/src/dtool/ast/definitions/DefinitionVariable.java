@@ -8,6 +8,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -21,7 +22,7 @@ import dtool.util.ArrayView;
  * Optionally has multiple variables defined with the multi-identifier syntax.
  * TODO fragments semantic visibility
  */
-public class DefinitionVariable extends Definition implements IStatement { 
+public class DefinitionVariable extends Definition implements IDeclaration, IStatement { 
 	
 	public static final ArrayView<DefVarFragment> NO_FRAGMENTS = ArrayView.create(new DefVarFragment[0]);
 	

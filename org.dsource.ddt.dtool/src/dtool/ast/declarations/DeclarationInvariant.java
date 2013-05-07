@@ -7,7 +7,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.BlockStatement;
 
-public class DeclarationInvariant extends ASTNode {
+public class DeclarationInvariant extends ASTNode implements IDeclaration {
 	
 	public final BlockStatement body;
 	

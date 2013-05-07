@@ -10,7 +10,7 @@ import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 /**
  * Debug/Version specification declaration
  */
-public class DeclarationDebugVersionSpec extends ASTNode {
+public class DeclarationDebugVersionSpec extends ASTNode implements IDeclaration {
 	
 	public final boolean isDebug;
 	public final VersionSymbol value;

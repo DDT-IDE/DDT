@@ -6,7 +6,9 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
 
-public class MissingDeclaration extends ASTNode implements IStatement {
+public class MissingDeclaration extends ASTNode implements IDeclaration 
+, IStatement //TODO: remove this eventually
+{
 	
 	public MissingDeclaration() {
 	}

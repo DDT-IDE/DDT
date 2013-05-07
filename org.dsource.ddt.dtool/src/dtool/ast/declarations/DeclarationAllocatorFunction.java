@@ -15,7 +15,7 @@ import dtool.util.ArrayView;
  * http://dlang.org/class.html#ClassAllocator
  * http://dlang.org/class.html#ClassDeallocator
  */
-public class DeclarationAllocatorFunction extends ASTNode {
+public class DeclarationAllocatorFunction extends ASTNode implements IDeclaration {
 	
 	public final boolean isNew;
 	public final ArrayView<IFunctionParameter> params;

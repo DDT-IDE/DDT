@@ -10,7 +10,7 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
 import dtool.util.ArrayView;
 
-public class DeclarationPragma extends DeclarationAttrib implements IStatement {
+public class DeclarationPragma extends DeclarationAttrib implements IDeclaration, IStatement {
 	
 	public final Symbol pragmaId;
 	public final ArrayView<Resolvable> expressions; // TODO
@@ -31,7 +31,6 @@ public class DeclarationPragma extends DeclarationAttrib implements IStatement {
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if(children) {
-			// TODO, consider whether these should be structural or not
 			TreeVisitor.acceptChildren(visitor, pragmaId);
 //			TreeVisitor.acceptChildren(visitor, expressions);
 			TreeVisitor.acceptChildren(visitor, body);

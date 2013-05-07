@@ -12,6 +12,7 @@ import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAttrib;
+import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefinitionEnum.NoEnumBody;
@@ -193,7 +194,11 @@ public class ASTNodeReparseCheck {
 		case INCOMPLETE_DECLARATION:
 			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
 		case INVALID_SYNTAX:
-			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
+			if(((InvalidSyntaxElement) nodeUnderTest).isStatementContext) {
+				return reparseCheck(snippedParser.parseStatementDeclaration());
+			} else {
+				return reparseCheck(snippedParser.parseDeclaration_withInvalid());
+			}
 		
 		/* ---------------------------------- */
 		
@@ -315,7 +320,7 @@ public class ASTNodeReparseCheck {
 		
 		case DECLARATION_INVARIANT: return reparseCheck(snippedParser.parseDeclarationInvariant_start());
 		case DECLARATION_UNITEST: return reparseCheck(snippedParser.parseDeclarationUnitTest_start());
-		case DECLARATION_ALLOCATOR_FUNCTION: return reparseCheck(snippedParser.parseDeclarationAllocatorFucntions());
+		case DECLARATION_ALLOCATOR_FUNCTION: return reparseCheck(snippedParser.parseDeclarationAllocatorFunctions());
 		case DECLARATION_POST_BLIT: return reparseCheck(snippedParser.parseDeclarationPostBlit_start());
 		case DECLARATION_SPECIAL_FUNCTION: return reparseCheck(snippedParser.parseDeclarationSpecialFunction());
 		case DECLARATION_DEBUG_VERSION_SPEC: return reparseCheck(snippedParser.parseDeclarationDebugVersionSpec());

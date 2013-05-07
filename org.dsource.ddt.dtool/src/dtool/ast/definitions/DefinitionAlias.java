@@ -6,6 +6,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
@@ -20,7 +21,7 @@ import dtool.util.ArrayView;
  * 
  * @see http://dlang.org/declaration.html#AliasDeclaration
  */
-public class DefinitionAlias extends ASTNode implements IStatement {
+public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement {
 	
 	public final ArrayView<DefinitionAliasFragment> aliasFragments;
 

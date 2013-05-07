@@ -10,8 +10,12 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.ArrayList;
 
+import melnorme.utilbox.core.CoreUtil;
+import dtool.ast.declarations.IDeclaration;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.EmptyStatement;
@@ -78,6 +82,15 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		NodeResult<? extends IStatement> decl = parseStatementDeclaration();
 		
 		return decl;
+	}
+	
+	protected NodeResult<? extends IStatement> parseStatementDeclaration() {
+		NodeResult<? extends IDeclaration> declResult = parseDeclaration(false, false, true);
+		if(declResult.node == null && lookAhead() != DeeTokens.EOF) {
+			return parseInvalidElement(RULE_STATEMENT, true);
+		}
+		assertTrue(declResult.node == null || declResult.node instanceof IStatement);
+		return CoreUtil.blindCast(declResult);
 	}
 	
 	protected NodeResult<StatementLabel> parseStatementLabel_start() {

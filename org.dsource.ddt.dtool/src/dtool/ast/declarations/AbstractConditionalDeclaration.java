@@ -11,7 +11,10 @@ import dtool.ast.definitions.Symbol;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public abstract class AbstractConditionalDeclaration extends DeclarationAttrib implements IStatement, INonScopedBlock {
+public abstract class AbstractConditionalDeclaration extends DeclarationAttrib 
+	implements INonScopedBlock, IDeclaration 
+	, IStatement // TODO change this when legacy code removed 
+	{
 	
 	// Note: value can be an integer or keyword
 	public static class VersionSymbol extends Symbol {

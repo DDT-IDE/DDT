@@ -7,11 +7,16 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
 
-public class InvalidSyntaxElement extends ASTNode implements IStatement {
+public class InvalidSyntaxElement extends ASTNode implements IDeclaration, IStatement {
 	
+	public final boolean isStatementContext;
 	public final Token badToken;
 	
 	public InvalidSyntaxElement(Token badToken) {
+		this(false, badToken);
+	}
+	public InvalidSyntaxElement(boolean isStatementContext, Token badToken) {
+		this.isStatementContext = isStatementContext;
 		this.badToken = badToken;
 	}
 	

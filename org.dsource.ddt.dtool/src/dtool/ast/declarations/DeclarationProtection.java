@@ -12,7 +12,7 @@ import dtool.ast.ISourceRepresentation;
 import dtool.ast.definitions.Definition;
 import dtool.refmodel.INonScopedBlock;
 
-public class DeclarationProtection extends DeclarationAttrib {
+public class DeclarationProtection extends DeclarationAttrib implements IDeclaration {
 	
 	public enum Protection implements ISourceRepresentation {
 	    PRIVATE,

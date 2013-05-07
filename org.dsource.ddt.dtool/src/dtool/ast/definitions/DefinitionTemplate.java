@@ -12,6 +12,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.DeclList;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
@@ -23,8 +24,10 @@ import dtool.util.ArrayView;
 /**
  * Definition of a template.
  * http://dlang.org/template.html#TemplateDeclaration
+ * 
+ * (Technically not allowed as statement, but parse so anyways.)
  */
-public class DefinitionTemplate extends Definition implements IScopeNode, IStatement {
+public class DefinitionTemplate extends Definition implements IScopeNode, IDeclaration, IStatement {
 	
 	public final boolean isMixin;
 	public final ArrayView<TemplateParameter> tplParams;

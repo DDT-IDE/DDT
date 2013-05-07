@@ -6,9 +6,8 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.statements.IStatement;
 
-public class IncompleteDeclaration extends ASTNode implements IStatement {
+public class IncompleteDeclaration extends ASTNode implements IDeclaration {
 	
 	public final ASTNode node;
 	public final boolean consumedSemiColon;

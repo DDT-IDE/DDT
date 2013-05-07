@@ -12,7 +12,7 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public class DeclarationMixinString extends ASTNode implements IStatement, INonScopedBlock {
+public class DeclarationMixinString extends ASTNode implements INonScopedBlock, IDeclaration, IStatement {
 	
 	public final Resolvable exp;
 	

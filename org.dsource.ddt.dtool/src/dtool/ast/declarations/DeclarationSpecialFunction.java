@@ -8,7 +8,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IFunctionBody;
 
-public class DeclarationSpecialFunction extends ASTNode {
+public class DeclarationSpecialFunction extends ASTNode implements IDeclaration {
 	
 	public static enum SpecialFunctionKind {
 		POST_BLIT("this(this)"),

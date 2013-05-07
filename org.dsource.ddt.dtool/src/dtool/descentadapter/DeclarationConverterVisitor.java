@@ -57,11 +57,11 @@ import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
-import dtool.ast.declarations.MissingDeclaration;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.ImportStatic;
-import dtool.ast.declarations.IncompleteDeclaration;
+import dtool.ast.declarations.MissingDeclaration;
+import dtool.ast.definitions.DeclarationEnum;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.DefinitionAliasDecl;
 import dtool.ast.definitions.DefinitionClass;
@@ -72,7 +72,6 @@ import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
-import dtool.ast.definitions.EnumContainer;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.TemplateAliasParam;
 import dtool.ast.definitions.TemplateParameter;
@@ -547,9 +546,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				new DefinitionEnum.EnumBody(DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext), false)
 			));
 		} else {
-			return connect(DefinitionConverter.sourceRange(elem), new EnumContainer(
-				DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext),
-				ReferenceConverter.convertType(elem.memtype, convContext)
+			return connect(DefinitionConverter.sourceRange(elem), new DeclarationEnum(
+				ReferenceConverter.convertType(elem.memtype, convContext),
+				new DefinitionEnum.EnumBody(DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext), false)
 			));
 		}
 	}

@@ -7,6 +7,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.DeclList;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
@@ -17,7 +18,7 @@ import dtool.util.NewUtils;
 /**
  * A definition of a aggregate. 
  */
-public abstract class DefinitionAggregate extends Definition implements IScopeNode, IStatement {
+public abstract class DefinitionAggregate extends Definition implements IScopeNode, IDeclaration, IStatement {
 	
 	public final ArrayView<TemplateParameter> tplParams;
 	public final Expression tplConstraint;

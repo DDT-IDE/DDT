@@ -8,12 +8,13 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
+import dtool.ast.declarations.IDeclaration;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public class DeclarationEnum extends ASTNode implements IStatement, INonScopedBlock {
+public class DeclarationEnum extends ASTNode implements INonScopedBlock, IDeclaration, IStatement {
 	
 	public final Reference type;
 	public final EnumBody body;

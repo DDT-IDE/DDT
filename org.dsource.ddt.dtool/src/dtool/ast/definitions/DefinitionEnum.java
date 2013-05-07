@@ -10,6 +10,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
+import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
@@ -17,7 +18,7 @@ import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
-public class DefinitionEnum extends Definition implements IScopeNode, IStatement {
+public class DefinitionEnum extends Definition implements IScopeNode, IDeclaration, IStatement {
 	
 	public final Reference type;
 	public final EnumBody body;

@@ -6,7 +6,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 
-public class DeclarationAlign extends DeclarationAttrib {
+public class DeclarationAlign extends DeclarationAttrib implements IDeclaration {
 	
 	public final String alignNum;
 	

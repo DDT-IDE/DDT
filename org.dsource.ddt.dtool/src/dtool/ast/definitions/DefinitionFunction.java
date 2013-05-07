@@ -10,6 +10,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
+import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
@@ -21,7 +22,7 @@ import dtool.util.ArrayView;
 /**
  * A definition of a function.
  */
-public class DefinitionFunction extends AbstractFunctionDefinition implements IScopeNode, IStatement {
+public class DefinitionFunction extends AbstractFunctionDefinition implements IScopeNode, IDeclaration, IStatement {
 	
 	public final Reference retType;
 	

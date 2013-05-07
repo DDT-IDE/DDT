@@ -10,10 +10,11 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.ISourceRepresentation;
 import dtool.ast.definitions.Definition;
+import dtool.ast.statements.IStatement;
 import dtool.parser.DeeTokens;
 import dtool.refmodel.INonScopedBlock;
 
-public class DeclarationBasicAttrib extends DeclarationAttrib {
+public class DeclarationBasicAttrib extends DeclarationAttrib implements IDeclaration, IStatement {
 	
 	public static enum AttributeKinds implements ISourceRepresentation {
 		ABSTRACT,

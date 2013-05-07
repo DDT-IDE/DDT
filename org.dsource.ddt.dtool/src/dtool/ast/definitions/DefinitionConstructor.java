@@ -14,11 +14,12 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.util.ArrayView;
 
-public class DefinitionConstructor extends AbstractFunctionDefinition {
+public class DefinitionConstructor extends AbstractFunctionDefinition implements IDeclaration {
 	
 	public DefinitionConstructor(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
 		ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 

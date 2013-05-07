@@ -10,8 +10,10 @@ import dtool.ast.statements.IStatement;
 
 /**
  * @see http://dlang.org/declaration.html#AliasThisDeclaration
+ * 
+ * (Technically not allowed as statement, but parse so anyways.)
  */
-public class DeclarationAliasThis extends ASTNode implements IStatement {
+public class DeclarationAliasThis extends ASTNode implements IDeclaration, IStatement {
 	
 	public final boolean isAssignSyntax;
 	public final RefIdentifier targetMember;

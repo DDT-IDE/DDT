@@ -11,6 +11,7 @@ import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
+import dtool.ast.statements.IStatement;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.INonScopedBlock;
 import dtool.util.ArrayView;
@@ -20,7 +21,7 @@ import dtool.util.ArrayView;
  * This is considered an INonScopedBlock because it might contain aliasing
  * imports and selective imports, which are primary-space {@link DefUnit}s.
  */
-public class DeclarationImport extends ASTNode implements INonScopedBlock {
+public class DeclarationImport extends ASTNode implements INonScopedBlock, IDeclaration, IStatement {
 	
 	public final ArrayView<IImportFragment> imports;
 	public final boolean isStatic;
