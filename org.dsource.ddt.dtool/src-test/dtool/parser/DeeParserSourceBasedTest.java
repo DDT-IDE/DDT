@@ -13,7 +13,6 @@ package dtool.parser;
 import static dtool.tests.DToolTestResources.getTestResource;
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.isValidStringRange;
-import static dtool.util.NewUtils.removeRange;
 import static dtool.util.NewUtils.replaceRange;
 import static java.util.Collections.unmodifiableMap;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -154,16 +153,6 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		}
 	}
 	
-	public static class ParserErrorExt extends ParserError {
-		public String sourceCorrectionForMissingTokens;
-		
-		public ParserErrorExt(ParserError error, String correctionForMissingTokens) {
-			super(error.errorType, error.sourceRange, error.msgErrorSource, error.msgData);
-			this.sourceCorrectionForMissingTokens = correctionForMissingTokens;
-		}
-		
-	}
-	
 	public void runSourceBasedTest(AnnotatedSource testSource) {
 		checkOffsetInvariant(testSource);
 		
@@ -183,7 +172,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		
 		ArrayList<ParserError> expectedErrors = new ArrayList<ParserError>();
 		HashMap<String, MetadataEntry> additionalMetadata = new HashMap<String, MetadataEntry>();
-		List<ParserErrorExt> errorCorrectionMetadata = new ArrayList<ParserErrorExt>();
+		List<StringCorrection> errorCorrectionMetadata = new ArrayList<>();
 		
 		for (MetadataEntry mde : testSource.metadata) {
 			if(mde.name.equals("AST_SOURCE_EXPECTED")) {
@@ -207,6 +196,12 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 				assertTrue(expectedStructure == null);
 				expectedStructure = parseExpectedStructure(mde.sourceValue);
 			} else if(mde.name.equals("error") || mde.name.equals("ERROR")){
+				if(areEqual(mde.value, "-none-")) {
+					int offset = ignoreFurtherErrorMDs ? parsedSource.length() : mde.offset;
+						
+					errorCorrectionMetadata.add(new StringCorrection(offset, 0, mde.sourceValue));
+					continue;
+				}
 				if(ignoreFurtherErrorMDs) 
 					continue;
 				
@@ -214,12 +209,20 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 				expectedErrors.add(error);
 				
 				if(getErrorTypeFromMDE(mde) == ParserErrorTypes.INVALID_TOKEN_CHARACTERS) {
-					errorCorrectionMetadata.add(new ParserErrorExt(error, null));
+					SourceRange sr = error.sourceRange;
+					errorCorrectionMetadata.add(new StringCorrection(sr.getOffset(), sr.getLength(), ""));
 				} else if(getErrorTypeFromMDE(mde) == ParserErrorTypes.EXPECTED_TOKEN) {
-					if(mde.sourceValue != null) {
-						assertTrue(mde.sourceWasIncluded == false || mde.sourceValue.isEmpty());
+					assertTrue(mde.sourceValue == null || mde.sourceValue.isEmpty() || !mde.sourceWasIncluded);
+					
+					String rpl = mde.sourceValue;
+					if(rpl == null) {
+						DeeTokens expectedToken = (DeeTokens) error.msgData;
+						if(expectedToken.getSourceValue() == null) 
+							continue;
+						rpl = expectedToken.getSourceValue();
 					}
-					errorCorrectionMetadata.add(new ParserErrorExt(error, mde.sourceValue));
+					
+					errorCorrectionMetadata.add(new StringCorrection(error.sourceRange.getEndPos(), 0, rpl));
 				}
 				
 			} else if(mde.name.equals("parser") && areEqual(mde.value, "AllowAnyErrors")){
@@ -250,33 +253,29 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			expectedPrintedSource, expectedStructure, expectedErrors, unmodifiableMap(additionalMetadata));
 	}
 	
-	public static String calcExpectedToStringAsCode(String parseSource, List<ParserErrorExt> errorInfo) {
+	public static class StringCorrection {
+		public String rpl;
+		public int offset;
+		public int length;
+		
+		public StringCorrection(int offset, int length, String rpl) {
+			this.rpl = rpl;
+			this.offset = offset;
+			this.length = length;
+		}
+		
+	}
+	
+	public static String calcExpectedToStringAsCode(String parseSource, List<StringCorrection> errorCorrections) {
 		int modifyDelta = 0;
 		
 		String correctedParseSource = parseSource;
-		for (ParserErrorExt error : errorInfo) {
-			if(error.errorType == ParserErrorTypes.INVALID_TOKEN_CHARACTERS) {
-				SourceRange sr = error.sourceRange;
-				int offset = sr.getOffset() + modifyDelta;
-				assertTrue(isValidStringRange(correctedParseSource, offset, sr.getLength()));
-				correctedParseSource = removeRange(correctedParseSource, offset , sr.getLength());
-				modifyDelta -= sr.getLength();
-			}
-			if(error.errorType == ParserErrorTypes.EXPECTED_TOKEN) {
-				
-				String rpl = error.sourceCorrectionForMissingTokens;
-				if(rpl == null) {
-					DeeTokens expectedToken = (DeeTokens) error.msgData;
-					if(expectedToken.getSourceValue() == null) 
-						continue;
-					rpl = expectedToken.getSourceValue();
-				}
-				
-				int offset = error.sourceRange.getEndPos() + modifyDelta;
-				assertTrue(isValidStringRange(correctedParseSource, offset, 0));
-				correctedParseSource = replaceRange(correctedParseSource, offset, 0, rpl);
-				modifyDelta += rpl.length();
-			}
+		for (StringCorrection sc : errorCorrections) {
+			
+			int offset = sc.offset + modifyDelta;
+			assertTrue(isValidStringRange(correctedParseSource, offset, sc.length));
+			correctedParseSource = replaceRange(correctedParseSource, offset , sc.length, sc.rpl);
+			modifyDelta += sc.rpl.length() - sc.length; // can be negative
 		}
 		return correctedParseSource;
 	}
