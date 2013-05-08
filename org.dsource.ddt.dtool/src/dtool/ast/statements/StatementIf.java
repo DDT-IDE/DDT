@@ -37,7 +37,7 @@ public class StatementIf extends Statement {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("if ");
-		cp.append("(", condition, ")");
+		cp.append("(", condition, ") ");
 		cp.append(thenBody, " ");
 		cp.append("else ", elseBody);
 	}

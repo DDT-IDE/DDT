@@ -40,6 +40,7 @@ import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
+import dtool.tests.DToolTests;
 
 
 public class DeeParserTest extends CommonTestUtils {
@@ -265,7 +266,6 @@ public class DeeParserTest extends CommonTestUtils {
 		DeeTokens.SEMICOLON
 		);
 	
-	// These checks can be computationally expensive. They make parsing quadratic on node depth.
 	public static void runNodeParsingChecks(ASTNode node, final String fullSource) {
 		String nodeSnippedSource = fullSource.substring(node.getStartPos(), node.getEndPos());
 		if(!areThereMissingTokenErrorsInNode(node)) {
@@ -274,7 +274,9 @@ public class DeeParserTest extends CommonTestUtils {
 			SourceEquivalenceChecker.assertCheck(nodeSnippedSource, node.toStringAsCode(), structuralControlTokens);
 		}
 		
-		new ASTNodeReparseCheck(fullSource, node).doCheck();
+		// Reparse check can be computationally expensive. They make parsing quadratic on node depth.
+		boolean doReparseCheck = DToolTests.TESTS_LITE_MODE;
+		new ASTNodeReparseCheck(fullSource, node).doCheck(doReparseCheck);
 	}
 	
 	protected static boolean areThereMissingTokenErrorsInNode(ASTNode node) {

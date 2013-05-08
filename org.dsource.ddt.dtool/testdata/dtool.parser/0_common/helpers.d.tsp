@@ -1,9 +1,13 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ExpIdentifier【ExpReference(RefIdentifier)】
 
- #@NO_ClosePARENS《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS)  /*No close brace */】 》
-  #@NO_CloseBRACE《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACE)  /*No close bracket*/】 》
-#@NO_CloseBRACKET《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACKET)/*No close parens */】 》
+#@BREAK《 #?STRUCTURE_EXPECTED!【#parser(IgnoreRest) #RULE_BROKEN(test)● $ 】  》
+#@IGNORE_REST《 #?STRUCTURE_EXPECTED!【#parser(IgnoreRest) ● $ 】  》
+       #@NULL《 #parser(IgnoreRest) #STRUCTURE_EXPECTED{} 》
+
+ #@NO_ClosePARENS《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS)  /*No close parens */】 》
+  #@NO_CloseBRACE《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACE)  /*No close brace */】 》
+#@NO_CloseBRACKET《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACKET)/*No close bracket */】 》
    #@NO_SEMICOLON《#?STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON) /*No semicolon */】 》
 
 #@CLOSEPARENS_OR_NO【)●#error(EXP_CLOSE_PARENS) /* No ) */】
@@ -13,9 +17,8 @@
 #@CLOSEBRACKET_OR_BREAK《#?STRUCTURE_EXPECTED!【]●】●#@NO_CloseBRACKET #@BREAK》
    #@SEMICOLON_OR_BREAK《#?STRUCTURE_EXPECTED!【;●】●#@NO_SEMICOLON#@BREAK》
 
-#@BREAK《 #?STRUCTURE_EXPECTED!【#parser(IgnoreRest) #RULE_BROKEN(test)● $ 】  》
-#@IGNORE_REST《 #?STRUCTURE_EXPECTED!【#parser(IgnoreRest) ● $ 】  》
-       #@NULL《 #parser(IgnoreRest) #STRUCTURE_EXPECTED{} 》
+#@ReqSemicolon《#?RULE_BROKEN【#error(-none-)¤【;】●;】》
+
 
 #@NO_ID《#?STRUCTURE_EXPECTED!【/*MISSING:ID*/ #error(EXP_ID)●RefIdentifier】》
 #@NO_DEFID《#?STRUCTURE_EXPECTED!【/*MISSING:DefID*/ #error(EXP_ID)●DefSymbol】》

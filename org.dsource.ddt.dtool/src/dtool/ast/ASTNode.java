@@ -266,14 +266,21 @@ public abstract class ASTNode implements IASTNeoNode {
 		return toStringAsCode();
 	}
 	
-	/** Returns a source representation of this node. There must only be one possible representation. */
+	/** Returns a source representation of this node. 
+	 * If node parsed without errors then this representation should be equal 
+	 * to the original parsed source (disregarding sub-channel tokens).
+	 * Otherwise, if there were errors, this method should still try to print something as close as possible
+	 * to the original parsed source: 
+	 * All tokens that were consumed should be printed.
+	 * Expected tokens that were *not* consumed should preferably be printed as well, but it is not strictly required. 
+	 */
 	public final String toStringAsCode() {
 		ASTCodePrinter cp = new ASTCodePrinter();
 		toStringAsCode(cp);
 		return cp.toString();
 	}
 	
-	@Override
+	/** @see #toStringAsCode() */
 	public void toStringAsCode(ASTCodePrinter cp) {
 		throw assertFail();
 	}

@@ -19,8 +19,6 @@ import descent.internal.compiler.parser.ast.IASTNode;
  */
 public interface IASTNeoNode extends IASTNode, IElement, IVisitable<IASTVisitor> {
 	
-	public void toStringAsCode(ASTCodePrinter astCodePrinter);
-	
 	public ASTNode asNode();
 	
 	@Override

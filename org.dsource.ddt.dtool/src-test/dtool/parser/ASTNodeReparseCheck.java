@@ -34,10 +34,8 @@ import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.parser.AbstractParser.NodeResult;
-import dtool.parser.AbstractParser.ParseHelper;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
-import dtool.tests.DToolTests;
 
 public class ASTNodeReparseCheck {
 	
@@ -142,12 +140,12 @@ public class ASTNodeReparseCheck {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public Void doCheck() {
+	public Void doCheck(boolean doReparsecheck) {
 		assertTrue(nodeUnderTest.getNodeType() != ASTNodeTypes.OTHER);
 		
 		basicSourceRangeCheck();
 		
-		if(DToolTests.TESTS_LITE_MODE) {
+		if(!doReparsecheck) {
 			return VOID;
 		}
 		
@@ -239,8 +237,7 @@ public class ASTNodeReparseCheck {
 		
 		case MISSING_EXPRESSION:
 			if(nodeUnderTest instanceof MissingParenthesesExpression) {
-				ParseHelper parse = snippedParser.new ParseHelper();
-				return reparseCheck(snippedParser.parseExpressionAroundParentheses(parse, true));
+				return simpleReparseCheck("");
 			}
 			return reparseCheck(snippedParser.parseExpression_toMissing());
 		case EXP_REF_RETURN:
@@ -413,6 +410,10 @@ public class ASTNodeReparseCheck {
 			return reparseCheck(snippedParser.parseStatement_ifStart().node);
 		case SIMPLE_VARIABLE_DEF:
 			return reparseCheck(snippedParser.attemptParseSimpleDefVar());
+		case STATEMENT_WHILE:
+			return reparseCheck(snippedParser.parseStatementWhile());
+		case STATEMENT_DO_WHILE:
+			return reparseCheck(snippedParser.parseStatementDoWhile());
 			
 		case OTHER: break;
 		}

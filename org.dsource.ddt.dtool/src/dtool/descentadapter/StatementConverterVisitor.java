@@ -52,7 +52,7 @@ import dtool.ast.statements.StatementCase;
 import dtool.ast.statements.StatementCaseRange;
 import dtool.ast.statements.StatementContinue;
 import dtool.ast.statements.StatementDefault;
-import dtool.ast.statements.StatementDo;
+import dtool.ast.statements.StatementDoWhile;
 import dtool.ast.statements.StatementExp;
 import dtool.ast.statements.StatementFor;
 import dtool.ast.statements.StatementForeach;
@@ -181,9 +181,9 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	@Override
 	public boolean visit(DoStatement element) {
 		return endAdapt(DefinitionConverter.sourceRange(element), 
-			new StatementDo(
-				ExpressionConverter.convert(element.condition, convContext),
-				convertStatement(element.body, convContext)
+			new StatementDoWhile(
+				convertStatement(element.body, convContext),
+				ExpressionConverter.convert(element.condition, convContext)
 			)
 		);
 	}

@@ -1,7 +1,5 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-#@ST__SAMPLE《►#?STRUCTURE_EXPECTED!【 Foo foo; ● DefVariable(RefIdentifier DefSymbol)】》
-
 // TODO: put statements in this block:
 #@ST_BLOCK__SAMPLE《
   ►#?STRUCTURE_EXPECTED!【 { #@ST__SAMPLE } ● BlockStatement(#@ST__SAMPLE)】》
@@ -12,6 +10,10 @@
 
 #@NO_STOrBLOCK《
   ►#?STRUCTURE_EXPECTED!【 /*Required St*/ #error(EXPRULE_StOrBlock) ● BlockStatement 】》
+
+#@ST__SAMPLE《►#?STRUCTURE_EXPECTED!【 Foo foo; ● DefVariable(RefIdentifier DefSymbol)】》
+#@ST__BROKEN《#@BROKEN_ST_BLOCK》
+
 
 // Note: it's usefull that all these four ST_* variations do not reference each other, even though they could. 
 // This is so they can be used in combination with each other and still fully expand cases, 
@@ -26,6 +28,11 @@
 ¤》
 #@ST__NB《
  ►#@NO_STOrBLOCK●
+ ►#@ST_BLOCK__SAMPLE●
+ ►#@ST__SAMPLE●
+ ►#?STRUCTURE_EXPECTED!【 ; ● EmptyStatement 】●
+¤》
+#@ST__NB_NE《
  ►#@ST_BLOCK__SAMPLE●
  ►#@ST__SAMPLE●
  ►#?STRUCTURE_EXPECTED!【 ; ● EmptyStatement 】●

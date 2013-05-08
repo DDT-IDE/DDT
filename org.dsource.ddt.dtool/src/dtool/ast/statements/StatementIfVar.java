@@ -39,7 +39,7 @@ public class StatementIfVar extends Statement {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("if ");
-		cp.append("(", conditionVar, ")");
+		cp.append("(", conditionVar, ") ");
 		cp.append(thenBody, " ");
 		cp.append("else ", elseBody);
 	}

@@ -49,13 +49,13 @@ public class ASTCodePrinter {
 	
 	public void append(IASTNeoNode node) {
 		if(node != null) {
-			node.toStringAsCode(this);
+			node.asNode().toStringAsCode(this);
 		}
 	}
 	
 	public void append(IASTNeoNode node, String sep) {
 		if(node != null) {
-			node.toStringAsCode(this);
+			node.asNode().toStringAsCode(this);
 			assertNotNull(sep);
 			append(sep);
 		}
@@ -64,11 +64,11 @@ public class ASTCodePrinter {
 	public void append(String prefix, IASTNeoNode node) {
 		if(node != null) {
 			append(prefix);
-			node.toStringAsCode(this);
+			node.asNode().toStringAsCode(this);
 		}
 	}
 	
-	public void append(String prefix, IASTNeoNode node, String suffix) {
+	public void append(String prefix, ASTNode node, String suffix) {
 		if(node != null) {
 			append(prefix);
 			node.toStringAsCode(this);
@@ -78,7 +78,7 @@ public class ASTCodePrinter {
 	
 	public void appendNodeOrNullAlt(IASTNeoNode node, String nullAlt) {
 		if(node != null) {
-			node.toStringAsCode(this);
+			node.asNode().toStringAsCode(this);
 		} else {
 			append(nullAlt);
 		}
@@ -104,7 +104,7 @@ public class ASTCodePrinter {
 		if(list != null) {
 			for (int i = 0; i < list.size(); i++) {
 				IASTNeoNode node = list.get(i);
-				append(node);
+				append(node.asNode());
 				if(printLastSep || i != list.size() - 1) {
 					sb.append(sep);
 				}

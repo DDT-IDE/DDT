@@ -5,8 +5,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 
 /** 
- * This class represents a syntax error where an expression delimited by paranthesis was expected.
- * It is used instead of null so that it can provide the source range of where the parenthesis was expected. 
+ * This class represents a syntax error where an expression delimited by parentheses was expected.
+ * It is used instead of null so that it can provide the source range of where the parentheses were expected. 
  */
 public class MissingParenthesesExpression extends Expression {
 	
@@ -27,6 +27,14 @@ public class MissingParenthesesExpression extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("/*( MissingExp )*/");
+	}
+	
+	public static void appendParenthesesExp(ASTCodePrinter cp, Expression expression) {
+		if(expression instanceof MissingParenthesesExpression) {
+			cp.append(expression);
+		} else {
+			cp.append("(", expression, ") ");
+		}
 	}
 	
 }

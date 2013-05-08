@@ -24,9 +24,11 @@ import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.EmptyStatement;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.SimpleVariableDef;
+import dtool.ast.statements.StatementDoWhile;
 import dtool.ast.statements.StatementIf;
 import dtool.ast.statements.StatementIfVar;
 import dtool.ast.statements.StatementLabel;
+import dtool.ast.statements.StatementWhile;
 import dtool.parser.DeeParser.DeeParserState;
 import dtool.util.ArrayView;
 
@@ -99,6 +101,10 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			return parseBlockStatement(true, true);
 		case KW_IF:
 			return parseStatement_ifStart();
+		case KW_WHILE:
+			return parseStatementWhile();
+		case KW_DO:
+			return parseStatementDoWhile();
 		default:
 			break;
 		}
@@ -189,6 +195,43 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		}
 		thisParser().restoreOriginalState(savedState);
 		return null;
+	}
+	
+	public NodeResult<StatementWhile> parseStatementWhile() {
+		if(!tryConsume(DeeTokens.KW_WHILE))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		Expression condition = null;
+		IStatement body = null;
+		parsing: { 
+			condition = parseExpressionAroundParentheses(parse, false, true);
+			if(parse.ruleBroken) break parsing;
+			
+			body = parse.checkResult(parseStatement(RULE_ST_OR_BLOCK));
+		}
+		return parse.resultConclude(new StatementWhile(condition, body));
+	}
+	
+	public NodeResult<StatementDoWhile> parseStatementDoWhile() {
+		if(!tryConsume(DeeTokens.KW_DO))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		IStatement body = null;
+		Expression condition = null;
+		parsing: { 
+			body = parse.checkResult(parseStatement(RULE_ST_OR_BLOCK));
+			if(parse.ruleBroken) break parsing;
+			
+			if(parse.consumeRequired(DeeTokens.KW_WHILE) == false) break parsing;
+			
+			condition = parseExpressionAroundParentheses(parse, false, true);
+			if(parse.ruleBroken) break parsing;
+			
+			parse.consumeRequired(DeeTokens.SEMICOLON);
+		}
+		return parse.resultConclude(new StatementDoWhile(body, condition));
 	}
 	
 }
