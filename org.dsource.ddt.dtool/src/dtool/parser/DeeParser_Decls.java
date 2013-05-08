@@ -68,7 +68,6 @@ import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.definitions.DefinitionFunction;
-import dtool.ast.definitions.DefinitionFunction.AutoReturnReference;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionNamedMixin;
 import dtool.ast.definitions.DefinitionStruct;
@@ -94,6 +93,7 @@ import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerStruct.StructInitEntry;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.AutoReference;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
@@ -250,9 +250,12 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(lookAhead() == nodeListTerminator) {
 				break;
 			}
-			ASTNode decl = parseDeclaration_withInvalid().node;
+			ASTNode decl = parseDeclaration().node;
 			if(decl == null) { 
-				break;
+				if(lookAhead() == DeeTokens.EOF) {
+					break;
+				}
+				decl = parseInvalidElement(RULE_DECLARATION, false);
 			}
 			declarations.add(decl);
 		}
@@ -264,24 +267,17 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public static final ParseRuleDescription RULE_DECLARATION = new ParseRuleDescription("Declaration");
 	
-	public NodeResult<? extends IDeclaration> parseDeclaration_withInvalid() {
-		NodeResult<? extends IDeclaration> declResult = parseDeclaration(true, false, false);
-		IDeclaration declaration = declResult.node;
-		if(declaration == null && lookAhead() != DeeTokens.EOF) {
-			return parseInvalidElement(RULE_DECLARATION, false);
-		}
-		return declResult;
-	}
-	
-	public NodeResult<InvalidSyntaxElement> parseInvalidElement(ParseRuleDescription expectedRule, 
+	public InvalidSyntaxElement parseInvalidElement(ParseRuleDescription expectedRule, 
 		boolean inStatementList) {
 		Token badToken = consumeLookAhead().token;
 		ParseHelper parse = new ParseHelper();
 		parse.storeBreakError(createSyntaxError(expectedRule));
-		return parse.resultConclude(new InvalidSyntaxElement(inStatementList, badToken));
+		return parse.conclude(new InvalidSyntaxElement(inStatementList, badToken));
 	}
 	
-	/** This rule always returns a node, except only on EOF where it returns null. */
+	public NodeResult<? extends IDeclaration> parseDeclaration() {
+		return parseDeclaration(true, false, false);
+	}
 	public NodeResult<? extends IDeclaration> parseDeclaration(boolean acceptEmptyDecl, boolean precedingIsSTCAttrib) {
 		return parseDeclaration(acceptEmptyDecl, precedingIsSTCAttrib, false);
 	}
@@ -466,10 +462,14 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	protected NodeResult<DefinitionFunction> parseAutoReturnFunction_start() {
-		LexElement autoToken = consumeLookAhead(DeeTokens.KW_AUTO);
-		AutoReturnReference autoReturn = conclude(srOf(autoToken, new AutoReturnReference()));
+		AutoReference autoReturn = parseAutoReference();
 		LexElement id = consumeLookAhead(DeeTokens.IDENTIFIER);
 		return parseDefinitionFunction_afterIdentifier(autoReturn, id);
+	}
+	
+	public AutoReference parseAutoReference() {
+		LexElement autoToken = consumeLookAhead(DeeTokens.KW_AUTO);
+		return conclude(srOf(autoToken, new AutoReference()));
 	}
 	
 	/* ----------------------------------------- */
@@ -832,12 +832,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return parse.resultConclude(new FunctionBody(bodyBlock));
 		}
 		return parse.resultConclude(new InOutFunctionBody(isOutIn, inBlock, outBlock, bodyBlock));
-	}
-	
-	protected BlockStatement createMissingBlock(ParseRuleDescription expectedRule) {
-		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
-		int nodeStart = getLexPosition();
-		return conclude(error, srToPosition(nodeStart, new BlockStatement()));
 	}
 	
 	public NodeResult<BlockStatement> parseBlockStatement_toMissing() {
@@ -1570,7 +1564,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) break parsing;
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
-			body = parse.checkResult(parseBlockStatement_toMissing(true));
+			body = parse.checkResult(parseBlockStatement_toMissing(false));
 		}
 		
 		return parse.resultConclude(new DeclarationInvariant(body));
@@ -1580,7 +1574,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		consumeLookAhead(DeeTokens.KW_UNITTEST);
 		ParseHelper parse = new ParseHelper();
 		
-		BlockStatement body = parse.checkResult(parseBlockStatement_toMissing(true));
+		BlockStatement body = parse.checkResult(parseBlockStatement_toMissing(false));
 		
 		return parse.resultConclude(new DeclarationUnitTest(body));
 	}

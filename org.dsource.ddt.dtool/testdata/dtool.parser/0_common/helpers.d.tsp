@@ -1,12 +1,12 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ExpIdentifier【ExpReference(RefIdentifier)】
 
-#@CLOSEPARENS_OR_NO【)●#error(EXP_CLOSE_PARENS) /* No ) */】
-
  #@NO_ClosePARENS《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS)  /*No close brace */】 》
   #@NO_CloseBRACE《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACE)  /*No close bracket*/】 》
 #@NO_CloseBRACKET《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACKET)/*No close parens */】 》
    #@NO_SEMICOLON《#?STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON) /*No semicolon */】 》
+
+#@CLOSEPARENS_OR_NO【)●#error(EXP_CLOSE_PARENS) /* No ) */】
 
  #@CLOSEPARENS_OR_BREAK《#?STRUCTURE_EXPECTED!【)●】●#@NO_ClosePARENS #@BREAK》
   #@CLOSEBRACE_OR_BREAK《#?STRUCTURE_EXPECTED!【}●】●#@NO_CloseBRACE #@BREAK》
@@ -15,6 +15,7 @@
 
 #@BREAK《 #?STRUCTURE_EXPECTED!【#parser(IgnoreRest) #RULE_BROKEN(test)● $ 】  》
 #@IGNORE_REST《 #?STRUCTURE_EXPECTED!【#parser(IgnoreRest) ● $ 】  》
+       #@NULL《 #parser(IgnoreRest) #STRUCTURE_EXPECTED{} 》
 
 #@NO_ID《#?STRUCTURE_EXPECTED!【/*MISSING:ID*/ #error(EXP_ID)●RefIdentifier】》
 #@NO_DEFID《#?STRUCTURE_EXPECTED!【/*MISSING:DefID*/ #error(EXP_ID)●DefSymbol】》

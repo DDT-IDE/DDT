@@ -40,7 +40,7 @@ public enum ASTNodeTypes {
 	REF_TYPEOF,
 	REF_MODIFIER,
 	
-	REF_AUTO_RETURN,
+	REF_AUTO,
 	
 	/* ---------------------------------- */
 	
@@ -161,5 +161,8 @@ public enum ASTNodeTypes {
 	EMPTY_STATEMENT,
 	
 	STATEMENT_LABEL,
+	STATEMENT_IF,
+	STATEMENT_IF_VAR,
+	SIMPLE_VARIABLE_DEF,
 	;
 }

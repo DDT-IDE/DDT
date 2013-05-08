@@ -2,12 +2,10 @@ package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertNotNull_;
 
-import java.util.Collection;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
 import dtool.ast.declarations.IDeclaration;
@@ -16,7 +14,6 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -61,37 +58,6 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Function;
-	}
-	
-	public static final class AutoReturnReference extends Reference {
-		
-		public AutoReturnReference() {}
-		
-		@Override
-		public ASTNodeTypes getNodeType() {
-			return ASTNodeTypes.REF_AUTO_RETURN;
-		}
-		
-		@Override
-		public void accept0(IASTVisitor visitor) {
-			visitor.visit(this);
-			visitor.endVisit(this);
-		}
-		
-		@Override
-		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.append("auto");
-		}
-		
-		@Override
-		public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
-			return null;
-		}
-		
-		@Override
-		public boolean canMatch(DefUnitDescriptor defunit) {
-			return false;
-		}
 	}
 	
 	public static String toStringParametersForSignature(ArrayView<IFunctionParameter> params) {

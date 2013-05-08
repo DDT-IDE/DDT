@@ -94,8 +94,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(AsmBlock elem) {
 		return endAdapt(DefinitionConverter.sourceRange(elem),
 			new BlockStatement(
-				convertStatements(elem),
-				true // TODO: How do we know if it is curly or not?
+				convertStatements(elem)
 			)
 		);
 	}
@@ -103,8 +102,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.CompoundStatement elem) {
 		return endAdapt(DefinitionConverter.sourceRange(elem),
 			new BlockStatement(
-				convertStatements(elem),
-				false // TODO: How do we know if it is curly or not?
+				convertStatements(elem)
 			)
 		);
 	}
@@ -313,8 +311,8 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 
 		return endAdapt(DefinitionConverter.sourceRange(element),
 			new BlockStatement(
-				statements,
-				hasCurlyBraces
+				statements
+				//,hasCurlyBraces
 			)
 		);
 	}

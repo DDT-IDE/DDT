@@ -34,12 +34,12 @@
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)  #error(SE_Statement) public #@BREAK  { void foo ; }
+#PARSE(STATEMENT)  #@NULL public { void foo ; }
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(STATEMENT)    pragma(foo) void foo;
 #STRUCTURE_EXPECTED: DeclarationPragma(Symbol DefinitionVariable(RefPrimitive DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)  #error(SE_Statement) extern #@BREAK  (C) { void foo ; }
+#PARSE(STATEMENT)  #@NULL extern(C) { void foo ; }
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib
 #PARSE(STATEMENT) const { void foo ; }
 
@@ -52,7 +52,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  TODO static if, conditionals
 #PARSE(STATEMENT)   static #error(EXPRULE_DeclOrBlock) #@BREAK if ( #@EXP_ASSIGN__LITE)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  TODO static if, conditionals
-#PARSE(STATEMENT)  #error(SE_Statement) version #@BREAK  (unix) { } else { } 
+#PARSE(STATEMENT)  #@NULL  version(unix) { } else { } 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(STATEMENT)     #@MIXIN_PRF《#?STRUCTURE_EXPECTED!【mixin ●】 ●/++/》 template tpl() #@DECLS_BLOCK__SAMPLE
@@ -68,7 +68,7 @@
 #STRUCTURE_EXPECTED:  DefinitionNamedMixin(#@TYPEREFS_NB__LITE DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(STATEMENT)  #error(SE_Statement) invariant #@BREAK () #@ST_BLOCK__SAMPLE
+#PARSE(STATEMENT)  #@NULL invariant () #@ST_BLOCK__SAMPLE
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(STATEMENT)  #error(SE_Statement) unittest #@BREAK #@ST_BLOCK__SAMPLE
+#PARSE(STATEMENT)  #@NULL unittest #@ST_BLOCK__SAMPLE
 

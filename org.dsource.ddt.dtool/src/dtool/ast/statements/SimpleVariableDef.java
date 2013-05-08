@@ -1,7 +1,6 @@
-package dtool.ast.definitions;
+package dtool.ast.statements;
 
 import static dtool.util.NewUtils.assertNotNull_;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
@@ -9,33 +8,27 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeUtil;
+import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
-import dtool.util.ArrayView;
 
-public class FunctionParameter extends DefUnit implements IFunctionParameter {
+public class SimpleVariableDef extends DefUnit {
 	
-	public final FnParameterAttributes paramAttribs;
 	public final Reference type;
 	public final Expression defaultValue;
-	public final boolean isVariadic;
 	
-	public FunctionParameter(ArrayView<FunctionParamAttribKinds> attribList, Reference type, ProtoDefSymbol defId, 
-		Expression defaultValue, boolean isVariadic) {
+	public SimpleVariableDef(Reference type, ProtoDefSymbol defId, Expression defaultValue) {
 		super(defId);
-		this.paramAttribs = FnParameterAttributes.create(attribList);
 		this.type = parentize(assertNotNull_(type));
 		this.defaultValue = parentize(defaultValue);
-		assertTrue(!isVariadic || defaultValue == null);
-		this.isVariadic = isVariadic;
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.FUNCTION_PARAMETER;
+		return ASTNodeTypes.SIMPLE_VARIABLE_DEF;
 	}
 	
 	@Override
@@ -51,16 +44,9 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		paramAttribs.toStringAsCode(cp);
 		cp.append(type, " ");
 		cp.append(defname);
 		cp.append(" = ", defaultValue);
-		cp.append(isVariadic, "...");
-	}
-	
-	@Override
-	public boolean isVariadic() {
-		return isVariadic;
 	}
 	
 	@Override
@@ -75,34 +61,6 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 			return null;
 		return defunits.iterator().next().getMembersScope(moduleResolver);
 		//return defunit.getMembersScope();
-	}
-	
-	@Override
-	public String toStringForHoverSignature() {
-		return type.toStringAsElement() + " " + getName();
-	}
-	
-	@Override
-	public String toStringForCodeCompletion() {
-		return getName() + "   " + type.toStringAsElement() + " - "
-				+ NodeUtil.getOuterDefUnit(this).toStringAsElement();
-	}
-	
-	@Override
-	public String toStringAsFunctionSignaturePart() {
-		return type.toStringAsElement() + " " + getName();
-	}
-	
-	@Override
-	public String toStringAsFunctionSimpleSignaturePart() {
-		return type.toStringAsElement();
-	}
-	
-	@Override
-	public String toStringInitializer() {
-		if(defaultValue == null)
-			return null;
-		return defaultValue.toStringAsElement();
 	}
 	
 }

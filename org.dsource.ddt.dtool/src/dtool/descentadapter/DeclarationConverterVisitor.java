@@ -404,7 +404,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			IStatement[] stmts = (stmt == null) ? new IStatement[0] : new IStatement[] { stmt };
 			return endAdapt(connect(DefinitionConverter.sourceRange(elem),
 				new DeclarationUnitTest(
-					connect(DefinitionConverter.sourceRange(elem), new BlockStatement(ArrayView.create(stmts), false)))
+					connect(DefinitionConverter.sourceRange(elem), new BlockStatement(ArrayView.create(stmts))))
 				)
 			);
 		}

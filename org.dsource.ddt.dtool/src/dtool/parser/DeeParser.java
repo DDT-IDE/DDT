@@ -41,7 +41,7 @@ public class DeeParser extends DeeParser_Statements {
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_REFERENCE.name)) {
 			result = new DeeParserResult(parseTypeReference(), this);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_DECLARATION.name)) {
-			result = new DeeParserResult(parseDeclaration_withInvalid(), this);
+			result = new DeeParserResult(parseDeclaration(), this);
 		} else if(parseRule.equals(RULE_TYPE_OR_EXP) || parseRule.equalsIgnoreCase("TypeOrExp") ) {
 			result = new DeeParserResult(parseTypeOrExpression(true), this);
 		} else if(parseRule.equalsIgnoreCase("ExpOrType") ) {

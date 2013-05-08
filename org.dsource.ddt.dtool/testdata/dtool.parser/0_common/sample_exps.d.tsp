@@ -139,7 +139,7 @@ EXP__NO_UNAMBIG_REFS : exclude cases that can only be cleanly parsed as refs
   ►#?STRUCTURE_EXPECTED!【0xFF | 0xAA●ExpInfix(? ?)】●
   ►#?STRUCTURE_EXPECTED!【1 > "2" && 3●ExpInfix(ExpInfix(? String) ?)】●
   ►#?STRUCTURE_EXPECTED!【2 || "3" < 4●ExpInfix(? ExpInfix(String ?))】●
-  ►#?STRUCTURE_EXPECTED!【foo *** ptr ●ExpInfix(ExpReference(?) ExpPrefix(ExpPrefix(ExpReference(RefIdentifier))) )】●
+  ►#?STRUCTURE_EXPECTED!【foo *** ptr #EXP__DECL_AMBIG(flag)●ExpInfix(ExpReference(?) ExpPrefix(ExpPrefix(ExpReference(RefIdentifier))) )】●
   
   ►#@EXP_OROR__LITE●
 ¤》

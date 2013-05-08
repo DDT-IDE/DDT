@@ -1,5 +1,6 @@
 package dtool.parser;
 
+import static dtool.tests.CommonTestUtils.assertAreEqual;
 import static dtool.util.NewUtils.assertCast;
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
@@ -12,8 +13,8 @@ import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAttrib;
-import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
+import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefinitionEnum.NoEnumBody;
 import dtool.ast.definitions.Module;
@@ -190,15 +191,16 @@ public class ASTNodeReparseCheck {
 			return reparseCheck((ASTNode) snippedParser.parseImportSelectiveSelection());
 		
 		case DECLARATION_EMTPY:
-			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
+			return reparseCheck(snippedParser.parseDeclaration());
 		case INCOMPLETE_DECLARATION:
-			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
+			return reparseCheck(snippedParser.parseDeclaration());
 		case INVALID_SYNTAX:
 			if(((InvalidSyntaxElement) nodeUnderTest).isStatementContext) {
-				return reparseCheck(snippedParser.parseStatementDeclaration());
+				assertAreEqual(snippedParser.parseStatement().node, null);
 			} else {
-				return reparseCheck(snippedParser.parseDeclaration_withInvalid());
+				assertAreEqual(snippedParser.parseDeclaration().node, null);
 			}
+			return VOID;
 		
 		/* ---------------------------------- */
 		
@@ -230,7 +232,7 @@ public class ASTNodeReparseCheck {
 			reparseCheck(snippedParser.parseTypeReference());
 			return VOID;
 		}
-		case REF_AUTO_RETURN:
+		case REF_AUTO:
 			return simpleReparseCheck("auto");
 		
 		/* ---------------------------------- */
@@ -331,7 +333,7 @@ public class ASTNodeReparseCheck {
 		/* ---------------------------------- */
 		
 		case DEFINITION_VARIABLE:
-			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
+			return reparseCheck(snippedParser.parseDeclaration());
 		case DEFINITION_VAR_FRAGMENT:
 			return reparseCheck(snippedParser.parseVarFragment(false));
 		case DEFINITION_AUTO_VARIABLE:
@@ -350,7 +352,7 @@ public class ASTNodeReparseCheck {
 			
 		case DEFINITION_FUNCTION:
 		case DEFINITION_CONSTRUCTOR:
-			return reparseCheck(snippedParser.parseDeclaration_withInvalid());
+			return reparseCheck(snippedParser.parseDeclaration());
 		case FUNCTION_PARAMETER:
 		case NAMELESS_PARAMETER:
 		case VAR_ARGS_PARAMETER:
@@ -406,6 +408,11 @@ public class ASTNodeReparseCheck {
 			return simpleReparseCheck(";");
 		case STATEMENT_LABEL:
 			return reparseCheck(snippedParser.parseStatementLabel_start().node);
+		case STATEMENT_IF:
+		case STATEMENT_IF_VAR:
+			return reparseCheck(snippedParser.parseStatement_ifStart().node);
+		case SIMPLE_VARIABLE_DEF:
+			return reparseCheck(snippedParser.attemptParseSimpleDefVar());
 			
 		case OTHER: break;
 		}

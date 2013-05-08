@@ -31,7 +31,7 @@ DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS_SAMPLE1 #@FN_PARAMS_SAMPL
 DefFunction(#@TYPE_REFS__NO_BROKEN DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ auto ref
 #PARSE(DECLARATION)  auto func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE 
-#STRUCTURE_EXPECTED: DefFunction(AutoReturnReference DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )
+#STRUCTURE_EXPECTED: DefFunction(AutoReference DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ 0 args
 

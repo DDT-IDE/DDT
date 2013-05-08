@@ -23,17 +23,14 @@ import dtool.util.ArrayView;
 public class BlockStatement extends Statement implements IScopeNode, IFunctionBody {
 	
 	public final ArrayView<IStatement> statements;
-	public final boolean hasCurlyBraces;
 	
-	public BlockStatement(ArrayView<IStatement> statements, boolean hasCurlyBraces) {
+	public BlockStatement(ArrayView<IStatement> statements) {
 		this.statements = parentizeI(assertNotNull_(statements));
-		this.hasCurlyBraces = hasCurlyBraces;
 	}
 	
 	/** This represents a missing block */
 	public BlockStatement() {
 		this.statements = null;
-		this.hasCurlyBraces = false;
 	}
 	
 	public final ArrayView<ASTNode> statements_asNodes() {
@@ -55,9 +52,13 @@ public class BlockStatement extends Statement implements IScopeNode, IFunctionBo
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(hasCurlyBraces, "{");
-		cp.appendList("\n", statements_asNodes(), "\n", "\n", " ");
-		cp.append(hasCurlyBraces, "}");
+		if(statements == null) {
+			cp.append(" ");
+			return;
+		}
+		cp.append("{");
+		cp.appendList("\n", statements_asNodes(), "\n", "\n");
+		cp.append("}");
 	}
 	
 	@Override

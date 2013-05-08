@@ -367,6 +367,8 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			errorParam = DeeParser.RULE_TYPE_OR_EXP.name;
 		} else if(errorParam.equals("TplArg")) {
 			errorParam = DeeParser.RULE_TPL_SINGLE_ARG.name;
+		} else if(errorParam.equals("StOrBlock")) {
+			errorParam = DeeParser.RULE_ST_OR_BLOCK.name;
 		}
 		return errorParam;
 	}

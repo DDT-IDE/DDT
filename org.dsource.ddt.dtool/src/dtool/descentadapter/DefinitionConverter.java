@@ -33,7 +33,6 @@ import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionFunction;
-import dtool.ast.definitions.DefinitionFunction.AutoReturnReference;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
@@ -41,6 +40,7 @@ import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.references.AutoReference;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IFunctionBody;
@@ -223,7 +223,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		Assert.isTrue(elem.parameters == null);
 		
 		Reference rettype = (elemTypeFunc.next == null) ? 
-				new AutoReturnReference() : 
+				new AutoReference() : 
 				ReferenceConverter.convertType(elemTypeFunc.next, convContext);
 		
 		DefUnitTuple defunitData = DefinitionConverter.convertDsymbol(elem, convContext);

@@ -1,7 +1,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Invalid elements in declaration:
 #error(SE_decl) ) ;
 #error(SE_decl) ]
-#error(SE_decl) }
+#error(SE_decl) while
 
 #STRUCTURE_EXPECTED:
 InvalidSyntaxElement DeclarationEmpty
@@ -9,8 +9,7 @@ InvalidSyntaxElement
 InvalidSyntaxElement
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #error(SE_decl) while #@BREAK (true) ; 
-#STRUCTURE_EXPECTED:  InvalidSyntaxElement
+#PARSE(DECLARATION)   #@NULL while (true) ; 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of reference start in declaration
 foo #error(EXP_IDENTIFIER) ;
 #STRUCTURE_EXPECTED: IncompleteDeclaration(?)

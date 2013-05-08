@@ -1,33 +1,35 @@
 package dtool.ast.statements;
 
+import static dtool.util.NewUtils.assertNotNull_;
+
+
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.expressions.Expression;
 
-public class StatementIf extends Statement {
+public class StatementIfVar extends Statement {
 	
-	public final Expression condition;
+	public final SimpleVariableDef conditionVar;
 	public final IStatement thenBody;
 	public final IStatement elseBody;
 	
-	public StatementIf(Expression condition, IStatement thenBody, IStatement elseBody) {
-		this.condition = parentize(condition);
+	public StatementIfVar(SimpleVariableDef conditionVar, IStatement thenBody, IStatement elseBody) {
+		this.conditionVar = parentize(assertNotNull_(conditionVar));
 		this.thenBody = parentizeI(thenBody);
 		this.elseBody = parentizeI(elseBody);
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.STATEMENT_IF;
+		return ASTNodeTypes.STATEMENT_IF_VAR;
 	}
 	
 	@Override
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, condition);
+			TreeVisitor.acceptChildren(visitor, conditionVar);
 			TreeVisitor.acceptChildren(visitor, thenBody);
 			TreeVisitor.acceptChildren(visitor, elseBody);
 		}
@@ -37,7 +39,7 @@ public class StatementIf extends Statement {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("if ");
-		cp.append("(", condition, ")");
+		cp.append("(", conditionVar, ")");
 		cp.append(thenBody, " ");
 		cp.append("else ", elseBody);
 	}

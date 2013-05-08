@@ -33,6 +33,7 @@ import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpPostfixOperator;
+import dtool.ast.references.AutoReference;
 import dtool.parser.DeeParserResult.ParserErrorComparator;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
@@ -199,6 +200,8 @@ public class DeeParserTest extends CommonTestUtils {
 			return ExpPostfixOperator.class.getSimpleName();
 		} else if(expectedNameRaw.equals("AliasFragment")) {
 			return DefinitionAliasFragment.class.getSimpleName();
+		} else if(expectedNameRaw.equals("AutoRef")) {
+			return AutoReference.class.getSimpleName();
 		}
 		
 		return replaceRegexFirstOccurrence(expectedNameRaw, 
