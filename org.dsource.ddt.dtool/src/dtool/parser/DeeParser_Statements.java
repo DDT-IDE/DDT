@@ -25,6 +25,7 @@ import dtool.ast.statements.EmptyStatement;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.SimpleVariableDef;
 import dtool.ast.statements.StatementDoWhile;
+import dtool.ast.statements.StatementFor;
 import dtool.ast.statements.StatementIf;
 import dtool.ast.statements.StatementIfVar;
 import dtool.ast.statements.StatementLabel;
@@ -78,7 +79,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 	public static final ParseRuleDescription RULE_STATEMENT = new ParseRuleDescription("Statement");
 	public static final ParseRuleDescription RULE_ST_OR_BLOCK = new ParseRuleDescription("Statement or Block");
 	
-	protected NodeResult<? extends IStatement> parseStatement(ParseRuleDescription expected) {
+	protected NodeResult<? extends IStatement> parseStatement_toMissing(ParseRuleDescription expected) {
 		NodeResult<? extends IStatement> stResult = parseStatement();
 		if(stResult.node == null) {
 			return result(false, createMissingBlock(expected));
@@ -105,6 +106,8 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			return parseStatementWhile();
 		case KW_DO:
 			return parseStatementDoWhile();
+		case KW_FOR:
+			return parseStatementFor();
 		default:
 			break;
 		}
@@ -151,11 +154,11 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			}
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
 			
-			thenBody = parse.checkResult(parseStatement(RULE_ST_OR_BLOCK));
+			thenBody = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
 			if(parse.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.KW_ELSE)) {
-				elseBody = parse.checkResult(parseStatement(RULE_ST_OR_BLOCK));
+				elseBody = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
 			}
 		}
 		
@@ -208,7 +211,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			condition = parseExpressionAroundParentheses(parse, false, true);
 			if(parse.ruleBroken) break parsing;
 			
-			body = parse.checkResult(parseStatement(RULE_ST_OR_BLOCK));
+			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
 		}
 		return parse.resultConclude(new StatementWhile(condition, body));
 	}
@@ -221,7 +224,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		IStatement body = null;
 		Expression condition = null;
 		parsing: { 
-			body = parse.checkResult(parseStatement(RULE_ST_OR_BLOCK));
+			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
 			if(parse.ruleBroken) break parsing;
 			
 			if(parse.consumeRequired(DeeTokens.KW_WHILE) == false) break parsing;
@@ -232,6 +235,36 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			parse.consumeRequired(DeeTokens.SEMICOLON);
 		}
 		return parse.resultConclude(new StatementDoWhile(body, condition));
+	}
+	
+	protected NodeResult<StatementFor> parseStatementFor() {
+		if(!tryConsume(DeeTokens.KW_FOR))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		IStatement init = null;
+		Expression condition = null;
+		Expression increment = null;
+		IStatement body = null;
+		
+		parsing: { 
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) break parsing;
+			
+			init = parse.checkResult(parseStatement_toMissing(RULE_STATEMENT));
+			if(parse.ruleBroken) break parsing;
+			
+			condition = parse.checkResult(parseExpression());
+			
+			if(parse.consumeExpected(DeeTokens.SEMICOLON)) {
+				increment = parse.checkResult(parseExpression());
+			}
+			
+			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
+			
+			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+		}
+		
+		return parse.resultConclude(new StatementFor(init, condition, increment, body));
 	}
 	
 }

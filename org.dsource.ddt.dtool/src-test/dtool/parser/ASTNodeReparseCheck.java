@@ -414,6 +414,8 @@ public class ASTNodeReparseCheck {
 			return reparseCheck(snippedParser.parseStatementWhile());
 		case STATEMENT_DO_WHILE:
 			return reparseCheck(snippedParser.parseStatementDoWhile());
+		case STATEMENT_FOR:
+			return reparseCheck(snippedParser.parseStatementFor());
 			
 		case OTHER: break;
 		}

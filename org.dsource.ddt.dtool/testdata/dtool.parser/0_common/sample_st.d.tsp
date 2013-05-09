@@ -6,10 +6,10 @@
 #@NO_ST_BLOCK《
   ►#?STRUCTURE_EXPECTED!【 /*Required StBlock*/ #error(EXPRULE_Block) ● BlockStatement 】》
 #@BROKEN_ST_BLOCK《
-  ►#?STRUCTURE_EXPECTED!【 { #@ST__SAMPLE #error(EXP_CLOSE_BRACE) #@BREAK● BlockStatement(#@ST__SAMPLE $】》
+  ►#?STRUCTURE_EXPECTED!【 { Bar barX; #error(EXP_CLOSE_BRACE) #@BREAK● BlockStatement(#@ST__SAMPLE $】》
 
-#@NO_STOrBLOCK《
-  ►#?STRUCTURE_EXPECTED!【 /*Required St*/ #error(EXPRULE_StOrBlock) ● BlockStatement 】》
+#@NO_STOrBLOCK《►#?STRUCTURE_EXPECTED!【 /*Required St*/ #error(EXPRULE_StOrBlock) ● BlockStatement 】》
+#@NO_ST《 ►#?STRUCTURE_EXPECTED!【 /*Required St*/ #error(EXPRULE_Statement) ● BlockStatement 】》
 
 #@ST__SAMPLE《►#?STRUCTURE_EXPECTED!【 Foo foo; ● DefVariable(RefIdentifier DefSymbol)】》
 #@ST__BROKEN《#@BROKEN_ST_BLOCK》

@@ -14,6 +14,7 @@ import static dtool.tests.DToolTestResources.getTestResource;
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.isValidStringRange;
 import static dtool.util.NewUtils.replaceRange;
+import static dtool.util.NewUtils.substringRemoveEnd;
 import static java.util.Collections.unmodifiableMap;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -158,10 +159,10 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		
 		final String DEFAULT_VALUE = "##DEFAULT VALUE";
 		
-		final String fullSource = testSource.source;
+		String fullSource = testSource.source;
 		final LexElementSource lexSource = new DeeParser(fullSource).lexSource;
 		
-		String parsedSource = fullSource;
+		String expectedParsedSource = fullSource;
 		String expectedRemainingSource = null;
 		String parseRule = null;
 		
@@ -185,10 +186,24 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 				ignoreFurtherErrorMDs = true;
 			} else if(mde.name.equals("PARSE")){
 				parseRule = mde.value;
+			} else if(mde.name.equals("parser") && areEqual(mde.value, "CutRest")){
+				int pos = mde.getOffsetFromNoLength();
+				
+				if(expectedRemainingSource == null) {
+					fullSource = fullSource.substring(0, pos);
+					expectedParsedSource = fullSource;
+					expectedRemainingSource = "";
+				} else {
+					int endLengthToRemove = fullSource.length() - pos;
+					fullSource = fullSource.substring(0, pos);
+					expectedRemainingSource = substringRemoveEnd(expectedRemainingSource, endLengthToRemove);
+				}
+				ignoreFurtherErrorMDs = true;
+				
 			} else if(mde.name.equals("parser") && areEqual(mde.value, "IgnoreRest")){
 				int pos = mde.getOffsetFromNoLength();
 				if(expectedRemainingSource == null) {
-					parsedSource = fullSource.substring(0, pos);
+					expectedParsedSource = fullSource.substring(0, pos);
 					expectedRemainingSource = fullSource.substring(pos);
 					ignoreFurtherErrorMDs = true;
 				}
@@ -197,7 +212,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 				expectedStructure = parseExpectedStructure(mde.sourceValue);
 			} else if(mde.name.equals("error") || mde.name.equals("ERROR")){
 				if(areEqual(mde.value, "-none-")) {
-					int offset = ignoreFurtherErrorMDs ? parsedSource.length() : mde.offset;
+					int offset = ignoreFurtherErrorMDs ? expectedParsedSource.length() : mde.offset;
 						
 					errorCorrectionMetadata.add(new StringCorrection(offset, 0, mde.sourceValue));
 					continue;
@@ -242,7 +257,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		
 		// Do error correction for toStringAsCode
 		if(expectedPrintedSource == DEFAULT_VALUE) {
-			expectedPrintedSource = calcExpectedToStringAsCode(parsedSource, errorCorrectionMetadata);
+			expectedPrintedSource = calcExpectedToStringAsCode(expectedParsedSource, errorCorrectionMetadata);
 		}
 		
 		if(allowAnyErrors) {

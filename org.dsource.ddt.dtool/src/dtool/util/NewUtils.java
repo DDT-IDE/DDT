@@ -119,8 +119,8 @@ public class NewUtils {
 		}
 	}
 	
-	public static String subStringFromEnd(String string, int length) {
-		return string.substring(0, string.length() - length);
+	public static String substringRemoveEnd(String string, int lengthFromEnd) {
+		return string.substring(0, string.length() - lengthFromEnd);
 	}
 	
 	public static boolean isValidStringRange(String string, int startIndex, int length) {

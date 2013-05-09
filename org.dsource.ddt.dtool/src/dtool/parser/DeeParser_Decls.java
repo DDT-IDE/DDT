@@ -543,8 +543,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 		}
 		
-		NodeResult<Expression> expResult = parseAssignExpression_Rule(createMissing, 
-			createMissing ? RULE_INITIALIZER : null);
+		NodeResult<Expression> expResult = createMissing ? 
+			parseAssignExpression_toMissing(true, RULE_INITIALIZER) : parseAssignExpression();
 		Expression exp = expResult.node;
 		if(exp == null) {
 			return nullResult();

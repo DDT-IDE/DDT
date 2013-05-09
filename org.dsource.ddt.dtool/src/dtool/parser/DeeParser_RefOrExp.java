@@ -315,38 +315,38 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	
 	public static final InfixOpType ANY_OPERATOR = InfixOpType.COMMA;
 	
-	public NodeResult<Expression> parseExpression() {
+	
+	public final NodeResult<Expression> parseExpression() {
 		return parseExpression(ANY_OPERATOR);
 	}
+	public final NodeResult<Expression> parseExpression_toMissing(boolean breakOnMissing, 
+		ParseRuleDescription expectedRule) {
+		return nullExpToMissingResult(parseExpression(), breakOnMissing, expectedRule);
+	}
+	public final Expression parseExpression_toMissing() {
+		return nullExpToMissing(parseExpression().node, RULE_EXPRESSION);
+	}
+	
+	
+	public final NodeResult<Expression> parseAssignExpression() {
+		return parseExpression(InfixOpType.ASSIGN);
+	}
+	public final NodeResult<Expression> parseAssignExpression_toMissing(boolean breakOnMissing, 
+		ParseRuleDescription expectedRule) {
+		return nullExpToMissingResult(parseAssignExpression(), breakOnMissing, expectedRule);
+	}
+	public final Expression parseAssignExpression_toMissing() {
+		return nullExpToMissing(parseAssignExpression().node, RULE_EXPRESSION);
+	}
+	
 	
 	protected NodeResult<Expression> parseExpression(InfixOpType precedenceLimit) {
 		return new ParseRule_TypeOrExp().parse(precedenceLimit).toExpression();
 	}
-	
-	public Expression parseExpression_toMissing() {
-		return nullExpToMissing(parseExpression().node);
-	}
-	public Expression parseExpression_toMissing(InfixOpType precedenceLimit) {
-		return nullExpToMissing(parseExpression(precedenceLimit).node);
+	protected Expression parseExpression_toMissing(InfixOpType precedenceLimit) {
+		return nullExpToMissing(parseExpression(precedenceLimit).node, RULE_EXPRESSION);
 	}
 	
-	public NodeResult<Expression> parseAssignExpression() {
-		return parseExpression(InfixOpType.ASSIGN);
-	}
-	
-	public Expression parseAssignExpression_toMissing() {
-		return nullExpToMissing(parseAssignExpression().node);
-	}
-	
-	public NodeResult<Expression> parseAssignExpression_Rule(boolean breakOnMissing, 
-		ParseRuleDescription expectedRule) {
-		NodeResult<Expression> expResult = parseAssignExpression();
-		if(expResult.node != null) {
-			return expResult;
-		}
-		Expression missingNode = expectedRule != null ? createMissingExpression(expectedRule) : null;
-		return result(expResult.ruleBroken || breakOnMissing, missingNode);
-	}
 	
 	public NodeResult<Resolvable> parseExpressionOrType() {
 		return parseTypeOrExpression(ANY_OPERATOR, false);
@@ -368,12 +368,25 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 		return new ParseRule_TypeOrExp().parse(precedenceLimit);
 	}
 	
+	/* ---------------- Missing stuff ---------------- */
+	
 	protected Expression nullExpToMissing(Expression exp) {
-		return exp != null ? exp : createMissingExpression(RULE_EXPRESSION);
+		return nullExpToMissing(exp, RULE_EXPRESSION);
 	}
+	protected Expression nullExpToMissing(Expression exp, ParseRuleDescription expectedRule) {
+		return exp != null ? exp : createMissingExpression(expectedRule);
+	}
+	
 	protected Resolvable nullTypeOrExpToMissing(Resolvable exp) {
 		return exp != null ? exp : createMissingExpression(RULE_TYPE_OR_EXP);
 	}
+	
+	public final NodeResult<Expression> nullExpToMissingResult(NodeResult<Expression> expResult, 
+		boolean breakOnMissing, ParseRuleDescription expectedRule) {
+		return expResult.node != null ? expResult :
+			result(expResult.ruleBroken || breakOnMissing, createMissingExpression(expectedRule));
+	}
+
 	
 	protected Expression createMissingExpression(ParseRuleDescription expectedRule) {
 		return createTypeOrExpMissingExp(TypeOrExpStatus.EXP, expectedRule, true);
@@ -1537,7 +1550,7 @@ protected class ParseRule_TypeOrExp {
 				
 				if(tryConsume(DeeTokens.LAMBDA)) {
 					
-					Expression bodyExp = parse.checkResult(parseAssignExpression_Rule(true, RULE_EXPRESSION));
+					Expression bodyExp = parse.checkResult(parseAssignExpression_toMissing(true, RULE_EXPRESSION));
 					return parse.resultConclude(new ExpLambda(fnParams, fnAttributes, bodyExp));
 				}
 				
@@ -1554,7 +1567,7 @@ protected class ParseRule_TypeOrExp {
 		consumeLookAhead(DeeTokens.LAMBDA);
 		
 		ParseHelper parse = new ParseHelper(defId.getStartPos());
-		Expression bodyExp = parse.checkResult(parseAssignExpression_Rule(true, RULE_EXPRESSION));
+		Expression bodyExp = parse.checkResult(parseAssignExpression_toMissing(true, RULE_EXPRESSION));
 		
 		SimpleLambdaDefUnit lambdaDefId = conclude(defId.nameSourceRange, new SimpleLambdaDefUnit(defId));
 		return parse.resultConclude(new ExpSimpleLambda(lambdaDefId, bodyExp));
