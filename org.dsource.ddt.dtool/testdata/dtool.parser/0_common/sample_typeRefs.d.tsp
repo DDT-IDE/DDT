@@ -1,8 +1,10 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
+#@TYPE_REFS__REFID《#?STRUCTURE_EXPECTED!【Foo #TYPE_REF_CAN_PARSE_AS_ID(flag) ●RefIdentifier】》
+
 // These type refs can always be used as qualifiers
 #@TYPE_REFS__QUALIFIER_ANY《
-  ►#?STRUCTURE_EXPECTED!【Foo #TYPE_REF_CAN_PARSE_AS_ID(flag) ●RefIdentifier】●
+  ►#@TYPE_REFS__REFID●
   ►#?STRUCTURE_EXPECTED!【.Foo●RefModuleQualified(?)】●
   ►#?STRUCTURE_EXPECTED!【Bar.foo●RefQualified(RefIdentifier RefIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【Bar.foo.Foobar●RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier)】●
@@ -148,7 +150,8 @@ for performance reasons, to keep the number of cases low.
   ►#?STRUCTURE_EXPECTED!【int function(inout int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
 ¤》
 #@TYPE_REFS__NO_BROKEN__LITE《
-  ►#?STRUCTURE_EXPECTED!【.Bar.foo●RefQualified(RefModuleQualified(?) RefIdentifier)】●
+  ►#@TYPE_REFS__REFID●
+  ►#?STRUCTURE_EXPECTED!【.Bar.foo*[]●RefTypeDynArray(RefTypePointer(RefQualified(RefModuleQualified(?) RefIdentifier)))】●
 ¤》
 
 #@TYPE_REFS__BROKEN《

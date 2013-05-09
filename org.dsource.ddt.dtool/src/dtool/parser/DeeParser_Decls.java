@@ -115,92 +115,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	/* ----------------------------------------------------------------- */
 	
-	public static ProtoDefSymbol defSymbol(BaseLexElement id) {
-		// possible bug here, should be srEffectiveRange
-		return new ProtoDefSymbol(id.getSourceValue(), id.getSourceRange(), id.getError());
-	}
-	
-	public final ProtoDefSymbol parseDefId() {
-		BaseLexElement defId = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
-		return defSymbol(defId);
-	}
-	
-	public final ProtoDefSymbol nullIdToMissingDefId(ProtoDefSymbol defId) {
-		if(defId == null) {
-			return defSymbol(createExpectedToken(DeeTokens.IDENTIFIER));
-		}
-		return defId;
-	}
-	
-	
-	/* -----------------------  Some helpers  ----------------------- */
-	
-	public abstract class ElementListParseHelper<T extends ASTNode> extends ParseHelper {
-		
-		public ArrayView<T> members; 
-		public boolean hasEndingSep = false;
-		
-		public ElementListParseHelper() {
-			nodeStart = -1;
-		}
-		
-		public void parseList(DeeTokens tkOPEN, DeeTokens tkSEP, DeeTokens tkCLOSE) {
-			parseList(true, tkOPEN, tkSEP, tkCLOSE, true);
-		}
-		public void parseList(boolean required, DeeTokens tkOPEN, DeeTokens tkSEP, DeeTokens tkCLOSE, 
-			boolean canHaveEndingSep) {
-			ParseHelper parse = this;
-			if(!tryConsume(tkOPEN)) {
-				parse.ruleBroken = required;
-				return;
-			}
-			setStartPosition(lastLexElement().getStartPos());
-			
-			ArrayList<T> membersList = new ArrayList<T>();
-			
-			boolean requireElement = false;
-			while(true) {
-				if(requireElement == false && tryConsume(tkCLOSE))
-					break;
-				
-				T entry = parseElement(requireElement || lookAhead() == tkSEP);
-				if(entry != null) {
-					membersList.add(entry);
-					hasEndingSep = false;
-				}
-				
-				if(tryConsume(tkSEP)) {
-					hasEndingSep = true;
-					requireElement = !canHaveEndingSep;
-					continue;
-				} else {
-					parse.consumeRequired(tkCLOSE);
-					break;
-				}
-			}
-			members = arrayView(membersList);
-		}
-		
-		public void parseSimpleList(boolean canBeEmpty, DeeTokens tkSEP) {
-			ArrayList<T> membersList = new ArrayList<T>();
-			
-			do {
-				T entry = parseElement(!canBeEmpty || lookAhead() == tkSEP);
-				if(entry != null) {
-					membersList.add(entry);
-				}
-				canBeEmpty = false; // after first element next elements become require
-			} while(tryConsume(tkSEP));
-			
-			members = arrayView(membersList);
-		}
-		
-		protected abstract T parseElement(boolean createMissing);
-		
-	}
-	
-	/* ----------------------------------------------------------------- */
-	
 	public AbstractParser.NodeResult<Module> parseModule() {
 		DeclarationModule md = parseModuleDeclaration();
 		
@@ -1094,30 +1008,18 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		protected EnumMember parseElement(boolean createMissing) {
 			ParseHelper parse = new ParseHelper(-1);
 			
-			Reference type;
-			ProtoDefSymbol defId = null;
+			TypeId_or_Id_PatternParse typeRef_defId = new TypeId_or_Id_PatternParse();
 			Expression value = null;
 			
-			type = parse.checkResult(parseTypeReference());
+			typeRef_defId.parsePattern(parse, createMissing);
+			if(typeRef_defId.defId == null)
+				return null;
 			
-			if(lookAhead() == DeeTokens.IDENTIFIER) {
-				defId = parseDefId();
-			} else if(couldHaveBeenParsedAsId(type)) {
-				defId = convertRefIdToDef(type);
-				type = null;
-			} else {
-				if(type == null && !createMissing) {
-					return null;
-				}
-				defId = parseDefId();
-			}
-
 			if(tryConsume(DeeTokens.ASSIGN)) {
 				value = parseAssignExpression_toMissing();
 			}
 			
-			parse.setStartPosition(type != null ? type.getStartPos() : defId.getStartPos());
-			return parse.conclude(new EnumMember(type, defId, value));
+			return parse.conclude(new EnumMember(typeRef_defId.type, typeRef_defId.defId, value));
 		}
 		
 	}

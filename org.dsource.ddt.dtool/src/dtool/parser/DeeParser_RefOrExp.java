@@ -87,22 +87,11 @@ import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
-import dtool.parser.DeeParser_Decls.ElementListParseHelper;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
 
-public abstract class DeeParser_RefOrExp extends AbstractParser {
-	
-	/* ----------------------------------------------------------------- */
-	
-	public DeeTokens lookAheadGrouped() {
-		return lookAheadToken().type.getGroupingToken();
-	}
-	
-	public String idTokenToString(BaseLexElement id) {
-		return id.isMissingElement() ? null : id.getSourceValue();
-	}
+public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	
 	/* --------------------  reference parsing  --------------------- */
 	
@@ -441,17 +430,6 @@ public abstract class DeeParser_RefOrExp extends AbstractParser {
 	protected ExpReference createExpReferenceWithError(Reference ref, boolean addError) {
 		ExpReference expReference = createExpReference(ref);
 		return conclude(addError ? createErrorTypeAsExpValue(ref) : null, expReference);
-	}
-	
-	public static boolean couldHaveBeenParsedAsId(Reference ref) {
-		return ref instanceof RefIdentifier;
-	}
-	
-	public static ProtoDefSymbol convertRefIdToDef(Reference ref) {
-		assertTrue(couldHaveBeenParsedAsId(ref));
-		RefIdentifier refId = (RefIdentifier) ref;
-		ParserError error = refId.name != null ? null : refId.getData().getNodeErrors().iterator().next();
-		return new ProtoDefSymbol(refId.name == null ? "" : refId.name, ref.getSourceRange(), error);
 	}
 	
 	public static enum TypeOrExpStatus { 

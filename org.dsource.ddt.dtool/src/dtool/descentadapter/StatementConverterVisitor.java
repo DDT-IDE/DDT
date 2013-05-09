@@ -45,6 +45,8 @@ import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.statements.BlockStatement;
+import dtool.ast.statements.ForeachRangeExpression;
+import dtool.ast.statements.ForeachVariableDef;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.StatementAsm;
 import dtool.ast.statements.StatementBreak;
@@ -56,7 +58,6 @@ import dtool.ast.statements.StatementDoWhile;
 import dtool.ast.statements.StatementExp;
 import dtool.ast.statements.StatementFor;
 import dtool.ast.statements.StatementForeach;
-import dtool.ast.statements.StatementForeachRange;
 import dtool.ast.statements.StatementGoto;
 import dtool.ast.statements.StatementGotoCase;
 import dtool.ast.statements.StatementGotoDefault;
@@ -80,12 +81,15 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	@Override
 	public boolean visit(ForeachRangeStatement elem) {
 		return endAdapt(DefinitionConverter.sourceRange(elem), 
-			new StatementForeachRange(
-				(IFunctionParameter) DescentASTConverter.convertElem(elem.arg, convContext),
-				ExpressionConverter.convert(elem.lwr, convContext),
-				ExpressionConverter.convert(elem.upr, convContext),
-				StatementConverterVisitor.convertStatement(elem.body, convContext),
-				elem.op == TOK.TOKforeach_reverse
+			new StatementForeach(
+				elem.op == TOK.TOKforeach_reverse,
+				ArrayView.create(new ForeachVariableDef[0] /* WHATEVER*/ ),
+//				(IFunctionParameter) DescentASTConverter.convertElem(elem.arg, convContext)),
+				new ForeachRangeExpression(
+					ExpressionConverter.convert(elem.lwr, convContext),
+					ExpressionConverter.convert(elem.upr, convContext)
+				),
+				StatementConverterVisitor.convertStatement(elem.body, convContext)
 			)
 		);
 	}
@@ -201,10 +205,11 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(ForeachStatement element) {
 		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementForeach(
-				DescentASTConverter.convertMany(element.arguments, IFunctionParameter.class, convContext),
+				element.op == TOK.TOKforeach_reverse,
+				ArrayView.create(new ForeachVariableDef[0] /* WHATEVER*/ ),
+				//DescentASTConverter.convertMany(element.arguments, IFunctionParameter.class, convContext),
 				ExpressionConverter.convert(element.sourceAggr, convContext),
-				convertStatement(element.body, convContext),
-				element.op == TOK.TOKforeach_reverse
+				convertStatement(element.body, convContext)
 			)
 		);
 	}

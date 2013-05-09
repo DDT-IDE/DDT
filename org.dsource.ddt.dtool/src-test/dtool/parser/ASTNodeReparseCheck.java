@@ -33,6 +33,7 @@ import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
+import dtool.ast.statements.ForeachRangeExpression;
 import dtool.parser.AbstractParser.NodeResult;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
@@ -101,6 +102,10 @@ public class ASTNodeReparseCheck {
 		else if(node instanceof MapArrayLiteralKeyValue) {
 			MapArrayLiteralKeyValue mapArrayEntry = (MapArrayLiteralKeyValue) node;
 			return canBeginWithEmptySpace(mapArrayEntry.key);
+		}
+		else if(node instanceof ForeachRangeExpression) {
+			ForeachRangeExpression fre = (ForeachRangeExpression) node;
+			return canBeginWithEmptySpace(fre.lower);
 		}
 		else if(node instanceof MissingParenthesesExpression) {
 			return true;
@@ -416,6 +421,12 @@ public class ASTNodeReparseCheck {
 			return reparseCheck(snippedParser.parseStatementDoWhile());
 		case STATEMENT_FOR:
 			return reparseCheck(snippedParser.parseStatementFor());
+		case STATEMENT_FOREACH:
+			return reparseCheck(snippedParser.parseStatementForeach());
+		case FOREACH_VARIABLE_DEF:
+			return reparseCheck(snippedParser.parseForeachVariableDef());
+		case FOREACH_RANGE_EXPRESSION:
+			return reparseCheck(snippedParser.parseForeachIterableExpression());
 			
 		case OTHER: break;
 		}

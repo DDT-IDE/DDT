@@ -22,10 +22,13 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.EmptyStatement;
+import dtool.ast.statements.ForeachRangeExpression;
+import dtool.ast.statements.ForeachVariableDef;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.SimpleVariableDef;
 import dtool.ast.statements.StatementDoWhile;
 import dtool.ast.statements.StatementFor;
+import dtool.ast.statements.StatementForeach;
 import dtool.ast.statements.StatementIf;
 import dtool.ast.statements.StatementIfVar;
 import dtool.ast.statements.StatementLabel;
@@ -108,6 +111,9 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			return parseStatementDoWhile();
 		case KW_FOR:
 			return parseStatementFor();
+		case KW_FOREACH:
+		case KW_FOREACH_REVERSE:
+			return parseStatementForeach();
 		default:
 			break;
 		}
@@ -253,10 +259,10 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			init = parse.checkResult(parseStatement_toMissing(RULE_STATEMENT));
 			if(parse.ruleBroken) break parsing;
 			
-			condition = parse.checkResult(parseExpression());
+			condition = parse.checkResult(parseExpression()); /*BUG here*/
 			
 			if(parse.consumeExpected(DeeTokens.SEMICOLON)) {
-				increment = parse.checkResult(parseExpression());
+				increment = parse.checkResult(parseExpression()); /*BUG here*/
 			}
 			
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
@@ -265,6 +271,63 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		}
 		
 		return parse.resultConclude(new StatementFor(init, condition, increment, body));
+	}
+	
+	protected NodeResult<StatementForeach> parseStatementForeach() {
+		if(!(tryConsume(DeeTokens.KW_FOREACH) || tryConsume(DeeTokens.KW_FOREACH_REVERSE)))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		boolean isForeachReverse = lastLexElement().token.type == DeeTokens.KW_FOREACH_REVERSE;
+		ArrayView<ForeachVariableDef> varParams = null;
+		Expression iterable = null;
+		IStatement body = null;
+		
+		parsing: { 
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) break parsing;
+		
+			ArrayList<ForeachVariableDef> varParamsList = new ArrayList<>(2);
+			do {
+				ForeachVariableDef varDef = parseForeachVariableDef();
+				varParamsList.add(varDef);
+			} while(tryConsume(DeeTokens.COMMA));
+			varParams = arrayView(varParamsList);
+			
+			if(parse.consumeExpected(DeeTokens.SEMICOLON)) {
+				iterable = parseForeachIterableExpression();
+			}
+			
+			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
+			
+			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+		}
+		
+		return parse.resultConclude(new StatementForeach(isForeachReverse, varParams, iterable, body));
+	}
+	
+	public ForeachVariableDef parseForeachVariableDef() {
+		ParseHelper parse = new ParseHelper(-1);
+		boolean isRef = false;
+		TypeId_or_Id_PatternParse typeRef_defId = new TypeId_or_Id_PatternParse();
+		
+		if(tryConsume(DeeTokens.KW_REF)) {
+			isRef = true;
+			parse.setStartPosition(lastLexElement().getStartPos());
+		}
+		typeRef_defId.parsePattern(parse, true);
+		
+		return parse.conclude(new ForeachVariableDef(isRef, typeRef_defId.type, typeRef_defId.defId));
+	}
+	
+	protected Expression parseForeachIterableExpression() {
+		Expression iterable = parseExpression_toMissing();
+		if(tryConsume(DeeTokens.DOUBLE_DOT)) {
+			ParseHelper parse = new ParseHelper(iterable);
+			Expression lower = iterable; 
+			Expression upper = parseExpression_toMissing();
+			return parse.conclude(new ForeachRangeExpression(lower, upper));
+		}
+		return iterable;
 	}
 	
 }
