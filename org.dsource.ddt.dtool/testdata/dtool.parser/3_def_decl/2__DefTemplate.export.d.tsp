@@ -34,9 +34,9 @@
   ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__NO_BROKEN foo●TemplateValueParam(#@TYPE_REFS__NO_BROKEN DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【foo[ #error(EXP_CLOSE_BRACKET)●TemplateValueParam(RefTypeDynArray(?) DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【foo[] #@NO_DEFID #FN_UNAMBIG_ARG(flag) ●TemplateValueParam(RefTypeDynArray(?) #@NO_DEFID)】●
-  ►#?STRUCTURE_EXPECTED!【Foo foo : #@EXP_COND_ORNO●TemplateValueParam(RefIdentifier DefSymbol #@EXP_COND_ORNO)】●
-  ►#?STRUCTURE_EXPECTED!【Foo foo = #@EXP_COND_ORNO●TemplateValueParam(RefIdentifier DefSymbol #@EXP_COND_ORNO)】●
-  ►#?STRUCTURE_EXPECTED!【Foo foo : #@EXP_COND_ORNO__LITE = #@EXP_COND_ORNO●TemplateValueParam(RefIdentifier DefSymbol #@EXP_COND_ORNO__LITE #@EXP_COND_ORNO)】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo : #@CONDEXP_OrNO●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_OrNO)】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo = #@CONDEXP_OrNO●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_OrNO)】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo : #@CONDEXP_OrNO__LITE = #@CONDEXP_OrNO●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_OrNO__LITE #@CONDEXP_OrNO)】●
 
   ►#?STRUCTURE_EXPECTED!【alias foo●TemplateAliasParam(DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【alias #@NO_DEFID●TemplateAliasParam(#@NO_DEFID)】●
@@ -61,7 +61,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template constraint
 #@TPL_CONSTRAINT__SAMPLES《
   ►#?STRUCTURE_EXPECTED!【if #error(EXP_OPEN_PARENS)【】● MissingParenthesesExpression】●
-  ►#?STRUCTURE_EXPECTED!【if(#@EXP_ANY_ORNO__LITE)● #@EXP_ANY_ORNO__LITE】●
+  ►#?STRUCTURE_EXPECTED!【if(#@EXP_OrNO__LITE)● #@EXP_OrNO__LITE】●
   ►#?STRUCTURE_EXPECTED!【if(#@EXP_ANY__LITE #error(EXP_CLOSE_PARENS) #@BREAK● #@EXP_ANY__LITE #@BREAK】●
 ¤》
 

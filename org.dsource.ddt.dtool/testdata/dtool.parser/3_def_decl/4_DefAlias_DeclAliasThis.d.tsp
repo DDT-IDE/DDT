@@ -20,8 +20,8 @@
 #PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef #error(EXP_ASSIGN)【】 #@SEMICOLON_OR_BREAK 
 #STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef = #@TYPEREF_ORNO #@SEMICOLON_OR_BREAK 
-#STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol #@TYPEREF_ORNO))
+#PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef = #@TYPEREF_OrNO #@SEMICOLON_OR_BREAK 
+#STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol #@TYPEREF_OrNO))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Decl syntax
 #PARSE(DECLARATION)   alias #@TYPEREF_NB_NoSingleDefId #@NO_DEFID  #@SEMICOLON_OR_BREAK 
