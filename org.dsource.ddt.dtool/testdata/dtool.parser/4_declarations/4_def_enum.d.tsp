@@ -12,11 +12,11 @@ DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumM
 
 #@BASE_TYPE__SAMPLE《
   ►#?STRUCTURE_EXPECTED!【/**/ #NoBaseType(flag)●】●
-  ►#?STRUCTURE_EXPECTED!【 : #@TYPEREFS_NB__LITE● #@TYPEREFS_NB__LITE】●
+  ►#?STRUCTURE_EXPECTED!【 : #@TYPEREF_NB__LITE● #@TYPEREF_NB__LITE】●
 ¤》
 #@BASE_TYPE《
   ►#@BASE_TYPE__SAMPLE●
-  ►#?STRUCTURE_EXPECTED!【 : #@TYPEREFS_NB● #@TYPEREFS_NB】●
+  ►#?STRUCTURE_EXPECTED!【 : #@TYPEREF_NB● #@TYPEREF_NB】●
   ►#?STRUCTURE_EXPECTED!【 : #@NO_TYPEREF● #@NO_TYPEREF】●
   ►#?STRUCTURE_EXPECTED!【 : typeof( foo #@NO_ClosePARENS #@BREAK● RefTypeof(*) #@BREAK】●
 ¤》
@@ -37,7 +37,7 @@ DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumM
   ►#?STRUCTURE_EXPECTED!【{ A = 3, B , #@CLOSEBRACE_OR_BREAK ● EnumBody(EnumMember(DefSymbol Integer) EnumMember(?) )】●
   ►#?STRUCTURE_EXPECTED!【{ A, B = #@EXP_ASSIGN ,}● EnumBody(EnumMember(DefSymbol) EnumMember(DefSymbol #@EXP_ASSIGN) )】●
   ►#?STRUCTURE_EXPECTED!【{ #@NO_DEFID, #@CLOSEBRACE_OR_BREAK ● EnumBody(EnumMember(#@NO_DEFID))】●
-  ►#?STRUCTURE_EXPECTED!【{ #@TYPEREFS_NB A = "asd", } ● EnumBody(EnumMember(#@TYPEREFS_NB DefSymbol String) )】●
+  ►#?STRUCTURE_EXPECTED!【{ #@TYPEREF_NB A = "asd", } ● EnumBody(EnumMember(#@TYPEREF_NB DefSymbol String) )】●
   ►#?STRUCTURE_EXPECTED!【{int[foo #error(EXP_CLOSE_BRACKET) A = "asd", B} ● EnumBody(EnumMember(RefIndexing(? ?) DefSymbol String) EnumMember(?) )】●
   ►#?STRUCTURE_EXPECTED!【{int[foo] #@NO_DEFID = "asd", } ● EnumBody(EnumMember(RefIndexing(? ?) #@NO_DEFID String) )】●
 ¤》

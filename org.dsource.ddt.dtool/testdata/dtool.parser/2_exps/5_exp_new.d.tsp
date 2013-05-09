@@ -21,14 +21,14 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 #@ALLOC_ARG《#@ARGLIST●►#?STRUCTURE_EXPECTED!【 /*No alloc args*/● 】》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new     #@ALLOC_ARG  #@TYPEREFS_NB  (sample)
-#STRUCTURE_EXPECTED: ExpNew( #@ALLOC_ARG  #@TYPEREFS_NB  #@ExpIdentifier )
+#PARSE(EXPRESSION)   new     #@ALLOC_ARG  #@TYPEREF_NB  (sample)
+#STRUCTURE_EXPECTED: ExpNew( #@ALLOC_ARG  #@TYPEREF_NB  #@ExpIdentifier )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ (note that ARG1 expansion gets messed up because of EXP_ASSIGN__NO_PENDING)
 #PARSE(EXPRESSION)   new     (#@ARG1 #@EXP_ASSIGN__NO_PENDING #error(EXP_CLOSE_PARENS)  #@BREAK foo (456)
 #STRUCTURE_EXPECTED: ExpNew( #@《*●#@NO_EXP● 》(ARG1) #@EXP_ASSIGN__NO_PENDING )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new     #@ARGLIST  #@NO_REF #@BREAK (123) 
-#STRUCTURE_EXPECTED: ExpNew( #@ARGLIST  #@NO_REF )  
+#PARSE(EXPRESSION)   new     #@ARGLIST  #@NO_TYPEREF #@BREAK (123) 
+#STRUCTURE_EXPECTED: ExpNew( #@ARGLIST  #@NO_TYPEREF )  
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@CTOR_ARG《
   ►#?STRUCTURE_EXPECTED!【 /*No ctor args*/● 】● 
@@ -37,14 +37,14 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
   ►#?STRUCTURE_EXPECTED!【( #@EXP_ASSIGN__LITE , #@NO_EXP #@NO_ClosePARENS #@BREAK ● #@EXP_ASSIGN__LITE #@NO_EXP】● 
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREFS_NB  #@CTOR_ARG
-#STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE   #@TYPEREFS_NB  #@CTOR_ARG )
+#PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREF_NB  #@CTOR_ARG
+#STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE   #@TYPEREF_NB  #@CTOR_ARG )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREFS_NB  [ #@EXP_ASSIGN__LITE ]
-#STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE  RefIndexing( #@TYPEREFS_NB #@EXP_ASSIGN__LITE )  )
+#PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREF_NB  [ #@EXP_ASSIGN__LITE ]
+#STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE  RefIndexing( #@TYPEREF_NB #@EXP_ASSIGN__LITE )  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new     #@NO_REF  #@BREAK [789]
-#STRUCTURE_EXPECTED: ExpNew( #@NO_REF )  
+#PARSE(EXPRESSION)   new     #@NO_TYPEREF  #@BREAK [789]
+#STRUCTURE_EXPECTED: ExpNew( #@NO_TYPEREF )  
 
 
 

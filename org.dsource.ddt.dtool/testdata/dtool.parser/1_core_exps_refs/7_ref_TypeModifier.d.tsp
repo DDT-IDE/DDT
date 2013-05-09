@@ -7,7 +7,7 @@ DefVariable(RefTypeModifier(RefIdentifier) DefSymbol)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ARG_CONTENT_OR_NO《
   ►#NO_BROKEN_PARENS(flag) #@TYPE_REFS●
-  ►#@NO_REF●
+  ►#@NO_TYPEREF●
 ¤》
 #@ARG_CONTENT_CLEAN《
   ►#@TYPE_REFS● 
@@ -29,8 +29,8 @@ DefVariable(RefQualified( RefTypeModifier( RefPrimitive ) RefIdentifier ) DefSym
 IncompleteDeclaration(RefTypeModifier(#@ARG_CONTENT_CLEAN))     IncompleteDeclaration(RefIdentifier)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS     ( #@NO_REF #error(EXP_CLOSE_PARENS)
-#STRUCTURE_EXPECTED: IncompleteDeclaration(RefTypeModifier(#@NO_REF) )
+#@TYPE_MODIFIERS     ( #@NO_TYPEREF #error(EXP_CLOSE_PARENS)
+#STRUCTURE_EXPECTED: IncompleteDeclaration(RefTypeModifier(#@NO_TYPEREF) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@TYPE_MODIFIERS #@NO_DECLorBLOCK 
 #STRUCTURE_EXPECTED: DeclarationBasicAttrib(#@NO_DECLorBLOCK)

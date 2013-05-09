@@ -4,8 +4,8 @@ mixin foo!(bar);
 DeclarationMixin(RefTemplateInstance(RefIdentifier RefIdentifier))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   mixin #@NO_REF #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  DeclarationMixin(#@NO_REF)
+#PARSE(DECLARATION)   mixin #@NO_TYPEREF #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  DeclarationMixin(#@NO_TYPEREF)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   mixin #@TYPE_REFS #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DeclarationMixin(#@TYPE_REFS)

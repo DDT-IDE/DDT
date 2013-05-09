@@ -1,6 +1,6 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-#@TYPE_REFS__REFID《#?STRUCTURE_EXPECTED!【Foo #TYPE_REF_CAN_PARSE_AS_ID(flag) ●RefIdentifier】》
+#@TYPE_REFS__REFID《#?STRUCTURE_EXPECTED!【Foo #TYPEREF_CanParseAsId(flag) ●RefIdentifier】》
 
 // These type refs can always be used as qualifiers
 #@TYPE_REFS__QUALIFIER_ANY《

@@ -6,12 +6,12 @@
 #STRUCTURE_EXPECTED:  DefinitionAlias(AliasFragment(DefSymbol RefTypeDynArray(RefIdentifier)))
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_REFS__NB__NO_SINGLE_ID《#@TYPEREFS_NB #?TYPE_REF_CAN_PARSE_AS_ID【#:DISCARD_CASE】》
+#@TYPE_REFS__NB__NO_SINGLE_ID《#@TYPEREF_NB #?TYPEREF_CanParseAsId【#:DISCARD_CASE】》
 
 #@FRAG_PREFIX《
   ►#?STRUCTURE_EXPECTED!【/*No fragment*/● 】●
   ►#?STRUCTURE_EXPECTED!【 aliasDef /*No =*/ #error(EXP_ASSIGN)【】 ,● AliasFragment(DefSymbol) 】●
-  ►#?STRUCTURE_EXPECTED!【 aliasDef = #@TYPEREFS_NB_ORNO__LITE ,● AliasFragment(DefSymbol #@TYPEREFS_NB_ORNO__LITE)】●
+  ►#?STRUCTURE_EXPECTED!【 aliasDef = #@TYPEREF_NB_ORNO__LITE ,● AliasFragment(DefSymbol #@TYPEREF_NB_ORNO__LITE)】●
 ¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
@@ -21,15 +21,15 @@
 #PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef #error(EXP_ASSIGN)【】 #@SEMICOLON_OR_BREAK 
 #STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef = #@TYPEREFS_ORNO #@SEMICOLON_OR_BREAK 
-#STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol #@TYPEREFS_ORNO))
+#PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef = #@TYPEREF_ORNO #@SEMICOLON_OR_BREAK 
+#STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol #@TYPEREF_ORNO))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Decl syntax
 #PARSE(DECLARATION)   alias #@TYPE_REFS__NB__NO_SINGLE_ID #@NO_DEFID  #@SEMICOLON_OR_BREAK 
 #STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPE_REFS__NB__NO_SINGLE_ID #@NO_DEFID)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   alias #@TYPEREFS_NB__LITE  foo  #@SEMICOLON_OR_BREAK 
-#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREFS_NB__LITE DefSymbol)
+#PARSE(DECLARATION)   alias #@TYPEREF_NB__LITE  foo  #@SEMICOLON_OR_BREAK 
+#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NB__LITE DefSymbol)
 
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ NOT supported: C style declaration syntax (it's deprecated in D)
