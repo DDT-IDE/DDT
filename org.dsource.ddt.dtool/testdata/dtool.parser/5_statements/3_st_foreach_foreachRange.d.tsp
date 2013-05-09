@@ -30,7 +30,7 @@
 #@ITERABLE《
  ►#?STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON) ● 】●
  ►#?STRUCTURE_EXPECTED!【; #@EXP_OrNO ● #@EXP_OrNO 】●
- ►#?STRUCTURE_EXPECTED!【; #@EXP_OrNO__LITE .. #@EXP_OrNO●ForeachRangeExpression(#@EXP_OrNO__LITE #@EXP_OrNO)】●
+ ►#?STRUCTURE_EXPECTED!【; #@EXP_OrNO__LITE #?MISSING_BRACKET{#:DISCARD_CASE} .. #@EXP_OrNO●ForeachRangeExpression(#@EXP_OrNO__LITE #@EXP_OrNO)】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    foreach ( foo #@ITERABLE ) #@ST__SAMPLE

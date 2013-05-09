@@ -34,9 +34,9 @@
   ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__NO_BROKEN foo●TemplateValueParam(#@TYPE_REFS__NO_BROKEN DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【foo[ #error(EXP_CLOSE_BRACKET)●TemplateValueParam(RefTypeDynArray(?) DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【foo[] #@NO_DEFID #FN_UNAMBIG_ARG(flag) ●TemplateValueParam(RefTypeDynArray(?) #@NO_DEFID)】●
-  ►#?STRUCTURE_EXPECTED!【Foo foo : #@CONDEXP_OrNO●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_OrNO)】●
-  ►#?STRUCTURE_EXPECTED!【Foo foo = #@CONDEXP_OrNO●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_OrNO)】●
-  ►#?STRUCTURE_EXPECTED!【Foo foo : #@CONDEXP_OrNO__LITE = #@CONDEXP_OrNO●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_OrNO__LITE #@CONDEXP_OrNO)】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo : #@CONDEXP_NBOrNO●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_NBOrNO)】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo = #@CONDEXP_NBOrNO●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_NBOrNO)】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo : #@CONDEXP_NBOrNO__LITE = #@CONDEXP_NBOrNO●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_NBOrNO__LITE #@CONDEXP_NBOrNO)】●
 
   ►#?STRUCTURE_EXPECTED!【alias foo●TemplateAliasParam(DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【alias #@NO_DEFID●TemplateAliasParam(#@NO_DEFID)】●

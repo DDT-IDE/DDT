@@ -259,13 +259,14 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			init = parse.checkResult(parseStatement_toMissing(RULE_STATEMENT));
 			if(parse.ruleBroken) break parsing;
 			
-			condition = parse.checkResult(parseExpression()); /*BUG here*/
+			condition = parseExpression().node;
 			
 			if(parse.consumeExpected(DeeTokens.SEMICOLON)) {
-				increment = parse.checkResult(parseExpression()); /*BUG here*/
+				increment = parseExpression().node;
 			}
 			
-			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
+			parse.consumeRequired(DeeTokens.CLOSE_PARENS);
+			if(parse.ruleBroken) break parsing;
 			
 			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
 		}
