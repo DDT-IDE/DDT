@@ -36,7 +36,6 @@
   ►#?STRUCTURE_EXPECTED!【(int a, ...) { /*foo : 123;*/ }●ExpFunctionLiteral(* * *)】●
   
   
-  
   ►#?STRUCTURE_EXPECTED!【foo(1, 3)●             ExpCall(#@ExpIdentifier Integer Integer)】●
   ►#?STRUCTURE_EXPECTED!【foo[12 .. [123]]●      ExpSlice(#@ExpIdentifier Integer ExpLiteralArray(?))】●
   ►#?STRUCTURE_EXPECTED!【foo++●                 ExpPostfix(#@ExpIdentifier)】●
@@ -45,60 +44,43 @@
   ►#?STRUCTURE_EXPECTED!【 (.foo).bar.xxx●ExpReference(RefQualified(?(RefQualified(ExpParentheses(*) ?)) ?))】●
   
   
-  ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
-    ►#?STRUCTURE_EXPECTED!【foo[]●                 ExpSlice(#@ExpIdentifier)】 】●
-  ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
-    ►#?STRUCTURE_EXPECTED!【foo[[123]]●            ExpIndex(#@ExpIdentifier ExpLiteralArray(?))】】●
+  ►#?STRUCTURE_EXPECTED!【foo[]#_EXP_AMBIG(flag)●ExpSlice(#@ExpIdentifier)】●
+  ►#?STRUCTURE_EXPECTED!【foo[[123]]#_EXP_AMBIG(flag)●ExpIndex(#@ExpIdentifier ExpLiteralArray(?))】●
   
   ►#?STRUCTURE_EXPECTED!【 foo[].init●ExpReference(RefQualified(ExpSlice(#@ExpIdentifier) RefIdentifier))】●
 ¤》
- #@EXP_POSTFIX__NO_UNAMBIG_REFS《 #EXP__NO_UNAMBIG_REFS(flag) #@EXP_POSTFIX 》
-#@EXP_POSTFIX__NO_POSSIBLE_REFS《 #EXP__NO_UNAMBIG_REFS(flag)#EXP__NO_AMBIGS(flag) #@EXP_POSTFIX 》
+ #@EXP_POSTFIX__NO_UNAMBIG_REFS《 #@EXP_POSTFIX #?_EXP_UNAMBIG{#:DISCARD_CASE}》
+#@EXP_POSTFIX__NO_POSSIBLE_REFS《 #@EXP_POSTFIX #?_EXP_UNAMBIG{#:DISCARD_CASE}#?_EXP_AMBIG{#:DISCARD_CASE}》
 
 
 EXP__NO_PENDING_MISSING : exclude cases that could have been parsed further if an EXP was appended
-EXP__NO_UNAMBIG_REFS : exclude cases that can only be cleanly parsed as refs
+_EXP_UNAMBIG : marker for cases that can only be cleanly parsed as refs
 
 #@EXP_UNARY_REFS《
-   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【  foo● ExpReference(RefIdentifier)】 】●
-   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【  #@INT_AS_EXP● #@INT_AS_EXP 】 】●
-   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
+  ►#?STRUCTURE_EXPECTED!【  foo #_EXP_AMBIG(flag)● ExpReference(RefIdentifier)】●
+  ►#?STRUCTURE_EXPECTED!【  #@INT_AS_EXP #_EXP_UNAMBIG(flag)● #@INT_AS_EXP 】●
 
-  ►#?STRUCTURE_EXPECTED!【  .foo● ExpReference(RefModuleQualified(RefIdentifier))】 】●
-   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【  .foo.bar● ExpReference(RefQualified(RefModuleQualified(?) RefIdentifier))】 】●
+  ►#?STRUCTURE_EXPECTED!【  .foo #_EXP_AMBIG(flag)● ExpReference(RefModuleQualified(RefIdentifier))】●
+  ►#?STRUCTURE_EXPECTED!【  .foo.bar #_EXP_AMBIG(flag)● ExpReference(RefQualified(RefModuleQualified(?) RefIdentifier))】●
   
-   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【 foo!(int)●ExpReference(RefTemplateInstance(RefIdentifier RefPrimitive) )】 】●
+  ►#?STRUCTURE_EXPECTED!【 foo!(int)#_EXP_AMBIG(flag)●ExpReference(RefTemplateInstance(RefIdentifier RefPrimitive) )】●
   
-   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【foo[]● ExpSlice(#@ExpIdentifier)】】●
+  ►#?STRUCTURE_EXPECTED!【foo[]#_EXP_AMBIG(flag)● ExpSlice(#@ExpIdentifier)】●
   
-   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【int []】● ExpReference(RefTypeDynArray(RefPrimitive))】】●
-   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【foo[int]】●ExpReference(RefIndexing(RefIdentifier RefPrimitive))】】●
-   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【int[foo]】●ExpReference(RefIndexing(RefPrimitive RefIdentifier))】】●
+  ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【int []】#_EXP_UNAMBIG(flag)● ExpReference(RefTypeDynArray(RefPrimitive))】●
+  ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【foo[int]】#_EXP_UNAMBIG(flag)●ExpReference(RefIndexing(RefIdentifier RefPrimitive))】●
+  ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【int[foo]】#_EXP_UNAMBIG(flag)●ExpReference(RefIndexing(RefPrimitive RefIdentifier))】●
 ¤》
 
 #@EXP_NON_UNARY_REFS《
-   ►#?EXP__NO_BREAKING_EXPS【#:DISCARD_CASE●
-   ►#?EXP__NO_AMBIGS【#:DISCARD_CASE● 
-  ►#?STRUCTURE_EXPECTED!【foo * #@NO_EXP #EXP_RULE_BROKEN(flag)● ExpInfix(ExpReference(RefIdentifier) #@NO_EXP)】】】●
+  ►#?STRUCTURE_EXPECTED!【foo * #@NO_EXP #EXP_RULE_BROKEN(flag)#_EXP_AMBIG(flag)● 
+    ExpInfix(ExpReference(RefIdentifier) #@NO_EXP)】●
 
-   ►#?EXP__NO_BREAKING_EXPS【#:DISCARD_CASE●
-   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE● 
-  ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【float *】 #EXP_RULE_BROKEN(flag)● ExpReference(RefTypePointer(RefPrimitive))】】】●
+  ►#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【float *】 #EXP_RULE_BROKEN(flag)#_EXP_UNAMBIG(flag)● 
+    ExpReference(RefTypePointer(RefPrimitive))】●
   
-   ►#?EXP__NO_BREAKING_EXPS【#:DISCARD_CASE●
-   ►#?EXP__NO_UNAMBIG_REFS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【 #error(TYPE_AS_EXP_VALUE)【foo**[bar* /++/] *】  #EXP_RULE_BROKEN(flag)●
-  ExpReference(
-   RefTypePointer(RefIndexing(RefTypePointer(RefTypePointer(RefIdentifier)) RefTypePointer(RefIdentifier) ))
-  )】】】●
+  ►#?STRUCTURE_EXPECTED!【 #error(TYPE_AS_EXP_VALUE)【foo**[bar* /++/] *】  #EXP_RULE_BROKEN(flag)#_EXP_UNAMBIG(flag)●
+    ExpReference(RefTypePointer(RefIndexing(RefTypePointer(RefTypePointer(RefIdentifier)) RefTypePointer(RefIdentifier) )))】●
 ¤》
 
 #@EXP_REFS《
@@ -122,8 +104,8 @@ EXP__NO_UNAMBIG_REFS : exclude cases that can only be cleanly parsed as refs
 #@EXP_UNARY__LITE《
   ►#?STRUCTURE_EXPECTED!【!foo[[123]]● ExpPrefix(ExpIndex(#@ExpIdentifier ExpLiteralArray(?)))】●
 ¤》
- #@EXP_UNARY__NO_UNAMBIG_REFS《 #EXP__NO_UNAMBIG_REFS(flag) #@EXP_UNARY 》
-#@EXP_UNARY__NO_POSSIBLE_REFS《 #EXP__NO_UNAMBIG_REFS(flag)#EXP__NO_AMBIGS(flag) #@EXP_UNARY 》
+ #@EXP_UNARY__NO_UNAMBIG_REFS《 #@EXP_UNARY #?_EXP_UNAMBIG{#:DISCARD_CASE}》
+#@EXP_UNARY__NO_POSSIBLE_REFS《 #@EXP_UNARY #?_EXP_UNAMBIG{#:DISCARD_CASE}#?_EXP_AMBIG{#:DISCARD_CASE}》
 #@EXP_UNARY__NO_PENDING《#EXP__NO_PENDING_MISSING(flag) #?STRUCTURE_EXPECTED!【/*UNARY_NO_PENDING*/】#@EXP_UNARY 》
 
 
@@ -179,11 +161,11 @@ Lambda expression is here because it's right side is an "open-ended" parsing of 
 
 #@EXP_NO_PENDING《 #EXP__NO_PENDING_MISSING(flag) #@EXP_ANY 》
 
-  #@EXP_COND__NO_POSSIBLE_REFS《 #EXP__NO_AMBIGS(flag)#EXP__NO_UNAMBIG_REFS(flag) #@EXP_COND 》
-#@EXP_ASSIGN__NO_POSSIBLE_REFS《 #EXP__NO_AMBIGS(flag)#EXP__NO_UNAMBIG_REFS(flag) #@EXP_ASSIGN 》
-      #@EXPS__NO_POSSIBLE_REFS《 #EXP__NO_UNAMBIG_REFS(flag)#EXP__NO_AMBIGS(flag) #@EXP_ANY 》
-  #@EXP_COND__NO_UNAMBIG_REFS《 #EXP__NO_UNAMBIG_REFS(flag) #@EXP_COND 》
-#@EXP_ASSIGN__NO_UNAMBIG_REFS《 #EXP__NO_UNAMBIG_REFS(flag) #@EXP_ASSIGN 》
-      #@EXPS__NO_UNAMBIG_REFS《 #EXP__NO_UNAMBIG_REFS(flag) #@EXP_ANY 》
+  #@EXP_COND__NO_POSSIBLE_REFS《 #@EXP_COND   #?_EXP_UNAMBIG{#:DISCARD_CASE}#?_EXP_AMBIG{#:DISCARD_CASE}》
+#@EXP_ASSIGN__NO_POSSIBLE_REFS《 #@EXP_ASSIGN #?_EXP_UNAMBIG{#:DISCARD_CASE}#?_EXP_AMBIG{#:DISCARD_CASE}》
+      #@EXPS__NO_POSSIBLE_REFS《 #@EXP_ANY    #?_EXP_UNAMBIG{#:DISCARD_CASE}#?_EXP_AMBIG{#:DISCARD_CASE}》
+   #@EXP_COND__NO_UNAMBIG_REFS《 #@EXP_COND   #?_EXP_UNAMBIG{#:DISCARD_CASE}》
+ #@EXP_ASSIGN__NO_UNAMBIG_REFS《 #@EXP_ASSIGN #?_EXP_UNAMBIG{#:DISCARD_CASE}》
+       #@EXPS__NO_UNAMBIG_REFS《 #@EXP_ANY    #?_EXP_UNAMBIG{#:DISCARD_CASE}》
 
 #@EXP_ASSIGN__NO_PENDING《 #EXP__NO_PENDING_MISSING(flag) #@EXP_ASSIGN 》   
