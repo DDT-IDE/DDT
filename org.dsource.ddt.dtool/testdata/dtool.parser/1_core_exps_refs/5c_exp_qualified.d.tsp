@@ -38,8 +38,8 @@
 #STRUCTURE_EXPECTED: ExpReference( #@EXP_QUALIFIED )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   #@EXP_QUALIFIED《
-  ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__QUALIFIER .init● RefQualified(#@TYPE_REFS__QUALIFIER RefIdentifier )】●
-  ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__QUALIFIER . init .blah● RefQualified(RefQualified(#@TYPE_REFS__QUALIFIER ?)  RefIdentifier)】●
+  ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__QUALIFIER_ForDot .init● RefQualified(#@TYPE_REFS__QUALIFIER_ForDot RefIdentifier )】●
+  ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__QUALIFIER_ForDot . init .blah● RefQualified(RefQualified(#@TYPE_REFS__QUALIFIER_ForDot ?)  RefIdentifier)】●
 ¤》
 #STRUCTURE_EXPECTED: ExpReference( #@EXP_QUALIFIED )
 

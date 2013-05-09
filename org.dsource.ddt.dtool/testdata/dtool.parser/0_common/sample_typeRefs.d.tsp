@@ -2,8 +2,8 @@
 
 #@TYPE_REFS__REFID《#?STRUCTURE_EXPECTED!【Foo #TYPEREF_CanParseAsId(flag) ●RefIdentifier】》
 
-// These type refs can always be used as qualifiers
-#@TYPE_REFS__QUALIFIER_ANY《
+// These type refs can always be used as qualifiers followed by dot or template instance
+#@TYPE_REFS__QUALIFIER_ForTplOrDot《
   ►#@TYPE_REFS__REFID●
   ►#?STRUCTURE_EXPECTED!【.Foo●RefModuleQualified(?)】●
   ►#?STRUCTURE_EXPECTED!【Bar.foo●RefQualified(RefIdentifier RefIdentifier)】●
@@ -20,19 +20,58 @@ RefTemplateInstance(
   RefIndexing(RefIdentifier RefTypePointer(RefIdentifier))
 )】●
 ¤》
-
-#@TYPE_REFS__QUALIFIER_DOT_ONLY《
+#@TYPE_REFS__QUALIFIER_ForDotOnly《
   ►#?STRUCTURE_EXPECTED!【int●RefPrimitive】●
   ►#?STRUCTURE_EXPECTED!【const(foo)●RefTypeModifier(RefIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【typeof(Bar.foo)●RefTypeof(ExpReference(RefQualified(RefIdentifier RefIdentifier)))】●
+  ►#?STRUCTURE_EXPECTED!【bar. foo!this #TYPE_REF_TPL_SIMPLE_ARG(flag)●RefTemplateInstance(RefQualified(RefIdentifier ?) ExpThis)】●
+¤》
+#@TYPE_REFS__QUALIFIER_ForDot《
+  ►#@TYPE_REFS__QUALIFIER_ForTplOrDot●
+  ►#@TYPE_REFS__QUALIFIER_ForDotOnly●
 ¤》
 
-#@TYPE_REFS__TPL_SINGLE_ARG《
-  ►#?STRUCTURE_EXPECTED!【bar. foo!this●RefTemplateInstance(RefQualified(RefIdentifier ?) ExpThis)】●
-  ►#?STRUCTURE_EXPECTED!【.bar.foo! arg●RefTemplateInstance(RefQualified(RefModuleQualified(?) ?) RefIdentifier)】●
+We don't use TYPEREFS_AMBIG__INVALID_QUALIFIER or TYPEREFS_UNAMBIG__INVALID_QUALIFIER in TYPE_REFS
+for performance reasons, to keep the number of cases low.
+#@TYPE_REFS__NO_BROKEN《
+  ►#@TYPE_REFS__QUALIFIER_ForTplOrDot●
+  ►#@TYPE_REFS__QUALIFIER_ForDotOnly●
+  
+  
+  ►#?STRUCTURE_EXPECTED!【int*●RefTypePointer(RefPrimitive)】●
+  ►#?STRUCTURE_EXPECTED!【int*[]●RefTypeDynArray(RefTypePointer(RefPrimitive))】●
+  ►#?STRUCTURE_EXPECTED!【foo*●RefTypePointer(RefIdentifier)】●
+  ►#?STRUCTURE_EXPECTED!【foo*[]●RefTypeDynArray(RefTypePointer(RefIdentifier))】●
+  ►#?STRUCTURE_EXPECTED!【arrayElem[int]●RefIndexing(RefIdentifier RefPrimitive)】●
+
+  ►#?STRUCTURE_EXPECTED!【dai[foo] *[foo][bar]●RefIndexing(RefIndexing(RefTypePointer(*) ?) RefIdentifier)】●  
+  ►#?STRUCTURE_EXPECTED!【dai[bar*] *[foo][foo**bar]●RefIndexing(RefIndexing(RefTypePointer(*) ?) ExpInfix(* ExpPrefix(ExpReference(?))))】●
+  ►#?STRUCTURE_EXPECTED!【dai[bar] ***●RefTypePointer(RefTypePointer(RefTypePointer(RefIndexing(? ?))))】●
+  
+  ►#?STRUCTURE_EXPECTED!【int function(inout int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
+¤》
+#@TYPE_REFS__NO_BROKEN__LITE《
+  ►#@TYPE_REFS__REFID●
+  ►#?STRUCTURE_EXPECTED!【.Bar.foo*[]●RefTypeDynArray(RefTypePointer(RefQualified(RefModuleQualified(?) RefIdentifier)))】●
 ¤》
 
-#@TYPE_REFS__QUALIFIER《#@TYPE_REFS__QUALIFIER_ANY●#@TYPE_REFS__QUALIFIER_DOT_ONLY》
+#@TYPE_REFS__BROKEN《
+   ►#?NO_BROKEN_BRACKETS【#:DISCARD_CASE●
+  ►#?STRUCTURE_EXPECTED!【arrayElem[foo #error(EXP_CLOSE_BRACKET)●RefIndexing(RefIdentifier RefIdentifier)】】●
+
+   ►#?NO_BROKEN_PARENS【#:DISCARD_CASE●
+  ►#?STRUCTURE_EXPECTED!【typeof("abc" #error(EXP_CLOSE_PARENS)●RefTypeof(String)】】●
+¤》
+
+#@TYPE_REFS《
+  ►#@TYPE_REFS__NO_BROKEN●
+  ►#@TYPE_REFS__BROKEN●
+¤》
+#@TYPE_REFS__LITE《
+  ►#@TYPE_REFS__NO_BROKEN__LITE●
+  ►#@TYPE_REFS__BROKEN●
+¤》
+
 
 // ----------------------------------------------------
 
@@ -49,8 +88,7 @@ RefTemplateInstance(
 
 // These source snippets are ambiguous as to whether to parse as ref or exp (they can parse as both)
 =====> #@TYPEREFS_AMBIG《
-  ►#@TYPE_REFS__QUALIFIER_ANY●
-  ►#@TYPE_REFS__TPL_SINGLE_ARG●
+  ►#@TYPE_REFS__QUALIFIER_ForTplOrDot●
   ►#@_TYPEREFS_AMBIG__BASE●
   
   ►#?STRUCTURE_EXPECTED!【dai* #INFIX(flag)● RefTypePointer(RefIdentifier)】●
@@ -87,7 +125,7 @@ RefTemplateInstance(
 
 // These references unambiguously parse as ref
 =====> #@TYPEREFS_UNAMBIG《
-  ►#@TYPE_REFS__QUALIFIER_DOT_ONLY●
+  ►#@TYPE_REFS__QUALIFIER_ForDotOnly#?TYPE_REF_TPL_SIMPLE_ARG{#:DISCARD_CASE}●
   
   ►#@_TYPEREFS_UNAMBIG__BASE●
   ►#?STRUCTURE_EXPECTED!【int *[]●RefTypeDynArray(RefTypePointer(RefPrimitive))】●
@@ -124,49 +162,3 @@ RefTemplateInstance(
 ¤》
 
 ---------------------------------------------------------
-
-We don't use TYPEREFS_AMBIG__INVALID_QUALIFIER or TYPEREFS_UNAMBIG__INVALID_QUALIFIER in TYPE_REFS
-for performance reasons, to keep the number of cases low.
-
-#@TYPE_REFS__NO_BROKEN《
-  ►#@TYPE_REFS__QUALIFIER_ANY●
-  ►#@TYPE_REFS__TPL_SINGLE_ARG●
-  ►#@TYPE_REFS__QUALIFIER_DOT_ONLY●
-  
-  ►#?STRUCTURE_EXPECTED!【int*●RefTypePointer(RefPrimitive)】●
-  ►#?STRUCTURE_EXPECTED!【int[]●RefTypeDynArray(RefPrimitive)】●
-  ►#?STRUCTURE_EXPECTED!【int*[]●RefTypeDynArray(RefTypePointer(RefPrimitive))】●
-  ►#?STRUCTURE_EXPECTED!【foo*●RefTypePointer(RefIdentifier)】●
-  ►#?STRUCTURE_EXPECTED!【foo*[]●RefTypeDynArray(RefTypePointer(RefIdentifier))】●
-  ►#?STRUCTURE_EXPECTED!【arrayElem[]●RefTypeDynArray(RefIdentifier)】●
-  ►#?STRUCTURE_EXPECTED!【arrayElem[foo*]●RefIndexing(RefIdentifier RefTypePointer(RefIdentifier))】●
-  ►#?STRUCTURE_EXPECTED!【arrayElem[int]●RefIndexing(RefIdentifier RefPrimitive)】●
-  ►#?STRUCTURE_EXPECTED!【arrayElem[foo**bar]●RefIndexing(RefIdentifier ExpInfix(* ExpPrefix(ExpReference(?))) )】●
-
-  ►#?STRUCTURE_EXPECTED!【dai[foo] *[foo][bar]●RefIndexing(RefIndexing(RefTypePointer(*) ?) RefIdentifier)】●  
-  ►#?STRUCTURE_EXPECTED!【dai[bar*] *[foo][bar]●RefIndexing(RefIndexing(RefTypePointer(*) ?) RefIdentifier)】●
-  ►#?STRUCTURE_EXPECTED!【dai[bar] ***●RefTypePointer(RefTypePointer(RefTypePointer(RefIndexing(? ?))))】●
-  
-  ►#?STRUCTURE_EXPECTED!【int function(inout int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
-¤》
-#@TYPE_REFS__NO_BROKEN__LITE《
-  ►#@TYPE_REFS__REFID●
-  ►#?STRUCTURE_EXPECTED!【.Bar.foo*[]●RefTypeDynArray(RefTypePointer(RefQualified(RefModuleQualified(?) RefIdentifier)))】●
-¤》
-
-#@TYPE_REFS__BROKEN《
-   ►#?NO_BROKEN_BRACKETS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【arrayElem[foo #error(EXP_CLOSE_BRACKET)●RefIndexing(RefIdentifier RefIdentifier)】】●
-
-   ►#?NO_BROKEN_PARENS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【typeof("abc" #error(EXP_CLOSE_PARENS)●RefTypeof(String)】】●
-¤》
-
-#@TYPE_REFS《
-  ►#@TYPE_REFS__NO_BROKEN●
-  ►#@TYPE_REFS__BROKEN●
-¤》
-#@TYPE_REFS__LITE《
-  ►#@TYPE_REFS__NO_BROKEN__LITE●
-  ►#@TYPE_REFS__BROKEN●
-¤》

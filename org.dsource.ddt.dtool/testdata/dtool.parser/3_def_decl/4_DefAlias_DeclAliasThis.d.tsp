@@ -6,7 +6,6 @@
 #STRUCTURE_EXPECTED:  DefinitionAlias(AliasFragment(DefSymbol RefTypeDynArray(RefIdentifier)))
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_REFS__NB__NO_SINGLE_ID《#@TYPEREF_NB #?TYPEREF_CanParseAsId【#:DISCARD_CASE】》
 
 #@FRAG_PREFIX《
   ►#?STRUCTURE_EXPECTED!【/*No fragment*/● 】●
@@ -25,8 +24,8 @@
 #STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol #@TYPEREF_ORNO))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Decl syntax
-#PARSE(DECLARATION)   alias #@TYPE_REFS__NB__NO_SINGLE_ID #@NO_DEFID  #@SEMICOLON_OR_BREAK 
-#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPE_REFS__NB__NO_SINGLE_ID #@NO_DEFID)
+#PARSE(DECLARATION)   alias #@TYPEREF_NB_NoSingleDefId #@NO_DEFID  #@SEMICOLON_OR_BREAK 
+#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NB_NoSingleDefId #@NO_DEFID)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   alias #@TYPEREF_NB__LITE  foo  #@SEMICOLON_OR_BREAK 
 #STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NB__LITE DefSymbol)

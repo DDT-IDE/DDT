@@ -33,20 +33,25 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 ¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(REFERENCE)                        #@TYPE_REFS__QUALIFIER_ANY #@TPL_ARGLIST
-#STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__QUALIFIER_ANY #@TPL_ARGLIST)
+#PARSE(REFERENCE)                        #@TYPE_REFS__QUALIFIER_ForTplOrDot #@TPL_ARGLIST
+#STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__QUALIFIER_ForTplOrDot #@TPL_ARGLIST)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ indexing cannot be template start
 #PARSE(REFERENCE)    #@TYPE_REFS__INVALID_QUALIFIER #@IGNORE_REST !this
 #STRUCTURE_EXPECTED: #@TYPE_REFS__INVALID_QUALIFIER
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(REFERENCE)    #@TYPE_REFS__QUALIFIER_DOT_ONLY #@IGNORE_REST !this
-#STRUCTURE_EXPECTED: #@TYPE_REFS__QUALIFIER_DOT_ONLY
+#PARSE(REFERENCE)    #@TYPE_REFS__QUALIFIER_ForDotOnly #@IGNORE_REST !this #?TYPE_REF_TPL_SIMPLE_ARG{#:DISCARD_CASE}
+#STRUCTURE_EXPECTED: #@TYPE_REFS__QUALIFIER_ForDotOnly
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ tpl single arg
+
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ tpl single arg
+#@TYPE_REFS__TPL_SINGLE_ARG《
+  ►#?STRUCTURE_EXPECTED!【bar. foo!this●RefTemplateInstance(RefQualified(RefIdentifier ?) ExpThis)】●
+  ►#?STRUCTURE_EXPECTED!【.bar.foo! arg●RefTemplateInstance(RefQualified(RefModuleQualified(?) ?) RefIdentifier)】●
+¤》
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)    #error(NO_TPL_SINGLE_ARG)【#@TYPE_REFS__TPL_SINGLE_ARG】 ! #@SINGLE_ARG
 #STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__TPL_SINGLE_ARG #@SINGLE_ARG)
-
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)    #@TYPE_REFS__TPL_SINGLE_ARG !(foo)
 #STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__TPL_SINGLE_ARG RefIdentifier)

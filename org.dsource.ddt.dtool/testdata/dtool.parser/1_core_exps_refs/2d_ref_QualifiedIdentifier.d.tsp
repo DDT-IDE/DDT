@@ -7,8 +7,8 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol)
 DefVariable(RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier) DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(REFERENCE)     #@TYPE_REFS__QUALIFIER•.foo
-#STRUCTURE_EXPECTED:  RefQualified(#@TYPE_REFS__QUALIFIER RefIdentifier)
+#PARSE(REFERENCE)     #@TYPE_REFS__QUALIFIER_ForDot•.foo
+#STRUCTURE_EXPECTED:  RefQualified(#@TYPE_REFS__QUALIFIER_ForDot RefIdentifier)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test rule break with stuff like foo. .bar
 #PARSE(REFERENCE)     foo. #@NO_ID #@BREAK .bar
