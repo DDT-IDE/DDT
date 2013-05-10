@@ -37,6 +37,9 @@ import dtool.ast.statements.StatementDefault;
 import dtool.ast.statements.StatementDoWhile;
 import dtool.ast.statements.StatementFor;
 import dtool.ast.statements.StatementForeach;
+import dtool.ast.statements.StatementGoto;
+import dtool.ast.statements.StatementGotoCase;
+import dtool.ast.statements.StatementGotoDefault;
 import dtool.ast.statements.StatementIf;
 import dtool.ast.statements.StatementIfVar;
 import dtool.ast.statements.StatementLabel;
@@ -156,6 +159,8 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			return parseStatementBreak();
 		case KW_RETURN:
 			return parseStatementReturn();
+		case KW_GOTO:
+			return parseStatement_gotoStart();
 		default:
 			break;
 		}
@@ -490,6 +495,26 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		parse.consumeRequired(DeeTokens.SEMICOLON);
 		
 		return parse.resultConclude(new StatementReturn(exp));
+	}
+	
+	protected NodeResult<? extends Statement> parseStatement_gotoStart() {
+		if(!tryConsume(DeeTokens.KW_GOTO))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		if(tryConsume(DeeTokens.KW_CASE)) {
+			Resolvable exp = parseExpression().node; /*BUG here in tests*/
+			parse.consumeRequired(DeeTokens.SEMICOLON);
+			return parse.resultConclude(new StatementGotoCase(exp));
+		}
+		if(tryConsume(DeeTokens.KW_DEFAULT)) {
+			parse.consumeRequired(DeeTokens.SEMICOLON);
+			return parse.resultConclude(new StatementGotoDefault());
+		}
+		
+		Symbol label = parseIdSymbol();
+		parse.consumeRequired(DeeTokens.SEMICOLON);
+		return parse.resultConclude(new StatementGoto(label));
 	}
 	
 }
