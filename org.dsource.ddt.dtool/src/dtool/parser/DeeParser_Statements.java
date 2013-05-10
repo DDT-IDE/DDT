@@ -25,13 +25,19 @@ import dtool.ast.statements.EmptyStatement;
 import dtool.ast.statements.ForeachRangeExpression;
 import dtool.ast.statements.ForeachVariableDef;
 import dtool.ast.statements.IStatement;
+import dtool.ast.statements.ScopedStatementList;
 import dtool.ast.statements.SimpleVariableDef;
+import dtool.ast.statements.Statement;
+import dtool.ast.statements.StatementCase;
+import dtool.ast.statements.StatementCaseRange;
+import dtool.ast.statements.StatementDefault;
 import dtool.ast.statements.StatementDoWhile;
 import dtool.ast.statements.StatementFor;
 import dtool.ast.statements.StatementForeach;
 import dtool.ast.statements.StatementIf;
 import dtool.ast.statements.StatementIfVar;
 import dtool.ast.statements.StatementLabel;
+import dtool.ast.statements.StatementSwitch;
 import dtool.ast.statements.StatementWhile;
 import dtool.parser.DeeParser.DeeParserState;
 import dtool.util.ArrayView;
@@ -53,21 +59,30 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		}
 		ParseHelper parse = new ParseHelper();
 		
-		ArrayView<IStatement> body = parseStatements(DeeTokens.CLOSE_BRACE);
+		ArrayView<IStatement> body = parseStatements(DeeTokens.CLOSE_BRACE, true);
 		parse.consumeRequired(DeeTokens.CLOSE_BRACE);
 		
 		return parse.resultConclude(new BlockStatement(body));
 	}
 	
-	protected ArrayView<IStatement> parseStatements(DeeTokens nodeListTerminator) {
+	protected NodeResult<ScopedStatementList> parseScopedStatementList() {
+		ParseHelper parse = new ParseHelper(getLexPosition());
+		
+		ArrayView<IStatement> body = parseStatements(null, false);
+		
+		return parse.resultConclude(new ScopedStatementList(body));
+	}
+	
+	protected ArrayView<IStatement> parseStatements(DeeTokens nodeListTerminator, boolean parseCaseDefault) {
 		ArrayList<IStatement> nodeList = new ArrayList<>();
 		while(true) {
 			if(lookAhead() == nodeListTerminator) {
 				break;
 			}
-			IStatement st = parseStatement().node;
+			IStatement st = parseStatement(parseCaseDefault).node;
 			if(st == null) {
-				if(lookAhead() == DeeTokens.EOF) {
+				if(lookAhead() == DeeTokens.EOF ||
+					lookAhead() == DeeTokens.KW_CASE || lookAhead() == DeeTokens.KW_DEFAULT) {
 					break;
 				}
 				st = parseInvalidElement(RULE_STATEMENT, true);
@@ -97,6 +112,9 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 	}
 	
 	protected NodeResult<? extends IStatement> parseStatement() {
+		return parseStatement(true);
+	}
+	protected NodeResult<? extends IStatement> parseStatement(boolean parseCaseDefault) {
 		switch (lookAhead()) {
 		case SEMICOLON: 
 			consumeLookAhead();
@@ -114,6 +132,20 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		case KW_FOREACH:
 		case KW_FOREACH_REVERSE:
 			return parseStatementForeach();
+		case KW_SWITCH:
+			return parseStatementSwitch();
+		case KW_FINAL:
+			if(lookAhead(1) == DeeTokens.KW_SWITCH)
+				return parseStatementSwitch();
+			break;
+		case KW_CASE:
+			if(!parseCaseDefault)
+				break;
+			return parseStatement_caseStart();
+		case KW_DEFAULT:
+			if(!parseCaseDefault)
+				break;
+			return parseStatementDefault();
 		default:
 			break;
 		}
@@ -320,7 +352,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		return parse.conclude(new ForeachVariableDef(isRef, typeRef_defId.type, typeRef_defId.defId));
 	}
 	
-	protected Expression parseForeachIterableExpression() {
+	public Expression parseForeachIterableExpression() {
 		Expression iterable = parseExpression_toMissing();
 		if(tryConsume(DeeTokens.DOUBLE_DOT)) {
 			ParseHelper parse = new ParseHelper(iterable);
@@ -329,6 +361,91 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			return parse.conclude(new ForeachRangeExpression(lower, upper));
 		}
 		return iterable;
+	}
+	
+	public NodeResult<StatementSwitch> parseStatementSwitch() {
+		ParseHelper parse = new ParseHelper(lookAheadElement());
+		boolean isFinal;
+		if(tryConsume(DeeTokens.KW_SWITCH)) {
+			isFinal = false;
+		} else if(tryConsume(DeeTokens.KW_FINAL, DeeTokens.KW_SWITCH)) {
+			isFinal = true;
+		} else {
+			return nullResult();
+		}
+		
+		Expression exp;
+		IStatement body = null;
+		parsing: { 
+			exp = parseExpressionAroundParentheses(parse, false, true);
+			if(parse.ruleBroken) break parsing;
+			
+			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+		}
+		
+		return parse.resultConclude(new StatementSwitch(isFinal, exp, body));
+	}
+	
+	protected NodeResult<? extends Statement> parseStatement_caseStart() {
+		if(!tryConsume(DeeTokens.KW_CASE))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		ArrayView<Expression> caseValues;
+		ScopedStatementList body = null;
+		parsing: {
+			ArrayList<Expression> caseValuesList = new ArrayList<>(2);
+			do {
+				Expression varDef = parseAssignExpression_toMissing();
+				caseValuesList.add(varDef);
+			} while(tryConsume(DeeTokens.COMMA));
+			caseValues = arrayView(caseValuesList);
+			
+			parse.consumeRequired(DeeTokens.COLON);
+			if(parse.ruleBroken) break parsing;
+			
+			if(caseValues.size() == 1 && lookAhead() == DeeTokens.DOUBLE_DOT) {
+				return parseStatementCaseRange_atDoubleDot(parse, caseValues.get(0));
+			}
+			
+			body = parse.checkResult(parseScopedStatementList());
+		}
+		
+		return parse.resultConclude(new StatementCase(caseValues, body));
+	}
+	
+	public NodeResult<StatementCaseRange> parseStatementCaseRange_atDoubleDot(ParseHelper parse, Expression expFirst) {
+		consumeLookAhead(DeeTokens.DOUBLE_DOT);
+		
+		Expression expLast = null;
+		ScopedStatementList body = null;
+		parsing: {
+			if(parse.consumeRequired(DeeTokens.KW_CASE) == false) break parsing;
+			
+			expLast = parseAssignExpression_toMissing();
+			
+			parse.consumeRequired(DeeTokens.COLON);
+			if(parse.ruleBroken) break parsing;
+			
+			body = parse.checkResult(parseScopedStatementList());
+		}
+		return parse.resultConclude(new StatementCaseRange(expFirst, expLast, body));
+	}
+	
+	public NodeResult<StatementDefault> parseStatementDefault() {
+		if(!tryConsume(DeeTokens.KW_DEFAULT))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		ScopedStatementList body = null;
+		parsing: { 
+			parse.consumeRequired(DeeTokens.COLON);
+			if(parse.ruleBroken) break parsing;
+			
+			body = parse.checkResult(parseScopedStatementList());
+		}
+		
+		return parse.resultConclude(new StatementDefault(body));
 	}
 	
 }

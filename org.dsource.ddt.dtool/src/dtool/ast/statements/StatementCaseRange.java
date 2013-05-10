@@ -1,19 +1,27 @@
 package dtool.ast.statements;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.expressions.Resolvable;
+import dtool.ast.expressions.Expression;
 
 public class StatementCaseRange extends Statement {
 	
-	public final Resolvable expFirst;
-	public final Resolvable expLast;
-	public final IStatement st;
+	public final Expression expFirst;
+	public final Expression expLast;
+	public final IStatement body;
 	
-	public StatementCaseRange(Resolvable expFirst, Resolvable expLast, IStatement st) {
-		this.expFirst = parentize(expFirst);
+	public StatementCaseRange(Expression expFirst, Expression expLast, IStatement body) {
+		this.expFirst = parentize(assertNotNull_(expFirst));
 		this.expLast = parentize(expLast);
-		this.st = parentizeI(st);
+		this.body = parentizeI(body);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.STATEMENT_CASE_RANGE;
 	}
 	
 	@Override
@@ -22,9 +30,16 @@ public class StatementCaseRange extends Statement {
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, expFirst);
 			TreeVisitor.acceptChildren(visitor, expLast);
-			TreeVisitor.acceptChildren(visitor, st);
+			TreeVisitor.acceptChildren(visitor, body);
 		}
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("case ", expFirst, " : .. ");
+		cp.append("case ", expLast, " : ");
+		cp.append(body);
 	}
 	
 }

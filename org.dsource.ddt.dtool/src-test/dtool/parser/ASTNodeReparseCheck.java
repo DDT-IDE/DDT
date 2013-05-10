@@ -34,6 +34,7 @@ import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.ForeachRangeExpression;
+import dtool.ast.statements.ScopedStatementList;
 import dtool.parser.AbstractParser.NodeResult;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
@@ -82,6 +83,9 @@ public class ASTNodeReparseCheck {
 		else if(node instanceof NodeList) {
 			return true;
 		}
+		else if(node instanceof ScopedStatementList) {
+			return true;
+		}
 		else if(node instanceof RefIdentifier || node instanceof RefImportSelection) {
 			return DeeParser.isMissing((Reference) node);
 		} 
@@ -114,6 +118,7 @@ public class ASTNodeReparseCheck {
 			BlockStatement blockStatement = (BlockStatement) node;
 			return blockStatement.statements == null;
 		}
+
 		
 		return false;
 	}
@@ -415,6 +420,7 @@ public class ASTNodeReparseCheck {
 			return reparseCheck(snippedParser.parseStatement_ifStart().node);
 		case SIMPLE_VARIABLE_DEF:
 			return reparseCheck(snippedParser.attemptParseSimpleDefVar());
+			
 		case STATEMENT_WHILE:
 			return reparseCheck(snippedParser.parseStatementWhile());
 		case STATEMENT_DO_WHILE:
@@ -427,6 +433,16 @@ public class ASTNodeReparseCheck {
 			return reparseCheck(snippedParser.parseForeachVariableDef());
 		case FOREACH_RANGE_EXPRESSION:
 			return reparseCheck(snippedParser.parseForeachIterableExpression());
+			
+		case STATEMENT_SWITCH:
+			return reparseCheck(snippedParser.parseStatementSwitch());
+		case STATEMENT_CASE:
+		case STATEMENT_CASE_RANGE:
+			return reparseCheck(snippedParser.parseStatement_caseStart());
+		case STATEMENT_DEFAULT:
+			return reparseCheck(snippedParser.parseStatementDefault());
+		case SCOPED_STATEMENT_LIST:
+			return reparseCheck(snippedParser.parseScopedStatementList());
 			
 		case OTHER: break;
 		}

@@ -149,6 +149,9 @@ Lambda expression is here because it's right side is an "open-ended" parsing of 
 #@EXP_ASSIGN__LITE《
   ►#?STRUCTURE_EXPECTED!【this = super += null●ExpInfix(ExpThis ExpInfix(ExpSuper ExpNull))】●
 ¤》
+#@ASSIGNEXP《#@EXP_ASSIGN》 // The previous name is deprecated
+#@ASSIGNEXP__LITE《#@EXP_ASSIGN__LITE》
+
 
 #@EXP_COMMA《#@EXP_ASSIGN●#@EXP_CONDITIONAL__LITE》
 #@EXP_COMMA__LITE《

@@ -1,5 +1,7 @@
 package dtool.descentadapter;
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
 import java.util.Collections;
 
 import descent.internal.compiler.parser.AsmBlock;
@@ -137,7 +139,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(CaseStatement element) {
 		return endAdapt(DefinitionConverter.sourceRange(element), 
 			new StatementCase(
-				ExpressionConverter.convert(element.exp, convContext),
+				ArrayView.create(array(ExpressionConverter.convert(element.exp, convContext))),
 				convertStatement(element.statement, convContext)
 			)
 		);
@@ -336,6 +338,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(SwitchStatement element) {
 		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementSwitch(
+				false,
 				ExpressionConverter.convert(element.condition, convContext),
 				convertStatement(element.body, convContext)
 			)

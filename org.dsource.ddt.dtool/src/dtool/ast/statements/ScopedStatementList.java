@@ -18,19 +18,14 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
- * A compound statement. Allways introduces a new Scope.
+ * A scoped statement list. Used by case/default statements
  */
-public class BlockStatement extends Statement implements IScopeNode, IFunctionBody {
+public class ScopedStatementList extends Statement implements IScopeNode, IFunctionBody {
 	
 	public final ArrayView<IStatement> statements;
 	
-	public BlockStatement(ArrayView<IStatement> statements) {
+	public ScopedStatementList(ArrayView<IStatement> statements) {
 		this.statements = parentizeI(assertNotNull_(statements));
-	}
-	
-	/** This represents a missing block */
-	public BlockStatement() {
-		this.statements = null;
 	}
 	
 	public final ArrayView<ASTNode> statements_asNodes() {
@@ -39,7 +34,7 @@ public class BlockStatement extends Statement implements IScopeNode, IFunctionBo
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.BLOCK_STATEMENT;
+		return ASTNodeTypes.SCOPED_STATEMENT_LIST;
 	}
 	
 	@Override
@@ -52,18 +47,12 @@ public class BlockStatement extends Statement implements IScopeNode, IFunctionBo
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		if(statements == null) {
-			cp.append(" ");
-			return;
-		}
-		cp.append("{");
 		cp.appendList("\n", statements_asNodes(), "\n", "\n");
-		cp.append("}");
 	}
 	
 	@Override
 	public Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
-		return statements.iterator(); //TODO: latent NPE bug here
+		return statements.iterator();
 	}
 	
 	@Override

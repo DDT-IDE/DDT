@@ -1,18 +1,19 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-// TODO: put statements in this block:
+ #@ST__SAMPLE《►#?STRUCTURE_EXPECTED!【 for(;true; i++) { } ● StatementFor(EmptyStatement ? * BlockStatement)】》
+#@ST__SAMPLE2《►#?STRUCTURE_EXPECTED!【 Foo foo; ● DefVariable(RefIdentifier ?) 】》
+#@ST__BROKEN《#@BROKEN_ST_BLOCK》
+
+
 #@ST_BLOCK__SAMPLE《
-  ►#?STRUCTURE_EXPECTED!【 { #@ST__SAMPLE } ● BlockStatement(#@ST__SAMPLE)】》
+  ►#?STRUCTURE_EXPECTED!【 { #@ST__SAMPLE2 #@ST__SAMPLE  } ● BlockStatement(#@ST__SAMPLE2 #@ST__SAMPLE)】》
 #@NO_ST_BLOCK《
   ►#?STRUCTURE_EXPECTED!【 /*Required StBlock*/ #error(EXPRULE_Block) ● BlockStatement 】》
 #@BROKEN_ST_BLOCK《
-  ►#?STRUCTURE_EXPECTED!【 { Bar barX; #error(EXP_CLOSE_BRACE) #@BREAK● BlockStatement(#@ST__SAMPLE $】》
+  ►#?STRUCTURE_EXPECTED!【 { #@ST__SAMPLE #error(EXP_CLOSE_BRACE) #@BREAK● BlockStatement(#@ST__SAMPLE $】》
 
 #@NO_STOrBLOCK《►#?STRUCTURE_EXPECTED!【 /*Required St*/ #error(EXPRULE_StOrBlock) ● BlockStatement 】》
 #@NO_ST《 ►#?STRUCTURE_EXPECTED!【 /*Required St*/ #error(EXPRULE_Statement) ● BlockStatement 】》
-
-#@ST__SAMPLE《►#?STRUCTURE_EXPECTED!【 Foo foo; ● DefVariable(RefIdentifier DefSymbol)】》
-#@ST__BROKEN《#@BROKEN_ST_BLOCK》
 
 
 // Note: it's usefull that all these four ST_* variations do not reference each other, even though they could. 
@@ -21,6 +22,12 @@
    
 #@ST__ANY《
  ►#@NO_STOrBLOCK●
+ ►#@ST_BLOCK__SAMPLE●
+ ►#@ST__SAMPLE●
+ ►#?STRUCTURE_EXPECTED!【 ; ● EmptyStatement 】●
+ ►#@BROKEN_ST_BLOCK●
+¤》
+#@ST__NE《
  ►#@ST_BLOCK__SAMPLE●
  ►#@ST__SAMPLE●
  ►#?STRUCTURE_EXPECTED!【 ; ● EmptyStatement 】●
