@@ -443,6 +443,12 @@ public class ASTNodeReparseCheck {
 			return reparseCheck(snippedParser.parseStatementDefault());
 		case SCOPED_STATEMENT_LIST:
 			return reparseCheck(snippedParser.parseScopedStatementList());
+		case STATEMENT_CONTINUE:
+			return reparseCheck(snippedParser.parseStatementContinue());
+		case STATEMENT_BREAK:
+			return reparseCheck(snippedParser.parseStatementBreak());
+		case STATEMENT_RETURN:
+			return reparseCheck(snippedParser.parseStatementReturn());
 			
 		case OTHER: break;
 		}

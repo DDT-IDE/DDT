@@ -19,6 +19,7 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.EmptyStatement;
@@ -28,8 +29,10 @@ import dtool.ast.statements.IStatement;
 import dtool.ast.statements.ScopedStatementList;
 import dtool.ast.statements.SimpleVariableDef;
 import dtool.ast.statements.Statement;
+import dtool.ast.statements.StatementBreak;
 import dtool.ast.statements.StatementCase;
 import dtool.ast.statements.StatementCaseRange;
+import dtool.ast.statements.StatementContinue;
 import dtool.ast.statements.StatementDefault;
 import dtool.ast.statements.StatementDoWhile;
 import dtool.ast.statements.StatementFor;
@@ -37,6 +40,7 @@ import dtool.ast.statements.StatementForeach;
 import dtool.ast.statements.StatementIf;
 import dtool.ast.statements.StatementIfVar;
 import dtool.ast.statements.StatementLabel;
+import dtool.ast.statements.StatementReturn;
 import dtool.ast.statements.StatementSwitch;
 import dtool.ast.statements.StatementWhile;
 import dtool.parser.DeeParser.DeeParserState;
@@ -146,6 +150,12 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			if(!parseCaseDefault)
 				break;
 			return parseStatementDefault();
+		case KW_CONTINUE:
+			return parseStatementContinue();
+		case KW_BREAK:
+			return parseStatementBreak();
+		case KW_RETURN:
+			return parseStatementReturn();
 		default:
 			break;
 		}
@@ -446,6 +456,40 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		}
 		
 		return parse.resultConclude(new StatementDefault(body));
+	}
+	
+	
+	public NodeResult<StatementContinue> parseStatementContinue() {
+		if(!tryConsume(DeeTokens.KW_CONTINUE))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		Symbol id = lookAhead() == DeeTokens.IDENTIFIER ? parseIdSymbol() : null;
+		parse.consumeRequired(DeeTokens.SEMICOLON);
+		
+		return parse.resultConclude(new StatementContinue(id));
+	}
+	
+	public NodeResult<StatementBreak> parseStatementBreak() {
+		if(!tryConsume(DeeTokens.KW_BREAK))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		Symbol id = lookAhead() == DeeTokens.IDENTIFIER ? parseIdSymbol() : null;
+		parse.consumeRequired(DeeTokens.SEMICOLON);
+		
+		return parse.resultConclude(new StatementBreak(id));
+	}
+	
+	public NodeResult<StatementReturn> parseStatementReturn() {
+		if(!tryConsume(DeeTokens.KW_RETURN))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		Resolvable exp = parseExpression().node;
+		parse.consumeRequired(DeeTokens.SEMICOLON);
+		
+		return parse.resultConclude(new StatementReturn(exp));
 	}
 	
 }
