@@ -5,7 +5,7 @@
  ►#?STRUCTURE_EXPECTED!【 ( #@EXP_ANY #?EXP__DECL_AMBIG【#:DISCARD_CASE】) ● StatementIf( #@EXP_ANY 】●
 
  ►#?STRUCTURE_EXPECTED!【 (auto defId #error(EXP_ASSIGN)【】 ) ●StatementIfVar( SimpleVariableDef(AutoRef DefSymbol )】●
- ►#?STRUCTURE_EXPECTED!【 (auto defId = #@EXP_OrNO__LITE) ●StatementIfVar( SimpleVariableDef(AutoRef DefSymbol #@EXP_OrNO__LITE)】●
+ ►#?STRUCTURE_EXPECTED!【 (auto defId = #@EXP_ANY__LITE) ●StatementIfVar( SimpleVariableDef(AutoRef DefSymbol #@EXP_ANY__LITE)】●
  ►#?STRUCTURE_EXPECTED!【 (#@TYPEREF_NB       defId = 123)                ●StatementIfVar( SimpleVariableDef(#@TYPEREF_NB DefSymbol Integer)】●
  ►#?STRUCTURE_EXPECTED!【 (#@TYPEREF_NB__LITE defId #error(EXP_ASSIGN)【】) ●StatementIfVar( SimpleVariableDef(#@TYPEREF_NB__LITE DefSymbol)】●
  ►#?STRUCTURE_EXPECTED!【 (#NO_BROKEN_PARENS(flag) #@TYPEREF_ANY #parser(AllowAnyErrors) ) ●StatementIf( * 】●

@@ -16,6 +16,6 @@
 #PARSE(STATEMENT)    for #@FOR_PARAMS  #@ST__SAMPLE
 #STRUCTURE_EXPECTED: StatementFor( #@FOR_PARAMS  #@ST__SAMPLE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(STATEMENT)    for ( #@ST__SAMPLE #@EXP_ANY__LITE ; ix++ ) #@ST__ANY
-#STRUCTURE_EXPECTED: StatementFor( #@ST__SAMPLE #@EXP_ANY__LITE ExpPostfixOp(*) #@ST__ANY )
+#PARSE(STATEMENT)    for ( #@ST__SAMPLE #@EXP_Opt__LITE ; ix++ ) #@ST__ANY
+#STRUCTURE_EXPECTED: StatementFor( #@ST__SAMPLE #@EXP_Opt__LITE ExpPostfixOp(*) #@ST__ANY )
 

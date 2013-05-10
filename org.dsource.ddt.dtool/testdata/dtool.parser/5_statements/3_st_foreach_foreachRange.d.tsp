@@ -18,7 +18,7 @@
 
 #@ITERABLE__SAMPLE《
  ►#?STRUCTURE_EXPECTED!【 #error(EXP_SEMICOLON) ● 】●
- ►#?STRUCTURE_EXPECTED!【 ; #@EXP_OrNO__LITE ● #@EXP_OrNO__LITE 】●
+ ►#?STRUCTURE_EXPECTED!【 ; #@EXP_ANY__LITE ● #@EXP_ANY__LITE 】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    foreach #error(EXP_OPEN_PARENS)¤【(;)】 #@BREAK  #@ST__SAMPLE
@@ -29,8 +29,8 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ITERABLE《
  ►#?STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON) ● 】●
- ►#?STRUCTURE_EXPECTED!【; #@EXP_OrNO ● #@EXP_OrNO 】●
- ►#?STRUCTURE_EXPECTED!【; #@EXP_OrNO__LITE #?MISSING_BRACKET{#:DISCARD_CASE} .. #@EXP_OrNO●ForeachRangeExpression(#@EXP_OrNO__LITE #@EXP_OrNO)】●
+ ►#?STRUCTURE_EXPECTED!【; #@EXP_ANY ● #@EXP_ANY 】●
+ ►#?STRUCTURE_EXPECTED!【; #@EXP_ANY__LITE #?MISSING_BRACKET{#:DISCARD_CASE} .. #@EXP_ANY●ForeachRangeExpression(#@EXP_ANY__LITE #@EXP_ANY)】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    foreach ( foo #@ITERABLE ) #@ST__SAMPLE
