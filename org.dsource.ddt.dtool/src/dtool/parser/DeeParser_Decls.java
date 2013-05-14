@@ -689,7 +689,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(!tryConsume(DeeTokens.KW_IF)) {
 			return null;
 		}
-		return parseExpressionAroundParentheses(parse, false, true);
+		return parseExpressionAroundParentheses(parse, true, false);
 	}
 	
 	public static final ParseRuleDescription RULE_FN_BODY = new ParseRuleDescription("FnBody");

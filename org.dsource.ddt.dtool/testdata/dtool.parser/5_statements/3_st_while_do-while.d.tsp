@@ -13,11 +13,14 @@
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)    do #@ST__NB_NE  while ( #@EXP_ANY__LITE );
-#STRUCTURE_EXPECTED: StatementDoWhile( #@ST__NB_NE  #@EXP_ANY__LITE )
+#PARSE(STATEMENT)    do #@NO_STOrBLOCK #error(EXP_KW_WHILE)【】 #@BREAK
+#STRUCTURE_EXPECTED: StatementDoWhile( #@NO_STOrBLOCK  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(STATEMENT)    do #@ST__BROKEN 
 #STRUCTURE_EXPECTED: StatementDoWhile( #@ST__BROKEN  )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)    do #@ST__NB_NE  while ( #@EXP_ANY__LITE );
+#STRUCTURE_EXPECTED: StatementDoWhile( #@ST__NB_NE  #@EXP_ANY__LITE )
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@DOWHILE_BODY《
  ►#?STRUCTURE_EXPECTED!【 #error(EXP_KW_WHILE)【】 #@BREAK #@ST__ANY ● #@BREAK #@ST__ANY 】●

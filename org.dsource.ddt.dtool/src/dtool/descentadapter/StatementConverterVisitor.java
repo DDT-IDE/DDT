@@ -65,7 +65,7 @@ import dtool.ast.statements.StatementGotoCase;
 import dtool.ast.statements.StatementGotoDefault;
 import dtool.ast.statements.StatementIf;
 import dtool.ast.statements.StatementLabel;
-import dtool.ast.statements.StatementOnScope;
+import dtool.ast.statements.StatementScope;
 import dtool.ast.statements.StatementReturn;
 import dtool.ast.statements.StatementSwitch;
 import dtool.ast.statements.StatementSynchronized;
@@ -123,7 +123,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	
 	@Override
 	public boolean visit(AsmStatement element) {
-		return endAdapt(connect(DefinitionConverter.sourceRange(element), new StatementAsm()));
+		return endAdapt(connect(DefinitionConverter.sourceRange(element), new StatementAsm(null)));
 	}
 	
 	@Override
@@ -274,8 +274,8 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	@Override
 	public boolean visit(OnScopeStatement element) {
 		return endAdapt(DefinitionConverter.sourceRange(element),
-			new StatementOnScope(
-				StatementOnScope.EventType.ON_EXIT, // TODO: Find out how to access this scope value
+			new StatementScope(
+				null, // TODO: Find out how to access this scope value
 				convertStatement(element.statement, convContext)
 			)
 		);

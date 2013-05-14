@@ -14,8 +14,9 @@ import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.utilbox.misc.StringUtil;
-import descent.core.compiler.Linkage;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.DeclarationLinkage.Linkage;
+import dtool.ast.statements.StatementScope.ScopeTypes;
 
 public class ParserError {
 	
@@ -28,11 +29,13 @@ public class ParserError {
 		EXPECTED_RULE, // expected valid token for rule
 		SYNTAX_ERROR, // unexpected rule in rule start
 		
-		INVALID_EXTERN_ID,
 		EXP_MUST_HAVE_PARENTHESES, 
 		TYPE_USED_AS_EXP_VALUE, 
 		INVALID_QUALIFIER, 
 		NO_CHAINED_TPL_SINGLE_ARG,
+		
+		INVALID_EXTERN_ID,
+		INVALID_SCOPE_ID,
 		
 	}
 	
@@ -71,9 +74,6 @@ public class ParserError {
 			return "Unexpected token after \"" + msgErrorSource + "\", while trying to parse " + msgData + ".";
 		case SYNTAX_ERROR:
 			return "Unexpected token \"" + msgErrorSource + "\", while trying to parse " + msgData + ".";
-		case INVALID_EXTERN_ID:
-			return "Invalid linkage specifier \"" + msgErrorSource + "\", valid ones are: " +
-				StringUtil.collToString(Linkage.values(), ",") + ".";
 		case EXP_MUST_HAVE_PARENTHESES:
 			return "Expression " + msgErrorSource + " must be parenthesized when next to operator: " + msgData + ".";
 		case TYPE_USED_AS_EXP_VALUE:
@@ -83,6 +83,14 @@ public class ParserError {
 		case NO_CHAINED_TPL_SINGLE_ARG:
 			return "The template '!' single argument " + msgErrorSource + 
 				" cannot be used next to other template '!' single arguments.";
+		
+		case INVALID_EXTERN_ID:
+			return "Invalid linkage specifier \"" + msgErrorSource + "\", valid ones are: " +
+				StringUtil.collToString(Linkage.values(), ",") + ".";
+		case INVALID_SCOPE_ID:
+			return "Invalid scope specifier \"" + msgErrorSource + "\", must be one of: " +
+				StringUtil.collToString(ScopeTypes.values(), ",") + ".";
+			
 		}
 		throw assertFail();
 	}

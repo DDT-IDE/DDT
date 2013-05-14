@@ -1633,7 +1633,7 @@ protected class ParseRule_TypeOrExp {
 			return null;
 		ParseHelper parse = new ParseHelper();
 		
-		Expression expParentheses = parseExpressionAroundParentheses(parse, true, false);
+		Expression expParentheses = parseExpressionAroundParentheses(parse, true, true);
 		return parse.resultConclude(new ExpImportString(expParentheses));
 	}
 	
@@ -1642,15 +1642,15 @@ protected class ParseRule_TypeOrExp {
 			return null;
 		ParseHelper parse = new ParseHelper();
 		
-		Expression expParentheses = parseExpressionAroundParentheses(parse, true, false);
+		Expression expParentheses = parseExpressionAroundParentheses(parse, true, true);
 		return parse.resultConclude(new ExpMixinString(expParentheses));
 	}
-	
-	public Expression parseExpressionAroundParentheses(ParseHelper parse, boolean brokenIfMissing, 
-		boolean createMissingParenthesesNode) {
-		if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) {
-			parse.ruleBroken = brokenIfMissing;
-			if(createMissingParenthesesNode) {
+
+	public Expression parseExpressionAroundParentheses(ParseHelper parse, boolean isRequired, 
+		boolean brokenIfMissing) {
+		boolean isOptional = !isRequired;
+		if(parse.consume(DeeTokens.OPEN_PARENS, isOptional, brokenIfMissing) == false) {
+			if(!isOptional) {
 				return conclude(srToPosition(getLexPosition(), new MissingParenthesesExpression()));
 			}
 			return null;

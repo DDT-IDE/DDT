@@ -4,13 +4,13 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.expressions.Resolvable;
+import dtool.ast.expressions.Expression;
 
 public class StatementReturn extends Statement {
 	
-	public final Resolvable exp;
+	public final Expression exp;
 	
-	public StatementReturn(Resolvable exp) {
+	public StatementReturn(Expression exp) {
 		this.exp = parentize(exp);
 	}
 	

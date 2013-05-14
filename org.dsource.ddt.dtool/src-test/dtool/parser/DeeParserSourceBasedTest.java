@@ -303,11 +303,12 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		Pair.create("EXPRULE", ParserErrorTypes.EXPECTED_RULE),
 		Pair.create("SE", ParserErrorTypes.SYNTAX_ERROR),
 		Pair.create("<SE", ParserErrorTypes.SYNTAX_ERROR),
-		Pair.create("BAD_LINKAGE_ID", ParserErrorTypes.INVALID_EXTERN_ID),
 		Pair.create("REQPARENS", ParserErrorTypes.EXP_MUST_HAVE_PARENTHESES),
 		Pair.create("TYPE_AS_EXP_VALUE", ParserErrorTypes.TYPE_USED_AS_EXP_VALUE),
 		Pair.create("INV_QUALIFIER", ParserErrorTypes.INVALID_QUALIFIER),
-		Pair.create("NO_TPL_SINGLE_ARG", ParserErrorTypes.NO_CHAINED_TPL_SINGLE_ARG)
+		Pair.create("NO_TPL_SINGLE_ARG", ParserErrorTypes.NO_CHAINED_TPL_SINGLE_ARG),
+		Pair.create("BAD_LINKAGE_ID", ParserErrorTypes.INVALID_EXTERN_ID),
+		Pair.create("INVALID_SCOPE_ID", ParserErrorTypes.INVALID_SCOPE_ID)
 	);
 	
 	public static ParserErrorTypes getErrorTypeFromMDE(MetadataEntry mde) {
@@ -344,8 +345,6 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			errorParam = getExpectedRuleName(errorParam);
 			boolean tokenBefore = errorTypeStr.equals("<SE");
 			return createErrorToken(ParserErrorTypes.SYNTAX_ERROR, mde, lexSource, tokenBefore, errorParam);
-		case INVALID_EXTERN_ID:
-			return createErrorToken(ParserErrorTypes.INVALID_EXTERN_ID, mde, lexSource, true, null);
 		case EXP_MUST_HAVE_PARENTHESES: 
 			errorParam = errorParam == null ? DeeParserTest.DONT_CHECK : errorParam;
 			errorSource = assertNotNull_(mde.sourceValue);
@@ -355,6 +354,10 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		case NO_CHAINED_TPL_SINGLE_ARG:
 			errorSource = assertNotNull_(mde.sourceValue);
 			return new ParserError(errorType, errorRange, errorSource, null);
+		case INVALID_EXTERN_ID:
+			return createErrorToken(ParserErrorTypes.INVALID_EXTERN_ID, mde, lexSource, true, null);
+		case INVALID_SCOPE_ID:
+			return createErrorToken(ParserErrorTypes.INVALID_SCOPE_ID, mde, lexSource, true, null);
 		}
 		throw assertFail();
 	}

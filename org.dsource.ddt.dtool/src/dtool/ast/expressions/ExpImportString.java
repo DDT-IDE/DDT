@@ -30,6 +30,6 @@ public class ExpImportString extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("import");
-		cp.append("(", exp, ")");
+		MissingParenthesesExpression.appendParenthesesExp(cp, exp);
 	}
 }

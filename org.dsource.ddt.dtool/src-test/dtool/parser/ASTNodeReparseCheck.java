@@ -453,6 +453,16 @@ public class ASTNodeReparseCheck {
 		case STATEMENT_GOTO_DEFAULT:
 		case STATEMENT_GOTO_CASE:
 			return reparseCheck(snippedParser.parseStatement_gotoStart());
+		case STATEMENT_THROW:
+			return reparseCheck(snippedParser.parseStatementThrow());
+		case STATEMENT_SYNCHRONIZED:
+			return reparseCheck(snippedParser.parseStatementSynchronized());
+		case STATEMENT_WITH:
+			return reparseCheck(snippedParser.parseStatementWith());
+		case STATEMENT_ASM:
+			return reparseCheck(snippedParser.parseStatementAsm());
+		case STATEMENT_SCOPE:
+			return reparseCheck(snippedParser.parseStatementScope());
 			
 		case OTHER: break;
 		}

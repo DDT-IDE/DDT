@@ -29,6 +29,7 @@ import dtool.ast.statements.IStatement;
 import dtool.ast.statements.ScopedStatementList;
 import dtool.ast.statements.SimpleVariableDef;
 import dtool.ast.statements.Statement;
+import dtool.ast.statements.StatementAsm;
 import dtool.ast.statements.StatementBreak;
 import dtool.ast.statements.StatementCase;
 import dtool.ast.statements.StatementCaseRange;
@@ -44,9 +45,14 @@ import dtool.ast.statements.StatementIf;
 import dtool.ast.statements.StatementIfVar;
 import dtool.ast.statements.StatementLabel;
 import dtool.ast.statements.StatementReturn;
+import dtool.ast.statements.StatementScope;
 import dtool.ast.statements.StatementSwitch;
+import dtool.ast.statements.StatementSynchronized;
+import dtool.ast.statements.StatementThrow;
 import dtool.ast.statements.StatementWhile;
+import dtool.ast.statements.StatementWith;
 import dtool.parser.DeeParser.DeeParserState;
+import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
 
@@ -161,6 +167,16 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			return parseStatementReturn();
 		case KW_GOTO:
 			return parseStatement_gotoStart();
+		case KW_THROW:
+			return parseStatementThrow();
+		case KW_SYNCHRONIZED:
+			return parseStatementSynchronized();
+		case KW_WITH:
+			return parseStatementWith();
+		case KW_ASM:
+			return parseStatementAsm();
+		case KW_SCOPE:
+			return parseStatementScope();
 		default:
 			break;
 		}
@@ -256,17 +272,27 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 	public NodeResult<StatementWhile> parseStatementWhile() {
 		if(!tryConsume(DeeTokens.KW_WHILE))
 			return nullResult();
-		ParseHelper parse = new ParseHelper();
+		ParseParensExpBodyNode parse = new ParseParensExpBodyNode().doParse(true);
+		return parse.resultConclude(new StatementWhile(parse.exp, parse.body));
+	}
+	
+	public class ParseParensExpBodyNode extends ParseHelper {
 		
-		Expression condition = null;
-		IStatement body = null;
-		parsing: { 
-			condition = parseExpressionAroundParentheses(parse, false, true);
-			if(parse.ruleBroken) break parsing;
+		public Expression exp = null;
+		public IStatement body = null;
+		
+		public ParseParensExpBodyNode doParse(boolean isRequired) {
+			ParseHelper parse = this;
 			
-			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			parsing: {
+				exp = parseExpressionAroundParentheses(parse, isRequired, false);
+				if(parse.ruleBroken) break parsing;
+				
+				body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			}
+			return this;
 		}
-		return parse.resultConclude(new StatementWhile(condition, body));
+		
 	}
 	
 	public NodeResult<StatementDoWhile> parseStatementDoWhile() {
@@ -282,7 +308,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			
 			if(parse.consumeRequired(DeeTokens.KW_WHILE) == false) break parsing;
 			
-			condition = parseExpressionAroundParentheses(parse, false, true);
+			condition = parseExpressionAroundParentheses(parse, true, false);
 			if(parse.ruleBroken) break parsing;
 			
 			parse.consumeRequired(DeeTokens.SEMICOLON);
@@ -392,7 +418,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		Expression exp;
 		IStatement body = null;
 		parsing: { 
-			exp = parseExpressionAroundParentheses(parse, false, true);
+			exp = parseExpressionAroundParentheses(parse, true, false);
 			if(parse.ruleBroken) break parsing;
 			
 			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
@@ -491,7 +517,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
 		
-		Resolvable exp = parseExpression().node;
+		Expression exp = parseExpression().node;
 		parse.consumeRequired(DeeTokens.SEMICOLON);
 		
 		return parse.resultConclude(new StatementReturn(exp));
@@ -515,6 +541,89 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		Symbol label = parseIdSymbol();
 		parse.consumeRequired(DeeTokens.SEMICOLON);
 		return parse.resultConclude(new StatementGoto(label));
+	}
+	
+	public NodeResult<StatementThrow> parseStatementThrow() {
+		if(!tryConsume(DeeTokens.KW_THROW))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		Expression exp = parseExpression_toMissing();
+		parse.consumeRequired(DeeTokens.SEMICOLON);
+		
+		return parse.resultConclude(new StatementThrow(exp));
+	}
+	
+	public NodeResult<StatementSynchronized> parseStatementSynchronized() {
+		if(!tryConsume(DeeTokens.KW_SYNCHRONIZED))
+			return nullResult();
+		ParseParensExpBodyNode parse = new ParseParensExpBodyNode().doParse(false);
+		return parse.resultConclude(new StatementSynchronized(parse.exp, parse.body));
+	}
+	
+	public NodeResult<StatementWith> parseStatementWith() {
+		if(!tryConsume(DeeTokens.KW_WITH))
+			return nullResult();
+		ParseParensExpBodyNode parse = new ParseParensExpBodyNode().doParse(true);
+		return parse.resultConclude(new StatementWith(parse.exp, parse.body));
+	}
+	
+	public NodeResult<StatementAsm> parseStatementAsm() {
+		if(!tryConsume(DeeTokens.KW_ASM))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		ArrayList<Token> tokenList = null;
+		parsing: { 
+			if(parse.consumeExpected(DeeTokens.OPEN_BRACE) == false) break parsing;
+			tokenList = new ArrayList<>();
+			
+			for(int braceDepth = 1; true; ) {
+				if(lookAhead() == DeeTokens.EOF) {
+					parse.consumeRequired(DeeTokens.CLOSE_BRACE);
+					break;
+				}
+				Token token = consumeLookAhead().token;
+				if(token.type == DeeTokens.OPEN_BRACE) {
+					braceDepth++;
+				}
+				if(token.type == DeeTokens.CLOSE_BRACE) {
+					braceDepth--;
+					if(braceDepth == 0)
+						break;
+				}
+				tokenList.add(token);
+			} 
+			
+		}
+		
+		return parse.resultConclude(new StatementAsm(arrayViewG(tokenList)));
+	}
+	
+	public NodeResult<StatementScope> parseStatementScope() {
+		if(!tryConsume(DeeTokens.KW_SCOPE))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		Symbol scopeTypeId = null;
+		IStatement body = null;
+		parsing: { 
+			if(parse.consumeExpected(DeeTokens.OPEN_PARENS)) {
+				
+				boolean idIsMissing = lookAhead() != DeeTokens.IDENTIFIER;
+				scopeTypeId = parseIdSymbol();
+				if(!idIsMissing && StatementScope.ScopeTypes.fromIdentifier(scopeTypeId.name) == null) {
+					parse.store(createErrorOnLastToken(ParserErrorTypes.INVALID_SCOPE_ID, null));
+				}
+				
+				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false)
+					break parsing;
+			}
+			
+			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+		}
+		
+		return parse.resultConclude(new StatementScope(scopeTypeId, body));
 	}
 	
 }

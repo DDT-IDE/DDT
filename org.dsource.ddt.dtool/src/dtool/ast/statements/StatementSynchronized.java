@@ -1,17 +1,25 @@
 package dtool.ast.statements;
 
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.expressions.Resolvable;
+import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.MissingParenthesesExpression;
 
 public class StatementSynchronized extends Statement {
 	
-	public final Resolvable exp;
+	public final Expression exp;
 	public final IStatement body;
 	
-	public StatementSynchronized(Resolvable exp, IStatement body) {
+	public StatementSynchronized(Expression exp, IStatement body) {
 		this.exp = parentize(exp);
 		this.body = parentizeI(body);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.STATEMENT_SYNCHRONIZED;
 	}
 	
 	@Override
@@ -22,6 +30,13 @@ public class StatementSynchronized extends Statement {
 			TreeVisitor.acceptChildren(visitor, body);
 		}
 		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("synchronized ");
+		MissingParenthesesExpression.appendParenthesesExp(cp, exp);
+		cp.append(body);
 	}
 	
 }

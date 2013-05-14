@@ -30,6 +30,6 @@ public class ExpMixinString extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("mixin");
-		cp.append("(", exp, ")");
+		MissingParenthesesExpression.appendParenthesesExp(cp, exp);
 	}
 }

@@ -8,3 +8,24 @@
 #@EXP_ARGS__SAMPLE《
  ►#?STRUCTURE_EXPECTED!【#@ASSIGNEXP__LITE ● #@ASSIGNEXP__LITE 】●
 ¤》
+
+// Simple variable declaration pattern - type optional
+#@SIMPLE_VAR_PAT《
+ ►#?STRUCTURE_EXPECTED!【#@DEFID_OrNO ● #@DEFID_OrNO 】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NB #@DEFID ● #@TYPEREF_NB #@DEFID】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NB_NoSingleDefId #@NO_DEFID ● #@TYPEREF_NB_NoSingleDefId #@NO_DEFID】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_BROKEN ● #@TYPEREF_BROKEN #@NO_DEFID】●
+¤》
+
+// Simple variable declaration pattern - type required
+#@SIMPLE_VAR_DEF《
+ ►#?STRUCTURE_EXPECTED!【#@NO_TYPEREF /*NO_DEFID*/ ● SimpleVarDef(#@NO_TYPEREF #@NO_DEFID )】●
+ ►#?STRUCTURE_EXPECTED!【 #@DEFID #@NO_DEFID ● SimpleVarDef(RefIdentifier #@NO_DEFID )】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NB #@DEFID ● SimpleVarDef(#@TYPEREF_NB #@DEFID)】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NB_NoSingleDefId #@NO_DEFID ● SimpleVarDef(#@TYPEREF_NB_NoSingleDefId #@NO_DEFID)】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_BROKEN ● SimpleVarDef(#@TYPEREF_BROKEN #@NO_DEFID)】●
+¤》
+
+#@SIMPLE_VAR_DEF__SAMPLE《
+ ►#?STRUCTURE_EXPECTED!【foo[bar] defid ● SimpleVarDef( RefIndexing(RefIdentifier RefIdentifier) #@DEFID ) 】●
+¤》
