@@ -28,6 +28,7 @@ import dtool.ast.statements.ForeachVariableDef;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.ScopedStatementList;
 import dtool.ast.statements.SimpleVariableDef;
+import dtool.ast.statements.VariableDefWithInit;
 import dtool.ast.statements.Statement;
 import dtool.ast.statements.StatementAsm;
 import dtool.ast.statements.StatementBreak;
@@ -49,8 +50,10 @@ import dtool.ast.statements.StatementScope;
 import dtool.ast.statements.StatementSwitch;
 import dtool.ast.statements.StatementSynchronized;
 import dtool.ast.statements.StatementThrow;
+import dtool.ast.statements.StatementTry;
 import dtool.ast.statements.StatementWhile;
 import dtool.ast.statements.StatementWith;
+import dtool.ast.statements.TryCatchClause;
 import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
@@ -132,21 +135,17 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		case SEMICOLON: 
 			consumeLookAhead();
 			return resultConclude(false, srOf(lastLexElement(), new EmptyStatement()));
-		case OPEN_BRACE:
-			return parseBlockStatement(true, true);
-		case KW_IF:
-			return parseStatement_ifStart();
-		case KW_WHILE:
-			return parseStatementWhile();
-		case KW_DO:
-			return parseStatementDoWhile();
-		case KW_FOR:
-			return parseStatementFor();
-		case KW_FOREACH:
-		case KW_FOREACH_REVERSE:
-			return parseStatementForeach();
-		case KW_SWITCH:
-			return parseStatementSwitch();
+		
+		case OPEN_BRACE:return parseBlockStatement(true, true);
+		
+		case KW_IF: return parseStatement_ifStart();
+		case KW_WHILE: return parseStatementWhile();
+		case KW_DO: return parseStatementDoWhile();
+		case KW_FOR: return parseStatementFor();
+		
+		case KW_FOREACH :return parseStatementForeach();
+		case KW_FOREACH_REVERSE: return parseStatementForeach();
+		case KW_SWITCH: return parseStatementSwitch();
 		case KW_FINAL:
 			if(lookAhead(1) == DeeTokens.KW_SWITCH)
 				return parseStatementSwitch();
@@ -159,24 +158,17 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			if(!parseCaseDefault)
 				break;
 			return parseStatementDefault();
-		case KW_CONTINUE:
-			return parseStatementContinue();
-		case KW_BREAK:
-			return parseStatementBreak();
-		case KW_RETURN:
-			return parseStatementReturn();
-		case KW_GOTO:
-			return parseStatement_gotoStart();
-		case KW_THROW:
-			return parseStatementThrow();
-		case KW_SYNCHRONIZED:
-			return parseStatementSynchronized();
-		case KW_WITH:
-			return parseStatementWith();
-		case KW_ASM:
-			return parseStatementAsm();
-		case KW_SCOPE:
-			return parseStatementScope();
+			
+		case KW_CONTINUE: return parseStatementContinue();
+		case KW_BREAK: return parseStatementBreak();
+		case KW_RETURN: return parseStatementReturn();
+		case KW_GOTO: return parseStatement_gotoStart();
+		case KW_THROW: return parseStatementThrow();
+		case KW_SYNCHRONIZED: return parseStatementSynchronized();
+		case KW_WITH: return parseStatementWith();
+		case KW_ASM: return parseStatementAsm();
+		case KW_SCOPE: return parseStatementScope();
+		case KW_TRY: return parseStatementTry();
 		default:
 			break;
 		}
@@ -211,13 +203,13 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		ParseHelper parse = new ParseHelper();
 		
 		Expression condition = null;
-		SimpleVariableDef conditionVar = null;
+		VariableDefWithInit conditionVar = null;
 		IStatement thenBody = null;
 		IStatement elseBody = null;
 		
 		parsing: { 
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) break parsing;
-			conditionVar = attemptParseSimpleDefVar();
+			conditionVar = attemptParseVariableDefWithInit(true);
 			if(conditionVar == null) {
 				condition = parseExpression_toMissing();
 			}
@@ -238,7 +230,11 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		}
 	}
 	
-	public SimpleVariableDef attemptParseSimpleDefVar() {
+	public VariableDefWithInit parseVariableDefWithInit() {
+		return attemptParseVariableDefWithInit(false);
+	}
+	
+	protected VariableDefWithInit attemptParseVariableDefWithInit(boolean revertIfInvalid) {
 		DeeParserState savedState = thisParser().enterBacktrackableMode();
 		
 		successfulParsing: {
@@ -249,24 +245,27 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			
 			if(lookAhead() == DeeTokens.KW_AUTO) {
 				type = parseAutoReference();
-				defId = parseDefId(); // Parse a SimpleVariableDef if even id is missing
+				defId = parseDefId(); // Parse a SimpleVariableDef even if id is missing
 			} else {
 				NodeResult<Reference> typeResult = parseTypeReference();
-				if(typeResult.ruleBroken) break successfulParsing;
 				type = typeResult.node;
-				
-				defId = parseDefId();
-				if(defId.isMissing()) break successfulParsing;
+				if(typeResult.ruleBroken) {
+					if(revertIfInvalid) break successfulParsing;
+					defId = parseMissingDefIdNoError();
+				} else {
+					defId = parseDefId();
+					if(revertIfInvalid && defId.isMissing()) break successfulParsing;
+				}
 			}
 			
 			Expression defaultValue = null;
 			if(parse.consumeRequired(DeeTokens.ASSIGN)) {
 				defaultValue = parseExpression_toMissing();
 			}
-			return parse.conclude(new SimpleVariableDef(type, defId, defaultValue));
+			return parse.conclude(new VariableDefWithInit(type, defId, defaultValue));
 		}
 		thisParser().restoreOriginalState(savedState);
-		return null;
+		return null;  // An exp will be parsed instead 
 	}
 	
 	public NodeResult<StatementWhile> parseStatementWhile() {
@@ -382,13 +381,13 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 	public ForeachVariableDef parseForeachVariableDef() {
 		ParseHelper parse = new ParseHelper(-1);
 		boolean isRef = false;
-		TypeId_or_Id_PatternParse typeRef_defId = new TypeId_or_Id_PatternParse();
+		TypeId_or_Id_RuleFragment typeRef_defId = new TypeId_or_Id_RuleFragment();
 		
 		if(tryConsume(DeeTokens.KW_REF)) {
 			isRef = true;
 			parse.setStartPosition(lastLexElement().getStartPos());
 		}
-		typeRef_defId.parsePattern(parse, true);
+		typeRef_defId.parseRuleFragment(parse, true);
 		
 		return parse.conclude(new ForeachVariableDef(isRef, typeRef_defId.type, typeRef_defId.defId));
 	}
@@ -624,6 +623,75 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		}
 		
 		return parse.resultConclude(new StatementScope(scopeTypeId, body));
+	}
+	
+	public static final ParseRuleDescription RULE_CATCH_OR_FINALLY = new ParseRuleDescription("catch or finally");
+	
+	public NodeResult<StatementTry> parseStatementTry() {
+		if(!tryConsume(DeeTokens.KW_TRY))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		
+		IStatement body;
+		ArrayList<TryCatchClause> catches = null;
+		IStatement finallyBody = null;
+		
+		parsing: { 
+			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			if(parse.ruleBroken) break parsing;
+			
+			catches = new ArrayList<>();
+			while(true) {
+				TryCatchClause catchClause = parse.checkResult(parseTryCatchClause());
+				if(catchClause == null) 
+					break;
+				catches.add(catchClause);
+				if(parse.ruleBroken) break parsing;
+			}
+			
+			if(tryConsume(DeeTokens.KW_FINALLY)) {
+				finallyBody = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			}
+			if(catches.size() == 0 && finallyBody == null) {
+				parse.store(createErrorExpectedRule(RULE_CATCH_OR_FINALLY));
+			}
+		}
+		
+		return parse.resultConclude(new StatementTry(body, arrayView(catches), finallyBody));
+	}
+	
+	protected NodeResult<TryCatchClause> parseTryCatchClause() {
+		if(!tryConsume(DeeTokens.KW_CATCH))
+			return nullResult();
+		ParseHelper parse = new ParseHelper();
+		LexElement catchKeyword = lastLexElement();
+		
+		SimpleVariableDef catchParam = null; 
+		IStatement body = null;
+		
+		parsing: {
+			if(tryConsume(DeeTokens.OPEN_PARENS)) {
+				catchParam = parseSimpleVariableDef();
+				
+				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false)
+					break parsing;
+			}
+			
+			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+		}
+		
+		if(parse.ruleBroken == false && catchParam == null && lookAhead() == DeeTokens.KW_CATCH) {
+			parse.store(createError(ParserErrorTypes.LAST_CATCH, catchKeyword.token, null));
+		}
+		
+		return parse.resultConclude(new TryCatchClause(catchParam, body));
+	}
+	
+	public SimpleVariableDef parseSimpleVariableDef() {
+		ParseHelper parse = new ParseHelper(-1);
+		TypeId_or_Id_RuleFragment typeRef_defId = new TypeId_RuleFragment();
+		typeRef_defId.parseRuleFragment(parse, true);
+		return parse.conclude(new SimpleVariableDef(typeRef_defId.type, typeRef_defId.defId));
 	}
 	
 }

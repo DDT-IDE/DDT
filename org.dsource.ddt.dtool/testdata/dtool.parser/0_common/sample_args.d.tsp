@@ -9,6 +9,8 @@
  ►#?STRUCTURE_EXPECTED!【#@ASSIGNEXP__LITE ● #@ASSIGNEXP__LITE 】●
 ¤》
 
+
+
 // Simple variable declaration pattern - type optional
 #@SIMPLE_VAR_PAT《
  ►#?STRUCTURE_EXPECTED!【#@DEFID_OrNO ● #@DEFID_OrNO 】●

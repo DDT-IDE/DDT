@@ -57,10 +57,10 @@ for performance reasons, to keep the number of cases low.
 
 #@TYPE_REFS__BROKEN《
    ►#?NO_BROKEN_BRACKETS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【arrayElem[foo #error(EXP_CLOSE_BRACKET)●RefIndexing(RefIdentifier RefIdentifier)】】●
+  ►#?STRUCTURE_EXPECTED!【arrayElem[foo #error(EXP_CLOSE_BRACKET) #MISSING_BRACKET(flag)●RefIndexing(RefIdentifier RefIdentifier)】】●
 
    ►#?NO_BROKEN_PARENS【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【typeof("abc" #error(EXP_CLOSE_PARENS)●RefTypeof(String)】】●
+  ►#?STRUCTURE_EXPECTED!【typeof("abc" #error(EXP_CLOSE_PARENS) #MISSING_PARENS(flag)●RefTypeof(String)】】●
 ¤》
 
 #@TYPE_REFS《

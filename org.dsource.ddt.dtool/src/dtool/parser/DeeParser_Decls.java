@@ -1008,10 +1008,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		protected EnumMember parseElement(boolean createMissing) {
 			ParseHelper parse = new ParseHelper(-1);
 			
-			TypeId_or_Id_PatternParse typeRef_defId = new TypeId_or_Id_PatternParse();
+			TypeId_or_Id_RuleFragment typeRef_defId = new TypeId_or_Id_RuleFragment();
 			Expression value = null;
 			
-			typeRef_defId.parsePattern(parse, createMissing);
+			typeRef_defId.parseRuleFragment(parse, createMissing);
 			if(typeRef_defId.defId == null)
 				return null;
 			

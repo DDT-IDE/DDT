@@ -308,7 +308,8 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		Pair.create("INV_QUALIFIER", ParserErrorTypes.INVALID_QUALIFIER),
 		Pair.create("NO_TPL_SINGLE_ARG", ParserErrorTypes.NO_CHAINED_TPL_SINGLE_ARG),
 		Pair.create("BAD_LINKAGE_ID", ParserErrorTypes.INVALID_EXTERN_ID),
-		Pair.create("INVALID_SCOPE_ID", ParserErrorTypes.INVALID_SCOPE_ID)
+		Pair.create("INVALID_SCOPE_ID", ParserErrorTypes.INVALID_SCOPE_ID),
+		Pair.create("LAST_CATCH", ParserErrorTypes.LAST_CATCH)
 	);
 	
 	public static ParserErrorTypes getErrorTypeFromMDE(MetadataEntry mde) {
@@ -355,9 +356,10 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			errorSource = assertNotNull_(mde.sourceValue);
 			return new ParserError(errorType, errorRange, errorSource, null);
 		case INVALID_EXTERN_ID:
-			return createErrorToken(ParserErrorTypes.INVALID_EXTERN_ID, mde, lexSource, true, null);
 		case INVALID_SCOPE_ID:
-			return createErrorToken(ParserErrorTypes.INVALID_SCOPE_ID, mde, lexSource, true, null);
+			return createErrorToken(errorType, mde, lexSource, true, null);
+		case LAST_CATCH:
+			return createErrorToken(ParserErrorTypes.LAST_CATCH, mde, lexSource, false, null);
 		}
 		throw assertFail();
 	}
@@ -386,6 +388,8 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			errorParam = DeeParser.RULE_TPL_SINGLE_ARG.name;
 		} else if(errorParam.equals("StOrBlock")) {
 			errorParam = DeeParser.RULE_ST_OR_BLOCK.name;
+		} else if(errorParam.equals("CatchFinally")) {
+			errorParam = DeeParser.RULE_CATCH_OR_FINALLY.name;
 		}
 		return errorParam;
 	}

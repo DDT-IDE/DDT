@@ -10,11 +10,11 @@ import dtool.ast.IASTVisitor;
 
 public class StatementIfVar extends Statement {
 	
-	public final SimpleVariableDef conditionVar;
+	public final VariableDefWithInit conditionVar;
 	public final IStatement thenBody;
 	public final IStatement elseBody;
 	
-	public StatementIfVar(SimpleVariableDef conditionVar, IStatement thenBody, IStatement elseBody) {
+	public StatementIfVar(VariableDefWithInit conditionVar, IStatement thenBody, IStatement elseBody) {
 		this.conditionVar = parentize(assertNotNull_(conditionVar));
 		this.thenBody = parentizeI(thenBody);
 		this.elseBody = parentizeI(elseBody);

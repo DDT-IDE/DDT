@@ -418,8 +418,8 @@ public class ASTNodeReparseCheck {
 		case STATEMENT_IF:
 		case STATEMENT_IF_VAR:
 			return reparseCheck(snippedParser.parseStatement_ifStart().node);
-		case SIMPLE_VARIABLE_DEF:
-			return reparseCheck(snippedParser.attemptParseSimpleDefVar());
+		case VARIABLE_DEF_WITH_INIT:
+			return reparseCheck(snippedParser.parseVariableDefWithInit());
 			
 		case STATEMENT_WHILE:
 			return reparseCheck(snippedParser.parseStatementWhile());
@@ -463,6 +463,12 @@ public class ASTNodeReparseCheck {
 			return reparseCheck(snippedParser.parseStatementAsm());
 		case STATEMENT_SCOPE:
 			return reparseCheck(snippedParser.parseStatementScope());
+		case STATEMENT_TRY:
+			return reparseCheck(snippedParser.parseStatementTry());
+		case TRY_CATCH_CLAUSE:
+			return reparseCheck(snippedParser.parseTryCatchClause());
+		case SIMPLE_VARIABLE_DEF:
+			return reparseCheck(snippedParser.parseSimpleVariableDef());
 			
 		case OTHER: break;
 		}

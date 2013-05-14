@@ -36,6 +36,7 @@ public class ParserError {
 		
 		INVALID_EXTERN_ID,
 		INVALID_SCOPE_ID,
+		LAST_CATCH,
 		
 	}
 	
@@ -90,6 +91,8 @@ public class ParserError {
 		case INVALID_SCOPE_ID:
 			return "Invalid scope specifier \"" + msgErrorSource + "\", must be one of: " +
 				StringUtil.collToString(ScopeTypes.values(), ",") + ".";
+		case LAST_CATCH:
+			return "Catch without parameter must be last catch (and only one per try statement). ";
 			
 		}
 		throw assertFail();

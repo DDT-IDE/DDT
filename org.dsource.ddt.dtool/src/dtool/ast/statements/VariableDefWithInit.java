@@ -10,22 +10,25 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class SimpleVariableDef extends DefUnit {
+public class VariableDefWithInit extends DefUnit {
 	
 	public final Reference type;
+	public final Expression defaultValue;
 	
-	public SimpleVariableDef(Reference type, ProtoDefSymbol defId) {
+	public VariableDefWithInit(Reference type, ProtoDefSymbol defId, Expression defaultValue) {
 		super(defId);
 		this.type = parentize(assertNotNull_(type));
+		this.defaultValue = parentize(defaultValue);
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.SIMPLE_VARIABLE_DEF;
+		return ASTNodeTypes.VARIABLE_DEF_WITH_INIT;
 	}
 	
 	@Override
@@ -34,6 +37,7 @@ public class SimpleVariableDef extends DefUnit {
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, type);
 			TreeVisitor.acceptChildren(visitor, defname);
+			TreeVisitor.acceptChildren(visitor, defaultValue);
 		}
 		visitor.endVisit(this);	
 	}
@@ -42,6 +46,7 @@ public class SimpleVariableDef extends DefUnit {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(type, " ");
 		cp.append(defname);
+		cp.append(" = ", defaultValue);
 	}
 	
 	@Override

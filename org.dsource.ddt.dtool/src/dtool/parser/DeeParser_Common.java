@@ -96,6 +96,10 @@ public abstract class DeeParser_Common extends AbstractParser {
 		return new ProtoDefSymbol(id.getSourceValue(), id.getSourceRange(), id.getError());
 	}
 	
+	public ProtoDefSymbol parseMissingDefIdNoError() {
+		return new ProtoDefSymbol("", srAt(getLexPosition()), null);
+	}
+	
 	public final ProtoDefSymbol parseDefId() {
 		BaseLexElement defId = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
 		return defSymbol(defId);
@@ -121,27 +125,27 @@ public abstract class DeeParser_Common extends AbstractParser {
 	
 	/* ----------------------------------------------------------------- */
 	
-	protected class TypeId_or_Id_PatternParse {
+	protected class TypeId_or_Id_RuleFragment {
 		
 		public Reference type = null;
 		public ProtoDefSymbol defId = null;
 		
-		public void parsePattern(ParseHelper parse, boolean createMissing) {
+		public void parseRuleFragment(ParseHelper parse, boolean createMissing) {
 			type = parse.checkResult(thisParser().parseTypeReference());
 			
 			if(lookAhead() == DeeTokens.IDENTIFIER) {
-				defId = parseDefId();
+				missingDefIdParse();
 			} else if(couldHaveBeenParsedAsId(type)) {
-				defId = convertRefIdToDef(type);
-				type = null;
+				assertTrue(parse.ruleBroken == false);
+				singleIdReparse();
 			} else {
 				if(type == null && !createMissing) {
 					return;
 				}
 				if(parse.ruleBroken) {
-					defId = new ProtoDefSymbol("", srAt(getLexPosition()), null);
+					defId = parseMissingDefIdNoError();
 				} else {
-					defId = parseDefId(); //This will create a full missing defId, with error
+					missingDefIdParse();
 				}
 			}
 			
@@ -150,6 +154,33 @@ public abstract class DeeParser_Common extends AbstractParser {
 			}
 		}
 		
+		protected void singleIdReparse() {
+			defId = convertRefIdToDef(type);
+			type = null;
+		}
+		
+		protected void missingDefIdParse() {
+			defId = parseDefId(); //This will create a full missing defId, with error
+		}
+		
+	}
+	
+	protected final class TypeId_RuleFragment extends TypeId_or_Id_RuleFragment {
+		
+		@Override
+		public void singleIdReparse() {
+			defId = parseDefId();
+		}
+		
+		@Override
+		public void missingDefIdParse() {
+			if(type == null) {
+				type = thisParser().createMissingTypeReference(true);
+				defId = defSymbol(consumeSubChannelTokens());
+			} else {
+				super.missingDefIdParse();
+			}
+		}
 	}
 	
 }
