@@ -17,7 +17,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
 import dtool.ast.DeclList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
@@ -191,13 +190,12 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public NodeResult<? extends IDeclaration> parseDeclaration() {
-		return parseDeclaration(true, false, false);
+		return parseDeclaration(false, false);
 	}
-	public NodeResult<? extends IDeclaration> parseDeclaration(boolean acceptEmptyDecl, boolean precedingIsSTCAttrib) {
-		return parseDeclaration(acceptEmptyDecl, precedingIsSTCAttrib, false);
+	public NodeResult<? extends IDeclaration> parseDeclaration(boolean precedingIsSTCAttrib) {
+		return parseDeclaration(precedingIsSTCAttrib, false);
 	}
-	public NodeResult<? extends IDeclaration> parseDeclaration(boolean acceptEmptyDecl, boolean precedingIsSTCAttrib,
-		boolean statementsOnly) {
+	public NodeResult<? extends IDeclaration> parseDeclaration(boolean precedingIsSTCAttrib, boolean statementsOnly) {
 		DeeTokens laGrouped = assertNotNull_(lookAheadGrouped());
 		
 		if(laGrouped == DeeTokens.EOF) {
@@ -319,6 +317,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(lookAhead(1) == DeeTokens.OPEN_PARENS && lookAhead(2) == DeeTokens.KW_THIS)
 				return parseDeclarationPostBlit_start();
 			return parseDefinitionConstructor();
+		case SEMICOLON:
+			return resultConclude(false, srOf(consumeLookAhead(), new DeclarationEmpty()));
 		default:
 			break;
 		}
@@ -333,45 +333,31 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				return resultConclude(true, srToPosition(ref, new IncompleteDeclaration(ref)));
 			}
 			
-			if(precedingIsSTCAttrib &&
-				ref.getNodeType() == ASTNodeTypes.REF_IDENTIFIER && lookAhead(0) != DeeTokens.IDENTIFIER) {
-				LexElement id = lastLexElement(); // Parse as auto declaration instead
-				return parseDefinitionVariable_afterIdentifier(null, id);
+			if(lookAhead() == DeeTokens.IDENTIFIER) {
+				LexElement defId = consumeLookAhead();
+				
+				if(lookAhead() == DeeTokens.OPEN_PARENS) {
+					return parseDefinitionFunction_afterIdentifier(ref, defId);
+				}
+				return parseDefinitionVariable_afterIdentifier(ref, defSymbol(defId));
+			} else if(precedingIsSTCAttrib && couldHaveBeenParsedAsId(ref)) {
+				// Parse as auto declaration instead
+				ProtoDefSymbol defId = convertRefIdToDef(ref);
+				return parseDefinitionVariable_afterIdentifier(null, defId);
+			} else {
+				
+				ParseHelper parse = new ParseHelper(ref);
+				parse.consumeExpected(DeeTokens.IDENTIFIER);
+				parse.consumeRequired(DeeTokens.SEMICOLON);
+				return parse.resultConclude(new IncompleteDeclaration(ref));
 			}
-			
-			return parseDeclaration_referenceStart(ref);
 		}
 		
-		if(tryConsume(DeeTokens.SEMICOLON)) {
-			ParseHelper parse = new ParseHelper();
-			if(!acceptEmptyDecl) {
-				parse.store(createSyntaxError(RULE_DECLARATION));
-			}
-			return parse.resultConclude(new DeclarationEmpty());
-		}
 		// else
 		return declarationNullResult();
 	}
 	public static NodeResult<? extends IDeclaration> declarationNullResult() {
 		return AbstractParser.<MissingDeclaration>result(false, null);
-	}
-	
-	protected NodeResult<? extends IDeclaration> parseDeclaration_referenceStart(Reference ref) {
-		assertNotNull(ref);
-		if(lookAhead() == DeeTokens.IDENTIFIER) {
-			LexElement defId = consumeLookAhead();
-			
-			if(lookAhead() == DeeTokens.OPEN_PARENS) {
-				return parseDefinitionFunction_afterIdentifier(ref, defId);
-			}
-			
-			return parseDefinitionVariable_afterIdentifier(ref, defId);
-		} else {
-			ParseHelper parse = new ParseHelper(ref);
-			parse.consumeExpected(DeeTokens.IDENTIFIER);
-			parse.consumeRequired(DeeTokens.SEMICOLON);
-			return parse.resultConclude(new IncompleteDeclaration(ref));
-		}
 	}
 	
 	protected NodeResult<DefinitionFunction> parseAutoReturnFunction_start() {
@@ -389,7 +375,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	
 	protected NodeResult<? extends DefinitionVariable> parseDefinitionVariable_afterIdentifier(
-		Reference ref, LexElement defId) 
+		Reference ref, ProtoDefSymbol defId) 
 	{
 		ArrayList<DefVarFragment> fragments = new ArrayList<>();
 		Initializer init = null;
@@ -410,10 +396,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		parse.consumeRequired(DeeTokens.SEMICOLON);
 		
 		if(isAutoRef) {
-			return parse.resultConclude(new DefinitionAutoVariable(defSymbol(defId), init, arrayView(fragments)));
+			return parse.resultConclude(new DefinitionAutoVariable(defId, init, arrayView(fragments)));
 		}
 		
-		return parse.resultConclude(new DefinitionVariable(defSymbol(defId), ref, init, arrayView(fragments)));
+		return parse.resultConclude(new DefinitionVariable(defId, ref, init, arrayView(fragments)));
 	}
 	
 	protected DefVarFragment parseVarFragment(boolean isAutoRef) {
@@ -1210,9 +1196,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				declList = parseDeclList(DeeTokens.CLOSE_BRACE);
 				parse.consumeRequired(DeeTokens.CLOSE_BRACE);
 			} else {
-				declList = parse.requiredResult(parseDeclaration(acceptEmptyDecl, enablesAutoDecl), RULE_DECLBODY);
+				declList = parse.requiredResult(parseDeclaration(enablesAutoDecl), RULE_DECLBODY);
 				if(declList == null) {
 					declList = concludeNode(srOf(consumeSubChannelTokens(), new MissingDeclaration()));
+				} else if(declList instanceof DeclarationEmpty && !acceptEmptyDecl) {
+					parse.store(createSyntaxError(RULE_DECLARATION));
 				}
 			}
 			return this;

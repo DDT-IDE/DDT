@@ -351,7 +351,7 @@ public class ASTNodeReparseCheck {
 		case DEFINITION_VAR_FRAGMENT:
 			return reparseCheck(snippedParser.parseVarFragment(false));
 		case DEFINITION_AUTO_VARIABLE:
-			return reparseCheck(snippedParser.parseDeclaration(true, true));
+			return reparseCheck(snippedParser.parseDeclaration(true));
 		case INITIALIZER_EXP:
 			return reparseCheck(snippedParser.parseInitializer().node);
 		case INITIALIZER_VOID:

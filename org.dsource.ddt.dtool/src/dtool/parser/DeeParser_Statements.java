@@ -202,7 +202,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 	}
 	
 	protected NodeResult<? extends IStatement> parseStatementDeclaration() {
-		NodeResult<? extends IDeclaration> declResult = parseDeclaration(false, false, true);
+		NodeResult<? extends IDeclaration> declResult = parseDeclaration(false, true);
 		assertTrue(declResult.node == null || declResult.node instanceof IStatement);
 		return CoreUtil.blindCast(declResult);
 	}
