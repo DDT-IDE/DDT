@@ -42,8 +42,6 @@ public class DeeLexer extends AbstractLexer {
 		ALPHA(true, true),
 		DIGIT(false, true),
 		
-		BACKSLASH,
-		
 		QUESTION, COMMA, SEMICOLON, COLON, DOLLAR, AT,
 		
 		MINUS, PLUS, STAR, SLASH, MOD,
@@ -108,8 +106,6 @@ public class DeeLexer extends AbstractLexer {
 		Arrays.fill(startRuleCharCategory, 'a', 'z'+1, CharRuleCategory.ALPHA);
 		Arrays.fill(startRuleCharCategory, 'A', 'Z'+1, CharRuleCategory.ALPHA);
 		startRuleCharCategory['_'] = CharRuleCategory.ALPHA;
-		
-		startRuleCharCategory['\\'] = CharRuleCategory.BACKSLASH;
 		
 		startRuleCharCategory['?'] = CharRuleCategory.QUESTION;
 		startRuleCharCategory[','] = CharRuleCategory.COMMA;
@@ -214,7 +210,6 @@ public class DeeLexer extends AbstractLexer {
 		case GREATER_THAN: return ruleGreaterStart();
 		case EXCLAMATION: return ruleExclamation();
 		
-		case BACKSLASH: return matchError();
 		case BAD_TOKEN: return matchError();
 		
 		}
@@ -602,7 +597,8 @@ public class DeeLexer extends AbstractLexer {
 		
 		pos++;
 		while(true) {
-			CharRuleCategory charCategory = getCharCategory(lookAhead());
+			int lookahead = lookAhead();
+			CharRuleCategory charCategory = getCharCategory(lookahead);
 			
 			if(charCategory == CharRuleCategory.SINGLE_QUOTES) {
 				pos++;
@@ -618,7 +614,7 @@ public class DeeLexer extends AbstractLexer {
 				seekToNewline();
 				return createErrorToken(DeeTokens.CHARACTER, 
 					LexerErrorTypes.CHAR_LITERAL_NOT_TERMINATED__REACHED_EOL);
-			} else if (charCategory == CharRuleCategory.BACKSLASH) {
+			} else if (lookahead == '\\') {
 				if (lookAhead(1) == '\'' || lookAhead(1) == '\\') {
 					pos += 2;
 					continue;

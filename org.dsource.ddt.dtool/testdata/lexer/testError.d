@@ -12,3 +12,6 @@ ERROR
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ boundary case
 #LEXERTEST:
 ERROR
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ backslash bug
+\#LEXERTEST:
+ERROR
