@@ -33,15 +33,6 @@
 #STRUCTURE_EXPECTED:  DeclarationAliasThis(RefIdentifier)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)  #@NULL public { void foo ; }
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)    pragma(foo) void foo;
-#STRUCTURE_EXPECTED: DeclarationPragma(Symbol DefinitionVariable(RefPrimitive DefSymbol))
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)  #@NULL extern(C) { void foo ; }
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib
-#PARSE(STATEMENT) const { void foo ; }
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    static import pack.bar.foo;
@@ -49,10 +40,6 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    static assert ( #@EXP_ASSIGN__LITE) ;
 #STRUCTURE_EXPECTED: DeclarationStaticAssert(#@EXP_ASSIGN__LITE)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  TODO static if, conditionals
-#PARSE(STATEMENT)   static #error(EXPRULE_DeclOrBlock) #@BREAK if ( #@EXP_ASSIGN__LITE)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  TODO static if, conditionals
-#PARSE(STATEMENT)  #@NULL  version(unix) { } else { } 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(STATEMENT)     #@MIXIN_PRF《#?STRUCTURE_EXPECTED!【mixin ●】 ●/++/》 template tpl() #@DECLS_BLOCK__SAMPLE
@@ -71,4 +58,17 @@
 #PARSE(STATEMENT)  #@NULL invariant () #@ST_BLOCK__SAMPLE
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)  #@NULL unittest #@ST_BLOCK__SAMPLE
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)  #@NULL public { void foo ; }
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)    pragma(foo) void foo;
+#STRUCTURE_EXPECTED: DeclarationPragma(Symbol DefinitionVariable(RefPrimitive DefSymbol))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)  #@NULL extern(C) { void foo ; }
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib
+#PARSE(STATEMENT) const { void foo ; }
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib
+#PARSE(STATEMENT)    const void foo;

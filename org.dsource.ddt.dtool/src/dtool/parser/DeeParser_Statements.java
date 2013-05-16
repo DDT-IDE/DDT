@@ -22,13 +22,14 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
+import dtool.ast.statements.BlockStatementUnscoped;
+import dtool.ast.statements.CommonStatementList;
 import dtool.ast.statements.EmptyStatement;
 import dtool.ast.statements.ForeachRangeExpression;
 import dtool.ast.statements.ForeachVariableDef;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.ScopedStatementList;
 import dtool.ast.statements.SimpleVariableDef;
-import dtool.ast.statements.VariableDefWithInit;
 import dtool.ast.statements.Statement;
 import dtool.ast.statements.StatementAsm;
 import dtool.ast.statements.StatementBreak;
@@ -54,6 +55,7 @@ import dtool.ast.statements.StatementTry;
 import dtool.ast.statements.StatementWhile;
 import dtool.ast.statements.StatementWith;
 import dtool.ast.statements.TryCatchClause;
+import dtool.ast.statements.VariableDefWithInit;
 import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
@@ -65,11 +67,15 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 	
 	public static final ParseRuleDescription RULE_BLOCK = new ParseRuleDescription("Block");
 	
-	@Override
 	protected NodeResult<BlockStatement> parseBlockStatement(boolean createMissing, boolean brokenIfMissing) {
+		return parseBlockStatement(createMissing, brokenIfMissing, true).upcastTypeParam();
+	}
+	
+	protected NodeResult<? extends CommonStatementList> parseBlockStatement(
+		boolean createMissing, boolean brokenIfMissing, boolean isScoped) {
 		if(!tryConsume(DeeTokens.OPEN_BRACE)) {
 			if(createMissing) {
-				return result(brokenIfMissing, createMissingBlock(RULE_BLOCK));
+				return result(brokenIfMissing, createMissingBlock(RULE_BLOCK, isScoped));
 			}
 			return nullResult(); 
 		}
@@ -78,7 +84,14 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		ArrayView<IStatement> body = parseStatements(DeeTokens.CLOSE_BRACE, true);
 		parse.consumeRequired(DeeTokens.CLOSE_BRACE);
 		
-		return parse.resultConclude(new BlockStatement(body));
+		return parse.resultConclude(isScoped ? new BlockStatement(body) : new BlockStatementUnscoped(body));
+	}
+	
+	protected CommonStatementList createMissingBlock(ParseRuleDescription expectedRule, boolean isScoped) {
+		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
+		int nodeStart = getLexPosition();
+		return conclude(error, srToPosition(nodeStart, 
+			isScoped ? new BlockStatement() : new BlockStatementUnscoped()));
 	}
 	
 	protected NodeResult<ScopedStatementList> parseScopedStatementList() {
@@ -89,13 +102,17 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		return parse.resultConclude(new ScopedStatementList(body));
 	}
 	
+	// Note these two rules are equivalent, but last one indicated a preference for blocks vs. single statements. 
+	public static final ParseRuleDescription RULE_STATEMENT = new ParseRuleDescription("Statement");
+	public static final ParseRuleDescription RULE_ST_OR_BLOCK = new ParseRuleDescription("Statement or Block");
+	
 	protected ArrayView<IStatement> parseStatements(DeeTokens nodeListTerminator, boolean parseCaseDefault) {
 		ArrayList<IStatement> nodeList = new ArrayList<>();
 		while(true) {
 			if(lookAhead() == nodeListTerminator) {
 				break;
 			}
-			IStatement st = parseStatement(parseCaseDefault).node;
+			IStatement st = parseStatement(parseCaseDefault, true).node;
 			if(st == null) {
 				if(lookAhead() == DeeTokens.EOF ||
 					lookAhead() == DeeTokens.KW_CASE || lookAhead() == DeeTokens.KW_DEFAULT) {
@@ -109,34 +126,36 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		return arrayViewI(nodeList);
 	}
 	
-	// Note these two rules are equivalent, but last one indicated a preference for blocks vs. single statements. 
-	public static final ParseRuleDescription RULE_STATEMENT = new ParseRuleDescription("Statement");
-	public static final ParseRuleDescription RULE_ST_OR_BLOCK = new ParseRuleDescription("Statement or Block");
+	protected NodeResult<? extends IStatement> parseStatement_toMissing() {
+		return parseStatement_toMissing(RULE_ST_OR_BLOCK);
+	}
 	
 	protected NodeResult<? extends IStatement> parseStatement_toMissing(ParseRuleDescription expected) {
 		NodeResult<? extends IStatement> stResult = parseStatement();
 		if(stResult.node == null) {
-			return result(false, createMissingBlock(expected));
+			return result(false, createMissingBlock(expected, true));
 		}
 		return stResult;
 	}
 	
-	protected BlockStatement createMissingBlock(ParseRuleDescription expectedRule) {
-		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
-		int nodeStart = getLexPosition();
-		return conclude(error, srToPosition(nodeStart, new BlockStatement()));
+	protected NodeResult<? extends IStatement> parseUnscopedStatement_toMissing() {
+		NodeResult<? extends IStatement> stResult = parseStatement(true, false);
+		if(stResult.node == null) {
+			return result(false, createMissingBlock(RULE_ST_OR_BLOCK, false));
+		}
+		return stResult;
 	}
 	
 	protected NodeResult<? extends IStatement> parseStatement() {
-		return parseStatement(true);
+		return parseStatement(true, true);
 	}
-	protected NodeResult<? extends IStatement> parseStatement(boolean parseCaseDefault) {
+	protected NodeResult<? extends IStatement> parseStatement(boolean parseCaseDefault, boolean isScoped) {
 		switch (lookAhead()) {
 		case SEMICOLON: 
 			consumeLookAhead();
 			return resultConclude(false, srOf(lastLexElement(), new EmptyStatement()));
 		
-		case OPEN_BRACE:return parseBlockStatement(true, true);
+		case OPEN_BRACE:return parseBlockStatement(true, true, isScoped);
 		
 		case KW_IF: return parseStatement_ifStart();
 		case KW_WHILE: return parseStatementWhile();
@@ -215,11 +234,11 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			}
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
 			
-			thenBody = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			thenBody = parse.checkResult(parseStatement_toMissing());
 			if(parse.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.KW_ELSE)) {
-				elseBody = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+				elseBody = parse.checkResult(parseStatement_toMissing());
 			}
 		}
 		
@@ -340,7 +359,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			parse.consumeRequired(DeeTokens.CLOSE_PARENS);
 			if(parse.ruleBroken) break parsing;
 			
-			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			body = parse.checkResult(parseStatement_toMissing());
 		}
 		
 		return parse.resultConclude(new StatementFor(init, condition, increment, body));
@@ -372,7 +391,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
 			
-			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			body = parse.checkResult(parseStatement_toMissing());
 		}
 		
 		return parse.resultConclude(new StatementForeach(isForeachReverse, varParams, iterable, body));
@@ -420,7 +439,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			exp = parseExpressionAroundParentheses(parse, true, false);
 			if(parse.ruleBroken) break parsing;
 			
-			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			body = parse.checkResult(parseStatement_toMissing());
 		}
 		
 		return parse.resultConclude(new StatementSwitch(isFinal, exp, body));
@@ -619,7 +638,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 					break parsing;
 			}
 			
-			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			body = parse.checkResult(parseStatement_toMissing());
 		}
 		
 		return parse.resultConclude(new StatementScope(scopeTypeId, body));
@@ -637,7 +656,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		IStatement finallyBody = null;
 		
 		parsing: { 
-			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			body = parse.checkResult(parseStatement_toMissing());
 			if(parse.ruleBroken) break parsing;
 			
 			catches = new ArrayList<>();
@@ -650,7 +669,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			}
 			
 			if(tryConsume(DeeTokens.KW_FINALLY)) {
-				finallyBody = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+				finallyBody = parse.checkResult(parseStatement_toMissing());
 			}
 			if(catches.size() == 0 && finallyBody == null) {
 				parse.store(createErrorExpectedRule(RULE_CATCH_OR_FINALLY));
@@ -677,7 +696,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 					break parsing;
 			}
 			
-			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
+			body = parse.checkResult(parseStatement_toMissing());
 		}
 		
 		if(parse.ruleBroken == false && catchParam == null && lookAhead() == DeeTokens.KW_CATCH) {

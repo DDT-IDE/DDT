@@ -5,13 +5,9 @@ import static dtool.util.NewUtils.assertNotNull_;
 import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
-import dtool.ast.IASTVisitor;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -20,29 +16,15 @@ import dtool.util.ArrayView;
 /**
  * A scoped statement list. Used by case/default statements
  */
-public class ScopedStatementList extends Statement implements IScopeNode, IFunctionBody {
-	
-	public final ArrayView<IStatement> statements;
+public class ScopedStatementList extends CommonStatementList implements IScopeNode {
 	
 	public ScopedStatementList(ArrayView<IStatement> statements) {
-		this.statements = parentizeI(assertNotNull_(statements));
-	}
-	
-	public final ArrayView<ASTNode> statements_asNodes() {
-		return CoreUtil.<ArrayView<ASTNode>>blindCast(statements);
+		super(assertNotNull_(statements));
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.SCOPED_STATEMENT_LIST;
-	}
-	
-	@Override
-	public void accept0(IASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			TreeVisitor.acceptChildren(visitor, statements);
-		}
-		visitor.endVisit(this);
 	}
 	
 	@Override

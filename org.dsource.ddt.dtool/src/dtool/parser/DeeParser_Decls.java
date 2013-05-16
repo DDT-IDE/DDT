@@ -104,6 +104,7 @@ import dtool.ast.statements.EmptyStatement;
 import dtool.ast.statements.FunctionBody;
 import dtool.ast.statements.FunctionBodyOutBlock;
 import dtool.ast.statements.IFunctionBody;
+import dtool.ast.statements.IStatement;
 import dtool.ast.statements.InOutFunctionBody;
 import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
@@ -285,8 +286,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				if(lookAhead(1) == DeeTokens.KW_ASSERT) { 
 					return parseDeclarationStaticAssert();
 				}
-				if(!statementsOnly && lookAhead(1) == DeeTokens.KW_IF) { 
-					return parseDeclarationStaticIf();
+				if(lookAhead(1) == DeeTokens.KW_IF) { 
+					return parseDeclarationStaticIf(statementsOnly);
 				}
 			}
 			if(isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
@@ -294,17 +295,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			return parseDeclarationBasicAttrib();
 		case KW_DEBUG:
-			if(statementsOnly) return declarationNullResult();
 			if(!statementsOnly && lookAhead(1) == DeeTokens.ASSIGN) {
 				return parseDeclarationDebugVersionSpec();
 			}
-			return parseDeclarationDebugVersion();
+			return parseDeclarationDebugVersion(statementsOnly);
 		case KW_VERSION:
-			if(statementsOnly) return declarationNullResult();
 			if(!statementsOnly && lookAhead(1) == DeeTokens.ASSIGN) {
 				return parseDeclarationDebugVersionSpec();
 			}
-			return parseDeclarationDebugVersion();
+			return parseDeclarationDebugVersion(statementsOnly);
 		case KW_INVARIANT: 
 			if(statementsOnly) return declarationNullResult();
 			return parseDeclarationInvariant_start();
@@ -695,7 +694,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	public static final ParseRuleDescription RULE_FN_BODY = new ParseRuleDescription("FnBody");
 	
 	protected NodeResult<? extends IFunctionBody> parseFunctionBody() {
-		NodeResult<BlockStatement> blockResult = parseBlockStatement(false, false);
+		NodeResult<BlockStatement> blockResult = thisParser().parseBlockStatement(false, false);
 		if(blockResult.node != null)
 			return blockResult;
 		
@@ -749,13 +748,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public NodeResult<BlockStatement> parseBlockStatement_toMissing() {
-		return parseBlockStatement(true, true);
+		return thisParser().parseBlockStatement(true, true);
 	}
 	public NodeResult<BlockStatement> parseBlockStatement_toMissing(boolean brokenIfMissing) {
-		return parseBlockStatement(true, brokenIfMissing);
+		return thisParser().parseBlockStatement(true, brokenIfMissing);
 	}
-	
-	protected abstract NodeResult<BlockStatement> parseBlockStatement(boolean createMissing, boolean brokenIfMissing);
 	
 	protected NodeResult<FunctionBodyOutBlock> parseOutBlock() {
 		if(!tryConsume(DeeTokens.KW_OUT))
@@ -1331,14 +1328,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new DeclarationBasicAttrib(attrib, ab.bodySyntax, ab.declList));
 	}
 	
-	public NodeResult<DeclarationStaticIf> parseDeclarationStaticIf() {
+	public NodeResult<DeclarationStaticIf> parseDeclarationStaticIf(boolean isStatement) {
 		ParseHelper parse = new ParseHelper(lookAheadElement());
 		if(!tryConsume(DeeTokens.KW_STATIC, DeeTokens.KW_IF))
 			return null;
 		
 		Expression exp = null;
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		ASTNode elseBody = null;
+		ConditionalBodyParseRule body = new ConditionalBodyParseRule();
 		
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
@@ -1347,27 +1343,22 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			if(parse.ruleBroken) break parsing;
 			
-			ab.parseAttribBody(parse, false, false);
-			if(parse.ruleBroken) break parsing;
-			
-			if(ab.bodySyntax != AttribBodySyntax.COLON) {
-				if(tryConsume(DeeTokens.KW_ELSE)) {
-					elseBody = new AttribBodyParseRule().parseDeclBlockOrSingle(parse, false, false).declList ;
-				}
-			}
+			body.parseConditionalBody(parse, isStatement);
 		}
-		return parse.resultConclude(new DeclarationStaticIf(exp, ab.bodySyntax, ab.declList, elseBody));
+		if(isStatement) {
+			return parse.resultConclude(new DeclarationStaticIf(exp, body.thenBodySt, body.elseBodySt));
+		}
+		return parse.resultConclude(new DeclarationStaticIf(exp, body.bodySyntax, body.declList, body.elseBody));
 	}
 	
-	public NodeResult<DeclarationDebugVersion> parseDeclarationDebugVersion() {
+	public NodeResult<DeclarationDebugVersion> parseDeclarationDebugVersion(boolean isStatement) {
 		if(!(tryConsume(DeeTokens.KW_DEBUG) || tryConsume(DeeTokens.KW_VERSION)))
 			return null;
 		boolean isDebug = lastLexElement().token.type == DeeTokens.KW_DEBUG;
 		ParseHelper parse = new ParseHelper();
 		
 		VersionSymbol value = null;
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		ASTNode elseBody = null;
+		ConditionalBodyParseRule body = new ConditionalBodyParseRule();
 		
 		parsing: {
 			if(parse.consume(DeeTokens.OPEN_PARENS, isDebug, true)) {
@@ -1380,16 +1371,42 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			if(parse.ruleBroken) break parsing;
 			
-			ab.parseAttribBody(parse, false, false);
-			if(parse.ruleBroken) break parsing;
+			body.parseConditionalBody(parse, isStatement);
+		}
+		if(isStatement) {
+			return parse.resultConclude(new DeclarationDebugVersion(isDebug, value, body.thenBodySt, body.elseBodySt));
+		}
+		return parse.resultConclude(
+			new DeclarationDebugVersion(isDebug, value, body.bodySyntax, body.declList, body.elseBody));
+	}
+	
+	protected class ConditionalBodyParseRule extends AttribBodyParseRule {
+		
+		public ASTNode elseBody = null;
+		public IStatement thenBodySt = null;
+		public IStatement elseBodySt = null;
+		
+		public void parseConditionalBody(ParseHelper parse, boolean isStatement) {
 			
-			if(ab.bodySyntax != AttribBodySyntax.COLON) {
+			if(isStatement) {
+				thenBodySt = parse.checkResult(thisParser().parseUnscopedStatement_toMissing()); 
+				if(parse.ruleBroken) return;
+				
 				if(tryConsume(DeeTokens.KW_ELSE)) {
-					elseBody = new AttribBodyParseRule().parseDeclBlockOrSingle(parse, false, false).declList ;
+					elseBodySt = parse.checkResult(thisParser().parseUnscopedStatement_toMissing());
+				}
+			} else {
+				parseAttribBody(parse, false, false);
+				if(parse.ruleBroken) return;
+				
+				if(bodySyntax != AttribBodySyntax.COLON) {
+					if(tryConsume(DeeTokens.KW_ELSE)) {
+						elseBody = new AttribBodyParseRule().parseDeclBlockOrSingle(parse, false, false).declList ;
+					}
 				}
 			}
 		}
-		return parse.resultConclude(new DeclarationDebugVersion(isDebug, value, ab.bodySyntax, ab.declList, elseBody));
+		
 	}
 	
 	/* ----------------------------------------- */

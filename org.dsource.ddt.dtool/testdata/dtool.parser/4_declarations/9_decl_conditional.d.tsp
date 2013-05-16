@@ -64,5 +64,22 @@
 #PARSE(DECLARATION)   #@CONDITION #@COND_BODY
 #STRUCTURE_EXPECTED:  #@CONDITION #@COND_BODY )
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-TODO: conditional statement
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Statement variation
+
+#@COND_BODY_ST《
+  ►#?STRUCTURE_EXPECTED!【#@ST__NB     ● #BLOCK_ST_UNSCOPED(flag) #@ST__NB 】●
+  ►#?STRUCTURE_EXPECTED!【#@ST__BROKEN ● #BLOCK_ST_UNSCOPED(flag) #@ST__BROKEN 】●
+  ►#?STRUCTURE_EXPECTED!【#@ST__NB else #@ST__ANY ● #BLOCK_ST_UNSCOPED(flag) #@ST__NB #@ST__ANY】●
+  
+  ►#?STRUCTURE_EXPECTED!【#@NO_STOrBLOCK #@IGNORE_REST : ● #BLOCK_ST_UNSCOPED(flag) #@NO_STOrBLOCK 】●
+  ►#?STRUCTURE_EXPECTED!【#@NO_STOrBLOCK #@IGNORE_REST invariant() /*Test that non-statements are not parsed*/ ● #BLOCK_ST_UNSCOPED(flag)#@NO_STOrBLOCK 】●
+¤》
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)     version #error(EXP_OPEN_PARENS)【】  #@BREAK
+#STRUCTURE_EXPECTED:  DeclarationDebugVersion( )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)     debug  #@NO_STOrBLOCK 
+#STRUCTURE_EXPECTED:  DeclarationDebugVersion( #BLOCK_ST_UNSCOPED(flag) #@NO_STOrBLOCK )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)     #@CONDITION #@COND_BODY_ST
+#STRUCTURE_EXPECTED:  #@CONDITION #@COND_BODY_ST )

@@ -5,15 +5,17 @@
 #@ST__BROKEN《#@BROKEN_ST_BLOCK》
 
 
-#@ST_BLOCK__SAMPLE《
-  ►#?STRUCTURE_EXPECTED!【 { #@ST__SAMPLE2 #@ST__SAMPLE  } ● BlockStatement(#@ST__SAMPLE2 #@ST__SAMPLE)】》
-#@NO_ST_BLOCK《
-  ►#?STRUCTURE_EXPECTED!【 /*Required StBlock*/ #error(EXPRULE_Block) ● BlockStatement 】》
-#@BROKEN_ST_BLOCK《
-  ►#?STRUCTURE_EXPECTED!【 { #@ST__SAMPLE #error(EXP_CLOSE_BRACE) #@BREAK● BlockStatement(#@ST__SAMPLE $】》
+#@BLOCKSTATEMENT《#?BLOCK_ST_UNSCOPED【BlockStatementUnscoped●BlockStatement】》
 
-#@NO_STOrBLOCK《►#?STRUCTURE_EXPECTED!【 /*Required St*/ #error(EXPRULE_StOrBlock) ● BlockStatement 】》
-#@NO_ST《 ►#?STRUCTURE_EXPECTED!【 /*Required St*/ #error(EXPRULE_Statement) ● BlockStatement 】》
+#@ST_BLOCK__SAMPLE《
+  ►#?STRUCTURE_EXPECTED!【 { #@ST__SAMPLE2 #@ST__SAMPLE  } ● #@BLOCKSTATEMENT (#@ST__SAMPLE2 #@ST__SAMPLE)】》
+#@NO_ST_BLOCK《
+  ►#?STRUCTURE_EXPECTED!【 /*Required StBlock*/ #error(EXPRULE_Block) ● #@BLOCKSTATEMENT 】》
+#@BROKEN_ST_BLOCK《
+  ►#?STRUCTURE_EXPECTED!【 { #@ST__SAMPLE #error(EXP_CLOSE_BRACE) #@BREAK● #@BLOCKSTATEMENT (#@ST__SAMPLE $】》
+
+#@NO_STOrBLOCK《►#?STRUCTURE_EXPECTED!【 /*Required St*/ #error(EXPRULE_StOrBlock) ● #@BLOCKSTATEMENT 】》
+#@NO_ST《 ►#?STRUCTURE_EXPECTED!【 /*Required St*/ #error(EXPRULE_Statement) ● #@BLOCKSTATEMENT 】》
 
 
 // Note: it's usefull that all these four ST_* variations do not reference each other, even though they could. 
@@ -45,12 +47,12 @@
  ►#?STRUCTURE_EXPECTED!【 ; ● EmptyStatement 】●
 ¤》
 
-#@ST_BLOCK《
+#@BLOCK_ST《
  ►#@NO_ST_BLOCK●
  ►#@ST_BLOCK__SAMPLE●
  ►#@BROKEN_ST_BLOCK●
 ¤》
-#@ST_BLOCK__NB《
+#@BLOCK_ST__NB《
  ►#@NO_ST_BLOCK●
  ►#@ST_BLOCK__SAMPLE●
 ¤》

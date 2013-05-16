@@ -8,6 +8,7 @@ import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.NodeList;
+import dtool.ast.statements.BlockStatementUnscoped;
 import dtool.refmodel.INonScopedBlock;
 
 public abstract class DeclarationAttrib extends ASTNode implements INonScopedBlock {
@@ -28,10 +29,14 @@ public abstract class DeclarationAttrib extends ASTNode implements INonScopedBlo
 	}
 	
 	public static Iterator<? extends ASTNode> getBodyIterator(ASTNode body) {
-		if(body == null)
+		if(body == null) {
 			return IteratorUtil.getEMPTY_ITERATOR();
+		}
 		if(body instanceof NodeList) { /*BUG here MAKE, do DeclList instead of NodeList*/
 			return ((NodeList<?>) body).nodes.iterator();
+		}
+		if(body instanceof BlockStatementUnscoped) { /*BUG here MAKE, comment*/
+			return ((BlockStatementUnscoped) body).getMembersIterator();
 		}
 		return IteratorUtil.singletonIterator(body);
 	}

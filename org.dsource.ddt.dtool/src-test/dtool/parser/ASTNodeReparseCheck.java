@@ -11,6 +11,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
@@ -33,6 +34,8 @@ import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
+import dtool.ast.statements.BlockStatementUnscoped;
+import dtool.ast.statements.CommonStatementList;
 import dtool.ast.statements.ForeachRangeExpression;
 import dtool.ast.statements.ScopedStatementList;
 import dtool.parser.AbstractParser.NodeResult;
@@ -114,8 +117,8 @@ public class ASTNodeReparseCheck {
 		else if(node instanceof MissingParenthesesExpression) {
 			return true;
 		}
-		else if(node instanceof BlockStatement) {
-			BlockStatement blockStatement = (BlockStatement) node;
+		else if(node instanceof BlockStatement || node instanceof BlockStatementUnscoped) {
+			CommonStatementList blockStatement = (CommonStatementList) node;
 			return blockStatement.statements == null;
 		}
 
@@ -333,8 +336,10 @@ public class ASTNodeReparseCheck {
 		case DECLARATION_POST_BLIT: return reparseCheck(snippedParser.parseDeclarationPostBlit_start());
 		case DECLARATION_SPECIAL_FUNCTION: return reparseCheck(snippedParser.parseDeclarationSpecialFunction());
 		case DECLARATION_DEBUG_VERSION_SPEC: return reparseCheck(snippedParser.parseDeclarationDebugVersionSpec());
-		case DECLARATION_DEBUG_VERSION: return reparseCheck(snippedParser.parseDeclarationDebugVersion());
-		case DECLARATION_STATIC_IF: return reparseCheck(snippedParser.parseDeclarationStaticIf());
+		case DECLARATION_DEBUG_VERSION: return reparseCheck(snippedParser.parseDeclarationDebugVersion(
+			((AbstractConditionalDeclaration) nodeUnderTest).isStatement()));
+		case DECLARATION_STATIC_IF: return reparseCheck(snippedParser.parseDeclarationStaticIf(
+			((AbstractConditionalDeclaration) nodeUnderTest).isStatement()));
 		case DECLARATION_STATIC_ASSERT: return reparseCheck(snippedParser.parseDeclarationStaticAssert());
 		
 		/* ---------------------------------- */
@@ -411,6 +416,8 @@ public class ASTNodeReparseCheck {
 		/* -------------------  Statements  ------------------- */
 		case BLOCK_STATEMENT:
 			return reparseCheck(snippedParser.parseBlockStatement_toMissing().node);
+		case BLOCK_STATEMENT_UNSCOPED:
+			return reparseCheck(snippedParser.parseBlockStatement(true, true, false).node);
 		case EMPTY_STATEMENT:
 			return simpleReparseCheck(";");
 		case STATEMENT_LABEL:

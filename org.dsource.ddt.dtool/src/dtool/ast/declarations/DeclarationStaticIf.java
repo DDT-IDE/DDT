@@ -6,6 +6,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
+import dtool.ast.statements.IStatement;
 
 public class DeclarationStaticIf extends AbstractConditionalDeclaration {
 	
@@ -14,6 +15,11 @@ public class DeclarationStaticIf extends AbstractConditionalDeclaration {
 	public DeclarationStaticIf(Expression exp, AttribBodySyntax bodySyntax, ASTNode thenBody, 
 		ASTNode elseBody) {
 		super(bodySyntax, thenBody, elseBody);
+		this.exp = parentize(exp);
+	}
+	
+	public DeclarationStaticIf(Expression exp, IStatement thenBody, IStatement elseBody) {
+		super(thenBody, elseBody);
 		this.exp = parentize(exp);
 	}
 	
