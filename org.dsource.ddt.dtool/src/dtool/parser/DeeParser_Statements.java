@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.IDeclaration;
+import dtool.ast.declarations.IncompleteDeclaration;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
@@ -38,6 +39,7 @@ import dtool.ast.statements.StatementCaseRange;
 import dtool.ast.statements.StatementContinue;
 import dtool.ast.statements.StatementDefault;
 import dtool.ast.statements.StatementDoWhile;
+import dtool.ast.statements.StatementExpression;
 import dtool.ast.statements.StatementFor;
 import dtool.ast.statements.StatementForeach;
 import dtool.ast.statements.StatementGoto;
@@ -197,14 +199,39 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			break;
 		}
 		
-		NodeResult<? extends IStatement> decl = parseStatementDeclaration();
-		return decl;
+		DeeParserState savedState = thisParser().enterBacktrackableMode();
+		
+		if(lookAhead() == DeeTokens.KW_IMPORT && lookAhead(1) == DeeTokens.OPEN_PARENS) {
+			// Disambiguate against DeclarationImport
+			return parseStatementExpression();
+		}
+		
+		NodeResult<? extends IDeclaration> declResult = parseDeclaration(false, true);
+		IDeclaration decl = declResult.node;
+		
+		if(decl instanceof IncompleteDeclaration || decl == null) {
+			thisParser().restoreOriginalState(savedState);
+			NodeResult<StatementExpression> expResult = parseStatementExpression();
+			if(expResult.node == null) {
+				assertTrue(decl == null); // Because any IncompleteDeclaration must be parsable as exp
+			}
+			return expResult;
+		} else {
+			assertTrue(decl instanceof IStatement);
+			return CoreUtil.blindCast(declResult);
+		}
+		
 	}
 	
-	protected NodeResult<? extends IStatement> parseStatementDeclaration() {
-		NodeResult<? extends IDeclaration> declResult = parseDeclaration(false, true);
-		assertTrue(declResult.node == null || declResult.node instanceof IStatement);
-		return CoreUtil.blindCast(declResult);
+	public NodeResult<StatementExpression> parseStatementExpression() {
+		ParseHelper parse = new ParseHelper(-1);
+		Expression exp = parseExpression().node;
+		if(exp == null) {
+			return nullResult();
+		}
+		parse.nodeStart = exp.getStartPos();
+		parse.consumeRequired(DeeTokens.SEMICOLON);
+		return parse.resultConclude(new StatementExpression(exp));
 	}
 	
 	/* ----------------------------------------------------------------- */

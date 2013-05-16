@@ -6,12 +6,16 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.references.Reference;
 
+/**
+ * Represents an incomplete var or function declaration (where the defId is missing).
+ */
 public class IncompleteDeclaration extends ASTNode implements IDeclaration {
 	
-	public final ASTNode node;
+	public final Reference node;
 	
-	public IncompleteDeclaration(ASTNode node) {
+	public IncompleteDeclaration(Reference node) {
 		this.node = parentize(assertNotNull_(node));
 	}
 	

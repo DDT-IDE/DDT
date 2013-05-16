@@ -424,7 +424,7 @@ public class ASTNodeReparseCheck {
 			return simpleReparseCheck(";");
 		
 		case STATEMENT_EXPRESSION:
-			return reparseCheck(snippedParser.parseStatement());
+			return reparseCheck(snippedParser.parseStatementExpression());
 			
 		case STATEMENT_LABEL:
 			return reparseCheck(snippedParser.parseStatementLabel_start().node);

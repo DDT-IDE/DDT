@@ -2,6 +2,10 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    int foo;
 #STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ duplicate case
+#PARSE(STATEMENT)    #error(TYPE_AS_EXP_VALUE)【foo[int]】 ;
+#STRUCTURE_EXPECTED: StatementExpression(*)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    int foo(void paramA) {  }
 #STRUCTURE_EXPECTED: DefFunction(RefPrimitive DefSymbol FunctionParameter(? ?)  BlockStatement)
@@ -67,7 +71,7 @@
 #STRUCTURE_EXPECTED: DeclarationPragma(Symbol DefinitionVariable(RefPrimitive DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(STATEMENT)  #@NULL extern(C) { void foo ; }
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib TODO
 #PARSE(STATEMENT) const { void foo ; }
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib TODO: basic attrib , this is wrong

@@ -289,7 +289,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				}
 			}
 			if(isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
-				break; // go to parseReference
+				break; // this will be parsed as a type modifier reference
 			}
 			return parseDeclarationBasicAttrib();
 		case KW_DEBUG:
@@ -323,39 +323,42 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			break;
 		}
 		
+		return parseDeclaration_varOrFunction(precedingIsSTCAttrib);
+	}
+	
+	public NodeResult<? extends IDeclaration> parseDeclaration_varOrFunction(boolean precedingIsSTCAttrib) {
 		// This parses (BasicType + BasicType2) of spec:
-		NodeResult<Reference> startRef = parseTypeReference_do(false); 
-		if(startRef.node != null) {
-			Reference ref = startRef.node;
-			
-			if(startRef.ruleBroken) {
-				/*BUG here possible with statementsOnly */
-				return resultConclude(true, srToPosition(ref, new IncompleteDeclaration(ref)));
-			}
-			
-			if(lookAhead() == DeeTokens.IDENTIFIER) {
-				LexElement defId = consumeLookAhead();
-				
-				if(lookAhead() == DeeTokens.OPEN_PARENS) {
-					return parseDefinitionFunction_afterIdentifier(ref, defId);
-				}
-				return parseDefinitionVariable_afterIdentifier(ref, defSymbol(defId));
-			} else if(precedingIsSTCAttrib && couldHaveBeenParsedAsId(ref)) {
-				// Parse as auto declaration instead
-				ProtoDefSymbol defId = convertRefIdToDef(ref);
-				return parseDefinitionVariable_afterIdentifier(null, defId);
-			} else {
-				
-				ParseHelper parse = new ParseHelper(ref);
-				parse.consumeExpected(DeeTokens.IDENTIFIER);
-				parse.consumeRequired(DeeTokens.SEMICOLON);
-				return parse.resultConclude(new IncompleteDeclaration(ref));
-			}
+		NodeResult<Reference> startRef = parseTypeReference_do(false);
+		if(startRef.node == null) {
+			return declarationNullResult();
+		} 
+		
+		Reference ref = startRef.node;
+		
+		if(startRef.ruleBroken) {
+			return resultConclude(true, srToPosition(ref, new IncompleteDeclaration(ref)));
 		}
 		
-		// else
-		return declarationNullResult();
+		if(lookAhead() == DeeTokens.IDENTIFIER) {
+			LexElement defId = consumeLookAhead();
+			
+			if(lookAhead() == DeeTokens.OPEN_PARENS) {
+				return parseDefinitionFunction_afterIdentifier(ref, defId);
+			}
+			return parseDefinitionVariable_afterIdentifier(ref, defSymbol(defId));
+		} else if(precedingIsSTCAttrib && couldHaveBeenParsedAsId(ref)) {
+			// Parse as auto declaration instead
+			ProtoDefSymbol defId = convertRefIdToDef(ref);
+			return parseDefinitionVariable_afterIdentifier(null, defId);
+		} else {
+			
+			ParseHelper parse = new ParseHelper(ref);
+			parse.consumeExpected(DeeTokens.IDENTIFIER);
+			parse.consumeRequired(DeeTokens.SEMICOLON);
+			return parse.resultConclude(new IncompleteDeclaration(ref));
+		}
 	}
+	
 	public static NodeResult<? extends IDeclaration> declarationNullResult() {
 		return AbstractParser.<MissingDeclaration>result(false, null);
 	}

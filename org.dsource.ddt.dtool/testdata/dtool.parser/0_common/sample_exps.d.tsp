@@ -28,12 +28,12 @@
   ►#?STRUCTURE_EXPECTED!【(123 ,"asd")●ExpParentheses(ExpInfix(Integer String))】●
   
   ►#?STRUCTURE_EXPECTED!【assert(2 + 2 == true, "error")●ExpAssert(* String)】●
-  ►#?STRUCTURE_EXPECTED!【mixin("2 + " ~ "2")●ExpMixinString(*)】●
-  ►#?STRUCTURE_EXPECTED!【import("testdata/samples.txt")●ExpImportString(String)】●
+  ►#?STRUCTURE_EXPECTED!【mixin("2 + " ~ "2") #MIXIN_EXP(flag)●ExpMixinString(*)】●
+  ►#?STRUCTURE_EXPECTED!【import("testdata/samples.txt") ●ExpImportString(String)】●
   
-  ►#?STRUCTURE_EXPECTED!【function(int a) { /*return; TODO: */ } ●ExpFunctionLiteral(* *) 】●
-  ►#?STRUCTURE_EXPECTED!【{ /*foo : 123; TODO*/ ; }●ExpFunctionLiteral(*)】●
-  ►#?STRUCTURE_EXPECTED!【(int a, ...) { /*foo : 123;*/ }●ExpFunctionLiteral(* * *)】●
+  ►#?STRUCTURE_EXPECTED!【function(int a) { return; } ●ExpFunctionLiteral(* *) 】●
+  ►#?STRUCTURE_EXPECTED!【{ ; } #BLOCK_ST_LIKE_EXP(flag) ●ExpFunctionLiteral( BlockStatement(EmptyStatement) )】●
+  ►#?STRUCTURE_EXPECTED!【(int a, ...) { return a; }●ExpFunctionLiteral(* * BlockStatement(StatementReturn(*)))】●
   
   
   ►#?STRUCTURE_EXPECTED!【foo(1, 3)●             ExpCall(#@ExpIdentifier Integer Integer)】●
