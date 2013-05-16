@@ -57,8 +57,8 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
  ►#?STRUCTURE_EXPECTED!【align(#error(EXP_INTEGER_DECIMAL)) ● DeclarationAlign( 】●
 ¤》
 
-// TODO pragma expression list !
 #@PRAGMA_ATTRIB《
+ ►#?STRUCTURE_EXPECTED!【pragma(foo, 123)● DeclarationPragma(Symbol Integer】●
  ►#?STRUCTURE_EXPECTED!【pragma(foo)● DeclarationPragma(Symbol 】●
  ►#?STRUCTURE_EXPECTED!【pragma ( #error(EXP_ID) )● DeclarationPragma(Symbol 】●
 ¤》
@@ -72,8 +72,6 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 
 #@ATTRIBS《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIB》
 #@ATTRIBS_WITH_ENUM《#@ATTRIBS●#@ENUM_ATTRIB》
-
-// TODO: should have attribs sample:
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS /**/ : #@DECL_LIST_SAMPLE

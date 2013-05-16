@@ -123,7 +123,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			nodeList.add(st);
 		}
 		
-		return arrayViewI(nodeList);
+		return arrayView(nodeList);
 	}
 	
 	protected NodeResult<? extends IStatement> parseStatement_toMissing() {

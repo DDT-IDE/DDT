@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNeoNode;
@@ -409,16 +410,10 @@ public abstract class AbstractParser {
 	
 	// TODO: optimize some of this arrayView creation
 	
-	public static <T extends IASTNeoNode> ArrayView<T> arrayViewI(Collection<? extends T> list) {
+	public static <T extends IASTNeoNode> ArrayView<T> arrayView(Collection<T> list) {
 		if(list == null)
 			return null;
-		return ArrayView.create((T[]) ArrayUtil.createFrom(list, IASTNeoNode.class));
-	}
-	
-	public static <T extends ASTNode> ArrayView<T> arrayView(Collection<? extends T> list) {
-		if(list == null)
-			return null;
-		return ArrayView.create((T[]) ArrayUtil.createFrom(list, ASTNode.class));
+		return ArrayView.create(ArrayUtil.createFrom(list, CoreUtil.<Class<T>>blindCast(ASTNode.class) ));
 	}
 	
 	public static <T> ArrayView<T> arrayViewG(Collection<? extends T> list) {

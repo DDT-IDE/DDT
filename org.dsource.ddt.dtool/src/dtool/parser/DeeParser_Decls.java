@@ -1109,7 +1109,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		parse.consumeRequired(DeeTokens.SEMICOLON);
 		parse.ruleBroken = false;
-		return parse.resultConclude(new DeclarationImport(isStatic, arrayViewI(fragments)));
+		return parse.resultConclude(new DeclarationImport(isStatic, arrayView(fragments)));
 	}
 	
 	public IImportFragment parseImportFragment() {
@@ -1163,7 +1163,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			
 		} while(tryConsume(DeeTokens.COMMA));
 		
-		return parse.conclude(new ImportSelective(fragment, arrayViewI(selFragments)));
+		return parse.conclude(new ImportSelective(fragment, arrayView(selFragments)));
 	}
 	
 	public IImportSelectiveSelection parseImportSelectiveSelection() {

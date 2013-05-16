@@ -262,7 +262,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 	
 	public final ArrayView<IFunctionParameter> getAsFunctionParameters() {
 		assertTrue(mode == TplOrFnMode.FN);
-		return arrayViewI(CoreUtil.<ArrayList<IFunctionParameter>>blindCast(params));
+		return arrayView(CoreUtil.<ArrayList<IFunctionParameter>>blindCast(params));
 	}
 	
 	public final ArrayView<IFunctionParameter> toFunctionParameters() {
