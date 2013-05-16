@@ -52,6 +52,11 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂   
 #PARSE(INITIALIZER)   {  #error(EXP_CLOSE_BRACE) #@BREAK
 #STRUCTURE_EXPECTED:  InitializerExp(ExpFunctionLiteral(BlockStatement))
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO after parseStatements is done   
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂    
 #PARSE(INITIALIZER)   {  foo : #error(EXP_CLOSE_BRACE) #@BREAK
-#STRUCTURE_EXPECTED:  InitializerExp(ExpFunctionLiteral(BlockStatement))
+#STRUCTURE_EXPECTED:  InitializerExp(ExpFunctionLiteral(BlockStatement(StatementLabel(?))))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂    
+#PARSE(INITIALIZER)   { foo : bar, foobar; } /* Literal that looks like struct init */ 
+#STRUCTURE_EXPECTED:  InitializerExp(
+ExpFunctionLiteral(BlockStatement( StatementLabel(?) StatementExpression(ExpInfix(* *)) )) )
+

@@ -17,15 +17,14 @@
     StructInitEntry(#@_ARRAY_INIT_SAMPLE)
     StructInitEntry(RefIdentifier InitializerStruct(StructInitEntry(RefIdentifier InitializerExp(String))))
   )】●
+  ►#?STRUCTURE_EXPECTED!【{ foo : bar, foobar; }/*Literal that looks like struct init*/●InitializerExp(
+    ExpFunctionLiteral(BlockStatement( StatementLabel(?) StatementExpression(ExpInfix(* *)) )) )】●
 ¤》
 #@INIT_NONVOID__SAMPLE《
   ►#@NO_INIT●
   ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN__LITE●InitializerExp(#@EXP_ASSIGN__LITE)】●
 ¤》
 // Note the subtle difference that INIT_NONVOID__SAMPLE has NO_INIT case
-
-TODO: FunctionLiteral with statements that look like init
-  ►#?STRUCTURE_EXPECTED!【{ [1, 2]; }●InitializerStruct(StructInitEntry(#@ExpIdentifier))】●
 
 
 #@INITIALIZERS《
