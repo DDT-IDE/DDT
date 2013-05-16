@@ -7,7 +7,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.expressions.Resolvable;
+import dtool.ast.expressions.Expression;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
 import dtool.util.ArrayView;
@@ -16,16 +16,16 @@ public class DeclarationPragma extends DeclarationAttrib implements IDeclaration
 	
 	public final boolean isStatement;
 	public final Symbol pragmaId;
-	public final ArrayView<Resolvable> expressions; // TODO
+	public final ArrayView<Expression> expressions;
 	
-	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, AttribBodySyntax abs, ASTNode bodyDecls) {
+	public DeclarationPragma(Symbol id, ArrayView<Expression> expressions, AttribBodySyntax abs, ASTNode bodyDecls) {
 		super(abs, bodyDecls);
 		this.pragmaId = parentize(id);
 		this.expressions = parentize(expressions);
 		this.isStatement = false;
 	}
 	
-	public DeclarationPragma(Symbol id, ArrayView<Resolvable> expressions, IStatement thenBody) {
+	public DeclarationPragma(Symbol id, ArrayView<Expression> expressions, IStatement thenBody) {
 		super(AttribBodySyntax.SINGLE_DECL, (ASTNode) thenBody);
 		assertTrue(!(thenBody instanceof BlockStatement));
 		this.pragmaId = parentize(id);
@@ -43,7 +43,7 @@ public class DeclarationPragma extends DeclarationAttrib implements IDeclaration
 		boolean children = visitor.visit(this);
 		if(children) {
 			TreeVisitor.acceptChildren(visitor, pragmaId);
-//			TreeVisitor.acceptChildren(visitor, expressions);
+			TreeVisitor.acceptChildren(visitor, expressions);
 			TreeVisitor.acceptChildren(visitor, body);
 		}
 		visitor.endVisit(this);

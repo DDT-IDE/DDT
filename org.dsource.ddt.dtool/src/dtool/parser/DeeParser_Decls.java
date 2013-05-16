@@ -471,7 +471,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(listParse.members == null)
 			return nullResult();
 		
-		return listParse.resultConclude(new InitializerArray(arrayView(listParse.members), listParse.hasEndingSep));
+		return listParse.resultConclude(new InitializerArray(listParse.members, listParse.hasEndingSep));
 	}
 	
 	public class ParseArrayInitEntry extends ElementListParseHelper<ArrayInitEntry> {
@@ -509,7 +509,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(listParse.members == null)
 			return nullResult();
 		
-		return listParse.resultConclude(new InitializerStruct(arrayView(listParse.members), listParse.hasEndingSep));
+		return listParse.resultConclude(new InitializerStruct(listParse.members, listParse.hasEndingSep));
 	}
 	
 	public class ParseStructInitEntry extends ElementListParseHelper<StructInitEntry> {
@@ -996,7 +996,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return nullResult();
 		}
 		
-		return parse.resultConclude(new EnumBody(arrayView(parse.members), parse.hasEndingSep));
+		return parse.resultConclude(new EnumBody(parse.members, parse.hasEndingSep));
 	}
 	
 	public class ParseEnumMember extends ElementListParseHelper<EnumMember> {
@@ -1055,7 +1055,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		boolean isClass = lastLexElement().token.type == DeeTokens.KW_CLASS;
 		AggregateDefinitionParse adp = new AggregateDefinitionParse();
 		
-		ElementListParseHelper<Reference> baseClasses = new TypeReferenceListParse();
+		SimpleListParseHelper<Reference> baseClasses = new TypeReferenceSimpleListParse();
 		parsing: {
 			adp.parseAggregate(true, false, true);
 			if(adp.ruleBroken) break parsing;
@@ -1074,6 +1074,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public class TypeReferenceListParse extends ElementListParseHelper<Reference> {
+		@Override
+		protected Reference parseElement(boolean createMissing) {
+			return parseTypeReference(createMissing, true).node;
+		}
+	}
+	
+	public class TypeReferenceSimpleListParse extends SimpleListParseHelper<Reference> {
 		@Override
 		protected Reference parseElement(boolean createMissing) {
 			return parseTypeReference(createMissing, true).node;
@@ -1284,13 +1291,18 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		Symbol pragmaId = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
 		IStatement bodySt = null;
+		ArrayView<Expression> expressions = null;
 		
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
 				pragmaId = parseIdSymbol();
 				
-				// TODO pragma argument list;
-				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
+				if(tryConsume(DeeTokens.COMMA)) {
+					expressions = parseExpArgumentList(false, parse, DeeTokens.CLOSE_PARENS);
+				} else {
+					parse.consumeRequired(DeeTokens.CLOSE_PARENS);
+				}
+				if(parse.ruleBroken) break parsing;
 				
 				if(isStatement) {
 					bodySt = parse.checkResult(thisParser().parseUnscopedStatement_toMissing()); 
@@ -1301,9 +1313,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		
 		if(isStatement) {
-			return parse.resultConclude(new DeclarationPragma(pragmaId, null, bodySt));
+			return parse.resultConclude(new DeclarationPragma(pragmaId, expressions, bodySt));
 		}
-		return parse.resultConclude(new DeclarationPragma(pragmaId, null, ab.bodySyntax, ab.declList));
+		return parse.resultConclude(new DeclarationPragma(pragmaId, expressions, ab.bodySyntax, ab.declList));
 	}
 	
 	public Symbol parseIdSymbol() {

@@ -46,6 +46,8 @@ import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
+import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.TryCatchClause;
 import dtool.ast.statements.ForeachRangeExpression;
@@ -287,7 +289,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(DefinitionConverter.sourceRange(element),
 			new DeclarationPragma(
 				DefinitionConverter.convertId(element.ident),
-				ExpressionConverter.convertMany(element.args, convContext),
+				DescentASTConverter.convertMany(element.args, Expression.class, convContext),
 				AttribBodySyntax.BRACE_BLOCK, body
 			)
 		);

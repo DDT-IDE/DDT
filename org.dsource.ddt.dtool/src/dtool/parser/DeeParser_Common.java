@@ -71,7 +71,15 @@ public abstract class DeeParser_Common extends AbstractParser {
 			members = arrayView(membersList);
 		}
 		
-		public void parseSimpleList(boolean canBeEmpty, DeeTokens tkSEP) {
+		protected abstract T parseElement(boolean createMissing);
+		
+	}
+	
+	public abstract class SimpleListParseHelper<T extends ASTNode> {
+		
+		public ArrayView<T> members; 
+		
+		public ArrayView<T> parseSimpleList(boolean canBeEmpty, DeeTokens tkSEP) {
 			ArrayList<T> membersList = new ArrayList<T>();
 			
 			do {
@@ -79,14 +87,22 @@ public abstract class DeeParser_Common extends AbstractParser {
 				if(entry != null) {
 					membersList.add(entry);
 				}
-				canBeEmpty = false; // after first element next elements become require
+				canBeEmpty = false; // after first element next elements become required
 			} while(tryConsume(tkSEP));
 			
 			members = arrayView(membersList);
+			return members;
+		}
+		
+		public ArrayView<T> parseSimpleListWithClose(ParseHelper parse, boolean canBeEmpty, DeeTokens tkSEP, 
+			DeeTokens tkCLOSE) {
+			parseSimpleList(canBeEmpty, tkSEP);
+			
+			parse.consumeRequired(tkCLOSE);
+			return members;
 		}
 		
 		protected abstract T parseElement(boolean createMissing);
-		
 	}
 	
 	/* ----------------------------------------------------------------- */

@@ -78,6 +78,7 @@ import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.definitions.TemplateTupleParam;
 import dtool.ast.definitions.TemplateTypeParam;
 import dtool.ast.definitions.TemplateValueParam;
+import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -347,7 +348,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
 			new DeclarationPragma(
 				DefinitionConverter.convertId(elem.ident),
-				ExpressionConverter.convertMany(elem.args, convContext),
+				DescentASTConverter.convertMany(elem.args, Expression.class, convContext),
 				AttribBodySyntax.BRACE_BLOCK, body
 			)
 		));

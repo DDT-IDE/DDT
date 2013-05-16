@@ -19,7 +19,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 
-import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTDirectChildrenVisitor;
 import dtool.ast.ASTNode;
@@ -240,11 +239,11 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			consumeLookAhead();
 			
 			ITemplateRefNode tplRef = (ITemplateRefNode) leftRef;
-			ArrayList<Resolvable> tplArgs = null;
+			ArrayView<Resolvable> tplArgs = null;
 			Resolvable singleArg = null;
 			
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				tplArgs = parseArgumentList(parse, true, DeeTokens.COMMA, DeeTokens.CLOSE_PARENS);
+				tplArgs = parseTypeOrExpArgumentList(parse, DeeTokens.COMMA, DeeTokens.CLOSE_PARENS);
 			} else {
 				if(leftRef instanceof RefTemplateInstance) {
 					RefTemplateInstance refTplInstance = (RefTemplateInstance) leftRef;
@@ -265,7 +264,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 					}
 				}
 			}
-			leftRef = parse.conclude(new RefTemplateInstance(tplRef, singleArg, arrayView(tplArgs)));
+			leftRef = parse.conclude(new RefTemplateInstance(tplRef, singleArg, tplArgs));
 			
 		} else if(!parsingExp && tryConsume(DeeTokens.STAR)) {
 			leftRef = conclude(srToPosition(leftRef, new RefTypePointer(leftRef)));
@@ -1485,32 +1484,35 @@ protected class ParseRule_TypeOrExp {
 	protected NodeResult<ExpCall> parseCallExpression_atParenthesis(Expression callee) {
 		ParseHelper parse = new ParseHelper(callee);
 		consumeLookAhead(DeeTokens.OPEN_PARENS);
-		ArrayList<Expression> args = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
-		return parse.resultConclude(new ExpCall(callee, arrayView(args)));
+		ArrayView<Expression> args = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
+		return parse.resultConclude(new ExpCall(callee, args));
 	}
 	
-	protected ArrayList<Expression> parseExpArgumentList(ParseHelper parse, DeeTokens tokenLISTCLOSE) {
-		return CoreUtil.blindCast(parseArgumentList(parse, false, DeeTokens.COMMA, tokenLISTCLOSE));
+	protected ArrayView<Expression> parseExpArgumentList(ParseHelper parse, DeeTokens tokenLISTCLOSE) {
+		return parseExpArgumentList(true, parse, tokenLISTCLOSE);
 	}
-	protected ArrayList<Resolvable> parseArgumentList(ParseHelper parse, boolean parseTypeOrExp, 
-		DeeTokens tokenSEPARATOR, DeeTokens tokenLISTCLOSE) {
-		
-		ArrayList<Resolvable> args = new ArrayList<Resolvable>();
-		
-		boolean first = true;
-		do {
-			Resolvable arg = (parseTypeOrExp ? parseTypeOrAssignExpression(true) : parseAssignExpression()).node;
-			
-			if(first && arg == null && lookAhead() != tokenSEPARATOR) {
-				break;
+	protected ArrayView<Expression> parseExpArgumentList(boolean canBeEmpty, ParseHelper parse, 
+		DeeTokens tokenLISTCLOSE) {
+		SimpleListParseHelper<Expression> elementListParse = new SimpleListParseHelper<Expression>() {
+			@Override
+			protected Expression parseElement(boolean createMissing) {
+				Expression arg = parseAssignExpression().node;
+				return createMissing ? nullExpToMissing(arg) : arg;
 			}
-			arg = parseTypeOrExp ? nullTypeOrExpToMissing(arg) : nullExpToMissing((Expression) arg);
-			args.add(arg);
-			first = false;
-		} while(tryConsume(tokenSEPARATOR));
+		};
+		return elementListParse.parseSimpleListWithClose(parse, canBeEmpty, DeeTokens.COMMA, tokenLISTCLOSE);
+	}
+	
+	protected ArrayView<Resolvable> parseTypeOrExpArgumentList(ParseHelper parse, DeeTokens tkSEP, DeeTokens tkCLOSE) {
 		
-		parse.consumeRequired(tokenLISTCLOSE);
-		return new ArrayList<Resolvable>(args);
+		SimpleListParseHelper<Resolvable> elementListParse = new SimpleListParseHelper<Resolvable>() {
+			@Override
+			protected Resolvable parseElement(boolean createMissing) {
+				Resolvable arg = parseTypeOrAssignExpression(true).node;
+				return createMissing ? nullTypeOrExpToMissing(arg) : arg;
+			}
+		};
+		return elementListParse.parseSimpleListWithClose(parse, true, tkSEP, tkCLOSE);
 	}
 	
 	protected NodeResult<? extends Expression> matchParenthesesStart() {
@@ -1689,9 +1691,9 @@ protected class ParseRule_TypeOrExp {
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
 		
-		ArrayList<Expression> allocArgs = null;
+		ArrayView<Expression> allocArgs = null;
 		Reference type = null;
-		ArrayList<Expression> args = null;
+		ArrayView<Expression> args = null;
 		
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
@@ -1711,20 +1713,20 @@ protected class ParseRule_TypeOrExp {
 			}
 		}
 		
-		return parse.resultConclude(new ExpNew(arrayView(allocArgs), type, arrayView(args)));
+		return parse.resultConclude(new ExpNew(allocArgs, type, args));
 	}
 	
 	protected NodeResult<ExpNewAnonClass> parseNewAnonClassExpression_afterClassKeyword(ParseHelper parse, 
-		ArrayList<Expression> allocArgs) {
+		ArrayView<Expression> allocArgs) {
 		parse.ruleBroken = false;
 		
 		ArrayView<Expression> args = null;
-		ElementListParseHelper<Reference> baseClasses = thisParser().new TypeReferenceListParse();
+		SimpleListParseHelper<Reference> baseClasses = thisParser().new TypeReferenceSimpleListParse();
 		DeclList declBody = null;
 		
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				args = arrayView(parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS));
+				args = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
 				if(parse.ruleBroken) break parsing;
 			}
 			
@@ -1733,7 +1735,7 @@ protected class ParseRule_TypeOrExp {
 			declBody = thisParser().parseDeclarationBlock(parse);
 		}
 		
-		return parse.resultConclude(new ExpNewAnonClass(arrayView(allocArgs), args, baseClasses.members, declBody));
+		return parse.resultConclude(new ExpNewAnonClass(allocArgs, args, baseClasses.members, declBody));
 	}
 	
 	public NodeResult<? extends Expression> parseCastExpression() {
