@@ -1,7 +1,0 @@
-
-void function(Typeonly) {
-
-}
-
-
-

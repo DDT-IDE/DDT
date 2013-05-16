@@ -3,7 +3,6 @@ package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,8 +11,8 @@ import melnorme.utilbox.core.CoreUtil;
 import org.junit.Before;
 
 import dtool.ast.ASTCommonSourceRangeChecker;
-import dtool.ast.ASTNode;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.references.RefIdentifier;
@@ -27,43 +26,13 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 	protected static final String TESTFILESDIR = "parser/";
 	
 	@Deprecated
-	public static Module parseTestFile(String filename) throws IOException {
-		return testDtoolParse(readTestResourceFile(TESTFILESDIR + filename));
-	}
-	
-	@Deprecated
-	public static Module testDtoolParse(final String source) {
-		return testParse(source, false, true);
-	}
-	
-	@Deprecated
-	public static Module testParseInvalidSyntax(final String source) {
-		return testParse(source, true, false);
-	}
-	
-	@Deprecated
-	public static Module testParse(String source, Boolean expectErrors) {
-		return testParse(source, expectErrors, true);
-	}
-	
-	@Deprecated
 	public static Module testParse(String source, Boolean expectErrors, boolean checkAST) {
 		return testParseDo(source, expectErrors, checkAST).module;
 	}
 	
 	@Deprecated
-	public static DeeParserResult testParseDo(String source, Boolean expectErrors) {
-		return testParseDo(source, expectErrors, false);
-	}
-	
-	@Deprecated
 	public static DeeParserResult testParseDo(String source, Boolean expectErrors, boolean checkSourceRanges) {
 		return parseSource(source, expectErrors, checkSourceRanges, "_tests_unnamed_");
-	}
-	
-	@Deprecated
-	public static DeeParserResult parseSource(String source, Boolean expectErrors, String defaultModuleName) {
-		return parseSource(source, expectErrors, false, defaultModuleName);
 	}
 	
 	@Deprecated

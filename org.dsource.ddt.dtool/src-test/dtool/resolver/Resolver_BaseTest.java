@@ -6,7 +6,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.IOException;
 
 import dtool.ast.definitions.Module;
-import dtool.parser.Parser__CommonTest;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.tests.DToolBaseTest;
 import dtool.util.NewUtils;
@@ -17,10 +16,6 @@ public class Resolver_BaseTest extends DToolBaseTest {
 	
 	public static String readResolverTestFile(String filePath) throws IOException {
 		return readTestResourceFile(TESTFILESDIR + filePath);
-	}
-	
-	public static Module parseTestFile(String filename) throws IOException {
-		return Parser__CommonTest.testDtoolParse(readTestResourceFile(TESTFILESDIR + filename));
 	}
 	
 	public static final class NullModuleResolver implements IModuleResolver {
