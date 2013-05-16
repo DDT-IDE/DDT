@@ -10,11 +10,11 @@ InvalidSyntaxElement
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@NULL while (true) ; 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of reference start in declaration
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of reference start in DECLARATION
 foo #error(EXP_IDENTIFIER) ;
 #STRUCTURE_EXPECTED: IncompleteDeclaration(?)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo #error(EXP_IDENTIFIER) #@INVALID_DECL__NO_SEMICOLON【】
+foo #error(EXP_IDENTIFIER) #@NO_SEMICOLON
 #STRUCTURE_EXPECTED: IncompleteDeclaration(?)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of ref identifiers: 

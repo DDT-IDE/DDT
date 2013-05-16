@@ -188,12 +188,13 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		case KW_ASM: return parseStatementAsm();
 		case KW_SCOPE: return parseStatementScope();
 		case KW_TRY: return parseStatementTry();
+		
+		case IDENTIFIER:
+			if(lookAhead(1) == DeeTokens.COLON)
+				return parseStatementLabel_start();
+			break;
 		default:
 			break;
-		}
-		
-		if(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.COLON) {
-			return parseStatementLabel_start();
 		}
 		
 		NodeResult<? extends IStatement> decl = parseStatementDeclaration();

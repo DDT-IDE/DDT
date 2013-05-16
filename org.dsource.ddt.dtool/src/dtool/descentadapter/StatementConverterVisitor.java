@@ -47,6 +47,7 @@ import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.TryCatchClause;
@@ -60,7 +61,7 @@ import dtool.ast.statements.StatementCaseRange;
 import dtool.ast.statements.StatementContinue;
 import dtool.ast.statements.StatementDefault;
 import dtool.ast.statements.StatementDoWhile;
-import dtool.ast.statements.StatementExp;
+import dtool.ast.statements.StatementExpression;
 import dtool.ast.statements.StatementFor;
 import dtool.ast.statements.StatementForeach;
 import dtool.ast.statements.StatementGoto;
@@ -201,8 +202,11 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		SourceRange sourceRange = element.hasNoSourceRangeInfo() && element.exp != null
 			? DefinitionConverter.sourceRange(element.exp)
 			: DefinitionConverter.sourceRange(element);
-		return endAdapt(sourceRange,
-			new StatementExp(ExpressionConverter.convert(element.exp, convContext)));
+		Expression exp = ExpressionConverter.convert(element.exp, convContext);
+		if(exp == null) {
+			return endAdapt(sourceRange, new StatementExpression(new MissingExpression()));
+		}
+		return endAdapt(sourceRange, new StatementExpression(exp));
 	}
 	
 	@Override

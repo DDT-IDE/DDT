@@ -24,13 +24,13 @@ DefVariable(RefTypeModifier(#@ARG_CONTENT_OR_NO) DefSymbol)
 #STRUCTURE_EXPECTED:
 DefVariable(RefQualified( RefTypeModifier( RefPrimitive ) RefIdentifier ) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS ( #@ARG_CONTENT_CLEAN #error:EXP_CLOSE_PARENS   declBroken #error:EXP_ID ;
+#@TYPE_MODIFIERS ( #@ARG_CONTENT_CLEAN #error:EXP_CLOSE_PARENS  #error(-none-)¤【;】  declBroken #error:EXP_ID ;
 #STRUCTURE_EXPECTED:
 IncompleteDeclaration(RefTypeModifier(#@ARG_CONTENT_CLEAN))     IncompleteDeclaration(RefIdentifier)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS     ( #@NO_TYPEREF #error(EXP_CLOSE_PARENS)
+#@TYPE_MODIFIERS     ( #@NO_TYPEREF #error(EXP_CLOSE_PARENS) #error(-none-)¤【;】
 #STRUCTURE_EXPECTED: IncompleteDeclaration(RefTypeModifier(#@NO_TYPEREF) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS #@NO_DECLorBLOCK 
+#@TYPE_MODIFIERS #@NO_DECLorBLOCK  
 #STRUCTURE_EXPECTED: DeclarationBasicAttrib(#@NO_DECLorBLOCK)

@@ -323,13 +323,14 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			break;
 		}
 		
-		NodeResult<Reference> startRef = parseTypeReference_do(false); // This parses (BasicType + BasicType2) of spec
+		// This parses (BasicType + BasicType2) of spec:
+		NodeResult<Reference> startRef = parseTypeReference_do(false); 
 		if(startRef.node != null) {
 			Reference ref = startRef.node;
 			
 			if(startRef.ruleBroken) {
 				/*BUG here possible with statementsOnly */
-				return resultConclude(true, srToPosition(ref, new IncompleteDeclaration(ref, false)));
+				return resultConclude(true, srToPosition(ref, new IncompleteDeclaration(ref)));
 			}
 			
 			if(precedingIsSTCAttrib &&
@@ -368,9 +369,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		} else {
 			ParseHelper parse = new ParseHelper(ref);
 			parse.consumeExpected(DeeTokens.IDENTIFIER);
-			boolean consumedSemiColon = tryConsume(DeeTokens.SEMICOLON);
-			parse.ruleBroken = !consumedSemiColon;
-			return parse.resultConclude(new IncompleteDeclaration(ref, consumedSemiColon));
+			parse.consumeRequired(DeeTokens.SEMICOLON);
+			return parse.resultConclude(new IncompleteDeclaration(ref));
 		}
 	}
 	

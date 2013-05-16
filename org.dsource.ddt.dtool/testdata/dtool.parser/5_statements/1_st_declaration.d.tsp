@@ -58,7 +58,7 @@
 #PARSE(STATEMENT)  #@NULL invariant () #@ST_BLOCK__SAMPLE
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)  #@NULL unittest #@ST_BLOCK__SAMPLE
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(STATEMENT)  #@NULL public { void foo ; }
@@ -70,5 +70,5 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib
 #PARSE(STATEMENT) const { void foo ; }
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib
-#PARSE(STATEMENT)    const void foo;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib TODO: basic attrib , this is wrong
+#PARSE(STATEMENT)    const invariant() { }

@@ -1,38 +1,37 @@
-package dtool.ast.declarations;
+package dtool.ast.statements;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.expressions.Expression;
 
-public class IncompleteDeclaration extends ASTNode implements IDeclaration {
+public class StatementExpression extends Statement {
 	
-	public final ASTNode node;
+	public final Expression exp;
 	
-	public IncompleteDeclaration(ASTNode node) {
-		this.node = parentize(assertNotNull_(node));
+	public StatementExpression(Expression exp) {
+		this.exp = parentize(assertNotNull_(exp));
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.INCOMPLETE_DECLARATION;
+		return ASTNodeTypes.STATEMENT_EXPRESSION;
 	}
 	
 	@Override
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, node);
+			TreeVisitor.acceptChildren(visitor, exp);
 		}
-		visitor.endVisit(this);
+		visitor.endVisit(this);	 
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(node);
-		cp.append(";");
+		cp.append(exp, ";");
 	}
 	
 }

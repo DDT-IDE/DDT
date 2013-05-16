@@ -422,6 +422,10 @@ public class ASTNodeReparseCheck {
 			return reparseCheck(snippedParser.parseBlockStatement(true, true, false).node);
 		case EMPTY_STATEMENT:
 			return simpleReparseCheck(";");
+		
+		case STATEMENT_EXPRESSION:
+			return reparseCheck(snippedParser.parseStatement());
+			
 		case STATEMENT_LABEL:
 			return reparseCheck(snippedParser.parseStatementLabel_start().node);
 		case STATEMENT_IF:
