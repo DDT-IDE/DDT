@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import dtool.ast.definitions.Module;
 import dtool.tests.DToolTestResources;
 
 @RunWith(Parameterized.class)
@@ -27,7 +28,8 @@ public class MassParse_MiscUnsupportedSyntaxCasesTest extends Parser__FileParseT
 	@Test
 	@Override
 	public void testParseFile() throws IOException {
-		parseFile(file, false, true);
+		String source = readStringFromFileUnchecked(file);
+		parseSourceN(source, false);
 	}
 	
 }

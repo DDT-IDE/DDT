@@ -53,16 +53,18 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 #PARSE(REFERENCE)    #error(NO_TPL_SINGLE_ARG)【#@TYPE_REFS__TPL_SINGLE_ARG】 ! #@SINGLE_ARG
 #STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__TPL_SINGLE_ARG #@SINGLE_ARG)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(REFERENCE)    #@TYPE_REFS__TPL_SINGLE_ARG !(foo)
-#STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__TPL_SINGLE_ARG RefIdentifier)
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)    foo! #error(EXPRULE_TemplateSingleArgument) .bar
 #STRUCTURE_EXPECTED: RefQualified(RefTemplateInstance(RefIdentifier #@NO_ROE) RefIdentifier)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)    foo!this . xpto
 #STRUCTURE_EXPECTED: RefQualified(RefTemplateInstance(RefIdentifier ExpThis) RefIdentifier)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Ensure ref rule break
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ !in !is interaction
+#PARSE(REFERENCE)    foo #@IGNORE_REST ! #@《in●is》
+#STRUCTURE_EXPECTED: RefIdentifier
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ tpl single arg with normal arg
+#PARSE(REFERENCE)    #@TYPE_REFS__TPL_SINGLE_ARG !(foo)
+#STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__TPL_SINGLE_ARG RefIdentifier)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Ensure ref rule break
 #PARSE(REFERENCE)    foo!(var[] #error(EXP_CLOSE_PARENS) #@BREAK !(blah)
 #STRUCTURE_EXPECTED: RefTemplateInstance(RefIdentifier RefTypeDynArray(*))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Ensure ref rule break 
