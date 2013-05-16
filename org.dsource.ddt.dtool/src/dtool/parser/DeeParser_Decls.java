@@ -258,7 +258,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(statementsOnly) return declarationNullResult();
 			return parseDeclarationAlign();
 		case KW_PRAGMA: 
-			return parseDeclarationPragma();
+			return parseDeclarationPragma(statementsOnly);
 		case PROTECTION_KW: 
 			if(statementsOnly) return declarationNullResult();
 			return parseDeclarationProtection();
@@ -1276,23 +1276,33 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new DeclarationAlign(alignNum, ab.bodySyntax, ab.declList));
 	}
 	
-	public NodeResult<DeclarationPragma> parseDeclarationPragma() {
+	public NodeResult<DeclarationPragma> parseDeclarationPragma(boolean isStatement) {
 		if(!tryConsume(DeeTokens.KW_PRAGMA))
 			return null;
 		ParseHelper parse = new ParseHelper();
 		
 		Symbol pragmaId = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
+		IStatement bodySt = null;
 		
-		if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
-			pragmaId = parseIdSymbol();
-			
-			// TODO pragma argument list;
-			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS)) {
-				ab.parseAttribBody(parse, true, false);
+		parsing: {
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
+				pragmaId = parseIdSymbol();
+				
+				// TODO pragma argument list;
+				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
+				
+				if(isStatement) {
+					bodySt = parse.checkResult(thisParser().parseUnscopedStatement_toMissing()); 
+				} else {
+					ab.parseAttribBody(parse, true, false);
+				}
 			}
 		}
 		
+		if(isStatement) {
+			return parse.resultConclude(new DeclarationPragma(pragmaId, null, bodySt));
+		}
 		return parse.resultConclude(new DeclarationPragma(pragmaId, null, ab.bodySyntax, ab.declList));
 	}
 	

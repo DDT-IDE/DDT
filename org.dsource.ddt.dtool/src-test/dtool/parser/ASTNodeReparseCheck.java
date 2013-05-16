@@ -15,6 +15,7 @@ import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
+import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefinitionEnum.NoEnumBody;
@@ -321,7 +322,8 @@ public class ASTNodeReparseCheck {
 		/* -------------------  Declarations  ------------------- */
 		case DECLARATION_LINKAGE: return reparseCheck(snippedParser.parseDeclarationExternLinkage());
 		case DECLARATION_ALIGN: return reparseCheck(snippedParser.parseDeclarationAlign());
-		case DECLARATION_PRAGMA: return reparseCheck(snippedParser.parseDeclarationPragma());
+		case DECLARATION_PRAGMA: return reparseCheck(snippedParser.parseDeclarationPragma(
+			((DeclarationPragma) nodeUnderTest).isStatement));
 		case DECLARATION_PROTECTION: return reparseCheck(snippedParser.parseDeclarationProtection());
 		case DECLARATION_BASIC_ATTRIB: return reparseCheck(snippedParser.parseDeclarationBasicAttrib());
 		
