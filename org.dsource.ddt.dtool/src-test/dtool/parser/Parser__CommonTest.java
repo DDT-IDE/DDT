@@ -13,6 +13,7 @@ import org.junit.Before;
 
 import dtool.ast.ASTCommonSourceRangeChecker;
 import dtool.ast.ASTNode;
+import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.references.RefIdentifier;
@@ -25,41 +26,50 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 	
 	protected static final String TESTFILESDIR = "parser/";
 	
+	@Deprecated
 	public static Module parseTestFile(String filename) throws IOException {
 		return testDtoolParse(readTestResourceFile(TESTFILESDIR + filename));
 	}
 	
+	@Deprecated
 	public static Module testDtoolParse(final String source) {
 		return testParse(source, false, true);
 	}
 	
+	@Deprecated
 	public static Module testParseInvalidSyntax(final String source) {
 		return testParse(source, true, false);
 	}
 	
+	@Deprecated
 	public static Module testParse(String source, Boolean expectErrors) {
 		return testParse(source, expectErrors, true);
 	}
 	
+	@Deprecated
 	public static Module testParse(String source, Boolean expectErrors, boolean checkAST) {
 		return testParseDo(source, expectErrors, checkAST).module;
 	}
 	
-	public static DeeParserSession testParseDo(String source, Boolean expectErrors) {
+	@Deprecated
+	public static DeeParserResult testParseDo(String source, Boolean expectErrors) {
 		return testParseDo(source, expectErrors, false);
 	}
 	
-	public static DeeParserSession testParseDo(String source, Boolean expectErrors, boolean checkSourceRanges) {
+	@Deprecated
+	public static DeeParserResult testParseDo(String source, Boolean expectErrors, boolean checkSourceRanges) {
 		return parseSource(source, expectErrors, checkSourceRanges, "_tests_unnamed_");
 	}
 	
-	public static DeeParserSession parseSource(String source, Boolean expectErrors, String defaultModuleName) {
+	@Deprecated
+	public static DeeParserResult parseSource(String source, Boolean expectErrors, String defaultModuleName) {
 		return parseSource(source, expectErrors, false, defaultModuleName);
 	}
 	
-	public static DeeParserSession parseSource(String source, Boolean expectErrors, boolean checkSourceRanges,
+	@Deprecated
+	public static DeeParserResult parseSource(String source, Boolean expectErrors, boolean checkSourceRanges,
 			String defaultModuleName) {
-		DeeParserSession parseResult = DeeParserSession.parseSource(source, defaultModuleName);
+		DeeParserResult parseResult = DeeParserSession.parseSource(source, defaultModuleName);
 		
 		if(expectErrors != null) {
 			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);
@@ -68,6 +78,16 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 			// We rarely get good source ranges with syntax errors; 
 			ASTCommonSourceRangeChecker.checkConsistency(parseResult.module);
 		}
+		return parseResult;
+	}
+	
+	public static DeeParserResult parseSourceN(String source, boolean expectErrors) {
+		DeeParserResult parseResult = DeeParser.parseSource(source);
+		
+		assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);
+		
+		ASTSourceRangeChecker.checkConsistency(parseResult.module);
+		
 		return parseResult;
 	}
 	

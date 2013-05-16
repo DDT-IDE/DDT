@@ -56,7 +56,7 @@ import dtool.util.NewUtils;
 @RunWith(Parameterized.class)
 public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 	
-	protected static final String TESTFILESDIR = "dtool.parser/";
+	protected static final String TESTFILESDIR = "parser/";
 	
 	protected static Map<String, TspExpansionElement> commonDefinitions = new HashMap<String, TspExpansionElement>();
 	
