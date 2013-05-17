@@ -24,9 +24,9 @@ import dtool.parser.LexElement.MissingLexElement;
 // XXX: BM: this code is a bit convoluted and strange, we use inheritance just for the sake of namespace importing
 public class DeeParser extends DeeParser_Statements {
 	
-	public static DeeParserResult parseSource(String source) {
+	public static DeeParserResult parseSource(String source, String defaultModuleName) {
 		DeeParser deeParser = new DeeParser(source);
-		return new DeeParserResult(deeParser.parseModule(), deeParser);
+		return new DeeParserResult(deeParser.parseModule(defaultModuleName), deeParser);
 	}
 	
 	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule) {
@@ -35,7 +35,7 @@ public class DeeParser extends DeeParser_Statements {
 	public DeeParserResult parseUsingRule(String parseRule) {
 		DeeParserResult result;
 		if(parseRule == null) {
-			result = new DeeParserResult(parseModule(), this);
+			result = new DeeParserResult(parseModule("__unnamed_module"), this);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_EXPRESSION.name)) {
 			result = new DeeParserResult(parseExpression(), this);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_REFERENCE.name)) {

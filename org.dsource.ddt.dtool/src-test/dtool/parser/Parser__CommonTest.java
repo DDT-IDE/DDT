@@ -28,8 +28,9 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		return parseResult;
 	}
 	
-	public static DeeParserResult testParseSource(String source, Boolean expectErrors, boolean checkSourceRanges) {
-		DeeParserResult parseResult = DeeParser.parseSource(source);
+	public static DeeParserResult testParseSource(String source, Boolean expectErrors, boolean checkSourceRanges, 
+		String defaultModuleName) {
+		DeeParserResult parseResult = DeeParser.parseSource(source, defaultModuleName);
 		
 		if(expectErrors != null) {
 			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);

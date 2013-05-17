@@ -40,7 +40,7 @@ public class DeclarationAttributesTest extends CommonTestUtils {
 	}
 	
 	public Definition getDefToTest(String source, String name, int... treePath) {
-		Module module = DeeParser.parseSource(source).module;
+		Module module = DeeParser.parseSource(source, "attribs_test").module;
 		Definition def = assertCast(getNodeFromTreePath(module, treePath), Definition.class);
 		assertEquals(def.getName(), name);
 		return def;

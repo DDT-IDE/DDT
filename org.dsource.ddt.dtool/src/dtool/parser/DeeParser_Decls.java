@@ -115,7 +115,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	/* ----------------------------------------------------------------- */
 	
-	public AbstractParser.NodeResult<Module> parseModule() {
+	public AbstractParser.NodeResult<Module> parseModule(String defaultModuleName) {
 		DeclarationModule md = parseModuleDeclaration();
 		
 		ArrayView<ASTNode> members = parseDeclDefs(null);
@@ -128,7 +128,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(md != null) {
 			return result(false, conclude(modRange, new Module(md.getModuleSymbol(), null, md, members)));
 		} else {
-			return result(false, conclude(modRange, Module.createModuleNoModuleDecl("_unnamed"/*BUG here*/, members)));
+			return result(false, conclude(modRange, Module.createModuleNoModuleDecl(defaultModuleName, members)));
 		}
 	}
 	
