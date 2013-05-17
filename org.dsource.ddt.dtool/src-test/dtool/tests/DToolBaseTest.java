@@ -19,13 +19,14 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import melnorme.utilbox.core.Function;
+import org.junit.Before;
+
 import melnorme.utilbox.core.VoidFunction;
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.DeeNamingRules_Test;
@@ -34,6 +35,17 @@ import dtool.DeeNamingRules_Test;
 public class DToolBaseTest extends CommonTestUtils {
 	
 	public static PrintStream testsLogger = System.out;
+	
+	public static Set<String> executedTests = new HashSet<String>();
+	
+	@Before
+	public void printSeparator() throws Exception {
+		String simpleName = getClass().getSimpleName();
+		if(!executedTests.contains(simpleName)) {
+			testsLogger.println("===============================  "+simpleName+"  ===============================");
+			executedTests.add(simpleName);
+		}
+	}
 	
 	/* -------------  Resources stuff   ------------ */
 	
@@ -57,16 +69,28 @@ public class DToolBaseTest extends CommonTestUtils {
 		}
 	}
 	
+	public static File getFile(String rootPath, String... segments) {
+		File file = new File(rootPath);
+		return getFile(file, segments);
+	}
+	
+	public static File getFile(File file, String... segments) {
+		for (String segment : segments) {
+			assertTrue(segment.contains("/") == false && segment.contains("\\") == false);
+			file = new File(file, segment);
+		}
+		return file;
+	}
+	
 	/* -------------  Module list stuff   ------------ */
 	
-	protected static ArrayList<File> getDeeModuleList(File folder) throws IOException {
+	protected static ArrayList<File> getDeeModuleList(File folder) {
 		return getDeeModuleList(folder, true);
 	}
-	protected static ArrayList<File> getDeeModuleList(File folder, boolean recurseDirs) throws IOException {
+	protected static ArrayList<File> getDeeModuleList(File folder, boolean recurseDirs) {
 		return getDeeModuleList(folder, recurseDirs, false);
 	}
-	protected static ArrayList<File> getDeeModuleList(File folder, boolean recurseDirs, final boolean validCUsOnly)
-			throws IOException {
+	protected static ArrayList<File> getDeeModuleList(File folder, boolean recurseDirs, final boolean validCUsOnly) {
 		assertTrue(folder.exists() && folder.isDirectory());
 		
 		final boolean addInAnyFileName = !validCUsOnly;
@@ -100,22 +124,24 @@ public class DToolBaseTest extends CommonTestUtils {
 	
 	public static Collection<Object[]> getTestFilesFromFolderAsParameterList(File folder, boolean includeDescription) 
 		throws IOException {
-		return toParameterList(includeDescription, getDeeModuleList(folder));
+		return createTestListFromFiles(includeDescription, getDeeModuleList(folder));
 	}
 	
-	public static Collection<Object[]> toParameterList(final boolean includeDescription, List<File> fileList) {
-		Function<File, Object[]> arrayWrap = new Function<File, Object[]>() {
-			@Override
-			public Object[] evaluate(File file) {
-				if(includeDescription) {
-					return new Object[] { file.getName(), file };
-				} else {
-					return new Object[] { file };
-				}
-			};
-		};
-		
-		return Arrays.asList(ArrayUtil.map(fileList, arrayWrap, Object[].class));
+	public static Collection<Object[]> createTestListFromFiles(final boolean includeDescription, List<File> fileList) {
+		final Collection<Object[]> testList = new ArrayList<>();
+		addFilesToTestList(testList, fileList, includeDescription);
+		return testList;
+	}
+	
+	public static void addFilesToTestList(final Collection<Object[]> testList, List<File> fileList,
+		final boolean includeDescription) {
+		for (File file : fileList) {
+			if(includeDescription) {
+				testList.add(new Object[] { file.getName(), file });
+			} else {
+				testList.add(new Object[] { file });
+			}
+		}
 	}
 	
 }

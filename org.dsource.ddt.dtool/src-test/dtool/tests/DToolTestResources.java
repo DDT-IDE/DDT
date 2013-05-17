@@ -56,8 +56,8 @@ public class DToolTestResources {
 		return file;
 	}
 	
-	public static File getTestResource(String fileRelPath) {
-		return new File(DToolTestResources.getInstance().getResourcesDir(), fileRelPath);
+	public static File getTestResource(String... segments) {
+		return DToolBaseTest.getFile(DToolTestResources.getInstance().getResourcesDir(), segments);
 	}
 	
 	protected static String testsWorkingDir;
@@ -76,9 +76,7 @@ public class DToolTestResources {
 	}
 	
 	public static File getWorkingDir() {
-		if(testsWorkingDir == null) {
-			initWorkingdir();
-		}
+		getInstance();
 		assertNotNull(testsWorkingDir);
 		File file = new File(testsWorkingDir);
 		assertTrue(file.exists() && file.isDirectory());
@@ -95,10 +93,15 @@ public class DToolTestResources {
 	}
 	
 	public static String resourceFileToString(File file) {
-		if(file.getName().equals(TESTDATA)) {
+		return resourceFileToString(file, TESTDATA);
+	}
+	
+	public static String resourceFileToString(File file, String rootDir) {
+		if(file.getName().equals(rootDir)) {
 			return "#";
 		} else {
-			String parentStr = (file.getParentFile() != null) ? resourceFileToString(file.getParentFile()) : ""; 
+			File parentFile = file.getParentFile();
+			String parentStr = (parentFile != null) ? resourceFileToString(parentFile, rootDir) : ""; 
 			return parentStr + "/" + file.getName();
 		}
 	}

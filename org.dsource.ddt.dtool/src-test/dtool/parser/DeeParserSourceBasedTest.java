@@ -56,7 +56,7 @@ import dtool.util.NewUtils;
 @RunWith(Parameterized.class)
 public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 	
-	protected static final String TESTFILESDIR = "parser/";
+	protected static final String TESTFILESDIR = "parser";
 	
 	protected static Map<String, TspExpansionElement> commonDefinitions = new HashMap<String, TspExpansionElement>();
 	
@@ -84,7 +84,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 	
 	@Parameters(name="{index}: {0}")
 	public static Collection<Object[]> filesToParse() throws IOException {
-		return toParameterList(true,
+		return createTestListFromFiles(true,
 			filter(getDeeModuleList(getTestResource(TESTFILESDIR)), new ParserTestFilesFilter()));
 	}
 	
