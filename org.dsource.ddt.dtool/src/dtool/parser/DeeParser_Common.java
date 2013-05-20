@@ -191,7 +191,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 		@Override
 		public void missingDefIdParse() {
 			if(type == null) {
-				type = thisParser().createMissingTypeReference(true);
+				type = thisParser().parseMissingTypeReference(true);
 				defId = defSymbol(consumeSubChannelTokens());
 			} else {
 				super.missingDefIdParse();

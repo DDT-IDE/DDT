@@ -1,4 +1,4 @@
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template sample args
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template sample params
 
 #@TPL_PARAMS_SAMPLE1《#?STRUCTURE_EXPECTED!【
   ►T : int = bar, ambigA = ambigB, int R : 10 = 1, alias A1 : 12 + 2 = foo, alias A2 : int = 2, TUPLE ..., this V●
@@ -13,14 +13,14 @@
 】》
 
 #@TPL_PARAMS__SAMPLE《#?STRUCTURE_EXPECTED!【
-  ►(int R = 1, T = bar, alias A1 : 1+2)●
+  ►int R = 1, T = bar, alias A1 : 1+2●
   
   TemplateValueParam(RefPrimitive DefSymbol Integer)
   TemplateTypeParam(DefSymbol RefIdentifier)
   TemplateAliasParam(DefSymbol ExpInfix(? ?))
 】》
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template args
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template Params tester
 
 #@_TYPE_OR_EXP《#@TYPE_REFS__NO_BROKEN ● #@EXP_COND__NO_POSSIBLE_REFS ● #@NO_ROE》
 #@_TYPE_OR_EXP_SAMPLE《#@TYPE_REFS__NO_BROKEN__LITE ● #@EXP_COND__LITE ● #@NO_ROE》
@@ -50,13 +50,22 @@
   ►#?STRUCTURE_EXPECTED!【this #@NO_ID●TemplateThisParam(DefSymbol)】●
 ¤》
 
-#@TPLARGS《
+#@TPLPARAMS《
   ►#@TPLARG_1●
   
-  ►#?STRUCTURE_EXPECTED!【#@NO_TYPEREF  , #@TPL_PARAMS_SAMPLE1● TemplateTypeParam(DefSymbol) #@TPL_PARAMS_SAMPLE1】●
-  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS_SAMPLE1, #@TPLARG_1● #@TPL_PARAMS_SAMPLE1 #@TPLARG_1】●
-  ►#?STRUCTURE_EXPECTED!【#@TPLARG_1, #@TPL_PARAMS_SAMPLE1● #@TPLARG_1 #@TPL_PARAMS_SAMPLE1】●
+  ►#?STRUCTURE_EXPECTED!【#@NO_TPLPARAM  , #@TPL_PARAMS_SAMPLE1● #@NO_TPLPARAM #@TPL_PARAMS_SAMPLE1】●
+  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE, #@TPLARG_1   ● #@TPL_PARAMS__SAMPLE #@TPLARG_1】●
+  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE, #@NO_TPLPARAM● #@TPL_PARAMS__SAMPLE #@NO_TPLPARAM】●
+  ►#?STRUCTURE_EXPECTED!【#@TPLARG_1, #@TPL_PARAMS__SAMPLE● #@TPLARG_1 #@TPL_PARAMS__SAMPLE】●
 ¤》
+#@TPLPARAMS__LITE《
+  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE● #@TPL_PARAMS__SAMPLE】●
+¤》
+
+#@NO_TPLPARAM《
+  ►#?STRUCTURE_EXPECTED!【#@NO_TYPEREF ● TemplateTypeParam(DefSymbol) 】●
+¤》
+
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template constraint
 #@TPL_CONSTRAINT__SAMPLES《
@@ -72,8 +81,8 @@
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@TPL_AGGREGATE_TESTER《
-  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE ● #@TPL_PARAMS__SAMPLE】●
-  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE #@TPL_CONSTRAINT__SAMPLES●#@TPL_PARAMS__SAMPLE #@TPL_CONSTRAINT__SAMPLES】●
+  ►#?STRUCTURE_EXPECTED!【(#@TPL_PARAMS__SAMPLE) ● #@TPL_PARAMS__SAMPLE】●
+  ►#?STRUCTURE_EXPECTED!【(#@TPL_PARAMS__SAMPLE) #@TPL_CONSTRAINT__SAMPLES●#@TPL_PARAMS__SAMPLE #@TPL_CONSTRAINT__SAMPLES】●
   ►#?STRUCTURE_EXPECTED!【#error(EXP_OPEN_BRACE)【】 #@BREAK if(#@NO_EXP)● #@BREAK #@NO_EXP】●
   ►#?STRUCTURE_EXPECTED!【(T : int = bar #@NO_ClosePARENS #@BREAK●
     TemplateTypeParam(DefSymbol RefPrimitive RefIdentifier) #@BREAK】●

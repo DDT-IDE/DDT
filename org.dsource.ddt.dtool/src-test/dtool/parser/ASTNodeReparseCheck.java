@@ -17,6 +17,7 @@ import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.InvalidSyntaxElement;
+import dtool.ast.declarations.StaticIfExpIs.StaticIfExpIsDefUnit;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefinitionEnum.NoEnumBody;
 import dtool.ast.definitions.Module;
@@ -184,6 +185,8 @@ public class ASTNodeReparseCheck {
 		
 		case SIMPLE_LAMBDA_DEFUNIT:
 			return VOID; // dont reparse test
+		case STATIC_IF_EXP_IS_DEF_UNIT:
+			return simpleReparseCheck(((StaticIfExpIsDefUnit) nodeUnderTest).defname.name);
 		
 		case MODULE:
 			Module module = (Module) nodeUnderTest;
@@ -277,6 +280,8 @@ public class ASTNodeReparseCheck {
 		case EXP_MIXIN_STRING:
 		case EXP_IMPORT_STRING:
 		case EXP_TYPEID:
+		case EXP_IS:
+		case STATIC_IF_EXP_IS:
 		
 		case EXP_INDEX:
 		case EXP_SLICE:

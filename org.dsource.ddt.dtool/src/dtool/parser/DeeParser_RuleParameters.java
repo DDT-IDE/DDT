@@ -61,9 +61,14 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 	public DeeParser_RuleParameters parse(ParseHelper parse, boolean isOptional) {
 		if(parse.consume(DeeTokens.OPEN_PARENS, isOptional, true) == false)
 			return this;
+		parseParameterList(true);
+		parse.consumeRequired(DeeTokens.CLOSE_PARENS);
+		return this;
+	}
+	
+	public void parseParameterList(boolean first) {
 		params = new ArrayList<Object>();
 		
-		boolean first = true;
 		while(true) {
 			Object param = parseParameter(first && lookAhead() != DeeTokens.COMMA);
 			
@@ -78,8 +83,6 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 			}
 			break;
 		}
-		parse.consumeRequired(DeeTokens.CLOSE_PARENS);
-		return this;
 	}
 	
 	public Object parseParameter() {
@@ -153,7 +156,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 					if(attribs == null && returnNullOnMissing) { // No Parameter at all
 						return null;
 					}
-					ref = createMissingTypeReference(true);
+					ref = parseMissingTypeReference(true);
 					break parsing;
 				}
 				

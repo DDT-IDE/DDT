@@ -87,6 +87,10 @@ public enum ASTNodeTypes {
 	EXP_INFIX,
 	EXP_CONDITIONAL,
 	
+	EXP_IS,
+	STATIC_IF_EXP_IS,
+	STATIC_IF_EXP_IS_DEF_UNIT,
+	
 	/* -------------------  Declarations  ------------------- */
 	DECLARATION_LINKAGE,
 	DECLARATION_ALIGN,

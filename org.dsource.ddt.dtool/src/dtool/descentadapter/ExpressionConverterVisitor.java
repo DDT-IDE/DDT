@@ -94,11 +94,12 @@ import dtool.ast.expressions.ExpCast;
 import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpDefaultInit;
 import dtool.ast.expressions.ExpFunctionLiteral;
-import dtool.ast.expressions.ExpIftype;
+import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpImportString;
 import dtool.ast.expressions.ExpIndex;
 import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
+import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
@@ -364,9 +365,9 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(IsExp element) {
 		return endAdapt(DefinitionConverter.sourceRange(element),
-			new ExpIftype(
+			new ExpIs(
 				ReferenceConverter.convertType(element.targ, convContext),
-				element.tok,
+				ExpIsSpecialization.TYPE_EXACT,
 				ReferenceConverter.convertType(element.tspec, convContext)
 			)
 		);

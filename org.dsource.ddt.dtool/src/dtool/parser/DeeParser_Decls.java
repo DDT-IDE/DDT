@@ -641,6 +641,12 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return tplParametersParse.parse(parse, isOptional).getAsTemplateParameters();
 	}
 	
+	protected final ArrayView<TemplateParameter> parseTemplateParametersList() {
+		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(thisParser(), TplOrFnMode.TPL);
+		tplParametersParse.parseParameterList(false);
+		return tplParametersParse.getAsTemplateParameters();
+	}
+	
 	public IFunctionParameter parseFunctionParameter() {
 		return (IFunctionParameter) new DeeParser_RuleParameters(thisParser(), TplOrFnMode.FN).parseParameter();
 	}

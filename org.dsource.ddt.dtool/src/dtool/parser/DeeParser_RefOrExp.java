@@ -25,9 +25,12 @@ import dtool.ast.ASTNode;
 import dtool.ast.DeclList;
 import dtool.ast.NodeData.PreParseNodeData;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.StaticIfExpIs;
+import dtool.ast.declarations.StaticIfExpIs.StaticIfExpIsDefUnit;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
+import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpCall;
@@ -40,6 +43,8 @@ import dtool.ast.expressions.ExpImportString;
 import dtool.ast.expressions.ExpIndex;
 import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
+import dtool.ast.expressions.ExpIs;
+import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.ExpLambda;
 import dtool.ast.expressions.ExpLiteralArray;
 import dtool.ast.expressions.ExpLiteralBool;
@@ -104,7 +109,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	public NodeResult<Reference> parseTypeReference(boolean createMissing, boolean reportMissingError) {
 		NodeResult<Reference> typeRef = parseTypeReference();
 		if((typeRef == null || typeRef.node == null) && createMissing) {
-			return result(false, createMissingTypeReference(reportMissingError));
+			return result(false, parseMissingTypeReference(reportMissingError));
 		}
 		return typeRef;
 	}
@@ -116,13 +121,14 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return parseTypeReference(true, reportMissingError);
 	}
 	
-	public Reference createMissingTypeReference(boolean reportMissingError) {
-		SourceRange sourceRange = createExpectedToken(DeeTokens.IDENTIFIER).getSourceRange();
-		return createMissingTypeReferenceNode(sourceRange, reportMissingError);
+	public Reference parseMissingTypeReference(boolean reportMissingError) {
+		ParseRuleDescription expectedRule = reportMissingError ? RULE_REFERENCE : null;
+		return parseMissingTypeReference(expectedRule);
 	}
 	
-	public Reference createMissingTypeReferenceNode(SourceRange sourceRange, boolean createMissingError) {
-		ParserError error = createMissingError ? createErrorExpectedRule(RULE_REFERENCE) : null;
+	public Reference parseMissingTypeReference(ParseRuleDescription expectedRule) {
+		SourceRange sourceRange = createExpectedToken(DeeTokens.IDENTIFIER).getSourceRange();
+		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
 		return createMissingTypeReferenceNode(sourceRange, error);
 	}
 	
@@ -144,18 +150,19 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		if(lookAheadGrouped() == DeeTokens.PRIMITIVE_KW) {
 			return parseReference_referenceStart(parseRefPrimitive_start(lookAhead()), parsingExp);
 		}
-		switch (lookAhead()) {
-		case DOT: refParseResult = parseRefModuleQualified(); break;
-		case IDENTIFIER: return parseReference_referenceStart(parseRefIdentifier(), parsingExp);
 		
-		case KW_TYPEOF: refParseResult = parseRefTypeof(); break;
-		
-		case KW_CONST: refParseResult = parseRefTypeModifier_start(TypeModifierKinds.CONST); break;
-		case KW_IMMUTABLE: refParseResult = parseRefTypeModifier_start(TypeModifierKinds.IMMUTABLE); break;
-		case KW_SHARED: refParseResult = parseRefTypeModifier_start(TypeModifierKinds.SHARED); break;
-		case KW_INOUT: refParseResult = parseRefTypeModifier_start(TypeModifierKinds.INOUT); break;
-		default:
-			return nullResult();
+		TypeModifierKinds typeModifier = determineTypeModifier(lookAhead());
+		if(typeModifier != null) {
+			refParseResult = parseRefTypeModifier_start(typeModifier);
+		} else {
+			switch (lookAhead()) {
+			case DOT: refParseResult = parseRefModuleQualified(); break;
+			case IDENTIFIER: return parseReference_referenceStart(parseRefIdentifier(), parsingExp);
+			case KW_TYPEOF: refParseResult = parseRefTypeof(); break;
+			
+			default:
+				return nullResult();
+			}
 		}
 		
 		if(refParseResult.ruleBroken) 
@@ -163,11 +170,19 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return parseReference_referenceStart(refParseResult.node, parsingExp);
 	}
 	
-	protected boolean isTypeModifier(DeeTokens lookAhead) {
-		switch (lookAhead) {
-		case KW_CONST: case KW_IMMUTABLE: case KW_SHARED: case KW_INOUT: return true;
-		default: return false;
+	public static TypeModifierKinds determineTypeModifier(DeeTokens tokenType) {
+		switch (tokenType) {
+		case KW_CONST: return TypeModifierKinds.CONST;
+		case KW_IMMUTABLE: return TypeModifierKinds.IMMUTABLE;
+		case KW_SHARED: return TypeModifierKinds.SHARED;
+		case KW_INOUT: return TypeModifierKinds.INOUT;
+		default:
+			return null;
 		}
+	}
+	
+	protected static boolean isTypeModifier(DeeTokens tokenType) {
+		return determineTypeModifier(tokenType) != null;
 	}
 	
 	public RefIdentifier parseRefIdentifier() {
@@ -687,6 +702,8 @@ protected class ParseRule_TypeOrExp {
 			return expConnect(parseNewExpression());
 		case KW_CAST:
 			return expConnect(parseCastExpression());
+		case KW_IS:
+			return expConnect(parseIsExpression());
 		case AND:
 		case INCREMENT:
 		case DECREMENT:
@@ -1801,6 +1818,94 @@ protected class ParseRule_TypeOrExp {
 			consumeLookAhead();
 			return altSingle;
 		} else {
+			return null;
+		}
+	}
+	
+	public static final ParseRuleDescription RULE_IS_TYPE_SPEC = new ParseRuleDescription("IsTypeSpecialization");
+	
+	public NodeResult<? extends Expression> parseIsExpression() {
+		if(!tryConsume(DeeTokens.KW_IS))
+			return null;
+		ParseHelper parse = new ParseHelper();
+		
+		Reference typeRef = null;
+		StaticIfExpIsDefUnit isExpDefUnit = null;
+		ExpIsSpecialization specKind = null;
+		Reference specTypeRef = null;
+		ArrayView<TemplateParameter> tplParams = null;
+		
+		parsing: {
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false)
+				break parsing;
+			
+			typeRef = parseTypeReference_ToMissing().node;
+			
+			if(lookAhead() == DeeTokens.IDENTIFIER) {
+				ProtoDefSymbol defId = parseDefId();
+				isExpDefUnit = concludeNode(srOf(lastLexElement(), new StaticIfExpIsDefUnit(defId)));
+			}
+			
+			if(tryConsume(DeeTokens.COLON)) {
+				specKind = ExpIsSpecialization.TYPE_SUBTYPE;
+				specTypeRef = parseTypeReference_ToMissing().node;
+			} else if(tryConsume(DeeTokens.EQUALS)) {
+				specKind = determineIsExpArchetype();
+				
+				if(specKind != null ) {
+					consumeLookAhead();
+				} else {
+					specKind = ExpIsSpecialization.TYPE_EXACT;
+					
+					specTypeRef = parseTypeReference().node;
+					if(specTypeRef == null) {
+						specTypeRef = parseMissingTypeReference(RULE_IS_TYPE_SPEC);						
+					}
+				}
+			}
+			
+			if((specKind == ExpIsSpecialization.TYPE_SUBTYPE || specKind == ExpIsSpecialization.TYPE_EXACT) 
+				&& tryConsume(DeeTokens.COMMA)) {
+				tplParams = thisParser().parseTemplateParametersList();
+			}
+			
+			parse.consumeRequired(DeeTokens.CLOSE_PARENS);
+		}
+		
+		if(isExpDefUnit != null || tplParams != null) {
+			return parse.resultConclude(new StaticIfExpIs(typeRef, isExpDefUnit, specKind, specTypeRef, tplParams));
+		} else {
+			return parse.resultConclude(new ExpIs(typeRef, specKind, specTypeRef));
+		}
+	}
+	
+	protected ExpIsSpecialization determineIsExpArchetype() {
+		if(determineTypeModifier(lookAhead()) != null && lookAhead(1) == DeeTokens.OPEN_PARENS)
+			return null;
+		
+		switch (lookAhead()) {
+		case KW_STRUCT: return ExpIsSpecialization.STRUCT;
+		case KW_UNION: return ExpIsSpecialization.UNION;
+		case KW_CLASS: return ExpIsSpecialization.CLASS;
+		case KW_INTERFACE: return ExpIsSpecialization.INTERFACE;
+		case KW_ENUM: return ExpIsSpecialization.ENUM;
+		case KW_FUNCTION: return ExpIsSpecialization.FUNCTION;
+		case KW_DELEGATE: return ExpIsSpecialization.DELEGATE;
+		case KW_SUPER: return ExpIsSpecialization.SUPER;
+		case KW_CONST:
+			return ExpIsSpecialization.CONST;
+		case KW_IMMUTABLE: 
+			return ExpIsSpecialization.IMMUTABLE;
+		case KW_INOUT: 
+			return ExpIsSpecialization.INOUT;
+		case KW_SHARED: 
+			return ExpIsSpecialization.SHARED;
+		
+		case KW_RETURN: return ExpIsSpecialization.RETURN;
+		case IDENTIFIER: 
+			if(lookAheadElement().getSourceValue().equals("__parameters"))
+				return ExpIsSpecialization.__PARAMETERS;
+		default:
 			return null;
 		}
 	}

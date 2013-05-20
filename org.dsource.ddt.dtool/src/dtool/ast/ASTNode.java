@@ -183,6 +183,11 @@ public abstract class ASTNode implements IASTNeoNode {
 		return getData().isParsedStatus();
 	}
 	
+	public void afterModuleParseCheck() {
+		// TODO: call afterModuleParseCheck
+		assertTrue(isParsedStatus());
+	}
+	
 	/* ------------------------------------------------------------ */
 	
 	@Override

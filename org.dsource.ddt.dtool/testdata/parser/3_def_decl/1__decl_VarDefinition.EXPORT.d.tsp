@@ -20,11 +20,15 @@
   ►#?STRUCTURE_EXPECTED!【{ foo : bar, foobar; }/*Literal that looks like struct init*/●InitializerExp(
     ExpFunctionLiteral(BlockStatement( StatementLabel(?) StatementExpression(ExpInfix(* *)) )) )】●
 ¤》
+#@INIT_NONVOID__LITE《
+  ►#?STRUCTURE_EXPECTED!【#@_ARRAY_INIT_SAMPLE●#@_ARRAY_INIT_SAMPLE】●
+¤》
+
 #@INIT_NONVOID__SAMPLE《
   ►#@NO_INIT●
   ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN__LITE●InitializerExp(#@EXP_ASSIGN__LITE)】●
 ¤》
-// Note the subtle difference that INIT_NONVOID__SAMPLE has NO_INIT case
+// Note the subtle difference that INIT_NONVOID__SAMPLE has a NO_INIT case
 
 
 #@INITIALIZERS《
