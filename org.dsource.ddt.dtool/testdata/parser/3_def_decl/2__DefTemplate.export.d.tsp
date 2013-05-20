@@ -27,9 +27,9 @@
 
 #@TPLARG_1《
   ►#?STRUCTURE_EXPECTED!【foo●TemplateTypeParam(DefSymbol)】●
-  ►#?STRUCTURE_EXPECTED!【foo : #@TYPEREF_NB_ORNO●TemplateTypeParam(DefSymbol #@TYPEREF_NB_ORNO)】●
-  ►#?STRUCTURE_EXPECTED!【foo = #@TYPEREF_NB_ORNO●TemplateTypeParam(DefSymbol #@TYPEREF_NB_ORNO)】●
-  ►#?STRUCTURE_EXPECTED!【foo : #@TYPEREF_NB_ORNO__LITE = #@TYPEREF_NB_ORNO●TemplateTypeParam(DefSymbol #@TYPEREF_NB_ORNO__LITE #@TYPEREF_NB_ORNO)】●
+  ►#?STRUCTURE_EXPECTED!【foo : #@TYPEREF_NB●TemplateTypeParam(DefSymbol #@TYPEREF_NB)】●
+  ►#?STRUCTURE_EXPECTED!【foo = #@TYPEREF_NB●TemplateTypeParam(DefSymbol #@TYPEREF_NB)】●
+  ►#?STRUCTURE_EXPECTED!【foo : #@TYPEREF_NB__LITE = #@TYPEREF_NB●TemplateTypeParam(DefSymbol #@TYPEREF_NB__LITE #@TYPEREF_NB)】●
 
   ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__NO_BROKEN foo●TemplateValueParam(#@TYPE_REFS__NO_BROKEN DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【foo[ #error(EXP_CLOSE_BRACKET)●TemplateValueParam(RefTypeDynArray(?) DefSymbol)】●

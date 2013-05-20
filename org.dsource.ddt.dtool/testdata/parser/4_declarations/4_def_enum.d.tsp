@@ -37,7 +37,7 @@ DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumM
   ►#?STRUCTURE_EXPECTED!【{ A = 3, B , #@CLOSEBRACE_OR_BREAK ● EnumBody(EnumMember(DefSymbol Integer) EnumMember(?) )】●
   ►#?STRUCTURE_EXPECTED!【{ A, B = #@EXP_ASSIGN ,}● EnumBody(EnumMember(DefSymbol) EnumMember(DefSymbol #@EXP_ASSIGN) )】●
   ►#?STRUCTURE_EXPECTED!【{ #@NO_DEFID, #@CLOSEBRACE_OR_BREAK ● EnumBody(EnumMember(#@NO_DEFID))】●
-  ►#?STRUCTURE_EXPECTED!【{ #@TYPEREF_NB A = "asd", } ● EnumBody(EnumMember(#@TYPEREF_NB DefSymbol String) )】●
+  ►#?STRUCTURE_EXPECTED!【{ #@TYPEREF_NBNE A = "asd", } ● EnumBody(EnumMember(#@TYPEREF_NBNE DefSymbol String) )】●
   ►#?STRUCTURE_EXPECTED!【{int[foo #error(EXP_CLOSE_BRACKET) A = "asd", B} ● EnumBody(EnumMember(RefIndexing(? ?) DefSymbol String) EnumMember(?) )】●
   ►#?STRUCTURE_EXPECTED!【{int[foo] #@NO_DEFID = "asd", } ● EnumBody(EnumMember(RefIndexing(? ?) #@NO_DEFID String) )】●
 ¤》

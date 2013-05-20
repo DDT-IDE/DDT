@@ -6,8 +6,8 @@
 
  ►#?STRUCTURE_EXPECTED!【 (auto defId #error(EXP_ASSIGN)【】 ) ●StatementIfVar( VariableDefWithInit(AutoRef DefSymbol )】●
  ►#?STRUCTURE_EXPECTED!【 (auto defId = #@EXP_ANY__LITE) ●StatementIfVar( VariableDefWithInit(AutoRef DefSymbol #@EXP_ANY__LITE)】●
- ►#?STRUCTURE_EXPECTED!【 (#@TYPEREF_NB       defId = 123)                ●StatementIfVar( VariableDefWithInit(#@TYPEREF_NB DefSymbol Integer)】●
- ►#?STRUCTURE_EXPECTED!【 (#@TYPEREF_NB__LITE defId #error(EXP_ASSIGN)【】) ●StatementIfVar( VariableDefWithInit(#@TYPEREF_NB__LITE DefSymbol)】●
+ ►#?STRUCTURE_EXPECTED!【 (#@TYPEREF_NBNE       defId = 123)                ●StatementIfVar( VariableDefWithInit(#@TYPEREF_NBNE DefSymbol Integer)】●
+ ►#?STRUCTURE_EXPECTED!【 (#@TYPEREF_NBNE__LITE defId #error(EXP_ASSIGN)【】) ●StatementIfVar( VariableDefWithInit(#@TYPEREF_NBNE__LITE DefSymbol)】●
  ►#?STRUCTURE_EXPECTED!【 (#NO_BROKEN_PARENS(flag) #@TYPEREF_ANY #parser(AllowAnyErrors) ) ●StatementIf( * 】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 

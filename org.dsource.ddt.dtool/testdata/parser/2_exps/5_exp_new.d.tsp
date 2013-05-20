@@ -21,8 +21,8 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 #@ALLOC_ARG《#@ARGLIST●►#?STRUCTURE_EXPECTED!【 /*No alloc args*/● 】》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new     #@ALLOC_ARG  #@TYPEREF_NB  (sample)
-#STRUCTURE_EXPECTED: ExpNew( #@ALLOC_ARG  #@TYPEREF_NB  #@ExpIdentifier )
+#PARSE(EXPRESSION)   new     #@ALLOC_ARG  #@TYPEREF_NBNE  (sample)
+#STRUCTURE_EXPECTED: ExpNew( #@ALLOC_ARG  #@TYPEREF_NBNE  #@ExpIdentifier )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ (note that ARG1 expansion gets messed up because of EXP_ASSIGN__NO_PENDING)
 #PARSE(EXPRESSION)   new     (#@ARG1 #@EXP_ASSIGN__NO_PENDING #error(EXP_CLOSE_PARENS)  #@BREAK foo (456)
 #STRUCTURE_EXPECTED: ExpNew( #@《*●#@NO_EXP● 》(ARG1) #@EXP_ASSIGN__NO_PENDING )
@@ -37,11 +37,11 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
   ►#?STRUCTURE_EXPECTED!【( #@EXP_ASSIGN__LITE , #@NO_EXP #@NO_ClosePARENS #@BREAK ● #@EXP_ASSIGN__LITE #@NO_EXP】● 
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREF_NB  #@CTOR_ARG
-#STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE   #@TYPEREF_NB  #@CTOR_ARG )
+#PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREF_NBNE  #@CTOR_ARG
+#STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE   #@TYPEREF_NBNE  #@CTOR_ARG )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREF_NB  [ #@EXP_ASSIGN__LITE ]
-#STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE  RefIndexing( #@TYPEREF_NB #@EXP_ASSIGN__LITE )  )
+#PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREF_NBNE  [ #@EXP_ASSIGN__LITE ]
+#STRUCTURE_EXPECTED: ExpNew( #@EXP_ASSIGN__LITE  RefIndexing( #@TYPEREF_NBNE #@EXP_ASSIGN__LITE )  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   new     #@NO_TYPEREF  #@BREAK [789]
 #STRUCTURE_EXPECTED: ExpNew( #@NO_TYPEREF )  

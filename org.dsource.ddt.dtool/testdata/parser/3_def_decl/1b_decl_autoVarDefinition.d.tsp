@@ -8,9 +8,9 @@ DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(#@ExpIdentifier
 DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(?) DefVarFragment(DefSymbol InitializerExp(?))) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test normal var definition is not broken
-#@SIMPLE_ATTRIBS #@TYPE_REFS__NO_BROKEN fooC = #@EXP_ASSIGN__LITE;
+#@SIMPLE_ATTRIBS #@TYPEREF_NBNE fooC = #@EXP_ASSIGN__LITE;
 #STRUCTURE_EXPECTED:
-#@SIMPLE_ATTRIBS ( DefVariable(#@TYPE_REFS__NO_BROKEN DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
+#@SIMPLE_ATTRIBS ( DefVariable(#@TYPEREF_NBNE DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test composite attribs dont make auto decl
 extern(C) foo #error(EXP_IDENTIFIER) ;

@@ -4,6 +4,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.IASTVisitor;
 import dtool.util.ArrayView;
 
+@Deprecated
 public class InitializerArray_Old extends Initializer {
 	
 	public final ArrayView<Resolvable> indexes;
