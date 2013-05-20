@@ -307,12 +307,16 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		Pair.create("TYPE_AS_EXP_VALUE", ParserErrorTypes.TYPE_USED_AS_EXP_VALUE),
 		Pair.create("INV_QUALIFIER", ParserErrorTypes.INVALID_QUALIFIER),
 		Pair.create("NO_TPL_SINGLE_ARG", ParserErrorTypes.NO_CHAINED_TPL_SINGLE_ARG),
-		Pair.create("BAD_LINKAGE_ID", ParserErrorTypes.INVALID_EXTERN_ID),
-		Pair.create("INVALID_SCOPE_ID", ParserErrorTypes.INVALID_SCOPE_ID),
-		Pair.create("LAST_CATCH", ParserErrorTypes.LAST_CATCH)
+		Pair.create("BAD_LINKAGE_ID", ParserErrorTypes.INVALID_EXTERN_ID)
 	);
 	
 	public static ParserErrorTypes getErrorTypeFromMDE(MetadataEntry mde) {
+		try {
+			return ParserErrorTypes.valueOf(mde.value);
+		} catch (IllegalArgumentException e) {
+			// continue
+		}
+		
 		ParserErrorTypes result = errorNameToType.get(mde.value);
 		if(result != null) {
 			return result;
@@ -357,6 +361,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			return new ParserError(errorType, errorRange, errorSource, null);
 		case INVALID_EXTERN_ID:
 		case INVALID_SCOPE_ID:
+		case INVALID_TRAITS_ID:
 			return createErrorToken(errorType, mde, lexSource, true, null);
 		case LAST_CATCH:
 			return createErrorToken(ParserErrorTypes.LAST_CATCH, mde, lexSource, false, null);

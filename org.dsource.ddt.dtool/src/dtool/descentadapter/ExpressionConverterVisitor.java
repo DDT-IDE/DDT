@@ -88,6 +88,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.definitions.IFunctionParameter;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpCast;
@@ -150,8 +151,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	public boolean visit(TraitsExp node) {
 		return endAdapt(connect(DefinitionConverter.sourceRange(node),
 			new ExpTraits(
-				node.ident.ident,
-				DescentASTConverter.convertMany(node.args, ASTNode.class, convContext))
+				new Symbol(node.ident.ident == null ? "" : new String(node.ident.ident)),
+				DescentASTConverter.convertMany(node.args, Resolvable.class, convContext))
 			)
 		);
 	}

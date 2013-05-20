@@ -39,6 +39,9 @@
   ►#?STRUCTURE_EXPECTED!【foo(1, 3)●             ExpCall(#@ExpIdentifier Integer Integer)】●
   ►#?STRUCTURE_EXPECTED!【foo[12 .. [123]]●      ExpSlice(#@ExpIdentifier Integer ExpLiteralArray(?))】●
   ►#?STRUCTURE_EXPECTED!【foo++●                 ExpPostfix(#@ExpIdentifier)】●
+
+  ►#?STRUCTURE_EXPECTED!【is(foo : bar[])●ExpIs(RefIdentifier RefTypeDynArray(RefIdentifier))】●
+  ►#?STRUCTURE_EXPECTED!【__traits(isStaticFunction, myfn, int, 123)●ExpTraits(Symbol RefIdentifier RefPrimitive Integer)】●
   
   ►#?STRUCTURE_EXPECTED!【 (int[]).init●ExpReference(RefQualified(ExpParentheses(RefTypeDynArray(*)) ?))】●
   ►#?STRUCTURE_EXPECTED!【 (.foo).bar.xxx●ExpReference(RefQualified(?(RefQualified(ExpParentheses(*) ?)) ?))】●

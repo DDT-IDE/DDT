@@ -1315,14 +1315,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new DeclarationPragma(pragmaId, expressions, ab.bodySyntax, ab.declList));
 	}
 	
-	public Symbol parseIdSymbol() {
-		BaseLexElement token = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
-		return createIdSymbol(token);
-	}
-	public Symbol createIdSymbol(BaseLexElement token) {
-		return conclude(token.getError(), srOf(token, new Symbol(token.getSourceValue())));
-	}
-	
 	public NodeResult<DeclarationProtection> parseDeclarationProtection() {
 		if(lookAheadGrouped() != DeeTokens.PROTECTION_KW) {
 			return null;

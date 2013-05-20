@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import dtool.ast.ASTNode;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
@@ -137,6 +138,14 @@ public abstract class DeeParser_Common extends AbstractParser {
 		RefIdentifier refId = (RefIdentifier) ref;
 		ParserError error = refId.name != null ? null : refId.getData().getNodeErrors().iterator().next();
 		return new ProtoDefSymbol(refId.name == null ? "" : refId.name, ref.getSourceRange(), error);
+	}
+	
+	public final Symbol parseIdSymbol() {
+		BaseLexElement token = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
+		return createIdSymbol(token);
+	}
+	public final Symbol createIdSymbol(BaseLexElement token) {
+		return conclude(token.getError(), srOf(token, new Symbol(token.getSourceValue())));
 	}
 	
 	/* ----------------------------------------------------------------- */

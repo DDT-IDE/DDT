@@ -30,6 +30,7 @@ import dtool.ast.declarations.StaticIfExpIs.StaticIfExpIsDefUnit;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
@@ -69,6 +70,7 @@ import dtool.ast.expressions.ExpSimpleLambda.SimpleLambdaDefUnit;
 import dtool.ast.expressions.ExpSlice;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
+import dtool.ast.expressions.ExpTraits;
 import dtool.ast.expressions.ExpTypeId;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingExpression;
@@ -704,6 +706,8 @@ protected class ParseRule_TypeOrExp {
 			return expConnect(parseCastExpression());
 		case KW_IS:
 			return expConnect(parseIsExpression());
+		case KW___TRAITS:
+			return expConnect(parseTraitsExpression());
 		case AND:
 		case INCREMENT:
 		case DECREMENT:
@@ -1524,15 +1528,18 @@ protected class ParseRule_TypeOrExp {
 		return elementListParse.parseSimpleListWithClose(parse, canBeEmpty, DeeTokens.COMMA, tokenLISTCLOSE);
 	}
 	
-	protected ArrayView<Resolvable> parseTypeOrExpArgumentList(ParseHelper parse, DeeTokens tkSEP, DeeTokens tkCLOSE) {
+	protected final class TypeOrExpArgumentListSimpleParse extends SimpleListParseHelper<Resolvable> {
+		@Override
+		protected Resolvable parseElement(boolean createMissing) {
+			Resolvable arg = parseTypeOrAssignExpression(true).node;
+			return createMissing ? nullTypeOrExpToMissing(arg) : arg;
+		}
+	}
+	
+	protected final ArrayView<Resolvable> parseTypeOrExpArgumentList(ParseHelper parse, DeeTokens tkSEP, 
+		DeeTokens tkCLOSE) {
 		
-		SimpleListParseHelper<Resolvable> elementListParse = new SimpleListParseHelper<Resolvable>() {
-			@Override
-			protected Resolvable parseElement(boolean createMissing) {
-				Resolvable arg = parseTypeOrAssignExpression(true).node;
-				return createMissing ? nullTypeOrExpToMissing(arg) : arg;
-			}
-		};
+		SimpleListParseHelper<Resolvable> elementListParse = new TypeOrExpArgumentListSimpleParse();
 		return elementListParse.parseSimpleListWithClose(parse, true, tkSEP, tkCLOSE);
 	}
 	
@@ -1908,6 +1915,41 @@ protected class ParseRule_TypeOrExp {
 		default:
 			return null;
 		}
+	}
+	
+	public NodeResult<ExpTraits> parseTraitsExpression() {
+		if(!tryConsume(DeeTokens.KW___TRAITS))
+			return null;
+		ParseHelper parse = new ParseHelper();
+		
+		Symbol traitsId = null;
+		ArrayView<Resolvable> args = null;
+		
+		parsing: {
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false)
+				break parsing;
+			
+			traitsId = parseTraitsId();
+			
+			if(parse.consumeExpected(DeeTokens.COMMA)) { 
+				SimpleListParseHelper<Resolvable> elementListParse = new TypeOrExpArgumentListSimpleParse();
+				elementListParse.parseSimpleList(false, DeeTokens.COMMA);
+				args = elementListParse.members;
+			}
+			
+			parse.consumeRequired(DeeTokens.CLOSE_PARENS);
+		}
+		
+		return parse.resultConclude(new ExpTraits(traitsId, args));
+	}
+	
+	public Symbol parseTraitsId() {
+		BaseLexElement traitsId = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
+		ParserError error = traitsId.getError();
+		if(error == null) {
+			error = DeeTokenSemantics.checkTraitsId(traitsId.getToken());
+		}
+		return conclude(error, srOf(traitsId, new Symbol(traitsId.getSourceValue())));
 	}
 	
 }

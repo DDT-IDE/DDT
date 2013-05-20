@@ -276,6 +276,7 @@ public abstract class AbstractParser {
 		}
 		
 		public final boolean consume(DeeTokens expectedTokenType, boolean isOptional, boolean breaksRule) {
+			assertTrue(!ruleBroken);
 			if(lookAhead() == expectedTokenType) {
 				consumeLookAhead();
 				return true;

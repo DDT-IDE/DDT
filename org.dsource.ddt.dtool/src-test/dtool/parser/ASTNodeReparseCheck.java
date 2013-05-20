@@ -280,8 +280,6 @@ public class ASTNodeReparseCheck {
 		case EXP_MIXIN_STRING:
 		case EXP_IMPORT_STRING:
 		case EXP_TYPEID:
-		case EXP_IS:
-		case STATIC_IF_EXP_IS:
 		
 		case EXP_INDEX:
 		case EXP_SLICE:
@@ -296,7 +294,12 @@ public class ASTNodeReparseCheck {
 		case EXP_POSTFIX_OP:
 		case EXP_INFIX:
 		case EXP_CONDITIONAL:
+		
+		case EXP_IS:
+		case STATIC_IF_EXP_IS:
+		case EXP_TRAITS:
 			return reparseCheck(snippedParser.parseExpression());
+			
 		case EXP_PARENTHESES: {
 			ExpParentheses expParentheses = (ExpParentheses) nodeUnderTest;
 			if(expParentheses.isDotAfterParensSyntax) {

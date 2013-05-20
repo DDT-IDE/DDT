@@ -90,6 +90,7 @@ public enum ASTNodeTypes {
 	EXP_IS,
 	STATIC_IF_EXP_IS,
 	STATIC_IF_EXP_IS_DEF_UNIT,
+	EXP_TRAITS,
 	
 	/* -------------------  Declarations  ------------------- */
 	DECLARATION_LINKAGE,
