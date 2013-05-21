@@ -580,11 +580,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				if(parse.ruleBroken) break parsing;
 			}
 			
-			if(tryConsume(DeeTokens.SEMICOLON)) { 
-				fnBody = conclude(srOf(lastLexElement(), new EmptyStatement()));
-			} else {
-				fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
-			}
+			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
 		}
 		
 		if(retType == null) {
@@ -685,6 +681,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	public static final ParseRuleDescription RULE_FN_BODY = new ParseRuleDescription("FnBody");
 	
 	protected NodeResult<? extends IFunctionBody> parseFunctionBody() {
+		if(tryConsume(DeeTokens.SEMICOLON)) { 
+			return resultConclude(false, srOf(lastLexElement(), new EmptyStatement()));
+		}
 		NodeResult<BlockStatement> blockResult = thisParser().parseBlockStatement(false, false);
 		if(blockResult.node != null)
 			return blockResult;

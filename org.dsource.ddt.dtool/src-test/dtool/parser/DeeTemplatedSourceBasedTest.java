@@ -22,8 +22,9 @@ import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
 import dtool.sourcegen.TemplatedSourceProcessor;
 import dtool.tests.DToolTests;
+import dtool.tests.DeeFileBasedTest;
 
-public abstract class DeeTemplatedSourceBasedTest extends DeeFilesBasedTest {
+public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 	
 	public DeeTemplatedSourceBasedTest(String testUIDescription, File file) {
 		super(testUIDescription, file);

@@ -119,7 +119,8 @@ function/template interactions - param default convert
 ¤》
 
 #@FN_BODY__SIMPLE_TESTER《
+ ►#@NO_BODY●
+ ►#@EMPTY_BODY●
  ►#@FN_BODY__SAMPLE●
  ►#@BROKEN_ST_BLOCK●
- ►#@NO_BODY●
 ¤》
