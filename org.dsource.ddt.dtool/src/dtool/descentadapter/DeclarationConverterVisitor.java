@@ -444,8 +444,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
 		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionAliasDecl(
+				(Reference) DescentASTConverter.convertElem(elem.type, convContext),
 				convertDsymbol.defSymbol,
-				(Reference) DescentASTConverter.convertElem(elem.type, convContext)
+				null,
+				null
 			)
 		);
 	}	

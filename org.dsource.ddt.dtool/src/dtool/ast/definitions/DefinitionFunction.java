@@ -42,7 +42,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 			TreeVisitor.acceptChildren(visitor, retType);
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, tplParams);
-			TreeVisitor.acceptChildren(visitor, params);
+			TreeVisitor.acceptChildren(visitor, fnParams);
 			TreeVisitor.acceptChildren(visitor, tplConstraint);
 			TreeVisitor.acceptChildren(visitor, fnBody);
 		}
@@ -72,7 +72,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	
 	@Override
 	public String toStringAsElement() {
-		return getName() + toStringParametersForSignature(params);
+		return getName() + toStringParametersForSignature(fnParams);
 	}
 	
 	
@@ -81,7 +81,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 		String str = ""
 			+ retType.toStringAsElement() + " " + getName() 
 			+ ASTCodePrinter.toStringParamListAsElements(tplParams)
-			+ toStringParametersForSignature(params);
+			+ toStringParametersForSignature(fnParams);
 		return str;
 	}
 	
@@ -90,7 +90,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	public String toStringForCodeCompletion() {
 		return getName()
 			+ ASTCodePrinter.toStringParamListAsElements(tplParams)
-			+ toStringParametersForSignature(params) 
+			+ toStringParametersForSignature(fnParams) 
 			+ "  " + retType.toStringAsElement()
 			+ " - " + NodeUtil.getOuterDefUnit(this).toStringAsElement();
 	}

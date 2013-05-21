@@ -23,13 +23,19 @@
 #PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef = #@TYPEREF_ANY #@SEMICOLON_OR_BREAK 
 #STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol #@TYPEREF_ANY))
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Decl syntax
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Decl syntax
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
 #PARSE(DECLARATION)   alias #@TYPEREF_NBNE_NoSingleDefId #@NO_DEFID  #@SEMICOLON_OR_BREAK 
 #STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE_NoSingleDefId #@NO_DEFID)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE  foo  #@SEMICOLON_OR_BREAK 
-#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE DefSymbol)
-
+#PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE  #@DEFID  #@SEMICOLON_OR_BREAK 
+#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE #@DEFID)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  function form
+#PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE  #@DEFID ( #@CLOSEPARENS_OR_NO #@SEMICOLON_OR_BREAK 
+#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE #@DEFID)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE  #@DEFID ( #@FN_PARAMS_SAMPLE ) #@FN_ATTRIB__SAMPLE #@SEMICOLON_OR_BREAK 
+#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE #@DEFID #@FN_PARAMS_SAMPLE #@FN_ATTRIB__SAMPLE)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ NOT supported: C style declaration syntax (it's deprecated in D)
 #PARSE(DECLARATION)   alias int aliasDef[];

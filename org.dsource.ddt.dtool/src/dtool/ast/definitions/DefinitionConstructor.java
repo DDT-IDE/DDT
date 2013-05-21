@@ -38,7 +38,7 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, tplParams);
-			TreeVisitor.acceptChildren(visitor, params);
+			TreeVisitor.acceptChildren(visitor, fnParams);
 			TreeVisitor.acceptChildren(visitor, tplConstraint);
 			TreeVisitor.acceptChildren(visitor, fnBody);
 		}

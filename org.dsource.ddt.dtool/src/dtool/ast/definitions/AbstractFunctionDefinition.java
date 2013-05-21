@@ -27,7 +27,7 @@ import dtool.util.ArrayView;
 public abstract class AbstractFunctionDefinition extends Definition implements ICallableElement, IScopeNode {
 	
 	public final ArrayView<TemplateParameter> tplParams;
-	public final ArrayView<IFunctionParameter> params;
+	public final ArrayView<IFunctionParameter> fnParams;
 	public final ArrayView<FunctionAttributes> fnAttributes;
 	public final Expression tplConstraint;
 	public final IFunctionBody fnBody;
@@ -38,19 +38,19 @@ public abstract class AbstractFunctionDefinition extends Definition implements I
 		super(defId);
 		
 		this.tplParams = parentize(tplParams);
-		this.params = parentizeI(fnParams);
+		this.fnParams = parentizeI(fnParams);
 		this.fnAttributes = fnAttributes;
 		this.tplConstraint = parentize(tplConstraint);
 		this.fnBody = parentizeI(fnBody);
 	}
 	
 	public final ArrayView<ASTNode> getParams_asNodes() {
-		return CoreUtil.blindCast(params);
+		return CoreUtil.blindCast(fnParams);
 	}
 	
 	@Override
 	public ArrayView<IFunctionParameter> getParameters() {
-		return params;
+		return fnParams;
 	}
 	
 	public void toStringAsCode_fromDefId(ASTCodePrinter cp) {
@@ -70,7 +70,7 @@ public abstract class AbstractFunctionDefinition extends Definition implements I
 	
 	@Override
 	public Iterator<IFunctionParameter> getMembersIterator(IModuleResolver moduleResolver) {
-		return params.iterator();
+		return fnParams.iterator();
 	}
 	
 	@Override

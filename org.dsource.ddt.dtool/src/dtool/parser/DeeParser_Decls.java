@@ -624,8 +624,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return new DeeParser_RuleParameters(thisParser(), TplOrFnMode.FN).parseDeciderMode(parse);
 	}
 	protected final ArrayView<IFunctionParameter> parseFunctionParameters(ParseHelper parse) {
+		return parseFunctionParameters(parse, false);
+	}
+	protected ArrayView<IFunctionParameter> parseFunctionParameters(ParseHelper parse, boolean isOptional) {
 		DeeParser_RuleParameters fnParametersParse = new DeeParser_RuleParameters(thisParser(), TplOrFnMode.FN);
-		return fnParametersParse.parse(parse, false).getAsFunctionParameters();
+		return fnParametersParse.parse(parse, isOptional).getAsFunctionParameters();
 	}
 	
 	protected final ArrayView<TemplateParameter> parseTemplateParameters(ParseHelper parse, boolean isOptional) {
@@ -853,6 +856,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		Reference ref = null;
 		ProtoDefSymbol defId = null;
+		ArrayView<IFunctionParameter> fnParams = null;
+		ArrayView<FunctionAttributes> fnAttributes = null;
 		
 		parsing: {
 			DeeParserState savedParserState = thisParser().enterBacktrackableMode();
@@ -871,11 +876,20 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			} else {
 				defId = parseDefId();
 			}
+			
+			fnParams = parseFunctionParameters(parse, true);
+			if(parse.ruleBroken) {
+				parse.ruleBroken = false;
+				break parsing;
+			}
+			
+			// Function attributes
+			fnAttributes = parseFunctionAttributes();
 		}
 		defId = nullIdToMissingDefId(defId);
 		
 		parse.consumeRequired(DeeTokens.SEMICOLON);
-		return parse.resultConclude(new DefinitionAliasDecl(defId, ref));
+		return parse.resultConclude(new DefinitionAliasDecl(ref, defId, fnParams, fnAttributes));
 	}
 	
 	protected NodeResult<DefinitionAlias> parseDefinitionAlias_atFragmentStart() {
