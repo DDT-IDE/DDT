@@ -9,11 +9,6 @@ import dtool.tests.DToolBaseTest;
 public abstract class Parser__CommonTest extends DToolBaseTest {
 	
 	@Deprecated
-	public static DeeParserResult testParseDo(String source, Boolean expectErrors, boolean checkSourceRanges) {
-		return parseSource(source, expectErrors, checkSourceRanges, "_tests_unnamed_");
-	}
-	
-	@Deprecated
 	public static DeeParserResult parseSource(String source, Boolean expectErrors, boolean checkSourceRanges,
 			String defaultModuleName) {
 		DeeParserResult parseResult = DeeParserSession.parseSource(source, defaultModuleName);
@@ -34,6 +29,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		
 		if(expectErrors != null) {
 			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);
+//			String src = source.substring(parseResult.errors.get(0).sourceRange.getStartPos());
 		}
 		
 		if(checkSourceRanges) {

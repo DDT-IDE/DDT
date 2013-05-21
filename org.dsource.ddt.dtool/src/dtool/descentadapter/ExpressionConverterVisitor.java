@@ -95,11 +95,11 @@ import dtool.ast.expressions.ExpCast;
 import dtool.ast.expressions.ExpConditional;
 import dtool.ast.expressions.ExpDefaultInit;
 import dtool.ast.expressions.ExpFunctionLiteral;
-import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpImportString;
 import dtool.ast.expressions.ExpIndex;
 import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
+import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
@@ -365,11 +365,12 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	
 	@Override
 	public boolean visit(IsExp element) {
+		Reference convertType = ReferenceConverter.convertType(element.tspec, convContext);
 		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpIs(
 				ReferenceConverter.convertType(element.targ, convContext),
-				ExpIsSpecialization.TYPE_EXACT,
-				ReferenceConverter.convertType(element.tspec, convContext)
+				convertType == null ? null : ExpIsSpecialization.TYPE_EXACT,
+				convertType
 			)
 		);
 	}

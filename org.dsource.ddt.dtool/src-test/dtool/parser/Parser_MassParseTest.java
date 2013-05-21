@@ -84,8 +84,8 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 			for (File file : moduleList) {
 				testsLogger.println("----------> " + DToolTestResources.resourceFileToString(file, COMMON_UNPACK));
 				String source = readStringFromFileUnchecked(file);
-				Parser__CommonTest.testParseDo(source, null, false);
-//				Parser__CommonTest.testParseSource(source, canHaveSyntaxErrors ? null : false, false);
+				Parser__CommonTest.parseSource(source, null, false, "_tests_unnamed_");
+//				Parser__CommonTest.testParseSource(source, canHaveSyntaxErrors ? null : false, false, "_unnamed");
 			}
 		}
 		
