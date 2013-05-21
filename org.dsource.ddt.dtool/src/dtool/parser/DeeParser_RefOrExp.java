@@ -1945,10 +1945,7 @@ protected class ParseRule_TypeOrExp {
 	
 	public Symbol parseTraitsId() {
 		BaseLexElement traitsId = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
-		ParserError error = traitsId.getError();
-		if(error == null) {
-			error = DeeTokenSemantics.checkTraitsId(traitsId.getToken());
-		}
+		ParserError error = DeeTokenSemantics.checkTraitsId(traitsId);
 		return conclude(error, srOf(traitsId, new Symbol(traitsId.getSourceValue())));
 	}
 	

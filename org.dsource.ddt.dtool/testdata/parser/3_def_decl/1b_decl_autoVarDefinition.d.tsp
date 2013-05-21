@@ -8,9 +8,9 @@ DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(#@ExpIdentifier
 DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(?) DefVarFragment(DefSymbol InitializerExp(?))) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test normal var definition is not broken
-#@SIMPLE_ATTRIBS #@TYPEREF_NBNE fooC = #@EXP_ASSIGN__LITE;
+#@SIMPLE_ATTRIBS__SAMPLE #@TYPEREF_NBNE fooC = #@EXP_ASSIGN__LITE;
 #STRUCTURE_EXPECTED:
-#@SIMPLE_ATTRIBS ( DefVariable(#@TYPEREF_NBNE DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
+#@SIMPLE_ATTRIBS__SAMPLE DefVariable(#@TYPEREF_NBNE DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test composite attribs dont make auto decl
 extern(C) foo #error(EXP_IDENTIFIER) ;
@@ -23,9 +23,8 @@ DeclarationPragma(Symbol IncompleteDeclaration(RefIdentifier) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@SIMPLE_ATTRIBS fooB = #@EXP_ASSIGN__LITE;
-
 #STRUCTURE_EXPECTED:
-#@SIMPLE_ATTRIBS ( DefAutoVariable(DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
+#@SIMPLE_ATTRIBS DefAutoVariable(DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
                                         
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@AUTO_START《auto●static●__gshared /*TODO: @disable */》

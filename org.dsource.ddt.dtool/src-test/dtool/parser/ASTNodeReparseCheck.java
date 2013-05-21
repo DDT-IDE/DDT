@@ -334,6 +334,7 @@ public class ASTNodeReparseCheck {
 			((DeclarationPragma) nodeUnderTest).isStatement));
 		case DECLARATION_PROTECTION: return reparseCheck(snippedParser.parseDeclarationProtection());
 		case DECLARATION_BASIC_ATTRIB: return reparseCheck(snippedParser.parseDeclarationBasicAttrib());
+		case DECLARATION_AT_ATTRIB: return reparseCheck(snippedParser.parseDeclarationAtAttrib());
 		
 		case DECLARATION_MIXIN_STRING: return reparseCheck(snippedParser.parseDeclarationMixinString());
 		case DECLARATION_MIXIN: return reparseCheck(snippedParser.parseDeclarationMixin());

@@ -23,6 +23,7 @@ import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
+import dtool.ast.declarations.DeclarationAtAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
@@ -267,14 +268,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			return parseDeclarationBasicAttrib();
 		case AT:
-			// TODO:
-			
-//				if((lookAhead(1) == DeeTokens.IDENTIFIER)) {
-//					LexElement atId = lookAheadElement(1);
-//					if(isSpecialAtToken(atId)) {
-//						return parseDeclarationBasicAttrib();
-//					}
-//				}
+				if(lookAhead(1) == DeeTokens.IDENTIFIER) {
+					return parseDeclarationAtAttrib();
+				}
 			break;
 		case ATTRIBUTE_KW:
 			if(lookAhead() == DeeTokens.KW_STATIC) { 
@@ -1337,6 +1333,23 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		AttribBodyParseRule ab = new AttribBodyParseRule().parseAttribBody(parse, false, true);
 		return parse.resultConclude(new DeclarationBasicAttrib(attrib, ab.bodySyntax, ab.declList));
+	}
+	
+	public NodeResult<DeclarationAtAttrib> parseDeclarationAtAttrib() {
+		if(!tryConsume(DeeTokens.AT)) 
+			return null;
+		
+		ParseHelper parse = new ParseHelper();
+		Symbol attribIdentifier = parseAttribId();
+		
+		AttribBodyParseRule ab = new AttribBodyParseRule().parseAttribBody(parse, false, true);
+		return parse.resultConclude(new DeclarationAtAttrib(attribIdentifier, ab.bodySyntax, ab.declList));
+	}
+	
+	public Symbol parseAttribId() {
+		BaseLexElement traitsId = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
+		ParserError error = DeeTokenSemantics.checkAttribId(traitsId);
+		return conclude(error, srOf(traitsId, new Symbol(traitsId.getSourceValue())));
 	}
 	
 	public NodeResult<DeclarationStaticIf> parseDeclarationStaticIf(boolean isStatement) {

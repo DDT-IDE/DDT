@@ -25,7 +25,7 @@ public class AnnotatedSource {
 		public final String value;
 		public final int offset;
 		public final String sourceValue;
-		public boolean sourceWasIncluded;
+		public final boolean sourceWasIncluded;
 		
 		public MetadataEntry(String name, String extraValue, String associatedSource, int offset) {
 			this(name, extraValue, associatedSource, offset, true);

@@ -85,11 +85,33 @@ public class DeeTokenSemantics {
 		Pair.create("compiles", true)
 	);
 	
-	public static ParserError checkTraitsId(Token traitsId) {
+	public static ParserError checkTraitsId(BaseLexElement traitsId) {
+		if(traitsId.getError() != null) {
+			return traitsId.getError();
+		}
+		
 		if(traitsIdMapper.get(traitsId.getSourceValue()) != null) {
 			return null;
 		}
-		return createError(ParserErrorTypes.INVALID_TRAITS_ID, traitsId, null);
+		return createError(ParserErrorTypes.INVALID_TRAITS_ID, traitsId.getToken(), null);
+	}
+	
+	protected static final Map<String, Boolean> attribIdMapper = NewUtils.initMap(
+		Pair.create("property", true),
+		Pair.create("safe", true),
+		Pair.create("trusted", true),
+		Pair.create("system", true),
+		Pair.create("disable", true)
+	);
+	
+	public static ParserError checkAttribId(BaseLexElement attribId) {
+		if(attribId.getError() != null) {
+			return attribId.getError(); // This means it's a missing id.
+		}
+		if(attribIdMapper.get(attribId.getSourceValue()) != null) {
+			return null;
+		}
+		return createError(ParserErrorTypes.INVALID_ATTRIB_ID, attribId.getToken(), null);
 	}
 	
 }

@@ -362,6 +362,10 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		case INVALID_EXTERN_ID:
 		case INVALID_SCOPE_ID:
 		case INVALID_TRAITS_ID:
+		case INVALID_ATTRIB_ID:
+			if(mde.sourceValue != null) {
+				return new ParserError(errorType, errorRange, mde.sourceValue, null);
+			}
 			return createErrorToken(errorType, mde, lexSource, true, null);
 		case LAST_CATCH:
 			return createErrorToken(ParserErrorTypes.LAST_CATCH, mde, lexSource, false, null);
@@ -371,12 +375,12 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 	
 	public static ParserError createErrorToken(ParserErrorTypes errorTypeTk, MetadataEntry mde, 
 		LexElementSource lexSource, boolean tokenBefore, Object errorParam) {
-		Token lastToken = tokenBefore 
+		Token adjacentToken = tokenBefore 
 			? findLastEffectiveTokenBeforeOffset(mde.offset, lexSource)
 			: findNextEffectiveTokenAfterOffset(mde.offset, lexSource);
 			
-		SourceRange errorRange = lastToken.getSourceRange();
-		String errorSource = lastToken.source;
+		SourceRange errorRange = adjacentToken.getSourceRange();
+		String errorSource = adjacentToken.source;
 		return new ParserError(errorTypeTk, errorRange, errorSource, errorParam);
 	}
 	
