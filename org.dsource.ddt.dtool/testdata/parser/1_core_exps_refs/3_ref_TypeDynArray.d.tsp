@@ -15,10 +15,10 @@ DefVariable(RefTypeDynArray(RefTypeDynArray(RefPrimitive))  DefSymbol)
 #STRUCTURE_EXPECTED:  RefTypeDynArray(RefIdentifier)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(REFERENCE)     #@TYPE_REFS__NO_BROKEN•[]
+#PARSE(REFERENCE)     #@TYPEREFS__NOBROKEN_APPENDABLE•[] 
 #STRUCTURE_EXPECTED:
-RefTypeDynArray(#@TYPE_REFS__NO_BROKEN)
+RefTypeDynArray(#@TYPEREFS__NOBROKEN_APPENDABLE)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(REFERENCE)     #@TYPE_REFS__NO_BROKEN•[][]
+#PARSE(REFERENCE)     #@TYPEREFS__NOBROKEN_APPENDABLE•[][]
 #STRUCTURE_EXPECTED:  
-RefTypeDynArray(RefTypeDynArray(#@TYPE_REFS__NO_BROKEN))
+RefTypeDynArray(RefTypeDynArray(#@TYPEREFS__NOBROKEN_APPENDABLE))

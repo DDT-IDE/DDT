@@ -7,9 +7,9 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@FN_KEYWORD《function●delegate》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  ret type
-#PARSE(REFERENCE)     #@TYPE_REFS__NO_BROKEN function(#@FN_PARAMS_SAMPLE)
+#PARSE(REFERENCE)     #@TYPEREFS__NOBROKEN_APPENDABLE function(#@FN_PARAMS_SAMPLE)
 #STRUCTURE_EXPECTED: 
-RefTypeFunction(#@TYPE_REFS__NO_BROKEN #@FN_PARAMS_SAMPLE )
+      RefTypeFunction(#@TYPEREFS__NOBROKEN_APPENDABLE #@FN_PARAMS_SAMPLE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(REFERENCE)     bar[] function #ERROR(EXP_OPEN_PARENS)【】 #@BREAK 
 #STRUCTURE_EXPECTED: 

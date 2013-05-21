@@ -31,10 +31,12 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	
 	public final TypeModifierKinds modifier;
 	public final Reference ref;
+	public final boolean hasParens;
 	
-	public RefTypeModifier(TypeModifierKinds modifier, Reference ref) {
+	public RefTypeModifier(TypeModifierKinds modifier, Reference ref, boolean hasParens) {
 		this.modifier = assertNotNull_(modifier);
 		this.ref = parentize(ref);
+		this.hasParens = hasParens;
 	}
 	
 	@Override
@@ -54,7 +56,11 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(modifier.sourceValue);
-		cp.append("(", ref, ")");
+		if(hasParens) {
+			cp.append("(", ref, ")");
+		} else {
+			cp.append(" ", ref);
+		}
 	}
 	
 	@Override

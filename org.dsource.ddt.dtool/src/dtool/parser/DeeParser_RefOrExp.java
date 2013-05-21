@@ -149,18 +149,19 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	protected NodeResult<Reference> parseTypeReference_do(boolean parsingExp) {
 		NodeResult<? extends Reference> refParseResult;
 		
-		if(lookAheadGrouped() == DeeTokens.PRIMITIVE_KW) {
-			return parseReference_referenceStart(parseRefPrimitive_start(lookAhead()), parsingExp);
-		}
-		
 		TypeModifierKinds typeModifier = determineTypeModifier(lookAhead());
 		if(typeModifier != null) {
 			refParseResult = parseRefTypeModifier_start(typeModifier);
 		} else {
-			switch (lookAhead()) {
-			case DOT: refParseResult = parseRefModuleQualified(); break;
-			case IDENTIFIER: return parseReference_referenceStart(parseRefIdentifier(), parsingExp);
-			case KW_TYPEOF: refParseResult = parseRefTypeof(); break;
+			switch (lookAhead().getGroupingToken()) {
+			case IDENTIFIER: 
+				return parseReference_referenceStart(parseRefIdentifier(), parsingExp);
+			case PRIMITIVE_KW: 
+				return parseReference_referenceStart(parseRefPrimitive_start(lookAhead()), parsingExp); 
+			case DOT: 
+				refParseResult = parseRefModuleQualified(); break;
+			case KW_TYPEOF: 
+				refParseResult = parseRefTypeof(); break;
 			
 			default:
 				return nullResult();
@@ -170,6 +171,24 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		if(refParseResult.ruleBroken) 
 			return refParseResult.<Reference>upcastTypeParam();
 		return parseReference_referenceStart(refParseResult.node, parsingExp);
+	}
+	
+	protected static boolean canParseTypeReferenceStart(DeeTokens lookAhead) {
+		TypeModifierKinds typeModifier = determineTypeModifier(lookAhead);
+		if(typeModifier != null) {
+			return true;
+		} else {
+			switch (lookAhead.getGroupingToken()) {
+			case IDENTIFIER: 
+			case PRIMITIVE_KW: 
+			case DOT: 
+			case KW_TYPEOF: 
+				return true;
+			
+			default:
+				return false;
+			}
+		}
 	}
 	
 	public static TypeModifierKinds determineTypeModifier(DeeTokens tokenType) {
@@ -185,6 +204,17 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	
 	protected static boolean isTypeModifier(DeeTokens tokenType) {
 		return determineTypeModifier(tokenType) != null;
+	}
+	
+	public boolean typeModifier_shouldParseAsAttrib(int laPos) {
+		assertTrue(isTypeModifier(lookAhead(laPos)));
+		
+		if(lookAhead(laPos + 1) == DeeTokens.IDENTIFIER) 
+			return lookAhead(laPos + 2) == DeeTokens.ASSIGN;
+		if(isTypeModifier(lookAhead(laPos + 1))) 
+			return typeModifier_shouldParseAsAttrib(laPos + 1);
+		
+		return lookAhead(laPos + 1) != DeeTokens.OPEN_PARENS && !canParseTypeReferenceStart(lookAhead(laPos + 1));
 	}
 	
 	public RefIdentifier parseRefIdentifier() {
@@ -229,11 +259,19 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		ParseHelper parse = new ParseHelper();
 		
 		Reference ref = null;
-		if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
+		boolean hasParens = false;
+		if(parse.consumeOptional(DeeTokens.OPEN_PARENS)) {
 			ref = parseTypeReference_ToMissing(true).node; 
 			parse.consumeRequired(DeeTokens.CLOSE_PARENS);
+			hasParens = true;
+		} else {
+			ref = parse.checkResult(parseTypeReference());
+			if(ref == null) {
+				ref = parseMissingTypeReference(RULE_REFERENCE);
+				parse.ruleBroken = true;
+			}
 		}
-		return parse.resultConclude(new RefTypeModifier(modKind, ref));
+		return parse.resultConclude(new RefTypeModifier(modKind, ref, hasParens));
 	}
 	
 	protected NodeResult<Reference> parseReference_referenceStart(Reference leftRef, boolean parsingExp) {
@@ -1798,14 +1836,14 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	public CastQualifiers parseCastQualifier() {
-		if(tryConsume(DeeTokens.KW_SHARED, DeeTokens.KW_CONST))
-			return CastQualifiers.SHARED_CONST;
 		switch (lookAhead()) {
 		case KW_CONST:
 			return parseCastQualifier(DeeTokens.KW_SHARED, CastQualifiers.CONST_SHARED, CastQualifiers.CONST);
 		case KW_INOUT:
 			return parseCastQualifier(DeeTokens.KW_SHARED, CastQualifiers.INOUT_SHARED, CastQualifiers.INOUT);
 		case KW_SHARED:
+			if(lookAhead(2) == DeeTokens.CLOSE_PARENS && tryConsume(DeeTokens.KW_SHARED, DeeTokens.KW_CONST))
+				return CastQualifiers.SHARED_CONST;
 			return parseCastQualifier(DeeTokens.KW_INOUT, CastQualifiers.SHARED_INOUT, CastQualifiers.SHARED);
 		case KW_IMMUTABLE:
 			if(lookAhead(1) == DeeTokens.CLOSE_PARENS) {
@@ -1817,7 +1855,7 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	public CastQualifiers parseCastQualifier(DeeTokens token1, CastQualifiers altDouble, CastQualifiers altSingle) {
-		if(lookAhead(1) == token1) {
+		if(lookAhead(2) == DeeTokens.CLOSE_PARENS && lookAhead(1) == token1) {
 			consumeLookAhead();
 			consumeLookAhead();
 			return altDouble;
@@ -1887,7 +1925,8 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	protected ExpIsSpecialization determineIsExpArchetype() {
-		if(determineTypeModifier(lookAhead()) != null && lookAhead(1) == DeeTokens.OPEN_PARENS)
+		if(isTypeModifier(lookAhead()) && 
+			(lookAhead(1) == DeeTokens.OPEN_PARENS || canParseTypeReferenceStart(lookAhead(1))))
 			return null;
 		
 		switch (lookAhead()) {

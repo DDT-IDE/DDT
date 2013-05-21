@@ -29,10 +29,10 @@ public class DeclarationAttributesTest extends CommonTestUtils {
 			"foo", arrayI(0, 0, 0, 0, 0)), 
 			Protection.PRIVATE, AttributeKinds.ABSTRACT, AttributeKinds.STATIC);
 		
-		String sourceA = "const int foo0; protected: static: private abstract int foo1; \n"+ 
+		String sourceA = "override int foo0; protected: static: private abstract int foo1; \n"+ 
 			"public: immutable: int foo2"; 
 		checkDef(getDefToTest(sourceA, "foo0", arrayI(0, 0)), 
-			null, AttributeKinds.CONST);
+			null, AttributeKinds.OVERRIDE);
 		checkDef(getDefToTest(sourceA, "foo1", arrayI(1, 0, 0, 0, 0)), 
 			Protection.PRIVATE, AttributeKinds.ABSTRACT, AttributeKinds.STATIC);
 		checkDef(getDefToTest(sourceA, "foo2", arrayI(1, 0, 1, 0, 0)), 

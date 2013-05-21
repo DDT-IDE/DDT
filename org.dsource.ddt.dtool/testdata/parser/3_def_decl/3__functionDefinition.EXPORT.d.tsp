@@ -1,14 +1,14 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@FN_PARAMS_SAMPLE《#?STRUCTURE_EXPECTED!【 .Bar.Baz baz, const Foo.Foobar foo = 2● 
   FunctionParameter(RefQualified(RefModuleQualified(?) RefIdentifier) DefSymbol)
-  FunctionParameter(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
+  FunctionParameter(RefTypeModifier(RefQualified(RefIdentifier RefIdentifier)) DefSymbol Integer)
 】》
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Parameters
 #@BREAK_Pr《 #?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS) #@BREAK● $ 】  》
 
-#@PARAM_ATTRIB《auto●#@TYPE_MODIFIERS●final●in●lazy●out●ref●scope●in lazy ref ●const inout●const lazy shared》
+#@PARAM_ATTRIB《auto●final●in●lazy●out●ref●scope●in lazy ref ●in lazy》
 #@PARAM_ATTRIB_ORNO《/*NONE*/●#@PARAM_ATTRIB #FN_ONLY(flag)》
-#@PARAM_ATTRIB_SAMP《/*NONE*/●const #FN_ONLY(flag)●in #FN_ONLY(flag)●lazy shared #FN_ONLY(flag)》
+#@PARAM_ATTRIB_SAMP《/*NONE*/●in #FN_ONLY(flag)●lazy scope #FN_ONLY(flag)》
 
 
 #@FN_PARAM_BASE《
@@ -29,7 +29,7 @@
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB #@NO_TYPEREF #@BREAK_Pr = 2 #FN_ONLY(flag)●NamelessParameter(#@NO_TYPEREF) $】】●
   
  ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE● 
-  ►#?STRUCTURE_EXPECTED!【const int foo ... #@BREAK_Pr = 2 #FN_ONLY(flag)●FunctionParameter(RefPrimitive DefSymbol) $】】●
+  ►#?STRUCTURE_EXPECTED!【final int foo ... #@BREAK_Pr = 2 #FN_ONLY(flag)●FunctionParameter(RefPrimitive DefSymbol) $】】●
  ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int[#error(EXP_CLOSE_BRACKET) #@BREAK_Pr ... ●NamelessParameter(RefTypeDynArray(*)) $】】●
 ¤》
@@ -49,11 +49,11 @@ function/template interactions - param default convert
   ►#?STRUCTURE_EXPECTED!【#@FN_PARAMS_SAMPLE ,      #@FN_PARAMS_SAMPLE● #@FN_PARAMS_SAMPLE #@FN_PARAMS_SAMPLE】●
   ►#?STRUCTURE_EXPECTED!【#@NO_TYPEREF           , #@FN_PARAMS_SAMPLE●NamelessParameter(#@NO_TYPEREF) #@FN_PARAMS_SAMPLE】●
 
-  ►#?STRUCTURE_EXPECTED!【const in char foo        #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●FunctionParameter(RefPrimitive DefSymbol) #@FN_PARAMS_SAMPLE】●
-  ►#?STRUCTURE_EXPECTED!【const in char            #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●NamelessParameter(RefPrimitive ) #@FN_PARAMS_SAMPLE】●
-  ►#?STRUCTURE_EXPECTED!【const Foo foo = #@NO_EXP #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●FunctionParameter(RefIdentifier DefSymbol #@NO_EXP) #@FN_PARAMS_SAMPLE】●
+  ►#?STRUCTURE_EXPECTED!【ref in char foo        #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●FunctionParameter(RefPrimitive DefSymbol) #@FN_PARAMS_SAMPLE】●
+  ►#?STRUCTURE_EXPECTED!【ref in char            #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●NamelessParameter(RefPrimitive ) #@FN_PARAMS_SAMPLE】●
+  ►#?STRUCTURE_EXPECTED!【ref Foo foo = #@NO_EXP #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●FunctionParameter(RefIdentifier DefSymbol #@NO_EXP) #@FN_PARAMS_SAMPLE】●
   
-  ►#?STRUCTURE_EXPECTED!【const in char ...        #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●NamelessParameter(RefPrimitive) #@FN_PARAMS_SAMPLE】● 
+  ►#?STRUCTURE_EXPECTED!【out in char ...        #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●NamelessParameter(RefPrimitive) #@FN_PARAMS_SAMPLE】● 
 ¤》
 
 #@FN_PARAMS__NO_BROKEN《#FN_PARAM__NO_BROKEN(flag)#@FN_PARAMS》

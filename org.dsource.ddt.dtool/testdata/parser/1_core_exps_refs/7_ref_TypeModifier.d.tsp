@@ -1,36 +1,29 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-const(blah) dummy;
-
-#STRUCTURE_EXPECTED:
-DefVariable(RefTypeModifier(RefIdentifier) DefSymbol)
+#PARSE(REFERENCE)     const(blah)
+#STRUCTURE_EXPECTED:  RefTypeModifier(RefIdentifier)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ARG_CONTENT_OR_NO《
-  ►#NO_BROKEN_PARENS(flag) #@TYPE_REFS●
+  ►#@TYPE_REFS●
   ►#@NO_TYPEREF●
 ¤》
 #@ARG_CONTENT_CLEAN《
   ►#@TYPE_REFS● 
 ¤》
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS•( #@ARG_CONTENT_OR_NO ) dummy;
-
-#STRUCTURE_EXPECTED:
-DefVariable(RefTypeModifier(#@ARG_CONTENT_OR_NO) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS•( int ).foo dummy;
-
-#STRUCTURE_EXPECTED:
-DefVariable(RefQualified( RefTypeModifier( RefPrimitive ) RefIdentifier ) DefSymbol)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS ( #@ARG_CONTENT_CLEAN #error:EXP_CLOSE_PARENS  #error(-none-)¤【;】  declBroken #error:EXP_ID ;
-#STRUCTURE_EXPECTED:
-IncompleteDeclaration(RefTypeModifier(#@ARG_CONTENT_CLEAN))     IncompleteDeclaration(RefIdentifier)
-
+#PARSE(REFERENCE)    #@TYPE_MODIFIERS #@NO_TYPEREF #@BREAK
+#STRUCTURE_EXPECTED: RefTypeModifier( #@NO_TYPEREF )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS     ( #@NO_TYPEREF #error(EXP_CLOSE_PARENS) #error(-none-)¤【;】
-#STRUCTURE_EXPECTED: IncompleteDeclaration(RefTypeModifier(#@NO_TYPEREF) )
+#PARSE(REFERENCE)    #@TYPE_MODIFIERS #@TYPEREF_NBNE 
+#STRUCTURE_EXPECTED: RefTypeModifier( #@TYPEREF_NBNE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@TYPE_MODIFIERS #@NO_DECLorBLOCK  
-#STRUCTURE_EXPECTED: DeclarationBasicAttrib(#@NO_DECLorBLOCK)
+#PARSE(REFERENCE)    #@TYPE_MODIFIERS #@TYPEREF_BROKEN #@BREAK
+#STRUCTURE_EXPECTED: RefTypeModifier( #@TYPEREF_BROKEN )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(REFERENCE)    #@TYPE_MODIFIERS•(#@ARG_CONTENT_OR_NO #@DISCARD_OnPARENS )
+#STRUCTURE_EXPECTED:   RefTypeModifier(#@ARG_CONTENT_OR_NO) 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(REFERENCE)    #@TYPE_MODIFIERS ( #@ARG_CONTENT_OR_NO #error(EXP_CLOSE_PARENS) #@BREAK  
+#STRUCTURE_EXPECTED:   RefTypeModifier( #@ARG_CONTENT_OR_NO )
+

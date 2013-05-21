@@ -25,9 +25,18 @@ DeclarationPragma(Symbol IncompleteDeclaration(RefIdentifier) )
 #@SIMPLE_ATTRIBS fooB = #@EXP_ASSIGN__LITE;
 #STRUCTURE_EXPECTED:
 #@SIMPLE_ATTRIBS DefAutoVariable(DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+const shared fooB = #@EXP_ASSIGN__LITE;
+#STRUCTURE_EXPECTED:
+DeclarationBasicAttrib(DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) ))
                                         
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@AUTO_START《auto●static●__gshared /*TODO: @disable */》
+#@AUTO_START《
+  ►#?STRUCTURE_EXPECTED!【auto● DeclarationBasicAttrib( 】●
+  ►#?STRUCTURE_EXPECTED!【static● DeclarationBasicAttrib( 】●
+  ►#?STRUCTURE_EXPECTED!【__gshared● DeclarationBasicAttrib( 】●
+  ►#?STRUCTURE_EXPECTED!【@disable● DeclarationAtAttrib(Symbol 】●
+¤》
 
 #@AUTO_INIT《
   ►#?STRUCTURE_EXPECTED!【= #@INITIALIZERS ● #@INITIALIZERS】●
@@ -39,7 +48,7 @@ DeclarationPragma(Symbol IncompleteDeclaration(RefIdentifier) )
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@AUTO_START foo #@AUTO_INIT #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@AUTO_INIT ) )
+#STRUCTURE_EXPECTED:  #@AUTO_START DefAutoVariable(DefSymbol #@AUTO_INIT ) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   auto foo = #@INITIALIZERS__SAMPLE , #@AUTO_FRAG #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@INITIALIZERS__SAMPLE #@AUTO_FRAG ) )

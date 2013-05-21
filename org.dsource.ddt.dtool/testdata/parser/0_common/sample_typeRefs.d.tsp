@@ -37,7 +37,7 @@ for performance reasons, to keep the number of cases low.
   ►#@TYPE_REFS__QUALIFIER_ForTplOrDot●
   ►#@TYPE_REFS__QUALIFIER_ForDotOnly●
   
-  
+  ►#?STRUCTURE_EXPECTED!【const shared int* #NO_TYPE_APPEND(flag)●RefTypeModifier(RefTypeModifier( RefTypePointer(RefPrimitive) ))】●
   ►#?STRUCTURE_EXPECTED!【int*●RefTypePointer(RefPrimitive)】●
   ►#?STRUCTURE_EXPECTED!【int*[]●RefTypeDynArray(RefTypePointer(RefPrimitive))】●
   ►#?STRUCTURE_EXPECTED!【foo*●RefTypePointer(RefIdentifier)】●
@@ -48,12 +48,14 @@ for performance reasons, to keep the number of cases low.
   ►#?STRUCTURE_EXPECTED!【dai[bar*] *[foo][foo**bar]●RefIndexing(RefIndexing(RefTypePointer(*) ?) ExpInfix(* ExpPrefix(ExpReference(?))))】●
   ►#?STRUCTURE_EXPECTED!【dai[bar] ***●RefTypePointer(RefTypePointer(RefTypePointer(RefIndexing(? ?))))】●
   
-  ►#?STRUCTURE_EXPECTED!【int function(inout int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
+  ►#?STRUCTURE_EXPECTED!【int function(in int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
 ¤》
 #@TYPE_REFS__NO_BROKEN__LITE《
   ►#@TYPE_REFS__REFID●
   ►#?STRUCTURE_EXPECTED!【.Bar.foo*[]●RefTypeDynArray(RefTypePointer(RefQualified(RefModuleQualified(?) RefIdentifier)))】●
 ¤》
+
+#@TYPEREFS__NOBROKEN_APPENDABLE《#@TYPE_REFS__NO_BROKEN #?NO_TYPE_APPEND【#:DISCARD_CASE】》
 
 #@TYPE_REFS__BROKEN《
    ►#?NO_BROKEN_BRACKETS【#:DISCARD_CASE●
@@ -140,7 +142,7 @@ for performance reasons, to keep the number of cases low.
    ►#?TYPE__NO_PENDING【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int * **●RefTypePointer(RefTypePointer(RefTypePointer(RefPrimitive)))】】●
 
-  ►#?STRUCTURE_EXPECTED!【int function(inout int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
+  ►#?STRUCTURE_EXPECTED!【int function(lazy int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
 ¤》
 #@TYPEREFS_UNAMBIG__NO_PENDING《#TYPE__NO_PENDING(flag)#@TYPEREFS_UNAMBIG》
 

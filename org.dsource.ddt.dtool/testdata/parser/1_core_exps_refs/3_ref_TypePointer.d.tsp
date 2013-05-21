@@ -9,6 +9,6 @@ DefVariable(RefTypePointer(RefTypePointer(RefPrimitive))  DefSymbol)
 #STRUCTURE_EXPECTED:  RefTypePointer(RefIdentifier)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(REFERENCE)     #@TYPE_REFS__NO_BROKEN•* 
-#STRUCTURE_EXPECTED:  RefTypePointer(#@TYPE_REFS__NO_BROKEN)
+#PARSE(REFERENCE)     #@TYPEREFS__NOBROKEN_APPENDABLE•* 
+#STRUCTURE_EXPECTED:  RefTypePointer(#@TYPEREFS__NOBROKEN_APPENDABLE)
 

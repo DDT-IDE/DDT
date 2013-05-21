@@ -70,8 +70,9 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
   ►#?STRUCTURE_EXPECTED!【#@SIMPLE_ATTRIBS_ENUM●#@SIMPLE_ATTRIBS_ENUM 】●
 ¤》
 
-#@ATTRIBS《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIB》
-#@ATTRIBS_WITH_ENUM《#@ATTRIBS●#@ENUM_ATTRIB》
+#@ATTRIBS《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIBS》
+#@ATTRIBS_NOTM《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIBS_NOTM》
+#@ATTRIBS_WITH_ENUM《#@ATTRIBS_NOTM●#@ENUM_ATTRIB》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS /**/ : #@DECL_LIST_SAMPLE
@@ -92,16 +93,19 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #PARSE(DECLARATION)  #@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
 #STRUCTURE_EXPECTED: #@ATTRIBS  DeclarationEmpty )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS /*Invalid Decl */ #@NO_DECLorBLOCK #@BREAK else ;
-#STRUCTURE_EXPECTED: #@ATTRIBS  #@NO_DECLorBLOCK )
+#PARSE(DECLARATION)  #@ATTRIBS_NOTM /*Invalid Decl */ #@NO_DECLorBLOCK #@BREAK else ;
+#STRUCTURE_EXPECTED: #@ATTRIBS_NOTM  #@NO_DECLorBLOCK )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM /*EOF case*/ #@NO_DECLorBLOCK #@BREAK
 #STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM  #@NO_DECLorBLOCK )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@ATTRIBS #@NO_DECLorBLOCK #error(SE_decl) ] int foo;
+#@ATTRIBS_NOTM #@NO_DECLorBLOCK #error(SE_decl) ] int foo;
 #STRUCTURE_EXPECTED: 
-#@ATTRIBS #@NO_DECLorBLOCK ) InvalidSyntaxElement DefinitionVariable(RefPrimitive DefSymbol)
+#@ATTRIBS_NOTM #@NO_DECLorBLOCK ) InvalidSyntaxElement DefinitionVariable(RefPrimitive DefSymbol)
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Ensure this case is not broken:
+#PARSE(DECLARATION)  #@TYPE_MODIFIERS (foo) fooB ;
+#STRUCTURE_EXPECTED: DefVariable(RefTypeModifier(RefIdentifier) DefSymbol) 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ATTRIBS_BAL_BROKEN《 
  ►extern(#error(BAD_LINKAGE_ID)#error(EXP_CLOSE_PARENS)●

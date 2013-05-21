@@ -268,9 +268,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			return parseDeclarationBasicAttrib();
 		case AT:
-				if(lookAhead(1) == DeeTokens.IDENTIFIER) {
-					return parseDeclarationAtAttrib();
-				}
+			if(lookAhead(1) == DeeTokens.IDENTIFIER) {
+				return parseDeclarationAtAttrib();
+			}
 			break;
 		case ATTRIBUTE_KW:
 			if(lookAhead() == DeeTokens.KW_STATIC) { 
@@ -284,10 +284,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 					return parseDeclarationStaticIf(statementsOnly);
 				}
 			}
-			if(isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
+			
+			if(isTypeModifier(lookAhead()) && !typeModifier_shouldParseAsAttrib(0)) {
 				break; // this will be parsed as a type modifier reference
 			}
+			
 			return parseDeclarationBasicAttrib();
+			
 		case KW_DEBUG:
 			if(!statementsOnly && lookAhead(1) == DeeTokens.ASSIGN) {
 				return parseDeclarationDebugVersionSpec();
@@ -1343,6 +1346,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		consumeLookAhead();
 		ParseHelper parse = new ParseHelper();
+		if(attrib == AttributeKinds.DEPRECATED) {
+			parseExpressionAroundParentheses(parse, false, false);
+			// TODO: tests for this, confirm spec
+		}
 		
 		AttribBodyParseRule ab = new AttribBodyParseRule().parseAttribBody(parse, false, true);
 		return parse.resultConclude(new DeclarationBasicAttrib(attrib, ab.bodySyntax, ab.declList));

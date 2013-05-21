@@ -12,10 +12,11 @@ public interface IFunctionParameter extends IASTNeoNode {
 	public static enum FunctionParamAttribKinds {
 		AUTO(DeeTokens.KW_AUTO),
 		
-		CONST(DeeTokens.KW_CONST), 
-		IMMUTABLE(DeeTokens.KW_IMMUTABLE), 
-		INOUT(DeeTokens.KW_INOUT), 
-		SHARED(DeeTokens.KW_SHARED),
+		//Disabled since these are parsed as type modifiers
+//		CONST(DeeTokens.KW_CONST), 
+//		IMMUTABLE(DeeTokens.KW_IMMUTABLE), 
+//		INOUT(DeeTokens.KW_INOUT), 
+//		SHARED(DeeTokens.KW_SHARED),
 		
 		FINAL(DeeTokens.KW_FINAL),
 		IN(DeeTokens.KW_IN),
@@ -37,10 +38,10 @@ public interface IFunctionParameter extends IASTNeoNode {
 		public static FunctionParamAttribKinds fromToken(DeeTokens token) {
 			switch (token) {
 			case KW_AUTO: return AUTO;
-			case KW_CONST: return CONST;
-			case KW_IMMUTABLE: return IMMUTABLE;
-			case KW_INOUT: return INOUT;
-			case KW_SHARED: return SHARED;
+//			case KW_CONST: return CONST;
+//			case KW_IMMUTABLE: return IMMUTABLE;
+//			case KW_INOUT: return INOUT;
+//			case KW_SHARED: return SHARED;
 			case KW_FINAL: return FINAL;
 			case KW_IN: return IN;
 			case KW_LAZY: return LAZY;
