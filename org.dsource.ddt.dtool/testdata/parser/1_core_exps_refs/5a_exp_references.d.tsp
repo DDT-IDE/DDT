@@ -16,9 +16,13 @@
 #PARSE(EXPRESSION_ToE) foo!( ( #@NO_EXP #error(EXP_CLOSE_PARENS) #error(EXP_CLOSE_PARENS) #@BREAK = 3
 #STRUCTURE_EXPECTED:   ExpReference(RefTemplateInstance(RefIdentifier ExpParentheses(#@NO_EXP)) #@BREAK )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test rule break
-#PARSE(EXPRESSION)     #error(TYPE_AS_EXP_VALUE)【typeof( #@NO_EXP#error(EXP_CLOSE_PARENS) #@BREAK】= 3
-#STRUCTURE_EXPECTED:  ExpReference(RefTypeof(*))
+#PARSE(EXPRESSION)     typeof( #@NO_EXP#error(EXP_CLOSE_PARENS) #@BREAK= 3
+#STRUCTURE_EXPECTED:   ExpReference(RefTypeof(*))
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)    #@INT_AS_EXP (123) 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)    typeof(bar)(123) // Test that no syntax errors occur
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Should not parse template instance
 #PARSE(EXPRESSION)    (foo).bar  #@IGNORE_REST ! (asdf)

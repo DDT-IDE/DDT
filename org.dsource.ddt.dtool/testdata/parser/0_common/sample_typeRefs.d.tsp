@@ -22,8 +22,8 @@ RefTemplateInstance(
 ¤》
 #@TYPE_REFS__QUALIFIER_ForDotOnly《
   ►#?STRUCTURE_EXPECTED!【int●RefPrimitive】●
-  ►#?STRUCTURE_EXPECTED!【const(foo)●RefTypeModifier(RefIdentifier)】●
-  ►#?STRUCTURE_EXPECTED!【typeof(Bar.foo)●RefTypeof(ExpReference(RefQualified(RefIdentifier RefIdentifier)))】●
+  ►#?STRUCTURE_EXPECTED!【const(foo) #TYPEREF_CAN_BE_EXP_PART(flag)●RefTypeModifier(RefIdentifier)】●
+  ►#?STRUCTURE_EXPECTED!【typeof(Bar.foo) #TYPEREF_CAN_BE_EXP_PART(flag)●RefTypeof(ExpReference(RefQualified(RefIdentifier RefIdentifier)))】●
   ►#?STRUCTURE_EXPECTED!【bar. foo!this #TYPE_REF_TPL_SIMPLE_ARG(flag)●RefTemplateInstance(RefQualified(RefIdentifier ?) ExpThis)】●
 ¤》
 #@TYPE_REFS__QUALIFIER_ForDot《

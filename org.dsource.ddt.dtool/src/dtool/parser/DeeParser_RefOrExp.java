@@ -485,11 +485,6 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return node;
 	}
 	
-	protected ExpReference createExpReferenceWithError(Reference ref, boolean addError) {
-		ExpReference expReference = createExpReference(ref);
-		return conclude(addError ? createErrorTypeAsExpValue(ref) : null, expReference);
-	}
-	
 	public static enum TypeOrExpStatus { 
 		TYPE, 
 		TYPE_OR_EXP, 
@@ -805,9 +800,12 @@ protected class ParseRule_TypeOrExp {
 			}
 			ParserError error = null;
 			if(parsesAsTypeRef(ref)) {
-				error = createErrorTypeAsExpValue(ref);
+				if(refIsErrorToUseInExp(ref)) {
+					// typeof and type modifier can appear in exp in a valid way, so no error in that case
+					error = createErrorTypeAsExpValue(ref);
+				}
 				if(mode.canBeType()) {
-					updateTypeOrExpMode(TypeOrExpStatus.TYPE); // Begginning of Type ref
+					updateTypeOrExpMode(TypeOrExpStatus.TYPE); // Beginning of Type ref
 				}
 			}
 			setParseBroken(ruleBroken);
@@ -851,7 +849,7 @@ protected class ParseRule_TypeOrExp {
 			return parsePostfixExpression(exp);
 		}
 		case DOT: {
-			IQualifierNode qualifier = resolvableToExp(false, convertTypeOrExp(null, exp, false));
+			IQualifierNode qualifier = resolvableToExp(convertTypeOrExp(null, exp, false), false);
 			ParseHelper parse = new ParseHelper(qualifier.asNode());
 			exp = null;
 			if(qualifier instanceof ExpReference) {
@@ -1186,9 +1184,9 @@ protected class ParseRule_TypeOrExp {
 		case REF_TEMPLATE_INSTANCE:
 			return false;
 		case REF_PRIMITIVE:
+		case REF_TYPE_FUNCTION:
 		case REF_TYPEOF:
 		case REF_MODIFIER:
-		case REF_TYPE_FUNCTION:
 			return true;
 			
 		case REF_TYPE_DYN_ARRAY:
@@ -1197,6 +1195,20 @@ protected class ParseRule_TypeOrExp {
 			throw assertFail(); // This method should not be used with these kinds of refs
 		default:
 			throw assertFail();
+		}
+	}
+	
+	protected static boolean refIsErrorToUseInExp(Reference ref) {
+		switch (ref.getNodeType()) {
+		case REF_PRIMITIVE:
+		case REF_TYPE_FUNCTION:
+			return true;
+		case REF_TYPE_DYN_ARRAY:
+		case REF_TYPE_POINTER:
+		case REF_INDEXING:
+			return true;
+		default:
+			return false;
 		}
 	}
 	
@@ -1269,13 +1281,14 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	protected Expression convertTypeOrExpToExpression(Expression exp) {
-		return resolvableToExp(true, convertTypeOrExp(null, exp, false));
+		return resolvableToExp(convertTypeOrExp(null, exp, false), true);
 	}
 	
-	protected Expression resolvableToExp(boolean reportError, Resolvable resolvable) {
+	protected Expression resolvableToExp(Resolvable resolvable, boolean reportError) {
 		if(resolvable instanceof Reference) {
 			Reference reference = (Reference) resolvable;
-			return createExpReferenceWithError(reference, reportError);
+			ExpReference expReference = createExpReference(reference);
+			return conclude(reportError ? createErrorTypeAsExpValue(reference) : null, expReference);
 		}
 		return (Expression) resolvable;
 	}
@@ -1381,7 +1394,8 @@ protected class ParseRule_TypeOrExp {
 			} else {
 				TypeOrExpData oldData = detachParent(expSlice);
 				refOnTheLeft = convertTypeOrExpToReference(refOnTheLeft, expSlice.slicee);
-				Expression expSlicee = resolvableToExp(true, refOnTheLeft);
+				
+				Expression expSlicee = resolvableToExp(refOnTheLeft, refIsErrorToUseInExp(refOnTheLeft));
 				return concludeToE(oldData, refOnTheLeft, exp.getEndPos(), 
 					new ExpSlice(expSlicee, expSlice.from, expSlice.to));
 			}
@@ -1403,7 +1417,7 @@ protected class ParseRule_TypeOrExp {
 			} else {
 				TypeOrExpData oldData = detachParent(expIndex);
 				refOnTheLeft = convertTypeOrExpToReference(refOnTheLeft, expIndex.indexee);
-				Expression expIndexee = resolvableToExp(true, refOnTheLeft);
+				Expression expIndexee = resolvableToExp(refOnTheLeft, refIsErrorToUseInExp(refOnTheLeft));
 				return concludeToE(oldData, expIndexee, exp.getEndPos(), new ExpIndex(expIndexee, expIndex.args));
 			}
 		}
@@ -1666,9 +1680,7 @@ protected class ParseRule_TypeOrExp {
 			resolvable = arg.toFinalResult(true).node;
 		} else {
 			resolvable = arg.toFinalResult(false).node;
-			if(resolvable instanceof Reference) {
-				parse.store(createErrorTypeAsExpValue((Reference) resolvable));
-			}
+			resolvable = resolvableToExp(resolvable, true);
 		}
 		if(resolvable == null) {
 			resolvable = nullExpToMissing(null);
