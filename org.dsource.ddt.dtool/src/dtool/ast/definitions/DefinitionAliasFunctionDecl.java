@@ -18,16 +18,17 @@ import dtool.util.ArrayView;
 /**
  * A definition of an alias, in the old syntax:
  * <code>alias BasicType Declarator ;</code>
+ * when Declarator declares a function.
  * 
  * @see http://dlang.org/declaration.html#AliasDeclaration
  */
-public class DefinitionAliasDecl extends Definition implements IDeclaration, IStatement {
+public class DefinitionAliasFunctionDecl extends Definition implements IDeclaration, IStatement {
 	
 	public final Reference target;
 	public final ArrayView<IFunctionParameter> fnParams;
 	public final ArrayView<FunctionAttributes> fnAttributes;
 	
-	public DefinitionAliasDecl(Reference target, ProtoDefSymbol defId, ArrayView<IFunctionParameter> fnParams,
+	public DefinitionAliasFunctionDecl(Reference target, ProtoDefSymbol defId, ArrayView<IFunctionParameter> fnParams,
 		ArrayView<FunctionAttributes> fnAttributes) {
 		super(defId);
 		this.target = parentize(target);
@@ -42,7 +43,7 @@ public class DefinitionAliasDecl extends Definition implements IDeclaration, ISt
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DEFINITION_ALIAS_DECL;
+		return ASTNodeTypes.DEFINITION_ALIAS_FUNCTION_DECL;
 	}
 	
 	@Override

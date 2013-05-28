@@ -26,7 +26,7 @@ import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
-import dtool.ast.definitions.DefinitionAliasDecl;
+import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
@@ -166,12 +166,12 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	
 	@Override
-	public boolean visit(DefinitionAliasDecl node) {
+	public boolean visit(DefinitionAliasVarDecl node) {
 		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
 		return true;
 	}
 	@Override
-	public void endVisit(DefinitionAliasDecl node) {
+	public void endVisit(DefinitionAliasVarDecl node) {
 		requestor.exitType(getDeclarationEndforNode(node));
 	}
 	

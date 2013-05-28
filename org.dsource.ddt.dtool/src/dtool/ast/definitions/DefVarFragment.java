@@ -39,6 +39,12 @@ public class DefVarFragment extends DefUnit {
 	}
 	
 	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(defname);
+		cp.append("= ", init);
+	}
+	
+	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Variable;
 	}
@@ -58,12 +64,6 @@ public class DefVarFragment extends DefUnit {
 			return null;
 		return defunits.iterator().next().getMembersScope(moduleResolver);
 		//return defunit.getMembersScope();
-	}
-	
-	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(defname);
-		cp.append("= ", init);
 	}
 	
 	@Deprecated

@@ -1,6 +1,6 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(DECLARATION)   alias foo[] aliasDef; 
-#STRUCTURE_EXPECTED:  DefinitionAliasDecl(RefTypeDynArray(RefIdentifier)  DefSymbol)
+#STRUCTURE_EXPECTED:  DefinitionAliasVarDecl(RefTypeDynArray(RefIdentifier)  DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(DECLARATION)   alias aliasDef = foo[]; 
 #STRUCTURE_EXPECTED:  DefinitionAlias(AliasFragment(DefSymbol RefTypeDynArray(RefIdentifier)))
@@ -24,24 +24,40 @@
 #STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol #@TYPEREF_ANY))
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Decl syntax
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
-#PARSE(DECLARATION)   alias #@TYPEREF_NBNE_NoSingleDefId #@NO_DEFID  #@SEMICOLON_OR_BREAK 
-#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE_NoSingleDefId #@NO_DEFID)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE  #@DEFID  #@SEMICOLON_OR_BREAK 
-#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE #@DEFID)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  function form
-#PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE  #@DEFID ( #@CLOSEPARENS_OR_NO #@SEMICOLON_OR_BREAK 
-#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE #@DEFID)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE  #@DEFID (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB__SAMPLE #@SEMICOLON_OR_BREAK 
-#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE #@DEFID #@FN_PARAMS_SAMPLE #@FN_ATTRIB__SAMPLE)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   alias               #@TYPEREF_NBNE__LITE #@DEFID #@NO_SEMICOLON #@BREAK nothrow ;
-#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE #@DEFID #@BREAK )
+#@ALIAS_VAR_DECL《
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE_NoSingleDefId #@NO_DEFID #@SEMICOLON_OR_BREAK● 
+                        #@TYPEREF_NBNE_NoSingleDefId #@NO_DEFID 】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_BROKEN #@NO_SEMICOLON #@BREAK fooB ●
+                        #@TYPEREF_BROKEN #@NO_DEFID 】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE fooB #@SEMICOLON_OR_BREAK●
+                        #@TYPEREF_NBNE DefSymbol 】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE__LITE fooA #@NO_SEMICOLON #@BREAK = #@INITIALIZERS__SAMPLE●
+                        #@TYPEREF_NBNE__LITE DefSymbol #@BREAK 】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE__LITE fooA, fooB #@SEMICOLON_OR_BREAK●
+                        #@TYPEREF_NBNE__LITE DefSymbol AliasVarDeclFragment(DefSymbol) 】●                                 
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ NOT supported: C style declaration syntax (it's deprecated in D)
-#PARSE(DECLARATION)   alias int aliasDef[];
+ ►#?STRUCTURE_EXPECTED!【int foo[] #@《 /**/ ● #error(EXP_SEMICOLON) #@BREAK * 》 ;●
+                        RefPrimitive DefSymbol RefTypeDynArray(CStyleRootRef) 】●
+¤》
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
+#PARSE(DECLARATION)   alias #@ALIAS_VAR_DECL  
+#STRUCTURE_EXPECTED:  DefinitionAliasVarDecl(#@ALIAS_VAR_DECL)
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Decl syntax
+#@ALIAS_FN_DECL《
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE__LITE #@DEFID ( #@CLOSEPARENS_OR_NO #@SEMICOLON_OR_BREAK●
+                        #@TYPEREF_NBNE__LITE #@DEFID】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE__LITE #@DEFID (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB__SAMPLE #@SEMICOLON_OR_BREAK●
+                        #@TYPEREF_NBNE__LITE #@DEFID  #@FN_PARAMS_SAMPLE  #@FN_ATTRIB__SAMPLE】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE__LITE #@DEFID (#@FN_PARAMS_SAMPLE) #@NO_SEMICOLON #@BREAK , foo ;●
+                        #@TYPEREF_NBNE__LITE #@DEFID  #@FN_PARAMS_SAMPLE  #@BREAK】●
+¤》
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
+#PARSE(DECLARATION)   alias #@ALIAS_FN_DECL  
+#STRUCTURE_EXPECTED:  DefinitionAliasFunctionDecl(#@ALIAS_FN_DECL)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
+#PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE #@DEFID #@NO_SEMICOLON #@BREAK nothrow ;  
+#STRUCTURE_EXPECTED:  DefinitionAliasVarDecl(#@TYPEREF_NBNE__LITE #@DEFID #@BREAK)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ alias this
 

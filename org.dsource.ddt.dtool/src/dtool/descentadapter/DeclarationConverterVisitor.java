@@ -63,7 +63,7 @@ import dtool.ast.declarations.ImportStatic;
 import dtool.ast.declarations.MissingDeclaration;
 import dtool.ast.definitions.DeclarationEnum;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
-import dtool.ast.definitions.DefinitionAliasDecl;
+import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionInterface;
@@ -443,7 +443,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
 		return endAdapt(convertDsymbol.sourceRange,
-			new DefinitionAliasDecl(
+			new DefinitionAliasVarDecl(
 				(Reference) DescentASTConverter.convertElem(elem.type, convContext),
 				convertDsymbol.defSymbol,
 				null,

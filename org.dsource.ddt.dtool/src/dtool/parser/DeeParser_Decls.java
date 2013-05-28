@@ -11,6 +11,7 @@
 package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
+import static dtool.util.NewUtils.lazyInitArrayList;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
+import dtool.ast.declarations.DeclBlock;
+import dtool.ast.declarations.DeclList;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
@@ -41,8 +44,6 @@ import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationProtection.Protection;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
-import dtool.ast.declarations.DeclBlock;
-import dtool.ast.declarations.DeclList;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.DeclarationStaticIf;
 import dtool.ast.declarations.DeclarationUnitTest;
@@ -64,7 +65,9 @@ import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAggregate.IAggregateBody;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
-import dtool.ast.definitions.DefinitionAliasDecl;
+import dtool.ast.definitions.DefinitionAliasFunctionDecl;
+import dtool.ast.definitions.DefinitionAliasVarDecl;
+import dtool.ast.definitions.DefinitionAliasVarDecl.AliasVarDeclFragment;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
@@ -76,7 +79,6 @@ import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
-import dtool.ast.definitions.DefinitionVariable.CStyleRootRef;
 import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.FunctionAttributes;
@@ -382,16 +384,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	protected NodeResult<? extends DefinitionVariable> parseDefinitionVariable_afterIdentifier(
 		Reference ref, ProtoDefSymbol defId) 
 	{
-		ArrayList<DefVarFragment> fragments = new ArrayList<>();
+		ArrayList<DefVarFragment> fragments = null;
 		Initializer init = null;
 		Reference cstyleSuffix = null;
 		
 		final boolean isAutoRef = ref == null;
 		ParseHelper parse = new ParseHelper(isAutoRef ? defId.getStartPos() : ref.getStartPos());
 		
-		if(!isAutoRef && lookAhead() == DeeTokens.OPEN_BRACKET) {
-			CStyleRootRef cstyleRootRef = conclude(srAt(getLexPosition()), new CStyleRootRef());
-			cstyleSuffix = parse.checkResult(parseCStyleDeclaratorSuffix(cstyleRootRef));
+		if(!isAutoRef) {
+			cstyleSuffix = parseCStyleSuffix(parse);
 		}
 		
 		if(tryConsume(DeeTokens.ASSIGN)){
@@ -402,6 +403,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		while(tryConsume(DeeTokens.COMMA)) {
 			DefVarFragment defVarFragment = parseVarFragment(isAutoRef);
+			fragments = lazyInitArrayList(fragments);
 			fragments.add(defVarFragment);
 		}
 		parse.consumeRequired(DeeTokens.SEMICOLON);
@@ -885,10 +887,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return parseDefinitionAlias_atFragmentStart();
 		}
 		
+		// Note that there are heavy similarites between this code and var/function declaration parsing
 		Reference ref = null;
 		ProtoDefSymbol defId = null;
-		ArrayView<IFunctionParameter> fnParams = null;
-		ArrayView<FunctionAttributes> fnAttributes = null;
+		Reference cstyleSuffix = null;
+		ArrayList<AliasVarDeclFragment> fragments = null;
 		
 		parsing: {
 			DeeParserState savedParserState = thisParser().enterBacktrackableMode();
@@ -908,21 +911,40 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				defId = parseDefId();
 			}
 			
-			fnParams = parseFunctionParameters(parse, true);
-			if(parse.ruleBroken) {
-				parse.ruleBroken = false;
-				break parsing;
+			if(lookAhead() == DeeTokens.OPEN_PARENS) {
+				return parseDefinitionAliasFunctionDecl(parse, ref, defId);
 			}
 			
-			// Function attributes
-			if(fnParams != null) {
-				fnAttributes = parseFunctionAttributes();
+			cstyleSuffix = parseCStyleSuffix(parse);
+			
+			while(tryConsume(DeeTokens.COMMA)) {
+				fragments = lazyInitArrayList(fragments);
+				fragments.add(parseAliasVarDeclFragment());
 			}
 		}
 		defId = nullIdToMissingDefId(defId);
 		
 		parse.consumeRequired(DeeTokens.SEMICOLON);
-		return parse.resultConclude(new DefinitionAliasDecl(ref, defId, fnParams, fnAttributes));
+		return parse.resultConclude(new DefinitionAliasVarDecl(ref, defId, cstyleSuffix, arrayView(fragments)));
+	}
+	
+	public NodeResult<? extends IDeclaration> parseDefinitionAliasFunctionDecl(ParseHelper parse, Reference ref,
+		ProtoDefSymbol defId) {
+		
+		ArrayView<IFunctionParameter> fnParams = parseFunctionParameters(parse, true);
+		ArrayView<FunctionAttributes> fnAttributes = null;
+		if(parse.ruleBroken) {
+			parse.ruleBroken = false;
+		} else {
+			fnAttributes = parseFunctionAttributes();
+		}
+		parse.consumeRequired(DeeTokens.SEMICOLON);
+		return parse.resultConclude(new DefinitionAliasFunctionDecl(ref, defId, fnParams, fnAttributes));
+	}
+	
+	protected AliasVarDeclFragment parseAliasVarDeclFragment() {
+		ProtoDefSymbol fragId = parseDefId();
+		return conclude(fragId.nameSourceRange, new AliasVarDeclFragment(fragId));
 	}
 	
 	protected NodeResult<DefinitionAlias> parseDefinitionAlias_atFragmentStart() {
@@ -1070,9 +1092,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return null;
 		
 		boolean isStruct = lastLexElement().token.type == DeeTokens.KW_STRUCT;
-		boolean isAnonymous = lookAhead() != DeeTokens.IDENTIFIER;
 		AggregateDefinitionParse adp = new AggregateDefinitionParse();
-		if(isAnonymous) {
+		if(lookAhead() != DeeTokens.IDENTIFIER) {
 			adp.defId = nullIdToMissingDefId(null);
 			adp.parseDeclarationBlockBody();
 		} else {

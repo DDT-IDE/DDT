@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Image;
 import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.PartialPackageDefUnit;
-import dtool.ast.definitions.DefinitionAliasDecl;
+import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
@@ -61,7 +61,7 @@ public class DeeElementImageProvider {
 			return DeePluginImages.NODE_MODULE_DEC;
 		} else if (node instanceof Reference) {
 			return DeePluginImages.NODE_REF;
-		} else if (node instanceof DefinitionAliasDecl) {
+		} else if (node instanceof DefinitionAliasVarDecl) {
 			return DeePluginImages.ENT_ALIAS;
 		} else if(node instanceof DefinitionTemplate) {
 			return DeePluginImages.ENT_TEMPLATE;

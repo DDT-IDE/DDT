@@ -28,6 +28,7 @@ import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.StaticIfExpIs;
 import dtool.ast.declarations.StaticIfExpIs.StaticIfExpIsDefUnit;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
+import dtool.ast.definitions.DefinitionVariable.CStyleRootRef;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Symbol;
@@ -354,6 +355,14 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	
 	public boolean isValidTemplateReferenceSyntax(Reference leftRef) {
 		return leftRef instanceof ITemplateRefNode;
+	}
+	
+	public Reference parseCStyleSuffix(ParseHelper parse) {
+		if(lookAhead() != DeeTokens.OPEN_BRACKET) {
+			return null;
+		}
+		CStyleRootRef cstyleRootRef = conclude(srAt(getLexPosition()), new CStyleRootRef());
+		return parse.checkResult(parseCStyleDeclaratorSuffix(cstyleRootRef));
 	}
 	
 	protected NodeResult<Reference> parseCStyleDeclaratorSuffix(Reference leftRef) {

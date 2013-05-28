@@ -17,7 +17,7 @@ import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionAliasDecl;
+import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
@@ -64,7 +64,7 @@ public abstract class ASTAbstractVisitor implements IASTVisitor {
 	
 	@Override public void endVisit(DefinitionTypedef node) {}
 	
-	@Override public void endVisit(DefinitionAliasDecl node) { }
+	@Override public void endVisit(DefinitionAliasVarDecl node) { }
 	@Override public void endVisit(DefinitionAliasFragment node) { }
 	
 	@Override public void endVisit(DefinitionFunction node) { }

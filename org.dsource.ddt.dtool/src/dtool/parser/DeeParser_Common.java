@@ -131,7 +131,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 	
 	public final ProtoDefSymbol nullIdToMissingDefId(ProtoDefSymbol defId) {
 		if(defId == null) {
-			return defSymbol(createExpectedToken(DeeTokens.IDENTIFIER));
+			return defSymbol(consumeSubChannelTokens());
 		}
 		return defId;
 	}

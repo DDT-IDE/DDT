@@ -159,9 +159,12 @@ public enum ASTNodeTypes {
 	
 	NAMED_MIXIN,
 	
-	DEFINITION_ALIAS_DECL,
 	DEFINITION_ALIAS,
 	DEFINITION_ALIAS_FRAGMENT,
+	
+	DEFINITION_ALIAS_VAR_DECL,
+	DEFINITION_ALIAS_FUNCTION_DECL,
+	ALIAS_VAR_DECL_FRAGMENT,
 	
 	/* -------------------  Statements  ------------------- */
 	

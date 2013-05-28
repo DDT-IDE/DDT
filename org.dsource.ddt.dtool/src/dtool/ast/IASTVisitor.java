@@ -19,7 +19,7 @@ import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
-import dtool.ast.definitions.DefinitionAliasDecl;
+import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
@@ -139,8 +139,9 @@ public interface IASTVisitor {
 	public boolean visit(DefinitionTypedef node);
 	public void endVisit(DefinitionTypedef node);
 	
-	public boolean visit(DefinitionAliasDecl node);
-	public void endVisit(DefinitionAliasDecl node);
+	// TODO: other Definition Alias elements
+	public boolean visit(DefinitionAliasVarDecl node);
+	public void endVisit(DefinitionAliasVarDecl node);
 	
 	public boolean visit(DefinitionAliasFragment node);
 	public void endVisit(DefinitionAliasFragment node);

@@ -29,7 +29,7 @@ import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
-import dtool.ast.definitions.DefinitionAliasDecl;
+import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
@@ -160,7 +160,7 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 		return true;
 	}
 	
-	@Override public boolean visit(DefinitionAliasDecl node) { return true; }
+	@Override public boolean visit(DefinitionAliasVarDecl node) { return true; }
 	@Override public boolean visit(DefinitionAliasFragment node) { return true; }
 	
 	@Override public boolean visit(DefinitionFunction node) { return true; }

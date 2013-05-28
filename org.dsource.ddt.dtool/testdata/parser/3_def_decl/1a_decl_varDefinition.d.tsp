@@ -6,14 +6,14 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol InitializerExp(?
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@TYPEREF_NBNE fooB #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  DefVariable(#@TYPEREF_NBNE DefSymbol)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@TYPEREF_NBNE #@NO_ID #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  IncompleteDeclaration(#@TYPEREF_NBNE)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@TYPEREF_BROKEN /*NoMissingExp*/ #@BREAK #@ReqSemicolon fooB 
 #STRUCTURE_EXPECTED:  IncompleteDeclaration(#@TYPEREF_BROKEN)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)   #@TYPEREF_NBNE fooB #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  DefVariable(#@TYPEREF_NBNE DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@TYPEREF_NBNE__LITE fooA = #@INITIALIZERS #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DefVariable(#@TYPEREF_NBNE__LITE DefSymbol #@INITIALIZERS)

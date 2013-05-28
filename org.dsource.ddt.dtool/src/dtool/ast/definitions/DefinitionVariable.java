@@ -1,6 +1,7 @@
 package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
@@ -44,7 +45,8 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 		this.type = parentize(type);
 		this.cstyleSuffix = parentize(cstyleSuffix);
 		this.init = parentize(init);
-		this.fragments = fragments != null ? parentize(fragments) : NO_FRAGMENTS;
+		this.fragments = parentize(fragments);
+		assertTrue(fragments == null || fragments.size() > 0);
 	}
 	
 	@Override
@@ -72,9 +74,7 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 		cp.append(defname);
 		cp.append(cstyleSuffix);
 		cp.append(" = ", init);
-		for (DefVarFragment varFragment : fragments) {
-			cp.append(", ", varFragment);
-		}
+		cp.appendList(", ", fragments, ", ", "");
 		cp.append(";");
 	}
 	

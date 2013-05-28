@@ -416,8 +416,11 @@ public class ASTNodeReparseCheck {
 		case NAMED_MIXIN:
 			return reparseCheck(snippedParser.parseDeclarationMixin());
 		case DEFINITION_ALIAS:
-		case DEFINITION_ALIAS_DECL:
+		case DEFINITION_ALIAS_FUNCTION_DECL:
+		case DEFINITION_ALIAS_VAR_DECL:
 			return reparseCheck(snippedParser.parseAliasDefinition());
+		case ALIAS_VAR_DECL_FRAGMENT:
+			return reparseCheck(snippedParser.parseAliasVarDeclFragment());
 		case DEFINITION_ALIAS_FRAGMENT:
 			return reparseCheck(snippedParser.parseAliasFragment());
 			
