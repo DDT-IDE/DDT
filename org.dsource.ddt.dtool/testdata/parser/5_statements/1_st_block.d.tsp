@@ -14,6 +14,8 @@
 #PARSE(STATEMENT)     { #error(SE_Statement) module ; }
 #STRUCTURE_EXPECTED:  BlockStatement( InvalidSyntaxElement EmptyStatement )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)     { #error(SE_Statement) ]      Foo foo; }
+#PARSE(STATEMENT)     { #error(SE_Statement) else      Foo foo; }
 #STRUCTURE_EXPECTED:  BlockStatement( InvalidSyntaxElement DefVariable(RefIdentifier DefSymbol) )
-
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)     { #error(EXP_CLOSE_BRACE) #@BREAK ]      Foo foo; }
+#STRUCTURE_EXPECTED:  BlockStatement( )

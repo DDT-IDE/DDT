@@ -10,3 +10,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    #@《final●》 switch ( #@EXP_ANY__LITE ) #@ST__ANY
 #STRUCTURE_EXPECTED: StatementSwitch( #@EXP_ANY__LITE #@ST__ANY )
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)    switch ( 123 ) { default: }
+#STRUCTURE_EXPECTED: StatementSwitch( Integer BlockStatement(StatementDefault(ScopedStatementList)) )

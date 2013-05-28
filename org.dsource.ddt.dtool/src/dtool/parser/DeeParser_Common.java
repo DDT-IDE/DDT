@@ -24,6 +24,13 @@ public abstract class DeeParser_Common extends AbstractParser {
 		return id.isMissingElement() ? null : id.getSourceValue();
 	}
 	
+	public static boolean isCloseBracketChar(DeeTokens token) {
+		return 
+			token == DeeTokens.CLOSE_BRACE || 
+			token == DeeTokens.CLOSE_BRACKET || 
+			token == DeeTokens.CLOSE_PARENS;
+	}
+	
 	/* -----------------------  List parse helper  ----------------------- */
 	
 	public abstract class ElementListParseHelper<T extends ASTNode> extends ParseHelper {

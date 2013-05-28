@@ -120,7 +120,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	public AbstractParser.NodeResult<Module> parseModule(String defaultModuleName) {
 		DeclarationModule md = parseModuleDeclaration();
 		
-		ArrayView<ASTNode> members = parseDeclDefs(null);
+		ArrayView<ASTNode> members = parseDeclDefs(null, true);
 		assertTrue(lookAhead() == DeeTokens.EOF);
 		consumeSubChannelTokens(); // Ensure pending whitespace is consumed as well
 		assertTrue(getLexPosition() == getSource().length());
@@ -160,7 +160,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.conclude(new DeclarationModule(arrayViewG(packagesList), moduleId));
 	}
 	
-	public ArrayView<ASTNode> parseDeclDefs(DeeTokens nodeListTerminator) {
+	public ArrayView<ASTNode> parseDeclDefs(DeeTokens nodeListTerminator, boolean consumeCloseBrackets) {
 		ArrayList<ASTNode> declarations = new ArrayList<>();
 		while(true) {
 			if(lookAhead() == nodeListTerminator) {
@@ -168,7 +168,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			ASTNode decl = parseDeclaration().node;
 			if(decl == null) { 
-				if(lookAhead() == DeeTokens.EOF) {
+				if(lookAhead() == DeeTokens.EOF || (!consumeCloseBrackets && isCloseBracketChar(lookAhead()))) {
 					break;
 				}
 				decl = parseInvalidElement(RULE_DECLARATION, false);
@@ -892,7 +892,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			
 			// Function attributes
-			fnAttributes = parseFunctionAttributes();
+			fnAttributes = parseFunctionAttributes(); /*BUG here only if fnParams*/
 		}
 		defId = nullIdToMissingDefId(defId);
 		
@@ -1236,7 +1236,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	protected DeclList parseDeclList(DeeTokens bodyListTerminator) {
 		ParseHelper parse = new ParseHelper(getLexPosition());
 		
-		ArrayView<ASTNode> declDefs = parseDeclDefs(bodyListTerminator);
+		ArrayView<ASTNode> declDefs = parseDeclDefs(bodyListTerminator, false);
 		consumeSubChannelTokens();
 		return parse.conclude(new DeclList(declDefs));
 	}

@@ -1,4 +1,4 @@
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Invalid elements in declaration:
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Invalid elements in module decl list:
 #error(SE_decl) ) ;
 #error(SE_decl) ]
 #error(SE_decl) while
@@ -8,8 +8,25 @@ InvalidSyntaxElement DeclarationEmpty
 InvalidSyntaxElement
 InvalidSyntaxElement
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@NULL while (true) ; 
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ brace recovery
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ decl list parsing
+#PARSE(DECLARATION)   public {  pure: #error(SE_decl)【else】 }  
+#STRUCTURE_EXPECTED:  DeclarationProtection(DeclList( DeclarationBasicAttrib(DeclList(InvalidSyntaxElement)) ))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)     {        ; #error(SE_Statement)【else】 #error(EXP_CLOSE_BRACE) #@BREAK #@《)●]》
+#STRUCTURE_EXPECTED:  BlockStatement(? InvalidSyntaxElement)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)     default: ; #error(SE_Statement)【else】  #@IGNORE_REST }
+#STRUCTURE_EXPECTED:  StatementDefault(ScopedStatementList(? InvalidSyntaxElement))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(EXPRESSION)    ( { ; #error(EXP_CLOSE_BRACE) )  
+#STRUCTURE_EXPECTED:  ExpParentheses(*)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ this case may change in the future 
+#PARSE(EXPRESSION)    ( { ; #error(EXP_CLOSE_BRACE) #error(EXP_CLOSE_PARENS) #@BREAK ]
+#STRUCTURE_EXPECTED:  ExpParentheses(*)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ statement only
+#PARSE(DECLARATION)   #@NULL while (true) ;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of reference start in DECLARATION
 foo #error(EXP_IDENTIFIER) ;
 #STRUCTURE_EXPECTED: IncompleteDeclaration(?)

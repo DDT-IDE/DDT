@@ -116,8 +116,9 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			}
 			IStatement st = parseStatement(parseCaseDefault, true).node;
 			if(st == null) {
-				if(lookAhead() == DeeTokens.EOF ||
-					lookAhead() == DeeTokens.KW_CASE || lookAhead() == DeeTokens.KW_DEFAULT) {
+				if(lookAhead() == DeeTokens.EOF 
+					|| lookAhead() == DeeTokens.KW_CASE || lookAhead() == DeeTokens.KW_DEFAULT 
+					|| isCloseBracketChar(lookAhead())) {
 					break;
 				}
 				st = parseInvalidElement(RULE_STATEMENT, true);
