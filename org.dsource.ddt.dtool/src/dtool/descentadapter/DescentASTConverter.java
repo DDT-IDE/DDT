@@ -10,6 +10,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTNode;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.definitions.Module;
 import dtool.util.ArrayView;
 
@@ -83,7 +84,7 @@ public class DescentASTConverter extends StatementConverterVisitor {
 		return convertMany(children, ASTNode.class, convContext);
 	}
 	
-	public static <T extends IASTNode> ArrayView<T> convertMany(Collection<? extends IASTNode> children,
+	public static <T extends IASTNeoNode> ArrayView<T> convertMany(Collection<? extends IASTNode> children,
 			Class<T> elemClass, ASTConversionContext convContext) {
 		if(children == null) return null;
 		T[] rets = ArrayUtil.create(children.size(), elemClass);
@@ -91,7 +92,7 @@ public class DescentASTConverter extends StatementConverterVisitor {
 		return ArrayView.create(rets);
 	}
 	
-	public static <T extends IASTNode> ArrayView<T> convertManyNoNulls(Collection<? extends IASTNode> children, 
+	public static <T extends IASTNeoNode> ArrayView<T> convertManyNoNulls(Collection<? extends IASTNode> children, 
 			Class<T> elemClass, ASTConversionContext convContext) {
 		if(children == null) return null;
 		ArrayView<T> res = convertMany(children, elemClass, convContext);

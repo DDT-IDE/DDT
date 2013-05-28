@@ -1,7 +1,7 @@
 package dtool.refmodel;
 
-import dtool.ast.DeclList;
 import dtool.ast.IASTNeoNode;
+import dtool.ast.declarations.DeclBlock;
 import dtool.ast.definitions.DefinitionClass;
 
 // TODO: rewrite this
@@ -30,7 +30,7 @@ public class ScopeUtil {
 	public static IASTNeoNode getNextParent(IASTNeoNode elem) {
 		/*BUG here should be:*/
 		//if (elem.getParent() instanceof DefinitionAggregate) {
-		if (elem.getParent() instanceof DefinitionClass && !(elem instanceof DeclList)) {
+		if (elem.getParent() instanceof DefinitionClass && !(elem instanceof DeclBlock)) {
 			// Need to skip aggregate defunit scope 
 			elem = elem.getParent().getParent();
 			return elem;

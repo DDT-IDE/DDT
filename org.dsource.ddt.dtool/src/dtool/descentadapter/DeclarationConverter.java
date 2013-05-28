@@ -17,7 +17,7 @@ import descent.internal.compiler.parser.Statement;
 import descent.internal.compiler.parser.StaticIfCondition;
 import descent.internal.compiler.parser.VersionCondition;
 import dtool.ast.ASTNode;
-import dtool.ast.NodeList;
+import dtool.ast.NodeList_OLD;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
@@ -32,8 +32,8 @@ public class DeclarationConverter extends BaseDmdConverter {
 	public static ASTNode convert(ConditionalDeclaration elem, ASTConversionContext convContext) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		DeclarationConverter.doSetParent(elem, elem.elsedecl);
-		NodeList thendecls = DeclarationConverter.createNodeList2(elem.decl, convContext); 
-		NodeList elsedecls = DeclarationConverter.createNodeList2(elem.elsedecl, convContext);
+		NodeList_OLD thendecls = DeclarationConverter.createNodeList2(elem.decl, convContext); 
+		NodeList_OLD elsedecls = DeclarationConverter.createNodeList2(elem.elsedecl, convContext);
 		
 		//assertTrue(!(thendecls == null && elsedecls == null));
 		Condition condition = elem.condition;
@@ -41,15 +41,15 @@ public class DeclarationConverter extends BaseDmdConverter {
 	}
 	
 	public static ASTNode convert(ConditionalStatement elem, ASTConversionContext convContext) {
-		NodeList thendecls = DeclarationConverter.createNodeList2(elem.ifbody, convContext); 
-		NodeList elsedecls = DeclarationConverter.createNodeList2(elem.elsebody, convContext);
+		NodeList_OLD thendecls = DeclarationConverter.createNodeList2(elem.ifbody, convContext); 
+		NodeList_OLD elsedecls = DeclarationConverter.createNodeList2(elem.elsebody, convContext);
 		
 		//assertTrue(!(thendecls == null && elsedecls == null));
 		Condition condition = elem.condition;
 		return createConditional(elem, thendecls, elsedecls, condition, convContext);
 	}
 	
-	public static ASTNode createConditional(ASTDmdNode elem, NodeList thendecls, NodeList elsedecls, 
+	public static ASTNode createConditional(ASTDmdNode elem, NodeList_OLD thendecls, NodeList_OLD elsedecls, 
 			Condition condition, ASTConversionContext convContext) 
 	{
 		if(condition instanceof DVCondition) {
@@ -102,19 +102,19 @@ public class DeclarationConverter extends BaseDmdConverter {
 		}
 	}
 	
-	public static NodeList createNodeList2(Statement body, ASTConversionContext convContext) {
+	public static NodeList_OLD createNodeList2(Statement body, ASTConversionContext convContext) {
 		if(body == null)
 			return null;
 		SourceRange sr = null;
 		if(body instanceof CompoundStatement) {
 			CompoundStatement cst = (CompoundStatement) body;
-			return connect(sr, new NodeList(DescentASTConverter.convertMany(cst.sourceStatements, convContext)));
+			return connect(sr, new NodeList_OLD(DescentASTConverter.convertMany(cst.sourceStatements, convContext)));
 		} else {
-			return connect(sr, new NodeList(DescentASTConverter.convertMany(Collections.singleton(body), convContext)));
+			return connect(sr, new NodeList_OLD(DescentASTConverter.convertMany(Collections.singleton(body), convContext)));
 		}
 	}
 	
-	public static NodeList createNodeList2(Collection<Dsymbol> decl, ASTConversionContext convContext) {
+	public static NodeList_OLD createNodeList2(Collection<Dsymbol> decl, ASTConversionContext convContext) {
 		if(decl == null)
 			return null;
 		ArrayView<ASTNode> decls = DescentASTConverter.convertMany(decl, convContext);
@@ -122,7 +122,7 @@ public class DeclarationConverter extends BaseDmdConverter {
 		if(!decls.isEmpty()) {
 			sr = sourceRangeStrict(decls.get(0).getStartPos(), decls.get(decls.size()-1).getEndPos());
 		}
-		return connect(sr, new NodeList(decls));
+		return connect(sr, new NodeList_OLD(decls));
 	}
 	
 }

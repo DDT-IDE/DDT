@@ -1,17 +1,19 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Invalid elements in module decl list:
-#error(SE_decl) ) ;
+#error(SE_decl) ) 
 #error(SE_decl) ]
 #error(SE_decl) while
+;
 
 #STRUCTURE_EXPECTED:
-InvalidSyntaxElement DeclarationEmpty
+InvalidSyntaxElement 
 InvalidSyntaxElement
 InvalidSyntaxElement
+DeclarationEmpty
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ brace recovery
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ decl list parsing
 #PARSE(DECLARATION)   public {  pure: #error(SE_decl)【else】 }  
-#STRUCTURE_EXPECTED:  DeclarationProtection(DeclList( DeclarationBasicAttrib(DeclList(InvalidSyntaxElement)) ))
+#STRUCTURE_EXPECTED:  DeclarationProtection(DeclBlock( DeclarationBasicAttrib(DeclList(InvalidSyntaxElement)) ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)     {        ; #error(SE_Statement)【else】 #error(EXP_CLOSE_BRACE) #@BREAK #@《)●]》
 #STRUCTURE_EXPECTED:  BlockStatement(? InvalidSyntaxElement)

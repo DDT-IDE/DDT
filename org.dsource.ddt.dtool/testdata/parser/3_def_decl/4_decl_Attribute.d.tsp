@@ -26,7 +26,7 @@ final {
 static:
 const:
 #STRUCTURE_EXPECTED:
-DeclarationBasicAttrib(DeclList( #@DECL_LIST_SAMPLE )) 
+DeclarationBasicAttrib(DeclBlock( #@DECL_LIST_SAMPLE )) 
 DeclarationBasicAttrib(DeclList(
 	DeclarationBasicAttrib(DeclList())
 ))
@@ -82,10 +82,10 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclList( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS /**/ { #@CLOSEBRACE_OR_BREAK 
-#STRUCTURE_EXPECTED: #@ATTRIBS DeclList( ))
+#STRUCTURE_EXPECTED: #@ATTRIBS DeclBlock( ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS { #@DECL_LIST_SAMPLE #@CLOSEBRACE_OR_BREAK
-#STRUCTURE_EXPECTED: #@ATTRIBS DeclList( #@DECL_LIST_SAMPLE ))
+#STRUCTURE_EXPECTED: #@ATTRIBS DeclBlock( #@DECL_LIST_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM int foo;
 #STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM DefinitionVariable(* *) )

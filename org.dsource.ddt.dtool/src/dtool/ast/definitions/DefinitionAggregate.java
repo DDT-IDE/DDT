@@ -5,8 +5,10 @@ import java.util.Iterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
-import dtool.ast.DeclList;
+import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.DeclBlock;
+import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
@@ -20,16 +22,20 @@ import dtool.util.NewUtils;
  */
 public abstract class DefinitionAggregate extends Definition implements IScopeNode, IDeclaration, IStatement {
 	
+	public interface IAggregateBody extends IASTNeoNode {
+		
+	}
+	
 	public final ArrayView<TemplateParameter> tplParams;
 	public final Expression tplConstraint;
-	public final DeclList decls;
+	public final IAggregateBody aggrBody;
 	
 	public DefinitionAggregate(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
-		Expression tplConstraint, DeclList decls) {
+		Expression tplConstraint, IAggregateBody aggrBody) {
 		super(defId);
 		this.tplParams = parentize(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
-		this.decls = parentize(decls);
+		this.aggrBody = parentizeI(aggrBody);
 	}
 	
 	protected void acceptNodeChildren(IASTVisitor visitor, boolean children) {
@@ -37,7 +43,7 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, tplParams);
 			TreeVisitor.acceptChildren(visitor, tplConstraint);
-			TreeVisitor.acceptChildren(visitor, decls);
+			TreeVisitor.acceptChildren(visitor, aggrBody);
 		}
 	}
 	
@@ -47,7 +53,7 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 		cp.appendList("(", tplParams, ",", ") ");
 		DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
 		if(printDecls) {
-			cp.append("{\n", decls, "}");
+			cp.append(aggrBody, "\n");
 		}
 	}
 	
@@ -58,7 +64,11 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	
 	@Override
 	public Iterator<? extends ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
-		return NewUtils.getChainedIterator(decls.nodes /*NPE BUG here*/, tplParams);
+		if(aggrBody instanceof DeclarationEmpty) {
+			return null; /*NPE BUG here*/
+		} else {
+			return NewUtils.getChainedIterator(((DeclBlock) aggrBody).nodes /*NPE BUG here*/, tplParams);
+		}
 	}
 	
 	@Override

@@ -3,9 +3,8 @@ package dtool.descentadapter;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.ASTNode;
-import dtool.ast.DeclList;
-import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.DeclBlock;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 import dtool.parser.DeeTokens;
 import dtool.parser.Token;
@@ -70,14 +69,8 @@ public abstract class ASTCommonConverter implements IASTVisitor {
 		return new Token(tokenType, source == null ? "" : new String(source), offset);
 	}
 	
-	
-	public NodeList<ASTNode> createNodeList(ArrayView<ASTNode> elems) {
-		return new NodeList<ASTNode>(elems);
+	public DeclBlock createDeclList(ArrayView<ASTNode> elems) {
+		return elems == null ? null : new DeclBlock(elems);
 	}
-	
-	public DeclList createDeclList(ArrayView<ASTNode> elems) {
-		return elems == null ? null : new DeclList(elems);
-	}
-
 	
 }

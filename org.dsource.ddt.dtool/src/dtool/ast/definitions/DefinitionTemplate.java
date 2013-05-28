@@ -9,9 +9,9 @@ import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.DeclList;
 import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingParenthesesExpression;
@@ -32,12 +32,12 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IDecla
 	public final boolean isMixin;
 	public final ArrayView<TemplateParameter> tplParams;
 	public final Expression tplConstraint;
-	public final DeclList decls;
+	public final DeclBlock decls;
 	
 	public final boolean wrapper;
 	
 	public DefinitionTemplate(boolean isMixin, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams, 
-		Expression tplConstraint, DeclList decls) {
+		Expression tplConstraint, DeclBlock decls) {
 		super(defId);
 		this.isMixin = isMixin;
 		this.tplParams = parentize(tplParams);
@@ -75,7 +75,7 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IDecla
 		cp.append(defname, " ");
 		cp.appendList("(", tplParams, ",", ") ");
 		tplConstraintToStringAsCode(cp, tplConstraint);
-		cp.append("{\n", decls, "}");
+		cp.append(decls);
 	}
 	
 	public static void tplConstraintToStringAsCode(ASTCodePrinter cp, Expression tplConstraint) {

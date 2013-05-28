@@ -3,28 +3,24 @@ package dtool.ast.declarations;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
+import dtool.ast.NodeList;
 import dtool.ast.definitions.DefinitionAggregate.IAggregateBody;
+import dtool.util.ArrayView;
 
-public class DeclarationEmpty extends ASTNode implements IDeclaration, IAggregateBody {
+public class DeclList extends NodeList<ASTNode> implements IAggregateBody {
 	
-	public DeclarationEmpty() {
+	public DeclList(ArrayView<ASTNode> nodes) {
+		super(nodes);
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECLARATION_EMTPY;
-	}
-	
-	@Override
-	public void accept0(IASTVisitor visitor) {
-		visitor.visit(this);
-		visitor.endVisit(this);
+		return ASTNodeTypes.DECL_LIST;
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(";");
+		cp.appendList(nodes, "\n", true);
 	}
 	
 }

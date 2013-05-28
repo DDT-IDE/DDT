@@ -4,7 +4,6 @@ import java.util.List;
 
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.DeclList;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.refmodel.IScope;
@@ -17,8 +16,8 @@ import dtool.util.ArrayView;
 public class DefinitionUnion extends DefinitionAggregate {
 	
 	public DefinitionUnion(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
-		Expression tplConstraint, DeclList decls) {
-		super(defId, tplParams, tplConstraint, decls);
+		Expression tplConstraint, IAggregateBody aggrBody) {
+		super(defId, tplParams, tplConstraint, aggrBody);
 	}
 	
 	@Override

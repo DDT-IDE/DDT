@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTDirectChildrenVisitor;
 import dtool.ast.ASTNode;
-import dtool.ast.DeclList;
 import dtool.ast.NodeData.PreParseNodeData;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.StaticIfExpIs;
 import dtool.ast.declarations.StaticIfExpIs.StaticIfExpIsDefUnit;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
@@ -1812,7 +1812,7 @@ protected class ParseRule_TypeOrExp {
 		
 		ArrayView<Expression> args = null;
 		SimpleListParseHelper<Reference> baseClasses = thisParser().new TypeReferenceSimpleListParse();
-		DeclList declBody = null;
+		DeclBlock declBody = null;
 		
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
@@ -1822,7 +1822,7 @@ protected class ParseRule_TypeOrExp {
 			
 			baseClasses.parseSimpleList(true, DeeTokens.COMMA);
 			
-			declBody = thisParser().parseDeclarationBlock(parse);
+			declBody = parse.requiredResult(thisParser().parseDeclarationBlock(), DeeParser.RULE_DECLARATION_BLOCK);
 		}
 		
 		return parse.resultConclude(new ExpNewAnonClass(allocArgs, args, baseClasses.members, declBody));

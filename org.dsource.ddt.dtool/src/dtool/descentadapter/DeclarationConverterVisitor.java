@@ -33,8 +33,7 @@ import descent.internal.compiler.parser.Version;
 import descent.internal.compiler.parser.VersionCondition;
 import dtool.DToolBundle;
 import dtool.ast.ASTNode;
-import dtool.ast.DeclList;
-import dtool.ast.NodeList;
+import dtool.ast.NodeList_OLD;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAliasThis;
@@ -52,6 +51,7 @@ import dtool.ast.declarations.DeclarationPostBlit;
 import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
@@ -158,7 +158,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	@Override
 	public boolean visit(AnonDeclaration node) {
-		DeclList body = createDeclList(DescentASTConverter.convertMany(node.decl, ASTNode.class, convContext));
+		DeclBlock body = createDeclList(DescentASTConverter.convertMany(node.decl, ASTNode.class, convContext));
 		return endAdapt(connect(DefinitionConverter.sourceRange(node), 
 			new DefinitionStruct(new ProtoDefSymbol("", null, null), null, null, body)));
 	}
@@ -198,7 +198,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.AlignDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		NodeList_OLD body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
 		return endAdapt(connect(sr, new DeclarationAlign(null, AttribBodySyntax.COLON, body)));
 	}
@@ -322,7 +322,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.LinkDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		NodeList_OLD body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
 		Linkage linkage = fromLINK(elem.linkage);
 		return endAdapt(connect(sr, new DeclarationLinkage(linkage.name, AttribBodySyntax.SINGLE_DECL, body)));
@@ -344,7 +344,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.PragmaDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		NodeList_OLD body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
 			new DeclarationPragma(
 				DefinitionConverter.convertId(elem.ident),
@@ -357,7 +357,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.ProtDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		NodeList_OLD body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem), new DeclarationProtection(
 			fromPROT(elem.protection), AttribBodySyntax.BRACE_BLOCK, body)));
 	}
@@ -382,7 +382,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.StorageClassDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
-		NodeList body = DeclarationConverter.createNodeList2(elem.decl, convContext);
+		NodeList_OLD body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		AttributeKinds declAttrib = AttributeKinds.FINAL; // WRONG, but dont care, deprecated
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
 			new DeclarationBasicAttrib(declAttrib, AttribBodySyntax.BRACE_BLOCK, body)));

@@ -6,7 +6,6 @@ import java.util.List;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.DeclList;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
@@ -22,8 +21,8 @@ public class DefinitionClass extends DefinitionAggregate {
 	public final ArrayView<Reference> baseClasses;
 	
 	public DefinitionClass(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
-		Expression tplConstraint, ArrayView<Reference> baseClasses, DeclList decls) {
-		super(defId, tplParams, tplConstraint, decls);
+		Expression tplConstraint, ArrayView<Reference> baseClasses, IAggregateBody aggrBody) {
+		super(defId, tplParams, tplConstraint, aggrBody);
 		this.baseClasses = parentize(baseClasses);
 	}
 	
@@ -47,7 +46,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	public void classLikeToStringAsCode(ASTCodePrinter cp, String keyword) {
 		aggregateToStringAsCode(cp, keyword, false);
 		cp.appendList(": ", baseClasses, ",", " ");
-		cp.append("{\n", decls, "}");
+		cp.append(aggrBody, "\n");
 	}
 	
 	@Override
@@ -62,7 +61,7 @@ public class DefinitionClass extends DefinitionAggregate {
 			TreeVisitor.acceptChildren(visitor, tplParams);
 			TreeVisitor.acceptChildren(visitor, tplConstraint);
 			TreeVisitor.acceptChildren(visitor, baseClasses);
-			TreeVisitor.acceptChildren(visitor, decls);
+			TreeVisitor.acceptChildren(visitor, aggrBody);
 		}
 	}
 	

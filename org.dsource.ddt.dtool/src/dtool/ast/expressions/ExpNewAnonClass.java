@@ -3,8 +3,8 @@ package dtool.ast.expressions;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.DeclList;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.DeclBlock;
 import dtool.ast.references.Reference;
 import dtool.util.ArrayView;
 
@@ -13,10 +13,10 @@ public class ExpNewAnonClass extends Expression {
 	public final ArrayView<Expression> allocArgs;
 	public final ArrayView<Expression> args;
 	public final ArrayView<Reference> baseClasses;
-	public final DeclList declBody; 
+	public final DeclBlock declBody; 
 	
 	public ExpNewAnonClass(ArrayView<Expression> allocArgs, ArrayView<Expression> args,
-			ArrayView<Reference> baseClasses, DeclList declBody) {
+			ArrayView<Reference> baseClasses, DeclBlock declBody) {
 		this.allocArgs = parentize(allocArgs);
 		this.args = parentize(args);
 		this.baseClasses = parentize(baseClasses);
@@ -48,7 +48,7 @@ public class ExpNewAnonClass extends Expression {
 		cp.appendList("(", args, ",", ")");
 		cp.append(" ");
 		cp.appendList(baseClasses, ",");
-		cp.append("{\n", declBody, "}");
+		cp.append(declBody);
 	}
 	
 }

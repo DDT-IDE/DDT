@@ -81,7 +81,7 @@ public class ASTNodeReparseCheck {
 	public static boolean canBeginWithEmptySpace(final ASTNode node) {
 		switch (node.getNodeType()) {
 		case MODULE:
-		case NODE_LIST:
+		case DECL_LIST:
 		case SCOPED_STATEMENT_LIST:
 		case CSTYLE_ROOT_REF:
 		case MISSING_EXPRESSION:
@@ -166,8 +166,9 @@ public class ASTNodeReparseCheck {
 			return VOID;
 		case CSTYLE_ROOT_REF:
 			return VOID;
-		case NODE_LIST: 
-			return VOID; // Don't reparse this node
+		case DECL_BLOCK: 
+		case DECL_LIST: 
+			return VOID; // Don't reparse these nodes
 		
 		case SYMBOL:
 			if(nodeUnderTest instanceof DefSymbol) {

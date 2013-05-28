@@ -17,7 +17,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import dtool.ast.ASTNode;
-import dtool.ast.DeclList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclarationAliasThis;
@@ -42,6 +41,8 @@ import dtool.ast.declarations.DeclarationProtection;
 import dtool.ast.declarations.DeclarationProtection.Protection;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
+import dtool.ast.declarations.DeclBlock;
+import dtool.ast.declarations.DeclList;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.DeclarationStaticIf;
 import dtool.ast.declarations.DeclarationUnitTest;
@@ -60,6 +61,7 @@ import dtool.ast.definitions.DeclarationMixin;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAggregate;
+import dtool.ast.definitions.DefinitionAggregate.IAggregateBody;
 import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasDecl;
@@ -787,28 +789,27 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		} else if(!tryConsume(DeeTokens.KW_TEMPLATE)) {
 			return null;
 		}
-		adp.parseAggregate(true, true, false);
+		adp.parseAggregate(false);
+		adp.parseDeclarationBlockBody();
 		
 		return adp.resultConclude(
-			new DefinitionTemplate(isMixin, adp.defId, adp.tplParams, adp.tplConstraint, adp.declBody));
+			new DefinitionTemplate(isMixin, adp.defId, adp.tplParams, adp.tplConstraint, adp.getDeclBlock()));
 	}
+	
+	public static final ParseRuleDescription RULE_AGGR_BODY = new ParseRuleDescription("AggregateBody");
 	
 	public class AggregateDefinitionParse extends ParseHelper {
 
 		protected ProtoDefSymbol defId = null;
 		protected ArrayView<TemplateParameter> tplParams = null;
 		protected Expression tplConstraint = null;
-		protected DeclList declBody = null;
+		protected IAggregateBody declBody = null;
 		
-		void parseAggregate(boolean requiresDefId, boolean parseDeclBody, boolean tplParamsIsOptional) {
+		public void parseAggregate(boolean tplParamsIsOptional) {
 			ParseHelper parse = this;
 			
 			parsing: {
-				if(!requiresDefId && lookAhead() != DeeTokens.IDENTIFIER) {
-					defId = nullIdToMissingDefId(null);
-				} else {
-					defId = parse.checkResult(parseDefId());
-				}
+				defId = parse.checkResult(parseDefId());
 				if(parse.ruleBroken) break parsing;
 				
 				tplParams = parseTemplateParameters(parse, tplParamsIsOptional);
@@ -818,22 +819,44 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 					tplConstraint = parseTemplateConstraint(parse);
 					if(parse.ruleBroken) break parsing;
 				}
-				
-				if(parseDeclBody) {
-					declBody = parseDeclarationBlock(parse);
+			}
+		}
+		
+		public final DeclBlock getDeclBlock() {
+			return (DeclBlock) declBody;
+		}
+		
+		public void parseDeclarationBlockBody() {
+			ParseHelper parse = this;
+			if(!parse.ruleBroken) {
+				declBody = parse.requiredResult(parseDeclarationBlock(), RULE_DECLARATION_BLOCK);
+			}
+		}
+		
+		public void parseAggregateBody() {
+			ParseHelper parse = this;
+			if(!parse.ruleBroken) {
+				if(tryConsume(DeeTokens.SEMICOLON)) {
+					declBody = concludeNode(srOf(lastLexElement(), new DeclarationEmpty()));
+				} else {
+					declBody = parse.requiredResult(parseDeclarationBlock(), RULE_AGGR_BODY);
 				}
 			}
 		}
 		
 	}
 	
-	public DeclList parseDeclarationBlock(ParseHelper parse) {
-		if(parse.consumeRequired(DeeTokens.OPEN_BRACE) == false) {
-			return null;
+	public static final ParseRuleDescription RULE_DECLARATION_BLOCK = new ParseRuleDescription("DeclarationBlock");
+	
+	public NodeResult<DeclBlock> parseDeclarationBlock() {
+		if(tryConsume(DeeTokens.OPEN_BRACE) == false) {
+			return nullResult();
 		}
-		DeclList declBody = parseDeclList(DeeTokens.CLOSE_BRACE);
+		ParseHelper parse = new ParseHelper();
+		
+		ArrayView<ASTNode> declDefs = parseDeclDefs(DeeTokens.CLOSE_BRACE, false);
 		parse.consumeRequired(DeeTokens.CLOSE_BRACE);
-		return declBody;
+		return parse.resultConclude(new DeclBlock(declDefs));
 	}
 	
 	public final NodeResult<RefTypeFunction> parseRefTypeFunction_afterReturnType(Reference retType) {
@@ -1047,8 +1070,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return null;
 		
 		boolean isStruct = lastLexElement().token.type == DeeTokens.KW_STRUCT;
+		boolean isAnonymous = lookAhead() != DeeTokens.IDENTIFIER;
 		AggregateDefinitionParse adp = new AggregateDefinitionParse();
-		adp.parseAggregate(false, true, true);
+		if(isAnonymous) {
+			adp.defId = nullIdToMissingDefId(null);
+			adp.parseDeclarationBlockBody();
+		} else {
+			adp.parseAggregate(true);
+			adp.parseAggregateBody();
+		}
 		
 		return adp.resultConclude(isStruct ?
 			new DefinitionStruct(adp.defId, adp.tplParams, adp.tplConstraint, adp.declBody) :
@@ -1071,14 +1101,14 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		SimpleListParseHelper<Reference> baseClasses = new TypeReferenceSimpleListParse();
 		parsing: {
-			adp.parseAggregate(true, false, true);
+			adp.parseAggregate(true);
 			if(adp.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.COLON)) {
 				baseClasses.parseSimpleList(false, DeeTokens.COMMA);
 			}
 			
-			adp.declBody = parseDeclarationBlock(adp);
+			adp.parseAggregateBody();
 		}
 		
 		return adp.resultConclude(isClass ?
@@ -1219,10 +1249,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		public AttribBodyParseRule parseDeclBlockOrSingle(ParseHelper parse, boolean acceptEmptyDecl, 
 			boolean enablesAutoDecl) {
-			if(tryConsume(DeeTokens.OPEN_BRACE)) {
+			if(lookAhead() == DeeTokens.OPEN_BRACE) {
 				bodySyntax = AttribBodySyntax.BRACE_BLOCK;
-				declList = parseDeclList(DeeTokens.CLOSE_BRACE);
-				parse.consumeRequired(DeeTokens.CLOSE_BRACE);
+				declList = parse.checkResult(parseDeclarationBlock());
 			} else {
 				declList = parse.requiredResult(parseDeclaration(enablesAutoDecl), RULE_DECLBODY);
 				if(declList == null) {
