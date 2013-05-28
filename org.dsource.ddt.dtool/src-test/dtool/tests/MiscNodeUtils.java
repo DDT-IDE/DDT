@@ -1,7 +1,6 @@
 package dtool.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNode;
 import dtool.ast.NodeList;
@@ -37,6 +36,15 @@ public class MiscNodeUtils {
 			node = children[childIx];
 		}
 		return node;
+	}
+	
+	public static ASTNode getLeftMostChild(ASTNode node) {
+		ASTNode[] children = node.getChildren();
+		if(children.length == 0) {
+			return node;
+		} else {
+			return getLeftMostChild(children[0]);
+		}
 	}
 	
 }

@@ -7,6 +7,7 @@ import java.util.Collection;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
+import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Initializer;
@@ -27,19 +28,21 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 	public static final ArrayView<DefVarFragment> NO_FRAGMENTS = ArrayView.create(new DefVarFragment[0]);
 	
 	public final Reference type;
+	public final Reference cstyleSuffix;
 	public final Initializer init;
 	public final ArrayView<DefVarFragment> fragments;
 	
-	public DefinitionVariable(ProtoDefSymbol defId, Reference type, Initializer init,
+	public DefinitionVariable(ProtoDefSymbol defId, Reference type, Reference cstyleSuffix, Initializer init,
 		ArrayView<DefVarFragment> fragments) {
-		this(defId, assertNotNull_(type), init, fragments, false);
+		this(defId, assertNotNull_(type), cstyleSuffix, init, fragments, false);
 	}
 	
-	protected DefinitionVariable(ProtoDefSymbol defId, Reference type, Initializer init,
+	protected DefinitionVariable(ProtoDefSymbol defId, Reference type, Reference cstyleSuffix, Initializer init,
 		ArrayView<DefVarFragment> fragments, @SuppressWarnings("unused") boolean dummy)
 	{
 		super(defId);
 		this.type = parentize(type);
+		this.cstyleSuffix = parentize(cstyleSuffix);
 		this.init = parentize(init);
 		this.fragments = fragments != null ? parentize(fragments) : NO_FRAGMENTS;
 	}
@@ -49,12 +52,38 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 		return ASTNodeTypes.DEFINITION_VARIABLE;
 	}
 	
+	@Override
+	public void accept0(IASTVisitor visitor) {
+		boolean children = visitor.visit(this);
+		if (children) {
+			TreeVisitor.acceptChildren(visitor, type);
+			TreeVisitor.acceptChildren(visitor, defname);
+			TreeVisitor.acceptChildren(visitor, cstyleSuffix);
+			TreeVisitor.acceptChildren(visitor, init);
+			
+			TreeVisitor.acceptChildren(visitor, fragments);
+		}
+		visitor.endVisit(this);
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(type, " ");
+		cp.append(defname);
+		cp.append(cstyleSuffix);
+		cp.append(" = ", init);
+		for (DefVarFragment varFragment : fragments) {
+			cp.append(", ", varFragment);
+		}
+		cp.append(";");
+	}
+	
 	// TODO refactor this into own class?
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
 		public DefinitionAutoVariable(ProtoDefSymbol defId, Initializer init, 
 			ArrayView<DefVarFragment> fragments) {
-			super(defId, null, init, fragments, false);
+			super(defId, null, null, init, fragments, false);
 		}
 		
 		@Override
@@ -62,19 +91,6 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 			return ASTNodeTypes.DEFINITION_AUTO_VARIABLE;
 		}
 		
-	}
-	
-	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, type);
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, init);
-			
-			TreeVisitor.acceptChildren(visitor, fragments);
-		}
-		visitor.endVisit(this);
 	}
 	
 	@Override
@@ -109,17 +125,6 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 	}
 	
 	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(type, " ");
-		cp.append(defname);
-		cp.append(" = ", init);
-		for (DefVarFragment varFragment : fragments) {
-			cp.append(", ", varFragment);
-		}
-		cp.append(";");
-	}
-	
-	@Override
 	public String toStringForHoverSignature() {
 		String str = getTypeString() + " " + getName();
 		return str;
@@ -130,4 +135,35 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 		return defname.toStringAsCode() + "   " + getTypeString() + " - " + getModuleScope().toStringAsElement();
 	}
 	
+	
+	public static class CStyleRootRef extends Reference {
+		
+		public CStyleRootRef() { }
+		
+		@Override
+		public ASTNodeTypes getNodeType() {
+			return ASTNodeTypes.CSTYLE_ROOT_REF;
+		}
+		
+		@Override
+		public void toStringAsCode(ASTCodePrinter cp) {
+		}
+		
+		@Override
+		public boolean canMatch(DefUnitDescriptor defunit) {
+			return false;
+		}
+
+		@Override
+		public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+			return null;
+		}
+		
+		@Override
+		public void accept0(IASTVisitor visitor) {
+			visitor.visit(this);
+			visitor.endVisit(this);
+		}
+		
+	}
 }

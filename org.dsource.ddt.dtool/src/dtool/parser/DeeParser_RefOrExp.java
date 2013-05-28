@@ -86,7 +86,6 @@ import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.RefTypeDynArray;
-import dtool.ast.references.RefTypeFunction;
 import dtool.ast.references.RefTypeModifier;
 import dtool.ast.references.RefTypeModifier.TypeModifierKinds;
 import dtool.ast.references.RefTypePointer;
@@ -323,20 +322,10 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			
 		} else if(!parsingExp && tryConsume(DeeTokens.STAR)) {
 			leftRef = conclude(srToPosition(leftRef, new RefTypePointer(leftRef)));
-			
-		} else if(!parsingExp && tryConsume(DeeTokens.OPEN_BRACKET)) {
-			
-			Resolvable resolvable = parseTypeOrExpression(true).node;
-			parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
-			
-			if(resolvable == null) {
-				leftRef = parse.conclude(new RefTypeDynArray(leftRef));
-			} else {
-				leftRef = parse.conclude(new RefIndexing(leftRef, resolvable));
-			}
-			
+		} else if(!parsingExp && lookAhead() == DeeTokens.OPEN_BRACKET) {
+			leftRef = parseBracketReference(leftRef, parse);
 		} else if(tryConsume(DeeTokens.KW_FUNCTION) || tryConsume(DeeTokens.KW_DELEGATE)) {
-			leftRef = parse.checkResult(parseRefTypeFunction_afterReturnType(leftRef));
+			leftRef = parse.checkResult(thisParser().parseRefTypeFunction_afterReturnType(leftRef));
 		} else {
 			return result(false, leftRef);
 		}
@@ -345,14 +334,37 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return parseReference_referenceStart(leftRef, parsingExp);
 	}
 	
+	public Reference parseBracketReference(Reference leftRef, ParseHelper parse) {
+		consumeLookAhead(DeeTokens.OPEN_BRACKET);
+		
+		Resolvable resolvable = parseTypeOrExpression(true).node;
+		parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
+		
+		if(resolvable == null) {
+			leftRef = parse.conclude(new RefTypeDynArray(leftRef));
+		} else {
+			leftRef = parse.conclude(new RefIndexing(leftRef, resolvable));
+		}
+		return leftRef;
+	}
+	
 	public boolean isTemplateInstanceLookahead() {
 		return lookAhead() == DeeTokens.NOT && !(lookAhead(1) == DeeTokens.KW_IN || lookAhead(1) == DeeTokens.KW_IS);
 	}
 	
-	public abstract NodeResult<RefTypeFunction> parseRefTypeFunction_afterReturnType(Reference retType);
-	
 	public boolean isValidTemplateReferenceSyntax(Reference leftRef) {
 		return leftRef instanceof ITemplateRefNode;
+	}
+	
+	protected NodeResult<Reference> parseCStyleDeclaratorSuffix(Reference leftRef) {
+		if(lookAhead() != DeeTokens.OPEN_BRACKET) {
+			return result(false, leftRef);
+		}
+		ParseHelper parse = new ParseHelper(leftRef.getStartPos());
+		leftRef = parseBracketReference(leftRef, parse);
+		if(parse.ruleBroken)
+			return result(true, leftRef);
+		return parseCStyleDeclaratorSuffix(leftRef);
 	}
 	
 	/* --------------------- EXPRESSIONS --------------------- */

@@ -29,7 +29,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 		
 		if(expectErrors != null) {
 			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);
-//			String src = source.substring(parseResult.errors.get(0).sourceRange.getStartPos());
+//			String src = source.substring(parseResult.errors.get(0).sourceRange.getStartPos() - 10);
 		}
 		
 		if(checkSourceRanges) {

@@ -74,6 +74,7 @@ import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.DefinitionVariable.CStyleRootRef;
 import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.FunctionAttributes;
@@ -381,11 +382,17 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	{
 		ArrayList<DefVarFragment> fragments = new ArrayList<>();
 		Initializer init = null;
+		Reference cstyleSuffix = null;
 		
 		final boolean isAutoRef = ref == null;
 		ParseHelper parse = new ParseHelper(isAutoRef ? defId.getStartPos() : ref.getStartPos());
 		
-		if(tryConsume(DeeTokens.ASSIGN)){ 
+		if(!isAutoRef && lookAhead() == DeeTokens.OPEN_BRACKET) {
+			CStyleRootRef cstyleRootRef = conclude(srAt(getLexPosition()), new CStyleRootRef());
+			cstyleSuffix = parse.checkResult(parseCStyleDeclaratorSuffix(cstyleRootRef));
+		}
+		
+		if(tryConsume(DeeTokens.ASSIGN)){
 			init = parseInitializer().node;
 		} else if(isAutoRef) {
 			parse.store(createExpectedTokenError(DeeTokens.ASSIGN));
@@ -400,8 +407,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(isAutoRef) {
 			return parse.resultConclude(new DefinitionAutoVariable(defId, init, arrayView(fragments)));
 		}
-		
-		return parse.resultConclude(new DefinitionVariable(defId, ref, init, arrayView(fragments)));
+		return parse.resultConclude(new DefinitionVariable(defId, ref, cstyleSuffix, init, arrayView(fragments)));
 	}
 	
 	protected DefVarFragment parseVarFragment(boolean isAutoRef) {
@@ -830,8 +836,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return declBody;
 	}
 	
-	@Override
-	public NodeResult<RefTypeFunction> parseRefTypeFunction_afterReturnType(Reference retType) {
+	public final NodeResult<RefTypeFunction> parseRefTypeFunction_afterReturnType(Reference retType) {
 		boolean isDelegate = lastLexElement().token.type == DeeTokens.KW_DELEGATE;
 		
 		ParseHelper parse = new ParseHelper(retType);

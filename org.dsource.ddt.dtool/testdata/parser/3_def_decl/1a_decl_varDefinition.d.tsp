@@ -33,7 +33,13 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol InitializerExp(?
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ C-style decls (deprecated)
 C style decls
-int foo*;
-int[int] foo* = 2, foo2    , foo3 = 3;
-
-#STRUCTURE_EXPECTED:
+The parser reads the c-style decl but doesn't actually store the c-style type info anywhere
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)  int foo[] #@【 /**/ ● #error(EXP_SEMICOLON) #@BREAK * 】  ;
+#STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefTypeDynArray(CStyleRootRef))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)  int foo[10] = 2, foo2 #error(EXP_SEMICOLON) #@BREAK [10];
+#STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefIndexing(CStyleRootRef Integer) InitializerExp(Integer) DefVarFragment(?) )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)  auto foo[] #@NO_DEFID;
+#STRUCTURE_EXPECTED: DeclarationBasicAttrib( IncompleteDeclaration(*) )

@@ -9,7 +9,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNeoNode;
-import dtool.ast.NodeList;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
@@ -20,6 +19,7 @@ import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.declarations.StaticIfExpIs.StaticIfExpIsDefUnit;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefinitionEnum.NoEnumBody;
+import dtool.ast.definitions.DefinitionVariable.CStyleRootRef;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
@@ -32,17 +32,14 @@ import dtool.ast.expressions.InitializerStruct.StructInitEntry;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.references.RefIdentifier;
-import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
-import dtool.ast.statements.BlockStatement;
-import dtool.ast.statements.BlockStatementUnscoped;
 import dtool.ast.statements.CommonStatementList;
 import dtool.ast.statements.ForeachRangeExpression;
-import dtool.ast.statements.ScopedStatementList;
 import dtool.parser.AbstractParser.NodeResult;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
+import dtool.tests.MiscNodeUtils;
 
 public class ASTNodeReparseCheck {
 	
@@ -82,50 +79,44 @@ public class ASTNodeReparseCheck {
 	}
 	
 	public static boolean canBeginWithEmptySpace(final ASTNode node) {
-		if(node instanceof Module) {
+		switch (node.getNodeType()) {
+		case MODULE:
+		case NODE_LIST:
+		case SCOPED_STATEMENT_LIST:
+		case CSTYLE_ROOT_REF:
+		case MISSING_EXPRESSION:
 			return true;
-		}
-		else if(node instanceof NodeList) {
-			return true;
-		}
-		else if(node instanceof ScopedStatementList) {
-			return true;
-		}
-		else if(node instanceof RefIdentifier || node instanceof RefImportSelection) {
+
+		case REF_IDENTIFIER:
+		case REF_IMPORT_SELECTION:
 			return DeeParser.isMissing((Reference) node);
-		} 
-		else if(node instanceof MissingExpression) {
-			return true;
-		} 
-		else if(node instanceof InitializerExp) {
+		case INITIALIZER_EXP:
 			return ((InitializerExp) node).exp instanceof MissingExpression;
-		} 
-		else if(node instanceof StructInitEntry) {
+		case STRUCT_INIT_ENTRY: {
 			StructInitEntry initEntry = (StructInitEntry) node;
 			return canBeginWithEmptySpace(initEntry.member != null ? initEntry.member : initEntry.value);
-		} 
-		else if(node instanceof ArrayInitEntry) {
+		}
+		case ARRAY_INIT_ENTRY: {
 			ArrayInitEntry initEntry = (ArrayInitEntry) node;
 			return canBeginWithEmptySpace(initEntry.index != null ? initEntry.index : initEntry.value);
 		}
-		else if(node instanceof MapArrayLiteralKeyValue) {
+		case MAPARRAY_ENTRY: {
 			MapArrayLiteralKeyValue mapArrayEntry = (MapArrayLiteralKeyValue) node;
 			return canBeginWithEmptySpace(mapArrayEntry.key);
 		}
-		else if(node instanceof ForeachRangeExpression) {
+		case FOREACH_RANGE_EXPRESSION: {
 			ForeachRangeExpression fre = (ForeachRangeExpression) node;
 			return canBeginWithEmptySpace(fre.lower);
 		}
-		else if(node instanceof MissingParenthesesExpression) {
-			return true;
-		}
-		else if(node instanceof BlockStatement || node instanceof BlockStatementUnscoped) {
-			CommonStatementList blockStatement = (CommonStatementList) node;
-			return blockStatement.statements == null;
-		}
-
 		
-		return false;
+		case BLOCK_STATEMENT:
+		case BLOCK_STATEMENT_UNSCOPED: {
+			return ((CommonStatementList) node).statements == null;
+		}
+		
+		default:
+			return false;
+		}
 	}
 	
 	
@@ -163,12 +154,17 @@ public class ASTNodeReparseCheck {
 		if(!doReparsecheck) {
 			return VOID;
 		}
+		if(MiscNodeUtils.getLeftMostChild(nodeUnderTest) instanceof CStyleRootRef) {
+			return VOID;
+		}
 		
 		prepSnippedParser(nodeUnderTest);
 		
 		switch (nodeUnderTest.getNodeType()) {
 		
 		case MISSING_DECLARATION:
+			return VOID;
+		case CSTYLE_ROOT_REF:
 			return VOID;
 		case NODE_LIST: 
 			return VOID; // Don't reparse this node

@@ -534,6 +534,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				new DefinitionVariable(
 				defUnitInfo.defSymbol,
 				typeRef,
+				null,
 				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null
 			));
 		}
