@@ -34,8 +34,11 @@
 #PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE  #@DEFID ( #@CLOSEPARENS_OR_NO #@SEMICOLON_OR_BREAK 
 #STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE #@DEFID)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE  #@DEFID ( #@FN_PARAMS_SAMPLE ) #@FN_ATTRIB__SAMPLE #@SEMICOLON_OR_BREAK 
+#PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE  #@DEFID (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB__SAMPLE #@SEMICOLON_OR_BREAK 
 #STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE #@DEFID #@FN_PARAMS_SAMPLE #@FN_ATTRIB__SAMPLE)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)   alias               #@TYPEREF_NBNE__LITE #@DEFID #@NO_SEMICOLON #@BREAK nothrow ;
+#STRUCTURE_EXPECTED:  DefinitionAliasDecl(#@TYPEREF_NBNE__LITE #@DEFID #@BREAK )
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ NOT supported: C style declaration syntax (it's deprecated in D)
 #PARSE(DECLARATION)   alias int aliasDef[];

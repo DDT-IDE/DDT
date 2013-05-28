@@ -1,6 +1,7 @@
 package dtool.ast.definitions;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
@@ -32,6 +33,7 @@ public class DefinitionAliasDecl extends Definition implements IDeclaration, ISt
 		this.target = parentize(target);
 		this.fnParams = parentizeI(fnParams);
 		this.fnAttributes = fnAttributes;
+		assertTrue(fnAttributes == null || fnParams != null);
 	}
 	
 	public final ArrayView<ASTNode> getParams_asNodes() {

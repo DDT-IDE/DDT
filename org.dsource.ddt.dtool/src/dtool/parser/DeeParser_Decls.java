@@ -892,7 +892,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 			
 			// Function attributes
-			fnAttributes = parseFunctionAttributes(); /*BUG here only if fnParams*/
+			if(fnParams != null) {
+				fnAttributes = parseFunctionAttributes();
+			}
 		}
 		defId = nullIdToMissingDefId(defId);
 		
