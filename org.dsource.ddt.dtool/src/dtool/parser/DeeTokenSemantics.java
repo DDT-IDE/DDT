@@ -1,5 +1,7 @@
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +27,14 @@ public class DeeTokenSemantics {
 		// Check token content validity  TODO: strings, unicode escapes, HTML entities, etc.
 		switch (token.type) {
 		case CHARACTER:
-			if(token.source.length() > 3) {
-				lexerErrors.add(createError(ParserErrorTypes.MALFORMED_TOKEN, token, 
-					LexerErrorTypes.CHAR_LITERAL_SIZE_GREATER_THAN_ONE));
+			assertTrue(token.source.length() > 2);
+			if(token.source.length() == 3)
+				break;
+			if(token.source.charAt(1) == '\\') {
+				break;
 			}
+			lexerErrors.add(createError(ParserErrorTypes.MALFORMED_TOKEN, token, 
+				LexerErrorTypes.CHAR_LITERAL_SIZE_GREATER_THAN_ONE));
 			break;
 		default:
 			break;

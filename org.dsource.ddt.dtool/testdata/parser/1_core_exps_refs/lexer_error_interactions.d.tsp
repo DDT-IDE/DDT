@@ -9,7 +9,7 @@ TODO: refactor these code samples?
 '
 #error(MT_CHxL)●
 'aaa'#error(MTC_CH_L)●
-'\U0123ABC'#error(MTC_CH_L) #comment(the error will change in future) ●
+'\U0123ABC' #comment(the error will change in future) ●
 
 0b00123456#error(MT_IBx)●
 0123456789#error(MT_IOx)●

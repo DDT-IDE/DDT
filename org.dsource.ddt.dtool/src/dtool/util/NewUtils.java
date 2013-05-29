@@ -2,7 +2,12 @@ package dtool.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -16,6 +21,7 @@ import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.ChainedIterator;
+import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.Pair;
 
@@ -186,6 +192,57 @@ public class NewUtils {
 				return iter;
 			}
 		};
+	}
+	
+	public static final int EOF = -1;
+	
+	public static final Charset UTF8 = assertNotNull_(Charset.forName("UTF-8"));
+	public static final Charset UTF16BE = assertNotNull_(Charset.forName("UTF-16BE"));
+	public static final Charset UTF16LE = assertNotNull_(Charset.forName("UTF-16LE"));
+	public static final Charset UTF32BE = assertNotNull_(Charset.forName("UTF-32BE"));
+	public static final Charset UTF32LE = assertNotNull_(Charset.forName("UTF-32LE"));
+	
+	
+	public static Charset detectEncoding(InputStream is, boolean resetIS) throws IOException {
+		byte[] bom = new byte[4];
+		bom[3] = 0x42; // To disambiguate UTF16LE edge case and UTF32LE
+		int read = is.read(bom);
+		assertTrue(read == bom.length || is.read() == EOF);
+		if(resetIS) {
+			is.reset();
+		}
+		
+		if(bom[0] == (byte)0xEF && bom[1] == (byte)0xBB && bom[2] == (byte)0xBF) {
+			return UTF8;
+		}
+		if(bom[0] == (byte)0xFE && bom[1] == (byte)0xFF) {
+			return UTF16BE;
+		}
+		if(bom[0] == (byte)0xFF && bom[1] == (byte)0xFE) {
+			if(bom[2] == 0x00 && bom[3] == 0x00) {
+				return UTF32LE;
+			}
+			return UTF16LE;
+		}
+		if(bom[0] == 0x00 && bom[1] == 0x00 && bom[2] == (byte)0xFE && bom[3] == (byte)0xFF) {
+			return UTF32BE;
+		}
+		
+		return null;
+	}
+	
+	// XXX: This method could perhaps be optimized slightly
+	public static String readStringFromFile_PreserveBOM(File file, Charset defaultCharset) throws IOException {
+		byte[] fileBytes = FileUtil.readBytesFromFile(file);
+		final Charset encoding = detectEncoding(new ByteArrayInputStream(fileBytes), false);
+		String string = new String(fileBytes, encoding == null ? defaultCharset : encoding);
+		if(encoding != null) {
+			if(encoding == UTF32BE || encoding == UTF32LE) {
+				string = "\uFEFF" + string; // Make things consistent across encodings
+			}
+			assertTrue(string.charAt(0) == 0xFEFF);
+		}
+		return string;
 	}
 	
 }

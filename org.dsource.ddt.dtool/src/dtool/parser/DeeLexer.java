@@ -281,6 +281,7 @@ public class DeeLexer extends AbstractLexer {
 	
 	protected final Token ruleHashStart() {
 		assertTrue(getCharCategory(lookAhead()) == CharRuleCategory.HASH);
+		// Note that shebang will not be recognized if lexer input has a UTF BOM
 		if(pos == 0 && lookAhead(1) == '!') {
 			pos += 2;
 			seekToNewline();
@@ -292,6 +293,9 @@ public class DeeLexer extends AbstractLexer {
 	}
 	
 	protected final Token ruleAlphaStart() {
+		if(pos == 0 && lookAhead() == 0xFEFF) {
+			return createToken(DeeTokens.WHITESPACE, 1); // UTF Byte Order Mark (BOM)
+		}
 		assertTrue(getCharCategory(lookAhead()).canBeIdentifierStart);
 		
 		// Note, according to D spec, not all non-ASCII characters are valid as identifier characters

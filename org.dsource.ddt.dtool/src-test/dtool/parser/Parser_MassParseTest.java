@@ -82,11 +82,15 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 			ArrayList<File> moduleList = getDeeModuleList(unpackedFolder);
 			boolean canHaveSyntaxErrors = unpackedFolder.getName().contains(BAD_SYNTAX);
 			for (File file : moduleList) {
-				testsLogger.println("----------> " + DToolTestResources.resourceFileToString(file, COMMON_UNPACK));
-				String source = readStringFromFileUnchecked(file);
-				Parser__CommonTest.parseSource(source, null, false, "_tests_unnamed_");
-//				Parser__CommonTest.testParseSource(source, canHaveSyntaxErrors ? null : false, false, "_unnamed");
+				testFileParse(canHaveSyntaxErrors, file);
 			}
+		}
+		
+		public void testFileParse(boolean canHaveSyntaxErrors, File file) {
+			testsLogger.println("----------> " + DToolTestResources.resourceFileToString(file, COMMON_UNPACK));
+			String source = readStringFromFileUnchecked(file);
+			Parser__CommonTest.parseSource(source, null, false, "_tests_unnamed_");
+//			Parser__CommonTest.testParseSource(source, canHaveSyntaxErrors ? null : false, false, "_unnamed");
 		}
 		
 	}

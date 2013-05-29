@@ -24,12 +24,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
-
 import melnorme.utilbox.core.VoidFunction;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
+
+import org.junit.Before;
+
 import dtool.DeeNamingRules_Test;
+import dtool.util.NewUtils;
 
 
 public class DToolBaseTest extends CommonTestUtils {
@@ -49,7 +51,7 @@ public class DToolBaseTest extends CommonTestUtils {
 	
 	/* -------------  Resources stuff   ------------ */
 	
-	protected static final Charset DEFAULT_TESTDATA_ENCODING = StringUtil.UTF8;
+	public static final Charset DEFAULT_TESTDATA_ENCODING = StringUtil.UTF8;
 	
 	public static String readTestResourceFile(String filePath) throws IOException {
 		File testDataDir = DToolTestResources.getInstance().getResourcesDir();
@@ -63,7 +65,7 @@ public class DToolBaseTest extends CommonTestUtils {
 	
 	public static String readStringFromFileUnchecked(File file) {
 		try {
-			return new String(FileUtil.readBytesFromFile(file), DEFAULT_TESTDATA_ENCODING);
+			return NewUtils.readStringFromFile_PreserveBOM(file, DEFAULT_TESTDATA_ENCODING);
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

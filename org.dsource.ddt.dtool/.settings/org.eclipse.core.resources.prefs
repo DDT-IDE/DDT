@@ -1,2 +1,6 @@
 eclipse.preferences.version=1
+encoding//testdata/lexer/testBOM_utf16BE.d=UTF-16BE
+encoding//testdata/lexer/testBOM_utf16LE.d=UTF-16LE
+encoding//testdata/lexer/testBOM_utf32BE.d=UTF-32BE
+encoding//testdata/lexer/testBOM_utf32LE.d=UTF-32LE
 encoding//testdata/lexer/testIdentifiers.d=UTF-8
