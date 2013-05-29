@@ -185,10 +185,13 @@ public class ASTNodeReparseCheck {
 		case STATIC_IF_EXP_IS_DEF_UNIT:
 			return simpleReparseCheck(((StaticIfExpIsDefUnit) nodeUnderTest).defname.name);
 		
-		case MODULE:
+		case MODULE: {
 			Module module = (Module) nodeUnderTest;
-			assertTrue(module.getStartPos() == 0 && module.getEndPos() == fullSource.length());
+			int endPos = module.getEndPos();
+			assertTrue(module.getStartPos() == 0 && (endPos == fullSource.length() || 
+				fullSource.charAt(endPos) == 0x00 || fullSource.charAt(endPos) == 0x1A));
 			return VOID;
+		}
 		case DECLARATION_MODULE:
 			return reparseCheck(snippedParser.parseModuleDeclaration());
 		case DECLARATION_IMPORT:

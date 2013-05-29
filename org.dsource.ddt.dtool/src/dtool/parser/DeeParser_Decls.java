@@ -127,9 +127,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		ArrayView<ASTNode> members = parseDeclDefs(null, true);
 		assertTrue(lookAhead() == DeeTokens.EOF);
 		consumeSubChannelTokens(); // Ensure pending whitespace is consumed as well
-		assertTrue(getLexPosition() == getSource().length());
+		assertTrue(getLexPosition() == lookAheadElement().getStartPos());
+		//assertTrue(getLexPosition() == getSource().length()); // This is not true if explicit EOF token is present. 
 		
-		SourceRange modRange = new SourceRange(0, getSource().length());
+		SourceRange modRange = new SourceRange(0, getLexPosition());
 		
 		if(md != null) {
 			return result(false, conclude(modRange, new Module(md.getModuleSymbol(), null, md, members)));
