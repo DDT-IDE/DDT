@@ -287,7 +287,7 @@ public abstract class AbstractParser {
 			}
 			if(isOptional == false) {
 				store(createExpectedTokenError(expectedTokenType));
-				ruleBroken = breaksRule;
+				setRuleBroken(breaksRule);
 			}
 			return false;
 		}
@@ -301,13 +301,24 @@ public abstract class AbstractParser {
 		}
 		
 		public ProtoDefSymbol checkResult(ProtoDefSymbol defId) {
-			ruleBroken = defId.isMissing();
+			setRuleBroken(defId.isMissing());
 			return defId;
 		}
 		
 		public <T extends ASTNode> T checkResult(NodeResult<T> nodeResult) {
-			ruleBroken = nodeResult.ruleBroken;
+			setRuleBroken(nodeResult.ruleBroken);
 			return nodeResult.node;
+		}
+		
+		public void setRuleBroken(boolean ruleBroken) {
+			this.ruleBroken = ruleBroken;
+		}
+		
+		public final ParseHelper clearRuleBroken() {
+			if(ruleBroken) {
+				setRuleBroken(false);
+			}
+			return this;
 		}
 		
 		public <T extends ASTNode> T requiredResult(NodeResult<T> nodeResult, ParseRuleDescription expectedRule) {
@@ -315,12 +326,12 @@ public abstract class AbstractParser {
 				storeBreakError(createErrorExpectedRule(expectedRule));
 				return null;
 			}
-			ruleBroken = nodeResult.ruleBroken;
+			setRuleBroken(nodeResult.ruleBroken);
 			return nodeResult.node;
 		}
 		
 		protected final ParserError storeBreakError(ParserError error) {
-			ruleBroken = error != null;
+			setRuleBroken(error != null);
 			return store(error);
 		}
 		
@@ -343,7 +354,7 @@ public abstract class AbstractParser {
 		public final <T extends ASTNode> NodeResult<T> resultConclude(T node) {
 			return result(ruleBroken, conclude(node));
 		}
-
+		
 	}
 	
 	public class SingleTokenParse {

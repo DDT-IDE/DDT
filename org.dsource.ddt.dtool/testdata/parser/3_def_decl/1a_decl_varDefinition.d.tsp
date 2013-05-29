@@ -41,5 +41,8 @@ The parser reads the c-style decl but doesn't actually store the c-style type in
 #PARSE(DECLARATION)  int foo[10] = 2, foo2 #error(EXP_SEMICOLON) #@BREAK [10];
 #STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefIndexing(CStyleRootRef Integer) InitializerExp(Integer) DefVarFragment(?) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)  auto foo[] #@NO_DEFID;
+#PARSE(DECLARATION)  int foo[  /**/  #error(EXP_CLOSE_BRACKET) #@【 /**/ ● #error(EXP_SEMICOLON)#@BREAK = 2 】;
+#STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefTypeDynArray(CStyleRootRef))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)  auto foo[] #@NO_DEFID; // Make sure this is not confused with C-Style decl
 #STRUCTURE_EXPECTED: DeclarationBasicAttrib( IncompleteDeclaration(*) )

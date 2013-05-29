@@ -58,19 +58,18 @@ DeclarationImport(ImportAlias(DefSymbol RefModule) ImportAlias(DefSymbol RefModu
 ¤》
 
 #@IMPORT_END《
-  ►#?STRUCTURE_EXPECTED!【;● 】●
-  ►#?STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON)● 】●
+  ►#@SEMICOLON_OR_BREAK●
   ►#?STRUCTURE_EXPECTED!【, #@^ID_OR_NO(END_ID) ;● #@^ID_OR_NO(END_ID)】●
 ¤》
 
-#@END_IGNORE!《#error(EXP_SEMICOLON) #parser(IgnoreRest)》
+#@END_IGNORE!《#error(EXP_SEMICOLON) #@BREAK》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-import #@EXTRA_ARG_OR_NO #@ID_OR_NO #@IMPORT_END  
+#PARSE(DECLARATION)   import #@EXTRA_ARG_OR_NO #@ID_OR_NO #@IMPORT_END  
 #STRUCTURE_EXPECTED:
 DeclarationImport(#@EXTRA_ARG_OR_NO #@ID_OR_NO #@IMPORT_END)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DeclarationImport)  import #@EXTRA_ARG_OR_NO #@END_REP_TEST《
+#PARSE(DECLARATION)   import #@EXTRA_ARG_OR_NO #@END_REP_TEST《
   ►#?STRUCTURE_EXPECTED!【foo #@END_IGNORE dummy;● ImportContent(RefModule)】●
   ►#?STRUCTURE_EXPECTED!【ali = foo #@END_IGNORE = dummy;●ImportAlias(DefSymbol RefModule)】●
 ¤》
@@ -124,7 +123,7 @@ import #@ID_OR_NO : #@SELID_EXTRA_OR_NO #@SELID_OR_NO #@SELIMPORT_END
 DeclarationImport(ImportSelective( #@ID_OR_NO #@SELID_EXTRA_OR_NO #@SELID_OR_NO #@SELIMPORT_END ))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DeclarationImport)  import foo : #@SELID_EXTRA_OR_NO #@END_REP_TEST《
+#PARSE(DECLARATION)   import foo : #@SELID_EXTRA_OR_NO #@END_REP_TEST《
   ►#?STRUCTURE_EXPECTED!【foo       #@END_IGNORE dummy;  ● RefImportSelection】●
   ►#?STRUCTURE_EXPECTED!【foo       #@END_IGNORE : dummy;● RefImportSelection】●
   ►#?STRUCTURE_EXPECTED!【ali = foo #@END_IGNORE = dummy;● ImportSelectiveAlias(DefSymbol RefImportSelection)】●

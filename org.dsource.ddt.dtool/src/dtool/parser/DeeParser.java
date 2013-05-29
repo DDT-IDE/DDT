@@ -52,8 +52,6 @@ public class DeeParser extends DeeParser_Statements {
 			result = new DeeParserResult(parseStatement(), this);
 		} else if(parseRule.equalsIgnoreCase("INIT_STRUCT")) {
 			result = new DeeParserResult(parseStructInitializer(), this);
-		} else if(parseRule.equals("DeclarationImport")) {
-			result = new DeeParserResult(parseDeclarationImport(), this);
 		} else {
 			throw assertFail();
 		}

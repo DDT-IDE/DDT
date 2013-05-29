@@ -392,22 +392,25 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		final boolean isAutoRef = ref == null;
 		ParseHelper parse = new ParseHelper(isAutoRef ? defId.getStartPos() : ref.getStartPos());
 		
-		if(!isAutoRef) {
-			cstyleSuffix = parseCStyleSuffix(parse);
+		parsing: {
+			if(!isAutoRef) {
+				cstyleSuffix = parseCStyleSuffix(parse);
+			}
+			if(parse.ruleBroken) break parsing;
+			
+			if(parse.consumeOptional(DeeTokens.ASSIGN)){
+				init = parseInitializer().node;
+			} else if(isAutoRef) {
+				parse.store(createExpectedTokenError(DeeTokens.ASSIGN));
+			}
+			
+			while(parse.consumeOptional(DeeTokens.COMMA)) {
+				DefVarFragment defVarFragment = parseVarFragment(isAutoRef);
+				fragments = lazyInitArrayList(fragments);
+				fragments.add(defVarFragment);
+			}
 		}
-		
-		if(tryConsume(DeeTokens.ASSIGN)){
-			init = parseInitializer().node;
-		} else if(isAutoRef) {
-			parse.store(createExpectedTokenError(DeeTokens.ASSIGN));
-		}
-		
-		while(tryConsume(DeeTokens.COMMA)) {
-			DefVarFragment defVarFragment = parseVarFragment(isAutoRef);
-			fragments = lazyInitArrayList(fragments);
-			fragments.add(defVarFragment);
-		}
-		parse.consumeRequired(DeeTokens.SEMICOLON);
+		parse.clearRuleBroken().consumeRequired(DeeTokens.SEMICOLON);
 		
 		if(isAutoRef) {
 			return parse.resultConclude(new DefinitionAutoVariable(defId, init, arrayView(fragments)));
@@ -918,7 +921,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			
 			cstyleSuffix = parseCStyleSuffix(parse);
 			
-			while(tryConsume(DeeTokens.COMMA)) {
+			while(parse.consumeOptional(DeeTokens.COMMA)) {
 				fragments = lazyInitArrayList(fragments);
 				fragments.add(parseAliasVarDeclFragment());
 			}
@@ -934,10 +937,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		ArrayView<IFunctionParameter> fnParams = parseFunctionParameters(parse, true);
 		ArrayView<FunctionAttributes> fnAttributes = null;
-		if(parse.ruleBroken) {
-			parse.ruleBroken = false;
-		} else {
+		if(!parse.ruleBroken) {
 			fnAttributes = parseFunctionAttributes();
+		} else {
+			parse.clearRuleBroken();
 		}
 		parse.consumeRequired(DeeTokens.SEMICOLON);
 		return parse.resultConclude(new DefinitionAliasFunctionDecl(ref, defId, fnParams, fnAttributes));
@@ -1174,7 +1177,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		} while(tryConsume(DeeTokens.COMMA));
 		
 		parse.consumeRequired(DeeTokens.SEMICOLON);
-		parse.ruleBroken = false;
 		return parse.resultConclude(new DeclarationImport(isStatic, arrayView(fragments)));
 	}
 	

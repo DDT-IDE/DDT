@@ -268,7 +268,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			ref = parse.checkResult(parseTypeReference());
 			if(ref == null) {
 				ref = parseMissingTypeReference(RULE_REFERENCE);
-				parse.ruleBroken = true;
+				parse.setRuleBroken(true);
 			}
 		}
 		return parse.resultConclude(new RefTypeModifier(modKind, ref, hasParens));
@@ -287,7 +287,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			assertTrue(!RefQualified.isExpressionQualifier(qualifier));
 			consumeLookAhead();
 			RefIdentifier qualifiedId = parseRefIdentifier();
-			parse.ruleBroken = isMissing(qualifiedId);
+			parse.setRuleBroken(isMissing(qualifiedId));
 			leftRef = parse.conclude(new RefQualified(qualifier, qualifiedId));
 			
 		} else if(isTemplateInstanceLookahead() && isValidTemplateReferenceSyntax(leftRef)){ // template instance
@@ -1795,16 +1795,18 @@ protected class ParseRule_TypeOrExp {
 		ArrayView<Expression> args = null;
 		
 		parsing: {
-			if(tryConsume(DeeTokens.OPEN_PARENS)) {
+			if(parse.consumeOptional(DeeTokens.OPEN_PARENS)) {
 				allocArgs = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
 			}
-			if(tryConsume(DeeTokens.KW_CLASS)) {
+			if(parse.ruleBroken) break parsing;
+			
+			if(parse.consumeOptional(DeeTokens.KW_CLASS)) {
 				return parseNewAnonClassExpression_afterClassKeyword(parse, allocArgs);
 			}
 			if(parse.ruleBroken) break parsing;
 			
 			type = parseTypeReference_ToMissing(true).node;
-			parse.ruleBroken = isMissing(type);
+			parse.setRuleBroken(isMissing(type));
 			if(parse.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
@@ -1817,7 +1819,6 @@ protected class ParseRule_TypeOrExp {
 	
 	protected NodeResult<ExpNewAnonClass> parseNewAnonClassExpression_afterClassKeyword(ParseHelper parse, 
 		ArrayView<Expression> allocArgs) {
-		parse.ruleBroken = false;
 		
 		ArrayView<Expression> args = null;
 		SimpleListParseHelper<Reference> baseClasses = thisParser().new TypeReferenceSimpleListParse();

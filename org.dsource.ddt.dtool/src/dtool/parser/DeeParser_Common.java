@@ -48,8 +48,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 		public void parseList(boolean required, DeeTokens tkOPEN, DeeTokens tkSEP, DeeTokens tkCLOSE, 
 			boolean canHaveEndingSep) {
 			ParseHelper parse = this;
-			if(!tryConsume(tkOPEN)) {
-				parse.ruleBroken = required;
+			if(parse.consume(tkOPEN, !required, required) == false) {
 				return;
 			}
 			setStartPosition(lastLexElement().getStartPos());
