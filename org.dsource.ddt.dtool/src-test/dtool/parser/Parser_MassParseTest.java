@@ -14,6 +14,7 @@ import org.junit.runners.Parameterized.Parameters;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.DToolTests;
+import dtool.tests.MiscDeeTestUtils;
 import dtool.tests.MiscFileUtils;
 
 /**
@@ -40,7 +41,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 		File massParseZipFilesFolder = DToolTestResources.getTestResource(MASSPARSE_ZIPFOLDER);
 		for (File zipFile : MiscFileUtils.collectZipFiles(massParseZipFilesFolder)) {
 			File unzippedFolder = unzipSource(zipFile);
-			addMassParseTest(testList, unzippedFolder);
+			testList.add(array(unzippedFolder.getName(), new MassParseTestRunnable(unzippedFolder, zipFile)));
 		}
 		return testList;
 	}
@@ -59,10 +60,6 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 		return getFile(getFile(DToolTestResources.getWorkingDir(), COMMON_UNPACK), segments);
 	}
 	
-	public static void addMassParseTest(final Collection<Object[]> testList, File unpackedFolder) {
-		testList.add(new Object[] { unpackedFolder.getName(), new MassParseTestRunnable(unpackedFolder) });
-	}
-	
 	/* ------------------------------------ */
 	
 	public Parser_MassParseTest(String testDescription, Runnable testRunnable) {
@@ -71,23 +68,50 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 	
 	public static class MassParseTestRunnable extends DToolBaseTest implements Runnable {
 		
-		public File unpackedFolder;
+		public final File unpackedFolder;
+		public final File zipFile;
 		
-		public MassParseTestRunnable(File unpackedFolder) {
+		public MassParseTestRunnable(File unpackedFolder, File zipFile) {
 			this.unpackedFolder = unpackedFolder;
+			this.zipFile = zipFile;
 		}
 		
 		@Override
 		public void run() {
 			ArrayList<File> moduleList = getDeeModuleList(unpackedFolder);
 			boolean canHaveSyntaxErrors = unpackedFolder.getName().contains(BAD_SYNTAX);
+			String[] exclusions = getExclusions();
+			
 			for (File file : moduleList) {
-				testFileParse(canHaveSyntaxErrors, file);
+				testFileParse(canHaveSyntaxErrors, file, exclusions);
 			}
 		}
 		
-		public void testFileParse(boolean canHaveSyntaxErrors, File file) {
+		public String[] getExclusions() {
+			File exclusionsFiles = new File(zipFile.toString() + ".EXCLUSIONS");
+			if(!exclusionsFiles.exists()) 
+				return new String[0];
+			String exclusionsFileSource = readStringFromFileUnchecked(exclusionsFiles);
+			String[] exclusions = MiscDeeTestUtils.splitLines(exclusionsFileSource);
+			return exclusions;
+		}
+		
+		public void testFileParse(boolean canHaveSyntaxErrors, File file, String[] exclusions) {
 			testsLogger.println("----------> " + DToolTestResources.resourceFileToString(file, COMMON_UNPACK));
+			String fileName = file.getName().toLowerCase();
+			if(!(fileName.endsWith(".d") || fileName.endsWith(".di")) ) {
+				canHaveSyntaxErrors = true;
+			}
+			if(canHaveSyntaxErrors == false) {
+				for (String exclusion : exclusions) {
+					String uriString = file.toURI().toString();
+					if(uriString.endsWith(exclusion)) {
+						canHaveSyntaxErrors = true;
+						break;
+					}
+				}
+			}
+			
 			String source = readStringFromFileUnchecked(file);
 			Parser__CommonTest.parseSource(source, null, false, "_tests_unnamed_");
 //			Parser__CommonTest.testParseSource(source, canHaveSyntaxErrors ? null : false, false, "_unnamed");

@@ -1,0 +1,6 @@
+#Note these are only exluded because of __vector()
+/dmd.2.062-druntime-src.zip/core/simd.d
+/dmd.2.062-druntime-src.zip/core/stdc/stdarg.d
+
+# TODO: alias extern(C) int blah(T);
+/dmd.2.062-druntime-src.zip/core/sys/freebsd/dlfcn.d

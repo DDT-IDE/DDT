@@ -1,5 +1,7 @@
 package dtool.tests;
 
+import java.util.regex.Pattern;
+
 import melnorme.utilbox.core.Function;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
@@ -32,6 +34,12 @@ public class MiscDeeTestUtils {
 				return obj == null ? null : obj.toStringAsCode();
 			}
 		};
+	}
+	
+	public static final Pattern LINE_SPLITTER = Pattern.compile("\n|(\r\n)|\r");
+	
+	public static String[] splitLines(String exclusionsFile) {
+		return LINE_SPLITTER.split(exclusionsFile);
 	}
 	
 }
