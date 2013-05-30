@@ -130,6 +130,8 @@ public enum DeeTokens {
 	KW_STATIC("static",             ATTRIBUTE_KW), 
 	KW_SYNCHRONIZED("synchronized", ATTRIBUTE_KW),
 	
+	KW_REF("ref"                  , ATTRIBUTE_KW),
+	
 	KW_AUTO("auto"),
 	
 	KW_ALIAS("alias"), KW_ALIGN("align"), 
@@ -148,7 +150,7 @@ public enum DeeTokens {
 	KW_MACRO("macro"), KW_MIXIN("mixin"), KW_MODULE("module"), 
 	KW_NEW("new"), KW_NULL("null"), KW_OUT("out"), 
 	KW_PRAGMA("pragma"), 
-	KW_REF("ref"), KW_RETURN("return"), 
+	KW_RETURN("return"), 
 	
 	KW_STRUCT("struct"), KW_SUPER("super"), KW_SWITCH("switch"), 
 	KW_TEMPLATE("template"), KW_THIS("this"), KW_THROW("throw"), KW_TRUE("true"), KW_TRY("try"), 

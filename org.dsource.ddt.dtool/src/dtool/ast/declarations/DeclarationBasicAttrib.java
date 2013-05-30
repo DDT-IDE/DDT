@@ -36,6 +36,8 @@ public class DeclarationBasicAttrib extends DeclarationAttrib implements IDeclar
 		SCOPE,
 		STATIC,
 		SYNCHRONIZED,
+		
+		REF,
 		;
 		
 		public static AttributeKinds fromToken(DeeTokens token) {
@@ -59,6 +61,7 @@ public class DeclarationBasicAttrib extends DeclarationAttrib implements IDeclar
 			case KW_SCOPE: return SCOPE;
 			case KW_STATIC: return STATIC;
 			case KW_SYNCHRONIZED: return SYNCHRONIZED;
+			case KW_REF: return REF;
 			default:
 				return null;
 			}

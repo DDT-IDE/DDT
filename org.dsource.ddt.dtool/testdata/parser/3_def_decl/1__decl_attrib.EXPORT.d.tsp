@@ -16,7 +16,10 @@
  ►#?STRUCTURE_EXPECTED!【scope●DeclarationBasicAttrib( 】●
  ►#?STRUCTURE_EXPECTED!【static●DeclarationBasicAttrib( 】●
  ►#?STRUCTURE_EXPECTED!【synchronized●DeclarationBasicAttrib( 】●
+ 
+ ►#?STRUCTURE_EXPECTED!【ref●DeclarationBasicAttrib( 】●
 ¤》
+// ref attrib is not documented in spec as an attrib as of 2.062
 
 #@PROT_ATTRIB【#?STRUCTURE_EXPECTED!【#@《private●package●protected●public●export》● DeclarationProtection( 】】
 #@AT_ATTRIB【#?STRUCTURE_EXPECTED!【#@《@property●@safe●@trusted●@  system●@disable●@ #error(INVALID_ATTRIB_ID){xxx}》●

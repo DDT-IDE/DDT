@@ -521,7 +521,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	protected NodeResult<DefinitionConstructor> parseDefinitionConstructor() {
 		if(tryConsume(DeeTokens.KW_THIS) == false) {
-			return nullResult();
+			return null;
 		}
 		ParseHelper parse = new ParseHelper();
 		ProtoDefSymbol defId = defSymbol(lastLexElement()); // TODO: mark this as special DefSymbol
@@ -868,7 +868,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public NodeResult<? extends IDeclaration> parseAliasDefinition() {
 		if(!tryConsume(DeeTokens.KW_ALIAS))
-			return AbstractParser.<DefinitionAlias>nullResult();
+			return null;
 		ParseHelper parse = new ParseHelper();
 		
 		if(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.ASSIGN) {
@@ -974,7 +974,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	protected NodeResult<DeclarationAliasThis> parseDeclarationAliasThis() {
 		if(!tryConsume(DeeTokens.KW_ALIAS))
-			return nullResult();
+			return null;
 		ParseHelper parse = new ParseHelper();
 		
 		boolean isAssignSyntax = false;
@@ -1385,9 +1385,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public NodeResult<DeclarationBasicAttrib> parseDeclarationBasicAttrib() {
 		AttributeKinds attrib = AttributeKinds.fromToken(lookAhead());
-		if(attrib == null) {
+		if(attrib == null)
 			return null;
-		}
+		
 		consumeLookAhead();
 		ParseHelper parse = new ParseHelper();
 		if(attrib == AttributeKinds.DEPRECATED) {
@@ -1632,7 +1632,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public NodeResult<DeclarationAllocatorFunction> parseDeclarationAllocatorFunctions() {
 		if((tryConsume(DeeTokens.KW_NEW) || tryConsume(DeeTokens.KW_DELETE)) == false)
-			return nullResult();
+			return null;
 		ParseHelper parse = new ParseHelper();
 		
 		boolean isNew = lastLexElement().token.type == DeeTokens.KW_NEW;
