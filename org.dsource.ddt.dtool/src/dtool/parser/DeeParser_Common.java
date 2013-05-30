@@ -164,20 +164,17 @@ public abstract class DeeParser_Common extends AbstractParser {
 		public void parseRuleFragment(ParseHelper parse, boolean createMissing) {
 			type = parse.checkResult(thisParser().parseTypeReference());
 			
-			if(lookAhead() == DeeTokens.IDENTIFIER) {
-				missingDefIdParse();
+			if(parse.ruleBroken) {
+				defId = parseMissingDefIdNoError();
+			} else if(lookAhead() == DeeTokens.IDENTIFIER) {
+				defId = parseDefId();
 			} else if(couldHaveBeenParsedAsId(type)) {
-				assertTrue(parse.ruleBroken == false);
 				singleIdReparse();
 			} else {
 				if(type == null && !createMissing) {
 					return;
 				}
-				if(parse.ruleBroken) {
-					defId = parseMissingDefIdNoError();
-				} else {
-					missingDefIdParse();
-				}
+				missingDefIdParse();
 			}
 			
 			if(parse.nodeStart == -1) {

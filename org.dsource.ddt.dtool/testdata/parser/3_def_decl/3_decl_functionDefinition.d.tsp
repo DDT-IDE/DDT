@@ -17,11 +17,11 @@ DefFunction( RefTypeModifier(?) DefSymbol #@FN_PARAMS_SAMPLE FunctionBody(*) )
 DefFunction( RefTypeModifier(?) DefSymbol #@FN_PARAMS_SAMPLE InOutFunctionBody(* FunctionBodyOutBlock(Symbol *) *))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic cases with template params
-inout(xpto) func(#@TPL_PARAMS_SAMPLE1) ( #@FN_PARAMS_SAMPLE ) nothrow body { int foo; }
-inout(xpto) func(#@TPL_PARAMS_SAMPLE1) ( #@FN_PARAMS_SAMPLE ) if( #@EXP_ANY__LITE ) body { int foo; }
+inout(xpto) func(#@TPL_PARAMS__SAMPLE) ( #@FN_PARAMS_SAMPLE ) nothrow body { int foo; }
+inout(xpto) func(#@TPL_PARAMS__SAMPLE) ( #@FN_PARAMS_SAMPLE ) if( #@EXP_ANY__LITE ) body { int foo; }
 #STRUCTURE_EXPECTED:
-DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS_SAMPLE1 #@FN_PARAMS_SAMPLE FunctionBody(*) )
-DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS_SAMPLE1 #@FN_PARAMS_SAMPLE #@EXP_ANY__LITE FunctionBody(*) )
+DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS__SAMPLE #@FN_PARAMS_SAMPLE FunctionBody(*) )
+DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS__SAMPLE #@FN_PARAMS_SAMPLE #@EXP_ANY__LITE FunctionBody(*) )
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ return type reference
@@ -56,9 +56,9 @@ DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_PARAMS #@ST_BLOCK__SAM
 #STRUCTURE_EXPECTED:
 DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_AFTER_PARAM )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   Foo tplFunc( #@TPL_PARAMS_SAMPLE1 ) #error(EXP_OPEN_PARENS)【】 #@BREAK #@ST_BLOCK__SAMPLE
+#PARSE(DECLARATION)   Foo tplFunc( #@TPL_PARAMS__SAMPLE ) #error(EXP_OPEN_PARENS)【】 #@BREAK #@ST_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED:
-DefFunction(RefIdentifier DefSymbol #@TPL_PARAMS_SAMPLE1 #@BREAK #@ST_BLOCK__SAMPLE )
+DefFunction(RefIdentifier DefSymbol #@TPL_PARAMS__SAMPLE #@BREAK #@ST_BLOCK__SAMPLE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   Foo tplFunc( #@TPLPARAMS #?FN_UNAMBIG_ARG【#:DISCARD_CASE】 ) ( #@FN_PARAMS_SAMPLE ) #@ST_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED:

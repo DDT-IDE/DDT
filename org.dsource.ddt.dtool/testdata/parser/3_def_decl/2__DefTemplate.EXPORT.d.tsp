@@ -62,6 +62,13 @@
   ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE● #@TPL_PARAMS__SAMPLE】●
 ¤》
 
+#@TPLPARAMS__SIMPLE_TESTER《
+  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS_SAMPLE1● #@TPL_PARAMS_SAMPLE1】●
+  ►#?STRUCTURE_EXPECTED!【int R = 1● TemplateValueParam(RefPrimitive DefSymbol Integer)】●
+  ►#?STRUCTURE_EXPECTED!【T = bar●TemplateTypeParam(DefSymbol RefIdentifier)】● 
+  ►#?STRUCTURE_EXPECTED!【int R = 1, #@NO_TPLPARAM● TemplateValueParam(RefPrimitive DefSymbol Integer) #@NO_TPLPARAM】●
+¤》
+
 #@NO_TPLPARAM《
   ►#?STRUCTURE_EXPECTED!【#@NO_TYPEREF ● TemplateTypeParam(DefSymbol) 】●
 ¤》

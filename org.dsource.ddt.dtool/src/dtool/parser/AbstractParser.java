@@ -267,8 +267,9 @@ public abstract class AbstractParser {
 			return srToPosition(nodeStart, node);
 		}
 		
-		public final boolean consumeRequired(DeeTokens expectedTokenType) {
-			return consume(expectedTokenType, false, true);
+		public final ParseHelper consumeRequired(DeeTokens expectedTokenType) {
+			consume(expectedTokenType, false, true);
+			return this;
 		}
 		
 		public final boolean consumeExpected(DeeTokens expectedTokenType) {
@@ -319,6 +320,16 @@ public abstract class AbstractParser {
 				setRuleBroken(false);
 			}
 			return this;
+		}
+		
+		/** Disable parsing until ruleBroken is explicitly checked. (safety feature) */
+		public void requireBrokenCheck() {
+			thisParser().setEnabled(false);
+		}
+		
+		public boolean checkRuleBroken() {
+			thisParser().setEnabled(true);
+			return ruleBroken;
 		}
 		
 		public <T extends ASTNode> T requiredResult(NodeResult<T> nodeResult, ParseRuleDescription expectedRule) {

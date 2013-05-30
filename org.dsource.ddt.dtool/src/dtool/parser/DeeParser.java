@@ -140,19 +140,24 @@ public class DeeParser extends DeeParser_Statements {
 	}
 	
 	public DeeParserState enterBacktrackableMode() {
-		DeeParserState parserState = new DeeParserState();
-		parserState.lexSource = getEnabledLexSource().saveState();
-		return parserState;
+		LexElementSource lexSource = getEnabledLexSource().saveState();
+		return new DeeParserState(lexSource, enabled);
 	}
 	
 	public void restoreOriginalState(DeeParserState savedState) {
 		this.lexSource.resetState(savedState.lexSource);
+		this.enabled = savedState.enabled;
 	}
 	
 	public class DeeParserState {
 		
-		protected ArrayList<ParserError> errors;
-		protected LexElementSource lexSource;
+		protected final LexElementSource lexSource;
+		protected final boolean enabled;
+		
+		public DeeParserState(LexElementSource lexSource, boolean enabled) {
+			this.lexSource = lexSource;
+			this.enabled = enabled;
+		}
 		
 	}
 	

@@ -87,7 +87,7 @@ DeclarationAlign() DefinitionVariable(RefPrimitive DefSymbol)
 #PARSE(DECLARATION)  #@ATTRIBS { #@DECL_LIST_SAMPLE #@CLOSEBRACE_OR_BREAK
 #STRUCTURE_EXPECTED: #@ATTRIBS DeclBlock( #@DECL_LIST_SAMPLE ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM int foo;
+#PARSE(DECLARATION)  #@ATTRIBS_WITH_ENUM int foo #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED: #@ATTRIBS_WITH_ENUM DefinitionVariable(* *) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;

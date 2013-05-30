@@ -256,12 +256,12 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		IStatement elseBody = null;
 		
 		parsing: { 
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) break parsing;
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 			conditionVar = attemptParseVariableDefWithInit(true);
 			if(conditionVar == null) {
 				condition = parseExpression_toMissing();
 			}
-			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
+			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			
 			thenBody = parse.checkResult(parseStatement_toMissing());
 			if(parse.ruleBroken) break parsing;
@@ -307,7 +307,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			}
 			
 			Expression defaultValue = null;
-			if(parse.consumeRequired(DeeTokens.ASSIGN)) {
+			if(parse.consumeRequired(DeeTokens.ASSIGN).ruleBroken == false) {
 				defaultValue = parseExpression_toMissing();
 			}
 			return parse.conclude(new VariableDefWithInit(type, defId, defaultValue));
@@ -353,7 +353,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			body = parse.checkResult(parseStatement_toMissing(RULE_ST_OR_BLOCK));
 			if(parse.ruleBroken) break parsing;
 			
-			if(parse.consumeRequired(DeeTokens.KW_WHILE) == false) break parsing;
+			if(parse.consumeRequired(DeeTokens.KW_WHILE).ruleBroken) break parsing;
 			
 			condition = parseExpressionAroundParentheses(parse, true, false);
 			if(parse.ruleBroken) break parsing;
@@ -374,7 +374,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		IStatement body = null;
 		
 		parsing: { 
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) break parsing;
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 			
 			init = parse.checkResult(parseStatement_toMissing(RULE_STATEMENT));
 			if(parse.ruleBroken) break parsing;
@@ -405,7 +405,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		IStatement body = null;
 		
 		parsing: { 
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false) break parsing;
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 		
 			ArrayList<ForeachVariableDef> varParamsList = new ArrayList<>(2);
 			do {
@@ -418,7 +418,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 				iterable = parseForeachIterableExpression();
 			}
 			
-			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false) break parsing;
+			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			
 			body = parse.checkResult(parseStatement_toMissing());
 		}
@@ -508,7 +508,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		Expression expLast = null;
 		ScopedStatementList body = null;
 		parsing: {
-			if(parse.consumeRequired(DeeTokens.KW_CASE) == false) break parsing;
+			if(parse.consumeRequired(DeeTokens.KW_CASE).ruleBroken) break parsing;
 			
 			expLast = parseAssignExpression_toMissing();
 			
@@ -663,8 +663,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 					parse.store(createErrorOnLastToken(ParserErrorTypes.INVALID_SCOPE_ID, null));
 				}
 				
-				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false)
-					break parsing;
+				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			}
 			
 			body = parse.checkResult(parseStatement_toMissing());
@@ -691,8 +690,9 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			catches = new ArrayList<>();
 			while(true) {
 				TryCatchClause catchClause = parse.checkResult(parseTryCatchClause());
-				if(catchClause == null) 
+				if(catchClause == null) {
 					break;
+				}
 				catches.add(catchClause);
 				if(parse.ruleBroken) break parsing;
 			}
@@ -721,8 +721,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
 				catchParam = parseSimpleVariableDef();
 				
-				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false)
-					break parsing;
+				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			}
 			
 			body = parse.checkResult(parseStatement_toMissing());

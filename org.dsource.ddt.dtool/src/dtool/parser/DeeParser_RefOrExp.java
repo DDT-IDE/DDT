@@ -242,7 +242,9 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		ParseHelper parse = new ParseHelper();
 		
 		Expression exp = null;
-		if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
+		parsing: {
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
+			
 			if(tryConsume(DeeTokens.KW_RETURN)) {
 				exp = conclude(srOf(lastLexElement(), new RefTypeof.ExpRefReturn()));
 			} else {
@@ -359,10 +361,13 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	
 	public Reference parseCStyleSuffix(ParseHelper parse) {
 		if(lookAhead() != DeeTokens.OPEN_BRACKET) {
+			parse.requireBrokenCheck();
 			return null;
 		}
 		CStyleRootRef cstyleRootRef = conclude(srAt(getLexPosition()), new CStyleRootRef());
-		return parse.checkResult(parseCStyleDeclaratorSuffix(cstyleRootRef));
+		NodeResult<Reference> cstyleDeclaratorSuffix = parseCStyleDeclaratorSuffix(cstyleRootRef);
+		parse.requireBrokenCheck();
+		return parse.checkResult(cstyleDeclaratorSuffix);
 	}
 	
 	protected NodeResult<Reference> parseCStyleDeclaratorSuffix(Reference leftRef) {
@@ -596,7 +601,7 @@ protected class ParseRule_TypeOrExp {
 		return result || expSoFar == null;
 	}
 	
-	public void setParseBroken(boolean parseBroken) {
+	public void setToEParseBroken(boolean parseBroken) {
 		this.breakRule = parseBroken;
 		if(breakRule) {
 			setEnabled(false);
@@ -604,7 +609,7 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	public Expression enterTypeOrExpMissingRightExpMode() {
-		setParseBroken(true);
+		setToEParseBroken(true);
 		isRightExpMissing = true;
 		if(mode == TypeOrExpStatus.TYPE_OR_EXP) {
 			mode = TypeOrExpStatus.TYPE_OR_EXP_WITH_MISSING_RIGHT;
@@ -623,7 +628,7 @@ protected class ParseRule_TypeOrExp {
 		return typeOrExpConnect(exp);
 	}
 	protected Expression expConnect(boolean parseBroken, Expression exp) {
-		setParseBroken(parseBroken);
+		setToEParseBroken(parseBroken);
 		return expConnect(exp);
 	}
 	protected Expression expConnect(NodeResult<? extends Expression> result) {
@@ -636,7 +641,7 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	protected Expression typeOrExpConnect(Expression exp, boolean parseBroken) {
-		setParseBroken(parseBroken);
+		setToEParseBroken(parseBroken);
 		return typeOrExpConnect(exp);
 	}
 	
@@ -829,7 +834,7 @@ protected class ParseRule_TypeOrExp {
 					updateTypeOrExpMode(TypeOrExpStatus.TYPE); // Beginning of Type ref
 				}
 			}
-			setParseBroken(ruleBroken);
+			setToEParseBroken(ruleBroken);
 			return typeOrExpConnect(null, error, null, createExpReference(ref));
 		}
 	}
@@ -995,8 +1000,8 @@ protected class ParseRule_TypeOrExp {
 				if(opType == InfixOpType.CONDITIONAL) {
 					middleExp = nullExpToMissing(parseExpression().node);
 					
-					if(parse.consumeRequired(DeeTokens.COLON) == false) {
-						setParseBroken(true);
+					if(parse.consumeRequired(DeeTokens.COLON).ruleBroken) {
+						setToEParseBroken(true);
 						break parsing;
 					}
 				}
@@ -1005,7 +1010,7 @@ protected class ParseRule_TypeOrExp {
 				
 				if(mode == TypeOrExpStatus.EXP) {
 					NodeResult<Expression> expResult = parseExpression(rightExpPrecedence);
-					setParseBroken(expResult.ruleBroken);
+					setToEParseBroken(expResult.ruleBroken);
 					rightExp = expResult.node;
 				} else {
 					rightExp = parseTypeOrExpression_start(rightExpPrecedence, false);
@@ -1103,7 +1108,7 @@ protected class ParseRule_TypeOrExp {
 					if(isMissing(firstArg) && lookAhead() != DeeTokens.COMMA && lookAhead() != secondLA) {
 						if(isExpIndexing) {
 							parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
-							setParseBroken(parse.ruleBroken);
+							setToEParseBroken(parse.ruleBroken);
 							return typeOrExpConnect(parse, parse.initRange(new ExpSlice(calleeExp)));
 						}
 						break; // Empty array literal
@@ -1124,7 +1129,7 @@ protected class ParseRule_TypeOrExp {
 						exp2 = parseAssignExpression_toMissing();
 						
 						parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
-						setParseBroken(parse.ruleBroken);
+						setToEParseBroken(parse.ruleBroken);
 						
 						if(!isExpIndexing) { // Small trick to improve parsing
 							calleeExp = createTypeOrExpMissingExp(TypeOrExpStatus.TYPE, false);
@@ -1162,7 +1167,7 @@ protected class ParseRule_TypeOrExp {
 			
 			
 			parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
-			setParseBroken(parse.ruleBroken);
+			setToEParseBroken(parse.ruleBroken);
 			
 			if(calleeExp == null) {
 				if(mapElements != null ) {
@@ -1718,7 +1723,8 @@ protected class ParseRule_TypeOrExp {
 		
 		Expression exp = null;
 		Expression msg = null;
-		if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
+		parsing: {
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 			exp = parseAssignExpression_toMissing();
 			if(tryConsume(DeeTokens.COMMA)) {
 				msg = parseAssignExpression_toMissing();
@@ -1769,8 +1775,8 @@ protected class ParseRule_TypeOrExp {
 		
 		Reference ref = null;
 		Expression exp = null;
-		
-		if(parse.consumeRequired(DeeTokens.OPEN_PARENS)) {
+		parsing: {
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 			Resolvable resolvable = nullTypeOrExpToMissing(parseTypeOrExpression(true).node);
 			if(resolvable instanceof Reference) {
 				ref = (Reference) resolvable;
@@ -1797,8 +1803,8 @@ protected class ParseRule_TypeOrExp {
 		parsing: {
 			if(parse.consumeOptional(DeeTokens.OPEN_PARENS)) {
 				allocArgs = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
+				if(parse.ruleBroken) break parsing;
 			}
-			if(parse.ruleBroken) break parsing;
 			
 			if(parse.consumeOptional(DeeTokens.KW_CLASS)) {
 				return parseNewAnonClassExpression_afterClassKeyword(parse, allocArgs);
@@ -1848,15 +1854,13 @@ protected class ParseRule_TypeOrExp {
 		Expression exp = null;
 		
 		parsing: {
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false)
-				break parsing;
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 			
 			qualifier = parseCastQualifier();
 			if(qualifier == null) {
 				type = parseTypeReference_ToMissing(false).node;
 			}
-			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS) == false)
-				break parsing;
+			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			
 			exp = parseUnaryExpression(); // TODO: check break
 			exp = exp != null ? exp : createMissingExpression(RULE_EXPRESSION, false); 
@@ -1915,8 +1919,7 @@ protected class ParseRule_TypeOrExp {
 		ArrayView<TemplateParameter> tplParams = null;
 		
 		parsing: {
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false)
-				break parsing;
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 			
 			typeRef = parseTypeReference_ToMissing().node;
 			
@@ -1999,8 +2002,7 @@ protected class ParseRule_TypeOrExp {
 		ArrayView<Resolvable> args = null;
 		
 		parsing: {
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS) == false)
-				break parsing;
+			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 			
 			traitsId = parseTraitsId();
 			

@@ -278,7 +278,7 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 		
 		// Reparse check can be computationally expensive. They make parsing quadratic on node depth.
-		boolean doReparseCheck = DToolTests.TESTS_LITE_MODE;
+		boolean doReparseCheck = DToolTests.TESTS_LITE_MODE && false; // reparse check disabled
 		new ASTNodeReparseCheck(fullSource, node).doCheck(doReparseCheck);
 	}
 	
