@@ -4,6 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
+import dtool.ast.references.Reference;
 import dtool.parser.ParserError;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -114,6 +115,14 @@ public abstract class DefUnit extends ASTNode {
 	@Deprecated
 	public String toStringForCodeCompletion() {
 		return getName() + " - " + getModuleScope().toStringAsElement();
+	}
+	
+	// TODO: move this to UI code
+	public static String typeRefToUIString(Reference typeReference) {
+		if(typeReference == null) {
+			return "<auto>";
+		}
+		return typeReference.toStringAsElement();
 	}
 	
 }

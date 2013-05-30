@@ -371,7 +371,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		setupDefinitionTypeInfo(elem, methodInfo);
 		
 		setupParametersInfo(elem, methodInfo);
-		methodInfo.returnType = typeRefToUIString(elem.retType);
+		methodInfo.returnType = DefUnit.typeRefToUIString(elem.retType);
 		return methodInfo;
 	}
 	
@@ -406,15 +406,8 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		setupDefUnitTypeInfo(elem, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
 		setupDefinitionTypeInfo(elem, fieldInfo);
 		
-		fieldInfo.type = typeRefToUIString(elem.type);
+		fieldInfo.type = DefUnit.typeRefToUIString(elem.type);
 		return fieldInfo;
-	}
-	
-	protected static String typeRefToUIString(Reference typeReference) {
-		if(typeReference == null) {
-			return "auto";
-		}
-		return typeReference.toStringAsElement();
 	}
 	
 }

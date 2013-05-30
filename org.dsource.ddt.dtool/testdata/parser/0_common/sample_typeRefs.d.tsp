@@ -37,7 +37,7 @@ for performance reasons, to keep the number of cases low.
   ►#@TYPE_REFS__QUALIFIER_ForTplOrDot●
   ►#@TYPE_REFS__QUALIFIER_ForDotOnly●
   
-  ►#?STRUCTURE_EXPECTED!【const shared int* #NO_TYPE_APPEND(flag)●RefTypeModifier(RefTypeModifier( RefTypePointer(RefPrimitive) ))】●
+  ►#?STRUCTURE_EXPECTED!【const shared int* #NO_TYPE_APPEND(flag) #TM_ATTRIB_AMBIG(flag)●RefTypeModifier(RefTypeModifier( RefTypePointer(RefPrimitive) ))】●
   ►#?STRUCTURE_EXPECTED!【int*●RefTypePointer(RefPrimitive)】●
   ►#?STRUCTURE_EXPECTED!【int*[]●RefTypeDynArray(RefTypePointer(RefPrimitive))】●
   ►#?STRUCTURE_EXPECTED!【foo*●RefTypePointer(RefIdentifier)】●

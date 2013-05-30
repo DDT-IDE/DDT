@@ -1,8 +1,5 @@
 package dtool.ast.definitions;
 
-import static dtool.util.NewUtils.assertNotNull_;
-
-
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -14,6 +11,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -27,7 +25,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 			ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 
 			Expression tplConstraint, IFunctionBody fnBody) {
 		super(defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
-		this.retType = parentize(assertNotNull_(retType));
+		this.retType = parentize(retType);
 	}
 	
 	@Override
@@ -60,6 +58,12 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 		return EArcheType.Function;
 	}
 	
+	public DefUnit findReturnTypeTargetDefUnit(IModuleResolver moduleResolver) {
+		if(retType == null) 
+			return null;
+		return retType.findTargetDefUnit(moduleResolver);
+	}
+	
 	public static String toStringParametersForSignature(ArrayView<IFunctionParameter> params) {
 		String strParams = "(";
 		for (int i = 0; i < params.size(); i++) {
@@ -79,7 +83,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	@Override
 	public String toStringForHoverSignature() {
 		String str = ""
-			+ retType.toStringAsElement() + " " + getName() 
+			+ typeRefToUIString(retType) + " " + getName() 
 			+ ASTCodePrinter.toStringParamListAsElements(tplParams)
 			+ toStringParametersForSignature(fnParams);
 		return str;
@@ -91,7 +95,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 		return getName()
 			+ ASTCodePrinter.toStringParamListAsElements(tplParams)
 			+ toStringParametersForSignature(fnParams) 
-			+ "  " + retType.toStringAsElement()
+			+ "  " + typeRefToUIString(retType)
 			+ " - " + NodeUtil.getOuterDefUnit(this).toStringAsElement();
 	}
 	

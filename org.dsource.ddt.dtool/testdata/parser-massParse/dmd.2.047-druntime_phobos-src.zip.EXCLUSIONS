@@ -1,3 +1,6 @@
+# typedef
 /dmd.2.047-druntime_phobos-src.zip/druntime/import/core/sys/windows/windows.d
-/dmd.2.047-druntime_phobos-src.zip/druntime/import/core/thread.di
+/dmd.2.047-druntime_phobos-src.zip/druntime/import/core/sys/windows/windows.di
+
+# old C-style function ptr decl
 /dmd.2.047-druntime_phobos-src.zip/druntime/import/object.di

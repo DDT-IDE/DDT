@@ -206,17 +206,6 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return determineTypeModifier(tokenType) != null;
 	}
 	
-	public boolean typeModifier_shouldParseAsAttrib(int laPos) {
-		assertTrue(isTypeModifier(lookAhead(laPos)));
-		
-		if(lookAhead(laPos + 1) == DeeTokens.IDENTIFIER) 
-			return lookAhead(laPos + 2) == DeeTokens.ASSIGN;
-		if(isTypeModifier(lookAhead(laPos + 1))) 
-			return typeModifier_shouldParseAsAttrib(laPos + 1);
-		
-		return lookAhead(laPos + 1) != DeeTokens.OPEN_PARENS && !canParseTypeReferenceStart(lookAhead(laPos + 1));
-	}
-	
 	public RefIdentifier parseRefIdentifier() {
 		BaseLexElement id = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
 		return conclude(id.getError(), srEffective(id, new RefIdentifier(idTokenToString(id))));

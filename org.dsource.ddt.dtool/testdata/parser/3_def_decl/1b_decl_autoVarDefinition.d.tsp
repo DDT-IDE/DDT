@@ -9,7 +9,7 @@ DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(?) DefVarFragme
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test normal var definition is not broken
 #@SIMPLE_ATTRIBS__SAMPLE #@TYPEREF_NBNE fooC = #@EXP_ASSIGN__LITE;
-#STRUCTURE_EXPECTED:
+#STRUCTURE_EXPECTED: #?TM_ATTRIB_AMBIG【#:DISCARD_CASE】
 #@SIMPLE_ATTRIBS__SAMPLE DefVariable(#@TYPEREF_NBNE DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test composite attribs dont make auto decl
@@ -34,7 +34,7 @@ DeclarationBasicAttrib(DeclarationBasicAttrib( DefAutoVariable(DefSymbol Initial
 #@AUTO_START《
   ►#?STRUCTURE_EXPECTED!【auto● DeclarationBasicAttrib( 】●
   ►#?STRUCTURE_EXPECTED!【static● DeclarationBasicAttrib( 】●
-  ►#?STRUCTURE_EXPECTED!【__gshared● DeclarationBasicAttrib( 】●
+  ►#?STRUCTURE_EXPECTED!【const● DeclarationBasicAttrib( 】●
   ►#?STRUCTURE_EXPECTED!【@disable● DeclarationAtAttrib(Symbol 】●
 ¤》
 

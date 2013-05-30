@@ -21,6 +21,7 @@ import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.AutoReference;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.BlockStatementUnscoped;
@@ -314,6 +315,11 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		}
 		thisParser().restoreOriginalState(savedState);
 		return null;  // An exp will be parsed instead 
+	}
+	
+	public AutoReference parseAutoReference() {
+		LexElement autoToken = consumeLookAhead(DeeTokens.KW_AUTO);
+		return conclude(srOf(autoToken, new AutoReference()));
 	}
 	
 	public NodeResult<StatementWhile> parseStatementWhile() {

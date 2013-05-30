@@ -26,12 +26,16 @@ DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS__SAMPLE #@FN_PARAMS_SAMPL
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ return type reference
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@TYPE_REFS__NO_BROKEN func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE
-#STRUCTURE_EXPECTED:
-DefFunction(#@TYPE_REFS__NO_BROKEN DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ auto ref
-#PARSE(DECLARATION)  auto func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE 
-#STRUCTURE_EXPECTED: DefFunction(AutoReference DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )
+#PARSE(DECLARATION)  #@TYPEREF_NBNE func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE
+#STRUCTURE_EXPECTED: #?TM_ATTRIB_AMBIG【DeclarationBasicAttrib(*)●
+         DefFunction(#@TYPEREF_NBNE DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )】
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ommited return type
+#PARSE(DECLARATION)  #@STC func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE 
+#STRUCTURE_EXPECTED: #@STC DefFunction(DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE) )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ommited return type
+#PARSE(DECLARATION)  const shared func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE 
+#STRUCTURE_EXPECTED: DeclarationBasicAttrib(DeclarationBasicAttrib( 
+                 DefFunction(DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE) ))
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ 0 args
 

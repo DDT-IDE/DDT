@@ -40,7 +40,6 @@ import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.references.AutoReference;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IFunctionBody;
@@ -223,7 +222,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		Assert.isTrue(elem.parameters == null);
 		
 		Reference rettype = (elemTypeFunc.next == null) ? 
-				new AutoReference() : 
+				null : 
 				ReferenceConverter.convertType(elemTypeFunc.next, convContext);
 		
 		DefUnitTuple defunitData = DefinitionConverter.convertDsymbol(elem, convContext);

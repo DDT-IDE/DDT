@@ -130,9 +130,10 @@ public enum DeeTokens {
 	KW_STATIC("static",             ATTRIBUTE_KW), 
 	KW_SYNCHRONIZED("synchronized", ATTRIBUTE_KW),
 	
+	KW_AUTO("auto"),
 	
 	KW_ALIAS("alias"), KW_ALIGN("align"), 
-	KW_ASM("asm"), KW_ASSERT("assert"), KW_AUTO("auto"),
+	KW_ASM("asm"), KW_ASSERT("assert"),
 	KW_BODY("body"), KW_BREAK("break"), 
 	KW_CASE("case"), KW_CAST("cast"), KW_CATCH("catch"), KW_CLASS("class"), KW_CONTINUE("continue"),
 	

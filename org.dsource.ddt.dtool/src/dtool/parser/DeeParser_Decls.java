@@ -98,7 +98,6 @@ import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerStruct.StructInitEntry;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.AutoReference;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
@@ -246,11 +245,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				return parseDeclarationAliasThis();
 			}
 			return parseAliasDefinition();
-		case KW_AUTO:
-			if(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.OPEN_PARENS) {
-				return parseAutoReturnFunction_start();
-			}
-			return parseDeclarationBasicAttrib();
 		case KW_MIXIN: 
 			if(lookAhead(1) == DeeTokens.KW_TEMPLATE) {
 				return parseTemplateDefinition();
@@ -278,6 +272,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				return parseDeclarationAtAttrib();
 			}
 			break;
+		case KW_AUTO:
+			return parseDeclarationBasicAttrib();
 		case ATTRIBUTE_KW:
 			if(lookAhead() == DeeTokens.KW_STATIC) { 
 				if(lookAhead(1) == DeeTokens.KW_IMPORT) { 
@@ -291,7 +287,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				}
 			}
 			
-			if(isTypeModifier(lookAhead()) && !typeModifier_shouldParseAsAttrib(0)) {
+			if(isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
 				break; // this will be parsed as a type modifier reference
 			}
 			
@@ -344,19 +340,21 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return resultConclude(true, srToPosition(ref, new IncompleteDeclaration(ref)));
 		}
 		
+		ProtoDefSymbol defId = null;
 		if(lookAhead() == DeeTokens.IDENTIFIER) {
-			LexElement defId = consumeLookAhead();
-			
+			defId = defSymbol(consumeLookAhead());
+		} else if(precedingIsSTCAttrib && couldHaveBeenParsedAsId(ref)) {
+			// Parse as auto declaration instead
+			defId = convertRefIdToDef(ref);
+			ref = null;
+		}
+		
+		if(defId != null) {
 			if(lookAhead() == DeeTokens.OPEN_PARENS) {
 				return parseDefinitionFunction_afterIdentifier(ref, defId);
 			}
-			return parseDefinitionVariable_afterIdentifier(ref, defSymbol(defId));
-		} else if(precedingIsSTCAttrib && couldHaveBeenParsedAsId(ref)) {
-			// Parse as auto declaration instead
-			ProtoDefSymbol defId = convertRefIdToDef(ref);
-			return parseDefinitionVariable_afterIdentifier(null, defId);
+			return parseDefinitionVariable_afterIdentifier(ref, defId);
 		} else {
-			
 			ParseHelper parse = new ParseHelper(ref);
 			parse.consumeExpected(DeeTokens.IDENTIFIER);
 			parse.consumeRequired(DeeTokens.SEMICOLON);
@@ -366,17 +364,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public static NodeResult<? extends IDeclaration> declarationNullResult() {
 		return AbstractParser.<MissingDeclaration>result(false, null);
-	}
-	
-	protected NodeResult<DefinitionFunction> parseAutoReturnFunction_start() {
-		AutoReference autoReturn = parseAutoReference();
-		LexElement id = consumeLookAhead(DeeTokens.IDENTIFIER);
-		return parseDefinitionFunction_afterIdentifier(autoReturn, id);
-	}
-	
-	public AutoReference parseAutoReference() {
-		LexElement autoToken = consumeLookAhead(DeeTokens.KW_AUTO);
-		return conclude(srOf(autoToken, new AutoReference()));
 	}
 	
 	/* ----------------------------------------- */
@@ -538,7 +525,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		ParseHelper parse = new ParseHelper();
 		ProtoDefSymbol defId = defSymbol(lastLexElement()); // TODO: mark this as special DefSymbol
-		return parse_FunctionLike(null, defId, parse).upcastTypeParam();
+		return parse_FunctionLike(true, null, defId, parse).upcastTypeParam();
 	}
 	
 	/**
@@ -546,16 +533,16 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	 * http://dlang.org/declaration.html#DeclaratorSuffix
 	 */
 	protected NodeResult<DefinitionFunction> parseDefinitionFunction_afterIdentifier(
-		Reference retType, LexElement defId) {
-		assertTrue(defId.isMissingElement() == false);
+		Reference retType, ProtoDefSymbol defId) {
+		assertTrue(defId.isMissing() == false);
 		
-		ParseHelper parse = new ParseHelper(retType.getStartPos());
+		ParseHelper parse = new ParseHelper(retType != null ? retType.getStartPos() : defId.getStartPos());
 		
-		return parse_FunctionLike(retType, defSymbol(defId), parse).upcastTypeParam();
+		return parse_FunctionLike(false, retType, defId, parse).upcastTypeParam();
 	}
 	
-	protected NodeResult<? extends AbstractFunctionDefinition> parse_FunctionLike(Reference retType, 
-		ProtoDefSymbol defId, ParseHelper parse) {
+	protected NodeResult<? extends AbstractFunctionDefinition> parse_FunctionLike(boolean isConstrutor, 
+		Reference retType, ProtoDefSymbol defId, ParseHelper parse) {
 		
 		ArrayView<IFunctionParameter> fnParams = null;
 		ArrayView<TemplateParameter> tplParams = null;
@@ -600,7 +587,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
 		}
 		
-		if(retType == null) {
+		if(isConstrutor) {
 			return parse.resultConclude(new DefinitionConstructor(
 				defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 		}

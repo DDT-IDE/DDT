@@ -53,7 +53,7 @@ public class ExpCall extends Expression {
 			return null;		
 		if (defUnit instanceof DefinitionFunction) {
 			DefinitionFunction defOpCallFunc = (DefinitionFunction) defUnit;
-			DefUnit targetDefUnit = defOpCallFunc.retType.findTargetDefUnit(moduleResolver);
+			DefUnit targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
 			return Collections.singleton(targetDefUnit);
 		}
 		
@@ -63,7 +63,7 @@ public class ExpCall extends Expression {
 			DefUnit defOpCall = iter.next();
 			if (defOpCall instanceof DefinitionFunction) {
 				DefinitionFunction defOpCallFunc = (DefinitionFunction) defOpCall;
-				DefUnit targetDefUnit = defOpCallFunc.retType.findTargetDefUnit(moduleResolver);
+				DefUnit targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
 				return Collections.singleton(targetDefUnit);
 			}
 		}
