@@ -14,12 +14,12 @@ import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class TryCatchClause extends ASTNode implements IScopeNode {
+public class CatchClause extends ASTNode implements IScopeNode {
 	
 	public final SimpleVariableDef catchParam;
 	public final IStatement body;
 	
-	public TryCatchClause(SimpleVariableDef catchParam, IStatement body) {
+	public CatchClause(SimpleVariableDef catchParam, IStatement body) {
 		this.catchParam = parentizeI(catchParam);
 		this.body = parentizeI(body);
 	}

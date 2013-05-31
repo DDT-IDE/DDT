@@ -119,7 +119,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 		return new ProtoDefSymbol(id.getSourceValue(), id.getSourceRange(), id.getError());
 	}
 	
-	public ProtoDefSymbol parseMissingDefIdNoError() {
+	public final ProtoDefSymbol parseMissingDefIdNoError() {
 		return new ProtoDefSymbol("", srAt(getLexPosition()), null);
 	}
 	
@@ -168,13 +168,16 @@ public abstract class DeeParser_Common extends AbstractParser {
 				defId = parseMissingDefIdNoError();
 			} else if(lookAhead() == DeeTokens.IDENTIFIER) {
 				defId = parseDefId();
-			} else if(couldHaveBeenParsedAsId(type)) {
-				singleIdReparse();
 			} else {
-				if(type == null && !createMissing) {
-					return;
+				// No defId so far
+				if(couldHaveBeenParsedAsId(type)) {
+					singleIdReparse();
+				} else {
+					if(type == null && !createMissing) {
+						return;
+					}
+					missingDefIdParse();
 				}
-				missingDefIdParse();
 			}
 			
 			if(parse.nodeStart == -1) {
@@ -193,22 +196,21 @@ public abstract class DeeParser_Common extends AbstractParser {
 		
 	}
 	
-	protected final class TypeId_RuleFragment extends TypeId_or_Id_RuleFragment {
+	protected final class TypeId_or_Type_RuleFragment extends TypeId_or_Id_RuleFragment {
 		
 		@Override
 		public void singleIdReparse() {
-			defId = parseDefId();
+			defId = parseMissingDefIdNoError();
 		}
 		
 		@Override
 		public void missingDefIdParse() {
 			if(type == null) {
 				type = thisParser().parseMissingTypeReference(true);
-				defId = defSymbol(consumeSubChannelTokens());
-			} else {
-				super.missingDefIdParse();
 			}
+			defId = parseMissingDefIdNoError();
 		}
+		
 	}
 	
 }

@@ -50,7 +50,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.BlockStatement;
-import dtool.ast.statements.TryCatchClause;
+import dtool.ast.statements.CatchClause;
 import dtool.ast.statements.ForeachRangeExpression;
 import dtool.ast.statements.ForeachVariableDef;
 import dtool.ast.statements.IStatement;
@@ -375,7 +375,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(DefinitionConverter.sourceRange(element),
 			new StatementTry(
 				convertStatement(element.body, convContext),
-				DescentASTConverter.convertMany(element.catches, TryCatchClause.class, convContext),
+				DescentASTConverter.convertMany(element.catches, CatchClause.class, convContext),
 				null
 			)
 		);
@@ -388,7 +388,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 			return endAdapt(DefinitionConverter.sourceRange(element),
 				new StatementTry(
 					convertStatement(tcs.body, convContext),
-					DescentASTConverter.convertMany(tcs.catches, TryCatchClause.class, convContext),
+					DescentASTConverter.convertMany(tcs.catches, CatchClause.class, convContext),
 					convertStatement(element.finalbody, convContext)
 				)
 			);
@@ -396,7 +396,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 			return endAdapt(DefinitionConverter.sourceRange(element),
 				new StatementTry(
 					convertStatement(element.body, convContext),
-					ArrayView.create(new TryCatchClause[0]),
+					ArrayView.create(new CatchClause[0]),
 					convertStatement(element.finalbody, convContext)
 				)
 			);
@@ -455,7 +455,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		}
 		
 		return endAdapt(DefinitionConverter.sourceRange(element),
-			new TryCatchClause(
+			new CatchClause(
 				null,
 				convertStatement(element.handler, convContext)
 			)

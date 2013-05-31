@@ -492,9 +492,9 @@ public class ASTNodeReparseCheck {
 		case STATEMENT_TRY:
 			return reparseCheck(snippedParser.parseStatementTry());
 		case TRY_CATCH_CLAUSE:
-			return reparseCheck(snippedParser.parseTryCatchClause());
+			return reparseCheck(snippedParser.parseCatchClause());
 		case SIMPLE_VARIABLE_DEF:
-			return reparseCheck(snippedParser.parseSimpleVariableDef());
+			return reparseCheck(snippedParser.parseSimpleVariableDef_DefIdOptional());
 			
 		case OTHER: break;
 		}

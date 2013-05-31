@@ -57,7 +57,7 @@ import dtool.ast.statements.StatementThrow;
 import dtool.ast.statements.StatementTry;
 import dtool.ast.statements.StatementWhile;
 import dtool.ast.statements.StatementWith;
-import dtool.ast.statements.TryCatchClause;
+import dtool.ast.statements.CatchClause;
 import dtool.ast.statements.VariableDefWithInit;
 import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.ParserError.ParserErrorTypes;
@@ -686,7 +686,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		ParseHelper parse = new ParseHelper();
 		
 		IStatement body;
-		ArrayList<TryCatchClause> catches = null;
+		ArrayList<CatchClause> catches = null;
 		IStatement finallyBody = null;
 		
 		parsing: { 
@@ -695,7 +695,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			
 			catches = new ArrayList<>();
 			while(true) {
-				TryCatchClause catchClause = parse.checkResult(parseTryCatchClause());
+				CatchClause catchClause = parse.checkResult(parseCatchClause());
 				if(catchClause == null) {
 					break;
 				}
@@ -714,7 +714,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		return parse.resultConclude(new StatementTry(body, arrayView(catches), finallyBody));
 	}
 	
-	protected NodeResult<TryCatchClause> parseTryCatchClause() {
+	protected NodeResult<CatchClause> parseCatchClause() {
 		if(!tryConsume(DeeTokens.KW_CATCH))
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
@@ -725,7 +725,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				catchParam = parseSimpleVariableDef();
+				catchParam = parseSimpleVariableDef_DefIdOptional();
 				
 				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			}
@@ -737,12 +737,12 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			parse.store(createError(ParserErrorTypes.LAST_CATCH, catchKeyword.token, null));
 		}
 		
-		return parse.resultConclude(new TryCatchClause(catchParam, body));
+		return parse.resultConclude(new CatchClause(catchParam, body));
 	}
 	
-	public SimpleVariableDef parseSimpleVariableDef() {
+	public SimpleVariableDef parseSimpleVariableDef_DefIdOptional() {
 		ParseHelper parse = new ParseHelper(-1);
-		TypeId_or_Id_RuleFragment typeRef_defId = new TypeId_RuleFragment();
+		TypeId_or_Id_RuleFragment typeRef_defId = new TypeId_or_Type_RuleFragment();
 		typeRef_defId.parseRuleFragment(parse, true);
 		return parse.conclude(new SimpleVariableDef(typeRef_defId.type, typeRef_defId.defId));
 	}

@@ -10,10 +10,10 @@ import dtool.util.ArrayView;
 public class StatementTry extends Statement {
 	
 	public final IStatement body;
-	public final ArrayView<TryCatchClause> catches;
+	public final ArrayView<CatchClause> catches;
 	public final IStatement finallyBody;
 	
-	public StatementTry(IStatement body, ArrayView<TryCatchClause> catches, IStatement finallyBody) {
+	public StatementTry(IStatement body, ArrayView<CatchClause> catches, IStatement finallyBody) {
 		this.body = parentizeI(body);
 		this.catches = parentize(catches);
 		this.finallyBody = parentizeI(finallyBody);
