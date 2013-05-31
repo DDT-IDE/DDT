@@ -85,6 +85,7 @@ import dtool.ast.references.RefIndexing;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
+import dtool.ast.references.RefSlice;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.RefTypeDynArray;
 import dtool.ast.references.RefTypeModifier;
@@ -329,15 +330,24 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	public Reference parseBracketReference(Reference leftRef, ParseHelper parse) {
 		consumeLookAhead(DeeTokens.OPEN_BRACKET);
 		
-		Resolvable resolvable = parseTypeOrExpression(true).node;
+		// Technically spec allows ASSIGN exp only
+		TypeOrExpResult argTypeOrExp = parseTypeOrExpression(InfixOpType.COMMA); 
+		
+		if(lookAhead() == DeeTokens.DOUBLE_DOT) {
+			Expression startIndex = nullExpToMissing(argTypeOrExp.toExpression().node);
+			consumeLookAhead(DeeTokens.DOUBLE_DOT);
+			Expression endIndex = parseAssignExpression_toMissing();
+			parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
+			return parse.conclude(new RefSlice(leftRef, startIndex, endIndex));
+		}
 		parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
 		
+		Resolvable resolvable = argTypeOrExp.toFinalResult(true).node;
 		if(resolvable == null) {
-			leftRef = parse.conclude(new RefTypeDynArray(leftRef));
+			return parse.conclude(new RefTypeDynArray(leftRef));
 		} else {
-			leftRef = parse.conclude(new RefIndexing(leftRef, resolvable));
+			return parse.conclude(new RefIndexing(leftRef, resolvable));
 		}
-		return leftRef;
 	}
 	
 	public boolean isTemplateInstanceLookahead() {
@@ -1070,7 +1080,6 @@ protected class ParseRule_TypeOrExp {
 			
 			ParseHelper parse = isExpIndexing ? new ParseHelper(calleeExp) : new ParseHelper();
 			
-			final boolean couldBeExpIndexing = mode == TypeOrExpStatus.TYPE && false; // This feature is disabled
 			final DeeTokens secondLA = isExpIndexing ? DeeTokens.DOUBLE_DOT : DeeTokens.COLON;
 			
 			ArrayList<Expression> elements = new ArrayList<Expression>();
@@ -1086,7 +1095,7 @@ protected class ParseRule_TypeOrExp {
 				if(firstElement) {
 					if(mode.canBeType()) {
 						TypeOrExpResult firstExpToE = new ParseRule_TypeOrExp().parse(InfixOpType.ASSIGN);
-						if(firstExpToE.isModePreferablyType()) {
+						if(firstExpToE.isModePreferablyType() && lookAhead() != DeeTokens.DOUBLE_DOT) {
 							updateTypeOrExpMode(TypeOrExpStatus.TYPE);
 						}
 						firstArg = firstExpToE.exp;
@@ -1113,17 +1122,19 @@ protected class ParseRule_TypeOrExp {
 						exp2parse = new ParseHelper(firstArg);
 						exp2 = parseAssignExpression_toMissing();
 						mapElements = new ArrayList<MapArrayLiteralKeyValue>();
-					} else if((isExpIndexing || couldBeExpIndexing)&& tryConsume(DeeTokens.DOUBLE_DOT)) {
-						setExpMode();
+					} else if(tryConsume(DeeTokens.DOUBLE_DOT)) {
+						firstArg = convertTypeOrExpToExpression(firstArg);
 						exp2 = parseAssignExpression_toMissing();
 						
 						parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
 						setToEParseBroken(parse.ruleBroken);
 						
-						if(!isExpIndexing) { // Small trick to improve parsing
+						if(!isExpIndexing) {
+							updateTypeOrExpMode(TypeOrExpStatus.TYPE);
 							calleeExp = createTypeOrExpMissingExp(TypeOrExpStatus.TYPE, false);
 							int nodeStart = parse.nodeStart;
-							calleeExp.setSourcePosition(nodeStart, nodeStart); // range won't matter in the end.
+							// range won't matter in the end since node will be converted:
+							calleeExp.setSourcePosition(nodeStart, nodeStart); 
 						}
 						
 						return typeOrExpBracketList(parse, new ExpSlice(calleeExp, firstArg, exp2));
@@ -1396,15 +1407,17 @@ protected class ParseRule_TypeOrExp {
 		case EXP_SLICE: {
 			ExpSlice expSlice = (ExpSlice) exp;
 			if(isCleanExpConvertion) {
-				assertTrue(expSlice.from == null && expSlice.to == null);
 				convertTypeOrExpToExpression_noChange(expSlice.slicee);
 				break;
 			}
 			if(convertToTypeRef) {
-				assertTrue(expSlice.from == null && expSlice.to == null);
-				
 				TypeOrExpData oldData = detachParent(expSlice);
 				refOnTheLeft = convertTypeOrExpToReference(refOnTheLeft, expSlice.slicee);
+				
+				if(expSlice.startIndex != null) {
+					return concludeToE(oldData, refOnTheLeft, expSlice.getEndPos(), 
+						new RefSlice(refOnTheLeft, expSlice.startIndex, expSlice.endIndex));
+				}
 				return concludeToE(oldData, refOnTheLeft, expSlice.getEndPos(), new RefTypeDynArray(refOnTheLeft));
 			} else {
 				TypeOrExpData oldData = detachParent(expSlice);
@@ -1412,7 +1425,7 @@ protected class ParseRule_TypeOrExp {
 				
 				Expression expSlicee = resolvableToExp(refOnTheLeft, refIsErrorToUseInExp(refOnTheLeft));
 				return concludeToE(oldData, refOnTheLeft, exp.getEndPos(), 
-					new ExpSlice(expSlicee, expSlice.from, expSlice.to));
+					new ExpSlice(expSlicee, expSlice.startIndex, expSlice.endIndex));
 			}
 		}
 		case EXP_INDEX: {

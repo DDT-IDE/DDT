@@ -46,7 +46,7 @@
 
 
 #@EXPS_WITH_CHILD_NEEDING_UPDATE《  * [foo] ● [foo]》
-#@EXP_CAUSING_BREAK_TO_TOP《  [1 ..2] ● [3, $]● (3) ● ++ 》
+#@EXP_CAUSING_BREAK_TO_TOP《  [3, $]● (3) ● ++ 》
 #@EXP_CAUSING_BREAK_TO_TOP_X《    ^^ 3》
 #@UNAMBIG_BEGIN《
   ►#error(TYPE_AS_EXP_VALUE)【int】●
@@ -99,13 +99,11 @@
   ►#?STRUCTURE_EXPECTED!【#@TYPEREFS_AMBIG *[foo: #@NO_EXP] * [foo]●ExpInfix(* ExpLiteralArray(#@ExpIdentifier))】●
 
   ►#?STRUCTURE_EXPECTED!【bar[#@INT_AS_EXP , 123] ●ExpIndex(#@ExpIdentifier #@INT_AS_EXP Integer)】●
-  ►#?STRUCTURE_EXPECTED!【bar[#@INT_AS_EXP .. 546]●ExpSlice(#@ExpIdentifier #@INT_AS_EXP Integer)】●
   ►#?STRUCTURE_EXPECTED!【bar*[#@INT_AS_EXP , 123]●ExpInfix(#@ExpIdentifier ExpLiteralArray(#@INT_AS_EXP Integer))】●
   ►#?STRUCTURE_EXPECTED!【bar*[#@INT_AS_EXP : 123]●ExpInfix(#@ExpIdentifier ExpLiteralMapArray(
       MapArrayLiteralKeyValue( #@INT_AS_EXP Integer) ))】●
   
   ►#?STRUCTURE_EXPECTED!【#@TYPEREFS_AMBIG #?INFIX【[7/*INFIX FIX*/]●】  (1, 2) * []●ExpInfix(* ExpLiteralArray)】●
-  ►#?STRUCTURE_EXPECTED!【#@TYPEREFS_AMBIG #?INFIX【[7/*INFIX FIX*/]●】  [foo .. 2] * []●ExpInfix(* ExpLiteralArray)】●
   
   ►#?STRUCTURE_EXPECTED!【#@TYPEREFS_AMBIG [] ++ ● * 】●
   ►#?STRUCTURE_EXPECTED!【#@TYPEREFS_AMBIG [] ^^ 123 ● * 】●

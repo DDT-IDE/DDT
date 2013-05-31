@@ -1,0 +1,24 @@
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(REFERENCE)     #@TYPEREFS__NBNE_APPENDABLE [ #@EXP_ASSIGN__LITE .. #@EXP_ASSIGN__LITE  #@CLOSEBRACKET_OR_BREAK
+#STRUCTURE_EXPECTED:  RefSlice(#@TYPEREFS__NBNE_APPENDABLE #@EXP_ASSIGN__LITE #@EXP_ASSIGN__LITE )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(REFERENCE)     slicee [#@ASSIGNEXP_NB .. #@ASSIGNEXP_NB #@CLOSEBRACKET_OR_BREAK
+#STRUCTURE_EXPECTED:  RefSlice( RefIdentifier #@ASSIGNEXP_NB #@ASSIGNEXP_NB )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ specific case bug test
+#PARSE(REFERENCE)     slicee [foo .. #@INT_AS_EXP #@CLOSEBRACKET_OR_BREAK
+#STRUCTURE_EXPECTED:  RefSlice( RefIdentifier #@ExpIdentifier #@INT_AS_EXP )
+
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)    slicee[ #@CLOSEBRACKET_OR_BREAK
+#STRUCTURE_EXPECTED:  ExpSlice( #@ExpIdentifier )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(EXPRESSION)    #@EXP_POSTFIX [#@EXP_ASSIGN__LITE  ..  #@EXP_ASSIGN__LITE  #@CLOSEBRACKET_OR_BREAK
+#STRUCTURE_EXPECTED:  ExpSlice( #@EXP_POSTFIX #@EXP_ASSIGN__LITE #@EXP_ASSIGN__LITE  #@CLOSEBRACKET_OR_BREAK )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)    slicee [#@ASSIGNEXP_NB .. #@ASSIGNEXP_NB #@CLOSEBRACKET_OR_BREAK
+#STRUCTURE_EXPECTED:  ExpSlice( #@ExpIdentifier #@ASSIGNEXP_NB #@ASSIGNEXP_NB )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)    slicee [#@ASSIGNEXP_NB .. #@ASSIGNEXP_NB #@CLOSEBRACKET_OR_BREAK
+#STRUCTURE_EXPECTED:  ExpSlice( #@ExpIdentifier #@ASSIGNEXP_NB #@ASSIGNEXP_NB )
+

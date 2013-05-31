@@ -10,7 +10,6 @@
 #@INDEXEE《
   ►#?STRUCTURE_EXPECTED!【foo ● #@ExpIdentifier】● 
   ►#?STRUCTURE_EXPECTED!【foo() ● ExpCall(#@ExpIdentifier)】 ●
-  ►#?STRUCTURE_EXPECTED!【foo[123 .. 44] ● ExpSlice(#@ExpIdentifier Integer Integer) 】●
   ►#?STRUCTURE_EXPECTED!【foo[123, 44] ● ExpIndex(#@ExpIdentifier Integer Integer) 】●
 ¤》
 
@@ -20,8 +19,8 @@
   ►#?STRUCTURE_EXPECTED!【/* NO EXTRA ARG */ ● 】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   #@INDEXEE ( #@CLOSEPARENS_OR_BREAK
-#STRUCTURE_EXPECTED: ExpCall( #@INDEXEE )
+#PARSE(EXPRESSION)   #@EXP_POSTFIX ( #@CLOSEPARENS_OR_BREAK
+#STRUCTURE_EXPECTED: ExpCall( #@EXP_POSTFIX )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   #@INDEXEE (#@EXP_ASSIGN #@CLOSEPARENS_OR_BREAK
 #STRUCTURE_EXPECTED: ExpCall( #@INDEXEE #@EXP_ASSIGN )

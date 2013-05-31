@@ -13,12 +13,12 @@ import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.references.RefIndexing;
+import dtool.ast.references.RefSlice;
 import dtool.ast.references.RefTypeDynArray;
+import dtool.ast.references.RefTypeFunction;
 import dtool.ast.references.RefTypePointer;
-import dtool.ast.references.RefTypeSlice;
 import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
-import dtool.ast.references.RefTypeFunction;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
 
 /**
@@ -175,7 +175,7 @@ abstract class RefConverterVisitor extends CoreConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypeSlice elem) {
 		return endAdapt(DefinitionConverter.sourceRange(elem), 
-			new RefTypeSlice(
+			new RefSlice(
 				ReferenceConverter.convertType(elem.next, convContext),
 				ExpressionConverter.convert(elem.lwr, convContext),
 				ExpressionConverter.convert(elem.upr, convContext))

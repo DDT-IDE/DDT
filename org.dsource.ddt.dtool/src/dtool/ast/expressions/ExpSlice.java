@@ -9,14 +9,14 @@ import dtool.ast.IASTVisitor;
 public class ExpSlice extends Expression {
 	
 	public final Expression slicee;
-	public final Expression from;
-	public final Expression to;
+	public final Expression startIndex;
+	public final Expression endIndex;
 	
-	public ExpSlice(Expression slicee, Expression from, Expression to) {
+	public ExpSlice(Expression slicee, Expression startIndex, Expression endIndex) {
 		this.slicee = parentizeI(slicee);
-		this.from = parentize(from);
-		this.to = parentize(to);
-		assertTrue((to == null) || (from != null));
+		this.startIndex = parentize(startIndex);
+		this.endIndex = parentize(endIndex);
+		assertTrue((endIndex == null) || (startIndex != null));
 	}
 	
 	public ExpSlice(Expression slicee) {
@@ -33,8 +33,8 @@ public class ExpSlice extends Expression {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, slicee);
-			TreeVisitor.acceptChildren(visitor, from);
-			TreeVisitor.acceptChildren(visitor, to);
+			TreeVisitor.acceptChildren(visitor, startIndex);
+			TreeVisitor.acceptChildren(visitor, endIndex);
 		}
 		visitor.endVisit(this);
 	}
@@ -42,9 +42,9 @@ public class ExpSlice extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(slicee, "[");
-		if(from != null) {
-			cp.append(from);
-			cp.append(" .. ", to);
+		if(startIndex != null) {
+			cp.append(startIndex);
+			cp.append(" .. ", endIndex);
 		}
 		cp.append("]");
 	}

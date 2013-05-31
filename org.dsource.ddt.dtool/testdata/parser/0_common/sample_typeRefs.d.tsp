@@ -31,6 +31,8 @@ RefTemplateInstance(
   ►#@TYPE_REFS__QUALIFIER_ForDotOnly●
 ¤》
 
+// In the future it may be that RefIndexing and RefSlice are allowed as qualifier, as this makes sense semantically
+
 We don't use TYPEREFS_AMBIG__INVALID_QUALIFIER or TYPEREFS_UNAMBIG__INVALID_QUALIFIER in TYPE_REFS
 for performance reasons, to keep the number of cases low.
 #@TYPE_REFS__NO_BROKEN《
@@ -48,6 +50,7 @@ for performance reasons, to keep the number of cases low.
   ►#?STRUCTURE_EXPECTED!【dai[bar*] *[foo][foo**bar]●RefIndexing(RefIndexing(RefTypePointer(*) ?) ExpInfix(* ExpPrefix(ExpReference(?))))】●
   ►#?STRUCTURE_EXPECTED!【dai[bar] ***●RefTypePointer(RefTypePointer(RefTypePointer(RefIndexing(? ?))))】●
   
+  ►#?STRUCTURE_EXPECTED!【dai[bar .. 123]●RefSlice(RefIdentifier #@ExpIdentifier Integer)】●
   ►#?STRUCTURE_EXPECTED!【int function(in int blah) nothrow●RefTypeFunction(RefPrimitive FunctionParameter(? ?))】●
 ¤》
 #@TYPE_REFS__NO_BROKEN__LITE《
@@ -56,6 +59,7 @@ for performance reasons, to keep the number of cases low.
 ¤》
 
 #@TYPEREFS__NOBROKEN_APPENDABLE《#@TYPE_REFS__NO_BROKEN #?NO_TYPE_APPEND【#:DISCARD_CASE】》
+#@TYPEREFS__NBNE_APPENDABLE《#@TYPE_REFS__NO_BROKEN #?NO_TYPE_APPEND【#:DISCARD_CASE】》
 
 #@TYPE_REFS__BROKEN《
    ►#?NO_BROKEN_BRACKETS【#:DISCARD_CASE●
@@ -93,6 +97,8 @@ for performance reasons, to keep the number of cases low.
   ►#@TYPE_REFS__QUALIFIER_ForTplOrDot●
   ►#@_TYPEREFS_AMBIG__BASE●
   
+  ►#?STRUCTURE_EXPECTED!【dai[bar .. 123]●RefSlice(RefIdentifier #@ExpIdentifier Integer)】●
+  
   ►#?STRUCTURE_EXPECTED!【dai* #INFIX(flag)● RefTypePointer(RefIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【dai *[]●RefTypeDynArray(RefTypePointer(RefIdentifier))】●
   ►#?STRUCTURE_EXPECTED!【dai*[foo][bar]             ●RefIndexing(RefIndexing(RefTypePointer(?) ?) ?)】●
@@ -125,11 +131,16 @@ for performance reasons, to keep the number of cases low.
 #@TYPEREFS_AMBIG__INVALID_QUALIFIER《#TYPE__NO_PENDING(flag)#@DEFINE_PREFIX_S_UNARY#@_TYPEREFS_AMBIG__CUSTOM_PREFIX》
 
 
+// TODO: put this in TYPEREFS_UNAMBIG  (needs bug fixing)
+  ►#?STRUCTURE_EXPECTED!【dai * [bar .. 123]●RefSlice(RefTypePointer(RefIdentifier) #@ExpIdentifier Integer)】●
+  
+
 // These references unambiguously parse as ref
 =====> #@TYPEREFS_UNAMBIG《
   ►#@TYPE_REFS__QUALIFIER_ForDotOnly#?TYPE_REF_TPL_SIMPLE_ARG{#:DISCARD_CASE}●
   
   ►#@_TYPEREFS_UNAMBIG__BASE●
+  
   ►#?STRUCTURE_EXPECTED!【int *[]●RefTypeDynArray(RefTypePointer(RefPrimitive))】●
   ►#?STRUCTURE_EXPECTED!【int *[foo]●RefIndexing(RefTypePointer(RefPrimitive) RefIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【int * *[foo]●RefIndexing(RefTypePointer(RefTypePointer(RefPrimitive)) RefIdentifier)】●

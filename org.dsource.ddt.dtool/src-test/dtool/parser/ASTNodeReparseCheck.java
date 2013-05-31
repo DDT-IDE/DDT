@@ -240,6 +240,7 @@ public class ASTNodeReparseCheck {
 		case REF_TYPE_DYN_ARRAY:
 		case REF_TYPE_POINTER:
 		case REF_INDEXING:
+		case REF_SLICE:
 		case REF_TYPE_FUNCTION:
 		case REF_TEMPLATE_INSTANCE:
 		case REF_TYPEOF:
