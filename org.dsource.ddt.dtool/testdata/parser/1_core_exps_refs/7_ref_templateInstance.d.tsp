@@ -2,7 +2,6 @@
 foo!(bar, 123) dummy;
 foo!() dummy;
 foo!xxx dummy;
-
 #STRUCTURE_EXPECTED:
 DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier Integer) DefSymbol)
 DefVariable(RefTemplateInstance(RefIdentifier) DefSymbol)
@@ -42,6 +41,10 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(REFERENCE)    #@TYPE_REFS__QUALIFIER_ForDotOnly #@IGNORE_REST !this #?TYPE_REF_TPL_SIMPLE_ARG{#:DISCARD_CASE}
 #STRUCTURE_EXPECTED: #@TYPE_REFS__QUALIFIER_ForDotOnly
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ SPECIAL case: in expression context we allow any kinf of qualified exp
+#PARSE(Expression)   #@EXP_POSTFIX . foo ! this 
+#STRUCTURE_EXPECTED: ExpReference( RefTemplateInstance( RefQualified(#@EXP_POSTFIX RefIdentifier) ExpThis) )
 
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ tpl single arg

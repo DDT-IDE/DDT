@@ -50,7 +50,11 @@
   ►#?STRUCTURE_EXPECTED!【foo[]#_EXP_AMBIG(flag)●ExpSlice(#@ExpIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【foo[[123]]#_EXP_AMBIG(flag)●ExpIndex(#@ExpIdentifier ExpLiteralArray(?))】●
   
-  ►#?STRUCTURE_EXPECTED!【 foo[].init●ExpReference(RefQualified(ExpSlice(#@ExpIdentifier) RefIdentifier))】●
+  ►#?STRUCTURE_EXPECTED!【 foo().init●ExpReference(RefQualified(ExpCall(#@ExpIdentifier) RefIdentifier))】●
+  
+  ►#?STRUCTURE_EXPECTED!【 foz++.func!(blah)● #?TPL_NO_EXPREF_WRAP!【ExpReference(】
+    RefTemplateInstance( RefQualified(ExpPostfix(#@ExpIdentifier) RefIdentifier) RefIdentifier) 
+  #?TPL_NO_EXPREF_WRAP!【)】】●
 ¤》
  #@EXP_POSTFIX__NO_UNAMBIG_REFS《 #@EXP_POSTFIX #?_EXP_UNAMBIG{#:DISCARD_CASE}》
 #@EXP_POSTFIX__NO_POSSIBLE_REFS《 #@EXP_POSTFIX #?_EXP_UNAMBIG{#:DISCARD_CASE}#?_EXP_AMBIG{#:DISCARD_CASE}》

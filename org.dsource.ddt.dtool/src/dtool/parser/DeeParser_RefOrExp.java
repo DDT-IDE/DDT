@@ -268,21 +268,13 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	
 	protected NodeResult<Reference> parseReference_referenceStart(Reference leftRef, boolean parsingExp) {
 		assertNotNull(leftRef);
-		return parseReference_referenceStart_do(leftRef, parsingExp);
+		return parseReference_referenceStart_do(leftRef, parsingExp, false);
 	}
-	protected NodeResult<Reference> parseReference_referenceStart_do(Reference leftRef, boolean parsingExp) {
+	protected NodeResult<Reference> parseReference_referenceStart_do(Reference leftRef, boolean parsingExp
+		, boolean templateOnly) {
 		ParseHelper parse = new ParseHelper(leftRef == null ? -1 : leftRef.getStartPos());
 		
-		// Star is multiply infix operator, dont parse as pointer ref
-		if(lookAhead() == DeeTokens.DOT && leftRef instanceof IQualifierNode) {
-			IQualifierNode qualifier = (IQualifierNode) leftRef;
-			assertTrue(!RefQualified.isExpressionQualifier(qualifier));
-			consumeLookAhead();
-			RefIdentifier qualifiedId = parseRefIdentifier();
-			parse.setRuleBroken(isMissing(qualifiedId));
-			leftRef = parse.conclude(new RefQualified(qualifier, qualifiedId));
-			
-		} else if(isTemplateInstanceLookahead() && isValidTemplateReferenceSyntax(leftRef)){ // template instance
+		if(isTemplateInstanceLookahead() && isValidTemplateReferenceSyntax(leftRef)){ // template instance
 			consumeLookAhead();
 			
 			ITemplateRefNode tplRef = (ITemplateRefNode) leftRef;
@@ -313,6 +305,16 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			}
 			leftRef = parse.conclude(new RefTemplateInstance(tplRef, singleArg, tplArgs));
 			
+		} else if(templateOnly) {
+			return result(false, leftRef);
+		} else if(lookAhead() == DeeTokens.DOT && leftRef instanceof IQualifierNode) {
+			IQualifierNode qualifier = (IQualifierNode) leftRef;
+			assertTrue(!RefQualified.isExpressionQualifier(qualifier));
+			consumeLookAhead();
+			RefIdentifier qualifiedId = parseRefIdentifier();
+			parse.setRuleBroken(isMissing(qualifiedId));
+			leftRef = parse.conclude(new RefQualified(qualifier, qualifiedId));
+			
 		} else if(!parsingExp && tryConsume(DeeTokens.STAR)) {
 			leftRef = conclude(srToPosition(leftRef, new RefTypePointer(leftRef)));
 		} else if(!parsingExp && lookAhead() == DeeTokens.OPEN_BRACKET) {
@@ -324,7 +326,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		}
 		if(parse.ruleBroken)
 			return result(true, leftRef);
-		return parseReference_referenceStart(leftRef, parsingExp);
+		return parseReference_referenceStart_do(leftRef, parsingExp, templateOnly);
 	}
 	
 	public Reference parseBracketReference(Reference leftRef, ParseHelper parse) {
@@ -700,7 +702,7 @@ protected class ParseRule_TypeOrExp {
 			// Check we actually parsed everything we should have
 			if(mode.canBeType()) {
 				boolean needsExpContext = precedenceLimit.precedence > InfixOpType.MUL.precedence;
-				assertTrue(parseReference_referenceStart_do(null, needsExpContext).node == null);
+				assertTrue(parseReference_referenceStart_do(null, needsExpContext, false).node == null);
 			}
 			if(mode.canBeExp()) {
 				assertTrue(parsePostfixExpression(DUMMY_EXP) == DUMMY_EXP);
@@ -881,6 +883,7 @@ protected class ParseRule_TypeOrExp {
 				ExpReference expReference = (ExpReference) qualifier;
 				if(expReference.ref instanceof RefQualified) {
 					assertTrue(((RefQualified) expReference.ref).isExpressionQualifier);
+				} else if(expReference.ref instanceof RefTemplateInstance) {
 				} else {
 					assertTrue(!(expReference.ref instanceof IQualifierNode)); 
 					// ...otherwise refqualified would have been parsed already
@@ -890,6 +893,7 @@ protected class ParseRule_TypeOrExp {
 			consumeLookAhead();
 			RefIdentifier qualifiedId = parseRefIdentifier();
 			Reference ref = parse.conclude(new RefQualified(qualifier, qualifiedId));
+			ref = parseReference_referenceStart_do(ref, true, true).node; // TODO check break...
 			updateTypeOrExpMode(TypeOrExpStatus.EXP);
 			return parsePostfixExpression(conclude(createExpReference(ref)));
 		}

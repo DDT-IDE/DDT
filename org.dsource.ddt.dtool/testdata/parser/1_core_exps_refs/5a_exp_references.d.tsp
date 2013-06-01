@@ -24,13 +24,6 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)    typeof(bar)(123) // Test that no syntax errors occur
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Should not parse template instance
-#PARSE(EXPRESSION)    (foo).bar  #@IGNORE_REST ! (asdf)
-#STRUCTURE_EXPECTED:  ExpReference(RefQualified(* *))
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Should not parse template instance
-#PARSE(EXPRESSION)    (foo).bar.bar  #@IGNORE_REST ! this
-#STRUCTURE_EXPECTED:  ExpReference(RefQualified(* *))
-
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ special case test precedence limit bug
 #PARSE(EXPRESSION)    7 ^^ exp * 2
 #STRUCTURE_EXPECTED:  ExpInfix(ExpInfix(Integer #@ExpIdentifier) Integer)

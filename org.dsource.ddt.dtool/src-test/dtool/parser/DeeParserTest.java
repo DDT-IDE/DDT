@@ -23,7 +23,6 @@ import java.util.Map.Entry;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
 import dtool.ast.ASTNode;
-import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
@@ -38,10 +37,10 @@ import dtool.ast.statements.SimpleVariableDef;
 import dtool.parser.DeeParserResult.ParserErrorComparator;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
+import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
-import dtool.tests.DToolTests;
 
 
 public class DeeParserTest extends CommonTestUtils {
@@ -60,7 +59,7 @@ public class DeeParserTest extends CommonTestUtils {
 		final String expectedPrintedSource, final NamedNodeElement[] expectedStructure, final 
 		ArrayList<ParserError> expectedErrors, Map<String, MetadataEntry> additionalMetadata) {
 		
-		final DeeTestsFullChecksParser deeParser = new DeeTestsFullChecksParser(fullSource);
+		final DeeTestsChecksParser deeParser = new DeeTestsChecksParser(fullSource);
 		String parsedSource = fullSource;
 		DeeParserResult result = parseUsingRule(parseRule, deeParser);
 		
@@ -99,33 +98,6 @@ public class DeeParserTest extends CommonTestUtils {
 		
 		runAdditionalTests(result, additionalMetadata);
 	}
-	
-	public static final class DeeTestsLexer extends DeeLexer {
-		public DeeTestsLexer(String source) {
-			super(source);
-		}
-		
-		@Override
-		public String toString() {
-			return source.substring(0, pos) + "<---parser--->" + source.substring(pos, source.length());
-		}
-	}
-	
-	public static class DeeTestsFullChecksParser extends DeeParser {
-		public DeeTestsFullChecksParser(String source) {
-			super(new DeeTestsLexer(source));
-		}
-		
-		@Override
-		protected void nodeConcluded(ASTNode node) {
-			checkNodeSourceRange(node, getSource());
-			
-			// Run additional tests on the node just parsed
-			// These might include node/rule specific tests
-			runNodeParsingChecks(node, getSource());
-		}
-	}
-	
 	
 	/* ============= Structure Checkers ============= */
 	
@@ -232,70 +204,10 @@ public class DeeParserTest extends CommonTestUtils {
 		assertTrue(resultErrors.size() == expectedErrors.size());
 	}
 	
-	public static void checkNodeTreeSourceRanges(final DeeParserResult result) {
-		ASTNode topNode = result.node;
-		
-		// Check consistency of source ranges (no overlapping ranges)
-		ASTSourceRangeChecker.checkConsistency(topNode);
-	}
-	
-	public static void checkNodeSourceRange(ASTNode node, final String fullSource) {
-		assertTrue(node.hasSourceRangeInfo());
-		assertTrue(node.getStartPos() <= fullSource.length() && node.getEndPos() <= fullSource.length());
-		
-		// Check consistency of source ranges (no overlapping ranges)
-		new ASTSourceRangeChecker(node) {
-			@Override
-			public boolean visitChildrenAfterPreVisitOk() {
-				return depth < 2;
-			}
-			
-			@SuppressWarnings("unused")
-			@Override
-			protected void handleSourceRangeStartPosBreach(ASTNode elem) {
-				String nodeStr = NodeUtil.getSubString(fullSource, elem.getSourceRange());
-				String parentStr = NodeUtil.getSubString(fullSource, elem.getParent().getSourceRange());
-				super.handleSourceRangeStartPosBreach(elem);
-				return;
-			}
-		};
-	}
-	
-	public static final DeeTokens[] structuralControlTokens = array(
-		DeeTokens.OPEN_PARENS, DeeTokens.CLOSE_PARENS,
-		DeeTokens.OPEN_BRACE, DeeTokens.CLOSE_BRACE,
-		DeeTokens.OPEN_BRACKET, DeeTokens.CLOSE_BRACKET,
-		DeeTokens.COLON,
-		DeeTokens.SEMICOLON
-		);
-	
-	public static void runNodeParsingChecks(ASTNode node, final String fullSource) {
-		String nodeSnippedSource = fullSource.substring(node.getStartPos(), node.getEndPos());
-		if(!areThereMissingTokenErrorsInNode(node)) {
-			SourceEquivalenceChecker.assertCheck(nodeSnippedSource, node.toStringAsCode());
-		} else {
-			SourceEquivalenceChecker.assertCheck(nodeSnippedSource, node.toStringAsCode(), structuralControlTokens);
-		}
-		
-		// Reparse check can be computationally expensive. They make parsing quadratic on node depth.
-		boolean doReparseCheck = DToolTests.TESTS_LITE_MODE && false; // reparse check disabled
-		new ASTNodeReparseCheck(fullSource, node).doCheck(doReparseCheck);
-	}
-	
-	protected static boolean areThereMissingTokenErrorsInNode(ASTNode node) {
-		ArrayList<ParserError> nodeErrors = DeeParserResult.collectErrors(new ArrayList<ParserError>(), node);
-		for(ParserError error : nodeErrors) {
-			if(error.errorType == ParserErrorTypes.INVALID_EXTERN_ID || 
-				(error.errorType == ParserErrorTypes.EXPECTED_TOKEN && error.msgData != DeeTokens.IDENTIFIER)) {
-				return true;
-			}
-		}
-		return false;
-	}
 	
 	/* ---------------- Rule specific tests ---------------- */
 	
-	public static DeeParserResult parseUsingRule(final String parseRule, DeeTestsFullChecksParser deeParser) {
+	public static DeeParserResult parseUsingRule(final String parseRule, DeeTestsChecksParser deeParser) {
 		if(parseRule != null && parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
 			DeeParserResult result = deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
 			DeeParserResult result2 = parseRule.equalsIgnoreCase("EXPRESSION_ToE") ?
@@ -308,7 +220,7 @@ public class DeeParserTest extends CommonTestUtils {
 					result2.errors.add(lastError);
 				}
 			}
-			ASTNodeReparseCheck.checkNodeEquality(result.node, result2.node);
+			DeeParsingSourceRangeChecks.checkNodeEquality(result.node, result2.node);
 			assertEquals(result.errors, result2.errors);
 			return result;
 		}
