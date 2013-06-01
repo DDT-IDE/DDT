@@ -220,7 +220,7 @@ public class DeeParserTest extends CommonTestUtils {
 					result2.errors.add(lastError);
 				}
 			}
-			DeeParsingSourceRangeChecks.checkNodeEquality(result.node, result2.node);
+			DeeParsingChecks.checkNodeEquality(result.node, result2.node);
 			assertEquals(result.errors, result2.errors);
 			return result;
 		}

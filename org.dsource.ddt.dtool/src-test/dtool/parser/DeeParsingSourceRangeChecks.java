@@ -1,10 +1,7 @@
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.DefSymbol;
@@ -19,47 +16,68 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.CommonStatementList;
 import dtool.ast.statements.ForeachRangeExpression;
-import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
-import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
+import dtool.parser.DeeParsingChecks.DeeParsingNodeCheck;
 
-public class DeeParsingSourceRangeChecks {
+public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {
 	
 	public static void runParsingSourceRangeChecks(ASTNode node, final String fullSource) {
 		new DeeParsingSourceRangeChecks(fullSource, node).doCheck();
 	}
 	
-	protected final String fullSource;
-	protected final ASTNode nodeUnderTest;
-	protected final String nodeSnippedSource;
-	
 	public DeeParsingSourceRangeChecks(String source, ASTNode node) {
-		this.fullSource = assertNotNull_(source);
-		this.nodeUnderTest = node;
-		this.nodeSnippedSource = fullSource.substring(nodeUnderTest.getStartPos(), nodeUnderTest.getEndPos());
+		super(source, node);
+	}
+	
+	public void doCheck() {
+		
+		switch (nodeUnderTest.getNodeType()) {
+		case MODULE: {
+			Module module = (Module) nodeUnderTest;
+			int endPos = module.getEndPos();
+			assertTrue(module.getStartPos() == 0 && (endPos == fullSource.length() || 
+				fullSource.charAt(endPos) == 0x00 || fullSource.charAt(endPos) == 0x1A));
+			return;
+		}
+		
+		case MISSING_EXPRESSION:
+			if(nodeUnderTest instanceof MissingParenthesesExpression) {
+				SourceEquivalenceChecker.assertCheck(nodeUnderTest.toStringAsCode(), "");
+			}
+			return;
+			
+		default: 
+			basicSourceRangeCheck();
+			
+			return;
+		}
 	}
 	
 	public void basicSourceRangeCheck() {
-		
-		LexElement firstLexElement = firstLexElementInSource(fullSource.substring(nodeUnderTest.getStartPos()));
-		assertTrue(firstLexElement.precedingSubChannelTokens == null || canBeginWithEmptySpace(nodeUnderTest));
+		if(!canBeginWithEmptySpace(nodeUnderTest)) {
+			LexElement firstLexElement = firstLexElementInNode();
+			assertTrue(firstLexElement.getFullRangeStartPos() == firstLexElement.getStartPos());
+		}
 		
 		if(nodeConsumesTrailingWhiteSpace(nodeUnderTest)) {
 			// Check that the range contains all possible whitespace
-			assertTrue(lexElementAfterSnippedRange(nodeUnderTest).getStartPos() == 0);
+			assertTrue(lexElementAfterNode(nodeUnderTest).getStartPos() == 0);
 		}
+	}
+	
+	public LexElement firstLexElementInNode() {
+		return firstLexElementInSource(fullSource.substring(nodeUnderTest.getStartPos()));
+	}
+	
+	public LexElement lexElementAfterNode(ASTNode node) {
+		return firstLexElementInSource(fullSource.substring(node.getEndPos()));
 	}
 	
 	public static LexElement firstLexElementInSource(String source) {
 		return new LexElementProducer().produceLexElement(new DeeLexer(source));
 	}
 	
-	public LexElement lexElementAfterSnippedRange(ASTNode node) {
-		return firstLexElementInSource(fullSource.substring(node.getEndPos()));
-	}
-	
 	public static boolean canBeginWithEmptySpace(final ASTNode node) {
 		switch (node.getNodeType()) {
-		case MODULE:
 		case DECL_LIST:
 		case SCOPED_STATEMENT_LIST:
 		case CSTYLE_ROOT_REF:
@@ -106,9 +124,6 @@ public class DeeParsingSourceRangeChecks {
 				return true;
 			}
 		}
-		if(node instanceof MissingExpression) {
-			//return true; // TODO, require TypeOrExp parse changes
-		}
 		if(node instanceof RefIdentifier) {
 			RefIdentifier refId = (RefIdentifier) node;
 			return DeeParser.isMissing(refId); 
@@ -122,81 +137,6 @@ public class DeeParsingSourceRangeChecks {
 		}
 		
 		return false;
-	}
-	
-	@SuppressWarnings("deprecation")
-	public void doCheck() {
-		assertTrue(nodeUnderTest.getNodeType() != ASTNodeTypes.OTHER);
-		
-		basicSourceRangeCheck();
-		
-		
-		switch (nodeUnderTest.getNodeType()) {
-		
-		case MODULE: {
-			Module module = (Module) nodeUnderTest;
-			int endPos = module.getEndPos();
-			assertTrue(module.getStartPos() == 0 && (endPos == fullSource.length() || 
-				fullSource.charAt(endPos) == 0x00 || fullSource.charAt(endPos) == 0x1A));
-			return;
-		}
-		
-		case MISSING_EXPRESSION:
-			if(nodeUnderTest instanceof MissingParenthesesExpression) {
-				SourceEquivalenceChecker.assertCheck(nodeUnderTest.toStringAsCode(), "");
-			}
-			
-		default: 
-			return;
-		}
-	}
-	
-	
-	public static void checkNodeEquality(ASTNode reparsedNode, ASTNode node) {
-		// We check the nodes are semantically equal by comparing the toStringAsCode
-		// TODO: use a more accurate equals method?
-		assertEquals(reparsedNode.toStringAsCode(), node.toStringAsCode());
-	}
-	
-	protected void functionParamReparseCheck() {
-		testParameter(true);
-	}
-	
-	protected void templateParamReparseCheck() {
-		testParameter(false);
-	}
-	
-	protected void testParameter(boolean isFunction) {
-		DeeParser snippedParser = prepParser(nodeSnippedSource);
-		
-		Object fromAmbig = new DeeParser_RuleParameters(snippedParser, TplOrFnMode.AMBIG).parseParameter();
-		boolean isAmbig = false;
-		if(fromAmbig instanceof AmbiguousParameter) {
-			isAmbig = true;
-			AmbiguousParameter ambiguousParameter = (AmbiguousParameter) fromAmbig;
-			fromAmbig = isFunction ? ambiguousParameter.convertToFunction() : ambiguousParameter.convertToTemplate(); 
-		}
-		checkNodeEquality((ASTNode) fromAmbig, nodeUnderTest);
-		snippedParser = prepParser(nodeSnippedSource);
-		
-		ASTNode paramParsedTheOtherWay = isFunction ? 
-			snippedParser.parseTemplateParameter() : (ASTNode) snippedParser.parseFunctionParameter();
-		
-		boolean hasFullyParsedCorrectly = allSourceParsedCorrectly(snippedParser, paramParsedTheOtherWay);
-		
-		assertTrue(hasFullyParsedCorrectly ? isAmbig : true);
-		if(hasFullyParsedCorrectly) {
-			String expectedSource = nodeUnderTest.toStringAsCode();
-			SourceEquivalenceChecker.assertCheck(paramParsedTheOtherWay.toStringAsCode(), expectedSource);
-		}
-	}
-	
-	public boolean allSourceParsedCorrectly(DeeParser parser, ASTNode resultNode) {
-		return parser.lookAhead() == DeeTokens.EOF && resultNode.getData().hasErrors();
-	}
-	
-	public static DeeParser prepParser(String snippedSource) {
-		return new DeeParser(new DeeParsingChecks.DeeTestsLexer(snippedSource));
 	}
 	
 }

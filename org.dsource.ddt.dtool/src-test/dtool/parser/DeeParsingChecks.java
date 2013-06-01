@@ -10,13 +10,17 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
 import dtool.ast.ASTNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.NodeUtil;
+import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
+import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.tests.CommonTestUtils;
 
@@ -104,6 +108,82 @@ public class DeeParsingChecks extends CommonTestUtils {
 			}
 		}
 		return false;
+	}
+	
+	public static void checkNodeEquality(ASTNode reparsedNode, ASTNode node) {
+		// We check the nodes are semantically equal by comparing the toStringAsCode
+		// TODO: use a more accurate equals method?
+		assertEquals(reparsedNode.toStringAsCode(), node.toStringAsCode());
+	}
+	
+	
+	public static class DeeParsingNodeCheck {
+		
+		protected final String fullSource;
+		protected final ASTNode nodeUnderTest;
+		protected final String nodeSnippedSource;
+		
+		@SuppressWarnings("deprecation")
+		public DeeParsingNodeCheck(String source, ASTNode node) {
+			this.fullSource = assertNotNull_(source);
+			this.nodeUnderTest = assertNotNull_(node);
+			this.nodeSnippedSource = fullSource.substring(nodeUnderTest.getStartPos(), nodeUnderTest.getEndPos());
+			assertTrue(nodeUnderTest.getNodeType() != ASTNodeTypes.OTHER);
+		}
+	}
+	
+	/* ------------------------------------- */
+	
+	//TODO: add this check to DeeTestsChecksParser ?
+	public static class ParametersReparseCheck extends DeeParsingNodeCheck {
+		
+		public ParametersReparseCheck(String source, ASTNode node) {
+			super(source, node);
+		}
+		
+		protected void functionParamReparseCheck() {
+			testParameter(true);
+		}
+		
+		protected void templateParamReparseCheck() {
+			testParameter(false);
+		}
+		
+		protected void testParameter(boolean isFunction) {
+			DeeParser snippedParser = prepParser(nodeSnippedSource);
+			
+			Object fromAmbig = new DeeParser_RuleParameters(snippedParser, TplOrFnMode.AMBIG).parseParameter();
+			boolean isAmbig = false;
+			if(fromAmbig instanceof AmbiguousParameter) {
+				isAmbig = true;
+				AmbiguousParameter ambiguousParameter = (AmbiguousParameter) fromAmbig;
+				fromAmbig = isFunction ? 
+					ambiguousParameter.convertToFunction() : 
+					ambiguousParameter.convertToTemplate(); 
+			}
+			DeeParsingChecks.checkNodeEquality((ASTNode) fromAmbig, nodeUnderTest);
+			snippedParser = prepParser(nodeSnippedSource);
+			
+			ASTNode paramParsedTheOtherWay = isFunction ? 
+				snippedParser.parseTemplateParameter() : (ASTNode) snippedParser.parseFunctionParameter();
+			
+			boolean hasFullyParsedCorrectly = allSourceParsedCorrectly(snippedParser, paramParsedTheOtherWay);
+			
+			assertTrue(hasFullyParsedCorrectly ? isAmbig : true);
+			if(hasFullyParsedCorrectly) {
+				String expectedSource = nodeUnderTest.toStringAsCode();
+				SourceEquivalenceChecker.assertCheck(paramParsedTheOtherWay.toStringAsCode(), expectedSource);
+			}
+		}
+		
+		public boolean allSourceParsedCorrectly(DeeParser parser, ASTNode resultNode) {
+			return parser.lookAhead() == DeeTokens.EOF && resultNode.getData().hasErrors();
+		}
+		
+		public static DeeParser prepParser(String snippedSource) {
+			return new DeeParser(new DeeParsingChecks.DeeTestsLexer(snippedSource));
+		}
+		
 	}
 	
 }
