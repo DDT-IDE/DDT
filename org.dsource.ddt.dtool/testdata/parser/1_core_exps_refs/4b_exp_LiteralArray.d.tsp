@@ -1,23 +1,10 @@
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    [123]
-#STRUCTURE_EXPECTED:  ExpLiteralArray(Integer)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    [1, "2", 66]
-#STRUCTURE_EXPECTED:  ExpLiteralArray(Integer String Integer)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    [ 1, "2" #error(EXP_CLOSE_BRACKET) #@BREAK
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
+#PARSE(EXPRESSION)    [ 1, "2" #@CLOSEBRACKET_OR_BREAK
 #STRUCTURE_EXPECTED:  ExpLiteralArray(Integer String)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    [ 1, #@NO_EXP #error(EXP_CLOSE_BRACKET) #@BREAK = 2
-#STRUCTURE_EXPECTED:  ExpLiteralArray(Integer #@NO_EXP)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    [ #error(EXP_CLOSE_BRACKET) #@BREAK = 2
+#PARSE(EXPRESSION)    [ #@CLOSEBRACKET_OR_BREAK 
 #STRUCTURE_EXPECTED:  ExpLiteralArray()
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   
-[ #@EXP1《1,● #@EXP_ASSIGN ,》   #@EXP2《 #@NO_EXP ● 666》  #@EXP3《  ●, #@EXP_ASSIGN 》  #@CLOSEBRACKET_OR_BREAK 
-#STRUCTURE_EXPECTED:
-ExpLiteralArray( #@《Integer●#@EXP_ASSIGN》(EXP1) #@《#@NO_EXP●Integer》(EXP2)  #@《●#@EXP_ASSIGN》(EXP3)  )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    [ #@EXP0《  /*MISSING*/ ● #@EXP_ASSIGN ● #error(EXPRULE_exp) , 123》  #@CLOSEBRACKET_OR_BREAK  
-#STRUCTURE_EXPECTED:  ExpLiteralArray( #@《●#@EXP_ASSIGN●MissingExpression Integer》(EXP0)  )
+#PARSE(EXPRESSION)    [ #@EXPARGS_ESEP  #@CLOSEBRACKET_OR_BREAK  
+#STRUCTURE_EXPECTED:  ExpLiteralArray( #@EXPARGS_ESEP )

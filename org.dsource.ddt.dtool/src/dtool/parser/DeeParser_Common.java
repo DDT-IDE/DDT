@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import dtool.ast.ASTNode;
+import dtool.ast.NodeListView;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.references.RefIdentifier;
@@ -84,28 +85,23 @@ public abstract class DeeParser_Common extends AbstractParser {
 	
 	public abstract class SimpleListParseHelper<T extends ASTNode> {
 		
-		public ArrayView<T> members; 
+		public NodeListView<T> members; 
 		
-		public ArrayView<T> parseSimpleList(boolean canBeEmpty, DeeTokens tkSEP) {
+		@Deprecated
+		public NodeListView<T> parseSimpleList(boolean canBeEmpty, DeeTokens tkSEP) {
+			return parseSimpleList(tkSEP, canBeEmpty, false);
+		}
+		
+		public NodeListView<T> parseSimpleList(DeeTokens tkSEP, boolean canBeEmpty, boolean canHaveEndingSep) {
 			ArrayList<T> membersList = new ArrayList<T>();
 			
 			do {
 				T entry = parseElement(!canBeEmpty || lookAhead() == tkSEP);
-				if(entry != null) {
-					membersList.add(entry);
-				}
-				canBeEmpty = false; // after first element next elements become required
+				membersList.add(entry);
+				canBeEmpty = canHaveEndingSep;
 			} while(tryConsume(tkSEP));
 			
-			members = arrayView(membersList);
-			return members;
-		}
-		
-		public ArrayView<T> parseSimpleListWithClose(ParseHelper parse, boolean canBeEmpty, DeeTokens tkSEP, 
-			DeeTokens tkCLOSE) {
-			parseSimpleList(canBeEmpty, tkSEP);
-			
-			parse.consumeRequired(tkCLOSE);
+			members = nodeListView(membersList);
 			return members;
 		}
 		

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.descentadapter;
 
+import static dtool.descentadapter.DescentASTConverter.convertManyNL;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
 
@@ -19,6 +20,7 @@ import descent.internal.compiler.parser.ArrayLiteralExp;
 import descent.internal.compiler.parser.CallExp;
 import dtool.DToolBundle;
 import dtool.ast.ASTNode;
+import dtool.ast.NodeListView;
 import dtool.ast.SourceRange;
 import dtool.ast.expressions.ExpCall;
 import dtool.ast.expressions.ExpLiteralArray;
@@ -56,13 +58,13 @@ public class ExpressionConverter extends BaseDmdConverter {
 	public static ExpCall createExpCall(CallExp elem, ASTConversionContext convContext) {
 		SourceRange sourceRange = DefinitionConverter.sourceRange(elem);
 		Expression callee = ExpressionConverter.convert(elem.e1, convContext); 
-		ArrayView<Expression> args = DescentASTConverter.convertMany(elem.arguments, Expression.class, convContext);
+		NodeListView<Expression> args = convertManyNL(elem.arguments, Expression.class, convContext);
 		return connect(sourceRange, new ExpCall(callee, args));
 	}
 	
 	public static ExpLiteralArray createExpArrayLiteral(ArrayLiteralExp elem, ASTConversionContext convContext) {
 		
-		ArrayView<Expression> args = DescentASTConverter.convertMany(elem.elements, Expression.class, convContext);
+		NodeListView<Expression> args = convertManyNL(elem.elements, Expression.class, convContext);
 		
 		SourceRange sourceRange = DefinitionConverter.sourceRange(elem);
 		if(sourceRange == null && DToolBundle.DMDPARSER_PROBLEMS__BUG41) {

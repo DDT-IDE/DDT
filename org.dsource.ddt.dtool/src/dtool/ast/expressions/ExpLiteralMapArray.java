@@ -6,13 +6,13 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.util.ArrayView;
+import dtool.ast.NodeListView;
 
 public class ExpLiteralMapArray extends Expression {
 	
-	public final ArrayView<MapArrayLiteralKeyValue> entries;
+	public final NodeListView<MapArrayLiteralKeyValue> entries;
 	
-	public ExpLiteralMapArray(ArrayView<MapArrayLiteralKeyValue> entries) {
+	public ExpLiteralMapArray(NodeListView<MapArrayLiteralKeyValue> entries) {
 		this.entries = parentize(assertNotNull_(entries));
 	}
 	
@@ -32,9 +32,7 @@ public class ExpLiteralMapArray extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("[ ");
-		cp.appendList(entries, ", ");
-		cp.append(" ]");
+		cp.appendNodeList("[ ", entries, ", ", " ]");
 	}
 	
 	
@@ -43,7 +41,7 @@ public class ExpLiteralMapArray extends Expression {
 		public final Expression value;
 		
 		public MapArrayLiteralKeyValue(Expression key, Expression value) {
-			this.key = parentize(key);
+			this.key = parentize(assertNotNull_(key));
 			this.value = parentize(value);
 		}
 		

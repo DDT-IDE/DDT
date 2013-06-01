@@ -1,5 +1,6 @@
 package dtool.descentadapter;
 
+import static dtool.descentadapter.DescentASTConverter.convertManyNL;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AddAssignExp;
@@ -85,6 +86,7 @@ import descent.internal.compiler.parser.VoidInitializer;
 import descent.internal.compiler.parser.XorAssignExp;
 import descent.internal.compiler.parser.XorExp;
 import dtool.ast.ASTNode;
+import dtool.ast.NodeListView;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.definitions.IFunctionParameter;
@@ -164,7 +166,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 			new ExpLiteralMapArray(
 				/*DescentASTConverter.convertMany(node.keys, Resolvable.class, convContext),*/
 				/*DescentASTConverter.convertMany(node.values, Resolvable.class, convContext),*/
-				ArrayView.create(new ExpLiteralMapArray.MapArrayLiteralKeyValue[0])
+				new NodeListView<>(new ExpLiteralMapArray.MapArrayLiteralKeyValue[0], false)
 			)
 		));
 	}
@@ -250,7 +252,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ArrayExp elem) {
 		Expression array = ExpressionConverter.convert(elem.e1, convContext);
-		ArrayView<Expression> args = DescentASTConverter.convertMany(elem.arguments, Expression.class, convContext);
+		NodeListView<Expression> args = convertManyNL(elem.arguments, Expression.class, convContext);
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem), new ExpIndex(array, args)));
 	}
 	
@@ -410,9 +412,9 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 				ReferenceConverter.convertType(element.newtype, convContext);
 		return endAdapt(DefinitionConverter.sourceRange(element),
 			new ExpNew(
-				DescentASTConverter.convertMany(element.newargs, Expression.class, convContext),
+				DescentASTConverter.convertManyNL(element.newargs, Expression.class, convContext),
 				type,
-				DescentASTConverter.convertMany(element.arguments, Expression.class, convContext)
+				DescentASTConverter.convertManyNL(element.arguments, Expression.class, convContext)
 			)
 		);
 	}

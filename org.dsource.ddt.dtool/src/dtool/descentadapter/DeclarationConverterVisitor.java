@@ -348,7 +348,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
 			new DeclarationPragma(
 				DefinitionConverter.convertId(elem.ident),
-				DescentASTConverter.convertMany(elem.args, Expression.class, convContext),
+				DescentASTConverter.convertManyNL(elem.args, Expression.class, convContext),
 				AttribBodySyntax.BRACE_BLOCK, body
 			)
 		));

@@ -4,14 +4,14 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.util.ArrayView;
+import dtool.ast.NodeListView;
 
 public class ExpIndex extends Expression {
 	
 	public final Expression indexee;
-	public final ArrayView<Expression> args;
+	public final NodeListView<Expression> args;
 	
-	public ExpIndex(Expression indexee, ArrayView<Expression> args) {
+	public ExpIndex(Expression indexee, NodeListView<Expression> args) {
 		this.indexee = parentize(indexee);
 		this.args = parentize(args);
 	}
@@ -34,7 +34,7 @@ public class ExpIndex extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(indexee);
-		cp.appendList("[", args, ", " , "]");
+		cp.appendNodeList("[", args, ", " , "]");
 	}
 	
 }

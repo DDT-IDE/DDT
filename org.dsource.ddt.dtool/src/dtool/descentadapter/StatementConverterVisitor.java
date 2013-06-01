@@ -293,7 +293,7 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 		return endAdapt(DefinitionConverter.sourceRange(element),
 			new DeclarationPragma(
 				DefinitionConverter.convertId(element.ident),
-				DescentASTConverter.convertMany(element.args, Expression.class, convContext),
+				DescentASTConverter.convertManyNL(element.args, Expression.class, convContext),
 				AttribBodySyntax.BRACE_BLOCK, body
 			)
 		);

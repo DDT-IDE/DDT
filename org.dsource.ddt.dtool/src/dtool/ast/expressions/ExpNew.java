@@ -4,9 +4,9 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeListView;
 import dtool.ast.references.RefIndexing;
 import dtool.ast.references.Reference;
-import dtool.util.ArrayView;
 
 /**
  * New expression.
@@ -17,11 +17,11 @@ import dtool.util.ArrayView;
  */
 public class ExpNew extends Expression {
 	
-	public final ArrayView<Expression> allocArgs;
+	public final NodeListView<Expression> allocArgs;
 	public final Reference newtype;
-	public final ArrayView<Expression> args;
+	public final NodeListView<Expression> args;
 	
-	public ExpNew(ArrayView<Expression> atorArgs, Reference type, ArrayView<Expression> args) {
+	public ExpNew(NodeListView<Expression> atorArgs, Reference type, NodeListView<Expression> args) {
 		this.allocArgs = parentize(atorArgs);
 		this.newtype = parentize(type);
 		this.args = parentize(args);
@@ -46,9 +46,9 @@ public class ExpNew extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("new");
-		cp.appendList("(", allocArgs, ", ", ")", " "); 
+		cp.appendNodeList("(", allocArgs, ", ", ")", " "); 
 		cp.append(newtype);
-		cp.appendList("(", args, ", ", ")", " ");
+		cp.appendNodeList("(", args, ", ", ")", " ");
 	}
 	
 }

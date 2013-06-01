@@ -6,5 +6,5 @@
 #PARSE(DECLARATION)  pragma(foo) ;
 #STRUCTURE_EXPECTED: DeclarationPragma(Symbol DeclarationEmpty)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test expression list
-#PARSE(DECLARATION)  pragma(foo, #@EXP_ARGS) : #@DECL_LIST_SAMPLE
-#STRUCTURE_EXPECTED: DeclarationPragma(Symbol #@EXP_ARGS DeclList( #@DECL_LIST_SAMPLE ))
+#PARSE(DECLARATION)             pragma(foo,   #@EXPARGS_NE_ESEP) : #@DECL_LIST_SAMPLE
+#STRUCTURE_EXPECTED: DeclarationPragma(Symbol #@EXPARGS_NE_ESEP DeclList( #@DECL_LIST_SAMPLE ))

@@ -11,6 +11,7 @@ import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNeoNode;
+import dtool.ast.NodeListView;
 import dtool.ast.definitions.Module;
 import dtool.util.ArrayView;
 
@@ -90,6 +91,14 @@ public class DescentASTConverter extends StatementConverterVisitor {
 		T[] rets = ArrayUtil.create(children.size(), elemClass);
 		convertManyIntoArray(children, rets, convContext);
 		return ArrayView.create(rets);
+	}
+	
+	public static <T extends IASTNeoNode> NodeListView<T> convertManyNL(Collection<? extends IASTNode> children,
+		Class<T> elemClass, ASTConversionContext convContext) {
+		if(children == null) return null;
+		T[] rets = ArrayUtil.create(children.size(), elemClass);
+		convertManyIntoArray(children, rets, convContext);
+		return new NodeListView<>(rets, false);
 	}
 	
 	public static <T extends IASTNeoNode> ArrayView<T> convertManyNoNulls(Collection<? extends IASTNode> children, 

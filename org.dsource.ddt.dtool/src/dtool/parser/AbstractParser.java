@@ -12,12 +12,14 @@ package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNeoNode;
+import dtool.ast.NodeListView;
 import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
@@ -440,13 +442,26 @@ public abstract class AbstractParser {
 	public static <T extends IASTNeoNode> ArrayView<T> arrayView(Collection<T> list) {
 		if(list == null)
 			return null;
-		return ArrayView.create(ArrayUtil.createFrom(list, CoreUtil.<Class<T>>blindCast(ASTNode.class) ));
+		T[] array = ArrayUtil.createFrom(list, CoreUtil.<Class<T>>blindCast(ASTNode.class));
+		return ArrayView.create(array);
 	}
 	
 	public static <T> ArrayView<T> arrayViewG(Collection<? extends T> list) {
 		if(list == null)
 			return null;
 		return ArrayView.create((T[]) ArrayUtil.createFrom(list, Object.class));
+	}
+	
+	public static <T extends IASTNeoNode> NodeListView<T> nodeListView(ArrayList<T> list) {
+		if(list == null)
+			return null;
+		boolean hasEndingSeparator = false;
+		if(list.size() > 0 && list.get(list.size()-1) == null) {
+			list.remove(list.size()-1);
+			hasEndingSeparator = true;
+		}
+		T[] array = ArrayUtil.createFrom(list, CoreUtil.<Class<T>>blindCast(ASTNode.class));
+		return new NodeListView<>(array, hasEndingSeparator);
 	}
 	
 }

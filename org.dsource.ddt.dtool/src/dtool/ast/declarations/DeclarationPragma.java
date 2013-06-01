@@ -6,30 +6,30 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeListView;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
-import dtool.util.ArrayView;
 
 public class DeclarationPragma extends DeclarationAttrib implements IDeclaration, IStatement {
 	
 	public final boolean isStatement;
 	public final Symbol pragmaId;
-	public final ArrayView<Expression> expressions;
+	public final NodeListView<Expression> expList;
 	
-	public DeclarationPragma(Symbol id, ArrayView<Expression> expressions, AttribBodySyntax abs, ASTNode bodyDecls) {
+	public DeclarationPragma(Symbol id, NodeListView<Expression> expList, AttribBodySyntax abs, ASTNode bodyDecls) {
 		super(abs, bodyDecls);
 		this.pragmaId = parentize(id);
-		this.expressions = parentize(expressions);
+		this.expList = parentize(expList);
 		this.isStatement = false;
 	}
 	
-	public DeclarationPragma(Symbol id, ArrayView<Expression> expressions, IStatement thenBody) {
+	public DeclarationPragma(Symbol id, NodeListView<Expression> expList, IStatement thenBody) {
 		super(AttribBodySyntax.SINGLE_DECL, (ASTNode) thenBody);
 		assertTrue(!(thenBody instanceof BlockStatement));
 		this.pragmaId = parentize(id);
-		this.expressions = parentize(expressions);
+		this.expList = parentize(expList);
 		this.isStatement = true;
 	}
 	
@@ -43,7 +43,7 @@ public class DeclarationPragma extends DeclarationAttrib implements IDeclaration
 		boolean children = visitor.visit(this);
 		if(children) {
 			TreeVisitor.acceptChildren(visitor, pragmaId);
-			TreeVisitor.acceptChildren(visitor, expressions);
+			TreeVisitor.acceptChildren(visitor, expList);
 			TreeVisitor.acceptChildren(visitor, body);
 		}
 		visitor.endVisit(this);
@@ -54,7 +54,7 @@ public class DeclarationPragma extends DeclarationAttrib implements IDeclaration
 		cp.append("pragma(");
 		if(pragmaId != null) {
 			cp.append(pragmaId);
-			cp.appendList(", ", expressions, ", ", "");
+			cp.appendNodeList(", ", expList, ", ", "");
 		}
 		cp.append(") ");
 		toStringAsCode_body(cp);

@@ -31,7 +31,7 @@ public class DeeParserAdditionalTests extends CommonTestUtils {
 		DeeParser parser = new DeeParser(source);
 		parser.consumeLookAhead(DeeTokens.OPEN_PARENS);
 		ParseHelper parse = parser.new ParseHelper();
-		parser.parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
+		parser.parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
 		return parse;
 	}
 	

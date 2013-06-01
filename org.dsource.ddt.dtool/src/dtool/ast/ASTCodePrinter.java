@@ -118,15 +118,30 @@ public class ASTCodePrinter {
 	
 	public boolean appendList(String open, ArrayView<? extends IASTNeoNode> args, String sep, String close, 
 		String spacingIfArgsNull) {
+		return appendList(open, args, sep, false, close, spacingIfArgsNull);
+	}
+	
+	public boolean appendList(String open, ArrayView<? extends IASTNeoNode> args, String sep, boolean hasEndingSep,
+		String close, String spacingIfArgsNull) {
 		if(args != null) {
 			append(open);
-			appendList(args, sep);
+			appendList(args, sep, hasEndingSep);
 			append(close);
 			return true;
 		} else {
 			append(spacingIfArgsNull);
 			return false;
 		}
+	}
+	
+	public void appendNodeList(String open, NodeListView<? extends IASTNeoNode> args, String sep, String close) {
+		appendNodeList(open, args, sep, close, null);
+	}
+	
+	public void appendNodeList(String open, NodeListView<? extends IASTNeoNode> args, String sep, String close, 
+		String spacingIfArgsNull) {
+		boolean hasEndingSeparator = args == null ? false : args.hasEndingSeparator;
+		appendList(open, args, sep, hasEndingSeparator, close, spacingIfArgsNull);
 	}
 	
 	/* ==== */

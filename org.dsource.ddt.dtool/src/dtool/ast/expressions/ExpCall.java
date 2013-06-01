@@ -8,19 +8,19 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeListView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
 import dtool.refmodel.pluginadapters.IModuleResolver;
-import dtool.util.ArrayView;
 
 public class ExpCall extends Expression {
 	
 	public final Expression callee;
-	public final ArrayView<Expression> args;
+	public final NodeListView<Expression> args;
 	
-	public ExpCall(Expression callee, ArrayView<Expression> args) {
+	public ExpCall(Expression callee, NodeListView<Expression> args) {
 		this.callee = parentize(callee);
 		this.args = parentize(args);
 	}
@@ -43,7 +43,7 @@ public class ExpCall extends Expression {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(callee);
-		cp.appendList("(", args, ", " , ")"); 
+		cp.appendNodeList("(", args, ", " , ")"); 
 	}
 	
 	@Override

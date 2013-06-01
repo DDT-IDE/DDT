@@ -18,6 +18,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import dtool.ast.ASTNode;
+import dtool.ast.NodeListView;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclBlock;
@@ -1345,14 +1346,14 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		Symbol pragmaId = null;
 		AttribBodyParseRule ab = new AttribBodyParseRule();
 		IStatement bodySt = null;
-		ArrayView<Expression> expressions = null;
+		NodeListView<Expression> expList = null;
 		
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 			pragmaId = parseIdSymbol();
 			
 			if(tryConsume(DeeTokens.COMMA)) {
-				expressions = parseExpArgumentList(false, parse, DeeTokens.CLOSE_PARENS);
+				expList = parseExpArgumentList(parse, false, DeeTokens.CLOSE_PARENS);
 			} else {
 				parse.consumeRequired(DeeTokens.CLOSE_PARENS);
 			}
@@ -1366,9 +1367,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		
 		if(isStatement) {
-			return parse.resultConclude(new DeclarationPragma(pragmaId, expressions, bodySt));
+			return parse.resultConclude(new DeclarationPragma(pragmaId, expList, bodySt));
 		}
-		return parse.resultConclude(new DeclarationPragma(pragmaId, expressions, ab.bodySyntax, ab.declList));
+		return parse.resultConclude(new DeclarationPragma(pragmaId, expList, ab.bodySyntax, ab.declList));
 	}
 	
 	public NodeResult<DeclarationProtection> parseDeclarationProtection() {

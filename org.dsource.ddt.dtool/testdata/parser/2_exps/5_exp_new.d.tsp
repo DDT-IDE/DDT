@@ -5,36 +5,24 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-#@ARG1《
-  ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN , ● #@EXP_ASSIGN】● 
-  ►#?STRUCTURE_EXPECTED!【#@NO_EXP , ● #@NO_EXP】●
-  ► ●
+#@ALLOC_ARG《
+  ►#?STRUCTURE_EXPECTED!【 /*No alloc args*/● 】● 
+  ►#?STRUCTURE_EXPECTED!【( #@EXPARGS_ESEP ) ● #@EXPARGS_ESEP】●
 ¤》
-#@ARGLIST《
-  ►#?STRUCTURE_EXPECTED!【( #@ARG1 #@EXP_ASSIGN )● #@ARG1 #@EXP_ASSIGN 】● 
-  ►#?STRUCTURE_EXPECTED!【( #@EXP_ASSIGN__LITE , #@NO_EXP )● #@EXP_ASSIGN__LITE #@NO_EXP】● 
-  ►#?STRUCTURE_EXPECTED!【( #@NO_EXP , #@NO_EXP )● #@NO_EXP #@NO_EXP】● 
-  
-  ►#?STRUCTURE_EXPECTED!【( #@NO_EXP , #@EXP_ASSIGN__LITE , #@NO_EXP )● #@NO_EXP #@EXP_ASSIGN__LITE #@NO_EXP】● 
-  ►#?STRUCTURE_EXPECTED!【()● 】●
-¤》
-#@ALLOC_ARG《#@ARGLIST●►#?STRUCTURE_EXPECTED!【 /*No alloc args*/● 】》
-
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   new     #@ALLOC_ARG  #@TYPEREF_NBNE  (sample)
 #STRUCTURE_EXPECTED: ExpNew( #@ALLOC_ARG  #@TYPEREF_NBNE  #@ExpIdentifier )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ (note that ARG1 expansion gets messed up because of EXP_ASSIGN__NO_PENDING)
-#PARSE(EXPRESSION)   new     (#@ARG1 #@EXP_ASSIGN__NO_PENDING #error(EXP_CLOSE_PARENS)  #@BREAK foo (456)
-#STRUCTURE_EXPECTED: ExpNew( #@《*●#@NO_EXP● 》(ARG1) #@EXP_ASSIGN__NO_PENDING )
+#PARSE(EXPRESSION)   new     (#@EXPARGS_ESEP__SAMPLE #error(EXP_CLOSE_PARENS)  #@BREAK
+#STRUCTURE_EXPECTED: ExpNew(  #@EXPARGS_ESEP__SAMPLE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   new     #@ARGLIST  #@NO_TYPEREF #@BREAK (123) 
-#STRUCTURE_EXPECTED: ExpNew( #@ARGLIST  #@NO_TYPEREF )  
+#PARSE(EXPRESSION)   new     (#@EXPARGS_ESEP) #@NO_TYPEREF #@BREAK (123) 
+#STRUCTURE_EXPECTED: ExpNew(  #@EXPARGS_ESEP  #@NO_TYPEREF )  
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@CTOR_ARG《
   ►#?STRUCTURE_EXPECTED!【 /*No ctor args*/● 】● 
-  ►#@ARGLIST● 
-  ►#?STRUCTURE_EXPECTED!【( #@NO_ClosePARENS #@BREAK ● 】●
-  ►#?STRUCTURE_EXPECTED!【( #@EXP_ASSIGN__LITE , #@NO_EXP #@NO_ClosePARENS #@BREAK ● #@EXP_ASSIGN__LITE #@NO_EXP】● 
+  ►#?STRUCTURE_EXPECTED!【( #@EXPARGS_ESEP ) ● #@EXPARGS_ESEP】●
+  ►#?STRUCTURE_EXPECTED!【( #@EXPARGS_ESEP__SAMPLE #@NO_ClosePARENS #@BREAK ● #@EXPARGS_ESEP__SAMPLE #@BREAK】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREF_NBNE  #@CTOR_ARG
@@ -45,6 +33,3 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   new     #@NO_TYPEREF  #@BREAK [789]
 #STRUCTURE_EXPECTED: ExpNew( #@NO_TYPEREF )  
-
-
-

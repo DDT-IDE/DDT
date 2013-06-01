@@ -23,6 +23,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTDirectChildrenVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.NodeData.PreParseNodeData;
+import dtool.ast.NodeListView;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.StaticIfExpIs;
@@ -1145,13 +1146,21 @@ protected class ParseRule_TypeOrExp {
 					}
 					exp1 = firstArg;
 				} else {
-					exp1 = parseAssignExpression_toMissing();
+					exp1 = parseAssignExpression().node;
+					if(lookAhead() == DeeTokens.COMMA) {
+						exp1 = nullExpToMissing(exp1, RULE_EXPRESSION);
+					}
 					
-					if(mapElements != null ) {
-						exp2parse = new ParseHelper(exp1);
-						assertTrue(mode == TypeOrExpStatus.EXP);
-						if(exp2parse.consumeExpected(DeeTokens.COLON)) {
-							exp2 = parseAssignExpression_toMissing();
+					if(mapElements != null) {
+						if(lookAhead() == DeeTokens.COLON) {
+							exp1 = nullExpToMissing(exp1, RULE_EXPRESSION);
+						}
+						if(exp1 != null) {
+							exp2parse = new ParseHelper(exp1);
+							assertTrue(mode == TypeOrExpStatus.EXP);
+							if(exp2parse.consumeExpected(DeeTokens.COLON)) {
+								exp2 = parseAssignExpression_toMissing();
+							}
 						}
 					}
 				}
@@ -1160,10 +1169,15 @@ protected class ParseRule_TypeOrExp {
 				if(mapElements == null ) {
 					elements.add(exp1);
 				} else {
-					mapElements.add(exp2parse.conclude(new MapArrayLiteralKeyValue(exp1, exp2)));
+					if(exp2parse == null) {
+						mapElements.add(null);
+					} else {
+						mapElements.add(exp2parse.conclude(new MapArrayLiteralKeyValue(exp1, exp2)));
+					}
 				}
 				
 				if(tryConsume(DeeTokens.COMMA)) {
+					assertTrue(exp1 != null);
 					continue;
 				}
 				break;
@@ -1175,12 +1189,12 @@ protected class ParseRule_TypeOrExp {
 			
 			if(calleeExp == null) {
 				if(mapElements != null ) {
-					return expConnect(parse.conclude(new ExpLiteralMapArray(arrayView(mapElements))));
+					return expConnect(parse.conclude(new ExpLiteralMapArray(nodeListView(mapElements))));
 				} else {
-					return typeOrExpBracketList(parse, new ExpLiteralArray(arrayView(elements)));
+					return typeOrExpBracketList(parse, new ExpLiteralArray(nodeListView(elements)));
 				}
 			}
-			return typeOrExpBracketList(parse, new ExpIndex(calleeExp, arrayView(elements)));
+			return typeOrExpBracketList(parse, new ExpIndex(calleeExp, nodeListView(elements)));
 		}
 		
 		@Override
@@ -1593,14 +1607,11 @@ protected class ParseRule_TypeOrExp {
 	protected NodeResult<ExpCall> parseCallExpression_atParenthesis(Expression callee) {
 		ParseHelper parse = new ParseHelper(callee);
 		consumeLookAhead(DeeTokens.OPEN_PARENS);
-		ArrayView<Expression> args = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
+		NodeListView<Expression> args = parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
 		return parse.resultConclude(new ExpCall(callee, args));
 	}
 	
-	protected ArrayView<Expression> parseExpArgumentList(ParseHelper parse, DeeTokens tokenLISTCLOSE) {
-		return parseExpArgumentList(true, parse, tokenLISTCLOSE);
-	}
-	protected ArrayView<Expression> parseExpArgumentList(boolean canBeEmpty, ParseHelper parse, 
+	protected NodeListView<Expression> parseExpArgumentList(ParseHelper parse, boolean canBeEmpty, 
 		DeeTokens tokenLISTCLOSE) {
 		SimpleListParseHelper<Expression> elementListParse = new SimpleListParseHelper<Expression>() {
 			@Override
@@ -1609,7 +1620,10 @@ protected class ParseRule_TypeOrExp {
 				return createMissing ? nullExpToMissing(arg) : arg;
 			}
 		};
-		return elementListParse.parseSimpleListWithClose(parse, canBeEmpty, DeeTokens.COMMA, tokenLISTCLOSE);
+		elementListParse.parseSimpleList(DeeTokens.COMMA, canBeEmpty, true);
+		
+		parse.consumeRequired(tokenLISTCLOSE);
+		return elementListParse.members;
 	}
 	
 	protected final class TypeOrExpArgumentListSimpleParse extends SimpleListParseHelper<Resolvable> {
@@ -1624,7 +1638,9 @@ protected class ParseRule_TypeOrExp {
 		DeeTokens tkCLOSE) {
 		
 		SimpleListParseHelper<Resolvable> elementListParse = new TypeOrExpArgumentListSimpleParse();
-		return elementListParse.parseSimpleListWithClose(parse, true, tkSEP, tkCLOSE);
+		elementListParse.parseSimpleList(true, tkSEP);
+		parse.consumeRequired(tkCLOSE);
+		return elementListParse.members;
 	}
 	
 	protected NodeResult<? extends Expression> matchParenthesesStart() {
@@ -1802,13 +1818,13 @@ protected class ParseRule_TypeOrExp {
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
 		
-		ArrayView<Expression> allocArgs = null;
+		NodeListView<Expression> allocArgs = null;
 		Reference type = null;
-		ArrayView<Expression> args = null;
+		NodeListView<Expression> args = null;
 		
 		parsing: {
 			if(parse.consumeOptional(DeeTokens.OPEN_PARENS)) {
-				allocArgs = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
+				allocArgs = parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
 				if(parse.ruleBroken) break parsing;
 			}
 			
@@ -1822,7 +1838,7 @@ protected class ParseRule_TypeOrExp {
 			if(parse.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				args = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
+				args = parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
 			}
 		}
 		
@@ -1838,7 +1854,7 @@ protected class ParseRule_TypeOrExp {
 		
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				args = parseExpArgumentList(parse, DeeTokens.CLOSE_PARENS);
+				args = parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
 				if(parse.ruleBroken) break parsing;
 			}
 			

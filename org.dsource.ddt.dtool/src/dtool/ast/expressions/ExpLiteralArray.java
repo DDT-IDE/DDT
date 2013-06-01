@@ -4,13 +4,13 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.util.ArrayView;
+import dtool.ast.NodeListView;
 
 public class ExpLiteralArray extends Expression {
 	
-	public final ArrayView<Expression> elements;
+	public final NodeListView<Expression> elements;
 	
-	public ExpLiteralArray(ArrayView<Expression> elements) {
+	public ExpLiteralArray(NodeListView<Expression> elements) {
 		this.elements = parentize(elements);
 	}
 	
@@ -30,7 +30,7 @@ public class ExpLiteralArray extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendList("[ ", elements, ", " , " ]");
+		cp.appendNodeList("[ ", elements, ", " , " ]");
 	}
 	
 }

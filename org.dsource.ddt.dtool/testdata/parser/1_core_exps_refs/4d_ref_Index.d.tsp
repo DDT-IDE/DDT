@@ -1,16 +1,10 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo[int] dummy;
-int[foo][Bar] dummy2;
-
 #STRUCTURE_EXPECTED:
 DefVariable(RefIndexing(RefIdentifier RefPrimitive) DefSymbol)
-DefVariable(RefIndexing(RefIndexing(RefPrimitive RefIdentifier) RefIdentifier)  DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo[1] dummy;
 int[123] [4] dummy2;
-
 #STRUCTURE_EXPECTED:
-DefVariable(RefIndexing(RefIdentifier ExpLiteralInteger) DefSymbol)
 DefVariable(RefIndexing(RefIndexing(RefPrimitive ExpLiteralInteger) ExpLiteralInteger)  DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ duplicate test case, here for clarity

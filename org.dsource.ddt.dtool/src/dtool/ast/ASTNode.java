@@ -293,11 +293,12 @@ public abstract class ASTNode implements IASTNeoNode {
 	/* =============== Parenting =============== */
 	
 	/** Set the parent of the given collection to the receiver. @return collection */
-	protected <T extends ASTNode> ArrayView<T> parentize(ArrayView<T> collection) {
-		return parentize(collection, false);
+	protected <T extends ArrayView<? extends ASTNode>> T parentize(T collection) {
+		parentize(collection, false);
+		return collection;
 	}
 	
-	protected <T extends ASTNode> ArrayView<T> parentize(ArrayView<T> collection, boolean allowNulls) {
+	protected <T extends ArrayView<? extends ASTNode>> T parentize(T collection, boolean allowNulls) {
 		if (collection != null) {
 			for (ASTNode node : collection) {
 				if(node != null) {
