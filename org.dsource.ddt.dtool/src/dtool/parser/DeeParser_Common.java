@@ -87,11 +87,6 @@ public abstract class DeeParser_Common extends AbstractParser {
 		
 		public NodeListView<T> members; 
 		
-		@Deprecated
-		public NodeListView<T> parseSimpleList(boolean canBeEmpty, DeeTokens tkSEP) {
-			return parseSimpleList(tkSEP, canBeEmpty, false);
-		}
-		
 		public NodeListView<T> parseSimpleList(DeeTokens tkSEP, boolean canBeEmpty, boolean canHaveEndingSep) {
 			ArrayList<T> membersList = new ArrayList<T>();
 			

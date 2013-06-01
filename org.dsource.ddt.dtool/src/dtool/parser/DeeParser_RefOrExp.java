@@ -279,7 +279,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			consumeLookAhead();
 			
 			ITemplateRefNode tplRef = (ITemplateRefNode) leftRef;
-			ArrayView<Resolvable> tplArgs = null;
+			NodeListView<Resolvable> tplArgs = null;
 			Resolvable singleArg = null;
 			
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
@@ -1634,11 +1634,11 @@ protected class ParseRule_TypeOrExp {
 		}
 	}
 	
-	protected final ArrayView<Resolvable> parseTypeOrExpArgumentList(ParseHelper parse, DeeTokens tkSEP, 
+	protected final NodeListView<Resolvable> parseTypeOrExpArgumentList(ParseHelper parse, DeeTokens tkSEP, 
 		DeeTokens tkCLOSE) {
 		
 		SimpleListParseHelper<Resolvable> elementListParse = new TypeOrExpArgumentListSimpleParse();
-		elementListParse.parseSimpleList(true, tkSEP);
+		elementListParse.parseSimpleList(tkSEP, true, true);
 		parse.consumeRequired(tkCLOSE);
 		return elementListParse.members;
 	}

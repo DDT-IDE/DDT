@@ -25,6 +25,7 @@ import descent.internal.compiler.parser.TypeInstance;
 import descent.internal.compiler.parser.TypeQualified;
 import dtool.DToolBundle;
 import dtool.ast.ASTNode;
+import dtool.ast.NodeListView;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.MissingDeclaration;
 import dtool.ast.definitions.DeclarationMixin;
@@ -41,7 +42,6 @@ import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
 import dtool.descentadapter.DescentASTConverter.ASTConversionContext;
-import dtool.util.ArrayView;
 
 
 /**
@@ -204,8 +204,8 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 	
 	public static RefTemplateInstance createRefTemplateInstance(Reference tplReference,
 			List<ASTDmdNode> tiargs, SourceRange sourceRange, ASTConversionContext convContext) {
-		ArrayView<Resolvable> tiargsNew = CoreUtil.blindCast(
-			DescentASTConverter.convertMany(tiargs, ASTNode.class, convContext));
+		NodeListView<Resolvable> tiargsNew = CoreUtil.blindCast(
+			DescentASTConverter.convertManyNL(tiargs, ASTNode.class, convContext));
 		return connect(sourceRange,  
 			new RefTemplateInstance((ITemplateRefNode) tplReference, null, tiargsNew));
 	}

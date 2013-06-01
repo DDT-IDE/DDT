@@ -11,20 +11,20 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeListView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
-import dtool.util.ArrayView;
 
 public class RefTemplateInstance extends Reference implements IQualifierNode, ITemplateRefNode {
 	
 	public final Reference tplRef;
 	public final Resolvable tplSingleArg;
-	public final ArrayView<Resolvable> tplArgs;
+	public final NodeListView<Resolvable> tplArgs;
 	
-	public RefTemplateInstance(ITemplateRefNode tplRef, Resolvable tplSingleArg, ArrayView<Resolvable> tplArgs) {
+	public RefTemplateInstance(ITemplateRefNode tplRef, Resolvable tplSingleArg, NodeListView<Resolvable> tplArgs) {
 		this.tplRef = parentizeI(assertInstance(tplRef, Reference.class));
 		assertTrue(exactlyOneIsNull(tplSingleArg, tplArgs));
 		this.tplSingleArg = parentize(tplSingleArg);
@@ -57,7 +57,7 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 		if(isSingleArgSyntax()) {
 			cp.append(tplSingleArg);
 		} else {
-			cp.appendList("(", tplArgs, ", ", ")");
+			cp.appendNodeList("(", tplArgs, ", ", ")");
 		}
 	}
 	
