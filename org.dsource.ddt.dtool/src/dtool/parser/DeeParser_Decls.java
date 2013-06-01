@@ -1116,7 +1116,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(adp.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.COLON)) {
-				baseClasses.parseSimpleList(false, DeeTokens.COMMA);
+				baseClasses.parseSimpleList(DeeTokens.COMMA, false, false);
 			}
 			
 			adp.parseAggregateBody();

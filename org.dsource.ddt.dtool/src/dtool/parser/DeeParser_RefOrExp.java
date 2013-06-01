@@ -1858,7 +1858,7 @@ protected class ParseRule_TypeOrExp {
 				if(parse.ruleBroken) break parsing;
 			}
 			
-			baseClasses.parseSimpleList(true, DeeTokens.COMMA);
+			baseClasses.parseSimpleList(DeeTokens.COMMA, true, false);
 			
 			declBody = parse.requiredResult(thisParser().parseDeclarationBlock(), DeeParser.RULE_DECLARATION_BLOCK);
 		}
@@ -2021,7 +2021,7 @@ protected class ParseRule_TypeOrExp {
 		ParseHelper parse = new ParseHelper();
 		
 		Symbol traitsId = null;
-		ArrayView<Resolvable> args = null;
+		NodeListView<Resolvable> args = null;
 		
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
@@ -2030,7 +2030,7 @@ protected class ParseRule_TypeOrExp {
 			
 			if(parse.consumeExpected(DeeTokens.COMMA)) { 
 				SimpleListParseHelper<Resolvable> elementListParse = new TypeOrExpArgumentListSimpleParse();
-				elementListParse.parseSimpleList(false, DeeTokens.COMMA);
+				elementListParse.parseSimpleList(DeeTokens.COMMA, true, true);
 				args = elementListParse.members;
 			}
 			

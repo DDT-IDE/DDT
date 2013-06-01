@@ -4,15 +4,15 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeListView;
 import dtool.ast.definitions.Symbol;
-import dtool.util.ArrayView;
 
 public class ExpTraits extends Expression {
 	
 	public final Symbol traitsId;
-	public final ArrayView<Resolvable> args;
+	public final NodeListView<Resolvable> args;
 	
-	public ExpTraits(Symbol traitsId, ArrayView<Resolvable> args) {
+	public ExpTraits(Symbol traitsId, NodeListView<Resolvable> args) {
 		this.traitsId = parentize(traitsId);
 		this.args = parentize(args);
 	}
@@ -37,7 +37,7 @@ public class ExpTraits extends Expression {
 		cp.append("__traits");
 		if(traitsId != null) {
 			cp.append("(", traitsId);
-			cp.appendList(", ", args, ",", "");
+			cp.appendNodeList(", ", args, ",", "");
 			cp.append(")");
 		}
 	}

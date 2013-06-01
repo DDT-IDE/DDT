@@ -154,7 +154,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 		return endAdapt(connect(DefinitionConverter.sourceRange(node),
 			new ExpTraits(
 				new Symbol(node.ident.ident == null ? "" : new String(node.ident.ident)),
-				DescentASTConverter.convertMany(node.args, Resolvable.class, convContext))
+				DescentASTConverter.convertManyNL(node.args, Resolvable.class, convContext))
 			)
 		);
 	}
