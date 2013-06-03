@@ -131,6 +131,7 @@ public abstract class ASTNode implements IASTNeoNode {
 	}
 	
 	/** Set the parent of this node. Cannot be null. Cannot set parent twice without explicitly detaching. */
+	@Override
 	public void setParent(ASTNode parent) {
 		assertTrue(parent != null);
 		assertTrue(this.parent == null);
@@ -312,7 +313,7 @@ public abstract class ASTNode implements IASTNeoNode {
 	}
 	
 	/** Set the parent of the given node to the receiver. @return node */
-	protected <T extends ASTNode> T parentize(T node) {
+	protected <T extends IASTNeoNode> T parentize(T node) {
 		if (node != null) {
 			node.setParent(this);
 		}
@@ -320,8 +321,7 @@ public abstract class ASTNode implements IASTNeoNode {
 	}
 	
 	protected <T extends IASTNeoNode> T parentizeI(T node) {
-		parentize((ASTNode) node);
-		return node;
+		return parentize(node);
 	}
 	
 	protected <T extends IASTNeoNode> ArrayView<T> parentizeI(ArrayView<T> collection) {

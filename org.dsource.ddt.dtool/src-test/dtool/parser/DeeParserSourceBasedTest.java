@@ -355,6 +355,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			errorSource = assertNotNull_(mde.sourceValue);
 			return new ParserError(errorType, errorRange, errorSource, errorParam);
 		case TYPE_USED_AS_EXP_VALUE:
+		case INIT_USED_IN_EXP:
 		case INVALID_QUALIFIER:
 		case NO_CHAINED_TPL_SINGLE_ARG:
 			errorSource = assertNotNull_(mde.sourceValue);

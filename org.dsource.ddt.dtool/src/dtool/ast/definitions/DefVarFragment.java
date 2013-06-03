@@ -6,7 +6,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.expressions.Initializer;
+import dtool.ast.expressions.IInitializer;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -16,9 +16,9 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  */
 public class DefVarFragment extends DefUnit {
 	
-	public final Initializer init;
+	public final IInitializer init;
 	
-	public DefVarFragment(ProtoDefSymbol defId, Initializer init) {
+	public DefVarFragment(ProtoDefSymbol defId, IInitializer init) {
 		super(defId);
 		this.init = parentize(init);
 	}
@@ -49,7 +49,7 @@ public class DefVarFragment extends DefUnit {
 		return EArcheType.Variable;
 	}
 	
-	public Initializer getInitializer() {
+	public IInitializer getInitializer() {
 		return init;
 	}
 	

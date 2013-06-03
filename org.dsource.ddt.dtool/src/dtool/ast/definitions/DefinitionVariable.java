@@ -11,7 +11,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
-import dtool.ast.expressions.Initializer;
+import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IDefUnitReference;
@@ -30,15 +30,15 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 	
 	public final Reference type;
 	public final Reference cstyleSuffix;
-	public final Initializer init;
+	public final IInitializer init;
 	public final ArrayView<DefVarFragment> fragments;
 	
-	public DefinitionVariable(ProtoDefSymbol defId, Reference type, Reference cstyleSuffix, Initializer init,
+	public DefinitionVariable(ProtoDefSymbol defId, Reference type, Reference cstyleSuffix, IInitializer init,
 		ArrayView<DefVarFragment> fragments) {
 		this(defId, assertNotNull_(type), cstyleSuffix, init, fragments, false);
 	}
 	
-	protected DefinitionVariable(ProtoDefSymbol defId, Reference type, Reference cstyleSuffix, Initializer init,
+	protected DefinitionVariable(ProtoDefSymbol defId, Reference type, Reference cstyleSuffix, IInitializer init,
 		ArrayView<DefVarFragment> fragments, @SuppressWarnings("unused") boolean dummy)
 	{
 		super(defId);
@@ -81,7 +81,7 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 	// TODO refactor this into own class?
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
-		public DefinitionAutoVariable(ProtoDefSymbol defId, Initializer init, 
+		public DefinitionAutoVariable(ProtoDefSymbol defId, IInitializer init, 
 			ArrayView<DefVarFragment> fragments) {
 			super(defId, null, null, init, fragments, false);
 		}

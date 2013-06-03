@@ -716,8 +716,8 @@ protected class ParseRule_TypeOrExp {
 		return new TypeOrExpResult(mode, exp, breakRule);
 	}
 	
-	protected Expression parseTypeOrExpression_start(InfixOpType precedenceLimit, boolean isStart) {
-		Expression prefixExp = parsePrefixExpression(isStart);
+	protected Expression parseTypeOrExpression_start(InfixOpType precedenceLimit, boolean isTypeOrExpStart) {
+		Expression prefixExp = parsePrimaryExpression(isTypeOrExpStart);
 		if(shouldReturnToParseRuleTopLevel(prefixExp)) {
 			return prefixExp;
 		}
@@ -725,8 +725,8 @@ protected class ParseRule_TypeOrExp {
 		return parseTypeOrExpression_fromUnary(precedenceLimit, prefixExp);
 	}
 	
-	public Expression parseTypeOrExpression_fromUnary(InfixOpType precedenceLimit, Expression prefixExp) {
-		Expression unaryExp = parsePostfixExpression(prefixExp);
+	public Expression parseTypeOrExpression_fromUnary(InfixOpType precedenceLimit, Expression unaryExp) {
+		unaryExp = parsePostfixExpression(unaryExp);
 		if(shouldReturnToParseRuleTopLevel(unaryExp)) {
 			return unaryExp;
 		}
@@ -735,15 +735,10 @@ protected class ParseRule_TypeOrExp {
 	}
 	
 	protected Expression parseUnaryExpression(boolean isTypeOrExpStart) {
-		Expression prefixExp = parsePrefixExpression(isTypeOrExpStart);
-		if(shouldReturnToParseRuleTopLevel(prefixExp)) {
-			return prefixExp;
-		}
-		
-		return parsePostfixExpression(prefixExp);
+		return parseTypeOrExpression_start(InfixOpType.NULL, isTypeOrExpStart);
 	}
 	
-	protected Expression parsePrefixExpression(boolean isTypeOrExpStart) {
+	protected Expression parsePrimaryExpression(boolean isTypeOrExpStart) {
 		if(isTypeOrExpStart) {
 			assertTrue(mode == null);
 		}
@@ -1542,6 +1537,13 @@ protected class ParseRule_TypeOrExp {
 	public Expression parseUnaryExpression() {
 		Expression exp = new ParseRule_TypeOrExp().parseUnaryExpression(true);
 		return convertTypeOrExpToExpression(exp); // TODO: Minor BUG here with TYPE occurences
+	}
+	
+	public Expression parseExpression_fromUnary(InfixOpType precedenceLimit, Expression unaryExp) {
+		ParseRule_TypeOrExp parseRule_TypeOrExp = new ParseRule_TypeOrExp();
+		parseRule_TypeOrExp.updateTypeOrExpMode(TypeOrExpStatus.EXP);
+		Expression exp = parseRule_TypeOrExp.parseTypeOrExpression_fromUnary(precedenceLimit, unaryExp);
+		return convertTypeOrExpToExpression(exp);
 	}
 	
 	public Expression parseArrayLiteral() {

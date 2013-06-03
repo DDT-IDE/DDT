@@ -39,7 +39,7 @@ DeclarationBasicAttrib(DeclarationBasicAttrib( DefAutoVariable(DefSymbol Initial
 ¤》
 
 #@AUTO_INIT《
-  ►#?STRUCTURE_EXPECTED!【= #@INITIALIZERS ● #@INITIALIZERS】●
+  ►#?STRUCTURE_EXPECTED!【= #@INITIALIZERS_TESTER ● #@INITIALIZERS_TESTER】●
   ►#?STRUCTURE_EXPECTED!【#error(EXP_ASSIGN)【】 ● 】●
 ¤》
 #@AUTO_FRAG《

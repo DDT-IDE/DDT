@@ -91,7 +91,7 @@ import dtool.ast.definitions.TemplateAliasParam;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.Expression;
-import dtool.ast.expressions.Initializer;
+import dtool.ast.expressions.IInitializer;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerArray.ArrayInitEntry;
 import dtool.ast.expressions.InitializerExp;
@@ -374,7 +374,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		Reference ref, ProtoDefSymbol defId) 
 	{
 		ArrayList<DefVarFragment> fragments = null;
-		Initializer init = null;
+		IInitializer init = null;
 		Reference cstyleSuffix = null;
 		
 		final boolean isAutoRef = ref == null;
@@ -409,7 +409,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	protected DefVarFragment parseVarFragment(boolean isAutoRef) {
 		ProtoDefSymbol fragId = parseDefId();
 		ParseHelper parse = new ParseHelper(fragId.getStartPos());
-		Initializer init = null;
+		IInitializer init = null;
 		
 		if(!fragId.isMissing()) {
 			if(tryConsume(DeeTokens.ASSIGN)){ 
@@ -423,7 +423,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public static final ParseRuleDescription RULE_INITIALIZER = new ParseRuleDescription("Initializer");
 	
-	public NodeResult<? extends Initializer> parseInitializer() {
+	public NodeResult<? extends IInitializer> parseInitializer() {
 		if(tryConsume(DeeTokens.KW_VOID)) {
 			return resultConclude(false, srOf(lastLexElement(), new InitializerVoid()));
 		}
@@ -431,28 +431,71 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parseNonVoidInitializer(true);
 	}
 	
-	public NodeResult<? extends Initializer> parseNonVoidInitializer(boolean createMissing) {
+	public NodeResult<? extends IInitializer> parseNonVoidInitializer(boolean createMissing) {
 		if(lookAhead() == DeeTokens.OPEN_BRACKET) {
-			return parseArrayInitializer();
+			NodeResult<InitializerArray> arrayInitResult = parseArrayInitializer();
+			if(arrayInitResult.ruleBroken) {
+				return arrayInitResult;
+			}
+			InitializerArray arrayInitExp = arrayInitResult.node;
+			Expression initExp = parseExpression_fromUnary(InfixOpType.ASSIGN, arrayInitExp);
+			if(initExp == arrayInitExp) {
+				return arrayInitResult;
+			}
+			ParserError error = null;
+			if(!arrayInitializerCouldParseAsArrayLiteral(arrayInitExp)) {
+				error = createError(ParserErrorTypes.INIT_USED_IN_EXP, arrayInitExp.getSourceRange(), null); 
+			} else {
+				// Even if initializer can be parsed as array literal, we place it in exp without any node conversion
+				// (this might change in future)
+			}
+			InitializerExp initializerExp = conclude(error, srOf(initExp, new InitializerExp(initExp)));
+			return result(false, initializerExp);
 		}
 		if(lookAhead() == DeeTokens.OPEN_BRACE) {
 			DeeParserState savedParserState = thisParser().enterBacktrackableMode();
 			NodeResult<InitializerStruct> structInitResult = parseStructInitializer();
 			
-			if(!structInitResult.ruleBroken) {
-				return structInitResult;
-			} else {
+			if(structInitResult.ruleBroken) {
 				thisParser().restoreOriginalState(savedParserState);
+				return parseExpInitializer(createMissing);
 			}
+			return structInitResult;
+			
 		}
-		
+		return parseExpInitializer(createMissing);
+	}
+	
+	public boolean arrayInitializerCouldParseAsArrayLiteral(InitializerArray arrayInit) {
+		if(arrayInit.entries.size() < 1) {
+			return true;
+		}
+		boolean mustBeMapEntries = arrayInit.entries.get(0).index != null;
+		for (ArrayInitEntry entry : arrayInit.entries) {
+			if(entry.value instanceof InitializerArray) {
+				InitializerArray initArraySubEntry = (InitializerArray) entry.value;
+				if(!arrayInitializerCouldParseAsArrayLiteral(initArraySubEntry)) {
+					return false;
+				}
+				return true;
+			} else if(!(entry.value instanceof InitializerExp)) {
+				return false;
+			}
+			boolean isMapEntry = entry.index != null;
+			if(isMapEntry != mustBeMapEntries)
+				return false;
+		}
+		return true;
+	}
+
+	public NodeResult<InitializerExp> parseExpInitializer(boolean createMissing) {
 		NodeResult<Expression> expResult = createMissing ? 
 			parseAssignExpression_toMissing(true, RULE_INITIALIZER) : parseAssignExpression();
 		Expression exp = expResult.node;
 		if(exp == null) {
-			return nullResult();
+			return AbstractParser.<InitializerExp>nullResult();
 		}
-		return resultConclude(expResult.ruleBroken, srBounds(exp, new InitializerExp(exp)));
+		return resultConclude(expResult.ruleBroken, srOf(exp, new InitializerExp(exp)));
 	}
 	
 	public NodeResult<InitializerArray> parseArrayInitializer() {
@@ -468,7 +511,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		@Override
 		protected ArrayInitEntry parseElement(boolean createMissing) {
 			Expression index = null;
-			Initializer initializer = null;
+			IInitializer initializer = null;
 			
 			if(lookAhead() == DeeTokens.COLON) {
 				index = parseAssignExpression_toMissing();
@@ -488,7 +531,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				}
 			}
 			
-			ASTNode startNode = index != null ? index : initializer;
+			ASTNode startNode = index != null ? index : initializer.asNode();
 			return concludeNode(srToPosition(startNode, new ArrayInitEntry(index, initializer)));
 		}
 	}
@@ -511,11 +554,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				member = parseRefIdentifier();
 				consumeLookAhead(DeeTokens.COLON);
 			}
-			Initializer init = parseNonVoidInitializer(createMissing || member != null).node;
+			IInitializer init = parseNonVoidInitializer(createMissing || member != null).node;
 			if(init == null)
 				return null;
 			
-			ASTNode startNode = member != null ? member : init;
+			ASTNode startNode = member != null ? member : init.asNode();
 			return concludeNode(srToPosition(startNode, new StructInitEntry(member, init)));
 		}
 	}
@@ -1181,7 +1224,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			fragment = parse.conclude(new ImportAlias(aliasId, refModule));
 		} else {
 			RefModule refModule = parseRefModule();
-			fragment = conclude(srBounds(refModule, new ImportContent(refModule)));
+			fragment = conclude(srOf(refModule, new ImportContent(refModule)));
 		}
 		
 		if(tryConsume(DeeTokens.COLON)) {

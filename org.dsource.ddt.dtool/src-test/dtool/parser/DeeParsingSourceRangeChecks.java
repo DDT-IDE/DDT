@@ -91,11 +91,11 @@ public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {
 			return ((InitializerExp) node).exp instanceof MissingExpression;
 		case STRUCT_INIT_ENTRY: {
 			StructInitEntry initEntry = (StructInitEntry) node;
-			return canBeginWithEmptySpace(initEntry.member != null ? initEntry.member : initEntry.value);
+			return canBeginWithEmptySpace(initEntry.member != null ? initEntry.member : (ASTNode) initEntry.value);
 		}
 		case ARRAY_INIT_ENTRY: {
 			ArrayInitEntry initEntry = (ArrayInitEntry) node;
-			return canBeginWithEmptySpace(initEntry.index != null ? initEntry.index : initEntry.value);
+			return canBeginWithEmptySpace(initEntry.index != null ? initEntry.index : (ASTNode) initEntry.value);
 		}
 		case MAPARRAY_ENTRY: {
 			MapArrayLiteralKeyValue mapArrayEntry = (MapArrayLiteralKeyValue) node;

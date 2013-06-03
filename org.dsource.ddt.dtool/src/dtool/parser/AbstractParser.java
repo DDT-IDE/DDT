@@ -403,12 +403,13 @@ public abstract class AbstractParser {
 		return srBounds(startPos, endPos, node);
 	}
 	
-	public static <T extends ASTNode> T srBounds(ASTNode wrappedNode, T node) {
-		return srBounds(wrappedNode, wrappedNode, node);
-	}
-	
 	public static <T extends ASTNode> T srOf(BaseLexElement lexElement, T node) {
 		node.setSourceRange(lexElement.getStartPos(), lexElement.getEndPos() - lexElement.getStartPos());
+		return node;
+	}
+	
+	public static <T extends ASTNode> T srOf(ASTNode rangeNode, T node) {
+		node.setSourceRange(rangeNode.getStartPos(), rangeNode.getLength());
 		return node;
 	}
 	

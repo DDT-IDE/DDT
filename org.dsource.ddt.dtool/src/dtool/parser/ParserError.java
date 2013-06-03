@@ -30,7 +30,8 @@ public class ParserError {
 		SYNTAX_ERROR, // unexpected rule in rule start
 		
 		EXP_MUST_HAVE_PARENTHESES, 
-		TYPE_USED_AS_EXP_VALUE, 
+		TYPE_USED_AS_EXP_VALUE,
+		INIT_USED_IN_EXP,
 		INVALID_QUALIFIER, 
 		NO_CHAINED_TPL_SINGLE_ARG,
 		
@@ -86,6 +87,8 @@ public class ParserError {
 		case NO_CHAINED_TPL_SINGLE_ARG:
 			return "The template '!' single argument " + msgErrorSource + 
 				" cannot be used next to other template '!' single arguments.";
+		case INIT_USED_IN_EXP:
+			return "The initializer " + msgErrorSource + " cannot be used as part of an expression.";
 		
 		case INVALID_EXTERN_ID:
 			return "Invalid linkage specifier \"" + msgErrorSource + "\", valid ones are: " +

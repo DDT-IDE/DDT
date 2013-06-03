@@ -38,9 +38,9 @@ public class InitializerStruct extends Initializer {
 	
 	public static class StructInitEntry extends ASTNode {
 		public final RefIdentifier member;
-		public final Initializer value;
+		public final IInitializer value;
 		
-		public StructInitEntry(RefIdentifier member, Initializer value) {
+		public StructInitEntry(RefIdentifier member, IInitializer value) {
 			this.member = parentize(member);
 			this.value = parentize(assertNotNull_(value));
 		}

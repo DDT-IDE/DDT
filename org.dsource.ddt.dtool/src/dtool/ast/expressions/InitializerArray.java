@@ -8,12 +8,12 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
 
-public class InitializerArray extends Initializer {
+public class InitializerArray extends Expression implements IInitializer {
 	
 	public final NodeListView<ArrayInitEntry> entries;
 	
 	public InitializerArray(NodeListView<ArrayInitEntry> indexes) {
-		this.entries = parentize(indexes);
+		this.entries = parentize(assertNotNull_(indexes));
 	}
 	
 	@Override
@@ -37,9 +37,9 @@ public class InitializerArray extends Initializer {
 	
 	public static class ArrayInitEntry extends ASTNode {
 		public final Expression index;
-		public final Initializer value;
+		public final IInitializer value;
 		
-		public ArrayInitEntry(Expression index, Initializer value) {
+		public ArrayInitEntry(Expression index, IInitializer value) {
 			this.index = parentize(index);
 			this.value = parentize(assertNotNull_(value));
 		}

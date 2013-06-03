@@ -7,6 +7,6 @@ import dtool.ast.ASTNode;
  * 
  * @see http://dlang.org/declaration.html#Initializer
  */
-public abstract class Initializer extends ASTNode {
+public abstract class Initializer extends ASTNode implements IInitializer {
 	
 }
