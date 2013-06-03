@@ -461,7 +461,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(listParse.members == null)
 			return nullResult();
 		
-		return listParse.resultConclude(new InitializerArray(listParse.members, listParse.hasEndingSep));
+		return listParse.resultConclude(new InitializerArray(listParse.members));
 	}
 	
 	public class ParseArrayInitEntry extends ElementListParseHelper<ArrayInitEntry> {
@@ -499,7 +499,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(listParse.members == null)
 			return nullResult();
 		
-		return listParse.resultConclude(new InitializerStruct(listParse.members, listParse.hasEndingSep));
+		return listParse.resultConclude(new InitializerStruct(listParse.members));
 	}
 	
 	public class ParseStructInitEntry extends ElementListParseHelper<StructInitEntry> {
@@ -1045,7 +1045,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return nullResult();
 		}
 		
-		return parse.resultConclude(new EnumBody(parse.members, parse.hasEndingSep));
+		return parse.resultConclude(new EnumBody(parse.members));
 	}
 	
 	public class ParseEnumMember extends ElementListParseHelper<EnumMember> {

@@ -6,11 +6,10 @@ import java.util.ArrayList;
 
 import dtool.ast.ASTNode;
 import dtool.ast.NodeListView;
-import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
-import dtool.util.ArrayView;
 
 
 public abstract class DeeParser_Common extends AbstractParser {
@@ -36,8 +35,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 	
 	public abstract class ElementListParseHelper<T extends ASTNode> extends ParseHelper {
 		
-		public ArrayView<T> members; 
-		public boolean hasEndingSep = false;
+		public NodeListView<T> members; 
 		
 		public ElementListParseHelper() {
 			nodeStart = -1;
@@ -55,6 +53,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 			setStartPosition(lastLexElement().getStartPos());
 			
 			ArrayList<T> membersList = new ArrayList<T>();
+			boolean hasEndingSep = false;
 			
 			boolean requireElement = false;
 			while(true) {
@@ -76,7 +75,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 					break;
 				}
 			}
-			members = arrayView(membersList);
+			members = nodeListView(membersList, hasEndingSep);
 		}
 		
 		protected abstract T parseElement(boolean createMissing);

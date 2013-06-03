@@ -547,12 +547,14 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				new DefinitionEnum(
 				defUnitTuple.defSymbol,
 				ReferenceConverter.convertType(elem.memtype, convContext),
-				new DefinitionEnum.EnumBody(DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext), false)
+				new DefinitionEnum.EnumBody(
+					DescentASTConverter.convertManyNL(elem.members, EnumMember.class, convContext))
 			));
 		} else {
 			return connect(DefinitionConverter.sourceRange(elem), new DeclarationEnum(
 				ReferenceConverter.convertType(elem.memtype, convContext),
-				new DefinitionEnum.EnumBody(DescentASTConverter.convertMany(elem.members, EnumMember.class, convContext), false)
+				new DefinitionEnum.EnumBody(
+					DescentASTConverter.convertManyNL(elem.members, EnumMember.class, convContext))
 			));
 		}
 	}

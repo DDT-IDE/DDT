@@ -7,7 +7,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeList;
+import dtool.ast.NodeListView;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.references.Reference;
@@ -46,11 +46,10 @@ public class DeclarationEnum extends ASTNode implements INonScopedBlock, IDeclar
 		cp.append(": ", type);
 		cp.append(body);
 	}
-
+	
 	@Override
 	public Iterator<? extends ASTNode> getMembersIterator() {
-		return NodeList.getMembersIterator(body);
+		return NodeListView.getIteratorSafe(body.nodeList /*BUG here NPE*/);
 	}
-	
 	
 }

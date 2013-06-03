@@ -7,16 +7,16 @@ import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeList;
+import dtool.ast.NodeListView;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
-import dtool.util.ArrayView;
 
 public class DefinitionEnum extends Definition implements IScopeNode, IDeclaration, IStatement {
 	
@@ -54,13 +54,12 @@ public class DefinitionEnum extends Definition implements IScopeNode, IDeclarati
 		cp.append(body);
 	}
 	
-	public static class EnumBody extends NodeList<EnumMember> {
+	public static class EnumBody extends ASTNode {
 		
-		public final boolean hasEndingComma;
-
-		public EnumBody(ArrayView<EnumMember> nodes, boolean endingComma) {
-			super(nodes);
-			this.hasEndingComma = endingComma;
+		public final NodeListView<EnumMember> nodeList;
+		
+		public EnumBody(NodeListView<EnumMember> nodes) {
+			this.nodeList = parentize(assertNotNull_(nodes));
 		}
 		
 		@Override
@@ -69,19 +68,26 @@ public class DefinitionEnum extends Definition implements IScopeNode, IDeclarati
 		}
 		
 		@Override
+		public void accept0(IASTVisitor visitor) {
+			boolean children = visitor.visit(this);
+			if (children) {
+				TreeVisitor.acceptChildren(visitor, nodeList);
+			}
+			visitor.endVisit(this);
+		}
+		
+		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.append("{");
-			cp.appendList(nodes, ", ", hasEndingComma);
-			cp.append("}");
+			cp.appendNodeList("{", nodeList, ", ", "}");
 		}
 	}
 	
 	public static class NoEnumBody extends EnumBody {
 		
-		public static ArrayView<EnumMember> NULL_DECLS = ArrayView.create(new EnumMember[0]);
+		public static NodeListView<EnumMember> NULL_DECLS = new NodeListView<>(new EnumMember[0], false);
 		
 		public NoEnumBody() {
-			super(NULL_DECLS, false);
+			super(NULL_DECLS);
 		}
 		
 		@Override
@@ -118,7 +124,7 @@ public class DefinitionEnum extends Definition implements IScopeNode, IDeclarati
 	
 	@Override
 	public Iterator<EnumMember> getMembersIterator(IModuleResolver moduleResolver) {
-		return body.nodes.iterator(); /*BUG here NPE*/
+		return body.nodeList.iterator(); /*BUG here NPE*/
 	}
 	
 	@Override

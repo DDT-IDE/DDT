@@ -460,6 +460,10 @@ public abstract class AbstractParser {
 			list.remove(list.size()-1);
 			hasEndingSeparator = true;
 		}
+		return nodeListView(list, hasEndingSeparator);
+	}
+	
+	public static <T extends IASTNeoNode> NodeListView<T> nodeListView(ArrayList<T> list, boolean hasEndingSeparator) {
 		T[] array = ArrayUtil.createFrom(list, CoreUtil.<Class<T>>blindCast(ASTNode.class));
 		return new NodeListView<>(array, hasEndingSeparator);
 	}

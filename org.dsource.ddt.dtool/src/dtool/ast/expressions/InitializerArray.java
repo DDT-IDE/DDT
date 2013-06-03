@@ -6,16 +6,14 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.util.ArrayView;
+import dtool.ast.NodeListView;
 
 public class InitializerArray extends Initializer {
 	
-	public final ArrayView<ArrayInitEntry> entries;
-	public final boolean hasEndingComma;
+	public final NodeListView<ArrayInitEntry> entries;
 	
-	public InitializerArray(ArrayView<ArrayInitEntry> indexes, boolean hasEndingComma) {
+	public InitializerArray(NodeListView<ArrayInitEntry> indexes) {
 		this.entries = parentize(indexes);
-		this.hasEndingComma = hasEndingComma;
 	}
 	
 	@Override
@@ -34,9 +32,7 @@ public class InitializerArray extends Initializer {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("[");
-		cp.appendList(entries, ", ", hasEndingComma);
-		cp.append("]");
+		cp.appendNodeList("[", entries, ", ", "]");
 	}
 	
 	public static class ArrayInitEntry extends ASTNode {

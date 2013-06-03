@@ -6,17 +6,15 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeListView;
 import dtool.ast.references.RefIdentifier;
-import dtool.util.ArrayView;
 
 public class InitializerStruct extends Initializer {
 	
-	public final ArrayView<StructInitEntry> entries;
-	public final boolean hasEndingComma;
+	public final NodeListView<StructInitEntry> entries;
 	
-	public InitializerStruct(ArrayView<StructInitEntry> indexes, boolean hasEndingComma) {
+	public InitializerStruct(NodeListView<StructInitEntry> indexes) {
 		this.entries = parentize(indexes);
-		this.hasEndingComma = hasEndingComma;
 	}
 	
 	@Override
@@ -35,9 +33,7 @@ public class InitializerStruct extends Initializer {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("{");
-		cp.appendList(entries, ", ", hasEndingComma);
-		cp.append("}");
+		cp.appendNodeList("{", entries, ", ", "}");
 	}
 	
 	public static class StructInitEntry extends ASTNode {

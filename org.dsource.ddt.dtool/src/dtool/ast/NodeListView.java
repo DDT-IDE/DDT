@@ -1,5 +1,8 @@
 package dtool.ast;
 
+import java.util.Iterator;
+
+import melnorme.utilbox.misc.IteratorUtil;
 import dtool.util.ArrayView;
 
 /**
@@ -13,6 +16,10 @@ public class NodeListView<T extends IASTNeoNode> extends ArrayView<T> {
 	public NodeListView(T[] array, boolean hasEndingSeparator) {
 		super(array);
 		this.hasEndingSeparator = hasEndingSeparator;
+	}
+	
+	public static <T> Iterator<T> getIteratorSafe(Iterable<T> nodeList) {
+		return nodeList == null ? IteratorUtil.<T>getEMPTY_ITERATOR() : nodeList.iterator();
 	}
 	
 }
