@@ -804,9 +804,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		BlockStatement block = null;
 		
 		parsing: {
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
-			id = parseIdSymbol();
-			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
+			if(parse.consumeOptional(DeeTokens.OPEN_PARENS)) {
+				id = parseIdSymbol();
+				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
+			}
 			
 			block = parse.checkResult(parseBlockStatement_toMissing(false));
 		}

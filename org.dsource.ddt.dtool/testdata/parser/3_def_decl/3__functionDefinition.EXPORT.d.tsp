@@ -90,12 +90,13 @@ function/template interactions - param default convert
  ►#?STRUCTURE_EXPECTED!【in #@NO_ST_BLOCK● #@NO_ST_BLOCK 】●
 ¤》
 #@OUT_BLOCKS《
+ ►#?STRUCTURE_EXPECTED!【out #@Sp_ST_BLOCK ● FunctionBodyOutBlock( #@Sp_ST_BLOCK )】●
+ ►#?STRUCTURE_EXPECTED!【out #@NO_ST_BLOCK ● FunctionBodyOutBlock( #@NO_ST_BLOCK )】●
  ►#?STRUCTURE_EXPECTED!【out(foo) #@Sp_ST_BLOCK● FunctionBodyOutBlock(Symbol #@Sp_ST_BLOCK )】●  
  ►#?STRUCTURE_EXPECTED!【out(foo) #@NO_ST_BLOCK● FunctionBodyOutBlock(Symbol #@NO_ST_BLOCK )】●
  
  ►#?STRUCTURE_EXPECTED!【out(foo #@BREAK_Pr● FunctionBodyOutBlock(Symbol $ )】●
  ►#?STRUCTURE_EXPECTED!【out(#@NO_ID #@BREAK_Pr● FunctionBodyOutBlock(Symbol $ )】●
- ►#?STRUCTURE_EXPECTED!【out #error(EXP_OPEN_PARENS)【】 #@BREAK● FunctionBodyOutBlock(   $ )】●
 ¤》
 
 #@FNDEF_BODY《
