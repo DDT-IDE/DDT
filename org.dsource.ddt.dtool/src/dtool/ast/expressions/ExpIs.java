@@ -18,6 +18,7 @@ public class ExpIs extends Expression {
 		INTERFACE,
 		ENUM,
 		FUNCTION,
+		TYPEDEF,
 		DELEGATE,
 		SUPER,
 		CONST,

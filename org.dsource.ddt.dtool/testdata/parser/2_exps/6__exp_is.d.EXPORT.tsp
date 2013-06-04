@@ -3,6 +3,7 @@
 #@ARCHETYPE《
   ►struct●union●class●interface●enum●
   ►function●delegate●
+  ►typedef /*deprecated but still used in isexp*/●
   ►super●
   ►const●immutable●inout●shared●
   ►return●

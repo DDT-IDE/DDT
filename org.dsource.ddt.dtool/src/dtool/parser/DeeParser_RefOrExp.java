@@ -1992,6 +1992,7 @@ protected class ParseRule_TypeOrExp {
 		case KW_INTERFACE: return ExpIsSpecialization.INTERFACE;
 		case KW_ENUM: return ExpIsSpecialization.ENUM;
 		case KW_FUNCTION: return ExpIsSpecialization.FUNCTION;
+		case KW_TYPEDEF: return ExpIsSpecialization.TYPEDEF;
 		case KW_DELEGATE: return ExpIsSpecialization.DELEGATE;
 		case KW_SUPER: return ExpIsSpecialization.SUPER;
 		case KW_CONST:
