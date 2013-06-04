@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNeoNode;
 import dtool.parser.DeeTokens;
+import dtool.parser.Token;
 import dtool.util.ArrayView;
 
 public interface IFunctionParameter extends IASTNeoNode {
@@ -12,11 +13,10 @@ public interface IFunctionParameter extends IASTNeoNode {
 	public static enum FunctionParamAttribKinds {
 		AUTO(DeeTokens.KW_AUTO),
 		
-		//Disabled since these are parsed as type modifiers
-//		CONST(DeeTokens.KW_CONST), 
-//		IMMUTABLE(DeeTokens.KW_IMMUTABLE), 
-//		INOUT(DeeTokens.KW_INOUT), 
-//		SHARED(DeeTokens.KW_SHARED),
+		CONST(DeeTokens.KW_CONST), 
+		IMMUTABLE(DeeTokens.KW_IMMUTABLE), 
+		INOUT(DeeTokens.KW_INOUT), 
+		SHARED(DeeTokens.KW_SHARED),
 		
 		FINAL(DeeTokens.KW_FINAL),
 		IN(DeeTokens.KW_IN),
@@ -38,10 +38,10 @@ public interface IFunctionParameter extends IASTNeoNode {
 		public static FunctionParamAttribKinds fromToken(DeeTokens token) {
 			switch (token) {
 			case KW_AUTO: return AUTO;
-//			case KW_CONST: return CONST;
-//			case KW_IMMUTABLE: return IMMUTABLE;
-//			case KW_INOUT: return INOUT;
-//			case KW_SHARED: return SHARED;
+			case KW_CONST: return CONST;
+			case KW_IMMUTABLE: return IMMUTABLE;
+			case KW_INOUT: return INOUT;
+			case KW_SHARED: return SHARED;
 			case KW_FINAL: return FINAL;
 			case KW_IN: return IN;
 			case KW_LAZY: return LAZY;
@@ -60,24 +60,25 @@ public interface IFunctionParameter extends IASTNeoNode {
 	
 	public static class FnParameterAttributes {
 		
-		public final ArrayView<FunctionParamAttribKinds> attribs;
+		public final ArrayView<Token> attribs;
 		
-		public FnParameterAttributes(ArrayView<FunctionParamAttribKinds> attribList) {
+		public FnParameterAttributes(ArrayView<Token> attribList) {
 			attribs = assertNotNull_(attribList);
-		}
-		
-		public void toStringAsCode(ASTCodePrinter cp) {
-			for (FunctionParamAttribKinds attribKind : attribs) {
-				cp.appendStrings(attribKind.getSourceValue(), " ");
+			for (Token token : attribs) {
+				assertTrue(FunctionParamAttribKinds.fromToken(token.type) != null);
 			}
 		}
 		
-		public static FnParameterAttributes create(ArrayView<FunctionParamAttribKinds> attribList) {
-			return attribList == null ? EMPTY_FN_PARAMS : new FnParameterAttributes(attribList);
+		public void toStringAsCode(ASTCodePrinter cp) {
+			cp.appendTokenList(attribs, " ", true);
 		}
 		
-		public static final FnParameterAttributes EMPTY_FN_PARAMS = new FnParameterAttributes(
-			ArrayView.<FunctionParamAttribKinds>create(new FunctionParamAttribKinds[0]));
+		public static final FnParameterAttributes EMPTY_FN_PARAMS = 
+			new FnParameterAttributes(ArrayView.create(new Token[0]));
+		
+		public static FnParameterAttributes create(ArrayView<Token> attribList) {
+			return attribList == null ? EMPTY_FN_PARAMS : new FnParameterAttributes(attribList);
+		}
 		
 	}
 	

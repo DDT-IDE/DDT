@@ -187,7 +187,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			} else if(mde.name.equals("PARSE")){
 				parseRule = mde.value;
 			} else if(mde.name.equals("parser") && areEqual(mde.value, "CutRest")){
-				int pos = mde.getOffsetFromNoLength();
+				int pos = assertNoLength(mde).offset;
 				
 				if(expectedRemainingSource == null) {
 					fullSource = fullSource.substring(0, pos);
@@ -201,7 +201,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 				ignoreFurtherErrorMDs = true;
 				
 			} else if(mde.name.equals("parser") && areEqual(mde.value, "IgnoreRest")){
-				int pos = mde.getOffsetFromNoLength();
+				int pos = assertNoLength(mde).offset;
 				if(expectedRemainingSource == null) {
 					expectedParsedSource = fullSource.substring(0, pos);
 					expectedRemainingSource = fullSource.substring(pos);
@@ -266,6 +266,12 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		
 		new DeeParserTest(fullSource).runParserTest______________________(parseRule, expectedRemainingSource, 
 			expectedPrintedSource, expectedStructure, expectedErrors, unmodifiableMap(additionalMetadata));
+	}
+	
+	public static MetadataEntry assertNoLength(MetadataEntry mde) {
+		assertTrue(mde.offset >= 0);
+		assertTrue(mde.sourceValue == null);
+		return mde;
 	}
 	
 	public static class StringCorrection {

@@ -1,5 +1,6 @@
 package dtool.parser;
 
+import dtool.ast.ASTNode;
 import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.LexElement.MissingLexElement;
 
@@ -54,6 +55,11 @@ public class AbstractParserRule extends DeeParser_Statements {
 	@Override
 	public LexElement lastLexElement() {
 		return parser.lastLexElement();
+	}
+	
+	@Override
+	protected void nodeConcluded(ASTNode node) {
+		parser.nodeConcluded(node);
 	}
 	
 	public static abstract class AbstractDecidingParserRule<T> extends AbstractParserRule {

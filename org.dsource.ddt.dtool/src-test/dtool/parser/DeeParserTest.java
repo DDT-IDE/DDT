@@ -26,21 +26,25 @@ import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.ExpLiteralString;
 import dtool.ast.expressions.ExpPostfixOperator;
+import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.AutoReference;
 import dtool.ast.statements.SimpleVariableDef;
 import dtool.parser.DeeParserResult.ParserErrorComparator;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
+import dtool.parser.DeeParsingChecks.ParametersReparseCheck;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
+import dtool.tests.DToolTests;
 
 
 public class DeeParserTest extends CommonTestUtils {
@@ -48,6 +52,7 @@ public class DeeParserTest extends CommonTestUtils {
 	public static final String DONT_CHECK = "#DONTCHECK";
 	
 	protected final String fullSource;
+	protected String expectedRemainingSource;
 	
 	public DeeParserTest(String fullSource) {
 		this.fullSource = fullSource;
@@ -59,19 +64,14 @@ public class DeeParserTest extends CommonTestUtils {
 		final String expectedPrintedSource, final NamedNodeElement[] expectedStructure, final 
 		ArrayList<ParserError> expectedErrors, Map<String, MetadataEntry> additionalMetadata) {
 		
-		final DeeTestsChecksParser deeParser = new DeeTestsChecksParser(fullSource);
-		String parsedSource = fullSource;
-		DeeParserResult result = parseUsingRule(parseRule, deeParser);
+		this.expectedRemainingSource = expectedRemainingSource;
 		
-		if(expectedRemainingSource == DeeParserTest.DONT_CHECK) {
-			parsedSource = fullSource.substring(0, deeParser.getLexPosition());
-		} else if(expectedRemainingSource == null) {
-			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
-		} else {
-			String remainingSource = fullSource.substring(deeParser.getLexPosition());
-			SourceEquivalenceChecker.assertCheck(remainingSource, expectedRemainingSource);
-			parsedSource = fullSource.substring(0, fullSource.length() - expectedRemainingSource.length());
-		}
+		final DeeTestsChecksParser deeParser = new DeeTestsChecksParser(fullSource);
+		DeeParserResult result = parseUsingRule(parseRule, deeParser, additionalMetadata);
+		if(result == null) 
+			return;
+		
+		String parsedSource = checkParsedSource(expectedRemainingSource, deeParser);
 		ASTNode mainNode = result.node; // a null result may make sense in some tests
 		
 		if(mainNode != null) {
@@ -97,6 +97,20 @@ public class DeeParserTest extends CommonTestUtils {
 		}
 		
 		runAdditionalTests(result, additionalMetadata);
+	}
+	
+	public String checkParsedSource(final String expectedRemainingSource, final DeeTestsChecksParser deeParser) {
+		String parsedSource = fullSource;
+		if(expectedRemainingSource == DeeParserTest.DONT_CHECK) {
+			parsedSource = fullSource.substring(0, deeParser.getLexPosition());
+		} else if(expectedRemainingSource == null) {
+			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
+		} else {
+			String remainingSource = fullSource.substring(deeParser.getLexPosition());
+			SourceEquivalenceChecker.assertCheck(remainingSource, expectedRemainingSource);
+			parsedSource = fullSource.substring(0, fullSource.length() - expectedRemainingSource.length());
+		}
+		return parsedSource;
 	}
 	
 	/* ============= Structure Checkers ============= */
@@ -207,22 +221,33 @@ public class DeeParserTest extends CommonTestUtils {
 	
 	/* ---------------- Rule specific tests ---------------- */
 	
-	public static DeeParserResult parseUsingRule(final String parseRule, DeeTestsChecksParser deeParser) {
+	public DeeParserResult parseUsingRule(String parseRule, DeeTestsChecksParser deeParser, 
+		Map<String, MetadataEntry> additionalMD) {
 		if(parseRule != null && parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
-			DeeParserResult result = deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
-			DeeParserResult result2 = parseRule.equalsIgnoreCase("EXPRESSION_ToE") ?
-				new DeeParser(deeParser.getSource()).parseUsingRule("TypeOrExp") :
-				new DeeParser(deeParser.getSource()).parseUsingRule("ExpOrType");
-			if(result.errors.size() >= 1) {
-				ParserError lastError = result.errors.get(result.errors.size()-1);
+			DeeParserResult resultExp = deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
+			DeeParserResult resultToE = new DeeParser(deeParser.getSource()).parseUsingRule("TypeOrExp");
+			ASTNode expNode = resultExp.node;
+			if(resultExp.errors.size() >= 1) {
+				ParserError lastError = resultExp.errors.get(resultExp.errors.size()-1);
 				if(lastError.errorType == ParserErrorTypes.TYPE_USED_AS_EXP_VALUE &&
-					SourceEquivalenceChecker.check(result.node.toStringAsCode(), lastError.msgErrorSource)) {
-					result2.errors.add(lastError);
+					SourceEquivalenceChecker.check(resultExp.node.toStringAsCode(), lastError.msgErrorSource)) {
+					resultToE.errors.add(lastError);
+					expNode = ((ExpReference) expNode).ref;
 				}
 			}
-			DeeParsingChecks.checkNodeEquality(result.node, result2.node);
-			assertEquals(result.errors, result2.errors);
-			return result;
+			DeeParsingChecks.checkNodeEquality(expNode, resultToE.node);
+			assertEquals(resultExp.errors, resultToE.errors);
+			return resultExp;
+		} else if(parseRule != null && parseRule.equalsIgnoreCase("PARAMETER_TEST")) {
+			
+			boolean parseAsFnParamOnly = additionalMD.get("FN_ONLY") != null;
+			boolean parseAsTplParamOnly = additionalMD.get("TPL_ONLY") != null;
+			
+			Object ambigParsedResult = new DeeParser_RuleParameters(deeParser, TplOrFnMode.AMBIG).parseParameter();
+			String parsedSource = checkParsedSource(expectedRemainingSource, deeParser);
+			parameterTest(parseAsFnParamOnly, parseAsTplParamOnly, parsedSource, ambigParsedResult);
+			
+			return null;
 		}
 		return deeParser.parseUsingRule(parseRule);
 	}
@@ -231,17 +256,6 @@ public class DeeParserTest extends CommonTestUtils {
 		Map<String, MetadataEntry> additionalMetaDataOriginal) {
 		Map<String, MetadataEntry> additionalMD = new HashMap<>(additionalMetaDataOriginal);
 		
-		MetadataEntry fnParamTest = additionalMD.remove("FN_PARAMETER_TEST");
-		if(fnParamTest != null) {
-			String source = result.source.substring(fnParamTest.offset);
-			DeeParser parser = new DeeParser(source);
-			Object parameter = new DeeParser_RuleParameters(parser, TplOrFnMode.AMBIG).parseParameter();
-			if(additionalMD.remove("FN_ONLY") != null) {
-				assertTrue(parameter instanceof IFunctionParameter);
-			} else {
-				assertTrue(parameter instanceof AmbiguousParameter);
-			}
-		}
 		MetadataEntry ruleBreakTest = additionalMD.remove("RULE_BROKEN");
 		if(additionalMD.remove("IGNORE_BREAK_FLAG_CHECK") == null) {
 			assertTrue(result.ruleBroken == (ruleBreakTest != null));
@@ -249,6 +263,23 @@ public class DeeParserTest extends CommonTestUtils {
 		
 		for (Entry<String, MetadataEntry> mde : additionalMD.entrySet()) {
 			assertEquals(mde.getValue().value, "flag");
+		}
+	}
+	
+	public static void parameterTest(boolean parseAsFnParamOnly, boolean parseAsTplParamOnly, 
+		String nodeSource, Object ambigParsedResult) {
+		assertTrue(!(parseAsFnParamOnly == true && parseAsTplParamOnly == true));
+		
+		if(parseAsFnParamOnly) {
+			assertTrue(ambigParsedResult instanceof IFunctionParameter);
+		} else if(parseAsTplParamOnly) {
+			assertTrue(ambigParsedResult instanceof TemplateParameter);
+		} else {
+			assertTrue(ambigParsedResult instanceof AmbiguousParameter);
+		}
+		
+		if(!DToolTests.TESTS_LITE_MODE) {
+			ParametersReparseCheck.ambigParameterReparseTest(nodeSource);				
 		}
 	}
 	

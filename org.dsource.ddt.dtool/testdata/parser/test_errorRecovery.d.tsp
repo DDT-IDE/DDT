@@ -12,7 +12,7 @@ DeclarationEmpty
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ brace recovery
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ decl list parsing
-#PARSE(DECLARATION)   public {  pure: #error(SE_decl)【else】 }  
+#PARSE(DECLARATION)   public {  pure: #error(SE_decl)【else】  }  
 #STRUCTURE_EXPECTED:  DeclarationProtection(DeclBlock( DeclarationBasicAttrib(DeclList(InvalidSyntaxElement)) ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)     {        ; #error(SE_Statement)【else】 #error(EXP_CLOSE_BRACE) #@BREAK #@《)●]》

@@ -16,7 +16,7 @@ public class TemplateValueParam extends TemplateParameter {
 	public final Expression specializationValue;
 	public final Expression defaultValue;
 	
-	public TemplateValueParam(ProtoDefSymbol defId, Reference type, Expression specializationValue, 
+	public TemplateValueParam(Reference type, ProtoDefSymbol defId, Expression specializationValue, 
 		Expression defaultValue) {
 		super(defId);
 		this.type = parentize(assertNotNull_(type));

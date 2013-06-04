@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 
 import dtool.parser.ParserError;
@@ -13,10 +14,10 @@ public abstract class NodeData {
 	
 	public abstract boolean isParsedStatus();
 	
-	public abstract Iterable<ParserError> getNodeErrors();
+	public abstract Collection<ParserError> getNodeErrors();
 	
 	public boolean hasErrors() {
-		return getNodeErrors().iterator().hasNext() == false;
+		return getNodeErrors().size() > 0;
 	}
 	
 	@SuppressWarnings("unused")
@@ -40,7 +41,7 @@ public abstract class NodeData {
 		}
 		
 		@Override
-		public Iterable<ParserError> getNodeErrors() {
+		public Collection<ParserError> getNodeErrors() {
 			throw assertFail();
 		};
 		
@@ -50,7 +51,7 @@ public abstract class NodeData {
 	
 	public static class ParsedNodeData extends NodeData {
 		
-		protected static final Iterable<ParserError> NO_ERRORS = Collections.emptyList(); 
+		protected static final Collection<ParserError> NO_ERRORS = Collections.emptyList(); 
 		
 		@Override
 		public boolean isParsedStatus() {
@@ -70,7 +71,7 @@ public abstract class NodeData {
 		}
 		
 		@Override
-		public Iterable<ParserError> getNodeErrors() {
+		public Collection<ParserError> getNodeErrors() {
 			return NO_ERRORS;
 		};
 		
@@ -83,7 +84,7 @@ public abstract class NodeData {
 	
 	public static class ParsedNodeDataWithErrors extends ParsedNodeData {
 		
-		protected Iterable<ParserError> errors;
+		protected Collection<ParserError> errors;
 		
 		public ParsedNodeDataWithErrors(ParserError... errors) {
 			for (ParserError parserError : errors) {
@@ -93,7 +94,7 @@ public abstract class NodeData {
 		}
 		
 		@Override
-		public Iterable<ParserError> getNodeErrors() {
+		public Collection<ParserError> getNodeErrors() {
 			return errors;
 		};
 		

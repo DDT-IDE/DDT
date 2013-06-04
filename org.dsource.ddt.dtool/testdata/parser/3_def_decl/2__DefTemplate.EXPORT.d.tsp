@@ -25,38 +25,39 @@
 #@_TYPE_OR_EXP《#@TYPE_REFS__NO_BROKEN ● #@EXP_COND__NO_POSSIBLE_REFS ● #@NO_ROE》
 #@_TYPE_OR_EXP_SAMPLE《#@TYPE_REFS__NO_BROKEN__LITE ● #@EXP_COND__LITE ● #@NO_ROE》
 
-#@TPLARG_1《
+#@TPLPARAMS_SINGLE《
   ►#?STRUCTURE_EXPECTED!【foo●TemplateTypeParam(DefSymbol)】●
-  ►#?STRUCTURE_EXPECTED!【foo : #@TYPEREF_NB●TemplateTypeParam(DefSymbol #@TYPEREF_NB)】●
   ►#?STRUCTURE_EXPECTED!【foo = #@TYPEREF_NB●TemplateTypeParam(DefSymbol #@TYPEREF_NB)】●
-  ►#?STRUCTURE_EXPECTED!【foo : #@TYPEREF_NB__LITE = #@TYPEREF_NB●TemplateTypeParam(DefSymbol #@TYPEREF_NB__LITE #@TYPEREF_NB)】●
+  ►#?STRUCTURE_EXPECTED!【foo #TPL_ONLY(flag) : #@TYPEREF_NB ●TemplateTypeParam(DefSymbol #@TYPEREF_NB)】●
+  ►#?STRUCTURE_EXPECTED!【foo #TPL_ONLY(flag) : #@TYPEREF_NB__LITE = #@TYPEREF_NB●TemplateTypeParam(DefSymbol #@TYPEREF_NB__LITE #@TYPEREF_NB)】●
 
   ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__NO_BROKEN foo●TemplateValueParam(#@TYPE_REFS__NO_BROKEN DefSymbol)】●
+  ►#?STRUCTURE_EXPECTED!【const shared int foo●TemplateValueParam(RefTypeModifier(RefTypeModifier(RefPrimitive)) DefSymbol)】●
+  ►#?STRUCTURE_EXPECTED!【const foo #@NO_DEFID #FN_ONLY(flag)●TemplateValueParam(RefTypeModifier(RefIdentifier) #@NO_DEFID)】●
   ►#?STRUCTURE_EXPECTED!【foo[ #error(EXP_CLOSE_BRACKET)●TemplateValueParam(RefTypeDynArray(?) DefSymbol)】●
-  ►#?STRUCTURE_EXPECTED!【foo[] #@NO_DEFID #FN_UNAMBIG_ARG(flag) ●TemplateValueParam(RefTypeDynArray(?) #@NO_DEFID)】●
-  ►#?STRUCTURE_EXPECTED!【Foo foo : #@CONDEXP_NB●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_NB)】●
+  ►#?STRUCTURE_EXPECTED!【foo[] #@NO_DEFID #FN_ONLY(flag) ●TemplateValueParam(RefTypeDynArray(?) #@NO_DEFID)】●
   ►#?STRUCTURE_EXPECTED!【Foo foo = #@CONDEXP_NB●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_NB)】●
-  ►#?STRUCTURE_EXPECTED!【Foo foo : #@CONDEXP_NB__LITE = #@CONDEXP_NB●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_NB__LITE #@CONDEXP_NB)】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo #TPL_ONLY(flag) : #@CONDEXP_NB ●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_NB)】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo #TPL_ONLY(flag) : #@CONDEXP_NB__LITE = #@CONDEXP_NB ●TemplateValueParam(RefIdentifier DefSymbol #@CONDEXP_NB__LITE #@CONDEXP_NB)】●
 
-  ►#?STRUCTURE_EXPECTED!【alias foo●TemplateAliasParam(DefSymbol)】●
-  ►#?STRUCTURE_EXPECTED!【alias #@NO_DEFID●TemplateAliasParam(#@NO_DEFID)】●
-  ►#?STRUCTURE_EXPECTED!【alias foo : #@_TYPE_OR_EXP●TemplateAliasParam(DefSymbol #@_TYPE_OR_EXP)】●
-  ►#?STRUCTURE_EXPECTED!【alias foo = #@_TYPE_OR_EXP●TemplateAliasParam(DefSymbol #@_TYPE_OR_EXP)】●
-  ►#?STRUCTURE_EXPECTED!【alias foo : #@_TYPE_OR_EXP_SAMPLE = #@_TYPE_OR_EXP●TemplateAliasParam(DefSymbol #@_TYPE_OR_EXP_SAMPLE #@_TYPE_OR_EXP)】●
+  ►#?STRUCTURE_EXPECTED!【#TPL_ONLY(flag) alias foo●TemplateAliasParam(DefSymbol)】●
+  ►#?STRUCTURE_EXPECTED!【#TPL_ONLY(flag) alias #@NO_DEFID●TemplateAliasParam(#@NO_DEFID)】●
+  ►#?STRUCTURE_EXPECTED!【#TPL_ONLY(flag) alias foo : #@_TYPE_OR_EXP●TemplateAliasParam(DefSymbol #@_TYPE_OR_EXP)】●
+  ►#?STRUCTURE_EXPECTED!【#TPL_ONLY(flag) alias foo = #@_TYPE_OR_EXP●TemplateAliasParam(DefSymbol #@_TYPE_OR_EXP)】●
+  ►#?STRUCTURE_EXPECTED!【#TPL_ONLY(flag) alias foo : #@_TYPE_OR_EXP_SAMPLE = #@_TYPE_OR_EXP●TemplateAliasParam(DefSymbol #@_TYPE_OR_EXP_SAMPLE #@_TYPE_OR_EXP)】●
   
   ►#?STRUCTURE_EXPECTED!【TUPLE ...●TemplateTupleParam(DefSymbol)】●
   
-  ►#?STRUCTURE_EXPECTED!【this THIS●TemplateThisParam(DefSymbol)】●
-  ►#?STRUCTURE_EXPECTED!【this #@NO_ID●TemplateThisParam(DefSymbol)】●
+  ►#?STRUCTURE_EXPECTED!【#TPL_ONLY(flag) this THIS●TemplateThisParam(DefSymbol)】●
+  ►#?STRUCTURE_EXPECTED!【#TPL_ONLY(flag) this #@NO_ID●TemplateThisParam(DefSymbol)】●
 ¤》
 
 #@TPLPARAMS《
-  ►#@TPLARG_1●
+  ►#@TPLPARAMS_SINGLE●
   
   ►#?STRUCTURE_EXPECTED!【#@NO_TPLPARAM  , #@TPL_PARAMS_SAMPLE1● #@NO_TPLPARAM #@TPL_PARAMS_SAMPLE1】●
-  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE, #@TPLARG_1   ● #@TPL_PARAMS__SAMPLE #@TPLARG_1】●
+  ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE, #@TPLPARAMS_SINGLE   ● #@TPL_PARAMS__SAMPLE #@TPLPARAMS_SINGLE】●
   ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE, #@NO_TPLPARAM● #@TPL_PARAMS__SAMPLE #@NO_TPLPARAM】●
-  ►#?STRUCTURE_EXPECTED!【#@TPLARG_1, #@TPL_PARAMS__SAMPLE● #@TPLARG_1 #@TPL_PARAMS__SAMPLE】●
 ¤》
 #@TPLPARAMS__LITE《
   ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS__SAMPLE● #@TPL_PARAMS__SAMPLE】●
@@ -64,7 +65,7 @@
 
 #@TPLPARAMS__SIMPLE_TESTER《
   ►#?STRUCTURE_EXPECTED!【#@TPL_PARAMS_SAMPLE1● #@TPL_PARAMS_SAMPLE1】●
-  ►#?STRUCTURE_EXPECTED!【int R = 1● TemplateValueParam(RefPrimitive DefSymbol Integer)】●
+  ►#?STRUCTURE_EXPECTED!【const int R = 1● TemplateValueParam(RefTypeModifier(RefPrimitive) DefSymbol Integer)】●
   ►#?STRUCTURE_EXPECTED!【T = bar●TemplateTypeParam(DefSymbol RefIdentifier)】● 
   ►#?STRUCTURE_EXPECTED!【int R = 1, #@NO_TPLPARAM● TemplateValueParam(RefPrimitive DefSymbol Integer) #@NO_TPLPARAM】●
 ¤》

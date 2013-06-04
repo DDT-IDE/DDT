@@ -748,8 +748,8 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		);
 		return endAdapt(dudt.sourceRange,
 			new TemplateValueParam(
-				dudt.defSymbol,
 				ReferenceConverter.convertType(elem.valType, convContext),
+				dudt.defSymbol,
 				ExpressionConverter.convert(elem.specValue, convContext),
 				ExpressionConverter.convert(elem.defaultValue, convContext)
 			)

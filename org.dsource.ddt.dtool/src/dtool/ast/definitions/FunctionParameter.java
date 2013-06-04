@@ -12,6 +12,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.parser.Token;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -23,7 +24,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	public final Expression defaultValue;
 	public final boolean isVariadic;
 	
-	public FunctionParameter(ArrayView<FunctionParamAttribKinds> attribList, Reference type, ProtoDefSymbol defId, 
+	public FunctionParameter(ArrayView<Token> attribList, Reference type, ProtoDefSymbol defId, 
 		Expression defaultValue, boolean isVariadic) {
 		super(defId);
 		this.paramAttribs = FnParameterAttributes.create(attribList);

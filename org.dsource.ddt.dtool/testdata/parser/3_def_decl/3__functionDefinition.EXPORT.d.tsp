@@ -1,22 +1,24 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@FN_PARAMS_SAMPLE《#?STRUCTURE_EXPECTED!【 .Bar.Baz baz, const Foo.Foobar foo = 2● 
+#@FN_PARAMS_SAMPLE《#?STRUCTURE_EXPECTED!【 .Bar.Baz baz, in const Foo.Foobar foo = 2● 
   FunctionParameter(RefQualified(RefModuleQualified(?) RefIdentifier) DefSymbol)
-  FunctionParameter(RefTypeModifier(RefQualified(RefIdentifier RefIdentifier)) DefSymbol Integer)
+  FunctionParameter(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
 】》
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Parameters
 #@BREAK_Pr《 #?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS) #@BREAK● $ 】  》
 
-#@PARAM_ATTRIB《auto●final●in●lazy●out●ref●scope●in lazy ref ●in lazy》
-#@PARAM_ATTRIB_ORNO《/*NONE*/●#@PARAM_ATTRIB #FN_ONLY(flag)》
-#@PARAM_ATTRIB_SAMP《/*NONE*/●in #FN_ONLY(flag)●lazy scope #FN_ONLY(flag)》
+#@PARAM_ATTRIB_NOTM《auto●final●in●lazy●out●ref●scope●in lazy ref ●const ref》
+#@PARAM_ATTRIB《#@PARAM_ATTRIB_NOTM #FN_ONLY(flag)●#@TYPE_MODIFIERS》
+#@PARAM_ATTRIB_ORNO《/*NONE*/●#@PARAM_ATTRIB》
+#@PARAM_ATTRIB_SAMP《/*NONE*/●in #FN_ONLY(flag)●const lazy #FN_ONLY(flag)》
 
 
 #@FN_PARAM_BASE《
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@TYPEREF_NBNE foo ●FunctionParameter(#@TYPEREF_NBNE DefSymbol)】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@TYPEREF_NBNE foo ●FunctionParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo foo ... #FN_ONLY(flag) ●FunctionParameter(RefIdentifier DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo foo = #@EXP_ASSIGN●    FunctionParameter(RefIdentifier DefSymbol #@EXP_ASSIGN)】●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@TYPEREF_NBNE     #?TYPEREF_CanParseAsId!【#FN_ONLY(flag)】●NamelessParameter(#@TYPEREF_NBNE)】●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP #@TYPEREF_NBNE ... #?TYPEREF_CanParseAsId!【#FN_ONLY(flag)】●NamelessParameter(#@TYPEREF_NBNE)】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB #@TYPEREF_NBNE #FN_ONLY(flag)                         ●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
+  ►#?STRUCTURE_EXPECTED!【/*NONE*/       #@TYPEREF_NBNE #?TYPEREF_CanParseAsId!【#FN_ONLY(flag)】●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP #@TYPEREF_NBNE ... #?TYPEREF_CanParseAsId!【#FN_ONLY(flag)】●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo = #@EXP_ASSIGN__NO_POSSIBLE_REFS #FN_ONLY(flag)●NamelessParameter(RefIdentifier #@EXP_ASSIGN__NO_POSSIBLE_REFS)】●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo = #@EXP_REFS    ●                         NamelessParameter(RefIdentifier #@EXP_REFS)】●
   ►#?STRUCTURE_EXPECTED!【... #FN_ONLY(flag)● CStyleVarArgsParameter】●
@@ -24,36 +26,41 @@
   ►#?STRUCTURE_EXPECTED!【#@TYPE_MODIFIERS (long) #FN_ONLY(flag)●NamelessParameter(RefTypeModifier(RefPrimitive))】●
 
  ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB #@NO_TYPEREF #@BREAK_Pr ... #FN_ONLY(flag)●NamelessParameter(#@NO_TYPEREF) $】】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_NOTM #@NO_TYPEREF #@BREAK_Pr ... #FN_ONLY(flag)●NamelessParameter(#@NO_TYPEREF) $】】●
  ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB #@NO_TYPEREF #@BREAK_Pr = 2 #FN_ONLY(flag)●NamelessParameter(#@NO_TYPEREF) $】】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_NOTM #@NO_TYPEREF #@BREAK_Pr = 2 #FN_ONLY(flag)●NamelessParameter(#@NO_TYPEREF) $】】●
   
  ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE● 
   ►#?STRUCTURE_EXPECTED!【final int foo ... #@BREAK_Pr = 2 #FN_ONLY(flag)●FunctionParameter(RefPrimitive DefSymbol) $】】●
  ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int[#error(EXP_CLOSE_BRACKET) #@BREAK_Pr ... ●NamelessParameter(RefTypeDynArray(*)) $】】●
 ¤》
+
 function/template interactions - param default convert
-#@FN_PARAM_SINGLE《
+#@FN_PARAMS_SINGLE《
   ►#@FN_PARAM_BASE●
+  
   ►#?STRUCTURE_EXPECTED!【Foo foo=bar[] ●FunctionParameter(RefIdentifier DefSymbol ExpSlice(#@ExpIdentifier))】●
   ►#?STRUCTURE_EXPECTED!【Foo foo=bar* #@NO_EXP●FunctionParameter(RefIdentifier DefSymbol ExpInfix(#@ExpIdentifier #@NO_EXP))】●
   ►#?STRUCTURE_EXPECTED!【Foo foo=#@TYPE_AS_EXP /* Test that TYPE_AS_EXP doesn't cause parsing as TPL*/ ● 
                             FunctionParameter(RefIdentifier DefSymbol #@TYPE_AS_EXP)】●
 ¤》
 
-// TODO VARIADIC MUST BE LAST ERROR
-#@FN_PARAMS《
-  ►#@FN_PARAM_SINGLE●
+#@FN_PARAMS_MULTI《
+  ►#?STRUCTURE_EXPECTED!【#@FN_PARAMS_SAMPLE , #@FN_PARAMS_SAMPLE● #@FN_PARAMS_SAMPLE #@FN_PARAMS_SAMPLE】●
+  ►#?STRUCTURE_EXPECTED!【#@NO_TYPEREF       , #@FN_PARAMS_SAMPLE●NamelessParameter(#@NO_TYPEREF) #@FN_PARAMS_SAMPLE】●
 
-  ►#?STRUCTURE_EXPECTED!【#@FN_PARAMS_SAMPLE ,      #@FN_PARAMS_SAMPLE● #@FN_PARAMS_SAMPLE #@FN_PARAMS_SAMPLE】●
-  ►#?STRUCTURE_EXPECTED!【#@NO_TYPEREF           , #@FN_PARAMS_SAMPLE●NamelessParameter(#@NO_TYPEREF) #@FN_PARAMS_SAMPLE】●
-
-  ►#?STRUCTURE_EXPECTED!【ref in char foo        #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●FunctionParameter(RefPrimitive DefSymbol) #@FN_PARAMS_SAMPLE】●
-  ►#?STRUCTURE_EXPECTED!【ref in char            #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●NamelessParameter(RefPrimitive ) #@FN_PARAMS_SAMPLE】●
-  ►#?STRUCTURE_EXPECTED!【ref Foo foo = #@NO_EXP #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●FunctionParameter(RefIdentifier DefSymbol #@NO_EXP) #@FN_PARAMS_SAMPLE】●
+  ►#?STRUCTURE_EXPECTED!【ref in char foo        , #@FN_PARAMS_SAMPLE●FunctionParameter(RefPrimitive DefSymbol) #@FN_PARAMS_SAMPLE】●
+  ►#?STRUCTURE_EXPECTED!【ref in char            , #@FN_PARAMS_SAMPLE●NamelessParameter(RefPrimitive ) #@FN_PARAMS_SAMPLE】●
+  ►#?STRUCTURE_EXPECTED!【ref Foo foo = #@NO_EXP , #@FN_PARAMS_SAMPLE●FunctionParameter(RefIdentifier DefSymbol #@NO_EXP) #@FN_PARAMS_SAMPLE】●
   
-  ►#?STRUCTURE_EXPECTED!【out in char ...        #FN_ONLY(flag), #@FN_PARAMS_SAMPLE●NamelessParameter(RefPrimitive) #@FN_PARAMS_SAMPLE】● 
+  ►#?STRUCTURE_EXPECTED!【out in char ...        , #@FN_PARAMS_SAMPLE●NamelessParameter(RefPrimitive) #@FN_PARAMS_SAMPLE】● 
+¤》
+// TODO VARIADIC MUST BE LAST ERROR
+
+#@FN_PARAMS《
+  ►#@FN_PARAMS_SINGLE●
+  ►#@FN_PARAMS_MULTI●
 ¤》
 
 #@FN_PARAMS__NO_BROKEN《#FN_PARAM__NO_BROKEN(flag)#@FN_PARAMS》

@@ -43,12 +43,6 @@ public class AnnotatedSource {
 			return new SourceRange(offset, sourceValue == null ? 0 : sourceValue.length());
 		}
 		
-		public int getOffsetFromNoLength() {
-			assertTrue(offset >= 0);
-			assertTrue(sourceValue == null);
-			return offset;
-		}
-		
 		@Override
 		public String toString() {
 			return "["+offset+"]" + name + "("+value+")" + sourceValue ;

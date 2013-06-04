@@ -37,7 +37,7 @@ DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS__SAMPLE #@FN_PARAMS_SAMPL
 #STRUCTURE_EXPECTED: DeclarationBasicAttrib(DeclarationBasicAttrib( 
                  DefFunction(DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE) ))
 
-Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ 0 args
+Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Fn 0 args
 
 #@FN_AFTER_PARAM《
   ►#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS) #@BREAK { }●】●
@@ -48,11 +48,15 @@ DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS__SAMPLE #@FN_PARAMS_SAMPL
 #PARSE(DECLARATION)   const(foo) func0( #@FN_AFTER_PARAM
 #STRUCTURE_EXPECTED:
 DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_AFTER_PARAM )
-
+Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Fn 1+ args
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Do parameter test
+#PARSE(PARAMETER_TEST) #@TPLPARAMS_SINGLE 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Do parameter test
+#PARSE(PARAMETER_TEST) #@FN_PARAMS_SINGLE 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  1+ param
-#PARSE(DECLARATION)   const(foo) func1( #FN_PARAMETER_TEST(test) #@FN_PARAMS ) #@ST_BLOCK__SAMPLE
+#PARSE(DECLARATION)   const(foo)  funcX( #@FN_PARAMS ) #@ST_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED:
-DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_PARAMS #@ST_BLOCK__SAMPLE)
+DefFunction(RefTypeModifier(?) DefSymbol #@FN_PARAMS #@ST_BLOCK__SAMPLE)
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Template args
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Template 0 args
@@ -64,7 +68,7 @@ DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_AFTER_PARAM )
 #STRUCTURE_EXPECTED:
 DefFunction(RefIdentifier DefSymbol #@TPL_PARAMS__SAMPLE #@BREAK #@ST_BLOCK__SAMPLE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   Foo tplFunc( #@TPLPARAMS #?FN_UNAMBIG_ARG【#:DISCARD_CASE】 ) ( #@FN_PARAMS_SAMPLE ) #@ST_BLOCK__SAMPLE
+#PARSE(DECLARATION)   Foo tplFunc( #@TPLPARAMS #?FN_ONLY【#:DISCARD_CASE】 ) ( #@FN_PARAMS_SAMPLE ) #@ST_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED:
 DefFunction(RefIdentifier DefSymbol #@TPLPARAMS #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )
 

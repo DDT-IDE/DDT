@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.lazyInitArrayList;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
@@ -32,6 +33,8 @@ import dtool.ast.definitions.TemplateTypeParam;
 import dtool.ast.definitions.TemplateValueParam;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.Expression;
+import dtool.ast.references.RefTypeModifier;
+import dtool.ast.references.RefTypeModifier.TypeModifierKinds;
 import dtool.ast.references.Reference;
 import dtool.parser.AbstractParserRule.AbstractDecidingParserRule;
 import dtool.util.ArrayView;
@@ -107,17 +110,20 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 			return parse.conclude(new TemplateThisParam(defId));
 		}
 		
-		ArrayList<FunctionParamAttribKinds> attribs = null;
+		ArrayList<Token> attribs = null;
 		if(mode != TplOrFnMode.TPL) {
 			while(true) {
 				FunctionParamAttribKinds paramAttrib = FunctionParamAttribKinds.fromToken(lookAhead());
 				if(paramAttrib == null || isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS)
 					break;
 				
-				setMode(TplOrFnMode.FN);
-				consumeLookAhead();
+				Token attribToken = consumeLookAhead().token;
 				attribs = lazyInitArrayList(attribs);
-				attribs.add(paramAttrib);
+				attribs.add(attribToken);
+				
+				if(!isTypeModifier(attribToken.type)) {
+					setMode(TplOrFnMode.FN);
+				}
 			}
 		}
 		
@@ -126,7 +132,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 	
 	protected class AmbiguousParameter {
 		
-		ArrayList<FunctionParamAttribKinds> attribs;
+		ArrayList<Token> attribs;
 		
 		Reference ref;
 		ProtoDefSymbol defId = null;
@@ -137,8 +143,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 		
 		SourceRange sr;
 		
-		public Object parseAmbiguousParam(boolean returnNullOnMissing, int nodeStart,
-			ArrayList<FunctionParamAttribKinds> attribs) {
+		public Object parseAmbiguousParam(boolean returnNullOnMissing, int nodeStart, ArrayList<Token> attribs) {
 			this.attribs = attribs;
 			
 			// Possible outcomes from this point
@@ -163,11 +168,12 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 				if(lookAhead() == DeeTokens.IDENTIFIER) {
 					defId = parseDefId(); 
 				} else {
-					if(!couldHaveBeenParsedAsId(ref)) {
-						if(mode != TplOrFnMode.TPL) {
-							setMode(TplOrFnMode.FN); // Can only be NamelessParam
-						} else {
+					if(!(couldHaveBeenParsedAsId(ref) && attribs == null)) {
+						if(mode == TplOrFnMode.TPL) {
+							assertTrue(attribs == null);
 							defId = parseDefId(); // will create a missing defId;
+						} else {
+							setMode(TplOrFnMode.FN); // Can only be NamelessParam
 						}
 					}
 				}
@@ -198,8 +204,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 							paramDefault = new TypeOrExpResult(TypeOrExpStatus.TYPE, 
 								wrapReferenceForTypeOrExpParse(parseTypeReference_ToMissing().node));
 						} else {
-							paramDefault = new TypeOrExpResult(TypeOrExpStatus.EXP, 
-								parseAssignExpression_toMissing());
+							paramDefault = new TypeOrExpResult(TypeOrExpStatus.EXP, parseAssignExpression_toMissing());
 						}
 					} else {
 						paramDefault = parseTypeOrExpression(InfixOpType.ASSIGN);
@@ -233,6 +238,16 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 		}
 		
 		public TemplateParameter convertToTemplate() {
+			if(attribs != null)  {
+				assertTrue(defId != null);
+				
+				for (int i = attribs.size()-1; i >= 0 ; i--) {
+					Token attribToken = attribs.get(i);
+					TypeModifierKinds modifier = assertNotNull_(determineTypeModifier(attribToken.type));
+					ref = concludeNode(srBounds(attribToken.getStartPos(), ref.getEndPos(), 
+						new RefTypeModifier(modifier, ref, false)));
+				}
+			}
 			if(defId == null && couldHaveBeenParsedAsId(ref)) {
 				defId = convertRefIdToDef(ref);
 				return conclude(sr, isVariadic ?  
@@ -241,7 +256,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 			} else {
 				defId = defId != null ? defId : new ProtoDefSymbol("", srAt(ref.getEndPos()), null);
 				return conclude(sr, 
-					new TemplateValueParam(defId, ref, valueSpecialization, paramDefault.toExpression().node));
+					new TemplateValueParam(ref, defId, valueSpecialization, paramDefault.toExpression().node));
 			}
 		}
 		

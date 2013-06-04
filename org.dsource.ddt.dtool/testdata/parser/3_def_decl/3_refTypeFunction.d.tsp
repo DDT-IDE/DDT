@@ -20,7 +20,7 @@ RefTypeFunction(RefTypeDynArray(?) )
 RefTypeFunction(RefTypeModifier(RefIdentifier) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  1+ param
-#PARSE(REFERENCE)     bar[] #@FN_KEYWORD ( #FN_PARAMETER_TEST(test) #@FN_PARAMS ) 
+#PARSE(REFERENCE)     bar[] #@FN_KEYWORD ( #@FN_PARAMS ) 
 #STRUCTURE_EXPECTED:
 RefTypeFunction(RefTypeDynArray(?) #@FN_PARAMS )
 
