@@ -56,4 +56,8 @@
  ►#@NO_ST_BLOCK●
  ►#@ST_BLOCK__SAMPLE●
 ¤》
+#@BLOCK_ST__NE《
+ ►#@ST_BLOCK__SAMPLE●
+ ►#@BROKEN_ST_BLOCK●
+¤》
  

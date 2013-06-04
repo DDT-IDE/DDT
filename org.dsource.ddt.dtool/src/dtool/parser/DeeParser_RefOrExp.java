@@ -48,7 +48,6 @@ import dtool.ast.expressions.ExpInfix;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
-import dtool.ast.expressions.ExpLambda;
 import dtool.ast.expressions.ExpLiteralArray;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
@@ -1657,13 +1656,6 @@ protected class ParseRule_TypeOrExp {
 			if(lookAhead() == DeeTokens.OPEN_BRACE || lookAhead() == DeeTokens.LAMBDA) {
 				fnParametersRule.acceptDeciderResult();
 				ArrayView<IFunctionParameter> fnParams = fnParametersRule.getAsFunctionParameters();
-				
-				if(tryConsume(DeeTokens.LAMBDA)) {
-					
-					Expression bodyExp = parse.checkResult(parseAssignExpression_toMissing(true, RULE_EXPRESSION));
-					return parse.resultConclude(new ExpLambda(fnParams, fnAttributes, bodyExp));
-				}
-				
 				return parseFunctionLiteral_atFunctionBody(parse.nodeStart, null, null, fnParams, fnAttributes);
 			}
 		}
@@ -1704,17 +1696,26 @@ protected class ParseRule_TypeOrExp {
 				fnAttributes);
 		}
 		
-		return parse.resultConclude(new ExpFunctionLiteral(isFunctionKeyword, retType, fnParams, fnAttributes, null));
+		return parse.resultConclude(
+			new ExpFunctionLiteral(isFunctionKeyword, retType, fnParams, fnAttributes, null, null));
 	}
 	
 	protected NodeResult<ExpFunctionLiteral> parseFunctionLiteral_atFunctionBody(int nodeStart,
 		Boolean isFunctionKeyword, Reference retType, ArrayView<IFunctionParameter> fnParams,
 		ArrayView<FunctionAttributes> fnAttributes) 
 	{
-		NodeResult<? extends IFunctionBody> fnBody = thisParser().parseBlockStatement(true, false);
-		
-		return resultConclude(fnBody.ruleBroken, srToPosition(nodeStart, 
-			new ExpFunctionLiteral(isFunctionKeyword, retType, fnParams, fnAttributes, fnBody.node)));
+		if(tryConsume(DeeTokens.LAMBDA)) {
+			assertTrue(fnParams != null);
+			NodeResult<Expression> litBody = parseAssignExpression_toMissing(true, RULE_EXPRESSION);
+			
+			return resultConclude(litBody.ruleBroken, srToPosition(nodeStart, 
+				new ExpFunctionLiteral(isFunctionKeyword, retType, fnParams, fnAttributes, null, litBody.node)));
+		} else {
+			NodeResult<? extends IFunctionBody> litBody = thisParser().parseBlockStatement(true, false);
+			
+			return resultConclude(litBody.ruleBroken, srToPosition(nodeStart, 
+				new ExpFunctionLiteral(isFunctionKeyword, retType, fnParams, fnAttributes, litBody.node, null)));
+		}
 	}
 	
 	public NodeResult<ExpParentheses> parseParenthesesExp() {

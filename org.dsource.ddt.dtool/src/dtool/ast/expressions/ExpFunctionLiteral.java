@@ -1,5 +1,6 @@
 package dtool.ast.expressions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
@@ -19,15 +20,17 @@ public class ExpFunctionLiteral extends Expression {
 	public final ArrayView<IFunctionParameter> fnParams;
 	public final ArrayView<FunctionAttributes> fnAttributes;
 	public final IFunctionBody fnBody;
-	
+	public final Expression bodyExpression;
 	
 	public ExpFunctionLiteral(Boolean isFunctionKeyword, Reference retType, ArrayView<IFunctionParameter> fnParams,
-		ArrayView<FunctionAttributes> fnAttributes, IFunctionBody fnBody) {
+		ArrayView<FunctionAttributes> fnAttributes, IFunctionBody fnBody, Expression bodyExpression) {
 		this.isFunctionKeyword = isFunctionKeyword;
 		this.retType = parentize(retType);
 		this.fnParams = parentizeI(fnParams);
 		this.fnAttributes = fnAttributes;
-		this.fnBody = parentizeI(fnBody);
+		this.fnBody = parentize(fnBody);
+		this.bodyExpression = parentize(bodyExpression);
+		assertTrue(fnBody == null || bodyExpression == null); // only one of each
 	}
 	
 	public final ArrayView<ASTNode> getParams_asNodes() {
@@ -46,6 +49,7 @@ public class ExpFunctionLiteral extends Expression {
 			TreeVisitor.acceptChildren(visitor, retType);
 			TreeVisitor.acceptChildren(visitor, fnParams);
 			TreeVisitor.acceptChildren(visitor, fnBody);
+			TreeVisitor.acceptChildren(visitor, bodyExpression);
 		}
 		visitor.endVisit(this);	 
 	}
@@ -58,6 +62,7 @@ public class ExpFunctionLiteral extends Expression {
 		cp.appendList("(", getParams_asNodes(), ",", ") ");
 		cp.appendTokenList(fnAttributes, " ", true);
 		cp.append(fnBody);
+		cp.append(" => ", bodyExpression);
 	}
 	
 }

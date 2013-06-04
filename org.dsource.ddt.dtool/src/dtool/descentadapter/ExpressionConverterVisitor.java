@@ -355,7 +355,8 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 				ReferenceConverter.convertType(elemTypeFunc.next, convContext),
 				DescentASTConverter.convertMany(elemTypeFunc.parameters, IFunctionParameter.class, convContext),
 				null,
-				fnBody
+				fnBody,
+				null
 			)) 
 		);
 	}
