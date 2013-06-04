@@ -1567,12 +1567,6 @@ protected class ParseRule_TypeOrExp {
 			consumeLookAhead();
 			return conclude(srOf(lastLexElement(), new ExpArrayLength()));
 			
-		case KW___LINE__:
-			consumeLookAhead();
-			return conclude(srOf(lastLexElement(), new ExpLiteralInteger(lastLexElement().token)));
-		case KW___FILE__:
-			consumeLookAhead();
-			return conclude(srOf(lastLexElement(), new ExpLiteralString(lastLexElement().token)));
 		case INTEGER:
 			consumeLookAhead();
 			return conclude(srOf(lastLexElement(), new ExpLiteralInteger(lastLexElement().token)));

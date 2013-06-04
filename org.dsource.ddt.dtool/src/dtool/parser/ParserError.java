@@ -13,12 +13,16 @@ package dtool.parser;
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+
+import java.util.Comparator;
+
 import melnorme.utilbox.misc.StringUtil;
+import descent.core.ISourceRange;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationLinkage.Linkage;
 import dtool.ast.statements.StatementScope.ScopeTypes;
 
-public class ParserError {
+public class ParserError implements ISourceRange {
 	
 	public enum ParserErrorTypes {
 		
@@ -56,6 +60,16 @@ public class ParserError {
 	}
 	
 	@Override
+	public int getOffset() {
+		return sourceRange.getOffset();
+	}
+	
+	@Override
+	public int getLength() {
+		return sourceRange.getLength();
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		if(!(obj instanceof ParserError))
 			return false;
@@ -63,6 +77,20 @@ public class ParserError {
 		ParserError other = (ParserError) obj;
 		return errorType == other.errorType && areEqual(sourceRange, other.sourceRange) 
 			&& areEqual(msgErrorSource, other.msgErrorSource) && areEqual(msgData, other.msgData);
+	}
+	
+	public static final class ErrorSourceRangeComparator implements Comparator<ParserError> {
+		@Override
+		public int compare(ParserError o1, ParserError o2) {
+			int compareResult = o1.sourceRange.compareTo(o2.sourceRange);
+			return compareResult;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "ERROR:" + errorType + sourceRange.toString() +
+			(msgErrorSource == null ? "" : ("【"+msgErrorSource+"】")) + "("+msgData+")";
 	}
 	
 	public String getUserMessage() {
@@ -105,12 +133,6 @@ public class ParserError {
 			
 		}
 		throw assertFail();
-	}
-	
-	@Override
-	public String toString() {
-		return "ERROR:" + errorType + sourceRange.toString() +
-			(msgErrorSource == null ? "" : ("【"+msgErrorSource+"】")) + "("+msgData+")";
 	}
 	
 }

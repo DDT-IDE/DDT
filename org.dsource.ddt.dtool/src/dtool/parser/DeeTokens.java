@@ -38,7 +38,7 @@ public enum DeeTokens {
 	OPEN_BRACKET("["),
 	CLOSE_BRACKET("]"),
 	
-	STRING(),
+	STRING(), // Note: special keyword token also have this category
 	STRING_WYSIWYG(STRING),
 	STRING_DQ     (STRING), 
 	STRING_HEX    (STRING), 
@@ -47,7 +47,7 @@ public enum DeeTokens {
 	
 	CHARACTER,
 	
-	INTEGER(),
+	INTEGER(), // Note: special keyword token also have this category
 	INTEGER_DECIMAL(INTEGER), 
 	INTEGER_BINARY (INTEGER), 
 	INTEGER_OCTAL  (INTEGER), 
@@ -159,17 +159,17 @@ public enum DeeTokens {
 	KW_VERSION("version"), KW_VOLATILE("volatile"), 
 	KW_WHILE("while"), KW_WITH("with"),
 	
-	KW___FILE__("__FILE__"), 
-	KW___LINE__("__LINE__"), 
+	KW___FILE__("__FILE__", STRING), 
+	KW___LINE__("__LINE__", INTEGER), 
 	KW___THREAD("__thread"), 
 	KW___TRAITS("__traits"),
 	
-	KW___DATE__("__DATE__"),
+	KW___DATE__("__DATE__", STRING),
 	KW___EOF__("__EOF__"), // This token is actually never returned by the lexer, it gets transformed into EOF
-	KW___TIME__("__TIME__"),
-	KW___TIMESTAMP__("__TIMESTAMP__"),
-	KW___VENDOR__("__VENDOR__"),
-	KW___VERSION__("__VERSION__"),
+	KW___TIME__("__TIME__", STRING),
+	KW___TIMESTAMP__("__TIMESTAMP__", STRING),
+	KW___VENDOR__("__VENDOR__", STRING),
+	KW___VERSION__("__VERSION__", INTEGER),
 	
 	SPECIAL_TOKEN_LINE,
 	

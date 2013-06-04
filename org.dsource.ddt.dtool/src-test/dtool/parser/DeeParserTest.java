@@ -16,7 +16,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -36,7 +38,6 @@ import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.AutoReference;
 import dtool.ast.statements.SimpleVariableDef;
-import dtool.parser.DeeParserResult.ParserErrorComparator;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
@@ -45,6 +46,7 @@ import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
 import dtool.tests.DToolTests;
+import dtool.util.NewUtils;
 
 
 public class DeeParserTest extends CommonTestUtils {
@@ -200,7 +202,9 @@ public class DeeParserTest extends CommonTestUtils {
 	
 	/* ============= Error and Source Range Checkers ============= */
 	
-	public static void checkParserErrors(ArrayList<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {
+	public static void checkParserErrors(List<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {
+		resultErrors = new ArrayList<>(resultErrors);
+		Collections.sort(resultErrors, new ParserErrorComparator());
 		Collections.sort(expectedErrors, new ParserErrorComparator());
 		
 		for(int i = 0; i < resultErrors.size(); i++) {
@@ -218,6 +222,19 @@ public class DeeParserTest extends CommonTestUtils {
 		assertTrue(resultErrors.size() == expectedErrors.size());
 	}
 	
+	public static final class ParserErrorComparator implements Comparator<ParserError> {
+		@Override
+		public int compare(ParserError o1, ParserError o2) {
+			int compareResult = o1.sourceRange.compareTo(o2.sourceRange);
+			if(compareResult == 0) {
+				compareResult = o1.errorType.ordinal() - o2.errorType.ordinal(); 
+			}
+			if(compareResult == 0) {
+				compareResult = NewUtils.compareStrings(o1.msgErrorSource, o2.msgErrorSource); 
+			}
+			return compareResult;
+		}
+	}
 	
 	/* ---------------- Rule specific tests ---------------- */
 	
@@ -227,16 +244,18 @@ public class DeeParserTest extends CommonTestUtils {
 			DeeParserResult resultExp = deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
 			DeeParserResult resultToE = new DeeParser(deeParser.getSource()).parseUsingRule("TypeOrExp");
 			ASTNode expNode = resultExp.node;
+			List<ParserError> resultToE_Errors = resultToE.errors;
 			if(resultExp.errors.size() >= 1) {
 				ParserError lastError = resultExp.errors.get(resultExp.errors.size()-1);
 				if(lastError.errorType == ParserErrorTypes.TYPE_USED_AS_EXP_VALUE &&
 					SourceEquivalenceChecker.check(resultExp.node.toStringAsCode(), lastError.msgErrorSource)) {
-					resultToE.errors.add(lastError);
+					resultToE_Errors = new ArrayList<>(resultToE.errors);
+					resultToE_Errors.add(lastError);
 					expNode = ((ExpReference) expNode).ref;
 				}
 			}
 			DeeParsingChecks.checkNodeEquality(expNode, resultToE.node);
-			assertEquals(resultExp.errors, resultToE.errors);
+			assertEquals(resultExp.errors, resultToE_Errors);
 			return resultExp;
 		} else if(parseRule != null && parseRule.equalsIgnoreCase("PARAMETER_TEST")) {
 			

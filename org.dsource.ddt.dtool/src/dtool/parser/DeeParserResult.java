@@ -14,13 +14,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
 
 import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.parser.AbstractParser.NodeResult;
-import dtool.util.NewUtils;
+import dtool.parser.ParserError.ErrorSourceRangeComparator;
 
 public class DeeParserResult {
 	
@@ -28,19 +28,19 @@ public class DeeParserResult {
 	public final ASTNode node;
 	public final boolean ruleBroken;
 	public final Module module;
-	public final ArrayList<ParserError> errors;
+	public final List<ParserError> errors;
 	
 	public DeeParserResult(NodeResult<? extends ASTNode> result, DeeParser parser) {
 		this(parser.getSource(), result.node, result.ruleBroken, parser.lexerErrors);
 		parser.lexerErrors = null;
 	}
 	
-	public DeeParserResult(String source, ASTNode node, boolean ruleBroken, ArrayList<ParserError> lexerErrors) {
+	protected DeeParserResult(String source, ASTNode node, boolean ruleBroken, ArrayList<ParserError> lexerErrors) {
 		this.source = source;
 		this.node = node;
 		this.ruleBroken = ruleBroken;
 		this.module = node instanceof Module ? (Module) node : null;
-		this.errors = lexerErrors == null ? null : collectErrors(lexerErrors, node);
+		this.errors = lexerErrors == null ? null : Collections.unmodifiableList(collectErrors(lexerErrors, node));
 	}
 	
 	public boolean hasSyntaxErrors() {
@@ -64,22 +64,8 @@ public class DeeParserResult {
 				}
 			});
 		}
-		Collections.sort(errors, new ParserErrorComparator());
+		Collections.sort(errors, new ErrorSourceRangeComparator());
 		return errors;
-	}
-	
-	public static final class ParserErrorComparator implements Comparator<ParserError> {
-		@Override
-		public int compare(ParserError o1, ParserError o2) {
-			int compareResult = o1.sourceRange.compareTo(o2.sourceRange);
-			if(compareResult == 0) {
-				compareResult = o1.errorType.ordinal() - o2.errorType.ordinal(); 
-			}
-			if(compareResult == 0) {
-				compareResult = NewUtils.compareStrings(o1.msgErrorSource, o2.msgErrorSource); 
-			}
-			return compareResult;
-		}
 	}
 	
 }
