@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="DDT Target" sequenceNumber="22">
+<?pde version="3.8"?><target name="DDT Target" sequenceNumber="23">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.ide" version="3.7.2.M20120208-0800"/>
@@ -9,7 +9,11 @@
 <repository location="http://download.eclipse.org/releases/indigo/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.dltk.core.feature.group" version="3.0.0.v20101211-0331-7l-2ED-z0UkhYdtV3_LBO"/>
+<unit id="org.eclipse.dltk.core.sdk.feature.group" version="3.0.0.v20101025-2100-79--90u49KJA5EWnnehvfrBQTf0z"/>
+<unit id="org.eclipse.dltk.javascript.sdk.feature.group" version="3.0.0.v20101125-1247-6--84h23HEEtYdeSOr8CqSGiBBpP"/>
+<unit id="org.eclipse.dltk.python.sdk.feature.group" version="2.0.0.v20090730-1514-4--84M22NfWGJIEgQf08I00CdNBH"/>
+<unit id="org.eclipse.dltk.ruby.sdk.feature.group" version="3.0.0.v20110424-6--84e23ICLpTai-6mICIrTdYP5l"/>
+<unit id="org.eclipse.dltk.tcl.sdk.feature.group" version="3.0.0.v20101109-0623-6--84l23HG7z-eiscV0O_l76KD4x"/>
 <repository location="http://download.eclipse.org/technology/dltk/updates-dev/3.0"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
