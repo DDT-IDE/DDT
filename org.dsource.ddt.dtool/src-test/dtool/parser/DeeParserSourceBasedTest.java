@@ -311,7 +311,6 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		Pair.create("<SE", ParserErrorTypes.SYNTAX_ERROR),
 		Pair.create("REQPARENS", ParserErrorTypes.EXP_MUST_HAVE_PARENTHESES),
 		Pair.create("TYPE_AS_EXP_VALUE", ParserErrorTypes.TYPE_USED_AS_EXP_VALUE),
-		Pair.create("INV_QUALIFIER", ParserErrorTypes.INVALID_QUALIFIER),
 		Pair.create("NO_TPL_SINGLE_ARG", ParserErrorTypes.NO_CHAINED_TPL_SINGLE_ARG),
 		Pair.create("BAD_LINKAGE_ID", ParserErrorTypes.INVALID_EXTERN_ID)
 	);
@@ -362,7 +361,6 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			return new ParserError(errorType, errorRange, errorSource, errorParam);
 		case TYPE_USED_AS_EXP_VALUE:
 		case INIT_USED_IN_EXP:
-		case INVALID_QUALIFIER:
 		case NO_CHAINED_TPL_SINGLE_ARG:
 			errorSource = assertNotNull_(mde.sourceValue);
 			return new ParserError(errorType, errorRange, errorSource, null);
@@ -398,7 +396,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			errorParam = DeeParser.RULE_EXPRESSION.name;
 		} else if(errorParam.equals("ref")) {
 			errorParam = DeeParser.RULE_REFERENCE.name;
-		} else if(errorParam.equals("RoE")) {
+		} else if(errorParam.equals("ToE")) {
 			errorParam = DeeParser.RULE_TYPE_OR_EXP.name;
 		} else if(errorParam.equals("TplArg")) {
 			errorParam = DeeParser.RULE_TPL_SINGLE_ARG.name;

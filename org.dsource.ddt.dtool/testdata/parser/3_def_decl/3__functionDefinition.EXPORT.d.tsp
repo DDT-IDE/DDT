@@ -20,7 +20,6 @@
   ►#?STRUCTURE_EXPECTED!【/*NONE*/       #@TYPEREF_NBNE #?TYPEREF_CanParseAsId!【#FN_ONLY(flag)】●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP #@TYPEREF_NBNE ... #?TYPEREF_CanParseAsId!【#FN_ONLY(flag)】●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo = #@EXP_ASSIGN__NO_POSSIBLE_REFS #FN_ONLY(flag)●NamelessParameter(RefIdentifier #@EXP_ASSIGN__NO_POSSIBLE_REFS)】●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo = #@EXP_REFS    ●                         NamelessParameter(RefIdentifier #@EXP_REFS)】●
   ►#?STRUCTURE_EXPECTED!【... #FN_ONLY(flag)● CStyleVarArgsParameter】●
   
   ►#?STRUCTURE_EXPECTED!【#@TYPE_MODIFIERS (long) #FN_ONLY(flag)●NamelessParameter(RefTypeModifier(RefPrimitive))】●
@@ -36,14 +35,15 @@
   ►#?STRUCTURE_EXPECTED!【int[#error(EXP_CLOSE_BRACKET) #@BREAK_Pr ... ●NamelessParameter(RefTypeDynArray(*)) $】】●
 ¤》
 
-function/template interactions - param default convert
+Test function/template interactions - paramDefault convertion :
 #@FN_PARAMS_SINGLE《
   ►#@FN_PARAM_BASE●
   
   ►#?STRUCTURE_EXPECTED!【Foo foo=bar[] ●FunctionParameter(RefIdentifier DefSymbol ExpSlice(#@ExpIdentifier))】●
   ►#?STRUCTURE_EXPECTED!【Foo foo=bar* #@NO_EXP●FunctionParameter(RefIdentifier DefSymbol ExpInfix(#@ExpIdentifier #@NO_EXP))】●
-  ►#?STRUCTURE_EXPECTED!【Foo foo=#@TYPE_AS_EXP /* Test that TYPE_AS_EXP doesn't cause parsing as TPL*/ ● 
-                            FunctionParameter(RefIdentifier DefSymbol #@TYPE_AS_EXP)】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo=#@TYPE_AS_EXP●FunctionParameter(RefIdentifier DefSymbol #@TYPE_AS_EXP)】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo= #@_EXP_REFS_BREAK!《#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●#@PARENS_BREAK】》 #@EXP_REFS ●
+  FunctionParameter(RefIdentifier DefSymbol #@EXP_REFS)】●
 ¤》
 
 #@FN_PARAMS_MULTI《

@@ -42,10 +42,8 @@ public class DeeParser extends DeeParser_Statements {
 			result = new DeeParserResult(parseTypeReference(), this);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_DECLARATION.name)) {
 			result = new DeeParserResult(parseDeclaration(), this);
-		} else if(parseRule.equals(RULE_TYPE_OR_EXP) || parseRule.equalsIgnoreCase("TypeOrExp") ) {
+		} else if(parseRule.equalsIgnoreCase(RULE_TYPE_OR_EXP.name) || parseRule.equalsIgnoreCase("TypeOrExp") ) {
 			result = new DeeParserResult(parseTypeOrExpression(true), this);
-		} else if(parseRule.equalsIgnoreCase("ExpOrType") ) {
-			result = new DeeParserResult(parseExpressionOrType(), this);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_INITIALIZER.name)) {
 			result = new DeeParserResult(parseInitializer(), this);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_STATEMENT.name)) {
@@ -116,7 +114,7 @@ public class DeeParser extends DeeParser_Statements {
 	
 	@Override
 	public int getLexPosition() {
-		return getLexSource().getLexPosition();
+		return getLexSource().getSourceLexPosition();
 	}
 	
 	@Override
@@ -139,7 +137,7 @@ public class DeeParser extends DeeParser_Statements {
 		return getEnabledLexSource().consumeSubChannelTokens();
 	}
 	
-	public DeeParserState enterBacktrackableMode() {
+	public DeeParserState saveParserState() {
 		LexElementSource lexSource = getEnabledLexSource().saveState();
 		return new DeeParserState(lexSource, enabled);
 	}

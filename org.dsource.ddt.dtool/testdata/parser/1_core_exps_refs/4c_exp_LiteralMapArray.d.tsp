@@ -9,12 +9,12 @@
  ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN : #@ASSIGNEXP_NB ● MapEntry(#@EXP_ASSIGN #@ASSIGNEXP_NB)】●
  ►#?STRUCTURE_EXPECTED!【 #@NO_EXP : #@NO_EXP           ● MapEntry(#@NO_EXP #@NO_EXP)】●
 ¤》
-#@ENTRY__SAMPLE《
-►#?STRUCTURE_EXPECTED!【7 : true ● MapEntry(Integer Bool)】●
-¤》
 #@ENTRY《
   ►#@FIRST_ENTRY●
   ►#?STRUCTURE_EXPECTED!【#@ASSIGNEXP_NBNE #error(EXP_COLON)●MapEntry(#@ASSIGNEXP_NBNE)】●
+¤》
+#@ENTRY__SAMPLE《
+►#?STRUCTURE_EXPECTED!【7 : true ● MapEntry(Integer Bool)】●
 ¤》
 
 #@ARGS《
@@ -25,5 +25,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)    [ #@ARGS #@CLOSEBRACKET_OR_BREAK  
 #STRUCTURE_EXPECTED:  ExpLiteralMapArray( #@ARGS )
-
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ this might change in future
+#PARSE(EXPRESSION)    [ #@ENTRY__SAMPLE , #@NO_CloseBRACKET #@BREAK  
+#STRUCTURE_EXPECTED:  ExpLiteralMapArray( #@ENTRY__SAMPLE )
 

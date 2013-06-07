@@ -3,7 +3,7 @@
   #@NO_EXP《#?STRUCTURE_EXPECTED!【/*MISSING:Exp*/ #error(EXPRULE_exp)●MissingExpression】》
 #@NULL_EXP《#?STRUCTURE_EXPECTED!【/*No exp here*/ ● 】》
 
-#@NO_ROE《#?STRUCTURE_EXPECTED!【/*MISSING:RoE*/ #error(EXPRULE_RoE)● MissingExpression】》
+#@NO_TOE《#?STRUCTURE_EXPECTED!【/*MISSING:ToE*/ #error(EXPRULE_ToE)● MissingExpression】》
 #@NO_TYPEREF《#?STRUCTURE_EXPECTED!【/*MISSING:Ref*/ #error(EXPRULE_ref)● RefIdentifier】》
 
 // NB = No Broken  , NE = No Empty
@@ -22,6 +22,7 @@
 
 #@TYPEREF_NB_NoSingleDefId《#@TYPEREF_NB #?TYPEREF_CanParseAsId【#:DISCARD_CASE】》
 #@TYPEREF_NBNE_NoSingleDefId《#@TYPEREF_NBNE #?TYPEREF_CanParseAsId【#:DISCARD_CASE】》
+#@TYPEREF_NBNEParens《#@TYPEREF_NBNE #?MISSING_PARENS【#:DISCARD_CASE】》
 
 #@TYPEREF__SAMPLE《#@TYPE_REFS__NO_BROKEN__LITE》
 

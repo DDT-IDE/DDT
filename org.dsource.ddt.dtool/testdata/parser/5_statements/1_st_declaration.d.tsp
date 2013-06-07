@@ -4,14 +4,14 @@
 #STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ duplicate case
-#PARSE(STATEMENT)    #error(TYPE_AS_EXP_VALUE)【foo[int]】 ;
+#PARSE(STATEMENT)    foo[#error(TYPE_AS_EXP_VALUE)【int】];
 #STRUCTURE_EXPECTED: StatementExpression(*)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(STATEMENT)    int foo(void paramA) {  }
-#STRUCTURE_EXPECTED: DefFunction(RefPrimitive DefSymbol FunctionParameter(? ?)  BlockStatement)
+#PARSE(STATEMENT)    int foo(Object) {  } #@IGNORE_REST ;
+#STRUCTURE_EXPECTED: DefFunction(RefPrimitive DefSymbol NamelessParameter(?)  BlockStatement)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(STATEMENT)    int foo(#@TPLPARAMS__SIMPLE_TESTER) (void paramA) {  }
-#STRUCTURE_EXPECTED: DefFunction(RefPrimitive DefSymbol #@TPLPARAMS__SIMPLE_TESTER FunctionParameter(? ?)  BlockStatement)
+#PARSE(STATEMENT)    int foo(#@TPLPARAMS__SIMPLE_TESTER) (Object) {  }
+#STRUCTURE_EXPECTED: DefFunction(RefPrimitive DefSymbol #@TPLPARAMS__SIMPLE_TESTER NamelessParameter(?)  BlockStatement)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(STATEMENT)    struct MyStruct #@DECLS_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED: DefinitionStruct(DefSymbol #@DECLS_BLOCK__SAMPLE)
@@ -75,4 +75,4 @@
 #PARSE(STATEMENT) const { void foo ; }
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib TODO: basic attrib , this is wrong
-#PARSE(STATEMENT)    const invariant() { }
+#PARSE(STATEMENT) const invariant() { }

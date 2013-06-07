@@ -201,7 +201,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			break;
 		}
 		
-		DeeParserState savedState = thisParser().enterBacktrackableMode();
+		DeeParserState savedState = thisParser().saveParserState();
 		
 		if(lookAhead() == DeeTokens.KW_IMPORT && lookAhead(1) == DeeTokens.OPEN_PARENS) {
 			// Disambiguate against DeclarationImport
@@ -284,7 +284,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 	}
 	
 	protected VariableDefWithInit attemptParseVariableDefWithInit(boolean revertIfInvalid) {
-		DeeParserState savedState = thisParser().enterBacktrackableMode();
+		DeeParserState savedState = thisParser().saveParserState();
 		
 		successfulParsing: {
 			ParseHelper parse = new ParseHelper(lookAheadElement());

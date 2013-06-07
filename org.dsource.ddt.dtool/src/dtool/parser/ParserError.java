@@ -36,7 +36,6 @@ public class ParserError implements ISourceRange {
 		EXP_MUST_HAVE_PARENTHESES, 
 		TYPE_USED_AS_EXP_VALUE,
 		INIT_USED_IN_EXP,
-		INVALID_QUALIFIER, 
 		NO_CHAINED_TPL_SINGLE_ARG,
 		
 		INVALID_EXTERN_ID,
@@ -110,8 +109,6 @@ public class ParserError implements ISourceRange {
 			return "Expression " + msgErrorSource + " must be parenthesized when next to operator: " + msgData + ".";
 		case TYPE_USED_AS_EXP_VALUE:
 			return "The type " + msgErrorSource + " cannot be used as an expression value.";
-		case INVALID_QUALIFIER:
-			return "The type " + msgErrorSource + " cannot directly be used as a qualifier in qualified reference.";
 		case NO_CHAINED_TPL_SINGLE_ARG:
 			return "The template '!' single argument " + msgErrorSource + 
 				" cannot be used next to other template '!' single arguments.";

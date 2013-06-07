@@ -1,8 +1,0 @@
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@ARG!《#@NO_EXP●#@EXPS__NO_UNAMBIG_REFS》
-#PARSE(EXPRESSION)    ( #@ARG #@CLOSEPARENS_OR_BREAK
-#STRUCTURE_EXPECTED:  ExpParentheses( #@ARG )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)    ( #error(TYPE_AS_EXP_VALUE)【#@TYPEREFS_UNAMBIG】 #?TYPEREF_CAN_BE_EXP_PART【#:DISCARD_CASE】 #@CLOSEPARENS_OR_BREAK  //unambig Refs 
-#STRUCTURE_EXPECTED:  ExpParentheses( ExpReference( #@TYPEREFS_UNAMBIG ) )
-

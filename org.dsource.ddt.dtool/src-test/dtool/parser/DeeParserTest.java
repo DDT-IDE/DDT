@@ -98,17 +98,17 @@ public class DeeParserTest extends CommonTestUtils {
 			ASTSourceRangeChecker.checkConsistency(mainNode);
 		}
 		
-		runAdditionalTests(result, additionalMetadata);
+		runAdditionalTests(parseRule, result, parsedSource, additionalMetadata);
 	}
 	
 	public String checkParsedSource(final String expectedRemainingSource, final DeeTestsChecksParser deeParser) {
 		String parsedSource = fullSource;
+		String remainingSource = fullSource.substring(deeParser.getLexPosition());
 		if(expectedRemainingSource == DeeParserTest.DONT_CHECK) {
 			parsedSource = fullSource.substring(0, deeParser.getLexPosition());
 		} else if(expectedRemainingSource == null) {
 			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
 		} else {
-			String remainingSource = fullSource.substring(deeParser.getLexPosition());
 			SourceEquivalenceChecker.assertCheck(remainingSource, expectedRemainingSource);
 			parsedSource = fullSource.substring(0, fullSource.length() - expectedRemainingSource.length());
 		}
@@ -240,24 +240,10 @@ public class DeeParserTest extends CommonTestUtils {
 	
 	public DeeParserResult parseUsingRule(String parseRule, DeeTestsChecksParser deeParser, 
 		Map<String, MetadataEntry> additionalMD) {
-		if(parseRule != null && parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
-			DeeParserResult resultExp = deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
-			DeeParserResult resultToE = new DeeParser(deeParser.getSource()).parseUsingRule("TypeOrExp");
-			ASTNode expNode = resultExp.node;
-			List<ParserError> resultToE_Errors = resultToE.errors;
-			if(resultExp.errors.size() >= 1) {
-				ParserError lastError = resultExp.errors.get(resultExp.errors.size()-1);
-				if(lastError.errorType == ParserErrorTypes.TYPE_USED_AS_EXP_VALUE &&
-					SourceEquivalenceChecker.check(resultExp.node.toStringAsCode(), lastError.msgErrorSource)) {
-					resultToE_Errors = new ArrayList<>(resultToE.errors);
-					resultToE_Errors.add(lastError);
-					expNode = ((ExpReference) expNode).ref;
-				}
-			}
-			DeeParsingChecks.checkNodeEquality(expNode, resultToE.node);
-			assertEquals(resultExp.errors, resultToE_Errors);
-			return resultExp;
-		} else if(parseRule != null && parseRule.equalsIgnoreCase("PARAMETER_TEST")) {
+		if(parseRule == null) {
+		} else if(parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
+			return deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
+		} else if(parseRule.equalsIgnoreCase("PARAMETER_TEST")) {
 			
 			boolean parseAsFnParamOnly = additionalMD.get("FN_ONLY") != null;
 			boolean parseAsTplParamOnly = additionalMD.get("TPL_ONLY") != null;
@@ -271,13 +257,40 @@ public class DeeParserTest extends CommonTestUtils {
 		return deeParser.parseUsingRule(parseRule);
 	}
 	
-	public static void runAdditionalTests(final DeeParserResult result, 
+	public void runAdditionalTests(String parseRule, final DeeParserResult result, String parsedSource, 
 		Map<String, MetadataEntry> additionalMetaDataOriginal) {
 		Map<String, MetadataEntry> additionalMD = new HashMap<>(additionalMetaDataOriginal);
 		
 		MetadataEntry ruleBreakTest = additionalMD.remove("RULE_BROKEN");
 		if(additionalMD.remove("IGNORE_BREAK_FLAG_CHECK") == null) {
 			assertTrue(result.ruleBroken == (ruleBreakTest != null));
+		}
+		
+		if(parseRule == null) {
+		} 
+		else if(parseRule.equalsIgnoreCase("REFERENCE")) {
+			if(DToolTests.TESTS_LITE_MODE == false) {
+				DeeTestsChecksParser parser = new DeeTestsChecksParser(parsedSource);
+				DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP);
+				DeeParsingChecks.checkNodeEquality(result.node, resultToE.node);
+			}
+		} 
+		else if(parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
+			DeeTestsChecksParser parser = new DeeTestsChecksParser(parsedSource);
+			DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP);
+			ASTNode expNode = result.node;
+			List<ParserError> resultToE_Errors = resultToE.errors;
+			if(result.errors.size() >= 1) {
+				ParserError lastError = result.errors.get(result.errors.size()-1);
+				if(lastError.errorType == ParserErrorTypes.TYPE_USED_AS_EXP_VALUE &&
+					SourceEquivalenceChecker.check(result.node.toStringAsCode(), lastError.msgErrorSource)) {
+					resultToE_Errors = new ArrayList<>(resultToE.errors);
+					resultToE_Errors.add(lastError);
+					expNode = ((ExpReference) expNode).ref;
+				}
+			}
+			DeeParsingChecks.checkNodeEquality(expNode, resultToE.node);
+			assertEquals(result.errors, resultToE_Errors);
 		}
 		
 		for (Entry<String, MetadataEntry> mde : additionalMD.entrySet()) {

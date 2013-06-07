@@ -14,12 +14,12 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 #@ARG_COMMA《
   ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN__LITE ● #@EXP_ASSIGN__LITE】● 
   ►#?STRUCTURE_EXPECTED!【bar[foo*] ● RefIndexing(RefIdentifier RefTypePointer(RefIdentifier))】● 
-  ►#?STRUCTURE_EXPECTED!【 #@NO_ROE ● #@NO_ROE 】● 
+  ►#?STRUCTURE_EXPECTED!【 #@NO_TOE ● #@NO_TOE 】● 
 ¤》
 
 #@TPL_ARGLIST《
   ►#?STRUCTURE_EXPECTED!【!( #@CLOSEPARENS_OR_BREAK ● 】●
-  ►#?STRUCTURE_EXPECTED!【!( #@NO_ROE , #@CLOSEPARENS_OR_BREAK ● #@NO_ROE】●
+  ►#?STRUCTURE_EXPECTED!【!( #@NO_TOE , #@CLOSEPARENS_OR_BREAK ● #@NO_TOE】●
   ►#?STRUCTURE_EXPECTED!【!( #@ARG #@《 ●,》 #@CLOSEPARENS_OR_BREAK ● #@ARG】●
   
   ►#?STRUCTURE_EXPECTED!【!(#@ARG_COMMA , #@ARG #@《 ●,》 #@CLOSEPARENS_OR_BREAK● #@ARG_COMMA #@ARG】●
@@ -37,9 +37,9 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 #STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__QUALIFIER_ForTplOrDot #@TPL_ARGLIST)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ indexing cannot be template start
-#PARSE(REFERENCE)    #@TYPE_REFS__INVALID_QUALIFIER #@IGNORE_REST !this
-#STRUCTURE_EXPECTED: #@TYPE_REFS__INVALID_QUALIFIER
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(REFERENCE)    #@TYPE_REFS__NO_BROKEN__INVALID_QUALIFIER #@IGNORE_REST !this
+#STRUCTURE_EXPECTED: #@TYPE_REFS__NO_BROKEN__INVALID_QUALIFIER
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)    #@TYPE_REFS__QUALIFIER_ForDotOnly #@IGNORE_REST !this #?TYPE_REF_TPL_SIMPLE_ARG{#:DISCARD_CASE}
 #STRUCTURE_EXPECTED: #@TYPE_REFS__QUALIFIER_ForDotOnly
 
@@ -58,7 +58,7 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 #STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__TPL_SINGLE_ARG #@SINGLE_ARG)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)    foo! #error(EXPRULE_TemplateSingleArgument) .bar
-#STRUCTURE_EXPECTED: RefQualified(RefTemplateInstance(RefIdentifier #@NO_ROE) RefIdentifier)
+#STRUCTURE_EXPECTED: RefQualified(RefTemplateInstance(RefIdentifier #@NO_TOE) RefIdentifier)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)    foo!this . xpto
 #STRUCTURE_EXPECTED: RefQualified(RefTemplateInstance(RefIdentifier ExpThis) RefIdentifier)
@@ -74,7 +74,7 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Ensure ref rule break 
 // Single arg missing doesn't cause rule to break
 #PARSE(REFERENCE)    foo! #error(EXPRULE_TemplateSingleArgument) !(blah)
-#STRUCTURE_EXPECTED: RefTemplateInstance(RefTemplateInstance(RefIdentifier #@NO_ROE) RefIdentifier)
+#STRUCTURE_EXPECTED: RefTemplateInstance(RefTemplateInstance(RefIdentifier #@NO_TOE) RefIdentifier)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo!(var[] #error(EXP_CLOSE_PARENS) #error(-none-)¤【;】 dummy #error(EXP_ID);
 #STRUCTURE_EXPECTED: 

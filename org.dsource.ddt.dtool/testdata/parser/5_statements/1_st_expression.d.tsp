@@ -6,6 +6,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(STATEMENT)     123 #@NO_SEMICOLON #@BREAK bar;
 #STRUCTURE_EXPECTED:  StatementExpression( Integer )
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ StatementExp vs. variable declaration
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ make sure it doesn't break the parsing of DefinitionVariable
 #PARSE(STATEMENT)     foo[bar*] bar;
 #STRUCTURE_EXPECTED:  DefinitionVariable(* DefSymbol)
@@ -20,3 +21,16 @@
 #PARSE(STATEMENT)     123[bar #@NO_CloseBRACKET #@NO_SEMICOLON #@BREAK  bar;
 #STRUCTURE_EXPECTED:  StatementExpression(ExpIndex(* *))
 
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ StatementExp vs. function declaration
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)    Object* foo(Object) {  } #@IGNORE_REST ;
+#STRUCTURE_EXPECTED: DefFunction(#@_FOO_PTR DefSymbol NamelessParameter(?)  BlockStatement)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)    Object* foo(#@TPLPARAMS__SIMPLE_TESTER) (Object) {  }
+#STRUCTURE_EXPECTED: DefFunction(#@_FOO_PTR DefSymbol #@TPLPARAMS__SIMPLE_TESTER NamelessParameter(?)  BlockStatement)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)    Object* foo(Object) ;
+#STRUCTURE_EXPECTED: DefFunction(#@_FOO_PTR DefSymbol NamelessParameter(?)  EmptyStatement)
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ BUG here TODO 
+#PARSE(STATEMENT)    Object * foo(Object++) ;
+#STRUCTURE_EXPECTED: StatementExp(ExpInfix( #@ExpIdentifier  ExpCall(#@ExpIdentifier ExpPostfix(#@ExpIdentifier)) ))

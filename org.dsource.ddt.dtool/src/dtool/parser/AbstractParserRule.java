@@ -73,7 +73,7 @@ public class AbstractParserRule extends DeeParser_Statements {
 		public abstract T parse(ParseHelper parse);
 		
 		public T parseDeciderMode(ParseHelper parse) {
-			savedParserState = parser.enterBacktrackableMode();
+			savedParserState = parser.saveParserState();
 			return parse(parse);
 		}
 		

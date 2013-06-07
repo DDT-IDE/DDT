@@ -12,38 +12,33 @@
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-#@QUALIFIERS《
-  ►#?STRUCTURE_EXPECTED!【1●Integer】●
-  ►#?STRUCTURE_EXPECTED!【1.0●ExpLiteralFloat】●
+#@EXP_QUALIFIER_BASE《
+  ►#?STRUCTURE_EXPECTED!【123●Integer】●
+  ►#?STRUCTURE_EXPECTED!【3.14●ExpLiteralFloat】●
   ►#?STRUCTURE_EXPECTED!【foo[] ● ExpSlice(#@ExpIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【#@EXP_POSTFIX__NO_POSSIBLE_REFS ●#@EXP_POSTFIX__NO_POSSIBLE_REFS】●
-  ►#?STRUCTURE_EXPECTED!【#@TYPEREFS_AMBIG__INVALID_QUALIFIER●*】●
-  
-  ►#?STRUCTURE_EXPECTED!【#error(INV_QUALIFIER)【foo[foo*]】 ● ExpReference(RefIndexing(RefIdentifier RefTypePointer(?)))】●
-  ►#?STRUCTURE_EXPECTED!【#error(INV_QUALIFIER)【int[]】 ● ExpReference(RefTypeDynArray(RefPrimitive))】●
-  ►#?STRUCTURE_EXPECTED!【#error(INV_QUALIFIER)【#@TYPEREFS_UNAMBIG__INVALID_QUALIFIER】●ExpReference(#@TYPEREFS_UNAMBIG__INVALID_QUALIFIER)】●
+¤》
+#@REF_QUALIFIER_BASE《
+  ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__QUALIFIER_ForDot●#@TYPE_REFS__QUALIFIER_ForDot】●
+¤》
 
-  
-  ►#?STRUCTURE_EXPECTED!【( #@EXPS__NO_POSSIBLE_REFS )●ExpParentheses( #@EXPS__NO_POSSIBLE_REFS )】●
-  ►#?STRUCTURE_EXPECTED!【( #@TYPEREFS_UNAMBIG )●ExpParentheses( #@TYPEREFS_UNAMBIG )】●
-  ►#?STRUCTURE_EXPECTED!【( #@TYPEREFS_AMBIG )●ExpParentheses( #@TYPEREFS_AMBIG )】●
+#@QUALIFIER《
+  ►#?STRUCTURE_EXPECTED!【#@EXP_QUALIFIER_BASE●#@EXP_QUALIFIER_BASE】●
+  ►#?STRUCTURE_EXPECTED!【#@REF_QUALIFIER_BASE●#@REF_QUALIFIER_BASE】●
+  ►#?STRUCTURE_EXPECTED!【#@EXP_QUALIFIER_BASE . init●ExpReference(RefQualified(#@EXP_QUALIFIER_BASE RefIdentifier))】●
+  ►#?STRUCTURE_EXPECTED!【#@REF_QUALIFIER_BASE . init●             RefQualified(#@REF_QUALIFIER_BASE RefIdentifier)】●
 ¤》
-// We also test ExpQualified and ExpParantheses interaction 
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   #@EXP_QUALIFIED《
-  ►#?STRUCTURE_EXPECTED!【#@QUALIFIERS .init● RefQualified(#@QUALIFIERS RefIdentifier )】●
-  ►#?STRUCTURE_EXPECTED!【#@QUALIFIERS . init .blah● RefQualified(ExpReference(RefQualified(#@QUALIFIERS ?))  RefIdentifier)】●
-¤》
-#STRUCTURE_EXPECTED: ExpReference( #@EXP_QUALIFIED )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   #@EXP_QUALIFIED《
-  ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__QUALIFIER_ForDot .init● RefQualified(#@TYPE_REFS__QUALIFIER_ForDot RefIdentifier )】●
-  ►#?STRUCTURE_EXPECTED!【#@TYPE_REFS__QUALIFIER_ForDot . init .blah● RefQualified(RefQualified(#@TYPE_REFS__QUALIFIER_ForDot ?)  RefIdentifier)】●
-¤》
-#STRUCTURE_EXPECTED: ExpReference( #@EXP_QUALIFIED )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION_ToE) #@QUALIFIERS . #@NO_ID /* error doesnt break parsing */ + 23
-#STRUCTURE_EXPECTED:   ExpInfix(  ExpReference(RefQualified(#@QUALIFIERS #@NO_ID)) Integer  )
+#PARSE(EXPRESSION)     #@QUALIFIER .qualified
+#STRUCTURE_EXPECTED:   ExpReference( RefQualified(#@QUALIFIER RefIdentifier) )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)     #PARSING_AS_EXP(flag) #@TYPE_REFS__NO_BROKEN__INVALID_QUALIFIER .init #parser(AllowAnyErrors)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION_ToE) #@QUALIFIER . #@NO_ID /* error doesnt break parsing */ + 23
+#STRUCTURE_EXPECTED:   ExpInfix(  ExpReference(RefQualified(#@QUALIFIER #@NO_ID)) Integer  )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION_ToE) . #@NO_ID /* error doesnt break parsing */ + 23
+#STRUCTURE_EXPECTED:   ExpInfix(  ExpReference(RefModuleQualified(#@NO_ID)) Integer  )
 

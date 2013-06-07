@@ -453,7 +453,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			return result(false, initializerExp);
 		}
 		if(lookAhead() == DeeTokens.OPEN_BRACE) {
-			DeeParserState savedParserState = thisParser().enterBacktrackableMode();
+			DeeParserState savedParserState = thisParser().saveParserState();
 			NodeResult<InitializerStruct> structInitResult = parseStructInitializer();
 			
 			if(structInitResult.ruleBroken) {
@@ -653,10 +653,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(parse.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.COLON)) {
-				specialization = nullTypeOrExpToMissing(parseTypeOrExpression(InfixOpType.CONDITIONAL, true).node);
+				NodeResult<Resolvable> typeOrCondExp = parseTypeOrExpression(InfixOpType.CONDITIONAL, true);
+				specialization = nullTypeOrExpToParseMissing(typeOrCondExp.node);
 			}
 			if(tryConsume(DeeTokens.ASSIGN)) {
-				init = nullTypeOrExpToMissing(parseTypeOrAssignExpression(true).node);
+				init = nullTypeOrExpToParseMissing(parseTypeOrAssignExpression(true).node);
 			}
 		}
 		
@@ -927,7 +928,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		ArrayList<AliasVarDeclFragment> fragments = null;
 		
 		parsing: {
-			DeeParserState savedParserState = thisParser().enterBacktrackableMode();
+			DeeParserState savedParserState = thisParser().saveParserState();
 			
 			NodeResult<Reference> refResult = parseTypeReference();
 			ref = refResult.node;

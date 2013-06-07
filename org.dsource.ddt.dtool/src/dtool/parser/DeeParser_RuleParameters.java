@@ -197,34 +197,41 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 					}
 				}
 				if(tryConsume(DeeTokens.ASSIGN)) {
-					if(mode == TplOrFnMode.FN) {
-						paramDefault = new TypeOrExpResult(TypeOrExpStatus.EXP, parseAssignExpression_toMissing());
-					} else if(mode == TplOrFnMode.TPL) {
-						if(defId == null) {
-							paramDefault = new TypeOrExpResult(TypeOrExpStatus.TYPE, 
-								wrapReferenceForTypeOrExpParse(parseTypeReference_ToMissing().node));
-						} else {
-							paramDefault = new TypeOrExpResult(TypeOrExpStatus.EXP, parseAssignExpression_toMissing());
-						}
-					} else {
-						paramDefault = parseTypeOrExpression(InfixOpType.ASSIGN);
-						if(paramDefault.isNull()) {
-							TypeOrExpStatus toeMode = TypeOrExpStatus.TYPE_OR_EXP;
-							paramDefault = new TypeOrExpResult(toeMode, createTypeOrExpMissingExp(toeMode, true));
-						} else if(paramDefault.mode == TypeOrExpStatus.EXP && defId == null) {
-							setMode(TplOrFnMode.FN); //NamelessParameter
-						}
-					}
+					parseParamDefault();
 				}
 			}
 			
 			assertTrue(defId == null ? valueSpecialization == null : typeSpecialization == null);
+			assertTrue(defId != null ? !paramDefault.isRefOnly() : true);
 			
 			sr = SourceRange.srStartToEnd(nodeStart, getLexPosition());
 			switch (mode) { default: throw assertUnreachable();
 			case AMBIG: return this;
 			case TPL: return convertToTemplate();
 			case FN: return convertToFunction();
+			}
+		}
+		
+		public void parseParamDefault() {
+			if(mode == TplOrFnMode.FN || defId != null) {
+				paramDefault = new TypeOrExpResult(null, result(false, parseAssignExpression_toMissing()));
+			} else if(mode == TplOrFnMode.TPL) {
+				if(defId == null) {
+					paramDefault = new TypeOrExpResult(parseTypeReference_ToMissing(), null); 
+				} else {
+					paramDefault = new TypeOrExpResult(null, result(false, parseAssignExpression_toMissing()));
+				}
+			} else {
+				paramDefault = parseTypeOrExpression(InfixOpType.ASSIGN);
+				if(paramDefault.isNull()) {
+					paramDefault = new TypeOrExpResult(
+						parseTypeReference_ToMissing(), 
+						result(false, parseAssignExpression_toMissing()));
+				} else if(paramDefault.isExpOnly() && defId == null) {
+					setMode(TplOrFnMode.FN); //NamelessParameter
+				}  else if(paramDefault.isRefOnly()) {
+					setMode(TplOrFnMode.TPL);
+				}
 			}
 		}
 		
@@ -250,7 +257,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 			}
 			if(defId == null && couldHaveBeenParsedAsId(ref)) {
 				defId = convertRefIdToDef(ref);
-				return conclude(sr, isVariadic ?  
+				return conclude(sr, isVariadic ? 
 					new TemplateTupleParam(defId) :
 					new TemplateTypeParam(defId, typeSpecialization, paramDefault.toReference().node));
 			} else {

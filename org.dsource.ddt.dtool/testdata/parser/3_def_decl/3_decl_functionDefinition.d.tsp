@@ -68,9 +68,9 @@ DefFunction(RefTypeModifier(RefIdentifier) DefSymbol #@FN_AFTER_PARAM )
 #STRUCTURE_EXPECTED:
 DefFunction(RefIdentifier DefSymbol #@TPL_PARAMS__SAMPLE #@BREAK #@ST_BLOCK__SAMPLE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   Foo tplFunc( #@TPLPARAMS #?FN_ONLY【#:DISCARD_CASE】 ) ( #@FN_PARAMS_SAMPLE ) #@ST_BLOCK__SAMPLE
+#PARSE(DECLARATION)   Foo tplFunc( #@TPLPARAMS_NB #?FN_ONLY【#:DISCARD_CASE】 ) ( #@FN_PARAMS_SAMPLE ) #@ST_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED:
-DefFunction(RefIdentifier DefSymbol #@TPLPARAMS #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )
+DefFunction(RefIdentifier DefSymbol #@TPLPARAMS_NB #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function  Attributes
 
