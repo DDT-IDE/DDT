@@ -8,8 +8,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
 
-public class DeclarationLinkage extends DeclarationAttrib implements IDeclaration 
-, IStatement // TODO: remove this when descent legacy is removed 
+public class DeclarationLinkage extends DeclarationAttrib implements IDeclaration, IStatement 
 {
 	
 	public enum Linkage {

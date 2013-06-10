@@ -321,7 +321,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(statementsOnly) return nullResult();
 			return parseDeclarationProtection(parseBody);
 		case KW_EXTERN: 
-			if(statementsOnly) return nullResult();
 			if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
 				return parseDeclarationExternLinkage(parseBody);
 			}

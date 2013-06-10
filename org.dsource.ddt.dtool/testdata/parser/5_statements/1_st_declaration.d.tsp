@@ -70,7 +70,7 @@
 #PARSE(STATEMENT)    pragma(foo) void foo;
 #STRUCTURE_EXPECTED: DeclarationPragma(Symbol DefinitionVariable(RefPrimitive DefSymbol))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)  #@NULL extern(C) { void foo ; }
+#PARSE(STATEMENT)  extern(C) { void foo ; }
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib TODO
 #PARSE(STATEMENT) const { void foo ; }
 
