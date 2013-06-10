@@ -190,9 +190,12 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		case KW_SYNCHRONIZED: return parseStatementSynchronized();
 		case KW_WITH: return parseStatementWith();
 		case KW_ASM: return parseStatementAsm();
-		case KW_SCOPE: return parseStatementScope();
 		case KW_TRY: return parseStatementTry();
-		
+		case KW_SCOPE:
+			if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
+				return parseStatementScope();
+			}
+			break;
 		case IDENTIFIER:
 			if(lookAhead(1) == DeeTokens.COLON)
 				return parseStatementLabel_start();

@@ -64,6 +64,9 @@
 #PARSE(STATEMENT)  #@NULL unittest #@ST_BLOCK__SAMPLE
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)    #@ATTRIBS_STCLike int foo; #?SYNCHRONIZED_ATTRIB{#:DISCARD_CASE}
+#STRUCTURE_EXPECTED: #@ATTRIBS_STCLike DefVariable(RefPrimitive DefSymbol) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(STATEMENT)  #@NULL public { void foo ; }
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂

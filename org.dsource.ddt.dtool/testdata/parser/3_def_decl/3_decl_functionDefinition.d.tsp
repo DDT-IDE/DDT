@@ -30,8 +30,8 @@ DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS__SAMPLE #@FN_PARAMS_SAMPL
 #STRUCTURE_EXPECTED: #?TM_ATTRIB_AMBIG【DeclarationBasicAttrib(*)●
          DefFunction(#@TYPEREF_NBNE DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )】
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ommited return type
-#PARSE(DECLARATION)  #@STC func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE 
-#STRUCTURE_EXPECTED: #@STC DefFunction(DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE) )
+#PARSE(DECLARATION)  #@ATTRIBS_STCLike func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE 
+#STRUCTURE_EXPECTED: #@ATTRIBS_STCLike DefFunction(DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ommited return type
 #PARSE(DECLARATION)  const shared func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE 
 #STRUCTURE_EXPECTED: DeclarationBasicAttrib(DeclarationBasicAttrib( 

@@ -1,6 +1,5 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@SCOPE《
- ►#?STRUCTURE_EXPECTED!【 #error(EXP_OPEN_PARENS)¤【】 ●  】●
  ►#?STRUCTURE_EXPECTED!【 ( #@NO_ID ) ● Symbol】●
  ►#?STRUCTURE_EXPECTED!【 ( exit #@NO_ClosePARENS #@BREAK ● Symbol #@BREAK】●
  ►#?STRUCTURE_EXPECTED!【 ( exit ) ● Symbol】●
@@ -11,3 +10,6 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    scope #@SCOPE  #@ST__ANY
 #STRUCTURE_EXPECTED: StatementScope( #@SCOPE  #@ST__ANY )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)    scope   #@SINGLE_DECL_SAMPLE
+#STRUCTURE_EXPECTED: DeclarationBasicAttrib( #@SINGLE_DECL_SAMPLE )

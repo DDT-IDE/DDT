@@ -22,9 +22,9 @@ DeclarationAlign( IncompleteDeclaration(RefIdentifier) )
 DeclarationPragma(Symbol IncompleteDeclaration(RefIdentifier) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@SIMPLE_ATTRIBS fooB = #@EXP_ASSIGN__LITE;
+#@ATTRIBS_STCLike fooB = #@EXP_ASSIGN__LITE;
 #STRUCTURE_EXPECTED:
-#@SIMPLE_ATTRIBS DefAutoVariable(DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
+#@ATTRIBS_STCLike DefAutoVariable(DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 const shared fooB = #@EXP_ASSIGN__LITE;
 #STRUCTURE_EXPECTED:
