@@ -6,6 +6,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -22,13 +23,15 @@ import dtool.util.ArrayView;
  */
 public class DefinitionAliasVarDecl extends Definition implements IDeclaration, IStatement {
 	
+	public final ArrayView<DeclarationAttrib> attributes;
 	public final Reference target;
 	public final Reference cstyleSuffix;
 	public final ArrayView<AliasVarDeclFragment> fragments;
 	
-	public DefinitionAliasVarDecl(Reference target, ProtoDefSymbol defId, Reference cstyleSuffix,
-		ArrayView<AliasVarDeclFragment> fragments) {
+	public DefinitionAliasVarDecl(ArrayView<DeclarationAttrib> attributes, Reference target, ProtoDefSymbol defId, 
+		Reference cstyleSuffix, ArrayView<AliasVarDeclFragment> fragments) {
 		super(defId);
+		this.attributes = parentize(attributes);
 		this.target = parentize(target);
 		this.cstyleSuffix = parentizeI(cstyleSuffix);
 		this.fragments = parentizeI(fragments);
@@ -44,6 +47,7 @@ public class DefinitionAliasVarDecl extends Definition implements IDeclaration, 
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
+			TreeVisitor.acceptChildren(visitor, attributes);
 			TreeVisitor.acceptChildren(visitor, target);
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, cstyleSuffix);
@@ -55,6 +59,7 @@ public class DefinitionAliasVarDecl extends Definition implements IDeclaration, 
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("alias ");
+		cp.appendList(attributes, " ", true);
 		cp.append(target, " ");
 		cp.append(defname);
 		cp.append(cstyleSuffix);

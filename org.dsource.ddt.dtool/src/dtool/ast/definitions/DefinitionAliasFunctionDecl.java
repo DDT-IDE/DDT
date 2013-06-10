@@ -8,6 +8,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -24,13 +25,15 @@ import dtool.util.ArrayView;
  */
 public class DefinitionAliasFunctionDecl extends Definition implements IDeclaration, IStatement {
 	
+	public final ArrayView<DeclarationAttrib> attributes;
 	public final Reference target;
 	public final ArrayView<IFunctionParameter> fnParams;
 	public final ArrayView<FunctionAttributes> fnAttributes;
 	
-	public DefinitionAliasFunctionDecl(Reference target, ProtoDefSymbol defId, ArrayView<IFunctionParameter> fnParams,
-		ArrayView<FunctionAttributes> fnAttributes) {
+	public DefinitionAliasFunctionDecl(ArrayView<DeclarationAttrib> attributes, Reference target, ProtoDefSymbol defId,
+		ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes) {
 		super(defId);
+		this.attributes = parentize(attributes);
 		this.target = parentize(target);
 		this.fnParams = parentizeI(fnParams);
 		this.fnAttributes = fnAttributes;
@@ -50,6 +53,7 @@ public class DefinitionAliasFunctionDecl extends Definition implements IDeclarat
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
+			TreeVisitor.acceptChildren(visitor, attributes);
 			TreeVisitor.acceptChildren(visitor, target);
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, fnParams);
@@ -60,6 +64,7 @@ public class DefinitionAliasFunctionDecl extends Definition implements IDeclarat
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("alias ");
+		cp.appendList(attributes, " ", true);
 		cp.append(target, " ");
 		cp.append(defname);
 		cp.appendList("(", getParams_asNodes(), ",", ") ");

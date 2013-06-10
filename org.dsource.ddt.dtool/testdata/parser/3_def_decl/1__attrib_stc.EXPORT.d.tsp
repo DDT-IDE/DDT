@@ -57,3 +57,38 @@
 #@SIMPLE_ATTRIBS_ENUM《
  ►#?STRUCTURE_EXPECTED!【enum●DeclarationBasicAttrib( 】●
 ¤》
+
+
+
+#@LINKAGE_TYPE{C,C++,D,Windows,Pascal,System}
+#@EXTERN_ATTRIB《
+ ►#?STRUCTURE_EXPECTED!【extern(#@LINKAGE_TYPE)● DeclarationLinkage( 】●
+ ►#?STRUCTURE_EXPECTED!【extern (Xpto #error(BAD_LINKAGE_ID) )● DeclarationLinkage( 】●
+ ►#?STRUCTURE_EXPECTED!【extern(#error(BAD_LINKAGE_ID))● DeclarationLinkage( 】●
+¤》
+
+#@ALIGN_ATTRIB《
+ ►#?STRUCTURE_EXPECTED!【align● DeclarationAlign( 】●
+ ►#?STRUCTURE_EXPECTED!【align(1)● DeclarationAlign( 】●
+ ►#?STRUCTURE_EXPECTED!【align(12)● DeclarationAlign( 】●
+ ►#?STRUCTURE_EXPECTED!【align(#error(EXP_INTEGER_DECIMAL)) ● DeclarationAlign( 】●
+¤》
+
+#@PRAGMA_ATTRIB《
+ ►#?STRUCTURE_EXPECTED!【pragma(foo, 123)● DeclarationPragma(Symbol Integer】●
+ ►#?STRUCTURE_EXPECTED!【pragma(foo)● DeclarationPragma(Symbol 】●
+ ►#?STRUCTURE_EXPECTED!【pragma ( #error(EXP_ID) )● DeclarationPragma(Symbol 】●
+¤》
+
+    #@ATTRIBS_NoENUM《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIBS》
+#@ATTRIBS_NoTMNoENUM《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIBS_NOTM》
+#@ATTRIBS_NoTM《#@SIMPLE_ATTRIBS_ENUM●#@ATTRIBS_NoTMNoENUM》
+     #@ATTRIBS《#@SIMPLE_ATTRIBS_ENUM●#@ATTRIBS_NoENUM》
+     
+#@ATTRIBS__LITE《
+ ►#?STRUCTURE_EXPECTED!【extern(D)● DeclarationLinkage( 】●
+ ►#?STRUCTURE_EXPECTED!【align(1)● DeclarationAlign( 】●
+ ►#?STRUCTURE_EXPECTED!【pragma(foo, 123)● DeclarationPragma(Symbol Integer】●
+ ►#@SIMPLE_ATTRIBS__SAMPLE●
+ ►#@SIMPLE_ATTRIBS_ENUM●
+¤》

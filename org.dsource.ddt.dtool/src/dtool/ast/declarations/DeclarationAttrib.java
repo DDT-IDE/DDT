@@ -11,7 +11,7 @@ import dtool.ast.NodeList_OLD;
 import dtool.ast.statements.BlockStatementUnscoped;
 import dtool.refmodel.INonScopedBlock;
 
-public abstract class DeclarationAttrib extends ASTNode implements INonScopedBlock {
+public abstract class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDeclaration {
 	
 	public static enum AttribBodySyntax { SINGLE_DECL, BRACE_BLOCK, COLON }
 	

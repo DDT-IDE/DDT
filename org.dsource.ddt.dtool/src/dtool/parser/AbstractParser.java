@@ -303,12 +303,12 @@ public abstract class AbstractParser {
 			return token;
 		}
 		
-		public ProtoDefSymbol checkResult(ProtoDefSymbol defId) {
+		public final ProtoDefSymbol checkResult(ProtoDefSymbol defId) {
 			setRuleBroken(defId.isMissing());
 			return defId;
 		}
 		
-		public <T extends ASTNode> T checkResult(NodeResult<T> nodeResult) {
+		public final <T extends ASTNode> T checkResult(NodeResult<T> nodeResult) {
 			setRuleBroken(nodeResult.ruleBroken);
 			return nodeResult.node;
 		}
