@@ -38,6 +38,3 @@
 #@DEFID_OrNO《#@DEFID●#@NO_DEFID》
 
 
-#@ARGS__SAMPLE《
-  ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN__LITE, 123 + "foo"● #@EXP_ASSIGN__LITE ExpInfix(Integer String)】●
-¤》

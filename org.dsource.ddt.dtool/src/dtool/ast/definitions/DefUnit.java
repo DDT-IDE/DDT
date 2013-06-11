@@ -3,9 +3,11 @@ package dtool.ast.definitions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTNode;
+import dtool.ast.ISourceRepresentation;
 import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
 import dtool.parser.ParserError;
+import dtool.parser.Token;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
@@ -35,7 +37,8 @@ public abstract class DefUnit extends ASTNode {
 	}
 	
 	public final Comment[] comments;
-	public final DefSymbol defname; // This may not be a child of DefUnit
+	public final Token[] commentsN;
+	public final DefSymbol defname; // It may happen that this is not a child of DefUnit
 	
 	protected DefUnit(DefSymbol defname, Comment[] comments) {
 		this(defname, comments, true);
@@ -45,6 +48,7 @@ public abstract class DefUnit extends ASTNode {
 		assertNotNull(defname);
 		this.defname = defIdIsChild ? parentize(defname) : defname;
 		this.comments = comments;
+		this.commentsN = null;
 	}
 	
 	public DefUnit(ProtoDefSymbol defIdTuple) {
@@ -75,17 +79,6 @@ public abstract class DefUnit extends ASTNode {
 	public boolean isSynthetic() {
 		// TODO need to define this properly
 		return getModuleNode() == null;
-	}
-	
-	public String getCombinedDocComments() {
-		if(comments == null || comments.length == 0) {
-			return null;
-		}
-		String str = new String(comments[0].string);
-		for (int i = 1; i < comments.length; i++) {
-			str = str + "\n" + comments[i].toString();
-		}
-		return str;
 	}
 	
 	/** Gets the archetype (the kind) of this DefUnit. */

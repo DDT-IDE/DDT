@@ -95,3 +95,7 @@ RefTemplateInstance(
   ►#@TYPE_REFS__NO_BROKEN__LITE●
   ►#@TYPE_REFS__BROKEN●
 ¤》
+
+/------------------------------/
+
+#@TYPE_MODIFIERS《const●immutable●shared●inout》
