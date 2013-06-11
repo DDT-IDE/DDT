@@ -1,7 +1,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@FN_PARAMS_SAMPLE《#?STRUCTURE_EXPECTED!【 .Bar.Baz baz, in const Foo.Foobar foo = 2● 
+#@FN_PARAMS_SAMPLE《#?STRUCTURE_EXPECTED!【 .Bar.Baz baz, in const Foo.Foobar = 2● 
   FunctionParameter(RefQualified(RefModuleQualified(?) RefIdentifier) DefSymbol)
-  FunctionParameter(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
+  NamelessParameter(RefQualified(RefIdentifier RefIdentifier) Integer)
 】》
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Parameters
 #@BREAK_Pr《 #?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS) #@BREAK● $ 】  》
@@ -61,6 +61,10 @@ Test function/template interactions - paramDefault convertion :
 #@FN_PARAMS《
   ►#@FN_PARAMS_SINGLE●
   ►#@FN_PARAMS_MULTI●
+¤》
+#@FN_PARAMS__LITE《
+  ►#@FN_PARAMS_SAMPLE●
+  ►#?STRUCTURE_EXPECTED!【... #FN_ONLY(flag)● CStyleVarArgsParameter】●
 ¤》
 
 #@FN_PARAMS__NO_BROKEN《#FN_PARAM__NO_BROKEN(flag)#@FN_PARAMS》

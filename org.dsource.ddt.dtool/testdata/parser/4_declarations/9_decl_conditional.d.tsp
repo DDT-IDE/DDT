@@ -60,6 +60,9 @@
   ►#?STRUCTURE_EXPECTED!【: ● DeclList】●
   ►#?STRUCTURE_EXPECTED!【: #@DECL_LIST_SAMPLE ● DeclList( #@DECL_LIST_SAMPLE )】●
 ¤》
+#@COND_BODY__LITE《
+  ►#?STRUCTURE_EXPECTED!【: #@DECL_LIST_SAMPLE ● DeclList( #@DECL_LIST_SAMPLE )】●
+¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   #@CONDITION #@COND_BODY
 #STRUCTURE_EXPECTED:  #@CONDITION #@COND_BODY )
@@ -73,6 +76,9 @@
   
   ►#?STRUCTURE_EXPECTED!【#@NO_STOrBLOCK #@IGNORE_REST : ● #BLOCK_ST_UNSCOPED(flag) #@NO_STOrBLOCK 】●
   ►#?STRUCTURE_EXPECTED!【#@NO_STOrBLOCK #@IGNORE_REST invariant() /*Test that non-statements are not parsed*/ ● #BLOCK_ST_UNSCOPED(flag)#@NO_STOrBLOCK 】●
+¤》
+#@COND_BODY_ST__LITE《
+  ►#?STRUCTURE_EXPECTED!【#@ST__NB     ● #BLOCK_ST_UNSCOPED(flag) #@ST__NB 】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)     version #error(EXP_OPEN_PARENS)【】  #@BREAK
