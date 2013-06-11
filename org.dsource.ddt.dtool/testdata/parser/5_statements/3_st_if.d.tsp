@@ -7,8 +7,12 @@
  ►#?STRUCTURE_EXPECTED!【(auto defId #error(EXP_ASSIGN)【】 ) ●StatementIfVar( VariableDefWithInit(AutoRef DefSymbol )】●
  ►#?STRUCTURE_EXPECTED!【(auto defId = #@EXP_ANY__LITE) ●StatementIfVar( VariableDefWithInit(AutoRef DefSymbol #@EXP_ANY__LITE)】●
  ►#?STRUCTURE_EXPECTED!【(#@TYPEREF_NBNE       defId = 123)                ●StatementIfVar( VariableDefWithInit(#@TYPEREF_NBNE DefSymbol Integer)】●
- ►#?STRUCTURE_EXPECTED!【(#@TYPEREF_NBNE__LITE defId #error(EXP_ASSIGN)【】) ●StatementIfVar( VariableDefWithInit(#@TYPEREF_NBNE__LITE DefSymbol)】●
- ►#?STRUCTURE_EXPECTED!【(#NO_BROKEN_PARENS(flag) #@TYPEREF_ANY #parser(AllowAnyErrors) #?CANT_FULLY_EXP_PARSE【#:DISCARD_CASE】)●StatementIf( * 】●
+ ►#?STRUCTURE_EXPECTED!【(#@TYPEREF_NBNE__LITE  #?TYPE_REF_POINTER【#:DISCARD_CASE】 defId #error(EXP_ASSIGN)【】) ●StatementIfVar( VariableDefWithInit(#@TYPEREF_NBNE__LITE DefSymbol)】●
+ ►#?STRUCTURE_EXPECTED!【(#@TYPEREF_NBNE__LITE #?TYPE_REF_POINTER!【#:DISCARD_CASE】 defId #parser(AllowAnyErrors) ) ●StatementIf( *】●
+ ►#?STRUCTURE_EXPECTED!【(xxxA * defId ) ●StatementIf( ExpInfix(#@ExpIdentifier #@ExpIdentifier) 】●
+ ►#?STRUCTURE_EXPECTED!【(const xxxB * defId #error(EXP_ASSIGN)【】 ) ●StatementIfVar( VariableDefWithInit(RefTypeModifier(#@_FOO_PTR) DefSymbol) 】●
+
+ ►#?STRUCTURE_EXPECTED!【(#@TYPEREF_NBParens #?CANT_FULLY_EXP_PARSE【#:DISCARD_CASE】 #parser(AllowAnyErrors) )●StatementIf( * 】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    if #@IF_CONDITION  #@ST__SAMPLE

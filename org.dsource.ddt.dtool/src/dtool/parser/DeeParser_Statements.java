@@ -22,6 +22,7 @@ import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.AutoReference;
+import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.BlockStatementUnscoped;
@@ -311,7 +312,12 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			}
 			
 			Expression defaultValue = null;
-			if(parse.consumeRequired(DeeTokens.ASSIGN).ruleBroken == false) {
+			parse.consumeRequired(DeeTokens.ASSIGN);
+			if(parse.ruleBroken) {
+				if(type instanceof RefTypePointer) {
+					break successfulParsing; // Parse as exp instead
+				}
+			} else {
 				defaultValue = parseExpression_toMissing();
 			}
 			return parse.conclude(new VariableDefWithInit(type, defId, defaultValue));

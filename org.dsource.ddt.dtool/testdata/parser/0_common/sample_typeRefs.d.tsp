@@ -38,13 +38,13 @@ RefTemplateInstance(
 
 // In the future it may be that RefIndexing and RefSlice are allowed as qualifier, as this makes sense semantically
 #@TYPE_REFS__NO_BROKEN__INVALID_QUALIFIER《
-  ►#?STRUCTURE_EXPECTED!【int*●RefTypePointer(RefPrimitive)】●
+  ►#?STRUCTURE_EXPECTED!【int* #TYPE_REF_POINTER(flag)●RefTypePointer(RefPrimitive)】●
   ►#?STRUCTURE_EXPECTED!【foo*[]●RefTypeDynArray(RefTypePointer(RefIdentifier))】●
   ►#?STRUCTURE_EXPECTED!【arrayElem[int]●RefIndexing(RefIdentifier RefPrimitive)】●
 
   ►#?STRUCTURE_EXPECTED!【dai[foo*] *[bar][foo**bar]●
     RefIndexing(RefIndexing(RefTypePointer(*) ?) ExpInfix(* ExpPrefix(ExpReference(?))))】●
-  ►#?STRUCTURE_EXPECTED!【dai[int*[]] ***●RefTypePointer(?(RefTypePointer(RefIndexing(? *))))】●
+  ►#?STRUCTURE_EXPECTED!【dai[int*[]] *** #TYPE_REF_POINTER(flag)●RefTypePointer(?(RefTypePointer(RefIndexing(? *))))】●
   
   ►#?STRUCTURE_EXPECTED!【foo[foo*[2 : #@NO_EXP]/*EXP*/]●RefIndexing(RefIdentifier ExpInfix(* *))】●
   
@@ -68,7 +68,7 @@ RefTemplateInstance(
 ¤》
 #@TYPE_REFS__NO_BROKEN__LITE《
   ►#@TYPE_REFS__REFID●
-  ►#?STRUCTURE_EXPECTED!【int*●RefTypePointer(RefPrimitive)】●
+  ►#?STRUCTURE_EXPECTED!【int*#TYPE_REF_POINTER(flag)●RefTypePointer(RefPrimitive)】●
   ►#?STRUCTURE_EXPECTED!【.Bar.foo*[]●RefTypeDynArray(RefTypePointer(RefQualified(RefModuleQualified(?) RefIdentifier)))】●
 ¤》
 
