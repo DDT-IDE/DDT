@@ -8,11 +8,11 @@ import dtool.util.ArrayView;
 public class InitializerStruct_Old extends Initializer {
 	
 	public final ArrayView<RefIdentifier> indexes;
-	public final ArrayView<Initializer> values;
+	public final ArrayView<IInitializer> values;
 	
-	public InitializerStruct_Old(ArrayView<RefIdentifier> indexes, ArrayView<Initializer> values) {
+	public InitializerStruct_Old(ArrayView<RefIdentifier> indexes, ArrayView<IInitializer> values) {
 		this.indexes = parentize(indexes, true);
-		this.values = parentize(values);
+		this.values = parentizeI(values);
 	}
 	
 	@Override

@@ -79,6 +79,7 @@ import dtool.ast.definitions.TemplateTupleParam;
 import dtool.ast.definitions.TemplateTypeParam;
 import dtool.ast.definitions.TemplateValueParam;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.IInitializer;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -502,7 +503,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			new DefinitionTypedef(
 				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
 				ReferenceConverter.convertType(elem.sourceBasetype, convContext),
-				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext)
+				DescentASTConverter.convertElem(elem.init, IInitializer.class, convContext)
 			)
 		);
 	}	

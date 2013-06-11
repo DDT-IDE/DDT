@@ -3,6 +3,7 @@ package dtool.ast.definitions;
 import melnorme.utilbox.tree.TreeVisitor;
 import descent.internal.compiler.parser.PROT;
 import dtool.ast.IASTVisitor;
+import dtool.ast.expressions.IInitializer;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -13,13 +14,13 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 public class DefinitionTypedef extends Definition implements IStatement {
 	
 	public final Reference type;
-	public final Initializer initializer;
+	public final IInitializer initializer;
 	
-	public DefinitionTypedef(DefUnitTuple dudt, PROT prot, Reference type, Initializer initializer) {
+	public DefinitionTypedef(DefUnitTuple dudt, PROT prot, Reference type, IInitializer initializer) {
 		super(dudt.defSymbol);
 		initSourceRange(dudt.sourceRange);
 		this.type = parentize(type);
-		this.initializer = parentize(initializer);
+		this.initializer = parentizeI(initializer);
 	}
 	
 	@Override
