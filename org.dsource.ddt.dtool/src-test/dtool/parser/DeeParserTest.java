@@ -38,6 +38,7 @@ import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.AutoReference;
 import dtool.ast.statements.SimpleVariableDef;
+import dtool.ast.statements.StatementExpression;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
@@ -194,6 +195,8 @@ public class DeeParserTest extends CommonTestUtils {
 			return AutoReference.class.getSimpleName();
 		} else if(expectedNameRaw.equals("SimpleVarDef")) {
 			return SimpleVariableDef.class.getSimpleName();
+		} if(expectedNameRaw.equals("StatementExp")) {
+			return StatementExpression.class.getSimpleName();
 		}
 		
 		return replaceRegexFirstOccurrence(expectedNameRaw, 

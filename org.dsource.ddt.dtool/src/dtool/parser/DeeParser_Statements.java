@@ -18,6 +18,7 @@ import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.declarations.IncompleteDeclaration;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
+import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
@@ -205,7 +206,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 			break;
 		}
 		
-		DeeParserState savedState = thisParser().saveParserState();
+		DeeParserState originalState = thisParser().saveParserState();
 		
 		if(lookAhead() == DeeTokens.KW_IMPORT && lookAhead(1) == DeeTokens.OPEN_PARENS) {
 			// Disambiguate against DeclarationImport
@@ -216,17 +217,30 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		IDeclaration decl = declResult.node;
 		
 		if(decl instanceof IncompleteDeclaration || decl == null) {
-			thisParser().restoreOriginalState(savedState);
+			thisParser().restoreOriginalState(originalState);
 			NodeResult<StatementExpression> expResult = parseStatementExpression();
-			if(expResult.node == null) {
-				assertTrue(decl == null); // Because any IncompleteDeclaration must be parsable as exp
-			}
+			assertTrue(expResult.node != null || decl == null); // any IncompleteDeclaration must be parsable as exp 
 			return expResult;
-		} else {
-			assertTrue(decl instanceof IStatement);
-			return CoreUtil.blindCast(declResult);
+		} else if(declResult.ruleBroken && decl instanceof DefinitionFunction) {
+			
+			DefinitionFunction defFunction = (DefinitionFunction) decl;
+			if(defFunction.fnBody == null && defFunction.tplConstraint == null && defFunction.fnAttributes == null) {
+				DeeParserState defFunctionState = thisParser().saveParserState();
+				
+				thisParser().restoreOriginalState(originalState);
+				NodeResult<StatementExpression> stExpResult = parseStatementExpression();
+				
+				int expLexElementPos = thisParser().getEnabledLexSource().getLexElementPosition();
+				if(expLexElementPos > defFunctionState.lexSource.getLexElementPosition()) {
+					return stExpResult;
+				} else {
+					thisParser().restoreOriginalState(defFunctionState);
+					// break to return declResult
+				}
+			}
 		}
-		
+		assertTrue(decl instanceof IStatement);
+		return CoreUtil.blindCast(declResult);
 	}
 	
 	public NodeResult<StatementExpression> parseStatementExpression() {

@@ -30,7 +30,13 @@
 #STRUCTURE_EXPECTED: DefFunction(#@_FOO_PTR DefSymbol #@TPLPARAMS__SIMPLE_TESTER NamelessParameter(?)  BlockStatement)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    Object* foo(Object) ;
-#STRUCTURE_EXPECTED: DefFunction(#@_FOO_PTR DefSymbol NamelessParameter(?)  EmptyStatement)
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ BUG here TODO 
+#STRUCTURE_EXPECTED: DefFunction(#@_FOO_PTR DefSymbol NamelessParameter(RefIdentifier)  EmptyStatement)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ this is not according to DMD, at least as of 2.062 TODO: need to discuss
+#PARSE(STATEMENT)    Object* foo(Object = 2) ;
+#STRUCTURE_EXPECTED: DefFunction(#@_FOO_PTR DefSymbol NamelessParameter(RefIdentifier Integer)  EmptyStatement)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
 #PARSE(STATEMENT)    Object * foo(Object++) ;
-#STRUCTURE_EXPECTED: StatementExp(ExpInfix( #@ExpIdentifier  ExpCall(#@ExpIdentifier ExpPostfix(#@ExpIdentifier)) ))
+#STRUCTURE_EXPECTED: StatementExp(ExpInfix( #@ExpIdentifier ExpCall(#@ExpIdentifier ExpPostfix(#@ExpIdentifier)) ))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
+#PARSE(STATEMENT)    Object * foo(Object obj #@PARENS_BREAK
+#STRUCTURE_EXPECTED: DefFunction(#@_FOO_PTR DefSymbol FunctionParameter(? ?) )
