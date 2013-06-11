@@ -3,14 +3,14 @@ auto foo = 2;
 static bar = foo;
 auto xa = 456, xb = 123;
 #STRUCTURE_EXPECTED:
-DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(Integer)) )
-DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(#@ExpIdentifier)) )
-DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(?) DefVarFragment(DefSymbol InitializerExp(?))) )
+DeclarationBasicAttrib( DefAutoVariable(DefSymbol Integer) )
+DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@ExpIdentifier) )
+DeclarationBasicAttrib( DefAutoVariable(DefSymbol Integer DefVarFragment(DefSymbol Integer)) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test normal var definition is not broken
 #@SIMPLE_ATTRIBS__SAMPLE #@TYPEREF_NBNE fooC = #@EXP_ASSIGN__LITE;
 #STRUCTURE_EXPECTED: #?TM_ATTRIB_AMBIG【#:DISCARD_CASE】
-#@SIMPLE_ATTRIBS__SAMPLE DefVariable(#@TYPEREF_NBNE DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
+#@SIMPLE_ATTRIBS__SAMPLE DefVariable(#@TYPEREF_NBNE DefSymbol #@EXP_ASSIGN__LITE ) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test composite attribs dont make auto decl
 extern(C) foo #error(EXP_IDENTIFIER) ;
@@ -24,11 +24,11 @@ DeclarationPragma(Symbol IncompleteDeclaration(RefIdentifier) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@ATTRIBS_STCLike fooB = #@EXP_ASSIGN__LITE;
 #STRUCTURE_EXPECTED:
-#@ATTRIBS_STCLike DefAutoVariable(DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) )
+#@ATTRIBS_STCLike DefAutoVariable(DefSymbol #@EXP_ASSIGN__LITE ) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 const shared fooB = #@EXP_ASSIGN__LITE;
 #STRUCTURE_EXPECTED:
-DeclarationBasicAttrib(DeclarationBasicAttrib( DefAutoVariable(DefSymbol InitializerExp(#@EXP_ASSIGN__LITE) ) ))
+DeclarationBasicAttrib(DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@EXP_ASSIGN__LITE ) ))
                                         
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@AUTO_START《

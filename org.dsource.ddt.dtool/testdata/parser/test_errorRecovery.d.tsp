@@ -70,9 +70,8 @@ DefinitionVariable(? ?)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  var Initializer
 var xx = #error(EXPRULE_Initializer) ;
-
-#STRUCTURE_EXPECTED:
-DefinitionVariable(? DefSymbol InitializerExp(MissingExpression))
+#STRUCTURE_EXPECTED: 
+DefinitionVariable(? DefSymbol MissingExpression)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of expressions: 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂

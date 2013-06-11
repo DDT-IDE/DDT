@@ -125,7 +125,6 @@ import dtool.ast.expressions.ExpTypeId;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Initializer;
 import dtool.ast.expressions.InitializerArray_Old;
-import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct_Old;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
@@ -214,9 +213,7 @@ abstract class ExpressionConverterVisitor extends DeclarationConverterVisitor {
 	@Override
 	public boolean visit(ExpInitializer element) {
 		return endAdapt(connect(DefinitionConverter.sourceRange(element, !(element.exp instanceof ErrorExp)),
-			new InitializerExp(
 				ExpressionConverter.convert(element.exp, convContext))
-			)
 		);
 	}
 

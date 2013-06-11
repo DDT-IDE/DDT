@@ -8,9 +8,7 @@ import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.InitializerArray.ArrayInitEntry;
-import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct.StructInitEntry;
-import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
@@ -87,8 +85,6 @@ public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {
 		case REF_IDENTIFIER:
 		case REF_IMPORT_SELECTION:
 			return DeeParser.isMissing((Reference) node);
-		case INITIALIZER_EXP:
-			return ((InitializerExp) node).exp instanceof MissingExpression;
 		case STRUCT_INIT_ENTRY: {
 			StructInitEntry initEntry = (StructInitEntry) node;
 			return canBeginWithEmptySpace(initEntry.member != null ? initEntry.member : (ASTNode) initEntry.value);
@@ -127,10 +123,6 @@ public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {
 		if(node instanceof RefIdentifier) {
 			RefIdentifier refId = (RefIdentifier) node;
 			return DeeParser.isMissing(refId); 
-		}
-		if(node instanceof InitializerExp) {
-			InitializerExp initializerExp = (InitializerExp) node;
-			return initializerExp.exp instanceof MissingExpression;
 		}
 		if(node instanceof DefSymbol) {
 			return false;

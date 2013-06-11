@@ -139,6 +139,7 @@ public abstract class ASTNode implements IASTNeoNode {
 	}
 	
 	public void detachFromParent() {
+		assertNotNull(this.parent);
 		this.parent.data = null; // Note, parent becomes an invalid node after this.
 		this.parent = null;
 	}

@@ -27,7 +27,7 @@
 #STRUCTURE_EXPECTED: DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumMember(RefPrimitive DefSymbol)) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    enum i = 4;
-#STRUCTURE_EXPECTED: DeclarationBasicAttrib(DefinitionAutoVariable(DefSymbol InitializerExp(?)))
+#STRUCTURE_EXPECTED: DeclarationBasicAttrib(DefinitionAutoVariable(DefSymbol Integer))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(DECLARATION)   alias foo[] aliasDef; 

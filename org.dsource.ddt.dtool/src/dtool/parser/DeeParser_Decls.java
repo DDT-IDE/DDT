@@ -18,6 +18,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import dtool.ast.ASTNode;
+import dtool.ast.NodeData;
 import dtool.ast.NodeListView;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
@@ -95,7 +96,6 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.expressions.InitializerArray;
 import dtool.ast.expressions.InitializerArray.ArrayInitEntry;
-import dtool.ast.expressions.InitializerExp;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerStruct.StructInitEntry;
 import dtool.ast.expressions.InitializerVoid;
@@ -475,20 +475,22 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			if(arrayInitResult.ruleBroken) {
 				return arrayInitResult;
 			}
-			InitializerArray arrayInitExp = arrayInitResult.node;
-			Expression initExp = parseExpression_fromUnary(InfixOpType.ASSIGN, arrayInitExp);
-			if(initExp == arrayInitExp) {
+			InitializerArray arrayInit = arrayInitResult.node;
+			assertTrue(arrayInit.getData().hasErrors() == false);
+			
+			Expression fullInitExp = parseExpression_fromUnary(InfixOpType.ASSIGN, arrayInit);
+			if(fullInitExp == arrayInit) {
 				return arrayInitResult;
 			}
-			ParserError error = null;
-			if(!arrayInitializerCouldParseAsArrayLiteral(arrayInitExp)) {
-				error = createError(ParserErrorTypes.INIT_USED_IN_EXP, arrayInitExp.getSourceRange(), null); 
+			if(!arrayInitializerCouldParseAsArrayLiteral(arrayInit)) {
+				ParserError error = createError(ParserErrorTypes.INIT_USED_IN_EXP, arrayInit.getSourceRange(), null);
+				arrayInit.removeData(NodeData.DEFAULT_PARSED_STATUS.getClass());
+				conclude(error, arrayInit);
 			} else {
 				// Even if initializer can be parsed as array literal, we place it in exp without any node conversion
 				// (this might change in future)
 			}
-			InitializerExp initializerExp = conclude(error, srOf(initExp, new InitializerExp(initExp)));
-			return result(false, initializerExp);
+			return result(false, fullInitExp);
 		}
 		if(lookAhead() == DeeTokens.OPEN_BRACE) {
 			DeeParserState savedParserState = thisParser().saveParserState();
@@ -516,7 +518,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 					return false;
 				}
 				return true;
-			} else if(!(entry.value instanceof InitializerExp)) {
+			} else if(!(entry.value instanceof Expression)) {
 				return false;
 			}
 			boolean isMapEntry = entry.index != null;
@@ -526,14 +528,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return true;
 	}
 
-	public NodeResult<InitializerExp> parseExpInitializer(boolean createMissing) {
-		NodeResult<Expression> expResult = createMissing ? 
-			parseAssignExpression_toMissing(true, RULE_INITIALIZER) : parseAssignExpression();
-		Expression exp = expResult.node;
-		if(exp == null) {
-			return AbstractParser.<InitializerExp>nullResult();
-		}
-		return resultConclude(expResult.ruleBroken, srOf(exp, new InitializerExp(exp)));
+	public NodeResult<Expression> parseExpInitializer(boolean createMissing) {
+		return createMissing ? 
+			parseAssignExpression_toMissing(true, RULE_INITIALIZER) : 
+			parseAssignExpression();
 	}
 	
 	public NodeResult<InitializerArray> parseArrayInitializer() {
@@ -561,9 +559,12 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				if(initializer == null)
 					return null;
 				
-				if(initializer instanceof InitializerExp && lookAhead() == DeeTokens.COLON) {
-					index = ((InitializerExp) initializer).exp;
-					index.detachFromParent();
+				if(lookAhead() == DeeTokens.COLON && initializerCanParseAsExp(initializer)) {
+					if(initializer instanceof InitializerArray) {
+						index = (InitializerArray) initializer;
+					} else {
+						index = (Expression) initializer;
+					}
 					consumeLookAhead(DeeTokens.COLON);
 					initializer = parseNonVoidInitializer(true).node;
 				}
@@ -572,6 +573,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			ASTNode startNode = index != null ? index : initializer.asNode();
 			return concludeNode(srToPosition(startNode, new ArrayInitEntry(index, initializer)));
 		}
+		
+	}
+	
+	public static boolean initializerCanParseAsExp(IInitializer initializer) {
+		return initializer instanceof Expression || initializer instanceof InitializerArray;
 	}
 	
 	public NodeResult<InitializerStruct> parseStructInitializer() {

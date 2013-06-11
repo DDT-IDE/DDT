@@ -1,30 +1,32 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
 #PARSE(INITIALIZER)   #@EXP_ASSIGN #?EXP_ARRAY_LITERAL{#:DISCARD_CASE} #?EXP_RULE_BROKEN【#@BREAK】
-#STRUCTURE_EXPECTED:  InitializerExp(#@EXP_ASSIGN)
+#STRUCTURE_EXPECTED:  #@EXP_ASSIGN
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@INITIALIZERS_NONVOID《
   ►#@NO_INIT●
   ►#@INITIALIZERS_NONVOID_NE●
 ¤》
 #@INITIALIZERS_NONVOID_NE《
-  ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN #?EXP_ARRAY_LITERAL{#:DISCARD_CASE} ●InitializerExp(#@EXP_ASSIGN)】●
+  ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN #?EXP_ARRAY_LITERAL{#:DISCARD_CASE} ●#@EXP_ASSIGN】●
   ►#?STRUCTURE_EXPECTED!【[ 7,  4 : foo,]● 
-    InitializerArray( ArrayInitEntry(InitializerExp(Integer)) ArrayInitEntry(Integer InitializerExp(#@ExpIdentifier)) 
+    InitializerArray( ArrayInitEntry(Integer) ArrayInitEntry(Integer #@ExpIdentifier) 
   )】●
   ►#?STRUCTURE_EXPECTED!【{ foo : bar, bar } ●InitializerStruct(
-    StructInitEntry(RefIdentifier InitializerExp(#@ExpIdentifier)) StructInitEntry(InitializerExp(#@ExpIdentifier))
+    StructInitEntry(RefIdentifier #@ExpIdentifier) StructInitEntry(#@ExpIdentifier)
   )】●
 ¤》
 
 #@INITIALIZERS_NONVOID__SAMPLE《
   ►#@NO_INIT●
-  ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN__LITE ●InitializerExp(#@EXP_ASSIGN__LITE)】●
+  ►#?STRUCTURE_EXPECTED!【#@EXP_ASSIGN__LITE ●#@EXP_ASSIGN__LITE】●
 ¤》
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test array initializer
 #@BRACKET_END《#@《●,》 #@CLOSEBRACKET_OR_BREAK》
 
 #@ARRAY_INIT_ENTRY《
   ►#?STRUCTURE_EXPECTED!【#@INITIALIZERS_NONVOID_NE ●ArrayInitEntry(#@INITIALIZERS_NONVOID_NE)】●
+  ►#?STRUCTURE_EXPECTED!【#@ASSIGNEXP_ANY : #@INITIALIZERS_NONVOID__SAMPLE ●
+          ArrayInitEntry(#?EXP_ARRAY_LITERAL【*●#@ASSIGNEXP_ANY】   #@INITIALIZERS_NONVOID__SAMPLE)】●
   ►#?STRUCTURE_EXPECTED!【#@ASSIGNEXP_ANY__LITE : #@INITIALIZERS_NONVOID ●
           ArrayInitEntry(#@ASSIGNEXP_ANY__LITE   #@INITIALIZERS_NONVOID)】●
 ¤》
@@ -45,7 +47,7 @@
           InitializerArray(#@ARRAY_INIT_ENTRY__SAMPLE   #@ARRAY_INIT_ENTRY)】●
   
   ►#@_ARRAY_INIT__SPECIAL_CASES●
-  ►#?STRUCTURE_EXPECTED!【[ 123 , #@BRACKET_BREAK = 456●InitializerArray(ArrayInitEntry(InitializerExp(Integer)))】●
+  ►#?STRUCTURE_EXPECTED!【[ 123 , #@BRACKET_BREAK = 456●InitializerArray(ArrayInitEntry(Integer))】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
 #PARSE(INITIALIZER)   #@ARRAY_INIT
@@ -88,8 +90,8 @@
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ if broken parse as exp   
 #PARSE(INITIALIZER)   {  #error(EXP_CLOSE_BRACE) #@BREAK
-#STRUCTURE_EXPECTED:  InitializerExp(ExpFunctionLiteral(BlockStatement))
+#STRUCTURE_EXPECTED:  ExpFunctionLiteral(BlockStatement)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ if broken parse as exp
 #PARSE(INITIALIZER)   {  foo : #error(EXP_CLOSE_BRACE) #@BREAK
-#STRUCTURE_EXPECTED:  InitializerExp(ExpFunctionLiteral(BlockStatement(StatementLabel(?))))
+#STRUCTURE_EXPECTED:  ExpFunctionLiteral(BlockStatement(StatementLabel(?)))
 

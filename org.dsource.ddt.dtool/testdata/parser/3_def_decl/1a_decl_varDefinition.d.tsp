@@ -1,7 +1,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 Bar.foo foo = 2;
 #STRUCTURE_EXPECTED:
-DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol InitializerExp(?))
+DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
@@ -25,8 +25,8 @@ IncompleteDeclaration(#@TYPEREF_NBNE)】
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@PREFIX《
   ►#?STRUCTURE_EXPECTED!【prefix,  ●DefSymbol 】●
-  ►#?STRUCTURE_EXPECTED!【prefix = 123,  ●DefSymbol InitializerExp(Integer) 】●
-  ►#?STRUCTURE_EXPECTED!【prefix = 123,  prf2 = 123,●DefSymbol InitializerExp(?) DefVarFragment(* InitializerExp(*)) 】●
+  ►#?STRUCTURE_EXPECTED!【prefix = 123,  ●DefSymbol Integer 】●
+  ►#?STRUCTURE_EXPECTED!【prefix = 123,  prf2 = 123,●DefSymbol Integer DefVarFragment(* Integer) 】●
   ►#?STRUCTURE_EXPECTED!【prefix, #@NO_ID, ●DefSymbol DefVarFragment(#@NO_DEFID) 】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -41,7 +41,7 @@ The parser reads the c-style decl but doesn't actually store the c-style type in
 #STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefTypeDynArray(CStyleRootRef))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)  int foo[10] = 2, foo2 #error(EXP_SEMICOLON) #@BREAK [10];
-#STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefIndexing(CStyleRootRef Integer) InitializerExp(Integer) DefVarFragment(?) )
+#STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefIndexing(CStyleRootRef Integer) Integer DefVarFragment(?) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)  int foo[  /**/  #error(EXP_CLOSE_BRACKET) #@【 /**/ ● #error(EXP_SEMICOLON)#@BREAK = 2 】;
 #STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefTypeDynArray(CStyleRootRef))

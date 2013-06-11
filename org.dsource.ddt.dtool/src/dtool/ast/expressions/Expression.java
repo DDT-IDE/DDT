@@ -8,7 +8,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public abstract class Expression extends Resolvable implements IQualifierNode {
+public abstract class Expression extends Resolvable implements IQualifierNode, IInitializer {
 	
 	// deprecate
 	public Collection<DefUnit> getType(IModuleResolver moduleResolver) {
