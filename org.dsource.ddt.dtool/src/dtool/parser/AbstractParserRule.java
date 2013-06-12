@@ -38,8 +38,8 @@ public class AbstractParserRule extends DeeParser_Statements {
 	}
 	
 	@Override
-	public int getLexPosition() {
-		return parser.getLexPosition();
+	public int getSourcePosition() {
+		return parser.getSourcePosition();
 	}
 	
 	@Override

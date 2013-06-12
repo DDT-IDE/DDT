@@ -5,6 +5,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.TokenInfo;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
+import dtool.parser.Token;
 
 @Deprecated
 public final class DefUnitTuple {
@@ -21,6 +22,11 @@ public final class DefUnitTuple {
 	
 	public DefUnitTuple(SourceRange sourceRange, TokenInfo defName, Comment[] comments) {
 		this(comments, defName.getString(), defName.getSourceRange(), sourceRange);
+	}
+
+	public Token[] commentsToToken() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

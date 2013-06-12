@@ -245,4 +245,10 @@ public class NewUtils {
 		return string;
 	}
 	
+	public static <T> List<T> arrayListFromElement(T element) {
+		ArrayList<T> list = new ArrayList<>();
+		list.add(element);
+		return list;
+	}
+	
 }

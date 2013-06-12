@@ -19,6 +19,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
+import dtool.parser.Token;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -32,10 +33,10 @@ public abstract class AbstractFunctionDefinition extends Definition implements I
 	public final Expression tplConstraint;
 	public final IFunctionBody fnBody;
 	
-	public AbstractFunctionDefinition(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public AbstractFunctionDefinition(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
 			ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 
 			Expression tplConstraint, IFunctionBody fnBody) {
-		super(defId);
+		super(comments, defId);
 		
 		this.tplParams = parentize(tplParams);
 		this.fnParams = parentizeI(fnParams);

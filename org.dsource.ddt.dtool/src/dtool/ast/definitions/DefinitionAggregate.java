@@ -12,6 +12,7 @@ import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
+import dtool.parser.Token;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -30,9 +31,9 @@ public abstract class DefinitionAggregate extends Definition implements IScopeNo
 	public final Expression tplConstraint;
 	public final IAggregateBody aggrBody;
 	
-	public DefinitionAggregate(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public DefinitionAggregate(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
 		Expression tplConstraint, IAggregateBody aggrBody) {
-		super(defId);
+		super(comments, defId);
 		this.tplParams = parentize(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
 		this.aggrBody = parentizeI(aggrBody);

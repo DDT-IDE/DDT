@@ -14,6 +14,7 @@ import dtool.ast.NodeListView;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.parser.Token;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -23,8 +24,8 @@ public class DefinitionEnum extends Definition implements IScopeNode, IDeclarati
 	public final Reference type;
 	public final EnumBody body;
 	
-	public DefinitionEnum(ProtoDefSymbol defId, Reference type, EnumBody body) {
-		super(assertNotNull_(defId));
+	public DefinitionEnum(Token[] comments, ProtoDefSymbol defId, Reference type, EnumBody body) {
+		super(comments, defId);
 		this.type = parentize(type);
 		this.body = parentize(body);
 	}

@@ -10,6 +10,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
+import dtool.parser.Token;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -21,10 +22,11 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	
 	public final Reference retType;
 	
-	public DefinitionFunction(Reference retType, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
-			ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 
-			Expression tplConstraint, IFunctionBody fnBody) {
-		super(defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
+	public DefinitionFunction(Token[] comments, Reference retType, ProtoDefSymbol defId, 
+		ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, 
+		ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint, IFunctionBody fnBody) 
+	{
+		super(comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
 		this.retType = parentize(retType);
 	}
 	

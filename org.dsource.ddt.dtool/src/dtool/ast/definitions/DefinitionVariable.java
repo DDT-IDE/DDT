@@ -1,6 +1,5 @@
 package dtool.ast.definitions;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
@@ -14,6 +13,7 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.parser.Token;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -28,21 +28,16 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 	
 	public static final ArrayView<DefVarFragment> NO_FRAGMENTS = ArrayView.create(new DefVarFragment[0]);
 	
-	public final Reference type;
+	public final Reference type; // Can be null
 	public final Reference cstyleSuffix;
 	public final IInitializer init;
 	public final ArrayView<DefVarFragment> fragments;
 	
-	public DefinitionVariable(ProtoDefSymbol defId, Reference type, Reference cstyleSuffix, IInitializer init,
-		ArrayView<DefVarFragment> fragments) {
-		this(defId, assertNotNull_(type), cstyleSuffix, init, fragments, false);
-	}
-	
-	protected DefinitionVariable(ProtoDefSymbol defId, Reference type, Reference cstyleSuffix, IInitializer init,
-		ArrayView<DefVarFragment> fragments, @SuppressWarnings("unused") boolean dummy)
+	public DefinitionVariable(Token[] comments, ProtoDefSymbol defId, Reference type, Reference cstyleSuffix, 
+		IInitializer init, ArrayView<DefVarFragment> fragments)
 	{
-		super(defId);
-		this.type = parentize(type);
+		super(comments, defId);
+		this.type = parentize(type); 
 		this.cstyleSuffix = parentize(cstyleSuffix);
 		this.init = parentize(init);
 		this.fragments = parentize(fragments);
@@ -81,9 +76,9 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 	// TODO refactor this into own class?
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
-		public DefinitionAutoVariable(ProtoDefSymbol defId, IInitializer init, 
+		public DefinitionAutoVariable(Token[] comments, ProtoDefSymbol defId, IInitializer init, 
 			ArrayView<DefVarFragment> fragments) {
-			super(defId, null, null, init, fragments, false);
+			super(comments, defId, null, null, init, fragments);
 		}
 		
 		@Override

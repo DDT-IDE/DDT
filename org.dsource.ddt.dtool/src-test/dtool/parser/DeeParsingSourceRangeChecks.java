@@ -5,7 +5,9 @@ import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.DefSymbol;
+import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.InitializerArray.ArrayInitEntry;
 import dtool.ast.expressions.InitializerStruct.StructInitEntry;
@@ -53,13 +55,19 @@ public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {
 	public void basicSourceRangeCheck() {
 		if(!canBeginWithEmptySpace(nodeUnderTest)) {
 			LexElement firstLexElement = firstLexElementInNode();
-			assertTrue(firstLexElement.getFullRangeStartPos() == firstLexElement.getStartPos());
+			assertTrue(firstLexElement.getFullRangeStartPos() == firstLexElement.getStartPos()
+				|| isDocComment(firstLexElement, nodeUnderTest));
 		}
 		
 		if(nodeConsumesTrailingWhiteSpace(nodeUnderTest)) {
 			// Check that the range contains all possible whitespace
 			assertTrue(lexElementAfterNode(nodeUnderTest).getStartPos() == 0);
 		}
+	}
+	
+	public static boolean isDocComment(LexElement firstLexElement, ASTNode node) {
+		return (node instanceof DefUnit || node instanceof DeclarationModule) &&
+			DeeTokenSemantics.tokenIsDocComment(firstLexElement.precedingSubChannelTokens[0]);
 	}
 	
 	public LexElement firstLexElementInNode() {

@@ -6,6 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import dtool.ast.declarations.DeclarationBasicAttrib;
 import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
 import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.parser.Token;
 
 /**
  * Abstract class for all declaration-based DefUnits. 
@@ -14,8 +15,8 @@ public abstract class Definition extends DefUnit {
 	
 	protected int defAttributesBitMask;
 	
-	public Definition(ProtoDefSymbol defId) {
-		super(defId);
+	public Definition(Token[] comments, ProtoDefSymbol defId) {
+		super(defId, comments);
 		this.defAttributesBitMask = 0;
 	}
 	

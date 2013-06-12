@@ -103,7 +103,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	public static final ParseRuleDescription RULE_TPL_SINGLE_ARG = new ParseRuleDescription("TemplateSingleArgument");
 	
 	public NodeResult<Reference> parseTypeReference() {
-		return parseTypeReference_do(false);
+		return parseTypeReference_start(false);
 	}
 	
 	public NodeResult<Reference> parseTypeReference(boolean createMissing, boolean reportMissingError) {
@@ -144,7 +144,14 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			|| ((ref instanceof RefImportSelection) && ((RefImportSelection) ref).name == null);
 	}
 	
-	protected NodeResult<Reference> parseTypeReference_do(boolean parsingExp) {
+	public NodeResult<Reference> parseTypeReference_start(boolean parsingExp) {
+		DeeTokens lookAhead = lookAhead();
+		NodeResult<Reference> result = parseTypeReference_start_do(parsingExp);
+		assertTrue(canParseTypeReferenceStart(lookAhead) == (result.node != null));
+		return result;
+	}
+	
+	protected NodeResult<Reference> parseTypeReference_start_do(boolean parsingExp) {
 		NodeResult<? extends Reference> refParseResult;
 		
 		TypeModifierKinds typeModifier = determineTypeModifier(lookAhead());
@@ -358,7 +365,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			parse.requireBrokenCheck();
 			return null;
 		}
-		CStyleRootRef cstyleRootRef = conclude(srAt(getLexPosition()), new CStyleRootRef());
+		CStyleRootRef cstyleRootRef = conclude(srAt(getSourcePosition()), new CStyleRootRef());
 		NodeResult<Reference> cstyleDeclaratorSuffix = parseCStyleDeclaratorSuffix(cstyleRootRef);
 		parse.requireBrokenCheck();
 		return parse.checkResult(cstyleDeclaratorSuffix);
@@ -435,11 +442,11 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	}
 	
 	protected Expression parseMissingExpression(ParseRuleDescription expectedRule, boolean consumeIgnoreTokens) {
-		int nodeStart = getLexPosition();
+		int nodeStart = getSourcePosition();
 		if(consumeIgnoreTokens) {
 			consumeSubChannelTokens();
 		}
-		int nodeEnd = getLexPosition();
+		int nodeEnd = getSourcePosition();
 		return createMissingExpression(expectedRule, lastLexElement(), nodeStart, nodeEnd);
 	}
 	
@@ -594,7 +601,7 @@ protected class ParseRule_Expression {
 				return expConclude(parseSimpleLambdaLiteral_start());
 			} // else fallthrough to TypeReference:
 		default:
-			NodeResult<Reference> typeRefResult = parseTypeReference_do(true);
+			NodeResult<Reference> typeRefResult = parseTypeReference_start(true);
 			Reference ref = typeRefResult.node;
 			if(ref == null) {
 				return null;
@@ -1221,7 +1228,7 @@ protected class ParseRule_Expression {
 		boolean isOptional = !isRequired;
 		if(parse.consume(DeeTokens.OPEN_PARENS, isOptional, brokenIfMissing) == false) {
 			if(!isOptional) {
-				return conclude(srToPosition(getLexPosition(), new MissingParenthesesExpression()));
+				return conclude(srToPosition(getSourcePosition(), new MissingParenthesesExpression()));
 			}
 			return null;
 		} else {

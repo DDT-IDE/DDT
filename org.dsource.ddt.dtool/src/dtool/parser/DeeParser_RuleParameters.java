@@ -204,7 +204,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 			assertTrue(defId == null ? valueSpecialization == null : typeSpecialization == null);
 			assertTrue(defId != null ? !paramDefault.isRefOnly() : true);
 			
-			sr = SourceRange.srStartToEnd(nodeStart, getLexPosition());
+			sr = SourceRange.srStartToEnd(nodeStart, getSourcePosition());
 			switch (mode) { default: throw assertUnreachable();
 			case AMBIG: return this;
 			case TPL: return convertToTemplate();

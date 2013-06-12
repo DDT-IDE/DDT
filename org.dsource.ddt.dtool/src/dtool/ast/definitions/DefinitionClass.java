@@ -9,6 +9,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.parser.Token;
 import dtool.refmodel.IScope;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -20,9 +21,9 @@ public class DefinitionClass extends DefinitionAggregate {
 	
 	public final ArrayView<Reference> baseClasses;
 	
-	public DefinitionClass(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public DefinitionClass(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
 		Expression tplConstraint, ArrayView<Reference> baseClasses, IAggregateBody aggrBody) {
-		super(defId, tplParams, tplConstraint, aggrBody);
+		super(comments, defId, tplParams, tplConstraint, aggrBody);
 		this.baseClasses = parentize(baseClasses);
 	}
 	

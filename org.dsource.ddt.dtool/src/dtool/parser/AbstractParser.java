@@ -40,7 +40,7 @@ public abstract class AbstractParser {
 	
 	public abstract LexElement lookAheadElement(int laIndex);
 	
-	public abstract int getLexPosition();
+	public abstract int getSourcePosition();
 	
 	public abstract LexElement lastLexElement();
 	
@@ -420,13 +420,13 @@ public abstract class AbstractParser {
 	}
 	
 	public final <T extends ASTNode> T srToPosition(int nodeStart, T node) {
-		node.setSourceRange(nodeStart, getLexPosition() - nodeStart);
+		node.setSourceRange(nodeStart, getSourcePosition() - nodeStart);
 		return node;
 	}
 	
 	public final <T extends ASTNode> T srToPosition(BaseLexElement start, T node) {
 		int declStart = start.getStartPos();
-		node.setSourceRange(declStart, getLexPosition() - declStart);
+		node.setSourceRange(declStart, getSourcePosition() - declStart);
 		return node;
 	}
 	

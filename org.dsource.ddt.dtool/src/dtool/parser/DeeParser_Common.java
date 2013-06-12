@@ -110,7 +110,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 	}
 	
 	public final ProtoDefSymbol parseMissingDefIdNoError() {
-		return new ProtoDefSymbol("", srAt(getLexPosition()), null);
+		return new ProtoDefSymbol("", srAt(getSourcePosition()), null);
 	}
 	
 	public final ProtoDefSymbol parseDefId() {
@@ -118,7 +118,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 		return defSymbol(defId);
 	}
 	
-	public final ProtoDefSymbol nullIdToMissingDefId(ProtoDefSymbol defId) {
+	public final ProtoDefSymbol nullIdToParseMissingDefId(ProtoDefSymbol defId) {
 		if(defId == null) {
 			return defSymbol(consumeSubChannelTokens());
 		}

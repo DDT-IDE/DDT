@@ -12,6 +12,7 @@ import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.parser.Token;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -30,9 +31,9 @@ public class DefinitionAliasFunctionDecl extends Definition implements IDeclarat
 	public final ArrayView<IFunctionParameter> fnParams;
 	public final ArrayView<FunctionAttributes> fnAttributes;
 	
-	public DefinitionAliasFunctionDecl(ArrayView<DeclarationAttrib> attributes, Reference target, ProtoDefSymbol defId,
-		ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes) {
-		super(defId);
+	public DefinitionAliasFunctionDecl(Token[] comments, ArrayView<DeclarationAttrib> attributes, Reference target, 
+		ProtoDefSymbol defId, ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes) {
+		super(comments, defId);
 		this.attributes = parentize(attributes);
 		this.target = parentize(target);
 		this.fnParams = parentizeI(fnParams);

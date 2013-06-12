@@ -12,19 +12,20 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.replaceRegexFirstOccurrence;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
 import dtool.ast.ASTNode;
+import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
@@ -55,22 +56,78 @@ public class DeeParserTest extends CommonTestUtils {
 	public static final String DONT_CHECK = "#DONTCHECK";
 	
 	protected final String fullSource;
-	protected String expectedRemainingSource;
+	protected final String parseRule;
+	protected final String expectedRemainingSource; 
+	protected final String expectedPrintedSource;
+	protected final NamedNodeElement[] expectedStructure; 
+	protected final ArrayList<ParserError> expectedErrors;
+	protected final List<MetadataEntry> additionalMetadataOriginal;
+	protected HashMap<String, Object> additionalMD;
+
 	
-	public DeeParserTest(String fullSource) {
+	public DeeParserTest(String fullSource, String parseRule, String expectedRemainingSource, 
+		String expectedPrintedSource, NamedNodeElement[] expectedStructure, ArrayList<ParserError> expectedErrors,
+		List<MetadataEntry> additionalMetadata) {
 		this.fullSource = fullSource;
+		this.parseRule = parseRule;
+		this.expectedRemainingSource = expectedRemainingSource;
+		this.expectedPrintedSource = expectedPrintedSource;
+		this.expectedStructure = expectedStructure;
+		this.expectedErrors = expectedErrors;
+		this.additionalMetadataOriginal = additionalMetadata;
+	}
+	
+	public static HashMap<String, Object> buildMetadataMap(List<MetadataEntry> entryList) {
+		HashMap<String, Object> entriesMap = new HashMap<>();
+		
+		for (MetadataEntry metadataEntry : entryList) {
+			String key = metadataEntry.name;
+			Object existingEntry = entriesMap.get(key);
+			if(existingEntry == null) {
+				entriesMap.put(key, metadataEntry);
+			} else {
+				ArrayList<MetadataEntry> listEntry = null; 
+				if(existingEntry instanceof MetadataEntry) {
+					listEntry = new ArrayList<>();
+					listEntry.add((MetadataEntry) existingEntry);
+				} else {
+					listEntry = assertCast(existingEntry, ArrayList.class);
+				}
+				listEntry.add(metadataEntry);
+				entriesMap.put(key, listEntry);
+			}
+		}
+		return entriesMap;
+	}
+	
+	public MetadataEntry getTestMetadata(String mdName) {
+		return assertCast(additionalMD.get(mdName), MetadataEntry.class);
+	}
+	
+	public MetadataEntry removeTestMetadata(String mdName) {
+		return assertCast(additionalMD.remove(mdName), MetadataEntry.class);
+	}
+	
+	public boolean removeTestMetadataFlag(String mdName) {
+		return additionalMD.remove(mdName) != null;
+	}
+	
+	public List<MetadataEntry> removeTestMetadataEntries(String mdName) {
+		Object entry = additionalMD.remove(mdName);
+		if(entry == null) {
+			return Collections.EMPTY_LIST;
+		} else if(entry instanceof MetadataEntry) {
+			return NewUtils.arrayListFromElement((MetadataEntry) entry);
+		}
+		return assertCast(entry, List.class);
 	}
 	
 	// The funky name here is to help locate this function in stack traces during debugging
-	public void runParserTest______________________(
-		final String parseRule, final String expectedRemainingSource, 
-		final String expectedPrintedSource, final NamedNodeElement[] expectedStructure, final 
-		ArrayList<ParserError> expectedErrors, Map<String, MetadataEntry> additionalMetadata) {
-		
-		this.expectedRemainingSource = expectedRemainingSource;
+	public void runParserTest______________________() {
+		additionalMD = buildMetadataMap(additionalMetadataOriginal);
 		
 		final DeeTestsChecksParser deeParser = new DeeTestsChecksParser(fullSource);
-		DeeParserResult result = parseUsingRule(parseRule, deeParser, additionalMetadata);
+		DeeParserResult result = parseUsingRule(deeParser);
 		if(result == null) 
 			return;
 		
@@ -99,14 +156,14 @@ public class DeeParserTest extends CommonTestUtils {
 			ASTSourceRangeChecker.checkConsistency(mainNode);
 		}
 		
-		runAdditionalTests(parseRule, result, parsedSource, additionalMetadata);
+		runAdditionalTests(result, parsedSource);
 	}
 	
 	public String checkParsedSource(final String expectedRemainingSource, final DeeTestsChecksParser deeParser) {
 		String parsedSource = fullSource;
-		String remainingSource = fullSource.substring(deeParser.getLexPosition());
+		String remainingSource = fullSource.substring(deeParser.getSourcePosition());
 		if(expectedRemainingSource == DeeParserTest.DONT_CHECK) {
-			parsedSource = fullSource.substring(0, deeParser.getLexPosition());
+			parsedSource = fullSource.substring(0, deeParser.getSourcePosition());
 		} else if(expectedRemainingSource == null) {
 			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);
 		} else {
@@ -241,15 +298,14 @@ public class DeeParserTest extends CommonTestUtils {
 	
 	/* ---------------- Rule specific tests ---------------- */
 	
-	public DeeParserResult parseUsingRule(String parseRule, DeeTestsChecksParser deeParser, 
-		Map<String, MetadataEntry> additionalMD) {
+	public DeeParserResult parseUsingRule(DeeTestsChecksParser deeParser) {
+		boolean parseAsFnParamOnly = removeTestMetadataFlag("FN_ONLY");
+		boolean parseAsTplParamOnly = removeTestMetadataFlag("TPL_ONLY");
+		
 		if(parseRule == null) {
 		} else if(parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
 			return deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
 		} else if(parseRule.equalsIgnoreCase("PARAMETER_TEST")) {
-			
-			boolean parseAsFnParamOnly = additionalMD.get("FN_ONLY") != null;
-			boolean parseAsTplParamOnly = additionalMD.get("TPL_ONLY") != null;
 			
 			Object ambigParsedResult = new DeeParser_RuleParameters(deeParser, TplOrFnMode.AMBIG).parseParameter();
 			String parsedSource = checkParsedSource(expectedRemainingSource, deeParser);
@@ -260,13 +316,12 @@ public class DeeParserTest extends CommonTestUtils {
 		return deeParser.parseUsingRule(parseRule);
 	}
 	
-	public void runAdditionalTests(String parseRule, final DeeParserResult result, String parsedSource, 
-		Map<String, MetadataEntry> additionalMetaDataOriginal) {
-		Map<String, MetadataEntry> additionalMD = new HashMap<>(additionalMetaDataOriginal);
+	
+	public void runAdditionalTests(final DeeParserResult result, final String parsedSource) {
 		
-		MetadataEntry ruleBreakTest = additionalMD.remove("RULE_BROKEN");
-		if(additionalMD.remove("IGNORE_BREAK_FLAG_CHECK") == null) {
-			assertTrue(result.ruleBroken == (ruleBreakTest != null));
+		boolean ruleBreakExpected = removeTestMetadataEntries("RULE_BROKEN").isEmpty() == false;
+		if(removeTestMetadata("IGNORE_BREAK_FLAG_CHECK") == null) {
+			assertTrue(result.ruleBroken == ruleBreakExpected);
 		}
 		
 		if(parseRule == null) {
@@ -295,10 +350,11 @@ public class DeeParserTest extends CommonTestUtils {
 			DeeParsingChecks.checkNodeEquality(expNode, resultToE.node);
 			assertEquals(result.errors, resultToE_Errors);
 		}
-		
-		for (Entry<String, MetadataEntry> mde : additionalMD.entrySet()) {
-			assertEquals(mde.getValue().value, "flag");
+		if(result.node instanceof DefUnit) {
+			runDDocTest(result);
 		}
+		
+		assertTrue(additionalMD.isEmpty());
 	}
 	
 	public static void parameterTest(boolean parseAsFnParamOnly, boolean parseAsTplParamOnly, 
@@ -316,6 +372,70 @@ public class DeeParserTest extends CommonTestUtils {
 		if(!DToolTests.TESTS_LITE_MODE) {
 			ParametersReparseCheck.ambigParameterReparseTest(nodeSource);				
 		}
+	}
+	
+	public void runDDocTest(final DeeParserResult result) {
+		
+		List<MetadataEntry> ddocTestEntries = removeTestMetadataEntries("DDOC_TEST");
+		DefUnit defUnit = findDDocTargetDefUnit(result);
+		
+		ArrayList<Token> commentsToCheck = defUnit.comments == null ? new ArrayList<Token>() : 
+			new ArrayList<>(Arrays.asList(defUnit.comments));
+		
+		
+		Token[] comments = defUnit.comments;
+		if(comments != null && comments.length > 0 && !(defUnit instanceof Module)) {
+			if(comments.length == 1) {
+				assertTrue(
+					comments[0].getEndPos() == defUnit.getEndPos() ||
+					comments[0].getStartPos() == defUnit.getStartPos());
+			} else {
+				assertTrue(comments[0].getStartPos() == defUnit.getStartPos());
+				int ddocEnd = comments[comments.length-1].getEndPos();
+				assertTrue(ddocEnd < defUnit.defname.getStartPos() || ddocEnd == defUnit.getEndPos());
+			}
+		}
+		
+		for (MetadataEntry ddocTest : ddocTestEntries) {
+			checkDDocComments(commentsToCheck, ddocTest);
+		}
+		
+		assertTrue(commentsToCheck.isEmpty()); // All comment tokens must be tagged.
+	}
+	
+	protected DefUnit findDDocTargetDefUnit(DeeParserResult result) {
+		MetadataEntry targetMDE = removeTestMetadata("DDOC_TEST_TARGET");
+		MetadataEntry targetMDEOverride = removeTestMetadata("DDOC_TEST_TARGET__OVERRIDE");
+		if(targetMDE == null) {
+			return (DefUnit) result.node;
+		}
+		if(targetMDEOverride != null) {
+			targetMDE = targetMDEOverride;
+		}
+		
+		String defUnitName = targetMDE.sourceValue.trim();
+		DefUnit targetDefUnit = null;
+		
+		for (ASTNode child : result.node.getChildren()) {
+			if(child instanceof DefUnit) {
+				DefUnit defUnit = (DefUnit) child;
+				if(defUnit.defname.name.equals(defUnitName)) {
+					assertTrue(targetDefUnit == null); // check that there is only one defunit with that name
+					targetDefUnit = defUnit;
+				}
+			}
+		}
+		return assertNotNull_(targetDefUnit);
+	}
+	
+	public void checkDDocComments(ArrayList<Token> comments, MetadataEntry ddocTest) {
+		for (Token token : comments) {
+			if(token.getSourceValue().equals(ddocTest.sourceValue)) { 
+				comments.remove(token);
+				return;
+			}
+		}
+		assertFail(); // Must find it in comments
 	}
 	
 }

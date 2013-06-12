@@ -16,6 +16,7 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
+import dtool.parser.Token;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -36,9 +37,9 @@ public class DefinitionTemplate extends Definition implements IScopeNode, IDecla
 	
 	public final boolean wrapper;
 	
-	public DefinitionTemplate(boolean isMixin, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams, 
-		Expression tplConstraint, DeclBlock decls) {
-		super(defId);
+	public DefinitionTemplate(Token[] comments, boolean isMixin, ProtoDefSymbol defId, 
+		ArrayView<TemplateParameter> tplParams, Expression tplConstraint, DeclBlock decls) {
+		super(comments, defId);
 		this.isMixin = isMixin;
 		this.tplParams = parentize(tplParams);
 		this.tplConstraint = parentize(tplConstraint);

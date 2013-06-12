@@ -15,7 +15,6 @@ import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.isValidStringRange;
 import static dtool.util.NewUtils.replaceRange;
 import static dtool.util.NewUtils.substringRemoveEnd;
-import static java.util.Collections.unmodifiableMap;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
@@ -116,17 +115,21 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		for (AnnotatedSource testCase : sourceBasedTests) {
 			
 			boolean printTestCaseSource = testCase.findMetadata("comment", "NO_STDOUT") == null;
+			boolean printCaseSeparator = testCase.findMetadata("comment", "PRINT_SEP") != null;
 			
 			if(!printSources.contains(testCase.originalTemplatedSource)) {
 				printCaseEnd(originalTemplateChildCount);
 				originalTemplateChildCount = 0;
 				testsLogger.println(">> ----------- Parser tests TEMPLATE ("+file.getName()+") : ----------- <<");
 				testsLogger.print(testCase.originalTemplatedSource);
-				if(printTestCaseSource) {
+				if(printTestCaseSource && !printCaseSeparator) {
 					testsLogger.println(" ----------- Parser source tests: ----------- ");
 				}
 			}
 			if(printTestCaseSource) {
+				if(printCaseSeparator) {
+					testsLogger.println(">-----------");
+				}
 				testsLogger.println(trimStartNewlines.matcher(testCase.source).replaceAll(""));
 			}
 			printSources.add(testCase.originalTemplatedSource);
@@ -171,8 +174,8 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		boolean allowAnyErrors = false;
 		boolean ignoreFurtherErrorMDs = false;
 		
-		ArrayList<ParserError> expectedErrors = new ArrayList<ParserError>();
-		HashMap<String, MetadataEntry> additionalMetadata = new HashMap<String, MetadataEntry>();
+		ArrayList<ParserError> expectedErrors = new ArrayList<>();
+		List<MetadataEntry> additionalMetadata = new ArrayList<>();
 		List<StringCorrection> errorCorrectionMetadata = new ArrayList<>();
 		
 		for (MetadataEntry mde : testSource.metadata) {
@@ -245,11 +248,9 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			} else if(mde.name.equals("test") && areEqual(mde.value, "IGNORE_BREAK_CHECK")){
 				expectedRemainingSource = DeeParserTest.DONT_CHECK;
 			} else if(areEqual(mde.value, "test")){
-				additionalMetadata.put(mde.name, mde);
+				additionalMetadata.add(mde);
 			} else {
-				if(areEqual(mde.value, "flag")) {
-					additionalMetadata.put(mde.name, mde);
-				} else if(!areEqual(mde.name, "comment")) {
+				if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "comment"))) {
 					assertFail("Unknown metadata");
 				}
 			}
@@ -264,8 +265,8 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			expectedErrors = null;
 		}
 		
-		new DeeParserTest(fullSource).runParserTest______________________(parseRule, expectedRemainingSource, 
-			expectedPrintedSource, expectedStructure, expectedErrors, unmodifiableMap(additionalMetadata));
+		new DeeParserTest(fullSource, parseRule, expectedRemainingSource, expectedPrintedSource, expectedStructure, 
+			expectedErrors, additionalMetadata).runParserTest______________________();
 	}
 	
 	public static MetadataEntry assertNoLength(MetadataEntry mde) {

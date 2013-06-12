@@ -7,6 +7,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.parser.Token;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
@@ -18,8 +19,8 @@ public class DefinitionNamedMixin extends DefUnit implements IDeclaration, IStat
 	
 	public final Reference templateInstance;
 	
-	public DefinitionNamedMixin(Reference templateInstance, ProtoDefSymbol defId) {
-		super(defId);
+	public DefinitionNamedMixin(Token[] comments, ProtoDefSymbol defId, Reference templateInstance) {
+		super(defId, comments);
 		this.templateInstance = parentize(templateInstance);
 	}
 	

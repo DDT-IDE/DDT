@@ -8,14 +8,14 @@ import java.util.TreeSet;
 import descent.core.ParserToolFactory;
 import descent.core.compiler.IScanner;
 import descent.core.compiler.ITerminalSymbols;
-import descent.internal.compiler.parser.Comment;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DdocMacros;
 import descent.core.ddoc.DdocParser;
 import descent.core.ddoc.DdocSection;
-import descent.core.ddoc.HTMLPrinterUtils;
 import descent.core.ddoc.DdocSection.Parameter;
+import descent.core.ddoc.HTMLPrinterUtils;
 import dtool.ast.definitions.DefUnit;
+import dtool.parser.Token;
 
 public class DeeDocAccessor {
 	
@@ -28,12 +28,10 @@ public class DeeDocAccessor {
 	
 	public static Ddoc getDdoc(DefUnit def) {
 		Ddoc ddoc = null;
-		Comment[] preComments = def.comments;
+		Token[] preComments = def.comments;
 		if (preComments != null && preComments.length > 0) {
-			for(Comment comment : preComments) {
-				if(!comment.isDDocComment())
-					continue;
-				DdocParser parser = new DdocParser(new String(comment.string));
+			for(Token comment : preComments) {
+				DdocParser parser = new DdocParser(comment.getSourceValue());
 				Ddoc newddoc = parser.parse();
 				if (ddoc == null) {
 					ddoc = newddoc;

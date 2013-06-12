@@ -41,8 +41,12 @@ public class LexElementSource {
 		return lexElementPosition;
 	}
 	
-	public final int getSourceLexPosition() {
+	public final int getSourcePosition() {
 		return sourcePosition;
+	}
+	
+	public final void setSourcePosition(int sourcePosition) {
+		this.sourcePosition = sourcePosition;
 	}
 	
 	public LexElement lookAheadElement(int laIndex) {

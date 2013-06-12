@@ -1,11 +1,11 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import descent.internal.compiler.parser.Comment;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTNode;
-import dtool.ast.ISourceRepresentation;
 import dtool.ast.SourceRange;
 import dtool.ast.references.Reference;
+import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
 import dtool.parser.Token;
 import dtool.refmodel.IScopeNode;
@@ -36,23 +36,31 @@ public abstract class DefUnit extends ASTNode {
 		}
 	}
 	
-	public final Comment[] comments;
-	public final Token[] commentsN;
+	public final Token[] comments;
 	public final DefSymbol defname; // It may happen that this is not a child of DefUnit
 	
-	protected DefUnit(DefSymbol defname, Comment[] comments) {
+	protected DefUnit(DefSymbol defname, Token[] comments) {
 		this(defname, comments, true);
 	}
 	
-	protected DefUnit(DefSymbol defname, Comment[] comments, boolean defIdIsChild) {
+	protected DefUnit(DefSymbol defname, Token[] comments, boolean defIdIsChild) {
 		assertNotNull(defname);
 		this.defname = defIdIsChild ? parentize(defname) : defname;
 		this.comments = comments;
-		this.commentsN = null;
+		if(comments != null) {
+			for (Token token : comments) {
+				assertTrue(DeeTokenSemantics.tokenIsDocComment(token));
+			}
+		}
 	}
 	
+	public DefUnit(ProtoDefSymbol defIdTuple, Token[] comments) {
+		this(createDefId(defIdTuple), comments);
+	}
+	
+	/** DefUnits using this constructor cannot have comments */
 	public DefUnit(ProtoDefSymbol defIdTuple) {
-		this(createDefId(defIdTuple), null /*TODO comments*/);
+		this(createDefId(defIdTuple), null);
 	}
 	
 	public static DefSymbol createDefId(ProtoDefSymbol defIdTuple) {

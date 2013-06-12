@@ -49,11 +49,13 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	
 	public static class DeclarationModule extends ASTNode {
 		
+		public final Token[] comments;
 		public final ArrayView<Token> packageList;
 		public final String[] packages; // Old API
 		public final DefSymbol moduleName; 
 		
-		public DeclarationModule(ArrayView<Token> packageList, BaseLexElement moduleDefUnit) {
+		public DeclarationModule(Token[] comments, ArrayView<Token> packageList, BaseLexElement moduleDefUnit) {
+			this.comments = comments;
 			this.packageList = assertNotNull_(packageList);
 			this.packages = NodeUtil.tokenArrayToStringArray(packageList);
 			this.moduleName = new ModuleDefSymbol(moduleDefUnit.getSourceValue());
@@ -100,13 +102,13 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	
 	public static Module createModuleNoModuleDecl(String moduleName, ArrayView<ASTNode> members) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
-		return new Module(defSymbol, null, null, members);
+		return new Module(null, defSymbol, null, members);
 	}
 	
 	public final DeclarationModule md;
 	public final ArrayView<ASTNode> members;
 	
-	public Module(ModuleDefSymbol defSymbol, Comment[] preComments, DeclarationModule md, 
+	public Module(Token[] preComments, ModuleDefSymbol defSymbol, DeclarationModule md, 
 			ArrayView<ASTNode> members) {
 		super(defSymbol, preComments, false);
 		defSymbol.module = this;

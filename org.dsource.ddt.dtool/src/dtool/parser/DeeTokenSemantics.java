@@ -120,4 +120,14 @@ public class DeeTokenSemantics {
 		return createError(ParserErrorTypes.INVALID_ATTRIB_ID, attribId.getToken(), null);
 	}
 	
+	public static boolean tokenIsDocComment(Token token) {
+		return
+			token.type == DeeTokens.COMMENT_LINE && token.getSourceValue().startsWith("///") ||
+			token.type == DeeTokens.COMMENT_NESTED 
+				&& token.getSourceValue().startsWith("/++") && token.getSourceValue().length() > 4 ||
+			token.type == DeeTokens.COMMENT_MULTI 
+				&& token.getSourceValue().startsWith("/**") && token.getSourceValue().length() > 4
+			;
+	}
+	
 }

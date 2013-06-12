@@ -63,7 +63,7 @@ public class LexElementSource_Test extends CommonTestUtils {
 
 		lexSource.consumeInput();
 		assertEquals(lexSource.lastLexElement().token.source, "cd");
-		assertEquals(lexSource.getSourceLexPosition(), 4);
+		assertEquals(lexSource.getSourcePosition(), 4);
 		assertEquals(lexSource.lookAheadElement(0).token.source, "ef");
 		assertEquals(lexSource.lookAheadElement(1).token.source, "gh");
 		assertEquals(lexSource.lookAheadElement(2).token.type, DeeTokens.EOF);
@@ -82,15 +82,15 @@ public class LexElementSource_Test extends CommonTestUtils {
 		LexElementSource lexSource = LexElementProducer.createFromLexer(new TestsInstrumentedLexer("abcd  efgh")); 
 		
 		lexSource.consumeSubChannelTokens();
-		assertTrue(lexSource.getSourceLexPosition() == 0);
+		assertTrue(lexSource.getSourcePosition() == 0);
 		
 		assertEquals(lexSource.lookAheadElement(2).token.source, "ef");
 		lexSource.consumeInput();
 		lexSource.consumeInput();
 		assertEquals(lexSource.lookAheadElement(0).token.source, "ef");
-		assertTrue(lexSource.getSourceLexPosition() == 4);
+		assertTrue(lexSource.getSourcePosition() == 4);
 		lexSource.consumeSubChannelTokens();
-		assertTrue(lexSource.getSourceLexPosition() == 6);
+		assertTrue(lexSource.getSourcePosition() == 6);
 		
 		assertEquals(lexSource.lookAheadElement(0).getStartPos(), 6);
 		assertEquals(lexSource.lookAheadElement(0).token.source, "ef");

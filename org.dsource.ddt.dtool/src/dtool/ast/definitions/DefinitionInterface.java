@@ -5,6 +5,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.parser.Token;
 import dtool.util.ArrayView;
 
 /**
@@ -12,9 +13,9 @@ import dtool.util.ArrayView;
  */
 public class DefinitionInterface extends DefinitionClass {
 	
-	public DefinitionInterface(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public DefinitionInterface(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
 		Expression tplConstraint, ArrayView<Reference> baseClasses,  IAggregateBody aggrBody) {
-		super(defId, tplParams, tplConstraint, baseClasses, aggrBody);
+		super(comments, defId, tplParams, tplConstraint, baseClasses, aggrBody);
 	}
 	
 	@Override

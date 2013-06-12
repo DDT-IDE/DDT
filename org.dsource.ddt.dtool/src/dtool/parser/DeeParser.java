@@ -113,8 +113,8 @@ public class DeeParser extends DeeParser_Statements {
 	}
 	
 	@Override
-	public int getLexPosition() {
-		return getLexSource().getSourceLexPosition();
+	public int getSourcePosition() {
+		return getLexSource().getSourcePosition();
 	}
 	
 	@Override

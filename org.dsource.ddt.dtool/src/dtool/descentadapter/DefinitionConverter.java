@@ -150,8 +150,9 @@ public class DefinitionConverter extends BaseDmdConverter {
 			
 			// Remove comments of other defunits (DMD parser quirk)
 			Comment[] comments = filterComments(elem, elem.md.start); 
-			DeclarationModule md = connect(declRange, new DeclarationModule(ArrayView.create(packages), defnameInfo));
-			return connect(sourceRange, new Module(md.getModuleSymbol(), comments, md, members));
+			DeclarationModule md = connect(declRange, 
+				new DeclarationModule(null, ArrayView.create(packages), defnameInfo));
+			return connect(sourceRange, new Module(null, md.getModuleSymbol(), md, members));
 		}
 	}
 	
@@ -228,6 +229,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 		DefUnitTuple defunitData = DefinitionConverter.convertDsymbol(elem, convContext);
 		return connect(defunitData.sourceRange, 
 			new DefinitionFunction(
+				defunitData.commentsToToken(),
 				rettype, 
 				defunitData.defSymbol, 
 				null, 
@@ -300,6 +302,7 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DefinitionConstructor createDefinitionCtor(CtorDeclaration elem, ASTConversionContext convContext) {
 		return connect(DefinitionConverter.sourceRange(elem),  
 			new DefinitionConstructor(
+				null,
 				new DefUnit.ProtoDefSymbol("this", new SourceRange(elem.thisStart, "this".length()), null),
 				null,
 				nullToEmpty(DescentASTConverter.convertMany(elem.arguments, IFunctionParameter.class, convContext)),

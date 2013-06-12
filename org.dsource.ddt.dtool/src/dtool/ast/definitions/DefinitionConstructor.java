@@ -17,14 +17,16 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
+import dtool.parser.Token;
 import dtool.util.ArrayView;
 
 public class DefinitionConstructor extends AbstractFunctionDefinition implements IDeclaration {
 	
-	public DefinitionConstructor(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public DefinitionConstructor(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
 		ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 
-		Expression tplConstraint, IFunctionBody fnBody) {
-	super(defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
+		Expression tplConstraint, IFunctionBody fnBody) 
+	{
+		super(comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
 	}
 	
 	@Override

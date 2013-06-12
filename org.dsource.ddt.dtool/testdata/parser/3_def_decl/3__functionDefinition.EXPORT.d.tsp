@@ -7,30 +7,30 @@
 #@BREAK_Pr《 #?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS) #@BREAK● $ 】  》
 
 #@PARAM_ATTRIB_NOTM《auto●final●in●lazy●out●ref●scope●in lazy ref ●const ref》
-#@PARAM_ATTRIB《#@PARAM_ATTRIB_NOTM #FN_ONLY(flag)●#@TYPE_MODIFIERS》
+#@PARAM_ATTRIB《#@PARAM_ATTRIB_NOTM #FN_ONLY(test)●#@TYPE_MODIFIERS》
 #@PARAM_ATTRIB_ORNO《/*NONE*/●#@PARAM_ATTRIB》
-#@PARAM_ATTRIB_SAMP《/*NONE*/●in #FN_ONLY(flag)●const lazy #FN_ONLY(flag)》
+#@PARAM_ATTRIB_SAMP《/*NONE*/●in #FN_ONLY(test)●const lazy #FN_ONLY(test)》
 
 
 #@FN_PARAM_BASE《
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@TYPEREF_NBNE foo ●FunctionParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE DefSymbol)】●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo foo ... #FN_ONLY(flag) ●FunctionParameter(RefIdentifier DefSymbol)】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo foo ... #FN_ONLY(test) ●FunctionParameter(RefIdentifier DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo foo = #@EXP_ASSIGN●    FunctionParameter(RefIdentifier DefSymbol #@EXP_ASSIGN)】●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB #@TYPEREF_NBNE #FN_ONLY(flag)                         ●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
-  ►#?STRUCTURE_EXPECTED!【/*NONE*/       #@TYPEREF_NBNE #?TYPEREF_CanParseAsId!【#FN_ONLY(flag)】●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP #@TYPEREF_NBNE ... #?TYPEREF_CanParseAsId!【#FN_ONLY(flag)】●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo = #@EXP_ASSIGN__NO_POSSIBLE_REFS #FN_ONLY(flag)●NamelessParameter(RefIdentifier #@EXP_ASSIGN__NO_POSSIBLE_REFS)】●
-  ►#?STRUCTURE_EXPECTED!【... #FN_ONLY(flag)● CStyleVarArgsParameter】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB #@TYPEREF_NBNE #FN_ONLY(test)                         ●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
+  ►#?STRUCTURE_EXPECTED!【/*NONE*/       #@TYPEREF_NBNE #?TYPEREF_CanParseAsId!【#FN_ONLY(test)】●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP #@TYPEREF_NBNE ... #?TYPEREF_CanParseAsId!【#FN_ONLY(test)】●NamelessParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE)】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo = #@EXP_ASSIGN__NO_POSSIBLE_REFS #FN_ONLY(test)●NamelessParameter(RefIdentifier #@EXP_ASSIGN__NO_POSSIBLE_REFS)】●
+  ►#?STRUCTURE_EXPECTED!【... #FN_ONLY(test)● CStyleVarArgsParameter】●
   
-  ►#?STRUCTURE_EXPECTED!【#@TYPE_MODIFIERS (long) #FN_ONLY(flag)●NamelessParameter(RefTypeModifier(RefPrimitive))】●
+  ►#?STRUCTURE_EXPECTED!【#@TYPE_MODIFIERS (long) #FN_ONLY(test)●NamelessParameter(RefTypeModifier(RefPrimitive))】●
 
  ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_NOTM #@NO_TYPEREF #@BREAK_Pr ... #FN_ONLY(flag)●NamelessParameter(#@NO_TYPEREF) $】】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_NOTM #@NO_TYPEREF #@BREAK_Pr ... #FN_ONLY(test)●NamelessParameter(#@NO_TYPEREF) $】】●
  ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●
-  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_NOTM #@NO_TYPEREF #@BREAK_Pr = 2 #FN_ONLY(flag)●NamelessParameter(#@NO_TYPEREF) $】】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_NOTM #@NO_TYPEREF #@BREAK_Pr = 2 #FN_ONLY(test)●NamelessParameter(#@NO_TYPEREF) $】】●
   
  ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE● 
-  ►#?STRUCTURE_EXPECTED!【final int foo ... #@BREAK_Pr = 2 #FN_ONLY(flag)●FunctionParameter(RefPrimitive DefSymbol) $】】●
+  ►#?STRUCTURE_EXPECTED!【final int foo ... #@BREAK_Pr = 2 #FN_ONLY(test)●FunctionParameter(RefPrimitive DefSymbol) $】】●
  ►#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【int[#error(EXP_CLOSE_BRACKET) #@BREAK_Pr ... ●NamelessParameter(RefTypeDynArray(*)) $】】●
 ¤》
@@ -64,7 +64,7 @@ Test function/template interactions - paramDefault convertion :
 ¤》
 #@FN_PARAMS__LITE《
   ►#@FN_PARAMS_SAMPLE●
-  ►#?STRUCTURE_EXPECTED!【... #FN_ONLY(flag)● CStyleVarArgsParameter】●
+  ►#?STRUCTURE_EXPECTED!【... #FN_ONLY(test)● CStyleVarArgsParameter】●
 ¤》
 
 #@FN_PARAMS__NO_BROKEN《#FN_PARAM__NO_BROKEN(flag)#@FN_PARAMS》

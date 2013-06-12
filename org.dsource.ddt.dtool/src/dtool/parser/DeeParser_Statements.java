@@ -66,7 +66,7 @@ import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
 
-public abstract class DeeParser_Statements extends DeeParser_Decls {
+public abstract class DeeParser_Statements extends DeeParser_Definitions {
 	
 	/* ----------------------------------------------------------------- */
 	
@@ -94,13 +94,13 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 	
 	protected CommonStatementList createMissingBlock(ParseRuleDescription expectedRule, boolean isScoped) {
 		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
-		int nodeStart = getLexPosition();
+		int nodeStart = getSourcePosition();
 		return conclude(error, srToPosition(nodeStart, 
 			isScoped ? new BlockStatement() : new BlockStatementUnscoped()));
 	}
 	
 	protected NodeResult<ScopedStatementList> parseScopedStatementList() {
-		ParseHelper parse = new ParseHelper(getLexPosition());
+		ParseHelper parse = new ParseHelper(getSourcePosition());
 		
 		ArrayView<IStatement> body = parseStatements(null, false);
 		
@@ -261,7 +261,7 @@ public abstract class DeeParser_Statements extends DeeParser_Decls {
 		consumeLookAhead(DeeTokens.COLON);
 		
 		Symbol label = createIdSymbol(labelId);
-		return resultConclude(false, srBounds(labelId.getStartPos(), getLexPosition(), new StatementLabel(label)));
+		return resultConclude(false, srBounds(labelId.getStartPos(), getSourcePosition(), new StatementLabel(label)));
 	}
 	
 	public NodeResult<? extends IStatement> parseStatement_ifStart() {

@@ -17,45 +17,21 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.NodeData;
-import dtool.ast.NodeListView;
 import dtool.ast.SourceRange;
-import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.DeclBlock;
-import dtool.ast.declarations.DeclList;
 import dtool.ast.declarations.DeclarationAliasThis;
-import dtool.ast.declarations.DeclarationAlign;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
-import dtool.ast.declarations.DeclarationAtAttrib;
 import dtool.ast.declarations.DeclarationAttrib;
-import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
-import dtool.ast.declarations.DeclarationBasicAttrib;
-import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
-import dtool.ast.declarations.DeclarationDebugVersion;
-import dtool.ast.declarations.DeclarationDebugVersionSpec;
 import dtool.ast.declarations.DeclarationEmpty;
-import dtool.ast.declarations.DeclarationImport;
-import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
-import dtool.ast.declarations.DeclarationLinkage;
-import dtool.ast.declarations.DeclarationLinkage.Linkage;
-import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.DeclarationPostBlit;
-import dtool.ast.declarations.DeclarationPragma;
-import dtool.ast.declarations.DeclarationProtection;
-import dtool.ast.declarations.DeclarationProtection.Protection;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
-import dtool.ast.declarations.DeclarationStaticAssert;
-import dtool.ast.declarations.DeclarationStaticIf;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.IDeclaration;
-import dtool.ast.declarations.ImportAlias;
-import dtool.ast.declarations.ImportContent;
-import dtool.ast.declarations.ImportSelective;
-import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
-import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.IncompleteDeclaration;
 import dtool.ast.declarations.InvalidSyntaxElement;
 import dtool.ast.declarations.MissingDeclaration;
@@ -101,8 +77,6 @@ import dtool.ast.expressions.InitializerStruct.StructInitEntry;
 import dtool.ast.expressions.InitializerVoid;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
-import dtool.ast.references.RefImportSelection;
-import dtool.ast.references.RefModule;
 import dtool.ast.references.RefTypeFunction;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
@@ -110,7 +84,6 @@ import dtool.ast.statements.EmptyStatement;
 import dtool.ast.statements.FunctionBody;
 import dtool.ast.statements.FunctionBodyOutBlock;
 import dtool.ast.statements.IFunctionBody;
-import dtool.ast.statements.IStatement;
 import dtool.ast.statements.InOutFunctionBody;
 import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
@@ -118,55 +91,128 @@ import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
 
-public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
+public abstract class DeeParser_Definitions extends DeeParser_Declarations {
+	
+	public static ArrayList<Token> readStartDDocComments(LexElement declStart, int sourcePosition) {
+		if(declStart.precedingSubChannelTokens == null)
+			return null;
+		ArrayList<Token> docComments = null;
+		for (Token token : declStart.precedingSubChannelTokens) {
+			if(token.getStartPos() < sourcePosition) {
+				assertTrue(token.getEndPos() <= sourcePosition);
+				continue;
+			}
+			
+			if(DeeTokenSemantics.tokenIsDocComment(token)) {
+				docComments = docComments == null ? new ArrayList<Token>(2) : docComments;
+				docComments.add(token);
+			}
+		}
+		return docComments;
+	}
+	
+	private static ArrayList<Token> END_DOCCOMMENTS_READ = new ArrayList<>(0);
+	
+	public class DefUnitParseHelper extends ParseHelper {
+		
+		protected ArrayList<Token> comments;
+		
+		public DefUnitParseHelper() {
+			super(-1);
+			
+			comments = readStartDDocComments(lookAheadElement(), thisParser().getSourcePosition());
+			if(comments != null) {
+				nodeStart = comments.get(0).getStartPos();
+			} else {
+				nodeStart = lookAheadElement().getStartPos();
+			}
+		}
+		
+		public Token[] parseEndDDocComments() {
+			
+			parsing: {
+				if(ruleBroken) break parsing;
+				
+				LexElement nextLexElement = lookAheadElement();
+				if(nextLexElement.precedingSubChannelTokens == null)
+					break parsing;
+				
+				for (Token token : nextLexElement.precedingSubChannelTokens) {
+					if(token.type == DeeTokens.EOL)
+						break;
+					if(DeeTokenSemantics.tokenIsDocComment(token)) {
+						if(token.type == DeeTokens.COMMENT_LINE && token.getSourceValue().startsWith("///")) {
+							comments = lazyInitArrayList(comments);
+							comments.add(token);
+							thisParser().getEnabledLexSource().setSourcePosition(token.getEndPos());
+						}
+						break;
+					}
+				}
+			}
+			Token[] result = comments == null ? null : ArrayUtil.createFrom(comments, Token.class);
+			discardDocComments();
+			return result;
+		}
+		
+		public final void discardDocComments() {
+			comments = END_DOCCOMMENTS_READ;
+		}
+		
+		@Override
+		public <T extends ASTNode> T conclude(T node) {
+			assertTrue(comments == END_DOCCOMMENTS_READ);
+			return super.conclude(node);
+		}
+	}
 	
 	/* ----------------------------------------------------------------- */
 	
 	public AbstractParser.NodeResult<Module> parseModule(String defaultModuleName) {
 		DeclarationModule md = parseModuleDeclaration();
 		
-		ArrayView<ASTNode> members = parseDeclDefs(null, true);
+		ArrayView<ASTNode> members = parseDeclarations(null, true);
 		assertTrue(lookAhead() == DeeTokens.EOF);
 		consumeSubChannelTokens(); // Ensure pending whitespace is consumed as well
-		assertTrue(getLexPosition() == lookAheadElement().getStartPos());
-		//assertTrue(getLexPosition() == getSource().length()); // This is not true if explicit EOF token is present. 
+		assertTrue(getSourcePosition() == lookAheadElement().getStartPos());
+		//assertTrue(getSourcePosition() == getSource().length()); //This is not true if explicit EOF token is present 
 		
-		SourceRange modRange = new SourceRange(0, getLexPosition());
+		SourceRange modRange = new SourceRange(0, getSourcePosition());
 		
 		if(md != null) {
-			return result(false, conclude(modRange, new Module(md.getModuleSymbol(), null, md, members)));
+			return result(false, conclude(modRange, new Module(md.comments, md.getModuleSymbol(), md, members)));
 		} else {
 			return result(false, conclude(modRange, Module.createModuleNoModuleDecl(defaultModuleName, members)));
 		}
 	}
 	
 	public DeclarationModule parseModuleDeclaration() {
-		if(!tryConsume(DeeTokens.KW_MODULE)) {
+		if(lookAhead() != DeeTokens.KW_MODULE) {
 			return null;
 		}
-		ParseHelper parse = new ParseHelper();
+		DefUnitParseHelper parse = new DefUnitParseHelper();
+		consumeLookAhead();
 		
 		ArrayList<Token> packagesList = new ArrayList<Token>(0);
 		BaseLexElement moduleId;
 		
 		while(true) {
-			BaseLexElement id = parse.consumeExpectedIdentifier();
+			moduleId = parse.consumeExpectedIdentifier();
 			
-			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
-				packagesList.add(id.getToken());
-				id = null;
-			} else {
-				parse.consumeRequired(DeeTokens.SEMICOLON);
-				moduleId = id;
-				break;
+			if(!moduleId.isMissingElement() && tryConsume(DeeTokens.DOT)) {
+				packagesList.add(moduleId.getToken());
+				moduleId = null;
+				continue;
 			}
+			break;
 		}
-		assertNotNull(moduleId);
+		parse.consumeRequired(DeeTokens.SEMICOLON);
+		Token[] comments = parse.parseEndDDocComments();
 		
-		return parse.conclude(new DeclarationModule(arrayViewG(packagesList), moduleId));
+		return parse.conclude(new DeclarationModule(comments, arrayViewG(packagesList), moduleId));
 	}
 	
-	public ArrayView<ASTNode> parseDeclDefs(DeeTokens nodeListTerminator, boolean consumeCloseBrackets) {
+	public ArrayView<ASTNode> parseDeclarations(DeeTokens nodeListTerminator, boolean consumeCloseBrackets) {
 		ArrayList<ASTNode> declarations = new ArrayList<>();
 		while(true) {
 			if(lookAhead() == nodeListTerminator) {
@@ -185,7 +231,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return arrayView(declarations);
 	}
 	
-	/* --------------------- DECLARATIONS --------------------- */
 	
 	public static final ParseRuleDescription RULE_DECLARATION = new ParseRuleDescription("Declaration");
 	
@@ -366,13 +411,17 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return arrayView(stcList);
 	}
 	
+	/* --------------------- DEFINITIONS --------------------- */
+	
 	public NodeResult<? extends IDeclaration> parseDeclaration_varOrFunction(boolean precedingIsSTCAttrib) {
-		// This parses (BasicType + BasicType2) of spec:
-		NodeResult<Reference> startRef = parseTypeReference_do(false);
-		if(startRef.node == null) {
+		if(!canParseTypeReferenceStart(lookAhead())) {
 			return declarationNullResult();
-		} 
+		}
 		
+		DefUnitParseHelper parse = new DefUnitParseHelper();
+		
+		NodeResult<Reference> startRef = parseTypeReference(); // This parses (BasicType + BasicType2) of spec
+		assertNotNull(startRef.node);
 		Reference ref = startRef.node;
 		
 		if(startRef.ruleBroken) {
@@ -390,13 +439,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		
 		if(defId != null) {
 			if(lookAhead() == DeeTokens.OPEN_PARENS) {
-				return parseDefinitionFunction_afterIdentifier(ref, defId);
+				return parseDefinitionFunction_afterIdentifier(parse, ref, defId);
 			}
-			return parseDefinitionVariable_afterIdentifier(ref, defId);
+			return parseDefinitionVariable_afterIdentifier(parse, ref, defId);
 		} else {
-			ParseHelper parse = new ParseHelper(ref);
 			parse.consumeExpected(DeeTokens.IDENTIFIER);
 			parse.consumeRequired(DeeTokens.SEMICOLON);
+			parse.discardDocComments();
 			return parse.resultConclude(new IncompleteDeclaration(ref));
 		}
 	}
@@ -409,14 +458,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	
 	protected NodeResult<? extends DefinitionVariable> parseDefinitionVariable_afterIdentifier(
-		Reference ref, ProtoDefSymbol defId) 
+		DefUnitParseHelper parse, Reference ref, ProtoDefSymbol defId) 
 	{
 		ArrayList<DefVarFragment> fragments = null;
 		IInitializer init = null;
 		Reference cstyleSuffix = null;
 		
 		final boolean isAutoRef = ref == null;
-		ParseHelper parse = new ParseHelper(isAutoRef ? defId.getStartPos() : ref.getStartPos());
 		
 		parsing: {
 			if(!isAutoRef) {
@@ -437,11 +485,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			}
 		}
 		parse.clearRuleBroken().consumeRequired(DeeTokens.SEMICOLON);
+		Token[] comments = parse.parseEndDDocComments();
 		
 		if(isAutoRef) {
-			return parse.resultConclude(new DefinitionAutoVariable(defId, init, arrayView(fragments)));
+			return parse.resultConclude(new DefinitionAutoVariable(comments, defId, init, arrayView(fragments)));
 		}
-		return parse.resultConclude(new DefinitionVariable(defId, ref, cstyleSuffix, init, arrayView(fragments)));
+		return parse.resultConclude(
+			new DefinitionVariable(comments, defId, ref, cstyleSuffix, init, arrayView(fragments)));
 	}
 	
 	protected DefVarFragment parseVarFragment(boolean isAutoRef) {
@@ -608,10 +658,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	protected NodeResult<DefinitionConstructor> parseDefinitionConstructor() {
+		DefUnitParseHelper parse = new DefUnitParseHelper();
 		if(tryConsume(DeeTokens.KW_THIS) == false) {
 			return null;
 		}
-		ParseHelper parse = new ParseHelper();
+		
 		ProtoDefSymbol defId = defSymbol(lastLexElement()); // TODO: mark this as special DefSymbol
 		return parse_FunctionLike(true, null, defId, parse).upcastTypeParam();
 	}
@@ -620,17 +671,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	 * Parse a function from this point:
 	 * http://dlang.org/declaration.html#DeclaratorSuffix
 	 */
-	protected NodeResult<DefinitionFunction> parseDefinitionFunction_afterIdentifier(
+	protected NodeResult<DefinitionFunction> parseDefinitionFunction_afterIdentifier(DefUnitParseHelper parse,
 		Reference retType, ProtoDefSymbol defId) {
 		assertTrue(defId.isMissing() == false);
-		
-		ParseHelper parse = new ParseHelper(retType != null ? retType.getStartPos() : defId.getStartPos());
 		
 		return parse_FunctionLike(false, retType, defId, parse).upcastTypeParam();
 	}
 	
 	protected NodeResult<? extends AbstractFunctionDefinition> parse_FunctionLike(boolean isConstrutor, 
-		Reference retType, ProtoDefSymbol defId, ParseHelper parse) {
+		Reference retType, ProtoDefSymbol defId, DefUnitParseHelper parse) {
 		
 		ArrayView<IFunctionParameter> fnParams = null;
 		ArrayView<TemplateParameter> tplParams = null;
@@ -675,13 +724,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
 		}
 		
+		Token[] comments = parse.parseEndDDocComments();
+		
 		if(isConstrutor) {
 			return parse.resultConclude(new DefinitionConstructor(
-				defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
+				comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 		}
 		
 		return parse.resultConclude(new DefinitionFunction(
-			retType, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
+			comments, retType, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 	}
 	
 	protected ASTNode parseTemplateAliasParameter_start() {
@@ -788,7 +839,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(lookAhead() == DeeTokens.KW_IN || lookAhead() == DeeTokens.KW_OUT || lookAhead() == DeeTokens.KW_BODY) {
 			parse.setStartPosition(lookAheadElement().getStartPos());
 		} else {
-			parse.setStartPosition(getLexPosition()); // It will be missing element
+			parse.setStartPosition(getSourcePosition()); // It will be missing element
 		}
 		
 		boolean isOutIn = false;
@@ -833,9 +884,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		return parse.resultConclude(new InOutFunctionBody(isOutIn, inBlock, outBlock, bodyBlock));
 	}
 	
-	public NodeResult<BlockStatement> parseBlockStatement_toMissing() {
-		return thisParser().parseBlockStatement(true, true);
-	}
 	public NodeResult<BlockStatement> parseBlockStatement_toMissing(boolean brokenIfMissing) {
 		return thisParser().parseBlockStatement(true, brokenIfMissing);
 	}
@@ -862,7 +910,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	
 	public NodeResult<DefinitionTemplate> parseTemplateDefinition() {
 		AggregateDefinitionParse adp = new AggregateDefinitionParse();
-		adp.nodeStart = lookAheadElement().getStartPos();
 		
 		boolean isMixin = false;
 		if(tryConsume(DeeTokens.KW_MIXIN, DeeTokens.KW_TEMPLATE)) {
@@ -873,18 +920,24 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		adp.parseAggregate(false);
 		adp.parseDeclarationBlockBody();
 		
-		return adp.resultConclude(
-			new DefinitionTemplate(isMixin, adp.defId, adp.tplParams, adp.tplConstraint, adp.getDeclBlock()));
+		Token[] comments = adp.parseEndDDocComments();
+		
+		return adp.resultConclude(new DefinitionTemplate(
+			comments, isMixin, adp.defId, adp.tplParams, adp.tplConstraint, adp.getDeclBlock()));
 	}
 	
 	public static final ParseRuleDescription RULE_AGGR_BODY = new ParseRuleDescription("AggregateBody");
 	
-	public class AggregateDefinitionParse extends ParseHelper {
+	public class AggregateDefinitionParse extends DefUnitParseHelper {
 
 		protected ProtoDefSymbol defId = null;
 		protected ArrayView<TemplateParameter> tplParams = null;
 		protected Expression tplConstraint = null;
 		protected IAggregateBody declBody = null;
+		
+		public AggregateDefinitionParse() {
+			super();
+		}
 		
 		public void parseAggregate(boolean tplParamsIsOptional) {
 			ParseHelper parse = this;
@@ -934,7 +987,7 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		ParseHelper parse = new ParseHelper();
 		
-		ArrayView<ASTNode> declDefs = parseDeclDefs(DeeTokens.CLOSE_BRACE, false);
+		ArrayView<ASTNode> declDefs = parseDeclarations(DeeTokens.CLOSE_BRACE, false);
 		parse.consumeRequired(DeeTokens.CLOSE_BRACE);
 		return parse.resultConclude(new DeclBlock(declDefs));
 	}
@@ -957,9 +1010,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	public NodeResult<? extends IDeclaration> parseAliasDefinition() {
+		DefUnitParseHelper parse = new DefUnitParseHelper();
 		if(!tryConsume(DeeTokens.KW_ALIAS))
 			return null;
-		ParseHelper parse = new ParseHelper();
 		
 		if(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.ASSIGN) {
 			return parseDefinitionAlias_atFragmentStart();
@@ -1009,13 +1062,15 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				fragments.add(parseAliasVarDeclFragment());
 			}
 		}
-		defId = nullIdToMissingDefId(defId); /*BUG here*/
+		defId = nullIdToParseMissingDefId(defId);
 		
 		parse.clearRuleBroken().consumeRequired(DeeTokens.SEMICOLON);
-		return parse.resultConclude(new DefinitionAliasVarDecl(stc, ref, defId, cstyleSuffix, arrayView(fragments)));
+		Token[] comments = parse.parseEndDDocComments();
+		return parse.resultConclude(
+			new DefinitionAliasVarDecl(comments, stc, ref, defId, cstyleSuffix, arrayView(fragments)));
 	}
 	
-	public NodeResult<? extends IDeclaration> parseDefinitionAliasFunctionDecl(ParseHelper parse, 
+	public NodeResult<? extends IDeclaration> parseDefinitionAliasFunctionDecl(DefUnitParseHelper parse, 
 		ArrayView<DeclarationAttrib> stc, Reference ref, ProtoDefSymbol defId) {
 		
 		ArrayView<IFunctionParameter> fnParams = parseFunctionParameters(parse, true);
@@ -1026,7 +1081,9 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			parse.clearRuleBroken();
 		}
 		parse.consumeRequired(DeeTokens.SEMICOLON);
-		return parse.resultConclude(new DefinitionAliasFunctionDecl(stc, ref, defId, fnParams, fnAttributes));
+		Token[] comments = parse.parseEndDDocComments();
+		return parse.resultConclude(
+			new DefinitionAliasFunctionDecl(comments, stc, ref, defId, fnParams, fnAttributes));
 	}
 	
 	protected AliasVarDeclFragment parseAliasVarDeclFragment() {
@@ -1095,8 +1152,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	protected NodeResult<DefinitionEnum> parseDefinitionEnum_start() {
+		DefUnitParseHelper parse = new DefUnitParseHelper();
 		consumeLookAhead(DeeTokens.KW_ENUM);
-		ParseHelper parse = new ParseHelper();
 		
 		ProtoDefSymbol defId = parseDefId();
 		Reference type = null;
@@ -1113,7 +1170,8 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 				body = parse.requiredResult(parseEnumBody(), RULE_ENUM_BODY);
 			}
 		}
-		return parse.resultConclude(new DefinitionEnum(defId, type, body));
+		Token[] comments = parse.parseEndDDocComments();
+		return parse.resultConclude(new DefinitionEnum(comments, defId, type, body));
 	}
 	
 	protected NodeResult<DeclarationEnum> parseDeclarationEnum_start() {
@@ -1175,22 +1233,24 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	protected NodeResult<? extends DefinitionAggregate> parseDefinition_StructOrUnion() {
+		AggregateDefinitionParse adp = new AggregateDefinitionParse();
 		if(!(tryConsume(DeeTokens.KW_STRUCT) || tryConsume(DeeTokens.KW_UNION)))
 			return null;
 		
 		boolean isStruct = lastLexElement().token.type == DeeTokens.KW_STRUCT;
-		AggregateDefinitionParse adp = new AggregateDefinitionParse();
 		if(lookAhead() != DeeTokens.IDENTIFIER) {
-			adp.defId = nullIdToMissingDefId(null);
+			adp.defId = nullIdToParseMissingDefId(null);
 			adp.parseDeclarationBlockBody();
 		} else {
 			adp.parseAggregate(true);
 			adp.parseAggregateBody();
 		}
 		
+		Token[] comments = adp.parseEndDDocComments();
+		
 		return adp.resultConclude(isStruct ?
-			new DefinitionStruct(adp.defId, adp.tplParams, adp.tplConstraint, adp.declBody) :
-			new DefinitionUnion(adp.defId, adp.tplParams, adp.tplConstraint, adp.declBody));
+			new DefinitionStruct(comments, adp.defId, adp.tplParams, adp.tplConstraint, adp.declBody) :
+			new DefinitionUnion (comments, adp.defId, adp.tplParams, adp.tplConstraint, adp.declBody));
 	}
 	
 	public NodeResult<DefinitionClass> parseDefinitionClass() {
@@ -1201,11 +1261,11 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 	}
 	
 	protected NodeResult<? extends DefinitionClass> parseDefinition_ClassOrInterface() {
+		AggregateDefinitionParse adp = new AggregateDefinitionParse();
 		if(!(tryConsume(DeeTokens.KW_CLASS) || tryConsume(DeeTokens.KW_INTERFACE)))
 			return null;
 		
 		boolean isClass = lastLexElement().token.type == DeeTokens.KW_CLASS;
-		AggregateDefinitionParse adp = new AggregateDefinitionParse();
 		
 		SimpleListParseHelper<Reference> baseClasses = new TypeReferenceSimpleListParse();
 		parsing: {
@@ -1219,9 +1279,13 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 			adp.parseAggregateBody();
 		}
 		
+		Token[] comments = adp.parseEndDDocComments();
+		
 		return adp.resultConclude(isClass ?
-			new DefinitionClass(adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, adp.declBody) :
-			new DefinitionInterface(adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, adp.declBody)
+			new DefinitionClass(
+				comments, adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, adp.declBody) :
+			new DefinitionInterface(
+				comments, adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, adp.declBody)
 		);
 	}
 	
@@ -1239,423 +1303,10 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 	}
 	
-	/* -------------------- Plain declarations -------------------- */
-	
-	public NodeResult<DeclarationImport> parseDeclarationImport() {
-		ParseHelper parse = new ParseHelper(lookAheadElement().getStartPos());
-		
-		boolean isStatic = false;
-		if(tryConsume(DeeTokens.KW_IMPORT)) {
-		} else if(tryConsume(DeeTokens.KW_STATIC, DeeTokens.KW_IMPORT)) {
-			isStatic = true;
-		} else {
-			return null;
-		}
-		
-		ArrayList<IImportFragment> fragments = new ArrayList<IImportFragment>();
-		do {
-			IImportFragment fragment = parseImportFragment();
-			assertNotNull(fragment);
-			fragments.add(fragment);
-		} while(tryConsume(DeeTokens.COMMA));
-		
-		parse.consumeRequired(DeeTokens.SEMICOLON);
-		return parse.resultConclude(new DeclarationImport(isStatic, arrayView(fragments)));
-	}
-	
-	public IImportFragment parseImportFragment() {
-		ProtoDefSymbol aliasId = null;
-		
-		IImportFragment fragment;
-		
-		if(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.ASSIGN
-			|| lookAhead() == DeeTokens.ASSIGN) {
-			aliasId = parseDefId();
-			ParseHelper parse = new ParseHelper(aliasId.getStartPos());
-			consumeLookAhead(DeeTokens.ASSIGN);
-			
-			RefModule refModule = parseRefModule();
-			fragment = parse.conclude(new ImportAlias(aliasId, refModule));
-		} else {
-			RefModule refModule = parseRefModule();
-			fragment = conclude(srOf(refModule, new ImportContent(refModule)));
-		}
-		
-		if(tryConsume(DeeTokens.COLON)) {
-			return parseSelectiveModuleImport(fragment);
-		}
-		
-		return fragment;
-	}
-	
-	public RefModule parseRefModule() {
-		ArrayList<Token> packages = new ArrayList<Token>(0);
-		
-		ParseHelper parse = new ParseHelper(-1);
-		while(true) {
-			BaseLexElement id = parse.consumeExpectedIdentifier();
-			
-			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
-				packages.add(id.getToken());
-			} else {
-				parse.setStartPosition(packages.size() > 0 ? packages.get(0).getStartPos() : id.getStartPos());
-				return parse.conclude(new RefModule(arrayViewG(packages), id.getSourceValue()));
-			}
-		}
-	}
-	
-	public ImportSelective parseSelectiveModuleImport(IImportFragment fragment) {
-		ParseHelper parse = new ParseHelper(fragment.asNode());
-		ArrayList<IImportSelectiveSelection> selFragments = new ArrayList<IImportSelectiveSelection>();
-		
-		do {
-			IImportSelectiveSelection importSelSelection = parseImportSelectiveSelection();
-			selFragments.add(importSelSelection);
-			
-		} while(tryConsume(DeeTokens.COMMA));
-		
-		return parse.conclude(new ImportSelective(fragment, arrayView(selFragments)));
-	}
-	
-	public IImportSelectiveSelection parseImportSelectiveSelection() {
-		
-		if(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.ASSIGN
-			|| lookAhead() == DeeTokens.ASSIGN) {
-			ProtoDefSymbol defId = parseDefId();
-			consumeLookAhead(DeeTokens.ASSIGN);
-			ParseHelper parse = new ParseHelper(defId.getStartPos());
-			
-			RefImportSelection refImportSelection = parseRefImportSelection();
-			return parse.conclude(new ImportSelectiveAlias(defId, refImportSelection));
-		} else {
-			return parseRefImportSelection();
-		}
-	}
-	
-	public RefImportSelection parseRefImportSelection() {
-		SingleTokenParse parse = new SingleTokenParse(DeeTokens.IDENTIFIER);
-		return parse.conclude(new RefImportSelection(idTokenToString(parse.lexToken)));
-	}
-	
-	public static final ParseRuleDescription RULE_DECLBODY = new ParseRuleDescription("DeclOrBlock");
-	
-	protected class AttribBodyParseRule {
-		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
-		public ASTNode declList;
-		
-		public AttribBodyParseRule parseAttribBody(ParseHelper parse, boolean acceptEmptyDecl, 
-			boolean enablesAutoDecl) {
-			if(tryConsume(DeeTokens.COLON)) {
-				bodySyntax = AttribBodySyntax.COLON;
-				declList = parseDeclList(null);
-			} else {
-				parseDeclBlockOrSingle(parse, acceptEmptyDecl, enablesAutoDecl);
-			}
-			return this;
-		}
-		
-		public AttribBodyParseRule parseDeclBlockOrSingle(ParseHelper parse, boolean acceptEmptyDecl, 
-			boolean enablesAutoDecl) {
-			if(lookAhead() == DeeTokens.OPEN_BRACE) {
-				bodySyntax = AttribBodySyntax.BRACE_BLOCK;
-				declList = parse.checkResult(parseDeclarationBlock());
-			} else {
-				declList = parse.checkResult(parseDeclaration(enablesAutoDecl));
-				if(declList == null) {
-					declList = concludeNode(srOf(consumeSubChannelTokens(), new MissingDeclaration()));
-					parse.storeBreakError(createErrorExpectedRule(RULE_DECLBODY));
-				} else if(declList instanceof DeclarationEmpty && !acceptEmptyDecl) {
-					parse.store(createSyntaxError(RULE_DECLARATION));
-				}
-			}
-			return this;
-		}
-	}
-	
-	protected DeclList parseDeclList(DeeTokens bodyListTerminator) {
-		ParseHelper parse = new ParseHelper(getLexPosition());
-		
-		ArrayView<ASTNode> declDefs = parseDeclDefs(bodyListTerminator, false);
-		consumeSubChannelTokens();
-		return parse.conclude(new DeclList(declDefs));
-	}
-	
-	public NodeResult<DeclarationLinkage> parseDeclarationExternLinkage(boolean parseBody) {
-		if(!tryConsume(DeeTokens.KW_EXTERN))
-			return null;
-		ParseHelper parse = new ParseHelper();
-		
-		String linkageStr = null;
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		
-		parsing: {
-			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				linkageStr = "";
-				
-				LexElement linkageToken = consumeIf(DeeTokens.IDENTIFIER);
-				if(linkageToken != null ) {
-					linkageStr = linkageToken.getSourceValue();
-					if(linkageStr.equals("C") && tryConsume(DeeTokens.INCREMENT)) {
-						linkageStr = Linkage.CPP.name;
-					}
-				}
-				
-				if(Linkage.fromString(linkageStr) == null) {
-					parse.store(createErrorOnLastToken(ParserErrorTypes.INVALID_EXTERN_ID, null));
-				}
-				
-				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
-			}
-			if(parseBody) {
-				ab.parseAttribBody(parse, false, false);
-			}
-		}
-		
-		return parse.resultConclude(new DeclarationLinkage(linkageStr, ab.bodySyntax, ab.declList));
-	}
-	
-	public NodeResult<DeclarationAlign> parseDeclarationAlign(boolean parseBody) {
-		if(!tryConsume(DeeTokens.KW_ALIGN))
-			return null;
-		ParseHelper parse = new ParseHelper();
-		
-		String alignNum = null;
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		
-		parsing: {
-			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				BaseLexElement alignNumToken = consumeExpectedContentToken(DeeTokens.INTEGER_DECIMAL);
-				alignNum = alignNumToken.getSourceValue();
-				parse.store(alignNumToken.getError());
-				
-				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
-			}
-			if(parseBody) {
-				ab.parseAttribBody(parse, false, false);
-			}
-		}
-		
-		return parse.resultConclude(new DeclarationAlign(alignNum, ab.bodySyntax, ab.declList));
-	}
-	
-	public NodeResult<DeclarationPragma> parseDeclarationPragma(boolean isStatement, boolean parseBody) {
-		if(!tryConsume(DeeTokens.KW_PRAGMA))
-			return null;
-		ParseHelper parse = new ParseHelper();
-		
-		Symbol pragmaId = null;
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		IStatement bodySt = null;
-		NodeListView<Expression> expList = null;
-		
-		parsing: {
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
-			pragmaId = parseIdSymbol();
-			
-			if(tryConsume(DeeTokens.COMMA)) {
-				expList = parseExpArgumentList(parse, false, DeeTokens.CLOSE_PARENS);
-			} else {
-				parse.consumeRequired(DeeTokens.CLOSE_PARENS);
-			}
-			if(parse.ruleBroken) break parsing;
-			
-			if(isStatement) {
-				bodySt = parse.checkResult(thisParser().parseUnscopedStatement_toMissing()); 
-			} else if(parseBody) {
-				ab.parseAttribBody(parse, true, false);
-			}
-		}
-		
-		if(isStatement) {
-			return parse.resultConclude(new DeclarationPragma(pragmaId, expList, bodySt));
-		}
-		return parse.resultConclude(new DeclarationPragma(pragmaId, expList, ab.bodySyntax, ab.declList));
-	}
-	
-	public NodeResult<DeclarationProtection> parseDeclarationProtection(boolean parseBody) {
-		if(lookAheadGrouped() != DeeTokens.PROTECTION_KW) {
-			return null;
-		}
-		LexElement protElement = consumeLookAhead();
-		ParseHelper parse = new ParseHelper();
-		Protection protection = DeeTokenSemantics.getProtectionFromToken(protElement.token.type);
-		
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		if(parseBody) {
-			ab.parseAttribBody(parse, false, true);
-		}
-		return parse.resultConclude(new DeclarationProtection(protection, ab.bodySyntax, ab.declList));
-	}
-	
-	public NodeResult<DeclarationBasicAttrib> parseDeclarationBasicAttrib(boolean parseBody) {
-		AttributeKinds attrib = AttributeKinds.fromToken(lookAhead());
-		if(attrib == null)
-			return null;
-		
-		consumeLookAhead();
-		ParseHelper parse = new ParseHelper();
-		if(attrib == AttributeKinds.DEPRECATED) {
-			parseExpressionAroundParentheses(parse, false, false);
-			// TODO: tests for this, confirm spec
-		}
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		if(parseBody) {
-			ab.parseAttribBody(parse, false, true);
-		}
-		return parse.resultConclude(new DeclarationBasicAttrib(attrib, ab.bodySyntax, ab.declList));
-	}
-	
-	public NodeResult<DeclarationAtAttrib> parseDeclarationAtAttrib(boolean parseBody) {
-		if(!tryConsume(DeeTokens.AT)) 
-			return null;
-		
-		ParseHelper parse = new ParseHelper();
-		Symbol attribIdentifier = parseAttribId();
-		
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		if(parseBody) {
-			ab.parseAttribBody(parse, false, true);
-		}
-		return parse.resultConclude(new DeclarationAtAttrib(attribIdentifier, ab.bodySyntax, ab.declList));
-	}
-	
-	public Symbol parseAttribId() {
-		BaseLexElement traitsId = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
-		ParserError error = DeeTokenSemantics.checkAttribId(traitsId);
-		return conclude(error, srOf(traitsId, new Symbol(traitsId.getSourceValue())));
-	}
-	
-	public NodeResult<DeclarationStaticIf> parseDeclarationStaticIf(boolean isStatement) {
-		ParseHelper parse = new ParseHelper(lookAheadElement());
-		if(!tryConsume(DeeTokens.KW_STATIC, DeeTokens.KW_IF))
-			return null;
-		
-		Expression exp = null;
-		ConditionalBodyParseRule body = new ConditionalBodyParseRule();
-		
-		parsing: {
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
-			exp = parseAssignExpression_toMissing();
-			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
-			
-			body.parseConditionalBody(parse, isStatement);
-		}
-		if(isStatement) {
-			return parse.resultConclude(new DeclarationStaticIf(exp, body.thenBodySt, body.elseBodySt));
-		}
-		return parse.resultConclude(new DeclarationStaticIf(exp, body.bodySyntax, body.declList, body.elseBody));
-	}
-	
-	public NodeResult<DeclarationDebugVersion> parseDeclarationDebugVersion(boolean isStatement) {
-		if(!(tryConsume(DeeTokens.KW_DEBUG) || tryConsume(DeeTokens.KW_VERSION)))
-			return null;
-		boolean isDebug = lastLexElement().token.type == DeeTokens.KW_DEBUG;
-		ParseHelper parse = new ParseHelper();
-		
-		VersionSymbol value = null;
-		ConditionalBodyParseRule body = new ConditionalBodyParseRule();
-		
-		parsing: {
-			if(parse.consume(DeeTokens.OPEN_PARENS, isDebug, true)) {
-				if(lookAhead() == DeeTokens.KW_ASSERT || lookAhead() == DeeTokens.KW_UNITTEST) {
-					value = createVersionSymbol(consumeLookAhead());
-				} else {
-					value = parseConditionalValue(isDebug, parse);
-				}
-				parse.consumeRequired(DeeTokens.CLOSE_PARENS);
-			}
-			if(parse.ruleBroken) break parsing;
-			
-			body.parseConditionalBody(parse, isStatement);
-		}
-		if(isStatement) {
-			return parse.resultConclude(new DeclarationDebugVersion(isDebug, value, body.thenBodySt, body.elseBodySt));
-		}
-		return parse.resultConclude(
-			new DeclarationDebugVersion(isDebug, value, body.bodySyntax, body.declList, body.elseBody));
-	}
-	
-	protected class ConditionalBodyParseRule extends AttribBodyParseRule {
-		
-		public ASTNode elseBody = null;
-		public IStatement thenBodySt = null;
-		public IStatement elseBodySt = null;
-		
-		public void parseConditionalBody(ParseHelper parse, boolean isStatement) {
-			
-			if(isStatement) {
-				thenBodySt = parse.checkResult(thisParser().parseUnscopedStatement_toMissing()); 
-				if(parse.ruleBroken) return;
-				
-				if(tryConsume(DeeTokens.KW_ELSE)) {
-					elseBodySt = parse.checkResult(thisParser().parseUnscopedStatement_toMissing());
-				}
-			} else {
-				parseAttribBody(parse, false, false);
-				if(parse.ruleBroken) return;
-				
-				if(bodySyntax != AttribBodySyntax.COLON) {
-					if(tryConsume(DeeTokens.KW_ELSE)) {
-						elseBody = new AttribBodyParseRule().parseDeclBlockOrSingle(parse, false, false).declList ;
-					}
-				}
-			}
-		}
-		
-	}
-	
-	/* ----------------------------------------- */
-	
-	public static final ParseRuleDescription RULE_DEBUG_ARG = new ParseRuleDescription("DebugArg");
-	public static final ParseRuleDescription RULE_VERSION_ARG = new ParseRuleDescription("VersionArg");
-	
-	public NodeResult<DeclarationDebugVersionSpec> parseDeclarationDebugVersionSpec() {
-		if(!(tryConsume(DeeTokens.KW_DEBUG) || tryConsume(DeeTokens.KW_VERSION)))
-			return null;
-		boolean isDebug = lastLexElement().token.type == DeeTokens.KW_DEBUG;
-		ParseHelper parse = new ParseHelper();
-		
-		VersionSymbol value = null;
-		if(parse.consumeExpected(DeeTokens.ASSIGN)) {
-			value = parseConditionalValue(isDebug, parse);
-		}
-		parse.consumeRequired(DeeTokens.SEMICOLON);
-		
-		return parse.resultConclude(new DeclarationDebugVersionSpec(isDebug, value));
-	}
-	
-	protected VersionSymbol parseConditionalValue(boolean isDebug, ParseHelper parse) {
-		if(lookAhead() == DeeTokens.IDENTIFIER || lookAheadGrouped() == DeeTokens.INTEGER) {
-			return createVersionSymbol(consumeLookAhead());
-		} else { 
-			parse.store(createErrorExpectedRule(isDebug ? RULE_DEBUG_ARG : RULE_VERSION_ARG));
-			return createVersionSymbol(consumeSubChannelTokens());
-		}
-	}
-	
-	public VersionSymbol createVersionSymbol(BaseLexElement token) {
-		return conclude(token.getError(), srOf(token, new VersionSymbol(token.getSourceValue())));
-	}
-	
-	public NodeResult<DeclarationMixinString> parseDeclarationMixinString() {
-		if(!tryConsume(DeeTokens.KW_MIXIN))
-			return null;
-		ParseHelper parse = new ParseHelper();
-		Expression exp = null;
-		
-		if(parse.consumeExpected(DeeTokens.OPEN_PARENS)) {
-			exp = parseExpression_toMissing();
-			parse.consumeExpected(DeeTokens.CLOSE_PARENS);
-		}
-		
-		parse.consumeRequired(DeeTokens.SEMICOLON);
-		return parse.resultConclude(new DeclarationMixinString(exp));
-	}
-	
 	public NodeResult<? extends IDeclaration> parseDeclarationMixin() {
+		DefUnitParseHelper parse = new DefUnitParseHelper();
 		if(!tryConsume(DeeTokens.KW_MIXIN))
 			return null;
-		ParseHelper parse = new ParseHelper();
 		
 		NodeResult<Reference> tplInstanceResult = parseTypeReference_ToMissing(true);
 		Reference tplInstance = tplInstanceResult.node;
@@ -1663,12 +1314,17 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		if(!tplInstanceResult.ruleBroken && lookAhead() == DeeTokens.IDENTIFIER) {
 			ProtoDefSymbol defId = parseDefId();
 			parse.consumeRequired(DeeTokens.SEMICOLON);
-			return parse.resultConclude(new DefinitionNamedMixin(tplInstance, defId));
+			Token[] comments = parse.parseEndDDocComments();
+			return parse.resultConclude(new DefinitionNamedMixin(comments, defId, tplInstance));
 		} else {
 			parse.consumeRequired(DeeTokens.SEMICOLON);
+			parse.discardDocComments();
 			return parse.resultConclude(new DeclarationMixin(tplInstance));
 		}
 	}
+	
+	/* -------------------- Function-like declarations -------------------- */
+
 	
 	public NodeResult<DeclarationInvariant> parseDeclarationInvariant_start() {
 		consumeLookAhead(DeeTokens.KW_INVARIANT);
@@ -1756,28 +1412,6 @@ public abstract class DeeParser_Decls extends DeeParser_RefOrExp {
 		}
 		
 		return parse.resultConclude(new DeclarationAllocatorFunction(isNew, params, fnBody));
-	}
-	
-	public NodeResult<DeclarationStaticAssert> parseDeclarationStaticAssert() {
-		ParseHelper parse = new ParseHelper(lookAheadElement());
-		if(!tryConsume(DeeTokens.KW_STATIC, DeeTokens.KW_ASSERT)) 
-			return null;
-		
-		Expression pred = null;
-		Expression msg = null;
-		
-		if(parse.consumeExpected(DeeTokens.OPEN_PARENS)) {
-			
-			pred = parseAssignExpression_toMissing();
-			if(tryConsume(DeeTokens.COMMA)) {
-				msg = parseAssignExpression_toMissing();
-			}
-			
-			parse.consumeExpected(DeeTokens.CLOSE_PARENS);
-		}
-		parse.consumeRequired(DeeTokens.SEMICOLON);
-		
-		return parse.resultConclude(new DeclarationStaticAssert(pred, msg));
 	}
 	
 }

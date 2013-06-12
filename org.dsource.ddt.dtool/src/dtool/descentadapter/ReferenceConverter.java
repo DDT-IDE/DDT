@@ -116,7 +116,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		if (elem.ident != null) {
 			DefUnitTuple defUnit = DefinitionConverter.convertDsymbol(elem, convContext);
 			return connect(sourceRange,
-				new DefinitionNamedMixin(refTplInstance, defUnit.defSymbol));
+				new DefinitionNamedMixin(defUnit.commentsToToken(), defUnit.defSymbol, refTplInstance));
 		} else {
 			return connect(sourceRange,
 				new DeclarationMixin(refTplInstance));

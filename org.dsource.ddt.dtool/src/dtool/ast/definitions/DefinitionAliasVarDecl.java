@@ -10,6 +10,7 @@ import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.parser.Token;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
@@ -28,9 +29,9 @@ public class DefinitionAliasVarDecl extends Definition implements IDeclaration, 
 	public final Reference cstyleSuffix;
 	public final ArrayView<AliasVarDeclFragment> fragments;
 	
-	public DefinitionAliasVarDecl(ArrayView<DeclarationAttrib> attributes, Reference target, ProtoDefSymbol defId, 
-		Reference cstyleSuffix, ArrayView<AliasVarDeclFragment> fragments) {
-		super(defId);
+	public DefinitionAliasVarDecl(Token[] comments, ArrayView<DeclarationAttrib> attributes, Reference target, 
+		ProtoDefSymbol defId, Reference cstyleSuffix, ArrayView<AliasVarDeclFragment> fragments) {
+		super(comments, defId);
 		this.attributes = parentize(attributes);
 		this.target = parentize(target);
 		this.cstyleSuffix = parentizeI(cstyleSuffix);

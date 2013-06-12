@@ -161,7 +161,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(AnonDeclaration node) {
 		DeclBlock body = createDeclList(DescentASTConverter.convertMany(node.decl, ASTNode.class, convContext));
 		return endAdapt(connect(DefinitionConverter.sourceRange(node), 
-			new DefinitionStruct(new ProtoDefSymbol("", null, null), null, null, body)));
+			new DefinitionStruct(null, new ProtoDefSymbol("", null, null), null, null, body)));
 	}
 
 	@Override
@@ -445,6 +445,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
 		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionAliasVarDecl(
+				convertDsymbol.commentsToToken(),
 				null,
 				(Reference) DescentASTConverter.convertElem(elem.type, convContext),
 				convertDsymbol.defSymbol,
@@ -483,6 +484,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
 		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionTemplate(
+				convertDsymbol.commentsToToken(),
 				false,
 				convertDsymbol.defSymbol,
 				tplParams,
@@ -527,6 +529,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefUnitTuple defUnitInfo = DefinitionConverter.convertDsymbol(elem, convContext);
 			return endAdapt(defUnitInfo.sourceRange,
 				new DefinitionVariable.DefinitionAutoVariable(
+				defUnitInfo.commentsToToken(), 
 				defUnitInfo.defSymbol,
 				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null
 			));
@@ -534,6 +537,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefUnitTuple defUnitInfo = DefinitionConverter.convertDsymbol(elem, convContext);
 			return endAdapt(defUnitInfo.sourceRange, 
 				new DefinitionVariable(
+				defUnitInfo.commentsToToken(),
 				defUnitInfo.defSymbol,
 				typeRef,
 				null,
@@ -547,6 +551,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			DefUnitTuple defUnitTuple = DefinitionConverter.convertDsymbol(elem, convContext);
 			return connect(defUnitTuple.sourceRange, 
 				new DefinitionEnum(
+				defUnitTuple.commentsToToken(),
 				defUnitTuple.defSymbol,
 				ReferenceConverter.convertType(elem.memtype, convContext),
 				new DefinitionEnum.EnumBody(
@@ -584,6 +589,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
 		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionClass(
+				convertDsymbol.commentsToToken(),
 				convertDsymbol.defSymbol,
 				tplParams,
 				null,
@@ -603,6 +609,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
 		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionInterface(
+				convertDsymbol.commentsToToken(),
 				convertDsymbol.defSymbol,
 				tplParams,
 				null,
@@ -622,6 +629,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
 		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionStruct(
+				convertDsymbol.commentsToToken(),
 				convertDsymbol.defSymbol,
 				tplParams,
 				null,
@@ -640,6 +648,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DefUnitTuple convertDsymbol = DefinitionConverter.convertDsymbol(elem, convContext);
 		return endAdapt(convertDsymbol.sourceRange,
 			new DefinitionUnion(
+				convertDsymbol.commentsToToken(),
 				convertDsymbol.defSymbol,
 				tplParams,
 				null,
