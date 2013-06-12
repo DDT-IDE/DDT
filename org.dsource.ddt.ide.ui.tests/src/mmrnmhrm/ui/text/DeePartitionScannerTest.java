@@ -64,7 +64,7 @@ public class DeePartitionScannerTest extends CommonTestUtils implements DeeParti
 		fp = (FastPartitioner) document.getDocumentPartitioner();
 	}
 	
-	private void checkPositions(Position[] positions, String[] expectedPositions) {
+	protected void checkPositions(Position[] positions, String[] expectedPositions) {
 		assertTrue(positions.length == expectedPositions.length);
 		for (int i = 0; i < positions.length; i++) {
 			TypedPosition position = downCast(positions[i], TypedPosition.class);
@@ -148,6 +148,8 @@ public class DeePartitionScannerTest extends CommonTestUtils implements DeeParti
 
 		testPartitions("a = /++ blah +/ 1;", array(DEE_NESTED_DOCCOMMENT));
 		testPartitions("a = /++ //   +/ 'a' `d`", array(DEE_NESTED_DOCCOMMENT, DEE_CHARACTER, DEE_RAW_STRING));
+//		testPartitions("a = /++/ special degenerate case", array(DEE_NESTED_COMMENT)); TODO
+//		testPartitions("a = /**/ special degenerate case", array(DEE_MULTI_COMMENT)); TODO
 		
 		testPartitions("foo = /`asdf`; ", array(DEE_RAW_STRING));
 		// Test nesting
