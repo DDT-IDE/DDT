@@ -11,7 +11,7 @@ public abstract class DeeModuleParsingUtil {
 	public static Module getParsedDeeModule(ISourceModule sourceModule) {
 		IModuleDeclaration moduleDeclaration = SourceParserUtil.parse(sourceModule, null);
 		if (moduleDeclaration instanceof DeeModuleDeclaration) {
-			return ((DeeModuleDeclaration) moduleDeclaration).neoModule;
+			return ((DeeModuleDeclaration) moduleDeclaration).module;
 		}
 		//TODO: consider proper behavior for sourceModule is not from our DLTK nature
 		return null;
@@ -32,7 +32,7 @@ public abstract class DeeModuleParsingUtil {
 		
 		if (moduleDeclaration instanceof DeeModuleDeclaration) {
 			DeeModuleDeclaration deeModuleDecl = (DeeModuleDeclaration) moduleDeclaration;
-			return deeModuleDecl.neoModule;
+			return deeModuleDecl.module;
 		}
 		return null;
 	}

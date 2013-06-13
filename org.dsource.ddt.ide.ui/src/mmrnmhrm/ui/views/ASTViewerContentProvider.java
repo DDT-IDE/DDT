@@ -15,17 +15,11 @@ public class ASTViewerContentProvider extends ElementContentProvider {
 	
 	@Override
 	public Object[] getElements(Object inputElement) {
-		DeeModuleDeclaration deeModule = view.fDeeModule;
-		if(deeModule == null) {
+		DeeModuleDeclaration deeModuleDecl = view.fDeeModule;
+		if(deeModuleDecl == null) {
 			return IElement.NO_ELEMENTS;
 		}
-		IElement input;
-		if(view.fUseOldAst == true || deeModule.neoModule == null) {
-			input = deeModule.dmdModule;
-		} else {
-			input = deeModule.neoModule; 
-		}
-		
+		IElement input = deeModuleDecl.module; 
 		return input.getChildren();
 	}
 	

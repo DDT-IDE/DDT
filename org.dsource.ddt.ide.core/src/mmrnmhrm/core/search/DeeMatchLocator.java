@@ -12,6 +12,7 @@ import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.declarations.ModuleDeclarationWrapper;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
@@ -103,7 +104,7 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 	@Override
 	protected void process(PossibleMatch possibleMatch) throws CoreException {
 		
-		DeeModuleDeclaration deeUnit = (DeeModuleDeclaration) possibleMatch.parsedUnit;
+		DeeModuleDeclaration deeUnit = getDeeModuleDeclaration(possibleMatch.parsedUnit);
 		ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
 		
 		
@@ -119,12 +120,13 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 		
 		// DLTK copied code, partially, 3.0
 		// unit comes from ModuleDeclaration parsedUnit = this.parser.parse(possibleMatch);
+		this.parser.parse(possibleMatch);
 		
 		this.currentPossibleMatch = possibleMatch;
 		
 		ModuleDeclaration unit = possibleMatch.parsedUnit;
 		try {
-			if (unit == null || unit.isEmpty()) {
+			if (unit == null || getDeeModuleDeclaration(unit) == null /*Modified code*/) {
 				return;
 			}
 			reportMatchingDo();
@@ -132,6 +134,16 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 			this.matches = null;
 			this.currentPossibleMatch = null;
 		}
+	}
+	
+	protected static DeeModuleDeclaration getDeeModuleDeclaration(ModuleDeclaration parsedUnit) {
+		if(parsedUnit instanceof ModuleDeclarationWrapper) {
+			ModuleDeclarationWrapper wrapper = (ModuleDeclarationWrapper) parsedUnit;
+			if(wrapper.getTarget() instanceof DeeModuleDeclaration) {
+				return (DeeModuleDeclaration) wrapper.getTarget();
+			}
+		}
+		throw assertFail();
 	}
 	
 	public void addMatch(ASTNode node, int accLevel, ISourceModule sourceModule) {

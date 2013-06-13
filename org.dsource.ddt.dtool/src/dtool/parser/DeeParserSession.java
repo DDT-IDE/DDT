@@ -8,23 +8,19 @@ import dtool.descentadapter.DescentASTConverter;
 
 public class DeeParserSession extends DeeParserResult {
 	
-	public static DeeParserSession parseSource(String defaultModuleName, String source, int langVersion,
-			IProblemReporter problemReporter) {
-		DescentParserAdapter parserAdapter = DescentParserAdapter.parseSource(source, langVersion, problemReporter);
+	public static DeeParserSession parseSource(String defaultModuleName, String source, 
+		IProblemReporter problemReporter) {
+		DescentParserAdapter parserAdapter = DescentParserAdapter.parseSource(source, Parser.D2, problemReporter);
 		Module module = DescentASTConverter.convertModule(parserAdapter.mod, defaultModuleName);
 		return new DeeParserSession(module, defaultModuleName, parserAdapter);
 	}
 	
-	public static DeeParserSession parseWithRecovery(String defaultModuleName, String source, int langVersion,
+	public static DeeParserSession parseWithRecovery(String defaultModuleName, String source, 
 			final int offset, Token lastTokenNonWS) {
-		DescentParserAdapter parserAdapter = DescentParserAdapter.parseSource(source, langVersion, null);
+		DescentParserAdapter parserAdapter = DescentParserAdapter.parseSource(source, Parser.D2, null);
 		parserAdapter.recoverForCompletion(source, offset, lastTokenNonWS);
 		Module module = DescentASTConverter.convertModule(parserAdapter.mod, defaultModuleName);
 		return new DeeParserSession(module, defaultModuleName, parserAdapter);
-	}
-	
-	public static DeeParserSession parseSource(String source, String defaultModuleName) {
-		return parseSource(defaultModuleName, source, Parser.D2, null);
 	}
 	
 	protected final String defaultModuleName;

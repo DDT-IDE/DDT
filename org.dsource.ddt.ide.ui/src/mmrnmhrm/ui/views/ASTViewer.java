@@ -9,7 +9,6 @@ import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration.EModelStatus;
 import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
@@ -37,14 +36,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
@@ -53,7 +50,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
-import dtool.ast.ASTNodeFinderOld;
 
 
 /**
@@ -71,7 +67,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	private DrillDownAdapter drillDownAdapter;
 	private Action actionExpand;
 	private Action actionCollapse;
-	private Action actionToggle;
+//	private Action actionToggle;
 	
 	//protected MultiListener fMultiListener;
 	
@@ -79,7 +75,6 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	protected IDocument fDocument;
 	protected ISourceModule fSourceModule;
 	protected DeeModuleDeclaration fDeeModule;
-	protected boolean fUseOldAst = false;
 	protected IASTNode selNode;
 	
 	
@@ -212,11 +207,11 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		makeVisible(viewer.getControl());
 		
 		int offset = EditorUtil.getSelection(fEditor).getOffset();
-		setContentDescription("AST ("+toStringParseStatus(fDeeModule.getParseStatus())+"), sel: " + offset);
+		setContentDescription("AST, sel: " + offset);
 		
 		//viewer.getControl().setRedraw(false);
 		viewer.refresh();
-		selNode = findElementDependingOnType(fDeeModule.getEffectiveModuleNode(), offset, true);
+		selNode = findElementDependingOnType(fDeeModule.getModuleNode(), offset, true);
 		if(selNode != null) {
 			viewer.reveal(selNode);
 		}
@@ -226,20 +221,8 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	public static IASTNode findElementDependingOnType(IASTNode root, int offset, boolean inclusiveEnd) {
 		if(root instanceof ASTNode) {
 			return ASTNodeFinder.findElement((ASTNode) root, offset, inclusiveEnd);
-		} else if(root instanceof descent.internal.compiler.parser.ast.ASTNode) {
-			return ASTNodeFinderOld.findElement(
-				(descent.internal.compiler.parser.ast.ASTNode) root, offset, inclusiveEnd);
-		} else {
+		}  else {
 			throw assertFail();
-		}
-	}
-	
-	public static String toStringParseStatus(int parseStatus) {
-		switch(parseStatus) {
-		case EModelStatus.PARSER_INTERNAL_ERROR: return "Internal Error";
-		case EModelStatus.PARSER_SYNTAX_ERRORS: return "Syntax Errors";
-		case EModelStatus.OK: return "OK";
-		default: assertFail(); return null;
 		}
 	}
 	
@@ -282,7 +265,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(actionCollapse);
 		manager.add(actionExpand);
-		manager.add(actionToggle);
+//		manager.add(actionToggle);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
@@ -324,16 +307,16 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		actionCollapse.setToolTipText("Collapse All nodes");
 		ASTViewer.setupActionImages(actionCollapse, "collapseall.gif");
 		
-		actionToggle = new Action() {
-			@Override
-			public void run() {
-				fUseOldAst  = !fUseOldAst; refreshViewer();
-			}
-		};
-		actionToggle.setText("Toggle Neo/Old AST");
-		actionToggle.setToolTipText("Toggle Neo/Old AST");
-		actionToggle.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+//		actionToggle = new Action() {
+//			@Override
+//			public void run() {
+//				fUseOldAst  = !fUseOldAst; refreshViewer();
+//			}
+//		};
+//		actionToggle.setText("Toggle Neo/Old AST");
+//		actionToggle.setToolTipText("Toggle Neo/Old AST");
+//		actionToggle.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 	}
 	
 	

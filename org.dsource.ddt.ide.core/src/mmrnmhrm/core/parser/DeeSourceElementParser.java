@@ -17,9 +17,11 @@ import mmrnmhrm.core.DeeCore;
 import org.dsource.ddt.ide.core.DeeNature;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.dsource.ddt.ide.core.model.engine.DeeSourceElementProvider;
-import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.AbstractSourceElementParser;
+import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.SourceParserUtil;
 
 public class DeeSourceElementParser extends AbstractSourceElementParser {
 	
@@ -31,9 +33,20 @@ public class DeeSourceElementParser extends AbstractSourceElementParser {
 		return DeeNature.NATURE_ID;
 	}
 	
+	protected DeeModuleDeclaration parse2(IModuleSource module) {
+		if (module instanceof ISourceModule) {
+			ISourceModule sourceModule = (ISourceModule) module;
+			return (DeeModuleDeclaration) SourceParserUtil.parse(sourceModule, getProblemReporter());
+		} else {
+			// parse directly without cache
+			final IModuleDeclaration result = SourceParserUtil.parse(module, getNatureId(), getProblemReporter());
+			return (DeeModuleDeclaration) result;
+		}
+	}
+	
 	@Override
 	public void parseSourceModule(IModuleSource module) {
-		final ModuleDeclaration moduleDeclaration = parse(module);
+		final IModuleDeclaration moduleDeclaration = parse2(module);
 		if (moduleDeclaration != null) {
 			DeeModuleDeclaration deeModuleDecl = (DeeModuleDeclaration) moduleDeclaration;
 			DeeSourceElementProvider provider = new DeeSourceElementProvider(getRequestor());

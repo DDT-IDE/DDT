@@ -35,7 +35,7 @@ import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
-import dtool.parser.DeeParserSession;
+import dtool.parser.DeeParserResult;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class FindDef__Common {
@@ -72,7 +72,7 @@ public class FindDef__Common {
 		IModuleSource moduleSource = (IModuleSource) sourceModule;
 		
 		DeeSourceParser sourceParser = new DeeSourceParser();
-		DeeParserSession parseResult = sourceParser.parseToDeeParseResult(moduleSource, null);
+		DeeParserResult parseResult = sourceParser.parseToDeeParseResult(moduleSource, null);
 		
 		String source;
 		try {

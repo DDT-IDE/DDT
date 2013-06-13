@@ -61,7 +61,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	public void provide(DeeModuleDeclaration moduleDecl) {
 		requestor.enterModule();
 		
-		Module neoModule = moduleDecl.neoModule;
+		Module neoModule = moduleDecl.module;
 		if(neoModule != null) {
 			
 			if(neoModule.md != null) {
@@ -75,7 +75,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 			}
 		}
 		
-		requestor.exitModule(moduleDecl.dmdModule.getEndPos());
+		requestor.exitModule(moduleDecl.module.getEndPos());
 	}
 	
 	@Override

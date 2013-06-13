@@ -11,7 +11,7 @@ public abstract class Parser__CommonTest extends DToolBaseTest {
 	@Deprecated
 	public static DeeParserResult parseSource(String source, Boolean expectErrors, boolean checkSourceRanges,
 			String defaultModuleName) {
-		DeeParserResult parseResult = DeeParserSession.parseSource(source, defaultModuleName);
+		DeeParserResult parseResult = DeeParserSession.parseSource(source, defaultModuleName, null);
 		
 		if(expectErrors != null) {
 			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);

@@ -119,7 +119,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		}
 		
 		// : Parse source and do syntax error recovery
-		DeeParserSession parseSession = DeeParserSession.parseWithRecovery(defaultModuleName, source, Parser.D2, 
+		DeeParserSession parseSession = DeeParserSession.parseWithRecovery(defaultModuleName, source,  
 				offset, lastTokenNonWS);
 		
 		Module neoModule = parseSession.getParsedModule(); 

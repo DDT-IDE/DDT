@@ -8,6 +8,7 @@ import org.eclipse.dltk.core.IModelElement;
 
 import descent.core.compiler.IProblem;
 import dtool.DeeNamingRules;
+import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserSession;
 
 public class DeeSourceParser extends AbstractSourceParser {
@@ -35,13 +36,12 @@ public class DeeSourceParser extends AbstractSourceParser {
 	
 	@Override
 	public DeeModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
-		DeeParserSession deeParserSession = parseToDeeParseResult(input, reporter);
-		DeeModuleDeclaration deeModuleDecl = new DeeModuleDeclaration(deeParserSession.getDMDModule());
-		deeModuleDecl.setNeoModule(deeParserSession.getParsedModule());
+		DeeParserResult deeParserSession = parseToDeeParseResult(input, reporter);
+		DeeModuleDeclaration deeModuleDecl = new DeeModuleDeclaration(deeParserSession.getParsedModule());
 		return deeModuleDecl;
 	}
 	
-	public DeeParserSession parseToDeeParseResult(IModuleSource input, IProblemReporter reporter) {
+	public DeeParserResult parseToDeeParseResult(IModuleSource input, IProblemReporter reporter) {
 		String source = input.getSourceContents();
 		
 		String defaultModuleName = "_unnamedSource_";
@@ -50,9 +50,7 @@ public class DeeSourceParser extends AbstractSourceParser {
 			defaultModuleName = DeeNamingRules.getModuleNameFromFileName(modelElement.getElementName());
 		}
 		
-		int langVersion = 2; // TODO we should use value from project configured interpreter version
-		
-		DeeParserSession deeParserSession = DeeParserSession.parseSource(defaultModuleName, source, langVersion,
+		DeeParserSession deeParserSession = DeeParserSession.parseSource(defaultModuleName, source,
 				DescentProblemAdapter.create(reporter));
 		return deeParserSession;
 	}
