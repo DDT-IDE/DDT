@@ -9,20 +9,17 @@
   DeclarationLinkage(DefinitionVariable(RefIdentifier DefSymbol))
 】》
 
-#@DECLS_BLOCK__SAMPLE《#?STRUCTURE_EXPECTED!【 { #@DECL_LIST_SAMPLE } ● DeclBlock(#@DECL_LIST_SAMPLE)】》
+#@DECLS_BLOCK__SAMPLE《#?STRUCTURE_EXPECTED!【{ #@DECL_LIST_SAMPLE } ● DeclBlock(#@DECL_LIST_SAMPLE)】》
 
 
-#@NO_DECLorBLOCK《
-  ►#?STRUCTURE_EXPECTED!【#error(EXPRULE_DeclOrBlock)● MissingDeclaration】●
-¤》
+#@NO_DECLorBLOCK《#?STRUCTURE_EXPECTED!【/*NoDECLOrBlock*/#error(EXPRULE_DeclOrBlock)● MissingDeclaration】》
+#@NO_DECLS_BLOCK《#?STRUCTURE_EXPECTED!【/*NoDECLSBLOCK*/#error(EXPRULE_DeclarationBlock) ● 】》
 
 #@DECLS_BLOCK《
   ►#?STRUCTURE_EXPECTED!【#@NO_DECLS_BLOCK #@BREAK ● #@BREAK 】●
   ►#@DECLS_BLOCK__NO_MISSING●
 ¤》
-#@NO_DECLS_BLOCK《
-  ►#?STRUCTURE_EXPECTED!【#error(EXPRULE_DeclarationBlock) ● 】●
-¤》
+
 
 #@DECLS_BLOCK__NO_MISSING《
   ►#?STRUCTURE_EXPECTED!【{ } ● DeclBlock( )】●

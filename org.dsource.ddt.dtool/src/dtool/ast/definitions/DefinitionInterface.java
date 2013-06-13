@@ -14,8 +14,10 @@ import dtool.util.ArrayView;
 public class DefinitionInterface extends DefinitionClass {
 	
 	public DefinitionInterface(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
-		Expression tplConstraint, ArrayView<Reference> baseClasses,  IAggregateBody aggrBody) {
-		super(comments, defId, tplParams, tplConstraint, baseClasses, aggrBody);
+		Expression tplConstraint, ArrayView<Reference> baseClasses, boolean baseClassesAfterConstraint, 
+		IAggregateBody aggrBody) 
+	{
+		super(comments, defId, tplParams, tplConstraint, baseClasses, baseClassesAfterConstraint, aggrBody);
 	}
 	
 	@Override

@@ -594,6 +594,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				tplParams,
 				null,
 				DescentASTConverter.convertMany(elem.sourceBaseclasses, Reference.class, convContext),
+				true,
 				createDeclList(DescentASTConverter.convertMany(elem.members, ASTNode.class, convContext))
 			)
 		);
@@ -614,6 +615,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 				tplParams,
 				null,
 				DescentASTConverter.convertMany(elem.sourceBaseclasses, Reference.class, convContext),
+				true,
 				createDeclList(DescentASTConverter.convertMany(elem.members, ASTNode.class, convContext))
 			)
 		);

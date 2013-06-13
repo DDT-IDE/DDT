@@ -20,11 +20,15 @@ import dtool.util.ArrayView;
 public class DefinitionClass extends DefinitionAggregate {
 	
 	public final ArrayView<Reference> baseClasses;
+	public final boolean baseClassesAfterConstraint;
 	
 	public DefinitionClass(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
-		Expression tplConstraint, ArrayView<Reference> baseClasses, IAggregateBody aggrBody) {
+		Expression tplConstraint, ArrayView<Reference> baseClasses, boolean baseClassesAfterConstraint, 
+		IAggregateBody aggrBody) 
+	{
 		super(comments, defId, tplParams, tplConstraint, aggrBody);
 		this.baseClasses = parentize(baseClasses);
+		this.baseClassesAfterConstraint = baseClassesAfterConstraint;
 	}
 	
 	@Override
@@ -45,8 +49,12 @@ public class DefinitionClass extends DefinitionAggregate {
 	}
 	
 	public void classLikeToStringAsCode(ASTCodePrinter cp, String keyword) {
-		aggregateToStringAsCode(cp, keyword, false);
+		cp.append(keyword);
+		cp.append(defname, " ");
+		cp.appendList("(", tplParams, ",", ") ");
+		if(baseClassesAfterConstraint) DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
 		cp.appendList(": ", baseClasses, ",", " ");
+		if(!baseClassesAfterConstraint) DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
 		cp.append(aggrBody, "\n");
 	}
 	
@@ -60,8 +68,9 @@ public class DefinitionClass extends DefinitionAggregate {
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, tplParams);
-			TreeVisitor.acceptChildren(visitor, tplConstraint);
+			if(baseClassesAfterConstraint) TreeVisitor.acceptChildren(visitor, tplConstraint);
 			TreeVisitor.acceptChildren(visitor, baseClasses);
+			if(!baseClassesAfterConstraint) TreeVisitor.acceptChildren(visitor, tplConstraint);
 			TreeVisitor.acceptChildren(visitor, aggrBody);
 		}
 	}

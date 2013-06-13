@@ -68,8 +68,7 @@ RefTemplateInstance(
 ¤》
 #@TYPE_REFS__NO_BROKEN__LITE《
   ►#@TYPE_REFS__REFID●
-  ►#?STRUCTURE_EXPECTED!【int*#TYPE_REF_POINTER(flag)●RefTypePointer(RefPrimitive)】●
-  ►#?STRUCTURE_EXPECTED!【.Bar.foo*[]●RefTypeDynArray(RefTypePointer(RefQualified(RefModuleQualified(?) RefIdentifier)))】●
+  ►#?STRUCTURE_EXPECTED!【int[]*#TYPE_REF_POINTER(flag)●RefTypePointer(RefTypeDynArray(RefPrimitive))】●
 ¤》
 
   #@TYPEREFS__NB_APPENDABLE《#@TYPE_REFS__NO_BROKEN #?NO_TYPE_APPEND【#:DISCARD_CASE】》
@@ -77,11 +76,11 @@ RefTemplateInstance(
 
 
 #@TYPE_REFS__BROKEN《
-   ►#?NO_BROKEN_BRACKETS【#:DISCARD_CASE●
+►#?NO_BROKEN_BRACKETS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【arrayElem[foo #error(EXP_CLOSE_BRACKET) #MISSING_BRACKET(flag)#TYPE_IS_BROKEN(flag)●
   RefIndexing(RefIdentifier RefIdentifier)】】●
 
-   ►#?NO_BROKEN_PARENS【#:DISCARD_CASE●
+►#?NO_BROKEN_PARENS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【typeof("abc"  #error(EXP_CLOSE_PARENS) #MISSING_PARENS(flag)#TYPE_IS_BROKEN(flag)●
    RefTypeof(String)】】●
 ¤》
@@ -93,7 +92,9 @@ RefTemplateInstance(
 ¤》
 #@TYPE_REFS__LITE《
   ►#@TYPE_REFS__NO_BROKEN__LITE●
-  ►#@TYPE_REFS__BROKEN●
+►#?NO_BROKEN_PARENS【#:DISCARD_CASE●
+  ►#?STRUCTURE_EXPECTED!【typeof("abc"  #error(EXP_CLOSE_PARENS) #MISSING_PARENS(flag)#TYPE_IS_BROKEN(flag)●
+   RefTypeof(String)】】●
 ¤》
 
 /------------------------------/

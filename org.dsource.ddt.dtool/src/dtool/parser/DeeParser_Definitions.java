@@ -1266,6 +1266,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			return null;
 		
 		boolean isClass = lastLexElement().token.type == DeeTokens.KW_CLASS;
+		boolean baseAfter = true;
 		
 		SimpleListParseHelper<Reference> baseClasses = new TypeReferenceSimpleListParse();
 		parsing: {
@@ -1275,6 +1276,10 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(tryConsume(DeeTokens.COLON)) {
 				baseClasses.parseSimpleList(DeeTokens.COMMA, false, false);
 			}
+			if(adp.tplParams != null && adp.tplConstraint == null) {
+				adp.tplConstraint = parseTemplateConstraint(adp);
+				baseAfter = false;
+			}
 			
 			adp.parseAggregateBody();
 		}
@@ -1283,9 +1288,9 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		return adp.resultConclude(isClass ?
 			new DefinitionClass(
-				comments, adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, adp.declBody) :
+				comments, adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, baseAfter, adp.declBody) :
 			new DefinitionInterface(
-				comments, adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, adp.declBody)
+				comments, adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, baseAfter, adp.declBody)
 		);
 	}
 	
