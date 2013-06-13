@@ -62,6 +62,7 @@ public class DeeTokenSemantics {
 		Pair.create("isAssociativeArray", true),
 		Pair.create("isFinalClass", true),
 		Pair.create("isPOD", true),
+		Pair.create("isNested", true),
 		Pair.create("isFloating", true),
 		Pair.create("isIntegral", true),
 		Pair.create("isScalar", true),
