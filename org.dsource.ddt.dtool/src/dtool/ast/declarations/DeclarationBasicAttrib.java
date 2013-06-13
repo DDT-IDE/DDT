@@ -38,6 +38,7 @@ public class DeclarationBasicAttrib extends DeclarationAttrib implements IDeclar
 		SYNCHRONIZED,
 		
 		REF,
+		__THREAD,
 		;
 		
 		public static AttributeKinds fromToken(DeeTokens token) {
@@ -62,6 +63,7 @@ public class DeclarationBasicAttrib extends DeclarationAttrib implements IDeclar
 			case KW_STATIC: return STATIC;
 			case KW_SYNCHRONIZED: return SYNCHRONIZED;
 			case KW_REF: return REF;
+			case KW___THREAD: return __THREAD;
 			default:
 				return null;
 			}

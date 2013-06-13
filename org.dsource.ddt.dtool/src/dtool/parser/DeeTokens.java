@@ -159,10 +159,11 @@ public enum DeeTokens {
 	KW_VERSION("version"), KW_VOLATILE("volatile"), 
 	KW_WHILE("while"), KW_WITH("with"),
 	
+	KW___TRAITS("__traits"),
+	
 	KW___FILE__("__FILE__", STRING), 
 	KW___LINE__("__LINE__", INTEGER), 
-	KW___THREAD("__thread"), 
-	KW___TRAITS("__traits"),
+	KW___THREAD("__thread", ATTRIBUTE_KW), 
 	
 	KW___DATE__("__DATE__", STRING),
 	KW___EOF__("__EOF__"), // This token is actually never returned by the lexer, it gets transformed into EOF

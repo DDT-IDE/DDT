@@ -19,6 +19,8 @@
  ►#?STRUCTURE_EXPECTED!【synchronized #SYNCHRONIZED_ATTRIB(flag)●DeclarationBasicAttrib( 】●
  
  ►#?STRUCTURE_EXPECTED!【ref●DeclarationBasicAttrib( 】●
+ 
+ ►#?STRUCTURE_EXPECTED!【__thread /*This attrib is not documented in spec?*/●DeclarationBasicAttrib( 】●
 ¤》
 
 #@PROT_ATTRIB【#?STRUCTURE_EXPECTED!【#@《private●package●protected●public●export》● DeclarationProtection( 】】
