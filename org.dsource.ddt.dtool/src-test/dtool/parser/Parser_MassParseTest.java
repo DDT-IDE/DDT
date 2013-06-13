@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import melnorme.utilbox.core.Predicate;
+import melnorme.utilbox.misc.ArrayUtil;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -93,6 +96,12 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 				return new String[0];
 			String exclusionsFileSource = readStringFromFileUnchecked(exclusionsFiles);
 			String[] exclusions = MiscDeeTestUtils.splitLines(exclusionsFileSource);
+			exclusions = ArrayUtil.filter(exclusions, new Predicate<String>() {
+				@Override
+				public boolean evaluate(String obj) {
+					return obj.trim().isEmpty() == false;
+				}
+			});
 			return exclusions;
 		}
 		
@@ -113,8 +122,12 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 			}
 			
 			String source = readStringFromFileUnchecked(file);
-			Parser__CommonTest.parseSource(source, null, false, "_tests_unnamed_");
-//			Parser__CommonTest.testParseSource(source, canHaveSyntaxErrors ? null : false, false, "_unnamed");
+//			if(true) {
+			if(false) {
+				Parser__CommonTest.parseSource(source, null, false, "_tests_unnamed_");
+			} else {
+				Parser__CommonTest.testParseSource(source, canHaveSyntaxErrors ? null : false, false, "_unnamed");
+			}
 		}
 		
 	}

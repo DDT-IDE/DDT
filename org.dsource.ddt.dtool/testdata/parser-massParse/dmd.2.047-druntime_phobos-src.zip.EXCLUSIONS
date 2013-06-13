@@ -1,6 +1,52 @@
 # typedef
 /dmd.2.047-druntime_phobos-src.zip/druntime/import/core/sys/windows/windows.d
 /dmd.2.047-druntime_phobos-src.zip/druntime/import/core/sys/windows/windows.di
+/dmd.2.047-druntime_phobos-src.zip/druntime/src/core/sys/windows/windows.d
+/dmd.2.047-druntime_phobos-src.zip/druntime/src/object_.d
+/dmd.2.047-druntime_phobos-src.zip/druntime/src/rt/aaA.d
+/dmd.2.047-druntime_phobos-src.zip/druntime/src/rt/aApply.d
+/dmd.2.047-druntime_phobos-src.zip/druntime/src/rt/aApplyR.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/contracts.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/conv.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/date.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/demangle.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/encoding.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/format.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/loader.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/socket.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/string.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/traits.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/windows/registry.d
+/dmd.2063-d_src.zip/druntime/import/core/sys/freebsd/dlfcn.d
+/dmd.2063-d_src.zip/druntime/src/core/sys/freebsd/dlfcn.d
+
+#volatite:
+/dmd.2.047-druntime_phobos-src.zip/druntime/src/core/thread.d
 
 # old C-style function ptr decl
 /dmd.2.047-druntime_phobos-src.zip/druntime/import/object.di
+/dmd.2.047-druntime_phobos-src.zip/druntime/src/rt/deh2.d
+/dmd.2.047-druntime_phobos-src.zip/druntime/src/rt/lifetime.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/etc/c/zlib.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/c/process.d
+
+#public base classes
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/openrj.d
+
+#is a HTML file
+/dmd.2.047-druntime_phobos-src.zip/phobos/phobos.d
+
+#TODO: remove next ones:
+#typeof error 
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/algorithm.d
+
+# if (y&(-y)==y) {
+#assert(ctrl.enabledExceptions() == FloatingPointControl.divByZeroException | overflowException);
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/biguintcore.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/internal/math/biguintcore.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/math.d
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/numeric.d
+
+
+#static if (is(_store.insertBack(value)))
+/dmd.2.047-druntime_phobos-src.zip/phobos/std/container.d
