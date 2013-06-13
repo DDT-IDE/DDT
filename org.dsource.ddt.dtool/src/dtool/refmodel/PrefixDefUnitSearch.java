@@ -7,8 +7,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
-
-import descent.internal.compiler.parser.Parser;
 import descent.internal.compiler.parser.TOK;
 import descent.internal.compiler.parser.Token;
 import descent.internal.compiler.parser.ast.TokenUtil;
@@ -26,6 +24,7 @@ import dtool.ast.references.RefModule;
 import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
+import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserSession;
 import dtool.parser.DescentParserAdapter;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -119,7 +118,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		}
 		
 		// : Parse source and do syntax error recovery
-		DeeParserSession parseSession = DeeParserSession.parseWithRecovery(defaultModuleName, source,  
+		DeeParserResult parseSession = DeeParserSession.parseWithRecovery(defaultModuleName, source,  
 				offset, lastTokenNonWS);
 		
 		Module neoModule = parseSession.getParsedModule(); 

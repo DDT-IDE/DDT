@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
@@ -28,19 +29,23 @@ public class DeeParserResult {
 	public final ASTNode node;
 	public final boolean ruleBroken;
 	public final Module module;
-	public final List<ParserError> errors;
+	public final List<? extends ICompileError> errors;
 	
 	public DeeParserResult(NodeResult<? extends ASTNode> result, DeeParser parser) {
-		this(parser.getSource(), result.node, result.ruleBroken, parser.lexerErrors);
+		this(parser.getSource(), result.node, result.ruleBroken, initErrors(parser.lexerErrors, result.node));
 		parser.lexerErrors = null;
 	}
 	
-	protected DeeParserResult(String source, ASTNode node, boolean ruleBroken, ArrayList<ParserError> lexerErrors) {
+	protected DeeParserResult(String source, ASTNode node, boolean ruleBroken, List<? extends ICompileError> errors) {
 		this.source = source;
 		this.node = node;
 		this.ruleBroken = ruleBroken;
 		this.module = node instanceof Module ? (Module) node : null;
-		this.errors = lexerErrors == null ? null : Collections.unmodifiableList(collectErrors(lexerErrors, node));
+		this.errors = Collections.unmodifiableList(errors);
+	}
+	
+	public static List<? extends ICompileError> initErrors(ArrayList<ParserError> lexerErrors, ASTNode resultNode) {
+		return lexerErrors == null ? null : collectErrors(lexerErrors, resultNode);
 	}
 	
 	public boolean hasSyntaxErrors() {
@@ -50,6 +55,10 @@ public class DeeParserResult {
 	public Module getParsedModule() {
 		assertNotNull(module);
 		return module;
+	}
+	
+	public List<ParserError> getErrors() {
+		return CoreUtil.blindCast(errors);
 	}
 	
 	// TODO: this could be optimized
@@ -66,6 +75,11 @@ public class DeeParserResult {
 		}
 		Collections.sort(errors, new ErrorSourceRangeComparator());
 		return errors;
+	}
+	
+	@Deprecated
+	public boolean isQualifiedDotFix() {
+		return false;
 	}
 	
 }

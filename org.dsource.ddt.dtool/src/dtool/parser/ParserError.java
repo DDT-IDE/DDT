@@ -22,7 +22,7 @@ import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclarationLinkage.Linkage;
 import dtool.ast.statements.StatementScope.ScopeTypes;
 
-public class ParserError implements ISourceRange {
+public class ParserError implements ICompileError, ISourceRange {
 	
 	public enum ParserErrorTypes {
 		
@@ -69,6 +69,21 @@ public class ParserError implements ISourceRange {
 	}
 	
 	@Override
+	public int getStartPos() {
+		return getOffset();
+	}
+	
+	@Override
+	public int getEndPos() {
+		return getOffset() + getLength();
+	}
+	
+	@Override
+	public int getLineNumber() {
+		return 0; //TODO
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		if(!(obj instanceof ParserError))
 			return false;
@@ -92,6 +107,7 @@ public class ParserError implements ISourceRange {
 			(msgErrorSource == null ? "" : ("【"+msgErrorSource+"】")) + "("+msgData+")";
 	}
 	
+	@Override
 	public String getUserMessage() {
 		switch(errorType) {
 		case INVALID_TOKEN_CHARACTERS:

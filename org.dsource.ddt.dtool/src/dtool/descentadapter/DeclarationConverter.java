@@ -120,7 +120,11 @@ public class DeclarationConverter extends BaseDmdConverter {
 		ArrayView<ASTNode> decls = DescentASTConverter.convertMany(decl, convContext);
 		SourceRange sr = null;
 		if(!decls.isEmpty()) {
-			sr = sourceRangeStrict(decls.get(0).getStartPos(), decls.get(decls.size()-1).getEndPos());
+			int startPos = decls.get(0).getStartPos();
+			int endPos = decls.get(decls.size()-1).getEndPos();
+			if(startPos != -1) {
+				sr = sourceRangeStrict(startPos, endPos);
+			}
 		}
 		return connect(sr, new NodeList_OLD(decls));
 	}

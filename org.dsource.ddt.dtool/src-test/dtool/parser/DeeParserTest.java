@@ -141,7 +141,7 @@ public class DeeParserTest extends CommonTestUtils {
 		checkExpectedStructure(mainNode, expectedStructure);
 		
 		if(expectedErrors != null) {
-			checkParserErrors(result.errors, expectedErrors);
+			checkParserErrors(result.getErrors(), expectedErrors);
 		}
 		
 		if(expectedPrintedSource != null) {
@@ -337,18 +337,18 @@ public class DeeParserTest extends CommonTestUtils {
 			DeeTestsChecksParser parser = new DeeTestsChecksParser(parsedSource);
 			DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP);
 			ASTNode expNode = result.node;
-			List<ParserError> resultToE_Errors = resultToE.errors;
+			List<ParserError> resultToE_Errors = resultToE.getErrors();
 			if(result.errors.size() >= 1) {
-				ParserError lastError = result.errors.get(result.errors.size()-1);
+				ParserError lastError = result.getErrors().get(result.errors.size()-1);
 				if(lastError.errorType == ParserErrorTypes.TYPE_USED_AS_EXP_VALUE &&
 					SourceEquivalenceChecker.check(result.node.toStringAsCode(), lastError.msgErrorSource)) {
-					resultToE_Errors = new ArrayList<>(resultToE.errors);
+					resultToE_Errors = new ArrayList<>(resultToE.getErrors());
 					resultToE_Errors.add(lastError);
 					expNode = ((ExpReference) expNode).ref;
 				}
 			}
 			DeeParsingChecks.checkNodeEquality(expNode, resultToE.node);
-			assertEquals(result.errors, resultToE_Errors);
+			assertEquals(result.getErrors(), resultToE_Errors);
 		}
 		if(result.node instanceof DefUnit) {
 			runDDocTest(result);
