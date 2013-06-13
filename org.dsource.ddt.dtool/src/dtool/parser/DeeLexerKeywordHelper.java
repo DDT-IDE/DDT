@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.Hashtable;
 
 public class DeeLexerKeywordHelper {
@@ -122,11 +124,15 @@ public class DeeLexerKeywordHelper {
 		storeKeyword(temp, DeeTokens.KW_WHILE);
 		storeKeyword(temp, DeeTokens.KW_WITH);
 		
-		storeKeyword(temp, DeeTokens.KW___FILE__);
-		storeKeyword(temp, DeeTokens.KW___LINE__);
+		storeKeyword(temp, DeeTokens.KW___TRAITS);
 		storeKeyword(temp, DeeTokens.KW___GSHARED);
 		storeKeyword(temp, DeeTokens.KW___THREAD);
-		storeKeyword(temp, DeeTokens.KW___TRAITS);
+		
+		storeKeyword(temp, DeeTokens.KW___FILE__);
+		storeKeyword(temp, DeeTokens.KW___LINE__);
+		storeKeyword(temp, DeeTokens.KW___MODULE__);
+		storeKeyword(temp, DeeTokens.KW___FUNCTION__);
+		storeKeyword(temp, DeeTokens.KW___PRETTY_FUNCTION__);
 		
 		
 		storeKeyword(temp, DeeTokens.KW___DATE__);
@@ -145,7 +151,9 @@ public class DeeLexerKeywordHelper {
 	}
 	
 	private static void storeKeyword(Hashtable<String, DeeTokens> table, DeeTokens keyword) {
-		table.put(keyword.getSourceValue(), keyword);
+		String key = keyword.getSourceValue();
+		assertTrue(table.get(key) == null);
+		table.put(key, keyword);
 	}
 	
 }

@@ -34,10 +34,12 @@ final finall finally finallyy
 KW_FINAL,WS, ID,WS, KW_FINALLY,WS, ID,WS, EOL
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+__FILE__ __MODULE__ __LINE__ __FUNCTION__ __PRETTY_FUNCTION__ 
 __DATE__ __TIME__ __TIMESTAMP__ __VENDOR__ __VERSION__
-__EOF__ blah blah
+__EOF__ 
 #LEXERTEST:
-KW___DATE__, WS,KW___TIME__, WS,KW___TIMESTAMP__, WS,KW___VENDOR__, WS,KW___VERSION__, EOL,
+KW___FILE__,WS, KW___MODULE__,WS, KW___LINE__,WS, KW___FUNCTION__,WS,  KW___PRETTY_FUNCTION__,WS, EOL,
+KW___DATE__,WS, KW___TIME__,WS, KW___TIMESTAMP__,WS, KW___VENDOR__,WS, KW___VERSION__, EOL,
 EOF,
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 !is

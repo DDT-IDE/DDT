@@ -125,7 +125,6 @@ public enum DeeTokens {
 	KW_NOTHROW("nothrow",           ATTRIBUTE_KW), 
 	KW_OVERRIDE("override",         ATTRIBUTE_KW), 
 	KW_PURE("pure",                 ATTRIBUTE_KW), 
-	KW___GSHARED("__gshared",       ATTRIBUTE_KW), 
 	KW_SCOPE("scope",               ATTRIBUTE_KW), 
 	KW_STATIC("static",             ATTRIBUTE_KW), 
 	KW_SYNCHRONIZED("synchronized", ATTRIBUTE_KW),
@@ -160,10 +159,14 @@ public enum DeeTokens {
 	KW_WHILE("while"), KW_WITH("with"),
 	
 	KW___TRAITS("__traits"),
+	KW___GSHARED("__gshared", ATTRIBUTE_KW), 
+	KW___THREAD("__thread", ATTRIBUTE_KW),
 	
 	KW___FILE__("__FILE__", STRING), 
 	KW___LINE__("__LINE__", INTEGER), 
-	KW___THREAD("__thread", ATTRIBUTE_KW), 
+	KW___MODULE__("__MODULE__", STRING), 
+	KW___FUNCTION__("__FUNCTION__", STRING), 
+	KW___PRETTY_FUNCTION__("__PRETTY_FUNCTION__", STRING),
 	
 	KW___DATE__("__DATE__", STRING),
 	KW___EOF__("__EOF__"), // This token is actually never returned by the lexer, it gets transformed into EOF

@@ -45,7 +45,7 @@
 #PARSE(STATEMENT)    static assert ( #@EXP_ASSIGN__LITE) ;
 #STRUCTURE_EXPECTED: DeclarationStaticAssert(#@EXP_ASSIGN__LITE)
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ template
 #PARSE(STATEMENT)     #@MIXIN_PRF《#?STRUCTURE_EXPECTED!【mixin ●】 ●/++/》 template tpl() #@DECLS_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED:  DefinitionTemplate(DefSymbol #@DECLS_BLOCK__SAMPLE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 

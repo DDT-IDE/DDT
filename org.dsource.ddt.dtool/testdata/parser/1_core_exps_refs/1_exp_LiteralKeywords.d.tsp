@@ -10,7 +10,10 @@ ExpThis●ExpSuper●ExpNull●ExpLiteralBool●ExpLiteralBool●ExpArrayLength
  ►#?STRUCTURE_EXPECTED!【 #@NO_EXP : #@NO_EXP           ● MapEntry(#@NO_EXP #@NO_EXP)】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   #@SPECIAL_KEYWORDS《__DATE__●__TIME__●__TIMESTAMP__●__VENDOR__●__FILE__》 #@《/*NoExtra*/●"extra str"》
+#PARSE(EXPRESSION)   #@SPECIAL_KEYWORDS《__DATE__●__TIME__●__TIMESTAMP__●__VENDOR__》 #@《/*NoExtra*/●"extra str"》
+#STRUCTURE_EXPECTED: ExpLiteralString
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(EXPRESSION)   #@SPECIAL_KEYWORDS《__FILE__●__MODULE__●__FUNCTION__●__PRETTY_FUNCTION__》 #@《/*NoExtra*/●"extra str"》
 #STRUCTURE_EXPECTED: ExpLiteralString
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   #@SPECIAL_KEYWORDS《__LINE__●__VERSION__》
