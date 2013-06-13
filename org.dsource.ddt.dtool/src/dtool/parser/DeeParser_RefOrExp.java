@@ -491,10 +491,9 @@ protected class ParseRule_Expression {
 		breakRule = false;
 	}
 	
-	public boolean shouldReturnToParseRuleTopLevel(Expression expSoFar) {
-		boolean result = breakRule;
-		assertTrue(isEnabled() == !result);
-		return result || expSoFar == null;
+	public boolean shouldReturnToParseRuleTopLevel(@SuppressWarnings("unused") Expression expSoFar) {
+		assertTrue(isEnabled() == !breakRule);
+		return breakRule;
 	}
 	
 	public void setToEParseBroken(boolean parseBroken) {
@@ -519,8 +518,17 @@ protected class ParseRule_Expression {
 	}
 	
 	protected Expression parseTypeOrExpression_start(InfixOpType precedenceLimit) {
-		Expression prefixExp = parsePrimaryExpression();
-		if(shouldReturnToParseRuleTopLevel(prefixExp)) {
+		Expression prefixExp;
+		Resolvable prefixExpResolvable = parsePrimaryExpression();
+		if(prefixExpResolvable == null || prefixExpResolvable instanceof Expression) {
+			prefixExp = (Expression) prefixExpResolvable;
+		} else {
+			Reference ref = (Reference) prefixExpResolvable;
+			boolean isTypeAsExpError = refIsErrorToUseInExp(ref, breakRule || lookAhead() == DeeTokens.OPEN_PARENS);
+			prefixExp = createExpReference(ref, isTypeAsExpError);
+		}
+		
+		if(prefixExp == null || shouldReturnToParseRuleTopLevel(prefixExp)) {
 			return prefixExp;
 		}
 		
@@ -540,7 +548,7 @@ protected class ParseRule_Expression {
 		return parseTypeOrExpression_start(InfixOpType.NULL);
 	}
 	
-	protected Expression parsePrimaryExpression() {
+	protected Resolvable parsePrimaryExpression() {
 		Expression simpleLiteral = parseSimpleLiteral();
 		if(simpleLiteral != null) {
 			return simpleLiteral;
@@ -603,15 +611,10 @@ protected class ParseRule_Expression {
 		default:
 			NodeResult<Reference> typeRefResult = parseTypeReference_start(true);
 			Reference ref = typeRefResult.node;
-			if(ref == null) {
-				return null;
-			}
-			
-			boolean isTypeAsExpError = refIsErrorToUseInExp(ref);
 			if(!(ref instanceof RefQualified || ref instanceof RefModuleQualified)) {
 				setToEParseBroken(typeRefResult.ruleBroken);
 			}
-			return createExpReference(ref, isTypeAsExpError);
+			return ref;
 		}
 	}
 	
@@ -877,12 +880,16 @@ protected class ParseRule_Expression {
 		
 } /* ---------------- ParseRule_TypeOrExp END----------------*/
 	
-   // typeof and type modifier can appear in exp in a valid way, so no error in that case
-	protected static boolean refIsErrorToUseInExp(Reference ref) {
+	protected static boolean refIsErrorToUseInExp(Reference ref, boolean allowOpCallTypeRefs) {
 		switch (ref.getNodeType()) {
 		case REF_PRIMITIVE:
 		case REF_TYPE_FUNCTION:
 			return true;
+		case REF_MODIFIER:
+			RefTypeModifier refModifier = (RefTypeModifier) ref;
+			return allowOpCallTypeRefs == false ? false : refIsErrorToUseInExp(refModifier.ref, true);
+		case REF_TYPEOF:
+			return allowOpCallTypeRefs == false;
 		case REF_TYPE_DYN_ARRAY:
 		case REF_TYPE_POINTER:
 		case REF_INDEXING:

@@ -37,7 +37,7 @@
   
   
   ►#?STRUCTURE_EXPECTED!【foo++●                 ExpPostfix(#@ExpIdentifier)】●
-  ►#?STRUCTURE_EXPECTED!【foo(1, 3)●             ExpCall(#@ExpIdentifier Integer Integer)】●
+  ►#?STRUCTURE_EXPECTED!【typeof(foo)(1, 3)●             ExpCall(ExpReference(RefTypeof(#@ExpIdentifier)) Integer Integer)】●
   ►#?STRUCTURE_EXPECTED!【foo[7..[123]]#_EXP_AMBIG(flag)●ExpSlice(#@ExpIdentifier Integer ExpLiteralArray(?))】●
 
   ►#?STRUCTURE_EXPECTED!【is(foo : bar[])●ExpIs(RefIdentifier RefTypeDynArray(RefIdentifier))】●
