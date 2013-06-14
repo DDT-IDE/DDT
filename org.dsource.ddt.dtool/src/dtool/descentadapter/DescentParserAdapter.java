@@ -1,4 +1,4 @@
-package dtool.parser;
+package dtool.descentadapter;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import descent.internal.compiler.parser.Lexer;

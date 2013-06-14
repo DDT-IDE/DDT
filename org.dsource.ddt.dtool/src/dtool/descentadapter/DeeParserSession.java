@@ -1,14 +1,17 @@
-package dtool.parser;
+package dtool.descentadapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import descent.core.compiler.IProblem;
 import descent.internal.compiler.parser.Parser;
+import descent.internal.compiler.parser.TOK;
 import descent.internal.compiler.parser.Token;
 import descent.internal.compiler.parser.ast.IProblemReporter;
+import descent.internal.compiler.parser.ast.TokenUtil;
 import dtool.ast.definitions.Module;
-import dtool.descentadapter.DescentASTConverter;
+import dtool.parser.DeeParserResult;
+import dtool.parser.ICompileError;
 
 public class DeeParserSession extends DeeParserResult {
 	
@@ -55,6 +58,30 @@ public class DeeParserSession extends DeeParserResult {
 		return parserAdapter.mod;
 	}
 	
+	public static boolean isValidReferenceToken(Token token) {
+		return token.value == TOK.TOKidentifier
+		|| token.value == TOK.TOKbool
+		|| token.value == TOK.TOKchar
+		|| token.value == TOK.TOKdchar
+		|| token.value == TOK.TOKfloat32
+		|| token.value == TOK.TOKfloat64
+		|| token.value == TOK.TOKfloat80
+		|| token.value == TOK.TOKint8
+		|| token.value == TOK.TOKint16
+		|| token.value == TOK.TOKint32
+		|| token.value == TOK.TOKint64
+		//|| token.value == TOK.TOKnull
+		//|| token.value == TOK.TOKthis
+		//|| token.value == TOK.TOKsuper
+		|| token.value == TOK.TOKuns8
+		|| token.value == TOK.TOKuns16
+		|| token.value == TOK.TOKuns32
+		|| token.value == TOK.TOKuns64
+		|| token.value == TOK.TOKvoid
+		|| token.value == TOK.TOKwchar
+		;
+	}
+	
 	public static List<ICompileError> initErrors(DescentParserAdapter parserAdapter) {
 		ArrayList<ICompileError> errors = new ArrayList<ICompileError>();
 		List<IProblem> problems = parserAdapter.parser.problems;
@@ -87,5 +114,36 @@ public class DeeParserSession extends DeeParserResult {
 			});
 		}
 		return errors;
+	}
+	
+	public static DeeParserResult parseWithRecovery(String source, String defaultModuleName, final int offset) {
+		Token tokenList = DescentParserAdapter.tokenizeSource(source);
+		
+		Token lastTokenNonWS = null;
+		Token lastToken = null;
+		
+		// : Find last non-white token before offset
+		Token newtoken = tokenList;
+		while (newtoken.ptr < offset) {
+			lastToken = newtoken;
+			if(!TokenUtil.isWhiteToken(newtoken.value)) {
+				lastTokenNonWS = newtoken;
+			}
+			
+			newtoken = newtoken.next;
+		}
+		
+		// : Check if completion request is *inside* the token
+		if(lastToken != null && lastToken.ptr < offset && (lastToken.ptr + lastToken.sourceLen) > offset) {
+			// if so then check if it's an allowed token
+			if(!DeeParserSession.isValidReferenceToken(lastToken)) {
+				return null;
+			}
+		}
+		
+		// : Parse source and do syntax error recovery
+		DeeParserResult parseResult = parseWithRecovery(defaultModuleName, source,  
+				offset, lastTokenNonWS);
+		return parseResult;
 	}
 }

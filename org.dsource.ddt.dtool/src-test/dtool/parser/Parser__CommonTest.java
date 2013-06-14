@@ -4,6 +4,7 @@ package dtool.parser;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCommonSourceRangeChecker;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
+import dtool.descentadapter.DeeParserSession;
 import dtool.tests.DToolBaseTest;
 
 public abstract class Parser__CommonTest extends DToolBaseTest {

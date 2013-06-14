@@ -7,9 +7,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
-import descent.internal.compiler.parser.TOK;
-import descent.internal.compiler.parser.Token;
-import descent.internal.compiler.parser.ast.TokenUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -24,9 +21,9 @@ import dtool.ast.references.RefModule;
 import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
+import dtool.descentadapter.DeeParserSession;
+import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
-import dtool.parser.DeeParserSession;
-import dtool.parser.DescentParserAdapter;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /** 
@@ -91,37 +88,17 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		assertTrue(session.errorMsg == null);
 		session.resultCode = ECompletionSessionResults.RESULT_OK;
 		
-		Token tokenList = DescentParserAdapter.tokenizeSource(source);
-		
-		Token lastTokenNonWS = null;
-		Token lastToken = null;
-		
-		// : Find last non-white token before offset
-		Token newtoken = tokenList;
-		while (newtoken.ptr < offset) {
-			lastToken = newtoken;
-			if(!TokenUtil.isWhiteToken(newtoken.value)) {
-				lastTokenNonWS = newtoken;
-			}
+		DeeParserResult parseResult = true ?
+			DeeParserSession.parseWithRecovery(source, defaultModuleName, offset) :
+			DeeParser.parseSource(source, defaultModuleName);
 			
-			newtoken = newtoken.next;
+		if(parseResult == null) {
+			CompletionSession.assignResult(session, ECompletionSessionResults.INVALID_LOCATION_INTOKEN, 
+				"Invalid location (inside token)");
+			return null;
 		}
 		
-		// : Check if completion request is *inside* the token
-		if(lastToken != null && lastToken.ptr < offset && (lastToken.ptr + lastToken.sourceLen) > offset) {
-			// if so then check if it's an allowed token
-			if(!isValidReferenceToken(lastToken)) {
-				CompletionSession.assignResult(session, ECompletionSessionResults.INVALID_LOCATION_INTOKEN, 
-						"Invalid location (inside token)");
-				return null;
-			}
-		}
-		
-		// : Parse source and do syntax error recovery
-		DeeParserResult parseSession = DeeParserSession.parseWithRecovery(defaultModuleName, source,  
-				offset, lastTokenNonWS);
-		
-		Module neoModule = parseSession.getParsedModule(); 
+		Module neoModule = parseResult.getParsedModule(); 
 		
 		/* ============================================== */
 		// : Do actual completion search
@@ -141,18 +118,19 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			
 			if(node instanceof RefIdentifier) {
 				RefIdentifier refIdent = (RefIdentifier) node;
-				if(!parseSession.isQualifiedDotFix()) {
+				if(!parseResult.isQualifiedDotFix()) {
 					setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), refIdent.name);
 				}
 			} else if(node instanceof CommonRefQualified) {
 				//CommonRefQualified refQual = (CommonRefQualified) node;
-				assertTrue(!parseSession.isQualifiedDotFix());
+				assertTrue(!parseResult.isQualifiedDotFix());
 				
-				if(lastTokenNonWS.value != TOK.TOKdot) {
+				//TODO: review commented changes
+//				if(lastTokenNonWS.value != TOK.TOKdot) {
 					CompletionSession.assignResult(session, ECompletionSessionResults.WEIRD_LOCATION_REFQUAL, 
 							"Invalid Location: before qualifier dot but not next to id.");
 					return search;
-				}
+//				}
 			} else if(node instanceof RefModule) {
 				RefModule refMod = (RefModule) node;
 				
@@ -160,7 +138,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 				
 				// We need to get exact source cause it may contains spaces, even comments
 				String refModCanonicalName = refMod.toStringAsElement();
-				if(parseSession.isQualifiedDotFix()) {
+				if(parseResult.isQualifiedDotFix()) {
 					refModCanonicalName = refModCanonicalName.substring(0, refModCanonicalName.length() - 1);
 					refModEndPos = refModEndPos - 1;
 				}
@@ -275,30 +253,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			return ScopeUtil.getOuterScope(node);
 		} 
 		return null;
-	}
-	
-	private static boolean isValidReferenceToken(Token token) {
-		return token.value == TOK.TOKidentifier
-		|| token.value == TOK.TOKbool
-		|| token.value == TOK.TOKchar
-		|| token.value == TOK.TOKdchar
-		|| token.value == TOK.TOKfloat32
-		|| token.value == TOK.TOKfloat64
-		|| token.value == TOK.TOKfloat80
-		|| token.value == TOK.TOKint8
-		|| token.value == TOK.TOKint16
-		|| token.value == TOK.TOKint32
-		|| token.value == TOK.TOKint64
-		//|| token.value == TOK.TOKnull
-		//|| token.value == TOK.TOKthis
-		//|| token.value == TOK.TOKsuper
-		|| token.value == TOK.TOKuns8
-		|| token.value == TOK.TOKuns16
-		|| token.value == TOK.TOKuns32
-		|| token.value == TOK.TOKuns64
-		|| token.value == TOK.TOKvoid
-		|| token.value == TOK.TOKwchar
-		;
 	}
 
 }

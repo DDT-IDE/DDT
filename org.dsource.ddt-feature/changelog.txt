@@ -2,7 +2,7 @@
 
 = DDT Change Log =
 
-== DDT 0.6.1 () ==
+== DDT 0.7.0 (development) ==
  * Holding Ctrl and clicking over a reference now always opens a new editor set on the reference target.
  * Fixed NPE bug when opening D search page with a package reference selected in the editor.
  * Fixed minor parser AFE bug with qualified reference at end of file.
