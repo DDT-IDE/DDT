@@ -14,5 +14,5 @@ DeclarationMixin(RefTemplateInstance(RefIdentifier RefIdentifier))
 #STRUCTURE_EXPECTED:  DefinitionNamedMixin(#@TYPE_REFS__NO_BROKEN DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   mixin #@TYPE_REFS__BROKEN #error(EXP_SEMICOLON) #@BREAK id ;
-#STRUCTURE_EXPECTED:  DeclarationMixin(#@TYPE_REFS__BROKEN)
+#PARSE(DECLARATION)   mixin #@TYPEREF_BROKEN__NoTypeAppend #error(EXP_SEMICOLON) #@BREAK id ;
+#STRUCTURE_EXPECTED:  DeclarationMixin(#@TYPEREF_BROKEN__NoTypeAppend)

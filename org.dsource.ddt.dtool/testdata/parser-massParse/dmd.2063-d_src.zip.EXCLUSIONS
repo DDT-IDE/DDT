@@ -1,9 +1,5 @@
 # TODO remove these valid entries:
 
-/druntime/import/core/simd.d
-/druntime/import/core/stdc/stdarg.d
-/druntime/src/core/simd.d
-/druntime/src/core/stdc/stdarg.d
 
 /phobos/std/exception.d
 /phobos/std/parallelism.d

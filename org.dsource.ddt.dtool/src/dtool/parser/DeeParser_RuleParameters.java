@@ -246,7 +246,6 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 		
 		public TemplateParameter convertToTemplate() {
 			if(attribs != null)  {
-				assertTrue(defId != null);
 				
 				for (int i = attribs.size()-1; i >= 0 ; i--) {
 					Token attribToken = attribs.get(i);
@@ -261,12 +260,15 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 					new TemplateTupleParam(defId) :
 					new TemplateTypeParam(defId, typeSpecialization, paramDefault.toReference().node));
 			} else {
-				defId = defId != null ? defId : new ProtoDefSymbol("", srAt(ref.getEndPos()), null);
+				defId = defId != null ? defId : createEmptyDefSymbol(ref.getEndPos());
 				return conclude(sr, 
 					new TemplateValueParam(ref, defId, valueSpecialization, paramDefault.toExpression().node));
 			}
 		}
-		
+	}
+	
+	public static ProtoDefSymbol createEmptyDefSymbol(int position) {
+		return new ProtoDefSymbol("", srAt(position), null);
 	}
 	
 	protected void setMode(TplOrFnMode newMode) {

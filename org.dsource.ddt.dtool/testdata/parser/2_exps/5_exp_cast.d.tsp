@@ -14,9 +14,11 @@ ExpCastQual( #@ExpIdentifier )
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@CAST_QUAL1《const●inout●immutable●shared》
 #@CAST_QUAL2《const shared●shared const●inout shared●shared inout》
+#@CAST_TYPEREFS《#NO_BROKEN_PARENS(flag)#@TYPE_REFS #?CANT_APPEND_TYPE{#:DISCARD_CASE}》
+
 #@CAST_START《
-  ►#?STRUCTURE_EXPECTED!【cast( #NO_BROKEN_PARENS(flag) #@TYPE_REFS )● ExpCast( #@TYPE_REFS 】● 
   ►#?STRUCTURE_EXPECTED!【cast( )●    ExpCast( #@NO_TYPEREF 】● 
+  ►#?STRUCTURE_EXPECTED!【cast( #@CAST_TYPEREFS )● ExpCast( #@CAST_TYPEREFS 】● 
   ►#?STRUCTURE_EXPECTED!【cast( #@CAST_QUAL1 )● ExpCastQual(】●
   ►#?STRUCTURE_EXPECTED!【cast( #@CAST_QUAL2 )● ExpCastQual(】●
 ¤》
@@ -32,8 +34,8 @@ ExpCastQual( #@ExpIdentifier )
 #PARSE(EXPRESSION)   cast (  #error(EXP_CLOSE_PARENS) #@BREAK / 7  
 #STRUCTURE_EXPECTED: ExpCast( #@NO_TYPEREF ) 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION)   cast ( #NO_BROKEN_PARENS(flag)#@TYPE_REFS #error(EXP_CLOSE_PARENS) #@BREAK foo  
-#STRUCTURE_EXPECTED: ExpCast( #@TYPE_REFS )
+#PARSE(EXPRESSION)   cast ( #@CAST_TYPEREFS #error(EXP_CLOSE_PARENS) #@BREAK foo  
+#STRUCTURE_EXPECTED: ExpCast( #@CAST_TYPEREFS )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   cast ( #@CAST_QUAL1 #@NO_TYPEREF #error(EXP_CLOSE_PARENS) #@BREAK
 #STRUCTURE_EXPECTED: ExpCast( RefTypeModifier(#@NO_TYPEREF) )

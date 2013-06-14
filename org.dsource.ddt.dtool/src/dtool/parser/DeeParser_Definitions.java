@@ -380,8 +380,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		case KW_ENUM:
 			return parseDeclarationBasicAttrib(parseBody);
 		case ATTRIBUTE_KW:
-			if(isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
-				break; // this will be parsed as a type modifier reference
+			if(isImmutabilitySpecifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
+				break; // this will be parsed as a type modifier
 			}
 			
 			return parseDeclarationBasicAttrib(parseBody);
@@ -1313,7 +1313,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		if(!tryConsume(DeeTokens.KW_MIXIN))
 			return null;
 		
-		NodeResult<Reference> tplInstanceResult = parseTypeReference_ToMissing(true);
+		NodeResult<Reference> tplInstanceResult = parseTypeReference_ToMissing();
 		Reference tplInstance = tplInstanceResult.node;
 		
 		if(!tplInstanceResult.ruleBroken && lookAhead() == DeeTokens.IDENTIFIER) {

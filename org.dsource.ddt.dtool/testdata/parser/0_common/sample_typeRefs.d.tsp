@@ -62,7 +62,7 @@ RefTemplateInstance(
   ►#@TYPE_REFS__QUALIFIER_ForDotOnly●
   ►#@TYPE_REFS__NO_BROKEN__INVALID_QUALIFIER●
   
-  ►#?STRUCTURE_EXPECTED!【const shared int* #NO_TYPE_APPEND(flag) #TM_ATTRIB_AMBIG(flag) ●
+  ►#?STRUCTURE_EXPECTED!【const shared int* #CANT_APPEND_TYPE(flag) #TM_ATTRIB_AMBIG(flag) ●
     #?TM_AMBIG_AS_RAW【RefTypePointer(RefPrimitive)●RefTypeModifier(RefTypeModifier( RefTypePointer(RefPrimitive) ))】
     】●
 ¤》
@@ -71,8 +71,8 @@ RefTemplateInstance(
   ►#?STRUCTURE_EXPECTED!【int[]*#TYPE_REF_POINTER(flag)●RefTypePointer(RefTypeDynArray(RefPrimitive))】●
 ¤》
 
-  #@TYPEREFS__NB_APPENDABLE《#@TYPE_REFS__NO_BROKEN #?NO_TYPE_APPEND【#:DISCARD_CASE】》
-#@TYPEREFS__NBNE_APPENDABLE《#@TYPE_REFS__NO_BROKEN #?NO_TYPE_APPEND【#:DISCARD_CASE】》
+  #@TYPEREFS__NB_APPENDABLE《#@TYPE_REFS__NO_BROKEN #?CANT_APPEND_TYPE【#:DISCARD_CASE】》
+#@TYPEREFS__NBNE_APPENDABLE《#@TYPE_REFS__NO_BROKEN #?CANT_APPEND_TYPE【#:DISCARD_CASE】》
 
 
 #@TYPE_REFS__BROKEN《
@@ -83,6 +83,14 @@ RefTemplateInstance(
 ►#?NO_BROKEN_PARENS【#:DISCARD_CASE●
   ►#?STRUCTURE_EXPECTED!【typeof("abc"  #error(EXP_CLOSE_PARENS) #MISSING_PARENS(flag)#TYPE_IS_BROKEN(flag)●
    RefTypeof(String)】】●
+   
+  ►#@TYPE_REFS__BROKEN__STABLE●
+¤》
+#@TYPE_REFS__BROKEN__STABLE《
+  ►#?STRUCTURE_EXPECTED!【#TYPE_IS_BROKEN(flag) typeof #error(EXP_OPEN_PARENS)【】 ●RefTypeof()】●
+  ►#?STRUCTURE_EXPECTED!【#TYPE_IS_BROKEN(flag) const  #@NO_TYPEREF #CANT_APPEND_TYPE(flag) ●
+    #?TM_AMBIG_AS_RAW【●RefTypeModifier(#@NO_TYPEREF)】 】●
+  ►#?STRUCTURE_EXPECTED!【#TYPE_IS_BROKEN(flag) __vector #error(EXP_OPEN_PARENS)【】 ●RefTypeModifier()】●
 ¤》
 
 
@@ -99,4 +107,7 @@ RefTemplateInstance(
 
 /------------------------------/
 
-#@TYPE_MODIFIERS《const●immutable●shared●inout》
+#@IMMUT_TYPE_MODIFIERS《const●immutable●shared●inout》 
+#@TYPE_MODIFIERS_NP《#@IMMUT_TYPE_MODIFIERS》 // These can be used with No Parentheses
+#@TYPE_MODIFIERS_WithParens《__vector》 
+#@TYPE_MODIFIERS《#@TYPE_MODIFIERS_NP●#@TYPE_MODIFIERS_WithParens》

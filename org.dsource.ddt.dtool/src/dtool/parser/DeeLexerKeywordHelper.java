@@ -127,6 +127,7 @@ public class DeeLexerKeywordHelper {
 		storeKeyword(temp, DeeTokens.KW___TRAITS);
 		storeKeyword(temp, DeeTokens.KW___GSHARED);
 		storeKeyword(temp, DeeTokens.KW___THREAD);
+		storeKeyword(temp, DeeTokens.KW___VECTOR);
 		
 		storeKeyword(temp, DeeTokens.KW___FILE__);
 		storeKeyword(temp, DeeTokens.KW___LINE__);

@@ -21,6 +21,8 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 		IMMUTABLE(DeeTokens.KW_IMMUTABLE),
 		SHARED(DeeTokens.KW_SHARED),
 		INOUT(DeeTokens.KW_INOUT),
+		
+		VECTOR(DeeTokens.KW___VECTOR),
 		;
 		public final String sourceValue;
 		

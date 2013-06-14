@@ -107,18 +107,24 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	}
 	
 	public NodeResult<Reference> parseTypeReference(boolean createMissing, boolean reportMissingError) {
+		return parseTypeReference(createMissing, reportMissingError, false);
+	}
+	
+	public NodeResult<Reference> parseTypeReference(boolean createMissing, boolean reportMissingError, 
+		boolean brokenIfMissing) {
 		NodeResult<Reference> typeRef = parseTypeReference();
 		if((typeRef == null || typeRef.node == null) && createMissing) {
-			return result(false, parseMissingTypeReference(reportMissingError));
+			return result(brokenIfMissing, parseMissingTypeReference(reportMissingError));
 		}
 		return typeRef;
 	}
 	
 	public NodeResult<Reference> parseTypeReference_ToMissing() {
-		return parseTypeReference_ToMissing(true);
+		return parseTypeReference(true, true);
 	}
-	public NodeResult<Reference> parseTypeReference_ToMissing(boolean reportMissingError) {
-		return parseTypeReference(true, reportMissingError);
+	
+	public NodeResult<Reference> parseTypeReference_ToMissing(boolean brokenIfMissing) {
+		return parseTypeReference(true, true, brokenIfMissing);
 	}
 	
 	public Reference parseMissingTypeReference(boolean reportMissingError) {
@@ -202,6 +208,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		case KW_IMMUTABLE: return TypeModifierKinds.IMMUTABLE;
 		case KW_SHARED: return TypeModifierKinds.SHARED;
 		case KW_INOUT: return TypeModifierKinds.INOUT;
+		case KW___VECTOR: return TypeModifierKinds.VECTOR;
 		default:
 			return null;
 		}
@@ -209,6 +216,15 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	
 	protected static boolean isTypeModifier(DeeTokens tokenType) {
 		return determineTypeModifier(tokenType) != null;
+	}
+	
+	protected static boolean isImmutabilitySpecifier(DeeTokens tokenType) {
+		switch (tokenType) {
+		case KW_CONST: case KW_IMMUTABLE: case KW_SHARED: case KW_INOUT: 
+			return true;
+		default:
+			return false;
+		}
 	}
 	
 	public RefIdentifier parseRefIdentifier() {
@@ -257,14 +273,14 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		Reference ref = null;
 		boolean hasParens = false;
 		if(parse.consumeOptional(DeeTokens.OPEN_PARENS)) {
-			ref = parseTypeReference_ToMissing(true).node; 
+			ref = parseTypeReference_ToMissing().node;
 			parse.consumeRequired(DeeTokens.CLOSE_PARENS);
 			hasParens = true;
 		} else {
-			ref = parse.checkResult(parseTypeReference());
-			if(ref == null) {
-				ref = parseMissingTypeReference(RULE_REFERENCE);
-				parse.setRuleBroken(true);
+			if(modKind == TypeModifierKinds.VECTOR) {
+				parse.consumeRequired(DeeTokens.OPEN_PARENS);
+			} else {
+				ref = parse.checkResult(parseTypeReference_ToMissing(true));
 			}
 		}
 		return parse.resultConclude(new RefTypeModifier(modKind, ref, hasParens));
@@ -524,7 +540,7 @@ protected class ParseRule_Expression {
 			prefixExp = (Expression) prefixExpResolvable;
 		} else {
 			Reference ref = (Reference) prefixExpResolvable;
-			boolean isTypeAsExpError = refIsErrorToUseInExp(ref, breakRule || lookAhead() == DeeTokens.OPEN_PARENS);
+			boolean isTypeAsExpError = !refIsAllowedInExp(ref, breakRule || lookAhead() == DeeTokens.OPEN_PARENS);
 			prefixExp = createExpReference(ref, isTypeAsExpError);
 		}
 		
@@ -880,22 +896,24 @@ protected class ParseRule_Expression {
 		
 } /* ---------------- ParseRule_TypeOrExp END----------------*/
 	
-	protected static boolean refIsErrorToUseInExp(Reference ref, boolean allowOpCallTypeRefs) {
+	protected static boolean refIsAllowedInExp(Reference ref, boolean allowOpCallTypeRefs) {
 		switch (ref.getNodeType()) {
 		case REF_PRIMITIVE:
 		case REF_TYPE_FUNCTION:
-			return true;
+			return false;
 		case REF_MODIFIER:
+			if(allowOpCallTypeRefs == false)
+				return false;
 			RefTypeModifier refModifier = (RefTypeModifier) ref;
-			return allowOpCallTypeRefs == false ? false : refIsErrorToUseInExp(refModifier.ref, true);
+			return refModifier.ref == null ? true : refIsAllowedInExp(refModifier.ref, true);
 		case REF_TYPEOF:
-			return allowOpCallTypeRefs == false;
+			return allowOpCallTypeRefs;
 		case REF_TYPE_DYN_ARRAY:
 		case REF_TYPE_POINTER:
 		case REF_INDEXING:
-			return true;
-		default:
 			return false;
+		default:
+			return true;
 		}
 	}
 	
@@ -1288,7 +1306,7 @@ protected class ParseRule_Expression {
 			}
 			if(parse.ruleBroken) break parsing;
 			
-			type = parseTypeReference_ToMissing(true).node;
+			type = parseTypeReference_ToMissing().node;
 			parse.setRuleBroken(isMissing(type));
 			if(parse.ruleBroken) break parsing;
 			
@@ -1335,7 +1353,7 @@ protected class ParseRule_Expression {
 			
 			qualifier = parseCastQualifier();
 			if(qualifier == null) {
-				type = parseTypeReference_ToMissing(false).node;
+				type = parseTypeReference(true, false).node;
 			}
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			
@@ -1438,7 +1456,7 @@ protected class ParseRule_Expression {
 	}
 	
 	protected ExpIsSpecialization determineIsExpArchetype() {
-		if(isTypeModifier(lookAhead()) && 
+		if(isImmutabilitySpecifier(lookAhead()) && 
 			(lookAhead(1) == DeeTokens.OPEN_PARENS || canParseTypeReferenceStart(lookAhead(1))))
 			return null;
 		

@@ -10,8 +10,8 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
 #STRUCTURE_EXPECTED:  #?TM_ATTRIB_AMBIG【DeclarationBasicAttrib(*)●
 IncompleteDeclaration(#@TYPEREF_NBNE)】 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@TYPEREF_BROKEN /*NoMissingExp*/ #@BREAK #@ReqSemicolon fooB 
-#STRUCTURE_EXPECTED:  IncompleteDeclaration(#@TYPEREF_BROKEN)
+#PARSE(DECLARATION)   #@TYPEREF_BROKEN__NoTypeAppend /*NoMissingExp*/ #@BREAK #@ReqSemicolon fooB 
+#STRUCTURE_EXPECTED:  IncompleteDeclaration(#@TYPEREF_BROKEN__NoTypeAppend)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@TYPEREF_NBNE fooB #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  #?TM_ATTRIB_AMBIG【DeclarationBasicAttrib(*)●

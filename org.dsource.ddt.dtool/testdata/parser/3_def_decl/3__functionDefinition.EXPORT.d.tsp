@@ -7,12 +7,15 @@
 #@BREAK_Pr《 #?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS) #@BREAK● $ 】  》
 
 #@PARAM_ATTRIB_NOTM《auto●final●in●lazy●out●ref●scope●in lazy ref ●const ref》
-#@PARAM_ATTRIB《#@PARAM_ATTRIB_NOTM #FN_ONLY(test)●#@TYPE_MODIFIERS》
+#@PARAM_ATTRIB《#@PARAM_ATTRIB_NOTM #FN_ONLY(test)●#@TYPE_MODIFIERS_NP》
 #@PARAM_ATTRIB_ORNO《/*NONE*/●#@PARAM_ATTRIB》
 #@PARAM_ATTRIB_SAMP《/*NONE*/●in #FN_ONLY(test)●const lazy #FN_ONLY(test)》
 
 
 #@FN_PARAM_BASE《
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@NO_TYPEREF #FN_EMPTY_PARAM(flag) ● NamelessParameter(#@NO_TYPEREF)】●
+  ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@TYPE_REFS__BROKEN__STABLE #?CANT_APPEND_TYPE{#:DISCARD_CASE} ●NamelessParameter(#@TYPE_REFS__BROKEN__STABLE)】●
+  
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_ORNO #@TYPEREF_NBNE foo ●FunctionParameter(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo foo ... #FN_ONLY(test) ●FunctionParameter(RefIdentifier DefSymbol)】●
   ►#?STRUCTURE_EXPECTED!【#@PARAM_ATTRIB_SAMP Foo foo = #@EXP_ASSIGN●    FunctionParameter(RefIdentifier DefSymbol #@EXP_ASSIGN)】●
@@ -37,7 +40,7 @@
 
 Test function/template interactions - paramDefault convertion :
 #@FN_PARAMS_SINGLE《
-  ►#@FN_PARAM_BASE●
+  ►#@FN_PARAM_BASE ●
   
   ►#?STRUCTURE_EXPECTED!【Foo foo=bar[] ●FunctionParameter(RefIdentifier DefSymbol ExpSlice(#@ExpIdentifier))】●
   ►#?STRUCTURE_EXPECTED!【Foo foo=bar* #@NO_EXP●FunctionParameter(RefIdentifier DefSymbol ExpInfix(#@ExpIdentifier #@NO_EXP))】●
@@ -59,7 +62,7 @@ Test function/template interactions - paramDefault convertion :
 // TODO VARIADIC MUST BE LAST ERROR
 
 #@FN_PARAMS《
-  ►#@FN_PARAMS_SINGLE●
+  ►#@FN_PARAMS_SINGLE #?FN_EMPTY_PARAM{#:DISCARD_CASE}●
   ►#@FN_PARAMS_MULTI●
 ¤》
 #@FN_PARAMS__LITE《
@@ -71,7 +74,7 @@ Test function/template interactions - paramDefault convertion :
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Function attributes
 #@FN_ATTRIB《#?STRUCTURE_EXPECTED!【
-►#@《#@TYPE_MODIFIERS●nothrow●pure●
+►#@《#@IMMUT_TYPE_MODIFIERS●nothrow●pure●
   ►@property●@safe●@trusted●@system●@disable● 
   ►@property @safe●nothrow @property pure @safe @disable》
 ● 】》
