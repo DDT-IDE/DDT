@@ -1,5 +1,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
+TODO defvar and defFunc with attribs
+
 #@DDOC_SAMPLE《/+NotDDOC+/#DDOC_TEST(test)【/++ StartDDOC +/】》
 
 #@DDOC《 ●/++/●/**/#DDOC_TEST(test)【/** StartDDOC */】  》

@@ -356,14 +356,13 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	public NodeResult<? extends DeclarationAttrib> parseAttributeDeclaration(boolean statementsOnly, 
 		boolean parseBody) {
+		/*BUG here bodies must conform to statementsOnly*/
 		switch (lookAheadGrouped()) {
 		case KW_ALIGN: 
-			if(statementsOnly) return nullResult();
 			return parseDeclarationAlign(parseBody);
 		case KW_PRAGMA: 
 			return parseDeclarationPragma(statementsOnly, parseBody);
 		case PROTECTION_KW: 
-			if(statementsOnly) return nullResult();
 			return parseDeclarationProtection(parseBody);
 		case KW_EXTERN: 
 			if(lookAhead(1) == DeeTokens.OPEN_PARENS) {

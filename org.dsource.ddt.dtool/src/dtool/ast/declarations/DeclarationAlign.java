@@ -5,8 +5,16 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.statements.IStatement;
 
-public class DeclarationAlign extends DeclarationAttrib implements IDeclaration {
+/**
+ * Align declaration 
+ * 
+ * Technicaly DMD doesn't accept this declaration as a statement, but structurally we allow it,
+ * even though a syntax or semantic error may still be issued.
+ * 
+ */
+public class DeclarationAlign extends DeclarationAttrib implements IDeclaration, IStatement {
 	
 	public final String alignNum;
 	

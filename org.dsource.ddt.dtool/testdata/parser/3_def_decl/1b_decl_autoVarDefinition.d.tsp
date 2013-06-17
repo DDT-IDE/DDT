@@ -8,23 +8,19 @@ DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@ExpIdentifier) )
 DeclarationBasicAttrib( DefAutoVariable(DefSymbol Integer DefVarFragment(DefSymbol Integer)) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test normal var definition is not broken
-#@SIMPLE_ATTRIBS__SAMPLE #@TYPEREF_NBNE fooC = #@EXP_ASSIGN__LITE;
-#STRUCTURE_EXPECTED: #?TM_ATTRIB_AMBIG【#:DISCARD_CASE】
-#@SIMPLE_ATTRIBS__SAMPLE DefVariable(#@TYPEREF_NBNE DefSymbol #@EXP_ASSIGN__LITE ) )
+#@ATTRIBS_AUTODecl__SAMPLE #@TYPEREF_NBNE fooC = #@EXP_ASSIGN__LITE;
+#STRUCTURE_EXPECTED: #?TM_ATTRIB_AMBIG【#:DISCARD_CASE】 /* TODO include attris in defVariable*/
+#@ATTRIBS_AUTODecl__SAMPLE DefVariable(#@TYPEREF_NBNE DefSymbol #@EXP_ASSIGN__LITE ) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test composite attribs dont make auto decl
-extern(C) foo #error(EXP_IDENTIFIER) ;
-align foo #error(EXP_IDENTIFIER) ;
-pragma(msg) foo #error(EXP_IDENTIFIER) ;
+#@COMPLEX_ATTRIBS foo #error(EXP_IDENTIFIER) ;
 #STRUCTURE_EXPECTED:
-DeclarationLinkage( IncompleteDeclaration(RefIdentifier) )
-DeclarationAlign( IncompleteDeclaration(RefIdentifier) )
-DeclarationPragma(Symbol IncompleteDeclaration(RefIdentifier) )
+#@COMPLEX_ATTRIBS IncompleteDeclaration(RefIdentifier) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@ATTRIBS_STCLike fooB = #@EXP_ASSIGN__LITE;
+#@ATTRIBS_AUTODecl fooB = #@EXP_ASSIGN__LITE;
 #STRUCTURE_EXPECTED:
-#@ATTRIBS_STCLike DefAutoVariable(DefSymbol #@EXP_ASSIGN__LITE ) )
+#@ATTRIBS_AUTODecl DefAutoVariable(DefSymbol #@EXP_ASSIGN__LITE ) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 const shared fooB = #@EXP_ASSIGN__LITE;
 #STRUCTURE_EXPECTED:

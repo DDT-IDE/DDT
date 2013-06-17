@@ -10,9 +10,17 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.ISourceRepresentation;
 import dtool.ast.definitions.Definition;
+import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public class DeclarationProtection extends DeclarationAttrib implements IDeclaration {
+/**
+ * Protection declaration 
+ * 
+ * Technicaly DMD doesn't accept this declaration as a statement, but structurally we allow it,
+ * even though a syntax or semantic error may still be issued.
+ * 
+ */
+public class DeclarationProtection extends DeclarationAttrib implements IDeclaration, IStatement {
 	
 	public enum Protection implements ISourceRepresentation {
 	    PRIVATE,

@@ -1,8 +1,17 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
+#@PROT_ATTRIBS《
+ ►#?STRUCTURE_EXPECTED!【private●DeclarationProtection( 】●
+ ►#?STRUCTURE_EXPECTED!【package●DeclarationProtection( 】●
+ ►#?STRUCTURE_EXPECTED!【protected●DeclarationProtection( 】●
+ ►#?STRUCTURE_EXPECTED!【public●DeclarationProtection( 】●
+ ►#?STRUCTURE_EXPECTED!【export●DeclarationProtection( 】●
+¤》
+
+
 // ref attrib is not documented in spec as an attrib as of 2.062
 
-#@STC_NOTM《
+#@BASIC_ATTRIBS《
  ►#?STRUCTURE_EXPECTED!【abstract●DeclarationBasicAttrib( 】●
  ►#?STRUCTURE_EXPECTED!【auto●DeclarationBasicAttrib( 】●
  
@@ -23,45 +32,40 @@
  ►#?STRUCTURE_EXPECTED!【__thread /*This attrib is not documented in spec?*/●DeclarationBasicAttrib( 】●
 ¤》
 
-#@PROT_ATTRIB【#?STRUCTURE_EXPECTED!【#@《private●package●protected●public●export》● DeclarationProtection( 】】
+#@BASIC_ATTRIB_ENUM《
+ ►#?STRUCTURE_EXPECTED!【enum #ENUM_ATTRIB(flag)●DeclarationBasicAttrib( 】●
+¤》
 
-#@TYPEMOD_ATTRIB《
+#@TYPEMOD_ATTRIBS《
  ►#?STRUCTURE_EXPECTED!【const●DeclarationBasicAttrib( 】●
  ►#?STRUCTURE_EXPECTED!【immutable●DeclarationBasicAttrib( 】●
  ►#?STRUCTURE_EXPECTED!【inout●DeclarationBasicAttrib( 】●
  ►#?STRUCTURE_EXPECTED!【shared●DeclarationBasicAttrib( 】●
 ¤》
 
-#@AT_ATTRIB【#?STRUCTURE_EXPECTED!【#@《@property●@safe●@trusted●@  system●@disable●@ #error(INVALID_ATTRIB_ID){xxx}》●
+#@AT_ATTRIBS【#?STRUCTURE_EXPECTED!【#@《@property●@safe●@trusted●@  system●@disable●@ #error(INVALID_ATTRIB_ID){xxx}》●
   DeclarationAtAttrib(Symbol 】】
 
 
-#@SIMPLE_ATTRIBS_NOTM《
- ►#@STC_NOTM●
- ►#@PROT_ATTRIB●
- ►#@AT_ATTRIB●
-¤》
-#@SIMPLE_ATTRIBS《
- ►#@SIMPLE_ATTRIBS_NOTM●
- ►#@TYPEMOD_ATTRIB●
+// These attribs enable auto declarations
+#@ATTRIBS_AUTODecl《
+ ►#@PROT_ATTRIBS●
+ ►#@BASIC_ATTRIBS●
+ ►#@BASIC_ATTRIB_ENUM●
+ ►#@TYPEMOD_ATTRIBS●
+ ►#@AT_ATTRIBS●
 ¤》
 
-#@SIMPLE_ATTRIBS__SAMPLE《
+#@ATTRIBS_AUTODecl__SAMPLE《
  ►#?STRUCTURE_EXPECTED!【package●DeclarationProtection( 】●
  ►#?STRUCTURE_EXPECTED!【static●DeclarationBasicAttrib( 】●
+ ►#@BASIC_ATTRIB_ENUM●
+ ►#?STRUCTURE_EXPECTED!【const●DeclarationBasicAttrib( 】●
  ►#?STRUCTURE_EXPECTED!【@safe●DeclarationAtAttrib(Symbol 】●
 ¤》
 
-#@ATTRIBS_STCLike《
- ►#@STC_NOTM●
- ►#@TYPEMOD_ATTRIB●
- ►#@AT_ATTRIB●
-¤》
 
-#@SIMPLE_ATTRIBS_ENUM《
- ►#?STRUCTURE_EXPECTED!【enum●DeclarationBasicAttrib( 】●
-¤》
-
+/----------------  Composite attributes  ----------------/
 
 #@LINKAGE_TYPE{C,C++,D,Windows,Pascal,System}
 #@EXTERN_ATTRIB《
@@ -83,18 +87,22 @@
  ►#?STRUCTURE_EXPECTED!【pragma ( #error(EXP_ID) )● DeclarationPragma(Symbol 】●
 ¤》
 
-    #@ATTRIBS_NoENUM《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIBS》
-#@ATTRIBS_NoTMNoENUM《#@EXTERN_ATTRIB●#@ALIGN_ATTRIB●#@PRAGMA_ATTRIB#PRAGMA(flag)●#@SIMPLE_ATTRIBS_NOTM》
-#@ATTRIBS_NoTM《#@SIMPLE_ATTRIBS_ENUM●#@ATTRIBS_NoTMNoENUM》
-     #@ATTRIBS《#@SIMPLE_ATTRIBS_ENUM●#@ATTRIBS_NoENUM》
 
-#@ATTRIBS_StOnly《#@EXTERN_ATTRIB●#@PRAGMA_ATTRIB●#@SIMPLE_ATTRIBS_STCOnly●#@SIMPLE_ATTRIBS_ENUM》
+#@COMPLEX_ATTRIBS《
+ ►#@EXTERN_ATTRIB●
+ ►#@ALIGN_ATTRIB●
+ ►#@PRAGMA_ATTRIB #PRAGMA(flag)●
+¤》
 
-     
+
+#@ATTRIBS《#@ATTRIBS_AUTODecl●#@COMPLEX_ATTRIBS》
+
 #@ATTRIBS__LITE《
  ►#?STRUCTURE_EXPECTED!【extern(D)● DeclarationLinkage( 】●
  ►#?STRUCTURE_EXPECTED!【align(1)● DeclarationAlign( 】●
- ►#?STRUCTURE_EXPECTED!【pragma(foo, 123)● DeclarationPragma(Symbol Integer】●
- ►#@SIMPLE_ATTRIBS__SAMPLE●
- ►#@SIMPLE_ATTRIBS_ENUM●
+ ►#?STRUCTURE_EXPECTED!【pragma(foo, 123) #PRAGMA(flag)● DeclarationPragma(Symbol Integer】●
+ ►#@ATTRIBS_AUTODecl__SAMPLE●
 ¤》
+
+#@ATTRIBS_NoENUM《#@ATTRIBS #?ENUM_ATTRIB{#:DISCARD_CASE}》
+

@@ -65,16 +65,11 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(STATEMENT)    #@ATTRIBS_STCLike int foo; #?SYNCHRONIZED_ATTRIB{#:DISCARD_CASE}
-#STRUCTURE_EXPECTED: #@ATTRIBS_STCLike DefVariable(RefPrimitive DefSymbol) )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)    #@ATTRIBS int foo; #?SYNCHRONIZED_ATTRIB{#:DISCARD_CASE}
+#STRUCTURE_EXPECTED: #@ATTRIBS DefVariable(RefPrimitive DefSymbol) )
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ this test is commented since prot attribs are actually allowed
 #PARSE(STATEMENT)  #@NULL public { void foo ; }
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)    pragma(foo) void foo;
-#STRUCTURE_EXPECTED: DeclarationPragma(Symbol DefinitionVariable(RefPrimitive DefSymbol))
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)  extern(C) { void foo ; }
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib TODO
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO: fix contents of attribute declarations:
 #PARSE(STATEMENT) const { void foo ; }
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib TODO: basic attrib , this is wrong
