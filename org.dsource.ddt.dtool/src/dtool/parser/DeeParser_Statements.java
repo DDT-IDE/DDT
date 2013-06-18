@@ -213,7 +213,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 			return parseStatementExpression();
 		}
 		
-		NodeResult<? extends IDeclaration> declResult = parseDeclaration(false, true);
+		NodeResult<? extends IDeclaration> declResult = parseDeclaration(true);
 		IDeclaration decl = declResult.node;
 		
 		if(decl instanceof IncompleteDeclaration || decl == null) {

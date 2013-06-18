@@ -1,37 +1,20 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic cases
 auto foo = 2;
-static bar = foo;
-auto xa = 456, xb = 123;
 #STRUCTURE_EXPECTED:
-DeclarationBasicAttrib( DefAutoVariable(DefSymbol Integer) )
-DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@ExpIdentifier) )
-DeclarationBasicAttrib( DefAutoVariable(DefSymbol Integer DefVarFragment(DefSymbol Integer)) )
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test normal var definition is not broken
-#@ATTRIBS_AUTODecl__SAMPLE #@TYPEREF_NBNE fooC = #@EXP_ASSIGN__LITE;
-#STRUCTURE_EXPECTED: #?TM_ATTRIB_AMBIG【#:DISCARD_CASE】 /* TODO include attris in defVariable*/
-#@ATTRIBS_AUTODecl__SAMPLE DefVariable(#@TYPEREF_NBNE DefSymbol #@EXP_ASSIGN__LITE ) )
-
+DefAutoVariable( AttribBasic DefSymbol Integer)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)  #@ATTRIBS_AUTODecl fooB = #@EXP_ASSIGN__LITE;
+#STRUCTURE_EXPECTED: DefAutoVariable(#@ATTRIBS_AUTODecl DefSymbol #@EXP_ASSIGN__LITE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test composite attribs dont make auto decl
-#@COMPLEX_ATTRIBS foo #error(EXP_IDENTIFIER) ;
-#STRUCTURE_EXPECTED:
-#@COMPLEX_ATTRIBS IncompleteDeclaration(RefIdentifier) )
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@ATTRIBS_AUTODecl fooB = #@EXP_ASSIGN__LITE;
-#STRUCTURE_EXPECTED:
-#@ATTRIBS_AUTODecl DefAutoVariable(DefSymbol #@EXP_ASSIGN__LITE ) )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-const shared fooB = #@EXP_ASSIGN__LITE;
-#STRUCTURE_EXPECTED:
-DeclarationBasicAttrib(DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@EXP_ASSIGN__LITE ) ))
+#PARSE(DECLARATION)  #@COMPLEX_ATTRIBS foo #@NO_DEFID #@SEMICOLON_BREAK = #@EXP_ASSIGN__LITE; 
+#STRUCTURE_EXPECTED: IncompleteDeclaration(#@COMPLEX_ATTRIBS RefIdentifier)
                                         
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@AUTO_START《
-  ►#?STRUCTURE_EXPECTED!【auto● DeclarationBasicAttrib( 】●
-  ►#?STRUCTURE_EXPECTED!【static● DeclarationBasicAttrib( 】●
-  ►#?STRUCTURE_EXPECTED!【const● DeclarationBasicAttrib( 】●
-  ►#?STRUCTURE_EXPECTED!【@disable● DeclarationAtAttrib(Symbol 】●
+  ►#?STRUCTURE_EXPECTED!【auto● AttribBasic 】●
+  ►#?STRUCTURE_EXPECTED!【static● AttribBasic 】●
+  ►#?STRUCTURE_EXPECTED!【const● AttribBasic 】●
+  ►#?STRUCTURE_EXPECTED!【@disable● AttribAt(Symbol) 】●
 ¤》
 
 #@AUTO_INIT《
@@ -44,10 +27,10 @@ DeclarationBasicAttrib(DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@EXP_A
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@AUTO_START foo #@AUTO_INIT #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  #@AUTO_START DefAutoVariable(DefSymbol #@AUTO_INIT ) )
+#STRUCTURE_EXPECTED:  DefAutoVariable(#@AUTO_START DefSymbol #@AUTO_INIT )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   auto foo = #@INITIALIZERS__SAMPLE , #@AUTO_FRAG #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  DeclarationBasicAttrib( DefAutoVariable(DefSymbol #@INITIALIZERS__SAMPLE #@AUTO_FRAG ) )
+#STRUCTURE_EXPECTED:  DefAutoVariable(AttribBasic DefSymbol #@INITIALIZERS__SAMPLE #@AUTO_FRAG )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   auto foo = #@INITIALIZERS__SAMPLE , foo2 #error(EXP_ASSIGN)【】 , #@AUTO_FRAG ;
-#STRUCTURE_EXPECTED:  DeclarationBasicAttrib(DefAutoVariable(? #@INITIALIZERS__SAMPLE DefVarFragment(DefSymbol) #@AUTO_FRAG ) )
+#STRUCTURE_EXPECTED:  DefAutoVariable(AttribBasic DefSymbol #@INITIALIZERS__SAMPLE DefVarFragment(DefSymbol) #@AUTO_FRAG )

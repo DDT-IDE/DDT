@@ -1,41 +1,26 @@
 package dtool.ast.declarations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
-import dtool.ast.statements.BlockStatement;
-import dtool.ast.statements.IStatement;
 
-public class DeclarationPragma extends DeclarationAttrib implements IDeclaration, IStatement {
+public class AttribPragma extends Attribute {
 	
-	public final boolean isStatement;
 	public final Symbol pragmaId;
 	public final NodeListView<Expression> expList;
 	
-	public DeclarationPragma(Symbol id, NodeListView<Expression> expList, AttribBodySyntax abs, ASTNode bodyDecls) {
-		super(abs, bodyDecls);
+	public AttribPragma(Symbol id, NodeListView<Expression> expList) {
 		this.pragmaId = parentize(id);
 		this.expList = parentize(expList);
-		this.isStatement = false;
-	}
-	
-	public DeclarationPragma(Symbol id, NodeListView<Expression> expList, IStatement thenBody) {
-		super(AttribBodySyntax.SINGLE_DECL, (ASTNode) thenBody);
-		assertTrue(!(thenBody instanceof BlockStatement));
-		this.pragmaId = parentize(id);
-		this.expList = parentize(expList);
-		this.isStatement = true;
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.DECLARATION_PRAGMA;
+		return ASTNodeTypes.ATTRIB_PRAGMA;
 	}
 	
 	@Override
@@ -44,7 +29,6 @@ public class DeclarationPragma extends DeclarationAttrib implements IDeclaration
 		if(children) {
 			TreeVisitor.acceptChildren(visitor, pragmaId);
 			TreeVisitor.acceptChildren(visitor, expList);
-			TreeVisitor.acceptChildren(visitor, body);
 		}
 		visitor.endVisit(this);
 	}
@@ -56,7 +40,6 @@ public class DeclarationPragma extends DeclarationAttrib implements IDeclaration
 			cp.append(pragmaId);
 			cp.appendNodeList(", ", expList, ", ", "");
 		}
-		cp.append(") ");
-		toStringAsCode_body(cp);
+		cp.append(")");
 	}
 }

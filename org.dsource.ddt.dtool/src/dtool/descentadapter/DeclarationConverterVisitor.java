@@ -4,6 +4,7 @@ package dtool.descentadapter;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.AggregateDeclaration;
 import descent.internal.compiler.parser.AnonDeclaration;
@@ -36,22 +37,25 @@ import dtool.ast.ASTNode;
 import dtool.ast.NodeList_OLD;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
+import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.DeclarationAliasThis;
-import dtool.ast.declarations.DeclarationAlign;
+import dtool.ast.declarations.AttribAlign;
+import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
-import dtool.ast.declarations.DeclarationBasicAttrib;
-import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
+import dtool.ast.declarations.AttribBasic;
+import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.DeclarationDebugVersionSpec;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.DeclarationInvariant;
-import dtool.ast.declarations.DeclarationLinkage;
-import dtool.ast.declarations.DeclarationLinkage.Linkage;
+import dtool.ast.declarations.AttribLinkage;
+import dtool.ast.declarations.AttribLinkage.Linkage;
 import dtool.ast.declarations.DeclarationPostBlit;
-import dtool.ast.declarations.DeclarationPragma;
-import dtool.ast.declarations.DeclarationProtection;
-import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.ast.declarations.AttribPragma;
+import dtool.ast.declarations.AttribProtection;
+import dtool.ast.declarations.AttribProtection.Protection;
 import dtool.ast.declarations.DeclBlock;
+import dtool.ast.declarations.DeclList;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
@@ -195,13 +199,21 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 
 	/*  ---------  Decls  --------  */
 	
+	@SuppressWarnings("unchecked")
+	protected static ArrayView<Attribute> attribs(Attribute node) {
+		if(node == null) 
+			return null;
+		return new ArrayView<>(array(node));
+	}
 
 	@Override
 	public boolean visit(descent.internal.compiler.parser.AlignDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList_OLD body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
-		return endAdapt(connect(sr, new DeclarationAlign(null, AttribBodySyntax.COLON, body)));
+		return endAdapt(connect(sr,
+			new DeclarationAttrib(attribs(new AttribAlign(null)), AttribBodySyntax.COLON, body)
+			));
 	}
 
 	@Override
@@ -326,7 +338,9 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		NodeList_OLD body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		SourceRange sr = DefinitionConverter.sourceRange(elem);
 		Linkage linkage = fromLINK(elem.linkage);
-		return endAdapt(connect(sr, new DeclarationLinkage(linkage.name, AttribBodySyntax.SINGLE_DECL, body)));
+		return endAdapt(connect(sr, new DeclarationAttrib(
+			attribs(new AttribLinkage(linkage.name)), AttribBodySyntax.SINGLE_DECL, body) 
+			));
 	}
 	
     public static Linkage fromLINK(LINK linkage) {
@@ -347,11 +361,13 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList_OLD body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
-			new DeclarationPragma(
-				DefinitionConverter.convertId(elem.ident),
-				DescentASTConverter.convertManyNL(elem.args, Expression.class, convContext),
+			new DeclarationAttrib(attribs(
+				new AttribPragma(
+					DefinitionConverter.convertId(elem.ident),
+					DescentASTConverter.convertManyNL(elem.args, Expression.class, convContext)
+				)),
 				AttribBodySyntax.BRACE_BLOCK, body
-			)
+				)
 		));
 	}
 
@@ -359,8 +375,11 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	public boolean visit(descent.internal.compiler.parser.ProtDeclaration elem) {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList_OLD body = DeclarationConverter.createNodeList2(elem.decl, convContext);
-		return endAdapt(connect(DefinitionConverter.sourceRange(elem), new DeclarationProtection(
-			fromPROT(elem.protection), AttribBodySyntax.BRACE_BLOCK, body)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
+			new DeclarationAttrib(
+				attribs(new AttribProtection(fromPROT(elem.protection))), 
+				AttribBodySyntax.BRACE_BLOCK, body)
+		));
 	}
 	
 	public static Protection fromPROT(PROT prot) {
@@ -385,8 +404,10 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 		DeclarationConverter.doSetParent(elem, elem.decl);
 		NodeList_OLD body = DeclarationConverter.createNodeList2(elem.decl, convContext);
 		AttributeKinds declAttrib = AttributeKinds.FINAL; // WRONG, but dont care, deprecated
-		return endAdapt(connect(DefinitionConverter.sourceRange(elem), 
-			new DeclarationBasicAttrib(declAttrib, AttribBodySyntax.BRACE_BLOCK, body)));
+		return endAdapt(connect(DefinitionConverter.sourceRange(elem),
+			new DeclarationAttrib(
+				attribs(new AttribBasic(declAttrib)), AttribBodySyntax.BRACE_BLOCK, body)
+		));
 	}
 	
 	@Override
@@ -530,6 +551,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			return endAdapt(defUnitInfo.sourceRange,
 				new DefinitionVariable.DefinitionAutoVariable(
 				defUnitInfo.commentsToToken(), 
+				null,
 				defUnitInfo.defSymbol,
 				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null
 			));
@@ -538,6 +560,7 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			return endAdapt(defUnitInfo.sourceRange, 
 				new DefinitionVariable(
 				defUnitInfo.commentsToToken(),
+				null,
 				defUnitInfo.defSymbol,
 				typeRef,
 				null,

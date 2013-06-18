@@ -41,14 +41,14 @@ import descent.internal.compiler.parser.WhileStatement;
 import descent.internal.compiler.parser.WithStatement;
 import dtool.ast.NodeList_OLD;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.AttribPragma;
+import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
-import dtool.ast.declarations.DeclarationPragma;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingExpression;
-import dtool.ast.expressions.Resolvable;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.CatchClause;
 import dtool.ast.statements.ForeachRangeExpression;
@@ -69,8 +69,8 @@ import dtool.ast.statements.StatementGotoCase;
 import dtool.ast.statements.StatementGotoDefault;
 import dtool.ast.statements.StatementIf;
 import dtool.ast.statements.StatementLabel;
-import dtool.ast.statements.StatementScope;
 import dtool.ast.statements.StatementReturn;
+import dtool.ast.statements.StatementScope;
 import dtool.ast.statements.StatementSwitch;
 import dtool.ast.statements.StatementSynchronized;
 import dtool.ast.statements.StatementThrow;
@@ -291,12 +291,13 @@ public class StatementConverterVisitor extends ExpressionConverterVisitor {
 	public boolean visit(PragmaStatement element) {
 		NodeList_OLD body = DeclarationConverter.createNodeList2(element.body, convContext);
 		return endAdapt(DefinitionConverter.sourceRange(element),
-			new DeclarationPragma(
-				DefinitionConverter.convertId(element.ident),
-				DescentASTConverter.convertManyNL(element.args, Expression.class, convContext),
-				AttribBodySyntax.BRACE_BLOCK, body
-			)
-		);
+			new DeclarationAttrib(attribs(
+				new AttribPragma(DefinitionConverter.convertId(element.ident),
+				DescentASTConverter.convertManyNL(element.args, Expression.class, convContext))
+			),
+			AttribBodySyntax.BRACE_BLOCK, 
+			body
+		));
 	}
 
 	@Override

@@ -113,7 +113,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	public NodeResult<Reference> parseTypeReference(boolean createMissing, boolean reportMissingError, 
 		boolean brokenIfMissing) {
 		NodeResult<Reference> typeRef = parseTypeReference();
-		if((typeRef == null || typeRef.node == null) && createMissing) {
+		if(isNull(typeRef) && createMissing) {
 			return result(brokenIfMissing, parseMissingTypeReference(reportMissingError));
 		}
 		return typeRef;

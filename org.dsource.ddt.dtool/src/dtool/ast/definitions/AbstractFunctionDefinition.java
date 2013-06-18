@@ -17,6 +17,7 @@ import java.util.List;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
+import dtool.ast.declarations.Attribute;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.Token;
@@ -27,17 +28,20 @@ import dtool.util.ArrayView;
 
 public abstract class AbstractFunctionDefinition extends Definition implements ICallableElement, IScopeNode {
 	
+	public final ArrayView<Attribute> attributes;
+	
 	public final ArrayView<TemplateParameter> tplParams;
 	public final ArrayView<IFunctionParameter> fnParams;
 	public final ArrayView<FunctionAttributes> fnAttributes;
 	public final Expression tplConstraint;
 	public final IFunctionBody fnBody;
 	
-	public AbstractFunctionDefinition(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
-			ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 
-			Expression tplConstraint, IFunctionBody fnBody) {
+	public AbstractFunctionDefinition(Token[] comments, ArrayView<Attribute> attributes, ProtoDefSymbol defId,
+		ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, 
+		ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint, IFunctionBody fnBody) {
 		super(comments, defId);
 		
+		this.attributes = parentize(attributes);
 		this.tplParams = parentize(tplParams);
 		this.fnParams = parentizeI(fnParams);
 		this.fnAttributes = fnAttributes;

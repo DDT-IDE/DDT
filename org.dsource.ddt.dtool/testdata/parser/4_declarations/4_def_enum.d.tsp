@@ -51,7 +51,7 @@ DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumM
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :duplicate test case, here for clarity 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   enum i = 4;
-#STRUCTURE_EXPECTED:  DeclarationBasicAttrib(DefinitionAutoVariable(DefSymbol Integer))
+#STRUCTURE_EXPECTED:  DefinitionAutoVariable(AttribBasic DefSymbol Integer)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   enum long x = 4;
-#STRUCTURE_EXPECTED:  DeclarationBasicAttrib(DefinitionVariable(RefPrimitive DefSymbol Integer))
+#STRUCTURE_EXPECTED:  DefinitionVariable(AttribBasic RefPrimitive DefSymbol Integer)

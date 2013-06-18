@@ -12,19 +12,21 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.lazyInitArrayList;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.NodeData;
 import dtool.ast.SourceRange;
+import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationAliasThis;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationAttrib;
+import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationInvariant;
 import dtool.ast.declarations.DeclarationPostBlit;
@@ -90,6 +92,7 @@ import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
+import dtool.util.SentinelArrayList;
 
 public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
@@ -111,7 +114,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return docComments;
 	}
 	
-	private static ArrayList<Token> END_DOCCOMMENTS_READ = new ArrayList<>(0);
+	private static ArrayList<Token> END_DOCCOMMENTS_READ = new SentinelArrayList<>();
 	
 	public class DefUnitParseHelper extends ParseHelper {
 		
@@ -129,6 +132,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 		
 		public Token[] parseEndDDocComments() {
+			assertTrue(comments != END_DOCCOMMENTS_READ);
 			
 			parsing: {
 				if(ruleBroken) break parsing;
@@ -243,17 +247,56 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	
 	public NodeResult<? extends IDeclaration> parseDeclaration() {
-		return parseDeclaration(false, false);
+		return parseDeclaration(false);
 	}
-	public NodeResult<? extends IDeclaration> parseDeclaration(boolean precedingIsSTCAttrib) {
-		return parseDeclaration(precedingIsSTCAttrib, false);
-	}
-	public NodeResult<? extends IDeclaration> parseDeclaration(boolean precedingIsSTCAttrib, boolean statementsOnly) {
-		DeeTokens laGrouped = assertNotNull_(lookAheadGrouped());
+	public NodeResult<? extends IDeclaration> parseDeclaration(boolean statementsOnly) {
+		NodeResult<? extends IDeclaration> nonAttributeDecl = parseNonAttributeDeclaration(statementsOnly);
+		if(nonAttributeDecl != null) {
+			return nonAttributeDecl;
+		}
 		
-		if(laGrouped == DeeTokens.EOF) {
+		DefUnitParseHelper parse = new DefUnitParseHelper();
+		ArrayView<Attribute> attributes = parseDefinitionAttributes(parse);
+		
+		if(parse.checkRuleBroken() == false) {
+			if(lookAhead() == DeeTokens.KW_THIS && !statementsOnly) {
+				return parseDefinitionConstructor_atThis(parse, attributes);
+			} else {
+				NodeResult<? extends IDeclaration> varOrFunction = parseDeclaration_varOrFunction(parse, attributes);
+				if(!isNull(varOrFunction)) {
+					return varOrFunction;
+				}
+			}
+		}
+		
+		if(attributes != null) {
+			parse.discardDocComments();
+			return parseDeclarationAttrib(parse, attributes, statementsOnly);
+		} else {
 			return declarationNullResult();
 		}
+	}
+	
+	public NodeResult<DeclarationAttrib> parseDeclarationAttrib(ParseHelper parse, ArrayView<Attribute> attributes,
+		boolean isStatement) {
+		if(parse.ruleBroken) {
+			return parse.resultConclude(new DeclarationAttrib(attributes, AttribBodySyntax.SINGLE_DECL, null));
+		}
+		
+		boolean isPragmaBody = getLastAttributeKind(attributes) == ASTNodeTypes.ATTRIB_PRAGMA;
+		if(isStatement) {
+			ASTNode body = isPragmaBody ? 
+				(ASTNode) parse.checkResult(thisParser().parseUnscopedStatement_toMissing()) :
+				parseMissingDeclaration(RULE_DECLARATOR);
+			return parse.resultConclude(new DeclarationAttrib(attributes, AttribBodySyntax.SINGLE_DECL, body));
+		} else {
+			AttribBodyParseRule ab = new AttribBodyParseRule();
+			ab.parseAttribBody(parse, true, isPragmaBody);
+			return parse.resultConclude(new DeclarationAttrib(attributes, ab.bodySyntax, ab.declList));
+		}
+	}
+	
+	public NodeResult<? extends IDeclaration> parseNonAttributeDeclaration(boolean statementsOnly) {
 		DeeTokens la = lookAhead();
 		
 		if(!statementsOnly && (la == DeeTokens.CONCAT || la == DeeTokens.KW_STATIC || la == DeeTokens.KW_SHARED)) {
@@ -262,6 +305,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				return declSpecialFunction;
 		}
 		
+		DeeTokens laGrouped = assertNotNull_(lookAheadGrouped());
 		switch (laGrouped) {
 		case KW_IMPORT: return parseDeclarationImport();
 		
@@ -337,71 +381,74 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(statementsOnly) return declarationNullResult();
 			if(lookAhead(1) == DeeTokens.OPEN_PARENS && lookAhead(2) == DeeTokens.KW_THIS)
 				return parseDeclarationPostBlit_start();
-			return parseDefinitionConstructor();
+			return parseDefinitionConstructor_atThis(new DefUnitParseHelper(), null);
 		case SEMICOLON:
 			return resultConclude(false, srOf(consumeLookAhead(), new DeclarationEmpty()));
 		default:
 			break;
 		}
-		
-		NodeResult<? extends DeclarationAttrib> stcDeclResult = parseAttributeDeclaration(statementsOnly);
-		if(stcDeclResult != null) 
-			return stcDeclResult;
-		
-		return parseDeclaration_varOrFunction(precedingIsSTCAttrib);
+		return null;
 	}
 	
-	public NodeResult<? extends DeclarationAttrib> parseAttributeDeclaration(boolean statementsOnly) {
-		return parseAttributeDeclaration(statementsOnly, true);
+	public static NodeResult<? extends IDeclaration> declarationNullResult() {
+		return AbstractParser.<MissingDeclaration>result(false, null);
 	}
-	public NodeResult<? extends DeclarationAttrib> parseAttributeDeclaration(boolean statementsOnly, 
-		boolean parseBody) {
-		/*BUG here bodies must conform to statementsOnly*/
+	
+	/* --------------------- ATTRIBUTES --------------------- */
+	
+	public NodeResult<? extends Attribute> parseAttribute() {
 		switch (lookAheadGrouped()) {
 		case KW_ALIGN: 
-			return parseDeclarationAlign(parseBody);
+			return parseAttribAlign();
 		case KW_PRAGMA: 
-			return parseDeclarationPragma(statementsOnly, parseBody);
+			return parseAttribPragma();
 		case PROTECTION_KW: 
-			return parseDeclarationProtection(parseBody);
+			return parseAttribProtection();
 		case KW_EXTERN: 
 			if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
-				return parseDeclarationExternLinkage(parseBody);
+				return parseAttribLinkage();
 			}
-			return parseDeclarationBasicAttrib(parseBody);
+			return parseAttribBasic();
 		case AT:
 			if(lookAhead(1) == DeeTokens.IDENTIFIER) {
-				return parseDeclarationAtAttrib(parseBody);
+				return parseAttribAt();
 			}
 			break;
 		case KW_AUTO:
-			return parseDeclarationBasicAttrib(parseBody);
+			return parseAttribBasic();
 		case KW_ENUM:
-			return parseDeclarationBasicAttrib(parseBody);
+			return parseAttribBasic();
 		case ATTRIBUTE_KW:
 			if(isImmutabilitySpecifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
-				break; // this will be parsed as a type modifier
+				break; // attrib will be parsed as a type modifier instead
+			}
+			if(lookAhead() == DeeTokens.KW_STATIC) {
+				if(lookAhead(1) == DeeTokens.KW_IMPORT || 
+					lookAhead(1) ==  DeeTokens.KW_ASSERT || 
+					lookAhead(1) == DeeTokens.KW_IF) {
+					break;
+				}
 			}
 			
-			return parseDeclarationBasicAttrib(parseBody);
+			return parseAttribBasic();
 		default:
 		}
 		return null;
 	}
 	
-	protected ArrayView<DeclarationAttrib> parseDefinitionAttributes(ParseHelper parse) {
-		ArrayList<DeclarationAttrib> stcList = null;
+	protected ArrayView<Attribute> parseDefinitionAttributes(ParseHelper parse) {
+		ArrayList<Attribute> stcList = null;
 		
 		while(true) {
-			NodeResult<? extends DeclarationAttrib> stcResult = parseAttributeDeclaration(false, false);
-			if(stcResult == null) {
+			NodeResult<? extends Attribute> attribResult = parseAttribute();
+			if(attribResult == null) {
 				break;
 			}
-			assertTrue(stcResult.node != null);
-			parse.checkResult(stcResult);
+			assertTrue(attribResult.node != null);
+			parse.checkResult(attribResult);
 			
 			stcList = NewUtils.lazyInitArrayList(stcList);
-			stcList.add(stcResult.node);
+			stcList.add(attribResult.node);
 			if(parse.ruleBroken) {
 				break;
 			}
@@ -410,54 +457,66 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return arrayView(stcList);
 	}
 	
-	/* --------------------- DEFINITIONS --------------------- */
-	
-	public NodeResult<? extends IDeclaration> parseDeclaration_varOrFunction(boolean precedingIsSTCAttrib) {
-		if(!canParseTypeReferenceStart(lookAhead())) {
-			return declarationNullResult();
+	public boolean isAutoVarEnablingAttrib(ArrayView<Attribute> attributes) {
+		ASTNodeTypes lastAttribKind = getLastAttributeKind(attributes);
+		switch (lastAttribKind) {
+		case ATTRIB_LINKAGE:
+		case ATTRIB_ALIGN:
+		case ATTRIB_PRAGMA:
+		case NULL:
+			return false;
+		default:
 		}
-		
-		DefUnitParseHelper parse = new DefUnitParseHelper();
-		
-		NodeResult<Reference> startRef = parseTypeReference(); // This parses (BasicType + BasicType2) of spec
-		assertNotNull(startRef.node);
-		Reference ref = startRef.node;
-		
-		if(startRef.ruleBroken) {
-			return resultConclude(true, srToPosition(ref, new IncompleteDeclaration(ref)));
-		}
-		
-		ProtoDefSymbol defId = null;
-		if(lookAhead() == DeeTokens.IDENTIFIER) {
-			defId = defSymbol(consumeLookAhead());
-		} else if(precedingIsSTCAttrib && couldHaveBeenParsedAsId(ref)) {
-			// Parse as auto declaration instead
-			defId = convertRefIdToDef(ref);
-			ref = null;
-		}
-		
-		if(defId != null) {
-			if(lookAhead() == DeeTokens.OPEN_PARENS) {
-				return parseDefinitionFunction_afterIdentifier(parse, ref, defId);
-			}
-			return parseDefinitionVariable_afterIdentifier(parse, ref, defId);
-		} else {
-			parse.consumeExpected(DeeTokens.IDENTIFIER);
-			parse.consumeRequired(DeeTokens.SEMICOLON);
-			parse.discardDocComments();
-			return parse.resultConclude(new IncompleteDeclaration(ref));
-		}
+		return true;
 	}
 	
-	public static NodeResult<? extends IDeclaration> declarationNullResult() {
-		return AbstractParser.<MissingDeclaration>result(false, null);
+	/* --------------------- DEFINITIONS --------------------- */
+	
+	public static final ParseRuleDescription RULE_DECLARATOR = new ParseRuleDescription(
+		"Declarator(Reference or ID)");
+	
+	public NodeResult<? extends IDeclaration> parseDeclaration_varOrFunction(DefUnitParseHelper parse, 
+		ArrayView<Attribute> attributes) {
+		if(!(canParseTypeReferenceStart(lookAhead()) || lookAhead() == DeeTokens.IDENTIFIER)) {
+			return null;
+		}
+		boolean autoEnablingAttribPresent = isAutoVarEnablingAttrib(attributes);
+		
+		NodeResult<Reference> refResult = parseTypeReference(); // This parses (BasicType + BasicType2) of spec
+		assertNotNull_(refResult.node);
+		Reference ref = parse.checkResult(refResult); 
+		
+		parsing: {
+			if(parse.ruleBroken) break parsing;
+			
+			ProtoDefSymbol defId = null;
+			if(lookAhead() == DeeTokens.IDENTIFIER) {
+				defId = defSymbol(consumeLookAhead());
+			} else if(autoEnablingAttribPresent && couldHaveBeenParsedAsId(ref)) {
+				// Parse as auto declaration instead
+				defId = convertRefIdToDef(ref);
+				ref = null;
+			}
+			
+			if(defId != null) {
+				if(lookAhead() == DeeTokens.OPEN_PARENS) {
+					return parseDefinitionFunction_afterIdentifier(parse, attributes, ref, defId);
+				}
+				return parseDefinitionVariable_afterIdentifier(parse, attributes, ref, defId);
+			} else {
+				parse.consumeExpected(DeeTokens.IDENTIFIER);
+				parse.consumeRequired(DeeTokens.SEMICOLON);
+			}
+		}
+		parse.discardDocComments();
+		return parse.resultConclude(new IncompleteDeclaration(attributes, ref));
 	}
 	
 	/* ----------------------------------------- */
 	
 	
 	protected NodeResult<? extends DefinitionVariable> parseDefinitionVariable_afterIdentifier(
-		DefUnitParseHelper parse, Reference ref, ProtoDefSymbol defId) 
+		DefUnitParseHelper parse, ArrayView<Attribute> attributes, Reference ref, ProtoDefSymbol defId) 
 	{
 		ArrayList<DefVarFragment> fragments = null;
 		IInitializer init = null;
@@ -487,10 +546,11 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		Token[] comments = parse.parseEndDDocComments();
 		
 		if(isAutoRef) {
-			return parse.resultConclude(new DefinitionAutoVariable(comments, defId, init, arrayView(fragments)));
+			return parse.resultConclude(
+				new DefinitionAutoVariable(comments, attributes, defId, init, arrayView(fragments)));
 		}
 		return parse.resultConclude(
-			new DefinitionVariable(comments, defId, ref, cstyleSuffix, init, arrayView(fragments)));
+			new DefinitionVariable(comments, attributes, defId, ref, cstyleSuffix, init, arrayView(fragments)));
 	}
 	
 	protected DefVarFragment parseVarFragment(boolean isAutoRef) {
@@ -656,14 +716,12 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 	}
 	
-	protected NodeResult<DefinitionConstructor> parseDefinitionConstructor() {
-		DefUnitParseHelper parse = new DefUnitParseHelper();
-		if(tryConsume(DeeTokens.KW_THIS) == false) {
-			return null;
-		}
+	protected NodeResult<DefinitionConstructor> parseDefinitionConstructor_atThis(DefUnitParseHelper parse, 
+		ArrayView<Attribute> attributes) {
+		consumeLookAhead(DeeTokens.KW_THIS);
 		
 		ProtoDefSymbol defId = defSymbol(lastLexElement()); // TODO: mark this as special DefSymbol
-		return parse_FunctionLike(true, null, defId, parse).upcastTypeParam();
+		return parse_FunctionLike(true, attributes, null, defId, parse).upcastTypeParam();
 	}
 	
 	/**
@@ -671,14 +729,14 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	 * http://dlang.org/declaration.html#DeclaratorSuffix
 	 */
 	protected NodeResult<DefinitionFunction> parseDefinitionFunction_afterIdentifier(DefUnitParseHelper parse,
-		Reference retType, ProtoDefSymbol defId) {
+		ArrayView<Attribute> attributes, Reference retType, ProtoDefSymbol defId) {
 		assertTrue(defId.isMissing() == false);
 		
-		return parse_FunctionLike(false, retType, defId, parse).upcastTypeParam();
+		return parse_FunctionLike(false, attributes, retType, defId, parse).upcastTypeParam();
 	}
 	
 	protected NodeResult<? extends AbstractFunctionDefinition> parse_FunctionLike(boolean isConstrutor, 
-		Reference retType, ProtoDefSymbol defId, DefUnitParseHelper parse) {
+		ArrayView<Attribute> attributes, Reference retType, ProtoDefSymbol defId, DefUnitParseHelper parse) {
 		
 		ArrayView<IFunctionParameter> fnParams = null;
 		ArrayView<TemplateParameter> tplParams = null;
@@ -727,11 +785,11 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		if(isConstrutor) {
 			return parse.resultConclude(new DefinitionConstructor(
-				comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
+				comments, attributes, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 		}
 		
 		return parse.resultConclude(new DefinitionFunction(
-			comments, retType, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
+			comments, attributes, retType, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 	}
 	
 	protected ASTNode parseTemplateAliasParameter_start() {
@@ -1018,7 +1076,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 		
 		// Note that there are heavy similarites between this code and var/function declaration parsing
-		ArrayView<DeclarationAttrib> stc = null;
+		ArrayView<Attribute> attributes = null;
 		Reference ref = null;
 		ProtoDefSymbol defId = null;
 		Reference cstyleSuffix = null;
@@ -1027,14 +1085,14 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		parsing: {
 			DeeParserState savedParserState = thisParser().saveParserState();
 			
-			stc = parseDefinitionAttributes(parse);
+			attributes = parseDefinitionAttributes(parse);
 			if(parse.checkRuleBroken()) break parsing;
 			
 			NodeResult<Reference> refResult = parseTypeReference();
 			ref = refResult.node;
 			if(refResult.ruleBroken) break parsing;
 			if(ref == null) {
-				if(stc == null) {
+				if(attributes == null) {
 					return parseDefinitionAlias_atFragmentStart(); // Return error as if DefinitionAlias was parsed
 				} else {
 					ref = parseMissingTypeReference(true);
@@ -1050,7 +1108,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			}
 			
 			if(lookAhead() == DeeTokens.OPEN_PARENS) {
-				return parseDefinitionAliasFunctionDecl(parse, stc, ref, defId);
+				return parseDefinitionAliasFunctionDecl(parse, attributes, ref, defId);
 			}
 			
 			cstyleSuffix = parseCStyleSuffix(parse);
@@ -1066,11 +1124,11 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		parse.clearRuleBroken().consumeRequired(DeeTokens.SEMICOLON);
 		Token[] comments = parse.parseEndDDocComments();
 		return parse.resultConclude(
-			new DefinitionAliasVarDecl(comments, stc, ref, defId, cstyleSuffix, arrayView(fragments)));
+			new DefinitionAliasVarDecl(comments, attributes, ref, defId, cstyleSuffix, arrayView(fragments)));
 	}
 	
 	public NodeResult<? extends IDeclaration> parseDefinitionAliasFunctionDecl(DefUnitParseHelper parse, 
-		ArrayView<DeclarationAttrib> stc, Reference ref, ProtoDefSymbol defId) {
+		ArrayView<Attribute> attributes, Reference ref, ProtoDefSymbol defId) {
 		
 		ArrayView<IFunctionParameter> fnParams = parseFunctionParameters(parse, true);
 		ArrayView<FunctionAttributes> fnAttributes = null;
@@ -1082,7 +1140,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		parse.consumeRequired(DeeTokens.SEMICOLON);
 		Token[] comments = parse.parseEndDDocComments();
 		return parse.resultConclude(
-			new DefinitionAliasFunctionDecl(comments, stc, ref, defId, fnParams, fnAttributes));
+			new DefinitionAliasFunctionDecl(comments, attributes, ref, defId, fnParams, fnAttributes));
 	}
 	
 	protected AliasVarDeclFragment parseAliasVarDeclFragment() {

@@ -5,6 +5,9 @@ public enum ASTNodeTypes {
 	@Deprecated
 	OTHER,
 	
+	/** Useful marker that represents a null object. Useful for using as a switch value. */
+	NULL,
+	
 	SYMBOL,
 	
 	MODULE,
@@ -94,12 +97,13 @@ public enum ASTNodeTypes {
 	EXP_TRAITS,
 	
 	/* -------------------  Declarations  ------------------- */
-	DECLARATION_LINKAGE,
-	DECLARATION_ALIGN,
-	DECLARATION_PRAGMA,
-	DECLARATION_PROTECTION,
-	DECLARATION_BASIC_ATTRIB,
-	DECLARATION_AT_ATTRIB,
+	DECLARATION_ATTRIB,
+	ATTRIB_LINKAGE,
+	ATTRIB_ALIGN,
+	ATTRIB_PRAGMA,
+	ATTRIB_PROTECTION,
+	ATTRIB_BASIC,
+	ATTRIB_AT,
 	
 	DECLARATION_MIXIN_STRING,
 	DECLARATION_MIXIN,

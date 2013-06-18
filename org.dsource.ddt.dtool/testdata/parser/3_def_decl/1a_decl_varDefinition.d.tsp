@@ -6,16 +6,17 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@TYPEREF_NBNE #@NO_ID #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  #?TM_ATTRIB_AMBIG【DeclarationBasicAttrib(*)●
-IncompleteDeclaration(#@TYPEREF_NBNE)】 
+#PARSE(DECLARATION)   #@ATTRIBS_Opt #@TYPEREF_BROKEN__NoTypeAppend /*NoMissingExp*/ #@BREAK #@ReqSemicolon fooB 
+#STRUCTURE_EXPECTED:  IncompleteDeclaration(#@ATTRIBS_Opt #@TYPEREF_BROKEN__NoTypeAppend)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@TYPEREF_BROKEN__NoTypeAppend /*NoMissingExp*/ #@BREAK #@ReqSemicolon fooB 
-#STRUCTURE_EXPECTED:  IncompleteDeclaration(#@TYPEREF_BROKEN__NoTypeAppend)
+#PARSE(DECLARATION)   #@ATTRIBS_Opt #@TYPEREF_NBNE__NoSingleDefId #@NO_ID #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  IncompleteDeclaration(#@ATTRIBS_Opt #TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE) 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@TYPEREF_NBNE fooB #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  #?TM_ATTRIB_AMBIG【DeclarationBasicAttrib(*)●
-          DefVariable(#@TYPEREF_NBNE DefSymbol)】
+#PARSE(DECLARATION)                 foo                           #@NO_ID #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  IncompleteDeclaration(RefIdentifier) 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(DECLARATION)   #@ATTRIBS_Opt #@TYPEREF_NBNE fooB #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  DefVariable(#@ATTRIBS_Opt #TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@TYPEREF_NBNE__LITE fooA = #@INITIALIZERS_TESTER #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DefVariable(#@TYPEREF_NBNE__LITE DefSymbol #@INITIALIZERS_TESTER)
@@ -34,8 +35,6 @@ IncompleteDeclaration(#@TYPEREF_NBNE)】
 #STRUCTURE_EXPECTED: DefVariable(#@TYPEREF_NBNE__LITE #@PREFIX DefVarFragment(DefSymbol #@INITIALIZERS__SAMPLE))
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ C-style decls (deprecated)
-C style decls
-The parser reads the c-style decl but doesn't actually store the c-style type info anywhere
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)  int foo[] #@【 /**/ ● #error(EXP_SEMICOLON) #@BREAK * 】  ;
 #STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefTypeDynArray(CStyleRootRef))
@@ -47,4 +46,4 @@ The parser reads the c-style decl but doesn't actually store the c-style type in
 #STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefTypeDynArray(CStyleRootRef))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)  auto foo[] #@NO_DEFID; // Make sure this is not confused with C-Style decl
-#STRUCTURE_EXPECTED: DeclarationBasicAttrib( IncompleteDeclaration(*) )
+#STRUCTURE_EXPECTED: IncompleteDeclaration(AttribBasic * )

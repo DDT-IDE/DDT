@@ -6,7 +6,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.declarations.DeclarationAttrib;
+import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -24,12 +24,12 @@ import dtool.util.ArrayView;
  */
 public class DefinitionAliasVarDecl extends Definition implements IDeclaration, IStatement {
 	
-	public final ArrayView<DeclarationAttrib> attributes;
+	public final ArrayView<Attribute> attributes;
 	public final Reference target;
 	public final Reference cstyleSuffix;
 	public final ArrayView<AliasVarDeclFragment> fragments;
 	
-	public DefinitionAliasVarDecl(Token[] comments, ArrayView<DeclarationAttrib> attributes, Reference target, 
+	public DefinitionAliasVarDecl(Token[] comments, ArrayView<Attribute> attributes, Reference target, 
 		ProtoDefSymbol defId, Reference cstyleSuffix, ArrayView<AliasVarDeclFragment> fragments) {
 		super(comments, defId);
 		this.attributes = parentize(attributes);

@@ -1,6 +1,13 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
-TODO defvar and defFunc with attribs
+
+#@DDOC_ATTRIBS《
+ ►●
+ ►extern(D)●
+ ►pragma(foo, 123)●
+ ►public●
+ ►static @safe●
+¤》
 
 #@DDOC_SAMPLE《/+NotDDOC+/#DDOC_TEST(test)【/++ StartDDOC +/】》
 
@@ -9,11 +16,12 @@ TODO defvar and defFunc with attribs
 /*-*/● #DDOC_TEST(test)【/// Post DDOC included |||
 】/*-*/】》
 
+TODO attribs for other definitions
 
 #@DEFUNITS_NB《
- ►int * defunit ; ●
- ►int* defunit(int foo) ; ●
- ►this(int foo) ; #DDOC_TEST_TARGET__OVERRIDE(test)¤【this】 ●
+ ►#@DDOC_ATTRIBS int * defunit ; ●
+ ►#@DDOC_ATTRIBS int* defunit(int foo) ; ●
+ ►#@DDOC_ATTRIBS this(int foo) ; #DDOC_TEST_TARGET__OVERRIDE(test)¤【this】 ●
  
  ►struct defunit { }●
  ►union defunit ;●

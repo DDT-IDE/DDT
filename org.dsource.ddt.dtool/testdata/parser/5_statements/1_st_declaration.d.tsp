@@ -27,7 +27,7 @@
 #STRUCTURE_EXPECTED: DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumMember(RefPrimitive DefSymbol)) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    enum i = 4;
-#STRUCTURE_EXPECTED: DeclarationBasicAttrib(DefinitionAutoVariable(DefSymbol Integer))
+#STRUCTURE_EXPECTED: DefinitionAutoVariable(AttribBasic DefSymbol Integer)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(DECLARATION)   alias foo[] aliasDef; 
@@ -64,13 +64,33 @@
 #PARSE(STATEMENT)  #@NULL unittest #@ST_BLOCK__SAMPLE
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(STATEMENT)    #@ATTRIBS int foo; #?SYNCHRONIZED_ATTRIB{#:DISCARD_CASE}
-#STRUCTURE_EXPECTED: #@ATTRIBS DefVariable(RefPrimitive DefSymbol) )
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ this test is commented since prot attribs are actually allowed
-#PARSE(STATEMENT)  #@NULL public { void foo ; }
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO: fix contents of attribute declarations:
-#PARSE(STATEMENT) const { void foo ; }
+#@ATTRIBS_ST《#@ATTRIBS #?SYNCHRONIZED_ATTRIB{#:DISCARD_CASE}》
+#@ATTRIBS_AUTODecl_ST《#@ATTRIBS_AUTODecl #?SYNCHRONIZED_ATTRIB{#:DISCARD_CASE}》
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ DeclarationBasicAttrib TODO: basic attrib , this is wrong
-#PARSE(STATEMENT) const invariant() { }
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(STATEMENT)     #@ATTRIBS_ST int foo;
+#STRUCTURE_EXPECTED:  DefVariable(#@ATTRIBS_ST RefPrimitive DefSymbol)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)     #@ATTRIBS_AUTODecl_ST fooB = #@EXP_ASSIGN__LITE;
+#STRUCTURE_EXPECTED:  DefAutoVariable(#@ATTRIBS_AUTODecl_ST DefSymbol #@EXP_ASSIGN__LITE )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ommited return type
+#PARSE(STATEMENT)     #@ATTRIBS_AUTODecl_ST func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE
+#STRUCTURE_EXPECTED:  DefFunction(#@ATTRIBS_AUTODecl_ST DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE)
+
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ this test is COMMENTED OUT since prot attribs are allowed structurally
+#PARSE(STATEMENT)  #@NULL public void foo ;
+
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@INVALID_ATTRIB_ST_FOLLOW《
+  ►invariant() { }●
+  ►this(int foo) { }●
+  ►  #@ST_BLOCK__SAMPLE #?ENUM_ATTRIB{#:DISCARD_CASE}●
+  ►: #@ST_BLOCK__SAMPLE #?ENUM_ATTRIB{#:DISCARD_CASE}●
+¤》
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ check that only declarators are allowed after  non-pragma ATTRIBS
+#PARSE(STATEMENT)    #@ATTRIBS_ST #@NO_DECLARATOR #@IGNORE_REST #@INVALID_ATTRIB_ST_FOLLOW #?PRAGMA_ATTR{#:DISCARD_CASE}
+#STRUCTURE_EXPECTED: DeclarationAttrib( #@ATTRIBS_ST #@NO_DECLARATOR )
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PARSE(STATEMENT)    pragma(foo) #@ST__ANY
+#STRUCTURE_EXPECTED: DeclarationAttrib( AttribPragma(Symbol) #BLOCK_ST_UNSCOPED(flag) #@ST__ANY)

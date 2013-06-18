@@ -62,8 +62,9 @@ RefTemplateInstance(
   ►#@TYPE_REFS__QUALIFIER_ForDotOnly●
   ►#@TYPE_REFS__NO_BROKEN__INVALID_QUALIFIER●
   
-  ►#?STRUCTURE_EXPECTED!【const shared int* #CANT_APPEND_TYPE(flag) #TM_ATTRIB_AMBIG(flag) ●
-    #?TM_AMBIG_AS_RAW【RefTypePointer(RefPrimitive)●RefTypeModifier(RefTypeModifier( RefTypePointer(RefPrimitive) ))】
+  ►#?STRUCTURE_EXPECTED!【const shared int* #CANT_APPEND_TYPE(flag) #TM_ATTRIB_AMBIG(flag)●#?TM_AMBIG_AS_RAW【
+    #?TM_AMBIG_NO_ATTRIB!【AttribBasic AttribBasic】 RefTypePointer(RefPrimitive)● 
+    RefTypeModifier(RefTypeModifier( RefTypePointer(RefPrimitive) ))】
     】●
 ¤》
 #@TYPE_REFS__NO_BROKEN__LITE《

@@ -12,7 +12,9 @@ public static import foo, pack.foo, pack.bar.foo;
 DeclarationImport(ImportContent(RefModule))
 DeclarationImport(ImportContent(RefModule))
 DeclarationImport(ImportContent(RefModule))
-DeclarationProtection( DeclarationImport(ImportContent(RefModule) ImportContent(RefModule) ImportContent(RefModule)) )
+DeclarationAttrib(AttribProtection 
+  DeclarationImport(ImportContent(RefModule) ImportContent(RefModule) ImportContent(RefModule)) 
+)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 import#error(EXP_ID)#error(EXP_SEMICOLON)#comment(EOF):

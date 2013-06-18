@@ -76,7 +76,6 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 #PARSE(REFERENCE)    foo! #error(EXPRULE_TemplateSingleArgument) !(blah)
 #STRUCTURE_EXPECTED: RefTemplateInstance(RefTemplateInstance(RefIdentifier #@NO_TOE) RefIdentifier)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-foo!(var[] #error(EXP_CLOSE_PARENS) #error(-none-)¤【;】 dummy #error(EXP_ID);
-#STRUCTURE_EXPECTED: 
-IncompleteDeclaration(RefTemplateInstance(RefIdentifier RefTypeDynArray(*)))
-IncompleteDeclaration(RefIdentifier)
+#PARSE(REFERENCE)     foo!(var[] #@PARENS_BREAK
+#STRUCTURE_EXPECTED:  RefTemplateInstance(RefIdentifier RefTypeDynArray(*))
+

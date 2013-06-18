@@ -5,6 +5,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 

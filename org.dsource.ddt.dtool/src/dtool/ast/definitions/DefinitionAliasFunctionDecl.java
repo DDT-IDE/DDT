@@ -8,7 +8,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.declarations.DeclarationAttrib;
+import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -26,12 +26,12 @@ import dtool.util.ArrayView;
  */
 public class DefinitionAliasFunctionDecl extends Definition implements IDeclaration, IStatement {
 	
-	public final ArrayView<DeclarationAttrib> attributes;
+	public final ArrayView<Attribute> attributes;
 	public final Reference target;
 	public final ArrayView<IFunctionParameter> fnParams;
 	public final ArrayView<FunctionAttributes> fnAttributes;
 	
-	public DefinitionAliasFunctionDecl(Token[] comments, ArrayView<DeclarationAttrib> attributes, Reference target, 
+	public DefinitionAliasFunctionDecl(Token[] comments, ArrayView<Attribute> attributes, Reference target, 
 		ProtoDefSymbol defId, ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes) {
 		super(comments, defId);
 		this.attributes = parentize(attributes);

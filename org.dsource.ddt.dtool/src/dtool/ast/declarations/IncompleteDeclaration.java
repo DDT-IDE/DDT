@@ -7,16 +7,19 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.Reference;
+import dtool.util.ArrayView;
 
 /**
  * Represents an incomplete var or function declaration (where the defId is missing).
  */
 public class IncompleteDeclaration extends ASTNode implements IDeclaration {
 	
-	public final Reference node;
+	public final ArrayView<Attribute> attributes;
+	public final Reference ref;
 	
-	public IncompleteDeclaration(Reference node) {
-		this.node = parentize(assertNotNull_(node));
+	public IncompleteDeclaration(ArrayView<Attribute> attributes, Reference ref) {
+		this.attributes = parentize(attributes);
+		this.ref = parentize(assertNotNull_(ref));
 	}
 	
 	@Override
@@ -28,14 +31,16 @@ public class IncompleteDeclaration extends ASTNode implements IDeclaration {
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, node);
+			TreeVisitor.acceptChildren(visitor, attributes);
+			TreeVisitor.acceptChildren(visitor, ref);
 		}
 		visitor.endVisit(this);
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(node);
+		cp.appendList(attributes, " ", true);
+		cp.append(ref);
 		cp.append(";");
 	}
 	

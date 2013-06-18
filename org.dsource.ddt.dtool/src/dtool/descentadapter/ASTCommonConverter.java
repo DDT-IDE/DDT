@@ -1,5 +1,6 @@
 package dtool.descentadapter;
 
+import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.utilbox.core.Assert;
 import descent.internal.compiler.parser.ast.IASTVisitor;
 import dtool.ast.ASTNode;

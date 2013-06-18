@@ -8,12 +8,13 @@ import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
+import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
 
-public abstract class AbstractConditionalDeclaration extends DeclarationAttrib 
+public abstract class AbstractConditionalDeclaration extends ASTNode 
 	implements INonScopedBlock, IDeclaration, IStatement 
 {
 	
@@ -25,18 +26,22 @@ public abstract class AbstractConditionalDeclaration extends DeclarationAttrib
 	}
 	
 	public final boolean isStatement;
+	public final AttribBodySyntax bodySyntax;
+	public final ASTNode body; // Note: can be DeclList
 	public final ASTNode elseBody;
 	
-	public AbstractConditionalDeclaration(AttribBodySyntax bodySyntax, ASTNode thenDecls, ASTNode elseDecls) {
-		super(bodySyntax, thenDecls);
-		this.elseBody = parentize(elseDecls);
+	public AbstractConditionalDeclaration(AttribBodySyntax bodySyntax, ASTNode bodyDecls, ASTNode elseDecls) {
 		this.isStatement = false;
+		this.bodySyntax = bodySyntax;
+		this.body = parentize(bodyDecls);
+		this.elseBody = parentize(elseDecls);
 	}
 	
 	public AbstractConditionalDeclaration(IStatement thenBody, IStatement elseBody) {
-		super(AttribBodySyntax.SINGLE_DECL, (ASTNode) thenBody);
-		this.elseBody = parentize((ASTNode) elseBody);
 		this.isStatement = true;
+		this.bodySyntax = AttribBodySyntax.SINGLE_DECL;
+		this.body = parentize((ASTNode) thenBody);
+		this.elseBody = parentize((ASTNode) elseBody);
 		assertTrue(!(thenBody instanceof BlockStatement));
 		assertTrue(!(elseBody instanceof BlockStatement));
 	}
@@ -50,15 +55,17 @@ public abstract class AbstractConditionalDeclaration extends DeclarationAttrib
 		if(body == null && elseBody == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
 		if(elseBody == null)
-			return getBodyIterator(body);
+			return DeclarationAttrib.getBodyIterator(body);
 		if(body == null)
-			return getBodyIterator(elseBody);
+			return DeclarationAttrib.getBodyIterator(elseBody);
 		
-		return new ChainedIterator<ASTNode>(getBodyIterator(body), getBodyIterator(elseBody)); 
+		return new ChainedIterator<ASTNode>(DeclarationAttrib.getBodyIterator(body), 
+			DeclarationAttrib.getBodyIterator(elseBody)); 
 	}
 	
 	public void toStringAsCodeBodyAndElseBody(ASTCodePrinter cp) {
-		toStringAsCode_body(cp);
+		cp.append(bodySyntax == AttribBodySyntax.COLON, " :\n");
+		cp.append(body);
 		if(elseBody != null) {
 			cp.append("else ");
 			cp.append(elseBody);

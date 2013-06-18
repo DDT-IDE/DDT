@@ -19,7 +19,7 @@ import java.util.Comparator;
 import melnorme.utilbox.misc.StringUtil;
 import descent.core.ISourceRange;
 import dtool.ast.SourceRange;
-import dtool.ast.declarations.DeclarationLinkage.Linkage;
+import dtool.ast.declarations.AttribLinkage.Linkage;
 import dtool.ast.statements.StatementScope.ScopeTypes;
 
 public class ParserError implements ICompileError, ISourceRange {

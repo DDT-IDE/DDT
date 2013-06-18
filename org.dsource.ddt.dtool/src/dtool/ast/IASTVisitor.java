@@ -1,16 +1,16 @@
 package dtool.ast;
 
-import dtool.ast.declarations.DeclarationAlign;
+import dtool.ast.declarations.AttribAlign;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
-import dtool.ast.declarations.DeclarationBasicAttrib;
+import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
-import dtool.ast.declarations.DeclarationLinkage;
+import dtool.ast.declarations.AttribLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
-import dtool.ast.declarations.DeclarationPragma;
-import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.AttribPragma;
+import dtool.ast.declarations.AttribProtection;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
@@ -103,11 +103,11 @@ public interface IASTVisitor {
 	public boolean visit(DeclarationEmpty node);
 	
 	//-- various Declarations
-	public boolean visit(DeclarationLinkage node);
-	public boolean visit(DeclarationAlign node);
-	public boolean visit(DeclarationPragma node);
-	public boolean visit(DeclarationProtection node);
-	public boolean visit(DeclarationBasicAttrib node);
+	public boolean visit(AttribLinkage node);
+	public boolean visit(AttribAlign node);
+	public boolean visit(AttribPragma node);
+	public boolean visit(AttribProtection node);
+	public boolean visit(AttribBasic node);
 	
 	//-- Aggregates
 	public boolean visit(DefinitionStruct node);

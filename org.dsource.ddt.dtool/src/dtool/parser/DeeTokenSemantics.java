@@ -7,7 +7,7 @@ import java.util.Map;
 
 import melnorme.utilbox.misc.Pair;
 
-import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.ast.declarations.AttribProtection.Protection;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.NewUtils;
 

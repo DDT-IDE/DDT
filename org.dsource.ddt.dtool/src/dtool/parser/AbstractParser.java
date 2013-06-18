@@ -170,11 +170,15 @@ public abstract class AbstractParser {
 		
 	}
 	
-	protected static <T extends ASTNode> NodeResult<T> nullResult() {
+	public static <T extends ASTNode> NodeResult<T> nullResult() {
 		return new NodeResult<T>(false, null);
 	}
-	protected static <T extends ASTNode> NodeResult<T> result(boolean ruleBroken, T node) {
+	public static <T extends ASTNode> NodeResult<T> result(boolean ruleBroken, T node) {
 		return new NodeResult<T>(ruleBroken, node);
+	}
+	
+	public static boolean isNull(NodeResult<?> result) {
+		return result == null || result.node == null;
 	}
 	
 	/* ---- Additional input consume helpers ---- */
@@ -309,6 +313,8 @@ public abstract class AbstractParser {
 		}
 		
 		public final <T extends ASTNode> T checkResult(NodeResult<T> nodeResult) {
+			if(nodeResult == null) 
+				return null;
 			setRuleBroken(nodeResult.ruleBroken);
 			return nodeResult.node;
 		}
@@ -467,6 +473,13 @@ public abstract class AbstractParser {
 	public static <T extends IASTNeoNode> NodeListView<T> nodeListView(ArrayList<T> list, boolean hasEndingSeparator) {
 		T[] array = ArrayUtil.createFrom(list, CoreUtil.<Class<T>>blindCast(ASTNode.class));
 		return new NodeListView<>(array, hasEndingSeparator);
+	}
+	
+	public static boolean lazyInitIsEmpty(ArrayView<?> arrayView) {
+		if(arrayView != null) {
+			assertTrue(!arrayView.isEmpty());
+		}
+		return arrayView == null;
 	}
 	
 }

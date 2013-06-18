@@ -10,17 +10,17 @@
  *******************************************************************************/
 package dtool.ast;
 
-import dtool.ast.declarations.DeclarationAlign;
+import dtool.ast.declarations.AttribAlign;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
-import dtool.ast.declarations.DeclarationBasicAttrib;
+import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
-import dtool.ast.declarations.DeclarationLinkage;
+import dtool.ast.declarations.AttribLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
-import dtool.ast.declarations.DeclarationPragma;
-import dtool.ast.declarations.DeclarationProtection;
+import dtool.ast.declarations.AttribPragma;
+import dtool.ast.declarations.AttribProtection;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
@@ -115,11 +115,11 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	@Override public boolean visit(DeclarationEmpty node) { return true; }
 	
 	//-- Various Declarations
-	@Override public boolean visit(DeclarationLinkage node) { return true; }
-	@Override public boolean visit(DeclarationAlign node) { return true; }
-	@Override public boolean visit(DeclarationPragma node) { return true; }
-	@Override public boolean visit(DeclarationProtection node) { return true; }
-	@Override public boolean visit(DeclarationBasicAttrib node) { return true; }
+	@Override public boolean visit(AttribLinkage node) { return true; }
+	@Override public boolean visit(AttribAlign node) { return true; }
+	@Override public boolean visit(AttribPragma node) { return true; }
+	@Override public boolean visit(AttribProtection node) { return true; }
+	@Override public boolean visit(AttribBasic node) { return true; }
 	
 	//-- Aggregates
 	@Override

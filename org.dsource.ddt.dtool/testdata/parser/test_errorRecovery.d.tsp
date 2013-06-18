@@ -13,7 +13,9 @@ DeclarationEmpty
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ brace recovery
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ decl list parsing
 #PARSE(DECLARATION)   public {  pure: #error(SE_decl)【else】  }  
-#STRUCTURE_EXPECTED:  DeclarationProtection(DeclBlock( DeclarationBasicAttrib(DeclList(InvalidSyntaxElement)) ))
+#STRUCTURE_EXPECTED:  DeclarationAttrib(AttribProtection 
+  DeclBlock( DeclarationAttrib(AttribBasic DeclList(InvalidSyntaxElement)) )
+)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)     {        ; #error(SE_Statement)【else】 #error(EXP_CLOSE_BRACE) #@BREAK #@《)●]》
 #STRUCTURE_EXPECTED:  BlockStatement(? InvalidSyntaxElement)
@@ -50,21 +52,21 @@ pragma( #error(EXP_ID) );
 // No close brackets/parentheses cause rule to quit parsing.
 align(16  #error:EXP_CLOSE_PARENS   int foo;
 #STRUCTURE_EXPECTED:
-DeclarationAlign  
+DeclarationAttrib(AttribAlign)  
 DefinitionVariable(RefPrimitive DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 extern(C) #@NO_DECLorBLOCK
 #STRUCTURE_EXPECTED:
-DeclarationLinkage(#@NO_DECLorBLOCK)
+DeclarationAttrib(AttribLinkage #@NO_DECLorBLOCK)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 extern(C) #error(SE_decl) ;
 #STRUCTURE_EXPECTED:
-DeclarationLinkage(DeclarationEmpty)
+DeclarationAttrib(AttribLinkage DeclarationEmpty)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 extern(C) #@NO_DECLorBLOCK #error(SE_decl) ] int foo;
 #STRUCTURE_EXPECTED:
-DeclarationLinkage(#@NO_DECLorBLOCK)
+DeclarationAttrib(AttribLinkage #@NO_DECLorBLOCK)
 InvalidSyntaxElement
 DefinitionVariable(? ?)
 

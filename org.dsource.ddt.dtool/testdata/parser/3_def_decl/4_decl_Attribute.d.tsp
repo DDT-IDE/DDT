@@ -1,13 +1,11 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic cases
-
 static int foo;
 extern(C) Foo foo;
 align (1) int foo;
-
 #STRUCTURE_EXPECTED:
-DeclarationBasicAttrib(DefinitionVariable(RefPrimitive DefSymbol))
-DeclarationLinkage(DefinitionVariable(RefIdentifier DefSymbol))
-DeclarationAlign(DefinitionVariable(RefPrimitive DefSymbol))
+DefinitionVariable(AttribBasic RefPrimitive DefSymbol)
+DefinitionVariable(AttribLinkage RefIdentifier DefSymbol)
+DefinitionVariable(AttribAlign RefPrimitive DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 final {
 	#@DECL_LIST_SAMPLE
@@ -15,9 +13,9 @@ final {
 static:
 const:
 #STRUCTURE_EXPECTED:
-DeclarationBasicAttrib(DeclBlock( #@DECL_LIST_SAMPLE )) 
-DeclarationBasicAttrib(DeclList(
-	DeclarationBasicAttrib(DeclList())
+DeclarationAttrib(AttribBasic DeclBlock(#@DECL_LIST_SAMPLE) ) 
+DeclarationAttrib(AttribBasic DeclList(
+	DeclarationAttrib(AttribBasic DeclList())
 ))
 
 
@@ -28,24 +26,30 @@ DeclarationBasicAttrib(DeclList(
  ►#@DECL_LIST_SAMPLE●
 ¤》
 
+#@DECL_ATTRIB_BODY_TESTER《
+ ►#?STRUCTURE_EXPECTED!【#@NO_DECLorBLOCK /*EOF case*/ #@IGNORE_REST● #@NO_DECLorBLOCK】●
+ ►#?STRUCTURE_EXPECTED!【#@NO_DECLorBLOCK /*Invalid Decl */ #@IGNORE_REST else ;● #@NO_DECLorBLOCK】●
+ ►#?STRUCTURE_EXPECTED!【invariant() { }● DeclarationInvariant(?)】●
+ ►#?STRUCTURE_EXPECTED!【static assert(true);● DeclarationStaticAssert(?)】●
+ ►#?STRUCTURE_EXPECTED!【static import foo;● DeclarationImport(*) 】●
+ ►#?STRUCTURE_EXPECTED!【static if(true) {} ● DeclarationStaticIf(? ?)】●
+¤》
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS_NoENUM : #@DECL_LIST_TESTER
-#STRUCTURE_EXPECTED: #@ATTRIBS_NoENUM DeclList( #@DECL_LIST_TESTER ))
+#STRUCTURE_EXPECTED: DeclarationAttrib( #@ATTRIBS_NoENUM DeclList(#@DECL_LIST_TESTER) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS_NoENUM { #@DECL_LIST_TESTER #@CLOSEBRACE_OR_BREAK
-#STRUCTURE_EXPECTED: #@ATTRIBS_NoENUM DeclBlock( #@DECL_LIST_TESTER ))
+#STRUCTURE_EXPECTED: DeclarationAttrib( #@ATTRIBS_NoENUM DeclBlock(#@DECL_LIST_TESTER) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS int foo #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED: #@ATTRIBS DefinitionVariable(* *) )
+#STRUCTURE_EXPECTED: DefinitionVariable(#@ATTRIBS * *)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS_NoENUM /*EMPTY DECLARATION Case */ #?PRAGMA!【#error:SE_decl】 ;
-#STRUCTURE_EXPECTED: #@ATTRIBS_NoENUM  DeclarationEmpty )
+#PARSE(DECLARATION)  #@ATTRIBS_NoENUM /*EMPTY DECLARATION Case */ #?PRAGMA_ATTR!【#error:SE_decl】 ;
+#STRUCTURE_EXPECTED: DeclarationAttrib( #@ATTRIBS_NoENUM  DeclarationEmpty )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS /*EOF case*/ #@NO_DECLorBLOCK #@BREAK
-#STRUCTURE_EXPECTED: #@ATTRIBS  #@NO_DECLorBLOCK )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS /*Invalid Decl */ #@NO_DECLorBLOCK #@BREAK else ;
-#STRUCTURE_EXPECTED: #@ATTRIBS  #@NO_DECLorBLOCK )
+#PARSE(DECLARATION)  #@ATTRIBS #@DECL_ATTRIB_BODY_TESTER
+#STRUCTURE_EXPECTED: DeclarationAttrib( #@ATTRIBS  #@DECL_ATTRIB_BODY_TESTER )
 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Ensure this case is not broken:
@@ -72,15 +76,15 @@ DeclarationBasicAttrib(DeclList(
 ¤》
 
 #@ATTRIBS_BROKEN《 
- ►#?STRUCTURE_EXPECTED!【extern(#error(BAD_LINKAGE_ID) #@PARENS_BREAK●DeclarationLinkage() 】●
- ►#?STRUCTURE_EXPECTED!【extern(C++ #@PARENS_BREAK●DeclarationLinkage() 】●
- ►#?STRUCTURE_EXPECTED!【align(#error(EXP_INTEGER_DECIMAL) #@PARENS_BREAK●DeclarationAlign() 】●
- ►#?STRUCTURE_EXPECTED!【align(16 #@PARENS_BREAK●DeclarationAlign() 】●
+ ►#?STRUCTURE_EXPECTED!【extern(#error(BAD_LINKAGE_ID) #@PARENS_BREAK● AttribLinkage】●
+ ►#?STRUCTURE_EXPECTED!【extern(C++ #@PARENS_BREAK● AttribLinkage】●
+ ►#?STRUCTURE_EXPECTED!【align(#error(EXP_INTEGER_DECIMAL) #@PARENS_BREAK● AttribAlign】●
+ ►#?STRUCTURE_EXPECTED!【align(16 #@PARENS_BREAK● AttribAlign】●
  
- ►#?STRUCTURE_EXPECTED!【pragma #error(EXP_OPEN_PARENS)¤【()】 #@BREAK●DeclarationPragma() 】●
- ►#?STRUCTURE_EXPECTED!【pragma ( #error(EXP_ID) #@PARENS_BREAK●DeclarationPragma(Symbol) 】●
- ►#?STRUCTURE_EXPECTED!【pragma ( foo2 #@PARENS_BREAK●DeclarationPragma(Symbol) 】●
+ ►#?STRUCTURE_EXPECTED!【pragma #error(EXP_OPEN_PARENS)¤【()】 #@BREAK● AttribPragma】●
+ ►#?STRUCTURE_EXPECTED!【pragma ( #error(EXP_ID) #@PARENS_BREAK● AttribPragma(Symbol)】●
+ ►#?STRUCTURE_EXPECTED!【pragma ( foo2 #@PARENS_BREAK● AttribPragma(Symbol)】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)  #@ATTRIBS_BROKEN  /*-----*/  #@BODY_TYPES
-#STRUCTURE_EXPECTED: #@ATTRIBS_BROKEN
+#STRUCTURE_EXPECTED: DeclarationAttrib( #@ATTRIBS_BROKEN )

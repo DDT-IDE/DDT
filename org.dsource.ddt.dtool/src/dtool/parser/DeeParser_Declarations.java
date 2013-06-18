@@ -11,29 +11,32 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
 import dtool.ast.ASTNode;
+import dtool.ast.ASTNodeTypes;
 import dtool.ast.NodeListView;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
+import dtool.ast.declarations.AttribAlign;
+import dtool.ast.declarations.AttribAt;
+import dtool.ast.declarations.AttribBasic;
+import dtool.ast.declarations.AttribBasic.AttributeKinds;
+import dtool.ast.declarations.AttribLinkage;
+import dtool.ast.declarations.AttribLinkage.Linkage;
+import dtool.ast.declarations.AttribPragma;
+import dtool.ast.declarations.AttribProtection;
+import dtool.ast.declarations.AttribProtection.Protection;
+import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.DeclList;
-import dtool.ast.declarations.DeclarationAlign;
-import dtool.ast.declarations.DeclarationAtAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
-import dtool.ast.declarations.DeclarationBasicAttrib;
-import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
 import dtool.ast.declarations.DeclarationDebugVersion;
 import dtool.ast.declarations.DeclarationDebugVersionSpec;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
-import dtool.ast.declarations.DeclarationLinkage;
-import dtool.ast.declarations.DeclarationLinkage.Linkage;
 import dtool.ast.declarations.DeclarationMixinString;
-import dtool.ast.declarations.DeclarationPragma;
-import dtool.ast.declarations.DeclarationProtection;
-import dtool.ast.declarations.DeclarationProtection.Protection;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.DeclarationStaticIf;
 import dtool.ast.declarations.ImportAlias;
@@ -48,6 +51,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.statements.IStatement;
+import dtool.parser.LexElement.MissingLexElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
@@ -156,27 +160,29 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
 		public ASTNode declList;
 		
-		public AttribBodyParseRule parseAttribBody(ParseHelper parse, boolean acceptEmptyDecl, 
-			boolean enablesAutoDecl) {
+		public AttribBodyParseRule parseAttribBody(ParseHelper parse, boolean nonAttribOnly, boolean acceptEmptyDecl) {
 			if(tryConsume(DeeTokens.COLON)) {
 				bodySyntax = AttribBodySyntax.COLON;
 				declList = parseDeclList(null);
 			} else {
-				parseDeclBlockOrSingle(parse, acceptEmptyDecl, enablesAutoDecl);
+				parseDeclBlockOrSingle(parse, nonAttribOnly, acceptEmptyDecl);
 			}
 			return this;
 		}
 		
-		public AttribBodyParseRule parseDeclBlockOrSingle(ParseHelper parse, boolean acceptEmptyDecl, 
-			boolean enablesAutoDecl) {
+		public AttribBodyParseRule parseDeclBlockOrSingle(ParseHelper parse, boolean nonAttribOnly, 
+			boolean acceptEmptyDecl) {
 			if(lookAhead() == DeeTokens.OPEN_BRACE) {
 				bodySyntax = AttribBodySyntax.BRACE_BLOCK;
 				declList = parse.checkResult(thisParser().parseDeclarationBlock());
 			} else {
-				declList = parse.checkResult(thisParser().parseDeclaration(enablesAutoDecl));
+				if(nonAttribOnly) {
+					declList = parse.checkResult(thisParser().parseNonAttributeDeclaration(false));
+				} else {
+					declList = parse.checkResult(thisParser().parseDeclaration(false));
+				}
 				if(declList == null) {
-					declList = concludeNode(srOf(consumeSubChannelTokens(), new MissingDeclaration()));
-					parse.storeBreakError(createErrorExpectedRule(RULE_DECLBODY));
+					declList = parseMissingDeclaration(RULE_DECLBODY);
 				} else if(declList instanceof DeclarationEmpty && !acceptEmptyDecl) {
 					parse.store(createSyntaxError(DeeParser.RULE_DECLARATION));
 				}
@@ -193,13 +199,27 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 		return parse.conclude(new DeclList(declDefs));
 	}
 	
-	public NodeResult<DeclarationLinkage> parseDeclarationExternLinkage(boolean parseBody) {
+	public MissingDeclaration parseMissingDeclaration(ParseRuleDescription expectedRule) {
+		MissingLexElement subChannelTokens = consumeSubChannelTokens();
+		ParserError error = createErrorExpectedRule(expectedRule);
+		return conclude(error, srOf(subChannelTokens, new MissingDeclaration()));
+	}
+	
+	public static ASTNodeTypes getLastAttributeKind(ArrayView<Attribute> attributes) {
+		if(attributes == null) {
+			return ASTNodeTypes.NULL;
+		}
+		assertTrue(attributes.size() > 0);
+		Attribute lastAttrib = attributes.get(attributes.size() - 1);
+		return lastAttrib.getNodeType();
+	}
+	
+	public NodeResult<AttribLinkage> parseAttribLinkage() {
 		if(!tryConsume(DeeTokens.KW_EXTERN))
 			return null;
 		ParseHelper parse = new ParseHelper();
 		
 		String linkageStr = null;
-		AttribBodyParseRule ab = new AttribBodyParseRule();
 		
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
@@ -219,21 +239,17 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 				
 				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			}
-			if(parseBody) {
-				ab.parseAttribBody(parse, false, false);
-			}
 		}
 		
-		return parse.resultConclude(new DeclarationLinkage(linkageStr, ab.bodySyntax, ab.declList));
+		return parse.resultConclude(new AttribLinkage(linkageStr));
 	}
 	
-	public NodeResult<DeclarationAlign> parseDeclarationAlign(boolean parseBody) {
+	public NodeResult<AttribAlign> parseAttribAlign() {
 		if(!tryConsume(DeeTokens.KW_ALIGN))
 			return null;
 		ParseHelper parse = new ParseHelper();
 		
 		String alignNum = null;
-		AttribBodyParseRule ab = new AttribBodyParseRule();
 		
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
@@ -243,22 +259,17 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 				
 				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			}
-			if(parseBody) {
-				ab.parseAttribBody(parse, false, false);
-			}
 		}
 		
-		return parse.resultConclude(new DeclarationAlign(alignNum, ab.bodySyntax, ab.declList));
+		return parse.resultConclude(new AttribAlign(alignNum));
 	}
 	
-	public NodeResult<DeclarationPragma> parseDeclarationPragma(boolean isStatement, boolean parseBody) {
+	public NodeResult<AttribPragma> parseAttribPragma() {
 		if(!tryConsume(DeeTokens.KW_PRAGMA))
 			return null;
 		ParseHelper parse = new ParseHelper();
 		
 		Symbol pragmaId = null;
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		IStatement bodySt = null;
 		NodeListView<Expression> expList = null;
 		
 		parsing: {
@@ -271,21 +282,12 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 				parse.consumeRequired(DeeTokens.CLOSE_PARENS);
 			}
 			if(parse.ruleBroken) break parsing;
-			
-			if(isStatement) {
-				bodySt = parse.checkResult(thisParser().parseUnscopedStatement_toMissing()); 
-			} else if(parseBody) {
-				ab.parseAttribBody(parse, true, false);
-			}
 		}
 		
-		if(isStatement) {
-			return parse.resultConclude(new DeclarationPragma(pragmaId, expList, bodySt));
-		}
-		return parse.resultConclude(new DeclarationPragma(pragmaId, expList, ab.bodySyntax, ab.declList));
+		return parse.resultConclude(new AttribPragma(pragmaId, expList));
 	}
 	
-	public NodeResult<DeclarationProtection> parseDeclarationProtection(boolean parseBody) {
+	public NodeResult<AttribProtection> parseAttribProtection() {
 		if(lookAheadGrouped() != DeeTokens.PROTECTION_KW) {
 			return null;
 		}
@@ -293,14 +295,10 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 		ParseHelper parse = new ParseHelper();
 		Protection protection = DeeTokenSemantics.getProtectionFromToken(protElement.token.type);
 		
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		if(parseBody) {
-			ab.parseAttribBody(parse, false, true);
-		}
-		return parse.resultConclude(new DeclarationProtection(protection, ab.bodySyntax, ab.declList));
+		return parse.resultConclude(new AttribProtection(protection));
 	}
 	
-	public NodeResult<DeclarationBasicAttrib> parseDeclarationBasicAttrib(boolean parseBody) {
+	public NodeResult<AttribBasic> parseAttribBasic() {
 		AttributeKinds attrib = AttributeKinds.fromToken(lookAhead());
 		if(attrib == null)
 			return null;
@@ -311,25 +309,16 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 			parseExpressionAroundParentheses(parse, false, false);
 			// TODO: tests for this, confirm spec
 		}
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		if(parseBody) {
-			ab.parseAttribBody(parse, false, true);
-		}
-		return parse.resultConclude(new DeclarationBasicAttrib(attrib, ab.bodySyntax, ab.declList));
+		return parse.resultConclude(new AttribBasic(attrib));
 	}
 	
-	public NodeResult<DeclarationAtAttrib> parseDeclarationAtAttrib(boolean parseBody) {
+	public NodeResult<AttribAt> parseAttribAt() {
 		if(!tryConsume(DeeTokens.AT)) 
 			return null;
 		
 		ParseHelper parse = new ParseHelper();
 		Symbol attribIdentifier = parseAttribId();
-		
-		AttribBodyParseRule ab = new AttribBodyParseRule();
-		if(parseBody) {
-			ab.parseAttribBody(parse, false, true);
-		}
-		return parse.resultConclude(new DeclarationAtAttrib(attribIdentifier, ab.bodySyntax, ab.declList));
+		return parse.resultConclude(new AttribAt(attribIdentifier));
 	}
 	
 	public Symbol parseAttribId() {
@@ -409,7 +398,7 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 				
 				if(bodySyntax != AttribBodySyntax.COLON) {
 					if(tryConsume(DeeTokens.KW_ELSE)) {
-						elseBody = new AttribBodyParseRule().parseDeclBlockOrSingle(parse, false, false).declList ;
+						elseBody = new AttribBodyParseRule().parseDeclBlockOrSingle(parse, false, false).declList;
 					}
 				}
 			}

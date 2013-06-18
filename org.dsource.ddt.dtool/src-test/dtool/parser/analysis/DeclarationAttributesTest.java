@@ -7,8 +7,8 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
-import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
-import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.ast.declarations.AttribBasic.AttributeKinds;
+import dtool.ast.declarations.AttribProtection.Protection;
 import dtool.ast.definitions.Definition;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;

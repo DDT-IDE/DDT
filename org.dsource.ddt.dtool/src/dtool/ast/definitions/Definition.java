@@ -3,9 +3,9 @@ package dtool.ast.definitions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import dtool.ast.declarations.DeclarationBasicAttrib;
-import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
-import dtool.ast.declarations.DeclarationProtection.Protection;
+import dtool.ast.declarations.AttribBasic;
+import dtool.ast.declarations.AttribBasic.AttributeKinds;
+import dtool.ast.declarations.AttribProtection.Protection;
 import dtool.parser.Token;
 
 /**
@@ -13,6 +13,7 @@ import dtool.parser.Token;
  */
 public abstract class Definition extends DefUnit {
 	
+//	public final ArrayView<Attribute> attributes; // TODO
 	protected int defAttributesBitMask;
 	
 	public Definition(Token[] comments, ProtoDefSymbol defId) {
@@ -35,7 +36,7 @@ public abstract class Definition extends DefUnit {
 		return protection == null ? Protection.PUBLIC : protection;
 	}
 	
-	public void setAttribute(DeclarationBasicAttrib declBasicAttrib) {
+	public void setAttribute(AttribBasic declBasicAttrib) {
 		defAttributesBitMask |= getBitMaskForBasicAttribute(declBasicAttrib.declAttrib);
 	}
 	

@@ -14,6 +14,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
@@ -22,11 +23,11 @@ import dtool.util.ArrayView;
 
 public class DefinitionConstructor extends AbstractFunctionDefinition implements IDeclaration {
 	
-	public DefinitionConstructor(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
-		ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, 
-		Expression tplConstraint, IFunctionBody fnBody) 
+	public DefinitionConstructor(Token[] comments, ArrayView<Attribute> attributes, ProtoDefSymbol defId, 
+		ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, 
+		ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint, IFunctionBody fnBody) 
 	{
-		super(comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
+		super(comments, attributes, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
 	}
 	
 	@Override
@@ -38,6 +39,7 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
+			TreeVisitor.acceptChildren(visitor, attributes);
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, tplParams);
 			TreeVisitor.acceptChildren(visitor, fnParams);
@@ -49,6 +51,7 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendList(attributes, " ", true);
 		toStringAsCode_fromDefId(cp);
 	}
 	

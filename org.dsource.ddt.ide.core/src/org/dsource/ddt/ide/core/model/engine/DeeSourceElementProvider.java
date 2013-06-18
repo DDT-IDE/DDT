@@ -21,7 +21,7 @@ import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
 import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAllocatorFunction;
-import dtool.ast.declarations.DeclarationBasicAttrib.AttributeKinds;
+import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Definition;

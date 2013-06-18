@@ -30,16 +30,16 @@
 ¤》
 
 #@ATTRIBS_TESTER《
-  ►#?STRUCTURE_EXPECTED!【#@ATTRIBS● #@ATTRIBS)】●
-  ►#?STRUCTURE_EXPECTED!【public extern(C) pure● DeclarationProtection DeclarationLinkage DeclarationBasicAttrib】●
+  ►#?STRUCTURE_EXPECTED!【#@ATTRIBS_Opt● #@ATTRIBS_Opt】●
+  ►#?STRUCTURE_EXPECTED!【public extern(C) pure● AttribProtection AttribLinkage AttribBasic】●
 ¤》
 
 #@ALIAS_VAR_DECL《
- ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE_NoSingleDefId #@NO_DEFID #@SEMICOLON_OR_BREAK #?TM_ATTRIB_AMBIG【#:DISCARD_CASE】● 
-                        #@TYPEREF_NBNE_NoSingleDefId #@NO_DEFID 】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE__NoSingleDefId #@NO_DEFID #@SEMICOLON_OR_BREAK● #TM_AMBIG_AS_RAW(flag)
+                        #@TYPEREF_NBNE__NoSingleDefId #@NO_DEFID 】●
  ►#?STRUCTURE_EXPECTED!【#@TYPEREF_BROKEN__NoTypeAppend #@SEMICOLON_BREAK fooB● 
                         #@TYPEREF_BROKEN__NoTypeAppend #@NO_DEFID 】●
- ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE fooB #@SEMICOLON_OR_BREAK ● #?TM_ATTRIB_AMBIG【#:DISCARD_CASE】  #TM_AMBIG_AS_RAW(flag)
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE fooB #@SEMICOLON_OR_BREAK ● #TM_AMBIG_AS_RAW(flag)
                         #@TYPEREF_NBNE DefSymbol】●
  ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE__LITE fooA #@NO_SEMICOLON #@BREAK = #@INITIALIZERS__SAMPLE●
                         #@TYPEREF_NBNE__LITE DefSymbol #@BREAK 】●
@@ -52,9 +52,9 @@
  ►#?STRUCTURE_EXPECTED!【#@ATTRIBS_TESTER #@TYPEREF_NBNE__LITE fooA ;● 
                         #@ATTRIBS_TESTER #@TYPEREF_NBNE__LITE DefSymbol 】●
  ►#?STRUCTURE_EXPECTED!【align(123 #error(EXP_CLOSE_PARENS)#error(EXP_SEMICOLON)#@BREAK #@TYPEREF_NBNE__LITE fooA ;● 
-                        DeclarationAlign #@NO_DEFID $ 】●
+                        AttribAlign #@NO_DEFID $ 】●
  ►#?STRUCTURE_EXPECTED!【pure #@NO_TYPEREF #@SEMICOLON_OR_BREAK● 
-                        DeclarationBasicAttrib #@NO_TYPEREF #@NO_DEFID 】●
+                        AttribBasic #@NO_TYPEREF #@NO_DEFID 】●
 ¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
@@ -62,8 +62,8 @@
 #STRUCTURE_EXPECTED:  DefinitionAliasVarDecl(#@ALIAS_VAR_DECL)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Decl syntax - function
 #@ALIAS_FN_DECL《
- ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE__LITE #@DEFID ( #@CLOSEPARENS_OR_NO #@SEMICOLON_OR_BREAK●
-                        #@TYPEREF_NBNE__LITE #@DEFID】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE #@DEFID ( #@CLOSEPARENS_OR_NO #@SEMICOLON_OR_BREAK● #TM_AMBIG_AS_RAW(flag)
+                        #@TYPEREF_NBNE #@DEFID】●
  ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE__LITE #@DEFID (#@FN_PARAMS_SAMPLE) #@FN_ATTRIB__SAMPLE #@SEMICOLON_OR_BREAK●
                         #@TYPEREF_NBNE__LITE #@DEFID  #@FN_PARAMS_SAMPLE  #@FN_ATTRIB__SAMPLE】●
  ►#?STRUCTURE_EXPECTED!【#@TYPEREF_NBNE__LITE #@DEFID (#@FN_PARAMS_SAMPLE) #@NO_SEMICOLON #@BREAK , foo ;●
