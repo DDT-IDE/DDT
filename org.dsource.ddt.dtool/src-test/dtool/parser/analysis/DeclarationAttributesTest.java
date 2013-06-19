@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.AttribProtection.Protection;
-import dtool.ast.definitions.Definition;
+import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
 import dtool.tests.CommonTestUtils;
@@ -39,14 +39,14 @@ public class DeclarationAttributesTest extends CommonTestUtils {
 			Protection.PUBLIC, AttributeKinds.STATIC, AttributeKinds.IMMUTABLE);
 	}
 	
-	public Definition getDefToTest(String source, String name, int... treePath) {
+	public CommonDefinition getDefToTest(String source, String name, int... treePath) {
 		Module module = DeeParser.parseSource(source, "attribs_test").module;
-		Definition def = assertCast(getNodeFromTreePath(module, treePath), Definition.class);
+		CommonDefinition def = assertCast(getNodeFromTreePath(module, treePath), CommonDefinition.class);
 		assertEquals(def.getName(), name);
 		return def;
 	}
 	
-	public void checkDef(Definition def, Protection protection, AttributeKinds... expectedAttribs) {
+	public void checkDef(CommonDefinition def, Protection protection, AttributeKinds... expectedAttribs) {
 		assertTrue(def.getProtection() == protection);
 		for (AttributeKinds attrib : AttributeKinds.values()) {
 			assertTrue(def.hasAttribute(attrib) == ArrayUtil.contains(expectedAttribs, attrib));

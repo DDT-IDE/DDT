@@ -9,7 +9,6 @@ import dtool.ast.IASTNeoNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationEmpty;
-import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
@@ -21,10 +20,9 @@ import dtool.util.NewUtils;
 /**
  * A definition of a aggregate. 
  */
-public abstract class DefinitionAggregate extends Definition implements IScopeNode, IDeclaration, IStatement {
+public abstract class DefinitionAggregate extends CommonDefinition implements IScopeNode, IStatement {
 	
 	public interface IAggregateBody extends IASTNeoNode {
-		
 	}
 	
 	public final ArrayView<TemplateParameter> tplParams;

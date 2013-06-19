@@ -9,7 +9,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
-import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
@@ -25,21 +24,19 @@ import dtool.util.ArrayView;
  * Optionally has multiple variables defined with the multi-identifier syntax.
  * TODO fragments semantic visibility
  */
-public class DefinitionVariable extends Definition implements IDeclaration, IStatement { 
+public class DefinitionVariable extends CommonDefinition implements IDeclaration, IStatement { 
 	
 	public static final ArrayView<DefVarFragment> NO_FRAGMENTS = ArrayView.create(new DefVarFragment[0]);
 	
-	public final ArrayView<Attribute> attributes;
 	public final Reference type; // Can be null
 	public final Reference cstyleSuffix;
 	public final IInitializer init;
 	public final ArrayView<DefVarFragment> fragments;
 	
-	public DefinitionVariable(Token[] comments, ArrayView<Attribute> attributes, ProtoDefSymbol defId,
-		Reference type, Reference cstyleSuffix, IInitializer init, ArrayView<DefVarFragment> fragments)
+	public DefinitionVariable(Token[] comments, ProtoDefSymbol defId, Reference type, Reference cstyleSuffix,
+		IInitializer init, ArrayView<DefVarFragment> fragments)
 	{
 		super(comments, defId);
-		this.attributes = parentize(attributes);
 		this.type = parentize(type);
 		this.cstyleSuffix = parentize(cstyleSuffix);
 		this.init = parentize(init);
@@ -56,7 +53,6 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, attributes);
 			TreeVisitor.acceptChildren(visitor, type);
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, cstyleSuffix);
@@ -69,7 +65,6 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendList(attributes, " ", true);
 		cp.append(type, " ");
 		cp.append(defname);
 		cp.append(cstyleSuffix);
@@ -81,9 +76,9 @@ public class DefinitionVariable extends Definition implements IDeclaration, ISta
 	// TODO refactor this into own class?
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
-		public DefinitionAutoVariable(Token[] comments, ArrayView<Attribute> attributes, ProtoDefSymbol defId, 
-			IInitializer init, ArrayView<DefVarFragment> fragments) {
-			super(comments, attributes, defId, null, null, init, fragments);
+		public DefinitionAutoVariable(Token[] comments, ProtoDefSymbol defId, IInitializer init,
+			ArrayView<DefVarFragment> fragments) {
+			super(comments, defId, null, null, init, fragments);
 		}
 		
 		@Override

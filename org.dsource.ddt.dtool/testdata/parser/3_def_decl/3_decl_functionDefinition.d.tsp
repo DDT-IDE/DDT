@@ -26,17 +26,17 @@ DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS__SAMPLE #@FN_PARAMS_SAMPL
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ return type reference
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@TYPEREF_NBNE func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE
+#PARSE(DECLARATION)  #@TYPEREF_NBNE__NoTM func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE
 #STRUCTURE_EXPECTED: 
-DefFunction(#TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )
+         DefFunction(#@TYPEREF_NBNE__NoTM DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ommited return type
 #PARSE(DECLARATION)  #@ATTRIBS_AUTODecl func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE 
 #STRUCTURE_EXPECTED: 
-         DefFunction(#@ATTRIBS_AUTODecl  DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE)
+   DeclarationAttrib(#@ATTRIBS_AUTODecl DefFunction(DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ommited return type
 #PARSE(DECLARATION)  const shared func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE 
 #STRUCTURE_EXPECTED:  
-DefFunction(AttribBasic AttribBasic DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE)
+DeclarationAttrib(AttribBasic AttribBasic DefFunction(DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE) )
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Fn 0 args
 

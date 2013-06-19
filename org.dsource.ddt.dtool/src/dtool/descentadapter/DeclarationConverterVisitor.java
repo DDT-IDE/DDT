@@ -551,7 +551,6 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			return endAdapt(defUnitInfo.sourceRange,
 				new DefinitionVariable.DefinitionAutoVariable(
 				defUnitInfo.commentsToToken(), 
-				null,
 				defUnitInfo.defSymbol,
 				DescentASTConverter.convertElem(elem.init, Initializer.class, convContext), null
 			));
@@ -560,7 +559,6 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 			return endAdapt(defUnitInfo.sourceRange, 
 				new DefinitionVariable(
 				defUnitInfo.commentsToToken(),
-				null,
 				defUnitInfo.defSymbol,
 				typeRef,
 				null,

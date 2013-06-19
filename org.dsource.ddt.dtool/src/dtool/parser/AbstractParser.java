@@ -364,7 +364,7 @@ public abstract class AbstractParser {
 			return error;
 		}
 		
-		public <T extends ASTNode> T conclude(T node) {
+		public final <T extends ASTNode> T conclude(T node) {
 			initRange(node);
 			nodeStart = -1;
 			return concludeDo(error1, error2, node);
@@ -375,22 +375,6 @@ public abstract class AbstractParser {
 		}
 		
 	}
-	
-	public class SingleTokenParse {
-		protected BaseLexElement lexToken;
-		protected ParserError error = null;
-		
-		public SingleTokenParse(DeeTokens expectedToken) {
-			lexToken = consumeExpectedContentToken(expectedToken);
-			error = lexToken.getError();
-		}
-		
-		public <T extends ASTNode> T conclude(T node) {
-			srBounds(lexToken.getStartPos(), lexToken.getEndPos(), node);
-			return concludeDo(error, null, node);
-		}
-	}
-	
 	
 	/* ---- Source range helpers ---- */
 	

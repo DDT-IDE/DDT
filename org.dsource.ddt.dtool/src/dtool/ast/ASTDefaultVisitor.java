@@ -10,17 +10,17 @@
  *******************************************************************************/
 package dtool.ast;
 
-import dtool.ast.declarations.AttribAlign;
-import dtool.ast.declarations.DeclarationAllocatorFunction;
-import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AbstractConditionalDeclaration;
+import dtool.ast.declarations.AttribAlign;
+import dtool.ast.declarations.AttribBasic;
+import dtool.ast.declarations.AttribLinkage;
+import dtool.ast.declarations.AttribPragma;
+import dtool.ast.declarations.AttribProtection;
+import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationInvariant;
-import dtool.ast.declarations.AttribLinkage;
 import dtool.ast.declarations.DeclarationMixinString;
-import dtool.ast.declarations.AttribPragma;
-import dtool.ast.declarations.AttribProtection;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
@@ -28,6 +28,7 @@ import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
@@ -37,9 +38,7 @@ import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
-import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
-import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
@@ -52,8 +51,8 @@ import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralChar;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
-import dtool.ast.expressions.ExpNewAnonClass;
 import dtool.ast.expressions.ExpLiteralString;
+import dtool.ast.expressions.ExpNewAnonClass;
 import dtool.ast.expressions.ExpNull;
 import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.ast.expressions.ExpPrefix;
@@ -152,11 +151,6 @@ public abstract class ASTDefaultVisitor extends ASTAbstractVisitor implements IA
 	
 	@Override
 	public boolean visit(DefinitionEnum node) {
-		return true;
-	}
-	
-	@Override
-	public boolean visit(DefinitionTypedef node) {
 		return true;
 	}
 	

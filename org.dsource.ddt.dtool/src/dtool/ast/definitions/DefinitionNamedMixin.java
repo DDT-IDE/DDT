@@ -4,7 +4,6 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
@@ -15,12 +14,12 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  * Declaration of a template mixin with an associated identifier:
  * http://dlang.org/template-mixin.html#TemplateMixinDeclaration (with MixinIdentifier)
  */
-public class DefinitionNamedMixin extends DefUnit implements IDeclaration, IStatement {
+public class DefinitionNamedMixin extends CommonDefinition implements IStatement {
 	
 	public final Reference templateInstance;
 	
 	public DefinitionNamedMixin(Token[] comments, ProtoDefSymbol defId, Reference templateInstance) {
-		super(defId, comments);
+		super(comments, defId);
 		this.templateInstance = parentize(templateInstance);
 	}
 	

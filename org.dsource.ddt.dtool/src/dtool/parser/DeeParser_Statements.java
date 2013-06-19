@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.IDeclaration;
-import dtool.ast.declarations.IncompleteDeclaration;
+import dtool.ast.declarations.IncompleteDeclarator;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Symbol;
@@ -216,7 +216,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		NodeResult<? extends IDeclaration> declResult = parseDeclaration(true);
 		IDeclaration decl = declResult.node;
 		
-		if(decl instanceof IncompleteDeclaration || decl == null) {
+		if(decl instanceof IncompleteDeclarator || decl == null) {
 			thisParser().restoreOriginalState(originalState);
 			NodeResult<StatementExpression> expResult = parseStatementExpression();
 			assertTrue(expResult.node != null || decl == null); // any IncompleteDeclaration must be parsable as exp 

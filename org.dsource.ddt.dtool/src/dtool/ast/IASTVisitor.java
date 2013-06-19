@@ -136,9 +136,6 @@ public interface IASTVisitor {
 	public boolean visit(DefinitionEnum node);
 	public void endVisit(DefinitionEnum node);
 	
-	public boolean visit(DefinitionTypedef node);
-	public void endVisit(DefinitionTypedef node);
-	
 	// TODO: other Definition Alias elements
 	public boolean visit(DefinitionAliasVarDecl node);
 	public void endVisit(DefinitionAliasVarDecl node);

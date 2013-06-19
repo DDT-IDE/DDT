@@ -9,7 +9,6 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.Attribute;
-import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
@@ -24,17 +23,17 @@ import dtool.util.ArrayView;
  * 
  * @see http://dlang.org/declaration.html#AliasDeclaration
  */
-public class DefinitionAliasFunctionDecl extends Definition implements IDeclaration, IStatement {
+public class DefinitionAliasFunctionDecl extends CommonDefinition implements IStatement {
 	
-	public final ArrayView<Attribute> attributes;
+	public final ArrayView<Attribute> aliasedAttributes;
 	public final Reference target;
 	public final ArrayView<IFunctionParameter> fnParams;
 	public final ArrayView<FunctionAttributes> fnAttributes;
 	
-	public DefinitionAliasFunctionDecl(Token[] comments, ArrayView<Attribute> attributes, Reference target, 
+	public DefinitionAliasFunctionDecl(Token[] comments, ArrayView<Attribute> aliasedAttributes, Reference target, 
 		ProtoDefSymbol defId, ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes) {
 		super(comments, defId);
-		this.attributes = parentize(attributes);
+		this.aliasedAttributes = parentize(aliasedAttributes);
 		this.target = parentize(target);
 		this.fnParams = parentizeI(fnParams);
 		this.fnAttributes = fnAttributes;
@@ -54,7 +53,7 @@ public class DefinitionAliasFunctionDecl extends Definition implements IDeclarat
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, attributes);
+			TreeVisitor.acceptChildren(visitor, aliasedAttributes);
 			TreeVisitor.acceptChildren(visitor, target);
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, fnParams);
@@ -65,7 +64,7 @@ public class DefinitionAliasFunctionDecl extends Definition implements IDeclarat
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("alias ");
-		cp.appendList(attributes, " ", true);
+		cp.appendList(aliasedAttributes, " ", true);
 		cp.append(target, " ");
 		cp.append(defname);
 		cp.appendList("(", getParams_asNodes(), ",", ") ");
@@ -82,7 +81,6 @@ public class DefinitionAliasFunctionDecl extends Definition implements IDeclarat
 	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
 		return target.getTargetScope(moduleResolver); // XXX: Not correct for functional variant of alias
 	}
-	
 	
 	@Override
 	public String toStringForCodeCompletion() {

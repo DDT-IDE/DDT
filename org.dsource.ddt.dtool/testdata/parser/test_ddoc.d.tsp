@@ -11,29 +11,28 @@
 
 #@DDOC_SAMPLE《/+NotDDOC+/#DDOC_TEST(test)【/++ StartDDOC +/】》
 
-#@DDOC《 ●/++/●/**/#DDOC_TEST(test)【/** StartDDOC */】  》
-#@DDOCPOST《 ●#?RULE_BROKEN【/// Post DDoc NOT included ||
+#@DDOC_PRE《 ●/++/●/**/#DDOC_TEST(test)【/** StartDDOC */】  》
+#@DDOC_POST《 ●#?RULE_BROKEN【/// Post DDoc NOT included ||
 /*-*/● #DDOC_TEST(test)【/// Post DDOC included |||
 】/*-*/】》
 
-TODO attribs for other definitions
 
 #@DEFUNITS_NB《
  ►#@DDOC_ATTRIBS int * defunit ; ●
  ►#@DDOC_ATTRIBS int* defunit(int foo) ; ●
  ►#@DDOC_ATTRIBS this(int foo) ; #DDOC_TEST_TARGET__OVERRIDE(test)¤【this】 ●
  
- ►struct defunit { }●
- ►union defunit ;●
- ►class defunit { } ●
- ►interface defunit(int foo) ;●
+ ►#@DDOC_ATTRIBS struct defunit { }●
+ ►#@DDOC_ATTRIBS union defunit ;●
+ ►#@DDOC_ATTRIBS class defunit { } ●
+ ►#@DDOC_ATTRIBS interface defunit(int foo) ;●
  
- ►enum defunit {A, B, C} ●
- ►template defunit(T) { } ●
- ►mixin tpl!(foo) defunit; ●
+ ►/+#@DDOC_ATTRIBS TODO BUG here+/  enum defunit {A, B, C} ●
+ ►#@DDOC_ATTRIBS template defunit(T) { } ●
+ ►#@DDOC_ATTRIBS mixin tpl!(foo) defunit; ●
  
- ►alias int defunit;●
- ►alias int defunit(int foo);●
+ ►#@DDOC_ATTRIBS alias int defunit;●
+ ►#@DDOC_ATTRIBS alias int defunit(int foo);●
 ¤》
 
 #@DEFUNITS《
@@ -49,27 +48,27 @@ TODO attribs for other definitions
 TODO DefVarFragment, DefinitionAliasFragment, AliasVarDeclFragment
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#comment(PRINT_SEP)
-#PARSE(DECLARATION)   #@DDOC #@DEFUNITS #@DDOCPOST
+#comment(PRINT_SEP) #DDOC_TEST_TARGET(test) 
+#PARSE(DECLARATION)   #@DDOC_PRE  #@DEFUNITS #@DDOC_POST
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#comment(PRINT_SEP)
-#PARSE(DECLARATION)   #@DDOC #@^DDOC #@DEFUNITS
+#comment(PRINT_SEP) #DDOC_TEST_TARGET(test) 
+#PARSE(DECLARATION)   #@DDOC_PRE  #@^DDOC_PRE #@DEFUNITS
 /// Post DDOC not part of defunit
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#comment(PRINT_SEP)  #DDOC_TEST_TARGET(test)¤【defunit】 
+#comment(PRINT_SEP)  #DDOC_TEST_TARGET(test)¤【defunit】
 int* defunitOther; /// Post DDOC other 
-#@DDOC_SAMPLE #@DDOC #@DEFUNITS_NB #@DDOCPOST
+#@DDOC_SAMPLE #@DDOC_PRE #@DEFUNITS_NB #@DDOC_POST
 /** other DDOC*/
 int* defunitOther;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#comment(PRINT_SEP)  
-#@DDOC_SAMPLE #@DDOC module defunit; #@DDOCPOST
+#comment(PRINT_SEP)  #DDOC_TEST_TARGET(test)
+#@DDOC_SAMPLE #@DDOC_PRE module defunit; #@DDOC_POST
 /++ other DDOC+/
 /** other DDOC*/
 int* defunitOther;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #comment(PRINT_SEP)   // without module declaration #DDOC_TEST_TARGET(test)¤【defunit】 
-#@DDOC_SAMPLE #@DDOC int defunit; #@DDOCPOST
+#@DDOC_SAMPLE #@DDOC_PRE int defunit; #@DDOC_POST
 /** other DDOC*/
 int* defunitOther;

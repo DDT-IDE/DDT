@@ -3,7 +3,10 @@ enum MyEnum : basetype { A , B }
 enum : int[] { A = 2 , float B }
 #STRUCTURE_EXPECTED:
 DefinitionEnum(DefSymbol RefIdentifier EnumBody(EnumMember(DefSymbol) EnumMember(DefSymbol)) )
-DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumMember(RefPrimitive DefSymbol)) )
+DeclarationEnum( RefTypeDynArray(*) EnumBody(
+  EnumMember(DefSymbol Integer) 
+  EnumMember(RefPrimitive DefSymbol)
+))
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ENUM_BODY__SAMPLE《
   ►#?STRUCTURE_EXPECTED!【{ A = 3, float B, XXX}●
@@ -51,7 +54,7 @@ DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumM
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :duplicate test case, here for clarity 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   enum i = 4;
-#STRUCTURE_EXPECTED:  DefinitionAutoVariable(AttribBasic DefSymbol Integer)
+#STRUCTURE_EXPECTED:  DeclarationAttrib(AttribBasic DefinitionAutoVariable(DefSymbol Integer) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   enum long x = 4;
-#STRUCTURE_EXPECTED:  DefinitionVariable(AttribBasic RefPrimitive DefSymbol Integer)
+#STRUCTURE_EXPECTED:  DeclarationAttrib(AttribBasic DefinitionVariable(RefPrimitive DefSymbol Integer) )

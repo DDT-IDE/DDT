@@ -28,7 +28,7 @@ public class DeeDocAccessor {
 	
 	public static Ddoc getDdoc(DefUnit def) {
 		Ddoc ddoc = null;
-		Token[] preComments = def.comments;
+		Token[] preComments = def.getDocComments();
 		if (preComments != null && preComments.length > 0) {
 			for(Token comment : preComments) {
 				DdocParser parser = new DdocParser(comment.getSourceValue());

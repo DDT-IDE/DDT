@@ -12,5 +12,5 @@
 #STRUCTURE_EXPECTED: StatementScope( #@SCOPE  #@ST__ANY )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    scope int foo;
-#STRUCTURE_EXPECTED: DefinitionVariable(AttribBasic RefPrimitive DefSymbol)
+#STRUCTURE_EXPECTED: DeclarationAttrib(AttribBasic DefinitionVariable(RefPrimitive DefSymbol) )
   

@@ -24,10 +24,13 @@
 #STRUCTURE_EXPECTED: DefinitionEnum(DefSymbol RefIdentifier EnumBody(EnumMember(DefSymbol) EnumMember(DefSymbol)) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(STATEMENT)    enum : int[] { A = 2 , float B }
-#STRUCTURE_EXPECTED: DeclarationEnum( RefTypeDynArray(*) EnumBody(EnumMember(DefSymbol Integer) EnumMember(RefPrimitive DefSymbol)) )
+#STRUCTURE_EXPECTED: DeclarationEnum( RefTypeDynArray(*) EnumBody(
+  EnumMember(DefSymbol Integer) 
+  EnumMember(RefPrimitive DefSymbol)
+))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    enum i = 4;
-#STRUCTURE_EXPECTED: DefinitionAutoVariable(AttribBasic DefSymbol Integer)
+#STRUCTURE_EXPECTED: DeclarationAttrib(AttribBasic DefinitionAutoVariable(DefSymbol Integer) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(DECLARATION)   alias foo[] aliasDef; 
@@ -69,13 +72,16 @@
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)     #@ATTRIBS_ST int foo;
-#STRUCTURE_EXPECTED:  DefVariable(#@ATTRIBS_ST RefPrimitive DefSymbol)
+#STRUCTURE_EXPECTED:  
+    DeclarationAttrib(#@ATTRIBS_ST DefVariable(RefPrimitive DefSymbol) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(STATEMENT)     #@ATTRIBS_AUTODecl_ST fooB = #@EXP_ASSIGN__LITE;
-#STRUCTURE_EXPECTED:  DefAutoVariable(#@ATTRIBS_AUTODecl_ST DefSymbol #@EXP_ASSIGN__LITE )
+#STRUCTURE_EXPECTED:  
+    DeclarationAttrib(#@ATTRIBS_AUTODecl_ST DefAutoVariable(DefSymbol #@EXP_ASSIGN__LITE) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ommited return type
 #PARSE(STATEMENT)     #@ATTRIBS_AUTODecl_ST func(#@FN_PARAMS_SAMPLE) #@ST_BLOCK__SAMPLE
-#STRUCTURE_EXPECTED:  DefFunction(#@ATTRIBS_AUTODecl_ST DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE)
+#STRUCTURE_EXPECTED:  
+    DeclarationAttrib(#@ATTRIBS_AUTODecl_ST DefFunction(DefSymbol #@FN_PARAMS_SAMPLE #@ST_BLOCK__SAMPLE) )
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ this test is COMMENTED OUT since prot attribs are allowed structurally
 #PARSE(STATEMENT)  #@NULL public void foo ;

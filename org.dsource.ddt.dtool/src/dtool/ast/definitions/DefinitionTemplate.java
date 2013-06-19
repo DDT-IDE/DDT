@@ -28,7 +28,7 @@ import dtool.util.ArrayView;
  * 
  * (Technically not allowed as statement, but parse so anyways.)
  */
-public class DefinitionTemplate extends Definition implements IScopeNode, IDeclaration, IStatement {
+public class DefinitionTemplate extends CommonDefinition implements IScopeNode, IDeclaration, IStatement {
 	
 	public final boolean isMixin;
 	public final ArrayView<TemplateParameter> tplParams;

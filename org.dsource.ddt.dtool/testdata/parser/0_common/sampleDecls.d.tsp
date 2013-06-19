@@ -6,7 +6,7 @@
 
 #@DECL_LIST_SAMPLE《#?STRUCTURE_EXPECTED!【 int foo; extern(C) Foo foo; ● 
   DefinitionVariable(RefPrimitive DefSymbol) 
-  DefinitionVariable(AttribLinkage RefIdentifier DefSymbol)
+  DeclarationAttrib(AttribLinkage DefinitionVariable(RefIdentifier DefSymbol))
 】》
 
 #@DECLS_BLOCK__SAMPLE《#?STRUCTURE_EXPECTED!【{ #@DECL_LIST_SAMPLE } ● DeclBlock(#@DECL_LIST_SAMPLE)】》

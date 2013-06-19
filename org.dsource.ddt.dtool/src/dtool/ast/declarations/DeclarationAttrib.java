@@ -13,7 +13,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList_OLD;
 import dtool.ast.declarations.AttribProtection.Protection;
-import dtool.ast.definitions.Definition;
+import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.statements.BlockStatementUnscoped;
 import dtool.ast.statements.IStatement;
 import dtool.refmodel.INonScopedBlock;
@@ -100,8 +100,8 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 		while(iter.hasNext()) {
 			IASTNode node = iter.next();
 			
-			if(node instanceof Definition) {
-				Definition def = (Definition) node;
+			if(node instanceof CommonDefinition) {
+				CommonDefinition def = (CommonDefinition) node;
 				def.setAttribute(attribute);
 			} else if(node instanceof INonScopedBlock) {
 				applyBasicAttributes(attribute, (INonScopedBlock) node);
@@ -114,8 +114,8 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 		while(iter.hasNext()) {
 			IASTNode node = iter.next();
 			
-			if(node instanceof Definition) {
-				Definition def = (Definition) node;
+			if(node instanceof CommonDefinition) {
+				CommonDefinition def = (CommonDefinition) node;
 				def.setProtection(protection);
 			} else if (node instanceof AttribProtection) {
 				// Do not descend, that inner decl take priority

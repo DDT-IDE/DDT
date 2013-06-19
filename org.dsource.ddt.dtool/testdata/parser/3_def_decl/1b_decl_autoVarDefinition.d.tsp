@@ -1,20 +1,20 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic cases
 auto foo = 2;
 #STRUCTURE_EXPECTED:
-DefAutoVariable( AttribBasic DefSymbol Integer)
+DeclarationAttrib(AttribBasic DefAutoVariable(DefSymbol Integer) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)  #@ATTRIBS_AUTODecl fooB = #@EXP_ASSIGN__LITE;
-#STRUCTURE_EXPECTED: DefAutoVariable(#@ATTRIBS_AUTODecl DefSymbol #@EXP_ASSIGN__LITE )
+#STRUCTURE_EXPECTED: DeclarationAttrib(#@ATTRIBS_AUTODecl DefAutoVariable(DefSymbol #@EXP_ASSIGN__LITE) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test composite attribs dont make auto decl
 #PARSE(DECLARATION)  #@COMPLEX_ATTRIBS foo #@NO_DEFID #@SEMICOLON_BREAK = #@EXP_ASSIGN__LITE; 
-#STRUCTURE_EXPECTED: IncompleteDeclaration(#@COMPLEX_ATTRIBS RefIdentifier)
+#STRUCTURE_EXPECTED: DeclarationAttrib(#@COMPLEX_ATTRIBS IncompleteDeclarator(RefIdentifier) )
                                         
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@AUTO_START《
-  ►#?STRUCTURE_EXPECTED!【auto● AttribBasic 】●
-  ►#?STRUCTURE_EXPECTED!【static● AttribBasic 】●
-  ►#?STRUCTURE_EXPECTED!【const● AttribBasic 】●
-  ►#?STRUCTURE_EXPECTED!【@disable● AttribAt(Symbol) 】●
+  ►#?STRUCTURE_EXPECTED!【auto● DeclarationAttrib(AttribBasic 】●
+  ►#?STRUCTURE_EXPECTED!【static● DeclarationAttrib(AttribBasic 】●
+  ►#?STRUCTURE_EXPECTED!【const● DeclarationAttrib(AttribBasic 】●
+  ►#?STRUCTURE_EXPECTED!【@disable● DeclarationAttrib(AttribAt(Symbol) 】●
 ¤》
 
 #@AUTO_INIT《
@@ -27,10 +27,10 @@ DefAutoVariable( AttribBasic DefSymbol Integer)
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@AUTO_START foo #@AUTO_INIT #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  DefAutoVariable(#@AUTO_START DefSymbol #@AUTO_INIT )
+#STRUCTURE_EXPECTED:  #@AUTO_START DefAutoVariable(DefSymbol #@AUTO_INIT) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   auto foo = #@INITIALIZERS__SAMPLE , #@AUTO_FRAG #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  DefAutoVariable(AttribBasic DefSymbol #@INITIALIZERS__SAMPLE #@AUTO_FRAG )
+#STRUCTURE_EXPECTED:  DeclarationAttrib(AttribBasic DefAutoVariable(DefSymbol #@INITIALIZERS__SAMPLE #@AUTO_FRAG) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   auto foo = #@INITIALIZERS__SAMPLE , foo2 #error(EXP_ASSIGN)【】 , #@AUTO_FRAG ;
-#STRUCTURE_EXPECTED:  DefAutoVariable(AttribBasic DefSymbol #@INITIALIZERS__SAMPLE DefVarFragment(DefSymbol) #@AUTO_FRAG )
+#STRUCTURE_EXPECTED:  DeclarationAttrib(AttribBasic DefAutoVariable(DefSymbol #@INITIALIZERS__SAMPLE DefVarFragment(DefSymbol) #@AUTO_FRAG) )

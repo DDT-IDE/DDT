@@ -51,6 +51,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.statements.IStatement;
+import dtool.parser.DeeParser_Definitions.DefinitionStartInfo;
 import dtool.parser.LexElement.MissingLexElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
@@ -150,8 +151,8 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 	}
 	
 	public RefImportSelection parseRefImportSelection() {
-		SingleTokenParse parse = new SingleTokenParse(DeeTokens.IDENTIFIER);
-		return parse.conclude(new RefImportSelection(idTokenToString(parse.lexToken)));
+		BaseLexElement lexToken = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
+		return conclude(lexToken.getError(), srOf(lexToken, new RefImportSelection(idTokenToString(lexToken))));
 	}
 	
 	public static final ParseRuleDescription RULE_DECLBODY = new ParseRuleDescription("DeclOrBlock");
@@ -160,27 +161,24 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
 		public ASTNode declList;
 		
-		public AttribBodyParseRule parseAttribBody(ParseHelper parse, boolean nonAttribOnly, boolean acceptEmptyDecl) {
+		public AttribBodyParseRule parseAttribBody(ParseHelper parse, boolean acceptEmptyDecl, 
+			DefinitionStartInfo defStartInfo, boolean autoDeclEnabled) {
 			if(tryConsume(DeeTokens.COLON)) {
 				bodySyntax = AttribBodySyntax.COLON;
 				declList = parseDeclList(null);
 			} else {
-				parseDeclBlockOrSingle(parse, nonAttribOnly, acceptEmptyDecl);
+				parseDeclBlockOrSingle(parse, acceptEmptyDecl, defStartInfo, autoDeclEnabled);
 			}
 			return this;
 		}
 		
-		public AttribBodyParseRule parseDeclBlockOrSingle(ParseHelper parse, boolean nonAttribOnly, 
-			boolean acceptEmptyDecl) {
+		public AttribBodyParseRule parseDeclBlockOrSingle(ParseHelper parse, boolean acceptEmptyDecl, 
+			DefinitionStartInfo defStartInfo, boolean autoDeclEnabled) {
 			if(lookAhead() == DeeTokens.OPEN_BRACE) {
 				bodySyntax = AttribBodySyntax.BRACE_BLOCK;
 				declList = parse.checkResult(thisParser().parseDeclarationBlock());
 			} else {
-				if(nonAttribOnly) {
-					declList = parse.checkResult(thisParser().parseNonAttributeDeclaration(false));
-				} else {
-					declList = parse.checkResult(thisParser().parseDeclaration(false));
-				}
+				declList = parse.checkResult(thisParser().parseDeclaration(false, autoDeclEnabled, defStartInfo));
 				if(declList == null) {
 					declList = parseMissingDeclaration(RULE_DECLBODY);
 				} else if(declList instanceof DeclarationEmpty && !acceptEmptyDecl) {
@@ -393,12 +391,13 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 					elseBodySt = parse.checkResult(thisParser().parseUnscopedStatement_toMissing());
 				}
 			} else {
-				parseAttribBody(parse, false, false);
+				parseAttribBody(parse, false, null, false);
 				if(parse.ruleBroken) return;
 				
 				if(bodySyntax != AttribBodySyntax.COLON) {
 					if(tryConsume(DeeTokens.KW_ELSE)) {
-						elseBody = new AttribBodyParseRule().parseDeclBlockOrSingle(parse, false, false).declList;
+						elseBody = new AttribBodyParseRule().
+							parseDeclBlockOrSingle(parse, false, null, false).declList;
 					}
 				}
 			}

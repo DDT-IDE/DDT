@@ -33,10 +33,10 @@ DeclarationEmpty
 #PARSE(DECLARATION)   #@NULL while (true) ;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of reference start in DECLARATION
 foo #error(EXP_IDENTIFIER) ;
-#STRUCTURE_EXPECTED: IncompleteDeclaration(?)
+#STRUCTURE_EXPECTED: IncompleteDeclarator(?)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo #error(EXP_IDENTIFIER) #@NO_SEMICOLON
-#STRUCTURE_EXPECTED: IncompleteDeclaration(?)
+#STRUCTURE_EXPECTED: IncompleteDeclarator(?)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of ref identifiers: 
 import#error(EXP_ID);

@@ -6,17 +6,14 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@ATTRIBS_Opt #@TYPEREF_BROKEN__NoTypeAppend /*NoMissingExp*/ #@BREAK #@ReqSemicolon fooB 
-#STRUCTURE_EXPECTED:  IncompleteDeclaration(#@ATTRIBS_Opt #@TYPEREF_BROKEN__NoTypeAppend)
+#PARSE(DECLARATION)   #@TYPEREF_BROKEN__NoTypeAppend /*NoMissingExp*/ #@BREAK #@ReqSemicolon fooB 
+#STRUCTURE_EXPECTED:  IncompleteDeclarator(#@TYPEREF_BROKEN__NoTypeAppend)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@ATTRIBS_Opt #@TYPEREF_NBNE__NoSingleDefId #@NO_ID #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  IncompleteDeclaration(#@ATTRIBS_Opt #TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE) 
+#PARSE(DECLARATION)   #@TYPEREF_NBNE__NoTM #@NO_ID #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  IncompleteDeclarator(#@TYPEREF_NBNE) 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)                 foo                           #@NO_ID #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  IncompleteDeclaration(RefIdentifier) 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@ATTRIBS_Opt #@TYPEREF_NBNE fooB #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  DefVariable(#@ATTRIBS_Opt #TM_AMBIG_AS_RAW(flag) #@TYPEREF_NBNE DefSymbol)
+#PARSE(DECLARATION)   #@TYPEREF_NBNE__NoTM fooB #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  DefVariable(#@TYPEREF_NBNE__NoTM DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@TYPEREF_NBNE__LITE fooA = #@INITIALIZERS_TESTER #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DefVariable(#@TYPEREF_NBNE__LITE DefSymbol #@INITIALIZERS_TESTER)
@@ -46,4 +43,4 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
 #STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol RefTypeDynArray(CStyleRootRef))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)  auto foo[] #@NO_DEFID; // Make sure this is not confused with C-Style decl
-#STRUCTURE_EXPECTED: IncompleteDeclaration(AttribBasic * )
+#STRUCTURE_EXPECTED: DeclarationAttrib( AttribBasic IncompleteDeclarator(*) )

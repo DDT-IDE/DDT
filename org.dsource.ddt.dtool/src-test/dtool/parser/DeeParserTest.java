@@ -25,8 +25,11 @@ import java.util.List;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
 import dtool.ast.ASTNode;
+import dtool.ast.declarations.DeclarationAttrib;
+import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
+import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.TemplateParameter;
@@ -350,9 +353,8 @@ public class DeeParserTest extends CommonTestUtils {
 			DeeParsingChecks.checkNodeEquality(expNode, resultToE.node);
 			assertEquals(result.getErrors(), resultToE_Errors);
 		}
-		if(result.node instanceof DefUnit) {
-			runDDocTest(result);
-		}
+		
+		runDDocTest(result);
 		
 		assertTrue(additionalMD.isEmpty());
 	}
@@ -375,24 +377,34 @@ public class DeeParserTest extends CommonTestUtils {
 	}
 	
 	public void runDDocTest(final DeeParserResult result) {
+		MetadataEntry targetMDE = removeTestMetadata("DDOC_TEST_TARGET");
+		if(targetMDE == null) {
+			return;
+		}
 		
+		DefUnit defUnit = findDDocTargetDefUnit(result, targetMDE);
+		assertNotNull_(defUnit);
 		List<MetadataEntry> ddocTestEntries = removeTestMetadataEntries("DDOC_TEST");
-		DefUnit defUnit = findDDocTargetDefUnit(result);
 		
-		ArrayList<Token> commentsToCheck = defUnit.comments == null ? new ArrayList<Token>() : 
-			new ArrayList<>(Arrays.asList(defUnit.comments));
+		ArrayList<Token> commentsToCheck = defUnit.getDocComments() == null ? new ArrayList<Token>() : 
+			new ArrayList<>(Arrays.asList(defUnit.getDocComments()));
 		
 		
-		Token[] comments = defUnit.comments;
-		if(comments != null && comments.length > 0 && !(defUnit instanceof Module)) {
+		Token[] comments = defUnit.getDocComments();
+		CommonDefinition commonDefinition = defUnit instanceof CommonDefinition ? (CommonDefinition) defUnit : null;
+		
+		if(comments != null && comments.length > 0 && !(defUnit instanceof Module) && commonDefinition != null) {
+			int extendedStartPos = commonDefinition.getExtendedStartPos();
+			int extendedEndPos = commonDefinition.getExtendedEndPos();
+			
 			if(comments.length == 1) {
 				assertTrue(
-					comments[0].getEndPos() == defUnit.getEndPos() ||
-					comments[0].getStartPos() == defUnit.getStartPos());
+					comments[0].getEndPos() == extendedEndPos ||
+					comments[0].getStartPos() == extendedStartPos);
 			} else {
-				assertTrue(comments[0].getStartPos() == defUnit.getStartPos());
+				assertTrue(comments[0].getStartPos() == extendedStartPos);
 				int ddocEnd = comments[comments.length-1].getEndPos();
-				assertTrue(ddocEnd < defUnit.defname.getStartPos() || ddocEnd == defUnit.getEndPos());
+				assertTrue(ddocEnd < defUnit.defname.getStartPos() || ddocEnd == extendedEndPos);
 			}
 		}
 		
@@ -403,11 +415,10 @@ public class DeeParserTest extends CommonTestUtils {
 		assertTrue(commentsToCheck.isEmpty()); // All comment tokens must be tagged.
 	}
 	
-	protected DefUnit findDDocTargetDefUnit(DeeParserResult result) {
-		MetadataEntry targetMDE = removeTestMetadata("DDOC_TEST_TARGET");
+	protected DefUnit findDDocTargetDefUnit(DeeParserResult result, MetadataEntry targetMDE) {
 		MetadataEntry targetMDEOverride = removeTestMetadata("DDOC_TEST_TARGET__OVERRIDE");
-		if(targetMDE == null) {
-			return (DefUnit) result.node;
+		if(targetMDE.sourceValue == null) {
+			return getDefunitFromExtendedDefinition(result.node);
 		}
 		if(targetMDEOverride != null) {
 			targetMDE = targetMDEOverride;
@@ -417,8 +428,8 @@ public class DeeParserTest extends CommonTestUtils {
 		DefUnit targetDefUnit = null;
 		
 		for (ASTNode child : result.node.getChildren()) {
-			if(child instanceof DefUnit) {
-				DefUnit defUnit = (DefUnit) child;
+			DefUnit defUnit = getDefunitFromExtendedDefinition(child);
+			if(defUnit != null) {
 				if(defUnit.defname.name.equals(defUnitName)) {
 					assertTrue(targetDefUnit == null); // check that there is only one defunit with that name
 					targetDefUnit = defUnit;
@@ -426,6 +437,22 @@ public class DeeParserTest extends CommonTestUtils {
 			}
 		}
 		return assertNotNull_(targetDefUnit);
+	}
+	
+	public DefUnit getDefunitFromExtendedDefinition(ASTNode node) {
+		while(true) {
+			if(node instanceof DefUnit) {
+				return (DefUnit) node;
+			}
+			if(node instanceof DeclarationAttrib) {
+				DeclarationAttrib declAttrib = (DeclarationAttrib) node;
+				if(declAttrib.bodySyntax == AttribBodySyntax.SINGLE_DECL) {
+					node = declAttrib.body;
+					continue;
+				}
+			}
+			return null;
+		}
 	}
 	
 	public void checkDDocComments(ArrayList<Token> comments, MetadataEntry ddocTest) {

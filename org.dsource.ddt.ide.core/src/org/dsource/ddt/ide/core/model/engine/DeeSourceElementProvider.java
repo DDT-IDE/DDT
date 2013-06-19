@@ -24,7 +24,7 @@ import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.Definition;
+import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
@@ -156,16 +156,6 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	}
 	
 	@Override
-	public boolean visit(DefinitionTypedef node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_TYPEDEF));
-		return true;
-	}
-	@Override
-	public void endVisit(DefinitionTypedef node) {
-		requestor.exitType(getDeclarationEndforNode(node));
-	}
-	
-	@Override
 	public boolean visit(DefinitionAliasVarDecl node) {
 		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
 		return true;
@@ -274,12 +264,13 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		elemInfo.modifiers |= archetypeMask;
 	}
 	
-	protected static void setupDefinitionTypeInfo(Definition elem, ISourceElementRequestor.ElementInfo elemInfo) {
+	protected static void setupDefinitionTypeInfo(CommonDefinition elem, ISourceElementRequestor.ElementInfo elemInfo)
+	{
 		elemInfo.modifiers |= getDeclarationModifiersFlags(elem);
 		elemInfo.modifiers |= getProtectionFlags(elem);
 	}
 	
-	protected static int getDeclarationModifiersFlags(Definition elem) {
+	protected static int getDeclarationModifiersFlags(CommonDefinition elem) {
 		int modifiers = 0;
 		
 		modifiers = addBitFlag(elem, AttributeKinds.ABSTRACT, modifiers, Modifiers.AccAbstract);
@@ -290,14 +281,14 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		return modifiers;
 	}
 	
-	protected static int addBitFlag(Definition def, AttributeKinds attrib, int modifiers, int modifierFlag) {
+	protected static int addBitFlag(CommonDefinition def, AttributeKinds attrib, int modifiers, int modifierFlag) {
 		if(def.hasAttribute(attrib)) {
 			modifiers |= modifierFlag;
 		}
 		return modifiers;
 	}
 	
-	protected static int getProtectionFlags(Definition elem) {
+	protected static int getProtectionFlags(CommonDefinition elem) {
 		int flags = 0;
 		
 		switch(elem.getEffectiveProtection()) {
@@ -320,7 +311,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		return typeInfo;
 	}
 	
-	protected static TypeInfo createTypeInfoForDefinition(Definition elem, int archetypeMask) {
+	protected static TypeInfo createTypeInfoForDefinition(CommonDefinition elem, int archetypeMask) {
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 		setupDefUnitTypeInfo(elem, typeInfo, archetypeMask);
 		setupDefinitionTypeInfo(elem, typeInfo);

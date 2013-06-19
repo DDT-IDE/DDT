@@ -1,11 +1,7 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic cases
-static int foo;
 extern(C) Foo foo;
-align (1) int foo;
 #STRUCTURE_EXPECTED:
-DefinitionVariable(AttribBasic RefPrimitive DefSymbol)
-DefinitionVariable(AttribLinkage RefIdentifier DefSymbol)
-DefinitionVariable(AttribAlign RefPrimitive DefSymbol)
+DeclarationAttrib(AttribLinkage DefinitionVariable(RefIdentifier DefSymbol) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 final {
 	#@DECL_LIST_SAMPLE
@@ -29,6 +25,9 @@ DeclarationAttrib(AttribBasic DeclList(
 #@DECL_ATTRIB_BODY_TESTER《
  ►#?STRUCTURE_EXPECTED!【#@NO_DECLorBLOCK /*EOF case*/ #@IGNORE_REST● #@NO_DECLorBLOCK】●
  ►#?STRUCTURE_EXPECTED!【#@NO_DECLorBLOCK /*Invalid Decl */ #@IGNORE_REST else ;● #@NO_DECLorBLOCK】●
+ ►#?STRUCTURE_EXPECTED!【int foo #@SEMICOLON_OR_BREAK ● DefinitionVariable(RefPrimitive DefSymbol)】●
+ ►#?STRUCTURE_EXPECTED!【/*Empty Decl*/ #?PRAGMA_ATTR!【#error(SE_decl)】 ; #?ENUM_ATTRIB{#:DISCARD_CASE}●DeclarationEmpty】●
+
  ►#?STRUCTURE_EXPECTED!【invariant() { }● DeclarationInvariant(?)】●
  ►#?STRUCTURE_EXPECTED!【static assert(true);● DeclarationStaticAssert(?)】●
  ►#?STRUCTURE_EXPECTED!【static import foo;● DeclarationImport(*) 】●
@@ -41,12 +40,6 @@ DeclarationAttrib(AttribBasic DeclList(
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS_NoENUM { #@DECL_LIST_TESTER #@CLOSEBRACE_OR_BREAK
 #STRUCTURE_EXPECTED: DeclarationAttrib( #@ATTRIBS_NoENUM DeclBlock(#@DECL_LIST_TESTER) )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS int foo #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED: DefinitionVariable(#@ATTRIBS * *)
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)  #@ATTRIBS_NoENUM /*EMPTY DECLARATION Case */ #?PRAGMA_ATTR!【#error:SE_decl】 ;
-#STRUCTURE_EXPECTED: DeclarationAttrib( #@ATTRIBS_NoENUM  DeclarationEmpty )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)  #@ATTRIBS #@DECL_ATTRIB_BODY_TESTER
 #STRUCTURE_EXPECTED: DeclarationAttrib( #@ATTRIBS  #@DECL_ATTRIB_BODY_TESTER )

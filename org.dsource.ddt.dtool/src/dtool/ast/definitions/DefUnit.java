@@ -36,31 +36,20 @@ public abstract class DefUnit extends ASTNode {
 		}
 	}
 	
-	public final Token[] comments;
 	public final DefSymbol defname; // It may happen that this is not a child of DefUnit
 	
-	protected DefUnit(DefSymbol defname, Token[] comments) {
-		this(defname, comments, true);
+	protected DefUnit(DefSymbol defname) {
+		this(defname, true);
 	}
 	
-	protected DefUnit(DefSymbol defname, Token[] comments, boolean defIdIsChild) {
+	protected DefUnit(DefSymbol defname, boolean defIdIsChild) {
 		assertNotNull(defname);
 		this.defname = defIdIsChild ? parentize(defname) : defname;
-		this.comments = comments;
-		if(comments != null) {
-			for (Token token : comments) {
-				assertTrue(DeeTokenSemantics.tokenIsDocComment(token));
-			}
-		}
+
 	}
 	
-	public DefUnit(ProtoDefSymbol defIdTuple, Token[] comments) {
-		this(createDefId(defIdTuple), comments);
-	}
-	
-	/** DefUnits using this constructor cannot have comments */
 	public DefUnit(ProtoDefSymbol defIdTuple) {
-		this(createDefId(defIdTuple), null);
+		this(createDefId(defIdTuple));
 	}
 	
 	public static DefSymbol createDefId(ProtoDefSymbol defIdTuple) {
@@ -87,6 +76,16 @@ public abstract class DefUnit extends ASTNode {
 	public boolean isSynthetic() {
 		// TODO need to define this properly
 		return getModuleNode() == null;
+	}
+	
+	/** @return the comments that define the DDoc for this defUnit. Can be null  */
+	public Token[] getDocComments() {
+		return null;
+	}
+	public void getDocComments_invariant() {
+		for (Token token : getDocComments()) {
+			assertTrue(DeeTokenSemantics.tokenIsDocComment(token));
+		}
 	}
 	
 	/** Gets the archetype (the kind) of this DefUnit. */

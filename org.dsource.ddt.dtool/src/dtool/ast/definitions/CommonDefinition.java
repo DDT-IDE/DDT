@@ -6,19 +6,43 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.AttribProtection.Protection;
+import dtool.ast.declarations.DeclarationAttrib;
+import dtool.ast.declarations.IDeclaration;
 import dtool.parser.Token;
 
 /**
- * Abstract class for all declaration-based DefUnits. 
+ * Abstract class for all declaration DefUnits that have preceding attributes and DDoc.
+ * {@link CommonDefinition} have and extended source range, which includes not only this node,
+ * but attached single-decl {@link DeclarationAttrib} and doc comments.
  */
-public abstract class Definition extends DefUnit {
+public abstract class CommonDefinition extends DefUnit implements IDeclaration {
 	
-//	public final ArrayView<Attribute> attributes; // TODO
+	public final Token[] comments;
+	protected int extendedStartPos = -1;
 	protected int defAttributesBitMask;
 	
-	public Definition(Token[] comments, ProtoDefSymbol defId) {
-		super(defId, comments);
+	public CommonDefinition(Token[] comments, ProtoDefSymbol defId) {
+		super(defId);
+		this.comments = comments;
 		this.defAttributesBitMask = 0;
+	}
+	
+	@Override
+	public Token[] getDocComments() {
+		return comments;
+	}
+	
+	public int getExtendedStartPos() {
+		return extendedStartPos;
+	}
+	
+	public void setExtendedStartPos(int extendedStartPos) {
+		assertTrue(this.extendedStartPos == -1); // can only set once
+		this.extendedStartPos = extendedStartPos;
+	}
+	
+	public int getExtendedEndPos() {
+		return getEndPos();
 	}
 	
 	/** Sets protection attribute. Can only set once. */

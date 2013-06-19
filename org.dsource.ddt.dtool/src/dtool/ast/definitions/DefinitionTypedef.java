@@ -11,13 +11,13 @@ import dtool.descentadapter.DefUnitTuple;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class DefinitionTypedef extends Definition implements IStatement {
+public class DefinitionTypedef extends DefUnit implements IStatement {
 	
 	public final Reference type;
 	public final IInitializer initializer;
 	
 	public DefinitionTypedef(DefUnitTuple dudt, PROT prot, Reference type, IInitializer initializer) {
-		super(dudt.commentsToToken(), dudt.defSymbol);
+		super(dudt.defSymbol);
 		initSourceRange(dudt.sourceRange);
 		this.type = parentize(type);
 		this.initializer = parentizeI(initializer);

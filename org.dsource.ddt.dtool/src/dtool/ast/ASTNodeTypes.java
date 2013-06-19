@@ -24,7 +24,7 @@ public enum ASTNodeTypes {
 	MISSING_DECLARATION,
 	INVALID_SYNTAX,
 	
-	INCOMPLETE_DECLARATION,
+	INCOMPLETE_DECLARATOR,
 	
 	/* ---------------------------------- */
 	

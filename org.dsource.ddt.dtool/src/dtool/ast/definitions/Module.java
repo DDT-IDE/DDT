@@ -7,13 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.Comment;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
-import dtool.ast.SourceRange;
 import dtool.parser.BaseLexElement;
 import dtool.parser.Token;
 import dtool.refmodel.INamedScope;
@@ -102,15 +100,14 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	
 	public static Module createModuleNoModuleDecl(String moduleName, ArrayView<ASTNode> members) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
-		return new Module(null, defSymbol, null, members);
+		return new Module(defSymbol, null, members);
 	}
 	
 	public final DeclarationModule md;
 	public final ArrayView<ASTNode> members;
 	
-	public Module(Token[] preComments, ModuleDefSymbol defSymbol, DeclarationModule md, 
-			ArrayView<ASTNode> members) {
-		super(defSymbol, preComments, false);
+	public Module(ModuleDefSymbol defSymbol, DeclarationModule md, ArrayView<ASTNode> members) {
+		super(defSymbol, false);
 		defSymbol.module = this;
 		this.md = parentize(md);
 		this.members = parentize(members);
@@ -123,18 +120,25 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	}
 	
 	@Override
+	public void accept0(IASTVisitor visitor) {
+		if (visitor.visit(this)) {
+			TreeVisitor.acceptChildren(visitor, md);
+			TreeVisitor.acceptChildren(visitor, members);
+		}
+		visitor.endVisit(this);
+	}
+	
+	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Module;
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, md);
-			TreeVisitor.acceptChildren(visitor, members);
+	public Token[] getDocComments() {
+		if(md != null) {
+			return md.comments;
 		}
-		visitor.endVisit(this);
+		return null;
 	}
 	
 	@Override

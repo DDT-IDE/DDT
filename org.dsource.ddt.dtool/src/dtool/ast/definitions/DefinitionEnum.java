@@ -19,7 +19,7 @@ import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public class DefinitionEnum extends Definition implements IScopeNode, IDeclaration, IStatement {
+public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDeclaration, IStatement {
 	
 	public final Reference type;
 	public final EnumBody body;

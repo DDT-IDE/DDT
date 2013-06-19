@@ -62,8 +62,6 @@ public abstract class ASTAbstractVisitor implements IASTVisitor {
 	
 	@Override public void endVisit(DefinitionEnum node) {}
 	
-	@Override public void endVisit(DefinitionTypedef node) {}
-	
 	@Override public void endVisit(DefinitionAliasVarDecl node) { }
 	@Override public void endVisit(DefinitionAliasFragment node) { }
 	

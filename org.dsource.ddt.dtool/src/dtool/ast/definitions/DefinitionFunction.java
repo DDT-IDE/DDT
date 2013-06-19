@@ -5,7 +5,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
-import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
@@ -23,11 +22,11 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	
 	public final Reference retType;
 	
-	public DefinitionFunction(Token[] comments, ArrayView<Attribute> attributes, Reference retType, 
-		ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, 
-		ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint, IFunctionBody fnBody) 
+	public DefinitionFunction(Token[] comments, Reference retType, ProtoDefSymbol defId,
+		ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams,
+		ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint, IFunctionBody fnBody)
 	{
-		super(comments, attributes, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
+		super(comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
 		this.retType = parentize(retType);
 	}
 	
@@ -40,7 +39,6 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, attributes);
 			TreeVisitor.acceptChildren(visitor, retType);
 			TreeVisitor.acceptChildren(visitor, defname);
 			TreeVisitor.acceptChildren(visitor, tplParams);
@@ -53,7 +51,6 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendList(attributes, " ", true);
 		cp.append(retType, " ");
 		toStringAsCode_fromDefId(cp);
 	}

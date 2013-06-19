@@ -17,7 +17,7 @@ import dtool.util.ArrayView;
  * A definition of an alias, in the new syntax:
  * <code>alias Identifier = Type [, Identifier = Type]* ;</code>
  * 
- * Not an actual {@link Definition} class.
+ * Not an actual {@link CommonDefinition} class, might change in future.
  * 
  * @see http://dlang.org/declaration.html#AliasDeclaration
  */
