@@ -17,7 +17,6 @@ public enum EArcheType {
 	Enum(true),
 	EnumMember, // same as var?
 	Alias,
-	Typedef(true),
 	Template,
 	TypeParameter(true),
 	Mixin,

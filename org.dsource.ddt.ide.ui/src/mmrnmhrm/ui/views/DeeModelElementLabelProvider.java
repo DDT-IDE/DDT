@@ -185,8 +185,6 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_ENUM);
 		case Alias:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_ALIAS);
-		case Typedef:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_TYPEDEF);
 		case EnumMember:
 		case Mixin:
 		case Tuple:

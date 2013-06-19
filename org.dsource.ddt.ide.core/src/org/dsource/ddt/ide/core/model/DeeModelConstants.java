@@ -12,7 +12,6 @@ public interface DeeModelConstants {
 	public static final int FLAG_KIND_ENUM =		0x04 << Modifiers.USER_MODIFIER;
 	public static final int FLAG_KIND_TEMPLATE =	0x05 << Modifiers.USER_MODIFIER;
 	public static final int FLAG_KIND_ALIAS =		0x06 << Modifiers.USER_MODIFIER;
-	public static final int FLAG_KIND_TYPEDEF =		0x07 << Modifiers.USER_MODIFIER;
 	public static final int FLAG_KIND_FUNCTION =	0x0A << Modifiers.USER_MODIFIER; 
 	public static final int FLAG_KIND_CONSTRUCTOR =	0x0B << Modifiers.USER_MODIFIER; 
 	public static final int FLAG_KIND_VARIABLE =	0x0D << Modifiers.USER_MODIFIER;

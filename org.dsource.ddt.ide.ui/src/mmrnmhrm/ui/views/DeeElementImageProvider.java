@@ -16,7 +16,6 @@ import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
-import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
@@ -79,8 +78,6 @@ public class DeeElementImageProvider {
 			return DeePluginImages.ENT_UNION;
 		} else if(node instanceof DefinitionClass) {
 			return DeePluginImages.ENT_CLASS;
-		} else if(node instanceof DefinitionTypedef) {
-			return DeePluginImages.ENT_TYPEDEF;
 		} else if(node instanceof DefinitionEnum) {
 			return DeePluginImages.ENT_ENUM;
 		} else if(!(node instanceof ASTNode)) {

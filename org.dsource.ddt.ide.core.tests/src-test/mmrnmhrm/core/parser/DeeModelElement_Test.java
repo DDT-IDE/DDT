@@ -60,8 +60,6 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 			EArcheType.Interface, "interface Interface { }");
 		checkElementExists(srcModule, topLevelElement.getType("Struct"), 
 			EArcheType.Struct, "struct Struct { }");
-		checkElementExists(srcModule, topLevelElement.getType("Typedef"), 
-			EArcheType.Typedef, "typedef TargetBar Typedef;");
 		checkElementExists(srcModule, topLevelElement.getType("Union"), 
 			EArcheType.Union, "union Union { }");
 		checkElementExists(srcModule, topLevelElement.getField("variable"), 

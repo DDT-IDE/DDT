@@ -20,7 +20,6 @@ public class FindDef_TargetsTest extends FindDef__CommonParameterizedTest  {
         return Arrays.asList(new Object[][]{
                 {19, 7},
                 {67, 49},
-                {97, 88},
                 {134, 127},
                 {251, 153},
                 {221, 166},

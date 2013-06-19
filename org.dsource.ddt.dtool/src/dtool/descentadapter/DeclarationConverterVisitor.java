@@ -56,6 +56,7 @@ import dtool.ast.declarations.AttribProtection;
 import dtool.ast.declarations.AttribProtection.Protection;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclList;
+import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationStaticAssert;
 import dtool.ast.declarations.DeclarationUnitTest;
 import dtool.ast.declarations.ImportAlias;
@@ -73,7 +74,6 @@ import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
-import dtool.ast.definitions.DefinitionTypedef;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EnumMember;
@@ -523,11 +523,12 @@ public abstract class DeclarationConverterVisitor extends RefConverterVisitor {
 	@Override
 	public boolean visit(descent.internal.compiler.parser.TypedefDeclaration elem) {
 		return endAdapt(
-			new DefinitionTypedef(
-				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
-				ReferenceConverter.convertType(elem.sourceBasetype, convContext),
-				DescentASTConverter.convertElem(elem.init, IInitializer.class, convContext)
-			)
+			new DeclarationEmpty()
+//			new DefinitionTypedef(
+//				DefinitionConverter.convertDsymbol(elem, convContext), elem.prot(),
+//				ReferenceConverter.convertType(elem.sourceBasetype, convContext),
+//				DescentASTConverter.convertElem(elem.init, IInitializer.class, convContext)
+//			)
 		);
 	}	
 	

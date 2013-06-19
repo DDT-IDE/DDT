@@ -32,7 +32,6 @@ public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
 				"Enum",
 				"Interface",
 				"Struct",
-				"Typedef",
 				"Union",
 				"variable",
 				"ImportSelectiveAlias",

@@ -40,7 +40,6 @@ public class DeePluginImages {
 	public static final String ENT_INTERFACE = createImage(T_OBJ, "ent_interface.gif");
 	public static final String ENT_STRUCT = createImage(T_OBJ, "ent_struct.gif");
 	public static final String ENT_TEMPLATE= createImage(T_OBJ, "ent_template.gif");
-	public static final String ENT_TYPEDEF = createImage(T_OBJ, "ent_typedef.gif");
 	public static final String ENT_UNION = createImage(T_OBJ, "ent_union.gif");
 	
 	public static final String ENT_VARIABLE = createImage(T_OBJ, "ent_variable.gif");
