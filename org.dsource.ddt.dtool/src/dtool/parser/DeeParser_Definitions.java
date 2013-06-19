@@ -369,21 +369,20 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 		
 		
-		NodeResult<DeclarationAttrib> declAttrib = parseDeclarationAttrib(defStartInfo, statementsOnly);
-		if(declAttrib != null)
-			return declAttrib;
+		if(defStartInfo != null) {
+			assertTrue(parseAttribute() == null);
+		} else {
+			NodeResult<DeclarationAttrib> declAttrib = parseDeclarationAttrib(statementsOnly);
+			if(declAttrib != null)
+				return declAttrib;
+		}
 		
 		return parseDeclaration_varOrFunction(defStartInfo, autoDeclEnabled);
 	}
 	
-	public NodeResult<DeclarationAttrib> parseDeclarationAttrib(DefinitionStartInfo defStartInfo, 
-		boolean isStatement) {
-		if(defStartInfo != null) {
-			assertTrue(parseAttribute() == null);
-			return null;
-		}
+	public NodeResult<DeclarationAttrib> parseDeclarationAttrib(boolean isStatementParsing) {
 		
-		defStartInfo = parseDefStartInfo();
+		DefinitionStartInfo defStartInfo = parseDefStartInfo();
 		ParseHelper parse = new ParseHelper(lookAheadElement());
 		ArrayView<Attribute> attributes = parseDefinitionAttributes(parse);
 		
@@ -399,7 +398,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			boolean isPragmaBody = getLastAttributeKind(attributes) == ASTNodeTypes.ATTRIB_PRAGMA;
 			boolean autoDeclEnabled = isAutoVarEnablingAttrib(attributes);
 			
-			if(!isStatement) {
+			if(!isStatementParsing) {
 				AttribBodyParseRule ab = new AttribBodyParseRule();
 				ab.parseAttribBody(parse, isPragmaBody, defStartInfo, autoDeclEnabled);
 				body = ab.declList;
@@ -407,7 +406,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			} else if(isPragmaBody) {
 				body = (ASTNode) parse.checkResult(thisParser().parseUnscopedStatement_toMissing());
 			} else {
-				NodeResult<? extends IDeclaration> decl = 
+				NodeResult<? extends IDeclaration> decl = parseDeclaration(true, autoDeclEnabled, defStartInfo);
 					parseDeclaration_varOrFunction(defStartInfo, autoDeclEnabled);
 				body = !isNull(decl) ? decl.node : parseMissingDeclaration(RULE_DECLARATOR);
 			}
