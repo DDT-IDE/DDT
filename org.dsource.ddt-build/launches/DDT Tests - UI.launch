@@ -36,6 +36,7 @@
 <booleanAttribute key="run_in_ui_thread" value="true"/>
 <setAttribute key="selected_features">
 <setEntry value="org.dsource.ddt:default"/>
+<setEntry value="org.eclipse.platform:default"/>
 </setAttribute>
 <booleanAttribute key="show_selected_only" value="false"/>
 <stringAttribute key="templateConfig" value="${target_home}\configuration\config.ini"/>
