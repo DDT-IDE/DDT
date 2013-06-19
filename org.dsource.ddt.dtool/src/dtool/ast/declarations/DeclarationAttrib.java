@@ -88,15 +88,20 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 			if(attribute instanceof AttribBasic) {
 				AttribBasic attribBasic = (AttribBasic) attribute;
 				applyBasicAttributes(attribBasic, this);			
-			} else if(attribute instanceof AttribProtection) {
+			}
+		}
+		for (int ix = attributes.size() - 1; ix >= 0; ix--) {
+			Attribute attribute = attributes.get(ix);
+			if(attribute instanceof AttribProtection) {
 				AttribProtection attribProtection = (AttribProtection) attribute;
-				applyProtectionAttributes(attribProtection.protection, this);			
+				applyProtectionAttributes(attribProtection.protection, this);
+				break; // last atribute takes precedence
 			} 
 		}
 	}
 	
 	protected void applyBasicAttributes(AttribBasic attribute, INonScopedBlock block) {
-		Iterator<? extends IASTNode> iter = block.getMembersIterator();
+		Iterator<? extends ASTNode> iter = block.getMembersIterator();
 		while(iter.hasNext()) {
 			IASTNode node = iter.next();
 			
@@ -110,22 +115,34 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 	}
 	
 	protected void applyProtectionAttributes(Protection protection, INonScopedBlock block) {
-		Iterator<? extends IASTNode> iter = block.getMembersIterator();
+		Iterator<? extends ASTNode> iter = block.getMembersIterator();
 		while(iter.hasNext()) {
-			IASTNode node = iter.next();
+			ASTNode descendantNode = iter.next();
 			
-			if(node instanceof CommonDefinition) {
-				CommonDefinition def = (CommonDefinition) node;
+			if (anotherProtectionAttribPresent(descendantNode)) {
+				continue; // Do not descend, other attrib takes precedence
+			}
+			if(descendantNode instanceof CommonDefinition) {
+				CommonDefinition def = (CommonDefinition) descendantNode;
 				def.setProtection(protection);
-			} else if (node instanceof AttribProtection) {
-				// Do not descend, that inner decl take priority
-			} else if (node instanceof DeclarationImport && protection == Protection.PUBLIC) {
-				DeclarationImport declImport = (DeclarationImport) node;
+			} else if (descendantNode instanceof DeclarationImport && protection == Protection.PUBLIC) {
+				DeclarationImport declImport = (DeclarationImport) descendantNode;
 				declImport.isTransitive = true;
-			} else if(node instanceof INonScopedBlock) {
-				applyProtectionAttributes(protection, (INonScopedBlock) node);
+			} else if(descendantNode instanceof INonScopedBlock) {
+				applyProtectionAttributes(protection, (INonScopedBlock) descendantNode);
 			}
 		}
+	}
+	
+	public boolean anotherProtectionAttribPresent(ASTNode node) {
+		if(node instanceof DeclarationAttrib) {
+			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
+			for (Attribute attrib : declAttrib.attributes) {
+				if(attrib instanceof AttribProtection) 
+					return true;
+			}
+		}
+		return false;
 	}
 	
 }
