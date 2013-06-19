@@ -265,7 +265,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 		if (rootReference == null) {
 			refQualified = new RefModuleQualified(singleRef);
 		} else {
-			refQualified = new RefQualified((IQualifierNode) rootReference, singleRef);
+			refQualified = new RefQualified((IQualifierNode) rootReference, -1, singleRef);
 			assertTrue(rootReference.hasNoSourceRangeInfo() == false);
 			assertTrue(rootReference.getStartPos() == startPos);
 		}
@@ -370,7 +370,7 @@ public abstract class ReferenceConverter extends BaseDmdConverter {
 			if(!(rootRef instanceof IQualifierNode)) {
 				rootRef = connect(sourceRange(rootRef), new ExpReference((Reference) rootRef));
 			}
-			RefQualified refQualified = new RefQualified((IQualifierNode) rootRef, subName);
+			RefQualified refQualified = new RefQualified((IQualifierNode) rootRef, -1, subName);
 			refQualified.initSourceRange(topSourceRange);
 			if(refQualified.hasNoSourceRangeInfo() == false || DToolBundle.DMDPARSER_PROBLEMS__BUG41 == false) {
 				// Correct some DMD missing ranges 

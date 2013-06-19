@@ -22,10 +22,12 @@ public class RefQualified extends CommonRefQualified {
 	
 	public final Resolvable qualifier;
 	public final boolean isExpressionQualifier;
+	public final int dotOffset;
 	
-	public RefQualified(IQualifierNode qualifier, RefIdentifier qualifiedIdRef) {
+	public RefQualified(IQualifierNode qualifier, int dotOffset, RefIdentifier qualifiedIdRef) {
 		super(assertNotNull_(qualifiedIdRef));
 		this.qualifier = parentizeI(assertInstance(qualifier, Resolvable.class));
+		this.dotOffset = dotOffset;
 		this.isExpressionQualifier = isExpressionQualifier(qualifier);
 	}
 	

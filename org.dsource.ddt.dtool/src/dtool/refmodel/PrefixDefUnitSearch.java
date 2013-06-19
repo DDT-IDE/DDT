@@ -18,6 +18,7 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
+import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
@@ -122,15 +123,26 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 					setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), refIdent.name);
 				}
 			} else if(node instanceof CommonRefQualified) {
-				//CommonRefQualified refQual = (CommonRefQualified) node;
 				assertTrue(!parseResult.isQualifiedDotFix());
 				
-				//TODO: review commented changes
-//				if(lastTokenNonWS.value != TOK.TOKdot) {
+				int dotOffset = -1;
+				if(node instanceof RefQualified) {
+					dotOffset = ((RefQualified) node).dotOffset;
+					if(dotOffset == -1) { // Hack for old convertion parser usage
+						RefQualified refQualified = (RefQualified) node;
+						String str = source.substring(refQualified.qualifier.getEndPos(), 
+							refQualified.qualifiedName.getStartPos());
+						dotOffset = refQualified.qualifier.getEndPos() + str.indexOf(".");
+					}
+				} else {
+					dotOffset = node.getStartPos();
+				}
+				
+				if(offset <= dotOffset) {
 					CompletionSession.assignResult(session, ECompletionSessionResults.WEIRD_LOCATION_REFQUAL, 
 							"Invalid Location: before qualifier dot but not next to id.");
 					return search;
-//				}
+				}
 			} else if(node instanceof RefModule) {
 				RefModule refMod = (RefModule) node;
 				

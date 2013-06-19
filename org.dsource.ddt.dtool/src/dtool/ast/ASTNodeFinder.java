@@ -1,7 +1,7 @@
 package dtool.ast;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
-import descent.internal.compiler.parser.ast.IASTNode;
 
 
 /**
@@ -9,11 +9,11 @@ import descent.internal.compiler.parser.ast.IASTNode;
  * An element is picked between element.startPos (inclusive) and  
  * element.endPos (inclusive).
  */
-public abstract class ASTNodeFinder<T extends IASTNode> {
+public class ASTNodeFinder {
 	
 	private int offset; 
 	private boolean inclusiveEnd;
-	private T match;
+	private ASTNode match;
 	
 	public ASTNodeFinder() {
 	}
@@ -23,26 +23,16 @@ public abstract class ASTNodeFinder<T extends IASTNode> {
 	}
 	
 	public static ASTNode findElement(final ASTNode root, int offset, boolean inclusiveEnd) {
-		ASTNodeFinder<ASTNode> astNodeFinder = new ASTNodeFinder<ASTNode>() {
-			@Override
-			public void doAcceptOnRoot() {
-				root.accept(new ASTHomogenousVisitor() {
-					@Override
-					public boolean preVisit(ASTNode node) {
-						return visitNode(node);
-					}
-				});
-			}
-		};
+		ASTNodeFinder astNodeFinder = new ASTNodeFinder();
 		return astNodeFinder.doFindElementInAST(root, offset, inclusiveEnd);
 	}
 	
 	/** Finds the node at the given offset, starting from given root node.
 	 *  Given inclusiveEnd controls whether to match nodes whose end position is the same as the offset.*/
-	protected T doFindElementInAST(T root, int offsetCursor, boolean inclusiveEnd) {
+	protected ASTNode doFindElementInAST(ASTNode root, int offsetCursor, boolean inclusiveEnd) {
 		if(root == null)
 			return null;
-		Assert.isTrue(!root.hasNoSourceRangeInfo());
+		assertTrue(root.hasSourceRangeInfo());
 		
 		this.offset = offsetCursor;
 		this.inclusiveEnd = inclusiveEnd;
@@ -51,21 +41,24 @@ public abstract class ASTNodeFinder<T extends IASTNode> {
 		if(!matchesRangeStart(root) || !matchesRangeEnd(root)) 
 			return null;
 		
-		this.doAcceptOnRoot();
+		root.accept(new ASTHomogenousVisitor() {
+			@Override
+			public boolean preVisit(ASTNode node) {
+				return visitNode(node);
+			}
+		});
 		
 		Assert.isNotNull(this.match);
 		return match;
 	}
 	
-	protected abstract void doAcceptOnRoot();
-	
-	public boolean visitNode(T elem) {
-		if(elem.hasNoSourceRangeInfo()) {
-			//Assert.fail();
-			return true; // Descend and search children.
-		} else if(matchesRangeStart(elem) && matchesRangeEnd(elem)) {
+	public boolean visitNode(ASTNode node) {
+		if(node.hasNoSourceRangeInfo()) {
+			// TODO: change to false
+			return true; // Shouldn't happen, but no need to assert
+		} else if(matchesRangeStart(node) && matchesRangeEnd(node)) {
 			// This node is the match, or is parent of the match.
-			match = elem;
+			match = node;
 			return true; // Descend and search children.
 		} else {
 			// Match not here, don't bother descending.
@@ -73,12 +66,12 @@ public abstract class ASTNodeFinder<T extends IASTNode> {
 		}
 	}
 	
-	private boolean matchesRangeStart(IASTNode elem) {
-		return offset >= elem.getStartPos();
+	private boolean matchesRangeStart(ASTNode node) {
+		return offset >= node.getStartPos();
 	}
 	
-	private boolean matchesRangeEnd(IASTNode elem) {
-		return inclusiveEnd ? offset <= elem.getEndPos() : offset < elem.getEndPos();
+	private boolean matchesRangeEnd(ASTNode node) {
+		return inclusiveEnd ? offset <= node.getEndPos() : offset < node.getEndPos();
 	}
 	
 }

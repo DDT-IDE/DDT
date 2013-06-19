@@ -327,10 +327,10 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		} else if(lookAhead() == DeeTokens.DOT && leftRef instanceof IQualifierNode) {
 			IQualifierNode qualifier = (IQualifierNode) leftRef;
 			assertTrue(!RefQualified.isExpressionQualifier(qualifier));
-			consumeLookAhead();
+			LexElement dotToken = consumeLookAhead(DeeTokens.DOT);
 			RefIdentifier qualifiedId = parseRefIdentifier();
 			parse.setRuleBroken(isMissing(qualifiedId));
-			leftRef = parse.conclude(new RefQualified(qualifier, qualifiedId));
+			leftRef = parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
 			
 		} else if(!parsingExp && tryConsume(DeeTokens.STAR)) {
 			leftRef = conclude(srToPosition(leftRef, new RefTypePointer(leftRef)));
@@ -671,9 +671,9 @@ protected class ParseRule_Expression {
 					assertFail(); // ...otherwise refqualified would have been parsed already
 				}
 			}
-			consumeLookAhead();
+			LexElement dotToken = consumeLookAhead(DeeTokens.DOT);
 			RefIdentifier qualifiedId = parseRefIdentifier();
-			Reference ref = parse.conclude(new RefQualified(qualifier, qualifiedId));
+			Reference ref = parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
 			ref = parseReference_referenceStart_do(ref, true, true).node; // TODO check break...
 			return parsePostfixExpression(conclude(createExpReference(ref)));
 		}
