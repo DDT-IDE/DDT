@@ -41,7 +41,6 @@ public class ParserError implements ICompileError, ISourceRange {
 		INVALID_EXTERN_ID,
 		INVALID_SCOPE_ID,
 		INVALID_TRAITS_ID,
-		INVALID_ATTRIB_ID,
 		LAST_CATCH,
 		
 	}
@@ -139,8 +138,6 @@ public class ParserError implements ICompileError, ISourceRange {
 				StringUtil.collToString(ScopeTypes.values(), ",") + ".";
 		case INVALID_TRAITS_ID:
 			return "Invalid traits id \"" + msgErrorSource + "\".";
-		case INVALID_ATTRIB_ID:
-			return "Invalid @ attribute id \"" + msgErrorSource + "\".";
 		case LAST_CATCH:
 			return "Catch without parameter must be last catch (and only one per try statement). ";
 			

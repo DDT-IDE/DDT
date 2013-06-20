@@ -20,9 +20,10 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.NodeListView;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.AttribAlign;
-import dtool.ast.declarations.AttribAt;
+import dtool.ast.declarations.AttribAtKeyword;
 import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
+import dtool.ast.declarations.AttribCustom;
 import dtool.ast.declarations.AttribLinkage;
 import dtool.ast.declarations.AttribLinkage.Linkage;
 import dtool.ast.declarations.AttribPragma;
@@ -48,6 +49,7 @@ import dtool.ast.declarations.MissingDeclaration;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
+import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.statements.IStatement;
@@ -155,7 +157,8 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 		return conclude(lexToken.getError(), srOf(lexToken, new RefImportSelection(idTokenToString(lexToken))));
 	}
 	
-	public static final ParseRuleDescription RULE_DECLBODY = new ParseRuleDescription("DeclOrBlock");
+	public static final ParseRuleDescription RULE_DECLBODY = 
+		new ParseRuleDescription("DeclOrBlock", "Declaration or Block");
 	
 	protected class AttribBodyParseRule {
 		public AttribBodySyntax bodySyntax = AttribBodySyntax.SINGLE_DECL;
@@ -182,7 +185,7 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 				if(declList == null) {
 					declList = parseMissingDeclaration(RULE_DECLBODY);
 				} else if(declList instanceof DeclarationEmpty && !acceptEmptyDecl) {
-					parse.store(createSyntaxError(DeeParser.RULE_DECLARATION));
+					parse.storeError(createSyntaxError(DeeParser.RULE_DECLARATION));
 				}
 			}
 			return this;
@@ -232,7 +235,7 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 				}
 				
 				if(Linkage.fromString(linkageStr) == null) {
-					parse.store(createErrorOnLastToken(ParserErrorTypes.INVALID_EXTERN_ID, null));
+					parse.storeError(createErrorOnLastToken(ParserErrorTypes.INVALID_EXTERN_ID, null));
 				}
 				
 				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
@@ -253,7 +256,7 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
 				BaseLexElement alignNumToken = consumeExpectedContentToken(DeeTokens.INTEGER_DECIMAL);
 				alignNum = alignNumToken.getSourceValue();
-				parse.store(alignNumToken.getError());
+				parse.storeError(alignNumToken.getError());
 				
 				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			}
@@ -310,19 +313,37 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 		return parse.resultConclude(new AttribBasic(attrib));
 	}
 	
-	public NodeResult<AttribAt> parseAttribAt() {
+	public static final ParseRuleDescription RULE_ID_OR_EXP_ARGLIST = 
+		new ParseRuleDescription("IdOrExpArgList", "ID or (<Expression List>)");
+	
+	public NodeResult<? extends Attribute> parseAmpersatAttrib() {
 		if(!tryConsume(DeeTokens.AT)) 
 			return null;
 		
 		ParseHelper parse = new ParseHelper();
-		Symbol attribIdentifier = parseAttribId();
-		return parse.resultConclude(new AttribAt(attribIdentifier));
-	}
-	
-	public Symbol parseAttribId() {
-		BaseLexElement traitsId = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
-		ParserError error = DeeTokenSemantics.checkAttribId(traitsId);
-		return conclude(error, srOf(traitsId, new Symbol(traitsId.getSourceValue())));
+		
+		RefIdentifier refId = null;
+		NodeListView<Expression> args = null;
+		
+		if(lookAhead() == DeeTokens.IDENTIFIER && DeeTokenSemantics.isPredefinedAttribId(lookAheadElement())) {
+			BaseLexElement traitsId = consumeLookAhead(DeeTokens.IDENTIFIER);
+			Symbol attribIdentifier = conclude(srOf(traitsId, new Symbol(traitsId.getSourceValue())));
+			return parse.resultConclude(new AttribAtKeyword(attribIdentifier));
+		}
+		
+		parsing: {
+			refId = attemptParseRefIdentifier();
+			if(parse.ruleBroken) break parsing;
+			
+			if(tryConsume(DeeTokens.OPEN_PARENS)) {
+				args = parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
+			} else {
+				parse.storeError(refId == null ?
+					createErrorExpectedRule(RULE_ID_OR_EXP_ARGLIST) : 
+					createExpectedTokenError(DeeTokens.OPEN_PARENS));
+			}
+		}
+		return parse.resultConclude(new AttribCustom(refId, args));		
 	}
 	
 	public NodeResult<DeclarationStaticIf> parseDeclarationStaticIf(boolean isStatement) {
@@ -407,8 +428,10 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 	
 	/* ----------------------------------------- */
 	
-	public static final ParseRuleDescription RULE_DEBUG_ARG = new ParseRuleDescription("DebugArg");
-	public static final ParseRuleDescription RULE_VERSION_ARG = new ParseRuleDescription("VersionArg");
+	public static final ParseRuleDescription RULE_DEBUG_ARG = 
+		new ParseRuleDescription("DebugArg", "DebugArgument");
+	public static final ParseRuleDescription RULE_VERSION_ARG = 
+		new ParseRuleDescription("VersionArg", "VersionArgument");
 	
 	public NodeResult<DeclarationDebugVersionSpec> parseDeclarationDebugVersionSpec() {
 		if(!(tryConsume(DeeTokens.KW_DEBUG) || tryConsume(DeeTokens.KW_VERSION)))
@@ -429,7 +452,7 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 		if(lookAhead() == DeeTokens.IDENTIFIER || lookAheadGrouped() == DeeTokens.INTEGER) {
 			return createVersionSymbol(consumeLookAhead());
 		} else { 
-			parse.store(createErrorExpectedRule(isDebug ? RULE_DEBUG_ARG : RULE_VERSION_ARG));
+			parse.storeError(createErrorExpectedRule(isDebug ? RULE_DEBUG_ARG : RULE_VERSION_ARG));
 			return createVersionSymbol(consumeSubChannelTokens());
 		}
 	}

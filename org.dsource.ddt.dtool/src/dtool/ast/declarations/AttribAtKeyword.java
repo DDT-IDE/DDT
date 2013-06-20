@@ -7,17 +7,17 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.Symbol;
 
-public class AttribAt extends Attribute {
+public class AttribAtKeyword extends Attribute {
 	
 	public final Symbol attribId;
 	
-	public AttribAt(Symbol attribId) {
+	public AttribAtKeyword(Symbol attribId) {
 		this.attribId = parentize(assertNotNull_(attribId));
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.ATTRIB_AT;
+		return ASTNodeTypes.ATTRIB_AT_KEYWORD;
 	}
 	
 	@Override

@@ -1,6 +1,6 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(STATEMENT)    try #@ST__NB #error(EXPRULE_CatchFinally)
+#PARSE(STATEMENT)    try #@ST__NB #error(EXPRULE_CatchOrFinally)
 #STRUCTURE_EXPECTED: StatementTry( #@ST__NB  )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(STATEMENT)    try #@ST__BROKEN 

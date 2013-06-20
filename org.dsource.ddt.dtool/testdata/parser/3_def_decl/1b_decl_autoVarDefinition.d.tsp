@@ -14,7 +14,7 @@ DeclarationAttrib(AttribBasic DefAutoVariable(DefSymbol Integer) )
   ►#?STRUCTURE_EXPECTED!【auto● DeclarationAttrib(AttribBasic 】●
   ►#?STRUCTURE_EXPECTED!【static● DeclarationAttrib(AttribBasic 】●
   ►#?STRUCTURE_EXPECTED!【const● DeclarationAttrib(AttribBasic 】●
-  ►#?STRUCTURE_EXPECTED!【@disable● DeclarationAttrib(AttribAt(Symbol) 】●
+  ►#?STRUCTURE_EXPECTED!【@disable● DeclarationAttrib(AttribAtKeyword(Symbol) 】●
 ¤》
 
 #@AUTO_INIT《

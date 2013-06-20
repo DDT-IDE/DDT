@@ -40,8 +40,8 @@
  ►#?STRUCTURE_EXPECTED!【shared●AttribBasic】●
 ¤》
 
-#@AT_ATTRIBS【#?STRUCTURE_EXPECTED!【#@《@property●@safe●@trusted●@  system●@disable●@ #error(INVALID_ATTRIB_ID){xxx}》●
-  AttribAt(Symbol)】】
+#@AT_ATTRIBS【#?STRUCTURE_EXPECTED!【#@《@property●@safe●@trusted●@  system●@disable》●
+  AttribAtKeyword(Symbol)】】
 
 
 
@@ -67,6 +67,12 @@
  ►#?STRUCTURE_EXPECTED!【pragma( #error(EXP_ID)) ● AttribPragma(Symbol)】●
 ¤》
 
+#@CUSTOM_ATTRIB《
+ ►#?STRUCTURE_EXPECTED!【@foo()● AttribCustom(RefIdentifier)】●
+ ►#?STRUCTURE_EXPECTED!【@(1, "foo")● AttribCustom(Integer String)】●
+ ►#?STRUCTURE_EXPECTED!【@foo(bar) ● AttribCustom(RefIdentifier #@ExpIdentifier)】●
+¤》
+
 
 // These attribs enable auto declarations
 #@ATTRIBS_AUTODecl《
@@ -75,7 +81,7 @@
  ►#@BASIC_ATTRIB_ENUM●
  ►#@TYPEMOD_ATTRIBS●
  ►#@AT_ATTRIBS●
- ►#?STRUCTURE_EXPECTED!【final @safe const●AttribBasic AttribAt(Symbol) AttribBasic】●
+ ►#?STRUCTURE_EXPECTED!【final @safe const●AttribBasic AttribAtKeyword(Symbol) AttribBasic】●
  ►#?STRUCTURE_EXPECTED!【align(1) pure●AttribAlign AttribBasic 】●
 ¤》
 
@@ -83,7 +89,7 @@
  ►#?STRUCTURE_EXPECTED!【package●AttribProtection】●
  ►#?STRUCTURE_EXPECTED!【static●AttribBasic】●
  ►#@BASIC_ATTRIB_ENUM●
- ►#?STRUCTURE_EXPECTED!【final @safe const●AttribBasic AttribAt(Symbol) AttribBasic】●
+ ►#?STRUCTURE_EXPECTED!【final @safe const●AttribBasic AttribAtKeyword(Symbol) AttribBasic】●
  ►#?STRUCTURE_EXPECTED!【align(1) pure●AttribAlign AttribBasic 】●
 ¤》
 
@@ -91,6 +97,7 @@
  ►#@EXTERN_ATTRIB●
  ►#@ALIGN_ATTRIB●
  ►#@PRAGMA_ATTRIB #PRAGMA_ATTR(flag)●
+ ►#@CUSTOM_ATTRIB●
  ►#?STRUCTURE_EXPECTED!【pragma(foo, 123) align(1)● AttribPragma(Symbol Integer) AttribAlign】●
  ►#?STRUCTURE_EXPECTED!【pure const extern(#error(BAD_LINKAGE_ID)) ● AttribBasic AttribBasic AttribLinkage 】●
 ¤》

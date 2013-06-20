@@ -27,6 +27,7 @@ import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.BlockStatementUnscoped;
+import dtool.ast.statements.CatchClause;
 import dtool.ast.statements.CommonStatementList;
 import dtool.ast.statements.EmptyStatement;
 import dtool.ast.statements.ForeachRangeExpression;
@@ -59,7 +60,6 @@ import dtool.ast.statements.StatementThrow;
 import dtool.ast.statements.StatementTry;
 import dtool.ast.statements.StatementWhile;
 import dtool.ast.statements.StatementWith;
-import dtool.ast.statements.CatchClause;
 import dtool.ast.statements.VariableDefWithInit;
 import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.ParserError.ParserErrorTypes;
@@ -70,7 +70,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 	
 	/* ----------------------------------------------------------------- */
 	
-	public static final ParseRuleDescription RULE_BLOCK = new ParseRuleDescription("Block");
+	public static final ParseRuleDescription RULE_BLOCK = new ParseRuleDescription("Block", "Block");
 	
 	protected NodeResult<BlockStatement> parseBlockStatement(boolean createMissing, boolean brokenIfMissing) {
 		return parseBlockStatement(createMissing, brokenIfMissing, true).upcastTypeParam();
@@ -108,8 +108,10 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 	}
 	
 	// Note these two rules are equivalent, but last one indicated a preference for blocks vs. single statements. 
-	public static final ParseRuleDescription RULE_STATEMENT = new ParseRuleDescription("Statement");
-	public static final ParseRuleDescription RULE_ST_OR_BLOCK = new ParseRuleDescription("Statement or Block");
+	public static final ParseRuleDescription RULE_STATEMENT = 
+		new ParseRuleDescription("Statement", "Statement");
+	public static final ParseRuleDescription RULE_ST_OR_BLOCK = 
+		new ParseRuleDescription("StOrBlock", "Statement or Block");
 	
 	protected ArrayView<IStatement> parseStatements(DeeTokens nodeListTerminator, boolean parseCaseDefault) {
 		ArrayList<IStatement> nodeList = new ArrayList<>();
@@ -685,7 +687,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 				boolean idIsMissing = lookAhead() != DeeTokens.IDENTIFIER;
 				scopeTypeId = parseIdSymbol();
 				if(!idIsMissing && StatementScope.ScopeTypes.fromIdentifier(scopeTypeId.name) == null) {
-					parse.store(createErrorOnLastToken(ParserErrorTypes.INVALID_SCOPE_ID, null));
+					parse.storeError(createErrorOnLastToken(ParserErrorTypes.INVALID_SCOPE_ID, null));
 				}
 				
 				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
@@ -697,7 +699,8 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		return parse.resultConclude(new StatementScope(scopeTypeId, body));
 	}
 	
-	public static final ParseRuleDescription RULE_CATCH_OR_FINALLY = new ParseRuleDescription("catch or finally");
+	public static final ParseRuleDescription RULE_CATCH_OR_FINALLY = 
+		new ParseRuleDescription("CatchOrFinally", "Catch or Finally");
 	
 	public NodeResult<StatementTry> parseStatementTry() {
 		if(!tryConsume(DeeTokens.KW_TRY))
@@ -726,7 +729,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 				finallyBody = parse.checkResult(parseStatement_toMissing());
 			}
 			if(catches.size() == 0 && finallyBody == null) {
-				parse.store(createErrorExpectedRule(RULE_CATCH_OR_FINALLY));
+				parse.storeError(createErrorExpectedRule(RULE_CATCH_OR_FINALLY));
 			}
 		}
 		
@@ -753,7 +756,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		}
 		
 		if(parse.ruleBroken == false && catchParam == null && lookAhead() == DeeTokens.KW_CATCH) {
-			parse.store(createError(ParserErrorTypes.LAST_CATCH, catchKeyword.token, null));
+			parse.storeError(createError(ParserErrorTypes.LAST_CATCH, catchKeyword.token, null));
 		}
 		
 		return parse.resultConclude(new CatchClause(catchParam, body));

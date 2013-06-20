@@ -260,7 +260,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	
 	
-	public static final ParseRuleDescription RULE_DECLARATION = new ParseRuleDescription("Declaration");
+	public static final ParseRuleDescription RULE_DECLARATION = new ParseRuleDescription("Declaration", "Declaration");
 	
 	public InvalidSyntaxElement parseInvalidElement(ParseRuleDescription expectedRule, 
 		boolean inStatementList) {
@@ -435,10 +435,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			}
 			return parseAttribBasic();
 		case AT:
-			if(lookAhead(1) == DeeTokens.IDENTIFIER) {
-				return parseAttribAt();
-			}
-			break;
+			return parseAmpersatAttrib();
 		case KW_AUTO:
 			return parseAttribBasic();
 		case KW_ENUM:
@@ -496,6 +493,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		case ATTRIB_LINKAGE:
 		case ATTRIB_ALIGN:
 		case ATTRIB_PRAGMA:
+		case ATTRIB_CUSTOM:
 		case NULL:
 			return false;
 		default:
@@ -527,8 +525,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	/* --------------------- DEFINITIONS --------------------- */
 	
-	public static final ParseRuleDescription RULE_DECLARATOR = new ParseRuleDescription(
-		"Declarator(Reference or ID)");
+	public static final ParseRuleDescription RULE_DECLARATOR = new ParseRuleDescription("Declarator",
+		"Declarator(Reference or Identifier)");
 	
 	public NodeResult<? extends IDeclaration> parseDeclaration_varOrFunction(DefinitionStartInfo defStartInfo, 
 		boolean autoEnablingAttribPresent) {
@@ -587,7 +585,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(parse.consumeOptional(DeeTokens.ASSIGN)){
 				init = parseInitializer().node;
 			} else if(isAutoRef) {
-				parse.store(createExpectedTokenError(DeeTokens.ASSIGN));
+				parse.storeError(createExpectedTokenError(DeeTokens.ASSIGN));
 			}
 			
 			while(parse.consumeOptional(DeeTokens.COMMA)) {
@@ -616,13 +614,13 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(tryConsume(DeeTokens.ASSIGN)){ 
 				init = parseInitializer().node;
 			} else if(isAutoRef) {
-				parse.store(createExpectedTokenError(DeeTokens.ASSIGN));
+				parse.storeError(createExpectedTokenError(DeeTokens.ASSIGN));
 			}
 		}
 		return parse.conclude(new DefVarFragment(fragId, init));
 	}
 	
-	public static final ParseRuleDescription RULE_INITIALIZER = new ParseRuleDescription("Initializer");
+	public static final ParseRuleDescription RULE_INITIALIZER = new ParseRuleDescription("Initializer", "Initializer");
 	
 	public NodeResult<? extends IInitializer> parseInitializer() {
 		if(tryConsume(DeeTokens.KW_VOID)) {
@@ -935,7 +933,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parseExpressionAroundParentheses(parse, true, false);
 	}
 	
-	public static final ParseRuleDescription RULE_FN_BODY = new ParseRuleDescription("FnBody");
+	public static final ParseRuleDescription RULE_FN_BODY = new ParseRuleDescription("FnBody", "FunctionBody");
 	
 	protected NodeResult<? extends IFunctionBody> parseFunctionBody() {
 		if(tryConsume(DeeTokens.SEMICOLON)) { 
@@ -1036,7 +1034,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			comments, isMixin, adp.defId, adp.tplParams, adp.tplConstraint, adp.getDeclBlock()));
 	}
 	
-	public static final ParseRuleDescription RULE_AGGR_BODY = new ParseRuleDescription("AggregateBody");
+	public static final ParseRuleDescription RULE_AGGR_BODY = 
+		new ParseRuleDescription("AggregateBody", "AggregateBody");
 	
 	public class AggregateDefinitionParse extends DefParseHelper {
 
@@ -1089,7 +1088,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 	}
 	
-	public static final ParseRuleDescription RULE_DECLARATION_BLOCK = new ParseRuleDescription("DeclarationBlock");
+	public static final ParseRuleDescription RULE_DECLARATION_BLOCK = 
+		new ParseRuleDescription("DeclarationBlock", "DeclarationBlock");
 	
 	public NodeResult<DeclBlock> parseDeclarationBlock() {
 		if(tryConsume(DeeTokens.OPEN_BRACE) == false) {
@@ -1301,7 +1301,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DeclarationEnum(type, body));
 	}
 	
-	public static final ParseRuleDescription RULE_ENUM_BODY = new ParseRuleDescription("EnumBody");
+	public static final ParseRuleDescription RULE_ENUM_BODY = new ParseRuleDescription("EnumBody", "EnumBody");
 	
 	public NodeResult<EnumBody> parseEnumBody() {
 		ParseEnumMember parse = new ParseEnumMember();

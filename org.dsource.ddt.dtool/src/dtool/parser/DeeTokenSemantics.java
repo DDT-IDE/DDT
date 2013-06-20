@@ -111,14 +111,8 @@ public class DeeTokenSemantics {
 		Pair.create("disable", true)
 	);
 	
-	public static ParserError checkAttribId(BaseLexElement attribId) {
-		if(attribId.getError() != null) {
-			return attribId.getError(); // This means it's a missing id.
-		}
-		if(attribIdMapper.get(attribId.getSourceValue()) != null) {
-			return null;
-		}
-		return createError(ParserErrorTypes.INVALID_ATTRIB_ID, attribId.getToken(), null);
+	public static boolean isPredefinedAttribId(BaseLexElement attribId) {
+		return attribIdMapper.get(attribId.getSourceValue()) != null;
 	}
 	
 	public static boolean tokenIsDocComment(Token token) {

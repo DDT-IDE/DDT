@@ -28,7 +28,7 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
   ►#?STRUCTURE_EXPECTED!【! #@SINGLE_ARG ● #@SINGLE_ARG 】●
 ¤》
 #@SINGLE_ARG《 
-  ►#?STRUCTURE_EXPECTED!【#error(EXPRULE_TplArg)● #@NO_EXP 】●
+  ►#?STRUCTURE_EXPECTED!【#error(EXPRULE_TplSingleArg)● #@NO_EXP 】●
   ►#?STRUCTURE_EXPECTED!【#@EXP_PRIMARY_SIMPLE  ● #@EXP_PRIMARY_SIMPLE】●
 ¤》
 
@@ -57,7 +57,7 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 #PARSE(REFERENCE)    #error(NO_TPL_SINGLE_ARG)【#@TYPE_REFS__TPL_SINGLE_ARG】 ! #@SINGLE_ARG
 #STRUCTURE_EXPECTED: RefTemplateInstance(#@TYPE_REFS__TPL_SINGLE_ARG #@SINGLE_ARG)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(REFERENCE)    foo! #error(EXPRULE_TemplateSingleArgument) .bar
+#PARSE(REFERENCE)    foo! #error(EXPRULE_TplSingleArg) .bar
 #STRUCTURE_EXPECTED: RefQualified(RefTemplateInstance(RefIdentifier #@NO_TOE) RefIdentifier)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)    foo!this . xpto
@@ -73,7 +73,7 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 #STRUCTURE_EXPECTED: RefTemplateInstance(RefIdentifier RefTypeDynArray(*))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Ensure ref rule break 
 // Single arg missing doesn't cause rule to break
-#PARSE(REFERENCE)    foo! #error(EXPRULE_TemplateSingleArgument) !(blah)
+#PARSE(REFERENCE)    foo! #error(EXPRULE_TplSingleArg) !(blah)
 #STRUCTURE_EXPECTED: RefTemplateInstance(RefTemplateInstance(RefIdentifier #@NO_TOE) RefIdentifier)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)     foo!(var[] #@PARENS_BREAK

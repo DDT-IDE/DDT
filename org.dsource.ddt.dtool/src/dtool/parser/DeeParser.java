@@ -30,23 +30,23 @@ public class DeeParser extends DeeParser_Statements {
 	}
 	
 	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule) {
-		return parseUsingRule(parseRule.name);
+		return parseUsingRule(parseRule.id);
 	}
 	public DeeParserResult parseUsingRule(String parseRule) {
 		DeeParserResult result;
 		if(parseRule == null) {
 			result = new DeeParserResult(parseModule("__unnamed_module"), this);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_EXPRESSION.name)) {
+		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_EXPRESSION.id)) {
 			result = new DeeParserResult(parseExpression(), this);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_REFERENCE.name)) {
+		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_REFERENCE.id)) {
 			result = new DeeParserResult(parseTypeReference(), this);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_DECLARATION.name)) {
+		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_DECLARATION.id)) {
 			result = new DeeParserResult(parseDeclaration(), this);
-		} else if(parseRule.equalsIgnoreCase(RULE_TYPE_OR_EXP.name) || parseRule.equalsIgnoreCase("TypeOrExp") ) {
+		} else if(parseRule.equalsIgnoreCase(RULE_TYPE_OR_EXP.id) || parseRule.equalsIgnoreCase("TypeOrExp")) {
 			result = new DeeParserResult(parseTypeOrExpression(true), this);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_INITIALIZER.name)) {
+		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_INITIALIZER.id)) {
 			result = new DeeParserResult(parseInitializer(), this);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_STATEMENT.name)) {
+		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_STATEMENT.id)) {
 			result = new DeeParserResult(parseStatement(), this);
 		} else if(parseRule.equalsIgnoreCase("INIT_STRUCT")) {
 			result = new DeeParserResult(parseStructInitializer(), this);

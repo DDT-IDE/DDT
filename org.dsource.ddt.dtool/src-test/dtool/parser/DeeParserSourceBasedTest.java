@@ -350,10 +350,10 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			DeeTokens expectedToken = DeeTokens.valueOf(expectedTokenStr);
 			return createErrorToken(ParserErrorTypes.EXPECTED_TOKEN, mde, lexSource, true, expectedToken);
 		case EXPECTED_RULE:
-			errorParam = getExpectedRuleName(errorParam);
+			errorParam = getExpectedRuleDescription(errorParam);
 			return createErrorToken(ParserErrorTypes.EXPECTED_RULE, mde, lexSource, true, errorParam);
 		case SYNTAX_ERROR:
-			errorParam = getExpectedRuleName(errorParam);
+			errorParam = getExpectedRuleDescription(errorParam);
 			boolean tokenBefore = errorTypeStr.equals("<SE");
 			return createErrorToken(ParserErrorTypes.SYNTAX_ERROR, mde, lexSource, tokenBefore, errorParam);
 		case EXP_MUST_HAVE_PARENTHESES: 
@@ -368,7 +368,6 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		case INVALID_EXTERN_ID:
 		case INVALID_SCOPE_ID:
 		case INVALID_TRAITS_ID:
-		case INVALID_ATTRIB_ID:
 			if(mde.sourceValue != null) {
 				return new ParserError(errorType, errorRange, mde.sourceValue, null);
 			}
@@ -390,25 +389,17 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		return new ParserError(errorTypeTk, errorRange, errorSource, errorParam);
 	}
 	
-	public static String getExpectedRuleName(String errorParam) {
-		if(errorParam.equals("decl")) {
-			return DeeParser.RULE_DECLARATION.name;
-		} else if(errorParam.equals("exp")) {
-			return DeeParser.RULE_EXPRESSION.name;
-		} else if(errorParam.equals("ref")) {
-			return DeeParser.RULE_REFERENCE.name;
-		} else if(errorParam.equals("ToE")) {
-			return DeeParser.RULE_TYPE_OR_EXP.name;
-		} else if(errorParam.equals("TplArg")) {
-			return DeeParser.RULE_TPL_SINGLE_ARG.name;
-		} else if(errorParam.equals("StOrBlock")) {
-			return DeeParser.RULE_ST_OR_BLOCK.name;
-		} else if(errorParam.equals("CatchFinally")) {
-			return DeeParser.RULE_CATCH_OR_FINALLY.name;
-		} else if(errorParam.equals("Declarator")) {
-			return DeeParser.RULE_DECLARATOR.name;
+	public static String getExpectedRuleDescription(String ruleId) {
+		if(ruleId.equals("decl")) {
+			return DeeParser.RULE_DECLARATION.description;
+		} else if(ruleId.equals("exp")) {
+			return DeeParser.RULE_EXPRESSION.description;
+		} else if(ruleId.equals("ref")) {
+			return DeeParser.RULE_REFERENCE.description;
 		}
-		return errorParam;
+		
+		assertTrue(DeeParser.getRule(ruleId) != null);
+		return DeeParser.getRule(ruleId).description;
 	}
 	
 	public static Token findLastEffectiveTokenBeforeOffset(int offset, LexElementSource lexSource) {

@@ -20,7 +20,7 @@
                          #@ASSIGNEXP_NB__LITE   #@ASSIGNEXP_NB__LITE   #@ASSIGNEXP__LITE】 ●
 ¤》 
 
-
+// Expression list which allows ending terminator
 #@EXPARGS_ESEP《
   ►#?STRUCTURE_EXPECTED!【/* NO EXTRA ARG */ ● 】●
   ►#?STRUCTURE_EXPECTED!【#@ASSIGNEXP_NBNE #@《 ●,》● #@ASSIGNEXP_NBNE】 ●
@@ -29,10 +29,15 @@
                          #@ASSIGNEXP_NB__LITE   #@ASSIGNEXP_NB__LITE   #@ASSIGNEXP_NBNE】 ●
 ¤》 
 #@EXPARGS_ESEP__SAMPLE《
-  ►#?STRUCTURE_EXPECTED!【/* NO EXTRA ARG */ ● 】●
+  ►#?STRUCTURE_EXPECTED!【/* NO_EXTRA_ARG */ ● 】●
   ►#?STRUCTURE_EXPECTED!【#@ASSIGNEXP_NBNE__LITE #@《 ●,》● #@ASSIGNEXP_NBNE__LITE】 ●
   ►#?STRUCTURE_EXPECTED!【#@ASSIGNEXP_NB__LITE , #@ASSIGNEXP_NBNE__LITE #@《 ●,》 ● #@ASSIGNEXP_NB__LITE #@ASSIGNEXP_NBNE__LITE】 ●
 ¤》 
+#@EXPARGS_ESEP_ParensClose《
+  ►#?STRUCTURE_EXPECTED!【 #@EXPARGS_ESEP ) ● #@EXPARGS_ESEP】●
+  ►#?STRUCTURE_EXPECTED!【 #@EXPARGS_ESEP__SAMPLE #@PARENS_BREAK ● #@EXPARGS_ESEP__SAMPLE #@PARENS_BREAK】●
+¤》 
+
 
 // Simple variable declaration pattern - type optional
 #@SIMPLE_VAR_PAT《

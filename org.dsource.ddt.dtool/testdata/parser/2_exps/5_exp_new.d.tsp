@@ -21,8 +21,7 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@CTOR_ARG《
   ►#?STRUCTURE_EXPECTED!【 /*No ctor args*/● 】● 
-  ►#?STRUCTURE_EXPECTED!【( #@EXPARGS_ESEP ) ● #@EXPARGS_ESEP】●
-  ►#?STRUCTURE_EXPECTED!【( #@EXPARGS_ESEP__SAMPLE #@NO_ClosePARENS #@BREAK ● #@EXPARGS_ESEP__SAMPLE #@BREAK】●
+  ►#?STRUCTURE_EXPECTED!【( #@EXPARGS_ESEP_ParensClose ● #@EXPARGS_ESEP_ParensClose】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   new   ( #@EXP_ASSIGN__LITE ) #@TYPEREF_NBNE  #@CTOR_ARG

@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -106,12 +107,23 @@ public abstract class AbstractParser {
 	
 	/* ----  ---- */
 	
+	protected static final HashMap<String, ParseRuleDescription> parseRules = new HashMap<>(); 
+	
+	// TODO: maybe this should be an enum
 	public static class ParseRuleDescription {
-		public final String name;
+		public final String id;
+		public final String description;
 		
-		public ParseRuleDescription(String name) {
-			this.name = name;
+		public ParseRuleDescription(String id, String description) {
+			this.id = id;
+			this.description = description;
+			assertTrue(parseRules.get(id) == null);
+			parseRules.put(id, this);
 		}
+	}
+	
+	public static ParseRuleDescription getRule(String key) {
+		return parseRules.get(key);
 	}
 	
 	/* ---- error helpers ---- */
@@ -134,11 +146,11 @@ public abstract class AbstractParser {
 	}
 	
 	protected ParserError createErrorExpectedRule(ParseRuleDescription expectedRule) {
-		return createErrorOnLastToken(ParserErrorTypes.EXPECTED_RULE, expectedRule.name);
+		return createErrorOnLastToken(ParserErrorTypes.EXPECTED_RULE, expectedRule.description);
 	}
 	
 	protected ParserError createSyntaxError(ParseRuleDescription expectedRule) {
-		return createErrorOnLastToken(ParserErrorTypes.SYNTAX_ERROR, expectedRule.name);
+		return createErrorOnLastToken(ParserErrorTypes.SYNTAX_ERROR, expectedRule.description);
 	}
 	
 	/* ---- Result helpers ---- */
@@ -293,7 +305,7 @@ public abstract class AbstractParser {
 				return true;
 			}
 			if(isOptional == false) {
-				store(createExpectedTokenError(expectedTokenType));
+				storeError(createExpectedTokenError(expectedTokenType));
 				setRuleBroken(breaksRule);
 			}
 			return false;
@@ -302,7 +314,7 @@ public abstract class AbstractParser {
 		public BaseLexElement consumeExpectedIdentifier() {
 			BaseLexElement token = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
 			if(token.getError() != null) {
-				store(token.getError());
+				storeError(token.getError());
 			}
 			return token;
 		}
@@ -351,10 +363,10 @@ public abstract class AbstractParser {
 		
 		protected final ParserError storeBreakError(ParserError error) {
 			setRuleBroken(error != null);
-			return store(error);
+			return storeError(error);
 		}
 		
-		protected final ParserError store(ParserError error) {
+		protected final ParserError storeError(ParserError error) {
 			assertTrue(error2 == null);
 			if(error1 == null) {
 				error1 = error;
