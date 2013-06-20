@@ -77,9 +77,4 @@ public class DeeParserResult {
 		return errors;
 	}
 	
-	@Deprecated
-	public boolean isQualifiedDotFix() {
-		return false;
-	}
-	
 }

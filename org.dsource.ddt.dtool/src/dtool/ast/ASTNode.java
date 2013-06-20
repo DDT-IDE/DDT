@@ -18,7 +18,6 @@ import melnorme.utilbox.core.CoreUtil;
 import descent.internal.compiler.parser.ASTDmdNode;
 import dtool.ast.NodeData.ParsedNodeDataWithErrors;
 import dtool.ast.definitions.Module;
-import dtool.descentadapter.DefinitionConverter;
 import dtool.parser.ParserError;
 import dtool.refmodel.INamedScope;
 import dtool.util.ArrayView;
@@ -106,12 +105,6 @@ public abstract class ASTNode implements IASTNeoNode {
 	public final void setSourceRange(SourceRange sourceRange) {
 		setSourceStart(sourceRange.getOffset());
 		setSourceEnd(sourceRange.getOffset() + sourceRange.getLength());
-	}
-	
-	/** Sets the source range the same as the given elem, even if the range is invalid. */
-	@Deprecated
-	public final void setSourceRange(ASTDmdNode elem) {
-		initSourceRange(DefinitionConverter.sourceRange(elem));
 	}
 	
 	@Deprecated

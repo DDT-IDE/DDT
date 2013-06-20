@@ -117,11 +117,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			
 			if(node instanceof RefIdentifier) {
 				RefIdentifier refIdent = (RefIdentifier) node;
-				if(!parseResult.isQualifiedDotFix()) {
-					setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), refIdent.name);
-				}
+				setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), refIdent.name);
 			} else if(node instanceof CommonRefQualified) {
-				assertTrue(!parseResult.isQualifiedDotFix());
 				
 				int dotOffset = -1;
 				if(node instanceof RefQualified) {
@@ -148,10 +145,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 				
 				// We need to get exact source cause it may contains spaces, even comments
 				String refModCanonicalName = refMod.toStringAsElement();
-				if(parseResult.isQualifiedDotFix()) {
-					refModCanonicalName = refModCanonicalName.substring(0, refModCanonicalName.length() - 1);
-					refModEndPos = refModEndPos - 1;
-				}
 				
 				String refModSource = refMod.hasSourceRangeInfo() ?
 						source.substring(refMod.getStartPos(), refModEndPos) :
