@@ -22,7 +22,6 @@ import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
-import dtool.descentadapter.DeeParserSession;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -89,11 +88,10 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		assertTrue(session.errorMsg == null);
 		session.resultCode = ECompletionSessionResults.RESULT_OK;
 		
-		DeeParserResult parseResult = true ?
-			DeeParserSession.parseWithRecovery(source, defaultModuleName, offset) :
-			DeeParser.parseSource(source, defaultModuleName);
-			
+		DeeParserResult parseResult = DeeParser.parseSource(source, defaultModuleName);
+		
 		if(parseResult == null) {
+			/*BUG here TODO: need to reimplement, check token list*/
 			CompletionSession.assignResult(session, ECompletionSessionResults.INVALID_LOCATION_INTOKEN, 
 				"Invalid location (inside token)");
 			return null;

@@ -3,6 +3,8 @@
 = DDT Change Log =
 
 == DDT 0.7.0 (development) ==
+ * Implemented #2: Support parsing of latest D syntax (up to D language version 2.063).
+   * Completely rewrote D parser, creating a new hand-written parser (IDE no longer depends on descent.compiler).
  * Holding Ctrl and clicking over a reference now always opens a new editor set on the reference target.
  * Fixed NPE bug when opening D search page with a package reference selected in the editor.
  * Fixed minor parser AFE bug with qualified reference at end of file.

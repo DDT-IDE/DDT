@@ -24,7 +24,7 @@ public class DescentParserAdapter {
 	}
 	
 	public Module mod;
-	protected Parser parser;
+	public Parser parser;
 	
 	/** Whether a qualified dot fix was performed. 
 	 * If it was, then a non-prefixed search should be made. */

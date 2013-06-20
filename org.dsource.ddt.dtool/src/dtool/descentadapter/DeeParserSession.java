@@ -13,19 +13,19 @@ import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult;
 import dtool.parser.ICompileError;
 
+@Deprecated
 public class DeeParserSession extends DeeParserResult {
 	
-	@Deprecated
-	public static DeeParserResult parseSource(String defaultModuleName, String source) {
-		return parseSource(defaultModuleName, source, null);
-	}
-	
-	public static DeeParserResult parseSource(String defaultModuleName, String source, 
-		IProblemReporter problemReporter) {
-		DescentParserAdapter parserAdapter = DescentParserAdapter.parseSource(source, Parser.D2, problemReporter);
-		Module module = DescentASTConverter.convertModule(parserAdapter.mod, defaultModuleName);
-		return new DeeParserSession(module, defaultModuleName, parserAdapter);
-	}
+//	public static DeeParserResult parseSource(String defaultModuleName, String source) {
+//		return parseSource(defaultModuleName, source, null);
+//	}
+//	
+//	public static DeeParserResult parseSource(String defaultModuleName, String source, 
+//		IProblemReporter problemReporter) {
+//		DescentParserAdapter parserAdapter = DescentParserAdapter.parseSource(source, Parser.D2, problemReporter);
+//		Module module = DescentASTConverter.convertModule(parserAdapter.mod, defaultModuleName);
+//		return new DeeParserSession(module, defaultModuleName, parserAdapter);
+//	}
 	
 	public static DeeParserResult parseWithRecovery(String defaultModuleName, String source, 
 			final int offset, Token lastTokenNonWS) {

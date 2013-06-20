@@ -2,26 +2,27 @@ package dtool.parser;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import descent.internal.compiler.parser.Parser;
 import dtool.ast.ASTCommonSourceRangeChecker;
 import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
 import dtool.descentadapter.DeeParserSession;
+import dtool.descentadapter.DescentParserAdapter;
 import dtool.tests.DToolBaseTest;
 
 public abstract class Parser__CommonTest extends DToolBaseTest {
 	
 	@Deprecated
-	public static DeeParserResult parseSource(String source, Boolean expectErrors, boolean checkSourceRanges,
+	public static void parseSource(String source, Boolean expectErrors, boolean checkSourceRanges,
 			String defaultModuleName) {
-		DeeParserResult parseResult = DeeParserSession.parseSource(source, defaultModuleName);
+		DescentParserAdapter parserAdapter = DescentParserAdapter.parseSource(source, Parser.D2, null);
+		
+		boolean hasErrors = parserAdapter.parser.problems.size() > 0;
 		
 		if(expectErrors != null) {
-			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);
+			assertTrue(hasErrors == expectErrors, "expectedErrors is not: " + expectErrors);
 		}
-		if(checkSourceRanges && !parseResult.hasSyntaxErrors()) {
-			// We rarely get good source ranges with syntax errors; 
-			ASTCommonSourceRangeChecker.checkConsistency(parseResult.module);
+		if(checkSourceRanges && !hasErrors) {
 		}
-		return parseResult;
 	}
 	
 	public static DeeParserResult testParseSource(String source, Boolean expectErrors, boolean checkSourceRanges, 
