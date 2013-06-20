@@ -27,7 +27,7 @@
  ►#@DDOC_ATTRIBS class defunit { } ●
  ►#@DDOC_ATTRIBS interface defunit(int foo) ;●
  
- ►/+#@DDOC_ATTRIBS TODO BUG here+/  enum defunit {A, B, C} ●
+ ►#@DDOC_ATTRIBS enum defunit {A, B, C} ●
  ►#@DDOC_ATTRIBS template defunit(T) { } ●
  ►#@DDOC_ATTRIBS mixin tpl!(foo) defunit; ●
  

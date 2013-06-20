@@ -1,16 +1,25 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 http://dlang.org/class.html#Destructor
 
-#@SHARED_OPT《●shared》
-
-#@SPECIAL_FN《
-  ►#?STRUCTURE_EXPECTED!【~this  #error(EXP_OPEN_PARENS)¤【()】 #@BREAK● #@BREAK】●
-  ►#?STRUCTURE_EXPECTED!【~this( #@CLOSEPARENS_OR_BREAK● #@CLOSEPARENS_OR_BREAK】●
-  ►#?STRUCTURE_EXPECTED!【#@SHARED_OPT static this  #error(EXP_OPEN_PARENS)¤【()】 #@BREAK● #@BREAK】●
-  ►#?STRUCTURE_EXPECTED!【#@SHARED_OPT static this( #@CLOSEPARENS_OR_BREAK● #@CLOSEPARENS_OR_BREAK】●
-  ►#?STRUCTURE_EXPECTED!【#@SHARED_OPT static ~this  #error(EXP_OPEN_PARENS)¤【()】 #@BREAK● #@BREAK】●
-  ►#?STRUCTURE_EXPECTED!【#@SHARED_OPT static ~this( #@CLOSEPARENS_OR_BREAK● #@CLOSEPARENS_OR_BREAK】●
+#@SHARED_OPT《
+  ►#?STRUCTURE_EXPECTED!【 ● 】●
+  ►#?STRUCTURE_EXPECTED!【 shared● AttribBasic】●
 ¤》
+
+#@ARG_TESTER《
+  ►#?STRUCTURE_EXPECTED!【 #error(EXP_OPEN_PARENS)¤【()】 #@BREAK ● #@BREAK】●
+  ►#?STRUCTURE_EXPECTED!【( #@CLOSEPARENS_OR_BREAK● #@CLOSEPARENS_OR_BREAK】●
+¤》
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   #@SPECIAL_FN #@FN_BODY__SIMPLE_TESTER
-#STRUCTURE_EXPECTED:  DeclarationSpecialFunction(#@SPECIAL_FN #@FN_BODY__SIMPLE_TESTER)
+#PARSE(DECLARATION)   ~this #@ARG_TESTER #@FN_BODY__SIMPLE_TESTER
+#STRUCTURE_EXPECTED:  
+DeclarationSpecialFunction(#@ARG_TESTER #@FN_BODY__SIMPLE_TESTER)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)   #@SHARED_OPT static ~this #@ARG_TESTER #@FN_BODY__SIMPLE_TESTER
+#STRUCTURE_EXPECTED:  
+DeclarationAttrib(#@SHARED_OPT AttribBasic DeclarationSpecialFunction(#@ARG_TESTER #@FN_BODY__SIMPLE_TESTER))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ parsed the same as normal constructor
+#PARSE(DECLARATION)   #@SHARED_OPT static this ( #@CLOSEPARENS_OR_BREAK #@ST_BLOCK__SAMPLE
+#STRUCTURE_EXPECTED:  
+DeclarationAttrib(#@SHARED_OPT AttribBasic DefinitionConstructor(DefSymbol #@CLOSEPARENS_OR_BREAK #@ST_BLOCK__SAMPLE))

@@ -12,6 +12,7 @@ package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.lazyInitArrayList;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
@@ -277,18 +278,11 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	public NodeResult<? extends IDeclaration> parseDeclaration(boolean statementsOnly, boolean autoDeclEnabled,
 		DefinitionStartInfo defStartInfo) {
-		DeeTokens la = lookAhead();
-		
-		if(!statementsOnly && (la == DeeTokens.CONCAT || la == DeeTokens.KW_STATIC || la == DeeTokens.KW_SHARED)) {
-			NodeResult<DeclarationSpecialFunction> declSpecialFunction = parseDeclarationSpecialFunction();
-			if(declSpecialFunction != null)
-				return declSpecialFunction;
-		}
 		
 		DeeTokens laGrouped = assertNotNull_(lookAheadGrouped());
 		switch (laGrouped) {
-		case KW_IMPORT: return parseDeclarationImport();
-		
+		case KW_IMPORT: 
+			return parseDeclarationImport();
 		case KW_STRUCT:
 			return parseDefinitionStruct(defStartInfo);
 		case KW_UNION:
@@ -299,16 +293,6 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			return parseDefinitionInterface(defStartInfo);
 		case KW_TEMPLATE: 
 			return parseTemplateDefinition(defStartInfo);
-			
-		case KW_ENUM:
-			if((lookAhead(1) == DeeTokens.COLON || lookAhead(1) == DeeTokens.OPEN_BRACE))
-				return parseDeclarationEnum_start();
-			if( (lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.COLON) ||
-				(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.OPEN_BRACE) ||
-				(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.SEMICOLON) || 
-				(lookAhead(1) == DeeTokens.SEMICOLON))
-				return parseDefinitionEnum_start(defStartInfo);
-			break;
 			
 		case KW_ALIAS:
 			if(lookAhead(1) == DeeTokens.KW_THIS ||  
@@ -324,7 +308,16 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				return parseDeclarationMixinString();
 			}
 			return parseDeclarationMixin(defStartInfo);
+		case KW_ENUM:
+			if(canParseDeclarationEnum())
+				return parseDeclarationEnum_start();
+			if(canParseDefinitionEnum())
+				return parseDefinitionEnum_start(defStartInfo);
+			break;
 		case ATTRIBUTE_KW:
+			if(shouldParseAsAttributeVsStaticDeclarations()) {
+				break;
+			}
 			if(lookAhead() == DeeTokens.KW_STATIC) { 
 				if(lookAhead(1) == DeeTokens.KW_IMPORT) { 
 					return parseDeclarationImport();
@@ -336,7 +329,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 					return parseDeclarationStaticIf(statementsOnly);
 				}
 			}
-			break;
+			throw assertFail();
 		case KW_DEBUG:
 			if(!statementsOnly && lookAhead(1) == DeeTokens.ASSIGN) {
 				return parseDeclarationDebugVersionSpec();
@@ -359,15 +352,30 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			return parseDeclarationAllocatorFunctions();
 		case KW_THIS: 
 			if(statementsOnly) return declarationNullResult();
-			if(lookAhead(1) == DeeTokens.OPEN_PARENS && lookAhead(2) == DeeTokens.KW_THIS)
+			if(lookAhead(1) == DeeTokens.OPEN_PARENS && lookAhead(2) == DeeTokens.KW_THIS) {
 				return parseDeclarationPostBlit_start();
+			}
 			return parseDefinitionConstructor_atThis(new DefParseHelper(defStartInfo));
+		case CONCAT:
+			if(lookAhead(1) == DeeTokens.KW_THIS)
+				return parseDeclarationSpecialFunction();
+			break;
 		case SEMICOLON:
 			return resultConclude(false, srOf(consumeLookAhead(), new DeclarationEmpty()));
 		default:
 			break;
 		}
 		
+		if(lookAheadGrouped() == DeeTokens.ATTRIBUTE_KW && shouldParseAsAttributeVsTypeModifier()) {
+			// parse current as attribute
+		} else {
+			NodeResult<? extends IDeclaration> 
+				declResult = parseDeclaration_varOrFunction(defStartInfo, autoDeclEnabled);
+			
+			if(!isNull(declResult)) {
+				return declResult;
+			}
+		}
 		
 		if(defStartInfo != null) {
 			assertTrue(parseAttribute() == null);
@@ -376,8 +384,76 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(declAttrib != null)
 				return declAttrib;
 		}
-		
-		return parseDeclaration_varOrFunction(defStartInfo, autoDeclEnabled);
+		return declarationNullResult();
+	}
+
+	public boolean shouldParseAsAttributeVsTypeModifier() {
+		return !(isImmutabilitySpecifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS);
+	}
+	
+	public final boolean canParseDeclarationEnum() {
+		return lookAhead(1) == DeeTokens.COLON || lookAhead(1) == DeeTokens.OPEN_BRACE;
+	}
+	
+	public final boolean canParseDefinitionEnum() {
+		return (lookAhead(1) == DeeTokens.SEMICOLON) || 
+			(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.COLON) ||
+			(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.OPEN_BRACE) ||
+			(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.SEMICOLON)
+			;
+	}
+	
+	public final boolean shouldParseAsAttributeVsStaticDeclarations() {
+		if(lookAhead() == DeeTokens.KW_STATIC) { 
+			if(lookAhead(1) == DeeTokens.KW_IMPORT || 
+				lookAhead(1) ==  DeeTokens.KW_ASSERT || 
+				lookAhead(1) == DeeTokens.KW_IF) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static NodeResult<? extends IDeclaration> declarationNullResult() {
+		return AbstractParser.<MissingDeclaration>result(false, null);
+	}
+	
+	/* --------------------- ATTRIBUTES --------------------- */
+	
+	// Note: make sure this is consistent/synchronized with the code in declaration parse
+	public NodeResult<? extends Attribute> parseAttribute() {
+		switch (lookAheadGrouped()) {
+		case KW_ALIGN: 
+			return parseAttribAlign();
+		case KW_PRAGMA: 
+			return parseAttribPragma();
+		case PROTECTION_KW: 
+			return parseAttribProtection();
+		case KW_EXTERN: 
+			if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
+				return parseAttribLinkage();
+			}
+			return parseAttribBasic();
+		case AT:
+			if(lookAhead(1) == DeeTokens.IDENTIFIER) {
+				return parseAttribAt();
+			}
+			break;
+		case KW_AUTO:
+			return parseAttribBasic();
+		case KW_ENUM:
+			if(canParseDeclarationEnum() || canParseDefinitionEnum())
+				break;
+			return parseAttribBasic();
+		case ATTRIBUTE_KW:
+			if(!shouldParseAsAttributeVsTypeModifier())
+				break;
+			if(!shouldParseAsAttributeVsStaticDeclarations())
+				break;
+			return parseAttribBasic();
+		default:
+		}
+		return null;
 	}
 	
 	public NodeResult<DeclarationAttrib> parseDeclarationAttrib(boolean isStatementParsing) {
@@ -407,7 +483,6 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				body = (ASTNode) parse.checkResult(thisParser().parseUnscopedStatement_toMissing());
 			} else {
 				NodeResult<? extends IDeclaration> decl = parseDeclaration(true, autoDeclEnabled, defStartInfo);
-					parseDeclaration_varOrFunction(defStartInfo, autoDeclEnabled);
 				body = !isNull(decl) ? decl.node : parseMissingDeclaration(RULE_DECLARATOR);
 			}
 		}
@@ -415,51 +490,17 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DeclarationAttrib(attributes, bodySyntax, body));
 	}
 	
-	public static NodeResult<? extends IDeclaration> declarationNullResult() {
-		return AbstractParser.<MissingDeclaration>result(false, null);
-	}
-	
-	/* --------------------- ATTRIBUTES --------------------- */
-	
-	public NodeResult<? extends Attribute> parseAttribute() {
-		switch (lookAheadGrouped()) {
-		case KW_ALIGN: 
-			return parseAttribAlign();
-		case KW_PRAGMA: 
-			return parseAttribPragma();
-		case PROTECTION_KW: 
-			return parseAttribProtection();
-		case KW_EXTERN: 
-			if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
-				return parseAttribLinkage();
-			}
-			return parseAttribBasic();
-		case AT:
-			if(lookAhead(1) == DeeTokens.IDENTIFIER) {
-				return parseAttribAt();
-			}
-			break;
-		case KW_AUTO:
-			return parseAttribBasic();
-		case KW_ENUM:
-			/*BUG here*/
-			return parseAttribBasic();
-		case ATTRIBUTE_KW:
-			if(isImmutabilitySpecifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS) {
-				break; // attrib will be parsed as a type modifier instead
-			}
-			if(lookAhead() == DeeTokens.KW_STATIC) {
-				if(lookAhead(1) == DeeTokens.KW_IMPORT || 
-					lookAhead(1) ==  DeeTokens.KW_ASSERT || 
-					lookAhead(1) == DeeTokens.KW_IF) {
-					break;
-				}
-			}
-			
-			return parseAttribBasic();
+	public boolean isAutoVarEnablingAttrib(ArrayView<Attribute> attributes) {
+		ASTNodeTypes lastAttribKind = getLastAttributeKind(attributes);
+		switch (lastAttribKind) {
+		case ATTRIB_LINKAGE:
+		case ATTRIB_ALIGN:
+		case ATTRIB_PRAGMA:
+		case NULL:
+			return false;
 		default:
 		}
-		return null;
+		return true;
 	}
 	
 	protected ArrayView<Attribute> parseDefinitionAttributes(ParseHelper parse) {
@@ -483,18 +524,6 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return arrayView(stcList);
 	}
 	
-	public boolean isAutoVarEnablingAttrib(ArrayView<Attribute> attributes) {
-		ASTNodeTypes lastAttribKind = getLastAttributeKind(attributes);
-		switch (lastAttribKind) {
-		case ATTRIB_LINKAGE:
-		case ATTRIB_ALIGN:
-		case ATTRIB_PRAGMA:
-		case NULL:
-			return false;
-		default:
-		}
-		return true;
-	}
 	
 	/* --------------------- DEFINITIONS --------------------- */
 	
@@ -1455,24 +1484,12 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	
 	public NodeResult<DeclarationSpecialFunction> parseDeclarationSpecialFunction() {
-		ParseHelper parse = new ParseHelper(lookAheadElement().getStartPos());
-		
-		SpecialFunctionKind kind = null;
-		if(tryConsume(DeeTokens.CONCAT, DeeTokens.KW_THIS)) {
-			kind = SpecialFunctionKind.DESTRUCTOR;
-		} else if(tryConsume(DeeTokens.KW_STATIC, DeeTokens.KW_THIS)) {
-			kind = SpecialFunctionKind.STATIC_CONSTRUCTOR;
-		} else if(tryConsume(DeeTokens.KW_STATIC, DeeTokens.CONCAT, DeeTokens.KW_THIS)) {
-			kind = SpecialFunctionKind.STATIC_DESTRUCTOR;
-		} else if(tryConsume(DeeTokens.KW_SHARED, DeeTokens.KW_STATIC, DeeTokens.KW_THIS)) {
-			kind = SpecialFunctionKind.SHARED_STATIC_CONSTRUCTOR;
-		} else if(tryConsume(DeeTokens.KW_SHARED, DeeTokens.KW_STATIC, DeeTokens.CONCAT)) {
-			parse.consumeExpected(DeeTokens.KW_THIS);
-			kind = SpecialFunctionKind.SHARED_STATIC_DESTRUCTOR;
-		}
-		if(kind == null)
+		ParseHelper parse = new ParseHelper(lookAheadElement());
+		if(!tryConsume(DeeTokens.CONCAT, DeeTokens.KW_THIS)) {
 			return null;
+		}
 		
+		SpecialFunctionKind kind = SpecialFunctionKind.DESTRUCTOR;
 		IFunctionBody fnBody = null;
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;

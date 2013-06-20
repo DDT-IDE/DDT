@@ -320,17 +320,19 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DeclarationSpecialFunction createDefinitionCtor(DtorDeclaration elem, 
 		ASTConversionContext convContext) {
 		return connect(DefinitionConverter.sourceRange(elem), new DeclarationSpecialFunction(
-			SpecialFunctionKind.STATIC_DESTRUCTOR,
+			SpecialFunctionKind.DESTRUCTOR,
 			convertFnBody(elem, convContext)
 			)
 		);
 	}
 	
-	public static DeclarationSpecialFunction createDefinitionCtor(StaticCtorDeclaration elem, 
+	public static DefinitionConstructor createDefinitionCtor(StaticCtorDeclaration elem, 
 		ASTConversionContext convContext) {
-		return connect(DefinitionConverter.sourceRange(elem), new DeclarationSpecialFunction(
-			SpecialFunctionKind.STATIC_CONSTRUCTOR,
-			convertFnBody(elem, convContext)
+		return connect(DefinitionConverter.sourceRange(elem), 
+			new DefinitionConstructor(
+				null, 
+				new DefUnit.ProtoDefSymbol("this", new SourceRange(elem.thisStart, "this".length()), null),
+				null, null, null, null, convertFnBody(elem, convContext)
 			)
 		);
 	}
@@ -338,13 +340,14 @@ public class DefinitionConverter extends BaseDmdConverter {
 	public static DeclarationSpecialFunction createDefinitionCtor(StaticDtorDeclaration elem, 
 		ASTConversionContext convContext) {
 		return connect(DefinitionConverter.sourceRange(elem), new DeclarationSpecialFunction(
-			DeclarationSpecialFunction.SpecialFunctionKind.STATIC_DESTRUCTOR,
+			DeclarationSpecialFunction.SpecialFunctionKind.DESTRUCTOR,
 			convertFnBody(elem, convContext)
 			)
 		);
 	}
 	
-	public static DeclarationAllocatorFunction createDefinitionCtor(NewDeclaration elem, ASTConversionContext convContext) {
+	public static DeclarationAllocatorFunction createDefinitionCtor(NewDeclaration elem, 
+		ASTConversionContext convContext) {
 		return connect(DefinitionConverter.sourceRange(elem), new DeclarationAllocatorFunction(
 			true,
 			nullToEmpty(DescentASTConverter.convertMany(elem.parameters, IFunctionParameter.class, convContext)),

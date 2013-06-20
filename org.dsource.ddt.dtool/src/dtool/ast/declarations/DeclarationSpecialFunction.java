@@ -14,10 +14,6 @@ public class DeclarationSpecialFunction extends ASTNode implements IDeclaration 
 		POST_BLIT("this(this)"),
 		
 		DESTRUCTOR("~this()"),
-		STATIC_CONSTRUCTOR("static this()"),
-		STATIC_DESTRUCTOR("static ~this()"),
-		SHARED_STATIC_CONSTRUCTOR("shared static this()"),
-		SHARED_STATIC_DESTRUCTOR("shared static ~this()"),
 		;
 		public final String sourceValue;
 		

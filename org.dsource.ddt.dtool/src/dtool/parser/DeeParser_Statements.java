@@ -297,10 +297,6 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		}
 	}
 	
-	public VariableDefWithInit parseVariableDefWithInit() {
-		return attemptParseVariableDefWithInit(false);
-	}
-	
 	protected VariableDefWithInit attemptParseVariableDefWithInit(boolean revertIfInvalid) {
 		DeeParserState savedState = thisParser().saveParserState();
 		

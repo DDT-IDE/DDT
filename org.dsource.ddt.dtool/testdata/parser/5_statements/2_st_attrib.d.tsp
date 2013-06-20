@@ -11,11 +11,11 @@
   
   ►#?STRUCTURE_EXPECTED!【template defunit(T) { } ●DefinitionTemplate(* * *)】●
   ►#?STRUCTURE_EXPECTED!【mixin tpl!(foo) defunit; ●DefinitionNamedMixin(* *)】●
+  ►#?STRUCTURE_EXPECTED!【enum defunit {A, B, C} ●DefinitionEnum(* *)】●
   
   ►#?STRUCTURE_EXPECTED!【alias int defunit; ●DefinitionAliasVarDecl(* *) 】●
   ►#?STRUCTURE_EXPECTED!【alias int defunit(int foo); ●DefinitionAliasFunctionDecl(* * *)】●
 ¤》
-  ►#?STRUCTURE_EXPECTED!【enum defunit {A, B, C} ●DefinitionEnum(* *)】● //TODO BUG here
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)     #@ATTRIBS_ST #@ATTRIB_BODY_ST 
 #STRUCTURE_EXPECTED:  
