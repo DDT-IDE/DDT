@@ -603,7 +603,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		ParseHelper parse = new ParseHelper();
 		
 		if(tryConsume(DeeTokens.KW_CASE)) {
-			Resolvable exp = parseExpression().node; /*BUG here in tests*/
+			Resolvable exp = parseExpression().node;
 			parse.consumeRequired(DeeTokens.SEMICOLON);
 			return parse.resultConclude(new StatementGotoCase(exp));
 		}
