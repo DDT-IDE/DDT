@@ -67,6 +67,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	}
 	
 	public static String toStringParametersForSignature(ArrayView<IFunctionParameter> params) {
+		/*BUG here NPE params*/
 		String strParams = "(";
 		for (int i = 0; i < params.size(); i++) {
 			if(i != 0)

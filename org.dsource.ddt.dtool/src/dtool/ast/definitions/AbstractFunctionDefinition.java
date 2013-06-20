@@ -51,9 +51,11 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		return CoreUtil.blindCast(fnParams);
 	}
 	
+	public static ArrayView<IFunctionParameter> NO_PARAMS = new ArrayView<>(new IFunctionParameter[0]);
+	
 	@Override
 	public ArrayView<IFunctionParameter> getParameters() {
-		return fnParams;
+		return fnParams == null ? NO_PARAMS : fnParams;
 	}
 	
 	public void toStringAsCode_fromDefId(ASTCodePrinter cp) {
@@ -73,6 +75,7 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	
 	@Override
 	public Iterator<IFunctionParameter> getMembersIterator(IModuleResolver moduleResolver) {
+		/*BUG here*/
 		return fnParams.iterator();
 	}
 	
