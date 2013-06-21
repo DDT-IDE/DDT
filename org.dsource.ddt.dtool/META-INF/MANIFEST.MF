@@ -8,8 +8,7 @@ Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional
-Bundle-ClassPath: .,
- libs/ini4j-0.3.2/ini4j-0.3.2.jar
+Bundle-ClassPath: .
 Export-Package: descent.core.ddoc,
  dtool,
  dtool.ast,
@@ -28,6 +27,4 @@ Export-Package: descent.core.ddoc,
  dtool.util,
  melnorme.utilbox.core,
  melnorme.utilbox.misc,
- melnorme.utilbox.tree,
- org.ini4j,
- org.ini4j.addon
+ melnorme.utilbox.tree

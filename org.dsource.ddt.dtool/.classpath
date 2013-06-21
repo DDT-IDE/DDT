@@ -5,6 +5,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-test"/>
 	<classpathentry kind="src" path="src-util"/>
-	<classpathentry exported="true" kind="lib" path="libs/ini4j-0.3.2/ini4j-0.3.2.jar" sourcepath="dtoolsrc.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

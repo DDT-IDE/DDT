@@ -18,7 +18,8 @@ Require-Bundle: org.dsource.ddt.dtool;bundle-version="[0.6.0,0.6.1)";visibility:
  org.eclipse.dltk.core;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.dltk.launching;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.debug.core;bundle-version="3.6.0"
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ libs/ini4j-0.3.2/ini4j-0.3.2.jar
 Export-Package: mmrnmhrm.core,
  mmrnmhrm.core.build,
  mmrnmhrm.core.codeassist,
