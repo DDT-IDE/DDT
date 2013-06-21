@@ -7,7 +7,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
@@ -51,7 +51,7 @@ public class DeclarationImport extends ASTNode implements INonScopedBlock, IDecl
 		visitor.endVisit(this);
 	}
 	
-	public static interface IImportFragment extends IASTNeoNode {
+	public static interface IImportFragment extends IASTNode {
 		
 		/** Performs a search in the secondary/background scope.
 		 * Only imports contribute to this secondary namespace. */

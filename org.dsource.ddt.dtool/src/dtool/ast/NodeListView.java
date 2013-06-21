@@ -9,7 +9,7 @@ import dtool.util.ArrayView;
  * Utility class for lists of nodes.
  * Has additional info saying if parsing encountered an endingseparator or not;
  */
-public class NodeListView<T extends IASTNeoNode> extends ArrayView<T> {
+public class NodeListView<T extends IASTNode> extends ArrayView<T> {
 	
 	public final boolean hasEndingSeparator;
 	

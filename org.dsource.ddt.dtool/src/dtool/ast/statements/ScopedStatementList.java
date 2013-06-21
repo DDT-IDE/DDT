@@ -7,7 +7,7 @@ import java.util.List;
 
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -33,7 +33,7 @@ public class ScopedStatementList extends CommonStatementList implements IScopeNo
 	}
 	
 	@Override
-	public Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
+	public Iterator<? extends IASTNode> getMembersIterator(IModuleResolver moduleResolver) {
 		return statements.iterator();
 	}
 	

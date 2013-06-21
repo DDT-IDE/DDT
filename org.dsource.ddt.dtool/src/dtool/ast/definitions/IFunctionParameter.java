@@ -3,12 +3,12 @@ package dtool.ast.definitions;
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.parser.DeeTokens;
 import dtool.parser.Token;
 import dtool.util.ArrayView;
 
-public interface IFunctionParameter extends IASTNeoNode {
+public interface IFunctionParameter extends IASTNode {
 	
 	public static enum FunctionParamAttribKinds {
 		AUTO(DeeTokens.KW_AUTO),

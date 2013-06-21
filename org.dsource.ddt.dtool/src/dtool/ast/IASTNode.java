@@ -12,12 +12,24 @@ package dtool.ast;
 
 import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.IVisitable;
-import descent.internal.compiler.parser.ast.IASTNode;
 
 /**
  * Interface for {@link ASTNode} objects. No other class can implement. 
  */
-public interface IASTNeoNode extends IASTNode, IElement, IVisitable<IASTVisitor> {
+public interface IASTNode extends IElement, IVisitable<IASTVisitor> {
+	
+	int getOffset();
+	int getLength();
+	
+	int getStartPos();
+	int getEndPos();
+	
+	boolean hasNoSourceRangeInfo();
+	
+	String toStringAsNode(boolean printRangeInfo);
+	
+	@Override
+	public IASTNode[] getChildren(); // Redefined to refine the type of children
 	
 	public ASTNode asNode();
 	

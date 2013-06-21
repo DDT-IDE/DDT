@@ -308,7 +308,7 @@ public class DeeLexer extends AbstractLexer {
 		String idValue = source.subSequence(tokenStartPos, pos).toString();
 		DeeTokens keywordToken = DeeLexerKeywordHelper.getKeywordToken(idValue);
 		if(keywordToken != null) {
-			if(keywordToken == DeeTokens.KW___EOF__) {
+			if(keywordToken == DeeTokens.EOF) {
 				return createEOFToken();
 			}
 			return createToken(keywordToken);

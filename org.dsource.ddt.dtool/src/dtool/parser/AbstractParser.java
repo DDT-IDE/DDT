@@ -19,7 +19,7 @@ import java.util.HashMap;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.ast.NodeListView;
 import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
@@ -442,7 +442,7 @@ public abstract class AbstractParser {
 	
 	// TODO: optimize some of this arrayView creation
 	
-	public static <T extends IASTNeoNode> ArrayView<T> arrayView(Collection<T> list) {
+	public static <T extends IASTNode> ArrayView<T> arrayView(Collection<T> list) {
 		if(list == null)
 			return null;
 		T[] array = ArrayUtil.createFrom(list, CoreUtil.<Class<T>>blindCast(ASTNode.class));
@@ -455,7 +455,7 @@ public abstract class AbstractParser {
 		return ArrayView.create((T[]) ArrayUtil.createFrom(list, Object.class));
 	}
 	
-	public static <T extends IASTNeoNode> NodeListView<T> nodeListView(ArrayList<T> list) {
+	public static <T extends IASTNode> NodeListView<T> nodeListView(ArrayList<T> list) {
 		if(list == null)
 			return null;
 		boolean hasEndingSeparator = false;
@@ -466,7 +466,7 @@ public abstract class AbstractParser {
 		return nodeListView(list, hasEndingSeparator);
 	}
 	
-	public static <T extends IASTNeoNode> NodeListView<T> nodeListView(ArrayList<T> list, boolean hasEndingSeparator) {
+	public static <T extends IASTNode> NodeListView<T> nodeListView(ArrayList<T> list, boolean hasEndingSeparator) {
 		T[] array = ArrayUtil.createFrom(list, CoreUtil.<Class<T>>blindCast(ASTNode.class));
 		return new NodeListView<>(array, hasEndingSeparator);
 	}

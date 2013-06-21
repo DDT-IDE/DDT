@@ -10,7 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.ArrayList;
@@ -29,8 +28,8 @@ import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
-import descent.internal.compiler.parser.TOK;
-import descent.internal.compiler.parser.ast.TokenUtil;
+import dtool.parser.DeeTokenHelper;
+import dtool.parser.DeeTokens;
 
 public class DeeCodeScanner extends AbstractScriptScanner {
 	
@@ -68,9 +67,9 @@ public class DeeCodeScanner extends AbstractScriptScanner {
 		
 		// Add word rule for keywords, types, and constants.
 		WordRule wordRule = new WordRule(new JavaWordDetector(), tkOther);
-		addWordsFromTokens(wordRule, TokenUtil.keywords, tkKeyword);
-		addWordsFromTokens(wordRule, TokenUtil.basicTypes, tkBasics);
-		addWordsFromTokens(wordRule, TokenUtil.specialNamedLiterals, tkLiterals);
+		addWordsFromTokens(wordRule, DeeTokenHelper.keyWords_control, tkKeyword);
+		addWordsFromTokens(wordRule, DeeTokenHelper.keyWords_nativeTypes, tkBasics);
+		addWordsFromTokens(wordRule, DeeTokenHelper.keyWords_literalValues, tkLiterals);
 		rules.add(wordRule);
 		
 		// These need special treament because of the '!' character
@@ -85,10 +84,9 @@ public class DeeCodeScanner extends AbstractScriptScanner {
 		return rules;
 	}
 	
-	protected void addWordsFromTokens(WordRule wordRule, TOK[] toks, IToken token) {
-		for (TOK tok : toks) {
-			assertNotNull(tok.value);
-			wordRule.addWord(tok.toString(), token);
+	protected void addWordsFromTokens(WordRule wordRule, List<DeeTokens> tokenTypes, IToken token) {
+		for (DeeTokens type : tokenTypes) {
+			wordRule.addWord(type.getSourceValue(), token);
 		}
 	}
 	

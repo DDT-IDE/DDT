@@ -8,7 +8,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
@@ -47,7 +47,7 @@ public class CatchClause extends ASTNode implements IScopeNode {
 	}
 	
 	@Override
-	public Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
+	public Iterator<? extends IASTNode> getMembersIterator(IModuleResolver moduleResolver) {
 		if(catchParam != null)
 			return IteratorUtil.singletonIterator(catchParam);
 		return IteratorUtil.getEMPTY_ITERATOR();

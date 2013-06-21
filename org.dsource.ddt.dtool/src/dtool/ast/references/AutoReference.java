@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
+import dtool.refmodel.DefUnitDescriptor;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**

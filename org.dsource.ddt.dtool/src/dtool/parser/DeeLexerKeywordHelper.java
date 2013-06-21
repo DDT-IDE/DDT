@@ -137,11 +137,12 @@ public class DeeLexerKeywordHelper {
 		
 		
 		storeKeyword(temp, DeeTokens.KW___DATE__);
-		storeKeyword(temp, DeeTokens.KW___EOF__);
 		storeKeyword(temp, DeeTokens.KW___TIME__);
 		storeKeyword(temp, DeeTokens.KW___TIMESTAMP__);
 		storeKeyword(temp, DeeTokens.KW___VENDOR__);
 		storeKeyword(temp, DeeTokens.KW___VERSION__);
+		
+		temp.put("__EOF__", DeeTokens.EOF); // Special keyword value that can generate an EOF
 		
 		keywordTable = temp;
 	}

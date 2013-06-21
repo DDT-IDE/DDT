@@ -10,8 +10,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import descent.internal.compiler.parser.ASTDmdNode;
-import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.IASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.Reference;
 
@@ -21,13 +20,11 @@ public class ASTViewerLabelProvider extends SimpleLabelProvider implements IColo
 	protected final Color cNoSourceRangeColor;
 	protected final Color cDefUnitColor;
 	protected final Color cEntityColor;
-	protected final Color cOldAstColor;
 	private ASTViewer viewer;
 	
 	public ASTViewerLabelProvider(ASTViewer viewer) {
 		this.viewer = viewer;
 		cNoSourceRangeColor = Display.getDefault().getSystemColor(SWT.COLOR_RED);
-		cOldAstColor = Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
 
 		cDefUnitColor = Display.getDefault().getSystemColor(SWT.COLOR_DARK_MAGENTA);
 		cEntityColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
@@ -52,8 +49,6 @@ public class ASTViewerLabelProvider extends SimpleLabelProvider implements IColo
 		IASTNode node = (IASTNode) element;
 		if(node.hasNoSourceRangeInfo())
 			return cNoSourceRangeColor;
-		if(node instanceof ASTDmdNode)
-			return cOldAstColor;
 		
 		//int offset = EditorUtil.getSelection(viewer.fEditor).getOffset();
 		//ASTNode selNode = ASTNodeFinder.findElement(viewer.fCUnit.getModule(), offset);

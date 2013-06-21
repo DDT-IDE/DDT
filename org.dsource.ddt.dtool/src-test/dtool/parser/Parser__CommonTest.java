@@ -2,30 +2,10 @@ package dtool.parser;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import descent.internal.compiler.parser.Module;
-import descent.internal.compiler.parser.Parser;
-import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
+import dtool.ast.ASTSourceRangeChecker;
 import dtool.tests.DToolBaseTest;
 
 public abstract class Parser__CommonTest extends DToolBaseTest {
-	
-	@Deprecated
-	public static void parseSource(String source, Boolean expectErrors, boolean checkSourceRanges,
-			String defaultModuleName) {
-		
-		Parser parser = new Parser(Parser.D2, source);
-		parser.setProblemReporter(null);
-		Module mod = parser.parseModuleObj();
-		assertTrue(mod.length == source.length());
-		
-		boolean hasErrors = parser.problems.size() > 0;
-		
-		if(expectErrors != null) {
-			assertTrue(hasErrors == expectErrors, "expectedErrors is not: " + expectErrors);
-		}
-		if(checkSourceRanges && !hasErrors) {
-		}
-	}
 	
 	public static DeeParserResult testParseSource(String source, Boolean expectErrors, boolean checkSourceRanges, 
 		String defaultModuleName) {

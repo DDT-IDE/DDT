@@ -6,13 +6,12 @@ import java.util.Iterator;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
+import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
-import dtool.ast.NodeList_OLD;
 import dtool.ast.declarations.AttribProtection.Protection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.statements.BlockStatementUnscoped;
@@ -71,9 +70,6 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 	public static Iterator<? extends ASTNode> getBodyIterator(ASTNode body) {
 		if(body == null) {
 			return IteratorUtil.getEMPTY_ITERATOR();
-		}
-		if(body instanceof NodeList_OLD) {
-			return ((NodeList_OLD<?>) body).nodes.iterator();
 		}
 		if(body instanceof NodeList<?>) {
 			return ((NodeList<?>) body).nodes.iterator();

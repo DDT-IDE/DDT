@@ -5,9 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import descent.core.ParserToolFactory;
-import descent.core.compiler.IScanner;
-import descent.core.compiler.ITerminalSymbols;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DdocMacros;
 import descent.core.ddoc.DdocParser;
@@ -15,6 +12,9 @@ import descent.core.ddoc.DdocSection;
 import descent.core.ddoc.DdocSection.Parameter;
 import descent.core.ddoc.HTMLPrinterUtils;
 import dtool.ast.definitions.DefUnit;
+import dtool.parser.DeeLexer;
+import dtool.parser.DeeTokenHelper;
+import dtool.parser.DeeTokens;
 import dtool.parser.Token;
 
 public class DeeDocAccessor {
@@ -152,228 +152,71 @@ public class DeeDocAccessor {
 		} catch (Exception e) {
 		}*/
 		
-		IScanner scanner = ParserToolFactory.createScanner(true, true, true, false);
-		scanner.setSource(text.toCharArray());
+		DeeLexer scanner = new DeeLexer(text);
 		
-		int token;
-		while((token = scanner.getNextToken()) != ITerminalSymbols.TokenNameEOF) {
-			String raw = scanner.getRawTokenSourceAsString();
+		Token token;
+		while((token = scanner.next()).type != DeeTokens.EOF) {
+			String raw = token.getSourceValue();
 			String styleClassName = null;
-			switch(token) {
-			case ITerminalSymbols.TokenNameabstract:
-			case ITerminalSymbols.TokenNamealias:
-			case ITerminalSymbols.TokenNamealign:
-			case ITerminalSymbols.TokenNameasm:
-			case ITerminalSymbols.TokenNameassert:
-			case ITerminalSymbols.TokenNameauto:
-			case ITerminalSymbols.TokenNamebody:
-			case ITerminalSymbols.TokenNamebreak:
-			case ITerminalSymbols.TokenNamecase:
-			case ITerminalSymbols.TokenNamecast:
-			case ITerminalSymbols.TokenNamecatch:
-			case ITerminalSymbols.TokenNameclass:
-			case ITerminalSymbols.TokenNameconst:
-			case ITerminalSymbols.TokenNamecontinue:
-			case ITerminalSymbols.TokenNamedebug:
-			case ITerminalSymbols.TokenNamedefault:
-			case ITerminalSymbols.TokenNamedelegate:
-			case ITerminalSymbols.TokenNamedelete:
-			case ITerminalSymbols.TokenNamedeprecated:
-			case ITerminalSymbols.TokenNamedo:
-			case ITerminalSymbols.TokenNameelse:
-			case ITerminalSymbols.TokenNameenum:
-			case ITerminalSymbols.TokenNameexport:
-			case ITerminalSymbols.TokenNameextern:
-			case ITerminalSymbols.TokenNamefinal:
-			case ITerminalSymbols.TokenNamefinally:
-			case ITerminalSymbols.TokenNamefor:
-			case ITerminalSymbols.TokenNameforeach:
-			case ITerminalSymbols.TokenNameforeach_reverse:
-			case ITerminalSymbols.TokenNamefunction:
-			case ITerminalSymbols.TokenNamegoto:
-			case ITerminalSymbols.TokenNameif:
-			case ITerminalSymbols.TokenNameiftype:
-			case ITerminalSymbols.TokenNameimport:
-			case ITerminalSymbols.TokenNamein:
-			case ITerminalSymbols.TokenNameinout:
-			case ITerminalSymbols.TokenNameinterface:
-			case ITerminalSymbols.TokenNameinvariant:
-			case ITerminalSymbols.TokenNameis:
-			case ITerminalSymbols.TokenNamelazy:
-			case ITerminalSymbols.TokenNamemacro:
-			case ITerminalSymbols.TokenNamemixin:
-			case ITerminalSymbols.TokenNamemodule:
-			case ITerminalSymbols.TokenNamenew:
-			case ITerminalSymbols.TokenNameout:
-			case ITerminalSymbols.TokenNameoverride:
-			case ITerminalSymbols.TokenNamepackage:
-			case ITerminalSymbols.TokenNamepragma:
-			case ITerminalSymbols.TokenNameprivate:
-			case ITerminalSymbols.TokenNameprotected:
-			case ITerminalSymbols.TokenNamepublic:
-			case ITerminalSymbols.TokenNameref:
-			case ITerminalSymbols.TokenNamescope:
-			case ITerminalSymbols.TokenNamestatic:
-			case ITerminalSymbols.TokenNamestruct:
-			case ITerminalSymbols.TokenNamesuper:
-			case ITerminalSymbols.TokenNameswitch:
-			case ITerminalSymbols.TokenNamesynchronized:
-			case ITerminalSymbols.TokenNametemplate:
-			case ITerminalSymbols.TokenNamethis:
-			case ITerminalSymbols.TokenNamethrow:
-			case ITerminalSymbols.TokenNametry:
-			case ITerminalSymbols.TokenNametypedef:
-			case ITerminalSymbols.TokenNametypeid:
-			case ITerminalSymbols.TokenNametypeof:
-			case ITerminalSymbols.TokenNameunion:
-			case ITerminalSymbols.TokenNameunittest:
-			case ITerminalSymbols.TokenNameversion:
-			case ITerminalSymbols.TokenNamevolatile:
-			case ITerminalSymbols.TokenNamewhile:
-			case ITerminalSymbols.TokenNamewith:
-				
-			case ITerminalSymbols.TokenNamebool:
-			case ITerminalSymbols.TokenNamebyte:
-			case ITerminalSymbols.TokenNamecdouble:
-			case ITerminalSymbols.TokenNamecent:
-			case ITerminalSymbols.TokenNamecfloat:
-			case ITerminalSymbols.TokenNamechar:
-			case ITerminalSymbols.TokenNamecreal:
-			case ITerminalSymbols.TokenNamedchar:
-			case ITerminalSymbols.TokenNamedouble:
-			case ITerminalSymbols.TokenNamefloat:
-			case ITerminalSymbols.TokenNameidouble:
-			case ITerminalSymbols.TokenNameifloat:
-			case ITerminalSymbols.TokenNameint:
-			case ITerminalSymbols.TokenNameireal:
-			case ITerminalSymbols.TokenNamelong:
-			case ITerminalSymbols.TokenNamereal:
-			case ITerminalSymbols.TokenNameshort:
-			case ITerminalSymbols.TokenNameubyte:
-			case ITerminalSymbols.TokenNameucent:
-			case ITerminalSymbols.TokenNameuint:
-			case ITerminalSymbols.TokenNameulong:
-			case ITerminalSymbols.TokenNameushort:
-			case ITerminalSymbols.TokenNamevoid:
-			case ITerminalSymbols.TokenNamewchar:
-				
-			case ITerminalSymbols.TokenName__traits:
-				styleClassName = IDeeDocColorConstants.JAVA_KEYWORD;
-				break;
-			case ITerminalSymbols.TokenNamereturn:
+			
+			switch(token.type) {
+			case KW_RETURN:
 				styleClassName = IDeeDocColorConstants.JAVA_KEYWORD_RETURN;
 				break;
-			case ITerminalSymbols.TokenNameAND:
-			case ITerminalSymbols.TokenNameAND_AND:
-			case ITerminalSymbols.TokenNameAND_EQUAL:
-			case ITerminalSymbols.TokenNameCOLON:
-			case ITerminalSymbols.TokenNameCOMMA:
-			case ITerminalSymbols.TokenNameDIVIDE:
-			case ITerminalSymbols.TokenNameDIVIDE_EQUAL:
-			case ITerminalSymbols.TokenNameDOLLAR:
-			case ITerminalSymbols.TokenNameDOT:
-			case ITerminalSymbols.TokenNameDOT_DOT:
-			case ITerminalSymbols.TokenNameDOT_DOT_DOT:
-			case ITerminalSymbols.TokenNameEQUAL:
-			case ITerminalSymbols.TokenNameEQUAL_EQUAL:
-			case ITerminalSymbols.TokenNameEQUAL_EQUAL_EQUAL:
-			case ITerminalSymbols.TokenNameGREATER:
-			case ITerminalSymbols.TokenNameGREATER_EQUAL:
-			case ITerminalSymbols.TokenNameLBRACE:
-			case ITerminalSymbols.TokenNameLBRACKET:
-			case ITerminalSymbols.TokenNameLEFT_SHIFT:
-			case ITerminalSymbols.TokenNameLEFT_SHIFT_EQUAL:
-			case ITerminalSymbols.TokenNameLESS:
-			case ITerminalSymbols.TokenNameLESS_EQUAL:
-			case ITerminalSymbols.TokenNameLESS_GREATER:
-			case ITerminalSymbols.TokenNameLESS_GREATER_EQUAL:
-			case ITerminalSymbols.TokenNameLPAREN:
-			case ITerminalSymbols.TokenNameMINUS:
-			case ITerminalSymbols.TokenNameMINUS_EQUAL:
-			case ITerminalSymbols.TokenNameMINUS_MINUS:
-			case ITerminalSymbols.TokenNameMULTIPLY:
-			case ITerminalSymbols.TokenNameMULTIPLY_EQUAL:
-			case ITerminalSymbols.TokenNameNOT:
-			case ITerminalSymbols.TokenNameNOT_EQUAL:
-			case ITerminalSymbols.TokenNameNOT_EQUAL_EQUAL:
-			case ITerminalSymbols.TokenNameNOT_GREATER:
-			case ITerminalSymbols.TokenNameNOT_GREATER_EQUAL:
-			case ITerminalSymbols.TokenNameNOT_LESS:
-			case ITerminalSymbols.TokenNameNOT_LESS_EQUAL:
-			case ITerminalSymbols.TokenNameNOT_LESS_GREATER:
-			case ITerminalSymbols.TokenNameNOT_LESS_GREATER_EQUAL:
-			case ITerminalSymbols.TokenNameOR:
-			case ITerminalSymbols.TokenNameOR_EQUAL:
-			case ITerminalSymbols.TokenNameOR_OR:
-			case ITerminalSymbols.TokenNamePLUS:
-			case ITerminalSymbols.TokenNamePLUS_EQUAL:
-			case ITerminalSymbols.TokenNamePLUS_PLUS:
-			case ITerminalSymbols.TokenNameQUESTION:
-			case ITerminalSymbols.TokenNameRBRACE:
-			case ITerminalSymbols.TokenNameRBRACKET:
-			case ITerminalSymbols.TokenNameREMAINDER:
-			case ITerminalSymbols.TokenNameREMAINDER_EQUAL:
-			case ITerminalSymbols.TokenNameRIGHT_SHIFT:
-			case ITerminalSymbols.TokenNameRIGHT_SHIFT_EQUAL:
-			case ITerminalSymbols.TokenNameRPAREN:
-			case ITerminalSymbols.TokenNameSEMICOLON:
-			case ITerminalSymbols.TokenNameTILDE:
-			case ITerminalSymbols.TokenNameTILDE_EQUAL:
-			case ITerminalSymbols.TokenNameUNSIGNED_RIGHT_SHIFT:
-			case ITerminalSymbols.TokenNameUNSIGNED_RIGHT_SHIFT_EQUAL:
-			case ITerminalSymbols.TokenNameXOR:
-			case ITerminalSymbols.TokenNameXOR_EQUAL:
-				styleClassName = IDeeDocColorConstants.JAVA_OPERATOR;				
-				break;
-			case ITerminalSymbols.TokenNamePRAGMA:
+			case SPECIAL_TOKEN_LINE:
 				styleClassName = IDeeDocColorConstants.JAVA_PRAGMA;
 				break;
-			case ITerminalSymbols.TokenNameCharacterLiteral:
-			case ITerminalSymbols.TokenNameStringLiteral:
-				styleClassName = IDeeDocColorConstants.JAVA_STRING;
-				break;
-			case ITerminalSymbols.TokenNameCOMMENT_BLOCK:
-				styleClassName = IDeeDocColorConstants.JAVA_MULTI_LINE_COMMENT;
-				break;
-			case ITerminalSymbols.TokenNameCOMMENT_DOC_BLOCK:
-				styleClassName = IDeeDocColorConstants.JAVADOC_DEFAULT;
-				break;
-			case ITerminalSymbols.TokenNameCOMMENT_DOC_LINE:
-				styleClassName = IDeeDocColorConstants.JAVA_SINGLE_LINE_DOC_COMMENT;
-				raw += "<br/>"; //$NON-NLS-1$
-				break;
-			case ITerminalSymbols.TokenNameCOMMENT_DOC_PLUS:
-				styleClassName = IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_DOC_COMMENT;
-				break;
-			case ITerminalSymbols.TokenNameCOMMENT_LINE:
+			case COMMENT_LINE:
 				styleClassName = IDeeDocColorConstants.JAVA_SINGLE_LINE_COMMENT;
 				raw += "<br/>"; //$NON-NLS-1$
 				break;
-			case ITerminalSymbols.TokenNameCOMMENT_PLUS:
+			case COMMENT_MULTI:
+				styleClassName = IDeeDocColorConstants.JAVA_MULTI_LINE_COMMENT;
+				break;
+			case COMMENT_NESTED:
 				styleClassName = IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_COMMENT;
 				break;
-			case ITerminalSymbols.TokenNameWHITESPACE:
+			case DOCCOMMENT_MULTI:
+				styleClassName = IDeeDocColorConstants.JAVADOC_DEFAULT;
+				break;
+			case DOCCOMMENT_LINE:
+				styleClassName = IDeeDocColorConstants.JAVA_SINGLE_LINE_DOC_COMMENT;
+				raw += "<br/>"; //$NON-NLS-1$
+				break;
+			case DOCCOMMENT_NESTED:
+				styleClassName = IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_DOC_COMMENT;
+				break;
+			case EOL:
+			case WHITESPACE:
 				styleClassName = null;
+				raw = raw.replace(" ", "&nbsp;");
+				raw = raw.replace("\n", "<br/>");
+				raw = raw.replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+				break;
 			default:
-				styleClassName = IDeeDocColorConstants.JAVA_DEFAULT;
-			}
-			if (styleClassName != null) {
-				buffer.append("<span class=\"" + styleClassName + "\">"); //$NON-NLS-1$ //$NON-NLS-2$
+				
+				DeeTokens tokenTypeGroup = token.type.getGroupingToken();
+				
+				if(DeeTokenHelper.isKeyword(token.type)) {
+					styleClassName = IDeeDocColorConstants.JAVA_KEYWORD;
+				} else {
+					if(tokenTypeGroup == DeeTokens.STRING || token.type.getGroupingToken() == DeeTokens.CHARACTER) {
+						styleClassName = IDeeDocColorConstants.JAVA_STRING;
+					}  else {
+						styleClassName = IDeeDocColorConstants.JAVA_DEFAULT;
+					}
+				}
 			}
 			
-			if (token == ITerminalSymbols.TokenNameWHITESPACE) {
-				raw = raw.replace(" ", "&nbsp;"); //$NON-NLS-1$ //$NON-NLS-2$
-				raw = raw.replace("\n", "<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
-				raw = raw.replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;"); //$NON-NLS-1$ //$NON-NLS-2$
+			if (styleClassName != null) {
+				buffer.append("<span class=\"" + styleClassName + "\">");
 			}
 			
 			buffer.append(raw);
 			if (styleClassName != null) {
-				buffer.append("</span>"); //$NON-NLS-1$
+				buffer.append("</span>");
 			}
 		}
 	}
-
-
-
+	
 }

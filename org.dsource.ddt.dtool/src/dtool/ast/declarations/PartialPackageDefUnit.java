@@ -4,7 +4,6 @@ import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
@@ -17,7 +16,7 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  * This partial DefUnit holds one DefUnit DefUnit and represents only 
  * part of it's complete namespace.
  */
-public abstract class PartialPackageDefUnit extends DefUnit implements IScopeNode {
+public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements IScopeNode {
 	
 	public PartialPackageDefUnit(String defName) {
 		super(defName); // These are synthetic defUnits so they have no sourceRange.

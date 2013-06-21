@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
+import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;

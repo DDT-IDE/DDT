@@ -7,11 +7,11 @@ Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: descent.compiler;bundle-version="0.6.1";visibility:=reexport,
- org.junit;bundle-version="4.11.0";resolution:=optional
+Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional
 Bundle-ClassPath: .,
  libs/ini4j-0.3.2/ini4j-0.3.2.jar
-Export-Package: dtool,
+Export-Package: descent.core.ddoc,
+ dtool,
  dtool.ast,
  dtool.ast.declarations,
  dtool.ast.definitions,
@@ -26,5 +26,8 @@ Export-Package: dtool,
  dtool.resolver,
  dtool.tests;x-friends:="org.dsource.ddt.ide.core,org.dsource.ddt.ide.ui",
  dtool.util,
+ melnorme.utilbox.core,
+ melnorme.utilbox.misc,
+ melnorme.utilbox.tree,
  org.ini4j,
  org.ini4j.addon

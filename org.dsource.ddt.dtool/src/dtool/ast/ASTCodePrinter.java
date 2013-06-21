@@ -47,13 +47,13 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void append(IASTNeoNode node) {
+	public void append(IASTNode node) {
 		if(node != null) {
 			node.asNode().toStringAsCode(this);
 		}
 	}
 	
-	public void append(IASTNeoNode node, String sep) {
+	public void append(IASTNode node, String sep) {
 		if(node != null) {
 			node.asNode().toStringAsCode(this);
 			assertNotNull(sep);
@@ -61,7 +61,7 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void append(String prefix, IASTNeoNode node) {
+	public void append(String prefix, IASTNode node) {
 		if(node != null) {
 			append(prefix);
 			node.asNode().toStringAsCode(this);
@@ -76,7 +76,7 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendNodeOrNullAlt(IASTNeoNode node, String nullAlt) {
+	public void appendNodeOrNullAlt(IASTNode node, String nullAlt) {
 		if(node != null) {
 			node.asNode().toStringAsCode(this);
 		} else {
@@ -96,14 +96,14 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendList(ArrayView<? extends IASTNeoNode> list, String sep) {
+	public void appendList(ArrayView<? extends IASTNode> list, String sep) {
 		appendList(list, sep, false);
 	}
 	
-	public void appendList(ArrayView<? extends IASTNeoNode> list, String sep, boolean printLastSep) {
+	public void appendList(ArrayView<? extends IASTNode> list, String sep, boolean printLastSep) {
 		if(list != null) {
 			for (int i = 0; i < list.size(); i++) {
-				IASTNeoNode node = list.get(i);
+				IASTNode node = list.get(i);
 				append(node.asNode());
 				if(printLastSep || i != list.size() - 1) {
 					sb.append(sep);
@@ -112,16 +112,16 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public boolean appendList(String open, ArrayView<? extends IASTNeoNode> args, String sep, String close) {
+	public boolean appendList(String open, ArrayView<? extends IASTNode> args, String sep, String close) {
 		return appendList(open, args, sep, close, null);
 	}
 	
-	public boolean appendList(String open, ArrayView<? extends IASTNeoNode> args, String sep, String close, 
+	public boolean appendList(String open, ArrayView<? extends IASTNode> args, String sep, String close, 
 		String spacingIfArgsNull) {
 		return appendList(open, args, sep, false, close, spacingIfArgsNull);
 	}
 	
-	public boolean appendList(String open, ArrayView<? extends IASTNeoNode> args, String sep, boolean hasEndingSep,
+	public boolean appendList(String open, ArrayView<? extends IASTNode> args, String sep, boolean hasEndingSep,
 		String close, String spacingIfArgsNull) {
 		if(args != null) {
 			append(open);
@@ -134,11 +134,11 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendNodeList(String open, NodeListView<? extends IASTNeoNode> args, String sep, String close) {
+	public void appendNodeList(String open, NodeListView<? extends IASTNode> args, String sep, String close) {
 		appendNodeList(open, args, sep, close, null);
 	}
 	
-	public void appendNodeList(String open, NodeListView<? extends IASTNeoNode> args, String sep, String close, 
+	public void appendNodeList(String open, NodeListView<? extends IASTNode> args, String sep, String close, 
 		String spacingIfArgsNull) {
 		boolean hasEndingSeparator = args == null ? false : args.hasEndingSeparator;
 		appendList(open, args, sep, hasEndingSeparator, close, spacingIfArgsNull);

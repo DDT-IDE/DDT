@@ -11,7 +11,7 @@ import org.eclipse.dltk.ui.ModelElementLabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 
-import descent.internal.compiler.parser.ast.IASTNode;
+import dtool.ast.IASTNode;
 
 public class DeeNavigatorLabelProvider extends ModelElementLabelProvider {
 
@@ -53,7 +53,7 @@ public class DeeNavigatorLabelProvider extends ModelElementLabelProvider {
 	@Override
 	public String getText(Object element) {
 		if(element instanceof IASTNode) {
-			return ((IElement) element).toString();
+			return ((IASTNode) element).toString();
 		} 
 		return super.getText(element);
 	}

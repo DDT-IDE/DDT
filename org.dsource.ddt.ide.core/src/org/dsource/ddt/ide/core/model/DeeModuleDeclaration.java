@@ -2,7 +2,7 @@ package org.dsource.ddt.ide.core.model;
 
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.ast.definitions.Module;
 
 public class DeeModuleDeclaration 
@@ -15,7 +15,7 @@ implements IModuleDeclaration {
 		this.module = module;
 	}
 	
-	public IASTNeoNode getModuleNode() {
+	public IASTNode getModuleNode() {
 		return module;
 	}
 	

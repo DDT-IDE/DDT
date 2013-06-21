@@ -9,7 +9,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
@@ -21,7 +21,7 @@ import dtool.util.ArrayView;
 
 public class ImportSelective extends ASTNode implements INonScopedBlock, IImportFragment {
 	
-	public static interface IImportSelectiveSelection extends IASTNeoNode {
+	public static interface IImportSelectiveSelection extends IASTNode {
 		//String getTargetName();
 	}
 	

@@ -3,7 +3,7 @@ package dtool.refmodel;
 import java.util.Iterator;
 import java.util.List;
 
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 /**
@@ -17,7 +17,7 @@ public interface IScope {
 
 	/** Gets all members of this scope, DefUnit or not. 
 	 * Used to iterate and find DefUnits .*/
-	Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver);
+	Iterator<? extends IASTNode> getMembersIterator(IModuleResolver moduleResolver);
 	
 	/** Returns the super (as in superclass) scopes of this scope.
 	 * Scopes should be ordered according to priority.

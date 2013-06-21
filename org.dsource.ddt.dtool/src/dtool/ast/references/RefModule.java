@@ -10,6 +10,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeUtil;
+import dtool.ast.declarations.SyntheticDefUnit;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
@@ -65,7 +66,7 @@ public class RefModule extends NamedReference {
 		return DefUnitSearch.wrapResult(targetMod);
 	}
 	
-	public static class LiteModuleDummy extends DefUnit {
+	public static class LiteModuleDummy extends SyntheticDefUnit {
 		
 		public LiteModuleDummy(String defname) {
 			super(defname);

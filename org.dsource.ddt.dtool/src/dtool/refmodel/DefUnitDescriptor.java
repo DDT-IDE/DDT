@@ -1,4 +1,4 @@
-package dtool.ast;
+package dtool.refmodel;
 
 /**
  * An info class to reference a DefUnit

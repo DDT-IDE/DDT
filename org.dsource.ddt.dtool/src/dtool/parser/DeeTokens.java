@@ -24,19 +24,17 @@ public enum DeeTokens {
 	WHITESPACE(null, true),
 	SCRIPT_LINE_INTRO(null, true),
 	
+	SPECIAL_TOKEN_LINE,
+	
 	COMMENT(null, true),
 	COMMENT_MULTI (COMMENT), 
 	COMMENT_NESTED(COMMENT), 
 	COMMENT_LINE  (COMMENT),
+	DOCCOMMENT_MULTI (COMMENT), // TODO 
+	DOCCOMMENT_NESTED(COMMENT), // TODO
+	DOCCOMMENT_LINE  (COMMENT), // TODO
 	
 	IDENTIFIER,
-	
-	OPEN_PARENS("("),
-	CLOSE_PARENS(")"),
-	OPEN_BRACE("{"),
-	CLOSE_BRACE("}"),
-	OPEN_BRACKET("["),
-	CLOSE_BRACKET("]"),
 	
 	STRING(), // Note: special keyword token also have this category
 	STRING_WYSIWYG(STRING),
@@ -57,10 +55,18 @@ public enum DeeTokens {
 	FLOAT_DECIMAL(FLOAT), 
 	FLOAT_HEX    (FLOAT),
 	
-	QUESTION("?"),
-	COMMA(","),
+	OPEN_PARENS("("),
+	CLOSE_PARENS(")"),
+	OPEN_BRACE("{"),
+	CLOSE_BRACE("}"),
+	OPEN_BRACKET("["),
+	CLOSE_BRACKET("]"),
 	SEMICOLON(";"),
 	COLON(":"),
+
+	
+	QUESTION("?"),
+	COMMA(","),
 	DOLLAR("$"),
 	AT("@"),
 	
@@ -68,17 +74,21 @@ public enum DeeTokens {
 	DOUBLE_DOT(".."), 
 	TRIPLE_DOT("..."),
 	
-	MINUS("-"), MINUS_ASSIGN("-="), DECREMENT("--"), 
-	PLUS("+"), PLUS_ASSIGN("+="), INCREMENT("++"),	
+	DECREMENT("--"), 
+	INCREMENT("++"),	
+	MINUS("-"), MINUS_ASSIGN("-="), 
+	PLUS("+"), PLUS_ASSIGN("+="), 
 	DIV("/"), DIV_ASSIGN("/="), 
 	STAR("*"), MULT_ASSIGN("*="), 
 	MOD("%"), MOD_ASSIGN("%="),
 	POW("^^"), POW_ASSIGN("^^="), 
 	
-	AND("&"), AND_ASSIGN("&="), LOGICAL_AND("&&"), 
-	OR("|"), OR_ASSIGN("|="), LOGICAL_OR("||"), 
+	AND("&"), AND_ASSIGN("&="), 
+	OR("|"), OR_ASSIGN("|="), 
 	XOR("^"), XOR_ASSIGN("^="),
 	CONCAT("~"), CONCAT_ASSIGN("~="),
+	LOGICAL_AND("&&"), 
+	LOGICAL_OR("||"), 
 	
 	LAMBDA("=>"),
 	
@@ -90,7 +100,8 @@ public enum DeeTokens {
 	UNORDERED_E("!<>"), UNORDERED("!<>="), 
 	UNORDERED_GE("!<"), UNORDERED_G("!<="), UNORDERED_LE("!>"), UNORDERED_L("!>="),
 	
-	LEFT_SHIFT("<<"), LEFT_SHIFT_ASSIGN("<<="), RIGHT_SHIFT(">>"), RIGHT_SHIFT_ASSIGN(">>="), 
+	LEFT_SHIFT("<<"), LEFT_SHIFT_ASSIGN("<<="), 
+	RIGHT_SHIFT(">>"), RIGHT_SHIFT_ASSIGN(">>="), 
 	TRIPLE_RSHIFT(">>>"), TRIPLE_RSHIFT_ASSIGN(">>>="),
 	
 	
@@ -185,7 +196,7 @@ public enum DeeTokens {
 	KW_THROW("throw"),
 	KW_TRUE("true"),
 	KW_TRY("try"),
-	KW_TYPEDEF("typedef"),
+	KW_TYPEDEF("typedef"), // This is deprecated, but we still have it as keyword
 	KW_TYPEID("typeid"),
 	KW_TYPEOF("typeof"),
 	KW_UNION("union"),
@@ -207,13 +218,10 @@ public enum DeeTokens {
 	KW___PRETTY_FUNCTION__("__PRETTY_FUNCTION__", STRING),
 	
 	KW___DATE__("__DATE__", STRING),
-	KW___EOF__("__EOF__"), // This token is actually never returned by the lexer, it gets transformed into EOF
 	KW___TIME__("__TIME__", STRING),
 	KW___TIMESTAMP__("__TIMESTAMP__", STRING),
 	KW___VENDOR__("__VENDOR__", STRING),
 	KW___VERSION__("__VERSION__", INTEGER),
-	
-	SPECIAL_TOKEN_LINE,
 	
 	;
 	

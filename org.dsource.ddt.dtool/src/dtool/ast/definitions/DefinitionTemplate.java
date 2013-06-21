@@ -9,7 +9,7 @@ import melnorme.utilbox.misc.ChainedIterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.IDeclaration;
@@ -109,14 +109,14 @@ public class DefinitionTemplate extends CommonDefinition implements IScopeNode, 
 	}
 	
 	@Override
-	public Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
+	public Iterator<? extends IASTNode> getMembersIterator(IModuleResolver moduleResolver) {
 		// BUG in accessing decls
 		// TODO: check if in a template invocation
 		// TODO: test this more, redo
 		if(wrapper) {
 			// Go straight to members of the inner decl
 			IScopeNode scope = ((DefUnit)decls.nodes.get(0)).getMembersScope(moduleResolver);
-			Iterator<? extends IASTNeoNode> tplIter = tplParams.iterator();
+			Iterator<? extends IASTNode> tplIter = tplParams.iterator();
 			return ChainedIterator.create(tplIter, scope.getMembersIterator(moduleResolver));
 		}
 		return ChainedIterator.create(tplParams.iterator(), decls.nodes.iterator());

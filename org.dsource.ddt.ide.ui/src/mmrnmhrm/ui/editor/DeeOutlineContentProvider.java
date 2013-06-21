@@ -7,8 +7,8 @@ import melnorme.utilbox.tree.IElement;
 
 import org.eclipse.jface.viewers.Viewer;
 
-import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNode;
+import dtool.ast.IASTNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;

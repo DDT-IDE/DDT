@@ -4,9 +4,8 @@ import java.util.Iterator;
 
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.IteratorUtil;
-import descent.internal.compiler.parser.ast.IASTNode;
 import dtool.ast.ASTNode;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportContent;
@@ -142,20 +141,19 @@ public class ReferenceResolver {
 	
 
 	private static void findDefUnitInImmediateScope(IScope scope, CommonDefUnitSearch search) {
-		Iterator<IASTNeoNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
+		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
 		
 		findDefUnits(search, iter, scope.hasSequentialLookup(), false, null);
 	}
 	
 	private static void findDefUnitInSecondaryScope(IScope scope, CommonDefUnitSearch search) {
-		Iterator<IASTNeoNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
+		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
 
 		IScope thisModule = scope.getModuleScope();
 		findDefUnits(search, iter, scope.hasSequentialLookup(), true, thisModule);
 	}
-
-
-	private static void findDefUnits(CommonDefUnitSearch search, Iterator<? extends IASTNeoNode> iter,
+	
+	private static void findDefUnits(CommonDefUnitSearch search, Iterator<? extends IASTNode> iter,
 			boolean isStatementScope, boolean importsOnly, IScope thisModule) {
 		
 		IScope refsModule = search.getReferenceModuleScope();

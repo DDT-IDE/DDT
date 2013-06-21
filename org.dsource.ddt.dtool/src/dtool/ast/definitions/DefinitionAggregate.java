@@ -5,7 +5,7 @@ import java.util.Iterator;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationEmpty;
@@ -22,7 +22,7 @@ import dtool.util.NewUtils;
  */
 public abstract class DefinitionAggregate extends CommonDefinition implements IScopeNode, IStatement {
 	
-	public interface IAggregateBody extends IASTNeoNode {
+	public interface IAggregateBody extends IASTNode {
 	}
 	
 	public final ArrayView<TemplateParameter> tplParams;

@@ -10,24 +10,30 @@
  *******************************************************************************/
 package dtool.ast;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
-import descent.internal.compiler.parser.ASTDmdNode;
 import dtool.ast.NodeData.ParsedNodeDataWithErrors;
 import dtool.ast.definitions.Module;
 import dtool.parser.ParserError;
 import dtool.refmodel.INamedScope;
 import dtool.util.ArrayView;
 
-public abstract class ASTNode implements IASTNeoNode {
+public abstract class ASTNode implements IASTNode {
 	
 	public static final ASTNode[] NO_ELEMENTS = new ASTNode[0]; 
 	
+	/** Source range start position */
 	protected int sourceStart = -1;
+	/** Source range end position */
 	protected int sourceEnd = -1;
+	
+	/** AST node parent, null if the node is the tree root. */
+	public ASTNode parent = null;
+	/** Custom field to store various kinds of data */
+	protected NodeData data = NodeData.CREATED_STATUS; 
+	
 	
 	public ASTNode() {
 	}
@@ -49,33 +55,6 @@ public abstract class ASTNode implements IASTNeoNode {
 		return sourceEnd;
 	}
 	
-	protected void setSourceStart(int start) {
-		this.sourceStart = start;
-	}
-	
-	protected void setSourceEnd(int end) {
-		this.sourceEnd = end;
-	}
-	
-	/** Sets the source positions, which must be valid. */
-	public final void setSourcePosition(int startPos, int endPos) {
-		assertTrue(startPos >= 0);
-		assertTrue(endPos >= startPos);
-		setSourceStart(startPos);
-		setSourceEnd(endPos);
-	}
-	
-	/** Checks if the node has source range info. */
-	public final boolean hasSourceRangeInfo() {
-		return this.sourceStart != -1;
-	}
-	
-	/** Checks if the node has no source range info. */
-	@Override
-	public final boolean hasNoSourceRangeInfo() {
-		return !hasSourceRangeInfo();
-	}
-	
 	/** Gets the source range start position, aka offset. */
 	@Override
 	public final int getOffset() {
@@ -95,28 +74,35 @@ public abstract class ASTNode implements IASTNeoNode {
 		return new SourceRange(getStartPos(), getLength());
 	}
 	
-	/** Sets the source range of this onde to given startPositon and given length */
+	/** Checks if the node has source range info. */
+	public final boolean hasSourceRangeInfo() {
+		return this.sourceStart != -1;
+	}
+	
+	/** Checks if the node has no source range info. */
+	@Override
+	public final boolean hasNoSourceRangeInfo() {
+		return !hasSourceRangeInfo();
+	}
+	
+	/** Sets the source positions, which must be valid. */
+	public final void setSourcePosition(int startPos, int endPos) {
+		assertTrue(!hasSourceRangeInfo()); // Can only be set once
+		assertTrue(startPos >= 0);
+		assertTrue(endPos >= startPos);
+		this.sourceStart = startPos;
+		this.sourceEnd = endPos;
+	}
+	
+	/** Sets the source range of the receiver to given startPositon and given length */
 	public final void setSourceRange(int startPosition, int length) {
-		setSourceStart(startPosition);
-		setSourceEnd(startPosition + length);
+		setSourcePosition(startPosition, startPosition + length);
 	}
 	
 	/** Sets the source range according to given sourceRange. */
 	public final void setSourceRange(SourceRange sourceRange) {
-		setSourceStart(sourceRange.getOffset());
-		setSourceEnd(sourceRange.getOffset() + sourceRange.getLength());
+		setSourcePosition(sourceRange.getOffset(), sourceRange.getOffset() + sourceRange.getLength());
 	}
-	
-	@Deprecated
-	public final void initSourceRange(SourceRange sourceRange) {
-		if(sourceRange != null) {
-			setSourceRange(sourceRange);
-		}
-	}
-	
-	
-	/** AST node parent, null if the node is the tree root. */
-	public ASTNode parent = null;
 	
 	@Override
 	public ASTNode getParent() {
@@ -136,8 +122,6 @@ public abstract class ASTNode implements IASTNeoNode {
 		this.parent.data = null; // Note, parent becomes an invalid node after this.
 		this.parent = null;
 	}
-	
-	protected NodeData data = NodeData.CREATED_STATUS; /* Custom field to store various kinds of data */
 	
 	public NodeData getData() {
 		return data;
@@ -185,14 +169,13 @@ public abstract class ASTNode implements IASTNeoNode {
 	
 	/* ------------------------------------------------------------ */
 	
+	public abstract ASTNodeTypes getNodeType();
+
 	@Override
 	public int getElementType() {
 		return getNodeType().ordinal(); 
 	}
 	
-	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.OTHER;
-	}
 	
 	@Override
 	public ASTNode[] getChildren() {
@@ -281,11 +264,9 @@ public abstract class ASTNode implements IASTNeoNode {
 	}
 	
 	/** @see #toStringAsCode() */
-	public void toStringAsCode(ASTCodePrinter cp) {
-		throw assertFail();
-	}
+	public abstract void toStringAsCode(ASTCodePrinter cp);
 	
-	/* =============== Parenting =============== */
+	/* =============== Parenting utils =============== */
 	
 	/** Set the parent of the given collection to the receiver. @return collection */
 	protected <T extends ArrayView<? extends ASTNode>> T parentize(T collection) {
@@ -307,18 +288,18 @@ public abstract class ASTNode implements IASTNeoNode {
 	}
 	
 	/** Set the parent of the given node to the receiver. @return node */
-	protected <T extends IASTNeoNode> T parentize(T node) {
+	protected <T extends IASTNode> T parentize(T node) {
 		if (node != null) {
 			node.setParent(this);
 		}
 		return node;
 	}
 	
-	protected <T extends IASTNeoNode> T parentizeI(T node) {
+	protected <T extends IASTNode> T parentizeI(T node) {
 		return parentize(node);
 	}
 	
-	protected <T extends IASTNeoNode> ArrayView<T> parentizeI(ArrayView<T> collection) {
+	protected <T extends IASTNode> ArrayView<T> parentizeI(ArrayView<T> collection) {
 		parentize(CoreUtil.<ArrayView<ASTNode>>blindCast(collection), false);
 		return collection;
 	}

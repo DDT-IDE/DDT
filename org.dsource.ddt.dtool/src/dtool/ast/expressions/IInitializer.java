@@ -1,7 +1,7 @@
 package dtool.ast.expressions;
 
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 
-public interface IInitializer extends IASTNeoNode {
+public interface IInitializer extends IASTNode {
 	
 }

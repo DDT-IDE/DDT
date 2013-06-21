@@ -8,6 +8,7 @@ import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTVisitor;
+import dtool.ast.declarations.SyntheticDefUnit;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.INamedScope;
 import dtool.refmodel.INativeDefUnit;
@@ -15,7 +16,7 @@ import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
-public abstract class NativeDefUnit extends DefUnit implements INativeDefUnit, IScopeNode {
+public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeDefUnit, IScopeNode {
 	
 	/** A module like class, contained all native defunits. */
 	public static class NativesScope implements IScope, INamedScope {

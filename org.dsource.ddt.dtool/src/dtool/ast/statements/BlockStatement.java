@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.pluginadapters.IModuleResolver;
@@ -29,7 +29,7 @@ public class BlockStatement extends CommonStatementList implements IScopeNode, I
 	}
 	
 	@Override
-	public Iterator<? extends IASTNeoNode> getMembersIterator(IModuleResolver moduleResolver) {
+	public Iterator<? extends IASTNode> getMembersIterator(IModuleResolver moduleResolver) {
 		return super.getMembersIterator();
 	}
 	

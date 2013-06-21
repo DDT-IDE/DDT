@@ -11,15 +11,16 @@
 package dtool.parser;
 
 import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.ArrayList;
 
-import dtool.ast.ASTCommonSourceRangeChecker.ASTSourceRangeChecker;
+import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.TemplateParameter;
@@ -78,8 +79,7 @@ public class DeeParsingChecks extends CommonTestUtils {
 			protected void handleSourceRangeStartPosBreach(ASTNode elem) {
 				String nodeStr = NodeUtil.getSubString(fullSource, elem.getSourceRange());
 				String parentStr = NodeUtil.getSubString(fullSource, elem.getParent().getSourceRange());
-				super.handleSourceRangeStartPosBreach(elem);
-				return;
+				assertFail();
 			}
 		};
 	}
@@ -135,12 +135,11 @@ public class DeeParsingChecks extends CommonTestUtils {
 		protected final ASTNode nodeUnderTest;
 		protected final String nodeSnippedSource;
 		
-		@SuppressWarnings("deprecation")
 		public DeeParsingNodeCheck(String source, ASTNode node) {
 			this.fullSource = assertNotNull_(source);
 			this.nodeUnderTest = assertNotNull_(node);
 			this.nodeSnippedSource = fullSource.substring(nodeUnderTest.getStartPos(), nodeUnderTest.getEndPos());
-			assertTrue(nodeUnderTest.getNodeType() != ASTNodeTypes.OTHER);
+			assertTrue(nodeUnderTest.getNodeType() != ASTNodeTypes.NULL);
 		}
 	}
 	
@@ -160,7 +159,7 @@ public class DeeParsingChecks extends CommonTestUtils {
 		
 		public static void paramReparseCheck(String nodeSource, boolean reparseAsFunctionParam) {
 			DeeParser unambigParser = new DeeParser(nodeSource);
-			IASTNeoNode unambigParsedParameter = reparseAsFunctionParam ? 
+			IASTNode unambigParsedParameter = reparseAsFunctionParam ? 
 				unambigParser.parseFunctionParameter() : unambigParser.parseTemplateParameter();
 				
 			Object ambigParsedParameterResult = parseAmbigParameter(nodeSource);

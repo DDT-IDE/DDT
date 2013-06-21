@@ -5,11 +5,11 @@ import java.util.Collection;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.DefUnitDescriptor;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
+import dtool.refmodel.DefUnitDescriptor;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class RefTypeof extends Reference implements IQualifierNode {

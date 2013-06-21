@@ -14,11 +14,11 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 
 import dtool.ast.ASTNode;
-import dtool.ast.DefUnitDescriptor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
+import dtool.refmodel.DefUnitDescriptor;
 
 public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 	

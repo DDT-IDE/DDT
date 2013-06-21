@@ -22,7 +22,6 @@
 	</properties>
 
 	<modules>
-		<module>../descent.compiler</module>
 		<module>org.dsource.ddt.dtool</module>
 		<module>org.dsource.ddt.ide.core</module>
 		<module>org.dsource.ddt.ide.core.tests</module>

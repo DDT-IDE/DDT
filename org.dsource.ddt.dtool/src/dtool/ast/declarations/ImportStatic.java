@@ -12,7 +12,7 @@ import dtool.refmodel.ReferenceResolver;
 import dtool.refmodel.pluginadapters.IModuleResolver;
 
 // TODO merge this with ImportContent
-public class ImportStatic extends ASTNode implements IImportFragment {
+public abstract class ImportStatic extends ASTNode implements IImportFragment {
 	
 	public final RefModule moduleRef;
 	

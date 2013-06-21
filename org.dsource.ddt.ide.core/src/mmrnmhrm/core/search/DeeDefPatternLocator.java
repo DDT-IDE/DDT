@@ -9,10 +9,10 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 
 import dtool.ast.ASTNode;
-import dtool.ast.DefUnitDescriptor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.Reference;
+import dtool.refmodel.DefUnitDescriptor;
 
 /// XXX: get rid of this class
 @Deprecated

@@ -1,10 +1,10 @@
 package dtool.ast.statements;
 
-import dtool.ast.IASTNeoNode;
+import dtool.ast.IASTNode;
 
 /** 
  * Marker for nodes that can be a function body.
  */
-public interface IFunctionBody extends IASTNeoNode {
+public interface IFunctionBody extends IASTNode {
 	
 }

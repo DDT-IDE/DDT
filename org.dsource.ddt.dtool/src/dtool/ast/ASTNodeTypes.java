@@ -2,8 +2,6 @@ package dtool.ast;
 
 
 public enum ASTNodeTypes {
-	@Deprecated
-	OTHER,
 	
 	/** Useful marker that represents a null object. Useful for using as a switch value. */
 	NULL,
