@@ -12,7 +12,7 @@ import org.eclipse.dltk.core.IModelElement;
 import dtool.DeeNamingRules;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
-import dtool.parser.ICompileError;
+import dtool.parser.ParserError;
 
 public class DeeSourceParser extends AbstractSourceParser {
 	
@@ -36,7 +36,7 @@ public class DeeSourceParser extends AbstractSourceParser {
 		DeeParserResult deeParserSession = DeeParser.parseSource(source, defaultModuleName);
 		
 		if(reporter != null) {
-			for (ICompileError parserError : deeParserSession.errors) {
+			for (ParserError parserError : deeParserSession.errors) {
 				reporter.reportProblem(new DefaultProblem(
 					parserError.getUserMessage(),
 					DefaultProblemIdentifier.decode(org.eclipse.dltk.compiler.problem.IProblem.Syntax),

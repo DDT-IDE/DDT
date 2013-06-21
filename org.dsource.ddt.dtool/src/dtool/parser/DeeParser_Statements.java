@@ -20,10 +20,12 @@ import dtool.ast.declarations.IncompleteDeclarator;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.AutoReference;
 import dtool.ast.references.RefTypePointer;
+import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.BlockStatementUnscoped;
@@ -443,6 +445,16 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 			
 			if(parse.consumeExpected(DeeTokens.SEMICOLON)) {
 				iterable = parseForeachIterableExpression();
+				if(iterable instanceof ExpReference) {
+					ExpReference expReference = (ExpReference) iterable;
+					if(expReference.ref instanceof RefTypeof) {
+						RefTypeof refTypeof = (RefTypeof) expReference.ref;
+						refTypeof.detachFromParent();
+						// This will remove the typeof error, since foreach allows tuples as the iterable part,
+						// and typeof can be used to create a type tuple.
+						iterable = createExpReference(refTypeof, false);
+					}
+				}
 			}
 			
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;

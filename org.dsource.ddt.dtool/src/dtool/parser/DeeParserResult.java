@@ -29,14 +29,14 @@ public class DeeParserResult {
 	public final ASTNode node;
 	public final boolean ruleBroken;
 	public final Module module;
-	public final List<? extends ICompileError> errors;
+	public final List<ParserError> errors;
 	
 	public DeeParserResult(NodeResult<? extends ASTNode> result, DeeParser parser) {
 		this(parser.getSource(), result.node, result.ruleBroken, initErrors(parser.lexerErrors, result.node));
 		parser.lexerErrors = null;
 	}
 	
-	protected DeeParserResult(String source, ASTNode node, boolean ruleBroken, List<? extends ICompileError> errors) {
+	protected DeeParserResult(String source, ASTNode node, boolean ruleBroken, List<ParserError> errors) {
 		this.source = source;
 		this.node = node;
 		this.ruleBroken = ruleBroken;
@@ -44,7 +44,7 @@ public class DeeParserResult {
 		this.errors = Collections.unmodifiableList(errors);
 	}
 	
-	public static List<? extends ICompileError> initErrors(ArrayList<ParserError> lexerErrors, ASTNode resultNode) {
+	public static List<ParserError> initErrors(ArrayList<ParserError> lexerErrors, ASTNode resultNode) {
 		return lexerErrors == null ? null : collectErrors(lexerErrors, resultNode);
 	}
 	

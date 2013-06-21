@@ -1,8 +1,4 @@
 # TODO remove these valid entries:
-
-
-/phobos/std/exception.d
-/phobos/std/parallelism.d
 /phobos/std/regex.d
 /phobos/std/typecons.d
 

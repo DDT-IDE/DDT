@@ -26,6 +26,8 @@
  ►#?STRUCTURE_EXPECTED!【#error(EXP_SEMICOLON) ● 】●
  ►#?STRUCTURE_EXPECTED!【; #@EXP_ANY ● #@EXP_ANY 】●
  ►#?STRUCTURE_EXPECTED!【; #@EXP_ANY__LITE #?MISSING_BRACKET{#:DISCARD_CASE} .. #@EXP_ANY●ForeachRangeExpression(#@EXP_ANY__LITE #@EXP_ANY)】●
+ 
+ ►#?STRUCTURE_EXPECTED!【; typeof(foo.tupleof) ● ExpReference(RefTypeof(*)) 】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    foreach ( foo #@ITERABLE ) #@ST__SAMPLE
