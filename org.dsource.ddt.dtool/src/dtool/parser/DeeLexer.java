@@ -343,14 +343,22 @@ public class DeeLexer extends AbstractLexer {
 		
 		if(lookAhead() == '*') {
 			pos++;
+			DeeTokens commentType = DeeTokens.COMMENT_MULTI;
+			if(lookAhead() == '*' && lookAhead(1) != '/')
+				commentType = DeeTokens.DOCCOMMENT_MULTI;
+			
 			int result = seekTo("*/");
 			if(result == 0) {
-				return createToken(DeeTokens.COMMENT_MULTI);
+				return createToken(commentType);
 			} else {
-				return createErrorToken(DeeTokens.COMMENT_MULTI, LexerErrorTypes.COMMENT_NOT_TERMINATED);
+				return createErrorToken(commentType, LexerErrorTypes.COMMENT_NOT_TERMINATED);
 			}
 		} else if(lookAhead() == '+') {
 			pos++;
+			DeeTokens commentType = DeeTokens.COMMENT_NESTED;
+			if(lookAhead() == '+' && lookAhead(1) != '/')
+				commentType = DeeTokens.DOCCOMMENT_NESTED;
+			
 			int nestingLevel = 1;
 			do {
 				int result = seekTo(SEEKUNTIL_MULTICOMMENTS);
@@ -361,16 +369,17 @@ public class DeeLexer extends AbstractLexer {
 					nestingLevel++;
 				} else {
 					assertTrue(result == -1);
-					return createErrorToken(DeeTokens.COMMENT_NESTED, LexerErrorTypes.COMMENTNESTED_NOT_TERMINATED);
+					return createErrorToken(commentType, LexerErrorTypes.COMMENTNESTED_NOT_TERMINATED);
 				}
 			} while (nestingLevel > 0);
 			
-			return createToken(DeeTokens.COMMENT_NESTED);
+			return createToken(commentType);
 			
 		} else if(lookAhead() == '/') {
 			pos++;
+			DeeTokens commentType = lookAhead() == '/' ? DeeTokens.DOCCOMMENT_LINE : DeeTokens.COMMENT_LINE; 
 			seekToNewlineOrEOFCharsRule(); // Note that EOF Chars are also a valid terminators for this rule
-			return createToken(DeeTokens.COMMENT_LINE);
+			return createToken(commentType);
 		} else if(lookAhead() == '=') {
 			pos++;
 			return createToken(DeeTokens.DIV_ASSIGN);

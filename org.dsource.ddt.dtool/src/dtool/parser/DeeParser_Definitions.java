@@ -165,13 +165,10 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				for (Token token : nextLexElement.precedingSubChannelTokens) {
 					if(token.type == DeeTokens.EOL)
 						break;
-					if(DeeTokenSemantics.tokenIsDocComment(token)) {
-						if(token.type == DeeTokens.COMMENT_LINE && token.getSourceValue().startsWith("///")) {
-							comments = lazyInitArrayList(comments);
-							comments.add(token);
-							thisParser().getEnabledLexSource().setSourcePosition(token.getEndPos());
-						}
-						break;
+					if(token.type == DeeTokens.DOCCOMMENT_LINE) {
+						comments = lazyInitArrayList(comments);
+						comments.add(token);
+						thisParser().getEnabledLexSource().setSourcePosition(token.getEndPos());
 					}
 				}
 			}
