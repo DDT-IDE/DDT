@@ -57,28 +57,31 @@ public class DeeTokenHelper {
 	public static enum TokensCategory { NATIVE_TYPE, CONTROL, LITERAL_VALUE, }
 	
 	public static TokensCategory getTokenTypeCategory(DeeTokens tokenType) {
-		// TODO: add other category types?
+		// BM: Add other categories for remaining tokens? They are not nedeed at the moment. 
+		// But nonetheless we list all DeeTokens in switch to make sure we dont miss any
+		
 		switch (tokenType) {
 		
+		case GROUP_COMMENT:
+		case GROUP_STRING:
+		case GROUP_INTEGER:
+		case GROUP_FLOAT:
+		case GROUP_ATTRIBUTE_KW:
+		case GROUP_PRIMITIVE_KW:
+		case GROUP_PROTECTION_KW:
+			return null; // Return null for artificial grouping tokens
+
 		case EOF:
 			return null;
 			
 		case INVALID_TOKEN:
 			return null;
-		case ATTRIBUTE_KW:
-		case PRIMITIVE_KW:
-		case PROTECTION_KW:
-			return null;
+			
 		
-		case SCRIPT_LINE_INTRO:
-			return null;
-		case SPECIAL_TOKEN_LINE:
-			return null;
-		case EOL:
+		case LINE_END:
 		case WHITESPACE:
 			return null;
 			
-		case COMMENT:
 		case COMMENT_MULTI: 
 		case COMMENT_NESTED: 
 		case COMMENT_LINE:
@@ -86,7 +89,15 @@ public class DeeTokenHelper {
 		case DOCCOMMENT_NESTED:
 		case DOCCOMMENT_LINE:
 			return null; // COMMENT
-
+		
+		case SCRIPT_LINE_INTRO:
+			return null;
+		case SPECIAL_TOKEN_LINE:
+			return null;
+			
+		case IDENTIFIER:
+			return null;
+		
 		case KW_BOOL:
 		case KW_VOID:
 		case KW_BYTE: 
@@ -217,10 +228,6 @@ public class DeeTokenHelper {
 			
 			return TokensCategory.LITERAL_VALUE;
 
-		case IDENTIFIER:
-			return null;
-			
-		case STRING:
 		case STRING_WYSIWYG:
 		case STRING_DQ: 
 		case STRING_HEX: 
@@ -231,14 +238,12 @@ public class DeeTokenHelper {
 		case CHARACTER:
 			return null;
 			
-		case INTEGER:
 		case INTEGER_DECIMAL: 
 		case INTEGER_BINARY: 
 		case INTEGER_OCTAL: 
 		case INTEGER_HEX:
 			return null;
 			
-		case FLOAT:
 		case FLOAT_DECIMAL: 
 		case FLOAT_HEX:
 			return null;

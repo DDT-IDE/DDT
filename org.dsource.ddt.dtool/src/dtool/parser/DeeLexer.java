@@ -269,7 +269,7 @@ public class DeeLexer extends AbstractLexer {
 		} else {
 			pos += 1;
 		}
-		return createToken(DeeTokens.EOL);
+		return createToken(DeeTokens.LINE_END);
 	}
 	
 	protected final Token matchWhiteSpace() {

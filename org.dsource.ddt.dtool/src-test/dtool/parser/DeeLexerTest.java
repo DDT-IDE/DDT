@@ -12,7 +12,7 @@ public class DeeLexerTest extends CommonTestUtils {
 	public void basicLexerTest() throws Exception { basicLexerTest$(); }
 	public void basicLexerTest$() throws Exception {
 		testLexerTokenizing("  \t", array(DeeTokens.WHITESPACE));
-		testLexerTokenizing("\n", array(DeeTokens.EOL));
+		testLexerTokenizing("\n", array(DeeTokens.LINE_END));
 		testLexerTokenizing("/*asd*/", array(DeeTokens.COMMENT_MULTI));
 		testLexerTokenizing("/+as/+ sadf  +/ d+/", array(DeeTokens.COMMENT_NESTED));
 		testLexerTokenizing("// asdfs", array(DeeTokens.COMMENT_LINE));

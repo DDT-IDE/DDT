@@ -16,7 +16,7 @@ public class Token implements ISourceRepresentation {
 		this.type = assertNotNull_(tokenType);
 		this.source = source;
 		this.startPos = startPos;
-		if(tokenType.getSourceValue() != null) {
+		if(tokenType.hasSourceValue()) {
 			assertEquals(tokenType.getSourceValue(), source);
 		}
 	}

@@ -134,23 +134,6 @@ public class DeeDocAccessor {
 	}
 	
 	private static void appendCode(StringBuffer buffer, String text) throws Exception {
-		// Don't format the code
-		
-		/*CodeFormatter formatter = ToolFactory.createCodeFormatter(null);
-		try {
-			// The most common example is something inside a function 
-			TextEdit edit = formatter.format(CodeFormatter.K_STATEMENTS, text, 0, text.length(), 0, "\n"); //$NON-NLS-1$
-			if (edit == null) {
-				// If not, try parsing a whole compilation unit
-				edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT, text, 0, text.length(), 0, "\n"); //$NON-NLS-1$
-			}
-			if (edit != null) {
-				Document doc = new Document(text);
-				edit.apply(doc);
-				text = doc.get();
-			}
-		} catch (Exception e) {
-		}*/
 		
 		DeeLexer scanner = new DeeLexer(text);
 		
@@ -186,7 +169,7 @@ public class DeeDocAccessor {
 			case DOCCOMMENT_NESTED:
 				styleClassName = IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_DOC_COMMENT;
 				break;
-			case EOL:
+			case LINE_END:
 			case WHITESPACE:
 				styleClassName = null;
 				raw = raw.replace(" ", "&nbsp;");
@@ -200,7 +183,7 @@ public class DeeDocAccessor {
 				if(DeeTokenHelper.isKeyword(token.type)) {
 					styleClassName = IDeeDocColorConstants.JAVA_KEYWORD;
 				} else {
-					if(tokenTypeGroup == DeeTokens.STRING || token.type.getGroupingToken() == DeeTokens.CHARACTER) {
+					if(tokenTypeGroup == DeeTokens.GROUP_STRING || token.type.getGroupingToken() == DeeTokens.CHARACTER) {
 						styleClassName = IDeeDocColorConstants.JAVA_STRING;
 					}  else {
 						styleClassName = IDeeDocColorConstants.JAVA_DEFAULT;

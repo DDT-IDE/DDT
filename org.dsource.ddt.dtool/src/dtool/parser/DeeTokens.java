@@ -10,6 +10,10 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+enum SubChannelTokenFlag { FLAG }
+
 /**
  * Tokens produced by the D Lexer.
  * Some of these tokens are synthetic - not actually produced by the Lexer - 
@@ -18,42 +22,44 @@ package dtool.parser;
 public enum DeeTokens {
 	
 	EOF,
-	INVALID_TOKEN(null, true),
 	
-	EOL(null, true),
-	WHITESPACE(null, true),
-	SCRIPT_LINE_INTRO(null, true),
+	INVALID_TOKEN(SubChannelTokenFlag.FLAG),
 	
-	SPECIAL_TOKEN_LINE,
+	LINE_END(SubChannelTokenFlag.FLAG),
+	WHITESPACE(SubChannelTokenFlag.FLAG),
 	
-	COMMENT(null, true),
-	COMMENT_MULTI (COMMENT), 
-	COMMENT_NESTED(COMMENT), 
-	COMMENT_LINE  (COMMENT),
-	DOCCOMMENT_MULTI (COMMENT), 
-	DOCCOMMENT_NESTED(COMMENT),
-	DOCCOMMENT_LINE  (COMMENT),
+	GROUP_COMMENT(SubChannelTokenFlag.FLAG),
+	COMMENT_MULTI    (GROUP_COMMENT), 
+	COMMENT_NESTED   (GROUP_COMMENT), 
+	COMMENT_LINE     (GROUP_COMMENT),
+	DOCCOMMENT_MULTI (GROUP_COMMENT), 
+	DOCCOMMENT_NESTED(GROUP_COMMENT),
+	DOCCOMMENT_LINE  (GROUP_COMMENT),
+	
+	SCRIPT_LINE_INTRO(SubChannelTokenFlag.FLAG),
+	SPECIAL_TOKEN_LINE(SubChannelTokenFlag.FLAG),
+	
 	
 	IDENTIFIER,
 	
-	STRING(), // Note: special keyword token also have this category
-	STRING_WYSIWYG(STRING),
-	STRING_DQ     (STRING), 
-	STRING_HEX    (STRING), 
-	STRING_DELIM  (STRING), 
-	STRING_TOKENS (STRING),
+	GROUP_STRING(), // Note: special keyword tokens also have this category
+	STRING_WYSIWYG(GROUP_STRING),
+	STRING_DQ     (GROUP_STRING), 
+	STRING_HEX    (GROUP_STRING), 
+	STRING_DELIM  (GROUP_STRING), 
+	STRING_TOKENS (GROUP_STRING),
 	
 	CHARACTER,
 	
-	INTEGER(), // Note: special keyword token also have this category
-	INTEGER_DECIMAL(INTEGER), 
-	INTEGER_BINARY (INTEGER), 
-	INTEGER_OCTAL  (INTEGER), 
-	INTEGER_HEX    (INTEGER),
+	GROUP_INTEGER(), // Note: special keyword tokens also have this category
+	INTEGER_DECIMAL(GROUP_INTEGER), 
+	INTEGER_BINARY (GROUP_INTEGER), 
+	INTEGER_OCTAL  (GROUP_INTEGER), 
+	INTEGER_HEX    (GROUP_INTEGER),
 	
-	FLOAT(),
-	FLOAT_DECIMAL(FLOAT), 
-	FLOAT_HEX    (FLOAT),
+	GROUP_FLOAT(),
+	FLOAT_DECIMAL(GROUP_FLOAT), 
+	FLOAT_HEX    (GROUP_FLOAT),
 	
 	OPEN_PARENS("("),
 	CLOSE_PARENS(")"),
@@ -63,7 +69,7 @@ public enum DeeTokens {
 	CLOSE_BRACKET("]"),
 	SEMICOLON(";"),
 	COLON(":"),
-
+	
 	
 	QUESTION("?"),
 	COMMA(","),
@@ -105,48 +111,57 @@ public enum DeeTokens {
 	TRIPLE_RSHIFT(">>>"), TRIPLE_RSHIFT_ASSIGN(">>>="),
 	
 	
-	PRIMITIVE_KW(),
-	KW_BOOL("bool",     PRIMITIVE_KW),
-	KW_VOID("void",     PRIMITIVE_KW),
-	KW_BYTE("byte",     PRIMITIVE_KW), KW_UBYTE("ubyte",     PRIMITIVE_KW),
-	KW_SHORT("short",   PRIMITIVE_KW), KW_USHORT("ushort",   PRIMITIVE_KW),
-	KW_INT("int",       PRIMITIVE_KW), KW_UINT("uint",       PRIMITIVE_KW), 
-	KW_LONG("long",     PRIMITIVE_KW), KW_ULONG("ulong",     PRIMITIVE_KW),
-	KW_CHAR("char",     PRIMITIVE_KW), KW_WCHAR("wchar",     PRIMITIVE_KW), KW_DCHAR("dchar", PRIMITIVE_KW),
-	KW_FLOAT("float",   PRIMITIVE_KW), KW_DOUBLE("double",   PRIMITIVE_KW), KW_REAL("real",   PRIMITIVE_KW),
-	KW_IFLOAT("ifloat", PRIMITIVE_KW), KW_IDOUBLE("idouble", PRIMITIVE_KW), KW_IREAL("ireal", PRIMITIVE_KW),  
-	KW_CFLOAT("cfloat", PRIMITIVE_KW), KW_CDOUBLE("cdouble", PRIMITIVE_KW), KW_CREAL("creal", PRIMITIVE_KW),
-	// These are keywords for an integer type, but are not implemented
-	KW_CENT("cent",     PRIMITIVE_KW), KW_UCENT("ucent",     PRIMITIVE_KW),  
+	GROUP_PRIMITIVE_KW(),
+	KW_BOOL("bool",     GROUP_PRIMITIVE_KW),
+	KW_VOID("void",     GROUP_PRIMITIVE_KW),
+	KW_BYTE("byte",     GROUP_PRIMITIVE_KW), KW_UBYTE("ubyte",     GROUP_PRIMITIVE_KW),
+	KW_SHORT("short",   GROUP_PRIMITIVE_KW), KW_USHORT("ushort",   GROUP_PRIMITIVE_KW),
+	KW_INT("int",       GROUP_PRIMITIVE_KW), KW_UINT("uint",       GROUP_PRIMITIVE_KW), 
+	KW_LONG("long",     GROUP_PRIMITIVE_KW), KW_ULONG("ulong",     GROUP_PRIMITIVE_KW),
+	KW_CENT("cent",     GROUP_PRIMITIVE_KW), KW_UCENT("ucent",     GROUP_PRIMITIVE_KW),  
 	
-	PROTECTION_KW(),
-	KW_PRIVATE("private",     PROTECTION_KW), 
-	KW_PACKAGE("package",     PROTECTION_KW), 
-	KW_PROTECTED("protected", PROTECTION_KW),
-	KW_PUBLIC("public",       PROTECTION_KW), 
-	KW_EXPORT("export",       PROTECTION_KW),
+	KW_CHAR("char",     GROUP_PRIMITIVE_KW), 
+	KW_WCHAR("wchar",   GROUP_PRIMITIVE_KW), 
+	KW_DCHAR("dchar",   GROUP_PRIMITIVE_KW),
 	
-	ATTRIBUTE_KW(),
-	KW_ABSTRACT("abstract",         ATTRIBUTE_KW),
+	KW_FLOAT("float",    GROUP_PRIMITIVE_KW), 
+	KW_DOUBLE("double",  GROUP_PRIMITIVE_KW), 
+	KW_REAL("real",      GROUP_PRIMITIVE_KW),
+	KW_IFLOAT("ifloat",  GROUP_PRIMITIVE_KW), 
+	KW_IDOUBLE("idouble",GROUP_PRIMITIVE_KW), 
+	KW_IREAL("ireal",    GROUP_PRIMITIVE_KW),  
+	KW_CFLOAT("cfloat",  GROUP_PRIMITIVE_KW), 
+	KW_CDOUBLE("cdouble",GROUP_PRIMITIVE_KW), 
+	KW_CREAL("creal",    GROUP_PRIMITIVE_KW),
 	
-	KW_CONST("const",               ATTRIBUTE_KW),
-	KW_IMMUTABLE("immutable",       ATTRIBUTE_KW),
-	KW_INOUT("inout",               ATTRIBUTE_KW), 
-	KW_SHARED("shared",             ATTRIBUTE_KW),
 	
-	KW_DEPRECATED("deprecated",     ATTRIBUTE_KW), 
-	KW_FINAL("final",               ATTRIBUTE_KW), 
-	KW_NOTHROW("nothrow",           ATTRIBUTE_KW), 
-	KW_OVERRIDE("override",         ATTRIBUTE_KW), 
-	KW_PURE("pure",                 ATTRIBUTE_KW), 
-	KW_SCOPE("scope",               ATTRIBUTE_KW), 
-	KW_STATIC("static",             ATTRIBUTE_KW), 
-	KW_SYNCHRONIZED("synchronized", ATTRIBUTE_KW),
+	GROUP_PROTECTION_KW(),
+	KW_PRIVATE("private",     GROUP_PROTECTION_KW), 
+	KW_PACKAGE("package",     GROUP_PROTECTION_KW), 
+	KW_PROTECTED("protected", GROUP_PROTECTION_KW),
+	KW_PUBLIC("public",       GROUP_PROTECTION_KW), 
+	KW_EXPORT("export",       GROUP_PROTECTION_KW),
 	
-	KW_REF("ref"                  , ATTRIBUTE_KW),
+	GROUP_ATTRIBUTE_KW(),
+	
+	KW_ABSTRACT("abstract",         GROUP_ATTRIBUTE_KW),
+	KW_DEPRECATED("deprecated",     GROUP_ATTRIBUTE_KW), 
+	KW_FINAL("final",               GROUP_ATTRIBUTE_KW), 
+	KW_NOTHROW("nothrow",           GROUP_ATTRIBUTE_KW), 
+	KW_OVERRIDE("override",         GROUP_ATTRIBUTE_KW), 
+	KW_PURE("pure",                 GROUP_ATTRIBUTE_KW), 
+	KW_SCOPE("scope",               GROUP_ATTRIBUTE_KW), 
+	KW_STATIC("static",             GROUP_ATTRIBUTE_KW), 
+	KW_SYNCHRONIZED("synchronized", GROUP_ATTRIBUTE_KW),
+	KW_REF("ref"                  , GROUP_ATTRIBUTE_KW),
+	
+	KW_CONST("const",               GROUP_ATTRIBUTE_KW),
+	KW_IMMUTABLE("immutable",       GROUP_ATTRIBUTE_KW),
+	KW_INOUT("inout",               GROUP_ATTRIBUTE_KW), 
+	KW_SHARED("shared",             GROUP_ATTRIBUTE_KW),
+	
 	
 	KW_AUTO("auto"),
-	
 	KW_ALIAS("alias"), 
 	KW_ALIGN("align"), 
 	KW_ASM("asm"), 
@@ -207,21 +222,22 @@ public enum DeeTokens {
 	KW_WITH("with"),
 	
 	KW___TRAITS("__traits"),
-	KW___GSHARED("__gshared", ATTRIBUTE_KW), 
-	KW___THREAD("__thread", ATTRIBUTE_KW),
+	KW___GSHARED("__gshared", GROUP_ATTRIBUTE_KW), 
+	KW___THREAD("__thread",  GROUP_ATTRIBUTE_KW),
 	KW___VECTOR("__vector"),
 	
-	KW___FILE__("__FILE__", STRING), 
-	KW___LINE__("__LINE__", INTEGER), 
-	KW___MODULE__("__MODULE__", STRING), 
-	KW___FUNCTION__("__FUNCTION__", STRING), 
-	KW___PRETTY_FUNCTION__("__PRETTY_FUNCTION__", STRING),
 	
-	KW___DATE__("__DATE__", STRING),
-	KW___TIME__("__TIME__", STRING),
-	KW___TIMESTAMP__("__TIMESTAMP__", STRING),
-	KW___VENDOR__("__VENDOR__", STRING),
-	KW___VERSION__("__VERSION__", INTEGER),
+	KW___FILE__("__FILE__", GROUP_STRING), 
+	KW___LINE__("__LINE__", GROUP_INTEGER), 
+	KW___MODULE__("__MODULE__", GROUP_STRING), 
+	KW___FUNCTION__("__FUNCTION__", GROUP_STRING), 
+	KW___PRETTY_FUNCTION__("__PRETTY_FUNCTION__", GROUP_STRING),
+	
+	KW___DATE__("__DATE__", GROUP_STRING),
+	KW___TIME__("__TIME__", GROUP_STRING),
+	KW___TIMESTAMP__("__TIMESTAMP__", GROUP_STRING),
+	KW___VENDOR__("__VENDOR__", GROUP_STRING),
+	KW___VERSION__("__VERSION__", GROUP_INTEGER),
 	
 	;
 	
@@ -232,11 +248,11 @@ public enum DeeTokens {
 	private DeeTokens(String sourceValue, boolean isSubChannel, DeeTokens groupToken) {
 		this.sourceValue = sourceValue;
 		this.isSubChannel = isSubChannel;
-		this.groupToken = groupToken;
+		this.groupToken = groupToken == null ? this : groupToken;
 	}
 	
-	private DeeTokens(String sourceValue, boolean isParserIgnored) {
-		this(sourceValue, isParserIgnored, null);
+	private DeeTokens(String sourceValue, boolean isSubChannel) {
+		this(sourceValue, isSubChannel, null);
 	}
 	
 	private DeeTokens(String sourceValue) {
@@ -251,16 +267,26 @@ public enum DeeTokens {
 		this(null, groupToken.isSubChannel, groupToken);
 	}
 	
+	private DeeTokens(@SuppressWarnings("unused") SubChannelTokenFlag subChannelMarker) {
+		this(null, true);
+	}
+	
+	
 	private DeeTokens(String sourceValue, DeeTokens groupToken) {
-		this(sourceValue, false, groupToken);
+		this(sourceValue, groupToken.isSubChannel, groupToken);
+	}
+	
+	public final boolean hasSourceValue() {
+		return sourceValue != null;
 	}
 	
 	public final String getSourceValue() {
+		assertNotNull(sourceValue);
 		return sourceValue;
 	}
 	
-	public DeeTokens getGroupingToken() {
-		return groupToken == null ? this : groupToken;
+	public final DeeTokens getGroupingToken() {
+		return groupToken;
 	}
 	
 }

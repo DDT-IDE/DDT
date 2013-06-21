@@ -82,4 +82,7 @@ DefinitionVariable(? DefSymbol MissingExpression)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)    new  ( #@EXP_ASSIGN__LITE #error(EXP_CLOSE_PARENS)  #@BREAK foo (456)
 #STRUCTURE_EXPECTED:  ExpNew( #@EXP_ASSIGN__LITE )
-  
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ pragma tokens →◙
+int #line 6 "foo\bar"
+x;  // this is now line 6 of file foo\bar

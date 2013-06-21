@@ -235,7 +235,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 					String rpl = mde.sourceValue;
 					if(rpl == null) {
 						DeeTokens expectedToken = (DeeTokens) error.msgData;
-						if(expectedToken.getSourceValue() == null) 
+						if(!expectedToken.hasSourceValue()) 
 							continue;
 						rpl = expectedToken.getSourceValue();
 					}

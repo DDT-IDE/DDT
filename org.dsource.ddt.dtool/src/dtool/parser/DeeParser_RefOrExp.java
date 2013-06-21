@@ -191,7 +191,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			switch (lookAhead().getGroupingToken()) {
 			case IDENTIFIER: 
 				return parseTypeReference_withLeftReference(parseRefIdentifier(), refRestrictions);
-			case PRIMITIVE_KW: 
+			case GROUP_PRIMITIVE_KW: 
 				return parseTypeReference_withLeftReference(parseRefPrimitive_start(lookAhead()), refRestrictions);
 			case DOT: 
 				refParseResult = parseRefModuleQualified(); break;
@@ -215,7 +215,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		} else {
 			switch (lookAhead.getGroupingToken()) {
 			case IDENTIFIER: 
-			case PRIMITIVE_KW: 
+			case GROUP_PRIMITIVE_KW: 
 			case DOT: 
 			case KW_TYPEOF: 
 				return true;
@@ -342,9 +342,9 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 					}
 				}
 				
-				if(lookAheadGrouped() == DeeTokens.PRIMITIVE_KW) {
+				if(lookAhead().getGroupingToken() == DeeTokens.GROUP_PRIMITIVE_KW) {
 					singleArg = parseRefPrimitive_start(lookAhead());	
-				} else if(lookAheadGrouped() == DeeTokens.IDENTIFIER) { 
+				} else if(lookAhead() == DeeTokens.IDENTIFIER) { 
 					singleArg = parseRefIdentifier();
 				} else {
 					singleArg = nullExpToParseMissing(parseSimpleLiteral(), RULE_TPL_SINGLE_ARG);
@@ -604,7 +604,7 @@ protected class ParseRule_Expression {
 			return simpleLiteral;
 		}
 		
-		switch (lookAheadGrouped()) {
+		switch (lookAhead()) {
 		case KW_ASSERT:
 			return expConclude(parseAssertExpression());
 		case KW_MIXIN:
@@ -670,7 +670,7 @@ protected class ParseRule_Expression {
 	
 	protected Expression parsePostfixExpression(Expression exp) {
 		
-		switch (lookAheadGrouped()) {
+		switch (lookAhead()) {
 		case DECREMENT:
 		case INCREMENT: {
 			exp = parsePostfixOpExpression_atOperator(exp);
@@ -1081,16 +1081,16 @@ protected class ParseRule_Expression {
 			consumeLookAhead();
 			return conclude(srOf(lastLexElement(), new ExpArrayLength()));
 			
-		case INTEGER:
+		case GROUP_INTEGER:
 			consumeLookAhead();
 			return conclude(srOf(lastLexElement(), new ExpLiteralInteger(lastLexElement().token)));
 		case CHARACTER: 
 			consumeLookAhead();
 			return conclude(srOf(lastLexElement(), new ExpLiteralChar(lastLexElement().token)));
-		case FLOAT:
+		case GROUP_FLOAT:
 			consumeLookAhead();
 			return conclude(srOf(lastLexElement(), new ExpLiteralFloat(lastLexElement().token)));
-		case STRING:
+		case GROUP_STRING:
 			return parseStringLiteral();
 		default:
 			return null;
@@ -1100,7 +1100,7 @@ protected class ParseRule_Expression {
 	public Expression parseStringLiteral() {
 		ArrayList<Token> stringTokens = new ArrayList<Token>();
 		
-		while(lookAheadGrouped() == DeeTokens.STRING) {
+		while(lookAheadGrouped() == DeeTokens.GROUP_STRING) {
 			Token string = consumeLookAhead().token;
 			stringTokens.add(string);
 		}

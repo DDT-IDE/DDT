@@ -163,7 +163,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 					break parsing;
 				
 				for (Token token : nextLexElement.precedingSubChannelTokens) {
-					if(token.type == DeeTokens.EOL)
+					if(token.type == DeeTokens.LINE_END)
 						break;
 					if(token.type == DeeTokens.DOCCOMMENT_LINE) {
 						comments = lazyInitArrayList(comments);
@@ -311,7 +311,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(canParseDefinitionEnum())
 				return parseDefinitionEnum_start(defStartInfo);
 			break;
-		case ATTRIBUTE_KW:
+		case GROUP_ATTRIBUTE_KW:
 			if(shouldParseAsAttributeVsStaticDeclarations()) {
 				break;
 			}
@@ -363,7 +363,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			break;
 		}
 		
-		if(lookAheadGrouped() == DeeTokens.ATTRIBUTE_KW && shouldParseAsAttributeVsTypeModifier()) {
+		if(lookAheadGrouped() == DeeTokens.GROUP_ATTRIBUTE_KW && shouldParseAsAttributeVsTypeModifier()) {
 			// parse current as attribute
 		} else {
 			NodeResult<? extends IDeclaration> 
@@ -424,7 +424,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			return parseAttribAlign();
 		case KW_PRAGMA: 
 			return parseAttribPragma();
-		case PROTECTION_KW: 
+		case GROUP_PROTECTION_KW: 
 			return parseAttribProtection();
 		case KW_EXTERN: 
 			if(lookAhead(1) == DeeTokens.OPEN_PARENS) {
@@ -439,7 +439,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(canParseDeclarationEnum() || canParseDefinitionEnum())
 				break;
 			return parseAttribBasic();
-		case ATTRIBUTE_KW:
+		case GROUP_ATTRIBUTE_KW:
 			if(!shouldParseAsAttributeVsTypeModifier())
 				break;
 			if(!shouldParseAsAttributeVsStaticDeclarations())

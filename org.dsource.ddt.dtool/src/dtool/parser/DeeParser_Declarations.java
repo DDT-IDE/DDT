@@ -289,7 +289,7 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 	}
 	
 	public NodeResult<AttribProtection> parseAttribProtection() {
-		if(lookAheadGrouped() != DeeTokens.PROTECTION_KW) {
+		if(lookAheadGrouped() != DeeTokens.GROUP_PROTECTION_KW) {
 			return null;
 		}
 		LexElement protElement = consumeLookAhead();
@@ -449,7 +449,7 @@ public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
 	}
 	
 	protected VersionSymbol parseConditionalValue(boolean isDebug, ParseHelper parse) {
-		if(lookAhead() == DeeTokens.IDENTIFIER || lookAheadGrouped() == DeeTokens.INTEGER) {
+		if(lookAhead() == DeeTokens.IDENTIFIER || lookAheadGrouped() == DeeTokens.GROUP_INTEGER) {
 			return createVersionSymbol(consumeLookAhead());
 		} else { 
 			parse.storeError(createErrorExpectedRule(isDebug ? RULE_DEBUG_ARG : RULE_VERSION_ARG));

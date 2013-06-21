@@ -27,7 +27,7 @@ public class ExpPrefix extends Expression {
 		
 		private PrefixOpType(DeeTokens token) {
 			this.token = token;
-			assertTrue(token.getSourceValue() != null);
+			assertTrue(token.hasSourceValue());
 		}
 		
 		private static final PrefixOpType[] mapping = initMapping(PrefixOpType.values());
@@ -44,6 +44,10 @@ public class ExpPrefix extends Expression {
 		
 		public static PrefixOpType tokenToPrefixOpType(DeeTokens token) {
 			return mapping[token.ordinal()];
+		}
+		
+		public String getSourceValue() {
+			return token.getSourceValue();
 		}
 		
 	}
@@ -72,7 +76,7 @@ public class ExpPrefix extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendStrings(kind.token.getSourceValue(), " ");
+		cp.appendStrings(kind.getSourceValue(), " ");
 		cp.append(exp);
 	}
 	

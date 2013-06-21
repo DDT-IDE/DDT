@@ -37,7 +37,7 @@ public class SourceEquivalenceChecker {
 		while(true) {
 			Token token = lexer.next();
 			DeeTokens type = token.type;
-			if((type.isSubChannel && (type.getGroupingToken() != DeeTokens.COMMENT || ignoreComments)) 
+			if((type.isSubChannel && (type.getGroupingToken() != DeeTokens.GROUP_COMMENT || ignoreComments)) 
 				|| (ArrayUtil.contains(additionalIgnores, type)))
 				continue;
 			return token;
