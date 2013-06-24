@@ -25,7 +25,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.swt.SWT;
 import org.junit.Test;
 
-public class LangAutoEditStragetyTest extends ScannerTestUtils {
+public class LangAutoEditStragetyTest extends Scanner_BaseTest {
 	
 	public static final String GENERIC_CODE = DeeUITests.readResource("common/samplecode.d");
 	public static final String NEUTRAL_SRCX = GENERIC_CODE;
@@ -42,7 +42,7 @@ public class LangAutoEditStragetyTest extends ScannerTestUtils {
 			autoEditStrategy = new LangAutoEditStrategy(prefStore, null) {
 				@Override
 				protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
-					return ScannerTestUtils.createBlockHeuristicScannerWithSamplePartitioning(doc);
+					return Scanner_BaseTest.createBlockHeuristicScannerWithSamplePartitioning(doc);
 				};
 			};
 		}

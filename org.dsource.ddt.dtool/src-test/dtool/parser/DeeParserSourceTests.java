@@ -38,7 +38,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.SourceRange;
-import dtool.parser.DeeParserTest.NamedNodeElement;
+import dtool.parser.DeeParserTester.NamedNodeElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
@@ -47,7 +47,7 @@ import dtool.tests.SimpleParser;
 import dtool.util.NewUtils;
 
 @RunWith(Parameterized.class)
-public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
+public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "parser";
 	
@@ -63,7 +63,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		return createTestFileParameters(TESTFILESDIR);
 	}
 	
-	public DeeParserSourceBasedTest(String testUIDescription, File file) {
+	public DeeParserSourceTests(String testUIDescription, File file) {
 		super(testUIDescription, file);
 	}
 	
@@ -161,7 +161,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			} else if(mde.name.equals("parser") && areEqual(mde.value, "AllowAnyErrors")){
 				allowAnyErrors = true;
 			} else if(mde.name.equals("test") && areEqual(mde.value, "IGNORE_BREAK_CHECK")){
-				expectedRemainingSource = DeeParserTest.DONT_CHECK;
+				expectedRemainingSource = DeeParserTester.DONT_CHECK;
 			} else if(areEqual(mde.value, "test")){
 				additionalMetadata.add(mde);
 			} else {
@@ -180,7 +180,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			expectedErrors = null;
 		}
 		
-		new DeeParserTest(fullSource, parseRule, expectedRemainingSource, expectedPrintedSource, expectedStructure, 
+		new DeeParserTester(fullSource, parseRule, expectedRemainingSource, expectedPrintedSource, expectedStructure, 
 			expectedErrors, additionalMetadata).runParserTest______________________();
 	}
 	
@@ -258,10 +258,10 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		case INVALID_TOKEN_CHARACTERS:
 			return new ParserError(ParserErrorTypes.INVALID_TOKEN_CHARACTERS, errorRange, mde.sourceValue, null);
 		case MALFORMED_TOKEN:
-			errorParam = DeeLexerSourceBasedTest.parseExpectedError(errorParam).toString();
+			errorParam = DeeLexerSourceTests.parseExpectedError(errorParam).toString();
 			return createErrorToken(ParserErrorTypes.MALFORMED_TOKEN, mde, lexSource, true, errorParam);
 		case EXPECTED_TOKEN:
-			String expectedTokenStr = DeeLexerSourceBasedTest.transformTokenNameAliases(errorParam);
+			String expectedTokenStr = DeeLexerSourceTests.transformTokenNameAliases(errorParam);
 			DeeTokens expectedToken = DeeTokens.valueOf(expectedTokenStr);
 			return createErrorToken(ParserErrorTypes.EXPECTED_TOKEN, mde, lexSource, true, expectedToken);
 		case EXPECTED_RULE:
@@ -272,7 +272,7 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 			boolean tokenBefore = errorTypeStr.equals("<SE");
 			return createErrorToken(ParserErrorTypes.SYNTAX_ERROR, mde, lexSource, tokenBefore, errorParam);
 		case EXP_MUST_HAVE_PARENTHESES: 
-			errorParam = errorParam == null ? DeeParserTest.DONT_CHECK : errorParam;
+			errorParam = errorParam == null ? DeeParserTester.DONT_CHECK : errorParam;
 			errorSource = assertNotNull_(mde.sourceValue);
 			return new ParserError(errorType, errorRange, errorSource, errorParam);
 		case TYPE_USED_AS_EXP_VALUE:

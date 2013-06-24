@@ -18,14 +18,14 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import dtool.tests.CommonTestUtils;
+import dtool.tests.CommonTest;
 
 /** 
  * Base core test class that adds an exception listener to the platform log. 
  * The ErrorLogListener was the only way I found to detect UI exceptions in SafeRunnable's 
  * when running as plugin test. 
  */
-public abstract class BaseDeeCoreTest extends CommonTestUtils {
+public abstract class BaseDeeCoreTest extends CommonTest {
 	
 	protected static ErrorLogListener logErrorListener;
 	

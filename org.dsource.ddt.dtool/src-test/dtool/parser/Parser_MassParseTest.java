@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.tests.DToolBaseTest;
+import dtool.tests.CommonTestUtils;
 import dtool.tests.DToolTestResources;
 import dtool.tests.DToolTests;
 import dtool.tests.MiscDeeTestUtils;
@@ -69,7 +69,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 		super(testDescription, testRunnable);
 	}
 	
-	public static class MassParseTestRunnable extends DToolBaseTest implements Runnable {
+	public static class MassParseTestRunnable extends CommonTestUtils implements Runnable {
 		
 		public final File unpackedFolder;
 		public final File zipFile;

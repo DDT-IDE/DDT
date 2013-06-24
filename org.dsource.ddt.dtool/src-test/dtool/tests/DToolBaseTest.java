@@ -34,7 +34,7 @@ import dtool.DeeNamingRules_Test;
 import dtool.util.NewUtils;
 
 
-public class DToolBaseTest extends CommonTestUtils {
+public class DToolBaseTest extends CommonTest {
 	
 	public static PrintStream testsLogger = System.out;
 	

@@ -54,7 +54,7 @@ import dtool.tests.DToolTests;
 import dtool.util.NewUtils;
 
 
-public class DeeParserTest extends CommonTestUtils {
+public class DeeParserTester extends CommonTestUtils {
 	
 	public static final String DONT_CHECK = "#DONTCHECK";
 	
@@ -68,7 +68,7 @@ public class DeeParserTest extends CommonTestUtils {
 	protected HashMap<String, Object> additionalMD;
 
 	
-	public DeeParserTest(String fullSource, String parseRule, String expectedRemainingSource, 
+	public DeeParserTester(String fullSource, String parseRule, String expectedRemainingSource, 
 		String expectedPrintedSource, NamedNodeElement[] expectedStructure, ArrayList<ParserError> expectedErrors,
 		List<MetadataEntry> additionalMetadata) {
 		this.fullSource = fullSource;
@@ -165,7 +165,7 @@ public class DeeParserTest extends CommonTestUtils {
 	public String checkParsedSource(final String expectedRemainingSource, final DeeTestsChecksParser deeParser) {
 		String parsedSource = fullSource;
 		String remainingSource = fullSource.substring(deeParser.getSourcePosition());
-		if(expectedRemainingSource == DeeParserTest.DONT_CHECK) {
+		if(expectedRemainingSource == DeeParserTester.DONT_CHECK) {
 			parsedSource = fullSource.substring(0, deeParser.getSourcePosition());
 		} else if(expectedRemainingSource == null) {
 			assertTrue(deeParser.lookAhead() == DeeTokens.EOF);

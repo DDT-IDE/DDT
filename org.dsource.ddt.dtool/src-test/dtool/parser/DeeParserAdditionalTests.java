@@ -15,10 +15,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import org.junit.Test;
 
 import dtool.parser.AbstractParser.ParseHelper;
-import dtool.tests.CommonTestUtils;
+import dtool.tests.DToolBaseTest;
 
 
-public class DeeParserAdditionalTests extends CommonTestUtils {
+public class DeeParserAdditionalTests extends DToolBaseTest {
 	
 	@Test
 	public void testArgList() throws Exception { testArgList$(); }

@@ -20,7 +20,7 @@ public class BlockHeuristicsScannner_PartitionsTest extends BlockHeuristicsScann
 	
 	@Override
 	public BlockHeuristicsScannner setupScanner() {
-		return ScannerTestUtils.createBlockHeuristicScannerWithSamplePartitioning(getDocument());
+		return Scanner_BaseTest.createBlockHeuristicScannerWithSamplePartitioning(getDocument());
 	}
 	
 	@Test
@@ -81,7 +81,7 @@ public class BlockHeuristicsScannner_PartitionsTest extends BlockHeuristicsScann
 	public void testScanToBlockWithPartitions() throws Exception { testScanToBlockWithPartitions$(); }
 	public void testScanToBlockWithPartitions$() throws Exception {
 		document = createDocument();
-		ScannerTestUtils.setupSamplePartitioner(document);
+		Scanner_BaseTest.setupSamplePartitioner(document);
 		
 		
 		testScanToBlockStart("{{", "{blah/*{*/", "}", 0);

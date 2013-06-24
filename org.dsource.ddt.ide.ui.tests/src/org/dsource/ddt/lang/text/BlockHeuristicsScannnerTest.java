@@ -19,7 +19,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.junit.Test;
 
 
-public class BlockHeuristicsScannnerTest extends ScannerTestUtils implements ILangHeuristicSymbols {
+public class BlockHeuristicsScannnerTest extends Scanner_BaseTest implements ILangHeuristicSymbols {
 	
 	public static BlockTokenRule[] SAMPLE_BLOCK_TOKENS = new BlockTokenRule[] {
 		new BlockTokenRule('{', '}'),

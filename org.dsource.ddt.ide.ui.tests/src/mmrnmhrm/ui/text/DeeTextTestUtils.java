@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
-import org.dsource.ddt.lang.text.ScannerTestUtils;
+import org.dsource.ddt.lang.text.Scanner_BaseTest;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.rules.FastPartitioner;
 
@@ -21,6 +21,6 @@ public class DeeTextTestUtils {
 	public static FastPartitioner installDeePartitioner(Document document) {
 		DeePartitionScanner partitionScanner = new DeePartitionScanner();
 		String partitioning = DeePartitions.DEE_PARTITIONING;
-		return ScannerTestUtils.installPartitioner(document, partitioning, partitionScanner, LEGAL_CONTENT_TYPES);
+		return Scanner_BaseTest.installPartitioner(document, partitioning, partitionScanner, LEGAL_CONTENT_TYPES);
 	}
 }

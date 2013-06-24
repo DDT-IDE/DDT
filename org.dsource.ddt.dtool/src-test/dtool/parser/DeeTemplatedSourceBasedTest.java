@@ -48,7 +48,7 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 		List<File> commonDefsFileList = getDeeModuleList(testFolder);
 		commonDefsFileList = filter(commonDefsFileList, new TemplatedTestFilesFilter(){{filterHeaders = false;}});
 		
-		String klassSimpleName = DeeParserSourceBasedTest.class.getSimpleName();
+		String klassSimpleName = DeeParserSourceTests.class.getSimpleName();
 		testsLogger.println(">>>>>>============ " + klassSimpleName + " COMMON DEFINITIONS FILES: ============" );
 		for (File headerFile : commonDefsFileList) {
 			testsLogger.println(headerFile);

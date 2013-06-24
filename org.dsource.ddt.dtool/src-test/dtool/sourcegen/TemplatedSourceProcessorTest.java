@@ -18,9 +18,9 @@ import org.junit.Test;
 
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplateSourceProcessorParser.TemplatedSourceException;
-import dtool.tests.CommonTestUtils;
+import dtool.tests.CommonTest;
 
-public class TemplatedSourceProcessorTest extends CommonTestUtils {
+public class TemplatedSourceProcessorTest extends CommonTest {
 	
 	public static final class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
 		@Override

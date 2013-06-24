@@ -19,10 +19,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
-import dtool.tests.CommonTestUtils;
+import dtool.tests.CommonTest;
 
 
-public class ScannerTestUtils extends CommonTestUtils {
+public abstract class Scanner_BaseTest extends CommonTest {
 	
 	protected static final String NL = "\r\n";
 	protected static final String TAB = "\t";

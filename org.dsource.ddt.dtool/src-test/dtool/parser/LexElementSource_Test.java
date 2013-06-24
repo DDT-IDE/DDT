@@ -5,9 +5,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import org.junit.Test;
 
 import dtool.ast.SourceRange;
-import dtool.tests.CommonTestUtils;
+import dtool.tests.DToolBaseTest;
 
-public class LexElementSource_Test extends CommonTestUtils {
+public class LexElementSource_Test extends DToolBaseTest {
 	
 	protected final class TestsInstrumentedLexer extends AbstractLexer {
 		private TestsInstrumentedLexer(String source) {

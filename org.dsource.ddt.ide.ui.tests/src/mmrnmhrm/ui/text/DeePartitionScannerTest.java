@@ -22,10 +22,10 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 import org.junit.Test;
 
 import dtool.DToolBundle;
-import dtool.tests.CommonTestUtils;
+import dtool.tests.CommonTest;
 
 // BM: a lot more could done in terms of test, this is just basic example
-public class DeePartitionScannerTest extends CommonTestUtils implements DeePartitions {
+public class DeePartitionScannerTest extends CommonTest implements DeePartitions {
 	
 	private static final String NL = "\n";
 	private Document document;

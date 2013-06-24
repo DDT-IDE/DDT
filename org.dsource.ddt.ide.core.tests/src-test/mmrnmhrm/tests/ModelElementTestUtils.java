@@ -1,5 +1,6 @@
 package mmrnmhrm.tests;
 
+import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
@@ -9,9 +10,7 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.tests.CommonTestUtils;
-
-public class ModelElementTestUtils extends CommonTestUtils {
+public class ModelElementTestUtils {
 	
 	public static ArrayList<IMember> getChildren(IParent element, String childName) throws ModelException {
 		assertCast(null, IMember.class);
