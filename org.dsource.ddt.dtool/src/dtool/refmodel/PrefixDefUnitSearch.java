@@ -105,7 +105,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		
 		ASTNode node = ASTNodeFinder.findElement(neoModule, offset);
 		assertNotNull(node);
-		session.invokeNode = node;
+		
 		PrefixSearchOptions searchOptions = new PrefixSearchOptions();
 		IScopeNode refScope = ScopeUtil.getScopeNode(node);
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(searchOptions, refScope, offset, defUnitAccepter,
@@ -186,7 +186,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 				
 				if(offset == node.getStartPos() || offset == node.getEndPos()) {
 					node = node.getParent();
-					session.invokeNode = node;
 				} else {
 					CompletionSession.assignResult(session, ECompletionSessionResults.INVALID_LOCATION_INSCOPE, 
 							"Invalid location in scope");

@@ -44,11 +44,12 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 		return getDeeModuleList(getTestResource(testFolder), true);
 	}
 	
-	public static void addCommonDefinitions(String testFolder, Map<String, TspExpansionElement> commonDefs) {
+	public static void addCommonDefinitions(Class<?> klass, String testFolder,
+		Map<String, TspExpansionElement> commonDefs) {
 		List<File> commonDefsFileList = getDeeModuleList(testFolder);
 		commonDefsFileList = filter(commonDefsFileList, new TemplatedTestFilesFilter(){{filterHeaders = false;}});
 		
-		String klassSimpleName = DeeParserSourceTests.class.getSimpleName();
+		String klassSimpleName = klass.getSimpleName();
 		testsLogger.println(">>>>>>============ " + klassSimpleName + " COMMON DEFINITIONS FILES: ============" );
 		for (File headerFile : commonDefsFileList) {
 			testsLogger.println(headerFile);
@@ -84,7 +85,8 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 		public boolean evaluate(File file) {
 			if(file.getName().endsWith("_TODO")) return true;
 			if(file.getParentFile().getName().equals("0_common")) return filterHeaders;
-			if(file.getName().contains(".export.") || file.getName().contains(".EXPORT.")) return filterHeaders;
+			if(file.getParentFile().getName().equals("0_common")) return filterHeaders;
+			if(file.getName().contains(".export") || file.getName().contains(".EXPORT")) return filterHeaders;
 			if(file.getName().endsWith(".tsp")) return !filterHeaders;
 			throw assertFail();
 		}

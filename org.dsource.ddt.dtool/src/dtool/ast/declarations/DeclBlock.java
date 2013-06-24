@@ -5,9 +5,10 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.NodeList;
 import dtool.ast.definitions.DefinitionAggregate.IAggregateBody;
+import dtool.refmodel.IScopeNode;
 import dtool.util.ArrayView;
 
-public class DeclBlock extends NodeList<ASTNode> implements IAggregateBody {
+public class DeclBlock extends NodeList<ASTNode> implements IAggregateBody, IScopeNode {
 	
 	public DeclBlock(ArrayView<ASTNode> nodes) {
 		super(nodes);

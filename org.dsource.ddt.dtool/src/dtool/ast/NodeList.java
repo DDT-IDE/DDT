@@ -3,12 +3,16 @@ package dtool.ast;
 import static dtool.util.NewUtils.assertNotNull_;
 
 import java.util.Iterator;
+import java.util.List;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
+import dtool.refmodel.IScope;
+import dtool.refmodel.IScopeNode;
+import dtool.refmodel.pluginadapters.IModuleResolver;
 import dtool.util.ArrayView;
 
-public abstract class NodeList<E extends ASTNode> extends ASTNode {
+public abstract class NodeList<E extends ASTNode> extends ASTNode implements IScopeNode {
 	
 	public final ArrayView<E> nodes;
 	
@@ -30,7 +34,22 @@ public abstract class NodeList<E extends ASTNode> extends ASTNode {
 		cp.appendList(nodes, "\n", true);
 	}
 	
-	public static Iterator<? extends ASTNode> getMembersIterator(NodeList<? extends ASTNode> body) {
+	@Override
+	public Iterator<? extends ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
+		return nodes.iterator();
+	}
+	
+	@Override
+	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
+		return null;
+	}
+	
+	@Override
+	public boolean hasSequentialLookup() {
+		return false;
+	}
+	
+	public static Iterator<? extends ASTNode> getBodyMembersIterator(NodeList<? extends ASTNode> body) {
 		return body == null ? IteratorUtil.<ASTNode>getEMPTY_ITERATOR() : body.nodes.iterator();
 	}
 	

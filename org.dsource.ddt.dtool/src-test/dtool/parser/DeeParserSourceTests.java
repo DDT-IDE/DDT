@@ -49,13 +49,13 @@ import dtool.util.NewUtils;
 @RunWith(Parameterized.class)
 public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 	
-	protected static final String TESTFILESDIR = "parser";
+	public static final String TESTFILESDIR = "parser";
 	
-	protected static Map<String, TspExpansionElement> commonDefinitions = new HashMap<String, TspExpansionElement>();
+	protected static Map<String, TspExpansionElement> commonDefinitions = new HashMap<>();
 	
 	@BeforeClass
 	public static void initCommonDefinitions() throws IOException {
-		addCommonDefinitions(TESTFILESDIR, commonDefinitions);
+		addCommonDefinitions(DeeParserSourceTests.class, TESTFILESDIR, commonDefinitions);
 	}
 	
 	@Parameters(name="{index}: {0}")

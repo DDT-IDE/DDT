@@ -1,12 +1,14 @@
 package dtool.resolver;
 
 import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsElement;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import melnorme.utilbox.core.Function;
+import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.tests.DToolBaseTest;
 
@@ -34,7 +36,8 @@ public class CompareDefUnits extends DToolBaseTest {
 	};
 	
 	
-	public static void checkResults(Collection<DefUnit> results, String[] expectedProposalsArr, boolean removeIntrinsics) {
+	public static void checkResults(Collection<DefUnit> results, String[] expectedProposalsArr, 
+		boolean removeIntrinsics) {
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);
 		HashSet<String> resultProposals = hashSet(strmap(results, fnDefUnitToStringAsElement(0)));
 		
@@ -47,6 +50,24 @@ public class CompareDefUnits extends DToolBaseTest {
 		resultProposals.remove(null);
 		
 		assertEqualSet(resultProposals, expectedProposals);
+	}
+	
+	public static void assertEqualSet(Set<?> result, Set<?> expected) {
+		boolean equals = result.equals(expected);
+		if(equals) {
+			return;
+		}
+		HashSet<?> resultExtra = removeAllCopy(result, expected);
+		HashSet<?> expectedMissing = removeAllCopy(expected, result);
+		if(!resultExtra.isEmpty()) {
+			System.out.println("--- Unexpected elements ("+resultExtra.size()+") : ---\n" +
+				StringUtil.collToString(resultExtra, "\n") );
+		}
+		if(!expectedMissing.isEmpty()) {
+			System.out.println("--- Missing elements ("+expectedMissing.size()+") : ---\n" +
+				StringUtil.collToString(expectedMissing, "\n") );
+		}
+		assertFail();
 	}
 	
 }
