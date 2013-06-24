@@ -28,7 +28,6 @@ import org.junit.runners.Parameterized.Parameters;
 import dtool.parser.DeeLexerTest.TokenChecker;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.tests.DToolTestResources;
 
 @RunWith(Parameterized.class)
 public class DeeLexerSourceBasedTest extends DeeTemplatedSourceBasedTest {
@@ -36,8 +35,8 @@ public class DeeLexerSourceBasedTest extends DeeTemplatedSourceBasedTest {
 	protected static final String TESTFILESDIR = "lexer";
 	
 	@Parameters(name="{index}: {0}")
-	public static Collection<Object[]> filesToParse() throws IOException {
-		return getTestFilesFromFolderAsParameterList(DToolTestResources.getTestResource(TESTFILESDIR), true);
+	public static Collection<Object[]> testFilesList() throws IOException {
+		return createTestFileParameters(TESTFILESDIR, null);
 	}
 	
 	public DeeLexerSourceBasedTest(String testDescription, File file) {
@@ -47,10 +46,16 @@ public class DeeLexerSourceBasedTest extends DeeTemplatedSourceBasedTest {
 	@Test
 	public void runLexerSourceBaseTests() throws Exception { runLexerSourceBaseTests$(); }
 	public void runLexerSourceBaseTests$() throws Exception {
-		for (AnnotatedSource testCase : getSourceBasedTests(null)) {
-			MetadataEntry lexerTestMde = assertNotNull_(testCase.findMetadata("LEXERTEST"));
-			runLexerSourceBasedTest(testCase.source, assertNotNull_(lexerTestMde.sourceValue));
+		for (AnnotatedSource testCase : getTestCasesFromFile(null)) {
+			runAnnotatedSourceTest(testCase);
 		}
+	}
+	
+	@Override
+	protected void runAnnotatedSourceTest(AnnotatedSource testCase) {
+		MetadataEntry lexerTestMde = assertNotNull_(testCase.findMetadata("LEXERTEST"));
+		String expectedTokenList = assertNotNull_(lexerTestMde.sourceValue);
+		runLexerSourceBasedTest(testCase.source, expectedTokenList);
 	}
 	
 	public void runLexerSourceBasedTest(String testSource, String expectedTokensList) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.tests.DToolTestResources.getTestResource;
 import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.isValidStringRange;
 import static dtool.util.NewUtils.replaceRange;
@@ -18,7 +17,6 @@ import static dtool.util.NewUtils.substringRemoveEnd;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import static melnorme.utilbox.misc.CollectionUtil.filter;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,12 +24,9 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
-import melnorme.utilbox.core.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.misc.StringUtil;
@@ -48,7 +43,6 @@ import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
-import dtool.sourcegen.TemplatedSourceProcessor;
 import dtool.tests.SimpleParser;
 import dtool.util.NewUtils;
 
@@ -61,44 +55,13 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 	
 	@BeforeClass
 	public static void initCommonDefinitions() throws IOException {
-		List<File> commonDefsFileList = getDeeModuleList(getTestResource(TESTFILESDIR));
-		commonDefsFileList = filter(commonDefsFileList, new ParserTestFilesFilter(){{filterHeaders = false;}});
-		
-		testsLogger.println(">>>>>>============ " + DeeParserSourceBasedTest.class.getSimpleName() 
-			+ " COMMON DEFINITIONS FILES: ============" );
-		for (File headerFile : commonDefsFileList) {
-			testsLogger.println(headerFile);
-			TemplatedSourceProcessor tsp = new TestsTemplateSourceProcessor() {
-				@Override
-				protected void addFullyProcessedSourceCase(ProcessingState caseState) {
-					assertTrue(caseState.isHeaderCase);
-				}
-			};
-			tsp.processSource_unchecked("#", readStringFromFileUnchecked(headerFile));
-			assertTrue(tsp.getGenCases().size() == 0);
-			NewUtils.addNew(commonDefinitions, tsp.getGlobalExpansions());
-		}
-		testsLogger.println("<<<<<<" );
+		addCommonDefinitions(TESTFILESDIR, commonDefinitions);
 	}
 	
 	@Parameters(name="{index}: {0}")
-	public static Collection<Object[]> filesToParse() throws IOException {
-		return createTestListFromFiles(true,
-			filter(getDeeModuleList(getTestResource(TESTFILESDIR)), new ParserTestFilesFilter()));
+	public static Collection<Object[]> testFilesList() throws IOException {
+		return createTestFileParameters(TESTFILESDIR);
 	}
-	
-	protected static class ParserTestFilesFilter implements Predicate<File> {
-		boolean filterHeaders = true;
-		@Override
-		public boolean evaluate(File file) {
-			if(file.getName().endsWith("_TODO")) return true;
-			if(file.getParentFile().getName().equals("0_common")) return filterHeaders;
-			if(file.getName().contains(".export.") || file.getName().contains(".EXPORT.")) return filterHeaders;
-			if(file.getName().endsWith(".tsp")) return !filterHeaders;
-			throw assertFail();
-		}
-	}
-	
 	
 	public DeeParserSourceBasedTest(String testUIDescription, File file) {
 		super(testUIDescription, file);
@@ -107,59 +70,11 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 	@Test
 	public void runSourceBasedTests() throws Exception { runSourceBasedTests$(); }
 	public void runSourceBasedTests$() throws Exception {
-		AnnotatedSource[] sourceBasedTests = getSourceBasedTests(commonDefinitions);
-		HashSet<String> printSources = new HashSet<String>();
-		Pattern trimStartNewlines = Pattern.compile("(^(\\n|\\r\\n)*)|((\\n|\\r\\n)*$)");
-		
-		int originalTemplateChildCount = -1;
-		for (AnnotatedSource testCase : sourceBasedTests) {
-			
-			boolean printTestCaseSource = testCase.findMetadata("comment", "NO_STDOUT") == null;
-			boolean printCaseSeparator = testCase.findMetadata("comment", "PRINT_SEP") != null;
-			
-			if(!printSources.contains(testCase.originalTemplatedSource)) {
-				printCaseEnd(originalTemplateChildCount);
-				originalTemplateChildCount = 0;
-				testsLogger.println(">> ----------- Parser tests TEMPLATE ("+file.getName()+") : ----------- <<");
-				testsLogger.print(testCase.originalTemplatedSource);
-				if(printTestCaseSource && !printCaseSeparator) {
-					testsLogger.println(" ----------- Parser source tests: ----------- ");
-				}
-			}
-			if(printTestCaseSource) {
-				if(printCaseSeparator) {
-					testsLogger.println(">-----------");
-				}
-				testsLogger.println(trimStartNewlines.matcher(testCase.source).replaceAll(""));
-			}
-			printSources.add(testCase.originalTemplatedSource);
-			
-			runSourceBasedTest(testCase);
-			originalTemplateChildCount++;
-		}
-		printCaseEnd(originalTemplateChildCount);
-		testsLogger.println();
+		runAnnotatedTests(getTestCasesFromFile(commonDefinitions));
 	}
 	
-	public void printCaseEnd(int originalTemplateChildCount) {
-		if(originalTemplateChildCount > 10 && originalTemplateChildCount != -1) {
-			testsLogger.println("<< ^^^ Previous case count: " + originalTemplateChildCount);
-		}
-	}
-	
-	public static void checkOffsetInvariant(AnnotatedSource testSource) {
-		int mdOffset = 0;
-		for (MetadataEntry mde : testSource.metadata) {
-			if(mde.offset != -1) {
-				assertTrue(mde.offset >= mdOffset);
-			}
-			mdOffset = mde.offset;
-		}
-	}
-	
-	public void runSourceBasedTest(AnnotatedSource testSource) {
-		checkOffsetInvariant(testSource);
-		
+	@Override
+	public void runAnnotatedSourceTest(AnnotatedSource testSource) {
 		final String DEFAULT_VALUE = "##DEFAULT VALUE";
 		
 		String fullSource = testSource.source;
@@ -468,5 +383,5 @@ public class DeeParserSourceBasedTest extends DeeTemplatedSourceBasedTest {
 		}
 		return ArrayUtil.createFrom(elements, NamedNodeElement.class);
 	}
-	
+
 }

@@ -124,11 +124,6 @@ public class DToolBaseTest extends CommonTestUtils {
 		return fileList;
 	}
 	
-	public static Collection<Object[]> getTestFilesFromFolderAsParameterList(File folder, boolean includeDescription) 
-		throws IOException {
-		return createTestListFromFiles(includeDescription, getDeeModuleList(folder));
-	}
-	
 	public static Collection<Object[]> createTestListFromFiles(final boolean includeDescription, List<File> fileList) {
 		final Collection<Object[]> testList = new ArrayList<>();
 		addFilesToTestList(testList, fileList, includeDescription);
