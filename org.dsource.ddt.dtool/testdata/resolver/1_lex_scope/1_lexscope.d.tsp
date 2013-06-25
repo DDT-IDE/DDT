@@ -9,3 +9,6 @@ class Class(T #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】, U :
   #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】
 }
 int Var2;
+
+V#REFSEARCH¤【Var▪Var2】;
+Va#REFSEARCH¤【Var▪Var2】;

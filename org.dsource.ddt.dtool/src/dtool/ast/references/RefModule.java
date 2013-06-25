@@ -100,7 +100,7 @@ public class RefModule extends NamedReference {
 	
 	
 	@Override
-	public String getReferenceName() {
+	public String getTargetSimpleName() {
 		return module;
 	}
 	

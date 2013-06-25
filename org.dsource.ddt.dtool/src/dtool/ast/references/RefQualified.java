@@ -24,8 +24,8 @@ public class RefQualified extends CommonRefQualified {
 	public final boolean isExpressionQualifier;
 	public final int dotOffset;
 	
-	public RefQualified(IQualifierNode qualifier, int dotOffset, RefIdentifier qualifiedIdRef) {
-		super(assertNotNull_(qualifiedIdRef));
+	public RefQualified(IQualifierNode qualifier, int dotOffset, RefIdentifier qualifiedId) {
+		super(assertNotNull_(qualifiedId));
 		this.qualifier = parentizeI(assertInstance(qualifier, Resolvable.class));
 		this.dotOffset = dotOffset;
 		this.isExpressionQualifier = isExpressionQualifier(qualifier);
@@ -41,7 +41,7 @@ public class RefQualified extends CommonRefQualified {
 		boolean children = visitor.visit(this);
 		if (children) {
 			TreeVisitor.acceptChildren(visitor, qualifier);
-			TreeVisitor.acceptChildren(visitor, qualifiedName);
+			TreeVisitor.acceptChildren(visitor, qualifiedId);
 		}
 		visitor.endVisit(this);
 	}
@@ -49,7 +49,7 @@ public class RefQualified extends CommonRefQualified {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(qualifier, qualifier instanceof ExpLiteralInteger ? " ." : ".");
-		cp.appendNodeOrNullAlt(qualifiedName, "/*MISSING*/");
+		cp.append(qualifiedId);
 	}
 	
 	@Override

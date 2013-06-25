@@ -6,26 +6,26 @@ package dtool.refmodel;
  */
 public class DefUnitDescriptor {
 	
-	protected final String baseName;
-	protected final String nameQualification;
+	protected final String qualifiedId;
+	protected final String idQualification;
 	
 	
-	public DefUnitDescriptor(String baseName) {
-		this.baseName = baseName;
-		this.nameQualification = null;
+	public DefUnitDescriptor(String qualifiedId) {
+		this.qualifiedId = qualifiedId;
+		this.idQualification = null;
 	}
 	
-	public DefUnitDescriptor(String baseName, String nameQualification) {
-		this.baseName = baseName;
-		this.nameQualification = nameQualification;
+	public DefUnitDescriptor(String qualifiedId, String idQualification) {
+		this.qualifiedId = qualifiedId;
+		this.idQualification = idQualification;
 	}
 	
-	public String getBaseName() {
-		return baseName;
+	public String getQualifiedId() {
+		return qualifiedId;
 	}
 	
-	public String getNameQualification() {
-		return nameQualification;
+	public String getIdQualification() {
+		return idQualification;
 	}
 	
 	public boolean isNative() {

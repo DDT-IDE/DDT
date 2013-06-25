@@ -132,8 +132,12 @@ public abstract class DeeParser_Common extends AbstractParser {
 	public static ProtoDefSymbol convertRefIdToDef(Reference ref) {
 		assertTrue(couldHaveBeenParsedAsId(ref));
 		RefIdentifier refId = (RefIdentifier) ref;
-		ParserError error = refId.name != null ? null : refId.getData().getNodeErrors().iterator().next();
-		return new ProtoDefSymbol(refId.name == null ? "" : refId.name, ref.getSourceRange(), error);
+		ParserError error = refId.isMissing() ? getMissingIdError(refId) : null;
+		return new ProtoDefSymbol(refId.isMissing() ? "" : refId.getIdString(), ref.getSourceRange(), error);
+	}
+	
+	protected static ParserError getMissingIdError(RefIdentifier refId) {
+		return refId.getData().getNodeErrors().iterator().next();
 	}
 	
 	public final Symbol parseIdSymbol() {

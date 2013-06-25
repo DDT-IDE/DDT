@@ -21,9 +21,11 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	 */
 	@Override
 	public final boolean canMatch(DefUnitDescriptor defunit) {
-		return getReferenceName().equals(defunit.getBaseName());
+		return getTargetSimpleName().equals(defunit.getQualifiedId());
 	}
 	
-	public abstract String getReferenceName();
+	/** @return the name of this reference without any qualifiers (therefore: the rightmost identifier).
+	 * Can be null. */
+	public abstract String getTargetSimpleName();
 	
 }

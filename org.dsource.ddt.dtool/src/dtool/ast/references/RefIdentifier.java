@@ -18,13 +18,13 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
 
 public class RefIdentifier extends NamedReference implements ITemplateRefNode {
 	
-	public final String name;
+	// this is private because of contract restriction, use appropriate getters instead
+	private final String identifier; 
 	
 	public RefIdentifier(String name) {
-		//assertNotNull(name); 
-		// BUG here TODO review reference and usage of this.name since the contract has now changed to allow null
-		assertTrue(name == null || name.length() > 0);
-		this.name = name;
+		this.identifier = name;
+		assertTrue(name == null || name.length() > 0); 
+		assertTrue(getIdString().indexOf(' ') == -1);
 	}
 	
 	@Override
@@ -32,9 +32,17 @@ public class RefIdentifier extends NamedReference implements ITemplateRefNode {
 		return ASTNodeTypes.REF_IDENTIFIER;
 	}
 	
+	public boolean isMissing() {
+		return identifier == null;
+	}
+	
+	public String getIdString() {
+		return identifier == null ? "" : identifier;
+	}
+	
 	@Override
-	public String getReferenceName() {
-		return name;
+	public String getTargetSimpleName() { 
+		return identifier;
 	}
 	
 	@Override
@@ -46,7 +54,7 @@ public class RefIdentifier extends NamedReference implements ITemplateRefNode {
 	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
-		DefUnitSearch search = new DefUnitSearch(name, this, this.getStartPos(), findOneOnly, moduleResolver);
+		DefUnitSearch search = new DefUnitSearch(identifier, this, this.getStartPos(), findOneOnly, moduleResolver);
 		doSearchForPossiblyQualifiedSingleRef(search, this);
 		return search.getMatchDefUnits();
 	}
@@ -79,7 +87,7 @@ public class RefIdentifier extends NamedReference implements ITemplateRefNode {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(name);
+		cp.append(identifier);
 	}
 	
 }

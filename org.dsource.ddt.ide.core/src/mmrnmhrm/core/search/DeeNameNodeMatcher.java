@@ -60,7 +60,7 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 		if(node instanceof CommonRefQualified)
 			return;
 		
-		if(patternMatcherHelper.matchesName(simpleName, node.getReferenceName().toCharArray())) {
+		if(patternMatcherHelper.matchesName(simpleName, node.getTargetSimpleName().toCharArray())) {
 			
 			Collection<DefUnit> defUnits = node.findTargetDefUnits(new DeeProjectModuleResolver(sourceModule), false);
 			

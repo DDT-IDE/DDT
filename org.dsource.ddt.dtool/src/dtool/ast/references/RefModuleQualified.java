@@ -17,8 +17,8 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  */
 public class RefModuleQualified extends CommonRefQualified {
 	
-	public RefModuleQualified(RefIdentifier subref) {
-		super(subref);
+	public RefModuleQualified(RefIdentifier qualifiedId) {
+		super(qualifiedId);
 	}
 	
 	@Override
@@ -30,7 +30,7 @@ public class RefModuleQualified extends CommonRefQualified {
 	public void accept0(IASTVisitor visitor) {
 		boolean children = visitor.visit(this);
 		if (children) {
-			TreeVisitor.acceptChildren(visitor, qualifiedName);
+			TreeVisitor.acceptChildren(visitor, qualifiedId);
 		}
 		visitor.endVisit(this);
 	}
@@ -38,7 +38,7 @@ public class RefModuleQualified extends CommonRefQualified {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(".");
-		cp.appendNodeOrNullAlt(qualifiedName, "/*MISSING*/");
+		cp.appendNodeOrNullAlt(qualifiedId, "/*MISSING*/");
 	}
 	
 	@Override

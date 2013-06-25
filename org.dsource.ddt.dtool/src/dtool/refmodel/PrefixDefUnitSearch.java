@@ -117,7 +117,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			
 			if(node instanceof RefIdentifier) {
 				RefIdentifier refIdent = (RefIdentifier) node;
-				setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), refIdent.name);
+				setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), refIdent.getIdString());
 			} else if(node instanceof CommonRefQualified) {
 				
 				int dotOffset = -1;
@@ -126,7 +126,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 					if(dotOffset == -1) { // Hack for old convertion parser usage
 						RefQualified refQualified = (RefQualified) node;
 						String str = source.substring(refQualified.qualifier.getEndPos(), 
-							refQualified.qualifiedName.getStartPos());
+							refQualified.qualifiedId.getStartPos());
 						dotOffset = refQualified.qualifier.getEndPos() + str.indexOf(".");
 					}
 				} else {

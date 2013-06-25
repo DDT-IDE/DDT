@@ -29,7 +29,7 @@ public class RefPrimitive extends NamedReference {
 	}
 	
 	@Override
-	public String getReferenceName() {
+	public String getTargetSimpleName() {
 		return primitive.source;
 	}
 	
@@ -42,7 +42,7 @@ public class RefPrimitive extends NamedReference {
 	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
-		DefUnitSearch search = new DefUnitSearch(getReferenceName(), this, this.getStartPos(), 
+		DefUnitSearch search = new DefUnitSearch(getTargetSimpleName(), this, this.getStartPos(), 
 			findOneOnly, moduleResolver);
 		assertFail(); // TODO
 		return search.getMatchDefUnits();

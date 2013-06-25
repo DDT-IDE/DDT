@@ -148,8 +148,8 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	}
 	
 	public static boolean isMissing(Reference ref) {
-		return ((ref instanceof RefIdentifier) && ((RefIdentifier) ref).name == null)
-			|| ((ref instanceof RefImportSelection) && ((RefImportSelection) ref).name == null);
+		return ((ref instanceof RefIdentifier) && ((RefIdentifier) ref).isMissing())
+			|| ((ref instanceof RefImportSelection) && ((RefImportSelection) ref).isMissing());
 	}
 	
 	public static enum RefParseRestrictions {

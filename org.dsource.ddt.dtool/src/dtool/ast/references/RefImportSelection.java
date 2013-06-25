@@ -34,8 +34,12 @@ public class RefImportSelection extends NamedReference implements IImportSelecti
 		visitor.endVisit(this);
 	}
 	
+	public boolean isMissing() {
+		return name == null;
+	}
+	
 	@Override
-	public String getReferenceName() {
+	public String getTargetSimpleName() {
 		return name;
 	}
 	

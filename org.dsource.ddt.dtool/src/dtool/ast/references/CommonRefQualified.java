@@ -19,28 +19,28 @@ import dtool.refmodel.pluginadapters.IModuleResolver;
  */
 public abstract class CommonRefQualified extends NamedReference implements ITemplateRefNode {
 	
-	public final RefIdentifier qualifiedName;
+	public final RefIdentifier qualifiedId;
 	
-	public CommonRefQualified(RefIdentifier qualifiedName) {
-		this.qualifiedName = parentize(qualifiedName);
+	public CommonRefQualified(RefIdentifier qualifiedId) {
+		this.qualifiedId = parentize(qualifiedId);
 	}
 	
 	/** Return the qualified name (the name reference on the right side). */
 	public RefIdentifier getQualifiedName() {
-		return qualifiedName;
+		return qualifiedId;
 	}
 	
 	public abstract Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver);
 	
 	@Override
-	public String getReferenceName() {
-		return qualifiedName.getReferenceName();
+	public String getTargetSimpleName() {
+		return qualifiedId.getTargetSimpleName();
 	}
 	
 	/** Finds the target defunits of this qualified reference. */
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
-		DefUnitSearch search = new DefUnitSearch(qualifiedName.name, this, findOneOnly, moduleResolver);
+		DefUnitSearch search = new DefUnitSearch(qualifiedId.getIdString(), this, findOneOnly, moduleResolver);
 		doQualifiedSearch(search, this);
 		return search.getMatchDefUnits();
 	}

@@ -1,7 +1,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 #@NONSCOPED_CONDITIONALS《version(yes)●debug(tests)●static if(true) 》
-#@NONSCOPED_CONTAINERS《#@ATTRIBS__LITE●#@NONSCOPED_CONDITIONALS 》
+#@NONSCOPED_CONTAINERS《#@ATTRIBS__LITE●#@NONSCOPED_CONDITIONALS》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module tests;
 #@REFSEARCH_TEST【#REFSEARCH¤【f1▪f2▪nested▪tests】】
