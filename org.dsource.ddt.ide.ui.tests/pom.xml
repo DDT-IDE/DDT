@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>org.dsource.ddt.ide.ui.tests</artifactId>
-	<version>0.6.0.qualifier</version>
+	<version>0.7.0.qualifier</version>
 	<packaging>eclipse-test-plugin</packaging>
 
 	<build>

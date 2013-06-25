@@ -2,7 +2,7 @@
 <feature
       id="org.dsource.ddt"
       label="%featureName"
-      version="0.6.0.qualifier"
+      version="0.7.0.qualifier"
       provider-name="%providerName"
       plugin="org.dsource.ddt.ide.ui">
 
@@ -26,21 +26,21 @@
          id="org.dsource.ddt.ide.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.7.0"
          unpack="false"/>
 
    <plugin
          id="org.dsource.ddt.ide.ui"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.7.0"
          unpack="false"/>
 
    <plugin
          id="org.dsource.ddt.dtool"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.7.0"
          unpack="false"/>
 
 </feature>
