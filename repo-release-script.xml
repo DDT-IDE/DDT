@@ -6,7 +6,7 @@
      ====================================================================== -->
 <project name="project" >
 
-	<property name="repoSrc" location="bin-maven/ddt.feature-repository/repository" ></property>
+	<property name="repoSrc" location="bin-maven/ddt.feature-repository/repository" />
 
 	<property name="gitLocation">git</property>
 	
@@ -14,15 +14,14 @@
 	<target name="echoInfo">
 		<echo>${commitLog}</echo>
 		<echo>${repoSrc}</echo>
-		<echo>${repoDest}</echo>
 	</target>
 	
 	<target name="setPreReleaseSite" depends="">
-		<property name="repoDest" location="../ddt.updates-PR" />
+		<property name="repoDest" location="../ddt.updates-PR/ddt.feature-repo" />
 	</target>
 	
 	<target name="setReleaseSite" depends="">
-		<property name="repoDest" location="../ddt.updates" />
+		<property name="repoDest" location="../ddt.updates/ddt.feature-repo" />
 	</target>
 
 
@@ -30,14 +29,18 @@
 	<target name="uploadReleaseRepo" depends="setReleaseSite, uploadRepo" />
 	
 	
-	<target name="uploadRepo" depends="echoInfo">
+	<target name="_check.repoDest">
 		<fail message="Files are missing.">
-		    <condition>
-		        <not>
-		        	<available file="${repoDest}" type="dir" />
-		        </not>
-		    </condition>
+			<condition>
+				<not>
+					<available file="${repoDest}" type="dir" />
+				</not>
+			</condition>
 		</fail>
+		<echo>${repoDest}</echo>
+	</target>
+	
+	<target name="uploadRepo" depends="echoInfo, _check.repoDest">
 		<fail unless="commitLog"/>
 
 		<delete verbose="true">
@@ -48,10 +51,10 @@
 		</copy>
 		
 		<exec dir="${repoDest}" executable="${gitLocation}" >
-		  	<arg line="status"/>
+			<arg line="status"/>
 		</exec>
 		<exec dir="${repoDest}" executable="${gitLocation}" >
-		  	<arg line="add -A *"/>
+			<arg line="add -A *"/>
 		</exec>
 		<exec dir="${repoDest}" executable="${gitLocation}" >
 			<arg line="commit -m"/>
@@ -62,4 +65,20 @@
 		</exec>
 	</target>
 
+	
+	<!-- ======================================================================
+		This task must be run from within eclipse, example:
+		eclipse -application org.eclipse.ant.core.antRunner -console -consolelog \
+		-f repo-release-script.xml createCompositeRepo -DrepoDest=../ddt.updates-PR
+	     ====================================================================== -->
+	<target name="createCompositeRepo" depends="_check.repoDest">
+		<p2.composite.repository>
+			<repository location="${repoDest}" name="DDT repository" compressed="false" />
+			<add>
+				<repository location="http://download.eclipse.org/releases/indigo" />
+				<repository location="ddt.feature-repo" />
+			</add>
+		</p2.composite.repository>
+	</target>
+	
 </project>

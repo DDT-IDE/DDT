@@ -17,7 +17,8 @@
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
 
 		<ddt.targetPlatform>org.dsource.ddt-build/target-platform/DDT</ddt.targetPlatform>
-
+		<qualifier_default_prefix>v</qualifier_default_prefix>
+			
 		<dtool.testdataDir>${parentBaseDir}/org.dsource.ddt.dtool/testdata</dtool.testdataDir>
 	</properties>
 
@@ -69,6 +70,8 @@
 		</profile>
 	</profiles>
 
+	<!-- Core build -->
+	
 	<build>
 		<directory>${parentBaseDirRelPath}/bin-maven/${project.artifactId}</directory>
 
@@ -78,6 +81,15 @@
 				<artifactId>tycho-maven-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<extensions>true</extensions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<format>'${qualifier_default_prefix}'yyyyMMddHHmm</format>
+				</configuration>
 			</plugin>
 
 			<plugin>
