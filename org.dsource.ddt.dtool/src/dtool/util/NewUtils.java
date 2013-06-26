@@ -49,7 +49,8 @@ public class NewUtils {
 	}
 	
 	public static <T> Iterator<? extends T> getChainedIterator(
-		Iterable<? extends T> iter1, Iterable<? extends T> iter2) {
+		Iterable<? extends T> iter1, Iterable<? extends T> iter2) 
+	{
 		if(iter1 == null && iter2 == null)
 			return IteratorUtil.getEMPTY_ITERATOR();
 		if(iter1 == null)

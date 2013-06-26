@@ -89,10 +89,10 @@ public class SimpleParser {
 	}
 	
 	public final int tryConsume(String... strings) {
-		for (int i = 0; i < strings.length; i++) {
-			String string = strings[i];
+		for (int ix = 0; ix < strings.length; ix++) {
+			String string = strings[ix];
 			if(tryConsume(string)) {
-				return i;
+				return ix;
 			}
 		}
 		return -1;

@@ -18,6 +18,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.CollectionUtil.filter;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,10 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import melnorme.utilbox.core.Predicate;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import melnorme.utilbox.core.Predicate;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
@@ -85,9 +88,18 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 		public boolean evaluate(File file) {
 			if(file.getName().endsWith("_TODO")) return true;
 			if(file.getParentFile().getName().equals("0_common")) return filterHeaders;
-			if(file.getParentFile().getName().equals("0_common")) return filterHeaders;
 			if(file.getName().contains(".export") || file.getName().contains(".EXPORT")) return filterHeaders;
 			if(file.getName().endsWith(".tsp")) return !filterHeaders;
+			
+			if(file.getName().endsWith(".d")) {
+				try {
+					assertTrue(!TemplatedSourceProcessor.isTSPSourceStart(new FileReader(file)));
+				} catch(IOException e) {
+					assertFail();
+				}
+				// Allow if file had no TSP data.
+				return true;
+			}
 			throw assertFail();
 		}
 	}

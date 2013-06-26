@@ -14,6 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc2.ChainedIterator2;
 import melnorme.utilbox.misc2.CopyableListIterator;
 import melnorme.utilbox.misc2.ICopyableIterator;
@@ -66,12 +69,18 @@ public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
 		}
 	}
 	
+	protected static final String[] splitKeywords = { "#:HEADER", "Ⓗ", "#:SPLIT", "━━", "▂▂", "▃▃"};
+	
+	public static boolean isTSPSourceStart(Reader reader) throws IOException {
+		String sourceIntro = new String(StreamUtil.readCharAmountFromReader(reader, 10));
+		SimpleParser parser = new SimpleParser(sourceIntro);
+		return parser.tryConsume(splitKeywords) > 0;
+	}
+	
 	public AnnotatedSource[] processSource(String defaultMarker, String fileSource) 
 		throws TemplatedSourceException {
 		
 		SimpleParser parser = new SimpleParser(fileSource);
-		
-		final String[] splitKeywords = { "#:HEADER", "Ⓗ", "#:SPLIT", "━━", "▂▂", "▃▃"};
 		
 		do {
 			boolean isHeader = false;

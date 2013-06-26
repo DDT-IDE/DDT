@@ -97,17 +97,29 @@ public class StreamUtil {
 		}
 	}
 	
-	/** Reads given length amount of chars from given reader, and returns them. 
+	/** Reads given length amount of chars from given reader, and returns them in a char[]. 
+	 *  Throws IOException if it fails to read given length amount of elements.
 	 *  Closes reader afterwards. 
-	 *  @throws IOException if it fails to read given length amount of elements. */
-	public static char[] readCharsFromReader(Reader reader, int length) throws IOException {
+	 */
+	public static char[] readRequiredAmountFromReader(Reader reader, int length) throws IOException {
+		char[] chars = readCharAmountFromReader(reader, length);
+		if(chars.length != length) {
+			throw createFailedToReadExpected(length, chars.length);
+		}
+		return chars;
+	}
+	
+	/** Attempts to read given length amount of chars from given reader, and returns them in a char[]. 
+	 *  Closes reader afterwards. */
+	public static char[] readCharAmountFromReader(Reader reader, int length) throws IOException 
+	{
 		try {
 			char[] chars = new char[length];
 			int totalRead = 0;
 			do {
 				int read = reader.read(chars, totalRead, length - totalRead);
 				if (read == -1) {
-					throw createFailedToReadExpected(length, totalRead);
+					break;
 				}
 				totalRead += read;
 			} while (totalRead != length);

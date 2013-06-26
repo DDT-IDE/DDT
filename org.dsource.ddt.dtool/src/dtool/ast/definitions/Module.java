@@ -162,7 +162,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		return members.iterator();
 	}
 	
-	public String getDeclaredQualifiedName() {
+	public String getFullyQualifiedName() {
 		StringBuilder fullName = new StringBuilder();
 		if(md != null) {
 			for (String packageStr : md.packages) {

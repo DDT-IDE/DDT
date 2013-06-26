@@ -133,7 +133,7 @@ public class FindDef__Common {
 	
 	protected static boolean equalModule(Module targetMod, Module obtainedModule) {
 		return targetMod == obtainedModule || 
-				targetMod.getDeclaredQualifiedName().equals(obtainedModule.getDeclaredQualifiedName());
+				targetMod.getFullyQualifiedName().equals(obtainedModule.getFullyQualifiedName());
 	}
 	
 	public static void testDeeSelectionEngine(ISourceModule moduleUnit, int offset, DefUnit defunit) {

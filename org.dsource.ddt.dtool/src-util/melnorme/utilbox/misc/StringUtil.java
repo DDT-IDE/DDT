@@ -111,7 +111,7 @@ public final class StringUtil {
 	
 	/** @return a substring of given string starting from the end of the last occurrence 
 	 * of given match, or the whole string if no match is found. */
-	public static String fromLastIndexOf(String match, String string) {
+	public static String fromAfterLastMatch(String string, String match) {
 		int lastIx = string.lastIndexOf(match);
 		return (lastIx == -1) ? string : string.substring(lastIx + match.length());
 	}
