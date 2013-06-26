@@ -39,10 +39,10 @@ import dtool.ast.ASTNodeFinder;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.INativeDefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.Reference;
-import dtool.refmodel.INativeDefUnit;
 
 public class GoToDefinitionHandler extends AbstractHandler  {
 	

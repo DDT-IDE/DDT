@@ -3,7 +3,7 @@ package dtool.refmodel;
 import java.util.Collection;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 /** 
  * A reference to a DefUnit.

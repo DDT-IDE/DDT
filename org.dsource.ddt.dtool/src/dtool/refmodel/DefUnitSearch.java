@@ -6,7 +6,7 @@ import java.util.Collection;
 import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.Reference;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 /**
  * Normal DefUnit search, 

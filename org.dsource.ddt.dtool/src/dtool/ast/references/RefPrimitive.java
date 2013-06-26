@@ -13,7 +13,7 @@ import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 public class RefPrimitive extends NamedReference {
 	

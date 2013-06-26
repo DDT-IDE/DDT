@@ -9,8 +9,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
-import dtool.refmodel.DefUnitDescriptor;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.DefUnitDescriptor;
+import dtool.refmodel.api.IModuleResolver;
 
 public class RefTypeof extends Reference implements IQualifierNode {
 	

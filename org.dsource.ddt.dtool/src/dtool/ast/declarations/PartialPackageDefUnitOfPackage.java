@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import dtool.ast.ASTNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 
 public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {

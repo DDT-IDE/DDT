@@ -10,7 +10,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IDefUnitReference;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 /**
  * A {@link Resolvable} is either an {@link Reference} or {@link Expression}

@@ -5,7 +5,7 @@ import mmrnmhrm.core.codeassist.DeeCompletionEngine;
 
 import org.junit.Test;
 
-import dtool.refmodel.PrefixDefUnitSearch;
+import dtool.refmodel.api.PrefixDefUnitSearchBase;
 import dtool.resolver.DefUnitArrayListCollector;
 
 public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
@@ -70,7 +70,7 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 	
 	@Test
 	public void test_impModuleRef_completionTextParameters() throws Exception {
-		PrefixDefUnitSearch search = DeeCompletionEngine.doCompletionSearch(getMarkerEndOffset("/+CC4@+/")+5, 
+		PrefixDefUnitSearchBase search = DeeCompletionEngine.doCompletionSearch(getMarkerEndOffset("/+CC4@+/")+5, 
 				srcModule, srcModule.getSource(), new DefUnitArrayListCollector());
 		assertTrue(search.searchOptions.rplLen == 0);
 	}

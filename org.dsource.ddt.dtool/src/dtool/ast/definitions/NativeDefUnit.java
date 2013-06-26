@@ -11,10 +11,9 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.SyntheticDefUnit;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.INamedScope;
-import dtool.refmodel.INativeDefUnit;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeDefUnit, IScopeNode {
 	

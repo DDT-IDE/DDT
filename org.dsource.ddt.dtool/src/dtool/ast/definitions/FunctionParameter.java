@@ -14,7 +14,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.Token;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 public class FunctionParameter extends DefUnit implements IFunctionParameter {

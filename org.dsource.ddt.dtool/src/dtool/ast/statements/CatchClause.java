@@ -12,7 +12,7 @@ import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 public class CatchClause extends ASTNode implements IScopeNode {
 	

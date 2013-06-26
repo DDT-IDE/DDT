@@ -24,24 +24,25 @@ import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IDefUnitMatchAccepter;
+import dtool.refmodel.api.IModuleResolver;
+import dtool.refmodel.api.PrefixDefUnitSearchBase;
+import dtool.refmodel.api.PrefixSearchOptions;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
  * TODO: The matches with the same name as matches in a scope with higher 
  * priority are not added.
  */
-public class PrefixDefUnitSearch extends CommonDefUnitSearch {
+public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 	
-	public final PrefixSearchOptions searchOptions;
 	private final IDefUnitMatchAccepter defUnitAccepter;
 	
 	private final Set<String> addedDefUnits = new HashSet<String>();
 	
 	public PrefixDefUnitSearch(PrefixSearchOptions searchOptions, IScopeNode refScope, int refOffset,
 			IDefUnitMatchAccepter defUnitAccepter, IModuleResolver moduleResolver) {
-		super(refScope, refOffset, moduleResolver);
-		this.searchOptions = searchOptions;
+		super(refScope, refOffset, moduleResolver, searchOptions);
 		this.defUnitAccepter = defUnitAccepter;
 	}
 	
@@ -76,10 +77,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		addedDefUnits.add(newDefUnitName);
 		return true;
 	};
-	
-	public static interface IDefUnitMatchAccepter {
-		void accept(DefUnit defUnit, PrefixSearchOptions searchOptions);
-	}
 	
 	public static PrefixDefUnitSearch doCompletionSearch(CompletionSession session, String defaultModuleName,
 			String source, final int offset, IModuleResolver modResolver, IDefUnitMatchAccepter defUnitAccepter) 

@@ -18,7 +18,7 @@ import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 /**
  * Class with static methods encoding D entity lookup rules.

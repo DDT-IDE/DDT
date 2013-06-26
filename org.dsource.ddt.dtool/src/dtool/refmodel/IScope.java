@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import dtool.ast.IASTNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 /**
  * A scope is a list of declarations and or statements.

@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import org.junit.Test;
 
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
-import dtool.refmodel.PrefixDefUnitSearch;
+import dtool.refmodel.api.PrefixDefUnitSearchBase;
 
 public class CodeCompletion_UnavailableTest extends CodeCompletion__Common {
 	
@@ -32,7 +32,7 @@ public class CodeCompletion_UnavailableTest extends CodeCompletion__Common {
 		testUnavailableCompletion(getMarkerEndOffset("/+CC10+/")+4, 
 				ECompletionSessionResults.WEIRD_LOCATION_REFQUAL);
 		
-		PrefixDefUnitSearch search = testUnavailableCompletion(getMarkerEndOffset("/+CC10+/")+6, 
+		PrefixDefUnitSearchBase search = testUnavailableCompletion(getMarkerEndOffset("/+CC10+/")+6, 
 				ECompletionSessionResults.RESULT_OK);
 		
 		assertTrue(search.searchOptions.namePrefixLen == 0 && search.searchOptions.rplLen == 0);

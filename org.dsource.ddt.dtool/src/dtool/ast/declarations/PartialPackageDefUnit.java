@@ -9,7 +9,7 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 /**
  * A synthetic DefUnit (not derived from source code), for partial package "definitions" of imports. 

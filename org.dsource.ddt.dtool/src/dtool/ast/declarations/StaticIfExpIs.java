@@ -14,7 +14,7 @@ import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 public class StaticIfExpIs extends Expression {

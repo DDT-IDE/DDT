@@ -3,10 +3,10 @@ package dtool.ast.references;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
 import dtool.ast.expressions.Resolvable;
-import dtool.refmodel.DefUnitDescriptor;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.DefUnitDescriptor;
+import dtool.refmodel.api.IModuleResolver;
 
 /**
  * Common class for entity references.

@@ -1,4 +1,4 @@
-package dtool.refmodel;
+package dtool.refmodel.api;
 
 /**
  * An info class to reference a DefUnit

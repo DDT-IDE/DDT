@@ -8,7 +8,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.parser.Token;
 import dtool.refmodel.IScope;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**

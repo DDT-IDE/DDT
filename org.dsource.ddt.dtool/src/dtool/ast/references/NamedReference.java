@@ -1,8 +1,8 @@
 package dtool.ast.references;
 
 import dtool.ast.expressions.Resolvable.IQualifierNode;
-import dtool.refmodel.DefUnitDescriptor;
 import dtool.refmodel.PrefixDefUnitSearch;
+import dtool.refmodel.api.DefUnitDescriptor;
 
 /** 
  * A reference based on an identifier. These references also 

@@ -18,7 +18,7 @@ import dtool.parser.Token;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.IScopeNode;
 import dtool.refmodel.PrefixDefUnitSearch;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 import dtool.util.ArrayView;
 import dtool.util.ArrayViewExt;
 

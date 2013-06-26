@@ -17,7 +17,7 @@ import dtool.parser.Token;
 import dtool.refmodel.INamedScope;
 import dtool.refmodel.IScope;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
 

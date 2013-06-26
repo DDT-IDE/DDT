@@ -10,7 +10,7 @@ import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.PrefixDefUnitSearch;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 // TODO: retire this element in favor of RefIdentifier?
 public class RefImportSelection extends NamedReference implements IImportSelectiveSelection {

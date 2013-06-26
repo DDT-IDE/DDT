@@ -10,7 +10,7 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 public class ImportAlias extends DefUnit implements IImportFragment {
 		

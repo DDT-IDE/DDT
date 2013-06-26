@@ -7,7 +7,7 @@ import java.util.Collections;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 public abstract class CommonDefUnitSearch {
 

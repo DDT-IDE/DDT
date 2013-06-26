@@ -13,7 +13,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.refmodel.DefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 public class ExpCall extends Expression {
 	

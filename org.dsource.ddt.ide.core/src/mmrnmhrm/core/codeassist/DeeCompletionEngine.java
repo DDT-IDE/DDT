@@ -16,9 +16,9 @@ import dtool.DeeNamingRules;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.contentassist.CompletionSession;
-import dtool.refmodel.PrefixDefUnitSearch;
-import dtool.refmodel.PrefixDefUnitSearch.IDefUnitMatchAccepter;
-import dtool.refmodel.PrefixSearchOptions;
+import dtool.refmodel.api.IDefUnitMatchAccepter;
+import dtool.refmodel.api.PrefixDefUnitSearchBase;
+import dtool.refmodel.api.PrefixSearchOptions;
 
 public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
@@ -79,17 +79,18 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		return proposal;
 	}
 	
-	public static PrefixDefUnitSearch doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
+	public static PrefixDefUnitSearchBase doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
 			IDefUnitMatchAccepter defUnitAccepter) {
 		CompletionSession session = new CompletionSession();
 		return doCompletionSearch(offset, moduleUnit, source, session, defUnitAccepter);
 	}
 	
-	public static PrefixDefUnitSearch doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
+	public static PrefixDefUnitSearchBase doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
 			CompletionSession session, IDefUnitMatchAccepter defUnitAccepter) {
 		String defaultModuleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit);
-		return PrefixDefUnitSearch.doCompletionSearch(session, defaultModuleName, source, offset, mr, defUnitAccepter);
+		return PrefixDefUnitSearchBase.runCompletionSearch(session, defaultModuleName, source, offset, mr, 
+			defUnitAccepter);
 	}
 	
 }

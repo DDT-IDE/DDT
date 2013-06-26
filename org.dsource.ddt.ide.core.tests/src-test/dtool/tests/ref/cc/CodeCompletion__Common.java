@@ -12,7 +12,7 @@ import org.junit.After;
 
 import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionSessionResults;
-import dtool.refmodel.PrefixDefUnitSearch;
+import dtool.refmodel.api.PrefixDefUnitSearchBase;
 import dtool.resolver.CompareDefUnits;
 import dtool.resolver.DefUnitArrayListCollector;
 import dtool.tests.DToolBaseTest;
@@ -58,11 +58,11 @@ public class CodeCompletion__Common extends DToolBaseTest {
 		return srcModule.getBuffer();
 	}
 	
-	protected PrefixDefUnitSearch testUnavailableCompletion(int offset, ECompletionSessionResults caResult) 
+	protected PrefixDefUnitSearchBase testUnavailableCompletion(int offset, ECompletionSessionResults caResult) 
 			throws ModelException {
 		CompletionSession session = new CompletionSession();
-		PrefixDefUnitSearch search = DeeCompletionEngine.doCompletionSearch(offset, srcModule, srcModule.getSource(), 
-				session, new DefUnitArrayListCollector());
+		PrefixDefUnitSearchBase search = DeeCompletionEngine.doCompletionSearch(offset, srcModule, 
+			srcModule.getSource(), session, new DefUnitArrayListCollector());
 		assertTrue(session.resultCode == caResult);
 		return search;
 	}
@@ -84,7 +84,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 		DefUnitArrayListCollector defUnitAccepter = new DefUnitArrayListCollector();
 		
 		CompletionSession session = new CompletionSession();
-		PrefixDefUnitSearch completionSearch = DeeCompletionEngine.doCompletionSearch(
+		PrefixDefUnitSearchBase completionSearch = DeeCompletionEngine.doCompletionSearch(
 				repOffset, srcModule, srcModule.getSource(), session, defUnitAccepter);
 		
 		if(expectedProposals == null) {

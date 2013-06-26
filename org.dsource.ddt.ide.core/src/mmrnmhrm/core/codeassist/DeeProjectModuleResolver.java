@@ -23,7 +23,7 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.DeeNamingRules;
 import dtool.ast.definitions.Module;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 public class DeeProjectModuleResolver implements IModuleResolver {
 	
@@ -138,7 +138,7 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 					}
 				}
 			}
-		}		
+		}
 		
 		return strings.toArray(new String[strings.size()]);
 	}

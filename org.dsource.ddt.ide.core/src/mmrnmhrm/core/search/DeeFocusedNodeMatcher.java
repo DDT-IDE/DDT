@@ -18,7 +18,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
-import dtool.refmodel.DefUnitDescriptor;
+import dtool.refmodel.api.DefUnitDescriptor;
 
 public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 	

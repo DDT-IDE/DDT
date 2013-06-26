@@ -9,7 +9,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
 import dtool.refmodel.CommonDefUnitSearch;
 import dtool.refmodel.ReferenceResolver;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 
 // TODO merge this with ImportContent
 public abstract class ImportStatic extends ASTNode implements IImportFragment {

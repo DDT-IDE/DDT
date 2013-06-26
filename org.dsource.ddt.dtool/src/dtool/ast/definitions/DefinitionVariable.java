@@ -13,10 +13,10 @@ import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.refmodel.DefUnitDescriptor;
 import dtool.refmodel.IDefUnitReference;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.DefUnitDescriptor;
+import dtool.refmodel.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**

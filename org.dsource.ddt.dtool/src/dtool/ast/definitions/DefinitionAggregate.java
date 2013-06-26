@@ -13,7 +13,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
 import dtool.refmodel.IScopeNode;
-import dtool.refmodel.pluginadapters.IModuleResolver;
+import dtool.refmodel.api.IModuleResolver;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
 
