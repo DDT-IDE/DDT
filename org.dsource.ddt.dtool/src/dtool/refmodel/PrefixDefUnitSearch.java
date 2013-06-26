@@ -84,11 +84,18 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	public static PrefixDefUnitSearch doCompletionSearch(CompletionSession session, String defaultModuleName,
 			String source, final int offset, IModuleResolver modResolver, IDefUnitMatchAccepter defUnitAccepter) 
 	{
+		DeeParserResult parseResult = DeeParser.parseSource(source, defaultModuleName);
+		
+		return doCompletionSearch(session, parseResult, offset, modResolver, defUnitAccepter);
+	}
+	
+	public static PrefixDefUnitSearch doCompletionSearch(CompletionSession session, DeeParserResult parseResult,
+		final int offset, IModuleResolver modResolver, IDefUnitMatchAccepter defUnitAccepter) {
+		String source = parseResult.source;
 		assertTrue(offset >= 0 && offset <= source.length());
 		assertTrue(session.errorMsg == null);
 		session.resultCode = ECompletionSessionResults.RESULT_OK;
 		
-		DeeParserResult parseResult = DeeParser.parseSource(source, defaultModuleName);
 		
 		if(parseResult == null) {
 			/*BUG here TODO: need to reimplement, check token list*/

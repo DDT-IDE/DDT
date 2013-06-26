@@ -44,13 +44,13 @@ public class RefPrimitive extends NamedReference {
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
 		DefUnitSearch search = new DefUnitSearch(getTargetSimpleName(), this, this.getStartPos(), 
 			findOneOnly, moduleResolver);
-		assertFail(); // TODO
+		assertFail(); // TODO /*BUG here*/
 		return search.getMatchDefUnits();
 	}
 	
 	@Override
 	public void doSearch(PrefixDefUnitSearch search) {
-		assertFail(); // TODO
+		assertFail(); // TODO /*BUG here*/
 		IScopeNode lookupScope = null;
 		ReferenceResolver.findDefUnitInExtendedScope(lookupScope, search);
 	}

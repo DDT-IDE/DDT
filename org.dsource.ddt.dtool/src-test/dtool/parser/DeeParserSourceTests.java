@@ -70,7 +70,7 @@ public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 	@Test
 	public void runSourceBasedTests() throws Exception { runSourceBasedTests$(); }
 	public void runSourceBasedTests$() throws Exception {
-		runAnnotatedTests(getTestCasesFromFile(commonDefinitions));
+		runAnnotatedTests(getTestCasesFromFile(commonDefinitions), true);
 	}
 	
 	@Override

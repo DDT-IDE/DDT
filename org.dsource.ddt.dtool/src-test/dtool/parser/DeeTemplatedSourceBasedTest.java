@@ -141,14 +141,16 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 	}
 	
 	
-	public void runAnnotatedTests(AnnotatedSource[] sourceBasedTests) {
+	public void runAnnotatedTests(AnnotatedSource[] sourceBasedTests, boolean printTestCaseSource) {
 		HashSet<String> printSources = new HashSet<String>();
 		Pattern trimStartNewlines = Pattern.compile("(^(\\n|\\r\\n)*)|((\\n|\\r\\n)*$)");
 		
 		int originalTemplateChildCount = -1;
 		for (AnnotatedSource testCase : sourceBasedTests) {
 			
-			boolean printTestCaseSource = testCase.findMetadata("comment", "NO_STDOUT") == null;
+			if(testCase.findMetadata("comment", "NO_STDOUT") != null) {
+				printTestCaseSource = false;
+			}
 			boolean printCaseSeparator = testCase.findMetadata("comment", "PRINT_SEP") != null;
 			
 			if(!printSources.contains(testCase.originalTemplatedSource)) {
