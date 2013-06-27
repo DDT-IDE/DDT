@@ -18,6 +18,7 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
+import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
@@ -119,7 +120,11 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		if(node instanceof NamedReference)  {
 			NamedReference namedRef = (NamedReference) node;
 			
-			if(node instanceof RefIdentifier) {
+			if(node instanceof RefPrimitive) {
+				RefPrimitive refIdent = (RefPrimitive) node;
+				String name = refIdent.getTargetSimpleName();
+				setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), name);
+			} else if(node instanceof RefIdentifier) {
 				RefIdentifier refIdent = (RefIdentifier) node;
 				setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), refIdent.getIdString());
 			} else if(node instanceof CommonRefQualified) {
