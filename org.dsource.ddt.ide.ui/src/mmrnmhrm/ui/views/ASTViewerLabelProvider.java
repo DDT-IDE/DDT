@@ -10,6 +10,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.Reference;
@@ -46,8 +47,8 @@ public class ASTViewerLabelProvider extends SimpleLabelProvider implements IColo
 	
 	@Override
 	public Color getBackground(Object element) {
-		IASTNode node = (IASTNode) element;
-		if(node.hasNoSourceRangeInfo())
+		ASTNode node = (ASTNode) element;
+		if(!node.hasSourceRangeInfo())
 			return cNoSourceRangeColor;
 		
 		//int offset = EditorUtil.getSelection(viewer.fEditor).getOffset();

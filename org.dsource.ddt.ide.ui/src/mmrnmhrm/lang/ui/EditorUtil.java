@@ -18,6 +18,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
 import dtool.ast.definitions.Module;
 
@@ -53,13 +54,13 @@ public class EditorUtil {
 			editor.resetHighlightRange();
 		else {
 			IStructuredSelection sel = (IStructuredSelection) selection;
-			IASTNode element = (IASTNode) sel.getFirstElement();
+			ASTNode node = (ASTNode) sel.getFirstElement();
 			
-			if(element.hasNoSourceRangeInfo())
+			if(!node.hasSourceRangeInfo())
 				return;
 			
-			int start = element.getOffset();
-			int end = element.getLength();
+			int start = node.getOffset();
+			int end = node.getLength();
 			try {
 				editor.setHighlightRange(start, end, true);
 				setEditorSelection(editor, start, end);

@@ -126,7 +126,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		
 		DefUnit defunit = defunits.iterator().next();
 		
-		if(defunit.hasNoSourceRangeInfo()) {
+		if(!defunit.hasSourceRangeInfo()) {
 			dialogError(window.getShell(), "DefUnit " +defunit.toStringAsElement()+ " has no source range info!");
 			return;
 		} 

@@ -281,7 +281,7 @@ public abstract class AbstractParser {
 		}
 		
 		public <T extends ASTNode> T initRange(T node) {
-			assertTrue(node.hasNoSourceRangeInfo());
+			assertTrue(!node.hasSourceRangeInfo());
 			return srToPosition(nodeStart, node);
 		}
 		

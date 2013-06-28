@@ -1,6 +1,7 @@
 package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 
 /**
@@ -25,15 +26,15 @@ public class ASTSourceRangeChecker extends ASTHomogenousVisitor {
 	}
 	
 	@Override
-	public boolean preVisit(ASTNode elem) {
+	public boolean preVisit(ASTNode node) {
 		depth++;
-		if(elem.hasNoSourceRangeInfo()) {
-			return handleSourceRangeNoInfo(elem);
-		} else if(elem.getOffset() < offsetCursor) {
-			handleSourceRangeStartPosBreach(elem);
+		
+		assertTrue(node.hasSourceRangeInfo());
+		if(node.getOffset() < offsetCursor) {
+			handleSourceRangeStartPosBreach(node);
 			return false;
 		}
-		offsetCursor = elem.getOffset();
+		offsetCursor = node.getOffset();
 		return visitChildrenAfterPreVisitOk(); // Go to children
 	}
 	
@@ -42,15 +43,15 @@ public class ASTSourceRangeChecker extends ASTHomogenousVisitor {
 	}
 	
 	@Override
-	public void postVisit(ASTNode elem) {
+	public void postVisit(ASTNode node) {
 		depth--;
-		if(elem.hasNoSourceRangeInfo()) {
-			return;
-		} else if(elem.getEndPos() < offsetCursor) {
-			handleSourceRangeEndPosBreach(elem);
+		
+		assertTrue(node.hasSourceRangeInfo());
+		if(node.getEndPos() < offsetCursor) {
+			handleSourceRangeEndPosBreach(node);
 			return;
 		} else {
-			offsetCursor = elem.getEndPos();
+			offsetCursor = node.getEndPos();
 			return;
 		}
 	}
@@ -58,11 +59,6 @@ public class ASTSourceRangeChecker extends ASTHomogenousVisitor {
 	@SuppressWarnings("unused") 
 	protected void handleSourceRangeEndPosBreach(ASTNode elem) {
 		assertFail();
-	}
-	
-	@SuppressWarnings("unused") 
-	protected boolean handleSourceRangeNoInfo(ASTNode elem) {
-		throw assertFail();
 	}
 	
 	@SuppressWarnings("unused") 

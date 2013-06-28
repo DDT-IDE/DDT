@@ -84,13 +84,6 @@ public abstract class ASTNode implements IASTNode {
 		return this.sourceStart != -1;
 	}
 	
-	/** Checks if the node has no source range info. */
-	@Override
-	@Deprecated
-	public final boolean hasNoSourceRangeInfo() {
-		return !hasSourceRangeInfo();
-	}
-	
 	/** Sets the source positions, which must be valid. */
 	public final void setSourcePosition(int startPos, int endPos) {
 		assertTrue(!hasSourceRangeInfo()); // Can only be set once
@@ -248,11 +241,7 @@ public abstract class ASTNode implements IASTNode {
 		String str = toStringClassName();
 		
 		if(printRangeInfo) {
-			if(hasNoSourceRangeInfo()) {
-				str += " [?+?]";
-			} else {
-				str += " ["+ getStartPos() +"+"+ getLength() +"]";
-			}
+			str += " ["+ getStartPos() +"+"+ getLength() +"]";
 		}
 		return str;
 	}

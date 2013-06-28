@@ -58,7 +58,7 @@ public class ASTNodeFinder extends ASTHomogenousVisitor {
 	}
 	
 	public boolean genericVisit(ASTNode node) {
-		if(node.hasNoSourceRangeInfo()) {
+		if(!node.hasSourceRangeInfo()) {
 			return false; // Shouldn't happen, but no need to assert
 		}
 		
