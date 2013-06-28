@@ -17,11 +17,10 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.ArrayList;
 
-import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
+import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.IASTNode;
-import dtool.ast.NodeUtil;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
@@ -54,6 +53,7 @@ public class DeeParsingChecks extends CommonTestUtils {
 		
 		@Override
 		protected void nodeConcluded(ASTNode node) {
+			assertTrue(node.isParsedStatus());
 			checkNodeSourceRange(node, getSource());
 			
 			// Run additional tests on the node just parsed
@@ -74,11 +74,10 @@ public class DeeParsingChecks extends CommonTestUtils {
 				return depth < 2;
 			}
 			
-			@SuppressWarnings("unused")
 			@Override
 			protected void handleSourceRangeStartPosBreach(ASTNode elem) {
-				String nodeStr = NodeUtil.getSubString(fullSource, elem.getSourceRange());
-				String parentStr = NodeUtil.getSubString(fullSource, elem.getParent().getSourceRange());
+				//String nodeStr = NodeUtil.getSubString(fullSource, elem.getSourceRange());
+				//String parentStr = NodeUtil.getSubString(fullSource, elem.getParent().getSourceRange());
 				assertFail();
 			}
 		};

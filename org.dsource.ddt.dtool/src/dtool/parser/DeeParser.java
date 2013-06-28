@@ -20,43 +20,45 @@ import dtool.parser.LexElement.MissingLexElement;
 
 /**
  * Concrete D Parser class
- * 
  */
-// XXX: BM: this code is a bit convoluted and strange, we use inheritance just for the sake of namespace importing
-public class DeeParser extends DeeParser_Statements {
+public class DeeParser 
+//It's not very elegant, but inheritance is used here just for the purpose of namespace importing:
+	extends DeeParser_Statements 
+{
 	
 	public static DeeParserResult parseSource(String source, String defaultModuleName) {
 		DeeParser deeParser = new DeeParser(source);
-		DeeParserResult result = new DeeParserResult(deeParser.parseModule(defaultModuleName), deeParser);
-		result.module.doAnalysisOnTree();
-		return result;
+		return deeParser.parseUsingRule(null, defaultModuleName);
 	}
 	
 	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule) {
-		return parseUsingRule(parseRule.id);
+		return parseUsingRule(parseRule, "__unnamed_module");
 	}
-	public DeeParserResult parseUsingRule(String parseRule) {
+	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule, String defaultModuleName) {
 		NodeResult<? extends ASTNode> nodeResult;
 		if(parseRule == null) {
-			nodeResult = parseModule("__unnamed_module");
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_EXPRESSION.id)) {
+			nodeResult = parseModule(defaultModuleName);
+		} else if(parseRule == DeeParser.RULE_EXPRESSION) {
 			nodeResult = parseExpression();
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_REFERENCE.id)) {
+		} else if(parseRule == DeeParser.RULE_REFERENCE) {
 			nodeResult = parseTypeReference();
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_DECLARATION.id)) {
+		} else if(parseRule == DeeParser.RULE_DECLARATION) {
 			nodeResult = parseDeclaration();
-		} else if(parseRule.equalsIgnoreCase(RULE_TYPE_OR_EXP.id) || parseRule.equalsIgnoreCase("TypeOrExp")) {
+		} else if(parseRule == RULE_TYPE_OR_EXP) {
 			nodeResult = parseTypeOrExpression(true);
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_INITIALIZER.id)) {
+		} else if(parseRule == DeeParser.RULE_INITIALIZER) {
 			nodeResult = parseInitializer();
-		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_STATEMENT.id)) {
+		} else if(parseRule == DeeParser.RULE_STATEMENT) {
 			nodeResult = parseStatement();
-		} else if(parseRule.equalsIgnoreCase("INIT_STRUCT")) {
+		} else if(parseRule == DeeParser.RULE_STRUCT_INITIALIZER) {
 			nodeResult = parseStructInitializer();
 		} else {
 			throw assertFail();
 		}
 		assertTrue(enabled);
+		if(nodeResult.node != null) {
+			nodeResult.node.doSimpleAnalysisOnTree();
+		}
 		return new DeeParserResult(nodeResult, this);
 	}
 	

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.NodeData;
 import dtool.ast.SourceRange;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.DeclBlock;
@@ -642,7 +641,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			}
 			if(!arrayInitializerCouldParseAsArrayLiteral(arrayInit)) {
 				ParserError error = createError(ParserErrorTypes.INIT_USED_IN_EXP, arrayInit.getSourceRange(), null);
-				arrayInit.removeData(NodeData.DEFAULT_PARSED_STATUS.getClass());
+				arrayInit.resetData();
 				conclude(error, arrayInit);
 			} else {
 				// Even if initializer can be parsed as array literal, we place it in exp without any node conversion
@@ -737,6 +736,9 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	public static boolean initializerCanParseAsExp(IInitializer initializer) {
 		return initializer instanceof Expression || initializer instanceof InitializerArray;
 	}
+	
+	public static final ParseRuleDescription RULE_STRUCT_INITIALIZER = 
+		new ParseRuleDescription("StructInit", "StructInitializer");
 	
 	public NodeResult<InitializerStruct> parseStructInitializer() {
 		ParseStructInitEntry listParse = new ParseStructInitEntry();

@@ -954,6 +954,10 @@ protected class ParseRule_Expression {
 	
 	/* ---------------- parse TypeOrExp ----------------*/
 	
+	public NodeResult<Resolvable> parseTypeOrExpression() {
+		return parseTypeOrExpression(true);
+	}
+	
 	public NodeResult<Resolvable> parseTypeOrExpression(boolean ambiguousToRef) {
 		return parseTypeOrExpression(ANY_OPERATOR, ambiguousToRef);
 	}

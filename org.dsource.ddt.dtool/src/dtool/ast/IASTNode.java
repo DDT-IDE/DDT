@@ -24,6 +24,7 @@ public interface IASTNode extends IElement, IVisitable<IASTVisitor> {
 	int getStartPos();
 	int getEndPos();
 	
+	@Deprecated
 	boolean hasNoSourceRangeInfo();
 	
 	String toStringAsNode(boolean printRangeInfo);

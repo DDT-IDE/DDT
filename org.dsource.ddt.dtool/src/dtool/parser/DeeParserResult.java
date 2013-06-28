@@ -11,6 +11,7 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class DeeParserResult {
 	public final Module module;
 	public final List<ParserError> errors;
 	
-	public DeeParserResult(NodeResult<? extends ASTNode> result, DeeParser parser) {
+	protected DeeParserResult(NodeResult<? extends ASTNode> result, DeeParser parser) {
 		this(parser.getSource(), result.node, result.ruleBroken, initErrors(parser.lexerErrors, result.node));
 		parser.lexerErrors = null;
 	}
@@ -42,6 +43,7 @@ public class DeeParserResult {
 		this.ruleBroken = ruleBroken;
 		this.module = node instanceof Module ? (Module) node : null;
 		this.errors = Collections.unmodifiableList(errors);
+		assertTrue(node == null || node.getData().isLocallyAnalyzedStatus());
 	}
 	
 	public static List<ParserError> initErrors(ArrayList<ParserError> lexerErrors, ASTNode resultNode) {

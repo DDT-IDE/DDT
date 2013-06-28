@@ -1,5 +1,6 @@
 package dtool.ast;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -14,17 +15,15 @@ public abstract class NodeData {
 	
 	public abstract boolean isParsedStatus();
 	
+	public abstract boolean isLocallyAnalyzedStatus();
+	
 	public abstract Collection<ParserError> getNodeErrors();
 	
 	public boolean hasErrors() {
 		return getNodeErrors().size() > 0;
 	}
 	
-	@SuppressWarnings("unused")
-	public void attachedToNode( ASTNode node) {
-	}
-	
-	public static NodeData CREATED_STATUS = new PreParseNodeData() {
+	public static CreatedStatusNodeData CREATED_STATUS = new CreatedStatusNodeData() {
 		
 		@Override
 		public String toString() {
@@ -33,21 +32,44 @@ public abstract class NodeData {
 		
 	};
 	
-	public void setPostParseStatus() {
-		// TODO 
-	}
 	
-	public static class PreParseNodeData extends NodeData {
-
+	public static class CreatedStatusNodeData extends NodeData {
+		
 		@Override
 		public boolean isParsedStatus() {
 			return false;
 		}
 		
 		@Override
+		public boolean isLocallyAnalyzedStatus() {
+			return false;
+		};
+		
+		@Override
 		public Collection<ParserError> getNodeErrors() {
 			throw assertFail();
-		};
+		}
+		
+		public void setParsed(ASTNode node) {
+			setParsedWithErrors(node, (ParserError[]) null);
+		}
+		
+		public void setParsedWithErrors(final ASTNode node, ParserError... errors) {
+			// Ensure children are also in parsed status
+			node.visitDirectChildren(new ASTDirectChildrenVisitor() {
+				@Override
+				protected void geneticChildrenVisit(ASTNode child) {
+					assertTrue(child.getParent() == node);
+					assertTrue(child.isParsedStatus());
+				}
+			});
+			
+			if(errors == null) {
+				node.setData(NodeData.DEFAULT_PARSED_STATUS);
+			} else {
+				node.setData(new ParsedNodeDataWithErrors(errors));
+			}
+		}
 		
 	}
 	
@@ -63,15 +85,8 @@ public abstract class NodeData {
 		}
 		
 		@Override
-		public void attachedToNode(final ASTNode node) {
-			// Ensure children are also in parsed status
-			node.accept(new ASTDirectChildrenVisitor() {
-				@Override
-				protected void geneticChildrenVisit(ASTNode child) {
-					assertTrue(child.getParent() == node);
-					assertTrue(child.isParsedStatus());
-				}
-			});
+		public boolean isLocallyAnalyzedStatus() {
+			return false;
 		}
 		
 		@Override
@@ -82,6 +97,15 @@ public abstract class NodeData {
 		@Override
 		public String toString() {
 			return "(PARSED)";
+		}
+		
+		public void setLocallyAnalysedData(ASTNode node) {
+			if(this == DEFAULT_PARSED_STATUS) {
+				// Reuse instance to avoid unnecessary allocations
+				node.setData(DEFAULT_LOCALLY_ANALYZED_STATUS);
+			} else {
+				node.setData(new AnalysedNodeData(this));
+			}
 		}
 		
 	}
@@ -101,6 +125,33 @@ public abstract class NodeData {
 		public Collection<ParserError> getNodeErrors() {
 			return errors;
 		};
+		
+	}
+	
+	public static NodeData DEFAULT_LOCALLY_ANALYZED_STATUS = new AnalysedNodeData(DEFAULT_PARSED_STATUS);
+	
+	public static class AnalysedNodeData extends NodeData {
+		
+		protected NodeData parsedStatus;
+		
+		public AnalysedNodeData(NodeData parsedStatus) {
+			this.parsedStatus = assertNotNull_(parsedStatus);
+		}
+		
+		@Override
+		public boolean isParsedStatus() {
+			return false;
+		}
+		
+		@Override
+		public boolean isLocallyAnalyzedStatus() {
+			return true;
+		}
+		
+		@Override
+		public Collection<ParserError> getNodeErrors() {
+			return parsedStatus.getNodeErrors();
+		}
 		
 	}
 	

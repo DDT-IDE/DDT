@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
+import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -43,6 +44,7 @@ import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.AutoReference;
 import dtool.ast.statements.SimpleVariableDef;
 import dtool.ast.statements.StatementExpression;
+import dtool.parser.AbstractParser.ParseRuleDescription;
 import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
 import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
@@ -138,7 +140,7 @@ public class DeeParserTester extends CommonTestUtils {
 		ASTNode mainNode = result.node; // a null result may make sense in some tests
 		
 		if(mainNode != null) {
-			checkBasicStructureContracts(array(mainNode), null);
+			checkBasicStructureContracts(mainNode);
 		}
 		
 		checkExpectedStructure(mainNode, expectedStructure);
@@ -178,12 +180,27 @@ public class DeeParserTester extends CommonTestUtils {
 	
 	/* ============= Structure Checkers ============= */
 	
-	public static void checkBasicStructureContracts(ASTNode[] children, ASTNode parent) {
-		for (ASTNode astNode : children) {
-			assertTrue(astNode.getParent() == parent);
-			assertTrue(astNode.isParsedStatus());
-			checkBasicStructureContracts(astNode.getChildren(), astNode);
-		}
+	public static void checkBasicStructureContracts(ASTNode parsedNode) {
+		assertTrue(parsedNode.getParent() == null);
+		parsedNode.accept(new ASTHomogenousVisitor() {
+			ASTNode parent = null;
+			ASTNode lastVisitedNode = null;
+			
+			@Override
+			public boolean preVisit(ASTNode node) {
+				assertTrue(node.isPostParseStatus());
+				assertTrue(node.getParent() == parent);
+				parent = node;
+				lastVisitedNode = node;
+				return true;
+			}
+			
+			@Override
+			public void postVisit(ASTNode node) {
+				assertTrue(node.hasChildren() == (node != lastVisitedNode));
+				parent = node.getParent();
+			}
+		});
 	}
 	
 	public static class NamedNodeElement {
@@ -316,9 +333,30 @@ public class DeeParserTester extends CommonTestUtils {
 			
 			return null;
 		}
-		return deeParser.parseUsingRule(parseRule);
+		return deeParser.parseUsingRule(getParseRule(parseRule));
 	}
 	
+	public static ParseRuleDescription getParseRule(String parseRuleName) {
+		if(parseRuleName == null) {
+			return null;
+		} else if(parseRuleName.equalsIgnoreCase(DeeParser.RULE_EXPRESSION.id)) {
+			return DeeParser.RULE_EXPRESSION;
+		} else if(parseRuleName.equalsIgnoreCase(DeeParser.RULE_REFERENCE.id)) {
+			return DeeParser.RULE_REFERENCE;
+		} else if(parseRuleName.equalsIgnoreCase(DeeParser.RULE_DECLARATION.id)) {
+			return DeeParser.RULE_DECLARATION;
+		} else if(parseRuleName.equalsIgnoreCase(DeeParser.RULE_TYPE_OR_EXP.id) 
+			|| parseRuleName.equalsIgnoreCase("TypeOrExp")) {
+			return DeeParser.RULE_TYPE_OR_EXP;
+		} else if(parseRuleName.equalsIgnoreCase(DeeParser.RULE_INITIALIZER.id)) {
+			return DeeParser.RULE_INITIALIZER;
+		} else if(parseRuleName.equalsIgnoreCase(DeeParser.RULE_STATEMENT.id)) {
+			return DeeParser.RULE_STATEMENT;
+		} else if(parseRuleName.equalsIgnoreCase("INIT_STRUCT")) {
+			return DeeParser.RULE_STRUCT_INITIALIZER;
+		}
+		throw assertFail();
+	}
 	
 	public void runAdditionalTests(final DeeParserResult result, final String parsedSource) {
 		

@@ -10,11 +10,13 @@
  *******************************************************************************/
 package dtool.ast;
 
+import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
-import dtool.ast.NodeData.ParsedNodeDataWithErrors;
+import dtool.ast.NodeData.CreatedStatusNodeData;
+import dtool.ast.NodeData.ParsedNodeData;
 import dtool.ast.definitions.Module;
 import dtool.parser.ParserError;
 import dtool.resolver.INamedScope;
@@ -32,7 +34,7 @@ public abstract class ASTNode implements IASTNode {
 	/** AST node parent, null if the node is the tree root. */
 	public ASTNode parent = null;
 	/** Custom field to store various kinds of data */
-	protected NodeData data = NodeData.CREATED_STATUS; 
+	private NodeData data = NodeData.CREATED_STATUS; 
 	
 	
 	public ASTNode() {
@@ -42,6 +44,9 @@ public abstract class ASTNode implements IASTNode {
 	public final ASTNode asNode() {
 		return this;
 	}
+	
+	/* ------------------------  Source range ------------------------ */
+
 	
 	/** Gets the source range start position. */
 	@Override
@@ -81,6 +86,7 @@ public abstract class ASTNode implements IASTNode {
 	
 	/** Checks if the node has no source range info. */
 	@Override
+	@Deprecated
 	public final boolean hasNoSourceRangeInfo() {
 		return !hasSourceRangeInfo();
 	}
@@ -103,6 +109,8 @@ public abstract class ASTNode implements IASTNode {
 	public final void setSourceRange(SourceRange sourceRange) {
 		setSourcePosition(sourceRange.getOffset(), sourceRange.getOffset() + sourceRange.getLength());
 	}
+	
+	/* ------------------------  Parent and children visitor ------------------------ */
 	
 	@Override
 	public final ASTNode getParent() {
@@ -128,66 +136,6 @@ public abstract class ASTNode implements IASTNode {
 		this.parent = null;
 	}
 	
-	public NodeData getData() {
-		return data;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <T> T getData(Class<T> klass) {
-		assertTrue(klass.isAssignableFrom(data.getClass()));
-		return (T) data;
-	}
-	
-	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */
-	public void setData(NodeData data) {
-		assertTrue(data != null);
-		assertTrue(this.data == NodeData.CREATED_STATUS); 
-		this.data = data;
-		this.data.attachedToNode(this);
-	}
-	
-	/** Removes the data of this node. Checks that the previous data class was exactly the same as given klass. 
-	 * @return the previous data. */
-	public <T extends NodeData> T removeData(Class<T> klass) {
-		assertTrue(klass.isAssignableFrom(data.getClass()));
-		T oldData = klass.cast(data);
-		this.data = NodeData.CREATED_STATUS;
-		return oldData;
-	}
-	
-	public void setParsedStatus() {
-		setData(NodeData.DEFAULT_PARSED_STATUS);
-	}
-	
-	public void setParsedStatusWithErrors(ParserError... errors) {
-		setData(new ParsedNodeDataWithErrors(errors));
-	}
-	
-	public final boolean isParsedStatus() {
-		return getData().isParsedStatus();
-	}
-	
-	/* ------------------------------------------------------------ */
-	
-	public abstract ASTNodeTypes getNodeType();
-
-	@Override
-	public int getElementType() {
-		return getNodeType().ordinal(); 
-	}
-	
-	
-	@Override
-	public ASTNode[] getChildren() {
-		return ASTChildrenCollector.getChildrenArray(this);
-	}
-	
-	@Override
-	public boolean hasChildren() {
-		// TODO: fix performance issue here.
-		return getChildren().length > 0;
-	}
-	
 	/** Accept a visitor into this node. */
 	@Override
 	public final void accept(IASTVisitor visitor) {
@@ -204,6 +152,85 @@ public abstract class ASTNode implements IASTNode {
 	
 	public abstract void accept0(IASTVisitor visitor);
 	
+	public void visitDirectChildren(ASTDirectChildrenVisitor directChildrenVisitor) {
+		accept(directChildrenVisitor); // This might be optimized in the future
+	}
+	
+	@Override
+	public boolean hasChildren() {
+		CheckForChildrenVisitor checkForChildrenVisitor = new CheckForChildrenVisitor();
+		visitDirectChildren(checkForChildrenVisitor);
+		return checkForChildrenVisitor.hasChildren;
+	}
+	
+	public static final class CheckForChildrenVisitor extends ASTDirectChildrenVisitor {
+		boolean hasChildren = false;
+		
+		@Override
+		protected void geneticChildrenVisit(ASTNode child) {
+			hasChildren = true;
+		}
+	}
+	
+	@Override
+	public ASTNode[] getChildren() {
+		return ASTChildrenCollector.getChildrenArray(this);
+	}
+	
+	/* ------------------------  Node type ------------------------  */
+	
+	public abstract ASTNodeTypes getNodeType();
+
+	@Override
+	public int getElementType() {
+		return getNodeType().ordinal(); 
+	}
+	
+	/* ------------------------  Node data ------------------------  */
+	
+	public final NodeData getData() {
+		return assertNotNull_(data);
+	}
+	
+	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */
+	protected final void setData(NodeData data) {
+		assertNotNull(data);
+		this.data = data;
+	}
+	
+	/** Removes the data of this node. Can only remove data if node is in parsed status. 
+	 * @return the previous data. */
+	public NodeData resetData() {
+		assertTrue(isParsedStatus()); // can only remove data if node is in parsed status
+		NodeData oldData = data;
+		this.data = NodeData.CREATED_STATUS;
+		return oldData;
+	}
+	
+	protected CreatedStatusNodeData getDataAtCreatedPhase() {
+		assertTrue(data == NodeData.CREATED_STATUS); 
+		//return (ParsedNodeData) this.data;
+		return NodeData.CREATED_STATUS;
+	}
+	
+	protected ParsedNodeData getDataAtParsedPhase() {
+		assertTrue(data.isParsedStatus()); 
+		return (ParsedNodeData) data;
+	}
+	
+	public void setParsedStatus() {
+		getDataAtCreatedPhase().setParsed(this);
+	}
+	
+	public void setParsedStatusWithErrors(ParserError... errors) {
+		getDataAtCreatedPhase().setParsedWithErrors(this, errors);
+	}
+	
+	public final boolean isParsedStatus() {
+		return getData().isParsedStatus();
+	}
+	
+	/* ------------------------------------------------------------ */
 	
 	public INamedScope getModuleScope() {
 		return NodeUtil.getParentModule(this);
@@ -306,25 +333,35 @@ public abstract class ASTNode implements IASTNode {
 	
 	/* =============== Analysis =============== */
 	
-	public void doAnalysisOnTree() {
-		assertTrue(getData().isParsedStatus());
-		ASTHomogenousVisitor childrenVisitor = new ASTHomogenousVisitor() {
-			@Override
-			public boolean preVisit(ASTNode node) {
-				doNodeAnalysis();
-				return true;
-			}
-			
-			@Override
-			public void postVisit(ASTNode node) {
-				getData().setPostParseStatus();
-			}
-		};
+	protected static final class LocalAnalysisVisitor extends ASTHomogenousVisitor {
+		@Override
+		public boolean preVisit(ASTNode node) {
+			node.doNodeSimpleAnalysis();
+			return true;
+		}
+		
+		@Override
+		public void postVisit(ASTNode node) {
+			node.endNodeSimpleAnalysis();
+		}
+	}
+	
+	public void doSimpleAnalysisOnTree() {
+		ASTHomogenousVisitor childrenVisitor = new LocalAnalysisVisitor();
 		this.accept(childrenVisitor);
 	}
 	
-	public void doNodeAnalysis() {
+	public void doNodeSimpleAnalysis() {
+		assertTrue(isParsedStatus());
 		// Default implementation: do nothing
+	}
+	
+	public void endNodeSimpleAnalysis() {
+		getDataAtParsedPhase().setLocallyAnalysedData(this);
+	}
+	
+	public boolean isPostParseStatus() {
+		return getData().isLocallyAnalyzedStatus();
 	}
 	
 }
