@@ -2,7 +2,6 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 
 
@@ -22,12 +21,7 @@ public class DefSymbol extends Symbol {
 	}
 	
 	@Override
-	public void setParent(ASTNode parent) {
-		checkParent(parent);
-		super.setParent(parent);
-	}
-	
-	public void checkParent(ASTNode parent) {
+	protected void checkNewParent() {
 		assertTrue(parent instanceof DefUnit);
 	}
 	

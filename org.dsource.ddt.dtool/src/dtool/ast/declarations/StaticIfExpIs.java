@@ -66,8 +66,7 @@ public class StaticIfExpIs extends Expression {
 	}
 	
 	@Override
-	public void afterModuleParseCheck() {
-		super.afterModuleParseCheck();
+	public void doNodeAnalysis() {
 		if(!(getParent() instanceof DeclarationStaticIf)) {
 			// TODO add error
 		}
@@ -99,8 +98,7 @@ public class StaticIfExpIs extends Expression {
 		}
 		
 		@Override
-		public void afterModuleParseCheck() {
-			super.afterModuleParseCheck();
+		protected void checkNewParent() {
 			assertTrue(getParent() instanceof StaticIfExpIs);
 		}
 		

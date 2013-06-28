@@ -12,19 +12,19 @@ package dtool.ast;
 
 
 /**
- * Util Visitor to visit node's direct children.
+ * Utility Visitor to visit node's direct children.
  */
 public class ASTDirectChildrenVisitor extends ASTDefaultVisitor {
 	
-	protected final int maxDepth = 1;
+	protected static final int maxDepth = 1;
 	protected int depth = 0; 
 	
 	@Override
 	public boolean preVisit(ASTNode node) {
-		depth++;
-		if(depth != 1) {
+		if(depth == 1) {
 			geneticChildrenVisit(node);
 		}
+		depth++;
 		return depth <= maxDepth;
 	}
 	

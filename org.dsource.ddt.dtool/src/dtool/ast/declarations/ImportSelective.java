@@ -1,6 +1,7 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Iterator;
 
@@ -38,6 +39,15 @@ public class ImportSelective extends ASTNode implements INonScopedBlock, IImport
 		return ASTNodeTypes.IMPORT_SELECTIVE;
 	}
 	
+	@Override
+	protected void checkNewParent() {
+		assertTrue(parent instanceof DeclarationImport);
+	}
+	
+	public DeclarationImport getDeclarationImport() {
+		return (DeclarationImport) super.getParent();
+	}
+	
 	public ArrayView<IImportSelectiveSelection> parentizeFrags(ArrayView<IImportSelectiveSelection> frags) {
 		if (frags != null) {
 			for (IImportSelectiveSelection selection : frags) {
@@ -67,8 +77,8 @@ public class ImportSelective extends ASTNode implements INonScopedBlock, IImport
 			TreeVisitor.acceptChildren(visitor, impSelFrags);
 		}
 		visitor.endVisit(this);
-		
 	}
+	
 	@Override
 	public Iterator<? extends ASTNode> getMembersIterator() {
 		return impSelFrags.iterator();

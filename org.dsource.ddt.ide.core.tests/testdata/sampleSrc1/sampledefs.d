@@ -36,7 +36,7 @@ union Union { }
 
 enum Enum { EnumMemberA, EnumMemberB }
 
-typedef TargetBar Typedef; // TODO remove
+//typedef TargetBar Typedef;
 
 alias TargetFoo Alias;
 

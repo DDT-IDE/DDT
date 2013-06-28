@@ -105,16 +105,21 @@ public abstract class ASTNode implements IASTNode {
 	}
 	
 	@Override
-	public ASTNode getParent() {
+	public final ASTNode getParent() {
 		return parent;
 	}
 	
 	/** Set the parent of this node. Cannot be null. Cannot set parent twice without explicitly detaching. */
 	@Override
-	public void setParent(ASTNode parent) {
+	public final void setParent(ASTNode parent) {
 		assertTrue(parent != null);
 		assertTrue(this.parent == null);
 		this.parent = parent;
+		checkNewParent();
+	}
+	
+	protected void checkNewParent() {
+		// Default implementation: do nothing
 	}
 	
 	public void detachFromParent() {
@@ -158,13 +163,8 @@ public abstract class ASTNode implements IASTNode {
 		setData(new ParsedNodeDataWithErrors(errors));
 	}
 	
-	public boolean isParsedStatus() {
+	public final boolean isParsedStatus() {
 		return getData().isParsedStatus();
-	}
-	
-	public void afterModuleParseCheck() {
-		// TODO: call afterModuleParseCheck
-		assertTrue(isParsedStatus());
 	}
 	
 	/* ------------------------------------------------------------ */
@@ -302,6 +302,29 @@ public abstract class ASTNode implements IASTNode {
 	protected <T extends IASTNode> ArrayView<T> parentizeI(ArrayView<T> collection) {
 		parentize(CoreUtil.<ArrayView<ASTNode>>blindCast(collection), false);
 		return collection;
+	}
+	
+	/* =============== Analysis =============== */
+	
+	public void doAnalysisOnTree() {
+		assertTrue(getData().isParsedStatus());
+		ASTHomogenousVisitor childrenVisitor = new ASTHomogenousVisitor() {
+			@Override
+			public boolean preVisit(ASTNode node) {
+				doNodeAnalysis();
+				return true;
+			}
+			
+			@Override
+			public void postVisit(ASTNode node) {
+				getData().setPostParseStatus();
+			}
+		};
+		this.accept(childrenVisitor);
+	}
+	
+	public void doNodeAnalysis() {
+		// Default implementation: do nothing
 	}
 	
 }

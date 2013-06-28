@@ -41,7 +41,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		}
 		
 		@Override
-		public void checkParent(ASTNode parent) {
+		protected void checkNewParent() {
 		}
 	}
 	

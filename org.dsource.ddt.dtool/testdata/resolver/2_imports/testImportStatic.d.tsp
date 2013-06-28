@@ -1,7 +1,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@STATIC_Opt《static●》
+#@STATIC_Opt《static #STATIC_IMPORT(flag)●/**/》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PROJECT(importsProject) // Static import test
+module importStatic; #PROJECT(importsProject) // Static import test
 
 #@STATIC_Opt import pack.mod1#FIND¤【pack.mod1/】;
 #@STATIC_Opt import pack.mod2#FIND¤【pack.mod2/】, pack.sample#FIND¤【pack.sample/】, 
@@ -18,7 +18,7 @@ void func() {
 	pack.sample.foopublicImportVar#FIND¤【pack2.foopublic/foopublicImportVar】++;
 	pack.sample.fooprivateImportVar#FIND¤【】++;
 	
-	pack.sample.pack2.foopublic.foopublicImportVar#FIND¤【pack2.foopublic/foopublicImportVar】++;  /// ugly D!
+	pack.sample.pack2.foopublic.foopublicImportVar#FIND¤【pack2.foopublic/foopublicImportVar】++;
 	pack.sample.pack2.fooprivate.fooprivateImportVar#FIND¤【】;
-	
 }
+#?STATIC_IMPORT【 #REFSEARCH¤【importStatic▪pack▪func()】 】

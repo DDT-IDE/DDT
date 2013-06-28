@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import dtool.ast.ASTNode;
 import dtool.parser.LexElement.MissingLexElement;
 
 /**
@@ -26,35 +27,37 @@ public class DeeParser extends DeeParser_Statements {
 	
 	public static DeeParserResult parseSource(String source, String defaultModuleName) {
 		DeeParser deeParser = new DeeParser(source);
-		return new DeeParserResult(deeParser.parseModule(defaultModuleName), deeParser);
+		DeeParserResult result = new DeeParserResult(deeParser.parseModule(defaultModuleName), deeParser);
+		result.module.doAnalysisOnTree();
+		return result;
 	}
 	
 	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule) {
 		return parseUsingRule(parseRule.id);
 	}
 	public DeeParserResult parseUsingRule(String parseRule) {
-		DeeParserResult result;
+		NodeResult<? extends ASTNode> nodeResult;
 		if(parseRule == null) {
-			result = new DeeParserResult(parseModule("__unnamed_module"), this);
+			nodeResult = parseModule("__unnamed_module");
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_EXPRESSION.id)) {
-			result = new DeeParserResult(parseExpression(), this);
+			nodeResult = parseExpression();
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_REFERENCE.id)) {
-			result = new DeeParserResult(parseTypeReference(), this);
+			nodeResult = parseTypeReference();
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_DECLARATION.id)) {
-			result = new DeeParserResult(parseDeclaration(), this);
+			nodeResult = parseDeclaration();
 		} else if(parseRule.equalsIgnoreCase(RULE_TYPE_OR_EXP.id) || parseRule.equalsIgnoreCase("TypeOrExp")) {
-			result = new DeeParserResult(parseTypeOrExpression(true), this);
+			nodeResult = parseTypeOrExpression(true);
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_INITIALIZER.id)) {
-			result = new DeeParserResult(parseInitializer(), this);
+			nodeResult = parseInitializer();
 		} else if(parseRule.equalsIgnoreCase(DeeParser.RULE_STATEMENT.id)) {
-			result = new DeeParserResult(parseStatement(), this);
+			nodeResult = parseStatement();
 		} else if(parseRule.equalsIgnoreCase("INIT_STRUCT")) {
-			result = new DeeParserResult(parseStructInitializer(), this);
+			nodeResult = parseStructInitializer();
 		} else {
 			throw assertFail();
 		}
 		assertTrue(enabled);
-		return result;
+		return new DeeParserResult(nodeResult, this);
 	}
 	
 	

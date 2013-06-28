@@ -10,7 +10,6 @@ import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
-import dtool.ast.declarations.ImportStatic;
 import dtool.ast.declarations.PartialPackageDefUnitOfPackage;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
@@ -148,7 +147,7 @@ public class ReferenceResolver {
 	
 	private static void findDefUnitInSecondaryScope(IScope scope, CommonDefUnitSearch search) {
 		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
-
+		
 		IScope thisModule = scope.getModuleScope();
 		findDefUnits(search, iter, scope.hasSequentialLookup(), true, thisModule);
 	}
@@ -202,7 +201,7 @@ public class ReferenceResolver {
 	
 	/* ====================  import lookup  ==================== */
 
-	public static void findDefUnitInStaticImport(ImportStatic importStatic, CommonDefUnitSearch search) {
+	public static void findDefUnitInStaticImport(ImportContent importStatic, CommonDefUnitSearch search) {
 		DefUnit defunit = importStatic.getPartialDefUnit(search.modResolver);
 		if(defunit != null && search.matches(defunit))
 			search.addMatch(defunit);
@@ -211,7 +210,7 @@ public class ReferenceResolver {
 	public static void findDefUnitInContentImport(ImportContent impContent, CommonDefUnitSearch search) {
 		findDefUnitInStaticImport(impContent, search);
 		//if(search.isScopeFinished()) return;
-
+		
 		Module targetModule = findImporTargetModule(search.modResolver, impContent);
 		if (targetModule != null)
 			findDefUnitInScope(targetModule, search);

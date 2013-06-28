@@ -33,6 +33,10 @@ public abstract class NodeData {
 		
 	};
 	
+	public void setPostParseStatus() {
+		// TODO 
+	}
+	
 	public static class PreParseNodeData extends NodeData {
 
 		@Override
@@ -99,5 +103,5 @@ public abstract class NodeData {
 		};
 		
 	}
-
+	
 }
