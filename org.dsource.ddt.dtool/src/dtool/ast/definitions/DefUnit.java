@@ -75,6 +75,10 @@ public abstract class DefUnit extends ASTNode {
 		return defname.name;
 	}
 	
+	public boolean availableInRegularNamespace() {
+		return true;
+	}
+	
 	public boolean isSynthetic() {
 		// TODO need to define this properly
 		return getModuleNode() == null;
@@ -126,5 +130,5 @@ public abstract class DefUnit extends ASTNode {
 		}
 		return typeReference.toStringAsElement();
 	}
-	
+
 }

@@ -52,11 +52,6 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 	}
 	
 	@Override
-	public boolean matches(DefUnit defUnit) {
-		return matchesName(defUnit.getName());
-	}
-	
-	@Override
 	public boolean matchesName(String defName) {
 		return defName.startsWith(searchOptions.searchPrefix);
 	}

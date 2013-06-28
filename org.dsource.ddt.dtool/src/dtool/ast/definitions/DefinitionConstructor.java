@@ -56,4 +56,9 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 		return EArcheType.Constructor;
 	}
 	
+	@Override
+	public boolean availableInRegularNamespace() {
+		return false;
+	}
+	
 }
