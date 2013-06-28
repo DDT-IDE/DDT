@@ -1,4 +1,4 @@
-package dtool.resolver;
+package dtool.refmodel;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;

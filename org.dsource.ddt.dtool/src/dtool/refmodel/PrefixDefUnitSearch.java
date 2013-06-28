@@ -22,9 +22,12 @@ import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
-import dtool.contentassist.CompletionSession.ECompletionSessionResults;
+import dtool.contentassist.CompletionSession.ECompletionResultStatus;
+import dtool.parser.DeeLexer;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
+import dtool.parser.DeeTokens;
+import dtool.parser.Token;
 import dtool.refmodel.api.IDefUnitMatchAccepter;
 import dtool.refmodel.api.IModuleResolver;
 import dtool.refmodel.api.PrefixDefUnitSearchBase;
@@ -37,9 +40,10 @@ import dtool.refmodel.api.PrefixSearchOptions;
  */
 public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 	
-	private final IDefUnitMatchAccepter defUnitAccepter;
+	protected final IDefUnitMatchAccepter defUnitAccepter;
+	protected final Set<String> addedDefUnits = new HashSet<String>();
 	
-	private final Set<String> addedDefUnits = new HashSet<String>();
+	protected int relexStartPos;
 	
 	public PrefixDefUnitSearch(PrefixSearchOptions searchOptions, IScopeNode refScope, int refOffset,
 			IDefUnitMatchAccepter defUnitAccepter, IModuleResolver moduleResolver) {
@@ -88,34 +92,37 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 	}
 	
 	public static PrefixDefUnitSearch doCompletionSearch(CompletionSession session, DeeParserResult parseResult,
-		final int offset, IModuleResolver modResolver, IDefUnitMatchAccepter defUnitAccepter) {
+		final int offset, IModuleResolver mr, IDefUnitMatchAccepter defUnitAccepter) {
 		String source = parseResult.source;
 		assertTrue(offset >= 0 && offset <= source.length());
 		assertTrue(session.errorMsg == null);
-		session.resultCode = ECompletionSessionResults.RESULT_OK;
+		session.resultCode = ECompletionResultStatus.RESULT_OK;
 		
-		
-		if(parseResult == null) {
-			/*BUG here TODO: need to reimplement, check token list*/
-			CompletionSession.assignResult(session, ECompletionSessionResults.INVALID_LOCATION_INTOKEN, 
-				"Invalid location (inside token)");
-			return null;
-		}
 		
 		Module neoModule = parseResult.getParsedModule(); 
+		ASTNodeFinderExtension nodeFinder = new ASTNodeFinderExtension(neoModule, offset, true);
+		ASTNode node = nodeFinder.match;
 		
-		/* ============================================== */
-		// : Do actual completion search
-		
-		
-		ASTNode node = ASTNodeFinder.findElement(neoModule, offset);
-		assertNotNull(node);
+		// NOTE: for performance reasons we want to provide a startPos as close as possible to offset,
+		// so we don't re-lex too many tokens. ASTNodeFinderExtension provides that.
+		// TODO: find a way to test the above premise?
+		int relexStartPos = nodeFinder.lastNodeBoundary;
+		Token token = findTokenAtOffset(offset, source, relexStartPos);
 		
 		PrefixSearchOptions searchOptions = new PrefixSearchOptions();
 		IScopeNode refScope = ScopeUtil.getScopeNode(node);
-		PrefixDefUnitSearch search = new PrefixDefUnitSearch(searchOptions, refScope, offset, defUnitAccepter,
-				modResolver);
+		PrefixDefUnitSearch search = new PrefixDefUnitSearch(searchOptions, refScope, offset, defUnitAccepter, mr);
+		search.relexStartPos = relexStartPos;
 		
+		if((offset > token.getStartPos() && offset < token.getEndPos()) && 
+			!(token.type == DeeTokens.WHITESPACE || token.type == DeeTokens.IDENTIFIER)) {
+			CompletionSession.assignResult(session, ECompletionResultStatus.INVALID_TOKEN_LOCATION, 
+				"Invalid location (inside unmodifiable token)");
+			return null;
+		}
+		
+		/* ============================================== */
+		// : Do actual completion search
 		
 		if(node instanceof NamedReference)  {
 			NamedReference namedRef = (NamedReference) node;
@@ -143,7 +150,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				}
 				
 				if(offset <= dotOffset) {
-					CompletionSession.assignResult(session, ECompletionSessionResults.WEIRD_LOCATION_REFQUAL, 
+					CompletionSession.assignResult(session, ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
 							"Invalid Location: before qualifier dot but not next to id.");
 					return search;
 				}
@@ -175,8 +182,8 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 			
 			namedRef.doSearch(search);
 		} else if(node instanceof Reference) {
-			CompletionSession.assignResult(session, ECompletionSessionResults.NOTIMPLEMENTED, 
-					"Don't know how to complete for node: "+node+" (DDT TODO)");
+			CompletionSession.assignResult(session, ECompletionResultStatus.OTHER_REFERENCE, 
+					"Can't complete for node: "+node.getNodeType()+"");
 			return search;
 		} else {
 			// Since picked node was not a reference,
@@ -196,9 +203,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				if(offset == node.getStartPos() || offset == node.getEndPos()) {
 					node = node.getParent();
 				} else {
-					CompletionSession.assignResult(session, ECompletionSessionResults.INVALID_LOCATION_INSCOPE, 
-							"Invalid location in scope");
-					return search;
+					break;
 				}
 			}
 			
@@ -207,6 +212,56 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		
 		assertTrue(session.errorMsg == null);
 		return search;
+	}
+	
+	public static class ASTNodeFinderExtension extends ASTNodeFinder {
+		
+		public int lastNodeBoundary = -1;
+		
+		public ASTNodeFinderExtension(ASTNode root, int offset, boolean inclusiveEnd) {
+			super(root, offset, inclusiveEnd);
+			findNodeInAST();
+			assertTrue(offset >= root.getStartPos() && offset <= root.getEndPos());
+			assertTrue(lastNodeBoundary >= 0);
+		}
+		
+		@Override
+		public boolean preVisit(ASTNode node) {
+			if(node.getStartPos() <= offset ) {
+				lastNodeBoundary = node.getStartPos();
+			}
+			return super.preVisit(node);
+		}
+		
+		@Override
+		public void postVisit(ASTNode node) {
+			if(node.getEndPos() <= offset ) {
+				lastNodeBoundary = node.getEndPos();
+			}
+			super.postVisit(node);
+		}
+		
+		@Override
+		public boolean findOnNode(ASTNode node) {
+			return super.findOnNode(node);
+		}
+	}
+	
+	/** Find the token at given offset of given source (inclusive end).
+	 * Start lexing search from startPos as an optimization, so we don't have to lex full source.
+	 * startpos should correspond to a token start in source. 
+	 */
+	public static Token findTokenAtOffset(final int offset, String source, int startPos) {
+		assertTrue(startPos <= offset);
+		DeeLexer lexer = new DeeLexer(source);
+		lexer.reset(startPos);
+		Token token;
+		while(true) {
+			token = lexer.next();
+			if(offset <= token.getEndPos())
+				return token;
+			assertTrue(token.type != DeeTokens.EOF);
+		}
 	}
 
 	private static boolean isInsideNonScopeBlock(ASTNode node, int offset, String sourceStr) {

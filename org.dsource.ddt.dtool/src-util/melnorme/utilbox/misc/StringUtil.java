@@ -87,34 +87,49 @@ public final class StringUtil {
 		return false;
 	}
 
-	/** @return "" if string is null, or the given string otherwise. */
+	/** @return "" if given string is null, or the given string otherwise. */
 	public static String nullAsEmpty(String string) {
 		if(string == null)
 			return "";
 		return string;
 	}
-
-	/** @return given string with strtrail appended, if given string isn't empty. */
-	public static String trailString(String string, String strtrail) {
-		if(string.length() > 0)
-			return string + strtrail;
-		else 
-			return string;
+	
+	/** @return null if given string is empty, or the given string otherwise. */
+	public static String emptyAsNull(String string) {
+		if(string != null && string.isEmpty())
+			return null;
+		return string;
 	}
 	
-	/** @return a substring of given string up until the beggining of first match 
-	 * of given match, or the whole string if no match is found. */
-	public static String upUntil(String string, String match) {
-		final int index = string.indexOf(match);
+	/** @return a substring of given string up until the start of the first occurrence of given match, 
+	 * or the whole string if no match is found. */
+	public static String substringUntilMatch(String string, String match) {
+		int index = string.indexOf(match);
 		return (index == -1) ? string : string.substring(0, index);
 	}
 	
-	/** @return a substring of given string starting from the end of the last occurrence 
-	 * of given match, or the whole string if no match is found. */
-	public static String fromAfterLastMatch(String string, String match) {
-		int lastIx = string.lastIndexOf(match);
-		return (lastIx == -1) ? string : string.substring(lastIx + match.length());
+	/** @return a substring of given string up until the start of the first occurrence of given match,  
+	 * or null if no match is found. */
+	public static String segmentUntilMatch(String string, String match) {
+		int index = string.indexOf(match);
+		return (index == -1) ? null   : string.substring(0, index);
 	}
+	
+	/** @return a substring of given string starting from the end of the last occurrence of given match, 
+	 * or the whole string if no match is found. */
+	public static String substringAfterMatch(String string, String match) {
+		int index = string.indexOf(match);
+		return (index == -1) ? string : string.substring(index + match.length());
+	}
+	
+	/** @return a substring of given string starting from the end of the first occurrence of given match, 
+	 * or null if no match is found. */
+	public static String segmentAfterMatch(String string, String match) {
+		int index = string.indexOf(match);
+		return (index == -1) ? null   : string.substring(index + match.length());
+	}
+	
+
 
 	/** @return a copy of given string without leading spaces. */
 	public static String trimLeadingSpaces(String string) {
@@ -128,14 +143,14 @@ public final class StringUtil {
 	public static String newSpaceFilledString(int length) {
 		return newFilledString(length, ' ');
 	}
-
+	
 	/** @return a String of given length filled with given ch. */
 	public static String newFilledString(int length, char ch) {
 		char str[] = new char[length];
 		Arrays.fill(str, ch);
 		return new String(str);
 	}
-
+	
 	/** @return a String of given length filled with given str. */
 	public static String newFilledString(int length, String str) { 
 		StringBuffer sb = new StringBuffer(length * str.length());

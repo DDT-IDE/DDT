@@ -85,13 +85,6 @@ public class NewUtils {
 		return list.toArray((T[])Array.newInstance(cpType, list.size()));
 	}
 	
-	/** @return a substring of given string starting from the end of the first occurrence 
-	 * of given match, or null if no match is found. */
-	public static String fromIndexOf(String match, String string) {
-		int lastIx = string.indexOf(match);
-		return (lastIx == -1) ? null : string.substring(lastIx + match.length());
-	}
-	
 	public static <T> T[] emptyToNull(T[] array) {
 		if(array == null || array.length == 0) {
 			return null;

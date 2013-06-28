@@ -11,10 +11,10 @@ import org.eclipse.dltk.core.ModelException;
 import org.junit.After;
 
 import dtool.contentassist.CompletionSession;
-import dtool.contentassist.CompletionSession.ECompletionSessionResults;
+import dtool.contentassist.CompletionSession.ECompletionResultStatus;
+import dtool.refmodel.CompareDefUnits;
+import dtool.refmodel.DefUnitArrayListCollector;
 import dtool.refmodel.api.PrefixDefUnitSearchBase;
-import dtool.resolver.CompareDefUnits;
-import dtool.resolver.DefUnitArrayListCollector;
 import dtool.tests.DToolBaseTest;
 
 public class CodeCompletion__Common extends DToolBaseTest {
@@ -58,7 +58,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 		return srcModule.getBuffer();
 	}
 	
-	protected PrefixDefUnitSearchBase testUnavailableCompletion(int offset, ECompletionSessionResults caResult) 
+	protected PrefixDefUnitSearchBase testUnavailableCompletion(int offset, ECompletionResultStatus caResult) 
 			throws ModelException {
 		CompletionSession session = new CompletionSession();
 		PrefixDefUnitSearchBase search = DeeCompletionEngine.doCompletionSearch(offset, srcModule, 
@@ -88,9 +88,9 @@ public class CodeCompletion__Common extends DToolBaseTest {
 				repOffset, srcModule, srcModule.getSource(), session, defUnitAccepter);
 		
 		if(expectedProposals == null) {
-			assertTrue(session.resultCode != ECompletionSessionResults.RESULT_OK);
+			assertTrue(session.resultCode != ECompletionResultStatus.RESULT_OK);
 		} else {
-			assertTrue(session.resultCode == ECompletionSessionResults.RESULT_OK, "Code Completion Unavailable");
+			assertTrue(session.resultCode == ECompletionResultStatus.RESULT_OK, "Code Completion Unavailable");
 			assertTrue(completionSearch.searchOptions.rplLen == repLen);
 			
 			CompareDefUnits.checkResults(defUnitAccepter.results, expectedProposals, removeObjectIntrinsics);

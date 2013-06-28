@@ -5,8 +5,8 @@ import mmrnmhrm.core.codeassist.DeeCompletionEngine;
 
 import org.junit.Test;
 
+import dtool.refmodel.DefUnitArrayListCollector;
 import dtool.refmodel.api.PrefixDefUnitSearchBase;
-import dtool.resolver.DefUnitArrayListCollector;
 
 public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 	

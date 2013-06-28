@@ -1,17 +1,16 @@
-package dtool.resolver;
+package dtool.refmodel;
 
 import java.util.ArrayList;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.contentassist.CompletionSession;
 import dtool.refmodel.api.IDefUnitMatchAccepter;
 import dtool.refmodel.api.PrefixSearchOptions;
 
-public class CompletionCollectorSession extends CompletionSession implements IDefUnitMatchAccepter {
+public class DefUnitArrayListCollector implements IDefUnitMatchAccepter {
 	
 	public final ArrayList<DefUnit> results;
 	
-	public CompletionCollectorSession() {
+	public DefUnitArrayListCollector() {
 		this.results = new ArrayList<DefUnit>();
 	}
 	

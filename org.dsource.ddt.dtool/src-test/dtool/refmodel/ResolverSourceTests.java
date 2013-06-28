@@ -1,4 +1,4 @@
-package dtool.resolver;
+package dtool.refmodel;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import melnorme.utilbox.core.Predicate;
@@ -27,11 +26,11 @@ import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.contentassist.CompletionSession.ECompletionResultStatus;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserSourceTests;
 import dtool.parser.DeeTemplatedSourceBasedTest;
-import dtool.refmodel.PrefixDefUnitSearch;
 import dtool.refmodel.api.IModuleResolver;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
@@ -131,18 +130,34 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 	
 	public void runRefSearchTest___________(DeeParserResult parseResult, IModuleResolver mr,
 		int defaultOffset, MetadataEntry mde) {
-		String[] expectedResults = splitValues(mde.sourceValue);
-		for (int i = 0; i < expectedResults.length; i++) {
-			expectedResults[i] = expectedResults[i].trim();
+		String testStringDescriptor = mde.sourceValue;
+		
+		ECompletionResultStatus expectedStatusCode = ECompletionResultStatus.RESULT_OK;
+		String[] expectedResults = null;
+		String relexStartPosMarker = null;
+		if(testStringDescriptor.startsWith("relexStartPos=")) {
+			relexStartPosMarker = StringUtil.segmentAfterMatch(testStringDescriptor, "relexStartPos=");
+			testStringDescriptor = null;
+		} else if(testStringDescriptor.startsWith("!")) {
+			String statusId = testStringDescriptor.substring(1); 
+			expectedStatusCode = assertNotNull_(ECompletionResultStatus.fromId(statusId));
+			expectedResults = new String[0];
+		} else {
+			expectedResults = splitValues(testStringDescriptor);
+			for (int i = 0; i < expectedResults.length; i++) {
+				expectedResults[i] = expectedResults[i].trim();
+			}
+			expectedResults = removeEmptyStrings(expectedResults); 
 		}
-		expectedResults = removeEmptyStrings(expectedResults); 
 		
 		int offset = defaultOffset != -1 ? defaultOffset : mde.offset;
 		
-		CompletionCollectorSession session = runCompletionSearch(parseResult, offset, mr);
+		CompletionCollectorSession session = runCompletionSearch(parseResult, offset, mr, relexStartPosMarker);
 		
-		List<DefUnit> results = session.results;
-		CompareDefUnits.checkResults(results, expectedResults, false);
+		assertTrue(session.resultCode == expectedStatusCode);
+		if(expectedResults != null) {
+			CompareDefUnits.checkResults(session.results, expectedResults, false);
+		}
 	}
 	
 	public static String[] splitValues(String string) {
@@ -150,10 +165,16 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 	}
 	
 	public CompletionCollectorSession runCompletionSearch(DeeParserResult parseResult, int offset,
-		IModuleResolver mr) {
+		IModuleResolver mr, String relexStartPosTargetMarker) {
 		CompletionCollectorSession session = new CompletionCollectorSession();
-		PrefixDefUnitSearch.doCompletionSearch(session, parseResult, offset, mr, session);
+		PrefixDefUnitSearch search = PrefixDefUnitSearch.doCompletionSearch(session, parseResult, offset, mr, session);
+		assertTrue(relexStartPosTargetMarker == null || 
+			search.relexStartPos == getMarkerPosition(relexStartPosTargetMarker));
 		return session;
+	}
+	
+	public int getMarkerPosition(String relexStartPosTargetMarker) {
+		return assertNotNull_(markers.get(relexStartPosTargetMarker)).offset;
 	}
 	
 	public String[] removeEmptyStrings(String[] expectedResults) {
@@ -178,12 +199,8 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 				String markerName = expectedTarget.substring(1);
 				removedDefUnitByEndMarker(markerName, resolvedDefUnits);
 			} else {
-				String moduleName = null;
-				String defUnitModuleQualifiedName = expectedTarget;
-				if(expectedTarget.contains("/")) {
-					moduleName = StringUtil.upUntil(expectedTarget, "/");
-					defUnitModuleQualifiedName = StringUtil.fromAfterLastMatch(expectedTarget, "/");
-				}
+				String moduleName = StringUtil.segmentUntilMatch(expectedTarget, "/");
+				String defUnitModuleQualifiedName = StringUtil.substringAfterMatch(expectedTarget, "/");
 				
 				removedDefUnitByName(resolvedDefUnits, moduleName, defUnitModuleQualifiedName);
 			}

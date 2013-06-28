@@ -242,13 +242,13 @@ public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 		if(result != null) {
 			return result;
 		}
-		String errorType = StringUtil.upUntil(mde.value, "_");
+		String errorType = StringUtil.substringUntilMatch(mde.value, "_");
 		return assertNotNull_(errorNameToType.get(errorType));
 	}
 	
 	public static ParserError decodeError(LexElementSource lexSource, MetadataEntry mde) {
-		String errorTypeStr = StringUtil.upUntil(mde.value, "_");
-		String errorParam = NewUtils.fromIndexOf("_", mde.value);
+		String errorTypeStr = StringUtil.substringUntilMatch(mde.value, "_");
+		String errorParam = StringUtil.segmentAfterMatch(mde.value, "_");
 		
 		SourceRange errorRange = mde.getSourceRange();
 		String errorSource = null;

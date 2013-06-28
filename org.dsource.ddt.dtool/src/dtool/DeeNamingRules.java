@@ -65,7 +65,7 @@ public class DeeNamingRules {
 	
 	public static String getModuleNameFromFileName(String fileName) {
 		// Hum, should we validate the identifier?
-		return StringUtil.upUntil(fileName, ".");
+		return StringUtil.substringUntilMatch(fileName, ".");
 	}
 	
 }

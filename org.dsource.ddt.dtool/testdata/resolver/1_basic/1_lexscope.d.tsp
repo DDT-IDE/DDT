@@ -3,7 +3,7 @@
 module tests;
 int Var;
 
-Var#FIND¤【tests/Var】;
+Var#FIND¤【tests/Var】#FIND¤【Var】;
 
 class Class(T #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】, U : T) #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】 { 
   // TODO the previous ones should not find 'member'
@@ -14,8 +14,15 @@ class Class(T #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】, U :
 int Var2;
 
 V#REFSEARCH¤【Var▪Var2】;
+V#REFSEARCH¤【Var▪Var2】xx;
 Va#REFSEARCH¤【Var▪Var2】;
+Va#REFSEARCH¤【Var▪Var2】xx;
+Vx#REFSEARCH¤【】xx;
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+V#REFSEARCH¤【Var】#@《x●》; // Edge case, refsearch at beginning of file
+
+int Var;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module tests;
 int voidLike;

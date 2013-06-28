@@ -20,7 +20,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.resolver.CompareDefUnits;
+import dtool.refmodel.CompareDefUnits;
 import dtool.tests.ref.cc.ICodeCompletionTester;
 
 // Not that this class is run as a JUnit test, so annotated initializers are not run
