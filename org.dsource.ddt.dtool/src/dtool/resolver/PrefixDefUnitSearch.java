@@ -1,4 +1,4 @@
-package dtool.refmodel;
+package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -28,10 +28,10 @@ import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
 import dtool.parser.Token;
-import dtool.refmodel.api.IDefUnitMatchAccepter;
-import dtool.refmodel.api.IModuleResolver;
-import dtool.refmodel.api.PrefixDefUnitSearchBase;
-import dtool.refmodel.api.PrefixSearchOptions;
+import dtool.resolver.api.IDefUnitMatchAccepter;
+import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.api.PrefixDefUnitSearchBase;
+import dtool.resolver.api.PrefixSearchOptions;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 

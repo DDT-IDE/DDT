@@ -12,9 +12,9 @@ import org.junit.After;
 
 import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionResultStatus;
-import dtool.refmodel.CompareDefUnits;
-import dtool.refmodel.DefUnitArrayListCollector;
-import dtool.refmodel.api.PrefixDefUnitSearchBase;
+import dtool.resolver.CompareDefUnits;
+import dtool.resolver.DefUnitArrayListCollector;
+import dtool.resolver.api.PrefixDefUnitSearchBase;
 import dtool.tests.DToolBaseTest;
 
 public class CodeCompletion__Common extends DToolBaseTest {

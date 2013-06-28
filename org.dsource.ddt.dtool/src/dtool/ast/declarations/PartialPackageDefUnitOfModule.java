@@ -8,7 +8,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.IModuleResolver;
 
 public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 	

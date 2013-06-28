@@ -11,9 +11,9 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
-import dtool.refmodel.DefUnitSearch;
-import dtool.refmodel.ReferenceResolver;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.DefUnitSearch;
+import dtool.resolver.ReferenceResolver;
+import dtool.resolver.api.IModuleResolver;
 
 public class ExpCall extends Expression {
 	

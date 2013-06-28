@@ -15,10 +15,10 @@ import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.NativeDefUnit;
-import dtool.refmodel.DefUnitSearch;
-import dtool.refmodel.IScope;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.DefUnitSearch;
+import dtool.resolver.IScope;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**

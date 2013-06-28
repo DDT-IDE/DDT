@@ -11,10 +11,10 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
-import dtool.refmodel.DefUnitSearch;
-import dtool.refmodel.IScope;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.DefUnitSearch;
+import dtool.resolver.IScope;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 
 public class RefTypeDynArray extends CommonRefNative {
 	

@@ -1,9 +1,9 @@
-package dtool.refmodel;
+package dtool.resolver;
 
 import java.util.Collection;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.IModuleResolver;
 
 /** 
  * A reference to a DefUnit.

@@ -6,8 +6,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 
 /**
  * A lambda expression in the short, simple syntax:

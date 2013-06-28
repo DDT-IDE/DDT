@@ -1,4 +1,4 @@
-package dtool.refmodel;
+package dtool.resolver;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -31,7 +31,8 @@ import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserSourceTests;
 import dtool.parser.DeeTemplatedSourceBasedTest;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.PrefixDefUnitSearch;
+import dtool.resolver.api.IModuleResolver;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;

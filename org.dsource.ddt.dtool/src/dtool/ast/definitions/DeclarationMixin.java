@@ -11,7 +11,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
-import dtool.refmodel.INonScopedBlock;
+import dtool.resolver.INonScopedBlock;
 
 /**
  * Declaration of a template mixin with no name:

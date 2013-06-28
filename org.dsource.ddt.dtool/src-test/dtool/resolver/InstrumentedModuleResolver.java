@@ -1,4 +1,4 @@
-package dtool.refmodel;
+package dtool.resolver;
 
 import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -15,7 +15,7 @@ import dtool.DeeNamingRules;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.IModuleResolver;
 import dtool.tests.DToolBaseTest;
 
 public final class InstrumentedModuleResolver implements IModuleResolver {

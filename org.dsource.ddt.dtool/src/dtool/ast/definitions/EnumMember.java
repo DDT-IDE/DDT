@@ -6,8 +6,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 
 public class EnumMember extends DefUnit {
 	

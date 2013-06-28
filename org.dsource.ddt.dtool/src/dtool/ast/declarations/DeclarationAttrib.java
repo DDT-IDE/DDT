@@ -16,7 +16,7 @@ import dtool.ast.declarations.AttribProtection.Protection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.statements.BlockStatementUnscoped;
 import dtool.ast.statements.IStatement;
-import dtool.refmodel.INonScopedBlock;
+import dtool.resolver.INonScopedBlock;
 import dtool.util.ArrayView;
 
 /**

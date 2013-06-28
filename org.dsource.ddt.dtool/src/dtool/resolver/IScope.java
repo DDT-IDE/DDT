@@ -1,10 +1,10 @@
-package dtool.refmodel;
+package dtool.resolver;
 
 import java.util.Iterator;
 import java.util.List;
 
 import dtool.ast.IASTNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.IModuleResolver;
 
 /**
  * A scope is a list of declarations and or statements.

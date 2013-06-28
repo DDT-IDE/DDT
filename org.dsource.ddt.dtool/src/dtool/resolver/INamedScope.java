@@ -1,4 +1,4 @@
-package dtool.refmodel;
+package dtool.resolver;
 
 
 // TODO: review this

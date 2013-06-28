@@ -1,4 +1,4 @@
-package dtool.refmodel.api;
+package dtool.resolver.api;
 
 public class PrefixSearchOptions {
 	

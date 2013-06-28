@@ -12,7 +12,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.Reference;
-import dtool.refmodel.api.DefUnitDescriptor;
+import dtool.resolver.api.DefUnitDescriptor;
 
 /// XXX: get rid of this class
 @Deprecated

@@ -7,9 +7,9 @@ import java.util.List;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.tree.TreeVisitor;
-import dtool.refmodel.IScope;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IScope;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 public abstract class NodeList<E extends ASTNode> extends ASTNode implements IScopeNode {

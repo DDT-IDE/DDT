@@ -9,8 +9,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**

@@ -5,8 +5,8 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.RefModule;
-import dtool.refmodel.CommonDefUnitSearch;
-import dtool.refmodel.ReferenceResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.ReferenceResolver;
 
 public class ImportContent extends ImportStatic {
 	

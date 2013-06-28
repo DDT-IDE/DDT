@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.refmodel.api;
+package dtool.resolver.api;
 
 import dtool.ast.definitions.Module;
 

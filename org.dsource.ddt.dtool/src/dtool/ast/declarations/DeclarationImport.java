@@ -12,8 +12,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
 import dtool.ast.statements.IStatement;
-import dtool.refmodel.CommonDefUnitSearch;
-import dtool.refmodel.INonScopedBlock;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.INonScopedBlock;
 import dtool.util.ArrayView;
 
 /**

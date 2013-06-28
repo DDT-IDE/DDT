@@ -15,9 +15,9 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.refmodel.IScope;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IScope;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 
 public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDeclaration, IStatement {
 	

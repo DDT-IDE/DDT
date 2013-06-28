@@ -1,4 +1,4 @@
-package dtool.refmodel;
+package dtool.resolver;
 
 import dtool.ast.IASTNode;
 import dtool.ast.declarations.DeclBlock;

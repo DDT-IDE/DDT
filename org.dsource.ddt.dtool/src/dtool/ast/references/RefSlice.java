@@ -11,8 +11,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
-import dtool.refmodel.api.DefUnitDescriptor;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.DefUnitDescriptor;
+import dtool.resolver.api.IModuleResolver;
 
 public class RefSlice extends Reference {
 	

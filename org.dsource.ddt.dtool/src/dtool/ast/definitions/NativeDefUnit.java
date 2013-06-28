@@ -9,11 +9,11 @@ import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.SyntheticDefUnit;
-import dtool.refmodel.IDefUnitReference;
-import dtool.refmodel.INamedScope;
-import dtool.refmodel.IScope;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IDefUnitReference;
+import dtool.resolver.INamedScope;
+import dtool.resolver.IScope;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 
 public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeDefUnit, IScopeNode {
 	

@@ -16,9 +16,9 @@ import dtool.DeeNamingRules;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.contentassist.CompletionSession;
-import dtool.refmodel.api.IDefUnitMatchAccepter;
-import dtool.refmodel.api.PrefixDefUnitSearchBase;
-import dtool.refmodel.api.PrefixSearchOptions;
+import dtool.resolver.api.IDefUnitMatchAccepter;
+import dtool.resolver.api.PrefixDefUnitSearchBase;
+import dtool.resolver.api.PrefixSearchOptions;
 
 public class DeeCompletionEngine extends ScriptCompletionEngine {
 	

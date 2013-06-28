@@ -7,9 +7,9 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
-import dtool.refmodel.CommonDefUnitSearch;
-import dtool.refmodel.ReferenceResolver;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.ReferenceResolver;
+import dtool.resolver.api.IModuleResolver;
 
 // TODO merge this with ImportContent
 public abstract class ImportStatic extends ASTNode implements IImportFragment {

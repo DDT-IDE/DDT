@@ -1,6 +1,6 @@
 package dtool.ast.references;
 
-import dtool.refmodel.api.DefUnitDescriptor;
+import dtool.resolver.api.DefUnitDescriptor;
 
 // TODO: review this hierarchy
 public abstract class CommonRefNative extends Reference {

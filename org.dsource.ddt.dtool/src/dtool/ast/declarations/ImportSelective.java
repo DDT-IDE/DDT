@@ -14,9 +14,9 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
-import dtool.refmodel.CommonDefUnitSearch;
-import dtool.refmodel.INonScopedBlock;
-import dtool.refmodel.ReferenceResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.INonScopedBlock;
+import dtool.resolver.ReferenceResolver;
 import dtool.util.ArrayView;
 
 public class ImportSelective extends ASTNode implements INonScopedBlock, IImportFragment {

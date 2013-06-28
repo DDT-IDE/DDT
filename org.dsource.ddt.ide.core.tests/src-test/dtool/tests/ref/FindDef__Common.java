@@ -36,7 +36,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.parser.DeeParserResult;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.IModuleResolver;
 
 public class FindDef__Common {
 	

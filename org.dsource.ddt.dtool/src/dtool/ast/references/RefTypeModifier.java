@@ -11,8 +11,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.parser.DeeTokens;
-import dtool.refmodel.api.DefUnitDescriptor;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.DefUnitDescriptor;
+import dtool.resolver.api.IModuleResolver;
 
 public class RefTypeModifier extends Reference implements IQualifierNode {
 	

@@ -17,7 +17,7 @@ import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.NodeData.ParsedNodeDataWithErrors;
 import dtool.ast.definitions.Module;
 import dtool.parser.ParserError;
-import dtool.refmodel.INamedScope;
+import dtool.resolver.INamedScope;
 import dtool.util.ArrayView;
 
 public abstract class ASTNode implements IASTNode {

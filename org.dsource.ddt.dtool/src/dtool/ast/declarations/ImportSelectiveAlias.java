@@ -8,8 +8,8 @@ import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefImportSelection;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 
 public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSelection {
 	

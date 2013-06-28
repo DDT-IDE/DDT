@@ -13,8 +13,8 @@ import dtool.ast.NodeUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.Token;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 public class FunctionParameter extends DefUnit implements IFunctionParameter {

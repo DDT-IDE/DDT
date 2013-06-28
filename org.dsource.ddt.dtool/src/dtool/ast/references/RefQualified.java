@@ -13,7 +13,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.IModuleResolver;
 
 /**
  * A normal qualified reference.

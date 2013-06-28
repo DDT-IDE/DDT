@@ -1,11 +1,11 @@
-package dtool.refmodel;
+package dtool.resolver;
 
 import java.util.ArrayList;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.contentassist.CompletionSession;
-import dtool.refmodel.api.IDefUnitMatchAccepter;
-import dtool.refmodel.api.PrefixSearchOptions;
+import dtool.resolver.api.IDefUnitMatchAccepter;
+import dtool.resolver.api.PrefixSearchOptions;
 
 public class CompletionCollectorSession extends CompletionSession implements IDefUnitMatchAccepter {
 	

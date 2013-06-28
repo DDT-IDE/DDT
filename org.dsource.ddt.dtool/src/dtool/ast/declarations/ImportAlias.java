@@ -8,9 +8,9 @@ import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefModule;
-import dtool.refmodel.CommonDefUnitSearch;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 
 public class ImportAlias extends DefUnit implements IImportFragment {
 		

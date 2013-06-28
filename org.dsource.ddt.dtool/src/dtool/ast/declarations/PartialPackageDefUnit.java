@@ -7,9 +7,9 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
-import dtool.refmodel.IScope;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IScope;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 
 /**
  * A synthetic DefUnit (not derived from source code), for partial package "definitions" of imports. 

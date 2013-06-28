@@ -20,9 +20,9 @@ import dtool.ast.ASTNode;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.Token;
-import dtool.refmodel.IScope;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IScope;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 public abstract class AbstractFunctionDefinition extends CommonDefinition 

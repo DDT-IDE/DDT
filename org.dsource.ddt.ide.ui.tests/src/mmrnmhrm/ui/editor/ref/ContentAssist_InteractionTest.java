@@ -18,7 +18,7 @@ import org.junit.After;
 import org.junit.Test;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.refmodel.CompareDefUnits;
+import dtool.resolver.CompareDefUnits;
 import dtool.tests.ref.cc.CodeCompletion_LookupTest;
 
 public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {

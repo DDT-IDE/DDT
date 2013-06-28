@@ -9,12 +9,12 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.parser.Token;
-import dtool.refmodel.DefUnitSearch;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.PrefixDefUnitSearch;
-import dtool.refmodel.ReferenceResolver;
-import dtool.refmodel.ScopeUtil;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.DefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.PrefixDefUnitSearch;
+import dtool.resolver.ReferenceResolver;
+import dtool.resolver.ScopeUtil;
+import dtool.resolver.api.IModuleResolver;
 
 public class RefPrimitive extends NamedReference {
 	

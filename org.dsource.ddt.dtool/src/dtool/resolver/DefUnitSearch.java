@@ -1,4 +1,4 @@
-package dtool.refmodel;
+package dtool.resolver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,7 +6,7 @@ import java.util.Collection;
 import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.Reference;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.IModuleResolver;
 
 /**
  * Normal DefUnit search, 

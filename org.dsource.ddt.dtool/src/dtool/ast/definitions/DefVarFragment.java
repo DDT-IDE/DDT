@@ -7,9 +7,9 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.IInitializer;
-import dtool.refmodel.IDefUnitReference;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IDefUnitReference;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.api.IModuleResolver;
 
 /**
  * A fragment of a variable definition in a multi-identifier variable declaration

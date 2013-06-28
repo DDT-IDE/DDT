@@ -23,7 +23,7 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.DeeNamingRules;
 import dtool.ast.definitions.Module;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.IModuleResolver;
 
 public class DeeProjectModuleResolver implements IModuleResolver {
 	

@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.refmodel.INonScopedBlock;
+import dtool.resolver.INonScopedBlock;
 import dtool.util.ArrayView;
 
 public class BlockStatementUnscoped extends CommonStatementList implements INonScopedBlock {

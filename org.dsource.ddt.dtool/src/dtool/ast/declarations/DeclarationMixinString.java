@@ -10,7 +10,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
-import dtool.refmodel.INonScopedBlock;
+import dtool.resolver.INonScopedBlock;
 
 /**
  * Parse exp contents as code (exp must resolve to a string).

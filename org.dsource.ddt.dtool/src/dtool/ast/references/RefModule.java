@@ -15,10 +15,10 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.parser.Token;
-import dtool.refmodel.DefUnitSearch;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.PrefixDefUnitSearch;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.DefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.PrefixDefUnitSearch;
+import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 import dtool.util.ArrayViewExt;
 

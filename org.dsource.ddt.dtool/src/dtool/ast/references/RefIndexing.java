@@ -10,8 +10,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable;
-import dtool.refmodel.api.DefUnitDescriptor;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.api.DefUnitDescriptor;
+import dtool.resolver.api.IModuleResolver;
 
 /**
  * An reference consisting of an element reference and an indexing paramater .

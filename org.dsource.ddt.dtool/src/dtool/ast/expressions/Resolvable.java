@@ -9,8 +9,8 @@ import dtool.ast.IASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
-import dtool.refmodel.IDefUnitReference;
-import dtool.refmodel.api.IModuleResolver;
+import dtool.resolver.IDefUnitReference;
+import dtool.resolver.api.IModuleResolver;
 
 /**
  * A {@link Resolvable} is either an {@link Reference} or {@link Expression}

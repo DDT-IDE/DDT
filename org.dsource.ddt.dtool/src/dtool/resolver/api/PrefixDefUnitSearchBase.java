@@ -1,10 +1,10 @@
-package dtool.refmodel.api;
+package dtool.resolver.api;
 
 
 import dtool.contentassist.CompletionSession;
-import dtool.refmodel.CommonDefUnitSearch;
-import dtool.refmodel.IScopeNode;
-import dtool.refmodel.PrefixDefUnitSearch;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.PrefixDefUnitSearch;
 
 // TODO: cleanup this hierarchy
 public abstract class PrefixDefUnitSearchBase extends CommonDefUnitSearch {
