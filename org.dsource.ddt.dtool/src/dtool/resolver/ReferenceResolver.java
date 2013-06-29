@@ -1,5 +1,7 @@
 package dtool.resolver;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Iterator;
 
 import melnorme.utilbox.core.ExceptionAdapter;
@@ -46,8 +48,8 @@ public class ReferenceResolver {
 	 * non-extended scope, (altough due to imports, they may originate from 
 	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
 	 */
-	public static void findDefUnitInExtendedScope(IScopeNode scope,
-			CommonDefUnitSearch search) {
+	public static void findDefUnitInExtendedScope(IScopeNode scope, CommonDefUnitSearch search) {
+		assertNotNull(scope);
 
 		do {
 			findDefUnitInScope(scope, search);

@@ -5,12 +5,19 @@ int Var;
 
 Var#FIND¤【tests/Var】#FIND¤【Var】;
 
+#REFSEARCH¤【tests▪Var▪Var2▪Class】
+static #REFSEARCH¤【tests▪Var▪Var2▪Class】 if(true) {
+}
+
 class Class(T #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】, U : T) #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】 { 
   // TODO the previous ones should not find 'member'
-  int member;
   
   #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】
+  int #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】 member;
+  if #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】 (true) {
+  }
 }
+
 int Var2;
 
 V#REFSEARCH¤【Var▪Var2】;
@@ -29,8 +36,9 @@ int voidLike;
 int foo;
 
 void func() {
-	int voidName2;
+	voi#REFSEARCH¤【voidLike】; // Test statements forward reference visibitity (or lack of)
 	
+	int voidName2;
 	
 	void#FIND¤【】; // Test primitive ref
 	

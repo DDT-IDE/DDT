@@ -181,8 +181,9 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 					"Can't complete for node: "+node.getNodeType()+"");
 			return search;
 		} else {
-			// Since picked node was not a reference,
-			// determine appropriate scope search parameters
+			// Since picked node was not a reference, determine appropriate lexical starting scope
+			// TODO: this code is a mess, need to cleanup and simplify
+			// See also ReferenceResolver.getStartingScope(refSingle);
 			IScopeNode scope;
 			while(true) {
 				assertNotNull(node); 
@@ -195,12 +196,9 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 					break;
 				}
 				
-				if(offset == node.getStartPos() || offset == node.getEndPos()) {
-					node = node.getParent();
-				} else {
-					break;
-				}
+				node = node.getParent();
 			}
+			assertNotNull(scope);
 			
 			ReferenceResolver.findDefUnitInExtendedScope(scope, search);
 		}
