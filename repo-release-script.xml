@@ -2,6 +2,7 @@
 <!-- ====================================================================== 
      Ant script for automated release and deploy of update site.
      Sample usage:
+     mvn clean integration-test -Dqualifier_default_prefix=PR1-
      ant -f repo-release-script.xml uploadPreReleaseRepo -DcommitLog="new daily"
      ====================================================================== -->
 <project name="project" >
