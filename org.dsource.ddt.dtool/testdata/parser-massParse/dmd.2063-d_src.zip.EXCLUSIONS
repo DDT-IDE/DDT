@@ -1,6 +1,5 @@
 # TODO remove these valid entries:
 /phobos/std/regex.d
-/phobos/std/typecons.d
 
 # is a HTML file:
 phobos/index.d

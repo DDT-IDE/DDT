@@ -6,7 +6,9 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.statements.IFunctionBody;
+import dtool.util.ArrayView;
 
 public class DeclarationSpecialFunction extends ASTNode implements IDeclaration {
 	
@@ -27,10 +29,13 @@ public class DeclarationSpecialFunction extends ASTNode implements IDeclaration 
 	}
 	
 	public final SpecialFunctionKind kind;
+	public final ArrayView<FunctionAttributes> fnAttributes;
 	public final IFunctionBody fnBody;
 	
-	public DeclarationSpecialFunction(SpecialFunctionKind kind, IFunctionBody fnBody) {
+	public DeclarationSpecialFunction(SpecialFunctionKind kind, ArrayView<FunctionAttributes> fnAttributes, 
+		IFunctionBody fnBody) {
 		this.kind = assertNotNull_(kind);
+		this.fnAttributes = fnAttributes;
 		this.fnBody = parentizeI(fnBody);
 	}
 	
@@ -51,6 +56,7 @@ public class DeclarationSpecialFunction extends ASTNode implements IDeclaration 
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(kind.toStringAsCode());
+		cp.appendTokenList(fnAttributes, " ", true);
 		cp.append(fnBody);
 	}
 	

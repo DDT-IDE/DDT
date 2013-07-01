@@ -29,7 +29,6 @@ import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.declarations.DeclarationInvariant;
-import dtool.ast.declarations.DeclarationPostBlit;
 import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.declarations.DeclarationSpecialFunction.SpecialFunctionKind;
 import dtool.ast.declarations.DeclarationUnitTest;
@@ -1466,20 +1465,10 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DeclarationUnitTest(body));
 	}
 	
-	public NodeResult<DeclarationPostBlit> parseDeclarationPostBlit_start() {
+	public NodeResult<DeclarationSpecialFunction> parseDeclarationPostBlit_start() {
 		consumeLookAhead(DeeTokens.KW_THIS);
 		ParseHelper parse = new ParseHelper();
-		
-		IFunctionBody fnBody = null;
-		parsing: {
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
-			parse.consumeExpected(DeeTokens.KW_THIS);
-			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
-			
-			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
-		}
-		
-		return parse.resultConclude(new DeclarationPostBlit(fnBody));
+		return parseDeclarationSpecialFunction_AtParams(parse, SpecialFunctionKind.POST_BLIT);
 	}
 	
 	public NodeResult<DeclarationSpecialFunction> parseDeclarationSpecialFunction() {
@@ -1487,17 +1476,25 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		if(!tryConsume(DeeTokens.CONCAT, DeeTokens.KW_THIS)) {
 			return null;
 		}
-		
-		SpecialFunctionKind kind = SpecialFunctionKind.DESTRUCTOR;
+		return parseDeclarationSpecialFunction_AtParams(parse, SpecialFunctionKind.DESTRUCTOR);
+	}
+	
+	public NodeResult<DeclarationSpecialFunction> parseDeclarationSpecialFunction_AtParams(ParseHelper parse, 
+		SpecialFunctionKind kind) {
 		IFunctionBody fnBody = null;
+		ArrayView<FunctionAttributes> fnAttributes = null;
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
+			if(kind == SpecialFunctionKind.POST_BLIT) {
+				parse.consumeExpected(DeeTokens.KW_THIS);
+			}
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			
+			fnAttributes = parseFunctionAttributes();
 			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
 		}
 		
-		return parse.resultConclude(new DeclarationSpecialFunction(kind, fnBody));
+		return parse.resultConclude(new DeclarationSpecialFunction(kind, fnAttributes, fnBody));
 	}
 	
 	public NodeResult<DeclarationAllocatorFunction> parseDeclarationAllocatorFunctions() {
