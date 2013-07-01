@@ -552,10 +552,10 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				return parseDefinitionVariable_afterIdentifier(parse, ref, defId);
 			} else {
 				parse.consumeExpected(DeeTokens.IDENTIFIER);
-				parse.consumeRequired(DeeTokens.SEMICOLON);
 			}
 		}
 		parse.discardDocComments();
+		parse.clearRuleBroken().consumeRequired(DeeTokens.SEMICOLON);
 		return parse.resultConclude(new IncompleteDeclarator(ref));
 	}
 	

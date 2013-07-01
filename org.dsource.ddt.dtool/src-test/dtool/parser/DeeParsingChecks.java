@@ -34,21 +34,10 @@ import dtool.tests.CommonTestUtils;
  */
 public class DeeParsingChecks extends CommonTestUtils {
 	
-	public static final class DeeTestsLexer extends DeeLexer {
-		public DeeTestsLexer(String source) {
-			super(source);
-		}
-		
-		@Override
-		public String toString() {
-			return source.substring(0, pos) + "<---parser--->" + source.substring(pos, source.length());
-		}
-	}
-	
 	public static class DeeTestsChecksParser extends DeeParser {
 		
 		public DeeTestsChecksParser(String source) {
-			super(new DeeTestsLexer(source));
+			super(new DeeLexer(source));
 		}
 		
 		@Override
@@ -183,6 +172,24 @@ public class DeeParsingChecks extends CommonTestUtils {
 			}
 		}
 		
+	}
+	
+	/* ------------------------------------- */
+	
+	public static DeeParserResult runSimpleSourceParseTest(String source, String defaultModuleName,
+			Boolean expectErrors, boolean runBasicContractChecks) {
+		
+		DeeParserResult parseResult = runBasicContractChecks ? 
+			new DeeTestsChecksParser(source).parseUsingRule(null, defaultModuleName) :
+			new DeeParser(source).parseUsingRule(null, defaultModuleName);
+		
+		if(expectErrors != null) {
+			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);
+//			source.substring(parseResult.errors.get(0).getStartPos() - 30);
+//			source.substring(parseResult.errors.get(0).getStartPos());
+		}
+		
+		return parseResult;
 	}
 	
 }

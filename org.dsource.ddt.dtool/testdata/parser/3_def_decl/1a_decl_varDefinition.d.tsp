@@ -6,7 +6,7 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@TYPEREF_BROKEN__NoTypeAppend /*NoMissingExp*/ #@BREAK #@ReqSemicolon fooB 
+#PARSE(DECLARATION)   #@TYPEREF_BROKEN__NoTypeAppend /*NoMissingExp*/ #@SEMICOLON_OR_BREAK #@IGNORE_REST fooB 
 #STRUCTURE_EXPECTED:  IncompleteDeclarator(#@TYPEREF_BROKEN__NoTypeAppend)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(DECLARATION)   #@TYPEREF_NBNE__NoTM #@NO_ID #@SEMICOLON_OR_BREAK

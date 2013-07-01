@@ -4,7 +4,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
-import dtool.tests.CommonTestUtils;
 import dtool.tests.DToolBaseTest;
 
 public class DeeLexerTest extends DToolBaseTest {
@@ -58,7 +57,7 @@ public class DeeLexerTest extends DToolBaseTest {
 	}
 	
 	public static void testLexerTokenizing(String source, TokenChecker[] tokenCheckers) {
-		DeeLexer deeLexer = new DeeParsingChecks.DeeTestsLexer(source);
+		DeeLexer deeLexer = new DeeTestsLexer(source);
 		int readSourceOffset = 0;
 		
 		StringBuilder constructedSource = new StringBuilder();
@@ -80,6 +79,17 @@ public class DeeLexerTest extends DToolBaseTest {
 		assertTrue(deeLexer.tokenStartPos == source.length());
 		new TokenChecker(DeeTokens.EOF).checkToken(deeLexer, readSourceOffset);
 		assertEquals(source, constructedSource.toString());
+	}
+	
+	protected static final class DeeTestsLexer extends DeeLexer {
+		public DeeTestsLexer(String source) {
+			super(source);
+		}
+		
+		@Override
+		public String toString() {
+			return source.substring(0, pos) + "<---parser--->" + source.substring(pos, source.length());
+		}
 	}
 	
 	public static class TokenChecker {

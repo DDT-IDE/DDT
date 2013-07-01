@@ -324,7 +324,7 @@ public class DeeParserTester extends CommonTestUtils {
 		
 		if(parseRule == null) {
 		} else if(parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
-			return deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
+			return deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION, null);
 		} else if(parseRule.equalsIgnoreCase("PARAMETER_TEST")) {
 			
 			Object ambigParsedResult = new DeeParser_RuleParameters(deeParser, TplOrFnMode.AMBIG).parseParameter();
@@ -333,7 +333,7 @@ public class DeeParserTester extends CommonTestUtils {
 			
 			return null;
 		}
-		return deeParser.parseUsingRule(getParseRule(parseRule));
+		return deeParser.parseUsingRule(getParseRule(parseRule), "_parser_tests");
 	}
 	
 	public static ParseRuleDescription getParseRule(String parseRuleName) {
@@ -370,13 +370,13 @@ public class DeeParserTester extends CommonTestUtils {
 		else if(parseRule.equalsIgnoreCase("REFERENCE")) {
 			if(DToolTests.TESTS_LITE_MODE == false) {
 				DeeTestsChecksParser parser = new DeeTestsChecksParser(parsedSource);
-				DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP);
+				DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP, null);
 				DeeParsingChecks.checkNodeEquality(result.node, resultToE.node);
 			}
 		} 
 		else if(parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
 			DeeTestsChecksParser parser = new DeeTestsChecksParser(parsedSource);
-			DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP);
+			DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP, null);
 			ASTNode expNode = result.node;
 			List<ParserError> resultToE_Errors = resultToE.getErrors();
 			if(result.errors.size() >= 1) {

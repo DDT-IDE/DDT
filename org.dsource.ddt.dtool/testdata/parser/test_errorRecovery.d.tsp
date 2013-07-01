@@ -37,6 +37,9 @@ foo #error(EXP_IDENTIFIER) ;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 foo #error(EXP_IDENTIFIER) #@NO_SEMICOLON
 #STRUCTURE_EXPECTED: IncompleteDeclarator(?)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+foo. #error(EXP_IDENTIFIER) #@NO_SEMICOLON
+#STRUCTURE_EXPECTED: IncompleteDeclarator(*)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  recovery of ref identifiers: 
 import#error(EXP_ID);

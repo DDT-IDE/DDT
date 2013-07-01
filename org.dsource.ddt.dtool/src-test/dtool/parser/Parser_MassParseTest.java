@@ -122,7 +122,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 			}
 			
 			String source = readStringFromFileUnchecked(file);
-			Parser__CommonTest.testParseSource(source, canHaveSyntaxErrors ? null : false, false, "_unnamed");
+			DeeParsingChecks.runSimpleSourceParseTest(source, "_massParse", canHaveSyntaxErrors ? null : false, false);
 		}
 		
 	}

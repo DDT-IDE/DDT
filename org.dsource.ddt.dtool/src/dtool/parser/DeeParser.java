@@ -27,12 +27,11 @@ public class DeeParser
 {
 	
 	public static DeeParserResult parseSource(String source, String defaultModuleName) {
-		DeeParser deeParser = new DeeParser(source);
-		return deeParser.parseUsingRule(null, defaultModuleName);
+		return new DeeParser(source).parseModuleSource(defaultModuleName);
 	}
 	
-	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule) {
-		return parseUsingRule(parseRule, "__unnamed_module");
+	public DeeParserResult parseModuleSource(String defaultModuleName) {
+		return parseUsingRule(null, defaultModuleName);
 	}
 	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule, String defaultModuleName) {
 		NodeResult<? extends ASTNode> nodeResult;
