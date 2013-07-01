@@ -412,7 +412,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			parse.requireBrokenCheck();
 			return null;
 		}
-		CStyleRootRef cstyleRootRef = conclude(srAt(getSourcePosition()), new CStyleRootRef());
+		CStyleRootRef cstyleRootRef = conclude(srAt(lookAheadElement().getStartPos()), new CStyleRootRef());
 		NodeResult<Reference> cstyleDeclaratorSuffix = parseCStyleDeclaratorSuffix(cstyleRootRef);
 		parse.requireBrokenCheck();
 		return parse.checkResult(cstyleDeclaratorSuffix);

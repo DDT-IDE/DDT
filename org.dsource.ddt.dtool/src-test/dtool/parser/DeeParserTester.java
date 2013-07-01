@@ -388,6 +388,9 @@ public class DeeParserTester extends CommonTestUtils {
 					expNode = ((ExpReference) expNode).ref;
 				}
 			}
+			if(expNode instanceof ExpReference) {
+				expNode = ((ExpReference) expNode).ref;
+			}
 			DeeParsingChecks.checkNodeEquality(expNode, resultToE.node);
 			assertEquals(result.getErrors(), resultToE_Errors);
 		}

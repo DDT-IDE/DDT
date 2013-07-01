@@ -378,7 +378,7 @@ public abstract class AbstractParser {
 		
 		public final <T extends ASTNode> T conclude(T node) {
 			initRange(node);
-			nodeStart = -1;
+			nodeStart = -nodeStart; // invalidate
 			return concludeDo(error1, error2, node);
 		}
 		

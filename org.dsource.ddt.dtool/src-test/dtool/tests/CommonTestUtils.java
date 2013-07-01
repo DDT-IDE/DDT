@@ -28,11 +28,11 @@ public class CommonTestUtils {
 		return true;
 	}
 	
-	public static <T, U extends T> void assertEquals(T obj1, U obj2) {
+	public static <T> void assertEquals(T obj1, T obj2) {
 		Assert.equals(obj1, obj2);
 	}
 	
-	public static <T, U extends T> void assertAreEqual(T obj1, U obj2) {
+	public static <T> void assertAreEqual(T obj1, T obj2) {
 		assertTrue(CoreUtil.areEqual(obj1, obj2));
 	}
 	

@@ -79,6 +79,9 @@ import dtool.ast.references.Reference;
  */
 public class ASTHomogenousVisitor implements IASTVisitor {
 	
+	public static final boolean VISIT_CHILDREN = true;
+	public static final boolean DONT_VISIT_CHILDREN = false;
+	
 	@Override
 	public boolean preVisit(ASTNode node) {
 		return true;

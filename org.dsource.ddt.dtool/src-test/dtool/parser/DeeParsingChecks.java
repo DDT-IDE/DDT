@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.ArrayList;
 
+import dtool.ast.ASTHomogenousVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.ASTSourceRangeChecker;
@@ -92,19 +93,31 @@ public class DeeParsingChecks extends CommonTestUtils {
 	}
 	
 	protected static boolean areThereMissingTokenErrorsInNode(ASTNode node) {
-		ArrayList<ParserError> nodeErrors = DeeParserResult.collectErrors(new ArrayList<ParserError>(), node);
-		for(ParserError error : nodeErrors) {
-			if(error.errorType == ParserErrorTypes.INVALID_EXTERN_ID || 
-				(error.errorType == ParserErrorTypes.EXPECTED_TOKEN && error.msgData != DeeTokens.IDENTIFIER)) {
-				return true;
+		CheckForMissingTokenErrors visitor = new CheckForMissingTokenErrors();
+		node.accept(visitor);
+		return visitor.hasMissingTokenErrors;
+	}
+	
+	protected static final class CheckForMissingTokenErrors extends ASTHomogenousVisitor {
+		public boolean hasMissingTokenErrors = false;
+		
+		@Override
+		public boolean preVisit(ASTNode node) {
+			for (ParserError error : node.getData().getNodeErrors()) {
+				if(error.errorType == ParserErrorTypes.INVALID_EXTERN_ID || 
+					(error.errorType == ParserErrorTypes.EXPECTED_TOKEN && error.msgData != DeeTokens.IDENTIFIER)) {
+					hasMissingTokenErrors = true;
+					return DONT_VISIT_CHILDREN;
+				}
 			}
+			return VISIT_CHILDREN;
 		}
-		return false;
 	}
 	
 	public static void checkNodeEquality(ASTNode reparsedNode, ASTNode node) {
 		// We check the nodes are semantically equal by comparing the toStringAsCode
 		// TODO: use a more accurate equals method?
+		assertEquals(reparsedNode.getClass(), node.getClass());
 		assertEquals(reparsedNode.toStringAsCode(), node.toStringAsCode());
 		assertEquals(reparsedNode.isParsedStatus(), node.isParsedStatus());
 		if(reparsedNode.isParsedStatus()) {
