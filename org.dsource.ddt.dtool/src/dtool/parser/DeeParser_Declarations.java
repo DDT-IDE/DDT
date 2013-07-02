@@ -59,7 +59,7 @@ import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
 
-public abstract class DeeParser_Declarations extends DeeParser_RefOrExp {
+public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 	
 	public NodeResult<DeclarationImport> parseDeclarationImport() {
 		ParseHelper parse = new ParseHelper(lookAheadElement().getStartPos());

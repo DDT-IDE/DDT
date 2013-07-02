@@ -33,25 +33,80 @@ import dtool.util.ArrayView;
  */
 public abstract class AbstractParser {
 	
-	protected abstract DeeParser thisParser();
+	protected String source;
+	protected LexElementSource lexSource;
+	protected boolean enabled;
+	
+	public AbstractParser() {
+		this.enabled = true;
+	}
 	
 	/* ---- Core functionality ---- */
+
+	public final String getSource() {
+		return source;
+	}
 	
-	public abstract String getSource();
+	public final LexElementSource getEnabledLexSource() {
+		assertTrue(enabled);
+		return lexSource;
+	}
 	
-	public abstract LexElement lookAheadElement(int laIndex);
+	protected final LexElementSource getLexSource() {
+		return lexSource;
+	}
 	
-	public abstract int getSourcePosition();
+	public final void setEnabled(boolean enabled) {
+		assertTrue(this.enabled == !enabled);
+		this.enabled = enabled;
+	}
 	
-	public abstract LexElement lastLexElement();
+	// There should be no reason to use this other than for contract checks only
+	public final boolean isEnabled() {
+		return enabled;
+	}
 	
-	public abstract LexElement consumeLookAhead();
+	public final int getSourcePosition() {
+		return getLexSource().getSourcePosition();
+	}
 	
-	public abstract MissingLexElement consumeSubChannelTokens();
+	public final LexElement lookAheadElement(int laIndex) {
+		return getEnabledLexSource().lookAheadElement(laIndex);
+	}
 	
-	public abstract void setEnabled(boolean enabled);
+	public final LexElement lastLexElement() {
+		return getLexSource().lastLexElement();
+	}
 	
-	public abstract boolean isEnabled();
+	public final LexElement consumeLookAhead() {
+		return getEnabledLexSource().consumeInput();
+	}
+	
+	public final MissingLexElement consumeSubChannelTokens() {
+		return getEnabledLexSource().consumeSubChannelTokens();
+	}
+	
+	public ParserState saveParserState() {
+		LexElementSource lexSource = getEnabledLexSource().saveState();
+		return new ParserState(lexSource, enabled);
+	}
+	
+	public void restoreOriginalState(ParserState savedState) {
+		this.lexSource.resetState(savedState.lexSource);
+		this.enabled = savedState.enabled;
+	}
+	
+	public class ParserState {
+		
+		protected final LexElementSource lexSource;
+		protected final boolean enabled;
+		
+		public ParserState(LexElementSource lexSource, boolean enabled) {
+			this.lexSource = lexSource;
+			this.enabled = enabled;
+		}
+		
+	}
 	
 	/* ---- Lookahead and consume helpers ---- */
 	
@@ -344,11 +399,11 @@ public abstract class AbstractParser {
 		
 		/** Disable parsing until ruleBroken is explicitly checked. (safety feature) */
 		public void requireBrokenCheck() {
-			thisParser().setEnabled(false);
+			setEnabled(false);
 		}
 		
 		public boolean checkRuleBroken() {
-			thisParser().setEnabled(true);
+			setEnabled(true);
 			return ruleBroken;
 		}
 		

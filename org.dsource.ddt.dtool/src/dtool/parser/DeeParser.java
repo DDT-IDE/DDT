@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import dtool.ast.ASTNode;
-import dtool.parser.LexElement.MissingLexElement;
 
 /**
  * Concrete D Parser class
@@ -61,106 +60,32 @@ public class DeeParser
 		return new DeeParserResult(nodeResult, this);
 	}
 	
-	
-	protected final String source;
-	protected LexElementSource lexSource;
 	protected ArrayList<ParserError> lexerErrors = new ArrayList<>();
-	protected boolean enabled;
 	
 	public DeeParser(String source) {
 		this(new DeeLexer(source));
 	}
 	
-	public DeeParser(DeeLexer deeLexer) {
+	protected DeeParser(DeeLexer deeLexer) {
 		this.source = deeLexer.getSource();
-		this.lexSource = new LexElementSource(new DeeLexElementProducer().produceLexTokens(deeLexer));
-		this.enabled = true;
+		DeeLexElementProducer deeLexElementProducer = new DeeLexElementProducer();
+		this.lexSource = new LexElementSource(deeLexElementProducer.produceLexTokens(deeLexer));
+		this.lexerErrors = deeLexElementProducer.lexerErrors;
 	}
 	
-	@Override
-	protected final DeeParser thisParser() {
-		return this;
-	}
-	
-	@Override
-	public final String getSource() {
-		return source;
-	}
-	
-	public final class DeeLexElementProducer extends LexElementProducer {
+	public static final class DeeLexElementProducer extends LexElementProducer {
+		
+		protected ArrayList<ParserError> lexerErrors = new ArrayList<>();
 		
 		@Override
 		protected void tokenCreated(Token token) {
 			DeeTokenSemantics.checkTokenErrors(token, lexerErrors);
 		}
-		
-	}
-	
-	public LexElementSource getEnabledLexSource() {
-		assertTrue(enabled);
-		return lexSource;
-	}
-	
-	protected LexElementSource getLexSource() {
-		return lexSource;
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
-		assertTrue(this.enabled == !enabled);
-		this.enabled = enabled;
-	}
-	
-	@Override
-	public boolean isEnabled() { // There should be no reason to use this other than for contract checks only
-		return enabled;
-	}
-	
-	@Override
-	public int getSourcePosition() {
-		return getLexSource().getSourcePosition();
-	}
-	
-	@Override
-	public LexElement lookAheadElement(int laIndex) {
-		return getEnabledLexSource().lookAheadElement(laIndex);
-	}
-	
-	@Override
-	public LexElement lastLexElement() {
-		return getLexSource().lastLexElement();
-	}
-	
-	@Override
-	public final LexElement consumeLookAhead() {
-		return getEnabledLexSource().consumeInput();
-	}
-	
-	@Override
-	public MissingLexElement consumeSubChannelTokens() {
-		return getEnabledLexSource().consumeSubChannelTokens();
-	}
-	
-	public DeeParserState saveParserState() {
-		LexElementSource lexSource = getEnabledLexSource().saveState();
-		return new DeeParserState(lexSource, enabled);
-	}
-	
-	public void restoreOriginalState(DeeParserState savedState) {
-		this.lexSource.resetState(savedState.lexSource);
-		this.enabled = savedState.enabled;
-	}
-	
-	public class DeeParserState {
-		
-		protected final LexElementSource lexSource;
-		protected final boolean enabled;
-		
-		public DeeParserState(LexElementSource lexSource, boolean enabled) {
-			this.lexSource = lexSource;
-			this.enabled = enabled;
-		}
-		
+	protected final DeeParser thisParser() {
+		return this;
 	}
 	
 }

@@ -63,7 +63,6 @@ import dtool.ast.statements.StatementTry;
 import dtool.ast.statements.StatementWhile;
 import dtool.ast.statements.StatementWith;
 import dtool.ast.statements.VariableDefWithInit;
-import dtool.parser.DeeParser.DeeParserState;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
@@ -210,7 +209,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 			break;
 		}
 		
-		DeeParserState originalState = thisParser().saveParserState();
+		ParserState originalState = saveParserState();
 		
 		if(lookAhead() == DeeTokens.KW_IMPORT && lookAhead(1) == DeeTokens.OPEN_PARENS) {
 			// Disambiguate against DeclarationImport
@@ -221,7 +220,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		IDeclaration decl = declResult.node;
 		
 		if(decl instanceof IncompleteDeclarator || decl == null) {
-			thisParser().restoreOriginalState(originalState);
+			restoreOriginalState(originalState);
 			NodeResult<StatementExpression> expResult = parseStatementExpression();
 			assertTrue(expResult.node != null || decl == null); // any IncompleteDeclaration must be parsable as exp 
 			return expResult;
@@ -229,16 +228,16 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 			
 			DefinitionFunction defFunction = (DefinitionFunction) decl;
 			if(defFunction.fnBody == null && defFunction.tplConstraint == null && defFunction.fnAttributes == null) {
-				DeeParserState defFunctionState = thisParser().saveParserState();
+				ParserState defFunctionState = saveParserState();
 				
-				thisParser().restoreOriginalState(originalState);
+				restoreOriginalState(originalState);
 				NodeResult<StatementExpression> stExpResult = parseStatementExpression();
 				
-				int expLexElementPos = thisParser().getEnabledLexSource().getLexElementPosition();
+				int expLexElementPos = getEnabledLexSource().getLexElementPosition();
 				if(expLexElementPos > defFunctionState.lexSource.getLexElementPosition()) {
 					return stExpResult;
 				} else {
-					thisParser().restoreOriginalState(defFunctionState);
+					restoreOriginalState(defFunctionState);
 					// break to return declResult
 				}
 			}
@@ -302,7 +301,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 	}
 	
 	protected VariableDefWithInit attemptParseVariableDefWithInit(boolean revertIfInvalid) {
-		DeeParserState savedState = thisParser().saveParserState();
+		ParserState savedState = saveParserState();
 		
 		successfulParsing: {
 			ParseHelper parse = new ParseHelper(lookAheadElement());
@@ -336,7 +335,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 			}
 			return parse.conclude(new VariableDefWithInit(type, defId, defaultValue));
 		}
-		thisParser().restoreOriginalState(savedState);
+		restoreOriginalState(savedState);
 		return null;  // An exp will be parsed instead 
 	}
 	

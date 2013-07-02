@@ -89,7 +89,8 @@ import dtool.ast.references.RefTypePointer;
 import dtool.ast.references.RefTypeof;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
-import dtool.parser.DeeParser.DeeParserState;
+import dtool.parser.DeeParser_Parameters.DeeParser_RuleParameters;
+import dtool.parser.DeeParser_Parameters.TplOrFnMode;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
@@ -562,7 +563,7 @@ protected class ParseRule_Expression {
 		if(breakRule) {
 			setEnabled(true);
 		} 
-		assertTrue(thisParser().isEnabled());
+		assertTrue(isEnabled());
 		return result(breakRule, exp);
 	}
 	
@@ -974,21 +975,21 @@ protected class ParseRule_Expression {
 	}
 	
 	protected TypeOrExpResult parseTypeOrExpression(InfixOpType precedenceLimit) {
-		DeeParserState initialState = thisParser().saveParserState();
+		ParserState initialState = saveParserState();
 		
 		NodeResult<Reference> refResult = parseTypeReference();
-		DeeParserState refResultState = thisParser().saveParserState();
-		assertTrue(thisParser().isEnabled());
-		thisParser().restoreOriginalState(initialState);
+		ParserState refResultState = saveParserState();
+		assertTrue(isEnabled());
+		restoreOriginalState(initialState);
 		
 		NodeResult<Expression> expResult = parseExpression(precedenceLimit);
-		int expResultLexPosition = thisParser().getEnabledLexSource().getLexElementPosition();
+		int expResultLexPosition = getEnabledLexSource().getLexElementPosition();
 		int refResultLexPosition = refResultState.lexSource.getLexElementPosition();
 		
 		if(expResultLexPosition > refResultLexPosition) {
 			return new TypeOrExpResult(null, expResult);
 		} else if(refResultLexPosition > expResultLexPosition) {
-			thisParser().restoreOriginalState(refResultState);
+			restoreOriginalState(refResultState);
 			return new TypeOrExpResult(refResult, null);
 		} else {
 			return new TypeOrExpResult(refResult, expResult);
@@ -1159,24 +1160,26 @@ protected class ParseRule_Expression {
 		assertTrue(lookAhead() == DeeTokens.OPEN_PARENS);
 		ParseHelper parse = new ParseHelper(lookAheadElement());
 		
-		DeeParser_RuleParameters fnParametersRule = thisParser().isFunctionParameters(parse);
+		ParserState savedParserState = saveParserState();
+		
+		DeeParser_RuleParameters fnParametersRule = thisParser().new DeeParser_RuleParameters(TplOrFnMode.FN);
+		fnParametersRule.parseParameters(parse);
 		
 		if(!parse.ruleBroken) {
 			ArrayView<FunctionAttributes> fnAttributes = thisParser().parseFunctionAttributes();
 			
 			if(lookAhead() == DeeTokens.OPEN_BRACE || lookAhead() == DeeTokens.LAMBDA) {
-				fnParametersRule.acceptDeciderResult();
 				ArrayView<IFunctionParameter> fnParams = fnParametersRule.getAsFunctionParameters();
 				return parseFunctionLiteral_atFunctionBody(parse.nodeStart, null, null, fnParams, fnAttributes);
 			}
 		}
 		
-		fnParametersRule.discardDeciderResult();
+		restoreOriginalState(savedParserState);
 		return parseParenthesesExp();
 	}
 	
 	protected NodeResult<ExpSimpleLambda> parseSimpleLambdaLiteral_start() {
-		ProtoDefSymbol defId = thisParser().parseDefId();
+		ProtoDefSymbol defId = parseDefId();
 		consumeLookAhead(DeeTokens.LAMBDA);
 		
 		ParseHelper parse = new ParseHelper(defId.getStartPos());

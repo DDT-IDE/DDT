@@ -24,8 +24,8 @@ import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.IASTNode;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.TemplateParameter;
-import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
-import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
+import dtool.parser.DeeParser_Parameters.AmbiguousParameter;
+import dtool.parser.DeeParser_Parameters.TplOrFnMode;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.tests.CommonTestUtils;
 
@@ -150,7 +150,7 @@ public class DeeParsingChecks extends CommonTestUtils {
 		
 		public static Object parseAmbigParameter(String nodeSnippedSource) {
 			DeeParser deeParser = new DeeParser(nodeSnippedSource);
-			return new DeeParser_RuleParameters(deeParser, TplOrFnMode.AMBIG).parseParameter();
+			return deeParser.new DeeParser_RuleParameters(TplOrFnMode.AMBIG).parseParameter();
 		}
 		
 		public static void ambigParameterReparseTest(String nodeSource) {

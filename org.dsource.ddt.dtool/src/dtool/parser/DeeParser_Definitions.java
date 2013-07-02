@@ -67,7 +67,6 @@ import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.definitions.TemplateAliasParam;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.Expression;
@@ -77,7 +76,6 @@ import dtool.ast.expressions.InitializerArray.ArrayInitEntry;
 import dtool.ast.expressions.InitializerStruct;
 import dtool.ast.expressions.InitializerStruct.StructInitEntry;
 import dtool.ast.expressions.InitializerVoid;
-import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefTypeFunction;
 import dtool.ast.references.Reference;
@@ -87,8 +85,6 @@ import dtool.ast.statements.FunctionBody;
 import dtool.ast.statements.FunctionBodyOutBlock;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.InOutFunctionBody;
-import dtool.parser.DeeParser.DeeParserState;
-import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
@@ -128,7 +124,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	
 	public DefinitionStartInfo parseDefStartInfo() {
-		ArrayList<Token> comments = readStartDDocComments(lookAheadElement(), thisParser().getSourcePosition());
+		ArrayList<Token> comments = readStartDDocComments(lookAheadElement(), getSourcePosition());
 		if(comments == null) {
 			return new DefinitionStartInfo(comments, lookAheadElement().getStartPos());
 		} else {
@@ -166,7 +162,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 					if(token.type == DeeTokens.DOCCOMMENT_LINE) {
 						comments = lazyInitArrayList(comments);
 						comments.add(token);
-						thisParser().getEnabledLexSource().setSourcePosition(token.getEndPos());
+						getEnabledLexSource().setSourcePosition(token.getEndPos());
 					}
 				}
 			}
@@ -649,11 +645,11 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			return result(false, fullInitExp);
 		}
 		if(lookAhead() == DeeTokens.OPEN_BRACE) {
-			DeeParserState savedParserState = thisParser().saveParserState();
+			ParserState savedParserState = saveParserState();
 			NodeResult<InitializerStruct> structInitResult = parseStructInitializer();
 			
 			if(structInitResult.ruleBroken) {
-				thisParser().restoreOriginalState(savedParserState);
+				restoreOriginalState(savedParserState);
 				return parseExpInitializer(createMissing);
 			}
 			return structInitResult;
@@ -841,63 +837,35 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			comments, retType, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 	}
 	
-	protected ASTNode parseTemplateAliasParameter_start() {
-		consumeLookAhead(DeeTokens.KW_ALIAS);
-		ParseHelper parse = new ParseHelper();
-		
-		ProtoDefSymbol defId;
-		Resolvable init = null;
-		Resolvable specialization = null;
-		
-		parsing: {
-			defId = parse.checkResult(parseDefId());
-			if(parse.ruleBroken) break parsing;
-			
-			if(tryConsume(DeeTokens.COLON)) {
-				NodeResult<Resolvable> typeOrCondExp = parseTypeOrExpression(InfixOpType.CONDITIONAL, true);
-				specialization = nullTypeOrExpToParseMissing(typeOrCondExp.node);
-			}
-			if(tryConsume(DeeTokens.ASSIGN)) {
-				init = nullTypeOrExpToParseMissing(parseTypeOrAssignExpression(true).node);
-			}
-		}
-		
-		return parse.conclude(new TemplateAliasParam(defId, specialization, init));
-	}
-	
 	protected final DeeParser_RuleParameters parseParameters(ParseHelper parse) {
-		return new DeeParser_RuleParameters(thisParser(), TplOrFnMode.AMBIG).parse(parse, false);
+		return new DeeParser_RuleParameters(TplOrFnMode.AMBIG).parse(parse, false);
 	}
 	
-	protected final DeeParser_RuleParameters isFunctionParameters(ParseHelper parse) {
-		// TODO: optimize unnecessary processing and object creation when in this decider mode
-		return new DeeParser_RuleParameters(thisParser(), TplOrFnMode.FN).parseDeciderMode(parse);
-	}
 	protected final ArrayView<IFunctionParameter> parseFunctionParameters(ParseHelper parse) {
 		return parseFunctionParameters(parse, false);
 	}
 	protected ArrayView<IFunctionParameter> parseFunctionParameters(ParseHelper parse, boolean isOptional) {
-		DeeParser_RuleParameters fnParametersParse = new DeeParser_RuleParameters(thisParser(), TplOrFnMode.FN);
+		DeeParser_RuleParameters fnParametersParse = new DeeParser_RuleParameters(TplOrFnMode.FN);
 		return fnParametersParse.parse(parse, isOptional).getAsFunctionParameters();
 	}
 	
 	protected final ArrayView<TemplateParameter> parseTemplateParameters(ParseHelper parse, boolean isOptional) {
-		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(thisParser(), TplOrFnMode.TPL);
+		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(TplOrFnMode.TPL);
 		return tplParametersParse.parse(parse, isOptional).getAsTemplateParameters();
 	}
 	
 	protected final ArrayView<TemplateParameter> parseTemplateParametersList() {
-		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(thisParser(), TplOrFnMode.TPL);
+		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(TplOrFnMode.TPL);
 		tplParametersParse.parseParameterList(false);
 		return tplParametersParse.getAsTemplateParameters();
 	}
 	
 	public IFunctionParameter parseFunctionParameter() {
-		return (IFunctionParameter) new DeeParser_RuleParameters(thisParser(), TplOrFnMode.FN).parseParameter();
+		return (IFunctionParameter) new DeeParser_RuleParameters(TplOrFnMode.FN).parseParameter();
 	}
 	
 	public TemplateParameter parseTemplateParameter() {
-		return (TemplateParameter) new DeeParser_RuleParameters(thisParser(), TplOrFnMode.TPL).parseParameter();
+		return (TemplateParameter) new DeeParser_RuleParameters(TplOrFnMode.TPL).parseParameter();
 	}
 	
 	protected ArrayView<FunctionAttributes> parseFunctionAttributes() {
@@ -1134,7 +1102,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		ArrayList<AliasVarDeclFragment> fragments = null;
 		
 		parsing: {
-			DeeParserState savedParserState = thisParser().saveParserState();
+			ParserState savedParserState = saveParserState();
 			
 			attributes = parseDefinitionAttributes(parse);
 			if(parse.checkRuleBroken()) break parsing;
@@ -1152,7 +1120,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			}
 			
 			if(lookAhead() != DeeTokens.IDENTIFIER && couldHaveBeenParsedAsId(ref)) {
-				thisParser().restoreOriginalState(savedParserState);
+				restoreOriginalState(savedParserState);
 				return parseDefinitionAlias_atFragmentStart(); // Return error as if trying to parse DefinitionAlias
 			} else {
 				defId = parseDefId();

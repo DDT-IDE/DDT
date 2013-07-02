@@ -45,8 +45,8 @@ import dtool.ast.references.AutoReference;
 import dtool.ast.statements.SimpleVariableDef;
 import dtool.ast.statements.StatementExpression;
 import dtool.parser.AbstractParser.ParseRuleDescription;
-import dtool.parser.DeeParser_RuleParameters.AmbiguousParameter;
-import dtool.parser.DeeParser_RuleParameters.TplOrFnMode;
+import dtool.parser.DeeParser_Parameters.AmbiguousParameter;
+import dtool.parser.DeeParser_Parameters.TplOrFnMode;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.parser.DeeParsingChecks.ParametersReparseCheck;
 import dtool.parser.ParserError.ParserErrorTypes;
@@ -327,7 +327,7 @@ public class DeeParserTester extends CommonTestUtils {
 			return deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION, null);
 		} else if(parseRule.equalsIgnoreCase("PARAMETER_TEST")) {
 			
-			Object ambigParsedResult = new DeeParser_RuleParameters(deeParser, TplOrFnMode.AMBIG).parseParameter();
+			Object ambigParsedResult = deeParser.new DeeParser_RuleParameters(TplOrFnMode.AMBIG).parseParameter();
 			String parsedSource = checkParsedSource(expectedRemainingSource, deeParser);
 			parameterTest(parseAsFnParamOnly, parseAsTplParamOnly, parsedSource, ambigParsedResult);
 			

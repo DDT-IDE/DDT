@@ -19,6 +19,7 @@ import static melnorme.utilbox.core.CoreUtil.blindCast;
 import java.util.ArrayList;
 
 import melnorme.utilbox.core.CoreUtil;
+import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.CStyleVarArgsParameter;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
@@ -26,6 +27,7 @@ import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.IFunctionParameter.FunctionParamAttribKinds;
 import dtool.ast.definitions.NamelessParameter;
+import dtool.ast.definitions.TemplateAliasParam;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.definitions.TemplateThisParam;
 import dtool.ast.definitions.TemplateTupleParam;
@@ -33,101 +35,141 @@ import dtool.ast.definitions.TemplateTypeParam;
 import dtool.ast.definitions.TemplateValueParam;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefTypeModifier;
 import dtool.ast.references.RefTypeModifier.TypeModifierKinds;
 import dtool.ast.references.Reference;
-import dtool.parser.AbstractParserRule.AbstractDecidingParserRule;
 import dtool.util.ArrayView;
 
-/** Helper class to parse function and template parameters */
-public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<DeeParser_RuleParameters> {
-	
+public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
+
 	protected static enum TplOrFnMode { TPL, FN, AMBIG }
 	
-	public TplOrFnMode mode;
-	public ArrayList<Object> params;
-	
-	public DeeParser_RuleParameters(DeeParser deeParser, TplOrFnMode mode) {
-		super(deeParser);
-		this.mode = mode;
-	}
-	
-	public boolean isAmbiguous() {
-		return mode == TplOrFnMode.AMBIG;
-	}
-	
-	@Override
-	public DeeParser_RuleParameters parse(ParseHelper parse) {
-		return parse(parse, false);
-	}
-	
-	public DeeParser_RuleParameters parse(ParseHelper parse, boolean isOptional) {
-		if(parse.consume(DeeTokens.OPEN_PARENS, isOptional, true) == false)
-			return this;
-		parseParameterList(true);
-		parse.consumeRequired(DeeTokens.CLOSE_PARENS);
-		return this;
-	}
-	
-	public void parseParameterList(boolean first) {
-		params = new ArrayList<Object>();
+	/** Helper class to parse function and template parameters */
+	public final class DeeParser_RuleParameters {
 		
-		while(true) {
-			Object param = parseParameter(first && lookAhead() != DeeTokens.COMMA);
+		public TplOrFnMode mode;
+		public ArrayList<Object> params;
+		
+		public DeeParser_RuleParameters(TplOrFnMode mode) {
+			this.mode = mode;
+		}
+		
+		public boolean isAmbiguous() {
+			return mode == TplOrFnMode.AMBIG;
+		}
+		
+		public DeeParser_RuleParameters parseParameters(ParseHelper parse) {
+			return parse(parse, false);
+		}
+		
+		public DeeParser_RuleParameters parse(ParseHelper parse, boolean isOptional) {
+			if(parse.consume(DeeTokens.OPEN_PARENS, isOptional, true) == false)
+				return this;
+			parseParameterList(true);
+			parse.consumeRequired(DeeTokens.CLOSE_PARENS);
+			return this;
+		}
+		
+		public void parseParameterList(boolean first) {
+			params = new ArrayList<Object>();
 			
-			if(param == null) {
+			while(true) {
+				Object param = parseParameter(first && lookAhead() != DeeTokens.COMMA);
+				
+				if(param == null) {
+					break;
+				}
+				params.add(param);
+				first = false;
+				
+				if(tryConsume(DeeTokens.COMMA)) {
+					continue;
+				}
 				break;
 			}
-			params.add(param);
-			first = false;
+		}
+		
+		public Object parseParameter() {
+			return parseParameter(false);
+		}
+		public Object parseParameter(boolean returnNullOnMissing) {
+			ParseHelper parse = new ParseHelper(lookAheadElement());
 			
-			if(tryConsume(DeeTokens.COMMA)) {
-				continue;
+			if(mode != TplOrFnMode.TPL && tryConsume(DeeTokens.TRIPLE_DOT)) {
+				setMode(TplOrFnMode.FN);
+				return parse.conclude(new CStyleVarArgsParameter());
 			}
-			break;
-		}
-	}
-	
-	public Object parseParameter() {
-		return parseParameter(false);
-	}
-	public Object parseParameter(boolean returnNullOnMissing) {
-		ParseHelper parse = new ParseHelper(lookAheadElement());
-		
-		if(mode != TplOrFnMode.TPL && tryConsume(DeeTokens.TRIPLE_DOT)) {
-			setMode(TplOrFnMode.FN);
-			return parse.conclude(new CStyleVarArgsParameter());
-		}
-		
-		if(mode != TplOrFnMode.FN && lookAhead() == DeeTokens.KW_ALIAS) {
-			setMode(TplOrFnMode.TPL);
-			return parseTemplateAliasParameter_start();
-		}
-		
-		if(mode != TplOrFnMode.FN && tryConsume(DeeTokens.KW_THIS)) {
-			setMode(TplOrFnMode.TPL);
-			ProtoDefSymbol defId = parseDefId();
-			return parse.conclude(new TemplateThisParam(defId));
-		}
-		
-		ArrayList<Token> attribs = null;
-		if(mode != TplOrFnMode.TPL) {
-			while(true) {
-				FunctionParamAttribKinds paramAttrib = FunctionParamAttribKinds.fromToken(lookAhead());
-				if(paramAttrib == null || isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS)
-					break;
-				
-				Token attribToken = consumeLookAhead().token;
-				attribs = lazyInitArrayList(attribs);
-				attribs.add(attribToken);
-				
-				if(!isTypeModifier(attribToken.type)) {
-					setMode(TplOrFnMode.FN);
+			
+			if(mode != TplOrFnMode.FN && lookAhead() == DeeTokens.KW_ALIAS) {
+				setMode(TplOrFnMode.TPL);
+				return parseTemplateAliasParameter_start();
+			}
+			
+			if(mode != TplOrFnMode.FN && tryConsume(DeeTokens.KW_THIS)) {
+				setMode(TplOrFnMode.TPL);
+				ProtoDefSymbol defId = parseDefId();
+				return parse.conclude(new TemplateThisParam(defId));
+			}
+			
+			ArrayList<Token> attribs = null;
+			if(mode != TplOrFnMode.TPL) {
+				while(true) {
+					FunctionParamAttribKinds paramAttrib = FunctionParamAttribKinds.fromToken(lookAhead());
+					if(paramAttrib == null || isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS)
+						break;
+					
+					Token attribToken = consumeLookAhead().token;
+					attribs = lazyInitArrayList(attribs);
+					attribs.add(attribToken);
+					
+					if(!isTypeModifier(attribToken.type)) {
+						setMode(TplOrFnMode.FN);
+					}
 				}
 			}
+			
+			return new AmbiguousParameter().parseAmbiguousParam(this, returnNullOnMissing, parse.nodeStart, attribs);
 		}
 		
-		return new AmbiguousParameter().parseAmbiguousParam(returnNullOnMissing, parse.nodeStart, attribs);
+		
+		protected void setMode(TplOrFnMode newMode) {
+			if(mode == newMode)
+				return;
+			assertTrue(mode == TplOrFnMode.AMBIG);
+			
+			mode = newMode;
+			if(params == null)
+				return;
+			
+			ArrayList<AmbiguousParameter> oldParams = blindCast(params);
+			params = new ArrayList<Object>();
+			for (AmbiguousParameter param : oldParams) {
+				params.add(mode == TplOrFnMode.FN ? param.convertToFunction() : param.convertToTemplate());
+			} 
+		}
+		
+		public final ArrayView<IFunctionParameter> getAsFunctionParameters() {
+			assertTrue(mode == TplOrFnMode.FN);
+			return arrayView(CoreUtil.<ArrayList<IFunctionParameter>>blindCast(params));
+		}
+		
+		public final ArrayView<IFunctionParameter> toFunctionParameters() {
+			assertTrue(isAmbiguous());
+			setMode(TplOrFnMode.FN);
+			return getAsFunctionParameters();
+		}
+		
+		public final ArrayView<TemplateParameter> getAsTemplateParameters() {
+			assertTrue(mode == TplOrFnMode.TPL);
+			return arrayView(CoreUtil.<ArrayList<TemplateParameter>>blindCast(params));
+		}
+		
+		public final ArrayView<TemplateParameter> toTemplateParameters() {
+			assertTrue(isAmbiguous());
+			setMode(TplOrFnMode.TPL);
+			return getAsTemplateParameters();
+		}
 	}
 	
 	protected class AmbiguousParameter {
@@ -143,7 +185,8 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 		
 		SourceRange sr;
 		
-		public Object parseAmbiguousParam(boolean returnNullOnMissing, int nodeStart, ArrayList<Token> attribs) {
+		public Object parseAmbiguousParam(DeeParser_RuleParameters params, boolean returnNullOnMissing, 
+			int nodeStart, ArrayList<Token> attribs) {
 			this.attribs = attribs;
 			
 			// Possible outcomes from this point
@@ -169,27 +212,27 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 					defId = parseDefId(); 
 				} else {
 					if(!(couldHaveBeenParsedAsId(ref) && attribs == null)) {
-						if(mode == TplOrFnMode.TPL) {
+						if(params.mode == TplOrFnMode.TPL) {
 							assertTrue(attribs == null);
 							defId = parseDefId(); // will create a missing defId;
 						} else {
-							setMode(TplOrFnMode.FN); // Can only be NamelessParam
+							params.setMode(TplOrFnMode.FN); // Can only be NamelessParam
 						}
 					}
 				}
 				
-				if((defId == null) || (defId != null && mode != TplOrFnMode.TPL) ) {
+				if((defId == null) || (defId != null && params.mode != TplOrFnMode.TPL) ) {
 					if(tryConsume(DeeTokens.TRIPLE_DOT)) {
 						if(defId != null) {
-							setMode(TplOrFnMode.FN); //FunctionParameter
+							params.setMode(TplOrFnMode.FN); //FunctionParameter
 						}
 						isVariadic = true;
 						break parsing;
 					}
 				}
 				
-				if(mode != TplOrFnMode.FN && tryConsume(DeeTokens.COLON)) {
-					setMode(TplOrFnMode.TPL); // TemplateTypeParam or TemplateValueParam
+				if(params.mode != TplOrFnMode.FN && tryConsume(DeeTokens.COLON)) {
+					params.setMode(TplOrFnMode.TPL); // TemplateTypeParam or TemplateValueParam
 					if(defId == null) { 
 						typeSpecialization = parseTypeReference_ToMissing().node;
 					} else {
@@ -197,7 +240,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 					}
 				}
 				if(tryConsume(DeeTokens.ASSIGN)) {
-					parseParamDefault();
+					parseParamDefault(params);
 				}
 			}
 			
@@ -205,17 +248,17 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 			assertTrue(defId != null ? !paramDefault.isRefOnly() : true);
 			
 			sr = SourceRange.srStartToEnd(nodeStart, getSourcePosition());
-			switch (mode) { default: throw assertUnreachable();
+			switch (params.mode) { default: throw assertUnreachable();
 			case AMBIG: return this;
 			case TPL: return convertToTemplate();
 			case FN: return convertToFunction();
 			}
 		}
 		
-		public void parseParamDefault() {
-			if(mode == TplOrFnMode.FN || defId != null) {
+		public void parseParamDefault(DeeParser_RuleParameters params) {
+			if(params.mode == TplOrFnMode.FN || defId != null) {
 				paramDefault = new TypeOrExpResult(null, result(false, parseAssignExpression_toMissing()));
-			} else if(mode == TplOrFnMode.TPL) {
+			} else if(params.mode == TplOrFnMode.TPL) {
 				if(defId == null) {
 					paramDefault = new TypeOrExpResult(parseTypeReference_ToMissing(), null); 
 				} else {
@@ -228,9 +271,9 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 						parseTypeReference_ToMissing(), 
 						result(false, parseAssignExpression_toMissing()));
 				} else if(paramDefault.isExpOnly() && defId == null) {
-					setMode(TplOrFnMode.FN); //NamelessParameter
+					params.setMode(TplOrFnMode.FN); //NamelessParameter
 				}  else if(paramDefault.isRefOnly()) {
-					setMode(TplOrFnMode.TPL);
+					params.setMode(TplOrFnMode.TPL);
 				}
 			}
 		}
@@ -271,41 +314,28 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 		return new ProtoDefSymbol("", srAt(position), null);
 	}
 	
-	protected void setMode(TplOrFnMode newMode) {
-		if(mode == newMode)
-			return;
-		assertTrue(mode == TplOrFnMode.AMBIG);
+	protected ASTNode parseTemplateAliasParameter_start() {
+		consumeLookAhead(DeeTokens.KW_ALIAS);
+		ParseHelper parse = new ParseHelper();
 		
-		mode = newMode;
-		if(params == null)
-			return;
+		ProtoDefSymbol defId;
+		Resolvable init = null;
+		Resolvable specialization = null;
 		
-		ArrayList<AmbiguousParameter> oldParams = blindCast(params);
-		params = new ArrayList<Object>();
-		for (AmbiguousParameter param : oldParams) {
-			params.add(mode == TplOrFnMode.FN ? param.convertToFunction() : param.convertToTemplate());
-		} 
+		parsing: {
+			defId = parse.checkResult(parseDefId());
+			if(parse.ruleBroken) break parsing;
+			
+			if(tryConsume(DeeTokens.COLON)) {
+				NodeResult<Resolvable> typeOrCondExp = parseTypeOrExpression(InfixOpType.CONDITIONAL, true);
+				specialization = nullTypeOrExpToParseMissing(typeOrCondExp.node);
+			}
+			if(tryConsume(DeeTokens.ASSIGN)) {
+				init = nullTypeOrExpToParseMissing(parseTypeOrAssignExpression(true).node);
+			}
+		}
+		
+		return parse.conclude(new TemplateAliasParam(defId, specialization, init));
 	}
 	
-	public final ArrayView<IFunctionParameter> getAsFunctionParameters() {
-		assertTrue(mode == TplOrFnMode.FN);
-		return arrayView(CoreUtil.<ArrayList<IFunctionParameter>>blindCast(params));
-	}
-	
-	public final ArrayView<IFunctionParameter> toFunctionParameters() {
-		assertTrue(isAmbiguous());
-		setMode(TplOrFnMode.FN);
-		return getAsFunctionParameters();
-	}
-	
-	public final ArrayView<TemplateParameter> getAsTemplateParameters() {
-		assertTrue(mode == TplOrFnMode.TPL);
-		return arrayView(CoreUtil.<ArrayList<TemplateParameter>>blindCast(params));
-	}
-	
-	public final ArrayView<TemplateParameter> toTemplateParameters() {
-		assertTrue(isAmbiguous());
-		setMode(TplOrFnMode.TPL);
-		return getAsTemplateParameters();
-	}
 }

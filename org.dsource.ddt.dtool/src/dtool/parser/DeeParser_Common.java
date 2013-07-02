@@ -14,6 +14,8 @@ import dtool.ast.references.Reference;
 
 public abstract class DeeParser_Common extends AbstractParser {
 	
+	protected abstract DeeParser thisParser();
+	
 	/* ----------------------------------------------------------------- */
 	
 	public DeeTokens lookAheadGrouped() {
