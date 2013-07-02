@@ -10,31 +10,35 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.SourceRange;
-import dtool.parser.LexElement.MissingLexElement;
 
 
 /**
- * Base class for a lex element. Can be a {@link LexElement} or {@link MissingLexElement}
+ * An extension of the simple {@link Token} with additional info.
+ * Stores information about some preceding sub-channel tokens.
+ * Can be a {@link MissingLexElement}, a synthetic token that represents a missing expected token.
  */
 public abstract class BaseLexElement implements IToken {
 	
+	public final DeeTokens type;
 	public final int startPos;
 	public final String source;
-	
 	/** This array stores some (but not all) preceding subchannel tokens.  */
 	protected final Token[] relevantPrecedingSubChannelTokens;
 	
-	public BaseLexElement(Token[] ignoredPrecedingTokens, String source, int startPos) {
+	public BaseLexElement(DeeTokens type, String source, int startPos, Token[] ignoredPrecedingTokens) {
+		this.type = assertNotNull(type);
+		if(type.hasSourceValue()) {
+			assertEquals(type.getSourceValue(), source);
+		}
 		this.source = assertNotNull(source);
 		this.startPos = startPos;
 		this.relevantPrecedingSubChannelTokens = ignoredPrecedingTokens;
 		assertTrue(ignoredPrecedingTokens == null || ignoredPrecedingTokens.length > 0);
 	}
-	
-	public abstract boolean isMissingElement();
 	
 	@Override
 	public final String getSourceValue() {
@@ -60,6 +64,11 @@ public abstract class BaseLexElement implements IToken {
 		return new SourceRange(getStartPos(), getLength());
 	}
 	
+	public final boolean isEOF() {
+		return type == DeeTokens.EOF;
+	}
+	
+	
 	public final int getFullRangeStartPos() {
 		if(relevantPrecedingSubChannelTokens != null && relevantPrecedingSubChannelTokens.length > 0) {
 			return relevantPrecedingSubChannelTokens[0].getStartPos();
@@ -73,11 +82,17 @@ public abstract class BaseLexElement implements IToken {
 		return relevantPrecedingSubChannelTokens == null ? EMPTY_ARRAY : relevantPrecedingSubChannelTokens;
 	}
 	
-	public abstract ParserError getError();
+	public abstract boolean isMissingElement();
 	
-	@Override
-	public String toString() {
+	public abstract ParserError getMissingError();
+	
+	
+	public String toStringRangePrefix() {
 		return getFullRangeStartPos() != getStartPos() ? "【"+getFullRangeStartPos()+"】" : "";
 	}
 	
+	@Override
+	public String toString() {
+		return toStringRangePrefix() + type +"►"+ source;
+	}
 }

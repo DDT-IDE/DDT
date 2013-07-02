@@ -135,7 +135,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	}
 	
 	public Reference parseMissingTypeReference(ParseRuleDescription expectedRule) {
-		SourceRange sourceRange = consumeSubChannelTokens().getSourceRange();
+		SourceRange sourceRange = consumeSubChannelTokensNoError().getSourceRange();
 		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
 		return createMissingTypeReferenceNode(sourceRange, error);
 	}
@@ -261,7 +261,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	
 	public RefIdentifier parseRefIdentifier() {
 		BaseLexElement id = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
-		return conclude(id.getError(), srEffective(id, new RefIdentifier(idTokenToString(id))));
+		return conclude(id.getMissingError(), srEffective(id, new RefIdentifier(idTokenToString(id))));
 	}
 	
 	protected RefPrimitive parseRefPrimitive_start(DeeTokens primitiveType) {
@@ -493,7 +493,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	protected Expression parseMissingExpression(ParseRuleDescription expectedRule, boolean consumeIgnoreTokens) {
 		int nodeStart = getSourcePosition();
 		if(consumeIgnoreTokens) {
-			consumeSubChannelTokens();
+			advanceSubChannelTokens();
 		}
 		int nodeEnd = getSourcePosition();
 		return createMissingExpression(expectedRule, lastLexElement(), nodeStart, nodeEnd);

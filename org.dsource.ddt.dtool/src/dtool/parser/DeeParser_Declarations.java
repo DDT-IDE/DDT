@@ -153,7 +153,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 	
 	public RefImportSelection parseRefImportSelection() {
 		BaseLexElement lexToken = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
-		return conclude(lexToken.getError(), srOf(lexToken, new RefImportSelection(idTokenToString(lexToken))));
+		return conclude(lexToken.getMissingError(), srOf(lexToken, new RefImportSelection(idTokenToString(lexToken))));
 	}
 	
 	public static final ParseRuleDescription RULE_DECLBODY = 
@@ -195,7 +195,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 		ParseHelper parse = new ParseHelper(getSourcePosition());
 		
 		ArrayView<ASTNode> declDefs = thisParser().parseDeclarations(bodyListTerminator, false);
-		consumeSubChannelTokens();
+		advanceSubChannelTokens();
 		return parse.conclude(new DeclList(declDefs));
 	}
 	
@@ -250,13 +250,12 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 			return null;
 		ParseHelper parse = new ParseHelper();
 		
-		String alignNum = null;
+		BaseLexElement alignNum = null;
 		
 		parsing: {
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				BaseLexElement alignNumToken = consumeExpectedContentToken(DeeTokens.INTEGER_DECIMAL);
-				alignNum = alignNumToken.getSourceValue();
-				parse.storeError(alignNumToken.getError());
+				alignNum = consumeExpectedContentToken(DeeTokens.INTEGER_DECIMAL);
+				parse.storeError(alignNum.getMissingError());
 				
 				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			}
@@ -453,12 +452,12 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 			return createVersionSymbol(consumeLookAhead());
 		} else { 
 			parse.storeError(createErrorExpectedRule(isDebug ? RULE_DEBUG_ARG : RULE_VERSION_ARG));
-			return createVersionSymbol(consumeSubChannelTokens());
+			return createVersionSymbol(consumeSubChannelTokensNoError());
 		}
 	}
 	
 	public VersionSymbol createVersionSymbol(BaseLexElement token) {
-		return conclude(token.getError(), srOf(token, new VersionSymbol(token.getSourceValue())));
+		return conclude(srOf(token, new VersionSymbol(token.getSourceValue())));
 	}
 	
 	public NodeResult<DeclarationStaticAssert> parseDeclarationStaticAssert() {

@@ -3,6 +3,7 @@ package dtool.ast.declarations;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.parser.IToken;
 
 /**
  * Align declaration 
@@ -13,9 +14,9 @@ import dtool.ast.IASTVisitor;
  */
 public class AttribAlign extends Attribute {
 	
-	public final String alignNum;
+	public final IToken alignNum;
 	
-	public AttribAlign(String alignNum) {
+	public AttribAlign(IToken alignNum) {
 		this.alignNum = alignNum;
 	}
 	
@@ -35,7 +36,7 @@ public class AttribAlign extends Attribute {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("align");
 		if(alignNum != null) {
-			cp.appendStrings("(", alignNum, ")");
+			cp.appendStrings("(", alignNum.getSourceValue(), ")");
 		}
 	}
 	

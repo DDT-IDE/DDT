@@ -45,22 +45,37 @@ public class DeeLexerTest extends DToolBaseTest {
 		testLexerTokenizing("final", array(DeeTokens.KW_FINAL));
 		testLexerTokenizing("finally", array(DeeTokens.KW_FINALLY));
 		testLexerTokenizing("finallyx", array(DeeTokens.IDENTIFIER));
+		
+		DeeLexer lexer = testLexerTokenizing("(blah)", 
+			array(DeeTokens.OPEN_PARENS, DeeTokens.IDENTIFIER, DeeTokens.CLOSE_PARENS));
+		lexer.reset(1);
+		testLexerTokenizing(lexer, 1, tokenCheckers(DeeTokens.IDENTIFIER, DeeTokens.CLOSE_PARENS));
+		lexer.reset(6);
+		testLexerTokenizing(lexer, 6);
 	}
 	
 	
-	public static void testLexerTokenizing(String source, DeeTokens[] deeTokens) {
+	public static DeeLexer testLexerTokenizing(String source, DeeTokens... deeTokens) {
+		return testLexerTokenizing(source, tokenCheckers(deeTokens));
+	}
+	
+	public static TokenChecker[] tokenCheckers(DeeTokens... deeTokens) {
 		TokenChecker[] tokenCheckers = new TokenChecker[deeTokens.length];
 		for (int i = 0; i < deeTokens.length; i++) {
 			tokenCheckers[i] = new TokenChecker(deeTokens[i]);
 		}
-		testLexerTokenizing(source, tokenCheckers);
+		return tokenCheckers;
 	}
 	
-	public static void testLexerTokenizing(String source, TokenChecker[] tokenCheckers) {
+	public static DeeLexer testLexerTokenizing(String source, TokenChecker... tokenCheckers) {
 		DeeLexer deeLexer = new DeeTestsLexer(source);
-		int readSourceOffset = 0;
+		testLexerTokenizing(deeLexer, 0, tokenCheckers);
+		return deeLexer;
+	}
+	public static void testLexerTokenizing(DeeLexer deeLexer, int readSourceOffset, TokenChecker... tokenCheckers) {
+		String source = deeLexer.source;
 		
-		StringBuilder constructedSource = new StringBuilder();
+		StringBuilder constructedSource = new StringBuilder(deeLexer.source.substring(0, readSourceOffset));
 		for (int i = 0; i < tokenCheckers.length; i++) {
 			TokenChecker tokenChecker = tokenCheckers[i];
 			Token token = tokenChecker.checkToken(deeLexer, readSourceOffset);
@@ -76,8 +91,9 @@ public class DeeLexerTest extends DToolBaseTest {
 			constructedSource.append(tokenSourceValue);
 			assertTrue(sourceSoFar.contentEquals(constructedSource));
 		}
-		assertTrue(deeLexer.tokenStartPos == source.length());
+		assertTrue(deeLexer.pos == source.length());
 		new TokenChecker(DeeTokens.EOF).checkToken(deeLexer, readSourceOffset);
+		assertTrue(deeLexer.tokenStartPos == source.length());
 		assertEquals(source, constructedSource.toString());
 	}
 	

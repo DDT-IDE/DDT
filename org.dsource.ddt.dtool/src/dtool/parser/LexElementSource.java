@@ -20,7 +20,7 @@ import java.util.AbstractList;
  */
 public class LexElementSource {
 	
-	public static final LexElement START_TOKEN = new LexElement(null, new Token(DeeTokens.EOF, "", 0));
+	public static final LexElement START_TOKEN = new LexElement(DeeTokens.EOF, "", 0, null);
 	
 	protected final AbstractList<LexElement> lexElementList; // Immutable
 	protected LexElement lastLexElement = START_TOKEN;

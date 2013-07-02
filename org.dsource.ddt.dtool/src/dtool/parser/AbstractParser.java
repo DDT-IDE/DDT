@@ -248,13 +248,16 @@ public abstract class AbstractParser {
 		return consumeSubChannelTokens(null);
 	}
 	
+	public final MissingLexElement consumeSubChannelTokensNoError() {
+		return consumeSubChannelTokens(null);
+	}
+	
 	public MissingLexElement consumeSubChannelTokens(ParserError error) {
 		// Missing element will consume whitetokens ahead
 		LexElement la = lookAheadElement();
 		int lookAheadStart = la.getStartPos();
 		MissingLexElement missingLexElement = new MissingLexElement(la.relevantPrecedingSubChannelTokens, 
-			lookAheadStart);
-		missingLexElement.error = error;
+			lookAheadStart, error);
 		getEnabledLexSource().advanceSubChannelTokens();
 		return missingLexElement;
 	}
@@ -371,8 +374,8 @@ public abstract class AbstractParser {
 		
 		public BaseLexElement consumeExpectedIdentifier() {
 			BaseLexElement token = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
-			if(token.getError() != null) {
-				storeError(token.getError());
+			if(token.getMissingError() != null) {
+				storeError(token.getMissingError());
 			}
 			return token;
 		}

@@ -66,11 +66,11 @@ public class Token implements ISourceRepresentation, IToken {
 		
 		protected final LexerErrorTypes error;
 		
-		public ErrorToken(String value, int start, DeeTokens originalType, LexerErrorTypes error) {
-			super(originalType, value, start);
+		public ErrorToken(DeeTokens tokenType, String value, int start, LexerErrorTypes error) {
+			super(tokenType, value, start);
 			this.error = error;
-			if(originalType == DeeTokens.INVALID_TOKEN || error == LexerErrorTypes.INVALID_CHARACTERS) {
-				assertTrue(originalType == DeeTokens.INVALID_TOKEN);
+			if(tokenType == DeeTokens.INVALID_TOKEN || error == LexerErrorTypes.INVALID_CHARACTERS) {
+				assertTrue(tokenType == DeeTokens.INVALID_TOKEN);
 				assertTrue(error == LexerErrorTypes.INVALID_CHARACTERS);
 			}
 		}

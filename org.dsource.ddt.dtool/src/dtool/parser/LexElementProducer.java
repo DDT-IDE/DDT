@@ -50,7 +50,8 @@ public class LexElementProducer {
 				ignoredTokens.add(token);
 				continue;
 			}
-			return new LexElement(NewUtils.toArray(ignoredTokens, Token.class), token);
+			return new LexElement(token.type, token.source, token.startPos, 
+				NewUtils.toArray(ignoredTokens, Token.class));
 		}
 	}
 	

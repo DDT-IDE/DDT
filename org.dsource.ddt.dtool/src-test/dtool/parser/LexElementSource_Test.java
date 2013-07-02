@@ -15,17 +15,17 @@ public class LexElementSource_Test extends DToolBaseTest {
 		}
 		
 		@Override
-		public Token parseToken() {
-			if(lookAheadIsEOF()) {
-				return createToken(DeeTokens.EOF);
+		public Void doParseToken() {
+			if(lookAhead() == EOF) {
+				return endMatch(DeeTokens.EOF);
 			}
 			if(lookAhead() == ' ') {
-				return createToken(DeeTokens.WHITESPACE, 1);
+				return matchTokenFromStartPos(DeeTokens.WHITESPACE, 1);
 			}
 			if(lookAhead() == 'X') {
-				createToken(DeeTokens.IDENTIFIER, 1);
+				matchTokenFromStartPos(DeeTokens.IDENTIFIER, 1);
 			}
-			return createToken(DeeTokens.IDENTIFIER, 2);
+			return matchTokenFromStartPos(DeeTokens.IDENTIFIER, 2);
 		}
 	}
 	

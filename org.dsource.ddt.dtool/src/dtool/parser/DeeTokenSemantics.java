@@ -93,8 +93,8 @@ public class DeeTokenSemantics {
 	);
 	
 	public static ParserError checkTraitsId(BaseLexElement traitsId) {
-		if(traitsId.getError() != null) {
-			return traitsId.getError();
+		if(traitsId.getMissingError() != null) {
+			return traitsId.getMissingError();
 		}
 		
 		if(traitsIdMapper.get(traitsId.getSourceValue()) != null) {

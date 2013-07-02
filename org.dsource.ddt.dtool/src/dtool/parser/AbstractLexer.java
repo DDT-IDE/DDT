@@ -12,7 +12,6 @@ package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import dtool.parser.Token.ErrorToken;
 
 public abstract class AbstractLexer {
 	
@@ -22,8 +21,9 @@ public abstract class AbstractLexer {
 
 	protected final String source;
 	protected int tokenStartPos = 0;
-	// BM: maybe pos should function param instead of global variable
-	protected int pos = tokenStartPos; // Temporary variable used internally by scanners 
+	protected int pos = 0; // Temporary variable. When a match is finished this will be token end position. 
+	protected DeeTokens tokenType; // type for the last matched token 
+	protected LexerErrorTypes errorType; // error for the last matched token
 	
 	public AbstractLexer(String source) {
 		this.source = assertNotNull(source);
@@ -31,30 +31,6 @@ public abstract class AbstractLexer {
 	
 	public final String getSource() {
 		return source;
-	}
-	
-	public final int getLexingPosition() {
-		return tokenStartPos;
-	}
-	
-	public boolean lookAheadIsEOF() {
-		assertTrue(pos == tokenStartPos);
-		return (tokenStartPos >= source.length());
-	}
-	
-	public final Token next() { 
-		Token token = parseToken();
-		assertNotNull(token);
-		
-		tokenStartPos = token.getEndPos();
-		return token;
-	}
-	
-	public abstract Token parseToken();
-	
-	public final void reset(int newTokenStartPosition) {
-		assertTrue(newTokenStartPosition >= 0 && newTokenStartPosition <= source.length());
-		tokenStartPos = newTokenStartPosition;
 	}
 	
 	/** Gets the character from absolute position index. */
@@ -74,19 +50,51 @@ public abstract class AbstractLexer {
 		return getCharacter(pos);
 	}
 	
-	
-	protected final Token createToken(DeeTokens tokenCode) {
-		String value = source.substring(tokenStartPos, pos);
-		return new Token(tokenCode, value, tokenStartPos);
+	public final void reset(int newTokenStartPosition) {
+		assertTrue(newTokenStartPosition >= 0 && newTokenStartPosition <= source.length());
+		pos = newTokenStartPosition;
+		tokenType = null;
 	}
-	protected final Token createToken(DeeTokens tokenCode, int length) {
+	
+	public final Token next() {
+		parseToken();
+		Token token = createParsedToken();
+		assertTrue(token.getEndPos() == pos);
+		return token;
+	}
+	
+	public void parseToken() {
+		tokenType = null;
+		errorType = null;
+		tokenStartPos = pos;
+		
+		doParseToken();
+	}
+	
+	protected Token createParsedToken() {
+		String value = source.substring(tokenStartPos, pos);
+		if(errorType != null) {
+			return new Token.ErrorToken(tokenType, value, tokenStartPos, errorType);
+		}
+		return new Token(tokenType, value, tokenStartPos);
+	}
+	
+	protected abstract Void doParseToken();
+	
+	protected final Void endMatchWithError(DeeTokens tokenType, LexerErrorTypes errorType) {
+		this.errorType = errorType;
+		return endMatch(tokenType);
+	}
+	
+	protected final Void endMatch(DeeTokens tokenType) {
+		this.tokenType = tokenType;
+		return null;
+	}
+	
+	
+	protected final Void matchTokenFromStartPos(DeeTokens tokenCode, int length) {
 		pos = tokenStartPos + length;
-		return createToken(tokenCode);
-	}
-	
-	protected final ErrorToken createErrorToken(DeeTokens originalToken, LexerErrorTypes errorType) {
-		String value = source.substring(tokenStartPos, pos);
-		return new Token.ErrorToken(value, tokenStartPos, originalToken, errorType);
+		return endMatch(tokenCode);
 	}
 	
 	/* ------------------------ Helpers ------------------------ */
@@ -231,21 +239,21 @@ public abstract class AbstractLexer {
 	
 	/* ------------------------  ------------------------ */
 	
-	protected final Token rule3Choices(char ch1, DeeTokens tk1, char ch2, DeeTokens tk2, DeeTokens tokenElse) {
+	protected final Void rule3Choices(char ch1, DeeTokens tk1, char ch2, DeeTokens tk2, DeeTokens tokenElse) {
 		if(lookAhead(1) == ch1) {
-			return createToken(tk1, 2);
+			return matchTokenFromStartPos(tk1, 2);
 		} else if(lookAhead(1) == ch2) {
-			return createToken(tk2, 2);
+			return matchTokenFromStartPos(tk2, 2);
 		} else {
-			return createToken(tokenElse, 1);
+			return matchTokenFromStartPos(tokenElse, 1);
 		}
 	}
 	
-	protected final Token rule2Choices(char ch1, DeeTokens tk1, DeeTokens tokenElse) {
+	protected final Void rule2Choices(char ch1, DeeTokens tk1, DeeTokens tokenElse) {
 		if(lookAhead(1) == ch1) {
-			return createToken(tk1, 2);
+			return matchTokenFromStartPos(tk1, 2);
 		} else {
-			return createToken(tokenElse, 1);
+			return matchTokenFromStartPos(tokenElse, 1);
 		}
 	}
 	

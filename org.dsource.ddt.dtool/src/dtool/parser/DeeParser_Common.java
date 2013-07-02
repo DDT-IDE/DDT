@@ -108,7 +108,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 	
 	public static ProtoDefSymbol defSymbol(BaseLexElement id) {
 		// possible bug here, should be srEffectiveRange
-		return new ProtoDefSymbol(id.getSourceValue(), id.getSourceRange(), id.getError());
+		return new ProtoDefSymbol(id.getSourceValue(), id.getSourceRange(), id.getMissingError());
 	}
 	
 	public final ProtoDefSymbol parseMissingDefIdNoError() {
@@ -122,7 +122,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 	
 	public final ProtoDefSymbol nullIdToParseMissingDefId(ProtoDefSymbol defId) {
 		if(defId == null) {
-			return defSymbol(consumeSubChannelTokens());
+			return parseMissingDefIdNoError();
 		}
 		return defId;
 	}
@@ -147,7 +147,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 		return createIdSymbol(token);
 	}
 	public final Symbol createIdSymbol(BaseLexElement token) {
-		return conclude(token.getError(), srOf(token, new Symbol(token.getSourceValue())));
+		return conclude(token.getMissingError(), srOf(token, new Symbol(token.getSourceValue())));
 	}
 	
 	/* ----------------------------------------------------------------- */

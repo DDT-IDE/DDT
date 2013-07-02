@@ -188,7 +188,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		ArrayView<ASTNode> members = parseDeclarations(null, true);
 		assertTrue(lookAhead() == DeeTokens.EOF);
-		consumeSubChannelTokens(); // Ensure pending whitespace is consumed as well
+		advanceSubChannelTokens(); // Ensure pending whitespace is consumed as well
 		assertTrue(getSourcePosition() == lookAheadElement().getStartPos());
 		//assertTrue(getSourcePosition() == getSource().length()); //This is not true if explicit EOF token is present 
 		

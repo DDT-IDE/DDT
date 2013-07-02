@@ -10,22 +10,11 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-/**
- * Parser lexing element with a main token and optional ignored channel tokens preceding it.
- */
 public class LexElement extends BaseLexElement {
 	
-	public final DeeTokens type;
-	
-	public LexElement(Token[] precedingSubChannelTokens, Token token) {
-		super(precedingSubChannelTokens, token.source, token.startPos);
-		this.type = assertNotNull(token.type);
-		if(type.hasSourceValue()) {
-			assertEquals(type.getSourceValue(), source);
-		}
+	public LexElement(DeeTokens type, String source, int startPos, Token[] ignoredPrecedingTokens) {
+		super(type, source, startPos, ignoredPrecedingTokens);
 	}
 	
 	@Override
@@ -33,26 +22,18 @@ public class LexElement extends BaseLexElement {
 		return false;
 	}
 	
-	public final boolean isEOF() {
-		return type == DeeTokens.EOF;
-	}
-	
 	@Override
-	public ParserError getError() {
+	public ParserError getMissingError() {
 		return null;
-	}
-	
-	@Override
-	public String toString() {
-		return super.toString() + type +"►"+ source;
 	}
 	
 	public final static class MissingLexElement extends BaseLexElement {
 		
 		public ParserError error;
 		
-		public MissingLexElement(Token[] ignoredPrecedingTokens, int lookAheadStart) {
-			super(ignoredPrecedingTokens, "", lookAheadStart);
+		public MissingLexElement(Token[] ignoredPrecedingTokens, int lookAheadStart, ParserError error) {
+			super(DeeTokens.WHITESPACE, "", lookAheadStart, ignoredPrecedingTokens);
+			this.error = error; // can be null
 		}
 		
 		@Override
@@ -61,7 +42,7 @@ public class LexElement extends BaseLexElement {
 		}
 		
 		@Override
-		public ParserError getError() {
+		public ParserError getMissingError() {
 			return error;
 		}
 		
