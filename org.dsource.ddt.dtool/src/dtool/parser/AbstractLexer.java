@@ -76,7 +76,7 @@ public abstract class AbstractLexer {
 	
 	
 	protected final Token createToken(DeeTokens tokenCode) {
-		String value = source.subSequence(tokenStartPos, pos).toString();
+		String value = source.substring(tokenStartPos, pos);
 		return new Token(tokenCode, value, tokenStartPos);
 	}
 	protected final Token createToken(DeeTokens tokenCode, int length) {
@@ -85,7 +85,7 @@ public abstract class AbstractLexer {
 	}
 	
 	protected final ErrorToken createErrorToken(DeeTokens originalToken, LexerErrorTypes errorType) {
-		String value = source.subSequence(tokenStartPos, pos).toString();
+		String value = source.substring(tokenStartPos, pos);
 		return new Token.ErrorToken(value, tokenStartPos, originalToken, errorType);
 	}
 	

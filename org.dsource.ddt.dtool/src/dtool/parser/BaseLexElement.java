@@ -10,7 +10,8 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static melnorme.utilbox.misc.StringUtil.collToString;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.SourceRange;
 import dtool.parser.LexElement.MissingLexElement;
 
@@ -18,43 +19,65 @@ import dtool.parser.LexElement.MissingLexElement;
 /**
  * Base class for a lex element. Can be a {@link LexElement} or {@link MissingLexElement}
  */
-public abstract class BaseLexElement {
+public abstract class BaseLexElement implements IToken {
 	
-	protected final Token[] precedingSubChannelTokens;
+	public final int startPos;
+	public final String source;
 	
-	public BaseLexElement(Token[] ignoredPrecedingTokens) {
-		this.precedingSubChannelTokens = ignoredPrecedingTokens;
+	/** This array stores some (but not all) preceding subchannel tokens.  */
+	protected final Token[] relevantPrecedingSubChannelTokens;
+	
+	public BaseLexElement(Token[] ignoredPrecedingTokens, String source, int startPos) {
+		this.source = assertNotNull(source);
+		this.startPos = startPos;
+		this.relevantPrecedingSubChannelTokens = ignoredPrecedingTokens;
+		assertTrue(ignoredPrecedingTokens == null || ignoredPrecedingTokens.length > 0);
 	}
 	
 	public abstract boolean isMissingElement();
 	
-	/** Retrieve main token. If failOnMissing, receiver must not be missingElement. */
-	public abstract Token getToken(boolean failOnMissing);
-	
-	public final Token getToken() {
-		return getToken(true);
+	@Override
+	public final String getSourceValue() {
+		return source;
 	}
 	
-	public abstract String getSourceValue();
+	@Override
+	public final int getStartPos() {
+		return startPos;
+	}
 	
-	public abstract int getStartPos();
+	public final int getLength() {
+		return source.length();
+	}
 	
-	public abstract int getEndPos();
+	@Override
+	public final int getEndPos() {
+		return startPos + source.length();
+	}
 	
-	public abstract SourceRange getSourceRange();
+	@Override
+	public final SourceRange getSourceRange() {
+		return new SourceRange(getStartPos(), getLength());
+	}
 	
 	public final int getFullRangeStartPos() {
-		if(precedingSubChannelTokens != null && precedingSubChannelTokens.length > 0) {
-			return precedingSubChannelTokens[0].getStartPos();
+		if(relevantPrecedingSubChannelTokens != null && relevantPrecedingSubChannelTokens.length > 0) {
+			return relevantPrecedingSubChannelTokens[0].getStartPos();
 		}
 		return getStartPos();
+	}
+	
+	public static final Token[] EMPTY_ARRAY = new Token[0];
+	
+	public Token[] getRelevantPrecedingSubChannelTokens() {
+		return relevantPrecedingSubChannelTokens == null ? EMPTY_ARRAY : relevantPrecedingSubChannelTokens;
 	}
 	
 	public abstract ParserError getError();
 	
 	@Override
 	public String toString() {
-		return precedingSubChannelTokens != null ? "【"+collToString(precedingSubChannelTokens, "●")+"】" : "";
+		return getFullRangeStartPos() != getStartPos() ? "【"+getFullRangeStartPos()+"】" : "";
 	}
 	
 }

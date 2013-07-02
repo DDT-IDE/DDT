@@ -8,7 +8,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.parser.Token;
+import dtool.parser.LexElement;
 import dtool.util.ArrayView;
 
 
@@ -23,7 +23,7 @@ public class NamelessParameter extends ASTNode implements IFunctionParameter {
 	public final Expression defaultValue;
 	public final boolean isVariadic;
 	
-	public NamelessParameter(ArrayView<Token> attribList, Reference type, Expression defaultValue, 
+	public NamelessParameter(ArrayView<LexElement> attribList, Reference type, Expression defaultValue, 
 		boolean isVariadic) {
 		this.paramAttribs = FnParameterAttributes.create(attribList); 
 		this.type = parentize(assertNotNull(type));

@@ -8,12 +8,11 @@ import java.util.Collection;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeUtil;
 import dtool.ast.declarations.SyntheticDefUnit;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
-import dtool.parser.Token;
+import dtool.parser.IToken;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.PrefixDefUnitSearch;
@@ -26,16 +25,23 @@ import dtool.util.ArrayViewExt;
  */
 public class RefModule extends NamedReference {
 	
-	public final ArrayView<Token> packageList;
+	public final ArrayView<IToken> packageList;
 	public final ArrayViewExt<String> packages; // TODO: Old API, refactor?
 	public final String module;
 	
-	public RefModule(ArrayView<Token> packageList, String module) {
+	public RefModule(ArrayView<IToken> packageList, String module) {
 		this.packageList = assertNotNull(packageList);
-		this.packages = ArrayViewExt.create(NodeUtil.tokenArrayToStringArray(packageList));
+		this.packages = ArrayViewExt.create(tokenArrayToStringArray(packageList));
 		this.module = module;
 	}
 	
+	public static String[] tokenArrayToStringArray(ArrayView<IToken> tokenArray) {
+		String[] stringArray = new String[tokenArray.size()];
+		for (int i = 0; i < stringArray.length; i++) {
+			stringArray[i] = tokenArray.get(i).getSourceValue();
+		}
+		return stringArray;
+	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {

@@ -93,10 +93,8 @@ import dtool.util.SentinelArrayList;
 public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public static ArrayList<Token> readStartDDocComments(LexElement declStart, int sourcePosition) {
-		if(declStart.precedingSubChannelTokens == null)
-			return null;
 		ArrayList<Token> docComments = null;
-		for (Token token : declStart.precedingSubChannelTokens) {
+		for (Token token : declStart.getRelevantPrecedingSubChannelTokens()) {
 			if(token.getStartPos() < sourcePosition) {
 				assertTrue(token.getEndPos() <= sourcePosition);
 				continue;
@@ -153,10 +151,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				if(ruleBroken) break parsing;
 				
 				LexElement nextLexElement = lookAheadElement();
-				if(nextLexElement.precedingSubChannelTokens == null)
-					break parsing;
 				
-				for (Token token : nextLexElement.precedingSubChannelTokens) {
+				for (Token token : nextLexElement.getRelevantPrecedingSubChannelTokens()) {
 					if(token.type == DeeTokens.LINE_END)
 						break;
 					if(token.type == DeeTokens.DOCCOMMENT_LINE) {
@@ -212,14 +208,14 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		DefParseHelper parse = new DefParseHelper(parseDefStartInfo());
 		consumeLookAhead();
 		
-		ArrayList<Token> packagesList = new ArrayList<Token>(0);
+		ArrayList<IToken> packagesList = new ArrayList<>(2);
 		BaseLexElement moduleId;
 		
 		while(true) {
 			moduleId = parse.consumeExpectedIdentifier();
 			
 			if(!moduleId.isMissingElement() && tryConsume(DeeTokens.DOT)) {
-				packagesList.add(moduleId.getToken());
+				packagesList.add(moduleId);
 				moduleId = null;
 				continue;
 			}
@@ -255,7 +251,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public InvalidSyntaxElement parseInvalidElement(ParseRuleDescription expectedRule, 
 		boolean inStatementList) {
-		Token badToken = consumeLookAhead().token;
+		LexElement badToken = consumeLookAhead();
 		ParseHelper parse = new ParseHelper();
 		parse.storeBreakError(createSyntaxError(expectedRule));
 		return parse.conclude(new InvalidSyntaxElement(inStatementList, badToken));
@@ -877,7 +873,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				consumeLookAhead();
 			} else {
 				if(lookAhead() == DeeTokens.AT && lookAhead(1) == DeeTokens.IDENTIFIER) {
-					attrib = FunctionAttributes.fromCustomAttribId(lookAheadElement(1).token.source);
+					attrib = FunctionAttributes.fromCustomAttribId(lookAheadElement(1).source);
 					if(attrib != null) {
 						consumeLookAhead();
 						consumeLookAhead();
@@ -1069,7 +1065,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	
 	public final NodeResult<RefTypeFunction> parseRefTypeFunction_afterReturnType(Reference retType) {
-		boolean isDelegate = lastLexElement().token.type == DeeTokens.KW_DELEGATE;
+		boolean isDelegate = lastLexElement().type == DeeTokens.KW_DELEGATE;
 		
 		ParseHelper parse = new ParseHelper(retType);
 		ArrayView<IFunctionParameter> fnParams = null;
@@ -1314,7 +1310,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		if(!(tryConsume(DeeTokens.KW_STRUCT) || tryConsume(DeeTokens.KW_UNION)))
 			return null;
 		
-		boolean isStruct = lastLexElement().token.type == DeeTokens.KW_STRUCT;
+		boolean isStruct = lastLexElement().type == DeeTokens.KW_STRUCT;
 		if(lookAhead() != DeeTokens.IDENTIFIER) {
 			adp.defId = nullIdToParseMissingDefId(null);
 			adp.parseDeclarationBlockBody();
@@ -1344,7 +1340,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		if(!(tryConsume(DeeTokens.KW_CLASS) || tryConsume(DeeTokens.KW_INTERFACE)))
 			return null;
 		
-		boolean isClass = lastLexElement().token.type == DeeTokens.KW_CLASS;
+		boolean isClass = lastLexElement().type == DeeTokens.KW_CLASS;
 		boolean baseAfter = true;
 		
 		SimpleListParseHelper<Reference> baseClasses = new TypeReferenceSimpleListParse();
@@ -1470,7 +1466,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			return null;
 		ParseHelper parse = new ParseHelper();
 		
-		boolean isNew = lastLexElement().token.type == DeeTokens.KW_NEW;
+		boolean isNew = lastLexElement().type == DeeTokens.KW_NEW;
 		ArrayView<IFunctionParameter> params = null;
 		IFunctionBody fnBody = null;
 		

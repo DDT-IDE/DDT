@@ -5,17 +5,17 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
-import dtool.parser.Token;
+import dtool.parser.IToken;
 
 public class InvalidSyntaxElement extends ASTNode implements IDeclaration, IStatement {
 	
 	public final boolean isStatementContext;
-	public final Token badToken;
+	public final IToken badToken;
 	
-	public InvalidSyntaxElement(Token badToken) {
+	public InvalidSyntaxElement(IToken badToken) {
 		this(false, badToken);
 	}
-	public InvalidSyntaxElement(boolean isStatementContext, Token badToken) {
+	public InvalidSyntaxElement(boolean isStatementContext, IToken badToken) {
 		this.isStatementContext = isStatementContext;
 		this.badToken = badToken;
 	}

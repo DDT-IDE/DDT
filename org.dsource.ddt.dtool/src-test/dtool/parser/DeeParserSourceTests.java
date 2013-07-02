@@ -295,12 +295,12 @@ public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 	
 	public static ParserError createErrorToken(ParserErrorTypes errorTypeTk, MetadataEntry mde, 
 		LexElementSource lexSource, boolean tokenBefore, Object errorParam) {
-		Token adjacentToken = tokenBefore 
+		IToken adjacentToken = tokenBefore 
 			? findLastEffectiveTokenBeforeOffset(mde.offset, lexSource)
 			: findNextEffectiveTokenAfterOffset(mde.offset, lexSource);
 			
 		SourceRange errorRange = adjacentToken.getSourceRange();
-		String errorSource = adjacentToken.source;
+		String errorSource = adjacentToken.getSourceValue();
 		return new ParserError(errorTypeTk, errorRange, errorSource, errorParam);
 	}
 	
@@ -317,7 +317,7 @@ public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 		return DeeParser.getRule(ruleId).description;
 	}
 	
-	public static Token findLastEffectiveTokenBeforeOffset(int offset, LexElementSource lexSource) {
+	public static LexElement findLastEffectiveTokenBeforeOffset(int offset, LexElementSource lexSource) {
 		AbstractList<LexElement> lexElementList = lexSource.lexElementList;
 		assertTrue(offset > 0 && offset <= lexElementList.get(lexElementList.size()-1).getEndPos());
 		
@@ -327,10 +327,10 @@ public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 				break;
 			lastLexElement = lexElement;
 		}
-		return lastLexElement == null ? null : lastLexElement.token;
+		return lastLexElement == null ? null : lastLexElement;
 	}
 	
-	public static Token findNextEffectiveTokenAfterOffset(int offset, LexElementSource lexSource) {
+	public static LexElement findNextEffectiveTokenAfterOffset(int offset, LexElementSource lexSource) {
 		AbstractList<LexElement> lexElementList = lexSource.lexElementList;
 		
 		for (LexElement lexElement : lexElementList) {
@@ -338,7 +338,7 @@ public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 				assertFail();
 			}
 			if(lexElement.getStartPos() >= offset) {
-				return lexElement.token;
+				return lexElement;
 			}
 		}
 		throw assertFail();

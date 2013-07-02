@@ -1,14 +1,12 @@
 package dtool.ast.references;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
-import dtool.parser.Token;
+import dtool.parser.IToken;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.PrefixDefUnitSearch;
@@ -18,9 +16,9 @@ import dtool.resolver.api.IModuleResolver;
 
 public class RefPrimitive extends NamedReference {
 	
-	public final Token primitive;
+	public final IToken primitive;
 	
-	public RefPrimitive(Token primitiveToken) {
+	public RefPrimitive(IToken primitiveToken) {
 		this.primitive = primitiveToken;
 	}
 	
@@ -31,7 +29,7 @@ public class RefPrimitive extends NamedReference {
 	
 	@Override
 	public String getTargetSimpleName() {
-		return primitive.source;
+		return primitive.getSourceValue();
 	}
 	
 	@Override

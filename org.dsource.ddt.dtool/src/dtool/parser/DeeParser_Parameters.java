@@ -112,14 +112,14 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 				return parse.conclude(new TemplateThisParam(defId));
 			}
 			
-			ArrayList<Token> attribs = null;
+			ArrayList<LexElement> attribs = null;
 			if(mode != TplOrFnMode.TPL) {
 				while(true) {
 					FunctionParamAttribKinds paramAttrib = FunctionParamAttribKinds.fromToken(lookAhead());
 					if(paramAttrib == null || isTypeModifier(lookAhead()) && lookAhead(1) == DeeTokens.OPEN_PARENS)
 						break;
 					
-					Token attribToken = consumeLookAhead().token;
+					LexElement attribToken = consumeLookAhead();
 					attribs = lazyInitArrayList(attribs);
 					attribs.add(attribToken);
 					
@@ -174,7 +174,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 	
 	protected class AmbiguousParameter {
 		
-		ArrayList<Token> attribs;
+		ArrayList<LexElement> attribs;
 		
 		Reference ref;
 		ProtoDefSymbol defId = null;
@@ -186,7 +186,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 		SourceRange sr;
 		
 		public Object parseAmbiguousParam(DeeParser_RuleParameters params, boolean returnNullOnMissing, 
-			int nodeStart, ArrayList<Token> attribs) {
+			int nodeStart, ArrayList<LexElement> attribs) {
 			this.attribs = attribs;
 			
 			// Possible outcomes from this point
@@ -291,7 +291,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			if(attribs != null)  {
 				
 				for (int i = attribs.size()-1; i >= 0 ; i--) {
-					Token attribToken = attribs.get(i);
+					LexElement attribToken = attribs.get(i);
 					TypeModifierKinds modifier = assertNotNull(determineTypeModifier(attribToken.type));
 					ref = concludeNode(srBounds(attribToken.getStartPos(), ref.getEndPos(), 
 						new RefTypeModifier(modifier, ref, false)));

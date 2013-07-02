@@ -10,21 +10,22 @@
  *******************************************************************************/
 package dtool.parser;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import dtool.ast.SourceRange;
 
 /**
  * Parser lexing element with a main token and optional ignored channel tokens preceding it.
  */
 public class LexElement extends BaseLexElement {
 	
-	public final Token token;
+	public final DeeTokens type;
 	
 	public LexElement(Token[] precedingSubChannelTokens, Token token) {
-		super(precedingSubChannelTokens);
-		this.token = assertNotNull(token);
-		assertTrue(precedingSubChannelTokens == null || precedingSubChannelTokens.length > 0);
+		super(precedingSubChannelTokens, token.source, token.startPos);
+		this.type = assertNotNull(token.type);
+		if(type.hasSourceValue()) {
+			assertEquals(type.getSourceValue(), source);
+		}
 	}
 	
 	@Override
@@ -32,33 +33,8 @@ public class LexElement extends BaseLexElement {
 		return false;
 	}
 	
-	@Override
-	public final Token getToken(boolean failOnMissing) {
-		return token;
-	}
-	
-	@Override
-	public final String getSourceValue() {
-		return token.getSourceValue();
-	}
-	
-	@Override
-	public final int getStartPos() {
-		return token.getStartPos();
-	}
-	
-	@Override
-	public final int getEndPos() {
-		return token.getEndPos();
-	}
-	
-	@Override
-	public final SourceRange getSourceRange() {
-		return token.getSourceRange();
-	}
-	
 	public final boolean isEOF() {
-		return token.type == DeeTokens.EOF;
+		return type == DeeTokens.EOF;
 	}
 	
 	@Override
@@ -68,48 +44,20 @@ public class LexElement extends BaseLexElement {
 	
 	@Override
 	public String toString() {
-		return super.toString() + token.toString();
+		return super.toString() + type +"►"+ source;
 	}
 	
 	public final static class MissingLexElement extends BaseLexElement {
 		
-		public final int startPos;
 		public ParserError error;
 		
 		public MissingLexElement(Token[] ignoredPrecedingTokens, int lookAheadStart) {
-			super(ignoredPrecedingTokens);
-			this.startPos = lookAheadStart;
+			super(ignoredPrecedingTokens, "", lookAheadStart);
 		}
 		
 		@Override
 		public final boolean isMissingElement() {
 			return true;
-		}
-		
-		@Override
-		public final Token getToken(boolean failOnMissing) {
-			assertTrue(!failOnMissing);
-			return null;
-		}
-		
-		@Override
-		public final String getSourceValue() {
-			return "";
-		}
-		
-		@Override
-		public final int getStartPos() {
-			return startPos;
-		}
-		
-		@Override
-		public final int getEndPos() {
-			return startPos;
-		}
-		
-		@Override
-		public final SourceRange getSourceRange() {
-			return SourceRange.srStartToEnd(startPos, startPos);
 		}
 		
 		@Override

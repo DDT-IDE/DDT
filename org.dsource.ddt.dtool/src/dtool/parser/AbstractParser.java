@@ -21,7 +21,6 @@ import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
 import dtool.ast.NodeListView;
-import dtool.ast.NodeUtil;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.parser.LexElement.MissingLexElement;
@@ -82,10 +81,6 @@ public abstract class AbstractParser {
 		return getEnabledLexSource().consumeInput();
 	}
 	
-	public final MissingLexElement consumeSubChannelTokens() {
-		return getEnabledLexSource().consumeSubChannelTokens();
-	}
-	
 	public ParserState saveParserState() {
 		LexElementSource lexSource = getEnabledLexSource().saveState();
 		return new ParserState(lexSource, enabled);
@@ -114,16 +109,12 @@ public abstract class AbstractParser {
 		return lookAheadElement(0);
 	}
 	
-	public final Token lookAheadToken() {
-		return lookAheadElement(0).token;
-	}
-	
 	public final DeeTokens lookAhead() {
-		return lookAheadElement(0).token.getTokenType();
+		return lookAheadElement(0).type;
 	}
 	
 	public final DeeTokens lookAhead(int laIndex) {
-		return lookAheadElement(laIndex).token.getTokenType();
+		return lookAheadElement(laIndex).type;
 	}
 	
 	public final LexElement consumeLookAhead(DeeTokens tokenType) {
@@ -184,11 +175,10 @@ public abstract class AbstractParser {
 	/* ---- error helpers ---- */
 	
 	protected ParserError createError(ParserErrorTypes errorType, SourceRange sr, Object msgData) {
-		String errorSource = NodeUtil.getSubString(getSource(), sr); 
-		return new ParserError(errorType, sr, errorSource, msgData);
+		return new ParserError(errorType, sr, sr.getSubString(getSource()), msgData);
 	}
 	
-	protected ParserError createError(ParserErrorTypes errorType, Token errorToken, Object msgData) {
+	protected ParserError createError(ParserErrorTypes errorType, IToken errorToken, Object msgData) {
 		return createError(errorType, errorToken.getSourceRange(), msgData);
 	}
 	
@@ -250,20 +240,33 @@ public abstract class AbstractParser {
 	
 	/* ---- Additional input consume helpers ---- */
 	
+	public final void advanceSubChannelTokens() {
+		getEnabledLexSource().advanceSubChannelTokens();
+	}
+	
+	public final MissingLexElement consumeSubChannelTokens() {
+		return consumeSubChannelTokens(null);
+	}
+	
+	public MissingLexElement consumeSubChannelTokens(ParserError error) {
+		// Missing element will consume whitetokens ahead
+		LexElement la = lookAheadElement();
+		int lookAheadStart = la.getStartPos();
+		MissingLexElement missingLexElement = new MissingLexElement(la.relevantPrecedingSubChannelTokens, 
+			lookAheadStart);
+		missingLexElement.error = error;
+		getEnabledLexSource().advanceSubChannelTokens();
+		return missingLexElement;
+	}
+	
 	protected final BaseLexElement consumeExpectedContentToken(DeeTokens expectedTokenType) {
 		if(lookAhead() == expectedTokenType) {
 			return consumeLookAhead();
 		} else {
 			ParserError error = createExpectedTokenError(expectedTokenType);
-			MissingLexElement missingToken = consumeSubChannelTokens();
-			missingToken.error = error;
+			BaseLexElement missingToken = consumeSubChannelTokens(error);
 			return missingToken;
 		}
-	}
-	
-	protected final MissingLexElement createExpectedToken(DeeTokens expectedTokenType) {
-		assertTrue(lookAhead() != expectedTokenType);
-		return consumeSubChannelTokens();
 	}
 	
 	/* ------------  Node finalization  ------------ */

@@ -19,7 +19,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 	/* ----------------------------------------------------------------- */
 	
 	public DeeTokens lookAheadGrouped() {
-		return lookAheadToken().type.getGroupingToken();
+		return lookAheadElement().type.getGroupingToken();
 	}
 	
 	public String idTokenToString(BaseLexElement id) {

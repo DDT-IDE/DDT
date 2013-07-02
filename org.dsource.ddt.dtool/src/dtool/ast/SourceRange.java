@@ -59,4 +59,9 @@ public final class SourceRange implements Comparable<SourceRange> {
 		return offset - other.offset;
 	}
 	
+	/** @return a substring of given string using the range of the receiver */
+	public String getSubString(String string) {
+		return string.substring(getStartPos(), getEndPos());
+	}
+	
 }

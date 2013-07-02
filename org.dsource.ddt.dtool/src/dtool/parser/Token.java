@@ -6,7 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ISourceRepresentation;
 import dtool.ast.SourceRange;
 
-public class Token implements ISourceRepresentation {
+public class Token implements ISourceRepresentation, IToken {
 	
 	public final DeeTokens type;
 	public final int startPos;
@@ -14,7 +14,7 @@ public class Token implements ISourceRepresentation {
 	
 	public Token(DeeTokens tokenType, String source, int startPos) {
 		this.type = assertNotNull(tokenType);
-		this.source = source;
+		this.source = assertNotNull(source);
 		this.startPos = startPos;
 		if(tokenType.hasSourceValue()) {
 			assertEquals(tokenType.getSourceValue(), source);
@@ -29,6 +29,7 @@ public class Token implements ISourceRepresentation {
 		return type.isSubChannel;
 	}
 	
+	@Override
 	public final int getStartPos() {
 		return startPos;
 	}
@@ -37,10 +38,12 @@ public class Token implements ISourceRepresentation {
 		return source.length();
 	}
 	
+	@Override
 	public final int getEndPos() {
 		return startPos + source.length();
 	}
 	
+	@Override
 	public final SourceRange getSourceRange() {
 		return new SourceRange(getStartPos(), getLength());
 	}

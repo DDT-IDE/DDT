@@ -135,7 +135,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	}
 	
 	public Reference parseMissingTypeReference(ParseRuleDescription expectedRule) {
-		SourceRange sourceRange = createExpectedToken(DeeTokens.IDENTIFIER).getSourceRange();
+		SourceRange sourceRange = consumeSubChannelTokens().getSourceRange();
 		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
 		return createMissingTypeReferenceNode(sourceRange, error);
 	}
@@ -266,7 +266,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	
 	protected RefPrimitive parseRefPrimitive_start(DeeTokens primitiveType) {
 		LexElement primitive = consumeLookAhead(primitiveType);
-		return conclude(srOf(primitive, new RefPrimitive(primitive.token)));
+		return conclude(srOf(primitive, new RefPrimitive(primitive)));
 	}
 	
 	public NodeResult<RefModuleQualified> parseRefModuleQualified() {
@@ -631,7 +631,7 @@ protected class ParseRule_Expression {
 		case CONCAT:
 		case KW_DELETE: {
 			LexElement prefixExpOpToken = consumeLookAhead();
-			PrefixOpType prefixOpType = PrefixOpType.tokenToPrefixOpType(prefixExpOpToken.token.type);
+			PrefixOpType prefixOpType = PrefixOpType.tokenToPrefixOpType(prefixExpOpToken.type);
 			
 			Expression exp = parseUnaryExpression();
 			if(exp == null) {
@@ -779,7 +779,7 @@ protected class ParseRule_Expression {
 			if(opType != InfixOpType.MUL) {
 				parse.storeError(checkValidAssociativityN(leftExp, opType));
 			} else {
-				assertTrue(lastLexElement().token.type == DeeTokens.STAR);
+				assertTrue(lastLexElement().type == DeeTokens.STAR);
 			}
 			
 			Expression middleExp = null;
@@ -1069,9 +1069,10 @@ protected class ParseRule_Expression {
 	
 	public Expression parseSimpleLiteral() {
 		switch (lookAheadGrouped()) {
-		case KW_TRUE: case KW_FALSE:
-			Token token = consumeLookAhead().token;
-			return conclude(srOf(lastLexElement(), new ExpLiteralBool(token.type == DeeTokens.KW_TRUE)));
+		case KW_TRUE: 
+		case KW_FALSE:
+			consumeLookAhead();
+			return conclude(srOf(lastLexElement(), new ExpLiteralBool(lastLexElement().type == DeeTokens.KW_TRUE)));
 		case KW_THIS:
 			consumeLookAhead();
 			return conclude(srOf(lastLexElement(), new ExpThis()));
@@ -1087,13 +1088,13 @@ protected class ParseRule_Expression {
 			
 		case GROUP_INTEGER:
 			consumeLookAhead();
-			return conclude(srOf(lastLexElement(), new ExpLiteralInteger(lastLexElement().token)));
+			return conclude(srOf(lastLexElement(), new ExpLiteralInteger(lastLexElement())));
 		case CHARACTER: 
 			consumeLookAhead();
-			return conclude(srOf(lastLexElement(), new ExpLiteralChar(lastLexElement().token)));
+			return conclude(srOf(lastLexElement(), new ExpLiteralChar(lastLexElement())));
 		case GROUP_FLOAT:
 			consumeLookAhead();
-			return conclude(srOf(lastLexElement(), new ExpLiteralFloat(lastLexElement().token)));
+			return conclude(srOf(lastLexElement(), new ExpLiteralFloat(lastLexElement())));
 		case GROUP_STRING:
 			return parseStringLiteral();
 		default:
@@ -1102,18 +1103,18 @@ protected class ParseRule_Expression {
 	}
 	
 	public Expression parseStringLiteral() {
-		ArrayList<Token> stringTokens = new ArrayList<Token>();
+		ArrayList<IToken> stringTokens = new ArrayList<IToken>(1);
 		
 		while(lookAheadGrouped() == DeeTokens.GROUP_STRING) {
-			Token string = consumeLookAhead().token;
+			IToken string = consumeLookAhead();
 			stringTokens.add(string);
 		}
-		Token[] tokenStrings = ArrayUtil.createFrom(stringTokens, Token.class);
+		IToken[] tokenStrings = ArrayUtil.createFrom(stringTokens, IToken.class);
 		return conclude(srToPosition(tokenStrings[0].getStartPos(), new ExpLiteralString(tokenStrings)));
 	}
 	
 	protected ExpPostfixOperator parsePostfixOpExpression_atOperator(Expression exp) {
-		Token op = consumeLookAhead().token;
+		LexElement op = consumeLookAhead();
 		return conclude(srToPosition(exp, new ExpPostfixOperator(exp, PostfixOpType.tokenToPrefixOpType(op.type))));
 	}
 	
@@ -1192,7 +1193,7 @@ protected class ParseRule_Expression {
 	public NodeResult<ExpFunctionLiteral> parseFunctionLiteral_start() {
 		assertTrue(lookAhead() == DeeTokens.KW_FUNCTION || lookAhead() == DeeTokens.KW_DELEGATE);
 		consumeLookAhead();
-		boolean isFunctionKeyword = lastLexElement().token.type == DeeTokens.KW_FUNCTION;
+		boolean isFunctionKeyword = lastLexElement().type == DeeTokens.KW_FUNCTION;
 		ParseHelper parse = new ParseHelper();
 		
 		Reference retType = parseTypeReference().node;

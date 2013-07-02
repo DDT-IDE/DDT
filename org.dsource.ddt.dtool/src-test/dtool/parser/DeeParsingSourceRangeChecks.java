@@ -80,6 +80,7 @@ public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {
 		case SCOPED_STATEMENT_LIST:
 		case CSTYLE_ROOT_REF:
 		case MISSING_EXPRESSION:
+		case MISSING_DECLARATION:
 			return true;
 
 		case REF_IDENTIFIER:

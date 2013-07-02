@@ -3,8 +3,6 @@ package dtool.ast;
 import melnorme.utilbox.tree.IElement;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.parser.Token;
-import dtool.util.ArrayView;
 
 public class NodeUtil {
 
@@ -39,18 +37,6 @@ public class NodeUtil {
 			node = node.getParent();
 		}
 		return false;
-	}
-	
-	public static String[] tokenArrayToStringArray(ArrayView<Token> tokenArray) {
-		String[] stringArray = new String[tokenArray.size()];
-		for (int i = 0; i < stringArray.length; i++) {
-			stringArray[i] = tokenArray.get(i).source;
-		}
-		return stringArray;
-	}
-	
-	public static String getSubString(String string, SourceRange sourceRange) {
-		return string.subSequence(sourceRange.getStartPos(), sourceRange.getEndPos()).toString();
 	}
 	
 }

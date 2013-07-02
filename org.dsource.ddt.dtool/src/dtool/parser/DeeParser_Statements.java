@@ -427,7 +427,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
 		
-		boolean isForeachReverse = lastLexElement().token.type == DeeTokens.KW_FOREACH_REVERSE;
+		boolean isForeachReverse = lastLexElement().type == DeeTokens.KW_FOREACH_REVERSE;
 		ArrayView<ForeachVariableDef> varParams = null;
 		Expression iterable = null;
 		IStatement body = null;
@@ -658,7 +658,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
 		
-		ArrayList<Token> tokenList = null;
+		ArrayList<IToken> tokenList = null;
 		parsing: { 
 			if(parse.consumeExpected(DeeTokens.OPEN_BRACE) == false) break parsing;
 			tokenList = new ArrayList<>();
@@ -668,7 +668,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 					parse.consumeRequired(DeeTokens.CLOSE_BRACE);
 					break;
 				}
-				Token token = consumeLookAhead().token;
+				LexElement token = consumeLookAhead();
 				if(token.type == DeeTokens.OPEN_BRACE) {
 					braceDepth++;
 				}
@@ -767,7 +767,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		}
 		
 		if(parse.ruleBroken == false && catchParam == null && lookAhead() == DeeTokens.KW_CATCH) {
-			parse.storeError(createError(ParserErrorTypes.LAST_CATCH, catchKeyword.token, null));
+			parse.storeError(createError(ParserErrorTypes.LAST_CATCH, catchKeyword, null));
 		}
 		
 		return parse.resultConclude(new CatchClause(catchParam, body));

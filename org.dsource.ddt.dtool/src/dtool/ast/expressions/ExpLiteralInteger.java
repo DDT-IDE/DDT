@@ -4,13 +4,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.parser.Token;
+import dtool.parser.IToken;
 
 public class ExpLiteralInteger extends Expression {
 	
-	public final Token num;
+	public final IToken num;
 	
-	public ExpLiteralInteger(Token num) {
+	public ExpLiteralInteger(IToken num) {
 		this.num = assertNotNull(num);
 	}
 	

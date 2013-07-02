@@ -10,8 +10,9 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeUtil;
+import dtool.ast.references.RefModule;
 import dtool.parser.BaseLexElement;
+import dtool.parser.IToken;
 import dtool.parser.Token;
 import dtool.resolver.INamedScope;
 import dtool.resolver.IScope;
@@ -47,14 +48,14 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	public static class DeclarationModule extends ASTNode {
 		
 		public final Token[] comments;
-		public final ArrayView<Token> packageList;
+		public final ArrayView<IToken> packageList;
 		public final String[] packages; // Old API
 		public final DefSymbol moduleName; 
 		
-		public DeclarationModule(Token[] comments, ArrayView<Token> packageList, BaseLexElement moduleDefUnit) {
+		public DeclarationModule(Token[] comments, ArrayView<IToken> packageList, BaseLexElement moduleDefUnit) {
 			this.comments = comments;
 			this.packageList = assertNotNull(packageList);
-			this.packages = NodeUtil.tokenArrayToStringArray(packageList);
+			this.packages = RefModule.tokenArrayToStringArray(packageList);
 			this.moduleName = new ModuleDefSymbol(moduleDefUnit.getSourceValue());
 			this.moduleName.setSourceRange(moduleDefUnit.getSourceRange());
 			this.moduleName.setParsedStatus();

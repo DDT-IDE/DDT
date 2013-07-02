@@ -4,13 +4,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.parser.Token;
+import dtool.parser.IToken;
 
 public class ExpLiteralFloat extends Expression {
 	
-	public final Token floatNum;
+	public final IToken floatNum;
 	
-	public ExpLiteralFloat(Token floatNum) {
+	public ExpLiteralFloat(IToken floatNum) {
 		this.floatNum = assertNotNull(floatNum);
 	}
 	

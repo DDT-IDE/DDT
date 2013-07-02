@@ -14,8 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.AbstractList;
 
-import dtool.parser.LexElement.MissingLexElement;
-
 /**
  * A list-like indexed source of {@link LexElement}'s.
  * Supports backtracking by means of saving and restoring state.
@@ -78,16 +76,8 @@ public class LexElementSource {
 		return lastLexElement;
 	}
 	
-	
-	public final MissingLexElement consumeSubChannelTokens() {
-		LexElement la = lookAheadElement(0);
-		
-		// Missing element will consume whitetokens ahead
-		int lookAheadStart = la.getStartPos();
-		MissingLexElement missingLexElement = new MissingLexElement(la.precedingSubChannelTokens, lookAheadStart);
-		sourcePosition = missingLexElement.getEndPos(); // advance LexSourcePosition
-		
-		return missingLexElement;
+	public final void advanceSubChannelTokens() {
+		setSourcePosition(lookAheadElement(0).getStartPos());
 	}
 	
 }

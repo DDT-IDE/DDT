@@ -3,14 +3,14 @@ package dtool.ast.statements;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.parser.Token;
+import dtool.parser.IToken;
 import dtool.util.ArrayView;
 
 public class StatementAsm extends Statement {
 	
-	public final ArrayView<Token> tokens;
+	public final ArrayView<IToken> tokens;
 	
-	public StatementAsm(ArrayView<Token> tokens) {
+	public StatementAsm(ArrayView<IToken> tokens) {
 		this.tokens = tokens;
 	}
 	

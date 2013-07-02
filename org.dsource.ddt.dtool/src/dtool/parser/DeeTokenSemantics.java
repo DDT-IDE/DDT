@@ -41,7 +41,7 @@ public class DeeTokenSemantics {
 		}
 	}
 	
-	public static ParserError createError(ParserErrorTypes errorType, Token token, Object msgData) {
+	public static ParserError createError(ParserErrorTypes errorType, IToken token, Object msgData) {
 		return new ParserError(errorType, token.getSourceRange(), token.getSourceValue(), msgData);
 	}
 	
@@ -100,7 +100,7 @@ public class DeeTokenSemantics {
 		if(traitsIdMapper.get(traitsId.getSourceValue()) != null) {
 			return null;
 		}
-		return createError(ParserErrorTypes.INVALID_TRAITS_ID, traitsId.getToken(), null);
+		return createError(ParserErrorTypes.INVALID_TRAITS_ID, traitsId, null);
 	}
 	
 	protected static final Map<String, Boolean> attribIdMapper = NewUtils.initMap(

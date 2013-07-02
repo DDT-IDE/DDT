@@ -54,7 +54,6 @@ import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.statements.IStatement;
 import dtool.parser.DeeParser_Definitions.DefinitionStartInfo;
-import dtool.parser.LexElement.MissingLexElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
 
@@ -109,14 +108,14 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 	}
 	
 	public RefModule parseRefModule() {
-		ArrayList<Token> packages = new ArrayList<Token>(0);
+		ArrayList<IToken> packages = new ArrayList<IToken>(2);
 		
 		ParseHelper parse = new ParseHelper(-1);
 		while(true) {
 			BaseLexElement id = parse.consumeExpectedIdentifier();
 			
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
-				packages.add(id.getToken());
+				packages.add(id);
 			} else {
 				parse.setStartPosition(packages.size() > 0 ? packages.get(0).getStartPos() : id.getStartPos());
 				return parse.conclude(new RefModule(arrayViewG(packages), id.getSourceValue()));
@@ -201,9 +200,10 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 	}
 	
 	public MissingDeclaration parseMissingDeclaration(ParseRuleDescription expectedRule) {
-		MissingLexElement subChannelTokens = consumeSubChannelTokens();
+		int nodeStart = getSourcePosition();
+		advanceSubChannelTokens();
 		ParserError error = createErrorExpectedRule(expectedRule);
-		return conclude(error, srOf(subChannelTokens, new MissingDeclaration()));
+		return conclude(error, srToPosition(nodeStart, new MissingDeclaration()));
 	}
 	
 	public static ASTNodeTypes getLastAttributeKind(ArrayView<Attribute> attributes) {
@@ -292,9 +292,9 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 		if(lookAheadGrouped() != DeeTokens.GROUP_PROTECTION_KW) {
 			return null;
 		}
-		LexElement protElement = consumeLookAhead();
+		LexElement protToken = consumeLookAhead();
 		ParseHelper parse = new ParseHelper();
-		Protection protection = DeeTokenSemantics.getProtectionFromToken(protElement.token.type);
+		Protection protection = DeeTokenSemantics.getProtectionFromToken(protToken.type);
 		
 		return parse.resultConclude(new AttribProtection(protection));
 	}
@@ -370,7 +370,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 	public NodeResult<DeclarationDebugVersion> parseDeclarationDebugVersion(boolean isStatement) {
 		if(!(tryConsume(DeeTokens.KW_DEBUG) || tryConsume(DeeTokens.KW_VERSION)))
 			return null;
-		boolean isDebug = lastLexElement().token.type == DeeTokens.KW_DEBUG;
+		boolean isDebug = lastLexElement().type == DeeTokens.KW_DEBUG;
 		ParseHelper parse = new ParseHelper();
 		
 		VersionSymbol value = null;
@@ -436,7 +436,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 	public NodeResult<DeclarationDebugVersionSpec> parseDeclarationDebugVersionSpec() {
 		if(!(tryConsume(DeeTokens.KW_DEBUG) || tryConsume(DeeTokens.KW_VERSION)))
 			return null;
-		boolean isDebug = lastLexElement().token.type == DeeTokens.KW_DEBUG;
+		boolean isDebug = lastLexElement().type == DeeTokens.KW_DEBUG;
 		ParseHelper parse = new ParseHelper();
 		
 		VersionSymbol value = null;

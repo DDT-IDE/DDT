@@ -3,17 +3,17 @@ package dtool.ast.expressions;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.parser.Token;
+import dtool.parser.IToken;
 
 public class ExpLiteralString extends Expression {
 	
-	public final Token[] stringTokens;
+	public final IToken[] stringTokens;
 	
-	public ExpLiteralString(Token stringToken) {
-		this(new Token[] { stringToken });
+	public ExpLiteralString(IToken stringToken) {
+		this(new IToken[] { stringToken });
 	}
 	
-	public ExpLiteralString(Token[] stringToken) {
+	public ExpLiteralString(IToken[] stringToken) {
 		this.stringTokens = stringToken;
 	}
 	
@@ -30,7 +30,7 @@ public class ExpLiteralString extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		for (Token stringToken : stringTokens) {
+		for (IToken stringToken : stringTokens) {
 			cp.appendToken(stringToken);
 		}
 	}

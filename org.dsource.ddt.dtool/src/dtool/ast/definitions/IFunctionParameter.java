@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNode;
 import dtool.parser.DeeTokens;
-import dtool.parser.Token;
+import dtool.parser.LexElement;
 import dtool.util.ArrayView;
 
 public interface IFunctionParameter extends IASTNode {
@@ -60,11 +60,11 @@ public interface IFunctionParameter extends IASTNode {
 	
 	public static class FnParameterAttributes {
 		
-		public final ArrayView<Token> attribs;
+		public final ArrayView<LexElement> attribs;
 		
-		public FnParameterAttributes(ArrayView<Token> attribList) {
+		public FnParameterAttributes(ArrayView<LexElement> attribList) {
 			attribs = assertNotNull(attribList);
-			for (Token token : attribs) {
+			for (LexElement token : attribs) {
 				assertTrue(FunctionParamAttribKinds.fromToken(token.type) != null);
 			}
 		}
@@ -74,9 +74,9 @@ public interface IFunctionParameter extends IASTNode {
 		}
 		
 		public static final FnParameterAttributes EMPTY_FN_PARAMS = 
-			new FnParameterAttributes(ArrayView.create(new Token[0]));
+			new FnParameterAttributes(ArrayView.create(new LexElement[0]));
 		
-		public static FnParameterAttributes create(ArrayView<Token> attribList) {
+		public static FnParameterAttributes create(ArrayView<LexElement> attribList) {
 			return attribList == null ? EMPTY_FN_PARAMS : new FnParameterAttributes(attribList);
 		}
 		
