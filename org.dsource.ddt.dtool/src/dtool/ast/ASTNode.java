@@ -322,6 +322,11 @@ public abstract class ASTNode implements IASTNode {
 	
 	/* =============== Analysis =============== */
 	
+	public static void doSimpleAnalysisOnTree(ASTNode treeNode) {
+		ASTHomogenousVisitor childrenVisitor = new LocalAnalysisVisitor();
+		treeNode.accept(childrenVisitor);
+	}
+	
 	protected static final class LocalAnalysisVisitor extends ASTHomogenousVisitor {
 		@Override
 		public boolean preVisit(ASTNode node) {
@@ -335,10 +340,6 @@ public abstract class ASTNode implements IASTNode {
 		}
 	}
 	
-	public void doSimpleAnalysisOnTree() {
-		ASTHomogenousVisitor childrenVisitor = new LocalAnalysisVisitor();
-		this.accept(childrenVisitor);
-	}
 	
 	public void doNodeSimpleAnalysis() {
 		assertTrue(isParsedStatus());

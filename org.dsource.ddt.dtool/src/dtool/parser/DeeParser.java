@@ -56,7 +56,7 @@ public class DeeParser
 		}
 		assertTrue(enabled);
 		if(nodeResult.node != null) {
-			nodeResult.node.doSimpleAnalysisOnTree();
+			ASTNode.doSimpleAnalysisOnTree(nodeResult.node);
 		}
 		return new DeeParserResult(nodeResult, this);
 	}

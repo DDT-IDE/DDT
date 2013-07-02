@@ -122,7 +122,10 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 			}
 			
 			String source = readStringFromFileUnchecked(file);
-			DeeParsingChecks.runSimpleSourceParseTest(source, "_massParse", canHaveSyntaxErrors ? null : false, false);
+			int count = System.getProperty("PerformanceTests") != null ? 5 : 1;
+			for (int i = 0; i < count; i++) {
+				DeeParsingChecks.runSimpleSourceParseTest(source, "_massParse", canHaveSyntaxErrors ? null : false, false);
+			}
 		}
 		
 	}
