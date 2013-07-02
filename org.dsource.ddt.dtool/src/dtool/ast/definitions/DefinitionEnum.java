@@ -1,6 +1,6 @@
 package dtool.ast.definitions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +60,7 @@ public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDec
 		public final NodeListView<EnumMember> nodeList;
 		
 		public EnumBody(NodeListView<EnumMember> nodes) {
-			this.nodeList = parentize(assertNotNull_(nodes));
+			this.nodeList = parentize(assertNotNull(nodes));
 		}
 		
 		@Override

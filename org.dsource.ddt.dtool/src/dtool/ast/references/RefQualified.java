@@ -1,7 +1,7 @@
 package dtool.ast.references;
 
 import static dtool.util.NewUtils.assertInstance;
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collection;
 
@@ -25,7 +25,7 @@ public class RefQualified extends CommonRefQualified {
 	public final int dotOffset;
 	
 	public RefQualified(IQualifierNode qualifier, int dotOffset, RefIdentifier qualifiedId) {
-		super(assertNotNull_(qualifiedId));
+		super(assertNotNull(qualifiedId));
 		this.qualifier = parentizeI(assertInstance(qualifier, Resolvable.class));
 		this.dotOffset = dotOffset;
 		this.isExpressionQualifier = isExpressionQualifier(qualifier);

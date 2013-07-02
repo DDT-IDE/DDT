@@ -1,6 +1,6 @@
 package dtool.ast.declarations;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -34,7 +34,7 @@ public class DeclarationSpecialFunction extends ASTNode implements IDeclaration 
 	
 	public DeclarationSpecialFunction(SpecialFunctionKind kind, ArrayView<FunctionAttributes> fnAttributes, 
 		IFunctionBody fnBody) {
-		this.kind = assertNotNull_(kind);
+		this.kind = assertNotNull(kind);
 		this.fnAttributes = fnAttributes;
 		this.fnBody = parentizeI(fnBody);
 	}

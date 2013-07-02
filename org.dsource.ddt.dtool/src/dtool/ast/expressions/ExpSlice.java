@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
@@ -14,7 +14,7 @@ public class ExpSlice extends Expression {
 	public final Expression endIndex;
 	
 	public ExpSlice(Expression slicee, Expression startIndex, Expression endIndex) {
-		this.slicee = parentizeI(assertNotNull_(slicee));
+		this.slicee = parentizeI(assertNotNull(slicee));
 		this.startIndex = parentize(startIndex);
 		this.endIndex = parentize(endIndex);
 		assertTrue((endIndex == null) || (startIndex != null));

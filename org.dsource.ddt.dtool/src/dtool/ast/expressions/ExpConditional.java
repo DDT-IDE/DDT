@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -13,7 +13,7 @@ public class ExpConditional extends Expression {
 	public final Resolvable elseExp;
 	
 	public ExpConditional(Resolvable condExp, Resolvable thenExp, Resolvable elseExp) {
-		this.condExp = parentize(assertNotNull_(condExp));
+		this.condExp = parentize(assertNotNull(condExp));
 		this.thenExp = parentize(thenExp);
 		this.elseExp = parentize(elseExp); 
 	}

@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -42,7 +42,7 @@ public class InitializerStruct extends Initializer {
 		
 		public StructInitEntry(RefIdentifier member, IInitializer value) {
 			this.member = parentize(member);
-			this.value = parentize(assertNotNull_(value));
+			this.value = parentize(assertNotNull(value));
 		}
 		
 		@Override

@@ -10,11 +10,11 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.isValidStringRange;
 import static dtool.util.NewUtils.replaceRange;
 import static dtool.util.NewUtils.substringRemoveEnd;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
@@ -99,7 +99,7 @@ public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 				if(areEqual(mde.value, "NoCheck")) {
 					expectedPrintedSource = null;
 				} else {
-					expectedPrintedSource = assertNotNull_(mde.sourceValue);
+					expectedPrintedSource = assertNotNull(mde.sourceValue);
 				}
 				ignoreFurtherErrorMDs = true;
 			} else if(mde.name.equals("PARSE")){
@@ -243,7 +243,7 @@ public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 			return result;
 		}
 		String errorType = StringUtil.substringUntilMatch(mde.value, "_");
-		return assertNotNull_(errorNameToType.get(errorType));
+		return assertNotNull(errorNameToType.get(errorType));
 	}
 	
 	public static ParserError decodeError(LexElementSource lexSource, MetadataEntry mde) {
@@ -273,12 +273,12 @@ public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
 			return createErrorToken(ParserErrorTypes.SYNTAX_ERROR, mde, lexSource, tokenBefore, errorParam);
 		case EXP_MUST_HAVE_PARENTHESES: 
 			errorParam = errorParam == null ? DeeParserTester.DONT_CHECK : errorParam;
-			errorSource = assertNotNull_(mde.sourceValue);
+			errorSource = assertNotNull(mde.sourceValue);
 			return new ParserError(errorType, errorRange, errorSource, errorParam);
 		case TYPE_USED_AS_EXP_VALUE:
 		case INIT_USED_IN_EXP:
 		case NO_CHAINED_TPL_SINGLE_ARG:
-			errorSource = assertNotNull_(mde.sourceValue);
+			errorSource = assertNotNull(mde.sourceValue);
 			return new ParserError(errorType, errorRange, errorSource, null);
 		case INVALID_EXTERN_ID:
 		case INVALID_SCOPE_ID:

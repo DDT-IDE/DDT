@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.SourceRange;
 
@@ -23,7 +23,7 @@ public class LexElement extends BaseLexElement {
 	
 	public LexElement(Token[] precedingSubChannelTokens, Token token) {
 		super(precedingSubChannelTokens);
-		this.token = assertNotNull_(token);
+		this.token = assertNotNull(token);
 		assertTrue(precedingSubChannelTokens == null || precedingSubChannelTokens.length > 0);
 	}
 	

@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -11,7 +11,7 @@ public class ExpLiteralFloat extends Expression {
 	public final Token floatNum;
 	
 	public ExpLiteralFloat(Token floatNum) {
-		this.floatNum = assertNotNull_(floatNum);
+		this.floatNum = assertNotNull(floatNum);
 	}
 	
 	@Override

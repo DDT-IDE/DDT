@@ -1,6 +1,6 @@
 package dtool.ast.declarations;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -11,7 +11,7 @@ public class AttribProtection extends Attribute {
 	public final Protection protection;
 	
 	public AttribProtection(Protection protection) {
-		this.protection = assertNotNull_(protection);
+		this.protection = assertNotNull(protection);
 	}
 	
 	@Override

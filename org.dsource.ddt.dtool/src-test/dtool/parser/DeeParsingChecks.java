@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
@@ -126,7 +126,7 @@ public class DeeParsingChecks extends CommonTestUtils {
 	}
 	
 	public static ArrayList<ParserError> collectNodeErrors(ASTNode node) {
-		assertNotNull_(node);
+		assertNotNull(node);
 		return DeeParserResult.collectErrors(new ArrayList<ParserError>(), node);
 	}
 	
@@ -137,8 +137,8 @@ public class DeeParsingChecks extends CommonTestUtils {
 		protected final String nodeSnippedSource;
 		
 		public DeeParsingNodeCheck(String source, ASTNode node) {
-			this.fullSource = assertNotNull_(source);
-			this.nodeUnderTest = assertNotNull_(node);
+			this.fullSource = assertNotNull(source);
+			this.nodeUnderTest = assertNotNull(node);
 			this.nodeSnippedSource = fullSource.substring(nodeUnderTest.getStartPos(), nodeUnderTest.getEndPos());
 			assertTrue(nodeUnderTest.getNodeType() != ASTNodeTypes.NULL);
 		}

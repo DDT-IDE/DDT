@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -13,7 +13,7 @@ public class ExpParentheses extends Expression {
 	
 	public ExpParentheses(boolean isDotAfterParensSyntax, Resolvable resolvable) {
 		this.isDotAfterParensSyntax = isDotAfterParensSyntax;
-		this.resolvable = parentize(assertNotNull_(resolvable));
+		this.resolvable = parentize(assertNotNull(resolvable));
 	}
 	
 	@Override

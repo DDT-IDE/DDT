@@ -1,6 +1,5 @@
 package dtool.sourcegen;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.emptyToNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -61,7 +60,7 @@ public class TemplateSourceProcessorParser {
 			this(source, RAW_TEXT);
 		}
 		protected TspStringElement(String producedText, String elemType) {
-			this.producedText = assertNotNull_(producedText);
+			this.producedText = assertNotNull(producedText);
 			this.elemType = elemType;
 		}
 		@Override
@@ -272,7 +271,7 @@ public class TemplateSourceProcessorParser {
 		if(ignoreLastArg) {
 			assertTrue(argument == null);
 		} else {
-			arguments.add(assertNotNull_(argument));
+			arguments.add(assertNotNull(argument));
 		}
 		return arguments;
 	}

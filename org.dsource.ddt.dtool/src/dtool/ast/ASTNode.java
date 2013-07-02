@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.ast;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
@@ -182,7 +181,7 @@ public abstract class ASTNode implements IASTNode {
 	/* ------------------------  Node data ------------------------  */
 	
 	public final NodeData getData() {
-		return assertNotNull_(data);
+		return assertNotNull(data);
 	}
 	
 	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */

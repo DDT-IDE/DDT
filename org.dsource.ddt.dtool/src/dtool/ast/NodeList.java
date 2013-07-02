@@ -1,6 +1,6 @@
 package dtool.ast;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +17,7 @@ public abstract class NodeList<E extends ASTNode> extends ASTNode implements ISc
 	public final ArrayView<E> nodes;
 	
 	protected NodeList(ArrayView<E> nodes) {
-		this.nodes = parentize(assertNotNull_(nodes));
+		this.nodes = parentize(assertNotNull(nodes));
 	}
 	
 	@Override

@@ -1,6 +1,6 @@
 package dtool.ast.statements;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -12,7 +12,7 @@ public class StatementExpression extends Statement {
 	public final Expression exp;
 	
 	public StatementExpression(Expression exp) {
-		this.exp = parentize(assertNotNull_(exp));
+		this.exp = parentize(assertNotNull(exp));
 	}
 	
 	@Override

@@ -1,6 +1,6 @@
 package dtool.ast.statements;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +19,7 @@ import dtool.util.ArrayView;
 public class ScopedStatementList extends CommonStatementList implements IScopeNode {
 	
 	public ScopedStatementList(ArrayView<IStatement> statements) {
-		super(assertNotNull_(statements));
+		super(assertNotNull(statements));
 	}
 	
 	@Override

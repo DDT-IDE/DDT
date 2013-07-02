@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
@@ -53,8 +53,8 @@ public class DeeLexerSourceTests extends DeeTemplatedSourceBasedTest {
 	
 	@Override
 	protected void runAnnotatedSourceTest(AnnotatedSource testCase) {
-		MetadataEntry lexerTestMde = assertNotNull_(testCase.findMetadata("LEXERTEST"));
-		String expectedTokenList = assertNotNull_(lexerTestMde.sourceValue);
+		MetadataEntry lexerTestMde = assertNotNull(testCase.findMetadata("LEXERTEST"));
+		String expectedTokenList = assertNotNull(lexerTestMde.sourceValue);
 		runLexerSourceBasedTest(testCase.source, expectedTokenList);
 	}
 	
@@ -143,7 +143,7 @@ public class DeeLexerSourceTests extends DeeTemplatedSourceBasedTest {
 	
 	public static LexerErrorTypes parseExpectedError(String string) {
 		assertTrue(!string.isEmpty());
-		return assertNotNull_(strToErrorType.get(string));
+		return assertNotNull(strToErrorType.get(string));
 	}
 	
 }

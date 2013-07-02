@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.tests;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 /** 
  * A very simple, unoptimized parser for simple languages.
@@ -25,7 +25,7 @@ public class SimpleParser {
 	protected String lastToken;
 
 	public SimpleParser(String source) {
-		this.source = assertNotNull_(source);
+		this.source = assertNotNull(source);
 		this.pos = 0;
 	}
 	

@@ -1,6 +1,6 @@
 package dtool.ast.definitions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -26,7 +26,7 @@ public class NamelessParameter extends ASTNode implements IFunctionParameter {
 	public NamelessParameter(ArrayView<Token> attribList, Reference type, Expression defaultValue, 
 		boolean isVariadic) {
 		this.paramAttribs = FnParameterAttributes.create(attribList); 
-		this.type = parentize(assertNotNull_(type));
+		this.type = parentize(assertNotNull(type));
 		this.defaultValue = parentize(defaultValue);
 		this.isVariadic = isVariadic;
 	}

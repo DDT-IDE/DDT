@@ -1,6 +1,6 @@
 package dtool.ast.definitions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNode;
@@ -63,7 +63,7 @@ public interface IFunctionParameter extends IASTNode {
 		public final ArrayView<Token> attribs;
 		
 		public FnParameterAttributes(ArrayView<Token> attribList) {
-			attribs = assertNotNull_(attribList);
+			attribs = assertNotNull(attribList);
 			for (Token token : attribs) {
 				assertTrue(FunctionParamAttribKinds.fromToken(token.type) != null);
 			}

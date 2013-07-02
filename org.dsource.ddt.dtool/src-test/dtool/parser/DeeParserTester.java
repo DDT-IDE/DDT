@@ -10,9 +10,9 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.replaceRegexFirstOccurrence;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
@@ -24,13 +24,13 @@ import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTHomogenousVisitor;
-import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.ASTNode;
+import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
+import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
-import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.TemplateParameter;
@@ -211,7 +211,7 @@ public class DeeParserTester extends CommonTestUtils {
 		public final NamedNodeElement[] children;
 		
 		public NamedNodeElement(String name, NamedNodeElement[] children) {
-			this.name = assertNotNull_(name);
+			this.name = assertNotNull(name);
 			this.children = children;
 		}
 		
@@ -424,7 +424,7 @@ public class DeeParserTester extends CommonTestUtils {
 		}
 		
 		DefUnit defUnit = findDDocTargetDefUnit(result, targetMDE);
-		assertNotNull_(defUnit);
+		assertNotNull(defUnit);
 		List<MetadataEntry> ddocTestEntries = removeTestMetadataEntries("DDOC_TEST");
 		
 		ArrayList<Token> commentsToCheck = defUnit.getDocComments() == null ? new ArrayList<Token>() : 
@@ -477,7 +477,7 @@ public class DeeParserTester extends CommonTestUtils {
 				}
 			}
 		}
-		return assertNotNull_(targetDefUnit);
+		return assertNotNull(targetDefUnit);
 	}
 	
 	public DefUnit getDefunitFromExtendedDefinition(ASTNode node) {

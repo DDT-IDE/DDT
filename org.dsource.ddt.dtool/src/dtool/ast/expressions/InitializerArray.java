@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -13,7 +13,7 @@ public class InitializerArray extends Expression implements IInitializer {
 	public final NodeListView<ArrayInitEntry> entries;
 	
 	public InitializerArray(NodeListView<ArrayInitEntry> indexes) {
-		this.entries = parentize(assertNotNull_(indexes));
+		this.entries = parentize(assertNotNull(indexes));
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class InitializerArray extends Expression implements IInitializer {
 		
 		public ArrayInitEntry(Expression index, IInitializer value) {
 			this.index = parentize(index);
-			this.value = parentize(assertNotNull_(value));
+			this.value = parentize(assertNotNull(value));
 		}
 		
 		@Override

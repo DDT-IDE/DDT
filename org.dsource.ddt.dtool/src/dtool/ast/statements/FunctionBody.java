@@ -1,6 +1,6 @@
 package dtool.ast.statements;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -12,7 +12,7 @@ public class FunctionBody extends ASTNode implements IFunctionBody {
 	public final BlockStatement bodyBlock;
 	
 	public FunctionBody(BlockStatement bodyBlock) {
-		this.bodyBlock = parentize(assertNotNull_(bodyBlock));
+		this.bodyBlock = parentize(assertNotNull(bodyBlock));
 	}
 	
 	protected FunctionBody(BlockStatement bodyBlock, @SuppressWarnings("unused") boolean dummy) {

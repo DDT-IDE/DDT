@@ -1,6 +1,6 @@
 package dtool.ast.statements;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -14,7 +14,7 @@ public class StatementCaseRange extends Statement {
 	public final IStatement body;
 	
 	public StatementCaseRange(Expression expFirst, Expression expLast, IStatement body) {
-		this.expFirst = parentize(assertNotNull_(expFirst));
+		this.expFirst = parentize(assertNotNull(expFirst));
 		this.expLast = parentize(expLast);
 		this.body = parentizeI(body);
 	}

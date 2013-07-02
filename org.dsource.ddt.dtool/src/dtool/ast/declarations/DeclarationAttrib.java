@@ -1,6 +1,6 @@
 package dtool.ast.declarations;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Iterator;
 
@@ -34,8 +34,8 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 	public final ASTNode body; // Note: can be DeclList
 	
 	public DeclarationAttrib(ArrayView<Attribute> attributes, AttribBodySyntax bodySyntax, ASTNode bodyDecls) {
-		this.attributes = parentize(assertNotNull_(attributes));
-		this.bodySyntax = assertNotNull_(bodySyntax);
+		this.attributes = parentize(assertNotNull(attributes));
+		this.bodySyntax = assertNotNull(bodySyntax);
 		this.body = parentize(bodyDecls);
 		
 		localAnalysis();

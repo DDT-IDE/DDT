@@ -1,6 +1,5 @@
 package dtool.ast.references;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -32,7 +31,7 @@ public class RefModule extends NamedReference {
 	public final String module;
 	
 	public RefModule(ArrayView<Token> packageList, String module) {
-		this.packageList = assertNotNull_(packageList);
+		this.packageList = assertNotNull(packageList);
 		this.packages = ArrayViewExt.create(NodeUtil.tokenArrayToStringArray(packageList));
 		this.module = module;
 	}

@@ -1,6 +1,6 @@
 package dtool.ast.definitions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
@@ -28,7 +28,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 		Expression defaultValue, boolean isVariadic) {
 		super(defId);
 		this.paramAttribs = FnParameterAttributes.create(attribList);
-		this.type = parentize(assertNotNull_(type));
+		this.type = parentize(assertNotNull(type));
 		this.defaultValue = parentize(defaultValue);
 		assertTrue(!isVariadic || defaultValue == null);
 		this.isVariadic = isVariadic;

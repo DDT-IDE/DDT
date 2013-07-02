@@ -1,6 +1,6 @@
 package dtool.ast.references;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
@@ -22,8 +22,8 @@ public class RefSlice extends Reference {
 	
 	public RefSlice(Reference slicee, Expression startIndex, Expression endIndex) {
 		this.slicee = parentize(slicee);
-		this.startIndex = parentize(assertNotNull_(startIndex));
-		this.endIndex = parentize(assertNotNull_(endIndex));
+		this.startIndex = parentize(assertNotNull(startIndex));
+		this.endIndex = parentize(assertNotNull(endIndex));
 		assertTrue((endIndex == null) || (startIndex != null));
 	}
 	

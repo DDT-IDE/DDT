@@ -1,5 +1,6 @@
 package dtool.util;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -59,11 +60,6 @@ public class NewUtils {
 			return iter1.iterator();
 		
 		return new ChainedIterator<T>(iter1.iterator(), iter2.iterator());
-	}
-	
-	public static <T> T assertNotNull_(T obj) {
-		Assert.AssertNamespace.assertNotNull(obj);
-		return obj;
 	}
 	
 	@SafeVarargs
@@ -190,11 +186,11 @@ public class NewUtils {
 	
 	public static final int EOF = -1;
 	
-	public static final Charset UTF8 = assertNotNull_(Charset.forName("UTF-8"));
-	public static final Charset UTF16BE = assertNotNull_(Charset.forName("UTF-16BE"));
-	public static final Charset UTF16LE = assertNotNull_(Charset.forName("UTF-16LE"));
-	public static final Charset UTF32BE = assertNotNull_(Charset.forName("UTF-32BE"));
-	public static final Charset UTF32LE = assertNotNull_(Charset.forName("UTF-32LE"));
+	public static final Charset UTF8 = assertNotNull(Charset.forName("UTF-8"));
+	public static final Charset UTF16BE = assertNotNull(Charset.forName("UTF-16BE"));
+	public static final Charset UTF16LE = assertNotNull(Charset.forName("UTF-16LE"));
+	public static final Charset UTF32BE = assertNotNull(Charset.forName("UTF-32BE"));
+	public static final Charset UTF32LE = assertNotNull(Charset.forName("UTF-32LE"));
 	
 	
 	public static Charset detectEncoding(InputStream is, boolean resetIS) throws IOException {

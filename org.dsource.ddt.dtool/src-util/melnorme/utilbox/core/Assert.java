@@ -153,8 +153,9 @@ public class Assert {
 			checkAssertion(!(object == null), message);
 		}
 		/** Like {@link Assert#isNotNull(Object, String)} with no message. */
-		public static void assertNotNull(Object object) {
+		public static <T> T assertNotNull(T object) {
 			checkAssertion(!(object == null), null);
+			return object;
 		}
 		
 		

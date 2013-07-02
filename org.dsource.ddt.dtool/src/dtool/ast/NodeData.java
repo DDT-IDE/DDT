@@ -1,6 +1,5 @@
 package dtool.ast;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -135,7 +134,7 @@ public abstract class NodeData {
 		protected NodeData parsedStatus;
 		
 		public AnalysedNodeData(NodeData parsedStatus) {
-			this.parsedStatus = assertNotNull_(parsedStatus);
+			this.parsedStatus = assertNotNull(parsedStatus);
 		}
 		
 		@Override

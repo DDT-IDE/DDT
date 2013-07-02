@@ -1,6 +1,6 @@
 package dtool.ast.declarations;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -12,7 +12,7 @@ public class AttribAtKeyword extends Attribute {
 	public final Symbol attribId;
 	
 	public AttribAtKeyword(Symbol attribId) {
-		this.attribId = parentize(assertNotNull_(attribId));
+		this.attribId = parentize(assertNotNull(attribId));
 	}
 	
 	@Override

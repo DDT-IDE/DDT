@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -11,7 +11,7 @@ public class ExpLiteralChar extends Expression {
 	public final Token ch;
 	
 	public ExpLiteralChar(Token num) {
-		this.ch = assertNotNull_(num);
+		this.ch = assertNotNull(num);
 	}
 	
 	@Override

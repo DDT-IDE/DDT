@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.parser.Token.ErrorToken;
@@ -27,7 +26,7 @@ public abstract class AbstractLexer {
 	protected int pos = tokenStartPos; // Temporary variable used internally by scanners 
 	
 	public AbstractLexer(String source) {
-		this.source = assertNotNull_(source);
+		this.source = assertNotNull(source);
 	}
 	
 	public final String getSource() {

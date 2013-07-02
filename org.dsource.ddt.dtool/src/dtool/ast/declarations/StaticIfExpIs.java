@@ -1,6 +1,6 @@
 package dtool.ast.declarations;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
@@ -27,7 +27,7 @@ public class StaticIfExpIs extends Expression {
 	
 	public StaticIfExpIs(Reference typeRef, StaticIfExpIsDefUnit isExpDefUnit, ExpIsSpecialization specKind, 
 		Reference specTypeRef, ArrayView<TemplateParameter> tplParams) {
-		this.typeRef = parentize(assertNotNull_(typeRef));
+		this.typeRef = parentize(assertNotNull(typeRef));
 		this.isExpDefUnit = parentize(isExpDefUnit);
 		this.specKind = specKind;
 		this.specTypeRef = parentize(specTypeRef);

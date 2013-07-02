@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.contentassist;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 
 public class CompletionSession {
@@ -25,7 +25,7 @@ public class CompletionSession {
 		protected final String id;
 		
 		ECompletionResultStatus(String id) {
-			this.id = assertNotNull_(id);
+			this.id = assertNotNull(id);
 		}
 		
 		public static ECompletionResultStatus fromId(String statusId) {

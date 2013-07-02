@@ -10,9 +10,9 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.lazyInitArrayList;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
@@ -274,7 +274,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	public NodeResult<? extends IDeclaration> parseDeclaration(boolean statementsOnly, boolean autoDeclEnabled,
 		DefinitionStartInfo defStartInfo) {
 		
-		DeeTokens laGrouped = assertNotNull_(lookAheadGrouped());
+		DeeTokens laGrouped = assertNotNull(lookAheadGrouped());
 		switch (laGrouped) {
 		case KW_IMPORT: 
 			return parseDeclarationImport();
@@ -530,7 +530,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 		DefParseHelper parse = new DefParseHelper(defStartInfo);
 		NodeResult<Reference> refResult = parseTypeReference(); // This parses (BasicType + BasicType2) of spec
-		assertNotNull_(refResult.node);
+		assertNotNull(refResult.node);
 		Reference ref = parse.checkResult(refResult); 
 		
 		parsing: {

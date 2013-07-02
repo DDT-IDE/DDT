@@ -1,7 +1,7 @@
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ISourceRepresentation;
 import dtool.ast.SourceRange;
@@ -13,7 +13,7 @@ public class Token implements ISourceRepresentation {
 	public final String source;
 	
 	public Token(DeeTokens tokenType, String source, int startPos) {
-		this.type = assertNotNull_(tokenType);
+		this.type = assertNotNull(tokenType);
 		this.source = source;
 		this.startPos = startPos;
 		if(tokenType.hasSourceValue()) {

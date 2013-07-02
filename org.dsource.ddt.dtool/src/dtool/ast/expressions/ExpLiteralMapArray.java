@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -13,7 +13,7 @@ public class ExpLiteralMapArray extends Expression {
 	public final NodeListView<MapArrayLiteralKeyValue> entries;
 	
 	public ExpLiteralMapArray(NodeListView<MapArrayLiteralKeyValue> entries) {
-		this.entries = parentize(assertNotNull_(entries));
+		this.entries = parentize(assertNotNull(entries));
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class ExpLiteralMapArray extends Expression {
 		public final Expression value;
 		
 		public MapArrayLiteralKeyValue(Expression key, Expression value) {
-			this.key = parentize(assertNotNull_(key));
+			this.key = parentize(assertNotNull(key));
 			this.value = parentize(value);
 		}
 		

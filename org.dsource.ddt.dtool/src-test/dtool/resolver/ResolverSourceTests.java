@@ -1,7 +1,7 @@
 package dtool.resolver;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
@@ -31,7 +31,6 @@ import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserSourceTests;
 import dtool.parser.DeeTemplatedSourceBasedTest;
-import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
@@ -115,7 +114,7 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 				// already processed
 			} else if(mde.name.equals("PROJECT")) {
 				assertTrue(mr instanceof NullModuleResolver);
-				File projectFolder = new File(file.getParent(), assertNotNull_(mde.value));
+				File projectFolder = new File(file.getParent(), assertNotNull(mde.value));
 				mr = new InstrumentedModuleResolver(projectFolder);
 			} else if(mde.name.equals("REFSEARCH")) {
 				testsLogger.println("#REFSEARCH:" + mde);
@@ -141,7 +140,7 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 			testStringDescriptor = null;
 		} else if(testStringDescriptor.startsWith("!")) {
 			String statusId = testStringDescriptor.substring(1); 
-			expectedStatusCode = assertNotNull_(ECompletionResultStatus.fromId(statusId));
+			expectedStatusCode = assertNotNull(ECompletionResultStatus.fromId(statusId));
 			expectedResults = new String[0];
 		} else {
 			expectedResults = splitValues(testStringDescriptor);
@@ -175,7 +174,7 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 	}
 	
 	public int getMarkerPosition(String relexStartPosTargetMarker) {
-		return assertNotNull_(markers.get(relexStartPosTargetMarker)).offset;
+		return assertNotNull(markers.get(relexStartPosTargetMarker)).offset;
 	}
 	
 	public String[] removeEmptyStrings(String[] expectedResults) {
@@ -249,7 +248,7 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 	}
 	
 	protected void removedDefUnitByEndMarker(String markerName, Collection<DefUnit> resolvedDefUnits) {
-		MetadataEntry marker = assertNotNull_(markers.get(markerName));
+		MetadataEntry marker = assertNotNull(markers.get(markerName));
 		
 		for (Iterator<DefUnit> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {
 			DefUnit defUnit = iterator.next();

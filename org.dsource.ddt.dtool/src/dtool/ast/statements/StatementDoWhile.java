@@ -1,6 +1,6 @@
 package dtool.ast.statements;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -14,7 +14,7 @@ public class StatementDoWhile extends Statement {
 	public final Expression condition;
 	
 	public StatementDoWhile(IStatement body, Expression condition) {
-		this.body = parentizeI(assertNotNull_(body));
+		this.body = parentizeI(assertNotNull(body));
 		this.condition = parentize(condition);
 	}
 	

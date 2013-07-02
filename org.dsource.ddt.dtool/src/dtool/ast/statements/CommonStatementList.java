@@ -1,7 +1,7 @@
 package dtool.ast.statements;
 
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Iterator;
 
@@ -17,7 +17,7 @@ public abstract class CommonStatementList extends Statement {
 	public final ArrayView<IStatement> statements;
 	
 	public CommonStatementList(ArrayView<IStatement> statements) {
-		this.statements = parentizeI(assertNotNull_(statements));
+		this.statements = parentizeI(assertNotNull(statements));
 	}
 	
 	/** This represents a missing block */

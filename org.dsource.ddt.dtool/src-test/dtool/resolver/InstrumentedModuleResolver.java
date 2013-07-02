@@ -1,7 +1,7 @@
 package dtool.resolver;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
@@ -31,7 +31,7 @@ public final class InstrumentedModuleResolver implements IModuleResolver {
 	
 	public void initModules(File projectFolder, String namePrefix) {
 		File[] children = projectFolder.listFiles();
-		assertNotNull_(children);
+		assertNotNull(children);
 		for (File child : children) {
 			if(child.isDirectory()) {
 				String packageName = child.getName();

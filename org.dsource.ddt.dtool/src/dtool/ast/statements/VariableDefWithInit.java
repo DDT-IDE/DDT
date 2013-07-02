@@ -1,6 +1,6 @@
 package dtool.ast.statements;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collection;
 
@@ -22,7 +22,7 @@ public class VariableDefWithInit extends DefUnit {
 	
 	public VariableDefWithInit(Reference type, ProtoDefSymbol defId, Expression defaultValue) {
 		super(defId);
-		this.type = parentize(assertNotNull_(type));
+		this.type = parentize(assertNotNull(type));
 		this.defaultValue = parentize(defaultValue);
 	}
 	

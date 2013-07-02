@@ -1,6 +1,6 @@
 package dtool.ast.declarations;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -16,7 +16,7 @@ public class IncompleteDeclarator extends ASTNode implements IDeclaration {
 	public final Reference ref;
 	
 	public IncompleteDeclarator(Reference ref) {
-		this.ref = parentize(assertNotNull_(ref));
+		this.ref = parentize(assertNotNull(ref));
 	}
 	
 	@Override

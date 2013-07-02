@@ -1,8 +1,6 @@
 package dtool.ast.statements;
 
-import static dtool.util.NewUtils.assertNotNull_;
-
-
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -15,7 +13,7 @@ public class StatementIfVar extends Statement {
 	public final IStatement elseBody;
 	
 	public StatementIfVar(VariableDefWithInit conditionVar, IStatement thenBody, IStatement elseBody) {
-		this.conditionVar = parentize(assertNotNull_(conditionVar));
+		this.conditionVar = parentize(assertNotNull(conditionVar));
 		this.thenBody = parentizeI(thenBody);
 		this.elseBody = parentizeI(elseBody);
 	}

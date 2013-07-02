@@ -1,6 +1,6 @@
 package dtool.ast.statements;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -12,7 +12,7 @@ public class StatementGoto extends Statement {
 	public final Symbol label;
 	
 	public StatementGoto(Symbol label) {
-		this.label = parentize(assertNotNull_(label));
+		this.label = parentize(assertNotNull(label));
 	}
 	
 	@Override

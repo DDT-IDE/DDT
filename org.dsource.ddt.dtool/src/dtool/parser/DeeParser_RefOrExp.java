@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -767,7 +766,7 @@ protected class ParseRule_Expression {
 	}
 	
 		public Expression parseInfixOperator(final Expression leftExp, final InfixOpType opType) {
-			ParseHelper parse = new ParseHelper(assertNotNull_(leftExp));
+			ParseHelper parse = new ParseHelper(assertNotNull(leftExp));
 			
 			Expression rightExp = null;
 			
@@ -1032,7 +1031,7 @@ protected class ParseRule_Expression {
 			if(isNull()) {
 				return nullResult();
 			}
-			return assertNotNull_(expResult);
+			return assertNotNull(expResult);
 		}
 		
 		public NodeResult<? extends Resolvable> toFinalResult(boolean ambiguousToRef) {

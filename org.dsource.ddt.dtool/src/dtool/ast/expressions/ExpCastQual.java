@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
@@ -34,7 +34,7 @@ public class ExpCastQual extends Expression {
 	public final Resolvable exp;
 	
 	public ExpCastQual(CastQualifiers castQualifier, Expression exp) {
-		this.castQualifier = assertNotNull_(castQualifier);
+		this.castQualifier = assertNotNull(castQualifier);
 		this.exp = parentize(exp);
 		assertTrue(exp == null || castQualifier != null);
 	}

@@ -1,6 +1,5 @@
 package dtool.ast.definitions;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Iterator;
@@ -54,7 +53,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		
 		public DeclarationModule(Token[] comments, ArrayView<Token> packageList, BaseLexElement moduleDefUnit) {
 			this.comments = comments;
-			this.packageList = assertNotNull_(packageList);
+			this.packageList = assertNotNull(packageList);
 			this.packages = NodeUtil.tokenArrayToStringArray(packageList);
 			this.moduleName = new ModuleDefSymbol(moduleDefUnit.getSourceValue());
 			this.moduleName.setSourceRange(moduleDefUnit.getSourceRange());

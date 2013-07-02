@@ -1,6 +1,6 @@
 package dtool.ast.references;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collection;
 
@@ -36,7 +36,7 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	public final boolean hasParens;
 	
 	public RefTypeModifier(TypeModifierKinds modifier, Reference ref, boolean hasParens) {
-		this.modifier = assertNotNull_(modifier);
+		this.modifier = assertNotNull(modifier);
 		this.ref = parentize(ref);
 		this.hasParens = hasParens;
 	}

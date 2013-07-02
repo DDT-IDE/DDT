@@ -1,6 +1,6 @@
 package dtool.ast.definitions;
 
-import static dtool.util.NewUtils.assertNotNull_;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -19,7 +19,7 @@ public class TemplateValueParam extends TemplateParameter {
 	public TemplateValueParam(Reference type, ProtoDefSymbol defId, Expression specializationValue, 
 		Expression defaultValue) {
 		super(defId);
-		this.type = parentize(assertNotNull_(type));
+		this.type = parentize(assertNotNull(type));
 		this.specializationValue = parentize(specializationValue);
 		this.defaultValue = parentize(defaultValue);
 	}

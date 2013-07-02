@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.Comparator;
@@ -51,8 +51,8 @@ public class ParserError implements ISourceRange {
 	protected final Object msgData;
 	
 	public ParserError(ParserErrorTypes errorType, SourceRange sourceRange, String msgErrorSource, Object msgData) {
-		this.errorType = assertNotNull_(errorType);
-		this.sourceRange = assertNotNull_(sourceRange);
+		this.errorType = assertNotNull(errorType);
+		this.sourceRange = assertNotNull(sourceRange);
 		this.msgErrorSource = msgErrorSource;
 		this.msgData = msgData;
 	}

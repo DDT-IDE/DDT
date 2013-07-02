@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.parser;
 
-import static dtool.util.NewUtils.assertNotNull_;
 import static dtool.util.NewUtils.lazyInitArrayList;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.blindCast;
@@ -249,7 +249,7 @@ public final class DeeParser_RuleParameters extends AbstractDecidingParserRule<D
 				
 				for (int i = attribs.size()-1; i >= 0 ; i--) {
 					Token attribToken = attribs.get(i);
-					TypeModifierKinds modifier = assertNotNull_(determineTypeModifier(attribToken.type));
+					TypeModifierKinds modifier = assertNotNull(determineTypeModifier(attribToken.type));
 					ref = concludeNode(srBounds(attribToken.getStartPos(), ref.getEndPos(), 
 						new RefTypeModifier(modifier, ref, false)));
 				}
