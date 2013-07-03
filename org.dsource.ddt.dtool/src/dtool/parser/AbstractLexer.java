@@ -76,7 +76,9 @@ public abstract class AbstractLexer {
 	}
 	
 	protected Token createParsedToken() {
-		String value = source.substring(tokenStartPos, pos);
+		String value = tokenType.hasSourceValue() ?
+			tokenType.getSourceValue() : // Minor optimization here, don't allocate string for these token types 
+			source.substring(tokenStartPos, pos);
 		if(tokenError != null) {
 			return new Token.ErrorToken(tokenType, value, tokenStartPos, tokenError);
 		}
