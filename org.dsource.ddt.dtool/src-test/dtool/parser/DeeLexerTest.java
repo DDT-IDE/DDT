@@ -140,7 +140,7 @@ public class DeeLexerTest extends DToolBaseTest {
 			assertTrue(token.getStartPos() == readOffset);
 			assertEquals(deeLexer.source.subSequence(token.getStartPos(), token.getEndPos()), token.getSourceValue());
 			
-			DeeTokens tokenCode = token.getTokenType();
+			DeeTokens tokenCode = token.getType();
 			if(tokenCode == DeeTokens.EOF) {
 				assertTrue(token.getEndPos() >= token.getStartPos());
 			} else {

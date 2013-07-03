@@ -13,8 +13,8 @@ package dtool.parser;
 
 public class LexElement extends BaseLexElement {
 	
-	public LexElement(DeeTokens type, String source, int startPos, Token[] ignoredPrecedingTokens) {
-		super(type, source, startPos, ignoredPrecedingTokens);
+	public LexElement(DeeTokens type, String source, int startPos, int fullStartPos, Token[] ignoredPrecedingTokens) {
+		super(type, source, startPos, fullStartPos, ignoredPrecedingTokens);
 	}
 	
 	@Override
@@ -31,8 +31,9 @@ public class LexElement extends BaseLexElement {
 		
 		public ParserError error;
 		
-		public MissingLexElement(Token[] ignoredPrecedingTokens, int lookAheadStart, ParserError error) {
-			super(DeeTokens.WHITESPACE, "", lookAheadStart, ignoredPrecedingTokens);
+		public MissingLexElement(int lookAheadStart, ParserError error, int laFullStartPos,
+			Token[] ignoredPrecedingTokens) {
+			super(DeeTokens.WHITESPACE, "", lookAheadStart, laFullStartPos, ignoredPrecedingTokens);
 			this.error = error; // can be null
 		}
 		

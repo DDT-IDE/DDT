@@ -152,6 +152,11 @@ public abstract class NodeData {
 			return parsedStatus.getNodeErrors();
 		}
 		
+		@Override
+		public String toString() {
+			return "(ANALYSED)";
+		}
+		
 	}
 	
 }

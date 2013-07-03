@@ -255,9 +255,8 @@ public abstract class AbstractParser {
 	public MissingLexElement consumeSubChannelTokens(ParserError error) {
 		// Missing element will consume whitetokens ahead
 		LexElement la = lookAheadElement();
-		int lookAheadStart = la.getStartPos();
-		MissingLexElement missingLexElement = new MissingLexElement(la.relevantPrecedingSubChannelTokens, 
-			lookAheadStart, error);
+		MissingLexElement missingLexElement = new MissingLexElement(la.getStartPos(), error, 
+			la.getFullRangeStartPos(), la.relevantPrecedingSubChannelTokens);
 		getEnabledLexSource().advanceSubChannelTokens();
 		return missingLexElement;
 	}

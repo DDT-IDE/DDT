@@ -24,20 +24,28 @@ import dtool.ast.SourceRange;
 public abstract class BaseLexElement implements IToken {
 	
 	public final DeeTokens type;
-	public final int startPos;
 	public final String source;
+	public final int startPos;
+	public final int fullStartPos;
 	/** This array stores some (but not all) preceding subchannel tokens.  */
 	protected final Token[] relevantPrecedingSubChannelTokens;
 	
-	public BaseLexElement(DeeTokens type, String source, int startPos, Token[] ignoredPrecedingTokens) {
+	public BaseLexElement(DeeTokens type, String source, int startPos, int fullStartPos, 
+		Token[] ignoredPrecedingTokens) {
 		this.type = assertNotNull(type);
 		if(type.hasSourceValue()) {
 			assertEquals(type.getSourceValue(), source);
 		}
 		this.source = assertNotNull(source);
 		this.startPos = startPos;
+		this.fullStartPos = fullStartPos;
 		this.relevantPrecedingSubChannelTokens = ignoredPrecedingTokens;
 		assertTrue(ignoredPrecedingTokens == null || ignoredPrecedingTokens.length > 0);
+	}
+	
+	@Override
+	public DeeTokens getType() {
+		return type;
 	}
 	
 	@Override
@@ -68,12 +76,9 @@ public abstract class BaseLexElement implements IToken {
 		return type == DeeTokens.EOF;
 	}
 	
-	
+	/** @return the full range start pos of this token, including preceding ignored tokens. */
 	public final int getFullRangeStartPos() {
-		if(relevantPrecedingSubChannelTokens != null && relevantPrecedingSubChannelTokens.length > 0) {
-			return relevantPrecedingSubChannelTokens[0].getStartPos();
-		}
-		return getStartPos();
+		return fullStartPos;
 	}
 	
 	public static final Token[] EMPTY_ARRAY = new Token[0];
@@ -95,4 +100,5 @@ public abstract class BaseLexElement implements IToken {
 	public String toString() {
 		return toStringRangePrefix() + type +"►"+ source;
 	}
+	
 }

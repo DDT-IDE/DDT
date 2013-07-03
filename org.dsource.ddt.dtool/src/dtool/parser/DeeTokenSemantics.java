@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.utilbox.misc.Pair;
-
 import dtool.ast.declarations.AttribProtection.Protection;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.NewUtils;
@@ -14,7 +13,7 @@ import dtool.util.NewUtils;
 public class DeeTokenSemantics {
 	
 	public static void checkTokenErrors(Token token, List<ParserError> lexerErrors) {
-		if(token.type == DeeTokens.INVALID_TOKEN) {
+		if(token.getType() == DeeTokens.INVALID_TOKEN) {
 			lexerErrors.add(createError(ParserErrorTypes.INVALID_TOKEN_CHARACTERS, token, null));
 			return;
 		}
@@ -25,12 +24,12 @@ public class DeeTokenSemantics {
 		}
 		
 		// Check token content validity  TODO: strings, unicode escapes, HTML entities, etc.
-		switch (token.type) {
+		switch (token.getType()) {
 		case CHARACTER:
-			assertTrue(token.source.length() > 2);
-			if(token.source.length() == 3)
+			assertTrue(token.getSourceValue().length() > 2);
+			if(token.getSourceValue().length() == 3)
 				break;
-			if(token.source.charAt(1) == '\\') {
+			if(token.getSourceValue().charAt(1) == '\\') {
 				break;
 			}
 			lexerErrors.add(createError(ParserErrorTypes.MALFORMED_TOKEN, token, 
@@ -116,10 +115,12 @@ public class DeeTokenSemantics {
 	}
 	
 	public static boolean tokenIsDocComment(Token token) {
-		return
-			token.type == DeeTokens.DOCCOMMENT_LINE ||
-			token.type == DeeTokens.DOCCOMMENT_NESTED  ||
-			token.type == DeeTokens.DOCCOMMENT_MULTI;
+		return tokenTypeIsDocComment(token.type);
 	}
 	
+	public static boolean tokenTypeIsDocComment(DeeTokens type) {
+		return type == DeeTokens.DOCCOMMENT_LINE ||
+			type == DeeTokens.DOCCOMMENT_NESTED || type == DeeTokens.DOCCOMMENT_MULTI;
+	}
+
 }

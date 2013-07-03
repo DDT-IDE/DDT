@@ -15,6 +15,8 @@ import dtool.ast.SourceRange;
 
 public interface IToken extends ISourceRepresentation {
 	
+	DeeTokens getType();
+	
 	@Override
 	String getSourceValue();
 	

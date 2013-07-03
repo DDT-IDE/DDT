@@ -21,12 +21,9 @@ public class Token implements ISourceRepresentation, IToken {
 		}
 	}
 	
-	public final DeeTokens getTokenType() {
+	@Override
+	public final DeeTokens getType() {
 		return type;
-	}
-	
-	public final boolean isSubChannelToken() {
-		return type.isSubChannel;
 	}
 	
 	@Override

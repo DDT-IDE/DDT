@@ -38,18 +38,33 @@ public class ArrayUtil {
 //	}
 	
 	/** Creates a new array of given length, and same component type as given compType. */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] create(int length, T[] compType) {
 		return (T[]) Array.newInstance(compType.getClass().getComponentType(), length);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <T> T[] create(int length, Class<T> klass) {
 		return (T[]) Array.newInstance(klass, length);
 	}
 	
+    /** Create an array from the given list, with the given cpType as the run-time component type.
+     * If the list is null, a zero-length array is created. */
+	public static <T> T[] createFrom(Collection<? extends T> list, Class<T> cpType) {
+		if(list == null) {
+			return (T[]) Array.newInstance(cpType, 0);
+		}
+		return list.toArray((T[])Array.newInstance(cpType, list.size()));
+	}
+	
+    /** Create an array from the given list, with the given cpType as the run-time component type.
+     * If the list is null, null is returned. */
+	public static <T> T[] toArray(Collection<? extends T> list, Class<T> cpType) {
+		if(list == null) {
+			return null;
+		}
+		return list.toArray((T[])Array.newInstance(cpType, list.size()));
+	}
+	
 	/** Creates a new array with the given length, and of the same type as the given array. */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] copyFrom(T[] array, int newLength) {
         T[] copy = (T[]) Array.newInstance(array.getClass().getComponentType(), newLength);
     	System.arraycopy(array, 0, copy, 0, Math.min(array.length, newLength));
@@ -97,16 +112,6 @@ public class ArrayUtil {
     	return Arrays.copyOfRange(original, from, to, newType);
     }
     
-    /** Create an array from the given list, with the given run-time component type.
-     * If the list is null, a zero-length array is created. */
-	@SuppressWarnings("unchecked")
-	public static <T> T[] createFrom(Collection<? extends T> list, Class<T> cpType) {
-		if(list == null)
-			return (T[]) Array.newInstance(cpType, 0);
-		else
-			return list.toArray((T[])Array.newInstance(cpType, list.size()));
-	}
-	
 	/** Creates an int[] from given coll of Integers. */
 	public static int[] createIntArray(List<? extends Integer> coll) {
 		int[] array = new int[coll.size()];
@@ -118,7 +123,6 @@ public class ArrayUtil {
 	
 	/** Creates an array with the same size as the given list.
 	 * If the list is null, a zero-length array is created. */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] newSameSize(List<?> list, Class<T> cpType) {
 		if(list == null)
 			return (T[]) Array.newInstance(cpType, 0);
@@ -179,7 +183,6 @@ public class ArrayUtil {
 	}
 	
 	/** Appends two arrays, creating a new array of given runtime type. */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] concat(T[] base, T[] other, Class<?> arClass) {
 		int newSize = base.length + other.length;
 		T[] newArray = (T[]) Array.newInstance(arClass, newSize);

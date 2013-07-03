@@ -7,7 +7,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,13 +71,6 @@ public class NewUtils {
 
 	public static <T> T lastElement(List<T> list) {
 		return list.get(list.size()-1);
-	}
-	
-	public static <T> T[] toArray(Collection<? extends T> list, Class<T> cpType) {
-		if(list == null) {
-			return null;
-		}
-		return list.toArray((T[])Array.newInstance(cpType, list.size()));
 	}
 	
 	public static <T> T[] emptyToNull(T[] array) {

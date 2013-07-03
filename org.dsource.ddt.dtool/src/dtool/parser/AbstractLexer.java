@@ -18,19 +18,23 @@ public abstract class AbstractLexer {
 	protected static final int EOF = -1;
 	
 	protected static final short ASCII_LIMIT = 127;
-
+	
 	protected final String source;
 	protected int tokenStartPos = 0;
 	protected int pos = 0; // Temporary variable. When a match is finished this will be token end position. 
 	protected DeeTokens tokenType; // type for the last matched token 
-	protected LexerErrorTypes errorType; // error for the last matched token
-	
+	protected LexerErrorTypes tokenError; // error for the last matched token
+
 	public AbstractLexer(String source) {
 		this.source = assertNotNull(source);
 	}
 	
 	public final String getSource() {
 		return source;
+	}
+	
+	public int getLexingPosition() {
+		return pos;
 	}
 	
 	/** Gets the character from absolute position index. */
@@ -65,7 +69,7 @@ public abstract class AbstractLexer {
 	
 	public void parseToken() {
 		tokenType = null;
-		errorType = null;
+		tokenError = null;
 		tokenStartPos = pos;
 		
 		doParseToken();
@@ -73,8 +77,8 @@ public abstract class AbstractLexer {
 	
 	protected Token createParsedToken() {
 		String value = source.substring(tokenStartPos, pos);
-		if(errorType != null) {
-			return new Token.ErrorToken(tokenType, value, tokenStartPos, errorType);
+		if(tokenError != null) {
+			return new Token.ErrorToken(tokenType, value, tokenStartPos, tokenError);
 		}
 		return new Token(tokenType, value, tokenStartPos);
 	}
@@ -82,7 +86,7 @@ public abstract class AbstractLexer {
 	protected abstract Void doParseToken();
 	
 	protected final Void endMatchWithError(DeeTokens tokenType, LexerErrorTypes errorType) {
-		this.errorType = errorType;
+		this.tokenError = errorType;
 		return endMatch(tokenType);
 	}
 	
@@ -256,5 +260,5 @@ public abstract class AbstractLexer {
 			return matchTokenFromStartPos(tokenElse, 1);
 		}
 	}
-	
+
 }

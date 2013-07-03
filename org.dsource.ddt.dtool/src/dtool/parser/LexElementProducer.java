@@ -12,7 +12,7 @@ package dtool.parser;
 
 import java.util.ArrayList;
 
-import dtool.util.NewUtils;
+import melnorme.utilbox.misc.ArrayUtil;
 
 /**
  * Produces {@link LexElement}'s from a lexer to construct a {@link LexElementSource}.
@@ -39,24 +39,35 @@ public class LexElementProducer {
 	}
 	
 	public LexElement produceLexElement(AbstractLexer lexer) {
-		ArrayList<Token> ignoredTokens = null;
+		ArrayList<Token> relevantSubChannelTokens = null;
+		int fullStartPos = lexer.getLexingPosition();
 		while(true) {
-			Token token = lexer.next();
-			tokenCreated(token);
+			lexer.parseToken();
+			Token token = lexer.createParsedToken();
+			tokenParsed(token);
 			
-			if(token.isSubChannelToken()) {
-				if(ignoredTokens == null)
-					ignoredTokens = new ArrayList<Token>(1);
-				ignoredTokens.add(token);
+			DeeTokens tkType = lexer.tokenType;
+			if(tkType.isSubChannel && !isRelevant(tkType)) {
 				continue;
 			}
-			return new LexElement(token.type, token.source, token.startPos, 
-				NewUtils.toArray(ignoredTokens, Token.class));
+			
+			if(tkType.isSubChannel) {
+				if(relevantSubChannelTokens == null)
+					relevantSubChannelTokens = new ArrayList<Token>(4);
+				relevantSubChannelTokens.add(token);
+				continue;
+			}
+			return new LexElement(tkType, token.source, token.startPos, fullStartPos, 
+				ArrayUtil.toArray(relevantSubChannelTokens, Token.class));
 		}
 	}
 	
+	protected static boolean isRelevant(DeeTokens type) {
+		return type == DeeTokens.LINE_END || DeeTokenSemantics.tokenTypeIsDocComment(type);
+	}
+	
 	@SuppressWarnings("unused")
-	protected void tokenCreated( Token token) {
+	protected void tokenParsed(Token token) {
 		// Default implementation
 	}
 	

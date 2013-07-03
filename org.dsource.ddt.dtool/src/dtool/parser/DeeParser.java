@@ -74,11 +74,10 @@ public class DeeParser
 	}
 	
 	public static final class DeeLexElementProducer extends LexElementProducer {
-		
 		protected ArrayList<ParserError> lexerErrors = new ArrayList<>();
 		
 		@Override
-		protected void tokenCreated(Token token) {
+		protected void tokenParsed(Token token) {
 			DeeTokenSemantics.checkTokenErrors(token, lexerErrors);
 		}
 	}
