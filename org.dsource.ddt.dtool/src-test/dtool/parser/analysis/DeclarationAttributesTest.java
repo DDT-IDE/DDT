@@ -8,7 +8,7 @@ import org.junit.Test;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
-import dtool.ast.declarations.AttribProtection.Protection;
+import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
@@ -21,28 +21,28 @@ public class DeclarationAttributesTest extends DToolBaseTest {
 	public void testAttribs() throws Exception { testAttribs$(); }
 	public void testAttribs$() throws Exception {
 		checkDef(getDefToTest("static public abstract int foo;", "foo"), 
-			Protection.PUBLIC, AttributeKinds.ABSTRACT, AttributeKinds.STATIC);
+			EProtection.PUBLIC, AttributeKinds.ABSTRACT, AttributeKinds.STATIC);
 		
 		checkDef(getDefToTest("private public abstract int foo;", "foo"), 
-			Protection.PUBLIC, AttributeKinds.ABSTRACT);
+			EProtection.PUBLIC, AttributeKinds.ABSTRACT);
 		
 		checkDef(getDefToTest("abstract abstract int foo;", "foo"), 
 			null, AttributeKinds.ABSTRACT);
 		
 		checkDef(getDefToTest("protected: static: private abstract int foo;", "foo"), 
-			Protection.PRIVATE, AttributeKinds.ABSTRACT, AttributeKinds.STATIC);
+			EProtection.PRIVATE, AttributeKinds.ABSTRACT, AttributeKinds.STATIC);
 		
 		checkDef(getDefToTest("protected: static: public private abstract int foo;", "foo"), 
-			Protection.PRIVATE, AttributeKinds.ABSTRACT, AttributeKinds.STATIC);
+			EProtection.PRIVATE, AttributeKinds.ABSTRACT, AttributeKinds.STATIC);
 		
 		String sourceA = "override int foo0; protected: static: private abstract int foo1; \n"+ 
 			"public: immutable: int foo2"; 
 		checkDef(getDefToTest(sourceA, "foo0"), 
 			null, AttributeKinds.OVERRIDE);
 		checkDef(getDefToTest(sourceA, "foo1"), 
-			Protection.PRIVATE, AttributeKinds.ABSTRACT, AttributeKinds.STATIC);
+			EProtection.PRIVATE, AttributeKinds.ABSTRACT, AttributeKinds.STATIC);
 		checkDef(getDefToTest(sourceA, "foo2"), 
-			Protection.PUBLIC, AttributeKinds.STATIC, AttributeKinds.IMMUTABLE);
+			EProtection.PUBLIC, AttributeKinds.STATIC, AttributeKinds.IMMUTABLE);
 	}
 	
 	public CommonDefinition getDefToTest(String source, String name) {
@@ -53,7 +53,7 @@ public class DeclarationAttributesTest extends DToolBaseTest {
 		return def;
 	}
 	
-	public void checkDef(CommonDefinition def, Protection protection, AttributeKinds... expectedAttribs) {
+	public void checkDef(CommonDefinition def, EProtection protection, AttributeKinds... expectedAttribs) {
 		assertTrue(def.getProtection() == protection);
 		for (AttributeKinds attrib : AttributeKinds.values()) {
 			assertTrue(def.hasAttribute(attrib) == ArrayUtil.contains(expectedAttribs, attrib));

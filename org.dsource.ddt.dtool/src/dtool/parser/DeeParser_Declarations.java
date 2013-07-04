@@ -28,7 +28,7 @@ import dtool.ast.declarations.AttribLinkage;
 import dtool.ast.declarations.AttribLinkage.Linkage;
 import dtool.ast.declarations.AttribPragma;
 import dtool.ast.declarations.AttribProtection;
-import dtool.ast.declarations.AttribProtection.Protection;
+import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.DeclList;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
@@ -293,7 +293,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 		}
 		LexElement protToken = consumeLookAhead();
 		ParseHelper parse = new ParseHelper();
-		Protection protection = DeeTokenSemantics.getProtectionFromToken(protToken.type);
+		EProtection protection = DeeTokenSemantics.getProtectionFromToken(protToken.type);
 		
 		return parse.resultConclude(new AttribProtection(protection));
 	}

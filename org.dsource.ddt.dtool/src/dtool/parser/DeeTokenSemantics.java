@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.utilbox.misc.Pair;
-import dtool.ast.declarations.AttribProtection.Protection;
+import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.NewUtils;
 
@@ -44,13 +44,13 @@ public class DeeTokenSemantics {
 		return new ParserError(errorType, token.getSourceRange(), token.getSourceValue(), msgData);
 	}
 	
-	public static Protection getProtectionFromToken(DeeTokens token) {
+	public static EProtection getProtectionFromToken(DeeTokens token) {
 		switch(token) {
-		case KW_PRIVATE: return Protection.PRIVATE;
-		case KW_PACKAGE: return Protection.PACKAGE;
-		case KW_PROTECTED: return Protection.PROTECTED;
-		case KW_PUBLIC: return Protection.PUBLIC;
-		case KW_EXPORT: return Protection.EXPORT;
+		case KW_PRIVATE: return EProtection.PRIVATE;
+		case KW_PACKAGE: return EProtection.PACKAGE;
+		case KW_PROTECTED: return EProtection.PROTECTED;
+		case KW_PUBLIC: return EProtection.PUBLIC;
+		case KW_EXPORT: return EProtection.EXPORT;
 		default: return null;
 		}
 	}

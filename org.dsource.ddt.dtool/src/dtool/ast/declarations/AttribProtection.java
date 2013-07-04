@@ -8,9 +8,9 @@ import dtool.ast.ISourceRepresentation;
 
 public class AttribProtection extends Attribute {
 	
-	public final Protection protection;
+	public final EProtection protection;
 	
-	public AttribProtection(Protection protection) {
+	public AttribProtection(EProtection protection) {
 		this.protection = assertNotNull(protection);
 	}
 	
@@ -28,7 +28,7 @@ public class AttribProtection extends Attribute {
 		cp.appendToken(protection);
 	}
 	
-	public enum Protection implements ISourceRepresentation {
+	public enum EProtection implements ISourceRepresentation {
 	    PRIVATE,
 	    PACKAGE,
 	    PROTECTED,

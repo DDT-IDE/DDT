@@ -4,16 +4,17 @@ import static melnorme.utilbox.core.CoreUtil.downCast;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.ui.DeePluginImages;
 
-import org.dsource.ddt.ide.core.model.ProtectionAttribute;
 import org.eclipse.dltk.ui.ScriptElementImageDescriptor_Extension;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Point;
 
+import dtool.ast.declarations.AttribProtection.EProtection;
+
 public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Extension {
 	
-	protected final ProtectionAttribute prot;
+	protected final EProtection prot;
 	
-	public DeeElementImageDescriptor(ImageDescriptor baseImage, int flags, ProtectionAttribute prot, Point size) {
+	public DeeElementImageDescriptor(ImageDescriptor baseImage, int flags, EProtection prot, Point size) {
 		super(baseImage, flags, size);
 		this.prot = prot;
 	}

@@ -9,7 +9,6 @@ import mmrnmhrm.ui.DeeUIPreferenceConstants;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 
 import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
-import org.dsource.ddt.ide.core.model.ProtectionAttribute;
 import org.eclipse.dltk.core.Flags;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ModelException;
@@ -21,6 +20,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
+import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.EArcheType;
 
 public class DeeModelElementLabelProvider extends LabelProvider implements ILabelProvider {
@@ -97,7 +97,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		ElementIconsStyle iconStyle = getIconStylePreference();
 		ImageDescriptor baseImage = getBaseImageDescriptor(archetype, elementFlags, iconStyle);
 		
-		ProtectionAttribute prot = null;
+		EProtection prot = null;
 		if (iconStyle != ElementIconsStyle.JDTLIKE || 
 				(archetype != EArcheType.Variable && archetype != EArcheType.Function)) {
 			prot = DeeModelElementUtil.elementFlagsToProtection(elementFlags, null);
@@ -178,7 +178,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 	}
 
 	public ImageDescriptor getJDTStyleFieldImageDescriptor(int flags) {
-		switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
+		switch (DeeModelElementUtil.elementFlagsToProtection(flags, EProtection.PUBLIC)) {
 		case PRIVATE: 
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PRIVATE);
 		case PROTECTED:
@@ -193,7 +193,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 	}
 	
 	public ImageDescriptor getJDTStyleMethodImageDescriptor(int flags) {
-		switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
+		switch (DeeModelElementUtil.elementFlagsToProtection(flags, EProtection.PUBLIC)) {
 		case PRIVATE: 
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PRIVATE);
 		case PROTECTED:

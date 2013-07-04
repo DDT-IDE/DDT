@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
-import dtool.ast.declarations.AttribProtection.Protection;
+import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.IDeclaration;
 import dtool.parser.Token;
@@ -47,18 +47,18 @@ public abstract class CommonDefinition extends DefUnit implements IDeclaration {
 	}
 	
 	/** Sets protection attribute. Can only set once. */
-	public void setProtection(Protection protection) {
+	public void setProtection(EProtection protection) {
 		assertTrue(getProtectionFromAttributesBitMask(defAttributesBitMask) == null);
 		defAttributesBitMask |= getBitMaskForProtectionAttribute(protection) ;
 	}
 	
-	public Protection getProtection() {
+	public EProtection getProtection() {
 		return getProtectionFromAttributesBitMask(defAttributesBitMask);
 	}
 	
-	public Protection getEffectiveProtection() {
-		Protection protection = getProtection();
-		return protection == null ? Protection.PUBLIC : protection;
+	public EProtection getEffectiveProtection() {
+		EProtection protection = getProtection();
+		return protection == null ? EProtection.PUBLIC : protection;
 	}
 	
 	public void setAttribute(AttribBasic declBasicAttrib) {
@@ -70,7 +70,7 @@ public abstract class CommonDefinition extends DefUnit implements IDeclaration {
 	}
 	
 	
-	public static int getBitMaskForProtectionAttribute(Protection protection) {
+	public static int getBitMaskForProtectionAttribute(EProtection protection) {
 		switch (protection) {
 		case PRIVATE: return 0x1;
 		case PACKAGE: return 0x2;
@@ -86,14 +86,14 @@ public abstract class CommonDefinition extends DefUnit implements IDeclaration {
 		return (1 << 3) << basicAttrib.ordinal();
 	}
 	
-	public static Protection getProtectionFromAttributesBitMask(int attributesBitMask) {
+	public static EProtection getProtectionFromAttributesBitMask(int attributesBitMask) {
 		switch (attributesBitMask & 0x7) {
 		case 0x0: return null;
-		case 0x1: return Protection.PRIVATE;
-		case 0x2: return Protection.PACKAGE;
-		case 0x3: return Protection.PROTECTED;
-		case 0x4: return Protection.PUBLIC;
-		case 0x5: return Protection.EXPORT;
+		case 0x1: return EProtection.PRIVATE;
+		case 0x2: return EProtection.PACKAGE;
+		case 0x3: return EProtection.PROTECTED;
+		case 0x4: return EProtection.PUBLIC;
+		case 0x5: return EProtection.EXPORT;
 		default: throw assertFail();
 		}
 	}

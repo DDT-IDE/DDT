@@ -3,6 +3,7 @@ package org.dsource.ddt.ide.core.model;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.Flags;
 
+import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.EArcheType;
 
 public class DeeModelElementUtil {
@@ -37,21 +38,21 @@ public class DeeModelElementUtil {
 		return elementFlagsToArcheType(elementFlags) == EArcheType.Constructor;
 	}
 	
-	public static ProtectionAttribute elementFlagsToProtection(int elementFlags, ProtectionAttribute undefined) {
+	public static EProtection elementFlagsToProtection(int elementFlags, EProtection undefined) {
 		if((elementFlags & DeeModelConstants.FLAG_ALT_PROTECTION) != 0) {
 			if(Flags.isPrivate(elementFlags)) {
-				return ProtectionAttribute.PACKAGE;
+				return EProtection.PACKAGE;
 			} else if(Flags.isPublic(elementFlags)) {
-				return ProtectionAttribute.EXPORT;
+				return EProtection.EXPORT;
 			}
 			return undefined;
 		}
 		if(Flags.isPrivate(elementFlags)) {
-			return ProtectionAttribute.PRIVATE;
+			return EProtection.PRIVATE;
 		} else if(Flags.isProtected(elementFlags)) {
-			return ProtectionAttribute.PROTECTED;
+			return EProtection.PROTECTED;
 		} else if(Flags.isPublic(elementFlags)) {
-			return ProtectionAttribute.PUBLIC;
+			return EProtection.PUBLIC;
 		}
 		return undefined;
 	}

@@ -11,7 +11,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
-import dtool.ast.declarations.AttribProtection.Protection;
+import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.statements.BlockStatementUnscoped;
 import dtool.ast.statements.IStatement;
@@ -107,7 +107,7 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 		}
 	}
 	
-	protected void applyProtectionAttributes(Protection protection, INonScopedBlock block) {
+	protected void applyProtectionAttributes(EProtection protection, INonScopedBlock block) {
 		Iterator<? extends ASTNode> iter = block.getMembersIterator();
 		while(iter.hasNext()) {
 			ASTNode descendantNode = iter.next();
@@ -118,7 +118,7 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 			if(descendantNode instanceof CommonDefinition) {
 				CommonDefinition def = (CommonDefinition) descendantNode;
 				def.setProtection(protection);
-			} else if (descendantNode instanceof DeclarationImport && protection == Protection.PUBLIC) {
+			} else if (descendantNode instanceof DeclarationImport && protection == EProtection.PUBLIC) {
 				DeclarationImport declImport = (DeclarationImport) descendantNode;
 				declImport.isTransitive = true;
 			} else if(descendantNode instanceof INonScopedBlock) {
