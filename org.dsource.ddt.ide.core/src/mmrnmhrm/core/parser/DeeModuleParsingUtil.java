@@ -1,4 +1,4 @@
-package org.dsource.ddt.ide.core.model;
+package mmrnmhrm.core.parser;
 
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.core.ISourceModule;

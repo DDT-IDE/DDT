@@ -5,8 +5,8 @@ import java.util.List;
 
 import melnorme.swtutil.SWTUtilExt;
 import melnorme.utilbox.tree.IElement;
+import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ElementChangedEvent;

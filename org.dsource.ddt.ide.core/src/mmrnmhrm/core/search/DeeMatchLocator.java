@@ -7,9 +7,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.model_elements.DeeModelEngine;
+import mmrnmhrm.core.parser.DeeModuleDeclaration;
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclarationWrapper;

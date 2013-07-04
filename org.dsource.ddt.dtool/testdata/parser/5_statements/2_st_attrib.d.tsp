@@ -10,7 +10,7 @@
   ►#?STRUCTURE_EXPECTED!【class defunit { } ●DefinitionClass(* *)】●
   
   ►#?STRUCTURE_EXPECTED!【template defunit(T) { } ●DefinitionTemplate(* * *)】●
-  ►#?STRUCTURE_EXPECTED!【mixin tpl!(foo) defunit; ●DefinitionNamedMixin(* *)】●
+  ►#?STRUCTURE_EXPECTED!【mixin tpl!(foo) defunit; ●DefinitionMixinInstance(* *)】●
   ►#?STRUCTURE_EXPECTED!【enum defunit {A, B, C} ●DefinitionEnum(* *)】●
   
   ►#?STRUCTURE_EXPECTED!【alias int defunit; ●DefinitionAliasVarDecl(* *) 】●

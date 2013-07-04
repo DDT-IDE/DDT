@@ -55,7 +55,7 @@ import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
-import dtool.ast.definitions.DefinitionNamedMixin;
+import dtool.ast.definitions.DefinitionMixinInstance;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionUnion;
@@ -1395,7 +1395,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			ProtoDefSymbol defId = parseDefId();
 			parse.consumeRequired(DeeTokens.SEMICOLON);
 			Token[] comments = parse.parseEndDDocComments();
-			return parse.resultConclude(new DefinitionNamedMixin(comments, defId, tplInstance));
+			return parse.resultConclude(new DefinitionMixinInstance(comments, defId, tplInstance));
 		} else {
 			parse.consumeRequired(DeeTokens.SEMICOLON);
 			parse.discardDocComments();

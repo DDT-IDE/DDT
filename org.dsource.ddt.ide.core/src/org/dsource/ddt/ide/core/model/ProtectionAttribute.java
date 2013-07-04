@@ -5,5 +5,5 @@ public enum ProtectionAttribute {
 	PACKAGE,
 	PROTECTED,
 	PUBLIC,
-	EXPORT
+	EXPORT,
 }

@@ -2,8 +2,8 @@ package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.model_elements.DeeModelEngine;
 
-import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionContext;

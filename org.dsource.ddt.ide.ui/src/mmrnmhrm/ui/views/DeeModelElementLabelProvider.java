@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.views;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
@@ -139,60 +140,71 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.NODE_MODULE_DEC);
 			
 		case Variable:
-			if(iconStyle != ElementIconsStyle.JDTLIKE) {
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);
-			} 
-			switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
-			case PRIVATE: 
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PRIVATE);
-			case PROTECTED:
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PROTECTED);
-			case PACKAGE: 
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_DEFAULT);
-			case PUBLIC:
-			case EXPORT:
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PUBLIC);
+			if(iconStyle == ElementIconsStyle.JDTLIKE) {
+				return getJDTStyleFieldImageDescriptor(flags); 
 			}
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);
 			
 		case Function:
 		case Constructor:
-			if(iconStyle != ElementIconsStyle.JDTLIKE) {
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_FUNCTION);
+			if(iconStyle == ElementIconsStyle.JDTLIKE) {
+				return getJDTStyleMethodImageDescriptor(flags);
 			}
-			switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
-			case PRIVATE: 
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PRIVATE);
-			case PROTECTED:
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PROTECTED);
-			case PACKAGE: 
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_DEFAULT);
-			case PUBLIC:
-			case EXPORT:
-				return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PUBLIC);
-			}
-		case Class:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_CLASS);
-		case Interface:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_INTERFACE);
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_FUNCTION);
 		case Struct:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_STRUCT);
 		case Union:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_UNION);
+		case Class:
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_CLASS);
+		case Interface:
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_INTERFACE);
 			
 		case Template:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_TEMPLATE);
+		case Mixin:
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_MIXIN);
 		case Enum:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_ENUM);
 		case Alias:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_ALIAS);
 		case EnumMember:
-		case Mixin:
 		case Tuple:
 		case TypeParameter:
 			throw assertFail(); //The above are not reported as elements
 		}
 		throw assertFail();
 		
+	}
+
+	public ImageDescriptor getJDTStyleFieldImageDescriptor(int flags) {
+		switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
+		case PRIVATE: 
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PRIVATE);
+		case PROTECTED:
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PROTECTED);
+		case PACKAGE: 
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_DEFAULT);
+		case PUBLIC:
+		case EXPORT:
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PUBLIC);
+		}
+		throw assertUnreachable();
+	}
+	
+	public ImageDescriptor getJDTStyleMethodImageDescriptor(int flags) {
+		switch (DeeModelElementUtil.elementFlagsToProtection(flags, ProtectionAttribute.PUBLIC)) {
+		case PRIVATE: 
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PRIVATE);
+		case PROTECTED:
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PROTECTED);
+		case PACKAGE: 
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_DEFAULT);
+		case PUBLIC:
+		case EXPORT:
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PUBLIC);
+		}
+		throw assertUnreachable();
 	}
 	
 }

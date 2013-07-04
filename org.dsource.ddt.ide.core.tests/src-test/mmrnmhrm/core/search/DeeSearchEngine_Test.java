@@ -18,10 +18,10 @@ import java.util.List;
 
 import melnorme.utilbox.misc.Pair;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+import mmrnmhrm.core.model_elements.DeeModelEngine;
+import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
-import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.CharOperation;
@@ -167,8 +167,8 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 		final String name = expectedContains.iterator().next().getElementName();
 		testNameSearch(searchPattern, expectedContains, name);
 	}
-	protected void testNameSearch(SearchPattern searchPattern, HashSet<IModelElement> expectedContains, final String name)
-			throws CoreException {
+	protected void testNameSearch(SearchPattern searchPattern, HashSet<IModelElement> expectedContains, 
+		final String name) throws CoreException {
 		SearchRequestorResultCollector requestor = executeSearch(searchPattern, new SearchRequestorResultCollector(){
 			@Override
 			public void acceptSearchMatch(SearchMatch match) throws CoreException {

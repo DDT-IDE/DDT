@@ -1,9 +1,8 @@
 package mmrnmhrm.ui.views;
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-
 import melnorme.util.ui.jface.ElementContentProvider;
 import melnorme.utilbox.tree.IElement;
+import mmrnmhrm.core.parser.DeeModuleDeclaration;
 
 public class ASTViewerContentProvider extends ElementContentProvider {
 	

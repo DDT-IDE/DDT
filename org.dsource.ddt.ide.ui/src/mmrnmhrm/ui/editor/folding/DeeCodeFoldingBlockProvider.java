@@ -10,7 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.folding;
 
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
+import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;

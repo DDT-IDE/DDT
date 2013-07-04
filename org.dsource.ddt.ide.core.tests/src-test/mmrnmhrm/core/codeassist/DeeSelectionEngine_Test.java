@@ -17,12 +17,12 @@ import static mmrnmhrm.core.codeassist.OutsideBuildpathTestResources.TEST_OUTFIL
 import static mmrnmhrm.core.codeassist.OutsideBuildpathTestResources.TEST_OUTFILE3;
 import static mmrnmhrm.core.codeassist.OutsideBuildpathTestResources.TEST_SRCFILE;
 import static mmrnmhrm.core.codeassist.OutsideBuildpathTestResources.TEST_SRC_TARGETFILE;
+import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.SampleNonDeeProject;
 
-import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IField;

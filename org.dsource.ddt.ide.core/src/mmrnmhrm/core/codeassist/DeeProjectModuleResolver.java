@@ -8,9 +8,9 @@ import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DLTKModelUtils;
+import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;

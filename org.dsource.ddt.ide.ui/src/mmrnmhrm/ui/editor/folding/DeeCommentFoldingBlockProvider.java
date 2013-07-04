@@ -2,10 +2,10 @@ package mmrnmhrm.ui.editor.folding;
 
 import java.util.List;
 
+import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 import mmrnmhrm.ui.text.DeePartitioningProvider;
 import mmrnmhrm.ui.text.DeePartitions;
 
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 import org.eclipse.dltk.ui.text.folding.IFoldingContent;

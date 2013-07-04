@@ -59,7 +59,7 @@
 #STRUCTURE_EXPECTED:  DeclarationMixin(#@TYPE_REFS__LITE)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)     mixin #@TYPEREF_NBNE__LITE defid ;
-#STRUCTURE_EXPECTED:  DefinitionNamedMixin(#@TYPEREF_NBNE__LITE DefSymbol)
+#STRUCTURE_EXPECTED:  DefinitionMixinInstance(#@TYPEREF_NBNE__LITE DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)  #@NULL invariant () #@ST_BLOCK__SAMPLE

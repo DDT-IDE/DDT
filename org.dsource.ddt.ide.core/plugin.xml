@@ -36,7 +36,7 @@
    <extension
          point="org.eclipse.dltk.core.sourceElementParsers">
       <parser
-            class="mmrnmhrm.core.parser.DeeSourceElementParser"
+            class="mmrnmhrm.core.model_elements.DeeSourceElementParser"
             nature="org.dsource.ddt.ide.core.nature"
             priority="0">
       </parser>

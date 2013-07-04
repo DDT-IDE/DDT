@@ -5,8 +5,8 @@ import java.util.Iterator;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+import mmrnmhrm.core.model_elements.DeeModelEngine;
 
-import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
@@ -68,7 +68,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 				// TODO: would be nice to have test for module == null path
 				if(module != null) {
 					ISourceModule targetSrcModule = moduleResolver.findModuleUnit(module); 
-					// TODO: would be nice to have test for module == null path
+					// TODO: would be nice to have test for targetSrcModule == null path
 					// TODO consider out of buildpath scenario
 					if(targetSrcModule != null) {
 						IMember targetModelElement = 

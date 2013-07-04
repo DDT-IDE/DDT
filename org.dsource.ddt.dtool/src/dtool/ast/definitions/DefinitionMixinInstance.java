@@ -13,18 +13,18 @@ import dtool.resolver.api.IModuleResolver;
  * Declaration of a template mixin with an associated identifier:
  * http://dlang.org/template-mixin.html#TemplateMixinDeclaration (with MixinIdentifier)
  */
-public class DefinitionNamedMixin extends CommonDefinition implements IStatement {
+public class DefinitionMixinInstance extends CommonDefinition implements IStatement {
 	
 	public final Reference templateInstance;
 	
-	public DefinitionNamedMixin(Token[] comments, ProtoDefSymbol defId, Reference templateInstance) {
+	public DefinitionMixinInstance(Token[] comments, ProtoDefSymbol defId, Reference templateInstance) {
 		super(comments, defId);
 		this.templateInstance = parentize(templateInstance);
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.NAMED_MIXIN;
+		return ASTNodeTypes.DEFINITION_MIXIN_INSTANCE;
 	}
 	
 	@Override

@@ -24,9 +24,10 @@ Export-Package: mmrnmhrm.core,
  mmrnmhrm.core.build,
  mmrnmhrm.core.codeassist,
  mmrnmhrm.core.launch,
+ mmrnmhrm.core.model_elements,
+ mmrnmhrm.core.parser,
  mmrnmhrm.core.projectmodel,
  mmrnmhrm.core.search,
  org.dsource.ddt.ide.core,
- org.dsource.ddt.ide.core.model,
- org.dsource.ddt.ide.core.model.engine
+ org.dsource.ddt.ide.core.model
 Eclipse-ExtensibleAPI: true

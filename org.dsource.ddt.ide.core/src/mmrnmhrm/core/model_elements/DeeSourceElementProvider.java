@@ -8,12 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.ide.core.model.engine;
+package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import mmrnmhrm.core.parser.DeeModuleDeclaration;
 
 import org.dsource.ddt.ide.core.model.DeeModelConstants;
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
@@ -33,10 +33,12 @@ import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
+import dtool.ast.definitions.DefinitionMixinInstance;
 import dtool.ast.definitions.DefinitionStruct;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.ICallableElement;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
@@ -47,10 +49,6 @@ import dtool.ast.references.Reference;
 import dtool.util.ArrayView;
 
 public final class DeeSourceElementProvider extends DeeSourceElementProviderNodeSwitcher {
-	
-	protected static final String[] EMPTY_STRING = new String[0];
-	protected static final String OBJECT = "Object"; //$NON-NLS-1$
-	protected static final String[] OBJECT_SUPER_CLASS_LIST = new String[] { OBJECT };
 	
 	protected ISourceElementRequestor requestor;
 	
@@ -99,6 +97,70 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 	protected static int getDeclarationEndforNode(ASTNode node) {
 		return node.getEndPos() - 1;
 	}
+	
+	/* ---------------------------------- */
+	
+	@Override
+	public boolean visit(DefinitionVariable node) {
+		requestor.enterField(createFieldInfo(node));
+		requestor.exitField(getDeclarationEndforNode(node));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionVariable node) {
+	}
+	
+	@Override
+	public boolean visit(DefVarFragment node) {
+		requestor.enterField(createFieldInfo(node));
+		requestor.exitField(getDeclarationEndforNode(node));
+		return true;
+	}
+	@Override
+	public void endVisit(DefVarFragment node) {
+	}
+	
+	protected static FieldInfo createFieldInfo(DefinitionVariable defVar) {
+		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
+		setupDefUnitTypeInfo(defVar, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
+		setupDefinitionTypeInfo(defVar, fieldInfo);
+		fieldInfo.type = DefUnit.typeRefToUIString(defVar.type);
+		
+		return fieldInfo;
+	}
+	
+	protected static FieldInfo createFieldInfo(DefVarFragment defVarFragment) {
+		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
+		setupDefUnitTypeInfo(defVarFragment, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
+		setupModifiersInfo(defVarFragment.getDefinitionVariableParent(), fieldInfo);
+		fieldInfo.type = DefUnit.typeRefToUIString(defVarFragment.getDefinitionVariableParent().type);
+		
+		return fieldInfo;
+	}
+	
+	/* ---------------------------------- */
+	
+	@Override
+	public boolean visit(DefinitionFunction node) {
+		requestor.enterMethod(createMethodInfo(node));
+		return true; //TODO: make /*BUG here set to false*/
+	}
+	@Override
+	public void endVisit(DefinitionFunction node) {
+		requestor.exitMethod(getDeclarationEndforNode(node));
+	}
+	
+	@Override
+	public boolean visit(DefinitionConstructor node) {
+		requestor.enterMethod(createConstructorInfo(node));
+		return true; //TODO: make /*BUG here set to false*/
+	}
+	@Override
+	public void endVisit(DefinitionConstructor node) {
+		requestor.exitMethod(getDeclarationEndforNode(node));
+	}
+	
+	/* ---------------------------------- */
 	
 	@Override
 	public boolean visit(DefinitionStruct node) {
@@ -153,6 +215,16 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 	}
 	
 	@Override
+	public boolean visit(DefinitionMixinInstance node) {
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_MIXIN));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionMixinInstance node) {
+		requestor.exitType(getDeclarationEndforNode(node));
+	}
+
+	@Override
 	public boolean visit(DefinitionEnum node) {
 		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ENUM));
 		return true;
@@ -163,111 +235,18 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 	}
 	
 	@Override
-	public boolean visit(DefinitionAliasVarDecl node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
-		return true;
+	public boolean visit(EnumMember node) {
+		// Don't report as model element
+		return false;
 	}
 	@Override
-	public void endVisit(DefinitionAliasVarDecl node) {
-		requestor.exitType(getDeclarationEndforNode(node));
+	public void endVisit(EnumMember node) {
 	}
 	
-	@Override
-	public boolean visit(DefinitionAliasFragment node) {
-		// TODO: DefinitionAliasFragment element type
-		//requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
-		return true;
-	}
-	@Override
-	public void endVisit(DefinitionAliasFragment node) {
-		//requestor.exitType(getDeclarationEndforNode(node));
-	}
-	
-	@Override
-	public boolean visit(DefinitionAliasFunctionDecl node) {
-		// TODO: test case for this kind
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
-		return true;
-	}
-	
-	@Override
-	public void endVisit(DefinitionAliasFunctionDecl node) {
-		requestor.exitType(getDeclarationEndforNode(node));
-	}
 	
 	/* ---------------------------------- */
 	
-	@Override
-	public boolean visit(DefinitionFunction node) {
-		requestor.enterMethod(createMethodInfo(node));
-		return true;
-	}
-	@Override
-	public void endVisit(DefinitionFunction node) {
-		requestor.exitMethod(getDeclarationEndforNode(node));
-	}
-	
-	@Override
-	public boolean visit(DefinitionConstructor node) {
-		requestor.enterMethod(createConstructorInfo(node));
-		return true;
-	}
-	@Override
-	public void endVisit(DefinitionConstructor node) {
-		requestor.exitMethod(getDeclarationEndforNode(node));
-	}
-	
-	/* ---------------------------------- */
-	
-	@Override
-	public boolean visit(DefinitionVariable node) {
-		requestor.enterField(createFieldInfo(node));
-		return true;
-	}
-	@Override
-	public void endVisit(DefinitionVariable node) {
-		requestor.exitField(getDeclarationEndforNode(node));
-	}
-	
-	@Override
-	public boolean visit(DefVarFragment node) {
-		//TODO:
-//		requestor.enterField(createFieldInfo(node));
-		return true;
-	}
-	
-	@Override
-	public void endVisit(DefVarFragment node) {
-		// TODO:
-//		requestor.exitField(getDeclarationEndforNode(node));
-	}
-	
-	/* ---------------------------------- */
-	
-	@Override
-	public boolean visit(NamedReference elem) {
-		Reference topReference = elem;
-		
-		ASTNode parent = topReference.getParent();
-		if(parent instanceof ExpReference) {
-			parent = parent.getParent();
-		}
-		if(parent instanceof ExpCall) {
-			ExpCall expCall = (ExpCall) parent;
-			int length = expCall.args == null ? 0 : expCall.args.size();
-			String methodName = elem.getTargetSimpleName(); // Dont use qualified name
-			if(methodName != null) {
-				requestor.acceptMethodReference(methodName, length, elem.getStartPos(), elem.getEndPos()-1);
-			}
-		}
-		
-		requestor.acceptTypeReference(elem.toStringAsElement(), elem.getStartPos());
-		return true;
-	}
-	
-	/* ================================== */
-	
-	
+	protected static final String[] EMPTY_STRING = new String[0];
 	
 	protected static void setupDefUnitTypeInfo(DefUnit defAggr, ISourceElementRequestor.ElementInfo elemInfo,
 			int archetypeMask) {
@@ -280,10 +259,15 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 		elemInfo.modifiers |= archetypeMask;
 	}
 	
-	protected static void setupDefinitionTypeInfo(CommonDefinition elem, 
+	protected static void setupDefinitionTypeInfo(CommonDefinition commonDef, 
 		ISourceElementRequestor.ElementInfo elemInfo) {
-		elemInfo.modifiers |= getDeclarationModifiersFlags(elem);
-		elemInfo.modifiers |= getProtectionFlags(elem);
+		setupModifiersInfo(commonDef, elemInfo);
+		elemInfo.declarationStart = commonDef.getExtendedStartPos();
+	}
+	
+	public static void setupModifiersInfo(CommonDefinition commonDef, ISourceElementRequestor.ElementInfo elemInfo) {
+		elemInfo.modifiers |= getDeclarationModifiersFlags(commonDef);
+		elemInfo.modifiers |= getProtectionFlags(commonDef);
 	}
 	
 	protected static int getDeclarationModifiersFlags(CommonDefinition elem) {
@@ -327,30 +311,37 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 		return typeInfo;
 	}
 	
-	protected static TypeInfo createTypeInfoForDefinition(CommonDefinition elem, int archetypeMask) {
+	protected static TypeInfo createTypeInfoForDefUnit(DefUnit node, int archetypeMask) {
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
-		setupDefUnitTypeInfo(elem, typeInfo, archetypeMask);
-		setupDefinitionTypeInfo(elem, typeInfo);
+		setupDefUnitTypeInfo(node, typeInfo, archetypeMask);
 		typeInfo.superclasses = DeeSourceElementProvider.EMPTY_STRING;
 		return typeInfo;
 	}
 	
+	protected static TypeInfo createTypeInfoForDefinition(CommonDefinition node, int archetypeMask) {
+		TypeInfo typeInfo = createTypeInfoForDefUnit(node, archetypeMask);
+		setupDefinitionTypeInfo(node, typeInfo);
+		return typeInfo;
+	}
 	
-	protected static TypeInfo createTypeInfoForClass(DefinitionClass elem) {
+	
+	protected static TypeInfo createTypeInfoForClass(DefinitionClass node) {
 		int archeType = DeeModelConstants.FLAG_KIND_CLASS;
-		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(elem, archeType);
-		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(elem, false);
+		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(node, archeType);
+		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(node, false);
 		return typeInfo;
 	}
 	
-	protected static TypeInfo createTypeInfoForInterface(DefinitionInterface elem) {
+	protected static TypeInfo createTypeInfoForInterface(DefinitionInterface node) {
 		int archetype = DeeModelConstants.FLAG_KIND_INTERFACE;
-		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(elem, archetype);
+		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(node, archetype);
 		typeInfo.modifiers |= Modifiers.AccInterface;
-		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(elem, true);
+		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(node, true);
 		return typeInfo;
 	}
 	
+	protected static final String OBJECT = "Object";
+	protected static final String[] OBJECT_SUPER_CLASS_LIST = new String[] { OBJECT };
 	
 	protected static String[] processSuperClassNames(DefinitionClass defClass, boolean isInterface) {
 		if(defClass.getName().equals("Object"))
@@ -408,13 +399,66 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 		}
 	}
 	
-	protected static FieldInfo createFieldInfo(DefinitionVariable elem) {
-		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
-		setupDefUnitTypeInfo(elem, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
-		setupDefinitionTypeInfo(elem, fieldInfo);
+	@Override
+	public boolean visit(DefinitionAliasVarDecl node) {
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionAliasVarDecl node) {
+		requestor.exitType(getDeclarationEndforNode(node));
+	}
+	
+	@Override
+	public boolean visit(DefinitionAliasFunctionDecl node) {
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionAliasFunctionDecl node) {
+		requestor.exitType(getDeclarationEndforNode(node));
+	}
+	
+	@Override
+	public boolean visit(DefinitionAliasFragment node) {
+		requestor.enterType(createTypeInfoForFragment(node));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionAliasFragment node) {
+		requestor.exitType(getDeclarationEndforNode(node));
+	}
+	
+	public static TypeInfo createTypeInfoForFragment(DefinitionAliasFragment node) {
+		TypeInfo typeInfo = createTypeInfoForDefUnit(node, DeeModelConstants.FLAG_KIND_ALIAS);
+		if(node.getDefinitionAliasParent().aliasFragments.get(0) == node) {
+			typeInfo.declarationStart = node.getDefinitionAliasParent().getStartPos();
+			// TODO: test case for extended start pos (definition alias with extended start)
+		}
+		return typeInfo;
+	}
+	
+	/* ================================== */
+	
+	@Override
+	public boolean visit(NamedReference elem) {
+		Reference topReference = elem;
 		
-		fieldInfo.type = DefUnit.typeRefToUIString(elem.type);
-		return fieldInfo;
+		ASTNode parent = topReference.getParent();
+		if(parent instanceof ExpReference) {
+			parent = parent.getParent();
+		}
+		if(parent instanceof ExpCall) {
+			ExpCall expCall = (ExpCall) parent;
+			int length = expCall.args == null ? 0 : expCall.args.size();
+			String methodName = elem.getTargetSimpleName(); // Dont use qualified name
+			if(methodName != null) {
+				requestor.acceptMethodReference(methodName, length, elem.getStartPos(), elem.getEndPos()-1);
+			}
+		}
+		
+		requestor.acceptTypeReference(elem.toStringAsElement(), elem.getStartPos());
+		return true;
 	}
 	
 }

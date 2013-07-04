@@ -33,6 +33,7 @@ public abstract class CommonDefinition extends DefUnit implements IDeclaration {
 	}
 	
 	public int getExtendedStartPos() {
+		assertTrue(this.extendedStartPos != -1);
 		return extendedStartPos;
 	}
 	

@@ -8,13 +8,53 @@ import ImportAliasingDefUnit = pack.sample;
 
 static import pack.sample;
 
-int variable;
 
-void functionFoo(int fooParam) {
+int Variable, Variable2;
+
+/** DDOC */
+static const int VarExtended, VarExtended2; /// Post DDoc
+
+// TODO: more tests with extenden range (DDOC and attributes prefix)
+
+auto AutoVar = 66, AutoVar2;
+
+void Function(int fooParam) {
 	int fooLocalVar;
 }
 
-class Class  {
+static AutoFunction(int fooParam) {
+	int fooLocalVar;
+}
+
+struct Struct { }
+
+union Union { }
+
+class Class { }
+
+interface Interface { }
+
+template Template() {} 
+
+mixin foo!() Mixin;
+
+enum Enum { EnumMemberA, EnumMemberB }
+
+enum { EnumDeclMemberA, EnumDeclMemberB }
+
+alias TargetFoo AliasVarDecl;
+alias TargetFoo AliasFunctionDecl(int param);
+alias AliasFrag = int, AliasFrag2 = char;
+
+
+void OtherFunction(int foo) {
+	int LocalVar;
+	class LocalClass { }
+}
+
+// Nested elements:
+
+class OtherClass  {
 	int fieldA;
 	
 	/*this*/ this(int ctorParam) { 
@@ -28,19 +68,7 @@ class Class  {
 	void methodB() { }
 }
 
-interface Interface { }
-
-struct Struct { }
-
-union Union { }
-
-enum Enum { EnumMemberA, EnumMemberB }
-
-//typedef TargetBar Typedef;
-
-alias TargetFoo Alias;
-
-template Template(
+template OtherTemplate(
 	TypeParam,
 	int ValueParam,
 	alias AliasParam,

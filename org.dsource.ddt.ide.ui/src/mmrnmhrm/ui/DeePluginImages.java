@@ -34,24 +34,8 @@ public class DeePluginImages {
 	public static final String ELEM_FILE = createImage(T_OBJ, "dee_file.gif");
 	
 	
-	public static final String ENT_ALIAS = createImage(T_OBJ, "ent_alias.gif");
-	public static final String ENT_CLASS = createImage(T_OBJ, "ent_class.gif");
-	public static final String ENT_ENUM = createImage(T_OBJ, "ent_enum.gif");
-	public static final String ENT_INTERFACE = createImage(T_OBJ, "ent_interface.gif");
-	public static final String ENT_STRUCT = createImage(T_OBJ, "ent_struct.gif");
-	public static final String ENT_TEMPLATE= createImage(T_OBJ, "ent_template.gif");
-	public static final String ENT_UNION = createImage(T_OBJ, "ent_union.gif");
-	
 	public static final String ENT_VARIABLE = createImage(T_OBJ, "ent_variable.gif");
 	public static final String ENT_FUNCTION = createImage(T_OBJ, "ent_function.gif");
-	
-	public static final String NODE_MODULE_DEC = createImage(T_OBJ, "elem_module_dec.gif");
-	public static final String NODE_IMPORT = createImage(T_OBJ, "elem_import.gif");
-	public static final String NODE_IMPORTS = createImage(T_OBJ, "elem_imports.gif");
-	
-	public static final String NODE_OLDAST = createImage(T_OBJ, "node_oldast.gif");
-	public static final String NODE_OTHER = createImage(T_OBJ, "node_other.gif");
-	public static final String NODE_REF = createImage(T_OBJ, "node_ref.gif");
 	
 	// We're using 'default' protection for 'package' protection in D
 	// No special icon for 'export' protection in D, same as public
@@ -64,6 +48,25 @@ public class DeePluginImages {
 	public static final String IMG_FIELD_PROTECTED = createImage(T_OBJ, "field_protected_obj.gif");
 	public static final String IMG_FIELD_PRIVATE = createImage(T_OBJ, "field_private_obj.gif");
 	public static final String IMG_FIELD_DEFAULT = createImage(T_OBJ, "field_default_obj.gif");
+	
+	
+	public static final String ENT_STRUCT = createImage(T_OBJ, "ent_struct.gif");
+	public static final String ENT_UNION = createImage(T_OBJ, "ent_union.gif");
+	public static final String ENT_CLASS = createImage(T_OBJ, "ent_class.gif");
+	public static final String ENT_INTERFACE = createImage(T_OBJ, "ent_interface.gif");
+	public static final String ENT_TEMPLATE = createImage(T_OBJ, "ent_template.gif");
+	public static final String ENT_MIXIN = createImage(T_OBJ, "ent_mixin.gif");
+	public static final String ENT_ENUM = createImage(T_OBJ, "ent_enum.gif");
+	public static final String ENT_ALIAS = createImage(T_OBJ, "ent_alias.gif");
+	
+	public static final String NODE_MODULE_DEC = createImage(T_OBJ, "elem_module_dec.gif");
+	public static final String NODE_IMPORT = createImage(T_OBJ, "elem_import.gif");
+	public static final String NODE_IMPORTS = createImage(T_OBJ, "elem_imports.gif");
+	
+	public static final String NODE_OLDAST = createImage(T_OBJ, "node_oldast.gif");
+	public static final String NODE_OTHER = createImage(T_OBJ, "node_other.gif");
+	public static final String NODE_REF = createImage(T_OBJ, "node_ref.gif");
+	
 	
 	public static final ImageDescriptor DESC_OVR_CONST = createUnmanaged(T_OVR, "ovr_const.gif");
 	public static final ImageDescriptor DESC_OVR_FINAL = createUnmanaged(T_OVR, "ovr_final.gif");

@@ -25,24 +25,37 @@ public class CodeCompletion_DefUnitsTest extends CodeCompletion__Common {
 				"tplFunc(asdf.qwer parameter)",
 				"TplNestedClass",
 				
-				"sampledefs",
-				"functionFoo(int fooParam)",
-				"Alias",
-				"Class",
-				"Enum",
-				"Interface",
-				"Struct",
-				"Union",
-				"variable",
-				"ImportSelectiveAlias",
-				"ImportAliasingDefUnit",
-				"pack",
-				
-				"Template",
+				"OtherTemplate",
 				"TypeParam",
 				"ValueParam",
 				"AliasParam",
-				"TupleParam"
+				"TupleParam",
+				
+				"sampledefs",
+				"pack",
+				"ImportSelectiveAlias",
+				"ImportAliasingDefUnit",
+				//---
+				"Variable", // "Variable2", TODO
+				"VarExtended", //"VarExtended2", TODO
+				"AutoVar", //"AutoVar2", TODO
+				"Function(int fooParam)",
+				"AutoFunction(int fooParam)",
+				"Struct",
+				"Union",
+				"Class",
+				"Interface",
+				"Template",
+				"Mixin",
+				"Enum",
+				"EnumDeclMemberA", "EnumDeclMemberB",
+				"AliasVarDecl",
+				"AliasFunctionDecl",
+				//"AliasFrag", "AliasFrag2", TODO
+				
+				"OtherFunction(int foo)",
+				"OtherClass"
+				
 		);
 		
 	}

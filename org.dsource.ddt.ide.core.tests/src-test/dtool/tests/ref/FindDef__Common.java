@@ -19,7 +19,7 @@ import java.util.Collection;
 
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.codeassist.DeeSelectionEngine;
-import mmrnmhrm.core.parser.DeeModelElement_Test;
+import mmrnmhrm.core.model_elements.DeeModelElement_Test;
 import mmrnmhrm.core.parser.DeeSourceParser;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;

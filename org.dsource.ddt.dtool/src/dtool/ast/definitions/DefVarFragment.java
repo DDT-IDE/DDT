@@ -1,5 +1,7 @@
 package dtool.ast.definitions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
@@ -20,6 +22,15 @@ public class DefVarFragment extends DefUnit {
 	public DefVarFragment(ProtoDefSymbol defId, IInitializer init) {
 		super(defId);
 		this.init = parentize(init);
+	}
+	
+	@Override
+	protected void checkNewParent() {
+		assertTrue(parent instanceof DefinitionVariable);
+	}
+	
+	public DefinitionVariable getDefinitionVariableParent() {
+		return (DefinitionVariable) parent;
 	}
 	
 	@Override
@@ -49,7 +60,7 @@ public class DefVarFragment extends DefUnit {
 	}
 	
 	public IDefUnitReference getTypeReference() {
-		return ((DefinitionVariable) getParent()).getTypeReference();
+		return getDefinitionVariableParent().getTypeReference();
 	}
 	
 	@Override

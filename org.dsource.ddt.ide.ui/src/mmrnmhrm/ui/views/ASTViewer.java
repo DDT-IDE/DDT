@@ -2,14 +2,14 @@ package mmrnmhrm.ui.views;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.parser.DeeModuleDeclaration;
+import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.action.Action;

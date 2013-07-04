@@ -1,6 +1,7 @@
 package dtool.ast.definitions;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -52,6 +53,15 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		public DefinitionAliasFragment(ProtoDefSymbol defId, Reference target) {
 			super(defId);
 			this.target = parentize(target);
+		}
+		
+		@Override
+		protected void checkNewParent() {
+			assertTrue(parent instanceof DefinitionAlias);
+		}
+		
+		public DefinitionAlias getDefinitionAliasParent() {
+			return (DefinitionAlias) parent;
 		}
 		
 		@Override

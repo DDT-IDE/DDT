@@ -9,18 +9,19 @@ public enum EArcheType {
 	Constructor,
 	
 	//Native,
-	Class(true),
-	Interface(true),
 	Struct(true),
 	Union(true),
+	Class(true),
+	Interface(true),
 	
-	Enum(true),
-	EnumMember, // same as var?
-	Alias,
 	Template,
 	TypeParameter(true),
 	Mixin,
 	Tuple, //This probably should not be an archetype
+	
+	Enum(true),
+	EnumMember, // same as var?
+	Alias,
 	;
 	
 	protected final boolean isType;

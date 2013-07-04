@@ -1,4 +1,4 @@
-package org.dsource.ddt.ide.core.model.engine;
+package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -81,11 +81,11 @@ public class DeeModelEngine {
 			if(bestMatch == null && returnNonExisting) {
 				if(isTypeElement(defUnit)) {
 					return parentElement.getType(defUnit.getName(), 1);
-				} else if(isFieldElement(defUnit) && parentElement instanceof IMethod) {
-					// TODO: specific test case for this /*BUG here*/
+				} else if(isFieldElement(defUnit) && parentElement instanceof IType) {
+					// TODO: specific test case for this /*BUG here make - need to tes this path. */
 					return ((IType) parentElement).getField(defUnit.getName());
-				} else if(isMethodElement(defUnit) && parentElement instanceof IMethod) {
-					// TODO: specific test case for this /*BUG here*/
+				} else if(isMethodElement(defUnit) && parentElement instanceof IType) {
+					// TODO: specific test case for this /*BUG here make - need to tes this path. */
 					return ((IType) parentElement).getMethod(defUnit.getName());
 				} else {
 					return parentElement.getType(defUnit.getName(), 1);

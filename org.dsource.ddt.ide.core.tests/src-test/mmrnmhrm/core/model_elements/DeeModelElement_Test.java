@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.parser;
+package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.tests.BaseDeeTest;
@@ -17,6 +17,7 @@ import mmrnmhrm.tests.ModelElementTestUtils;
 import mmrnmhrm.tests.SampleMainProject;
 
 import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
+import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.ISourceModule;
@@ -40,71 +41,116 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		return sourceModule;
 	}
 	
+	/*  ------  */
+	public static boolean defunitIsReportedAsModelElement(DefUnit defunit) {
+		boolean result = 
+				defunit instanceof FunctionParameter || 
+				defunit instanceof EnumMember ||
+				defunit instanceof TemplateParameter ||
+				defunit instanceof ImportSelectiveAlias ||
+				defunit instanceof ImportAlias;
+		return !result;
+	}
+	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		ISourceModule srcModule = getSourceModule(TR_SAMPLE_SRC1, "sampledefs.d");
+		final IType topLevelElement = srcModule.getType("sampledefs");
 		
-		IType topLevelElement = srcModule.getType("sampledefs");
-		checkElementExists(srcModule, topLevelElement, 
-				EArcheType.Module, "module sampledefs;");
+		new SampleModelElementsVisitor(srcModule) { 
+			@Override
+			public void visitAllModelElements(
+				IType _Module,
+				IField _Variable,
+				IField _Variable2,
+				IField _VarExtended,
+				IField _VarExtended2,
+				IField _AutoVar,
+				IField _AutoVar2,
+				
+				IMethod _Function,
+				IMethod _AutoFunction,
+				
+				IType _Struct,
+				IType _Union,
+				IType _Class,
+				IType _Interface,
+				IType _Template,
+				IType _Enum,
+				IType _Mixin,
+				IType _AliasVarDecl,
+				IType _AliasFunctionDecl,
+				IType _AliasFrag,
+				IType _AliasFrag2,
+				IField _OtherClass_fieldA,
+				IMethod _OtherClass_methodB,
+				IMethod _OtherClass_this,
+				IType _OtherTemplate_TplNestedClass,
+				IMethod tplFunc
+			) {
+				
+				runCheckElementExists( _Module, EArcheType.Module, "module sampledefs;");
 		
-		// TODO: test the other elements
-		checkElementExists(srcModule, topLevelElement.getType("Alias"), 
-			EArcheType.Alias, "alias TargetFoo Alias;");
-		checkElementExists(srcModule, topLevelElement.getType("Class"), 
-			EArcheType.Class, "class Class  {");
-		checkElementExists(srcModule, topLevelElement.getType("Enum"), 
-			EArcheType.Enum, "enum Enum {");
-		checkElementExists(srcModule, topLevelElement.getType("Interface"), 
-			EArcheType.Interface, "interface Interface { }");
-		checkElementExists(srcModule, topLevelElement.getType("Struct"), 
-			EArcheType.Struct, "struct Struct { }");
-		checkElementExists(srcModule, topLevelElement.getType("Union"), 
-			EArcheType.Union, "union Union { }");
-		checkElementExists(srcModule, topLevelElement.getField("variable"), 
-			EArcheType.Variable, "int variable;");
-		checkElementExists(srcModule, topLevelElement.getType("Template"), 
-			EArcheType.Template, "template Template(");
+				runCheckElementExists(_Variable, EArcheType.Variable, "int Variable");
+				runCheckElementExists(_Variable2, EArcheType.Variable, "Variable2");
+				runCheckElementExists(_VarExtended, EArcheType.Variable, "/** DDOC */\r\nstatic ");
+				runCheckElementExists(_VarExtended2, EArcheType.Variable, "VarExtended2");
+				
+				
+				runCheckElementExists(_AutoVar, EArcheType.Variable, "auto AutoVar =");
+				runCheckElementExists(_AutoVar2, EArcheType.Variable, "AutoVar2");
+				
+				runCheckElementExists(_Function, EArcheType.Function, "void Function(int fooParam)");
+				runCheckElementExists(_AutoFunction, EArcheType.Function, "static AutoFunction(int fooParam)");
+				
+				runCheckElementExists(_Struct, EArcheType.Struct, "struct Struct { }");
+				runCheckElementExists(_Union, EArcheType.Union, "union Union { }");
+				runCheckElementExists(_Class, EArcheType.Class, "class Class {");
+				runCheckElementExists(_Interface, EArcheType.Interface, "interface Interface { }");
 		
+				runCheckElementExists(_Template, EArcheType.Template, "template Template(");
+				runCheckElementExists(_Enum, EArcheType.Enum, "enum Enum {");
+				
+				runCheckElementExists(_Mixin, EArcheType.Mixin, "mixin foo!() Mixin;");
+				
+				runCheckElementExists(_AliasVarDecl, EArcheType.Alias, "alias TargetFoo AliasVarDecl;");
+				runCheckElementExists(_AliasFunctionDecl, EArcheType.Alias, "alias TargetFoo AliasFunctionDecl(");
+				runCheckElementExists(_AliasFrag, EArcheType.Alias, "alias AliasFrag = int");
+				runCheckElementExists(_AliasFrag2, EArcheType.Alias, "AliasFrag2 = char");
+				
+				runCheckElementExists(_OtherClass_fieldA, EArcheType.Variable, "int fieldA;");
+				runCheckElementExists(_OtherClass_methodB, EArcheType.Function, "void methodB() { }");
+				runCheckElementExists(_OtherClass_this, EArcheType.Constructor, "this(int ctorParam)");
+				
+				runCheckElementExists(_OtherTemplate_TplNestedClass, EArcheType.Class, "class TplNestedClass  {");
+				runCheckElementExists(tplFunc, EArcheType.Function, "void tplFunc(asdf.qwer parameter) {");
+			}
+			
+			protected void runCheckElementExists(IMember element, EArcheType archeType, String code) {
+				checkElementExists(srcModule, element, archeType, code);
+			}
+			
+		}.visitAll();
 		
-		checkElementExists(srcModule, topLevelElement.getType("Class").getField("fieldA"), 
-			EArcheType.Variable, "int fieldA;");
-		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("methodB"), 
-			EArcheType.Function, "void methodB() { }");
-		
-		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass"), 
-			EArcheType.Class, "class TplNestedClass  {");
-		
-		
-		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass")
-				.getMethod("tplFunc"),
-			EArcheType.Function, 
-			"void tplFunc(asdf.qwer parameter) {");
-		
-		
-		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("this"), 
-				EArcheType.Constructor, "/*this*/", "this(int ");
-//		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("~this"), 
-//				EArcheType.Function, "/*~this*/", "~this()");
-//		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("new"), 
-//				EArcheType.Function, "/*new*/", "new()");
-//		checkElementExists(srcModule, topLevelElement.getType("Class").getMethod("delete"), 
-//				EArcheType.Function, "/*delete*/", "delete()");
-		
-//		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("this"), 
-//				EArcheType.Function, "/*static this*/", "static /*static this*/ this()");
-//		checkElementExists(srcModule, topLevelElement.getType("Template").getType("TplNestedClass").getMethod("~this"), 
-//				EArcheType.Function, "/*static ~this*/", "static /*static ~this*/ ~this()");
-		
-	}
-	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, 
-			String code) throws ModelException {
-		checkElementExists(sourceModule, element, archeType, (String) null, code);
+		assertTrue(topLevelElement.getMethod("OtherFunction").exists());
+		// TODO: need to re-enable this test, but need to complete search engine tests first
+		if(false) {
+			assertTrue(topLevelElement.getMethod("OtherFunction").getChildren().length == 0);
+		}
 	}
 	
-	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, String nameKey,
-			String code) throws ModelException {
+	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, 
+			String code) {
+		try {
+			checkElementExists(sourceModule, element, archeType, (String) null, code);
+		} catch(ModelException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, 
+		String nameKey, String code) throws ModelException {
 		String source = sourceModule.getSource();
 		
 		assertTrue(element.exists());
@@ -189,19 +235,6 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		assertEquals(topLevelElement.getNamespace().getQualifiedName("."), nameSpace);
 		IType subElement = topLevelElement.getType(sampleSubType);
 		assertTrue(subElement.exists() && subElement.getNamespace() == null);
-	}
-	
-	
-	/*  ---  */
-	
-	public static boolean defunitIsReportedAsModelElement(DefUnit defunit) {
-		boolean result = 
-				defunit instanceof FunctionParameter || 
-				defunit instanceof EnumMember ||
-				defunit instanceof TemplateParameter ||
-				defunit instanceof ImportSelectiveAlias ||
-				defunit instanceof ImportAlias;
-		return !result;
 	}
 	
 }

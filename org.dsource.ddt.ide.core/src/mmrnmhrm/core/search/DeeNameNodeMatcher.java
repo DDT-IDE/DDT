@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.lang.core.search.CommonLangPatternMatcher;
 
-import org.dsource.ddt.ide.core.model.engine.DeeModelEngine;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.matching.PatternLocator;

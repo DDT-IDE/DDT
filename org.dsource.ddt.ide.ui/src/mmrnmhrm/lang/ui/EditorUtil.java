@@ -3,7 +3,8 @@ package mmrnmhrm.lang.ui;
 
 
 
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
+import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;

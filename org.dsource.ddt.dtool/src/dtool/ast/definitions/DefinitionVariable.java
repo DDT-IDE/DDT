@@ -14,7 +14,6 @@ import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
 import dtool.resolver.IDefUnitReference;
 import dtool.resolver.IScopeNode;
-import dtool.resolver.api.DefUnitDescriptor;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -30,7 +29,7 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	public final Reference type; // Can be null
 	public final Reference cstyleSuffix;
 	public final IInitializer init;
-	public final ArrayView<DefVarFragment> fragments;
+	protected final ArrayView<DefVarFragment> fragments;
 	
 	public DefinitionVariable(Token[] comments, ProtoDefSymbol defId, Reference type, Reference cstyleSuffix,
 		IInitializer init, ArrayView<DefVarFragment> fragments)
@@ -73,7 +72,29 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 		return EArcheType.Variable;
 	}
 	
-	// TODO refactor this into own class?
+	public IDefUnitReference getTypeReference() {
+		return determineType();
+	}
+	
+	private IDefUnitReference determineType() {
+		if(type != null)
+			return type;
+		return NativeDefUnit.nullReference; // TODO: auto references
+	}
+	
+	public ArrayView<DefVarFragment> getFragments() {
+		return fragments == null ? NO_FRAGMENTS : fragments;
+	}
+	
+	@Override
+	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		Collection<DefUnit> defunits = determineType().findTargetDefUnits(moduleResolver, true);
+		if(defunits == null || defunits.isEmpty())
+			return null;
+		return defunits.iterator().next().getMembersScope(moduleResolver);
+		//return defunit.getMembersScope();
+	}
+	
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
 		public DefinitionAutoVariable(Token[] comments, ProtoDefSymbol defId, IInitializer init,
@@ -86,25 +107,6 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 			return ASTNodeTypes.DEFINITION_AUTO_VARIABLE;
 		}
 		
-	}
-	
-	public IDefUnitReference getTypeReference() {
-		return determineType();
-	}
-	
-	private IDefUnitReference determineType() {
-		if(type != null)
-			return type;
-		return NativeDefUnit.nullReference; // TODO: auto references
-	}
-	
-	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
-		Collection<DefUnit> defunits = determineType().findTargetDefUnits(moduleResolver, true);
-		if(defunits == null || defunits.isEmpty())
-			return null;
-		return defunits.iterator().next().getMembersScope(moduleResolver);
-		//return defunit.getMembersScope();
 	}
 	
 	@Deprecated
@@ -123,35 +125,5 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	@Override
 	public String toStringForCodeCompletion() {
 		return defname.toStringAsCode() + "   " + getTypeString() + " - " + getModuleScope().toStringAsElement();
-	}
-	
-	
-	public static class CStyleRootRef extends Reference {
-		
-		public CStyleRootRef() { }
-		
-		@Override
-		public ASTNodeTypes getNodeType() {
-			return ASTNodeTypes.CSTYLE_ROOT_REF;
-		}
-		
-		@Override
-		public void toStringAsCode(ASTCodePrinter cp) {
-		}
-		
-		@Override
-		public boolean canMatch(DefUnitDescriptor defunit) {
-			return false;
-		}
-
-		@Override
-		public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
-			return null;
-		}
-		
-		@Override
-		public void visitChildren(IASTVisitor visitor) {
-		}
-		
 	}
 }

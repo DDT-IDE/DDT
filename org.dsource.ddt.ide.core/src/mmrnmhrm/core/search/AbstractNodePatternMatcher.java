@@ -1,7 +1,8 @@
 package mmrnmhrm.core.search;
 
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
+import mmrnmhrm.core.parser.DeeModuleDeclaration;
+
 import org.eclipse.dltk.core.ISourceModule;
 
 import dtool.ast.ASTVisitor;

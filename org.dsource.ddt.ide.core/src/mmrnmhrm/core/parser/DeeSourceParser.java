@@ -1,6 +1,5 @@
 package mmrnmhrm.core.parser;
 
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.DefaultProblem;

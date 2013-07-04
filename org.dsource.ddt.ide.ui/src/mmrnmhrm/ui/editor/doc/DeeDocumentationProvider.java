@@ -7,9 +7,9 @@ import java.io.Reader;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.codeassist.DeeSelectionEngine;
+import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
-import org.dsource.ddt.ide.core.model.DeeModuleParsingUtil;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;

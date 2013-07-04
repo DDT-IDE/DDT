@@ -3,6 +3,9 @@
 = DDT Change Log =
 
 == DDT 0.7.0 (development) ==
+ * Fixed bug in D Appearance preference page - var and funtions showing up as Structs in preview.
+ * Added mixin template instance to listed model elements in UI (for example, outline)
+ * -- Preview Release 0.7.0 --
  * Requirements changes: now requires minimum Java VM version 1.7 .
  * Implemented #2: Support parsing of latest D syntax (up to D language version 2.063).
    * Completely rewrote D parser, creating a new hand-written parser (IDE no longer depends on descent.compiler).

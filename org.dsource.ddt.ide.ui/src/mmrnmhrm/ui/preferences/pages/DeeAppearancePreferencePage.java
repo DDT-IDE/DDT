@@ -87,6 +87,8 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 				DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE, LABEL_PROVIDER_STYLE, 1, 
 				labelAndValues, getFieldEditorParent());
 		addField(iconStyleEditor);
+		//This should not be necessary, editor should have property initialized:
+		selectedIconStyle = ElementIconsStyle.DDTLEAN; 
 		
 		previewGroup = new PreviewGroup();
 		previewGroup.createPreviewGroup();
@@ -110,13 +112,13 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 	@Override
 	public boolean performOk() {
 		boolean performOk = super.performOk();
-		refreshViewers();
+		refreshIDEViewers();
 		return performOk;
 	}
 	
-	/** Triggers a refresh on  viewers with model element label providers. 
+	/** Triggers a refresh on all viewers with model element label providers. 
 	 * (Uses a workaround to trigger refresh in {@link AppearanceAwareLabelProvider} ) */
-	protected void refreshViewers() {
+	protected void refreshIDEViewers() {
 		IPreferenceStore prefStore = DeePlugin.getInstance().getPreferenceStore();
 		String value = prefStore.getString(PreferenceConstants.APPEARANCE_METHOD_RETURNTYPE);
 		prefStore.firePropertyChangeEvent(PreferenceConstants.APPEARANCE_METHOD_RETURNTYPE, value, value);
@@ -156,12 +158,13 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 				
 				@Override
 				protected ElementIconsStyle getIconStylePreference() {
-					return selectedIconStyle;
+					return assertNotNull(selectedIconStyle);
 				}
 				
 			};
 			previewTree.setLabelProvider(new DecoratingLabelProvider(labelProvider, null));
 			previewTree.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
+			assertNotNull(selectedIconStyle);
 			previewTree.setInput(this);
 			return previewTree;
 		}
@@ -221,13 +224,16 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			new FakeMember.FakeType(sampleClass, "Class2", FLAG_KIND_CLASS | FLAG_PROTECTION_PROTECTED | FINAL, ns);
 			new FakeMember.FakeType(sampleClass, "Class3", FLAG_KIND_CLASS | FLAG_PROTECTION_PRIVATE | SF, ns);
 			
-			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE | FLAG_PROTECTION_PUBLIC, ns);
-			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE | FLAG_PROTECTION_PROTECTED, ns);
-			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE | FLAG_PROTECTION_PACKAGE, ns);
-			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE | FLAG_PROTECTION_PRIVATE, ns);
 			new FakeMember.FakeType(module, "Struct", FLAG_KIND_STRUCT, ns);
 			new FakeMember.FakeType(module, "Union", FLAG_KIND_UNION, ns);
+			new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS | FLAG_PROTECTION_PUBLIC, ns);
+			new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS | FLAG_PROTECTION_PROTECTED, ns);
+			new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS | FLAG_PROTECTION_PACKAGE, ns);
+			new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS | FLAG_PROTECTION_PRIVATE, ns);
+			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE, ns);
 			new FakeMember.FakeType(module, "Template", FLAG_KIND_TEMPLATE, ns);
+			new FakeMember.FakeType(module, "Mixin", FLAG_KIND_MIXIN, ns);
+			new FakeMember.FakeType(module, "Enum", FLAG_KIND_ENUM, ns);
 			new FakeMember.FakeType(module, "Alias", FLAG_KIND_ALIAS, ns);
 			
 			IModelElement[] treeModel = CoreUtil.<IModelElement>array(module);

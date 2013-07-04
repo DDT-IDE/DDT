@@ -41,11 +41,6 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		assertTrue(parent instanceof DeclarationImport || parent instanceof ImportSelective);
 	}
 	
-	@Override
-	public void doNodeSimpleAnalysis() {
-		assertTrue(getDeclarationImport() != null);
-	}
-	
 	public DeclarationImport getDeclarationImport() {
 		ASTNode parent = super.getParent();
 		if(parent instanceof DeclarationImport) {
@@ -53,6 +48,11 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		} else {
 			return ((ImportSelective) parent).getDeclarationImport();
 		}
+	}
+	
+	@Override
+	public void doNodeSimpleAnalysis() {
+		assertTrue(getDeclarationImport() != null);
 	}
 	
 	@Override

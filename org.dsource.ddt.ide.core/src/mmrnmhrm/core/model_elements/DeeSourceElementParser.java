@@ -9,14 +9,13 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 
-package mmrnmhrm.core.parser;
+package mmrnmhrm.core.model_elements;
 
 
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.parser.DeeModuleDeclaration;
 
 import org.dsource.ddt.ide.core.DeeNature;
-import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
-import org.dsource.ddt.ide.core.model.engine.DeeSourceElementProvider;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.AbstractSourceElementParser;
