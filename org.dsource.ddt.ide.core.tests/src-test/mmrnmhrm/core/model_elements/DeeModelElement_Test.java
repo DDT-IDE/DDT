@@ -16,7 +16,6 @@ import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.ModelElementTestUtils;
 import mmrnmhrm.tests.SampleMainProject;
 
-import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;

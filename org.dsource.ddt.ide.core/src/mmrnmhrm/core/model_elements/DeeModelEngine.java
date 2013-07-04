@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.dltk.core.IMember;
-import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;

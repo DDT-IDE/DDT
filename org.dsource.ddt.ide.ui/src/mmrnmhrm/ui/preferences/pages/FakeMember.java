@@ -6,8 +6,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import mmrnmhrm.core.model_elements.DeeModelConstants;
 
-import org.dsource.ddt.ide.core.model.DeeModelConstants;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;

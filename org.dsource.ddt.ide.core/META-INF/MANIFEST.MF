@@ -28,6 +28,5 @@ Export-Package: mmrnmhrm.core,
  mmrnmhrm.core.parser,
  mmrnmhrm.core.projectmodel,
  mmrnmhrm.core.search,
- org.dsource.ddt.ide.core,
- org.dsource.ddt.ide.core.model
+ org.dsource.ddt.ide.core
 Eclipse-ExtensibleAPI: true

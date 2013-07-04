@@ -3,12 +3,12 @@ package mmrnmhrm.ui.views;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.model_elements.DeeModelElementUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIPreferenceConstants;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 
-import org.dsource.ddt.ide.core.model.DeeModelElementUtil;
 import org.eclipse.dltk.core.Flags;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ModelException;

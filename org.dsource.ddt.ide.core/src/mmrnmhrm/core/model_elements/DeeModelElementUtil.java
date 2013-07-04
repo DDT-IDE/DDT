@@ -1,4 +1,4 @@
-package org.dsource.ddt.ide.core.model;
+package mmrnmhrm.core.model_elements;
 
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.Flags;

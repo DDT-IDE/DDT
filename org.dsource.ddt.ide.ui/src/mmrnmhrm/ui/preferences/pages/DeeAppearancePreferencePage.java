@@ -14,13 +14,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.swtutil.LayoutUtil;
 import melnorme.utilbox.core.CoreUtil;
+import mmrnmhrm.core.model_elements.DeeModelConstants;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPreferenceConstants;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
-import org.dsource.ddt.ide.core.model.DeeModelConstants;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.DLTKCore;

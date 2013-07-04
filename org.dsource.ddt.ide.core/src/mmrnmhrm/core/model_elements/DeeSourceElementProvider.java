@@ -13,7 +13,6 @@ package mmrnmhrm.core.model_elements;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.core.parser.DeeModuleDeclaration;
 
-import org.dsource.ddt.ide.core.model.DeeModelConstants;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
