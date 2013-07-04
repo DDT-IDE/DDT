@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -35,15 +34,12 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, tplParams);
-			TreeVisitor.acceptChildren(visitor, fnParams);
-			TreeVisitor.acceptChildren(visitor, tplConstraint);
-			TreeVisitor.acceptChildren(visitor, fnBody);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, tplParams);
+		acceptVisitor(visitor, fnParams);
+		acceptVisitor(visitor, tplConstraint);
+		acceptVisitor(visitor, fnBody);
 	}
 	
 	@Override

@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.misc.IteratorUtil;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.resolver.IScope;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
@@ -21,12 +20,8 @@ public abstract class NodeList<E extends ASTNode> extends ASTNode implements ISc
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, nodes);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, nodes);
 	}
 	
 	@Override

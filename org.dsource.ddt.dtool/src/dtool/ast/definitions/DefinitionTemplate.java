@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.misc.ChainedIterator;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNode;
@@ -58,15 +57,11 @@ public class DefinitionTemplate extends CommonDefinition implements IScopeNode, 
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, tplParams);
-			TreeVisitor.acceptChildren(visitor, tplConstraint);
-			TreeVisitor.acceptChildren(visitor, decls);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, tplParams);
+		acceptVisitor(visitor, tplConstraint);
+		acceptVisitor(visitor, decls);
 	}
 	
 	@Override

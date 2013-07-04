@@ -3,7 +3,6 @@ package dtool.ast.references;
 import java.util.Collection;
 import java.util.Collections;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -27,12 +26,8 @@ public class RefModuleQualified extends CommonRefQualified {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, qualifiedId);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, qualifiedId);
 	}
 	
 	@Override

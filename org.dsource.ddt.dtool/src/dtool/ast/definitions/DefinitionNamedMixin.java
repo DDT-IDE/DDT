@@ -1,6 +1,5 @@
 package dtool.ast.definitions;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -29,13 +28,9 @@ public class DefinitionNamedMixin extends CommonDefinition implements IStatement
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, templateInstance);
-			TreeVisitor.acceptChildren(visitor, defname);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, templateInstance);
+		acceptVisitor(visitor, defname);
 	}
 	
 	@Override

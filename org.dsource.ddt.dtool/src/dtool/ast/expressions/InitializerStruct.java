@@ -1,7 +1,6 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -23,12 +22,8 @@ public class InitializerStruct extends Initializer {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, entries);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, entries);
 	}
 	
 	@Override
@@ -51,13 +46,9 @@ public class InitializerStruct extends Initializer {
 		}
 		
 		@Override
-		public void accept0(IASTVisitor visitor) {
-			boolean children = visitor.visit(this);
-			if (children) {
-				TreeVisitor.acceptChildren(visitor, member);
-				TreeVisitor.acceptChildren(visitor, value);
-			}
-			visitor.endVisit(this);	 
+		public void visitChildren(IASTVisitor visitor) {
+			acceptVisitor(visitor, member);
+			acceptVisitor(visitor, value);
 		}
 		
 		@Override

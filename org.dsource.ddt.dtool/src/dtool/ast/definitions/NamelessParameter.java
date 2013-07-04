@@ -1,7 +1,6 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -37,13 +36,9 @@ public class NamelessParameter extends ASTNode implements IFunctionParameter {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, type);
-			TreeVisitor.acceptChildren(visitor, defaultValue);
-		}
-		visitor.endVisit(this);	
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, type);
+		acceptVisitor(visitor, defaultValue);
 	}
 	
 	@Override

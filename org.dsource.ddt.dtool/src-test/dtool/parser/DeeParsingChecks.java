@@ -17,7 +17,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.ArrayList;
 
-import dtool.ast.ASTHomogenousVisitor;
+import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.ASTSourceRangeChecker;
@@ -98,7 +98,7 @@ public class DeeParsingChecks extends CommonTestUtils {
 		return visitor.hasMissingTokenErrors;
 	}
 	
-	protected static final class CheckForMissingTokenErrors extends ASTHomogenousVisitor {
+	protected static final class CheckForMissingTokenErrors extends ASTVisitor {
 		public boolean hasMissingTokenErrors = false;
 		
 		@Override

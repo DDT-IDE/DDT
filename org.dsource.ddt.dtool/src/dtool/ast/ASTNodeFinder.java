@@ -8,7 +8,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
  * Finds the innermost element whose source range contains the offset.
  * An element is picked between element.startPos (inclusive) and element.endPos (inclusive according to inclusiveEnd).
  */
-public class ASTNodeFinder extends ASTHomogenousVisitor {
+public class ASTNodeFinder extends ASTVisitor {
 	
 	public static ASTNode findElement(ASTNode root, int offset) {
 		return findElement(root, offset, true);

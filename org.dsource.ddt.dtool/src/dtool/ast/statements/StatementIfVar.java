@@ -1,7 +1,6 @@
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -24,14 +23,10 @@ public class StatementIfVar extends Statement {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, conditionVar);
-			TreeVisitor.acceptChildren(visitor, thenBody);
-			TreeVisitor.acceptChildren(visitor, elseBody);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, conditionVar);
+		acceptVisitor(visitor, thenBody);
+		acceptVisitor(visitor, elseBody);
 	}
 	
 	@Override

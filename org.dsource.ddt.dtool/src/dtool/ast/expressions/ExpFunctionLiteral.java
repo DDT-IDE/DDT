@@ -2,7 +2,6 @@ package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -43,15 +42,11 @@ public class ExpFunctionLiteral extends Expression {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, retType);
-			TreeVisitor.acceptChildren(visitor, fnParams);
-			TreeVisitor.acceptChildren(visitor, fnBody);
-			TreeVisitor.acceptChildren(visitor, bodyExpression);
-		}
-		visitor.endVisit(this);	 
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, retType);
+		acceptVisitor(visitor, fnParams);
+		acceptVisitor(visitor, fnBody);
+		acceptVisitor(visitor, bodyExpression);
 	}
 	
 	@Override

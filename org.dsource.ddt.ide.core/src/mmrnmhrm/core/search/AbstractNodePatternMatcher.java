@@ -4,7 +4,7 @@ package mmrnmhrm.core.search;
 import org.dsource.ddt.ide.core.model.DeeModuleDeclaration;
 import org.eclipse.dltk.core.ISourceModule;
 
-import dtool.ast.ASTHomogenousVisitor;
+import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
 
 public abstract class AbstractNodePatternMatcher {
@@ -22,7 +22,7 @@ public abstract class AbstractNodePatternMatcher {
 	}
 	
 	public void doMatching(DeeModuleDeclaration deeUnit, final ISourceModule sourceModule) {
-		deeUnit.module.accept(new ASTHomogenousVisitor() {
+		deeUnit.module.accept(new ASTVisitor() {
 			@Override
 			public boolean preVisit(ASTNode node) {
 				return match(node, sourceModule);

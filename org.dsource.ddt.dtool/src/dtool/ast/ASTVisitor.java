@@ -8,26 +8,21 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool;
-
-import dtool.ast.ASTVisitor;
-import dtool.ast.ASTNode;
+package dtool.ast;
 
 
-public abstract class ASTNodeSearcher<T> extends ASTVisitor {
+/**
+ * Default generic visitor
+ */
+public class ASTVisitor implements IASTVisitor {
 	
-	public T match;
-	public boolean continueSearch = true;
+	public static final boolean VISIT_CHILDREN = true;
+	public static final boolean DONT_VISIT_CHILDREN = false;
 	
 	@Override
 	public boolean preVisit(ASTNode node) {
-		if(continueSearch == false)
-			return false;
-		
-		return doPreVisit(node);
+		return true;
 	}
-	
-	public abstract boolean doPreVisit(ASTNode node);
 	
 	@Override
 	public void postVisit(ASTNode node) {

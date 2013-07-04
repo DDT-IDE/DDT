@@ -1,7 +1,6 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -24,14 +23,10 @@ public class ExpConditional extends Expression {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, condExp);
-			TreeVisitor.acceptChildren(visitor, thenExp);
-			TreeVisitor.acceptChildren(visitor, elseExp);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, condExp);
+		acceptVisitor(visitor, thenExp);
+		acceptVisitor(visitor, elseExp);
 	}
 	
 	@Override

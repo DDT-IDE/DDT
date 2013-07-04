@@ -5,7 +5,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -36,15 +35,10 @@ public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDec
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, type);
-			TreeVisitor.acceptChildren(visitor, body);
-		}
-		visitor.endVisit(this);
-		
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, type);
+		acceptVisitor(visitor, body);
 	}
 	
 	@Override
@@ -69,12 +63,8 @@ public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDec
 		}
 		
 		@Override
-		public void accept0(IASTVisitor visitor) {
-			boolean children = visitor.visit(this);
-			if (children) {
-				TreeVisitor.acceptChildren(visitor, nodeList);
-			}
-			visitor.endVisit(this);
+		public void visitChildren(IASTVisitor visitor) {
+			acceptVisitor(visitor, nodeList);
 		}
 		
 		@Override

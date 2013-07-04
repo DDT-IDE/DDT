@@ -1,6 +1,5 @@
 package dtool.ast.expressions;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -29,15 +28,11 @@ public class ExpNewAnonClass extends Expression {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, allocArgs);
-			TreeVisitor.acceptChildren(visitor, args);
-			TreeVisitor.acceptChildren(visitor, baseClasses);
-			TreeVisitor.acceptChildren(visitor, declBody);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, allocArgs);
+		acceptVisitor(visitor, args);
+		acceptVisitor(visitor, baseClasses);
+		acceptVisitor(visitor, declBody);
 	}
 	
 	@Override

@@ -2,7 +2,6 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -35,9 +34,7 @@ public class RefTypeof extends Reference implements IQualifierNode {
 		}
 		
 		@Override
-		public void accept0(IASTVisitor visitor) {
-			visitor.visit(this);
-			visitor.endVisit(this);
+		public void visitChildren(IASTVisitor visitor) {
 		}
 		
 		@Override
@@ -47,12 +44,8 @@ public class RefTypeof extends Reference implements IQualifierNode {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, expression);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, expression);
 	}
 	
 	@Override

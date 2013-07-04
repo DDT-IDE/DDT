@@ -1,7 +1,6 @@
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -25,11 +24,8 @@ public class FunctionBody extends ASTNode implements IFunctionBody {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			TreeVisitor.acceptChildren(visitor, bodyBlock);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, bodyBlock);
 	}
 	
 	@Override

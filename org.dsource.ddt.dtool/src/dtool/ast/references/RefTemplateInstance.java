@@ -6,7 +6,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -41,14 +40,10 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, tplRef);
-			TreeVisitor.acceptChildren(visitor, tplSingleArg);
-			TreeVisitor.acceptChildren(visitor, tplArgs);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, tplRef);
+		acceptVisitor(visitor, tplSingleArg);
+		acceptVisitor(visitor, tplArgs);
 	}
 	
 	@Override

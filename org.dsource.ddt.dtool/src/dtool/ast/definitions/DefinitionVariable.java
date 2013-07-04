@@ -4,7 +4,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -50,17 +49,13 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, type);
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, cstyleSuffix);
-			TreeVisitor.acceptChildren(visitor, init);
-			
-			TreeVisitor.acceptChildren(visitor, fragments);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, type);
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, cstyleSuffix);
+		acceptVisitor(visitor, init);
+		
+		acceptVisitor(visitor, fragments);
 	}
 	
 	@Override
@@ -71,6 +66,11 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 		cp.append(" = ", init);
 		cp.appendList(", ", fragments, ", ", "");
 		cp.append(";");
+	}
+	
+	@Override
+	public EArcheType getArcheType() {
+		return EArcheType.Variable;
 	}
 	
 	// TODO refactor this into own class?
@@ -86,11 +86,6 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 			return ASTNodeTypes.DEFINITION_AUTO_VARIABLE;
 		}
 		
-	}
-	
-	@Override
-	public EArcheType getArcheType() {
-		return EArcheType.Variable;
 	}
 	
 	public IDefUnitReference getTypeReference() {
@@ -155,9 +150,7 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 		}
 		
 		@Override
-		public void accept0(IASTVisitor visitor) {
-			visitor.visit(this);
-			visitor.endVisit(this);
+		public void visitChildren(IASTVisitor visitor) {
 		}
 		
 	}

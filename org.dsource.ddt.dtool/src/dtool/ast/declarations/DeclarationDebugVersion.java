@@ -1,6 +1,5 @@
 package dtool.ast.declarations;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -32,14 +31,10 @@ public class DeclarationDebugVersion extends AbstractConditionalDeclaration {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, value);
-			TreeVisitor.acceptChildren(visitor, body);
-			TreeVisitor.acceptChildren(visitor, elseBody);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, value);
+		acceptVisitor(visitor, body);
+		acceptVisitor(visitor, elseBody);
 	}
 	
 	@Override

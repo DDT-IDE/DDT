@@ -3,7 +3,6 @@ package dtool.ast.definitions;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -37,10 +36,8 @@ public class DefinitionClass extends DefinitionAggregate {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		acceptNodeChildren(visitor, children);
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptNodeChildren(visitor);
 	}
 	
 	@Override
@@ -64,15 +61,15 @@ public class DefinitionClass extends DefinitionAggregate {
 	}
 	
 	@Override
-	protected void acceptNodeChildren(IASTVisitor visitor, boolean children) {
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, tplParams);
-			if(baseClassesAfterConstraint) TreeVisitor.acceptChildren(visitor, tplConstraint);
-			TreeVisitor.acceptChildren(visitor, baseClasses);
-			if(!baseClassesAfterConstraint) TreeVisitor.acceptChildren(visitor, tplConstraint);
-			TreeVisitor.acceptChildren(visitor, aggrBody);
-		}
+	protected void acceptNodeChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, tplParams);
+		if(baseClassesAfterConstraint)
+			acceptVisitor(visitor, tplConstraint);
+		acceptVisitor(visitor, baseClasses);
+		if(!baseClassesAfterConstraint)
+			acceptVisitor(visitor, tplConstraint);
+		acceptVisitor(visitor, aggrBody);
 	}
 	
 	@Override

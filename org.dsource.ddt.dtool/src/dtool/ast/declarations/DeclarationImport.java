@@ -3,7 +3,6 @@ package dtool.ast.declarations;
 import java.util.Iterator;
 
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -43,12 +42,8 @@ public class DeclarationImport extends ASTNode implements INonScopedBlock, IDecl
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, imports);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, imports);
 	}
 	
 	public static interface IImportFragment extends IASTNode {

@@ -3,7 +3,6 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -50,15 +49,11 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, aliasedAttributes);
-			TreeVisitor.acceptChildren(visitor, target);
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, fnParams);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, aliasedAttributes);
+		acceptVisitor(visitor, target);
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, fnParams);
 	}
 	
 	@Override

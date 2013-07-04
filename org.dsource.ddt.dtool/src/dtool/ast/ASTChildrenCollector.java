@@ -9,7 +9,7 @@ import melnorme.utilbox.tree.IVisitable;
 /**
  * Uses a Visitor to collect a node's children.
  */
-public class ASTChildrenCollector extends ASTHomogenousVisitor {
+public class ASTChildrenCollector extends ASTVisitor {
 	
 	private boolean visitingParent = true;
 	private List<ASTNode> childrenLst;

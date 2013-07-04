@@ -1,6 +1,5 @@
 package dtool.ast.definitions;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -36,17 +35,13 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, retType);
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, tplParams);
-			TreeVisitor.acceptChildren(visitor, fnParams);
-			TreeVisitor.acceptChildren(visitor, tplConstraint);
-			TreeVisitor.acceptChildren(visitor, fnBody);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, retType);
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, tplParams);
+		acceptVisitor(visitor, fnParams);
+		acceptVisitor(visitor, tplConstraint);
+		acceptVisitor(visitor, fnBody);
 	}
 	
 	@Override

@@ -7,7 +7,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 /**
  * Checks the AST source range contracts.
  */
-public class ASTSourceRangeChecker extends ASTHomogenousVisitor {
+public class ASTSourceRangeChecker extends ASTVisitor {
 	
 	protected int offsetCursor;
 	protected int depth = 0;

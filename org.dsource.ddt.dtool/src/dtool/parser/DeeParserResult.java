@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import melnorme.utilbox.core.CoreUtil;
-import dtool.ast.ASTHomogenousVisitor;
+import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.parser.AbstractParser.NodeResult;
@@ -66,7 +66,7 @@ public class DeeParserResult {
 	// TODO: this could be optimized
 	protected static ArrayList<ParserError> collectErrors(final ArrayList<ParserError> errors, ASTNode node) {
 		if(node != null) {
-			node.accept(new ASTHomogenousVisitor() {
+			node.accept(new ASTVisitor() {
 				@Override
 				public void postVisit(ASTNode node) {
 					for (ParserError parserError : node.getData().getNodeErrors()) {

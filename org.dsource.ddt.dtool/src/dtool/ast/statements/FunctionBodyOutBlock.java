@@ -1,6 +1,5 @@
 package dtool.ast.statements;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -23,12 +22,9 @@ public class FunctionBodyOutBlock extends ASTNode {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			TreeVisitor.acceptChildren(visitor, result);
-			TreeVisitor.acceptChildren(visitor, block);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, result);
+		acceptVisitor(visitor, block);
 	}
 	
 	@Override

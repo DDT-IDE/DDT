@@ -5,7 +5,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -33,14 +32,10 @@ public class RefSlice extends Reference {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, slicee);
-			TreeVisitor.acceptChildren(visitor, startIndex);
-			TreeVisitor.acceptChildren(visitor, endIndex);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, slicee);
+		acceptVisitor(visitor, startIndex);
+		acceptVisitor(visitor, endIndex);
 	}
 	
 	@Override

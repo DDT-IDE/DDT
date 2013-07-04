@@ -1,6 +1,5 @@
 package dtool.ast.statements;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -22,13 +21,9 @@ public class ForeachRangeExpression extends Expression {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, lower);
-			TreeVisitor.acceptChildren(visitor, upper);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, lower);
+		acceptVisitor(visitor, upper);
 	}
 	
 	@Override

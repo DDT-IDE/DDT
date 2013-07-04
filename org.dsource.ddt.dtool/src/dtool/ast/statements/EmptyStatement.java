@@ -15,9 +15,7 @@ public class EmptyStatement extends Statement implements IFunctionBody, IStateme
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		visitor.visit(this);
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
 	}
 	
 	@Override

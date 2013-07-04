@@ -20,11 +20,7 @@ public class StatementAsm extends Statement {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
 	}
 	
 	@Override

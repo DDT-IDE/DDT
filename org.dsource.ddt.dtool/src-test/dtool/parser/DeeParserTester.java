@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.ASTHomogenousVisitor;
+import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTSourceRangeChecker;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -182,7 +182,7 @@ public class DeeParserTester extends CommonTestUtils {
 	
 	public static void checkBasicStructureContracts(ASTNode parsedNode) {
 		assertTrue(parsedNode.getParent() == null);
-		parsedNode.accept(new ASTHomogenousVisitor() {
+		parsedNode.accept(new ASTVisitor() {
 			ASTNode parent = null;
 			ASTNode lastVisitedNode = null;
 			

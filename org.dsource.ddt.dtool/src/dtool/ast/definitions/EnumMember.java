@@ -1,6 +1,5 @@
 package dtool.ast.definitions;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -26,14 +25,10 @@ public class EnumMember extends DefUnit {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, type);
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, value);
-		}
-		visitor.endVisit(this);	 			
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, type);
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, value);
 	}
 	
 	@Override

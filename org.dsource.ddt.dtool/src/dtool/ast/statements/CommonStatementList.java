@@ -6,7 +6,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Iterator;
 
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTVisitor;
@@ -30,11 +29,8 @@ public abstract class CommonStatementList extends Statement {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			TreeVisitor.acceptChildren(visitor, statements);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, statements);
 	}
 	
 	@Override

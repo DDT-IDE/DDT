@@ -1,6 +1,5 @@
 package dtool.ast.statements;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -24,14 +23,10 @@ public class StatementIf extends Statement {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, condition);
-			TreeVisitor.acceptChildren(visitor, thenBody);
-			TreeVisitor.acceptChildren(visitor, elseBody);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, condition);
+		acceptVisitor(visitor, thenBody);
+		acceptVisitor(visitor, elseBody);
 	}
 	
 	@Override

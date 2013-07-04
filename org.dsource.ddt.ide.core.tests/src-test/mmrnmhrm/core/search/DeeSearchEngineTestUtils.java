@@ -18,7 +18,7 @@ import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.ASTHomogenousVisitor;
+import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.util.NewUtils;
@@ -112,7 +112,7 @@ public class DeeSearchEngineTestUtils {
 			if(element instanceof ISourceModule) {
 				final ISourceModule sourceModule = (ISourceModule) element;
 				Module module = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
-				module.accept(new ASTHomogenousVisitor() {
+				module.accept(new ASTVisitor() {
 					@Override
 					public boolean preVisit(ASTNode node) {
 						visitNode(node, sourceModule);

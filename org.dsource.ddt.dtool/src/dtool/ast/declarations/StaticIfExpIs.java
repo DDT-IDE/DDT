@@ -2,7 +2,6 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -44,15 +43,11 @@ public class StaticIfExpIs extends Expression {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, typeRef);
-			TreeVisitor.acceptChildren(visitor, isExpDefUnit);
-			TreeVisitor.acceptChildren(visitor, specTypeRef);
-			TreeVisitor.acceptChildren(visitor, tplParams);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, typeRef);
+		acceptVisitor(visitor, isExpDefUnit);
+		acceptVisitor(visitor, specTypeRef);
+		acceptVisitor(visitor, tplParams);
 	}
 	
 	@Override
@@ -84,12 +79,8 @@ public class StaticIfExpIs extends Expression {
 		}
 		
 		@Override
-		public void accept0(IASTVisitor visitor) {
-			boolean children = visitor.visit(this);
-			if (children) {
-				TreeVisitor.acceptChildren(visitor, defname);
-			}
-			visitor.endVisit(this);
+		public void visitChildren(IASTVisitor visitor) {
+			acceptVisitor(visitor, defname);
 		}
 		
 		@Override

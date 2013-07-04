@@ -1,7 +1,6 @@
 package dtool.ast.definitions;
 
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -35,12 +34,8 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, aliasFragments);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, aliasFragments);
 	}
 	
 	@Override
@@ -65,13 +60,9 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		}
 		
 		@Override
-		public void accept0(IASTVisitor visitor) {
-			boolean children = visitor.visit(this);
-			if (children) {
-				TreeVisitor.acceptChildren(visitor, defname);
-				TreeVisitor.acceptChildren(visitor, target);
-			}
-			visitor.endVisit(this);
+		public void visitChildren(IASTVisitor visitor) {
+			acceptVisitor(visitor, defname);
+			acceptVisitor(visitor, target);
 		}
 		
 		@Override

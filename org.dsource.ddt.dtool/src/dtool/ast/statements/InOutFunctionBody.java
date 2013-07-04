@@ -1,6 +1,5 @@
 package dtool.ast.statements;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -25,13 +24,10 @@ public class InOutFunctionBody extends FunctionBody implements IFunctionBody {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			TreeVisitor.acceptChildren(visitor, isOutIn ? outBlock : inBlock);
-			TreeVisitor.acceptChildren(visitor, isOutIn ? inBlock : outBlock);
-			TreeVisitor.acceptChildren(visitor, bodyBlock);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, isOutIn ? outBlock : inBlock);
+		acceptVisitor(visitor, isOutIn ? inBlock : outBlock);
+		acceptVisitor(visitor, bodyBlock);
 	}
 	
 	@Override

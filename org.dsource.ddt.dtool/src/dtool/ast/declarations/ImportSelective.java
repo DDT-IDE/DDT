@@ -6,7 +6,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Iterator;
 
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -70,13 +69,9 @@ public class ImportSelective extends ASTNode implements INonScopedBlock, IImport
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, fragment);
-			TreeVisitor.acceptChildren(visitor, impSelFrags);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, fragment);
+		acceptVisitor(visitor, impSelFrags);
 	}
 	
 	@Override

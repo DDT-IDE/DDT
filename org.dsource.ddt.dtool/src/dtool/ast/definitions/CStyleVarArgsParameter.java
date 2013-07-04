@@ -21,9 +21,7 @@ public class CStyleVarArgsParameter extends ASTNode implements IFunctionParamete
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		visitor.visit(this);
-		visitor.endVisit(this);	
+	public void visitChildren(IASTVisitor visitor) {
 	}
 	
 	@Override

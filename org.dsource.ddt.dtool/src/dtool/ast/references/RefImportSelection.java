@@ -29,9 +29,7 @@ public class RefImportSelection extends NamedReference implements IImportSelecti
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		visitor.visit(this);
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
 	}
 	
 	public boolean isMissing() {

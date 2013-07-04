@@ -1,6 +1,5 @@
 package dtool.ast.declarations;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -24,13 +23,9 @@ public class AttribPragma extends Attribute {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if(children) {
-			TreeVisitor.acceptChildren(visitor, pragmaId);
-			TreeVisitor.acceptChildren(visitor, expList);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, pragmaId);
+		acceptVisitor(visitor, expList);
 	}
 	
 	@Override

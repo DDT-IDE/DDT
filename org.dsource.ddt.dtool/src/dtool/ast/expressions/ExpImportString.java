@@ -1,6 +1,5 @@
 package dtool.ast.expressions;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -19,12 +18,8 @@ public class ExpImportString extends Expression {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, exp);
-		}
-		visitor.endVisit(this);	 
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, exp);
 	}
 	
 	@Override

@@ -5,7 +5,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Iterator;
 
 import melnorme.utilbox.misc.IteratorUtil;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -47,12 +46,9 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			TreeVisitor.acceptChildren(visitor, attributes);
-			TreeVisitor.acceptChildren(visitor, body);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, attributes);
+		acceptVisitor(visitor, body);
 	}
 	
 	@Override

@@ -1,7 +1,6 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -30,15 +29,11 @@ public class TemplateValueParam extends TemplateParameter {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, type);
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, specializationValue);
-			TreeVisitor.acceptChildren(visitor, defaultValue);
-		}
-		visitor.endVisit(this);	
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, type);
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, specializationValue);
+		acceptVisitor(visitor, defaultValue);
 	}
 	
 	@Override

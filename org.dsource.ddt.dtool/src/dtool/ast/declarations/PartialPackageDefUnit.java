@@ -51,7 +51,7 @@ public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements 
 	
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
+	public void visitChildren(IASTVisitor visitor) {
 	}
 	
 	@Override

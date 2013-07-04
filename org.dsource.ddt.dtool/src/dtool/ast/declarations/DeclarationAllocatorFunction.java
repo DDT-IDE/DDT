@@ -1,7 +1,6 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -37,13 +36,9 @@ public class DeclarationAllocatorFunction extends ASTNode implements IDeclaratio
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, params);
-			TreeVisitor.acceptChildren(visitor, fnBody);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, params);
+		acceptVisitor(visitor, fnBody);
 	}
 	
 	@Override

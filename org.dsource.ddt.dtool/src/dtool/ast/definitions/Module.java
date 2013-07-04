@@ -5,7 +5,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -72,13 +71,9 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		}
 		
 		@Override
-		public void accept0(IASTVisitor visitor) {
-			boolean children = visitor.visit(this);
-			if (children) {
-				//TreeVisitor.acceptChildren(visitor, packages);
-				TreeVisitor.acceptChildren(visitor, moduleName);
-			}
-			visitor.endVisit(this);
+		public void visitChildren(IASTVisitor visitor) {
+			//TreeVisitor.acceptChildren(visitor, packages);
+			acceptVisitor(visitor, moduleName);
 		}
 		
 		@Override
@@ -120,12 +115,9 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			TreeVisitor.acceptChildren(visitor, md);
-			TreeVisitor.acceptChildren(visitor, members);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, md);
+		acceptVisitor(visitor, members);
 	}
 	
 	@Override

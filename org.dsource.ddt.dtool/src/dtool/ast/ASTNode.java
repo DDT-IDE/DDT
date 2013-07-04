@@ -135,14 +135,13 @@ public abstract class ASTNode implements IASTNode {
 		
 		// begin with the generic pre-visit
 		if(visitor.preVisit(this)) {
-			// dynamic dispatch to internal method for type-specific visit/endVisit
-			accept0(visitor);
+			visitChildren(visitor);
 		}
 		// end with the generic post-visit
 		visitor.postVisit(this);
 	}
 	
-	public abstract void accept0(IASTVisitor visitor);
+	public abstract void visitChildren(IASTVisitor visitor);
 	
 	public void visitDirectChildren(ASTDirectChildrenVisitor directChildrenVisitor) {
 		accept(directChildrenVisitor); // This might be optimized in the future
@@ -167,6 +166,25 @@ public abstract class ASTNode implements IASTNode {
 	@Override
 	public ASTNode[] getChildren() {
 		return ASTChildrenCollector.getChildrenArray(this);
+	}
+	
+	// Utility methods
+	
+	/** Accepts the visitor on child. If child is null, nothing happens. */
+	public static void acceptVisitor(IASTVisitor visitor, IASTNode node) {
+		if (node != null) {
+			node.accept(visitor);
+		}
+	}
+	
+	/** Accepts the visitor on the children. If children is null, nothing happens. */
+	public static void acceptVisitor(IASTVisitor visitor, Iterable<? extends IASTNode> nodes) {
+		if (nodes == null)
+			return;
+		
+		for(IASTNode node : nodes) {
+			acceptVisitor(visitor, node);
+		}
 	}
 	
 	/* ------------------------  Node type ------------------------  */
@@ -322,11 +340,11 @@ public abstract class ASTNode implements IASTNode {
 	/* =============== Analysis =============== */
 	
 	public static void doSimpleAnalysisOnTree(ASTNode treeNode) {
-		ASTHomogenousVisitor childrenVisitor = new LocalAnalysisVisitor();
+		ASTVisitor childrenVisitor = new LocalAnalysisVisitor();
 		treeNode.accept(childrenVisitor);
 	}
 	
-	protected static final class LocalAnalysisVisitor extends ASTHomogenousVisitor {
+	protected static final class LocalAnalysisVisitor extends ASTVisitor {
 		@Override
 		public boolean preVisit(ASTNode node) {
 			node.doNodeSimpleAnalysis();

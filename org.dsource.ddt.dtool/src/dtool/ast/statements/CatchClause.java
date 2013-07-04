@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.utilbox.misc.IteratorUtil;
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -30,13 +29,9 @@ public class CatchClause extends ASTNode implements IScopeNode {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, catchParam);
-			TreeVisitor.acceptChildren(visitor, body);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, catchParam);
+		acceptVisitor(visitor, body);
 	}
 	
 	@Override

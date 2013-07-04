@@ -2,7 +2,6 @@ package dtool.ast.definitions;
 
 import java.util.Iterator;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
@@ -37,13 +36,11 @@ public abstract class DefinitionAggregate extends CommonDefinition implements IS
 		this.aggrBody = parentizeI(aggrBody);
 	}
 	
-	protected void acceptNodeChildren(IASTVisitor visitor, boolean children) {
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, tplParams);
-			TreeVisitor.acceptChildren(visitor, tplConstraint);
-			TreeVisitor.acceptChildren(visitor, aggrBody);
-		}
+	protected void acceptNodeChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, tplParams);
+		acceptVisitor(visitor, tplConstraint);
+		acceptVisitor(visitor, aggrBody);
 	}
 	
 	public void aggregateToStringAsCode(ASTCodePrinter cp, String keyword, boolean printDecls) {

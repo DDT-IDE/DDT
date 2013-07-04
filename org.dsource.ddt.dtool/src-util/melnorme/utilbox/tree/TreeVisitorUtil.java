@@ -15,36 +15,19 @@ package melnorme.utilbox.tree;
 public abstract class TreeVisitorUtil {
 	
 	/** Accepts the visitor on child. If child is null, nothing happens. */
-	public static <T> void acceptChild(T visitor, IVisitable<T> child) {
+	public static <T> void acceptChildren(T visitor, IVisitable<T> child) {
 		if (child != null) {
 			child.accept(visitor);
 		}
 	}
 	
-	/** Same as {@link #acceptChild(Object, IVisitable) } */
-	public static <T> void acceptChildren(T visitor, IVisitable<T> child) {
-		TreeVisitorUtil.acceptChild(visitor, child);
-	}
-	
-	/** Accepts the visitor on the children. If children is null, nothing
-	 * happens.	*/
-	public static <T> void acceptChildren(T visitor, IVisitable<T>[] children) {
-		if (children == null)
-			return;
-		
-		for(int i = 0; i < children.length; i++) {
-			TreeVisitorUtil.acceptChild(visitor, children[i]);
-		}
-	}
-	
-	/** Accepts the visitor on the children. If children is null, nothing
-	 * happens. */
+	/** Accepts the visitor on the children. If children is null, nothing happens. */
 	public static <T> void acceptChildren(T visitor, Iterable<? extends IVisitable<T>> children) {
 		if (children == null)
 			return;
 		
 		for(IVisitable<T> child : children) {
-			TreeVisitorUtil.acceptChild(visitor, child);
+			acceptChildren(visitor, child);
 		}
 	}
 	

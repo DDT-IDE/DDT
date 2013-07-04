@@ -19,13 +19,14 @@ import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 
+import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
-import dtool.ast.declarations.DeclarationAllocatorFunction;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
-import dtool.ast.declarations.DeclarationSpecialFunction;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.CommonDefinition;
+import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
+import dtool.ast.definitions.DefinitionAliasFunctionDecl;
 import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionConstructor;
@@ -45,7 +46,7 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
 import dtool.util.ArrayView;
 
-public final class DeeSourceElementProvider extends DeeSourceElementProvider_BaseVisitor {
+public final class DeeSourceElementProvider extends DeeSourceElementProviderNodeSwitcher {
 	
 	protected static final String[] EMPTY_STRING = new String[0];
 	protected static final String OBJECT = "Object"; //$NON-NLS-1$
@@ -65,13 +66,20 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 			
 			if(neoModule.md != null) {
 				requestor.enterNamespace(neoModule.md.packages);
-				neoModule.accept(this);
-				requestor.exitNamespace();
 			} else {
 				requestor.enterNamespace(EMPTY_STRING);
-				neoModule.accept(this);
-				requestor.exitNamespace();
 			}
+			neoModule.accept(new ASTVisitor() {
+				@Override
+				public boolean preVisit(ASTNode node) {
+					return DeeSourceElementProvider.this.preVisit(node);
+				}
+				@Override
+				public void postVisit(ASTNode node) {
+					DeeSourceElementProvider.this.postVisit(node);
+				}
+			});
+			requestor.exitNamespace();
 		}
 		
 		requestor.exitModule(moduleDecl.module.getEndPos());
@@ -175,6 +183,18 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		//requestor.exitType(getDeclarationEndforNode(node));
 	}
 	
+	@Override
+	public boolean visit(DefinitionAliasFunctionDecl node) {
+		// TODO: test case for this kind
+		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
+		return true;
+	}
+	
+	@Override
+	public void endVisit(DefinitionAliasFunctionDecl node) {
+		requestor.exitType(getDeclarationEndforNode(node));
+	}
+	
 	/* ---------------------------------- */
 	
 	@Override
@@ -197,25 +217,6 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		requestor.exitMethod(getDeclarationEndforNode(node));
 	}
 	
-	@Override
-	public boolean visit(DeclarationSpecialFunction node) {
-		// TODO
-		return true;
-	}
-	
-	@Override
-	public void endVisit(DeclarationSpecialFunction node) {
-	}
-	
-	@Override
-	public boolean visit(DeclarationAllocatorFunction node) {
-		// TODO
-		return true;
-	}
-	@Override
-	public void endVisit(DeclarationAllocatorFunction node) {
-	}
-	
 	/* ---------------------------------- */
 	
 	@Override
@@ -227,6 +228,21 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 	public void endVisit(DefinitionVariable node) {
 		requestor.exitField(getDeclarationEndforNode(node));
 	}
+	
+	@Override
+	public boolean visit(DefVarFragment node) {
+		//TODO:
+//		requestor.enterField(createFieldInfo(node));
+		return true;
+	}
+	
+	@Override
+	public void endVisit(DefVarFragment node) {
+		// TODO:
+//		requestor.exitField(getDeclarationEndforNode(node));
+	}
+	
+	/* ---------------------------------- */
 	
 	@Override
 	public boolean visit(NamedReference elem) {
@@ -264,8 +280,8 @@ public final class DeeSourceElementProvider extends DeeSourceElementProvider_Bas
 		elemInfo.modifiers |= archetypeMask;
 	}
 	
-	protected static void setupDefinitionTypeInfo(CommonDefinition elem, ISourceElementRequestor.ElementInfo elemInfo)
-	{
+	protected static void setupDefinitionTypeInfo(CommonDefinition elem, 
+		ISourceElementRequestor.ElementInfo elemInfo) {
 		elemInfo.modifiers |= getDeclarationModifiersFlags(elem);
 		elemInfo.modifiers |= getProtectionFlags(elem);
 	}

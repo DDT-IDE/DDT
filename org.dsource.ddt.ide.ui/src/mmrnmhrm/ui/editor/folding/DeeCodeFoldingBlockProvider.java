@@ -19,20 +19,9 @@ import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Region;
 
-import dtool.ast.ASTDefaultVisitor;
+import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
-import dtool.ast.declarations.AbstractConditionalDeclaration;
-import dtool.ast.declarations.DeclarationDebugVersion;
-import dtool.ast.declarations.DeclarationUnitTest;
-import dtool.ast.definitions.DefinitionClass;
-import dtool.ast.definitions.DefinitionFunction;
-import dtool.ast.definitions.DefinitionInterface;
-import dtool.ast.definitions.DefinitionStruct;
-import dtool.ast.definitions.DefinitionTemplate;
-import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.Module;
-import dtool.ast.expressions.ExpFunctionLiteral;
-import dtool.ast.expressions.ExpNewAnonClass;
 
 public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	
@@ -78,67 +67,37 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 			ISourceModule sourceModule = (ISourceModule) content.getModelElement();
 			Module deeModule = DeeModuleParsingUtil.parseAndGetAST(sourceModule);
 			if (deeModule != null) {
-				deeModule.accept(new ASTDefaultVisitor() {
+				deeModule.accept(new ASTVisitor() {
 					
 					@Override
-					public boolean visit(DefinitionStruct elem) {
-						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
-						return true;
-					}
-					@Override
-					public boolean visit(DefinitionUnion elem) {
-						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
-						return true;
-					}
-					@Override
-					public boolean visit(DefinitionClass elem) {
-						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
-						return true;
-					}
-					@Override
-					public boolean visit(DefinitionInterface elem) {
-						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
-						return true;
-					}
-					
-					@Override
-					public boolean visit(DefinitionTemplate elem) {
-						reportBlock(elem, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
-						return true;
-					}
-					
-					@Override
-					public boolean visit(DefinitionFunction elem) {
-						reportBlock(elem, DeeFoldingBlockKind.FUNCTION, collapseFunctions);
-						return true;
-					}
-					
-					@Override
-					public boolean visit(ExpFunctionLiteral elem) {
-						reportBlock(elem, DeeFoldingBlockKind.FUNCTIONLITERALS, collapseFunctionLiterals);
-						return true;
-					}
-					
-					@Override
-					public boolean visit(ExpNewAnonClass elem) {
-						reportBlock(elem, DeeFoldingBlockKind.ANONCLASSES, collapseAnonClasses);
-						return true;
-					}
-					
-					@Override
-					public boolean visit(DeclarationUnitTest elem) {
-						reportBlock(elem, DeeFoldingBlockKind.UNITTEST, collapseUnittests);
-						return true;
-					}
-					
-					@Override
-					public boolean visit(AbstractConditionalDeclaration elem) {
-						if(elem instanceof DeclarationDebugVersion) {
-							reportBlock(elem, DeeFoldingBlockKind.CONDITIONALS, collapseConditionals);
+					public boolean preVisit(ASTNode node) {
+						switch (node.getNodeType()) {
+						case DEFINITION_STRUCT:
+						case DEFINITION_UNION:
+						case DEFINITION_CLASS:
+						case DEFINITION_INTERFACE:
+						case DEFINITION_TEMPLATE:
+							reportBlock(node, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
+							break;
+						case DEFINITION_FUNCTION:
+							reportBlock(node, DeeFoldingBlockKind.FUNCTION, collapseFunctions);
+							break;
+						case EXP_FUNCTION_LITERAL:
+							reportBlock(node, DeeFoldingBlockKind.FUNCTIONLITERALS, collapseFunctionLiterals);
+							break;
+						case EXP_NEW_ANON_CLASS:
+							reportBlock(node, DeeFoldingBlockKind.ANONCLASSES, collapseAnonClasses);
+							break;
+						case DECLARATION_UNITEST:
+							reportBlock(node, DeeFoldingBlockKind.UNITTEST, collapseUnittests);
+							break;
+						case DECLARATION_DEBUG_VERSION:
+							reportBlock(node, DeeFoldingBlockKind.CONDITIONALS, collapseConditionals);
+							break;
+						default:
 						}
-						return true;
+						return VISIT_CHILDREN;
 					}
-					
 				});
 			}
 		}

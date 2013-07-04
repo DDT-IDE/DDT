@@ -49,9 +49,7 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		visitor.visit(this);
-		visitor.endVisit(this);	
+	public void visitChildren(IASTVisitor visitor) {
 	}
 	
 	@Override
@@ -88,7 +86,7 @@ public class RefModule extends NamedReference {
 		}
 		
 		@Override
-		public void accept0(IASTVisitor visitor) {
+		public void visitChildren(IASTVisitor visitor) {
 			assertFail();
 		}
 		

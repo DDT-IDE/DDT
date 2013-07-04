@@ -1,6 +1,5 @@
 package dtool.ast.statements;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -28,14 +27,10 @@ public class StatementForeach extends Statement {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, varParams);
-			TreeVisitor.acceptChildren(visitor, iterable);
-			TreeVisitor.acceptChildren(visitor, body);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, varParams);
+		acceptVisitor(visitor, iterable);
+		acceptVisitor(visitor, body);
 	}
 	
 	@Override

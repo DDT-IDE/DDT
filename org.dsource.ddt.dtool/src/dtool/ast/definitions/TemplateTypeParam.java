@@ -1,6 +1,5 @@
 package dtool.ast.definitions;
 
-import melnorme.utilbox.tree.TreeVisitor;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -25,14 +24,10 @@ public class TemplateTypeParam extends TemplateParameter {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		if (children) {
-			TreeVisitor.acceptChildren(visitor, defname);
-			TreeVisitor.acceptChildren(visitor, specializationType);
-			TreeVisitor.acceptChildren(visitor, defaultType);
-		}
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, specializationType);
+		acceptVisitor(visitor, defaultType);
 	}
 	
 	@Override

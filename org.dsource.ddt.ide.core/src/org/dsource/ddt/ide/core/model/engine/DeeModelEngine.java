@@ -82,8 +82,10 @@ public class DeeModelEngine {
 				if(isTypeElement(defUnit)) {
 					return parentElement.getType(defUnit.getName(), 1);
 				} else if(isFieldElement(defUnit) && parentElement instanceof IMethod) {
+					// TODO: specific test case for this /*BUG here*/
 					return ((IType) parentElement).getField(defUnit.getName());
 				} else if(isMethodElement(defUnit) && parentElement instanceof IMethod) {
+					// TODO: specific test case for this /*BUG here*/
 					return ((IType) parentElement).getMethod(defUnit.getName());
 				} else {
 					return parentElement.getType(defUnit.getName(), 1);

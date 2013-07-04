@@ -80,7 +80,7 @@ public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeD
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
+	public void visitChildren(IASTVisitor visitor) {
 		Assert.fail("Intrinsics do not suppport accept.");
 	}
 	

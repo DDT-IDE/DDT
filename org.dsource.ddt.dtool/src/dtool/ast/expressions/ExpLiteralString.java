@@ -23,9 +23,7 @@ public class ExpLiteralString extends Expression {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		visitor.visit(this);
-		visitor.endVisit(this);	 
+	public void visitChildren(IASTVisitor visitor) {
 	}
 	
 	@Override

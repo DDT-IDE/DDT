@@ -27,10 +27,8 @@ public class DefinitionStruct extends DefinitionAggregate {
 	}
 	
 	@Override
-	public void accept0(IASTVisitor visitor) {
-		boolean children = visitor.visit(this);
-		acceptNodeChildren(visitor, children);
-		visitor.endVisit(this);
+	public void visitChildren(IASTVisitor visitor) {
+		acceptNodeChildren(visitor);
 	}
 	
 	@Override

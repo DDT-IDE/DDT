@@ -14,7 +14,7 @@ package dtool.ast;
 /**
  * Utility Visitor to visit node's direct children.
  */
-public class ASTDirectChildrenVisitor extends ASTDefaultVisitor {
+public class ASTDirectChildrenVisitor extends ASTVisitor {
 	
 	protected static final int maxDepth = 1;
 	protected int depth = 0; 
