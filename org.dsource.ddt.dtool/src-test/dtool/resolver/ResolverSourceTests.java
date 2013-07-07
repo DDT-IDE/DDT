@@ -35,7 +35,7 @@ import dtool.parser.DeeTemplatedSourceBasedTest;
 import dtool.resolver.api.IModuleResolver;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
 import dtool.util.NewUtils;
 
 public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {

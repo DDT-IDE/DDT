@@ -42,7 +42,7 @@ import dtool.parser.DeeParserTester.NamedNodeElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
 import dtool.tests.SimpleParser;
 import dtool.util.NewUtils;
 

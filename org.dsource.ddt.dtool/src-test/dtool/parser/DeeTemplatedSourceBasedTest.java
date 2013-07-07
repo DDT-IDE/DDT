@@ -34,7 +34,7 @@ import org.junit.runners.Parameterized;
 
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.sourcegen.TemplateSourceProcessorParser.TspExpansionElement;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
 import dtool.sourcegen.TemplatedSourceProcessor;
 import dtool.tests.DToolTests;
 import dtool.tests.DeeFileBasedTest;

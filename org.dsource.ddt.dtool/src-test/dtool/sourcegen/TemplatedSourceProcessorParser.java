@@ -11,7 +11,7 @@ import melnorme.utilbox.misc.StringUtil;
 import dtool.tests.SimpleParser;
 
 
-public class TemplateSourceProcessorParser {
+public class TemplatedSourceProcessorParser {
 	
 	@SuppressWarnings("serial")
 	public class TemplatedSourceException extends Exception {

@@ -36,7 +36,7 @@ import dtool.util.NewUtils;
 /**
  * Generates multiple source cases from a templated source, using an embedded markup language. 
  */
-public class TemplatedSourceProcessor extends TemplateSourceProcessorParser {
+public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 	
 	public static AnnotatedSource[] processTemplatedSource(String marker, String source) 
 		throws TemplatedSourceException {
