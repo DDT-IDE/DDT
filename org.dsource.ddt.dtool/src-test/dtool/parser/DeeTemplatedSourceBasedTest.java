@@ -35,7 +35,7 @@ import org.junit.runners.Parameterized;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessor;
-import dtool.sourcegen.TemplatedSourceProcessorCommonTest.TestsTemplateSourceProcessor;
+import dtool.sourcegen.TemplatedSourceProcessorCommonTest.TestsTemplatedSourceProcessor;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
 import dtool.tests.DToolTests;
 import dtool.tests.DeeFileBasedTest;
@@ -124,7 +124,7 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 		return new DeeTestsTemplateSourceProcessor().processSource_unchecked("#", fileSource);
 	}
 	
-	protected static class DeeTestsTemplateSourceProcessor extends TestsTemplateSourceProcessor {
+	protected static class DeeTestsTemplateSourceProcessor extends TestsTemplatedSourceProcessor {
 		@Override
 		protected void putExpansion(ProcessingState sourceCase, String expansionId, TspExpansionElement expansion) {
 			addExpansion(sourceCase, expansionId, expansion);

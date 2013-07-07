@@ -4,12 +4,14 @@ package dtool.sourcegen;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
+import dtool.sourcegen.TemplatedSourceProcessor.StandardErrors;
+import dtool.sourcegen.TemplatedSourceProcessor.TemplatedSourceProcessingException;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TemplatedSourceException;
 import dtool.tests.CommonTest;
 
 public class TemplatedSourceProcessorCommonTest extends CommonTest {
 	
-	public static class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
+	public static class TestsTemplatedSourceProcessor extends TemplatedSourceProcessor {
 		@Override
 		protected void handleError(TemplatedSourceException tse) throws TemplatedSourceException {
 			assertFail();
@@ -20,18 +22,32 @@ public class TemplatedSourceProcessorCommonTest extends CommonTest {
 		testSourceProcessing_____(defaultMarker, source, checkers);
 	}
 	
-	public void testSourceProcessing_____(String defaultMarker, String source, GeneratedSourceChecker... checkers) {
-		TemplatedSourceProcessor tsp = new TestsTemplateSourceProcessor();
-		AnnotatedSource[] annotatedSource = tsp.processSource_unchecked(defaultMarker, source);
-		visitContainer(annotatedSource, checkers);
+	public static void testSourceProcessing_____(String defaultMarker, String source, 
+		GeneratedSourceChecker... checkers) {
+		TemplatedSourceProcessor tsp = new TestsTemplatedSourceProcessor();
+		AnnotatedSource[] annotatedSources = tsp.processSource_unchecked(defaultMarker, source);
+		visitContainer(annotatedSources, checkers);
 	}
 	
 	public void testSourceProcessing(String marker, String source, int errorOffset) {
 		try {
-			TemplatedSourceProcessor.processTemplatedSource(marker, source);
+			TemplatedSourceProcessor tsp = new TemplatedSourceProcessor();
+			tsp.processSource(marker, source);
 			assertFail();
 		} catch(TemplatedSourceException tse) {
 			assertTrue(tse.errorOffset == errorOffset);
+		}
+	}
+	
+	public void testSourceProcessing(String marker, String source, StandardErrors errorType, String errorObject) {
+		try {
+			TemplatedSourceProcessor tsp = new TemplatedSourceProcessor();
+			tsp.processSource(marker, source);
+			assertFail();
+		} catch(TemplatedSourceException tse) {
+			TemplatedSourceProcessingException tspe = assertCast(tse, TemplatedSourceProcessingException.class);
+			assertEquals(tspe.errorString, errorType);
+			assertEquals(tspe.errorObject.toString(), errorObject);
 		}
 	}
 	

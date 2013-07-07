@@ -61,7 +61,7 @@ DeclarationImport(ImportAlias(DefSymbol RefModule) ImportAlias(DefSymbol RefModu
 
 #@IMPORT_END《
   ►#@SEMICOLON_OR_BREAK●
-  ►#?STRUCTURE_EXPECTED!【, #@^ID_OR_NO(END_ID) ;● #@^ID_OR_NO(END_ID)】●
+  ►#?STRUCTURE_EXPECTED!【, #@ID_OR_NO ;● #@ID_OR_NO】●
 ¤》
 
 #@END_IGNORE!《#error(EXP_SEMICOLON) #@BREAK》
@@ -112,7 +112,7 @@ DeclarationImport(ImportSelective(ImportAlias(DefSymbol RefModule)
 
 #@SELIMPORT_END《
   ►#@SELIMPORT_END__LITE●
-  ►#?STRUCTURE_EXPECTED!【, #@^SELID_OR_NO(END_ID) ; ● #@^SELID_OR_NO(END_ID)】●
+  ►#?STRUCTURE_EXPECTED!【, #@SELID_OR_NO ; ● #@SELID_OR_NO】●
 ¤》
 #@SELIMPORT_END__LITE《
   ►#?STRUCTURE_EXPECTED!【;● 】●

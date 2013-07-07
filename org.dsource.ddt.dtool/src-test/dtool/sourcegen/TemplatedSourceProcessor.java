@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.sourcegen;
 
+import static dtool.sourcegen.TemplatedSourceProcessor.StandardErrors.MISMATCHED_VARIATION_SIZE;
+import static dtool.sourcegen.TemplatedSourceProcessor.StandardErrors.UNDEFINED_REFER;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -46,8 +48,8 @@ public class TemplatedSourceProcessor extends SplitProcessor {
 		return tsp.processSource(marker, source);
 	}
 	
-	protected final Map<String, TspExpansionElement> globalExpansions = new HashMap<String, TspExpansionElement>();
-	protected final ArrayList<AnnotatedSource> genCases = new ArrayList<AnnotatedSource>();
+	protected final Map<String, TspExpansionElement> globalExpansions = new HashMap<>();
+	protected final ArrayList<AnnotatedSource> genCases = new ArrayList<>();
 	protected final TemplatedSourceProcessorParser tspParser = new TemplatedSourceProcessorParser() {
 		@Override
 		protected void handleParserError(TemplatedSourceException tse) throws TemplatedSourceException {
@@ -83,16 +85,6 @@ public class TemplatedSourceProcessor extends SplitProcessor {
 		}
 	}
 	
-	@Override
-	protected void processSplitCaseSource(String caseSource, boolean isHeader, String keyMarker) 
-		throws TemplatedSourceException {
-		ArrayList<TspElement> sourceElements = tspParser.parseSplitCase(caseSource, keyMarker);
-		ProcessingState processingState = new ProcessingState(isHeader, caseSource);
-		processCaseContents(processingState, new CopyableListIterator<TspElement>(sourceElements));
-	}
-	
-	// --------------------- Generation phase ---------------------
-	
 	protected void checkError(boolean errorCondition, ProcessingState sourceCase) throws TemplatedSourceException {
 		if(errorCondition) {
 			reportError(sourceCase); 
@@ -102,6 +94,46 @@ public class TemplatedSourceProcessor extends SplitProcessor {
 	protected void reportError(ProcessingState sourceCase) throws TemplatedSourceException {
 		tspParser.reportError(sourceCase.sourceSB.length());
 	}
+	
+	protected void checkError(boolean errorCondition, StandardErrors errorType, TspExpansionElement expansion) 
+		throws TemplatedSourceException {
+		if(errorCondition) {
+			String str = expansion.expansionId != null ? expansion.expansionId : "";
+			str += expansion.pairedExpansionId != null ? ":"+expansion.pairedExpansionId : "";
+			handleError(new TemplatedSourceProcessingException(-1, errorType, str));
+		}
+	}
+	
+	public static enum StandardErrors {
+		REDEFINITION,
+		UNDEFINED_REFER,
+		NO_ARGUMENTS, 
+		MISMATCHED_VARIATION_SIZE,
+	}
+	
+	@SuppressWarnings("serial")
+	public static class TemplatedSourceProcessingException extends TemplatedSourceException {
+		public final StandardErrors errorString;
+		public final Object errorObject;
+		
+		public TemplatedSourceProcessingException(int errorOffset, StandardErrors errorString, Object errorObject) {
+			super(errorOffset);
+			this.errorString = errorString;
+			this.errorObject = errorObject;
+		}
+	}
+	
+	// --------------------- Generation phase ---------------------
+
+	@Override
+	protected void processSplitCaseSource(String caseSource, boolean isHeader, String keyMarker) 
+		throws TemplatedSourceException {
+		ArrayList<TspElement> sourceElements = tspParser.parseSplitCase(caseSource, keyMarker);
+		ProcessingState processingState = new ProcessingState(isHeader, caseSource);
+		processCaseContents(processingState, new CopyableListIterator<TspElement>(sourceElements));
+	}
+	
+	
 	
 	public class ProcessingState {
 		
@@ -306,22 +338,33 @@ public class TemplatedSourceProcessor extends SplitProcessor {
 			definedExpansionElem = sourceCase.getExpansion(expansionId);
 			
 			if(arguments == null) {
-				checkError(definedExpansionElem == null, sourceCase);
+				checkError(definedExpansionElem == null, UNDEFINED_REFER, expansionElem);
 				arguments = definedExpansionElem.arguments;
 			} else {
 				// We allow a "redefinition" only if the element is exactly the same
-				checkError(definedExpansionElem != null && definedExpansionElem != expansionElem, sourceCase);
+				checkError(definedExpansionElem != null && definedExpansionElem != expansionElem, 
+					StandardErrors.REDEFINITION, expansionElem);
 				putExpansion(sourceCase, expansionId, expansionElem);
 			}
 		}
+		checkError(arguments.size() == 0, StandardErrors.NO_ARGUMENTS, expansionElem);
+		
+		if(expansionElem.defineOnly || sourceCase.isHeaderCase) {
+			// TODO:  situation where there is a pairedExpansionId has no test cases that test it
+			return false;
+		}
+		
+		String secondaryIdToActivate = expansionElem.anonymousExpansion ? null : expansionId;
+		String pairedIdToActivate = null;
 		
 		Integer pairedExpansionIx = null;
 		TspExpansionElement referredExpansion = null;
 		if(expansionElem.pairedExpansionId == null) {
 			if(definedExpansionElem != null && expansionElem.anonymousExpansion == false) {
-				pairedExpansionIx = sourceCase.activeExpansions.get(expansionId);
-				// The result is usually null, but it can be a valid index in certain situations
-				// where this defined exp has been "redefined"
+				pairedIdToActivate = definedExpansionElem.pairedExpansionId;
+				if(pairedIdToActivate == null) {
+					pairedIdToActivate = expansionId;
+				}
 			}
 		} else {
 			// Paired expansion referral.
@@ -329,27 +372,28 @@ public class TemplatedSourceProcessor extends SplitProcessor {
 			referredExpansion = sourceCase.getExpansion(expansionElem.pairedExpansionId);
 			if(expansionElem.anonymousExpansion) {
 			} else {
-				checkError(referredExpansion == null, sourceCase); // If referred, then it must be defined
-				checkError(arguments.size() != referredExpansion.arguments.size(), sourceCase);
+				 // If referred, then it must be defined
+				checkError(referredExpansion == null, UNDEFINED_REFER, expansionElem);
+				checkError(arguments.size() != referredExpansion.arguments.size(), 
+					MISMATCHED_VARIATION_SIZE, expansionElem);
 			}
-			
-			pairedExpansionIx = sourceCase.activeExpansions.get(expansionElem.pairedExpansionId);
+			pairedIdToActivate = expansionElem.pairedExpansionId;
 		}
 		
-		if(expansionElem.dontOuputSource || sourceCase.isHeaderCase) {
-			// TODO:  situation where there is a pairedExpansionId has no test cases that test it
-			return false;
+		if(pairedIdToActivate != null) {
+			pairedExpansionIx = sourceCase.activeExpansions.get(pairedIdToActivate);
 		}
-		
-		String idToActivate = expansionElem.anonymousExpansion ? null : expansionId;
-		String pairedIdToActivate = expansionElem.pairedExpansionId;
 		
 		if(pairedExpansionIx != null) {
+			if(sourceCase.activeExpansions.get(secondaryIdToActivate) != null) {
+				secondaryIdToActivate = null;
+			}
+			pairedIdToActivate = null;
 			int ix = pairedExpansionIx;
-			processArgument(sourceCase, elementStream, idToActivate, pairedIdToActivate, arguments.get(ix), ix);
+			processArgument(sourceCase, elementStream, secondaryIdToActivate, null, arguments.get(ix), ix);
 		} else {
 			for (int ix = 0; ix < arguments.size(); ix++) {
-				processArgument(sourceCase, elementStream, idToActivate, pairedIdToActivate, arguments.get(ix), ix);
+				processArgument(sourceCase, elementStream, secondaryIdToActivate, pairedIdToActivate, arguments.get(ix), ix);
 			}
 		}
 		return true;

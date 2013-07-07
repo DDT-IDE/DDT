@@ -11,29 +11,28 @@
 
 package dtool.sourcegen;
 
+import static dtool.sourcegen.TemplatedSourceProcessor.StandardErrors.MISMATCHED_VARIATION_SIZE;
+import static dtool.sourcegen.TemplatedSourceProcessor.StandardErrors.REDEFINITION;
+import static dtool.sourcegen.TemplatedSourceProcessor.StandardErrors.UNDEFINED_REFER;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
+import dtool.sourcegen.TemplatedSourceProcessor.StandardErrors;
 
 /* BASIC EXPANSION FORMATS:
-
 A:  #@{1, 2, 3}         Unnamed-Expansion
-B:  #@EXP{1, 2, 3}      Definition, Named-Expansion  
-C:  #@EXP!{1, 2, 3}     Definition only
+B:  #@EXP{1, 2, 3}      Definition-Expansion
+B2: #@EXP!{1, 2, 3}     Definition-only
+Bx: #@EXP               Full-Reference
 
-F:  #@EXP               Named-Expansion with argument referral(EXP)
-G:  #@EXP!              NO LONGER VALID
+R1: #@{1, 2, 3}(EXP)    Expansion, pairing with active(EXP)
+R2: #@EXP2(EXP)         Refer-Expansion(EXP2), pairing with active(EXP)
+R3: #@EXP2{1,2,3}(EXP)  Definition-Expansion, pairing with active(EXP)
 
-EA: #@{1, 2, 3}(EXP)    Expansion, pairing with active(EXP)
-EB: #@(EXP)             NO LONGER VALID
-EC: #@EXP2{1,2,3}(EXP)  Definition, Named-Expansion, pairing with active(EXP)
-ED: #@EXP2(EXP)         Named-Expansion with argument referral(EXP2), pairing with active(EXP)
-
-H:  #@^EXP              Unnamed-Expansion with argument referral(EXP)
-I:  #@^EXP(EXP2)        Unnamed-Expansion with argument referral(EXP), pairing with active(EXP2)
-
+H:  #@^EXP              Unpaired Full-Reference
 */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProcessorCommonTest {
@@ -127,7 +126,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 		// Syntax errors: interactions:
 		
 		testSourceProcessing("#", "foo #@EXPANSION1{12,}:EXP:", checkMD("foo 12:EXP:"), checkMD("foo :EXP:"));
-
+		
 		testSourceProcessing("#", "> #,", 3); 
 		testSourceProcessing("#", "> #}", 3); 
 		
@@ -166,42 +165,30 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 			checkMD("foo var3#==")
 		);
 		
-		// B: Definition, Named-Expansion -- EA:
-		testSourceProcessing("#", 
-			"foo #@EXPANSION1{var1,var2#,,var3##}==#@{A,B,C}(EXPANSION1)",
-			
-			checkMD("foo var1==A"),
-			checkMD("foo var2,==B"),
-			checkMD("foo var3#==C")
-		);
+		// B:  #@EXP{1, 2, 3}      Definition-Expansion
 		//Error: redefined:
-		testSourceProcessing("#", "foo #@EXPANSION1{a,b} -- #@EXPANSION1{a,b}", 9); 
-		testSourceProcessing("#", "foo #@EXPANSION1{a,#@EXPANSION1{a,b}}", 4);
+		testSourceProcessing("#", "foo #@EXP1{a,b} -- #@EXP1{a,b}", REDEFINITION, "EXP1"); 
+		testSourceProcessing("#", "foo #@EXP1{a,#@EXP1{a,b}}", REDEFINITION, "EXP1");
+		testSourceProcessing("#", "foo #@EXP1《¤》", StandardErrors.NO_ARGUMENTS, "EXP1");
 		
+		// B2: #@EXP!{1, 2, 3}     Definition only
 		
-		// == C: Definition only ==
+		testSourceProcessing("#", "foo #@EXPANSION1! -- #@EXPANSION1{a,b}", 17); // Bad syntax: no args
+		testSourceProcessing("#", "foo #@! -- #@EXPANSION1{a,b}", 7); // Bad syntax: no id
 		
-		// C: Basic case 
-		testSourceProcessing("#", "> #@EXPANSION1!{A,B,C} b", checkMD(">  b"));
-		// needs F: to test more
+		testSourceProcessing("#", "foo #@EXPANSION1!{a,b} -- #@EXPANSION1{a,b}", REDEFINITION, "EXPANSION1"); 
 		
-		// F:  #@EXP               Named-Expansion with argument referral(EXP)
-		testSourceProcessing("#", 
-			"#@EXPANSION1!{var1,var2,var3}"+
-			"#@EXPANSION1 == #@{A,B,C}(EXPANSION1)",
-			
-			checkMD("var1 == A"),
-			checkMD("var2 == B"),
-			checkMD("var3 == C")
-		);
+		testSourceProcessing("#", "> #@EXPANSION1!{A,B,C} b", 
+			checkMD(">  b"));
+		
+		// Bx: #@EXP               Full-Reference
+		testSourceProcessing("#", "> #@EXP2", UNDEFINED_REFER, "EXP2");
 		
 		testSourceProcessing("#", 
-			"foo #@EXPANSION1{var1,var2,var3}==#@EXP2{VAR1,VAR2,VAR3}(EXPANSION1) ||"+
-			" #@EXPANSION1•X == #@EXP2",
-			
-			checkMD("foo var1==VAR1 || var1X == VAR1"),
-			checkMD("foo var2==VAR2 || var2X == VAR2"),
-			checkMD("foo var3==VAR3 || var3X == VAR3")
+			"#@EXPANSION1{var1,var2,var3} == #@EXPANSION1",
+			checkMD("var1 == var1"),
+			checkMD("var2 == var2"),
+			checkMD("var3 == var3")
 		);
 		
 		testSourceProcessing("#", 
@@ -215,16 +202,34 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 			checkMD("foo var3 == xxx -- var3")
 		);
 		
-		//Error: redefined
-		testSourceProcessing("#", "foo #@EXPANSION1!{a,b} -- #@EXPANSION1{a,b}", 8);
-		testSourceProcessing("#", "foo #@EXPANSION1!{a,#@EXPANSION1{a,b}} #@EXPANSION1", 5);
-		//Error: no args (syntax)
-		testSourceProcessing("#", "foo #@EXPANSION1! -- #@EXPANSION1{a,b}", 17);
+		testSourceProcessing("#", 
+			"#@EXPANSION1!{var1,var2,var3}"+ "#@EXPANSION1 == #@EXPANSION1",
+			checkMD("var1 == var1"),
+			checkMD("var2 == var2"),
+			checkMD("var3 == var3")
+		);
+		
+		testSourceProcessing("#", "foo #@EXPANSION1!{a,#@EXPANSION1{a,b}} #@EXPANSION1", REDEFINITION, "EXPANSION1"); 
 		
 		
-		// ============== EA: -- EB: -- EC: -- ED ==============
+		//R1: #@{1, 2, 3}(EXP)    Expansion, pairing with active(EXP)
+		//R2: #@EXP2(EXP)         Refer-Expansion(EXP2), pairing with active(EXP)
+		//R3: #@EXP2{1,2,3}(EXP)  Definition-Expansion, pairing with active(EXP)
 		
-		// EA: #@{1, 2, 3}(EXP)   Expansion, pairing with active(EXP)
+		
+		testSourceProcessing("#", "> #@(EXPANSION1)", 16); // Syntax error
+		// Error: undefined ref
+		testSourceProcessing("#", "> #@{A,B,C}(EXPANSION1)", UNDEFINED_REFER, ":EXPANSION1");
+		testSourceProcessing("#", "> #@EXP2(EXPANSION1)", UNDEFINED_REFER, "EXP2:EXPANSION1");
+		testSourceProcessing("#", "> #@EXP2{A,B,C}(EXPANSION1)", UNDEFINED_REFER, "EXP2:EXPANSION1");
+		testSourceProcessing("#", "#@H_EXP!{z1,z2,z3}"+ "> #@H_EXP(EXPANSION1)", UNDEFINED_REFER, "H_EXP:EXPANSION1");
+		//Error: Mismatched argument count:
+		testSourceProcessing("#", "> #@EXP1{a,b} -- #@{a}(EXP1)", MISMATCHED_VARIATION_SIZE, ":EXP1"); 
+		testSourceProcessing("#", "> #@EXP1{a,b} -- #@{a,b,c}(EXP1)", MISMATCHED_VARIATION_SIZE, ":EXP1");
+		testSourceProcessing("#", "> #@EXP1{a,b} -- #@EXP2{a,b,c}(EXP1)", MISMATCHED_VARIATION_SIZE, "EXP2:EXP1");
+		testSourceProcessing("#", "> #@H_EXP{a,b} -- #@{a,b,c}(H_EXP)", MISMATCHED_VARIATION_SIZE, ":H_EXP");
+		
+		
 		testSourceProcessing("#", 
 			"foo #@EXPANSION1{var1,var2,var3}==#@{A,B,C}(EXPANSION1)",
 			
@@ -234,74 +239,94 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 		);
 		
 		testSourceProcessing("#", 
-			"foo #@EXPANSION1!{var1,var2,var3}==#@{A,B,C}(EXPANSION1)==#@EXPANSION1",
+			"#@EXPANSION1!{var1,var2,var3}"+ "#@EXPANSION1 == #@{A,B,C}(EXPANSION1)",
 			
-			checkMD("foo ==A==var1"),
-			checkMD("foo ==B==var2"),
-			checkMD("foo ==C==var3")
+			checkMD("var1 == A"),
+			checkMD("var2 == B"),
+			checkMD("var3 == C")
 		);
 		
-		// EC: #@EXP2{1,2,3}(EXP)  Definition, Named-Expansion, pairing with active(EXP)
 		testSourceProcessing("#", 
-			"foo #@EXPANSION1{var1,var2,var3}==#@EXP{A,B,C}(EXPANSION1) #@{x,y,z}(EXP)",
+			"#@EXPANSION1!{var1,var2,var3}" + "#@{A,B,C}(EXPANSION1) == #@EXPANSION1",
 			
-			checkMD("foo var1==A x"), 
-			checkMD("foo var2==B y"),
-			checkMD("foo var3==C z")
+			checkMD("A == var1"),
+			checkMD("B == var2"),
+			checkMD("C == var3")
 		);
 		
-		// Make sure both EXP and EXPANSION1 IDs are ACTIVATED
-		testSourceProcessing("#", 
-			"foo #@EXPANSION1!{var1,var2,var3}=>#@EXP{A,B,C}(EXPANSION1) #@{x,y,z}(EXP)--#@EXPANSION1",
+		testSourceProcessing("#", "#@EXP2!{A,B,C}"+
+			"#@EXP1{var1,var2,var3}"+"==#@EXP2(EXP1) -- #@{x,y,z}(EXP1)",
 			
-			checkMD("foo =>A x--var1"), 
-			checkMD("foo =>B y--var2"),
-			checkMD("foo =>C z--var3")
+			checkMD("var1==A -- x"),
+			checkMD("var2==B -- y"),
+			checkMD("var3==C -- z")
+		);
+		testSourceProcessing("#", 
+			"#@EXP1{var1,var2,var3}"+"==#@EXP2{A,B,C}(EXP1) -- #@{x,y,z}(EXP1)",
+			
+			checkMD("var1==A -- x"), 
+			checkMD("var2==B -- y"),
+			checkMD("var3==C -- z")
 		);
 		
-		//ED: #@EXP2(EXP)         Named-Expansion with argument referral(EXP2), pairing with active(EXP)
+		// Make sure both H_EXP and EXP ids can be referred (master id != master element id)
 		testSourceProcessing("#", 
-			"#@EXP1{var1,var2,var3}"+"#@EXP2!{z1,z2,z3}"+"> #@EXP2(EXP1) -- #@{A,B,C}(EXP1)",
+			"#@H_EXP!{var1,var2,var3}" + "#@EXP{A,B,C}(H_EXP) #@{x,y,z}(EXP)--#@H_EXP",
+			
+			checkMD("A x--var1"), 
+			checkMD("B y--var2"),
+			checkMD("C z--var3")
+		);
+		
+		// test indirect pairing master: EXP2->EXP1
+		testSourceProcessing("#", 
+			"#@EXP1{var1,var2,var3}"+"#@EXP2!{z1,z2,z3}"+"> #@EXP2(EXP1) -- #@{A,B,C}(EXP2)",
 			
 			checkMD("var1> z1 -- A"),
 			checkMD("var2> z2 -- B"),
 			checkMD("var3> z3 -- C")
 		);
-
-		// Error: undefined ref
-		testSourceProcessing("#", "> #@(EXPANSION1)", 2); 
-		testSourceProcessing("#", "> #@{A,B,C}(EXPANSION1)", 2);
-		testSourceProcessing("#", "> #@EXP2{A,B,C}(EXPANSION1)", 2);
-		testSourceProcessing("#",                      "> #@EXP2(EXPANSION1)", 2);
-		testSourceProcessing("#", "#@EXP2!{z1,z2,z3}"+ "> #@EXP2(EXPANSION1)", 2);
-		testSourceProcessing("#", "> #@EXP2", 2);
-		//Error: Mismatched argument count:
-		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@{a}(EXPANSION1)", 7); 
-		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@{a,b,c}(EXPANSION1)", 7);
-		testSourceProcessing("#", "> #@EXPANSION1{a,b} -- #@EXP2{a,b,c}(EXPANSION1)", 7);
-		testSourceProcessing("#", "#@EXP2!{a,b,c}"+ "> #@EXP2(EXPANSION1)", 2);
+		// another indirect pairing master (through define-only) : EXP2->EXP1 
+		testSourceProcessing("#", 
+			"#@EXP1{var1,var2,var3}"+"#@EXP2!{z1,z2,z3}(EXP1)"+"> #@EXP2 -- #@{A,B,C}(EXP2)",
+			
+			checkMD("var1> z1 -- A"),
+			checkMD("var2> z2 -- B"),
+			checkMD("var3> z3 -- C")
+		);
+		
+		testSourceProcessing("#", 
+			"#@EXPANSION1{var1,var2,var3}==#@EXP2{VAR1,VAR2,VAR3}(EXPANSION1) ||"+
+			" #@EXPANSION1•X == #@EXP2",
+			
+			checkMD("var1==VAR1 || var1X == VAR1"),
+			checkMD("var2==VAR2 || var2X == VAR2"),
+			checkMD("var3==VAR3 || var3X == VAR3")
+		);
+		
 		
 		// H:  #@^EXP              Unnamed-Expansion with argument referral(EXP)
 		
 		testSourceProcessing("#", "> #@^{1,2,3}", 5); // Bad syntax: no name
 		testSourceProcessing("#", "> #@^EXP1!{1,2,3}", 10); // Bad syntax: has define only
+		testSourceProcessing("#", "> #@^EXP1{1,2,3}", 16); // Bad syntax: ^ with arguments (makes definition)
+		testSourceProcessing("#", "> #@^EXP1(EXP2)", 10); // Bad syntax: has refer id
 		
 		GeneratedSourceChecker[] expectedCasesH = array(
 			checkMD("> var1 -- var1"), checkMD("> var1 -- var2"), checkMD("> var1 -- var3"),
 			checkMD("> var2 -- var1"), checkMD("> var2 -- var2"), checkMD("> var2 -- var3"),
 			checkMD("> var3 -- var1"), checkMD("> var3 -- var2"), checkMD("> var3 -- var3"));
 		
-		testSourceProcessing("#", 
-			"> #@^EXP1{var1,var2,var3} -- #@EXP1", expectedCasesH
+		testSourceProcessing("#",
+			"#@EXP1!{var1,var2,var3}> #@^EXP1 -- #@EXP1", expectedCasesH
 		);
 		testSourceProcessing("#", 
 			"> #@EXP1{var1,var2,var3} -- #@^EXP1", expectedCasesH
 		);
 		
-		// I:  #@^EXP(EXP2)        Unnamed-Expansion with argument referral(EXP), pairing with active(EXP2)
 		testSourceProcessing("#", 
 			"#@EXP1!{var1,var2,var3}"+ "#@EXP2!{1,2,3}"+
-			"> #@EXP1 -- #@EXP2 - #@^EXP1(EXP2)", 
+			"> #@EXP1 -- #@EXP2 - #@EXP1(EXP2)", 
 			
 			checkMD("> var1 -- 1 - var1"), checkMD("> var1 -- 2 - var2"), checkMD("> var1 -- 3 - var3"),
 			checkMD("> var2 -- 1 - var1"), checkMD("> var2 -- 2 - var2"), checkMD("> var2 -- 3 - var3"),
@@ -319,14 +344,58 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 		
 		// ============== Advanced cases ==============
 		
-		// Visibility of referrals:
-		testSourceProcessing("#", ">#@{#@INNER_EXP{A,B,C},#@INNER_EXP{A,B,C}}", 
-			checkMD(">A"),checkMD(">B"),checkMD(">C"),
-			checkMD(">A"),checkMD(">B"),checkMD(">C"));
-		testSourceProcessing("#", "> #@{#@INNER_EXP{A,B,C}, #@(INNER_EXP)}", 3); // Error: undefined ref
-		testSourceProcessing("#", "> #@{#@INNER_EXP{A,B,C}, } #@(INNER_EXP)", 4); // Error: undefined ref
+		// ------------- Test some nesting issues: ------------- 
 		
-		// Nesting of expansions
+		testSourceProcessing("#", 
+			"#@EXP{var1,#@SUB【var2A●var2B】,var3}==#@{A,#@SUB,#@【C】}(EXP)",
+			checkMD("var1==A"),
+			checkMD("var2A==var2A"),
+			checkMD("var2B==var2B"),
+			checkMD("var3==C")
+		);
+		testSourceProcessing("#", 
+			"#@EXP{var1,#@SUB【var2A●var2B】,var3}==#@{A,#@【var2A●var2B】(SUB),#@【C】}(EXP)",
+			checkMD("var1==A"), 
+			checkMD("var2A==var2A"), 
+			checkMD("var2B==var2B"), 
+			checkMD("var3==C")
+		);
+		
+		testSourceProcessing("#", 
+			"#@EXPANSION1{var1,var2,var3}==#@{A,#@【B1●B2】,C}(EXPANSION1)",
+			checkMD("var1==A"), 
+			checkMD("var2==B1"), 
+			checkMD("var2==B2"), 
+			checkMD("var3==C")
+		);
+		
+		
+		testSourceProcessing("#", 
+			"foo #@EXPANSION1{var1,#@【var2A●var2B】,var3}==#@{A,B,C}(EXPANSION1)",
+			checkMD("foo var1==A"),
+			checkMD("foo var2A==B"),
+			checkMD("foo var2B==B"),
+			checkMD("foo var3==C")
+		);
+		
+		// Visibility of nested-definitions:
+		testSourceProcessing("#", ">#@{#@INNER_EXP{A,B,C},#@INNER_EXP{A,B}}", 
+			checkMD(">A"),checkMD(">B"),checkMD(">C"),
+			checkMD(">A"),checkMD(">B"));
+		
+		testSourceProcessing("#", "> #@{#@INNER_EXP{A,B,C}, #@INNER_EXP}", UNDEFINED_REFER, "INNER_EXP");
+		testSourceProcessing("#", "> #@{#@INNER_EXP{A,B,C}, } #@INNER_EXP", UNDEFINED_REFER, "INNER_EXP");
+		
+		// Define-only with nested: TODO:
+		testSourceProcessing("#", 
+			"#@H_EXP!{var1,#@SUB【var2A●var2B】,var3}"+"#@H_EXP==#@H_EXP",
+			checkMD("var1==var1"),
+			checkMD("var2A==var2A"),
+			checkMD("var2B==var2B"),
+			checkMD("var3==var3")
+		);
+		
+		// Nested-definitions:
 		testSourceProcessing("#", 
 			">#@EXPA!{A,B,C} #@X{#@EXPA,x} #@X",
 			
@@ -367,8 +436,8 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 		
 		testSourceProcessing("#", 
 			"#:SPLIT ____\n"+"#@EXPANSION1{var1,var2#,,var3##}"+
-			"#:SPLIT\n> #@(EXPANSION1)",
-			2 // Not defined
+			"#:SPLIT\n> #@EXPANSION1",
+			StandardErrors.UNDEFINED_REFER, "EXPANSION1"
 		);
 		
 		testSourceProcessing("#", 
@@ -376,7 +445,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 			"#@EXPANSION1{var1,var2,var3}"+
 			"#@EXPANSION2{A,BB,CCC}"+
 			"#:SPLIT ___\n> #@EXPANSION2{xxxA,xxxb,xxxc}",
-			2 // Redefined
+			StandardErrors.REDEFINITION, "EXPANSION2"
 		);
 		
 		
@@ -441,13 +510,36 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 		
 		// Nested
 		testSourceProcessing("#", 
-			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
-			"#:SPLIT\n> #@OUTER{.#@EXPANSION1.,B} -- #@EXPANSION1",
+			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}━━\n"+
+			"> #@OUTER{.#@EXPANSION1.,B} -- #@EXPANSION1",
 			
 			checkMD("> .var1. -- var1"),
 			checkMD("> .var2. -- var2"),
 			checkMD("> .var3. -- var3"),
 			checkMD("> B -- var1"), checkMD("> B -- var2"), checkMD("> B -- var3")
+		);
+		
+		testSourceProcessing("#", 
+			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}━━\n"+
+			"> #@EXPANSION1 -- #@OUTER{.#@EXPANSION1.,B}",
+			
+			checkMD("> var1 -- .var1."), checkMD("> var1 -- B"), 
+			checkMD("> var2 -- .var2."), checkMD("> var2 -- B"),
+			checkMD("> var3 -- .var3."), checkMD("> var3 -- B")
+		);
+		
+		testSourceProcessing("#", 
+			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}━━\n"+
+			"> #@{b,.#@EXPANSION1.} -- #@OUTER{.#@EXPANSION1.,B}",
+			
+			checkMD("> b -- .var1."),
+			checkMD("> b -- .var2."),
+			checkMD("> b -- .var3."),
+			checkMD("> b -- B"),
+			
+			checkMD("> .var1. -- .var1."), checkMD("> .var1. -- B"), 
+			checkMD("> .var2. -- .var2."), checkMD("> .var2. -- B"),
+			checkMD("> .var3. -- .var3."), checkMD("> .var3. -- B")
 		);
 		
 		testSourceProcessing("#", 
@@ -462,14 +554,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 			checkMD("> ~var3~ -- var3")
 		);
 		
-		testSourceProcessing("#", 
-			"#:HEADER ____\n"+"#@EXPANSION1{var1,var2,var3}"+
-			"#:SPLIT\n> #@EXPANSION1 -- #@OUTER{.#@EXPANSION1.,B}",
-			
-			checkMD("> var1 -- .var1."), checkMD("> var1 -- B"), 
-			checkMD("> var2 -- .var2."), checkMD("> var2 -- B"),
-			checkMD("> var3 -- .var3."), checkMD("> var3 -- B")
-		);
+
 		
 	}
 	
@@ -523,19 +608,20 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 			)
 		);
 		
-		// Metadata in header:
-		testSourceProcessing("#",  "#:HEADER ____\n"+"> #@{A,B,C}", 2);
+		// Unnamed definitions in header
+		testSourceProcessing("#",  "#:HEADER ____\n"+"> #@{A,B,C}", 
+			2);
 		
 		// Performance test:
 		AnnotatedSource[] processTemplatedSource = TemplatedSourceProcessor.processTemplatedSource("#", 
 			"#:HEADER ____\n"+
 			">#@N{X#tag(arg){xxx} #tag2(arg){xxx} #tag3(arg){xxx}}"+
-			" #@N2!{a#@(N),b#@(N),c#@(N),d#@(N),e#@(N),f#@(N)),g#@(N),h#@(N),k#@(N),l#@(N)}"+
-			" #@N3{#@(N2),#@(N2),#@(N2),#@(N2),#@(N2),#@(N2)),#@(N2),#@(N2),#@(N2),#@(N2)}"+
-			" #@N4{#@(N2),#@(N2),#@(N2),#@(N2),#@(N2),#@(N2)),#@(N2),#@(N2),#@(N2),#@(N2)}"+
-			" #@N5{#@(N2),#@(N2),#@(N2),#@(N2),#@(N2),#@(N2)),#@(N2),#@(N2),#@(N2),#@(N2)}"+
-			" #@N6{#@(N2),#@(N2),#@(N2),#@(N2),#@(N2),#@(N2)),#@(N2),#@(N2),#@(N2),#@(N2)}"+
-			" #@N7{#@(N2),#@(N2),#@(N2),#@(N2),#@(N2),#@(N2)),#@(N2),#@(N2),#@(N2),#@(N2)}"+
+			" #@N2!{a#@N,b#@N,c#@N,d#@N,e#@N,f#@N),g#@N,h#@N,k#@N,l#@N}"+
+			" #@N3{#@N2,#@N2,#@N2,#@N2,#@N2,#@N2),#@N2,#@N2,#@N2,#@N2}"+
+			" #@N4{#@N2,#@N2,#@N2,#@N2,#@N2,#@N2),#@N2,#@N2,#@N2,#@N2}"+
+			" #@N5{#@N2,#@N2,#@N2,#@N2,#@N2,#@N2),#@N2,#@N2,#@N2,#@N2}"+
+			" #@N6{#@N2,#@N2,#@N2,#@N2,#@N2,#@N2),#@N2,#@N2,#@N2,#@N2}"+
+			" #@N7{#@N2,#@N2,#@N2,#@N2,#@N2,#@N2),#@N2,#@N2,#@N2,#@N2}"+
 			"==");
 		
 		System.out.println(processTemplatedSource.length);
