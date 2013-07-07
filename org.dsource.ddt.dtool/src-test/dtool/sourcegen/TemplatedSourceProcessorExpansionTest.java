@@ -11,7 +11,9 @@
 
 package dtool.sourcegen;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
@@ -32,10 +34,11 @@ H:  #@^EXP              Unnamed-Expansion with argument referral(EXP)
 I:  #@^EXP(EXP2)        Unnamed-Expansion with argument referral(EXP), pairing with active(EXP2)
 
 */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProcessorCommonTest {
 	
 	@Test
-	public void testExpansionSyntax() throws Exception { testExpansionSyntax$(); }
+	public void test1_ExpansionSyntax() throws Exception { testExpansionSyntax$(); }
 	public void testExpansionSyntax$() throws Exception {
 		// Basic syntax, escapes
 		
@@ -67,7 +70,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 	}
 	
 	@Test
-	public void testExpansionAdvancedSyntax() throws Exception { testExpansionAdvancedSyntax$(); }
+	public void test2_ExpansionAdvancedSyntax() throws Exception { testExpansionAdvancedSyntax$(); }
 	public void testExpansionAdvancedSyntax$() throws Exception {
 		// Different kmarker
 		testSourceProcessing("#!", 
@@ -117,7 +120,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 		testSourceProcessing("#", "> #MD(►xyz, line\n){ ►ABC,line}==", 
 			checkSourceOnly("> ABC,line==", 1)); 
 		testSourceProcessing("#", "> #MD:\n►asd, line\n ==", 
-			checkMD("> ", new MetadataEntry("MD", null, "asd, line\n ==", 2)));
+			checkMD("> ", new MetadataEntry("MD", null, "asd, line\n ==", 2, false)));
 		
 		
 		// Syntax errors: interactions:
@@ -150,7 +153,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 	}
 	
 	@Test
-	public void testExpansion() throws Exception { testExpansion$(); }
+	public void test3_Expansion() throws Exception { testExpansion$(); }
 	public void testExpansion$() throws Exception {
 		
 		// A: Unnamed-Expansion
@@ -334,10 +337,11 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 			
 			checkMD("> A A"), checkMD("> B B"), checkMD("> C C"), checkMD("> x x")
 		);
+		
 	}
 	
 	@Test
-	public void testDiscard() throws Exception { testDiscard$(); }
+	public void test4_Discard() throws Exception { testDiscard$(); }
 	public void testDiscard$() throws Exception {
 		
 		testSourceProcessing("#", "> #@{A,B #:DISCARD_CASE ,C}==",
@@ -357,7 +361,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 	}
 	
 	@Test
-	public void testExpansionWithSplit() throws Exception { testExpansionWithSplit$(); }
+	public void test5_ExpansionWithSplit() throws Exception { testExpansionWithSplit$(); }
 	public void testExpansionWithSplit$() throws Exception {
 		
 		testSourceProcessing("#", 
@@ -471,7 +475,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 	/* ------------------------  METADATA-EXPANSION interactions ------------------------ */
 	
 	@Test
-	public void testMetadata_Interactions() throws Exception { testMetadata_Interactions$(); }
+	public void test6_Metadata_Interactions() throws Exception { testMetadata_Interactions$(); }
 	public void testMetadata_Interactions$() throws Exception {
 		testSourceProcessing("#", 
 			"asdf #{#}#tag_A(asfd,3,4){xxx},abc###tag_B(arg1,arg2,arg3){sourceValue2}}==#{1,xxx}",
@@ -514,7 +518,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 			),
 			checkMD(
 				"multilineMD lineOther4\n",
-				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 12)
+				new MetadataEntry("error", "arg1,arg2,arg3", " line1\nline2\nline3\n", 12, false)
 			)
 		);
 		
@@ -537,7 +541,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 	}
 	
 	@Test
-	public void testExpansionInMetadata() throws Exception { testExpansionInMetadata$(); }
+	public void test6b_ExpansionInMetadata() throws Exception { testExpansionInMetadata$(); }
 	public void testExpansionInMetadata$() throws Exception {
 		
 		testSourceProcessing("#", 
@@ -571,20 +575,21 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 				new MetadataEntry("nestedMD", null, "nestedMDsrc C", 23))
 		);
 		
+		MetadataEntry top;
 		testSourceProcessing("#", 
 			"> #@EXP{AA,B,CCCC} #tag(arg):\ntagMD #nestedMD{xxx}",
 			
 			checkMD("> AA ", 
-				new MetadataEntry("tag", "arg", "tagMD xxx", 5),
-				new MetadataEntry("nestedMD", null, "xxx", -1))
+				top = new MetadataEntry("tag", "arg", "tagMD xxx", 5, false),
+				new MetadataEntry("nestedMD", null, "xxx", 6, top))
 				,
 			checkMD("> B ", 
-				new MetadataEntry("tag", "arg", "tagMD xxx", 4),
-				new MetadataEntry("nestedMD", null, "xxx", -1))
+				top = new MetadataEntry("tag", "arg", "tagMD xxx", 4, false),
+				new MetadataEntry("nestedMD", null, "xxx", 6, top))
 				,
 			checkMD("> CCCC ", 
-				new MetadataEntry("tag", "arg", "tagMD xxx", 7),
-				new MetadataEntry("nestedMD", null, "xxx", -1)
+				top = new MetadataEntry("tag", "arg", "tagMD xxx", 7, false),
+				new MetadataEntry("nestedMD", null, "xxx", 6, top)
 				)
 		);
 	}
@@ -592,7 +597,7 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 	/* ------------------------  CONDITIONAL EXPANSION  ------------------------ */
 	
 	@Test
-	public void testIfElseExpansion() throws Exception { testIfElseExpansion$(); }
+	public void test9_IfElseExpansion() throws Exception { testIfElseExpansion$(); }
 	public void testIfElseExpansion$() throws Exception {
 		testSourceProcessing("#", 
 			"> #@{A,B#var(Bactive)} #?var{THEN}-#?var!{NOT_THEN}",

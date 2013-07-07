@@ -9,7 +9,7 @@ import dtool.tests.CommonTest;
 
 public class TemplatedSourceProcessorCommonTest extends CommonTest {
 	
-	public static final class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
+	public static class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
 		@Override
 		protected void reportError(int offset) throws TemplatedSourceException {
 			assertFail();
@@ -17,8 +17,13 @@ public class TemplatedSourceProcessorCommonTest extends CommonTest {
 	}
 	
 	public void testSourceProcessing(String defaultMarker, String source, GeneratedSourceChecker... checkers) {
+		testSourceProcessing_____(defaultMarker, source, checkers);
+	}
+	
+	public void testSourceProcessing_____(String defaultMarker, String source, GeneratedSourceChecker... checkers) {
 		TemplatedSourceProcessor tsp = new TestsTemplateSourceProcessor();
-		visitContainer(tsp.processSource_unchecked(defaultMarker, source), checkers);
+		AnnotatedSource[] annotatedSource = tsp.processSource_unchecked(defaultMarker, source);
+		visitContainer(annotatedSource, checkers);
 	}
 	
 	public void testSourceProcessing(String marker, String source, int errorOffset) {
@@ -59,9 +64,11 @@ public class TemplatedSourceProcessorCommonTest extends CommonTest {
 	protected void checkMetadata(MetadataEntry mde1, MetadataEntry expMde) {
 		assertAreEqual(mde1.name, expMde.name);
 		assertAreEqual(mde1.value, expMde.value);
+		assertAreEqual(mde1.offset, expMde.offset);
+		assertAreEqual(mde1.isTopLevelMetadata(), expMde.isTopLevelMetadata());
+		assertAreEqual(mde1.sourceWasIncluded, expMde.sourceWasIncluded);
 		if(expMde.sourceValue != DONT_CHECK)
 			assertAreEqual(mde1.sourceValue, expMde.sourceValue);
-		assertAreEqual(mde1.offset, expMde.offset);
 	}
 	
 	public static String prepString(String source, String openDelim, String closeDelim) {

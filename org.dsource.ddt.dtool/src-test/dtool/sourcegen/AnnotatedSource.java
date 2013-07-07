@@ -26,22 +26,39 @@ public class AnnotatedSource {
 		public final String value;
 		public final int offset;
 		public final String sourceValue;
+		// the parent MDE to which offset applies, or null for top-level TODO
+		private final Object parentScopeMDE; 
 		public final boolean sourceWasIncluded;
 		
 		public MetadataEntry(String name, String extraValue, String associatedSource, int offset) {
-			this(name, extraValue, associatedSource, offset, true);
+			this(name, extraValue, associatedSource, offset, null, true);
+		}
+		public MetadataEntry(String name, String extraValue, String associatedSource, int offset, 
+			Object parentScopeMDE) {
+			this(name, extraValue, associatedSource, offset, parentScopeMDE, true);
+		}
+		public MetadataEntry(String name, String extraValue, String associatedSource, int offset, 
+			boolean sourceWasIncluded) {
+			this(name, extraValue, associatedSource, offset, null, sourceWasIncluded);
 		}
 		
-		public MetadataEntry(String name, String extraValue, String mdSource, int offset, boolean sourceWasIncluded) {
+		public MetadataEntry(String name, String extraValue, String mdSource, int offset, 
+			Object parentScopeMDE, boolean sourceWasIncluded) {
 			this.name = name;
 			this.value = extraValue;
-			this.sourceValue = mdSource;
 			this.offset = offset;
+			assertTrue(offset >= 0);
+			this.sourceValue = mdSource;
+			this.parentScopeMDE = parentScopeMDE;
 			this.sourceWasIncluded = sourceWasIncluded;
 		}
 		
 		public SourceRange getSourceRange() {
 			return new SourceRange(offset, sourceValue == null ? 0 : sourceValue.length());
+		}
+		
+		public boolean isTopLevelMetadata() {
+			return parentScopeMDE == null;
 		}
 		
 		@Override
@@ -99,7 +116,6 @@ public class AnnotatedSource {
 			MetadataEntry mde = mdeIter.next();
 			assertTrue(offset >= 0 && maxSourceOffset >= offset);
 			int nextOffset = mde.offset;
-			assertTrue(nextOffset != -1); //TODO need to fix this
 			assertTrue(nextOffset >= offset);
 			if(nextOffset > maxSourceOffset) {
 				mdeIter.previous();

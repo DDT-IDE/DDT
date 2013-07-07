@@ -34,8 +34,9 @@ import org.junit.runners.Parameterized;
 
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
 import dtool.sourcegen.TemplatedSourceProcessor;
+import dtool.sourcegen.TemplatedSourceProcessorCommonTest.TestsTemplateSourceProcessor;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
 import dtool.tests.DToolTests;
 import dtool.tests.DeeFileBasedTest;
 import dtool.util.NewUtils;
@@ -56,7 +57,7 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 		testsLogger.println(">>>>>>============ " + klassSimpleName + " COMMON DEFINITIONS FILES: ============" );
 		for (File headerFile : commonDefsFileList) {
 			testsLogger.println(headerFile);
-			TemplatedSourceProcessor tsp = new TestsTemplateSourceProcessor() {
+			TemplatedSourceProcessor tsp = new DeeTestsTemplateSourceProcessor() {
 				@Override
 				protected void addFullyProcessedSourceCase(ProcessingState caseState) {
 					assertTrue(caseState.isHeaderCase);
@@ -109,7 +110,7 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 	}
 	
 	public AnnotatedSource[] getTestCasesFromFile(Map<String, TspExpansionElement> commonDefinitions) {
-		TestsTemplateSourceProcessor tsp = new TestsTemplateSourceProcessor();
+		DeeTestsTemplateSourceProcessor tsp = new DeeTestsTemplateSourceProcessor();
 		if(commonDefinitions != null) {
 			tsp.addGlobalExpansions(commonDefinitions);
 		}
@@ -120,15 +121,10 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 	}
 	
 	public static AnnotatedSource[] getSourceBasedTestCases(String fileSource) {
-		return new TestsTemplateSourceProcessor().processSource_unchecked("#", fileSource);
+		return new DeeTestsTemplateSourceProcessor().processSource_unchecked("#", fileSource);
 	}
 	
-	protected static class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
-		@Override
-		protected void reportError(int offset) throws TemplatedSourceException {
-			assertFail();
-		}
-		
+	protected static class DeeTestsTemplateSourceProcessor extends TestsTemplateSourceProcessor {
 		@Override
 		protected void putExpansion(ProcessingState sourceCase, String expansionId, TspExpansionElement expansion) {
 			addExpansion(sourceCase, expansionId, expansion);
@@ -191,7 +187,7 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 	public static void checkOffsetInvariant(AnnotatedSource testSource) {
 		int mdOffset = 0;
 		for (MetadataEntry mde : testSource.metadata) {
-			if(mde.offset != -1) {
+			if(mde.isTopLevelMetadata()) {
 				assertTrue(mde.offset >= mdOffset);
 			}
 			mdOffset = mde.offset;

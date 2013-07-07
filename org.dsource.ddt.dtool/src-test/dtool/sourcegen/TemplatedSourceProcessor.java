@@ -118,12 +118,22 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 	
 	// --------------------- Generation phase ---------------------
 	
+	protected void checkError(boolean errorCondition, ProcessingState sourceCase) throws TemplatedSourceException {
+		if(errorCondition) {
+			reportError(sourceCase); 
+		}
+	}
+	
+	protected void reportError(ProcessingState sourceCase) throws TemplatedSourceException {
+		reportError(sourceCase.sourceSB.length());
+	}
+	
 	public class ProcessingState {
 		
 		public final boolean isHeaderCase;
 		public final String originalSource;
-		protected final StringBuilder originalSourceSB = new StringBuilder();
-		protected StringBuilder sourceSB = originalSourceSB;
+		protected StringBuilder sourceSB = new StringBuilder();
+		protected TemporaryMetadataEntry topLevelMDE = null;
 		public final ArrayList<MetadataEntry> metadata = new ArrayList<MetadataEntry>();
 		public final Map<String, TspExpansionElement> expansionDefinitions = 
 			new HashMap<String, TspExpansionElement>();
@@ -134,11 +144,13 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 			this.originalSource = originalSource;
 		}
 		
-		public ProcessingState(boolean isHeaderCase, String originalSrc, String source, List<MetadataEntry> metadata,
-			Map<String, Integer> activeExpansions, Map<String, TspExpansionElement> expansionDefinitions) {
+		public ProcessingState(boolean isHeaderCase, String originalSrc, StringBuilder sourceSB, 
+			TemporaryMetadataEntry topLevelMDE, List<MetadataEntry> metadata, Map<String, Integer> activeExpansions,
+			Map<String, TspExpansionElement> expansionDefinitions) {
 			this.isHeaderCase = isHeaderCase;
 			this.originalSource = originalSrc;
-			this.sourceSB.append(source);
+			this.sourceSB.append(sourceSB.toString());
+			this.topLevelMDE = topLevelMDE;
 			this.metadata.addAll(metadata);
 			this.activeExpansions.putAll(activeExpansions);
 			this.expansionDefinitions.putAll(expansionDefinitions);
@@ -146,13 +158,8 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 		
 		@Override
 		public ProcessingState clone() {
-			String source = sourceSB.toString();
-			return new ProcessingState(isHeaderCase, originalSource, source, metadata, activeExpansions,
-				expansionDefinitions);
-		}
-		
-		public boolean isTopMostSourceOutput() {
-			return sourceSB == originalSourceSB;
+			return new ProcessingState(isHeaderCase, originalSource, sourceSB, topLevelMDE, metadata, 
+				activeExpansions, expansionDefinitions);
 		}
 		
 		public TspExpansionElement getExpansion(String expansionId) {
@@ -195,17 +202,17 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 			} else if(tspElem instanceof TspMetadataElement) {
 				final TspMetadataElement mdElem = (TspMetadataElement) tspElem;
 				
-				StringBuilder originalSB = sourceCase.sourceSB;
-				
 				int metadataIx = sourceCase.metadata.size();
-				sourceCase.metadata.add(new TemporaryMetadataEntry(mdElem));
-				final TspMetadataEndElement mdEndElem = new TspMetadataEndElement(mdElem, originalSB, metadataIx);
+				TemporaryMetadataEntry temporaryParentMDE = new TemporaryMetadataEntry(mdElem);
+				sourceCase.metadata.add(temporaryParentMDE);
+				final TspMetadataEndElement mdEndElem = new TspMetadataEndElement(mdElem, sourceCase, metadataIx);
 				
-				if(mdElem.associatedElements != null) {
-					Argument sourceArgument = mdElem.associatedElements;
+				if(mdElem.childElements != null) {
+					Argument sourceArgument = mdElem.childElements;
 					
 					if(mdElem.outputSource == false) {
 						sourceCase.sourceSB = new StringBuilder(); // Create a temporary source output
+						sourceCase.topLevelMDE = temporaryParentMDE;
 					}
 					
 					ICopyableIterator<TspElement> mdArgIter = ChainedIterator2.create(
@@ -247,21 +254,37 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 	
 	protected class TemporaryMetadataEntry extends MetadataEntry {
 		public TemporaryMetadataEntry(TspMetadataElement mdElem) {
-			super(mdElem.tag, mdElem.value, null, -1, false);
+			super(mdElem.tag, mdElem.value, null, 0, null, false);
 		}
 	}
 	
 	protected static class TspMetadataEndElement extends TspElement {
 		public final TspMetadataElement mdElem;
-		public final StringBuilder originalSB;
-		public final int metadataIx;
 		public final int offset;
+		public final int metadataIx;
+		private final StringBuilder originalSB;
+		public final TemporaryMetadataEntry originalTopLevelMDE;
+		public final ProcessingState originalSourceCase;
 		
-		public TspMetadataEndElement(TspMetadataElement mdElem, StringBuilder originalSB, int metadataIx) {
+		public TspMetadataEndElement(TspMetadataElement mdElem, ProcessingState sourceCase,  int metadataIx) {
 			this.mdElem = mdElem;
-			this.originalSB = originalSB;
-			this.offset = originalSB.length();
+			this.offset = sourceCase.sourceSB.length();
 			this.metadataIx = metadataIx;
+			this.originalSourceCase = sourceCase;
+			this.originalSB = sourceCase.sourceSB;
+			if(mdElem.childElements != null && mdElem.outputSource == false) {
+				this.originalTopLevelMDE = sourceCase.topLevelMDE;
+			} else {
+				this.originalTopLevelMDE = null;
+			}
+		}
+		
+		public StringBuilder getOriginalSB(ProcessingState sourceCase) {
+			if(originalSourceCase == sourceCase) {
+				return originalSB;
+			} else {
+				return new StringBuilder(originalSB); // An expansion has occurred so we need to duplicate
+			}
 		}
 		
 		@Override
@@ -275,20 +298,19 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 		String associatedSource = null;
 		
 		TspMetadataElement mdElem = mdEndElem.mdElem;
-		if(mdElem.associatedElements != null) {
+		if(mdElem.childElements != null) {
 			if(mdElem.outputSource) {
 				associatedSource = sourceCase.sourceSB.substring(offset, sourceCase.sourceSB.length());
 			} else {
 				associatedSource = sourceCase.sourceSB.toString();
-				sourceCase.sourceSB = mdEndElem.originalSB; // Restore original source output
+				sourceCase.sourceSB = mdEndElem.getOriginalSB(sourceCase); // Restore original source output
+				sourceCase.topLevelMDE = mdEndElem.originalTopLevelMDE;
 			}
 		}
 		boolean sourceWasIncluded = mdElem.outputSource;
-		if(!sourceCase.isTopMostSourceOutput()) {
-			offset = -1; 
-		}
 		
-		MetadataEntry mde = new MetadataEntry(mdElem.tag, mdElem.value, associatedSource, offset, sourceWasIncluded);
+		MetadataEntry mde = new MetadataEntry(mdElem.tag, mdElem.value, associatedSource, offset, 
+			sourceCase.topLevelMDE, sourceWasIncluded);
 		assertTrue(sourceCase.metadata.get(mdEndElem.metadataIx) instanceof TemporaryMetadataEntry);
 		sourceCase.metadata.set(mdEndElem.metadataIx, mde);
 	}
@@ -338,8 +360,6 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 			
 			referredExpansion = sourceCase.getExpansion(expansionElem.pairedExpansionId);
 			if(expansionElem.anonymousExpansion) {
-				// TODO: this situation has no test cases that test it 
-				// allow activating a referred expansion that is no defied.
 			} else {
 				checkError(referredExpansion == null, sourceCase); // If referred, then it must be defined
 				checkError(arguments.size() != referredExpansion.arguments.size(), sourceCase);
@@ -370,16 +390,6 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 	protected void putExpansion(ProcessingState sourceCase, final String expansionId, 
 		TspExpansionElement expansionElem) {
 		sourceCase.putExpansion(expansionId, expansionElem);
-	}
-	
-	protected void checkError(boolean errorCondition, ProcessingState sourceCase) throws TemplatedSourceException {
-		if(errorCondition) {
-			reportError(sourceCase); 
-		}
-	}
-	
-	protected void reportError(ProcessingState sourceCase) throws TemplatedSourceException {
-		reportError(sourceCase.sourceSB.length());
 	}
 	
 	protected void processArgument(ProcessingState sourceCase, ICopyableIterator<TspElement> elementStream,

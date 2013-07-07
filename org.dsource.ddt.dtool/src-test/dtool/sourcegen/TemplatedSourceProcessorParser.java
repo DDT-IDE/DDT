@@ -290,13 +290,13 @@ public class TemplatedSourceProcessorParser {
 	public static class TspMetadataElement extends TspElement {
 		public final String tag; 
 		public final String value; 
-		public final Argument associatedElements; 
+		public final Argument childElements; 
 		public final boolean outputSource;
 		
-		public TspMetadataElement(String tag, String value, Argument associatedElements, boolean outputSource) {
+		public TspMetadataElement(String tag, String value, Argument childElements, boolean outputSource) {
 			this.tag = tag;
 			this.value = value;
-			this.associatedElements = associatedElements;
+			this.childElements = childElements;
 			this.outputSource = outputSource;
 		}
 	}
