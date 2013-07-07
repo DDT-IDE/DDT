@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.tests.ref;
+package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -38,11 +38,8 @@ import dtool.ast.references.Reference;
 import dtool.parser.DeeParserResult;
 import dtool.resolver.api.IModuleResolver;
 
-public class FindDef__Common {
-	
-	public static String testdataRefsPath(String testfile) {
-		return ITestResourcesConstants.TR_REFS +"/"+ testfile;
-	}
+/*BUG here*/
+public class DeeSelectionEngine_Test_TODO {
 	
 	public static class ParseSource {
 		public Module module;
@@ -83,27 +80,12 @@ public class FindDef__Common {
 		return new ParseSource(parseResult.module, source, sourceModule);
 	}
 	
-	protected int getMarkerEndOffset(String marker) throws ModelException {
-		String source = sourceModule.source;
-		return source.indexOf(marker) + marker.length();
-	}
-	
-	protected int getMarkerStartOffset(String marker) throws ModelException {
-		String source = sourceModule.source;
-		return source.indexOf(marker);
-	}
-	
-	protected void testFindRefWithConfiguredValues() throws ModelException {
-		IModuleResolver moduleResolver = getModuleResolver();
-		testFindRef(sourceModule, offset, targetModule, targetOffset, moduleResolver);
-	}
-	
 	protected static IModuleResolver getModuleResolver() {
 		return new DeeProjectModuleResolver(SampleMainProject.scriptProject);
 	}
 	
-	public static void testFindRef(ParseSource parseSource, int offset, Module targetMod, int targetOffset,
-			IModuleResolver modResolver) throws ModelException {
+	public static void testFindRef(ParseSource parseSource, int offset, int targetOffset) throws ModelException {
+		IModuleResolver modResolver = new DeeProjectModuleResolver(SampleMainProject.scriptProject);
 		
 		Module srcMod = parseSource.module;
 		
@@ -118,22 +100,10 @@ public class FindDef__Common {
 			assertFail(" Find Ref got no DefUnit.");
 		}
 		DefUnit defunit = defunits.iterator().next();
-		
 		assertNotNull(defunit);
-		
-		Module obtainedModule = NodeUtil.getParentModule(defunit);
-		assertTrue(equalModule(targetMod, obtainedModule), " Find Ref got wrong target module.");
-		
-		assertTrue(defunit.defname.getStartPos() == targetOffset,
-				" Find Ref went to wrong offset: " + defunit.defname.getStartPos());
 		
 		
 		testDeeSelectionEngine(parseSource.scriptModule, offset, defunit);
-	}
-	
-	protected static boolean equalModule(Module targetMod, Module obtainedModule) {
-		return targetMod == obtainedModule || 
-				targetMod.getFullyQualifiedName().equals(obtainedModule.getFullyQualifiedName());
 	}
 	
 	public static void testDeeSelectionEngine(ISourceModule moduleUnit, int offset, DefUnit defunit) {

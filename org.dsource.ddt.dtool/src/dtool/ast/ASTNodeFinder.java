@@ -17,47 +17,46 @@ public class ASTNodeFinder extends ASTVisitor {
 	public static ASTNode findElement(final ASTNode root, int offset, boolean inclusiveEnd) {
 		if(root == null)
 			return null;
-		ASTNodeFinder astNodeFinder = new ASTNodeFinder(root, offset, inclusiveEnd);
-		astNodeFinder.findNodeInAST();
-		return astNodeFinder.match;
+		return new ASTNodeFinder(root, offset, inclusiveEnd).match;
+	}
+	
+	public static ASTNode findElementPreferLeft(ASTNode root, int offset) {
+		ASTNodeFinder astNodeFinder = new ASTNodeFinder(root, offset, true);
+		return astNodeFinder.matchOnLeft != null ? astNodeFinder.matchOnLeft : astNodeFinder.match;
 	}
 	
 	public final ASTNode root;
 	public final int offset; 
 	public final boolean inclusiveEnd;
 	public ASTNode match;
+	public ASTNode matchOnLeft;
 	
 	public ASTNodeFinder(ASTNode root, int offset, boolean inclusiveEnd) {
+		this(root, offset, inclusiveEnd, null);
+		findNodeInAST();
+	}
+	
+	/** Constructor that doesn't run visitor search */
+	protected ASTNodeFinder(ASTNode root, int offset, boolean inclusiveEnd, @SuppressWarnings("unused") Object dummy) {
 		assertNotNull(root);
 		assertTrue(root.hasSourceRangeInfo());
 		this.root = root;
 		this.offset = offset;
 		this.inclusiveEnd = inclusiveEnd;
+		assertTrue(offset >= root.getStartPos() && offset <= root.getEndPos());
 		
-		findNodeInAST();
+		this.match = null;
+		this.matchOnLeft = null;
 	}
 	
-	/** Finds the node at the given offset, starting from given root node.
-	 *  Given inclusiveEnd controls whether to match nodes whose end position is the same as the offset.
-	 */
-	public ASTNodeFinder findNodeInAST() {
-		this.match = null;
-		
-		if(!matchesNodeStart(root) || !matchesNodeEnd(root)) 
-			return this;
-		
+	protected ASTNodeFinder findNodeInAST() {
+		assertTrue(match == null && matchOnLeft == null);
 		root.accept(this);
-		
-		assertNotNull(this.match);
 		return this;
 	}
 	
 	@Override
 	public boolean preVisit(ASTNode node) {
-		return genericVisit(node);
-	}
-	
-	public boolean genericVisit(ASTNode node) {
 		if(!node.hasSourceRangeInfo()) {
 			return false; // Shouldn't happen, but no need to assert
 		}
@@ -68,7 +67,12 @@ public class ASTNodeFinder extends ASTVisitor {
 	public boolean findOnNode(ASTNode node) {
 		if(matchesNodeStart(node) && matchesNodeEnd(node)) {
 			// This node is the match, or is parent of the match.
+			ASTNode oldMatch = match;
 			match = node;
+			if(oldMatch != null && oldMatch.getEndPos() == match.getStartPos()) {
+				assertTrue(offset == oldMatch.getEndPos());
+				matchOnLeft = oldMatch;
+			}
 			return true; // Descend and search children.
 		} else {
 			// Match not here: don't bother descending, go forward

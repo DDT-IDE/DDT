@@ -1,4 +1,4 @@
 module pack.sample3;
 
-public import pack2.foopublic2;
-import pack2.fooprivate;
+public import pack2.public_imported;
+import pack2.private_imported;

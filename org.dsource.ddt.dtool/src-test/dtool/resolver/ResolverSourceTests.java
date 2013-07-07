@@ -23,6 +23,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
+import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
@@ -76,9 +77,17 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 	@Test
 	public void runSourceBasedTests() throws Exception { runSourceBasedTests$(); }
 	public void runSourceBasedTests$() throws Exception {
-		runAnnotatedTests(getTestCasesFromFile(commonDefinitions), false);
+		runAnnotatedTests(getTestCasesFromFile(commonDefinitions));
 	}
 	
+	@Override
+	public void printTestCaseSource(AnnotatedSource testCase, boolean printCaseSeparator) {
+		if(printCaseSeparator) {
+			testsLogger.println(">-----------");
+		}
+		String caseSource = AnnotatedSource.printSourceWithMetadata(testCase);
+		testsLogger.println(caseSource);
+	}
 	
 	public static final String DEFAULT_MODULE_NAME = "__resolver_tests";
 	
@@ -122,6 +131,9 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 			} else if(mde.name.equals("FIND")) {
 				testsLogger.println("#FIND:" + mde);
 				runFindTest_________(parseResult, mr, mde);
+			} else if(mde.name.equals("FINDFAIL")) {
+				testsLogger.println("#FINDFAIL:" + mde);
+				runFindFailTest(parseResult, mde);
 			} else if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "comment"))) {
 				assertFail("Unknown metadata");
 			}
@@ -156,7 +168,7 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 		
 		assertTrue(session.resultCode == expectedStatusCode);
 		if(expectedResults != null) {
-			CompareDefUnits.checkResults(session.results, expectedResults, false);
+			CompareDefUnits.checkResults(session.results, expectedResults, false, true);
 		}
 	}
 	
@@ -187,9 +199,17 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 		return expectedResults;
 	}
 	
-	public void runFindTest_________(DeeParserResult parseResult, IModuleResolver mr, MetadataEntry mde) {
+	public void runFindFailTest(DeeParserResult parseResult, MetadataEntry mde) {
 		ASTNode node = ASTNodeFinder.findElement(parseResult.module, mde.offset);
-		Reference ref = assertCast(node, Reference.class);
+		assertTrue(!(node instanceof Reference));
+	}
+	
+	public void runFindTest_________(DeeParserResult parseResult, IModuleResolver mr, MetadataEntry mde) {
+		ASTNodeFinder nodeFinder = new ASTNodeFinder(parseResult.module, mde.offset, true);
+		Reference ref = (nodeFinder.matchOnLeft instanceof Reference) ? 
+				(Reference) nodeFinder.matchOnLeft :
+				assertCast(nodeFinder.match, Reference.class);
+		
 		LinkedList<DefUnit> resolvedDefUnits = makeLinkedList(ref.findTargetDefUnits(mr, false));
 		
 		String[] expectedResults = splitValues(mde.sourceValue);
@@ -210,36 +230,60 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 	
 	public void removedDefUnitByName(Collection<DefUnit> resolvedDefUnits, 
 		String moduleName, String moduleQualifiedName) {
+		String expectedFullyTypedName = moduleName + (moduleQualifiedName != null ? "/" + moduleQualifiedName : "");
+		
 		for (Iterator<DefUnit> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {
 			DefUnit defUnit = iterator.next();
 			
 			if(moduleName != null ) {
-				if(!defUnit.getModuleNode().getFullyQualifiedName().equals(moduleName)) {
+				String defUnitFullyTypedName = getDefUnitFullyTypedName(defUnit);
+				if(defUnitFullyTypedName.equals(expectedFullyTypedName)) {
+					iterator.remove();
+					return;
+				} else {
 					continue; // Not a match
 				}
-			}
-			
-			if(getDefUnitModuleQualifedName(defUnit).equals(moduleQualifiedName)) {
-				iterator.remove();
-				return;
+			} else {
+				if(getDefUnitModuleQualifedName(defUnit).equals(moduleQualifiedName)) {
+					iterator.remove();
+					return;
+				}
 			}
 		}
 		assertFail(); // Must find a matching result
 	}
 	
+	// TODO: review this
+	public static String getDefUnitFullyTypedName(DefUnit defUnit) {
+		String base = getDefUnitFullyQualifedName(defUnit);
+		switch(defUnit.getArcheType()) {
+		case Package:
+			base += "/";
+			break;
+		default:
+		}
+		return base;
+	}
+	
+	public static String getDefUnitFullyQualifedName(DefUnit defUnit) {
+		if(defUnit instanceof Module) {
+			return ((Module) defUnit).getFullyQualifiedName() + "/";
+		}
+		
+		DefUnit parentDefUnit = NodeUtil.getParentDefUnit(defUnit);
+		if(parentDefUnit == null) {
+			return defUnit.getName();
+		}
+		String sep = parentDefUnit instanceof Module ? "" : ".";
+		String parentQualifedName = getDefUnitFullyQualifedName(parentDefUnit);
+		return parentQualifedName  + sep + defUnit.getName();
+	}
+
 	public String getDefUnitModuleQualifedName(DefUnit defUnit) {
 		if(defUnit instanceof Module) {
 			return "";
 		}
-		DefUnit parentDefUnit;
-		ASTNode parentNode = defUnit.getParent();
-		while(true) {
-			if(parentNode instanceof DefUnit) {
-				parentDefUnit = (DefUnit) parentNode;
-				break;
-			}
-			parentNode = parentNode.getParent();
-		}
+		DefUnit parentDefUnit = NodeUtil.getParentDefUnit(defUnit);
 		String parentQualifedName = getDefUnitModuleQualifedName(parentDefUnit);
 		if(parentQualifedName == "") {
 			return defUnit.getName();

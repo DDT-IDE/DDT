@@ -1,4 +1,4 @@
-module pack2.fooprivate;
+module pack2.private_imported;
 
 int fooprivateImportVar0; 
 

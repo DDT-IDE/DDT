@@ -1,4 +1,4 @@
-module pack2.foopublic;
+module pack2.public_imported;
 
 int foopublicImportVar0;
 

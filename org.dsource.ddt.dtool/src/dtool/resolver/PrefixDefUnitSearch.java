@@ -100,7 +100,6 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		
 		// NOTE: for performance reasons we want to provide a startPos as close as possible to offset,
 		// so we don't re-lex too many tokens. ASTNodeFinderExtension provides that.
-		// TODO: find a way to test the above premise?
 		int relexStartPos = nodeFinder.lastNodeBoundary;
 		Token token = findTokenAtOffset(offset, source, relexStartPos);
 		
@@ -212,15 +211,14 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		public int lastNodeBoundary = -1;
 		
 		public ASTNodeFinderExtension(ASTNode root, int offset, boolean inclusiveEnd) {
-			super(root, offset, inclusiveEnd);
+			super(root, offset, inclusiveEnd, null);
 			findNodeInAST();
-			assertTrue(offset >= root.getStartPos() && offset <= root.getEndPos());
 			assertTrue(lastNodeBoundary >= 0);
 		}
 		
 		@Override
 		public boolean preVisit(ASTNode node) {
-			if(node.getStartPos() <= offset ) {
+			if(node.hasSourceRangeInfo() && node.getStartPos() <= offset ) {
 				lastNodeBoundary = node.getStartPos();
 			}
 			return super.preVisit(node);
@@ -228,15 +226,10 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		
 		@Override
 		public void postVisit(ASTNode node) {
-			if(node.getEndPos() <= offset ) {
+			if(node.hasSourceRangeInfo() && node.getEndPos() <= offset ) {
 				lastNodeBoundary = node.getEndPos();
 			}
 			super.postVisit(node);
-		}
-		
-		@Override
-		public boolean findOnNode(ASTNode node) {
-			return super.findOnNode(node);
 		}
 	}
 	

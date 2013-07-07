@@ -1,6 +1,5 @@
 package dtool.ast;
 
-import melnorme.utilbox.tree.IElement;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 
@@ -20,13 +19,20 @@ public class NodeUtil {
 	
 	/** @return the outermost DefUnit starting from given node (non-inclusive), or null if not found. */
 	public static DefUnit getOuterDefUnit(ASTNode node) {
-		IElement elem = node.getParent();
-		while(elem != null) {
-			if (elem instanceof DefUnit)
-				return (DefUnit) elem;
-			elem = elem.getParent();
+		node = node.getParent();
+		while(true) {
+			if (node instanceof DefUnit) {
+				return (DefUnit) node;
+			}
+			if(node == null) {
+				return null;
+			}
+			node = node.getParent();
 		}
-		return null;
+	}
+	
+	public static DefUnit getParentDefUnit(ASTNode node) {
+		return getOuterDefUnit(node);
 	}
 	
 	public static boolean isContainedIn(ASTNode node, ASTNode container) {

@@ -152,11 +152,10 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 		}
 	}
 	
-	
-	public void runAnnotatedTests(AnnotatedSource[] sourceBasedTests, boolean printTestCaseSource) {
-		HashSet<String> printSources = new HashSet<String>();
-		Pattern trimStartNewlines = Pattern.compile("(^(\\n|\\r\\n)*)|((\\n|\\r\\n)*$)");
+	public void runAnnotatedTests(AnnotatedSource[] sourceBasedTests) {
+		HashSet<String> printedTemplatedSources = new HashSet<String>();
 		
+		boolean printTestCaseSource = true;
 		int originalTemplateChildCount = -1;
 		for (AnnotatedSource testCase : sourceBasedTests) {
 			
@@ -165,23 +164,22 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 			}
 			boolean printCaseSeparator = testCase.findMetadata("comment", "PRINT_SEP") != null;
 			
-			if(!printSources.contains(testCase.originalTemplatedSource)) {
+			if(!printedTemplatedSources.contains(testCase.originalTemplatedSource)) {
 				printCaseEnd(originalTemplateChildCount);
 				originalTemplateChildCount = 0;
-				testsLogger.println(">> ----------- Parser tests TEMPLATE ("+file.getName()+") : ----------- <<");
+				String testClassName = getClass().getSimpleName();
+				String fileName = file.getName();
+				testsLogger.println(">> ----------- "+testClassName+" TEMPLATE ("+fileName+") : ----------- <<");
 				testsLogger.print(testCase.originalTemplatedSource);
-				if(printTestCaseSource && !printCaseSeparator) {
-					testsLogger.println(" ----------- Parser source tests: ----------- ");
-				}
+				if(!testCase.originalTemplatedSource.endsWith("\n"))
+					testsLogger.println();
+				testsLogger.println(" ----------- ^^^^ ----------- ");
 			}
-			if(printTestCaseSource) {
-				if(printCaseSeparator) {
-					testsLogger.println(">-----------");
-				}
-				testsLogger.println(trimStartNewlines.matcher(testCase.source).replaceAll(""));
-			}
-			printSources.add(testCase.originalTemplatedSource);
+			printedTemplatedSources.add(testCase.originalTemplatedSource);
 			
+			if(printTestCaseSource) {
+				printTestCaseSource(testCase, printCaseSeparator);
+			}
 			checkOffsetInvariant(testCase);
 			runAnnotatedSourceTest(testCase);
 			originalTemplateChildCount++;
@@ -198,6 +196,17 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 			}
 			mdOffset = mde.offset;
 		}
+	}
+	
+	protected static final Pattern STARTING_NEWLINES_TRIMMER = Pattern.compile("(^(\\n|\\r\\n)*)|((\\n|\\r\\n)*$)");
+	
+	public void printTestCaseSource(AnnotatedSource testCase, boolean printCaseSeparator) {
+		if(printCaseSeparator) {
+			testsLogger.println(">-----------");
+		}
+//		String caseSource = AnnotatedSource.printSourceWithMetadata(testCase);
+		String caseSource = testCase.source;
+		testsLogger.println(STARTING_NEWLINES_TRIMMER.matcher(caseSource).replaceAll(""));
 	}
 	
 	protected void printCaseEnd(int originalTemplateChildCount) {

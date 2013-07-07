@@ -4,6 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.SourceRange;
@@ -82,4 +83,49 @@ public class AnnotatedSource {
 		return foundMde;
 	}
 	
+	public static String printSourceWithMetadata(AnnotatedSource testCase) {
+		ListIterator<MetadataEntry> mdeIter = testCase.metadata.listIterator();
+		StringBuffer sb = new StringBuffer();
+		printCaseSourceWithMetaData(testCase.source, mdeIter, 0, testCase.source.length(), sb);
+		assertTrue(mdeIter.hasNext() == false);
+		return sb.toString();
+	}
+	
+	public static void printCaseSourceWithMetaData(String source, ListIterator<MetadataEntry> mdeIter, 
+		final int startOffset, final int maxSourceOffset, StringBuffer sb) {
+		int offset = startOffset;
+
+		while(mdeIter.hasNext()) {
+			MetadataEntry mde = mdeIter.next();
+			assertTrue(offset >= 0 && maxSourceOffset >= offset);
+			int nextOffset = mde.offset;
+			assertTrue(nextOffset != -1); //TODO need to fix this
+			assertTrue(nextOffset >= offset);
+			if(nextOffset > maxSourceOffset) {
+				mdeIter.previous();
+				break;
+			}
+			
+			sb.append(source.substring(offset, nextOffset));
+			offset = nextOffset;
+			
+			sb.append("#" + mde.name);
+			if(mde.value != null) {
+				sb.append("(" + mde.value + ")");
+			}
+			if(mde.sourceValue != null) {
+				sb.append(mde.sourceWasIncluded ? "【" : "¤【");
+				if(mde.sourceWasIncluded) {
+					nextOffset += mde.sourceValue.length();
+					printCaseSourceWithMetaData(source, mdeIter, offset, nextOffset, sb);
+					offset = nextOffset;
+				} else {
+					printCaseSourceWithMetaData(mde.sourceValue, mdeIter, 0, mde.sourceValue.length(), sb);
+				}
+				sb.append("】");
+			}
+		}
+		assertTrue(offset >= 0 && maxSourceOffset >= offset);
+		sb.append(source.substring(offset, maxSourceOffset));
+	}
 }

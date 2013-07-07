@@ -12,5 +12,5 @@ class SampleClassB {
 }
 
 public import pack.modSyntaxErrors;
-public import pack2.foopublic;
-import pack2.fooprivate;
+public import pack2.public_imported;
+import pack2.private_imported;

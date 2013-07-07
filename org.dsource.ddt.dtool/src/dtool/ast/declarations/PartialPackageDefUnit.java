@@ -19,16 +19,16 @@ import dtool.resolver.api.IModuleResolver;
 public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements IScopeNode {
 	
 	public PartialPackageDefUnit(String defName) {
-		super(defName); // These are synthetic defUnits so they have no sourceRange.
+		super(defName);
 	}
 	
-	public static PartialPackageDefUnit createPartialDefUnits(String[] packages, RefModule entModule, Module module) {
+	public static PartialPackageDefUnit createPartialDefUnits(String[] packages, RefModule refModule, Module module) {
 		String defName = packages[0];
 		if(packages.length == 1 ) {
-			return new PartialPackageDefUnitOfModule(defName, module, entModule);
+			return new PartialPackageDefUnitOfModule(defName, module, refModule);
 		} else {
 			String[] newNames = ArrayUtil.copyOfRange(packages, 1, packages.length);
-			PartialPackageDefUnit partialDefUnits = createPartialDefUnits(newNames, entModule, null);
+			PartialPackageDefUnit partialDefUnits = createPartialDefUnits(newNames, refModule, null /*BUG here*/);
 			return new PartialPackageDefUnitOfPackage(defName, partialDefUnits);
 		}
 	}

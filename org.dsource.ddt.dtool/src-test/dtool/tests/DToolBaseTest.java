@@ -126,11 +126,11 @@ public class DToolBaseTest extends CommonTest {
 	
 	public static Collection<Object[]> createTestListFromFiles(final boolean includeDescription, List<File> fileList) {
 		final Collection<Object[]> testList = new ArrayList<>();
-		addFilesToTestList(testList, fileList, includeDescription);
+		addFilesToTestParameters(testList, fileList, includeDescription);
 		return testList;
 	}
 	
-	public static void addFilesToTestList(final Collection<Object[]> testList, List<File> fileList,
+	public static void addFilesToTestParameters(final Collection<Object[]> testList, List<File> fileList,
 		final boolean includeDescription) {
 		for (File file : fileList) {
 			if(includeDescription) {

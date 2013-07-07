@@ -18,6 +18,15 @@ public class MiscDeeTestUtils {
 		};
 	}
 	
+	public static Function<DefUnit, String> fnDefUnitToStringAsName(final int prefixLen) {
+		return new Function<DefUnit, String>() {
+			@Override
+			public String evaluate(DefUnit obj) {
+				return obj == null ? null : obj.getName().substring(prefixLen);
+			}
+		};
+	}
+	
 	public static Function<DefUnit, String> fnDefUnitToStringAsElement(final int prefixLen) {
 		return new Function<DefUnit, String>() {
 			@Override

@@ -40,7 +40,6 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 				"packA.sampledefs_inpack", "packA.subpack.sampledefs_inpack",
 				"pack.mod1", "pack.mod2", "pack.mod3", "pack.modSyntaxErrors", 
 				"pack.sample", "pack.sample2", "pack.sample3", 
-				"pack.testSelfImport3",
 				"pack.subpack.mod3", "pack.subpack.mod4",
 				"pack2.fooprivate", "pack2.foopublic", "pack2.foopublic2"
 		);
@@ -51,7 +50,6 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 		String[] cc3results5 = array(
 				"pack.mod1", "pack.mod2", "pack.mod3", "pack.modSyntaxErrors", 
 				"pack.sample", "pack.sample2", "pack.sample3", 
-				"pack.testSelfImport3",
 				"pack.subpack.mod3", "pack.subpack.mod4"
 		);
 		testComputeProposalsWithRepLen(cc3Offset+5,    5, "mod3".length(), false, cc3results5);

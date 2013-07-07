@@ -13,5 +13,5 @@ class Foo {
 
 void func() {
 	int fB;
-	f#REFSEARCH¤【fA▪fB▪func()】;
+	f#REFSEARCH¤【fA▪fB▪func】;
 }
