@@ -14,13 +14,13 @@ import dtool.tests.SimpleParser;
 public class TemplatedSourceProcessorParser {
 	
 	@SuppressWarnings("serial")
-	public class TemplatedSourceException extends Exception {
+	public static class TemplatedSourceException extends Exception {
 		public int errorOffset;
 		public TemplatedSourceException(int errorOffset) {
 			this.errorOffset = errorOffset;
 		}
 	}
-
+	
 	protected String kMARKER;
 	protected String[] kMARKER_array;
 
@@ -71,6 +71,11 @@ public class TemplatedSourceProcessorParser {
 		public String getSource() {
 			return producedText;
 		}
+		
+		@Override
+		public String toString() {
+			return "STRING【" + producedText + "】";
+		}
 	}
 	
 	protected TspElement parseElement(SimpleParser parser) throws TemplatedSourceException {
@@ -119,14 +124,18 @@ public class TemplatedSourceProcessorParser {
 		return null;
 	}
 	
-	protected void reportError(final int offset) throws TemplatedSourceException {
-		throw new TemplatedSourceException(offset);
+	protected final void reportError(final int offset) throws TemplatedSourceException {
+		handleParserError(new TemplatedSourceException(offset));
 	}
 	
-	protected void checkError(boolean condition, SimpleParser parser) throws TemplatedSourceException {
+	protected final void checkError(boolean condition, SimpleParser parser) throws TemplatedSourceException {
 		if(condition) {
 			reportError(parser.getSourcePosition());
 		}
+	}
+	
+	protected void handleParserError(TemplatedSourceException tse) throws TemplatedSourceException {
+		throw tse;
 	}
 	
 	public static class TspExpansionElement extends TspElement {
@@ -134,6 +143,7 @@ public class TemplatedSourceProcessorParser {
 		public final String pairedExpansionId; 
 		public final ArrayList<Argument> arguments; 
 		public final boolean dontOuputSource;
+		public final boolean defineOnly;
 		public final boolean anonymousExpansion;
 		
 		public TspExpansionElement(String expansionId, String pairedExpansionId, ArrayList<Argument> arguments, 
@@ -143,15 +153,23 @@ public class TemplatedSourceProcessorParser {
 			this.arguments = arguments;
 			this.anonymousExpansion = anonymousExpansion;
 			this.dontOuputSource = dontOuputSource;
+			this.defineOnly = dontOuputSource;
+			if(defineOnly) {
+				assertTrue(expansionId != null && arguments != null);
+			}
+		}
+		
+		public boolean isDefinition() {
+			return expansionId != null && arguments != null;
 		}
 		
 		@Override
 		public String toString() {
-			return "EXPANSION["+(anonymousExpansion?"^":"")+(dontOuputSource?"!":"")+
-				StringUtil.nullAsEmpty(expansionId)+
+			return "EXPANSION"+(anonymousExpansion?"^":"")+(dontOuputSource?"!":"")+
+				"["+ StringUtil.nullAsEmpty(expansionId)+ "]" +
 				(pairedExpansionId == null ? "" : "("+pairedExpansionId+")")+
-				(arguments == null ? "" : "{"+StringUtil.collToString(arguments, "#,#")+"}")+
-				"]";
+				(arguments == null ? "" : "{"+StringUtil.collToString(arguments, "♦")+"}")
+				;
 		}
 	}
 	
@@ -159,7 +177,7 @@ public class TemplatedSourceProcessorParser {
 	protected class Argument extends ArrayList<TspElement> { 
 		@Override
 		public String toString() {
-			return "ARGUMENT["+StringUtil.collToString(this, "")+"]";
+			return "["+StringUtil.collToString(this, "")+"]";
 		}
 	}
 	
@@ -175,14 +193,15 @@ public class TemplatedSourceProcessorParser {
 				anonymousExpansion = true;
 			}
 			expansionId = emptyToNull(parser.consumeAlphaNumericUS(false));
-			if(anonymousExpansion) {
-				checkError(expansionId == null, parser);
-			} 
+			
 			if(parser.tryConsume("!")) {
-				checkError(expansionId == null, parser); // No test case for this
-				checkError(anonymousExpansion, parser);
+				checkError(expansionId == null, parser); // TODO: No test case for this
 				defineOnly = true;
 			}
+		}
+		if(anonymousExpansion) {
+			checkError(expansionId == null, parser);
+			checkError(defineOnly, parser);
 		}
 		
 		ArrayList<Argument> arguments = null;
@@ -192,16 +211,18 @@ public class TemplatedSourceProcessorParser {
 			arguments = parseArgumentList(parser, closeDelim);
 		}
 		checkError(defineOnly && arguments == null, parser);
+		checkError(anonymousExpansion && arguments != null, parser);
 		
 		String pairedExpansionId = null;
 		if(parser.tryConsume("(")) {
+			checkError(anonymousExpansion, parser);
 			pairedExpansionId = consumeDelimitedId(parser, ")");
 		}
 		
 		// This is just an optional separator, useful when expansion only has an id, like: #@EXP•BLA
 		parser.tryConsume("•"); 
 		
-		checkError(expansionId == null && pairedExpansionId == null && arguments == null, parser);
+		checkError(expansionId == null && arguments == null, parser);
 		return new TspExpansionElement(expansionId, pairedExpansionId, arguments, anonymousExpansion, defineOnly);
 	}
 	
@@ -288,9 +309,9 @@ public class TemplatedSourceProcessorParser {
 	}
 	
 	public static class TspMetadataElement extends TspElement {
-		public final String tag; 
-		public final String value; 
-		public final Argument childElements; 
+		public final String tag;
+		public final String value;
+		public final Argument childElements;
 		public final boolean outputSource;
 		
 		public TspMetadataElement(String tag, String value, Argument childElements, boolean outputSource) {
@@ -301,8 +322,8 @@ public class TemplatedSourceProcessorParser {
 		}
 	}
 	
-	protected static final String[] OPEN_DELIMS  = {"{","«","〈","《","「","『","【","〔","〖","〚" };
-	protected static final String[] CLOSE_DELIMS = {"}","»","〉","》","」","』","】","〕","〗","〛"} ;
+	public static final String[] OPEN_DELIMS  = {"{","«","〈","《","「","『","【","〔","〖","〚" };
+	public static final String[] CLOSE_DELIMS = {"}","»","〉","》","」","』","】","〕","〗","〛"} ;
 	
 	protected TspMetadataElement parseMetadataElement(SimpleParser parser) throws TemplatedSourceException {
 		String name = parser.consumeAlphaNumericUS(false);

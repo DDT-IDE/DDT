@@ -18,6 +18,7 @@ import org.junit.runners.MethodSorters;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 /* BASIC EXPANSION FORMATS:
+
 A:  #@{1, 2, 3}         Unnamed-Expansion
 B:  #@EXP{1, 2, 3}      Definition, Named-Expansion  
 C:  #@EXP!{1, 2, 3}     Definition only
@@ -137,11 +138,11 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 		testSourceProcessing("#", "foo #@EXPANSION1{12}(xxx:END:\n)", 21+3);
 		
 		
-		for (int i = 0; i < TemplatedSourceProcessor.OPEN_DELIMS.length; i++) {
-			String openDelim = TemplatedSourceProcessor.OPEN_DELIMS[i];
-			if(openDelim.equals("{")) 
+		for (int i = 0; i < TemplatedSourceProcessorParser.OPEN_DELIMS.length; i++) {
+			String openDelim = TemplatedSourceProcessorParser.OPEN_DELIMS[i];
+			if(openDelim.equals("{"))
 				continue;
-			String close = TemplatedSourceProcessor.CLOSE_DELIMS[i];
+			String close = TemplatedSourceProcessorParser.CLOSE_DELIMS[i];
 			
 			testSourceProcessing("#", prepString("asdf #@EXP►,}◙► #◄,last#◙}◄==", openDelim, close),
 				

@@ -11,7 +11,7 @@ public class TemplatedSourceProcessorCommonTest extends CommonTest {
 	
 	public static class TestsTemplateSourceProcessor extends TemplatedSourceProcessor {
 		@Override
-		protected void reportError(int offset) throws TemplatedSourceException {
+		protected void handleError(TemplatedSourceException tse) throws TemplatedSourceException {
 			assertFail();
 		}
 	}

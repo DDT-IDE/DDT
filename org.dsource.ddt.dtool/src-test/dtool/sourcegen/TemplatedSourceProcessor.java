@@ -14,29 +14,31 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc2.ChainedIterator2;
 import melnorme.utilbox.misc2.CopyableListIterator;
 import melnorme.utilbox.misc2.ICopyableIterator;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.tests.SimpleParser;
+import dtool.sourcegen.TemplatedSourceProcessorParser.Argument;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TemplatedSourceException;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TspCommandElement;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TspElement;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TspIfElseExpansionElement;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TspMetadataElement;
+import dtool.sourcegen.TemplatedSourceProcessorParser.TspStringElement;
 import dtool.util.NewUtils;
 
 /**
  * Generates multiple source cases from a templated source, using an embedded markup language. 
  */
-public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
+public class TemplatedSourceProcessor extends SplitProcessor {
 	
 	public static AnnotatedSource[] processTemplatedSource(String marker, String source) 
 		throws TemplatedSourceException {
@@ -46,6 +48,12 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 	
 	protected final Map<String, TspExpansionElement> globalExpansions = new HashMap<String, TspExpansionElement>();
 	protected final ArrayList<AnnotatedSource> genCases = new ArrayList<AnnotatedSource>();
+	protected final TemplatedSourceProcessorParser tspParser = new TemplatedSourceProcessorParser() {
+		@Override
+		protected void handleParserError(TemplatedSourceException tse) throws TemplatedSourceException {
+			handleError(tse);
+		};
+	};
 	
 	public TemplatedSourceProcessor() { }
 	
@@ -61,6 +69,12 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 		return genCases;
 	}
 	
+	public AnnotatedSource[] processSource(String defaultMarker, String fileSource) 
+		throws TemplatedSourceException {
+		splitSourceCases(defaultMarker, fileSource);
+		return ArrayUtil.createFrom(getGenCases(), AnnotatedSource.class);
+	}
+	
 	public AnnotatedSource[] processSource_unchecked(String defaultMarker, String unprocessedSource) {
 		try {
 			return processSource(defaultMarker, unprocessedSource);
@@ -69,49 +83,10 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 		}
 	}
 	
-	protected static final String[] splitKeywords = { "#:HEADER", "Ⓗ", "#:SPLIT", "━━", "▂▂", "▃▃"};
-	
-	public static boolean isTSPSourceStart(Reader reader) throws IOException {
-		String sourceIntro = new String(StreamUtil.readCharAmountFromReader(reader, 10));
-		SimpleParser parser = new SimpleParser(sourceIntro);
-		return parser.tryConsume(splitKeywords) > 0;
-	}
-	
-	public AnnotatedSource[] processSource(String defaultMarker, String fileSource) 
-		throws TemplatedSourceException {
-		
-		SimpleParser parser = new SimpleParser(fileSource);
-		
-		do {
-			boolean isHeader = false;
-			String keyMarker = defaultMarker;
-			
-			int alt = parser.tryConsume(splitKeywords);
-			if(alt != SimpleParser.EOF) {
-				if(alt == 0 || alt == 1) {
-					isHeader = true;
-				}
-				checkError(parser.seekToNewLine() == false, parser);
-				Matcher matcher = Pattern.compile("→(.)").matcher(parser.getLastConsumedString());
-				if(matcher.find()) {
-					keyMarker = matcher.group(1);
-				}
-			} else {
-				assertTrue(parser.getSourcePosition() == 0);
-			}
-			
-			parser.consumeUntilAny(splitKeywords);
-			
-			String unprocessedCaseSource = parser.getLastConsumedString();
-			processSplitCaseSource(unprocessedCaseSource, isHeader, keyMarker);
-		} while(!parser.lookaheadIsEOF());
-		
-		return ArrayUtil.createFrom(getGenCases(), AnnotatedSource.class);
-	}
-	
+	@Override
 	protected void processSplitCaseSource(String caseSource, boolean isHeader, String keyMarker) 
 		throws TemplatedSourceException {
-		ArrayList<TspElement> sourceElements = parseSplitCase(caseSource, keyMarker);
+		ArrayList<TspElement> sourceElements = tspParser.parseSplitCase(caseSource, keyMarker);
 		ProcessingState processingState = new ProcessingState(isHeader, caseSource);
 		processCaseContents(processingState, new CopyableListIterator<TspElement>(sourceElements));
 	}
@@ -125,7 +100,7 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 	}
 	
 	protected void reportError(ProcessingState sourceCase) throws TemplatedSourceException {
-		reportError(sourceCase.sourceSB.length());
+		tspParser.reportError(sourceCase.sourceSB.length());
 	}
 	
 	public class ProcessingState {
@@ -201,43 +176,10 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 				sourceCase.sourceSB.append(stringElem.producedText);
 			} else if(tspElem instanceof TspMetadataElement) {
 				final TspMetadataElement mdElem = (TspMetadataElement) tspElem;
-				
-				int metadataIx = sourceCase.metadata.size();
-				TemporaryMetadataEntry temporaryParentMDE = new TemporaryMetadataEntry(mdElem);
-				sourceCase.metadata.add(temporaryParentMDE);
-				final TspMetadataEndElement mdEndElem = new TspMetadataEndElement(mdElem, sourceCase, metadataIx);
-				
-				if(mdElem.childElements != null) {
-					Argument sourceArgument = mdElem.childElements;
-					
-					if(mdElem.outputSource == false) {
-						sourceCase.sourceSB = new StringBuilder(); // Create a temporary source output
-						sourceCase.topLevelMDE = temporaryParentMDE;
-					}
-					
-					ICopyableIterator<TspElement> mdArgIter = ChainedIterator2.create(
-						CopyableListIterator.create(sourceArgument),
-						CopyableListIterator.create(Collections.<TspElement>singletonList(mdEndElem))
-					);
-					elementStream = ChainedIterator2.create(mdArgIter, elementStream);
-				} else {
-					processMetadataEndElem(sourceCase, mdEndElem);
-				}
+				elementStream = processMetadataElement(sourceCase, elementStream, mdElem);
 			} else if(tspElem instanceof TspIfElseExpansionElement) {
 				TspIfElseExpansionElement tspIfElse = (TspIfElseExpansionElement) tspElem;
-				
-				Argument sourceArgument = tspIfElse.invert ? tspIfElse.argThen : tspIfElse.argElse;
-				
-				for (MetadataEntry mde : sourceCase.metadata) {
-					if(mde != null && mde.name.equals(tspIfElse.mdConditionId)) {
-						sourceArgument = tspIfElse.invert ? tspIfElse.argElse : tspIfElse.argThen;
-						break;
-					}
-				}
-				if(sourceArgument != null) {
-					ICopyableIterator<TspElement> mdArgIter = CopyableListIterator.create(sourceArgument);
-					elementStream = ChainedIterator2.create(mdArgIter, elementStream);
-				}
+				elementStream = processIfElseExpansion(sourceCase, elementStream, tspIfElse);
 			} else if(tspElem instanceof TspMetadataEndElement) {
 				processMetadataEndElem(sourceCase, (TspMetadataEndElement) tspElem);
 			} else if(tspElem instanceof TspCommandElement) {
@@ -250,6 +192,39 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 		}
 		
 		addFullyProcessedSourceCase(sourceCase);
+	}
+	
+	protected void addFullyProcessedSourceCase(ProcessingState caseState) {
+		if(caseState.isHeaderCase == false) {
+			String source = caseState.sourceSB.toString();
+			genCases.add(new AnnotatedSource(source, caseState.originalSource, caseState.metadata));
+		}
+	}
+	
+	public ICopyableIterator<TspElement> processMetadataElement(ProcessingState sourceCase,
+		ICopyableIterator<TspElement> elementStream, final TspMetadataElement mdElem) {
+		int metadataIx = sourceCase.metadata.size();
+		TemporaryMetadataEntry temporaryParentMDE = new TemporaryMetadataEntry(mdElem);
+		sourceCase.metadata.add(temporaryParentMDE);
+		final TspMetadataEndElement mdEndElem = new TspMetadataEndElement(mdElem, sourceCase, metadataIx);
+		
+		if(mdElem.childElements != null) {
+			Argument sourceArgument = mdElem.childElements;
+			
+			if(mdElem.outputSource == false) {
+				sourceCase.sourceSB = new StringBuilder(); // Create a temporary source output
+				sourceCase.topLevelMDE = temporaryParentMDE;
+			}
+			
+			ICopyableIterator<TspElement> mdArgIter = ChainedIterator2.create(
+				CopyableListIterator.create(sourceArgument),
+				CopyableListIterator.create(Collections.<TspElement>singletonList(mdEndElem))
+			);
+			elementStream = ChainedIterator2.create(mdArgIter, elementStream);
+		} else {
+			processMetadataEndElem(sourceCase, mdEndElem);
+		}
+		return elementStream;
 	}
 	
 	protected class TemporaryMetadataEntry extends MetadataEntry {
@@ -313,13 +288,6 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 			sourceCase.topLevelMDE, sourceWasIncluded);
 		assertTrue(sourceCase.metadata.get(mdEndElem.metadataIx) instanceof TemporaryMetadataEntry);
 		sourceCase.metadata.set(mdEndElem.metadataIx, mde);
-	}
-	
-	protected void addFullyProcessedSourceCase(ProcessingState caseState) {
-		if(caseState.isHeaderCase == false) {
-			String source = caseState.sourceSB.toString();
-			genCases.add(new AnnotatedSource(source, caseState.originalSource, caseState.metadata));
-		}
 	}
 	
 	protected boolean processExpansionElement(ProcessingState sourceCase, ICopyableIterator<TspElement> elementStream,
@@ -410,6 +378,23 @@ public class TemplatedSourceProcessor extends TemplatedSourceProcessorParser {
 			Integer oldValue = newState.activeExpansions.put(expansionId, index);
 			assertTrue(oldValue == null || oldValue == index); 
 		}
+	}
+	
+	public ICopyableIterator<TspElement> processIfElseExpansion(ProcessingState sourceCase,
+		ICopyableIterator<TspElement> elementStream, TspIfElseExpansionElement tspIfElse) {
+		Argument sourceArgument = tspIfElse.invert ? tspIfElse.argThen : tspIfElse.argElse;
+		
+		for (MetadataEntry mde : sourceCase.metadata) {
+			if(mde != null && mde.name.equals(tspIfElse.mdConditionId)) {
+				sourceArgument = tspIfElse.invert ? tspIfElse.argElse : tspIfElse.argThen;
+				break;
+			}
+		}
+		if(sourceArgument != null) {
+			ICopyableIterator<TspElement> mdArgIter = CopyableListIterator.create(sourceArgument);
+			elementStream = ChainedIterator2.create(mdArgIter, elementStream);
+		}
+		return elementStream;
 	}
 	
 }
