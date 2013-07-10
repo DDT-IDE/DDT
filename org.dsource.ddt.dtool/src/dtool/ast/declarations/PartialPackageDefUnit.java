@@ -28,7 +28,7 @@ public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements 
 			return new PartialPackageDefUnitOfModule(defName, module, refModule);
 		} else {
 			String[] newNames = ArrayUtil.copyOfRange(packages, 1, packages.length);
-			PartialPackageDefUnit partialDefUnits = createPartialDefUnits(newNames, refModule, null /*BUG here*/);
+			PartialPackageDefUnit partialDefUnits = createPartialDefUnits(newNames, refModule, module);
 			return new PartialPackageDefUnitOfPackage(defName, partialDefUnits);
 		}
 	}

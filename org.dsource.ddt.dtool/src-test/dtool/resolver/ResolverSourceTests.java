@@ -7,10 +7,10 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 
 import melnorme.utilbox.core.Predicate;
@@ -21,17 +21,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
 import dtool.ast.NodeUtil;
+import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession.ECompletionResultStatus;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserSourceTests;
 import dtool.parser.DeeTemplatedSourceBasedTest;
+import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
 import dtool.resolver.api.IModuleResolver;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
@@ -123,21 +122,32 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 				// already processed
 			} else if(mde.name.equals("PROJECT")) {
 				assertTrue(mr instanceof NullModuleResolver);
-				File projectFolder = new File(file.getParent(), assertNotNull(mde.value));
-				mr = new InstrumentedModuleResolver(projectFolder);
+				mr = createInstrumentedModuleResolver(mde, parseResult);
 			} else if(mde.name.equals("REFSEARCH")) {
-				testsLogger.println("#REFSEARCH:" + mde);
+				testsLogger.println(mde);
 				runRefSearchTest___________(parseResult, mr, defaultOffset, mde);
 			} else if(mde.name.equals("FIND")) {
-				testsLogger.println("#FIND:" + mde);
-				runFindTest_________(parseResult, mr, mde);
+				testsLogger.println(mde);
+				runFindTest(parseResult, mr, mde);
+			} else if(mde.name.equals("FINDMISSING")) {
+				testsLogger.println(mde);
+				runFindMissingTest(parseResult, mr, mde);
 			} else if(mde.name.equals("FINDFAIL")) {
-				testsLogger.println("#FINDFAIL:" + mde);
+				testsLogger.println(mde);
 				runFindFailTest(parseResult, mde);
 			} else if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "comment"))) {
 				assertFail("Unknown metadata");
 			}
 		}
+	}
+	
+	public IModuleResolver createInstrumentedModuleResolver(MetadataEntry mde, DeeParserResult parseResult) {
+		String projectDescription = mde.value;
+		String moduleName = StringUtil.segmentUntilMatch(projectDescription, "@");
+		String projectFolderName = StringUtil.substringAfterMatch(projectDescription, "@");
+
+		File projectFolder = new File(file.getParent(), assertNotNull(projectFolderName));
+		return new InstrumentedModuleResolver(projectFolder, moduleName, parseResult);
 	}
 	
 	public void runRefSearchTest___________(DeeParserResult parseResult, IModuleResolver mr,
@@ -200,35 +210,43 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 	}
 	
 	public void runFindFailTest(DeeParserResult parseResult, MetadataEntry mde) {
-		ASTNode node = ASTNodeFinder.findElement(parseResult.module, mde.offset);
-		assertTrue(!(node instanceof Reference));
+		DirectDefUnitResolve resolveResult = ReferenceResolver.resolveAtOffset(parseResult, mde.offset, null);
+		assertTrue(resolveResult.pickedRef == null || resolveResult.invalidPickRef);
 	}
 	
-	public void runFindTest_________(DeeParserResult parseResult, IModuleResolver mr, MetadataEntry mde) {
-		ASTNodeFinder nodeFinder = new ASTNodeFinder(parseResult.module, mde.offset, true);
-		Reference ref = (nodeFinder.matchOnLeft instanceof Reference) ? 
-				(Reference) nodeFinder.matchOnLeft :
-				assertCast(nodeFinder.match, Reference.class);
-		
-		LinkedList<DefUnit> resolvedDefUnits = makeLinkedList(ref.findTargetDefUnits(mr, false));
-		
+	public void runFindTest(DeeParserResult parseResult, IModuleResolver mr, MetadataEntry mde) {
 		String[] expectedResults = splitValues(mde.sourceValue);
+		runFindTest_________(parseResult, mr, mde.offset, expectedResults);
+	}
+	
+	public void runFindMissingTest(DeeParserResult parseResult, IModuleResolver mr, MetadataEntry mde) {
+		assertTrue(mde.sourceValue == null);
+		DirectDefUnitResolve result = runFindTest_________(parseResult, mr, mde.offset, NewUtils.EMPTY_STRING_ARRAY);
+		assertTrue(result.pickedRef.syntaxIsMissingIdentifier());
+	}
+	
+	public DirectDefUnitResolve runFindTest_________(DeeParserResult parseResult, IModuleResolver mr, int offset, 
+		String[] expectedResults) {
+		DirectDefUnitResolve resolveResult = ReferenceResolver.resolveAtOffset(parseResult, offset, mr);
+		Collection<DefUnit> resultDefUnitsOriginal = resolveResult.getResolvedDefUnits();
 		
+		Collection<DefUnit> resultDefUnits = new ArrayList<>(nullToEmpty(resultDefUnitsOriginal));
 		for (String expectedTarget : expectedResults) {
 			if(expectedTarget.startsWith("@") ) {
 				String markerName = expectedTarget.substring(1);
-				removedDefUnitByEndMarker(markerName, resolvedDefUnits);
+				removedDefUnitByEndMarker(markerName, resultDefUnits);
 			} else {
 				String moduleName = StringUtil.segmentUntilMatch(expectedTarget, "/");
 				String defUnitModuleQualifiedName = StringUtil.substringAfterMatch(expectedTarget, "/");
 				
-				removedDefUnitByName(resolvedDefUnits, moduleName, defUnitModuleQualifiedName);
+				removeDefUnitByName(resultDefUnits, moduleName, defUnitModuleQualifiedName);
 			}
 		}
-		assertTrue(resolvedDefUnits.isEmpty());
+		assertTrue(resultDefUnits.isEmpty());
+		return resolveResult;
 	}
 	
-	public void removedDefUnitByName(Collection<DefUnit> resolvedDefUnits, 
+	public void removeDefUnitByName(Collection<DefUnit> resolvedDefUnits, 
 		String moduleName, String moduleQualifiedName) {
 		String expectedFullyTypedName = moduleName + (moduleQualifiedName != null ? "/" + moduleQualifiedName : "");
 		
@@ -239,6 +257,7 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 				String defUnitFullyTypedName = getDefUnitFullyTypedName(defUnit);
 				if(defUnitFullyTypedName.equals(expectedFullyTypedName)) {
 					iterator.remove();
+					removeDuplicatedInstances(iterator, defUnit); // TODO: might not be necessary in future
 					return;
 				} else {
 					continue; // Not a match
@@ -251,6 +270,20 @@ public class ResolverSourceTests extends DeeTemplatedSourceBasedTest {
 			}
 		}
 		assertFail(); // Must find a matching result
+	}
+	
+	public void removeDuplicatedInstances(Iterator<DefUnit> iterator, DefUnit defUnit) {
+		while(iterator.hasNext()) {
+			DefUnit next = iterator.next();
+			if(next == defUnit || isSamePackageNamespace(defUnit, next)) {
+				iterator.remove();
+			}
+		}
+	}
+	
+	public boolean isSamePackageNamespace(DefUnit defUnit, DefUnit next) {
+		return (next instanceof PartialPackageDefUnit) && (defUnit instanceof PartialPackageDefUnit)
+			&& next.getName().equals(defUnit.getName());
 	}
 	
 	// TODO: review this

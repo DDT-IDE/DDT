@@ -1,6 +1,8 @@
 package dtool.resolver;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +47,7 @@ public abstract class CommonDefUnitSearch {
 		this.refScope = refScope;
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
-		this.modResolver = moduleResolver;
+		this.modResolver = assertNotNull(moduleResolver);
 	}
 	
 	public IModuleResolver getModResolver() {
@@ -96,6 +98,9 @@ public abstract class CommonDefUnitSearch {
 	/** Returns whether this search matches the given defUnit or not. */
 	public boolean matches(DefUnit defUnit) {
 		if(!defUnit.availableInRegularNamespace()) {
+			return false;
+		}
+		if(defUnit.syntaxIsMissingName()) {
 			return false;
 		}
 		return matchesName(defUnit.getName());

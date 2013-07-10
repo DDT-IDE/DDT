@@ -1,12 +1,15 @@
 package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNode;
+import dtool.ast.ASTNodeFinder;
 import dtool.ast.IASTNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
@@ -17,8 +20,11 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
+import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
+import dtool.ast.references.Reference;
+import dtool.parser.DeeParserResult;
 import dtool.resolver.api.IModuleResolver;
 
 /**
@@ -29,7 +35,7 @@ import dtool.resolver.api.IModuleResolver;
 public class ReferenceResolver {
 	
 	private static final String[] EMPTY_PACKAGE = new String[0];
-
+	
 	public static Module findModuleUnchecked(IModuleResolver modResolver, String[] packages, String module) {
 		try {
 			return modResolver.findModule(packages, module);
@@ -77,8 +83,7 @@ public class ReferenceResolver {
 		}
 	}
 	
-	private static void findDefUnitInModuleDec(Module module,
-			CommonDefUnitSearch search) {
+	private static void findDefUnitInModuleDec(Module module, CommonDefUnitSearch search) {
 		DeclarationModule decMod = module.md;
 		if(decMod != null) {
 			DefUnit defUnit;
@@ -86,15 +91,9 @@ public class ReferenceResolver {
 			if(decMod.packages.length == 0 || decMod.packages[0] == "") {
 				defUnit = module;
 			} else {
-				// Cache this?
-			
-				String[] packNames = new String[decMod.packages.length];
-				for(int i = 0; i< decMod.packages.length; ++i){
-					packNames[i] = decMod.packages[i];
-				}
+				String[] packNames = decMod.packages;
 				
-				defUnit = PartialPackageDefUnitOfPackage.createPartialDefUnits(
-						packNames, null, module);
+				defUnit = PartialPackageDefUnitOfPackage.createPartialDefUnits(packNames, null, module);
 			}
 			
 			if(search.matches(defUnit))
@@ -115,6 +114,7 @@ public class ReferenceResolver {
 	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
 	 */
 	public static void findDefUnitInScope(IScope scope, CommonDefUnitSearch search) {
+		assertNotNull(scope);
 		if(search.hasSearched(scope))
 			return;
 		
@@ -235,11 +235,15 @@ public class ReferenceResolver {
 			
 		for(ASTNode impSelFrag: impSelective.impSelFrags) {
 			if(impSelFrag instanceof RefImportSelection) {
-				String name;
-				name = ((RefImportSelection) impSelFrag).name;
+				RefImportSelection refImportSelection = (RefImportSelection) impSelFrag;
+				String name = refImportSelection.getIdString();
 				// Do pre-emptive matching
-				if(search.matchesName(name)) {
-					findDefUnitInScope(targetModule, search);
+				if(!search.matchesName(name)) {
+					continue;
+				}
+				DefUnit defUnit = refImportSelection.findTargetDefUnit(search.modResolver);
+				if(defUnit != null) { 
+					search.addMatch(defUnit);
 				}
 			} // Aliases are matched in the primary namespace 
 			/*
@@ -259,5 +263,50 @@ public class ReferenceResolver {
 		}
 		return scope;
 	}
-
+	
+	public static class DirectDefUnitResolve {
+		
+		protected ASTNode pickedNode;
+		protected Reference pickedRef;
+		public Collection<DefUnit> resolvedDefUnits;
+		public boolean invalidPickRef = false;
+		
+		public void pickLocation(Module module, int offset) {
+			ASTNodeFinder nodeFinder = new ASTNodeFinder(module, offset, true);
+			
+			if(nodeFinder.matchOnLeft instanceof Reference) {
+				this.pickedNode = nodeFinder.matchOnLeft;
+				this.pickedRef = (Reference) pickedNode;
+			} else if(nodeFinder.match instanceof Reference) {
+				this.pickedRef = (Reference) nodeFinder.match;
+			}
+			this.pickedNode = nodeFinder.match;
+			
+			if(pickedRef instanceof CommonRefQualified) {
+				invalidPickRef = true;
+			}
+		}
+		
+		public boolean isValidPickRef() {
+			return pickedRef != null && invalidPickRef == false;
+		}
+		
+		public Collection<DefUnit> getResolvedDefUnits() {
+			assertTrue(isValidPickRef()); // a valid ref must have picked from offset
+			return resolvedDefUnits;
+		}
+		
+	}
+	
+	public static DirectDefUnitResolve resolveAtOffset(DeeParserResult parseResult, int offset, IModuleResolver mr) {
+		DirectDefUnitResolve refResolve = new DirectDefUnitResolve();
+		
+		refResolve.pickLocation(parseResult.module, offset);
+		
+		if(refResolve.isValidPickRef()) {
+			refResolve.resolvedDefUnits = refResolve.pickedRef.findTargetDefUnits(mr, false);
+		}
+		return refResolve;
+	}
+	
 }

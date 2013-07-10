@@ -63,7 +63,10 @@ public class AnnotatedSource {
 		
 		@Override
 		public String toString() {
-			return "["+offset+"]" + name + "("+value+")" + sourceValue ;
+			return "["+offset+"]" + name + 
+				(sourceWasIncluded ? "" : "¤") +
+				(value != null ? "("+value+")" : "") +
+				(sourceValue != null ? "【"+sourceValue+"】" : "");
 		}
 	}
 	
@@ -103,13 +106,13 @@ public class AnnotatedSource {
 	public static String printSourceWithMetadata(AnnotatedSource testCase) {
 		ListIterator<MetadataEntry> mdeIter = testCase.metadata.listIterator();
 		StringBuffer sb = new StringBuffer();
-		printCaseSourceWithMetaData(testCase.source, mdeIter, 0, testCase.source.length(), sb);
+		printCaseSourceWithMetaData(testCase.source, mdeIter, 0, testCase.source.length(), null, sb);
 		assertTrue(mdeIter.hasNext() == false);
 		return sb.toString();
 	}
 	
 	public static void printCaseSourceWithMetaData(String source, ListIterator<MetadataEntry> mdeIter, 
-		final int startOffset, final int maxSourceOffset, StringBuffer sb) {
+		final int startOffset, final int maxSourceOffset, MetadataEntry parentMDE, StringBuffer sb) {
 		int offset = startOffset;
 
 		while(mdeIter.hasNext()) {
@@ -117,7 +120,12 @@ public class AnnotatedSource {
 			assertTrue(offset >= 0 && maxSourceOffset >= offset);
 			int nextOffset = mde.offset;
 			assertTrue(nextOffset >= offset);
-			if(nextOffset > maxSourceOffset) {
+			
+			// TODO This condition is actually buggy and will be incorrect on child MDEs of child MDEs (depth 2)
+			// This is because AnnotatedSource class doesn't provide parent MDE info
+			boolean mdeIsParentOfParentMDE = mde.isTopLevelMetadata() == (parentMDE == null);
+			
+			if(nextOffset > maxSourceOffset || !mdeIsParentOfParentMDE) {
 				mdeIter.previous();
 				break;
 			}
@@ -133,10 +141,10 @@ public class AnnotatedSource {
 				sb.append(mde.sourceWasIncluded ? "【" : "¤【");
 				if(mde.sourceWasIncluded) {
 					nextOffset += mde.sourceValue.length();
-					printCaseSourceWithMetaData(source, mdeIter, offset, nextOffset, sb);
+					printCaseSourceWithMetaData(source, mdeIter, offset, nextOffset, parentMDE, sb);
 					offset = nextOffset;
 				} else {
-					printCaseSourceWithMetaData(mde.sourceValue, mdeIter, 0, mde.sourceValue.length(), sb);
+					printCaseSourceWithMetaData(mde.sourceValue, mdeIter, 0, mde.sourceValue.length(), mde, sb);
 				}
 				sb.append("】");
 			}

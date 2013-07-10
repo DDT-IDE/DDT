@@ -4,15 +4,16 @@ module importTest; #PROJECT(importsProject)
 
 import mod1alias = pack.mod1#FIND¤【pack.mod1/】;
 import mod2alias = pack.mod2#FIND¤【pack.mod2/】;
-import pack.mod2, sampleAlias = pack.sample#FIND¤【pack.sample/】, pack.subpack.mod3; 
+import pack.mod2, sampleAlias = pack.sample#FIND¤【pack.sample/】; 
 
 
 #@__CONTEXT_START__
-	#REFSEARCH¤【importTest▪mod1alias▪mod2alias▪sampleAlias▪pack】
+	#REFSEARCH¤【importTest▪mod1alias▪mod2alias▪#@PACK_MOD2_MBRS▪pack▪sampleAlias】
 	pack.#REFSEARCH¤【mod2】;
 	pack.sample#FIND¤【】;
 	
-	sampleAlias#FIND¤【importAliasTest/sampleAlias】;
+	sampleAlias#FIND¤【importTest/sampleAlias】;
+	sampleAlias.#REFSEARCH¤【#@PACK_SAMPLE_MBRS】;
 	sampleAlias.SampleClass#FIND¤【pack.sample/SampleClass】;
 	sampleAlias.SampleClass.foo#FIND¤【pack.sample/SampleClass.foo】++;
 
@@ -26,4 +27,4 @@ import pack.mod2, sampleAlias = pack.sample#FIND¤【pack.sample/】, pack.subpa
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module importTest; #PROJECT(importsProject)
 
-import sampleAlias3 =#@SPACE_Opt#FINDFAIL#REFSEARCH¤【pack▪pack2】#@SPACE_Opt2;
+import sampleAlias3 =#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@IMPORTSPROJ_ALL_MODULES】#@SPACE_Opt2;

@@ -1,5 +1,7 @@
 package dtool.ast.declarations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -9,6 +11,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
 import dtool.resolver.api.IModuleResolver;
+import dtool.util.NewUtils;
 
 public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 	
@@ -17,8 +20,9 @@ public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 	
 	public PartialPackageDefUnitOfModule(String defName, Module module, RefModule moduleRef) {
 		super(defName);
-		this.module = module; // BUG here
+		this.module = module;
 		this.moduleRef = moduleRef;
+		assertTrue(NewUtils.exactlyOneIsNull(module, moduleRef));
 	}
 	
 	@Override

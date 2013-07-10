@@ -3,6 +3,7 @@
 = DDT Change Log =
 
 == DDT 0.7.0 (development) ==
+ * Fixed a bug with selective imports presentive all symbol elements, not just the selected ones.
  * Fixed bug in D Appearance preference page - var and funtions showing up as Structs in preview.
  * Added mixin template instance to listed model elements in UI (for example, outline)
  * -- Preview Release 0.7.0 --

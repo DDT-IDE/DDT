@@ -1,12 +1,27 @@
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+module tests; // Test identifier-embedded refsearch
+int Var;
+int Var2;
+int Foo;
+
+V#REFSEARCH¤【Var▪Var2】;
+V#REFSEARCH¤【Var▪Var2】xx;
+Va#REFSEARCH¤【Var▪Var2】;
+Va#REFSEARCH¤【Var▪Var2】xx;
+Vx#REFSEARCH¤【】xx;
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module tests;
+V#REFSEARCH¤【Var】#@《x●》; // Edge case, refsearch at beginning of file
+
+int Var;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+module tests; // Test invalid locations
 int Var;
 
-void func() { // Test invalid locations
+void func() {
 	x =#REFSEARCH¤【!invalid_token】#FINDFAIL= 2;
 	/*A Comment#REFSEARCH¤【!invalid_token】#FINDFAIL */
-	
-	foo #REFSEARCH¤【!invalid_qualified】.bar;
 	
 	foo[]#REFSEARCH¤【!other_ref】 foo;
 	foo!#REFSEARCH¤【!other_ref】 (123)#REFSEARCH¤【!other_ref】;

@@ -36,4 +36,9 @@ public abstract class Reference extends Resolvable {
 	
 	public abstract boolean canMatch(DefUnitDescriptor defunit);
 	
+	// How to handle composite references though? (like RefQualified)
+	public boolean syntaxIsMissingIdentifier() {
+		return false; // TODO /*BUG here for children*/
+	}
+	
 }

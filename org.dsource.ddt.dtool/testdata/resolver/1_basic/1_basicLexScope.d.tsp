@@ -20,20 +20,12 @@ class Class(T #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】, U :
 
 int Var2;
 
-V#REFSEARCH¤【Var▪Var2】;
-V#REFSEARCH¤【Var▪Var2】xx;
-Va#REFSEARCH¤【Var▪Var2】;
-Va#REFSEARCH¤【Var▪Var2】xx;
-Vx#REFSEARCH¤【】xx;
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-V#REFSEARCH¤【Var】#@《x●》; // Edge case, refsearch at beginning of file
-
-int Var;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module tests;
 int voidLike;
 int foo;
+
+class /*Missing DefId*/ {}
 
 void func() {
 	voi#REFSEARCH¤【voidLike】; // Test statements forward reference visibitity (or lack of)
@@ -45,6 +37,16 @@ void func() {
 	voi#REFSEARCH¤【voidLike▪voidName2】;
 	void#REFSEARCH¤【voidLike▪voidName2】; // Test primitive ref
 }
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+module tests;
+int foo;
+
+alias align(123 ;
+class /*Missing DefId*/ {}
+Foo;
+
+#REFSEARCH¤【tests▪foo】
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 TODO:

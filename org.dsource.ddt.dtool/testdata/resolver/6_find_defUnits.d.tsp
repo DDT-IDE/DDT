@@ -47,9 +47,9 @@ Var1
 
 VarAuto1
 
-Function(int Parameter)
-Function()
-FunctionAuto(int Parameter)
+Function
+Function
+FunctionAuto
 
 Class
 Interface

@@ -79,6 +79,10 @@ public abstract class DefUnit extends ASTNode {
 		return true;
 	}
 	
+	public boolean syntaxIsMissingName() {
+		return getName().isEmpty();
+	}
+
 	public boolean isSynthetic() {
 		// TODO need to define this properly
 		return getModuleNode() == null;

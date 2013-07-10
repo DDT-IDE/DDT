@@ -15,7 +15,7 @@ int xpto_test_var;
 module _dummy; #PROJECT(importsProject)
 
 #@__CONTEXT_START__
-	import xpto;
+	import xpto#FIND¤【xpto/】; // Test self-test
 	
 	xpto_imported_var#FIND¤【pack2.xpto_imported/xpto_imported_var】;
 	#REFSEARCH¤【xpto▪xpto_var▪pack2▪xpto_imported_var】

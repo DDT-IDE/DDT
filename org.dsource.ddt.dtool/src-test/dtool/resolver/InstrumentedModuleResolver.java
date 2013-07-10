@@ -21,12 +21,15 @@ import dtool.tests.DToolBaseTest;
 public final class InstrumentedModuleResolver implements IModuleResolver {
 	
 	protected File projectFolder;
-	protected Map<String, DeeParserResult> modules = new HashMap<>(); 
+	protected Map<String, DeeParserResult> modules = new HashMap<>();
 	
-	public InstrumentedModuleResolver(File projectFolder) {
+	public InstrumentedModuleResolver(File projectFolder, String extraModuleName, DeeParserResult extraModuleResult) {
 		this.projectFolder = projectFolder;
 		
 		initModules(projectFolder, "");
+		if(extraModuleName != null) {
+			modules.put(extraModuleName, extraModuleResult);
+		}
 	}
 	
 	public void initModules(File projectFolder, String namePrefix) {

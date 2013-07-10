@@ -59,6 +59,11 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
+	public boolean syntaxIsMissingIdentifier() {
+		return module.isEmpty();
+	}
+	
+	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
 		Module targetMod;
 		try {
@@ -67,6 +72,15 @@ public class RefModule extends NamedReference {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 		return DefUnitSearch.wrapResult(targetMod);
+	}
+	
+	public Module findTargetModule(IModuleResolver moduleResolver) {
+		try {
+			Module targetMod = moduleResolver.findModule(packages.getInternalArray(), module);
+			return targetMod;
+		} catch (Exception e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 	public static class LiteModuleDummy extends SyntheticDefUnit {

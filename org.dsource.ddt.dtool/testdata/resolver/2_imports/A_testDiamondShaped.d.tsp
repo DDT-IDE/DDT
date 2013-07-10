@@ -19,7 +19,7 @@ pack.sample  pack.sample2  pack.sample3
   // top of diamond
   pack2.public_imported.foopublicImportVar#FIND¤【pack2.public_imported/foopublicImportVar】++;
   foopublicImportVar#FIND¤【pack2.public_imported/foopublicImportVar】++; 
-  #REFSEARCH¤【importTest▪pack▪#@PACK_SAMPLE_CONTENTS】
+  #REFSEARCH¤【importTest▪pack▪#@PACK_SAMPLE_MBRS】
   
 #@__CONTEXT_END__
 

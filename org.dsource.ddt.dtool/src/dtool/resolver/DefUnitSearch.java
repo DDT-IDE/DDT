@@ -1,7 +1,10 @@
 package dtool.resolver;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.DefUnit;
@@ -26,14 +29,19 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	public DefUnitSearch(String searchName, Reference searchref, int refOffset, boolean findOneOnly,
 			IModuleResolver moduleResolver) {
 		super(ScopeUtil.getOuterScope(searchref), refOffset, findOneOnly, moduleResolver);
-		this.searchName = searchName;
+		this.searchName = assertNotNull(searchName);
 		//defunits = new ArrayDeque<DefUnit>(4);
 	}
 	
+	@Deprecated // Deprecated API
 	public Collection<DefUnit> getMatchDefUnits() {
 		return defunits;
 	}
-
+	
+	public Collection<DefUnit> getMatchDefUnits2() {
+		return defunits == null ? Collections.EMPTY_LIST : defunits;
+	}
+	
 	@Override
 	public void addMatch(DefUnit defunit) {
 		if(defunits == null)

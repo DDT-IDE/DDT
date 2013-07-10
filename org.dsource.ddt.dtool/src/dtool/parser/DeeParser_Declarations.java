@@ -117,7 +117,8 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 			if(!id.isMissingElement() && tryConsume(DeeTokens.DOT)) {
 				packages.add(id);
 			} else {
-				parse.setStartPosition(packages.size() > 0 ? packages.get(0).getStartPos() : id.getStartPos());
+				int idStartPos = id.getEffectiveStartPos();
+				parse.setStartPosition(packages.size() > 0 ? packages.get(0).getStartPos() : idStartPos);
 				return parse.conclude(new RefModule(arrayViewG(packages), id.getSourceValue()));
 			}
 		}
@@ -152,8 +153,9 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 	}
 	
 	public RefImportSelection parseRefImportSelection() {
-		BaseLexElement lexToken = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
-		return conclude(lexToken.getMissingError(), srOf(lexToken, new RefImportSelection(idTokenToString(lexToken))));
+		BaseLexElement idToken = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
+		return conclude(idToken.getMissingError(), 
+			srEffective(idToken, new RefImportSelection(idTokenToString(idToken))));
 	}
 	
 	public static final ParseRuleDescription RULE_DECLBODY = 

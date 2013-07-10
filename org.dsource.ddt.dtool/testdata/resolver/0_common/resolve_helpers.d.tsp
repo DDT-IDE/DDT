@@ -13,8 +13,3 @@
 #@SPACE_Opt《 ●》
 #@SPACE_Opt2《 ●》
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-
-
-#@PACK_SAMPLE_CONTENTS【sampleVar▪sampleVarB▪SampleClass▪SampleClassB
-▪foopublicImportVar0▪foopublicImportVar▪foopublicImportVar2】

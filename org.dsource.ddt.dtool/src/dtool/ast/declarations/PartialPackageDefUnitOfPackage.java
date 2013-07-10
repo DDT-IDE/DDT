@@ -15,8 +15,7 @@ public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
 	
 	protected PartialPackageDefUnitOfPackage(String defName, PartialPackageDefUnit subPackage) {
 		super(defName);
-		this.subPackage = subPackage;
-		assertNotNull(subPackage);
+		this.subPackage = parentize(assertNotNull(subPackage));
 	}
 	
 	@Override

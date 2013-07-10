@@ -169,7 +169,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				
 			} else if (node instanceof RefImportSelection) {
 				RefImportSelection refImpSel = (RefImportSelection) node;
-				setupPrefixedSearchOptions(searchOptions, offset, refImpSel.getOffset(), refImpSel.name);
+				setupPrefixedSearchOptions(searchOptions, offset, refImpSel.getOffset(), refImpSel.getIdString());
 			} else {
 				throw assertFail();
 			}

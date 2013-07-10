@@ -3,6 +3,8 @@ package dtool.parser;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAttrib;
+import dtool.ast.declarations.ImportContent;
+import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
@@ -83,9 +85,18 @@ public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {
 		case MISSING_DECLARATION:
 			return true;
 
+		case REF_MODULE:
 		case REF_IDENTIFIER:
 		case REF_IMPORT_SELECTION:
-			return DeeParser.isMissing((Reference) node);
+			return ((Reference) node).syntaxIsMissingIdentifier();
+		case IMPORT_SELECTIVE: {
+			ImportSelective importSelective = (ImportSelective) node;
+			return canBeginWithEmptySpace((ASTNode) importSelective.fragment);
+		}
+		case IMPORT_CONTENT: {
+			ImportContent importContent = (ImportContent) node;
+			return canBeginWithEmptySpace(importContent.moduleRef);
+		}
 		case STRUCT_INIT_ENTRY: {
 			StructInitEntry initEntry = (StructInitEntry) node;
 			return canBeginWithEmptySpace(initEntry.member != null ? initEntry.member : (ASTNode) initEntry.value);
@@ -123,7 +134,7 @@ public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {
 		}
 		if(node instanceof RefIdentifier) {
 			RefIdentifier refId = (RefIdentifier) node;
-			return DeeParser.isMissing(refId); 
+			return refId.isMissing(); 
 		}
 		if(node instanceof DefSymbol) {
 			return false;

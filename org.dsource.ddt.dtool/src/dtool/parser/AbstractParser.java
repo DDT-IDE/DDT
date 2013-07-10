@@ -476,7 +476,7 @@ public abstract class AbstractParser {
 	}
 	
 	public static <T extends ASTNode> T srEffective(BaseLexElement lexElement, T node) {
-		int startPos = lexElement.isMissingElement() ? lexElement.getFullRangeStartPos() : lexElement.getStartPos();
+		int startPos = lexElement.getEffectiveStartPos();
 		node.setSourceRange(startPos, lexElement.getEndPos() - startPos);
 		return node;
 	}

@@ -81,6 +81,11 @@ public abstract class BaseLexElement implements IToken {
 		return fullStartPos;
 	}
 	
+	// TODO: maybe getStarpos should behave like this all the time
+	public final int getEffectiveStartPos() {
+		return isMissingElement() ? getFullRangeStartPos() : getStartPos();
+	}
+	
 	public static final Token[] EMPTY_ARRAY = new Token[0];
 	
 	public Token[] getRelevantPrecedingSubChannelTokens() {

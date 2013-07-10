@@ -77,8 +77,8 @@ public class CommonTestUtils {
 	
 	/* -------------------------- */
 	
-	public static <T> LinkedList<T> makeLinkedList(Collection<T> coll) {
-		return new LinkedList<>(coll == null ? Collections.EMPTY_LIST: coll);
+	public static <U> Collection<U> nullToEmpty(Collection<U> coll) {
+		return coll == null ? Collections.EMPTY_LIST : coll;
 	}
 	
 	@SafeVarargs

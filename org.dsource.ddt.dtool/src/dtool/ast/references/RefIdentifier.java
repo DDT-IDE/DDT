@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.resolver.CommonDefUnitSearch;
@@ -16,28 +15,15 @@ import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
 
-public class RefIdentifier extends NamedReference implements ITemplateRefNode {
-	
-	// this is private because of contract restriction, use appropriate getters instead
-	private final String identifier; 
+public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNode {
 	
 	public RefIdentifier(String name) {
-		this.identifier = name;
-		assertTrue(name == null || name.length() > 0); 
-		assertTrue(getIdString().indexOf(' ') == -1);
+		super(name);
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.REF_IDENTIFIER;
-	}
-	
-	public boolean isMissing() {
-		return identifier == null;
-	}
-	
-	public String getIdString() {
-		return identifier == null ? "" : identifier;
 	}
 	
 	@Override
@@ -46,12 +32,9 @@ public class RefIdentifier extends NamedReference implements ITemplateRefNode {
 	}
 	
 	@Override
-	public void visitChildren(IASTVisitor visitor) {
-	}
-	
-	
-	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
+		if(isMissing())
+			return null;
 		DefUnitSearch search = new DefUnitSearch(identifier, this, this.getStartPos(), findOneOnly, moduleResolver);
 		doSearchForPossiblyQualifiedSingleRef(search, this);
 		return search.getMatchDefUnits();
@@ -81,11 +64,6 @@ public class RefIdentifier extends NamedReference implements ITemplateRefNode {
 		
 		IScopeNode lookupScope = ReferenceResolver.getStartingScope(refSingle);
 		ReferenceResolver.findDefUnitInExtendedScope(lookupScope, search);
-	}
-	
-	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(identifier);
 	}
 	
 }

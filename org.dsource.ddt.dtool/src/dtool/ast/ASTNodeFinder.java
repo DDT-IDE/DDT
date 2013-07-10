@@ -69,7 +69,7 @@ public class ASTNodeFinder extends ASTVisitor {
 			// This node is the match, or is parent of the match.
 			ASTNode oldMatch = match;
 			match = node;
-			if(oldMatch != null && oldMatch.getEndPos() == match.getStartPos()) {
+			if(oldMatch != null && isAdjacent(oldMatch, match)) {
 				assertTrue(offset == oldMatch.getEndPos());
 				matchOnLeft = oldMatch;
 			}
@@ -78,6 +78,11 @@ public class ASTNodeFinder extends ASTVisitor {
 			// Match not here: don't bother descending, go forward
 			return false; 
 		}
+	}
+	
+	public boolean isAdjacent(ASTNode node, ASTNode nextNode) {
+		return node.getEndPos() == nextNode.getStartPos() &&
+			!NodeUtil.isContainedIn(nextNode, node); // This check is necessary because of zero-length nodes
 	}
 	
 	protected boolean matchesNodeStart(ASTNode node) {

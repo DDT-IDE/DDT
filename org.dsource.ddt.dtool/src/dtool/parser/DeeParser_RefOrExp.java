@@ -75,7 +75,6 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.ast.references.RefIdentifier;
-import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefIndexing;
 import dtool.ast.references.RefModuleQualified;
 import dtool.ast.references.RefPrimitive;
@@ -143,13 +142,8 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	public Reference createMissingTypeReferenceNode(SourceRange sourceRange, ParserError error) {
 		RefIdentifier refMissing = new RefIdentifier(null);
 		refMissing.setSourceRange(sourceRange);
-		assertTrue(isMissing(refMissing));
+		assertTrue(refMissing.isMissing());
 		return conclude(error, refMissing);
-	}
-	
-	public static boolean isMissing(Reference ref) {
-		return ((ref instanceof RefIdentifier) && ((RefIdentifier) ref).isMissing())
-			|| ((ref instanceof RefImportSelection) && ((RefImportSelection) ref).isMissing());
 	}
 	
 	public static enum RefParseRestrictions {
@@ -241,7 +235,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	protected static boolean isTypeModifier(DeeTokens tokenType) {
 		return determineTypeModifier(tokenType) != null;
 	}
-	
+	/** Note: consider interaction with {@link #determineTypeModifier(DeeTokens)} */
 	protected static boolean isImmutabilitySpecifier(DeeTokens tokenType) {
 		switch (tokenType) {
 		case KW_CONST: case KW_IMMUTABLE: case KW_SHARED: case KW_INOUT: 
@@ -250,7 +244,6 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			return false;
 		}
 	}
-	
 	
 	public RefIdentifier attemptParseRefIdentifier() {
 		if(lookAhead() != DeeTokens.IDENTIFIER) {
@@ -275,7 +268,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		int nodeStart = lastLexElement().getStartPos();
 		
 		RefIdentifier id = parseRefIdentifier();
-		return resultConclude(isMissing(id), srToPosition(nodeStart, new RefModuleQualified(id)));
+		return resultConclude(id.isMissing(), srToPosition(nodeStart, new RefModuleQualified(id)));
 	}
 	
 	public NodeResult<RefTypeof> parseRefTypeof() {
@@ -357,11 +350,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		} else if(lookAhead() == DeeTokens.DOT && leftRef instanceof IQualifierNode) {
 			IQualifierNode qualifier = (IQualifierNode) leftRef;
 			assertTrue(!RefQualified.isExpressionQualifier(qualifier));
-			LexElement dotToken = consumeLookAhead(DeeTokens.DOT);
-			RefIdentifier qualifiedId = parseRefIdentifier();
-			parse.setRuleBroken(isMissing(qualifiedId));
-			leftRef = parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
-			
+			leftRef = parseRefQualified(parse, qualifier);
 		} else if(refRestrictions.canParsePointer() && tryConsume(DeeTokens.STAR)) {
 			leftRef = conclude(srToPosition(leftRef, new RefTypePointer(leftRef)));
 		} else if(refRestrictions.canParseBracketRef() && lookAhead() == DeeTokens.OPEN_BRACKET) {
@@ -375,6 +364,20 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		if(parse.ruleBroken)
 			return result(true, leftRef);
 		return parseTypeReference_withLeftReference(leftRef, refRestrictions);
+	}
+	
+	public Reference parseRefQualified(ParseHelper parse, IQualifierNode qualifier) {
+		LexElement dotToken = consumeLookAhead(DeeTokens.DOT);
+		RefIdentifier qualifiedId = parseRefIdentifier();
+		parse.setRuleBroken(qualifiedId.isMissing());
+		return parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
+	}
+	
+	// TODO: make these two methods the same?
+	public Reference parseRefQualifiedForExp(ParseHelper parse, IQualifierNode qualifier) {
+		LexElement dotToken = consumeLookAhead(DeeTokens.DOT);
+		RefIdentifier qualifiedId = parseRefIdentifier();
+		return parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
 	}
 	
 	public Reference parseBracketReference(Reference leftRef, ParseHelper parse) {
@@ -693,7 +696,6 @@ protected class ParseRule_Expression {
 			return parsePostfixExpression(exp);
 		}
 		case DOT: {
-			ParseHelper parse = new ParseHelper(exp);
 			IQualifierNode qualifier = exp;
 			exp = null;
 			if(qualifier instanceof ExpReference) {
@@ -705,11 +707,10 @@ protected class ParseRule_Expression {
 					assertFail(); // ...otherwise refqualified would have been parsed already
 				}
 			}
-			LexElement dotToken = consumeLookAhead(DeeTokens.DOT);
-			RefIdentifier qualifiedId = parseRefIdentifier();
-			Reference ref = parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
-			ref = parseTypeReference_withLeftReference(ref, RefParseRestrictions.TEMPLATE_ONLY).node; 
+			ParseHelper parse = new ParseHelper(qualifier.getStartPos());
+			Reference ref = parseRefQualifiedForExp(parse, qualifier);
 			// TODO check break...
+			ref = parseTypeReference_withLeftReference(ref, RefParseRestrictions.TEMPLATE_ONLY).node; 
 			return parsePostfixExpression(conclude(createExpReference(ref)));
 		}
 		default:
@@ -1349,7 +1350,8 @@ protected class ParseRule_Expression {
 			if(parse.ruleBroken) break parsing;
 			
 			type = parseTypeReference_ToMissing().node;
-			parse.setRuleBroken(isMissing(type));
+			//TODO: review if this is necessary:
+			parse.setRuleBroken(type.syntaxIsMissingIdentifier());
 			if(parse.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
