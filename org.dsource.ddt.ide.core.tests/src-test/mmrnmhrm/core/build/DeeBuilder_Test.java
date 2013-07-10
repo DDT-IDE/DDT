@@ -40,7 +40,7 @@ public class DeeBuilder_Test extends BaseDeeTest implements ITestResourcesConsta
 	
 	protected IScriptProject createBuildProject(String projectName) throws CoreException {
 		this.projectName = projectName;
-		return createAndOpenDeeProject(projectName, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
+		return createAndOpenDeeProject(projectName, true, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
 	}
 	
 	protected void doProjectBuild(IScriptProject deeProj) throws CoreException {

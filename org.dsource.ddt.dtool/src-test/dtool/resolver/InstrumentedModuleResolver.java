@@ -7,29 +7,40 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.DeeNamingRules;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.ResolverSourceTests.ITestsModuleResolver;
 import dtool.tests.DToolBaseTest;
 
-public final class InstrumentedModuleResolver implements IModuleResolver {
+public final class InstrumentedModuleResolver implements ITestsModuleResolver {
 	
 	protected File projectFolder;
 	protected Map<String, DeeParserResult> modules = new HashMap<>();
+	protected String extraModuleName;
+	protected DeeParserResult extraModuleResult;
 	
-	public InstrumentedModuleResolver(File projectFolder, String extraModuleName, DeeParserResult extraModuleResult) {
+	public InstrumentedModuleResolver(File projectFolder) {
 		this.projectFolder = projectFolder;
 		
 		initModules(projectFolder, "");
-		if(extraModuleName != null) {
-			modules.put(extraModuleName, extraModuleResult);
-		}
+	}
+	
+	public void setExtraModule(String extraModuleName, DeeParserResult extraModuleResult) {
+		this.extraModuleName = extraModuleName;
+		this.extraModuleResult = extraModuleResult;
+	}
+	
+	@Override
+	public void doCleanup() {
+		extraModuleName = null;
+		extraModuleResult = null;
 	}
 	
 	public void initModules(File projectFolder, String namePrefix) {
@@ -55,9 +66,14 @@ public final class InstrumentedModuleResolver implements IModuleResolver {
 	@Override
 	public String[] findModules(String fqNamePrefix) throws Exception {
 		ArrayList<String> matchedModules = new ArrayList<>();
-		for (Entry<String, DeeParserResult> entry : modules.entrySet()) {
-			if(entry.getKey().startsWith(fqNamePrefix)) {
-				matchedModules.add(entry.getKey());
+		Set<String> nameEntries = new HashSet<>(modules.keySet());
+		if(extraModuleName != null) {
+			nameEntries.add(extraModuleName);
+		}
+		
+		for (String moduleName : nameEntries) {
+			if(moduleName.startsWith(fqNamePrefix)) {
+				matchedModules.add(moduleName);
 			}
 		}
 		return matchedModules.toArray(new String[0]);
@@ -70,6 +86,13 @@ public final class InstrumentedModuleResolver implements IModuleResolver {
 			fullName += ".";
 		}
 		fullName += module;
+		return findModule(fullName);
+	}
+	
+	public Module findModule(String fullName) {
+		if(extraModuleName != null && fullName.equals(extraModuleName)) {
+			return extraModuleResult.module;
+		}
 		DeeParserResult moduleEntry = modules.get(fullName);
 		return moduleEntry == null ? null : moduleEntry.module;
 	}

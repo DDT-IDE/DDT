@@ -42,7 +42,7 @@ import dtool.tests.DeeFileBasedTest;
 import dtool.util.NewUtils;
 
 @RunWith(Parameterized.class)
-public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
+public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 	
 	public static ArrayList<File> getDeeModuleList(String testFolder) {
 		return getDeeModuleList(getTestResource(testFolder), true);
@@ -105,7 +105,7 @@ public abstract class DeeTemplatedSourceBasedTest extends DeeFileBasedTest {
 		}
 	}
 	
-	public DeeTemplatedSourceBasedTest(String testUIDescription, File file) {
+	public CommonTemplatedSourceBasedTest(String testUIDescription, File file) {
 		super(testUIDescription, file);
 	}
 	

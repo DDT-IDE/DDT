@@ -20,7 +20,7 @@ public class GDCInstallType_Test extends BaseDeeTest {
 	public void testLibraryLocations() throws Exception { testLibraryLocations$(); }
 	public void testLibraryLocations$() throws Exception {		
 		CommonInstallType dmdInstallType = new GDCInstallType();
-		File compilerInstallExe = DeeCoreTestResources.getTestResource(MOCK_GDC_INSTALL_PATH);
+		File compilerInstallExe = DeeCoreTestResources.getWorkingDirFile(MOCK_GDC_INSTALL_PATH);
 		Path compilerPath = new Path(compilerInstallExe.getAbsolutePath());
 		LibraryLocation[] libLocations = getLibraryLocations(dmdInstallType, compilerPath);
 		

@@ -56,10 +56,6 @@ public class CompareDefUnits extends DToolBaseTest {
 		}
 		resultProposals.remove(null);
 		
-		// To make tests simpler we discard these one for expected results:
-		resultProposals.remove("_dummy");
-		resultProposals.remove("_dummy()");
-		
 		assertEqualSet(resultProposals, expectedProposals);
 	}
 	

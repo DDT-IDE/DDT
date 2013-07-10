@@ -37,7 +37,7 @@ public class DeeParserResult {
 		parser.lexerErrors = null;
 	}
 	
-	protected DeeParserResult(String source, ASTNode node, boolean ruleBroken, List<ParserError> errors) {
+	public DeeParserResult(String source, ASTNode node, boolean ruleBroken, List<ParserError> errors) {
 		this.source = source;
 		this.node = node;
 		this.ruleBroken = ruleBroken;

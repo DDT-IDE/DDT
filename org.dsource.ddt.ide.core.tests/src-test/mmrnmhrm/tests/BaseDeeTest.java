@@ -47,7 +47,7 @@ import dtool.tests.DToolTestResources;
 public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	
 	static {
-		DToolResourcesPluginAdapter.initialize();
+		DToolResourcesWorkingDirAdapter.initialize();
 		
 		disableWorkspaceAutoBuild();
 		disableDLTKIndexer();
@@ -114,7 +114,7 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		IInterpreterInstallType deeDmdInstallType = ScriptRuntime.getInterpreterInstallType(installTypeId);
 		InterpreterStandin install = new InterpreterStandin(deeDmdInstallType, installName + ".id");
 		
-		String installPathStr = DeeCoreTestResources.getTestResource(installExePath).getAbsolutePath();
+		String installPathStr = DeeCoreTestResources.getWorkingDirFile(installExePath).getAbsolutePath();
 		assertTrue(new File(installPathStr).exists());
 		
 		install.setInstallLocation(new LazyFileHandle(LocalEnvironment.ENVIRONMENT_ID, new Path(installPathStr)));
@@ -125,16 +125,16 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 	}
 	
 	public static IScriptProject createAndOpenDeeProject(String name) throws CoreException {
-		return createAndOpenDeeProject(name, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
+		return createAndOpenDeeProject(name, false, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
 	}
 	
 	public static IScriptProject createAndOpenDeeProject(
-			String name, final String installTypeId, final String installId) throws CoreException {
+			String name, boolean overwrite, final String installTypeId, final String installId) throws CoreException {
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		
 		final IProject project;
 		project = workspaceRoot.getProject(name);
-		if(project.exists()) {
+		if(overwrite && project.exists()) {
 			project.delete(true, null);
 		}
 		project.create(null);

@@ -30,7 +30,7 @@ public class DeeGDCProject_Test extends DeeBuilder_Test implements ITestResource
 	@Override
 	protected IScriptProject createBuildProject(String projectName) throws CoreException {
 		this.projectName = projectName;
-		return createAndOpenDeeProject(projectName, GDCInstallType.INSTALLTYPE_ID, MOCK_GDC_INSTALL_NAME);
+		return createAndOpenDeeProject(projectName, true, GDCInstallType.INSTALLTYPE_ID, MOCK_GDC_INSTALL_NAME);
 	}
 	
 	@Override

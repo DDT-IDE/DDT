@@ -10,16 +10,21 @@ import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 import mmrnmhrm.tests.utils.BundleResourcesUtil;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.dltk.core.IScriptProject;
 
 import dtool.tests.DToolTestResources;
+import dtool.tests.MiscFileUtils;
 
 
 public class DeeCoreTestResources {
 	
-	private static final String TESTDATA_BUNDLE_PATH = "testdata/";
+	public static File getWorkingDirFile(String relativePath) {
+		return new File(DToolTestResources.getWorkingDir(), relativePath);
+	}
 	
 	public static void createSrcFolderFromDeeCoreResource(String resourcePath, IContainer destFolder) 
 			throws CoreException {
@@ -36,6 +41,7 @@ public class DeeCoreTestResources {
 		assertTrue(destFolder.exists());
 	}
 	
+	protected static final String TESTDATA_BUNDLE_PATH = "testdata/";
 	
 	/** Copies the contents of a test bundle resource folder into given destFolder destination */
 	public static void copyTestFolderContentsFromDeeResource(String resourcePath, File destFolder) 
@@ -49,8 +55,12 @@ public class DeeCoreTestResources {
 		}
 	}
 	
-	public static File getTestResource(String relativePath) {
-		return new File(DToolTestResources.getWorkingDir(), relativePath);
+	public static void createSrcFolderFromDirectory(File directory, IScriptProject project, 
+		String destFolderName) throws CoreException {
+		IFolder destFolder = project.getProject().getFolder(destFolderName);
+		MiscFileUtils.copyDirContentsIntoDirectory(directory, destFolder.getLocation().toFile());
+		destFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
+		ProjectModelUtil.addSourceFolder(destFolder, null);
 	}
 	
 }

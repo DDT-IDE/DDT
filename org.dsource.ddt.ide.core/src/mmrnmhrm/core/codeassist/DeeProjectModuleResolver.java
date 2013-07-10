@@ -66,7 +66,8 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 		return findModule(packages, moduleName, this.scriptProject);
 	}
 	
-	protected Module findModule(String[] packages, String modName, IScriptProject deeproj) throws ModelException {
+	protected static Module findModule(String[] packages, String modName, IScriptProject deeproj) 
+		throws ModelException {
 		ISourceModule moduleUnit = findModuleUnit(deeproj, packages, modName);
 		if(moduleUnit == null)
 			return null;
@@ -106,7 +107,7 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 		return findModules(fqNamePrefix, this.scriptProject);
 	}
 	
-	protected String[] findModules(String fqNamePrefix, IScriptProject scriptProject) throws ModelException {
+	protected static String[] findModules(String fqNamePrefix, IScriptProject scriptProject) throws ModelException {
 		List<String> strings = new ArrayList<String>();
 		
 		for (IProjectFragment srcFolder : scriptProject.getProjectFragments()) {

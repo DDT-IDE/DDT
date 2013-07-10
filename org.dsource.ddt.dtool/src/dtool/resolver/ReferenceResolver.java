@@ -187,7 +187,8 @@ public class ReferenceResolver {
 				}
 			} else if(importsOnly && elem instanceof DeclarationImport) {
 				DeclarationImport declImport = (DeclarationImport) elem;
-
+				
+				// This equals test is a bit brittle:
 				if(!refsModule.equals(thisModule) && !declImport.isTransitive)
 					continue; // Don't consider private imports
 				

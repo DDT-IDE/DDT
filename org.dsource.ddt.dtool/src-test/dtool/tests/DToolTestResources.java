@@ -57,7 +57,7 @@ public class DToolTestResources {
 	}
 	
 	public static File getTestResource(String... segments) {
-		return DToolBaseTest.getFile(DToolTestResources.getInstance().getResourcesDir(), segments);
+		return MiscFileUtils.getFile(DToolTestResources.getInstance().getResourcesDir(), segments);
 	}
 	
 	protected static String testsWorkingDir;

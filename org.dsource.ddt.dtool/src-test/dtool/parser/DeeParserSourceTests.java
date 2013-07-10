@@ -47,7 +47,7 @@ import dtool.tests.SimpleParser;
 import dtool.util.NewUtils;
 
 @RunWith(Parameterized.class)
-public class DeeParserSourceTests extends DeeTemplatedSourceBasedTest {
+public class DeeParserSourceTests extends CommonTemplatedSourceBasedTest {
 	
 	public static final String TESTFILESDIR = "parser";
 	

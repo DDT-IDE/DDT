@@ -22,7 +22,7 @@ public class DMDInstallType_Test extends BaseDeeTest {
 	public void testLibraryLocations() throws Exception { testLibraryLocations$(); }
 	public void testLibraryLocations$() throws Exception {
 		DMDInstallType dmdInstallType = new DMDInstallType();
-		File compilerInstallExe = DeeCoreTestResources.getTestResource(MOCK_DMD2_TESTDATA_PATH);
+		File compilerInstallExe = DeeCoreTestResources.getWorkingDirFile(MOCK_DMD2_TESTDATA_PATH);
 		Path compilerPath = new Path(compilerInstallExe.getAbsolutePath());
 		LibraryLocation[] libLocations = getLibraryLocations(dmdInstallType, compilerPath);
 		
@@ -38,7 +38,7 @@ public class DMDInstallType_Test extends BaseDeeTest {
 	public void testLibraryLocUnix() throws Exception { testLibraryLocUnix$(); }
 	public void testLibraryLocUnix$() throws Exception {
 		DMDInstallType dmdInstallType = new DMDInstallType();
-		File compilerInstallExe = DeeCoreTestResources.getTestResource(MOCK_DMD2SYSTEM_PATH);
+		File compilerInstallExe = DeeCoreTestResources.getWorkingDirFile(MOCK_DMD2SYSTEM_PATH);
 		Path compilerPath = new Path(compilerInstallExe.getAbsolutePath());
 		LibraryLocation[] libLocations = getLibraryLocations(dmdInstallType, compilerPath);
 

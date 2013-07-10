@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.core.Predicate;
+import melnorme.utilbox.core.VoidFunction;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.runner.RunWith;
@@ -42,11 +43,26 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 		
 		MiscFileUtils.deleteDir(getMassParseUnpackedResource()); // Allways delete unpackFolder
 		File massParseZipFilesFolder = DToolTestResources.getTestResource(MASSPARSE_ZIPFOLDER);
-		for (File zipFile : MiscFileUtils.collectZipFiles(massParseZipFilesFolder)) {
+		for (File zipFile : collectZipFiles(massParseZipFilesFolder)) {
 			File unzippedFolder = unzipSource(zipFile);
 			testList.add(array(unzippedFolder.getName(), new MassParseTestRunnable(unzippedFolder, zipFile)));
 		}
 		return testList;
+	}
+	
+	public static ArrayList<File> collectZipFiles(File folder) throws IOException {
+		final ArrayList<File> fileList = new ArrayList<>();
+		VoidFunction<File> fileVisitor = new VoidFunction<File>() {
+			@Override
+			public Void evaluate(File file) {
+				if(file.isFile() && file.getName().endsWith(".zip")) {
+					fileList.add(file);
+				}
+				return null;
+			}
+		};
+		MiscFileUtils.traverseFiles(folder, false, fileVisitor);
+		return fileList;
 	}
 	
 	protected static File unzipSource(File zipFile) throws IOException {
@@ -60,7 +76,8 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 	}
 	
 	public static File getMassParseUnpackedResource(String... segments) {
-		return getFile(getFile(DToolTestResources.getWorkingDir(), COMMON_UNPACK), segments);
+		File unpackedRoot = MiscFileUtils.getFile(DToolTestResources.getWorkingDir(), COMMON_UNPACK);
+		return MiscFileUtils.getFile(unpackedRoot, segments);
 	}
 	
 	/* ------------------------------------ */

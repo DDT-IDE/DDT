@@ -71,18 +71,6 @@ public class DToolBaseTest extends CommonTest {
 		}
 	}
 	
-	public static File getFile(String rootPath, String... segments) {
-		File file = new File(rootPath);
-		return getFile(file, segments);
-	}
-	
-	public static File getFile(File file, String... segments) {
-		for (String segment : segments) {
-			assertTrue(segment.contains("/") == false && segment.contains("\\") == false);
-			file = new File(file, segment);
-		}
-		return file;
-	}
 	
 	/* -------------  Module list stuff   ------------ */
 	

@@ -30,7 +30,7 @@ import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 @RunWith(Parameterized.class)
-public class DeeLexerSourceTests extends DeeTemplatedSourceBasedTest {
+public class DeeLexerSourceTests extends CommonTemplatedSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "lexer";
 	
