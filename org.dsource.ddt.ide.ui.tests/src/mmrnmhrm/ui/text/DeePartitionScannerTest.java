@@ -115,7 +115,7 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 	public void testDelimitedStrings$() throws Exception {
 		testPartitions("foo = q\"(foo(xxx))\"; /+ +/", array(DEE_DELIM_STRING, DEE_NESTED_COMMENT));
 		testPartitions("foo = q\"(foo(xx\nx))\"; /+ +/", array(DEE_DELIM_STRING, DEE_NESTED_COMMENT));
-		if(!DToolBundle.UNSUPPORTED_DMD_FUNCTIONALITY$) return;
+		if(!DToolBundle.UNIMPLEMENTED_FUNCTIONALITY) return;
 		
 		testPartitions("foo = q\"(foo(xx\"x))\"; /+ +/", array(DEE_DELIM_STRING, DEE_NESTED_COMMENT));
 		
