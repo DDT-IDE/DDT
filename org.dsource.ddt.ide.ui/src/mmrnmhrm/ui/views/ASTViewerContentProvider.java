@@ -6,7 +6,7 @@ import mmrnmhrm.core.parser.DeeModuleDeclaration;
 
 public class ASTViewerContentProvider extends ElementContentProvider {
 	
-	ASTViewer view;
+	protected ASTViewer view;
 	
 	public ASTViewerContentProvider(ASTViewer view) {
 		this.view = view;
@@ -18,7 +18,7 @@ public class ASTViewerContentProvider extends ElementContentProvider {
 		if(deeModuleDecl == null) {
 			return IElement.NO_ELEMENTS;
 		}
-		IElement input = deeModuleDecl.module; 
+		IElement input = deeModuleDecl.getModule(); 
 		return input.getChildren();
 	}
 	

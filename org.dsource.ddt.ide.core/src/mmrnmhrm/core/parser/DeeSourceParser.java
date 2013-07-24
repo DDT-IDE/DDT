@@ -17,8 +17,8 @@ public class DeeSourceParser extends AbstractSourceParser {
 	
 	@Override
 	public DeeModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
-		DeeParserResult deeParserSession = parseToDeeParseResult(input, reporter);
-		DeeModuleDeclaration deeModuleDecl = new DeeModuleDeclaration(deeParserSession.getParsedModule());
+		DeeParserResult deeParserResult = parseToDeeParseResult(input, reporter);
+		DeeModuleDeclaration deeModuleDecl = new DeeModuleDeclaration(deeParserResult);
 		return deeModuleDecl;
 	}
 	

@@ -87,11 +87,17 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		return proposal;
 	}
 	
-	public static PrefixDefUnitSearchBase doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
+	public static PrefixDefUnitSearchBase doCompletionSearch(int offset, ISourceModule moduleUnit, String source,
 			IDefUnitMatchAccepter defUnitAccepter) {
 		CompletionSession session = new CompletionSession();
 		return doCompletionSearch(offset, moduleUnit, source, session, defUnitAccepter);
 	}
+	
+	public static PrefixDefUnitSearchBase doCompletionSearch(int offset, ISourceModule moduleUnit,
+		IDefUnitMatchAccepter defUnitAccepter) throws ModelException {
+		CompletionSession session = new CompletionSession();
+		return doCompletionSearch(offset, moduleUnit, moduleUnit.getSource(), session, defUnitAccepter);
+	}	
 	
 	public static PrefixDefUnitSearchBase doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
 			CompletionSession session, IDefUnitMatchAccepter defUnitAccepter) {
@@ -100,6 +106,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		String defaultModuleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
 		// TODO: store DeeParserResult, dont reparse
 		DeeParserResult parseResult = DeeParser.parseSource(source, defaultModuleName);
+//		DeeParserResult parseResult = DeeModuleParsingUtil.getParsedDeeModuleDecl(moduleUnit).deeParserResult;
 		
 		return PrefixDefUnitSearch.doCompletionSearch(session, parseResult, offset, mr, defUnitAccepter);
 	}

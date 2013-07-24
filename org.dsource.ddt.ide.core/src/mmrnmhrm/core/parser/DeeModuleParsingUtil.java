@@ -11,7 +11,7 @@ public abstract class DeeModuleParsingUtil {
 	public static Module getParsedDeeModule(ISourceModule sourceModule) {
 		IModuleDeclaration moduleDeclaration = SourceParserUtil.parse(sourceModule, null);
 		if (moduleDeclaration instanceof DeeModuleDeclaration) {
-			return ((DeeModuleDeclaration) moduleDeclaration).module;
+			return ((DeeModuleDeclaration) moduleDeclaration).getModule();
 		}
 		//TODO: consider proper behavior for sourceModule is not from our DLTK nature
 		return null;
@@ -27,14 +27,8 @@ public abstract class DeeModuleParsingUtil {
 	
 	/** Parses the module and returns an AST. Returns null if given module is not the DDT nature. 
 	 * This operation uses caching for the created AST. */
-	public static Module parseAndGetAST(ISourceModule module) {
-		IModuleDeclaration moduleDeclaration = SourceParserUtil.parse(module, null);
-		
-		if (moduleDeclaration instanceof DeeModuleDeclaration) {
-			DeeModuleDeclaration deeModuleDecl = (DeeModuleDeclaration) moduleDeclaration;
-			return deeModuleDecl.module;
-		}
-		return null;
+	public static Module parseAndGetAST(ISourceModule sourceModule) {
+		return getParsedDeeModule(sourceModule);
 	}
 	
 }

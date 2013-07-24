@@ -23,7 +23,7 @@ public abstract class AbstractNodePatternMatcher {
 	}
 	
 	public void doMatching(DeeModuleDeclaration deeUnit, final ISourceModule sourceModule) {
-		deeUnit.module.accept(new ASTVisitor() {
+		deeUnit.getModule().accept(new ASTVisitor() {
 			@Override
 			public boolean preVisit(ASTNode node) {
 				return match(node, sourceModule);

@@ -58,28 +58,27 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 	public void provide(DeeModuleDeclaration moduleDecl) {
 		requestor.enterModule();
 		
-		Module neoModule = moduleDecl.module;
-		if(neoModule != null) {
-			
-			if(neoModule.md != null) {
-				requestor.enterNamespace(neoModule.md.packages);
-			} else {
-				requestor.enterNamespace(EMPTY_STRING);
-			}
-			neoModule.accept(new ASTVisitor() {
-				@Override
-				public boolean preVisit(ASTNode node) {
-					return DeeSourceElementProvider.this.preVisit(node);
-				}
-				@Override
-				public void postVisit(ASTNode node) {
-					DeeSourceElementProvider.this.postVisit(node);
-				}
-			});
-			requestor.exitNamespace();
+		Module module = moduleDecl.getModule();
+		if(module.md != null) {
+			requestor.enterNamespace(module.md.packages);
+		} else {
+			requestor.enterNamespace(EMPTY_STRING);
 		}
 		
-		requestor.exitModule(moduleDecl.module.getEndPos());
+		module.accept(new ASTVisitor() {
+			@Override
+			public boolean preVisit(ASTNode node) {
+				return DeeSourceElementProvider.this.preVisit(node);
+			}
+			@Override
+			public void postVisit(ASTNode node) {
+				DeeSourceElementProvider.this.postVisit(node);
+			}
+		});
+		
+		requestor.exitNamespace();
+		
+		requestor.exitModule(module.getEndPos());
 	}
 	
 	@Override

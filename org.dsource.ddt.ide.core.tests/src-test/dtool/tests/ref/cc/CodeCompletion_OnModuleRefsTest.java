@@ -69,7 +69,7 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 	@Test
 	public void test_impModuleRef_completionTextParameters() throws Exception {
 		PrefixDefUnitSearchBase search = DeeCompletionEngine.doCompletionSearch(getMarkerEndOffset("/+CC4@+/")+5, 
-				srcModule, srcModule.getSource(), new DefUnitArrayListCollector());
+				srcModule, new DefUnitArrayListCollector());
 		assertTrue(search.searchOptions.rplLen == 0);
 	}
 	

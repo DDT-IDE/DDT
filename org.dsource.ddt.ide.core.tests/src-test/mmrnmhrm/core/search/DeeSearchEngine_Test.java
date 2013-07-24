@@ -523,7 +523,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 			ISourceModule sourceModule = key.getFirst();
 			ArrayList<Integer> nodeTreePath = blindCast(key.getSecond());
 			
-			Module deeModule = DeeModuleParsingUtil.parseAndGetAST(sourceModule);
+			Module deeModule = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
 			ASTNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModule, nodeTreePath);
 			
 			final DefUnit defUnit = (DefUnit) node;
