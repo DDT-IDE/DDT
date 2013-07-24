@@ -6,6 +6,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.utilbox.misc.MiscUtil.nullToOther;
+import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +36,7 @@ import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserSourceTests;
 import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
 import dtool.resolver.api.IModuleResolver;
-import dtool.resolver.api.PrefixDefUnitSearchBase;
+import dtool.resolver.api.NullModuleResolver;
 import dtool.resolver.api.PrefixDefUnitSearchBase.ECompletionResultStatus;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
@@ -87,17 +89,7 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		void cleanupChanges();
 	}
 	
-	public static final class NullModuleResolver implements ITestsModuleResolver {
-		@Override
-		public String[] findModules(String fqNamePrefix) throws Exception {
-			return NewUtils.EMPTY_STRING_ARRAY;
-		}
-		
-		@Override
-		public Module findModule(String[] packages, String module) throws Exception {
-			return null;
-		}
-		
+	public static final class TestsNullModuleResolver extends NullModuleResolver implements ITestsModuleResolver {
 		@Override
 		public void cleanupChanges() {
 		}
@@ -151,11 +143,10 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		if(projectDescription != null) {
 			testsModuleName = StringUtil.segmentUntilMatch(projectDescription, "@");
 			testsProjectDirName = StringUtil.substringAfterMatch(projectDescription, "@");
+			testsProjectDirName = emptyAsNull(testsProjectDirName);
 		}
 		
-		testsModuleName = testsModuleName == null ? DEFAULT_MODULE_NAME : testsModuleName;
-		parseResult = DeeParser.parseSource(testCase.source, testsModuleName);
-		setupTestProject(testsModuleName, testsProjectDirName);
+		setupTestProject(testsModuleName, testsProjectDirName, testCase);
 		assertNotNull(mr);
 		
 		testsLogger.println("-----");
@@ -163,9 +154,12 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		processResolverTestMetadata(testCase);
 	}
 	
-	public void setupTestProject(String moduleName, String projectFolderName) {
+	public void setupTestProject(String moduleName, String projectFolderName, AnnotatedSource testCase) {
+		moduleName = nullToOther(moduleName, DEFAULT_MODULE_NAME);
+		parseResult = DeeParser.parseSource(testCase.source, moduleName);
+		
 		if(projectFolderName == null || projectFolderName.isEmpty()) {
-			mr = new NullModuleResolver();
+			mr = new TestsNullModuleResolver();
 			return;
 		}
 		TestsSimpleModuleResolver existingMR = moduleResolvers.get(projectFolderName);

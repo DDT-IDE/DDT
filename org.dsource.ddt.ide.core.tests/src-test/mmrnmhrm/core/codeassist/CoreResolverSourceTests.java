@@ -11,6 +11,7 @@
 package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.MiscUtil.nullToOther;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,10 @@ import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.tests.BaseDeeTest;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.dltk.compiler.env.IModuleSource;
+import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 
@@ -40,18 +44,21 @@ public abstract class CoreResolverSourceTests extends ResolverSourceTests {
 	protected static HashMap<String, IScriptProject> fixtureProjects = new HashMap<>();
 	
 	protected ISourceModule sourceModule;
+	protected IModuleSource moduleSource;
+	
 	
 	@Override
-	public void setupTestProject(String moduleName, String projectFolderName) {
+	public void setupTestProject(String moduleName, String projectFolderName, AnnotatedSource testCase) {
 		try {
-			setupTestProject_do(moduleName, projectFolderName);
+			setupTestProject_do(moduleName, projectFolderName, testCase);
 		} catch(CoreException | IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}
 	
-	public void setupTestProject_do(String moduleName, String projectFolderName)
+	public void setupTestProject_do(String explicitModuleName, String projectFolderName, AnnotatedSource testCase)
 		throws CoreException, IOException {
+		assertTrue(parseResult == null); // sourceModule is used instead of this.
 		
 		IScriptProject scriptProject = fixtureProjects.get(projectFolderName /*Can be null*/);
 		
@@ -61,16 +68,14 @@ public abstract class CoreResolverSourceTests extends ResolverSourceTests {
 			fixtureProjects.put(projectFolderName, scriptProject);
 		}
 		
-		mr = new TestsWorkspaceModuleResolver(scriptProject, moduleName, parseResult) {
-			@Override
-			public void doCleanupChanges() throws CoreException {
-				super.doCleanupChanges();
-				sourceModule = null;
-			}
-		};
+		String moduleName = nullToOther(explicitModuleName, DEFAULT_MODULE_NAME);
+		mr = new TestsWorkspaceModuleResolver(scriptProject, moduleName, testCase.source);
+		
 		sourceModule = (ISourceModule) DLTKCore.create(getModuleResolver().customFile);
 		assertTrue(sourceModule != null && sourceModule.exists());
-		parseResult = null; // sourceModule is used instead of this.
+		
+		IModelElement modelElement = projectFolderName == null ? null : sourceModule;
+		moduleSource = new ModuleSource(explicitModuleName, modelElement, testCase.source);
 	}
 	
 	protected TestsWorkspaceModuleResolver getModuleResolver() {

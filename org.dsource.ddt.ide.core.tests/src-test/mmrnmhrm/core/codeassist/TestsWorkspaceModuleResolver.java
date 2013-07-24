@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IScriptProject;
 
-import dtool.parser.DeeParserResult;
 import dtool.resolver.ResolverSourceTests.ITestsModuleResolver;
 
 /**
@@ -29,8 +28,8 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 	protected final byte[] customFilePreviousContents;
 	protected final IScriptProject scriptProject;
 	
-	public TestsWorkspaceModuleResolver(IScriptProject scriptProject, 
-		String moduleName, DeeParserResult parseResult) throws IOException, CoreException {
+	public TestsWorkspaceModuleResolver(IScriptProject scriptProject, String moduleName, 
+		String source) throws IOException, CoreException {
 		super(scriptProject);
 		this.scriptProject = scriptProject;
 		
@@ -44,7 +43,7 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 		}
 		customFile = srcFolder.getFile(filePath);
 		
-		ByteArrayInputStream is = new ByteArrayInputStream(parseResult.source.getBytes(StringUtil.UTF8));
+		ByteArrayInputStream is = new ByteArrayInputStream(source.getBytes(StringUtil.UTF8));
 		if(customFile.exists()) {
 			customFilePreviousContents = StreamUtil.readAllBytesFromStream(customFile.getContents());
 			customFile.setContents(is, IResource.NONE, null);

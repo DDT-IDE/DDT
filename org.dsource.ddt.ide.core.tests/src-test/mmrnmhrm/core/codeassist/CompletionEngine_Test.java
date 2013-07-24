@@ -43,15 +43,15 @@ public class CompletionEngine_Test extends BaseDeeCoreTest {
 	}
 	
 	protected void testCompletionEngine(final int offset, final int rplLen) throws ModelException {
-		testCompletionEngine(srcModule, offset, rplLen);
+		testCompletionEngine((IModuleSource) srcModule, offset, rplLen);
 	}
 	
-	public static DeeCompletionEngine testCompletionEngine(ISourceModule sourceModule, final int offset,
+	public static DeeCompletionEngine testCompletionEngine(IModuleSource moduleSource, final int offset,
 		final int rplLen) {
 		CompletionRequestor requestor = new CompletionEngineTestsRequestor(offset, rplLen);
 		DeeCompletionEngine completionEngine = new DeeCompletionEngine();
 		completionEngine.setRequestor(requestor);
-		completionEngine.complete((IModuleSource) sourceModule, offset, 0);
+		completionEngine.complete(moduleSource, offset, 0);
 		return completionEngine;
 	}
 	

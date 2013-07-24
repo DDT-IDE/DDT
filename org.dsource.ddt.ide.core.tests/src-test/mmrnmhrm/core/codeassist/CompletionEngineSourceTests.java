@@ -10,10 +10,15 @@
  *******************************************************************************/
 package mmrnmhrm.core.codeassist;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+
+import org.eclipse.dltk.compiler.env.IModuleSource;
+import org.eclipse.dltk.core.ISourceModule;
 
 import mmrnmhrm.core.codeassist.CompletionEngine_Test.CompletionEngineTestsRequestor;
 import dtool.ast.definitions.DefUnit;
@@ -46,16 +51,24 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 		String rplLenStr = searchParams; 
 		if(rplLenStr != null) {
 			rplLen = Integer.parseInt(rplLenStr);
-			
 		}
+		
+		runCompletionEngineTest((IModuleSource) sourceModule, offset, expectedResults, rplLen);
+		if(moduleSource != null) {
+			// Run this variation of the test with something that is not a IModuleSource
+			assertTrue(!(moduleSource instanceof ISourceModule));
+			runCompletionEngineTest(moduleSource, offset, expectedResults, rplLen);
+		}
+	}
+	
+	public void runCompletionEngineTest(IModuleSource moduleSource, int offset, String[] expectedResults, int rplLen) {
 		DeeCompletionEngine completionEngine;
-		completionEngine = CompletionEngine_Test.testCompletionEngine(sourceModule, offset, rplLen);
+		completionEngine = CompletionEngine_Test.testCompletionEngine(moduleSource, offset, rplLen);
 		
 		CompletionEngineTestsRequestor requestor = (CompletionEngineTestsRequestor) completionEngine.getRequestor();
 		if(expectedResults != null) {
 			checkResults(requestor.results, expectedResults);
 		}
-		
 	}
 	
 	@Override

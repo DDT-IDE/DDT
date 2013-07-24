@@ -43,6 +43,7 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 		return findModuleUnit(module, null);
 	}
 	
+	// TODO: review this methods
 	public ISourceModule findModuleUnit(Module module, ISourceModule workingCopySourceModule) throws ModelException {
 		String[] packages = module.getDeclaredPackages();
 		String moduleName = module.getName();

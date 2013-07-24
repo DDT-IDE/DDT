@@ -140,4 +140,9 @@ public class MiscUtil {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}
+	
+	public static <T> T nullToOther(T object, T altValue) {
+		return object == null ? altValue : object;
+	}
+	
 }
