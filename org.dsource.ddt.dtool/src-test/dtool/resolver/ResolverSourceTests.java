@@ -28,13 +28,14 @@ import dtool.ast.NodeUtil;
 import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.contentassist.CompletionSession.ECompletionResultStatus;
 import dtool.parser.CommonTemplatedSourceBasedTest;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserSourceTests;
 import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
 import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.api.PrefixDefUnitSearchBase;
+import dtool.resolver.api.PrefixDefUnitSearchBase.ECompletionResultStatus;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
@@ -237,21 +238,14 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	public void runRefSearchTest(int offset, @SuppressWarnings("unused") String searchParams, 
 		ECompletionResultStatus expectedStatusCode, String[] expectedResults, String relexStartPosMarker) {
 		
-		CompletionCollectorSession session = runCompletionSearch(parseResult, offset, relexStartPosMarker);
+		DefUnitCollector collector = new DefUnitCollector();
+		PrefixDefUnitSearch search = PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr, collector);
 		
-		assertTrue(session.resultCode == expectedStatusCode);
+		assertTrue(relexStartPosMarker == null || search.relexStartPos == getMarkerPosition(relexStartPosMarker));
+		assertTrue(search.getResultCode() == expectedStatusCode);
 		if(expectedResults != null) {
-			checkResults(session.results, expectedResults);
+			checkResults(collector.results, expectedResults);
 		}
-	}
-	
-	public CompletionCollectorSession runCompletionSearch(DeeParserResult parseResult, int offset,
-		String relexStartPosTargetMarker) {
-		CompletionCollectorSession session = new CompletionCollectorSession();
-		PrefixDefUnitSearch search = PrefixDefUnitSearch.doCompletionSearch(session, parseResult, offset, mr, session);
-		assertTrue(relexStartPosTargetMarker == null || 
-			search.relexStartPos == getMarkerPosition(relexStartPosTargetMarker));
-		return session;
 	}
 	
 	public static String[] splitValues(String string) {

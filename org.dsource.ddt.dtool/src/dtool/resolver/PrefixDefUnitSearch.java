@@ -21,8 +21,6 @@ import dtool.ast.references.RefModule;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
-import dtool.contentassist.CompletionSession;
-import dtool.contentassist.CompletionSession.ECompletionResultStatus;
 import dtool.parser.DeeLexer;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
@@ -42,12 +40,24 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 	protected final IDefUnitMatchAccepter defUnitAccepter;
 	protected final Set<String> addedDefUnits = new HashSet<String>();
 	
-	protected int relexStartPos;
+	protected ECompletionResultStatus resultCode = ECompletionResultStatus.RESULT_OK;
+	
+	protected int relexStartPos; // for tests only
 	
 	public PrefixDefUnitSearch(PrefixSearchOptions searchOptions, IScopeNode refScope, int refOffset,
 			IDefUnitMatchAccepter defUnitAccepter, IModuleResolver moduleResolver) {
 		super(refScope, refOffset, moduleResolver, searchOptions);
 		this.defUnitAccepter = defUnitAccepter;
+	}
+	
+	public ECompletionResultStatus getResultCode() {
+		return resultCode;
+	}
+	
+	public PrefixDefUnitSearch assignResult(ECompletionResultStatus resultCode, 
+		@SuppressWarnings("unused") String errorMsg) {
+		this.resultCode = resultCode;
+		return this;
 	}
 	
 	@Override
@@ -77,12 +87,11 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		return true;
 	};
 	
-	public static PrefixDefUnitSearch doCompletionSearch(CompletionSession session, DeeParserResult parseResult,
-		final int offset, IModuleResolver mr, IDefUnitMatchAccepter defUnitAccepter) {
+	public static PrefixDefUnitSearch doCompletionSearch(DeeParserResult parseResult, int offset, IModuleResolver mr, 
+		IDefUnitMatchAccepter defUnitAccepter) {
+		
 		String source = parseResult.source;
 		assertTrue(offset >= 0 && offset <= source.length());
-		assertTrue(session.errorMsg == null);
-		session.resultCode = ECompletionResultStatus.RESULT_OK;
 		
 		
 		Module neoModule = parseResult.getParsedModule(); 
@@ -96,14 +105,14 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		
 		PrefixSearchOptions searchOptions = new PrefixSearchOptions();
 		IScopeNode refScope = ScopeUtil.getScopeNode(node);
-		PrefixDefUnitSearch search = new PrefixDefUnitSearch(searchOptions, refScope, offset, defUnitAccepter, mr);
+		final PrefixDefUnitSearch search = 
+			new PrefixDefUnitSearch(searchOptions, refScope, offset, defUnitAccepter, mr);
 		search.relexStartPos = relexStartPos;
 		
 		if((offset > token.getStartPos() && offset < token.getEndPos()) && 
 			!(token.type == DeeTokens.WHITESPACE || token.type == DeeTokens.IDENTIFIER)) {
-			CompletionSession.assignResult(session, ECompletionResultStatus.INVALID_TOKEN_LOCATION, 
+			return search.assignResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION, 
 				"Invalid location (inside unmodifiable token)");
-			return null;
 		}
 		
 		/* ============================================== */
@@ -135,9 +144,8 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				}
 				
 				if(offset <= dotOffset) {
-					CompletionSession.assignResult(session, ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
+					return search.assignResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
 							"Invalid Location: before qualifier dot but not next to id.");
-					return search;
 				}
 			} else if(node instanceof RefModule) {
 				RefModule refMod = (RefModule) node;
@@ -167,9 +175,8 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 			
 			namedRef.doSearch(search);
 		} else if(node instanceof Reference) {
-			CompletionSession.assignResult(session, ECompletionResultStatus.OTHER_REFERENCE, 
+			return search.assignResult(ECompletionResultStatus.OTHER_REFERENCE, 
 					"Can't complete for node: "+node.getNodeType()+"");
-			return search;
 		} else {
 			// Since picked node was not a reference, determine appropriate lexical starting scope
 			// TODO: this code is a mess, need to cleanup and simplify
@@ -193,7 +200,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 			ReferenceResolver.findDefUnitInExtendedScope(scope, search);
 		}
 		
-		assertTrue(session.errorMsg == null);
+		assertTrue(search.resultCode == ECompletionResultStatus.RESULT_OK);
 		return search;
 	}
 	

@@ -18,7 +18,7 @@ import java.util.Iterator;
 import mmrnmhrm.core.codeassist.CompletionEngine_Test.CompletionEngineTestsRequestor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.contentassist.CompletionSession.ECompletionResultStatus;
+import dtool.resolver.api.PrefixDefUnitSearchBase.ECompletionResultStatus;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class CompletionEngineSourceTests extends CoreResolverSourceTests {

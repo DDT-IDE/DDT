@@ -10,11 +10,11 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.After;
 
-import dtool.contentassist.CompletionSession;
-import dtool.contentassist.CompletionSession.ECompletionResultStatus;
 import dtool.resolver.CompareDefUnits;
-import dtool.resolver.DefUnitArrayListCollector;
+import dtool.resolver.DefUnitCollector;
+import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.PrefixDefUnitSearchBase;
+import dtool.resolver.api.PrefixDefUnitSearchBase.ECompletionResultStatus;
 import dtool.tests.DToolBaseTest;
 
 public class CodeCompletion__Common extends DToolBaseTest {
@@ -60,10 +60,9 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	
 	protected PrefixDefUnitSearchBase testUnavailableCompletion(int offset, ECompletionResultStatus caResult) 
 			throws ModelException {
-		CompletionSession session = new CompletionSession();
-		PrefixDefUnitSearchBase search = DeeCompletionEngine.doCompletionSearch(offset, srcModule, 
-			srcModule.getSource(), session, new DefUnitArrayListCollector());
-		assertTrue(session.resultCode == caResult);
+		PrefixDefUnitSearch search = DeeCompletionEngine.doCompletionSearch(offset, srcModule, 
+			new DefUnitCollector());
+		assertTrue(search.getResultCode() == caResult);
 		return search;
 	}
 	
@@ -81,16 +80,15 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	protected void testComputeProposalsDo(int repOffset, int repLen, boolean removeObjectIntrinsics,
 			String[] expectedProposals) throws ModelException {
 		
-		DefUnitArrayListCollector defUnitAccepter = new DefUnitArrayListCollector();
+		DefUnitCollector defUnitAccepter = new DefUnitCollector();
 		
-		CompletionSession session = new CompletionSession();
-		PrefixDefUnitSearchBase completionSearch = DeeCompletionEngine.doCompletionSearch(
-				repOffset, srcModule, srcModule.getSource(), session, defUnitAccepter);
+		PrefixDefUnitSearch completionSearch = DeeCompletionEngine.doCompletionSearch(
+			repOffset, srcModule, defUnitAccepter);
 		
 		if(expectedProposals == null) {
-			assertTrue(session.resultCode != ECompletionResultStatus.RESULT_OK);
+			assertTrue(completionSearch.getResultCode() != ECompletionResultStatus.RESULT_OK);
 		} else {
-			assertTrue(session.resultCode == ECompletionResultStatus.RESULT_OK, "Code Completion Unavailable");
+			assertTrue(completionSearch.getResultCode() == ECompletionResultStatus.RESULT_OK);
 			assertTrue(completionSearch.searchOptions.rplLen == repLen);
 			
 			CompareDefUnits.checkResults(defUnitAccepter.results, expectedProposals, removeObjectIntrinsics);

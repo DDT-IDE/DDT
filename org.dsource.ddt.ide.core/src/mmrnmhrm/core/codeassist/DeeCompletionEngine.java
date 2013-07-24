@@ -16,12 +16,10 @@ import org.eclipse.dltk.core.ModelException;
 import dtool.DeeNamingRules;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.contentassist.CompletionSession;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.IDefUnitMatchAccepter;
-import dtool.resolver.api.PrefixDefUnitSearchBase;
 import dtool.resolver.api.PrefixSearchOptions;
 
 public class DeeCompletionEngine extends ScriptCompletionEngine {
@@ -87,20 +85,13 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		return proposal;
 	}
 	
-	public static PrefixDefUnitSearchBase doCompletionSearch(int offset, ISourceModule moduleUnit, String source,
-			IDefUnitMatchAccepter defUnitAccepter) {
-		CompletionSession session = new CompletionSession();
-		return doCompletionSearch(offset, moduleUnit, source, session, defUnitAccepter);
-	}
-	
-	public static PrefixDefUnitSearchBase doCompletionSearch(int offset, ISourceModule moduleUnit,
+	public static PrefixDefUnitSearch doCompletionSearch(int offset, ISourceModule moduleUnit,
 		IDefUnitMatchAccepter defUnitAccepter) throws ModelException {
-		CompletionSession session = new CompletionSession();
-		return doCompletionSearch(offset, moduleUnit, moduleUnit.getSource(), session, defUnitAccepter);
+		return doCompletionSearch(offset, moduleUnit, moduleUnit.getSource(), defUnitAccepter);
 	}	
 	
-	public static PrefixDefUnitSearchBase doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
-			CompletionSession session, IDefUnitMatchAccepter defUnitAccepter) {
+	public static PrefixDefUnitSearch doCompletionSearch(int offset, ISourceModule moduleUnit, String source,
+			IDefUnitMatchAccepter defUnitAccepter) {
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit);
 		
 		String defaultModuleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
@@ -108,7 +99,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		DeeParserResult parseResult = DeeParser.parseSource(source, defaultModuleName);
 //		DeeParserResult parseResult = DeeModuleParsingUtil.getParsedDeeModuleDecl(moduleUnit).deeParserResult;
 		
-		return PrefixDefUnitSearch.doCompletionSearch(session, parseResult, offset, mr, defUnitAccepter);
+		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr, defUnitAccepter);
 	}
 	
 }
