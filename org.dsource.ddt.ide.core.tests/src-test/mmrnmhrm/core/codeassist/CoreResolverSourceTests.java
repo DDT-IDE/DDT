@@ -1,27 +1,33 @@
+/*******************************************************************************
+ * Copyright (c) 2013, 2013 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.core.codeassist;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.HashMap;
 
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.tests.BaseDeeTest;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.ISourceModule;
 
-import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.EArcheType;
-import dtool.parser.DeeParserResult;
-import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
 import dtool.resolver.ResolverSourceTests;
-import dtool.resolver.api.IModuleResolver;
-import dtool.sourcegen.AnnotatedSource.MetadataEntry;
+import dtool.sourcegen.AnnotatedSource;
 
-public class CoreResolverSourceTests extends ResolverSourceTests {
+public abstract class CoreResolverSourceTests extends ResolverSourceTests {
 	
 	static {
 		MiscUtil.loadClass(BaseDeeTest.class);
@@ -31,55 +37,54 @@ public class CoreResolverSourceTests extends ResolverSourceTests {
 		super(testUIDescription, file);
 	}
 	
+	protected static HashMap<String, IScriptProject> fixtureProjects = new HashMap<>();
+	
+	protected ISourceModule sourceModule;
+	
 	@Override
-	public ITestsModuleResolver updateInstrumentModuleResolver(String projectFolderName, String moduleName,
-		DeeParserResult parseResult, ITestsModuleResolver existingMR) {
+	public void setupTestProject(String moduleName, String projectFolderName) {
 		try {
-			File projectDir = new File(file.getParent(), assertNotNull(projectFolderName));
-			return TestsWorkspaceModuleResolver.updateTestsModuleResolver(projectDir, moduleName, parseResult, 
-				(TestsWorkspaceModuleResolver) existingMR);
+			setupTestProject_do(moduleName, projectFolderName);
 		} catch(CoreException | IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}
 	
-	// TODO: rest of custom tests
-	
-	@Override
-	public void runRefSearchTest_________(DeeParserResult parseResult, IModuleResolver mr, int defaultOffset,
-		MetadataEntry mde) {
-		super.runRefSearchTest_________(parseResult, mr, defaultOffset, mde);
-	}
-	
-	@Override
-	protected HashSet<String> prepareResultProposals(Collection<DefUnit> results, boolean compareUsingName) {
-		for (Iterator<DefUnit> iterator = results.iterator(); iterator.hasNext(); ) {
-			DefUnit defUnit = iterator.next();
-			if(defUnit.getArcheType() == EArcheType.Module) {
-				String fqName = getDefUnitFullyTypedName(defUnit);
-				if(fqName.equals("object") || fqName.equals("std.stdio")) {
-					iterator.remove();
-				}
-			}
+	public void setupTestProject_do(String moduleName, String projectFolderName)
+		throws CoreException, IOException {
+		
+		IScriptProject scriptProject = fixtureProjects.get(projectFolderName /*Can be null*/);
+		
+		if(scriptProject == null) {
+			File projectDir = projectFolderName == null ? null : new File(file.getParent(), projectFolderName);
+			scriptProject = TestsWorkspaceModuleResolver.createTestsWorkspaceProject(projectDir);
+			fixtureProjects.put(projectFolderName, scriptProject);
 		}
-		HashSet<String> trimedResults = super.prepareResultProposals(results, compareUsingName);
-		return trimedResults;
+		
+		mr = new TestsWorkspaceModuleResolver(scriptProject, moduleName, parseResult) {
+			@Override
+			public void doCleanupChanges() throws CoreException {
+				super.doCleanupChanges();
+				sourceModule = null;
+			}
+		};
+		sourceModule = (ISourceModule) DLTKCore.create(getModuleResolver().customFile);
+		assertTrue(sourceModule != null && sourceModule.exists());
+		parseResult = null; // sourceModule is used instead of this.
+	}
+	
+	protected TestsWorkspaceModuleResolver getModuleResolver() {
+		return (TestsWorkspaceModuleResolver) mr; 
+	}
+	
+	protected IScriptProject getScriptProject() {
+		return getModuleResolver().scriptProject;
 	}
 	
 	@Override
-	public DirectDefUnitResolve runFindTest_________(DeeParserResult parseResult, IModuleResolver mr, 
-		MetadataEntry mde) {
-		return super.runFindTest_________(parseResult, mr, mde);
-	}
-	
-	@Override
-	public void runFindMissingTest_________(DeeParserResult parseResult, IModuleResolver mr, MetadataEntry mde) {
-		super.runFindMissingTest_________(parseResult, mr, mde);
-	}
-	
-	@Override
-	public void runFindFailTest_________(DeeParserResult parseResult, MetadataEntry mde) {
-		super.runFindFailTest_________(parseResult, mde);
+	public void processResolverTestMetadata(AnnotatedSource testCase) {
+		assertTrue(sourceModule != null && sourceModule.exists());
+		super.processResolverTestMetadata(testCase);
 	}
 	
 }

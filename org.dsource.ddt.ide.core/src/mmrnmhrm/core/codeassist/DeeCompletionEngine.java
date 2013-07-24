@@ -8,6 +8,7 @@ import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionContext;
 import org.eclipse.dltk.core.CompletionProposal;
+import org.eclipse.dltk.core.CompletionRequestor;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
@@ -16,11 +17,18 @@ import dtool.DeeNamingRules;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.contentassist.CompletionSession;
+import dtool.parser.DeeParser;
+import dtool.parser.DeeParserResult;
+import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.IDefUnitMatchAccepter;
 import dtool.resolver.api.PrefixDefUnitSearchBase;
 import dtool.resolver.api.PrefixSearchOptions;
 
 public class DeeCompletionEngine extends ScriptCompletionEngine {
+	
+	protected CompletionRequestor getRequestor() {
+		return requestor;
+	}
 	
 	@Override
 	public void complete(IModuleSource module, final int position, int i) {
@@ -87,10 +95,13 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
 	public static PrefixDefUnitSearchBase doCompletionSearch(final int offset, ISourceModule moduleUnit, String source,
 			CompletionSession session, IDefUnitMatchAccepter defUnitAccepter) {
-		String defaultModuleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit);
-		return PrefixDefUnitSearchBase.runCompletionSearch(session, defaultModuleName, source, offset, mr, 
-			defUnitAccepter);
+		
+		String defaultModuleName = DeeNamingRules.getModuleNameFromFileName(moduleUnit.getElementName());
+		// TODO: store DeeParserResult, dont reparse
+		DeeParserResult parseResult = DeeParser.parseSource(source, defaultModuleName);
+		
+		return PrefixDefUnitSearch.doCompletionSearch(session, parseResult, offset, mr, defUnitAccepter);
 	}
 	
 }

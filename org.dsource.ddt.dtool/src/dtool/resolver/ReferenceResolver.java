@@ -144,20 +144,18 @@ public class ReferenceResolver {
 	private static void findDefUnitInImmediateScope(IScope scope, CommonDefUnitSearch search) {
 		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
 		
-		findDefUnits(search, iter, scope.hasSequentialLookup(), false, null);
+		findDefUnits(search, iter, scope.hasSequentialLookup(), false);
 	}
 	
 	private static void findDefUnitInSecondaryScope(IScope scope, CommonDefUnitSearch search) {
 		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
 		
-		IScope thisModule = scope.getModuleScope();
-		findDefUnits(search, iter, scope.hasSequentialLookup(), true, thisModule);
+		findDefUnits(search, iter, scope.hasSequentialLookup(), true);
 	}
 	
 	private static void findDefUnits(CommonDefUnitSearch search, Iterator<? extends IASTNode> iter,
-			boolean isStatementScope, boolean importsOnly, IScope thisModule) {
+			boolean isStatementScope, boolean importsOnly) {
 		
-		IScope refsModule = search.getReferenceModuleScope();
 		int refOffset = search.refOffset;
 		
 		while(iter.hasNext()) {
@@ -165,7 +163,7 @@ public class ReferenceResolver {
 			
 			if (elem instanceof INonScopedBlock) {
 				INonScopedBlock container = ((INonScopedBlock) elem);
-				findDefUnits(search, container.getMembersIterator(), isStatementScope, importsOnly, thisModule);
+				findDefUnits(search, container.getMembersIterator(), isStatementScope, importsOnly);
 				if(search.isFinished() && search.findOnlyOne)
 					return; // Return if we only want one match in the scope
 			}
@@ -188,8 +186,8 @@ public class ReferenceResolver {
 			} else if(importsOnly && elem instanceof DeclarationImport) {
 				DeclarationImport declImport = (DeclarationImport) elem;
 				
-				// This equals test is a bit brittle:
-				if(!refsModule.equals(thisModule) && !declImport.isTransitive)
+				Module searchOriginModule = search.getSearchReferenceModule();
+				if(!declImport.isTransitive && !privateNodeIsVisible(declImport, searchOriginModule))
 					continue; // Don't consider private imports
 				
 				for (IImportFragment impFrag : declImport.imports) {
@@ -197,10 +195,14 @@ public class ReferenceResolver {
 					// continue regardless of search.findOnlyOne because of partial packages
 				}
 			} 
-
 		}
 	}
-
+	
+	public static boolean privateNodeIsVisible(ASTNode node, Module searchOriginModule) {
+		Module nodeModule = node.getModuleNode();
+		// only visible if in node in same module as search origin ref.
+		return searchOriginModule.getFullyQualifiedName().equals(nodeModule.getFullyQualifiedName());
+	}
 	
 	/* ====================  import lookup  ==================== */
 

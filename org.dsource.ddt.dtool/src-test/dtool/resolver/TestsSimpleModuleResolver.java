@@ -19,14 +19,14 @@ import dtool.parser.DeeParserResult;
 import dtool.resolver.ResolverSourceTests.ITestsModuleResolver;
 import dtool.tests.DToolBaseTest;
 
-public final class InstrumentedModuleResolver implements ITestsModuleResolver {
+public final class TestsSimpleModuleResolver implements ITestsModuleResolver {
 	
 	protected File projectFolder;
 	protected Map<String, DeeParserResult> modules = new HashMap<>();
 	protected String extraModuleName;
 	protected DeeParserResult extraModuleResult;
 	
-	public InstrumentedModuleResolver(File projectFolder) {
+	public TestsSimpleModuleResolver(File projectFolder) {
 		this.projectFolder = projectFolder;
 		
 		initModules(projectFolder, "");
@@ -38,7 +38,7 @@ public final class InstrumentedModuleResolver implements ITestsModuleResolver {
 	}
 	
 	@Override
-	public void doCleanup() {
+	public void cleanupChanges() {
 		extraModuleName = null;
 		extraModuleResult = null;
 	}

@@ -1,6 +1,5 @@
 package dtool.resolver;
 
-import static dtool.resolver.ResolverUtil.findModule_unchecked;
 import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsElement;
 import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsName;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -45,17 +44,20 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	
 	protected static final String TESTFILESDIR = "resolver";
 	
-	protected static Map<String, TspExpansionElement> commonDefinitions = new HashMap<>();
+	protected static Map<String, TspExpansionElement> commonDefinitions;
 	
 	@BeforeClass
 	public static void initCommonDefinitions() throws IOException {
-		 // Add parser common data
-		addCommonDefinitions(ResolverSourceTests.class, DeeParserSourceTests.TESTFILESDIR, commonDefinitions);
-		addCommonDefinitions(ResolverSourceTests.class, TESTFILESDIR, commonDefinitions);
+		if(commonDefinitions == null) {
+			commonDefinitions = new HashMap<>();
+			 // Add parser common data
+			addCommonDefinitions(ResolverSourceTests.class, DeeParserSourceTests.TESTFILESDIR, commonDefinitions);
+			addCommonDefinitions(ResolverSourceTests.class, TESTFILESDIR, commonDefinitions);
+		}
 	}
 	
 	@Parameters(name="{index}: {0}")
-	public static Collection<Object[]> testParameterList() throws IOException {
+	public static Collection<Object[]> prepareTestParameterList() throws IOException {
 		return createTestFileParameters(TESTFILESDIR);
 	}
 	
@@ -80,6 +82,10 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	
 	/*------------------------------*/
 	
+	public interface ITestsModuleResolver extends IModuleResolver {
+		void cleanupChanges();
+	}
+	
 	public static final class NullModuleResolver implements ITestsModuleResolver {
 		@Override
 		public String[] findModules(String fqNamePrefix) throws Exception {
@@ -92,127 +98,122 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		}
 		
 		@Override
-		public void doCleanup() {
+		public void cleanupChanges() {
 		}
 	}
 	
-	public interface ITestsModuleResolver extends IModuleResolver {
-		void doCleanup() throws Exception;
-	}
+	public static final String DEFAULT_MODULE_NAME = "_dummy";
 	
-	public static final String DEFAULT_MODULE_NAME = "__resolver_tests";
+	protected static HashMap<String, TestsSimpleModuleResolver> moduleResolvers = new HashMap<>();
 	
-	protected static HashMap<String, ITestsModuleResolver> moduleResolvers = new HashMap<>();
+	protected ITestsModuleResolver mr;
+	protected DeeParserResult parseResult;
 	
 	protected Map<String, MetadataEntry> markers;
-	protected ITestsModuleResolver mr;
+	
+	public int getMarkerPosition(String markerName) {
+		return assertNotNull(markers.get(markerName)).offset;
+	}
+	
+	public DeeParserResult getParseResult() {
+		return assertNotNull(parseResult);
+	}
 	
 	@Override
 	protected final void runAnnotatedSourceTest(AnnotatedSource testCase) {
-		mr = new NullModuleResolver();
 		try {
-			runAnnotatedSourceTestDo(testCase);
+			processTestAnnotations(testCase);
 		} finally {
-			try {
-				mr.doCleanup();
-			} catch(Exception e) {
-				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-			}
+			mr.cleanupChanges();
 		}
 	}
 	
-	protected void runAnnotatedSourceTestDo(AnnotatedSource testCase) {
-		String source = testCase.source;
-		int defaultOffset = -1;
-		
+	protected void processTestAnnotations(AnnotatedSource testCase) {
 		
 		markers = new HashMap<>();
+		String projectDescription = null;
+		
 		for (MetadataEntry mde : testCase.metadata) {
-			if(mde.name.startsWith("marker")) {
-				if(mde.name.equals("marker_default")) {
-					assertTrue(defaultOffset == -1);
-					defaultOffset = mde.offset;
-				}
+			if(mde.name.equals("PROJECT")) {
+				assertTrue(projectDescription == null); // Set only once
+				projectDescription = mde.value;
+			} else if(mde.name.startsWith("marker")) {
 				if(mde.value != null) {
 					markers.put(mde.value, mde);
 				}
-				
 			}
 		}
 		
-		DeeParserResult parseResult = DeeParser.parseSource(source, DEFAULT_MODULE_NAME);
+		String testsModuleName = null;
+		String testsProjectDirName = null;
+		
+		if(projectDescription != null) {
+			testsModuleName = StringUtil.segmentUntilMatch(projectDescription, "@");
+			testsProjectDirName = StringUtil.substringAfterMatch(projectDescription, "@");
+		}
+		
+		testsModuleName = testsModuleName == null ? DEFAULT_MODULE_NAME : testsModuleName;
+		parseResult = DeeParser.parseSource(testCase.source, testsModuleName);
+		setupTestProject(testsModuleName, testsProjectDirName);
+		assertNotNull(mr);
 		
 		testsLogger.println("-----");
 		
+		processResolverTestMetadata(testCase);
+	}
+	
+	public void setupTestProject(String moduleName, String projectFolderName) {
+		if(projectFolderName == null || projectFolderName.isEmpty()) {
+			mr = new NullModuleResolver();
+			return;
+		}
+		TestsSimpleModuleResolver existingMR = moduleResolvers.get(projectFolderName);
+		if(existingMR == null) {
+			File projectFolder = new File(file.getParent(), assertNotNull(projectFolderName));
+			existingMR = new TestsSimpleModuleResolver(projectFolder);
+			moduleResolvers.put(projectFolderName, existingMR); // Cache the MR data
+		}
+		if(moduleName != null) {
+			existingMR.setExtraModule(moduleName, parseResult);
+		}
+		mr = existingMR;
+	}
+	
+	/*----------------------------------------*/
+	
+	public void processResolverTestMetadata(AnnotatedSource testCase) {
 		for (MetadataEntry mde : testCase.metadata) {
 			if(mde.name.startsWith("marker")) {
 				// already processed
 			} else if(mde.name.equals("PROJECT")) {
-				assertTrue(mr instanceof NullModuleResolver); // Set only once
-				parseResult = setupInstrumentedModuleResolver(mde, parseResult);
+				// already processed
 			} else if(mde.name.equals("REFSEARCH")) {
 				testsLogger.println(mde);
-				runRefSearchTest_________(parseResult, mr, defaultOffset, mde);
+				prepRefSearchTest_________(mde);
 			} else if(mde.name.equals("FIND")) {
 				testsLogger.println(mde);
-				runFindTest_________(parseResult, mr, mde);
+				runFindTest_________(mde);
 			} else if(mde.name.equals("FINDMISSING")) {
 				testsLogger.println(mde);
-				runFindMissingTest_________(parseResult, mr, mde);
+				runFindMissingTest_________(mde);
 			} else if(mde.name.equals("FINDFAIL")) {
 				testsLogger.println(mde);
-				runFindFailTest_________(parseResult, mde);
+				runFindFailTest_________(mde);
 			} else if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "comment"))) {
 				assertFail("Unknown metadata");
 			}
 		}
 	}
 	
-	public int getMarkerPosition(String relexStartPosTargetMarker) {
-		return assertNotNull(markers.get(relexStartPosTargetMarker)).offset;
-	}
-	
-	public DeeParserResult setupInstrumentedModuleResolver(MetadataEntry mde, DeeParserResult parseResult) {
-		String projectDescription = mde.value;
-		String moduleName = StringUtil.segmentUntilMatch(projectDescription, "@");
-		String projectFolderName = StringUtil.substringAfterMatch(projectDescription, "@");
-		
-		ITestsModuleResolver existingMR = moduleResolvers.get(projectFolderName);
-		mr = updateInstrumentModuleResolver(projectFolderName, moduleName, parseResult, existingMR);
-		assertNotNull(mr);
-		moduleResolvers.put(projectFolderName, mr); // Cache the MR data
-		
-		Module resolvedModule = findModule_unchecked(mr, parseResult.module.getFullyQualifiedName());
-		if(moduleName != null) {
-			assertTrue(resolvedModule != null);
-			if(resolvedModule != parseResult.module) {
-				String source = parseResult.source;
-				return new DeeParserResult(source, resolvedModule, parseResult.ruleBroken, parseResult.errors);
-			}
-		}
-		return parseResult;
-	}
-	
-	public ITestsModuleResolver updateInstrumentModuleResolver(String projectFolderName, String moduleName,
-		DeeParserResult parseResult, ITestsModuleResolver existingMR) {
-		InstrumentedModuleResolver testMR = (InstrumentedModuleResolver) existingMR;
-		if(testMR == null) {
-			File projectFolder = new File(file.getParent(), assertNotNull(projectFolderName));
-			testMR = new InstrumentedModuleResolver(projectFolder);
-		}
-		testMR.setExtraModule(moduleName, parseResult);
-		return testMR;
-	}
-	
-	/*----------------------------------------*/
-	
-	public void runRefSearchTest_________(DeeParserResult parseResult, IModuleResolver mr,
-		int defaultOffset, MetadataEntry mde) {
+	public void prepRefSearchTest_________(MetadataEntry mde) {
 		String testStringDescriptor = mde.sourceValue;
 		
 		ECompletionResultStatus expectedStatusCode = ECompletionResultStatus.RESULT_OK;
 		String[] expectedResults = null;
 		String relexStartPosMarker = null;
+		String searchParams = StringUtil.segmentAfterMatch(testStringDescriptor, ">>");
+		testStringDescriptor = StringUtil.substringUntilMatch(testStringDescriptor, ">>");
+		
 		if(testStringDescriptor.startsWith("relexStartPos=")) {
 			relexStartPosMarker = StringUtil.segmentAfterMatch(testStringDescriptor, "relexStartPos=");
 			testStringDescriptor = null;
@@ -228,9 +229,15 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 			expectedResults = removeEmptyStrings(expectedResults); 
 		}
 		
-		int offset = defaultOffset != -1 ? defaultOffset : mde.offset;
+		int offset = mde.offset;
 		
-		CompletionCollectorSession session = runCompletionSearch(parseResult, offset, mr, relexStartPosMarker);
+		runRefSearchTest(offset, searchParams, expectedStatusCode, expectedResults, relexStartPosMarker);
+	}
+	
+	public void runRefSearchTest(int offset, @SuppressWarnings("unused") String searchParams, 
+		ECompletionResultStatus expectedStatusCode, String[] expectedResults, String relexStartPosMarker) {
+		
+		CompletionCollectorSession session = runCompletionSearch(parseResult, offset, relexStartPosMarker);
 		
 		assertTrue(session.resultCode == expectedStatusCode);
 		if(expectedResults != null) {
@@ -239,7 +246,7 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	}
 	
 	public CompletionCollectorSession runCompletionSearch(DeeParserResult parseResult, int offset,
-		IModuleResolver mr, String relexStartPosTargetMarker) {
+		String relexStartPosTargetMarker) {
 		CompletionCollectorSession session = new CompletionCollectorSession();
 		PrefixDefUnitSearch search = PrefixDefUnitSearch.doCompletionSearch(session, parseResult, offset, mr, session);
 		assertTrue(relexStartPosTargetMarker == null || 
@@ -277,26 +284,32 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		return resultProposals;
 	}
 	
-	public DirectDefUnitResolve runFindTest_________(DeeParserResult parseResult, IModuleResolver mr, 
-		MetadataEntry mde) {
-		String[] expectedResults = splitValues(mde.sourceValue);
-		return doRunFindTest(parseResult, mr, mde.offset, expectedResults);
-	}
-	
-	public void runFindFailTest_________(DeeParserResult parseResult, MetadataEntry mde) {
-		DirectDefUnitResolve resolveResult = ReferenceResolver.resolveAtOffset(parseResult, mde.offset, null);
+	public void runFindFailTest_________(MetadataEntry mde) {
+		DirectDefUnitResolve resolveResult = resolveAtOffset(mde.offset);
 		assertTrue(resolveResult.pickedRef == null || resolveResult.invalidPickRef);
 	}
 	
-	public void runFindMissingTest_________(DeeParserResult parseResult, IModuleResolver mr, MetadataEntry mde) {
+	public DirectDefUnitResolve resolveAtOffset(int offset) {
+		return ReferenceResolver.resolveAtOffset(getParseResult(), offset, mr);
+	}
+	
+	public void runFindTest_________(MetadataEntry mde) {
+		doFindTest(mde);
+	}
+	
+	public DirectDefUnitResolve doFindTest(MetadataEntry mde) {
+		String[] expectedResults = splitValues(mde.sourceValue);
+		return doRunFindTest(mde.offset, expectedResults);
+	}
+	
+	public void runFindMissingTest_________(MetadataEntry mde) {
 		assertTrue(mde.sourceValue == null);
-		DirectDefUnitResolve result = doRunFindTest(parseResult, mr, mde.offset, NewUtils.EMPTY_STRING_ARRAY);
+		DirectDefUnitResolve result = doRunFindTest(mde.offset, NewUtils.EMPTY_STRING_ARRAY);
 		assertTrue(result.pickedRef.syntaxIsMissingIdentifier());
 	}
 	
-	public DirectDefUnitResolve doRunFindTest(DeeParserResult parseResult, IModuleResolver mr, int offset,
-		String[] expectedResults) {
-		DirectDefUnitResolve resolveResult = ReferenceResolver.resolveAtOffset(parseResult, offset, mr);
+	public DirectDefUnitResolve doRunFindTest(int offset, String[] expectedResults) {
+		DirectDefUnitResolve resolveResult = resolveAtOffset(offset);
 		Collection<DefUnit> resultDefUnitsOriginal = resolveResult.getResolvedDefUnits();
 		
 		Collection<DefUnit> resultDefUnits = new ArrayList<>(nullToEmpty(resultDefUnitsOriginal));

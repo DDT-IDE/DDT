@@ -33,7 +33,7 @@ public abstract class CommonDefUnitSearch {
 	/** Module Resolver */
 	protected final IModuleResolver modResolver;
 	/** Cached value of the reference's module scope. */
-	protected IScope refModuleScope; 
+	protected Module searchRefModule; 
 	/** The scopes that have already been searched */
 	protected ArrayList<IScope> searchedScopes;
 
@@ -42,12 +42,15 @@ public abstract class CommonDefUnitSearch {
 		this(refScope, refOffset, false, moduleResolver);
 	}
 	
-	public CommonDefUnitSearch(IScopeNode refScope, int refOffset, boolean findOneOnly, IModuleResolver moduleResolver) { 
+	public CommonDefUnitSearch(IScopeNode refScope, int refOffset, boolean findOneOnly, 
+		IModuleResolver moduleResolver) { 
 		this.searchedScopes = new ArrayList<IScope>(4);
-		this.refScope = refScope;
+		this.refScope = assertNotNull(refScope);
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
 		this.modResolver = assertNotNull(moduleResolver);
+		
+		this.searchRefModule = assertNotNull(refScope.asNode().getModuleNode());
 	}
 	
 	public IModuleResolver getModResolver() {
@@ -86,10 +89,8 @@ public abstract class CommonDefUnitSearch {
 	}
 	
 	/** Get the Module of the search's reference. */
-	public IScope getReferenceModuleScope() {
-		if(refModuleScope == null)
-			refModuleScope = refScope.getModuleScope();
-		return refModuleScope;
+	public Module getSearchReferenceModule() {
+		return searchRefModule;
 	}
 	
 	/** Return whether the search has found all matches. */

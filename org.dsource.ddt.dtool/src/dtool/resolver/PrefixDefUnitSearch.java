@@ -24,7 +24,6 @@ import dtool.ast.references.Reference;
 import dtool.contentassist.CompletionSession;
 import dtool.contentassist.CompletionSession.ECompletionResultStatus;
 import dtool.parser.DeeLexer;
-import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
 import dtool.parser.Token;
@@ -77,14 +76,6 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		addedDefUnits.add(newDefUnitName);
 		return true;
 	};
-	
-	public static PrefixDefUnitSearch doCompletionSearch(CompletionSession session, String defaultModuleName,
-			String source, final int offset, IModuleResolver modResolver, IDefUnitMatchAccepter defUnitAccepter) 
-	{
-		DeeParserResult parseResult = DeeParser.parseSource(source, defaultModuleName);
-		
-		return doCompletionSearch(session, parseResult, offset, modResolver, defUnitAccepter);
-	}
 	
 	public static PrefixDefUnitSearch doCompletionSearch(CompletionSession session, DeeParserResult parseResult,
 		final int offset, IModuleResolver mr, IDefUnitMatchAccepter defUnitAccepter) {

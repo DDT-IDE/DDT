@@ -1,19 +1,4 @@
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module tests;
 
-#REFSEARCH:
-tests
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-// implicit module name
-
-#REFSEARCH:
-__resolver_tests
-
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module pack.foo;
-#REFSEARCH:
-pack
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@TPLPARAMS_OPT《●(T, U : T[])》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -74,13 +59,12 @@ template Template(
 	this TemplateParamThis
 	) 
 {
-	#marker_default
-}
-
-#REFSEARCH:
-Template▪__resolver_tests ▪
+	#REFSEARCH¤【
+Template
 TemplateParamType 
 TemplateParamValue 
 TemplateParamAlias
 TemplateParamTuple
 TemplateParamThis
+	】
+}

@@ -1,3 +1,9 @@
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ implicit module name
+int mysample; #PROJECT(implicitName@)
+
+#@__CONTEXT_START__
+	#REFSEARCH¤【mysample▪implicitName】
+#@__CONTEXT_END__
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module importTest;
 

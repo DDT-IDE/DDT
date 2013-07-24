@@ -1,20 +1,18 @@
 package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import mmrnmhrm.core.codeassist.CompletionEngine_Test;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.text.DeePartitions;
 
-import org.eclipse.dltk.core.CompletionRequestor;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.junit.Test;
-
-import dtool.tests.ref.cc.CompletionEngine_Test;
 
 public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 	
@@ -29,7 +27,7 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 			{ this.srcModule = DLTKCore.createSourceModuleFrom(file); }
 			
 			@Override
-			protected CompletionRequestor testCompletionEngine(int offset, int rplLen) throws ModelException {
+			protected void testCompletionEngine(int offset, int rplLen) throws ModelException {
 				ContentAssistant ca = getContentAssistant(editor);
 				
 				DeeCodeCompletionProcessor caProcessor = new DeeCodeCompletionProcessor(editor, ca, DeePartitions.DEE_CODE);
@@ -46,8 +44,6 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 					assertTrue(deeProposal.getReplacementLength() == rplLen);
 					assertTrue(deeProposal.getCursorPosition() == deeProposal.getReplacementString().length());
 				}
-				
-				return null;
 			}
 		}.testBasic();
 	}

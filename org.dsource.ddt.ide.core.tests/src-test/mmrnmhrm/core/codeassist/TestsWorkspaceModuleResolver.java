@@ -6,9 +6,11 @@ import java.io.IOException;
 
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
+import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -19,24 +21,28 @@ import dtool.parser.DeeParserResult;
 import dtool.resolver.ResolverSourceTests.ITestsModuleResolver;
 
 /**
- * Resolver and helper to setup tests project fixture
+ * Module resolver helper for the ResolverSourceTests fixture
  */
 public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver implements ITestsModuleResolver {
 	
 	protected final IFile customFile;
 	protected final byte[] customFilePreviousContents;
+	protected final IScriptProject scriptProject;
 	
 	public TestsWorkspaceModuleResolver(IScriptProject scriptProject, 
 		String moduleName, DeeParserResult parseResult) throws IOException, CoreException {
 		super(scriptProject);
+		this.scriptProject = scriptProject;
 		
 		if(moduleName == null) {
-			customFile = null;
-			customFilePreviousContents = null;
-			return;
+			moduleName = CoreResolverSourceTests.DEFAULT_MODULE_NAME; 
 		}
 		Path filePath = new Path(moduleName.replaceAll("\\.", "/") + ".d");
-		customFile = scriptProject.getProject().getFolder("src-dtool").getFile(filePath);
+		IContainer srcFolder = scriptProject.getProject().getFolder("src-dtool");
+		if(!srcFolder.exists()) {
+			srcFolder = scriptProject.getProject();
+		}
+		customFile = srcFolder.getFile(filePath);
 		
 		ByteArrayInputStream is = new ByteArrayInputStream(parseResult.source.getBytes(StringUtil.UTF8));
 		if(customFile.exists()) {
@@ -49,7 +55,15 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 	}
 	
 	@Override
-	public void doCleanup() throws CoreException {
+	public void cleanupChanges() {
+		try {
+			doCleanupChanges();
+		} catch(CoreException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	public void doCleanupChanges() throws CoreException {
 		if(customFile != null) {
 			if(customFilePreviousContents == null) {
 				customFile.delete(false, null);
@@ -60,18 +74,12 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 		}
 	}
 	
-	public static TestsWorkspaceModuleResolver updateTestsModuleResolver(File projectDir,
-		String moduleName, DeeParserResult parseResult, TestsWorkspaceModuleResolver existingMR) throws CoreException, IOException {
-		IScriptProject scriptProject;
-		if(existingMR == null) {
-			scriptProject = createCoreResolverTestsProject(projectDir);
-		} else {
-			scriptProject = existingMR.scriptProject;
+	public static IScriptProject createTestsWorkspaceProject(File projectSourceDir) throws CoreException {
+		if(projectSourceDir == null) {
+			IScriptProject resolverProject = BaseDeeTest.createAndOpenDeeProject("r__emptyProject");
+			ProjectModelUtil.addSourceFolder(resolverProject.getProject(), null);
+			return resolverProject;
 		}
-		return new TestsWorkspaceModuleResolver(scriptProject, moduleName, parseResult);
-	}
-	
-	public static IScriptProject createCoreResolverTestsProject(File projectSourceDir) throws CoreException {
 		IScriptProject resolverProject = BaseDeeTest.createAndOpenDeeProject("r_" + projectSourceDir.getName());
 		
 		DeeCoreTestResources.createSrcFolderFromDirectory(projectSourceDir, resolverProject, "src-dtool");

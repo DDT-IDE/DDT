@@ -173,15 +173,20 @@ public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 			}
 			printedTemplatedSources.add(testCase.originalTemplatedSource);
 			
-			if(printTestCaseSource) {
-				printTestCaseSource(testCase, printCaseSeparator);
-			}
 			checkOffsetInvariant(testCase);
-			runAnnotatedSourceTest(testCase);
+			enterAnnotatedSourceCase(testCase, printTestCaseSource, printCaseSeparator);
 			originalTemplateChildCount++;
 		}
 		printCaseEnd(originalTemplateChildCount);
 		testsLogger.println();
+	}
+	
+	protected void enterAnnotatedSourceCase(AnnotatedSource testCase, boolean printTestCaseSource,
+		boolean printCaseSeparator) {
+		if(printTestCaseSource) {
+			printTestCaseSource(testCase, printCaseSeparator);
+		}
+		runAnnotatedSourceTest(testCase);
 	}
 	
 	public static void checkOffsetInvariant(AnnotatedSource testSource) {

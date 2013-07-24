@@ -184,6 +184,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	/* ----------------------------------------------------------------- */
 	
 	public AbstractParser.NodeResult<Module> parseModule(String defaultModuleName) {
+		assertNotNull(defaultModuleName);
 		DeclarationModule md = parseModuleDeclaration();
 		
 		ArrayView<ASTNode> members = parseDeclarations(null, true);

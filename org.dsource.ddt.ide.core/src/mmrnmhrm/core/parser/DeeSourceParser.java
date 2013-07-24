@@ -32,10 +32,10 @@ public class DeeSourceParser extends AbstractSourceParser {
 		if(modelElement != null) {
 			defaultModuleName = DeeNamingRules.getModuleNameFromFileName(modelElement.getElementName());
 		}
-		DeeParserResult deeParserSession = DeeParser.parseSource(source, defaultModuleName);
+		DeeParserResult deeParserResult = DeeParser.parseSource(source, defaultModuleName);
 		
 		if(reporter != null) {
-			for (ParserError parserError : deeParserSession.errors) {
+			for (ParserError parserError : deeParserResult.errors) {
 				reporter.reportProblem(new DefaultProblem(
 					parserError.getUserMessage(),
 					DefaultProblemIdentifier.decode(org.eclipse.dltk.compiler.problem.IProblem.Syntax),
@@ -49,7 +49,7 @@ public class DeeSourceParser extends AbstractSourceParser {
 			}
 		}
 		
-		return deeParserSession;
+		return deeParserResult;
 	}
 	
 }

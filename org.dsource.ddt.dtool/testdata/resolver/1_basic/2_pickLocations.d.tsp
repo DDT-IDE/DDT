@@ -6,13 +6,17 @@ int Var2;
 int Foo;
 
 V#REFSEARCH¤【Var▪Var2】;
-V#REFSEARCH¤【Var▪Var2】xx;
+V#REFSEARCH¤【Var▪Var2 >>2】xx;
 Va#REFSEARCH¤【Var▪Var2】;
-Va#REFSEARCH¤【Var▪Var2】xx;
+Va#REFSEARCH¤【Var▪Var2 >>2】xx;
 Vx#REFSEARCH¤【】xx;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-V#REFSEARCH¤【Var】#@《x●》; // Edge case, refsearch at beginning of file
+#REFSEARCH¤【Var▪implicitName】; // Edge case, refsearch at beginning of file
+#PROJECT(implicitName@)
+int Var;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+V#@《#REFSEARCH¤【Var】●#REFSEARCH¤【Var>>1】x》; // Edge case, refsearch at beginning of file
 
 int Var;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂

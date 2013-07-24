@@ -1,18 +1,24 @@
-package dtool.tests.ref.cc;
+package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.ArrayList;
+
 import mmrnmhrm.core.codeassist.DeeCompletionEngine;
 import mmrnmhrm.tests.BaseDeeCoreTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
+
+import dtool.ast.definitions.DefUnit;
 
 // These tests could be expanded
 public class CompletionEngine_Test extends BaseDeeCoreTest {
@@ -36,25 +42,43 @@ public class CompletionEngine_Test extends BaseDeeCoreTest {
 		testCompletionEngine(getMarkerEndPos("/+CC3@+/")+1, 2);
 	}
 	
-	protected CompletionRequestor testCompletionEngine(final int offset, final int rplLen) throws ModelException {
-		CompletionRequestor requestor = new CompletionRequestor() {
-			@Override
-			public void accept(CompletionProposal proposal) {
-				assertTrue(proposal.getCompletionLocation() == offset);
-				assertTrue(proposal.getReplaceStart() == offset);
-				assertTrue(proposal.getReplaceEnd() - proposal.getReplaceStart() == rplLen);
-			}
-		};
+	protected void testCompletionEngine(final int offset, final int rplLen) throws ModelException {
+		testCompletionEngine(srcModule, offset, rplLen);
+	}
+	
+	public static DeeCompletionEngine testCompletionEngine(ISourceModule sourceModule, final int offset,
+		final int rplLen) {
+		CompletionRequestor requestor = new CompletionEngineTestsRequestor(offset, rplLen);
 		DeeCompletionEngine completionEngine = new DeeCompletionEngine();
 		completionEngine.setRequestor(requestor);
-		completionEngine.complete(ModuleSourceTestUtils.moduleToIModuleSource(srcModule), offset, 0);
-		return requestor;
+		completionEngine.complete((IModuleSource) sourceModule, offset, 0);
+		return completionEngine;
 	}
 	
 	protected int getMarkerEndPos(String markerString) throws ModelException {
 		int startPos = srcModule.getSource().indexOf(markerString);
 		assertTrue(startPos >= 0);
 		return startPos + markerString.length();
+	}
+	
+	public static final class CompletionEngineTestsRequestor extends CompletionRequestor {
+		protected final int offset;
+		protected final int rplLen;
+		protected final ArrayList<DefUnit> results = new ArrayList<>();
+		
+		private CompletionEngineTestsRequestor(int offset, int rplLen) {
+			this.offset = offset;
+			this.rplLen = rplLen;
+		}
+		
+		@Override
+		public void accept(CompletionProposal proposal) {
+			assertTrue(proposal.getCompletionLocation() == offset);
+			assertTrue(proposal.getReplaceStart() == offset);
+			assertTrue(proposal.getReplaceEnd() - proposal.getReplaceStart() == rplLen);
+			DefUnit defUnit = (DefUnit) proposal.getExtraInfo();
+			results.add(defUnit);
+		}
 	}
 	
 }

@@ -1,5 +1,7 @@
 package dtool.ast.definitions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.util.Iterator;
 
 import dtool.ast.ASTCodePrinter;
@@ -61,6 +63,7 @@ public abstract class DefinitionAggregate extends CommonDefinition implements IS
 	@Override
 	public Iterator<? extends ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
 		if(aggrBody instanceof DeclarationEmpty) {
+			assertFail();
 			return null; /*NPE BUG here*/
 		} else {
 			return NewUtils.getChainedIterator(((DeclBlock) aggrBody).nodes /*NPE BUG here*/, tplParams);

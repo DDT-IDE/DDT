@@ -29,7 +29,7 @@ public class DeclarationImport extends ASTNode implements INonScopedBlock, IDecl
 	public DeclarationImport(boolean isStatic, ArrayView<IImportFragment> imports) {
 		this.imports = parentizeI(imports);
 		this.isStatic = isStatic;
-		this.isTransitive = false; // TODO, should be determined by surronding analysis
+		this.isTransitive = false; // TODO, should be determined by surrounding analysis
 	}
 	
 	public final ArrayView<ASTNode> imports_asNodes() {
