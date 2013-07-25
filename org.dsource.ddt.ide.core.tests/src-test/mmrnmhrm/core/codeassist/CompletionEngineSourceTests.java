@@ -53,6 +53,10 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 			rplLen = Integer.parseInt(rplLenStr);
 		}
 		
+		runRefSearchTest(offset, expectedResults, rplLen);
+	}
+	
+	public void runRefSearchTest(int offset, String[] expectedResults, int rplLen) {
 		runCompletionEngineTest((IModuleSource) sourceModule, offset, expectedResults, rplLen);
 		if(moduleSource != null) {
 			// Run this variation of the test with something that is not a IModuleSource

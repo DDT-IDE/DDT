@@ -12,6 +12,7 @@ import org.eclipse.ui.progress.IProgressConstants;
 
 public class DeePerspective implements IPerspectiveFactory {
 	
+	public static final String PERSPECTIVE_ID = "org.dsource.ddt.ide.ui.DeePerspective";
 	public static final String SCRIPTEXPLORER_VIEW_ID = "org.eclipse.dltk.ui.ScriptExplorer";
 	
 	

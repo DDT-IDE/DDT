@@ -99,6 +99,7 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	
 	protected static HashMap<String, TestsSimpleModuleResolver> moduleResolvers = new HashMap<>();
 	
+	protected AnnotatedSource testCase;
 	protected ITestsModuleResolver mr;
 	protected DeeParserResult parseResult;
 	
@@ -115,10 +116,15 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	@Override
 	protected final void runAnnotatedSourceTest(AnnotatedSource testCase) {
 		try {
+			this.testCase = testCase;
 			processTestAnnotations(testCase);
 		} finally {
-			mr.cleanupChanges();
+			doAnnotatedTestCleanup();
 		}
+	}
+	
+	public void doAnnotatedTestCleanup() {
+		mr.cleanupChanges();
 	}
 	
 	protected void processTestAnnotations(AnnotatedSource testCase) {
@@ -183,21 +189,25 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 			} else if(mde.name.equals("PROJECT")) {
 				// already processed
 			} else if(mde.name.equals("REFSEARCH")) {
-				testsLogger.println(mde);
+				printMDE(mde);
 				prepRefSearchTest_________(mde);
 			} else if(mde.name.equals("FIND")) {
-				testsLogger.println(mde);
+				printMDE(mde);
 				runFindTest_________(mde);
 			} else if(mde.name.equals("FINDMISSING")) {
-				testsLogger.println(mde);
+				printMDE(mde);
 				runFindMissingTest_________(mde);
 			} else if(mde.name.equals("FINDFAIL")) {
-				testsLogger.println(mde);
+				printMDE(mde);
 				runFindFailTest_________(mde);
 			} else if(!(areEqual(mde.value, "flag") || areEqual(mde.name, "comment"))) {
 				assertFail("Unknown metadata");
 			}
 		}
+	}
+	
+	public void printMDE(MetadataEntry mde) {
+		testsLogger.println(mde);
 	}
 	
 	public void prepRefSearchTest_________(MetadataEntry mde) {

@@ -1,7 +1,6 @@
 package dtool.tests.ref.cc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.codeassist.DeeCompletionEngine;
 
 import org.junit.Test;
 
@@ -68,7 +67,7 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 	
 	@Test
 	public void test_impModuleRef_completionTextParameters() throws Exception {
-		PrefixDefUnitSearchBase search = DeeCompletionEngine.doCompletionSearch(getMarkerEndOffset("/+CC4@+/")+5, 
+		PrefixDefUnitSearchBase search = doCompletionSearch(getMarkerEndOffset("/+CC4@+/")+5, 
 				srcModule, new DefUnitCollector());
 		assertTrue(search.searchOptions.rplLen == 0);
 	}

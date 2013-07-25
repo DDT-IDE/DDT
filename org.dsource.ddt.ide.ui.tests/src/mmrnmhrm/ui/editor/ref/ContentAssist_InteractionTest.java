@@ -80,7 +80,7 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		ca.addCompletionListener(caWatcher);
 		
 		viewer.revealRange(ccOffset, 10);
-		invokeContentAssist();
+		invokeContentAssist(editor, ccOffset);
 		assertTrue(caWatcher.active == true);
 		return caWatcher;
 	}

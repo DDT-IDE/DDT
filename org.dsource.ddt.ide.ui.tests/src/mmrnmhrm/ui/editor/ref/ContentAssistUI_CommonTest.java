@@ -24,6 +24,8 @@ import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
@@ -34,12 +36,17 @@ import dtool.ast.definitions.DefUnit;
 
 public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 	
-	protected final IFile file;
+	protected final ISourceModule srcModule;
 	protected final ScriptEditor editor;
 	
 	public ContentAssistUI_CommonTest(IFile file) {
-		this.file = file;
 		this.editor = BaseDeeUITest.openDeeEditorForFile(file);
+		this.srcModule = DLTKCore.createSourceModuleFrom(file);
+	}
+	
+	public ContentAssistUI_CommonTest(ISourceModule sourceModule) {
+		this.srcModule = sourceModule;
+		this.editor = BaseDeeUITest.openDeeEditorForFile((IFile) sourceModule.getResource());
 	}
 	
 	protected int getMarkerStartPos(String markerString) {
@@ -56,7 +63,8 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 		return ccOffset + markerString.length();
 	}
 	
-	protected void invokeContentAssist() {
+	public static void invokeContentAssist(ScriptEditor editor, int offset) {
+		editor.getViewer().setSelectedRange(offset, 0);
 		ITextOperationTarget target= (ITextOperationTarget) editor.getAdapter(ITextOperationTarget.class);
 		if (target != null && target.canDoOperation(ISourceViewer.CONTENTASSIST_PROPOSALS)) {
 			target.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);

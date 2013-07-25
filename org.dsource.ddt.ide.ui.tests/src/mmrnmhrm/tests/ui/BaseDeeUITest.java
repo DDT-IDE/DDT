@@ -3,6 +3,7 @@ package mmrnmhrm.tests.ui;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.ui.editor.DeeEditor;
+import mmrnmhrm.ui.views.DeePerspective;
 
 import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IFile;
@@ -15,25 +16,28 @@ import org.eclipse.ui.intro.IIntroPart;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 
 public class BaseDeeUITest extends BaseDeeTest {
 	
-	@BeforeClass
-	public static void staticTestInit() throws Exception {
+	static {
+		assertTrue(PlatformUI.getWorkbench() != null);
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		page.closeAllEditors(false);
 		
 		IIntroPart intro = PlatformUI.getWorkbench().getIntroManager().getIntro();
 		PlatformUI.getWorkbench().getIntroManager().closeIntro(intro);
+		
+		page.setPerspective(
+			PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(DeePerspective.PERSPECTIVE_ID));
+		
 		SWTTestUtils.________________flushUIEventQueue________________();
 	}
 	
 	@AfterClass
 	public static void staticTestEnd() throws Exception {
+		WorkbenchUtils.getActivePage().closeAllEditors(false);
 	}
-	
 	
 	@Before
 	public void checkWorbench() throws Exception {

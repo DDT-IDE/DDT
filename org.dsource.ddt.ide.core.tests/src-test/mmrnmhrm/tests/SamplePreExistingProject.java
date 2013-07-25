@@ -23,7 +23,6 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 	private static final boolean REQUIRE_PREEXISTING_PROJ = false;
 	
 	public static IScriptProject sampleDeeProj = null;
-	public static IProject project;
 	
 	
 	public static void checkForExistanceOfPreExistingProject() {

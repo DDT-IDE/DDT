@@ -110,12 +110,4 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		return proposal;
 	}
 	
-	@Deprecated
-	public static PrefixDefUnitSearch doCompletionSearch(int offset, ISourceModule moduleUnit,
-		IDefUnitMatchAccepter defUnitAccepter) throws ModelException {
-		DeeParserResult parseResult = DeeModuleParsingUtil.getParsedDeeModuleDecl(moduleUnit).deeParserResult;
-		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit);
-		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr, defUnitAccepter);
-	}
-	
 }

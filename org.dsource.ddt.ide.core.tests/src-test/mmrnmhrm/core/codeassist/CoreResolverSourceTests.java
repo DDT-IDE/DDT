@@ -27,6 +27,7 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.ModelException;
 
 import dtool.resolver.ResolverSourceTests;
 import dtool.sourcegen.AnnotatedSource;
@@ -72,7 +73,7 @@ public abstract class CoreResolverSourceTests extends ResolverSourceTests {
 		mr = new TestsWorkspaceModuleResolver(scriptProject, moduleName, testCase.source);
 		
 		sourceModule = (ISourceModule) DLTKCore.create(getModuleResolver().customFile);
-		assertTrue(sourceModule != null && sourceModule.exists());
+		checkModuleSetupConsistency();
 		
 		IModelElement modelElement = projectFolderName == null ? null : sourceModule;
 		moduleSource = new ModuleSource(explicitModuleName, modelElement, testCase.source);
@@ -88,8 +89,17 @@ public abstract class CoreResolverSourceTests extends ResolverSourceTests {
 	
 	@Override
 	public void processResolverTestMetadata(AnnotatedSource testCase) {
-		assertTrue(sourceModule != null && sourceModule.exists());
+		checkModuleSetupConsistency();
 		super.processResolverTestMetadata(testCase);
+	}
+	
+	public void checkModuleSetupConsistency() {
+		assertTrue(sourceModule != null && sourceModule.exists());
+		try {
+			assertTrue(sourceModule.getSource().equals(testCase.source));
+		} catch(ModelException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 }

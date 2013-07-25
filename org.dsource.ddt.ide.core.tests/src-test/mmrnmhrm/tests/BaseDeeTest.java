@@ -32,9 +32,12 @@ import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.internal.environment.LazyFileHandle;
 import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
 import org.eclipse.dltk.core.search.indexing.IndexManager;
+import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.eclipse.dltk.launching.ScriptRuntime;
+import org.junit.After;
+import org.junit.Before;
 
 import dtool.tests.DToolTestResources;
 
@@ -99,18 +102,27 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 		
-		createFakeDeeInstall(
-				DMDInstallType.INSTALLTYPE_ID, 
-				MOCK_DMD2_INSTALL_NAME, 
-				MOCK_DMD2_TESTDATA_PATH);
+		createFakeDeeInstall(DMDInstallType.INSTALLTYPE_ID, 
+				MOCK_DMD2_INSTALL_NAME, MOCK_DMD2_TESTDATA_PATH, true);
 		
-		createFakeDeeInstall(
-				GDCInstallType.INSTALLTYPE_ID, 
-				MOCK_GDC_INSTALL_NAME, 
-				MOCK_GDC_INSTALL_PATH);
+		createFakeDeeInstall(GDCInstallType.INSTALLTYPE_ID, 
+				MOCK_GDC_INSTALL_NAME, MOCK_GDC_INSTALL_PATH, false);
+		
+		checkTestSetupInvariants();
 	}
 	
-	protected static void createFakeDeeInstall(String installTypeId, String installName, String installExePath) {
+	public static void checkTestSetupInvariants() {
+		assertTrue(ScriptRuntime.getInterpreterInstallType(DMDInstallType.INSTALLTYPE_ID).
+			getInterpreterInstalls().length > 0);
+	}
+	
+	@Before
+	@After
+	public void checkTestSetupInvariants_do() {
+		checkTestSetupInvariants();
+	}
+	
+	protected static void createFakeDeeInstall(String installTypeId, String installName, String installExePath, boolean setAsDefault) {
 		IInterpreterInstallType deeDmdInstallType = ScriptRuntime.getInterpreterInstallType(installTypeId);
 		InterpreterStandin install = new InterpreterStandin(deeDmdInstallType, installName + ".id");
 		
@@ -121,7 +133,14 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		install.setName(installName);
 		install.setInterpreterArgs(null);
 		install.setLibraryLocations(null); // Use default locations
-		install.convertToRealInterpreter();
+		IInterpreterInstall realInstall = install.convertToRealInterpreter();
+		if(setAsDefault) {
+			try {
+				ScriptRuntime.setDefaultInterpreterInstall(realInstall, null);
+			} catch(CoreException e) {
+				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			}
+		}
 	}
 	
 	public static IScriptProject createAndOpenDeeProject(String name) throws CoreException {
@@ -163,8 +182,8 @@ public abstract class BaseDeeTest extends BaseDeeCoreTest {
 		ProjectModelUtil.addNature(project, DeeNature.NATURE_ID);
 		assertTrue(dltkProj.exists());
 		
-		IBuildpathEntry entry = DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()
-				.append(libraryEntry)		
+		IBuildpathEntry entry = DLTKCore.newContainerEntry(
+			ScriptRuntime.newDefaultInterpreterContainerPath().append(libraryEntry)		
 		);
 		dltkProj.setRawBuildpath(new IBuildpathEntry[] {entry}, null);
 		assertNotNull(ScriptRuntime.getInterpreterInstall(dltkProj));

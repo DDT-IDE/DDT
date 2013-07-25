@@ -7,7 +7,6 @@ import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.text.DeePartitions;
 
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
@@ -24,7 +23,7 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		new CompletionEngine_Test() {
-			{ this.srcModule = DLTKCore.createSourceModuleFrom(file); }
+			{ this.srcModule = ContentAssist_ProposalTest.this.srcModule; }
 			
 			@Override
 			protected void testCompletionEngine(int offset, int rplLen) throws ModelException {

@@ -5,7 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Miscellaneous very simple utility methods for using reflection. 
+ * Miscellaneous very simple utility methods for using reflection.
+ * Some of these methods have very low type safety, and as such may not be suitable for production code.
  */
 public class ReflectionUtils {
 	
@@ -53,7 +54,7 @@ public class ReflectionUtils {
 	}
 	
 	/** Same as {@link Method#invoke(Object, Object...)} but unchecks the exceptions. */
-	public static <T> T uncheckedInvoke(Object obj, final Method method, Object... args) {
+	public static <T> T uncheckedInvoke(Object obj, Method method, Object... args) {
 		try {
 			return (T) method.invoke(obj, args);
 		} catch (IllegalArgumentException e) {
@@ -63,7 +64,25 @@ public class ReflectionUtils {
 		} catch (InvocationTargetException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e.getTargetException());
 		}
-	}	
+	}
+	
+	/** Invoke method with given methodName on given obj receiver, using given args */
+	public static <T> T invokeMethod(Object obj, String methodName, Object... args) {
+		try {
+			Class<?>[] paramTypes = new Class<?>[args.length];
+			for(int i = 0; i < paramTypes.length; i++) {
+				paramTypes[i] = args[i].getClass();
+			}
+			Method method = getAvailableMethod(obj.getClass(), methodName, paramTypes);
+			return (T) method.invoke(obj, args);
+		} catch (IllegalArgumentException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		} catch (IllegalAccessException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		} catch (InvocationTargetException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e.getTargetException());
+		}
+	}
 	
 	/** Reads the method with given methodName and given parameterTypes in given klass. */
 	public static Method getAvailableMethod(Class<?> klass, String methodName, Class<?>... paramTypes) {

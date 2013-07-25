@@ -42,6 +42,7 @@ public class CompareDefUnits extends DToolBaseTest {
 		checkResults(results, expectedProposalsArr, removeIntrinsics, false);
 	}
 	
+	@Deprecated
 	public static void checkResults(Collection<DefUnit> results, String[] expectedProposalsArr,
 		boolean removeIntrinsics, boolean compareUsingName) {
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);

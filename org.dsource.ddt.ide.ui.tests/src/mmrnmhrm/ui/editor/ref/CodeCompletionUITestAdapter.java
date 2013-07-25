@@ -11,10 +11,7 @@ import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.text.DeePartitions;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -26,21 +23,17 @@ import dtool.tests.ref.cc.ICodeCompletionTester;
 // Not that this class is run as a JUnit test, so annotated initializers are not run
 public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest implements ICodeCompletionTester {
 	
-	protected ISourceModule srcModule;
-	
-	public CodeCompletionUITestAdapter(IFile file) {
-		super(file);
-		this.srcModule = DLTKCore.createSourceModuleFrom(file);
+	public CodeCompletionUITestAdapter(ISourceModule srcModule) {
+		super(srcModule);
+		
+		ContentAssistant ca = ContentAssistUI_CommonTest.getContentAssistant(editor);
+		ca.enableAutoInsert(false);
+		ca.enablePrefixCompletion(false);
 	}
 	
 	@Override
 	public boolean isJUnitTest() {
 		return false;
-	}
-	
-	public CodeCompletionUITestAdapter(ISourceModule srcModule) {
-		super(assertCast(srcModule.getResource(), IFile.class));
-		this.srcModule = DLTKCore.createSourceModuleFrom(file);
 	}
 	
 	@Override
@@ -49,31 +42,32 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 	}
 	
 	@Override
-	public void testComputeProposalsWithRepLen(int repOffset, int prefixLen, 
-			int repLen, boolean removeObjectIntrinsics, String... expectedProposals) throws ModelException {
+	public void testComputeProposalsWithRepLen(int offset, int prefixLen, int repLen,
+		boolean removeObjectIntrinsics, String... expectedProposals) {
 		
-		// Test with DeeCompletionProcessor as well
 		ContentAssistant ca = getContentAssistant(editor);
-		DeeCodeCompletionProcessor caProcessor = new DeeCodeCompletionProcessor(editor, ca, DeePartitions.DEE_CODE);
-		ICompletionProposal[] proposals = caProcessor.computeCompletionProposals(editor.getViewer(), repOffset);
-		checkProposals(repOffset, prefixLen, repLen, removeObjectIntrinsics, proposals, expectedProposals);
+		DeeCodeCompletionProcessor caProcessor = (DeeCodeCompletionProcessor) 
+			ca.getContentAssistProcessor(DeePartitions.DEE_CODE);
 		
-		invokeContentAssist(); // Just a wild shot test
+		ICompletionProposal[] proposals = caProcessor.computeCompletionProposals(editor.getViewer(), offset);
+		checkProposals(offset, prefixLen, repLen, removeObjectIntrinsics, proposals, expectedProposals);
+		
+		invokeContentAssist(editor, offset); 
 		SWTTestUtils.________________clearEventQueue________________();
 	}
-
+	
 	protected void checkProposals(int repOffset, int prefixLen, int repLen, boolean removeObjectIntrinsics,
 			ICompletionProposal[] proposals, String... expectedProposals) {
-		assertNotNull(proposals, "Code Completion Unavailable");
+		assertNotNull(proposals);
 		
 		List<DefUnit> results = mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>());
 		
 		CompareDefUnits.checkResults(results, expectedProposals, removeObjectIntrinsics);
 		
-		checkProposals(repOffset, repLen, prefixLen, proposals);
+		checkProposals(proposals, repOffset, repLen, prefixLen);
 	}
 	
-	protected static void checkProposals(int repOffset, int repLen, int prefixLen, ICompletionProposal[] proposals) {
+	protected static void checkProposals(ICompletionProposal[] proposals, int repOffset, int repLen, int prefixLen) {
 		for(ICompletionProposal completionProposal : proposals) {
 			if(completionProposal instanceof ScriptTemplateProposal) {
 				continue;
@@ -81,18 +75,16 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 			DeeCompletionProposal proposal = (DeeCompletionProposal) completionProposal;
 			String defName = proposal.defUnit.toStringAsElement();
 			
-			String repStr = defName.substring(prefixLen);
-			checkProposal(proposal, repOffset, repLen, repStr);
+			assertTrue(repOffset == proposal.getReplacementOffset());
+			assertTrue(repLen == proposal.getReplacementLength());
+			if(prefixLen != -666) {
+				String repStr = defName.substring(prefixLen);
+				if(repStr.indexOf('(') != -1) {
+					repStr = repStr.substring(0, repStr.indexOf('('));
+				}
+				assertTrue(repStr.equals(proposal.getReplacementString()));				
+			}
 		}
-	}
-	
-	protected static void checkProposal(DeeCompletionProposal proposal, int repOffset, int repLen, String repStr) {
-		if(repStr.indexOf('(') != -1) {
-			repStr = repStr.substring(0, repStr.indexOf('('));
-		}
-		assertTrue(repOffset == proposal.getReplacementOffset());
-		assertTrue(repLen == proposal.getReplacementLength());
-		assertTrue(repStr.equals(proposal.getReplacementString()));
 	}
 	
 }

@@ -1,7 +1,8 @@
 package dtool.tests.ref.cc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.codeassist.DeeCompletionEngine;
+import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
@@ -10,9 +11,11 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.After;
 
+import dtool.parser.DeeParserResult;
 import dtool.resolver.CompareDefUnits;
 import dtool.resolver.DefUnitCollector;
 import dtool.resolver.PrefixDefUnitSearch;
+import dtool.resolver.api.IDefUnitMatchAccepter;
 import dtool.resolver.api.PrefixDefUnitSearchBase;
 import dtool.resolver.api.PrefixDefUnitSearchBase.ECompletionResultStatus;
 import dtool.tests.DToolBaseTest;
@@ -60,8 +63,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	
 	protected PrefixDefUnitSearchBase testUnavailableCompletion(int offset, ECompletionResultStatus caResult) 
 			throws ModelException {
-		PrefixDefUnitSearch search = DeeCompletionEngine.doCompletionSearch(offset, srcModule, 
-			new DefUnitCollector());
+		PrefixDefUnitSearch search = doCompletionSearch(offset, srcModule, new DefUnitCollector());
 		assertTrue(search.getResultCode() == caResult);
 		return search;
 	}
@@ -82,8 +84,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 		
 		DefUnitCollector defUnitAccepter = new DefUnitCollector();
 		
-		PrefixDefUnitSearch completionSearch = DeeCompletionEngine.doCompletionSearch(
-			repOffset, srcModule, defUnitAccepter);
+		PrefixDefUnitSearch completionSearch = doCompletionSearch(repOffset, srcModule, defUnitAccepter);
 		
 		if(expectedProposals == null) {
 			assertTrue(completionSearch.getResultCode() != ECompletionResultStatus.RESULT_OK);
@@ -93,6 +94,13 @@ public class CodeCompletion__Common extends DToolBaseTest {
 			
 			CompareDefUnits.checkResults(defUnitAccepter.results, expectedProposals, removeObjectIntrinsics);
 		}
+	}
+	
+	public static PrefixDefUnitSearch doCompletionSearch(int offset, ISourceModule moduleUnit,
+		IDefUnitMatchAccepter defUnitAccepter) throws ModelException {
+		DeeParserResult parseResult = DeeModuleParsingUtil.getParsedDeeModuleDecl(moduleUnit).deeParserResult;
+		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit);
+		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr, defUnitAccepter);
 	}
 	
 }

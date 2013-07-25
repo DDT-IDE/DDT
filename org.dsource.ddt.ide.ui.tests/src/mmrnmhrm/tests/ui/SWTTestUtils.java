@@ -13,7 +13,10 @@ package mmrnmhrm.tests.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
 
 
@@ -45,6 +48,27 @@ public class SWTTestUtils {
 	public static void runEventQueueUntilEmpty(Display display) {
 		assertEquals(display, Display.getCurrent());
 		while (display.readAndDispatch()) {
+		}
+	}
+	
+	public static void runSWTEventLoop() {
+		Display display = Display.getCurrent();
+		
+		final boolean[] breakLoopFlag = new boolean[1];
+		
+		display.addFilter(SWT.KeyDown, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				System.out.println("" + event.button + "--" + event.character  + " :: " + event.keyCode);
+				if(event.keyCode == SWT.PAUSE) {
+					breakLoopFlag[0] = true;
+				}
+			}
+		});
+		
+		while(breakLoopFlag[0] == false) {
+			if(!display.readAndDispatch())
+				display.sleep();
 		}
 	}
 	

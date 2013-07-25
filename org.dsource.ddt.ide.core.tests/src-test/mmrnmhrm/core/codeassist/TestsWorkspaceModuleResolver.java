@@ -25,11 +25,12 @@ import dtool.resolver.ResolverSourceTests.ITestsModuleResolver;
 public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver implements ITestsModuleResolver {
 	
 	protected final IFile customFile;
+	protected final boolean customFileRequiresCleanup;
 	protected final byte[] customFilePreviousContents;
 	protected final IScriptProject scriptProject;
 	
-	public TestsWorkspaceModuleResolver(IScriptProject scriptProject, String moduleName, 
-		String source) throws IOException, CoreException {
+	public TestsWorkspaceModuleResolver(IScriptProject scriptProject, String moduleName, String source) 
+		throws IOException, CoreException {
 		super(scriptProject);
 		this.scriptProject = scriptProject;
 		
@@ -42,6 +43,15 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 			srcFolder = scriptProject.getProject();
 		}
 		customFile = srcFolder.getFile(filePath);
+		
+		if(moduleName == CoreResolverSourceTests.DEFAULT_MODULE_NAME) {
+			// Avoid doing custom file cleanup if possible. This is done for performance reasons,
+			// since UI tests gets slow if a file with an attached editor gets deleted
+			// (Opening an editor is somewhat expensive apparently)
+			customFileRequiresCleanup = false;
+		} else {
+			customFileRequiresCleanup = true;
+		}
 		
 		ByteArrayInputStream is = new ByteArrayInputStream(source.getBytes(StringUtil.UTF8));
 		if(customFile.exists()) {
@@ -63,7 +73,7 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 	}
 	
 	public void doCleanupChanges() throws CoreException {
-		if(customFile != null) {
+		if(customFile != null && customFileRequiresCleanup) {
 			if(customFilePreviousContents == null) {
 				customFile.delete(false, null);
 			} else {

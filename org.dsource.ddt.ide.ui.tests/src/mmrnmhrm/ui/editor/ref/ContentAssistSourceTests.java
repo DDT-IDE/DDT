@@ -1,0 +1,123 @@
+package mmrnmhrm.ui.editor.ref;
+
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.ReflectionUtils;
+import mmrnmhrm.core.codeassist.CompletionEngineSourceTests;
+import mmrnmhrm.tests.ui.BaseDeeUITest;
+import mmrnmhrm.tests.ui.SWTTestUtils;
+import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
+import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
+import mmrnmhrm.ui.text.DeePartitions;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+
+import dtool.ast.definitions.DefUnit;
+import dtool.sourcegen.AnnotatedSource;
+
+public class ContentAssistSourceTests extends CompletionEngineSourceTests {
+	
+	static {
+		MiscUtil.loadClass(BaseDeeUITest.class);
+	}
+	
+	public ContentAssistSourceTests(String testUIDescription, File file) {
+		super(testUIDescription, file);
+	}
+	
+	protected static ScriptEditor editor;
+	
+	@Override
+	public void doAnnotatedTestCleanup() {
+		super.doAnnotatedTestCleanup();
+		
+		SWTTestUtils.________________clearEventQueue________________();
+	}
+	
+	@Override
+	public void setupTestProject_do(String explicitModuleName, String projectFolderName, AnnotatedSource testCase)
+		throws CoreException, IOException {
+		super.setupTestProject_do(explicitModuleName, projectFolderName, testCase);
+		
+		IFile file = (IFile) sourceModule.getResource();
+		editor = BaseDeeUITest.openDeeEditorForFile(file);
+		sourceModule.discardWorkingCopy(); // XXX: In the future this might not be necessary
+		
+		ContentAssistant ca = ContentAssistUI_CommonTest.getContentAssistant(editor);
+		ca.enableAutoInsert(false);
+		ca.enablePrefixCompletion(false);
+		SWTTestUtils.________________clearEventQueue________________();
+	}
+	
+	@Override
+	public void runRefSearchTest(int offset, final String[] expectedResults, int rplLen) {
+		testComputeProposalsWithRepLen(offset, 0, rplLen, expectedResults);
+	}
+	
+	public void testComputeProposalsWithRepLen(int offset, int prefixLen, int repLen,
+		String... expectedResults) {
+		
+		ContentAssistant ca = ContentAssistUI_CommonTest.getContentAssistant(editor);
+		ReflectionUtils.invokeMethod(ca, "hide"); //ca.hide();
+		SWTTestUtils.________________clearEventQueue________________();
+		
+		ContentAssistUI_CommonTest.invokeContentAssist(editor, offset); 
+		
+		DeeCodeCompletionProcessor caProcessor = (DeeCodeCompletionProcessor) 
+			ca.getContentAssistProcessor(DeePartitions.DEE_CODE);
+		
+		ICompletionProposal[] proposals;
+		
+		if(true) {
+			Object completionProposalPopup = ReflectionUtils.readField(ca, "fProposalPopup");
+			proposals = (ICompletionProposal[]) 
+				ReflectionUtils.readField(completionProposalPopup, "fComputedProposals");
+			ICompletionProposal[] proposals2 = (ICompletionProposal[]) 
+				ReflectionUtils.readField(completionProposalPopup, "fFilteredProposals");
+			assertEqualArrays(proposals, proposals2);
+			
+		} else {
+			proposals = caProcessor.computeCompletionProposals(editor.getViewer(), offset);
+		}
+		prefixLen = -666; // Don't check TODO
+		checkProposals(offset, prefixLen, repLen, proposals, expectedResults);
+	}
+	
+	protected void checkProposals(int repOffset, int prefixLen, int repLen, ICompletionProposal[] proposals, 
+		String... expectedResults) {
+		if(proposals == null) {
+			assertTrue(expectedResults.length == 0);
+			return;
+		}
+		assertNotNull(proposals);
+		
+		if(expectedResults != null) {
+			List<DefUnit> results = proposalResultsToDefUnit(proposals);
+			checkResults(results, expectedResults);
+		}
+		CodeCompletionUITestAdapter.checkProposals(proposals, repOffset, repLen, prefixLen);
+	}
+	
+	public List<DefUnit> proposalResultsToDefUnit(ICompletionProposal[] proposals) {
+		ArrayList<DefUnit> results = new ArrayList<>();
+		for (ICompletionProposal completionProposal : proposals) {
+			if(completionProposal instanceof DeeCompletionProposal) {
+				DeeCompletionProposal deeProposal = (DeeCompletionProposal) completionProposal;
+				results.add(deeProposal.defUnit);
+			}
+		}
+		return results;
+	}
+	
+}
