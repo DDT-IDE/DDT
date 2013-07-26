@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -101,5 +102,27 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 			return deeProposal == null ? null : deeProposal.defUnit;
 		}
 	};
+	
+	public static final int DONT_CHECK = -666;
+	
+	public static void checkProposals(ICompletionProposal[] proposals, int repOffset, int repLen, int prefixLen) {
+		for(ICompletionProposal completionProposal : proposals) {
+			if(completionProposal instanceof ScriptTemplateProposal) {
+				continue;
+			}
+			DeeCompletionProposal proposal = (DeeCompletionProposal) completionProposal;
+			String defName = proposal.defUnit.toStringAsElement();
+			
+			assertTrue(repOffset == proposal.getReplacementOffset());
+			assertTrue(repLen == proposal.getReplacementLength());
+			if(prefixLen != DONT_CHECK) {
+				String repStr = defName.substring(prefixLen);
+				if(repStr.indexOf('(') != -1) {
+					repStr = repStr.substring(0, repStr.indexOf('('));
+				}
+				assertTrue(repStr.equals(proposal.getReplacementString()));				
+			}
+		}
+	}
 	
 }

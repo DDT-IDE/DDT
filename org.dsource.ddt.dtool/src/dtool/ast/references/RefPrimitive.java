@@ -1,5 +1,7 @@
 package dtool.ast.references;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
@@ -19,7 +21,7 @@ public class RefPrimitive extends NamedReference {
 	public final IToken primitive;
 	
 	public RefPrimitive(IToken primitiveToken) {
-		this.primitive = primitiveToken;
+		this.primitive = assertNotNull(primitiveToken);
 	}
 	
 	@Override
@@ -27,6 +29,8 @@ public class RefPrimitive extends NamedReference {
 		return ASTNodeTypes.REF_PRIMITIVE;
 	}
 	
+	/** @return the name of this reference without any qualifiers (therefore: the rightmost identifier).
+	 * For RefPrimitive, it cannot be null. */
 	@Override
 	public String getTargetSimpleName() {
 		return primitive.getSourceValue();

@@ -13,9 +13,7 @@ import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.codeassist.CompletionEngineSourceTests;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
-import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
-import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -74,23 +72,19 @@ public class ContentAssistSourceTests extends CompletionEngineSourceTests {
 		
 		ContentAssistUI_CommonTest.invokeContentAssist(editor, offset); 
 		
-		DeeCodeCompletionProcessor caProcessor = (DeeCodeCompletionProcessor) 
-			ca.getContentAssistProcessor(DeePartitions.DEE_CODE);
 		
 		ICompletionProposal[] proposals;
+		Object completionProposalPopup = ReflectionUtils.readField(ca, "fProposalPopup");
+		proposals = (ICompletionProposal[]) ReflectionUtils.readField(completionProposalPopup, "fComputedProposals");
 		
-		if(true) {
-			Object completionProposalPopup = ReflectionUtils.readField(ca, "fProposalPopup");
-			proposals = (ICompletionProposal[]) 
-				ReflectionUtils.readField(completionProposalPopup, "fComputedProposals");
-			ICompletionProposal[] proposals2 = (ICompletionProposal[]) 
-				ReflectionUtils.readField(completionProposalPopup, "fFilteredProposals");
-			assertEqualArrays(proposals, proposals2);
+//		DeeCodeCompletionProcessor caProcessor = (DeeCodeCompletionProcessor) 
+//			ca.getContentAssistProcessor(DeePartitions.DEE_CODE);
+//		proposals = caProcessor.computeCompletionProposals(editor.getViewer(), offset);
+		
+		assertEqualArrays(proposals, (ICompletionProposal[]) 
+			ReflectionUtils.readField(completionProposalPopup, "fFilteredProposals"));
 			
-		} else {
-			proposals = caProcessor.computeCompletionProposals(editor.getViewer(), offset);
-		}
-		prefixLen = -666; // Don't check TODO
+		prefixLen = ContentAssistUI_CommonTest.DONT_CHECK; // Don't check TODO
 		checkProposals(offset, prefixLen, repLen, proposals, expectedResults);
 	}
 	

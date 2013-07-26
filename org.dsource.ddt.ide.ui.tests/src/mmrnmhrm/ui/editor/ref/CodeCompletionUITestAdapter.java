@@ -1,18 +1,15 @@
 package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.swtutil.SWTTestUtils;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
-import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
@@ -65,26 +62,6 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 		CompareDefUnits.checkResults(results, expectedProposals, removeObjectIntrinsics);
 		
 		checkProposals(proposals, repOffset, repLen, prefixLen);
-	}
-	
-	protected static void checkProposals(ICompletionProposal[] proposals, int repOffset, int repLen, int prefixLen) {
-		for(ICompletionProposal completionProposal : proposals) {
-			if(completionProposal instanceof ScriptTemplateProposal) {
-				continue;
-			}
-			DeeCompletionProposal proposal = (DeeCompletionProposal) completionProposal;
-			String defName = proposal.defUnit.toStringAsElement();
-			
-			assertTrue(repOffset == proposal.getReplacementOffset());
-			assertTrue(repLen == proposal.getReplacementLength());
-			if(prefixLen != -666) {
-				String repStr = defName.substring(prefixLen);
-				if(repStr.indexOf('(') != -1) {
-					repStr = repStr.substring(0, repStr.indexOf('('));
-				}
-				assertTrue(repStr.equals(proposal.getReplacementString()));				
-			}
-		}
 	}
 	
 }

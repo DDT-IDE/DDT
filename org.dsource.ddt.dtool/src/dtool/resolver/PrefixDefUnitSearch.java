@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
@@ -133,12 +132,6 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				int dotOffset = -1;
 				if(node instanceof RefQualified) {
 					dotOffset = ((RefQualified) node).dotOffset;
-					if(dotOffset == -1) { // Hack for old convertion parser usage
-						RefQualified refQualified = (RefQualified) node;
-						String str = source.substring(refQualified.qualifier.getEndPos(), 
-							refQualified.qualifiedId.getStartPos());
-						dotOffset = refQualified.qualifier.getEndPos() + str.indexOf(".");
-					}
 				} else {
 					dotOffset = node.getStartPos();
 				}
@@ -153,11 +146,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				int refModEndPos = refMod.getEndPos();
 				
 				// We need to get exact source cause it may contains spaces, even comments
-				String refModCanonicalName = refMod.toStringAsElement();
-				
-				String refModSource = refMod.hasSourceRangeInfo() ?
-						source.substring(refMod.getStartPos(), refModEndPos) :
-						refModCanonicalName;
+				String refModSource = source.substring(refMod.getStartPos(), refModEndPos);
 				
 				int rplLen = refModEndPos - offset;
 				if(source.length() > offset && Character.isWhitespace(source.charAt(offset))) {
@@ -204,33 +193,6 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		return search;
 	}
 	
-	public static class ASTNodeFinderExtension extends ASTNodeFinder {
-		
-		public int lastNodeBoundary = -1;
-		
-		public ASTNodeFinderExtension(ASTNode root, int offset, boolean inclusiveEnd) {
-			super(root, offset, inclusiveEnd, null);
-			findNodeInAST();
-			assertTrue(lastNodeBoundary >= 0);
-		}
-		
-		@Override
-		public boolean preVisit(ASTNode node) {
-			if(node.hasSourceRangeInfo() && node.getStartPos() <= offset ) {
-				lastNodeBoundary = node.getStartPos();
-			}
-			return super.preVisit(node);
-		}
-		
-		@Override
-		public void postVisit(ASTNode node) {
-			if(node.hasSourceRangeInfo() && node.getEndPos() <= offset ) {
-				lastNodeBoundary = node.getEndPos();
-			}
-			super.postVisit(node);
-		}
-	}
-	
 	/** Find the token at given offset of given source (inclusive end).
 	 * Start lexing search from startPos as an optimization, so we don't have to lex full source.
 	 * startpos should correspond to a token start in source. 
@@ -267,14 +229,13 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		return true;
 	}
 	
-	private static void setupPrefixedSearchOptions(PrefixSearchOptions searchOptions, final int offset, int nameOffset,
+	private static void setupPrefixedSearchOptions(PrefixSearchOptions searchOptions, int offset, int nameOffset,
 			String name) {
-		int namePrefixLen = offset - nameOffset;
-		assertTrue(namePrefixLen >= 0);
-		if(name.length() < namePrefixLen) {
-			// This case shouldnt happen, but can happen due to parser source range bugs, so workaround
-			namePrefixLen = name.length();
-		}
+		assertTrue(offset >= nameOffset);
+		assertTrue(offset <= nameOffset + name.length() || name.isEmpty());
+		// empty name is a special case
+		int namePrefixLen = name.isEmpty() ? 0 : offset - nameOffset;
+		
 		searchOptions.searchPrefix = name.substring(0, namePrefixLen);
 		searchOptions.namePrefixLen = searchOptions.searchPrefix.length();
 		searchOptions.rplLen = name.length() - namePrefixLen;
@@ -292,7 +253,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		}
 		
 		searchOptions.searchPrefix = canonicalModuleNamePrefix;
-		searchOptions.namePrefixLen = canonicalModuleNamePrefix.length();
+		searchOptions.namePrefixLen = searchOptions.searchPrefix.length();
 		searchOptions.rplLen = rplLen;
 	}
 	
