@@ -6,7 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import mmrnmhrm.tests.ui.SWTTestUtils;
+import melnorme.swtutil.SWTTestUtils;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.text.DeePartitions;

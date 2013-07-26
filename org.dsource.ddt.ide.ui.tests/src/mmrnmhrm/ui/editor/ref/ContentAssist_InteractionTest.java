@@ -4,8 +4,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import melnorme.swtutil.SWTTestUtils;
 import mmrnmhrm.tests.SampleMainProject;
-import mmrnmhrm.tests.ui.SWTTestUtils;
 
 import org.eclipse.jface.text.contentassist.ContentAssistEvent;
 import org.eclipse.jface.text.contentassist.ContentAssistant;

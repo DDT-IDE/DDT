@@ -9,7 +9,7 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 
-package mmrnmhrm.tests.ui;
+package melnorme.swtutil;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 
@@ -51,7 +51,7 @@ public class SWTTestUtils {
 		}
 	}
 	
-	public static void runSWTEventLoop() {
+	public static void runSWTEventLoopUntilBreak() {
 		Display display = Display.getCurrent();
 		
 		final boolean[] breakLoopFlag = new boolean[1];
