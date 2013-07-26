@@ -116,9 +116,16 @@ public class DeePluginImages {
 	/* ------------------------------------------- */
 	
 	/** This is an alternate registry with keys based on ImageDescriptors.
-	 * XXX: maybe this should be consolidate with the other String key-based registry */ 
+	 * XXX: maybe this should be consolidated with the other String key-based registry */ 
 	public static ImageDescriptorRegistry getImageDescriptorRegistry() {
 		return DLTKUIPlugin.getImageDescriptorRegistry();
+	}
+	
+	/* ------------------------------------------- */
+	
+	public static ImageDescriptor getIDEInternalErrorImageDescriptor() {
+		// BM: maybe there's some other image we could use
+		return ImageDescriptor.getMissingImageDescriptor();
 	}
 	
 }

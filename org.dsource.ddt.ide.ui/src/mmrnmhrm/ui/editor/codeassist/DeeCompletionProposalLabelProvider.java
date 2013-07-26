@@ -2,23 +2,58 @@ package mmrnmhrm.ui.editor.codeassist;
 
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
 import org.eclipse.jface.resource.ImageDescriptor;
 
+import dtool.ast.definitions.DefUnit;
+import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
+import mmrnmhrm.core.model_elements.DefElementDescriptor;
+import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
+import mmrnmhrm.ui.views.DeeElementImageProvider;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelProvider {
 	
-	private DeeModelElementLabelProvider modelElementLabelProvider = new DeeModelElementLabelProvider();
+	protected DeeModelElementLabelProvider modelElementLabelProvider = new DeeModelElementLabelProvider();
+	protected ElementIconsStyle iconStyle;
 	
 	public DeeCompletionProposalLabelProvider() {
 	}
 	
+	public ElementIconsStyle getIconStylePreference() {
+		// Delayed init to ensure this is run in UI thread
+		if(iconStyle == null) {
+			iconStyle = DeeElementImageProvider.getIconStylePreference();
+		}
+		return iconStyle;
+	}
+	
 	@Override
 	public ImageDescriptor createImageDescriptor(CompletionProposal proposal) {
-		if(proposal.getModelElement() instanceof IMember) {
+		DefElementDescriptor defDescriptor = null;
+		
+		if(proposal.getExtraInfo() instanceof DefElementDescriptor) {
+			defDescriptor = (DefElementDescriptor) proposal.getExtraInfo();
+		}
+		else if(proposal.getExtraInfo() instanceof DefUnit) {
+			DefUnit defUnit = (DefUnit) proposal.getExtraInfo();
+			defDescriptor = new DefElementDescriptor(defUnit);
+		} 
+		else if(proposal.getModelElement() instanceof IMember) {
 			IMember member = (IMember) proposal.getModelElement();
-			return modelElementLabelProvider.getImageDescriptor(member, DeeModelElementLabelProvider.SMALL_SIZE);
+			try {
+				defDescriptor = DeeSourceElementProvider.toElementDescriptor(member);
+			} catch (ModelException e) {
+				DeeCore.logError(e);
+				return DeePluginImages.getIDEInternalErrorImageDescriptor();
+			}
+		}
+		
+		if(defDescriptor != null) {
+			return DeeElementImageProvider.getDefUnitImageDescriptor(defDescriptor, getIconStylePreference());
 		}
 		// Return no image
 		return null;

@@ -1,6 +1,8 @@
 package mmrnmhrm.ui.actions;
 
+import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
+import mmrnmhrm.ui.views.DeeElementImageProvider;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
@@ -60,8 +62,9 @@ public class DeeOpenTypeAction extends OpenTypeAction {
 			return new ITypeInfoImageProvider() {
 				@Override
 				public ImageDescriptor getImageDescriptor(ITypeInfoRequestor typeInfoRequestor) {
-					return deeModelElementLabelProvider.getImageDescriptor(typeInfoRequestor.getModifiers(),
-							DeeModelElementLabelProvider.BIG_SIZE);
+					return deeModelElementLabelProvider.getImageDescriptor(
+						new DefElementDescriptor(typeInfoRequestor.getModifiers()),
+						DeeElementImageProvider.BIG_SIZE);
 				}
 			};
 		}

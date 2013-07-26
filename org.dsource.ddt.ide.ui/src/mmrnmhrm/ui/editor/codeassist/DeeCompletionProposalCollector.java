@@ -64,14 +64,10 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 		}
 	}
 	
+	@SuppressWarnings("unused") 
 	protected Image createImage(CompletionProposal proposal, DefUnit defUnit) {
-		ImageDescriptor imageDesc = getLabelProvider().createImageDescriptor(proposal);
-		if(imageDesc != null) {
-			return DeePluginImages.getImageDescriptorRegistry().get(imageDesc);
-		} else {
-			// ATM, some types of proposals have images that only DeeElementImageProvider can provide
-			return DeeElementImageProvider.getNodeImage(defUnit);
-		}
+		ImageDescriptor imageDescriptor = getLabelProvider().createImageDescriptor(proposal);
+		return DeePluginImages.getImageDescriptorRegistry().get(imageDescriptor); 
 	}
 	
 	@Override

@@ -28,10 +28,6 @@ public class DeeCompletionEngine_Test extends BaseDeeTest {
 				public void accept(CompletionProposal proposal) {
 					assertTrue(proposal.getCompletionLocation() == offset);
 					assertTrue(proposal.getReplaceStart() == offset);
-					
-					if(((DefUnit) proposal.getExtraInfo()).getModuleNode() != null) {
-						assertTrue(proposal.getModelElement() != null);
-					}
 				}
 			}
 			

@@ -21,6 +21,7 @@ struct Struct #@TPLPARAMS_OPT { static int member1; int member2; }
 union Union #@TPLPARAMS_OPT { static int member1; int member2; }
 
 enum Enum { member1, member2, }
+enum { EnumMemberA, EnumMemberB }
 
 template Template(TemplateParamType) { }
 
@@ -32,16 +33,15 @@ Var1
 
 VarAuto1
 
-Function
-Function
-FunctionAuto
+Function▪
+Function▪
+FunctionAuto▪
 
-Class
-Interface
-Struct
-Union
+Class▪Interface▪Struct▪Union
 
 Enum
+EnumMemberA▪EnumMemberB
+
 Template
 
 #comment(TODO):

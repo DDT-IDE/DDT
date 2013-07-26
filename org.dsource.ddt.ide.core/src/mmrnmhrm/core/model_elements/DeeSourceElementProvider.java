@@ -17,9 +17,11 @@ import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
+import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
+import dtool.ast.ASTVisitor;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DefUnit;
@@ -246,14 +248,20 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 	
 	protected static final String[] EMPTY_STRING = new String[0];
 	
-	protected static void setupDefUnitTypeInfo(DefUnit defAggr, ISourceElementRequestor.ElementInfo elemInfo,
+	protected static void setupDefUnitTypeInfo(DefUnit defUnit, ISourceElementRequestor.ElementInfo elemInfo,
 			int archetypeMask) {
-		assertTrue((archetypeMask & DeeModelConstants.FLAGMASK_KIND) == archetypeMask);
-		elemInfo.name = defAggr.getName();
-		elemInfo.declarationStart = defAggr.getStartPos();
-		elemInfo.nameSourceStart = defAggr.defname.getStartPos();
-		elemInfo.nameSourceEnd = defAggr.defname.getEndPos() - 1;
+		elemInfo.name = defUnit.getName();
+		elemInfo.declarationStart = defUnit.getStartPos();
+		elemInfo.nameSourceStart = defUnit.defname.getStartPos();
+		elemInfo.nameSourceEnd = defUnit.defname.getEndPos() - 1;
 		
+		if(defUnit instanceof Module) {
+			elemInfo.modifiers |= Modifiers.AccModule;
+		} else if(defUnit instanceof DefinitionInterface) {
+			elemInfo.modifiers |= Modifiers.AccInterface; // This one might be redundant as archetype is also set
+		}
+		
+		assertTrue((archetypeMask & DeeModelConstants.FLAGMASK_KIND) == archetypeMask);
 		elemInfo.modifiers |= archetypeMask;
 	}
 	
@@ -264,8 +272,11 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 	}
 	
 	public static void setupModifiersInfo(CommonDefinition commonDef, ISourceElementRequestor.ElementInfo elemInfo) {
-		elemInfo.modifiers |= getDeclarationModifiersFlags(commonDef);
-		elemInfo.modifiers |= getProtectionFlags(commonDef);
+		elemInfo.modifiers |= getCommonDefinitionModifiersInfo(commonDef);
+	}
+	
+	public static int getCommonDefinitionModifiersInfo(CommonDefinition commonDef) {
+		return getDeclarationModifiersFlags(commonDef) | getProtectionFlags(commonDef);
 	}
 	
 	protected static int getDeclarationModifiersFlags(CommonDefinition elem) {
@@ -304,7 +315,6 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 	protected static TypeInfo createTypeInfoForModule(Module elem) {
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 		setupDefUnitTypeInfo(elem, typeInfo, 0);
-		typeInfo.modifiers |= Modifiers.AccModule;
 		//typeInfo.superclasses = DeeSourceElementProvider.EMPTY_STRING;
 		return typeInfo;
 	}
@@ -333,7 +343,6 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 	protected static TypeInfo createTypeInfoForInterface(DefinitionInterface node) {
 		int archetype = DeeModelConstants.FLAG_KIND_INTERFACE;
 		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(node, archetype);
-		typeInfo.modifiers |= Modifiers.AccInterface;
 		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(node, true);
 		return typeInfo;
 	}
@@ -435,6 +444,11 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 		}
 		return typeInfo;
 	}
+	
+	public static DefElementDescriptor toElementDescriptor(IMember member) throws ModelException {
+		int modifierFlags = member.getFlags();
+		return new DefElementDescriptor(modifierFlags);
+	}	
 	
 	/* ================================== */
 	

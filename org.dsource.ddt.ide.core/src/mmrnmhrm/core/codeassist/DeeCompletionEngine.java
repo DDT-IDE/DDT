@@ -1,8 +1,6 @@
 package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
@@ -10,14 +8,11 @@ import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionContext;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
-import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
 
 import dtool.DeeNamingRules;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.resolver.PrefixDefUnitSearch;
@@ -40,12 +35,19 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			CompletionContext context = new CompletionContext();
 			requestor.acceptContext(context);
 			
-			final ISourceModule sourceModule;
+			IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
+				@Override
+				public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
+					CompletionProposal proposal = createProposal(defUnit, position, searchOptions);
+					requestor.accept(proposal);
+				}
+			};
+			
 			DeeParserResult parseResult;
 			IModuleResolver mr;
 			
 			if(moduleSource instanceof ISourceModule) {
-				sourceModule = (ISourceModule) moduleSource;
+				ISourceModule sourceModule = (ISourceModule) moduleSource;
 				parseResult = DeeModuleParsingUtil.getParsedDeeModuleDecl(sourceModule).deeParserResult;
 				mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
 			} else {
@@ -58,16 +60,8 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 				} else {
 					mr = new NullModuleResolver();
 				}
-				sourceModule = null;
 			}
 			
-			IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
-				@Override
-				public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
-					CompletionProposal proposal = createProposal(defUnit, position, sourceModule, searchOptions);
-					requestor.accept(proposal);
-				}
-			};
 			PrefixDefUnitSearch.doCompletionSearch(parseResult, position, mr, collectorAdapter);
 		} finally {
 			requestor.endReporting();
@@ -79,8 +73,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		return fileName == null ? "" : DeeNamingRules.getModuleNameFromFileName(fileName);
 	}
 	
-	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset, ISourceModule sourceModule,
-			PrefixSearchOptions searchOptions) {
+	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset, PrefixSearchOptions searchOptions) {
 		String rplStr = defUnit.getName().substring(searchOptions.namePrefixLen);
 		
 		CompletionProposal proposal = createProposal(CompletionProposal.TYPE_REF, ccOffset);
@@ -88,24 +81,6 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		proposal.setCompletion(rplStr);
 		proposal.setReplaceRange(ccOffset, ccOffset + searchOptions.rplLen);
 		proposal.setExtraInfo(defUnit);
-		
-		// TODO: remove this code, it's not necessary to setModelElement
-		Module moduleNode = defUnit.getModuleNode();
-		if(moduleNode != null && sourceModule != null) {
-			// We need the check above because of synthetic defUnits TODO address this in a different way
-
-			DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule);
-			try {
-				ISourceModule defUnitSourceModule = moduleResolver.findModuleUnit(moduleNode, sourceModule);
-				if(defUnitSourceModule != null) {
-					IMember me = DeeModelEngine.findCorrespondingModelElement(defUnit, defUnitSourceModule);
-					proposal.setModelElement(me);
-				}
-			} catch(ModelException e) {
-				// Just log, don't set model element
-				DeeCore.log(e);
-			}
-		}
 		
 		return proposal;
 	}

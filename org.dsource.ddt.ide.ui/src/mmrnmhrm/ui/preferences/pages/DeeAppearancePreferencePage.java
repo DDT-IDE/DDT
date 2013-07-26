@@ -102,7 +102,7 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			
 			Object newValue = event.getNewValue();
 			if(newValue != null && newValue instanceof String) {
-				selectedIconStyle = ElementIconsStyle.create((String) newValue, null);
+				selectedIconStyle = ElementIconsStyle.fromString((String) newValue, null);
 			}
 			
 			previewGroup.refreshPreview();
