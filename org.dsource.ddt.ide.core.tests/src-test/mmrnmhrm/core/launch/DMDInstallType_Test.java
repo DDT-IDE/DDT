@@ -26,26 +26,33 @@ public class DMDInstallType_Test extends BaseDeeTest {
 		Path compilerPath = new Path(compilerInstallExe.getAbsolutePath());
 		LibraryLocation[] libLocations = getLibraryLocations(dmdInstallType, compilerPath);
 		
-		assertTrue(libLocations.length == 2);
-		IPath compilerBasePath = compilerPath.removeLastSegments(3);
-		checkLibLocation(libLocations[0], compilerBasePath, "src/druntime/import");
-		checkLibLocation(libLocations[1], compilerBasePath, "src/phobos");
+		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
+			"src/druntime/import", "src/phobos");	
 	}
 	
-	protected static final String MOCK_DMD2SYSTEM_PATH = MOCK_DEE_COMPILERS_PATH+"DMDInstall-system/usr/bin/dmd";
+	protected static final String MOCK_DMD2_SYSTEM_PATH = MOCK_DEE_COMPILERS_PATH+"DMDInstall-system/usr/bin/dmd";
+	protected static final String MOCK_DMD2_SYSTEM_PATH2 = MOCK_DEE_COMPILERS_PATH+"DMDInstall-system2/usr/bin/dmd";
 	
 	@Test
 	public void testLibraryLocUnix() throws Exception { testLibraryLocUnix$(); }
 	public void testLibraryLocUnix$() throws Exception {
-		DMDInstallType dmdInstallType = new DMDInstallType();
-		File compilerInstallExe = DeeCoreTestResources.getWorkingDirFile(MOCK_DMD2SYSTEM_PATH);
+		File compilerInstallExe = DeeCoreTestResources.getWorkingDirFile(MOCK_DMD2_SYSTEM_PATH);
 		Path compilerPath = new Path(compilerInstallExe.getAbsolutePath());
-		LibraryLocation[] libLocations = getLibraryLocations(dmdInstallType, compilerPath);
+		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 
-		assertTrue(libLocations.length == 2);
-		IPath compilerBasePath = compilerPath.removeLastSegments(3);
-		checkLibLocation(libLocations[0], compilerBasePath, "include/d/dmd/druntime/import");
-		checkLibLocation(libLocations[1], compilerBasePath, "include/d/dmd/phobos");
+		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
+			"include/d/dmd/druntime/import", "include/d/dmd/phobos");	
+	}
+	
+	@Test
+	public void testLibraryLocUnix2() throws Exception { testLibraryLocUnix2$(); }
+	public void testLibraryLocUnix2$() throws Exception {
+		File compilerInstallExe = DeeCoreTestResources.getWorkingDirFile(MOCK_DMD2_SYSTEM_PATH2);
+		Path compilerPath = new Path(compilerInstallExe.getAbsolutePath());
+		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
+		
+		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
+			"include/dmd/druntime/import", "include/dmd/phobos");		 
 	}
 	
 	public static LibraryLocation[] getLibraryLocations(CommonInstallType dmdInstallType, Path compilerPath) {
@@ -54,10 +61,17 @@ public class DMDInstallType_Test extends BaseDeeTest {
 		return dmdInstallType.getDefaultLibraryLocations(file);
 	}
 	
-	
-	public static void checkLibLocation(LibraryLocation libLocation, IPath compilerBasePath, String string) {
-		IPath libraryPath = libLocation.getLibraryPath();
-		assertEqualArrays(libraryPath.segments(), compilerBasePath.append(string).segments());
+	public static void checkLibLocations(LibraryLocation[] libLocations, IPath compilerBasePath, 
+		String... expectedPaths) {
+		assertTrue(libLocations.length == expectedPaths.length);
+		
+		compilerBasePath = compilerBasePath.setDevice(null); // get rid of local environment stuff
+		
+		for (int i = 0; i < expectedPaths.length; i++) {
+			String expectedPath = expectedPaths[i];
+			IPath libraryPath = libLocations[i].getLibraryPath().setDevice(null);
+			assertEquals(libraryPath, compilerBasePath.append(expectedPath));
+		}
 	}
 	
 }

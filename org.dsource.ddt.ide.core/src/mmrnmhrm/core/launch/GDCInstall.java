@@ -11,7 +11,6 @@ public class GDCInstall extends CommonDeeInstall {
 	@Override
 	public String getDefaultBuildFileData() {
 		return 
-			"-v2\n" +
 			"-o$/DEEBUILDER.OUTPUTEXE\n" +
 			"$/DEEBUILDER.SRCLIBS.-I\n" +
 			"$/DEEBUILDER.SRCFOLDERS.-I\n" +

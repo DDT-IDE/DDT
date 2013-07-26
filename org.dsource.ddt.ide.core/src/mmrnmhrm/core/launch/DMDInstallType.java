@@ -5,7 +5,6 @@ import java.util.List;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.IInterpreterInstall;
@@ -35,28 +34,39 @@ public class DMDInstallType extends CommonInstallType {
 	@Override
 	protected void addDefaultLibraryLocations(IFileHandle executableLocation, List<LibraryLocation> locs) {
 		IEnvironment env = executableLocation.getEnvironment();
-		IPath installPath = executableLocation.getPath().removeLastSegments(3);
-		IPath path = installPath.append("src/druntime/import");
-		if(path.toFile().exists() && path.toFile().isDirectory()) {
-			// Found a D2 DMD install
-			addLibraryLocationFromPath(locs, env, path);
-			addLibraryLocationFromPath(locs, env, installPath.append(new Path("src/phobos")));
+		
+		final IPath exePath = executableLocation.getPath();
+		final IPath dmdZipInstallPath = exePath.removeLastSegments(3);
+		
+		if(checkForDMD2InstallLocation(locs, env, dmdZipInstallPath.append("src")))
 			return;
-		} 
-		path = installPath.append("src/phobos");
+		
+		IPath path = dmdZipInstallPath.append("src/phobos");
 		if(path.toFile().exists() && path.toFile().isDirectory()) {
-			// if "druntime/import" doesn't exist, it's likely a D1 DMD install
+			// if "src/phobos" exists but "druntime/import" doesn't exist, it's likely a D1 DMD install
 			addLibraryLocationFromPath(locs, env, path);
 			return;
 		}
-		path = installPath.append("include/d/dmd/druntime/import");
+		
+		// exePath is /usr/bin/dmd
+		if(checkForDMD2InstallLocation(locs, env, exePath.removeLastSegments(3).append("include/d/dmd")))
+			return;
+		
+		if(checkForDMD2InstallLocation(locs, env, exePath.removeLastSegments(3).append("include/dmd")))
+			return;
+		
+		// TODO: should we throw an error?
+	}
+	
+	public boolean checkForDMD2InstallLocation(List<LibraryLocation> locs, IEnvironment env, IPath libBasePath) {
+		IPath path = libBasePath.append("druntime/import");
 		if(path.toFile().exists() && path.toFile().isDirectory()) {
 			// Found a D2 DMD install with Unix style install
 			addLibraryLocationFromPath(locs, env, path);
-			addLibraryLocationFromPath(locs, env, installPath.append("include/d/dmd/phobos"));
-			return;
+			addLibraryLocationFromPath(locs, env, libBasePath.append("phobos"));
+			return true;
 		}
-		// TODO: should we throw an error?
+		return false;
 	}
 	
 }

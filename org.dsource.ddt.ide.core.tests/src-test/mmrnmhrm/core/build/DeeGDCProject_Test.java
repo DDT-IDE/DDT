@@ -37,7 +37,6 @@ public class DeeGDCProject_Test extends DeeBuilder_Test implements ITestResource
 	protected void checkResponseFileForBuildSrc(IProject project) throws CoreException, IOException {
 		String contents = readContentsOfIFile(project.getFile("build.rf"));
 		String responseBegin =
-			"-v2"+NL+
 			"-o\"bin/" + projectName+OS_EXT+"\""+NL+
 			""+NL+
 			"-I\"buildSrc\""+NL
@@ -50,7 +49,6 @@ public class DeeGDCProject_Test extends DeeBuilder_Test implements ITestResource
 	@Override
 	protected void checkResponseForTest_SpacesInNames(String contents) {
 		String responseBegin =
-			"-v2"+NL+
 			"-o\"bin/"+"Spaces in Project name"+OS_EXT+"\""+NL+
 			""+NL+
 			"-I\"src copy\""+NL

@@ -3,7 +3,9 @@
 = DDT Change Log =
 
 == DDT 0.7.0 (development) ==
- * Code Completion icons now consistent with the rest of the IDE UI 
+ * Implemented #3 : support Debian Linux DMD layout
+ * -v2 switch is no longer included in default GDC build response file.
+ * Code Completion icons now consistent with the rest of the IDE UI:
   * (previously some decorators for storage classes or protection attributes were missing, 
     and JDT like icons where not supported in Code Completion popup)
  * Fixed a bug with selective imports presenting all module symbols, not just the selected ones.
