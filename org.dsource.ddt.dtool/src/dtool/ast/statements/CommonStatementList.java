@@ -9,6 +9,7 @@ import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTVisitor;
+import dtool.ast.NodeListView;
 import dtool.util.ArrayView;
 
 public abstract class CommonStatementList extends Statement {
@@ -45,7 +46,7 @@ public abstract class CommonStatementList extends Statement {
 	}
 	
 	public Iterator<? extends ASTNode> getMembersIterator() {
-		return statements_asNodes().iterator(); //TODO: latent NPE bug here
+		return NodeListView.getIteratorSafe(statements_asNodes());
 	}
 	
 }

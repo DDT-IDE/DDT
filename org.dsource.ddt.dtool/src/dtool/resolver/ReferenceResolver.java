@@ -156,45 +156,48 @@ public class ReferenceResolver {
 	private static void findDefUnits(CommonDefUnitSearch search, Iterator<? extends IASTNode> iter,
 			boolean isStatementScope, boolean importsOnly) {
 		
-		int refOffset = search.refOffset;
 		
 		while(iter.hasNext()) {
-			IASTNode elem = iter.next();
+			IASTNode node = iter.next();
 			
-			if (elem instanceof INonScopedBlock) {
-				INonScopedBlock container = ((INonScopedBlock) elem);
-				findDefUnits(search, container.getMembersIterator(), isStatementScope, importsOnly);
+			int refOffset = search.refOffset;
+			// Check if we have passed the reference offset
+			if(isStatementScope && refOffset < node.getStartPos()) {
+				return;
+			}
+			
+			evaluateNodeForSearch(search, isStatementScope, importsOnly, node);
+		}
+	}
+	
+	public static void evaluateNodeForSearch(CommonDefUnitSearch search, boolean isStatementScope, boolean importsOnly,
+		IASTNode node) {
+		
+		if(node instanceof INonScopedBlock) {
+			INonScopedBlock container = ((INonScopedBlock) node);
+			findDefUnits(search, container.getMembersIterator(), isStatementScope, importsOnly);
+			if(search.isFinished() && search.findOnlyOne)
+				return; // Return if we only want one match in the scope
+		}
+		if(!importsOnly && node instanceof DefUnit) {
+			DefUnit defunit = (DefUnit) node;
+			if(search.matches(defunit)) {
+				search.addMatch(defunit);
 				if(search.isFinished() && search.findOnlyOne)
 					return; // Return if we only want one match in the scope
 			}
+		} 
+		else if(importsOnly && node instanceof DeclarationImport) {
+			DeclarationImport declImport = (DeclarationImport) node;
 			
-			// Check if the reference is before the point of definition
-			if(isStatementScope && refOffset < elem.getEndPos()) {
-				/* XXX: Technically we could return right away, since
-				 * no further nodes should match, but keep going in case 
-				 * there are source range errors. */ 
-				continue;
+			Module searchOriginModule = search.getSearchReferenceModule();
+			if(!declImport.isTransitive && !privateNodeIsVisible(declImport, searchOriginModule))
+				return; // Don't consider private imports
+			
+			for (IImportFragment impFrag : declImport.imports) {
+				impFrag.searchInSecondaryScope(search);
+				// continue regardless of search.findOnlyOne because of partial packages
 			}
-			
-			if(!importsOnly && elem instanceof DefUnit) {
-				DefUnit defunit = (DefUnit) elem;
-				if(search.matches(defunit)) {
-					search.addMatch(defunit);
-					if(search.isFinished() && search.findOnlyOne)
-						return; // Return if we only want one match in the scope
-				}
-			} else if(importsOnly && elem instanceof DeclarationImport) {
-				DeclarationImport declImport = (DeclarationImport) elem;
-				
-				Module searchOriginModule = search.getSearchReferenceModule();
-				if(!declImport.isTransitive && !privateNodeIsVisible(declImport, searchOriginModule))
-					continue; // Don't consider private imports
-				
-				for (IImportFragment impFrag : declImport.imports) {
-					impFrag.searchInSecondaryScope(search);
-					// continue regardless of search.findOnlyOne because of partial packages
-				}
-			} 
 		}
 	}
 	

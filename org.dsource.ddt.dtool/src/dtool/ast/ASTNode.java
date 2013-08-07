@@ -14,9 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
+import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.NodeData.CreatedStatusNodeData;
 import dtool.ast.NodeData.ParsedNodeData;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.parser.ParserError;
 import dtool.resolver.INamedScope;
@@ -277,10 +277,7 @@ public abstract class ASTNode implements IASTNode {
 		string.append(toStringClassName());
 		string.append(isParsedStatus() ? "#" : ":" + getData());
 		
-		if(this instanceof DefUnit) {
-			DefUnit defUnit = (DefUnit) this;
-			string.append("["+defUnit.toStringAsElement()+"]");
-		}
+		string.append(toStringAsCode());
 		string.append("\n");
 		return string.toString(); 
 	}

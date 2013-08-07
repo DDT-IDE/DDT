@@ -13,7 +13,6 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.NodeList;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
-import dtool.ast.statements.BlockStatementUnscoped;
 import dtool.ast.statements.IStatement;
 import dtool.resolver.INonScopedBlock;
 import dtool.util.ArrayView;
@@ -69,9 +68,6 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 		}
 		if(body instanceof NodeList<?>) {
 			return ((NodeList<?>) body).nodes.iterator();
-		}
-		if(body instanceof BlockStatementUnscoped) { /*BUG here MAKE, comment*/
-			return ((BlockStatementUnscoped) body).getMembersIterator();
 		}
 		return IteratorUtil.singletonIterator(body);
 	}

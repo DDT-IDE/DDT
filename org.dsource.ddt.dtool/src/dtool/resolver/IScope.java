@@ -14,9 +14,9 @@ import dtool.resolver.api.IModuleResolver;
  */
 public interface IScope {
 
-
 	/** Gets all members of this scope, DefUnit or not. 
-	 * Used to iterate and find DefUnits .*/
+	 * Used to iterate and find DefUnits.
+	 * The iterator must iterate the members in order! (accourding to source position) */
 	Iterator<? extends IASTNode> getMembersIterator(IModuleResolver moduleResolver);
 	
 	/** Returns the super (as in superclass) scopes of this scope.

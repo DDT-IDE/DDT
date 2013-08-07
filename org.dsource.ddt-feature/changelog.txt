@@ -3,6 +3,7 @@
 = DDT Change Log =
 
 == DDT 0.7.0 (development) ==
+ * Fixed code completion NPE bug with conditional declarations/statements with missing bodies.
  * Implemented #3 : support Debian Linux DMD layout
  * -v2 switch is no longer included in default GDC build response file.
  * Code Completion icons now consistent with the rest of the IDE UI:
