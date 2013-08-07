@@ -11,7 +11,6 @@
 package melnorme.utilbox.misc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -25,18 +24,19 @@ import melnorme.utilbox.core.Predicate;
  */
 public class CollectionUtil {
 	
-//	public static <T> List<T> createFixedList(T[] array) {
-//		return Arrays.asList(array);
-//	}
-	
-	/** Creates a HashSet from given collection. */
-	public static <T> HashSet<T> createHashSet(Collection<T> collection) {
-		return new HashSet<T>(collection);
+	/** @return given coll if it's not null, or an immutable empty collection otherwise. */
+	public static <U> Collection<U> nullToEmpty(Collection<U> coll) {
+		return coll == null ? Collections.EMPTY_LIST : coll;
 	}
 	
-	/** Creates a HashSet from given array. */
-	public static <T> HashSet<T> createHashSet(T[] array) {
-		return new HashSet<T>(Arrays.asList(array));
+	/** Creates a {@link ArrayList} from given collection (collection can be null). */
+	public static <T> Collection<T> createArrayList(Collection<T> collection) {
+		return new ArrayList<>(collection == null ? Collections.EMPTY_LIST : collection);
+	}
+	
+	/** Creates a {@link HashSet} from given collection (collection can be null). */
+	public static <T> HashSet<T> createHashSet(Collection<T> collection) {
+		return new HashSet<T>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
 	
 	/** Creates a List copy of orig, with all elements except elements equal to excludedElem. */

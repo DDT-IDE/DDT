@@ -1,7 +1,5 @@
 package dtool.resolver;
 
-import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsElement;
-import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsName;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -11,10 +9,8 @@ import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -26,10 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.ast.NodeUtil;
-import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.Module;
 import dtool.parser.CommonTemplatedSourceBasedTest;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
@@ -210,6 +203,47 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		testsLogger.println(mde);
 	}
 	
+	/* =============== */
+	
+	public static String[] splitValues(String string) {
+		return string.isEmpty() ? new String[0] : string.split("(\\\r?\\\n)"+"|▪|◘");
+	}
+	
+	public static String[] removeEmptyStrings(String[] expectedResults) {
+		expectedResults = ArrayUtil.filter(expectedResults, new Predicate<String>() {
+			@Override
+			public boolean evaluate(String obj) {
+				return !obj.isEmpty();
+			}
+		});
+		return expectedResults;
+	}
+	
+	protected void checkResults(Collection<DefUnit> resultDefUnitsOriginal, String[] expectedResults) {
+		checkResults(resultDefUnitsOriginal, expectedResults, true);
+	}
+	
+	public void checkResults(Collection<DefUnit> resultDefUnitsOriginal, String[] expectedResults,
+		boolean removedDummyResults) {
+		DefUnitResultsChecker defUnitResultsChecker = new DefUnitResultsChecker(resultDefUnitsOriginal);
+		
+		if(removedDummyResults) {
+			removeDummyDefUnits(defUnitResultsChecker.resultDefUnits);
+		}
+		
+		defUnitResultsChecker.checkResults(expectedResults, markers);
+	}
+	
+	public void removeDummyDefUnits(Collection<DefUnit> resultDefUnits) {
+		for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			DefUnit defUnit = iterator.next();
+			
+			if(defUnit.getName().equals("_dummy")) {
+				iterator.remove();
+			}
+		}
+	}
+	
 	public void prepRefSearchTest_________(MetadataEntry mde) {
 		String testStringDescriptor = mde.sourceValue;
 		
@@ -252,36 +286,6 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		}
 	}
 	
-	public static String[] splitValues(String string) {
-		return string.isEmpty() ? new String[0] : string.split("(\\\r?\\\n)"+"|▪|◘");
-	}
-	
-	public static String[] removeEmptyStrings(String[] expectedResults) {
-		expectedResults = ArrayUtil.filter(expectedResults, new Predicate<String>() {
-			@Override
-			public boolean evaluate(String obj) {
-				return !obj.isEmpty();
-			}
-		});
-		return expectedResults;
-	}
-	
-	protected void checkResults(Collection<DefUnit> results, String[] expectedProposalsArr) {
-		HashSet<String> resultProposals = prepareResultProposals(results, true);
-		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);
-		CompareDefUnits.assertEqualSet(resultProposals, expectedProposals);
-	}
-	
-	protected HashSet<String> prepareResultProposals(Collection<DefUnit> results, boolean compareUsingName) {
-		HashSet<String> resultProposals = hashSet(strmap(results, 
-			compareUsingName ? fnDefUnitToStringAsName(0) : fnDefUnitToStringAsElement(0)));
-		
-		// To make tests simpler we discard these ones from expected results:
-		resultProposals.remove("_dummy");
-		resultProposals.remove("_dummy()");
-		return resultProposals;
-	}
-	
 	public void runFindFailTest_________(MetadataEntry mde) {
 		DirectDefUnitResolve resolveResult = resolveAtOffset(mde.offset);
 		assertTrue(resolveResult.pickedRef == null || resolveResult.invalidPickRef);
@@ -308,113 +312,8 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	
 	public DirectDefUnitResolve doRunFindTest(int offset, String[] expectedResults) {
 		DirectDefUnitResolve resolveResult = resolveAtOffset(offset);
-		Collection<DefUnit> resultDefUnitsOriginal = resolveResult.getResolvedDefUnits();
-		
-		Collection<DefUnit> resultDefUnits = new ArrayList<>(nullToEmpty(resultDefUnitsOriginal));
-		for (String expectedTarget : expectedResults) {
-			if(expectedTarget.startsWith("@") ) {
-				String markerName = expectedTarget.substring(1);
-				removedDefUnitByEndMarker(markerName, resultDefUnits);
-			} else {
-				String moduleName = StringUtil.segmentUntilMatch(expectedTarget, "/");
-				String defUnitModuleQualifiedName = StringUtil.substringAfterMatch(expectedTarget, "/");
-				
-				removeDefUnitByName(resultDefUnits, moduleName, defUnitModuleQualifiedName);
-			}
-		}
-		assertTrue(resultDefUnits.isEmpty());
+		checkResults(resolveResult.getResolvedDefUnits(), expectedResults, false);
 		return resolveResult;
-	}
-	
-	public void removeDefUnitByName(Collection<DefUnit> resolvedDefUnits, 
-		String moduleName, String moduleQualifiedName) {
-		String expectedFullyTypedName = moduleName + (moduleQualifiedName != null ? "/" + moduleQualifiedName : "");
-		
-		for (Iterator<DefUnit> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {
-			DefUnit defUnit = iterator.next();
-			
-			if(moduleName != null ) {
-				String defUnitFullyTypedName = getDefUnitFullyTypedName(defUnit);
-				if(defUnitFullyTypedName.equals(expectedFullyTypedName)) {
-					iterator.remove();
-					removeDuplicatedInstances(iterator, defUnit); // TODO: might not be necessary in future
-					return;
-				} else {
-					continue; // Not a match
-				}
-			} else {
-				if(getDefUnitModuleQualifedName(defUnit).equals(moduleQualifiedName)) {
-					iterator.remove();
-					return;
-				}
-			}
-		}
-		assertFail(); // Must find a matching result
-	}
-	
-	public void removeDuplicatedInstances(Iterator<DefUnit> iterator, DefUnit defUnit) {
-		while(iterator.hasNext()) {
-			DefUnit next = iterator.next();
-			if(next == defUnit || isSamePackageNamespace(defUnit, next)) {
-				iterator.remove();
-			}
-		}
-	}
-	
-	public boolean isSamePackageNamespace(DefUnit defUnit, DefUnit next) {
-		return (next instanceof PartialPackageDefUnit) && (defUnit instanceof PartialPackageDefUnit)
-			&& next.getName().equals(defUnit.getName());
-	}
-	
-	// TODO: review this
-	public static String getDefUnitFullyTypedName(DefUnit defUnit) {
-		String base = getDefUnitFullyQualifedName(defUnit);
-		switch(defUnit.getArcheType()) {
-		case Package:
-			base += "/";
-			break;
-		default:
-		}
-		return base;
-	}
-	
-	public static String getDefUnitFullyQualifedName(DefUnit defUnit) {
-		if(defUnit instanceof Module) {
-			return ((Module) defUnit).getFullyQualifiedName() + "/";
-		}
-		
-		DefUnit parentDefUnit = NodeUtil.getParentDefUnit(defUnit);
-		if(parentDefUnit == null) {
-			return defUnit.getName();
-		}
-		String sep = parentDefUnit instanceof Module ? "" : ".";
-		String parentQualifedName = getDefUnitFullyQualifedName(parentDefUnit);
-		return parentQualifedName  + sep + defUnit.getName();
-	}
-
-	public String getDefUnitModuleQualifedName(DefUnit defUnit) {
-		if(defUnit instanceof Module) {
-			return "";
-		}
-		DefUnit parentDefUnit = NodeUtil.getParentDefUnit(defUnit);
-		String parentQualifedName = getDefUnitModuleQualifedName(parentDefUnit);
-		if(parentQualifedName == "") {
-			return defUnit.getName();
-		}
-		return parentQualifedName + "." + defUnit.getName();
-	}
-	
-	protected void removedDefUnitByEndMarker(String markerName, Collection<DefUnit> resolvedDefUnits) {
-		MetadataEntry marker = assertNotNull(markers.get(markerName));
-		
-		for (Iterator<DefUnit> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {
-			DefUnit defUnit = iterator.next();
-			if(defUnit.defname.getEndPos() == marker.offset || defUnit.defname.getStartPos() == marker.offset) {
-				iterator.remove();
-				return;
-			}
-		}
-		assertFail();
 	}
 	
 }

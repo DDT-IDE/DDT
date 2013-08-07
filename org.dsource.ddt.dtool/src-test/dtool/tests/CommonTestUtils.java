@@ -76,10 +76,6 @@ public class CommonTestUtils {
 	
 	/* -------------------------- */
 	
-	public static <U> Collection<U> nullToEmpty(Collection<U> coll) {
-		return coll == null ? Collections.EMPTY_LIST : coll;
-	}
-	
 	@SafeVarargs
 	public static <T> T[] array(T... elems) {
 		return elems;

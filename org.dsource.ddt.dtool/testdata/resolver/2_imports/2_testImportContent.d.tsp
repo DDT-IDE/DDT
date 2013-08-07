@@ -19,9 +19,9 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module importTest; #PROJECT(importsProject)
 
-static import modA#FIND¤【modA/】;
-static import pack.mod1#FIND¤【pack.mod1/】;
-static import pack.mod2#FIND¤【pack.mod2/】, pack.sample, pack.subpack.mod3#FIND¤【pack.subpack.mod3/】;
+static import modA;
+static import pack.mod1;
+static import pack.mod2, pack.sample, pack.subpack.mod3;
 
 #@__CONTEXT_START__
 	#REFSEARCH¤【importTest▪pack▪modA】
@@ -30,9 +30,9 @@ static import pack.mod2#FIND¤【pack.mod2/】, pack.sample, pack.subpack.mod3#F
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module importTest; #PROJECT(importsProject)
 
-import modA#FIND¤【modA/】;
-import pack.mod1#FIND¤【pack.mod1/】;
-import pack.mod2#FIND¤【pack.mod2/】, pack.sample#FIND¤【pack.sample/】, pack.subpack.mod3#FIND¤【pack.subpack.mod3/】; 
+import modA;
+import pack.mod1;
+import pack.mod2, pack.sample, pack.subpack.mod3; 
 
 
 #@__CONTEXT_START__
@@ -53,11 +53,23 @@ import pack.mod2#FIND¤【pack.mod2/】, pack.sample#FIND¤【pack.sample/】, p
 	pack2.private_imported.fooprivateImportVar#FIND¤【】++;  // fail
 	
 	#@STATIC_IMPORT_TEST
+	
 #@__CONTEXT_END__
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ resolving as pick location
+module importTest; #PROJECT(importsProject)
 
+import modA#FIND¤【modA/】#REFSEARCH¤【modA/】;
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ resolving in module reference
+import pack.mod1#FIND¤【pack.mod1/】#REFSEARCH¤【pack.mod1/】;
+import pack.s#FIND¤【】#REFSEARCH¤【pack.sample/▪pack.sample2/▪pack.sample3/▪pack.subpack.mod3/▪pack.subpack.mod4/】;
+import pack_NONEXISTANT.#FINDMISSING#REFSEARCH¤【】;
+
+import pack.subpack.mod3#FIND¤【pack.subpack.mod3/】#REFSEARCH¤【pack.subpack.mod3/】;
+import pack_NONEXISTANT.subpack.#FINDMISSING#REFSEARCH¤【】;
+import pack.subpack_NONEXISTANT.#FINDMISSING#REFSEARCH¤【】;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax errors
 module importTest; #PROJECT(importsProject)
 
 import#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@IMPORTSPROJ_ALL_MODULES】#@SPACE_Opt2;
 import pack.#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@IMPORTSPROJ_PACK_MODULES】#@SPACE_Opt2;
+import pack.subpack.#@SPACE_Opt#FINDMISSING#REFSEARCH¤【pack.subpack.mod3/▪pack.subpack.mod4/】#@SPACE_Opt2;

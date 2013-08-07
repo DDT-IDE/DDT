@@ -1,7 +1,6 @@
 package dtool.resolver;
 
 import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsElement;
-import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsName;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.util.Collection;
@@ -13,6 +12,9 @@ import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.tests.DToolBaseTest;
 
+/**
+ * This is an old version of what {@link DefUnitResultsChecker} does now
+ */
 public class CompareDefUnits extends DToolBaseTest {
 	
 	public static String[] INTRINSIC_DEFUNITS = new String[] {
@@ -36,18 +38,10 @@ public class CompareDefUnits extends DToolBaseTest {
 		}
 	};
 	
-	
 	public static void checkResults(Collection<DefUnit> results, String[] expectedProposalsArr, 
 		boolean removeIntrinsics) {
-		checkResults(results, expectedProposalsArr, removeIntrinsics, false);
-	}
-	
-	@Deprecated
-	public static void checkResults(Collection<DefUnit> results, String[] expectedProposalsArr,
-		boolean removeIntrinsics, boolean compareUsingName) {
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);
-		HashSet<String> resultProposals = hashSet(strmap(results, 
-			compareUsingName ? fnDefUnitToStringAsName(0) : fnDefUnitToStringAsElement(0)));
+		HashSet<String> resultProposals = hashSet(strmap(results, fnDefUnitToStringAsElement(0)));
 		
 		if(removeIntrinsics) {
 			// Don't remove intrinsics which are explicitly expected

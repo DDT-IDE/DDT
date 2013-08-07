@@ -1,11 +1,11 @@
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ implicit module name
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ implicit module name
 int mysample; #PROJECT(implicitName@)
 
 #@__CONTEXT_START__
 	#REFSEARCH¤【mysample▪implicitName】
 #@__CONTEXT_END__
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module importTest;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ simple module decl (no packages
+module importTest#REFSEARCH¤【importTest▪mysample】;
 
 int mysample;
 
@@ -18,10 +18,10 @@ int mysample;
 	importTest.importTest#FIND¤【】;
 #@__CONTEXT_END__
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-module#@SPACE_Opt; // Syntax errors
+module#@SPACE_Opt#REFSEARCH¤【mysample】; // Syntax errors
 int mysample;
 #REFSEARCH¤【mysample】
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ // test package defunit
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ // test package defunit
 module pack.importTest;
 
 int mysample;
@@ -44,8 +44,8 @@ module pack.#@SPACE_Opt; // Syntax errors
 int mysample;
 #REFSEARCH¤【mysample▪pack】
 	pack.#REFSEARCH¤【】#FINDMISSING;
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ // test package defunit with subpackages
-module pack.subpack.importTest;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ // test package defunit with subpackages
+module pack.subpack.importTest#REFSEARCH¤【pack▪mysample】;
 
 int mysample;
 
@@ -67,7 +67,8 @@ int mysample;
 #@__CONTEXT_END__
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ // Syntax errors
-module pack.subpack.#@SPACE_Opt;
+module pack.subpack.#@SPACE_Opt#REFSEARCH¤【pack▪mysample】;
 int mysample;
-#REFSEARCH¤【mysample▪pack】
-	pack.subpack.#REFSEARCH¤【】#FINDMISSING;
+
+#REFSEARCH¤【pack▪mysample】
+pack.subpack.#REFSEARCH¤【】#FINDMISSING;

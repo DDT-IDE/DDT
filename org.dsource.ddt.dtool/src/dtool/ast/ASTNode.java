@@ -16,6 +16,7 @@ import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.NodeData.CreatedStatusNodeData;
 import dtool.ast.NodeData.ParsedNodeData;
+import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.parser.ParserError;
 import dtool.resolver.INamedScope;
@@ -272,8 +273,16 @@ public abstract class ASTNode implements IASTNode {
 	
 	@Override
 	public final String toString() {
-		String suffix = isParsedStatus() ? "#" : ":" + getData();
-		return toStringClassName() + suffix +"【"+toStringAsCode()+"】";
+		StringBuilder string = new StringBuilder();
+		string.append(toStringClassName());
+		string.append(isParsedStatus() ? "#" : ":" + getData());
+		
+		if(this instanceof DefUnit) {
+			DefUnit defUnit = (DefUnit) this;
+			string.append("["+defUnit.toStringAsElement()+"]");
+		}
+		string.append("\n");
+		return string.toString(); 
 	}
 	
 	/** Returns a simple representation of this node, element-like and for for a line. 

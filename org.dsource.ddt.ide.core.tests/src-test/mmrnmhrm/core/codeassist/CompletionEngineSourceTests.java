@@ -14,15 +14,16 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
+
+import mmrnmhrm.core.codeassist.CompletionEngine_Test.CompletionEngineTestsRequestor;
 
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.ISourceModule;
 
-import mmrnmhrm.core.codeassist.CompletionEngine_Test.CompletionEngineTestsRequestor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.resolver.DefUnitResultsChecker;
 import dtool.resolver.api.PrefixDefUnitSearchBase.ECompletionResultStatus;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
@@ -76,18 +77,19 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	}
 	
 	@Override
-	protected HashSet<String> prepareResultProposals(Collection<DefUnit> results, boolean compareUsingName) {
-		for (Iterator<DefUnit> iterator = results.iterator(); iterator.hasNext(); ) {
+	public void removeDummyDefUnits(Collection<DefUnit> resultDefUnits) {
+		super.removeDummyDefUnits(resultDefUnits);
+		
+		for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
 			DefUnit defUnit = iterator.next();
+			
 			if(defUnit.getArcheType() == EArcheType.Module) {
-				String fqName = getDefUnitFullyTypedName(defUnit);
-				if(fqName.equals("object") || fqName.equals("std.stdio")) {
+				String fqName = DefUnitResultsChecker.getDefUnitFullyTypedName(defUnit);
+				if(fqName.equals("object/") || fqName.equals("std.stdio/")) {
 					iterator.remove();
 				}
 			}
 		}
-		HashSet<String> trimedResults = super.prepareResultProposals(results, compareUsingName);
-		return trimedResults;
 	}
 	
 }
