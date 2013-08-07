@@ -2,9 +2,9 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module importTest; #PROJECT(importsProject)
 
-import mod1alias = pack.mod1#FIND¤【pack.mod1/】;
-import mod2alias = pack.mod2#FIND¤【pack.mod2/】;
-import pack.mod2, sampleAlias = pack.sample#FIND¤【pack.sample/】; 
+import mod1alias = pack.mod1;
+import mod2alias =/*syntax error*/;
+import pack.mod2, sampleAlias = pack.sample; 
 
 
 #@__CONTEXT_START__
@@ -24,7 +24,26 @@ import pack.mod2, sampleAlias = pack.sample#FIND¤【pack.sample/】;
 	sampleAlias.pack2.private_imported#FIND¤【】++;  // fail
 	sampleAlias.pack2.private_imported.fooprivateImportVar#FIND¤【】++;  // fail
 #@__CONTEXT_END__
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ resolving as pick location
 module importTest; #PROJECT(importsProject)
 
-import sampleAlias3 =#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@IMPORTSPROJ_ALL_MODULES】#@SPACE_Opt2;
+import modalias = modA#FIND¤【modA/】#REFSEARCH¤【modA/】;
+import pack.mod2, modalias = modA#FIND¤【modA/】#REFSEARCH¤【modA/】;
+
+import modalias = pack.mod1#FIND¤【pack.mod1/】#REFSEARCH¤【pack.mod1/】;
+import modalias = pack.sample#FIND¤【pack.sample/】#REFSEARCH¤【pack.sample/▪pack.sample2/▪pack.sample3/】;
+import modalias = pack_NONEXISTANT.#FINDMISSING#REFSEARCH¤【】;
+
+import modalias = pack.subpack.mod3#FIND¤【pack.subpack.mod3/】#REFSEARCH¤【pack.subpack.mod3/】;
+import modalias = pack_NONEXISTANT.subpack.#FINDMISSING#REFSEARCH¤【】;
+import modalias = pack.subpack_NONEXISTANT.#FINDMISSING#REFSEARCH¤【】;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+module importTest;
+import modalias#FINDFAIL#REFSEARCH¤【modalias▪importTest】 = modA;
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax errors
+module importTest; #PROJECT(importsProject)
+
+import sampleAlias =#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@IMPORTSPROJ_ALL_MODULES】#@SPACE_Opt2;
+import sampleAlias = pack.#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@IMPORTSPROJ_PACK_MODULES】#@SPACE_Opt2;
+import sampleAlias = pack.subpack.#@SPACE_Opt#FINDMISSING#REFSEARCH¤【pack.subpack.mod3/▪pack.subpack.mod4/】#@SPACE_Opt2;

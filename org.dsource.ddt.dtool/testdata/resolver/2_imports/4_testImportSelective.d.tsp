@@ -2,16 +2,17 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module importTests; #PROJECT(importsProject)
 
-import pack.mod3, pack.sample#FIND¤【pack.sample/】 : 
- 	SampleClass#FIND¤【pack.sample/SampleClass】, 
- 	sampleVar#FIND¤【pack.sample/sampleVar】,
- 	noSuchElement#FIND¤【】,  
- 	SampleClassBAlias = SampleClassB#FIND¤【pack.sample/SampleClassB】, 
- 	sampleVarBAlias = sampleVarB#FIND¤【pack.sample/sampleVarB】,
- 	MissingAlias = noSuchElement#FIND¤【】,
+import pack.mod3, pack.sample : 
+ 	SampleClass, 
+ 	sampleVar,
+ 	noSuchElement, 
+ 	/*SYNTAX-ERROR MISSING*/,
+ 	SampleClassBAlias = SampleClassB, 
+ 	sampleVarBAlias = /*SYNTAX-ERROR MISSING*/,
+ 	MissingAlias = noSuchElement,
  	;
  	
-import pack.nonExistant#FIND¤【】 : Foo1#FIND¤【】, Foo2#FIND¤【】,
+import pack.nonExistant : Foo1, Foo2;
  	
 #@__CONTEXT_START__
 	pack.sample#FIND¤【】; // No FQN with selective
@@ -42,7 +43,20 @@ import sampleAlias = pack.sample : SampleClass, sampleVarBAlias = sampleVarB;
 #REFSEARCH¤【importTests▪#comment¤【sampleAlias▪】SampleClass▪sampleVarBAlias】 
 pack#FIND¤【】.#REFSEARCH¤【】;
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ resolving as pick location
+#PROJECT(importsProject)
+
+import pack.mod3, pack.sample#FIND¤【pack.sample/】 : 
+ 	SampleClass#FIND¤【pack.sample/SampleClass】, 
+ 	sampleVar#FIND¤【pack.sample/sampleVar】,
+ 	noSuchElement#FIND¤【】,
+ 	SampleClassBAlias = SampleClassB#FIND¤【pack.sample/SampleClassB】, 
+ 	sampleVarBAlias = sampleVarB#FIND¤【pack.sample/sampleVarB】,
+ 	MissingAlias = noSuchElement#FIND¤【】,
+ 	;
+ 	
+import pack.nonExistant#FIND¤【】 : Foo1#FIND¤【】, Foo2#FIND¤【】;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax errors
 #PROJECT(importsProject)
 
 import pack.sample :#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@PACK_SAMPLE_MBRS】#@SPACE_Opt2,

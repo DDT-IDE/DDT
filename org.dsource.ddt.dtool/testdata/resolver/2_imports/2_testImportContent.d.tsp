@@ -21,6 +21,7 @@ module importTest; #PROJECT(importsProject)
 
 static import modA;
 static import pack.mod1;
+static import /* syntax error */;
 static import pack.mod2, pack.sample, pack.subpack.mod3;
 
 #@__CONTEXT_START__
@@ -32,6 +33,7 @@ module importTest; #PROJECT(importsProject)
 
 import modA;
 import pack.mod1;
+import /* syntax error */;
 import pack.mod2, pack.sample, pack.subpack.mod3; 
 
 
