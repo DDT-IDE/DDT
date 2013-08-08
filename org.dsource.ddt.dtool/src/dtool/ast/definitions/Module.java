@@ -155,15 +155,12 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	}
 	
 	public String getFullyQualifiedName() {
-		StringBuilder fullName = new StringBuilder();
+		ASTCodePrinter cp = new ASTCodePrinter();
 		if(md != null) {
-			for (String packageStr : md.packages) {
-				fullName.append(packageStr);
-				fullName.append(".");
-			}
+			cp.appendTokenList(md.packageList, ".", true);
 		}
-		fullName.append(getName());
-		return fullName.toString();
+		cp.append(getName());
+		return cp.toString();
 	}
 	
 	public String[] getDeclaredPackages() {
@@ -190,11 +187,6 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	@Override
 	public String getExtendedName() {
 		return getName();
-	}
-	
-	@Override
-	public String toStringForHoverSignature() {
-		return toStringAsElement();
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import melnorme.swtutil.SWTTestUtils;
@@ -14,6 +15,7 @@ import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.codeassist.CompletionEngineSourceTests;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
+import mmrnmhrm.ui.editor.hover.HoverUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -24,13 +26,13 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import dtool.ast.definitions.DefUnit;
 import dtool.sourcegen.AnnotatedSource;
 
-public class ContentAssistSourceTests extends CompletionEngineSourceTests {
+public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	
 	static {
 		MiscUtil.loadClass(BaseDeeUITest.class);
 	}
 	
-	public ContentAssistSourceTests(String testUIDescription, File file) {
+	public ContentAssistUISourceTests(String testUIDescription, File file) {
 		super(testUIDescription, file);
 	}
 	
@@ -101,6 +103,13 @@ public class ContentAssistSourceTests extends CompletionEngineSourceTests {
 			checkResults(results, expectedResults);
 		}
 		CodeCompletionUITestAdapter.checkProposals(proposals, repOffset, repLen, prefixLen);
+	}
+	
+	@Override
+	public void precheckOriginalResults(Collection<DefUnit> resultDefUnitsOriginal) {
+		for (DefUnit defUnit : resultDefUnitsOriginal) {
+			HoverUtil.getLabelForHoverSignature(defUnit);
+		}
 	}
 	
 	public List<DefUnit> proposalResultsToDefUnit(ICompletionProposal[] proposals) {

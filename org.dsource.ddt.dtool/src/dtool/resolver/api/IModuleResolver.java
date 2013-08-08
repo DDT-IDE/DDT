@@ -26,7 +26,8 @@ public interface IModuleResolver {
 	Module findModule(String[] packages, String module) throws Exception;
 	
 	
-	/** Searches for the names of modules whose fully qualified names start with the given fqNamePrefix */
+	/** Searches for the names of modules whose fully qualified names start with the given fqNamePrefix.
+	 * @return an array of fully qualified names of the found modules. */
 	String[] findModules(String fqNamePrefix) throws Exception;
 	
 }

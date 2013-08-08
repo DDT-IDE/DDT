@@ -73,16 +73,10 @@ public class DefVarFragment extends DefUnit {
 	}
 	
 	@Deprecated
-	private String getTypeString() {
+	public String getTypeString() {
 		if(getTypeReference() != null)
 			return getTypeReference().toStringAsElement();
 		return "auto";
-	}
-	
-	@Override
-	public String toStringForHoverSignature() {
-		String str = getTypeString() + " " + getName();
-		return str;
 	}
 	
 	@Override

@@ -110,16 +110,10 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	}
 	
 	@Deprecated
-	private String getTypeString() {
+	public String getTypeString() {
 		if(type != null)
 			return type.toStringAsElement();
 		return "auto";
-	}
-	
-	@Override
-	public String toStringForHoverSignature() {
-		String str = getTypeString() + " " + getName();
-		return str;
 	}
 	
 	@Override

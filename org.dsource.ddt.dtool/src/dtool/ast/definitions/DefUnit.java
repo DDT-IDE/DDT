@@ -120,14 +120,6 @@ public abstract class DefUnit extends ASTNode {
 		return getName();
 	}
 	
-	/** Returns signature-oriented String representation. TODO: this should move to UI code */
-	@Deprecated
-	public String toStringForHoverSignature() {
-		String str = getModuleScope().toStringAsElement() + "." + getName();
-		//if(getMembersScope() != this)str += " : " + getMembersScope();
-		return str;
-	}
-	
 	/** Returns completion proposal oriented String representation. TODO: this should move to UI code */
 	//public abstract String toStringForCodeCompletion() ;
 	@Deprecated

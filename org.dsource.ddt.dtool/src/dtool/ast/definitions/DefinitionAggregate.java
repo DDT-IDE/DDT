@@ -76,14 +76,6 @@ public abstract class DefinitionAggregate extends CommonDefinition implements IS
 	}
 	
 	@Override
-	public String toStringForHoverSignature() {
-		ASTCodePrinter cp = new ASTCodePrinter();
-		cp.append(getName());
-		cp.appendList("(", tplParams, ",", ") ");
-		return cp.toString();
-	}
-	
-	@Override
 	public String toStringForCodeCompletion() {
 		return getName() + " - " + getModuleScope().toStringAsElement();
 	}

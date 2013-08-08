@@ -84,16 +84,6 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	}
 	
 	@Override
-	public String toStringForHoverSignature() {
-		ASTCodePrinter cp = new ASTCodePrinter();
-		cp.appendStrings(typeRefToUIString(retType), " ");
-		cp.append(getName());
-		cp.appendList("(", tplParams, ",", ") ");
-		cp.appendList("(", getParams_asNodes(), ",", ") ");
-		return cp.toString();
-	}
-	
-	@Override
 	public String toStringForCodeCompletion() {
 		ASTCodePrinter cp = new ASTCodePrinter();
 		cp.append(getName());

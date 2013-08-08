@@ -85,13 +85,17 @@ public class RefModule extends NamedReference {
 	
 	public static class LiteModuleDummy extends SyntheticDefUnit {
 		
-		public LiteModuleDummy(String defname) {
-			super(defname);
+		public LiteModuleDummy(String fqModuleName) {
+			super(fqModuleName);
 		}
 		
 		@Override
 		public EArcheType getArcheType() {
 			return EArcheType.Module;
+		}
+		
+		public String getFullyQualifiedName() {
+			return getName();
 		}
 		
 		@Override
@@ -109,10 +113,6 @@ public class RefModule extends NamedReference {
 			return getName();
 		}
 		
-		@Override
-		public String toStringForHoverSignature() {
-			return getName();
-		}
 	}
 	
 	
@@ -127,9 +127,9 @@ public class RefModule extends NamedReference {
 		
 		String[] strings = search.resolveModules(prefix);
 		for (int i = 0; i < strings.length; i++) {
-			String name = strings[i];
+			String fqName = strings[i];
 			
-			search.addMatch(new LiteModuleDummy(name));		
+			search.addMatch(new LiteModuleDummy(fqName));		
 		}
 	}
 	

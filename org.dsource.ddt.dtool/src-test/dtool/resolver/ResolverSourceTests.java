@@ -225,6 +225,9 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	
 	public void checkResults(Collection<DefUnit> resultDefUnitsOriginal, String[] expectedResults,
 		boolean removedDummyResults) {
+		
+		precheckOriginalResults(resultDefUnitsOriginal);
+		
 		DefUnitResultsChecker defUnitResultsChecker = new DefUnitResultsChecker(resultDefUnitsOriginal);
 		
 		if(removedDummyResults) {
@@ -232,6 +235,15 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		}
 		
 		defUnitResultsChecker.checkResults(expectedResults, markers);
+	}
+	
+	/** Run these extra functions to test that they don't crash.
+	 * TODO: Ideally we would also check the results of these functions, but it's too much work for now. */
+	public void precheckOriginalResults(Collection<DefUnit> resultDefUnitsOriginal) {
+		for (DefUnit defUnit : resultDefUnitsOriginal) {
+			defUnit.toStringAsElement();
+			defUnit.toStringForCodeCompletion();
+		}
 	}
 	
 	public void removeDummyDefUnits(Collection<DefUnit> resultDefUnits) {

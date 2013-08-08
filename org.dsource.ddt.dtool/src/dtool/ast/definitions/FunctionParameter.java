@@ -74,11 +74,6 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	}
 	
 	@Override
-	public String toStringForHoverSignature() {
-		return type.toStringAsElement() + " " + getName();
-	}
-	
-	@Override
 	public String toStringForCodeCompletion() {
 		return getName() + "   " + type.toStringAsElement() + " - "
 				+ NodeUtil.getOuterDefUnit(this).toStringAsElement();

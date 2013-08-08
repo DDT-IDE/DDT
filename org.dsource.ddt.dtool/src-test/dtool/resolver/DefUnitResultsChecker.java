@@ -26,14 +26,6 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	
 	public DefUnitResultsChecker(Collection<DefUnit> resultDefUnits) {
 		this.resultDefUnits = createArrayList(resultDefUnits);
-		
-		for (DefUnit defUnit : this.resultDefUnits) {
-			// run these extra functions to test that they don't crash.
-			// TODO: Ideally we would also check the results of these functions, but it's too much work for now. 
-			defUnit.toStringAsElement();
-			defUnit.toStringForCodeCompletion();
-			defUnit.toStringForHoverSignature();
-		}
 	}
 	
 	public void checkResults(String[] expectedResults, Map<String, MetadataEntry> markers) {

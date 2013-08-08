@@ -40,11 +40,6 @@ public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements 
 	
 	
 	@Override
-	public String toStringForHoverSignature() {
-		return getName();
-	}
-	
-	@Override
 	public String toStringForCodeCompletion() {
 		return getName();
 	}
