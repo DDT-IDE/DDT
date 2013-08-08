@@ -1,10 +1,6 @@
 package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Iterator;
-
-import dtool.ast.definitions.DefUnit;
 import dtool.util.ArrayView;
 
 public class ASTCodePrinter {
@@ -142,29 +138,6 @@ public class ASTCodePrinter {
 		String spacingIfArgsNull) {
 		boolean hasEndingSeparator = args == null ? false : args.hasEndingSeparator;
 		appendList(open, args, sep, hasEndingSeparator, close, spacingIfArgsNull);
-	}
-	
-	/* ==== */
-	@Deprecated
-	public static String toStringParamListAsElements(Iterable<? extends DefUnit> nodes) {
-		if(nodes == null)
-			return "";
-		return "("+toStringAsElements(nodes, ", ")+")";
-	}
-	
-	/** Util for printing a collection of nodes. */
-	@Deprecated
-	public final static String toStringAsElements(Iterable<? extends DefUnit> nodes, String sep) {
-		StringBuilder sb = new StringBuilder();
-		Iterator<? extends DefUnit> iter = nodes.iterator();
-		for (int i = 0; iter.hasNext(); i++) {
-			DefUnit next = iter.next();
-			if(i > 0) {
-				sb.append(sep);
-			}
-			sb.append(next.toStringAsElement());
-		}
-		return sb.toString();
 	}
 	
 }

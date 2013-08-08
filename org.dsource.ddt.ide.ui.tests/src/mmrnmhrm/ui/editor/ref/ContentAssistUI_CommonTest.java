@@ -111,7 +111,7 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 				continue;
 			}
 			DeeCompletionProposal proposal = (DeeCompletionProposal) completionProposal;
-			String defName = proposal.defUnit.toStringAsElement();
+			String defName = proposal.defUnit.getExtendedName();
 			
 			assertTrue(repOffset == proposal.getReplacementOffset());
 			assertTrue(repLen == proposal.getReplacementLength());

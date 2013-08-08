@@ -12,9 +12,7 @@ void _dummy() {
 	debug(xxx) /* SYNTAX ERROR */
 }
 
-#@__CONTEXT_START__
-	#@REFSEARCH_TEST【#REFSEARCH¤【f1▪f2▪duplicate▪nested】】
-#@__CONTEXT_END__
+#@REFSEARCH_TEST【#REFSEARCH¤【f1▪f2▪duplicate▪nested】】
 
 #@NONSCOPED_CONTAINERS_ST {
 	#@REFSEARCH_TEST  // test ref from within container
@@ -44,9 +42,7 @@ void _dummy() {
 		int else_nested;
 }
 
-#@__CONTEXT_START__
-	#@REFSEARCH_TEST【#REFSEARCH¤【f1▪f2▪duplicate▪nested▪else_f1▪else_nested】】
-#@__CONTEXT_END__
+#@REFSEARCH_TEST【#REFSEARCH¤【f1▪f2▪duplicate▪nested▪else_f1▪else_nested】】
 
 #@NONSCOPED_CONTAINERS_ST {
 	int f3;

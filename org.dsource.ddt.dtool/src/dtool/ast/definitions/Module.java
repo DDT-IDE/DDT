@@ -188,6 +188,11 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	}
 	
 	@Override
+	public String getExtendedName() {
+		return getName();
+	}
+	
+	@Override
 	public String toStringForHoverSignature() {
 		return toStringAsElement();
 	}

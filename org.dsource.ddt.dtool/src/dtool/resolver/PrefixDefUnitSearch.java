@@ -71,20 +71,14 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 	
 	@Override
 	public void addMatch(DefUnit defUnit) {
-		if(notOccluded(defUnit)) {
-			defUnitAccepter.accept(defUnit, searchOptions);
-		}
-	}
-	
-	public boolean notOccluded(DefUnit newDefUnit) {
-		String newDefUnitName = newDefUnit.toStringAsElement();
+		String defUnitExtendedName = defUnit.getExtendedName();
 		
-		if(addedDefUnits.contains(newDefUnitName)) {
-			return false;
+		if(addedDefUnits.contains(defUnitExtendedName)) {
+			return;
 		}
-		addedDefUnits.add(newDefUnitName);
-		return true;
-	};
+		addedDefUnits.add(defUnitExtendedName);
+		defUnitAccepter.accept(defUnit, searchOptions);
+	}
 	
 	public static PrefixDefUnitSearch doCompletionSearch(DeeParserResult parseResult, int offset, IModuleResolver mr, 
 		IDefUnitMatchAccepter defUnitAccepter) {

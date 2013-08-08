@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.actions;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
@@ -33,7 +34,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.Logg;
-import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.NodeUtil;
@@ -116,12 +116,12 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 			return;
 		}
 		
-		Logg.main.println(" Find Definition, found: " + ASTCodePrinter.toStringAsElements(defunits, " ") );
+		Logg.main.println(" Find Definition, found: " + collToString_defUnits(defunits, " ") );
 		
 		
 		if(defunits.size() > 1) {
 			dialogInfo(window.getShell(), "Multiple definitions found: \n" 
-					+ ASTCodePrinter.toStringAsElements(defunits, "\n") + "\nGoing to the first one.");
+					+ collToString_defUnits(defunits, "\n") + "\nGoing to the first one.");
 		} 
 		
 		DefUnit defunit = defunits.iterator().next();
@@ -159,6 +159,19 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 						"Don't know how to open editor for: " + targetModUnit));
 			}
 		}
+	}
+	
+	public final static String collToString_defUnits(Iterable<? extends DefUnit> nodes, String sep) {
+		StringBuilder sb = new StringBuilder();
+		Iterator<? extends DefUnit> iter = nodes.iterator();
+		for (int i = 0; iter.hasNext(); i++) {
+			DefUnit next = iter.next();
+			if(i > 0) {
+				sb.append(sep);
+			}
+			sb.append(next.toStringForCodeCompletion());
+		}
+		return sb.toString();
 	}
 	
 	public static void openEditor(IWorkbenchPage page, IEditorInput input, EOpenNewEditor openNewEditor, 

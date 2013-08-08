@@ -62,7 +62,8 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 	}
 	
 	public static String toStringParametersForSignature(ArrayView<IFunctionParameter> params) {
-		/*BUG here NPE params*/
+		if(params == null) 
+			return "";
 		String strParams = "(";
 		for (int i = 0; i < params.size(); i++) {
 			if(i != 0)
@@ -77,24 +78,30 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 		return getName() + toStringParametersForSignature(fnParams);
 	}
 	
+	@Override
+	public String getExtendedName() {
+		return getName() + toStringParametersForSignature(fnParams);
+	}
 	
 	@Override
 	public String toStringForHoverSignature() {
-		String str = ""
-			+ typeRefToUIString(retType) + " " + getName() 
-			+ ASTCodePrinter.toStringParamListAsElements(tplParams)
-			+ toStringParametersForSignature(fnParams);
-		return str;
+		ASTCodePrinter cp = new ASTCodePrinter();
+		cp.appendStrings(typeRefToUIString(retType), " ");
+		cp.append(getName());
+		cp.appendList("(", tplParams, ",", ") ");
+		cp.appendList("(", getParams_asNodes(), ",", ") ");
+		return cp.toString();
 	}
-	
 	
 	@Override
 	public String toStringForCodeCompletion() {
-		return getName()
-			+ ASTCodePrinter.toStringParamListAsElements(tplParams)
-			+ toStringParametersForSignature(fnParams) 
-			+ "  " + typeRefToUIString(retType)
-			+ " - " + NodeUtil.getOuterDefUnit(this).toStringAsElement();
+		ASTCodePrinter cp = new ASTCodePrinter();
+		cp.append(getName());
+		cp.appendList("(", tplParams, ",", ") ");
+		cp.append(toStringParametersForSignature(fnParams));
+		cp.appendStrings(" : ", typeRefToUIString(retType));
+		cp.append(" - " + NodeUtil.getOuterDefUnit(this).toStringAsElement());
+		return cp.toString();
 	}
 	
 }
