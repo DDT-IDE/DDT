@@ -124,7 +124,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		setupDefUnitTypeInfo(defVar, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
 		setupDefinitionTypeInfo(defVar, fieldInfo);
-		fieldInfo.type = DefUnit.typeRefToUIString(defVar.type);
+		fieldInfo.type = getTypeRefString(defVar.type);
 		
 		return fieldInfo;
 	}
@@ -133,9 +133,16 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		setupDefUnitTypeInfo(defVarFragment, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
 		setupModifiersInfo(defVarFragment.getDefinitionVariableParent(), fieldInfo);
-		fieldInfo.type = DefUnit.typeRefToUIString(defVarFragment.getDefinitionVariableParent().type);
+		fieldInfo.type = getTypeRefString(defVarFragment.getDefinitionVariableParent().type);
 		
 		return fieldInfo;
+	}
+	
+	public static String getTypeRefString(Reference typeReference) {
+		if(typeReference == null) {
+			return "auto"; // Perhaps we could just return null instead
+		}
+		return typeReference.toStringAsElement();
 	}
 	
 	/* ---------------------------------- */
@@ -365,7 +372,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 		String[] baseClassesStr = new String[baseClasses.size()];
 		for (int i = 0; i < baseClasses.size(); i++) {
 			// There is no way this can work without a FQN, but I don't know what DLTK wants
-			baseClassesStr[i] = baseClasses.get(i).toStringAsElement(); 
+			baseClassesStr[i] = baseClasses.get(i).toStringAsCode(); 
 		}
 		return baseClassesStr;
 	}
@@ -376,7 +383,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 		setupDefinitionTypeInfo(elem, methodInfo);
 		
 		setupParametersInfo(elem, methodInfo);
-		methodInfo.returnType = DefUnit.typeRefToUIString(elem.retType);
+		methodInfo.returnType = getTypeRefString(elem.retType);
 		return methodInfo;
 	}
 	

@@ -77,7 +77,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		String rplStr = defUnit.getName().substring(searchOptions.namePrefixLen);
 		
 		CompletionProposal proposal = createProposal(CompletionProposal.TYPE_REF, ccOffset);
-		proposal.setName(defUnit.toStringForCodeCompletion());
+		proposal.setName(defUnit.getExtendedName());
 		proposal.setCompletion(rplStr);
 		proposal.setReplaceRange(ccOffset, ccOffset + searchOptions.rplLen);
 		proposal.setExtraInfo(defUnit);

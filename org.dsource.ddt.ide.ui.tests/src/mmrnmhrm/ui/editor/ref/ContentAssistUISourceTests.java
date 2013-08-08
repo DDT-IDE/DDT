@@ -15,7 +15,7 @@ import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.codeassist.CompletionEngineSourceTests;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
-import mmrnmhrm.ui.editor.hover.HoverUtil;
+import mmrnmhrm.ui.views.DeeDefUnitLabelProvider;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -108,7 +108,8 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	@Override
 	public void precheckOriginalResults(Collection<DefUnit> resultDefUnitsOriginal) {
 		for (DefUnit defUnit : resultDefUnitsOriginal) {
-			HoverUtil.getLabelForHoverSignature(defUnit);
+			DeeDefUnitLabelProvider.getLabelForHoverSignature(defUnit);
+			DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defUnit);
 		}
 	}
 	

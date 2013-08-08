@@ -91,11 +91,6 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 			return target.getTargetScope(moduleResolver);
 		}
 		
-		@Override
-		public String toStringForCodeCompletion() {
-			return getName() + " -> " + target.toStringAsElement();
-		}
-		
 	}
 	
 }

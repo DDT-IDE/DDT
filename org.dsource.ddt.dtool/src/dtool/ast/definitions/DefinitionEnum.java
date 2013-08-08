@@ -118,9 +118,4 @@ public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDec
 		return body.nodeList.iterator(); /*BUG here NPE*/
 	}
 	
-	@Override
-	public String toStringForCodeCompletion() {
-		return getName() + " - " + getModuleScope().toStringAsElement();
-	}
-	
 }

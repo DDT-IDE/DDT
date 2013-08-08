@@ -8,6 +8,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.IInitializer;
+import dtool.ast.references.Reference;
 import dtool.resolver.IDefUnitReference;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
@@ -59,29 +60,17 @@ public class DefVarFragment extends DefUnit {
 		return init;
 	}
 	
-	public IDefUnitReference getTypeReference() {
-		return getDefinitionVariableParent().getTypeReference();
+	public Reference getDeclaredTypeReference() {
+		return getDefinitionVariableParent().type;
 	}
 	
 	@Override
 	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
-		Collection<DefUnit> defunits = getTypeReference().findTargetDefUnits(moduleResolver, true);
+		IDefUnitReference resolvedType = getDefinitionVariableParent().determineType();
+		Collection<DefUnit> defunits = resolvedType.findTargetDefUnits(moduleResolver, true);
 		if(defunits == null || defunits.isEmpty())
 			return null;
 		return defunits.iterator().next().getMembersScope(moduleResolver);
-		//return defunit.getMembersScope();
-	}
-	
-	@Deprecated
-	public String getTypeString() {
-		if(getTypeReference() != null)
-			return getTypeReference().toStringAsElement();
-		return "auto";
-	}
-	
-	@Override
-	public String toStringForCodeCompletion() {
-		return defname.toStringAsCode() + "   " + getTypeString() + " - " + getModuleScope().toStringAsElement();
 	}
 	
 }

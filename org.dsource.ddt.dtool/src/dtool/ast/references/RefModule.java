@@ -108,13 +108,7 @@ public class RefModule extends NamedReference {
 			assertFail();
 		}
 		
-		@Override
-		public String toStringForCodeCompletion() {
-			return getName();
-		}
-		
 	}
-	
 	
 	@Override
 	public String getTargetSimpleName() {

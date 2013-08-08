@@ -8,6 +8,7 @@ import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.DeeEditor;
+import mmrnmhrm.ui.views.DeeDefUnitLabelProvider;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -165,11 +166,11 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		StringBuilder sb = new StringBuilder();
 		Iterator<? extends DefUnit> iter = nodes.iterator();
 		for (int i = 0; iter.hasNext(); i++) {
-			DefUnit next = iter.next();
+			DefUnit defUnit = iter.next();
 			if(i > 0) {
 				sb.append(sep);
 			}
-			sb.append(next.toStringForCodeCompletion());
+			sb.append(DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defUnit));
 		}
 		return sb.toString();
 	}

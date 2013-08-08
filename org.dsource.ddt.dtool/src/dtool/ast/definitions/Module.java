@@ -189,9 +189,4 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 		return getName();
 	}
 	
-	@Override
-	public String toStringForCodeCompletion() {
-		return getName();
-	}
-	
 }

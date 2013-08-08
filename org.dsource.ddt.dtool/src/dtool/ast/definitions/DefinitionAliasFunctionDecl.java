@@ -77,9 +77,4 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		return target.getTargetScope(moduleResolver); // XXX: Not correct for functional variant of alias
 	}
 	
-	@Override
-	public String toStringForCodeCompletion() {
-		return getName() + " -> " + target.toStringAsElement();
-	}
-	
 }

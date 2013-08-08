@@ -219,7 +219,7 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		return expectedResults;
 	}
 	
-	protected void checkResults(Collection<DefUnit> resultDefUnitsOriginal, String[] expectedResults) {
+	protected final void checkResults(Collection<DefUnit> resultDefUnitsOriginal, String[] expectedResults) {
 		checkResults(resultDefUnitsOriginal, expectedResults, true);
 	}
 	
@@ -242,7 +242,6 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	public void precheckOriginalResults(Collection<DefUnit> resultDefUnitsOriginal) {
 		for (DefUnit defUnit : resultDefUnitsOriginal) {
 			defUnit.toStringAsElement();
-			defUnit.toStringForCodeCompletion();
 		}
 	}
 	

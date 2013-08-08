@@ -72,14 +72,10 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 		return EArcheType.Variable;
 	}
 	
-	public IDefUnitReference getTypeReference() {
-		return determineType();
-	}
-	
-	private IDefUnitReference determineType() {
+	public IDefUnitReference determineType() {
 		if(type != null)
 			return type;
-		return NativeDefUnit.nullReference; // TODO: auto references
+		return NativeDefUnit.nullReference; 
 	}
 	
 	public ArrayView<DefVarFragment> getFragments() {
@@ -88,7 +84,10 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	
 	@Override
 	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
-		Collection<DefUnit> defunits = determineType().findTargetDefUnits(moduleResolver, true);
+		if(type == null)
+			return null; // TODO: auto references
+		
+		Collection<DefUnit> defunits = type.findTargetDefUnits(moduleResolver, true);
 		if(defunits == null || defunits.isEmpty())
 			return null;
 		return defunits.iterator().next().getMembersScope(moduleResolver);
@@ -109,15 +108,4 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 		
 	}
 	
-	@Deprecated
-	public String getTypeString() {
-		if(type != null)
-			return type.toStringAsElement();
-		return "auto";
-	}
-	
-	@Override
-	public String toStringForCodeCompletion() {
-		return defname.toStringAsCode() + "   " + getTypeString() + " - " + getModuleScope().toStringAsElement();
-	}
 }

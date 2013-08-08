@@ -3,7 +3,6 @@ package dtool.ast.definitions;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeUtil;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
@@ -61,6 +60,20 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 		return retType.findTargetDefUnit(moduleResolver);
 	}
 	
+	@Override
+	public String toStringAsElement() {
+		return getName() + toStringParametersForSignature();
+	}
+	
+	@Override
+	public String getExtendedName() {
+		return getName() + toStringParametersForSignature();
+	}
+	
+	public String toStringParametersForSignature() {
+		return toStringParametersForSignature(fnParams);
+	}
+	
 	public static String toStringParametersForSignature(ArrayView<IFunctionParameter> params) {
 		if(params == null) 
 			return "";
@@ -71,27 +84,6 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 			strParams += params.get(i).toStringAsFunctionSignaturePart();
 		}
 		return strParams + ")";
-	}
-	
-	@Override
-	public String toStringAsElement() {
-		return getName() + toStringParametersForSignature(fnParams);
-	}
-	
-	@Override
-	public String getExtendedName() {
-		return getName() + toStringParametersForSignature(fnParams);
-	}
-	
-	@Override
-	public String toStringForCodeCompletion() {
-		ASTCodePrinter cp = new ASTCodePrinter();
-		cp.append(getName());
-		cp.appendList("(", tplParams, ",", ") ");
-		cp.append(toStringParametersForSignature(fnParams));
-		cp.appendStrings(" : ", typeRefToUIString(retType));
-		cp.append(" - " + NodeUtil.getOuterDefUnit(this).toStringAsElement());
-		return cp.toString();
 	}
 	
 }

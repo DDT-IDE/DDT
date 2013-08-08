@@ -40,12 +40,6 @@ public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements 
 	
 	
 	@Override
-	public String toStringForCodeCompletion() {
-		return getName();
-	}
-	
-	
-	@Override
 	public void visitChildren(IASTVisitor visitor) {
 	}
 	

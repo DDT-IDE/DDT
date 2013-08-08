@@ -75,9 +75,4 @@ public abstract class DefinitionAggregate extends CommonDefinition implements IS
 		return false;
 	}
 	
-	@Override
-	public String toStringForCodeCompletion() {
-		return getName() + " - " + getModuleScope().toStringAsElement();
-	}
-	
 }

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.views.DeeDefUnitLabelProvider;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
@@ -22,14 +23,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.Bundle;
 
 import descent.core.ddoc.Ddoc;
-import dtool.ast.ASTCodePrinter;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefVarFragment;
-import dtool.ast.definitions.DefinitionAggregate;
-import dtool.ast.definitions.DefinitionFunction;
-import dtool.ast.definitions.DefinitionVariable;
-import dtool.ast.definitions.Module;
-import dtool.ast.references.RefModule.LiteModuleDummy;
 import dtool.ddoc.DeeDocAccessor;
 import dtool.ddoc.IDeeDocColorConstants;
 
@@ -45,7 +39,7 @@ public class HoverUtil {
 
 	/** Gets the HTML info for the given DefUnit. */
 	public static String getDefUnitHoverInfoWithDeeDoc(DefUnit defUnit) {
-		String sig = getLabelForHoverSignature(defUnit);
+		String sig = DeeDefUnitLabelProvider.getLabelForHoverSignature(defUnit);
 		String str = convertToHTMLContent(sig);
 		str = "<b>" +str+ "</b>" 
 		+"  <span style=\"color: #915F6D;\" >"+
@@ -60,56 +54,6 @@ public class HoverUtil {
 		return str;
 	}
 	
-	public static String getLabelForHoverSignature(DefUnit defUnit) {
-		ASTCodePrinter cp = new ASTCodePrinter();
-		
-		if(defUnit instanceof LiteModuleDummy) {
-			LiteModuleDummy module = (LiteModuleDummy) defUnit;
-			return module.getFullyQualifiedName();
-		}
-		
-		switch (defUnit.getNodeType()) {
-		case MODULE: {
-			Module module = (Module) defUnit;
-			return module.getFullyQualifiedName();
-		}
-		case DEFINITION_VARIABLE: {
-			DefinitionVariable var = (DefinitionVariable) defUnit;
-			
-			String str = var.getTypeString() + " " + var.getName();
-			return str;
-		}
-		case DEFINITION_VAR_FRAGMENT: {
-			DefVarFragment fragment = (DefVarFragment) defUnit;
-			
-			String str = fragment.getTypeString() + " " + fragment.getName();
-			return str;
-		}
-
-		case DEFINITION_FUNCTION: {
-			DefinitionFunction function = (DefinitionFunction) defUnit; 
-			cp.appendStrings(function.typeRefToUIString(function.retType), " ");
-			cp.append(function.getName());
-			cp.appendList("(", function.tplParams, ",", ") ");
-			cp.appendList("(", function.getParams_asNodes(), ",", ") ");
-			return cp.toString();
-		}
-		
-		default:
-			break;
-		}
-		
-		if(defUnit instanceof DefinitionAggregate) {
-			DefinitionAggregate defAggr = (DefinitionAggregate) defUnit;
-			cp.append(defAggr.getName());
-			cp.appendList("(", defAggr.tplParams, ",", ") ");
-			return cp.toString();
-		}
-		
-		// Default hover signature:
-		return defUnit.getName();
-	}
-
 	@SuppressWarnings("restriction")
 	private static String convertToHTMLContent(String str) {
 		

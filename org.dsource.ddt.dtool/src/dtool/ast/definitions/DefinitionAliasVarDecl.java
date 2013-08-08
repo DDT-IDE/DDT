@@ -73,11 +73,6 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		return target.getTargetScope(moduleResolver);
 	}
 	
-	@Override
-	public String toStringForCodeCompletion() {
-		return getName() + " -> " + target.toStringAsElement();
-	}
-	
 	// TODO:
 	public static class AliasVarDeclFragment extends DefUnit {
 		

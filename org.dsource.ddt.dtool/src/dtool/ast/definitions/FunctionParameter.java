@@ -74,12 +74,6 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	}
 	
 	@Override
-	public String toStringForCodeCompletion() {
-		return getName() + "   " + type.toStringAsElement() + " - "
-				+ NodeUtil.getOuterDefUnit(this).toStringAsElement();
-	}
-	
-	@Override
 	public String toStringAsFunctionSignaturePart() {
 		return type.toStringAsElement() + " " + getName();
 	}
