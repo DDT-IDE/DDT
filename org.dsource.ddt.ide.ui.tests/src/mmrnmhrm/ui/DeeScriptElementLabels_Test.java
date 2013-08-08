@@ -35,7 +35,7 @@ public class DeeScriptElementLabels_Test extends BaseDeeTest implements ITestRes
 			ScriptElementLabels.T_FULLY_QUALIFIED |
 			ScriptElementLabels.T_TYPE_PARAMETERS |
 			ScriptElementLabels.F_FULLY_QUALIFIED |
-			ScriptElementLabels.M_FULLY_QUALIFIED | ScriptElementLabels.M_PARAMETER_NAMES  
+			ScriptElementLabels.M_FULLY_QUALIFIED | ScriptElementLabels.M_PARAMETER_TYPES  
 			;
 	
 	public static ISourceModule getSourceModule(String srcFolder, String cuPath) {

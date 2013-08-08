@@ -142,6 +142,7 @@ public class DeeDefUnitLabelProvider {
 	}
 	
 	public static String getDefUnitContainerSuffix(DefUnit defUnit) {
+		/* BUG here can be null with synthetic defUnits */
 		return " - " + defUnit.getModuleScope().toStringAsElement();
 	}
 	

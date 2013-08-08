@@ -81,7 +81,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements IS
 		for (int i = 0; i < params.size(); i++) {
 			if(i != 0)
 				strParams += ", ";
-			strParams += params.get(i).toStringAsFunctionSignaturePart();
+			strParams += params.get(i).toStringForFunctionSignature();
 		}
 		return strParams + ")";
 	}

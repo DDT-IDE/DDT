@@ -3,6 +3,7 @@
 = DDT Change Log =
 
 == DDT 0.7.0 (development) ==
+ * Fixed bug with the display text of function and template parameters in code completion popup.  
  * Fixed code completion NPE bug with function declaration with missing syntax.
  * Fixed code completion NPE bug with conditional declarations/statements with missing bodies.
  * Implemented #3 : support Debian Linux DMD layout

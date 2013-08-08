@@ -226,7 +226,9 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	public void checkResults(Collection<DefUnit> resultDefUnitsOriginal, String[] expectedResults,
 		boolean removedDummyResults) {
 		
-		precheckOriginalResults(resultDefUnitsOriginal);
+		if(resultDefUnitsOriginal != null) {
+			precheckOriginalResults(resultDefUnitsOriginal);
+		}
 		
 		DefUnitResultsChecker defUnitResultsChecker = new DefUnitResultsChecker(resultDefUnitsOriginal);
 		

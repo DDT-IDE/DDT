@@ -8,7 +8,6 @@ import java.util.Collection;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.LexElement;
@@ -74,20 +73,25 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	}
 	
 	@Override
-	public String toStringAsFunctionSignaturePart() {
-		return type.toStringAsElement() + " " + getName();
+	public String getTypeStringRepresentation() {
+		return getStringRepresentation(type, null, isVariadic);
 	}
 	
 	@Override
-	public String toStringAsFunctionSimpleSignaturePart() {
-		return type.toStringAsElement();
-	}
-	
-	@Override
-	public String toStringInitializer() {
+	public String getInitializerStringRepresentation() {
 		if(defaultValue == null)
 			return null;
 		return defaultValue.toStringAsElement();
+	}
+	
+	@Override
+	public String toStringForFunctionSignature() {
+		return getStringRepresentation(type, getName(), isVariadic);
+	}
+	
+	public static String getStringRepresentation(Reference type, String name, boolean isVariadic) {
+		String nameStr = name == null ? "": " " + name;
+		return type.toStringAsElement() + nameStr + (isVariadic ? "..." : "");
 	}
 	
 }

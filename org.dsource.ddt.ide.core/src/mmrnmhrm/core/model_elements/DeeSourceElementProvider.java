@@ -401,15 +401,14 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 		ArrayView<IFunctionParameter> params = elem.getParameters();
 		
 		methodInfo.parameterNames = new String[params.size()];
+		methodInfo.parameterTypes = new String[params.size()];
 		methodInfo.parameterInitializers = new String[params.size()];
 		for (int i = 0; i < methodInfo.parameterNames.length; i++) {
-			String name = params.get(i).toStringAsFunctionSimpleSignaturePart();
-			if(name == null) {
-				name = "";
-			}
-			methodInfo.parameterNames[i] = name;
-			String initStr = params.get(i).toStringInitializer();
-			methodInfo.parameterInitializers[i] = initStr; 
+			IFunctionParameter param = params.get(i);
+			
+			methodInfo.parameterNames[i] = param instanceof DefUnit ? ((DefUnit) param).getName() : "";
+			methodInfo.parameterTypes[i] = param.getTypeStringRepresentation();
+			methodInfo.parameterInitializers[i] = param.getInitializerStringRepresentation(); 
 		}
 	}
 	

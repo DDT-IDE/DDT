@@ -84,13 +84,13 @@ public interface IFunctionParameter extends IASTNode {
 	
 	boolean isVariadic();
 	
-	/** Basicly, returns the type string for this function parameter. */
-	String toStringAsFunctionSimpleSignaturePart();
+	/** @return a string representation of the type of this function parameter. */
+	String getTypeStringRepresentation();
 	
-	/** A String representation for the initializer*/
-	String toStringInitializer();
+	/** @return a string representation of the initializer. Can be null.*/
+	String getInitializerStringRepresentation();
 	
-	/** Returns a string to be used as part of function full signature.  */
-	String toStringAsFunctionSignaturePart();
+	/** @return a string representation of this parameter, for use as part of a function signature. */
+	String toStringForFunctionSignature();
 
 }

@@ -1,5 +1,6 @@
 package dtool.ast.definitions;
 
+import static dtool.ast.definitions.FunctionParameter.getStringRepresentation;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -55,20 +56,20 @@ public class NamelessParameter extends ASTNode implements IFunctionParameter {
 	}
 	
 	@Override
-	public String toStringAsFunctionSignaturePart() {
-		return type.toStringAsElement();
+	public String getTypeStringRepresentation() {
+		return getStringRepresentation(type, null, isVariadic);
 	}
 	
 	@Override
-	public String toStringAsFunctionSimpleSignaturePart() {
-		return type.toStringAsElement();
-	}
-	
-	@Override
-	public String toStringInitializer() {
+	public String getInitializerStringRepresentation() {
 		if(defaultValue == null)
 			return null;
 		return defaultValue.toStringAsElement();
+	}
+	
+	@Override
+	public String toStringForFunctionSignature() {
+		return getStringRepresentation(type, null, isVariadic);
 	}
 	
 }
