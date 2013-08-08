@@ -21,7 +21,7 @@ import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.ASTNode;
-import dtool.ast.ASTVisitor;
+import dtool.ast.ASTSwitchVisitor;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DefUnit;
@@ -49,7 +49,7 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
 import dtool.util.ArrayView;
 
-public final class DeeSourceElementProvider extends DeeSourceElementProviderNodeSwitcher {
+public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	protected ISourceElementRequestor requestor;
 	
@@ -67,16 +67,7 @@ public final class DeeSourceElementProvider extends DeeSourceElementProviderNode
 			requestor.enterNamespace(EMPTY_STRING);
 		}
 		
-		module.accept(new ASTVisitor() {
-			@Override
-			public boolean preVisit(ASTNode node) {
-				return DeeSourceElementProvider.this.preVisit(node);
-			}
-			@Override
-			public void postVisit(ASTNode node) {
-				DeeSourceElementProvider.this.postVisit(node);
-			}
-		});
+		module.accept(this);
 		
 		requestor.exitNamespace();
 		

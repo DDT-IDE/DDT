@@ -1,7 +1,6 @@
-package mmrnmhrm.core.model_elements;
+package dtool.ast;
 
 
-import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasFunctionDecl;
@@ -20,10 +19,11 @@ import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 
-public abstract class DeeSourceElementProviderNodeSwitcher {
+public abstract class ASTSwitchVisitor extends ASTVisitor {
 
-	// NOTE: make sure preVisit code is matches endVisit
+	// NOTE: make sure preVisit code matches endVisit
 	
+	@Override
 	public final boolean preVisit(ASTNode node) {
 		switch (node.getNodeType()) {
 		case MODULE:
@@ -69,9 +69,9 @@ public abstract class DeeSourceElementProviderNodeSwitcher {
 		default:
 			return true;
 		}
-		
 	}
 	
+	@Override
 	public final void postVisit(ASTNode node) {
 		switch (node.getNodeType()) {
 		case MODULE:
@@ -168,5 +168,44 @@ public abstract class DeeSourceElementProviderNodeSwitcher {
 	/* ---------------------------------- */
 	
 	public abstract boolean visit(NamedReference elem);
+	
+	
+	/* ========================================== */
+	
+	public static abstract class ASTCommonSwitchVisitor extends ASTSwitchVisitor {
+		
+		@Override public void endVisit(Module node) { }
+		
+		@Override public void endVisit(DefinitionStruct node) {}
+		
+		@Override public void endVisit(DefinitionUnion node) { }
+		
+		@Override public void endVisit(DefinitionClass node) { }
+		
+		@Override public void endVisit(DefinitionInterface node) { }
+		
+		@Override public void endVisit(DefinitionTemplate node) { }
+		
+		@Override public void endVisit(DefinitionMixinInstance node) { }
+		
+		@Override public void endVisit(DefinitionEnum node) { }
+		
+		@Override public void endVisit(EnumMember node) { }
+		
+		@Override public void endVisit(DefinitionAliasVarDecl node) { }
+		
+		@Override public void endVisit(DefinitionAliasFragment node) { }
+		
+		@Override public void endVisit(DefinitionAliasFunctionDecl node) { }
+		
+		@Override public void endVisit(DefinitionFunction node) { }
+		
+		@Override public void endVisit(DefinitionConstructor node) { }
+		
+		@Override public void endVisit(DefinitionVariable node) { }
+		
+		@Override public void endVisit(DefVarFragment node) { }
+		
+	}
 	
 }
