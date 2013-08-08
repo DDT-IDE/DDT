@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import melnorme.utilbox.core.Function;
+
 /**
  * Miscelleanous String utilities 
  */
@@ -25,22 +27,47 @@ public final class StringUtil {
 	public static final Charset UTF16 = Charset.forName("UTF-16");
 	
 	
-	/** @return a String of the given Collection elements with the given separator String. */
+	/** @return a String produced from the given coll with the given separator String, 
+	 * using the elements's toString() method. */
 	public static String collToString(Collection<?> coll, String sep) {
-		//if(coll == null) return "<null>";
-		
+		return collToString(coll, sep, null);
+	}
+	
+	/** @return a String produced from the given coll with the given separator String, 
+	 * using give strFunction to produce a string from each element. */
+	public static <T> String collToString(Collection<T> coll, String sep, Function<T, String> strFunction) {
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for(T item : coll){
+			if(!first)
+				sb.append(sep);
+			first = false;
+			
+			sb.append(strFunction == null ? item.toString() : strFunction.evaluate(item));
+		}
+		return sb.toString();
+	}
+	
+	// This helper function is not used in code, but rather for Eclipse IDE debug detail formatters
+	@SuppressWarnings("unused")
+	private static <T> String debug_collToString(Collection<T> coll) {
+//		Collection<?> coll = this;
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
 		for(Object item : coll){
 			if(!first)
-				sb.append(sep);
-			else
-				first = false;
-			sb.append(item.toString());
+				sb.append("\n");
+			first = false;
+			
+			String itemStr = item.toString();
+			int firstLine = itemStr.indexOf("\n");
+			if(firstLine != -1) {
+				itemStr = itemStr.substring(0, firstLine); 
+			}
+			sb.append(itemStr);
 		}
 		return sb.toString();
 	}
-
 	
 	/** @return a String from the given coll with a given separator String. */	
 	public static String collToString(Object[] coll, String sep) {
@@ -49,8 +76,7 @@ public final class StringUtil {
 		for(Object item : coll){
 			if(!first)
 				sb.append(sep);
-			else
-				first = false;
+			first = false;
 			sb.append(item.toString());
 		}
 		return sb.toString();
