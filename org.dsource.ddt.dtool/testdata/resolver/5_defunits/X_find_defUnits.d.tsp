@@ -1,12 +1,11 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module Module;
+module Module; // TODO: rest of defUnits
 
 int Var; 
-auto VarAuto = 2;
-
 int Var1, Var2, Var3;
-int VarAuto1 = int, VarAuto2 = bar;
+auto VarAuto = 2;
+auto VarAuto1 = int, VarAuto2 = bar;
 
 
 int Function (int Param = 3, Foo Param2 ...)  { }
@@ -26,6 +25,11 @@ union Union
 enum Enum { member1, member2, }
 enum { EnumMemberA, EnumMemberB }
 
+alias Alias1 = foo[], Alias2 = bar[1123 + 3]; 
+alias foo[] AliasVarDecl; 
+alias foo[] AliasFunctionDecl(int[2] a) nothrow;
+
+
 template Template(
 	TemplateParamType, 
 	int TemplateParamValue, 
@@ -39,16 +43,11 @@ template Template(
 	
 Module
 
-Var
-VarAuto
-Var1
+Var▪Var1
+VarAuto▪VarAuto1
 #comment(TODO)¤【
-Var2
-Var3
-VarAuto2
+Var2▪Var3▪VarAuto2
 】
-
-VarAuto1
 
 Function
 Function
@@ -58,6 +57,9 @@ Class▪Interface▪Struct▪Union
 
 Enum
 EnumMemberA▪EnumMemberB
+
+#comment(TODO)¤【Alias1▪Alias2▪】
+AliasVarDecl▪AliasFunctionDecl
 
 Template
 

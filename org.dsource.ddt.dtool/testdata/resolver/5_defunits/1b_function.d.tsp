@@ -30,4 +30,5 @@ int FunctionSyntaxError(_dummy, _dummy : T[], alias _dummy)
 int Function(int Param, char, int Param2, Foo Param3...)  { 
 	int a;
 	#REFSEARCH¤【a▪Param▪Param2▪Param3▪Function】
+	// TODO: more pick locations
 }

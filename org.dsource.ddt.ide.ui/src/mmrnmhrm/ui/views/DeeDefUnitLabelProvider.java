@@ -115,6 +115,7 @@ public class DeeDefUnitLabelProvider {
 		}
 		case DEFINITION_ALIAS_FUNCTION_DECL: {
 			DefinitionAliasFunctionDecl elem = (DefinitionAliasFunctionDecl) defUnit;
+			// TODO: print a proper alias segment
 			return elem.getName() + getAliasSegment(elem.target) + getDefUnitContainerSuffix(defUnit);
 		}
 		
