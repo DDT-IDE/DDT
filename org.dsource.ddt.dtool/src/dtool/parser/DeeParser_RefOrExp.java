@@ -505,14 +505,10 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	protected Expression createMissingExpression(ParseRuleDescription expectedRule, LexElement previousToken,
 		int nodeStart, int nodeEnd) {
 		
-		MissingExpression missingExp = new MissingExpression();
-		missingExp.setSourceRange(nodeStart, nodeEnd - nodeStart);
-		ParserError error = null;
-		if(expectedRule != null) {
-			SourceRange errorRange = previousToken.getSourceRange();
-			error = createError(ParserErrorTypes.EXPECTED_RULE, errorRange, expectedRule.description);
-		}
-		return conclude(error, missingExp);
+		ParserError error = expectedRule != null ? 
+			createErrorExpectedRule(expectedRule, previousToken.getSourceRange()) : null;
+		
+		return conclude(error, srBounds(nodeStart, nodeEnd, new MissingExpression()));
 	}
 	
 	public boolean isMissing(Expression exp) {
@@ -1347,11 +1343,8 @@ protected class ParseRule_Expression {
 			if(parse.consumeOptional(DeeTokens.KW_CLASS)) {
 				return parseNewAnonClassExpression_afterClassKeyword(parse, allocArgs);
 			}
-			if(parse.ruleBroken) break parsing;
 			
-			type = parseTypeReference_ToMissing().node;
-			//TODO: review if this is necessary:
-			parse.setRuleBroken(type.syntaxIsMissingIdentifier());
+			type = parse.checkResult(parseTypeReference_ToMissing(true));
 			if(parse.ruleBroken) break parsing;
 			
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
@@ -1377,7 +1370,7 @@ protected class ParseRule_Expression {
 			
 			baseClasses.parseSimpleList(DeeTokens.COMMA, true, false);
 			
-			declBody = parse.requiredResult(thisParser().parseDeclarationBlock(), DeeParser.RULE_DECLARATION_BLOCK);
+			declBody = parse.parseRequiredRule(thisParser().parseDeclarationBlock(), DeeParser.RULE_DECLARATION_BLOCK);
 		}
 		
 		return parse.resultConclude(new ExpNewAnonClass(allocArgs, args, baseClasses.members, declBody));

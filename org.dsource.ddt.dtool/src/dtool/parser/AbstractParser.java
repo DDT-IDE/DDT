@@ -194,6 +194,10 @@ public abstract class AbstractParser {
 		return createErrorOnLastToken(ParserErrorTypes.EXPECTED_RULE, expectedRule.description);
 	}
 	
+	protected ParserError createErrorExpectedRule(ParseRuleDescription expectedRule, SourceRange sourceRange) {
+		return createError(ParserErrorTypes.EXPECTED_RULE, sourceRange, expectedRule.description);
+	}
+	
 	protected ParserError createSyntaxError(ParseRuleDescription expectedRule) {
 		return createErrorOnLastToken(ParserErrorTypes.SYNTAX_ERROR, expectedRule.description);
 	}
@@ -242,10 +246,6 @@ public abstract class AbstractParser {
 	
 	public final void advanceSubChannelTokens() {
 		getEnabledLexSource().advanceSubChannelTokens();
-	}
-	
-	public final MissingLexElement consumeSubChannelTokens() {
-		return consumeSubChannelTokens(null);
 	}
 	
 	public final MissingLexElement consumeSubChannelTokensNoError() {
@@ -366,7 +366,7 @@ public abstract class AbstractParser {
 			}
 			if(isOptional == false) {
 				storeError(createExpectedTokenError(expectedTokenType));
-				setRuleBroken(breaksRule);
+				parseBrokenRule(breaksRule);
 			}
 			return false;
 		}
@@ -379,25 +379,20 @@ public abstract class AbstractParser {
 			return token;
 		}
 		
-		public final ProtoDefSymbol checkResult(ProtoDefSymbol defId) {
-			setRuleBroken(defId.isMissing());
-			return defId;
-		}
-		
-		public final <T extends ASTNode> T checkResult(NodeResult<T> nodeResult) {
-			if(nodeResult == null) 
-				return null;
-			setRuleBroken(nodeResult.ruleBroken);
-			return nodeResult.node;
-		}
-		
 		public void setRuleBroken(boolean ruleBroken) {
 			this.ruleBroken = ruleBroken;
 		}
 		
+		public void parseBrokenRule(boolean ruleBroken) {
+			if(ruleBroken) {
+				advanceSubChannelTokens();
+				setRuleBroken(true);
+			}
+		}
+		
 		public final ParseHelper clearRuleBroken() {
 			if(ruleBroken) {
-				setRuleBroken(false);
+				ruleBroken = false;
 			}
 			return this;
 		}
@@ -412,18 +407,33 @@ public abstract class AbstractParser {
 			return ruleBroken;
 		}
 		
-		public <T extends ASTNode> T requiredResult(NodeResult<T> nodeResult, ParseRuleDescription expectedRule) {
-			if(nodeResult.node == null) {
-				storeBreakError(createErrorExpectedRule(expectedRule));
+		public final ProtoDefSymbol checkResult(ProtoDefSymbol defId) {
+			setRuleBroken(defId.isMissing());
+			return defId;
+		}
+		
+		public final <T extends ASTNode> T checkResult(NodeResult<T> nodeResult) {
+			if(nodeResult == null) 
 				return null;
-			}
 			setRuleBroken(nodeResult.ruleBroken);
 			return nodeResult.node;
 		}
 		
-		protected final ParserError storeBreakError(ParserError error) {
-			setRuleBroken(error != null);
-			return storeError(error);
+		/** 
+		 * Parse a required rule.
+		 * Note that the parsing of the required rule is not actually performed by this function,
+		 * but instead it must be called *immediately* before this function is called, 
+		 * and the result placed in give nodeResult.
+		 * (This is so that lambdas/function-delegate don't have to be used)
+		 */
+		public <T extends ASTNode> T parseRequiredRule(NodeResult<T> nodeResult, ParseRuleDescription expectedRule) {
+			if(nodeResult.node == null) {
+				storeError(createErrorExpectedRule(expectedRule));
+				parseBrokenRule(true);
+				return null;
+			}
+			parseBrokenRule(nodeResult.ruleBroken);
+			return nodeResult.node;
 		}
 		
 		protected final ParserError storeError(ParserError error) {

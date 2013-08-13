@@ -254,7 +254,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		boolean inStatementList) {
 		LexElement badToken = consumeLookAhead();
 		ParseHelper parse = new ParseHelper();
-		parse.storeBreakError(createSyntaxError(expectedRule));
+		parse.storeError(createSyntaxError(expectedRule));
 		return parse.conclude(new InvalidSyntaxElement(inStatementList, badToken));
 	}
 	
@@ -820,7 +820,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				if(parse.ruleBroken) break parsing;
 			}
 			
-			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
+			fnBody = parse.parseRequiredRule(parseFunctionBody(), RULE_FN_BODY);
 		}
 		
 		Token[] comments = parse.parseEndDDocComments();
@@ -943,9 +943,10 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				bodyBlock = parse.checkResult(parseBlockStatement_toMissing(false));
 			} else {
 				if(inBlock == null && outBlock == null) {
-					return nullResult().<FunctionBody>upcastTypeParam();
+					return AbstractParser.<FunctionBody>nullResult();
+				} else {
+					parse.parseRequiredRule(nullResult(), RULE_FN_BODY);
 				}
-				parse.storeBreakError(createErrorExpectedRule(RULE_FN_BODY));
 			}
 		}
 		
@@ -1034,7 +1035,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		public void parseDeclarationBlockBody() {
 			ParseHelper parse = this;
 			if(parse.ruleBroken == false) {
-				declBody = parse.requiredResult(parseDeclarationBlock(), RULE_DECLARATION_BLOCK);
+				declBody = parse.parseRequiredRule(parseDeclarationBlock(), RULE_DECLARATION_BLOCK);
 			}
 		}
 		
@@ -1044,7 +1045,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				if(tryConsume(DeeTokens.SEMICOLON)) {
 					declBody = concludeNode(srOf(lastLexElement(), new DeclarationEmpty()));
 				} else {
-					declBody = parse.requiredResult(parseDeclarationBlock(), RULE_AGGR_BODY);
+					declBody = parse.parseRequiredRule(parseDeclarationBlock(), RULE_AGGR_BODY);
 				}
 			}
 		}
@@ -1240,7 +1241,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(tryConsume(DeeTokens.SEMICOLON)) {
 				body = concludeNode(srOf(lastLexElement(), new DefinitionEnum.NoEnumBody()));
 			} else {
-				body = parse.requiredResult(parseEnumBody(), RULE_ENUM_BODY);
+				body = parse.parseRequiredRule(parseEnumBody(), RULE_ENUM_BODY);
 			}
 		}
 		Token[] comments = parse.parseEndDDocComments();
@@ -1259,7 +1260,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				type = parse.checkResult(parseTypeReference_ToMissing());
 				if(parse.ruleBroken) break parsing;
 			}
-			body = parse.requiredResult(parseEnumBody(), RULE_ENUM_BODY);
+			body = parse.parseRequiredRule(parseEnumBody(), RULE_ENUM_BODY);
 		}
 		return parse.resultConclude(new DeclarationEnum(type, body));
 	}
@@ -1456,7 +1457,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			
 			fnAttributes = parseFunctionAttributes();
-			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
+			fnBody = parse.parseRequiredRule(parseFunctionBody(), RULE_FN_BODY);
 		}
 		
 		return parse.resultConclude(new DeclarationSpecialFunction(kind, fnAttributes, fnBody));
@@ -1475,7 +1476,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			params = parseFunctionParameters(parse);
 			if(parse.ruleBroken) break parsing;
 			
-			fnBody = parse.requiredResult(parseFunctionBody(), RULE_FN_BODY);
+			fnBody = parse.parseRequiredRule(parseFunctionBody(), RULE_FN_BODY);
 		}
 		
 		return parse.resultConclude(new DeclarationAllocatorFunction(isNew, params, fnBody));

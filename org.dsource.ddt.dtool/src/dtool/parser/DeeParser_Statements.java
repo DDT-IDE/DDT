@@ -81,7 +81,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		boolean createMissing, boolean brokenIfMissing, boolean isScoped) {
 		if(!tryConsume(DeeTokens.OPEN_BRACE)) {
 			if(createMissing) {
-				return result(brokenIfMissing, createMissingBlock(RULE_BLOCK, isScoped));
+				return parseMissingBlock(brokenIfMissing, RULE_BLOCK, isScoped);
 			}
 			return nullResult(); 
 		}
@@ -93,11 +93,15 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		return parse.resultConclude(isScoped ? new BlockStatement(body) : new BlockStatementUnscoped(body));
 	}
 	
-	protected CommonStatementList createMissingBlock(ParseRuleDescription expectedRule, boolean isScoped) {
-		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
+	public NodeResult<? extends CommonStatementList> parseMissingBlock(boolean brokenIfMissing,
+		ParseRuleDescription expectedRule, boolean isScoped) {
+		if(brokenIfMissing) {
+			advanceSubChannelTokens();
+		}
 		int nodeStart = getSourcePosition();
-		return conclude(error, srToPosition(nodeStart, 
-			isScoped ? new BlockStatement() : new BlockStatementUnscoped()));
+		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
+		return result(brokenIfMissing, conclude(error, srToPosition(nodeStart, 
+			isScoped ? new BlockStatement() : new BlockStatementUnscoped())));
 	}
 	
 	protected NodeResult<ScopedStatementList> parseScopedStatementList() {
@@ -139,10 +143,10 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		return parseStatement_toMissing(RULE_ST_OR_BLOCK);
 	}
 	
-	protected NodeResult<? extends IStatement> parseStatement_toMissing(ParseRuleDescription expected) {
+	protected NodeResult<? extends IStatement> parseStatement_toMissing(ParseRuleDescription expectedRule) {
 		NodeResult<? extends IStatement> stResult = parseStatement();
 		if(stResult.node == null) {
-			return result(false, createMissingBlock(expected, true));
+			return parseMissingBlock(false, expectedRule, true);
 		}
 		return stResult;
 	}
@@ -150,7 +154,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 	protected NodeResult<? extends IStatement> parseUnscopedStatement_toMissing() {
 		NodeResult<? extends IStatement> stResult = parseStatement(true, false);
 		if(stResult.node == null) {
-			return result(false, createMissingBlock(RULE_ST_OR_BLOCK, false));
+			return parseMissingBlock(false, RULE_ST_OR_BLOCK, false);
 		}
 		return stResult;
 	}

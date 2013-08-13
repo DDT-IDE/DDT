@@ -363,6 +363,13 @@ public class DeeParserTester extends CommonTestUtils {
 		boolean ruleBreakExpected = removeTestMetadataEntries("RULE_BROKEN").isEmpty() == false;
 		if(removeTestMetadata("IGNORE_BREAK_FLAG_CHECK") == null) {
 			assertTrue(result.ruleBroken == ruleBreakExpected);
+			if(result.ruleBroken) {
+				// if rule syntax is broken then node position must include all pending whitespace source.
+				assertTrue(result.node.getEndPos() >= parsedSource.length());
+				// The reason the above is not a strict equality check is just because
+				// parsedSource/expectedRemainingSource is not entirely accurate in most test cases:
+				// there is usually a bit of whitespace in expectedRemainingSource that may be consumed as well.
+			}
 		}
 		
 		if(parseRule == null) {
