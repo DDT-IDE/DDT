@@ -704,9 +704,10 @@ protected class ParseRule_Expression {
 				}
 			}
 			ParseHelper parse = new ParseHelper(qualifier.getStartPos());
-			Reference ref = parseRefQualifiedForExp(parse, qualifier);
-			// TODO check break...
-			ref = parseTypeReference_withLeftReference(ref, RefParseRestrictions.TEMPLATE_ONLY).node; 
+			Reference ref = parseRefQualified(parse, qualifier);
+			if(!parse.ruleBroken) {
+				ref = parseTypeReference_withLeftReference(ref, RefParseRestrictions.TEMPLATE_ONLY).node; 
+			}
 			return parsePostfixExpression(conclude(createExpReference(ref)));
 		}
 		default:

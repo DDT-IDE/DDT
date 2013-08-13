@@ -43,9 +43,13 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 #PARSE(REFERENCE)    #@TYPE_REFS__QUALIFIER_ForDotOnly #@IGNORE_REST !this #?TYPE_REF_TPL_SIMPLE_ARG{#:DISCARD_CASE}
 #STRUCTURE_EXPECTED: #@TYPE_REFS__QUALIFIER_ForDotOnly
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ SPECIAL case: in expression context we allow any kinf of qualified exp
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ SPECIAL case: in EXPRESSION context we allow any kinf of qualified exp
 #PARSE(Expression)   #@EXP_POSTFIX . foo ! this 
 #STRUCTURE_EXPECTED: ExpReference( RefTemplateInstance( RefQualified(#@EXP_POSTFIX RefIdentifier) ExpThis) )
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ EXPRESSION context  - test broken qualifier
+#PARSE(Expression)   foo . #@NO_ID #@IGNORE_REST ! this 
+#STRUCTURE_EXPECTED: ExpReference( RefQualified(RefIdentifier #@NO_ID) )
 
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ tpl single arg

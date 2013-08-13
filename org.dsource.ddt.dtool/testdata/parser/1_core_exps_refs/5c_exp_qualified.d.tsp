@@ -36,8 +36,8 @@
 #PARSE(EXPRESSION)     #PARSING_AS_EXP(flag) #@TYPE_REFS__NO_BROKEN__INVALID_QUALIFIER .init #parser(AllowAnyErrors)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(EXPRESSION_ToE) #@QUALIFIER . #@NO_ID /* error doesnt break parsing */ + 23
-#STRUCTURE_EXPECTED:   ExpInfix(  ExpReference(RefQualified(#@QUALIFIER #@NO_ID)) Integer  )
+#PARSE(EXPRESSION_ToE) #@QUALIFIER . #@NO_ID /* error doesnt break parsing */ () + 23
+#STRUCTURE_EXPECTED:   ExpInfix( ExpCall( ExpReference(RefQualified(#@QUALIFIER #@NO_ID)) )  Integer)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION_ToE) . #@NO_ID /* error doesnt break parsing */ + 23
 #STRUCTURE_EXPECTED:   ExpInfix(  ExpReference(RefModuleQualified(#@NO_ID)) Integer  )
