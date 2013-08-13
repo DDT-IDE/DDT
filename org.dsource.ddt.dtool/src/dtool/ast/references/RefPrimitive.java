@@ -10,10 +10,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.parser.IToken;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.IScope;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
-import dtool.resolver.ScopeUtil;
 import dtool.resolver.api.IModuleResolver;
 
 public class RefPrimitive extends NamedReference {
@@ -50,8 +48,7 @@ public class RefPrimitive extends NamedReference {
 	
 	@Override
 	public void doSearch(PrefixDefUnitSearch search) {
-		IScope lookupScope = ScopeUtil.getOuterScope(this);
-		ReferenceResolver.findDefUnitInExtendedScope(lookupScope, search);
+		ReferenceResolver.resolveSearchInFullLexicalScope(this, search);
 	}
 	
 	@Override

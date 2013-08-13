@@ -30,13 +30,11 @@ public abstract class PrefixDefUnitSearchBase extends CommonDefUnitSearch {
 			return null;
 		}
 	}
-
-	public final PrefixSearchOptions searchOptions;
 	
-	public PrefixDefUnitSearchBase(ASTNode originNode, int refOffset, IModuleResolver moduleResolver,
-		PrefixSearchOptions searchOptions) {
+	public final PrefixSearchOptions searchOptions = new PrefixSearchOptions();
+	
+	public PrefixDefUnitSearchBase(ASTNode originNode, int refOffset, IModuleResolver moduleResolver) {
 		super(originNode, refOffset, moduleResolver);
-		this.searchOptions = searchOptions;
 	}
 	
 }

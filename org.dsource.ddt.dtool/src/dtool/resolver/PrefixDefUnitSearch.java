@@ -1,17 +1,14 @@
 package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import dtool.ast.ASTNode;
-import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.expressions.Expression;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
@@ -43,9 +40,9 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 	
 	protected int relexStartPos; // for tests only
 	
-	public PrefixDefUnitSearch(PrefixSearchOptions searchOptions, ASTNode originNode, int refOffset,
+	public PrefixDefUnitSearch(ASTNode originNode, int refOffset,
 			IDefUnitMatchAccepter defUnitAccepter, IModuleResolver moduleResolver) {
-		super(originNode, refOffset, moduleResolver, searchOptions);
+		super(originNode, refOffset, moduleResolver);
 		this.defUnitAccepter = defUnitAccepter;
 	}
 	
@@ -96,9 +93,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		int relexStartPos = nodeFinder.lastNodeBoundary;
 		Token token = findTokenAtOffset(offset, source, relexStartPos);
 		
-		PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-		final PrefixDefUnitSearch search = 
-			new PrefixDefUnitSearch(searchOptions, node, offset, defUnitAccepter, mr);
+		PrefixDefUnitSearch search = new PrefixDefUnitSearch(node, offset, defUnitAccepter, mr);
 		search.relexStartPos = relexStartPos;
 		
 		if((offset > token.getStartPos() && offset < token.getEndPos()) && 
@@ -107,6 +102,11 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				"Invalid location (inside unmodifiable token)");
 		}
 		
+		search.performCompletionSearch(offset, source, node);
+		return search;
+	}
+
+	public void performCompletionSearch(int offset, String source, ASTNode node) {
 		/* ============================================== */
 		// : Do actual completion search
 		
@@ -122,19 +122,6 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 			} else if(node instanceof RefImportSelection) {
 				RefImportSelection refImpSel = (RefImportSelection) node;
 				setupPrefixedSearchOptions(searchOptions, offset, refImpSel.getOffset(), refImpSel.getIdString());
-			} else if(node instanceof CommonRefQualified) {
-				
-				int dotOffset = -1;
-				if(node instanceof RefQualified) {
-					dotOffset = ((RefQualified) node).dotOffset;
-				} else {
-					dotOffset = node.getStartPos();
-				}
-				
-				if(offset <= dotOffset) {
-					return search.assignResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
-							"Invalid Location: before qualifier dot but not next to id.");
-				}
 			} else if(node instanceof RefModule) {
 				RefModule refMod = (RefModule) node;
 				
@@ -150,39 +137,33 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				String moduleSourceNamePrefix = refModSource.substring(0, offset-refMod.getStartPos());
 				setupPrefixedSearchOptions_withCanonization(searchOptions, rplLen, moduleSourceNamePrefix);
 				
+			} else if(node instanceof CommonRefQualified) {
+				
+				int dotOffset = -1;
+				if(node instanceof RefQualified) {
+					dotOffset = ((RefQualified) node).dotOffset;
+				} else {
+					dotOffset = node.getStartPos();
+				}
+				
+				if(offset <= dotOffset) {
+					assignResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
+							"Invalid Location: before qualifier dot but not next to id.");
+					return;
+				}
 			} else {
 				throw assertFail();
 			}
 			
-			namedRef.doSearch(search);
+			namedRef.doSearch(this);
+			assertTrue(resultCode == ECompletionResultStatus.RESULT_OK);
 		} else if(node instanceof Reference) {
-			return search.assignResult(ECompletionResultStatus.OTHER_REFERENCE, 
-					"Can't complete for node: "+node.getNodeType()+"");
+			assignResult(ECompletionResultStatus.OTHER_REFERENCE, "Can't complete for node: "+node.getNodeType()+"");
+			return;
 		} else {
-			// Since picked node was not a reference, determine appropriate lexical starting scope
-			// TODO: this code is a mess, need to cleanup and simplify
-			// See also ReferenceResolver.getStartingScope(refSingle);
-			IScope scope;
-			while(true) {
-				assertNotNull(node); 
-				scope = isValidCompletionScope(node);
-				if(scope != null)
-					break;
-				
-				if(isInsideNonScopeBlock(node, offset, source)) {
-					scope = ScopeUtil.getScopeNode(node);
-					break;
-				}
-				
-				node = node.getParent();
-			}
-			assertNotNull(scope);
-			
-			ReferenceResolver.findDefUnitInExtendedScope(scope, search);
+			ReferenceResolver.resolveSearchInFullLexicalScope(node, this);
+			assertTrue(resultCode == ECompletionResultStatus.RESULT_OK);
 		}
-		
-		assertTrue(search.resultCode == ECompletionResultStatus.RESULT_OK);
-		return search;
 	}
 	
 	/** Find the token at given offset of given source (inclusive end).
@@ -202,25 +183,6 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		}
 	}
 
-	private static boolean isInsideNonScopeBlock(ASTNode node, int offset, String sourceStr) {
-		if(!(node instanceof INonScopedBlock)) {
-			return false;
-		}
-		INonScopedBlock nonScopedBlock = (INonScopedBlock) node;
-		nonScopedBlock.getMembersIterator(); // Need proper way to determine CC context
-		
-		if(node instanceof DeclarationAttrib) {
-			int blockContentsStart = sourceStr.indexOf(":", node.getStartPos());
-			if(blockContentsStart != -1 && offset > blockContentsStart) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
 	private static void setupPrefixedSearchOptions(PrefixSearchOptions searchOptions, int offset, int nameOffset,
 			String name) {
 		assertTrue(offset >= nameOffset);
@@ -249,13 +211,4 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		searchOptions.rplLen = rplLen;
 	}
 	
-	private static IScope isValidCompletionScope(ASTNode node) {
-		if(node instanceof IScope) {
-			return (IScope) node;
-		} else if(node instanceof Expression) {
-			return ScopeUtil.getOuterScope(node);
-		} 
-		return null;
-	}
-
 }

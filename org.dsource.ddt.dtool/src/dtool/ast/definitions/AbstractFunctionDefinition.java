@@ -11,9 +11,6 @@
 package dtool.ast.definitions;
 
 
-import java.util.Iterator;
-import java.util.List;
-
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -28,7 +25,7 @@ import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 public abstract class AbstractFunctionDefinition extends CommonDefinition 
-	implements ICallableElement, IScope, IResolveParticipant
+	implements ICallableElement, IResolveParticipant
 {
 	
 	public final ArrayView<TemplateParameter> tplParams;
@@ -69,35 +66,16 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		cp.appendNodeOrNullAlt(fnBody, " ");
 	}
 	
+	@Deprecated
 	@Override
 	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		// FIXME
-		return this;
-	}
-	
-	@Override
-	public Iterator<IFunctionParameter> getMembersIterator(IModuleResolver moduleResolver) {
-		/*BUG here*/
-		return fnParams.iterator();
-	}
-	
-	@Override
-	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-		// TODO: function super
 		return null;
 	}
 	
 	@Override
-	public boolean hasSequentialLookup() {
-		return true;
-	}
-	
-	@Override
 	public void provideResultsForSearch(CommonDefUnitSearch search, boolean importsOnly) {
-		if(tplParams != null)
-		ReferenceResolver.lexicalResolve(search, hasSequentialLookup(), importsOnly, tplParams.iterator());
-		if(fnParams != null)
-		ReferenceResolver.lexicalResolve(search, hasSequentialLookup(), importsOnly, fnParams.iterator());
+		ReferenceResolver.lexicalResolve(search, importsOnly, tplParams, true);
+		ReferenceResolver.lexicalResolve(search, importsOnly, fnParams, true);
 	}
 	
 	/* ------------------------------------------------------------------------ */

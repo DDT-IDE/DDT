@@ -10,9 +10,10 @@ import dtool.resolver.api.IModuleResolver;
  * A scope is a list of declarations and or statements.
  * Some of those declarations may be DefUnits.
  * A scope may have several super scopes, and has exactly one outer scope.
- * A scope may be a statement block, which has different lookup rules. 
+ * A scope may be a statement block, which has different lookup rules.
+ * @deprecated in favor of {@link IResolveParticipant} 
  */
-public interface IScope {
+public interface IScope extends IBaseScope {
 
 	/** Gets all members of this scope, DefUnit or not. 
 	 * Used to iterate and find DefUnits.

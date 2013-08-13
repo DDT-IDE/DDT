@@ -7,7 +7,6 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.IScope;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
@@ -44,7 +43,7 @@ public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNo
 	
 	/** Does a search determining the correct lookup scope when
 	 * the CommonRefSingle is part of a qualified reference. */
-	public static void doSearchForPossiblyQualifiedSingleRef(CommonDefUnitSearch search, RefIdentifier refSingle) {
+	public void doSearchForPossiblyQualifiedSingleRef(CommonDefUnitSearch search, RefIdentifier refSingle) {
 		// First determine the lookup scope.
 		if(refSingle.getParent() instanceof CommonRefQualified) {
 			CommonRefQualified parent = (CommonRefQualified) refSingle.getParent();
@@ -57,8 +56,7 @@ public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNo
 			// continue using outer scope as the lookup
 		}
 		
-		IScope lookupScope = ReferenceResolver.getStartingScope(refSingle);
-		ReferenceResolver.findDefUnitInExtendedScope(lookupScope, search);
+		ReferenceResolver.resolveSearchInFullLexicalScope(refSingle, search);
 	}
 	
 }

@@ -6,23 +6,24 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.IASTNode;
+import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.PartialPackageDefUnitOfPackage;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionFunction;
+import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.references.CommonRefQualified;
-import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.Reference;
 import dtool.parser.DeeParserResult;
@@ -47,52 +48,100 @@ public class ReferenceResolver {
 	
 	/* ====================  reference lookup  ==================== */
 	
+	public static void resolveSearchInFullLexicalScope(ASTNode node, CommonDefUnitSearch search) {
+		IBaseScope lookupScope = getNearestLexicalScope(node);
+		ReferenceResolver.findDefUnitInExtendedScope(lookupScope, search);
+	}
 	
-	/** Searches for the given CommonDefUnitSearch search, in the scope's 
-	 * immediate namespace, secondary namespace (imports), and super scopes.
-	 * 
-	 * The set of matched {@link DefUnit}s must all be visible in the same
-	 * non-extended scope, (altough due to imports, they may originate from 
-	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
-	 */
-	public static void findDefUnitInExtendedScope(IScope scope, CommonDefUnitSearch search) {
+	public static void findDefUnitInExtendedScope(IBaseScope scope, CommonDefUnitSearch search) {
 		assertNotNull(scope);
 
-		do {
+		while(true) {
 			findDefUnitInScope(scope, search);
 			if(search.isFinished())
 				return;
 
-			IScope outerScope = getOuterLexicalScope(scope);
+			IBaseScope outerScope = getOuterLexicalScope(scope);
 			if(outerScope == null) {
-				Module module = (Module) scope;
-				findDefUnitInModuleDec(module, search);
-				findDefUnitInObjectIntrinsic(search);
+				if(scope instanceof Module) {
+					Module module = (Module) scope;
+					findDefUnitInModuleDec(module, search);
+					findDefUnitInObjectIntrinsic(search);
+				}
 				return;
 			}
-
-			// retry in outer scope
 			scope = outerScope; 
-		} while (true);
+		}
 	}
 	
-	public static IScope getOuterLexicalScope(IScope scope) {
+	public static IBaseScope getOuterLexicalScope(IBaseScope scope) {
 		if(scope instanceof ASTNode) {
 			ASTNode node = (ASTNode) scope;
-			return ScopeUtil.getOuterScope(node);
+			return getOuterLexicalScope(node);
 		}
 		throw assertFail();
 	}
 	
-	/*BUG here*/
-	public static IScope getStartingScope(RefIdentifier refSingle) {
-		IScope scope = ScopeUtil.getOuterScope(refSingle);
-		if(scope instanceof DefinitionFunction) {
-			DefinitionFunction function = (DefinitionFunction) scope;
-			// Skip it as this scope can't look into itself
-			scope = ScopeUtil.getOuterScope(function);
+	public static IBaseScope getOuterLexicalScope(final ASTNode node) {
+		ASTNode parent;
+		/*BUG here should be:*/
+		//if (elem.getParent() instanceof DefinitionAggregate) {
+		if (node.getParent() instanceof DefinitionClass && !(node instanceof DeclBlock)) {
+			// Need to skip aggregate defunit scope 
+			parent = node.getParent().getParent();
+		} else {
+			parent = node.getParent();
 		}
-		return scope;
+		if(parent == null) {
+			return null;
+		}
+		return getNearestLexicalScope(parent);
+	}
+	
+	public static IBaseScope getNearestLexicalScope(ASTNode node) {
+		if (node instanceof IBaseScope)
+			return (IBaseScope) node;
+		
+		return getOuterLexicalScope(node);
+	}
+	
+	
+	/** Searches for the given CommonDefUnitSearch search, in the scope's 
+	 * immediate namespace, secondary namespace (imports), and super scopes.
+	 *  
+	 * Does not search, if the scope has alread been searched in this search.
+	 * The set of matched {@link DefUnit}s must all be visible in the same
+	 * non-extended scope, (altough due to imports, they may originate from 
+	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
+	 */
+	public static void findDefUnitInScope(IBaseScope scope, CommonDefUnitSearch search) {
+		assertNotNull(scope);
+		if(search.hasSearched(scope))
+			return;
+		
+		search.enterNewScope(scope);
+		
+		findDefUnitInScope(scope, search, false);
+		if(search.isFinished())
+			return;
+		
+		findDefUnitInScope(scope, search, true);
+		if(search.isFinished())
+			return;
+		
+		if(scope instanceof IScope) {
+			IScope scopeX = (IScope) scope;
+			List<IScope> superScopes = scopeX.getSuperScopes(search.modResolver);
+			if(superScopes != null) {
+				for(IScope superscope : superScopes) {
+					if(superscope != null)
+						findDefUnitInScope(superscope, search); 
+					if(search.isFinished())
+						return;
+				}
+			}
+		}
+		
 	}
 	
 	private static void findDefUnitInObjectIntrinsic(CommonDefUnitSearch search) {
@@ -124,63 +173,22 @@ public class ReferenceResolver {
 		}
 	}
 
-	/** Searches for the given CommonDefUnitSearch search, in the scope's 
-	 * immediate namespace, secondary namespace (imports), and super scopes.
-	 *  
-	 * Does not search, if the scope has alread been searched in this search.
-	 * The set of matched {@link DefUnit}s must all be visible in the same
-	 * non-extended scope, (altough due to imports, they may originate from 
-	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
-	 */
-	public static void findDefUnitInScope(IScope scope, CommonDefUnitSearch search) {
-		assertNotNull(scope);
-		if(search.hasSearched(scope))
-			return;
-		
-		search.enterNewScope(scope);
-		
-		findDefUnitInImmediateScope(scope, search);
-		if(search.isFinished())
-			return;
-		
-		findDefUnitInSecondaryScope(scope, search);
-		if(search.isFinished())
-			return;
-
-		// Search super scope 
-		if(scope.getSuperScopes(search.modResolver) != null) {
-			for(IScope superscope : scope.getSuperScopes(search.modResolver)) {
-				if(superscope != null)
-					findDefUnitInScope(superscope, search); 
-				if(search.isFinished())
-					return;
-			}
-		}
-		
-	}
-	
-
-	private static void findDefUnitInImmediateScope(IScope scope, CommonDefUnitSearch search) {
-		findDefUnitInScope(scope, search, false);
-	}
-	
-	private static void findDefUnitInSecondaryScope(IScope scope, CommonDefUnitSearch search) {
-		findDefUnitInScope(scope, search, true);
-	}
-	
-	private static void findDefUnitInScope(IScope scope, CommonDefUnitSearch search, boolean importsOnly) {
-		if(scope instanceof IResolveParticipant) {
-			IResolveParticipant scopeProvider = (IResolveParticipant) scope;
+	private static void findDefUnitInScope(IBaseScope baseScope, CommonDefUnitSearch search, boolean importsOnly) {
+		if(baseScope instanceof IResolveParticipant) {
+			IResolveParticipant scopeProvider = (IResolveParticipant) baseScope;
 			scopeProvider.provideResultsForSearch(search, importsOnly);
-			return;
+		} else {
+			IScope scope = (IScope) baseScope;
+			Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
+			findDefUnits(search, iter, scope.hasSequentialLookup(), importsOnly);
 		}
-		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
-		findDefUnits(search, iter, scope.hasSequentialLookup(), importsOnly);
 	}
 	
-	public static void lexicalResolve(CommonDefUnitSearch search, 
-		boolean isStatementScope, boolean importsOnly, Iterator<? extends IASTNode> iter) {
-		findDefUnits(search, iter, isStatementScope, importsOnly);
+	public static void lexicalResolve(CommonDefUnitSearch search, boolean importsOnly, Iterable<? extends IASTNode> nodeIterable,
+		boolean hasSequentialLookup) {
+		if(nodeIterable != null) {
+			findDefUnits(search, nodeIterable.iterator(), hasSequentialLookup, importsOnly);
+		}
 	}
 	
 	public static void findDefUnits(CommonDefUnitSearch search, Iterator<? extends IASTNode> iter,
