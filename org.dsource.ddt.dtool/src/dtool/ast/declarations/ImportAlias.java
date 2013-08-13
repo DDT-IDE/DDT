@@ -8,7 +8,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefModule;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 public class ImportAlias extends DefUnit implements IImportFragment {
@@ -48,7 +48,7 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		return moduleRef.getTargetScope(moduleResolver);
 	}
 	

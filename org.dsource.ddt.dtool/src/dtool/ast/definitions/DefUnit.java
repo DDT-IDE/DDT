@@ -7,7 +7,7 @@ import dtool.ast.SourceRange;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
 import dtool.parser.Token;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 /**
@@ -104,7 +104,7 @@ public abstract class DefUnit extends ASTNode {
 	 * In the case of aggregate like DefUnits the members scope is contained
 	 * in the DefUnit node, but on other cases the scope is somewhere else.
 	 * May be null if the scope is not found. */
-	public abstract IScopeNode getMembersScope(IModuleResolver moduleResolver);
+	public abstract IScope getMembersScope(IModuleResolver moduleResolver);
 	
 	@Override
 	public String toStringAsElement() {

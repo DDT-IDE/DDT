@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.resolver.api.IModuleResolver;
@@ -24,9 +25,6 @@ public abstract class CommonDefUnitSearch {
 	
 	/** Flag for stop searching when suitable matches are found. */
 	protected final boolean findOnlyOne;
-	/** The scope where the reference is located. 
-	 * Used for protection access restrictions. */
-	protected final IScopeNode refScope;
 	/** The offset of the reference. 
 	 * Used to check availability in statement scopes. */
 	protected final int refOffset;
@@ -38,19 +36,18 @@ public abstract class CommonDefUnitSearch {
 	protected ArrayList<IScope> searchedScopes;
 
 
-	public CommonDefUnitSearch(IScopeNode refScope, int refOffset, IModuleResolver moduleResolver) {
-		this(refScope, refOffset, false, moduleResolver);
+	public CommonDefUnitSearch(ASTNode originNode, int refOffset, IModuleResolver moduleResolver) {
+		this(originNode, refOffset, false, moduleResolver);
 	}
 	
-	public CommonDefUnitSearch(IScopeNode refScope, int refOffset, boolean findOneOnly, 
+	public CommonDefUnitSearch(ASTNode originNode, int refOffset, boolean findOneOnly, 
 		IModuleResolver moduleResolver) { 
 		this.searchedScopes = new ArrayList<IScope>(4);
-		this.refScope = assertNotNull(refScope);
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
 		this.modResolver = assertNotNull(moduleResolver);
 		
-		this.searchRefModule = assertNotNull(refScope.asNode().getModuleNode());
+		this.searchRefModule = assertNotNull(originNode.getModuleNode());
 	}
 	
 	public IModuleResolver getModResolver() {
@@ -88,8 +85,8 @@ public abstract class CommonDefUnitSearch {
 		searchedScopes.add(scope);
 	}
 	
-	/** Get the Module of the search's reference. */
-	public Module getSearchReferenceModule() {
+	/** @return the Module of the node or position where this search originates. */
+	public Module getSearchOriginModule() {
 		return searchRefModule;
 	}
 	

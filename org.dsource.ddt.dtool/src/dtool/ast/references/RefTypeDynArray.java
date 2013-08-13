@@ -12,7 +12,6 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
 
 public class RefTypeDynArray extends CommonRefNative {
@@ -52,7 +51,7 @@ public class RefTypeDynArray extends CommonRefNative {
 		public static final IntrinsicDynArray instance = new IntrinsicDynArray();
 		
 		@Override
-		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		public IScope getMembersScope(IModuleResolver moduleResolver) {
 			// TODO Auto-generated method stub
 			return null;
 		}

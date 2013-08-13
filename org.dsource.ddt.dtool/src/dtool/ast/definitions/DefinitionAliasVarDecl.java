@@ -10,7 +10,7 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -69,7 +69,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		return target.getTargetScope(moduleResolver);
 	}
 	
@@ -101,7 +101,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		}
 		
 		@Override
-		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		public IScope getMembersScope(IModuleResolver moduleResolver) {
 			return null; // TODO:
 		}
 		

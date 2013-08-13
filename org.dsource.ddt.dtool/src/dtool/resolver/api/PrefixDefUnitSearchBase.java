@@ -2,8 +2,8 @@ package dtool.resolver.api;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import dtool.ast.ASTNode;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScopeNode;
 
 // TODO: cleanup this hierarchy
 public abstract class PrefixDefUnitSearchBase extends CommonDefUnitSearch {
@@ -33,9 +33,9 @@ public abstract class PrefixDefUnitSearchBase extends CommonDefUnitSearch {
 
 	public final PrefixSearchOptions searchOptions;
 	
-	public PrefixDefUnitSearchBase(IScopeNode refScope, int refOffset, IModuleResolver moduleResolver,
+	public PrefixDefUnitSearchBase(ASTNode originNode, int refOffset, IModuleResolver moduleResolver,
 		PrefixSearchOptions searchOptions) {
-		super(refScope, refOffset, moduleResolver);
+		super(originNode, refOffset, moduleResolver);
 		this.searchOptions = searchOptions;
 	}
 	

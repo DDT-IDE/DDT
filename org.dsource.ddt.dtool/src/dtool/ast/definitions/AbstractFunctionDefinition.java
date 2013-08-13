@@ -20,13 +20,15 @@ import dtool.ast.ASTNode;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.Token;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IResolveParticipant;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 public abstract class AbstractFunctionDefinition extends CommonDefinition 
-	implements ICallableElement, IScopeNode 
+	implements ICallableElement, IScope, IResolveParticipant
 {
 	
 	public final ArrayView<TemplateParameter> tplParams;
@@ -68,7 +70,7 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		// FIXME
 		return this;
 	}
@@ -87,7 +89,15 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	
 	@Override
 	public boolean hasSequentialLookup() {
-		return false;
+		return true;
+	}
+	
+	@Override
+	public void provideResultsForSearch(CommonDefUnitSearch search, boolean importsOnly) {
+		if(tplParams != null)
+		ReferenceResolver.lexicalResolve(search, hasSequentialLookup(), importsOnly, tplParams.iterator());
+		if(fnParams != null)
+		ReferenceResolver.lexicalResolve(search, hasSequentialLookup(), importsOnly, fnParams.iterator());
 	}
 	
 	/* ------------------------------------------------------------------------ */

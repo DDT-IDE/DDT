@@ -15,7 +15,6 @@ import dtool.parser.IToken;
 import dtool.parser.Token;
 import dtool.resolver.INamedScope;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
@@ -24,7 +23,7 @@ import dtool.util.NewUtils;
  * D Module. 
  * The top-level AST class, has no parent, is the first and main node of every compilation unit.
  */
-public class Module extends DefUnit implements IScopeNode, INamedScope {
+public class Module extends DefUnit implements IScope, INamedScope {
 	
 	public static class ModuleDefSymbol extends DefSymbol {
 		
@@ -134,7 +133,7 @@ public class Module extends DefUnit implements IScopeNode, INamedScope {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		return this;
 	}
 	

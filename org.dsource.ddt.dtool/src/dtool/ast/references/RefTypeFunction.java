@@ -16,7 +16,6 @@ import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.NativeDefUnit;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -82,7 +81,7 @@ public class RefTypeFunction extends CommonRefNative {
 		public static final IntrinsicFunction instance = new IntrinsicFunction();
 		
 		@Override
-		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		public IScope getMembersScope(IModuleResolver moduleResolver) {
 			// TODO Auto-generated method stub
 			return null;
 		}

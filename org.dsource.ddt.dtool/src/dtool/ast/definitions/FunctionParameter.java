@@ -11,7 +11,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.LexElement;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -64,7 +64,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		Collection<DefUnit> defunits = type.findTargetDefUnits(moduleResolver, true);
 		if(defunits == null || defunits.isEmpty())
 			return null;

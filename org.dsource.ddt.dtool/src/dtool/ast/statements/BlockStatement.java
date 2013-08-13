@@ -6,14 +6,13 @@ import java.util.List;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNode;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
  * A compound statement. Allways introduces a new Scope.
  */
-public class BlockStatement extends CommonStatementList implements IScopeNode, IFunctionBody {
+public class BlockStatement extends CommonStatementList implements IScope, IFunctionBody {
 	
 	public BlockStatement(ArrayView<IStatement> statements) {
 		super(statements);

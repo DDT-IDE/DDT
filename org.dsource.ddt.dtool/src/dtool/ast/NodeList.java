@@ -7,11 +7,10 @@ import java.util.List;
 
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
-public abstract class NodeList<E extends ASTNode> extends ASTNode implements IScopeNode {
+public abstract class NodeList<E extends ASTNode> extends ASTNode implements IScope {
 	
 	public final ArrayView<E> nodes;
 	

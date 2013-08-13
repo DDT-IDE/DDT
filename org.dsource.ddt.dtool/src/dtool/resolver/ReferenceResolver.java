@@ -1,5 +1,6 @@
 package dtool.resolver;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -54,7 +55,7 @@ public class ReferenceResolver {
 	 * non-extended scope, (altough due to imports, they may originate from 
 	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
 	 */
-	public static void findDefUnitInExtendedScope(IScopeNode scope, CommonDefUnitSearch search) {
+	public static void findDefUnitInExtendedScope(IScope scope, CommonDefUnitSearch search) {
 		assertNotNull(scope);
 
 		do {
@@ -62,8 +63,8 @@ public class ReferenceResolver {
 			if(search.isFinished())
 				return;
 
-			IScopeNode outerscope = ScopeUtil.getOuterScope(scope);
-			if(outerscope == null) {
+			IScope outerScope = getOuterLexicalScope(scope);
+			if(outerScope == null) {
 				Module module = (Module) scope;
 				findDefUnitInModuleDec(module, search);
 				findDefUnitInObjectIntrinsic(search);
@@ -71,9 +72,27 @@ public class ReferenceResolver {
 			}
 
 			// retry in outer scope
-			scope = outerscope; 
+			scope = outerScope; 
 		} while (true);
-		
+	}
+	
+	public static IScope getOuterLexicalScope(IScope scope) {
+		if(scope instanceof ASTNode) {
+			ASTNode node = (ASTNode) scope;
+			return ScopeUtil.getOuterScope(node);
+		}
+		throw assertFail();
+	}
+	
+	/*BUG here*/
+	public static IScope getStartingScope(RefIdentifier refSingle) {
+		IScope scope = ScopeUtil.getOuterScope(refSingle);
+		if(scope instanceof DefinitionFunction) {
+			DefinitionFunction function = (DefinitionFunction) scope;
+			// Skip it as this scope can't look into itself
+			scope = ScopeUtil.getOuterScope(function);
+		}
+		return scope;
 	}
 	
 	private static void findDefUnitInObjectIntrinsic(CommonDefUnitSearch search) {
@@ -142,18 +161,29 @@ public class ReferenceResolver {
 	
 
 	private static void findDefUnitInImmediateScope(IScope scope, CommonDefUnitSearch search) {
-		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
-		
-		findDefUnits(search, iter, scope.hasSequentialLookup(), false);
+		findDefUnitInScope(scope, search, false);
 	}
 	
 	private static void findDefUnitInSecondaryScope(IScope scope, CommonDefUnitSearch search) {
-		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
-		
-		findDefUnits(search, iter, scope.hasSequentialLookup(), true);
+		findDefUnitInScope(scope, search, true);
 	}
 	
-	private static void findDefUnits(CommonDefUnitSearch search, Iterator<? extends IASTNode> iter,
+	private static void findDefUnitInScope(IScope scope, CommonDefUnitSearch search, boolean importsOnly) {
+		if(scope instanceof IResolveParticipant) {
+			IResolveParticipant scopeProvider = (IResolveParticipant) scope;
+			scopeProvider.provideResultsForSearch(search, importsOnly);
+			return;
+		}
+		Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
+		findDefUnits(search, iter, scope.hasSequentialLookup(), importsOnly);
+	}
+	
+	public static void lexicalResolve(CommonDefUnitSearch search, 
+		boolean isStatementScope, boolean importsOnly, Iterator<? extends IASTNode> iter) {
+		findDefUnits(search, iter, isStatementScope, importsOnly);
+	}
+	
+	public static void findDefUnits(CommonDefUnitSearch search, Iterator<? extends IASTNode> iter,
 			boolean isStatementScope, boolean importsOnly) {
 		
 		
@@ -190,7 +220,7 @@ public class ReferenceResolver {
 		else if(importsOnly && node instanceof DeclarationImport) {
 			DeclarationImport declImport = (DeclarationImport) node;
 			
-			Module searchOriginModule = search.getSearchReferenceModule();
+			Module searchOriginModule = search.getSearchOriginModule();
 			if(!declImport.isTransitive && !privateNodeIsVisible(declImport, searchOriginModule))
 				return; // Don't consider private imports
 			
@@ -251,23 +281,8 @@ public class ReferenceResolver {
 				if(defUnit != null) { 
 					search.addMatch(defUnit);
 				}
-			} // Aliases are matched in the primary namespace 
-			/*
-				else if(impSelFrag instanceof ImportSelectiveAlias) {
-				ImportSelectiveAlias selFrag = (ImportSelectiveAlias) impSelFrag;
-				if(search.matches(selFrag))
-					search.addMatch(selFrag);
-			} */
+			}
 		}
-	}
-
-	public static IScopeNode getStartingScope(RefIdentifier refSingle) {
-		IScopeNode scope = ScopeUtil.getOuterScope(refSingle);
-		if(scope instanceof DefinitionFunction) {
-			// Skip it as this scope can't look into itself
-			scope = ScopeUtil.getOuterScope(scope);
-		}
-		return scope;
 	}
 	
 	public static class DirectDefUnitResolve {

@@ -12,7 +12,7 @@ import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -99,7 +99,7 @@ public class StaticIfExpIs extends Expression {
 		}
 		
 		@Override
-		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		public IScope getMembersScope(IModuleResolver moduleResolver) {
 			StaticIfExpIs staticIfIsExp = (StaticIfExpIs) getParent();
 			// This is only correct for the basic ExpIs case, the other scenarios are hard to calculate
 			return staticIfIsExp.typeRef.getTargetScope(moduleResolver);

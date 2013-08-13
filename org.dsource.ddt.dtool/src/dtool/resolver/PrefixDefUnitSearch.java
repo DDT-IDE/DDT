@@ -43,9 +43,9 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 	
 	protected int relexStartPos; // for tests only
 	
-	public PrefixDefUnitSearch(PrefixSearchOptions searchOptions, IScopeNode refScope, int refOffset,
+	public PrefixDefUnitSearch(PrefixSearchOptions searchOptions, ASTNode originNode, int refOffset,
 			IDefUnitMatchAccepter defUnitAccepter, IModuleResolver moduleResolver) {
-		super(refScope, refOffset, moduleResolver, searchOptions);
+		super(originNode, refOffset, moduleResolver, searchOptions);
 		this.defUnitAccepter = defUnitAccepter;
 	}
 	
@@ -97,9 +97,8 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		Token token = findTokenAtOffset(offset, source, relexStartPos);
 		
 		PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-		IScopeNode refScope = ScopeUtil.getScopeNode(node);
 		final PrefixDefUnitSearch search = 
-			new PrefixDefUnitSearch(searchOptions, refScope, offset, defUnitAccepter, mr);
+			new PrefixDefUnitSearch(searchOptions, node, offset, defUnitAccepter, mr);
 		search.relexStartPos = relexStartPos;
 		
 		if((offset > token.getStartPos() && offset < token.getEndPos()) && 
@@ -115,12 +114,14 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 			NamedReference namedRef = (NamedReference) node;
 			
 			if(node instanceof RefPrimitive) {
-				RefPrimitive refIdent = (RefPrimitive) node;
-				String name = refIdent.getTargetSimpleName();
-				setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), name);
+				RefPrimitive refPrim = (RefPrimitive) node;
+				setupPrefixedSearchOptions(searchOptions, offset, refPrim.getOffset(), refPrim.getTargetSimpleName());
 			} else if(node instanceof RefIdentifier) {
 				RefIdentifier refIdent = (RefIdentifier) node;
 				setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), refIdent.getIdString());
+			} else if(node instanceof RefImportSelection) {
+				RefImportSelection refImpSel = (RefImportSelection) node;
+				setupPrefixedSearchOptions(searchOptions, offset, refImpSel.getOffset(), refImpSel.getIdString());
 			} else if(node instanceof CommonRefQualified) {
 				
 				int dotOffset = -1;
@@ -149,9 +150,6 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				String moduleSourceNamePrefix = refModSource.substring(0, offset-refMod.getStartPos());
 				setupPrefixedSearchOptions_withCanonization(searchOptions, rplLen, moduleSourceNamePrefix);
 				
-			} else if (node instanceof RefImportSelection) {
-				RefImportSelection refImpSel = (RefImportSelection) node;
-				setupPrefixedSearchOptions(searchOptions, offset, refImpSel.getOffset(), refImpSel.getIdString());
 			} else {
 				throw assertFail();
 			}
@@ -164,7 +162,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 			// Since picked node was not a reference, determine appropriate lexical starting scope
 			// TODO: this code is a mess, need to cleanup and simplify
 			// See also ReferenceResolver.getStartingScope(refSingle);
-			IScopeNode scope;
+			IScope scope;
 			while(true) {
 				assertNotNull(node); 
 				scope = isValidCompletionScope(node);
@@ -251,9 +249,9 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		searchOptions.rplLen = rplLen;
 	}
 	
-	private static IScopeNode isValidCompletionScope(ASTNode node) {
-		if(node instanceof IScopeNode) {
-			return (IScopeNode) node;
+	private static IScope isValidCompletionScope(ASTNode node) {
+		if(node instanceof IScope) {
+			return (IScope) node;
 		} else if(node instanceof Expression) {
 			return ScopeUtil.getOuterScope(node);
 		} 

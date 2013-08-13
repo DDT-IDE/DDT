@@ -7,7 +7,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
@@ -60,7 +60,7 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 			return;
 		
 		for (DefUnit unit : defunits) {
-			IScopeNode scope = unit.getMembersScope(search.getModResolver());
+			IScope scope = unit.getMembersScope(search.getModResolver());
 			if(scope != null) {
 				ReferenceResolver.findDefUnitInScope(scope, search);
 			}

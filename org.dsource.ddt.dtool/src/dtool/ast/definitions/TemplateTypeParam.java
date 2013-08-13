@@ -4,7 +4,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.Reference;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 public class TemplateTypeParam extends TemplateParameter {
@@ -46,7 +46,7 @@ public class TemplateTypeParam extends TemplateParameter {
 	 * Can be null
 	 */
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		if(specializationType == null)
 			return null;
 		return specializationType.getTargetScope(moduleResolver);

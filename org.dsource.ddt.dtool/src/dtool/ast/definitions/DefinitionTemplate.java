@@ -17,7 +17,6 @@ import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -27,7 +26,7 @@ import dtool.util.ArrayView;
  * 
  * (Technically not allowed as statement, but parse so anyways.)
  */
-public class DefinitionTemplate extends CommonDefinition implements IScopeNode, IDeclaration, IStatement {
+public class DefinitionTemplate extends CommonDefinition implements IScope, IDeclaration, IStatement {
 	
 	public final boolean isMixin;
 	public final ArrayView<TemplateParameter> tplParams;
@@ -88,7 +87,7 @@ public class DefinitionTemplate extends CommonDefinition implements IScopeNode, 
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		return this;
 	}
 	
@@ -110,7 +109,7 @@ public class DefinitionTemplate extends CommonDefinition implements IScopeNode, 
 		// TODO: test this more, redo
 		if(wrapper) {
 			// Go straight to members of the inner decl
-			IScopeNode scope = ((DefUnit)decls.nodes.get(0)).getMembersScope(moduleResolver);
+			IScope scope = ((DefUnit)decls.nodes.get(0)).getMembersScope(moduleResolver);
 			Iterator<? extends IASTNode> tplIter = tplParams.iterator();
 			return ChainedIterator.create(tplIter, scope.getMembersIterator(moduleResolver));
 		}

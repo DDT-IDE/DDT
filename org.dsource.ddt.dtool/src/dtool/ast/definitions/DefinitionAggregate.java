@@ -13,7 +13,7 @@ import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
@@ -21,7 +21,7 @@ import dtool.util.NewUtils;
 /**
  * A definition of a aggregate. 
  */
-public abstract class DefinitionAggregate extends CommonDefinition implements IScopeNode, IStatement {
+public abstract class DefinitionAggregate extends CommonDefinition implements IScope, IStatement {
 	
 	public interface IAggregateBody extends IASTNode {
 	}
@@ -56,7 +56,7 @@ public abstract class DefinitionAggregate extends CommonDefinition implements IS
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		return this;
 	}
 	

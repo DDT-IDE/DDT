@@ -5,7 +5,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 /**
@@ -66,7 +66,7 @@ public class ExpSimpleLambda extends Expression {
 		}
 		
 		@Override
-		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		public IScope getMembersScope(IModuleResolver moduleResolver) {
 			return null;
 		}
 		

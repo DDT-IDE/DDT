@@ -9,14 +9,13 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNode;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
  * A scoped statement list. Used by case/default statements
  */
-public class ScopedStatementList extends CommonStatementList implements IScopeNode {
+public class ScopedStatementList extends CommonStatementList implements IScope {
 	
 	public ScopedStatementList(ArrayView<IStatement> statements) {
 		super(assertNotNull(statements));

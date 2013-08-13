@@ -10,7 +10,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.resolver.IDefUnitReference;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 /**
@@ -65,7 +65,7 @@ public class DefVarFragment extends DefUnit {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		IDefUnitReference resolvedType = getDefinitionVariableParent().determineType();
 		Collection<DefUnit> defunits = resolvedType.findTargetDefUnits(moduleResolver, true);
 		if(defunits == null || defunits.isEmpty())

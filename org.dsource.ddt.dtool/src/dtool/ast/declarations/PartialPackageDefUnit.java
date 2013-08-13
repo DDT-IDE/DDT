@@ -8,7 +8,6 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
 
 /**
@@ -16,7 +15,7 @@ import dtool.resolver.api.IModuleResolver;
  * This partial DefUnit holds one DefUnit DefUnit and represents only 
  * part of it's complete namespace.
  */
-public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements IScopeNode {
+public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements IScope {
 	
 	public PartialPackageDefUnit(String defName) {
 		super(defName);
@@ -49,7 +48,7 @@ public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements 
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		return this;
 	}
 	

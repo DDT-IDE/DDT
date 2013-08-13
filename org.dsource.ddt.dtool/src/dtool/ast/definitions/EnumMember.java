@@ -5,7 +5,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 public class EnumMember extends DefUnit {
@@ -44,7 +44,7 @@ public class EnumMember extends DefUnit {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		return getType().getTargetScope(moduleResolver);
 	}
 	

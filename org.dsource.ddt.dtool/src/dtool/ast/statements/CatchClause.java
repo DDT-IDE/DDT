@@ -10,10 +10,9 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
 
-public class CatchClause extends ASTNode implements IScopeNode {
+public class CatchClause extends ASTNode implements IScope {
 	
 	public final SimpleVariableDef catchParam;
 	public final IStatement body;

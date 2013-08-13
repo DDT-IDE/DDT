@@ -9,14 +9,14 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
  * A definition of a function.
  */
-public class DefinitionFunction extends AbstractFunctionDefinition implements IScopeNode, IDeclaration, IStatement {
+public class DefinitionFunction extends AbstractFunctionDefinition implements IScope, IDeclaration, IStatement {
 	
 	public final Reference retType;
 	

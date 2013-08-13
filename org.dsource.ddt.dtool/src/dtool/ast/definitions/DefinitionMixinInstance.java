@@ -6,7 +6,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 /**
@@ -47,7 +47,7 @@ public class DefinitionMixinInstance extends CommonDefinition implements IStatem
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		return templateInstance.getTargetScope(moduleResolver);
 	}
 	

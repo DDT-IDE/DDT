@@ -28,7 +28,7 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	
 	public DefUnitSearch(String searchName, Reference searchref, int refOffset, boolean findOneOnly,
 			IModuleResolver moduleResolver) {
-		super(ScopeUtil.getOuterScope(searchref), refOffset, findOneOnly, moduleResolver);
+		super(searchref, refOffset, findOneOnly, moduleResolver);
 		this.searchName = assertNotNull(searchName);
 		//defunits = new ArrayDeque<DefUnit>(4);
 	}

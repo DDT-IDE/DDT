@@ -12,10 +12,9 @@ import dtool.ast.declarations.SyntheticDefUnit;
 import dtool.resolver.IDefUnitReference;
 import dtool.resolver.INamedScope;
 import dtool.resolver.IScope;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.api.IModuleResolver;
 
-public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeDefUnit, IScopeNode {
+public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeDefUnit, IScope {
 	
 	/** A module like class, contained all native defunits. */
 	public static class NativesScope implements IScope, INamedScope {
@@ -86,7 +85,7 @@ public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeD
 	
 	
 	@Override
-	public abstract IScopeNode getMembersScope(IModuleResolver moduleResolver);
+	public abstract IScope getMembersScope(IModuleResolver moduleResolver);
 	
 	@Override
 	public boolean hasSequentialLookup() {

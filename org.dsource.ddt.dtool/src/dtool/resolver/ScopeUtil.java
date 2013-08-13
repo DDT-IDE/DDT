@@ -9,18 +9,18 @@ public class ScopeUtil {
 
 	/** Finds the first outer scope of the given element 
 	 * (navigating through the element's parents). */
-	public static IScopeNode getOuterScope(IASTNode elem) {
+	public static IScope getOuterScope(IASTNode elem) {
 		return getScopeNode(getNextParent(elem));
 	}
 	
 	/** Finds the first IScopeNode in the given elem chain of parents, 
 	 * including elem itself. This corresponds to the innermost lexical
 	 * scope available from elem. */
-	public static IScopeNode getScopeNode(IASTNode elem) {
+	public static IScope getScopeNode(IASTNode elem) {
 	
 		while(elem != null) {
-			if (elem instanceof IScopeNode)
-				return (IScopeNode) elem;
+			if (elem instanceof IScope)
+				return (IScope) elem;
 			
 			elem = getNextParent(elem);
 		}

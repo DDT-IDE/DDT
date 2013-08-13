@@ -13,7 +13,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
 import dtool.resolver.IDefUnitReference;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -83,7 +83,7 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		if(type == null)
 			return null; // TODO: auto references
 		

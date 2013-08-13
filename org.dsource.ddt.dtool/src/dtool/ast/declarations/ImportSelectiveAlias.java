@@ -7,7 +7,7 @@ import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefImportSelection;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSelection {
@@ -36,7 +36,7 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		return target.getTargetScope(moduleResolver);
 	}
 	

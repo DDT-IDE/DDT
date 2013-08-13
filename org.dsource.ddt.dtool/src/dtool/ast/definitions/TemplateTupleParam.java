@@ -3,7 +3,7 @@ package dtool.ast.definitions;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 public class TemplateTupleParam extends TemplateParameter {
@@ -34,7 +34,7 @@ public class TemplateTupleParam extends TemplateParameter {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		// TODO return intrinsic universal
 		return null;
 	}

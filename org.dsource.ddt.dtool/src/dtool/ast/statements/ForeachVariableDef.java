@@ -8,7 +8,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.Reference;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 public class ForeachVariableDef extends DefUnit {
@@ -46,7 +46,7 @@ public class ForeachVariableDef extends DefUnit {
 	}
 	
 	@Override
-	public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+	public IScope getMembersScope(IModuleResolver moduleResolver) {
 		Collection<DefUnit> defunits = type.findTargetDefUnits(moduleResolver, true);
 		if(defunits == null || defunits.isEmpty())
 			return null;

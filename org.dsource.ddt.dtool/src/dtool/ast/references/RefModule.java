@@ -14,7 +14,7 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.parser.IToken;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
@@ -99,7 +99,7 @@ public class RefModule extends NamedReference {
 		}
 		
 		@Override
-		public IScopeNode getMembersScope(IModuleResolver moduleResolver) {
+		public IScope getMembersScope(IModuleResolver moduleResolver) {
 			assertFail(); return null;
 		}
 		

@@ -4,7 +4,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
 import dtool.ast.expressions.Resolvable;
 import dtool.resolver.IDefUnitReference;
-import dtool.resolver.IScopeNode;
+import dtool.resolver.IScope;
 import dtool.resolver.api.DefUnitDescriptor;
 import dtool.resolver.api.IModuleResolver;
 
@@ -19,7 +19,7 @@ public abstract class Reference extends Resolvable {
 		return NativeDefUnit.nullReference;
 	}
 	
-	public IScopeNode getTargetScope(IModuleResolver moduleResolver) {
+	public IScope getTargetScope(IModuleResolver moduleResolver) {
 		DefUnit defunit = findTargetDefUnit(moduleResolver); 
 		if(defunit == null)
 			return null;
