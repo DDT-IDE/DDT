@@ -54,7 +54,7 @@ public class ExpCall extends Expression {
 		
 		DefUnitSearch search = new DefUnitSearch("opCall", null, false, moduleResolver);
 		ReferenceResolver.findDefUnitInScope(defUnit.getMembersScope(moduleResolver), search);
-		// possible BUG here with getMatchDefUnits
+		
 		for (Iterator<DefUnit> iter = search.getMatchDefUnits().iterator(); iter.hasNext();) {
 			DefUnit defOpCall = iter.next();
 			if (defOpCall instanceof DefinitionFunction) {

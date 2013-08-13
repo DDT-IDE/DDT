@@ -112,7 +112,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		Reference ref = (Reference)elem;
 		Collection<DefUnit> defunits = ref.findTargetDefUnits(moduleResolver, false);
 		
-		if(defunits == null || defunits.size() == 0) {
+		if(defunits == null || defunits.isEmpty()) {
 			dialogWarning(window.getShell(), "Definition not found for entity reference: " + ref.toStringAsElement());
 			return;
 		}

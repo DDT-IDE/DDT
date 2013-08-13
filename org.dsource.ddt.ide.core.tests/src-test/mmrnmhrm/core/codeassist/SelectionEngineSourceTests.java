@@ -40,11 +40,9 @@ public class SelectionEngineSourceTests extends CoreResolverSourceTests {
 		DirectDefUnitResolve resolveResult = doFindTest(mde);
 		
 		// TODO: adapt test to more than one defUnit returned?
-		if(resolveResult.getResolvedDefUnits() != null) {
-			Iterator<DefUnit> iterator = resolveResult.getResolvedDefUnits().iterator();
-			DefUnit defUnit = iterator.hasNext() ? iterator.next() : null; 
-			SelectionEngineSourceTests.testDeeSelectionEngine(sourceModule, mde.offset, defUnit);
-		}
+		Iterator<DefUnit> iterator = resolveResult.getResolvedDefUnits().iterator();
+		DefUnit defUnit = iterator.hasNext() ? iterator.next() : null; 
+		SelectionEngineSourceTests.testDeeSelectionEngine(sourceModule, mde.offset, defUnit);
 	}
 	
 	@Override

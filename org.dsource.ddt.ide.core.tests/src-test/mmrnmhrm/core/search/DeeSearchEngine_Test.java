@@ -491,7 +491,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 					
 					DeeProjectModuleResolver mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
 					Collection<DefUnit> targetDefUnits = reference.findTargetDefUnits(mr, false);
-					if(targetDefUnits == null) {
+					if(targetDefUnits == null || targetDefUnits.isEmpty()) {
 						return;
 					}
 					

@@ -33,12 +33,7 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 		//defunits = new ArrayDeque<DefUnit>(4);
 	}
 	
-	@Deprecated // Deprecated API
 	public Collection<DefUnit> getMatchDefUnits() {
-		return defunits;
-	}
-	
-	public Collection<DefUnit> getMatchDefUnits2() {
 		return defunits == null ? Collections.EMPTY_LIST : defunits;
 	}
 	
