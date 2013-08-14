@@ -18,14 +18,12 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IResolveParticipant;
-import dtool.resolver.IScope;
+import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
-import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 public abstract class AbstractFunctionDefinition extends CommonDefinition 
-	implements ICallableElement, IResolveParticipant
+	implements ICallableElement, IScopeNode
 {
 	
 	public final ArrayView<TemplateParameter> tplParams;
@@ -66,16 +64,15 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		cp.appendNodeOrNullAlt(fnBody, " ");
 	}
 	
-	@Deprecated
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		return null;
+	public void resolveSearchInScope(CommonDefUnitSearch search) {
+		ReferenceResolver.findInNodeList(search, tplParams, true);
+		ReferenceResolver.findInNodeList(search, fnParams, true);
 	}
 	
 	@Override
-	public void provideResultsForSearch(CommonDefUnitSearch search, boolean importsOnly) {
-		ReferenceResolver.lexicalResolve(search, importsOnly, tplParams, true);
-		ReferenceResolver.lexicalResolve(search, importsOnly, fnParams, true);
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		// Do nothing, a function has no members scope
 	}
 	
 	/* ------------------------------------------------------------------------ */

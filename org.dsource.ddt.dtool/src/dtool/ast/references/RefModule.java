@@ -16,7 +16,6 @@ import dtool.parser.DeeParser;
 import dtool.parser.IToken;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.IScope;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
@@ -100,9 +99,20 @@ public class RefModule extends NamedReference {
 		DeeParser parser = new DeeParser(moduleQualifiedNameSnippedSource);
 		String moduleQualifiedNameCanonicalPrefix = parser.parseRefModule().toStringAsCode();
 		
-		int rplLen = getEndPos() - offset;
-		prefixSearch.setupPrefixedSearchOptions(moduleQualifiedNameCanonicalPrefix, rplLen);
+		int rplEndPos = getEndPos();
+		if(isMissingCoreReference()) {
+			rplEndPos = offset;
+			// Minor BUG here, need proper way to find moduleBaseName start
+			for (IToken packageToken : packageList) {
+				rplEndPos = packageToken.getEndPos() + 1;
+			}
+			if(rplEndPos < offset) {
+				rplEndPos = offset;
+			}
+		}
+		int rplLen = rplEndPos - offset;
 		
+		prefixSearch.setupPrefixedSearchOptions(moduleQualifiedNameCanonicalPrefix, rplLen);
 		doSearch(prefixSearch);
 	}
 	
@@ -144,7 +154,7 @@ public class RefModule extends NamedReference {
 		}
 		
 		@Override
-		public IScope getMembersScope(IModuleResolver moduleResolver) {
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 			throw assertFail();
 		}
 		

@@ -1,18 +1,16 @@
 package dtool.ast.statements;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Collections;
 
-import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.ReferenceResolver;
 
-public class CatchClause extends ASTNode implements IScope {
+public class CatchClause extends ASTNode implements IScopeNode {
 	
 	public final SimpleVariableDef catchParam;
 	public final IStatement body;
@@ -41,20 +39,10 @@ public class CatchClause extends ASTNode implements IScope {
 	}
 	
 	@Override
-	public Iterator<? extends IASTNode> getMembersIterator(IModuleResolver moduleResolver) {
-		if(catchParam != null)
-			return IteratorUtil.singletonIterator(catchParam);
-		return IteratorUtil.getEMPTY_ITERATOR();
-	}
-	
-	@Override
-	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-		return null;
-	}
-	
-	@Override
-	public boolean hasSequentialLookup() {
-		return false;
+	public void resolveSearchInScope(CommonDefUnitSearch search) {
+		if(catchParam != null) {
+			ReferenceResolver.findInNodeList(search, Collections.singletonList(catchParam), false);
+		}
 	}
 	
 }

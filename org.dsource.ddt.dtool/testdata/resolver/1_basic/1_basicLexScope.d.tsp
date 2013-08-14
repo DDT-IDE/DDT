@@ -9,8 +9,7 @@ Var#FIND¤【tests/Var】#FIND¤【Var】;
 static #REFSEARCH¤【tests▪Var▪Var2▪Class】 if(true) {
 }
 
-class Class(T #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】, U : T) #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】 { 
-  // TODO the previous ones should not find 'member'
+class Class(T #REFSEARCH¤【tests▪Var▪Var2▪Class▪T】, U : T) #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U】 { 
   
   #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】
   int #REFSEARCH¤【tests▪Var▪Var2▪Class▪T▪U▪member】 member;

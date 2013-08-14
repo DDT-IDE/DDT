@@ -1,14 +1,10 @@
 package dtool.ast.definitions;
 
-import java.util.List;
-
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.parser.Token;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -41,8 +37,4 @@ public class DefinitionUnion extends DefinitionAggregate {
 		return EArcheType.Union;
 	}
 	
-	@Override
-	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-		return null;
-	}
 }

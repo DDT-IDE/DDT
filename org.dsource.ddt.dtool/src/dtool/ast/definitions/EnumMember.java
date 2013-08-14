@@ -5,8 +5,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 
 public class EnumMember extends DefUnit {
 	
@@ -43,13 +42,13 @@ public class EnumMember extends DefUnit {
 		return EArcheType.EnumMember;
 	}
 	
-	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		return getType().getTargetScope(moduleResolver);
-	}
-	
 	private Reference getType() {
 		return ((DefinitionEnum) getParent()).type;
+	}
+	
+	@Override
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		Reference.resolveSearchInReferedMembersScope(search, getType());
 	}
 	
 }

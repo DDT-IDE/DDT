@@ -11,7 +11,6 @@ import dtool.ast.NodeListView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
 
 public class ExpCall extends Expression {
@@ -53,7 +52,7 @@ public class ExpCall extends Expression {
 		}
 		
 		DefUnitSearch search = new DefUnitSearch("opCall", null, false, moduleResolver);
-		ReferenceResolver.findDefUnitInScope(defUnit.getMembersScope(moduleResolver), search);
+		defUnit.resolveSearchInMembersScope(search);
 		
 		for (Iterator<DefUnit> iter = search.getMatchDefUnits().iterator(); iter.hasNext();) {
 			DefUnit defOpCall = iter.next();

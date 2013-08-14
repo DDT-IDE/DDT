@@ -5,8 +5,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * A lambda expression in the short, simple syntax:
@@ -66,8 +65,8 @@ public class ExpSimpleLambda extends Expression {
 		}
 		
 		@Override
-		public IScope getMembersScope(IModuleResolver moduleResolver) {
-			return null;
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			// TODO:
 		}
 		
 	}

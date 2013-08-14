@@ -4,8 +4,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.Reference;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 
 public class TemplateTypeParam extends TemplateParameter {
 	
@@ -42,15 +41,9 @@ public class TemplateTypeParam extends TemplateParameter {
 		return EArcheType.TypeParameter;
 	}
 	
-	/*
-	 * Can be null
-	 */
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		if(specializationType == null)
-			return null;
-		return specializationType.getTargetScope(moduleResolver);
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		Reference.resolveSearchInReferedMembersScope(search, specializationType);
 	}
-
 	
 }

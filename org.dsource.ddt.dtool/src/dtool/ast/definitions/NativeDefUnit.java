@@ -1,46 +1,22 @@
 package dtool.ast.definitions;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 import melnorme.utilbox.core.Assert;
-import melnorme.utilbox.misc.IteratorUtil;
-import dtool.ast.ASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.SyntheticDefUnit;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IDefUnitReference;
-import dtool.resolver.INamedScope;
-import dtool.resolver.IScope;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.IScopeProvider;
 import dtool.resolver.api.IModuleResolver;
 
-public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeDefUnit, IScope {
+public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeDefUnit, IScopeNode {
 	
 	/** A module like class, contained all native defunits. */
-	public static class NativesScope implements IScope, INamedScope {
+	public static class NativesScope implements IScopeProvider {
 		
 		public NativesScope() {
-		}
-		
-		@Override
-		public Iterator<? extends ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
-			// TODO: put intrinsics here?
-			return IteratorUtil.getEMPTY_ITERATOR();
-		}
-		
-		@Override
-		public INamedScope getModuleScope() {
-			return this;
-		}
-		
-		@Override
-		public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-			return null;
-		}
-		
-		@Override
-		public boolean hasSequentialLookup() {
-			return false;
 		}
 		
 		@Override
@@ -49,9 +25,10 @@ public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeD
 		}
 		
 		@Override
-		public String toStringAsElement() {
-			return toString();
+		public void resolveSearchInScope(CommonDefUnitSearch search) {
+			// TODO Auto-generated method stub
 		}
+		
 	}
 	
 	private static final class UndeterminedReference implements IDefUnitReference {
@@ -83,20 +60,9 @@ public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeD
 		Assert.fail("Intrinsics do not suppport accept.");
 	}
 	
-	
 	@Override
-	public abstract IScope getMembersScope(IModuleResolver moduleResolver);
-	
-	@Override
-	public boolean hasSequentialLookup() {
-		return false;
-	}
-	
-	//public abstract IScope getSuperScope();
-	
-	@Override
-	public INamedScope getModuleScope() {
-		return nativesScope;
+	public void resolveSearchInScope(CommonDefUnitSearch search) {
+		// TODO Auto-generated method stub
 	}
 	
 }

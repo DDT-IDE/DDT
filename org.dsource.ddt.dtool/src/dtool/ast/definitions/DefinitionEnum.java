@@ -1,10 +1,6 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Iterator;
-import java.util.List;
-
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -14,10 +10,11 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.ReferenceResolver;
 
-public class DefinitionEnum extends CommonDefinition implements IScope, IDeclaration, IStatement {
+public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDeclaration, IStatement {
 	
 	public final Reference type;
 	public final EnumBody body;
@@ -97,24 +94,13 @@ public class DefinitionEnum extends CommonDefinition implements IScope, IDeclara
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		return this;
+	public void resolveSearchInScope(CommonDefUnitSearch search) {
+		ReferenceResolver.findInNodeList(search, body.nodeList /*BUG here NPE*/, true);
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public boolean hasSequentialLookup() {
-		return true;
-	}
-	
-	@Override
-	public Iterator<EnumMember> getMembersIterator(IModuleResolver moduleResolver) {
-		return body.nodeList.iterator(); /*BUG here NPE*/
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		ReferenceResolver.resolveSearchInScope(search, this);
 	}
 	
 }

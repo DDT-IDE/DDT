@@ -2,17 +2,13 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.LexElement;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 
 public class FunctionParameter extends DefUnit implements IFunctionParameter {
@@ -64,15 +60,6 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		Collection<DefUnit> defunits = type.findTargetDefUnits(moduleResolver, true);
-		if(defunits == null || defunits.isEmpty())
-			return null;
-		return defunits.iterator().next().getMembersScope(moduleResolver);
-		//return defunit.getMembersScope();
-	}
-	
-	@Override
 	public String getTypeStringRepresentation() {
 		return getStringRepresentation(type, null, isVariadic);
 	}
@@ -92,6 +79,13 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	public static String getStringRepresentation(Reference type, String name, boolean isVariadic) {
 		String nameStr = name == null ? "": " " + name;
 		return type.toStringAsElement() + nameStr + (isVariadic ? "..." : "");
+	}
+	
+	@Override
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		if(type == null)
+			return;
+		Reference.resolveSearchInReferedMembersScope(search, type);
 	}
 	
 }

@@ -1,17 +1,12 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
-import dtool.resolver.IDefUnitReference;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * A fragment of a variable definition in a multi-identifier variable declaration
@@ -65,12 +60,8 @@ public class DefVarFragment extends DefUnit {
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		IDefUnitReference resolvedType = getDefinitionVariableParent().determineType();
-		Collection<DefUnit> defunits = resolvedType.findTargetDefUnits(moduleResolver, true);
-		if(defunits == null || defunits.isEmpty())
-			return null;
-		return defunits.iterator().next().getMembersScope(moduleResolver);
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		Reference.resolveSearchInReferedMembersScope(search, getDefinitionVariableParent().determineType());
 	}
 	
 }

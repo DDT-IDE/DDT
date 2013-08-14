@@ -78,7 +78,10 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 				}
 			}
 		}
-		assertTrue(removed); // Must find a matching result
+		if(removed == false) {
+			System.out.println(" > Not Found: " + expectedTarget);
+			assertFail(); // Must find a matching result
+		}
 	}
 	
 	// TODO: review this

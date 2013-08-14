@@ -1,17 +1,14 @@
 package dtool.ast.references;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.IScope;
 import dtool.resolver.api.IModuleResolver;
 
 public class RefTypePointer extends CommonRefNative {
@@ -49,21 +46,9 @@ public class RefTypePointer extends CommonRefNative {
 		
 		public static final IntrinsicPointer instance = new IntrinsicPointer();
 		
-		
 		@Override
-		public IScope getMembersScope(IModuleResolver moduleResolver) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		@Override
-		public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		@Override
-		public Iterator<ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
-			// TODO Auto-generated method stub
-			return null;
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			// TODO
 		}
 	}
 	

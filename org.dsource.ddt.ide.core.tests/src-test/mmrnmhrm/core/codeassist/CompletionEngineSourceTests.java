@@ -49,9 +49,8 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	public void runRefSearchTest(int offset, String searchParams, ECompletionResultStatus expectedStatusCode, 
 		String[] expectedResults, String relexStartPosMarker) {
 		int rplLen = 0;
-		String rplLenStr = searchParams; 
-		if(rplLenStr != null) {
-			rplLen = Integer.parseInt(rplLenStr);
+		if(getRplLen(searchParams) != null) {
+			rplLen = getRplLen(searchParams);
 		}
 		
 		runRefSearchTest(offset, expectedResults, rplLen);

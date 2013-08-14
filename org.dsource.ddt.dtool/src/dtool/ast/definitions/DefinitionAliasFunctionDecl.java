@@ -11,8 +11,7 @@ import dtool.ast.declarations.Attribute;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 
 /**
@@ -73,8 +72,9 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		return target.getTargetScope(moduleResolver); // XXX: Not correct for functional variant of alias
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		// XXX: Not correct for functional variant of alias
+		Reference.resolveSearchInReferedMembersScope(search, target);
 	}
 	
 }

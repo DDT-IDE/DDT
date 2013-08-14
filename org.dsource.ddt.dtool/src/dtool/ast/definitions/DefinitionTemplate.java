@@ -1,14 +1,8 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Iterator;
-import java.util.List;
-
-import melnorme.utilbox.misc.ChainedIterator;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.IDeclaration;
@@ -16,8 +10,9 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.ReferenceResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -26,7 +21,7 @@ import dtool.util.ArrayView;
  * 
  * (Technically not allowed as statement, but parse so anyways.)
  */
-public class DefinitionTemplate extends CommonDefinition implements IScope, IDeclaration, IStatement {
+public class DefinitionTemplate extends CommonDefinition implements IScopeNode, IDeclaration, IStatement {
 	
 	public final boolean isMixin;
 	public final ArrayView<TemplateParameter> tplParams;
@@ -87,33 +82,16 @@ public class DefinitionTemplate extends CommonDefinition implements IScope, IDec
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		return this;
+	public void resolveSearchInScope(CommonDefUnitSearch search) {
+		ReferenceResolver.findInNodeList(search, tplParams, true);
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-		// TODO: template super scope
-		return null;
-	}
-	
-	@Override
-	public boolean hasSequentialLookup() {
-		return false;
-	}
-	
-	@Override
-	public Iterator<? extends IASTNode> getMembersIterator(IModuleResolver moduleResolver) {
-		// BUG in accessing decls
-		// TODO: check if in a template invocation
-		// TODO: test this more, redo
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		if(wrapper) {
-			// Go straight to members of the inner decl
-			IScope scope = ((DefUnit)decls.nodes.get(0)).getMembersScope(moduleResolver);
-			Iterator<? extends IASTNode> tplIter = tplParams.iterator();
-			return ChainedIterator.create(tplIter, scope.getMembersIterator(moduleResolver));
+			// TODO: go straight to members of wrapped definition
 		}
-		return ChainedIterator.create(tplParams.iterator(), decls.nodes.iterator());
+		ReferenceResolver.resolveSearchInScope(search, decls);
 	}
 	
 }

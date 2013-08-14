@@ -150,8 +150,8 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		assertNotNull(mr);
 		
 		testsLogger.println("-----");
-		
 		processResolverTestMetadata(testCase);
+		testsLogger.println("----------  ----------");
 	}
 	
 	public void setupTestProject(String moduleName, String projectFolderName, AnnotatedSource testCase) {
@@ -287,7 +287,7 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		runRefSearchTest(offset, searchParams, expectedStatusCode, expectedResults, relexStartPosMarker);
 	}
 	
-	public void runRefSearchTest(int offset, @SuppressWarnings("unused") String searchParams, 
+	public void runRefSearchTest(int offset, String searchParams, 
 		ECompletionResultStatus expectedStatusCode, String[] expectedResults, String relexStartPosMarker) {
 		
 		DefUnitCollector collector = new DefUnitCollector();
@@ -295,8 +295,21 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		
 		assertTrue(relexStartPosMarker == null || search.relexStartPos == getMarkerPosition(relexStartPosMarker));
 		assertTrue(search.getResultCode() == expectedStatusCode);
+		if(getRplLen(searchParams) != null) {
+			assertEquals(search.searchOptions.rplLen, getRplLen(searchParams));
+		}
+		
 		if(expectedResults != null) {
 			checkResults(collector.results, expectedResults);
+		}
+	}
+	
+	public Integer getRplLen(String searchParams) {
+		String rplLenStr = searchParams; 
+		if(rplLenStr != null) {
+			return Integer.parseInt(rplLenStr);
+		} else {
+			return null;
 		}
 	}
 	

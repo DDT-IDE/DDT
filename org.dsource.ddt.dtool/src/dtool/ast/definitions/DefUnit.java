@@ -7,8 +7,7 @@ import dtool.ast.SourceRange;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
 import dtool.parser.Token;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * Abstract class for all AST elements that define a new named entity.
@@ -100,12 +99,6 @@ public abstract class DefUnit extends ASTNode {
 	/** Gets the archetype (the kind) of this DefUnit. */
 	public abstract EArcheType getArcheType() ;
 	
-	/** Gets the scope which contains the members of this DefUnit. 
-	 * In the case of aggregate like DefUnits the members scope is contained
-	 * in the DefUnit node, but on other cases the scope is somewhere else.
-	 * May be null if the scope is not found. */
-	public abstract IScope getMembersScope(IModuleResolver moduleResolver);
-	
 	@Override
 	public String toStringAsElement() {
 		return getName();
@@ -118,5 +111,11 @@ public abstract class DefUnit extends ASTNode {
 	public String getExtendedName() {
 		return getName();
 	}
-
+	
+	/**
+	 * Resolve given search in the members scope of this defunit.
+	 * Note that the members can be different from the lexical scope that a defunit may provide.
+	 */
+	public abstract void resolveSearchInMembersScope(CommonDefUnitSearch search);
+	
 }

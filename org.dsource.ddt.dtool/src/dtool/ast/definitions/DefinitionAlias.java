@@ -9,8 +9,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 
 /**
@@ -87,8 +86,8 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		}
 		
 		@Override
-		public IScope getMembersScope(IModuleResolver moduleResolver) {
-			return target.getTargetScope(moduleResolver);
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			Reference.resolveSearchInReferedMembersScope(search, target);
 		}
 		
 	}

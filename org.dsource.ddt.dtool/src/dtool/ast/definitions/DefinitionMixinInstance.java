@@ -6,8 +6,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * Declaration of a template mixin with an associated identifier:
@@ -47,8 +46,8 @@ public class DefinitionMixinInstance extends CommonDefinition implements IStatem
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		return templateInstance.getTargetScope(moduleResolver);
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		Reference.resolveSearchInReferedMembersScope(search, templateInstance);
 	}
 	
 }

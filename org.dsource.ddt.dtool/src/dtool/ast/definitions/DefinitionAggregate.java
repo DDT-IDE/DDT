@@ -1,11 +1,6 @@
 package dtool.ast.definitions;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
-import java.util.Iterator;
-
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclBlock;
@@ -13,15 +8,15 @@ import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.ReferenceResolver;
 import dtool.util.ArrayView;
-import dtool.util.NewUtils;
 
 /**
  * A definition of a aggregate. 
  */
-public abstract class DefinitionAggregate extends CommonDefinition implements IScope, IStatement {
+public abstract class DefinitionAggregate extends CommonDefinition implements IStatement, IScopeNode {
 	
 	public interface IAggregateBody extends IASTNode {
 	}
@@ -56,23 +51,17 @@ public abstract class DefinitionAggregate extends CommonDefinition implements IS
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		return this;
+	public void resolveSearchInScope(CommonDefUnitSearch search) {
+		ReferenceResolver.findInNodeList(search, tplParams, true);
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
-		if(aggrBody instanceof DeclarationEmpty) {
-			assertFail();
-			return null; /*NPE BUG here*/
-		} else {
-			return NewUtils.getChainedIterator(((DeclBlock) aggrBody).nodes /*NPE BUG here*/, tplParams);
-		}
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		ReferenceResolver.resolveSearchInScope(search, getBodyScope());
 	}
 	
-	@Override
-	public boolean hasSequentialLookup() {
-		return false;
+	public IScopeNode getBodyScope() {
+		return aggrBody instanceof DeclarationEmpty ? null : ((DeclBlock) aggrBody);
 	}
 	
 }

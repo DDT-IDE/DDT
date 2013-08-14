@@ -4,11 +4,9 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.NodeList;
-import dtool.ast.definitions.DefinitionAggregate.IAggregateBody;
-import dtool.resolver.IScope;
 import dtool.util.ArrayView;
 
-public class DeclList extends NodeList<ASTNode> implements IAggregateBody, IScope {
+public class DeclList extends NodeList<ASTNode> {
 	
 	public DeclList(ArrayView<ASTNode> nodes) {
 		super(nodes);

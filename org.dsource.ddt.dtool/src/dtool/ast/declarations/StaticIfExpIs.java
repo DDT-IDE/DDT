@@ -12,8 +12,7 @@ import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 
 public class StaticIfExpIs extends Expression {
@@ -99,11 +98,11 @@ public class StaticIfExpIs extends Expression {
 		}
 		
 		@Override
-		public IScope getMembersScope(IModuleResolver moduleResolver) {
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 			StaticIfExpIs staticIfIsExp = (StaticIfExpIs) getParent();
-			// This is only correct for the basic ExpIs case, the other scenarios are hard to calculate
-			return staticIfIsExp.typeRef.getTargetScope(moduleResolver);
+			Reference.resolveSearchInReferedMembersScope(search, staticIfIsExp.typeRef);
 		}
+		
 	}
 	
 }

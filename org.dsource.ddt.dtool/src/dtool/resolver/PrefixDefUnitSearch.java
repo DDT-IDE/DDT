@@ -136,6 +136,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 	}
 	
 	public void setupPrefixedSearchOptions(String searchPrefix, int rplLen) {
+		assertTrue(rplLen >= 0);
 		searchOptions.searchPrefix = searchPrefix;
 		searchOptions.namePrefixLen = searchOptions.searchPrefix.length();
 		searchOptions.rplLen = rplLen;

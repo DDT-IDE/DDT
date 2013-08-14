@@ -1,10 +1,6 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Iterator;
-import java.util.List;
-
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -13,9 +9,9 @@ import dtool.ast.references.RefModule;
 import dtool.parser.BaseLexElement;
 import dtool.parser.IToken;
 import dtool.parser.Token;
-import dtool.resolver.INamedScope;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.ReferenceResolver;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
 
@@ -23,7 +19,7 @@ import dtool.util.NewUtils;
  * D Module. 
  * The top-level AST class, has no parent, is the first and main node of every compilation unit.
  */
-public class Module extends DefUnit implements IScope, INamedScope {
+public class Module extends DefUnit implements IScopeNode {
 	
 	public static class ModuleDefSymbol extends DefSymbol {
 		
@@ -132,27 +128,6 @@ public class Module extends DefUnit implements IScope, INamedScope {
 		return null;
 	}
 	
-	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		return this;
-	}
-	
-	@Override
-	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-		return null;
-	}
-	
-	@Override
-	public boolean hasSequentialLookup() {
-		return false;
-	}
-	
-	
-	@Override
-	public Iterator<? extends ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
-		return members.iterator();
-	}
-	
 	public String getFullyQualifiedName() {
 		ASTCodePrinter cp = new ASTCodePrinter();
 		if(md != null) {
@@ -186,6 +161,16 @@ public class Module extends DefUnit implements IScope, INamedScope {
 	@Override
 	public String getExtendedName() {
 		return getName();
+	}
+	
+	@Override
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		ReferenceResolver.resolveSearchInScope(search, this);
+	}
+	
+	@Override
+	public void resolveSearchInScope(CommonDefUnitSearch search) {
+		ReferenceResolver.findInNodeList(search, members, false);
 	}
 	
 }

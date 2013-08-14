@@ -3,8 +3,7 @@ package dtool.ast.definitions;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 
 public class TemplateTupleParam extends TemplateParameter {
 	
@@ -34,9 +33,9 @@ public class TemplateTupleParam extends TemplateParameter {
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		// TODO return intrinsic universal
-		return null;
+		return;
 	}
 	
 }

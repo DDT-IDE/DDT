@@ -1,9 +1,6 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -12,9 +9,8 @@ import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IDefUnitReference;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**
@@ -83,15 +79,10 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		if(type == null)
-			return null; // TODO: auto references
-		
-		Collection<DefUnit> defunits = type.findTargetDefUnits(moduleResolver, true);
-		if(defunits == null || defunits.isEmpty())
-			return null;
-		return defunits.iterator().next().getMembersScope(moduleResolver);
-		//return defunit.getMembersScope();
+			return; // TODO: auto references
+		Reference.resolveSearchInReferedMembersScope(search, type);
 	}
 	
 	public static class DefinitionAutoVariable extends DefinitionVariable {

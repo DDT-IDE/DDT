@@ -29,8 +29,8 @@ public class RefImportSelection extends CommonRefIdentifier implements IImportSe
 	@Override
 	public void doSearch(CommonDefUnitSearch search) {
 		RefModule refMod = getImportSelectiveContainer().getModuleRef();
-		Collection<DefUnit> targetModules = refMod.findTargetDefUnits(search.getModResolver(), false);
-		CommonRefQualified.findDefUnitInMultipleDefUnitScopes(targetModules, search);
+		Collection<DefUnit> targetModules = refMod.findTargetDefUnits(search.getModuleResolver(), false);
+		CommonRefQualified.resolveSearchInMultipleDefUnits(targetModules, search);
 	}
 	
 }

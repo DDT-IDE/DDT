@@ -33,7 +33,7 @@ public abstract class CommonDefUnitSearch {
 	/** Cached value of the reference's module scope. */
 	protected Module searchRefModule; 
 	/** The scopes that have already been searched */
-	protected ArrayList<IBaseScope> searchedScopes;
+	protected ArrayList<IScopeNode> searchedScopes;
 
 
 	public CommonDefUnitSearch(ASTNode originNode, int refOffset, IModuleResolver moduleResolver) {
@@ -42,7 +42,7 @@ public abstract class CommonDefUnitSearch {
 	
 	public CommonDefUnitSearch(ASTNode originNode, int refOffset, boolean findOneOnly, 
 		IModuleResolver moduleResolver) { 
-		this.searchedScopes = new ArrayList<IBaseScope>(4);
+		this.searchedScopes = new ArrayList<>(4);
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
 		this.modResolver = assertNotNull(moduleResolver);
@@ -50,7 +50,7 @@ public abstract class CommonDefUnitSearch {
 		this.searchRefModule = assertNotNull(originNode.getModuleNode());
 	}
 	
-	public IModuleResolver getModResolver() {
+	public IModuleResolver getModuleResolver() {
 		return modResolver;
 	}
 	
@@ -71,7 +71,7 @@ public abstract class CommonDefUnitSearch {
 	}
 	
 	/** Return whether we have already search the given scope or not. */
-	public boolean hasSearched(IBaseScope scope) {
+	public boolean hasSearched(IScopeNode scope) {
 		// TODO: shit performance here, make it a hash, or sorted search
 		if(searchedScopes.contains(scope))
 			return true;
@@ -79,7 +79,7 @@ public abstract class CommonDefUnitSearch {
 	}
 
 	/** Indicate we are now searching the given new scope. */
-	public void enterNewScope(IBaseScope scope) {
+	public void enterNewScope(IScopeNode scope) {
 		// TODO: keep only the named scopes?
 		// how about partial scopes?
 		searchedScopes.add(scope);

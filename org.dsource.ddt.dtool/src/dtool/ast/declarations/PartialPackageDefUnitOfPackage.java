@@ -3,10 +3,9 @@ package dtool.ast.declarations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collections;
-import java.util.Iterator;
 
-import dtool.ast.ASTNode;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.ReferenceResolver;
 
 
 public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
@@ -19,13 +18,8 @@ public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator(IModuleResolver moduleResolver) {
-		return Collections.singleton(subPackage).iterator();
-	}
-	
-	@Override
-	public String toStringAsElement() {
-		return getName() /*+ "." + child.toStringAsElement()*/;
+	public void resolveSearchInScope(CommonDefUnitSearch search) {
+		ReferenceResolver.findInNodeList(search, Collections.singleton(subPackage), false);
 	}
 	
 }

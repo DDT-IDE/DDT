@@ -1,21 +1,20 @@
 package dtool.ast.declarations;
 
-import java.util.List;
-
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.ReferenceResolver;
 
 /**
  * A synthetic DefUnit (not derived from source code), for partial package "definitions" of imports. 
  * This partial DefUnit holds one DefUnit DefUnit and represents only 
  * part of it's complete namespace.
  */
-public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements IScope {
+public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements IScopeNode {
 	
 	public PartialPackageDefUnit(String defName) {
 		super(defName);
@@ -43,23 +42,13 @@ public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements 
 	}
 	
 	@Override
-	public Module getModuleScope() {
+	public String getModuleFullyQualifiedName() {
 		return null;
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		return this;
-	}
-	
-	@Override
-	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-		return null;
-	}
-	
-	@Override
-	public boolean hasSequentialLookup() {
-		return false;
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		ReferenceResolver.resolveSearchInScope(search, this);
 	}
 	
 }

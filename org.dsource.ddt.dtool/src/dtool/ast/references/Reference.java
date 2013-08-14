@@ -1,10 +1,12 @@
 package dtool.ast.references;
 
+import java.util.Collection;
+
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.NativeDefUnit;
 import dtool.ast.expressions.Resolvable;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IDefUnitReference;
-import dtool.resolver.IScope;
 import dtool.resolver.api.DefUnitDescriptor;
 import dtool.resolver.api.IModuleResolver;
 
@@ -19,20 +21,19 @@ public abstract class Reference extends Resolvable {
 		return NativeDefUnit.nullReference;
 	}
 	
-	public IScope getTargetScope(IModuleResolver moduleResolver) {
-		DefUnit defunit = findTargetDefUnit(moduleResolver); 
-		if(defunit == null)
-			return null;
-		return defunit.getMembersScope(moduleResolver);
+	public static void resolveSearchInReferedMembersScope(CommonDefUnitSearch search, IDefUnitReference reference) {
+		if(reference == null) {
+			return;
+		}
+		
+		IModuleResolver moduleResolver = search.getModuleResolver();
+		Collection<DefUnit> defunits = reference.findTargetDefUnits(moduleResolver, true);
+		if(defunits == null || defunits.isEmpty())
+			return;
+		// if several defUnits found, search in first only
+		DefUnit resolvedType = defunits.iterator().next();
+		resolvedType.resolveSearchInMembersScope(search);
 	}
-	
-	/*public void performSearch(CommonDefUnitSearch search) {
-		Collection<DefUnit> defunits = findLookupDefUnits();
-		ANeoResolve.doSearchInDefUnits(defunits, search);
-	}
-	
-	public abstract Collection<DefUnit> findLookupDefUnits();
-	 */
 	
 	public abstract boolean canMatch(DefUnitDescriptor defunit);
 	

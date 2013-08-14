@@ -1,18 +1,15 @@
 package dtool.ast.statements;
 
-import java.util.Iterator;
-import java.util.List;
-
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNode;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.ReferenceResolver;
 import dtool.util.ArrayView;
 
 /**
  * A compound statement. Allways introduces a new Scope.
  */
-public class BlockStatement extends CommonStatementList implements IScope, IFunctionBody {
+public class BlockStatement extends CommonStatementList implements IScopeNode, IFunctionBody {
 	
 	public BlockStatement(ArrayView<IStatement> statements) {
 		super(statements);
@@ -28,18 +25,8 @@ public class BlockStatement extends CommonStatementList implements IScope, IFunc
 	}
 	
 	@Override
-	public Iterator<? extends IASTNode> getMembersIterator(IModuleResolver moduleResolver) {
-		return super.getMembersIterator();
-	}
-	
-	@Override
-	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-		return null;
-	}
-	
-	@Override
-	public boolean hasSequentialLookup() {
-		return true;
+	public void resolveSearchInScope(CommonDefUnitSearch search) {
+		ReferenceResolver.findInNodeList(search, statements_asNodes(), true);
 	}
 	
 }

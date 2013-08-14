@@ -1,17 +1,13 @@
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Collection;
-
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.Reference;
-import dtool.resolver.IScope;
-import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.CommonDefUnitSearch;
 
 public class SimpleVariableDef extends DefUnit {
 	
@@ -45,12 +41,8 @@ public class SimpleVariableDef extends DefUnit {
 	}
 	
 	@Override
-	public IScope getMembersScope(IModuleResolver moduleResolver) {
-		Collection<DefUnit> defunits = type.findTargetDefUnits(moduleResolver, true);
-		if(defunits == null || defunits.isEmpty())
-			return null;
-		return defunits.iterator().next().getMembersScope(moduleResolver);
-		//return defunit.getMembersScope();
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		Reference.resolveSearchInReferedMembersScope(search, type);
 	}
 	
 }

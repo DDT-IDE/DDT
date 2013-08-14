@@ -14,12 +14,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.NodeData.CreatedStatusNodeData;
 import dtool.ast.NodeData.ParsedNodeData;
 import dtool.ast.definitions.Module;
 import dtool.parser.ParserError;
-import dtool.resolver.INamedScope;
+import dtool.resolver.IScopeNode;
+import dtool.resolver.ReferenceResolver;
 import dtool.util.ArrayView;
 
 public abstract class ASTNode implements IASTNode {
@@ -243,12 +243,17 @@ public abstract class ASTNode implements IASTNode {
 	
 	/* ------------------------------------------------------------ */
 	
-	public INamedScope getModuleScope() {
-		return NodeUtil.getParentModule(this);
+	public String getModuleFullyQualifiedName() {
+		/* BUG here: can be null with synthetic defUnits */
+		return getModuleNode().getFullyQualifiedName();
 	}
 	
 	public Module getModuleNode() {
 		return NodeUtil.getParentModule(this);
+	}
+	
+	public IScopeNode getOuterLexicalScope() {
+		return ReferenceResolver.getOuterLexicalScope(this);
 	}
 	
 	/* =============== STRING FUNCTIONS =============== */

@@ -8,9 +8,7 @@ import java.util.Collection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScope;
 import dtool.resolver.PrefixDefUnitSearch;
-import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
 import dtool.resolver.api.PrefixDefUnitSearchBase.ECompletionResultStatus;
 
@@ -41,21 +39,18 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 	
 	@Override
 	public void doSearch(CommonDefUnitSearch search) {
-		Collection<DefUnit> defunits = findRootDefUnits(search.getModResolver());
-		findDefUnitInMultipleDefUnitScopes(defunits, search);
+		Collection<DefUnit> defunits = findRootDefUnits(search.getModuleResolver());
+		resolveSearchInMultipleDefUnits(defunits, search);
 	}
 	
-	public static void findDefUnitInMultipleDefUnitScopes(Collection<DefUnit> defunits, CommonDefUnitSearch search) {
-		if(defunits == null)
+	public static void resolveSearchInMultipleDefUnits(Collection<DefUnit> defUnits, CommonDefUnitSearch search) {
+		if(defUnits == null)
 			return;
 		
-		for (DefUnit unit : defunits) {
-			IScope scope = unit.getMembersScope(search.getModResolver());
-			if(scope != null) {
-				ReferenceResolver.findDefUnitInScope(scope, search);
-			}
+		for (DefUnit defUnit : defUnits) {
 			if(search.isFinished())
 				return;
+			defUnit.resolveSearchInMembersScope(search);
 		}
 	}
 	

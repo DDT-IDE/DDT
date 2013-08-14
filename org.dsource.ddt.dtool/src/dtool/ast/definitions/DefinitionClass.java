@@ -1,15 +1,14 @@
 package dtool.ast.definitions;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.Token;
-import dtool.resolver.IScope;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -73,19 +72,24 @@ public class DefinitionClass extends DefinitionAggregate {
 	}
 	
 	@Override
-	public List<IScope> getSuperScopes(IModuleResolver moduleResolver) {
-		if(baseClasses == null || baseClasses.size() < 0)
-			return null;
-		
-		List<IScope> scopes = new ArrayList<IScope>();
-		for(Reference baseclass: baseClasses) {
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		if(getBodyScope() != null) {
+			ReferenceResolver.resolveSearchInScope(search, getBodyScope());
+		} else {
+			// Even without a body scope, we can resolve in super scopes
+			resolveSearchInSuperScopes(search);
+		}
+	}
+	
+	public void resolveSearchInSuperScopes(CommonDefUnitSearch search) {
+		IModuleResolver moduleResolver = search.getModuleResolver();
+		for(Reference baseclass : CollectionUtil.nullToEmpty(baseClasses)) {
 			DefUnit defunit = baseclass.findTargetDefUnit(moduleResolver);
 			if(defunit == null)
 				continue;
-			scopes.add(defunit.getMembersScope(moduleResolver));
+			
+			defunit.resolveSearchInMembersScope(search);
 		}
-		return scopes;
-		// TODO add Object super scope.
 	}
 	
 }

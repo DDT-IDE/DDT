@@ -1,15 +1,12 @@
 package dtool.resolver;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import melnorme.utilbox.core.ExceptionAdapter;
-import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.IASTNode;
@@ -49,19 +46,19 @@ public class ReferenceResolver {
 	/* ====================  reference lookup  ==================== */
 	
 	public static void resolveSearchInFullLexicalScope(ASTNode node, CommonDefUnitSearch search) {
-		IBaseScope lookupScope = getNearestLexicalScope(node);
+		IScopeNode lookupScope = getNearestLexicalScope(node);
 		ReferenceResolver.findDefUnitInExtendedScope(lookupScope, search);
 	}
 	
-	public static void findDefUnitInExtendedScope(IBaseScope scope, CommonDefUnitSearch search) {
+	public static void findDefUnitInExtendedScope(IScopeNode scope, CommonDefUnitSearch search) {
 		assertNotNull(scope);
-
+		
 		while(true) {
 			findDefUnitInScope(scope, search);
 			if(search.isFinished())
 				return;
 
-			IBaseScope outerScope = getOuterLexicalScope(scope);
+			IScopeNode outerScope = scope.getOuterLexicalScope();
 			if(outerScope == null) {
 				if(scope instanceof Module) {
 					Module module = (Module) scope;
@@ -74,15 +71,14 @@ public class ReferenceResolver {
 		}
 	}
 	
-	public static IBaseScope getOuterLexicalScope(IBaseScope scope) {
-		if(scope instanceof ASTNode) {
-			ASTNode node = (ASTNode) scope;
-			return getOuterLexicalScope(node);
-		}
-		throw assertFail();
+	public static IScopeNode getNearestLexicalScope(ASTNode node) {
+		if (node instanceof IScopeNode)
+			return (IScopeNode) node;
+		
+		return getOuterLexicalScope(node);
 	}
 	
-	public static IBaseScope getOuterLexicalScope(final ASTNode node) {
+	public static IScopeNode getOuterLexicalScope(ASTNode node) {
 		ASTNode parent;
 		/*BUG here should be:*/
 		//if (elem.getParent() instanceof DefinitionAggregate) {
@@ -98,13 +94,11 @@ public class ReferenceResolver {
 		return getNearestLexicalScope(parent);
 	}
 	
-	public static IBaseScope getNearestLexicalScope(ASTNode node) {
-		if (node instanceof IBaseScope)
-			return (IBaseScope) node;
-		
-		return getOuterLexicalScope(node);
+	public static void resolveSearchInScope(CommonDefUnitSearch search, IScopeNode scope) {
+		if(scope != null) {
+			findDefUnitInScope(scope, search);
+		}
 	}
-	
 	
 	/** Searches for the given CommonDefUnitSearch search, in the scope's 
 	 * immediate namespace, secondary namespace (imports), and super scopes.
@@ -114,81 +108,49 @@ public class ReferenceResolver {
 	 * non-extended scope, (altough due to imports, they may originate from 
 	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
 	 */
-	public static void findDefUnitInScope(IBaseScope scope, CommonDefUnitSearch search) {
+	public static void findDefUnitInScope(IScopeNode scope, CommonDefUnitSearch search) {
 		assertNotNull(scope);
 		if(search.hasSearched(scope))
 			return;
 		
 		search.enterNewScope(scope);
-		
-		findDefUnitInDirectScope(scope, search);
-		if(search.isFinished())
-			return;
-		
-		if(scope instanceof IScope) {
-			IScope scopeX = (IScope) scope;
-			List<IScope> superScopes = scopeX.getSuperScopes(search.modResolver);
-			if(superScopes != null) {
-				for(IScope superscope : superScopes) {
-					if(superscope != null)
-						findDefUnitInScope(superscope, search); 
-					if(search.isFinished())
-						return;
-				}
-			}
-		}
-		
+		scope.resolveSearchInScope(search);
 	}
 	
-	protected static void findDefUnitInDirectScope(IBaseScope scope, CommonDefUnitSearch search) {
-		findDefUnitInScope(scope, search, false);
-		if(search.isFinished())
-			return;
-		
-		findDefUnitInScope(scope, search, true);
-	}
-	
-	private static void findDefUnitInScope(IBaseScope baseScope, CommonDefUnitSearch search, boolean importsOnly) {
-		if(baseScope instanceof IResolveParticipant) {
-			IResolveParticipant scopeProvider = (IResolveParticipant) baseScope;
-			scopeProvider.provideResultsForSearch(search, importsOnly);
-		} else {
-			IScope scope = (IScope) baseScope;
-			Iterator<IASTNode> iter = IteratorUtil.recast(scope.getMembersIterator(search.modResolver));
-			findDefUnits(search, iter, scope.hasSequentialLookup(), importsOnly);
-		}
-	}
-	
-	public static void lexicalResolve(CommonDefUnitSearch search, boolean importsOnly, 
-		Iterable<? extends IASTNode> nodeIterable, boolean hasSequentialLookup) {
+	public static void findInNodeList(CommonDefUnitSearch search, 
+		Iterable<? extends IASTNode> nodeIterable, boolean isSequentialLookup) {
 		if(nodeIterable != null) {
-			findDefUnits(search, nodeIterable.iterator(), hasSequentialLookup, importsOnly);
+			if(search.isFinished())
+				return;
+			findDefUnits(search, nodeIterable.iterator(), isSequentialLookup, false);
+			if(search.isFinished())
+				return;
+			findDefUnits(search, nodeIterable.iterator(), isSequentialLookup, true);
 		}
 	}
 	
 	public static void findDefUnits(CommonDefUnitSearch search, Iterator<? extends IASTNode> iter,
-			boolean isStatementScope, boolean importsOnly) {
-		
+			boolean isSequentialLookup, boolean importsOnly) {
 		
 		while(iter.hasNext()) {
 			IASTNode node = iter.next();
 			
 			int refOffset = search.refOffset;
 			// Check if we have passed the reference offset
-			if(isStatementScope && refOffset < node.getStartPos()) {
+			if(isSequentialLookup && refOffset < node.getStartPos()) {
 				return;
 			}
 			
-			evaluateNodeForSearch(search, isStatementScope, importsOnly, node);
+			evaluateNodeForSearch(search, isSequentialLookup, importsOnly, node);
 		}
 	}
 	
-	public static void evaluateNodeForSearch(CommonDefUnitSearch search, boolean isStatementScope, boolean importsOnly,
-		IASTNode node) {
+	public static void evaluateNodeForSearch(CommonDefUnitSearch search, boolean isSequentialLookup, 
+		boolean importsOnly, IASTNode node) {
 		
 		if(node instanceof INonScopedBlock) {
 			INonScopedBlock container = ((INonScopedBlock) node);
-			findDefUnits(search, container.getMembersIterator(), isStatementScope, importsOnly);
+			findDefUnits(search, container.getMembersIterator(), isSequentialLookup, importsOnly);
 			if(search.isFinished() && search.findOnlyOne)
 				return; // Return if we only want one match in the scope
 		}
@@ -263,12 +225,12 @@ public class ReferenceResolver {
 		findDefUnitInStaticImport(impContent, search);
 		//if(search.isScopeFinished()) return;
 		
-		Module targetModule = findImporTargetModule(search.modResolver, impContent);
+		Module targetModule = findImportTargetModule(search.modResolver, impContent);
 		if (targetModule != null)
 			findDefUnitInScope(targetModule, search);
 	}
 	
-	private static Module findImporTargetModule(IModuleResolver modResolver, IImportFragment impSelective) {
+	private static Module findImportTargetModule(IModuleResolver modResolver, IImportFragment impSelective) {
 		String[] packages = impSelective.getModuleRef().packages.getInternalArray();
 		String modules = impSelective.getModuleRef().module;
 		Module targetModule;
@@ -279,7 +241,7 @@ public class ReferenceResolver {
 	public static void findDefUnitInSelectiveImport(
 			ImportSelective impSelective, CommonDefUnitSearch search) {
 
-		Module targetModule = findImporTargetModule(search.modResolver, impSelective);
+		Module targetModule = findImportTargetModule(search.modResolver, impSelective);
 		if (targetModule == null)
 			return;
 			
