@@ -51,8 +51,8 @@ public final class StringUtil {
 	// This helper function is not used in code, but rather for Eclipse IDE debug detail formatters
 	@SuppressWarnings("unused")
 	private static <T> String debug_collToString(Collection<T> coll) {
-//		Collection<?> coll = this;
-		StringBuilder sb = new StringBuilder();
+//		java.util.Collection<?> coll = this;
+		java.lang.StringBuilder sb = new java.lang.StringBuilder();
 		boolean first = true;
 		for(Object item : coll){
 			if(!first)
