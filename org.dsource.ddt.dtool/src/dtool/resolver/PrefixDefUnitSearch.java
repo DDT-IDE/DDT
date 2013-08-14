@@ -1,6 +1,5 @@
 package dtool.resolver;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.HashSet;
@@ -9,13 +8,7 @@ import java.util.Set;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
-import dtool.ast.references.RefIdentifier;
-import dtool.ast.references.RefImportSelection;
-import dtool.ast.references.RefModule;
-import dtool.ast.references.RefPrimitive;
-import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.parser.DeeLexer;
 import dtool.parser.DeeParserResult;
@@ -76,12 +69,11 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		defUnitAccepter.accept(defUnit, searchOptions);
 	}
 	
-	public static PrefixDefUnitSearch doCompletionSearch(DeeParserResult parseResult, int offset, IModuleResolver mr, 
-		IDefUnitMatchAccepter defUnitAccepter) {
+	public static PrefixDefUnitSearch doCompletionSearch(DeeParserResult parseResult, final int offset, 
+		IModuleResolver mr, IDefUnitMatchAccepter defUnitAccepter) {
 		
 		String source = parseResult.source;
-		assertTrue(offset >= 0 && offset <= source.length());
-		
+		assertTrue(offset >= 0 && offset <= source.length());		
 		
 		Module neoModule = parseResult.getParsedModule(); 
 		ASTNodeFinderExtension nodeFinder = new ASTNodeFinderExtension(neoModule, offset, true);
@@ -101,68 +93,17 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				"Invalid location (inside unmodifiable token)");
 		}
 		
-		search.performCompletionSearch(offset, source, node);
-		return search;
-	}
-
-	public void performCompletionSearch(int offset, String source, ASTNode node) {
-		/* ============================================== */
-		// : Do actual completion search
-		
 		if(node instanceof NamedReference)  {
 			NamedReference namedRef = (NamedReference) node;
-			
-			if(node instanceof RefPrimitive) {
-				RefPrimitive refPrim = (RefPrimitive) node;
-				setupPrefixedSearchOptions(offset, refPrim.getOffset(), refPrim.getCoreReferenceName());
-			} else if(node instanceof RefIdentifier) {
-				RefIdentifier refIdent = (RefIdentifier) node;
-				setupPrefixedSearchOptions(offset, refIdent.getOffset(), refIdent.getDenulledIdentifier());
-			} else if(node instanceof RefImportSelection) {
-				RefImportSelection refImpSel = (RefImportSelection) node;
-				setupPrefixedSearchOptions(offset, refImpSel.getOffset(), refImpSel.getDenulledIdentifier());
-			} else if(node instanceof RefModule) {
-				RefModule refMod = (RefModule) node;
-				
-				int refModEndPos = refMod.getEndPos();
-				
-				// We need to get exact source cause it may contains spaces, even comments
-				String refModSource = source.substring(refMod.getStartPos(), refModEndPos);
-				
-				int rplLen = refModEndPos - offset;
-				if(source.length() > offset && Character.isWhitespace(source.charAt(offset))) {
-					rplLen = 0; // Don't replace, just append
-				}
-				String moduleSourceNamePrefix = refModSource.substring(0, offset-refMod.getStartPos());
-				setupPrefixedSearchOptions_withCanonization(rplLen, moduleSourceNamePrefix);
-				
-			} else if(node instanceof CommonRefQualified) {
-				
-				int dotOffset = -1;
-				if(node instanceof RefQualified) {
-					dotOffset = ((RefQualified) node).dotOffset;
-				} else {
-					dotOffset = node.getStartPos();
-				}
-				
-				if(offset <= dotOffset) {
-					assignResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
-							"Invalid Location: before qualifier dot but not next to id.");
-					return;
-				}
-			} else {
-				throw assertFail();
-			}
-			
-			namedRef.doSearch(this);
-			assertTrue(resultCode == ECompletionResultStatus.RESULT_OK);
+			namedRef.performPrefixSearch(search, source);
 		} else if(node instanceof Reference) {
-			assignResult(ECompletionResultStatus.OTHER_REFERENCE, "Can't complete for node: "+node.getNodeType()+"");
-			return;
+			search.assignResult(ECompletionResultStatus.OTHER_REFERENCE, 
+				"Can't complete for node: "+node.getNodeType()+"");
+			return search;
 		} else {
-			ReferenceResolver.resolveSearchInFullLexicalScope(node, this);
-			assertTrue(resultCode == ECompletionResultStatus.RESULT_OK);
+			ReferenceResolver.resolveSearchInFullLexicalScope(node, search);
 		}
+		return search;
 	}
 	
 	/** Find the token at given offset of given source (inclusive end).
@@ -181,29 +122,21 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 			assertTrue(token.type != DeeTokens.EOF);
 		}
 	}
-
-	protected void setupPrefixedSearchOptions(int offset, int nameOffset, String name) {
+	
+	public void setupPrefixedSearchOptions(int nameOffset, String name) {
+		int offset = getOffset();
 		assertTrue(offset >= nameOffset);
 		assertTrue(offset <= nameOffset + name.length() || name.isEmpty());
 		// empty name is a special case
 		int namePrefixLen = name.isEmpty() ? 0 : offset - nameOffset;
 		
-		searchOptions.searchPrefix = name.substring(0, namePrefixLen);
-		searchOptions.namePrefixLen = searchOptions.searchPrefix.length();
-		searchOptions.rplLen = name.length() - namePrefixLen;
+		int rplLen = name.length() - namePrefixLen;
+		String searchPrefix = name.substring(0, namePrefixLen);
+		setupPrefixedSearchOptions(searchPrefix, rplLen);
 	}
 	
-	protected void setupPrefixedSearchOptions_withCanonization(int rplLen, String moduleSourceNamePrefix) {
-		String canonicalModuleNamePrefix = "";
-		for (int i = 0; i < moduleSourceNamePrefix.length(); i++) {
-			char ch = moduleSourceNamePrefix.charAt(i);
-			// This is not the ideal way to determine the canonical name, info should be provided by parser
-			if(!Character.isWhitespace(ch)) {
-				canonicalModuleNamePrefix = canonicalModuleNamePrefix + ch; 
-			}
-		}
-		
-		searchOptions.searchPrefix = canonicalModuleNamePrefix;
+	public void setupPrefixedSearchOptions(String searchPrefix, int rplLen) {
+		searchOptions.searchPrefix = searchPrefix;
 		searchOptions.namePrefixLen = searchOptions.searchPrefix.length();
 		searchOptions.rplLen = rplLen;
 	}

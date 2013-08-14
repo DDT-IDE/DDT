@@ -12,6 +12,7 @@ import dtool.ast.declarations.SyntheticDefUnit;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
+import dtool.parser.DeeParser;
 import dtool.parser.IToken;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
@@ -88,6 +89,21 @@ public class RefModule extends NamedReference {
 		} catch (Exception e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
+	}
+	
+	@Override
+	public void performPrefixSearch(PrefixDefUnitSearch prefixSearch, String fullSource) {
+		int offset = prefixSearch.getOffset();
+		
+		// We reparse the snipped source as it's the easiest way to determine search prefix
+		String moduleQualifiedNameSnippedSource = fullSource.substring(getStartPos(), offset);
+		DeeParser parser = new DeeParser(moduleQualifiedNameSnippedSource);
+		String moduleQualifiedNameCanonicalPrefix = parser.parseRefModule().toStringAsCode();
+		
+		int rplLen = getEndPos() - offset;
+		prefixSearch.setupPrefixedSearchOptions(moduleQualifiedNameCanonicalPrefix, rplLen);
+		
+		doSearch(prefixSearch);
 	}
 	
 	@Override

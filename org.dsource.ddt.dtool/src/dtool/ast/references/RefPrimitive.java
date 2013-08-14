@@ -11,6 +11,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.parser.IToken;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
+import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
 
@@ -52,6 +53,12 @@ public class RefPrimitive extends NamedReference {
 			findOneOnly, moduleResolver);
 		/*BUG here*/
 		return search.getMatchDefUnits();
+	}
+	
+	@Override
+	public void performPrefixSearch(PrefixDefUnitSearch prefixSearch, String fullSource) {
+		prefixSearch.setupPrefixedSearchOptions(getOffset(), getCoreReferenceName());
+		doSearch(prefixSearch);
 	}
 	
 	@Override

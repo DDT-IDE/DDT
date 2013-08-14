@@ -37,4 +37,8 @@ public abstract class PrefixDefUnitSearchBase extends CommonDefUnitSearch {
 		super(originNode, refOffset, moduleResolver);
 	}
 	
+	public int getOffset() {
+		return refOffset;
+	}
+	
 }

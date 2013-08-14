@@ -4,6 +4,7 @@ package dtool.ast.references;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTVisitor;
+import dtool.resolver.PrefixDefUnitSearch;
 
 public abstract class CommonRefIdentifier extends NamedReference {
 	
@@ -35,6 +36,12 @@ public abstract class CommonRefIdentifier extends NamedReference {
 	
 	public String getDenulledIdentifier() {
 		return identifier == null ? "" : identifier;
+	}
+	
+	@Override
+	public void performPrefixSearch(PrefixDefUnitSearch prefixSearch, String fullSource) {
+		prefixSearch.setupPrefixedSearchOptions(getStartPos(), getDenulledIdentifier());
+		doSearch(prefixSearch);
 	}
 	
 }

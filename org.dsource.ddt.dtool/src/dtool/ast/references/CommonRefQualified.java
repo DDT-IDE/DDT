@@ -9,8 +9,10 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScope;
+import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
+import dtool.resolver.api.PrefixDefUnitSearchBase.ECompletionResultStatus;
 
 
 /**
@@ -55,6 +57,21 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 			if(search.isFinished())
 				return;
 		}
+	}
+	
+	@Override
+	public void performPrefixSearch(PrefixDefUnitSearch prefixSearch, String fullSource) {
+		if(prefixSearch.getOffset() <= getDotOffset()) {
+			prefixSearch.assignResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
+					"Invalid Location: before qualifier dot but not next to id.");
+			return;
+		}
+		
+		doSearch(prefixSearch);
+	}
+	
+	public int getDotOffset() {
+		return getStartPos();
 	}
 	
 }

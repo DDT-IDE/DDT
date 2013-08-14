@@ -32,10 +32,8 @@ void func() {
 	
 	int voidName2;
 	
-	void#FIND¤【】; // Test primitive ref
-	
 	voi#REFSEARCH¤【voidLike▪voidName2】;
-	void#REFSEARCH¤【voidLike▪voidName2】; // Test primitive ref
+	void#FIND¤【】#REFSEARCH¤【voidLike▪voidName2】; // Test primitive ref TODO find
 }
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
