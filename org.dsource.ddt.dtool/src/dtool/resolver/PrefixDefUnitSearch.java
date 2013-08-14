@@ -24,7 +24,6 @@ import dtool.parser.Token;
 import dtool.resolver.api.IDefUnitMatchAccepter;
 import dtool.resolver.api.IModuleResolver;
 import dtool.resolver.api.PrefixDefUnitSearchBase;
-import dtool.resolver.api.PrefixSearchOptions;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
@@ -115,13 +114,13 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 			
 			if(node instanceof RefPrimitive) {
 				RefPrimitive refPrim = (RefPrimitive) node;
-				setupPrefixedSearchOptions(searchOptions, offset, refPrim.getOffset(), refPrim.getTargetSimpleName());
+				setupPrefixedSearchOptions(offset, refPrim.getOffset(), refPrim.getCoreReferenceName());
 			} else if(node instanceof RefIdentifier) {
 				RefIdentifier refIdent = (RefIdentifier) node;
-				setupPrefixedSearchOptions(searchOptions, offset, refIdent.getOffset(), refIdent.getIdString());
+				setupPrefixedSearchOptions(offset, refIdent.getOffset(), refIdent.getDenulledIdentifier());
 			} else if(node instanceof RefImportSelection) {
 				RefImportSelection refImpSel = (RefImportSelection) node;
-				setupPrefixedSearchOptions(searchOptions, offset, refImpSel.getOffset(), refImpSel.getIdString());
+				setupPrefixedSearchOptions(offset, refImpSel.getOffset(), refImpSel.getDenulledIdentifier());
 			} else if(node instanceof RefModule) {
 				RefModule refMod = (RefModule) node;
 				
@@ -135,7 +134,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 					rplLen = 0; // Don't replace, just append
 				}
 				String moduleSourceNamePrefix = refModSource.substring(0, offset-refMod.getStartPos());
-				setupPrefixedSearchOptions_withCanonization(searchOptions, rplLen, moduleSourceNamePrefix);
+				setupPrefixedSearchOptions_withCanonization(rplLen, moduleSourceNamePrefix);
 				
 			} else if(node instanceof CommonRefQualified) {
 				
@@ -183,8 +182,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		}
 	}
 
-	private static void setupPrefixedSearchOptions(PrefixSearchOptions searchOptions, int offset, int nameOffset,
-			String name) {
+	protected void setupPrefixedSearchOptions(int offset, int nameOffset, String name) {
 		assertTrue(offset >= nameOffset);
 		assertTrue(offset <= nameOffset + name.length() || name.isEmpty());
 		// empty name is a special case
@@ -195,8 +193,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		searchOptions.rplLen = name.length() - namePrefixLen;
 	}
 	
-	private static void setupPrefixedSearchOptions_withCanonization(PrefixSearchOptions searchOptions,
-			int rplLen, String moduleSourceNamePrefix) {
+	protected void setupPrefixedSearchOptions_withCanonization(int rplLen, String moduleSourceNamePrefix) {
 		String canonicalModuleNamePrefix = "";
 		for (int i = 0; i < moduleSourceNamePrefix.length(); i++) {
 			char ch = moduleSourceNamePrefix.charAt(i);

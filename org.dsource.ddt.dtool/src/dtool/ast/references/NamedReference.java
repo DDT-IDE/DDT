@@ -1,8 +1,13 @@
 package dtool.ast.references;
 
+import java.util.Collection;
+
+import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
-import dtool.resolver.PrefixDefUnitSearch;
+import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.DefUnitSearch;
 import dtool.resolver.api.DefUnitDescriptor;
+import dtool.resolver.api.IModuleResolver;
 
 /** 
  * A reference based on an identifier. These references also 
@@ -10,9 +15,30 @@ import dtool.resolver.api.DefUnitDescriptor;
  */
 public abstract class NamedReference extends Reference implements IQualifierNode {
 	
-	/** Perform a search using the lookup rules of this reference. */
-	public abstract void doSearch(PrefixDefUnitSearch search);
+	/** @return the central/primary name of this reference. 
+	 * (that usually means the rightmost identifier without qualifiers).
+	 * Can be null. */
+	public abstract String getCoreReferenceName();
 	
+	/** @return whether the core reference is missing or not (it can be missing on syntax errors). */
+	public boolean isMissingCoreReference() {
+		return getCoreReferenceName() == null || getCoreReferenceName().isEmpty();
+	}
+	
+	/** Perform a search using the lookup rules of this reference. */
+	public abstract void doSearch(CommonDefUnitSearch search);
+	
+	
+	@Override
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
+		if(isMissingCoreReference()) {
+			return null;
+		}
+		DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), this, this.getStartPos(), 
+			findOneOnly, moduleResolver);
+		doSearch(search);
+		return search.getMatchDefUnits();
+	}
 	
 	/** Return wheter this reference can match the given defunit.
 	 * This is a very lightweight method that only compares the defunit's 
@@ -21,11 +47,7 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	 */
 	@Override
 	public final boolean canMatch(DefUnitDescriptor defunit) {
-		return getTargetSimpleName().equals(defunit.getQualifiedId());
+		return getCoreReferenceName().equals(defunit.getQualifiedId());
 	}
-	
-	/** @return the name of this reference without any qualifiers (therefore: the rightmost identifier).
-	 * Can be null. */
-	public abstract String getTargetSimpleName();
 	
 }

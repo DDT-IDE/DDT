@@ -1,20 +1,14 @@
 package dtool.ast.references;
 
-import java.util.Collection;
-
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.DefUnitSearch;
-import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
-import dtool.resolver.api.IModuleResolver;
 
 public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNode {
 	
-	public RefIdentifier(String name) {
-		super(name);
+	public RefIdentifier(String identifier) {
+		super(identifier);
 	}
 	
 	@Override
@@ -23,21 +17,7 @@ public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNo
 	}
 	
 	@Override
-	public String getTargetSimpleName() { 
-		return identifier;
-	}
-	
-	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
-		if(isMissing())
-			return null;
-		DefUnitSearch search = new DefUnitSearch(identifier, this, this.getStartPos(), findOneOnly, moduleResolver);
-		doSearchForPossiblyQualifiedSingleRef(search, this);
-		return search.getMatchDefUnits();
-	}
-	
-	@Override
-	public void doSearch(PrefixDefUnitSearch search) {
+	public void doSearch(CommonDefUnitSearch search) {
 		doSearchForPossiblyQualifiedSingleRef(search, this);
 	}
 	
@@ -50,7 +30,7 @@ public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNo
 			// check if the ref id is qualifier or qualified
 			if(parent.getQualifiedName() == refSingle) {
 				// then we must do qualified search (use root as the lookup scopes)
-				CommonRefQualified.doQualifiedSearch(search, parent);
+				parent.doSearch(search);
 				return;
 			}
 			// continue using outer scope as the lookup

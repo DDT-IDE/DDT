@@ -12,7 +12,7 @@ import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.RefModule.LiteModuleDummy;
+import dtool.ast.references.RefModule.LightweightModuleProxy;
 import dtool.ast.references.Reference;
 
 public class DeeDefUnitLabelProvider {
@@ -20,8 +20,8 @@ public class DeeDefUnitLabelProvider {
 	public static String getLabelForHoverSignature(DefUnit defUnit) {
 		ASTCodePrinter cp = new ASTCodePrinter();
 		
-		if(defUnit instanceof LiteModuleDummy) {
-			LiteModuleDummy module = (LiteModuleDummy) defUnit;
+		if(defUnit instanceof LightweightModuleProxy) {
+			LightweightModuleProxy module = (LightweightModuleProxy) defUnit;
 			return module.getFullyQualifiedName();
 		}
 		
@@ -67,8 +67,8 @@ public class DeeDefUnitLabelProvider {
 	// TODO: there are no tests for this code
 	public static String getLabelForContentAssistPopup(DefUnit defUnit) {
 		
-		if(defUnit instanceof LiteModuleDummy) {
-			LiteModuleDummy module = (LiteModuleDummy) defUnit;
+		if(defUnit instanceof LightweightModuleProxy) {
+			LightweightModuleProxy module = (LightweightModuleProxy) defUnit;
 			return module.getFullyQualifiedName();
 		}
 		

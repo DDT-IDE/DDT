@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.references.NamedReference;
 import dtool.parser.CommonTemplatedSourceBasedTest;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
@@ -320,7 +321,10 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	public void runFindMissingTest_________(MetadataEntry mde) {
 		assertTrue(mde.sourceValue == null);
 		DirectDefUnitResolve result = doRunFindTest(mde.offset, NewUtils.EMPTY_STRING_ARRAY);
-		assertTrue(result.pickedRef.syntaxIsMissingIdentifier());
+		assertTrue(result.resolvedDefUnits == null);
+		assertTrue(result.pickedRef instanceof NamedReference);
+		NamedReference pickedRef_named = (NamedReference) result.pickedRef;
+		assertTrue(pickedRef_named.isMissingCoreReference());
 	}
 	
 	public DirectDefUnitResolve doRunFindTest(int offset, String[] expectedResults) {

@@ -12,7 +12,11 @@ public abstract class CommonRefIdentifier extends NamedReference {
 	public CommonRefIdentifier(String identifier) {
 		this.identifier = identifier;
 		assertTrue(identifier == null || identifier.length() > 0); 
-		assertTrue(getIdString().indexOf(' ') == -1);
+		assertTrue(getDenulledIdentifier().indexOf(' ') == -1);
+	}
+	
+	@Override
+	public void visitChildren(IASTVisitor visitor) {
 	}
 	
 	@Override
@@ -21,20 +25,16 @@ public abstract class CommonRefIdentifier extends NamedReference {
 	}
 	
 	@Override
-	public boolean syntaxIsMissingIdentifier() {
-		return isMissing();
+	public String getCoreReferenceName() { 
+		return identifier;
 	}
-
+	
 	public boolean isMissing() {
 		return identifier == null;
 	}
-
-	public String getIdString() {
-		return identifier == null ? "" : identifier;
-	}
 	
-	@Override
-	public void visitChildren(IASTVisitor visitor) {
+	public String getDenulledIdentifier() {
+		return identifier == null ? "" : identifier;
 	}
 	
 }

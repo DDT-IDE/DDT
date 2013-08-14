@@ -1,6 +1,7 @@
 package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +22,7 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 
 	private ArrayList<DefUnit> defunits;
 	protected boolean matchesArePartialDefUnits = false;
-
+	
 	public DefUnitSearch(String searchName, Reference searchref, boolean findOneOnly, IModuleResolver moduleResolver) {
 		this(searchName, searchref, -1, findOneOnly, moduleResolver);
 	}
@@ -30,7 +31,7 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 			IModuleResolver moduleResolver) {
 		super(searchref, refOffset, findOneOnly, moduleResolver);
 		this.searchName = assertNotNull(searchName);
-		//defunits = new ArrayDeque<DefUnit>(4);
+		assertTrue(searchName.isEmpty() == false);
 	}
 	
 	public Collection<DefUnit> getMatchDefUnits() {

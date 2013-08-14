@@ -13,6 +13,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.parser.IToken;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.IScope;
 import dtool.resolver.PrefixDefUnitSearch;
@@ -59,8 +60,14 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public boolean syntaxIsMissingIdentifier() {
-		return module.isEmpty();
+	public String toStringAsElement() {
+		assertNotNull(module);
+		return toStringAsCode();
+	}
+	
+	@Override
+	public String getCoreReferenceName() {
+		return module;
 	}
 	
 	@Override
@@ -83,9 +90,31 @@ public class RefModule extends NamedReference {
 		}
 	}
 	
-	public static class LiteModuleDummy extends SyntheticDefUnit {
+	@Override
+	public void doSearch(CommonDefUnitSearch search) {
+		if(search instanceof PrefixDefUnitSearch) {
+			PrefixDefUnitSearch prefixDefUnitSearch = (PrefixDefUnitSearch) search;
+			doSearch_forPrefixSearch(prefixDefUnitSearch);
+		} else {
+			assertFail();
+			// TODO: harmonize both kinds of searches
+		}
+	}
+	
+	public void doSearch_forPrefixSearch(PrefixDefUnitSearch search) {
+		String prefix = search.searchOptions.searchPrefix;
 		
-		public LiteModuleDummy(String fqModuleName) {
+		String[] strings = search.resolveModules(prefix);
+		for (int i = 0; i < strings.length; i++) {
+			String fqName = strings[i];
+			
+			search.addMatch(new LightweightModuleProxy(fqName));		
+		}
+	}
+	
+	public static class LightweightModuleProxy extends SyntheticDefUnit {
+		
+		public LightweightModuleProxy(String fqModuleName) {
 			super(fqModuleName);
 		}
 		
@@ -100,7 +129,7 @@ public class RefModule extends NamedReference {
 		
 		@Override
 		public IScope getMembersScope(IModuleResolver moduleResolver) {
-			assertFail(); return null;
+			throw assertFail();
 		}
 		
 		@Override
@@ -108,29 +137,6 @@ public class RefModule extends NamedReference {
 			assertFail();
 		}
 		
-	}
-	
-	@Override
-	public String getTargetSimpleName() {
-		return module;
-	}
-	
-	@Override
-	public void doSearch(PrefixDefUnitSearch search) {
-		String prefix = search.searchOptions.searchPrefix;
-		
-		String[] strings = search.resolveModules(prefix);
-		for (int i = 0; i < strings.length; i++) {
-			String fqName = strings[i];
-			
-			search.addMatch(new LiteModuleDummy(fqName));		
-		}
-	}
-	
-	@Override
-	public String toStringAsElement() {
-		assertNotNull(module);
-		return toStringAsCode();
 	}
 	
 }

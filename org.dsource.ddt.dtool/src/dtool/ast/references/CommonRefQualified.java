@@ -1,14 +1,14 @@
 package dtool.ast.references;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Collection;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.DefUnitSearch;
 import dtool.resolver.IScope;
-import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
 
@@ -22,7 +22,7 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 	public final RefIdentifier qualifiedId;
 	
 	public CommonRefQualified(RefIdentifier qualifiedId) {
-		this.qualifiedId = parentize(qualifiedId);
+		this.qualifiedId = parentize(assertNotNull(qualifiedId));
 	}
 	
 	/** Return the qualified name (the name reference on the right side). */
@@ -30,28 +30,16 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 		return qualifiedId;
 	}
 	
+	@Override
+	public String getCoreReferenceName() {
+		return qualifiedId.getCoreReferenceName();
+	}
+	
 	public abstract Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver);
 	
 	@Override
-	public String getTargetSimpleName() {
-		return qualifiedId.getTargetSimpleName();
-	}
-	
-	/** Finds the target defunits of this qualified reference. */
-	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
-		DefUnitSearch search = new DefUnitSearch(qualifiedId.getIdString(), this, findOneOnly, moduleResolver);
-		doQualifiedSearch(search, this);
-		return search.getMatchDefUnits();
-	}
-	
-	@Override
-	public void doSearch(PrefixDefUnitSearch search) {
-		doQualifiedSearch(search, this);
-	}
-	
-	public static void doQualifiedSearch(CommonDefUnitSearch search, CommonRefQualified qref) {
-		Collection<DefUnit> defunits = qref.findRootDefUnits(search.getModResolver());
+	public void doSearch(CommonDefUnitSearch search) {
+		Collection<DefUnit> defunits = findRootDefUnits(search.getModResolver());
 		findDefUnitInMultipleDefUnitScopes(defunits, search);
 	}
 	

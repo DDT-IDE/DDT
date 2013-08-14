@@ -39,7 +39,7 @@ public class RefModuleQualified extends CommonRefQualified {
 	@Override
 	public Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver) {
 		final Module module = NodeUtil.getParentModule(this);
-		return Collections.singletonList((DefUnit)module);
+		return Collections.singletonList((DefUnit) module);
 	}
 	
 }

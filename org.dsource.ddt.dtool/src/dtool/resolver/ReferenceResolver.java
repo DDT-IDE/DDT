@@ -121,11 +121,7 @@ public class ReferenceResolver {
 		
 		search.enterNewScope(scope);
 		
-		findDefUnitInScope(scope, search, false);
-		if(search.isFinished())
-			return;
-		
-		findDefUnitInScope(scope, search, true);
+		findDefUnitInDirectScope(scope, search);
 		if(search.isFinished())
 			return;
 		
@@ -144,35 +140,14 @@ public class ReferenceResolver {
 		
 	}
 	
-	private static void findDefUnitInObjectIntrinsic(CommonDefUnitSearch search) {
-		Module targetModule = search.resolveModule(EMPTY_PACKAGE, "object");
-		if (targetModule != null) {
-			findDefUnitInScope(targetModule, search);
-		}
+	protected static void findDefUnitInDirectScope(IBaseScope scope, CommonDefUnitSearch search) {
+		findDefUnitInScope(scope, search, false);
+		if(search.isFinished())
+			return;
+		
+		findDefUnitInScope(scope, search, true);
 	}
 	
-	private static void findDefUnitInModuleDec(Module module, CommonDefUnitSearch search) {
-		DeclarationModule decMod = module.md;
-		if(decMod != null) {
-			DefUnit defUnit;
-			
-			if(decMod.packages.length == 0 || decMod.packages[0] == "") {
-				defUnit = module;
-			} else {
-				String[] packNames = decMod.packages;
-				
-				defUnit = PartialPackageDefUnitOfPackage.createPartialDefUnits(packNames, null, module);
-			}
-			
-			if(search.matches(defUnit))
-				search.addMatch(defUnit);
-		} else {
-			if(search.matches(module)) {
-				search.addMatch(module);
-			}
-		}
-	}
-
 	private static void findDefUnitInScope(IBaseScope baseScope, CommonDefUnitSearch search, boolean importsOnly) {
 		if(baseScope instanceof IResolveParticipant) {
 			IResolveParticipant scopeProvider = (IResolveParticipant) baseScope;
@@ -184,8 +159,8 @@ public class ReferenceResolver {
 		}
 	}
 	
-	public static void lexicalResolve(CommonDefUnitSearch search, boolean importsOnly, Iterable<? extends IASTNode> nodeIterable,
-		boolean hasSequentialLookup) {
+	public static void lexicalResolve(CommonDefUnitSearch search, boolean importsOnly, 
+		Iterable<? extends IASTNode> nodeIterable, boolean hasSequentialLookup) {
 		if(nodeIterable != null) {
 			findDefUnits(search, nodeIterable.iterator(), hasSequentialLookup, importsOnly);
 		}
@@ -245,6 +220,37 @@ public class ReferenceResolver {
 		return searchOriginModule.getFullyQualifiedName().equals(nodeModule.getFullyQualifiedName());
 	}
 	
+	/* ====================  ==================== */
+	
+	private static void findDefUnitInObjectIntrinsic(CommonDefUnitSearch search) {
+		Module targetModule = search.resolveModule(EMPTY_PACKAGE, "object");
+		if (targetModule != null) {
+			findDefUnitInScope(targetModule, search);
+		}
+	}
+	
+	private static void findDefUnitInModuleDec(Module module, CommonDefUnitSearch search) {
+		DeclarationModule decMod = module.md;
+		if(decMod != null) {
+			DefUnit defUnit;
+			
+			if(decMod.packages.length == 0 || decMod.packages[0] == "") {
+				defUnit = module;
+			} else {
+				String[] packNames = decMod.packages;
+				
+				defUnit = PartialPackageDefUnitOfPackage.createPartialDefUnits(packNames, null, module);
+			}
+			
+			if(search.matches(defUnit))
+				search.addMatch(defUnit);
+		} else {
+			if(search.matches(module)) {
+				search.addMatch(module);
+			}
+		}
+	}
+
 	/* ====================  import lookup  ==================== */
 
 	public static void findDefUnitInStaticImport(ImportContent importStatic, CommonDefUnitSearch search) {
@@ -280,7 +286,7 @@ public class ReferenceResolver {
 		for(ASTNode impSelFrag: impSelective.impSelFrags) {
 			if(impSelFrag instanceof RefImportSelection) {
 				RefImportSelection refImportSelection = (RefImportSelection) impSelFrag;
-				String name = refImportSelection.getIdString();
+				String name = refImportSelection.getDenulledIdentifier();
 				// Do pre-emptive matching
 				if(!search.matchesName(name)) {
 					continue;

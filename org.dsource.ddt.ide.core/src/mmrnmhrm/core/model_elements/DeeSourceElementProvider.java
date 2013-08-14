@@ -460,7 +460,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 		if(parent instanceof ExpCall) {
 			ExpCall expCall = (ExpCall) parent;
 			int length = expCall.args == null ? 0 : expCall.args.size();
-			String methodName = elem.getTargetSimpleName(); // Dont use qualified name
+			String methodName = elem.getCoreReferenceName(); // Dont use qualified name
 			if(methodName != null) {
 				requestor.acceptMethodReference(methodName, length, elem.getStartPos(), elem.getEndPos()-1);
 			}

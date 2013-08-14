@@ -16,7 +16,7 @@ import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.RefModule.LiteModuleDummy;
+import dtool.ast.references.RefModule.LightweightModuleProxy;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
 
@@ -95,8 +95,8 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	
 	public static String getDefUnitFullyQualifedName(DefUnit defUnit) {
 		// TODO: this could use some cleanup
-		if(defUnit instanceof LiteModuleDummy) {
-			return ((LiteModuleDummy) defUnit).getName() + "/";
+		if(defUnit instanceof LightweightModuleProxy) {
+			return ((LightweightModuleProxy) defUnit).getFullyQualifiedName() + "/";
 		}
 		if(defUnit instanceof Module) {
 			return ((Module) defUnit).getFullyQualifiedName() + "/";

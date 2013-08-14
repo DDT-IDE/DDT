@@ -3,17 +3,17 @@ package dtool.parser;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAttrib;
+import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
-import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpLiteralMapArray.MapArrayLiteralKeyValue;
 import dtool.ast.expressions.InitializerArray.ArrayInitEntry;
 import dtool.ast.expressions.InitializerStruct.StructInitEntry;
 import dtool.ast.expressions.MissingParenthesesExpression;
+import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
-import dtool.ast.references.Reference;
 import dtool.ast.statements.CommonStatementList;
 import dtool.ast.statements.ForeachRangeExpression;
 import dtool.parser.DeeParsingChecks.DeeParsingNodeCheck;
@@ -88,7 +88,7 @@ public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {
 		case REF_MODULE:
 		case REF_IDENTIFIER:
 		case REF_IMPORT_SELECTION:
-			return ((Reference) node).syntaxIsMissingIdentifier();
+			return ((NamedReference) node).isMissingCoreReference();
 		case IMPORT_SELECTIVE: {
 			ImportSelective importSelective = (ImportSelective) node;
 			return canBeginWithEmptySpace((ASTNode) importSelective.fragment);
