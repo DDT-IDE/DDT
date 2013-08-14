@@ -12,6 +12,7 @@ import dtool.ast.declarations.SyntheticDefUnit;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
+import dtool.parser.BaseLexElement;
 import dtool.parser.DeeParser;
 import dtool.parser.IToken;
 import dtool.resolver.CommonDefUnitSearch;
@@ -27,13 +28,15 @@ import dtool.util.ArrayViewExt;
 public class RefModule extends NamedReference {
 	
 	public final ArrayView<IToken> packageList;
+	public final BaseLexElement moduleToken;
 	public final ArrayViewExt<String> packages; // TODO: Old API, refactor?
 	public final String module;
 	
-	public RefModule(ArrayView<IToken> packageList, String module) {
+	public RefModule(ArrayView<IToken> packageList, BaseLexElement moduleToken) {
 		this.packageList = assertNotNull(packageList);
+		this.moduleToken = assertNotNull(moduleToken);
 		this.packages = ArrayViewExt.create(tokenArrayToStringArray(packageList));
-		this.module = module;
+		this.module = moduleToken.getSourceValue();
 	}
 	
 	public static String[] tokenArrayToStringArray(ArrayView<IToken> tokenArray) {
@@ -51,6 +54,10 @@ public class RefModule extends NamedReference {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
+	}
+	
+	public String getModuleSimpleName() {
+		return module;
 	}
 	
 	@Override
@@ -101,13 +108,10 @@ public class RefModule extends NamedReference {
 		
 		int rplEndPos = getEndPos();
 		if(isMissingCoreReference()) {
-			rplEndPos = offset;
-			// Minor BUG here, need proper way to find moduleBaseName start
-			for (IToken packageToken : packageList) {
-				rplEndPos = packageToken.getEndPos() + 1;
-			}
+			rplEndPos = moduleToken.getFullRangeStartPos();
 			if(rplEndPos < offset) {
-				rplEndPos = offset;
+				// If module name is missing, don't replace the whitespace in missing module name
+				rplEndPos = offset; 
 			}
 		}
 		int rplLen = rplEndPos - offset;

@@ -226,15 +226,15 @@ public class ReferenceResolver {
 		//if(search.isScopeFinished()) return;
 		
 		Module targetModule = findImportTargetModule(search.modResolver, impContent);
-		if (targetModule != null)
+		if(targetModule != null) {
 			findDefUnitInScope(targetModule, search);
+		}
 	}
 	
 	private static Module findImportTargetModule(IModuleResolver modResolver, IImportFragment impSelective) {
 		String[] packages = impSelective.getModuleRef().packages.getInternalArray();
 		String modules = impSelective.getModuleRef().module;
-		Module targetModule;
-		targetModule =  findModuleUnchecked(modResolver, packages, modules);
+		Module targetModule = findModuleUnchecked(modResolver, packages, modules);
 		return targetModule;
 	}
 	

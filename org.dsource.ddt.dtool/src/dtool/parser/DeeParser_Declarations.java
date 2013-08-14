@@ -119,7 +119,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 			} else {
 				int idStartPos = id.getEffectiveStartPos();
 				parse.setStartPosition(packages.size() > 0 ? packages.get(0).getStartPos() : idStartPos);
-				return parse.conclude(new RefModule(arrayViewG(packages), id.getSourceValue()));
+				return parse.conclude(new RefModule(arrayViewG(packages), id));
 			}
 		}
 	}

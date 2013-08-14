@@ -45,9 +45,8 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	}
 	
 	/** Return wheter this reference can match the given defunit.
-	 * This is a very lightweight method that only compares the defunit's 
-	 * name with the identifier of this reference, if any.
-	 * XXX: Qualified refs, how should they compare? 
+	 * This is a very lightweight method that only compares the defunit's name 
+	 * with the core identifier of this reference.
 	 */
 	@Override
 	public final boolean canMatch(DefUnitDescriptor defunit) {
