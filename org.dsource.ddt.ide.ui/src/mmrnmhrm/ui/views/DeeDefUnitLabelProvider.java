@@ -45,8 +45,8 @@ public class DeeDefUnitLabelProvider {
 			DefinitionFunction function = (DefinitionFunction) defUnit; 
 			cp.appendStrings(typeRefToUIString(function.retType), " ");
 			cp.append(function.getName());
-			cp.appendList("(", function.tplParams, ",", ") ");
-			cp.appendList("(", function.getParams_asNodes(), ",", ") ");
+			cp.appendList("(", function.tplParams, ", ", ") ");
+			cp.appendList("(", function.getParams_asNodes(), ", ", ") ");
 			return cp.toString();
 		}
 		
