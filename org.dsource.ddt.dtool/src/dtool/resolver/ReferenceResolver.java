@@ -10,14 +10,12 @@ import melnorme.utilbox.core.ExceptionAdapter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.IASTNode;
-import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.PartialPackageDefUnitOfPackage;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.references.CommonRefQualified;
@@ -79,15 +77,7 @@ public class ReferenceResolver {
 	}
 	
 	public static IScopeNode getOuterLexicalScope(ASTNode node) {
-		ASTNode parent;
-		/*BUG here should be:*/
-		//if (elem.getParent() instanceof DefinitionAggregate) {
-		if (node.getParent() instanceof DefinitionClass && !(node instanceof DeclBlock)) {
-			// Need to skip aggregate defunit scope 
-			parent = node.getParent().getParent();
-		} else {
-			parent = node.getParent();
-		}
+		ASTNode parent = node.getParent();
 		if(parent == null) {
 			return null;
 		}
