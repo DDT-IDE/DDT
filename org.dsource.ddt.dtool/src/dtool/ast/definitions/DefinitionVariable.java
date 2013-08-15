@@ -10,7 +10,6 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IDefUnitReference;
 import dtool.util.ArrayView;
 
 /**
@@ -66,12 +65,6 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Variable;
-	}
-	
-	public IDefUnitReference determineType() {
-		if(type != null)
-			return type;
-		return NativeDefUnit.nullReference; 
 	}
 	
 	public ArrayView<DefVarFragment> getFragments() {

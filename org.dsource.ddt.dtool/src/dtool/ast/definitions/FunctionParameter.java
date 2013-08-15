@@ -68,7 +68,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	public String getInitializerStringRepresentation() {
 		if(defaultValue == null)
 			return null;
-		return defaultValue.toStringAsElement();
+		return defaultValue.toStringAsCode();
 	}
 	
 	@Override
@@ -78,7 +78,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	
 	public static String getStringRepresentation(Reference type, String name, boolean isVariadic) {
 		String nameStr = name == null ? "": " " + name;
-		return type.toStringAsElement() + nameStr + (isVariadic ? "..." : "");
+		return type.toStringAsCode() + nameStr + (isVariadic ? "..." : "");
 	}
 	
 	@Override

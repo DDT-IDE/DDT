@@ -1,6 +1,6 @@
 package dtool.resolver;
 
-import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsName;
+import static dtool.resolver.CompareDefUnits.fnDefUnitToStringAsName;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -42,7 +42,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		}
 		
 		if(!resultDefUnits.isEmpty()) {
-			String resultDefUnitsStr = collToString(strmap(resultDefUnits, fnDefUnitToStringAsName(0)), "\n");
+			String resultDefUnitsStr = collToString(strmap(resultDefUnits, fnDefUnitToStringAsName()), "\n");
 			System.out.println("--- Unexpected elements ("+resultDefUnits.size()+") : ---\n" + resultDefUnitsStr);
 		}
 		assertTrue(resultDefUnits.isEmpty());

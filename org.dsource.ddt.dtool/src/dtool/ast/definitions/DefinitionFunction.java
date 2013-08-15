@@ -60,11 +60,6 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		return getName() + toStringParametersForSignature();
-	}
-	
-	@Override
 	public String getExtendedName() {
 		return getName() + toStringParametersForSignature();
 	}

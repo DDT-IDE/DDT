@@ -67,12 +67,6 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public String toStringAsElement() {
-		assertNotNull(module);
-		return toStringAsCode();
-	}
-	
-	@Override
 	public String getCoreReferenceName() {
 		return module;
 	}

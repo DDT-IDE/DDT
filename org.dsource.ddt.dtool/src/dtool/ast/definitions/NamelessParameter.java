@@ -64,7 +64,7 @@ public class NamelessParameter extends ASTNode implements IFunctionParameter {
 	public String getInitializerStringRepresentation() {
 		if(defaultValue == null)
 			return null;
-		return defaultValue.toStringAsElement();
+		return defaultValue.toStringAsCode();
 	}
 	
 	@Override

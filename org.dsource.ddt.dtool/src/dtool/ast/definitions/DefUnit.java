@@ -99,11 +99,6 @@ public abstract class DefUnit extends ASTNode {
 	/** Gets the archetype (the kind) of this DefUnit. */
 	public abstract EArcheType getArcheType() ;
 	
-	@Override
-	public String toStringAsElement() {
-		return getName();
-	}
-	
 	/** @return the extended name of this defUnit. 
 	 * The extended name is the name of the defunit plus additional addornments(can contain spaces) that
 	 * allow to disambiguate this defUnit from homonym defUnits in the same scope (for example function parameters).

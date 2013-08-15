@@ -113,7 +113,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		Collection<DefUnit> defunits = ref.findTargetDefUnits(moduleResolver, false);
 		
 		if(defunits == null || defunits.isEmpty()) {
-			dialogWarning(window.getShell(), "Definition not found for entity reference: " + ref.toStringAsElement());
+			dialogWarning(window.getShell(), "Definition not found for entity reference: " + ref.toStringAsCode());
 			return;
 		}
 		
@@ -128,11 +128,11 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		DefUnit defunit = defunits.iterator().next();
 		
 		if(!defunit.hasSourceRangeInfo()) {
-			dialogError(window.getShell(), "DefUnit " +defunit.toStringAsElement()+ " has no source range info!");
+			dialogError(window.getShell(), "DefUnit " +defunit.getExtendedName()+ " has no source range info!");
 			return;
 		} 
 		if(defunit instanceof INativeDefUnit) {
-			dialogInfo(window.getShell(), "DefUnit " +defunit.toStringAsElement()+ " is a language native.");
+			dialogInfo(window.getShell(), "DefUnit " +defunit.getExtendedName()+ " is a language native.");
 			return;
 		} 
 		

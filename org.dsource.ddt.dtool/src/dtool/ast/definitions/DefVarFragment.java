@@ -61,7 +61,7 @@ public class DefVarFragment extends DefUnit {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferedMembersScope(search, getDefinitionVariableParent().determineType());
+		Reference.resolveSearchInReferedMembersScope(search, getDefinitionVariableParent().type);
 	}
 	
 }

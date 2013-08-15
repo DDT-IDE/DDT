@@ -287,12 +287,6 @@ public abstract class ASTNode implements IASTNode {
 		return string.toString(); 
 	}
 	
-	/** Returns a simple representation of this node, element-like and for for a line. 
-	 * TODO: need to fix this API */
-	public String toStringAsElement() {
-		return toStringAsCode();
-	}
-	
 	/** Returns a source representation of this node. 
 	 * If node parsed without errors then this representation should be equal 
 	 * to the original parsed source (disregarding sub-channel tokens).

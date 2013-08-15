@@ -8,7 +8,6 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.NativeDefUnit;
@@ -62,14 +61,6 @@ public class RefTypeFunction extends CommonRefNative {
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		return DefUnitSearch.wrapResult(IntrinsicFunction.instance);
 	}
-	
-	@Override
-	public String toStringAsElement() {
-		return Reference.maybeNullReference(retType).toStringAsElement() 
-				+ " function"  
-				+ DefinitionFunction.toStringParametersForSignature(params/*, varargs*/);
-	}
-	
 	
 	public static class IntrinsicFunction extends NativeDefUnit {
 		public IntrinsicFunction() {

@@ -1,6 +1,5 @@
 package dtool.resolver;
 
-import static dtool.tests.MiscDeeTestUtils.fnDefUnitToStringAsElement;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.util.Collection;
@@ -30,13 +29,32 @@ public class CompareDefUnits extends DToolBaseTest {
 	
 	public static Set<String> INTRINSIC_DEFUNITS_SET = unmodifiable(hashSet(INTRINSIC_DEFUNITS));
 	
+	public static Function<String, String> fnStringToSubString(final int index) {
+		return new Function<String, String>() {
+			@Override
+			public String evaluate(String obj) {
+				return (obj == null || index > obj.length() )? null : obj.substring(index);
+			}
+		};
+	}
 	
-	public static Function<DefUnit, String> defUnitStringAsElementMapper = new Function<DefUnit, String>() {
-		@Override
-		public String evaluate(DefUnit obj) {
-			return obj == null ? null : obj.toStringAsElement();
-		}
-	};
+	public static Function<DefUnit, String> fnDefUnitToStringAsElement(final int prefixLen) {
+		return new Function<DefUnit, String>() {
+			@Override
+			public String evaluate(DefUnit defUnit) {
+				return defUnit == null ? null : defUnit.getExtendedName().substring(prefixLen);
+			}
+		};
+	}
+	
+	public static Function<DefUnit, String> fnDefUnitToStringAsName() {
+		return new Function<DefUnit, String>() {
+			@Override
+			public String evaluate(DefUnit obj) {
+				return obj == null ? null : obj.getName();
+			}
+		};
+	}
 	
 	public static void checkResults(Collection<DefUnit> results, String[] expectedProposalsArr, 
 		boolean removeIntrinsics) {

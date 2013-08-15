@@ -15,6 +15,4 @@ public interface IDefUnitReference {
 	 * If no results are found, return null. */
 	Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly);
 	
-	String toStringAsElement();
-	
 }

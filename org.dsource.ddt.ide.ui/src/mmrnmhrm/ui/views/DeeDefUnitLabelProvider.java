@@ -139,7 +139,7 @@ public class DeeDefUnitLabelProvider {
 	}
 	
 	public static String getAliasSegment(Reference target) {
-		return " -> " + target.toStringAsElement();
+		return " -> " + target.toStringAsCode();
 	}
 	
 	public static String getDefUnitContainerSuffix(DefUnit defUnit) {
@@ -150,7 +150,7 @@ public class DeeDefUnitLabelProvider {
 		if(typeReference == null) {
 			return "auto";
 		}
-		return typeReference.toStringAsElement();
+		return typeReference.toStringAsCode();
 	}
 	
 }

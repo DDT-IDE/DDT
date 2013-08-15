@@ -133,7 +133,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 		if(typeReference == null) {
 			return "auto"; // Perhaps we could just return null instead
 		}
-		return typeReference.toStringAsElement();
+		return typeReference.toStringAsCode();
 	}
 	
 	/* ---------------------------------- */
@@ -465,8 +465,8 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 				requestor.acceptMethodReference(methodName, length, elem.getStartPos(), elem.getEndPos()-1);
 			}
 		}
-		
-		requestor.acceptTypeReference(elem.toStringAsElement(), elem.getStartPos());
+		// Should we report qualified refs as well?
+		requestor.acceptTypeReference(elem.toStringAsCode(), elem.getStartPos());
 		return true;
 	}
 	

@@ -34,18 +34,13 @@ public class ExpReference extends Expression {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return ref.findTargetDefUnits(moduleResolver, findFirstOnly);
-	}
-	
-	@Override
-	public String toStringAsElement() {
-		return ref.toStringAsElement();
-	}
-	
-	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(ref);
+	}
+	
+	@Override
+	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		return ref.findTargetDefUnits(moduleResolver, findFirstOnly);
 	}
 	
 }

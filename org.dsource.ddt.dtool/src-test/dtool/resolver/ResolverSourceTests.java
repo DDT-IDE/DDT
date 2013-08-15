@@ -244,7 +244,7 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	 * TODO: Ideally we would also check the results of these functions, but it's too much work for now. */
 	public void precheckOriginalResults(Collection<DefUnit> resultDefUnitsOriginal) {
 		for (DefUnit defUnit : resultDefUnitsOriginal) {
-			defUnit.toStringAsElement();
+			defUnit.getExtendedName();
 		}
 	}
 	

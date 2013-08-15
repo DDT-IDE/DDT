@@ -79,13 +79,6 @@ public class Module extends DefUnit implements IScopeNode {
 			cp.append(";");
 		}
 		
-		@Override
-		public String toStringAsElement() {
-			ASTCodePrinter cp = new ASTCodePrinter();
-			cp.appendTokenList(packageList, ".", true);
-			cp.append(moduleName.name);
-			return cp.toString();
-		}
 	}
 	
 	public static Module createModuleNoModuleDecl(String moduleName, ArrayView<ASTNode> members) {
@@ -148,14 +141,6 @@ public class Module extends DefUnit implements IScopeNode {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(md, cp.ST_SEP);
 		cp.appendList(members, cp.ST_SEP);
-	}
-	
-	@Override
-	public String toStringAsElement() {
-		if(md == null) {
-			return getName();
-		}
-		return md.toStringAsElement();
 	}
 	
 	@Override
