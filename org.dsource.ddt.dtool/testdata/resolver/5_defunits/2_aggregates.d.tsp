@@ -52,8 +52,8 @@ int outside;
 Aggregate.#REFSEARCH¤【bodyVar▪bodyVar2】
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax error
 int outside; 
-#@AGGREGATE_KIND_ALL Aggregate(T, alias A = int /*MISSING BODY*/
 Aggregate.#REFSEARCH¤【】
+#@AGGREGATE_KIND_ALL Aggregate(T, alias A = int /*MISSING BODY*/
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ super scopes
 #@OBJ_AGGREGATE_KIND《class●interface》
 

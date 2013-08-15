@@ -1,5 +1,6 @@
 package dtool.ast.definitions;
 
+import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -30,12 +31,13 @@ public class Module extends DefUnit implements IScopeNode {
 		}
 		
 		@Override
-		public DefUnit getDefUnit() {
-			return module;
+		protected ASTNode getParent_Concrete() {
+			return assertCast(parent, DeclarationModule.class);
 		}
 		
 		@Override
-		protected void checkNewParent() {
+		public DefUnit getDefUnit() {
+			return module;
 		}
 	}
 	

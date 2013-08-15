@@ -123,8 +123,8 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	protected static FieldInfo createFieldInfo(DefVarFragment defVarFragment) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		setupDefUnitTypeInfo(defVarFragment, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
-		setupModifiersInfo(defVarFragment.getDefinitionVariableParent(), fieldInfo);
-		fieldInfo.type = getTypeRefString(defVarFragment.getDefinitionVariableParent().type);
+		setupModifiersInfo(defVarFragment.getParent_Concrete(), fieldInfo);
+		fieldInfo.type = getTypeRefString(defVarFragment.getParent_Concrete().type);
 		
 		return fieldInfo;
 	}
@@ -435,8 +435,8 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	public static TypeInfo createTypeInfoForFragment(DefinitionAliasFragment node) {
 		TypeInfo typeInfo = createTypeInfoForDefUnit(node, DeeModelConstants.FLAG_KIND_ALIAS);
-		if(node.getDefinitionAliasParent().aliasFragments.get(0) == node) {
-			typeInfo.declarationStart = node.getDefinitionAliasParent().getStartPos();
+		if(node.getParent_Concrete().aliasFragments.get(0) == node) {
+			typeInfo.declarationStart = node.getParent_Concrete().getStartPos();
 			// TODO: test case for extended start pos (definition alias with extended start)
 		}
 		return typeInfo;

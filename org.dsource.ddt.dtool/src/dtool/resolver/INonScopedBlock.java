@@ -11,8 +11,7 @@ import dtool.ast.ASTNode;
  */
 public interface INonScopedBlock { // FIXME: some nodes implement this and they should not.
 	
-	/** Gets the members of this NonScopedBlock.
-	 * Note: It is not guaranteed that the returned nodes direct parent is 
-	 * this NonScopedBlock (due to DeclarationStaticIfIsType). */
+	/** @return an iterator for the members of this {@link INonScopedBlock}. Non-null. */
 	Iterator<? extends ASTNode> getMembersIterator();
+	
 }

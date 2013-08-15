@@ -52,7 +52,7 @@ public class NewUtils {
 		Iterable<? extends T> iter1, Iterable<? extends T> iter2) 
 	{
 		if(iter1 == null && iter2 == null)
-			return IteratorUtil.getEMPTY_ITERATOR();
+			return IteratorUtil.emptyIterator();
 		if(iter1 == null)
 			return iter2.iterator();
 		if(iter2 == null)

@@ -1,7 +1,7 @@
 package dtool.ast.declarations;
 
+import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Iterator;
 
@@ -39,12 +39,12 @@ public class ImportSelective extends ASTNode implements INonScopedBlock, IImport
 	}
 	
 	@Override
-	protected void checkNewParent() {
-		assertTrue(parent instanceof DeclarationImport);
+	protected DeclarationImport getParent_Concrete() {
+		return assertCast(parent, DeclarationImport.class);
 	}
 	
 	public DeclarationImport getDeclarationImport() {
-		return (DeclarationImport) super.getParent();
+		return getParent_Concrete();
 	}
 	
 	public ArrayView<IImportSelectiveSelection> parentizeFrags(ArrayView<IImportSelectiveSelection> frags) {

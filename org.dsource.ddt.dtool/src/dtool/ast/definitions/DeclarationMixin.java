@@ -44,7 +44,7 @@ public class DeclarationMixin extends ASTNode implements INonScopedBlock, IDecla
 	
 	@Override
 	public Iterator<ASTNode> getMembersIterator() {
-		return IteratorUtil.getEMPTY_ITERATOR();
+		return IteratorUtil.emptyIterator();
 		// TODO: mixin container
 		/*
 		DefUnit defunit = type.findTargetDefUnit();

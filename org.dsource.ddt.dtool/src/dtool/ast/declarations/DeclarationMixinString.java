@@ -36,7 +36,7 @@ public class DeclarationMixinString extends ASTNode implements INonScopedBlock, 
 	@Override
 	public Iterator<? extends ASTNode> getMembersIterator() {
 		// TODO: parse the exp string
-		return IteratorUtil.getEMPTY_ITERATOR();
+		return IteratorUtil.emptyIterator();
 	}
 	
 	@Override

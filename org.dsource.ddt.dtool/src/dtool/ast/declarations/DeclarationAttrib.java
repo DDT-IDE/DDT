@@ -64,7 +64,7 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 	
 	public static Iterator<? extends ASTNode> getBodyIterator(ASTNode body) {
 		if(body == null) {
-			return IteratorUtil.getEMPTY_ITERATOR();
+			return IteratorUtil.emptyIterator();
 		}
 		if(body instanceof NodeList<?>) {
 			return ((NodeList<?>) body).nodes.iterator();

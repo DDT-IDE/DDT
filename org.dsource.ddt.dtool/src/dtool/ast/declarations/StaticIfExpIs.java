@@ -1,5 +1,6 @@
 package dtool.ast.declarations;
 
+import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
@@ -73,6 +74,11 @@ public class StaticIfExpIs extends Expression {
 		}
 		
 		@Override
+		protected StaticIfExpIs getParent_Concrete() {
+			return assertCast(parent, StaticIfExpIs.class);
+		}
+		
+		@Override
 		public ASTNodeTypes getNodeType() {
 			return ASTNodeTypes.STATIC_IF_EXP_IS_DEF_UNIT;
 		}
@@ -88,18 +94,13 @@ public class StaticIfExpIs extends Expression {
 		}
 		
 		@Override
-		protected void checkNewParent() {
-			assertTrue(getParent() instanceof StaticIfExpIs);
-		}
-		
-		@Override
 		public EArcheType getArcheType() {
 			return EArcheType.Alias;
 		}
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			StaticIfExpIs staticIfIsExp = (StaticIfExpIs) getParent();
+			StaticIfExpIs staticIfIsExp = getParent_Concrete();
 			Reference.resolveSearchInReferedMembersScope(search, staticIfIsExp.typeRef);
 		}
 		

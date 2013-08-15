@@ -1,6 +1,7 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -14,7 +15,7 @@ import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
 
-public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDeclaration, IStatement {
+public class DefinitionEnum extends CommonDefinition implements IDeclaration, IStatement {
 	
 	public final Reference type;
 	public final EnumBody body;
@@ -45,12 +46,18 @@ public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDec
 		cp.append(body);
 	}
 	
-	public static class EnumBody extends ASTNode {
+	public static class EnumBody extends ASTNode implements IScopeNode {
 		
 		public final NodeListView<EnumMember> nodeList;
 		
-		public EnumBody(NodeListView<EnumMember> nodes) {
-			this.nodeList = parentize(assertNotNull(nodes));
+		public EnumBody(NodeListView<EnumMember> nodeList) {
+			this.nodeList = parentize(assertNotNull(nodeList));
+		}
+		
+		@Override
+		protected ASTNode getParent_Concrete() {
+			assertTrue(parent instanceof DeclarationEnum || parent instanceof DefinitionEnum);
+			return parent;
 		}
 		
 		@Override
@@ -67,6 +74,12 @@ public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDec
 		public void toStringAsCode(ASTCodePrinter cp) {
 			cp.appendNodeList("{", nodeList, ", ", "}");
 		}
+		
+		@Override
+		public void resolveSearchInScope(CommonDefUnitSearch search) {
+			ReferenceResolver.findInNodeList(search, nodeList, false);
+		}
+		
 	}
 	
 	public static class NoEnumBody extends EnumBody {
@@ -94,13 +107,10 @@ public class DefinitionEnum extends CommonDefinition implements IScopeNode, IDec
 	}
 	
 	@Override
-	public void resolveSearchInScope(CommonDefUnitSearch search) {
-		ReferenceResolver.findInNodeList(search, body.nodeList /*BUG here NPE*/, true);
-	}
-	
-	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		ReferenceResolver.resolveSearchInScope(search, this);
+		if(body != null) {
+			ReferenceResolver.findInNodeList(search, body.nodeList, false);
+		}
 	}
 	
 }

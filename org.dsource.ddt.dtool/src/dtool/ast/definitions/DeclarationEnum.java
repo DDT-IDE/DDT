@@ -2,6 +2,7 @@ package dtool.ast.definitions;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -43,7 +44,9 @@ public class DeclarationEnum extends ASTNode implements INonScopedBlock, IDeclar
 	
 	@Override
 	public Iterator<? extends ASTNode> getMembersIterator() {
-		return NodeListView.getIteratorSafe(body.nodeList /*BUG here NPE*/);
+		if(body == null)
+			return IteratorUtil.emptyIterator();
+		return NodeListView.getIteratorSafe(body.nodeList);
 	}
 	
 }

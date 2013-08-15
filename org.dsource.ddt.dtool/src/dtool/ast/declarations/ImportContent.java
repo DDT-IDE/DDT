@@ -22,6 +22,21 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	}
 	
 	@Override
+	protected ASTNode getParent_Concrete() {
+		assertTrue(parent instanceof DeclarationImport || parent instanceof ImportSelective);
+		return parent;
+	}
+	
+	public DeclarationImport getDeclarationImport() {
+		ASTNode parent = super.getParent();
+		if(parent instanceof DeclarationImport) {
+			return (DeclarationImport) parent;
+		} else {
+			return ((ImportSelective) parent).getDeclarationImport();
+		}
+	}
+	
+	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.IMPORT_CONTENT;
 	}
@@ -34,20 +49,6 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(moduleRef);
-	}
-	
-	@Override
-	protected void checkNewParent() {
-		assertTrue(parent instanceof DeclarationImport || parent instanceof ImportSelective);
-	}
-	
-	public DeclarationImport getDeclarationImport() {
-		ASTNode parent = super.getParent();
-		if(parent instanceof DeclarationImport) {
-			return (DeclarationImport) parent;
-		} else {
-			return ((ImportSelective) parent).getDeclarationImport();
-		}
 	}
 	
 	@Override

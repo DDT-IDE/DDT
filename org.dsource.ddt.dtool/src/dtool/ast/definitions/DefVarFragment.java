@@ -1,6 +1,6 @@
 package dtool.ast.definitions;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static dtool.util.NewUtils.assertCast;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -21,12 +21,8 @@ public class DefVarFragment extends DefUnit {
 	}
 	
 	@Override
-	protected void checkNewParent() {
-		assertTrue(parent instanceof DefinitionVariable);
-	}
-	
-	public DefinitionVariable getDefinitionVariableParent() {
-		return (DefinitionVariable) parent;
+	public DefinitionVariable getParent_Concrete() {
+		return assertCast(parent, DefinitionVariable.class);
 	}
 	
 	@Override
@@ -56,12 +52,12 @@ public class DefVarFragment extends DefUnit {
 	}
 	
 	public Reference getDeclaredTypeReference() {
-		return getDefinitionVariableParent().type;
+		return getParent_Concrete().type;
 	}
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferedMembersScope(search, getDefinitionVariableParent().type);
+		Reference.resolveSearchInReferedMembersScope(search, getParent_Concrete().type);
 	}
 	
 }

@@ -19,7 +19,7 @@ public class NodeListView<T extends IASTNode> extends ArrayView<T> {
 	}
 	
 	public static <T> Iterator<T> getIteratorSafe(Iterable<T> nodeList) {
-		return nodeList == null ? IteratorUtil.<T>getEMPTY_ITERATOR() : nodeList.iterator();
+		return nodeList == null ? IteratorUtil.<T>emptyIterator() : nodeList.iterator();
 	}
 	
 }

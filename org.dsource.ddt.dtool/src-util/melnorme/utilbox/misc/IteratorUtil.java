@@ -18,8 +18,9 @@ public class IteratorUtil {
 	
 	public static final Iterator<?> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
 	
+	/** @return an empty iterator */
 	@SuppressWarnings("unchecked")
-	public static <T> Iterator<T> getEMPTY_ITERATOR() {
+	public static <T> Iterator<T> emptyIterator() {
 		return (Iterator<T>) EMPTY_ITERATOR;
 	}
 	

@@ -53,7 +53,7 @@ public abstract class AbstractConditionalDeclaration extends ASTNode
 	@Override
 	public Iterator<? extends ASTNode> getMembersIterator() {
 		if(body == null && elseBody == null)
-			return IteratorUtil.getEMPTY_ITERATOR();
+			return IteratorUtil.emptyIterator();
 		if(elseBody == null)
 			return DeclarationAttrib.getBodyIterator(body);
 		if(body == null)

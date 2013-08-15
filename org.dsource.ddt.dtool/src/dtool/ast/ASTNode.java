@@ -121,6 +121,16 @@ public abstract class ASTNode implements IASTNode {
 	
 	protected void checkNewParent() {
 		// Default implementation: do nothing
+		// subclasses can implement to check a contract relating to their parent 
+		// (usually, to ensure the parent is of a certain class)
+		getParent_Concrete();
+	}
+	
+	/** Same as {@link #getParent()}, but allows classes to cast to a more specific parent. */
+	// Is this extra method really needed instead of just defining getParent as non-final?
+	// Would the casts make a different in performance?
+	protected ASTNode getParent_Concrete() {
+		return getParent();
 	}
 	
 	public void detachFromParent() {
