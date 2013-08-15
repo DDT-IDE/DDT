@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ====================================================================== 
-     Ant script for automated release and deploy of update site.
-     Sample usage:
-     mvn clean integration-test -Dqualifier_default_prefix=PR1-
-     ant -f repo-release-script.xml uploadPreReleaseRepo -DcommitLog="new daily"
+	
+Ant script for automated release and deploy of update site. Sample usage:
+First, Run the build script:
+	mvn clean integration-test
+Alternatively, use a version qualifier prefix:
+	mvn clean integration-test -Dqualifier_default_prefix=PR1-
+
+Run this repo upload script:
+It requires a git repo of the project updateSite Git repo, as specified by -DupdateSiteGitRepo
+	ant -f repo-release-script.xml uploadRelease -DupdateSiteGitRepo="../ddt.updates" -DcommitLog="new daily"
      ====================================================================== -->
 <project name="project" >
 
@@ -11,30 +17,25 @@
 
 	<property name="gitLocation">git</property>
 	
-	
 	<target name="echoInfo">
 		<echo>${commitLog}</echo>
 		<echo>${repoSrc}</echo>
 	</target>
 	
-	<target name="setPreReleaseSite" depends="">
-		<property name="repoDest" location="../ddt.updates-PR/ddt.feature-repo" />
-	</target>
-	
 	<target name="setReleaseSite" depends="">
-		<property name="repoDest" location="../ddt.updates/ddt.feature-repo" />
+		<fail unless="updateSiteGitRepo"/>
+		<property name="repoDest" location="${updateSiteGitRepo}/ddt.feature-repo" />
 	</target>
 
 
-	<target name="uploadPreReleaseRepo" depends="setPreReleaseSite, uploadRepo"/>
-	<target name="uploadReleaseRepo" depends="setReleaseSite, uploadRepo" />
+	<target name="uploadRelease" depends="setReleaseSite, uploadRepo" />
 	
 	
 	<target name="_check.repoDest">
 		<fail message="Files are missing.">
 			<condition>
 				<not>
-					<available file="${repoDest}" type="dir" />
+					<available file="${updateSiteGitRepo}" type="dir" />
 				</not>
 			</condition>
 		</fail>
@@ -44,9 +45,11 @@
 	<target name="uploadRepo" depends="echoInfo, _check.repoDest">
 		<fail unless="commitLog"/>
 
+		<mkdir dir="${repoDest}"/> <!-- Seems like erroronmissingdir isn't working? -->
 		<delete verbose="true">
-			<fileset dir="${repoDest}" includes="**/*.jar"/>
+			<fileset dir="${repoDest}" erroronmissingdir="false" includes="**/*.jar"/>
 		</delete>
+		<mkdir dir="${repoDest}"/>
 		<copy verbose="true" todir="${repoDest}">
 			<fileset dir="${repoSrc}"/>
 		</copy>
@@ -69,8 +72,7 @@
 	
 	<!-- ======================================================================
 		This task must be run from within eclipse, example:
-		eclipse -application org.eclipse.ant.core.antRunner -console -consolelog \
-		-f repo-release-script.xml createCompositeRepo -DrepoDest=../ddt.updates-PR
+		eclipse -application org.eclipse.ant.core.antRunner -console -consolelog -f repo-release-script.xml createCompositeRepo -DrepoDest=../ddt.updates-PR
 	     ====================================================================== -->
 	<target name="createCompositeRepo" depends="_check.repoDest">
 		<p2.composite.repository>
