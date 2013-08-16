@@ -1,0 +1,1 @@
+// Take screenshot with OpenType
