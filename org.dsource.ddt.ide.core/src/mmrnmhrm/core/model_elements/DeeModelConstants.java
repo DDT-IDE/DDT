@@ -14,7 +14,8 @@ public interface DeeModelConstants {
 	public static final int FLAG_KIND_ENUM =		0x06 << Modifiers.USER_MODIFIER;
 	public static final int FLAG_KIND_ALIAS =		0x07 << Modifiers.USER_MODIFIER;
 	public static final int FLAG_KIND_FUNCTION =	0x0A << Modifiers.USER_MODIFIER; 
-	public static final int FLAG_KIND_CONSTRUCTOR =	0x0B << Modifiers.USER_MODIFIER; 
+	public static final int FLAG_KIND_CONSTRUCTOR =	0x0B << Modifiers.USER_MODIFIER;
+	public static final int FLAG_KIND_ENUM_MEMBER =	0x0C << Modifiers.USER_MODIFIER;
 	public static final int FLAG_KIND_VARIABLE =	0x0F << Modifiers.USER_MODIFIER;
 	// we used 4 bits in total
 	public static final int FLAGMASK_KIND = 0x0F << Modifiers.USER_MODIFIER;

@@ -28,7 +28,6 @@ import dtool.ast.declarations.ImportAlias;
 import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.TemplateParameter;
 
@@ -44,7 +43,6 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 	public static boolean defunitIsReportedAsModelElement(DefUnit defunit) {
 		boolean result = 
 				defunit instanceof FunctionParameter || 
-				defunit instanceof EnumMember ||
 				defunit instanceof TemplateParameter ||
 				defunit instanceof ImportSelectiveAlias ||
 				defunit instanceof ImportAlias;
@@ -77,6 +75,9 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 				IType _Interface,
 				IType _Template,
 				IType _Enum,
+				IField _Enum_memberA,
+				IField _Enum_memberB,
+				
 				IType _Mixin,
 				IType _AliasVarDecl,
 				IType _AliasFunctionDecl,
@@ -110,6 +111,9 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		
 				runCheckElementExists(_Template, EArcheType.Template, "template Template(");
 				runCheckElementExists(_Enum, EArcheType.Enum, "enum Enum {");
+				runCheckElementExists(_Enum_memberA, EArcheType.EnumMember, "EnumMemberA");
+				runCheckElementExists(_Enum_memberB, EArcheType.EnumMember, "EnumMemberB");
+				
 				
 				runCheckElementExists(_Mixin, EArcheType.Mixin, "mixin foo!() Mixin;");
 				

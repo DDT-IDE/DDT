@@ -28,6 +28,7 @@ public class DeeModelElementUtil {
 		case DeeModelConstants.FLAG_KIND_ALIAS: return EArcheType.Alias;
 		case DeeModelConstants.FLAG_KIND_FUNCTION: return EArcheType.Function;
 		case DeeModelConstants.FLAG_KIND_CONSTRUCTOR: return EArcheType.Constructor;
+		case DeeModelConstants.FLAG_KIND_ENUM_MEMBER: return EArcheType.EnumMember;
 		case DeeModelConstants.FLAG_KIND_VARIABLE: return EArcheType.Variable;
 		default:
 			return null;

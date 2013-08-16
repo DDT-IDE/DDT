@@ -132,7 +132,11 @@ public class DeeScriptElementLabels_Test extends BaseDeeTest implements ITestRes
 				IType _Class,
 				IType _Interface,
 				IType _Template,
+				
 				IType _Enum,
+				IField _Enum_memberA,
+				IField _Enum_memberB,
+				
 				IType _Mixin,
 				IType _AliasVarDecl,
 				IType _AliasFunctionDecl,
@@ -168,6 +172,8 @@ public class DeeScriptElementLabels_Test extends BaseDeeTest implements ITestRes
 		
 				checkLabel(_Template, qualification, "Template");
 				checkLabel(_Enum, qualification, "Enum");
+				checkLabel(_Enum_memberA, qualification, "Enum.EnumMemberA");
+				checkLabel(_Enum_memberB, qualification, "Enum.EnumMemberB");
 				
 				checkLabel(_Mixin, qualification, "Mixin");
 				

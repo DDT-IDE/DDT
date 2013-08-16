@@ -36,6 +36,8 @@ public abstract class SampleModelElementsVisitor extends BaseDeeTest {
 		IType interface_ = topLevelElement.getType("Interface");
 		IType template = topLevelElement.getType("Template");
 		IType enum_ = topLevelElement.getType("Enum");
+		IField enum_memberA = topLevelElement.getType("Enum").getField("EnumMemberA");
+		IField enum_memberB = topLevelElement.getType("Enum").getField("EnumMemberB");
 		IType mixin = topLevelElement.getType("Mixin");
 		IType aliasVarDecl = topLevelElement.getType("AliasVarDecl");
 		IType aliasFunctionDecl = topLevelElement.getType("AliasFunctionDecl");
@@ -47,14 +49,42 @@ public abstract class SampleModelElementsVisitor extends BaseDeeTest {
 		IMethod otherClass_methodB = topLevelElement.getType("OtherClass").getMethod("methodB");
 		IMethod otherClass_this = topLevelElement.getType("OtherClass").getMethod("this");
 		final IType otherTemplate = topLevelElement.getType("OtherTemplate");
-		IType tplNestedClass = otherTemplate.getType("TplNestedClass");
+		IType _OtherTemplate_TplNestedClass = otherTemplate.getType("TplNestedClass");
 		IMethod tplFunc = otherTemplate.getType("TplNestedClass").getMethod("tplFunc");
 		
 		
-		visitAllModelElements(moduleType, variable, variable2, varExtended, varExtended2, autoVar, autoVar2,
-			function_, autoFunction, struct_, union_, class_, interface_, template, enum_, mixin, aliasVarDecl,
-			aliasFunctionDecl, aliasFrag, aliasFrag2, otherClass_fieldA, otherClass_methodB, otherClass_this,
-			tplNestedClass, tplFunc);
+		visitAllModelElements(
+			moduleType,
+			variable,
+			variable2,
+			varExtended,
+			varExtended2,
+			autoVar,
+			autoVar2,
+			
+			function_,
+			autoFunction,
+			
+			struct_,
+			union_,
+			class_,
+			interface_,
+			template,
+			
+			enum_,
+			enum_memberA,
+			enum_memberB,
+			
+			mixin,
+			aliasVarDecl,
+			aliasFunctionDecl,
+			aliasFrag,
+			aliasFrag2,
+			otherClass_fieldA,
+			otherClass_methodB,
+			otherClass_this,
+			_OtherTemplate_TplNestedClass,
+			tplFunc);
 	}
 	
 	public abstract void visitAllModelElements(
@@ -74,7 +104,11 @@ public abstract class SampleModelElementsVisitor extends BaseDeeTest {
 		IType _Class,
 		IType _Interface,
 		IType _Template,
+		
 		IType _Enum,
+		IField _Enum_memberA,
+		IField _Enum_memberB,
+		
 		IType _Mixin,
 		IType _AliasVarDecl,
 		IType _AliasFunctionDecl,

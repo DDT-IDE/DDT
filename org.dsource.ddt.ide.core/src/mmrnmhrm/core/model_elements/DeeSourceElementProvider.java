@@ -234,11 +234,20 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	@Override
 	public boolean visit(EnumMember node) {
-		// Don't report as model element
-		return false;
+		requestor.enterField(createFieldInfoForEnum(node));
+		requestor.exitField(getDeclarationEndforNode(node));
+		return true;
 	}
 	@Override
 	public void endVisit(EnumMember node) {
+	}
+	
+	protected static FieldInfo createFieldInfoForEnum(EnumMember enumMember) {
+		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
+		setupDefUnitTypeInfo(enumMember, fieldInfo, DeeModelConstants.FLAG_KIND_ENUM_MEMBER);
+		fieldInfo.type = enumMember.type != null ? enumMember.type.toStringAsCode() : null;
+		
+		return fieldInfo;
 	}
 	
 	

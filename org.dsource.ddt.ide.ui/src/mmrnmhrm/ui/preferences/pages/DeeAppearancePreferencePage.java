@@ -233,7 +233,8 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE, ns);
 			new FakeMember.FakeType(module, "Template", FLAG_KIND_TEMPLATE, ns);
 			new FakeMember.FakeType(module, "Mixin", FLAG_KIND_MIXIN, ns);
-			new FakeMember.FakeType(module, "Enum", FLAG_KIND_ENUM, ns);
+			FakeMember.FakeType sampleEnum = new FakeMember.FakeType(module, "Enum", FLAG_KIND_ENUM, ns);
+			new FakeMember.FakeField(sampleEnum, "EnumMember", FLAG_KIND_ENUM_MEMBER, ns, null);
 			new FakeMember.FakeType(module, "Alias", FLAG_KIND_ALIAS, ns);
 			
 			IModelElement[] treeModel = CoreUtil.<IModelElement>array(module);

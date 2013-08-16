@@ -19,6 +19,7 @@ import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.Module;
 
 /**
@@ -95,7 +96,7 @@ public class DeeModelEngine {
 	}
 	
 	private static boolean isFieldElement(DefUnit defUnit) {
-		return defUnit instanceof DefinitionVariable;
+		return defUnit instanceof DefinitionVariable || defUnit instanceof EnumMember;
 	}
 	
 	private static boolean isMethodElement(DefUnit defUnit) {
