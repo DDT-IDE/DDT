@@ -1,12 +1,9 @@
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module Module; // TODO: rest of defUnits
+module sample_outline;
 
 int Var; 
 int Var1, Var2, Var3;
 auto VarAuto = 1;
 auto VarAuto1 = 2, VarAuto2 = "bar";
-
 
 int Function (int Param, Struct Param2 ...)  { return 0; }
 int Function (...)  { return 0; }
@@ -14,13 +11,10 @@ void FunctionT (T, U : T[]) (Class Param = null)  { }
 auto FunctionAuto (int Parameter)  { }
 auto FunctionAutoT(T, U : T[]) (int Parameter ...)  { }
 
-
 class Class (T, U : T[]) { static int member1; int member2; int method() { return 1;};}
 interface Interface { static int member1; int method(); }
 struct Struct { static int member1; int member2; }
-union Union 
-(T : int = bar, int R : 10 = 1, alias ALIAS : int[] = [1, 10], this V, TUPLE ...)
-{ static int member1; int member2; }
+union Union (T : int = bar, int R : 10 = 1, alias ALIAS : int[] = [1, 10], this V, TUPLE ...) { static int member1; int member2; }
 
 enum Enum { member1, member2, }
 enum { EnumMemberA, EnumMemberB }
@@ -38,38 +32,8 @@ template Template(
 	TemplateParamTuple...
 	) 
 {
-
-#REFSEARCH¤【
 	
-Module
-
-Var▪Var1
-VarAuto▪VarAuto1
-#comment(TODO)¤【
-Var2▪Var3▪VarAuto2
-】
-
-Function
-Function
-FunctionT
-FunctionAuto
-FunctionAutoT
-
-Class▪Interface▪Struct▪Union
-
-Enum
-EnumMemberA▪EnumMemberB
-
-#comment(TODO)¤【Alias1▪Alias2▪】
-AliasVarDecl▪AliasFunctionDecl
-
-Template
-
-TemplateParamType 
-TemplateParamValue 
-TemplateParamAlias
-TemplateParamTuple
-TemplateParamThis
-】
-
 }
+
+
+
