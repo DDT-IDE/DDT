@@ -30,8 +30,8 @@ public class DMDInstallType_Test extends BaseDeeTest {
 			"src/druntime/import", "src/phobos");	
 	}
 	
-	protected static final String MOCK_DMD2_SYSTEM_PATH = MOCK_DEE_COMPILERS_PATH+"DMDInstall-system/usr/bin/dmd";
-	protected static final String MOCK_DMD2_SYSTEM_PATH2 = MOCK_DEE_COMPILERS_PATH+"DMDInstall-system2/usr/bin/dmd";
+	protected static final String MOCK_DMD2_SYSTEM_PATH = MOCK_DEE_COMPILERS_PATH+"DMDInstall-linux/usr/bin/dmd";
+	protected static final String MOCK_DMD2_SYSTEM_PATH2 = MOCK_DEE_COMPILERS_PATH+"DMDInstall-linux2/usr/bin/dmd";
 	
 	@Test
 	public void testLibraryLocUnix() throws Exception { testLibraryLocUnix$(); }
@@ -41,7 +41,7 @@ public class DMDInstallType_Test extends BaseDeeTest {
 		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
-			"include/d/dmd/druntime/import", "include/d/dmd/phobos");	
+			"usr/include/dmd/druntime/import", "usr/include/dmd/phobos");		 
 	}
 	
 	@Test
@@ -52,7 +52,7 @@ public class DMDInstallType_Test extends BaseDeeTest {
 		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
-			"include/dmd/druntime/import", "include/dmd/phobos");		 
+			"include/d/dmd/druntime/import", "include/d/dmd/phobos");	
 	}
 	
 	public static LibraryLocation[] getLibraryLocations(CommonInstallType dmdInstallType, Path compilerPath) {

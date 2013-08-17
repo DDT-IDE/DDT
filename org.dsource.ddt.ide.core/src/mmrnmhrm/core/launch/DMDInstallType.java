@@ -52,10 +52,14 @@ public class DMDInstallType extends CommonInstallType {
 		if(checkForDMD2InstallLocation(locs, env, exePath.removeLastSegments(3).append("include/d/dmd")))
 			return;
 		
+		if(checkForDMD2InstallLocation(locs, env, exePath.removeLastSegments(3).append("usr/include/dmd")))
+			return;
+		
+		// Not sure there is any Linux layout like this, but no hard in trying:
 		if(checkForDMD2InstallLocation(locs, env, exePath.removeLastSegments(3).append("include/dmd")))
 			return;
 		
-		// TODO: should we throw an error?
+		// TODO: should we throw an error or show an error dialog?
 	}
 	
 	public boolean checkForDMD2InstallLocation(List<LibraryLocation> locs, IEnvironment env, IPath libBasePath) {
