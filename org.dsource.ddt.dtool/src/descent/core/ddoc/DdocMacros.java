@@ -11,6 +11,7 @@
  *******************************************************************************/
 package descent.core.ddoc;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
@@ -144,7 +145,7 @@ public class DdocMacros {
 	public static String replaceMacros(String source, Map<String, String> macroDefinitions, 
 		Set<String> expandedMacros) {
 		DdocMacros ddocMacroProcessor = new DdocMacros(source, 0, macroDefinitions);
-		return ddocMacroProcessor.replaceMacros(expandedMacros, false /* not nested */);
+		return ddocMacroProcessor.replaceMacros(expandedMacros);
 	}
 	
 	protected String source;
@@ -182,138 +183,132 @@ public class DdocMacros {
 	
 	/**
 	 * @param expandedMacros the expanded macros so far. Used for cycle detection.
-	 * @param isNested
 	 * @return
 	 */
-	private String replaceMacros(Set<String> expandedMacros, boolean isNested) {
+	private String replaceMacros(Set<String> expandedMacros) {
 		// Total string
 		StringBuilder sb = new StringBuilder();
 		
-		
 		int length = source.length();
 		
-		loop: 
 		for(; position < length; position++) {
-			char c = source.charAt(position);
-			if (c != '$') {
-				sb.append(c);
+			char ch = source.charAt(position);
+			if (ch != '$') {
+				sb.append(ch);
 				continue;
 			}
 			
 			if(lookAhead(1) != '(') {
-				sb.append(c);
+				sb.append(ch);
 				continue;
 			}
 			
-			// The current argument in the macro
-			StringBuilder currentArgument = new StringBuilder();
-			
-			// Argument $0
-			StringBuilder $0 = new StringBuilder();
-			
-			// Argument $+
-			StringBuilder $plus = new StringBuilder();
-			
-			List<String> arguments = new ArrayList<String>();
-			
-			// In case a macro is started but not finished
-			StringBuilder temp = new StringBuilder();
-			temp.append(c);
-			
-			position++;
-			c = source.charAt(position);
-			temp.append(c);
-			
-			position++;
-			if (position == length) {
-				sb.append(temp);
-				continue;
-			}
-			c = source.charAt(position);
-			
-			currentArgument.setLength(0);
-			$0.setLength(0);
-			$plus.setLength(0);
-			arguments.clear();
-			
-			boolean foundSpace = false;
-			boolean foundComma = false;
-			
-			int parenCount = 0;
-			for(; position < length; position++) {
-				c = source.charAt(position);
-				if (c == '$' && position < length - 1 && source.charAt(position + 1) == '(') {
-					String result = replaceMacros(expandedMacros, true /* nested */);
-					currentArgument.append(result);				
-					temp.append(result);
-					if (foundSpace) {
-						$0.append(result);
-					}
-					if (foundComma) {
-						$plus.append(result);
-					}
-					continue;
-				} else if (c == ' ' && !foundSpace) {
-					foundSpace = true;
-					arguments.add(currentArgument.toString());
-					currentArgument.setLength(0);
-					temp.append(c);
-					continue;
-				} else if (c == ')' && parenCount > 0) {
-					parenCount--;
-				} else if (c == ')' && parenCount == 0) {
-					arguments.add(currentArgument.toString());
-					
-					String macroName = arguments.get(0);
-					String replacement = macroDefinitions.get(macroName);
-					if (replacement != null) {
-						// Recursive step: replace macros in replacement
-						if (!expandedMacros.contains(macroName)) {
-							expandedMacros.add(macroName);
-							replacement = replaceMacros(replacement, macroDefinitions, expandedMacros);
-							expandedMacros.remove(macroName);
-							
-							replacement = replaceParameters(replacement, arguments, $0.toString(), $plus.toString());
-							sb.append(replacement);
-						}
-						
-						if (isNested) {
-							return sb.toString();
-						} else {
-							continue loop;
-						}
-					} else {
-						// If macro not found, append to temp string:
-					}
-				} else if (c == ',') {
-					if (foundComma) {
-						$plus.append(c);
-					}
-					foundComma = true;
-					arguments.add(currentArgument.toString());
-					currentArgument.setLength(0);
-					$0.append(c);
-					continue;
-				}
-				
-				if (c == '(') {
-					parenCount++;
-				}
-				
-				currentArgument.append(c);				
-				temp.append(c);
-				if (foundSpace) {
-					$0.append(c);
-				}
-				if (foundComma) {
-					$plus.append(c);
-				}
-			}
-			
-			sb.append(temp);
+			String result = assertNotNull(evaluateMacro(expandedMacros));
+			sb.append(result);
 		}
 		
 		return sb.toString();
+	}
+	
+	private String evaluateMacro(Set<String> expandedMacros) {
+		int length = source.length();
+		
+		// In case a macro is started but not finished
+		StringBuilder temp = new StringBuilder();
+		temp.append("$(");
+		
+		position += 2;
+		if (position == length) {
+			return temp.toString();
+		}
+		char ch = source.charAt(position);
+		
+		// The current argument in the macro
+		StringBuilder currentArgument = new StringBuilder();
+		// Argument $0
+		StringBuilder $0 = new StringBuilder();
+		// Argument $+
+		StringBuilder $plus = new StringBuilder();
+		List<String> arguments = new ArrayList<String>();
+		
+		boolean foundSpace = false;
+		boolean foundComma = false;
+		
+		int parensCount = 0;
+		for(; position < length; position++) {
+			ch = source.charAt(position);
+			if (ch == '$' && lookAhead(1) == '(') {
+				
+				String result = evaluateMacro(expandedMacros);
+				assertNotNull(result);
+				currentArgument.append(result);				
+				temp.append(result);
+				if (foundSpace) {
+					$0.append(result);
+				}
+				if (foundComma) {
+					$plus.append(result);
+				}
+				continue;
+			} else if (ch == ' ' && !foundSpace) {
+				foundSpace = true;
+				arguments.add(currentArgument.toString());
+				currentArgument.setLength(0);
+				temp.append(ch);
+				continue;
+			} else if (ch == ')' && parensCount > 0) {
+				parensCount--;
+			} else if (ch == ')' && parensCount == 0) {
+				arguments.add(currentArgument.toString());
+				
+				String macroName = arguments.get(0);
+				String replacement = macroDefinitions.get(macroName);
+				if (replacement != null) {
+					// Recursive step: replace macros in replacement
+					if (expandedMacros.contains(macroName)) {
+						return cycleErrorString(macroName);
+					} else {
+						expandedMacros.add(macroName);
+						replacement = replaceMacros(replacement, macroDefinitions, expandedMacros);
+						expandedMacros.remove(macroName);
+						
+						replacement = replaceParameters(replacement, arguments, $0.toString(), $plus.toString());
+						return replacement;
+					}
+					
+				} else {
+					// If macro not found, append to temp string:
+				}
+			} else if (ch == ',') {
+				if (foundComma) {
+					$plus.append(ch);
+				}
+				foundComma = true;
+				arguments.add(currentArgument.toString());
+				currentArgument.setLength(0);
+				$0.append(ch);
+				continue;
+			}
+			
+			if (ch == '(') {
+				parensCount++;
+			}
+			
+			currentArgument.append(ch);				
+			temp.append(ch);
+			if (foundSpace) {
+				$0.append(ch);
+			}
+			if (foundComma) {
+				$plus.append(ch);
+			}
+		}
+		
+		return temp.toString();
+	}
+	
+	public static String cycleErrorString(String macroName) {
+		return "$DDOC ERROR - CYCLE DETECTED WITH MACRO: "+macroName+" $";
 	}
 	
 	private static String replaceParameters(String string, List<String> arguments, String $0, String $plus) {

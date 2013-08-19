@@ -24,32 +24,50 @@ public class DDocMacrosTest {
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		 runMacroTest("abc", "abc");
-		 runMacroTest("abc $(B mybold) def", "abc " + boldResult("mybold") + " def");
+		 runBasicTest("sample", "sample");
 		 
-		 //Nested
-		 runMacroTest("abc $(B $(I my) bold) def", "abc " + boldResult(italicResult("my") + " bold") + " def");
+		 runBasicTest("$(B sampleB)", boldResult("sampleB"));
+		 runBadSyntaxTests("$(B sampleB", "$(B sampleB");
+		 runBadSyntaxTests("$(B ", "$(B ");
+	}
+	
+	public void runBasicTest(String SAMPLE_SOURCE, String SAMPLE_EXPECTED) {
+		runMacroTest(SAMPLE_SOURCE, SAMPLE_EXPECTED);
+		runMacroTest(SAMPLE_SOURCE + " abc $(B mybold) def", 
+			SAMPLE_EXPECTED + " abc " + boldResult("mybold") + " def");
+		 
+		//Nested
+		runMacroTest(SAMPLE_SOURCE + "abc $(B $(I my) bold) def", 
+			SAMPLE_EXPECTED + "abc " + boldResult(italicResult("my") + " bold") + " def");
+		runMacroTest("abc $(B $(I " + SAMPLE_SOURCE + ") bold) def", 
+			"abc " + boldResult(italicResult(SAMPLE_EXPECTED) + " bold") + " def");
 		 
 		//Nested + Recursive
-		 Map<String, String> macroDefsA = new HashMap<>(DdocMacros.getDefaultMacros());
-		 macroDefsA.put("X", "<u>xxx $(I $0) </u>");
-		 runMacroTest("abc $(B $(X my) bold) xyz", macroDefsA, 
-			 "abc " + boldResult("<u>xxx "+italicResult("my")+" </u>"  + " bold") + " xyz");
+		Map<String, String> macroDefsA = new HashMap<>(DdocMacros.getDefaultMacros());
+		macroDefsA.put("X", "<u>" +SAMPLE_SOURCE+ " $(I $0) </u>");
+		runMacroTest("abc $(B $(X my) bold) xyz", macroDefsA, 
+			 "abc " + boldResult("<u>" +SAMPLE_EXPECTED+ " "+italicResult("my")+" </u>"  + " bold") + " xyz");
 		 
-		 // Recursive - cycle
-		 macroDefsA.put("CYCLE", "<u>xxx $(CYCLE blah) </u>");
-		 runMacroTest("abc $(CYCLE my) xyz", macroDefsA, 
-			 "abc " + "<u>xxx "+("")+" </u>" + " xyz");
+		// Recursive - cycle
+		macroDefsA.put("CYCLE", "<u>xxx $(CYCLE blah) </u>");
+		runMacroTest(SAMPLE_SOURCE + "abc $(CYCLE my) xyz", macroDefsA, 
+			SAMPLE_EXPECTED + "abc " + "<u>xxx "+DdocMacros.cycleErrorString("CYCLE")+" </u>" + " xyz");
 		 
-		 // Not found:
-		 runMacroTest("abc $(NON_EXISTANT my) xyz", macroDefsA, 
-			 "abc " + "$(NON_EXISTANT my)" + " xyz");
+		// Not found:
+		runMacroTest(SAMPLE_SOURCE + "abc $(NON_EXISTANT my) xyz", macroDefsA, 
+			SAMPLE_EXPECTED + "abc " + "$(NON_EXISTANT my)" + " xyz");
 		 
-		 // macro odd syntax:
-		 runMacroTest("abc) (my) ) ", macroDefsA, 
-			 "abc) (my) ) ");
-
+		// macro odd syntax:
+		runMacroTest(SAMPLE_SOURCE + "abc) (my) ) ", SAMPLE_EXPECTED + "abc) (my) ) ");
+		runBadSyntaxTests(SAMPLE_SOURCE, SAMPLE_EXPECTED);
 	}
+	public void runBadSyntaxTests(String SAMPLE_PREFIX_SOURCE, String SAMPLE_EXPECTED) {
+		runMacroTest(SAMPLE_PREFIX_SOURCE + "$(", SAMPLE_EXPECTED + "$(");
+		runMacroTest(SAMPLE_PREFIX_SOURCE + "$(X", SAMPLE_EXPECTED + "$(X");
+		runMacroTest(SAMPLE_PREFIX_SOURCE + "$(X ", SAMPLE_EXPECTED + "$(X ");
+		runMacroTest(SAMPLE_PREFIX_SOURCE + "$(X def $(", SAMPLE_EXPECTED + "$(X def $(");
+	}
+	
 	public static String boldResult(String string) {
 		return "<b>" + string + "</b>";
 	}
@@ -59,8 +77,6 @@ public class DDocMacrosTest {
 	
 	public void runMacroTest(String source, String expectedResult) {
 		runMacroTest(source, DdocMacros.getDefaultMacros(), expectedResult);
-		
-		runMacroTest("$(B "+source+")", DdocMacros.getDefaultMacros(), boldResult(expectedResult));
 	}
 	public void runMacroTest(String source, Map<String, String> macroDefinitions, String expectedResult) {
 		String result = DdocMacros.replaceMacros(source, macroDefinitions);
