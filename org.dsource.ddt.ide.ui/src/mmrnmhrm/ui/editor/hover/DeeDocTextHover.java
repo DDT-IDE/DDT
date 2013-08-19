@@ -13,7 +13,6 @@ package mmrnmhrm.ui.editor.hover;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
-import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.editor.doc.DeeDocumentationProvider;
 
@@ -71,7 +70,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 		if(module == null)
 			return null;
 		
-		return ASTNodeFinder.findElement(module, offset, DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
+		return ASTNodeFinder.findElement(module, offset);
 	}
 	
 	@Override

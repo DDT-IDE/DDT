@@ -68,9 +68,12 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	}
 	
 	@Test
-	public void testOpenRef_TargetInSameFile() {
+	public void testOpenRef_TargetInSameFile() throws Exception { testOpenRef_TargetInSameFile$(); }
+	public void testOpenRef_TargetInSameFile$() throws Exception {
 		int offset = getOffsetForString("Foo foo");
 		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
+		offset = offset + "Foo".length();
+		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
 	}
 	
 	protected int getOffsetForString(String string) {

@@ -6,7 +6,6 @@ import java.io.Reader;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
-import mmrnmhrm.core.codeassist.DeeSelectionEngine;
 import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
@@ -25,7 +24,7 @@ import dtool.ast.definitions.Module;
 
 /**
  * XXX: DLTK: This {@link DeeDocumentationProvider} is disabled (not used at the moment), 
- * due to a API limitation (unable to specify empty title without DLTK provied an alternative default)
+ * due to a API limitation (unable to specify empty title without having DLTK provide an alternative default)
  * {@link DeeDocTextHover} is used instead.
  */
 public class DeeDocumentationProvider implements IScriptDocumentationProvider, IScriptDocumentationProviderExtension2 {
@@ -77,8 +76,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 		final int start = range.getOffset();
 		
 		Module deeModule = DeeModuleParsingUtil.getParsedDeeModule(member.getSourceModule());
-		ASTNode pickedNode = ASTNodeFinder.findElement(deeModule, start, 
-				DeeSelectionEngine.ELEMENT_DDOC_SELECTION__INCLUSIVE_END);
+		ASTNode pickedNode = ASTNodeFinder.findElement(deeModule, start);
 		
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(member.getScriptProject());
 		return DeeDocTextHover.getDocInfoForNode(pickedNode, moduleResolver);

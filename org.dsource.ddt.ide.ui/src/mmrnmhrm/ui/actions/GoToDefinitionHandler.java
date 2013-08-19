@@ -85,7 +85,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
 		
 		Module module = EditorUtil.getModuleFromEditor(editor);
-		ASTNode elem = ASTNodeFinder.findElement(module, offset, false);
+		ASTNode elem = ASTNodeFinder.findElement(module, offset);
 		
 		if(elem == null) {
 			// Shouldn't happen, apart from threading/concurrency issues

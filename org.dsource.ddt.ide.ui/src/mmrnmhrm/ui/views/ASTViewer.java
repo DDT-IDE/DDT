@@ -1,6 +1,5 @@
 package mmrnmhrm.ui.views;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.parser.DeeModuleDeclaration;
 import mmrnmhrm.core.parser.DeeModuleParsingUtil;
@@ -47,7 +46,6 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.IASTNode;
 
@@ -211,19 +209,11 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		
 		//viewer.getControl().setRedraw(false);
 		viewer.refresh();
-		selNode = findElementDependingOnType(fDeeModule.getModuleNode(), offset, true);
+		selNode = ASTNodeFinder.findElement(fDeeModule.getModule(), offset);
 		if(selNode != null) {
 			viewer.reveal(selNode);
 		}
 		//viewer.getControl().setRedraw(true);
-	}
-	
-	public static IASTNode findElementDependingOnType(IASTNode root, int offset, boolean inclusiveEnd) {
-		if(root instanceof ASTNode) {
-			return ASTNodeFinder.findElement((ASTNode) root, offset, inclusiveEnd);
-		}  else {
-			throw assertFail();
-		}
 	}
 	
 	public static void makeVisible(Control control) {
