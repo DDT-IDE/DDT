@@ -7,6 +7,7 @@ import java.util.TreeSet;
 
 import descent.core.ddoc.DdocSection.Parameter;
 import dtool.ast.definitions.DefUnit;
+import dtool.ddoc.DdocMacros;
 import dtool.ddoc.IDeeDocColorConstants;
 import dtool.parser.DeeLexer;
 import dtool.parser.DeeTokenHelper;

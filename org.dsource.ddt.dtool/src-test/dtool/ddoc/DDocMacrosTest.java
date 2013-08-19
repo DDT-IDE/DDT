@@ -17,8 +17,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import descent.core.ddoc.DdocMacros;
-
 public class DDocMacrosTest {
 	
 	@Test
@@ -27,8 +25,11 @@ public class DDocMacrosTest {
 		 runBasicTest("sample", "sample");
 		 
 		 runBasicTest("$(B sampleB)", boldResult("sampleB"));
+		 runBasicTest("$(NON_EXISTANT my)", "$(NON_EXISTANT my)");
+		 
 		 runBadSyntaxTests("$(B sampleB", "$(B sampleB");
 		 runBadSyntaxTests("$(B ", "$(B ");
+		 runBadSyntaxTests("$(", "$(");
 	}
 	
 	public void runBasicTest(String SAMPLE_SOURCE, String SAMPLE_EXPECTED) {
@@ -60,6 +61,9 @@ public class DDocMacrosTest {
 		// macro odd syntax:
 		runMacroTest(SAMPLE_SOURCE + "abc) (my) ) ", SAMPLE_EXPECTED + "abc) (my) ) ");
 		runBadSyntaxTests(SAMPLE_SOURCE, SAMPLE_EXPECTED);
+		
+		// TODO: we need test for arguments, parens nesting, string nesting, etc. 
+		// It's likely there are bugs with that functionality
 	}
 	public void runBadSyntaxTests(String SAMPLE_PREFIX_SOURCE, String SAMPLE_EXPECTED) {
 		runMacroTest(SAMPLE_PREFIX_SOURCE + "$(", SAMPLE_EXPECTED + "$(");

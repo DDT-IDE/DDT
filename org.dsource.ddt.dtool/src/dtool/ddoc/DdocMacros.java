@@ -7,9 +7,9 @@
  *
  * Contributors:
  *    Ary Borenszweig - initial API and implementation?
- *    Bruno Medeiros - some refactoring
+ *    Bruno Medeiros - refactoring and some bugfixes
  *******************************************************************************/
-package descent.core.ddoc;
+package dtool.ddoc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -214,12 +214,12 @@ public class DdocMacros {
 		int length = source.length();
 		
 		// In case a macro is started but not finished
-		StringBuilder temp = new StringBuilder();
-		temp.append("$(");
+		StringBuilder rawSource = new StringBuilder();
+		rawSource.append("$(");
 		
 		position += 2;
 		if (position == length) {
-			return temp.toString();
+			return rawSource.toString();
 		}
 		char ch = source.charAt(position);
 		
@@ -242,7 +242,7 @@ public class DdocMacros {
 				String result = evaluateMacro(expandedMacros);
 				assertNotNull(result);
 				currentArgument.append(result);				
-				temp.append(result);
+				rawSource.append(result);
 				if (foundSpace) {
 					$0.append(result);
 				}
@@ -254,30 +254,28 @@ public class DdocMacros {
 				foundSpace = true;
 				arguments.add(currentArgument.toString());
 				currentArgument.setLength(0);
-				temp.append(ch);
+				rawSource.append(ch);
 				continue;
-			} else if (ch == ')' && parensCount > 0) {
-				parensCount--;
 			} else if (ch == ')' && parensCount == 0) {
 				arguments.add(currentArgument.toString());
 				
 				String macroName = arguments.get(0);
 				String replacement = macroDefinitions.get(macroName);
-				if (replacement != null) {
-					// Recursive step: replace macros in replacement
-					if (expandedMacros.contains(macroName)) {
-						return cycleErrorString(macroName);
-					} else {
-						expandedMacros.add(macroName);
-						replacement = replaceMacros(replacement, macroDefinitions, expandedMacros);
-						expandedMacros.remove(macroName);
-						
-						replacement = replaceParameters(replacement, arguments, $0.toString(), $plus.toString());
-						return replacement;
-					}
-					
+				if (replacement == null) {
+					rawSource.append(ch);
+					// If macro not found, return raw source
+					return rawSource.toString();
+				}
+				// Recursive step: replace macros in replacement
+				if (expandedMacros.contains(macroName)) {
+					return cycleErrorString(macroName);
 				} else {
-					// If macro not found, append to temp string:
+					expandedMacros.add(macroName);
+					replacement = replaceMacros(replacement, macroDefinitions, expandedMacros);
+					expandedMacros.remove(macroName);
+					
+					replacement = replaceParameters(replacement, arguments, $0.toString(), $plus.toString());
+					return replacement;
 				}
 			} else if (ch == ',') {
 				if (foundComma) {
@@ -288,14 +286,14 @@ public class DdocMacros {
 				currentArgument.setLength(0);
 				$0.append(ch);
 				continue;
-			}
-			
-			if (ch == '(') {
+			} else if (ch == '(') {
 				parensCount++;
+			} else if (ch == ')') {
+				parensCount--;
 			}
 			
 			currentArgument.append(ch);				
-			temp.append(ch);
+			rawSource.append(ch);
 			if (foundSpace) {
 				$0.append(ch);
 			}
@@ -304,7 +302,7 @@ public class DdocMacros {
 			}
 		}
 		
-		return temp.toString();
+		return rawSource.toString();
 	}
 	
 	public static String cycleErrorString(String macroName) {
