@@ -88,20 +88,22 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		ASTNode elem = ASTNodeFinder.findElement(module, offset, false);
 		
 		if(elem == null) {
-			dialogWarning(window.getShell(), "No element found at pos: " + offset);
-			Logg.main.println(" ! ASTElementFinder null?");
+			// Shouldn't happen, apart from threading/concurrency issues
+			String msg = "No node found at offset: " + offset;
+			dialogError(window.getShell(), msg);
+			DeeCore.logError(msg);
 			return;
 		}
-		Logg.main.println(" Selected Element: " + elem.toStringAsNode(true));
+		Logg.main.println(" Picked node: " + elem.toStringAsNode(true));
 		
 		if(elem instanceof Symbol) {
 			dialogInfo(window.getShell(),
-					"Element is not an entity reference," +" it's already a definition: " + elem.toStringClassName());
+					"Element next to cursor is already a definition, not a reference.");
 			return;
 		}
 		if(!(elem instanceof Reference)) {
 			dialogInfo(window.getShell(),
-					"Element is not an entity reference: "+ elem.toStringClassName());
+					"No reference found next to cursor.");
 			return;
 		}
 		
@@ -113,7 +115,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		Collection<DefUnit> defunits = ref.findTargetDefUnits(moduleResolver, false);
 		
 		if(defunits == null || defunits.isEmpty()) {
-			dialogWarning(window.getShell(), "Definition not found for entity reference: " + ref.toStringAsCode());
+			dialogWarning(window.getShell(), "Definition not found for reference: " + ref.toStringAsCode());
 			return;
 		}
 		
@@ -122,19 +124,23 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		
 		if(defunits.size() > 1) {
 			dialogInfo(window.getShell(), "Multiple definitions found: \n" 
-					+ collToString_defUnits(defunits, "\n") + "\nGoing to the first one.");
+					+ collToString_defUnits(defunits, "\n") + "\nOpening the first one.");
 		} 
 		
 		DefUnit defunit = defunits.iterator().next();
 		
-		if(!defunit.hasSourceRangeInfo()) {
-			dialogError(window.getShell(), "DefUnit " +defunit.getExtendedName()+ " has no source range info!");
-			return;
-		} 
 		if(defunit instanceof INativeDefUnit) {
-			dialogInfo(window.getShell(), "DefUnit " +defunit.getExtendedName()+ " is a language native.");
+			// TODO: test this path
+			dialogInfo(window.getShell(), 
+				"Definition " +defunit.getExtendedName()+ " is a language primitive, cannot open editor.");
 			return;
-		} 
+		}
+		if(!defunit.hasSourceRangeInfo()) {
+			String msg = "DefUnit " +defunit.getExtendedName()+ " has no source range info!";
+			dialogError(window.getShell(), msg);
+			DeeCore.logError(msg);
+			return;
+		}
 		
 		
 		Module targetModule = NodeUtil.getParentModule(defunit);

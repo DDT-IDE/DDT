@@ -12,7 +12,6 @@
 package mmrnmhrm.ui.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import junit.framework.Assert;
 import mmrnmhrm.core.codeassist.OutsideBuildpathTestResources;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.tests.ITestResourcesConstants;
@@ -143,7 +142,7 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 		deeEditor = (DeeEditor) WorkbenchUtils.getActivePage().getActiveEditor();
 		IFile editorFile = ((FileEditorInput) deeEditor.getEditorInput()).getFile();
 		IPath path = editorFile.getFullPath();
-		Assert.assertEquals(path, prjpath.append(targetpath));
+		assertEquals(path, prjpath.append(targetpath));
 	}
 	
 }

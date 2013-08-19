@@ -26,6 +26,7 @@ public class DefSymbol extends Symbol {
 		return assertCast(parent, DefUnit.class);
 	}
 	
+	/** @return the defunit associated with this defSymbol. Cannot be null. */
 	public DefUnit getDefUnit() {
 		return (DefUnit) getParent();
 	}
