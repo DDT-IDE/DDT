@@ -1,4 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2013 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Ary Borenszweig - initial API and implementation?
+ *    Bruno Medeiros - some refactoring
+ *******************************************************************************/
 package descent.core.ddoc;
+
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,82 +27,96 @@ import java.util.TreeSet;
 public class DdocMacros {
 	
 	private final static Map<String, String> defaultMacros;
+	
 	static {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("B", "<b>$0</b>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("I", "<i>$0</i>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("U", "<u>$0</u>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("P", "<p>$0</p>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DL", "<dl>$0</dl>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DT", "<dt>$0</dt>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DD", "<dd>$0</dd>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("TABLE", "<table border=\"1\" cellpadding=\"4\">$0</table>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("TR", "<tr>$0</tr>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("TH", "<th>$0</th>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("TD", "<td>$0</td>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("OL", "<ol>$0</ol>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("UL", "<ul>$0</ul>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("LI", "<li>$0</li>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("BIG", "<big>$0</big>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("SMALL", "<small>$0</small>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("BR", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("LINK", "<a href=\"$0\" target=\"_blank\">$0</a>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("LINK2", "<a href=\"$1\" target=\"_blank\">$+</a>"); //$NON-NLS-1$ //$NON-NLS-2$
+		map.put("B", "<b>$0</b>");
+		map.put("I", "<i>$0</i>");
+		map.put("U", "<u>$0</u>");
+		map.put("P", "<p>$0</p>");
+		map.put("DL", "<dl>$0</dl>");
+		map.put("DT", "<dt>$0</dt>");
+		map.put("DD", "<dd>$0</dd>");
+		map.put("TABLE", "<table border=\"1\" cellpadding=\"4\">$0</table>");
+		map.put("TR", "<tr>$0</tr>");
+		map.put("TH", "<th>$0</th>");
+		map.put("TD", "<td>$0</td>");
+		map.put("OL", "<ol>$0</ol>");
+		map.put("UL", "<ul>$0</ul>");
+		map.put("LI", "<li>$0</li>");
+		map.put("BIG", "<big>$0</big>");
+		map.put("SMALL", "<small>$0</small>");
+		map.put("BR", "<br>");
+		map.put("LINK", "<a href=\"$0\" target=\"_blank\">$0</a>");
+		map.put("LINK2", "<a href=\"$1\" target=\"_blank\">$+</a>");
+		map.put("LPAREN", "(");
+		map.put("RPAREN", ")");
 		
-		map.put("RED", "<font color=red>$0</font>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("BLUE", "<font color=blue>$0</font>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("GREEN", "<font color=green>$0</font>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("YELLOW", "<font color=yellow>$0</font>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("BLACK", "<font color=black>$0</font>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("WHITE", "<font color=white>$0</font>"); //$NON-NLS-1$ //$NON-NLS-2$
+		map.put("RED", "<font color=red>$0</font>");
+		map.put("BLUE", "<font color=blue>$0</font>");
+		map.put("GREEN", "<font color=green>$0</font>");
+		map.put("YELLOW", "<font color=yellow>$0</font>");
+		map.put("BLACK", "<font color=black>$0</font>");
+		map.put("WHITE", "<font color=white>$0</font>");
 		
-		map.put("D_CODE", "<span class=\"code\">$0</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+		map.put("D_CODE", "<span class=\"code\">$0</span>");
 		
 		// TODO ddoc macro provider
-		map.put("D_COMMENT", "<span class=\"java_single_line_comment\">$0</span>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		map.put("D_STRING", "<span class=\"java_string\">$0</span>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		map.put("D_KEYWORD", "<span class=\"java_keyword\">$0</span>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		map.put("D_PSYMBOL", "$(U $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("D_PARAM", "$(I $0)"); //$NON-NLS-1$ //$NON-NLS-2$
+		map.put("D_COMMENT", "<span class=\"java_single_line_comment\">$0</span>");
+		map.put("D_STRING", "<span class=\"java_string\">$0</span>");
+		map.put("D_KEYWORD", "<span class=\"java_keyword\">$0</span>");
+		map.put("D_PSYMBOL", "$(U $0)");
+		map.put("D_PARAM", "$(I $0)");
 		
-		map.put("DDOC", "<html><head> <META http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"><title>$(TITLE)</title></head><body><h1>$(TITLE)</h1>$(BODY)</body></html>"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_COMMENT", "<!-- $0 -->"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_DECL", "$(DT $(BIG $0))"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_DECL_DD", "$(DD $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_DITTO", "$(BR) $0"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_SECTIONS", "$0"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_SUMMARY", "$0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_DESCRIPTION", "$0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_AUTHORS", "$(B Authors:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_BUGS", "$(RED BUGS:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_COPYRIGHT", "$(B Copyright:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_DATE", "$(B Date:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_DEPRECATED", "$(RED Deprecated:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_EXAMPLES", "$(B Examples:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_HISTORY", "$(B History:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_LICENSE", "$(B License:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_RETURNS", "$(B Returns:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_SEE_ALSO", "$(B See Also:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_STANDARDS", "$(B Standards:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_THROWS", "$(B Throws:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_VERSION", "$(B Version:)$(BR) $0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_SECTION_H", "$(B $0)$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_SECTION", "$0$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_MEMBERS", "$(DL $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_MODULE_MEMBERS", "$(DDOC_MEMBERS $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_CLASS_MEMBERS", "$(DDOC_MEMBERS $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_STRUCT_MEMBERS", "$(DDOC_MEMBERS $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_ENUM_MEMBERS", "$(DDOC_MEMBERS $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_TEMPLATE_MEMBERS", "$(DDOC_MEMBERS $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_PARAMS", "$(B Params:)$(BR)\n$(TABLE $0)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_PARAM_ROW", "$(TR $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_PARAM_ID", "$(TD $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_PARAM_DESC", "$(TD $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_BLANKLINE", "$(BR)$(BR)"); //$NON-NLS-1$ //$NON-NLS-2$
+		map.put("DDOC", 
+		"<html><head>"+
+		"<META http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">"+
+		"<title>$(TITLE)</title>"+
+//		"<link rel="stylesheet" type="text/css" href="style.css">"
+		"</head><body>"+
+		"<h1>$(TITLE)</h1>"+
+		"$(BODY)"+
+		"</body></html>"
+		);
 		
-		map.put("DDOC_PSYMBOL", "$(U $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_KEYWORD", "$(B $0)"); //$NON-NLS-1$ //$NON-NLS-2$
-		map.put("DDOC_PARAM", "$(I $0)"); //$NON-NLS-1$ //$NON-NLS-2$
+		map.put("DDOC_COMMENT", "<!-- $0 -->");
+		map.put("DDOC_DECL", "$(DT $(BIG $0))");
+		map.put("DDOC_DECL_DD", "$(DD $0)");
+		map.put("DDOC_DITTO", "$(BR) $0");
+		map.put("DDOC_SECTIONS", "$0");
+		map.put("DDOC_SUMMARY", "$0$(BR)$(BR)");
+		map.put("DDOC_DESCRIPTION", "$0$(BR)$(BR)");
+		map.put("DDOC_AUTHORS", "$(B Authors:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_BUGS", "$(RED BUGS:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_COPYRIGHT", "$(B Copyright:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_DATE", "$(B Date:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_DEPRECATED", "$(RED Deprecated:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_EXAMPLES", "$(B Examples:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_HISTORY", "$(B History:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_LICENSE", "$(B License:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_RETURNS", "$(B Returns:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_SEE_ALSO", "$(B See Also:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_STANDARDS", "$(B Standards:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_THROWS", "$(B Throws:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_VERSION", "$(B Version:)$(BR) $0$(BR)$(BR)");
+		map.put("DDOC_SECTION_H", "$(B $0)$(BR)$(BR)");
+		map.put("DDOC_SECTION", "$0$(BR)$(BR)");
+		map.put("DDOC_MEMBERS", "$(DL $0)");
+		map.put("DDOC_MODULE_MEMBERS", "$(DDOC_MEMBERS $0)");
+		map.put("DDOC_CLASS_MEMBERS", "$(DDOC_MEMBERS $0)");
+		map.put("DDOC_STRUCT_MEMBERS", "$(DDOC_MEMBERS $0)");
+		map.put("DDOC_ENUM_MEMBERS", "$(DDOC_MEMBERS $0)");
+		map.put("DDOC_TEMPLATE_MEMBERS", "$(DDOC_MEMBERS $0)");
+		map.put("DDOC_PARAMS", "$(B Params:)$(BR)\n$(TABLE $0)$(BR)");
+		map.put("DDOC_PARAM_ROW", "$(TR $0)");
+		map.put("DDOC_PARAM_ID", "$(TD $0)");
+		map.put("DDOC_PARAM_DESC", "$(TD $0)");
+		map.put("DDOC_BLANKLINE", "$(BR)$(BR)");
+		
+		map.put("DDOC_ANCHOR", "<a name=\"$1\"></a>");
+		map.put("DDOC_PSYMBOL", "$(U $0)");
+		map.put("DDOC_KEYWORD", "$(B $0)");
+		map.put("DDOC_PARAM", "$(I $0)");
 		
 		defaultMacros = Collections.unmodifiableMap(map);
 	}
@@ -105,63 +132,104 @@ public class DdocMacros {
 	/**
 	 * Replaces the macros found in the given string with the given macros
 	 * map.
-	 * @param string the string to replace
+	 * @param source the string to replace
 	 * @param macros the macros map
 	 * @return the replaced string
 	 */
-	public static String replaceMacros(String string, Map<String, String> macros) {
-		TreeSet<String> usedMacros = new TreeSet<String>();
-		return replaceMacros(string, new int[] { 0 }, macros, usedMacros, false /* not nested */);
+	public static String replaceMacros(String source, Map<String, String> macros) {
+		TreeSet<String> expandedMacros = new TreeSet<String>();
+		return replaceMacros(source, macros, expandedMacros);
 	}
 	
-	private static String replaceMacros(String string, int[] from, Map<String, String> macros, Set<String> usedMacros, boolean isNested) {
+	public static String replaceMacros(String source, Map<String, String> macroDefinitions, 
+		Set<String> expandedMacros) {
+		DdocMacros ddocMacroProcessor = new DdocMacros(source, 0, macroDefinitions);
+		return ddocMacroProcessor.replaceMacros(expandedMacros, false /* not nested */);
+	}
+	
+	protected String source;
+	protected int position;
+	
+	protected Map<String, String> macroDefinitions;
+	
+	public DdocMacros(String source, int position, Map<String, String> macroDefinitions) {
+		this.source = source;
+		this.position = position;
+		this.macroDefinitions = macroDefinitions;
+	}
+	
+	/** Gets the character from absolute position index, or EOF if index exceeds source.length. */
+	public static int getCharacter(String source, int index) {
+		if(index >= source.length()) {
+			return -1;
+		}
+		return source.charAt(index);
+	}
+	
+	public final int lookAhead(int offset) {
+		return getCharacter(source, position + offset);
+	}
+	
+	public final int lookAhead() {
+		return getCharacter(source, position);
+	}
+	
+	public final char lookAheadChar() {
+		int character = getCharacter(source, position);
+		assertTrue(character != -1);
+		return (char) character;
+	}
+	
+	/**
+	 * @param expandedMacros the expanded macros so far. Used for cycle detection.
+	 * @param isNested
+	 * @return
+	 */
+	private String replaceMacros(Set<String> expandedMacros, boolean isNested) {
 		// Total string
 		StringBuilder sb = new StringBuilder();
 		
-		// In case a macro is started but not finished
-		StringBuilder temp = new StringBuilder();
 		
-		// The current argument in the macro
-		StringBuilder currentArgument = new StringBuilder();
-		
-		// Argument $0
-		StringBuilder $0 = new StringBuilder();
-		
-		// Argument $+
-		StringBuilder $plus = new StringBuilder();
-		
-		List<String> arguments = new ArrayList<String>(); 
-		
-		int length = string.length();
+		int length = source.length();
 		
 		loop: 
-		for(; from[0] < length; from[0]++) {
-			char c = string.charAt(from[0]);
+		for(; position < length; position++) {
+			char c = source.charAt(position);
 			if (c != '$') {
 				sb.append(c);
 				continue;
 			}
 			
-			temp.setLength(0);
-			
-			temp.append(c);			
-			from[0]++;
-			if (from[0] == length || string.charAt(from[0]) != '(') {
-				sb.append(temp);
-				if (from[0] != length) {
-					sb.append(string.charAt(from[0]));
-				}
+			if(lookAhead(1) != '(') {
+				sb.append(c);
 				continue;
 			}
-			c = string.charAt(from[0]);
+			
+			// The current argument in the macro
+			StringBuilder currentArgument = new StringBuilder();
+			
+			// Argument $0
+			StringBuilder $0 = new StringBuilder();
+			
+			// Argument $+
+			StringBuilder $plus = new StringBuilder();
+			
+			List<String> arguments = new ArrayList<String>();
+			
+			// In case a macro is started but not finished
+			StringBuilder temp = new StringBuilder();
 			temp.append(c);
 			
-			from[0]++;
-			if (from[0] == length) {
+			position++;
+			c = source.charAt(position);
+			temp.append(c);
+			
+			position++;
+			if (position == length) {
 				sb.append(temp);
 				continue;
 			}
-			c = string.charAt(from[0]);
+			c = source.charAt(position);
 			
 			currentArgument.setLength(0);
 			$0.setLength(0);
@@ -172,10 +240,10 @@ public class DdocMacros {
 			boolean foundComma = false;
 			
 			int parenCount = 0;
-			for(; from[0] < length; from[0]++) {
-				c = string.charAt(from[0]);
-				if (c == '$' && from[0] < length - 1 && string.charAt(from[0] + 1) == '(') {
-					String result = replaceMacros(string, from, macros, usedMacros, true /* nested */);
+			for(; position < length; position++) {
+				c = source.charAt(position);
+				if (c == '$' && position < length - 1 && source.charAt(position + 1) == '(') {
+					String result = replaceMacros(expandedMacros, true /* nested */);
 					currentArgument.append(result);				
 					temp.append(result);
 					if (foundSpace) {
@@ -197,22 +265,25 @@ public class DdocMacros {
 					arguments.add(currentArgument.toString());
 					
 					String macroName = arguments.get(0);
-					String replacement = macros.get(macroName);
+					String replacement = macroDefinitions.get(macroName);
 					if (replacement != null) {
 						// Recursive step: replace macros in replacement
-						if (!usedMacros.contains(macroName)) {
-							usedMacros.add(macroName);
-							replacement = replaceMacros(replacement, new int[] { 0 }, macros, usedMacros, false /* not nested */);
-							usedMacros.remove(macroName);
+						if (!expandedMacros.contains(macroName)) {
+							expandedMacros.add(macroName);
+							replacement = replaceMacros(replacement, macroDefinitions, expandedMacros);
+							expandedMacros.remove(macroName);
 							
 							replacement = replaceParameters(replacement, arguments, $0.toString(), $plus.toString());
 							sb.append(replacement);
 						}
-					}
-					if (isNested) {
-						return sb.toString();
+						
+						if (isNested) {
+							return sb.toString();
+						} else {
+							continue loop;
+						}
 					} else {
-						continue loop;
+						// If macro not found, append to temp string:
 					}
 				} else if (c == ',') {
 					if (foundComma) {

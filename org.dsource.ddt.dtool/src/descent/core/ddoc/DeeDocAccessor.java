@@ -1,17 +1,13 @@
-package dtool.ddoc;
+package descent.core.ddoc;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import descent.core.ddoc.Ddoc;
-import descent.core.ddoc.DdocMacros;
-import descent.core.ddoc.DdocParser;
-import descent.core.ddoc.DdocSection;
 import descent.core.ddoc.DdocSection.Parameter;
-import descent.core.ddoc.HTMLPrinterUtils;
 import dtool.ast.definitions.DefUnit;
+import dtool.ddoc.IDeeDocColorConstants;
 import dtool.parser.DeeLexer;
 import dtool.parser.DeeTokenHelper;
 import dtool.parser.DeeTokens;
