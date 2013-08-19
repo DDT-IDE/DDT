@@ -7,6 +7,7 @@
  * Fixed bug with implementation of issue #3 : support Debian Linux DMD layout.
  * DDoc view: The text of undefined macros now remains unmodified, instead of being replaced by empty text.
    * Example: {{{My $(NO_SUCH_MACRO undefined) macro}}} will render as {{{My $(NO_SUCH_MACRO undefined) macro}}} instead of {{{My  macro}}}
+ * Added predefined DDoc macro: {{{D}}}. Does the same as {{{D_CODE}}}.
 
 == DDT 0.7.0 (2013-08-15) ==
  * Requirements changes: now requires minimum Java VM version 1.7 .

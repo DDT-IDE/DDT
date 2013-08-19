@@ -30,6 +30,8 @@ public class DdocMacros {
 	private final static Map<String, String> defaultMacros;
 	
 	static {
+		// See http://dlang.org/ddoc.html
+		
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("B", "<b>$0</b>");
 		map.put("I", "<i>$0</i>");
@@ -60,6 +62,8 @@ public class DdocMacros {
 		map.put("BLACK", "<font color=black>$0</font>");
 		map.put("WHITE", "<font color=white>$0</font>");
 		
+		// These two macros are the same, the "D" one is a newer version that was renamed.
+		map.put("D", "<span class=\"code\">$0</span>");
 		map.put("D_CODE", "<span class=\"code\">$0</span>");
 		
 		// TODO ddoc macro provider
