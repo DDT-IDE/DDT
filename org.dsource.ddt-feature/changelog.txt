@@ -21,15 +21,16 @@
  * Fixed NPE bug when opening D search page with a package reference selected in the editor.
  * Fixed minor parser AFE bug with qualified reference at end of file.
  * Fixed minor bug when resolving modules without module declarations (implicit module name).
+ * SITE: Moved project website from Eclipse Labs to normal Google Code: http://code.google.com/p/ddt/
  * -- released Preview Release 0.7.0 --
  * Added mixin template instance to listed model elements in UI (for example, outline)
  * Fixed bug in D Appearance preference page: var and funtions showing up as Structs in preview.
  * Fixed a bug with selective imports presenting all module symbols, not just the selected ones.
  * Code completion icons now consistent with the rest of the IDE UI:
   * (previously some decorators for storage classes or protection attributes were missing, and JDT like icons where not supported in Code Completion popup)
- * -v2 switch is no longer included in default GDC build response file.
+ * The -v2 switch is no longer included in default GDC build response file.
  * Implemented issue #3 : support Debian Linux DMD layout
- * Fixed code completion NPE bug with function declaration with missing syntax.
+ * Fixed code completion NPE bug with function declarations with missing syntax.
  * Fixed code completion NPE bug with conditional declarations/statements with missing bodies.
  * Fixed bug with the display text of function and template parameters in code completion popup.  
 
