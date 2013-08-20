@@ -21,11 +21,6 @@ public class ASTNodeFinder extends ASTVisitor {
 		return new ASTNodeFinder(root, offset, inclusiveEnd).match;
 	}
 	
-	public static ASTNode findElementPreferLeft(ASTNode root, int offset) {
-		ASTNodeFinder astNodeFinder = new ASTNodeFinder(root, offset, true);
-		return astNodeFinder.matchOnLeft != null ? astNodeFinder.matchOnLeft : astNodeFinder.match;
-	}
-	
 	public final ASTNode root;
 	public final int offset; 
 	public final boolean inclusiveEnd;

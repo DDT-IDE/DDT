@@ -78,8 +78,11 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 
 		offset = getOffsetForString("testGoToDefOp.");
 		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
+		
 		offset = getEndPosForString("testGoToDefOp.");
-		doTest(offset, IStatus.ERROR, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
+		doTest(offset, IStatus.INFO, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
+		assertTrue(OperationsManager.get().opMessage.contains(
+			GoToDefinitionHandler.MISSING_REFERENCE_FOUND_NEXT_TO_CURSOR));
 	}
 	
 	protected int getOffsetForString(String string) {

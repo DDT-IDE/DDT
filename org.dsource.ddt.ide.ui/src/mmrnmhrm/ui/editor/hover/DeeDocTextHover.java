@@ -28,7 +28,7 @@ import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.Reference;
+import dtool.ast.references.NamedReference;
 
 /**
  * Standard documentation hover for DDoc.
@@ -79,7 +79,7 @@ public class DeeDocTextHover extends AbstractTextHover {
 		if(node == null)
 			return null;
 		
-		if(!(node instanceof DefSymbol || node instanceof Reference))
+		if(!(node instanceof DefSymbol || node instanceof NamedReference))
 			return null;
 		
 		return new NodeRegion(node); // Hum, perhaps it's not a very good idea to hold to an instance of the node
@@ -109,8 +109,8 @@ public class DeeDocTextHover extends AbstractTextHover {
 		if(node instanceof DefSymbol) {
 			DefUnit defUnit = ((DefSymbol) node).getDefUnit();
 			return HoverUtil.getDefUnitHoverInfoWithDeeDoc(defUnit);
-		} else if(node instanceof Reference) {
-			DefUnit defUnit = ((Reference) node).findTargetDefUnit(moduleResolver);
+		} else if(node instanceof NamedReference) {
+			DefUnit defUnit = ((NamedReference) node).findTargetDefUnit(moduleResolver);
 			if(defUnit != null) {
 				return HoverUtil.getDefUnitHoverInfoWithDeeDoc(defUnit);
 			} else {

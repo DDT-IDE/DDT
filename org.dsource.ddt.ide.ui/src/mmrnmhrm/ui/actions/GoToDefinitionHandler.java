@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+import mmrnmhrm.core.codeassist.ReferenceSwitchHelper;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.DeeEditor;
@@ -20,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.IExternalSourceModule;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ExternalStorageEditorInput;
 import org.eclipse.jface.text.TextSelection;
@@ -37,11 +39,11 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import dtool.Logg;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INativeDefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.definitions.Symbol;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
 import dtool.ast.util.NodeUtil;
@@ -49,7 +51,16 @@ import dtool.ast.util.NodeUtil;
 public class GoToDefinitionHandler extends AbstractHandler  {
 	
 	public static final String COMMAND_ID = DeePlugin.EXTENSIONS_IDPREFIX+"commands.openDefinition";
-	private static final String GO_TO_DEFINITION_OPNAME = "Go to Definition";
+	protected static final String GO_TO_DEFINITION_OPNAME = "Go to Definition";
+	
+	protected static final String ELEMENT_NEXT_TO_CURSOR_IS_ALREADY_A_DEFINITION_NOT_A_REFERENCE = 
+		"Element next to cursor is already a definition, not a reference.";
+	protected static final String NO_REFERENCE_FOUND_NEXT_TO_CURSOR = 
+		"No reference found next to cursor.";
+	protected static final String MISSING_REFERENCE_FOUND_NEXT_TO_CURSOR = 
+		"Missing reference found next to cursor.";
+	protected static final String NO_NAMED_REFERENCE_FOUND_NEXT_TO_CURSOR = 
+		"No named reference found next to cursor.";
 	
 	public static enum EOpenNewEditor { ALWAYS, TRY_REUSING_EXISTING_EDITORS, NEVER }
 	
@@ -81,43 +92,66 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		executeOperation(srcEditor, openNewEditor, offset);
 	}
 	
-	public static void executeOperation(ITextEditor editor, EOpenNewEditor openNewEditor, int offset)
+	public static void executeOperation(ITextEditor editor, EOpenNewEditor openNewEditor, final int offset)
 			throws CoreException {
-		IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
+		final IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
 		
 		Module module = EditorUtil.getModuleFromEditor(editor);
-		ASTNode elem = ASTNodeFinder.findElement(module, offset);
-		
-		if(elem == null) {
+		ASTNode node = ASTNodeFinder.findElement(module, offset);
+		if(node == null) {
 			// Shouldn't happen, apart from threading/concurrency issues
+			DeeCore.logError("ASTNodeFinder.findElement(...) == null");
 			String msg = "No node found at offset: " + offset;
 			dialogError(window.getShell(), msg);
-			DeeCore.logError(msg);
 			return;
 		}
-		Logg.main.println(" Picked node: " + elem.toStringAsNode(true));
 		
-		if(elem instanceof Symbol) {
-			dialogInfo(window.getShell(),
-					"Element next to cursor is already a definition, not a reference.");
-			return;
-		}
-		if(!(elem instanceof Reference)) {
-			dialogInfo(window.getShell(), "No reference found next to cursor.");
-			return;
-		}
-		if(elem instanceof NamedReference) {
-			NamedReference namedReference = (NamedReference) elem;
-			if(namedReference.isMissingCoreReference()) {
-				dialogInfo(window.getShell(), "Missing reference found next to cursor.");
+		ReferenceSwitchHelper refPickHelper = new ReferenceSwitchHelper() {
+			
+			@Override
+			protected void nodeIsDefSymbol(DefSymbol defSymbol) {
+				dialogInfo(window.getShell(),
+					ELEMENT_NEXT_TO_CURSOR_IS_ALREADY_A_DEFINITION_NOT_A_REFERENCE);
 			}
+			
+			@Override
+			protected void nodeIsNotReference() {
+				dialogInfo(window.getShell(), NO_REFERENCE_FOUND_NEXT_TO_CURSOR);
+			}
+			
+			@Override
+			protected void nodeIsNonNamedReference(Reference reference) {
+				dialogInfo(window.getShell(), NO_NAMED_REFERENCE_FOUND_NEXT_TO_CURSOR);
+			}
+			
+			@Override
+			protected void nodeIsNamedReference_missing(NamedReference namedReference) {
+				dialogInfo(window.getShell(), MISSING_REFERENCE_FOUND_NEXT_TO_CURSOR);
+			}
+			
+			@Override
+			protected void nodeIsNamedReference_ok(NamedReference namedReference) {
+				this.reference = namedReference;
+			}
+		};
+		
+		refPickHelper.switchOnPickedNode(node);
+		if(refPickHelper.reference == null) {
+			return;
 		}
+		
+		findAndOpenTarget(editor, openNewEditor, module, refPickHelper.reference);
+	}
+	
+	public static void findAndOpenTarget(ITextEditor editor, EOpenNewEditor openNewEditor,
+		Module module, Reference ref) throws PartInitException, ModelException,
+		CoreException {
+		
+		final IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
 		
 		IModelElement element = EditorUtility.getEditorInputModelElement(editor, false);
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(element.getScriptProject());
 		
-		// find the target
-		Reference ref = (Reference)elem;
 		Collection<DefUnit> defunits = ref.findTargetDefUnits(moduleResolver, false);
 		
 		if(defunits == null || defunits.isEmpty()) {

@@ -1,7 +1,5 @@
 package dtool.ast.references;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.util.Collection;
 
 import dtool.ast.ASTCodePrinter;
@@ -48,7 +46,7 @@ public class RefIndexing extends Reference {
 	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		throw assertFail(); // TODO:
+		return null; // TODO:
 	}
 	
 	@Override
