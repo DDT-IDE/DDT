@@ -13,10 +13,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule.LightweightModuleProxy;
+import dtool.ast.util.NodeUtil;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
 

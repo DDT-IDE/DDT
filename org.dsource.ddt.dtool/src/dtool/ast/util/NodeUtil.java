@@ -1,5 +1,6 @@
-package dtool.ast;
+package dtool.ast.util;
 
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 

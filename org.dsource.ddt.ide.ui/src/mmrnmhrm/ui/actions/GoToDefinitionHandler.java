@@ -37,13 +37,14 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import dtool.Logg;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
-import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INativeDefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
+import dtool.ast.util.NodeUtil;
 
 public class GoToDefinitionHandler extends AbstractHandler  {
 	
@@ -102,9 +103,14 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 			return;
 		}
 		if(!(elem instanceof Reference)) {
-			dialogInfo(window.getShell(),
-					"No reference found next to cursor.");
+			dialogInfo(window.getShell(), "No reference found next to cursor.");
 			return;
+		}
+		if(elem instanceof NamedReference) {
+			NamedReference namedReference = (NamedReference) elem;
+			if(namedReference.isMissingCoreReference()) {
+				dialogInfo(window.getShell(), "Missing reference found next to cursor.");
+			}
 		}
 		
 		IModelElement element = EditorUtility.getEditorInputModelElement(editor, false);

@@ -2,6 +2,7 @@ package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import dtool.ast.util.NodeUtil;
 
 
 /**

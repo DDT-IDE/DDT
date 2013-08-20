@@ -8,7 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast;
+package dtool.ast.util;
+
+import dtool.ast.ASTNode;
+import dtool.ast.ASTVisitor;
 
 
 /**

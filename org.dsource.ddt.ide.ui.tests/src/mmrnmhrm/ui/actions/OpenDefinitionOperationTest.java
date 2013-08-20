@@ -70,14 +70,24 @@ public class OpenDefinitionOperationTest extends BaseDeeUITest {
 	@Test
 	public void testOpenRef_TargetInSameFile() throws Exception { testOpenRef_TargetInSameFile$(); }
 	public void testOpenRef_TargetInSameFile$() throws Exception {
-		int offset = getOffsetForString("Foo foo");
+		int offset;
+		offset = getOffsetForString("Foo foo");
 		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
-		offset = offset + "Foo".length();
+		offset = getOffsetForString("Foo foo") + "Foo".length();
 		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
+
+		offset = getOffsetForString("testGoToDefOp.");
+		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
+		offset = getEndPosForString("testGoToDefOp.");
+		doTest(offset, IStatus.ERROR, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
 	}
 	
 	protected int getOffsetForString(String string) {
 		return srcEditor.getDocumentProvider().getDocument(srcEditor.getEditorInput()).get().indexOf(string);
+	}
+	
+	protected int getEndPosForString(String string) {
+		return getOffsetForString(string) + string.length();
 	}
 	
 	@Test

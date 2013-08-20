@@ -1,7 +1,9 @@
-package dtool.ast;
+package dtool.ast.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import dtool.ast.ASTNode;
+import dtool.ast.ASTVisitor;
 
 
 /**

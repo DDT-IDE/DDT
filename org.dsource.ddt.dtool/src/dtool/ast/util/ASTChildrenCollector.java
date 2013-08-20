@@ -1,8 +1,11 @@
-package dtool.ast;
+package dtool.ast.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import dtool.ast.ASTNode;
+import dtool.ast.ASTVisitor;
+import dtool.ast.IASTVisitor;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.tree.IVisitable;
 

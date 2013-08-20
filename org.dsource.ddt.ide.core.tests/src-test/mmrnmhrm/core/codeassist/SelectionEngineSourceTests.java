@@ -23,8 +23,8 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.junit.Ignore;
 
-import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.util.NodeUtil;
 import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 

@@ -15,3 +15,5 @@ Foo foo;
 NotFound notfound;
 
 SampleClass sampleClass; // in another editor
+
+testGoToDefOp. ;

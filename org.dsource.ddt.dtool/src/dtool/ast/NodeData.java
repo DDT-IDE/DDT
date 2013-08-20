@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import dtool.ast.util.ASTDirectChildrenVisitor;
 import dtool.parser.ParserError;
 
 public abstract class NodeData {

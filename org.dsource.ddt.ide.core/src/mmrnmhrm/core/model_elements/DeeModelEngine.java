@@ -15,12 +15,12 @@ import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.Module;
+import dtool.ast.util.NodeUtil;
 
 /**
  * This class manages how to do mapping between definition nodes and ModelElements. 

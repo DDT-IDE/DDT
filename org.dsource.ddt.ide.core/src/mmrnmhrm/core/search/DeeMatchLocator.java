@@ -27,8 +27,8 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 import org.eclipse.dltk.core.search.matching.PossibleMatch;
 
 import dtool.ast.ASTNode;
-import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.util.NodeUtil;
 
 public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 	

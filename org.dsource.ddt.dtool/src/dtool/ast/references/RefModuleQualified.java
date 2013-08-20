@@ -6,9 +6,9 @@ import java.util.Collections;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.NodeUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
+import dtool.ast.util.NodeUtil;
 import dtool.resolver.api.IModuleResolver;
 
 /** An entity reference starting at module scope. 
