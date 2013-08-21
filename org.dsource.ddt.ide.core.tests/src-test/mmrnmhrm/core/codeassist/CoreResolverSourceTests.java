@@ -29,10 +29,10 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.resolver.ResolverSourceTests;
+import dtool.resolver.BaseResolverSourceTests;
 import dtool.sourcegen.AnnotatedSource;
 
-public abstract class CoreResolverSourceTests extends ResolverSourceTests {
+public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	
 	static {
 		MiscUtil.loadClass(BaseDeeTest.class);
@@ -59,8 +59,6 @@ public abstract class CoreResolverSourceTests extends ResolverSourceTests {
 	
 	public void setupTestProject_do(String explicitModuleName, String projectFolderName, AnnotatedSource testCase)
 		throws CoreException, IOException {
-		assertTrue(parseResult == null); // sourceModule is used instead of this.
-		
 		IScriptProject scriptProject = fixtureProjects.get(projectFolderName /*Can be null*/);
 		
 		if(scriptProject == null) {

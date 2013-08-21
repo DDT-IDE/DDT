@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IScriptProject;
 
-import dtool.resolver.ResolverSourceTests.ITestsModuleResolver;
+import dtool.resolver.BaseResolverSourceTests.ITestsModuleResolver;
 
 /**
  * Module resolver helper for the ResolverSourceTests fixture

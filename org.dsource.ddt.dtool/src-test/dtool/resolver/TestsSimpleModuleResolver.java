@@ -16,7 +16,7 @@ import dtool.DeeNamingRules;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
-import dtool.resolver.ResolverSourceTests.ITestsModuleResolver;
+import dtool.resolver.BaseResolverSourceTests.ITestsModuleResolver;
 import dtool.tests.DToolBaseTest;
 
 public final class TestsSimpleModuleResolver implements ITestsModuleResolver {
