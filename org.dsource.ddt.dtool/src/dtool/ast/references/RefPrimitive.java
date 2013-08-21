@@ -48,14 +48,6 @@ public class RefPrimitive extends NamedReference {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
-		DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), this, this.getStartPos(), 
-			findOneOnly, moduleResolver);
-		/*BUG here*/
-		return search.getMatchDefUnits();
-	}
-	
-	@Override
 	public void performPrefixSearch(PrefixDefUnitSearch prefixSearch, String fullSource) {
 		prefixSearch.setupPrefixedSearchOptions(getOffset(), getCoreReferenceName());
 		doSearch(prefixSearch);

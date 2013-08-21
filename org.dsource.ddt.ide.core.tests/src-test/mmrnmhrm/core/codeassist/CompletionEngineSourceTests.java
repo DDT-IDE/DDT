@@ -68,14 +68,12 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	}
 	
 	@Override
-	public void removeDummyDefUnits(Collection<DefUnit> resultDefUnits) {
-		super.removeDummyDefUnits(resultDefUnits);
-		
+	public void removeDefUnitsFromExpected(Collection<DefUnit> resultDefUnits) {
 		for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
 			DefUnit defUnit = iterator.next();
 			
 			if(defUnit.getArcheType() == EArcheType.Module) {
-				String fqName = DefUnitResultsChecker.getDefUnitFullyTypedName(defUnit);
+				String fqName = DefUnitResultsChecker.getDefUnitTypedQualification(defUnit);
 				if(fqName.equals("object/") || fqName.equals("std.stdio/")) {
 					iterator.remove();
 				}

@@ -82,8 +82,14 @@ public abstract class DefUnit extends ASTNode {
 	}
 
 	public boolean isSynthetic() {
-		// TODO need to define this properly
-		return getModuleNode() == null;
+		return false; // reimplement method as appropriate
+	}
+	
+	/** @return true if this is a pre-defined/native language element. 
+	 * (example: primitives such as int, void, or native types like arrays, pointer types) 
+	 */
+	public boolean isLanguageIntrinsic() {
+		return false;
 	}
 	
 	/** @return the comments that define the DDoc for this defUnit. Can be null  */

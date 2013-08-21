@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import melnorme.utilbox.core.Predicate;
@@ -190,11 +189,18 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	}
 	
 	protected final void checkResults(Collection<DefUnit> resultDefUnitsOriginal, String[] expectedResults) {
-		checkResults(resultDefUnitsOriginal, expectedResults, true);
+		boolean ignoreNativeResults = true;
+		for (String expectedResult : expectedResults) {
+			if(expectedResult.startsWith("/")) {
+				ignoreNativeResults = false;
+				break;
+			}
+		}
+		checkResults(resultDefUnitsOriginal, expectedResults, true, ignoreNativeResults);
 	}
 	
 	public void checkResults(Collection<DefUnit> resultDefUnitsOriginal, String[] expectedResults,
-		boolean removedDummyResults) {
+		boolean ignoreDummyResults, boolean ignoreNativeResults) {
 		
 		if(resultDefUnitsOriginal != null) {
 			precheckOriginalResults(resultDefUnitsOriginal);
@@ -202,10 +208,8 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		
 		DefUnitResultsChecker defUnitResultsChecker = new DefUnitResultsChecker(resultDefUnitsOriginal);
 		
-		if(removedDummyResults) {
-			removeDummyDefUnits(defUnitResultsChecker.resultDefUnits);
-		}
-		
+		defUnitResultsChecker.removeIgnoredDefUnits(ignoreDummyResults, ignoreNativeResults);
+		removeDefUnitsFromExpected(defUnitResultsChecker.resultDefUnits);
 		defUnitResultsChecker.checkResults(expectedResults, markers);
 	}
 	
@@ -214,17 +218,13 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	public void precheckOriginalResults(Collection<DefUnit> resultDefUnitsOriginal) {
 		for (DefUnit defUnit : resultDefUnitsOriginal) {
 			defUnit.getExtendedName();
+			defUnit.getModuleNode();
+			defUnit.getModuleFullyQualifiedName();
 		}
 	}
 	
-	public void removeDummyDefUnits(Collection<DefUnit> resultDefUnits) {
-		for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			DefUnit defUnit = iterator.next();
-			
-			if(defUnit.getName().equals("_dummy")) {
-				iterator.remove();
-			}
-		}
+	@SuppressWarnings("unused")
+	public void removeDefUnitsFromExpected(Collection<DefUnit> resultDefUnits) {
 	}
 	
 	public void prepRefSearchTest_________(MetadataEntry mde) {

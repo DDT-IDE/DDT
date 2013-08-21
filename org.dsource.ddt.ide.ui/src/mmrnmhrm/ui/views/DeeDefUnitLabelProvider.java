@@ -143,7 +143,8 @@ public class DeeDefUnitLabelProvider {
 	}
 	
 	public static String getDefUnitContainerSuffix(DefUnit defUnit) {
-		return " - " + defUnit.getModuleFullyQualifiedName();
+		String moduleFullyQualifiedName = defUnit.getModuleFullyQualifiedName();
+		return moduleFullyQualifiedName == null ? "" : " - " + moduleFullyQualifiedName;
 	}
 	
 	public static String typeRefToUIString(Reference typeReference) {

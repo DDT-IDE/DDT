@@ -17,7 +17,6 @@ import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.PartialPackageDefUnitOfPackage;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.definitions.NativeDefUnit;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.RefImportSelection;
@@ -48,8 +47,7 @@ public class ReferenceResolver {
 		IScopeNode scope = getNearestLexicalScope(node);
 		assertNotNull(scope);
 		
-		// TODO
-		//findDefUnitInNativesScope(search);
+		findDefUnitInNativesScope(search);
 		
 		while(true) {
 			findDefUnitInScope(scope, search);
@@ -85,7 +83,7 @@ public class ReferenceResolver {
 	}
 	
 	public static void findDefUnitInNativesScope(CommonDefUnitSearch search) {
-		findDefUnitInScope(NativeDefUnit.nativesScope, search);
+		findDefUnitInScope(NativesScope.nativesScope, search);
 	}
 	
 	public static void resolveSearchInScope(CommonDefUnitSearch search, IScopeNode scope) {

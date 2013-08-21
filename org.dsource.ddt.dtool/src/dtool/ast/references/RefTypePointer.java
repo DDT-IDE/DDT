@@ -6,7 +6,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.NativeDefUnit;
+import dtool.ast.definitions.IntrinsicDefUnit;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
@@ -39,7 +39,7 @@ public class RefTypePointer extends CommonRefNative {
 		cp.append(elemType, "*");
 	}
 	
-	public static class IntrinsicPointer extends NativeDefUnit {
+	public static class IntrinsicPointer extends IntrinsicDefUnit {
 		public IntrinsicPointer() {
 			super("<pointer>");
 		}

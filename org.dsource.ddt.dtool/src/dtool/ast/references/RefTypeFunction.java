@@ -10,7 +10,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.definitions.NativeDefUnit;
+import dtool.ast.definitions.IntrinsicDefUnit;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
@@ -62,7 +62,7 @@ public class RefTypeFunction extends CommonRefNative {
 		return DefUnitSearch.wrapResult(IntrinsicFunction.instance);
 	}
 	
-	public static class IntrinsicFunction extends NativeDefUnit {
+	public static class IntrinsicFunction extends IntrinsicDefUnit {
 		public IntrinsicFunction() {
 			super("<funtion>");
 		}

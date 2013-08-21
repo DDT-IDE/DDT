@@ -257,8 +257,9 @@ public abstract class ASTNode implements IASTNode {
 	/* ------------------------------------------------------------ */
 	
 	public String getModuleFullyQualifiedName() {
-		/* BUG here: can be null with synthetic defUnits */
-		return getModuleNode().getFullyQualifiedName();
+		/* This must be overriden by synthetic defUnits */
+		Module moduleNode = assertNotNull(getModuleNode());
+		return moduleNode.getFullyQualifiedName();
 	}
 	
 	public Module getModuleNode() {

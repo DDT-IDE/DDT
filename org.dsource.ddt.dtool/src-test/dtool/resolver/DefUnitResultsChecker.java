@@ -28,6 +28,25 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		this.resultDefUnits = createArrayList(resultDefUnits);
 	}
 	
+	public void removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives) {
+		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives);
+	}
+	
+	public static void removeIgnoredDefUnits(Collection<DefUnit> resultDefUnits, 
+		boolean ignoreDummyResults, boolean ignorePrimitives) {
+		for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			DefUnit defUnit = iterator.next();
+			
+			if(ignoreDummyResults && defUnit.getName().equals("_dummy")) {
+				iterator.remove();
+			}
+			
+			if(ignorePrimitives && defUnit.isLanguageIntrinsic()) {
+				iterator.remove();
+			}
+		}
+	}
+	
 	public void checkResults(String[] expectedResults, Map<String, MetadataEntry> markers) {
 		HashSet<String> expectedResultsDeduplicated = hashSet(expectedResults);
 		
@@ -63,14 +82,14 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 				}
 			}
 		} else {
-			String expectedFullyTypedName = moduleName + 
+			String expectedFullyTypedQualification = moduleName + 
 				(defUnitModuleQualifiedName != null ? "/" + defUnitModuleQualifiedName : "");
 			
 			for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
 				DefUnit defUnit = iterator.next();
 				
-				String defUnitFullyTypedName = getDefUnitFullyTypedName(defUnit);
-				if(defUnitFullyTypedName.equals(expectedFullyTypedName)) {
+				String defUnitTypedQualification = getDefUnitTypedQualification(defUnit);
+				if(defUnitTypedQualification.equals(expectedFullyTypedQualification)) {
 					iterator.remove();
 					removed = true;
 				} else {
@@ -84,9 +103,14 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		}
 	}
 	
-	// TODO: review this
-	public static String getDefUnitFullyTypedName(DefUnit defUnit) {
-		String base = getDefUnitFullyQualifedName(defUnit);
+	/**
+	 * Return a name identifying this defUnit in the projects source code.
+	 * It's similar to a fully qualified name, but has some more information on the name about
+	 * the containing defunits.
+	 * (the name is not enough to uniquely locate a defUnit in a project. That's the goal anyways)
+	 */
+	public static String getDefUnitTypedQualification(DefUnit defUnit) {
+		String base = getDefUnitTypeQualificationBase(defUnit);
 		switch(defUnit.getArcheType()) {
 		case Package:
 			base += "/";
@@ -96,8 +120,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		return base;
 	}
 	
-	public static String getDefUnitFullyQualifedName(DefUnit defUnit) {
-		// TODO: this could use some cleanup
+	public static String getDefUnitTypeQualificationBase(DefUnit defUnit) {
 		if(defUnit instanceof LightweightModuleProxy) {
 			return ((LightweightModuleProxy) defUnit).getFullyQualifiedName() + "/";
 		}
@@ -106,13 +129,25 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		}
 		
 		DefUnit parentDefUnit = NodeUtil.getParentDefUnit(defUnit);
+		
+		String qualification;
 		if(parentDefUnit == null) {
-			return defUnit.getName();
+			assertTrue(defUnit.isSynthetic());
+			if(defUnit.isLanguageIntrinsic()) { 
+				qualification = NATIVES_ROOT;
+			} else {
+				qualification = "";
+			}
+		} else {
+			String sep = parentDefUnit instanceof Module ? "" : ".";
+			String parentQualifedName = getDefUnitTypeQualificationBase(parentDefUnit);
+			qualification = parentQualifedName + sep;
 		}
-		String sep = parentDefUnit instanceof Module ? "" : ".";
-		String parentQualifedName = getDefUnitFullyQualifedName(parentDefUnit);
-		return parentQualifedName  + sep + defUnit.getName();
+		
+		return qualification + defUnit.getName();
 	}
+	
+	public static String NATIVES_ROOT = "/";
 	
 	public static String getDefUnitModuleQualifedName(DefUnit defUnit) {
 		if(defUnit instanceof Module) {
@@ -125,6 +160,10 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		}
 		return parentQualifedName + "." + defUnit.getName();
 	}
+	
+	
+	
+	/* ------ */
 	
 	public static void removedDefUnitByMarker(Collection<DefUnit> resolvedDefUnits, MetadataEntry marker) {
 		for (Iterator<DefUnit> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {

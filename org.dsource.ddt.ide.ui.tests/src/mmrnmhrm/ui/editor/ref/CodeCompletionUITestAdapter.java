@@ -2,7 +2,6 @@ package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.swtutil.SWTTestUtils;
@@ -57,8 +56,7 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 			ICompletionProposal[] proposals, String... expectedProposals) {
 		assertNotNull(proposals);
 		
-		List<DefUnit> results = mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>());
-		
+		List<DefUnit> results = ContentAssistUI_CommonTest.proposalsToDefUnitResults(proposals);
 		CompareDefUnits.checkResults(results, expectedProposals, removeObjectIntrinsics);
 		
 		checkProposals(proposals, repOffset, repLen, prefixLen);

@@ -1,4 +1,14 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+int other;
+
+#REFSEARCH¤【/bool▪/byte▪/ubyte▪/short▪/ushort▪/int▪/uint▪/long▪/ulong▪/char▪/wchar▪/dchar▪/float▪/double▪/real▪/void▪
+    /ifloat▪/idouble▪/ireal▪/cfloat▪/cdouble▪/creal▪other
+】;
+u#REFSEARCH¤【/ubyte▪/ushort▪/uint▪/ulong】;
+void#FIND¤【/void】#REFSEARCH¤【/void】; // Test primitive resolving
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module tests;
 int Var;
@@ -27,12 +37,12 @@ int foo;
 class /*Missing DefId*/ {}
 
 void func() {
-	voi#REFSEARCH¤【voidLike】; // Test statements forward reference visibitity (or lack of)
+	voi#REFSEARCH¤【voidLike▪/void】; // Test statements forward reference visibitity (or lack of)
 	
 	int voidName2;
 	
-	voi#REFSEARCH¤【voidLike▪voidName2】;
-	void#FIND¤【】#REFSEARCH¤【voidLike▪voidName2】; // Test primitive ref TODO find
+	voi#REFSEARCH¤【voidLike▪voidName2▪/void】;
+	void#FIND¤【/void】#REFSEARCH¤【voidLike▪voidName2▪/void】;
 }
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -44,12 +54,3 @@ class /*Missing DefId*/ {}
 Foo;
 
 #REFSEARCH¤【tests▪foo】
-
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO
-void#FIND¤【void】; // Test primitive ref
-
-int other;
-
-#REFSEARCH¤【bool▪byte▪ubyte▪short▪ushort▪int▪uint▪long▪ulong▪char▪wchar▪dchar▪float▪double▪real▪void▪
-    ifloat▪idouble▪ireal▪cfloat▪cdouble▪creal▪other
-】;

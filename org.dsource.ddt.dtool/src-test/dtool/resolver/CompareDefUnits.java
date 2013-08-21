@@ -2,6 +2,7 @@ package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,8 +57,11 @@ public class CompareDefUnits extends DToolBaseTest {
 		};
 	}
 	
-	public static void checkResults(Collection<DefUnit> results, String[] expectedProposalsArr, 
+	public static void checkResults(Collection<DefUnit> originaResults, String[] expectedProposalsArr, 
 		boolean removeIntrinsics) {
+		Collection<DefUnit> results = new ArrayList<>(originaResults);
+		DefUnitResultsChecker.removeIgnoredDefUnits(results, false, true);
+		
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);
 		HashSet<String> resultProposals = hashSet(strmap(results, fnDefUnitToStringAsElement(0)));
 		

@@ -11,14 +11,13 @@
 package mmrnmhrm.ui.editor.ref;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
-import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.core.Function;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
@@ -93,16 +92,6 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 	
 	/* ----------------------------------- */
 	
-	public final static Function<ICompletionProposal, DefUnit> proposalToDefunit = 
-			new Function<ICompletionProposal, DefUnit>() {
-		@Override
-		public DefUnit evaluate(ICompletionProposal obj) {
-			assertNotNull(obj);
-			DeeCompletionProposal deeProposal = CoreUtil.tryCast(obj, DeeCompletionProposal.class);
-			return deeProposal == null ? null : deeProposal.defUnit;
-		}
-	};
-	
 	public static final int DONT_CHECK = -666;
 	
 	public static void checkProposals(ICompletionProposal[] proposals, int repOffset, int repLen, int prefixLen) {
@@ -123,6 +112,17 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 				assertTrue(repStr.equals(proposal.getReplacementString()));				
 			}
 		}
+	}
+	
+	public static List<DefUnit> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
+		List<DefUnit> results = new ArrayList<DefUnit>();
+		for (ICompletionProposal iCompletionProposal : proposals) {
+			if(iCompletionProposal instanceof DeeCompletionProposal) {
+				DeeCompletionProposal deeCompletionProposal = (DeeCompletionProposal) iCompletionProposal;
+				results.add(deeCompletionProposal.defUnit);
+			}
+		}
+		return results;
 	}
 	
 }

@@ -103,7 +103,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	
 	public DirectDefUnitResolve doRunFindTest(int offset, String[] expectedResults) {
 		DirectDefUnitResolve resolveResult = resolveAtOffset(offset);
-		checkResults(resolveResult.getResolvedDefUnits(), expectedResults, false);
+		checkResults(resolveResult.getResolvedDefUnits(), expectedResults, false, false);
 		return resolveResult;
 	}
 	

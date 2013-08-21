@@ -1,9 +1,6 @@
 package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.ArrayList;
-
 import melnorme.swtutil.SWTTestUtils;
 import mmrnmhrm.tests.SampleMainProject;
 
@@ -17,7 +14,6 @@ import org.eclipse.swt.widgets.Event;
 import org.junit.After;
 import org.junit.Test;
 
-import dtool.ast.definitions.DefUnit;
 import dtool.resolver.CompareDefUnits;
 import dtool.tests.ref.cc.CodeCompletion_LookupTest;
 
@@ -118,8 +114,8 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		ICompletionProposal[] proposals;
 		proposals = getProposals(ca);
 		CompareDefUnits.checkResults(/*1,*/ 
-				mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>()), 
-				CodeCompletion_LookupTest.EXPECTED_IN_TEST_f, true);
+			proposalsToDefUnitResults(proposals),
+			CodeCompletion_LookupTest.EXPECTED_IN_TEST_f, true);
 		
 		simulateCharacterPress('o', 'o'); // at start of defunit
 		SWTTestUtils.________________flushUIEventQueue________________();
@@ -128,8 +124,8 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		
 		proposals = getProposals(ca);
 		CompareDefUnits.checkResults(/*2,*/ 
-				mapOut(list(proposals), proposalToDefunit, new ArrayList<DefUnit>()),
-				CodeCompletion_LookupTest.EXPECTED_IN_TEST_fo, true);
+			proposalsToDefUnitResults(proposals),
+			CodeCompletion_LookupTest.EXPECTED_IN_TEST_fo, true);
 		
 		simulateCharacterPress('z', 'z'); // before defunit
 		SWTTestUtils.________________flushUIEventQueue________________();
