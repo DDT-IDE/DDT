@@ -21,7 +21,7 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 	
 	@Test
 	public void test1() throws Exception {
-		testComputeProposals(getMarkerEndOffset("/+CC1@+/"), 0, true,
+		testComputeProposals(getMarkerEndOffset("/+CC1@+/"), 0, 
 				"fParam",
 				"foobarvar", "ix", "func(int a, List!(Foo) a)", "test(int fParam)",  
 				"foovar", "foox", "baz",
@@ -47,15 +47,15 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 	
 	@Test
 	public void test2() throws Exception {
-		testComputeProposals(getMarkerEndOffset("/+CC2@+/")+1, 1, false, EXPECTED_IN_TEST_f);
+		testComputeProposals(getMarkerEndOffset("/+CC2@+/")+1, 1, EXPECTED_IN_TEST_f);
 		
 		// same test, but having characters ahead of offset
-		testComputeProposalsWithRepLen(getMarkerEndOffset("/+CC3@+/")+1, 1, 2, false, EXPECTED_IN_TEST_f);
+		testComputeProposalsWithRepLen(getMarkerEndOffset("/+CC3@+/")+1, 1, 2, EXPECTED_IN_TEST_f);
 	}
 	
 	@Test
 	public void test3() throws Exception {
-		testComputeProposals(getMarkerEndOffset("/+CC3@+/")+3, 3, false,
+		testComputeProposals(getMarkerEndOffset("/+CC3@+/")+3, 3, 
 				"foobarvar",
 				"foovar", "foox", "foo_t", "fooalias", "fooOfModule"
 		);
@@ -63,7 +63,7 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 	
 	@Test
 	public void test4() throws Exception {
-		testComputeProposals(getMarkerEndOffset("/+CC4@+/")+2, 2, false,
+		testComputeProposals(getMarkerEndOffset("/+CC4@+/")+2, 2, 
 				EXPECTED_IN_TEST_fo
 		);
 	}
@@ -73,7 +73,7 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 		// FIXUP because of syntax errors;
 		srcModule.getBuffer().replace(getMarkerEndOffset("/+CC6@+/")+3, 1, ".");
 		try {
-			testComputeProposals(getMarkerEndOffset("/+CC6@+/")+4, 0, false,
+			testComputeProposals(getMarkerEndOffset("/+CC6@+/")+4, 0, 
 					"foovar", "foox", "baz");
 		} finally {
 			srcModule.getBuffer().replace(541, 1, " ");
@@ -83,10 +83,10 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 	public void test6b() throws Exception {
 		// Test in middle of the first name of the qualified ref
 		int offset = getMarkerEndOffset("/+CC6b@+/");
-		testComputeProposalsWithRepLen(offset+1, 1, 2, false,
+		testComputeProposalsWithRepLen(offset+1, 1, 2, 
 				"Foo", "FooBar");
 		// Test at end of qualified ref
-		testComputeProposals(offset+5, 1, false,
+		testComputeProposals(offset+5, 1, 
 				"foovar", "foox");
 	}
 	
@@ -96,7 +96,7 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 		int markerEndOffset = getMarkerEndOffset("/+CC7@+/");
 		srcModule.getBuffer().replace(markerEndOffset, 1, ".");
 		try {
-			testComputeProposals(markerEndOffset+1, 0, false,
+			testComputeProposals(markerEndOffset+1, 0, 
 					"Foo", "fooOfModule", "frak",
 					"fooalias", "foo_t", "ix", "FooBar", "Xpto", "func(char b, List!(Foo) b)", "func()",
 					"pack", "nonexistantmodule",
@@ -109,7 +109,7 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 	
 	@Test
 	public void test7b() throws Exception {
-		testComputeProposals(getMarkerEndOffset("/+CC7b@+/")+2, 1, false,
+		testComputeProposals(getMarkerEndOffset("/+CC7b@+/")+2, 1, 
 				"fooOfModule", "frak",
 				"func(char b, List!(Foo) b)", "func()",
 				"fooalias", "foo_t");
@@ -118,8 +118,8 @@ public class CodeCompletion_LookupTest extends CodeCompletion__Common {
 	
 	@Test
 	public void test8() throws Exception {
-		testComputeProposals(getMarkerEndOffset("/+CC8@+/")+14, 1, false,
+		testComputeProposals(getMarkerEndOffset("/+CC8@+/")+14, 1, 
 				"foovar", "foox");
 	}
+	
 }
-

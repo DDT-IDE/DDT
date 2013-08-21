@@ -115,7 +115,7 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		proposals = getProposals(ca);
 		CompareDefUnits.checkResults(/*1,*/ 
 			proposalsToDefUnitResults(proposals),
-			CodeCompletion_LookupTest.EXPECTED_IN_TEST_f, true);
+			CodeCompletion_LookupTest.EXPECTED_IN_TEST_f);
 		
 		simulateCharacterPress('o', 'o'); // at start of defunit
 		SWTTestUtils.________________flushUIEventQueue________________();
@@ -125,7 +125,7 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		proposals = getProposals(ca);
 		CompareDefUnits.checkResults(/*2,*/ 
 			proposalsToDefUnitResults(proposals),
-			CodeCompletion_LookupTest.EXPECTED_IN_TEST_fo, true);
+			CodeCompletion_LookupTest.EXPECTED_IN_TEST_fo);
 		
 		simulateCharacterPress('z', 'z'); // before defunit
 		SWTTestUtils.________________flushUIEventQueue________________();

@@ -34,8 +34,8 @@ public class CodeCompletion__Common extends DToolBaseTest {
 		this.ccTester = new ICodeCompletionTester() {
 			@Override
 			public void testComputeProposalsWithRepLen(int repOffset, int prefixLen,
-					int repLen, boolean removeObjectIntrinsics, String... expectedProposals) throws ModelException {
-				testComputeProposalsDo(repOffset, repLen, removeObjectIntrinsics, expectedProposals);
+					int repLen, String... expectedProposals) throws ModelException {
+				testComputeProposalsDo(repOffset, repLen, expectedProposals);
 			}
 			
 			@Override
@@ -68,19 +68,19 @@ public class CodeCompletion__Common extends DToolBaseTest {
 		return search;
 	}
 	
-	public void testComputeProposalsWithRepLen(int repOffset, int prefixLen,
-			int repLen, boolean removeObjectIntrinsics, String... expectedProposals) throws ModelException {
-		ccTester.testComputeProposalsWithRepLen(repOffset, prefixLen, repLen, removeObjectIntrinsics, expectedProposals);
+	public void testComputeProposalsWithRepLen(int repOffset, int prefixLen, int repLen, 
+		String... expectedProposals) throws ModelException {
+		ccTester.testComputeProposalsWithRepLen(repOffset, prefixLen, repLen, expectedProposals);
 	}
 	
-	public final void testComputeProposals(int repOffset, int prefixLen, boolean removeObjectIntrinsics,
+	public final void testComputeProposals(int repOffset, int prefixLen, 
 			String... expectedProposals) throws ModelException {
-		testComputeProposalsWithRepLen(repOffset, prefixLen, 0, removeObjectIntrinsics, expectedProposals);
+		testComputeProposalsWithRepLen(repOffset, prefixLen, 0, expectedProposals);
 	}
 	
 	
-	protected void testComputeProposalsDo(int repOffset, int repLen, boolean removeObjectIntrinsics,
-			String[] expectedProposals) throws ModelException {
+	protected void testComputeProposalsDo(int repOffset, int repLen, String[] expectedProposals) 
+		throws ModelException {
 		
 		DefUnitCollector defUnitAccepter = new DefUnitCollector();
 		
@@ -92,7 +92,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 			assertTrue(completionSearch.getResultCode() == ECompletionResultStatus.RESULT_OK);
 			assertTrue(completionSearch.searchOptions.rplLen == repLen);
 			
-			CompareDefUnits.checkResults(defUnitAccepter.results, expectedProposals, removeObjectIntrinsics);
+			CompareDefUnits.checkResults(defUnitAccepter.results, expectedProposals);
 		}
 	}
 	

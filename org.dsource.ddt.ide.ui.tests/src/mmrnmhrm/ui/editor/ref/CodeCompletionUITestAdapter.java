@@ -39,25 +39,25 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 	
 	@Override
 	public void testComputeProposalsWithRepLen(int offset, int prefixLen, int repLen,
-		boolean removeObjectIntrinsics, String... expectedProposals) {
+		String... expectedProposals) {
 		
 		ContentAssistant ca = getContentAssistant(editor);
 		DeeCodeCompletionProcessor caProcessor = (DeeCodeCompletionProcessor) 
 			ca.getContentAssistProcessor(DeePartitions.DEE_CODE);
 		
 		ICompletionProposal[] proposals = caProcessor.computeCompletionProposals(editor.getViewer(), offset);
-		checkProposals(offset, prefixLen, repLen, removeObjectIntrinsics, proposals, expectedProposals);
+		checkProposals(offset, prefixLen, repLen, proposals, expectedProposals);
 		
 		invokeContentAssist(editor, offset); 
 		SWTTestUtils.________________clearEventQueue________________();
 	}
 	
-	protected void checkProposals(int repOffset, int prefixLen, int repLen, boolean removeObjectIntrinsics,
+	protected void checkProposals(int repOffset, int prefixLen, int repLen,
 			ICompletionProposal[] proposals, String... expectedProposals) {
 		assertNotNull(proposals);
 		
 		List<DefUnit> results = ContentAssistUI_CommonTest.proposalsToDefUnitResults(proposals);
-		CompareDefUnits.checkResults(results, expectedProposals, removeObjectIntrinsics);
+		CompareDefUnits.checkResults(results, expectedProposals);
 		
 		checkProposals(proposals, repOffset, repLen, prefixLen);
 	}

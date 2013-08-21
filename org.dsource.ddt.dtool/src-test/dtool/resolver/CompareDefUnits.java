@@ -1,6 +1,7 @@
 package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,19 +17,6 @@ import dtool.tests.DToolBaseTest;
  * This is an old version of what {@link DefUnitResultsChecker} does now
  */
 public class CompareDefUnits extends DToolBaseTest {
-	
-	public static String[] INTRINSIC_DEFUNITS = new String[] {
-		"bit", "size_t", "ptrdiff_t", "hash_t", "string", "wstring", "dstring",
-		"printf(char*, ...)", "trace_term()", "Object", "Interface", "ClassInfo",
-		"OffsetTypeInfo", "TypeInfo",
-		"TypeInfo_Typedef", "TypeInfo_Enum", "TypeInfo_Pointer", "TypeInfo_Array",
-		"TypeInfo_StaticArray", "TypeInfo_AssociativeArray", "TypeInfo_Function", "TypeInfo_Delegate",
-		"TypeInfo_Class", "TypeInfo_Interface", "TypeInfo_Struct", "TypeInfo_Tuple", "TypeInfo_Const",
-		"TypeInfo_Invariant",
-		"MemberInfo", "MemberInfo_field", "MemberInfo_function", "Exception", "Error"
-	};
-	
-	public static Set<String> INTRINSIC_DEFUNITS_SET = unmodifiable(hashSet(INTRINSIC_DEFUNITS));
 	
 	public static Function<String, String> fnStringToSubString(final int index) {
 		return new Function<String, String>() {
@@ -57,21 +45,14 @@ public class CompareDefUnits extends DToolBaseTest {
 		};
 	}
 	
-	public static void checkResults(Collection<DefUnit> originaResults, String[] expectedProposalsArr, 
-		boolean removeIntrinsics) {
+	public static void checkResults(Collection<DefUnit> originaResults, String[] expectedProposalsArr) {
 		Collection<DefUnit> results = new ArrayList<>(originaResults);
 		DefUnitResultsChecker.removeIgnoredDefUnits(results, false, true);
 		
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);
 		HashSet<String> resultProposals = hashSet(strmap(results, fnDefUnitToStringAsElement(0)));
 		
-		if(removeIntrinsics) {
-			// Don't remove intrinsics which are explicitly expected
-			HashSet<String> intrinsicsProposals = hashSet(INTRINSIC_DEFUNITS);
-			Set<String> intrinsicsProposalsToRemove = removeAllCopy(intrinsicsProposals, expectedProposals);
-			resultProposals.removeAll(intrinsicsProposalsToRemove);
-		}
-		resultProposals.remove(null);
+		assertTrue(resultProposals.contains(null) == false);
 		
 		assertEqualSet(resultProposals, expectedProposals);
 	}
