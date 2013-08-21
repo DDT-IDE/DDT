@@ -24,7 +24,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.resolver.DefUnitResultsChecker;
-import dtool.resolver.api.PrefixDefUnitSearchBase.ECompletionResultStatus;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class CompletionEngineSourceTests extends CoreResolverSourceTests {
@@ -46,22 +45,17 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	}
 	
 	@Override
-	public void runRefSearchTest(int offset, String searchParams, ECompletionResultStatus expectedStatusCode, 
-		String[] expectedResults, String relexStartPosMarker) {
-		int rplLen = 0;
-		if(getRplLen(searchParams) != null) {
-			rplLen = getRplLen(searchParams);
-		}
-		
-		runRefSearchTest(offset, expectedResults, rplLen);
+	protected void runRefSearchRelexTest_________(int offset, String relexStartPosMarker) {
 	}
 	
-	public void runRefSearchTest(int offset, String[] expectedResults, int rplLen) {
-		runCompletionEngineTest((IModuleSource) sourceModule, offset, expectedResults, rplLen);
+	@Override
+	public void runRefSearchTest_________(RefSearchOptions options) {
+		IModuleSource sourceModule_cast = (IModuleSource) sourceModule;
+		runCompletionEngineTest(sourceModule_cast, options.offset, options.expectedResults, options.rplLen);
 		if(moduleSource != null) {
-			// Run this variation of the test with something that is not a IModuleSource
+			// Variation: Run this test with something that is not a ISourceModule
 			assertTrue(!(moduleSource instanceof ISourceModule));
-			runCompletionEngineTest(moduleSource, offset, expectedResults, rplLen);
+			runCompletionEngineTest(moduleSource, options.offset, options.expectedResults, options.rplLen);
 		}
 	}
 	
@@ -70,9 +64,7 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 		completionEngine = CompletionEngine_Test.testCompletionEngine(moduleSource, offset, rplLen);
 		
 		CompletionEngineTestsRequestor requestor = (CompletionEngineTestsRequestor) completionEngine.getRequestor();
-		if(expectedResults != null) {
-			checkResults(requestor.results, expectedResults);
-		}
+		checkResults(requestor.results, expectedResults);
 	}
 	
 	@Override

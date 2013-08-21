@@ -45,10 +45,11 @@ Foo;
 
 #REFSEARCH¤【tests▪foo】
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-TODO:
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO
 void#FIND¤【void】; // Test primitive ref
 
-	#REFSEARCH¤【bool▪byte▪ubyte▪short▪ushort▪int▪uint▪long▪ulong▪char▪wchar▪dchar▪float▪double▪real▪void▪
-    ifloat▪idouble▪ireal▪cfloat▪cdouble▪creal▪voidLike▪voidName2
+int other;
+
+#REFSEARCH¤【bool▪byte▪ubyte▪short▪ushort▪int▪uint▪long▪ulong▪char▪wchar▪dchar▪float▪double▪real▪void▪
+    ifloat▪idouble▪ireal▪cfloat▪cdouble▪creal▪other
 】;

@@ -61,8 +61,8 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	}
 	
 	@Override
-	public void runRefSearchTest(int offset, final String[] expectedResults, int rplLen) {
-		testComputeProposalsWithRepLen(offset, 0, rplLen, expectedResults);
+	public void runRefSearchTest_________(RefSearchOptions options) {
+		testComputeProposalsWithRepLen(options.offset, 0, options.rplLen, options.expectedResults);
 	}
 	
 	public void testComputeProposalsWithRepLen(int offset, int prefixLen, int repLen,

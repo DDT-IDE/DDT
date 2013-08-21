@@ -17,6 +17,7 @@ import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.PartialPackageDefUnitOfPackage;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
+import dtool.ast.definitions.NativeDefUnit;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.RefImportSelection;
@@ -43,13 +44,12 @@ public class ReferenceResolver {
 	
 	/* ====================  reference lookup  ==================== */
 	
-	public static void resolveSearchInFullLexicalScope(ASTNode node, CommonDefUnitSearch search) {
-		IScopeNode lookupScope = getNearestLexicalScope(node);
-		ReferenceResolver.findDefUnitInExtendedScope(lookupScope, search);
-	}
-	
-	public static void findDefUnitInExtendedScope(IScopeNode scope, CommonDefUnitSearch search) {
+	public static void resolveSearchInFullLexicalScope(final ASTNode node, CommonDefUnitSearch search) {
+		IScopeNode scope = getNearestLexicalScope(node);
 		assertNotNull(scope);
+		
+		// TODO
+		//findDefUnitInNativesScope(search);
 		
 		while(true) {
 			findDefUnitInScope(scope, search);
@@ -84,6 +84,10 @@ public class ReferenceResolver {
 		return getNearestLexicalScope(parent);
 	}
 	
+	public static void findDefUnitInNativesScope(CommonDefUnitSearch search) {
+		findDefUnitInScope(NativeDefUnit.nativesScope, search);
+	}
+	
 	public static void resolveSearchInScope(CommonDefUnitSearch search, IScopeNode scope) {
 		if(scope != null) {
 			findDefUnitInScope(scope, search);
@@ -98,7 +102,7 @@ public class ReferenceResolver {
 	 * non-extended scope, (altough due to imports, they may originate from 
 	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
 	 */
-	public static void findDefUnitInScope(IScopeNode scope, CommonDefUnitSearch search) {
+	public static void findDefUnitInScope(IScopeProvider scope, CommonDefUnitSearch search) {
 		assertNotNull(scope);
 		if(search.hasSearched(scope))
 			return;
@@ -107,8 +111,8 @@ public class ReferenceResolver {
 		scope.resolveSearchInScope(search);
 	}
 	
-	public static void findInNodeList(CommonDefUnitSearch search, 
-		Iterable<? extends IASTNode> nodeIterable, boolean isSequentialLookup) {
+	public static void findInNodeList(CommonDefUnitSearch search, Iterable<? extends IASTNode> nodeIterable, 
+		boolean isSequentialLookup) {
 		if(nodeIterable != null) {
 			if(search.isFinished())
 				return;

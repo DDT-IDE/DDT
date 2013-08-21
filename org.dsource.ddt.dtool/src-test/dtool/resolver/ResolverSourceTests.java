@@ -184,7 +184,12 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 				// already processed
 			} else if(mde.name.equals("REFSEARCH")) {
 				printMDE(mde);
-				prepRefSearchTest_________(mde);
+				if(mde.sourceValue.startsWith("relexStartPos=")) {
+					String relexStartPosMarker = StringUtil.segmentAfterMatch(mde.sourceValue, "relexStartPos=");
+					runRefSearchRelexTest_________(mde.offset, relexStartPosMarker);
+				} else {
+					prepRefSearchTest_________(mde);
+				}
 			} else if(mde.name.equals("FIND")) {
 				printMDE(mde);
 				runFindTest_________(mde);
@@ -259,18 +264,15 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	}
 	
 	public void prepRefSearchTest_________(MetadataEntry mde) {
+		int offset = mde.offset;
 		String testStringDescriptor = mde.sourceValue;
 		
 		ECompletionResultStatus expectedStatusCode = ECompletionResultStatus.RESULT_OK;
 		String[] expectedResults = null;
-		String relexStartPosMarker = null;
 		String searchParams = StringUtil.segmentAfterMatch(testStringDescriptor, ">>");
 		testStringDescriptor = StringUtil.substringUntilMatch(testStringDescriptor, ">>");
 		
-		if(testStringDescriptor.startsWith("relexStartPos=")) {
-			relexStartPosMarker = StringUtil.segmentAfterMatch(testStringDescriptor, "relexStartPos=");
-			testStringDescriptor = null;
-		} else if(testStringDescriptor.startsWith("!")) {
+		if(testStringDescriptor.startsWith("!")) {
 			String statusId = testStringDescriptor.substring(1); 
 			expectedStatusCode = assertNotNull(ECompletionResultStatus.fromId(statusId));
 			expectedResults = new String[0];
@@ -282,38 +284,54 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 			expectedResults = removeEmptyStrings(expectedResults); 
 		}
 		
-		int offset = mde.offset;
-		
-		runRefSearchTest(offset, searchParams, expectedStatusCode, expectedResults, relexStartPosMarker);
+		RefSearchOptions refTester = new RefSearchOptions(offset, searchParams, expectedStatusCode, expectedResults);
+		runRefSearchTest_________(refTester);
 	}
 	
-	public void runRefSearchTest(int offset, String searchParams, 
-		ECompletionResultStatus expectedStatusCode, String[] expectedResults, String relexStartPosMarker) {
+	public static class RefSearchOptions {
+		public final int offset;
+		public final ECompletionResultStatus expectedStatusCode;
+		public final String[] expectedResults;
+
+		public final String searchParams;
+		public final int rplLen;
+		
+		public RefSearchOptions(int offset, String searchParams, ECompletionResultStatus expectedStatusCode,
+			String[] expectedResults) {
+			this.offset = offset;
+			this.searchParams = searchParams;
+			this.expectedStatusCode = expectedStatusCode;
+			this.expectedResults = assertNotNull(expectedResults);
+			
+			if(searchParams != null) {
+				this.rplLen = Integer.parseInt(searchParams);
+			} else {
+				this.rplLen = 0;
+			}
+		}
+		
+	}
+	
+	public void runRefSearchTest_________(RefSearchOptions options) {
 		
 		DefUnitCollector collector = new DefUnitCollector();
-		PrefixDefUnitSearch search = PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr, collector);
+		PrefixDefUnitSearch search = 
+			PrefixDefUnitSearch.doCompletionSearch(parseResult, options.offset, mr, collector);
 		
-		assertTrue(relexStartPosMarker == null || search.relexStartPos == getMarkerPosition(relexStartPosMarker));
-		assertTrue(search.getResultCode() == expectedStatusCode);
-		if(getRplLen(searchParams) != null) {
-			assertEquals(search.searchOptions.rplLen, getRplLen(searchParams));
-		}
+		assertEquals(search.getResultCode(), options.expectedStatusCode);
+		assertEquals(search.searchOptions.rplLen, options.rplLen);
 		
-		if(expectedResults != null) {
-			checkResults(collector.results, expectedResults);
-		}
+		checkResults(collector.results, options.expectedResults);
 	}
 	
-	public Integer getRplLen(String searchParams) {
-		String rplLenStr = searchParams; 
-		if(rplLenStr != null) {
-			return Integer.parseInt(rplLenStr);
-		} else {
-			return null;
-		}
+	protected void runRefSearchRelexTest_________(int offset, String relexStartPosMarker) {
+		PrefixDefUnitSearch search = 
+			PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr, new DefUnitCollector());
+		
+		assertTrue(search.relexStartPos == getMarkerPosition(relexStartPosMarker));
 	}
 	
-	public void runFindFailTest_________(MetadataEntry mde) {
+	protected void runFindFailTest_________(MetadataEntry mde) {
 		DirectDefUnitResolve resolveResult = resolveAtOffset(mde.offset);
 		assertTrue(resolveResult.pickedRef == null || resolveResult.invalidPickRef);
 	}
@@ -322,7 +340,7 @@ public class ResolverSourceTests extends CommonTemplatedSourceBasedTest {
 		return ReferenceResolver.resolveAtOffset(getParseResult(), offset, mr);
 	}
 	
-	public void runFindTest_________(MetadataEntry mde) {
+	protected void runFindTest_________(MetadataEntry mde) {
 		doFindTest(mde);
 	}
 	

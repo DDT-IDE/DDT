@@ -1,28 +1,40 @@
 package dtool.ast.definitions;
 
-import melnorme.utilbox.core.Assert;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
+import java.util.ArrayList;
+
+import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.SyntheticDefUnit;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.IScopeProvider;
+import dtool.resolver.ReferenceResolver;
+import dtool.util.ArrayView;
 
-public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeDefUnit, IScopeNode {
+public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeDefUnit {
 	
 	/** A module like class, contained all native defunits. */
 	public static class NativesScope implements IScopeProvider {
 		
-		public NativesScope() {
-		}
+		public final ArrayView<SyntheticDefUnit> intrinsics;
 		
-		@Override
-		public String toString() {
-			return "<natives>";
+		public NativesScope() {
+			NativeDefUnit intrinsicPrimitive = new NativeDefUnit("void") {
+				@Override
+				public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+				}
+			};
+			ArrayList<SyntheticDefUnit> intrincsList = new ArrayList<>();
+			intrincsList.add(intrinsicPrimitive);
+			
+			SyntheticDefUnit[] createFrom = ArrayUtil.createFrom(intrincsList, SyntheticDefUnit.class);
+			intrinsics = ArrayView.create(createFrom);
 		}
 		
 		@Override
 		public void resolveSearchInScope(CommonDefUnitSearch search) {
-			// TODO Auto-generated method stub
+			ReferenceResolver.findInNodeList(search, intrinsics, false);
 		}
 		
 	}
@@ -40,12 +52,7 @@ public abstract class NativeDefUnit extends SyntheticDefUnit implements INativeD
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		Assert.fail("Intrinsics do not suppport accept.");
-	}
-	
-	@Override
-	public void resolveSearchInScope(CommonDefUnitSearch search) {
-		// TODO Auto-generated method stub
+		assertFail();
 	}
 	
 }

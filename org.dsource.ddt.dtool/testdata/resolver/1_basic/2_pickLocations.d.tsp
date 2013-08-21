@@ -9,7 +9,7 @@ V#REFSEARCH¤【Var▪Var2】;
 V#REFSEARCH¤【Var▪Var2 >>2】xx;
 Va#REFSEARCH¤【Var▪Var2】;
 Va#REFSEARCH¤【Var▪Var2 >>2】xx;
-Vx#REFSEARCH¤【】xx;
+Vx#REFSEARCH¤【>>2】xx;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #REFSEARCH¤【Var▪implicitName】; // Edge case, refsearch at beginning of file
