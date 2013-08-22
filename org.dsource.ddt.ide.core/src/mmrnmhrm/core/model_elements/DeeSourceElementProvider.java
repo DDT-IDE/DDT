@@ -42,6 +42,7 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.ICallableElement;
 import dtool.ast.definitions.IFunctionParameter;
+import dtool.ast.definitions.IntrinsicDefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpCall;
 import dtool.ast.expressions.ExpReference;
@@ -262,14 +263,30 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 		elemInfo.nameSourceStart = defUnit.defname.getStartPos();
 		elemInfo.nameSourceEnd = defUnit.defname.getEndPos() - 1;
 		
-		if(defUnit instanceof Module) {
-			elemInfo.modifiers |= Modifiers.AccModule;
-		} else if(defUnit instanceof DefinitionInterface) {
-			elemInfo.modifiers |= Modifiers.AccInterface; // This one might be redundant as archetype is also set
-		}
+		elemInfo.modifiers = modifierFlagsFromDefUnit(defUnit);
 		
 		assertTrue((archetypeMask & DeeModelConstants.FLAGMASK_KIND) == archetypeMask);
 		elemInfo.modifiers |= archetypeMask;
+	}
+	
+	public static int modifierFlagsFromDefUnit(DefUnit defUnit) {
+		int modifiers = 0;
+		if(defUnit instanceof Module) {
+			modifiers |= Modifiers.AccModule;
+		} else if(defUnit instanceof DefinitionInterface) {
+			modifiers |= Modifiers.AccInterface; // This one might be redundant as archetype is also set
+		}
+		
+		if(defUnit instanceof CommonDefinition) {
+			CommonDefinition commonDefinition = (CommonDefinition) defUnit;
+			modifiers |= getCommonDefinitionModifiersInfo(commonDefinition);
+		}
+		
+		if(defUnit instanceof IntrinsicDefUnit) {
+			modifiers |= DeeModelConstants.FLAG_NATIVE;
+		}
+		
+		return modifiers;
 	}
 	
 	protected static void setupDefinitionTypeInfo(CommonDefinition commonDef, 

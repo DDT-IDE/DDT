@@ -20,6 +20,7 @@ public interface DeeModelConstants {
 	// we used 4 bits in total
 	public static final int FLAGMASK_KIND = 0x0F << Modifiers.USER_MODIFIER;
 	
+	public static final int FLAG_NATIVE = 1 << Modifiers.USER_MODIFIER + 6;
 	public static final int FLAG_TEMPLATED = 1 << Modifiers.USER_MODIFIER + 7; // Not used yet
 	
 	// Modifier flag for protection flag that indicates an export or package protection attribute: 

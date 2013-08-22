@@ -49,6 +49,7 @@ public class DeePluginImages {
 	public static final String IMG_FIELD_PRIVATE = createImage(T_OBJ, "field_private_obj.gif");
 	public static final String IMG_FIELD_DEFAULT = createImage(T_OBJ, "field_default_obj.gif");
 	
+	public static final String ELEM_PRIMITIVE = createImage(T_OBJ, "ent_struct.gif"); // TODO
 	
 	public static final String ENT_STRUCT = createImage(T_OBJ, "ent_struct.gif");
 	public static final String ENT_UNION = createImage(T_OBJ, "ent_union.gif");

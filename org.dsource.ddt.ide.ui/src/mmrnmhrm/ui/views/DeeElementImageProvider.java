@@ -88,7 +88,7 @@ public class DeeElementImageProvider {
 	public ImageDescriptor getImageDescriptor(DefElementDescriptor elementDesc, Point imageSize,
 		ElementIconsStyle iconStyle) {
 		assertNotNull(iconStyle);
-		EArcheType archeType = elementDesc.archeType;
+		EArcheType archeType = elementDesc.getArcheType();
 		int elementFlags = elementDesc.modifierFlags;
 		if(archeType == null) {
 			// archetype can be null if elementFlags is somehow wrongly created
@@ -96,7 +96,7 @@ public class DeeElementImageProvider {
 			return DeePluginImages.getIDEInternalErrorImageDescriptor();
 		}
 		
-		ImageDescriptor baseImage = getBaseImageDescriptor(archeType, elementFlags, iconStyle);
+		ImageDescriptor baseImage = getBaseImageDescriptor(elementDesc, iconStyle);
 		
 		EProtection prot = null;
 		if (iconStyle != ElementIconsStyle.JDTLIKE || 
@@ -104,11 +104,18 @@ public class DeeElementImageProvider {
 			prot = DeeModelElementUtil.elementFlagsToProtection(elementFlags, null);
 		}
 		
-		int imageFlags = getImageAdornmentFlags(elementFlags);
+		int imageFlags = getImageAdornmentFlags(elementFlags); // XXX flaw here, potential BUG 
 		return new DeeElementImageDescriptor(baseImage, imageFlags, prot, imageSize);
 	}
 	
-	protected ImageDescriptor getBaseImageDescriptor(EArcheType archeType, int flags, ElementIconsStyle iconStyle) {
+	protected ImageDescriptor getBaseImageDescriptor(DefElementDescriptor elementDesc, ElementIconsStyle iconStyle) {
+		EArcheType archeType = elementDesc.getArcheType();
+		int flags = elementDesc.modifierFlags;
+		
+		if(elementDesc.isNative()) {
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ELEM_PRIMITIVE);
+		}
+		
 		switch (archeType) {
 		case Package:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ELEM_PACKAGE);
