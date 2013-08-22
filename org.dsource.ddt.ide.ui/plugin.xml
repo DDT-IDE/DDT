@@ -169,7 +169,7 @@
             class="mmrnmhrm.ui.search.DeeSearchPage"
             enabled="true"
             extensions="d,di,dh:90"
-            icon="icons/action16e/search_obj.RUBY.gif"
+            icon="icons/action16e/d_search.png"
             id="org.dsource.ddt.ide.ui.DeeSearchPage"
             label="%LangSearchPage.label"
             showScopeSection="true"
@@ -282,7 +282,7 @@
          <action
                class="mmrnmhrm.ui.actions.DeeOpenSearchPageAction"
                definitionId="org.dsource.ddt.ide.ui.commands.openDeeSearchPage"
-               icon="icons/action16e/search_obj.RUBY.gif"
+               icon="icons/action16e/d_search.png"
                id="org.dsource.ddt.ide.ui.actions.deeOpenSearchPage"
                label="%OpenLangSearchPageAction.label"
                menubarPath="org.eclipse.search.menu/dialogGroup"

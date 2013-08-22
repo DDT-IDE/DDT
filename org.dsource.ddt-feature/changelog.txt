@@ -8,12 +8,12 @@
  * Implemented: In DDoc view, the text of undefined macros now remains unmodified, instead of being replaced by empty text.
    * Example: {{{My $(NO_SUCH_MACRO undefined) macro}}} will render as {{{My $(NO_SUCH_MACRO undefined) macro}}} instead of {{{My  macro}}}
  * Implemented: In DDoc view, added predefined DDoc macro: {{{D}}}. Works the same as {{{D_CODE}}}.
- * Changed some of the dialog messages for the Open Definition operation to be more clear and concise.
+ * Cleanup: changed some of the dialog messages for the Open Definition operation to be more clear and concise.
  * Fixed regression bug in editor resolving functionality where a reference would not be found if the cursor was at the very end of the reference.
    * Affects: Open Definition, Open Definition hyperlinks, References search, DDoc view hovers.
- * Restricted some editor functionality to named references only (Open Definition, Open Definition hyperlinks, DDoc view hovers).
+ * Cleanup: restricted some editor functionality to named references only (Open Definition, Open Definition hyperlinks, DDoc view hovers).
  * Implemented: Code Completion now presents language primitive results (void, int, char, etc.).
- * Cleanup: new icon for named mixins elements.
+ * Cleanup: new icon for named mixins elements. New icon for D search.
 
 == DDT 0.7.0 (2013-08-15) ==
  * Requirements changes: now requires minimum Java VM version 1.7 .
