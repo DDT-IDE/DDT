@@ -192,6 +192,9 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			ISourceModule sourceModule1 = scriptFolder.getSourceModule("sourceModule.d");
 			assertNotNull(sourceModule1);
 
+//			FakeMember.FakeType primitive_
+//				= new FakeMember.FakeType(sourceModule1, "primitive", FLAG_KIND_STRUCT, ns);
+			
 			FakeMember.FakeType module 
 				= new FakeMember.FakeType(sourceModule1, "preview_module", Modifiers.AccModule, ns);
 			
@@ -199,6 +202,8 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			
 			final int FINAL = Modifiers.AccFinal;
 			final int SF = Modifiers.AccStatic | Modifiers.AccFinal;
+			
+			new FakeMember.FakeField(module, "varA", FLAG_PROTECTION_PUBLIC, ns, "int");
 			
 			new FakeMember.FakeField(module, "varA", FLAG_PROTECTION_PUBLIC, ns, "int");
 			new FakeMember.FakeField(module, "varB", FLAG_PROTECTION_PROTECTED, ns, "int");
@@ -214,28 +219,33 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			new FakeMember.FakeMethod(module, "function3", FLAG_PROTECTION_PACKAGE, ns, paramsI, false, "int");
 			new FakeMember.FakeMethod(module, "function4", FLAG_PROTECTION_PRIVATE, ns, paramsI, false, "int");
 			
-			FakeMember.FakeType sampleClass = new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS, ns);
+			new FakeMember.FakeType(module, "Struct", FLAG_KIND_STRUCT, ns);
+			new FakeMember.FakeType(module, "Union", FLAG_KIND_UNION, ns);
+			new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS, ns);
+			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE, ns);
+			new FakeMember.FakeType(module, "Template", FLAG_KIND_TEMPLATE, ns);
+			new FakeMember.FakeType(module, "NamedMixin", FLAG_KIND_MIXIN, ns);
+			FakeMember.FakeType sampleEnum = new FakeMember.FakeType(module, "Enum", FLAG_KIND_ENUM, ns);
+			new FakeMember.FakeField(sampleEnum, "EnumMember", FLAG_KIND_ENUM_MEMBER, ns, null);
+			new FakeMember.FakeType(module, "Alias", FLAG_KIND_ALIAS, ns);
+			
+			FakeMember.FakeType sampleClass = new FakeMember.FakeType(module, "ClassWithNested", FLAG_KIND_CLASS, ns);
 			
 			new FakeMember.FakeMethod(sampleClass, "this", FLAG_PROTECTION_PUBLIC, ns, paramsO, true, "int");
 			new FakeMember.FakeMethod(sampleClass, "~this", FLAG_PROTECTION_PRIVATE, ns, paramsO, true, "int");
 			new FakeMember.FakeMethod(sampleClass, "method1", FLAG_PROTECTION_PUBLIC | SF, ns, paramsE, false, "int");
 			new FakeMember.FakeMethod(sampleClass, "method2", FLAG_PROTECTION_PROTECTED, ns, paramsE, false, "void");
 			
-			new FakeMember.FakeType(sampleClass, "Class2", FLAG_KIND_CLASS | FLAG_PROTECTION_PROTECTED | FINAL, ns);
-			new FakeMember.FakeType(sampleClass, "Class3", FLAG_KIND_CLASS | FLAG_PROTECTION_PRIVATE | SF, ns);
-			
-			new FakeMember.FakeType(module, "Struct", FLAG_KIND_STRUCT, ns);
-			new FakeMember.FakeType(module, "Union", FLAG_KIND_UNION, ns);
-			new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS | FLAG_PROTECTION_PUBLIC, ns);
-			new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS | FLAG_PROTECTION_PROTECTED, ns);
-			new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS | FLAG_PROTECTION_PACKAGE, ns);
-			new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS | FLAG_PROTECTION_PRIVATE, ns);
-			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE, ns);
-			new FakeMember.FakeType(module, "Template", FLAG_KIND_TEMPLATE, ns);
-			new FakeMember.FakeType(module, "Mixin", FLAG_KIND_MIXIN, ns);
-			FakeMember.FakeType sampleEnum = new FakeMember.FakeType(module, "Enum", FLAG_KIND_ENUM, ns);
-			new FakeMember.FakeField(sampleEnum, "EnumMember", FLAG_KIND_ENUM_MEMBER, ns, null);
-			new FakeMember.FakeType(module, "Alias", FLAG_KIND_ALIAS, ns);
+			new FakeMember.FakeType(sampleClass, "Class_public", 
+				FLAG_KIND_CLASS | FLAG_PROTECTION_PUBLIC | FINAL, ns);
+			new FakeMember.FakeType(sampleClass, "Class_package", 
+				FLAG_KIND_CLASS | FLAG_PROTECTION_PACKAGE | FINAL, ns);
+			new FakeMember.FakeType(sampleClass, "Class_protected", 
+				FLAG_KIND_CLASS | FLAG_PROTECTION_PROTECTED | SF, ns);
+			new FakeMember.FakeType(sampleClass, "Class_private", 
+				FLAG_KIND_CLASS | FLAG_PROTECTION_PRIVATE, ns);
+			new FakeMember.FakeType(sampleClass, "Class_export", 
+				FLAG_KIND_CLASS | FLAG_PROTECTION_EXPORT, ns);
 			
 			IModelElement[] treeModel = CoreUtil.<IModelElement>array(module);
 			return treeModel;

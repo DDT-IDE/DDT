@@ -39,10 +39,10 @@ public class DeePluginImages {
 	
 	// We're using 'default' protection for 'package' protection in D
 	// No special icon for 'export' protection in D, same as public
-	public static final String IMG_METHOD_PUBLIC = createImage(T_OBJ, "methpub_obj.gif");
-	public static final String IMG_METHOD_PROTECTED = createImage(T_OBJ,"methpro_obj.gif");
-	public static final String IMG_METHOD_PRIVATE = createImage(T_OBJ, "methpri_obj.gif");
-	public static final String IMG_METHOD_DEFAULT = createImage(T_OBJ,"methdef_obj.gif");
+	public static final String IMG_METHOD_PUBLIC = createImage(T_OBJ, "function_public.gif");
+	public static final String IMG_METHOD_PROTECTED = createImage(T_OBJ,"function_protected.gif");
+	public static final String IMG_METHOD_PRIVATE = createImage(T_OBJ, "function_private.gif");
+	public static final String IMG_METHOD_DEFAULT = createImage(T_OBJ,"function_default.gif");
 	
 	public static final String IMG_FIELD_PUBLIC = createImage(T_OBJ, "field_public_obj.gif");
 	public static final String IMG_FIELD_PROTECTED = createImage(T_OBJ, "field_protected_obj.gif");
@@ -53,9 +53,9 @@ public class DeePluginImages {
 	public static final String ENT_STRUCT = createImage(T_OBJ, "ent_struct.gif");
 	public static final String ENT_UNION = createImage(T_OBJ, "ent_union.gif");
 	public static final String ENT_CLASS = createImage(T_OBJ, "ent_class.gif");
-	public static final String ENT_INTERFACE = createImage(T_OBJ, "ent_interface.gif");
+	public static final String ENT_INTERFACE = createImage(T_OBJ, "ent_interface.png");
 	public static final String ENT_TEMPLATE = createImage(T_OBJ, "ent_template.gif");
-	public static final String ENT_MIXIN = createImage(T_OBJ, "ent_mixin.gif");
+	public static final String ENT_MIXIN = createImage(T_OBJ, "ent_namespace.gif");
 	public static final String ENT_ENUM = createImage(T_OBJ, "ent_enum.gif");
 	public static final String ENT_ALIAS = createImage(T_OBJ, "ent_alias.gif");
 	
@@ -63,7 +63,6 @@ public class DeePluginImages {
 	public static final String NODE_IMPORT = createImage(T_OBJ, "elem_import.gif");
 	public static final String NODE_IMPORTS = createImage(T_OBJ, "elem_imports.gif");
 	
-	public static final String NODE_OLDAST = createImage(T_OBJ, "node_oldast.gif");
 	public static final String NODE_OTHER = createImage(T_OBJ, "node_other.gif");
 	public static final String NODE_REF = createImage(T_OBJ, "node_ref.gif");
 	
@@ -72,7 +71,6 @@ public class DeePluginImages {
 	public static final ImageDescriptor DESC_OVR_FINAL = createUnmanaged(T_OVR, "ovr_final.gif");
 	public static final ImageDescriptor DESC_OVR_IMMUTABLE = createUnmanaged(T_OVR, "ovr_immutable.gif");
 	public static final ImageDescriptor DESC_OVR_STATIC = createUnmanaged(T_OVR, "ovr_static.png");
-	//public static final ImageDescriptor DESC_OVR_STATIC = createUnmanaged(T_OVR, "ovr_static.gif");
 	public static final ImageDescriptor DESC_OVR_PRIVATE = createUnmanaged(T_OVR, "aggregate-private.png");
 	public static final ImageDescriptor DESC_OVR_PROTECTED = createUnmanaged(T_OVR, "aggregate-protected.png");
 	public static final ImageDescriptor DESC_OVR_DEFAULT = createUnmanaged(T_OVR, "aggregate-default.png");
