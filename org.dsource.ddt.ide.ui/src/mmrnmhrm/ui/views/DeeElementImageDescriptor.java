@@ -70,6 +70,13 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 		if(prot == null)
 			return;
 		
+		if(elementDesc.isImmutable()) {
+			addTopRightImage(DeePluginImages.DESC_OVR_IMMUTABLE,  new Point(fTopRightPos, 0));
+		}
+		if(elementDesc.isConst()) {
+			addTopRightImage(DeePluginImages.DESC_OVR_CONST,  new Point(fTopRightPos, 0));
+		}
+		
 		Point pos;
 		switch (prot) {
 		
@@ -92,6 +99,14 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 		case EXPORT: // TODO?
 			break;
 		}
+		
+		if(elementDesc.isOverride()) {
+			// Don't add because icon is ugly with function icon
+			
+//			pos = new Point(15, getSize().y);
+//			addBottomRightImage(DeePluginImages.DESC_OVR_OVERRIDE, pos);
+		}
+		
 	}
 	
 }

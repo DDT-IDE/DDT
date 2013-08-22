@@ -40,4 +40,12 @@ public interface DeeModelConstants {
 	public static final int FLAG_PROTECTION_PUBLIC =	Modifiers.AccPublic;
 	public static final int FLAG_PROTECTION_EXPORT =	Modifiers.AccPublic | FLAG_ALT_PROTECTION;
 	
+	public static final int FLAG_OVERRIDE = 1 << Modifiers.USER_MODIFIER + 9;
+	
+	public static final int FLAG_STATIC = Modifiers.AccStatic;
+	public static final int FLAG_FINAL = Modifiers.AccFinal;
+	public static final int FLAG_ABSTRACT = Modifiers.AccAbstract;
+	public static final int FLAG_CONST =  Modifiers.AccConst;
+	public static final int FLAG_IMMUTABLE = 1 << Modifiers.USER_MODIFIER + 11;
+	
 }

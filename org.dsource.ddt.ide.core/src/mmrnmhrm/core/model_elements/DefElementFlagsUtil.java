@@ -122,10 +122,21 @@ public class DefElementFlagsUtil {
 	protected static int getDeclarationModifierFlags(CommonDefinition elem) {
 		int modifiers = 0;
 		
-		modifiers |= bitFlagForAttribute(elem, AttributeKinds.ABSTRACT, Modifiers.AccAbstract);
-		modifiers |= bitFlagForAttribute(elem, AttributeKinds.CONST, Modifiers.AccConst);
-		modifiers |= bitFlagForAttribute(elem, AttributeKinds.FINAL, Modifiers.AccFinal);
-		modifiers |= bitFlagForAttribute(elem, AttributeKinds.STATIC, Modifiers.AccStatic);
+		modifiers |= bitFlagForAttribute(elem, AttributeKinds.STATIC, DeeModelConstants.FLAG_STATIC);
+		modifiers |= bitFlagForAttribute(elem, AttributeKinds.FINAL, DeeModelConstants.FLAG_FINAL);
+		
+		// Report these for variable only
+		if(elem.getArcheType() == EArcheType.Variable) {
+			modifiers |= bitFlagForAttribute(elem, AttributeKinds.CONST, DeeModelConstants.FLAG_CONST); 
+			modifiers |= bitFlagForAttribute(elem, AttributeKinds.IMMUTABLE, DeeModelConstants.FLAG_IMMUTABLE);
+		}
+		
+		modifiers |= bitFlagForAttribute(elem, AttributeKinds.ABSTRACT, DeeModelConstants.FLAG_ABSTRACT);
+		
+		// Report these for Function only
+		if(elem.getArcheType() == EArcheType.Function) {
+			modifiers |= bitFlagForAttribute(elem, AttributeKinds.OVERRIDE, DeeModelConstants.FLAG_OVERRIDE);
+		}
 		
 		return modifiers;
 	}

@@ -11,6 +11,7 @@
 package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.arrayI;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.ModelElementTestUtils;
@@ -31,7 +32,8 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.TemplateParameter;
 
-public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesConstants {
+public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesConstants,
+	DeeModelConstants {
 	
 	public static ISourceModule getSourceModule(String srcFolder, String cuPath) {
 		ISourceModule sourceModule = SampleMainProject.getSourceModule(srcFolder, cuPath);
@@ -124,14 +126,23 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 				
 				runCheckElementExists(_OtherClass_fieldA, EArcheType.Variable, "int fieldA;");
 				runCheckElementExists(_OtherClass_methodB, EArcheType.Function, "void methodB() { }");
-				runCheckElementExists(_OtherClass_this, EArcheType.Constructor, "this(int ctorParam)");
+				runCheckElementExists(_OtherClass_this, 
+					EArcheType.Constructor, "/*this*/ ", "this(int ctorParam)");
 				
 				runCheckElementExists(_OtherTemplate_TplNestedClass, EArcheType.Class, "class TplNestedClass  {");
 				runCheckElementExists(tplFunc, EArcheType.Function, "void tplFunc(asdf.qwer parameter) {");
+				
 			}
 			
 			protected void runCheckElementExists(IMember element, EArcheType archeType, String code) {
-				checkElementExists(srcModule, element, archeType, code);
+				runCheckElementExists(element, archeType, null, code);
+			}
+			protected void runCheckElementExists(IMember element, EArcheType archeType, String nameKey, String code) {
+				try {
+					doCheckElementExists(srcModule, element, archeType, nameKey, code);
+				} catch(ModelException e) {
+					throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+				}
 			}
 			
 		}.visitAll();
@@ -144,25 +155,21 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 	}
 	
 	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, 
-			String code) {
-		try {
-			checkElementExists(sourceModule, element, archeType, (String) null, code);
-		} catch(ModelException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+			String code) throws ModelException {
+		doCheckElementExists(sourceModule, element, archeType, (String) null, code);
 	}
 	
-	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, 
-		String nameKey, String code) throws ModelException {
+	protected void doCheckElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, 
+		String namePrefixKey, String code) throws ModelException {
 		String source = sourceModule.getSource();
 		
 		assertTrue(element.exists());
 		assertTrue(element.getCorrespondingResource() == null);
 		assertTrue(element.getOpenable() == sourceModule);
 		assertTrue(element.getSource().startsWith(code));
-		int nameOffset = (nameKey == null) ? 
+		int nameOffset = (namePrefixKey == null) ? 
 				source.indexOf(" " + element.getElementName()) + 1 :
-				source.indexOf(nameKey) + nameKey.length() + 1;
+				source.indexOf(namePrefixKey) + namePrefixKey.length();
 		assertTrue(element.getNameRange().getOffset() == nameOffset);
 		assertTrue(element.getNameRange().getLength() == element.getElementName().length());
 		
@@ -238,6 +245,48 @@ public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesC
 		assertEquals(topLevelElement.getNamespace().getQualifiedName("."), nameSpace);
 		IType subElement = topLevelElement.getType(sampleSubType);
 		assertTrue(subElement.exists() && subElement.getNamespace() == null);
+	}
+	
+	@Test
+	public void testModifiers() throws Exception { testModifiers$(); }
+	public void testModifiers$() throws Exception {
+		
+		final IType moduleElement = getModuleElement(TR_SAMPLE_SRC1, "modelElementsTest");
+		
+		testElement(moduleElement.getType("Class").getField("fieldA"), 
+			arrayI());
+		testElement(moduleElement.getType("Class").getField("fieldB"), 
+			FLAG_STATIC, FLAG_IMMUTABLE);
+		testElement(moduleElement.getType("Class").getField("fieldC"), 
+			FLAG_CONST, FLAG_FINAL);
+		
+		testElement(moduleElement.getType("Class").getMethod("methodA"), 
+			FLAG_OVERRIDE);
+		testElement(moduleElement.getType("Class").getMethod("methodB"), 
+			FLAG_STATIC, FLAG_FINAL);
+
+	}
+	
+	public void testElement(IMember member, int... trueFlags) 
+		throws ModelException {
+		DefElementDescriptor defElementDescriptor = new DefElementDescriptor(member.getFlags());
+		
+		int falseFlags = FLAG_OVERRIDE | FLAG_STATIC | FLAG_FINAL | FLAG_ABSTRACT | FLAG_CONST| FLAG_IMMUTABLE; 
+		
+		for (int flag : trueFlags) {
+			falseFlags &= ~flag;
+			assertTrue((defElementDescriptor.elementFlags & flag) != 0);
+		}
+		
+		assertTrue((defElementDescriptor.elementFlags & falseFlags) == 0);
+
+	}
+	
+	public IType getModuleElement(String sourceFolder, String moduleName) {
+		ISourceModule srcModule = getSourceModule(sourceFolder, moduleName+".d");
+		IType moduleElement = srcModule.getType(moduleName);
+		assertTrue(moduleElement.exists());
+		return moduleElement;
 	}
 	
 }

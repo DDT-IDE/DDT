@@ -34,4 +34,16 @@ public class DefElementDescriptor {
 		return (elementFlags & DeeModelConstants.FLAG_NATIVE) != 0;
 	}
 	
+	public boolean isOverride() {
+		return (elementFlags & DeeModelConstants.FLAG_OVERRIDE) != 0;
+	}
+	
+	public boolean isImmutable() {
+		return (elementFlags & DeeModelConstants.FLAG_IMMUTABLE) != 0;
+	}
+	
+	public boolean isConst() {
+		return (elementFlags & DeeModelConstants.FLAG_CONST) != 0;
+	}
+	
 }

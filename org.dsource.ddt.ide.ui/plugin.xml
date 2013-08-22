@@ -496,7 +496,7 @@
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
 		<launchConfigurationTypeImage
             configTypeID="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
-            icon="$nl$/icons/d_app.gif"
+            icon="$nl$/icons/action16e/d_app.gif"
             id="org.dsource.ddt.ide.ui.launchConfigurationTypeImage1">
 		</launchConfigurationTypeImage>
 	</extension>
