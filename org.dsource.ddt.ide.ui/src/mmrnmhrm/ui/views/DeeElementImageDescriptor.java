@@ -1,9 +1,16 @@
 package mmrnmhrm.ui.views;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.arrayI;
 import static melnorme.utilbox.core.CoreUtil.downCast;
-import melnorme.utilbox.misc.MiscUtil;
+
+import java.util.Arrays;
+
+import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeePluginImages;
 
+import org.eclipse.dltk.core.Flags;
+import org.eclipse.dltk.ui.ScriptElementImageDescriptor;
 import org.eclipse.dltk.ui.ScriptElementImageDescriptor_Extension;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Point;
@@ -12,22 +19,49 @@ import dtool.ast.declarations.AttribProtection.EProtection;
 
 public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Extension {
 	
+	protected final DefElementDescriptor elementDesc;
 	protected final EProtection prot;
 	
-	public DeeElementImageDescriptor(ImageDescriptor baseImage, int flags, EProtection prot, Point size) {
-		super(baseImage, flags, size);
+	public DeeElementImageDescriptor(ImageDescriptor baseImage, DefElementDescriptor elementDesc, EProtection prot, 
+		Point size) {
+		super(baseImage, getImageAdornmentFlags(elementDesc.elementFlags), size);
+		this.elementDesc = assertNotNull(elementDesc);
 		this.prot = prot;
 	}
 	
 	@Override
 	public boolean equalsPeer(ScriptElementImageDescriptor_Extension object) {
 		DeeElementImageDescriptor other = downCast(object);
-		return this.prot == other.prot && super.equalsPeer(other);
+		return this.prot == other.prot
+			&& this.elementDesc.elementFlags == other.elementDesc.elementFlags
+			&& super.equalsPeer(other);
 	}
 	
 	@Override
 	public int hashCode() {
-		return MiscUtil.combineHashCodes(prot == null ? 0 : prot.hashCode(), super.hashCode());
+		int protHashCode = prot == null ? 0 : prot.hashCode();
+		return Arrays.hashCode(arrayI(protHashCode, elementDesc.elementFlags, super.hashCode()));
+	}
+	
+	
+	protected static int getImageAdornmentFlags(int elementFlags) {
+		int imageFlags = 0;
+		
+		if (new DefElementDescriptor(elementFlags).isConstructor()) {
+			imageFlags |= ScriptElementImageDescriptor.CONSTRUCTOR; // TODO: this should be its own base image
+		}
+		
+		if(Flags.isAbstract(elementFlags)) {
+			imageFlags |= ScriptElementImageDescriptor.ABSTRACT;
+		}
+		if(Flags.isFinal(elementFlags)) {
+			imageFlags |= ScriptElementImageDescriptor.FINAL;
+		}
+		if(Flags.isStatic(elementFlags)) {
+			imageFlags |= ScriptElementImageDescriptor.STATIC;
+		}
+		
+		return imageFlags;
 	}
 	
 	@Override

@@ -4,15 +4,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.utilbox.tree.IElement;
-import mmrnmhrm.core.model_elements.DeeModelElementUtil;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
+import mmrnmhrm.core.model_elements.DefElementFlagsUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIPreferenceConstants;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 
-import org.eclipse.dltk.core.Flags;
-import org.eclipse.dltk.ui.ScriptElementImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -89,7 +87,7 @@ public class DeeElementImageProvider {
 		ElementIconsStyle iconStyle) {
 		assertNotNull(iconStyle);
 		EArcheType archeType = elementDesc.getArcheType();
-		int elementFlags = elementDesc.modifierFlags;
+		int elementFlags = elementDesc.elementFlags;
 		if(archeType == null) {
 			// archetype can be null if elementFlags is somehow wrongly created
 			// for example, can happen if elementFlags is serialized/deserialized with incompatible DDT versions  
@@ -101,16 +99,15 @@ public class DeeElementImageProvider {
 		EProtection prot = null;
 		if (iconStyle != ElementIconsStyle.JDTLIKE || 
 				(archeType != EArcheType.Variable && archeType != EArcheType.Function)) {
-			prot = DeeModelElementUtil.elementFlagsToProtection(elementFlags, null);
+			prot = DefElementFlagsUtil.elementFlagsToProtection(elementFlags, null);
 		}
 		
-		int imageFlags = getImageAdornmentFlags(elementFlags); // XXX flaw here, potential BUG 
-		return new DeeElementImageDescriptor(baseImage, imageFlags, prot, imageSize);
+		return new DeeElementImageDescriptor(baseImage, elementDesc, prot, imageSize);
 	}
 	
 	protected ImageDescriptor getBaseImageDescriptor(DefElementDescriptor elementDesc, ElementIconsStyle iconStyle) {
 		EArcheType archeType = elementDesc.getArcheType();
-		int flags = elementDesc.modifierFlags;
+		int flags = elementDesc.elementFlags;
 		
 		if(elementDesc.isNative()) {
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ELEM_PRIMITIVE);
@@ -165,7 +162,7 @@ public class DeeElementImageProvider {
 	}
 	
 	public ImageDescriptor getJDTStyleFieldImageDescriptor(int flags) {
-		switch (DeeModelElementUtil.elementFlagsToProtection(flags, EProtection.PUBLIC)) {
+		switch (DefElementFlagsUtil.elementFlagsToProtection(flags, EProtection.PUBLIC)) {
 		case PRIVATE: 
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PRIVATE);
 		case PROTECTED:
@@ -180,7 +177,7 @@ public class DeeElementImageProvider {
 	}
 	
 	public ImageDescriptor getJDTStyleMethodImageDescriptor(int flags) {
-		switch (DeeModelElementUtil.elementFlagsToProtection(flags, EProtection.PUBLIC)) {
+		switch (DefElementFlagsUtil.elementFlagsToProtection(flags, EProtection.PUBLIC)) {
 		case PRIVATE: 
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PRIVATE);
 		case PROTECTED:
@@ -192,26 +189,6 @@ public class DeeElementImageProvider {
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PUBLIC);
 		}
 		throw assertUnreachable();
-	}
-	
-	protected int getImageAdornmentFlags(int modifiers) {
-		int imageFlags = 0;
-		
-		if (DeeModelElementUtil.isConstructor(modifiers)) {
-			imageFlags |= ScriptElementImageDescriptor.CONSTRUCTOR; // TODO: this should be its own base image
-		}
-		
-		if(Flags.isAbstract(modifiers)) {
-			imageFlags |= ScriptElementImageDescriptor.ABSTRACT;
-		}
-		if(Flags.isFinal(modifiers)) {
-			imageFlags |= ScriptElementImageDescriptor.FINAL;
-		}
-		if(Flags.isStatic(modifiers)) {
-			imageFlags |= ScriptElementImageDescriptor.STATIC;
-		}
-		
-		return imageFlags;
 	}
 	
 }

@@ -97,6 +97,7 @@ public class MiscUtil {
 	
 	/** Returns the first element of objs array that is not null.
 	 * At least one element must be not null. */
+	@SafeVarargs
 	public static <T> T firstNonNull(T... objs) {
 		for (int i = 0; i < objs.length; i++) {
 			if(objs[i] != null)

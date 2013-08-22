@@ -11,9 +11,9 @@
 package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static mmrnmhrm.core.model_elements.DefElementFlagsUtil.getCommonDefinitionModifiersInfo;
 import mmrnmhrm.core.parser.DeeModuleDeclaration;
 
-import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
@@ -22,7 +22,6 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.ASTNode;
 import dtool.ast.ASTSwitchVisitor;
-import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefVarFragment;
@@ -42,7 +41,6 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.ICallableElement;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.definitions.IntrinsicDefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpCall;
 import dtool.ast.expressions.ExpReference;
@@ -124,7 +122,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	protected static FieldInfo createFieldInfo(DefVarFragment defVarFragment) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		setupDefUnitTypeInfo(defVarFragment, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
-		setupModifiersInfo(defVarFragment.getParent_Concrete(), fieldInfo);
+		fieldInfo.modifiers |= getCommonDefinitionModifiersInfo(defVarFragment.getParent_Concrete());
 		fieldInfo.type = getTypeRefString(defVarFragment.getParent_Concrete().type);
 		
 		return fieldInfo;
@@ -263,77 +261,13 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 		elemInfo.nameSourceStart = defUnit.defname.getStartPos();
 		elemInfo.nameSourceEnd = defUnit.defname.getEndPos() - 1;
 		
-		elemInfo.modifiers = modifierFlagsFromDefUnit(defUnit);
-		
+		elemInfo.modifiers = DefElementFlagsUtil.elementFlagsFromDefUnit(defUnit);
 		assertTrue((archetypeMask & DeeModelConstants.FLAGMASK_KIND) == archetypeMask);
-		elemInfo.modifiers |= archetypeMask;
-	}
-	
-	public static int modifierFlagsFromDefUnit(DefUnit defUnit) {
-		int modifiers = 0;
-		if(defUnit instanceof Module) {
-			modifiers |= Modifiers.AccModule;
-		} else if(defUnit instanceof DefinitionInterface) {
-			modifiers |= Modifiers.AccInterface; // This one might be redundant as archetype is also set
-		}
-		
-		if(defUnit instanceof CommonDefinition) {
-			CommonDefinition commonDefinition = (CommonDefinition) defUnit;
-			modifiers |= getCommonDefinitionModifiersInfo(commonDefinition);
-		}
-		
-		if(defUnit instanceof IntrinsicDefUnit) {
-			modifiers |= DeeModelConstants.FLAG_NATIVE;
-		}
-		
-		return modifiers;
 	}
 	
 	protected static void setupDefinitionTypeInfo(CommonDefinition commonDef, 
 		ISourceElementRequestor.ElementInfo elemInfo) {
-		setupModifiersInfo(commonDef, elemInfo);
 		elemInfo.declarationStart = commonDef.getExtendedStartPos();
-	}
-	
-	public static void setupModifiersInfo(CommonDefinition commonDef, ISourceElementRequestor.ElementInfo elemInfo) {
-		elemInfo.modifiers |= getCommonDefinitionModifiersInfo(commonDef);
-	}
-	
-	public static int getCommonDefinitionModifiersInfo(CommonDefinition commonDef) {
-		return getDeclarationModifiersFlags(commonDef) | getProtectionFlags(commonDef);
-	}
-	
-	protected static int getDeclarationModifiersFlags(CommonDefinition elem) {
-		int modifiers = 0;
-		
-		modifiers = addBitFlag(elem, AttributeKinds.ABSTRACT, modifiers, Modifiers.AccAbstract);
-		modifiers = addBitFlag(elem, AttributeKinds.CONST, modifiers, Modifiers.AccConst);
-		modifiers = addBitFlag(elem, AttributeKinds.FINAL, modifiers, Modifiers.AccFinal);
-		modifiers = addBitFlag(elem, AttributeKinds.STATIC, modifiers, Modifiers.AccStatic);
-		
-		return modifiers;
-	}
-	
-	protected static int addBitFlag(CommonDefinition def, AttributeKinds attrib, int modifiers, int modifierFlag) {
-		if(def.hasAttribute(attrib)) {
-			modifiers |= modifierFlag;
-		}
-		return modifiers;
-	}
-	
-	protected static int getProtectionFlags(CommonDefinition elem) {
-		int flags = 0;
-		
-		switch(elem.getEffectiveProtection()) {
-		case PRIVATE: flags |= Modifiers.AccPrivate; break;
-		case PUBLIC: flags |= Modifiers.AccPublic; break;
-		case PROTECTED: flags |= Modifiers.AccProtected; break;
-		case PACKAGE: flags |= DeeModelConstants.FLAG_PROTECTION_PACKAGE; break;
-		case EXPORT: flags |= DeeModelConstants.FLAG_PROTECTION_EXPORT; break;
-		
-		default: flags |= Modifiers.AccPublic;
-		}
-		return flags;
 	}
 	
 	protected static TypeInfo createTypeInfoForModule(Module elem) {

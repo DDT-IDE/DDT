@@ -228,6 +228,8 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			FakeMember.FakeType sampleEnum = new FakeMember.FakeType(module, "Enum", FLAG_KIND_ENUM, ns);
 			new FakeMember.FakeField(sampleEnum, "EnumMember", FLAG_KIND_ENUM_MEMBER, ns, null);
 			new FakeMember.FakeType(module, "Alias", FLAG_KIND_ALIAS, ns);
+			new FakeMember.FakeType(module, "Tuple", FLAG_KIND_TUPLE, ns);
+			new FakeMember.FakeType(module, "TypeParameter", FLAG_KIND_TYPE_PARAM, ns);
 			
 			FakeMember.FakeType sampleClass = new FakeMember.FakeType(module, "ClassWithNested", FLAG_KIND_CLASS, ns);
 			

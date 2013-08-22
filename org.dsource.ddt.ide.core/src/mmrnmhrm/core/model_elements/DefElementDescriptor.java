@@ -1,32 +1,37 @@
 package mmrnmhrm.core.model_elements;
 
+import org.eclipse.dltk.core.IModelElement;
+
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 
 /**
- * A descriptor of a DefUnit that has enough info do determine an icon
+ * A flag descriptor of a language element (usually a DefUnit) with enough info do determine an icon
+ * The descriptor should consist of an int field only, 
+ * so that it can be stored in {@link IModelElement}'s modifier flags.
  */
 public class DefElementDescriptor {
 	
-	public final int modifierFlags;
-	protected final EArcheType archeType;
+	public final int elementFlags;
 	
 	public DefElementDescriptor(int elementFlags) {
-		this.modifierFlags = elementFlags & ~DeeModelConstants.FLAGMASK_KIND;
-		this.archeType = DeeModelElementUtil.elementFlagsToArcheType(elementFlags);
+		this.elementFlags = elementFlags;
 	}
 	
 	public DefElementDescriptor(DefUnit defUnit) {
-		this.modifierFlags = DeeSourceElementProvider.modifierFlagsFromDefUnit(defUnit);
-		this.archeType = defUnit.getArcheType();
+		this.elementFlags = DefElementFlagsUtil.elementFlagsFromDefUnit(defUnit);
 	}
 	
 	public EArcheType getArcheType() {
-		return archeType;
+		return DefElementFlagsUtil.elementFlagsToArcheType(elementFlags);
+	}
+	
+	public boolean isConstructor() {
+		return getArcheType() == EArcheType.Constructor;
 	}
 	
 	public boolean isNative() {
-		return (modifierFlags & DeeModelConstants.FLAG_NATIVE) != 0;
+		return (elementFlags & DeeModelConstants.FLAG_NATIVE) != 0;
 	}
 	
 }
