@@ -124,7 +124,7 @@ public class ScriptElementImageDescriptor_Extension extends CompositeImageDescri
 		return fSize.hashCode();
 	}
 
-	private ImageData getImageData( ImageDescriptor descriptor ) {
+	protected ImageData getImageData( ImageDescriptor descriptor ) {
 
 		if( this.fBaseImage != null ) {
 			ImageData data = descriptor.getImageData( ); // see bug 51965: getImageData can return null

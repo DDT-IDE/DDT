@@ -73,16 +73,18 @@ public class DeePluginImages {
 	public static final String NODE_REF = createImage(T_OBJ, "node_ref.gif");
 	
 	
-	public static final ImageDescriptor DESC_OVR_FINAL = createUnmanaged(T_OVR, "ovr_final.gif");
+	public static final ImageDescriptor DESC_OVR_PRIVATE = createUnmanaged(T_OVR, "aggregate-private.png");
+	public static final ImageDescriptor DESC_OVR_PROTECTED = createUnmanaged(T_OVR, "aggregate-protected.png");
+	public static final ImageDescriptor DESC_OVR_DEFAULT = createUnmanaged(T_OVR, "aggregate-default.png");
+	
+	public static final ImageDescriptor DESC_OVR_FINAL = createUnmanaged(T_OVR, "ovr_final.png");
 	public static final ImageDescriptor DESC_OVR_STATIC = createUnmanaged(T_OVR, "ovr_static.png");
 	
 	public static final ImageDescriptor DESC_OVR_CONST = createUnmanaged(T_OVR, "ovr_const.png");
 	public static final ImageDescriptor DESC_OVR_IMMUTABLE = createUnmanaged(T_OVR, "ovr_immutable.png");
-	public static final ImageDescriptor DESC_OVR_OVERRIDE = createUnmanaged(T_OVR, "ovr_override.png");
 	
-	public static final ImageDescriptor DESC_OVR_PRIVATE = createUnmanaged(T_OVR, "aggregate-private.png");
-	public static final ImageDescriptor DESC_OVR_PROTECTED = createUnmanaged(T_OVR, "aggregate-protected.png");
-	public static final ImageDescriptor DESC_OVR_DEFAULT = createUnmanaged(T_OVR, "aggregate-default.png");
+	public static final ImageDescriptor DESC_OVR_OVERRIDE = createUnmanaged(T_OVR, "ovr_override.png");
+	public static final ImageDescriptor DESC_OVR_TEMPLATED = createUnmanaged(T_OVR, "ovr_templated.png");
 	
 	
 	public static final ImageDescriptor OPEN_DEF_DESC = getActionImageDescriptor("gotodef.gif", true);

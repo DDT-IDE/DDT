@@ -4,8 +4,8 @@ import org.eclipse.dltk.ast.Modifiers;
 
 public interface DeeModelConstants {
 	
-	public static final int FLAG_KIND_PACKAGE =		Modifiers.AccNameSpace;
 	public static final int FLAG_KIND_MODULE =		Modifiers.AccModule;
+	public static final int FLAG_KIND_PACKAGE =		Modifiers.AccNameSpace;
 	
 	// Archetype flags for IMember's IModelElement
 	public static final int FLAG_KIND_STRUCT =		0x00 << Modifiers.USER_MODIFIER;

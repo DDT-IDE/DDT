@@ -46,4 +46,8 @@ public class DefElementDescriptor {
 		return (elementFlags & DeeModelConstants.FLAG_CONST) != 0;
 	}
 	
+	public boolean isFlag(int flag) {
+		return (elementFlags & flag) != 0;
+	}
+	
 }

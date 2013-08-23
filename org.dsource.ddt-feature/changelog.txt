@@ -14,7 +14,7 @@
  * Cleanup: restricted some editor functionality to named references only (Open Definition, Open Definition hyperlinks, DDoc view hovers).
  * Implemented: Code Completion now presents language primitive results (void, int, char, etc.).
  * Cleanup: new icon for named mixins elements. New icon for D search.
- * Cleanup: Added icon adornments for {{{const}}} and {{{immutable}}} attributes in variables. 
+ * Cleanup: Added icon adornments for {{{const,immutable,static,final,abstract}}} attributes in variables. 
 
 == DDT 0.7.0 (2013-08-15) ==
  * Requirements changes: now requires minimum Java VM version 1.7 .

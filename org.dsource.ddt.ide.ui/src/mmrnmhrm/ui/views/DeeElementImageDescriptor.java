@@ -6,6 +6,7 @@ import static melnorme.utilbox.core.CoreUtil.downCast;
 
 import java.util.Arrays;
 
+import mmrnmhrm.core.model_elements.DeeModelConstants;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeePluginImages;
 
@@ -13,6 +14,7 @@ import org.eclipse.dltk.core.Flags;
 import org.eclipse.dltk.ui.ScriptElementImageDescriptor;
 import org.eclipse.dltk.ui.ScriptElementImageDescriptor_Extension;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 
 import dtool.ast.declarations.AttribProtection.EProtection;
@@ -54,12 +56,6 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 		if(Flags.isAbstract(elementFlags)) {
 			imageFlags |= ScriptElementImageDescriptor.ABSTRACT;
 		}
-		if(Flags.isFinal(elementFlags)) {
-			imageFlags |= ScriptElementImageDescriptor.FINAL;
-		}
-		if(Flags.isStatic(elementFlags)) {
-			imageFlags |= ScriptElementImageDescriptor.STATIC;
-		}
 		
 		return imageFlags;
 	}
@@ -70,12 +66,21 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 		if(prot == null)
 			return;
 		
+		Point topRightPoint = new Point(fTopRightPos, 0);
+		if(elementDesc.isFlag(DeeModelConstants.FLAG_STATIC)) {
+			addTopRightImage(DeePluginImages.DESC_OVR_STATIC, topRightPoint);
+		}
+		if(elementDesc.isFlag(DeeModelConstants.FLAG_FINAL)) {
+			addTopRightImage(DeePluginImages.DESC_OVR_FINAL, topRightPoint);
+		}
+		
 		if(elementDesc.isImmutable()) {
-			addTopRightImage(DeePluginImages.DESC_OVR_IMMUTABLE,  new Point(fTopRightPos, 0));
+			addTopRightImage(DeePluginImages.DESC_OVR_IMMUTABLE, topRightPoint);
 		}
 		if(elementDesc.isConst()) {
-			addTopRightImage(DeePluginImages.DESC_OVR_CONST,  new Point(fTopRightPos, 0));
+			addTopRightImage(DeePluginImages.DESC_OVR_CONST, topRightPoint);
 		}
+		
 		
 		Point pos;
 		switch (prot) {
@@ -100,8 +105,14 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 			break;
 		}
 		
+//		if(true) {
+//			int x = 0;
+//			ImageData data = getImageData(DeePluginImages.DESC_OVR_TEMPLATED);
+//			drawImage(data, x, 0);
+//		}
+		
 		if(elementDesc.isOverride()) {
-			// Don't add because icon is ugly with function icon
+			// Don't add because icon is ugly combined with function icon
 			
 //			pos = new Point(15, getSize().y);
 //			addBottomRightImage(DeePluginImages.DESC_OVR_OVERRIDE, pos);
