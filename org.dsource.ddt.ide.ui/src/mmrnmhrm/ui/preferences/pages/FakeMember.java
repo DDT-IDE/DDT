@@ -1,12 +1,13 @@
 package mmrnmhrm.ui.preferences.pages;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static mmrnmhrm.core.model_elements.DefElementFlagConstants.FLAG_KIND_FUNCTION;
+import static mmrnmhrm.core.model_elements.DefElementFlagConstants.FLAG_KIND_VARIABLE;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.core.model_elements.DeeModelConstants;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -374,7 +375,7 @@ public abstract class FakeMember implements IMember {
 		
 		public FakeMethod(IModelElement parent, String elementName, int flags, String[] namespace,
 				IParameter[] parameters, boolean isConstructor, String returnType) {
-			super(parent, IModelElement.METHOD, elementName, DeeModelConstants.FLAG_KIND_FUNCTION | flags, namespace);
+			super(parent, IModelElement.METHOD, elementName, FLAG_KIND_FUNCTION | flags, namespace);
 			this.parameters = parameters;
 			this.isConstructor = isConstructor;
 			this.returnType = returnType;
@@ -423,7 +424,7 @@ public abstract class FakeMember implements IMember {
 		protected String type;
 		
 		public FakeField(IModelElement parent, String elementName, int flags, String[] namespace, String type) {
-			super(parent, IModelElement.FIELD, elementName, DeeModelConstants.FLAG_KIND_VARIABLE | flags, namespace);
+			super(parent, IModelElement.FIELD, elementName, FLAG_KIND_VARIABLE | flags, namespace);
 			this.type = type;
 		}
 		

@@ -15,7 +15,7 @@ import dtool.util.ArrayView;
 /**
  * A definition of a function.
  */
-public class DefinitionFunction extends AbstractFunctionDefinition implements IDeclaration, IStatement {
+public class DefinitionFunction extends AbstractFunctionDefinition implements IDeclaration, IStatement{
 	
 	public final Reference retType;
 	

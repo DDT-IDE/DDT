@@ -2,7 +2,7 @@ package mmrnmhrm.core.model_elements;
 
 import org.eclipse.dltk.ast.Modifiers;
 
-public interface DeeModelConstants {
+public interface DefElementFlagConstants {
 	
 	public static final int FLAG_KIND_MODULE =		Modifiers.AccModule;
 	public static final int FLAG_KIND_PACKAGE =		Modifiers.AccNameSpace;
@@ -29,7 +29,7 @@ public interface DeeModelConstants {
 	
 	
 	public static final int FLAG_NATIVE = 1 << Modifiers.USER_MODIFIER + 6;
-	public static final int FLAG_TEMPLATED = 1 << Modifiers.USER_MODIFIER + 7; // Not used yet
+	public static final int FLAG_TEMPLATED = 1 << Modifiers.USER_MODIFIER + 7;
 	
 	// Modifier flag for protection flag that indicates an export or package protection attribute: 
 	static final int FLAG_ALT_PROTECTION = 1 << Modifiers.USER_MODIFIER + 8;

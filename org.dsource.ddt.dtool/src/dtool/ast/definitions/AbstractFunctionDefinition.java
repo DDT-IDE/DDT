@@ -23,7 +23,7 @@ import dtool.resolver.ReferenceResolver;
 import dtool.util.ArrayView;
 
 public abstract class AbstractFunctionDefinition extends CommonDefinition 
-	implements ICallableElement, IScopeNode
+	implements ICallableElement, IScopeNode, ITemplatableElement
 {
 	
 	public final ArrayView<TemplateParameter> tplParams;
@@ -62,6 +62,11 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		cp.appendTokenList(fnAttributes, " ", true);
 		DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
 		cp.appendNodeOrNullAlt(fnBody, " ");
+	}
+	
+	@Override
+	public boolean isTemplated() {
+		return tplParams != null;
 	}
 	
 	@Override

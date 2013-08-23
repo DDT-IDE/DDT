@@ -6,7 +6,7 @@ import static melnorme.utilbox.core.CoreUtil.downCast;
 
 import java.util.Arrays;
 
-import mmrnmhrm.core.model_elements.DeeModelConstants;
+import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeePluginImages;
 
@@ -67,10 +67,10 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 			return;
 		
 		Point topRightPoint = new Point(fTopRightPos, 0);
-		if(elementDesc.isFlag(DeeModelConstants.FLAG_STATIC)) {
+		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_STATIC)) {
 			addTopRightImage(DeePluginImages.DESC_OVR_STATIC, topRightPoint);
 		}
-		if(elementDesc.isFlag(DeeModelConstants.FLAG_FINAL)) {
+		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_FINAL)) {
 			addTopRightImage(DeePluginImages.DESC_OVR_FINAL, topRightPoint);
 		}
 		
@@ -105,11 +105,11 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 			break;
 		}
 		
-//		if(true) {
-//			int x = 0;
-//			ImageData data = getImageData(DeePluginImages.DESC_OVR_TEMPLATED);
-//			drawImage(data, x, 0);
-//		}
+		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_TEMPLATED)) {
+			int x = 0;
+			ImageData data = getImageData(DeePluginImages.DESC_OVR_TEMPLATED);
+			drawImage(data, x, 0);
+		}
 		
 		if(elementDesc.isOverride()) {
 			// Don't add because icon is ugly combined with function icon

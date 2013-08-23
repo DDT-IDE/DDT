@@ -31,19 +31,19 @@ public class DefElementDescriptor {
 	}
 	
 	public boolean isNative() {
-		return (elementFlags & DeeModelConstants.FLAG_NATIVE) != 0;
+		return (elementFlags & DefElementFlagConstants.FLAG_NATIVE) != 0;
 	}
 	
 	public boolean isOverride() {
-		return (elementFlags & DeeModelConstants.FLAG_OVERRIDE) != 0;
+		return (elementFlags & DefElementFlagConstants.FLAG_OVERRIDE) != 0;
 	}
 	
 	public boolean isImmutable() {
-		return (elementFlags & DeeModelConstants.FLAG_IMMUTABLE) != 0;
+		return (elementFlags & DefElementFlagConstants.FLAG_IMMUTABLE) != 0;
 	}
 	
 	public boolean isConst() {
-		return (elementFlags & DeeModelConstants.FLAG_CONST) != 0;
+		return (elementFlags & DefElementFlagConstants.FLAG_CONST) != 0;
 	}
 	
 	public boolean isFlag(int flag) {

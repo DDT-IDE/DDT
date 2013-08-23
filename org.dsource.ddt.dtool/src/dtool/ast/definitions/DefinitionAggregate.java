@@ -16,7 +16,9 @@ import dtool.util.ArrayView;
 /**
  * A definition of a aggregate. 
  */
-public abstract class DefinitionAggregate extends CommonDefinition implements IStatement, IScopeNode {
+public abstract class DefinitionAggregate extends CommonDefinition 
+	implements IStatement, IScopeNode, ITemplatableElement 
+{
 	
 	public interface IAggregateBody extends IASTNode {
 	}
@@ -48,6 +50,11 @@ public abstract class DefinitionAggregate extends CommonDefinition implements IS
 		if(printDecls) {
 			cp.append(aggrBody, "\n");
 		}
+	}
+	
+	@Override
+	public boolean isTemplated() {
+		return tplParams != null;
 	}
 	
 	@Override

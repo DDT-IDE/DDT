@@ -21,7 +21,9 @@ import dtool.util.ArrayView;
  * 
  * (Technically not allowed as statement, but parse so anyways.)
  */
-public class DefinitionTemplate extends CommonDefinition implements IScopeNode, IDeclaration, IStatement {
+public class DefinitionTemplate extends CommonDefinition 
+	implements IScopeNode, IDeclaration, IStatement, ITemplatableElement 
+{
 	
 	public final boolean isMixin;
 	public final ArrayView<TemplateParameter> tplParams;
@@ -79,6 +81,11 @@ public class DefinitionTemplate extends CommonDefinition implements IScopeNode, 
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Template;
+	}
+	
+	@Override
+	public boolean isTemplated() {
+		return true;
 	}
 	
 	@Override

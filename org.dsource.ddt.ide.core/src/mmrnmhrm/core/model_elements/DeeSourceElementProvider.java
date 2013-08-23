@@ -112,7 +112,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	protected static FieldInfo createFieldInfo(DefinitionVariable defVar) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
-		setupDefUnitTypeInfo(defVar, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
+		setupDefUnitTypeInfo(defVar, fieldInfo, DefElementFlagConstants.FLAG_KIND_VARIABLE);
 		setupDefinitionTypeInfo(defVar, fieldInfo);
 		fieldInfo.type = getTypeRefString(defVar.type);
 		
@@ -121,7 +121,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	protected static FieldInfo createFieldInfo(DefVarFragment defVarFragment) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
-		setupDefUnitTypeInfo(defVarFragment, fieldInfo, DeeModelConstants.FLAG_KIND_VARIABLE);
+		setupDefUnitTypeInfo(defVarFragment, fieldInfo, DefElementFlagConstants.FLAG_KIND_VARIABLE);
 		fieldInfo.modifiers |= getCommonDefinitionModifiersInfo(defVarFragment.getParent_Concrete());
 		fieldInfo.type = getTypeRefString(defVarFragment.getParent_Concrete().type);
 		
@@ -161,7 +161,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	@Override
 	public boolean visit(DefinitionStruct node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_STRUCT));
+		requestor.enterType(createTypeInfoForDefinition(node, DefElementFlagConstants.FLAG_KIND_STRUCT));
 		return true;
 	}
 	@Override
@@ -171,7 +171,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	@Override
 	public boolean visit(DefinitionUnion node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_UNION));
+		requestor.enterType(createTypeInfoForDefinition(node, DefElementFlagConstants.FLAG_KIND_UNION));
 		return true;
 	}
 	@Override
@@ -203,7 +203,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	@Override
 	public boolean visit(DefinitionTemplate node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_TEMPLATE));
+		requestor.enterType(createTypeInfoForDefinition(node, DefElementFlagConstants.FLAG_KIND_TEMPLATE));
 		return true;
 	}
 	@Override
@@ -213,7 +213,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	@Override
 	public boolean visit(DefinitionMixinInstance node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_MIXIN));
+		requestor.enterType(createTypeInfoForDefinition(node, DefElementFlagConstants.FLAG_KIND_MIXIN));
 		return true;
 	}
 	@Override
@@ -223,7 +223,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 
 	@Override
 	public boolean visit(DefinitionEnum node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ENUM));
+		requestor.enterType(createTypeInfoForDefinition(node, DefElementFlagConstants.FLAG_KIND_ENUM));
 		return true;
 	}
 	@Override
@@ -243,7 +243,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	protected static FieldInfo createFieldInfoForEnum(EnumMember enumMember) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
-		setupDefUnitTypeInfo(enumMember, fieldInfo, DeeModelConstants.FLAG_KIND_ENUM_MEMBER);
+		setupDefUnitTypeInfo(enumMember, fieldInfo, DefElementFlagConstants.FLAG_KIND_ENUM_MEMBER);
 		fieldInfo.type = enumMember.type != null ? enumMember.type.toStringAsCode() : null;
 		
 		return fieldInfo;
@@ -262,7 +262,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 		elemInfo.nameSourceEnd = defUnit.defname.getEndPos() - 1;
 		
 		elemInfo.modifiers = DefElementFlagsUtil.elementFlagsFromDefUnit(defUnit);
-		assertTrue((archetypeMask & DeeModelConstants.FLAGMASK_KIND) == archetypeMask);
+		assertTrue((archetypeMask & DefElementFlagConstants.FLAGMASK_KIND) == archetypeMask);
 	}
 	
 	protected static void setupDefinitionTypeInfo(CommonDefinition commonDef, 
@@ -292,14 +292,14 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	
 	protected static TypeInfo createTypeInfoForClass(DefinitionClass node) {
-		int archeType = DeeModelConstants.FLAG_KIND_CLASS;
+		int archeType = DefElementFlagConstants.FLAG_KIND_CLASS;
 		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(node, archeType);
 		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(node, false);
 		return typeInfo;
 	}
 	
 	protected static TypeInfo createTypeInfoForInterface(DefinitionInterface node) {
-		int archetype = DeeModelConstants.FLAG_KIND_INTERFACE;
+		int archetype = DefElementFlagConstants.FLAG_KIND_INTERFACE;
 		ISourceElementRequestor.TypeInfo typeInfo = createTypeInfoForDefinition(node, archetype);
 		typeInfo.superclasses = DeeSourceElementProvider.processSuperClassNames(node, true);
 		return typeInfo;
@@ -330,7 +330,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	protected static ISourceElementRequestor.MethodInfo createMethodInfo(DefinitionFunction elem) {
 		ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
-		setupDefUnitTypeInfo(elem, methodInfo, DeeModelConstants.FLAG_KIND_FUNCTION);
+		setupDefUnitTypeInfo(elem, methodInfo, DefElementFlagConstants.FLAG_KIND_FUNCTION);
 		setupDefinitionTypeInfo(elem, methodInfo);
 		
 		setupParametersInfo(elem, methodInfo);
@@ -340,7 +340,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	protected static ISourceElementRequestor.MethodInfo createConstructorInfo(DefinitionConstructor elem) {
 		ISourceElementRequestor.MethodInfo elemInfo = new ISourceElementRequestor.MethodInfo();
-		setupDefUnitTypeInfo(elem, elemInfo, DeeModelConstants.FLAG_KIND_CONSTRUCTOR);
+		setupDefUnitTypeInfo(elem, elemInfo, DefElementFlagConstants.FLAG_KIND_CONSTRUCTOR);
 		setupDefinitionTypeInfo(elem, elemInfo);
 		elemInfo.isConstructor = true;
 		
@@ -365,7 +365,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	@Override
 	public boolean visit(DefinitionAliasVarDecl node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
+		requestor.enterType(createTypeInfoForDefinition(node, DefElementFlagConstants.FLAG_KIND_ALIAS));
 		return true;
 	}
 	@Override
@@ -375,7 +375,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	
 	@Override
 	public boolean visit(DefinitionAliasFunctionDecl node) {
-		requestor.enterType(createTypeInfoForDefinition(node, DeeModelConstants.FLAG_KIND_ALIAS));
+		requestor.enterType(createTypeInfoForDefinition(node, DefElementFlagConstants.FLAG_KIND_ALIAS));
 		return true;
 	}
 	@Override
@@ -394,7 +394,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	}
 	
 	public static TypeInfo createTypeInfoForFragment(DefinitionAliasFragment node) {
-		TypeInfo typeInfo = createTypeInfoForDefUnit(node, DeeModelConstants.FLAG_KIND_ALIAS);
+		TypeInfo typeInfo = createTypeInfoForDefUnit(node, DefElementFlagConstants.FLAG_KIND_ALIAS);
 		if(node.getParent_Concrete().aliasFragments.get(0) == node) {
 			typeInfo.declarationStart = node.getParent_Concrete().getStartPos();
 			// TODO: test case for extended start pos (definition alias with extended start)

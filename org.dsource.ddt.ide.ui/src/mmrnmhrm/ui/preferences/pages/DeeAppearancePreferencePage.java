@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.swtutil.LayoutUtil;
 import melnorme.utilbox.core.CoreUtil;
-import mmrnmhrm.core.model_elements.DeeModelConstants;
+import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPreferenceConstants;
@@ -176,7 +176,7 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 	}
 	
 	
-	protected class PreviewContentProvider extends TreeNodeContentProvider implements DeeModelConstants {
+	protected class PreviewContentProvider extends TreeNodeContentProvider implements DefElementFlagConstants {
 		
 		protected IModelElement[] treeModel = createTreeModel();
 		

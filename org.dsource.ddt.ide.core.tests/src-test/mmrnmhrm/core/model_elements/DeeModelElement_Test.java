@@ -33,7 +33,7 @@ import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.TemplateParameter;
 
 public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesConstants,
-	DeeModelConstants {
+	DefElementFlagConstants {
 	
 	public static ISourceModule getSourceModule(String srcFolder, String cuPath) {
 		ISourceModule sourceModule = SampleMainProject.getSourceModule(srcFolder, cuPath);
