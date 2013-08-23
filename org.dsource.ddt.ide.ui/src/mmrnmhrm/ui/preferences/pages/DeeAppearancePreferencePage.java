@@ -223,13 +223,13 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			new FakeMember.FakeType(module, "Union", FLAG_KIND_UNION, ns);
 			new FakeMember.FakeType(module, "Class", FLAG_KIND_CLASS, ns);
 			new FakeMember.FakeType(module, "Interface", FLAG_KIND_INTERFACE, ns);
-			new FakeMember.FakeType(module, "Template", FLAG_KIND_TEMPLATE, ns);
-			new FakeMember.FakeType(module, "NamedMixin", FLAG_KIND_MIXIN, ns);
+			new FakeMember.FakeType(module, "Template", FLAG_KIND_TEMPLATE | FLAG_TEMPLATED, ns);
+			new FakeMember.FakeType(module, "MixinInstance", FLAG_KIND_MIXIN, ns);
 			FakeMember.FakeType sampleEnum = new FakeMember.FakeType(module, "Enum", FLAG_KIND_ENUM, ns);
 			new FakeMember.FakeField(sampleEnum, "EnumMember", FLAG_KIND_ENUM_MEMBER, ns, null);
-			new FakeMember.FakeType(module, "Alias", FLAG_KIND_ALIAS, ns);
-			new FakeMember.FakeType(module, "Tuple", FLAG_KIND_TUPLE, ns);
 			new FakeMember.FakeType(module, "TypeParameter", FLAG_KIND_TYPE_PARAM, ns);
+			new FakeMember.FakeType(module, "Tuple", FLAG_KIND_TUPLE, ns);
+			new FakeMember.FakeType(module, "Alias", FLAG_KIND_ALIAS, ns);
 			
 			FakeMember.FakeType sampleClass = new FakeMember.FakeType(module, "ClassWithNested", FLAG_KIND_CLASS, ns);
 			

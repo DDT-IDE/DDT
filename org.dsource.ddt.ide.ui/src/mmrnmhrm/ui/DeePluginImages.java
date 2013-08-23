@@ -1,9 +1,6 @@
 package mmrnmhrm.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.io.FileNotFoundException;
-
 import mmrnmhrm.lang.ui.PluginImagesHelperExtension;
 
 import org.eclipse.core.runtime.IPath;
@@ -35,12 +32,22 @@ public class DeePluginImages {
 		return assertNotNull(helper.createUnManaged(base, imageName, false));
 	}
 	
+	private static String createImage(String base, String imageName) {
+		ImageDescriptor imgDesc = getImageDescriptor(base, imageName, false);
+		assertNotNull(imgDesc);
+		String key = imageName;
+		helper.createManaged(base, imageName, key);
+		return key;
+	}
+	
 	public static final String ELEM_PACKAGE = createImage(T_OBJ, "dee_package.gif");
 	public static final String ELEM_FILE = createImage(T_OBJ, "dee_file.gif");
 	
-	
-	public static final String ENT_VARIABLE = createImage(T_OBJ, "ent_variable.gif");
-	public static final String ENT_FUNCTION = createImage(T_OBJ, "ent_function.gif");
+	public static final String NODE_MODULE_DEC = createImage(T_OBJ, "ent_module.png");
+
+	public static final String ENT_VARIABLE = createImage(T_OBJ, "ent_variable.png");
+	public static final String ENT_FUNCTION = createImage(T_OBJ, "ent_function.png");
+	public static final String ENT_CONSTRUCTOR = createImage(T_OBJ, "ent_constructor.png");
 	
 	// We're using 'default' protection for 'package' protection in D
 	// No special icon for 'export' protection in D, same as public
@@ -54,18 +61,20 @@ public class DeePluginImages {
 	public static final String IMG_FIELD_PRIVATE = createImage(T_OBJ, "field_private_obj.gif");
 	public static final String IMG_FIELD_DEFAULT = createImage(T_OBJ, "field_default_obj.gif");
 	
-	public static final String ELEM_PRIMITIVE = createImage(T_OBJ, "ent_struct.gif"); // TODO
 	
-	public static final String ENT_STRUCT = createImage(T_OBJ, "ent_struct.gif");
+	public static final String ENT_NATIVE = createImage(T_OBJ, "ent_native.png");
+	public static final String ENT_STRUCT = createImage(T_OBJ, "ent_struct.png");
 	public static final String ENT_UNION = createImage(T_OBJ, "ent_union.gif");
 	public static final String ENT_CLASS = createImage(T_OBJ, "ent_class.gif");
 	public static final String ENT_INTERFACE = createImage(T_OBJ, "ent_interface.png");
-	public static final String ENT_TEMPLATE = createImage(T_OBJ, "ent_template.gif");
-	public static final String ENT_MIXIN = createImage(T_OBJ, "ent_namespace.gif");
+	public static final String ENT_TEMPLATE = createImage(T_OBJ, "ent_namespace.png");
+	public static final String ENT_MIXIN = createImage(T_OBJ, "ent_namespace.png");
 	public static final String ENT_ENUM = createImage(T_OBJ, "ent_enum.gif");
-	public static final String ENT_ALIAS = createImage(T_OBJ, "ent_alias.gif");
+	public static final String ENT_TYPE_PARAMETER = createImage(T_OBJ, "ent_type_parameter.png");
+	public static final String ENT_TUPLE = createImage(T_OBJ, "ent_tuple.png");
+//	public static final String ENT_UNKOWN_ALIAS = createImage(T_OBJ, "ent_alias.png");
 	
-	public static final String NODE_MODULE_DEC = createImage(T_OBJ, "elem_module_dec.gif");
+	
 	public static final String NODE_IMPORT = createImage(T_OBJ, "elem_import.gif");
 	public static final String NODE_IMPORTS = createImage(T_OBJ, "elem_imports.gif");
 	
@@ -79,26 +88,16 @@ public class DeePluginImages {
 	
 	public static final ImageDescriptor DESC_OVR_FINAL = createUnmanaged(T_OVR, "ovr_final.png");
 	public static final ImageDescriptor DESC_OVR_STATIC = createUnmanaged(T_OVR, "ovr_static.png");
+	public static final ImageDescriptor DESC_OVR_ABSTRACT = createUnmanaged(T_OVR, "ovr_abstract.png");
 	
 	public static final ImageDescriptor DESC_OVR_CONST = createUnmanaged(T_OVR, "ovr_const.png");
 	public static final ImageDescriptor DESC_OVR_IMMUTABLE = createUnmanaged(T_OVR, "ovr_immutable.png");
 	
-	public static final ImageDescriptor DESC_OVR_OVERRIDE = createUnmanaged(T_OVR, "ovr_override.png");
 	public static final ImageDescriptor DESC_OVR_TEMPLATED = createUnmanaged(T_OVR, "ovr_templated.png");
+	public static final ImageDescriptor DESC_OVR_ALIAS = createUnmanaged(T_OVR, "ovr_alias_arrow.png");
 	
 	
 	public static final ImageDescriptor OPEN_DEF_DESC = getActionImageDescriptor("gotodef.gif", true);
-	
-	private static String createImage(String base, String imageName) {
-		ImageDescriptor imgDesc = getImageDescriptor(base, imageName, false);
-		if(imgDesc == null) {
-			String imgPath = ICONS_PATH.append(base).append(imageName).toString();
-			DeePlugin.log(new FileNotFoundException(imgPath));
-		}
-		String key = imageName;
-		helper.createManaged(base, imageName, key);
-		return key;
-	}
 	
 	
 	private static ImageDescriptor getImageDescriptor(String prefix, String name, 

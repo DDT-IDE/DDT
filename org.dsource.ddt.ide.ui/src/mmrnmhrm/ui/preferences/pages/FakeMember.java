@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.preferences.pages;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static mmrnmhrm.core.model_elements.DefElementFlagConstants.FLAG_KIND_CONSTRUCTOR;
 import static mmrnmhrm.core.model_elements.DefElementFlagConstants.FLAG_KIND_FUNCTION;
 import static mmrnmhrm.core.model_elements.DefElementFlagConstants.FLAG_KIND_VARIABLE;
 
@@ -375,7 +376,8 @@ public abstract class FakeMember implements IMember {
 		
 		public FakeMethod(IModelElement parent, String elementName, int flags, String[] namespace,
 				IParameter[] parameters, boolean isConstructor, String returnType) {
-			super(parent, IModelElement.METHOD, elementName, FLAG_KIND_FUNCTION | flags, namespace);
+			super(parent, IModelElement.METHOD, elementName, 
+				flags | (isConstructor ? FLAG_KIND_CONSTRUCTOR : FLAG_KIND_FUNCTION), namespace);
 			this.parameters = parameters;
 			this.isConstructor = isConstructor;
 			this.returnType = returnType;

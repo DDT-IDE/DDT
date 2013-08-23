@@ -6,11 +6,10 @@ import static melnorme.utilbox.core.CoreUtil.downCast;
 
 import java.util.Arrays;
 
-import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
+import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.ui.DeePluginImages;
 
-import org.eclipse.dltk.core.Flags;
 import org.eclipse.dltk.ui.ScriptElementImageDescriptor;
 import org.eclipse.dltk.ui.ScriptElementImageDescriptor_Extension;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -18,6 +17,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 
 import dtool.ast.declarations.AttribProtection.EProtection;
+import dtool.ast.definitions.EArcheType;
 
 public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Extension {
 	
@@ -50,11 +50,7 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 		int imageFlags = 0;
 		
 		if (new DefElementDescriptor(elementFlags).isConstructor()) {
-			imageFlags |= ScriptElementImageDescriptor.CONSTRUCTOR; // TODO: this should be its own base image
-		}
-		
-		if(Flags.isAbstract(elementFlags)) {
-			imageFlags |= ScriptElementImageDescriptor.ABSTRACT;
+			imageFlags |= ScriptElementImageDescriptor.CONSTRUCTOR;
 		}
 		
 		return imageFlags;
@@ -62,25 +58,51 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 	
 	@Override
 	protected void drawCompositeImage(int width, int height) {
+		if(elementDesc.isOverride()) {
+			// Don't add because icon is ugly combined with function icon
+			
+//			addTopRightImage(DeePluginImages.DESC_OVR_OVERRIDE, new Point(getSize().x, 0));
+		}
+		
 		super.drawCompositeImage(width, height);
-		if(prot == null)
-			return;
+		
+		
+		drawProtectionAdornment();
 		
 		Point topRightPoint = new Point(fTopRightPos, 0);
 		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_STATIC)) {
 			addTopRightImage(DeePluginImages.DESC_OVR_STATIC, topRightPoint);
 		}
+		
 		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_FINAL)) {
 			addTopRightImage(DeePluginImages.DESC_OVR_FINAL, topRightPoint);
+		} else if(elementDesc.isFlag(DefElementFlagConstants.FLAG_ABSTRACT)) {
+			addTopRightImage(DeePluginImages.DESC_OVR_ABSTRACT, topRightPoint);
 		}
 		
 		if(elementDesc.isImmutable()) {
 			addTopRightImage(DeePluginImages.DESC_OVR_IMMUTABLE, topRightPoint);
-		}
-		if(elementDesc.isConst()) {
+		} else if(elementDesc.isConst()) {
 			addTopRightImage(DeePluginImages.DESC_OVR_CONST, topRightPoint);
 		}
 		
+		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_TEMPLATED)) {
+			int x = 0;
+			ImageData data = getImageData(DeePluginImages.DESC_OVR_TEMPLATED);
+			drawImage(data, x, 0);
+		}
+		
+		if(elementDesc.getArcheType() == EArcheType.Alias) {
+			int x = 0;
+			ImageData data = getImageData(DeePluginImages.DESC_OVR_ALIAS);
+			drawImage(data, x, getSize().y - data.height);
+		}
+		
+	}
+	
+	public void drawProtectionAdornment() {
+		if(prot == null)
+			return;
 		
 		Point pos;
 		switch (prot) {
@@ -104,20 +126,6 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 		case EXPORT: // TODO?
 			break;
 		}
-		
-		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_TEMPLATED)) {
-			int x = 0;
-			ImageData data = getImageData(DeePluginImages.DESC_OVR_TEMPLATED);
-			drawImage(data, x, 0);
-		}
-		
-		if(elementDesc.isOverride()) {
-			// Don't add because icon is ugly combined with function icon
-			
-//			pos = new Point(15, getSize().y);
-//			addBottomRightImage(DeePluginImages.DESC_OVR_OVERRIDE, pos);
-		}
-		
 	}
 	
 }

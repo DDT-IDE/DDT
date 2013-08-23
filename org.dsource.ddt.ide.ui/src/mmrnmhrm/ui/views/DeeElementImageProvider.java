@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.utilbox.tree.IElement;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
+import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.core.model_elements.DefElementFlagsUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeePluginImages;
@@ -96,10 +97,17 @@ public class DeeElementImageProvider {
 		
 		ImageDescriptor baseImage = getBaseImageDescriptor(elementDesc, iconStyle);
 		
-		EProtection prot = null;
-		if (iconStyle != ElementIconsStyle.JDTLIKE || 
-				(archeType != EArcheType.Variable && archeType != EArcheType.Function)) {
+		EProtection prot;
+		if (iconStyle == ElementIconsStyle.JDTLIKE && 
+			(archeType == EArcheType.Variable || archeType == EArcheType.Function)) {
+			prot = null; // Don't render protection adornment
+		} else {
 			prot = DefElementFlagsUtil.elementFlagsToProtection(elementFlags, null);
+			
+			if(elementDesc.getArcheType() == EArcheType.Constructor) {
+				// This is to prevent drawing the constructor 'C' adornment
+				elementDesc.setArcheType(DefElementFlagConstants.FLAG_KIND_FUNCTION);
+			}
 		}
 		
 		return new DeeElementImageDescriptor(baseImage, elementDesc, prot, imageSize);
@@ -110,7 +118,7 @@ public class DeeElementImageProvider {
 		int flags = elementDesc.elementFlags;
 		
 		if(elementDesc.isNative()) {
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ELEM_PRIMITIVE);
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_NATIVE);
 		}
 		
 		switch (archeType) {
@@ -126,11 +134,15 @@ public class DeeElementImageProvider {
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);
 			
 		case Function:
-		case Constructor:
 			if(iconStyle == ElementIconsStyle.JDTLIKE) {
 				return getJDTStyleMethodImageDescriptor(flags);
 			}
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_FUNCTION);
+		case Constructor:
+			if(iconStyle == ElementIconsStyle.JDTLIKE) {
+				return getJDTStyleMethodImageDescriptor(flags);
+			}
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_CONSTRUCTOR);
 		case Struct:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_STRUCT);
 		case Union:
@@ -147,12 +159,12 @@ public class DeeElementImageProvider {
 		case Enum:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_ENUM);
 		case Alias:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_ALIAS);
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_NATIVE);
 			
 		case Tuple:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_TEMPLATE);
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_TUPLE);
 		case TypeParameter:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_ALIAS);
+			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_TYPE_PARAMETER);
 		case EnumMember:
 			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);
 		}

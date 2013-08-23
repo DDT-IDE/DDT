@@ -89,6 +89,7 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		
 		if((offset > token.getStartPos() && offset < token.getEndPos()) && 
 			!(token.type == DeeTokens.WHITESPACE || token.type == DeeTokens.IDENTIFIER)) {
+			/*BUG here needs to be identifier token*/
 			return search.assignResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION, 
 				"Invalid location (inside unmodifiable token)");
 		}

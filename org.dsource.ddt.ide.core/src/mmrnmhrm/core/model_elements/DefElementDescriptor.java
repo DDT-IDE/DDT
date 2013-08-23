@@ -12,7 +12,7 @@ import dtool.ast.definitions.EArcheType;
  */
 public class DefElementDescriptor {
 	
-	public final int elementFlags;
+	public int elementFlags;
 	
 	public DefElementDescriptor(int elementFlags) {
 		this.elementFlags = elementFlags;
@@ -48,6 +48,11 @@ public class DefElementDescriptor {
 	
 	public boolean isFlag(int flag) {
 		return (elementFlags & flag) != 0;
+	}
+	
+	public void setArcheType(int flagKind) {
+		elementFlags = elementFlags & ~DefElementFlagConstants.FLAGMASK_KIND; //Erase archetype
+		elementFlags |= flagKind; // Add new archetype flags
 	}
 	
 }

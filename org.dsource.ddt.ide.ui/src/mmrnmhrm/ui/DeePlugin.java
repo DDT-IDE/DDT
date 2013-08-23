@@ -1,6 +1,7 @@
 package mmrnmhrm.ui;
 
 import melnorme.swtutil.SWTUtilExt;
+import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.build.DeeProjectBuilder;
 import mmrnmhrm.lang.ui.InitializeAfterLoadJob;
 import mmrnmhrm.lang.ui.LangPlugin;
@@ -44,6 +45,8 @@ public class DeePlugin extends LangPlugin {
 		pluginInstance = this;
 		super.start(context);
 		initPlugin();
+		
+		MiscUtil.loadClass(DeePluginImages.class); // Fail fast if resources not found
 		
 		listener = new DeeBuilderUIListener();
 		DeeProjectBuilder.addDataListener(listener);
