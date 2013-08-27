@@ -99,6 +99,19 @@ public abstract class FakeMember implements IMember {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <E extends IModelElement> E getAncestor(Class<E> elementClass) {
+		IModelElement element = this;
+		do {
+			if (elementClass.isInstance(element)) {
+				return (E) element;
+			}
+			element = element.getParent();
+		} while (element != null);
+		return null;
+	}
+	
 	@Override
 	public IResource getResource() {
 		return null;
@@ -151,7 +164,7 @@ public abstract class FakeMember implements IMember {
 	}
 	
 	@Override
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		throw assertFail();
 	}
 	

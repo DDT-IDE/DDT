@@ -17,6 +17,7 @@
  * Implemented: added icon adornment for templated types .
  * Cleanup: new icons for most D source elements, slight change to icon overlays. New icon for D search.
   * The new icon design is meant to better convey visual information for the semantics of the underlying element.
+ * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).
 
 == DDT 0.7.0 (2013-08-15) ==
  * Requirements changes: now requires minimum Java VM version 1.7 .

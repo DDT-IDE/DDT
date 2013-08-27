@@ -19,7 +19,7 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.dltk.core" version="3.0.0" match="compatible"/>
+      <import feature="org.eclipse.dltk.core" version="5.0.0" match="compatible"/>
    </requires>
 
    <plugin

@@ -4,7 +4,7 @@ package mmrnmhrm.ui.editor.codeassist;
 import mmrnmhrm.ui.editor.hover.HoverUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.ui.text.completion.ProposalInfo;
+import org.eclipse.dltk.ui.text.completion.ICompletionProposalInfo;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
@@ -68,7 +68,7 @@ public abstract class ScriptCompletionProposalExtension extends ScriptCompletion
 	}
 	
 	@Override
-	public ProposalInfo getProposalInfo() {
+	public ICompletionProposalInfo getProposalInfo() {
 		return super.getProposalInfo();
 	}
 	
