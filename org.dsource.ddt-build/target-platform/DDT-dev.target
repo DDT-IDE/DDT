@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="DDT Target" sequenceNumber="23">
+<?pde version="3.8"?><target name="DDT Target" sequenceNumber="24">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.feature.group" version="4.3.0.v20130605-2000"/>
 <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.0.v20130521-0416"/>
 <unit id="org.eclipse.emf.ecore.feature.group" version="2.9.0.v20130528-0742"/>
 <unit id="org.eclipse.emf.common.feature.group" version="2.9.0.v20130528-0742"/>
+<unit id="org.eclipse.dltk.core.feature.group" version="5.0.0.201306060709"/>
 <repository location="http://download.eclipse.org/releases/kepler/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.dltk.core.sdk.feature.group" version="5.0.0.201306060709"/>
 <unit id="org.eclipse.dltk.javascript.sdk.feature.group" version="5.0.0.201306060709"/>
 <unit id="org.eclipse.dltk.python.sdk.feature.group" version="5.0.0.201306060709"/>
 <unit id="org.eclipse.dltk.ruby.sdk.feature.group" version="5.0.0.201306060709"/>

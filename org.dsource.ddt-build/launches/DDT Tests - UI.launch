@@ -26,6 +26,7 @@
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
 <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
+<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}&#13;&#10;-consoleLog"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.dsource.ddt.ide.ui.tests"/>
@@ -36,6 +37,7 @@
 <booleanAttribute key="run_in_ui_thread" value="true"/>
 <setAttribute key="selected_features">
 <setEntry value="org.dsource.ddt:default"/>
+<setEntry value="org.eclipse.e4.rcp:default"/>
 <setEntry value="org.eclipse.platform:default"/>
 </setAttribute>
 <booleanAttribute key="show_selected_only" value="false"/>
