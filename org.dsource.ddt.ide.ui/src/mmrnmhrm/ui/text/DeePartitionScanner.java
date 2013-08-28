@@ -3,7 +3,6 @@ package mmrnmhrm.ui.text;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
@@ -41,13 +40,13 @@ public class DeePartitionScanner extends RuleBasedPartitionScanner {
 		rules.add(new SingleLineRule("'", "'", tkCharacter, '\\', true));
 		
 		
-		rules.add(new EndOfLineRule("///", tkSingleDocComment, NO_ESCAPE_CHAR)); 
-		rules.add(new EndOfLineRule("//", tkSingleComment, NO_ESCAPE_CHAR));
+		rules.add(new PatternRule_Fixed("///", null, tkSingleDocComment, NO_ESCAPE_CHAR, true, true)); 
+		rules.add(new PatternRule_Fixed("//", null, tkSingleComment, NO_ESCAPE_CHAR, true, true));
 		
 		rules.add(new NestedDelimiterRule("/++", "/+", "+/", tkNestedDocComment, NO_ESCAPE_CHAR, true));
 		rules.add(new NestedDelimiterRule("/+", "/+", "+/", tkNestedComment, NO_ESCAPE_CHAR, true));
-		rules.add(new MultiLineRule("/**", "*/", tkMultiDocComment, NO_ESCAPE_CHAR, true));
-		rules.add(new MultiLineRule("/*", "*/", tkMultiComment, NO_ESCAPE_CHAR, true));
+		rules.add(new PatternRule_Fixed("/**", "*/", tkMultiDocComment, NO_ESCAPE_CHAR, false, true));
+		rules.add(new PatternRule_Fixed("/*", "*/", tkMultiComment, NO_ESCAPE_CHAR, false, true));
 		
 		
 		setPredicateRules(rules.toArray(new IPredicateRule[rules.size()]));

@@ -36,7 +36,7 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 		testPartitions("foo = \"asdf\"; ", array(DEE_STRING));
 	}
 	
-	private void testPartitions(String source, String[] expectedPositions) throws BadPositionCategoryException {
+	private void testPartitions(String source, String... expectedPositions) throws BadPositionCategoryException {
 		Position[] positions = calculatePositions(source);
 		checkPositions(positions, expectedPositions);
 	}
@@ -140,16 +140,13 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 	@Test
 	public void testComments() throws Exception { testComments$(); }
 	public void testComments$() throws Exception {
-		testPartitions("a = /+ // +/ 1;       ", array(DEE_NESTED_COMMENT));
-		testPartitions("a = /+ blah         //",array(DEE_NESTED_COMMENT));
-		testPartitions("a = /+ blah \n blah   ", array(DEE_NESTED_COMMENT));
-		testPartitions("a = /+ /* +/ */ 3;  //", array(DEE_NESTED_COMMENT, DEE_SINGLE_COMMENT));
-		testPartitions("a = /+ \"+/\" +/ 1\"; ", array(DEE_NESTED_COMMENT, DEE_STRING));
-
-		testPartitions("a = /++ blah +/ 1;", array(DEE_NESTED_DOCCOMMENT));
-		testPartitions("a = /++ //   +/ 'a' `d`", array(DEE_NESTED_DOCCOMMENT, DEE_CHARACTER, DEE_RAW_STRING));
+		testComments_Common("/+", "+/", DEE_NESTED_COMMENT);
+		testComments_Common("/++", "+/", DEE_NESTED_DOCCOMMENT);
+		testComments_Common("/*", "*/", DEE_MULTI_COMMENT);
+		testComments_Common("/**", "*/", DEE_MULTI_DOCCOMMENT);
+		
 //		testPartitions("a = /++/ special degenerate case", array(DEE_NESTED_COMMENT)); TODO
-//		testPartitions("a = /**/ special degenerate case", array(DEE_MULTI_COMMENT)); TODO
+//		testPartitions("a = /**/ special degenerate case", array(DEE_NESTED_COMMENT)); TODO
 		
 		testPartitions("foo = /`asdf`; ", array(DEE_RAW_STRING));
 		// Test nesting
@@ -160,6 +157,18 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 		checkPositions(positions2, array(DEE_NESTED_COMMENT));
 		assertTrue(positions2[0].length == 22 - 2);
 	}
+
+	public void testComments_Common(String START, String CLOSE, String tokenType) throws BadPositionCategoryException {
+		testPartitions("a /");
+		testPartitions("a "+START+"", tokenType);
+		
+		testPartitions("a/ `S` "+START+" // "+CLOSE+" 1; ", DEE_RAW_STRING, tokenType);
+		testPartitions("a/ `S` "+START+" blah * + \n `asd`", DEE_RAW_STRING, tokenType); // EOL Unterminated
+		testPartitions("a/ `S` "+START+" blah * +    `asd`", DEE_RAW_STRING, tokenType); // EOF Unterminated
+		testPartitions("a/ `S` "+START+" //   "+CLOSE+" `asd`", DEE_RAW_STRING, tokenType, DEE_RAW_STRING);
+		
+		testPartitions("a/ `S` "+START+" * + \""+CLOSE+"\" "+CLOSE+" 1\"; ", DEE_RAW_STRING, tokenType, DEE_STRING);
+	}
 	
 	@Test
 	public void testAll_withSamePartitioner() throws Exception { testAll_withSamePartitioner$(); }
@@ -167,10 +176,6 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 		setupDocument("");
 		recreateDocSetup = false;
 		
-		testPartitions("a = /+ blah         ", array(DEE_NESTED_COMMENT));
-		testPartitions("a = /+ blah \n blah ", array(DEE_NESTED_COMMENT));
-		testPartitions("a = /+ // +/ 'a' `d`", array(DEE_NESTED_COMMENT, DEE_CHARACTER, DEE_RAW_STRING));
-
 		testString();
 		testRawString();
 		testSLComments();

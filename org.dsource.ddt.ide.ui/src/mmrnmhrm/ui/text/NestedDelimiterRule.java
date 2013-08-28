@@ -2,17 +2,17 @@ package mmrnmhrm.ui.text;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.text.rules.Token;
 
-public class NestedDelimiterRule extends PatternRule {
+public class NestedDelimiterRule extends PatternRule_Fixed {
 	
 	protected final char[] anotherStart;
 	protected final char[][] startSequences;
 	protected char[][] innerStartSequences;
 	protected int fOpenDelims = 0;
 	
-	public NestedDelimiterRule(String start, String innerStart, String end, IToken token, char escapeCharacter, boolean breaksOnEOF) {
+	public NestedDelimiterRule(String start, String innerStart, String end, IToken token, char escapeCharacter, 
+		boolean breaksOnEOF) {
 		super(start, end, token, escapeCharacter, false, breaksOnEOF);
 		this.anotherStart = innerStart.toCharArray();
 		startSequences = new char[][] { fStartSequence };
