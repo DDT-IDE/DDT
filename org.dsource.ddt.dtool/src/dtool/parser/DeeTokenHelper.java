@@ -205,7 +205,7 @@ public class DeeTokenHelper {
 		case KW___GSHARED: 
 		case KW___THREAD:
 		case KW___VECTOR:
-
+			
 			return TokensCategory.CONTROL;
 			
 		case KW_THIS: 

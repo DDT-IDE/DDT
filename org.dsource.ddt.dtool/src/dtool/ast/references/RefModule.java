@@ -91,8 +91,7 @@ public class RefModule extends NamedReference {
 		}
 	}
 	
-	@Override
-	public void performPrefixSearch(PrefixDefUnitSearch prefixSearch, String fullSource) {
+	public void setupPrefixSearchParams(PrefixDefUnitSearch prefixSearch, String fullSource) {
 		int offset = prefixSearch.getOffset();
 		
 		// We reparse the snipped source as it's the easiest way to determine search prefix
@@ -111,7 +110,6 @@ public class RefModule extends NamedReference {
 		int rplLen = rplEndPos - offset;
 		
 		prefixSearch.setupPrefixedSearchOptions(moduleQualifiedNameCanonicalPrefix, rplLen);
-		doSearch(prefixSearch);
 	}
 	
 	@Override

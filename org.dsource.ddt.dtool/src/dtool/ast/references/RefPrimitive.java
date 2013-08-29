@@ -6,7 +6,6 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.parser.IToken;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 public class RefPrimitive extends NamedReference {
@@ -39,12 +38,6 @@ public class RefPrimitive extends NamedReference {
 	@Override
 	public boolean isMissingCoreReference() {
 		return false;
-	}
-	
-	@Override
-	public void performPrefixSearch(PrefixDefUnitSearch prefixSearch, String fullSource) {
-		prefixSearch.setupPrefixedSearchOptions(getOffset(), getCoreReferenceName());
-		doSearch(prefixSearch);
 	}
 	
 	@Override

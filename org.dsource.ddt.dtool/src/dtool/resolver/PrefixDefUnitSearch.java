@@ -1,5 +1,6 @@
 package dtool.resolver;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.HashSet;
@@ -8,7 +9,9 @@ import java.util.Set;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.NamedReference;
+import dtool.ast.references.CommonRefIdentifier;
+import dtool.ast.references.CommonRefQualified;
+import dtool.ast.references.RefModule;
 import dtool.parser.DeeLexer;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
@@ -81,31 +84,65 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		// NOTE: for performance reasons we want to provide a startPos as close as possible to offset,
 		// so we don't re-lex too many tokens. ASTNodeFinderExtension provides that.
 		int relexStartPos = nodeFinder.lastNodeBoundary;
-		Token token = findTokenAtOffset(offset, source, relexStartPos);
+		// TODO: reuse relexStartPos
 		
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(node, offset, defUnitAccepter, mr);
 		search.relexStartPos = relexStartPos;
 		
-		if((offset > token.getStartPos() && offset < token.getEndPos()) && 
-			!(token.type == DeeTokens.WHITESPACE || token.type == DeeTokens.IDENTIFIER)) {
-			/*BUG here needs to be identifier token*/
+		Token tokenAtOffset = findTokenAtOffset(offset, source, 0);
+		Token tokenAfterOffset = tokenAtOffset.getEndPos() > offset ? 
+			tokenAtOffset : 
+			findTokenAtOffset(offset, source, tokenAtOffset.getEndPos());
+		
+		if((offset > tokenAtOffset.getStartPos() && offset < tokenAtOffset.getEndPos()) &&
+			canCompleteInsideToken(tokenAtOffset)) {
 			return search.assignResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION, 
 				"Invalid location (inside unmodifiable token)");
 		}
 		
-		
-		if(node instanceof NamedReference)  {
-			NamedReference namedRef = (NamedReference) node;
-			namedRef.performPrefixSearch(search, source);
-		} else {
-			ReferenceResolver.resolveSearchInFullLexicalScope(node, search);
+		String searchPrefix = "";
+		if(tokenIsAlphaNumeric(tokenAtOffset)) {
+			searchPrefix = tokenAtOffset.getSourceValue().substring(0, offset - tokenAtOffset.getStartPos());
 		}
+		int rplLen = 0;
+		if(tokenIsAlphaNumeric(tokenAfterOffset)) {
+			rplLen = tokenAfterOffset.getEndPos() - offset;
+		}
+		search.setupPrefixedSearchOptions(searchPrefix, rplLen);
+		
+		
+		if(node instanceof CommonRefIdentifier) {
+			CommonRefIdentifier namedRef = (CommonRefIdentifier) node;
+			
+			namedRef.doSearch(search);
+			return search;
+		} else if(node instanceof CommonRefQualified) {
+			CommonRefQualified namedRef = (CommonRefQualified) node;
+			if(search.getOffset() <= namedRef.getDotOffset()) {
+				search.assignResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
+						"Invalid Location: before qualifier dot but not next to id.");
+				return search;
+			}
+			assertEquals(search.searchOptions.searchPrefix, "");
+			assertEquals(search.searchOptions.namePrefixLen, 0);
+			assertEquals(search.searchOptions.rplLen, 0);
+			
+			namedRef.doSearch(search);
+			return search;
+		} else if(node instanceof RefModule) {
+			RefModule namedRef = (RefModule) node;
+			// RefModule has a specialized way to setup prefix len things
+			namedRef.setupPrefixSearchParams(search, source);
+			namedRef.doSearch(search);
+			return search;
+		}
+		
+		ReferenceResolver.resolveSearchInFullLexicalScope(node, search);
 		return search;
 	}
 	
-	/** Find the token at given offset of given source (inclusive end).
-	 * Start lexing search from startPos as an optimization, so we don't have to lex full source.
-	 * startpos should correspond to a token start in source. 
+	/** Find the first token at given offset of given source (inclusive end).
+	 * Initialize the lexer start position to given startPos position.
 	 */
 	public static Token findTokenAtOffset(final int offset, String source, int startPos) {
 		assertTrue(startPos <= offset);
@@ -118,18 +155,15 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				return token;
 			assertTrue(token.type != DeeTokens.EOF);
 		}
+		
 	}
 	
-	public void setupPrefixedSearchOptions(int nameOffset, String name) {
-		int offset = getOffset();
-		assertTrue(offset >= nameOffset);
-		assertTrue(offset <= nameOffset + name.length() || name.isEmpty());
-		// empty name is a special case
-		int namePrefixLen = name.isEmpty() ? 0 : offset - nameOffset;
-		
-		int rplLen = name.length() - namePrefixLen;
-		String searchPrefix = name.substring(0, namePrefixLen);
-		setupPrefixedSearchOptions(searchPrefix, rplLen);
+	public static boolean canCompleteInsideToken(Token token) {
+		return !(token.type == DeeTokens.WHITESPACE || tokenIsAlphaNumeric(token));
+	}
+	
+	public static boolean tokenIsAlphaNumeric(Token token) {
+		return token.type == DeeTokens.IDENTIFIER || token.type.isKeyword();
 	}
 	
 	public void setupPrefixedSearchOptions(String searchPrefix, int rplLen) {

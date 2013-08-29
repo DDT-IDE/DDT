@@ -6,7 +6,6 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.DefUnitDescriptor;
 import dtool.resolver.api.IModuleResolver;
 
@@ -25,9 +24,6 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	public boolean isMissingCoreReference() {
 		return getCoreReferenceName() == null || getCoreReferenceName().isEmpty();
 	}
-	
-	/** Setup and perform a prefix search. */
-	public abstract void performPrefixSearch(PrefixDefUnitSearch prefixSearch, String fullSource);
 	
 	/** Run a fully configured search using the lookup rules of this reference. */
 	public abstract void doSearch(CommonDefUnitSearch search);

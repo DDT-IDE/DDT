@@ -10,10 +10,10 @@ int Foo;
 	tests.Var#FIND¤【tests/Var】#FIND¤【Var】;
 	
 	tests.V#REFSEARCH¤【Var▪Var2】;
-	tests.V#REFSEARCH¤【Var▪Var2>>2】xx;
+	tests.V#REFSEARCH¤【Var▪Var2►2】xx;
 	tests.Va#REFSEARCH¤【Var▪Var2】;
-	tests.Va#REFSEARCH¤【Var▪Var2>>2】xx;
-	tests.Vx#REFSEARCH¤【>>2】xx;
+	tests.Va#REFSEARCH¤【Var▪Var2►2】xx;
+	tests.Vx#REFSEARCH¤【►2】xx;
 	tests.Var#REFSEARCH¤【Var▪Var2】;
 	
 	tests#FIND¤【tests/】#REFSEARCH¤【tests】.Var;

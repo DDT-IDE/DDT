@@ -39,7 +39,7 @@ import modalias = pack_NONEXISTANT.subpack.#FINDMISSING#REFSEARCH¤【】;
 import modalias = pack.subpack_NONEXISTANT.#FINDMISSING#REFSEARCH¤【】;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module importTest;
-import modalias#FINDFAIL#REFSEARCH¤【modalias▪importTest】 = modA;
+import modalias#FINDFAIL#REFSEARCH¤【modalias】 = modA;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax errors
 module importTest; #PROJECT(importsProject)

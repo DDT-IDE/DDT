@@ -289,4 +289,8 @@ public enum DeeTokens {
 		return groupToken;
 	}
 	
+	public boolean isKeyword() {
+		return DeeTokenHelper.isKeyword(this);
+	}
+	
 }

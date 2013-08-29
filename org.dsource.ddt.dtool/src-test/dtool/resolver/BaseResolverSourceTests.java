@@ -233,8 +233,8 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		
 		ECompletionResultStatus expectedStatusCode = ECompletionResultStatus.RESULT_OK;
 		String[] expectedResults = null;
-		String searchParams = StringUtil.segmentAfterMatch(testStringDescriptor, ">>");
-		testStringDescriptor = StringUtil.substringUntilMatch(testStringDescriptor, ">>");
+		String searchParams = StringUtil.segmentAfterMatch(testStringDescriptor, "►");
+		testStringDescriptor = StringUtil.substringUntilMatch(testStringDescriptor, "►");
 		
 		if(testStringDescriptor.startsWith("!")) {
 			String statusId = testStringDescriptor.substring(1); 
