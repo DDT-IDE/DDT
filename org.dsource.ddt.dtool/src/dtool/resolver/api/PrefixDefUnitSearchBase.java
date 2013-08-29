@@ -12,7 +12,6 @@ public abstract class PrefixDefUnitSearchBase extends CommonDefUnitSearch {
 		RESULT_OK("ok"),
 		INVALID_TOKEN_LOCATION("invalid_token"),
 		INVALID_REFQUAL_LOCATION("invalid_qualified"),
-		OTHER_REFERENCE("other_ref")
 		;
 		
 		protected final String id;

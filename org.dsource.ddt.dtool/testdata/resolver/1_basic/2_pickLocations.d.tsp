@@ -20,15 +20,16 @@ V#@《#REFSEARCH¤【Var】●#REFSEARCH¤【Var>>1】x》; // Edge case, refsea
 
 int Var;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-module tests; // Test invalid locations
-int Var;
+module tests; // Test locations that used to be invalid (changed behavior)
+int Var; int foo;
 
-void func() {
+void _ignore() {
 	x =#REFSEARCH¤【!invalid_token】#FINDFAIL= 2;
 	/*A Comment#REFSEARCH¤【!invalid_token】#FINDFAIL */
 	
-	foo[]#REFSEARCH¤【!other_ref】 foo;
-	foo!#REFSEARCH¤【!other_ref】 (123)#REFSEARCH¤【!other_ref】;
+	foo[]#FINDFAIL#REFSEARCH¤【tests▪Var▪foo】 foo;
+	foo[#FINDFAIL#REFSEARCH¤【tests▪Var▪foo】] foo;
+	foo!#FINDFAIL#REFSEARCH¤【tests▪Var▪foo】(123)#FINDFAIL#REFSEARCH¤【tests▪Var▪foo】;
 }
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 int foo; //Test node boundaries (This test requires that a InvalidSyntaxElement node be created for each line)

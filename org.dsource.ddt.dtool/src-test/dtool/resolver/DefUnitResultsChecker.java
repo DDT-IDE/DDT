@@ -37,7 +37,8 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
 			DefUnit defUnit = iterator.next();
 			
-			if(ignoreDummyResults && defUnit.getName().equals("_dummy")) {
+			if(ignoreDummyResults && 
+				(defUnit.getName().equals("_dummy") || defUnit.getName().equals("_ignore"))) {
 				iterator.remove();
 			}
 			

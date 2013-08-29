@@ -19,6 +19,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.references.CommonRefQualified;
+import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.Reference;
 import dtool.parser.DeeParserResult;
@@ -271,7 +272,7 @@ public class ReferenceResolver {
 			}
 			this.pickedNode = nodeFinder.match;
 			
-			if(pickedRef instanceof CommonRefQualified) {
+			if(pickedRef instanceof CommonRefQualified || !(pickedRef instanceof NamedReference)) {
 				invalidPickRef = true;
 			}
 		}
@@ -285,16 +286,19 @@ public class ReferenceResolver {
 			return resolvedDefUnits;
 		}
 		
+		public void resolveAtoffset(DeeParserResult parseResult, int offset, IModuleResolver mr) {
+			pickLocation(parseResult.module, offset);
+			
+			if(isValidPickRef()) {
+				resolvedDefUnits = pickedRef.findTargetDefUnits(mr, false);
+			}
+		}
+		
 	}
 	
 	public static DirectDefUnitResolve resolveAtOffset(DeeParserResult parseResult, int offset, IModuleResolver mr) {
 		DirectDefUnitResolve refResolve = new DirectDefUnitResolve();
-		
-		refResolve.pickLocation(parseResult.module, offset);
-		
-		if(refResolve.isValidPickRef()) {
-			refResolve.resolvedDefUnits = refResolve.pickedRef.findTargetDefUnits(mr, false);
-		}
+		refResolve.resolveAtoffset(parseResult, offset, mr);
 		return refResolve;
 	}
 	

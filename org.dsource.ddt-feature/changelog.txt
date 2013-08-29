@@ -18,6 +18,8 @@
  * Cleanup: new icons for most D source elements, slight change to icon overlays. New icon for D search.
   * The new icon design is meant to better convey visual information for the semantics of the underlying element.
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).
+ * Fixed unintended behavior regression in 0.7.0 where Code Completion would not show any results when invoked in certain type reference contexts. 
+   * Examples: {{{foo[♦]♦}}} {{{foo[123]♦}}} {{{foo!♦(♦)}}} {{{const(foo)♦}}} (♦ denotes location where CC would be invoked)
 
 == DDT 0.7.0 (2013-08-15) ==
  * Requirements changes: now requires minimum Java VM version 1.7 .

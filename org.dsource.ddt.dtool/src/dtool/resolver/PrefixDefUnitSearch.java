@@ -9,7 +9,6 @@ import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
-import dtool.ast.references.Reference;
 import dtool.parser.DeeLexer;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
@@ -94,13 +93,10 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 				"Invalid location (inside unmodifiable token)");
 		}
 		
+		
 		if(node instanceof NamedReference)  {
 			NamedReference namedRef = (NamedReference) node;
 			namedRef.performPrefixSearch(search, source);
-		} else if(node instanceof Reference) {
-			search.assignResult(ECompletionResultStatus.OTHER_REFERENCE, 
-				"Can't complete for node: "+node.getNodeType()+"");
-			return search;
 		} else {
 			ReferenceResolver.resolveSearchInFullLexicalScope(node, search);
 		}
