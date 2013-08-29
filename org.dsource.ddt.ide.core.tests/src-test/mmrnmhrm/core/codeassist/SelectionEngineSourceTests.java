@@ -90,9 +90,4 @@ public class SelectionEngineSourceTests extends CoreResolverSourceTests {
 		// Do nothing
 	}
 	
-	@Override
-	protected void runRefSearchRelexTest_________(int offset, String relexStartPosMarker) {
-		// Do nothing
-	}
-	
 }

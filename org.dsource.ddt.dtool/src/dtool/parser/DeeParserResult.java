@@ -13,6 +13,7 @@ package dtool.parser;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,18 +28,22 @@ import dtool.parser.ParserError.ErrorSourceRangeComparator;
 public class DeeParserResult {
 	
 	public final String source;
+	public final List<LexElement> tokenList;
 	public final ASTNode node;
 	public final boolean ruleBroken;
 	public final Module module;
 	public final List<ParserError> errors;
 	
 	protected DeeParserResult(NodeResult<? extends ASTNode> result, DeeParser parser) {
-		this(parser.getSource(), result.node, result.ruleBroken, initErrors(parser.lexerErrors, result.node));
+		this(parser.getSource(), parser.lexSource.lexElementList, result.node, result.ruleBroken, 
+			initErrors(parser.lexerErrors, result.node));
 		parser.lexerErrors = null;
 	}
 	
-	public DeeParserResult(String source, ASTNode node, boolean ruleBroken, List<ParserError> errors) {
+	public DeeParserResult(String source, AbstractList<LexElement> tokenList, ASTNode node, boolean ruleBroken,
+		List<ParserError> errors) {
 		this.source = source;
+		this.tokenList = Collections.unmodifiableList(tokenList);
 		this.node = node;
 		this.ruleBroken = ruleBroken;
 		this.module = node instanceof Module ? (Module) node : null;

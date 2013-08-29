@@ -45,10 +45,6 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	}
 	
 	@Override
-	protected void runRefSearchRelexTest_________(int offset, String relexStartPosMarker) {
-	}
-	
-	@Override
 	public void runRefSearchTest_________(RefSearchOptions options) {
 		IModuleSource sourceModule_cast = (IModuleSource) sourceModule;
 		runCompletionEngineTest(sourceModule_cast, options.offset, options.expectedResults, options.rplLen);

@@ -64,14 +64,6 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	}
 	
 	@Override
-	protected void runRefSearchRelexTest_________(int offset, String relexStartPosMarker) {
-		PrefixDefUnitSearch search = 
-			PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr, new DefUnitCollector());
-		
-		assertTrue(search.relexStartPos == getMarkerPosition(relexStartPosMarker));
-	}
-	
-	@Override
 	protected void runFindFailTest_________(MetadataEntry mde) {
 		DirectDefUnitResolve resolveResult = resolveAtOffset(mde.offset);
 		assertTrue(resolveResult.pickedRef == null || resolveResult.invalidPickRef);

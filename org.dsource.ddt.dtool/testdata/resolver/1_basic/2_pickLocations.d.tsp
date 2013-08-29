@@ -1,23 +1,5 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-//test relex  for refsearch (internal value that is important for performance)
-void func#marker(FUNC) ( #REFSEARCH¤【relexStartPos=FUNC】 int a) #marker(BODY)【】{
-	#REFSEARCH¤【relexStartPos=BODY】
-	int bar;
-	int foo;#marker(ST_A) 
-	#REFSEARCH¤【relexStartPos=ST_A】
-	#marker(ST)#REFSEARCH¤【relexStartPos=ST】;
-}#marker(FUNC_END)
-
-
-#REFSEARCH¤【relexStartPos=FUNC_END】
-
-/** DDOC */
-#marker(CLASS_START)class #REFSEARCH¤【relexStartPos=CLASS_START】 Foo {
-	int foo;
-}
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 module _ignore; // Test various pick location situations with identifiers
 int Var; int Var2;
 int Foo;

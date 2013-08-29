@@ -12,10 +12,10 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonRefIdentifier;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.RefModule;
-import dtool.parser.DeeLexer;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
-import dtool.parser.Token;
+import dtool.parser.IToken;
+import dtool.parser.TokenListUtil;
 import dtool.resolver.api.IDefUnitMatchAccepter;
 import dtool.resolver.api.IModuleResolver;
 import dtool.resolver.api.PrefixDefUnitSearchBase;
@@ -31,8 +31,6 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 	protected final Set<String> addedDefUnits = new HashSet<String>();
 	
 	protected ECompletionResultStatus resultCode = ECompletionResultStatus.RESULT_OK;
-	
-	protected int relexStartPos; // for tests only
 	
 	public PrefixDefUnitSearch(ASTNode originNode, int refOffset,
 			IDefUnitMatchAccepter defUnitAccepter, IModuleResolver moduleResolver) {
@@ -81,18 +79,9 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		ASTNodeFinderExtension nodeFinder = new ASTNodeFinderExtension(neoModule, offset, true);
 		ASTNode node = nodeFinder.match;
 		
-		// NOTE: for performance reasons we want to provide a startPos as close as possible to offset,
-		// so we don't re-lex too many tokens. ASTNodeFinderExtension provides that.
-		int relexStartPos = nodeFinder.lastNodeBoundary;
-		// TODO: reuse relexStartPos
-		
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(node, offset, defUnitAccepter, mr);
-		search.relexStartPos = relexStartPos;
 		
-		Token tokenAtOffset = findTokenAtOffset(offset, source, 0);
-		Token tokenAfterOffset = tokenAtOffset.getEndPos() > offset ? 
-			tokenAtOffset : 
-			findTokenAtOffset(offset, source, tokenAtOffset.getEndPos());
+		IToken tokenAtOffset = TokenListUtil.findTokenAtOffset(offset, parseResult);
 		
 		if((offset > tokenAtOffset.getStartPos() && offset < tokenAtOffset.getEndPos()) &&
 			canCompleteInsideToken(tokenAtOffset)) {
@@ -105,8 +94,8 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 			searchPrefix = tokenAtOffset.getSourceValue().substring(0, offset - tokenAtOffset.getStartPos());
 		}
 		int rplLen = 0;
-		if(tokenIsAlphaNumeric(tokenAfterOffset)) {
-			rplLen = tokenAfterOffset.getEndPos() - offset;
+		if(tokenIsAlphaNumeric(tokenAtOffset)) {
+			rplLen = tokenAtOffset.getEndPos() - offset;
 		}
 		search.setupPrefixedSearchOptions(searchPrefix, rplLen);
 		
@@ -141,29 +130,12 @@ public class PrefixDefUnitSearch extends PrefixDefUnitSearchBase {
 		return search;
 	}
 	
-	/** Find the first token at given offset of given source (inclusive end).
-	 * Initialize the lexer start position to given startPos position.
-	 */
-	public static Token findTokenAtOffset(final int offset, String source, int startPos) {
-		assertTrue(startPos <= offset);
-		DeeLexer lexer = new DeeLexer(source);
-		lexer.reset(startPos);
-		Token token;
-		while(true) {
-			token = lexer.next();
-			if(offset <= token.getEndPos())
-				return token;
-			assertTrue(token.type != DeeTokens.EOF);
-		}
-		
+	public static boolean canCompleteInsideToken(IToken token) {
+		return !(token.getType() == DeeTokens.WHITESPACE || tokenIsAlphaNumeric(token));
 	}
 	
-	public static boolean canCompleteInsideToken(Token token) {
-		return !(token.type == DeeTokens.WHITESPACE || tokenIsAlphaNumeric(token));
-	}
-	
-	public static boolean tokenIsAlphaNumeric(Token token) {
-		return token.type == DeeTokens.IDENTIFIER || token.type.isKeyword();
+	public static boolean tokenIsAlphaNumeric(IToken token) {
+		return token.getType() == DeeTokens.IDENTIFIER || token.getType().isKeyword();
 	}
 	
 	public void setupPrefixedSearchOptions(String searchPrefix, int rplLen) {

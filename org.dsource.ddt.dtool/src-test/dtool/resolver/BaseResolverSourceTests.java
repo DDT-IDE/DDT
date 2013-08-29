@@ -147,12 +147,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 				// already processed
 			} else if(mde.name.equals("REFSEARCH")) {
 				printMDE(mde);
-				if(mde.sourceValue.startsWith("relexStartPos=")) {
-					String relexStartPosMarker = StringUtil.segmentAfterMatch(mde.sourceValue, "relexStartPos=");
-					runRefSearchRelexTest_________(mde.offset, relexStartPosMarker);
-				} else {
-					prepRefSearchTest_________(mde);
-				}
+				prepRefSearchTest_________(mde);
 			} else if(mde.name.equals("FIND")) {
 				printMDE(mde);
 				runFindTest_________(mde);
@@ -277,8 +272,6 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	}
 	
 	protected abstract void runRefSearchTest_________(RefSearchOptions options);
-	
-	protected abstract void runRefSearchRelexTest_________(int offset, String relexStartPosMarker);
 	
 	protected abstract void runFindFailTest_________(MetadataEntry mde);
 	
