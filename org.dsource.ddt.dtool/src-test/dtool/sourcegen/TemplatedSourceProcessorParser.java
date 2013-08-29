@@ -247,11 +247,16 @@ public class TemplatedSourceProcessorParser {
 		
 		final String listEndPrefix = "¤";
 		final String argStart = "►";
-		final String[] tokenStarts = eofTerminates ? 
-			new String[] { argStart, listEnd, kMARKER } : 
-			argSeparator != null ?
-			new String[] { argStart, argSeparator, listEndPrefix, listEnd, kMARKER } :
-			new String[] { argStart, listEndPrefix, listEnd, kMARKER };
+		final String[] tokenStarts; 
+		if(eofTerminates) {
+			tokenStarts = (argSeparator != null ?
+					new String[] { argStart, listEnd, kMARKER } :
+					new String[] { listEnd, kMARKER });
+		} else {
+			tokenStarts = argSeparator != null ?
+				new String[] { argStart, argSeparator, listEndPrefix, listEnd, kMARKER } :
+				new String[] { listEndPrefix, listEnd, kMARKER };
+		}
 		
 		boolean ignoreLastArg = false;
 		boolean argumentStartFound = false;

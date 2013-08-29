@@ -228,6 +228,12 @@ public class TemplatedSourceProcessorTest extends TemplatedSourceProcessorCommon
 			checkMD("lineOther4\n")
 		);
 		
+		// ► interaction
+		testSourceProcessing("#", 
+			"foo1 ## #MD(ab►c●d)【x►x●x】==",
+			checkMD("foo1 # x►x●x==", new MetadataEntry("MD", "ab►c●d", "x►x●x", 7))
+		);
+		
 	}
 	
 	@Test

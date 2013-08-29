@@ -118,9 +118,9 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 		// Uniform argument separator syntax -- in metadata
 		
 		testSourceProcessing("#", "> #MD(►xyz, line\n){ ►ABC,line}==", 
-			checkSourceOnly("> ABC,line==", 1)); 
+			checkMD(">  ►ABC,line==", new MetadataEntry("MD", "►xyz, line\n", " ►ABC,line", 2, true)));
 		testSourceProcessing("#", "> #MD:\n►asd, line\n ==", 
-			checkMD("> ", new MetadataEntry("MD", null, "asd, line\n ==", 2, false)));
+			checkMD("> ", new MetadataEntry("MD", null, "►asd, line\n ==", 2, false)));
 		
 		
 		// Syntax errors: interactions:
