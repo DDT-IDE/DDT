@@ -5,8 +5,8 @@
 == DDT 0.8.0 (2013-08-30) ==
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).
  * Changed: In DDoc view, the text of undefined macros now remains unmodified, instead of being replaced by empty text.
-   * Example: {{{My $(NO_SUCH_MACRO undefined) macro}}} will render as {{{My $(NO_SUCH_MACRO undefined) macro}}} instead of {{{My  macro}}}
- * Added: In DDoc view, added predefined DDoc macro: {{{D}}}. Works the same as {{{D_CODE}}}.
+   * Example: _{{{My $(NO_SUCH_MACRO undefined) macro}}}_ will render as _{{{My $(NO_SUCH_MACRO undefined) macro}}}_ instead of _{{{My  macro}}}_.
+ * Added: In DDoc view, added predefined DDoc macro: _{{{D}}}_. Works the same as _{{{D_CODE}}}_.
  * Implemented: Code Completion now presents language primitive results (void, int, char, etc.).
  * Fixed unintended behavior regression in 0.7.0 where Code Completion would not show any results when invoked in certain type reference source contexts. Examples (♦ denotes location where CC would be invoked):
 {{{
@@ -26,8 +26,8 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
   * The new icon design is meant to better convey visual information for the semantics of the underlying element.
  * Added icon adornment for templated types.
  * Added icon adornments for {{{const,immutable}}} attributes in variables.
- * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=68 issue@ELabs #68]: Missing enum members in the outline view.
- * Fixed bug with implementation of issue #3 : support Debian Linux DMD layout.
+ * Fixed issue #8: Missing enum members in the outline view.
+ * Fixed bug with implementation of issue #3: support Debian Linux DMD layout.
  * Cleanup: changed some of the dialog messages for the Open Definition operation to be more clear and concise.
  * Cleanup: restricted some editor functionality to named references only (Open Definition, Open Definition hyperlinks, DDoc view hovers).
 
