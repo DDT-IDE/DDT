@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DDT Tests
 Bundle-SymbolicName: org.dsource.ddt.ide.ui.tests;singleton:=true
-Bundle-Version: 0.7.0.qualifier
-Fragment-Host: org.dsource.ddt.ide.ui;bundle-version="[0.7.0,0.7.1)"
+Bundle-Version: 0.8.0.qualifier
+Fragment-Host: org.dsource.ddt.ide.ui;bundle-version="[0.8.0,0.8.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.0"
 Bundle-ClassPath: .
