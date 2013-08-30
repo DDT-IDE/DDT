@@ -15,9 +15,8 @@ import dtool.parser.DeeParserResult;
 import dtool.resolver.CompareDefUnits;
 import dtool.resolver.DefUnitCollector;
 import dtool.resolver.PrefixDefUnitSearch;
+import dtool.resolver.api.ECompletionResultStatus;
 import dtool.resolver.api.IDefUnitMatchAccepter;
-import dtool.resolver.api.PrefixDefUnitSearchBase;
-import dtool.resolver.api.PrefixDefUnitSearchBase.ECompletionResultStatus;
 import dtool.tests.DToolBaseTest;
 
 public class CodeCompletion__Common extends DToolBaseTest {
@@ -61,7 +60,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 		return srcModule.getBuffer();
 	}
 	
-	protected PrefixDefUnitSearchBase testUnavailableCompletion(int offset, ECompletionResultStatus caResult) 
+	protected PrefixDefUnitSearch testUnavailableCompletion(int offset, ECompletionResultStatus caResult) 
 			throws ModelException {
 		PrefixDefUnitSearch search = doCompletionSearch(offset, srcModule, new DefUnitCollector());
 		assertTrue(search.getResultCode() == caResult);

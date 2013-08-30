@@ -21,6 +21,7 @@ import dtool.ast.util.ASTChildrenCollector;
 import dtool.ast.util.ASTDirectChildrenVisitor;
 import dtool.ast.util.NodeUtil;
 import dtool.parser.ParserError;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
 import dtool.util.ArrayView;
@@ -201,13 +202,25 @@ public abstract class ASTNode implements IASTNode {
 		}
 	}
 	
-	/* ------------------------  Node type ------------------------  */
+	/* ------------------------  Node type  ------------------------  */
 	
 	public abstract ASTNodeTypes getNodeType();
 
 	@Override
 	public int getElementType() {
 		return getNodeType().ordinal(); 
+	}
+	
+	/* ------------------------------------------------------------ */
+	
+	public String getModuleFullyQualifiedName() {
+		/* This must be overriden by synthetic defUnits */
+		Module moduleNode = assertNotNull(getModuleNode());
+		return moduleNode.getFullyQualifiedName();
+	}
+	
+	public Module getModuleNode() {
+		return NodeUtil.getParentModule(this);
 	}
 	
 	/* ------------------------  Node data ------------------------  */
@@ -252,22 +265,6 @@ public abstract class ASTNode implements IASTNode {
 	
 	public final boolean isParsedStatus() {
 		return getData().isParsedStatus();
-	}
-	
-	/* ------------------------------------------------------------ */
-	
-	public String getModuleFullyQualifiedName() {
-		/* This must be overriden by synthetic defUnits */
-		Module moduleNode = assertNotNull(getModuleNode());
-		return moduleNode.getFullyQualifiedName();
-	}
-	
-	public Module getModuleNode() {
-		return NodeUtil.getParentModule(this);
-	}
-	
-	public IScopeNode getOuterLexicalScope() {
-		return ReferenceResolver.getOuterLexicalScope(this);
 	}
 	
 	/* =============== STRING FUNCTIONS =============== */
@@ -322,8 +319,7 @@ public abstract class ASTNode implements IASTNode {
 	
 	/** Set the parent of the given collection to the receiver. @return collection */
 	protected <T extends ArrayView<? extends ASTNode>> T parentize(T collection) {
-		parentize(collection, false);
-		return collection;
+		return parentize(collection, false);
 	}
 	
 	protected <T extends ArrayView<? extends ASTNode>> T parentize(T collection, boolean allowNulls) {
@@ -356,7 +352,7 @@ public abstract class ASTNode implements IASTNode {
 		return collection;
 	}
 	
-	/* =============== Analysis =============== */
+	/* =============== Analysis and semantics =============== */
 	
 	public static void doSimpleAnalysisOnTree(ASTNode treeNode) {
 		ASTVisitor childrenVisitor = new LocalAnalysisVisitor();
@@ -388,6 +384,18 @@ public abstract class ASTNode implements IASTNode {
 	
 	public boolean isPostParseStatus() {
 		return getData().isLocallyAnalyzedStatus();
+	}
+	
+	/* ------------------------------------------------------------ */
+	
+	public IScopeNode getOuterLexicalScope() {
+		return ReferenceResolver.getOuterLexicalScope(this);
+	}
+	
+	/** Run a reference search using the lookup rules of this node.
+	 * Default is run the search on the full lexical scope */
+	public void performRefSearch(CommonDefUnitSearch search) {
+		ReferenceResolver.resolveSearchInFullLexicalScope(this, search);
 	}
 	
 }

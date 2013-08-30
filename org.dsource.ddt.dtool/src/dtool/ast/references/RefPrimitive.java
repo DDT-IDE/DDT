@@ -5,8 +5,6 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.parser.IToken;
-import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.ReferenceResolver;
 
 public class RefPrimitive extends NamedReference {
 	
@@ -38,11 +36,6 @@ public class RefPrimitive extends NamedReference {
 	@Override
 	public boolean isMissingCoreReference() {
 		return false;
-	}
-	
-	@Override
-	public void doSearch(CommonDefUnitSearch search) {
-		ReferenceResolver.resolveSearchInFullLexicalScope(this, search);
 	}
 	
 }

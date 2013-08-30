@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import org.junit.Test;
 
 import dtool.resolver.DefUnitCollector;
-import dtool.resolver.api.PrefixDefUnitSearchBase;
+import dtool.resolver.PrefixDefUnitSearch;
 
 public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 	
@@ -67,7 +67,7 @@ public class CodeCompletion_OnModuleRefsTest extends CodeCompletion__Common {
 	
 	@Test
 	public void test_impModuleRef_completionTextParameters() throws Exception {
-		PrefixDefUnitSearchBase search = doCompletionSearch(getMarkerEndOffset("/+CC4@+/")+5, 
+		PrefixDefUnitSearch search = doCompletionSearch(getMarkerEndOffset("/+CC4@+/")+5, 
 				srcModule, new DefUnitCollector());
 		assertTrue(search.searchOptions.rplLen == 0);
 	}

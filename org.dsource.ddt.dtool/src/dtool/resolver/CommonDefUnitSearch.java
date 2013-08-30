@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.resolver.api.IModuleResolver;
@@ -30,24 +29,24 @@ public abstract class CommonDefUnitSearch {
 	protected final int refOffset;
 	/** Module Resolver */
 	protected final IModuleResolver modResolver;
-	/** Cached value of the reference's module scope. */
-	protected Module searchRefModule; 
+	/** The module where the search started. */
+	protected Module refOriginModule;
 	/** The scopes that have already been searched */
 	protected ArrayList<IScopeProvider> searchedScopes;
-
-
-	public CommonDefUnitSearch(ASTNode originNode, int refOffset, IModuleResolver moduleResolver) {
-		this(originNode, refOffset, false, moduleResolver);
+	
+	
+	public CommonDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
+		this(refOriginModule, refOffset, false, moduleResolver);
 	}
 	
-	public CommonDefUnitSearch(ASTNode originNode, int refOffset, boolean findOneOnly, 
+	public CommonDefUnitSearch(Module refOriginModule, int refOffset, boolean findOneOnly, 
 		IModuleResolver moduleResolver) { 
 		this.searchedScopes = new ArrayList<>(4);
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
 		this.modResolver = assertNotNull(moduleResolver);
 		
-		this.searchRefModule = assertNotNull(originNode.getModuleNode());
+		this.refOriginModule = assertNotNull(refOriginModule);
 	}
 	
 	public IModuleResolver getModuleResolver() {
@@ -87,7 +86,7 @@ public abstract class CommonDefUnitSearch {
 	
 	/** @return the Module of the node or position where this search originates. */
 	public Module getSearchOriginModule() {
-		return searchRefModule;
+		return refOriginModule;
 	}
 	
 	/** Return whether the search has found all matches. */

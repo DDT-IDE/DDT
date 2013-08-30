@@ -2,27 +2,41 @@
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 module tests; // Test qualified refsearch
-int Var;
-int Var2;
-int Foo;
+class Foo {
+	int Var;
+	int Var2;
+	int member;
+	int intro;
+}
+int other;
 
 #@__CONTEXT_START__
-	tests.Var#FIND¤【tests/Var】#FIND¤【Var】;
+	Foo.Var#FIND¤【Var】#FIND¤【tests/Foo.Var】;
 	
-	tests.V#REFSEARCH¤【Var▪Var2】;
-	tests.V#REFSEARCH¤【Var▪Var2►2】xx;
-	tests.Va#REFSEARCH¤【Var▪Var2】;
-	tests.Va#REFSEARCH¤【Var▪Var2►2】xx;
-	tests.Vx#REFSEARCH¤【►2】xx;
-	tests.Var#REFSEARCH¤【Var▪Var2】;
+	Foo.V#REFSEARCH¤【Var▪Var2】;
+	Foo.V#REFSEARCH¤【Var▪Var2►2】xx;
+	Foo.Va#REFSEARCH¤【Var▪Var2】;
+	Foo.Va#REFSEARCH¤【Var▪Var2►2】xx;
+	Foo.Vx#REFSEARCH¤【►2】xx;
+	Foo.Var#REFSEARCH¤【Var▪Var2】;
 	
-	tests#FIND¤【tests/】#REFSEARCH¤【tests】.Var;
-	tests #REFSEARCH¤【!invalid_qualified】#FINDFAIL.Var;
-	tests #REFSEARCH¤【!invalid_qualified】.Var;
+	Foo#FIND¤【Foo】#REFSEARCH¤【Foo】.Var;
+	Foo #REFSEARCH¤【!invalid_qualified】#FINDFAIL.Var;
+	Foo #REFSEARCH¤【!invalid_qualified】.Var;
 	
-	tests.#REFSEARCH¤【Var▪Var2▪Foo】#FINDMISSING;
-	tests.#REFSEARCH¤【Var▪Var2▪Foo】#FINDMISSING  ;
-	tests. #REFSEARCH¤【Var▪Var2▪Foo】#FINDMISSING;
-	tests. #REFSEARCH¤【Var▪Var2▪Foo】#FINDMISSING  ;
+	Foo.#REFSEARCH¤【Var▪Var2▪member▪intro】#FINDMISSING;
+	Foo.#REFSEARCH¤【Var▪Var2▪member▪intro】#FINDMISSING  ;
+	Foo. #REFSEARCH¤【Var▪Var2▪member▪intro】#FINDMISSING;
+	Foo. #REFSEARCH¤【Var▪Var2▪member▪intro】#FINDMISSING  ;
+	
+	// Test keywords as qualified identifier
+	Foo. #FINDMISSING#REFSEARCH¤【Var▪Var2▪member▪intro►2】in;
+	Foo. i#FINDFAIL#REFSEARCH¤【intro►1】n;
+	Foo. in#FINDFAIL#REFSEARCH¤【intro】;
+	
+	Foo. #FINDMISSING#REFSEARCH¤【Var▪Var2▪member▪intro►3】int;
+	Foo. i#FIND¤【/int】#REFSEARCH¤【intro►2】nt;
+	Foo. int#FIND¤【/int】#REFSEARCH¤【intro】;	
+	
 	
 #@__CONTEXT_END__

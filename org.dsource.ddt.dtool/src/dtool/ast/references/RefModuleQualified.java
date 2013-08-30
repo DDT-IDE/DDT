@@ -37,6 +37,11 @@ public class RefModuleQualified extends CommonRefQualified {
 	}
 	
 	@Override
+	public int getDotOffset() {
+		return getStartPos();
+	}
+	
+	@Override
 	public Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver) {
 		final Module module = NodeUtil.getParentModule(this);
 		return Collections.singletonList((DefUnit) module);

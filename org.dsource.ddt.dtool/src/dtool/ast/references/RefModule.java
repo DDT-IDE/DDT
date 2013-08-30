@@ -13,7 +13,6 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.parser.BaseLexElement;
-import dtool.parser.DeeParser;
 import dtool.parser.IToken;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
@@ -91,29 +90,8 @@ public class RefModule extends NamedReference {
 		}
 	}
 	
-	public void setupPrefixSearchParams(PrefixDefUnitSearch prefixSearch, String fullSource) {
-		int offset = prefixSearch.getOffset();
-		
-		// We reparse the snipped source as it's the easiest way to determine search prefix
-		String moduleQualifiedNameSnippedSource = fullSource.substring(getStartPos(), offset);
-		DeeParser parser = new DeeParser(moduleQualifiedNameSnippedSource);
-		String moduleQualifiedNameCanonicalPrefix = parser.parseRefModule().toStringAsCode();
-		
-		int rplEndPos = getEndPos();
-		if(isMissingCoreReference()) {
-			rplEndPos = moduleToken.getFullRangeStartPos();
-			if(rplEndPos < offset) {
-				// If module name is missing, don't replace the whitespace in missing module name
-				rplEndPos = offset; 
-			}
-		}
-		int rplLen = rplEndPos - offset;
-		
-		prefixSearch.setupPrefixedSearchOptions(moduleQualifiedNameCanonicalPrefix, rplLen);
-	}
-	
 	@Override
-	public void doSearch(CommonDefUnitSearch search) {
+	public void performRefSearch(CommonDefUnitSearch search) {
 		if(search instanceof PrefixDefUnitSearch) {
 			PrefixDefUnitSearch prefixDefUnitSearch = (PrefixDefUnitSearch) search;
 			doSearch_forPrefixSearch(prefixDefUnitSearch);

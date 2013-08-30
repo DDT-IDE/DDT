@@ -20,8 +20,9 @@
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).
  * Fixed unintended behavior regression in 0.7.0 where Code Completion would not show any results when invoked in certain type reference contexts. 
    * Examples: {{{foo[♦]♦}}} {{{foo[123]♦}}} {{{foo!♦(♦)}}} {{{const(foo)♦}}} (♦ denotes location where CC would be invoked)
- * Improved Code Completion to work when invoked next or inside any keyword. Previously it worked on primitive type keywords only ({{{int}}}, {{{char}}}, etc. ).  
-   * Examples: {{{char intro, intro2; in♦ // CC at invoked here will offer 【intro, intro2】 as completions}}}
+ * Improved Code Completion to work when invoked next or inside any keyword. Previously it worked on primitive type keywords only ({{{int}}}, {{{char}}}, etc. ). Examples:   
+   * {{{char intro, intro2; in♦ // CC invoked here will offer 【intro, intro2】 as completions}}}
+   * {{{class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【intro】 as completions}}}
 
 == DDT 0.7.0 (2013-08-15) ==
  * Requirements changes: now requires minimum Java VM version 1.7 .

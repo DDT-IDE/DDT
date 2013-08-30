@@ -47,6 +47,11 @@ public class RefQualified extends CommonRefQualified {
 		cp.append(qualifiedId);
 	}
 	
+	@Override
+	public int getDotOffset() {
+		return dotOffset;
+	}
+	
 	public static boolean isExpressionQualifier(IQualifierNode qualifier) {
 		return qualifier instanceof Expression || 
 			((qualifier instanceof RefQualified) && ((RefQualified) qualifier).isExpressionQualifier);
@@ -55,11 +60,6 @@ public class RefQualified extends CommonRefQualified {
 	@Override
 	public Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver) {
 		return qualifier.findTargetDefUnits(moduleResolver, false);
-	}
-	
-	@Override
-	public int getDotOffset() {
-		return dotOffset;
 	}
 	
 }

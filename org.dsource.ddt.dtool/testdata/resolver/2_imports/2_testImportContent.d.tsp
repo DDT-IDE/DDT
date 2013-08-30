@@ -72,8 +72,13 @@ import pack.subpack_NONEXISTANT.#FINDMISSING#REFSEARCH¤【】;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax errors
 module importTest; #PROJECT(importsProject)
 
-import#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@IMPORTSPROJ_ALL_MODULES】#@SPACE_Opt2;
+import #FINDMISSING#REFSEARCH¤【#@IMPORTSPROJ_ALL_MODULES】#@SPACE_Opt2;
 import #REFSEARCH¤【#@IMPORTSPROJ_ALL_MODULES►5】pack.#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@IMPORTSPROJ_PACK_MODULES►0】#@SPACE_Opt2;
 import #REFSEARCH¤【#@IMPORTSPROJ_ALL_MODULES►6】pack .#@SPACE_Opt2#FINDMISSING#REFSEARCH¤【#@IMPORTSPROJ_PACK_MODULES►0】;
 import #REFSEARCH¤【#@IMPORTSPROJ_ALL_MODULES►13】pack.subpack.#@SPACE_Opt#FINDMISSING#REFSEARCH¤【pack.subpack.mod3/▪pack.subpack.mod4/】#@SPACE_Opt2;
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax errors - keywords that could be identifiers
+module importTest; #PROJECT(importsProject2)
+import in#FINDFAIL#REFSEARCH¤【intromodule/▪intropack.xpto/】;
+import #FINDMISSING#REFSEARCH¤【intromodule/▪intropack.xpto/▪other/►2】in;
+import int#FIND¤【/int】#REFSEARCH¤【intromodule/▪intropack.xpto/】;
+import #FINDMISSING#REFSEARCH¤【intromodule/▪intropack.xpto/▪other/►3】int;

@@ -29,7 +29,7 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	
 	public DefUnitSearch(String searchName, Reference searchref, int refOffset, boolean findOneOnly,
 			IModuleResolver moduleResolver) {
-		super(searchref, refOffset, findOneOnly, moduleResolver);
+		super(searchref.getModuleNode(), refOffset, findOneOnly, moduleResolver);
 		this.searchName = assertNotNull(searchName);
 		assertTrue(searchName.isEmpty() == false);
 	}

@@ -33,10 +33,16 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 		return qualifiedId.getCoreReferenceName();
 	}
 	
+	public abstract int getDotOffset();
+	
 	public abstract Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver);
 	
 	@Override
-	public void doSearch(CommonDefUnitSearch search) {
+	public void performRefSearch(CommonDefUnitSearch search) {
+		performeQualifiedRefSearch(search);
+	}
+	
+	public void performeQualifiedRefSearch(CommonDefUnitSearch search) {
 		Collection<DefUnit> defunits = findRootDefUnits(search.getModuleResolver());
 		resolveSearchInMultipleDefUnits(defunits, search);
 	}
@@ -50,10 +56,6 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 				return;
 			defUnit.resolveSearchInMembersScope(search);
 		}
-	}
-	
-	public int getDotOffset() {
-		return getStartPos();
 	}
 	
 }

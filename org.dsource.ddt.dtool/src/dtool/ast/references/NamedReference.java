@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.api.DefUnitDescriptor;
 import dtool.resolver.api.IModuleResolver;
@@ -25,9 +24,6 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 		return getCoreReferenceName() == null || getCoreReferenceName().isEmpty();
 	}
 	
-	/** Run a fully configured search using the lookup rules of this reference. */
-	public abstract void doSearch(CommonDefUnitSearch search);
-	
 	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
@@ -36,7 +32,7 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 		}
 		DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), this, this.getStartPos(), 
 			findOneOnly, moduleResolver);
-		doSearch(search);
+		performRefSearch(search);
 		return search.getMatchDefUnits();
 	}
 	
