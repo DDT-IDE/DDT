@@ -32,7 +32,7 @@ It requires a git repo of the project updateSite Git repo, as specified by -Dupd
 	
 	
 	<target name="_check.repoDest">
-		<fail message="Files are missing.">
+		<fail message="updateSiteGitRepo dir is missing.">
 			<condition>
 				<not>
 					<available file="${updateSiteGitRepo}" type="dir" />
@@ -72,13 +72,13 @@ It requires a git repo of the project updateSite Git repo, as specified by -Dupd
 	
 	<!-- ======================================================================
 		This task must be run from within eclipse, example:
-		eclipse -application org.eclipse.ant.core.antRunner -console -consolelog -f repo-release-script.xml createCompositeRepo -DrepoDest=../ddt.updates-PR
+		eclipse -application org.eclipse.ant.core.antRunner -console -consolelog -f repo-release-script.xml createCompositeRepo -updateSiteGitRepo=../ddt.updates-PR
 	     ====================================================================== -->
 	<target name="createCompositeRepo" depends="_check.repoDest">
 		<p2.composite.repository>
-			<repository location="${repoDest}" name="DDT repository" compressed="false" />
+			<repository location="${updateSiteGitRepo}" name="DDT repository" compressed="false" />
 			<add>
-				<repository location="http://download.eclipse.org/releases/indigo" />
+				<repository location="http://download.eclipse.org/releases/kepler" />
 				<repository location="ddt.feature-repo" />
 			</add>
 		</p2.composite.repository>
