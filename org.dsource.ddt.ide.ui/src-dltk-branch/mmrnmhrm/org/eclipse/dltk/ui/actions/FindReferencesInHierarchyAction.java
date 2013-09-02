@@ -7,7 +7,6 @@ import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.actions.OperationsManager;
 
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
@@ -21,6 +20,7 @@ import org.eclipse.dltk.ui.search.PatternQuerySpecification;
 import org.eclipse.dltk.ui.search.QuerySpecification;
 
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 
 public final class FindReferencesInHierarchyAction extends FindAction {
 
@@ -40,7 +40,7 @@ public final class FindReferencesInHierarchyAction extends FindAction {
 	}
 	
 	@Override
-	protected void runOperation(DefUnit defunit) {
+	protected void runOperation(INamedElement defunit) {
 		if(defunit.getArcheType().isType()) {
 			super.runOperation(defunit);
 		} else {

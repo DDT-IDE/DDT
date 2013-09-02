@@ -1,12 +1,5 @@
 package mmrnmhrm.ui.editor.codeassist;
 
-import org.eclipse.dltk.core.CompletionProposal;
-import org.eclipse.dltk.core.IMember;
-import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
-import org.eclipse.jface.resource.ImageDescriptor;
-
-import dtool.ast.definitions.DefUnit;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
@@ -14,6 +7,14 @@ import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 import mmrnmhrm.ui.views.DeeElementImageProvider;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
+
+import org.eclipse.dltk.core.CompletionProposal;
+import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
+import org.eclipse.jface.resource.ImageDescriptor;
+
+import dtool.ast.definitions.INamedElement;
 
 public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelProvider {
 	
@@ -38,9 +39,9 @@ public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelP
 		if(proposal.getExtraInfo() instanceof DefElementDescriptor) {
 			defDescriptor = (DefElementDescriptor) proposal.getExtraInfo();
 		}
-		else if(proposal.getExtraInfo() instanceof DefUnit) {
-			DefUnit defUnit = (DefUnit) proposal.getExtraInfo();
-			defDescriptor = new DefElementDescriptor(defUnit);
+		else if(proposal.getExtraInfo() instanceof INamedElement) {
+			INamedElement defElement = (INamedElement) proposal.getExtraInfo();
+			defDescriptor = new DefElementDescriptor(defElement);
 		} 
 		else if(proposal.getModelElement() instanceof IMember) {
 			IMember member = (IMember) proposal.getModelElement();

@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import dtool.ast.declarations.PartialPackageDefUnit;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.resolver.api.IModuleResolver;
@@ -18,10 +18,10 @@ import dtool.resolver.api.IModuleResolver;
  * searches for DefUnit's whose defname matches the search name. 
  */
 public class DefUnitSearch extends CommonDefUnitSearch {
-
+	
 	protected final String searchName;
-
-	private ArrayList<DefUnit> defunits;
+	
+	private ArrayList<INamedElement> namedElements;
 	protected boolean matchesArePartialDefUnits = false;
 	
 	public DefUnitSearch(String searchName, Reference searchref, boolean findOneOnly, IModuleResolver moduleResolver) {
@@ -35,16 +35,16 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 		assertTrue(searchName.isEmpty() == false);
 	}
 	
-	public Collection<DefUnit> getMatchDefUnits() {
-		return defunits == null ? Collections.EMPTY_LIST : defunits;
+	public Collection<INamedElement> getMatchedElements() {
+		return namedElements == null ? Collections.EMPTY_LIST : namedElements;
 	}
 	
 	@Override
-	public void addMatch(DefUnit defunit) {
-		if(defunits == null)
-			defunits = new ArrayList<DefUnit>(4);
-		defunits.add(defunit);
-		if(defunit instanceof PartialPackageDefUnit)
+	public void addMatch(INamedElement namedElem) {
+		if(namedElements == null)
+			namedElements = new ArrayList<>(4);
+		namedElements.add(namedElem);
+		if(namedElem instanceof PartialPackageDefUnit)
 			matchesArePartialDefUnits = true;
 	}
 	
@@ -54,7 +54,7 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	 * all scopes, because there could allways be another partial. */
 	@Override
 	public boolean isFinished() {
-		return defunits != null && !matchesArePartialDefUnits;
+		return namedElements != null && !matchesArePartialDefUnits;
 	}
 
 	@Override

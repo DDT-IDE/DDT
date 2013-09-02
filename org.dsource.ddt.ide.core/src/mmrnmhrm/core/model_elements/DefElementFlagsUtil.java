@@ -1,5 +1,6 @@
 package mmrnmhrm.core.model_elements;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import org.eclipse.dltk.ast.Modifiers;
@@ -8,8 +9,8 @@ import org.eclipse.dltk.core.Flags;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.ITemplatableElement;
 import dtool.ast.definitions.IntrinsicDefUnit;
 
@@ -68,17 +69,20 @@ public class DefElementFlagsUtil {
 		}
 	}
 	
-	public static int elementFlagsFromDefUnit(DefUnit defUnit) {
-		EArcheType archeType = defUnit.getArcheType();
+	public static int elementFlagsForNamedElement(INamedElement defElement) {
+		EArcheType archeType = defElement.getArcheType();
 		int modifiers = elementFlagsForArchetype(archeType);
 		
-		if(defUnit instanceof CommonDefinition) {
-			CommonDefinition commonDefinition = (CommonDefinition) defUnit;
+		if(defElement instanceof CommonDefinition) {
+			CommonDefinition commonDefinition = (CommonDefinition) defElement;
 			modifiers |= getCommonDefinitionModifiersInfo(commonDefinition);
 		}
 		
-		if(defUnit instanceof IntrinsicDefUnit) {
+		if(defElement instanceof IntrinsicDefUnit) {
+			assertTrue(defElement.isLanguageIntrinsic());
 			modifiers |= DefElementFlagConstants.FLAG_NATIVE;
+		} else {
+			assertTrue(!defElement.isLanguageIntrinsic());
 		}
 		
 		return modifiers;

@@ -10,7 +10,7 @@ import java.util.Set;
 
 import melnorme.utilbox.core.Function;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.definitions.IDefElement;
+import dtool.ast.definitions.INamedElement;
 import dtool.tests.DToolBaseTest;
 
 /**
@@ -27,26 +27,26 @@ public class CompareDefUnits extends DToolBaseTest {
 		};
 	}
 	
-	public static Function<IDefElement, String> fnDefUnitToStringAsElement(final int prefixLen) {
-		return new Function<IDefElement, String>() {
+	public static Function<INamedElement, String> fnDefUnitToStringAsElement(final int prefixLen) {
+		return new Function<INamedElement, String>() {
 			@Override
-			public String evaluate(IDefElement defUnit) {
+			public String evaluate(INamedElement defUnit) {
 				return defUnit == null ? null : defUnit.getExtendedName().substring(prefixLen);
 			}
 		};
 	}
 	
-	public static Function<IDefElement, String> fnDefUnitToStringAsName() {
-		return new Function<IDefElement, String>() {
+	public static Function<INamedElement, String> fnDefUnitToStringAsName() {
+		return new Function<INamedElement, String>() {
 			@Override
-			public String evaluate(IDefElement obj) {
+			public String evaluate(INamedElement obj) {
 				return obj == null ? null : obj.getName();
 			}
 		};
 	}
 	
-	public static void checkResults(Collection<? extends IDefElement> originaResults, String[] expectedProposalsArr) {
-		Collection<IDefElement> results = new ArrayList<>(originaResults);
+	public static void checkResults(Collection<? extends INamedElement> originaResults, String[] expectedProposalsArr) {
+		Collection<INamedElement> results = new ArrayList<>(originaResults);
 		DefUnitResultsChecker.removeIgnoredDefUnits(results, false, true);
 		
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);

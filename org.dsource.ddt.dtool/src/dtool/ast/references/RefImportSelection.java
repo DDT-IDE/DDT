@@ -5,7 +5,7 @@ import java.util.Collection;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.resolver.CommonDefUnitSearch;
 
 // TODO: retire this element in favor of RefIdentifier?
@@ -29,8 +29,8 @@ public class RefImportSelection extends CommonRefIdentifier implements IImportSe
 	@Override
 	public void performRefSearch(CommonDefUnitSearch search) {
 		RefModule refMod = getImportSelectiveContainer().getModuleRef();
-		Collection<DefUnit> targetModules = refMod.findTargetDefUnits(search.getModuleResolver(), false);
-		CommonRefQualified.resolveSearchInMultipleDefUnits(targetModules, search);
+		Collection<INamedElement> targetModules = refMod.findTargetDefElements(search.getModuleResolver(), false);
+		CommonRefQualified.resolveSearchInMultipleElements(targetModules, search);
 	}
 	
 }

@@ -9,23 +9,22 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 
 public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
-	// TODO: Consider removing this reference, use less info, to be more lightweight memory-wise
-	public final DefUnit defUnit; 
+	public final INamedElement namedElement; 
 	
 	public DeeCompletionProposal(String replacementString, int replacementOffset, int replacementLength, 
-			Image image, String displayString, DefUnit defUnit,
+			Image image, String displayString, INamedElement namedElement,
 			IContextInformation contextInformation) {
 		super(replacementString, replacementOffset, replacementLength, image, displayString, contextInformation, 5);
-		this.defUnit = defUnit;
+		this.namedElement = namedElement;
 	}
 	
 	@Override
 	public String getProposalInfoString(IProgressMonitor monitor) {
-		return HoverUtil.getHoverInfoWithDeeDoc(defUnit, defUnit.getDDoc());
+		return HoverUtil.getHoverInfoWithDeeDoc(namedElement);
 	}
 	
 	@Override
@@ -37,7 +36,7 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
 	@Override
 	protected boolean isValidPrefix(String prefix) {
-		if(isInScriptdoc()) {
+		if(isInDoc()) {
 			return super.isValidPrefix(prefix);
 		}
 		return isPrefix(prefix, getReplacementString());
@@ -52,7 +51,7 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	/** A string representation of this proposal, useful for debugging purposes only. */
 	@Override
 	public String toString() {
-		return defUnit.getName();
+		return namedElement.getName();
 	}
 	
 }

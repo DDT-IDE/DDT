@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.resolver.api.IModuleResolver;
 
@@ -95,11 +96,16 @@ public abstract class CommonDefUnitSearch {
 		return matchesName(defUnit.getName());
 	}
 	
+	// TODO: subside into #matches(DefUnit)
+	public boolean matches(INamedElement defElement) {
+		return matchesName(defElement.getName());
+	}
+	
 	/** Returns whether this search matches the given name or not. */
 	public abstract boolean matchesName(String defName);
-
+	
 	
 	/** Adds the matched defunit. */
-	public abstract void addMatch(DefUnit defUnit);
-
+	public abstract void addMatch(INamedElement defElement);
+	
 }

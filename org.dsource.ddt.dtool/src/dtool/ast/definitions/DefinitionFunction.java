@@ -53,10 +53,10 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		return EArcheType.Function;
 	}
 	
-	public DefUnit findReturnTypeTargetDefUnit(IModuleResolver moduleResolver) {
+	public INamedElement findReturnTypeTargetDefUnit(IModuleResolver moduleResolver) {
 		if(retType == null) 
 			return null;
-		return retType.findTargetDefUnit(moduleResolver);
+		return retType.findTargetDefElement(moduleResolver);
 	}
 	
 	@Override

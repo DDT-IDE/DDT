@@ -48,6 +48,11 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 		String[] packages = module.getDeclaredPackages();
 		String moduleName = module.getName();
 		
+		return findModuleUnit(packages, moduleName, workingCopySourceModule);
+	}
+	
+	public ISourceModule findModuleUnit(String[] packages, String moduleName, ISourceModule workingCopySourceModule)
+		throws ModelException {
 		if(workingCopySourceModule != null) {
 			Module wcModule = DeeModuleParsingUtil.getParsedDeeModule(workingCopySourceModule);
 			

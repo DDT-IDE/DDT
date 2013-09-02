@@ -42,6 +42,11 @@ public abstract class SyntheticDefUnit extends DefUnit {
 	}
 	
 	@Override
+	public DefUnit resolveDefUnit() {
+		return null;
+	}
+	
+	@Override
 	public String getModuleFullyQualifiedName() {
 		return null;
 	}

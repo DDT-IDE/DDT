@@ -28,7 +28,7 @@ public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 		if(module != null) {
 			ReferenceResolver.findInNodeList(search, Collections.singleton(module), false);
 		} else {
-			Module targetModule = (Module) moduleRef.findTargetDefUnit(search.getModuleResolver());
+			Module targetModule = (Module) moduleRef.findTargetDefElement(search.getModuleResolver());
 			if(targetModule != null) {
 				ReferenceResolver.findInNodeList(search, Collections.singleton(targetModule), false);
 			}

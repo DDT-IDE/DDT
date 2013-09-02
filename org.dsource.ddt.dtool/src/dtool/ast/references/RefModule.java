@@ -9,8 +9,8 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.SyntheticDefUnit;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.expressions.Resolvable;
 import dtool.parser.BaseLexElement;
@@ -71,7 +71,7 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
 		Module targetMod;
 		try {
 			targetMod = moduleResolver.findModule(packages.getInternalArray(), module);

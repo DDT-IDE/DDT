@@ -1,12 +1,9 @@
 package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
 
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
@@ -18,7 +15,7 @@ import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.dltk.ui.search.PatternQuerySpecification;
 import org.eclipse.dltk.ui.search.QuerySpecification;
 
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 
 public final class FindReferencesAction extends FindAction {
 
@@ -45,7 +42,7 @@ public final class FindReferencesAction extends FindAction {
 	}
 	
 	@Override
-	protected QuerySpecification createQuery(DefUnit defunit) throws ModelException {
+	protected QuerySpecification createQuery(INamedElement defunit) throws ModelException {
 		DLTKSearchScopeFactory factory = DLTKSearchScopeFactory.getInstance();
 		
 		boolean isInsideInterpreterEnvironment = isInsideInterpreterEnv(defunit, factory);

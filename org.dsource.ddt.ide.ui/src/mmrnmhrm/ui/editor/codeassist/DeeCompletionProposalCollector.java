@@ -15,7 +15,7 @@ import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalCollector;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 
 public class DeeCompletionProposalCollector extends ScriptCompletionProposalCollector {
 	
@@ -47,17 +47,17 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 		
 		if(proposal instanceof RefSearchCompletionProposal) {
 			RefSearchCompletionProposal refSearchProposal = (RefSearchCompletionProposal) proposal;
-			DefUnit defUnit = refSearchProposal.getExtraInfo();
+			INamedElement namedElement = refSearchProposal.getExtraInfo();
 			
 			String completion = proposal.getCompletion();
 			int repStart = proposal.getReplaceStart();
 			int repLength = proposal.getReplaceEnd() - proposal.getReplaceStart();
-			Image image = createImage(proposal, defUnit);
+			Image image = createImage(proposal);
 			
-			String displayString = DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defUnit);
+			String displayString = DeeDefUnitLabelProvider.getLabelForContentAssistPopup(namedElement);
 			
 			DeeCompletionProposal completionProposal = new DeeCompletionProposal(completion, repStart, repLength,
-					image, displayString, defUnit, null);
+					image, displayString, namedElement, null);
 			completionProposal.setTriggerCharacters(getVarTrigger());
 			return completionProposal;
 			
@@ -66,8 +66,7 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 		}
 	}
 	
-	@SuppressWarnings("unused") 
-	protected Image createImage(CompletionProposal proposal, DefUnit defUnit) {
+	protected Image createImage(CompletionProposal proposal) {
 		ImageDescriptor imageDescriptor = getLabelProvider().createImageDescriptor(proposal);
 		return DeePluginImages.getImageDescriptorRegistry().get(imageDescriptor); 
 	}

@@ -13,7 +13,7 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 
 import dtool.DeeNamingRules;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.resolver.PrefixDefUnitSearch;
@@ -55,8 +55,8 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			}
 			
 			PrefixDefUnitSearch search = PrefixDefUnitSearch.doCompletionSearch(parseResult, position, mr);
-			for (DefUnit defUnit : search.getResults()) {
-				CompletionProposal proposal = createProposal(defUnit, position, search.searchOptions);
+			for (INamedElement result : search.getResults()) {
+				CompletionProposal proposal = createProposal(result, position, search.searchOptions);
 				requestor.accept(proposal);				
 			}
 			
@@ -70,15 +70,15 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		return fileName == null ? "" : DeeNamingRules.getModuleNameFromFileName(fileName);
 	}
 	
-	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset,
+	protected CompletionProposal createProposal(INamedElement namedElem, int ccOffset,
 		PrefixSearchOptions searchOptions) {
-		String rplStr = defUnit.getName().substring(searchOptions.namePrefixLen);
+		String rplStr = namedElem.getName().substring(searchOptions.namePrefixLen);
 		
 		CompletionProposal proposal = new RefSearchCompletionProposal(CompletionProposal.TYPE_REF, ccOffset);
-		proposal.setName(defUnit.getExtendedName());
+		proposal.setName(namedElem.getExtendedName());
 		proposal.setCompletion(rplStr);
 		proposal.setReplaceRange(ccOffset, ccOffset + searchOptions.rplLen);
-		proposal.setExtraInfo(defUnit);
+		proposal.setExtraInfo(namedElem);
 		
 		return proposal;
 	}
@@ -91,13 +91,13 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		
 		@Override
 		public void setExtraInfo(Object extraInfo) {
-			assertTrue(extraInfo instanceof DefUnit);
+			assertTrue(extraInfo instanceof INamedElement);
 			super.setExtraInfo(extraInfo);
 		}
 		
 		@Override
-		public DefUnit getExtraInfo() {
-			return (DefUnit) super.getExtraInfo();
+		public INamedElement getExtraInfo() {
+			return (INamedElement) super.getExtraInfo();
 		}
 		
 	}

@@ -8,7 +8,7 @@ import java.util.Collection;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Expression;
 import dtool.resolver.api.DefUnitDescriptor;
 import dtool.resolver.api.IModuleResolver;
@@ -52,7 +52,7 @@ public class RefSlice extends Reference {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		return null; // TODO:
 	}
 }

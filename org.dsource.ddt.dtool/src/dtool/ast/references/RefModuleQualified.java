@@ -6,7 +6,7 @@ import java.util.Collections;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
 import dtool.resolver.api.IModuleResolver;
@@ -42,9 +42,9 @@ public class RefModuleQualified extends CommonRefQualified {
 	}
 	
 	@Override
-	public Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver) {
+	public Collection<INamedElement> findRootDefUnits(IModuleResolver moduleResolver) {
 		final Module module = NodeUtil.getParentModule(this);
-		return Collections.singletonList((DefUnit) module);
+		return Collections.<INamedElement>singletonList(module);
 	}
 	
 }

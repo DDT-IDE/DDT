@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
@@ -19,6 +20,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EnumMember;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
 
@@ -27,6 +29,25 @@ import dtool.ast.util.NodeUtil;
  *
  */
 public class DeeModelEngine {
+	
+	public static IMember findCorrespondingModelElement(DefUnit targetDefUnit, DeeProjectModuleResolver moduleResolver)
+		throws ModelException {
+		if(targetDefUnit == null) 
+			return null;
+		
+		Module module = targetDefUnit.getModuleNode();
+		// TODO: would be nice to have test for module == null path
+		if(module != null) {
+			ISourceModule targetSrcModule = moduleResolver.findModuleUnit(module); 
+			// TODO: would be nice to have test for targetSrcModule == null path
+			// TODO consider out of buildpath scenario
+			if(targetSrcModule != null) {
+				return findCorrespondingModelElement(targetDefUnit, targetSrcModule);
+				
+			}
+		}
+		return null;
+	}
 	
 	public static IMember findCorrespondingModelElement(DefUnit defUnit, ISourceModule sourceModule)
 			throws ModelException {
@@ -134,18 +155,19 @@ public class DeeModelEngine {
 	 * Returns the fully qualified name for given defUnit.
 	 * TODO think more about the naming of local elements 
 	 */
-	public static String[] getQualification(final DefUnit defUnit) {
+	public static String[] getQualification(final INamedElement defUnit) {
 		LinkedList<String> qualification = getQualificationList(defUnit);
 		return ArrayUtil.createFrom(qualification, String.class);
 	}
 	
-	public static LinkedList<String> getQualificationList(final DefUnit defUnit) {
+	// TODO review this code
+	public static LinkedList<String> getQualificationList(final INamedElement defUnit) {
 		LinkedList<String> qualications = new LinkedList<String>();
 		
-		DefUnit defUnitIter = defUnit;
+		INamedElement defUnitIter = defUnit;
 		
 		while(true) {
-			DefUnit parentDefUnit = NodeUtil.getOuterDefUnit(defUnitIter);
+			INamedElement parentDefUnit = defUnitIter.getParentNamespace();
 			
 			if(parentDefUnit == null) {
 				if((defUnitIter instanceof Module)) {

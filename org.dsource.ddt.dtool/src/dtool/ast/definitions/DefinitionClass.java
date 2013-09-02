@@ -84,11 +84,11 @@ public class DefinitionClass extends DefinitionAggregate {
 	public void resolveSearchInSuperScopes(CommonDefUnitSearch search) {
 		IModuleResolver moduleResolver = search.getModuleResolver();
 		for(Reference baseclass : CollectionUtil.nullToEmpty(baseClasses)) {
-			DefUnit defunit = baseclass.findTargetDefUnit(moduleResolver);
-			if(defunit == null)
+			INamedElement baseClassElem = baseclass.findTargetDefElement(moduleResolver);
+			if(baseClassElem == null)
 				continue;
 			
-			defunit.resolveSearchInMembersScope(search);
+			baseClassElem.resolveSearchInMembersScope(search);
 		}
 	}
 	

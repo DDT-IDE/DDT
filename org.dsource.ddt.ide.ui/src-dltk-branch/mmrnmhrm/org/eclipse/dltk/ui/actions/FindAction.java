@@ -37,9 +37,11 @@ import org.eclipse.ui.progress.IProgressService;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.resolver.ResolverUtil;
+import dtool.resolver.ResolverUtil.ModuleNameDescriptor;
 
 public abstract class FindAction extends SelectionDispatchAction {
 
@@ -80,7 +82,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		} else if(elem instanceof Reference) {
 			Reference ref = (Reference) elem;
 			IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
-			DefUnit defunit = ref.findTargetDefUnit(new DeeProjectModuleResolver(scriptProject));
+			INamedElement defunit = ref.findTargetDefElement(new DeeProjectModuleResolver(scriptProject));
 			if(defunit == null) {
 				OperationsManager.openWarning(getShell(), SEARCH_REFS, 
 				"No DefUnit found when resolving reference.");
@@ -93,7 +95,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 	}
 
-	protected void runOperation(final DefUnit defUnit) {
+	protected void runOperation(final INamedElement defUnit) {
 		OperationsManager.executeOperation(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
@@ -102,7 +104,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}, SEARCH_REFS);
 	}
 
-	protected void performNewSearch(DefUnit defunit) throws ModelException {
+	protected void performNewSearch(INamedElement defunit) throws ModelException {
 		assertNotNull(defunit);
 		DLTKSearchQuery query= new DLTKSearchQuery(createQuery(defunit));
 		if (query.canRunInBackground()) {
@@ -128,7 +130,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 	}
 
-	protected QuerySpecification createQuery(DefUnit defunit) throws ModelException {
+	protected QuerySpecification createQuery(INamedElement defunit) throws ModelException {
 		DLTKSearchScopeFactory factory= DLTKSearchScopeFactory.getInstance();
 		IDLTKSearchScope scope= factory.createWorkspaceScope(true, getLanguageToolkit());
 		String description= factory.getWorkspaceScopeDescription(true);
@@ -151,16 +153,17 @@ public abstract class FindAction extends SelectionDispatchAction {
 		return "This operation is not available for the selected element."; 
 	}
 	
-	protected boolean isInsideInterpreterEnv(DefUnit defunit, DLTKSearchScopeFactory factory) throws ModelException {
+	protected boolean isInsideInterpreterEnv(INamedElement defunit, DLTKSearchScopeFactory factory) throws ModelException {
 		IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(scriptProject);
 		
 		boolean isInsideInterpreterEnvironment;
-		Module moduleNode = defunit.getModuleNode();
-		if(moduleNode == null) {
+		String moduleFQName = defunit.getModuleFullyQualifiedName();
+		if(moduleFQName == null) {
 			isInsideInterpreterEnvironment = false;
 		} else {
-			ISourceModule element = mr.findModuleUnit(moduleNode, null);
+			ModuleNameDescriptor nameDescriptor = ResolverUtil.getNameDescriptor(moduleFQName);
+			ISourceModule element = mr.findModuleUnit(nameDescriptor.packages, nameDescriptor.moduleName, null);
 			// review this
 			isInsideInterpreterEnvironment = element == null? false : factory.isInsideInterpreter(element);
 		}

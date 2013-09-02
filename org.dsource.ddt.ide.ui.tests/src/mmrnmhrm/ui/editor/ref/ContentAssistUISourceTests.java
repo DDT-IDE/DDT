@@ -23,8 +23,7 @@ import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
-import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.IDefElement;
+import dtool.ast.definitions.INamedElement;
 import dtool.sourcegen.AnnotatedSource;
 
 public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
@@ -100,26 +99,26 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 		assertNotNull(proposals);
 		
 		if(expectedResults != null) {
-			List<DefUnit> results = proposalResultsToDefUnit(proposals);
+			List<INamedElement> results = proposalResultsToDefUnit(proposals);
 			checkResults(results, expectedResults);
 		}
 		CodeCompletionUITestAdapter.checkProposals(proposals, repOffset, repLen, prefixLen);
 	}
 	
 	@Override
-	public void precheckOriginalResults(Collection<DefUnit> resultDefElementsOriginal) {
-		for (IDefElement defElement : resultDefElementsOriginal) {
+	public void precheckOriginalResults(Collection<INamedElement> resultDefElementsOriginal) {
+		for (INamedElement defElement : resultDefElementsOriginal) {
 			DeeDefUnitLabelProvider.getLabelForHoverSignature(defElement);
 			DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defElement);
 		}
 	}
 	
-	public List<DefUnit> proposalResultsToDefUnit(ICompletionProposal[] proposals) {
-		ArrayList<DefUnit> results = new ArrayList<>();
+	public List<INamedElement> proposalResultsToDefUnit(ICompletionProposal[] proposals) {
+		ArrayList<INamedElement> results = new ArrayList<>();
 		for (ICompletionProposal completionProposal : proposals) {
 			if(completionProposal instanceof DeeCompletionProposal) {
 				DeeCompletionProposal deeProposal = (DeeCompletionProposal) completionProposal;
-				results.add(deeProposal.defUnit);
+				results.add(deeProposal.namedElement);
 			}
 		}
 		return results;

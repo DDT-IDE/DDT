@@ -6,7 +6,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefModule;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
@@ -73,9 +73,9 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		return moduleRef.packages.getInternalArray();
 	}
 	
-	public DefUnit getPartialDefUnit(IModuleResolver moduleResolver) {
+	public INamedElement getPartialDefUnit(IModuleResolver moduleResolver) {
 		if(getPackageNames().length == 0 || getPackageNames()[0] == "") {
-			return moduleRef.findTargetDefUnit(moduleResolver);
+			return moduleRef.findTargetDefElement(moduleResolver);
 		}
 		
 		// Do lazy PartialDefUnit creation

@@ -32,7 +32,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import dtool.ast.definitions.IDefElement;
+import dtool.ast.definitions.INamedElement;
 
 public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 	
@@ -100,7 +100,7 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 				continue;
 			}
 			DeeCompletionProposal proposal = (DeeCompletionProposal) completionProposal;
-			String defName = proposal.defUnit.getExtendedName();
+			String defName = proposal.namedElement.getExtendedName();
 			
 			assertTrue(repOffset == proposal.getReplacementOffset());
 			assertTrue(repLen == proposal.getReplacementLength());
@@ -114,12 +114,12 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 		}
 	}
 	
-	public static List<IDefElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
-		List<IDefElement> results = new ArrayList<>();
+	public static List<INamedElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
+		List<INamedElement> results = new ArrayList<>();
 		for (ICompletionProposal iCompletionProposal : proposals) {
 			if(iCompletionProposal instanceof DeeCompletionProposal) {
 				DeeCompletionProposal deeCompletionProposal = (DeeCompletionProposal) iCompletionProposal;
-				results.add(deeCompletionProposal.defUnit);
+				results.add(deeCompletionProposal.namedElement);
 			}
 		}
 		return results;

@@ -28,6 +28,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 
@@ -67,14 +68,15 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		Reference ref = (Reference) node;
 		
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule);
-		Collection<DefUnit> defunits = ref.findTargetDefUnits(moduleResolver, false);
+		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		// We assume namespace Parent is the same
-		if(defunits == null) {
+		if(defElements == null) {
 			return new IModelElement[0];
 		}
 		
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
-		for (DefUnit defUnit : defunits) {
+		for (INamedElement defElement : defElements) {
+			DefUnit defUnit = defElement.resolveDefUnit();
 			IMember modelElement = getModelElement(defUnit, moduleResolver, sourceModule);
 			if(modelElement != null) {
 				list.add(modelElement);
@@ -85,6 +87,9 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 	}
 	
 	protected IMember getModelElement(DefUnit defUnit, DeeProjectModuleResolver mr, ISourceModule sourceModule) {
+		if(defUnit == null) {
+			return null;
+		}
 		Module module = defUnit.getModuleNode();
 		if(module == null) {
 			return null;

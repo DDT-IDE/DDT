@@ -5,7 +5,7 @@ import mmrnmhrm.tests.ui.BaseDeeUITest;
 import org.junit.Test;
 
 import dtool.ast.declarations.PartialPackageDefUnit;
-import dtool.ast.definitions.IDefElement;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefModule.LightweightModuleProxy;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.NativesScope;
@@ -18,7 +18,7 @@ public class DeeDefUnitLabelProvider_Test extends BaseDeeUITest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		IDefElement defElement;
+		INamedElement defElement;
 		defElement = new LightweightModuleProxy("foo");
 		assertEquals(DeeDefUnitLabelProvider.getLabelForHoverSignature(defElement), "foo");
 		assertEquals(DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defElement), "foo");
@@ -40,7 +40,7 @@ public class DeeDefUnitLabelProvider_Test extends BaseDeeUITest {
 		
 		DefUnitSearch search = new DefUnitSearch("int", null, -1, true, new NullModuleResolver());
 		ReferenceResolver.findDefUnitInScope(NativesScope.nativesScope, search);
-		defElement = search.getMatchDefUnits().iterator().next();
+		defElement = search.getMatchedElements().iterator().next();
 		
 		assertEquals(DeeDefUnitLabelProvider.getLabelForHoverSignature(defElement), "int");
 		assertEquals(DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defElement), "int");

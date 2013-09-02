@@ -4,19 +4,19 @@ package dtool.ast.expressions;
 import java.util.Collection;
 import java.util.Collections;
 
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.resolver.api.IModuleResolver;
 
 public abstract class Expression extends Resolvable implements IQualifierNode, IInitializer {
 	
 	// deprecate
-	public Collection<DefUnit> getType(IModuleResolver moduleResolver) {
-		return findTargetDefUnits(moduleResolver, false);
+	public Collection<INamedElement> getType(IModuleResolver moduleResolver) {
+		return findTargetDefElements(moduleResolver, false);
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		return Collections.emptySet();
 	}
 	

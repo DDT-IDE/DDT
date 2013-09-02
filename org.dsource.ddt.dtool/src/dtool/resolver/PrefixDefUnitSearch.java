@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import dtool.ast.ASTNode;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
@@ -31,8 +31,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
 	public final PrefixSearchOptions searchOptions = new PrefixSearchOptions();
 	
-	protected final Set<String> addedDefUnits = new HashSet<>();
-	protected final ArrayList<DefUnit> results  = new ArrayList<>();
+	protected final Set<String> addedDefElements = new HashSet<>();
+	protected final ArrayList<INamedElement> results  = new ArrayList<>();
 	
 	protected ECompletionResultStatus resultCode = ECompletionResultStatus.RESULT_OK;
 	
@@ -65,17 +65,17 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	}
 	
 	@Override
-	public void addMatch(DefUnit defUnit) {
-		String defUnitExtendedName = defUnit.getExtendedName();
+	public void addMatch(INamedElement namedElem) {
+		String extendedName = namedElem.getExtendedName();
 		
-		if(addedDefUnits.contains(defUnitExtendedName)) {
+		if(addedDefElements.contains(extendedName)) {
 			return;
 		}
-		addedDefUnits.add(defUnitExtendedName);
-		results.add(defUnit);
+		addedDefElements.add(extendedName);
+		results.add(namedElem);
 	}
 	
-	public ArrayList<DefUnit> getResults() {
+	public ArrayList<INamedElement> getResults() {
 		return results;
 	}
 	

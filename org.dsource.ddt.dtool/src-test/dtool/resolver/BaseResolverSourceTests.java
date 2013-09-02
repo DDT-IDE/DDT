@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.IDefElement;
+import dtool.ast.definitions.INamedElement;
 import dtool.parser.CommonTemplatedSourceBasedTest;
 import dtool.parser.DeeParserSourceTests;
 import dtool.resolver.api.ECompletionResultStatus;
@@ -184,8 +184,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		return expectedResults;
 	}
 	
-	protected final void checkResults(Collection<DefUnit> resultDefUnitsOriginal, 
-		String[] expectedResults) {
+	protected final void checkResults(Collection<INamedElement> resultDefUnitsOriginal, String[] expectedResults) {
 		boolean ignoreNativeResults = true;
 		for (String expectedResult : expectedResults) {
 			if(expectedResult.startsWith("/")) {
@@ -196,14 +195,14 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		checkResults(resultDefUnitsOriginal, expectedResults, true, ignoreNativeResults);
 	}
 	
-	public void checkResults(Collection<DefUnit> resultDefUnitsOriginal, String[] expectedResults,
+	public void checkResults(Collection<INamedElement> resultElementsOriginal, String[] expectedResults,
 		boolean ignoreDummyResults, boolean ignoreNativeResults) {
 		
-		if(resultDefUnitsOriginal != null) {
-			precheckOriginalResults(resultDefUnitsOriginal);
+		if(resultElementsOriginal != null) {
+			precheckOriginalResults(resultElementsOriginal);
 		}
 		
-		DefUnitResultsChecker defUnitResultsChecker = new DefUnitResultsChecker(resultDefUnitsOriginal);
+		DefUnitResultsChecker defUnitResultsChecker = new DefUnitResultsChecker(resultElementsOriginal);
 		
 		defUnitResultsChecker.removeIgnoredDefUnits(ignoreDummyResults, ignoreNativeResults);
 		removeDefUnitsFromExpected(defUnitResultsChecker.resultDefUnits);
@@ -212,19 +211,19 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	
 	/** Run these extra functions to test that they don't crash.
 	 * TODO: Ideally we would also check the results of these functions, but it's too much work for now. */
-	public void precheckOriginalResults(Collection<DefUnit> resultDefUnitsOriginal) {
-		for (IDefElement defElement : resultDefUnitsOriginal) {
-			defElement.getExtendedName();
-			defElement.getModuleFullyQualifiedName();
-			if(defElement instanceof DefUnit) {
-				DefUnit defUnit = (DefUnit) defElement;
+	public void precheckOriginalResults(Collection<INamedElement> resultElementsOriginal) {
+		for (INamedElement elem : resultElementsOriginal) {
+			elem.getExtendedName();
+			elem.getModuleFullyQualifiedName();
+			if(elem instanceof DefUnit) {
+				DefUnit defUnit = (DefUnit) elem;
 				defUnit.getModuleNode();
 			}
 		}
 	}
 	
 	@SuppressWarnings("unused")
-	public void removeDefUnitsFromExpected(Collection<IDefElement> resultDefUnits) {
+	public void removeDefUnitsFromExpected(Collection<INamedElement> resultElements) {
 	}
 	
 	public void prepRefSearchTest_________(MetadataEntry mde) {

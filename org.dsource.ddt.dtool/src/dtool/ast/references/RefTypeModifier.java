@@ -7,7 +7,7 @@ import java.util.Collection;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.parser.DeeTokens;
 import dtool.resolver.api.DefUnitDescriptor;
@@ -61,9 +61,9 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		/*BUG here null*/
-		return ref.findTargetDefUnits(moduleResolver, findFirstOnly);
+		return ref.findTargetDefElements(moduleResolver, findFirstOnly);
 	}
 	
 	@Override

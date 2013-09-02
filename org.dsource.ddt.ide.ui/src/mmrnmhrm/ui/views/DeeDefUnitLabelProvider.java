@@ -10,13 +10,13 @@ import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
-import dtool.ast.definitions.IDefElement;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 
 public class DeeDefUnitLabelProvider {
 	
-	public static String getLabelForHoverSignature(IDefElement defElement) {
+	public static String getLabelForHoverSignature(INamedElement defElement) {
 		DefUnit defUnit = defElement.asDefUnit();
 		
 		if(defUnit == null) {
@@ -64,21 +64,28 @@ public class DeeDefUnitLabelProvider {
 		return defUnit.getName();
 	}
 	
-	public static String getLabelForContentAssistPopup(IDefElement defElement) {
+	public static String getLabelForContentAssistPopup(INamedElement namedElement) {
 		
-		DefUnit defUnit = defElement.asDefUnit();
+		switch (namedElement.getArcheType()) {
+		case Module:
+			// TODO: disambiguate case with LiteModuleProxy
+			return namedElement.getName();
+		case Package:
+			return namedElement.getName();
+		default:
+			break;
+		}
+		
+		// We should NOT try to resolve defElement to its true defUnit because that can be a costly operation,
+		// and this method should calculate a label quickly, without the need for parsing or other semantic operations
+		DefUnit defUnit = namedElement.asDefUnit();
 		if(defUnit == null) {
-			return defElement.getName();
+			return namedElement.getName();
 		}
 		
 		ASTCodePrinter cp = new ASTCodePrinter();
 		
 		switch (defUnit.getNodeType()) {
-		case MODULE: {
-			Module elem = (Module) defUnit;
-			return elem.getName();
-		}
-		
 		case DEFINITION_VARIABLE: {
 			DefinitionVariable elem = (DefinitionVariable) defUnit;
 			return elem.getName() + getTypeSegment(elem.type) + getDefUnitContainerSuffix(defUnit);

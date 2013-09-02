@@ -13,6 +13,7 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
 
@@ -62,12 +63,13 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 		
 		if(patternMatcherHelper.matchesName(simpleName, node.getCoreReferenceName().toCharArray())) {
 			
-			Collection<DefUnit> defUnits = node.findTargetDefUnits(new DeeProjectModuleResolver(sourceModule), false);
+			Collection<INamedElement> defUnits = 
+				node.findTargetDefElements(new DeeProjectModuleResolver(sourceModule), false);
 			
 			int matched = 0;
 			int notMatched = 0;
 			if(defUnits != null) {
-				for (DefUnit defUnit : defUnits) {
+				for (INamedElement defUnit : defUnits) {
 					
 					String[] qualificationArray = DeeModelEngine.getQualification(defUnit);
 					char[] nodeQualification = StringUtil.collToString(qualificationArray, "$").toCharArray();

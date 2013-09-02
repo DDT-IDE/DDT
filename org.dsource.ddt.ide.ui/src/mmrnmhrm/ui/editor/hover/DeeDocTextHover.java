@@ -27,6 +27,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 
@@ -110,9 +111,9 @@ public class DeeDocTextHover extends AbstractTextHover {
 			DefUnit defUnit = ((DefSymbol) node).getDefUnit();
 			return HoverUtil.getDefUnitHoverInfoWithDeeDoc(defUnit);
 		} else if(node instanceof NamedReference) {
-			DefUnit defUnit = ((NamedReference) node).findTargetDefUnit(moduleResolver);
-			if(defUnit != null) {
-				return HoverUtil.getDefUnitHoverInfoWithDeeDoc(defUnit);
+			INamedElement namedElem = ((NamedReference) node).findTargetDefElement(moduleResolver);
+			if(namedElem != null) {
+				return HoverUtil.getHoverInfoWithDeeDoc(namedElem);
 			} else {
 				return null;
 			}

@@ -18,6 +18,7 @@ import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 
 // These tests could be expanded
 public class CompletionEngine_Test extends BaseDeeCoreTest {
@@ -63,7 +64,7 @@ public class CompletionEngine_Test extends BaseDeeCoreTest {
 	public static final class CompletionEngineTestsRequestor extends CompletionRequestor {
 		protected final int offset;
 		protected final int rplLen;
-		protected final ArrayList<DefUnit> results = new ArrayList<>();
+		protected final ArrayList<INamedElement> results = new ArrayList<>();
 		
 		private CompletionEngineTestsRequestor(int offset, int rplLen) {
 			this.offset = offset;

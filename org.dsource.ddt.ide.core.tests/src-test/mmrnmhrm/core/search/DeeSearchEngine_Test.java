@@ -46,6 +46,7 @@ import org.junit.Test;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.tests.MiscNodeUtils;
@@ -443,7 +444,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(srcModule.getScriptProject());
-		assertTrue(assertInstance(defUnit, DefinitionVariable.class).type.findTargetDefUnit(mr) == null);
+		assertTrue(assertInstance(defUnit, DefinitionVariable.class).type.findTargetDefElement(mr) == null);
 	}
 	
 	/* ---- En mass test ---- */
@@ -490,14 +491,16 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 					Reference reference = (Reference) node;
 					
 					DeeProjectModuleResolver mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
-					Collection<DefUnit> targetDefUnits = reference.findTargetDefUnits(mr, false);
-					if(targetDefUnits == null || targetDefUnits.isEmpty()) {
+					Collection<INamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
+					if(targetDefElements == null || targetDefElements.isEmpty()) {
 						return;
 					}
 					
-					for (DefUnit defUnit : targetDefUnits) {
-						ArrayList<Integer> nodeTreePath = DeeSearchEngineTestUtils.getNodeTreePath(defUnit);
-						
+					for (INamedElement defElement : targetDefElements) {
+						DefUnit defUnit = defElement.resolveDefUnit();
+						if(defUnit == null) {
+							continue;
+						}
 						Module moduleNode = defUnit.getModuleNode();
 						if(moduleNode == null) {
 							continue; // consider this case more
@@ -505,6 +508,7 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 							
 						ISourceModule defUnitSrcModule = findSourceModule(moduleNode, searchProj);
 						
+						ArrayList<Integer> nodeTreePath = DeeSearchEngineTestUtils.getNodeTreePath(defUnit);
 						Pair<ISourceModule, ?> key = Pair.create(defUnitSrcModule, nodeTreePath);
 						
 						if(defUnitToReferencesMap.get(key) == null) {

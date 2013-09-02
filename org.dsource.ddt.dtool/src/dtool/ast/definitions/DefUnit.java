@@ -15,7 +15,7 @@ import dtool.resolver.CommonDefUnitSearch;
 /**
  * Abstract class for all AST elements that define a new named entity.
  */
-public abstract class DefUnit extends ASTNode implements IDefElement {
+public abstract class DefUnit extends ASTNode implements INamedElement {
 	
 	public static class ProtoDefSymbol {
 		public final String name;
@@ -103,7 +103,7 @@ public abstract class DefUnit extends ASTNode implements IDefElement {
 	}
 	
 	@Override
-	public IDefElement getParentNamespace() {
+	public INamedElement getParentNamespace() {
 		return NodeUtil.getParentDefUnit(this);
 	}
 	
@@ -112,11 +112,16 @@ public abstract class DefUnit extends ASTNode implements IDefElement {
 		return this;
 	}
 	
+	@Override
+	public DefUnit resolveDefUnit() {
+		return this;
+	}
+	
 	/** @return the comments that define the DDoc for this defUnit. Can be null  */
 	public Token[] getDocComments() {
 		return null;
 	}
-	public void getDocComments_invariant() {
+	public void getDocComments_$invariant() {
 		for (Token token : getDocComments()) {
 			assertTrue(DeeTokenSemantics.tokenIsDocComment(token));
 		}
@@ -126,10 +131,12 @@ public abstract class DefUnit extends ASTNode implements IDefElement {
 		return DeeDocAccessor.getDdocFromDocComments(getDocComments());
 	}
 	
-	/**
-	 * Resolve given search in the members scope of this defunit.
-	 * Note that the members can be different from the lexical scope that a defunit may provide.
-	 */
+	@Override
+	public Ddoc resolveDDoc() {
+		return getDDoc();
+	}
+	
+	@Override
 	public abstract void resolveSearchInMembersScope(CommonDefUnitSearch search);
 	
 }

@@ -15,7 +15,7 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.Module;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
 import dtool.resolver.api.DefUnitDescriptor;
@@ -56,29 +56,21 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 			return;
 		
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule);
-		Collection<DefUnit> defUnits = ref.findTargetDefUnits(moduleResolver, false);
+		Collection<INamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
 		if(defUnits == null)
 			return;
 		
-		for (Iterator<DefUnit> iter = defUnits.iterator(); iter.hasNext();) {
-			DefUnit targetDefUnit = iter.next();
+		for (Iterator<INamedElement> iter = defUnits.iterator(); iter.hasNext();) {
+			INamedElement targetDefElement = iter.next();
+			DefUnit targetDefUnit = targetDefElement.resolveDefUnit();
 			
 			try {
-				Module module = targetDefUnit.getModuleNode();
-				// TODO: would be nice to have test for module == null path
-				if(module != null) {
-					ISourceModule targetSrcModule = moduleResolver.findModuleUnit(module); 
-					// TODO: would be nice to have test for targetSrcModule == null path
-					// TODO consider out of buildpath scenario
-					if(targetSrcModule != null) {
-						IMember targetModelElement = 
-								DeeModelEngine.findCorrespondingModelElement(targetDefUnit, targetSrcModule);
-						
-						if(modelElement.equals(targetModelElement)) {
-							deeMatchLocator.addMatch(ref, PatternLocator.ACCURATE_MATCH, sourceModule);
-							return;
-						}
-					}
+				IMember targetModelElement = DeeModelEngine.findCorrespondingModelElement(targetDefUnit, 
+					moduleResolver);
+
+				if(targetModelElement != null && modelElement.equals(targetModelElement)) {
+					deeMatchLocator.addMatch(ref, PatternLocator.ACCURATE_MATCH, sourceModule);
+					return;
 				}
 				
 			} catch (ModelException e) {

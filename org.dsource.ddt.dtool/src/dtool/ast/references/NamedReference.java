@@ -2,7 +2,7 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.api.DefUnitDescriptor;
@@ -26,14 +26,14 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
 		if(isMissingCoreReference()) {
 			return null;
 		}
 		DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), getModuleNode(), getStartPos(), 
 			findOneOnly, moduleResolver);
 		performRefSearch(search);
-		return search.getMatchDefUnits();
+		return search.getMatchedElements();
 	}
 	
 	/** Return wheter this reference can match the given defunit.

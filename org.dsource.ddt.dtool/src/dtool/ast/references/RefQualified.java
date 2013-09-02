@@ -8,7 +8,7 @@ import java.util.Collection;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
@@ -58,8 +58,8 @@ public class RefQualified extends CommonRefQualified {
 	}
 	
 	@Override
-	public Collection<DefUnit> findRootDefUnits(IModuleResolver moduleResolver) {
-		return qualifier.findTargetDefUnits(moduleResolver, false);
+	public Collection<INamedElement> findRootDefUnits(IModuleResolver moduleResolver) {
+		return qualifier.findTargetDefElements(moduleResolver, false);
 	}
 	
 }

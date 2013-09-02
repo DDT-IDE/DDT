@@ -2,7 +2,7 @@ package dtool.resolver;
 
 import java.util.Collection;
 
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.resolver.api.IModuleResolver;
 
 /** 
@@ -13,6 +13,6 @@ public interface IDefUnitReference {
 	
 	/** Finds the DefUnits matching this reference. 
 	 * If no results are found, return null. */
-	Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly);
+	Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly);
 	
 }

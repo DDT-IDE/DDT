@@ -42,7 +42,7 @@ public class CStyleRootRef extends Reference {
 	}
 
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		return null;
 	}
 	

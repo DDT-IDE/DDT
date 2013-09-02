@@ -16,6 +16,7 @@ import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.PartialPackageDefUnitOfPackage;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.references.CommonRefQualified;
@@ -210,7 +211,7 @@ public class ReferenceResolver {
 	/* ====================  import lookup  ==================== */
 
 	public static void findDefUnitInStaticImport(ImportContent importStatic, CommonDefUnitSearch search) {
-		DefUnit defunit = importStatic.getPartialDefUnit(search.modResolver);
+		INamedElement defunit = importStatic.getPartialDefUnit(search.modResolver);
 		if(defunit != null && search.matches(defunit))
 			search.addMatch(defunit);
 	}
@@ -247,9 +248,9 @@ public class ReferenceResolver {
 				if(!search.matchesName(name)) {
 					continue;
 				}
-				DefUnit defUnit = refImportSelection.findTargetDefUnit(search.modResolver);
-				if(defUnit != null) { 
-					search.addMatch(defUnit);
+				INamedElement namedElement = refImportSelection.findTargetDefElement(search.modResolver);
+				if(namedElement != null) { 
+					search.addMatch(namedElement);
 				}
 			}
 		}
@@ -259,7 +260,7 @@ public class ReferenceResolver {
 		
 		protected ASTNode pickedNode;
 		protected Reference pickedRef;
-		public Collection<DefUnit> resolvedDefUnits;
+		public Collection<INamedElement> resolvedDefUnits;
 		public boolean invalidPickRef = false;
 		
 		public void pickLocation(Module module, int offset) {
@@ -282,7 +283,7 @@ public class ReferenceResolver {
 			return pickedRef != null && invalidPickRef == false;
 		}
 		
-		public Collection<DefUnit> getResolvedDefUnits() {
+		public Collection<INamedElement> getResolvedDefUnits() {
 			assertTrue(isValidPickRef()); // a valid ref must have picked from offset
 			return resolvedDefUnits;
 		}
@@ -291,7 +292,7 @@ public class ReferenceResolver {
 			pickLocation(parseResult.module, offset);
 			
 			if(isValidPickRef()) {
-				resolvedDefUnits = pickedRef.findTargetDefUnits(mr, false);
+				resolvedDefUnits = pickedRef.findTargetDefElements(mr, false);
 			}
 		}
 		

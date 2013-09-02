@@ -10,7 +10,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
@@ -62,9 +62,9 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	}
 	
 	@Override
-	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findOneOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
 		// Not accurate, this will ignore the template parameters:
-		return tplRef.findTargetDefUnits(moduleResolver, findOneOnly);
+		return tplRef.findTargetDefElements(moduleResolver, findOneOnly);
 	}
 	
 }

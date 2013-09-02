@@ -22,7 +22,7 @@ import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.ISourceModule;
 
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.IDefElement;
+import dtool.ast.definitions.INamedElement;
 import dtool.resolver.DefUnitResultsChecker;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
@@ -64,9 +64,9 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	}
 	
 	@Override
-	public void removeDefUnitsFromExpected(Collection<IDefElement> resultDefUnits) {
-		for (Iterator<IDefElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			IDefElement defElement = iterator.next();
+	public void removeDefUnitsFromExpected(Collection<INamedElement> resultDefUnits) {
+		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			INamedElement defElement = iterator.next();
 			
 			if(defElement.getArcheType() == EArcheType.Module) {
 				String fqName = DefUnitResultsChecker.getDefUnitTypedQualification(defElement);

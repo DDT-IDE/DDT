@@ -2,7 +2,7 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IDefUnitReference;
@@ -20,11 +20,11 @@ public abstract class Reference extends Resolvable {
 		}
 		
 		IModuleResolver moduleResolver = search.getModuleResolver();
-		Collection<DefUnit> defunits = reference.findTargetDefUnits(moduleResolver, true);
+		Collection<INamedElement> defunits = reference.findTargetDefElements(moduleResolver, true);
 		if(defunits == null || defunits.isEmpty())
 			return;
 		// if several defUnits found, search in first only
-		DefUnit resolvedType = defunits.iterator().next();
+		INamedElement resolvedType = defunits.iterator().next();
 		resolvedType.resolveSearchInMembersScope(search);
 	}
 	

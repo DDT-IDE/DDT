@@ -42,11 +42,10 @@ import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.INativeDefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
-import dtool.ast.util.NodeUtil;
 
 public class GoToDefinitionHandler extends AbstractHandler  {
 	
@@ -152,42 +151,43 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		IModelElement element = EditorUtility.getEditorInputModelElement(editor, false);
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(element.getScriptProject());
 		
-		Collection<DefUnit> defunits = ref.findTargetDefUnits(moduleResolver, false);
+		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		
-		if(defunits == null || defunits.isEmpty()) {
+		if(defElements == null || defElements.isEmpty()) {
 			dialogWarning(window.getShell(), "Definition not found for reference: " + ref.toStringAsCode());
 			return;
 		}
 		
-		Logg.main.println(" Find Definition, found: " + collToString_defUnits(defunits, " ") );
+		Logg.main.println(" Find Definition, found: " + collToString_defUnits(defElements, " ") );
 		
 		
-		if(defunits.size() > 1) {
+		if(defElements.size() > 1) {
 			dialogInfo(window.getShell(), "Multiple definitions found: \n" 
-					+ collToString_defUnits(defunits, "\n") + "\nOpening the first one.");
-		} 
+					+ collToString_defUnits(defElements, "\n") + "\nOpening the first one.");
+		}
 		
-		DefUnit defunit = defunits.iterator().next();
+		INamedElement defElement = defElements.iterator().next();
 		
-		if(defunit instanceof INativeDefUnit) {
+		if(defElement.isLanguageIntrinsic()) {
 			// TODO: test this path
 			dialogInfo(window.getShell(), 
-				"Definition " +defunit.getExtendedName()+ " is a language primitive, cannot open editor.");
+				"Definition " +defElement.getExtendedName()+ " is a language primitive, cannot open editor.");
 			return;
 		}
-		if(!defunit.hasSourceRangeInfo()) {
-			String msg = "DefUnit " +defunit.getExtendedName()+ " has no source range info!";
+		DefUnit defUnit = defElement.resolveDefUnit();
+		if(defUnit == null || !defUnit.hasSourceRangeInfo()) {
+			String msg = "DefUnit " +defElement.getExtendedName()+ " has no source range info!";
 			dialogError(window.getShell(), msg);
 			DeeCore.logError(msg);
 			return;
 		}
 		
 		
-		Module targetModule = NodeUtil.getParentModule(defunit);
+		Module targetModule = defUnit.getModuleNode();
 		
 		if(targetModule == module) {
 			IWorkbenchPage page = window.getActivePage();
-			openEditor(page, editor.getEditorInput(), openNewEditor, null, defunit);
+			openEditor(page, editor.getEditorInput(), openNewEditor, null, defUnit);
 		} else {
 			ISourceModule targetModUnit = moduleResolver.findModuleUnit(targetModule);
 			
@@ -196,11 +196,11 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 			if (targetModUnit instanceof IExternalSourceModule) {
 				IExternalSourceModule externalSourceModule = (IExternalSourceModule) targetModUnit;
 				IEditorInput input = new ExternalStorageEditorInput(externalSourceModule);
-				openEditor(page, input, openNewEditor, editor, defunit);
+				openEditor(page, input, openNewEditor, editor, defUnit);
 			} else if (targetModUnit != null) {
 				IFile file = (IFile) DeeCore.getWorkspaceRoot().findMember(targetModUnit.getPath());
 				IEditorInput input = new FileEditorInput(file);
-				openEditor(page, input, openNewEditor, editor, defunit);
+				openEditor(page, input, openNewEditor, editor, defUnit);
 			} else {
 				throw new CoreException(DeeCore.createErrorStatus(
 						"Don't know how to open editor for: " + targetModUnit));
@@ -208,15 +208,15 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		}
 	}
 	
-	public final static String collToString_defUnits(Iterable<? extends DefUnit> nodes, String sep) {
+	public final static String collToString_defUnits(Iterable<? extends INamedElement> nodes, String sep) {
 		StringBuilder sb = new StringBuilder();
-		Iterator<? extends DefUnit> iter = nodes.iterator();
+		Iterator<? extends INamedElement> iter = nodes.iterator();
 		for (int i = 0; iter.hasNext(); i++) {
-			DefUnit defUnit = iter.next();
+			INamedElement defElement = iter.next();
 			if(i > 0) {
 				sb.append(sep);
 			}
-			sb.append(DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defUnit));
+			sb.append(DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defElement));
 		}
 		return sb.toString();
 	}

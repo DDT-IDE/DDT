@@ -7,7 +7,7 @@ import java.util.Collections;
 
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.resolver.IDefUnitReference;
@@ -31,20 +31,21 @@ public abstract class Resolvable extends ASTNode implements IDefUnitReference {
 	}
 	
 	@Override
-	public abstract Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly);
+	public abstract Collection<INamedElement> findTargetDefElements(
+		IModuleResolver moduleResolver, boolean findFirstOnly);
 	
-	public DefUnit findTargetDefUnit(IModuleResolver moduleResolver) {
-		Collection<DefUnit> defunits = findTargetDefUnits(moduleResolver, true);
-		if(defunits == null || defunits.isEmpty())
+	public INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
+		Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
+		if(namedElems == null || namedElems.isEmpty())
 			return null;
-		return defunits.iterator().next();
+		return namedElems.iterator().next();
 	}
 	
 	/** Convenience method for wraping a single defunit as a search result. */
-	public static Collection<DefUnit> wrapResult(DefUnit defunit) {
-		if(defunit == null)
+	public static Collection<INamedElement> wrapResult(INamedElement elem) {
+		if(elem == null)
 			return null;
-		return Collections.singletonList(defunit);
+		return Collections.singletonList(elem);
 	}
 	
 }
