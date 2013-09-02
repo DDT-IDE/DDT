@@ -15,13 +15,6 @@ public abstract class CommonDefUnitSearch {
 
 	public static final Collection<DefUnit> NO_DEFUNITS = Collections.emptySet();
 
-	/** Convenience method for wraping a single defunit as a search result. */
-	public static Collection<DefUnit> wrapResult(DefUnit defunit) {
-		if(defunit == null)
-			return null;
-		return Collections.singletonList(defunit);
-	}
-	
 	/** Flag for stop searching when suitable matches are found. */
 	protected final boolean findOnlyOne;
 	/** The offset of the reference. 

@@ -53,14 +53,13 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	@Override
 	public void runRefSearchTest_________(RefSearchOptions options) {
 		
-		DefUnitCollector collector = new DefUnitCollector();
 		PrefixDefUnitSearch search = 
-			PrefixDefUnitSearch.doCompletionSearch(parseResult, options.offset, mr, collector);
+			PrefixDefUnitSearch.doCompletionSearch(parseResult, options.offset, mr);
 		
 		assertEquals(search.getResultCode(), options.expectedStatusCode);
 		assertEquals(search.searchOptions.rplLen, options.rplLen);
 		
-		checkResults(collector.results, options.expectedResults);
+		checkResults(search.getResults(), options.expectedResults);
 	}
 	
 	@Override

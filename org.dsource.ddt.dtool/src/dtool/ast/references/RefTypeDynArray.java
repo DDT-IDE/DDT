@@ -7,8 +7,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.IntrinsicDefUnit;
+import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.DefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
 
 public class RefTypeDynArray extends CommonRefNative {
@@ -36,7 +36,7 @@ public class RefTypeDynArray extends CommonRefNative {
 	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return DefUnitSearch.wrapResult(IntrinsicDynArray.instance);
+		return Resolvable.wrapResult(IntrinsicDynArray.instance);
 	}
 	
 	

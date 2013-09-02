@@ -13,10 +13,8 @@ import org.junit.After;
 
 import dtool.parser.DeeParserResult;
 import dtool.resolver.CompareDefUnits;
-import dtool.resolver.DefUnitCollector;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.ECompletionResultStatus;
-import dtool.resolver.api.IDefUnitMatchAccepter;
 import dtool.tests.DToolBaseTest;
 
 public class CodeCompletion__Common extends DToolBaseTest {
@@ -62,7 +60,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	
 	protected PrefixDefUnitSearch testUnavailableCompletion(int offset, ECompletionResultStatus caResult) 
 			throws ModelException {
-		PrefixDefUnitSearch search = doCompletionSearch(offset, srcModule, new DefUnitCollector());
+		PrefixDefUnitSearch search = doCompletionSearch(offset, srcModule);
 		assertTrue(search.getResultCode() == caResult);
 		return search;
 	}
@@ -81,9 +79,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	protected void testComputeProposalsDo(int repOffset, int repLen, String[] expectedProposals) 
 		throws ModelException {
 		
-		DefUnitCollector defUnitAccepter = new DefUnitCollector();
-		
-		PrefixDefUnitSearch completionSearch = doCompletionSearch(repOffset, srcModule, defUnitAccepter);
+		PrefixDefUnitSearch completionSearch = doCompletionSearch(repOffset, srcModule);
 		
 		if(expectedProposals == null) {
 			assertTrue(completionSearch.getResultCode() != ECompletionResultStatus.RESULT_OK);
@@ -91,15 +87,14 @@ public class CodeCompletion__Common extends DToolBaseTest {
 			assertTrue(completionSearch.getResultCode() == ECompletionResultStatus.RESULT_OK);
 			assertTrue(completionSearch.searchOptions.rplLen == repLen);
 			
-			CompareDefUnits.checkResults(defUnitAccepter.results, expectedProposals);
+			CompareDefUnits.checkResults(completionSearch.getResults(), expectedProposals);
 		}
 	}
 	
-	public static PrefixDefUnitSearch doCompletionSearch(int offset, ISourceModule moduleUnit,
-		IDefUnitMatchAccepter defUnitAccepter) throws ModelException {
+	public static PrefixDefUnitSearch doCompletionSearch(int offset, ISourceModule moduleUnit) throws ModelException {
 		DeeParserResult parseResult = DeeModuleParsingUtil.getParsedDeeModuleDecl(moduleUnit).deeParserResult;
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit);
-		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr, defUnitAccepter);
+		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr);
 	}
 	
 }

@@ -11,8 +11,8 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.IntrinsicDefUnit;
+import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.DefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -59,7 +59,7 @@ public class RefTypeFunction extends CommonRefNative {
 	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return DefUnitSearch.wrapResult(IntrinsicFunction.instance);
+		return Resolvable.wrapResult(IntrinsicFunction.instance);
 	}
 	
 	public static class IntrinsicFunction extends IntrinsicDefUnit {

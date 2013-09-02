@@ -7,8 +7,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.IntrinsicDefUnit;
+import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.DefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
 
 public class RefTypePointer extends CommonRefNative {
@@ -31,7 +31,7 @@ public class RefTypePointer extends CommonRefNative {
 	
 	@Override
 	public Collection<DefUnit> findTargetDefUnits(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return DefUnitSearch.wrapResult(IntrinsicPointer.instance);
+		return Resolvable.wrapResult(IntrinsicPointer.instance);
 	}
 	
 	@Override

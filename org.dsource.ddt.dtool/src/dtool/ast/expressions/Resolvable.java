@@ -3,6 +3,7 @@ package dtool.ast.expressions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
@@ -37,6 +38,13 @@ public abstract class Resolvable extends ASTNode implements IDefUnitReference {
 		if(defunits == null || defunits.isEmpty())
 			return null;
 		return defunits.iterator().next();
+	}
+	
+	/** Convenience method for wraping a single defunit as a search result. */
+	public static Collection<DefUnit> wrapResult(DefUnit defunit) {
+		if(defunit == null)
+			return null;
+		return Collections.singletonList(defunit);
 	}
 	
 }

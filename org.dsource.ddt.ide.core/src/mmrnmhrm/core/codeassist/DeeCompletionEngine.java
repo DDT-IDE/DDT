@@ -16,7 +16,6 @@ import dtool.ast.definitions.DefUnit;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.resolver.PrefixDefUnitSearch;
-import dtool.resolver.api.IDefUnitMatchAccepter;
 import dtool.resolver.api.IModuleResolver;
 import dtool.resolver.api.NullModuleResolver;
 import dtool.resolver.api.PrefixSearchOptions;
@@ -34,14 +33,6 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		try {
 			CompletionContext context = new CompletionContext();
 			requestor.acceptContext(context);
-			
-			IDefUnitMatchAccepter collectorAdapter = new IDefUnitMatchAccepter() {
-				@Override
-				public void accept(DefUnit defUnit, PrefixSearchOptions searchOptions) {
-					CompletionProposal proposal = createProposal(defUnit, position, searchOptions);
-					requestor.accept(proposal);
-				}
-			};
 			
 			DeeParserResult parseResult;
 			IModuleResolver mr;
@@ -62,7 +53,12 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 				}
 			}
 			
-			PrefixDefUnitSearch.doCompletionSearch(parseResult, position, mr, collectorAdapter);
+			PrefixDefUnitSearch search = PrefixDefUnitSearch.doCompletionSearch(parseResult, position, mr);
+			for (DefUnit defUnit : search.getResults()) {
+				CompletionProposal proposal = createProposal(defUnit, position, search.searchOptions);
+				requestor.accept(proposal);				
+			}
+			
 		} finally {
 			requestor.endReporting();
 		}

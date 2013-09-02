@@ -12,10 +12,10 @@ import dtool.ast.declarations.SyntheticDefUnit;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
+import dtool.ast.expressions.Resolvable;
 import dtool.parser.BaseLexElement;
 import dtool.parser.IToken;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.DefUnitSearch;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
@@ -78,7 +78,7 @@ public class RefModule extends NamedReference {
 		} catch (Exception e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
-		return DefUnitSearch.wrapResult(targetMod);
+		return Resolvable.wrapResult(targetMod);
 	}
 	
 	public Module findTargetModule(IModuleResolver moduleResolver) {

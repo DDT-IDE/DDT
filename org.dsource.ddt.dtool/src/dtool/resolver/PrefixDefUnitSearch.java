@@ -3,6 +3,7 @@ package dtool.resolver;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,7 +19,6 @@ import dtool.parser.DeeTokens;
 import dtool.parser.IToken;
 import dtool.parser.TokenListUtil;
 import dtool.resolver.api.ECompletionResultStatus;
-import dtool.resolver.api.IDefUnitMatchAccepter;
 import dtool.resolver.api.IModuleResolver;
 import dtool.resolver.api.PrefixSearchOptions;
 
@@ -31,15 +31,13 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
 	public final PrefixSearchOptions searchOptions = new PrefixSearchOptions();
 	
-	protected final IDefUnitMatchAccepter defUnitAccepter;
 	protected final Set<String> addedDefUnits = new HashSet<String>();
+	protected final ArrayList<DefUnit> results  = new ArrayList<DefUnit>();
 	
 	protected ECompletionResultStatus resultCode = ECompletionResultStatus.RESULT_OK;
 	
-	public PrefixDefUnitSearch(Module refOriginModule, int refOffset,
-			IDefUnitMatchAccepter defUnitAccepter, IModuleResolver moduleResolver) {
+	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
 		super(refOriginModule, refOffset, moduleResolver);
-		this.defUnitAccepter = defUnitAccepter;
 	}
 	
 	public int getOffset() {
@@ -74,18 +72,22 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			return;
 		}
 		addedDefUnits.add(defUnitExtendedName);
-		defUnitAccepter.accept(defUnit, searchOptions);
+		results.add(defUnit);
+	}
+	
+	public ArrayList<DefUnit> getResults() {
+		return results;
 	}
 	
 	public static PrefixDefUnitSearch doCompletionSearch(DeeParserResult parseResult, final int offset, 
-		IModuleResolver mr, IDefUnitMatchAccepter defUnitAccepter) {
+		IModuleResolver mr) {
 		
 		String source = parseResult.source;
 		assertTrue(offset >= 0 && offset <= source.length());		
 		
 		Module module = parseResult.getParsedModule();
 		
-		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, defUnitAccepter, mr);
+		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, mr);
 		
 		IToken tokenAtOffset = TokenListUtil.findTokenAtOffset(offset, parseResult);
 		
