@@ -16,7 +16,7 @@ public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 	protected final RefModule moduleRef;
 	protected final DefUnit module;
 	
-	public PartialPackageDefUnitOfModule(String defName, Module module, RefModule moduleRef) {
+	public PartialPackageDefUnitOfModule(String defName, DefUnit module, RefModule moduleRef) {
 		super(defName);
 		this.module = module;
 		this.moduleRef = moduleRef;

@@ -21,8 +21,8 @@ import mmrnmhrm.core.codeassist.CompletionEngine_Test.CompletionEngineTestsReque
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.ISourceModule;
 
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.IDefElement;
 import dtool.resolver.DefUnitResultsChecker;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
@@ -64,12 +64,12 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	}
 	
 	@Override
-	public void removeDefUnitsFromExpected(Collection<DefUnit> resultDefUnits) {
-		for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			DefUnit defUnit = iterator.next();
+	public void removeDefUnitsFromExpected(Collection<IDefElement> resultDefUnits) {
+		for (Iterator<IDefElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			IDefElement defElement = iterator.next();
 			
-			if(defUnit.getArcheType() == EArcheType.Module) {
-				String fqName = DefUnitResultsChecker.getDefUnitTypedQualification(defUnit);
+			if(defElement.getArcheType() == EArcheType.Module) {
+				String fqName = DefUnitResultsChecker.getDefUnitTypedQualification(defElement);
 				if(fqName.equals("object/") || fqName.equals("std.stdio/")) {
 					iterator.remove();
 				}

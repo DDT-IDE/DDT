@@ -12,7 +12,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.IDefElement;
 import dtool.resolver.CompareDefUnits;
 import dtool.tests.ref.cc.ICodeCompletionTester;
 
@@ -56,7 +56,7 @@ public class CodeCompletionUITestAdapter extends ContentAssistUI_CommonTest impl
 			ICompletionProposal[] proposals, String... expectedProposals) {
 		assertNotNull(proposals);
 		
-		List<DefUnit> results = ContentAssistUI_CommonTest.proposalsToDefUnitResults(proposals);
+		List<IDefElement> results = ContentAssistUI_CommonTest.proposalsToDefUnitResults(proposals);
 		CompareDefUnits.checkResults(results, expectedProposals);
 		
 		checkProposals(proposals, repOffset, repLen, prefixLen);

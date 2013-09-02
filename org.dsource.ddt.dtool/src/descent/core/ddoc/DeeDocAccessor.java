@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Ary Borenszweig - initial API and implementation? (Descent project)
+ *******************************************************************************/
 package descent.core.ddoc;
 
 import java.util.HashMap;
@@ -6,7 +16,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import descent.core.ddoc.DdocSection.Parameter;
-import dtool.ast.definitions.DefUnit;
 import dtool.ddoc.DdocMacros;
 import dtool.ddoc.IDeeDocColorConstants;
 import dtool.parser.DeeLexer;
@@ -23,9 +32,9 @@ public class DeeDocAccessor {
 		redSections.add("Deprecated"); //$NON-NLS-1$
 	}
 	
-	public static Ddoc getDdoc(DefUnit def) {
+	public static Ddoc getDdocFromDocComments(Token[] docComments) {
 		Ddoc ddoc = null;
-		Token[] preComments = def.getDocComments();
+		Token[] preComments = docComments;
 		if (preComments != null && preComments.length > 0) {
 			for(Token comment : preComments) {
 				DdocParser parser = new DdocParser(comment.getSourceValue());

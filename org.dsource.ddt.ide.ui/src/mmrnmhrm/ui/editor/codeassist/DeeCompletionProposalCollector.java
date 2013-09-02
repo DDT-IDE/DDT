@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.editor.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import mmrnmhrm.core.codeassist.DeeCompletionEngine.RefSearchCompletionProposal;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.views.DeeDefUnitLabelProvider;
 
@@ -44,8 +45,9 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 	@Override
 	protected IScriptCompletionProposal createScriptCompletionProposal(CompletionProposal proposal) {
 		
-		if(proposal.getExtraInfo() instanceof DefUnit) {
-			DefUnit defUnit = (DefUnit) proposal.getExtraInfo();
+		if(proposal instanceof RefSearchCompletionProposal) {
+			RefSearchCompletionProposal refSearchProposal = (RefSearchCompletionProposal) proposal;
+			DefUnit defUnit = refSearchProposal.getExtraInfo();
 			
 			String completion = proposal.getCompletion();
 			int repStart = proposal.getReplaceStart();

@@ -30,7 +30,7 @@ public class CollectionUtil {
 	}
 	
 	/** Creates a {@link ArrayList} from given collection (collection can be null). */
-	public static <T> Collection<T> createArrayList(Collection<T> collection) {
+	public static <T> Collection<T> createArrayList(Collection<? extends T> collection) {
 		return new ArrayList<>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
 	

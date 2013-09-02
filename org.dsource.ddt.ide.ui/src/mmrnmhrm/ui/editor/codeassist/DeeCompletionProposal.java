@@ -25,7 +25,7 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
 	@Override
 	public String getProposalInfoString(IProgressMonitor monitor) {
-		return HoverUtil.getDefUnitHoverInfoWithDeeDoc(defUnit);
+		return HoverUtil.getHoverInfoWithDeeDoc(defUnit, defUnit.getDDoc());
 	}
 	
 	@Override

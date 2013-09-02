@@ -31,8 +31,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
 	public final PrefixSearchOptions searchOptions = new PrefixSearchOptions();
 	
-	protected final Set<String> addedDefUnits = new HashSet<String>();
-	protected final ArrayList<DefUnit> results  = new ArrayList<DefUnit>();
+	protected final Set<String> addedDefUnits = new HashSet<>();
+	protected final ArrayList<DefUnit> results  = new ArrayList<>();
 	
 	protected ECompletionResultStatus resultCode = ECompletionResultStatus.RESULT_OK;
 	

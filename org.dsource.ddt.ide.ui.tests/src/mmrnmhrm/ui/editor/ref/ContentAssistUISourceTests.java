@@ -24,6 +24,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.IDefElement;
 import dtool.sourcegen.AnnotatedSource;
 
 public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
@@ -106,10 +107,10 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	}
 	
 	@Override
-	public void precheckOriginalResults(Collection<DefUnit> resultDefUnitsOriginal) {
-		for (DefUnit defUnit : resultDefUnitsOriginal) {
-			DeeDefUnitLabelProvider.getLabelForHoverSignature(defUnit);
-			DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defUnit);
+	public void precheckOriginalResults(Collection<DefUnit> resultDefElementsOriginal) {
+		for (IDefElement defElement : resultDefElementsOriginal) {
+			DeeDefUnitLabelProvider.getLabelForHoverSignature(defElement);
+			DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defElement);
 		}
 	}
 	

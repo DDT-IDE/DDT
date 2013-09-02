@@ -2,8 +2,11 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import descent.core.ddoc.Ddoc;
+import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
+import dtool.ast.util.NodeUtil;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
 import dtool.parser.Token;
@@ -12,7 +15,7 @@ import dtool.resolver.CommonDefUnitSearch;
 /**
  * Abstract class for all AST elements that define a new named entity.
  */
-public abstract class DefUnit extends ASTNode {
+public abstract class DefUnit extends ASTNode implements IDefElement {
 	
 	public static class ProtoDefSymbol {
 		public final String name;
@@ -69,27 +72,44 @@ public abstract class DefUnit extends ASTNode {
 		this(new ProtoDefSymbol(defName, null, null));
 	}
 	
+	@Override
 	public String getName() {
 		return defname.name;
+	}
+	
+	public boolean syntaxIsMissingName() {
+		return getName().isEmpty();
 	}
 	
 	public boolean availableInRegularNamespace() {
 		return true;
 	}
 	
-	public boolean syntaxIsMissingName() {
-		return getName().isEmpty();
-	}
-
 	public boolean isSynthetic() {
 		return false; // reimplement method as appropriate
 	}
 	
-	/** @return true if this is a pre-defined/native language element. 
-	 * (example: primitives such as int, void, or native types like arrays, pointer types) 
-	 */
+	@Override
 	public boolean isLanguageIntrinsic() {
 		return false;
+	}
+	
+	@Override
+	public abstract EArcheType getArcheType() ;
+	
+	@Override
+	public String getExtendedName() {
+		return getName();
+	}
+	
+	@Override
+	public IDefElement getParentNamespace() {
+		return NodeUtil.getParentDefUnit(this);
+	}
+	
+	@Override
+	public DefUnit asDefUnit() {
+		return this;
 	}
 	
 	/** @return the comments that define the DDoc for this defUnit. Can be null  */
@@ -102,15 +122,8 @@ public abstract class DefUnit extends ASTNode {
 		}
 	}
 	
-	/** Gets the archetype (the kind) of this DefUnit. */
-	public abstract EArcheType getArcheType() ;
-	
-	/** @return the extended name of this defUnit. 
-	 * The extended name is the name of the defunit plus additional addornments(can contain spaces) that
-	 * allow to disambiguate this defUnit from homonym defUnits in the same scope (for example function parameters).
-	 */
-	public String getExtendedName() {
-		return getName();
+	public Ddoc getDDoc() {
+		return DeeDocAccessor.getDdocFromDocComments(getDocComments());
 	}
 	
 	/**

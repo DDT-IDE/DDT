@@ -25,6 +25,7 @@ import org.osgi.framework.Bundle;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.IDefElement;
 import dtool.ddoc.IDeeDocColorConstants;
 
 public class HoverUtil {
@@ -39,14 +40,15 @@ public class HoverUtil {
 
 	/** Gets the HTML info for the given DefUnit. */
 	public static String getDefUnitHoverInfoWithDeeDoc(DefUnit defUnit) {
+		return getHoverInfoWithDeeDoc(defUnit, defUnit.getDDoc());
+	}
+	
+	public static String getHoverInfoWithDeeDoc(IDefElement defUnit, Ddoc ddoc) {
 		String sig = DeeDefUnitLabelProvider.getLabelForHoverSignature(defUnit);
 		String str = convertToHTMLContent(sig);
 		str = "<b>" +str+ "</b>" 
-		+"  <span style=\"color: #915F6D;\" >"+
-			"("+defUnit.getArcheType().toString()+")"+"</span>";
-
+		+"  <span style=\"color: #915F6D;\" >"+ "("+defUnit.getArcheType().toString()+")"+"</span>";
 		
-		Ddoc ddoc = DeeDocAccessor.getDdoc(defUnit);
 		if(ddoc != null) {
 			StringBuffer stringBuffer = DeeDocAccessor.transform(ddoc, EMPTY_MAP);
 			str += "<br/><br/>" + stringBuffer.toString();

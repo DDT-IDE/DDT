@@ -111,6 +111,12 @@ public class Module extends DefUnit implements IScopeNode {
 	}
 	
 	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append(md, cp.ST_SEP);
+		cp.appendList(members, cp.ST_SEP);
+	}
+	
+	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Module;
 	}
@@ -132,22 +138,16 @@ public class Module extends DefUnit implements IScopeNode {
 		return cp.toString();
 	}
 	
+	@Override
+	public String getModuleFullyQualifiedName() {
+		return getFullyQualifiedName();
+	}
+	
 	public String[] getDeclaredPackages() {
 		if(md != null) {
 			return md.packages;
 		}
 		return NewUtils.EMPTY_STRING_ARRAY;
-	}
-	
-	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(md, cp.ST_SEP);
-		cp.appendList(members, cp.ST_SEP);
-	}
-	
-	@Override
-	public String getExtendedName() {
-		return getName();
 	}
 	
 	@Override

@@ -30,7 +30,7 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 		if(isMissingCoreReference()) {
 			return null;
 		}
-		DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), this, this.getStartPos(), 
+		DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), getModuleNode(), getStartPos(), 
 			findOneOnly, moduleResolver);
 		performRefSearch(search);
 		return search.getMatchDefUnits();

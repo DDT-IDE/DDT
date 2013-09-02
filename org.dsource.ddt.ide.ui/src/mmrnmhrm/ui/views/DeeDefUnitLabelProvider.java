@@ -1,7 +1,6 @@
 package mmrnmhrm.ui.views;
 
 import dtool.ast.ASTCodePrinter;
-import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAggregate;
@@ -11,24 +10,25 @@ import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
+import dtool.ast.definitions.IDefElement;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.RefModule.LightweightModuleProxy;
 import dtool.ast.references.Reference;
 
 public class DeeDefUnitLabelProvider {
 	
-	public static String getLabelForHoverSignature(DefUnit defUnit) {
-		ASTCodePrinter cp = new ASTCodePrinter();
+	public static String getLabelForHoverSignature(IDefElement defElement) {
+		DefUnit defUnit = defElement.asDefUnit();
 		
-		if(defUnit instanceof LightweightModuleProxy) {
-			LightweightModuleProxy module = (LightweightModuleProxy) defUnit;
-			return module.getFullyQualifiedName();
+		if(defUnit == null) {
+			return defElement.getName();
 		}
+		
+		ASTCodePrinter cp = new ASTCodePrinter();
 		
 		switch (defUnit.getNodeType()) {
 		case MODULE: {
 			Module module = (Module) defUnit;
-			return module.getFullyQualifiedName();
+			return module.getModuleFullyQualifiedName();
 		}
 		case DEFINITION_VARIABLE: {
 			DefinitionVariable var = (DefinitionVariable) defUnit;
@@ -64,17 +64,11 @@ public class DeeDefUnitLabelProvider {
 		return defUnit.getName();
 	}
 	
-	// TODO: there are no tests for this code
-	public static String getLabelForContentAssistPopup(DefUnit defUnit) {
+	public static String getLabelForContentAssistPopup(IDefElement defElement) {
 		
-		if(defUnit instanceof LightweightModuleProxy) {
-			LightweightModuleProxy module = (LightweightModuleProxy) defUnit;
-			return module.getFullyQualifiedName();
-		}
-		
-		if(defUnit instanceof PartialPackageDefUnit) {
-			PartialPackageDefUnit elem = (PartialPackageDefUnit) defUnit;
-			return elem.getName();
+		DefUnit defUnit = defElement.asDefUnit();
+		if(defUnit == null) {
+			return defElement.getName();
 		}
 		
 		ASTCodePrinter cp = new ASTCodePrinter();
@@ -93,6 +87,11 @@ public class DeeDefUnitLabelProvider {
 			DefVarFragment elem = (DefVarFragment) defUnit;
 			Reference type = elem.getDeclaredTypeReference();
 			return elem.getName() + getTypeSegment(type) + getDefUnitContainerSuffix(defUnit);
+		}
+		
+		case FUNCTION_PARAMETER: {
+			FunctionParameter elem = (FunctionParameter) defUnit;
+			return elem.getName() + getTypeSegment(elem.type) + getDefUnitContainerSuffix(defUnit);
 		}
 		
 		case DEFINITION_FUNCTION: {
@@ -119,10 +118,6 @@ public class DeeDefUnitLabelProvider {
 			return elem.getName() + getAliasSegment(elem.target) + getDefUnitContainerSuffix(defUnit);
 		}
 		
-		case FUNCTION_PARAMETER: {
-			FunctionParameter elem = (FunctionParameter) defUnit;
-			return elem.getName() + getTypeSegment(elem.type) + getDefUnitContainerSuffix(defUnit);
-		}
 		
 		default: break;
 		}

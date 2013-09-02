@@ -38,8 +38,7 @@ public abstract class CommonDefUnitSearch {
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
 		this.modResolver = assertNotNull(moduleResolver);
-		
-		this.refOriginModule = assertNotNull(refOriginModule);
+		this.refOriginModule = refOriginModule;
 	}
 	
 	public IModuleResolver getModuleResolver() {

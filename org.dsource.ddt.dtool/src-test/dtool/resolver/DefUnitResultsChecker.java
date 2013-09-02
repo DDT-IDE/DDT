@@ -14,17 +14,18 @@ import java.util.Map;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.IDefElement;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.RefModule.LightweightModuleProxy;
 import dtool.ast.util.NodeUtil;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
 
 public class DefUnitResultsChecker extends CommonTestUtils {
 	
-	protected final Collection<DefUnit> resultDefUnits;
+	protected final Collection<IDefElement> resultDefUnits;
 	
-	public DefUnitResultsChecker(Collection<DefUnit> resultDefUnits) {
+	public DefUnitResultsChecker(Collection<? extends IDefElement> resultDefUnits) {
 		this.resultDefUnits = createArrayList(resultDefUnits);
 	}
 	
@@ -32,17 +33,17 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives);
 	}
 	
-	public static void removeIgnoredDefUnits(Collection<DefUnit> resultDefUnits, 
+	public static void removeIgnoredDefUnits(Collection<IDefElement> resultDefUnits, 
 		boolean ignoreDummyResults, boolean ignorePrimitives) {
-		for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			DefUnit defUnit = iterator.next();
+		for (Iterator<IDefElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			IDefElement defElement = iterator.next();
 			
 			if(ignoreDummyResults && 
-				(defUnit.getName().equals("_dummy") || defUnit.getName().equals("_ignore"))) {
+				(defElement.getName().equals("_dummy") || defElement.getName().equals("_ignore"))) {
 				iterator.remove();
 			}
 			
-			if(ignorePrimitives && defUnit.isLanguageIntrinsic()) {
+			if(ignorePrimitives && defElement.isLanguageIntrinsic()) {
 				iterator.remove();
 			}
 		}
@@ -55,7 +56,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			if(expectedTarget.startsWith("@") ) {
 				String markerName = expectedTarget.substring(1);
 				MetadataEntry marker = assertNotNull(markers.get(markerName));
-				DefUnitResultsChecker.removedDefUnitByMarker(resultDefUnits, marker);
+				DefUnitResultsChecker.removeDefUnitByMarker(resultDefUnits, marker);
 			} else {
 				removeDefUnit(expectedTarget);
 			}
@@ -74,10 +75,10 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		
 		boolean removed = false;
 		if(moduleName == null ) {
-			for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-				DefUnit defUnit = iterator.next();
+			for (Iterator<IDefElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+				IDefElement defElement = iterator.next();
 				
-				if(defUnit.getName().equals(expectedTarget)) {
+				if(defElement.getName().equals(expectedTarget)) {
 					iterator.remove();
 					removed = true;
 				}
@@ -86,10 +87,10 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			String expectedFullyTypedQualification = moduleName + 
 				(defUnitModuleQualifiedName != null ? "/" + defUnitModuleQualifiedName : "");
 			
-			for (Iterator<DefUnit> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-				DefUnit defUnit = iterator.next();
+			for (Iterator<IDefElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+				IDefElement defElement = iterator.next();
 				
-				String defUnitTypedQualification = getDefUnitTypedQualification(defUnit);
+				String defUnitTypedQualification = getDefUnitTypedQualification(defElement);
 				if(defUnitTypedQualification.equals(expectedFullyTypedQualification)) {
 					iterator.remove();
 					removed = true;
@@ -110,9 +111,9 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	 * the containing defunits.
 	 * (the name is not enough to uniquely locate a defUnit in a project. That's the goal anyways)
 	 */
-	public static String getDefUnitTypedQualification(DefUnit defUnit) {
-		String base = getDefUnitTypeQualificationBase(defUnit);
-		switch(defUnit.getArcheType()) {
+	public static String getDefUnitTypedQualification(IDefElement defElement) {
+		String base = getDefUnitTypeQualificationBase(defElement);
+		switch(defElement.getArcheType()) {
 		case Package:
 			base += "/";
 			break;
@@ -121,31 +122,24 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		return base;
 	}
 	
-	public static String getDefUnitTypeQualificationBase(DefUnit defUnit) {
-		if(defUnit instanceof LightweightModuleProxy) {
-			return ((LightweightModuleProxy) defUnit).getFullyQualifiedName() + "/";
-		}
-		if(defUnit instanceof Module) {
-			return ((Module) defUnit).getFullyQualifiedName() + "/";
+	public static String getDefUnitTypeQualificationBase(IDefElement defElement) {
+		if(defElement.getArcheType() == EArcheType.Module) {
+			return defElement.getModuleFullyQualifiedName() + "/";
 		}
 		
-		DefUnit parentDefUnit = NodeUtil.getParentDefUnit(defUnit);
+		if(defElement.isLanguageIntrinsic()) { 
+			return NATIVES_ROOT + defElement.getName();
+		}
 		
-		String qualification;
-		if(parentDefUnit == null) {
-			assertTrue(defUnit.isSynthetic());
-			if(defUnit.isLanguageIntrinsic()) { 
-				qualification = NATIVES_ROOT;
-			} else {
-				qualification = "";
-			}
+		IDefElement parentNamespace = defElement.getParentNamespace();
+		if(parentNamespace == null) {
+			return defElement.getName();
 		} else {
-			String sep = parentDefUnit instanceof Module ? "" : ".";
-			String parentQualifedName = getDefUnitTypeQualificationBase(parentDefUnit);
-			qualification = parentQualifedName + sep;
+			String sep = parentNamespace.getArcheType() == EArcheType.Module  ? "" : ".";
+			String parentQualifedName = getDefUnitTypeQualificationBase(parentNamespace);
+			String qualification = parentQualifedName + sep;
+			return qualification + defElement.getName();
 		}
-		
-		return qualification + defUnit.getName();
 	}
 	
 	public static String NATIVES_ROOT = "/";
@@ -166,12 +160,15 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	
 	/* ------ */
 	
-	public static void removedDefUnitByMarker(Collection<DefUnit> resolvedDefUnits, MetadataEntry marker) {
-		for (Iterator<DefUnit> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {
-			DefUnit defUnit = iterator.next();
-			if(defUnit.defname.getEndPos() == marker.offset || defUnit.defname.getStartPos() == marker.offset) {
-				iterator.remove();
-				return;
+	public static void removeDefUnitByMarker(Collection<IDefElement> resolvedDefUnits, MetadataEntry marker) {
+		for (Iterator<IDefElement> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {
+			IDefElement defElement = iterator.next();
+			if(defElement instanceof DefUnit) {
+				DefUnit defNode = (DefUnit) defElement;
+				if(defNode.defname.getEndPos() == marker.offset || defNode.defname.getStartPos() == marker.offset) {
+					iterator.remove();
+					return;
+				}
 			}
 		}
 		assertFail();

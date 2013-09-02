@@ -123,7 +123,8 @@ public class RefModule extends NamedReference {
 			return EArcheType.Module;
 		}
 		
-		public String getFullyQualifiedName() {
+		@Override
+		public String getModuleFullyQualifiedName() {
 			return getName();
 		}
 		

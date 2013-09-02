@@ -158,8 +158,7 @@ public class ReferenceResolver {
 		else if(importsOnly && node instanceof DeclarationImport) {
 			DeclarationImport declImport = (DeclarationImport) node;
 			
-			Module searchOriginModule = search.getSearchOriginModule();
-			if(!declImport.isTransitive && !privateNodeIsVisible(declImport, searchOriginModule))
+			if(!declImport.isTransitive && !privateNodeIsVisible(declImport, search.getSearchOriginModule()))
 				return; // Don't consider private imports
 			
 			for (IImportFragment impFrag : declImport.imports) {
@@ -170,6 +169,8 @@ public class ReferenceResolver {
 	}
 	
 	public static boolean privateNodeIsVisible(ASTNode node, Module searchOriginModule) {
+		if(searchOriginModule == null) 
+			return false;
 		Module nodeModule = node.getModuleNode();
 		// only visible if in node in same module as search origin ref.
 		return searchOriginModule.getFullyQualifiedName().equals(nodeModule.getFullyQualifiedName());

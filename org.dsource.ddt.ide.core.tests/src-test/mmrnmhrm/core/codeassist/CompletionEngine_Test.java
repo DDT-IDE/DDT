@@ -4,7 +4,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
-import mmrnmhrm.core.codeassist.DeeCompletionEngine;
 import mmrnmhrm.tests.BaseDeeCoreTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;

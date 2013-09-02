@@ -32,7 +32,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.IDefElement;
 
 public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 	
@@ -114,8 +114,8 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 		}
 	}
 	
-	public static List<DefUnit> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
-		List<DefUnit> results = new ArrayList<DefUnit>();
+	public static List<IDefElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
+		List<IDefElement> results = new ArrayList<>();
 		for (ICompletionProposal iCompletionProposal : proposals) {
 			if(iCompletionProposal instanceof DeeCompletionProposal) {
 				DeeCompletionProposal deeCompletionProposal = (DeeCompletionProposal) iCompletionProposal;

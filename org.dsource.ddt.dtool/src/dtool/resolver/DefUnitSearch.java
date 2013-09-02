@@ -9,6 +9,7 @@ import java.util.Collections;
 
 import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.resolver.api.IModuleResolver;
 
@@ -24,12 +25,12 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	protected boolean matchesArePartialDefUnits = false;
 	
 	public DefUnitSearch(String searchName, Reference searchref, boolean findOneOnly, IModuleResolver moduleResolver) {
-		this(searchName, searchref, -1, findOneOnly, moduleResolver);
+		this(searchName, searchref.getModuleNode(), -1, findOneOnly, moduleResolver);
 	}
 	
-	public DefUnitSearch(String searchName, Reference searchref, int refOffset, boolean findOneOnly,
-			IModuleResolver moduleResolver) {
-		super(searchref.getModuleNode(), refOffset, findOneOnly, moduleResolver);
+	public DefUnitSearch(String searchName, Module refOriginModule, int refOffset, boolean findOneOnly,
+		IModuleResolver moduleResolver) {
+		super(refOriginModule, refOffset, findOneOnly, moduleResolver);
 		this.searchName = assertNotNull(searchName);
 		assertTrue(searchName.isEmpty() == false);
 	}

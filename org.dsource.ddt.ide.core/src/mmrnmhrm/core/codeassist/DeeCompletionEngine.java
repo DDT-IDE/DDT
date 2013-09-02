@@ -1,6 +1,7 @@
 package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
@@ -69,16 +70,36 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		return fileName == null ? "" : DeeNamingRules.getModuleNameFromFileName(fileName);
 	}
 	
-	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset, PrefixSearchOptions searchOptions) {
+	protected CompletionProposal createProposal(DefUnit defUnit, int ccOffset,
+		PrefixSearchOptions searchOptions) {
 		String rplStr = defUnit.getName().substring(searchOptions.namePrefixLen);
 		
-		CompletionProposal proposal = createProposal(CompletionProposal.TYPE_REF, ccOffset);
+		CompletionProposal proposal = new RefSearchCompletionProposal(CompletionProposal.TYPE_REF, ccOffset);
 		proposal.setName(defUnit.getExtendedName());
 		proposal.setCompletion(rplStr);
 		proposal.setReplaceRange(ccOffset, ccOffset + searchOptions.rplLen);
 		proposal.setExtraInfo(defUnit);
 		
 		return proposal;
+	}
+	
+	public static class RefSearchCompletionProposal extends CompletionProposal {
+
+		protected RefSearchCompletionProposal(int kind, int completionLocation) {
+			super(kind, completionLocation);
+		}
+		
+		@Override
+		public void setExtraInfo(Object extraInfo) {
+			assertTrue(extraInfo instanceof DefUnit);
+			super.setExtraInfo(extraInfo);
+		}
+		
+		@Override
+		public DefUnit getExtraInfo() {
+			return (DefUnit) super.getExtraInfo();
+		}
+		
 	}
 	
 }
