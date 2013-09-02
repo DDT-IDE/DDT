@@ -5,9 +5,7 @@ import java.util.List;
 
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
-import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 
 // See: http://www.digitalmars.com/d/2.0/lex.html
@@ -33,11 +31,12 @@ public class DeePartitionScanner extends RuleBasedPartitionScanner {
 		
 		List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 		
-		rules.add(new MultiLineRule("`", "`", tkRawString, NO_ESCAPE_CHAR, true));
-		rules.add(new MultiLineRule("r\"", "\"", tkRawString2, NO_ESCAPE_CHAR, true));
-		rules.add(new MultiLineRule("q\"", "\"", tkDelimString, NO_ESCAPE_CHAR, true)); // TODO: this rule is not accurate
-		rules.add(new MultiLineRule("\"", "\"", tkString, '\\', true));
-		rules.add(new SingleLineRule("'", "'", tkCharacter, '\\', true));
+		rules.add(new PatternRule_Fixed("`", "`", tkRawString, NO_ESCAPE_CHAR, false, true));
+		rules.add(new PatternRule_Fixed("r\"", "\"", tkRawString2, NO_ESCAPE_CHAR, false, true));
+		// TODO: this rule is not accurate, need to use something like HereDocEnabledPartitioner to make it work
+		rules.add(new PatternRule_Fixed("q\"", "\"", tkDelimString, NO_ESCAPE_CHAR, false, true)); 
+		rules.add(new PatternRule_Fixed("\"", "\"", tkString, '\\', false, true));
+		rules.add(new PatternRule_Fixed("'", "'", tkCharacter, '\\', true, true));
 		
 		
 		rules.add(new PatternRule_Fixed("///", null, tkSingleDocComment, NO_ESCAPE_CHAR, true, true)); 

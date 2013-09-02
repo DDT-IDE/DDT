@@ -106,6 +106,7 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 		
 		testPartitions("foo = r\"foo \n", array(DEE_RAW_STRING2)); // incomplete string
 		testPartitions("foo = r\"foo ", array(DEE_RAW_STRING2)); // incomplete string
+		testPartitions("foo = r"); // incomplete string start - Regression test
 		testPartitions("foo = r\"as\0\"df\"; /+ +/", array(DEE_RAW_STRING2, DEE_STRING));
 		testPartitions("foo = r\"as \n df\"; /+ +/", array(DEE_RAW_STRING2, DEE_NESTED_COMMENT));
 	}
@@ -115,6 +116,8 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 	public void testDelimitedStrings$() throws Exception {
 		testPartitions("foo = q\"(foo(xxx))\"; /+ +/", array(DEE_DELIM_STRING, DEE_NESTED_COMMENT));
 		testPartitions("foo = q\"(foo(xx\nx))\"; /+ +/", array(DEE_DELIM_STRING, DEE_NESTED_COMMENT));
+		testPartitions("foo = q"); // incomplete string start - Regression test
+		
 		if(!DToolBundle.UNIMPLEMENTED_FUNCTIONALITY) return;
 		
 		testPartitions("foo = q\"(foo(xx\"x))\"; /+ +/", array(DEE_DELIM_STRING, DEE_NESTED_COMMENT));
