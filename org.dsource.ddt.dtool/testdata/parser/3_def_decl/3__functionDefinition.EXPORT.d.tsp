@@ -126,10 +126,10 @@ Test function/template interactions - paramDefault convertion :
  ►#?STRUCTURE_EXPECTED!【#@OUT_BLOCKS body #@Sp_ST_BLOCK            ●InOutFunctionBody( #@OUT_BLOCKS #@Sp_ST_BLOCK )】●
  ►#?STRUCTURE_EXPECTED!【#@OUT_BLOCKS #@IN_BLOCKS body #@Sp_ST_BLOCK●InOutFunctionBody( #@OUT_BLOCKS #@IN_BLOCKS #@Sp_ST_BLOCK )】●
  
- ►#?STRUCTURE_EXPECTED!【in     #@Sp_ST_BLOCK #@NO_BODY     #@Sp_ST_BLOCK  ●InOutFunctionBody( #@Sp_ST_BLOCK #@NO_BODY )】●
- ►#?STRUCTURE_EXPECTED!【in     #@Sp_ST_BLOCK #@NO_BODY  in #@Sp_ST_BLOCK  ●InOutFunctionBody( #@Sp_ST_BLOCK #@NO_BODY )】●
- ►#?STRUCTURE_EXPECTED!【out(f) #@Sp_ST_BLOCK #@NO_BODY         #@Sp_ST_BLOCK ●InOutFunctionBody( FunctionBodyOutBlock(Symbol #@Sp_ST_BLOCK) #@NO_BODY )】●
- ►#?STRUCTURE_EXPECTED!【out(f) #@Sp_ST_BLOCK #@NO_BODY  out(f) #@Sp_ST_BLOCK ●InOutFunctionBody( FunctionBodyOutBlock(Symbol #@Sp_ST_BLOCK) #@NO_BODY )】●
+ ►#?STRUCTURE_EXPECTED!【in     #@Sp_ST_BLOCK #@IGNORE_REST     #@Sp_ST_BLOCK  ●InOutFunctionBody( #@Sp_ST_BLOCK #@IGNORE_REST )】●
+ ►#?STRUCTURE_EXPECTED!【in     #@Sp_ST_BLOCK #@IGNORE_REST  in #@Sp_ST_BLOCK  ●InOutFunctionBody( #@Sp_ST_BLOCK #@IGNORE_REST )】●
+ ►#?STRUCTURE_EXPECTED!【out(f) #@Sp_ST_BLOCK #@IGNORE_REST         #@Sp_ST_BLOCK ●InOutFunctionBody( FunctionBodyOutBlock(Symbol #@Sp_ST_BLOCK) #@IGNORE_REST )】●
+ ►#?STRUCTURE_EXPECTED!【out(f) #@Sp_ST_BLOCK #@IGNORE_REST  out(f) #@Sp_ST_BLOCK ●InOutFunctionBody( FunctionBodyOutBlock(Symbol #@Sp_ST_BLOCK) #@IGNORE_REST )】●
 ¤》
 #@FN_BODY__SAMPLE《
  ►#?STRUCTURE_EXPECTED!【  #@IN_BLOCKS body #@Sp_ST_BLOCK             ●InOutFunctionBody( #@IN_BLOCKS #@Sp_ST_BLOCK )】●

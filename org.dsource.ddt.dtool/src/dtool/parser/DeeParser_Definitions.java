@@ -944,8 +944,6 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			} else {
 				if(inBlock == null && outBlock == null) {
 					return AbstractParser.<FunctionBody>nullResult();
-				} else {
-					parse.parseRequiredRule(nullResult(), RULE_FN_BODY);
 				}
 			}
 		}

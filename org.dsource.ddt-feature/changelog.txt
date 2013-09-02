@@ -2,6 +2,9 @@
 
 = DDT Change Log =
 
+== DDT 0.8.1 (devel) ==
+ * Fixed issue #7: Error parsing interface function with contracts but no body
+
 == DDT 0.8.0 (2013-08-30) ==
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).
  * Changed: In DDoc view, the text of undefined macros now remains unmodified, instead of being replaced by empty text.
