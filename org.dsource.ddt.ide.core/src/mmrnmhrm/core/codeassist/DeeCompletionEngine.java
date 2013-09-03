@@ -72,7 +72,14 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
 	protected CompletionProposal createProposal(INamedElement namedElem, int ccOffset,
 		PrefixSearchOptions searchOptions) {
-		String rplStr = namedElem.getName().substring(searchOptions.namePrefixLen);
+		String rplName;
+		if(searchOptions.isImportModuleSearch) {
+			rplName = namedElem.getFullyQualifiedName();
+		} else {
+			rplName = namedElem.getName();
+		}
+		
+		String rplStr = rplName.substring(searchOptions.namePrefixLen);
 		
 		CompletionProposal proposal = new RefSearchCompletionProposal(ccOffset, searchOptions.isImportModuleSearch);
 		proposal.setName(namedElem.getExtendedName());

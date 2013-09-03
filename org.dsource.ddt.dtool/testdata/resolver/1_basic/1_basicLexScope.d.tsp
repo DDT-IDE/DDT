@@ -14,6 +14,7 @@ module tests;
 int Var;
 
 Var#FIND¤【tests/Var】#FIND¤【Var】;
+NonExistant#FIND¤【】#REFSEARCH¤【】;
 
 #REFSEARCH¤【tests▪Var▪Var2▪Class】
 static #REFSEARCH¤【tests▪Var▪Var2▪Class】 if(true) {

@@ -1,23 +1,16 @@
 package dtool.ast.references;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.utilbox.misc.StringUtil;
-import descent.core.ddoc.Ddoc;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.declarations.SyntheticDefUnit;
-import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.Module;
+import dtool.ast.declarations.ModuleProxy;
 import dtool.parser.BaseLexElement;
 import dtool.parser.IToken;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.PrefixDefUnitSearch;
-import dtool.resolver.ResolverUtil;
-import dtool.resolver.ResolverUtil.ModuleNameDescriptor;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 import dtool.util.ArrayViewExt;
@@ -71,6 +64,10 @@ public class RefModule extends NamedReference {
 		return module;
 	}
 	
+	protected String getRefModuleFullyQualifiedName() {
+		return toStringAsCode();
+	}
+	
 	@Override
 	public ModuleProxy findTargetDefElement(IModuleResolver moduleResolver) {
 		return (ModuleProxy) super.findTargetDefElement(moduleResolver);
@@ -82,16 +79,12 @@ public class RefModule extends NamedReference {
 			PrefixDefUnitSearch prefixDefUnitSearch = (PrefixDefUnitSearch) search;
 			doSearch_forPrefixSearch(prefixDefUnitSearch);
 		} else {
+			assertTrue(isMissingCoreReference() == false);
 			DefUnitSearch defUnitSearch = (DefUnitSearch) search;
 			IModuleResolver mr = search.getModuleResolver();
-			Module targetModule;
-			try {
-				targetModule = mr.findModule(packages.getInternalArray(), module);
-			} catch(Exception e) {
-				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-			}
-			if(targetModule != null) {
-				defUnitSearch.addMatch(new ModuleProxy(targetModule.getFullyQualifiedName(), mr));
+			ModuleProxy moduleProxy = new ModuleProxy(getRefModuleFullyQualifiedName(), mr);
+			if(moduleProxy.resolveDefUnit() != null) {
+				defUnitSearch.addMatch(moduleProxy);
 			}
 		}
 	}
@@ -103,68 +96,8 @@ public class RefModule extends NamedReference {
 		for (int i = 0; i < strings.length; i++) {
 			String fqName = strings[i];
 			
-			search.addMatch(new ModuleProxy(fqName, search.getModuleResolver()));
+			search.addMatchDirectly(new ModuleProxy(fqName, search.getModuleResolver()));
 		}
-	}
-	
-	public static class ModuleProxy extends SyntheticDefUnit {
-		
-		protected final IModuleResolver moduleResolver;
-		protected String fqModuleName;
-		
-		public ModuleProxy(String fqModuleName, IModuleResolver moduleResolver) {
-			super(StringUtil.substringAfterLastMatch(fqModuleName, "."));
-			this.fqModuleName = fqModuleName;
-			this.moduleResolver = moduleResolver;
-		}
-		
-		@Override
-		public EArcheType getArcheType() {
-			return EArcheType.Module;
-		}
-		
-		@Override
-		public void visitChildren(IASTVisitor visitor) {
-			assertFail();
-		}
-		
-		@Override
-		public String getModuleFullyQualifiedName() {
-			return fqModuleName;
-		}
-		
-		@Override
-		public String getFullyQualifiedName() {
-			return fqModuleName;
-		}
-		
-		@Override
-		public Module resolveDefUnit() {
-			ModuleNameDescriptor nameDescriptor = ResolverUtil.getNameDescriptor(getModuleFullyQualifiedName());
-			try {
-				return moduleResolver.findModule(nameDescriptor.packages, nameDescriptor.moduleName);
-			} catch(Exception e) {
-				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-			}
-		}
-		
-		@Override
-		public Ddoc resolveDDoc() {
-			DefUnit resolvedModule = resolveDefUnit();
-			if(resolvedModule != null) {
-				return resolveDefUnit().getDDoc();
-			}
-			return null;
-		}
-		
-		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			DefUnit resolvedModule = resolveDefUnit();
-			if(resolvedModule != null) {
-				resolvedModule.resolveSearchInMembersScope(search);
-			}
-		}
-		
 	}
 	
 }

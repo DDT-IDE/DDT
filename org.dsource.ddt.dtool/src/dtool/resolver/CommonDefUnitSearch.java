@@ -108,4 +108,9 @@ public abstract class CommonDefUnitSearch {
 	/** Adds the matched defunit. */
 	public abstract void addMatch(INamedElement defElement);
 	
+	@Override
+	public String toString() {
+		return getClass().getName() + " ---";
+	}
+	
 }

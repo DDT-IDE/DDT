@@ -4,9 +4,9 @@ import mmrnmhrm.tests.ui.BaseDeeUITest;
 
 import org.junit.Test;
 
+import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.INamedElement;
-import dtool.ast.references.RefModule.ModuleProxy;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.NativesScope;
 import dtool.resolver.ReferenceResolver;

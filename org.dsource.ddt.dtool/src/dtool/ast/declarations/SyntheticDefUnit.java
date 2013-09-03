@@ -28,7 +28,7 @@ public abstract class SyntheticDefUnit extends DefUnit {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		// TODO: review if this is correct
 		cp.append("#");
-		cp.append(defname);
+		cp.append(getFullyQualifiedName());
 	}
 	
 	@Override

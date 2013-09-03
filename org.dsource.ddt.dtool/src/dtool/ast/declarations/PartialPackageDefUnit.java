@@ -1,6 +1,7 @@
 package dtool.ast.declarations;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -44,6 +45,14 @@ public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements 
 	@Override
 	public String getModuleFullyQualifiedName() {
 		return null;
+	}
+	
+	public abstract String toStringMemberName();
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		super.toStringAsCode(cp);
+		cp.appendStrings("(", toStringMemberName(), ")");
 	}
 	
 	@Override

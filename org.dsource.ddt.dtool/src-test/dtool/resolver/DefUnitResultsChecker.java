@@ -14,10 +14,8 @@ import java.util.Map;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
-import dtool.ast.definitions.Module;
-import dtool.ast.util.NodeUtil;
+import dtool.ast.util.NamedElementUtil;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
 
@@ -90,7 +88,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
 				INamedElement element = iterator.next();
 				
-				String defUnitTypedQualification = getDefUnitTypedQualification(element);
+				String defUnitTypedQualification = NamedElementUtil.getElementTypedQualification(element);
 				if(defUnitTypedQualification.equals(expectedFullyTypedQualification)) {
 					iterator.remove();
 					removed = true;
@@ -105,56 +103,6 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		}
 	}
 	
-	/**
-	 * Return a name identifying this defUnit in the projects source code.
-	 * It's similar to a fully qualified name, but has some more information on the name about
-	 * the containing defunits.
-	 * (the name is not enough to uniquely locate a defUnit in a project. That's the goal anyways)
-	 */
-	public static String getDefUnitTypedQualification(INamedElement namedElement) {
-		String base = getDefUnitTypeQualificationBase(namedElement);
-		switch(namedElement.getArcheType()) {
-		case Package:
-			base += "/";
-			break;
-		default:
-		}
-		return base;
-	}
-	
-	public static String getDefUnitTypeQualificationBase(INamedElement namedElement) {
-		if(namedElement.getArcheType() == EArcheType.Module) {
-			return namedElement.getModuleFullyQualifiedName() + "/";
-		}
-		
-		if(namedElement.isLanguageIntrinsic()) { 
-			return NATIVES_ROOT + namedElement.getName();
-		}
-		
-		INamedElement parentNamespace = namedElement.getParentNamespace();
-		if(parentNamespace == null) {
-			return namedElement.getName();
-		} else {
-			String sep = parentNamespace.getArcheType() == EArcheType.Module  ? "" : ".";
-			String parentQualifedName = getDefUnitTypeQualificationBase(parentNamespace);
-			String qualification = parentQualifedName + sep;
-			return qualification + namedElement.getName();
-		}
-	}
-	
-	public static String NATIVES_ROOT = "/";
-	
-	public static String getDefUnitModuleQualifedName(DefUnit defUnit) {
-		if(defUnit instanceof Module) {
-			return "";
-		}
-		DefUnit parentDefUnit = NodeUtil.getParentDefUnit(defUnit);
-		String parentQualifedName = getDefUnitModuleQualifedName(parentDefUnit);
-		if(parentQualifedName == "") {
-			return defUnit.getName();
-		}
-		return parentQualifedName + "." + defUnit.getName();
-	}
 	
 	
 	/* ------ */

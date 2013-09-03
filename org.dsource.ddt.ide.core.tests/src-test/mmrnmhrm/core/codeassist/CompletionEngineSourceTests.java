@@ -23,7 +23,7 @@ import org.eclipse.dltk.core.ISourceModule;
 
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
-import dtool.resolver.DefUnitResultsChecker;
+import dtool.ast.util.NamedElementUtil;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class CompletionEngineSourceTests extends CoreResolverSourceTests {
@@ -69,7 +69,7 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 			INamedElement defElement = iterator.next();
 			
 			if(defElement.getArcheType() == EArcheType.Module) {
-				String fqName = DefUnitResultsChecker.getDefUnitTypedQualification(defElement);
+				String fqName = NamedElementUtil.getElementTypedQualification(defElement);
 				if(fqName.equals("object/") || fqName.equals("std.stdio/")) {
 					iterator.remove();
 				}

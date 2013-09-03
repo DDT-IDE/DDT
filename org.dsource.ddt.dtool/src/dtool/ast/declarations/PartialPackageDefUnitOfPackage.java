@@ -18,6 +18,11 @@ public class PartialPackageDefUnitOfPackage extends PartialPackageDefUnit  {
 	}
 	
 	@Override
+	public String toStringMemberName() {
+		return subPackage.getName() + "." + subPackage.toStringMemberName();
+	}
+	
+	@Override
 	public void resolveSearchInScope(CommonDefUnitSearch search) {
 		ReferenceResolver.findInNodeList(search, Collections.singleton(subPackage), false);
 	}

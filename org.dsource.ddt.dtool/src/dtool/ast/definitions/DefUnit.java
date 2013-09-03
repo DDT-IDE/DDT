@@ -11,7 +11,7 @@ import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
-import dtool.ast.references.RefModule.ModuleProxy;
+import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.util.NodeUtil;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;

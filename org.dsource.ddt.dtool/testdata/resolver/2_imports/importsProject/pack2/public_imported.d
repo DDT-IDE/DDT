@@ -6,4 +6,4 @@ int foopublicImportVar;
 
 int foopublicImportVar2;
 
-public import pack.modSyntaxErrors;
+public import pack.modNonExistant;

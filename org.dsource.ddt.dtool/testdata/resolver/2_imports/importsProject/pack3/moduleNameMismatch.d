@@ -1,3 +1,3 @@
-module pack2.anotherName;
+module pack3.anotherName;
 
 int moduleNameMismatch_var;

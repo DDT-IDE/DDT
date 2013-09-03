@@ -7,12 +7,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import melnorme.utilbox.core.Function;
+import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
+import dtool.ast.util.NamedElementUtil;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
@@ -72,6 +75,10 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			return;
 		}
 		addedDefElements.add(extendedName);
+		addMatchDirectly(namedElem);
+	}
+	
+	public void addMatchDirectly(INamedElement namedElem) {
 		results.add(namedElem);
 	}
 	
@@ -182,4 +189,18 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		search.searchOptions.isImportModuleSearch = true;
 	}
 	
+	
+	@Override
+	public String toString() {
+		String str = super.toString() + "\n";
+		str += "searchPrefix: " + searchOptions.searchPrefix +"\n";
+		str += "----- Results: -----\n";
+		str += StringUtil.collToString(results, "\n", new Function<INamedElement, String>() {
+			@Override
+			public String evaluate(INamedElement obj) {
+				return NamedElementUtil.getElementTypedQualification(obj); 
+			}
+		});
+		return str;
+	}
 }

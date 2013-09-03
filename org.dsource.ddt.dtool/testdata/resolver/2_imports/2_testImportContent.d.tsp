@@ -28,6 +28,16 @@ static import pack.mod2, pack.sample, pack.subpack.mod3;
 	#REFSEARCH¤【importTest▪pack▪modA】
 	#@STATIC_IMPORT_TEST
 #@__CONTEXT_END__
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Non-existant
+// Non-existant packages: // TODO: should be FIND¤【】 instead of FINDMISSING¤【】 ?
+import pack_NONEXISTANT#FINDMISSING#REFSEARCH¤【►1】.#FINDMISSING#REFSEARCH¤【】;
+import pack_NONEXISTANT.subpack#FINDMISSING#REFSEARCH¤【►1】.#FINDMISSING#REFSEARCH¤【】;
+import pack.subpack_NONEXISTANT#FINDMISSING#REFSEARCH¤【►1】.#FINDMISSING#REFSEARCH¤【】;
+// Non-existant module:
+import pack.NONEXISTANT#FIND¤【】#REFSEARCH¤【】;
+
+pack.#REFSEARCH¤【subpack_NONEXISTANT】; // TODO change this API?
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module importTest; #PROJECT(importsProject)
 
@@ -64,11 +74,22 @@ import modA#FIND¤【modA/】#REFSEARCH¤【modA/】;
 
 import pack.mod1#FIND¤【pack.mod1/】#REFSEARCH¤【pack.mod1/】;
 import pack.s#FIND¤【】#REFSEARCH¤【pack.sample/▪pack.sample2/▪pack.sample3/▪pack.subpack.mod3/▪pack.subpack.mod4/】;
-import pack_NONEXISTANT.#FINDMISSING#REFSEARCH¤【】;
-
 import pack.subpack.mod3#FIND¤【pack.subpack.mod3/】#REFSEARCH¤【pack.subpack.mod3/】;
-import pack_NONEXISTANT.subpack.#FINDMISSING#REFSEARCH¤【】;
-import pack.subpack_NONEXISTANT.#FINDMISSING#REFSEARCH¤【】;
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Name mismatch
+module importTest; #PROJECT(importsProject)
+// Test name mismatch - as pick location:
+import pack3.#REFSEARCH¤【pack3.fullNameMismatch/▪pack3.moduleNameMismatch/▪pack3.packageNameMismatch/▪pack3.other/】;
+ import pack3.moduleNameMismatch#FIND¤【pack3.moduleNameMismatch/】#REFSEARCH¤【pack3.moduleNameMismatch/】;
+import pack3.packageNameMismatch#FIND¤【pack3.packageNameMismatch/】#REFSEARCH¤【pack3.packageNameMismatch/】;
+   import pack3.fullNameMismatch#FIND¤【pack3.fullNameMismatch/】#REFSEARCH¤【pack3.fullNameMismatch/】;
+
+// Test name mismatch - as import content:
+pack3.#REFSEARCH¤【pack3.fullNameMismatch/▪pack3.moduleNameMismatch/▪pack3.packageNameMismatch/】;
+ pack3.moduleNameMismatch#FIND¤【pack3.moduleNameMismatch/】.#REFSEARCH¤【moduleNameMismatch_var】;
+pack3.packageNameMismatch#FIND¤【pack3.packageNameMismatch/】.#REFSEARCH¤【packageNameMismatch_var】;
+   pack3.fullNameMismatch#FIND¤【pack3.fullNameMismatch/】.#REFSEARCH¤【fullNameMismatch_var】;
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax errors
 module importTest; #PROJECT(importsProject)
 
