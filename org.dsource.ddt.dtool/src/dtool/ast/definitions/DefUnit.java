@@ -11,7 +11,7 @@ import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
-import dtool.ast.references.RefModule.LightweightModuleProxy;
+import dtool.ast.references.RefModule.ModuleProxy;
 import dtool.ast.util.NodeUtil;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
@@ -123,8 +123,8 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 			INamedElement parentDefUnit = defUnitIter.getParentNamespace();
 			// TODO: fix this code
 			if(parentDefUnit == null) {
-				if(defUnitIter instanceof LightweightModuleProxy) {
-					LightweightModuleProxy lightweightModuleProxy = (LightweightModuleProxy) defUnitIter;
+				if(defUnitIter instanceof ModuleProxy) {
+					ModuleProxy lightweightModuleProxy = (ModuleProxy) defUnitIter;
 					defUnitIter = lightweightModuleProxy.resolveDefUnit();
 				}
 				
@@ -140,6 +140,16 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 				qualications.add(0, parentDefUnit.getName());
 				defUnitIter = parentDefUnit;
 			}
+		}
+	}
+	
+	@Override
+	public String getFullyQualifiedName() {
+		INamedElement parentNamespace = getParentNamespace();
+		if(parentNamespace == null) {
+			return getName();
+		} else {
+			return parentNamespace.getFullyQualifiedName() + "." + getName();
 		}
 	}
 	

@@ -6,34 +6,39 @@ import org.junit.Test;
 
 import dtool.ast.declarations.PartialPackageDefUnit;
 import dtool.ast.definitions.INamedElement;
-import dtool.ast.references.RefModule.LightweightModuleProxy;
+import dtool.ast.references.RefModule.ModuleProxy;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.NativesScope;
 import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.NullModuleResolver;
 
-public class DeeDefUnitLabelProvider_Test extends BaseDeeUITest {
+public class DeeElementLabelProvider_Test extends BaseDeeUITest {
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
 		INamedElement defElement;
-		defElement = new LightweightModuleProxy("foo", null);
+		defElement = new ModuleProxy("foo", null);
 		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "foo");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "foo");
 		
-		defElement = new LightweightModuleProxy("pack.mod", null);
+		defElement = new ModuleProxy("pack.mod", null);
 		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack.mod");
-		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack.mod");
+		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "mod");
+		
+		defElement = new ModuleProxy("pack.sub.mod", null);
+		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack.sub.mod");
+		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "mod");
+		
 		
 		defElement = PartialPackageDefUnit.createPartialDefUnits(array("pack"), null, 
-			new LightweightModuleProxy("modA", null));
+			new ModuleProxy("modA", null));
 		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 
 		defElement = PartialPackageDefUnit.createPartialDefUnits(array("pack", "sub"), null, 
-			new LightweightModuleProxy("modA", null));
+			new ModuleProxy("modA", null));
 		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 		

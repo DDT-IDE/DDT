@@ -74,7 +74,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		PrefixSearchOptions searchOptions) {
 		String rplStr = namedElem.getName().substring(searchOptions.namePrefixLen);
 		
-		CompletionProposal proposal = new RefSearchCompletionProposal(CompletionProposal.TYPE_REF, ccOffset);
+		CompletionProposal proposal = new RefSearchCompletionProposal(ccOffset, searchOptions.isImportModuleSearch);
 		proposal.setName(namedElem.getExtendedName());
 		proposal.setCompletion(rplStr);
 		proposal.setReplaceRange(ccOffset, ccOffset + searchOptions.rplLen);
@@ -84,9 +84,12 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	}
 	
 	public static class RefSearchCompletionProposal extends CompletionProposal {
-
-		protected RefSearchCompletionProposal(int kind, int completionLocation) {
-			super(kind, completionLocation);
+		
+		public final boolean isModuleImportCompletion;
+		
+		protected RefSearchCompletionProposal(int completionLocation, boolean isModuleImportCompletion) {
+			super(CompletionProposal.TYPE_REF, completionLocation);
+			this.isModuleImportCompletion = isModuleImportCompletion;
 		}
 		
 		@Override
@@ -98,6 +101,10 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		@Override
 		public INamedElement getExtraInfo() {
 			return (INamedElement) super.getExtraInfo();
+		}
+		
+		public boolean isModuleImportCompletion() {
+			return isModuleImportCompletion;
 		}
 		
 	}

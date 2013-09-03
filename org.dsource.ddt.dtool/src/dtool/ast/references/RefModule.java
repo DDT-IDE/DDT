@@ -2,6 +2,7 @@ package dtool.ast.references;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.utilbox.misc.StringUtil;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -71,8 +72,8 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public LightweightModuleProxy findTargetDefElement(IModuleResolver moduleResolver) {
-		return (LightweightModuleProxy) super.findTargetDefElement(moduleResolver);
+	public ModuleProxy findTargetDefElement(IModuleResolver moduleResolver) {
+		return (ModuleProxy) super.findTargetDefElement(moduleResolver);
 	}
 	
 	@Override
@@ -90,7 +91,7 @@ public class RefModule extends NamedReference {
 				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 			}
 			if(targetModule != null) {
-				defUnitSearch.addMatch(new LightweightModuleProxy(targetModule.getFullyQualifiedName(), mr));
+				defUnitSearch.addMatch(new ModuleProxy(targetModule.getFullyQualifiedName(), mr));
 			}
 		}
 	}
@@ -102,16 +103,18 @@ public class RefModule extends NamedReference {
 		for (int i = 0; i < strings.length; i++) {
 			String fqName = strings[i];
 			
-			search.addMatch(new LightweightModuleProxy(fqName, search.getModuleResolver()));
+			search.addMatch(new ModuleProxy(fqName, search.getModuleResolver()));
 		}
 	}
 	
-	public static class LightweightModuleProxy extends SyntheticDefUnit {
+	public static class ModuleProxy extends SyntheticDefUnit {
 		
 		protected final IModuleResolver moduleResolver;
-
-		public LightweightModuleProxy(String fqModuleName, IModuleResolver moduleResolver) {
-			super(fqModuleName);
+		protected String fqModuleName;
+		
+		public ModuleProxy(String fqModuleName, IModuleResolver moduleResolver) {
+			super(StringUtil.substringAfterLastMatch(fqModuleName, "."));
+			this.fqModuleName = fqModuleName;
 			this.moduleResolver = moduleResolver;
 		}
 		
@@ -121,13 +124,18 @@ public class RefModule extends NamedReference {
 		}
 		
 		@Override
-		public String getModuleFullyQualifiedName() {
-			return getName();
+		public void visitChildren(IASTVisitor visitor) {
+			assertFail();
 		}
 		
 		@Override
-		public void visitChildren(IASTVisitor visitor) {
-			assertFail();
+		public String getModuleFullyQualifiedName() {
+			return fqModuleName;
+		}
+		
+		@Override
+		public String getFullyQualifiedName() {
+			return fqModuleName;
 		}
 		
 		@Override

@@ -2,14 +2,12 @@ package dtool.resolver.api;
 
 public class PrefixSearchOptions {
 	
-	public String searchPrefix;
-	public int namePrefixLen;
-	public int rplLen;
+	public String searchPrefix = "";
+	public int namePrefixLen = 0;
+	public int rplLen = 0;
+	public boolean isImportModuleSearch = false;
 	
 	public PrefixSearchOptions() {
-		searchPrefix = "";
-		rplLen = 0;
-		namePrefixLen = 0;
 	}
 	
 }

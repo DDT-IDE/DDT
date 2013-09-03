@@ -7,7 +7,7 @@ import java.util.Collections;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefModule;
-import dtool.ast.references.RefModule.LightweightModuleProxy;
+import dtool.ast.references.RefModule.ModuleProxy;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 import dtool.util.NewUtils;
@@ -29,7 +29,7 @@ public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 		if(module != null) {
 			ReferenceResolver.findInNodeList(search, Collections.singleton(module), false);
 		} else {
-			LightweightModuleProxy targetModuleProxy = moduleRef.findTargetDefElement(search.getModuleResolver());
+			ModuleProxy targetModuleProxy = moduleRef.findTargetDefElement(search.getModuleResolver());
 			if(targetModuleProxy != null) {
 				Module targetModule = targetModuleProxy.resolveDefUnit();
 				if(targetModule != null) {

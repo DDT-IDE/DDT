@@ -129,6 +129,7 @@ public class Module extends DefUnit implements IScopeNode {
 		return null;
 	}
 	
+	@Override
 	public String getFullyQualifiedName() {
 		ASTCodePrinter cp = new ASTCodePrinter();
 		if(md != null) {

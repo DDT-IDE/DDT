@@ -11,25 +11,29 @@ import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.INamedElement;
-import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 
 public class DeeElementLabelProvider {
 	
-	public static String getLabelForHoverSignature(INamedElement defElement) {
-		DefUnit defUnit = defElement.asDefUnit();
+	public static String getLabelForHoverSignature(INamedElement namedElement) {
 		
+		switch (namedElement.getArcheType()) {
+		case Module:
+			return namedElement.getFullyQualifiedName();
+		case Package:
+			return namedElement.getFullyQualifiedName();
+		default:
+			break;
+		}
+		
+		DefUnit defUnit = namedElement.asDefUnit();
 		if(defUnit == null) {
-			return defElement.getName();
+			return namedElement.getFullyQualifiedName();
 		}
 		
 		ASTCodePrinter cp = new ASTCodePrinter();
 		
 		switch (defUnit.getNodeType()) {
-		case MODULE: {
-			Module module = (Module) defUnit;
-			return module.getModuleFullyQualifiedName();
-		}
 		case DEFINITION_VARIABLE: {
 			DefinitionVariable var = (DefinitionVariable) defUnit;
 			
@@ -68,7 +72,6 @@ public class DeeElementLabelProvider {
 		
 		switch (namedElement.getArcheType()) {
 		case Module:
-			// TODO: disambiguate case with LiteModuleProxy
 			return namedElement.getName();
 		case Package:
 			return namedElement.getName();

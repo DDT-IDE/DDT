@@ -179,6 +179,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			moduleQualifiedNameCanonicalPrefix += lookAhead.getSourceValue();
 		}
 		search.setupPrefixedSearchOptions(moduleQualifiedNameCanonicalPrefix, rplLen);
+		search.searchOptions.isImportModuleSearch = true;
 	}
 	
 }

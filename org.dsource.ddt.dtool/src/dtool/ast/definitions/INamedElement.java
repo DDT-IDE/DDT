@@ -63,4 +63,6 @@ public interface INamedElement {
 	// TODO: cleanup this API
 	List<String> getQualificationList();
 	
+	String getFullyQualifiedName();
+	
 }
