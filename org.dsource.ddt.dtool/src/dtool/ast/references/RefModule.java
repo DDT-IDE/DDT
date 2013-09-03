@@ -82,11 +82,15 @@ public class RefModule extends NamedReference {
 			assertTrue(isMissingCoreReference() == false);
 			DefUnitSearch defUnitSearch = (DefUnitSearch) search;
 			IModuleResolver mr = search.getModuleResolver();
-			ModuleProxy moduleProxy = new ModuleProxy(getRefModuleFullyQualifiedName(), mr);
+			ModuleProxy moduleProxy = getModuleProxy(mr);
 			if(moduleProxy.resolveDefUnit() != null) {
 				defUnitSearch.addMatch(moduleProxy);
 			}
 		}
+	}
+	
+	public ModuleProxy getModuleProxy(IModuleResolver mr) {
+		return new ModuleProxy(getRefModuleFullyQualifiedName(), mr);
 	}
 	
 	public void doSearch_forPrefixSearch(PrefixDefUnitSearch search) {

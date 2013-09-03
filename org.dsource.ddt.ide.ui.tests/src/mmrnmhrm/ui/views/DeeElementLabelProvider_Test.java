@@ -32,13 +32,11 @@ public class DeeElementLabelProvider_Test extends BaseDeeUITest {
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "mod");
 		
 		
-		defElement = PartialPackageDefUnit.createPartialDefUnits(array("pack"), null, 
-			new ModuleProxy("modA", null));
+		defElement = PartialPackageDefUnit.createPartialDefUnits(array("pack"), new ModuleProxy("modA", null));
 		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 
-		defElement = PartialPackageDefUnit.createPartialDefUnits(array("pack", "sub"), null, 
-			new ModuleProxy("modA", null));
+		defElement = PartialPackageDefUnit.createPartialDefUnits(array("pack", "sub"), new ModuleProxy("modA", null));
 		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 		

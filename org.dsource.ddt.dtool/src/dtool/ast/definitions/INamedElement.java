@@ -3,6 +3,7 @@ package dtool.ast.definitions;
 import java.util.List;
 
 import descent.core.ddoc.Ddoc;
+import dtool.ast.ILanguageNode;
 import dtool.resolver.CommonDefUnitSearch;
 
 /**
@@ -10,7 +11,7 @@ import dtool.resolver.CommonDefUnitSearch;
  * May exists in source or outside source, it can be implicitly or explicitly defined.
  * Implementation may be an AST node such as {@link DefUnit} (that is the more common case).
  */
-public interface INamedElement {
+public interface INamedElement extends ILanguageNode {
 	
 	/** The name of the element that is referred to. */
 	String getName();
@@ -25,18 +26,23 @@ public interface INamedElement {
 	/** Gets the archetype (the kind) of this DefElement. */
 	EArcheType getArcheType();
 	
-	/** @return the fully qualified name of the module this element belongs to. 
-	 * Can be null if element is not contained in a module. */
-	String getModuleFullyQualifiedName();
-	
 	/** @return true if this is a pre-defined/native language element. 
 	 * (example: primitives such as int, void, or native types like arrays, pointer types) 
 	 */
 	boolean isLanguageIntrinsic();
 	
+	/** @return the fully qualified name of the module this element belongs to. 
+	 * Can be null if element is not contained in a module. */
+	String getModuleFullyQualifiedName();
+	
 	/** @return the nearest enclosing {@link IDefElement}.
 	 * That will be the qualifiying namespace, even if this element cannot be referred to directly. */
 	INamedElement getParentNamespace();
+	
+	// TODO: cleanup this API
+	List<String> getQualificationList();
+	
+	String getFullyQualifiedName();
 	
 	/** @return the receiver if it is a {@link DefUnit}, otherwise return null. 
 	 * (However synthetic defUnits must return null as well regardless of receiver class (temporary API)).
@@ -60,9 +66,5 @@ public interface INamedElement {
 	 */
 	void resolveSearchInMembersScope(CommonDefUnitSearch search);
 	
-	// TODO: cleanup this API
-	List<String> getQualificationList();
-	
-	String getFullyQualifiedName();
 	
 }

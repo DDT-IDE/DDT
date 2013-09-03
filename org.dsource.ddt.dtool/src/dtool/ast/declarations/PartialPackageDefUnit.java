@@ -3,9 +3,8 @@ package dtool.ast.declarations;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.references.RefModule;
+import dtool.ast.definitions.INamedElement;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
@@ -21,13 +20,13 @@ public abstract class PartialPackageDefUnit extends SyntheticDefUnit implements 
 		super(defName);
 	}
 	
-	public static PartialPackageDefUnit createPartialDefUnits(String[] packages, RefModule refModule, DefUnit module) {
+	public static PartialPackageDefUnit createPartialDefUnits(String[] packages, INamedElement module) {
 		String defName = packages[0];
 		if(packages.length == 1 ) {
-			return new PartialPackageDefUnitOfModule(defName, module, refModule);
+			return new PartialPackageDefUnitOfModule(defName, module);
 		} else {
 			String[] newNames = ArrayUtil.copyOfRange(packages, 1, packages.length);
-			PartialPackageDefUnit partialDefUnits = createPartialDefUnits(newNames, refModule, module);
+			PartialPackageDefUnit partialDefUnits = createPartialDefUnits(newNames, module);
 			return new PartialPackageDefUnitOfPackage(defName, partialDefUnits);
 		}
 	}

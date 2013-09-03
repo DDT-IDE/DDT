@@ -36,11 +36,20 @@ public class CompareDefUnits extends DToolBaseTest {
 		};
 	}
 	
-	public static Function<INamedElement, String> fnDefUnitToStringAsName() {
+	public static Function<INamedElement, String> fnElementToName() {
 		return new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement obj) {
 				return obj == null ? null : obj.getName();
+			}
+		};
+	}
+	
+	public static Function<INamedElement, String> fnElementToFullyQualifiedName() {
+		return new Function<INamedElement, String>() {
+			@Override
+			public String evaluate(INamedElement obj) {
+				return obj == null ? null : obj.getFullyQualifiedName();
 			}
 		};
 	}

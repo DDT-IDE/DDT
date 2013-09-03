@@ -73,14 +73,19 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		return moduleRef.packages.getInternalArray();
 	}
 	
-	public INamedElement getPartialDefUnit(IModuleResolver moduleResolver) {
+	public INamedElement getPartialDefUnit(IModuleResolver mr) {
 		if(getPackageNames().length == 0 || getPackageNames()[0] == "") {
-			return moduleRef.findTargetDefElement(moduleResolver);
+			return moduleRef.findTargetDefElement(mr);
 		}
 		
 		// Do lazy PartialDefUnit creation
 		if(defunit == null) {
-			defunit = PartialPackageDefUnit.createPartialDefUnits(getPackageNames(), moduleRef, null); 
+			if(moduleRef.isMissingCoreReference()) {
+				defunit = null;
+			} else {
+				INamedElement moduleElem = moduleRef.getModuleProxy(mr);
+				defunit = PartialPackageDefUnit.createPartialDefUnits(getPackageNames(), moduleElem); 
+			}
 		}
 		return defunit;
 	}

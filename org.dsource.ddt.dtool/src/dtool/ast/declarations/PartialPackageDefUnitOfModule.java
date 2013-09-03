@@ -1,48 +1,36 @@
 package dtool.ast.declarations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collections;
-
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.Module;
-import dtool.ast.references.RefModule;
+import dtool.ast.definitions.INamedElement;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
-import dtool.util.NewUtils;
 
 /**
  * A package namespace containing a module.
  */
 public class PartialPackageDefUnitOfModule extends PartialPackageDefUnit {
 	
-	protected final RefModule moduleRef;
-	protected final DefUnit module;
+	protected final INamedElement moduleElement;
 	
-	public PartialPackageDefUnitOfModule(String defName, DefUnit module, RefModule moduleRef) {
+	public PartialPackageDefUnitOfModule(String defName, INamedElement module) {
 		super(defName);
-		this.module = module;
-		this.moduleRef = moduleRef;
-		assertTrue(NewUtils.exactlyOneIsNull(module, moduleRef));
+		this.moduleElement = assertNotNull(module);
 	}
 	
 	@Override
 	public String toStringMemberName() {
-		return "[" + (module != null ? 
-			module.getFullyQualifiedName() :
-			moduleRef.getModuleFullyQualifiedName())
-			+ "]";
+		return "[" + moduleElement.getFullyQualifiedName()	+ "]";
 	}
 	
 	@Override
 	public void resolveSearchInScope(CommonDefUnitSearch search) {
-		if(module != null) {
-			ReferenceResolver.findInNodeList(search, Collections.singleton(module), false);
-		} else {
-			ModuleProxy targetModuleProxy = moduleRef.findTargetDefElement(search.getModuleResolver());
-			if(targetModuleProxy != null) {
-				ReferenceResolver.findInNodeList(search, Collections.singleton(targetModuleProxy), false);
-			}
+		DefUnit resolvedDefUnit = moduleElement.resolveDefUnit();
+		if(resolvedDefUnit != null) {
+			// Note that we dont use resolvedDefUnit for evaluateNodeForSearch,
+			// this means modules with mismatched names will match again the import name (file name),
+			// instead of the module declaration name
+			ReferenceResolver.evaluateNodeForSearch(search, false, false, moduleElement);
 		}
 	}
 	

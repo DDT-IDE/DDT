@@ -10,6 +10,7 @@ import melnorme.utilbox.core.ExceptionAdapter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.IASTNode;
+import dtool.ast.ILanguageNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportContent;
@@ -140,7 +141,7 @@ public class ReferenceResolver {
 	}
 	
 	public static void evaluateNodeForSearch(CommonDefUnitSearch search, boolean isSequentialLookup, 
-		boolean importsOnly, IASTNode node) {
+		boolean importsOnly, ILanguageNode node) {
 		
 		if(node instanceof INonScopedBlock) {
 			INonScopedBlock container = ((INonScopedBlock) node);
@@ -196,7 +197,7 @@ public class ReferenceResolver {
 			} else {
 				String[] packNames = decMod.packages;
 				
-				defUnit = PartialPackageDefUnitOfPackage.createPartialDefUnits(packNames, null, module);
+				defUnit = PartialPackageDefUnitOfPackage.createPartialDefUnits(packNames, module);
 			}
 			
 			if(search.matches(defUnit))
