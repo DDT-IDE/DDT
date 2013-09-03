@@ -4,6 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import mmrnmhrm.core.codeassist.DeeCompletionEngine.RefSearchCompletionProposal;
 import mmrnmhrm.tests.BaseDeeCoreTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
@@ -17,7 +18,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 
 // These tests could be expanded
@@ -73,10 +73,13 @@ public class CompletionEngine_Test extends BaseDeeCoreTest {
 		
 		@Override
 		public void accept(CompletionProposal proposal) {
+			assertTrue(proposal instanceof RefSearchCompletionProposal);
+			RefSearchCompletionProposal refProposal = (RefSearchCompletionProposal) proposal;
+			
 			assertTrue(proposal.getCompletionLocation() == offset);
 			assertTrue(proposal.getReplaceStart() == offset);
 			assertTrue(proposal.getReplaceEnd() - proposal.getReplaceStart() == rplLen);
-			DefUnit defUnit = (DefUnit) proposal.getExtraInfo();
+			INamedElement defUnit = refProposal.getExtraInfo();
 			results.add(defUnit);
 		}
 	}

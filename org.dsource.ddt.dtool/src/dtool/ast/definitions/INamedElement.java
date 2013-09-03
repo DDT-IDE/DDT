@@ -36,15 +36,14 @@ public interface INamedElement extends ILanguageNode {
 	 * Can be null if element is not contained in a module. */
 	String getModuleFullyQualifiedName();
 	
-	/** @return the nearest enclosing {@link IDefElement}.
-	 * That will be the qualifiying namespace, even if this element cannot be referred to directly. */
-	// TODO: cleanup this, for Modules it's not working as described
-	@Deprecated
-	INamedElement getParentNamespace();
+	/** @return the nearest enclosing {@link INamedElement}.
+	 * For modules and packages, that is null. */
+	INamedElement getParentElement();
 	
 	/** @return the receiver if it is a {@link DefUnit}, otherwise return null. 
 	 * (However synthetic defUnits must return null as well regardless of receiver class (temporary API)).
 	 * Therefore unlike {@link #resolveDefUnit()} this method does not perform any semantic computation. */
+	@Deprecated
 	DefUnit asDefUnit();
 	
 	/** @return the DefUnit this named element represents. In most cases this is the same as the receiver, 

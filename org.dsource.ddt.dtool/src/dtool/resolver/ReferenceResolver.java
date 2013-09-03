@@ -10,12 +10,11 @@ import melnorme.utilbox.core.ExceptionAdapter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.IASTNode;
-import dtool.ast.ILanguageNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
-import dtool.ast.declarations.PartialPackageDefUnitOfPackage;
+import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
@@ -86,7 +85,7 @@ public class ReferenceResolver {
 	}
 	
 	public static void findDefUnitInNativesScope(CommonDefUnitSearch search) {
-		findDefUnitInScope(NativesScope.nativesScope, search);
+		NativesScope.nativesScope.resolveSearchInScope(search);
 	}
 	
 	public static void resolveSearchInScope(CommonDefUnitSearch search, IScopeNode scope) {
@@ -137,25 +136,21 @@ public class ReferenceResolver {
 			}
 			
 			evaluateNodeForSearch(search, isSequentialLookup, importsOnly, node);
+			if(search.isFinished() && search.findOnlyOne) // TODO make BUG HERE 
+				return;
 		}
 	}
 	
 	public static void evaluateNodeForSearch(CommonDefUnitSearch search, boolean isSequentialLookup, 
-		boolean importsOnly, ILanguageNode node) {
+		boolean importsOnly, IASTNode node) {
 		
 		if(node instanceof INonScopedBlock) {
 			INonScopedBlock container = ((INonScopedBlock) node);
 			findDefUnits(search, container.getMembersIterator(), isSequentialLookup, importsOnly);
-			if(search.isFinished() && search.findOnlyOne)
-				return; // Return if we only want one match in the scope
 		}
 		if(!importsOnly && node instanceof DefUnit) {
 			DefUnit defunit = (DefUnit) node;
-			if(search.matches(defunit)) {
-				search.addMatch(defunit);
-				if(search.isFinished() && search.findOnlyOne)
-					return; // Return if we only want one match in the scope
-			}
+			evaluateDefUnitForSearch(search, defunit);
 		} 
 		else if(importsOnly && node instanceof DeclarationImport) {
 			DeclarationImport declImport = (DeclarationImport) node;
@@ -166,6 +161,38 @@ public class ReferenceResolver {
 			for (IImportFragment impFrag : declImport.imports) {
 				impFrag.searchInSecondaryScope(search);
 				// continue regardless of search.findOnlyOne because of partial packages
+			}
+		}
+	}
+	
+	public static void evaluateDefUnitForSearch(CommonDefUnitSearch search, DefUnit defunit) {
+		if(defunit != null && search.matches(defunit)) {
+			search.addMatch(defunit);
+		}
+	}
+	
+	public static void findInNamedElementList(CommonDefUnitSearch search, 
+		Iterable<? extends INamedElement> elementIterable) {
+		if(elementIterable != null) {
+			if(search.isFinished())
+				return;
+			
+			for (INamedElement namedElement : elementIterable) {
+				evaluateNamedElementForSearch(search, namedElement);
+				if(search.isFinished() && search.findOnlyOne) // TODO make BUG HERE 
+					return;
+			}
+		}
+	}
+	
+	// TODO: refactor this code maybe?
+	public static void evaluateNamedElementForSearch(CommonDefUnitSearch search, INamedElement namedElement) {
+		if(namedElement instanceof DefUnit) {
+			DefUnit defUnit = (DefUnit) namedElement;
+			evaluateDefUnitForSearch(search, defUnit);
+		} else {
+			if(namedElement != null && search.matches(namedElement)) {
+				search.addMatch(namedElement);
 			}
 		}
 	}
@@ -189,32 +216,26 @@ public class ReferenceResolver {
 	
 	private static void findDefUnitInModuleDec(Module module, CommonDefUnitSearch search) {
 		DeclarationModule decMod = module.md;
+		INamedElement moduleElement;
 		if(decMod != null) {
-			DefUnit defUnit;
 			
 			if(decMod.packages.length == 0 || decMod.packages[0] == "") {
-				defUnit = module;
+				moduleElement = module;
 			} else {
 				String[] packNames = decMod.packages;
-				
-				defUnit = PartialPackageDefUnitOfPackage.createPartialDefUnits(packNames, module);
+				moduleElement = PackageNamespace.createPartialDefUnits(packNames, module);
 			}
-			
-			if(search.matches(defUnit))
-				search.addMatch(defUnit);
 		} else {
-			if(search.matches(module)) {
-				search.addMatch(module);
-			}
+			moduleElement = module;
 		}
+		evaluateNamedElementForSearch(search, moduleElement);
 	}
-
+	
 	/* ====================  import lookup  ==================== */
 
 	public static void findDefUnitInStaticImport(ImportContent importStatic, CommonDefUnitSearch search) {
-		INamedElement defunit = importStatic.getPartialDefUnit(search.modResolver);
-		if(defunit != null && search.matches(defunit))
-			search.addMatch(defunit);
+		INamedElement namedElement = importStatic.getPartialDefUnit(search.modResolver);
+		evaluateNamedElementForSearch(search, namedElement);
 	}
 	
 	public static void findDefUnitInContentImport(ImportContent impContent, CommonDefUnitSearch search) {

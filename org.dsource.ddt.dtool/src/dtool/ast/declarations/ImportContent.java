@@ -15,7 +15,7 @@ import dtool.resolver.api.IModuleResolver;
 public class ImportContent extends ASTNode implements IImportFragment {
 	
 	public final RefModule moduleRef;
-	private PartialPackageDefUnit defunit; // Non-Structural Element
+	private PackageNamespace defunit; // Non-Structural Element
 	
 	public ImportContent(RefModule refModule) {
 		this.moduleRef = parentize(refModule);
@@ -84,7 +84,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 				defunit = null;
 			} else {
 				INamedElement moduleElem = moduleRef.getModuleProxy(mr);
-				defunit = PartialPackageDefUnit.createPartialDefUnits(getPackageNames(), moduleElem); 
+				defunit = PackageNamespace.createPartialDefUnits(getPackageNames(), moduleElem); 
 			}
 		}
 		return defunit;

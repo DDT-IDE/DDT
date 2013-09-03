@@ -3,7 +3,7 @@ package dtool.resolver;
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.ast.declarations.SyntheticDefUnit;
+import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.IntrinsicDefUnit;
 import dtool.util.ArrayView;
 
@@ -14,10 +14,10 @@ public class NativesScope implements IScopeProvider {
 	
 	public static final NativesScope nativesScope = new NativesScope();
 	
-	public final ArrayView<SyntheticDefUnit> intrinsics;
+	public final ArrayView<IntrinsicDefUnit> intrinsics;
 	
 	public NativesScope() {
-		ArrayList<SyntheticDefUnit> intrincsList = new ArrayList<>();
+		ArrayList<IntrinsicDefUnit> intrincsList = new ArrayList<>();
 	    
 		intrincsList.add(new PrimitiveDefUnit("bool"));
 		intrincsList.add(new PrimitiveDefUnit("byte"));
@@ -44,19 +44,24 @@ public class NativesScope implements IScopeProvider {
 		intrincsList.add(new PrimitiveDefUnit("cdouble"));
 		intrincsList.add(new PrimitiveDefUnit("creal"));
 		
-		SyntheticDefUnit[] createFrom = ArrayUtil.createFrom(intrincsList, SyntheticDefUnit.class);
+		IntrinsicDefUnit[] createFrom = ArrayUtil.createFrom(intrincsList, IntrinsicDefUnit.class);
 		intrinsics = ArrayView.create(createFrom);
 	}
 	
 	@Override
 	public void resolveSearchInScope(CommonDefUnitSearch search) {
-		ReferenceResolver.findInNodeList(search, intrinsics, false);
+		ReferenceResolver.findInNamedElementList(search, intrinsics);
 	}
 	
 	public static class PrimitiveDefUnit extends IntrinsicDefUnit {
 		
 		public PrimitiveDefUnit(String name) {
 			super(name);
+		}
+		
+		@Override
+		public Ddoc resolveDDoc() {
+			return null;
 		}
 		
 		@Override

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import dtool.ast.declarations.PartialPackageDefUnit;
+import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
@@ -44,7 +44,7 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 		if(namedElements == null)
 			namedElements = new ArrayList<>(4);
 		namedElements.add(namedElem);
-		if(namedElem instanceof PartialPackageDefUnit)
+		if(namedElem instanceof PackageNamespace)
 			matchesArePartialDefUnits = true;
 	}
 	

@@ -5,7 +5,7 @@ import mmrnmhrm.tests.ui.BaseDeeUITest;
 import org.junit.Test;
 
 import dtool.ast.declarations.ModuleProxy;
-import dtool.ast.declarations.PartialPackageDefUnit;
+import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.INamedElement;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.NativesScope;
@@ -32,11 +32,11 @@ public class DeeElementLabelProvider_Test extends BaseDeeUITest {
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "mod");
 		
 		
-		defElement = PartialPackageDefUnit.createPartialDefUnits(array("pack"), new ModuleProxy("modA", null));
+		defElement = PackageNamespace.createPartialDefUnits(array("pack"), new ModuleProxy("modA", null));
 		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 
-		defElement = PartialPackageDefUnit.createPartialDefUnits(array("pack", "sub"), new ModuleProxy("modA", null));
+		defElement = PackageNamespace.createPartialDefUnits(array("pack", "sub"), new ModuleProxy("modA", null));
 		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 		

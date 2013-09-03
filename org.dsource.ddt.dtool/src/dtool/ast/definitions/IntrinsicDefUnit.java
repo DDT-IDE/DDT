@@ -1,16 +1,17 @@
 package dtool.ast.definitions;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import dtool.ast.IASTVisitor;
-import dtool.ast.declarations.SyntheticDefUnit;
+import descent.core.ddoc.Ddoc;
+import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * Base class for intrinsic elements. See {@link #isLanguageIntrinsic()} 
  */
-public abstract class IntrinsicDefUnit extends SyntheticDefUnit implements INativeDefUnit {
+public abstract class IntrinsicDefUnit implements INamedElement {
+	
+	protected String name;
 	
 	public IntrinsicDefUnit(String name) {
-		super(name);
+		this.name = name;
 	}
 	
 	@Override
@@ -19,13 +20,49 @@ public abstract class IntrinsicDefUnit extends SyntheticDefUnit implements INati
 	}
 	
 	@Override
-	public void visitChildren(IASTVisitor visitor) {
-		assertFail();
-	}
-	
-	@Override
 	public boolean isLanguageIntrinsic() {
 		return true;
 	}
+	
+	@Override
+	public String getName() {
+		return name;
+	}
+	
+	@Override
+	public String getExtendedName() {
+		return name;
+	}
+	
+	@Override
+	public String getFullyQualifiedName() {
+		return name;
+	}
+	
+	@Override
+	public String getModuleFullyQualifiedName() {
+		return null;
+	}
+	
+	@Override
+	public INamedElement getParentElement() {
+		return null;
+	}
+	
+	@Override
+	public DefUnit asDefUnit() {
+		return null;
+	}
+
+	@Override
+	public DefUnit resolveDefUnit() {
+		return null;
+	}
+	
+	@Override
+	public abstract Ddoc resolveDDoc();
+	
+	@Override
+	public abstract void resolveSearchInMembersScope(CommonDefUnitSearch search);
 	
 }

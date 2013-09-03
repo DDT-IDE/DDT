@@ -1,25 +1,25 @@
 package dtool.ast.declarations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.misc.StringUtil;
 import descent.core.ddoc.Ddoc;
-import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ResolverUtil;
 import dtool.resolver.ResolverUtil.ModuleNameDescriptor;
 import dtool.resolver.api.IModuleResolver;
 
-public class ModuleProxy extends SyntheticDefUnit {
+public class ModuleProxy implements INamedElement {
 	
 	protected final IModuleResolver moduleResolver;
-	protected String fqModuleName;
+	protected final String fqModuleName;
+	protected final String moduleName;
 	
 	public ModuleProxy(String fqModuleName, IModuleResolver moduleResolver) {
-		super(StringUtil.substringAfterLastMatch(fqModuleName, "."));
+		this.moduleName = StringUtil.substringAfterLastMatch(fqModuleName, "."); 
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fqModuleName = fqModuleName;
 		this.moduleResolver = moduleResolver;
@@ -31,8 +31,18 @@ public class ModuleProxy extends SyntheticDefUnit {
 	}
 	
 	@Override
-	public void visitChildren(IASTVisitor visitor) {
-		assertFail();
+	public String getName() {
+		return moduleName;
+	}
+	
+	@Override
+	public String getExtendedName() {
+		return moduleName;
+	}
+	
+	@Override
+	public boolean isLanguageIntrinsic() {
+		return false;
 	}
 	
 	@Override
@@ -43,6 +53,16 @@ public class ModuleProxy extends SyntheticDefUnit {
 	@Override
 	public String getFullyQualifiedName() {
 		return fqModuleName;
+	}
+	
+	@Override
+	public INamedElement getParentElement() {
+		return null;
+	}
+	
+	@Override
+	public DefUnit asDefUnit() {
+		return null;
 	}
 	
 	@Override

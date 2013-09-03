@@ -2,6 +2,7 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
+import descent.core.ddoc.Ddoc;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -46,6 +47,11 @@ public class RefTypeDynArray extends CommonRefNative {
 		}
 		
 		public static final IntrinsicDynArray instance = new IntrinsicDynArray();
+		
+		@Override
+		public Ddoc resolveDDoc() {
+			return null; // TODO
+		}
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {

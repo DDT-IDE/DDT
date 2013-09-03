@@ -72,10 +72,6 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 		this(new ProtoDefSymbol(defName, null, null));
 	}
 	
-	public boolean isSynthetic() {
-		return false; // reimplement method as appropriate
-	}
-	
 	@Override
 	public String getName() {
 		return defname.name;
@@ -104,7 +100,7 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 	
 	@Override
 	public String getFullyQualifiedName() {
-		INamedElement parentNamespace = getParentNamespace();
+		INamedElement parentNamespace = getParentElement();
 		if(parentNamespace == null) {
 			return getName();
 		} else {
@@ -113,7 +109,7 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 	}
 	
 	@Override
-	public INamedElement getParentNamespace() {
+	public INamedElement getParentElement() {
 		return NodeUtil.getParentDefUnit(this);
 	}
 	

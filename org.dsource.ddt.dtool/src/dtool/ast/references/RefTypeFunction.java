@@ -3,6 +3,7 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import melnorme.utilbox.core.CoreUtil;
+import descent.core.ddoc.Ddoc;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -68,6 +69,11 @@ public class RefTypeFunction extends CommonRefNative {
 		}
 		
 		public static final IntrinsicFunction instance = new IntrinsicFunction();
+		
+		@Override
+		public Ddoc resolveDDoc() {
+			return null; // TODO
+		}
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
