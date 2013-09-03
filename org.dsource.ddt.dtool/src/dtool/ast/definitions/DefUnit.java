@@ -2,16 +2,10 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
-import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.util.NodeUtil;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
@@ -78,6 +72,10 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 		this(new ProtoDefSymbol(defName, null, null));
 	}
 	
+	public boolean isSynthetic() {
+		return false; // reimplement method as appropriate
+	}
+	
 	@Override
 	public String getName() {
 		return defname.name;
@@ -89,10 +87,6 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 	
 	public boolean availableInRegularNamespace() {
 		return true;
-	}
-	
-	public boolean isSynthetic() {
-		return false; // reimplement method as appropriate
 	}
 	
 	@Override
@@ -109,41 +103,6 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 	}
 	
 	@Override
-	public INamedElement getParentNamespace() {
-		return NodeUtil.getParentDefUnit(this);
-	}
-	
-	@Override
-	public List<String> getQualificationList() {
-		LinkedList<String> qualications = new LinkedList<String>();
-		
-		INamedElement defUnitIter = this;
-		
-		while(true) {
-			INamedElement parentDefUnit = defUnitIter.getParentNamespace();
-			// TODO: fix this code
-			if(parentDefUnit == null) {
-				if(defUnitIter instanceof ModuleProxy) {
-					ModuleProxy lightweightModuleProxy = (ModuleProxy) defUnitIter;
-					defUnitIter = lightweightModuleProxy.resolveDefUnit();
-				}
-				
-				if(defUnitIter instanceof Module) {
-					Module module = ((Module) defUnitIter);
-					
-					String[] packageNames = module.getDeclaredPackages();
-					qualications.addAll(0, Arrays.asList(packageNames));
-				}
-				
-				return qualications;
-			} else {
-				qualications.add(0, parentDefUnit.getName());
-				defUnitIter = parentDefUnit;
-			}
-		}
-	}
-	
-	@Override
 	public String getFullyQualifiedName() {
 		INamedElement parentNamespace = getParentNamespace();
 		if(parentNamespace == null) {
@@ -151,6 +110,11 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 		} else {
 			return parentNamespace.getFullyQualifiedName() + "." + getName();
 		}
+	}
+	
+	@Override
+	public INamedElement getParentNamespace() {
+		return NodeUtil.getParentDefUnit(this);
 	}
 	
 	@Override

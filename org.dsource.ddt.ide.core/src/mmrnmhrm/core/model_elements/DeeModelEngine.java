@@ -2,10 +2,7 @@ package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.List;
-
-import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 
 import org.eclipse.dltk.core.IMember;
@@ -22,6 +19,7 @@ import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
+import dtool.util.NewUtils;
 
 /**
  * This class manages how to do mapping between definition nodes and ModelElements. 
@@ -155,8 +153,12 @@ public class DeeModelEngine {
 	 * TODO think more about the naming of local elements 
 	 */
 	public static String[] getQualification(final INamedElement defUnit) {
-		List<String> qualification = defUnit.getQualificationList();
-		return ArrayUtil.createFrom(qualification, String.class);
+		String fqName = defUnit.getFullyQualifiedName();
+		String qualification = StringUtil.segmentUntilLastMatch(fqName, ".");
+		if(qualification == null) {
+			return NewUtils.EMPTY_STRING_ARRAY;
+		}
+		return qualification.split("\\.");
 	}
 	
 	public static String getPackageName(ISourceModule sourceModule) {

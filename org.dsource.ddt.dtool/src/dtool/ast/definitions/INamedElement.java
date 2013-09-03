@@ -1,7 +1,5 @@
 package dtool.ast.definitions;
 
-import java.util.List;
-
 import descent.core.ddoc.Ddoc;
 import dtool.ast.ILanguageNode;
 import dtool.resolver.CommonDefUnitSearch;
@@ -31,18 +29,18 @@ public interface INamedElement extends ILanguageNode {
 	 */
 	boolean isLanguageIntrinsic();
 	
+	/** @return The fully qualified name of this element. Not null. */
+	String getFullyQualifiedName();
+	
 	/** @return the fully qualified name of the module this element belongs to. 
 	 * Can be null if element is not contained in a module. */
 	String getModuleFullyQualifiedName();
 	
 	/** @return the nearest enclosing {@link IDefElement}.
 	 * That will be the qualifiying namespace, even if this element cannot be referred to directly. */
+	// TODO: cleanup this, for Modules it's not working as described
+	@Deprecated
 	INamedElement getParentNamespace();
-	
-	// TODO: cleanup this API
-	List<String> getQualificationList();
-	
-	String getFullyQualifiedName();
 	
 	/** @return the receiver if it is a {@link DefUnit}, otherwise return null. 
 	 * (However synthetic defUnits must return null as well regardless of receiver class (temporary API)).
