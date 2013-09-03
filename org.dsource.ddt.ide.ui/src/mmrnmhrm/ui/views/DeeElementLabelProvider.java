@@ -14,7 +14,7 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 
-public class DeeDefUnitLabelProvider {
+public class DeeElementLabelProvider {
 	
 	public static String getLabelForHoverSignature(INamedElement defElement) {
 		DefUnit defUnit = defElement.asDefUnit();

@@ -3,8 +3,7 @@ package mmrnmhrm.core.model_elements;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
@@ -156,33 +155,8 @@ public class DeeModelEngine {
 	 * TODO think more about the naming of local elements 
 	 */
 	public static String[] getQualification(final INamedElement defUnit) {
-		LinkedList<String> qualification = getQualificationList(defUnit);
+		List<String> qualification = defUnit.getQualificationList();
 		return ArrayUtil.createFrom(qualification, String.class);
-	}
-	
-	// TODO review this code
-	public static LinkedList<String> getQualificationList(final INamedElement defUnit) {
-		LinkedList<String> qualications = new LinkedList<String>();
-		
-		INamedElement defUnitIter = defUnit;
-		
-		while(true) {
-			INamedElement parentDefUnit = defUnitIter.getParentNamespace();
-			
-			if(parentDefUnit == null) {
-				if((defUnitIter instanceof Module)) {
-					Module module = ((Module) defUnitIter);
-					
-					String[] packageNames = module.getDeclaredPackages();
-					qualications.addAll(0, Arrays.asList(packageNames));
-				}
-				
-				return qualications;
-			} else {
-				qualications.add(0, parentDefUnit.getName());
-				defUnitIter = parentDefUnit;
-			}
-		}
 	}
 	
 	public static String getPackageName(ISourceModule sourceModule) {

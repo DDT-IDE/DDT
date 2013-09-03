@@ -2,21 +2,21 @@ package dtool.ast.references;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Collection;
-
+import descent.core.ddoc.Ddoc;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.SyntheticDefUnit;
+import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.ast.expressions.Resolvable;
 import dtool.parser.BaseLexElement;
 import dtool.parser.IToken;
 import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.DefUnitSearch;
 import dtool.resolver.PrefixDefUnitSearch;
+import dtool.resolver.ResolverUtil;
+import dtool.resolver.ResolverUtil.ModuleNameDescriptor;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 import dtool.util.ArrayViewExt;
@@ -71,23 +71,8 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
-		Module targetMod;
-		try {
-			targetMod = moduleResolver.findModule(packages.getInternalArray(), module);
-		} catch (Exception e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-		return Resolvable.wrapResult(targetMod);
-	}
-	
-	public Module findTargetModule(IModuleResolver moduleResolver) {
-		try {
-			Module targetMod = moduleResolver.findModule(packages.getInternalArray(), module);
-			return targetMod;
-		} catch (Exception e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+	public LightweightModuleProxy findTargetDefElement(IModuleResolver moduleResolver) {
+		return (LightweightModuleProxy) super.findTargetDefElement(moduleResolver);
 	}
 	
 	@Override
@@ -96,8 +81,17 @@ public class RefModule extends NamedReference {
 			PrefixDefUnitSearch prefixDefUnitSearch = (PrefixDefUnitSearch) search;
 			doSearch_forPrefixSearch(prefixDefUnitSearch);
 		} else {
-			assertFail();
-			// TODO: harmonize both kinds of searches
+			DefUnitSearch defUnitSearch = (DefUnitSearch) search;
+			IModuleResolver mr = search.getModuleResolver();
+			Module targetModule;
+			try {
+				targetModule = mr.findModule(packages.getInternalArray(), module);
+			} catch(Exception e) {
+				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			}
+			if(targetModule != null) {
+				defUnitSearch.addMatch(new LightweightModuleProxy(targetModule.getFullyQualifiedName(), mr));
+			}
 		}
 	}
 	
@@ -108,14 +102,17 @@ public class RefModule extends NamedReference {
 		for (int i = 0; i < strings.length; i++) {
 			String fqName = strings[i];
 			
-			search.addMatch(new LightweightModuleProxy(fqName));		
+			search.addMatch(new LightweightModuleProxy(fqName, search.getModuleResolver()));
 		}
 	}
 	
 	public static class LightweightModuleProxy extends SyntheticDefUnit {
 		
-		public LightweightModuleProxy(String fqModuleName) {
+		protected final IModuleResolver moduleResolver;
+
+		public LightweightModuleProxy(String fqModuleName, IModuleResolver moduleResolver) {
 			super(fqModuleName);
+			this.moduleResolver = moduleResolver;
 		}
 		
 		@Override
@@ -129,13 +126,35 @@ public class RefModule extends NamedReference {
 		}
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			throw assertFail();
+		public void visitChildren(IASTVisitor visitor) {
+			assertFail();
 		}
 		
 		@Override
-		public void visitChildren(IASTVisitor visitor) {
-			assertFail();
+		public Module resolveDefUnit() {
+			ModuleNameDescriptor nameDescriptor = ResolverUtil.getNameDescriptor(getModuleFullyQualifiedName());
+			try {
+				return moduleResolver.findModule(nameDescriptor.packages, nameDescriptor.moduleName);
+			} catch(Exception e) {
+				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			}
+		}
+		
+		@Override
+		public Ddoc resolveDDoc() {
+			DefUnit resolvedModule = resolveDefUnit();
+			if(resolvedModule != null) {
+				return resolveDefUnit().getDDoc();
+			}
+			return null;
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			DefUnit resolvedModule = resolveDefUnit();
+			if(resolvedModule != null) {
+				resolvedModule.resolveSearchInMembersScope(search);
+			}
 		}
 		
 	}

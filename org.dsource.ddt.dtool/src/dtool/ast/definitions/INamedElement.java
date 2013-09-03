@@ -1,5 +1,7 @@
 package dtool.ast.definitions;
 
+import java.util.List;
+
 import descent.core.ddoc.Ddoc;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -57,5 +59,8 @@ public interface INamedElement {
 	 * Note that the members can be different from the lexical scope that a defunit may provide.
 	 */
 	void resolveSearchInMembersScope(CommonDefUnitSearch search);
+	
+	// TODO: cleanup this API
+	List<String> getQualificationList();
 	
 }

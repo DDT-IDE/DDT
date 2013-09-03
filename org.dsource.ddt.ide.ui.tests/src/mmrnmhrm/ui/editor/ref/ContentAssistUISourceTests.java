@@ -15,7 +15,7 @@ import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.codeassist.CompletionEngineSourceTests;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
-import mmrnmhrm.ui.views.DeeDefUnitLabelProvider;
+import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -108,8 +108,8 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	@Override
 	public void precheckOriginalResults(Collection<INamedElement> resultDefElementsOriginal) {
 		for (INamedElement defElement : resultDefElementsOriginal) {
-			DeeDefUnitLabelProvider.getLabelForHoverSignature(defElement);
-			DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defElement);
+			DeeElementLabelProvider.getLabelForHoverSignature(defElement);
+			DeeElementLabelProvider.getLabelForContentAssistPopup(defElement);
 		}
 	}
 	

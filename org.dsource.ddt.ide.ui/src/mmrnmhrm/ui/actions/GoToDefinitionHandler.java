@@ -9,7 +9,7 @@ import mmrnmhrm.core.codeassist.ReferenceSwitchHelper;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.DeeEditor;
-import mmrnmhrm.ui.views.DeeDefUnitLabelProvider;
+import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -216,7 +216,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 			if(i > 0) {
 				sb.append(sep);
 			}
-			sb.append(DeeDefUnitLabelProvider.getLabelForContentAssistPopup(defElement));
+			sb.append(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement));
 		}
 		return sb.toString();
 	}

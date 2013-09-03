@@ -21,8 +21,8 @@ public class ResolverUtil {
 	}
 	
 	public static ModuleNameDescriptor getNameDescriptor(String moduleFullyQualifiedName) {
-		String moduleName = StringUtil.substringAfterMatch(moduleFullyQualifiedName, ".");
-		String packagesSeg = StringUtil.segmentUntilMatch(moduleFullyQualifiedName, ".");
+		String moduleName = StringUtil.substringAfterLastMatch(moduleFullyQualifiedName, ".");
+		String packagesSeg = StringUtil.segmentUntilLastMatch(moduleFullyQualifiedName, ".");
 		String[] packages = packagesSeg == null ? NewUtils.EMPTY_STRING_ARRAY : packagesSeg.split("\\.");
 		return new ModuleNameDescriptor(packages, moduleName);
 	}

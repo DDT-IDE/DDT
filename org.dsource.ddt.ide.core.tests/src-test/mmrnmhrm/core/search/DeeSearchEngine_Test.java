@@ -4,24 +4,18 @@ import static java.lang.Math.min;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.areEqualArrays;
-import static melnorme.utilbox.core.CoreUtil.blindCast;
-import static melnorme.utilbox.core.CoreUtil.downCast;
 import static mmrnmhrm.core.search.DeeSearchEngineTestUtils.getSourceModule;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.misc.Pair;
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
-import mmrnmhrm.core.model_elements.DeeModelEngine;
-import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+import melnorme.utilbox.misc.StringUtil;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.CharOperation;
@@ -29,6 +23,8 @@ import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IProjectFragment;
+import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
@@ -40,19 +36,88 @@ import org.eclipse.dltk.core.search.SearchMatch;
 import org.eclipse.dltk.core.search.SearchParticipant;
 import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.SearchRequestor;
+import org.eclipse.dltk.core.search.index.EntryResult;
+import org.eclipse.dltk.core.search.index.Index;
+import org.eclipse.dltk.core.search.indexing.IIndexConstants;
+import org.eclipse.dltk.core.search.indexing.IndexManager;
 import org.eclipse.dltk.internal.core.search.matching.FieldPattern;
-import org.junit.Test;
-
-import dtool.ast.ASTNode;
-import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionVariable;
-import dtool.ast.definitions.INamedElement;
-import dtool.ast.definitions.Module;
-import dtool.ast.references.Reference;
-import dtool.tests.MiscNodeUtils;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 // TODO consider out of buildpath cases
-public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDLTKSearchConstants {
+public abstract class DeeSearchEngine_Test extends DLTKIndexCheckTest implements IDLTKSearchConstants {
+	
+	protected static IProjectFragment getSrcFolder(IScriptProject scriptProject, String folderName) {
+		return scriptProject.getProjectFragment(scriptProject.getProject().getFolder(folderName));
+	}
+	
+	protected static ISourceModule getModule(IScriptProject project, String srcFolder, String pkg, String module) {
+		IScriptFolder scriptFolder = getSrcFolder(project, srcFolder).getScriptFolder(pkg);
+		return scriptFolder.getSourceModule(module + ".d");
+	}
+	
+	protected static IType getElement(IScriptProject scriptProject, String srcFolder, String pkg, String srcModule) {
+		ISourceModule sourceModule = getModule(scriptProject, srcFolder, pkg, srcModule);
+		return sourceModule.getType(srcModule);
+		//return sourceModule;
+	}
+	
+	
+	@BeforeClass
+	public static void setup() {
+		enableDLTKIndexer(true);
+	}
+	
+	@AfterClass
+	public static void teardown() {
+		disableDLTKIndexer();
+	}
+	
+	/* ---------- Some debug helper ---------- */ 
+	
+	@SuppressWarnings("restriction")
+	public static void printIndexDebugInfo(IProject prj) throws Exception {
+		
+		System.out.println("========= Index DEBUG INFO ========");
+		
+		IndexManager im = org.eclipse.dltk.internal.core.ModelManager.getModelManager().getIndexManager();
+		Index idx = im.getIndex(prj.getFullPath(), true, true); // This is index file for project root
+		
+		assertNotNull(im.indexLocations.keyTable);
+		System.out.println("===== Index Locations ====\n" + im.indexLocations + "\n");
+		
+		im.waitUntilReady();
+		
+		// And then check using
+		String[] docNames = idx.queryDocumentNames(null); // To check all documents in this index
+		assertNotNull(docNames);
+		System.out.println("===== Index docs ====\n" + StringUtil.collToString(docNames, "\n") );
+		
+		System.out.println("===== Query: Type Decl, * ====");
+		debugPrintCategory(idx, IIndexConstants.TYPE_DECL);
+		System.out.println("===== Query: Field Decl, * ====");
+		debugPrintCategory(idx, IIndexConstants.FIELD_DECL);
+		System.out.println("===== Query: Method Decl, * ====");
+		debugPrintCategory(idx, IIndexConstants.METHOD_DECL);
+		System.out.println("===== Query: Ref, * ====");
+		debugPrintCategory(idx, IIndexConstants.REF);
+		System.out.println("===== Query: Method Ref, * ====");
+		debugPrintCategory(idx, IIndexConstants.METHOD_REF);
+	}
+	
+	protected static void debugPrintCategory(Index idx, char[] category) throws IOException {
+		char[][] categoryArray = {category};
+		EntryResult[] query = idx.query(categoryArray, new char[]{'*'}, SearchPattern.R_PATTERN_MATCH);
+		if(query == null) {
+			System.out.println("__ null __");
+			return;
+		}
+		for (EntryResult entryResult : query) {
+			System.out.println(entryResult.getWord());
+		}
+	}
+	
+	/* ----------  ---------- */ 
 	
 	protected class SearchRequestorResultCollector extends SearchRequestor {
 		
@@ -143,11 +208,12 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 	
 	private SearchRequestorResultCollector executeSearch(SearchPattern searchPattern, 
 			SearchRequestorResultCollector requestor) throws CoreException {
+		assertNotNull(searchPattern);
+		
 		SearchEngine engine = new SearchEngine();
 		SearchParticipant defaultSearchParticipant = SearchEngine.getDefaultSearchParticipant();
 		IDLTKSearchScope scope = SearchEngine.createSearchScope(searchProj);
 		
-		assertNotNull(searchPattern);
 		engine.search(searchPattern, array(defaultSearchParticipant), scope, requestor, new NullProgressMonitor());
 		return requestor;
 	}
@@ -198,55 +264,6 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 		return hashSet(element);
 	}
 	
-	@Test
-	public void searchType() throws Exception { searchType$(); }
-	public void searchType$() throws Exception {
-		testSearchForElement(getElement(searchProj, "srcA", "pack", "mod1").getType("Mod1Class"));
-		testSearchForElement(getElement(searchProj, "srcA", "pack", "mod1"));
-		
-		// The test boundaries we are exploring here mostly relate to the package name
-		testSearchForElement(getElement(searchProj, "srcA", "pack/subpack", "mod3").getType("Mod3Class"));
-		testSearchForElement(getElement(searchProj, "srcA", "", "mod0").getType("Mod0Class"));
-		testSearchForElement(getElement(searchProj, "srcA", "", "mod0"));
-	}
-	
-	@Test
-	public void searchVar() throws Exception { searchVar$(); }
-	public void searchVar$() throws Exception {
-		testSearchForElement(getElement(searchProj, "srcA", "pack", "mod1").getField("mod1Var"));
-		testSearchForElement(getElement(searchProj, "srcA", "pack", "mod1").getType("Mod1Class").getField("foo"));
-		
-		// The test boundaries we are exploring here mostly relate to the package name
-		testSearchForElement(getElement(searchProj, "srcA", "pack/subpack", "mod3").getField("mod3Var"));
-		testSearchForElement(getElement(searchProj, "srcA", "", "mod0").getField("mod0Var"));
-	}
-	
-	@Test
-	public void searchMethod() throws Exception { searchMethod$(); }
-	public void searchMethod$() throws Exception {
-		IType mod1 = getElement(searchProj, "srcA", "pack", "mod1");
-		testSearchForElement(mod1.getMethod("mod1Func"), true);
-		testSearchForElement(mod1.getType("Mod1Class").getMethod("methodA"), true);
-		
-		// The test boundaries we are exploring here mostly relate to the package name
-		testSearchForElement(getElement(searchProj, "srcA", "pack/subpack", "mod3").getMethod("mod3Func"), true);
-		testSearchForElement(getElement(searchProj, "srcA", "", "mod0").getMethod("mod0Func"), true);
-		
-		// TODO: test search with homonym methods with different parameters
-	}
-	
-	@Test
-	public void searchOther() throws Exception { searchOther$(); }
-	public void searchOther$() throws Exception {
-		IType mod0 = getElement(searchProj, "srcA", "", "mod0");
-		
-		testSearch(createStringPattern("mod0", IDLTKSearchConstants.TYPE, DECLARATIONS), elementSet(mod0));
-		testNameSearch(createStringPattern("mod0", IDLTKSearchConstants.TYPE, DECLARATIONS), elementSet(mod0));
-		
-		SearchPattern searchPattern = createStringPattern("pack", IDLTKSearchConstants.TYPE, REFERENCES);
-		SearchRequestorResultCollector requestor = executeSearch(searchPattern);
-		// TODO test this more
-	}
 	
 	protected static final int PREFIX_MATCH = SearchPattern.R_PREFIX_MATCH;
 	protected static final int PREFIX_MATCH_CS = SearchPattern.R_PREFIX_MATCH | SearchPattern.R_CASE_SENSITIVE;
@@ -360,231 +377,6 @@ public class DeeSearchEngine_Test extends BaseDeeSearchEngineTest implements IDL
 		String foundKey = module.getBuffer().getText(offset-length, length);
 		if(foundKey.startsWith("/*") && foundKey.endsWith("*/")) {
 			assertEquals("/*"+targetFQName+"*/", foundKey);
-		}
-	}
-	
-	@Test
-	public void searchTypeRefs() throws Exception { searchTypeRefs$(); }
-	public void searchTypeRefs$() throws Exception {
-		IMember element = getElement(searchProj, "srcB", "", "sampledefs").getType("Class");
-		SearchRequestorResultCollector collector = testSearchForElementReferences(element);
-		
-		ISourceModule module = getModule(searchProj, "srcB", "", "sampledefs_refs");
-		
-		checkMarkers(collector, module, "/*sampledefs.Class*/");
-	}
-	
-	@Test
-	public void searchVarRefs() throws Exception { searchVarRefs$(); }
-	public void searchVarRefs$() throws Exception {
-		IMember element = getElement(searchProj, "srcB", "", "sampledefs").getType("Class").getField("fieldA");
-		SearchRequestorResultCollector collector = testSearchForElementReferences(element);
-		
-		ISourceModule module = getModule(searchProj, "srcB", "", "sampledefs_refs");
-		
-		checkMarkers(collector, module, "/*sampledefs.Class.fieldA*/");
-	}
-	
-	@Test
-	public void searchMethodRefs() throws Exception { searchMethodRefs$(); }
-	public void searchMethodRefs$() throws Exception {
-		IMember element = getElement(searchProj, "srcB", "", "sampledefs").getType("Class").getMethod("methodB");
-		SearchRequestorResultCollector collector = testSearchForElementReferences(element);
-		//printIndexDebugInfo(searchProj.getProject())
-		ISourceModule module = getModule(searchProj, "srcB", "", "sampledefs_refs");
-		
-		checkMarkers(collector, module, "/*sampledefs.Class.methodB*/");
-	}
-	
-	protected void checkMarkers(SearchRequestorResultCollector collector, ISourceModule module, String key) throws ModelException {
-		ArrayList<Integer> offsets = getMarkersEnd(module, key);
-		assertTrue(collector.results.size() >= offsets.size());
-		
-		for (Integer markerOffset : offsets) {
-			boolean matchFound = false;
-			for (Iterator<SearchMatch> iterator = collector.matches.iterator(); iterator.hasNext(); ) {
-				SearchMatch match = iterator.next();
-				
-				ISourceModule matchModule = assertInstance(match.getElement(), IMember.class).getSourceModule();
-				if(DeeSearchEngineTestUtils.getSourceModuleFQName(matchModule).equals("sampledefs_refs")) {
-					if(match.getOffset() == markerOffset) {
-						// This marker offset is accounted for
-						matchFound = true;
-						iterator.remove();
-						break;
-					}
-				}
-			}
-			assertTrue(matchFound);
-		}
-	}
-	
-	protected ArrayList<Integer> getMarkersEnd(ISourceModule module, String string) throws ModelException {
-		String contents = module.getBuffer().getContents();
-		ArrayList<Integer> offsets = new ArrayList<Integer>();
-		
-		int indexOf = 0;
-		do {
-			indexOf = contents.indexOf(string, indexOf);
-			if(indexOf != -1) {
-				offsets.add(indexOf + string.length());
-				indexOf++;
-			} else {
-				assertTrue(!offsets.isEmpty());
-				return offsets;
-			}
-		} while (true);
-	}
-	
-	@Test
-	public void testTestData() throws Exception { testTestData$(); }
-	public void testTestData$() throws Exception {
-		ISourceModule srcModule = getModule(searchProj, "srcB", "", "search2");
-		Module module = DeeModuleParsingUtil.getParsedDeeModule(srcModule);
-		
-		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
-		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(srcModule.getScriptProject());
-		assertTrue(assertInstance(defUnit, DefinitionVariable.class).type.findTargetDefElement(mr) == null);
-	}
-	
-	/* ---- En mass test ---- */
-	
-	@Test
-	public void testSearchForAllModelElement() throws Exception { testSearchForAllModelElement$(); }
-	public void testSearchForAllModelElement$() throws Exception {
-		new DeeSearchEngineTestUtils.ElementsAndDefUnitVisitor() {
-			@Override
-			protected void visitMember(IMember element) throws CoreException {
-				testSearchForElement(element);
-			}
-			
-			@Override
-			protected void visitNode(ASTNode node, ISourceModule sourceModule) {
-				if(node instanceof DefUnit) {
-					// All DefUnits must be searchable
-					DefUnit defUnit = (DefUnit) node;
-					try {
-						IMember element = DeeModelEngine.findCorrespondingModelElement(defUnit, sourceModule);
-						if(element != null) {
-							testSearchForElement(element);
-						}
-					} catch (CoreException e) {
-						throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-					}
-				}
-			}
-			
-		}.visitElementsAndNodes(searchProj, 10);
-	}
-	
-	@Test
-	public void testSearchForAllModelElementRefs() throws Exception { testSearchForAllModelElementRefs$(); }
-	public void testSearchForAllModelElementRefs$() throws Exception {
-		
-		final HashMap<Pair<ISourceModule, ?>, HashSet<Reference>> defUnitToReferencesMap 
-		= new HashMap<Pair<ISourceModule, ?>, HashSet<Reference>>();
-		
-		new DeeSearchEngineTestUtils.ElementsAndDefUnitVisitor() {
-			@Override
-			protected void visitNode(ASTNode node, ISourceModule sourceModule) {
-				if(node instanceof Reference) {
-					Reference reference = (Reference) node;
-					
-					DeeProjectModuleResolver mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
-					Collection<INamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
-					if(targetDefElements == null || targetDefElements.isEmpty()) {
-						return;
-					}
-					
-					for (INamedElement defElement : targetDefElements) {
-						DefUnit defUnit = defElement.resolveDefUnit();
-						if(defUnit == null) {
-							continue;
-						}
-						Module moduleNode = defUnit.getModuleNode();
-						if(moduleNode == null) {
-							continue; // consider this case more
-						}
-							
-						ISourceModule defUnitSrcModule = findSourceModule(moduleNode, searchProj);
-						
-						ArrayList<Integer> nodeTreePath = DeeSearchEngineTestUtils.getNodeTreePath(defUnit);
-						Pair<ISourceModule, ?> key = Pair.create(defUnitSrcModule, nodeTreePath);
-						
-						if(defUnitToReferencesMap.get(key) == null) {
-							defUnitToReferencesMap.put(key, new HashSet<Reference>());
-						}
-						
-						defUnitToReferencesMap.get(key).add(reference);
-					}
-				}
-			}
-		}.visitElementsAndNodes(getSrcFolder(searchProj, "srcA"), 10);
-		
-		
-		
-		for (Pair<ISourceModule, ?> key : defUnitToReferencesMap.keySet()) {
-			ISourceModule sourceModule = key.getFirst();
-			ArrayList<Integer> nodeTreePath = blindCast(key.getSecond());
-			
-			Module deeModule = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
-			ASTNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModule, nodeTreePath);
-			
-			final DefUnit defUnit = (DefUnit) node;
-			final HashSet<Reference> expectedReferences = defUnitToReferencesMap.get(key);
-			
-			IMember element = DeeModelEngine.findCorrespondingModelElement(defUnit, sourceModule);
-//			if(element == null) {
-//				// TODO: consider this case
-//				continue;
-//			}
-			
-			final String keyIdentifier = DeeSearchEngineTestUtils.getModelElementFQName(element);
-			
-			doTestSearchForElementReferences(element, new MatchChecker(){
-				@Override
-				public void checkMatch(SearchMatch match) throws CoreException {
-					IMember refElement = assertInstance(match.getElement(), IMember.class);
-					ISourceModule module = getSourceModule(refElement);
-					checkKey(module, match.getOffset(), keyIdentifier);
-					
-					checkReferences(expectedReferences, match);
-				}
-				
-				private void checkReferences(final HashSet<Reference> expectedReferences, SearchMatch referenceMatch) {
-					// Search for referenceMatch in expectedReferences, then remove it
-					
-					for (Reference pair : expectedReferences) {
-						Reference reference = pair;
-						
-						String[] refModuleName = DeeSearchEngineTestUtils.getModuleFQName(reference.getModuleNode());
-						
-						IModelElement modelElement = downCast(referenceMatch.getElement());
-						ISourceModule matchSrcModule = DeeSearchEngineTestUtils.getSourceModule(modelElement);
-						
-						String[] matchModuleName = DeeSearchEngineTestUtils.getModelElementFQNameArray(matchSrcModule);
-						
-						if( areEqualArrays(refModuleName, matchModuleName) &&
-							reference.getOffset() == referenceMatch.getOffset() &&
-							reference.getLength() == referenceMatch.getLength()
-						) {
-							expectedReferences.remove(pair);
-							return;
-						}
-					}
-					assertFail();
-				}
-			});
-			
-		}
-	}
-	
-	public static ISourceModule findSourceModule(Module module, IScriptProject searchProj) {
-		try {
-			// TODO: test this, consider multiple named source Packages
-			return new DeeProjectModuleResolver(searchProj).findModuleUnit(module);
-		} catch (ModelException e) {
-			return null;
 		}
 	}
 	

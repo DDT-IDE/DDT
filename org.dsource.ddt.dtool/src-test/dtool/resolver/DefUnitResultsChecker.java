@@ -157,7 +157,6 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	}
 	
 	
-	
 	/* ------ */
 	
 	public static void removeDefUnitByMarker(Collection<INamedElement> resolvedDefUnits, MetadataEntry marker) {

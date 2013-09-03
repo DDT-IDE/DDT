@@ -133,7 +133,6 @@ public final class StringUtil {
 		int index = string.indexOf(match);
 		return (index == -1) ? string : string.substring(0, index);
 	}
-	
 	/** @return a substring of given string up until the start of the first occurrence of given match,  
 	 * or null if no match is found. */
 	public static String segmentUntilMatch(String string, String match) {
@@ -141,13 +140,12 @@ public final class StringUtil {
 		return (index == -1) ? null   : string.substring(0, index);
 	}
 	
-	/** @return a substring of given string starting from the end of the last occurrence of given match, 
+	/** @return a substring of given string starting from the end of the first occurrence of given match, 
 	 * or the whole string if no match is found. */
 	public static String substringAfterMatch(String string, String match) {
 		int index = string.indexOf(match);
 		return (index == -1) ? string : string.substring(index + match.length());
 	}
-	
 	/** @return a substring of given string starting from the end of the first occurrence of given match, 
 	 * or null if no match is found. */
 	public static String segmentAfterMatch(String string, String match) {
@@ -155,8 +153,34 @@ public final class StringUtil {
 		return (index == -1) ? null   : string.substring(index + match.length());
 	}
 	
-
-
+	/** @return a substring of given string up until the start of the last occurrence of given match, 
+	 * or the whole string if no match is found. */
+	public static String substringUntilLastMatch(String string, String match) {
+		int index = string.lastIndexOf(match);
+		return (index == -1) ? string : string.substring(0, index);
+	}
+	/** @return a substring of given string up until the start of the last occurrence of given match,  
+	 * or null if no match is found. */
+	public static String segmentUntilLastMatch(String string, String match) {
+		int index = string.lastIndexOf(match);
+		return (index == -1) ? null   : string.substring(0, index);
+	}
+	
+	/** @return a substring of given string starting from the end of the last occurrence of given match, 
+	 * or the whole string if no match is found. */
+	public static String substringAfterLastMatch(String string, String match) {
+		int index = string.lastIndexOf(match);
+		return (index == -1) ? string : string.substring(index + match.length());
+	}
+	
+	/** @return a substring of given string starting from the end of the last occurrence of given match, 
+	 * or null if no match is found. */
+	public static String segmentAfterLastMatch(String string, String match) {
+		int index = string.lastIndexOf(match);
+		return (index == -1) ? null   : string.substring(index + match.length());
+	}
+	
+	
 	/** @return a copy of given string without leading spaces. */
 	public static String trimLeadingSpaces(String string) {
 		int pos = 0;

@@ -4,9 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 
@@ -18,8 +16,8 @@ import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
+import dtool.ast.ASTVisitor;
 import dtool.ast.definitions.Module;
 import dtool.util.NewUtils;
 
@@ -33,15 +31,6 @@ public class DeeSearchEngineTestUtils {
 		}
 		String packageName = DeeModelEngine.getPackageName(sourceModule);
 		return packageName.isEmpty() ? moduleFileName : packageName + "." + moduleFileName;
-	}
-	
-	public static String[] getModelElementFQNameArray(ISourceModule sourceModule) {
-		String fqName = getSourceModuleFQName(sourceModule);
-		if(fqName.isEmpty()) {
-			return NewUtils.EMPTY_STRING_ARRAY;
-		} else {
-			return fqName.split("\\.");
-		}
 	}
 	
 	public static String getModelElementFQName(IMember element) {
@@ -143,12 +132,6 @@ public class DeeSearchEngineTestUtils {
 		@SuppressWarnings("unused")
 		protected void visitMember(IMember element) throws CoreException {
 		}
-	}
-	
-	public static String[] getModuleFQName(Module moduleNode) {
-		LinkedList<String> qualification = DeeModelEngine.getQualificationList(moduleNode);
-		qualification.add(moduleNode.getName());
-		return ArrayUtil.createFrom(qualification, String.class);
 	}
 	
 }

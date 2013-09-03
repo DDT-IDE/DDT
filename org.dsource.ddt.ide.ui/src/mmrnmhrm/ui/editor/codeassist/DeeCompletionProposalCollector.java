@@ -3,7 +3,7 @@ package mmrnmhrm.ui.editor.codeassist;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import mmrnmhrm.core.codeassist.DeeCompletionEngine.RefSearchCompletionProposal;
 import mmrnmhrm.ui.DeePluginImages;
-import mmrnmhrm.ui.views.DeeDefUnitLabelProvider;
+import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.dltk.core.CompletionProposal;
@@ -54,7 +54,7 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 			int repLength = proposal.getReplaceEnd() - proposal.getReplaceStart();
 			Image image = createImage(proposal);
 			
-			String displayString = DeeDefUnitLabelProvider.getLabelForContentAssistPopup(namedElement);
+			String displayString = DeeElementLabelProvider.getLabelForContentAssistPopup(namedElement);
 			
 			DeeCompletionProposal completionProposal = new DeeCompletionProposal(completion, repStart, repLength,
 					image, displayString, namedElement, null);

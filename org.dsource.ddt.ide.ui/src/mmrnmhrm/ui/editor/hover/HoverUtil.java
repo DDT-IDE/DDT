@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import mmrnmhrm.ui.DeePlugin;
-import mmrnmhrm.ui.views.DeeDefUnitLabelProvider;
+import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
@@ -48,7 +48,7 @@ public class HoverUtil {
 	}
 	
 	public static String getHoverInfoWithDeeDoc(INamedElement defUnit, Ddoc ddoc) {
-		String sig = DeeDefUnitLabelProvider.getLabelForHoverSignature(defUnit);
+		String sig = DeeElementLabelProvider.getLabelForHoverSignature(defUnit);
 		String str = convertToHTMLContent(sig);
 		str = "<b>" +str+ "</b>" 
 		+"  <span style=\"color: #915F6D;\" >"+ "("+defUnit.getArcheType().toString()+")"+"</span>";
