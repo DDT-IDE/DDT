@@ -31,6 +31,12 @@ void _ignore() {
 	foo!#FINDFAIL#REFSEARCH¤【tests▪Var▪foo】(123)#FINDFAIL#REFSEARCH¤【tests▪Var▪foo】;
 }
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+module tests;
+auto x = 123.#REFSEARCH¤【!invalid_token】;
+auto x = 123 .#REFSEARCH¤【】;
+auto x = 123. #REFSEARCH¤【tests▪x】;
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 char inFoo; char inFoo2; // Test completion under keywords
 void intMaker(); int other;
 

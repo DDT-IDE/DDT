@@ -103,6 +103,12 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			return search.assignResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION, 
 				"Invalid location (inside unmodifiable token)");
 		}
+		if(tokenAtOffset.getType().getGroupingToken() == DeeTokens.GROUP_FLOAT) {
+			if(tokenAtOffset.getSourceValue().endsWith(".")) {
+				return search.assignResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION, 
+					"Invalid location (after float)");
+			}
+		}
 		
 		int correctedOffset = offset;
 		String searchPrefix = "";

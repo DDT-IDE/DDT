@@ -21,7 +21,8 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		super(testUIDescription, file);
 	}
 	
-	public static final class TestsNullModuleResolver extends NullModuleResolver implements ITestsModuleResolver {
+	public static final class TestsNullModuleResolver extends NullModuleResolver 
+		implements ITestsModuleResolver {
 		@Override
 		public void cleanupChanges() {
 		}
