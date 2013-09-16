@@ -58,7 +58,8 @@ public abstract class CommonInstallType extends AbstractInterpreterInstallType {
 		return locations.toArray(new LibraryLocation[0]);
 	}
 	
-	protected abstract void addDefaultLibraryLocations(IFileHandle executableLocation, List<LibraryLocation> locs);
+	protected abstract void addDefaultLibraryLocations(IFileHandle executableLocation, 
+		List<LibraryLocation> locs);
 	
 	
 	protected static void addLibraryLocationFromPath(List<LibraryLocation> locs, IEnvironment env, IPath path) {

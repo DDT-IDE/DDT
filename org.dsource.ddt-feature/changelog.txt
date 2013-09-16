@@ -6,6 +6,7 @@
  * Fixed issue #7: Error parsing interface function with contracts but no body.
  * Fixed limitation: Code Completion module list in import declarations now shows the module's DDoc.
  * Documentation: added entry in UserGuide#Eclipse_basics about Eclipse memory settings optimization.
+ * Fixed/Implemented issue #10: Compiler installation search in preferences page.
 
 == DDT 0.8.0 (2013-08-30) ==
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).

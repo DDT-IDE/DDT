@@ -17,7 +17,7 @@ public class GDCInstallType extends CommonInstallType {
 	
 	@Override
 	public String getName() {
-		return "GDC (D2)";
+		return "GDC";
 	}
 	
 	private static String[] INTERPRETER_EXECUTABLE_NAMES = { "gdc" };
