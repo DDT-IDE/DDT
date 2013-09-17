@@ -2,12 +2,12 @@
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 int other;
-
+// Test primitive resolving
 #REFSEARCH¤【/bool▪/byte▪/ubyte▪/short▪/ushort▪/int▪/uint▪/long▪/ulong▪/char▪/wchar▪/dchar▪/float▪/double▪/real▪/void▪
     /ifloat▪/idouble▪/ireal▪/cfloat▪/cdouble▪/creal▪other
 】;
 u#REFSEARCH¤【/ubyte▪/ushort▪/uint▪/ulong】;
-void#FIND¤【/void】#REFSEARCH¤【/void】; // Test primitive resolving
+void#FIND¤【/void】#REFSEARCH¤【/void】; 
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module tests;
