@@ -10,8 +10,6 @@ import org.eclipse.dltk.core.CompletionRequestor;
 import org.eclipse.dltk.core.ISourceModule;
 import org.junit.Test;
 
-import dtool.ast.definitions.DefUnit;
-
 public class DeeCompletionEngine_Test extends BaseDeeTest {
 	
 	@Test

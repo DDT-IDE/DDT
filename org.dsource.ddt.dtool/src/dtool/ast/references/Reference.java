@@ -6,7 +6,7 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IDefUnitReference;
-import dtool.resolver.NativesScope;
+import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.api.DefUnitDescriptor;
 import dtool.resolver.api.IModuleResolver;
 
@@ -34,7 +34,7 @@ public abstract class Reference extends Resolvable {
 		}
 		/*BUG here with hasTypeContainer*/
 		if(isDotQualified && hasTypeContainer) { 
-			NativesScope.resolveSearchInTypePropertiesScope(search);
+			LanguageIntrinsics.d_2_063_intrinsics.resolveSearchInTypePropertiesScope(search);
 		}
 	}
 	

@@ -19,7 +19,6 @@ import org.eclipse.dltk.core.ModelException;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTVisitor;
 import dtool.ast.definitions.Module;
-import dtool.util.NewUtils;
 
 public class DeeSearchEngineTestUtils {
 	

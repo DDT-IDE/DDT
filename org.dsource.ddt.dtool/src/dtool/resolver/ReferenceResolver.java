@@ -49,7 +49,7 @@ public class ReferenceResolver {
 		IScopeNode scope = getNearestLexicalScope(node);
 		assertNotNull(scope);
 		
-		findDefUnitInNativesScope(search);
+		findDefUnitInPrimitivesScope(search);
 		
 		while(true) {
 			findDefUnitInScope(scope, search);
@@ -84,8 +84,8 @@ public class ReferenceResolver {
 		return getNearestLexicalScope(parent);
 	}
 	
-	public static void findDefUnitInNativesScope(CommonDefUnitSearch search) {
-		NativesScope.nativesScope.resolveSearchInScope(search);
+	public static void findDefUnitInPrimitivesScope(CommonDefUnitSearch search) {
+		LanguageIntrinsics.d_2_063_intrinsics.primitivesScope.resolveSearchInScope(search);
 	}
 	
 	public static void resolveSearchInScope(CommonDefUnitSearch search, IScopeNode scope) {

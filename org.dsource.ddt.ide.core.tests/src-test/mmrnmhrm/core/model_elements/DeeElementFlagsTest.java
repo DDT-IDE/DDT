@@ -6,14 +6,14 @@ import org.junit.Test;
 
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.IntrinsicDefUnit;
-import dtool.resolver.NativesScope;
+import dtool.resolver.LanguageIntrinsics;
 
 public class DeeElementFlagsTest {
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		for (IntrinsicDefUnit nativeDefUnit : NativesScope.nativesScope.intrinsics) {
+		for (IntrinsicDefUnit nativeDefUnit : LanguageIntrinsics.d_2_063_intrinsics.primitivesScope.intrinsics) {
 			assertTrue(new DefElementDescriptor(nativeDefUnit).isNative());
 		}
 		

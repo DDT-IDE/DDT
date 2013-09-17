@@ -8,7 +8,7 @@ import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.INamedElement;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.NativesScope;
+import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.NullModuleResolver;
 
@@ -42,7 +42,7 @@ public class DeeElementLabelProvider_Test extends BaseDeeUITest {
 		
 		
 		DefUnitSearch search = new DefUnitSearch("int", null, -1, true, new NullModuleResolver());
-		ReferenceResolver.findDefUnitInScope(NativesScope.nativesScope, search);
+		ReferenceResolver.findDefUnitInScope(LanguageIntrinsics.d_2_063_intrinsics.primitivesScope, search);
 		defElement = search.getMatchedElements().iterator().next();
 		
 		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "int");

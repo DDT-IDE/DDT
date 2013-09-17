@@ -7,7 +7,7 @@
 void.#REFSEARCH¤【#@TYPE_PROPERTIES】;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 bool.#REFSEARCH¤【#@TYPE_PROPERTIES】;
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO
-#@INTEGRAL_TYPES.#REFSEARCH¤【#@TYPE_PROPERTIES】;
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ TODO
-#@FLOAT_TYPES.#REFSEARCH¤【#@TYPE_PROPERTIES】;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@INTEGRAL_TYPES.#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#@FLOAT_TYPES.#REFSEARCH¤【#@FLOAT_PROPERTIES】;
