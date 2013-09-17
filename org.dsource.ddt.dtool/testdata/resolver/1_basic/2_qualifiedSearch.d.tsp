@@ -1,5 +1,4 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 module tests; // Test qualified refsearch
 class Foo {
@@ -38,5 +37,33 @@ int other;
 	Foo. i#FIND¤【/int】#REFSEARCH¤【intro►2】nt;
 	Foo. int#FIND¤【/int】#REFSEARCH¤【intro】;	
 	
-	
 #@__CONTEXT_END__
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+module tests; // test module qualified
+
+	int Var;
+	int Var2;
+	int member;
+	int intro;
+
+invariant() {
+	int other;
+	#REFSEARCH¤【Var▪Var2▪member▪intro▪other▪tests】 // test self check
+	
+	.Var#REFSEARCH¤【Var▪Var2】#FIND¤【tests/Var】;
+	
+	.#REFSEARCH¤【Var▪Var2▪member▪intro】#FINDMISSING;
+	.#REFSEARCH¤【Var▪Var2▪member▪intro】#FINDMISSING  ;
+	. #REFSEARCH¤【Var▪Var2▪member▪intro】#FINDMISSING;
+	. #REFSEARCH¤【Var▪Var2▪member▪intro】#FINDMISSING  ;
+	
+	// Test keywords as qualified identifier
+	. #FINDMISSING#REFSEARCH¤【Var▪Var2▪member▪intro►2】in;
+	. i#FINDFAIL#REFSEARCH¤【intro►1】n;
+	. in#FINDFAIL#REFSEARCH¤【intro】;
+	
+	. #FINDMISSING#REFSEARCH¤【Var▪Var2▪member▪intro►3】int;
+	. i#FIND¤【/int】#REFSEARCH¤【intro►2】nt;
+	. int#FIND¤【/int】#REFSEARCH¤【intro】;	
+	
+}
