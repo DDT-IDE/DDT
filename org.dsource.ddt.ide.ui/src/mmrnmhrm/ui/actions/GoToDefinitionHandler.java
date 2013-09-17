@@ -171,7 +171,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		if(defElement.isLanguageIntrinsic()) {
 			// TODO: test this path
 			dialogInfo(window.getShell(), 
-				"Definition " +defElement.getExtendedName()+ " is a language primitive, cannot open editor.");
+				"Cannot open editor, element \"" +defElement.getExtendedName()+ "\" is a language intrinsic.");
 			return;
 		}
 		DefUnit defUnit = defElement.resolveDefUnit();

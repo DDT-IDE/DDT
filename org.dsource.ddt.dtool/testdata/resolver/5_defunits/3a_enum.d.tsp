@@ -14,12 +14,16 @@ enum Enum : basetype #REFSEARCH¤【Enum▪outside】 {
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ as qualifed ref
 int outside; 
 enum Enum : basetype { MemberA , MemberB }
-Enum.#REFSEARCH¤【MemberA▪MemberB】
+Enum.#REFSEARCH¤【MemberA▪MemberB▪#@TYPE_PROPERTIES】
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax error
 int outside; 
-Enum.#REFSEARCH¤【MemberA】;
+Enum.#REFSEARCH¤【MemberA▪#@TYPE_PROPERTIES】;
 enum Enum : basetype { MemberA , 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax error
 int outside; 
+Enum#FIND¤【Enum】.#REFSEARCH¤【▪#@TYPE_PROPERTIES】;
+enum Enum : basetype
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax error
+int outside; 
 Enum#FIND¤【Enum】.#REFSEARCH¤【】;
-enum Enum #@《/**/● : basetype》
+enum Enum 

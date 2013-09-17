@@ -36,7 +36,7 @@ int outside;
 	int bodyVar;
 	#REFSEARCH¤【bodyVar▪#@TPLPARAMS_OPT_result▪Aggregate▪outside】
 #@《}●/*MISSING*/》
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ from body - template 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ from body (template)
 int outside;
 template Aggregate(T, U : T[]) {
 	int bodyVar;
@@ -44,16 +44,28 @@ template Aggregate(T, U : T[]) {
 #@《}●/*MISSING*/》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ as qualifed ref
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 int outside; 
-#@AGGREGATE_KIND_ALL Aggregate(T, alias A = int) {
+#@AGGREGATE_KIND Aggregate(T, alias A = int) {
+	int bodyVar;
+	int bodyVar2;
+}
+Aggregate.#REFSEARCH¤【bodyVar▪bodyVar2▪#@TYPE_PROPERTIES】
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  (template)
+template Aggregate(T, alias A = int) {
 	int bodyVar;
 	int bodyVar2;
 }
 Aggregate.#REFSEARCH¤【bodyVar▪bodyVar2】
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax error
 int outside; 
+Aggregate.#REFSEARCH¤【#@TYPE_PROPERTIES】
+#@AGGREGATE_KIND Aggregate(T, alias A = int /*MISSING BODY*/
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax error (template)
+int outside; 
 Aggregate.#REFSEARCH¤【】
-#@AGGREGATE_KIND_ALL Aggregate(T, alias A = int /*MISSING BODY*/
+template Aggregate(T, alias A = int /*MISSING BODY*/
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ super scopes
 #@OBJ_AGGREGATE_KIND《class●interface》
 
@@ -87,8 +99,8 @@ int outside;
 #@OBJ_AGGREGATE_KIND Aggregate#@TPLPARAMS_OPT : Super1, Super2, ISuper {
 	int bodyVar;
 }
-Aggregate.#REFSEARCH¤【bodyVar▪superMember▪occluded▪fooX▪barA▪barX】
+Aggregate.#REFSEARCH¤【bodyVar▪superMember▪occluded▪fooX▪barA▪barX▪#@TYPE_PROPERTIES】
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@COMMON_CLASSES
-Aggregate.#REFSEARCH¤【superMember▪occluded▪fooX▪barA▪barX】
+Aggregate.#REFSEARCH¤【superMember▪occluded▪fooX▪barA▪barX▪#@TYPE_PROPERTIES】
 #@OBJ_AGGREGATE_KIND Aggregate#@TPLPARAMS_OPT : Super1, Super2, ISuper

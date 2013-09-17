@@ -22,3 +22,7 @@
 
 #@TPLPARAMS_OPT《●(TYPE, TYPE_U : TYPE[])》
 #@TPLPARAMS_OPT_result《●▪TYPE▪TYPE_U》(TPLPARAMS_OPT)
+
+
+#@TYPE_PROPERTIES【init▪sizeof▪alignof▪mangleof▪stringof】
+#@INTEGRAL_PROPERTIES【#@TYPE_PROPERTIES】

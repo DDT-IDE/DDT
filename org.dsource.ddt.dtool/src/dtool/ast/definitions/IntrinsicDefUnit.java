@@ -65,4 +65,9 @@ public abstract class IntrinsicDefUnit implements INamedElement {
 	@Override
 	public abstract void resolveSearchInMembersScope(CommonDefUnitSearch search);
 	
+	@Override
+	public String toString() {
+		return "intrinsic#" + getName();
+	}
+	
 }

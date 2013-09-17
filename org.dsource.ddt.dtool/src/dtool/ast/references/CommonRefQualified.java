@@ -39,23 +39,12 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 	
 	@Override
 	public void performRefSearch(CommonDefUnitSearch search) {
-		performeQualifiedRefSearch(search);
+		performQualifiedRefSearch(search);
 	}
 	
-	public void performeQualifiedRefSearch(CommonDefUnitSearch search) {
+	public void performQualifiedRefSearch(CommonDefUnitSearch search) {
 		Collection<INamedElement> defunits = findRootDefUnits(search.getModuleResolver());
-		resolveSearchInMultipleElements(defunits, search);
-	}
-	
-	public static void resolveSearchInMultipleElements(Collection<INamedElement> elems, CommonDefUnitSearch search) {
-		if(elems == null)
-			return;
-		
-		for (INamedElement namedDef : elems) {
-			if(search.isFinished())
-				return;
-			namedDef.resolveSearchInMembersScope(search);
-		}
+		Reference.resolveSearchInMultipleContainers(defunits, search, true);
 	}
 	
 }

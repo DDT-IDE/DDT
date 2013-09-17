@@ -22,7 +22,7 @@ public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNo
 			CommonRefQualified parent = (CommonRefQualified) getParent();
 			if(parent.getQualifiedName() == this) {
 				// if so, then we must do qualified search (use root as the lookup scope)
-				parent.performeQualifiedRefSearch(search);
+				parent.performRefSearch(search);
 				return;
 			}
 		}

@@ -50,14 +50,6 @@ public class DdocParser {
 	}
 	
 	/**
-	 * Creates a parser for the given text.
-	 * @param text the text to parse
-	 */
-	public DdocParser(char[] text) {
-		this.text = new String(text);
-	}
-	
-	/**
 	 * Parses the text and returns the Ddoc information.
 	 * @return the ddoc information
 	 */

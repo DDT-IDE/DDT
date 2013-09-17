@@ -15,6 +15,7 @@ import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.util.NamedElementUtil;
+import dtool.resolver.NativesScope.IPrimitiveDefUnit;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.CommonTestUtils;
 
@@ -40,7 +41,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 				iterator.remove();
 			}
 			
-			if(ignorePrimitives && defElement.isLanguageIntrinsic()) {
+			if(ignorePrimitives && defElement instanceof IPrimitiveDefUnit) {
 				iterator.remove();
 			}
 		}

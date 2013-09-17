@@ -40,17 +40,6 @@ class FooBar : Foo {
 		
 		f/+@CC.I+/; // test interactive CA (moving cursor left and right)
 		
-		/+CC6@+/Foo ; // Qualified 0 char prefix
-		/+CC6b@+/Foo.f; // Qualified 1 char prefix
-		
-		/+CC7@+/ ; // Module Qualified 0 char prefix
-		/+CC7b@+/.f; // Module Qualified 1 char prefix
-		
-		/+CC8@+/Xpto.xptofoo.f; // Module Qualified 
-		int fDecoy;
-		
-		/+CC9@+/foo == bar; // Test inside token
-		/+CC10+/Foo  .  f; // Test inside spaces of refQualified
 	}
 }
 

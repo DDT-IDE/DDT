@@ -8,7 +8,6 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.ReferenceResolver;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -73,12 +72,11 @@ public class DefinitionClass extends DefinitionAggregate {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		if(getBodyScope() != null) {
-			ReferenceResolver.resolveSearchInScope(search, getBodyScope());
-		} else {
+		if(getBodyScope() == null) {
 			// Even without a body scope, we can resolve in super scopes
 			resolveSearchInSuperScopes(search);
 		}
+		super.resolveSearchInMembersScope(search);
 	}
 	
 	public void resolveSearchInSuperScopes(CommonDefUnitSearch search) {

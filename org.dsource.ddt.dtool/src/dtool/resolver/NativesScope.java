@@ -1,9 +1,13 @@
 package dtool.resolver;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import descent.core.ddoc.Ddoc;
+import descent.core.ddoc.DdocParser;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.IntrinsicDefUnit;
 import dtool.util.ArrayView;
 
@@ -53,7 +57,11 @@ public class NativesScope implements IScopeProvider {
 		ReferenceResolver.findInNamedElementList(search, intrinsics);
 	}
 	
-	public static class PrimitiveDefUnit extends IntrinsicDefUnit {
+	public static interface IPrimitiveDefUnit {
+		
+	}
+	
+	public static class PrimitiveDefUnit extends IntrinsicDefUnit implements IPrimitiveDefUnit {
 		
 		public PrimitiveDefUnit(String name) {
 			super(name);
@@ -66,8 +74,49 @@ public class NativesScope implements IScopeProvider {
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			// TODO
+		}
+	}
+	
+	public static class IntrinsicProperty extends IntrinsicDefUnit {
+		
+		public final Ddoc ddoc;
+		
+		public IntrinsicProperty(String name, Ddoc ddoc) {
+			super(name);
+			this.ddoc = ddoc;
 		}
 		
+		@Override
+		public EArcheType getArcheType() {
+			return EArcheType.Variable;
+		}
+		
+		@Override
+		public Ddoc resolveDDoc() {
+			return ddoc;
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			// TODO
+		}
+	}
+	
+	protected static List<IntrinsicDefUnit> typeProperties = Arrays.<IntrinsicDefUnit>asList(
+		new IntrinsicProperty("init", parseDDoc("initializer")),
+		new IntrinsicProperty("sizeof", parseDDoc("size in bytes (equivalent to C's $(D sizeof(type)))")),
+		new IntrinsicProperty("alignof", parseDDoc("alignment size")),
+		new IntrinsicProperty("mangleof", parseDDoc("string representing the ‘mangled’ representation of the type")),
+		new IntrinsicProperty("stringof", parseDDoc("string representing the source representation of the type"))
+	);
+	
+	public static Ddoc parseDDoc(String ddocSource) {
+		return new DdocParser("/**" + ddocSource + "*/").parse();
+	}
+	
+	public static void resolveSearchInTypePropertiesScope(CommonDefUnitSearch search) {
+		ReferenceResolver.findInNamedElementList(search, typeProperties);
 	}
 	
 }
