@@ -2,15 +2,21 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.Collection;
+
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
+import dtool.ast.references.CommonRefQualified;
 import dtool.ast.util.NodeUtil;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IResolvable;
+import dtool.resolver.api.IModuleResolver;
 
 /**
  * Abstract class for all AST elements that define a new named entity.
@@ -144,5 +150,16 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 	
 	@Override
 	public abstract void resolveSearchInMembersScope(CommonDefUnitSearch search);
+	
+	
+	public static void resolveSearchInReferredContainer(CommonDefUnitSearch search, IResolvable resolvable) {
+		if(resolvable == null) {
+			return;
+		}
+		
+		IModuleResolver mr = search.getModuleResolver();
+		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr, true);
+		CommonRefQualified.resolveSearchInMultipleContainers(containers, search, true);
+	}
 	
 }

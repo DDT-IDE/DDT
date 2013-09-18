@@ -74,7 +74,7 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferredContainer(search, type);
+		resolveSearchInReferredContainer(search, type);
 	}
 	
 	public static class DefinitionAutoVariable extends DefinitionVariable {
@@ -93,7 +93,7 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 			if(initializer instanceof IResolvable) {
 				IResolvable resolvable = (IResolvable) initializer;
-				Reference.resolveSearchInReferredContainer(search, resolvable);
+				resolveSearchInReferredContainer(search, resolvable);
 			}
 		}
 		

@@ -53,7 +53,7 @@ public class EnumMember extends DefUnit {
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		Reference effectiveType = type != null ? type : getEnumParentType();
-		Reference.resolveSearchInReferedMembersScope(search, effectiveType);
+		resolveSearchInReferredContainer(search, effectiveType);
 	}
 	
 	public Reference getEnumParentType() {

@@ -83,9 +83,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		if(type == null)
-			return;
-		Reference.resolveSearchInReferedMembersScope(search, type);
+		resolveSearchInReferredContainer(search, type);
 	}
 	
 }

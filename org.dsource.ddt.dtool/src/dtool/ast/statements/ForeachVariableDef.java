@@ -44,7 +44,7 @@ public class ForeachVariableDef extends DefUnit {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferedMembersScope(search, type);
+		resolveSearchInReferredContainer(search, type);
 	}
 	
 }

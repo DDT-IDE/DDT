@@ -101,7 +101,7 @@ public class StaticIfExpIs extends Expression {
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 			StaticIfExpIs staticIfIsExp = getParent_Concrete();
-			Reference.resolveSearchInReferedMembersScope(search, staticIfIsExp.typeRef);
+			resolveSearchInReferredContainer(search, staticIfIsExp.typeRef);
 		}
 		
 	}

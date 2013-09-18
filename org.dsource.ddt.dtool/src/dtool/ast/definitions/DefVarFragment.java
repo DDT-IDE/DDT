@@ -57,7 +57,7 @@ public class DefVarFragment extends DefUnit {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferedMembersScope(search, getParent_Concrete().type);
+		resolveSearchInReferredContainer(search, getParent_Concrete().type);
 	}
 	
 }

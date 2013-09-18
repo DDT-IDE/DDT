@@ -7,7 +7,6 @@ import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefModule;
-import dtool.ast.references.Reference;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class ImportAlias extends DefUnit implements IImportFragment {
@@ -48,7 +47,7 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferedMembersScope(search, moduleRef);
+		resolveSearchInReferredContainer(search, moduleRef);
 	}
 	
 	@Override

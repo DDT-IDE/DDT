@@ -83,7 +83,7 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			Reference.resolveSearchInReferedMembersScope(search, target);
+			resolveSearchInReferredContainer(search, target);
 		}
 		
 	}

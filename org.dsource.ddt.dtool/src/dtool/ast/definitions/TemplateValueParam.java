@@ -50,7 +50,7 @@ public class TemplateValueParam extends TemplateParameter {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferedMembersScope(search, type);
+		resolveSearchInReferredContainer(search, type);
 	}
 	
 }

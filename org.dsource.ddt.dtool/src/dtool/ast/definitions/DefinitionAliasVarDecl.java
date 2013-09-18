@@ -69,7 +69,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferedMembersScope(search, target);
+		resolveSearchInReferredContainer(search, target);
 	}
 	
 	// TODO:

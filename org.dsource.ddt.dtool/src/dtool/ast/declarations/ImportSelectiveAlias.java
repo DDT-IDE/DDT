@@ -7,7 +7,6 @@ import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefImportSelection;
-import dtool.ast.references.Reference;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSelection {
@@ -37,7 +36,7 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferedMembersScope(search, target);
+		resolveSearchInReferredContainer(search, target);
 	}
 	
 	@Override

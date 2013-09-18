@@ -42,7 +42,7 @@ public class SimpleVariableDef extends DefUnit {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferedMembersScope(search, type);
+		resolveSearchInReferredContainer(search, type);
 	}
 	
 }

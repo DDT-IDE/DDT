@@ -47,7 +47,7 @@ public class DefinitionMixinInstance extends CommonDefinition implements IStatem
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference.resolveSearchInReferedMembersScope(search, templateInstance);
+		resolveSearchInReferredContainer(search, templateInstance);
 	}
 	
 }
