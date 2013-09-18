@@ -65,6 +65,7 @@ public class CoreUtil /* extends Assert */ {
 	}
 	
 	/** Shortcut for creating an array of T. */
+	@SafeVarargs
 	public static <T> T[] array(T... elems) {
 		return elems;
 	}

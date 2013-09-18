@@ -145,6 +145,7 @@ public class ArrayUtil {
 	}
 	
 	/** Creates a new array with given first element prepended to given rest array. */
+	@SafeVarargs
 	public static <T> T[] prepend(T first, T... rest) {
 		T[] newArray = ArrayUtil.create(rest.length + 1, rest);
 		newArray[0] = first;
@@ -154,6 +155,7 @@ public class ArrayUtil {
 	
 	/** Appends given array other to given array base, 
 	 * creating a new array of the same runtime type as original. */
+	@SafeVarargs
 	public static <T> T[] concat(T[] base, T... other) {
 		return concat(base, other, other.length);
 	}
