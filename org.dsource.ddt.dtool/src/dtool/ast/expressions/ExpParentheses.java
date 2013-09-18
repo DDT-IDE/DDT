@@ -1,9 +1,14 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.Collection;
+
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.definitions.INamedElement;
+import dtool.resolver.api.IModuleResolver;
 
 public class ExpParentheses extends Expression {
 	
@@ -29,4 +34,10 @@ public class ExpParentheses extends Expression {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("(", resolvable, ")");
 	}
+	
+	@Override
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		return resolvable.findTargetDefElements(moduleResolver, findFirstOnly);
+	}
+	
 }

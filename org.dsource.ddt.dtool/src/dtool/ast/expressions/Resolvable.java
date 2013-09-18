@@ -34,7 +34,7 @@ public abstract class Resolvable extends ASTNode implements IDefUnitReference {
 	public abstract Collection<INamedElement> findTargetDefElements(
 		IModuleResolver moduleResolver, boolean findFirstOnly);
 	
-	public INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
+	public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
 		Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
 		if(namedElems == null || namedElems.isEmpty())
 			return null;

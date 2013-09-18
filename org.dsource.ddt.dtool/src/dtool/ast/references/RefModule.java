@@ -69,11 +69,6 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public ModuleProxy findTargetDefElement(IModuleResolver moduleResolver) {
-		return (ModuleProxy) super.findTargetDefElement(moduleResolver);
-	}
-	
-	@Override
 	public void performRefSearch(CommonDefUnitSearch search) {
 		if(search instanceof PrefixDefUnitSearch) {
 			PrefixDefUnitSearch prefixDefUnitSearch = (PrefixDefUnitSearch) search;

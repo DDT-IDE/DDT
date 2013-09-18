@@ -4,10 +4,18 @@
 #@FLOAT_TYPES《float●double●real》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-void.#REFSEARCH¤【#@TYPE_PROPERTIES】;
+  void.#REFSEARCH¤【#@TYPE_PROPERTIES】;
+auto _dummy = 
+(void).#REFSEARCH¤【#@TYPE_PROPERTIES】;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-bool.#REFSEARCH¤【#@TYPE_PROPERTIES】;
+  bool.#REFSEARCH¤【#@TYPE_PROPERTIES】;
+auto _dummy =
+(bool).#REFSEARCH¤【#@TYPE_PROPERTIES】;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@INTEGRAL_TYPES.#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
+  #@INTEGRAL_TYPES.#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
+auto _dummy =
+(#@INTEGRAL_TYPES).#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#@FLOAT_TYPES.#REFSEARCH¤【#@FLOAT_PROPERTIES】;
+  #@FLOAT_TYPES.#REFSEARCH¤【#@FLOAT_PROPERTIES】;
+auto _dummy =
+(#@FLOAT_TYPES).#REFSEARCH¤【#@FLOAT_PROPERTIES】;

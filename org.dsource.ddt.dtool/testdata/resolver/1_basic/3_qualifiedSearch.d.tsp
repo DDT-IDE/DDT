@@ -9,7 +9,6 @@ class Foo {
 }
 int other;
 
-#@__CONTEXT_START__
 	Foo.Var#FIND¤【Var】#FIND¤【tests/Foo.Var】;
 	
 	Foo.V#REFSEARCH¤【Var▪Var2】;
@@ -38,8 +37,18 @@ int other;
 	Foo. i#FIND¤【/int】#REFSEARCH¤【intro▪init►2】nt;
 	Foo. int#FIND¤【/int】#REFSEARCH¤【intro】;	
 	
-#@__CONTEXT_END__
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+module tests; // Test qualified with indirect (exp) qualifier
+class Foo {
+	int Var;
+	int Var2;
+	int member;
+	int intro;
+}
+int other;
+
+auto _dummy = (Foo).#REFSEARCH¤【Var▪Var2▪member▪intro▪#@TYPE_PROPERTIES】#FINDMISSING;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module tests; // test module qualified
 
 	int Var;
