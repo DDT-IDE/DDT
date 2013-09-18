@@ -5,7 +5,7 @@ import java.util.Collection;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IDefUnitReference;
+import dtool.resolver.IResolvable;
 import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.api.DefUnitDescriptor;
 import dtool.resolver.api.IModuleResolver;
@@ -38,8 +38,18 @@ public abstract class Reference extends Resolvable {
 		}
 	}
 	
+	public static void resolveSearchInReferredContainer(CommonDefUnitSearch search, IResolvable resolvable) {
+		if(resolvable == null) {
+			return;
+		}
+		
+		IModuleResolver mr = search.getModuleResolver();
+		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr, true);
+		resolveSearchInMultipleContainers(containers, search, true);
+	}
+	
 	// TODO: review this method
-	public static void resolveSearchInReferedMembersScope(CommonDefUnitSearch search, IDefUnitReference reference) {
+	public static void resolveSearchInReferedMembersScope(CommonDefUnitSearch search, IResolvable reference) {
 		if(reference == null) {
 			return;
 		}

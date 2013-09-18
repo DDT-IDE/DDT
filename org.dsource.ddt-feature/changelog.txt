@@ -9,7 +9,7 @@
  * Fixed/Implemented issue #10: Compiler installation search in preferences page.
  * Cleanup: Code Completion now shows no results if invoked after float token ending in a dot.
  * Implemented: Code Completion now resolves type properties (.init, .sizeof, .alignof, etc.), integral properties (.min, .max), float properties(.infinity, .nan, etc.).
- * Implemented: Code Completion now resolves parentheses expression.
+ * Implemented: Code Completion now resolves parentheses expression. Auto declarations (resolve to initializer).
 
 == DDT 0.8.0 (2013-08-30) ==
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).

@@ -10,6 +10,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IResolvable;
 import dtool.util.ArrayView;
 
 /**
@@ -23,16 +24,16 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	
 	public final Reference type; // Can be null
 	public final Reference cstyleSuffix;
-	public final IInitializer init;
+	public final IInitializer initializer;
 	protected final ArrayView<DefVarFragment> fragments;
 	
 	public DefinitionVariable(Token[] comments, ProtoDefSymbol defId, Reference type, Reference cstyleSuffix,
-		IInitializer init, ArrayView<DefVarFragment> fragments)
+		IInitializer initializer, ArrayView<DefVarFragment> fragments)
 	{
 		super(comments, defId);
 		this.type = parentize(type);
 		this.cstyleSuffix = parentize(cstyleSuffix);
-		this.init = parentize(init);
+		this.initializer = parentize(initializer);
 		this.fragments = parentize(fragments);
 		assertTrue(fragments == null || fragments.size() > 0);
 	}
@@ -47,7 +48,7 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 		acceptVisitor(visitor, type);
 		acceptVisitor(visitor, defname);
 		acceptVisitor(visitor, cstyleSuffix);
-		acceptVisitor(visitor, init);
+		acceptVisitor(visitor, initializer);
 		
 		acceptVisitor(visitor, fragments);
 	}
@@ -57,7 +58,7 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 		cp.append(type, " ");
 		cp.append(defname);
 		cp.append(cstyleSuffix);
-		cp.append(" = ", init);
+		cp.append(" = ", initializer);
 		cp.appendList(", ", fragments, ", ", "");
 		cp.append(";");
 	}
@@ -73,21 +74,27 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		if(type == null)
-			return; // TODO: auto references
-		Reference.resolveSearchInReferedMembersScope(search, type);
+		Reference.resolveSearchInReferredContainer(search, type);
 	}
 	
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
-		public DefinitionAutoVariable(Token[] comments, ProtoDefSymbol defId, IInitializer init,
+		public DefinitionAutoVariable(Token[] comments, ProtoDefSymbol defId, IInitializer initializer,
 			ArrayView<DefVarFragment> fragments) {
-			super(comments, defId, null, null, init, fragments);
+			super(comments, defId, null, null, initializer, fragments);
 		}
 		
 		@Override
 		public ASTNodeTypes getNodeType() {
 			return ASTNodeTypes.DEFINITION_AUTO_VARIABLE;
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			if(initializer instanceof IResolvable) {
+				IResolvable resolvable = (IResolvable) initializer;
+				Reference.resolveSearchInReferredContainer(search, resolvable);
+			}
 		}
 		
 	}

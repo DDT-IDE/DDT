@@ -10,17 +10,17 @@ import dtool.ast.IASTNode;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
-import dtool.resolver.IDefUnitReference;
+import dtool.resolver.IResolvable;
 import dtool.resolver.api.IModuleResolver;
 
 /**
  * A {@link Resolvable} is either an {@link Reference} or {@link Expression}
  */
-public abstract class Resolvable extends ASTNode implements IDefUnitReference {
+public abstract class Resolvable extends ASTNode implements IResolvable {
 	
 	/** Marker interface for nodes that can appear as qualifier in {@link RefQualified}. 
 	 * Must be a {@link Resolvable}. */
-	public interface IQualifierNode extends IDefUnitReference, IASTNode { }
+	public interface IQualifierNode extends IResolvable, IASTNode { }
 	
 	/** Marker interface for nodes that can appear as template references in template instance. 
 	 * Must be a {@link Reference}.*/

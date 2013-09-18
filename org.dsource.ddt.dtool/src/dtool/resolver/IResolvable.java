@@ -6,12 +6,11 @@ import dtool.ast.definitions.INamedElement;
 import dtool.resolver.api.IModuleResolver;
 
 /** 
- * A reference to a DefUnit.
- * TODO rename to IResolvable? 
- * */
-public interface IDefUnitReference {
+ * A node that is a reference (or a value implicitly referring) to a named element.
+ */
+public interface IResolvable {
 	
-	/** Finds the DefUnits matching this reference. 
+	/** Finds the named element matching this {@link IResolvable}. 
 	 * If no results are found, return null. */
 	Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly);
 	
