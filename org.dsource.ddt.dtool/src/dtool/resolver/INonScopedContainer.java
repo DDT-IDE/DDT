@@ -5,9 +5,8 @@ import java.util.Iterator;
 import dtool.ast.ASTNode;
 
 /**
- * Interface for a container node that contains nodes that are part of the same
- * scope as the container. 
- * (version/debug declarations, attribute declarations, etc.)
+ * Interface for a node that potentially contains named elements visible 
+ * in the same scope/namespace as the container. 
  */
 public interface INonScopedContainer {
 	

@@ -2,6 +2,10 @@ package dtool.ast.definitions;
 
 
 import static dtool.util.NewUtils.assertCast;
+
+import java.util.Iterator;
+
+import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -10,6 +14,7 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.INonScopedContainer;
 import dtool.util.ArrayView;
 
 /**
@@ -20,7 +25,7 @@ import dtool.util.ArrayView;
  * 
  * @see http://dlang.org/declaration.html#AliasDeclaration
  */
-public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement {
+public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement, INonScopedContainer {
 	
 	public final ArrayView<DefinitionAliasFragment> aliasFragments;
 
@@ -43,6 +48,11 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		cp.append("alias ");
 		cp.appendList(aliasFragments, ", ", false);
 		cp.append(";");
+	}
+	
+	@Override
+	public Iterator<? extends ASTNode> getMembersIterator() {
+		return IteratorUtil.nonNullIterator(aliasFragments);
 	}
 	
 	public static class DefinitionAliasFragment extends DefUnit {

@@ -9,6 +9,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -78,6 +79,18 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 			strParams += params.get(i).toStringForFunctionSignature();
 		}
 		return strParams + ")";
+	}
+	
+	@Override
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		resolveSearchInMembersScopeForFunction(search, retType, tplParams, fnParams, tplConstraint);
+	}
+	
+	@SuppressWarnings("unused")
+	public static void resolveSearchInMembersScopeForFunction(CommonDefUnitSearch search, Reference retType,
+		 ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, Expression tplConstraint) {
+		// Do nothing, a function has no members scope
+		// TODO: except for implicit function calls syntax, that needs to be implemented
 	}
 	
 }

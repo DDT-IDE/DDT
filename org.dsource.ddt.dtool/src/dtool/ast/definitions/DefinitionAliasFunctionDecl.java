@@ -73,8 +73,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		// XXX: Not correct for functional variant of alias
-		resolveSearchInReferredContainer(search, target);
+		DefinitionFunction.resolveSearchInMembersScopeForFunction(search, target, null, fnParams, null);
 	}
 	
 }

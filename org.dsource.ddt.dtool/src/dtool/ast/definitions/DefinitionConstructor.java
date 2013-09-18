@@ -17,6 +17,7 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.Token;
+import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 
 public class DefinitionConstructor extends AbstractFunctionDefinition implements IDeclaration {
@@ -55,6 +56,11 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	@Override
 	public boolean availableInRegularNamespace() {
 		return false;
+	}
+	
+	@Override
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		// Not applicable to constructor as it cannot be referred directly
 	}
 	
 }

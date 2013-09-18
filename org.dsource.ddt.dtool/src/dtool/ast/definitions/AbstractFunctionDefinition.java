@@ -75,11 +75,6 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		ReferenceResolver.findInNodeList(search, fnParams, true);
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		// Do nothing, a function has no members scope
-	}
-	
 	/* ------------------------------------------------------------------------ */
 	
 }

@@ -1,8 +1,14 @@
 package dtool.ast.definitions;
 
 
+import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.Iterator;
+
+import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.Attribute;
@@ -11,6 +17,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.INonScopedContainer;
 import dtool.util.ArrayView;
 
 /**
@@ -20,7 +27,8 @@ import dtool.util.ArrayView;
  * 
  * @see http://dlang.org/declaration.html#AliasDeclaration
  */
-public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclaration, IStatement {
+// Note implementation similarities with {@link DefinitionVariable} and {@link DefVarFragment}
+public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclaration, IStatement, INonScopedContainer {
 	
 	public final ArrayView<Attribute> aliasedAttributes;
 	public final Reference target;
@@ -72,7 +80,11 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		resolveSearchInReferredContainer(search, target);
 	}
 	
-	// TODO:
+	@Override
+	public Iterator<? extends ASTNode> getMembersIterator() {
+		return IteratorUtil.nonNullIterator(fragments);
+	}
+	
 	public static class AliasVarDeclFragment extends DefUnit {
 		
 		public AliasVarDeclFragment(ProtoDefSymbol defId) {
@@ -82,6 +94,11 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		@Override
 		public ASTNodeTypes getNodeType() {
 			return ASTNodeTypes.ALIAS_VAR_DECL_FRAGMENT;
+		}
+		
+		@Override
+		public DefinitionAliasVarDecl getParent_Concrete() {
+			return assertCast(parent, DefinitionAliasVarDecl.class);
 		}
 		
 		@Override
@@ -101,7 +118,8 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			// TODO
+			Reference target = getParent_Concrete().target;
+			resolveSearchInReferredContainer(search, target);
 		}
 		
 	}

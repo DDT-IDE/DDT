@@ -57,7 +57,7 @@ Class▪Interface▪Struct▪Union
 Enum
 EnumMemberA▪EnumMemberB
 
-#comment(TODO)¤【Alias1▪Alias2▪】
+Alias1▪Alias2
 AliasVarDecl▪AliasFunctionDecl
 
 Template

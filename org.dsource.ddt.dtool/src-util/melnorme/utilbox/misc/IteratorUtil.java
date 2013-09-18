@@ -32,8 +32,13 @@ public class IteratorUtil {
 		return ((Iterator<T>) iterator);
 	}
 	
-	public static <T> Iterator<T> singletonIterator(T elem) {
-		return Collections.singletonList(elem).iterator();
+	public static <T> Iterator<T> singletonIterator(T obj) {
+		return Collections.singletonList(obj).iterator();
+	}
+	
+	/** @return the iterator for given iterable, or an empty iterator if iterable is null */
+	public static <T> Iterator<T> nonNullIterator(Iterable<T> iterable) {
+		return iterable == null ? Collections.<T>emptyIterator() : iterable.iterator();
 	}
 	
 }
