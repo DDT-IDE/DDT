@@ -1,7 +1,11 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.Iterator;
+
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
@@ -10,15 +14,15 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.INonScopedContainer;
 import dtool.resolver.IResolvable;
 import dtool.util.ArrayView;
 
 /**
  * A variable definition. 
  * Optionally has multiple variables defined with the multi-identifier syntax.
- * TODO fragments semantic visibility
  */
-public class DefinitionVariable extends CommonDefinition implements IDeclaration, IStatement { 
+public class DefinitionVariable extends CommonDefinition implements IDeclaration, IStatement, INonScopedContainer { 
 	
 	public static final ArrayView<DefVarFragment> NO_FRAGMENTS = ArrayView.create(new DefVarFragment[0]);
 	
@@ -73,8 +77,23 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	}
 	
 	@Override
+	public Iterator<? extends ASTNode> getMembersIterator() {
+		return getFragments().iterator();
+	}
+	
+	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInReferredContainer(search, type);
+		resolveSearchInMembersScopeForVariable(search, type, initializer);
+	}
+	
+	public static void resolveSearchInMembersScopeForVariable(CommonDefUnitSearch search, 
+		Reference typeRef, IInitializer initializer) {
+		if(typeRef != null) {
+			resolveSearchInReferredContainer(search, typeRef);
+		} else if(initializer instanceof IResolvable) {
+			IResolvable resolvable = (IResolvable) initializer;
+			resolveSearchInReferredContainer(search, resolvable);
+		}
 	}
 	
 	public static class DefinitionAutoVariable extends DefinitionVariable {
@@ -87,14 +106,6 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 		@Override
 		public ASTNodeTypes getNodeType() {
 			return ASTNodeTypes.DEFINITION_AUTO_VARIABLE;
-		}
-		
-		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			if(initializer instanceof IResolvable) {
-				IResolvable resolvable = (IResolvable) initializer;
-				resolveSearchInReferredContainer(search, resolvable);
-			}
 		}
 		
 	}

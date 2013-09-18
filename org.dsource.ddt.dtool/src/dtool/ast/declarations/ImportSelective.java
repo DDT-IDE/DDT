@@ -15,11 +15,11 @@ import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.INonScopedBlock;
+import dtool.resolver.INonScopedContainer;
 import dtool.resolver.ReferenceResolver;
 import dtool.util.ArrayView;
 
-public class ImportSelective extends ASTNode implements INonScopedBlock, IImportFragment {
+public class ImportSelective extends ASTNode implements INonScopedContainer, IImportFragment {
 	
 	public static interface IImportSelectiveSelection extends IASTNode {
 		//String getTargetName();

@@ -29,8 +29,8 @@ enum : basetype #REFSEARCH¤【outside▪EnumA▪EnumB】 { EnumA = 2 , float En
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ as qualifed ref
 int outside; 
 enum : int[] { EnumA = 2 , float EnumB }
-EnumA.#REFSEARCH¤【】 // TODO int[] members
-EnumB.#REFSEARCH¤【】 // TODO int[] members
+EnumA.#REFSEARCH¤【#@TYPE_PROPERTIES】; // TODO int[] members
+EnumB.#REFSEARCH¤【#@FLOAT_PROPERTIES】;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax error
 int outside; 
 enum : /*MISSING*/ { EnumA = 2 , float EnumB } 

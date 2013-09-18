@@ -10,14 +10,14 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.INonScopedBlock;
+import dtool.resolver.INonScopedContainer;
 
 /**
  * Declaration of a template mixin with no name:
  * http://dlang.org/template-mixin.html#TemplateMixinDeclaration
  * (without MixinIdentifier)
  */
-public class DeclarationMixin extends ASTNode implements INonScopedBlock, IDeclaration, IStatement {
+public class DeclarationMixin extends ASTNode implements INonScopedContainer, IDeclaration, IStatement {
 	
 	public final Reference templateInstance;
 	

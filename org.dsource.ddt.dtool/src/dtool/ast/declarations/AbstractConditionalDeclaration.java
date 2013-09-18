@@ -12,10 +12,10 @@ import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.INonScopedBlock;
+import dtool.resolver.INonScopedContainer;
 
 public abstract class AbstractConditionalDeclaration extends ASTNode 
-	implements INonScopedBlock, IDeclaration, IStatement 
+	implements INonScopedContainer, IDeclaration, IStatement 
 {
 	
 	// Note: value can be an integer or keyword

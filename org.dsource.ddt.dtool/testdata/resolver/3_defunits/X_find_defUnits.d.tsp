@@ -43,11 +43,8 @@ template Template(
 	
 Module
 
-Var▪Var1
-VarAuto▪VarAuto1
-#comment(TODO)¤【
-Var2▪Var3▪VarAuto2
-】
+Var▪Var1▪Var2▪Var3▪
+VarAuto▪VarAuto1▪VarAuto2
 
 Function
 Function

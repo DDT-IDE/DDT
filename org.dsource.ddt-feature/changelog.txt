@@ -6,10 +6,11 @@
  * Fixed issue #7: Error parsing interface function with contracts but no body.
  * Fixed limitation: Code Completion module list in import declarations now shows the module's DDoc.
  * Documentation: added entry in UserGuide#Eclipse_basics about Eclipse memory settings optimization.
- * Fixed/Implemented issue #10: Compiler installation search in preferences page.
+ * Fixed issue #10: Compiler installation search in preferences page.
  * Cleanup: Code Completion now shows no results if invoked after float token ending in a dot.
  * Implemented: Code Completion now resolves type properties (.init, .sizeof, .alignof, etc.), integral properties (.min, .max), float properties(.infinity, .nan, etc.).
  * Implemented: Code Completion now resolves parentheses expression. Auto declarations (resolve to initializer).
+ * Fixed 0.7.0 regression: Code Completion now resolves all variable symbols in multi-variable declaration.
 
 == DDT 0.8.0 (2013-08-30) ==
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).
@@ -40,7 +41,7 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Cleanup: changed some of the dialog messages for the Open Definition operation to be more clear and concise.
  * Cleanup: restricted some editor functionality to named references only (Open Definition, Open Definition hyperlinks, DDoc view hovers).
 
-== DDT 0.7.0 (2013-08-15) ==
+== DDT 0.7.0 - "Midnight Riders" (2013-08-15) ==
  * Requirements changes: now requires minimum Java VM version 1.7 .
  * Implemented issue #2: Support parsing of latest D syntax (up to D language version 2.063).
    * Completely rewrote D parser, creating a new hand-written parser (IDE no longer depends on descent.compiler).

@@ -9,13 +9,13 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.INonScopedBlock;
+import dtool.resolver.INonScopedContainer;
 
 /**
  * Parse exp contents as code (exp must resolve to a string).
  * http://dlang.org/module.html#MixinDeclaration
  */
-public class DeclarationMixinString extends ASTNode implements INonScopedBlock, IDeclaration, IStatement {
+public class DeclarationMixinString extends ASTNode implements INonScopedContainer, IDeclaration, IStatement {
 	
 	public final Expression exp;
 	

@@ -144,14 +144,14 @@ public class ReferenceResolver {
 	public static void evaluateNodeForSearch(CommonDefUnitSearch search, boolean isSequentialLookup, 
 		boolean importsOnly, IASTNode node) {
 		
-		if(node instanceof INonScopedBlock) {
-			INonScopedBlock container = ((INonScopedBlock) node);
+		if(node instanceof INonScopedContainer) {
+			INonScopedContainer container = ((INonScopedContainer) node);
 			findDefUnits(search, container.getMembersIterator(), isSequentialLookup, importsOnly);
 		}
 		if(!importsOnly && node instanceof DefUnit) {
 			DefUnit defunit = (DefUnit) node;
 			evaluateDefUnitForSearch(search, defunit);
-		} 
+		}
 		else if(importsOnly && node instanceof DeclarationImport) {
 			DeclarationImport declImport = (DeclarationImport) node;
 			

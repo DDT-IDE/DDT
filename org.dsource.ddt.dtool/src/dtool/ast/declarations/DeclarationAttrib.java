@@ -14,7 +14,7 @@ import dtool.ast.NodeList;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.INonScopedBlock;
+import dtool.resolver.INonScopedContainer;
 import dtool.util.ArrayView;
 
 /**
@@ -23,7 +23,7 @@ import dtool.util.ArrayView;
  * Technicaly DMD doesn't accept certain attributes as statements (such as protection, align), 
  * but structurally we allow it, even though a syntax or semantic error may still be issued.
  */
-public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDeclaration, IStatement {
+public class DeclarationAttrib extends ASTNode implements INonScopedContainer, IDeclaration, IStatement {
 	
 	public static enum AttribBodySyntax { SINGLE_DECL, BRACE_BLOCK, COLON }
 	
@@ -89,7 +89,9 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 		}
 	}
 	
-	protected void applyBasicAttributes(AttribBasic attribute, INonScopedBlock block) {
+	// TODO have CommonDefinition fetch attributes upwards,
+	// instead of the other way around
+	protected void applyBasicAttributes(AttribBasic attribute, INonScopedContainer block) {
 		Iterator<? extends ASTNode> iter = block.getMembersIterator();
 		while(iter.hasNext()) {
 			IASTNode node = iter.next();
@@ -97,13 +99,13 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 			if(node instanceof CommonDefinition) {
 				CommonDefinition def = (CommonDefinition) node;
 				def.setAttribute(attribute);
-			} else if(node instanceof INonScopedBlock) {
-				applyBasicAttributes(attribute, (INonScopedBlock) node);
+			} else if(node instanceof INonScopedContainer) {
+				applyBasicAttributes(attribute, (INonScopedContainer) node);
 			}
 		}
 	}
 	
-	protected void applyProtectionAttributes(EProtection protection, INonScopedBlock block) {
+	protected void applyProtectionAttributes(EProtection protection, INonScopedContainer block) {
 		Iterator<? extends ASTNode> iter = block.getMembersIterator();
 		while(iter.hasNext()) {
 			ASTNode descendantNode = iter.next();
@@ -117,8 +119,8 @@ public class DeclarationAttrib extends ASTNode implements INonScopedBlock, IDecl
 			} else if (descendantNode instanceof DeclarationImport && protection == EProtection.PUBLIC) {
 				DeclarationImport declImport = (DeclarationImport) descendantNode;
 				declImport.isTransitive = true;
-			} else if(descendantNode instanceof INonScopedBlock) {
-				applyProtectionAttributes(protection, (INonScopedBlock) descendantNode);
+			} else if(descendantNode instanceof INonScopedContainer) {
+				applyProtectionAttributes(protection, (INonScopedContainer) descendantNode);
 			}
 		}
 	}

@@ -4,10 +4,10 @@ import java.util.Iterator;
 
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.resolver.INonScopedBlock;
+import dtool.resolver.INonScopedContainer;
 import dtool.util.ArrayView;
 
-public class BlockStatementUnscoped extends CommonStatementList implements INonScopedBlock {
+public class BlockStatementUnscoped extends CommonStatementList implements INonScopedContainer {
 	
 	public BlockStatementUnscoped(ArrayView<IStatement> nodes) {
 		super(nodes);

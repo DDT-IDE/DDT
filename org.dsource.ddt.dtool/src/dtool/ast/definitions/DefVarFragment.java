@@ -13,11 +13,11 @@ import dtool.resolver.CommonDefUnitSearch;
  */
 public class DefVarFragment extends DefUnit {
 	
-	public final IInitializer init;
+	public final IInitializer initializer;
 	
-	public DefVarFragment(ProtoDefSymbol defId, IInitializer init) {
+	public DefVarFragment(ProtoDefSymbol defId, IInitializer initializer) {
 		super(defId);
-		this.init = parentize(init);
+		this.initializer = parentize(initializer);
 	}
 	
 	@Override
@@ -33,13 +33,13 @@ public class DefVarFragment extends DefUnit {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, defname);
-		acceptVisitor(visitor, init);
+		acceptVisitor(visitor, initializer);
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(defname);
-		cp.append("= ", init);
+		cp.append("= ", initializer);
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class DefVarFragment extends DefUnit {
 	}
 	
 	public IInitializer getInitializer() {
-		return init;
+		return initializer;
 	}
 	
 	public Reference getDeclaredTypeReference() {
@@ -57,7 +57,8 @@ public class DefVarFragment extends DefUnit {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInReferredContainer(search, getParent_Concrete().type);
+		Reference varDeclType = getParent_Concrete().type;
+		DefinitionVariable.resolveSearchInMembersScopeForVariable(search, varDeclType, initializer);
 	}
 	
 }
