@@ -7,6 +7,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
+import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.api.DefUnitDescriptor;
 import dtool.resolver.api.IModuleResolver;
 
@@ -46,12 +47,14 @@ public class RefIndexing extends Reference {
 	
 	@Override
 	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return null; // TODO:
+		//TODO infer if its a static array, map array, or tupe
+		// Assume it's a static array. 
+		return Resolvable.wrapResult(LanguageIntrinsics.d_2_063_intrinsics.staticArrayType);
 	}
 	
 	@Override
 	public boolean canMatch(DefUnitDescriptor defunit) {
-		return false; // TODO:
+		return false;
 	}
 	
 }

@@ -8,9 +8,12 @@
  * Documentation: added entry in UserGuide#Eclipse_basics about Eclipse memory settings optimization.
  * Fixed issue #10: Compiler installation search in preferences page.
  * Cleanup: Code Completion now shows no results if invoked after float token ending in a dot.
- * Implemented: Code Completion now resolves type properties (.init, .sizeof, .alignof, etc.), integral properties (.min, .max), float properties(.infinity, .nan, etc.), object properties (.classinfo).
- * Implemented: Code Completion now resolves parentheses expression. Auto declarations (resolve to initializer).
  * Fixed 0.7.0 regression: Code Completion now locates all identifiers in multi-identifier variable declaration and multi-identifier alias declaration.
+ * Implemented: Code Completion now resolves:
+   * global type properties (.init, .sizeof, .alignof, etc.)
+   * integral properties (.min, .max) float properties(.infinity, .nan, etc.), object properties (.classinfo).
+   * static/dynamic array properties (.ptr, .length, .dup, etc.).
+ * Implemented: Code Completion now resolves parentheses expression. Auto declarations (resolve to initializer).
 
 == DDT 0.8.0 (2013-08-30) ==
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).
