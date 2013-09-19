@@ -14,7 +14,9 @@ Class▪
 Interface▪
 Template▪
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#@AGGREGATE_KIND《struct●union●class●interface》
+#@AGGREGATE_KIND《struct●union●class#CLASS(flag)●interface#CLASS(flag)》
+#@AGGREGATE_KIND_INTRINSIC_MEMBERS《#@TYPE_PROPERTIES▪#@《●●classinfo●classinfo》(AGGREGATE_KIND)》
+
 #@AGGREGATE_KIND_ALL《struct●union●class●interface●template》
 #@AGGREGATE_START《#@AGGREGATE_KIND Aggregate#@TPLPARAMS_OPT》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -50,7 +52,8 @@ int outside;
 	int bodyVar;
 	int bodyVar2;
 }
-Aggregate.#REFSEARCH¤【bodyVar▪bodyVar2▪#@TYPE_PROPERTIES】
+Aggregate.#REFSEARCH¤【bodyVar▪bodyVar2▪#@AGGREGATE_KIND_INTRINSIC_MEMBERS】;
+Aggregate.classinfo.#REFSEARCH¤【】; // TODO refsearch
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  (template)
 template Aggregate(T, alias A = int) {
 	int bodyVar;
@@ -60,7 +63,7 @@ Aggregate.#REFSEARCH¤【bodyVar▪bodyVar2】
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax error
 int outside; 
-Aggregate.#REFSEARCH¤【#@TYPE_PROPERTIES】
+Aggregate.#REFSEARCH¤【#@AGGREGATE_KIND_INTRINSIC_MEMBERS】
 #@AGGREGATE_KIND Aggregate(T, alias A = int /*MISSING BODY*/
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax error (template)
 int outside; 
@@ -99,8 +102,8 @@ int outside;
 #@OBJ_AGGREGATE_KIND Aggregate#@TPLPARAMS_OPT : Super1, Super2, ISuper {
 	int bodyVar;
 }
-Aggregate.#REFSEARCH¤【bodyVar▪superMember▪occluded▪fooX▪barA▪barX▪#@TYPE_PROPERTIES】
+Aggregate.#REFSEARCH¤【bodyVar▪superMember▪occluded▪fooX▪barA▪barX▪#@TYPE_PROPERTIES▪classinfo】
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@COMMON_CLASSES
-Aggregate.#REFSEARCH¤【superMember▪occluded▪fooX▪barA▪barX▪#@TYPE_PROPERTIES】
+Aggregate.#REFSEARCH¤【superMember▪occluded▪fooX▪barA▪barX▪#@TYPE_PROPERTIES▪classinfo】
 #@OBJ_AGGREGATE_KIND Aggregate#@TPLPARAMS_OPT : Super1, Super2, ISuper

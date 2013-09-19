@@ -1,7 +1,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 module tests; // Test qualified refsearch
-class Foo {
+struct Foo {
 	int Var;
 	int Var2;
 	int member;
@@ -39,7 +39,7 @@ int other;
 	
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 module tests; // Test qualified with indirect (exp) qualifier
-class Foo {
+struct Foo {
 	int Var;
 	int Var2;
 	int member;

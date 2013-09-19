@@ -84,6 +84,7 @@ public class LanguageIntrinsics {
 	
 	public final IntrinsicScope primitivesScope;
 	public final IntrinsicScope typePropertiesScope;
+	public final IntrinsicScope objectPropertiesScope;
 	
 	public LanguageIntrinsics() {
 		typePropertiesScope = new IntrinsicScope(
@@ -119,6 +120,10 @@ public class LanguageIntrinsics {
 			new IntrinsicProperty("im", parseDDoc("imaginary part"))
 		);
 		
+		objectPropertiesScope = new IntrinsicScope(
+			new IntrinsicProperty("classinfo", parseDDoc("Information about the dynamic type of the class"))
+		);
+		
 		primitivesScope = new IntrinsicScope(
 			new PrimitiveDefUnit("void"),
 			
@@ -149,12 +154,9 @@ public class LanguageIntrinsics {
 		);
 	}
 	
-	public static Ddoc parseDDoc(String ddocSource) {
+	// helper class
+	protected static Ddoc parseDDoc(String ddocSource) {
 		return new DdocParser("/**" + ddocSource + "*/").parse();
-	}
-	
-	public void resolveSearchInTypePropertiesScope(CommonDefUnitSearch search) {
-		typePropertiesScope.resolveSearchInScope(search);
 	}
 	
 }

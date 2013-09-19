@@ -69,6 +69,7 @@ public abstract class NodeData {
 			} else {
 				node.setData(new ParsedNodeDataWithErrors(errors));
 			}
+			assertTrue(node.hasSourceRangeInfo());
 		}
 		
 	}
