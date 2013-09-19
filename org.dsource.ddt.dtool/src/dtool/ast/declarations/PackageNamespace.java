@@ -82,11 +82,6 @@ public class PackageNamespace implements INamedElement, IScopeProvider {
 	}
 	
 	@Override
-	public DefUnit asDefUnit() {
-		return null;
-	}
-	
-	@Override
 	public DefUnit resolveDefUnit() {
 		return null;
 	}

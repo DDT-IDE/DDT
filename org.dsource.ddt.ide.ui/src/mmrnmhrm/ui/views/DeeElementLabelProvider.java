@@ -1,5 +1,6 @@
 package mmrnmhrm.ui.views;
 
+import static melnorme.utilbox.core.CoreUtil.tryCast;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefVarFragment;
@@ -26,7 +27,7 @@ public class DeeElementLabelProvider {
 			break;
 		}
 		
-		DefUnit defUnit = namedElement.asDefUnit();
+		DefUnit defUnit = tryCast(namedElement, DefUnit.class); 
 		if(defUnit == null) {
 			return namedElement.getFullyQualifiedName();
 		}
@@ -79,9 +80,9 @@ public class DeeElementLabelProvider {
 			break;
 		}
 		
-		// We should NOT try to resolve defElement to its true defUnit because that can be a costly operation,
-		// and this method should calculate a label quickly, without the need for parsing or other semantic operations
-		DefUnit defUnit = namedElement.asDefUnit();
+		// We should NOT try to resolve namedElement to its true defUnit because that can be a costly operation,
+		// and want to calculate a label quickly, without the need for parsing or other semantic operations
+		DefUnit defUnit = tryCast(namedElement, DefUnit.class); 
 		if(defUnit == null) {
 			return namedElement.getName();
 		}

@@ -61,11 +61,6 @@ public class ModuleProxy implements INamedElement {
 	}
 	
 	@Override
-	public DefUnit asDefUnit() {
-		return null;
-	}
-	
-	@Override
 	public Module resolveDefUnit() {
 		ModuleNameDescriptor nameDescriptor = ResolverUtil.getNameDescriptor(getModuleFullyQualifiedName());
 		try {

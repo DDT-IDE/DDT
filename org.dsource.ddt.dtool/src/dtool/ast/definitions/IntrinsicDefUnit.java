@@ -50,11 +50,6 @@ public abstract class IntrinsicDefUnit implements INamedElement {
 	}
 	
 	@Override
-	public DefUnit asDefUnit() {
-		return null;
-	}
-
-	@Override
 	public DefUnit resolveDefUnit() {
 		return null;
 	}

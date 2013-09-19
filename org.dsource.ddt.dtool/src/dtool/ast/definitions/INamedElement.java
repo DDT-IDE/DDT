@@ -40,15 +40,8 @@ public interface INamedElement extends ILanguageNode {
 	 * For modules and packages, that is null. */
 	INamedElement getParentElement();
 	
-	/** @return the receiver if it is a {@link DefUnit}, otherwise return null. 
-	 * (However synthetic defUnits must return null as well regardless of receiver class (temporary API)).
-	 * Therefore unlike {@link #resolveDefUnit()} this method does not perform any semantic computation. */
-	@Deprecated
-	DefUnit asDefUnit();
-	
 	/** @return the DefUnit this named element represents. In most cases this is the same as the receiver, 
-	 * and therefore the same as {@link #asDefUnit()}, but this method allows proxy {@link INamedElement} classes to 
-	 * resolve to their proxied {@link DefUnit}. 
+	 * but this method allows proxy {@link INamedElement} classes to resolve to their proxied {@link DefUnit}. 
 	 * It may still return null since the underlying defunit may not exist at all (implicitly defined named elements).
 	 */
 	DefUnit resolveDefUnit();
@@ -62,6 +55,5 @@ public interface INamedElement extends ILanguageNode {
 	 * Note that the members can be different from the lexical scope that a defunit may provide.
 	 */
 	void resolveSearchInMembersScope(CommonDefUnitSearch search);
-	
 	
 }

@@ -120,11 +120,6 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 	}
 	
 	@Override
-	public DefUnit asDefUnit() {
-		return this;
-	}
-	
-	@Override
 	public DefUnit resolveDefUnit() {
 		return this;
 	}
