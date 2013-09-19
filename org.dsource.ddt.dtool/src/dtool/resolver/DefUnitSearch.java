@@ -7,10 +7,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import melnorme.utilbox.core.Function;
+import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.ast.util.NamedElementUtil;
 import dtool.resolver.api.IModuleResolver;
 
 /**
@@ -61,5 +64,15 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	public boolean matchesName(String defName) {
 		return searchName.equals(defName);
 	}
-
+	
+	@Override
+	public String toString() {
+		return super.toString() + StringUtil.collToString(namedElements, "\n", new Function<INamedElement, String>() {
+			@Override
+			public String evaluate(INamedElement obj) {
+				return NamedElementUtil.getElementTypedQualification(obj); 
+			}
+		});
+	}
+	
 }

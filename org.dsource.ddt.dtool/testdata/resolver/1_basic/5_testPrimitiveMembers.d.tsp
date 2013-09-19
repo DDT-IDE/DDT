@@ -19,3 +19,8 @@ auto _dummy =
   #@FLOAT_TYPES.#REFSEARCH¤【#@FLOAT_PROPERTIES】;
 auto _dummy =
 (#@FLOAT_TYPES).#REFSEARCH¤【#@FLOAT_PROPERTIES】;
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#PROJECT(rawProject)
+int.init.#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
+float.init.#REFSEARCH¤【#@FLOAT_PROPERTIES】;
+float.stringof.#REFSEARCH¤【#@TYPE_PROPERTIES】; //TODO array properties

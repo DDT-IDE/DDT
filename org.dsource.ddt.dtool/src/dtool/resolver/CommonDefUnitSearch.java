@@ -110,7 +110,7 @@ public abstract class CommonDefUnitSearch {
 	
 	@Override
 	public String toString() {
-		return getClass().getName() + " ---";
+		return getClass().getName() + " ---\n";
 	}
 	
 }

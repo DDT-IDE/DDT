@@ -29,6 +29,7 @@ import dtool.resolver.api.IModuleResolver;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
+import dtool.tests.DToolTestResources;
 
 public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	
@@ -68,6 +69,17 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		}
 		String caseSource = AnnotatedSource.printSourceWithMetadata(testCase);
 		testsLogger.println(caseSource);
+	}
+	
+	public File getProjectDirectory(String projectFolderName) {
+		File projectFolder = new File(file.getParent(), assertNotNull(projectFolderName));
+		if(projectFolder.exists() == false) {
+			File commonDir = DToolTestResources.getTestResource(TESTFILESDIR, "0_common"); 
+			assertTrue(commonDir.exists());
+			projectFolder = new File(commonDir, assertNotNull(projectFolderName));
+		}
+		assertTrue(projectFolder.exists());
+		return projectFolder;
 	}
 	
 	/*------------------------------*/

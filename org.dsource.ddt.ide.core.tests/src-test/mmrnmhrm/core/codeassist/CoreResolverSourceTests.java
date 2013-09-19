@@ -62,7 +62,7 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 		IScriptProject scriptProject = fixtureProjects.get(projectFolderName /*Can be null*/);
 		
 		if(scriptProject == null) {
-			File projectDir = projectFolderName == null ? null : new File(file.getParent(), projectFolderName);
+			File projectDir = projectFolderName == null ? null : getProjectDirectory(projectFolderName);
 			scriptProject = TestsWorkspaceModuleResolver.createTestsWorkspaceProject(projectDir);
 			fixtureProjects.put(projectFolderName, scriptProject);
 		}

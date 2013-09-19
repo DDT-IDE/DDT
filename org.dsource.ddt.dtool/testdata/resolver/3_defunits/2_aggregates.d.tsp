@@ -53,7 +53,6 @@ int outside;
 	int bodyVar2;
 }
 Aggregate.#REFSEARCH¤【bodyVar▪bodyVar2▪#@AGGREGATE_KIND_INTRINSIC_MEMBERS】;
-Aggregate.classinfo.#REFSEARCH¤【】; // TODO refsearch
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  (template)
 template Aggregate(T, alias A = int) {
 	int bodyVar;
@@ -69,8 +68,15 @@ Aggregate.#REFSEARCH¤【#@AGGREGATE_KIND_INTRINSIC_MEMBERS】
 int outside; 
 Aggregate.#REFSEARCH¤【】
 template Aggregate(T, alias A = int /*MISSING BODY*/
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ super scopes
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ class/interface
 #@OBJ_AGGREGATE_KIND《class●interface》
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ class properties
+#PROJECT(rawProject)
+#@OBJ_AGGREGATE_KIND Class {
+	int foo;
+}
+Class.classinfo.#REFSEARCH¤【#@TYPE_PROPERTIES▪TypeInfo_Class_MARKER▪classinfo】;
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ super scopes
 
 #@COMMON_CLASSES《
 ►int outside; 

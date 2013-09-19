@@ -41,7 +41,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		}
 		TestsSimpleModuleResolver existingMR = moduleResolvers.get(projectFolderName);
 		if(existingMR == null) {
-			File projectFolder = new File(file.getParent(), assertNotNull(projectFolderName));
+			File projectFolder = getProjectDirectory(projectFolderName);
 			existingMR = new TestsSimpleModuleResolver(projectFolder);
 			moduleResolvers.put(projectFolderName, existingMR); // Cache the MR data
 		}

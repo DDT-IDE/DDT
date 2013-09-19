@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 
 import dtool.resolver.BaseResolverSourceTests.ITestsModuleResolver;
@@ -84,13 +85,15 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 	}
 	
 	public static IScriptProject createTestsWorkspaceProject(File projectSourceDir) throws CoreException {
+		String projectName = projectSourceDir == null ? "r__emptyProject" : "r_" + projectSourceDir.getName();
+		
+		IScriptProject resolverProject = BaseDeeTest.createAndOpenDeeProject(projectName);
+		resolverProject.setRawBuildpath(new IBuildpathEntry[] {}, null); // Remove library entry
+		
 		if(projectSourceDir == null) {
-			IScriptProject resolverProject = BaseDeeTest.createAndOpenDeeProject("r__emptyProject");
 			ProjectModelUtil.addSourceFolder(resolverProject.getProject(), null);
 			return resolverProject;
 		}
-		IScriptProject resolverProject = BaseDeeTest.createAndOpenDeeProject("r_" + projectSourceDir.getName());
-		
 		DeeCoreTestResources.createSrcFolderFromDirectory(projectSourceDir, resolverProject, "src-dtool");
 		return resolverProject;
 	}

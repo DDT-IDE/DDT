@@ -12,6 +12,6 @@ public interface IResolvable {
 	
 	/** Finds the named element matching this {@link IResolvable}. 
 	 * If no results are found, return null. */
-	Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly);
+	Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);
 	
 }
