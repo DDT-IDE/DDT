@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DdocParser;
@@ -42,7 +41,7 @@ public class LanguageIntrinsics {
 		
 		protected final Collection<IntrinsicDefUnit> members;
 		
-		public PrimitiveDefUnit(String name, List<IntrinsicDefUnit> members) {
+		public PrimitiveDefUnit(String name, Collection<IntrinsicDefUnit> members) {
 			super(name);
 			this.members = members;
 		}
@@ -65,15 +64,15 @@ public class LanguageIntrinsics {
 	
 	public static class IntrinsicScope implements IScopeProvider {
 		
-		public final ArrayView<IntrinsicDefUnit> intrinsics;
+		public final ArrayView<IntrinsicDefUnit> members;
 		
-		public IntrinsicScope(IntrinsicDefUnit... intrinsics) {
-			this.intrinsics = ArrayView.create(intrinsics);
+		public IntrinsicScope(IntrinsicDefUnit... members) {
+			this.members = ArrayView.create(members);
 		}
 		
 		@Override
 		public void resolveSearchInScope(CommonDefUnitSearch search) {
-			ReferenceResolver.findInNamedElementList(search, intrinsics);
+			ReferenceResolver.findInNamedElementList(search, members);
 		}
 	}
 	
@@ -183,6 +182,9 @@ public class LanguageIntrinsics {
 		new IntrinsicProperty("stringof", string_type, 
 			parseDDoc("string representing the source representation of the type"))
 	);
+	
+	public final PrimitiveDefUnit bool_type = new PrimitiveDefUnit("bool", typePropertiesScope.members);
+	public final PrimitiveDefUnit char_type = new PrimitiveDefUnit("char", typePropertiesScope.members);
 	
 	public final IntrinsicScope objectPropertiesScope = new IntrinsicScope(
 		new IntrinsicProperty("classinfo", new FullyQualifiedReference("object", "TypeInfo_Class"), 

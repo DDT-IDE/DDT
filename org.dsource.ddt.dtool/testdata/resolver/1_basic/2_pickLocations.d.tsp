@@ -42,7 +42,7 @@ class#FINDFAIL#REFSEARCH¤【】 #FINDFAIL#REFSEARCH¤【Var▪Foo】#comment(EO
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module tests;
 auto x = 123.#REFSEARCH¤【!invalid_token】; //Float token
-auto x = 123 .#REFSEARCH¤【】;
+auto x = 123 .#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
 auto x = 123. #REFSEARCH¤【tests▪x】;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 int foo; //Test node boundaries (This test requires that a InvalidSyntaxElement node be created for each line)

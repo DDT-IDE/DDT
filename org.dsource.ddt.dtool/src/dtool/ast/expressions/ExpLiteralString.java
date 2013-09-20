@@ -1,9 +1,14 @@
 package dtool.ast.expressions;
 
+import java.util.Collection;
+
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.definitions.INamedElement;
 import dtool.parser.IToken;
+import dtool.resolver.LanguageIntrinsics;
+import dtool.resolver.api.IModuleResolver;
 
 public class ExpLiteralString extends Expression {
 	
@@ -31,6 +36,11 @@ public class ExpLiteralString extends Expression {
 		for (IToken stringToken : stringTokens) {
 			cp.appendToken(stringToken);
 		}
+	}
+	
+	@Override
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+		return LanguageIntrinsics.d_2_063_intrinsics.string_type.findTargetDefElements(mr, findFirstOnly);
 	}
 	
 }

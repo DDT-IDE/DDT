@@ -1,11 +1,18 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.Collection;
+import java.util.Collections;
+
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
+import dtool.ast.definitions.INamedElement;
+import dtool.resolver.LanguageIntrinsics;
+import dtool.resolver.api.IModuleResolver;
 
 public class InitializerArray extends Expression implements IInitializer {
 	
@@ -55,6 +62,11 @@ public class InitializerArray extends Expression implements IInitializer {
 			cp.append(index, " : ");
 			cp.append(value);
 		}
+	}
+	
+	@Override
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		return Collections.<INamedElement>singleton(LanguageIntrinsics.d_2_063_intrinsics.dynArrayType);
 	}
 	
 }

@@ -1,17 +1,24 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.Collection;
+import java.util.Collections;
+
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.definitions.INamedElement;
 import dtool.parser.IToken;
+import dtool.resolver.LanguageIntrinsics;
+import dtool.resolver.api.IModuleResolver;
 
 public class ExpLiteralChar extends Expression {
 	
-	public final IToken ch;
+	public final IToken charToken;
 	
-	public ExpLiteralChar(IToken num) {
-		this.ch = assertNotNull(num);
+	public ExpLiteralChar(IToken charToken) {
+		this.charToken = assertNotNull(charToken);
 	}
 	
 	@Override
@@ -25,7 +32,12 @@ public class ExpLiteralChar extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendToken(ch);
+		cp.appendToken(charToken);
+	}
+	
+	@Override
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		return Collections.<INamedElement>singleton(LanguageIntrinsics.d_2_063_intrinsics.char_type);
 	}
 	
 }

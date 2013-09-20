@@ -13,7 +13,7 @@ public class DeeElementFlagsTest {
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		for (IntrinsicDefUnit nativeDefUnit : LanguageIntrinsics.d_2_063_intrinsics.primitivesScope.intrinsics) {
+		for (IntrinsicDefUnit nativeDefUnit : LanguageIntrinsics.d_2_063_intrinsics.primitivesScope.members) {
 			assertTrue(new DefElementDescriptor(nativeDefUnit).isNative());
 		}
 		

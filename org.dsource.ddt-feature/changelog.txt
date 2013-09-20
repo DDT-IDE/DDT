@@ -13,6 +13,7 @@
    * global type properties (.init, .sizeof, .alignof, etc.)
    * integral properties (.min, .max) float properties(.infinity, .nan, etc.), object properties (.classinfo).
    * static/dynamic array properties (.ptr, .length, .dup, etc.).
+   * The type of bool/char/integral/floating/string/array literals. (Not map array though) 
  * Implemented: Code Completion now resolves parentheses expression. Auto declarations (resolve to initializer).
 
 == DDT 0.8.0 (2013-08-30) ==

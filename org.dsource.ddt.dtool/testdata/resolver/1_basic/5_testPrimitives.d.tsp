@@ -24,3 +24,9 @@ auto _dummy =
 int.init.#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
 float.init.#REFSEARCH¤【#@FLOAT_PROPERTIES】;
 float.stringof.#REFSEARCH¤【#@ARRAY_PROPERTIES】;
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ primitive literals
+auto _dummy = true .#REFSEARCH¤【#@TYPE_PROPERTIES】;
+auto _dummy = 'a' .#REFSEARCH¤【#@TYPE_PROPERTIES】;
+auto _dummy = 123 .#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
+auto _dummy = 123.01f .#REFSEARCH¤【#@FLOAT_PROPERTIES】;
