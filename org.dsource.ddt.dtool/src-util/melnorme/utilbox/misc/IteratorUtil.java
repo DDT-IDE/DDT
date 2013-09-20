@@ -36,9 +36,14 @@ public class IteratorUtil {
 		return Collections.singletonList(obj).iterator();
 	}
 	
-	/** @return the iterator for given iterable, or an empty iterator if iterable is null */
+	/** @return the iterator for given iterable, or an empty {@link Iterator} if iterable is null */
 	public static <T> Iterator<T> nonNullIterator(Iterable<T> iterable) {
 		return iterable == null ? Collections.<T>emptyIterator() : iterable.iterator();
+	}
+	
+	/** @return the given iterable, or an empty {@link Iterable} if given iterable is null */
+	public static <T> Iterable<T> nonNullIterable(Iterable<T> iterable) {
+		return iterable == null ? Collections.<T>emptyList() : iterable;
 	}
 	
 }

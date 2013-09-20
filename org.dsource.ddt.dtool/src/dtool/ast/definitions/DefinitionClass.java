@@ -1,5 +1,6 @@
 package dtool.ast.definitions;
 
+import static melnorme.utilbox.misc.IteratorUtil.nonNullIterable;
 import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -99,6 +100,22 @@ public class DefinitionClass extends DefinitionAggregate {
 				baseClassDef.resolveSearchInHierarchyScope(search);
 			}
 		}
+	}
+	
+	public INamedElement resolveSuperClass(IModuleResolver mr) {
+		
+		for (Reference baseClassRef : nonNullIterable(baseClasses)) {
+			INamedElement baseClass = baseClassRef.findTargetDefElement(mr);
+			
+			if(baseClass.getArcheType() == EArcheType.Interface) {
+				continue;
+			}
+			if(baseClass instanceof DefinitionClass) {
+				return baseClass;
+			}
+		}
+		// TODO test implicit object reference
+		return LanguageIntrinsics.d_2_063_intrinsics.object_reference.findTargetDefElement(mr);
 	}
 	
 }

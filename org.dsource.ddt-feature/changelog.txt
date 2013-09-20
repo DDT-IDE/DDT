@@ -15,6 +15,7 @@
    * static/dynamic array properties (.ptr, .length, .dup, etc.).
    * The type of bool/char/integral/floating/string/array literals. (Not map array though) 
  * Implemented: Code Completion now resolves parentheses expression. Auto declarations (resolve to initializer).
+   * this/super expressions.
 
 == DDT 0.8.0 (2013-08-30) ==
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).

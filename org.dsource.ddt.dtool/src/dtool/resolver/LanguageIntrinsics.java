@@ -113,6 +113,13 @@ public class LanguageIntrinsics {
 			this.elementName = elementName;
 		}
 		
+		public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
+			Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
+			if(namedElems == null || namedElems.isEmpty())
+				return null;
+			return namedElems.iterator().next();
+		}
+		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
 			Module module = ResolverUtil.findModule_unchecked(mr, moduleFullName);
@@ -185,11 +192,6 @@ public class LanguageIntrinsics {
 	
 	public final PrimitiveDefUnit bool_type = new PrimitiveDefUnit("bool", typePropertiesScope.members);
 	public final PrimitiveDefUnit char_type = new PrimitiveDefUnit("char", typePropertiesScope.members);
-	
-	public final IntrinsicScope objectPropertiesScope = new IntrinsicScope(
-		new IntrinsicProperty("classinfo", new FullyQualifiedReference("object", "TypeInfo_Class"), 
-			parseDDoc("Information about the dynamic type of the class"))
-	);
 	
 	{
 		
@@ -337,5 +339,12 @@ public class LanguageIntrinsics {
 		);
 		
 	}
+	
+	public final FullyQualifiedReference object_reference = new FullyQualifiedReference("object", "Object");
+	
+	public final IntrinsicScope objectPropertiesScope = new IntrinsicScope(
+		new IntrinsicProperty("classinfo", new FullyQualifiedReference("object", "TypeInfo_Class"), 
+			parseDDoc("Information about the dynamic type of the class"))
+	);
 	
 }
