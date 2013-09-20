@@ -61,9 +61,8 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		/*BUG here null*/
-		return ref.findTargetDefElements(moduleResolver, findFirstOnly);
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+		return findTargetElementsForReference(mr, ref, findFirstOnly);
 	}
 	
 	@Override
