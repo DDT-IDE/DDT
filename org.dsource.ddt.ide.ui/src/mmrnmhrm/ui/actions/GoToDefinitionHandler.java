@@ -185,27 +185,25 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		
 		Module targetModule = defUnit.getModuleNode();
 		
+		IWorkbenchPage page = window.getActivePage();
+		IEditorInput newInput;
 		if(targetModule == module) {
-			IWorkbenchPage page = window.getActivePage();
-			openEditor(page, editor.getEditorInput(), openNewEditor, null, defUnit);
+			newInput = editor.getEditorInput();
 		} else {
-			ISourceModule targetModUnit = moduleResolver.findModuleUnit(targetModule);
+			ISourceModule targetSourceModule = moduleResolver.findModuleUnit(targetModule);
 			
-			IWorkbenchPage page = window.getActivePage();
-			
-			if (targetModUnit instanceof IExternalSourceModule) {
-				IExternalSourceModule externalSourceModule = (IExternalSourceModule) targetModUnit;
-				IEditorInput input = new ExternalStorageEditorInput(externalSourceModule);
-				openEditor(page, input, openNewEditor, editor, defUnit);
-			} else if (targetModUnit != null) {
-				IFile file = (IFile) DeeCore.getWorkspaceRoot().findMember(targetModUnit.getPath());
-				IEditorInput input = new FileEditorInput(file);
-				openEditor(page, input, openNewEditor, editor, defUnit);
+			if (targetSourceModule instanceof IExternalSourceModule) {
+				IExternalSourceModule externalSourceModule = (IExternalSourceModule) targetSourceModule;
+				newInput = new ExternalStorageEditorInput(externalSourceModule);
+			} else if (targetSourceModule != null) {
+				IFile file = (IFile) DeeCore.getWorkspaceRoot().findMember(targetSourceModule.getPath());
+				newInput = new FileEditorInput(file);
 			} else {
 				throw new CoreException(DeeCore.createErrorStatus(
-						"Don't know how to open editor for: " + targetModUnit));
+						"Don't know how to open editor for: " + targetSourceModule));
 			}
 		}
+		openEditor(page, newInput, openNewEditor, editor, defUnit);
 	}
 	
 	public final static String collToString_defUnits(Iterable<? extends INamedElement> nodes, String sep) {
@@ -221,22 +219,22 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 		return sb.toString();
 	}
 	
-	public static void openEditor(IWorkbenchPage page, IEditorInput input, EOpenNewEditor openNewEditor, 
-			ITextEditor editor, DefUnit defunit) throws PartInitException {
+	public static void openEditor(IWorkbenchPage page, IEditorInput newInput, EOpenNewEditor openNewEditor, 
+			ITextEditor currentEditor, DefUnit defunit) throws PartInitException {
 		if(openNewEditor == EOpenNewEditor.NEVER) {
-			if(editor.getEditorInput().equals(input)) {
-				setSelectionOnDefUnit(editor, defunit);
-			} else if(editor instanceof IReusableEditor) {
-				IReusableEditor reusableEditor = (IReusableEditor) editor;
-				reusableEditor.setInput(input);
-				setSelectionOnDefUnit(editor, defunit);
+			if(currentEditor.getEditorInput().equals(newInput)) {
+				setSelectionOnDefUnit(currentEditor, defunit);
+			} else if(currentEditor instanceof IReusableEditor) {
+				IReusableEditor reusableEditor = (IReusableEditor) currentEditor;
+				reusableEditor.setInput(newInput);
+				setSelectionOnDefUnit(currentEditor, defunit);
 			} else {
-				openEditor(page, input, EOpenNewEditor.ALWAYS, editor, defunit);
+				openEditor(page, newInput, EOpenNewEditor.ALWAYS, currentEditor, defunit);
 			}
 		} else {
 			int matchFlags = openNewEditor == EOpenNewEditor.ALWAYS ? 
 				IWorkbenchPage.MATCH_NONE : IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID;
-			ITextEditor targetEditor = (ITextEditor) page.openEditor(input, DeeEditor.EDITOR_ID, true, matchFlags);
+			ITextEditor targetEditor = (ITextEditor) page.openEditor(newInput, DeeEditor.EDITOR_ID, true, matchFlags);
 			setSelectionOnDefUnit(targetEditor, defunit);
 		}
 	}

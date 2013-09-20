@@ -55,18 +55,19 @@ public class DeeElementHyperlink implements IHyperlink {
 		OperationsManager.executeOperation(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				GoToDefinitionHandler.executeOperation(fTextEditor, EOpenNewEditor.ALWAYS, offset);
+				GoToDefinitionHandler.executeOperation(fTextEditor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS, 
+					offset);
 			}
 		}, "Open Element");
 	}
 	
 	@Override
 	public String getTypeLabel() {
-		return "Open Dee Definition";
+		return "Go to D element definition";
 	}
 	
 	@Override
 	public String getHyperlinkText() {
-		return "Open Dee Definition";
+		return "Go to D element definition";
 	}
 }
