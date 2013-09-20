@@ -16,7 +16,7 @@ public abstract class Expression extends Resolvable implements IQualifierNode, I
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
 		return Collections.emptySet();
 	}
 	

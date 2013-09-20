@@ -17,6 +17,7 @@
  * Implemented: Code Completion now resolves parentheses expression. Auto declarations (resolve to initializer).
    * this/super literal expressions.
    * cast expression.
+   * new expression.
 
 == DDT 0.8.0 (2013-08-30) ==
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).

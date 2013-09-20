@@ -31,8 +31,7 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	}
 	
 	@Override
-	public abstract Collection<INamedElement> findTargetDefElements(
-		IModuleResolver moduleResolver, boolean findFirstOnly);
+	public abstract Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);
 	
 	public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
 		Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
