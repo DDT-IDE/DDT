@@ -2,9 +2,14 @@ package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.Collection;
+
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.definitions.INamedElement;
+import dtool.resolver.api.IModuleResolver;
 
 public class ExpCastQual extends Expression {
 	
@@ -53,6 +58,11 @@ public class ExpCastQual extends Expression {
 		cp.append("cast");
 		cp.appendStrings("(", castQualifier.toStringAsCode(), ")");
 		cp.append(exp);
+	}
+	
+	@Override
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+		return findTargetElementsForReference(mr, exp, findFirstOnly);
 	}
 	
 }

@@ -48,4 +48,12 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 		return Collections.singletonList(elem);
 	}
 	
+	public static Collection<INamedElement> findTargetElementsForReference(IModuleResolver mr, Resolvable resolvable,
+		boolean findFirstOnly) {
+		if(resolvable == null) {
+			return null;
+		}
+		return resolvable.findTargetDefElements(mr, findFirstOnly);
+	}
+	
 }
