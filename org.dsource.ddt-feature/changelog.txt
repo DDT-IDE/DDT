@@ -19,6 +19,7 @@
    * cast expression.
    * new expression.
  * Fixed issue #9: Control-click opens up new editor everytime
+ * Fixed 0.8.0 regression: missing icon for D application launch action/configuration.
 
 == DDT 0.8.0 (2013-08-30) ==
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).

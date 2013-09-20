@@ -496,7 +496,7 @@
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
 		<launchConfigurationTypeImage
             configTypeID="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
-            icon="$nl$/icons/action16e/d_app.gif"
+            icon="$nl$/icons/action16e/d_app_launch.png"
             id="org.dsource.ddt.ide.ui.launchConfigurationTypeImage1">
 		</launchConfigurationTypeImage>
 	</extension>
@@ -515,7 +515,7 @@
       <shortcut
             class="mmrnmhrm.ui.launch.DeeLaunchShortcut"
             description="%LangLaunchShortcut.description"
-            icon="$nl$/icons/d_app.gif"
+            icon="$nl$/icons/action16e/d_app_launch.png"
             id="org.dsource.ddt.ide.ui.launch.launchShortcut"
             label="%LangLaunchShortcut.name"
             modes="run, debug">
