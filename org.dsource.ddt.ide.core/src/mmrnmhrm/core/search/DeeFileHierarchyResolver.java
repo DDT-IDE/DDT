@@ -5,6 +5,8 @@ import org.eclipse.dltk.core.IFileHierarchyInfo;
 import org.eclipse.dltk.core.IFileHierarchyResolver;
 import org.eclipse.dltk.core.ISourceModule;
 
+
+// TODO review and implement
 public class DeeFileHierarchyResolver implements IFileHierarchyResolver {
 	
 	public DeeFileHierarchyResolver() {
