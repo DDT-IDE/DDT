@@ -1,18 +1,27 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.core.launch;
 
 
 
 import org.dsource.ddt.ide.core.DeeNature;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
-import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterConfig;
-import org.eclipse.dltk.launching.LaunchingMessages;
-import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 
 public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegate {
 	
@@ -22,30 +31,33 @@ public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 	}
 	
 	@Override
-	protected InterpreterConfig createInterpreterConfig(ILaunchConfiguration configuration, ILaunch launch)
-			throws CoreException {
-		return super.createInterpreterConfig(configuration, launch);
-	}
-	
-	@Override
 	public boolean buildForLaunch(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor)
 			throws CoreException {
 		return super.buildForLaunch(configuration, mode, monitor);
 	}
 	
 	@Override
+	protected void validateLaunchConfiguration(ILaunchConfiguration configuration, String mode, IProject project)
+		throws CoreException {
+		super.validateLaunchConfiguration(configuration, mode, project);
+	}
+	
+	@Override
+	protected InterpreterConfig createInterpreterConfig(ILaunchConfiguration configuration, ILaunch launch)
+			throws CoreException {
+		return super.createInterpreterConfig(configuration, launch);
+	}
+	
+	@Override
 	public IInterpreterRunner getInterpreterRunner(ILaunchConfiguration configuration, String mode)
 			throws CoreException {
 		
-		IInterpreterInstall interpreter = getInterpreterInstall(configuration);
-		if (interpreter == null) {
-			throw abort(
-					LaunchingMessages.AbstractScriptLaunchConfigurationDelegate_The_specified_InterpreterEnvironment_installation_does_not_exist_4,
-					null,
-					ScriptLaunchConfigurationConstants.ERR_INTERPRETER_INSTALL_DOES_NOT_EXIST);
+		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
+			// TODO:
+			//return new DeeDebuggingRunner();
 		}
 		
-		return new DeeNativeRunner(interpreter);
+		return new DeeNativeRunner();
 	}
 	
 	@Override
