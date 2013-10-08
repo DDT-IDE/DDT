@@ -11,6 +11,7 @@
 package mmrnmhrm.core.launch;
 
 
+import mmrnmhrm.core.launch.debug.DeeDebuggingRunner;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;
@@ -22,6 +23,8 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
 import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterConfig;
+import org.eclipse.dltk.launching.LaunchingMessages;
+import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 
 public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegate {
 	
@@ -39,7 +42,11 @@ public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 	@Override
 	protected void validateLaunchConfiguration(ILaunchConfiguration configuration, String mode, IProject project)
 		throws CoreException {
-		super.validateLaunchConfiguration(configuration, mode, project);
+		if(ILaunchManager.DEBUG_MODE.equals(mode)) {
+			abort(LaunchingMessages.AbstractScriptLaunchConfigurationDelegate_debuggingEngineNotSelected,
+					null,
+					ScriptLaunchConfigurationConstants.ERR_NO_DEFAULT_DEBUGGING_ENGINE);
+		}
 	}
 	
 	@Override
@@ -52,9 +59,8 @@ public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 	public IInterpreterRunner getInterpreterRunner(ILaunchConfiguration configuration, String mode)
 			throws CoreException {
 		
-		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
-			// TODO:
-			//return new DeeDebuggingRunner();
+		if(mode.equals(ILaunchManager.DEBUG_MODE)) {
+			return new DeeDebuggingRunner();
 		}
 		
 		return new DeeNativeRunner();

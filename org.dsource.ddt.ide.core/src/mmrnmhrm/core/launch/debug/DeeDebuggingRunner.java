@@ -8,9 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.launch;
+package mmrnmhrm.core.launch.debug;
 
+import java.util.List;
 import java.util.Map;
+
+import mmrnmhrm.core.launch.DeeNativeRunner;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
@@ -22,9 +25,10 @@ import org.eclipse.dltk.launching.InterpreterConfig;
 public class DeeDebuggingRunner extends DeeNativeRunner {
 	
 	@Override
-	protected String[] renderCommandLine(InterpreterConfig config) {
-		// TODO:
-		return super.renderCommandLine(config);
+	public void renderCommandLineForCompiledExecutable(InterpreterConfig config, List<String> items) {
+		items.add("gdb");
+		items.add("--args");
+		super.renderCommandLineForCompiledExecutable(config, items);
 	}
 	
 	@Override

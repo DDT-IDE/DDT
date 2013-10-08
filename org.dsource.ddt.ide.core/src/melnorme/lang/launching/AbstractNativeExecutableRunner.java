@@ -53,20 +53,18 @@ public abstract class AbstractNativeExecutableRunner extends AbstractInterpreter
 	}
 	
 	@Override
-	protected String[] renderCommandLine(InterpreterConfig config) {
-		return renderCommandLineForCompiledExecutable(config);
+	protected final String[] renderCommandLine(InterpreterConfig config) {
+		List<String> items = new ArrayList<String>();
+		renderCommandLineForCompiledExecutable(config, items);
+		return ArrayUtil.createFrom(items, String.class);
 	}
 	
-	public static String[] renderCommandLineForCompiledExecutable(InterpreterConfig config) {
-		List<String> items = new ArrayList<String>();
-		
+	public void renderCommandLineForCompiledExecutable(InterpreterConfig config, List<String> items) {
 		items.add(config.getScriptFilePath().toString());
 		
 		// application arguments arguments
 		List<String> scriptArgs = config.getScriptArgs();
 		items.addAll(scriptArgs);
-		
-		return ArrayUtil.createFrom(items, String.class);
 	}
 	
 }
