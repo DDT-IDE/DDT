@@ -12,7 +12,7 @@ import java.util.List;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuildOptions;
-import mmrnmhrm.core.launch.CommonDeeInstall;
+import mmrnmhrm.core.compiler_installs.CommonDeeInstall;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;

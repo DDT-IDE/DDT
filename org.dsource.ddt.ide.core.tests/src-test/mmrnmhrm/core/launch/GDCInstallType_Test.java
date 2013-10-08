@@ -5,6 +5,7 @@ import static mmrnmhrm.core.launch.DMDInstallType_Test.getLibraryLocations;
 
 import java.io.File;
 
+import mmrnmhrm.core.compiler_installs.GDCInstallType;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
 

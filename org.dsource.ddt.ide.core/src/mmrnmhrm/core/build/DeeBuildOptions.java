@@ -1,6 +1,6 @@
 package mmrnmhrm.core.build;
 
-import mmrnmhrm.core.launch.CommonDeeInstall;
+import mmrnmhrm.core.compiler_installs.CommonDeeInstall;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;

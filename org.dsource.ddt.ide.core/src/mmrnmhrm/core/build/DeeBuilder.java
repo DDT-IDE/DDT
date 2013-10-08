@@ -14,7 +14,7 @@ import java.util.Map;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.launch.CommonDeeInstall;
+import mmrnmhrm.core.compiler_installs.CommonDeeInstall;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 

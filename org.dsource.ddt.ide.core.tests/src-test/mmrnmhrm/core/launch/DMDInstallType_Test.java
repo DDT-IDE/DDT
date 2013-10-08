@@ -4,6 +4,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 
+import mmrnmhrm.core.compiler_installs.CommonInstallType;
+import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
 

@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 
-import mmrnmhrm.core.launch.GDCInstallType;
+import mmrnmhrm.core.compiler_installs.GDCInstallType;
 import mmrnmhrm.tests.ITestResourcesConstants;
 
 import org.eclipse.core.resources.IProject;

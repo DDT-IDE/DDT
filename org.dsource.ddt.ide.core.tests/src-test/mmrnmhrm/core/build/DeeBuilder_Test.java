@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.launch.DMDInstallType;
+import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.DeeCoreTestResources;

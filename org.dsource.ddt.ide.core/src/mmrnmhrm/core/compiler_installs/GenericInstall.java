@@ -1,19 +1,17 @@
-package mmrnmhrm.core.launch;
+package mmrnmhrm.core.compiler_installs;
 
 
 
-public class GDCInstall extends CommonDeeInstall { 
+public class GenericInstall extends CommonDeeInstall { 
 	
-	public GDCInstall(GDCInstallType type, String id) {
+	public GenericInstall(GenericInstallType type, String id) {
 		super(type, id);
 	}
 	
 	@Override
 	public String getDefaultBuildFileData() {
 		return 
-			"-o$/DEEBUILDER.OUTPUTEXE\n" +
-			"$/DEEBUILDER.SRCLIBS.-I\n" +
-			"$/DEEBUILDER.SRCFOLDERS.-I\n" +
+			"//Unsupported\n"+	
 			"$/DEEBUILDER.SRCMODULES\n"
 		;
 	}

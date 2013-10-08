@@ -1,4 +1,4 @@
-package mmrnmhrm.core.launch;
+package mmrnmhrm.core.compiler_installs;
 
 
 import org.eclipse.dltk.launching.IInterpreterInstallType;

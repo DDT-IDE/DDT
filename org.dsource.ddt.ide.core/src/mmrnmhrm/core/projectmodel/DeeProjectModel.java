@@ -10,7 +10,7 @@ import java.util.Map;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.LangCore;
-import mmrnmhrm.core.launch.CommonDeeInstall;
+import mmrnmhrm.core.compiler_installs.CommonDeeInstall;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;

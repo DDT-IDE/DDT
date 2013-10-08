@@ -1,4 +1,4 @@
-package mmrnmhrm.core.launch;
+package mmrnmhrm.core.compiler_installs;
 
 import java.util.List;
 

@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.dltk.core.IScriptProject;
 
-import mmrnmhrm.core.launch.CommonDeeInstall;
+import mmrnmhrm.core.compiler_installs.CommonDeeInstall;
 import mmrnmhrm.tests.BaseDeeTest;
 
 public class DeeProjectModelTest extends BaseDeeTest {

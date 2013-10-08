@@ -57,15 +57,15 @@
    <extension
          point="org.eclipse.dltk.launching.interpreterInstallTypes">
       <interpreterInstallType
-            class="mmrnmhrm.core.launch.DMDInstallType"
+            class="mmrnmhrm.core.compiler_installs.DMDInstallType"
             id="org.dsource.ddt.ide.core.launching.deeDmdInstallType">
       </interpreterInstallType>
       <interpreterInstallType
-            class="mmrnmhrm.core.launch.GDCInstallType"
+            class="mmrnmhrm.core.compiler_installs.GDCInstallType"
             id="org.dsource.ddt.ide.core.launching.GDCInstallType">
       </interpreterInstallType>      
       <interpreterInstallType
-            class="mmrnmhrm.core.launch.GenericInstallType"
+            class="mmrnmhrm.core.compiler_installs.GenericInstallType"
             id="org.dsource.ddt.ide.core.launching.GenericInstallType">
       </interpreterInstallType>      
    </extension>
