@@ -8,25 +8,25 @@
  
  * Contributors:
  *     ??? (DLTK) - initial API and implementation
- *     Bruno Medeiros - modifications     
+ *     Bruno Medeiros - modifications, removed most DLTK dependencies
  *******************************************************************************/
 package melnorme.lang.launching;
 
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StringUtil;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -38,13 +38,8 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.environment.IEnvironment;
-import org.eclipse.dltk.core.environment.IExecutionEnvironment;
-import org.eclipse.dltk.core.environment.IExecutionLogger;
 import org.eclipse.dltk.internal.launching.DLTKLaunchingPlugin;
-import org.eclipse.dltk.launching.EnvironmentVariable;
 import org.eclipse.dltk.launching.IInterpreterRunner;
-import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.LaunchingMessages;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.osgi.util.NLS;
@@ -59,133 +54,90 @@ import org.eclipse.osgi.util.NLS;
  * @see IInterpreterRunner
  * 
  */
-public abstract class AbstractInterpreterRunner_Mod implements IInterpreterRunner {
+public abstract class AbstractProcessRunner {
 	
-	protected void abort(String message, Throwable exception)
-		throws CoreException {
+	protected void abort(String message, Throwable exception) throws CoreException {
 		throw new CoreException(new Status(IStatus.ERROR,
-			DLTKLaunchingPlugin.PLUGIN_ID,
-			ScriptLaunchConfigurationConstants.ERR_INTERNAL_ERROR, message,
-			exception));
+			DLTKLaunchingPlugin.PLUGIN_ID, ScriptLaunchConfigurationConstants.ERR_INTERNAL_ERROR, message, exception));
 	}
 	
-	protected void abort(String message, Throwable exception, int code)
-		throws CoreException {
-		throw new CoreException(new Status(IStatus.ERROR,
+	protected void abort(String message, Throwable exception, int code) throws CoreException {
+		throw new CoreException(new Status(IStatus.ERROR, 
 			DLTKLaunchingPlugin.PLUGIN_ID, code, message, exception));
 	}
 	
-	@Override
-	public void run(InterpreterConfig config, ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		if (monitor == null) {
-			monitor = new NullProgressMonitor();
+	protected IPath workingDir;
+	protected IPath processFile;
+	protected List<String> processArguments;
+	protected String[] environment;
+	protected Process sp;
+	
+	protected void initConfiguration(IPath workingDir, IPath processFile, List<String> processArgs, String[] environment)
+			throws CoreException {
+		this.workingDir = workingDir;
+		this.processFile = processFile;
+		this.processArguments = processArgs;
+		this.environment = environment;
+		
+		
+		if (!workingDir.toFile().exists()) {
+			abort(NLS.bind(LaunchMessages.errWorkingDirectoryDoesntExist, workingDir.toString()), null);
+		}
+		if (processFile == null) {
+			abort(LaunchMessages.errExecutableFileNull, null);
 		}
 		
-		try {
-			monitor.beginTask(LaunchingMessages.AbstractInterpreterRunner_launching, 5);
-			if (monitor.isCanceled()) {
-				return;
-			}
-			alterConfig(launch, config);
-			monitor.worked(1);
-			monitor.subTask(LaunchingMessages.AbstractInterpreterRunner_running);
-			rawRun(launch, config);
-			monitor.worked(4);
-			
-		} finally {
-			monitor.done();
+		if(!processFile.toFile().exists()) {
+			abort(NLS.bind(LaunchMessages.errExecutableFileDoesntExist, processFile.toString()), null);
 		}
 	}
 	
-	@SuppressWarnings("unused")
-	protected void alterConfig(ILaunch launch, InterpreterConfig config) {
-	}
-	
-	protected void traceExecution(String processLabel, String cmdLineLabel,
-		IPath workingDirectory, String[] environment) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("-----------------------------------------------\n"); //$NON-NLS-1$
-		sb.append("Running ").append(processLabel).append('\n'); //$NON-NLS-1$
-		sb.append("Command line: ").append(cmdLineLabel).append('\n'); //$NON-NLS-1$
-		sb.append("Working directory: ").append(workingDirectory).append('\n'); //$NON-NLS-1$
-		sb.append("Environment:\n"); //$NON-NLS-1$
-		for (int i = 0; i < environment.length; i++) {
-			sb.append('\t').append(environment[i]).append('\n');
-		}
-		sb.append("-----------------------------------------------\n"); //$NON-NLS-1$
-		System.out.println(sb);
-	}
-	
-	public static class LaunchLogger implements IExecutionLogger {
-		
-		protected final String fileName;
-		
-		public LaunchLogger() {
-			fileName = new java.text.SimpleDateFormat("yyyy-MM-dd-HHmm").format(new Date()) + ".log";
-		}
-		
-		@Override
-		public void logLine(String line) {
-			final File file = new File(System.getProperty("user.home"), fileName);
-			try {
-				final FileWriter writer = new FileWriter(file, true);
-				try {
-					writer.write(line);
-					writer.write("\n");
-				} finally {
-					try {
-						writer.close();
-					} catch (IOException e) {
-						// ignore
-					}
-				}
-			} catch (IOException e) {
-				// ignore?
-			}
-		}
-	}
-	
-	protected IProcess rawRun(final ILaunch launch, InterpreterConfig config)
-		throws CoreException {
-		
-		checkConfig(config);
-		
-		String[] cmdLine = renderCommandLine(config);
-		IPath workingDirectory = config.getWorkingDirectoryPath();
-		String[] environment = getEnvironmentVariablesAsStrings(config);
+	protected IProcess launchProcess(final ILaunch launch) throws CoreException {
+		String[] cmdLine = getCommandLine();
+		Process sp = newSystemProcess(cmdLine);
 		
 		final String cmdLineLabel = renderCommandLineLabel(cmdLine);
 		final String baseProcessLabel = renderBaseProcessLabel(cmdLine);
+		return newProcessWithLabelUpdater(launch, cmdLineLabel, baseProcessLabel, sp);
+	}
+	
+	protected Process newSystemProcess(String[] cmdLine) throws CoreException {
 		
-		if (DLTKLaunchingPlugin.TRACE_EXECUTION) {
-			traceExecution(baseProcessLabel, cmdLineLabel, workingDirectory, environment);
+		if(DLTKLaunchingPlugin.TRACE_EXECUTION) {
+			traceExecution(cmdLine, workingDir, environment);
 		}
 		
-		IExecutionEnvironment exeEnv = getExecEnvironment(config);
-		IExecutionLogger logger = DLTKLaunchingPlugin.LOGGING_CATCH_OUTPUT.isEnabled() ? new LaunchLogger() : null;
-		
-		Process p = exeEnv.exec(cmdLine, workingDirectory, environment, logger);
-		if (p == null) {
+		Process sp = DebugPlugin.exec(cmdLine, workingDir.toFile(), environment);
+		if (sp == null) {
 			abort(LaunchingMessages.AbstractInterpreterRunner_executionWasCancelled, null);
 		}
-		
-		launch.setAttribute(DLTKLaunchingPlugin.LAUNCH_COMMAND_LINE, cmdLineLabel);
-		
-		return newProcessWithLabelUpdater(launch, cmdLineLabel, baseProcessLabel, p);
+		return sp;
 	}
 	
-	protected abstract void checkConfig(InterpreterConfig config) throws CoreException;
-	
-	protected abstract String[] renderCommandLine(InterpreterConfig config);
-	
-	protected String[] getEnvironmentVariablesAsStrings(InterpreterConfig config) {
-		EnvironmentVariable[] additionalVars = null; // Default: no additional vars are added 
-		return config.getEnvironmentAsStringsIncluding(additionalVars);
+	protected static void traceExecution(String[] cmdLine, IPath workingDirectory, String[] environment) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("-----------------------------------------------\n");
+		sb.append("Command line: ").append(StringUtil.collToString(cmdLine, "●")).append('\n');
+		sb.append("Working directory: ").append(workingDirectory).append('\n');
+		sb.append("Environment:\n");
+		for (int i = 0; i < environment.length; i++) {
+			sb.append('\t').append(environment[i]).append('\n');
+		}
+		sb.append("-----------------------------------------------\n");
+		System.out.println(sb);
 	}
 	
-	protected IExecutionEnvironment getExecEnvironment(InterpreterConfig config) {
-		IEnvironment environment = config.getEnvironment();
-		return (IExecutionEnvironment) environment.getAdapter(IExecutionEnvironment.class);
+	protected final String[] getCommandLine() {
+		List<String> items = new ArrayList<String>();
+		prepareCommandLine(items);
+		return ArrayUtil.createFrom(items, String.class);
+	}
+	
+	public void prepareCommandLine(List<String> items) {
+		items.add(processFile.toOSString());
+		
+		List<String> scriptArgs = processArguments;
+		items.addAll(scriptArgs);
 	}
 	
 	/**
@@ -193,7 +145,7 @@ public abstract class AbstractInterpreterRunner_Mod implements IInterpreterRunne
 	 * 
 	 * @param launch
 	 *            the launch the process is contained in
-	 * @param p
+	 * @param sp
 	 *            the system process to wrap
 	 * @param label
 	 *            the label assigned to the process
@@ -205,11 +157,14 @@ public abstract class AbstractInterpreterRunner_Mod implements IInterpreterRunne
 	 * @since 2.0
 	 * 
 	 */
-	protected IProcess newProcess(ILaunch launch, Process p, String label,
-			Map<String, String> attributes) throws CoreException {
-		IProcess process = DebugPlugin.newProcess(launch, p, label, attributes);
+	protected IProcess newProcess(ILaunch launch, Process sp, String label, Map<String, String> attributes) 
+			throws CoreException {
+		
+		this.sp = sp;
+		IProcess process = DebugPlugin.newProcess(launch, sp, label, attributes);
+		
 		if (process == null) {
-			p.destroy();
+			sp.destroy();
 			abort(LaunchingMessages.AbstractInterpreterRunner_0, null);
 		}
 		return process;
@@ -271,14 +226,15 @@ public abstract class AbstractInterpreterRunner_Mod implements IInterpreterRunne
 	}
 	
 	public IProcess newProcessWithLabelUpdater(ILaunch launch, String cmdLineLabel, String baseProcessLabel, 
-		Process p) throws CoreException {
-		final AtomicReference<IProcess> process = new AtomicReference<>(null);
+		Process sp) throws CoreException {
+		final AtomicReference<IProcess> processRef = new AtomicReference<>(null);
 		
-		DebugPlugin.getDefault().addDebugEventListener(new ProcessLabelListener(launch, process));
-		process.set(newProcess(launch, p, baseProcessLabel, getDefaultProcessMap()));
-		process.get().setAttribute(IProcess.ATTR_CMDLINE, cmdLineLabel);
-		updateProcessLabel(launch, process.get());
-		return process.get();
+		DebugPlugin.getDefault().addDebugEventListener(new ProcessLabelListener(launch, processRef));
+		IProcess process = newProcess(launch, sp, baseProcessLabel, getDefaultProcessMap());
+		processRef.set(process);
+		process.setAttribute(IProcess.ATTR_CMDLINE, cmdLineLabel);
+		updateProcessLabel(launch, process);
+		return process;
 	}
 	
 	protected final class ProcessLabelListener implements IDebugEventSetListener {
@@ -295,8 +251,7 @@ public abstract class AbstractInterpreterRunner_Mod implements IInterpreterRunne
 			for (int i = 0; i < events.length; i++) {
 				DebugEvent event = events[i];
 				if (event.getSource().equals(process.get())) {
-					if (event.getKind() == DebugEvent.CHANGE
-						|| event.getKind() == DebugEvent.TERMINATE) {
+					if (event.getKind() == DebugEvent.CHANGE || event.getKind() == DebugEvent.TERMINATE) {
 						updateProcessLabel(launch, process.get());
 						if (event.getKind() == DebugEvent.TERMINATE) {
 							DebugPlugin.getDefault().removeDebugEventListener(this);
@@ -307,7 +262,7 @@ public abstract class AbstractInterpreterRunner_Mod implements IInterpreterRunne
 		}
 	}
 	
-	protected static void updateProcessLabel(final ILaunch launch, final IProcess process) {
+	protected static String computeName(final ILaunch launch, final IProcess process) {
 		StringBuffer buffer = new StringBuffer();
 		int exitValue = 0;
 		try {
@@ -338,7 +293,12 @@ public abstract class AbstractInterpreterRunner_Mod implements IInterpreterRunne
 			buffer.append("] "); //$NON-NLS-1$
 		}
 		buffer.append(process.getLabel());
-		process.setAttribute(IProcess.ATTR_PROCESS_LABEL, buffer.toString());
+		return buffer.toString();
+	}
+	
+	protected static void updateProcessLabel(final ILaunch launch, final IProcess process) {
+		String computedName = computeName(launch, process);
+		process.setAttribute(IProcess.ATTR_PROCESS_LABEL, computedName);
 	}
 	
 }

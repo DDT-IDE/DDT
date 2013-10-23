@@ -23,6 +23,7 @@ import melnorme.utilbox.core.Function;
  */
 public final class StringUtil {
 	
+	public static final Charset ASCII = Charset.forName("ASCII");
 	public static final Charset UTF8 = Charset.forName("UTF-8");
 	public static final Charset UTF16 = Charset.forName("UTF-16");
 	

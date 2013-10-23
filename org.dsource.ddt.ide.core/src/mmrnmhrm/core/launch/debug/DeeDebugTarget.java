@@ -9,15 +9,18 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
-//TODO: IDebugTarget implement
 public class DeeDebugTarget extends AbstractDebugElement implements IDebugTarget {
 	
 	protected final ILaunch launch;
 	protected final IProcess process;
+	protected final IDebuggerHandler debuggerHandler;
 	
-	public DeeDebugTarget(ILaunch launch, IProcess process) {
+	protected DebugExecutionStatus status = DebugExecutionStatus.RUNNING;
+	
+	public DeeDebugTarget(ILaunch launch, IProcess process, IDebuggerHandler debuggerHandler) {
 		this.launch = launch;
 		this.process = process;
+		this.debuggerHandler = debuggerHandler;
 	}
 	
 	@Override
@@ -37,7 +40,7 @@ public class DeeDebugTarget extends AbstractDebugElement implements IDebugTarget
 	
 	@Override
 	public String getName() throws DebugException {
-		return process.getLabel();
+		return process.getLabel() + "DEBUG TARGET";
 	}
 	
 	// ---------------- Threads
@@ -60,45 +63,46 @@ public class DeeDebugTarget extends AbstractDebugElement implements IDebugTarget
 	
 	@Override
 	public boolean canTerminate() {
-		return true;
+		return !isTerminated();
 	}
 	
 	@Override
 	public boolean isTerminated() {
-		// TODO Auto-generated method stub
-		return false;
+		return status.isTerminated();
 	}
 	
 	@Override
 	public void terminate() throws DebugException {
-		System.out.println("terminate");
-		// TODO Auto-generated method stub
+		System.out.println("terminate"); // TODO
+		getProcess().terminate(); // TODO: run async?
+		status = DebugExecutionStatus.TERMINATED;
 	}
 	
 	@Override
 	public boolean canResume() {
-		return true;
+		return status.canResume();
 	}
 	
 	@Override
 	public boolean canSuspend() {
-		return true;
+		return status.canSuspend();
 	}
 	
 	@Override
 	public boolean isSuspended() {
-		// TODO Auto-generated method stub
-		return false;
+		return status.isSuspended();
 	}
 	
 	@Override
 	public void resume() throws DebugException {
-		// TODO Auto-generated method stub
+		System.out.println("resume"); // TODO
+		status = DebugExecutionStatus.RUNNING;
 	}
 	
 	@Override
 	public void suspend() throws DebugException {
-		// TODO Auto-generated method stub
+		debuggerHandler.commandSuspend();
+		status = DebugExecutionStatus.SUSPENDED;
 	}
 	
 	// ---------------- breakpoints

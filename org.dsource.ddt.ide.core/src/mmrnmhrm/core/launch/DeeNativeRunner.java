@@ -10,12 +10,22 @@
  *******************************************************************************/
 package mmrnmhrm.core.launch;
 
-import melnorme.lang.launching.AbstractNativeExecutableRunner;
+import java.util.List;
+
+import melnorme.lang.launching.AbstractBinaryRunner;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterConfig;
+import org.eclipse.dltk.launching.LaunchingMessages;
 
-public class DeeNativeRunner extends AbstractNativeExecutableRunner {
+public class DeeNativeRunner extends AbstractBinaryRunner 
+	implements IInterpreterRunner 
+{
 	
 	@Override
 	protected String getProcessType() {
@@ -23,8 +33,35 @@ public class DeeNativeRunner extends AbstractNativeExecutableRunner {
 	}
 	
 	@Override
-	protected void checkConfig(InterpreterConfig config) throws CoreException {
-		super.checkConfig(config);
+	public void run(InterpreterConfig config, ILaunch launch, IProgressMonitor monitor) throws CoreException {
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
+		}
+		
+		try {
+			monitor.beginTask(LaunchingMessages.AbstractInterpreterRunner_launching, 5);
+			if (monitor.isCanceled()) {
+				return;
+			}
+			
+			monitor.worked(1);
+			monitor.subTask(LaunchingMessages.AbstractInterpreterRunner_running);
+			initConfig(config);
+			launchProcess(launch);
+			monitor.worked(4);
+			
+		} finally {
+			monitor.done();
+		}
+	}
+	
+	protected void initConfig(InterpreterConfig config) throws CoreException {
+		IPath workingDirectoryPath = config.getWorkingDirectoryPath();
+		IPath scriptFilePath = config.getScriptFilePath();
+		List<String> scriptArgs = config.getScriptArgs();
+		String[] environment = config.getEnvironmentAsStringsIncluding(null); // Default: no additional vars are added
+		
+		initConfiguration(workingDirectoryPath, scriptFilePath, scriptArgs, environment);
 	}
 	
 }

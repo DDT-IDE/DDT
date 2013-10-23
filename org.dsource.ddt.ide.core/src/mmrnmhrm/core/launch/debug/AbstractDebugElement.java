@@ -19,6 +19,26 @@ import org.eclipse.debug.core.model.IDebugElement;
 
 public abstract class AbstractDebugElement implements IDebugElement {
 	
+	public static enum DebugExecutionStatus { 
+		RUNNING, SUSPENDED, TERMINATED;
+
+		public boolean canResume() {
+			return this == SUSPENDED;
+		}
+		
+		public boolean canSuspend() {
+			return this == RUNNING;
+		}
+		
+		public boolean isSuspended() {
+			return this == SUSPENDED;
+		}
+		
+		public boolean isTerminated() {
+			return this == TERMINATED;
+		} 
+	};
+	
 	@Override
 	public String getModelIdentifier() {
 		return DeeCore.PLUGIN_ID;

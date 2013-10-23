@@ -11,19 +11,23 @@
 package mmrnmhrm.core.launch;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import mmrnmhrm.core.launch.debug.DeeDebuggingRunner;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.Launch;
 import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
 import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterConfig;
-import org.eclipse.dltk.launching.LaunchingMessages;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 
 public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegate {
@@ -40,12 +44,51 @@ public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 	}
 	
 	@Override
+	public ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
+		
+		// Remove some DLTK attributes that affect how our launch runs
+		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+		workingCopy.removeAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID);
+		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
+		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE, false);
+		workingCopy.doSave();
+		
+		final Launch launch = new Launch(configuration, mode, null);
+		return launch;
+	}
+	
+	@Override
+	protected void setDebugConsoleAttributes(Launch launch, ILaunchConfiguration configuration) throws CoreException {
+		throw assertUnreachable();
+	}
+	
+	@Override
+	protected void setDebugOptions(Launch launch, ILaunchConfiguration configuration) throws CoreException {
+		throw assertUnreachable();
+	}
+	
+	
+	protected String savedAttrCaptureOutput;
+	
+	@Override
+	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
+			throws CoreException {
+		
+		// we need to save attribute DebugPlugin.ATTR_CAPTURE_OUTPUT because super.launch resets it
+		savedAttrCaptureOutput = launch.getAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT);
+		
+		super.launch(configuration, mode, launch, monitor);
+	}
+	
+	@Override
 	protected void validateLaunchConfiguration(ILaunchConfiguration configuration, String mode, IProject project)
 		throws CoreException {
+		
 		if(ILaunchManager.DEBUG_MODE.equals(mode)) {
-			abort(LaunchingMessages.AbstractScriptLaunchConfigurationDelegate_debuggingEngineNotSelected,
-					null,
-					ScriptLaunchConfigurationConstants.ERR_NO_DEFAULT_DEBUGGING_ENGINE);
+			if(Platform.inDevelopmentMode()) {
+				// Allow use of beta Debug engine
+			} else 
+			abort("Debugging not supported", null);
 		}
 	}
 	
@@ -69,6 +112,9 @@ public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 	@Override
 	protected void runRunner(ILaunchConfiguration configuration, IInterpreterRunner runner, InterpreterConfig config,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
+		
+		launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, savedAttrCaptureOutput);
+		
 		super.runRunner(configuration, runner, config, launch, monitor);
 	}
 	
