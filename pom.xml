@@ -29,7 +29,7 @@
 		<module>org.dsource.ddt.ide.ui</module>
 		<module>org.dsource.ddt.ide.ui.tests</module>
 		<module>org.dsource.ddt-feature</module>
-		<module>org.dsource.ddt-build/feature-repository-project</module>
+		<module>org.dsource.ddt-build/repository</module>
 	</modules>
 
 	<profiles>
