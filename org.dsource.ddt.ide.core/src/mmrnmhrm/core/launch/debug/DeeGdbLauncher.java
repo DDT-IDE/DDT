@@ -16,15 +16,16 @@ import mmrnmhrm.core.launch.DeeNativeRunner;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
 
 
-public class DeeDebuggingRunner extends DeeNativeRunner {
+public class DeeGdbLauncher extends DeeNativeRunner {
 	
 	@Override
 	public void prepareCommandLine(List<String> items) {
 		items.add("gdb");
+		items.add("--interpreter");
+		items.add("mi2");
 		items.add("--args");
 		super.prepareCommandLine(items);
 	}
@@ -33,8 +34,7 @@ public class DeeDebuggingRunner extends DeeNativeRunner {
 	protected IProcess launchProcess(ILaunch launch) throws CoreException {
 		IProcess process = super.launchProcess(launch);
 		
-		GdbDebuggerHandler debuggerHandler = new GdbDebuggerHandler(process, sp);
-		IDebugTarget target = new DeeDebugTarget(launch, process, debuggerHandler);
+		DeeDebugTarget target = new DeeDebugTarget(launch, process, sp);
 		launch.addDebugTarget(target);
 		
 		return process;
