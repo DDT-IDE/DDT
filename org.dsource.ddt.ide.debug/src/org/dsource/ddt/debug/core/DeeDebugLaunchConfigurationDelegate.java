@@ -11,7 +11,7 @@
 package org.dsource.ddt.debug.core;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import mmrnmhrm.core.launch.AbstractScriptLaunchConfigurationDelegateExtension;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
@@ -19,6 +19,7 @@ import org.eclipse.cdt.dsf.gdb.IGDBLaunchConfigurationConstants;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate;
 import org.eclipse.cdt.dsf.gdb.launching.LaunchUtils;
 import org.eclipse.cdt.dsf.service.DsfSession;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -28,31 +29,20 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.ISourceLocator;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputer;
-import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
-import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 
 import dtool.DToolBundle;
 
-public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegate {
+public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegateExtension {
 	
 	protected final GdbLaunchDelegate gdbLaunchDelegate = new GdbLaunchDelegateExtension();
 	
 	@Override
 	public String getLanguageId() {
 		return DeeNature.NATURE_ID;
-	}
-	
-	
-	
-	@Override
-	public boolean buildForLaunch(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor)
-			throws CoreException {
-		return super.buildForLaunch(configuration, mode, monitor);
 	}
 	
 	@Override
@@ -115,46 +105,21 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 		workingCopy.doSave();
 		
 		return gdbLaunchDelegate.getLaunch(configuration, mode);
-		
-//		final Launch launch = new Launch(configuration, mode, null);
-//		return launch;
 	}
 	
 	@Override
-	protected void setDebugConsoleAttributes(Launch launch, ILaunchConfiguration configuration) throws CoreException {
-		throw assertUnreachable();
-	}
-	
-	@Override
-	protected void setDebugOptions(Launch launch, ILaunchConfiguration configuration) throws CoreException {
-		throw assertUnreachable();
-	}
-	
-	
-	protected String savedAttrCaptureOutput;
-	
-	@Override
-	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
+	protected void validateLaunchConfiguration(ILaunchConfiguration configuration, String mode, IProject project)
 			throws CoreException {
-		
 		if(!mode.equals(ILaunchManager.DEBUG_MODE)) {
 			abort("Internal error: can only use this delegate for debug launches", null);
 		}
-		
+	}
+	
+	@Override
+	protected void launch0(InterpreterConfig config, ILaunchConfiguration configuration, ILaunch launch,
+			IProgressMonitor monitor) throws CoreException {
+		String mode = launch.getLaunchMode();
 		gdbLaunchDelegate.launch(configuration, mode, launch, monitor);
-		
-	}
-	
-	@Override
-	public IInterpreterRunner getInterpreterRunner(ILaunchConfiguration configuration, String mode)
-			throws CoreException {
-		throw assertUnreachable();
-	}
-	
-	@Override
-	protected void runRunner(ILaunchConfiguration configuration, IInterpreterRunner runner, InterpreterConfig config,
-			ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		throw assertUnreachable();
 	}
 	
 	public static class GdbLaunchDelegateExtension extends GdbLaunchDelegate {

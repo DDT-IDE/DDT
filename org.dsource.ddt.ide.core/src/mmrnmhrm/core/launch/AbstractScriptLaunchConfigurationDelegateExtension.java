@@ -66,12 +66,12 @@ public abstract class AbstractScriptLaunchConfigurationDelegateExtension
 	}
 	
 	@Override
-	protected void setDebugConsoleAttributes(Launch launch, ILaunchConfiguration configuration) throws CoreException {
+	protected final void setDebugConsoleAttributes(Launch launch, ILaunchConfiguration configuration) throws CoreException {
 		throw assertUnreachable();
 	}
 	
 	@Override
-	protected void setDebugOptions(Launch launch, ILaunchConfiguration configuration) throws CoreException {
+	protected final void setDebugOptions(Launch launch, ILaunchConfiguration configuration) throws CoreException {
 		throw assertUnreachable();
 	}
 	
@@ -129,16 +129,15 @@ public abstract class AbstractScriptLaunchConfigurationDelegateExtension
 	@Override
 	protected void validateLaunchConfiguration(ILaunchConfiguration configuration, String mode, IProject project)
 			throws CoreException {
-		
 		if(ILaunchManager.DEBUG_MODE.equals(mode)) {
 			abort("Debugging not supported", null);
 		}
 	}
 	
 	@Override
-	protected final InterpreterConfig createInterpreterConfig(ILaunchConfiguration configuration, ILaunch launch)
+	protected InterpreterConfig createInterpreterConfig(ILaunchConfiguration configuration, ILaunch launch)
 			throws CoreException {
-		throw assertUnreachable();
+		return super.createInterpreterConfig(configuration, launch);
 	}
 	
 	@Override
