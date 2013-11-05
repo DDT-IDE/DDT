@@ -1,6 +1,11 @@
 package mmrnmhrm.core.launch.debug;
 
+import java.util.HashMap;
+
+import melnorme.utilbox.misc.ArrayUtil;
+
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IBreakpoint;
@@ -13,14 +18,17 @@ public class DeeDebugTarget extends AbstractDebugElement implements IDebugTarget
 	
 	protected final ILaunch launch;
 	protected final IProcess process;
-	protected final IDebuggerHandler debuggerHandler;
+	protected final IDebuggerHandler debuggerController;
 	
-	protected DebugExecutionStatus status = DebugExecutionStatus.RUNNING;
+	protected DebugExecutionState state = DebugExecutionState.RUNNING;
 	
-	public DeeDebugTarget(ILaunch launch, IProcess process, IDebuggerHandler debuggerHandler) {
+	public DeeDebugTarget(ILaunch launch, IProcess process, Process sp) {
+		super(null);
 		this.launch = launch;
 		this.process = process;
-		this.debuggerHandler = debuggerHandler;
+		this.debuggerController = new GdbController(process, sp, this);
+
+		debuggerController.commandStartSession();
 	}
 	
 	@Override
@@ -43,20 +51,36 @@ public class DeeDebugTarget extends AbstractDebugElement implements IDebugTarget
 		return process.getLabel() + "DEBUG TARGET";
 	}
 	
+	protected void shutdown() {
+		debuggerController.dispose();
+	}
+	
 	// ---------------- Threads
 	
-	protected IThread[] threads = new IThread[] {
-		new DeeDebugThread(this),
-	};
+	protected HashMap<String, DeeDebugThread> threads = new HashMap<>();
 	
 	@Override
-	public IThread[] getThreads() throws DebugException {
-		return threads;
+	public synchronized IThread[] getThreads() throws DebugException {
+		return ArrayUtil.createFrom(threads.values(), IThread.class);
 	}
 	
 	@Override
-	public boolean hasThreads() throws DebugException {
-		return true;
+	public synchronized boolean hasThreads() throws DebugException {
+		return !threads.isEmpty();
+	}
+	
+	public synchronized void createThread(String id) {
+		DeeDebugThread debugThread = new DeeDebugThread(this);
+		threads.put(id, debugThread);
+		debugThread.fireCreationEvent();
+	}
+	
+	public synchronized void removeThread(String id) {
+		DeeDebugThread debugThread = threads.get(id);
+		if(debugThread != null) {
+			debugThread.fireTerminateEvent();
+			threads.remove(id);
+		}
 	}
 	
 	// ---------------- ITerminate , ISuspendResume ----------------
@@ -68,41 +92,55 @@ public class DeeDebugTarget extends AbstractDebugElement implements IDebugTarget
 	
 	@Override
 	public boolean isTerminated() {
-		return status.isTerminated();
-	}
-	
-	@Override
-	public void terminate() throws DebugException {
-		System.out.println("terminate"); // TODO
-		getProcess().terminate(); // TODO: run async?
-		status = DebugExecutionStatus.TERMINATED;
+		return state.isTerminated();
 	}
 	
 	@Override
 	public boolean canResume() {
-		return status.canResume();
+		return state.canResume();
 	}
 	
 	@Override
 	public boolean canSuspend() {
-		return status.canSuspend();
+		return state.canSuspend();
 	}
 	
 	@Override
 	public boolean isSuspended() {
-		return status.isSuspended();
+		return state.isSuspended();
+	}
+	
+	@Override
+	public void terminate() throws DebugException {
+		getProcess().terminate();
+		setTerminated();
 	}
 	
 	@Override
 	public void resume() throws DebugException {
-		System.out.println("resume"); // TODO
-		status = DebugExecutionStatus.RUNNING;
+		debuggerController.commandResume();
 	}
 	
 	@Override
 	public void suspend() throws DebugException {
-		debuggerHandler.commandSuspend();
-		status = DebugExecutionStatus.SUSPENDED;
+		debuggerController.commandSuspend();
+	}
+	
+	public synchronized void setTerminated() {
+		state = DebugExecutionState.TERMINATED;
+		fireTerminateEvent();
+		shutdown();
+	}
+
+	public synchronized void setResumed(boolean clientRequest) {
+		state = DebugExecutionState.RUNNING;
+		fireResumeEvent(clientRequest ? DebugEvent.CLIENT_REQUEST : DebugEvent.UNSPECIFIED );
+	}
+	
+	
+	protected synchronized void setSuspended(boolean clientRequest) {
+		state = DebugExecutionState.SUSPENDED;
+		fireResumeEvent(clientRequest ? DebugEvent.CLIENT_REQUEST : DebugEvent.UNSPECIFIED );
 	}
 	
 	// ---------------- breakpoints
@@ -156,5 +194,5 @@ public class DeeDebugTarget extends AbstractDebugElement implements IDebugTarget
 	public IMemoryBlock getMemoryBlock(long startAddress, long length) throws DebugException {
 		return null;
 	}
-	
+
 }

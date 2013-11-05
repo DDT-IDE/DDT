@@ -154,7 +154,7 @@
       <launchConfigurationType
             delegate="mmrnmhrm.core.launch.DeeLaunchConfigurationDelegate"
             id="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
-            modes="run, debug"
+            modes="run"
             name="%localDeeApplication">
       </launchConfigurationType>
    </extension>

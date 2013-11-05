@@ -13,14 +13,13 @@ Require-Bundle: org.dsource.ddt.dtool;bundle-version="[0.8.1,0.9.0)";visibility:
  org.eclipse.core.resources;bundle-version="3.6.0",
  org.eclipse.core.filebuffers;bundle-version="3.5.0",
  org.eclipse.core.expressions;bundle-version="3.4.0",
- org.eclipse.jface;bundle-version="3.6.0",
- org.eclipse.jface.text;bundle-version="3.6.0",
  org.eclipse.dltk.core;bundle-version="[5.0.0,6.0.0)",
  org.eclipse.dltk.launching;bundle-version="[5.0.0,6.0.0)",
  org.eclipse.debug.core;bundle-version="3.6.0"
 Bundle-ClassPath: .,
  libs/ini4j-0.3.2/ini4j-0.3.2.jar
-Export-Package: mmrnmhrm.core,
+Export-Package: melnorme.lang.launching,
+ mmrnmhrm.core,
  mmrnmhrm.core.build,
  mmrnmhrm.core.codeassist,
  mmrnmhrm.core.launch,

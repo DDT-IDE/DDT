@@ -8,14 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.launch;
+package org.dsource.ddt.ui.tabgroup;
 
 import org.eclipse.dltk.debug.ui.launchConfigurations.ScriptArgumentsTab;
 import org.eclipse.dltk.internal.debug.ui.launcher.InterpreterArgumentsBlock;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-final class DeeScriptArgumentsTab extends ScriptArgumentsTab {
+public class DeeScriptArgumentsTab extends ScriptArgumentsTab {
 	
 	@Override
 	protected InterpreterArgumentsBlock createInterpreterArgsBlock() {

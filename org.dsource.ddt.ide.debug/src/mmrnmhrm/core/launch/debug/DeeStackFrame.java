@@ -1,7 +1,6 @@
 package mmrnmhrm.core.launch.debug;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import mmrnmhrm.core.launch.debug.AbstractDebugElement.ChildDebugElement;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IRegisterGroup;
@@ -9,7 +8,7 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 
-public class DeeStackFrame extends ChildDebugElement implements IStackFrame {
+public class DeeStackFrame extends AbstractDebugElement implements IStackFrame {
 	
 	protected final DeeDebugThread debugThread;
 	

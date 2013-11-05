@@ -11,17 +11,17 @@
 package mmrnmhrm.core.launch.debug;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import mmrnmhrm.core.DeeCore;
 
-import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.core.model.IDebugElement;
+import org.eclipse.debug.core.model.IDebugTarget;
 
-public abstract class AbstractDebugElement implements IDebugElement {
+public abstract class AbstractDebugElement extends DebugElement implements IDebugElement {
 	
-	public static enum DebugExecutionStatus { 
+	public static enum DebugExecutionState { 
 		RUNNING, SUSPENDED, TERMINATED;
-
+		
 		public boolean canResume() {
 			return this == SUSPENDED;
 		}
@@ -43,34 +43,9 @@ public abstract class AbstractDebugElement implements IDebugElement {
 	public String getModelIdentifier() {
 		return DeeCore.PLUGIN_ID;
 	}
-
-	@Override
-	public abstract DeeDebugTarget getDebugTarget();
-
-	@Override
-	public Object getAdapter(Class adapter) {
-		return null;
-	}
 	
-	public static class ChildDebugElement extends AbstractDebugElement {
-		
-		protected final DeeDebugTarget debugTarget;
-
-		public ChildDebugElement(DeeDebugTarget debugTarget) {
-			super();
-			this.debugTarget = assertNotNull(debugTarget);
-		}
-		
-		@Override
-		public DeeDebugTarget getDebugTarget() {
-			return debugTarget;
-		}
-		
-		@Override
-		public ILaunch getLaunch() {
-			return debugTarget.getLaunch();
-		}
-		
+	public AbstractDebugElement(IDebugTarget target) {
+		super(target);
 	}
 	
 }

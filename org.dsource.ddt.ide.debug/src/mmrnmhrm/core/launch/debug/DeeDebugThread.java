@@ -1,13 +1,11 @@
 package mmrnmhrm.core.launch.debug;
 
-import mmrnmhrm.core.launch.debug.AbstractDebugElement.ChildDebugElement;
-
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 
-public class DeeDebugThread extends ChildDebugElement implements IThread {
+public class DeeDebugThread extends AbstractDebugElement implements IThread {
 	
 	public DeeDebugThread(DeeDebugTarget debugTarget) {
 		super(debugTarget);

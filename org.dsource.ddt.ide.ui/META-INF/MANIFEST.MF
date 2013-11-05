@@ -29,3 +29,4 @@ Require-Bundle: org.dsource.ddt.ide.core;bundle-version="[0.8.1,0.9.0]",
  org.eclipse.ui.console;bundle-version="3.5.0",
  org.eclipse.search;bundle-version="3.6.0",
  org.eclipse.debug.ui;bundle-version="3.6.0"
+Export-Package: mmrnmhrm.ui.launch.tabgroup

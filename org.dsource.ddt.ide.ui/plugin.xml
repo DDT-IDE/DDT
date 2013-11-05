@@ -504,7 +504,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="mmrnmhrm.ui.launch.DeeTabGroup"
+            class="org.dsource.ddt.ui.tabgroup.DeeTabGroup"
             description="%LangTabGroup.description"
             id="org.dsource.ddt.ide.ui.launchConfigurationTabGroup1"
             type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">

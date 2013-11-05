@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.launch;
+package org.dsource.ddt.ui.tabgroup;
 
 public class DeeLaunchConfigurationsMessages {
 	

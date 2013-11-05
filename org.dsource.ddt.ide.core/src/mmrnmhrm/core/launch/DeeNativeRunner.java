@@ -34,34 +34,27 @@ public class DeeNativeRunner extends AbstractBinaryRunner
 	
 	@Override
 	public void run(InterpreterConfig config, ILaunch launch, IProgressMonitor monitor) throws CoreException {
+		IPath workingDirectoryPath = config.getWorkingDirectoryPath();
+		IPath scriptFilePath = config.getScriptFilePath();
+		List<String> scriptArgs = config.getScriptArgs();
+		String[] environment = config.getEnvironmentAsStringsIncluding(null); // Default: no additional vars are added
+		initConfiguration(workingDirectoryPath, scriptFilePath, scriptArgs, environment);
+
+		run(launch, monitor);
+	}
+
+	public void run(ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
 		
 		try {
-			monitor.beginTask(LaunchingMessages.AbstractInterpreterRunner_launching, 5);
-			if (monitor.isCanceled()) {
-				return;
-			}
-			
-			monitor.worked(1);
-			monitor.subTask(LaunchingMessages.AbstractInterpreterRunner_running);
-			initConfig(config);
+			monitor.beginTask(LaunchingMessages.AbstractInterpreterRunner_launching, 1);
 			launchProcess(launch);
-			monitor.worked(4);
-			
+			monitor.worked(1);
 		} finally {
 			monitor.done();
 		}
-	}
-	
-	protected void initConfig(InterpreterConfig config) throws CoreException {
-		IPath workingDirectoryPath = config.getWorkingDirectoryPath();
-		IPath scriptFilePath = config.getScriptFilePath();
-		List<String> scriptArgs = config.getScriptArgs();
-		String[] environment = config.getEnvironmentAsStringsIncluding(null); // Default: no additional vars are added
-		
-		initConfiguration(workingDirectoryPath, scriptFilePath, scriptArgs, environment);
 	}
 	
 }

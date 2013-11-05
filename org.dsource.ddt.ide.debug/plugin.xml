@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.launchDelegates">
+      <launchDelegate
+            delegate="org.dsource.ddt.debug.core.DeeDebugLaunchConfigurationDelegate"
+            id="org.dsource.ddt.ide.debug.launchDelegate"
+            modes="debug"
+            type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
+      </launchDelegate>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.dsource.ddt.debug.ui.DeeDebugTabGroup"
+            description="Debug a D application"
+            id="org.dsource.ddt.debug.ui.launchConfigurationTabGroup_debug"
+            type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
+      </launchConfigurationTabGroup>
+   </extension>
+
+</plugin>

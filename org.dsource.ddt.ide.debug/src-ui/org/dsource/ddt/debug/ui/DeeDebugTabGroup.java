@@ -8,15 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.launch;
+package org.dsource.ddt.debug.ui;
 
+import org.dsource.ddt.ui.tabgroup.DeeMainLaunchConfigurationTab;
+import org.dsource.ddt.ui.tabgroup.DeeScriptArgumentsTab;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.dltk.debug.ui.launchConfigurations.ScriptCommonTab;
 
-public class DeeTabGroup extends AbstractLaunchConfigurationTabGroup {
+public class DeeDebugTabGroup extends AbstractLaunchConfigurationTabGroup {
 	
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
@@ -24,6 +26,8 @@ public class DeeTabGroup extends AbstractLaunchConfigurationTabGroup {
 				new DeeMainLaunchConfigurationTab(mode),
 				new DeeScriptArgumentsTab(),
 				new EnvironmentTab(),
+				new EnvironmentTab(),
+				new ScriptCommonTab(), // TODO: use CommonTab or CommonTabLite ?
 				new ScriptCommonTab()
 		};
 		
