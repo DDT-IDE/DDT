@@ -15,6 +15,8 @@ import mmrnmhrm.core.launch.AbstractScriptLaunchConfigurationDelegateExtension;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
+import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupDirector;
+import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupParticipant;
 import org.eclipse.cdt.dsf.gdb.IGDBLaunchConfigurationConstants;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate;
 import org.eclipse.cdt.dsf.gdb.launching.LaunchUtils;
@@ -30,7 +32,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.ISourceLocator;
-import org.eclipse.debug.core.sourcelookup.ISourcePathComputer;
+import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
+import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 
@@ -79,7 +82,7 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_START_MODE, 
 				ICDTLaunchConfigurationConstants.DEBUGGER_MODE_RUN);
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_STOP_AT_MAIN, 
-				ICDTLaunchConfigurationConstants.DEBUGGER_STOP_AT_MAIN_DEFAULT);
+				false);
 
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_STOP_AT_MAIN_SYMBOL, 
 				ICDTLaunchConfigurationConstants.DEBUGGER_STOP_AT_MAIN_SYMBOL_DEFAULT);
@@ -96,10 +99,6 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 				IGDBLaunchConfigurationConstants.DEBUGGER_NON_STOP_DEFAULT);
 		workingCopy.setAttribute(IGDBLaunchConfigurationConstants.ATTR_DEBUGGER_REVERSE, 
 				IGDBLaunchConfigurationConstants.DEBUGGER_REVERSE_DEFAULT);
-		
-		
-		workingCopy.setAttribute(ISourcePathComputer.ATTR_SOURCE_PATH_COMPUTER_ID, 
-				"org.eclipse.cdt.debug.core.sourcePathComputer");
 		
 		
 		workingCopy.doSave();
@@ -146,6 +145,15 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 				LaunchUtils.verifyBinary(config, exePath);
 			}
 			return exePath;
+		}
+		
+		@Override
+		protected DsfSourceLookupDirector createDsfSourceLocator(ILaunchConfiguration configuration, DsfSession session)
+				throws CoreException {
+			DsfSourceLookupDirector sourceLookupDirector = new DeeSourceLookupDirector(session);
+			
+	    	sourceLookupDirector.addParticipants( new ISourceLookupParticipant[]{ new DsfSourceLookupParticipant(session) } );
+			return sourceLookupDirector;
 		}
 		
 	}

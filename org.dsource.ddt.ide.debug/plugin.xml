@@ -2,11 +2,20 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            class="org.dsource.ddt.debug.core.DeeSourceLookupDirector"
+            id="org.dsource.ddt.ide.debug.sourceLocator"
+            name="D Source Locator">
+      </sourceLocator>
+   </extension>
+   <extension
          point="org.eclipse.debug.core.launchDelegates">
       <launchDelegate
             delegate="org.dsource.ddt.debug.core.DeeDebugLaunchConfigurationDelegate"
             id="org.dsource.ddt.ide.debug.launchDelegate"
             modes="debug"
+            sourceLocatorId="org.dsource.ddt.ide.debug.sourceLocator"
             type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
       </launchDelegate>
    </extension>
@@ -17,6 +26,9 @@
             description="Debug a D application"
             id="org.dsource.ddt.debug.ui.launchConfigurationTabGroup_debug"
             type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
+         <launchMode
+               mode="debug">
+         </launchMode>
       </launchConfigurationTabGroup>
    </extension>
 
