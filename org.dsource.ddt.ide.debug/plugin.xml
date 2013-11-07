@@ -31,5 +31,17 @@
          </launchMode>
       </launchConfigurationTabGroup>
    </extension>
+   <extension
+         point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
+      <toggleTargetFactory
+            class="org.dsource.ddt.debug.ui.DeeToggleBreakpointsTargetFactory"
+            id="org.dsource.ddt.ide.debug.toggleTargetFactory">
+         <enablement>
+            <instanceof
+                  value="mmrnmhrm.ui.editor.DeeEditor">
+            </instanceof>
+         </enablement>
+      </toggleTargetFactory>
+   </extension>
 
 </plugin>
