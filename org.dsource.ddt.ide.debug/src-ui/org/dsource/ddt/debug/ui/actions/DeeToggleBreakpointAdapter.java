@@ -11,7 +11,7 @@
  * Warren Paul (Nokia) - Bug 217485, Bug 218342
  * Oyvind Harboe (oyvind.harboe@zylin.com) - Bug 225099
  *******************************************************************************/
-package org.dsource.ddt.debug.ui;
+package org.dsource.ddt.debug.ui.actions;
 
 import java.math.BigInteger;
 import java.util.HashMap;
