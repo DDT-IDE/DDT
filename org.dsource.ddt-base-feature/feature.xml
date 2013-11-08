@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.dsource.ddt"
+      id="org.dsource.ddt-base"
       label="%featureName"
       version="0.9.0.qualifier"
       provider-name="%providerName"
@@ -17,18 +17,27 @@
    <license url="%licenseURL">
       %license
    </license>
-   
-   <includes
-         id="org.dsource.ddt-base"
-         version="0.0.0"/>
 
    <requires>
       <import feature="org.eclipse.dltk.core" version="5.0.0" match="compatible"/>
-      <import feature="org.eclipse.cdt.gnu.dsf" version="4.2.0" match="compatible"/>
    </requires>
 
    <plugin
-         id="org.dsource.ddt.ide.debug"
+         id="org.dsource.ddt.ide.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.dsource.ddt.ide.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.dsource.ddt.dtool"
          download-size="0"
          install-size="0"
          version="0.0.0"
