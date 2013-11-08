@@ -2,6 +2,13 @@
 
 = DDT Change Log =
 
+== DDT 0.9.0 ==
+ * Issue #13: Added integrated debugging support, using CDT's GDB debugger integration. Supports:
+   * Setting breakpoints, watchpoints.
+   * Program threads and stack frame view. Non-stop mode (for supported GBDs).
+   * Variables view. Dissambly view.
+   * Reverse debugging (for supported GDB targets).
+
 == DDT 0.8.1 (2013-09-23) ==
  * Documentation: added entry in [UserGuide#Eclipse_basics] about Eclipse memory settings optimization.
  * Fixed: Code Completion module list in import declarations now shows the module's DDoc.

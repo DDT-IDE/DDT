@@ -3,12 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
 Bundle-SymbolicName: org.dsource.ddt.ide.ui;singleton:=true
-Bundle-Version: 0.8.1.qualifier
+Bundle-Version: 0.9.0.qualifier
 Bundle-Activator: org.dsource.ddt.ui.DeeUIPlugin
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.dsource.ddt.ide.core;bundle-version="[0.8.1,0.9.0]",
+Require-Bundle: org.dsource.ddt.ide.core;bundle-version="[0.9.0,0.10.0)",
  org.eclipse.core.resources;bundle-version="3.6.0",
  org.eclipse.core.expressions;bundle-version="3.4.0",
  org.eclipse.core.filesystem;bundle-version="1.3.0",
