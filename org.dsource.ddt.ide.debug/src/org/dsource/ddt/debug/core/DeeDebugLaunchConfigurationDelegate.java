@@ -38,7 +38,7 @@ import dtool.DToolBundle;
 
 public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegateExtension {
 	
-	protected final GdbLaunchDelegate gdbLaunchDelegate = new GdbLaunchDelegateExtension();
+	protected final GdbLaunchDelegateExtension gdbLaunchDelegate = new GdbLaunchDelegateExtension();
 	
 	@Override
 	public String getLanguageId() {
@@ -63,7 +63,7 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 		IPath fullBinaryPath = projectPath.append(progName); 
 		
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME, fullBinaryPath.toString());
-
+		
 		String progArgs = workingCopy.getAttribute(ScriptLaunchConfigurationConstants.ATTR_SCRIPT_ARGUMENTS, 
 				(String) null);
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, progArgs);
@@ -100,6 +100,8 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 		
 		@Override
 		public ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
+			setDefaultProcessFactory(configuration); // Reset GDB process factory.
+			
 			return super.getLaunch(configuration, mode);
 		}
 		
@@ -127,7 +129,7 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 				throws CoreException {
 			DsfSourceLookupDirector sourceLookupDirector = new DeeSourceLookupDirector(session);
 			
-	    	sourceLookupDirector.addParticipants( new ISourceLookupParticipant[]{ new DsfSourceLookupParticipant(session) } );
+			sourceLookupDirector.addParticipants( new ISourceLookupParticipant[]{ new DsfSourceLookupParticipant(session) } );
 			return sourceLookupDirector;
 		}
 		
