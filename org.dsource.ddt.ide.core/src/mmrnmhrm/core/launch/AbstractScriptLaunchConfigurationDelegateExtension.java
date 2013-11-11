@@ -55,14 +55,19 @@ public abstract class AbstractScriptLaunchConfigurationDelegateExtension
 	@Override
 	public ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
 		
-		// Remove some DLTK attributes that affect how our launch runs
 		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
-		workingCopy.removeAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID);
-		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
-		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE, false);
+		// Remove some DLTK attributes that affect how our launch runs
+		cleanDLTKDebugConfig(workingCopy);
 		
 		final Launch launch = new Launch(configuration, mode, null);
 		return launch;
+	}
+	
+	public static void cleanDLTKDebugConfig(ILaunchConfigurationWorkingCopy workingCopy) {
+		workingCopy.removeAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID);
+		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
+		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE, false);
+		workingCopy.setAttribute("org.eclipse.dltk.debug.debugConsole", false);
 	}
 	
 	@Override

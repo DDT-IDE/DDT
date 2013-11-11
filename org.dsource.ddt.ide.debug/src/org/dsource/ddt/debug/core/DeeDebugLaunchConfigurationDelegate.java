@@ -17,7 +17,6 @@ import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupDirector;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupParticipant;
-import org.eclipse.cdt.dsf.gdb.IGDBLaunchConfigurationConstants;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate;
 import org.eclipse.cdt.dsf.gdb.launching.LaunchUtils;
 import org.eclipse.cdt.dsf.service.DsfSession;
@@ -26,7 +25,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -52,10 +50,7 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 		
 		// Remove some DLTK attributes that affect how our launch runs
 		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
-		workingCopy.removeAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID);
-		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
-		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE, false);
-
+		AbstractScriptLaunchConfigurationDelegateExtension.cleanDLTKDebugConfig(workingCopy);
 		
 		String progName = workingCopy.getAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, 
 				(String) null);
@@ -72,37 +67,18 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 		String progArgs = workingCopy.getAttribute(ScriptLaunchConfigurationConstants.ATTR_SCRIPT_ARGUMENTS, 
 				(String) null);
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, progArgs);
-
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_USE_TERMINAL, 
-				ICDTLaunchConfigurationConstants.USE_TERMINAL_DEFAULT);
-
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_ID, 
-				"gdb");
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_START_MODE, 
-				ICDTLaunchConfigurationConstants.DEBUGGER_MODE_RUN);
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_STOP_AT_MAIN, 
-				false);
-
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_STOP_AT_MAIN_SYMBOL, 
-				ICDTLaunchConfigurationConstants.DEBUGGER_STOP_AT_MAIN_SYMBOL_DEFAULT);
-
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_ID, 
-				"gdb");
-		
-		
-		workingCopy.setAttribute(IGDBLaunchConfigurationConstants.ATTR_DEBUG_NAME, 
-				"gdb");
-//		workingCopy.setAttribute(IGDBLaunchConfigurationConstants.ATTR_GDB_INIT, 
-//				".gdbinit");
-		workingCopy.setAttribute(IGDBLaunchConfigurationConstants.ATTR_DEBUGGER_NON_STOP, 
-				IGDBLaunchConfigurationConstants.DEBUGGER_NON_STOP_DEFAULT);
-		workingCopy.setAttribute(IGDBLaunchConfigurationConstants.ATTR_DEBUGGER_REVERSE, 
-				IGDBLaunchConfigurationConstants.DEBUGGER_REVERSE_DEFAULT);
-		
 		
 		workingCopy.doSave();
 		
-		return gdbLaunchDelegate.getLaunch(configuration, mode);
+		ILaunch launch = gdbLaunchDelegate.getLaunch(configuration, mode);
+		return launch;
+	}
+	
+	protected void setDefaultAttributeValue(ILaunchConfigurationWorkingCopy workingCopy, String attribute, 
+			String value) throws CoreException {
+		if(!workingCopy.hasAttribute(attribute)) {
+			workingCopy.setAttribute(attribute, value);
+		}
 	}
 	
 	@Override
