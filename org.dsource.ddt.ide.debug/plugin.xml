@@ -43,8 +43,68 @@
          </enablement>
       </toggleTargetFactory>
    </extension>
-   <extension
+   
+	<extension point="org.eclipse.ui.editorActions">
+		<editorContribution
+			targetID="org.dsource.ddt.ide.ui.editors.DeeEditor"
+			id="org.dsource.ddt.ide.ui.editor.DeeEditor.BreakpointRulerActions">
+
+			<action label="%dummyLabel"
+				class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+				style="push" actionID="RulerDoubleClick"
+				id="DeeEditor.rulerDoubleClickAction" />
+		</editorContribution>
+	</extension>
+   
+	<extension
+		point="org.eclipse.ui.menus">
+	    <menuContribution
+	          locationURI="popup:#DeeRulerContext?after=debug">
+			<menu 
+		         id="breakpointTypes.ddt" 
+		    	 label="%BreakpointTypes.label">
+		       <dynamic
+		             class="org.eclipse.debug.ui.actions.BreakpointTypesContribution"
+		             id="org.eclipse.debug.ui.actions.BreakpointTypesContribution">
+		       </dynamic>
+			</menu>
+		</menuContribution>
+	</extension>
+   
+	<extension
          point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            targetID="#DeeRulerContext"
+            id="org.dsource.ddt.debug.ui.DeeEditorRulerDebugPopupActions">
+         <action
+               label="%RulerBreakpointProperties.label"
+               helpContextId="breakpoint_properties_action_context"
+               class="org.eclipse.cdt.debug.internal.ui.actions.breakpoints.CBreakpointPropertiesRulerActionDelegate"
+               menubarPath="debug"
+               id="org.eclipse.ddt.debug.internal.ui.actions.CBreakpointPropertiesRulerActionDelegate">
+         </action>
+         <action
+               label="%AddBreakpointInteractive.label"
+               helpContextId="add_breakpoint_interactive_action_context"
+               class="org.eclipse.cdt.debug.internal.ui.actions.breakpoints.CAddBreakpointInteractiveRulerActionDelegate"
+               menubarPath="debug"
+               id="org.eclipse.ddt.debug.ui.actions.RulerCreateBreakpointInteractiveAction">
+         </action>         
+         <action
+               label="%EnableBreakpoint.label"
+               helpContextId="enable_disable_breakpoint_action_context"
+               class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+               menubarPath="debug"
+               id="org.eclipse.ddt.debug.ui.actions.EnableDisableBreakpointRulerActionDelegate">
+         </action>
+         <action
+               label="%AddBreakpoint.label"
+               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+               definitionId="org.eclipse.debug.ui.commands.ToggleBreakpoint"
+               menubarPath="debug"
+               id="org.eclipse.ddt.debug.ui.actions.RulerToggleBreakpointAction">
+         </action>
+      </viewerContribution>
       <viewerContribution
             targetID="#DeeEditorContext"
             id="org.dsource.ddt.debug.ui.DeeEditorDebugPopupActions">
