@@ -10,20 +10,15 @@
  *******************************************************************************/
 package org.dsource.ddt.ui.tabgroup;
 
-import mmrnmhrm.ui.DeePlugin;
-
 import org.dsource.ddt.ide.core.DeeNature;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.dltk.core.PreferencesLookupDelegate;
-import org.eclipse.dltk.debug.core.DLTKDebugPreferenceConstants;
-import org.eclipse.dltk.debug.ui.launchConfigurations.MainLaunchConfigurationTab;
+import org.dsource.ddt.lang.ui.tabgroup.MainLaunchConfigurationTab;
 import org.eclipse.swt.widgets.Composite;
 
 
 public class DeeMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
-	public DeeMainLaunchConfigurationTab(String mode) {
-		super(mode);
+	public DeeMainLaunchConfigurationTab() {
+		super();
 	}
 	
 	@Override
@@ -32,37 +27,8 @@ public class DeeMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected boolean breakOnFirstLinePrefEnabled(PreferencesLookupDelegate delegate) {
-		return delegate.getBoolean(DeePlugin.PLUGIN_ID,
-				DLTKDebugPreferenceConstants.PREF_DBGP_BREAK_ON_FIRST_LINE);
-	}
-	
-	@Override
-	protected boolean dbpgLoggingPrefEnabled(PreferencesLookupDelegate delegate) {
-		return delegate.getBoolean(DeePlugin.PLUGIN_ID,
-				DLTKDebugPreferenceConstants.PREF_DBGP_ENABLE_LOGGING);
-	}
-	
-	
-	@Override
 	protected void createMainModuleEditor(Composite parent, String text) {
 		super.createMainModuleEditor(parent, DeeLaunchConfigurationsMessages.mainTab_launchFileGroup);
-	}
-	
-	// Don't do any custom GUI controls for now
-	@Override
-	protected void updateProjectFromConfig(ILaunchConfiguration config) {
-		super.updateProjectFromConfig(config);
-	}
-	
-	@Override
-	protected void doInitializeForm(ILaunchConfiguration config) {
-		super.doInitializeForm(config);
-	}
-	
-	@Override
-	protected void updateMainModuleFromConfig(ILaunchConfiguration config) {
-		super.updateMainModuleFromConfig(config);
 	}
 	
 }

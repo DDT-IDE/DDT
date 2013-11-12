@@ -25,7 +25,7 @@ public class DeeDebugTabGroup extends AbstractLaunchConfigurationTabGroup {
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-				new DeeMainLaunchConfigurationTab(mode),
+				new DeeMainLaunchConfigurationTab(),
 				new DeeScriptArgumentsTab(),
 				new EnvironmentTab(),
 				new LocalApplicationCDebuggerTab(),
