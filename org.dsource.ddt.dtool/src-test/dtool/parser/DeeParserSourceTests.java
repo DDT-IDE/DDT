@@ -160,7 +160,7 @@ public class DeeParserSourceTests extends CommonTemplatedSourceBasedTest {
 				
 			} else if(mde.name.equals("parser") && areEqual(mde.value, "AllowAnyErrors")){
 				allowAnyErrors = true;
-			} else if(mde.name.equals("test") && areEqual(mde.value, "IGNORE_BREAK_CHECK")){
+			} else if(mde.name.equals("test") && areEqual(mde.value, "IGNORE_REMAINING_SOURCE_CHECK")){
 				expectedRemainingSource = DeeParserTester.DONT_CHECK;
 			} else if(areEqual(mde.value, "test")){
 				additionalMetadata.add(mde);

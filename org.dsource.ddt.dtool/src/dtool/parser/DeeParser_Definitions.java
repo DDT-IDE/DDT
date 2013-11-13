@@ -627,8 +627,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			InitializerArray arrayInit = arrayInitResult.node;
 			assertTrue(arrayInit.getData().hasErrors() == false);
 			
-			Expression fullInitExp = parseExpression_fromUnary(InfixOpType.ASSIGN, arrayInit);
-			if(fullInitExp == arrayInit) {
+			NodeResult<Expression> fullExpInitializer = parseExpression_fromUnary(InfixOpType.ASSIGN, arrayInit);
+			if(fullExpInitializer.node == arrayInit) {
 				return arrayInitResult;
 			}
 			if(!arrayInitializerCouldParseAsArrayLiteral(arrayInit)) {
@@ -639,7 +639,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				// Even if initializer can be parsed as array literal, we place it in exp without any node conversion
 				// (this might change in future)
 			}
-			return result(false, fullInitExp);
+			return fullExpInitializer;
 		}
 		if(lookAhead() == DeeTokens.OPEN_BRACE) {
 			ParserState savedParserState = saveParserState();

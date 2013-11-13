@@ -467,7 +467,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	
 	
 	protected NodeResult<Expression> parseExpression(InfixOpType precedenceLimit) {
-		return new ParseRule_Expression().parseExpressionDo(precedenceLimit);
+		return new ParseRule_Expression().rule_parseExpression(precedenceLimit);
 	}
 	protected Expression parseExpression_toMissing(InfixOpType precedenceLimit) {
 		return nullExpToParseMissing(parseExpression(precedenceLimit).node);
@@ -531,21 +531,45 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	}
 	
 	/* ============================ TypeOrExp ============================ */
-	
+
+/** Note: Whenever this class is instantiated, then it must be called only with one of the rule_* methods,
+ * this is to ensure that the parser state is restored properly when {@link ParseRule_Expression} is done.
+ */
 protected class ParseRule_Expression {
 	
-	public boolean breakRule; // TODO : remove this class
+	public boolean breakRule;
 	
 	public ParseRule_Expression() {
 		breakRule = false;
 	}
 	
-	public boolean shouldReturnToParseRuleTopLevel(@SuppressWarnings("unused") Expression expSoFar) {
+	public NodeResult<Expression> rule_parseExpression(InfixOpType precedenceLimit) {
+		return toResult(parseTypeOrExpression_start(precedenceLimit));
+	}
+	
+	public NodeResult<Expression> rule_parseUnaryExpression() {
+		return toResult(parseUnaryExpression());
+	}
+	
+	public NodeResult<Expression> rule_parseTypeOrExpression_fromUnary(InfixOpType precedenceLimit, 
+			Expression unaryExp) {
+		return toResult(parseTypeOrExpression_fromUnary(precedenceLimit, unaryExp));
+	}
+	
+	public NodeResult<Expression> toResult(Expression exp) {
+		if(breakRule) {
+			setEnabled(true);
+		} 
+		assertTrue(isEnabled());
+		return result(breakRule, exp);
+	}
+	
+	protected boolean shouldReturnToParseRuleTopLevel(@SuppressWarnings("unused") Expression expSoFar) {
 		assertTrue(isEnabled() == !breakRule);
 		return breakRule;
 	}
 	
-	public void setToEParseBroken(boolean parseBroken) {
+	protected void setToEParseBroken(boolean parseBroken) {
 		this.breakRule = parseBroken;
 		if(breakRule) {
 			setEnabled(false);
@@ -555,15 +579,6 @@ protected class ParseRule_Expression {
 	protected Expression expConclude(NodeResult<? extends Expression> result) {
 		setToEParseBroken(result.ruleBroken);
 		return result.node;
-	}
-	
-	public NodeResult<Expression> parseExpressionDo(InfixOpType precedenceLimit) {
-		Expression exp = parseTypeOrExpression_start(precedenceLimit);
-		if(breakRule) {
-			setEnabled(true);
-		} 
-		assertTrue(isEnabled());
-		return result(breakRule, exp);
 	}
 	
 	protected Expression parseTypeOrExpression_start(InfixOpType precedenceLimit) {
@@ -1052,17 +1067,13 @@ protected class ParseRule_Expression {
 		return (Expression) resolvable;
 	}
 	
-	public Expression parseUnaryExpression() {
-		return new ParseRule_Expression().parseUnaryExpression();
+	public NodeResult<Expression> parseUnaryExpression_toMissing() {
+		NodeResult<Expression> result = new ParseRule_Expression().rule_parseUnaryExpression();
+		return nullExpToParseMissing(result, false, RULE_EXPRESSION);
 	}
 	
-	public Expression parseExpression_fromUnary(InfixOpType precedenceLimit, Expression unaryExp) {
-		ParseRule_Expression parseRule_TypeOrExp = new ParseRule_Expression();
-		return parseRule_TypeOrExp.parseTypeOrExpression_fromUnary(precedenceLimit, unaryExp);
-	}
-	
-	public Expression parseArrayLiteral() {
-		return new ParseRule_Expression().parseArrayLiteral();
+	public NodeResult<Expression> parseExpression_fromUnary(InfixOpType precedenceLimit, Expression unaryExp) {
+		return new ParseRule_Expression().rule_parseTypeOrExpression_fromUnary(precedenceLimit, unaryExp);
 	}
 	
 	public Expression parseSimpleLiteral() {
@@ -1395,7 +1406,7 @@ protected class ParseRule_Expression {
 			}
 			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			
-			exp = nullExpToParseMissing(parseUnaryExpression()); // TODO: check break
+			exp = parse.checkResult(parseUnaryExpression_toMissing());
 		}
 		
 		if(qualifier != null) {

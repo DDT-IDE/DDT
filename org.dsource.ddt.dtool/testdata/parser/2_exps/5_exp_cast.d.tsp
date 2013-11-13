@@ -43,3 +43,7 @@ ExpCastQual( #@ExpIdentifier )
 #PARSE(EXPRESSION)   cast ( #@CAST_QUAL2 #@NO_TYPEREF #error(EXP_CLOSE_PARENS) #@BREAK  
 #STRUCTURE_EXPECTED: ExpCast( RefTypeModifier(RefTypeModifier(#@NO_TYPEREF)) )
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test with broken unary exp operand
+#PARSE(EXPRESSION)   #@CAST_START  foo( #@PARENS_BREAK
+#STRUCTURE_EXPECTED: #@CAST_START  ExpCall(#@ExpIdentifier ) )
+

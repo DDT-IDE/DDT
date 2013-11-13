@@ -53,6 +53,10 @@
 #PARSE(INITIALIZER)   #@ARRAY_INIT
 #STRUCTURE_EXPECTED:  #@ARRAY_INIT
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  variant of issue #17 - only happens when trying to parse initializer
+#PARSE(INITIALIZER)   [ 7,  4 ] + ( 2 #@PARENS_BREAK
+#STRUCTURE_EXPECTED:  ExpInfix(InitializerArray(* *) ExpParentheses(Integer) )  
+
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ test struct initializer
 
 #@BRACE_END《#@《●,》 #@CLOSEBRACE_OR_BREAK》

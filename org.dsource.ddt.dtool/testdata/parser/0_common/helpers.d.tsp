@@ -6,6 +6,8 @@
    #@CUT_REST《 #?STRUCTURE_EXPECTED!【#parser(CutRest) ● $ 】  》
        #@NULL《 #parser(IgnoreRest) #STRUCTURE_EXPECTED{} 》
 
+#@IGNORE_ALL_CHECKS《#parser(AllowAnyErrors) #AST_SOURCE_EXPECTED(NoCheck) #test(IGNORE_REMAINING_SOURCE_CHECK) #IGNORE_BREAK_FLAG_CHECK(test)》
+
  #@NO_ClosePARENS《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS)  /*No close parens */】 》
   #@NO_CloseBRACE《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACE)  /*No close brace */】 》
 #@NO_CloseBRACKET《#?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_BRACKET)/*No close bracket */】 》

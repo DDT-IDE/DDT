@@ -9,6 +9,7 @@
    * Variables view. Dissambly view.
    * Reverse debugging (for supported GDB targets).
  * Fixed issue #19: NPE when opening editor with hyperlinks disabled
+ * Fixed issue #17: Assertion failure with cast expression and invalid code in UnaryExpression
 
 == DDT 0.8.1 (2013-09-23) ==
  * Documentation: added entry in [UserGuide#Eclipse_basics] about Eclipse memory settings optimization.
