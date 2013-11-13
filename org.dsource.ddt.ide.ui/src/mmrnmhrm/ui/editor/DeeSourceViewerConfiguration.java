@@ -176,11 +176,13 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	@Override
 	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
 		IHyperlinkDetector[] hyperlinkDetectors = super.getHyperlinkDetectors(sourceViewer);
-		for (int i = 0; i < hyperlinkDetectors.length; i++) {
-			if(hyperlinkDetectors[i] instanceof ModelElementHyperlinkDetector) {
-				// Remove ModelElementHyperlinkDetector cause it sucks
-				// Creating a new array is not necessary I think
-				hyperlinkDetectors[i] = null; 
+		if(hyperlinkDetectors != null) {
+			for (int i = 0; i < hyperlinkDetectors.length; i++) {
+				if(hyperlinkDetectors[i] instanceof ModelElementHyperlinkDetector) {
+					// Remove ModelElementHyperlinkDetector cause it sucks
+					// Creating a new array is not necessary I think
+					hyperlinkDetectors[i] = null; 
+				}
 			}
 		}
 		return hyperlinkDetectors;
