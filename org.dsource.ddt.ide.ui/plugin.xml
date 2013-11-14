@@ -33,7 +33,7 @@
        point="org.eclipse.ui.perspectives">
     <perspective
           class="mmrnmhrm.ui.views.DeePerspective"
-          icon="icons/view16/ddt_persp.gif"
+          icon="icons/view16/ddt_persp.png"
           id="org.dsource.ddt.ide.ui.DeePerspective"
           name="%LangPerspective.name">
     </perspective>
