@@ -13,7 +13,7 @@ It requires a git repo of the project updateSite Git repo, as specified by -Dupd
      ====================================================================== -->
 <project name="project" >
 
-	<property name="repoSrc" location="bin-maven/ddt.feature-repository/repository" />
+	<property name="repoSrc" location="bin-maven/ddt.repository/repository" />
 
 	<property name="gitLocation">git</property>
 	
