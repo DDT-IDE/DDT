@@ -67,7 +67,6 @@ public abstract class AbstractScriptLaunchConfigurationDelegateExtension
 		workingCopy.removeAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID);
 		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
 		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE, false);
-		workingCopy.setAttribute("org.eclipse.dltk.debug.debugConsole", false);
 	}
 	
 	@Override

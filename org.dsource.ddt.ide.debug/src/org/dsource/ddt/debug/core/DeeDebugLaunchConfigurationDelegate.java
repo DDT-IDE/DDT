@@ -100,9 +100,12 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 		
 		@Override
 		public ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
-			setDefaultProcessFactory(configuration); // Reset GDB process factory.
+			setDefaultProcessFactory(configuration); // Reset process factory to what GdbLaunch expected
 			
-			return super.getLaunch(configuration, mode);
+			ILaunch launch = super.getLaunch(configuration, mode);
+			// workaround for DLTK bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=419273
+			launch.setAttribute("org.eclipse.dltk.debug.debugConsole", "false");
+			return launch;
 		}
 		
 		@Override
