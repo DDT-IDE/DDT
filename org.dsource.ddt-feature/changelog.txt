@@ -4,10 +4,11 @@
 
 == DDT 0.9.0 (2013-11-14) ==
  * Issue #13: Added integrated debugging support, using CDT's GDB debugger integration. Supports:
-   * Stop/resume program executing. Listing program threads and stack frame contents. 
+   * Stop/resume program execution. Listing program threads and stack frame contents. 
    * Setting breakpoints, watchpoints (breakpoint on data/variables), tracepoints. Breakpoint conditions.
    * Stack variables inspection view. Expression watch and view. Disassembly view.
    * Non-stop mode (for supported GBDs). Reverse debugging (for supported GDB targets).
+   * Most of Eclipse CDT is now a requirement for DDT (for the debugging feature).
  * Fixed issue #19: NPE when opening editor with hyperlinks disabled
  * Fixed issue #17: Assertion failure with cast expression and invalid code in UnaryExpression
  * Changed D perspective icon.
