@@ -2,6 +2,9 @@
 
 = DDT Change Log =
 
+== DDT 0.9.1 ===
+ * Fixed issue #20: GDC incluce/d/*/ library location layout not recognized
+
 == DDT 0.9.0 (2013-11-14) ==
  * Issue #13: Added integrated debugging support, using CDT's GDB debugger integration. Supports:
    * Stop/resume program execution. Listing program threads and stack frame contents. 

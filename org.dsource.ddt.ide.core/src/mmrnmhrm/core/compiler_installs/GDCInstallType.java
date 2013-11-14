@@ -36,20 +36,27 @@ public class GDCInstallType extends CommonInstallType {
 	protected void addDefaultLibraryLocations(IFileHandle executableLocation, List<LibraryLocation> locs) {
 		IEnvironment env = executableLocation.getEnvironment();
 		IPath installPath = executableLocation.getPath().removeLastSegments(2);
-		IPath baseLibPath = installPath.append("include/d2");
 		
+		if(tryDLibFolder(locs, env, installPath.append("include/d"))) {
+			return;
+		}
+		tryDLibFolder(locs, env, installPath.append("include/d2"));
+		
+	}
+	
+	protected static boolean tryDLibFolder(List<LibraryLocation> locs, IEnvironment env, IPath baseLibPath) {
 		File[] listFiles = baseLibPath.toFile().listFiles();
 		if(listFiles == null) 
-			return;
+			return false;
 		
 		for (int i = 0; i < listFiles.length; i++) {
 			File libEntry = listFiles[i];
 			if(libEntry.isDirectory() && new File(libEntry, "object.di").exists()) {
 				addLibraryLocationFromPath(locs, env, baseLibPath.append(libEntry.getName()));
-				break;
+				return true;
 			}
 		}
-		
+		return false;
 	}
 	
 }

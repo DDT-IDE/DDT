@@ -26,4 +26,17 @@ public class GDCInstallType_Test extends BaseDeeTest {
 			"include/d2/4.5.2");	
 	}
 	
+	protected static final String MOCK_GDC_INSTALL_PATH_B = MOCK_DEE_COMPILERS_PATH+"gdcInstallB/bin/gdc";
+	
+	@Test
+	public void stestLibraryLocations_2() throws Exception { stestLibraryLocations_2$(); }
+	public void stestLibraryLocations_2$() throws Exception {
+		File compilerInstallExe = DeeCoreTestResources.getWorkingDirFile(MOCK_GDC_INSTALL_PATH_B);
+		Path compilerPath = new Path(compilerInstallExe.getAbsolutePath());
+		LibraryLocation[] libLocations = getLibraryLocations(new GDCInstallType(), compilerPath);
+		
+		checkLibLocations(libLocations, compilerPath.removeLastSegments(2), 
+			"include/d/4.6.1");			 
+	}
+	
 }
