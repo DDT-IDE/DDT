@@ -20,6 +20,7 @@
 
    <requires>
       <import feature="org.eclipse.dltk.core" version="5.0.0" match="compatible"/>
+      <import feature="org.eclipse.platform" version="4.3.0" match="compatible"/>
    </requires>
 
    <plugin

@@ -17,7 +17,7 @@
    <license url="%licenseURL">
       %license
    </license>
-   
+
    <includes
          id="org.dsource.ddt-base"
          version="0.0.0"/>
@@ -25,6 +25,7 @@
    <requires>
       <import feature="org.eclipse.dltk.core" version="5.0.0" match="compatible"/>
       <import feature="org.eclipse.cdt.gnu.dsf" version="4.2.0" match="compatible"/>
+      <import feature="org.eclipse.platform" version="4.3.0" match="compatible"/>
    </requires>
 
    <plugin
