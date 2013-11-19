@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import mmrnmhrm.core.codeassist.DeeCompletionEngine.RefSearchCompletionProposal;
-import mmrnmhrm.tests.BaseDeeCoreTest;
+import mmrnmhrm.tests.CommonCoreTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
@@ -21,7 +21,7 @@ import org.junit.Test;
 import dtool.ast.definitions.INamedElement;
 
 // These tests could be expanded
-public class CompletionEngine_Test extends BaseDeeCoreTest {
+public class CompletionEngine_Test extends CommonCoreTest {
 	
 	protected ISourceModule srcModule;
 	

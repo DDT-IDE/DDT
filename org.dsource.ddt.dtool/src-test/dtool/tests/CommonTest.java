@@ -4,6 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 /**
  *  Recommended base class for all tests.
+ *  It verifies a contract relating to the class name, which is important for test runners.
  */
 public class CommonTest extends CommonTestUtils {
 	

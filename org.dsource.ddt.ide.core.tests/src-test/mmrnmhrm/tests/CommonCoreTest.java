@@ -25,7 +25,7 @@ import dtool.tests.CommonTest;
  * The ErrorLogListener was the only way I found to detect UI exceptions in SafeRunnable's 
  * when running as plugin test. 
  */
-public abstract class BaseDeeCoreTest extends CommonTest {
+public abstract class CommonCoreTest extends CommonTest {
 	
 	protected static ErrorLogListener logErrorListener;
 	

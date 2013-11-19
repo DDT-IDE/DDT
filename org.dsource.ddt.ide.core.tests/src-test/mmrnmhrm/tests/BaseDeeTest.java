@@ -47,7 +47,7 @@ import dtool.tests.DToolTestResources;
  * - Creates common sample workspace projects.
  * Statically loads some read only projects, and prepares the workbench, in case it wasn't cleared.
  */
-public abstract class BaseDeeTest extends BaseDeeCoreTest {
+public abstract class BaseDeeTest extends CommonCoreTest {
 	
 	static {
 		DToolResourcesWorkingDirAdapter.initialize();
