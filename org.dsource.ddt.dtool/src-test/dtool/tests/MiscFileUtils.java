@@ -91,9 +91,9 @@ public class MiscFileUtils {
 		@Override
 		protected void visitFile(File file, Path relativePath) throws IOException {
 			Path targetPath = destFolder.toPath().resolve(relativePath);
-			File parentDir = new File(targetPath.toString()).getParentFile();
-			parentDir.mkdir();
-			assertTrue(parentDir.exists());
+			File targetPathParent = new File(targetPath.toString()).getParentFile();
+			targetPathParent.mkdirs();
+			assertTrue(targetPathParent.exists());
 			Files.copy(file.toPath(), targetPath);
 		}
 	}
