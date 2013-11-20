@@ -70,6 +70,14 @@
       </interpreterInstallType>      
    </extension>
    <extension
+         point="org.eclipse.dltk.launching.interpreterContainerExtension">
+      <interpreterContainerExtension
+            class="mmrnmhrm.core.compiler_installs.DeeInterpreterContainerExtension"
+            nature="org.dsource.ddt.ide.core.nature"
+            priority="0">
+      </interpreterContainerExtension>
+   </extension>
+   <extension
          id="deebuilder"
          name="Dee Builder"
          point="org.eclipse.core.resources.builders">
