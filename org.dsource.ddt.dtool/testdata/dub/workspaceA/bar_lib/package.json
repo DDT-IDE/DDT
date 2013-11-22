@@ -1,0 +1,11 @@
+{
+	"name": "bar_lib",
+	"description": "An example project skeleton",
+	"homepage": "http://example.org",
+	"copyright": "Copyright © 2000, Your Name",
+	"authors": [
+		"Your Name"
+	],
+	"dependencies": {
+	}
+}
