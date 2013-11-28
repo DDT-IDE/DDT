@@ -3,7 +3,7 @@ DDT
 
 DDT is an Eclipse-based IDE for the D programming language.
 
-## Develpment Workspace setup and usage
+## Development workspace setup and usage
 
 #### Setting up the development environment:
  * Clone the DDT repository.
