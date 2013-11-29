@@ -31,44 +31,61 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
 
+import dtool.dub.DubBundle.DubBundleException;
+
 /**
  * Parse a Dub bundle in a filesystem location into an in-memory description of the bundle.
  */
-public class DeeBundleParser {
+public class DubBundleParser {
 	
-	@SuppressWarnings("serial")
-	public static class DubBundleException extends Exception {
-		
-		public DubBundleException(String message) {
-	        super(message);
-	    }
-		
+	public static DubBundle parseDubBundleFromLocation(Path location) {
+		return new DubBundleParser(location).parseDubBundle();
 	}
 	
-	protected static String readStringFromFile(File file) throws IOException, FileNotFoundException {
-		return new String(FileUtil.readBytesFromFile(file), StringUtil.UTF8);
+	protected final Path location;
+	protected String bundleName = null;
+	protected String version = null;
+	protected Path[] srcFolders = null;
+	protected Path[] autoSrcFolders = null;
+	protected Object[] dependencies = null;
+	protected DubBundleException dubError;
+	
+	protected DubBundleParser(Path location) {
+		this.location = location;
 	}
 	
 	protected void semanticError(JsonParserHelper jsonParser, String message) throws DubBundleException {
 		throw new DubBundleException(message);
 	}
 	
-	public DubBundle parseDubBundle(Path location) throws IOException, MalformedJsonException, DubBundleException {
+	protected static String readStringFromFile(File file) throws IOException, FileNotFoundException {
+		return new String(FileUtil.readBytesFromFile(file), StringUtil.UTF8);
+	}
+	
+	protected DubBundle parseDubBundle() {
+		parseDubBundleData();
+		if(bundleName == null) {
+			bundleName = location.getFileName().toString();
+			if(dubError == null) {
+				dubError = new DubBundleException("Bundle name not defined");
+			}
+		}
+		
+		return new DubBundle(location, bundleName, version, srcFolders, autoSrcFolders, dependencies, dubError);
+	}
+	
+	protected void parseDubBundleData() {
 		File jsonLocation = location.resolve("package.json").toFile();
-		
-		String source = readStringFromFile(jsonLocation);
-		
-//		System.out.print("----\n" + source);
-//		System.out.println("----");
-		
-		String bundleName = null;
-		String version = null;
-		Path[] srcFolders = null;
-		Path[] autoSrcFolders = null;
-		Object[] dependencies = null;
-		
+		String source;
+		try {
+			source = readStringFromFile(jsonLocation);
+		} catch (IOException e) {
+			dubError = new DubBundleException(e);
+			return;
+		}
 		
 		try(JsonParserHelper jsonParser = new JsonParserHelper(new StringReader(source))) {
+			jsonParser.setLenient(true);
 			
 			jsonParser.consumeExpected(JsonToken.BEGIN_OBJECT);
 			
@@ -85,7 +102,7 @@ public class DeeBundleParser {
 					} else if(propertyName.equals("sourcePaths")) {
 						srcFolders = readSourcePaths(jsonParser);
 					} else if(propertyName.equals("depedencies")) {
-						dependencies = readDependencies(jsonParser);
+						readDependencies(jsonParser);
 					} else {
 						jsonParser.skipValue();
 					}
@@ -97,19 +114,19 @@ public class DeeBundleParser {
 			jsonParser.consumeExpected(JsonToken.END_OBJECT);
 			jsonParser.consumeExpected(JsonToken.END_DOCUMENT);
 			assertTrue(jsonParser.peek() == JsonToken.END_DOCUMENT);
-		}
-		
-		if(bundleName == null)
-			throw new DubBundleException("Bundle name not defined");
-		
-//		if(version == null)
+			
+			if(srcFolders == null) {
+				autoSrcFolders = searchImplicitSrcFolders(location);
+			}
+			
+//			if(version == null)
 //			version = "~master"; // Perhaps keep null?
-		
-		if(srcFolders == null) {
-			autoSrcFolders = searchImplicitSrcFolders(location);
+			
+		} catch (IOException e) {
+			dubError = new DubBundleException(e);
+		} catch (DubBundleException e) {
+			dubError = e;
 		}
-		
-		return new DubBundle(bundleName, version, location, srcFolders, autoSrcFolders, dependencies);
 	}
 	
 	protected void errorUnexpected(JsonToken tokenType) throws MalformedJsonException {
@@ -117,7 +134,7 @@ public class DeeBundleParser {
 	}
 	
 	protected Path[] readSourcePaths(JsonParserHelper jsonParser) throws IOException, DubBundleException {
-		ArrayList<String> stringArray = consumeStringArray(jsonParser);
+		ArrayList<String> stringArray = consumeStringArray(jsonParser, true);
 		
 		ArrayList<Path> pathArray = new ArrayList<>();
 		for (String string : stringArray) {
@@ -127,7 +144,7 @@ public class DeeBundleParser {
 		return ArrayUtil.createFrom(pathArray, Path.class);
 	}
 	
-	protected ArrayList<String> consumeStringArray(JsonParserHelper jsonParser) throws IOException, 
+	protected ArrayList<String> consumeStringArray(JsonParserHelper jsonParser, boolean ignoreNulls) throws IOException, 
 		DubBundleException {
 		jsonParser.consumeExpected(JsonToken.BEGIN_ARRAY);
 		
@@ -136,9 +153,14 @@ public class DeeBundleParser {
 		while(jsonParser.hasNext()) {
 			JsonToken tokenType = jsonParser.peek();
 			
+			if(ignoreNulls && tokenType == JsonToken.NULL) {
+				jsonParser.nextNull();
+				continue;
+			}
+			
 			if(tokenType != JsonToken.STRING) {
 				semanticError(jsonParser, "Expected String value, instead got: " + tokenType);
-			} 
+			}
 			
 			String entry = jsonParser.nextString();
 			strings.add(entry);
@@ -147,9 +169,9 @@ public class DeeBundleParser {
 		return strings;
 	}
 	
-	protected Object[] readDependencies(JsonParserHelper jsonParser) throws IOException {
+	protected void readDependencies(JsonParserHelper jsonParser) throws IOException {
 		jsonParser.skipValue();
-		return null;
+		dependencies = null;
 	}
 	
 	protected Path[] searchImplicitSrcFolders(Path location) throws DubBundleException {
@@ -216,5 +238,5 @@ public class DeeBundleParser {
 		}
 		
 	}
-	
+
 }

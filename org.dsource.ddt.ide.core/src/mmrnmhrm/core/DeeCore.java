@@ -1,6 +1,7 @@
 package mmrnmhrm.core;
 
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
+import mmrnmhrm.core.projectmodel.DubProjectModel;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
@@ -45,6 +46,7 @@ public class DeeCore extends LangCore {
 		//TypeHierarchy.DEBUG = true;
 		
 		DeeProjectModel.initializeModel();
+		DubProjectModel.initializeDefault();
 	}
 	
 	/* *********************************************** */

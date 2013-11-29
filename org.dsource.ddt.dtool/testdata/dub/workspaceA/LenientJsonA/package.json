@@ -1,0 +1,10 @@
+{
+	name: "lenient-json1",
+	dependencies: {
+		"foo_lib": "~master"
+	},
+	targetPath: "bin",
+	sourcePaths: [ src, src-test, ],
+	
+	blah : foobar
+}

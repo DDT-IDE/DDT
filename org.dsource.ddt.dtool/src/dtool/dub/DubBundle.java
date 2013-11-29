@@ -11,28 +11,28 @@
 package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
 public class DubBundle {
 	
+	public final Path location; // location in the filesystem where bundle is installed. Can be null if not installed.
 	public final String name; 
 	public final String version;
-	public final Path location; // location in the filesystem where bundle is installed. Can be null if not installed.
 	public final Path[] srcFolders;
 	public final Path[] implicitSrcFolders;
 	public final Object[] dependencies;
+	public final DubBundleException error;
 	
-	public DubBundle(String name, String version, Path location, Path[] srcFolders, Path[] implicitSrcFolders,
-			Object[] dependencies) {
+	public DubBundle(Path location, String name, String version, Path[] srcFolders, Path[] implicitSrcFolders,
+			Object[] dependencies, DubBundleException exception) {
 		this.name = assertNotNull(name);
 		this.version = version;
 		this.location = location;
 		this.srcFolders = srcFolders;
 		this.implicitSrcFolders = implicitSrcFolders;
 		this.dependencies = dependencies;
-		assertTrue(srcFolders != null || implicitSrcFolders != null);
+		this.error = exception;
 	}
 	
 	public Path[] getEffectiveSourceFolders() {
@@ -41,6 +41,19 @@ public class DubBundle {
 		} else {
 			return implicitSrcFolders;
 		}
+	}
+	
+	@SuppressWarnings("serial")
+	public static class DubBundleException extends Exception {
+		
+		public DubBundleException(String message) {
+	        super(message);
+	    }
+		
+		public DubBundleException(Exception exception) {
+	        super(exception);
+	    }
+		
 	}
 	
 }

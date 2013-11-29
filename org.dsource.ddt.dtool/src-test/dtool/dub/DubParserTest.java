@@ -10,17 +10,14 @@
  *******************************************************************************/
 package dtool.dub;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Test;
 
-import com.google.gson.stream.MalformedJsonException;
-
-import dtool.dub.DeeBundleParser.DubBundleException;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
 
@@ -41,21 +38,13 @@ public class DubParserTest extends DToolBaseTest {
 		testBundle(dubWorkspaceA.resolve("foo_lib"), 
 				"foo_lib", null, array(path("source")));
 		
-		DubRegistry dubRegistry = new DubRegistry(dubWorkspaceA);
-		// TODO:
+		testBundle(dubWorkspaceA.resolve("LenientJsonA"), 
+				"lenient-json1", null, array(path("src"), path("src-test")));
 		
 	}
 	
 	public DubBundle parseDubBundle(Path location) {
-		try {
-			return new DeeBundleParser().parseDubBundle(location);
-		} catch (MalformedJsonException e) {
-			throw assertFail();
-		} catch (IOException e) {
-			throw assertFail();
-		} catch (DubBundleException e) {
-			throw assertFail();
-		}
+		return DubBundleParser.parseDubBundleFromLocation(location);
 	}
 	
 	public void testBundle(Path location, String name, String version, Path[] srcFolders) {
@@ -68,10 +57,19 @@ public class DubParserTest extends DToolBaseTest {
 		assertAreEqual(bundle.version, version);
 		assertEqualArrays(bundle.getEffectiveSourceFolders(), srcFolders);
 		assertEqualArrays(bundle.dependencies, null); // TODO
+		assertAreEqual(bundle.error, null);
 	}
 	
 	public static Path path(String first) {
 		return Paths.get(first);
+	}
+	
+	@Test
+	public void testNonExistant() throws Exception { testNonExistant$(); }
+	public void testNonExistant$() throws Exception {
+		DubBundle dubBundle = parseDubBundle(DToolTestResources.getTestResourcePath("dub", "nonExistent"));
+		assertTrue(dubBundle.error.getCause() instanceof FileNotFoundException);
+		assertEquals(dubBundle.name, "nonExistent");
 	}
 	
 }

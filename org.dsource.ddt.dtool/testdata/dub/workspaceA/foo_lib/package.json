@@ -8,5 +8,6 @@
 	],
 	"dependencies": {
 		"bar_lib": "~master"
-	}
+	},
+	"sourcePaths": [ "src" ]
 }
