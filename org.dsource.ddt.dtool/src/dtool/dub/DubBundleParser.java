@@ -59,7 +59,7 @@ public class DubBundleParser {
 	}
 	
 	protected static String readStringFromFile(File file) throws IOException, FileNotFoundException {
-		return new String(FileUtil.readBytesFromFile(file), StringUtil.UTF8);
+		return FileUtil.readStringFromFile(file, StringUtil.UTF8);
 	}
 	
 	protected DubBundle parseDubBundle() {

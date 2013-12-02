@@ -56,7 +56,7 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 		
 		ByteArrayInputStream is = new ByteArrayInputStream(source.getBytes(StringUtil.UTF8));
 		if(customFile.exists()) {
-			customFilePreviousContents = StreamUtil.readAllBytesFromStream(customFile.getContents());
+			customFilePreviousContents = StreamUtil.readAllBytesFromStream(customFile.getContents()).toByteArray();
 			customFile.setContents(is, IResource.NONE, null);
 		} else {
 			customFilePreviousContents = null;
