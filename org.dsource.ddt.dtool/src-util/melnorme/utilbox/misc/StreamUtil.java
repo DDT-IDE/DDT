@@ -12,7 +12,6 @@ package melnorme.utilbox.misc;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,19 +34,19 @@ public class StreamUtil {
 	
 	/** Reads and returns all bytes from given inputStream until an EOF is read. 
 	 * Closes inputStream afterwards. */
-	public static ByteArrayOutputStream readAllBytesFromStream(InputStream inputStream) throws IOException {
+	public static ByteArrayOutputStreamExt readAllBytesFromStream(InputStream inputStream) throws IOException {
 		return readAllBytesFromStream(inputStream, 32);
 	}
 	
 	/** Reads and returns all bytes from given inputStream until an EOF is read. 
 	 * Closes inputStream afterwards. 
 	 * ByteArray buffer is initialized to given capacity. */
-	public static ByteArrayOutputStream readAllBytesFromStream(InputStream inputStream, int capacity) 
+	public static ByteArrayOutputStreamExt readAllBytesFromStream(InputStream inputStream, int capacity) 
 			throws IOException {
 		try {
 			final int BUFFER_SIZE = 1024;
 			byte[] buffer = new byte[BUFFER_SIZE];
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream(capacity);
+			ByteArrayOutputStreamExt bytes = new ByteArrayOutputStreamExt(capacity);
 			
 			int read;
 			while((read = inputStream.read(buffer)) != EOF) {
