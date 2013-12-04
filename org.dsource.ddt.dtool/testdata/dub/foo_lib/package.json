@@ -9,5 +9,6 @@
 	"dependencies": {
 		"bar_lib": "~master"
 	},
-	"sourcePaths": [ "src" ]
+	"sourcePaths": [ "src", "src2" ],
+	"importPaths": [ "src", "src2" ]
 }

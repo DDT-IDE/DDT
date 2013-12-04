@@ -22,24 +22,32 @@ import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
 
 public class DubParserTest extends DToolBaseTest {
-
+	
+	public static final Path DUB_WORKSPACE = DToolTestResources.getTestResourcePath("dub");
+	
+	public static Path[] paths(String... str) {
+		Path[] newArray = new Path[str.length];
+		for (int i = 0; i < str.length; i++) {
+			newArray[i] = Paths.get(str[i]); 
+		}
+		return newArray;
+	}
+	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
-	public void testBasic$() {
+	public void testBasic$() throws Exception {
 		
-		Path dubWorkspaceA = DToolTestResources.getTestResourcePath("dub", "workspaceA");
+		testBundle(DUB_WORKSPACE.resolve("XptoBundle"), 
+				"xptobundle", null, paths("src", "src-test"));
 		
-		testBundle(dubWorkspaceA.resolve("XptoBundle"), "xptobundle", null, 
-				array(path("src"), path("src-test")));
-		
-		testBundle(dubWorkspaceA.resolve("bar_lib"), 
-				"bar_lib", null, array(path("source")));
+		testBundle(DUB_WORKSPACE.resolve("bar_lib"), 
+				"bar_lib", null, paths("source"));
 
-		testBundle(dubWorkspaceA.resolve("foo_lib"), 
-				"foo_lib", null, array(path("source")));
+		testBundle(DUB_WORKSPACE.resolve("foo_lib"), 
+				"foo_lib", null, paths("src", "src2"));
 		
-		testBundle(dubWorkspaceA.resolve("LenientJsonA"), 
-				"lenient-json1", null, array(path("src"), path("src-test")));
+		testBundle(DUB_WORKSPACE.resolve("LenientJsonA"), 
+				"lenient-json1", null, paths("src", "src-test"));
 		
 	}
 	
@@ -48,20 +56,20 @@ public class DubParserTest extends DToolBaseTest {
 	}
 	
 	public void testBundle(Path location, String name, String version, Path[] srcFolders) {
-		checkBundle(parseDubBundle(location), location, name, version, srcFolders);
+		DubBundle dubBundle = parseDubBundle(location);
+		checkBundle(dubBundle, location, name, version, srcFolders, null);
 	}
 	
-	public static void checkBundle(DubBundle bundle, Path location, String name, String version, Path[] srcFolders) {
+	public static void checkBundle(DubBundle bundle, Path location, String name, String version, Path[] srcFolders,
+			String errorCheck) {
 		assertAreEqual(bundle.location, location);
 		assertAreEqual(bundle.name, name);
 		assertAreEqual(bundle.version, version);
-		assertEqualArrays(bundle.getEffectiveSourceFolders(), srcFolders);
+		assertEqualArrays(bundle.getRawSourceFolders(), srcFolders);
 		assertEqualArrays(bundle.dependencies, null); // TODO
-		assertAreEqual(bundle.error, null);
-	}
-	
-	public static Path path(String first) {
-		return Paths.get(first);
+		
+		Exception exception = bundle.error;
+		assertExceptionContains(exception, errorCheck);
 	}
 	
 	@Test
@@ -69,6 +77,7 @@ public class DubParserTest extends DToolBaseTest {
 	public void testNonExistant$() throws Exception {
 		DubBundle dubBundle = parseDubBundle(DToolTestResources.getTestResourcePath("dub", "nonExistent"));
 		assertTrue(dubBundle.error.getCause() instanceof FileNotFoundException);
+		assertExceptionContains(dubBundle.error, "FileNotFoundException");
 		assertEquals(dubBundle.name, "nonExistent");
 	}
 	

@@ -11,8 +11,10 @@
 package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 
 public class DubBundle {
 	
@@ -26,16 +28,23 @@ public class DubBundle {
 	
 	public DubBundle(Path location, String name, String version, Path[] srcFolders, Path[] implicitSrcFolders,
 			Object[] dependencies, DubBundleException exception) {
+		this.location = location;
 		this.name = assertNotNull(name);
 		this.version = version;
-		this.location = location;
 		this.srcFolders = srcFolders;
 		this.implicitSrcFolders = implicitSrcFolders;
 		this.dependencies = dependencies;
 		this.error = exception;
+		if(!hasErrors()) {
+			assertTrue(location != null);
+		}
 	}
 	
-	public Path[] getEffectiveSourceFolders() {
+	public boolean hasErrors() {
+		return error != null;
+	}
+	
+	public Path[] getRawSourceFolders() {
 		if(srcFolders != null) {
 			return srcFolders;
 		} else {
@@ -53,6 +62,51 @@ public class DubBundle {
 		public DubBundleException(Exception exception) {
 	        super(exception);
 	    }
+		
+	}
+	
+	public static class DubBundleDescription {
+		
+		protected final String bundleName;
+		protected final DubBundleException error;
+		protected final DubBundle mainDubBundle;
+		protected final DubBundle[] bundleDependencies;
+		
+		public DubBundleDescription(String bundleName, DubBundle[] bundles, DubBundleException error) {
+			this.bundleName = bundleName;
+			this.error = error;
+			
+			if(bundles != null && bundles.length >= 1) {
+				if(!hasErrors()) {
+					// If no main error, then bundles must have no errors as well
+					for (DubBundle dubBundle : bundles) {
+						assertTrue(!dubBundle.hasErrors());
+					}
+				}
+				mainDubBundle = bundles[0];
+				bundleDependencies = Arrays.copyOfRange(bundles, 1, bundles.length);
+			} else {
+				mainDubBundle = null;
+				bundleDependencies = null;
+			}
+			
+			if(!hasErrors()) {
+				assertTrue(bundles.length >= 1);
+			}
+			
+		}
+		
+		public boolean hasErrors() {
+			return error != null;
+		}
+		
+		public DubBundle getMainBundle() {
+			return mainDubBundle;
+		}
+		
+		public DubBundle[] getBundleDependencies() {
+			return bundleDependencies;
+		}
 		
 	}
 	

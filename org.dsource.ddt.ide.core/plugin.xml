@@ -78,6 +78,13 @@
       </interpreterContainerExtension>
    </extension>
    <extension
+         point="org.eclipse.dltk.core.buildpathContainerInitializer">
+      <buildpathContainerInitializer
+            class="mmrnmhrm.core.projectmodel.DubContainerInitializer"
+            id="org.dsource.ddt.ide.core.DubContainer">
+      </buildpathContainerInitializer>
+   </extension>
+   <extension
          id="deebuilder"
          name="Dee Builder"
          point="org.eclipse.core.resources.builders">
