@@ -15,7 +15,7 @@ import static dtool.dub.DubParserTest.paths;
 
 import java.nio.file.Path;
 
-import melnorme.utilbox.misc.ProcessHelper;
+import melnorme.utilbox.misc.ExternalProcessOutputReader;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Test;
@@ -27,14 +27,14 @@ import dtool.tests.DToolTestResources;
 public class DubDescribeTest extends DToolBaseTest {
 	
 	public static final Path DUB_WORKSPACE = DubParserTest.DUB_WORKSPACE;
+	public static final String DUB_PATH = "dub";
 	
 	protected String runDubDescribe(java.nio.file.Path path) throws Exception {
-		ProcessBuilder pb = new ProcessBuilder("dub", "describe");
+		ProcessBuilder pb = new ProcessBuilder(DUB_PATH, "describe");
 		pb.directory(path.toFile());
 		
-		ProcessHelper processHelper = new ProcessHelper();
-		processHelper.startProcess(pb);
-		processHelper.awaitTermination(1000);
+		ExternalProcessOutputReader processHelper = ExternalProcessOutputReader.startProcess(pb, false);
+		processHelper.awaitTermination(2000);
 
 		return processHelper.getStdOutBytes().toString(StringUtil.UTF8);
 	}

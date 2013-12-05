@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.ExecutorAgent;
-import melnorme.utilbox.misc.ProcessHelper;
+import melnorme.utilbox.misc.ExternalProcessOutputReader;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.LangCore;
@@ -65,7 +65,7 @@ public class DubProjectModel {
 		return defaultInstance;
 	}
 	
-	protected final ExecutorAgent executorAgent = new ExecutorAgent(DubProjectModel.class.getSimpleName());
+	protected final ExecutorAgent executorAgent = new CoreExecutorAgent(DubProjectModel.class.getSimpleName());
 	protected final DubProjectModelResourceListener listener;
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
 	
@@ -276,9 +276,9 @@ class UpdateProjectModel implements Runnable {
 		ProcessBuilder pb = new ProcessBuilder("dub", "describe");
 		pb.directory(path.toFile());
 		
-		ProcessHelper processHelper = new ProcessHelper();
+		ExternalProcessOutputReader processHelper;
 		try {
-			processHelper.startProcess(pb);
+			processHelper = ExternalProcessOutputReader.startProcess(pb, false);
 		} catch (IOException e) {
 			throw DeeCore.createCoreException("Could not start dub process", e);
 		}

@@ -319,16 +319,18 @@ public class DeeBuilder {
 				fireHandleOutputLine("DDT: No build process specified.");
 				return;
 			}
-			Process proc = builder.start();
-			ExternalProcessAdapter processUtil = new ExternalProcessAdapter() {
+			ExternalProcessLineNotifyHandler processUtil = new ExternalProcessLineNotifyHandler(builder, monitor) {
 				@Override
 				protected void handleReadLine(String line) {
-					buildLog.println("\t" + line);
-					fireHandleOutputLine(line);
+					synchronized(this) {
+						// TODO: review concurrency usage of this method and fireHandleOutputLine
+						buildLog.println("\t" + line);
+						fireHandleOutputLine(line);
+					}
 				}
 			};
-			processUtil.waitForProcess(monitor, proc);
-			buildLog.println(">>  Exit value: " + proc.exitValue());
+			int exitValue = processUtil.awaitTermination();
+			buildLog.println(">>  Exit value: " + exitValue);
 		} catch(IOException e) {
 			throw DeeCore.createCoreException("D Build: Error exec'ing.", e);
 		} catch(InterruptedException e) {
