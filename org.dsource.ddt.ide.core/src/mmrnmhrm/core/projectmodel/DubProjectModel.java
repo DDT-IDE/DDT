@@ -66,7 +66,7 @@ public class DubProjectModel {
 		return defaultInstance;
 	}
 	
-	protected final ExecutorAgent executorAgent = new CoreExecutorAgent(DubProjectModel.class.getSimpleName());
+	protected final CoreExecutorAgent executorAgent = new CoreExecutorAgent(DubProjectModel.class.getSimpleName());
 	protected final DubProjectModelResourceListener listener;
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
 	
@@ -145,7 +145,10 @@ public class DubProjectModel {
 			
 			switch(projectDelta.getKind()) {
 			case IModelElementDelta.ADDED:
-				queueProjectUpdate(projectElement);
+				IResource packageFile = projectElement.getProject().findMember(DUB_BUNDLE_PACKAGE_FILE);
+				if(packageFile != null && packageFile.getType() == IResource.FILE) {
+					queueProjectUpdate(projectElement);
+				}
 				break;
 			case IModelElementDelta.REMOVED:
 				removeProject(projectElement);
@@ -178,6 +181,11 @@ public class DubProjectModel {
 	
 	public void syncPendingUpdates() {
 		executorAgent.waitForPendingTasks();
+	}
+	
+	/** WARNING: this API is for test use only */
+	public ExecutorAgent internal_getExecutorAgent() {
+		return executorAgent;
 	}
 	
 }

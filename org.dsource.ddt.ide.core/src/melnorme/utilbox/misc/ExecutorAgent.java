@@ -29,12 +29,14 @@ import java.util.concurrent.TimeoutException;
  */
 public class ExecutorAgent implements ExecutorService {
 	
-	protected final ThreadPoolExecutor executor;
 	protected final String name;
+	protected final LinkedBlockingQueue<Runnable> linkedBlockingQueue;
+	protected final ThreadPoolExecutor executor;
 	
 	public ExecutorAgent(String name) {
 		this.name = name;
-		this.executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), 
+		linkedBlockingQueue = new LinkedBlockingQueue<Runnable>();
+		this.executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, linkedBlockingQueue, 
 				new NameAgentThreadFactory(name)) {
 			
 			@Override
@@ -108,6 +110,27 @@ public class ExecutorAgent implements ExecutorService {
 	@SuppressWarnings("unused")
 	protected void handleUnexpectException(Throwable throwable) {
 	}
+	
+    /**
+     * Returns the approximate total number of tasks that have ever been
+     * scheduled for execution. Because the states of tasks and
+     * threads may change dynamically during computation, the returned
+     * value is only an approximation.
+     *
+     * @return the number of tasks
+     */
+	public long getSubmittedTaskCount() {
+		return executor.getTaskCount();
+	}
+	
+	/** @return true if there is any task being executed, or queued to be executed.
+	 * WARNING: This method has a concurrency bug and may not return false
+	 * even if the current thread has submited a task that has not yet completed.
+	 * Use only for test code, in a tentative way only. */
+	public boolean guess_hasPendingTasks() {
+		return linkedBlockingQueue.size() > 0 || executor.getActiveCount() > 0;
+	}
+	
 	
 	/* ---- delegate all methods --- */
 	

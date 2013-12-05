@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 
+import melnorme.utilbox.misc.ExecutorAgent;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
@@ -70,6 +71,10 @@ public class DubProjectModelTest extends BaseDeeTest {
 		return sb;
 	}
 	
+	protected static ExecutorAgent getDubExecutorAgent() {
+		return DubProjectModel.getDefault().internal_getExecutorAgent();
+	}
+	
 	/* ************************************ */
 	
 	public static final String DUB_TEST = "DubTest";
@@ -79,9 +84,20 @@ public class DubProjectModelTest extends BaseDeeTest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
+		long taskCount = getDubExecutorAgent().getSubmittedTaskCount();
 		IScriptProject dubTestProject = createAndOpenDeeProject(DUB_TEST, true);
-		DubProjectModel.getDefault().syncPendingUpdates();
+		
+		assertTrue(getDubExecutorAgent().getSubmittedTaskCount() == taskCount); // check no change
 		assertTrue(DubProjectModel.getDefault().getBundleInfo(DUB_TEST) == null);
+		
+		try {
+			runBasicTest(dubTestProject);
+		} finally {
+			dubTestProject.getProject().delete(true, null); // cleanup
+		}
+	}
+	
+	public void runBasicTest(IScriptProject dubTestProject) throws Exception {
 		
 		writeJsonFile(dubTestProject, "{"+
 				jsEntry("name", "xptobundle")+
@@ -104,8 +120,6 @@ public class DubProjectModelTest extends BaseDeeTest {
 				dep(DUB_WORKSPACE.resolve("foo_lib"), "src2")
 				);
 		
-		
-		dubTestProject.getProject().delete(true, null); // cleanup
 	}
 
 	protected static void writeJsonFile(IScriptProject dubTestProject, String contents) throws CoreException {
