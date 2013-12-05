@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.dub;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -39,10 +41,14 @@ public class DubBundleDescriptionParser extends CommonDubParser {
 			putError(new DubBundleException("Expected \"mainPackage\" entry."));
 		}
 		
-		for (DubBundle bundle : bundles) {
-			if(bundle.hasErrors()) {
-				putError(bundle.error);
-				break;
+		if(dubError == null) {
+			assertNotNull(bundles);
+			// check for errors during bundle parsing
+			for (DubBundle bundle : bundles) {
+				if(bundle.hasErrors()) {
+					putError(bundle.error);
+					break;
+				}
 			}
 		}
 		
