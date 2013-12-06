@@ -62,6 +62,10 @@ public class DubProjectModel {
 		defaultInstance = new DubProjectModel();
 	}
 	
+	public static void disposeDefault() throws CoreException {
+		defaultInstance.dispose();
+	}
+	
 	public static DubProjectModel getDefault() {
 		return defaultInstance;
 	}
@@ -85,10 +89,8 @@ public class DubProjectModel {
 	
 	public void dispose() {
 		DLTKCore.removeElementChangedListener(listener);
-		if(defaultInstance == this) {
-			defaultInstance = null;
-		}
-		executorAgent.shutdown();
+		executorAgent.shutdownNow();
+		// FIXME: there can still be some problems when shutdown, with pending executing task.
 	}
 	
 	protected void initializeProjectInfo() {

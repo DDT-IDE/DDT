@@ -38,6 +38,7 @@ public class DeeCore extends LangCore {
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		DeeProjectModel.dispose();
+		DubProjectModel.disposeDefault();
 		pluginInstance = null;
 	}
 	
