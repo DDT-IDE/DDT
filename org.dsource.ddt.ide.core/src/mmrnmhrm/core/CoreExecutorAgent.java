@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core;
 
-import melnorme.utilbox.misc.ExecutorAgent;
+import melnorme.utilbox.concurrency.ExecutorAgent;
 
 public class CoreExecutorAgent extends ExecutorAgent {
 	
@@ -19,7 +19,7 @@ public class CoreExecutorAgent extends ExecutorAgent {
 	}
 	
 	@Override
-	protected void handleUnexpectException(Throwable throwable) {
+	protected void handleThrowableException(Throwable throwable) {
 		if(throwable != null) {
 			// Log unexpected exceptions. This is important for two reasons:
 			// 1: Give some user feedback an internal error ocurred, even if is for the log only.

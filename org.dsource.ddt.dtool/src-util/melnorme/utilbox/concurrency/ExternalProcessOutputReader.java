@@ -8,11 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.misc;
+package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
+
+import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 
 /**
  * Helper class designed to safely read (with regards to concurrency) the output of a sub-process.

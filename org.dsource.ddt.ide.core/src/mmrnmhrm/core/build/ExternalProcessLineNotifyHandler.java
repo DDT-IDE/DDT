@@ -12,7 +12,7 @@ package mmrnmhrm.core.build;
 
 import java.io.IOException;
 
-import melnorme.utilbox.misc.ExternalProcessHelper;
+import melnorme.utilbox.concurrency.ExternalProcessHelper;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;

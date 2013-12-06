@@ -20,9 +20,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
+import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.ExecutorAgent;
-import melnorme.utilbox.misc.ExternalProcessOutputReader;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.CoreExecutorAgent;
 import mmrnmhrm.core.DeeCore;
@@ -70,7 +70,7 @@ public class DubProjectModel {
 		return defaultInstance;
 	}
 	
-	protected final CoreExecutorAgent executorAgent = new CoreExecutorAgent(DubProjectModel.class.getSimpleName());
+	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubProjectModel.class.getSimpleName());
 	protected final DubProjectModelResourceListener listener;
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
 	
@@ -90,7 +90,11 @@ public class DubProjectModel {
 	public void dispose() {
 		DLTKCore.removeElementChangedListener(listener);
 		executorAgent.shutdownNow();
-		// FIXME: there can still be some problems when shutdown, with pending executing task.
+		try {
+			executorAgent.awaitTermination();
+		} catch (InterruptedException e) {
+			DeeCore.log(e);
+		}
 	}
 	
 	protected void initializeProjectInfo() {
@@ -186,7 +190,7 @@ public class DubProjectModel {
 	}
 	
 	/** WARNING: this API is for test use only */
-	public ExecutorAgent internal_getExecutorAgent() {
+	public IExecutorAgent internal_getExecutorAgent() {
 		return executorAgent;
 	}
 	

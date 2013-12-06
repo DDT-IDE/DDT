@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 
-import melnorme.utilbox.misc.ExecutorAgent;
+import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
@@ -71,7 +71,7 @@ public class DubProjectModelTest extends BaseDeeTest {
 		return sb;
 	}
 	
-	protected static ExecutorAgent getDubExecutorAgent() {
+	protected static IExecutorAgent getDubExecutorAgent() {
 		return DubProjectModel.getDefault().internal_getExecutorAgent();
 	}
 	

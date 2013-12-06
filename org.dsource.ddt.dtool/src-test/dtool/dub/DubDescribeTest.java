@@ -15,7 +15,7 @@ import static dtool.dub.DubParserTest.paths;
 
 import java.nio.file.Path;
 
-import melnorme.utilbox.misc.ExternalProcessOutputReader;
+import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Test;
