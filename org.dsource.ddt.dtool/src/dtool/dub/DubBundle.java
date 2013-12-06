@@ -108,6 +108,10 @@ public class DubBundle {
 			return bundleDependencies;
 		}
 		
+		public DubBundleException getError() {
+			return error;
+		}
+		
 	}
 	
 }

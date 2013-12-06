@@ -17,6 +17,8 @@ import mmrnmhrm.core.WorkspaceUtils;
 import mmrnmhrm.tests.BaseDeeTest;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.IBuildpathEntry;
@@ -75,6 +77,14 @@ public class DubProjectModelTest extends BaseDeeTest {
 		return DubProjectModel.getDefault().internal_getExecutorAgent();
 	}
 	
+	protected static DubProjectModel getProjectModel() {
+		return DubProjectModel.getDefault();
+	}
+	
+	protected static DubBundleDescription getDubProjectInfo(String projectName) {
+		return DubProjectModel.getDefault().getBundleInfo(projectName);
+	}
+	
 	/* ************************************ */
 	
 	public static final String DUB_TEST = "DubTest";
@@ -99,19 +109,17 @@ public class DubProjectModelTest extends BaseDeeTest {
 	
 	public void runBasicTest(IScriptProject dubTestProject) throws Exception {
 		
-		writeJsonFile(dubTestProject, "{"+
-				jsEntry("name", "xptobundle")+
-				"}");
+		writeDUBJson_AndSync(dubTestProject, "{"+ jsEntry("name", "xptobundle")+ "}");
 		checkBundle(dubTestProject, "xptobundle", srcFolders());
-
-		writeJsonFile(dubTestProject, "{"+
+		
+		writeDUBJson_AndSync(dubTestProject, "{"+
 				jsEntry("name", "xptobundle")+
 				jsEntry("importPaths", jsArray("src", "src-test"))+
 				"\"blah\":null}");
 		checkBundle(dubTestProject, "xptobundle", srcFolders("src", "src-test"));
 		
 		
-		writeJsonFile(dubTestProject, 
+		writeDUBJson_AndSync(dubTestProject, 
 				readFileContents(DUB_WORKSPACE.resolve("XptoBundle/package.json")));
 		
 		checkBundle(dubTestProject, "xptobundle", srcFolders("src", "src-test"), 
@@ -120,9 +128,22 @@ public class DubProjectModelTest extends BaseDeeTest {
 				dep(DUB_WORKSPACE.resolve("foo_lib"), "src2")
 				);
 		
+		
+		DubBundleDescription dubBundle = getDubProjectInfo(dubTestProject.getElementName());
+		writeDUBJson_AndSync(dubTestProject, "{"+ jsEntry("nameXX", "xptobundle")+ "}");
+		assertTrue(getDubProjectInfo(dubTestProject.getElementName()) == dubBundle);
+		IMarker[] markers = dubTestProject.getResource().findMarkers(DubProjectModel.DUB_PROBLEM_ID, true, 1);
+		assertTrue(markers.length == 1);
+		IMarker errorMarker = markers[0];
+		assertTrue(errorMarker.getAttribute(IMarker.MESSAGE, "").startsWith("dub returned non-zero"));
+		assertEquals(errorMarker.getAttribute(IMarker.SEVERITY), IMarker.SEVERITY_ERROR);
+		
+		writeDUBJson_AndSync(dubTestProject, "{"+ jsEntry("name", "xptobundle")+ "}");
+		checkBundle(dubTestProject, "xptobundle", srcFolders());
+		
 	}
 
-	protected static void writeJsonFile(IScriptProject dubTestProject, String contents) throws CoreException {
+	protected static void writeDUBJson_AndSync(IScriptProject dubTestProject, String contents) throws CoreException {
 		writeStringToFile(dubTestProject, "package.json", contents);
 		DubProjectModel.getDefault().syncPendingUpdates();
 	}
@@ -141,12 +162,18 @@ public class DubProjectModelTest extends BaseDeeTest {
 	}
 	
 	public static void checkBundle(IScriptProject dubProject, String dubName, String[] srcFolders,
-			DubBundle... deps) throws ModelException {
+			DubBundle... deps) throws CoreException {
+		checkBundle(dubProject, null, dubName, srcFolders, deps);
+	}
+	public static void checkBundle(IScriptProject dubProject, String expectedError, String dubName, 
+			String[] srcFolders, DubBundle... deps) throws CoreException {
 		DubBundleDescription dubBundle = DubProjectModel.getDefault().getBundleInfo(dubProject.getElementName());
-		
 		Path location = Paths.get(dubProject.getResource().getLocationURI());
+		
 		assertAreEqual(dubBundle.getMainBundle().name, dubName);
 		assertAreEqual(dubBundle.getMainBundle().location, location);
+		assertExceptionContains(dubBundle.getError(), expectedError);
+		assertTrue(dubProject.getResource().findMarkers(DubProjectModel.DUB_PROBLEM_ID, true, IResource.DEPTH_INFINITE).length == 0);
 		
 		checkRawBuildpath(dubProject.getRawBuildpath(), srcFolders);
 		

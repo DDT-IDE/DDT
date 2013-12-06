@@ -29,13 +29,13 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.LangCore;
 
 import org.dsource.ddt.ide.core.DeeNature;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ElementChangedEvent;
@@ -70,12 +70,15 @@ public class DubProjectModel {
 		return defaultInstance;
 	}
 	
+	public static final String DUB_PROBLEM_ID = DeeCore.EXTENSIONS_IDPREFIX + "DubProblem";
+	
 	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubProjectModel.class.getSimpleName());
 	protected final DubProjectModelResourceListener listener;
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
 	
 	public DubProjectModel() throws CoreException {
 		listener = new DubProjectModelResourceListener();
+		/*BUG here*/
 		DLTKCore.run(new IWorkspaceRunnable() {
 			
 			@Override
@@ -107,7 +110,7 @@ public class DubProjectModel {
 		}
 		
 		for (IScriptProject deeProject : deeProjects) {
-			queueProjectUpdate(deeProject);
+			checkNewProject(deeProject);
 		}
 	}
 	
@@ -134,7 +137,6 @@ public class DubProjectModel {
 		@Override
 		public void elementChanged(ElementChangedEvent event) {
 			IModelElementDelta delta = event.getDelta();
-			System.out.println("----->\n" + delta);
 			
 			assertTrue(delta.getElement().getElementType() == IModelElement.SCRIPT_MODEL);
 			
@@ -151,10 +153,7 @@ public class DubProjectModel {
 			
 			switch(projectDelta.getKind()) {
 			case IModelElementDelta.ADDED:
-				IResource packageFile = projectElement.getProject().findMember(DUB_BUNDLE_PACKAGE_FILE);
-				if(packageFile != null && packageFile.getType() == IResource.FILE) {
-					queueProjectUpdate(projectElement);
-				}
+				checkNewProject(projectElement);
 				break;
 			case IModelElementDelta.REMOVED:
 				removeProject(projectElement);
@@ -177,6 +176,13 @@ public class DubProjectModel {
 			}
 		}
 		
+	}
+	
+	protected void checkNewProject(IScriptProject projectElement) {
+		IResource packageFile = projectElement.getProject().findMember(DUB_BUNDLE_PACKAGE_FILE);
+		if(packageFile != null && packageFile.getType() == IResource.FILE) {
+			queueProjectUpdate(projectElement);
+		}
 	}
 	
 	protected void queueProjectUpdate(final IScriptProject projectElement) {
@@ -208,58 +214,109 @@ class UpdateProjectModel implements Runnable {
 	
 	@Override
 	public void run() {
-		IStatus status = updateProject(projectElement);
-		if(!status.isOK()) {
-			// TODO report this to user.
-			DeeCore.getInstance().getLog().log(status);
+		updateProject(projectElement);
+	}
+	
+	protected void logInternalError(CoreException ce) {
+		DeeCore.logError(ce);
+	}
+	
+	protected Void updateProject(IScriptProject projectElement) {
+		
+		deleteDubMarkers(projectElement);
+		
+		URI locationURI = projectElement.getResource().getLocationURI();
+		java.nio.file.Path path = Paths.get(locationURI);
+		assertTrue(path.isAbsolute());
+		ProcessBuilder pb = new ProcessBuilder("dub", "describe").directory(path.toFile());
+		
+		ExternalProcessOutputReader processHelper;
+		try {
+			processHelper = ExternalProcessOutputReader.startProcess(pb, false);
+		} catch (IOException e) {
+			return createDubErrorMarker(projectElement, "Could not start dub process: ",  e);
+		}
+		try {
+			processHelper.awaitTermination(2000);
+		} catch (InterruptedException e) {
+			return createDubErrorMarker(projectElement, "Timeout running dub process.", null);
+		}
+		String bundleDescription;
+		String stdErr;
+		try {
+			bundleDescription = processHelper.getStdOutBytes().toString(StringUtil.UTF8);
+			stdErr = processHelper.getStdErrBytes().toString(StringUtil.UTF8);
+		} catch (IOException e) {
+			// TODO, this is not actually reachable, if process terminated correctly
+			return createDubErrorMarker(projectElement, "Error reading dub process output: ", e);
+		}
+		
+		int exitValue = processHelper.getProcess().exitValue();
+		if(exitValue != 0) {
+			return createDubErrorMarker(projectElement, "dub returned non-zero status: " + exitValue 
+					+ " \n" + stdErr, null);
+		}
+		
+		
+		DubBundleDescription bundleDesc = new DubBundleDescriptionParser().parseDescription(bundleDescription);
+		
+		if(!bundleDesc.hasErrors()) {
+			updateBuildpath(projectElement, bundleDesc);
+		} else {
+			createDubErrorMarker(projectElement, "Error parsing description:", bundleDesc.getError());
+		}
+		return null;
+	}
+	
+	protected void deleteDubMarkers(IScriptProject projectElement) {
+		try {
+			IMarker[] markers = projectElement.getResource().findMarkers(DubProjectModel.DUB_PROBLEM_ID, true, 
+					IResource.DEPTH_ONE);
+			for (IMarker marker : markers) {
+				marker.delete();
+			}
+		} catch (CoreException ce) {
+			logInternalError(ce);
 		}
 	}
 	
-	protected IStatus updateProject(IScriptProject projectElement) {
-		String projectName = projectElement.getElementName();
-		URI locationURI = projectElement.getResource().getLocationURI();
-		
-		DubBundleDescription bundleDesc;
+	protected Void createDubErrorMarker(IScriptProject projectElement, String message, Exception exception) {
 		try {
-			// TODO handle DUB error codes
-			String bundleDescription = runDubDescribe(Paths.get(locationURI));
-			bundleDesc = new DubBundleDescriptionParser().parseDescription(bundleDescription);
+			IMarker dubMarker = projectElement.getResource().createMarker(DubProjectModel.DUB_PROBLEM_ID);
+			String messageExtra = exception == null ? "" : exception.getMessage();
+			dubMarker.setAttribute(IMarker.MESSAGE, message + messageExtra);
+			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		} catch (CoreException ce) {
-			return ce.getStatus();
+			logInternalError(ce);
+		}
+		return null;
+	}
+	
+	protected void updateBuildpath(IScriptProject projectElement, DubBundleDescription bundleDesc) {
+		
+		ArrayList<IBuildpathEntry> entries = new ArrayList<>();
+		
+		// TODO: correlate the compiler install used by Dub with the one on buildpath
+		entries.add(DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()));
+		
+		entries.add(DLTKCore.newContainerEntry(new Path(DubContainerInitializer.ID)));
+		
+		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getRawSourceFolders()) {
+			IPath path2 = projectElement.getPath().append(srcFolder.toString());
+			entries.add(DLTKCore.newSourceEntry(path2));
 		}
 		
-		if(!bundleDesc.hasErrors()) {
+		try {
+			// TODO: should this be set atomically?
+			dubProjectModel.addProject(projectElement, bundleDesc);
 			
-			dubProjectModel.addProject(projectElement, bundleDesc); 
-
-			ArrayList<IBuildpathEntry> entries = new ArrayList<>();
-			
-			// TODO: correlate the compiler install used by Dub with the one on buildpath
-			entries.add(DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()));
-			
-			entries.add(DLTKCore.newContainerEntry(new Path(DubContainerInitializer.ID)));
-			
-			for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getRawSourceFolders()) {
-				IPath path = projectElement.getPath().append(srcFolder.toString());
-				entries.add(DLTKCore.newSourceEntry(path));
-			}
-			
-			try {
-				updateDubContainer(projectElement, getBuildpathEntriesFromDesc(bundleDesc));
-			} catch (ModelException me) {
-				return me.getStatus();
-			}
-			
-			try {
-				projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
-			} catch (ModelException e) {
-				return DeeCore.createErrorStatus(
-						"Failure updating buildpath of project " + projectName + ".", e);
-			}
+			updateDubContainer(projectElement, getBuildpathEntriesFromDesc(bundleDesc));
+			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
+		} catch (ModelException me) {
+			logInternalError(me);
 		}
-		return DeeCore.createStatus(null);
 	}
-
+	
 	protected void updateDubContainer(IScriptProject projectElement, IBuildpathEntry[] entries) throws ModelException {
 		Path containerPath = new Path(DubContainerInitializer.ID);
 		DubContainer dubContainer = new DubContainer(containerPath, projectElement, entries);
@@ -284,32 +341,6 @@ class UpdateProjectModel implements Runnable {
 		}
 		
 		return ArrayUtil.createFrom(depEntries, IBuildpathEntry.class);
-	}
-	
-	protected String runDubDescribe(java.nio.file.Path path) throws CoreException {
-		assertTrue(path.isAbsolute());
-		ProcessBuilder pb = new ProcessBuilder("dub", "describe");
-		pb.directory(path.toFile());
-		
-		ExternalProcessOutputReader processHelper;
-		try {
-			processHelper = ExternalProcessOutputReader.startProcess(pb, false);
-		} catch (IOException e) {
-			throw DeeCore.createCoreException("Could not start dub process", e);
-		}
-		
-		try {
-			processHelper.awaitTermination(2000);
-		} catch (InterruptedException e) {
-			throw DeeCore.createCoreException("Timeout running dub process", e);
-		}
-		
-		try {
-			return processHelper.getStdOutBytes().toString(StringUtil.UTF8);
-		} catch (IOException e) {
-			throw DeeCore.createCoreException("Error reading dub output: ", e);
-		}
-		
 	}
 	
 }

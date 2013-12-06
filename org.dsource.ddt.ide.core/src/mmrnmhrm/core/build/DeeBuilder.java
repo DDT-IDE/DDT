@@ -139,7 +139,7 @@ public class DeeBuilder {
 		IPath projectBasedPath = entry.getPath().removeFirstSegments(1);
 		IContainer entryContainer = (IContainer) project.findMember(projectBasedPath);
 		
-		
+		/*BUG here NPE*/
 		IPath containerPath = entryContainer.isLinked(IResource.CHECK_ANCESTORS) ?
 				entryContainer.getLocation() :
 				projectBasedPath;

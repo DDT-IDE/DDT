@@ -77,6 +77,10 @@ public abstract class ExternalProcessHelper {
 	
 	protected abstract Runnable createStdErrReaderTask();
 	
+	public Process getProcess() {
+		return process;
+	}
+	
 	/** {@link #awaitTermination(int)} with no timeout */ 
 	public int awaitTermination() throws InterruptedException {
 		return awaitTermination(-1);
@@ -169,6 +173,8 @@ public abstract class ExternalProcessHelper {
 		}
 		
 	}
+	
+	/* -------------------- Default reader tasks --------------------*/
 	
 	protected static class ReadAllBytesTask implements Runnable {
 		

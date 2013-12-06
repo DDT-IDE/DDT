@@ -1,5 +1,6 @@
 package mmrnmhrm.tests.utils;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.runtime.ILogListener;
@@ -22,6 +23,7 @@ public final class ErrorLogListener implements ILogListener {
 		if(status.getSeverity() == IStatus.ERROR && errorOccurred == false) {
 			errorOccurred = true;
 			exception = status.getException();
+			assertNotNull(exception);
 		}
 	}
 	
