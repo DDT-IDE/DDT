@@ -72,22 +72,33 @@ public class DubProjectModel {
 	
 	public static final String DUB_PROBLEM_ID = DeeCore.EXTENSIONS_IDPREFIX + "DubProblem";
 	
-	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubProjectModel.class.getSimpleName());
-	protected final DubProjectModelResourceListener listener;
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
+	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubProjectModel.class.getSimpleName());
+	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
 	
 	public DubProjectModel() throws CoreException {
-		listener = new DubProjectModelResourceListener();
-		/*BUG here*/
-		DLTKCore.run(new IWorkspaceRunnable() {
-			
+		// Run initialization in executor thread
+		// This is recommended so that we avoid running the initialization in the UI thread, which is
+		// most likely to happen when DubProjectModel is created.
+		// This way we prevent workspace deltas do be creating in the UI thread during plugin initialization.
+		executorAgent.submit(new Runnable() {
 			@Override
-			public void run(IProgressMonitor monitor) {
-				initializeProjectInfo();
-				DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
+			public void run() {
+				try {
+					DLTKCore.run(new IWorkspaceRunnable() {
+						@Override
+						public void run(IProgressMonitor monitor) {
+							DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
+							initializeProjectInfo();
+						}
+					}, null);
+				} catch (CoreException e) {
+					DeeCore.logError(e);
+					// This really should not happen, but still try to recover by registering listener.
+					DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
+				}
 			}
-			
-		}, null);
+		});
 	}
 	
 	public void dispose() {
@@ -241,14 +252,13 @@ class UpdateProjectModel implements Runnable {
 		} catch (InterruptedException e) {
 			return createDubErrorMarker(projectElement, "Timeout running dub process.", null);
 		}
-		String bundleDescription;
+		String descriptionOutput;
 		String stdErr;
 		try {
-			bundleDescription = processHelper.getStdOutBytes().toString(StringUtil.UTF8);
+			descriptionOutput = processHelper.getStdOutBytes().toString(StringUtil.UTF8);
 			stdErr = processHelper.getStdErrBytes().toString(StringUtil.UTF8);
 		} catch (IOException e) {
-			// TODO, this is not actually reachable, if process terminated correctly
-			return createDubErrorMarker(projectElement, "Error reading dub process output: ", e);
+			return createDubErrorMarker(projectElement, "Error occurred reading dub process output: ", e);
 		}
 		
 		int exitValue = processHelper.getProcess().exitValue();
@@ -258,7 +268,7 @@ class UpdateProjectModel implements Runnable {
 		}
 		
 		
-		DubBundleDescription bundleDesc = new DubBundleDescriptionParser().parseDescription(bundleDescription);
+		DubBundleDescription bundleDesc = new DubBundleDescriptionParser().parseDescription(descriptionOutput);
 		
 		if(!bundleDesc.hasErrors()) {
 			updateBuildpath(projectElement, bundleDesc);
