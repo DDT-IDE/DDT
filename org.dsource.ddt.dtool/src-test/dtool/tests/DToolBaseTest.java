@@ -60,7 +60,7 @@ public class DToolBaseTest extends CommonTest {
 	}
 	
 	public static String readStringFromFile(File file) throws IOException, FileNotFoundException {
-		return new String(FileUtil.readBytesFromFile(file), DEFAULT_TESTDATA_ENCODING);
+		return FileUtil.readStringFromFile(file, DEFAULT_TESTDATA_ENCODING);
 	}
 	
 	public static String readStringFromFileUnchecked(File file) {

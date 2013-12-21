@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelStatusConstants;
+import org.eclipse.dltk.core.IScriptModel;
 import org.eclipse.dltk.core.PreferencesLookupDelegate;
 
 public abstract class LangCore extends Plugin {
@@ -37,14 +38,24 @@ public abstract class LangCore extends Plugin {
 		return ResourcesPlugin.getWorkspace();
 	}
 	
-	/** Creates a status describing an error in this plugin. */
-	public static IStatus createErrorStatus(String msg) {
-		return createErrorStatus(msg, null);
+	/** Convenience method to get the DLTK Model. */
+	public static IScriptModel getDLTKModel() {
+		return DLTKCore.create(ResourcesPlugin.getWorkspace().getRoot());
 	}
 	
-	/** Creates a status describing an error in this plugin. */
-	public static Status createErrorStatus(String msg, Exception e) {
-		return new Status(IStatus.ERROR, DeeCore.PLUGIN_ID, IModelStatusConstants.INTERNAL_ERROR, msg, e); 
+	/** Creates an OK status with given message. */
+	public static Status createStatus(String message) {
+		return new Status(IStatus.OK, DeeCore.PLUGIN_ID, message); 
+	}
+	
+	/** Creates a status describing an error in this plugin, with given message. */
+	public static IStatus createErrorStatus(String message) {
+		return createErrorStatus(message, null);
+	}
+	
+	/** Creates a status describing an error in this plugin, with give message and exception. */
+	public static Status createErrorStatus(String message, Throwable throwable) {
+		return new Status(IStatus.ERROR, DeeCore.PLUGIN_ID, IModelStatusConstants.INTERNAL_ERROR, message, throwable); 
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */
@@ -57,8 +68,13 @@ public abstract class LangCore extends Plugin {
 	}
 	
 	/** Logs an error status with given exception and given message. */
-	public static void logError(Exception e, String message) {
-		getInstance().getLog().log(createErrorStatus(message, e));
+	public static void logError(Throwable throwable, String message) {
+		getInstance().getLog().log(createErrorStatus(message, throwable));
+	}
+	
+	/** Logs given error status. */
+	public static void logError(IStatus status) {
+		getInstance().getLog().log(status);
 	}
 	
 	/** Logs an error status with given message. */
@@ -67,8 +83,8 @@ public abstract class LangCore extends Plugin {
 	}
 	
 	/** Logs an error status with given exception. */
-	public static void logError(Exception e) {
-		getInstance().getLog().log(createErrorStatus(LangCoreMessages.LangCore_internal_error, e));
+	public static void logError(Throwable throwable) {
+		getInstance().getLog().log(createErrorStatus(LangCoreMessages.LangCore_internal_error, throwable));
 	}
 	
 	/** Logs the given message, creating a new warning status for this plugin. */

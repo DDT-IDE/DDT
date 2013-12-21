@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -21,9 +22,9 @@ import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.ChainedIterator;
-import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.Pair;
+import melnorme.utilbox.misc.StreamUtil;
 
 public class NewUtils {
 	
@@ -213,9 +214,15 @@ public class NewUtils {
 		return null;
 	}
 	
-	// XXX: This method could perhaps be optimized slightly
 	public static String readStringFromFile_PreserveBOM(File file, Charset defaultCharset) throws IOException {
-		byte[] fileBytes = FileUtil.readBytesFromFile(file);
+		FileInputStream inputStream = new FileInputStream(file);
+		return readStringFromStream_preserveBOM(inputStream, defaultCharset);
+	}
+	
+	// XXX: This method could be optimized a bit
+	public static String readStringFromStream_preserveBOM(InputStream is, Charset defaultCharset)
+			throws IOException {
+		byte[] fileBytes = StreamUtil.readAllBytesFromStream(is).toByteArray();
 		final Charset encoding = detectEncoding(new ByteArrayInputStream(fileBytes), false);
 		String string = new String(fileBytes, encoding == null ? defaultCharset : encoding);
 		if(encoding != null) {

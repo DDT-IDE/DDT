@@ -147,6 +147,10 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		return createAndOpenDeeProject(name, false, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
 	}
 	
+	public static IScriptProject createAndOpenDeeProject(String name, boolean overwrite) throws CoreException {
+		return createAndOpenDeeProject(name, overwrite, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
+	}
+	
 	public static IScriptProject createAndOpenDeeProject(
 			String name, boolean overwrite, final String installTypeId, final String installId) throws CoreException {
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();

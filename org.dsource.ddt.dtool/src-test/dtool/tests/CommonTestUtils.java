@@ -74,6 +74,14 @@ public class CommonTestUtils {
 		);
 	}
 	
+	public static void assertExceptionContains(Exception exception, String string) {
+		if(string == null) {
+			assertTrue(exception == null);
+		} else {
+			assertTrue(exception.toString().contains(string));
+		}
+	}
+	
 	/* -------------------------- */
 	
 	@SafeVarargs
