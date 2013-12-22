@@ -36,3 +36,6 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(EXPRESSION)    new (#@ARGS__SAMPLE) class #@FROM_CLASS_KEYWORD
 #STRUCTURE_EXPECTED:  ExpNewAnonClass( #@ARGS__SAMPLE #@FROM_CLASS_KEYWORD )
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ newExpAnonClass with outer class (not allowed)
+#PARSE(EXPRESSION)   #@EXP_POSTFIX . new  #@ALLOC_ARGS #@NO_TYPEREF #@BREAK class #@DECLS_BLOCK__SAMPLE
+#STRUCTURE_EXPECTED: ExpNew( #@EXP_POSTFIX  #@ALLOC_ARGS #@NO_TYPEREF )

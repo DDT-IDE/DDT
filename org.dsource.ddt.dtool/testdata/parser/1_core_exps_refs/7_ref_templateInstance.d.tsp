@@ -44,8 +44,8 @@ DefVariable(RefTemplateInstance(RefIdentifier RefIdentifier) DefSymbol)
 #STRUCTURE_EXPECTED: #@TYPE_REFS__QUALIFIER_ForDotOnly
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ SPECIAL case: in EXPRESSION context we allow any kinf of qualified exp
-#PARSE(Expression)   #@EXP_POSTFIX . foo ! this 
-#STRUCTURE_EXPECTED: ExpReference( RefTemplateInstance( RefQualified(#@EXP_POSTFIX RefIdentifier) ExpThis) )
+#PARSE(Expression)   #@EXP_POSTFIX__NO_POSSIBLE_REFS . foo ! this 
+#STRUCTURE_EXPECTED: ExpReference( RefTemplateInstance( RefQualified(#@EXP_POSTFIX__NO_POSSIBLE_REFS RefIdentifier) ExpThis) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ EXPRESSION context  - test broken qualifier
 #PARSE(Expression)   foo . #@NO_ID #@IGNORE_REST ! this 

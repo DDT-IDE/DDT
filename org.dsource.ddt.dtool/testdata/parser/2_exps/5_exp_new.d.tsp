@@ -9,6 +9,10 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
   ►#?STRUCTURE_EXPECTED!【 /*No alloc args*/● 】● 
   ►#?STRUCTURE_EXPECTED!【( #@EXPARGS_ESEP ) ● #@EXPARGS_ESEP】●
 ¤》
+#@ALLOC_ARG__SAMPLE《
+  ►#?STRUCTURE_EXPECTED!【 /*No alloc args*/● 】● 
+  ►#?STRUCTURE_EXPECTED!【( 123 ) ● Integer】●
+¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   new     #@ALLOC_ARG  #@TYPEREF_NBNE__LITE  (sample)
 #STRUCTURE_EXPECTED: ExpNew( #@ALLOC_ARG  #@TYPEREF_NBNE__LITE  #@ExpIdentifier )
@@ -18,6 +22,14 @@ ExpNew(RefIdentifier Integer #@ExpIdentifier)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)   new     (#@EXPARGS_ESEP) #@NO_TYPEREF #@BREAK (123) 
 #STRUCTURE_EXPECTED: ExpNew(  #@EXPARGS_ESEP  #@NO_TYPEREF )
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ newExp with outer class
+#PARSE(EXPRESSION)   #@EXP_POSTFIX . new   #@ALLOC_ARG__SAMPLE #@TYPEREF_NE__LITE #?TYPE_IS_BROKEN{#@BREAK}
+#STRUCTURE_EXPECTED: ExpNew( #@EXP_POSTFIX  #@ALLOC_ARG__SAMPLE  #@TYPEREF_NE__LITE  )
+▂▂▂▂▂▂▂▂▂ - check association of prefix exp
+#PARSE(EXPRESSION)   ++ foo . new Inner(123) 
+#STRUCTURE_EXPECTED: ExpPrefix( ExpNew( #@ExpIdentifier RefIdentifier Integer) )
+
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@CTOR_ARG__SAMPLE《
   ►#?STRUCTURE_EXPECTED!【 /*No ctor args*/● 】● 

@@ -5,6 +5,7 @@
 == DDT 0.9.1 ===
  * UI cleanup: "Interpreter Container" now named "D Standard Library"
  * Fixed issue #20: GDC incluce/d/*/ library location layout not recognized
+ * Fixed issue #36: Editor/parser doesn't recognize new operator's nested class instantiation syntax. 
 
 == DDT 0.9.0 (2013-11-14) ==
  * Issue #13: Added integrated debugging support, using CDT's GDB debugger integration. Supports:

@@ -20,11 +20,14 @@ import dtool.resolver.api.IModuleResolver;
  */
 public class ExpNew extends Expression {
 	
+	public final Expression outerClassArg;
 	public final NodeListView<Expression> allocArgs;
 	public final Reference newtype;
 	public final NodeListView<Expression> args;
 	
-	public ExpNew(NodeListView<Expression> atorArgs, Reference type, NodeListView<Expression> args) {
+	public ExpNew(Expression outerClassArg, NodeListView<Expression> atorArgs, Reference type,
+		NodeListView<Expression> args) {
+		this.outerClassArg = parentize(outerClassArg);
 		this.allocArgs = parentize(atorArgs);
 		this.newtype = parentize(type);
 		this.args = parentize(args);
@@ -37,6 +40,7 @@ public class ExpNew extends Expression {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, outerClassArg);
 		acceptVisitor(visitor, allocArgs);
 		acceptVisitor(visitor, newtype);
 		acceptVisitor(visitor, args);
@@ -44,6 +48,7 @@ public class ExpNew extends Expression {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("", outerClassArg, ".");
 		cp.append("new");
 		cp.appendNodeList("(", allocArgs, ", ", ")", " "); 
 		cp.append(newtype);
