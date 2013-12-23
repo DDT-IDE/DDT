@@ -376,13 +376,6 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
 	}
 	
-	// TODO: make these two methods the same?
-	public Reference parseRefQualifiedForExp(ParseHelper parse, IQualifierNode qualifier) {
-		LexElement dotToken = consumeLookAhead(DeeTokens.DOT);
-		RefIdentifier qualifiedId = parseRefIdentifier();
-		return parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
-	}
-	
 	public Reference parseBracketReference(Reference leftRef, ParseHelper parse) {
 		consumeLookAhead(DeeTokens.OPEN_BRACKET);
 		
