@@ -1,4 +1,4 @@
-package org.dsource.ddt.debug.core;
+package melnorme.ide.debug.core;
 
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 
@@ -48,7 +48,7 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 	@Override
 	protected DsfSourceLookupDirector createDsfSourceLocator(ILaunchConfiguration configuration, DsfSession session)
 			throws CoreException {
-		DsfSourceLookupDirector sourceLookupDirector = new DeeSourceLookupDirector(session);
+		DsfSourceLookupDirector sourceLookupDirector = new LangSourceLookupDirector(session);
 		
 		sourceLookupDirector.addParticipants( 
 				new ISourceLookupParticipant[]{ new DsfSourceLookupParticipant(session) } );

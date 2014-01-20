@@ -11,7 +11,7 @@
  * Warren Paul (Nokia) - Bug 217485, Bug 218342
  * Oyvind Harboe (oyvind.harboe@zylin.com) - Bug 225099
  *******************************************************************************/
-package org.dsource.ddt.debug.ui.actions;
+package melnorme.ide.debug.ui;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -32,9 +32,8 @@ import org.eclipse.ui.IWorkbenchPart;
  * Toggles a line breakpoint in a C/C++ editor.
  * 
  * @since 7.2
- * TODO: addapt to D Editor
  */
-public class DeeToggleBreakpointAdapter extends AbstractToggleBreakpointAdapter {
+public class LangToggleBreakpointAdapter extends AbstractToggleBreakpointAdapter {
 
 	@Override
 	protected ICLineBreakpoint findLineBreakpoint( String sourceHandle, IResource resource, int lineNumber ) throws CoreException {

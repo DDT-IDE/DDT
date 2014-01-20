@@ -11,6 +11,7 @@
 package org.dsource.ddt.debug.core;
 
 
+import melnorme.ide.debug.core.GdbLaunchDelegateExtension;
 import mmrnmhrm.core.launch.AbstractScriptLaunchConfigurationDelegateExtension;
 
 import org.dsource.ddt.ide.core.DeeNature;

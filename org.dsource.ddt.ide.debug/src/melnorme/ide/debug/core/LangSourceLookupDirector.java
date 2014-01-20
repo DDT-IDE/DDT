@@ -8,7 +8,9 @@
  * Contributors:
  * Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.debug.core;
+package melnorme.ide.debug.core;
+
+import melnorme.ide.debug.core._concrete.LangDebug;
 
 import org.eclipse.cdt.debug.core.sourcelookup.AbsolutePathSourceContainer;
 import org.eclipse.cdt.debug.core.sourcelookup.ProgramRelativePathSourceContainer;
@@ -26,17 +28,20 @@ import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
 
-public class DeeSourceLookupDirector extends DsfSourceLookupDirector {
+/**
+ * This class removes some CDT-specific lookup mechanisms
+ */
+public class LangSourceLookupDirector extends DsfSourceLookupDirector {
 	
 	protected DsfSession session;
 	
 	/** This should be used only for configuring containers and saving a memento. 
 	 * Otherwise, for full use,  a session must be provided. */
-	public DeeSourceLookupDirector() {
+	public LangSourceLookupDirector() {
 		this(null);
 	}
 	
-	public DeeSourceLookupDirector(DsfSession session) {
+	public LangSourceLookupDirector(DsfSession session) {
 		super(session);
 		this.session = session;
 	}
@@ -58,22 +63,22 @@ public class DeeSourceLookupDirector extends DsfSourceLookupDirector {
 		
 		return new ISourcePathComputer() {
 			
-			DeeSourcePathComputer deeSourcePathComputer = new DeeSourcePathComputer();
+			LangSourcePathComputer langSourcePathComputer = new LangSourcePathComputer();
 			
 			@Override
 			public ISourceContainer[] computeSourceContainers(ILaunchConfiguration configuration, IProgressMonitor monitor)
 					throws CoreException {
-				return deeSourcePathComputer.computeSourceContainers(configuration, monitor);
+				return langSourcePathComputer.computeSourceContainers(configuration, monitor);
 			}
 			
 			@Override
 			public String getId() {
-				return "org.dsource.ddt.debug.core.DeeSourceLookupDirector";
+				return LangDebug.LANG_SOURCE_LOOKUP_DIRECTOR;
 			}
 		};
 	} 
 	
-	public static class DeeSourcePathComputer implements ISourcePathComputerDelegate {
+	public static class LangSourcePathComputer implements ISourcePathComputerDelegate {
 		@Override
 		public ISourceContainer[] computeSourceContainers(ILaunchConfiguration configuration, IProgressMonitor monitor)
 				throws CoreException {
