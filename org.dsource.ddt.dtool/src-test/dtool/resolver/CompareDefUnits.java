@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import melnorme.utilbox.core.Function;
+import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.INamedElement;
 import dtool.tests.DToolBaseTest;

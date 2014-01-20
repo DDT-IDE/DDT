@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.core.Function;
+import melnorme.utilbox.core.fntypes.Function;
 
 /**
  * Miscelleanous String utilities 

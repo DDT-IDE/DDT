@@ -1,4 +1,4 @@
-package melnorme.utilbox.core;
+package melnorme.utilbox.core.fntypes;
 
 
 public interface VoidFunction<T> extends Function<T, Void> {

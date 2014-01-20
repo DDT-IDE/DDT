@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import melnorme.utilbox.core.VoidFunction;
+import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
 

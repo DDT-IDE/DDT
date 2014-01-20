@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import melnorme.utilbox.core.Function;
+import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.INamedElement;

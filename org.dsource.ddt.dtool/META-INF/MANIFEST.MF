@@ -26,5 +26,6 @@ Export-Package: descent.core.ddoc,
  dtool.tests;x-friends:="org.dsource.ddt.ide.core,org.dsource.ddt.ide.ui",
  dtool.util,
  melnorme.utilbox.core,
+ melnorme.utilbox.core.fntypes,
  melnorme.utilbox.misc,
  melnorme.utilbox.tree

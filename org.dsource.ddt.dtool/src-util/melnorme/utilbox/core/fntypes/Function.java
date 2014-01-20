@@ -1,4 +1,4 @@
-package melnorme.utilbox.core;
+package melnorme.utilbox.core.fntypes;
 
 public interface Function<T, R> {
 	
