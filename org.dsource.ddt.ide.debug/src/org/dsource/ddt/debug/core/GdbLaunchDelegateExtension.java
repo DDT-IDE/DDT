@@ -1,5 +1,7 @@
 package org.dsource.ddt.debug.core;
 
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
+
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupDirector;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupParticipant;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate;
@@ -11,8 +13,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ISourceLocator;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;
-
-import dtool.DToolBundle;
 
 public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 	
@@ -39,7 +39,7 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 		// Finally, make sure the program is a proper binary.
 		
 		// BM: this code is disabled because without a project the binary verifier defaults to ELF on any platform
-		if(DToolBundle.UNIMPLEMENTED_FUNCTIONALITY) {
+		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
 			LaunchUtils.verifyBinary(config, exePath);
 		}
 		return exePath;

@@ -12,7 +12,6 @@ package org.dsource.ddt.debug.ui;
 
 import org.dsource.ddt.ui.tabgroup.DeeMainLaunchConfigurationTab;
 import org.dsource.ddt.ui.tabgroup.DeeScriptArgumentsTab;
-import org.eclipse.cdt.dsf.gdb.internal.ui.launching.LocalApplicationCDebuggerTab;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
@@ -28,7 +27,7 @@ public class DeeDebugTabGroup extends AbstractLaunchConfigurationTabGroup {
 				new DeeMainLaunchConfigurationTab(),
 				new DeeScriptArgumentsTab(),
 				new EnvironmentTab(),
-				new LocalApplicationCDebuggerTab(),
+				new org.eclipse.cdt.dsf.gdb.internal.ui.launching.LocalApplicationCDebuggerTab(),
 				new SourceLookupTab(),
 				new CommonTab(),
 		};
