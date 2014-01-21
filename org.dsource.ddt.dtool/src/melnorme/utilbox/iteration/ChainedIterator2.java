@@ -9,7 +9,7 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 
-package melnorme.utilbox.misc2;
+package melnorme.utilbox.iteration;
 
 
 /**

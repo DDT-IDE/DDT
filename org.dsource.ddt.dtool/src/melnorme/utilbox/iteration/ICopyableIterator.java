@@ -1,4 +1,4 @@
-package melnorme.utilbox.misc2;
+package melnorme.utilbox.iteration;
 
 import java.util.Iterator;
 
