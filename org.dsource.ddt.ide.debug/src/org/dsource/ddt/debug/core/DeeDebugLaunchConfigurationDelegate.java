@@ -38,13 +38,18 @@ public class DeeDebugLaunchConfigurationDelegate extends DeeLaunchConfigurationD
 		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
 		cleanDLTKDebugConfig(workingCopy);
 		
+		// Setup CDT config parameters
 		String fullProgramPath = getProgramFullPath(configuration).toString();
+		String workingDirPath = getWorkingDirectoryOrDefault(configuration).toString();
 		// Need to pass raw args, because CDT will reevaluate variables.
-		String progArgs = getProgramArguments_Attribute(configuration); 
+		String progArgs = getProgramArguments_Attribute(configuration);
 		
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME, fullProgramPath);
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, progArgs);
-		// TODO: WORKING DIR, ENVIRONMENT
+		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, workingDirPath);
+		// Note, environment is already setup, because it uses standard attributes:
+		// ILaunchManager.ATTR_ENVIRONMENT_VARIABLES and ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES
+		
 		workingCopy.doSave();
 		
 		ILaunch launch = gdbLaunchDelegate.getLaunch(configuration, mode);

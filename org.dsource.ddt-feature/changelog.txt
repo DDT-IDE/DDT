@@ -7,6 +7,7 @@
  * Fixed issue #20: GDC incluce/d/*/ library location layout not recognized
  * Fixed issue #36: Editor/parser doesn't recognize new operator's nested class instantiation syntax. 
  * Updated UserGuide documentation: added info for debugging, Code Templates, Auto-Indent. Restructured sections and updated/removed old info.
+ * Fixed bug: working directory option of a D launch configuration not honored when run in debug mode.
  * Fixed bug: environment variables non-append option of a D launch configuration not honored.
 
 == DDT 0.9.0 (2013-11-14) ==
