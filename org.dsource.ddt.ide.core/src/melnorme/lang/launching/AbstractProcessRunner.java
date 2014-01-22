@@ -15,6 +15,7 @@ package melnorme.lang.launching;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -68,12 +69,12 @@ public abstract class AbstractProcessRunner {
 	
 	protected IPath workingDir;
 	protected IPath processFile;
-	protected List<String> processArguments;
+	protected String[] processArguments;
 	protected String[] environment;
 	protected Process sp;
 	
-	protected void initConfiguration(IPath workingDir, IPath processFile, List<String> processArgs, String[] environment)
-			throws CoreException {
+	public void initConfiguration(IPath workingDir, IPath processFile, String[] processArgs, 
+			String[] environment) throws CoreException {
 		this.workingDir = workingDir;
 		this.processFile = processFile;
 		this.processArguments = processArgs;
@@ -133,11 +134,9 @@ public abstract class AbstractProcessRunner {
 		return ArrayUtil.createFrom(items, String.class);
 	}
 	
-	public void prepareCommandLine(List<String> items) {
-		items.add(processFile.toOSString());
-		
-		List<String> scriptArgs = processArguments;
-		items.addAll(scriptArgs);
+	protected void prepareCommandLine(List<String> commandLine) {
+		commandLine.add(processFile.toOSString());
+		commandLine.addAll(Arrays.asList(processArguments));
 	}
 	
 	/**

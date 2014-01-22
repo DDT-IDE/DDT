@@ -11,24 +11,26 @@
 package mmrnmhrm.core.launch;
 
 
-import org.dsource.ddt.ide.core.DeeNature;
+import melnorme.ide.launching.ProcessSpawnInfo;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.dltk.launching.InterpreterConfig;
 
 public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegateExtension {
 	
 	@Override
-	public String getLanguageId() {
-		return DeeNature.NATURE_ID;
-	}
-	
-	@Override
-	protected void launch0(InterpreterConfig config, ILaunchConfiguration configuration, ILaunch launch,
+	protected void launchProcess(ProcessSpawnInfo config, ILaunchConfiguration configuration, ILaunch launch,
 			IProgressMonitor monitor) throws CoreException {
-		new DeeNativeRunner().run(config, launch, monitor);
+		
+		DeeNativeRunner deeNativeRunner = new DeeNativeRunner();
+		deeNativeRunner.initConfiguration(
+				config.workingDir,
+				config.processFile,
+				config.processArguments,
+				null); // TODO: environment
+		deeNativeRunner.run(launch, monitor);
 	}
 	
 }

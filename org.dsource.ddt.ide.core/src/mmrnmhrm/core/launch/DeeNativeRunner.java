@@ -10,39 +10,21 @@
  *******************************************************************************/
 package mmrnmhrm.core.launch;
 
-import java.util.List;
-
 import melnorme.lang.launching.AbstractBinaryRunner;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.dltk.launching.IInterpreterRunner;
-import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.LaunchingMessages;
 
-public class DeeNativeRunner extends AbstractBinaryRunner 
-	implements IInterpreterRunner 
-{
+public class DeeNativeRunner extends AbstractBinaryRunner {
 	
 	@Override
 	protected String getProcessType() {
 		return DeeLaunchConfigurationConstants.ID_DEE_PROCESS_TYPE;
 	}
 	
-	@Override
-	public void run(InterpreterConfig config, ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		IPath workingDirectoryPath = config.getWorkingDirectoryPath();
-		IPath scriptFilePath = config.getScriptFilePath();
-		List<String> scriptArgs = config.getScriptArgs();
-		String[] environment = config.getEnvironmentAsStringsIncluding(null); // Default: no additional vars are added
-		initConfiguration(workingDirectoryPath, scriptFilePath, scriptArgs, environment);
-
-		run(launch, monitor);
-	}
-
 	public void run(ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
