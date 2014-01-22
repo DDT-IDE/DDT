@@ -35,15 +35,6 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
 public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConfigurationDelegate {
 	
-	public static CoreException createCoreException(Throwable exception, int code) {
-		String message = exception.getMessage();
-		return createCoreException(exception, code, message);
-	}
-	
-	public static CoreException createCoreException(Throwable exception, int code, String message) {
-		return LaunchingCore.createCoreException(exception, code, message);
-	}
-	
 	public static IWorkspaceRoot getWorkspaceRoot() {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
@@ -57,7 +48,11 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 	protected IProject[] fOrderedProjects;
 	
 	protected CoreException abort(String message, Throwable exception) throws CoreException {
-		throw createCoreException(exception, LaunchingCore.LAUNCHING_CONFIG_ERROR, message);
+		throw LaunchingCore.createCoreException(exception, LaunchingCore.LAUNCHING_CONFIG_ERROR, message);
+	}
+	
+	protected CoreException fail(String messagePattern, Object... arguments) throws CoreException {
+		throw abort(MessageFormat.format(messagePattern, arguments), null);
 	}
 	
 	@Override
@@ -65,7 +60,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 			throws CoreException {
 		
 		if (monitor != null) {
-			monitor.subTask(LaunchingMessages.LCD_buildPrerequesite);
+			monitor.subTask(LaunchMessages.LCD_buildPrerequesite);
 		}
 		
 		fOrderedProjects = null;
@@ -125,7 +120,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 	}
 	
 	protected CoreException abort_UnsupportedMode(String mode) throws CoreException {
-		return abort(MessageFormat.format(LaunchingMessages.LCD_Error_UnsupportedMode, mode), null);
+		return fail(LaunchMessages.LCD_errINTERNAL_UnsupportedMode, mode);
 	}
 	
 	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
@@ -148,7 +143,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 		
 		try {
 			monitor.beginTask(
-				MessageFormat.format(LaunchingMessages.LCD_startingLaunchConfiguration, configuration.getName()),
+				MessageFormat.format(LaunchMessages.LCD_startingLaunchConfiguration, configuration.getName()),
 				10);
 			
 			final ProcessSpawnInfo config = createProcessSpawnInfo(configuration);
@@ -157,7 +152,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 			}
 			monitor.worked(3);
 			
-			monitor.subTask(LaunchingMessages.LCD_startingProcess);
+			monitor.subTask(LaunchMessages.LCD_startingProcess);
 			launchProcess(config, configuration, launch, new SubProgressMonitor(monitor, 7));
 			
 		} catch (CoreException ce) {
@@ -169,9 +164,9 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 	
 	protected ProcessSpawnInfo createProcessSpawnInfo(ILaunchConfiguration configuration) throws CoreException {
 		
-		IPath processFullPath = getProcessFullPath(configuration);
+		IPath processFullPath = getProgramFullPath(configuration);
 		
-		String[] processArgs = getProcessArguments(configuration);
+		String[] processArgs = getProgramArguments(configuration);
 		
 		IPath workingDirectory = getWorkingDirectoryOrDefault(configuration);
 		
@@ -183,21 +178,25 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 		return new ProcessSpawnInfo(processFullPath, processArgs, workingDirectory, configEnv, appendEnv);
 	}
 	
-	protected IPath getProcessFullPath(ILaunchConfiguration configuration) throws CoreException {
-		Path getProcessRelativePath = getProcessRelativePath(configuration);
+	protected IPath getProgramFullPath(ILaunchConfiguration configuration) throws CoreException {
+		Path getProcessRelativePath = getProgramRelativePath(configuration);
 		IProject project = getProject(configuration);
 		return project.getFile(getProcessRelativePath).getLocation();
 	}
 	
-	protected Path getProcessRelativePath(ILaunchConfiguration configuration) throws CoreException {
-		String attribValue = getProcessRelativePath_Attribute(configuration);
-		if (attribValue == null || attribValue.isEmpty()) {
-			abort(LaunchingMessages.LCD_processNotSpecified, null);
+	protected Path getProgramRelativePath(ILaunchConfiguration configuration) throws CoreException {
+		String attribValueRaw = getProcessRelativePath_Attribute(configuration);
+		if (attribValueRaw == null || attribValueRaw.isEmpty()) {
+			fail(LaunchMessages.LCD_errProcessNotSpecified);
 		}
-		return new Path(getVariableManager().performStringSubstitution(attribValue));
+		String expandedValue = getVariableManager().performStringSubstitution(attribValueRaw);
+		if (expandedValue.isEmpty()) {
+			fail(LaunchMessages.LCD_errProcessPathEmtpy);
+		}
+		return new Path(expandedValue);
 	}
 	
-	protected String[] getProcessArguments(ILaunchConfiguration configuration) throws CoreException {
+	protected String[] getProgramArguments(ILaunchConfiguration configuration) throws CoreException {
 		String argumentsRaw = getProgramArguments_Attribute(configuration);
 		String args = getVariableManager().performStringSubstitution(argumentsRaw);
 		return DebugPlugin.parseArguments(args);
@@ -230,8 +229,29 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 		return null;
 	}
 	
-	protected abstract void launchProcess(ProcessSpawnInfo config, ILaunchConfiguration configuration, 
-			ILaunch launch, IProgressMonitor monitor) 
-			throws CoreException;
-
+	@SuppressWarnings("unused")
+	protected void launchProcess(ProcessSpawnInfo processSpawnInfo, ILaunchConfiguration configuration, 
+			ILaunch launch, IProgressMonitor monitor) throws CoreException {
+		
+		if(processSpawnInfo.programPath == null) {
+			fail(LaunchMessages.LCD_errProcessPathEmtpy);
+		}
+		
+		EclipseProcessLauncher processLauncher = new EclipseProcessLauncher(
+				processSpawnInfo.workingDir,
+				processSpawnInfo.programPath,
+				processSpawnInfo.programArguments,
+				processSpawnInfo.environment,
+				processSpawnInfo.appendEnv,
+				LaunchingCore.PROCESS_TYPE
+				);
+		
+		try {
+			processLauncher.launchProcess(launch);
+			monitor.worked(7);
+		} finally {
+			monitor.done();
+		}
+	}
+	
 }

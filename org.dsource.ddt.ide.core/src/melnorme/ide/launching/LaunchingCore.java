@@ -1,6 +1,7 @@
 package melnorme.ide.launching;
 
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.launch.DeeLaunchConfigurationConstants;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -10,6 +11,7 @@ public class LaunchingCore {
 	
 	// TODO: truly make this melnorme.lang independent.
 	public static final String PLUGIN_ID = DeeCore.PLUGIN_ID;
+	public static final String PROCESS_TYPE = DeeLaunchConfigurationConstants.ID_DEE_PROCESS_TYPE;
 	
 	public static final int LAUNCHING_CONFIG_ERROR = 101;
 	

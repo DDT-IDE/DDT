@@ -4,33 +4,69 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
- *     Bruno Medeiros - initial API and implementation
+ * Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package mmrnmhrm.core.launch;
 
 
-import melnorme.ide.launching.ProcessSpawnInfo;
+import melnorme.ide.launching.AbstractLangLaunchConfigurationDelegate;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.Launch;
+import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
+import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 
-public class DeeLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegateExtension {
+/**
+ * D {@link LaunchConfigurationDelegate}, based on DLTK properties. 
+ */
+public class DeeLaunchConfigurationDelegate extends AbstractLangLaunchConfigurationDelegate {
 	
 	@Override
-	protected void launchProcess(ProcessSpawnInfo config, ILaunchConfiguration configuration, ILaunch launch,
-			IProgressMonitor monitor) throws CoreException {
+	protected String getProjectAttribute(ILaunchConfiguration config) throws CoreException {
+		return config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
+	}
+	
+	@Override
+	protected String getProcessRelativePath_Attribute(ILaunchConfiguration config) throws CoreException {
+		return config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, (String) null);
+	}
+	
+	@Override
+	protected String getProgramArguments_Attribute(ILaunchConfiguration config) throws CoreException {
+		return config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_SCRIPT_ARGUMENTS, "");
+	}
+	
+	@Override
+	protected String getWorkingDirectory_Attribute(ILaunchConfiguration config) throws CoreException {
+		return config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, (String) null);
+	}
+	
+	@Override
+	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
+		// Remove some DLTK attributes that affect how our launch runs
+		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+		cleanDLTKDebugConfig(workingCopy);
+		workingCopy.doSave();
+		// Note: DebugPlugin.ATTR_PROCESS_FACTORY_ID is also changed by CDT when launching in DEBUG mode
 		
-		DeeNativeRunner deeNativeRunner = new DeeNativeRunner();
-		deeNativeRunner.initConfiguration(
-				config.workingDir,
-				config.processFile,
-				config.processArguments,
-				null); // TODO: environment
-		deeNativeRunner.run(launch, monitor);
+		return new Launch(configuration, mode, null);
+	}
+	
+	public static void cleanDLTKDebugConfig(ILaunchConfigurationWorkingCopy workingCopy) {
+		workingCopy.removeAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID);
+		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
+		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE, false);
+	}
+	
+	@Override
+	protected ILaunch getLaunchForDebugMode(ILaunchConfiguration configuration, String mode) throws CoreException {
+		throw abort_UnsupportedMode(mode);
 	}
 	
 }

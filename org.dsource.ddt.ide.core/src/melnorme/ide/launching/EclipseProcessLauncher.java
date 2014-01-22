@@ -8,12 +8,17 @@
  
  * Contributors:
  *     ??? (DLTK) - initial API and implementation
- *     Bruno Medeiros - modifications, removed most DLTK dependencies
+ *     Bruno Medeiros - modifications, removed DLTK dependencies
  *******************************************************************************/
-package melnorme.lang.launching;
+package melnorme.ide.launching;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -23,12 +28,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -39,93 +41,93 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.internal.launching.DLTKLaunchingPlugin;
-import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.LaunchingMessages;
-import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.osgi.util.NLS;
 
-//BM: Copied from org.eclipse.dltk.launching.AbstractInterpreterRunner @ DLTK 5.0
+//BM: Partially based on org.eclipse.dltk.launching.AbstractInterpreterRunner @ DLTK 5.0
 /**
- * Abstract implementation of a interpreter runner.
- * <p>
- * Clients implementing interpreter runners should subclass this class.
- * </p>
- * 
- * @see IInterpreterRunner
- * 
+ * Helper class to launch an Eclipse IProcess.
  */
-public abstract class AbstractProcessRunner {
+public class EclipseProcessLauncher {
 	
-	protected void abort(String message, Throwable exception) throws CoreException {
-		throw new CoreException(new Status(IStatus.ERROR,
-			DLTKLaunchingPlugin.PLUGIN_ID, ScriptLaunchConfigurationConstants.ERR_INTERNAL_ERROR, message, exception));
-	}
+	protected final IPath workingDir;
+	protected final IPath processFile;
+	protected final String[] processArguments;
+	protected final Map<String, String> environment;
+	protected final boolean appendEnvironment;
 	
-	protected void abort(String message, Throwable exception, int code) throws CoreException {
-		throw new CoreException(new Status(IStatus.ERROR, 
-			DLTKLaunchingPlugin.PLUGIN_ID, code, message, exception));
-	}
+	protected String processType;
 	
-	protected IPath workingDir;
-	protected IPath processFile;
-	protected String[] processArguments;
-	protected String[] environment;
-	protected Process sp;
-	
-	public void initConfiguration(IPath workingDir, IPath processFile, String[] processArgs, 
-			String[] environment) throws CoreException {
+	public EclipseProcessLauncher(IPath workingDir, IPath processFile, String[] processArgs, 
+			Map<String, String> environment, boolean appendEnvironment, String processType) {
 		this.workingDir = workingDir;
 		this.processFile = processFile;
+		assertNotNull(processFile);
 		this.processArguments = processArgs;
 		this.environment = environment;
+		this.appendEnvironment = appendEnvironment;
 		
-		
-		if (!workingDir.toFile().exists()) {
-			abort(NLS.bind(LaunchMessages.errWorkingDirectoryDoesntExist, workingDir.toString()), null);
-		}
-		if (processFile == null) {
-			abort(LaunchMessages.errExecutableFileNull, null);
-		}
-		
-		if(!processFile.toFile().exists()) {
-			abort(NLS.bind(LaunchMessages.errExecutableFileDoesntExist, processFile.toString()), null);
-		}
+		this.processType = processType;
+	}
+	
+	protected CoreException abort(String message, Throwable exception) throws CoreException {
+		throw LaunchingCore.createCoreException(exception, LaunchingCore.LAUNCHING_CONFIG_ERROR, message);
+	}
+	
+	protected CoreException fail(String messagePattern, Object... arguments) throws CoreException {
+		throw abort(MessageFormat.format(messagePattern, arguments), null);
 	}
 	
 	protected IProcess launchProcess(final ILaunch launch) throws CoreException {
+		if(workingDir != null && !workingDir.toFile().exists()) {
+			fail(LaunchMessages.errWorkingDirectoryDoesntExist, workingDir);
+		}
+		if(!processFile.toFile().exists()) {
+			fail(LaunchMessages.errExecutableFileDoesntExist, processFile);
+		}
+		
 		String[] cmdLine = getCommandLine();
 		Process sp = newSystemProcess(cmdLine);
 		
 		final String cmdLineLabel = renderCommandLineLabel(cmdLine);
 		final String baseProcessLabel = renderBaseProcessLabel(cmdLine);
-		return newProcessWithLabelUpdater(launch, cmdLineLabel, baseProcessLabel, sp);
+		return newEclipseProcessWithLabelUpdater(launch, cmdLineLabel, baseProcessLabel, sp);
 	}
 	
+	/** Create the {@link java.lang.Process}. */
 	protected Process newSystemProcess(String[] cmdLine) throws CoreException {
 		
-		if(DLTKLaunchingPlugin.TRACE_EXECUTION) {
-			traceExecution(cmdLine, workingDir, environment);
-		}
-		
-		Process sp = DebugPlugin.exec(cmdLine, workingDir.toFile(), environment);
-		if (sp == null) {
-			abort(LaunchingMessages.AbstractInterpreterRunner_executionWasCancelled, null);
+		File workingDirectory = workingDir.toFile();
+		Process sp= null;
+		try {
+			
+			ProcessBuilder processBuilder = new ProcessBuilder(cmdLine).directory(workingDirectory);
+			setupEnvironment(processBuilder);
+			
+			sp = processBuilder.start();
+		} catch (IOException e) {
+			abort(LaunchMessages.errNewJavaProcessFailed, e);
 		}
 		return sp;
 	}
 	
-	protected static void traceExecution(String[] cmdLine, IPath workingDirectory, String[] environment) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("-----------------------------------------------\n");
-		sb.append("Command line: ").append(StringUtil.collToString(cmdLine, "●")).append('\n');
-		sb.append("Working directory: ").append(workingDirectory).append('\n');
-		sb.append("Environment:\n");
-		for (int i = 0; i < environment.length; i++) {
-			sb.append('\t').append(environment[i]).append('\n');
+	protected void setupEnvironment(ProcessBuilder processBuilder) throws CoreException {
+		try {
+			// This is a non-standard map that can throw some exceptions, see doc
+			Map<String, String> env = processBuilder.environment();
+			if(!appendEnvironment) {
+				env.clear();
+			}
+			
+			if(environment != null) {
+				for (String key : environment.keySet()) {
+					String value = environment.get(key);
+					env.put(key, value);
+				}
+			}
+		} catch (UnsupportedOperationException | IllegalArgumentException e) {
+			abort(LaunchMessages.errFailedToSetupProcessEnvironment, e);
 		}
-		sb.append("-----------------------------------------------\n");
-		System.out.println(sb);
 	}
 	
 	protected final String[] getCommandLine() {
@@ -139,45 +141,35 @@ public abstract class AbstractProcessRunner {
 		commandLine.addAll(Arrays.asList(processArguments));
 	}
 	
-	/**
-	 * Returns a new process aborting if the process could not be created.
-	 * 
-	 * @param launch
-	 *            the launch the process is contained in
-	 * @param sp
-	 *            the system process to wrap
-	 * @param label
-	 *            the label assigned to the process
-	 * @param attributes
-	 *            values for the attribute map
-	 * @return the new process
-	 * @throws CoreException
-	 *             problems occurred creating the process
-	 * @since 2.0
-	 * 
-	 */
-	protected IProcess newProcess(ILaunch launch, Process sp, String label, Map<String, String> attributes) 
-			throws CoreException {
+	public IProcess newEclipseProcessWithLabelUpdater(ILaunch launch, String cmdLineLabel, String baseProcessLabel, 
+		Process sp) throws CoreException {
+		final AtomicReference<IProcess> processRef = new AtomicReference<>(null);
 		
-		this.sp = sp;
-		IProcess process = DebugPlugin.newProcess(launch, sp, label, attributes);
+		DebugPlugin.getDefault().addDebugEventListener(new ProcessLabelListener(launch, processRef));
+		IProcess process = newEclipseProcess(launch, sp, baseProcessLabel);
+		processRef.set(process);
+		process.setAttribute(IProcess.ATTR_CMDLINE, cmdLineLabel);
+		updateProcessLabel(launch, process);
+		return process;
+	}
+	
+	protected IProcess newEclipseProcess(ILaunch launch, Process sp, String label) throws CoreException {
+		
+		IProcess process = DebugPlugin.newProcess(launch, sp, label, getProcessAttributes());
 		
 		if (process == null) {
 			sp.destroy();
-			abort(LaunchingMessages.AbstractInterpreterRunner_0, null);
+			fail(LaunchMessages.errINTERNAL_newIProcessFailed);
 		}
 		return process;
 	}
 	
-	
-	protected Map<String, String> getDefaultProcessMap() {
+	protected Map<String, String> getProcessAttributes() {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put(IProcess.ATTR_PROCESS_TYPE, getProcessType());
+		if(processType != null) {
+			map.put(IProcess.ATTR_PROCESS_TYPE, processType);
+		}
 		return map;
-	}
-	
-	protected String getProcessType() {
-		return ScriptLaunchConfigurationConstants.ID_SCRIPT_PROCESS_TYPE;
 	}
 	
 	protected static String renderBaseProcessLabel(String[] commandLine) {
@@ -222,18 +214,6 @@ public abstract class AbstractProcessRunner {
 			}
 		}
 		return buf.toString();
-	}
-	
-	public IProcess newProcessWithLabelUpdater(ILaunch launch, String cmdLineLabel, String baseProcessLabel, 
-		Process sp) throws CoreException {
-		final AtomicReference<IProcess> processRef = new AtomicReference<>(null);
-		
-		DebugPlugin.getDefault().addDebugEventListener(new ProcessLabelListener(launch, processRef));
-		IProcess process = newProcess(launch, sp, baseProcessLabel, getDefaultProcessMap());
-		processRef.set(process);
-		process.setAttribute(IProcess.ATTR_CMDLINE, cmdLineLabel);
-		updateProcessLabel(launch, process);
-		return process;
 	}
 	
 	protected final class ProcessLabelListener implements IDebugEventSetListener {

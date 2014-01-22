@@ -6,17 +6,17 @@ import org.eclipse.core.runtime.IPath;
 
 public class ProcessSpawnInfo {
 	
+	public IPath programPath;
+	public String[] programArguments;
 	public IPath workingDir;
-	public IPath processFile;
-	public String[] processArguments;
 	public Map<String, String> environment;
 	public boolean appendEnv;
 	
-	public ProcessSpawnInfo(IPath processFile, String[] processArguments, IPath workingDir, 
+	public ProcessSpawnInfo(IPath programPath, String[] programArguments, IPath workingDir, 
 			Map<String, String> environment, boolean appendEnv) {
+		this.programPath = programPath;
+		this.programArguments = programArguments;
 		this.workingDir = workingDir;
-		this.processFile = processFile;
-		this.processArguments = processArguments;
 		this.environment = environment;
 		this.appendEnv = appendEnv;
 	}

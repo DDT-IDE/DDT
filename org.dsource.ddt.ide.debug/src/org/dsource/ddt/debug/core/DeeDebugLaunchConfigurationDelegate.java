@@ -13,7 +13,7 @@ package org.dsource.ddt.debug.core;
 
 import melnorme.ide.debug.core.GdbLaunchDelegateExtension;
 import melnorme.ide.launching.ProcessSpawnInfo;
-import mmrnmhrm.core.launch.AbstractScriptLaunchConfigurationDelegateExtension;
+import mmrnmhrm.core.launch.DeeLaunchConfigurationDelegate;
 
 import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
 import org.eclipse.core.runtime.CoreException;
@@ -22,13 +22,13 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
-public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegateExtension {
+public class DeeDebugLaunchConfigurationDelegate extends DeeLaunchConfigurationDelegate {
 	
 	protected final GdbLaunchDelegateExtension gdbLaunchDelegate = new GdbLaunchDelegateExtension();
 	
 	@Override
 	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
-		throw abort("Internal error: can only use this delegate for debug launches", null);
+		throw abort_UnsupportedMode(mode); // Run not supported
 	}
 	
 	@Override
@@ -36,9 +36,9 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 		
 		// Remove some DLTK attributes that affect how our launch runs
 		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
-		AbstractScriptLaunchConfigurationDelegateExtension.cleanDLTKDebugConfig(workingCopy);
+		cleanDLTKDebugConfig(workingCopy);
 		
-		String fullProgramPath = getProcessFullPath(configuration).toString();
+		String fullProgramPath = getProgramFullPath(configuration).toString();
 		// Need to pass raw args, because CDT will reevaluate variables.
 		String progArgs = getProgramArguments_Attribute(configuration); 
 		
@@ -52,8 +52,8 @@ public class DeeDebugLaunchConfigurationDelegate extends AbstractScriptLaunchCon
 	}
 	
 	@Override
-	protected void launchProcess(ProcessSpawnInfo config, ILaunchConfiguration configuration, ILaunch launch,
-			IProgressMonitor monitor) throws CoreException {
+	protected void launchProcess(ProcessSpawnInfo processSpawnInfo, ILaunchConfiguration configuration, 
+			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		String mode = launch.getLaunchMode();
 		gdbLaunchDelegate.launch(configuration, mode, launch, monitor);
 	}
