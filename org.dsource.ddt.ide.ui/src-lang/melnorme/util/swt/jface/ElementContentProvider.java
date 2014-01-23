@@ -1,4 +1,4 @@
-package melnorme.util.ui.jface;
+package melnorme.util.swt.jface;
 
 import melnorme.utilbox.tree.IElement;
 

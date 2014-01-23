@@ -26,7 +26,7 @@ public class BaseComposite extends Composite {
 		SWTUtil.setRandomDebugColor(this);
 		
 		if(parent.getLayout() instanceof GridLayout) {
-			setLayoutData(LayoutUtil.newRowGridData());
+			setLayoutData(SWTLayoutUtil.newRowGridData());
 		}
 	}
 

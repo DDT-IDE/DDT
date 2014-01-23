@@ -12,7 +12,7 @@ package mmrnmhrm.ui.editor;
 
 import java.util.ArrayList;
 
-import melnorme.util.ui.jface.ElementContentProvider;
+import melnorme.util.swt.jface.ElementContentProvider;
 import melnorme.utilbox.tree.IElement;
 
 import org.eclipse.jface.viewers.Viewer;

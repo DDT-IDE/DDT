@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.views;
 
-import melnorme.util.ui.jface.SimpleLabelProvider;
+import melnorme.util.swt.jface.SimpleLabelProvider;
 
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
