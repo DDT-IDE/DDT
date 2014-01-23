@@ -10,7 +10,7 @@
  *     ??? (DLTK) - initial API and implementation
  *     Bruno Medeiros - modifications, removed DLTK dependencies
  *******************************************************************************/
-package melnorme.ide.launching;
+package melnorme.lang.ide.launching;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;

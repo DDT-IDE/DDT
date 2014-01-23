@@ -12,7 +12,7 @@ package org.dsource.ddt.debug.core;
 
 
 import melnorme.ide.debug.core.GdbLaunchDelegateExtension;
-import melnorme.ide.launching.ProcessSpawnInfo;
+import melnorme.lang.ide.launching.ProcessSpawnInfo;
 import mmrnmhrm.core.launch.DeeLaunchConfigurationDelegate;
 
 import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;

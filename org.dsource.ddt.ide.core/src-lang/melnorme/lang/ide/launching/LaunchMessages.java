@@ -1,4 +1,4 @@
-package melnorme.ide.launching;
+package melnorme.lang.ide.launching;
 
 public class LaunchMessages {
 	

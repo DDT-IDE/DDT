@@ -1,16 +1,14 @@
 package org.dsource.ddt.ui;
 
+import melnorme.lang.ide.ui.LangPlugin;
 import melnorme.swtutil.SWTUtilExt;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.build.DeeProjectBuilder;
-import mmrnmhrm.lang.ui.InitializeAfterLoadJob;
-import mmrnmhrm.lang.ui.LangPlugin;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.launch.DeeBuilderUIListener;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.osgi.framework.Bundle;
@@ -29,7 +27,6 @@ public class DeeUIPlugin extends LangPlugin {
 	// ID to start the debug plugin automatically, if present
 	private static final String DEBUG_PLUGIN_ID = "org.dsource.ddt.ide.debug";
 	
-	public static boolean initialized; 
 	protected static DeeUIPlugin pluginInstance;
 	
 	/** Returns the plugin instance. */
@@ -57,7 +54,7 @@ public class DeeUIPlugin extends LangPlugin {
 		listener = new DeeBuilderUIListener();
 		DeeProjectBuilder.addDataListener(listener);
 		
-		(new InitializeAfterLoadJob()).schedule();
+		startInitializeAfterLoadJob();
 	}
 	
 	@Override
@@ -76,11 +73,6 @@ public class DeeUIPlugin extends LangPlugin {
 		SWTUtilExt.enableDebugColorHelpers = Platform.inDebugMode();
 		
 		startDebugPlugin();
-	}
-	
-	public static void initializeAfterLoad(IProgressMonitor monitor) throws CoreException {
-		// nothing to do
-		monitor.done();
 	}
 	
 	private static void startDebugPlugin() {

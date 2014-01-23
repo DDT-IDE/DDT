@@ -1,6 +1,5 @@
-package mmrnmhrm.core;
+package melnorme.lang.ide.core;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -13,7 +12,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelStatusConstants;
-import org.eclipse.dltk.core.PreferencesLookupDelegate;
 
 public abstract class LangCore extends Plugin {
 	
@@ -23,8 +21,10 @@ public abstract class LangCore extends Plugin {
 		
 	}
 	
-	private static Plugin getInstance() {
-		return DeeCore.getInstance();
+	public static String PLUGIN_ID = LangCore_Actual.PLUGIN_ID;
+	
+	public static Plugin getInstance() {
+		return LangCore_Actual.getInstance();
 	}
 	
 	/** Convenience method to get the WorkspaceRoot. */
@@ -44,7 +44,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Creates a status describing an error in this plugin. */
 	public static Status createErrorStatus(String msg, Exception e) {
-		return new Status(IStatus.ERROR, DeeCore.PLUGIN_ID, IModelStatusConstants.INTERNAL_ERROR, msg, e); 
+		return new Status(IStatus.ERROR, PLUGIN_ID, IModelStatusConstants.INTERNAL_ERROR, msg, e); 
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */
@@ -73,8 +73,8 @@ public abstract class LangCore extends Plugin {
 	
 	/** Logs the given message, creating a new warning status for this plugin. */
 	public static void logWarning(String message) {
-		getInstance().getLog().log(new Status(IStatus.WARNING, DeeCore.PLUGIN_ID,
-						IModelStatusConstants.INTERNAL_ERROR, message, null));
+		getInstance().getLog().log(
+				new Status(IStatus.WARNING, PLUGIN_ID, IModelStatusConstants.INTERNAL_ERROR, message, null));
 	}
 	
 	
@@ -93,19 +93,4 @@ public abstract class LangCore extends Plugin {
 		run(action, ResourcesPlugin.getWorkspace().getRoot(), monitor);
 	}
 	
-	
-	/** Runs the given action, if an exception occurs log it. */
-	public static void executeChecked(IWorkspaceRunnable action, IProgressMonitor monitor) {
-		try {
-			run(action, ResourcesPlugin.getWorkspace().getRoot(), monitor);
-		} catch (CoreException e) {
-			log(e);
-		}
-	}
-	
-	protected final PreferencesLookupDelegate preferencesLookup = new PreferencesLookupDelegate((IProject) null);
-	
-	public PreferencesLookupDelegate getPreferencesLookup() {
-		return preferencesLookup;
-	}
 }

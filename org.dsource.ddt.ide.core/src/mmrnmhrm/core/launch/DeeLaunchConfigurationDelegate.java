@@ -11,7 +11,7 @@
 package mmrnmhrm.core.launch;
 
 
-import melnorme.ide.launching.AbstractLangLaunchConfigurationDelegate;
+import melnorme.lang.ide.launching.AbstractLangLaunchConfigurationDelegate;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;

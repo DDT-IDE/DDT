@@ -9,7 +9,7 @@
  * 		DLTK project - initial code
  *      Bruno Medeiros - reimplementation, removed DLTK dependencies
  *******************************************************************************/
-package melnorme.ide.launching;
+package melnorme.lang.ide.launching;
 
 import java.text.MessageFormat;
 import java.util.Map;

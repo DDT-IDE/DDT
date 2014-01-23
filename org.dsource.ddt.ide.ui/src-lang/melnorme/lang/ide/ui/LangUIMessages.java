@@ -8,25 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.lang.ui;
+package melnorme.lang.ide.ui;
 
 import org.eclipse.osgi.util.NLS;
 
 public final class LangUIMessages extends NLS {
-
-	private static final String BUNDLE_NAME= "mmrnmhrm.lang.ui.LangUIMessages"; //$NON-NLS-1$
-
-	private LangUIMessages() {
-		// Do not instantiate
-	}
-
-	public static String LangPlugin_internal_error;
 	
+	private LangUIMessages() {} // Do not instantiate
+	
+	public static String LangPlugin_internal_error;
 	public static String ExceptionDialog_seeErrorLogMessage;
 	
 	
+	public static String InitializeAfterLoadJob_starter_job_name;
+	public static String LangPlugin_initializing_ui;
+	
 	static {
-		NLS.initializeMessages(BUNDLE_NAME, LangUIMessages.class);
+		NLS.initializeMessages(LangUIMessages.class.getCanonicalName() + "_Actual", LangUIMessages.class);
 	}
-
+	
 }

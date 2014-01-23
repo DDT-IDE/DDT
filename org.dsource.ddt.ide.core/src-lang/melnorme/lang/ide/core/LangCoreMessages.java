@@ -1,4 +1,4 @@
-package mmrnmhrm.core;
+package melnorme.lang.ide.core;
 
 public class LangCoreMessages {
 

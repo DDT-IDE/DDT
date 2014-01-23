@@ -8,11 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.ide.launching;
+package melnorme.lang.ide.launching;
 
 import java.util.Map;
 
-import mmrnmhrm.core.LangCore;
+import melnorme.lang.ide.core.LangCore;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
