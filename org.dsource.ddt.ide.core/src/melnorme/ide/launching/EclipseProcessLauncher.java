@@ -25,26 +25,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.debug.core.DebugEvent;
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.dltk.compiler.util.Util;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.launching.LaunchingMessages;
-import org.eclipse.osgi.util.NLS;
 
-//BM: Partially based on org.eclipse.dltk.launching.AbstractInterpreterRunner @ DLTK 5.0
 /**
  * Helper class to launch an Eclipse IProcess.
  */
@@ -89,9 +78,7 @@ public class EclipseProcessLauncher {
 		String[] cmdLine = getCommandLine();
 		Process sp = newSystemProcess(cmdLine);
 		
-		final String cmdLineLabel = renderCommandLineLabel(cmdLine);
-		final String baseProcessLabel = renderBaseProcessLabel(cmdLine);
-		return newEclipseProcessWithLabelUpdater(launch, cmdLineLabel, baseProcessLabel, sp);
+		return newEclipseProcessWithLabelUpdater(launch, cmdLine, sp);
 	}
 	
 	/** Create the {@link java.lang.Process}. */
@@ -141,27 +128,22 @@ public class EclipseProcessLauncher {
 		commandLine.addAll(Arrays.asList(processArguments));
 	}
 	
-	public IProcess newEclipseProcessWithLabelUpdater(ILaunch launch, String cmdLineLabel, String baseProcessLabel, 
-		Process sp) throws CoreException {
-		final AtomicReference<IProcess> processRef = new AtomicReference<>(null);
+	public IProcess newEclipseProcessWithLabelUpdater(ILaunch launch, String[] cmdLine, Process sp) 
+			throws CoreException {
 		
-		DebugPlugin.getDefault().addDebugEventListener(new ProcessLabelListener(launch, processRef));
-		IProcess process = newEclipseProcess(launch, sp, baseProcessLabel);
-		processRef.set(process);
+		final String cmdLineLabel = renderCommandLineLabel(cmdLine);
+		final String processLabel = renderProcessLabel();
+		
+		IProcess process = newEclipseProcess(launch, sp, processLabel);
 		process.setAttribute(IProcess.ATTR_CMDLINE, cmdLineLabel);
-		updateProcessLabel(launch, process);
+		
 		return process;
 	}
 	
 	protected IProcess newEclipseProcess(ILaunch launch, Process sp, String label) throws CoreException {
-		
-		IProcess process = DebugPlugin.newProcess(launch, sp, label, getProcessAttributes());
-		
-		if (process == null) {
-			sp.destroy();
-			fail(LaunchMessages.errINTERNAL_newIProcessFailed);
-		}
-		return process;
+		// We ignore process factories, and create the class ourselves:
+		return new RuntimeProcessExtension(launch, sp, label, getProcessAttributes());
+		//return DebugPlugin.newProcess(launch, sp, label, getProcessAttributes());
 	}
 	
 	protected Map<String, String> getProcessAttributes() {
@@ -172,112 +154,17 @@ public class EclipseProcessLauncher {
 		return map;
 	}
 	
-	protected static String renderBaseProcessLabel(String[] commandLine) {
-		String format = LaunchingMessages.StandardInterpreterRunner;
-		String timestamp = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-				DateFormat.MEDIUM).format(new Date(System.currentTimeMillis()));
-		return NLS.bind(format, commandLine[0], timestamp);
+	protected static final DateFormat PROCESS_LABEL_DATE_FORMAT = 
+			DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+	
+	protected String renderProcessLabel() {
+		String timestampLabel = PROCESS_LABEL_DATE_FORMAT.format(new Date(System.currentTimeMillis()));
+		String processFilePath = processFile.toOSString();
+		return MessageFormat.format("{0} ({1})", processFilePath, timestampLabel);
 	}
-
-	/**
-	 * String representation of the command line
-	 * 
-	 * @param commandLine
-	 * @return
-	 */
+	
 	protected static String renderCommandLineLabel(String[] commandLine) {
-		if (commandLine.length == 0)
-			return Util.EMPTY_STRING;
-		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < commandLine.length; i++) {
-			if (i != 0) {
-				buf.append(' ');
-			}
-			char[] characters = commandLine[i].toCharArray();
-			StringBuffer command = new StringBuffer();
-			boolean containsSpace = false;
-			for (int j = 0; j < characters.length; j++) {
-				char character = characters[j];
-				if (character == '\"') {
-					command.append('\\');
-				} else if (character == ' ') {
-					containsSpace = true;
-				}
-				command.append(character);
-			}
-			if (containsSpace) {
-				buf.append('\"');
-				buf.append(command.toString());
-				buf.append('\"');
-			} else {
-				buf.append(command.toString());
-			}
-		}
-		return buf.toString();
-	}
-	
-	protected final class ProcessLabelListener implements IDebugEventSetListener {
-		protected final ILaunch launch;
-		protected final AtomicReference<IProcess> process;
-		
-		public ProcessLabelListener(ILaunch launch, AtomicReference<IProcess> process) {
-			this.launch = launch;
-			this.process = process;
-		}
-		
-		@Override
-		public void handleDebugEvents(DebugEvent[] events) {
-			for (int i = 0; i < events.length; i++) {
-				DebugEvent event = events[i];
-				if (event.getSource().equals(process.get())) {
-					if (event.getKind() == DebugEvent.CHANGE || event.getKind() == DebugEvent.TERMINATE) {
-						updateProcessLabel(launch, process.get());
-						if (event.getKind() == DebugEvent.TERMINATE) {
-							DebugPlugin.getDefault().removeDebugEventListener(this);
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	protected static String computeName(final ILaunch launch, final IProcess process) {
-		StringBuffer buffer = new StringBuffer();
-		int exitValue = 0;
-		try {
-			exitValue = process.getExitValue();
-		} catch (DebugException e1) {
-			// DLTKCore.error(e1);
-			exitValue = 0;// Seems not available yet
-		}
-		if (exitValue != 0) {
-			buffer.append("<abnormal exit code:" + exitValue + "> ");
-		}
-		String type = null;
-		ILaunchConfiguration launchConfiguration = launch.getLaunchConfiguration();
-		if (launchConfiguration != null) {
-			try {
-				ILaunchConfigurationType launchConfigType = launchConfiguration.getType();
-				if (launchConfigType != null) {
-					type = launchConfigType.getName();
-				}
-			} catch (CoreException e) {
-				DLTKCore.error(e);
-			}
-			buffer.append(launchConfiguration.getName());
-		}
-		if (type != null) {
-			buffer.append(" ["); //$NON-NLS-1$
-			buffer.append(type);
-			buffer.append("] "); //$NON-NLS-1$
-		}
-		buffer.append(process.getLabel());
-		return buffer.toString();
-	}
-	
-	protected static void updateProcessLabel(final ILaunch launch, final IProcess process) {
-		String computedName = computeName(launch, process);
-		process.setAttribute(IProcess.ATTR_PROCESS_LABEL, computedName);
+		return StringUtil.collToString(commandLine, "\n");
 	}
 	
 }

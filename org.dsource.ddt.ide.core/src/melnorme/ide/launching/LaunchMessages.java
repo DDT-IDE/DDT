@@ -24,6 +24,5 @@ public class LaunchMessages {
 			"Failed to setup process environment.";
 	public static final String errNewJavaProcessFailed = 
 			"Failed to create a child process.";
-	public static final String errINTERNAL_newIProcessFailed = 
-			"Internal error: an Eclipse IProcess could not be created for the launch";
+	
 }
