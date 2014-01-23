@@ -1,4 +1,4 @@
-package melnorme.ide.debug.core;
+package melnorme.lang.ide.debug.core;
 
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 

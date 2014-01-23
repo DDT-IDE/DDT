@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
-            class="melnorme.ide.debug.core.LangSourceLookupDirector"
+            class="melnorme.lang.ide.debug.core.LangSourceLookupDirector"
             id="org.dsource.ddt.ide.debug.sourceLocator"
             name="D Source Locator">
       </sourceLocator>
@@ -34,7 +34,7 @@
    <extension
          point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
       <toggleTargetFactory
-            class="melnorme.ide.debug.ui.LangToggleBreakpointsTargetFactory"
+            class="melnorme.lang.ide.debug.ui.LangToggleBreakpointsTargetFactory"
             id="org.dsource.ddt.ide.debug.toggleTargetFactory">
          <enablement>
             <instanceof

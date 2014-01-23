@@ -8,16 +8,13 @@
  * Contributors:
  * Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.ide.debug.ui;
+package melnorme.lang.ide.debug.ui;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import melnorme.ide.debug.ui._concrete.DebugMessages;
-import melnorme.ide.debug.ui._concrete.DebugUI;
 
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTargetFactory;

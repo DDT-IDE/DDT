@@ -1,6 +1,6 @@
-package melnorme.ide.debug.ui._concrete;
+package melnorme.lang.ide.debug.ui;
 
-public class DebugMessages {
+public class DebugMessages_Actual {
 	
 	public static final String LANG_BREAKPOINT_TARGET_DESCRIPTION = 
 			"Breakpoint for D language files and elements.";

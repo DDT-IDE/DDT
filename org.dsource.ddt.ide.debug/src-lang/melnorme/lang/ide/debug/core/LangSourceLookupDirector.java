@@ -8,9 +8,7 @@
  * Contributors:
  * Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.ide.debug.core;
-
-import melnorme.ide.debug.core._concrete.LangDebug;
+package melnorme.lang.ide.debug.core;
 
 import org.eclipse.cdt.debug.core.sourcelookup.AbsolutePathSourceContainer;
 import org.eclipse.cdt.debug.core.sourcelookup.ProgramRelativePathSourceContainer;

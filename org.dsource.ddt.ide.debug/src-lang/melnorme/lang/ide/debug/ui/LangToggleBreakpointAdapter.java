@@ -11,7 +11,7 @@
  * Warren Paul (Nokia) - Bug 217485, Bug 218342
  * Oyvind Harboe (oyvind.harboe@zylin.com) - Bug 225099
  *******************************************************************************/
-package melnorme.ide.debug.ui;
+package melnorme.lang.ide.debug.ui;
 
 import java.math.BigInteger;
 import java.util.HashMap;
