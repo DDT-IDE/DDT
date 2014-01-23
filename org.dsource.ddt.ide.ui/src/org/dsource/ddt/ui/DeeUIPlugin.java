@@ -1,7 +1,7 @@
 package org.dsource.ddt.ui;
 
 import melnorme.lang.ide.ui.LangPlugin;
-import melnorme.swtutil.SWTUtilExt;
+import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.build.DeeProjectBuilder;
 import mmrnmhrm.ui.DeePluginImages;
@@ -70,7 +70,7 @@ public class DeeUIPlugin extends LangPlugin {
 		Logg.main.println("Location: " + Platform.getLocation());
 		Logg.main.println("Instance Location: " + Platform.getInstanceLocation().getURL());
 		
-		SWTUtilExt.enableDebugColorHelpers = Platform.inDebugMode();
+		SWTUtil.enableDebugColorHelpers = Platform.inDebugMode();
 		
 		startDebugPlugin();
 	}

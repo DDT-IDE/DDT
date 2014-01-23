@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package melnorme.util.ui.swt;
+package melnorme.util.swt;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 

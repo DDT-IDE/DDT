@@ -1,6 +1,6 @@
 package melnorme.util.ui.fields;
 
-import melnorme.swtutil.GridComposite;
+import melnorme.util.swt.GridComposite;
 
 import org.eclipse.jdt.internal.ui.util.PixelConverter;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField;

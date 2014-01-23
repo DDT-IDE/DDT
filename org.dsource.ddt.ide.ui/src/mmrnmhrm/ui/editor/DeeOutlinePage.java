@@ -3,7 +3,7 @@ package mmrnmhrm.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.swtutil.SWTUtilExt;
+import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.tree.IElement;
 import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 
@@ -63,7 +63,7 @@ public class DeeOutlinePage extends ScriptOutlinePage {
 		private final class ElementChangedListener implements IElementChangedListener {
 			@Override
 			public void elementChanged(ElementChangedEvent event) {
-				SWTUtilExt.runInSWTThread(new Runnable() {
+				SWTUtil.runInSWTThread(new Runnable() {
 					@Override
 					public void run() {
 						if(getControl() == null || fOutlineViewer == null)

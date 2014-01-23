@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial implementation
  *******************************************************************************/
-package melnorme.swtutil;
+package melnorme.util.swt;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 

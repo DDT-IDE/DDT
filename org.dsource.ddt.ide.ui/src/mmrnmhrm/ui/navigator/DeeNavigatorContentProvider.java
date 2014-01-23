@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.navigator;
 
-import melnorme.swtutil.SWTUtilExt;
+import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.tree.IElement;
 
 import org.eclipse.core.resources.IContainer;
@@ -84,7 +84,7 @@ public class DeeNavigatorContentProvider implements ITreeContentProvider, org.ec
 	
 	@Override
 	public void elementChanged(org.eclipse.dltk.core.ElementChangedEvent event) {
-		SWTUtilExt.runInSWTThread(new Runnable() {
+		SWTUtil.runInSWTThread(new Runnable() {
 			@Override
 			public void run() {
 				viewer.refresh();

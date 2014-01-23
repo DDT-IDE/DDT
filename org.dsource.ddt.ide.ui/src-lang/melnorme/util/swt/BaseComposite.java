@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial implementation
  *******************************************************************************/
-package melnorme.swtutil;
+package melnorme.util.swt;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -23,7 +23,7 @@ public class BaseComposite extends Composite {
 	public BaseComposite(Composite parent) {
 		super(parent, SWT.NONE);
 		
-		SWTUtilExt.setRandomDebugColor(this);
+		SWTUtil.setRandomDebugColor(this);
 		
 		if(parent.getLayout() instanceof GridLayout) {
 			setLayoutData(LayoutUtil.newRowGridData());
@@ -33,6 +33,6 @@ public class BaseComposite extends Composite {
 	/** Sets the enable state of this control and of all children. */
 	public void recursiveSetEnabled(boolean enabled) {
 		super.setEnabled(enabled);
-		SWTUtilExt.recursiveSetEnabled(this, enabled);
+		SWTUtil.recursiveSetEnabled(this, enabled);
 	}
 }

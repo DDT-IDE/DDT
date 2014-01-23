@@ -4,7 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.List;
 
-import melnorme.swtutil.SWTTestUtils;
+import melnorme.util.swt.SWTTestUtils;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.text.DeePartitions;
 

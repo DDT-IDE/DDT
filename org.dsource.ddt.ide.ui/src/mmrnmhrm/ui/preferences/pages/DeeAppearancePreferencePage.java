@@ -12,7 +12,7 @@ package mmrnmhrm.ui.preferences.pages;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.swtutil.LayoutUtil;
+import melnorme.util.swt.LayoutUtil;
 import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.ui.DeePlugin;

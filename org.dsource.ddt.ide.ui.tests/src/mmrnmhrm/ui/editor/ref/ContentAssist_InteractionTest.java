@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.swtutil.SWTTestUtils;
+import melnorme.util.swt.SWTTestUtils;
 import mmrnmhrm.tests.SampleMainProject;
 
 import org.eclipse.jface.text.contentassist.ContentAssistEvent;

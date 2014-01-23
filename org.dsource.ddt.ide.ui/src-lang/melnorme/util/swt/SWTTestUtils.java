@@ -9,7 +9,7 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 
-package melnorme.swtutil;
+package melnorme.util.swt;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 

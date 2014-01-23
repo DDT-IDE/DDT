@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial implementation
  *******************************************************************************/
-package melnorme.swtutil;
+package melnorme.util.swt;
 
 import java.util.Random;
 
@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * Miscelleanous class with some SWT utils.
  */
-public class SWTUtilExt {
+public class SWTUtil {
 		
 	/** Controls the enablement of composite color helpers. 
 	 * (random backgroung color)*/
