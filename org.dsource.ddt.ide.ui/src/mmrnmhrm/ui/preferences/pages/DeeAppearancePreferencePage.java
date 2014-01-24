@@ -12,7 +12,7 @@ package mmrnmhrm.ui.preferences.pages;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.swtutil.LayoutUtil;
+import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.ui.DeePlugin;
@@ -132,7 +132,7 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 			Group group = new Group(getFieldEditorParent(), SWT.NONE);
 			group.setText("Preview:");
 			
-			group.setLayout(LayoutUtil.createFillLayout(2, 2, 0));
+			group.setLayout(SWTLayoutUtil.createFillLayout(2, 2, 0));
 			GridData gd = new GridData(GridData.FILL_BOTH);
 			group.setLayoutData(gd);
 			group.setLayoutData(GridDataFactory.fillDefaults().minSize(SWT.DEFAULT, SWT.DEFAULT).create());

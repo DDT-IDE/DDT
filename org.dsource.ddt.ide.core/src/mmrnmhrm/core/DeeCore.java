@@ -1,5 +1,6 @@
 package mmrnmhrm.core;
 
+import melnorme.lang.ide.core.LangCore;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.core.projectmodel.DubProjectModel;
 

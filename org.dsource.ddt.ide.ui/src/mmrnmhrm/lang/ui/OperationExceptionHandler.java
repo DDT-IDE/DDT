@@ -11,7 +11,7 @@
 package mmrnmhrm.lang.ui;
 
 
-import mmrnmhrm.core.LangCore;
+import melnorme.lang.ide.core.LangCore;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Status;

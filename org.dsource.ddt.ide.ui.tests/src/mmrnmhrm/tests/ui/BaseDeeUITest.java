@@ -1,7 +1,7 @@
 package mmrnmhrm.tests.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.swtutil.SWTTestUtils;
+import melnorme.util.swt.SWTTestUtils;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.views.DeePerspective;

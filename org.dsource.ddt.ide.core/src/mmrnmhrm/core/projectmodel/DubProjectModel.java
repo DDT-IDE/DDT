@@ -25,8 +25,8 @@ import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.CoreExecutorAgent;
+import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.LangCore;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IMarker;
@@ -114,7 +114,7 @@ public class DubProjectModel {
 	protected void initializeProjectInfo() {
 		IScriptProject[] deeProjects;
 		try {
-			deeProjects = LangCore.getDLTKModel().getScriptProjects(DeeNature.NATURE_ID);
+			deeProjects = DLTKUtils.getDLTKModel().getScriptProjects(DeeNature.NATURE_ID);
 		} catch (ModelException e) {
 			DeeCore.log(e);
 			return;

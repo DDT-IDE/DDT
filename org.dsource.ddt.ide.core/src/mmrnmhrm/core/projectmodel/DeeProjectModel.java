@@ -8,8 +8,8 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 import java.util.HashMap;
 import java.util.Map;
 
+import melnorme.lang.ide.core.LangCore;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.LangCore;
 import mmrnmhrm.core.compiler_installs.CommonDeeInstall;
 
 import org.eclipse.core.resources.IResource;

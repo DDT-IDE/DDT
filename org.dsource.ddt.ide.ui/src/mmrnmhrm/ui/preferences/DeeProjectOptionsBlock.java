@@ -2,12 +2,12 @@ package mmrnmhrm.ui.preferences;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.swtutil.GridComposite;
+import melnorme.util.swt.GridComposite;
+import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.ui.fields.FieldUtil;
 import melnorme.util.ui.fields.ProjectContainerSelectionDialog;
 import melnorme.util.ui.fields.SelectionComboDialogField;
 import melnorme.util.ui.fields.StringDialogField;
-import melnorme.util.ui.swt.SWTLayoutUtil;
 import mmrnmhrm.core.build.DeeBuildOptions;
 import mmrnmhrm.core.build.DeeBuilder;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;

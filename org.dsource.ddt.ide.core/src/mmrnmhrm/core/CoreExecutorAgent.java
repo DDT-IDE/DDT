@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.concurrency.ExecutorAgent;
 
 public class CoreExecutorAgent extends ExecutorAgent {

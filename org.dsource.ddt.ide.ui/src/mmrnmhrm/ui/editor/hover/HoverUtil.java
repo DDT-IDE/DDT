@@ -70,7 +70,7 @@ public class HoverUtil {
 	}
 
 	public static String loadStyleSheet(String cssfilepath) {
-		Bundle bundle= Platform.getBundle(JavaPlugin.getPluginId());
+		Bundle bundle= Platform.getBundle(JavaPlugin.PLUGIN_ID);
 		URL url= bundle.getEntry(cssfilepath); //$NON-NLS-1$
 		if (url != null) {
 			try {
