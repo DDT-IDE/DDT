@@ -1,7 +1,6 @@
 package mmrnmhrm.ui.actions;
 
 import melnorme.utilbox.core.Assert;
-import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -10,6 +9,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -46,7 +46,7 @@ public class SampleTest1Handler extends AbstractHandler {
 		OperationsManager.executeOperation(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				DeeCore.run(op, null);
+				DLTKCore.run(op, null);
 			}
 		}, "blah");
 		
