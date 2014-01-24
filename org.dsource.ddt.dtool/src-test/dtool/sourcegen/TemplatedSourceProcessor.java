@@ -22,10 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import melnorme.utilbox.iteration.ChainedIterator2;
+import melnorme.utilbox.iteration.CopyableListIterator;
+import melnorme.utilbox.iteration.ICopyableIterator;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc2.ChainedIterator2;
-import melnorme.utilbox.misc2.CopyableListIterator;
-import melnorme.utilbox.misc2.ICopyableIterator;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessorParser.Argument;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TemplatedSourceException;

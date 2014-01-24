@@ -28,5 +28,6 @@ Export-Package: descent.core.ddoc,
  dtool.util,
  melnorme.utilbox.concurrency,
  melnorme.utilbox.core,
+ melnorme.utilbox.core.fntypes,
  melnorme.utilbox.misc,
  melnorme.utilbox.tree

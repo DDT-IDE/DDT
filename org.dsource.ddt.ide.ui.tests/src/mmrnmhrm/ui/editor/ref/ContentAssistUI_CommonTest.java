@@ -73,9 +73,12 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 	
 	public static ContentAssistant getContentAssistant(ScriptEditor scriptEditor) {
 		// Need to do this because AdaptedSourceViewer is not extendable
-		Object caField = ReflectionUtils.readField(scriptEditor.getScriptSourceViewer(), "fContentAssistant");
-		ContentAssistant ca = (ContentAssistant) caField;
-		return ca;
+		try {
+			Object caField = ReflectionUtils.readField(scriptEditor.getScriptSourceViewer(), "fContentAssistant");
+			return (ContentAssistant) caField;
+		} catch (NoSuchFieldException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 	protected static boolean isProposalPopupActive(ContentAssistant ca) {
@@ -84,7 +87,7 @@ public class ContentAssistUI_CommonTest extends BaseDeeUITest {
 	}
 	
 	
-	protected static ICompletionProposal[] getProposals(ContentAssistant ca) {
+	protected static ICompletionProposal[] getProposals(ContentAssistant ca) throws NoSuchFieldException {
 		// A bit of hack
 		Object proposalPopup = ReflectionUtils.readField(ca, "fProposalPopup");
 		return downCast(ReflectionUtils.readField(proposalPopup, "fFilteredProposals"));

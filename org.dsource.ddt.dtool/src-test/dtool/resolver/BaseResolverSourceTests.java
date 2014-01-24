@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import melnorme.utilbox.core.Predicate;
+import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 

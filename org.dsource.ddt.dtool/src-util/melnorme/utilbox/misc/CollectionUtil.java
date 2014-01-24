@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import melnorme.utilbox.core.Predicate;
+import melnorme.utilbox.core.fntypes.Predicate;
 
 /**
  * Utils for creation, query, and modification of Collection classes.

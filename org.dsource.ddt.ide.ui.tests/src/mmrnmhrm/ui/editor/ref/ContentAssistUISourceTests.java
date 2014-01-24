@@ -62,11 +62,15 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	
 	@Override
 	public void runRefSearchTest_________(RefSearchOptions options) {
-		testComputeProposalsWithRepLen(options.offset, 0, options.rplLen, options.expectedResults);
+		try {
+			testComputeProposalsWithRepLen(options.offset, 0, options.rplLen, options.expectedResults);
+		} catch (NoSuchFieldException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 	public void testComputeProposalsWithRepLen(int offset, int prefixLen, int repLen,
-		String... expectedResults) {
+		String... expectedResults) throws NoSuchFieldException {
 		
 		ContentAssistant ca = ContentAssistUI_CommonTest.getContentAssistant(editor);
 		ReflectionUtils.invokeMethod(ca, "hide"); //ca.hide();

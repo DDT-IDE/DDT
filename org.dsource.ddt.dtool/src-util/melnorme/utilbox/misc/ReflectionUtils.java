@@ -111,19 +111,20 @@ public class ReflectionUtils {
 	/* ---------------------------------------------------------------- */
 	
 	/** Reads the field with given fieldName in given object. */
-	public static <T> Object readField(T object, String fieldName) {
+	public static <T> Object readField(T object, String fieldName) throws NoSuchFieldException {
 		return readAvailableField(object.getClass(), object, fieldName);
 	}
 	
 	/** Reads the static field with given fieldName in given klass. */
-	public static Object readStaticField(Class<?> klass, String fieldName) {
+	public static Object readStaticField(Class<?> klass, String fieldName) throws NoSuchFieldException {
 		return readAvailableField(klass, null, fieldName);
 	}
 	
-	private static <T> Object readAvailableField(Class<?> klass, T object, String fieldName) {
+	private static <T> Object readAvailableField(Class<?> klass, T object, String fieldName) throws NoSuchFieldException {
 		Field field = getAvailableField(klass, fieldName);
-		if (field == null) 
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(new NoSuchFieldException());
+		if (field == null) {
+			throw new NoSuchFieldException();
+		}
 		
 		try {
 			return field.get(object);
@@ -135,19 +136,20 @@ public class ReflectionUtils {
 	}
 	
 	/** Write the field with given fieldName in given object to given value. */
-	public static <T> void writeField(Object object, String fieldName, Object value) {
+	public static <T> void writeField(Object object, String fieldName, Object value) throws NoSuchFieldException {
 		writeAvailableField(object.getClass(), object, fieldName, value);
 	}
 	
 	/** Write the static field with given fieldName in given klass to given value. */
-	public static void writeStaticField(Class<?> klass, String fieldName, Object value) {
+	public static void writeStaticField(Class<?> klass, String fieldName, Object value) throws NoSuchFieldException {
 		writeAvailableField(klass, null, fieldName, value);
 	}
 	
-	private static <T> void writeAvailableField(Class<?> klass, T object, String fieldName, T value) {
+	private static <T> void writeAvailableField(Class<?> klass, T object, String fieldName, T value) 
+			throws NoSuchFieldException {
 		Field field = getAvailableField(klass, fieldName);
 		if (field == null) 
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(new NoSuchFieldException());
+			throw new NoSuchFieldException();
 
 		try {
 			field.set(object, value);

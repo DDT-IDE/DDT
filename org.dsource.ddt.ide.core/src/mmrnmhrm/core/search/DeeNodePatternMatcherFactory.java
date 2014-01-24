@@ -1,7 +1,7 @@
 package mmrnmhrm.core.search;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import melnorme.utilbox.misc.ReflectionUtils2;
+import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.IUsesReflectionToAccessInternalAPI;
 
@@ -124,7 +124,7 @@ public class DeeNodePatternMatcherFactory implements IUsesReflectionToAccessInte
 	
 	protected static char[] readInternalField(Object obj, String fieldName, char[] defaultValue) {
 		try {
-			Object value = ReflectionUtils2.readField(obj, fieldName);
+			Object value = ReflectionUtils.readField(obj, fieldName);
 			if (value == null) {
 				return null;
 			} else if (value instanceof char[]) {

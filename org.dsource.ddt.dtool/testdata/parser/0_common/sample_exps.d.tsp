@@ -47,7 +47,6 @@
   ►#?STRUCTURE_EXPECTED!【 (.foo).bar.xxx●ExpReference(RefQualified(?(RefQualified(ExpParentheses(*) ?)) ?))】●
   
   
-  ►#?STRUCTURE_EXPECTED!【foo[]#_EXP_AMBIG(flag)●ExpSlice(#@ExpIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【foo[[123]]#_EXP_AMBIG(flag)●ExpIndex(#@ExpIdentifier ExpLiteralArray(?))】●
   
   ►#?STRUCTURE_EXPECTED!【 foo().init●ExpReference(RefQualified(ExpCall(#@ExpIdentifier) RefIdentifier))】●
@@ -55,6 +54,8 @@
   ►#?STRUCTURE_EXPECTED!【 foz++.func!(blah)● #?TPL_NO_EXPREF_WRAP!【ExpReference(】
     RefTemplateInstance( RefQualified(ExpPostfix(#@ExpIdentifier) RefIdentifier) RefIdentifier) 
   #?TPL_NO_EXPREF_WRAP!【)】】●
+  
+  ►#@EXP_UNARY_REFS●  
 ¤》
 #@EXP_POSTFIX__NO_POSSIBLE_REFS《 #@EXP_POSTFIX #?_EXP_AMBIG{#:DISCARD_CASE}》
 
@@ -95,7 +96,6 @@ _EXP_AMBIG : marker for cases that can be cleanly parsed as refs
 
 #@EXP_UNARY《
   ►#@EXP_POSTFIX●
-  ►#@EXP_UNARY_REFS●
   
   ►#?STRUCTURE_EXPECTED!【123 ^^ exp●            ExpInfix(Integer #@ExpIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【new(123, foo) .bar.Foo(+1, foo[123])●ExpNew(? #@ExpIdentifier RefQualified(* *) * *)】●

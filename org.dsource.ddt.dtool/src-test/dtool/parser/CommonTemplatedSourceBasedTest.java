@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import melnorme.utilbox.core.Predicate;
+import melnorme.utilbox.core.fntypes.Predicate;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

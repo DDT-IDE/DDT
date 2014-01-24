@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import melnorme.utilbox.core.Function;
-import melnorme.utilbox.core.Predicate;
+import melnorme.utilbox.core.fntypes.Function;
+import melnorme.utilbox.core.fntypes.Predicate;
 
 public class ArrayUtil {
 	

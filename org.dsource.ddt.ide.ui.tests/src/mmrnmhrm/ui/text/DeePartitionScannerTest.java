@@ -12,6 +12,7 @@ package mmrnmhrm.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
 
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.text.BadPositionCategoryException;
@@ -21,7 +22,6 @@ import org.eclipse.jface.text.TypedPosition;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.junit.Test;
 
-import dtool.DToolBundle;
 import dtool.tests.CommonTest;
 
 // BM: a lot more could done in terms of test, this is just basic example
@@ -118,7 +118,7 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 		testPartitions("foo = q\"(foo(xx\nx))\"; /+ +/", array(DEE_DELIM_STRING, DEE_NESTED_COMMENT));
 		testPartitions("foo = q"); // incomplete string start - Regression test
 		
-		if(!DToolBundle.UNIMPLEMENTED_FUNCTIONALITY) return;
+		if(!DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) return;
 		
 		testPartitions("foo = q\"(foo(xx\"x))\"; /+ +/", array(DEE_DELIM_STRING, DEE_NESTED_COMMENT));
 		

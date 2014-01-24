@@ -348,6 +348,9 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		} else if(refRestrictions.templateOnly()) {
 			return result(false, leftRef);
 		} else if(lookAhead() == DeeTokens.DOT && leftRef instanceof IQualifierNode) {
+			if(lookAhead(1) == DeeTokens.KW_NEW && refRestrictions == RefParseRestrictions.EXP_ONLY) {
+				return result(false, leftRef);
+			}
 			IQualifierNode qualifier = (IQualifierNode) leftRef;
 			assertTrue(!RefQualified.isExpressionQualifier(qualifier));
 			leftRef = parseRefQualified(parse, qualifier);
@@ -370,13 +373,6 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		LexElement dotToken = consumeLookAhead(DeeTokens.DOT);
 		RefIdentifier qualifiedId = parseRefIdentifier();
 		parse.setRuleBroken(qualifiedId.isMissing());
-		return parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
-	}
-	
-	// TODO: make these two methods the same?
-	public Reference parseRefQualifiedForExp(ParseHelper parse, IQualifierNode qualifier) {
-		LexElement dotToken = consumeLookAhead(DeeTokens.DOT);
-		RefIdentifier qualifiedId = parseRefIdentifier();
 		return parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
 	}
 	
@@ -707,7 +703,14 @@ protected class ParseRule_Expression {
 			return parsePostfixExpression(exp);
 		}
 		case DOT: {
-			IQualifierNode qualifier = exp;
+			ParseHelper parse = new ParseHelper(exp.getStartPos());
+			if(lookAhead(1) == DeeTokens.KW_NEW) {
+				consumeLookAhead(DeeTokens.DOT);
+				consumeLookAhead(DeeTokens.KW_NEW);
+				return expConclude(parseNewExpression_do(parse, exp));
+			}
+			
+			final Expression qualifier = exp;
 			exp = null;
 			if(qualifier instanceof ExpReference) {
 				ExpReference expReference = (ExpReference) qualifier;
@@ -718,7 +721,6 @@ protected class ParseRule_Expression {
 					assertFail(); // ...otherwise refqualified would have been parsed already
 				}
 			}
-			ParseHelper parse = new ParseHelper(qualifier.getStartPos());
 			Reference ref = parseRefQualified(parse, qualifier);
 			if(!parse.ruleBroken) {
 				ref = parseTypeReference_withLeftReference(ref, RefParseRestrictions.TEMPLATE_ONLY).node; 
@@ -1342,6 +1344,11 @@ protected class ParseRule_Expression {
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
 		
+		Expression outerClass = null;
+		return parseNewExpression_do(parse, outerClass);
+	}
+	
+	public NodeResult<? extends Expression> parseNewExpression_do(ParseHelper parse, Expression outerClass) {
 		NodeListView<Expression> allocArgs = null;
 		Reference type = null;
 		NodeListView<Expression> args = null;
@@ -1352,7 +1359,7 @@ protected class ParseRule_Expression {
 				if(parse.ruleBroken) break parsing;
 			}
 			
-			if(parse.consumeOptional(DeeTokens.KW_CLASS)) {
+			if(outerClass == null && parse.consumeOptional(DeeTokens.KW_CLASS)) {
 				return parseNewAnonClassExpression_afterClassKeyword(parse, allocArgs);
 			}
 			
@@ -1364,7 +1371,7 @@ protected class ParseRule_Expression {
 			}
 		}
 		
-		return parse.resultConclude(new ExpNew(allocArgs, type, args));
+		return parse.resultConclude(new ExpNew(outerClass, allocArgs, type, args));
 	}
 	
 	protected NodeResult<ExpNewAnonClass> parseNewAnonClassExpression_afterClassKeyword(ParseHelper parse, 

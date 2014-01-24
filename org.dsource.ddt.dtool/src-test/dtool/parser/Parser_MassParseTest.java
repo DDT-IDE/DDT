@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import melnorme.utilbox.core.Predicate;
-import melnorme.utilbox.core.VoidFunction;
+import melnorme.utilbox.core.fntypes.Predicate;
+import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.runner.RunWith;

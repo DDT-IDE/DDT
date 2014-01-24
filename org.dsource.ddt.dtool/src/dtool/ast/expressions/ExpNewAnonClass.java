@@ -12,7 +12,7 @@ public class ExpNewAnonClass extends Expression {
 	public final ArrayView<Expression> allocArgs;
 	public final ArrayView<Expression> args;
 	public final ArrayView<Reference> baseClasses;
-	public final DeclBlock declBody; 
+	public final DeclBlock declBody;
 	
 	public ExpNewAnonClass(ArrayView<Expression> allocArgs, ArrayView<Expression> args,
 			ArrayView<Reference> baseClasses, DeclBlock declBody) {

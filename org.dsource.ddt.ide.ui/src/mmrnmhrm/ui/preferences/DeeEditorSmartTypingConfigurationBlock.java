@@ -13,6 +13,7 @@ package mmrnmhrm.ui.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.ui.DeeUIPreferenceConstants;
 
@@ -23,8 +24,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import dtool.DToolBundle;
 
 public class DeeEditorSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 	
@@ -37,7 +36,7 @@ public class DeeEditorSmartTypingConfigurationBlock extends AbstractConfiguratio
 	protected void addOverLayKeys(OverlayPreferenceStore store) {
 		List<OverlayKey> keys = new ArrayList<OverlayKey>();
 		
-		if(DToolBundle.UNIMPLEMENTED_FUNCTIONALITY) { // TODO implement
+		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) { // TODO implement
 			keys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, 
 					DeeUIPreferenceConstants.AE_CLOSE_STRINGS));
 			keys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, 
@@ -79,7 +78,7 @@ public class DeeEditorSmartTypingConfigurationBlock extends AbstractConfiguratio
 		layout.numColumns = 1;
 		group.setLayout(layout);
 		
-		if(DToolBundle.UNIMPLEMENTED_FUNCTIONALITY) {
+		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
 		addCheckBox(group,
 				DeePreferencesMessages.LangSmartTypingConfigurationBlock_closeStrings,
 				DeeUIPreferenceConstants.AE_CLOSE_STRINGS, 0);

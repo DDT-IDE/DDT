@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.dsource.ddt.lang.text;
 
-import melnorme.utilbox.core.Function;
+import melnorme.utilbox.core.fntypes.Function;
 
 public class LangTextUtil {
 	

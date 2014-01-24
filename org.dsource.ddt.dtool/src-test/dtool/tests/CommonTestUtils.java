@@ -12,7 +12,7 @@ import java.util.Set;
 
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.core.Function;
+import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.StringUtil;
