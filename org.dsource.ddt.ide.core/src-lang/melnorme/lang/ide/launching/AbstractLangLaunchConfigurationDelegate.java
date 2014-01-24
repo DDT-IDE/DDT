@@ -56,7 +56,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 	}
 	
 	@Override
-	public boolean preLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) 
+	public boolean preLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor)
 			throws CoreException {
 		
 		if (monitor != null) {
@@ -79,7 +79,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 	}
 	
 	@Override
-	protected IProject[] getProjectsForProblemSearch(ILaunchConfiguration configuration, String mode) 
+	protected IProject[] getProjectsForProblemSearch(ILaunchConfiguration configuration, String mode)
 			throws CoreException {
 		return fOrderedProjects;
 	}
@@ -89,13 +89,21 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 		return super.isLaunchProblem(problemMarker);
 	}
 	
-	protected abstract String getProjectAttribute(ILaunchConfiguration config) throws CoreException;
+	protected String getProjectAttribute(ILaunchConfiguration config) throws CoreException {
+		return config.getAttribute(LaunchConstants.ATTR_PROJECT_NAME, (String) null);
+	}
 	
-	protected abstract String getProcessRelativePath_Attribute(ILaunchConfiguration config) throws CoreException;
+	protected String getProcessRelativePath_Attribute(ILaunchConfiguration config) throws CoreException {
+		return config.getAttribute(LaunchConstants.ATTR_PROG_FILE, (String) null);
+	}
 	
-	protected abstract String getProgramArguments_Attribute(ILaunchConfiguration config) throws CoreException;
+	protected String getProgramArguments_Attribute(ILaunchConfiguration config) throws CoreException {
+		return config.getAttribute(LaunchConstants.ATTR_PROG_ARGUMENTS, "");
+	}
 	
-	protected abstract String getWorkingDirectory_Attribute(ILaunchConfiguration config) throws CoreException;
+	protected String getWorkingDirectory_Attribute(ILaunchConfiguration config) throws CoreException {
+		return config.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, (String) null);
+	}
 	
 	protected IProject getProject(ILaunchConfiguration configuration) throws CoreException {
 		String projectName = getProjectAttribute(configuration);
@@ -127,7 +135,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 		return new Launch(configuration, mode, null);
 	}
 	
-	protected abstract ILaunch getLaunchForDebugMode(ILaunchConfiguration configuration, String mode) 
+	protected abstract ILaunch getLaunchForDebugMode(ILaunchConfiguration configuration, String mode)
 			throws CoreException;
 	
 	@Override
@@ -170,21 +178,21 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 		
 		IPath workingDirectory = getWorkingDirectoryOrDefault(configuration);
 		
-		boolean appendEnv = 
+		boolean appendEnv =
 				configuration.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true);
-		Map<String, String> configEnv = 
+		Map<String, String> configEnv =
 				configuration.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<?, ?>) null);
 		
 		return new ProcessSpawnInfo(processFullPath, processArgs, workingDirectory, configEnv, appendEnv);
 	}
 	
 	protected IPath getProgramFullPath(ILaunchConfiguration configuration) throws CoreException {
-		Path getProcessRelativePath = getProgramRelativePath(configuration);
+		IPath programRelativePath = getProgramRelativePath(configuration);
 		IProject project = getProject(configuration);
-		return project.getFile(getProcessRelativePath).getLocation();
+		return project.getFile(programRelativePath).getLocation();
 	}
 	
-	protected Path getProgramRelativePath(ILaunchConfiguration configuration) throws CoreException {
+	protected IPath getProgramRelativePath(ILaunchConfiguration configuration) throws CoreException {
 		String attribValueRaw = getProcessRelativePath_Attribute(configuration);
 		if (attribValueRaw == null || attribValueRaw.isEmpty()) {
 			fail(LaunchMessages.LCD_errProcessNotSpecified);
@@ -206,7 +214,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 		IPath path = getWorkingDirectory(configuration);
 		if (path == null) {
 			return getDefaultWorkingDirectory(configuration);
-		} 
+		}
 		return path;
 	}
 	
@@ -230,7 +238,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 	}
 	
 	@SuppressWarnings("unused")
-	protected void launchProcess(ProcessSpawnInfo processSpawnInfo, ILaunchConfiguration configuration, 
+	protected void launchProcess(ProcessSpawnInfo processSpawnInfo, ILaunchConfiguration configuration,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		
 		if(processSpawnInfo.programPath == null) {
@@ -243,7 +251,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 				processSpawnInfo.programArguments,
 				processSpawnInfo.environment,
 				processSpawnInfo.appendEnv,
-				LaunchingCore.PROCESS_TYPE
+				LaunchConstants.PROCESS_TYPE_ID
 				);
 		
 		try {

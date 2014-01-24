@@ -34,21 +34,22 @@ public class DeeDebugLaunchConfigurationDelegate extends DeeLaunchConfigurationD
 	@Override
 	public ILaunch getLaunchForDebugMode(ILaunchConfiguration configuration, String mode) throws CoreException {
 		
-		// Remove some DLTK attributes that affect how our launch runs
-		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
-		cleanDLTKDebugConfig(workingCopy);
-		
 		// Setup CDT config parameters
 		String fullProgramPath = getProgramFullPath(configuration).toString();
 		String workingDirPath = getWorkingDirectoryOrDefault(configuration).toString();
 		// Need to pass raw args, because CDT will reevaluate variables.
 		String progArgs = getProgramArguments_Attribute(configuration);
 		
+		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+		
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME, fullProgramPath);
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, progArgs);
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, workingDirPath);
 		// Note, environment is already setup, because it uses standard attributes:
 		// ILaunchManager.ATTR_ENVIRONMENT_VARIABLES and ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES
+		
+		// Remove some DLTK attributes that affect how our launch runs
+		cleanDLTKDebugConfig(workingCopy);
 		
 		workingCopy.doSave();
 		

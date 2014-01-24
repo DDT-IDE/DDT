@@ -5,7 +5,7 @@ import org.dsource.ddt.ui.DeeUIPlugin;
 
 public class DebugUI_Actual {
 	
-	public static String LANG_BREAKPOINT_FACTORY_ID = DeeUIPlugin.PLUGIN_ID + "DeeBreakpointFactory";
+	public static String LANG_BREAKPOINT_FACTORY_ID = DeeUIPlugin.PLUGIN_ID + "BreakpointFactory";
 	
 	public static DeeToggleBreakpointAdapter createToggleBreakPointAdapter() {
 		return new DeeToggleBreakpointAdapter();

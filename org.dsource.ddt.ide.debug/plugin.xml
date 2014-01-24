@@ -19,6 +19,10 @@
             type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
       </launchDelegate>
    </extension>
+   
+   
+   <!-- launch UI -->
+   
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
@@ -31,6 +35,7 @@
          </launchMode>
       </launchConfigurationTabGroup>
    </extension>
+   
    <extension
          point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
       <toggleTargetFactory
@@ -51,7 +56,7 @@
 
 			<action label="%dummyLabel"
 				class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
-				style="push" actionID="RulerDoubleClick"
+				actionID="RulerDoubleClick"
 				id="DeeEditor.rulerDoubleClickAction" />
 		</editorContribution>
 	</extension>
@@ -105,6 +110,11 @@
                id="org.eclipse.ddt.debug.ui.actions.RulerToggleBreakpointAction">
          </action>
       </viewerContribution>
+   </extension>
+   
+   <!-- Add Watch, Run to, Resume, Move to, etc. -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
       <viewerContribution
             targetID="#DeeEditorContext"
             id="org.dsource.ddt.debug.ui.DeeEditorDebugPopupActions">

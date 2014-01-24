@@ -14,7 +14,7 @@ package mmrnmhrm.ui.launch;
 import java.util.ArrayList;
 import java.util.List;
 
-import mmrnmhrm.core.launch.DeeLaunchConfigurationConstants;
+import mmrnmhrm.core.launch.DeeLaunchConstants;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
 import mmrnmhrm.core.projectmodel.DeeProjectOptions;
 
@@ -38,7 +38,7 @@ public class DeeLaunchShortcut extends AbstractScriptLaunchShortcut {
 	
 	@Override
 	protected ILaunchConfigurationType getConfigurationType() {
-		return getLaunchManager().getLaunchConfigurationType(DeeLaunchConfigurationConstants.ID_DEE_EXECUTABLE);
+		return getLaunchManager().getLaunchConfigurationType(DeeLaunchConstants.ID_DEE_LAUNCH_TYPE);
 	}
 	
 	@Override
