@@ -21,10 +21,10 @@ DDT is an Eclipse-based IDE for the D programming language.
   * Some of the suites (DTool at the moment) can be run in Lite Mode, skipping some of the heavyweight, long-running tests. There is also a launch configuration for this.
 
 #### Automated Building and Testing:
-Using Maven Tycho, it is possible to automatically build DDT, create an update site, and run all the tests. Download [Maven](http://maven.apache.org/) (minimum version 3.0), and open a shell on the root folder of the source repository:
- * Run `mvn package` to build the main DDT artifacts. The built p2 repository should rest at `bin-maven/ddt.repository/repository`
- * Run `mvn integration-test` to build all the DDT artifacts and run the test suites. You can do `mvn integration-test -P TestsLiteMode` to run the test suites in Lite Mode (skip heavyweight tests).
-   * Run `mvn package -P build-ide-product` to build a prepackaged Eclipse installation with DDT already installed. This is not actively maintained as it is not a release artifact, so it may be broken.
+Using Maven (and Tycho), it is possible to automatically build DDT, create an update site, and run all the tests. Download [Maven](http://maven.apache.org/) (minimum version 3.0), and run the following commands on the root folder of the repository:
+ * Run `mvn package` to build DDT into a p2 repository (which is a local update site). It will be placed at `bin-maven/ddt.repository/repository`
+ * Run `mvn integration-test` to build DDT as above and also run the test suites. You can do `mvn integration-test -P TestsLiteMode` to run the test suites in "Lite Mode" (skip certain long-running tests).
+ * Also, running `mvn package -P build-ide-product` will build a pre-packaged Eclipse installation with DDT already installed. This is not released to the public, but can potentially be of some use internally.
 
 #### Uploading a new release:
  Releases are made on the p2 update site. The DDT update site is the `updates` Git repository, accessed through plain HTTP: http://updates.ddt.googlecode.com/git/ . Therefore, a new DDT release is created by building a the p2 repository locally as described above (run `mvn integration-test`), then placing the p2 repository in the `https://code.google.com/p/ddt.updates/` Git repository (and pushing to origin of course):
