@@ -1,85 +1,55 @@
 package mmrnmhrm.ui;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import mmrnmhrm.lang.ui.PluginImagesHelperExtension;
+import melnorme.lang.ide.ui.LangImages;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.dltk.ui.PluginImagesHelper;
 import org.eclipse.dltk.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
-import org.osgi.framework.Bundle;
 
-public class DeePluginImages {
+public abstract class DeePluginImages extends LangImages {
 	
-	private DeePluginImages() {} // Don't instantiate
+	protected static final String T_ACTIONS = "action16e";
 	
-	public static final IPath ICONS_PATH= new Path("$nl$/icons/");
+	public static final String ELEM_PACKAGE = createManaged(T_OBJ, "dee_package.gif");
+	public static final String ELEM_FILE = createManaged(T_OBJ, "dee_file.gif");
 	
-	private static final String ACTIONS_PATH = "action16e";
-	
-	private static final String T_OBJ = "obj16";
-	private static final String T_OVR = "ovr16";
-	
-	// Registry/helper must be on top, to be initialized before createImage is used 
-	private static final PluginImagesHelperExtension helper = new PluginImagesHelperExtension(
-			DeeUI.getDefault().getBundle(), ICONS_PATH);
-	
-	private static ImageDescriptor createUnmanaged(String base, String imageName) {
-		// Hard fail if image not found.
-		return assertNotNull(helper.createUnManaged(base, imageName, false));
-	}
-	
-	private static String createImage(String base, String imageName) {
-		ImageDescriptor imgDesc = getImageDescriptor(base, imageName, false);
-		assertNotNull(imgDesc);
-		String key = imageName;
-		helper.createManaged(base, imageName, key);
-		return key;
-	}
-	
-	public static final String ELEM_PACKAGE = createImage(T_OBJ, "dee_package.gif");
-	public static final String ELEM_FILE = createImage(T_OBJ, "dee_file.gif");
-	
-	public static final String NODE_MODULE_DEC = createImage(T_OBJ, "ent_module.png");
+	public static final String NODE_MODULE_DEC = createManaged(T_OBJ, "ent_module.png");
 
-	public static final String ENT_VARIABLE = createImage(T_OBJ, "ent_variable.png");
-	public static final String ENT_FUNCTION = createImage(T_OBJ, "ent_function.png");
-	public static final String ENT_CONSTRUCTOR = createImage(T_OBJ, "ent_constructor.png");
+	public static final String ENT_VARIABLE = createManaged(T_OBJ, "ent_variable.png");
+	public static final String ENT_FUNCTION = createManaged(T_OBJ, "ent_function.png");
+	public static final String ENT_CONSTRUCTOR = createManaged(T_OBJ, "ent_constructor.png");
 	
 	// We're using 'default' protection for 'package' protection in D
 	// No special icon for 'export' protection in D, same as public
-	public static final String IMG_METHOD_PUBLIC = createImage(T_OBJ, "function_public.gif");
-	public static final String IMG_METHOD_PROTECTED = createImage(T_OBJ,"function_protected.gif");
-	public static final String IMG_METHOD_PRIVATE = createImage(T_OBJ, "function_private.gif");
-	public static final String IMG_METHOD_DEFAULT = createImage(T_OBJ,"function_default.gif");
+	public static final String IMG_METHOD_PUBLIC = createManaged(T_OBJ, "function_public.gif");
+	public static final String IMG_METHOD_PROTECTED = createManaged(T_OBJ, "function_protected.gif");
+	public static final String IMG_METHOD_PRIVATE = createManaged(T_OBJ, "function_private.gif");
+	public static final String IMG_METHOD_DEFAULT = createManaged(T_OBJ, "function_default.gif");
 	
-	public static final String IMG_FIELD_PUBLIC = createImage(T_OBJ, "field_public_obj.gif");
-	public static final String IMG_FIELD_PROTECTED = createImage(T_OBJ, "field_protected_obj.gif");
-	public static final String IMG_FIELD_PRIVATE = createImage(T_OBJ, "field_private_obj.gif");
-	public static final String IMG_FIELD_DEFAULT = createImage(T_OBJ, "field_default_obj.gif");
+	public static final String IMG_FIELD_PUBLIC = createManaged(T_OBJ, "field_public_obj.gif");
+	public static final String IMG_FIELD_PROTECTED = createManaged(T_OBJ, "field_protected_obj.gif");
+	public static final String IMG_FIELD_PRIVATE = createManaged(T_OBJ, "field_private_obj.gif");
+	public static final String IMG_FIELD_DEFAULT = createManaged(T_OBJ, "field_default_obj.gif");
 	
 	
-	public static final String ENT_NATIVE = createImage(T_OBJ, "ent_native.png");
-	public static final String ENT_STRUCT = createImage(T_OBJ, "ent_struct.png");
-	public static final String ENT_UNION = createImage(T_OBJ, "ent_union.gif");
-	public static final String ENT_CLASS = createImage(T_OBJ, "ent_class.gif");
-	public static final String ENT_INTERFACE = createImage(T_OBJ, "ent_interface.png");
-	public static final String ENT_TEMPLATE = createImage(T_OBJ, "ent_namespace.png");
-	public static final String ENT_MIXIN = createImage(T_OBJ, "ent_namespace.png");
-	public static final String ENT_ENUM = createImage(T_OBJ, "ent_enum.gif");
-	public static final String ENT_TYPE_PARAMETER = createImage(T_OBJ, "ent_type_parameter.png");
-	public static final String ENT_TUPLE = createImage(T_OBJ, "ent_tuple.png");
+	public static final String ENT_NATIVE = createManaged(T_OBJ, "ent_native.png");
+	public static final String ENT_STRUCT = createManaged(T_OBJ, "ent_struct.png");
+	public static final String ENT_UNION = createManaged(T_OBJ, "ent_union.gif");
+	public static final String ENT_CLASS = createManaged(T_OBJ, "ent_class.gif");
+	public static final String ENT_INTERFACE = createManaged(T_OBJ, "ent_interface.png");
+	public static final String ENT_TEMPLATE = createManaged(T_OBJ, "ent_namespace.png");
+	public static final String ENT_MIXIN = createManaged(T_OBJ, "ent_namespace.png");
+	public static final String ENT_ENUM = createManaged(T_OBJ, "ent_enum.gif");
+	public static final String ENT_TYPE_PARAMETER = createManaged(T_OBJ, "ent_type_parameter.png");
+	public static final String ENT_TUPLE = createManaged(T_OBJ, "ent_tuple.png");
 //	public static final String ENT_UNKOWN_ALIAS = createImage(T_OBJ, "ent_alias.png");
 	
 	
-	public static final String NODE_IMPORT = createImage(T_OBJ, "elem_import.gif");
-	public static final String NODE_IMPORTS = createImage(T_OBJ, "elem_imports.gif");
+	public static final String NODE_IMPORT = createManaged(T_OBJ, "elem_import.gif");
+	public static final String NODE_IMPORTS = createManaged(T_OBJ, "elem_imports.gif");
 	
-	public static final String NODE_OTHER = createImage(T_OBJ, "node_other.gif");
-	public static final String NODE_REF = createImage(T_OBJ, "node_ref.gif");
+	public static final String NODE_OTHER = createManaged(T_OBJ, "node_other.gif");
+	public static final String NODE_REF = createManaged(T_OBJ, "node_ref.gif");
 	
 	
 	public static final ImageDescriptor DESC_OVR_PRIVATE = createUnmanaged(T_OVR, "aggregate-private.png");
@@ -97,30 +67,13 @@ public class DeePluginImages {
 	public static final ImageDescriptor DESC_OVR_ALIAS = createUnmanaged(T_OVR, "ovr_alias_arrow.png");
 	
 	
-	public static final ImageDescriptor OPEN_DEF_DESC = getActionImageDescriptor("gotodef.gif", true);
+	public static final ImageDescriptor OPEN_DEF_DESC = createUnmanaged(T_ACTIONS, "gotodef.gif");
 	
-	
-	private static ImageDescriptor getImageDescriptor(String prefix, String name, 
-			boolean useMissingImageDescriptor) {
-		IPath path = ICONS_PATH.append(prefix).append(name);
-		Bundle bundle = DeeUI.getInstance().getBundle();
-		return PluginImagesHelper.createImageDescriptor(bundle, path, useMissingImageDescriptor);
-	}
-	
+	@Deprecated
 	public static ImageDescriptor getActionImageDescriptor(String file, boolean useMissingImageDescriptor) {
-		return getImageDescriptor(ACTIONS_PATH, file, useMissingImageDescriptor);
+		return helper.createUnmanaged(T_ACTIONS, file, useMissingImageDescriptor);
 	}
-	
-	/** Gets the managed {@link Image} associated with the given key. */
-	public static Image getManagedImage(String imageKey) {
-		return helper.get(imageKey);
-	}
-	
-	/** Gets the managed {@link ImageDescriptor} associated with the given key. */
-	public static ImageDescriptor getManagedDescriptor(String imageKey) {
-		return helper.getDescriptor(imageKey);
-	}
-	
+
 	/* ------------------------------------------- */
 	
 	/** This is an alternate registry with keys based on ImageDescriptors.

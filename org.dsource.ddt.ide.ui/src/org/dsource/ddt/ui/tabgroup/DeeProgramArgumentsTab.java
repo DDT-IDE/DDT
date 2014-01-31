@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 IBM Corporation and others.
+ * Copyright (c) 2009, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.dsource.ddt.ui.tabgroup;
 
-public class DeeLaunchConfigurationsMessages {
-	//XXX: refactor out
-	public static String mainTab_launchFileGroup =
-			"Launch Executable:";
+import melnorme.lang.ide.ui.launch.LangArgumentsTab;
+
+public class DeeProgramArgumentsTab extends LangArgumentsTab {
 	
 }

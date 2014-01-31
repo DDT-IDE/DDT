@@ -10,20 +10,24 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import melnorme.lang.ide.core.EclipseUtils;
+import melnorme.utilbox.misc.MiscUtil;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
 
-public abstract class LangPlugin extends AbstractUIPlugin {
+public abstract class LangUIPlugin extends AbstractUIPlugin {
 
-	public static String PLUGIN_ID = LangPlugin_Actual.PLUGIN_ID;
+	public static String PLUGIN_ID = LangUIPlugin_Actual.PLUGIN_ID;
 	
-	public static LangPlugin getInstance() {
-		return LangPlugin_Actual.getInstance();
+	public static LangUIPlugin getInstance() {
+		return LangUIPlugin_Actual.__getInstance();
 	}
 	
 	/** Logs the given status. */
@@ -37,9 +41,35 @@ public abstract class LangPlugin extends AbstractUIPlugin {
 				LangUIMessages.LangPlugin_internal_error, e)); 
 	}
 	
-	/** Gets the plugins preference store. */
-	public static IPreferenceStore getPrefStore() {
-		return getInstance().getPreferenceStore();
+	/* -------- start/stop methods -------- */
+	
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		
+		MiscUtil.loadClass(start_getImagesClass()); // Fail fast if resources not found
+		
+		doCustomStart(context);
+		
+		// Force start of debug plugin, if present, so that UI contributions will be fully active.
+		// ATM, some UI contributions that dynamically manipulate enablement and state don't work correctly
+		// unless underlying plugin is started.
+		startDebugPlugin();
+		
+		startInitializeAfterLoadJob();
+	}
+	
+	protected abstract Class<?> start_getImagesClass();
+	
+	protected abstract void doCustomStart(BundleContext context);
+	
+	protected static void startDebugPlugin() {
+		EclipseUtils.startOtherPlugin(LangUIPlugin_Actual.DEBUG_PLUGIN_ID);
+	}
+	
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
 	}
 	
 	protected static boolean initialized; 
@@ -53,4 +83,12 @@ public abstract class LangPlugin extends AbstractUIPlugin {
 		monitor.done();
 	}
 	
+	/* --------  -------- */
+	
+	/** Gets the plugins preference store. */
+	public static IPreferenceStore getPrefStore() {
+		return getInstance().getPreferenceStore();
+	}
+	
+
 }

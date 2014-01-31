@@ -11,6 +11,9 @@
 package org.eclipse.jdt.internal.ui.util;
 
 
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
@@ -25,10 +28,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Widget;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.util.Assert;
-
 /**
  * Utility class to simplify access to some SWT resources. 
  */
@@ -40,11 +39,7 @@ public class SWTUtil {
 	 * display is returned. Otherwise the method returns the default display.
 	 */
 	public static Display getStandardDisplay() {
-		Display display;
-		display= Display.getCurrent();
-		if (display == null)
-			display= Display.getDefault();
-		return display;		
+		return melnorme.util.swt.SWTUtil.getStandardDisplay();
 	}
 	
 	/**
