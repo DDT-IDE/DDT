@@ -89,6 +89,11 @@ public class DeeDocTextHover extends AbstractTextHover {
 	
 	@Override
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
+		IModelElement element = EditorUtility.getEditorInputModelElement(getEditor(), false);
+		if(element == null) {
+			return null;
+		}
+		
 		ASTNode node;
 		if(hoverRegion instanceof NodeRegion) {
 			node = ((NodeRegion) hoverRegion).node;
@@ -96,7 +101,6 @@ public class DeeDocTextHover extends AbstractTextHover {
 			node = getNodeAtOffset(hoverRegion.getOffset());
 		}
 		
-		IModelElement element = EditorUtility.getEditorInputModelElement(getEditor(), false);
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(element.getScriptProject());
 		
 		String info = getDocInfoForNode(node, moduleResolver);
