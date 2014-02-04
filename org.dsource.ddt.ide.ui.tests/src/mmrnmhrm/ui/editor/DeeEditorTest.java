@@ -1,11 +1,11 @@
 package mmrnmhrm.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.WorkbenchUtils;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.ui.views.ASTViewer;
 
-import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;

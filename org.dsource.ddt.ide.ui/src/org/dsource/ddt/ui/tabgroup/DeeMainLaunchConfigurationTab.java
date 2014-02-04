@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.dsource.ddt.ui.tabgroup;
 
-import org.dsource.ddt.ide.core.DeeNature;
-import org.dsource.ddt.lang.ui.tabgroup.MainLaunchConfigurationTab;
-import org.eclipse.swt.widgets.Composite;
+import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
 
 public class DeeMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
@@ -22,13 +23,8 @@ public class DeeMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	public String getNatureID() {
-		return DeeNature.NATURE_ID;
-	}
-	
-	@Override
-	protected void createMainModuleEditor(Composite parent, String text) {
-		super.createMainModuleEditor(parent, DeeLaunchConfigurationsMessages.mainTab_launchFileGroup);
+	protected void programPathField_setDefaults(IResource contextualResource, ILaunchConfigurationWorkingCopy config) {
+		// TODO: figure out executable path
 	}
 	
 }

@@ -10,6 +10,7 @@
  * Fixed bug: working directory option of a D launch configuration not honored when run in debug mode.
  * Fixed bug: environment variables non-append option of a D launch configuration not honored.
  * Fixed some potential issues related to debugging occurring unless the user had full CDT manually installed.
+ * Cleaned up the behavior and labels of D Application launch configuration dialog.
 
 == DDT 0.9.0 (2013-11-14) ==
  * Issue #13: Added integrated debugging support, using CDT's GDB debugger integration. Supports:

@@ -20,7 +20,7 @@ import org.eclipse.debug.ui.WorkingDirectoryBlock;
 
 public class LangWorkingDirectoryBlock extends WorkingDirectoryBlock {
 	
-	protected LangWorkingDirectoryBlock() {
+	public LangWorkingDirectoryBlock() {
 		super(LaunchConstants.ATTR_WORKING_DIRECTORY);
 	}
 	

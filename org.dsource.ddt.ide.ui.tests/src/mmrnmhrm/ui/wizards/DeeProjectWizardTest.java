@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.wizards;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.WorkbenchUtils;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.ProjectModelUtil;
@@ -9,7 +10,6 @@ import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.tests.ui.accessors.ProjectWizardFirstPage__Accessor;
 import mmrnmhrm.tests.ui.accessors.WizardDialog__Accessor;
 
-import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;

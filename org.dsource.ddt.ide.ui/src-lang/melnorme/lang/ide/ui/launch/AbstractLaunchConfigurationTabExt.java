@@ -11,6 +11,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.util.swt.SWTFactoryUtil;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.StringVariableSelectionDialog;
@@ -18,33 +22,28 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchConfigurationTab {
 	
-	protected ILaunchConfiguration launchConfig;
-	
-	protected ILaunchConfiguration getCurrentLaunchConfiguration() {
-		return launchConfig;
+	public static String getConfigAttribute(ILaunchConfiguration config, String key, String defaultValue) {
+		String projectName = "";
+		try {
+			projectName = config.getAttribute(key, defaultValue);
+		} catch (CoreException e) {
+			LangUIPlugin.log(e);
+		}
+		return projectName;
 	}
-	
-	protected void setCurrentLaunchConfiguration(ILaunchConfiguration config) {
-		launchConfig = config;
-	}
-	
-	@Override
-	public void initializeFrom(ILaunchConfiguration config) {
-		setCurrentLaunchConfiguration(config);
-	}
-	
 	
 	/**
 	 * Creates a button that allows user to insert build variables.
 	 * 
 	 * @since 7.1
 	 */
-	protected Button createVariablesButton(Composite parent, String label, final Text textField) {
-		Button variablesButton = createPushButton(parent, label, null); 
+	protected static Button createVariablesButton(Composite parent, String label, final Text textField) {
+		Button variablesButton = SWTFactoryUtil.createPushButton(parent, label, null);
 		variablesButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
@@ -59,21 +58,14 @@ public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchCo
 	 * field. Prompt the user for a variable and enter the result
 	 * in the given field.
 	 */
-	private void handleVariablesButtonSelected(Text textField) {
-		String variable = getVariable();
+	private static void handleVariablesButtonSelected(Text textField) {
+		final Shell shell = textField.getShell();
+		StringVariableSelectionDialog dialog = new StringVariableSelectionDialog(shell);
+		dialog.open();
+		String variable = dialog.getVariableExpression();
 		if (variable != null) {
 			textField.insert(variable);
 		}
-	}
-	
-	/**
-	 * Prompts the user to choose and configure a variable and returns
-	 * the resulting string, suitable to be used as an attribute.
-	 */
-	private String getVariable() {
-		StringVariableSelectionDialog dialog = new StringVariableSelectionDialog(getShell());
-		dialog.open();
-		return dialog.getVariableExpression();
 	}
 	
 }

@@ -1,12 +1,12 @@
 package mmrnmhrm.tests.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.WorkbenchUtils;
 import melnorme.util.swt.SWTTestUtils;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.views.DeePerspective;
 
-import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.ui.IWorkbenchPage;
