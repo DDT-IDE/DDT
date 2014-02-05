@@ -36,7 +36,7 @@ import dtool.ast.references.NamedReference;
  * Used instead of {@link DeeDocumentationProvider} due to API limitation, review in the future.
  * (used in editor hovers extensions, and editor information provider (F2))
  */
-public class DeeDocTextHover extends AbstractTextHover {
+public class DeeDocTextHover extends AbstractDocTextHover {
 	
 	public static class NodeRegion implements IRegion {
 		

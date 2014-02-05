@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Map;
 
+import melnorme.lang.ide.ui.editors.BestMatchHover;
 import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
@@ -115,7 +116,10 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	@Override
 	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
-		return super.getTextHover(sourceViewer, contentType, stateMask);
+		if(contentType == DeePartitions.DEE_CODE) {
+			return new BestMatchHover(getEditor(), stateMask);
+		} 
+		return null;
 	}
 	
 	@Override

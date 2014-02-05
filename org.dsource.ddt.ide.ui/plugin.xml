@@ -352,23 +352,6 @@
     </provider>
  </extension>
  <extension
-       point="org.eclipse.dltk.ui.editorTextHovers">
-	<hover
-	        activate="false"
-	        class="mmrnmhrm.ui.editor.hover.ProblemHoverWrapper"
-	        id="org.dsource.ddt.ide.ui.#org.eclipse.dltk.ui.ProblemHover"
-	        label="Problem Description"
-	        nature="org.dsource.ddt.ide.core.nature">
-	</hover>
-    <hover
-          activate="false"
-          class="mmrnmhrm.ui.editor.hover.DeeDocTextHover"
-          id="org.dsource.ddt.ide.ui.DeeDocHover"
-          label="D Documentation Hover"
-          nature="org.dsource.ddt.ide.core.nature">
-    </hover>
- </extension>
- <extension
        id="DeeCodeCompletionProposalComputer"
        point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
 		<scriptCompletionProposalComputer
