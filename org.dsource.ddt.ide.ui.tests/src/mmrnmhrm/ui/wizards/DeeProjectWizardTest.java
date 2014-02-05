@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.wizards;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.ui.WorkbenchUtils;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.ProjectModelUtil;

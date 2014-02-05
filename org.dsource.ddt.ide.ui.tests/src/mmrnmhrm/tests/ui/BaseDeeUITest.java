@@ -1,7 +1,7 @@
 package mmrnmhrm.tests.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.ui.WorkbenchUtils;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.util.swt.SWTTestUtils;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.ui.editor.DeeEditor;
