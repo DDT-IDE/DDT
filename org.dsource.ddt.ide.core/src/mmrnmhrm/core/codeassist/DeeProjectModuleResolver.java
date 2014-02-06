@@ -129,10 +129,13 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 				pkgName = pkgName.replace("/", ".");
 				
 				for (IModelElement srcUnitElem : pkgFrag.getChildren()) {
-					ISourceModule srcUnit = (ISourceModule) srcUnitElem;
-					String modName = srcUnit.getElementName();
+					ISourceModule cu = (ISourceModule) srcUnitElem;
+					String cuFileName = cu.getElementName();
+					if(!DeeNamingRules.isValidCompilationUnitName(cuFileName))
+						continue;
+					
 					// remove extension
-					modName = modName.substring(0, modName.indexOf('.'));
+					String modName = DeeNamingRules.getModuleNameFromFileName(cuFileName);
 					String fqName;
 					if(pkgName.equals("")) {
 						fqName = modName;

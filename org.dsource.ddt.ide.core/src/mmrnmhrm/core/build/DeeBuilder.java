@@ -179,7 +179,7 @@ public class DeeBuilder {
 	protected void processResource(IFile file) {
 		String modUnitName = file.getName();
 		IPath projectRelativePath = file.getProjectRelativePath();
-		if(DeeNamingRules.isValidCompilationUnitName(modUnitName)) {
+		if(DeeNamingRules.isValidCompilationUnitName(modUnitName, false)) {
 			IPath resourcePath = file.isLinked(IResource.CHECK_ANCESTORS) ?
 					file.getLocation() :
 					projectRelativePath;

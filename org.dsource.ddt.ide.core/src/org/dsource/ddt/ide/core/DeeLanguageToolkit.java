@@ -1,5 +1,6 @@
 package org.dsource.ddt.ide.core;
 
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IResource;
@@ -48,12 +49,10 @@ public class DeeLanguageToolkit extends AbstractLanguageToolkit  {
 		return false;
 	}
 	
-	// TODO: DLTK understand a bit better the validate and canValidate methods
-	
 	@Override
 	public IStatus validateSourceModule(IResource resource) {
 		String name = resource.getName();
-		if(DeeNamingRules.isValidCompilationUnitName(name)) {
+		if(DeeNamingRules.isValidCompilationUnitName(name, false)) {
 			return Status.OK_STATUS;
 		} else {
 			return new Status(IStatus.ERROR, DeeCore.PLUGIN_ID, "Invalid resource name:" + name);
@@ -62,8 +61,12 @@ public class DeeLanguageToolkit extends AbstractLanguageToolkit  {
 	
 	@Override
 	public boolean validateSourcePackage(IPath path, IEnvironment environment) {
+		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
+			return DeeNamingRules.isValidPackagePathName(path.toString());	
+		}
+		// We always return true because DLTK gives us path as an absolute path! 
+		// Thus we have no way to determine where the package starts, so we cant use isValidPackagePathName
 		return true;
-		//return DeeNameRules.isValidPackagePathName(path.toString());
 	}
 	
 }

@@ -2,7 +2,6 @@ package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,13 +46,19 @@ public final class TestsSimpleModuleResolver implements ITestsModuleResolver {
 		File[] children = projectFolder.listFiles();
 		assertNotNull(children);
 		for (File child : children) {
+			String resourceName = child.getName();
+			
 			if(child.isDirectory()) {
-				String packageName = child.getName();
-				assertTrue(DeeNamingRules.isValidDIdentifier(packageName));
+				String packageName = resourceName;
+				if(!DeeNamingRules.isValidPackageNamePart(packageName, true)) {
+					continue;
+				}
 				initModules(child, namePrefix + packageName + ".");
-			} else if(child.getName().endsWith(".d")) {
-				String moduleName = child.getName().replaceFirst(".d$", "");
-				assertTrue(DeeNamingRules.isValidDIdentifier(moduleName));
+			} else if(resourceName.endsWith(".d")) {
+				String moduleName = DeeNamingRules.getModuleNameFromFileName(resourceName);
+				if(!DeeNamingRules.isValidCompilationUnitName(resourceName)) {
+					continue;
+				}
 				String source = DToolBaseTest.readStringFromFileUnchecked(child);
 				DeeParserResult parseResult = DeeParser.parseSource(source, moduleName);
 				modules.put(namePrefix + moduleName, parseResult);
