@@ -14,7 +14,7 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.ast.util.NamedElementUtil;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 
 /**
  * Normal DefUnit search, 

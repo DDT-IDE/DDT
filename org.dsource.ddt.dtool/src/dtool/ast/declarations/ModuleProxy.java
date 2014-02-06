@@ -7,11 +7,11 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
+import dtool.project.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 import dtool.resolver.ResolverUtil;
 import dtool.resolver.ResolverUtil.ModuleNameDescriptor;
-import dtool.resolver.api.IModuleResolver;
 
 public class ModuleProxy implements INamedElement {
 	

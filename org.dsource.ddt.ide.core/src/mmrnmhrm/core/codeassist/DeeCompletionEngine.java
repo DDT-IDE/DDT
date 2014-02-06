@@ -16,9 +16,9 @@ import dtool.ast.definitions.INamedElement;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.project.DeeNamingRules;
+import dtool.project.IModuleResolver;
+import dtool.project.NullModuleResolver;
 import dtool.resolver.PrefixDefUnitSearch;
-import dtool.resolver.api.IModuleResolver;
-import dtool.resolver.api.NullModuleResolver;
 import dtool.resolver.api.PrefixSearchOptions;
 
 public class DeeCompletionEngine extends ScriptCompletionEngine {

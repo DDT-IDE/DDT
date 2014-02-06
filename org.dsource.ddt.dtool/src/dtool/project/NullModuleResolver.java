@@ -1,7 +1,6 @@
-package dtool.resolver.api;
+package dtool.project;
 
 import dtool.ast.definitions.Module;
-import dtool.project.CommonModuleResolver;
 import dtool.util.NewUtils;
 
 public class NullModuleResolver extends CommonModuleResolver {

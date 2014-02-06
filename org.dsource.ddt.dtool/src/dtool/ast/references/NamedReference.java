@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
+import dtool.project.IModuleResolver;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.api.DefUnitDescriptor;
-import dtool.resolver.api.IModuleResolver;
 
 /** 
  * A reference based on an identifier. These references also 

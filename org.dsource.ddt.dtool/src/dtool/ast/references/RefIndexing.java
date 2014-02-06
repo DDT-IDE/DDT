@@ -7,9 +7,9 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
+import dtool.project.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.api.DefUnitDescriptor;
-import dtool.resolver.api.IModuleResolver;
 
 /**
  * An reference consisting of an element reference and an indexing paramater .

@@ -6,7 +6,7 @@ import java.util.Collections;
 
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 
 public abstract class Expression extends Resolvable implements IQualifierNode, IInitializer {
 	

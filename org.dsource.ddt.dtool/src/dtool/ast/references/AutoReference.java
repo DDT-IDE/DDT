@@ -6,8 +6,8 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
+import dtool.project.IModuleResolver;
 import dtool.resolver.api.DefUnitDescriptor;
-import dtool.resolver.api.IModuleResolver;
 
 /**
  * This reference node can only be parsed in special circumstances

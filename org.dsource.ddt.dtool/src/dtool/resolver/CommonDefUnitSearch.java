@@ -10,7 +10,7 @@ import java.util.Collections;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 
 public abstract class CommonDefUnitSearch {
 

@@ -9,7 +9,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 
 public class ExpCastQual extends Expression {
 	

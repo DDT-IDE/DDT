@@ -10,8 +10,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.INamedElement;
+import dtool.project.IModuleResolver;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.api.IModuleResolver;
 
 public class ExpCall extends Expression {
 	

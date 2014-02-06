@@ -16,8 +16,8 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.Reference;
+import dtool.project.IModuleResolver;
 import dtool.resolver.api.DefUnitDescriptor;
-import dtool.resolver.api.IModuleResolver;
 
 /**
  * Adapter class to parse C-style postfix declarator, i.e., 

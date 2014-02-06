@@ -9,7 +9,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 
 /** An entity reference starting at module scope. 
  * Example: "a = .foo;"

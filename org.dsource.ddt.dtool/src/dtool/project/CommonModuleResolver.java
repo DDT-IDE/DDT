@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
-import dtool.resolver.api.IModuleResolver;
 
 public abstract class CommonModuleResolver implements IModuleResolver {
 	

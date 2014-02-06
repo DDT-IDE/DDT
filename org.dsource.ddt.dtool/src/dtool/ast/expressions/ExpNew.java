@@ -9,7 +9,7 @@ import dtool.ast.NodeListView;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefIndexing;
 import dtool.ast.references.Reference;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 
 /**
  * New expression.

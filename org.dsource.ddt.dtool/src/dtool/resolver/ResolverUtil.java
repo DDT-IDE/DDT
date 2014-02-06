@@ -2,7 +2,7 @@ package dtool.resolver;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 import dtool.util.NewUtils;
 
 public class ResolverUtil {

@@ -12,7 +12,7 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.IntrinsicDefUnit;
 import dtool.ast.definitions.Module;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 import dtool.util.ArrayView;
 
 /** 

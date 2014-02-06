@@ -8,9 +8,9 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefModule;
+import dtool.project.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
-import dtool.resolver.api.IModuleResolver;
 
 public class ImportContent extends ASTNode implements IImportFragment {
 	

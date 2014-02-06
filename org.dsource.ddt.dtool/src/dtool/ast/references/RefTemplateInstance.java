@@ -14,8 +14,8 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
+import dtool.project.IModuleResolver;
 import dtool.resolver.api.DefUnitDescriptor;
-import dtool.resolver.api.IModuleResolver;
 
 public class RefTemplateInstance extends Reference implements IQualifierNode, ITemplateRefNode {
 	

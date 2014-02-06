@@ -10,8 +10,8 @@ import dtool.ast.IASTNode;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
+import dtool.project.IModuleResolver;
 import dtool.resolver.IResolvable;
-import dtool.resolver.api.IModuleResolver;
 
 /**
  * A {@link Resolvable} is either an {@link Reference} or {@link Expression}
