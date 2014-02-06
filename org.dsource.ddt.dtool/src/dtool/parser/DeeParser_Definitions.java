@@ -1183,6 +1183,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public DefinitionAliasFragment parseAliasFragment() {
 		ProtoDefSymbol defId = parseDefId();
+		ArrayView<TemplateParameter> tplParams = null;
 		Reference ref = null;
 		
 		ParseHelper parse = new ParseHelper(defId.nameSourceRange.getStartPos());
@@ -1191,12 +1192,15 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			parse.checkResult(defId);
 			if(parse.ruleBroken) break parsing;
 			
+			tplParams = parseTemplateParameters(parse, true);
+			if(parse.ruleBroken) break parsing;
+			
 			if(parse.consumeRequired(DeeTokens.ASSIGN).ruleBroken) break parsing;
 			
 			NodeResult<Reference> refResult = parseTypeReference_ToMissing();
 			ref = refResult.node;
 		}
-		return parse.conclude(new DefinitionAliasFragment(defId, ref));
+		return parse.conclude(new DefinitionAliasFragment(defId, tplParams, ref));
 	}
 	
 	protected NodeResult<DeclarationAliasThis> parseDeclarationAliasThis() {
