@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import descent.core.ddoc.DdocSection.Parameter;
-import dtool.DeeNamingRules;
+import dtool.project.DeeNamingRules;
 
 /**
  * Parser of ddoc documentation comments.

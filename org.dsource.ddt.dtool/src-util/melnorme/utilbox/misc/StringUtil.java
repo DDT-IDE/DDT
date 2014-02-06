@@ -182,6 +182,15 @@ public final class StringUtil {
 	}
 	
 	
+	/** Trim an given endMatch String from given string if there is a match. 
+	 * @return the result. */
+	public static String trimEnding(String string, String endMatch) {
+		if(string.endsWith(endMatch)) {
+			return string.substring(0, string.length() - endMatch.length());
+		}
+		return string;
+	}
+	
 	/** @return a copy of given string without leading spaces. */
 	public static String trimLeadingSpaces(String string) {
 		int pos = 0;
@@ -210,5 +219,5 @@ public final class StringUtil {
 		
 		return sb.toString();
 	}
-
+	
 }

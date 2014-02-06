@@ -12,10 +12,10 @@ import org.eclipse.dltk.core.CompletionRequestor;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 
-import dtool.DeeNamingRules;
 import dtool.ast.definitions.INamedElement;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
+import dtool.project.DeeNamingRules;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.IModuleResolver;
 import dtool.resolver.api.NullModuleResolver;

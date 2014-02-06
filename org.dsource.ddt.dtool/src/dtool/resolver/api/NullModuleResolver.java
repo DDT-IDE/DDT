@@ -1,17 +1,18 @@
 package dtool.resolver.api;
 
 import dtool.ast.definitions.Module;
+import dtool.project.CommonModuleResolver;
 import dtool.util.NewUtils;
 
-public class NullModuleResolver implements IModuleResolver {
+public class NullModuleResolver extends CommonModuleResolver {
 	
 	@Override
-	public String[] findModules(String fqNamePrefix) throws Exception {
+	protected String[] findModules_do(String fqNamePrefix) throws Exception {
 		return NewUtils.EMPTY_STRING_ARRAY;
 	}
 	
 	@Override
-	public Module findModule(String[] packages, String module) throws Exception {
+	protected Module findModule_do(String[] packages, String module) throws Exception {
 		return null;
 	}
 	

@@ -1,4 +1,4 @@
-package dtool;
+package dtool.project;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.utilbox.misc.StringUtil;
@@ -6,6 +6,8 @@ import dtool.parser.DeeLexerKeywordHelper;
 import dtool.parser.DeeTokens;
 
 /**
+ * Naming rules code for compilation units and packages.
+ * 
  * Some stuff here breaks on UTF32 supplementary characters (we don't care much)
  */
 public class DeeNamingRules {
@@ -84,8 +86,31 @@ public class DeeNamingRules {
 	}
 	
 	public static String getModuleNameFromFileName(String fileName) {
-		// Hum, should we validate the identifier?
 		return StringUtil.substringUntilMatch(fileName, ".");
+	}
+	
+	
+	/**
+	 * @return The fully qualified name of the module with given packagePath and given fileName,
+	 * or null if this compilation has a name or path that cannot be imported.
+	 * The fully qualified name is the name by which the module can be imported.
+	 * @param packagePath package path separated by "/"
+	 * @param fileName the compilation unit file name
+	 */
+	public static String getModuleFQNameFromFilePath(String packagePath, String fileName) {
+		packagePath = StringUtil.trimEnding(packagePath, "/");
+		String packageName = packagePath.replace("/", ".");
+		
+		if(fileName.equals("package.d") && !packageName.isEmpty()) {
+			return packageName;
+		} else {
+			if(!DeeNamingRules.isValidCompilationUnitName(fileName)) {
+				return null;
+			}
+			String moduleName = getModuleNameFromFileName(fileName);
+			return packageName.isEmpty() ? moduleName : packageName + "." + moduleName;
+		}
+		
 	}
 	
 }

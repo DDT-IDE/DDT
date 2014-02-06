@@ -8,6 +8,7 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.ReferenceResolver;
 import dtool.resolver.ResolverUtil;
 import dtool.resolver.ResolverUtil.ModuleNameDescriptor;
 import dtool.resolver.api.IModuleResolver;
@@ -63,11 +64,8 @@ public class ModuleProxy implements INamedElement {
 	@Override
 	public Module resolveDefUnit() {
 		ModuleNameDescriptor nameDescriptor = ResolverUtil.getNameDescriptor(getModuleFullyQualifiedName());
-		try {
-			return moduleResolver.findModule(nameDescriptor.packages, nameDescriptor.moduleName);
-		} catch(Exception e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+		return ReferenceResolver.findModuleUnchecked(moduleResolver, 
+				nameDescriptor.packages, nameDescriptor.moduleName);
 	}
 	
 	@Override

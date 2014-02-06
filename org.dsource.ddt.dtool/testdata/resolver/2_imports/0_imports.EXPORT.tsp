@@ -11,12 +11,12 @@
 
 #@IMPORTSPROJ_PACK_MODULES【pack.mod1/▪pack.mod2/▪pack.mod3/▪
 pack.sample/▪pack.sample2/▪pack.sample3/▪
-pack.subpack.mod3/▪pack.subpack.mod4/】
+pack.subpack/▪pack.subpack.mod3/▪pack.subpack.mod4/】
 
 #@IMPORTSPROJ_ALL_MODULES【
 modA/▪
 xpto/▪
 #@IMPORTSPROJ_PACK_MODULES▪
-pack2.private_imported/▪pack2.xpto_imported/▪pack2.public_imported/▪
+pack2/▪pack2.private_imported/▪pack2.xpto_imported/▪pack2.public_imported/▪
 pack3.fullNameMismatch/▪pack3.moduleNameMismatch/▪pack3.packageNameMismatch/▪pack3.other/▪
 】

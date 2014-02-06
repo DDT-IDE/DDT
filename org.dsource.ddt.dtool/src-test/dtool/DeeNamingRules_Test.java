@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import dtool.parser.DeeTokenHelper;
 import dtool.parser.DeeTokens;
+import dtool.project.DeeNamingRules;
 
 public class DeeNamingRules_Test extends DeeNamingRules {
 	

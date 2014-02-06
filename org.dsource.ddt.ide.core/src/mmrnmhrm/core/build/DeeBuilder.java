@@ -33,9 +33,9 @@ import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
-import dtool.DeeNamingRules;
 import dtool.Logg;
 import dtool.SimpleLogger;
+import dtool.project.DeeNamingRules;
 
 public class DeeBuilder {
 	

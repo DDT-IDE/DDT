@@ -11,7 +11,7 @@ import org.eclipse.dltk.core.AbstractLanguageToolkit;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.environment.IEnvironment;
 
-import dtool.DeeNamingRules;
+import dtool.project.DeeNamingRules;
 
 public class DeeLanguageToolkit extends AbstractLanguageToolkit  {
 	

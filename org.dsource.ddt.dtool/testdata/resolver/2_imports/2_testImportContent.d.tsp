@@ -15,6 +15,10 @@
 	pack.sample.fooprivateImportVar#FIND¤【】;
 	pack.sample.pack2.private_imported#FIND¤【】;
 	pack.sample.pack2.private_imported.fooprivateImportVar#FIND¤【】;
+	
+	pack.subpack#FIND¤【pack.subpack/】; // test import package
+	pack.subpack.#REFSEARCH¤【PackSubpackPackage▪mod3】; 
+	pack.subpack#REFSEARCH¤【pack.subpack/】;
 】
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module importTest; #PROJECT(importsProject)
@@ -23,6 +27,7 @@ static import modA;
 static import pack.mod1;
 static import /* syntax error */;
 static import pack.mod2, pack.sample, pack.subpack.mod3;
+static import pack.subpack;
 
 #@__CONTEXT_START__
 	#REFSEARCH¤【importTest▪pack▪modA】
@@ -59,12 +64,13 @@ import modA;
 import pack.mod1;
 import /* syntax error */;
 import pack.mod2, pack.sample, pack.subpack.mod3; 
+import pack.subpack;
 
 
 #@__CONTEXT_START__
 	pack.#REFSEARCH¤【mod1▪mod2▪sample▪subpack】;
 	#REFSEARCH¤【importTest▪modA▪#@MODA_MBRS▪pack▪#@PACK_MOD1_MBRS▪
-		#@PACK_MOD2_MBRS▪#@PACK_SAMPLE_MBRS▪#@SUBPACK_MOD3_MBRS】;
+		#@PACK_MOD2_MBRS▪#@PACK_SAMPLE_MBRS▪#@SUBPACK_MOD3_MBRS▪PackSubpackPackage】;
 	
 	SampleClass#FIND¤【pack.sample/SampleClass】;
 	SampleClass.foo#FIND¤【pack.sample/SampleClass.foo】;
@@ -87,7 +93,7 @@ module importTest; #PROJECT(importsProject)
 import modA#FIND¤【modA/】#REFSEARCH¤【modA/】;
 
 import pack.mod1#FIND¤【pack.mod1/】#REFSEARCH¤【pack.mod1/】;
-import pack.s#FIND¤【】#REFSEARCH¤【pack.sample/▪pack.sample2/▪pack.sample3/▪pack.subpack.mod3/▪pack.subpack.mod4/】;
+import pack.s#FIND¤【】#REFSEARCH¤【pack.sample/▪pack.sample2/▪pack.sample3/▪pack.subpack/▪pack.subpack.mod3/▪pack.subpack.mod4/】;
 import pack.subpack.mod3#FIND¤【pack.subpack.mod3/】#REFSEARCH¤【pack.subpack.mod3/】;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax errors
