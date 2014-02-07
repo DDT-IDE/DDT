@@ -13,7 +13,7 @@
  * Cleaned up the behavior and labels of D Application launch configuration dialog.
  * Added debug hover to editor. Will present variables info of currently running session.
  * Added D 2.064 package.d import rule.
- * Added D 2.064 template alias def syntax.
+ * Added D 2.064 alias and enum eponymous template shortcut syntax.
 
 == DDT 0.9.0 (2013-11-14) ==
  * Issue #13: Added integrated debugging support, using CDT's GDB debugger integration. Supports:

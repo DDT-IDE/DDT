@@ -29,8 +29,8 @@
   EnumMember(RefPrimitive DefSymbol)
 ))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(STATEMENT)    enum i = 4;
-#STRUCTURE_EXPECTED: DeclarationAttrib(AttribBasic DefinitionAutoVariable(DefSymbol Integer) )
+#PARSE(STATEMENT)     enum i = 4;
+#STRUCTURE_EXPECTED:  DefinitionEnumVar(DefinitionEnumVarFragment(DefSymbol Integer) )
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(DECLARATION)   alias foo[] aliasDef; 
