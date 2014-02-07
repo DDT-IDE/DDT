@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
 Bundle-SymbolicName: org.dsource.ddt.ide.ui;singleton:=true
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 0.9.1.qualifier
 Bundle-Activator: org.dsource.ddt.ui.DeeUIPlugin
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
