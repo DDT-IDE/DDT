@@ -116,7 +116,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	@Override
 	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
-		if(contentType == DeePartitions.DEE_CODE) {
+		if(contentType.equals(DeePartitions.DEE_CODE)) {
 			return new BestMatchHover(getEditor(), stateMask);
 		} 
 		return null;
