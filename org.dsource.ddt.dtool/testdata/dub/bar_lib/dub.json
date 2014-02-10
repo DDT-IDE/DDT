@@ -1,6 +1,6 @@
 {
 	"name": "bar_lib",
-	"description": "An example project skeleton",
+	"description": "Bar library",
 	"homepage": "http://example.org",
 	"copyright": "Copyright © 2000, Your Name",
 	"authors": [

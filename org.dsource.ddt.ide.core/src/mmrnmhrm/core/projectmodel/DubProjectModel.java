@@ -143,7 +143,7 @@ public class DubProjectModel {
 	}
 	
 	
-	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path("package.json");
+	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path("dub.json");
 	
 	protected final class DubProjectModelResourceListener implements IElementChangedListener {
 		

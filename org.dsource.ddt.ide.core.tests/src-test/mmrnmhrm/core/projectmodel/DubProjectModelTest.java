@@ -135,7 +135,7 @@ public class DubProjectModelTest extends BaseDeeTest {
 		
 		
 		writeDubJson_AndSync(dubTestProject, 
-				readFileContents(DUB_WORKSPACE.resolve("XptoBundle/package.json")));
+				readFileContents(DUB_WORKSPACE.resolve("XptoBundle/dub.json")));
 		
 		checkBundle(dubTestProject, "xptobundle", srcFolders("src", "src-test"), 
 				dep(DUB_WORKSPACE.resolve("bar_lib"), "source"),
@@ -164,7 +164,7 @@ public class DubProjectModelTest extends BaseDeeTest {
 	}
 
 	protected static void writeDubJson_AndSync(IScriptProject dubTestProject, String contents) throws CoreException {
-		writeStringToFile(dubTestProject, "package.json", contents);
+		writeStringToFile(dubTestProject, "dub.json", contents);
 		DubProjectModel.getDefault().syncPendingUpdates();
 	}
 	

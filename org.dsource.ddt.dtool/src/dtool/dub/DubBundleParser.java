@@ -85,7 +85,7 @@ public class DubBundleParser extends CommonDubParser {
 	}
 	
 	protected void parseFromLocation(Path location) throws DubBundleException {
-		File jsonLocation = location.resolve(MiscUtil.createValidPath("package.json")).toFile();
+		File jsonLocation = location.resolve(MiscUtil.createValidPath("dub.json")).toFile();
 		
 		try {
 			String source = readStringFromFile(jsonLocation);
