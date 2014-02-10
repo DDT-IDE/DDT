@@ -10,8 +10,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Expression;
+import dtool.project.IModuleResolver;
 import dtool.resolver.api.DefUnitDescriptor;
-import dtool.resolver.api.IModuleResolver;
 
 public class RefSlice extends Reference {
 	

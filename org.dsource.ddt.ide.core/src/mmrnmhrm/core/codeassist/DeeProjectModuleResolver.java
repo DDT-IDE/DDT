@@ -6,6 +6,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqualArrays;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DLTKModelUtils;
 import mmrnmhrm.core.parser.DeeModuleParsingUtil;
@@ -21,11 +22,11 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.DeeNamingRules;
 import dtool.ast.definitions.Module;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.CommonModuleResolver;
+import dtool.project.DeeNamingRules;
 
-public class DeeProjectModuleResolver implements IModuleResolver {
+public class DeeProjectModuleResolver extends CommonModuleResolver{
 	
 	protected final IScriptProject scriptProject;
 	
@@ -43,7 +44,7 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 		return findModuleUnit(module, null);
 	}
 	
-	// TODO: review this methods
+	// TODO: review this method
 	public ISourceModule findModuleUnit(Module module, ISourceModule workingCopySourceModule) throws ModelException {
 		String[] packages = module.getDeclaredPackages();
 		String moduleName = module.getName();
@@ -51,6 +52,7 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 		return findModuleUnit(packages, moduleName, workingCopySourceModule);
 	}
 	
+	// TODO: review this method
 	public ISourceModule findModuleUnit(String[] packages, String moduleName, ISourceModule workingCopySourceModule)
 		throws ModelException {
 		if(workingCopySourceModule != null) {
@@ -67,8 +69,7 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 	}
 	
 	@Override
-	public Module findModule(String[] packages, String moduleName) throws CoreException {
-		// possible BUG here
+	public Module findModule_do(String[] packages, String moduleName) throws CoreException {
 		return findModule(packages, moduleName, this.scriptProject);
 	}
 	
@@ -101,6 +102,20 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 				}
 			}
 		}
+		
+		packagesPath = packagesPath.append(moduleName); // search for package.d
+		
+		for (IProjectFragment srcFolder : deeProject.getProjectFragments()) {
+			IScriptFolder scriptFolder = srcFolder.getScriptFolder(packagesPath);
+			
+			if(scriptFolder.exists()) {
+				ISourceModule sourceModule = scriptFolder.getSourceModule("package.d");
+				if(DLTKModelUtils.exists(sourceModule)) {
+					return sourceModule;
+				}
+			}
+		}
+		
 		return null;
 	}
 	
@@ -109,45 +124,40 @@ public class DeeProjectModuleResolver implements IModuleResolver {
 	}
 	
 	@Override
-	public String[] findModules(String fqNamePrefix) throws ModelException {
+	public String[] findModules_do(String fqNamePrefix) throws ModelException {
 		return findModules(fqNamePrefix, this.scriptProject);
 	}
 	
 	protected static String[] findModules(String fqNamePrefix, IScriptProject scriptProject) throws ModelException {
-		List<String> strings = new ArrayList<String>();
+		List<String> matchedModulesFQName = new ArrayList<String>();
 		
 		for (IProjectFragment srcFolder : scriptProject.getProjectFragments()) {
 			
 			for (IModelElement pkgFragElem : srcFolder.getChildren()) {
 				IScriptFolder pkgFrag = (IScriptFolder) pkgFragElem;
 				
-				String pkgName = pkgFrag.getElementName();
+				String packagePath= pkgFrag.getElementName();
 				
-				if(!DeeNamingRules.isValidPackagePathName(pkgName))
+				if(!DeeNamingRules.isValidPackagePathName(packagePath))
 					continue;
 				
-				pkgName = pkgName.replace("/", ".");
-				
 				for (IModelElement srcUnitElem : pkgFrag.getChildren()) {
-					ISourceModule srcUnit = (ISourceModule) srcUnitElem;
-					String modName = srcUnit.getElementName();
-					// remove extension
-					modName = modName.substring(0, modName.indexOf('.'));
-					String fqName;
-					if(pkgName.equals("")) {
-						fqName = modName;
-					} else {
-						fqName = pkgName + "." + modName;
-					}
+					ISourceModule cu = (ISourceModule) srcUnitElem;
+					String cuFileName = cu.getElementName();
+					
+					String fqName = DeeNamingRules.getModuleFQNameFromFilePath(packagePath, cuFileName);
+					
+					if(fqName == null)
+						continue;
 					
 					if(fqName.startsWith(fqNamePrefix)) {
-						strings.add(fqName);
+						matchedModulesFQName.add(fqName);
 					}
 				}
 			}
 		}
 		
-		return strings.toArray(new String[strings.size()]);
+		return ArrayUtil.createFrom(matchedModulesFQName, String.class);
 	}
 	
 }

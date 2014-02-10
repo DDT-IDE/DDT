@@ -11,6 +11,10 @@ enum Enum : basetype #REFSEARCH¤【Enum▪outside】 {
 	MemberA #REFSEARCH¤【Enum▪outside▪MemberA▪MemberB】 ,  MemberB 
 #@《}●/*MISSING*/》
 
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+int outside;
+enum Enum = #REFSEARCH¤【Enum▪VarA▪VarB▪outside】 , VarA = 123, VarB  #@《;●/*MISSING*/》
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ as qualifed ref
 int outside; 
 enum Enum : basetype { MemberA , MemberB }
@@ -27,3 +31,9 @@ enum Enum : basetype
 int outside; 
 Enum#FIND¤【Enum】.#REFSEARCH¤【】;
 enum Enum 
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+int outside;
+Enum#FIND¤【Enum】.#REFSEARCH¤【】;
+VarA#FIND¤【VarA】.#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
+enum Enum = , VarA = 123, VarB  #@《;●/*MISSING*/》

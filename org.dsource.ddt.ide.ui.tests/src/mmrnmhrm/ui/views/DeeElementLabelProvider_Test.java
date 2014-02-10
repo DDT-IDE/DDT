@@ -7,10 +7,10 @@ import org.junit.Test;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.INamedElement;
+import dtool.project.NullModuleResolver;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;
-import dtool.resolver.api.NullModuleResolver;
 
 public class DeeElementLabelProvider_Test extends BaseDeeUITest {
 	

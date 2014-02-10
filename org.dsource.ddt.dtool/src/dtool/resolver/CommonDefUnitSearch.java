@@ -10,7 +10,7 @@ import java.util.Collections;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 
 public abstract class CommonDefUnitSearch {
 
@@ -55,11 +55,7 @@ public abstract class CommonDefUnitSearch {
 	}
 	
 	public Module resolveModule(String[] packages, String module) {
-		try {
-			return modResolver.findModule(packages, module);
-		} catch (Exception e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+		return ReferenceResolver.findModuleUnchecked(modResolver, packages, module);
 	}
 	
 	/** Return whether we have already search the given scope or not. */

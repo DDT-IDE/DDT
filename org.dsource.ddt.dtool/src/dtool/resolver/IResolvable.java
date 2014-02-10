@@ -3,7 +3,7 @@ package dtool.resolver;
 import java.util.Collection;
 
 import dtool.ast.definitions.INamedElement;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 
 /** 
  * A node that is a reference (or a value implicitly referring) to a named element.

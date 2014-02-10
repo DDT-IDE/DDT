@@ -2,7 +2,7 @@
 <feature
       id="org.dsource.ddt"
       label="%featureName"
-      version="0.9.0.qualifier"
+      version="0.9.1.qualifier"
       provider-name="%providerName"
       plugin="org.dsource.ddt.ide.ui">
 
@@ -23,9 +23,10 @@
          version="0.0.0"/>
 
    <requires>
+      <import feature="org.eclipse.platform" version="4.3.0" match="compatible"/>
       <import feature="org.eclipse.dltk.core" version="5.0.0" match="compatible"/>
       <import feature="org.eclipse.cdt.gnu.dsf" version="4.2.0" match="compatible"/>
-      <import feature="org.eclipse.platform" version="4.3.0" match="compatible"/>
+      <import feature="org.eclipse.cdt.platform" version="8.2.1" match="compatible"/>
    </requires>
 
    <plugin

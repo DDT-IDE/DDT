@@ -22,7 +22,7 @@ public class DeeTabGroup extends AbstractLaunchConfigurationTabGroup {
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 				new DeeMainLaunchConfigurationTab(),
-				new DeeScriptArgumentsTab(),
+				new DeeProgramArgumentsTab(),
 				new EnvironmentTab(),
 				new ScriptCommonTab()
 		};

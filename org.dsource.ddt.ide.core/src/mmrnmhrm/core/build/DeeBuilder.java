@@ -33,9 +33,9 @@ import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
-import dtool.DeeNamingRules;
 import dtool.Logg;
 import dtool.SimpleLogger;
+import dtool.project.DeeNamingRules;
 
 public class DeeBuilder {
 	
@@ -179,7 +179,7 @@ public class DeeBuilder {
 	protected void processResource(IFile file) {
 		String modUnitName = file.getName();
 		IPath projectRelativePath = file.getProjectRelativePath();
-		if(DeeNamingRules.isValidCompilationUnitName(modUnitName)) {
+		if(DeeNamingRules.isValidCompilationUnitName(modUnitName, false)) {
 			IPath resourcePath = file.isLinked(IResource.CHECK_ANCESTORS) ?
 					file.getLocation() :
 					projectRelativePath;

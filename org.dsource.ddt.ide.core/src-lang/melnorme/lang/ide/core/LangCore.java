@@ -4,16 +4,11 @@ import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IModelStatusConstants;
 
 public abstract class LangCore extends Plugin {
 	
@@ -23,7 +18,8 @@ public abstract class LangCore extends Plugin {
 		
 	}
 	
-	public static String PLUGIN_ID = LangCore_Actual.PLUGIN_ID;
+	public static final String PLUGIN_ID = LangCore_Actual.PLUGIN_ID;
+	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
 	public static Plugin getInstance() {
 		return LangCore_Actual.getInstance();
@@ -51,7 +47,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Creates a status describing an error in this plugin, with give message and exception. */
 	public static Status createErrorStatus(String message, Throwable throwable) {
-		return new Status(IStatus.ERROR, DeeCore.PLUGIN_ID, IModelStatusConstants.INTERNAL_ERROR, message, throwable); 
+		return new Status(IStatus.ERROR, DeeCore.PLUGIN_ID, ILangConstants.INTERNAL_ERROR, message, throwable); 
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */
@@ -86,23 +82,7 @@ public abstract class LangCore extends Plugin {
 	/** Logs the given message, creating a new warning status for this plugin. */
 	public static void logWarning(String message) {
 		getInstance().getLog().log(
-				new Status(IStatus.WARNING, PLUGIN_ID, IModelStatusConstants.INTERNAL_ERROR, message, null));
-	}
-	
-	
-	/**
-	 * See {@link DLTKCore#run(IWorkspaceRunnable, ISchedulingRule, IProgressMonitor)}
-	 */
-	public static void run(IWorkspaceRunnable action, ISchedulingRule rule,
-			IProgressMonitor monitor) throws CoreException {
-		DLTKCore.run(action, rule, monitor);
-	}
-	
-	/** Runs {@link #run(IWorkspaceRunnable, ISchedulingRule, IProgressMonitor) }
-	 * with workspace root as the rule. */
-	public static void run(IWorkspaceRunnable action, IProgressMonitor monitor)
-		throws CoreException {
-		run(action, ResourcesPlugin.getWorkspace().getRoot(), monitor);
+				new Status(IStatus.WARNING, PLUGIN_ID, ILangConstants.INTERNAL_ERROR, message, null));
 	}
 	
 }

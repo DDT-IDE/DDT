@@ -12,6 +12,7 @@
 package mmrnmhrm.ui.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.core.codeassist.OutsideBuildpathTestResources;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.tests.ITestResourcesConstants;
@@ -21,7 +22,6 @@ import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 import mmrnmhrm.ui.editor.DeeEditor;
 
-import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;

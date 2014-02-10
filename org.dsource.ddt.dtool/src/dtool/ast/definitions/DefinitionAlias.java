@@ -57,10 +57,13 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 	
 	public static class DefinitionAliasFragment extends DefUnit {
 		
+		public final ArrayView<TemplateParameter> tplParams; // Since 2.064
 		public final Reference target;
 		
-		public DefinitionAliasFragment(ProtoDefSymbol defId, Reference target) {
+		public DefinitionAliasFragment(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams, 
+				Reference target) {
 			super(defId);
+			this.tplParams = parentize(tplParams);
 			this.target = parentize(target);
 		}
 		
@@ -77,12 +80,14 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		@Override
 		public void visitChildren(IASTVisitor visitor) {
 			acceptVisitor(visitor, defname);
+			acceptVisitor(visitor, tplParams);
 			acceptVisitor(visitor, target);
 		}
 		
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
 			cp.append(defname);
+			cp.appendList("(", tplParams, ",", ") ");
 			cp.append(" = ", target);
 		}
 		

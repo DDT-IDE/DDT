@@ -8,10 +8,10 @@ import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.compiler.problem.ProblemSeverities;
 import org.eclipse.dltk.core.IModelElement;
 
-import dtool.DeeNamingRules;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.ParserError;
+import dtool.project.DeeNamingRules;
 
 public class DeeSourceParser extends AbstractSourceParser {
 	

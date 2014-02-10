@@ -26,7 +26,7 @@ public class CollectionUtil {
 	
 	/** Creates a {@link ArrayList} from given collection (collection can be null). */
 	public static <T> Collection<T> createArrayList(Collection<? extends T> collection) {
-		return new ArrayList<>(collection == null ? Collections.EMPTY_LIST : collection);
+		return new ArrayList<T>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
 	
 	/** Creates a {@link HashSet} from given collection (collection can be null). */
@@ -73,7 +73,7 @@ public class CollectionUtil {
 		return list;
 	}
 	
-	@SuppressWarnings("unused") 
+	@SuppressWarnings("unused")
 	private static void testCompile_sort_generics() {
 		List<? extends Integer> list = null;
 		sort(list);

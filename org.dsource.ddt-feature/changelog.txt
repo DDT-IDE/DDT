@@ -2,13 +2,18 @@
 
 = DDT Change Log =
 
-== DDT 0.9.1 ===
- * UI cleanup: "Interpreter Container" now named "D Standard Library"
- * Fixed issue #20: GDC incluce/d/*/ library location layout not recognized
- * Fixed issue #36: Editor/parser doesn't recognize new operator's nested class instantiation syntax. 
- * Updated UserGuide documentation: added info for debugging, Code Templates, Auto-Indent. Restructured sections and updated/removed old info.
+== DDT 0.9.1 (2014-02-07) ===
+ * Added debug hover to D editor. When a CDT debug session is active, this hover presents detailed info for the variable under the cursor, similar to the Variables view.
+ * Added D 2.064 support for eponymous template shortcut syntax for alias and enum.
+ * Added D 2.064 support for the package.d import rule. ([https://github.com/bruno-medeiros/DDT/issues/33 #33])
  * Fixed bug: working directory option of a D launch configuration not honored when run in debug mode.
  * Fixed bug: environment variables non-append option of a D launch configuration not honored.
+ * Fixed some potential issues related to debugging occurring unless the user had full CDT feature manually installed.
+ * Fixed [https://github.com/bruno-medeiros/DDT/issues/20 #20]: GDC `incluce/d/*/` library location layout not recognized
+ * Fixed [https://github.com/bruno-medeiros/DDT/issues/36 #36]: Editor/parser doesn't recognize `new` operator's nested class instantiation syntax. 
+ * Cleaned up the behavior and labels of D Application launch configuration dialog.
+ * UI cleanup: "Interpreter Container" now named "D Standard Library"
+ * Updated UserGuide documentation: added info for debugging, Code Templates, Auto-Indent. Restructured sections and updated/removed old info.
 
 == DDT 0.9.0 (2013-11-14) ==
  * Issue #13: Added integrated debugging support, using CDT's GDB debugger integration. Supports:

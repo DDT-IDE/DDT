@@ -2,7 +2,6 @@ package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,14 +11,15 @@ import java.util.Map;
 import java.util.Set;
 
 import melnorme.utilbox.misc.StringUtil;
-import dtool.DeeNamingRules;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
+import dtool.project.CommonModuleResolver;
+import dtool.project.DeeNamingRules;
 import dtool.resolver.BaseResolverSourceTests.ITestsModuleResolver;
 import dtool.tests.DToolBaseTest;
 
-public final class TestsSimpleModuleResolver implements ITestsModuleResolver {
+public final class TestsSimpleModuleResolver extends CommonModuleResolver implements ITestsModuleResolver {
 	
 	protected File projectFolder;
 	protected Map<String, DeeParserResult> modules = new HashMap<>();
@@ -43,20 +43,29 @@ public final class TestsSimpleModuleResolver implements ITestsModuleResolver {
 		extraModuleResult = null;
 	}
 	
-	public void initModules(File projectFolder, String namePrefix) {
+	public void initModules(File projectFolder, String packagePath) {
 		File[] children = projectFolder.listFiles();
 		assertNotNull(children);
 		for (File child : children) {
+			String resourceName = child.getName();
+			
 			if(child.isDirectory()) {
-				String packageName = child.getName();
-				assertTrue(DeeNamingRules.isValidDIdentifier(packageName));
-				initModules(child, namePrefix + packageName + ".");
-			} else if(child.getName().endsWith(".d")) {
-				String moduleName = child.getName().replaceFirst(".d$", "");
-				assertTrue(DeeNamingRules.isValidDIdentifier(moduleName));
+				String packageName = resourceName;
+				if(!DeeNamingRules.isValidPackageNamePart(packageName, true)) {
+					continue;
+				}
+				initModules(child, packagePath + packageName + "/");
+			} else if(resourceName.endsWith(".d")) {
+				
+				String moduleFQName = DeeNamingRules.getModuleFQNameFromFilePath(packagePath, resourceName);
+				if(moduleFQName == null) 
+					continue;
+				
+				String moduleName = StringUtil.substringAfterLastMatch(moduleFQName, ".");
+				
 				String source = DToolBaseTest.readStringFromFileUnchecked(child);
 				DeeParserResult parseResult = DeeParser.parseSource(source, moduleName);
-				modules.put(namePrefix + moduleName, parseResult);
+				modules.put(moduleFQName, parseResult);
 			} else {
 				assertFail();
 			}
@@ -64,7 +73,7 @@ public final class TestsSimpleModuleResolver implements ITestsModuleResolver {
 	}
 	
 	@Override
-	public String[] findModules(String fqNamePrefix) throws Exception {
+	public String[] findModules_do(String fqNamePrefix) throws Exception {
 		ArrayList<String> matchedModules = new ArrayList<>();
 		Set<String> nameEntries = new HashSet<>(modules.keySet());
 		if(extraModuleName != null) {
@@ -80,7 +89,7 @@ public final class TestsSimpleModuleResolver implements ITestsModuleResolver {
 	}
 	
 	@Override
-	public Module findModule(String[] packages, String module) throws Exception {
+	public Module findModule_do(String[] packages, String module) throws Exception {
 		String fullName = StringUtil.collToString(packages, ".");
 		if(packages.length > 0) {
 			fullName += ".";

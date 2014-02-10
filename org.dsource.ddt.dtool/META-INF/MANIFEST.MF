@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.dsource.ddt.dtool;singleton:=true
-Bundle-Version: 0.8.1.qualifier
+Bundle-Version: 0.9.1.qualifier
 Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
@@ -21,6 +21,7 @@ Export-Package: descent.core.ddoc,
  dtool.ddoc,
  dtool.dub,
  dtool.parser,
+ dtool.project,
  dtool.resolver;x-friends:="org.dsource.ddt.ide.core,org.dsource.ddt.ide.ui",
  dtool.resolver.api,
  dtool.sourcegen;x-friends:="org.dsource.ddt.ide.core,org.dsource.ddt.ide.ui",

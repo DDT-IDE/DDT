@@ -51,7 +51,7 @@ public class DeeElementImageProvider {
 			return getDefUnitImageDescriptor(defUnit, iconStyle);
 		}
 		
-		return DeePluginImages.getManagedDescriptor(getNodeImageDescriptorKey(node));
+		return DeePluginImages.getDescriptor(getNodeImageDescriptorKey(node));
 	}
 	
 	public static ImageDescriptor getDefUnitImageDescriptor(DefUnit defUnit, ElementIconsStyle iconStyle) {
@@ -118,55 +118,55 @@ public class DeeElementImageProvider {
 		int flags = elementDesc.elementFlags;
 		
 		if(elementDesc.isNative()) {
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_NATIVE);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_NATIVE);
 		}
 		
 		switch (archeType) {
 		case Package:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ELEM_PACKAGE);
+			return DeePluginImages.getDescriptor(DeePluginImages.ELEM_PACKAGE);
 		case Module:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.NODE_MODULE_DEC);
+			return DeePluginImages.getDescriptor(DeePluginImages.NODE_MODULE_DEC);
 			
 		case Variable:
 			if(iconStyle == ElementIconsStyle.JDTLIKE) {
 				return getJDTStyleFieldImageDescriptor(flags); 
 			}
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_VARIABLE);
 			
 		case Function:
 			if(iconStyle == ElementIconsStyle.JDTLIKE) {
 				return getJDTStyleMethodImageDescriptor(flags);
 			}
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_FUNCTION);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_FUNCTION);
 		case Constructor:
 			if(iconStyle == ElementIconsStyle.JDTLIKE) {
 				return getJDTStyleMethodImageDescriptor(flags);
 			}
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_CONSTRUCTOR);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_CONSTRUCTOR);
 		case Struct:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_STRUCT);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_STRUCT);
 		case Union:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_UNION);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_UNION);
 		case Class:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_CLASS);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_CLASS);
 		case Interface:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_INTERFACE);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_INTERFACE);
 			
 		case Template:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_TEMPLATE);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_TEMPLATE);
 		case Mixin:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_MIXIN);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_MIXIN);
 		case Enum:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_ENUM);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_ENUM);
 		case Alias:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_NATIVE);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_NATIVE);
 			
 		case Tuple:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_TUPLE);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_TUPLE);
 		case TypeParameter:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_TYPE_PARAMETER);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_TYPE_PARAMETER);
 		case EnumMember:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.ENT_VARIABLE);
+			return DeePluginImages.getDescriptor(DeePluginImages.ENT_VARIABLE);
 		}
 		
 		throw assertFail();
@@ -176,14 +176,14 @@ public class DeeElementImageProvider {
 	public ImageDescriptor getJDTStyleFieldImageDescriptor(int flags) {
 		switch (DefElementFlagsUtil.elementFlagsToProtection(flags, EProtection.PUBLIC)) {
 		case PRIVATE: 
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PRIVATE);
+			return DeePluginImages.getDescriptor(DeePluginImages.IMG_FIELD_PRIVATE);
 		case PROTECTED:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PROTECTED);
+			return DeePluginImages.getDescriptor(DeePluginImages.IMG_FIELD_PROTECTED);
 		case PACKAGE: 
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_DEFAULT);
+			return DeePluginImages.getDescriptor(DeePluginImages.IMG_FIELD_DEFAULT);
 		case PUBLIC:
 		case EXPORT:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_FIELD_PUBLIC);
+			return DeePluginImages.getDescriptor(DeePluginImages.IMG_FIELD_PUBLIC);
 		}
 		throw assertUnreachable();
 	}
@@ -191,14 +191,14 @@ public class DeeElementImageProvider {
 	public ImageDescriptor getJDTStyleMethodImageDescriptor(int flags) {
 		switch (DefElementFlagsUtil.elementFlagsToProtection(flags, EProtection.PUBLIC)) {
 		case PRIVATE: 
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PRIVATE);
+			return DeePluginImages.getDescriptor(DeePluginImages.IMG_METHOD_PRIVATE);
 		case PROTECTED:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PROTECTED);
+			return DeePluginImages.getDescriptor(DeePluginImages.IMG_METHOD_PROTECTED);
 		case PACKAGE: 
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_DEFAULT);
+			return DeePluginImages.getDescriptor(DeePluginImages.IMG_METHOD_DEFAULT);
 		case PUBLIC:
 		case EXPORT:
-			return DeePluginImages.getManagedDescriptor(DeePluginImages.IMG_METHOD_PUBLIC);
+			return DeePluginImages.getDescriptor(DeePluginImages.IMG_METHOD_PUBLIC);
 		}
 		throw assertUnreachable();
 	}

@@ -21,8 +21,8 @@ import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
 import dtool.parser.IToken;
 import dtool.parser.TokenListUtil;
+import dtool.project.IModuleResolver;
 import dtool.resolver.api.ECompletionResultStatus;
-import dtool.resolver.api.IModuleResolver;
 import dtool.resolver.api.PrefixSearchOptions;
 
 /** 

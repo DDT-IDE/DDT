@@ -277,7 +277,7 @@ public class DeeParserTester extends CommonTestUtils {
 		}
 		
 		return replaceRegexFirstOccurrence(expectedNameRaw, 
-			"(Def)(Variable|AutoVar|Function|Constructor)", 1, "Definition");
+			"(Def)(Variable|AutoVar|Function|Constructor|EnumVarFragment)", 1, "Definition");
 	}
 	
 	/* ============= Error and Source Range Checkers ============= */

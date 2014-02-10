@@ -14,9 +14,9 @@ import dtool.ast.util.NodeUtil;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
 import dtool.parser.Token;
+import dtool.project.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IResolvable;
-import dtool.resolver.api.IModuleResolver;
 
 /**
  * Abstract class for all AST elements that define a new named entity.

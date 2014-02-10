@@ -31,6 +31,7 @@ import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
+import dtool.ast.definitions.DefinitionEnumVar.DefinitionEnumVarFragment;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionMixinInstance;
@@ -74,6 +75,15 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	}
 	
 	@Override
+	public boolean visitOther(ASTNode node) {
+		return true; 
+	}
+	
+	@Override
+	public void endVisitOther(ASTNode node) {
+	}
+	
+	@Override
 	public boolean visit(Module node) {
 		requestor.enterType(createTypeInfoForModule(node));
 		return true;
@@ -110,6 +120,16 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	public void endVisit(DefVarFragment node) {
 	}
 	
+	@Override
+	public boolean visit(DefinitionEnumVarFragment node) {
+		requestor.enterField(createFieldInfo(node));
+		requestor.exitField(getDeclarationEndforNode(node));
+		return true;
+	}
+	@Override
+	public void endVisit(DefinitionEnumVarFragment node) {
+	}
+	
 	protected static FieldInfo createFieldInfo(DefinitionVariable defVar) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		setupDefUnitTypeInfo(defVar, fieldInfo, DefElementFlagConstants.FLAG_KIND_VARIABLE);
@@ -124,6 +144,16 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 		setupDefUnitTypeInfo(defVarFragment, fieldInfo, DefElementFlagConstants.FLAG_KIND_VARIABLE);
 		fieldInfo.modifiers |= getCommonDefinitionModifiersInfo(defVarFragment.getParent_Concrete());
 		fieldInfo.type = getTypeRefString(defVarFragment.getParent_Concrete().type);
+		
+		return fieldInfo;
+	}
+	
+	protected static FieldInfo createFieldInfo(DefinitionEnumVarFragment defFragment) {
+		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
+		setupDefUnitTypeInfo(defFragment, fieldInfo, DefElementFlagConstants.FLAG_KIND_VARIABLE);
+		// TODO: modifier for enum
+//		fieldInfo.modifiers |= getCommonDefinitionModifiersInfo(defFragment.getParent_Concrete());
+		fieldInfo.type = getTypeRefString(null);
 		
 		return fieldInfo;
 	}

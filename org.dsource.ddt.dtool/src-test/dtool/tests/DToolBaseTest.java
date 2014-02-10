@@ -104,7 +104,7 @@ public class DToolBaseTest extends CommonTest {
 					// exclude team private folder, like .svn, and other crap
 					return !childName.startsWith(".");
 				} else {
-					return addInAnyFileName || DeeNamingRules_Test.isValidCompilationUnitName(childName);
+					return addInAnyFileName || DeeNamingRules_Test.isValidCompilationUnitName(childName, false);
 				}
 			}
 		};

@@ -7,8 +7,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
+import dtool.project.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
-import dtool.resolver.api.IModuleResolver;
 
 public class RefTypePointer extends CommonRefNative {
 	

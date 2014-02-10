@@ -10,9 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-import melnorme.lang.ide.ui.LangPlugin;
-import melnorme.lang.ide.ui.LangUIMessages;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -33,19 +30,19 @@ public class InitializeAfterLoadJob extends UIJob {
 			monitor.beginTask("", 10); //$NON-NLS-1$
 			
 			try {
-				LangPlugin.initializeAfterLoad(new SubProgressMonitor(monitor, 4));
+				LangUIPlugin.initializeAfterLoad(new SubProgressMonitor(monitor, 4));
 			} catch (CoreException e) {
-				LangPlugin.log(e);
-				LangPlugin.initialized = true;
+				LangUIPlugin.log(e);
+				LangUIPlugin.initialized = true;
 				return e.getStatus();
 			}
 			
-			LangPlugin.initialized = true;
-			return new Status(IStatus.OK, LangPlugin.PLUGIN_ID, IStatus.OK, "", null);
+			LangUIPlugin.initialized = true;
+			return new Status(IStatus.OK, LangUIPlugin.PLUGIN_ID, IStatus.OK, "", null);
 		}
 		@Override
 		public boolean belongsTo(Object family) {
-			return LangPlugin.PLUGIN_ID.equals(family);
+			return LangUIPlugin.PLUGIN_ID.equals(family);
 		}
 	}
 	
@@ -56,11 +53,11 @@ public class InitializeAfterLoadJob extends UIJob {
 	
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
-		LangPlugin.initialized = false;
+		LangUIPlugin.initialized = false;
 		Job job = new RealJob(LangUIMessages.LangPlugin_initializing_ui);
 		job.setPriority(Job.SHORT);
 		job.schedule();
-		return new Status(IStatus.OK, LangPlugin.PLUGIN_ID, IStatus.OK, "", null);
+		return new Status(IStatus.OK, LangUIPlugin.PLUGIN_ID, IStatus.OK, "", null);
 	}
 	
 }

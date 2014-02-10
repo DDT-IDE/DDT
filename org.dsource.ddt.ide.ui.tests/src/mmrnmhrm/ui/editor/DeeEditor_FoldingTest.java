@@ -1,11 +1,11 @@
 package mmrnmhrm.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 
-import org.dsource.ddt.lang.ui.WorkbenchUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;

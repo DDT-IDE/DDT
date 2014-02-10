@@ -8,10 +8,10 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.parser.BaseLexElement;
 import dtool.parser.IToken;
+import dtool.project.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.PrefixDefUnitSearch;
-import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 import dtool.util.ArrayViewExt;
 

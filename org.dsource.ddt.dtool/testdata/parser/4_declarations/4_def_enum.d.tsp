@@ -1,12 +1,47 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
+enum i = 4;
 enum MyEnum : basetype { A , B }
 enum : int[] { A = 2 , float B }
 #STRUCTURE_EXPECTED:
+DefinitionEnumVar(DefinitionEnumVarFragment(DefSymbol Integer) )
 DefinitionEnum(DefSymbol RefIdentifier EnumBody(EnumMember(DefSymbol) EnumMember(DefSymbol)) )
 DeclarationEnum( RefTypeDynArray(*) EnumBody(
   EnumMember(DefSymbol Integer) 
   EnumMember(RefPrimitive DefSymbol)
 ))
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ definition enum 
+
+#@TPL_ELEMENT_TESTER《
+  ►#?STRUCTURE_EXPECTED!【 ● 】●
+  ►#?STRUCTURE_EXPECTED!【(#@TPL_PARAMS__SAMPLE) ● #@TPL_PARAMS__SAMPLE】●
+¤》
+
+
+#@FRAG_PREFIX_NE《
+  ►#?STRUCTURE_EXPECTED!【 fragDef (#@TPL_PARAMS__SAMPLE) /*No = */ #error(EXP_ASSIGN)【】 ,● DefEnumVarFragment(DefSymbol #@TPL_PARAMS__SAMPLE) 】●
+  ►#?STRUCTURE_EXPECTED!【 fragDef #@TPL_ELEMENT_TESTER = #@EXP_ASSIGN__LITE ,● DefEnumVarFragment(DefSymbol #@TPL_ELEMENT_TESTER #@EXP_ASSIGN__LITE)】●
+¤》
+#@FRAG_PREFIX《
+  ►#?STRUCTURE_EXPECTED!【/*No fragment*/● 】●
+  ►#@FRAG_PREFIX_NE●
+¤》
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)   enum #@FRAG_PREFIX_NE #@NO_DEFID #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  DefinitionEnumVar(#@FRAG_PREFIX_NE DefEnumVarFragment(#@NO_DEFID))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)   enum fragDefT (#@TPL_PARAMS__SAMPLE #@NO_ClosePARENS #@NO_SEMICOLON #@BREAK
+#STRUCTURE_EXPECTED:  DefinitionEnumVar(DefEnumVarFragment(DefSymbol #@TPL_PARAMS__SAMPLE))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)   enum #@FRAG_PREFIX_NE fragDef2 #error(EXP_ASSIGN)【】 #@SEMICOLON_OR_BREAK 
+#STRUCTURE_EXPECTED:  DefinitionEnumVar(#@FRAG_PREFIX_NE DefEnumVarFragment(DefSymbol))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)   enum #@FRAG_PREFIX fragDef2 = #@INITIALIZERS__SAMPLE #@SEMICOLON_OR_BREAK 
+#STRUCTURE_EXPECTED:  DefinitionEnumVar(#@FRAG_PREFIX DefEnumVarFragment(DefSymbol #@INITIALIZERS__SAMPLE))
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  :duplicate test case, here for clarity 
+#PARSE(DECLARATION)   enum long x = 4;
+#STRUCTURE_EXPECTED:  DeclarationAttrib(AttribBasic DefinitionVariable(RefPrimitive DefSymbol Integer) )
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #@ENUM_BODY__SAMPLE《
   ►#?STRUCTURE_EXPECTED!【{ A = 3, float B, XXX}●
@@ -51,10 +86,4 @@ DeclarationEnum( RefTypeDynArray(*) EnumBody(
 #PARSE(DECLARATION)   enum #@DEFID #@BASE_TYPE__SAMPLE #@ENUM_BODY
 #STRUCTURE_EXPECTED:  DefinitionEnum(#@DEFID #@BASE_TYPE__SAMPLE #@ENUM_BODY)
 
-Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ :duplicate test case, here for clarity 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   enum i = 4;
-#STRUCTURE_EXPECTED:  DeclarationAttrib(AttribBasic DefinitionAutoVariable(DefSymbol Integer) )
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-#PARSE(DECLARATION)   enum long x = 4;
-#STRUCTURE_EXPECTED:  DeclarationAttrib(AttribBasic DefinitionVariable(RefPrimitive DefSymbol Integer) )
+

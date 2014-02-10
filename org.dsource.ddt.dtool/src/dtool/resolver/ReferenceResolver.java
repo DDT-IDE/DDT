@@ -24,7 +24,7 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.Reference;
 import dtool.parser.DeeParserResult;
-import dtool.resolver.api.IModuleResolver;
+import dtool.project.IModuleResolver;
 
 /**
  * Class with static methods encoding D entity lookup rules.
@@ -36,6 +36,9 @@ public class ReferenceResolver {
 	private static final String[] EMPTY_PACKAGE = new String[0];
 	
 	public static Module findModuleUnchecked(IModuleResolver modResolver, String[] packages, String module) {
+		if(module.isEmpty())
+			return null;
+		
 		try {
 			return modResolver.findModule(packages, module);
 		} catch (Exception e) {
@@ -250,8 +253,8 @@ public class ReferenceResolver {
 	
 	private static Module findImportTargetModule(IModuleResolver modResolver, IImportFragment impSelective) {
 		String[] packages = impSelective.getModuleRef().packages.getInternalArray();
-		String modules = impSelective.getModuleRef().module;
-		Module targetModule = findModuleUnchecked(modResolver, packages, modules);
+		String module = impSelective.getModuleRef().module;
+		Module targetModule = findModuleUnchecked(modResolver, packages, module);
 		return targetModule;
 	}
 	

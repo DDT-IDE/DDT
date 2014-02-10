@@ -47,7 +47,7 @@ public class EclipseProcessLauncher {
 	
 	protected String processType;
 	
-	public EclipseProcessLauncher(IPath workingDir, IPath processFile, String[] processArgs, 
+	public EclipseProcessLauncher(IPath workingDir, IPath processFile, String[] processArgs,
 			Map<String, String> environment, boolean appendEnvironment, String processType) {
 		this.workingDir = workingDir;
 		this.processFile = processFile;
@@ -112,7 +112,9 @@ public class EclipseProcessLauncher {
 					env.put(key, value);
 				}
 			}
-		} catch (UnsupportedOperationException | IllegalArgumentException e) {
+		} catch (UnsupportedOperationException e) {
+			abort(LaunchMessages.errFailedToSetupProcessEnvironment, e);
+		} catch (IllegalArgumentException e) {
 			abort(LaunchMessages.errFailedToSetupProcessEnvironment, e);
 		}
 	}
@@ -128,7 +130,7 @@ public class EclipseProcessLauncher {
 		commandLine.addAll(Arrays.asList(processArguments));
 	}
 	
-	public IProcess newEclipseProcessWithLabelUpdater(ILaunch launch, String[] cmdLine, Process sp) 
+	public IProcess newEclipseProcessWithLabelUpdater(ILaunch launch, String[] cmdLine, Process sp)
 			throws CoreException {
 		
 		final String cmdLineLabel = renderCommandLineLabel(cmdLine);
@@ -154,7 +156,7 @@ public class EclipseProcessLauncher {
 		return map;
 	}
 	
-	protected static final DateFormat PROCESS_LABEL_DATE_FORMAT = 
+	protected static final DateFormat PROCESS_LABEL_DATE_FORMAT =
 			DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 	
 	protected String renderProcessLabel() {

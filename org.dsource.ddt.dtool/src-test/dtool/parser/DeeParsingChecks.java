@@ -46,6 +46,8 @@ public class DeeParsingChecks extends CommonTestUtils {
 			assertTrue(node.isParsedStatus());
 			checkNodeSourceRange(node, getSource());
 			
+			node.accept(new ASTSwitchVisitorTester()); // Test ASTSwitchVisitor
+			
 			// Run additional tests on the node just parsed
 			// These might include node/rule specific tests
 			runNodeParsingChecks(node, getSource());

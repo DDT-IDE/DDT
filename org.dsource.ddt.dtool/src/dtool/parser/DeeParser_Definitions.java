@@ -53,6 +53,8 @@ import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
+import dtool.ast.definitions.DefinitionEnumVar;
+import dtool.ast.definitions.DefinitionEnumVar.DefinitionEnumVarFragment;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionMixinInstance;
@@ -387,6 +389,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return (lookAhead(1) == DeeTokens.SEMICOLON) || 
 			(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.COLON) ||
 			(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.OPEN_BRACE) ||
+			(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.ASSIGN) ||
+			(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.OPEN_PARENS) ||
 			(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.SEMICOLON)
 			;
 	}
@@ -1183,6 +1187,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public DefinitionAliasFragment parseAliasFragment() {
 		ProtoDefSymbol defId = parseDefId();
+		ArrayView<TemplateParameter> tplParams = null;
 		Reference ref = null;
 		
 		ParseHelper parse = new ParseHelper(defId.nameSourceRange.getStartPos());
@@ -1191,12 +1196,15 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			parse.checkResult(defId);
 			if(parse.ruleBroken) break parsing;
 			
+			tplParams = parseTemplateParameters(parse, true);
+			if(parse.ruleBroken) break parsing;
+			
 			if(parse.consumeRequired(DeeTokens.ASSIGN).ruleBroken) break parsing;
 			
 			NodeResult<Reference> refResult = parseTypeReference_ToMissing();
 			ref = refResult.node;
 		}
-		return parse.conclude(new DefinitionAliasFragment(defId, ref));
+		return parse.conclude(new DefinitionAliasFragment(defId, tplParams, ref));
 	}
 	
 	protected NodeResult<DeclarationAliasThis> parseDeclarationAliasThis() {
@@ -1223,9 +1231,14 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DeclarationAliasThis(isAssignSyntax, refId));
 	}
 	
-	protected NodeResult<DefinitionEnum> parseDefinitionEnum_start(DefinitionStartInfo defStartInfo) {
+	protected NodeResult<? extends IDeclaration> parseDefinitionEnum_start(DefinitionStartInfo defStartInfo) {
 		DefParseHelper parse = new DefParseHelper(defStartInfo);
 		consumeLookAhead(DeeTokens.KW_ENUM);
+		
+		if(lookAhead() == DeeTokens.IDENTIFIER
+				&& (lookAhead(1) == DeeTokens.OPEN_PARENS || lookAhead(1) == DeeTokens.ASSIGN)) {
+			return parseDefinitionEnumVar_afterId(parse);
+		}
 		
 		ProtoDefSymbol defId = parseDefId();
 		Reference type = null;
@@ -1244,6 +1257,43 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 		Token[] comments = parse.parseEndDDocComments();
 		return parse.resultConclude(new DefinitionEnum(comments, defId, type, body));
+	}
+	
+	protected NodeResult<DefinitionEnumVar> parseDefinitionEnumVar_afterId(DefParseHelper parse) {
+		ArrayList<DefinitionEnumVarFragment> fragments = new ArrayList<>();
+		
+		while(true) {
+			DefinitionEnumVarFragment fragment = parseEnumVarFragment();
+			fragments.add(fragment);
+			
+			if(!tryConsume(DeeTokens.COMMA)) {
+				break;
+			}
+		}
+		
+		parse.consumeRequired(DeeTokens.SEMICOLON);
+		return parse.resultConclude(new DefinitionEnumVar(arrayView(fragments)));
+	}
+
+	public DefinitionEnumVarFragment parseEnumVarFragment() {
+		ProtoDefSymbol defId = parseDefId();
+		ArrayView<TemplateParameter> tplParams = null;
+		IInitializer initializer = null;
+		
+		ParseHelper parse = new ParseHelper(defId.nameSourceRange.getStartPos());
+		
+		parsing: {
+			parse.checkResult(defId);
+			if(parse.ruleBroken) break parsing;
+			
+			tplParams = parseTemplateParameters(parse, true);
+			if(parse.ruleBroken) break parsing;
+			
+			if(parse.consumeRequired(DeeTokens.ASSIGN).ruleBroken) break parsing;
+			
+			initializer = parseInitializer().node;
+		}
+		return parse.conclude(new DefinitionEnumVarFragment(defId, tplParams, initializer));
 	}
 	
 	protected NodeResult<DeclarationEnum> parseDeclarationEnum_start() {

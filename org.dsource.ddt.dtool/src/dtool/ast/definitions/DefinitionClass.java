@@ -8,10 +8,10 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.Token;
+import dtool.project.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;
-import dtool.resolver.api.IModuleResolver;
 import dtool.util.ArrayView;
 
 /**

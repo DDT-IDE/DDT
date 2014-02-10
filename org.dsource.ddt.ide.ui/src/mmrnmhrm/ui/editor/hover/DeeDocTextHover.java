@@ -36,7 +36,7 @@ import dtool.ast.references.NamedReference;
  * Used instead of {@link DeeDocumentationProvider} due to API limitation, review in the future.
  * (used in editor hovers extensions, and editor information provider (F2))
  */
-public class DeeDocTextHover extends AbstractTextHover {
+public class DeeDocTextHover extends AbstractDocTextHover {
 	
 	public static class NodeRegion implements IRegion {
 		
@@ -89,6 +89,11 @@ public class DeeDocTextHover extends AbstractTextHover {
 	
 	@Override
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
+		IModelElement element = EditorUtility.getEditorInputModelElement(getEditor(), false);
+		if(element == null) {
+			return null;
+		}
+		
 		ASTNode node;
 		if(hoverRegion instanceof NodeRegion) {
 			node = ((NodeRegion) hoverRegion).node;
@@ -96,7 +101,6 @@ public class DeeDocTextHover extends AbstractTextHover {
 			node = getNodeAtOffset(hoverRegion.getOffset());
 		}
 		
-		IModelElement element = EditorUtility.getEditorInputModelElement(getEditor(), false);
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(element.getScriptProject());
 		
 		String info = getDocInfoForNode(node, moduleResolver);

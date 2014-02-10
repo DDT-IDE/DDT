@@ -1,11 +1,11 @@
 package mmrnmhrm.ui.actions;
 
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.lang.ui.OperationExceptionHandler;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
@@ -41,7 +41,7 @@ public class OperationsManager {
 		ISimpleRunnable op = new ISimpleRunnable() {
 			@Override
 			public void run() throws CoreException {
-				DeeCore.run(action, null);
+				DLTKCore.run(action, null);
 			}
 		};
 		return get().doOperation(opName, op);

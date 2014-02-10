@@ -1,6 +1,7 @@
 package dtool.ast;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasFunctionDecl;
@@ -8,6 +9,7 @@ import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
+import dtool.ast.definitions.DefinitionEnumVar.DefinitionEnumVarFragment;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionMixinInstance;
@@ -20,9 +22,8 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 
 public abstract class ASTSwitchVisitor extends ASTVisitor {
-
-	// NOTE: make sure preVisit code matches endVisit
 	
+	// NOTE: make sure preVisit code matches endVisit
 	@Override
 	public final boolean preVisit(ASTNode node) {
 		switch (node.getNodeType()) {
@@ -49,6 +50,8 @@ public abstract class ASTSwitchVisitor extends ASTVisitor {
 			return visit((DefinitionTemplate) node);
 		case DEFINITION_MIXIN_INSTANCE:
 			return visit((DefinitionMixinInstance) node);
+		case DEFINITION_ENUM_VAR_FRAGMENT:
+			return visit((DefinitionEnumVarFragment) node);
 		case DEFINITION_ENUM:
 			return visit((DefinitionEnum) node);
 		case ENUM_MEMBER:
@@ -67,7 +70,8 @@ public abstract class ASTSwitchVisitor extends ASTVisitor {
 		case REF_MODULE:
 			return visit((NamedReference) node);
 		default:
-			return true;
+			assertTrue(!(node instanceof NamedReference));
+			return visitOther(node);
 		}
 	}
 	
@@ -97,6 +101,8 @@ public abstract class ASTSwitchVisitor extends ASTVisitor {
 			endVisit((DefinitionTemplate) node); return;
 		case DEFINITION_MIXIN_INSTANCE:
 			endVisit((DefinitionMixinInstance) node); return;
+		case DEFINITION_ENUM_VAR_FRAGMENT:
+			endVisit((DefinitionEnumVarFragment) node); return;
 		case DEFINITION_ENUM:
 			endVisit((DefinitionEnum) node); return;
 		case ENUM_MEMBER:
@@ -108,9 +114,13 @@ public abstract class ASTSwitchVisitor extends ASTVisitor {
 		case DEFINITION_ALIAS_FUNCTION_DECL:
 			endVisit((DefinitionAliasFunctionDecl) node); return;
 		default:
+			endVisitOther(node);
 			break;
 		}
 	}
+	
+	public abstract boolean visitOther(ASTNode node);
+	public abstract void endVisitOther(ASTNode node);
 	
 	public abstract boolean visit(Module node);
 	public abstract void endVisit(Module node);
@@ -133,6 +143,9 @@ public abstract class ASTSwitchVisitor extends ASTVisitor {
 	
 	public abstract boolean visit(DefinitionMixinInstance node);
 	public abstract void endVisit(DefinitionMixinInstance node);
+	
+	public abstract boolean visit(DefinitionEnumVarFragment node);
+	public abstract void endVisit(DefinitionEnumVarFragment node);
 	
 	public abstract boolean visit(DefinitionEnum node);
 	public abstract void endVisit(DefinitionEnum node);
@@ -174,6 +187,8 @@ public abstract class ASTSwitchVisitor extends ASTVisitor {
 	
 	public static abstract class ASTCommonSwitchVisitor extends ASTSwitchVisitor {
 		
+		@Override public void endVisitOther(ASTNode node) { }
+		
 		@Override public void endVisit(Module node) { }
 		
 		@Override public void endVisit(DefinitionStruct node) {}
@@ -187,6 +202,8 @@ public abstract class ASTSwitchVisitor extends ASTVisitor {
 		@Override public void endVisit(DefinitionTemplate node) { }
 		
 		@Override public void endVisit(DefinitionMixinInstance node) { }
+		
+		@Override public void endVisit(DefinitionEnumVarFragment node) { }
 		
 		@Override public void endVisit(DefinitionEnum node) { }
 		

@@ -7,6 +7,9 @@ int Var1, Var2, Var3;
 auto VarAuto = 1;
 auto VarAuto1 = 2, VarAuto2 = "bar";
 
+enum EnumVar;
+enum EnumVar1 = 1, EnumVar2 = "bar";
+
 
 int Function (int Param, Struct Param2 ...)  { return 0; }
 int Function (...)  { return 0; }
@@ -45,6 +48,7 @@ Module
 
 Var▪Var1▪Var2▪Var3▪
 VarAuto▪VarAuto1▪VarAuto2
+EnumVar▪EnumVar1▪EnumVar2
 
 Function
 Function

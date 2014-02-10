@@ -28,26 +28,6 @@ import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 public class DeeLaunchConfigurationDelegate extends AbstractLangLaunchConfigurationDelegate {
 	
 	@Override
-	protected String getProjectAttribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
-	}
-	
-	@Override
-	protected String getProcessRelativePath_Attribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, (String) null);
-	}
-	
-	@Override
-	protected String getProgramArguments_Attribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_SCRIPT_ARGUMENTS, "");
-	}
-	
-	@Override
-	protected String getWorkingDirectory_Attribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, (String) null);
-	}
-	
-	@Override
 	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
 		// Remove some DLTK attributes that affect how our launch runs
 		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();

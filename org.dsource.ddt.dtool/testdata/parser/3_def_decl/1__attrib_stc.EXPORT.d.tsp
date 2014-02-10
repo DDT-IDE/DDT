@@ -78,7 +78,6 @@
 #@ATTRIBS_AUTODecl《
  ►#@PROT_ATTRIBS●
  ►#@BASIC_ATTRIBS●
- ►#@BASIC_ATTRIB_ENUM●
  ►#@TYPEMOD_ATTRIBS●
  ►#@AT_ATTRIBS●
  ►#?STRUCTURE_EXPECTED!【final @safe const●AttribBasic AttribAtKeyword(Symbol) AttribBasic】●

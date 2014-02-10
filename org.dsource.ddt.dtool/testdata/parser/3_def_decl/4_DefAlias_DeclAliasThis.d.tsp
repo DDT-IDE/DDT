@@ -10,15 +10,24 @@
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
+#@TPL_ELEMENT_TESTER《
+  ►#?STRUCTURE_EXPECTED!【 ● 】●
+  ►#?STRUCTURE_EXPECTED!【(#@TPL_PARAMS__SAMPLE) ● #@TPL_PARAMS__SAMPLE】●
+¤》
+
 #@FRAG_PREFIX《
   ►#?STRUCTURE_EXPECTED!【/*No fragment*/● 】●
-  ►#?STRUCTURE_EXPECTED!【 aliasDef /*No =*/ #error(EXP_ASSIGN)【】 ,● AliasFragment(DefSymbol) 】●
-  ►#?STRUCTURE_EXPECTED!【 aliasDef = #@TYPEREF_NB__LITE ,● AliasFragment(DefSymbol #@TYPEREF_NB__LITE)】●
+  ►#?STRUCTURE_EXPECTED!【 aliasDef /*No = */ #error(EXP_ASSIGN)【】 ,● AliasFragment(DefSymbol) 】●
+  ►#?STRUCTURE_EXPECTED!【 aliasDef #@TPL_ELEMENT_TESTER /*No = */ #error(EXP_ASSIGN)【】 ,● AliasFragment(DefSymbol #@TPL_ELEMENT_TESTER) 】●
+  ►#?STRUCTURE_EXPECTED!【 aliasDef #@TPL_ELEMENT_TESTER = #@TYPEREF_NB__LITE ,● AliasFragment(DefSymbol #@TPL_ELEMENT_TESTER #@TYPEREF_NB__LITE)】●
 ¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   alias #@FRAG_PREFIX #@NO_DEFID #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(#@NO_DEFID))
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
+#PARSE(DECLARATION)   alias aliasDef (#@TPL_PARAMS__SAMPLE #@NO_ClosePARENS #@NO_SEMICOLON #@BREAK
+#STRUCTURE_EXPECTED:  DefinitionAlias(AliasFragment(DefSymbol #@TPL_PARAMS__SAMPLE))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(DECLARATION)   alias #@FRAG_PREFIX aliasDef #error(EXP_ASSIGN)【】 #@SEMICOLON_OR_BREAK 
 #STRUCTURE_EXPECTED:  DefinitionAlias(#@FRAG_PREFIX AliasFragment(DefSymbol))

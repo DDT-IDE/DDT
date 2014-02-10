@@ -11,10 +11,8 @@
 package org.dsource.ddt.ui.tabgroup;
 
 public class DeeLaunchConfigurationsMessages {
-	
+	//XXX: refactor out
 	public static String mainTab_launchFileGroup =
 			"Launch Executable:";
 	
-	public static String argumentsTab_launchArgumentsGroup =
-			"Executable &arguments:";
 }
