@@ -43,7 +43,7 @@ import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
-import dtool.tests.SimpleParser;
+import dtool.tests.utils.SimpleParser;
 import dtool.util.NewUtils;
 
 @RunWith(Parameterized.class)

@@ -13,7 +13,7 @@ import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
 import dtool.tests.DToolBaseTest;
-import dtool.tests.MiscNodeUtils;
+import dtool.tests.utils.MiscNodeUtils;
 
 public class DeclarationAttributesTest extends DToolBaseTest {
 	

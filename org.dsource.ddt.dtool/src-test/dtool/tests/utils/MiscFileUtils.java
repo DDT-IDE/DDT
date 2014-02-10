@@ -1,4 +1,4 @@
-package dtool.tests;
+package dtool.tests.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import dtool.tests.DToolBaseTest;
 import melnorme.utilbox.core.fntypes.Function;
 
 /**

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IScriptProject;
 
 import dtool.tests.DToolTestResources;
-import dtool.tests.MiscFileUtils;
+import dtool.tests.utils.MiscFileUtils;
 
 
 public class DeeCoreTestResources {

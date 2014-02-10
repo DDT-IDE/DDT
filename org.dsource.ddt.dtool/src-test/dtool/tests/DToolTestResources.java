@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import dtool.DToolBundle;
-
+import dtool.tests.utils.MiscFileUtils;
 
 
 public class DToolTestResources {

@@ -1,11 +1,11 @@
-package dtool.tests;
+package dtool.tests.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.ASTNodeSearcher;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
+import dtool.ast.ASTVisitor;
 import dtool.ast.IASTNode;
 import dtool.ast.NodeList;
 import dtool.ast.definitions.DefUnit;
@@ -101,6 +101,27 @@ public class MiscNodeUtils {
 		};
 		node.accept(searcher);
 		return searcher.match;
+	}
+	
+	public static abstract class ASTNodeSearcher<T> extends ASTVisitor {
+		
+		public T match;
+		public boolean continueSearch = true;
+		
+		@Override
+		public boolean preVisit(ASTNode node) {
+			if(continueSearch == false)
+				return false;
+			
+			return doPreVisit(node);
+		}
+		
+		public abstract boolean doPreVisit(ASTNode node);
+		
+		@Override
+		public void postVisit(ASTNode node) {
+		}
+		
 	}
 	
 }

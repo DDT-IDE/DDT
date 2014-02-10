@@ -30,7 +30,8 @@ import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Before;
 
-import dtool.DeeNamingRules_Test;
+import dtool.project.DeeNamingRules_Test;
+import dtool.tests.utils.MiscFileUtils;
 import dtool.util.NewUtils;
 
 

@@ -19,6 +19,7 @@ DDT is an Eclipse-based IDE for the D programming language.
   * `-DDToolTestResources.workingDir=${workspace_loc}/_runtime-tests` (workspace for tests to use while running)
   * `-DDToolTestResources.baseDir=${workspace_loc:/org.dsource.ddt.dtool/testdata}` (where to get certain DTool test resources. This allows DTool tests to run outside of Eclipse runtime.)
   * Some of the suites (DTool at the moment) can be run in Lite Mode, skipping some of the heavyweight, long-running tests. There is also a launch configuration for this.
+  * Some tests may have external runtime dependencies, such as requiring the DUB tool on the environment PATH.
 
 #### Automated Building and Testing:
 Using Maven (and Tycho), it is possible to automatically build DDT, create an update site, and run all the tests. Download [Maven](http://maven.apache.org/) (minimum version 3.0), and run the following commands on the root folder of the repository:

@@ -1,4 +1,4 @@
-package dtool;
+package dtool.project;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 

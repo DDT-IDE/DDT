@@ -23,19 +23,16 @@ import org.junit.Test;
 import dtool.dub.DubBundle.DubBundleDescription;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
+import dtool.tests.DToolTests;
 
 public class DubDescribeTest extends DToolBaseTest {
 	
 	public static final Path DUB_WORKSPACE = DubParserTest.DUB_WORKSPACE;
-	public static final String DUB_PATH = "dub";
 	
 	protected String runDubDescribe(java.nio.file.Path path) throws Exception {
-		ProcessBuilder pb = new ProcessBuilder(DUB_PATH, "describe");
-		pb.directory(path.toFile());
-		
-		ExternalProcessOutputReader processHelper = ExternalProcessOutputReader.startProcess(pb, false);
+		ExternalProcessOutputReader processHelper = DToolTests.startDubDescribe(path, "describe");
 		processHelper.awaitTermination(2000);
-
+		
 		return processHelper.getStdOutBytes().toString(StringUtil.UTF8);
 	}
 	

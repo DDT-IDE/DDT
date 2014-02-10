@@ -8,7 +8,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.StringUtil;
-import dtool.tests.SimpleParser;
+import dtool.tests.utils.SimpleParser;
 
 
 public class TemplatedSourceProcessorParser {
