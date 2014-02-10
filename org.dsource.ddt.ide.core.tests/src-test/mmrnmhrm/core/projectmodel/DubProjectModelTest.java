@@ -1,5 +1,7 @@
 package mmrnmhrm.core.projectmodel;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -18,7 +20,7 @@ import mmrnmhrm.tests.BaseDeeTest;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.IBuildpathEntry;
@@ -26,13 +28,26 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.launching.ScriptRuntime;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleDescription;
+import dtool.dub.DubBundle.DubBundleException;
+import dtool.dub.DubDescribeTest;
 import dtool.dub.DubParserTest;
 
 public class DubProjectModelTest extends BaseDeeTest {
+	
+	@BeforeClass
+	public static void initDubRepositoriesPath() {
+		DubDescribeTest.initDubRepositoriesPath();
+	}
+	@AfterClass
+	public static void cleanupDubRepositoriesPath() {
+		DubDescribeTest.cleanupDubRepositoriesPath();
+	}
 	
 	public static String readFileContents(Path path) throws IOException {
 		assertTrue(path.isAbsolute());
@@ -42,7 +57,7 @@ public class DubProjectModelTest extends BaseDeeTest {
 	public static void writeStringToFile(IScriptProject dubTestProject, String name, String contents) 
 			throws CoreException {
 		IFile file = dubTestProject.getProject().getFile(name);
-		WorkspaceUtils.writeFile(file, new ByteArrayInputStream(contents.getBytes()));
+		WorkspaceUtils.writeFile(file, new ByteArrayInputStream(contents.getBytes(StringUtil.UTF8)));
 	}
 	
 	
@@ -103,23 +118,23 @@ public class DubProjectModelTest extends BaseDeeTest {
 		try {
 			runBasicTest(dubTestProject);
 		} finally {
-			dubTestProject.getProject().delete(true, null); // cleanup
+//			dubTestProject.getProject().delete(true, null); // cleanup
 		}
 	}
 	
 	public void runBasicTest(IScriptProject dubTestProject) throws Exception {
 		
-		writeDUBJson_AndSync(dubTestProject, "{"+ jsEntry("name", "xptobundle")+ "}");
+		writeDubJson_AndSync(dubTestProject, "{"+ jsEntry("name", "xptobundle")+ "}");
 		checkBundle(dubTestProject, "xptobundle", srcFolders());
 		
-		writeDUBJson_AndSync(dubTestProject, "{"+
+		writeDubJson_AndSync(dubTestProject, "{"+
 				jsEntry("name", "xptobundle")+
 				jsEntry("importPaths", jsArray("src", "src-test"))+
 				"\"blah\":null}");
 		checkBundle(dubTestProject, "xptobundle", srcFolders("src", "src-test"));
 		
 		
-		writeDUBJson_AndSync(dubTestProject, 
+		writeDubJson_AndSync(dubTestProject, 
 				readFileContents(DUB_WORKSPACE.resolve("XptoBundle/package.json")));
 		
 		checkBundle(dubTestProject, "xptobundle", srcFolders("src", "src-test"), 
@@ -129,21 +144,26 @@ public class DubProjectModelTest extends BaseDeeTest {
 				);
 		
 		
-		DubBundleDescription dubBundle = getDubProjectInfo(dubTestProject.getElementName());
-		writeDUBJson_AndSync(dubTestProject, "{"+ jsEntry("nameXX", "xptobundle")+ "}");
-		assertTrue(getDubProjectInfo(dubTestProject.getElementName()) == dubBundle);
-		IMarker[] markers = dubTestProject.getResource().findMarkers(DubProjectModel.DUB_PROBLEM_ID, true, 1);
-		assertTrue(markers.length == 1);
-		IMarker errorMarker = markers[0];
-		assertTrue(errorMarker.getAttribute(IMarker.MESSAGE, "").startsWith("dub returned non-zero"));
-		assertEquals(errorMarker.getAttribute(IMarker.SEVERITY), IMarker.SEVERITY_ERROR);
+		writeDubJson_AndSync(dubTestProject, "{"+ jsEntry("nameXX", "xptobundle")+ "}");
+		checkErrorBundle(dubTestProject, "dub returned non-zero");
 		
-		writeDUBJson_AndSync(dubTestProject, "{"+ jsEntry("name", "xptobundle")+ "}");
+		writeDubJson_AndSync(dubTestProject, "{"+ jsEntry("name", "xptobundle")+ "}");
 		checkBundle(dubTestProject, "xptobundle", srcFolders());
 		
 	}
+	protected void checkErrorBundle(IScriptProject dubTestProject, String errorMsgStart) throws CoreException {
+		DubBundleException error = getDubProjectInfo(dubTestProject.getElementName()).getError();
+		assertTrue(error != null);
+		assertTrue(error.getMessage().startsWith(errorMsgStart));
+		
+		IMarker[] markers = DubProjectModel.getDubErrorMarkers(dubTestProject.getProject());
+		assertTrue(markers.length == 1);
+		IMarker errorMarker = markers[0];
+		assertTrue(errorMarker.getAttribute(IMarker.MESSAGE, "").startsWith(errorMsgStart));
+		assertEquals(errorMarker.getAttribute(IMarker.SEVERITY), IMarker.SEVERITY_ERROR);
+	}
 
-	protected static void writeDUBJson_AndSync(IScriptProject dubTestProject, String contents) throws CoreException {
+	protected static void writeDubJson_AndSync(IScriptProject dubTestProject, String contents) throws CoreException {
 		writeStringToFile(dubTestProject, "package.json", contents);
 		DubProjectModel.getDefault().syncPendingUpdates();
 	}
@@ -167,17 +187,26 @@ public class DubProjectModelTest extends BaseDeeTest {
 	}
 	public static void checkBundle(IScriptProject dubProject, String expectedError, String dubName, 
 			String[] srcFolders, DubBundle... deps) throws CoreException {
+		IProject project = dubProject.getProject();
+		
 		DubBundleDescription dubBundle = DubProjectModel.getDefault().getBundleInfo(dubProject.getElementName());
-		Path location = Paths.get(dubProject.getResource().getLocationURI());
+		assertNotNull(dubBundle);
+		if(dubBundle.getError() != null) {
+			assertFail("Not Null: " + dubBundle.getError());
+		}
+		
+		Path location = Paths.get(project.getLocationURI());
 		
 		assertAreEqual(dubBundle.getMainBundle().name, dubName);
 		assertAreEqual(dubBundle.getMainBundle().location, location);
 		assertExceptionContains(dubBundle.getError(), expectedError);
-		assertTrue(dubProject.getResource().findMarkers(DubProjectModel.DUB_PROBLEM_ID, true, IResource.DEPTH_INFINITE).length == 0);
 		
 		checkRawBuildpath(dubProject.getRawBuildpath(), srcFolders);
 		
 		checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), srcFolders, deps);
+		
+		IMarker[] dubErrorMarkers = DubProjectModel.getDubErrorMarkers(project);
+		assertTrue(dubErrorMarkers.length == 0);
 	}
 	
 	public static void checkRawBuildpath(IBuildpathEntry[] rawBuildpath, String[] srcFolders) throws ModelException {

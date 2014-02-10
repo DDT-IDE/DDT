@@ -30,6 +30,7 @@ import mmrnmhrm.core.DeeCore;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -50,6 +51,7 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import dtool.SimpleLogger;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleDescription;
+import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescriptionParser;
 
 public class DubProjectModel {
@@ -199,7 +201,7 @@ public class DubProjectModel {
 	protected void queueProjectUpdate(final IScriptProject projectElement) {
 		log.println(">> Updating project: ", projectElement);
 		
-		executorAgent.submit(new UpdateProjectModel(projectElement, this));
+		executorAgent.submit(new UpdateProjectModel(projectElement.getProject(), this));
 	}
 	
 	public void syncPendingUpdates() {
@@ -211,32 +213,36 @@ public class DubProjectModel {
 		return executorAgent;
 	}
 	
+	public static IMarker[] getDubErrorMarkers(IProject project) throws CoreException {
+		return project.findMarkers(DubProjectModel.DUB_PROBLEM_ID, true, IResource.DEPTH_ONE);
+	}
+	
 }
 
 class UpdateProjectModel implements Runnable {
 	
-	protected final IScriptProject projectElement;
+	protected final IProject project;
 	protected DubProjectModel dubProjectModel;
 	
-	protected UpdateProjectModel(IScriptProject projectElement, DubProjectModel dubProjectModel) {
-		this.projectElement = projectElement;
+	protected UpdateProjectModel(IProject project, DubProjectModel dubProjectModel) {
+		this.project = project;
 		this.dubProjectModel = dubProjectModel;
 	}
 	
 	@Override
 	public void run() {
-		updateProject(projectElement);
+		updateProject(project);
 	}
 	
 	protected void logInternalError(CoreException ce) {
 		DeeCore.logError(ce);
 	}
 	
-	protected Void updateProject(IScriptProject projectElement) {
+	protected Void updateProject(IProject project) {
 		
-		deleteDubMarkers(projectElement);
+		deleteDubMarkers(project);
 		
-		URI locationURI = projectElement.getResource().getLocationURI();
+		URI locationURI = project.getLocationURI();
 		java.nio.file.Path path = Paths.get(locationURI);
 		assertTrue(path.isAbsolute());
 		ProcessBuilder pb = new ProcessBuilder("dub", "describe").directory(path.toFile());
@@ -245,12 +251,12 @@ class UpdateProjectModel implements Runnable {
 		try {
 			processHelper = ExternalProcessOutputReader.startProcess(pb, false);
 		} catch (IOException e) {
-			return createDubErrorMarker(projectElement, "Could not start dub process: ",  e);
+			return setProjectDubError(project, "Could not start dub process: ",  e);
 		}
 		try {
-			processHelper.awaitTermination(2000);
+			processHelper.awaitTermination(5000);
 		} catch (InterruptedException e) {
-			return createDubErrorMarker(projectElement, "Timeout running dub process.", null);
+			return setProjectDubError(project, "Timeout running dub process.", null);
 		}
 		String descriptionOutput;
 		String stdErr;
@@ -258,30 +264,29 @@ class UpdateProjectModel implements Runnable {
 			descriptionOutput = processHelper.getStdOutBytes().toString(StringUtil.UTF8);
 			stdErr = processHelper.getStdErrBytes().toString(StringUtil.UTF8);
 		} catch (IOException e) {
-			return createDubErrorMarker(projectElement, "Error occurred reading dub process output: ", e);
+			return setProjectDubError(project, "Error occurred reading dub process output: ", e);
 		}
 		
 		int exitValue = processHelper.getProcess().exitValue();
 		if(exitValue != 0) {
-			return createDubErrorMarker(projectElement, "dub returned non-zero status: " + exitValue 
-					+ " \n" + stdErr, null);
+			return setProjectDubError(project, "dub returned non-zero status: " + exitValue 
+					+ " \n--STDERR:\n" + stdErr + "\n--STDOUT:\n" + descriptionOutput, null);
 		}
 		
 		
 		DubBundleDescription bundleDesc = new DubBundleDescriptionParser().parseDescription(descriptionOutput);
 		
 		if(!bundleDesc.hasErrors()) {
-			updateBuildpath(projectElement, bundleDesc);
+			updateBuildpath(project, bundleDesc);
 		} else {
-			createDubErrorMarker(projectElement, "Error parsing description:", bundleDesc.getError());
+			setProjectDubError(project, "Error parsing description:", bundleDesc.getError());
 		}
 		return null;
 	}
 	
-	protected void deleteDubMarkers(IScriptProject projectElement) {
+	protected void deleteDubMarkers(IProject project) {
 		try {
-			IMarker[] markers = projectElement.getResource().findMarkers(DubProjectModel.DUB_PROBLEM_ID, true, 
-					IResource.DEPTH_ONE);
+			IMarker[] markers = DubProjectModel.getDubErrorMarkers(project);
 			for (IMarker marker : markers) {
 				marker.delete();
 			}
@@ -290,9 +295,15 @@ class UpdateProjectModel implements Runnable {
 		}
 	}
 	
-	protected Void createDubErrorMarker(IScriptProject projectElement, String message, Exception exception) {
+	protected Void setProjectDubError(IProject project, String message, Exception exception) {
+		IScriptProject projectElement = DLTKCore.create(project);
+		DubBundleException dubError = new DubBundleException(message, exception);
+		DubBundleDescription bundleDesc = new DubBundleDescription(null, null, dubError);
+		
+		dubProjectModel.addProject(projectElement, bundleDesc);
+		
 		try {
-			IMarker dubMarker = projectElement.getResource().createMarker(DubProjectModel.DUB_PROBLEM_ID);
+			IMarker dubMarker = project.createMarker(DubProjectModel.DUB_PROBLEM_ID);
 			String messageExtra = exception == null ? "" : exception.getMessage();
 			dubMarker.setAttribute(IMarker.MESSAGE, message + messageExtra);
 			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
@@ -302,7 +313,8 @@ class UpdateProjectModel implements Runnable {
 		return null;
 	}
 	
-	protected void updateBuildpath(IScriptProject projectElement, DubBundleDescription bundleDesc) {
+	protected void updateBuildpath(IProject project, DubBundleDescription bundleDesc) {
+		IScriptProject projectElement = DLTKCore.create(project);
 		
 		ArrayList<IBuildpathEntry> entries = new ArrayList<>();
 		

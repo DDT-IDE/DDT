@@ -15,36 +15,35 @@ import static dtool.dub.DubParserTest.paths;
 
 import java.nio.file.Path;
 
-import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
-import melnorme.utilbox.misc.StringUtil;
-
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import dtool.dub.DubBundle.DubBundleDescription;
-import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
-import dtool.tests.DToolTests;
 
-public class DubDescribeTest extends DToolBaseTest {
+public class DubDescribeTest extends DubCommonTest {
 	
 	public static final Path DUB_WORKSPACE = DubParserTest.DUB_WORKSPACE;
 	
-	protected String runDubDescribe(java.nio.file.Path path) throws Exception {
-		ExternalProcessOutputReader processHelper = DToolTests.startDubDescribe(path, "describe");
-		processHelper.awaitTermination(2000);
-		
-		return processHelper.getStdOutBytes().toString(StringUtil.UTF8);
-	}
-	
 	protected static final Path XPTO_BUNDLE = DUB_WORKSPACE.resolve("XptoBundle");
+	
+	@BeforeClass
+	public static void initDubRepositoriesPath() {
+		dubAddPath(DUB_WORKSPACE);
+	}
+	@AfterClass
+	public static void cleanupDubRepositoriesPath() {
+		dubRemovePath(DUB_WORKSPACE);
+	}
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		String source = runDubDescribe(XPTO_BUNDLE);
+		String describeSource = runDubDescribe(XPTO_BUNDLE);
 		
-		DubBundleDescription dubDescribe = new DubBundleDescriptionParser().parseDescription(source);
+		DubBundleDescription dubDescribe = new DubBundleDescriptionParser().parseDescription(describeSource);
 		assertEquals(dubDescribe.bundleName, "xptobundle");
 		assertExceptionContains(dubDescribe.error, null);
 		checkBundle(dubDescribe.getMainBundle(), XPTO_BUNDLE, 

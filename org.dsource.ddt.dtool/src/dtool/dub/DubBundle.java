@@ -55,16 +55,24 @@ public class DubBundle {
 	@SuppressWarnings("serial")
 	public static class DubBundleException extends Exception {
 		
+	    public DubBundleException(String message, Throwable cause) {
+	        super(message, cause);
+	    }
+		
 		public DubBundleException(String message) {
 	        super(message);
 	    }
 		
-		public DubBundleException(Exception exception) {
+		public DubBundleException(Throwable exception) {
 	        super(exception);
 	    }
 		
 	}
 	
+	/**
+	 * Describes a DUB bundle builpath. 
+	 * This is usually derived from running the DUB tool, and as such it can be incomplete and have errors.  
+	 */
 	public static class DubBundleDescription {
 		
 		protected final String bundleName;

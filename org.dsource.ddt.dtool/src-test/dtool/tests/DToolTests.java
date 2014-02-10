@@ -10,27 +10,28 @@
  *******************************************************************************/
 package dtool.tests;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
-import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
 import melnorme.utilbox.core.DevelopmentCodeMarkers.Tests_HasExternalDependencies;
-import melnorme.utilbox.misc.ArrayUtil;
 
 public class DToolTests implements Tests_HasExternalDependencies {
 	
 	public static final String DTOOL_PREFIX = "DTool.";
-	public static final boolean TESTS_LITE_MODE = System.getProperty(DTOOL_PREFIX + "TestsLiteMode") != null;
+	public static final boolean TESTS_LITE_MODE = getSystemProperty("TestsLiteMode", false); 
+	public static final String DUB_PROGRAM_PATH = getSystemProperty("DubBinPath", "dub"); 
 	
-	public static final String DUB_PROGRAM_PATH = "dub";
-	
-	public static ExternalProcessOutputReader startDubDescribe(Path path, String... arguments) throws IOException {
-		String[] command = ArrayUtil.prepend(DUB_PROGRAM_PATH, arguments);
-		ProcessBuilder pb = new ProcessBuilder(command);
-		pb.directory(path.toFile());
-		
-		ExternalProcessOutputReader processHelper = ExternalProcessOutputReader.startProcess(pb, false);
-		return processHelper;
+	public static String getSystemProperty(String propName, String defaultValue) {
+		String propValue = System.getProperty(DTOOL_PREFIX + propName);
+		if(propValue == null) {
+			return defaultValue;
+		}
+		return propValue;
 	}
 	
+	public static boolean getSystemProperty(String propName, boolean defaultValue) {
+		String propValue = System.getProperty(DTOOL_PREFIX + propName);
+		if(propValue == null) {
+			return defaultValue;
+		}
+		return propValue != null;
+	}
+
 }
