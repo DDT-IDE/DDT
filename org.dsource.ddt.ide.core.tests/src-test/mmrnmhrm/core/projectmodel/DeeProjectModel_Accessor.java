@@ -2,13 +2,11 @@ package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import mmrnmhrm.core.compiler_installs.CommonDeeInstall;
 
 import org.eclipse.dltk.core.IScriptProject;
 
-import mmrnmhrm.core.compiler_installs.CommonDeeInstall;
-import mmrnmhrm.tests.BaseDeeTest;
-
-public class DeeProjectModelTest extends BaseDeeTest {
+public class DeeProjectModel_Accessor {
 	
 	public static CommonDeeInstall checkInstall(IScriptProject project, String installTypeId, String installId) {
 		CommonDeeInstall install = DeeProjectModel.getInstallForProject(project);

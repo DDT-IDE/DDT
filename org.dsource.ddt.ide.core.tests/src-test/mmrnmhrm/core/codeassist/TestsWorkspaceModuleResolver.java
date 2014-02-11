@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
 
@@ -91,7 +90,7 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 		resolverProject.setRawBuildpath(new IBuildpathEntry[] {}, null); // Remove library entry
 		
 		if(projectSourceDir == null) {
-			ProjectModelUtil.addSourceFolder(resolverProject.getProject(), null);
+			DeeCoreTestResources.addSourceFolder(resolverProject.getProject(), null);
 			return resolverProject;
 		}
 		DeeCoreTestResources.createSrcFolderFromDirectory(projectSourceDir, resolverProject, "src-dtool");

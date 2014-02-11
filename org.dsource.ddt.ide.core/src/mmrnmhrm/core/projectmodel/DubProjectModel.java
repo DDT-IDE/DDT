@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import melnorme.lang.ide.core.utils.EventManager;
 import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
 import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -54,7 +55,7 @@ import dtool.dub.DubBundle.DubBundleDescription;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescriptionParser;
 
-public class DubProjectModel {
+public class DubProjectModel extends EventManager<DubProjectModel, DubBundleDescription, IDubProjectModelListener> {
 	
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
@@ -131,11 +132,13 @@ public class DubProjectModel {
 	protected synchronized void addProject(IScriptProject projectElement, DubBundleDescription dubBundle) {
 		log.println(">> Add project info: ", projectElement);
 		dubBundleInfos.put(projectElement.getElementName(), dubBundle);
+		fireUpdateEvent(this, dubBundle);
 	}
 	
 	protected synchronized void removeProject(IScriptProject projectElement) {
 		log.println(">> Removing project: ", projectElement);
 		dubBundleInfos.remove(projectElement.getElementName());
+		/*BUG here*/
 	}
 	
 	public synchronized DubBundleDescription getBundleInfo(String projectName) {
@@ -216,6 +219,12 @@ public class DubProjectModel {
 	public static IMarker[] getDubErrorMarkers(IProject project) throws CoreException {
 		return project.findMarkers(DubProjectModel.DUB_PROBLEM_ID, true, IResource.DEPTH_ONE);
 	}
+
+	public DubDependenciesContainer getDubElement(IProject project) {
+		DubBundleDescription bundleInfo = getBundleInfo(project.getName());
+		
+		return new DubDependenciesContainer(bundleInfo);
+	}
 	
 }
 
@@ -254,7 +263,7 @@ class UpdateProjectModel implements Runnable {
 			return setProjectDubError(project, "Could not start dub process: ",  e);
 		}
 		try {
-			processHelper.awaitTermination(5000);
+			processHelper.awaitTermination(50000);
 		} catch (InterruptedException e) {
 			return setProjectDubError(project, "Timeout running dub process.", null);
 		}
@@ -321,7 +330,7 @@ class UpdateProjectModel implements Runnable {
 		// TODO: correlate the compiler install used by Dub with the one on buildpath
 		entries.add(DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()));
 		
-		entries.add(DLTKCore.newContainerEntry(new Path(DubContainerInitializer.ID)));
+		entries.add(DLTKCore.newContainerEntry(new Path(DubBuildpathContainerInitializer.ID)));
 		
 		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getRawSourceFolders()) {
 			IPath path2 = projectElement.getPath().append(srcFolder.toString());
@@ -329,18 +338,18 @@ class UpdateProjectModel implements Runnable {
 		}
 		
 		try {
-			// TODO: should this be set atomically?
-			dubProjectModel.addProject(projectElement, bundleDesc);
-			
+			// TODO: should all this be set atomically?
 			updateDubContainer(projectElement, getBuildpathEntriesFromDesc(bundleDesc));
 			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
+			
+			dubProjectModel.addProject(projectElement, bundleDesc);
 		} catch (ModelException me) {
 			logInternalError(me);
 		}
 	}
 	
 	protected void updateDubContainer(IScriptProject projectElement, IBuildpathEntry[] entries) throws ModelException {
-		Path containerPath = new Path(DubContainerInitializer.ID);
+		Path containerPath = new Path(DubBuildpathContainerInitializer.ID);
 		DubContainer dubContainer = new DubContainer(containerPath, projectElement, entries);
 		DLTKCore.setBuildpathContainer(containerPath, array(projectElement), array(dubContainer), null);
 	}

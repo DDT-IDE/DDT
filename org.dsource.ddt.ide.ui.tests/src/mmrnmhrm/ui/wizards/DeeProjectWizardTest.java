@@ -3,8 +3,8 @@ package mmrnmhrm.ui.wizards;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.MiscUtil;
+import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.projectmodel.ProjectModelUtil;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.tests.ui.accessors.ProjectWizardFirstPage__Accessor;
@@ -181,11 +181,12 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 	
 	protected boolean checkNoChanges() throws Throwable {
 		logErrorListener.checkErrors();
-		return ProjectModelUtil.getDeeProject(NEWPROJNAME).exists() == false;
+		
+		return DLTKUtils.getDLTKModel().getScriptProject(NEWPROJNAME).exists() == false;
 	}
 	
 	protected boolean checkProjectCreated() throws Throwable {
 		logErrorListener.checkErrors();
-		return ProjectModelUtil.getDeeProject(NEWPROJNAME).exists();
+		return DLTKUtils.getDLTKModel().getScriptProject(NEWPROJNAME).exists();
 	}
 }

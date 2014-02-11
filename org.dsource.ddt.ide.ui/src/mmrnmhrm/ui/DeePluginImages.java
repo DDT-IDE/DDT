@@ -67,6 +67,15 @@ public abstract class DeePluginImages extends LangImages {
 	public static final ImageDescriptor DESC_OVR_ALIAS = createUnmanaged(T_OVR, "ovr_alias_arrow.png");
 	
 	
+	/* ---------- DUB elements ---------- */
+	
+	protected static final String T_OBJ_DUB = "obj16_dub";
+	
+	public static final String DUB_DEPENDENCIES_CONTAINER = createManaged(T_OBJ_DUB, "DubDependenciesContainer.png");
+	public static final String DUB_DEP_ELEMENT = createManaged(T_OBJ_DUB, "DubBundleDep.png");
+	
+	/* ------------------------------------------- */
+	
 	public static final ImageDescriptor OPEN_DEF_DESC = createUnmanaged(T_ACTIONS, "gotodef.gif");
 	
 	@Deprecated

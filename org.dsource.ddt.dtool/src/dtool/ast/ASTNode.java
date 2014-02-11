@@ -50,7 +50,7 @@ public abstract class ASTNode implements IASTNode {
 	}
 	
 	/* ------------------------  Source range ------------------------ */
-
+	
 	
 	/** Gets the source range start position. */
 	@Override
@@ -205,8 +205,7 @@ public abstract class ASTNode implements IASTNode {
 	/* ------------------------  Node type  ------------------------  */
 	
 	public abstract ASTNodeTypes getNodeType();
-
-	@Override
+	
 	public int getElementType() {
 		return getNodeType().ordinal(); 
 	}

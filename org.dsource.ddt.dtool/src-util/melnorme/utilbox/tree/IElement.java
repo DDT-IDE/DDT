@@ -30,6 +30,4 @@ public interface IElement {
 	/** Returns the node's children. */
 	IElement[] getChildren();
 
-	/** Returns this element's kind encoded as an integer. */
-	int getElementType();
 }

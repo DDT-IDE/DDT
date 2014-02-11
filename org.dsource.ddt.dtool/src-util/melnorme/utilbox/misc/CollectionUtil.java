@@ -29,6 +29,12 @@ public class CollectionUtil {
 		return new ArrayList<T>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
 	
+	/** @return An empty collection if given coll is null, or the given coll otherwise.
+	 * The returned collection cannot be modified. */
+	public static <T> Collection<T> nullToEmpty(Collection<T> coll) {
+		return coll == null ? Collections.EMPTY_LIST : coll;
+	}
+	
 	/** Creates a {@link HashSet} from given collection (collection can be null). */
 	public static <T> HashSet<T> createHashSet(Collection<T> collection) {
 		return new HashSet<T>(collection == null ? Collections.EMPTY_LIST : collection);

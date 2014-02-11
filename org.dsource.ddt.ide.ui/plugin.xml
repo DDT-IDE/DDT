@@ -406,45 +406,40 @@
            language="org.dsource.ddt.ide.core.nature">
      </modelLabelProvider>
   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="mmrnmhrm.ui.navigator.DubNavigatorContent"
+            icon="icons/action16e/extra/spathi.16.gif"
+            id="org.dsource.ddt.ide.ui.DubNavigatorContent"
+            labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
+            name="Dub Elements"
+            priority="higher">
+         <triggerPoints>
+            <or>
+               <instanceof
+                     value="org.eclipse.core.resources.IProject">
+               </instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <or>
+            </or>
+         </possibleChildren>
+      </navigatorContent>
+   </extension>
    
    <extension
          point="org.eclipse.ui.navigator.viewer">
       <viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
          <includes>
             <contentExtension pattern="org.dsource.ddt.ide.ui.navigatorContent"/>
+            <contentExtension
+                  pattern="org.dsource.ddt.ide.ui.DubNavigatorContent">
+            </contentExtension>
          </includes>
       </viewerContentBinding>
-   </extension>
-   <extension
-         point="org.eclipse.ui.navigator.navigatorContent">
-      <navigatorContent
-            activeByDefault="true"
-            contentProvider="mmrnmhrm.ui.navigator.DeeNavigatorContentProvider"
-            icon="icons/action16e/extra/sample.gif"
-            id="org.dsource.ddt.ide.ui.navigatorContent"
-            labelProvider="mmrnmhrm.ui.navigator.DeeNavigatorLabelProvider"
-            name="D Elements"
-            priority="high">
-         <triggerPoints>
-            <or>
-               <reference
-                     definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
-               </reference>
-            </or>
-         </triggerPoints>
-         <possibleChildren>
-            <or>
-               <instanceof value="org.eclipse.core.resources.IResource"/>
-               <instanceof
-                     value="org.eclipse.dltk.core.IModelElement">
-               </instanceof>
-            </or>
-         </possibleChildren>
-         <actionProvider
-               class="mmrnmhrm.ui.navigator.DeeCommonActionProvider"
-               id="org.dsource.ddt.ide.ui.actions.navigatorActionProvider">
-         </actionProvider>
-      </navigatorContent>
    </extension>
    <extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">

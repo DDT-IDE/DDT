@@ -75,6 +75,8 @@ public class DubBundle {
 	 */
 	public static class DubBundleDescription {
 		
+		protected static final DubBundle[] EMTPY_BUNDLE_DEPS = { };
+		
 		protected final String bundleName;
 		protected final DubBundleException error;
 		protected final DubBundle mainDubBundle;
@@ -95,7 +97,7 @@ public class DubBundle {
 				bundleDependencies = Arrays.copyOfRange(bundles, 1, bundles.length);
 			} else {
 				mainDubBundle = null;
-				bundleDependencies = null;
+				bundleDependencies = EMTPY_BUNDLE_DEPS;
 			}
 			
 			if(!hasErrors()) {
@@ -113,7 +115,7 @@ public class DubBundle {
 		}
 		
 		public DubBundle[] getBundleDependencies() {
-			return bundleDependencies;
+			return assertNotNull(bundleDependencies);
 		}
 		
 		public DubBundleException getError() {

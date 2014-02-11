@@ -20,11 +20,11 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IScriptProject;
 
-public class DubContainerInitializer extends BuildpathContainerInitializer {
+public class DubBuildpathContainerInitializer extends BuildpathContainerInitializer {
 	
 	public static String ID = DeeCore.PLUGIN_ID + ".DubContainer";
 	
-	public DubContainerInitializer() {
+	public DubBuildpathContainerInitializer() {
 	}
 	
 	@Override

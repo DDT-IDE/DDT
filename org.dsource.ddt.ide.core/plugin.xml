@@ -80,7 +80,7 @@
    <extension
          point="org.eclipse.dltk.core.buildpathContainerInitializer">
       <buildpathContainerInitializer
-            class="mmrnmhrm.core.projectmodel.DubContainerInitializer"
+            class="mmrnmhrm.core.projectmodel.DubBuildpathContainerInitializer"
             id="org.dsource.ddt.ide.core.DubContainer">
       </buildpathContainerInitializer>
    </extension>

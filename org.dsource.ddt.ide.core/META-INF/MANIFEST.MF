@@ -20,6 +20,7 @@ Require-Bundle: org.dsource.ddt.dtool;bundle-version="[0.9.1,0.10.0)";visibility
 Bundle-ClassPath: .,
  libs/ini4j-0.3.2/ini4j-0.3.2.jar
 Export-Package: melnorme.lang.ide.core,
+ melnorme.lang.ide.core.utils,
  melnorme.lang.ide.launching,
  mmrnmhrm.core,
  mmrnmhrm.core.build,

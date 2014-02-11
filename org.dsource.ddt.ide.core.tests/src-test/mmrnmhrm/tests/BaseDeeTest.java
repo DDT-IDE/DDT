@@ -6,14 +6,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuilder__Accessor;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.core.compiler_installs.GDCInstallType;
 import mmrnmhrm.core.projectmodel.DeeProjectModel;
-import mmrnmhrm.core.projectmodel.DeeProjectModelTest;
-import mmrnmhrm.core.projectmodel.ProjectModelUtil;
+import mmrnmhrm.core.projectmodel.DeeProjectModel_Accessor;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;
@@ -173,7 +173,7 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 //		scriptProject.setOption(DLTKCore.INDEXER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
 //		scriptProject.setOption(DLTKCore.BUILDER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
 		
-		DeeProjectModelTest.checkInstall(scriptProject, installTypeId, installId);
+		DeeProjectModel_Accessor.checkInstall(scriptProject, installTypeId, installId);
 		DeeProjectModel.getDeeProjectInfo(scriptProject);
 		assertTrue(project.exists() && project.isOpen());
 		return scriptProject;
@@ -183,7 +183,7 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		assertTrue(project.exists());
 		IScriptProject dltkProj = DLTKCore.create(project);
 		assertTrue(!dltkProj.exists()); 
-		ProjectModelUtil.addNature(project, DeeNature.NATURE_ID);
+		EclipseUtils.addNature(project, DeeNature.NATURE_ID);
 		assertTrue(dltkProj.exists());
 		
 		IBuildpathEntry entry = DLTKCore.newContainerEntry(
