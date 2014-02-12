@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 
 public class DubBundle {
 	
@@ -44,7 +43,7 @@ public class DubBundle {
 		return error != null;
 	}
 	
-	public Path[] getRawSourceFolders() {
+	public Path[] getSourceFolders() {
 		if(srcFolders != null) {
 			return srcFolders;
 		} else {
@@ -66,61 +65,6 @@ public class DubBundle {
 		public DubBundleException(Throwable exception) {
 	        super(exception);
 	    }
-		
-	}
-	
-	/**
-	 * Describes a DUB bundle builpath. 
-	 * This is usually derived from running the DUB tool, and as such it can be incomplete and have errors.  
-	 */
-	public static class DubBundleDescription {
-		
-		protected static final DubBundle[] EMTPY_BUNDLE_DEPS = { };
-		
-		protected final String bundleName;
-		protected final DubBundleException error;
-		protected final DubBundle mainDubBundle;
-		protected final DubBundle[] bundleDependencies;
-		
-		public DubBundleDescription(String bundleName, DubBundle[] bundles, DubBundleException error) {
-			this.bundleName = bundleName;
-			this.error = error;
-			
-			if(bundles != null && bundles.length >= 1) {
-				if(!hasErrors()) {
-					// If no main error, then bundles must have no errors as well
-					for (DubBundle dubBundle : bundles) {
-						assertTrue(!dubBundle.hasErrors());
-					}
-				}
-				mainDubBundle = bundles[0];
-				bundleDependencies = Arrays.copyOfRange(bundles, 1, bundles.length);
-			} else {
-				mainDubBundle = null;
-				bundleDependencies = EMTPY_BUNDLE_DEPS;
-			}
-			
-			if(!hasErrors()) {
-				assertTrue(bundles.length >= 1);
-			}
-			
-		}
-		
-		public boolean hasErrors() {
-			return error != null;
-		}
-		
-		public DubBundle getMainBundle() {
-			return mainDubBundle;
-		}
-		
-		public DubBundle[] getBundleDependencies() {
-			return assertNotNull(bundleDependencies);
-		}
-		
-		public DubBundleException getError() {
-			return error;
-		}
 		
 	}
 	

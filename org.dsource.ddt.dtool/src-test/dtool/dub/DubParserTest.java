@@ -14,24 +14,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.Test;
 
-import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
 
-public class DubParserTest extends DToolBaseTest {
+public class DubParserTest extends CommonDubTest {
 	
 	public static final Path DUB_WORKSPACE = DToolTestResources.getTestResourcePath("dub");
-	
-	public static Path[] paths(String... str) {
-		Path[] newArray = new Path[str.length];
-		for (int i = 0; i < str.length; i++) {
-			newArray[i] = Paths.get(str[i]); 
-		}
-		return newArray;
-	}
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
@@ -57,20 +47,9 @@ public class DubParserTest extends DToolBaseTest {
 	
 	public void testBundle(Path location, String name, String version, Path[] srcFolders) {
 		DubBundle dubBundle = parseDubBundle(location);
-		checkBundle(dubBundle, location, name, version, srcFolders, null);
+		dep(location, null, name, version, srcFolders).check(dubBundle);
 	}
 	
-	public static void checkBundle(DubBundle bundle, Path location, String name, String version, Path[] srcFolders,
-			String errorCheck) {
-		assertAreEqual(bundle.location, location);
-		assertAreEqual(bundle.name, name);
-		assertAreEqual(bundle.version, version);
-		assertEqualArrays(bundle.getRawSourceFolders(), srcFolders);
-		assertEqualArrays(bundle.dependencies, null); // TODO
-		
-		Exception exception = bundle.error;
-		assertExceptionContains(exception, errorCheck);
-	}
 	
 	@Test
 	public void testNonExistant() throws Exception { testNonExistant$(); }

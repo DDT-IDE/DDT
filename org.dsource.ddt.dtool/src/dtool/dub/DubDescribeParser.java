@@ -19,15 +19,14 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import com.google.gson.stream.JsonToken;
 
-import dtool.dub.DubBundle.DubBundleDescription;
 import dtool.dub.DubBundle.DubBundleException;
 
-public class DubBundleDescriptionParser extends CommonDubParser {
+public class DubDescribeParser extends CommonDubParser {
 	
 	protected String bundleName;
 	protected ArrayList<DubBundle> bundles;
 	
-	public DubBundleDescriptionParser() {
+	public DubDescribeParser() {
 	}
 	
 	public DubBundleDescription parseDescription(String source) {

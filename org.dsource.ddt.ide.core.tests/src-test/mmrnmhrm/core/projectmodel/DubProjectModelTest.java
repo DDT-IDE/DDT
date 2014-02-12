@@ -1,15 +1,13 @@
 package mmrnmhrm.core.projectmodel;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static dtool.dub.CommonDubTest.dep;
+import static dtool.dub.CommonDubTest.paths;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 
-import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+import melnorme.utilbox.concurrency.LatchRunnable;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -22,12 +20,16 @@ import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.junit.Test;
 
-import dtool.dub.DubBundle;
-import dtool.dub.DubBundle.DubBundleDescription;
+import dtool.dub.CommonDubTest.DubBundleChecker;
 import dtool.dub.DubBundle.DubBundleException;
+import dtool.dub.DubBundleDescription;
 import dtool.dub.DubParserTest;
 
-public class DubProjectModelTest extends DubCommonTest {
+public class DubProjectModelTest extends CommonDubModelTest {
+	
+//	protected DubDependenciesContainer getDubContainer(IScriptProject dubProject) {
+//		return DubProjectModel.getDefault().getDubElement(dubProject.getProject());
+//	}
 	
 	/* ************************************ */
 	
@@ -40,102 +42,98 @@ public class DubProjectModelTest extends DubCommonTest {
 		
 		long taskCount = getDubExecutorAgent().getSubmittedTaskCount();
 		IScriptProject dubTestProject = createAndOpenDeeProject(DUB_TEST, true);
-		
-		assertTrue(getDubExecutorAgent().getSubmittedTaskCount() == taskCount); // check no change
+		// check no change:
+		assertTrue(getDubExecutorAgent().getSubmittedTaskCount() == taskCount); 
 		assertTrue(DubProjectModel.getDefault().getBundleInfo(DUB_TEST) == null);
 		
 		try {
-			runBasicTest(dubTestProject);
+			runBasicTestSequence(dubTestProject);
 		} finally {
 			dubTestProject.getProject().delete(true, null); // cleanup
 		}
 	}
 	
-	public void runBasicTest(IScriptProject dubTestProject) throws Exception {
+	public void runBasicTestSequence(IScriptProject dubTestProject) throws Exception {
+		Path location = dubTestProject.getProject().getLocation().toFile().toPath();
 		
-		writeDubJson_AndSync(dubTestProject, "{"+ jsEntry("name", "xptobundle")+ "}");
-		checkBundle(dubTestProject, "xptobundle", srcFolders());
+		writeDubJsonAndVerifyStatus("{"+ jsEntry("name", "xptobundle")+ "}",
+				dubTestProject, 
+				dep(location, null, "xptobundle", "~master", srcFolders()));
 		
-		writeDubJson_AndSync(dubTestProject, "{"+
+		writeDubJsonAndVerifyStatus("{"+
 				jsEntry("name", "xptobundle")+
 				jsEntry("importPaths", jsArray("src", "src-test"))+
-				"\"blah\":null}");
-		checkBundle(dubTestProject, "xptobundle", srcFolders("src", "src-test"));
-		
-		
-		writeDubJson_AndSync(dubTestProject, 
-				readFileContents(DUB_WORKSPACE.resolve("XptoBundle/dub.json")));
-		
-		checkBundle(dubTestProject, "xptobundle", srcFolders("src", "src-test"), 
-				dep(DUB_WORKSPACE.resolve("bar_lib"), "source"),
-				dep(DUB_WORKSPACE.resolve("foo_lib"), "src"),
-				dep(DUB_WORKSPACE.resolve("foo_lib"), "src2")
+				"\"blah\":null}",
+				
+				dubTestProject, 
+				dep(location, null, "xptobundle", "~master", srcFolders("src", "src-test"))
 				);
 		
 		
-		writeDubJson_AndSync(dubTestProject, "{"+ jsEntry("nameXX", "xptobundle")+ "}");
-		checkErrorBundle(dubTestProject, "dub returned non-zero");
+		writeDubJsonAndVerifyStatus(
+				readFileContents(DUB_WORKSPACE.resolve("XptoBundle/dub.json")),
 		
-		writeDubJson_AndSync(dubTestProject, "{"+ jsEntry("name", "xptobundle")+ "}");
-		checkBundle(dubTestProject, "xptobundle", srcFolders());
+				dubTestProject,
+				dep(location, null, "xptobundle", "~master", srcFolders("src", "src-test")), 
+				dep(DUB_WORKSPACE.resolve("bar_lib"), null, "bar_lib", "~master", paths("source")),
+				dep(DUB_WORKSPACE.resolve("foo_lib"), null, "bar_lib", "~master", paths("src", "src2"))
+				);
 		
-	}
-	protected void checkErrorBundle(IScriptProject dubProject, String errorMsgStart) throws CoreException {
-		DubBundleException error = getDubProjectInfo(dubProject.getElementName()).getError();
-		assertTrue(error != null);
-		assertTrue(error.getMessage().startsWith(errorMsgStart));
 		
-		IMarker[] markers = DubProjectModel.getDubErrorMarkers(dubProject.getProject());
-		assertTrue(markers.length == 1);
-		IMarker errorMarker = markers[0];
-		assertTrue(errorMarker.getAttribute(IMarker.MESSAGE, "").startsWith(errorMsgStart));
-		assertEquals(errorMarker.getAttribute(IMarker.SEVERITY), IMarker.SEVERITY_ERROR);
-	}
-
-	public static String[] srcFolders(String... elems) {
-		return elems;
+		writeDubJsonAndVerifyStatus("{"+ jsEntry("nameMISSING", "xptobundle")+ "}",
+				dubTestProject, 
+				dep("dub returned non-zero", null));
+		
+		writeDubJsonAndVerifyStatus("{"+ jsEntry("name", "xptobundle")+ "}",
+				dubTestProject, 
+				dep(location, null, "xptobundle", "~master", srcFolders()));
+		
 	}
 	
-	public static DubBundle dep(Path baseLocation, String... elems) throws InvalidPathExceptionX {
-		Path[] paths = new Path[elems.length];
-		for (int i = 0; i < elems.length; i++) {
-			paths[i] = MiscUtil.createPath(elems[i]);
-			
-		}
-		return new DubBundle(baseLocation, "", null, paths, null, null, null);
+	public final void writeDubJsonAndVerifyStatus(String dubJson, IScriptProject dubProject, 
+			DubBundleChecker mainBundle, DubBundleChecker... deps) throws CoreException {
+		LatchRunnable preWriteLatch = writeDubJson(dubProject, dubJson);
+		checkModel(preWriteLatch, dubProject, mainBundle, deps);
 	}
 	
-	public final void checkBundle(IScriptProject dubProject, String dubName, String[] srcFolders,
-			DubBundle... deps) throws CoreException {
-		checkBundle(dubProject, null, dubName, srcFolders, deps);
-	}
-	
-	public void checkBundle(IScriptProject dubProject, String expectedError, String dubName, 
-			String[] srcFolders, DubBundle... deps) throws CoreException {
+	public void checkModel(LatchRunnable preWriteLatch, IScriptProject dubProject, DubBundleChecker expMainBundle,
+			DubBundleChecker... deps) throws CoreException {
+		
+		DubBundleDescription dubBundle;
+//		DubBundleDescription dubBundle = getExistingDubBundleInfo(dubProject.getElementName());
+//		assertTrue(!dubBundle.isResolved());
+		
+		preWriteLatch.releaseAll();
+		DubProjectModel.getDefault().syncPendingUpdates();
+		
+		dubBundle = getExistingDubBundleInfo(dubProject.getElementName());
+//		assertTrue(dubBundle.isResolved());
+		
 		IProject project = dubProject.getProject();
 		
-		DubBundleDescription dubBundle = getDubProjectInfo(dubProject.getElementName());
-		assertNotNull(dubBundle);
-		if(dubBundle.getError() != null) {
-			assertFail("Not Null: " + dubBundle.getError());
+		DubBundleException error = dubBundle.getError();
+		
+		if(error != null) {
+			
+			IMarker[] markers = DubProjectModel.getDubErrorMarkers(dubProject.getProject());
+			assertTrue(markers.length == 1);
+			IMarker errorMarker = markers[0];
+			assertTrue(errorMarker.getAttribute(IMarker.MESSAGE, "").startsWith(error.getMessage()));
+			assertEquals(errorMarker.getAttribute(IMarker.SEVERITY), IMarker.SEVERITY_ERROR);
+			
+		} else {
+			expMainBundle.check(dubBundle.getMainBundle()); // TODO always have a main bundle, even with errors
+			checkRawBuildpath(dubProject.getRawBuildpath(), expMainBundle.sourceFolders);
+			
+			checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), expMainBundle.sourceFolders, deps);
+			
+			IMarker[] dubErrorMarkers = DubProjectModel.getDubErrorMarkers(project);
+			assertTrue(dubErrorMarkers.length == 0);
 		}
-		
-		Path location = Paths.get(project.getLocationURI());
-		
-		assertAreEqual(dubBundle.getMainBundle().name, dubName);
-		assertAreEqual(dubBundle.getMainBundle().location, location);
-		assertExceptionContains(dubBundle.getError(), expectedError);
-		
-		checkRawBuildpath(dubProject.getRawBuildpath(), srcFolders);
-		
-		checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), srcFolders, deps);
-		
-		IMarker[] dubErrorMarkers = DubProjectModel.getDubErrorMarkers(project);
-		assertTrue(dubErrorMarkers.length == 0);
 	}
 	
-	public static void checkRawBuildpath(IBuildpathEntry[] rawBuildpath, String[] srcFolders) throws ModelException {
-		HashSet<String> sourcePaths = hashSet(srcFolders);
+	public static void checkRawBuildpath(IBuildpathEntry[] rawBuildpath, Path[] srcFolders) throws ModelException {
+		HashSet<Path> sourcePaths = hashSet(srcFolders);
 		
 		for (IBuildpathEntry bpEntry : rawBuildpath) {
 			IPath entryPath = bpEntry.getPath();
@@ -151,7 +149,7 @@ public class DubProjectModelTest extends DubCommonTest {
 			assertTrue(bpEntry.getEntryKind() == IBuildpathEntry.BPE_SOURCE);
 			assertTrue(bpEntry.isExternal() == false);
 			IPath folderPath = entryPath.removeFirstSegments(1); // Remove project segment
-			assertTrue(sourcePaths.remove(folderPath.toString()));
+			assertTrue(sourcePaths.remove(folderPath.toFile().toPath()));
 			continue;
 		}
 		
@@ -159,13 +157,13 @@ public class DubProjectModelTest extends DubCommonTest {
 		assertTrue(sourcePaths.isEmpty());
 	}
 	
-	public static void checkResolvedBuildpath(IBuildpathEntry[] buildpath, String[] srcFolders, 
-			DubBundle[] deps) throws ModelException {
-		HashSet<String> sourcePaths = hashSet(srcFolders);
+	public static void checkResolvedBuildpath(IBuildpathEntry[] buildpath, Path[] srcFolders, 
+			DubBundleChecker[] deps) throws ModelException {
+		HashSet<Path> sourcePaths = hashSet(srcFolders);
 		
 		HashSet<Path> depSourcePaths = new HashSet<>();
-		for (DubBundle bundleDep : deps) {
-			for (Path path : bundleDep.getRawSourceFolders()) {
+		for (DubBundleChecker bundleDep : deps) {
+			for (Path path : bundleDep.sourceFolders) {
 				Path srcFolderAbsolute = bundleDep.location.resolve(path);
 				depSourcePaths.add(srcFolderAbsolute);
 			}
@@ -193,7 +191,7 @@ public class DubProjectModelTest extends DubCommonTest {
 			assertTrue(bpEntry.getEntryKind() == IBuildpathEntry.BPE_SOURCE);
 			assertTrue(bpEntry.isExternal() == false);
 			IPath folderPath = entryPath.removeFirstSegments(1); // Remove project segment
-			assertTrue(sourcePaths.remove(folderPath.toString()));
+			assertTrue(sourcePaths.remove(folderPath.toFile().toPath()));
 			continue;
 		}
 		
@@ -202,4 +200,16 @@ public class DubProjectModelTest extends DubCommonTest {
 		assertTrue(depSourcePaths == null || depSourcePaths.isEmpty());
 	}
 	
+//	protected void removeChild(HashSet<CommonDubElement> children, DubBundle dubBundle) {
+//		String name = dubBundle.name;
+//		for (CommonDubElement dubElement : children) {
+//			if(dubElement instanceof DubDependencyElement) {
+//				DubDependencyElement dubDependencyElement = (DubDependencyElement) dubElement;
+//				if(dubDependencyElement.getBundleName().equals(name)) {
+//					children.remove(dubElement);
+//					return;
+//				}
+//			}
+//		}
+//	}
 }

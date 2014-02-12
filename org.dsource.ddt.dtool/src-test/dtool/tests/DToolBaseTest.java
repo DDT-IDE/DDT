@@ -18,6 +18,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -50,6 +51,12 @@ public class DToolBaseTest extends CommonTest {
 		}
 	}
 	
+	public interface Checker<T> {
+		
+		Void check(T obj);
+		
+	}
+	
 	/* -------------  Resources stuff   ------------ */
 	
 	public static final Charset DEFAULT_TESTDATA_ENCODING = StringUtil.UTF8;
@@ -62,6 +69,10 @@ public class DToolBaseTest extends CommonTest {
 	
 	public static String readStringFromFile(File file) throws IOException, FileNotFoundException {
 		return FileUtil.readStringFromFile(file, DEFAULT_TESTDATA_ENCODING);
+	}
+	
+	public static String readStringFromFile(Path path) throws IOException, FileNotFoundException {
+		return readStringFromFile(path.toFile());
 	}
 	
 	public static String readStringFromFileUnchecked(File file) {

@@ -51,9 +51,9 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 
 import dtool.SimpleLogger;
 import dtool.dub.DubBundle;
-import dtool.dub.DubBundle.DubBundleDescription;
 import dtool.dub.DubBundle.DubBundleException;
-import dtool.dub.DubBundleDescriptionParser;
+import dtool.dub.DubBundleDescription;
+import dtool.dub.DubDescribeParser;
 
 public class DubProjectModel extends EventManager<DubProjectModel, DubBundleDescription, IDubProjectModelListener> {
 	
@@ -83,7 +83,7 @@ public class DubProjectModel extends EventManager<DubProjectModel, DubBundleDesc
 		// Run initialization in executor thread
 		// This is recommended so that we avoid running the initialization in the UI thread, which is
 		// most likely to happen when DubProjectModel is created.
-		// This way we prevent workspace deltas do be creating in the UI thread during plugin initialization.
+		// This way we prevent workspace deltas to be created in the UI thread during plugin initialization.
 		executorAgent.submit(new Runnable() {
 			@Override
 			public void run() {
@@ -283,7 +283,7 @@ class UpdateProjectModel implements Runnable {
 		}
 		
 		
-		DubBundleDescription bundleDesc = new DubBundleDescriptionParser().parseDescription(descriptionOutput);
+		DubBundleDescription bundleDesc = new DubDescribeParser().parseDescription(descriptionOutput);
 		
 		if(!bundleDesc.hasErrors()) {
 			updateBuildpath(project, bundleDesc);
@@ -332,7 +332,7 @@ class UpdateProjectModel implements Runnable {
 		
 		entries.add(DLTKCore.newContainerEntry(new Path(DubBuildpathContainerInitializer.ID)));
 		
-		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getRawSourceFolders()) {
+		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getSourceFolders()) {
 			IPath path2 = projectElement.getPath().append(srcFolder.toString());
 			entries.add(DLTKCore.newSourceEntry(path2));
 		}
@@ -362,7 +362,7 @@ class UpdateProjectModel implements Runnable {
 			}
 			
 			// TODO project dependencies
-			for (java.nio.file.Path srcFolder : depBundle.getRawSourceFolders()) {
+			for (java.nio.file.Path srcFolder : depBundle.getSourceFolders()) {
 				
 				java.nio.file.Path srcFolderAbsolute = depBundle.location.resolve(srcFolder);
 				assertTrue(srcFolderAbsolute.isAbsolute());

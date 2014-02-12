@@ -11,11 +11,19 @@
 package mmrnmhrm.core.projectmodel;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+
+import melnorme.utilbox.concurrency.IExecutorAgent;
+import melnorme.utilbox.concurrency.LatchRunnable;
+import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.StringUtil;
+import mmrnmhrm.core.WorkspaceUtils;
+import mmrnmhrm.tests.BaseDeeTest;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -23,26 +31,22 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import dtool.dub.DubDescribeTest;
-import dtool.dub.DubBundle.DubBundleDescription;
-import melnorme.utilbox.concurrency.IExecutorAgent;
-import melnorme.utilbox.misc.FileUtil;
-import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.WorkspaceUtils;
-import mmrnmhrm.tests.BaseDeeTest;
+import dtool.dub.CommonDubTest;
+import dtool.dub.DubBundleDescription;
+import dtool.dub.DubDescribeParserTest;
 
 /**
  * Utilities for manipualtion Dub projects
  */
-public abstract class DubCommonTest extends BaseDeeTest {
+public abstract class CommonDubModelTest extends BaseDeeTest {
 	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
-		DubDescribeTest.initDubRepositoriesPath();
+		DubDescribeParserTest.initDubRepositoriesPath();
 	}
 	@AfterClass
 	public static void cleanupDubRepositoriesPath() {
-		DubDescribeTest.cleanupDubRepositoriesPath();
+		DubDescribeParserTest.cleanupDubRepositoriesPath();
 	}
 	
 	public static String readFileContents(Path path) throws IOException {
@@ -92,13 +96,19 @@ public abstract class DubCommonTest extends BaseDeeTest {
 		return DubProjectModel.getDefault();
 	}
 	
-	protected static DubBundleDescription getDubProjectInfo(String projectName) {
-		return DubProjectModel.getDefault().getBundleInfo(projectName);
+	protected static DubBundleDescription getExistingDubBundleInfo(String projectName) {
+		return assertNotNull(DubProjectModel.getDefault().getBundleInfo(projectName));
 	}
 	
-	protected static void writeDubJson_AndSync(IScriptProject dubTestProject, String contents) throws CoreException {
+	protected static LatchRunnable writeDubJson(IScriptProject dubTestProject, String contents) throws CoreException {
+		LatchRunnable latchRunnable = new LatchRunnable();
+		getDubExecutorAgent().submit(latchRunnable);
 		writeStringToFile(dubTestProject, "dub.json", contents);
-		DubProjectModel.getDefault().syncPendingUpdates();
+		return latchRunnable;
+	}
+	
+	public static Path[] srcFolders(String... elems) {
+		return CommonDubTest.paths(elems);
 	}
 	
 }

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.dub.DubBundle;
-import dtool.dub.DubBundle.DubBundleDescription;
+import dtool.dub.DubBundleDescription;
 
 public class DubDependenciesContainer extends CommonDubElement {
 	

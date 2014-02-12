@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
-import dtool.dub.DubBundle.DubBundleDescription;
+import dtool.dub.DubBundleDescription;
 import melnorme.lang.ide.core.utils.ICommonEventListener;
 
 public interface IDubProjectModelListener extends ICommonEventListener<DubProjectModel, DubBundleDescription> {

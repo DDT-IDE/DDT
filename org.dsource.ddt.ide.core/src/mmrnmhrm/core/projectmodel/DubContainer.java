@@ -66,7 +66,7 @@ public class DubContainer implements IBuildpathContainer {
 		
 		@Override
 		public String getValue() {
-			return null;
+			return ""; // Don't return null, DLTK might not like it
 		}
 	}
 	

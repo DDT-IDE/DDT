@@ -15,7 +15,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 
-import dtool.dub.DubBundle.DubBundleDescription;
+import dtool.dub.DubBundleDescription;
 
 public class DubNavigatorContent extends AbstractContentProvider implements ICommonContentProvider {
 	

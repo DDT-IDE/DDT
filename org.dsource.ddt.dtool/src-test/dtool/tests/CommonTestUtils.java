@@ -1,5 +1,6 @@
 package dtool.tests;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Arrays;
@@ -27,11 +28,11 @@ public class CommonTestUtils {
 		return true;
 	}
 	
-	public static <T> void assertEquals(T obj1, T obj2) {
+	public static void assertEquals(Object obj1, Object obj2) {
 		Assert.equals(obj1, obj2);
 	}
 	
-	public static <T> void assertAreEqual(T obj1, T obj2) {
+	public static void assertAreEqual(Object obj1, Object obj2) {
 		assertTrue(CoreUtil.areEqual(obj1, obj2));
 	}
 	
@@ -79,6 +80,16 @@ public class CommonTestUtils {
 			assertTrue(exception == null);
 		} else {
 			assertTrue(exception.toString().contains(string));
+		}
+	}
+	
+	public static void assertExceptionMsgStart(Exception exception, String string) {
+		if(string == null) {
+			assertTrue(exception == null);
+		} else {
+			String message = exception.getMessage();
+			assertNotNull(message);
+			assertTrue(message.startsWith(string));
 		}
 	}
 	

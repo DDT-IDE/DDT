@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -22,11 +23,87 @@ import melnorme.utilbox.misc.StringUtil;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTests;
 
-public class DubCommonTest extends DToolBaseTest {
+public class CommonDubTest extends DToolBaseTest {
 	
-	public DubCommonTest() {
+	public CommonDubTest() {
 		super();
 	}
+	
+	public static Path[] paths(String... str) {
+		Path[] newArray = new Path[str.length];
+		for (int i = 0; i < str.length; i++) {
+			newArray[i] = Paths.get(str[i]); 
+		}
+		return newArray;
+	}
+	
+	public static abstract class DubBundleChecker implements Checker<DubBundle> {
+		
+		public final Path location;
+		public final Path[] sourceFolders;
+		
+		public DubBundleChecker(Path location, Path[] sourceFolders) {
+			this.location = location;
+			this.sourceFolders = sourceFolders;
+		}
+		
+	}
+	
+	public static DubBundleChecker dep(final Path location, final String errorMsgStart, final String name, 
+			final String version, final Path[] srcFolders) {
+		return new DubBundleChecker(location, srcFolders) {
+			@Override
+			public Void check(DubBundle bundle) {
+				assertAreEqual(bundle.location, location);
+				assertAreEqual(bundle.name, name);
+				assertAreEqual(bundle.version, version);
+				
+				assertEqualArrays(bundle.getSourceFolders(), srcFolders);
+				assertEqualArrays(bundle.dependencies, null);
+				
+				assertExceptionMsgStart(bundle.error, errorMsgStart);
+				return null;
+			}
+		};
+	}
+	
+	public static DubBundleChecker dep(final String errorMsgStart, final String name) {
+		return new DubBundleChecker(null, null) {
+			@Override
+			public Void check(DubBundle bundle) {
+				assertAreEqual(bundle.name, name);
+				
+				assertExceptionMsgStart(bundle.error, errorMsgStart);
+				return null;
+			}
+		};
+	}
+	
+	public static DubBundleChecker depNoCheck() {
+		return new DubBundleChecker(null, null) {
+			@Override
+			public Void check(DubBundle bundle) {
+				return null;
+			}
+		};
+	}
+	
+	protected static void checkResolvedBundle(DubBundleDescription dubDescribe, String dubDescribeError, 
+			String bundleName, DubBundleChecker mainBundle, DubBundleChecker... deps) {
+		assertAreEqual(dubDescribe.bundleName, bundleName);
+		assertExceptionContains(dubDescribe.error, dubDescribeError);
+		assertTrue(dubDescribe.isResolved());
+		
+		mainBundle.check(dubDescribe.getMainBundle());
+		
+		assertTrue(deps.length == dubDescribe.getBundleDependencies().length);
+		for (int ix = 0; ix < deps.length; ix++) {
+			DubBundleChecker dubDepChecker = deps[ix];
+			dubDepChecker.check(dubDescribe.getBundleDependencies()[ix]);
+		}
+	}
+	
+	/* ------------------------------ */
 	
 	protected String runDubDescribe(java.nio.file.Path workingDir) throws Exception {
 		ExternalProcessOutputReader processHelper = startDubProcess(workingDir, "describe");
