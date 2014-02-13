@@ -145,9 +145,9 @@ public class DubModelManager extends EventManager<DubModelManager, DubBundleDesc
 		fireUpdateEvent(this, dubBundleDescription);
 	}
 	
-	protected synchronized void removeProject(IScriptProject projectElement) {
-		log.println(">> Removing project: ", projectElement);
-		DubBundleDescription oldDesc = dubBundleInfos.remove(projectElement.getElementName());
+	protected synchronized void removeProject(IProject project) {
+		log.println(">> Removing project: ", project);
+		DubBundleDescription oldDesc = dubBundleInfos.remove(project.getName());
 		fireUpdateEvent(this, oldDesc);
 	}
 	
@@ -182,7 +182,7 @@ public class DubModelManager extends EventManager<DubModelManager, DubBundleDesc
 				checkNewProject(project);
 				break;
 			case IModelElementDelta.REMOVED:
-				removeProject(projectElement);
+				removeProject(project);
 				break;
 			case IModelElementDelta.CHANGED:
 				IResourceDelta[] resourceDeltas = projectDelta.getResourceDeltas();
@@ -207,8 +207,6 @@ public class DubModelManager extends EventManager<DubModelManager, DubBundleDesc
 	protected void checkNewProject(IProject project) {
 		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
 		if(packageFile != null && packageFile.getType() == IResource.FILE) {
-			IFolder folder = project.getFolder(DUB_BUNDLE_PACKAGE_FILE);
-			assertTrue(folder.exists() == false);
 			queueProjectUpdate(project);
 		}
 	}

@@ -1,5 +1,6 @@
 package melnorme.lang.ide.core;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IWorkspace;
@@ -27,7 +28,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Convenience method to get the WorkspaceRoot. */
 	public static IWorkspaceRoot getWorkspaceRoot() {
-		return ResourcesPlugin.getWorkspace().getRoot();
+		return EclipseUtils.getWorkspaceRoot();
 	}
 	
 	/** Convenience method to get the Workspace. */

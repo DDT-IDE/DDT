@@ -19,9 +19,7 @@ import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -151,22 +149,24 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		return createAndOpenDeeProject(name, overwrite, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
 	}
 	
+	public static IScriptProject setupStandardDeeProject(IProject project) throws CoreException {
+		return setupStandardDeeProject(project, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
+	}
+	
 	public static IScriptProject createAndOpenDeeProject(
 			String name, boolean overwrite, final String installTypeId, final String installId) throws CoreException {
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		
-		final IProject project;
-		project = workspaceRoot.getProject(name);
-		if(overwrite && project.exists()) {
-			project.delete(true, null);
-		}
-		project.create(null);
-		project.open(null);
+		IProject project = createAndOpenProject(name, overwrite);
+		return setupStandardDeeProject(project, installTypeId, installId);
+	}
+	
+	public static IScriptProject setupStandardDeeProject(final IProject project, String installTypeId,
+			String installId) throws CoreException {
+		final String libraryBuildpathEntry = installTypeId + "/" + installId;
 		EnvironmentManager.setEnvironmentId(project, null, false);
 		project.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				setupDeeProject(project, installTypeId + "/" + installId);
+				setupDeeProject(project, libraryBuildpathEntry);
 			}
 		}, null, IWorkspace.AVOID_UPDATE, null);
 		IScriptProject scriptProject = DLTKCore.create(project);
@@ -175,8 +175,18 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		
 		DeeProjectModel_Accessor.checkInstall(scriptProject, installTypeId, installId);
 		DeeProjectModel.getDeeProjectInfo(scriptProject);
-		assertTrue(project.exists() && project.isOpen());
 		return scriptProject;
+	}
+	
+	public static IProject createAndOpenProject(String name, boolean overwrite) throws CoreException {
+		final IProject project = EclipseUtils.getWorkspaceRoot().getProject(name);
+		if(overwrite && project.exists()) {
+			project.delete(true, null);
+		}
+		project.create(null);
+		project.open(null);
+		assertTrue(project.exists() && project.isOpen());
+		return project;
 	}
 	
 	public static void setupDeeProject(IProject project, String libraryEntry) throws CoreException {

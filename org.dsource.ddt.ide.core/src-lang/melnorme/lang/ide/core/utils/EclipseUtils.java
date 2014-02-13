@@ -18,6 +18,8 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
@@ -25,6 +27,11 @@ import org.osgi.framework.BundleException;
 
 public class EclipseUtils {
 
+	/** Convenience method to get the WorkspaceRoot. */
+	public static IWorkspaceRoot getWorkspaceRoot() {
+		return ResourcesPlugin.getWorkspace().getRoot();
+	}
+	
 	public static void startOtherPlugin(String pluginId) {
 		try {
 			Bundle debugPlugin = Platform.getBundle(pluginId);

@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
@@ -44,26 +45,35 @@ public class DubModelManagerTest extends CommonDubModelTest {
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		
+		IProject project;
 		long taskCount = getDubExecutorAgent().getSubmittedTaskCount();
-		IScriptProject dubTestProject = createAndOpenDeeProject(DUB_TEST, true);
+		project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		// check no change:
 		assertTrue(getDubExecutorAgent().getSubmittedTaskCount() == taskCount); 
 		assertTrue(DubModelManager.getBundleInfo(DUB_TEST) == null);
 		
 		try {
-			runBasicTestSequence(dubTestProject);
+			runBasicTestSequence(project);
 		} finally {
-			dubTestProject.getProject().delete(true, null); // cleanup
+			project.delete(true, null); // cleanup
 		}
+		assertTrue(DubModelManager.getBundleInfo(project.getName()) == null);
+		
+		// Verify code path where a project that already has dub manifest is added.
+		project = createAndOpenProject(DUB_TEST, true);
+		LatchRunnable latch = writeDubJson(project, "{"+ jsEntry("name", "xptobundle")+ jsFileEnd());
+		setupStandardDeeProject(project);
+		
+		Path location = project.getLocation().toFile().toPath();
+		checkDubModel(latch, project, 
+			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
 	}
 	
-	public void runBasicTestSequence(IScriptProject dubTestProject) throws Exception {
-		Path location = dubTestProject.getProject().getLocation().toFile().toPath();
+	public void runBasicTestSequence(IProject project) throws Exception {
+		Path location = project.getLocation().toFile().toPath();
 		
-		writeDubJsonAndVerifyStatus("{"+ 
-			jsEntry("name", "xptobundle")+ jsFileEnd(),
-			dubTestProject, 
+		writeDubJsonAndVerifyStatus("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
+			project, 
 			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
 		writeDubJsonAndVerifyStatus("{"+
@@ -72,7 +82,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			jsEntry("version", "2.1")+
 			jsFileEnd(),
 			
-			dubTestProject, 
+			project, 
 			main(location, null, "xptobundle", "2.1", srcFolders("src", "src-test"), rawDeps())
 		);
 		
@@ -80,7 +90,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		writeDubJsonAndVerifyStatus(
 			readFileContents(DUB_WORKSPACE.resolve("XptoBundle/dub.json")),
 			
-			dubTestProject,
+			project,
 			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders("src", "src-test"), 
 				rawDeps("foo_lib"), 
 				bundle(DUB_WORKSPACE.resolve("foo_lib"), null, "foo_lib", DubBundle.DEFAULT_VERSION, paths("src", "src2")),
@@ -90,24 +100,24 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		
 		// Test error in raw DUB.json, check that project info should stay same as before: TODO
 		writeDubJsonAndVerifyStatus("{"+ jsEntry("nameMISSING", "xptobundle")+ jsFileEnd(),
-			dubTestProject, 
+			project, 
 			bundle(DubManifestParser.ERROR_BUNDLE_NAME_UNDEFINED, IGNORE_STR));
 		
 		writeDubJsonAndVerifyStatus("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
-			dubTestProject, 
+			project, 
 			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
 	}
 	
-	public void writeDubJsonAndVerifyStatus(String dubJson, IScriptProject dubProject, DubBundleChecker mainBundle)
+	public void writeDubJsonAndVerifyStatus(String dubJson, IProject project, DubBundleChecker mainBundle)
 			throws CoreException {
-		LatchRunnable preWriteLatch = writeDubJson(dubProject, dubJson);
-		checkModel(preWriteLatch, dubProject, mainBundle);
+		LatchRunnable preWriteLatch = writeDubJson(project, dubJson);
+		checkDubModel(preWriteLatch, project, mainBundle);
 	}
 	
-	public void checkModel(LatchRunnable preWriteLatch, IScriptProject dubProject, DubBundleChecker expMainBundle) 
+	public void checkDubModel(LatchRunnable preWriteLatch, IProject project, DubBundleChecker expMainBundle) 
 			throws CoreException {
-		final IProject project = dubProject.getProject();
+		IScriptProject dubProject = DLTKCore.create(project);
 		
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project.getName());
 		expMainBundle.checkBundleDescription(dubBundle, false);

@@ -26,8 +26,8 @@ import mmrnmhrm.core.WorkspaceUtils;
 import mmrnmhrm.tests.BaseDeeTest;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.core.IScriptProject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -54,9 +54,9 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 		return FileUtil.readStringFromFile(path.toFile(), StringUtil.UTF8);
 	}
 	
-	public static void writeStringToFile(IScriptProject dubTestProject, String name, String contents) 
+	public static void writeStringToFile(IProject project, String name, String contents) 
 			throws CoreException {
-		IFile file = dubTestProject.getProject().getFile(name);
+		IFile file = project.getFile(name);
 		WorkspaceUtils.writeFile(file, new ByteArrayInputStream(contents.getBytes(StringUtil.UTF8)));
 	}
 	
@@ -104,10 +104,10 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 		return assertNotNull(DubModelManager.getBundleInfo(projectName));
 	}
 	
-	protected static LatchRunnable writeDubJson(IScriptProject dubTestProject, String contents) throws CoreException {
+	protected static LatchRunnable writeDubJson(IProject project, String contents) throws CoreException {
 		LatchRunnable latchRunnable = new LatchRunnable();
 		getDubExecutorAgent().submit(latchRunnable);
-		writeStringToFile(dubTestProject, "dub.json", contents);
+		writeStringToFile(project, "dub.json", contents);
 		return latchRunnable;
 	}
 	
