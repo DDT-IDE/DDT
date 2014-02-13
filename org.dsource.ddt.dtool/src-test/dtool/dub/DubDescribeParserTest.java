@@ -20,9 +20,9 @@ import dtool.tests.DToolTestResources;
 
 public class DubDescribeParserTest extends CommonDubTest {
 	
-	public static final Path DUB_WORKSPACE = DubParserTest.DUB_WORKSPACE;
+	public static final Path DUB_WORKSPACE = DubManifestParserTest.DUB_WORKSPACE;
 	
-	protected static final Path XPTO_BUNDLE = DUB_WORKSPACE.resolve("XptoBundle");
+	protected static final Path XPTO_BUNDLE_PATH = DUB_WORKSPACE.resolve("XptoBundle");
 	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
@@ -37,13 +37,14 @@ public class DubDescribeParserTest extends CommonDubTest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		String describeSource = runDubDescribe(XPTO_BUNDLE);
-		DubBundleDescription dubDescribe = new DubDescribeParser().parseDescription(describeSource);
+		String describeSource = runDubDescribe(XPTO_BUNDLE_PATH);
+		DubBundleDescription description = DubDescribeParser.parseDescription(XPTO_BUNDLE_PATH, describeSource);
 		
-		checkResolvedBundle(dubDescribe, null, "xptobundle", 
-			dep(XPTO_BUNDLE, null, "xptobundle", "~master", paths("src", "src-test")), 
-			dep(DUB_WORKSPACE.resolve("foo_lib"), null, "foo_lib", "~master", paths("src", "src2")), 
-			dep(DUB_WORKSPACE.resolve("bar_lib"), null, "bar_lib", "~master", paths("source")));
+		checkResolvedBundle(description, null, 
+			main(XPTO_BUNDLE_PATH, null, "xptobundle", "~master", paths("src", "src-test"),
+				rawDeps("foo_lib"),
+				bundle(DUB_WORKSPACE.resolve("foo_lib"), null, "foo_lib", "~master", paths("src", "src2")), 
+				bundle(DUB_WORKSPACE.resolve("bar_lib"), null, "bar_lib", "~master", paths("source"))));
 	}
 	
 	public static final Path DESCRIBE_RESPATH = DToolTestResources.getTestResourcePath("dub", "_describeErrors");
@@ -53,22 +54,21 @@ public class DubDescribeParserTest extends CommonDubTest {
 	public void testDescriptionParseErrors$() throws Exception {
 		{
 			String source = readStringFromFile(DESCRIBE_RESPATH.resolve("error.no_mainPackage.json"));
-			DubBundleDescription dubDescribe = new DubDescribeParser().parseDescription(source);
+			DubBundleDescription dubDescribe = DubDescribeParser.parseDescription(DESCRIBE_RESPATH, source);
 			
-			checkResolvedBundle(dubDescribe, "Expected \"mainPackage\" entry.", null, 
-				depNoCheck(), 
-				depNoCheck(), depNoCheck());
-			
+			checkResolvedBundle(dubDescribe, DubDescribeParser.ERROR_PACKAGES_IS_EMPTY, 
+				bundle(DubDescribeParser.ERROR_PACKAGES_IS_EMPTY, IGNORE_STR));
 		}
 		
 		{
 			String source = readStringFromFile(DESCRIBE_RESPATH.resolve("error.no_package_name_in_dep.json"));
-			DubBundleDescription dubDescribe = new DubDescribeParser().parseDescription(source);
+			DubBundleDescription dubDescribe = DubDescribeParser.parseDescription(DESCRIBE_RESPATH, source);
 			
-			checkResolvedBundle(dubDescribe, "Bundle name not defined.", "xptobundle", 
-				depNoCheck(),
-				dep("Bundle name not defined.", "foo_lib"),
-				depNoCheck());
+			checkResolvedBundle(dubDescribe, "Bundle name not defined.",
+				main(IGNORE_PATH, null, "xptobundle", IGNORE_STR, null,
+					rawDeps("foo_lib", "bar_lib"),
+ 					bundle("Bundle name not defined.", IGNORE_STR),
+					bundle(null, "bar_lib")));
 		}
 	}
 	

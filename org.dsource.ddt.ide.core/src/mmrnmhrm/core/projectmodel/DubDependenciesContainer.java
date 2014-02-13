@@ -25,6 +25,18 @@ public class DubDependenciesContainer extends CommonDubElement {
 	public DubDependenciesContainer(DubBundleDescription bundleInfo) {
 		super(null);
 		this.bundleInfo = bundleInfo;
+		createChildren();
+	}
+	
+	protected CommonDubElement[] createChildren() {
+		ArrayList<DubDependencyElement> newChildren = new ArrayList<>();
+		
+		if(bundleInfo != null) {
+			for (DubBundle dubBundle : bundleInfo.getBundleDependencies()) {
+				newChildren.add(new DubDependencyElement(this, dubBundle));
+			}
+		}
+		return ArrayUtil.createFrom(newChildren, CommonDubElement.class);
 	}
 	
 	@Override
@@ -32,28 +44,18 @@ public class DubDependenciesContainer extends CommonDubElement {
 		return DubElementType.DUB_DEP_CONTAINER;
 	}
 	
+	public DubBundleDescription getBundleInfo() {
+		return bundleInfo;
+	}
+	
 	@Override
 	public boolean hasChildren() {
-		return true; // TODO
+		return depElements.length > 0;
 	}
 	
 	@Override
 	public CommonDubElement[] getChildren() {
-		if(depElements == null) {
-			depElements = createChildren();
-		}
 		return depElements;
-	}
-	
-	protected CommonDubElement[] createChildren() {
-		ArrayList<DubDependencyElement> list = new ArrayList<>();
-		
-		if(bundleInfo != null) {
-			for (DubBundle dubBundle : bundleInfo.getBundleDependencies()) {
-				list.add(new DubDependencyElement(this, dubBundle));
-			}
-		}
-		return ArrayUtil.createFrom(list, CommonDubElement.class);
 	}
 	
 }

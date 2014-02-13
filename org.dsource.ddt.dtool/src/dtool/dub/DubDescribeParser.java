@@ -10,9 +10,8 @@
  *******************************************************************************/
 package dtool.dub;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
@@ -23,35 +22,38 @@ import dtool.dub.DubBundle.DubBundleException;
 
 public class DubDescribeParser extends CommonDubParser {
 	
+	public static final String ERROR_PACKAGES_IS_EMPTY = "'packages' entry is empty or missing.";
+	
+	public static DubBundleDescription parseDescription(Path location, String describeSource) {
+		return new DubDescribeParser().parseInput(location, describeSource);
+	}
+	
 	protected String bundleName;
 	protected ArrayList<DubBundle> bundles;
 	
 	public DubDescribeParser() {
 	}
 	
-	public DubBundleDescription parseDescription(String source) {
+	public DubBundleDescription parseInput(Path location, String describeSource) {
 		try {
-			parseFromSource(source);
+			parseFromSource(describeSource);
 		} catch (DubBundleException e) {
 			dubError = e;
 		}
 		
-		if(bundleName == null) {
-			putError(new DubBundleException("Expected \"mainPackage\" entry."));
-		}
-		
-		if(dubError == null) {
-			assertNotNull(bundles);
-			// check for errors during bundle parsing
-			for (DubBundle bundle : bundles) {
-				if(bundle.hasErrors()) {
-					putError(bundle.error);
-					break;
-				}
+		if(bundles == null || bundles.size() == 0) {
+			
+			if(bundleName == null) {
+				bundleName = "<error_undefined>";
 			}
+			putError(ERROR_PACKAGES_IS_EMPTY);
+			return new DubBundleDescription(new DubBundle(location, bundleName, dubError), true);
+			
+		} else {
+			DubBundle mainBundle = bundles.remove(0);
+			DubBundle[] bundleDeps = ArrayUtil.createFrom(bundles, DubBundle.class);
+			return new DubBundleDescription(mainBundle, bundleDeps);
 		}
-		
-		return new DubBundleDescription(bundleName, ArrayUtil.createFrom(bundles, DubBundle.class), dubError);
 	}
 
 	@Override
@@ -68,7 +70,7 @@ public class DubDescribeParser extends CommonDubParser {
 				if(propertyName.equals("mainPackage")) {
 					bundleName = jsonParser.consumeStringValue();
 				} else if(propertyName.equals("packages")) {
-					bundles = readBundles(jsonParser);
+					bundles = readDescribedBundles(jsonParser);
 				} else {
 					jsonParser.skipValue();
 				}
@@ -80,7 +82,7 @@ public class DubDescribeParser extends CommonDubParser {
 		jsonParser.consumeExpected(JsonToken.END_OBJECT);
 	}
 	
-	protected static ArrayList<DubBundle> readBundles(JsonReaderExt jsonParser) throws IOException {
+	protected static ArrayList<DubBundle> readDescribedBundles(JsonReaderExt jsonParser) throws IOException {
 		jsonParser.consumeExpected(JsonToken.BEGIN_ARRAY);
 		
 		ArrayList<DubBundle> bundles = new ArrayList<>();
@@ -89,7 +91,7 @@ public class DubDescribeParser extends CommonDubParser {
 			JsonToken tokenType = jsonParser.peek();
 			
 			if(tokenType == JsonToken.BEGIN_OBJECT) {
-				DubBundle bundle = new DubBundleParser().readBundle(jsonParser).createBundle(null);
+				DubBundle bundle = new DubManifestParser().readBundle(jsonParser).createBundle(null);
 				bundles.add(bundle);
 			} else {
 				jsonParser.errorUnexpected(tokenType);

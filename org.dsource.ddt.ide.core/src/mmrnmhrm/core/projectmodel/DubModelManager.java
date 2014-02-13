@@ -15,21 +15,20 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.EventManager;
 import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
 import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.CoreExecutorAgent;
-import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
 
 import org.dsource.ddt.ide.core.DeeNature;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -53,55 +52,69 @@ import dtool.SimpleLogger;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
+import dtool.dub.DubManifestParser;
 import dtool.dub.DubDescribeParser;
 
-public class DubProjectModel extends EventManager<DubProjectModel, DubBundleDescription, IDubProjectModelListener> {
+public class DubModelManager extends EventManager<DubModelManager, DubBundleDescription, IDubProjectModelListener> {
 	
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
-	public static DubProjectModel defaultInstance;
+	public static DubModelManager defaultInstance;
 	
 	public static void initializeDefault() throws CoreException {
-		defaultInstance = new DubProjectModel();
+		defaultInstance = new DubModelManager();
 	}
 	
 	public static void disposeDefault() throws CoreException {
 		defaultInstance.dispose();
 	}
 	
-	public static DubProjectModel getDefault() {
+	public static DubModelManager getDefault() {
 		return defaultInstance;
+	}
+	
+	public static DubBundleDescription getBundleInfo(String projectName) {
+		return getDefault().doGetBundleInfo(projectName);
+	}
+	
+	public static DubDependenciesContainer getDubContainer(IProject project) {
+		DubBundleDescription bundleInfo = getBundleInfo(project.getName());
+		return new DubDependenciesContainer(bundleInfo);
 	}
 	
 	public static final String DUB_PROBLEM_ID = DeeCore.EXTENSIONS_IDPREFIX + "DubProblem";
 	
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
-	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubProjectModel.class.getSimpleName());
+	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubModelManager.class.getSimpleName());
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
 	
-	public DubProjectModel() throws CoreException {
-		// Run initialization in executor thread
-		// This is recommended so that we avoid running the initialization in the UI thread, which is
-		// most likely to happen when DubProjectModel is created.
-		// This way we prevent workspace deltas to be created in the UI thread during plugin initialization.
+	public DubModelManager() throws CoreException {
+		// Run initialization in executor thread.
+		// This is necessary so that we avoid running the initialization during plugin initialization.
+		// Otherwise there could be problems because initialization is heavyweight code:
+		// it requests workspace locks (which may not be available) and issues workspace deltas
 		executorAgent.submit(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					DLTKCore.run(new IWorkspaceRunnable() {
-						@Override
-						public void run(IProgressMonitor monitor) {
-							DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
-							initializeProjectInfo();
-						}
-					}, null);
-				} catch (CoreException e) {
-					DeeCore.logError(e);
-					// This really should not happen, but still try to recover by registering listener.
-					DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
-				}
+				initializeModelManager();
 			}
 		});
+	}
+	
+	protected void initializeModelManager() {
+		try {
+			DLTKCore.run(new IWorkspaceRunnable() {
+				@Override
+				public void run(IProgressMonitor monitor) {
+					DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
+					readProjectInfo(monitor);
+				}
+			}, null);
+		} catch (CoreException e) {
+			DeeCore.logError(e);
+			// This really should not happen, but still try to recover by registering listener.
+			DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
+		}
 	}
 	
 	public void dispose() {
@@ -114,37 +127,33 @@ public class DubProjectModel extends EventManager<DubProjectModel, DubBundleDesc
 		}
 	}
 	
-	protected void initializeProjectInfo() {
-		IScriptProject[] deeProjects;
+	protected void readProjectInfo(@SuppressWarnings("unused") IProgressMonitor monitor) {
 		try {
-			deeProjects = DLTKUtils.getDLTKModel().getScriptProjects(DeeNature.NATURE_ID);
-		} catch (ModelException e) {
+			IProject[] deeProjects = EclipseUtils.getOpenedProjects(DeeNature.NATURE_ID);
+			for (IProject project : deeProjects) {
+				checkNewProject(project);
+			}
+		} catch (CoreException e) {
 			DeeCore.log(e);
-			return;
-		}
-		
-		for (IScriptProject deeProject : deeProjects) {
-			checkNewProject(deeProject);
 		}
 	}
 	
 	
-	protected synchronized void addProject(IScriptProject projectElement, DubBundleDescription dubBundle) {
-		log.println(">> Add project info: ", projectElement);
-		dubBundleInfos.put(projectElement.getElementName(), dubBundle);
-		fireUpdateEvent(this, dubBundle);
+	protected synchronized void addProject(IProject project, DubBundleDescription dubBundleDescription) {
+		log.println(">> Add project info: ", project);
+		dubBundleInfos.put(project.getName(), dubBundleDescription);
+		fireUpdateEvent(this, dubBundleDescription);
 	}
 	
 	protected synchronized void removeProject(IScriptProject projectElement) {
 		log.println(">> Removing project: ", projectElement);
-		dubBundleInfos.remove(projectElement.getElementName());
-		/*BUG here*/
+		DubBundleDescription oldDesc = dubBundleInfos.remove(projectElement.getElementName());
+		fireUpdateEvent(this, oldDesc);
 	}
 	
-	public synchronized DubBundleDescription getBundleInfo(String projectName) {
+	protected synchronized DubBundleDescription doGetBundleInfo(String projectName) {
 		return dubBundleInfos.get(projectName);
 	}
-	
 	
 	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path("dub.json");
 	
@@ -166,10 +175,11 @@ public class DubProjectModel extends EventManager<DubProjectModel, DubBundleDesc
 		
 		protected void processScriptProjectDelta(IModelElementDelta projectDelta) {
 			IScriptProject projectElement = (IScriptProject) projectDelta.getElement();
+			IProject project = projectElement.getProject();
 			
 			switch(projectDelta.getKind()) {
 			case IModelElementDelta.ADDED:
-				checkNewProject(projectElement);
+				checkNewProject(project);
 				break;
 			case IModelElementDelta.REMOVED:
 				removeProject(projectElement);
@@ -182,7 +192,7 @@ public class DubProjectModel extends EventManager<DubProjectModel, DubBundleDesc
 					if(resourceDelta.getResource().getType() == IResource.FILE && 
 							resourceDelta.getProjectRelativePath().equals(DUB_BUNDLE_PACKAGE_FILE)) {
 						if(resourceDelta.getResource().getType() == IResource.FILE) {
-							queueProjectUpdate(projectElement);
+							queueProjectUpdate(project);
 						}
 					}
 				}
@@ -194,17 +204,25 @@ public class DubProjectModel extends EventManager<DubProjectModel, DubBundleDesc
 		
 	}
 	
-	protected void checkNewProject(IScriptProject projectElement) {
-		IResource packageFile = projectElement.getProject().findMember(DUB_BUNDLE_PACKAGE_FILE);
+	protected void checkNewProject(IProject project) {
+		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
 		if(packageFile != null && packageFile.getType() == IResource.FILE) {
-			queueProjectUpdate(projectElement);
+			IFolder folder = project.getFolder(DUB_BUNDLE_PACKAGE_FILE);
+			assertTrue(folder.exists() == false);
+			queueProjectUpdate(project);
 		}
 	}
 	
-	protected void queueProjectUpdate(final IScriptProject projectElement) {
-		log.println(">> Updating project: ", projectElement);
+	protected void queueProjectUpdate(final IProject project) {
+		log.println(">> Updating project: ", project);
 		
-		executorAgent.submit(new UpdateProjectModel(projectElement.getProject(), this));
+		java.nio.file.Path location = project.getLocation().toFile().toPath();
+		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation(location);
+		
+		DubBundleDescription dubBundleDescription = new DubBundleDescription(unresolvedBundle, false);
+		addProject(project, dubBundleDescription);
+		
+		executorAgent.submit(new UpdateProjectModel(project, this));
 	}
 	
 	public void syncPendingUpdates() {
@@ -217,23 +235,18 @@ public class DubProjectModel extends EventManager<DubProjectModel, DubBundleDesc
 	}
 	
 	public static IMarker[] getDubErrorMarkers(IProject project) throws CoreException {
-		return project.findMarkers(DubProjectModel.DUB_PROBLEM_ID, true, IResource.DEPTH_ONE);
+		return project.findMarkers(DubModelManager.DUB_PROBLEM_ID, true, IResource.DEPTH_ONE);
 	}
 
-	public DubDependenciesContainer getDubElement(IProject project) {
-		DubBundleDescription bundleInfo = getBundleInfo(project.getName());
-		
-		return new DubDependenciesContainer(bundleInfo);
-	}
-	
 }
+
 
 class UpdateProjectModel implements Runnable {
 	
 	protected final IProject project;
-	protected DubProjectModel dubProjectModel;
+	protected DubModelManager dubProjectModel;
 	
-	protected UpdateProjectModel(IProject project, DubProjectModel dubProjectModel) {
+	protected UpdateProjectModel(IProject project, DubModelManager dubProjectModel) {
 		this.project = project;
 		this.dubProjectModel = dubProjectModel;
 	}
@@ -251,10 +264,9 @@ class UpdateProjectModel implements Runnable {
 		
 		deleteDubMarkers(project);
 		
-		URI locationURI = project.getLocationURI();
-		java.nio.file.Path path = Paths.get(locationURI);
-		assertTrue(path.isAbsolute());
-		ProcessBuilder pb = new ProcessBuilder("dub", "describe").directory(path.toFile());
+		java.nio.file.Path location = project.getLocation().toFile().toPath();
+		assertTrue(location.isAbsolute());
+		ProcessBuilder pb = new ProcessBuilder("dub", "describe").directory(location.toFile());
 		
 		ExternalProcessOutputReader processHelper;
 		try {
@@ -283,7 +295,7 @@ class UpdateProjectModel implements Runnable {
 		}
 		
 		
-		DubBundleDescription bundleDesc = new DubDescribeParser().parseDescription(descriptionOutput);
+		DubBundleDescription bundleDesc = DubDescribeParser.parseDescription(location, descriptionOutput);
 		
 		if(!bundleDesc.hasErrors()) {
 			updateBuildpath(project, bundleDesc);
@@ -295,7 +307,7 @@ class UpdateProjectModel implements Runnable {
 	
 	protected void deleteDubMarkers(IProject project) {
 		try {
-			IMarker[] markers = DubProjectModel.getDubErrorMarkers(project);
+			IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
 			for (IMarker marker : markers) {
 				marker.delete();
 			}
@@ -305,14 +317,16 @@ class UpdateProjectModel implements Runnable {
 	}
 	
 	protected Void setProjectDubError(IProject project, String message, Exception exception) {
-		IScriptProject projectElement = DLTKCore.create(project);
-		DubBundleException dubError = new DubBundleException(message, exception);
-		DubBundleDescription bundleDesc = new DubBundleDescription(null, null, dubError);
+		java.nio.file.Path location = project.getLocation().toFile().toPath();
 		
-		dubProjectModel.addProject(projectElement, bundleDesc);
+		DubBundleException dubError = new DubBundleException(message, exception);
+		DubBundleDescription bundleDesc = new DubBundleDescription(
+				new DubBundle(location, "<dub_error>", dubError), false);
+		
+		dubProjectModel.addProject(project, bundleDesc);
 		
 		try {
-			IMarker dubMarker = project.createMarker(DubProjectModel.DUB_PROBLEM_ID);
+			IMarker dubMarker = project.createMarker(DubModelManager.DUB_PROBLEM_ID);
 			String messageExtra = exception == null ? "" : exception.getMessage();
 			dubMarker.setAttribute(IMarker.MESSAGE, message + messageExtra);
 			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
@@ -342,7 +356,7 @@ class UpdateProjectModel implements Runnable {
 			updateDubContainer(projectElement, getBuildpathEntriesFromDesc(bundleDesc));
 			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
 			
-			dubProjectModel.addProject(projectElement, bundleDesc);
+			dubProjectModel.addProject(project, bundleDesc);
 		} catch (ModelException me) {
 			logInternalError(me);
 		}

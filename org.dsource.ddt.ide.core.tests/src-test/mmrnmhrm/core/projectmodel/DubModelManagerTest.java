@@ -1,7 +1,10 @@
 package mmrnmhrm.core.projectmodel;
 
-import static dtool.dub.CommonDubTest.dep;
+import static dtool.dub.CommonDubTest.bundle;
+import static dtool.dub.CommonDubTest.main;
 import static dtool.dub.CommonDubTest.paths;
+import static dtool.dub.CommonDubTest.rawDeps;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -21,20 +24,22 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import org.junit.Test;
 
 import dtool.dub.CommonDubTest.DubBundleChecker;
+import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
-import dtool.dub.DubParserTest;
+import dtool.dub.DubManifestParser;
+import dtool.dub.DubManifestParserTest;
 
-public class DubProjectModelTest extends CommonDubModelTest {
+public class DubModelManagerTest extends CommonDubModelTest {
 	
-//	protected DubDependenciesContainer getDubContainer(IScriptProject dubProject) {
-//		return DubProjectModel.getDefault().getDubElement(dubProject.getProject());
-//	}
+	protected DubDependenciesContainer getDubContainer(IProject project) {
+		return DubModelManager.getDubContainer(project);
+	}
 	
 	/* ************************************ */
 	
 	public static final String DUB_TEST = "DubTest";
-	public static Path DUB_WORKSPACE = DubParserTest.DUB_WORKSPACE;
+	public static Path DUB_WORKSPACE = DubManifestParserTest.DUB_WORKSPACE;
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
@@ -44,7 +49,7 @@ public class DubProjectModelTest extends CommonDubModelTest {
 		IScriptProject dubTestProject = createAndOpenDeeProject(DUB_TEST, true);
 		// check no change:
 		assertTrue(getDubExecutorAgent().getSubmittedTaskCount() == taskCount); 
-		assertTrue(DubProjectModel.getDefault().getBundleInfo(DUB_TEST) == null);
+		assertTrue(DubModelManager.getBundleInfo(DUB_TEST) == null);
 		
 		try {
 			runBasicTestSequence(dubTestProject);
@@ -56,78 +61,89 @@ public class DubProjectModelTest extends CommonDubModelTest {
 	public void runBasicTestSequence(IScriptProject dubTestProject) throws Exception {
 		Path location = dubTestProject.getProject().getLocation().toFile().toPath();
 		
-		writeDubJsonAndVerifyStatus("{"+ jsEntry("name", "xptobundle")+ "}",
-				dubTestProject, 
-				dep(location, null, "xptobundle", "~master", srcFolders()));
+		writeDubJsonAndVerifyStatus("{"+ 
+			jsEntry("name", "xptobundle")+ jsFileEnd(),
+			dubTestProject, 
+			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
 		writeDubJsonAndVerifyStatus("{"+
-				jsEntry("name", "xptobundle")+
-				jsEntry("importPaths", jsArray("src", "src-test"))+
-				"\"blah\":null}",
-				
-				dubTestProject, 
-				dep(location, null, "xptobundle", "~master", srcFolders("src", "src-test"))
-				);
+			jsEntry("name", "xptobundle")+
+			jsEntry("importPaths", jsArray("src", "src-test"))+
+			jsEntry("version", "2.1")+
+			jsFileEnd(),
+			
+			dubTestProject, 
+			main(location, null, "xptobundle", "2.1", srcFolders("src", "src-test"), rawDeps())
+		);
 		
 		
 		writeDubJsonAndVerifyStatus(
-				readFileContents(DUB_WORKSPACE.resolve("XptoBundle/dub.json")),
+			readFileContents(DUB_WORKSPACE.resolve("XptoBundle/dub.json")),
+			
+			dubTestProject,
+			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders("src", "src-test"), 
+				rawDeps("foo_lib"), 
+				bundle(DUB_WORKSPACE.resolve("foo_lib"), null, "foo_lib", DubBundle.DEFAULT_VERSION, paths("src", "src2")),
+				bundle(DUB_WORKSPACE.resolve("bar_lib"), null, "bar_lib", DubBundle.DEFAULT_VERSION, paths("source"))
+			)
+		);
 		
-				dubTestProject,
-				dep(location, null, "xptobundle", "~master", srcFolders("src", "src-test")), 
-				dep(DUB_WORKSPACE.resolve("bar_lib"), null, "bar_lib", "~master", paths("source")),
-				dep(DUB_WORKSPACE.resolve("foo_lib"), null, "bar_lib", "~master", paths("src", "src2"))
-				);
+		// Test error in raw DUB.json, check that project info should stay same as before: TODO
+		writeDubJsonAndVerifyStatus("{"+ jsEntry("nameMISSING", "xptobundle")+ jsFileEnd(),
+			dubTestProject, 
+			bundle(DubManifestParser.ERROR_BUNDLE_NAME_UNDEFINED, IGNORE_STR));
 		
-		
-		writeDubJsonAndVerifyStatus("{"+ jsEntry("nameMISSING", "xptobundle")+ "}",
-				dubTestProject, 
-				dep("dub returned non-zero", null));
-		
-		writeDubJsonAndVerifyStatus("{"+ jsEntry("name", "xptobundle")+ "}",
-				dubTestProject, 
-				dep(location, null, "xptobundle", "~master", srcFolders()));
+		writeDubJsonAndVerifyStatus("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
+			dubTestProject, 
+			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
 	}
 	
-	public final void writeDubJsonAndVerifyStatus(String dubJson, IScriptProject dubProject, 
-			DubBundleChecker mainBundle, DubBundleChecker... deps) throws CoreException {
+	public void writeDubJsonAndVerifyStatus(String dubJson, IScriptProject dubProject, DubBundleChecker mainBundle)
+			throws CoreException {
 		LatchRunnable preWriteLatch = writeDubJson(dubProject, dubJson);
-		checkModel(preWriteLatch, dubProject, mainBundle, deps);
+		checkModel(preWriteLatch, dubProject, mainBundle);
 	}
 	
-	public void checkModel(LatchRunnable preWriteLatch, IScriptProject dubProject, DubBundleChecker expMainBundle,
-			DubBundleChecker... deps) throws CoreException {
+	public void checkModel(LatchRunnable preWriteLatch, IScriptProject dubProject, DubBundleChecker expMainBundle) 
+			throws CoreException {
+		final IProject project = dubProject.getProject();
 		
-		DubBundleDescription dubBundle;
-//		DubBundleDescription dubBundle = getExistingDubBundleInfo(dubProject.getElementName());
-//		assertTrue(!dubBundle.isResolved());
+		DubBundleDescription dubBundle = getExistingDubBundleInfo(project.getName());
+		expMainBundle.checkBundleDescription(dubBundle, false);
+		
+		DubDependenciesContainer dubContainer = getDubContainer(project);
+		assertNotNull(dubContainer);
+		// TODO test children
 		
 		preWriteLatch.releaseAll();
-		DubProjectModel.getDefault().syncPendingUpdates();
+		DubModelManager.getDefault().syncPendingUpdates();
 		
-		dubBundle = getExistingDubBundleInfo(dubProject.getElementName());
-//		assertTrue(dubBundle.isResolved());
+		dubBundle = getExistingDubBundleInfo(project.getName());
+		if(expMainBundle.errorMsgStart != null) {
+			// Check that we did not attempt to call dub describe on a .json with errors
+			assertTrue(!dubBundle.isResolved());
+			return;
+		}
 		
-		IProject project = dubProject.getProject();
+		expMainBundle.checkBundleDescription(dubBundle, true);
 		
 		DubBundleException error = dubBundle.getError();
-		
+		DubBundleChecker[] deps = expMainBundle.deps;
 		if(error != null) {
 			
-			IMarker[] markers = DubProjectModel.getDubErrorMarkers(dubProject.getProject());
+			IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
 			assertTrue(markers.length == 1);
 			IMarker errorMarker = markers[0];
 			assertTrue(errorMarker.getAttribute(IMarker.MESSAGE, "").startsWith(error.getMessage()));
 			assertEquals(errorMarker.getAttribute(IMarker.SEVERITY), IMarker.SEVERITY_ERROR);
 			
 		} else {
-			expMainBundle.check(dubBundle.getMainBundle()); // TODO always have a main bundle, even with errors
 			checkRawBuildpath(dubProject.getRawBuildpath(), expMainBundle.sourceFolders);
 			
 			checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), expMainBundle.sourceFolders, deps);
 			
-			IMarker[] dubErrorMarkers = DubProjectModel.getDubErrorMarkers(project);
+			IMarker[] dubErrorMarkers = DubModelManager.getDubErrorMarkers(project);
 			assertTrue(dubErrorMarkers.length == 0);
 		}
 	}

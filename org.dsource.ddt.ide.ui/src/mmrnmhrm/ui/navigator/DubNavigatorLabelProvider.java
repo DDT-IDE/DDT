@@ -18,6 +18,8 @@ import mmrnmhrm.ui.DeePluginImages;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import dtool.dub.DubBundleDescription;
+
 
 public class DubNavigatorLabelProvider extends LabelProvider {
 	
@@ -45,7 +47,22 @@ class DubElementTextProvider extends DubElementSwitcher<String>{
 
 	@Override
 	public String visitDepContainer(DubDependenciesContainer element) {
-		return "Dub Dependencies";
+		String baseText = "Dub Dependencies";
+		
+		DubBundleDescription bundleInfo = element.getBundleInfo();
+		if(bundleInfo.isResolved()) {
+			if(bundleInfo.hasErrors()) {
+				return baseText + " [DUB error]";
+			} else {
+				return baseText;
+			}
+		} else {
+			if(bundleInfo.hasErrors()) {
+				return baseText + " [dub.json error]";
+			} else {
+				return baseText + " <dub describe'ing>";
+			}
+		}
 	}
 
 	@Override

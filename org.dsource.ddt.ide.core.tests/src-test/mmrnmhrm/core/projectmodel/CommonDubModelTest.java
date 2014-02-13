@@ -65,6 +65,10 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 		return "\""+key+"\" : \""+value+"\",";
 	}
 	
+	public static String jsFileEnd() {
+		return "\"dummyEndKey\" : null } ";
+	}
+	
 	public static String jsEntry(String key, CharSequence value) {
 		return "\"" + key + "\" : " + jsToString(value) + ",";
 	}
@@ -89,15 +93,15 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 	}
 	
 	protected static IExecutorAgent getDubExecutorAgent() {
-		return DubProjectModel.getDefault().internal_getExecutorAgent();
+		return DubModelManager.getDefault().internal_getExecutorAgent();
 	}
 	
-	protected static DubProjectModel getProjectModel() {
-		return DubProjectModel.getDefault();
+	protected static DubModelManager getProjectModel() {
+		return DubModelManager.getDefault();
 	}
 	
 	protected static DubBundleDescription getExistingDubBundleInfo(String projectName) {
-		return assertNotNull(DubProjectModel.getDefault().getBundleInfo(projectName));
+		return assertNotNull(DubModelManager.getBundleInfo(projectName));
 	}
 	
 	protected static LatchRunnable writeDubJson(IScriptProject dubTestProject, String contents) throws CoreException {

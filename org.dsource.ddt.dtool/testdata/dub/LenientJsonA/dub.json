@@ -1,7 +1,8 @@
 {
 	name: "lenient-json1",
 	dependencies: {
-		"foo_lib": "~master"
+		"foo_lib": "~master",
+		"other_lib": "2.10.7"
 	},
 	targetPath: "bin",
 	importPaths: [ src, src-test, ],

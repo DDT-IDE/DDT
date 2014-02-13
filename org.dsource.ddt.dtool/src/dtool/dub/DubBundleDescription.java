@@ -11,10 +11,6 @@
 package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Arrays;
-
 import dtool.dub.DubBundle.DubBundleException;
 
 /**
@@ -23,40 +19,45 @@ import dtool.dub.DubBundle.DubBundleException;
  */
 public class DubBundleDescription {
 	
-	protected static final DubBundle[] EMTPY_BUNDLE_DEPS = { };
-	
-	protected final String bundleName;
-	protected final DubBundleException error;
 	protected final DubBundle mainDubBundle;
 	protected final DubBundle[] bundleDependencies;
+	protected final DubBundleException error;
+	protected final boolean isResolved;
 	
-	public DubBundleDescription(String bundleName, DubBundle[] bundles, DubBundleException error) {
-		this.bundleName = bundleName;
-		this.error = error;
+	public DubBundleDescription(DubBundle mainDubBunble, DubBundle[] deps) {
+		assertNotNull(mainDubBunble);
+		assertNotNull(deps);
 		
-		if(bundles != null && bundles.length >= 1) {
-			if(!hasErrors()) {
-				// If no main error, then bundles must have no errors as well
-				for (DubBundle dubBundle : bundles) {
-					assertTrue(!dubBundle.hasErrors());
+		this.mainDubBundle = mainDubBunble;
+		this.bundleDependencies = deps;
+		this.isResolved = true;
+		
+		if(mainDubBunble.error != null) {
+			error = mainDubBunble.error;
+		} else {
+			for (DubBundle dubBundle : bundleDependencies) {
+				if(dubBundle.error != null) {
+					error = dubBundle.error;
+					return;
 				}
 			}
-			mainDubBundle = bundles[0];
-			bundleDependencies = Arrays.copyOfRange(bundles, 1, bundles.length);
-		} else {
-			mainDubBundle = null;
-			bundleDependencies = EMTPY_BUNDLE_DEPS;
+			error = null;
 		}
-		
-		if(!hasErrors()) {
-			assertTrue(bundles.length >= 1);
-		}
-		
 	}
 	
-	public boolean hasErrors() {
-		return error != null;
+	/** Constructor for unresolved descriptions, 
+	 * or descriptions representing an error in the describe source. */
+	public DubBundleDescription(DubBundle unresolvedBundle, boolean isResolved) {
+		this.mainDubBundle = unresolvedBundle;
+		this.bundleDependencies = EMTPY_BUNDLE_DEPS;
+		this.isResolved = isResolved;
+		this.error = mainDubBundle.error;
+		if(isResolved) {
+			assertNotNull(error);
+		}
 	}
+	
+	protected static final DubBundle[] EMTPY_BUNDLE_DEPS = { };
 	
 	public DubBundle getMainBundle() {
 		return mainDubBundle;
@@ -66,12 +67,16 @@ public class DubBundleDescription {
 		return assertNotNull(bundleDependencies);
 	}
 	
-	public DubBundleException getError() {
-		return error;
+	public boolean isResolved() {
+		return isResolved;
 	}
 	
-	public boolean isResolved() {
-		return true;
+	public boolean hasErrors() {
+		return error != null;
+	}
+	
+	public DubBundleException getError() {
+		return error;
 	}
 	
 }

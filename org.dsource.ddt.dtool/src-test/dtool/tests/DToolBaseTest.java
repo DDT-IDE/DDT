@@ -51,12 +51,6 @@ public class DToolBaseTest extends CommonTest {
 		}
 	}
 	
-	public interface Checker<T> {
-		
-		Void check(T obj);
-		
-	}
-	
 	/* -------------  Resources stuff   ------------ */
 	
 	public static final Charset DEFAULT_TESTDATA_ENCODING = StringUtil.UTF8;

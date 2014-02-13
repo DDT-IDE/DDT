@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
+import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTests;
 
@@ -37,70 +38,107 @@ public class CommonDubTest extends DToolBaseTest {
 		return newArray;
 	}
 	
-	public static abstract class DubBundleChecker implements Checker<DubBundle> {
+	
+	public static final DubBundleChecker[] IGNORE_DEPS = new DubBundleChecker[0];
+	public static final String[] IGNORE_RAW_DEPS = new String[0];
+	
+	public static class DubBundleChecker extends CommonChecker {
 		
 		public final Path location;
+		public final String bundleName;
+		public final String errorMsgStart;
+		public final String version;
 		public final Path[] sourceFolders;
+		public final String[] rawDeps;
+		public final DubBundleChecker[] deps;
 		
-		public DubBundleChecker(Path location, Path[] sourceFolders) {
+		public DubBundleChecker(Path location, String bundleName, String errorMsgStart, String version,
+				Path[] sourceFolders, String[] rawDeps, DubBundleChecker[] deps) {
 			this.location = location;
+			this.bundleName = bundleName;
+			this.errorMsgStart = errorMsgStart;
+			this.version = version;
 			this.sourceFolders = sourceFolders;
+			this.rawDeps = rawDeps;
+			this.deps = deps;
+		}
+		
+		@Override
+		protected boolean isIgnoreArray(Object[] expected){
+			return expected == IGNORE_DEPS || expected == IGNORE_ARR || expected == IGNORE_RAW_DEPS;
+		}
+		
+		public void check(DubBundle bundle) {
+			checkAllExceptDepRefs(bundle);
+			checkDepRefs(bundle);
+		}
+		
+		protected void checkAllExceptDepRefs(DubBundle bundle) {
+			checkAreEqual(bundle.location, location);
+			checkAreEqual(bundle.name, bundleName);
+			assertExceptionMsgStart(bundle.error, errorMsgStart);
+			checkAreEqual(bundle.version, version);
+			checkAreEqualArray(bundle.getSourceFolders(), ignoreIfNull(sourceFolders));
+		}
+		
+		protected void checkDepRefs(DubBundle bundle) {
+			if(rawDeps == IGNORE_RAW_DEPS) {
+				return;
+			}
+			assertEquals(bundle.getDependencyRefs().length, rawDeps.length);
+			for (int i = 0; i < rawDeps.length; i++) {
+				String expRawDep = rawDeps[i];
+				DubDependecyRef depRef = bundle.getDependencyRefs()[i];
+				checkAreEqual(depRef.bundleName, expRawDep);
+			}
+		}
+		
+		public void checkBundleDescription(DubBundleDescription bundleDescription, boolean isResolved) {
+			assertTrue(bundleDescription.isResolved() == isResolved);
+			
+			if(isResolved) {
+				checkAllExceptDepRefs(bundleDescription.getMainBundle());
+			} else {
+				check(bundleDescription.getMainBundle());
+				assertTrue(bundleDescription.getBundleDependencies().length == 0);
+				return;
+			}
+			
+			if(deps == IGNORE_DEPS) 
+				return;
+			
+			assertTrue(deps.length == bundleDescription.getBundleDependencies().length);
+			for (int ix = 0; ix < deps.length; ix++) {
+				DubBundleChecker dubDepChecker = deps[ix];
+				dubDepChecker.check(bundleDescription.getBundleDependencies()[ix]);
+			}
 		}
 		
 	}
 	
-	public static DubBundleChecker dep(final Path location, final String errorMsgStart, final String name, 
-			final String version, final Path[] srcFolders) {
-		return new DubBundleChecker(location, srcFolders) {
-			@Override
-			public Void check(DubBundle bundle) {
-				assertAreEqual(bundle.location, location);
-				assertAreEqual(bundle.name, name);
-				assertAreEqual(bundle.version, version);
-				
-				assertEqualArrays(bundle.getSourceFolders(), srcFolders);
-				assertEqualArrays(bundle.dependencies, null);
-				
-				assertExceptionMsgStart(bundle.error, errorMsgStart);
-				return null;
-			}
-		};
+	public static DubBundleChecker main(Path location, String errorMsgStart, String name, 
+			String version, Path[] srcFolders, String[] rawDeps, DubBundleChecker... deps) {
+		return new DubBundleChecker(location, name, errorMsgStart, version, srcFolders, rawDeps, deps);
 	}
 	
-	public static DubBundleChecker dep(final String errorMsgStart, final String name) {
-		return new DubBundleChecker(null, null) {
-			@Override
-			public Void check(DubBundle bundle) {
-				assertAreEqual(bundle.name, name);
-				
-				assertExceptionMsgStart(bundle.error, errorMsgStart);
-				return null;
-			}
-		};
+	public static DubBundleChecker bundle(Path location, String errorMsgStart, String name, 
+			String version, Path[] srcFolders) {
+		return main(location, errorMsgStart, name, version, srcFolders, IGNORE_RAW_DEPS, IGNORE_DEPS);
 	}
 	
-	public static DubBundleChecker depNoCheck() {
-		return new DubBundleChecker(null, null) {
-			@Override
-			public Void check(DubBundle bundle) {
-				return null;
-			}
-		};
+	public static DubBundleChecker bundle(String errorMsgStart, String name) {
+		return new DubBundleChecker(IGNORE_PATH, name, errorMsgStart, IGNORE_STR, null, IGNORE_RAW_DEPS, IGNORE_DEPS);
 	}
 	
-	protected static void checkResolvedBundle(DubBundleDescription dubDescribe, String dubDescribeError, 
-			String bundleName, DubBundleChecker mainBundle, DubBundleChecker... deps) {
-		assertAreEqual(dubDescribe.bundleName, bundleName);
-		assertExceptionContains(dubDescribe.error, dubDescribeError);
-		assertTrue(dubDescribe.isResolved());
+	public static String[] rawDeps(String... rawDeps) {
+		return rawDeps;
+	}
+	
+	protected void checkResolvedBundle(DubBundleDescription bundleDescription, String dubDescribeError, 
+			DubBundleChecker mainBundleChecker) {
+		assertExceptionContains(bundleDescription.error, dubDescribeError);
 		
-		mainBundle.check(dubDescribe.getMainBundle());
-		
-		assertTrue(deps.length == dubDescribe.getBundleDependencies().length);
-		for (int ix = 0; ix < deps.length; ix++) {
-			DubBundleChecker dubDepChecker = deps[ix];
-			dubDepChecker.check(dubDescribe.getBundleDependencies()[ix]);
-		}
+		mainBundleChecker.checkBundleDescription(bundleDescription, true);
 	}
 	
 	/* ------------------------------ */

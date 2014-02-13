@@ -29,7 +29,7 @@ public class CollectionUtil {
 		return new ArrayList<T>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
 	
-	/** @return An empty collection if given coll is null, or the given coll otherwise.
+	/** @return given coll if it's non-null, an empty collection otherwise.
 	 * The returned collection cannot be modified. */
 	public static <T> Collection<T> nullToEmpty(Collection<T> coll) {
 		return coll == null ? Collections.EMPTY_LIST : coll;

@@ -50,12 +50,6 @@ public abstract class CommonDubParser {
 		}
 	}
 	
-	protected void putError(DubBundleException e) {
-		if(dubError == null) {
-			dubError = e;
-		}
-	}
-	
 	protected void parseFromSource(String source) throws DubBundleException {
 		try(JsonReaderExt jsonParser = new JsonReaderExt(new StringReader(source))) {
 			jsonParser.setLenient(true);
@@ -117,7 +111,7 @@ public abstract class CommonDubParser {
 				MalformedJsonException {
 			JsonToken tokenType = jsonReader.peek();
 			if(tokenType != expectedToken) {
-				throw new MalformedJsonException("Expected: " + expectedToken);
+				throw new MalformedJsonException("Expected: " + expectedToken + " Got: " + tokenType);
 			}
 			return tokenType;
 		}
