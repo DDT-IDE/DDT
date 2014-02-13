@@ -28,7 +28,6 @@ import mmrnmhrm.core.CoreExecutorAgent;
 import mmrnmhrm.core.DeeCore;
 
 import org.dsource.ddt.ide.core.DeeNature;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -52,8 +51,8 @@ import dtool.SimpleLogger;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
-import dtool.dub.DubManifestParser;
 import dtool.dub.DubDescribeParser;
+import dtool.dub.DubManifestParser;
 
 public class DubModelManager extends EventManager<DubModelManager, DubBundleDescription, IDubProjectModelListener> {
 	
@@ -79,6 +78,8 @@ public class DubModelManager extends EventManager<DubModelManager, DubBundleDesc
 	
 	public static DubDependenciesContainer getDubContainer(IProject project) {
 		DubBundleDescription bundleInfo = getBundleInfo(project.getName());
+		if(bundleInfo == null)
+			return null;
 		return new DubDependenciesContainer(bundleInfo);
 	}
 	
@@ -319,7 +320,7 @@ class UpdateProjectModel implements Runnable {
 		
 		DubBundleException dubError = new DubBundleException(message, exception);
 		DubBundleDescription bundleDesc = new DubBundleDescription(
-				new DubBundle(location, "<dub_error>", dubError), false);
+				new DubBundle(location, "<dub_error>", dubError), true); //TODO test this path
 		
 		dubProjectModel.addProject(project, bundleDesc);
 		

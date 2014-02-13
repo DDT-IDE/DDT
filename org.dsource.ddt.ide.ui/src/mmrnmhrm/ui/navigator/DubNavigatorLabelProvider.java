@@ -12,7 +12,9 @@ package mmrnmhrm.ui.navigator;
 import mmrnmhrm.core.projectmodel.CommonDubElement;
 import mmrnmhrm.core.projectmodel.CommonDubElement.DubElementSwitcher;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
-import mmrnmhrm.core.projectmodel.DubDependencyElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
 import mmrnmhrm.ui.DeePluginImages;
 
 import org.eclipse.jface.viewers.LabelProvider;
@@ -70,6 +72,16 @@ class DubElementTextProvider extends DubElementSwitcher<String>{
 		return element.getBundleName();
 	}
 	
+	@Override
+	public String visitRawDepElement(DubRawDependencyElement element) {
+		return element.getBundleName();
+	}
+	
+	@Override
+	public String visitErrorElement(DubErrorElement element) {
+		return element.errorDescription;
+	}
+	
 }
 
 class DubElementImageProvider extends DubElementSwitcher<Image>{
@@ -81,7 +93,17 @@ class DubElementImageProvider extends DubElementSwitcher<Image>{
 
 	@Override
 	public Image visitDepElement(DubDependencyElement element) {
-		return DeePluginImages.getImage(DeePluginImages.DUB_DEP_ELEMENT);
+		return DeePluginImages.getImage(DeePluginImages.DUB_BUNDLE_DEP);
+	}
+	
+	@Override
+	public Image visitRawDepElement(DubRawDependencyElement element) {
+		return DeePluginImages.getImage(DeePluginImages.DUB_RAW_DEP);
+	}
+	
+	@Override
+	public Image visitErrorElement(DubErrorElement element) {
+		return DeePluginImages.getImage(DeePluginImages.DUB_ERROR_ELEMENT);
 	}
 	
 }

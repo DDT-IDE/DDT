@@ -54,8 +54,9 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	
 	@Override
 	public boolean hasChildren(Object element) {
-		if(isDeeProject(element)) {
-			return true;
+		if(element instanceof IProject) {
+			IProject project = (IProject) element;
+			return DubModelManager.getBundleInfo(project.getName()) != null;
 		}
 		if(element instanceof CommonDubElement) {
 			return ((CommonDubElement) element).hasChildren();
@@ -65,19 +66,17 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	
 	@Override
 	public Object[] getChildren(Object parent) {
-		if(isDeeProject(parent)) {
-			IProject project = (IProject) parent;
-			DubDependenciesContainer dubContainer = DubModelManager.getDubContainer(project);
+		if(parent instanceof IProject) {
+			DubDependenciesContainer dubContainer = DubModelManager.getDubContainer((IProject) parent);
+			if(dubContainer == null) {
+				return null;
+			}
 			return array(dubContainer);
 		}
 		if(parent instanceof CommonDubElement) {
 			return ((CommonDubElement) parent).getChildren();
 		}
 		return null;
-	}
-	
-	protected boolean isDeeProject(Object parent) {
-		return parent instanceof IProject;
 	}
 	
 	@Override

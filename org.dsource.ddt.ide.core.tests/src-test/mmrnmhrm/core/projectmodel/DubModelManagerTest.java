@@ -4,13 +4,19 @@ import static dtool.dub.CommonDubTest.bundle;
 import static dtool.dub.CommonDubTest.main;
 import static dtool.dub.CommonDubTest.paths;
 import static dtool.dub.CommonDubTest.rawDeps;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import melnorme.utilbox.concurrency.LatchRunnable;
+import melnorme.utilbox.misc.CollectionUtil;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.ICommonDepElement;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -58,6 +64,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			project.delete(true, null); // cleanup
 		}
 		assertTrue(DubModelManager.getBundleInfo(project.getName()) == null);
+		assertTrue(getDubContainer(project) == null);
 		
 		// Verify code path where a project that already has dub manifest is added.
 		project = createAndOpenProject(DUB_TEST, true);
@@ -72,11 +79,11 @@ public class DubModelManagerTest extends CommonDubModelTest {
 	public void runBasicTestSequence(IProject project) throws Exception {
 		Path location = project.getLocation().toFile().toPath();
 		
-		writeDubJsonAndVerifyStatus("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
+		writeDubJsonAndCheckDubModel("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
 			project, 
 			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
-		writeDubJsonAndVerifyStatus("{"+
+		writeDubJsonAndCheckDubModel("{"+
 			jsEntry("name", "xptobundle")+
 			jsEntry("importPaths", jsArray("src", "src-test"))+
 			jsEntry("version", "2.1")+
@@ -87,7 +94,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		);
 		
 		
-		writeDubJsonAndVerifyStatus(
+		writeDubJsonAndCheckDubModel(
 			readFileContents(DUB_WORKSPACE.resolve("XptoBundle/dub.json")),
 			
 			project,
@@ -98,18 +105,18 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			)
 		);
 		
-		// Test error in raw DUB.json, check that project info should stay same as before: TODO
-		writeDubJsonAndVerifyStatus("{"+ jsEntry("nameMISSING", "xptobundle")+ jsFileEnd(),
+		// TODO: Test error in raw DUB.json, check that project info should stay same as before:
+		writeDubJsonAndCheckDubModel("{"+ jsEntry("nameMISSING", "xptobundle")+ jsFileEnd(),
 			project, 
 			bundle(DubManifestParser.ERROR_BUNDLE_NAME_UNDEFINED, IGNORE_STR));
 		
-		writeDubJsonAndVerifyStatus("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
+		writeDubJsonAndCheckDubModel("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
 			project, 
 			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
 	}
 	
-	public void writeDubJsonAndVerifyStatus(String dubJson, IProject project, DubBundleChecker mainBundle)
+	public void writeDubJsonAndCheckDubModel(String dubJson, IProject project, DubBundleChecker mainBundle)
 			throws CoreException {
 		LatchRunnable preWriteLatch = writeDubJson(project, dubJson);
 		checkDubModel(preWriteLatch, project, mainBundle);
@@ -117,26 +124,20 @@ public class DubModelManagerTest extends CommonDubModelTest {
 	
 	public void checkDubModel(LatchRunnable preWriteLatch, IProject project, DubBundleChecker expMainBundle) 
 			throws CoreException {
-		IScriptProject dubProject = DLTKCore.create(project);
 		
-		DubBundleDescription dubBundle = getExistingDubBundleInfo(project.getName());
-		expMainBundle.checkBundleDescription(dubBundle, false);
-		
-		DubDependenciesContainer dubContainer = getDubContainer(project);
-		assertNotNull(dubContainer);
-		// TODO test children
+		checkUnresolvedBundle(project, expMainBundle);
 		
 		preWriteLatch.releaseAll();
 		DubModelManager.getDefault().syncPendingUpdates();
 		
-		dubBundle = getExistingDubBundleInfo(project.getName());
+		DubBundleDescription dubBundle = getExistingDubBundleInfo(project.getName());
 		if(expMainBundle.errorMsgStart != null) {
-			// Check that we did not attempt to call dub describe on a .json with errors
-			assertTrue(!dubBundle.isResolved());
-			return;
+			// Check that we did not attempt to call dub describe on a manifest with errors
+			return; // TODO remove this check
 		}
 		
 		expMainBundle.checkBundleDescription(dubBundle, true);
+		testDubContainer(project, expMainBundle);
 		
 		DubBundleException error = dubBundle.getError();
 		DubBundleChecker[] deps = expMainBundle.deps;
@@ -149,6 +150,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			assertEquals(errorMarker.getAttribute(IMarker.SEVERITY), IMarker.SEVERITY_ERROR);
 			
 		} else {
+			IScriptProject dubProject = DLTKCore.create(project);
 			checkRawBuildpath(dubProject.getRawBuildpath(), expMainBundle.sourceFolders);
 			
 			checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), expMainBundle.sourceFolders, deps);
@@ -156,6 +158,12 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			IMarker[] dubErrorMarkers = DubModelManager.getDubErrorMarkers(project);
 			assertTrue(dubErrorMarkers.length == 0);
 		}
+	}
+	
+	protected void checkUnresolvedBundle(IProject project, DubBundleChecker expMainBundle) {
+		DubBundleDescription dubBundleDesc = getExistingDubBundleInfo(project.getName());
+		expMainBundle.checkBundleDescription(dubBundleDesc, false);
+		testDubContainerUnresolved(project, expMainBundle);
 	}
 	
 	public static void checkRawBuildpath(IBuildpathEntry[] rawBuildpath, Path[] srcFolders) throws ModelException {
@@ -226,16 +234,50 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		assertTrue(depSourcePaths == null || depSourcePaths.isEmpty());
 	}
 	
-//	protected void removeChild(HashSet<CommonDubElement> children, DubBundle dubBundle) {
-//		String name = dubBundle.name;
-//		for (CommonDubElement dubElement : children) {
-//			if(dubElement instanceof DubDependencyElement) {
-//				DubDependencyElement dubDependencyElement = (DubDependencyElement) dubElement;
-//				if(dubDependencyElement.getBundleName().equals(name)) {
-//					children.remove(dubElement);
-//					return;
-//				}
-//			}
-//		}
-//	}
+	protected void testDubContainerUnresolved(IProject project, DubBundleChecker expMainBundle) {
+		DubDependenciesContainer dubContainer = getDubContainer(project);
+		assertNotNull(dubContainer);
+		LinkedList<CommonDubElement> depChildren = CollectionUtil.createLinkedList(dubContainer.getChildren());
+		for (String rawDep : expMainBundle.rawDeps) {
+			removeChild(depChildren, rawDep);
+		}
+		removeErrorElement(expMainBundle, depChildren);
+		assertTrue(depChildren.isEmpty());
+	}
+	
+	protected void testDubContainer(IProject project, DubBundleChecker expMainBundle) {
+		DubDependenciesContainer dubContainer = getDubContainer(project);
+		assertNotNull(dubContainer);
+		assertTrue(dubContainer.getBundleInfo().isResolved());
+		
+		CommonDubElement[] children = dubContainer.getChildren();
+		LinkedList<CommonDubElement> depChildren = CollectionUtil.createLinkedList(children);
+		for (DubBundleChecker dep : expMainBundle.deps) {
+			removeChild(depChildren, dep.bundleName);
+		}
+		removeErrorElement(expMainBundle, depChildren);
+		assertTrue(depChildren.isEmpty());
+	}
+	
+	protected void removeErrorElement(DubBundleChecker expMainBundle, LinkedList<CommonDubElement> depChildren) {
+		if(expMainBundle.errorMsgStart != null) {
+			assertTrue(depChildren.size() > 0);
+			CommonDubElement removed = depChildren.remove(0);
+			DubErrorElement dubErrorElement = assertCast(removed, DubErrorElement.class);
+			assertTrue(dubErrorElement.errorDescription.startsWith(expMainBundle.errorMsgStart));
+		}
+	}
+	
+	protected void removeChild(Collection<CommonDubElement> children, String name) {
+		for (CommonDubElement dubElement : children) {
+			if(dubElement instanceof ICommonDepElement) {
+				ICommonDepElement depElement = (ICommonDepElement) dubElement;
+				if(depElement.getBundleName().equals(name)) {
+					assertTrue(children.remove(dubElement));
+					return;
+				}
+			}
+		}
+		assertFail(); // Must have removed
+	}
 }

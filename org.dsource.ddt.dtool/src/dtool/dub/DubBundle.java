@@ -40,6 +40,8 @@ public class DubBundle {
 		this.error = error;
 		if(!hasErrors()) {
 			assertTrue(location != null);
+		} else {
+			assertTrue(error.getMessage() != null);
 		}
 	}
 	

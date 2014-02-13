@@ -2,6 +2,20 @@
 
 = DDT Change Log =
 
+== DDT 0.10.0  ===
+ * Added DUB support.
+   * Modify buildpath to include dub dependencies.
+ TODO:
+   * dub describe output console
+   * UI actions for DUB Elements in navigator
+   * Create a job to allow stopping DUB run. Remove timeout.
+   * DLTK Model elements in Project Explorer
+    * UI actions
+   * get parent
+   * automatic Compiler Library setup from DUB.
+   * remove DLTK outdated UI
+   * DUB build support
+
 == DDT 0.9.1 (2014-02-07) ===
  * Added debug hover to D editor. When a CDT debug session is active, this hover presents detailed info for the variable under the cursor, similar to the Variables view.
  * Added D 2.064 support for eponymous template shortcut syntax for alias and enum.

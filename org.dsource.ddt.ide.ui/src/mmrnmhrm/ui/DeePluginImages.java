@@ -5,6 +5,7 @@ import melnorme.lang.ide.ui.LangImages;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.ISharedImages;
 
 public abstract class DeePluginImages extends LangImages {
 	
@@ -72,7 +73,11 @@ public abstract class DeePluginImages extends LangImages {
 	protected static final String T_OBJ_DUB = "obj16_dub";
 	
 	public static final String DUB_DEPENDENCIES_CONTAINER = createManaged(T_OBJ_DUB, "DubDependenciesContainer.png");
-	public static final String DUB_DEP_ELEMENT = createManaged(T_OBJ_DUB, "DubBundleDep.png");
+	public static final String DUB_BUNDLE_DEP = createManaged(T_OBJ_DUB, "DubBundleDep.png");
+	public static final String DUB_RAW_DEP = createManaged(T_OBJ_DUB, "DubRawDep.png");
+	public static final String DUB_ERROR_ELEMENT = putSharedImages(T_OBJ_DUB, "DubErrorElement", 
+		ISharedImages.IMG_OBJS_ERROR_TSK);
+//	public static final String DUB_MANIFEST = createManaged(T_OBJ_DUB, "DubManifest.png");
 	
 	/* ------------------------------------------- */
 	

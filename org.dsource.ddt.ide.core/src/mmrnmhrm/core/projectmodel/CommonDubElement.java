@@ -12,12 +12,17 @@ package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.utilbox.tree.IElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
 
 public abstract class CommonDubElement implements IElement {
 	
 	public static enum DubElementType {
 		DUB_DEP_CONTAINER,
-		DUB_DEP_ELEMENT,
+		DUB_RESOLVED_DEP,
+		DUB_RAW_DEP,
+		DUB_ERROR_ELEMENT,
 	}
 	
 	protected final CommonDubElement parent;
@@ -52,14 +57,20 @@ public abstract class CommonDubElement implements IElement {
 		public RET switchElement(CommonDubElement element) {
 			switch (element.getElementType()) {
 			case DUB_DEP_CONTAINER: return visitDepContainer((DubDependenciesContainer) element);
-			case DUB_DEP_ELEMENT: return visitDepElement((DubDependencyElement) element);
+			case DUB_RAW_DEP: return visitRawDepElement((DubRawDependencyElement) element);
+			case DUB_RESOLVED_DEP: return visitDepElement((DubDependencyElement) element);
+			case DUB_ERROR_ELEMENT: return visitErrorElement((DubErrorElement) element);
 			}
 			throw assertUnreachable();
 		}
 		
 		public abstract RET visitDepContainer(DubDependenciesContainer element);
 		
+		public abstract RET visitRawDepElement(DubRawDependencyElement element);
+		
 		public abstract RET visitDepElement(DubDependencyElement element);
+		
+		public abstract RET visitErrorElement(DubErrorElement element);
 		
 	}
 	
