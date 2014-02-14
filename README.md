@@ -55,3 +55,6 @@ public void testXXX$() throws Exception {
 This is donely solely as an aid when debugging code, so that the "Drop to frame" functionality can be used on the unit-test method. It seems the Eclipse debugger cannot drop-to-frame to a method that is invoked dynamically (such as the unit-test method). So we wrap the unit-test method on another one. So while we now cannot drop-to-frame in `testXXX`, we can do it in `testXXX$`, which basically allows us to restart the unit-test.
 
 TODO: investigate if there is an alternate way to achieve the same. I haven't actually checked that.
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/bruno-medeiros/ddt/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
