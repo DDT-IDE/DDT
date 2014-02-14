@@ -10,28 +10,21 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
-import melnorme.utilbox.misc.StreamUtil;
-
 /**
  * Helper to start an external process and read its output concurrently,
- * while support cancellation and timeouts. 
+ * using one or two reader threads (for stdout and stderr).
+ * It also supports waiting for process termination with timeouts. 
  */
 public abstract class ExternalProcessHelper {
 	
 	protected final boolean redirectErrorStream;
 	protected final Process process;
 	
-	protected final CountDownLatch threadTerminationLatch;
+	protected final CountDownLatch fullTerminationLatch;
 	
 	protected final Thread mainReaderThread;
 	protected final Thread stderrReaderThread; // Can be null
@@ -40,46 +33,35 @@ public abstract class ExternalProcessHelper {
 		redirectErrorStream = pb.redirectErrorStream();
 		process = pb.start();
 		
-		threadTerminationLatch = new CountDownLatch(2);
+		fullTerminationLatch = new CountDownLatch(2);
 		
-		mainReaderThread = createAndStartMainReaderThread();
+		mainReaderThread = new ProcessHelperMainThread(createMainReaderTask());
+		mainReaderThread.start();
 		
 		if(!redirectErrorStream) {
-			stderrReaderThread = createAndStartStdErrReaderThread();
+			stderrReaderThread = new ProcessHelperStderrThread(createStdErrReaderTask());
+			stderrReaderThread.start();
 		} else {
-			threadTerminationLatch.countDown(); // dont start stderr thread, so update latch
+			fullTerminationLatch.countDown(); // dont start stderr thread, so update latch
 			stderrReaderThread = null;
 		}
 	}
 	
-	/** Create and start main reader thread. 
-	 * It is essential that the thread runs {@link Process#waitFor()} before terminating. */
-	protected LatchCountdownThread createAndStartMainReaderThread() {
-		Runnable mainReader = new RunAndWaitForProcessTask(createMainReaderTask());
-		LatchCountdownThread mainReaderThread = new LatchCountdownThread(mainReader);
-		mainReaderThread.start();
-		return mainReaderThread;
-	}
-	
-	/** Create and start StdErr reader thread. */
-	protected LatchCountdownThread createAndStartStdErrReaderThread() {
-		Runnable stderrReader = createStdErrReaderTask();
-		LatchCountdownThread stderrReaderThread = new LatchCountdownThread(stderrReader);
-		stderrReaderThread.start();
-		return stderrReaderThread;
+	public Process getProcess() {
+		return process;
 	}
 	
 	public boolean isRedirectingErrorStream() {
 		return redirectErrorStream;
 	}
 	
+	public boolean isFullyTerminated() {
+		return fullTerminationLatch.getCount() == 0;
+	}
+	
 	protected abstract Runnable createMainReaderTask();
 	
 	protected abstract Runnable createStdErrReaderTask();
-	
-	public Process getProcess() {
-		return process;
-	}
 	
 	/** {@link #awaitTermination(int)} with no timeout */ 
 	public int awaitTermination() throws InterruptedException {
@@ -94,7 +76,7 @@ public abstract class ExternalProcessHelper {
 	 */
 	public int awaitTermination(int timeoutMs) throws InterruptedException {
 		try {
-			boolean success = awaitLatchOrCancel(timeoutMs);
+			boolean success = awaitFullTerminationOrCancel(timeoutMs);
 			if(!success) {
 				throw new InterruptedException();
 			}
@@ -103,20 +85,16 @@ public abstract class ExternalProcessHelper {
 			throw e;
 		}
 		
-		mainReaderThread.join();
-		if(stderrReaderThread != null) {
-			stderrReaderThread.join();
-		}
 		return process.exitValue();
 	}
 	
-	protected boolean awaitLatchOrCancel(int timeoutMs) throws InterruptedException {
+	protected boolean awaitFullTerminationOrCancel(int timeoutMs) throws InterruptedException {
 		int waitedTime = 0;
 		
 		while(true) {
 			int cancelPollPeriod = getCancelPollingPeriod();
-			boolean success = threadTerminationLatch.await(cancelPollPeriod, TimeUnit.MILLISECONDS);
-			if(success) {
+			boolean latchSuccess = fullTerminationLatch.await(cancelPollPeriod, TimeUnit.MILLISECONDS);
+			if(latchSuccess) {
 				return true;
 			}
 			if(isCanceled()) {
@@ -135,95 +113,52 @@ public abstract class ExternalProcessHelper {
 	
 	protected abstract boolean isCanceled();
 	
-	protected class RunAndWaitForProcessTask implements Runnable {
+	protected class ProcessHelperMainThread extends Thread {
 		
-		protected final Runnable task;
-		
-		public RunAndWaitForProcessTask(Runnable task) {
-			this.task = task;
-		}
-		
-		@Override
-		public void run() {
-			task.run();
-			try {
-				process.waitFor();
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-		}
-	}
-	
-	protected class LatchCountdownThread extends Thread {
-		
-		protected final Runnable runnable;
-		
-		public LatchCountdownThread(Runnable runnable) {
-			this.runnable = runnable;
+		public ProcessHelperMainThread(Runnable runnable) {
+			super(runnable);
 			setDaemon(true);
 		}
 		
 		@Override
 		public void run() {
-			try { 
-				runnable.run();
+			try {
+				super.run();
 			} finally {
-				threadTerminationLatch.countDown();
+				waitForProcessIndefinitely();
+				fullTerminationLatch.countDown();
+			}
+		}
+		
+		protected void waitForProcessIndefinitely() {
+			while(true) {
+				try {
+					process.waitFor();
+					return;
+				} catch (InterruptedException e) {
+					// retry waitfor, we must ensure process is terminated.
+				}
 			}
 		}
 		
 	}
 	
-	/* -------------------- Default reader tasks --------------------*/
-	
-	protected static class ReadAllBytesTask implements Runnable {
+	protected class ProcessHelperStderrThread extends Thread {
 		
-		protected final InputStream is;
-		protected ByteArrayOutputStreamExt bytes;
-		protected IOException exception;
-		
-		public ReadAllBytesTask(InputStream is) {
-			this.is = is;
+		public ProcessHelperStderrThread(Runnable runnable) {
+			super(runnable);
+			setDaemon(true);
 		}
 		
 		@Override
 		public void run() {
 			try {
-				bytes = StreamUtil.readAllBytesFromStream(is);
-			} catch (IOException e) {
-				this.exception = e;
+				super.run();
+			} finally {
+				fullTerminationLatch.countDown();
 			}
 		}
 		
-		public synchronized ByteArrayOutputStreamExt getResult() throws IOException {
-			if(exception != null) {
-				throw exception;
-			}
-			return assertNotNull(bytes);
-		}
 	}
 	
-	protected static abstract class ReadLineNotifyTask implements Runnable {
-		
-		protected final InputStream inputStream;
-		protected IOException exception;
-		
-		public ReadLineNotifyTask(InputStream inputStream) {
-			this.inputStream = inputStream;
-		}
-		
-		@Override
-		public void run() {
-			try(BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-				String line;
-				while ((line = reader.readLine()) != null) {
-					handleReadLine(line);
-				}
-			} catch (IOException ioe) {
-				this.exception = ioe;
-			}
-		}
-		
-		protected abstract void handleReadLine(String line);
-	}
 }

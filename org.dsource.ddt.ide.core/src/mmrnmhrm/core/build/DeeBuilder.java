@@ -319,14 +319,23 @@ public class DeeBuilder {
 				fireHandleOutputLine("DDT: No build process specified.");
 				return;
 			}
-			ExternalProcessLineNotifyHandler processUtil = new ExternalProcessLineNotifyHandler(builder, monitor) {
-				@Override
+			ExternalProcessLineNotifyHandler_Ext processUtil = new ExternalProcessLineNotifyHandler_Ext(builder, monitor) {
 				protected void handleReadLine(String line) {
 					synchronized(this) {
 						// TODO: review concurrency usage of this method and fireHandleOutputLine
 						buildLog.println("\t" + line);
 						fireHandleOutputLine(line);
 					}
+				}
+
+				@Override
+				protected void handleStdOutLine(String line) {
+					handleReadLine(line);
+				}
+
+				@Override
+				protected void handleStdErrLine(String line) {
+					handleReadLine(line);
 				}
 			};
 			int exitValue = processUtil.awaitTermination();

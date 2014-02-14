@@ -14,9 +14,10 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 
 /**
- * Some minor extensions to {@link ByteArrayOutputStream}
+ * Some minor extensions to {@link ByteArrayOutputStream}.
+ * Allows accessing the internal buffer and count value
  */
-public class ByteArrayOutputStreamExt extends ByteArrayOutputStream {
+public class ByteArrayOutputStreamExt extends ByteArrayOutputStream implements IByteSequence {
 	
 	public ByteArrayOutputStreamExt() {
 	}
@@ -25,16 +26,31 @@ public class ByteArrayOutputStreamExt extends ByteArrayOutputStream {
 		super(size);
 	}
     
-	public synchronized byte[] getBuffer() {
+	public synchronized byte[] getInternalBuffer() {
 		return buf;
 	}
 	
+	@Override
+	public synchronized int byteAt(int index) {
+        if (index < 0 || index >= count) {
+            throw new IndexOutOfBoundsException();
+        }
+		return buf[index];
+	}
+	
+	@Override
 	public synchronized int getCount() {
 		return count;
 	}
 	
+	@Override
 	public synchronized String toString(Charset charset) {
 		return new String(buf, 0, count, charset);
+	}
+	
+	@Override
+	public synchronized byte[] toByteArray() {
+		return super.toByteArray();
 	}
 	
 }

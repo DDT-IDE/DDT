@@ -12,21 +12,20 @@ package mmrnmhrm.core.build;
 
 import java.io.IOException;
 
-import melnorme.utilbox.concurrency.ExternalProcessHelper;
+
+import melnorme.utilbox.concurrency.ExternalProcessLineReader;
+import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 
-/**
- * External Process handler that notifies a listener every time a line of output is read.
- * Also, can kill external process reading if given monitor is canceled. 
- */
-public class ExternalProcessLineNotifyHandler extends ExternalProcessHelper {
+@Deprecated
+public abstract class ExternalProcessLineNotifyHandler_Ext extends ExternalProcessLineReader {
 	
 	protected final IProgressMonitor monitor;
-	
-	public ExternalProcessLineNotifyHandler(ProcessBuilder pb, IProgressMonitor monitor) throws IOException {
-		super(pb);
+	@Deprecated
+	public ExternalProcessLineNotifyHandler_Ext(ProcessBuilder pb, IProgressMonitor monitor) throws IOException {
+		super(pb, StringUtil.UTF8);
 		this.monitor = monitor;
 	}
 	
@@ -45,31 +44,6 @@ public class ExternalProcessLineNotifyHandler extends ExternalProcessHelper {
 	@Override
 	protected boolean isCanceled() {
 		return monitor.isCanceled();
-	}
-	
-	@Override
-	protected Runnable createMainReaderTask() {
-		return new ReadLineNotifyTask(process.getInputStream()) {
-			@Override
-			protected void handleReadLine(String line) {
-				ExternalProcessLineNotifyHandler.this.handleReadLine(line);
-			}
-		};
-	}
-	
-	@Override
-	protected Runnable createStdErrReaderTask() {
-		return new ReadLineNotifyTask(process.getErrorStream()) {
-			@Override
-			protected void handleReadLine(String line) {
-				ExternalProcessLineNotifyHandler.this.handleReadLine(line);
-			}
-		};
-	}
-	
-	@SuppressWarnings("unused")
-	protected void handleReadLine(String line) {
-		// Default implementation: do nothing
 	}
 	
 }

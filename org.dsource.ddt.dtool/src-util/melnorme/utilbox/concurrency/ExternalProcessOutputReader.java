@@ -10,25 +10,28 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
+import melnorme.utilbox.misc.IByteSequence;
+import melnorme.utilbox.misc.StreamUtil;
 
 /**
- * Helper class designed to safely read (with regards to concurrency) the output of a sub-process.
+ * External Process Helper that reads all process output into a byte array (and another for stderr)
  */
 public class ExternalProcessOutputReader extends ExternalProcessHelper {
-	
-	protected ReadAllBytesTask mainReader;
-	protected ReadAllBytesTask stderrReader;
 	
 	public static ExternalProcessOutputReader startProcess(ProcessBuilder pb, boolean redirectStdErr) 
 			throws IOException {
 		pb.redirectErrorStream(redirectStdErr);
 		return new ExternalProcessOutputReader(pb);
 	}
+	
+	protected ReadAllBytesTask mainReader;
+	protected ReadAllBytesTask stderrReader;
 	
 	public ExternalProcessOutputReader(ProcessBuilder pb) throws IOException {
 		super(pb);
@@ -49,11 +52,40 @@ public class ExternalProcessOutputReader extends ExternalProcessHelper {
 		return false;
 	}
 	
-	public ByteArrayOutputStreamExt getStdOutBytes() throws IOException {
+	protected static class ReadAllBytesTask implements Runnable {
+		
+		protected final InputStream is;
+		protected IByteSequence bytes;
+		protected IOException exception;
+		
+		public ReadAllBytesTask(InputStream is) {
+			this.is = is;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				bytes = StreamUtil.readAllBytesFromStream(is);
+			} catch (IOException e) {
+				this.exception = e;
+			}
+		}
+		
+		public synchronized IByteSequence getResult() throws IOException {
+			if(exception != null) {
+				throw exception;
+			}
+			return assertNotNull(bytes);
+		}
+	}
+	
+	public IByteSequence getStdOutBytes() throws IOException {
+		assertTrue(isFullyTerminated());
 		return mainReader.getResult();
 	}
 	
-	public ByteArrayOutputStreamExt getStdErrBytes() throws IOException {
+	public IByteSequence getStdErrBytes() throws IOException {
+		assertTrue(isFullyTerminated());
 		assertTrue(redirectErrorStream == false);
 		return stderrReader.getResult();
 	}

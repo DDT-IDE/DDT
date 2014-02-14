@@ -34,14 +34,14 @@ public class StreamUtil {
 	
 	/** Reads and returns all bytes from given inputStream until an EOF is read. 
 	 * Closes inputStream afterwards. */
-	public static ByteArrayOutputStreamExt readAllBytesFromStream(InputStream inputStream) throws IOException {
+	public static IByteSequence readAllBytesFromStream(InputStream inputStream) throws IOException {
 		return readAllBytesFromStream(inputStream, 32);
 	}
 	
 	/** Reads and returns all bytes from given inputStream until an EOF is read. 
 	 * Closes inputStream afterwards. 
 	 * ByteArray buffer is initialized to given capacity. */
-	public static ByteArrayOutputStreamExt readAllBytesFromStream(InputStream inputStream, int capacity) 
+	public static IByteSequence readAllBytesFromStream(InputStream inputStream, int capacity) 
 			throws IOException {
 		try {
 			final int BUFFER_SIZE = 1024;

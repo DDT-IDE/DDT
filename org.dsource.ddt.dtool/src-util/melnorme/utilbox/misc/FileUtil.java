@@ -26,7 +26,7 @@ public final class FileUtil extends StreamUtil {
 	
 	/** Read all bytes of the given file. 
 	 * @return the bytes that where read in a {@link ByteArrayOutputStream}. */
-	public static ByteArrayOutputStream readBytesFromFile(File file) throws IOException, FileNotFoundException {
+	public static IByteSequence readBytesFromFile(File file) throws IOException, FileNotFoundException {
 		long fileLength = file.length();
 		/*
 		 * You cannot create an array using a long type. It needs to be an
@@ -42,13 +42,13 @@ public final class FileUtil extends StreamUtil {
 	/** Read all bytes from the given file.
 	 * @return a String created from those bytes, with given charsetName. */
 	public static String readStringFromFile(File file, String charsetName) throws IOException, FileNotFoundException {
-		return readBytesFromFile(file).toString(charsetName);
+		return readBytesFromFile(file).toString(Charset.forName(charsetName));
 	}
 	
 	/** Read all bytes from the given file.
 	 * @return a String created from those bytes, with given charset. */
 	public static String readStringFromFile(File file, Charset charset) throws IOException, FileNotFoundException {
-		return readBytesFromFile(file).toString(charset.name());
+		return readBytesFromFile(file).toString(charset);
 	}
 	
 	
