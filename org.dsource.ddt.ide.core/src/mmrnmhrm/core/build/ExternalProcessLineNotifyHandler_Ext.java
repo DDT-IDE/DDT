@@ -12,14 +12,12 @@ package mmrnmhrm.core.build;
 
 import java.io.IOException;
 
-
 import melnorme.utilbox.concurrency.ExternalProcessLineReader;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 
-@Deprecated
 public abstract class ExternalProcessLineNotifyHandler_Ext extends ExternalProcessLineReader {
 	
 	protected final IProgressMonitor monitor;
@@ -30,12 +28,12 @@ public abstract class ExternalProcessLineNotifyHandler_Ext extends ExternalProce
 	}
 	
 	@Override
-	public int awaitTermination(int timeoutMs) throws InterruptedException {
+	protected boolean awaitTermination(int timeoutMs) throws InterruptedException {
 		try {
 			return super.awaitTermination(timeoutMs);
 		} catch (InterruptedException e) {
 			if(isCanceled()) {
-				throw new OperationCanceledException();
+				throw new OperationCanceledException(); // Replace exception
 			}
 			throw e;
 		}

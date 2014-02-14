@@ -10,9 +10,12 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Helper to start an external process and read its output concurrently,
@@ -21,9 +24,13 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class ExternalProcessHelper {
 	
+	public static final int NO_TIMEOUT = -1;
+	
 	protected final boolean redirectErrorStream;
 	protected final Process process;
 	
+	/** This latch exists to signal that the process has terminated, and also that the reader threads 
+	 * have finished reading all input. This last aspect is very important. */
 	protected final CountDownLatch fullTerminationLatch;
 	
 	protected final Thread mainReaderThread;
@@ -39,7 +46,7 @@ public abstract class ExternalProcessHelper {
 		mainReaderThread.start();
 		
 		if(!redirectErrorStream) {
-			stderrReaderThread = new ProcessHelperStderrThread(createStdErrReaderTask());
+			stderrReaderThread = new ProcessHelperStdErrThread(createStdErrReaderTask());
 			stderrReaderThread.start();
 		} else {
 			fullTerminationLatch.countDown(); // dont start stderr thread, so update latch
@@ -63,55 +70,6 @@ public abstract class ExternalProcessHelper {
 	
 	protected abstract Runnable createStdErrReaderTask();
 	
-	/** {@link #awaitTermination(int)} with no timeout */ 
-	public int awaitTermination() throws InterruptedException {
-		return awaitTermination(-1);
-	}
-	
-	/**
-	 * Await termination of underlying process.
-	 * If method returns sucessfully, process has terminated and all reader threads have finished processing.
-	 * @param timeoutMs timeout in milliseconds to wait for. -1 for no timeout (waiting indefinitely).
-	 * @throws InterruptedException if timeout occurs, or cancel requested.   
-	 */
-	public int awaitTermination(int timeoutMs) throws InterruptedException {
-		try {
-			boolean success = awaitFullTerminationOrCancel(timeoutMs);
-			if(!success) {
-				throw new InterruptedException();
-			}
-		} catch(InterruptedException e) {
-			process.destroy(); // This should ensure reader threads will terminate soon after
-			throw e;
-		}
-		
-		return process.exitValue();
-	}
-	
-	protected boolean awaitFullTerminationOrCancel(int timeoutMs) throws InterruptedException {
-		int waitedTime = 0;
-		
-		while(true) {
-			int cancelPollPeriod = getCancelPollingPeriod();
-			boolean latchSuccess = fullTerminationLatch.await(cancelPollPeriod, TimeUnit.MILLISECONDS);
-			if(latchSuccess) {
-				return true;
-			}
-			if(isCanceled()) {
-				return false;
-			}
-			if(timeoutMs >= 0 && waitedTime >= timeoutMs) {
-				return false;
-			}
-			waitedTime += cancelPollPeriod;
-		}
-	}
-	
-	protected int getCancelPollingPeriod() {
-		return 200;
-	}
-	
-	protected abstract boolean isCanceled();
 	
 	protected class ProcessHelperMainThread extends Thread {
 		
@@ -143,9 +101,9 @@ public abstract class ExternalProcessHelper {
 		
 	}
 	
-	protected class ProcessHelperStderrThread extends Thread {
+	protected class ProcessHelperStdErrThread extends Thread {
 		
-		public ProcessHelperStderrThread(Runnable runnable) {
+		public ProcessHelperStdErrThread(Runnable runnable) {
 			super(runnable);
 			setDaemon(true);
 		}
@@ -159,6 +117,71 @@ public abstract class ExternalProcessHelper {
 			}
 		}
 		
+	}
+	
+	/*----------  Waiting functionality ----------*/
+	
+	/**
+	 * Await termination of process, with given timeoutMs timeout. Can use -1 for no timeout.
+	 * Periodically polls cancel monitor, if one exists.
+	 * @return true if termination reached, false if timeout reached.
+	 * @throws InterruptedException if interrupted or cancel signalled.
+	 */
+	protected boolean awaitTermination(int timeoutMs) throws InterruptedException {
+		int waitedTime = 0;
+		
+		while(true) {
+			int cancelPollPeriodMs = getCancelPollingPeriodMs();
+			boolean latchSuccess = fullTerminationLatch.await(cancelPollPeriodMs, TimeUnit.MILLISECONDS);
+			if(latchSuccess) {
+				return true;
+			}
+			if(isCanceled()) {
+				throw new InterruptedException();
+			}
+			if(timeoutMs != NO_TIMEOUT && waitedTime >= timeoutMs) {
+				return false;
+			}
+			waitedTime += cancelPollPeriodMs;
+		}
+	}
+	
+	protected int getCancelPollingPeriodMs() {
+		return 200;
+	}
+	
+	protected abstract boolean isCanceled();
+	
+	/** 
+	 * Same as {@link #awaitTermination(int))} but:
+	 * Will throw exception on any outcome other than successful termination.
+	 * @return process exit value
+	 */
+	public int awaitTerminationStrict(int timeoutMs) throws InterruptedException, TimeoutException {
+		boolean success = awaitTermination(timeoutMs);
+		if(!success) {
+			throw new TimeoutException();
+		}
+		return process.exitValue();
+	}
+	
+	
+	public int awaitTerminationStrict_destroyOnException(int timeoutMs) 
+			throws InterruptedException, TimeoutException {
+		try {
+			return awaitTerminationStrict(timeoutMs);
+		} catch (Exception e) {
+			process.destroy();
+			throw e;
+		}
+	}
+	
+	public int awaitTerminationStrict_destroyOnException() throws InterruptedException {
+		try {
+			return awaitTerminationStrict_destroyOnException(NO_TIMEOUT);
+		} catch (TimeoutException e) {
+			throw assertFail(); // Can't happen with NO_TIMEOUT
+		}
 	}
 	
 }

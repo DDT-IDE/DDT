@@ -314,12 +314,13 @@ public class DeeBuilder {
 	}
 	
 	protected void startProcess(IProgressMonitor monitor, final ProcessBuilder builder) throws CoreException {
+		if(builder.command().size() == 0) {
+			fireHandleOutputLine("DDT: No build process specified.");
+			return;
+		}
 		try {
-			if(builder.command().size() == 0) {
-				fireHandleOutputLine("DDT: No build process specified.");
-				return;
-			}
-			ExternalProcessLineNotifyHandler_Ext processUtil = new ExternalProcessLineNotifyHandler_Ext(builder, monitor) {
+			ExternalProcessLineNotifyHandler_Ext processHandler = 
+					new ExternalProcessLineNotifyHandler_Ext(builder, monitor) {
 				protected void handleReadLine(String line) {
 					synchronized(this) {
 						// TODO: review concurrency usage of this method and fireHandleOutputLine
@@ -338,12 +339,18 @@ public class DeeBuilder {
 					handleReadLine(line);
 				}
 			};
-			int exitValue = processUtil.awaitTermination();
-			buildLog.println(">>  Exit value: " + exitValue);
+			
+			try {
+				int exitValue = processHandler.awaitTerminationStrict_destroyOnException();
+				buildLog.println(">>  Exit value: " + exitValue);
+			} catch (InterruptedException e) {
+				if(processHandler.isCanceled()) {
+					throw new OperationCanceledException();
+				}
+				throw DeeCore.createCoreException("D Build: Interrupted.", e);
+			}
 		} catch(IOException e) {
 			throw DeeCore.createCoreException("D Build: Error exec'ing.", e);
-		} catch(InterruptedException e) {
-			throw DeeCore.createCoreException("D Build: Interrupted.", e);
 		}
 	}
 	

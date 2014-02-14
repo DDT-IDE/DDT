@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ListenerListHelper;
@@ -280,8 +281,8 @@ class UpdateProjectModel implements Runnable {
 			return setProjectDubError(project, "Could not start dub process: ",  e);
 		}
 		try {
-			processHelper.awaitTermination(50000);
-		} catch (InterruptedException e) {
+			processHelper.awaitTerminationStrict_destroyOnException(50000);
+		} catch (TimeoutException | InterruptedException e) {
 			return setProjectDubError(project, "Timeout running dub process.", null);
 		}
 		String descriptionOutput;
