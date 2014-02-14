@@ -37,20 +37,32 @@ public abstract class ExternalProcessHelper {
 	protected final Thread stderrReaderThread; // Can be null
 	
 	public ExternalProcessHelper(ProcessBuilder pb) throws IOException {
+		this(pb, true);
+	}
+	
+	public ExternalProcessHelper(ProcessBuilder pb, boolean startReaders) throws IOException {
 		redirectErrorStream = pb.redirectErrorStream();
 		process = pb.start();
 		
 		fullTerminationLatch = new CountDownLatch(2);
 		
 		mainReaderThread = new ProcessHelperMainThread(createMainReaderTask());
-		mainReaderThread.start();
 		
 		if(!redirectErrorStream) {
 			stderrReaderThread = new ProcessHelperStdErrThread(createStdErrReaderTask());
-			stderrReaderThread.start();
 		} else {
 			fullTerminationLatch.countDown(); // dont start stderr thread, so update latch
 			stderrReaderThread = null;
+		}
+		if(startReaders) {
+			startReaderThreads();
+		}
+	}
+	
+	protected void startReaderThreads() {
+		mainReaderThread.start();
+		if(stderrReaderThread != null) {
+			stderrReaderThread.start();
 		}
 	}
 	

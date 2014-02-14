@@ -276,7 +276,7 @@ class UpdateProjectModel implements Runnable {
 		
 		ExternalProcessOutputReader processHelper;
 		try {
-			processHelper = ExternalProcessOutputReader.startProcess(pb, false);
+			processHelper = new ExternalProcessOutputReader(pb);
 		} catch (IOException e) {
 			return setProjectDubError(project, "Could not start dub process: ",  e);
 		}

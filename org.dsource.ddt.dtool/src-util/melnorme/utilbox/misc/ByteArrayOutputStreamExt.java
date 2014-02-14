@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 public class ByteArrayOutputStreamExt extends ByteArrayOutputStream implements IByteSequence {
 	
 	public ByteArrayOutputStreamExt() {
+		super();
 	}
 	
 	public ByteArrayOutputStreamExt(int size) {

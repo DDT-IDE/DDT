@@ -24,7 +24,7 @@ import java.io.Writer;
  */
 public class StreamUtil {
 	
-	protected static final int EOF = -1;
+	public static final int EOF = -1;
 	
 	private static IOException createFailedToReadExpected(int length, int totalRead) {
 		return new IOException("Failed to read requested amount of characters. " +

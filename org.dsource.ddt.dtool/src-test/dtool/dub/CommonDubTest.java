@@ -159,8 +159,7 @@ public class CommonDubTest extends DToolBaseTest {
 			pb.directory(workingDir.toFile());
 		}
 		
-		ExternalProcessOutputReader processHelper = ExternalProcessOutputReader.startProcess(pb, false);
-		return processHelper;
+		return new ExternalProcessOutputReader(pb);
 	}
 	
 	public static void dubAddPath(Path packageRootDir) {

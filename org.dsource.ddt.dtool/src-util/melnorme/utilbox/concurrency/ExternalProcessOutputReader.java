@@ -10,12 +10,12 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.IByteSequence;
 import melnorme.utilbox.misc.StreamUtil;
 
@@ -24,17 +24,15 @@ import melnorme.utilbox.misc.StreamUtil;
  */
 public class ExternalProcessOutputReader extends ExternalProcessHelper {
 	
-	public static ExternalProcessOutputReader startProcess(ProcessBuilder pb, boolean redirectStdErr) 
-			throws IOException {
-		pb.redirectErrorStream(redirectStdErr);
-		return new ExternalProcessOutputReader(pb);
-	}
-	
 	protected ReadAllBytesTask mainReader;
 	protected ReadAllBytesTask stderrReader;
 	
 	public ExternalProcessOutputReader(ProcessBuilder pb) throws IOException {
 		super(pb);
+	}
+	
+	public ExternalProcessOutputReader(ProcessBuilder pb, boolean startReaders) throws IOException {
+		super(pb, startReaders);
 	}
 	
 	@Override
@@ -52,31 +50,37 @@ public class ExternalProcessOutputReader extends ExternalProcessHelper {
 		return false;
 	}
 	
-	protected static class ReadAllBytesTask implements Runnable {
+	protected static class ReadAllBytesTask extends ExceptionTrackingRunnable<IByteSequence, IOException> {
 		
 		protected final InputStream is;
-		protected IByteSequence bytes;
-		protected IOException exception;
 		
 		public ReadAllBytesTask(InputStream is) {
 			this.is = is;
 		}
 		
 		@Override
-		public void run() {
+		public IByteSequence doRun() throws IOException {
 			try {
-				bytes = StreamUtil.readAllBytesFromStream(is);
-			} catch (IOException e) {
-				this.exception = e;
+				final int BUFFER_SIZE = 1024;
+				byte[] buffer = new byte[BUFFER_SIZE];
+				ByteArrayOutputStreamExt byteArray = new ByteArrayOutputStreamExt(32);
+				
+				int read;
+				while((read = is.read(buffer)) != StreamUtil.EOF) {
+					byteArray.write(buffer, 0, read);
+					notifyReadChunk(buffer, 0, read);
+				}
+				return byteArray;
+			} finally {
+				is.close();
 			}
 		}
 		
-		public synchronized IByteSequence getResult() throws IOException {
-			if(exception != null) {
-				throw exception;
-			}
-			return assertNotNull(bytes);
+		@SuppressWarnings("unused")
+		protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
+			// Default implementation: do nothing
 		}
+		
 	}
 	
 	public IByteSequence getStdOutBytes() throws IOException {
