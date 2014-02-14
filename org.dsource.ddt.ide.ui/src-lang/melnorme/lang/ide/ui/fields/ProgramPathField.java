@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.launch;
+package melnorme.lang.ide.ui.fields;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.util.swt.SWTFactoryUtil;

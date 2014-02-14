@@ -4,12 +4,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.io.IOException;
 
+import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import mmrnmhrm.core.build.CommonDeeBuilderListener;
 import mmrnmhrm.core.build.IDeeBuilderListener;
 
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
@@ -19,7 +17,7 @@ public class DeeBuilderUIListener extends CommonDeeBuilderListener implements ID
 	
 	@Override
 	public void buildCommandsCreated(String buildCommands) {
-		final MessageConsole myConsole = findOrCreateConsole(CONSOLE_NAME);
+		final MessageConsole myConsole = ConsoleUtils.findOrCreateMessageConsole(CONSOLE_NAME);
 		// BM: There used to be a race condition here with Console code itself, but not more
 		myConsole.clearConsole(); 
 		handleProcessOutputLine("--------  Build Commands:  --------\n" + buildCommands + "\n"); 
@@ -32,7 +30,7 @@ public class DeeBuilderUIListener extends CommonDeeBuilderListener implements ID
 		
 		// TODO:, listen for different project outputs
 		String name = CONSOLE_NAME;
-		MessageConsole builderConsole = findOrCreateConsole(name);
+		MessageConsole builderConsole = ConsoleUtils.findOrCreateMessageConsole(name);
 		MessageConsoleStream out = builderConsole.newMessageStream();
 		out.println(line);
 		
@@ -46,24 +44,4 @@ public class DeeBuilderUIListener extends CommonDeeBuilderListener implements ID
 		builderConsole.activate();
 	}
 	
-	
-	public static MessageConsole findOrCreateConsole(String name) {
-		MessageConsole console = findConsole(name);
-		if(console == null) {
-			//no console found, so create a new one
-			console = new MessageConsole(name, null);
-			ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[]{console});
-		}
-		return console;
-	}
-	
-	private static MessageConsole findConsole(String name) {
-		IConsoleManager consoleMgr = ConsolePlugin.getDefault().getConsoleManager();
-		IConsole[] existing = consoleMgr.getConsoles();
-		for (int i = 0; i < existing.length; i++) {
-			if (name.equals(existing[i].getName()))
-				return (MessageConsole) existing[i];
-		}
-		return null;
-	}
 }

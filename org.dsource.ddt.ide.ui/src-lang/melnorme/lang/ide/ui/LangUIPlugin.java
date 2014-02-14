@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import melnorme.lang.ide.core.LangCore.ILangConstants;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -35,10 +36,19 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		getInstance().getLog().log(status);
 	}
 	
-	/** Logs the given Throwable, wrapping it in a Status. */
-	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, PLUGIN_ID, ILangStatusConstants.INTERNAL_ERROR,
-				LangUIMessages.LangPlugin_internal_error, e)); 
+	/** Logs the given throwable, wrapping it in a Status. */
+	public static void log(Throwable throwable) {
+		log(createErrorStatus(LangUIMessages.LangPlugin_internal_error, throwable));
+	}
+	
+	/** Creates a status describing an error in this plugin, with given message and given throwable. */
+	public static Status createErrorStatus(String message, Throwable throwable) {
+		return new Status(IStatus.ERROR, PLUGIN_ID, ILangConstants.INTERNAL_ERROR, message, throwable); 
+	}
+	
+	/** Logs an error status with given message. */
+	public static void logError(String message) {
+		getInstance().getLog().log(createErrorStatus(message, null));
 	}
 	
 	public static void logWarning(String message) {

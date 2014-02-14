@@ -9,7 +9,7 @@
  * 		DLTK team -
  * 		Bruno Medeiros - lang modifications
  *******************************************************************************/
-package melnorme.lang.ide.ui.launch;
+package melnorme.lang.ide.ui.fields;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
