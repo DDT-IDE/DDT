@@ -11,8 +11,14 @@
 package mmrnmhrm.core.projectmodel;
 
 import dtool.dub.DubBundleDescription;
-import melnorme.lang.ide.core.utils.ICommonEventListener;
 
-public interface IDubProjectModelListener extends ICommonEventListener<DubModelManager, DubBundleDescription> {
+public interface IDubProjectModelListener {
+	
+	/** 
+	 * Note, several locks are held in the scope of this method (DubModel, and potentially Workspace Root).
+	 * Do run long running or locking code in the implementation, 
+	 * just post the event to another thread/agent/dispatcher to handle.
+	 */
+	void notifyUpdateEvent(DubModelManager source, DubBundleDescription object);
 	
 }

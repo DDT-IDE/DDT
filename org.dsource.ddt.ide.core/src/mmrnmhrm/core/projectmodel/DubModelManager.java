@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.EventManager;
+import melnorme.lang.ide.core.utils.ListenerListHelper;
 import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
 import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -54,7 +54,7 @@ import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParser;
 import dtool.dub.DubManifestParser;
 
-public class DubModelManager extends EventManager<DubModelManager, DubBundleDescription, IDubProjectModelListener> {
+public class DubModelManager extends ListenerListHelper<IDubProjectModelListener> {
 	
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
@@ -150,6 +150,12 @@ public class DubModelManager extends EventManager<DubModelManager, DubBundleDesc
 		log.println(">> Removing project: ", project);
 		DubBundleDescription oldDesc = dubBundleInfos.remove(project.getName());
 		fireUpdateEvent(this, oldDesc);
+	}
+	
+	protected void fireUpdateEvent(DubModelManager source, DubBundleDescription object) {
+		for (IDubProjectModelListener listener : getListeners()) {
+			listener.notifyUpdateEvent(source, object);
+		}
 	}
 	
 	protected synchronized DubBundleDescription doGetBundleInfo(String projectName) {

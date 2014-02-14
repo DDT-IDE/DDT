@@ -15,26 +15,29 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.ListenerList;
+
 /**
- * Base class for an event manager that fires update events to registered listeners.
- * This class is designed to be thread safe. 
+ * Helper to manage a listener list, then used to fire events.
+ * This class is designed to be thread safe.
+ * @see also {@link ListenerList} 
  */
-public class EventManager<SOURCE, EVENT_OBJ, T extends ICommonEventListener<SOURCE, EVENT_OBJ>> {
+public class ListenerListHelper<LISTENER> {
 	
-	protected final Object listenersLock = new Object();
-	protected List<T> listeners = Collections.unmodifiableList(new ArrayList<T>());
+	private final Object listenersLock = new Object();
+	private volatile List<LISTENER> listeners = Collections.unmodifiableList(new ArrayList<LISTENER>());
 	
-	public void addListener(T listener) {
-		ArrayList<T> newListeners = new ArrayList<>(listeners);
+	public void addListener(LISTENER listener) {
+		ArrayList<LISTENER> newListeners = new ArrayList<>(listeners);
 		newListeners.add(listener);
 		
 		setNewListeners(newListeners);
 	}
 	
-	public void removeListener(T listener) {
-		ArrayList<T> newListeners = new ArrayList<>(listeners);
-		for (Iterator<T> iter = newListeners.iterator(); iter.hasNext(); ) {
-			T iterElem = iter.next();
+	public void removeListener(LISTENER listener) {
+		ArrayList<LISTENER> newListeners = new ArrayList<LISTENER>(listeners);
+		for (Iterator<LISTENER> iter = newListeners.iterator(); iter.hasNext(); ) {
+			LISTENER iterElem = iter.next();
 			if(iterElem == listener) {
 				iter.remove();
 				break;
@@ -42,24 +45,16 @@ public class EventManager<SOURCE, EVENT_OBJ, T extends ICommonEventListener<SOUR
 		}
 		
 		setNewListeners(newListeners);
-		
 	}
 	
-	private void setNewListeners(ArrayList<T> newListeners) {
+	private void setNewListeners(ArrayList<LISTENER> newListeners) {
 		synchronized (listenersLock) {
 			listeners = newListeners;
 		}
 	}
 	
-	protected List<T> getListeners() {
+	protected List<LISTENER> getListeners() {
 		return listeners;
-	}
-	
-	protected void fireUpdateEvent(SOURCE source, EVENT_OBJ object) {
-		List<T> listenersToIterate = getListeners();
-		for (T listener : listenersToIterate) {
-			listener.notifyUpdateEvent(source, object);
-		}
 	}
 	
 }
