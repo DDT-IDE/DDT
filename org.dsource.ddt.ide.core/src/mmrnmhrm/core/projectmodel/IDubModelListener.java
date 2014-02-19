@@ -12,7 +12,7 @@ package mmrnmhrm.core.projectmodel;
 
 import dtool.dub.DubBundleDescription;
 
-public interface IDubProjectModelListener {
+public interface IDubModelListener {
 	
 	/** 
 	 * Note, several locks are held in the scope of this method (DubModel, and potentially Workspace Root).

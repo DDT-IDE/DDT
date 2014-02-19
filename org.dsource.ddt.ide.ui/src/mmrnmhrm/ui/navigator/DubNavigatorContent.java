@@ -5,7 +5,7 @@ import melnorme.util.swt.jface.AbstractContentProvider;
 import mmrnmhrm.core.projectmodel.CommonDubElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.DubModelManager;
-import mmrnmhrm.core.projectmodel.IDubProjectModelListener;
+import mmrnmhrm.core.projectmodel.IDubModelListener;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -34,7 +34,7 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		super.inputChanged(viewer, oldInput, newInput);
-		DubModelManager.getDefault().addListener(new IDubProjectModelListener() {
+		DubModelManager.getDefault().addListener(new IDubModelListener() {
 			
 			@Override
 			public void notifyUpdateEvent(DubModelManager source, DubBundleDescription eventObject) {

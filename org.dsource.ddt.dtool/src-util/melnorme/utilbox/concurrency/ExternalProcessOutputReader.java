@@ -31,8 +31,8 @@ public class ExternalProcessOutputReader extends ExternalProcessHelper {
 		super(pb);
 	}
 	
-	public ExternalProcessOutputReader(ProcessBuilder pb, boolean startReaders) throws IOException {
-		super(pb, startReaders);
+	public ExternalProcessOutputReader(Process process, boolean readStdErr, boolean startReaders) {
+		super(process, readStdErr, startReaders);
 	}
 	
 	@Override
@@ -90,7 +90,7 @@ public class ExternalProcessOutputReader extends ExternalProcessHelper {
 	
 	public IByteSequence getStdErrBytes() throws IOException {
 		assertTrue(isFullyTerminated());
-		assertTrue(redirectErrorStream == false);
+		assertTrue(readStdErr);
 		return stderrReader.getResult();
 	}
 	

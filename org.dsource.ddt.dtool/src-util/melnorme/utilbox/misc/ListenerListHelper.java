@@ -8,19 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils;
+package melnorme.utilbox.misc;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.ListenerList;
-
 /**
  * Helper to manage a listener list, then used to fire events.
  * This class is designed to be thread safe.
- * @see also {@link ListenerList} 
+ * @see also {@link org.eclipse.core.runtime.ListenerList} 
  */
 public class ListenerListHelper<LISTENER> {
 	
@@ -53,7 +51,7 @@ public class ListenerListHelper<LISTENER> {
 		}
 	}
 	
-	protected List<LISTENER> getListeners() {
+	public List<LISTENER> getListeners() {
 		return listeners;
 	}
 	

@@ -3,8 +3,10 @@ package org.dsource.ddt.ui;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTUtil;
 import mmrnmhrm.core.build.DeeProjectBuilder;
+import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.launch.DeeBuilderUIListener;
+import mmrnmhrm.ui.launch.DubProcessUIListener;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.core.runtime.Platform;
@@ -52,16 +54,23 @@ public class DeeUIPlugin extends LangUIPlugin {
 		return DeePluginImages.class;
 	}
 	
+	private DubProcessUIListener dubProcessListener;
+	
 	@Override
 	protected void doCustomStart(BundleContext context) {
 		SWTUtil.enableDebugColorHelpers = Platform.inDebugMode();
 		
 		listener = new DeeBuilderUIListener();
 		DeeProjectBuilder.addDataListener(listener);
+		
+		dubProcessListener = new DubProcessUIListener();
+		DubModelManager.getDefault().addDubProcessListener(dubProcessListener);
 	}
 	
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		DubModelManager.getDefault().removeDubProcessListener(dubProcessListener);
+		
 		DeeProjectBuilder.removeDataListener(listener);
 		
 		super.stop(context);

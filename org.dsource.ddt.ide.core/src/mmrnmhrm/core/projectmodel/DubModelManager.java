@@ -15,15 +15,20 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.TimeoutException;
+import java.util.List;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.ListenerListHelper;
-import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
+import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.CoreExecutorAgent;
 import mmrnmhrm.core.DeeCore;
@@ -55,13 +60,14 @@ import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParser;
 import dtool.dub.DubManifestParser;
 
-public class DubModelManager extends ListenerListHelper<IDubProjectModelListener> {
+public class DubModelManager extends ListenerListHelper<IDubModelListener> {
 	
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
-	public static DubModelManager defaultInstance;
+	protected static DubModelManager defaultInstance;
 	
 	public static void initializeDefault() throws CoreException {
+		assertTrue(defaultInstance == null);
 		defaultInstance = new DubModelManager();
 	}
 	
@@ -89,6 +95,16 @@ public class DubModelManager extends ListenerListHelper<IDubProjectModelListener
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
 	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubModelManager.class.getSimpleName());
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
+	
+	protected final ListenerListHelper<IDubProcessListener> dubProcessListenersHelper = new ListenerListHelper<>();
+	
+	public void addDubProcessListener(IDubProcessListener dubProcessListener) {
+		dubProcessListenersHelper.addListener(dubProcessListener);
+	}
+	
+	public void removeDubProcessListener(IDubProcessListener dubProcessListener) {
+		dubProcessListenersHelper.removeListener(dubProcessListener);
+	}
 	
 	public DubModelManager() throws CoreException {
 		// Run initialization in executor thread.
@@ -140,7 +156,6 @@ public class DubModelManager extends ListenerListHelper<IDubProjectModelListener
 		}
 	}
 	
-	
 	protected synchronized void addProject(IProject project, DubBundleDescription dubBundleDescription) {
 		log.println(">> Add project info: ", project);
 		dubBundleInfos.put(project.getName(), dubBundleDescription);
@@ -154,7 +169,7 @@ public class DubModelManager extends ListenerListHelper<IDubProjectModelListener
 	}
 	
 	protected void fireUpdateEvent(DubModelManager source, DubBundleDescription object) {
-		for (IDubProjectModelListener listener : getListeners()) {
+		for (IDubModelListener listener : getListeners()) {
 			listener.notifyUpdateEvent(source, object);
 		}
 	}
@@ -212,6 +227,12 @@ public class DubModelManager extends ListenerListHelper<IDubProjectModelListener
 		
 	}
 	
+	/** Marker interface for listener callbacks that runs in the Dub executor */
+	@Target(ElementType.METHOD)
+	@Retention(RetentionPolicy.SOURCE)
+	public static @interface RunsInDubExecutor {
+	}
+	
 	protected void checkNewProject(IProject project) {
 		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
 		if(packageFile != null && packageFile.getType() == IResource.FILE) {
@@ -247,14 +268,27 @@ public class DubModelManager extends ListenerListHelper<IDubProjectModelListener
 }
 
 
+class DubExternalProcessHelper extends ExternalProcessOutputHelper {
+	
+	public DubExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders) {
+		super(process, readStdErr, startReaders);
+	}
+	
+	@Override
+	protected void handleListenerException(RuntimeException e) {
+		LangCore.logError(e, "Internal error notifying listener");
+	}
+	
+}
+
 class UpdateProjectModel implements Runnable {
 	
 	protected final IProject project;
-	protected DubModelManager dubProjectModel;
+	protected final DubModelManager dubModelManager;
 	
-	protected UpdateProjectModel(IProject project, DubModelManager dubProjectModel) {
+	protected UpdateProjectModel(IProject project, DubModelManager dubModelManager) {
 		this.project = project;
-		this.dubProjectModel = dubProjectModel;
+		this.dubModelManager = dubModelManager;
 	}
 	
 	@Override
@@ -266,6 +300,13 @@ class UpdateProjectModel implements Runnable {
 		DeeCore.logError(ce);
 	}
 	
+	public void notifyDubProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb) {
+		List<IDubProcessListener> listeners = dubModelManager.dubProcessListenersHelper.getListeners();
+		for (IDubProcessListener dubProcessListener : listeners) {
+			dubProcessListener.handleProcessStarted(processHelper, pb);
+		}
+	}
+	
 	protected Void updateProject(IProject project) {
 		
 		deleteDubMarkers(project);
@@ -274,16 +315,20 @@ class UpdateProjectModel implements Runnable {
 		assertTrue(location.isAbsolute());
 		ProcessBuilder pb = new ProcessBuilder("dub", "describe").directory(location.toFile());
 		
-		ExternalProcessOutputReader processHelper;
+		ExternalProcessOutputHelper processHelper;
 		try {
-			processHelper = new ExternalProcessOutputReader(pb);
+			processHelper = new DubExternalProcessHelper(pb.start(), true, false);
 		} catch (IOException e) {
 			return setProjectDubError(project, "Could not start dub process: ",  e);
 		}
+		
+		notifyDubProcessStarted(processHelper, pb);		
+		processHelper.startReaderThreads();
+		
 		try {
-			processHelper.awaitTerminationStrict_destroyOnException(50000);
-		} catch (TimeoutException | InterruptedException e) {
-			return setProjectDubError(project, "Timeout running dub process.", null);
+			processHelper.awaitTerminationStrict_destroyOnException();
+		} catch (InterruptedException e) {
+			return setProjectDubError(project, "Interrupted running dub process.", null);
 		}
 		String descriptionOutput;
 		String stdErr;
@@ -329,7 +374,7 @@ class UpdateProjectModel implements Runnable {
 		DubBundleDescription bundleDesc = new DubBundleDescription(
 				new DubBundle(location, "<dub_error>", dubError), true); //TODO test this path
 		
-		dubProjectModel.addProject(project, bundleDesc);
+		dubModelManager.addProject(project, bundleDesc);
 		
 		try {
 			IMarker dubMarker = project.createMarker(DubModelManager.DUB_PROBLEM_ID);
@@ -362,7 +407,7 @@ class UpdateProjectModel implements Runnable {
 			updateDubContainer(projectElement, getBuildpathEntriesFromDesc(bundleDesc));
 			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
 			
-			dubProjectModel.addProject(project, bundleDesc);
+			dubModelManager.addProject(project, bundleDesc);
 		} catch (ModelException me) {
 			logInternalError(me);
 		}

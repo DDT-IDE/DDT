@@ -6,7 +6,7 @@
  * Added DUB support.
    * Modify buildpath to include dub dependencies.
  TODO:
-   * dub describe output console
+   * dub describe output console - termination, startup
    * UI actions for DUB Elements in navigator
    * Create a job to allow stopping DUB run. Remove timeout.
    * DLTK Model elements in Project Explorer

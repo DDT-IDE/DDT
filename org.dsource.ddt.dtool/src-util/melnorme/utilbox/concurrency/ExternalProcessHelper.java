@@ -26,8 +26,8 @@ public abstract class ExternalProcessHelper {
 	
 	public static final int NO_TIMEOUT = -1;
 	
-	protected final boolean redirectErrorStream;
 	protected final Process process;
+	protected final boolean readStdErr;
 	
 	/** This latch exists to signal that the process has terminated, and also that the reader threads 
 	 * have finished reading all input. This last aspect is very important. */
@@ -37,18 +37,18 @@ public abstract class ExternalProcessHelper {
 	protected final Thread stderrReaderThread; // Can be null
 	
 	public ExternalProcessHelper(ProcessBuilder pb) throws IOException {
-		this(pb, true);
+		this(pb.start(), pb.redirectErrorStream() == false, true);
 	}
 	
-	public ExternalProcessHelper(ProcessBuilder pb, boolean startReaders) throws IOException {
-		redirectErrorStream = pb.redirectErrorStream();
-		process = pb.start();
+	public ExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders) {
+		this.process = process;
+		this.readStdErr = readStdErr;
 		
 		fullTerminationLatch = new CountDownLatch(2);
 		
 		mainReaderThread = new ProcessHelperMainThread(createMainReaderTask());
 		
-		if(!redirectErrorStream) {
+		if(readStdErr) {
 			stderrReaderThread = new ProcessHelperStdErrThread(createStdErrReaderTask());
 		} else {
 			fullTerminationLatch.countDown(); // dont start stderr thread, so update latch
@@ -59,7 +59,7 @@ public abstract class ExternalProcessHelper {
 		}
 	}
 	
-	protected void startReaderThreads() {
+	public void startReaderThreads() {
 		mainReaderThread.start();
 		if(stderrReaderThread != null) {
 			stderrReaderThread.start();
@@ -70,8 +70,8 @@ public abstract class ExternalProcessHelper {
 		return process;
 	}
 	
-	public boolean isRedirectingErrorStream() {
-		return redirectErrorStream;
+	public boolean isReadingStdErr() {
+		return readStdErr;
 	}
 	
 	public boolean isFullyTerminated() {
