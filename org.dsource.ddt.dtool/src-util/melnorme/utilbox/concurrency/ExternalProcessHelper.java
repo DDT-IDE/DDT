@@ -97,6 +97,8 @@ public abstract class ExternalProcessHelper {
 			} finally {
 				waitForProcessIndefinitely();
 				fullTerminationLatch.countDown();
+				
+				mainReaderThread_Terminated();
 			}
 		}
 		
@@ -111,6 +113,10 @@ public abstract class ExternalProcessHelper {
 			}
 		}
 		
+	}
+	
+	/** Callback method for when main reader thread is about to terminate. Subclasses can extend. */
+	public void mainReaderThread_Terminated() {
 	}
 	
 	protected class ProcessHelperStdErrThread extends Thread {

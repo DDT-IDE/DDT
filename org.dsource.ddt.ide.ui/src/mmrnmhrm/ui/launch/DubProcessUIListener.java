@@ -99,6 +99,15 @@ public class DubProcessUIListener implements IDubProcessListener {
 			}		
 		}
 		
+		@Override
+		public void notifyProcessTerminatedAndRead(int exitCode) {
+			try {
+				metaOut.write("--------  Terminated, exit code: " + exitCode +  "  --------\n");
+			} catch (IOException e) {
+				// Ignore
+			}
+		}
+		
 	}
 	
 }

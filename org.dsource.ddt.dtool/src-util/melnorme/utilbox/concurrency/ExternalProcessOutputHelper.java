@@ -28,6 +28,9 @@ public class ExternalProcessOutputHelper extends ExternalProcessOutputReader {
 		
 		void notifyStdErrListeners(byte[] buffer, int offset, int readCount);
 		
+		/** Notifies that the underlying process has terminated, and all reader threads have finished processing. */
+		void notifyProcessTerminatedAndRead(int exitCode);
+		
 	}
 	
 	protected final ListenerListHelper<IProcessOutputListener> outputListeners = new ListenerListHelper<>();
@@ -41,7 +44,7 @@ public class ExternalProcessOutputHelper extends ExternalProcessOutputReader {
 		return mainReader = new ReadAllBytesTask(process.getInputStream()) {
 			@Override
 			protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
-				notifyListeners(buffer, offset, readCount, true);
+				notifyDataRead(buffer, offset, readCount, true);
 			}
 
 		};
@@ -52,12 +55,12 @@ public class ExternalProcessOutputHelper extends ExternalProcessOutputReader {
 		return stderrReader = new ReadAllBytesTask(process.getErrorStream()) {
 			@Override
 			protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
-				notifyListeners(buffer, offset, readCount, false);
+				notifyDataRead(buffer, offset, readCount, false);
 			}
 		};
 	}
 	
-	protected void notifyListeners(byte[] buffer, int offset, int readCount, boolean stdOut) {
+	protected void notifyDataRead(byte[] buffer, int offset, int readCount, boolean stdOut) {
 		for (IProcessOutputListener pol : outputListeners.getListeners()) {
 			try {
 				if(stdOut) 
@@ -65,6 +68,30 @@ public class ExternalProcessOutputHelper extends ExternalProcessOutputReader {
 				else {
 					pol.notifyStdErrListeners(buffer, offset, readCount);
 				}
+			} catch (RuntimeException e) {
+				handleListenerException(e);
+			}
+		}
+	}
+	
+	@Override
+	public void mainReaderThread_Terminated() {
+		while(true) {
+			try {
+				fullTerminationLatch.await();
+				break;
+			} catch (InterruptedException e) {
+				// retry await
+			}
+		}
+		notifyProcessTerminatedAndRead(process.exitValue());
+	}
+	
+	
+	protected void notifyProcessTerminatedAndRead(int exitCode) {
+		for (IProcessOutputListener pol : outputListeners.getListeners()) {
+			try {
+				pol.notifyProcessTerminatedAndRead(exitCode);
 			} catch (RuntimeException e) {
 				handleListenerException(e);
 			}
