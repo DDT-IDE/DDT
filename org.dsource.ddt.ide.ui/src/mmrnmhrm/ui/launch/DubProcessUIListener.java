@@ -3,7 +3,6 @@ package mmrnmhrm.ui.launch;
 import java.io.IOException;
 
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.utilbox.concurrency.ExceptionTrackingRunnable;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper.IProcessOutputListener;
 import melnorme.utilbox.misc.StringUtil;
@@ -37,17 +36,18 @@ public class DubProcessUIListener implements IDubProcessListener {
 	@RunsInDubExecutor
 	@Override
 	public void handleProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb) {
+		final DubProcessUIConsoleOutputHandler outputListener = new DubProcessUIConsoleOutputHandler(processHelper);
 		
-		ExceptionTrackingRunnable<DubProcessOutputListener, RuntimeException> createConsoleListener =
-				new ExceptionTrackingRunnable<DubProcessOutputListener, RuntimeException>() {
-			
+		// BM: it's not clear to me if a Color can be created outside UI thread, so do asyncExec
+		// I would think one cant, but some Platform code (ProcessConsole) does freely create Color instances
+		// on the UI thread, so maybe the asyncExec is not necessary.
+		Display.getDefault().asyncExec(new Runnable() {
 			@Override
-			protected DubProcessOutputListener doRun() throws RuntimeException {
-				return new DubProcessOutputListener();
+			public void run() {
+				outputListener.metaOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
+				outputListener.stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 			}
-		};
-		Display.getDefault().syncExec(createConsoleListener);
-		DubProcessOutputListener outputListener = createConsoleListener.getResult();
+		});
 		
 		try {
 			outputListener.metaOut.write("--------  " + StringUtil.collToString(pb.command(), " ") + " --------\n");
@@ -59,26 +59,26 @@ public class DubProcessUIListener implements IDubProcessListener {
 		processHelper.getOutputListeningHelper().addListener(outputListener);
 	}
 	
-	public static class DubProcessOutputListener implements IProcessOutputListener {
+	public static class DubProcessUIConsoleOutputHandler implements IProcessOutputListener {
+		
+		protected final ExternalProcessOutputHelper processHelper;
 		
 		private final MessageConsole console;
 		private final MessageConsoleStream metaOut;
 		private final MessageConsoleStream stdOut;
 		private final MessageConsoleStream stdErr;
-
-		public DubProcessOutputListener() {
-			//TODO review this code
+		
+		public DubProcessUIConsoleOutputHandler(ExternalProcessOutputHelper processHelper) {
+			this.processHelper = processHelper;
 			
 			console = ConsoleUtils.findOrCreateMessageConsole(CONSOLE_NAME);
 			console.clearConsole();
 			
 			metaOut = console.newMessageStream();
-			metaOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
 			
 			stdOut = console.newMessageStream();
 			stdErr = console.newMessageStream();
 			stdErr.setActivateOnWrite(true);
-			stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 		}
 		
 		@Override
@@ -86,7 +86,7 @@ public class DubProcessUIListener implements IDubProcessListener {
 			try {
 				stdOut.write(buffer, offset, readCount);
 			} catch (IOException e) {
-//				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+				// Ignore, it could simply mean the console page has been closed
 			}
 		}
 		
@@ -95,7 +95,7 @@ public class DubProcessUIListener implements IDubProcessListener {
 			try {
 				stdErr.write(buffer, offset, readCount);
 			} catch (IOException e) {
-//				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+				// Ignore, it could simply mean the console page has been closed
 			}		
 		}
 		
