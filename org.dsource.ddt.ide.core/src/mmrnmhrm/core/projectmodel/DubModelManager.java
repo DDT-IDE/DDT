@@ -20,7 +20,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
@@ -60,7 +59,7 @@ import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParser;
 import dtool.dub.DubManifestParser;
 
-public class DubModelManager extends ListenerListHelper<IDubModelListener> {
+public class DubModelManager {
 	
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
@@ -68,7 +67,7 @@ public class DubModelManager extends ListenerListHelper<IDubModelListener> {
 	
 	public static void initializeDefault() throws CoreException {
 		assertTrue(defaultInstance == null);
-		defaultInstance = new DubModelManager();
+		defaultInstance = new DubModelManager(DubModel.getDefault());
 	}
 	
 	public static void disposeDefault() throws CoreException {
@@ -79,34 +78,27 @@ public class DubModelManager extends ListenerListHelper<IDubModelListener> {
 		return defaultInstance;
 	}
 	
-	public static DubBundleDescription getBundleInfo(String projectName) {
-		return getDefault().doGetBundleInfo(projectName);
-	}
-	
-	public static DubDependenciesContainer getDubContainer(IProject project) {
-		DubBundleDescription bundleInfo = getBundleInfo(project.getName());
-		if(bundleInfo == null)
-			return null;
-		return new DubDependenciesContainer(bundleInfo);
-	}
-	
 	public static final String DUB_PROBLEM_ID = DeeCore.EXTENSIONS_IDPREFIX + "DubProblem";
 	
-	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
+	/** Marker interface for listener callbacks that runs in the Dub executor. 
+	 * Used for documentation purposes only, has no effect in code. */
+	@Target(ElementType.METHOD)
+	@Retention(RetentionPolicy.SOURCE)
+	public static @interface RunsInDubExecutor { }
+	
+	/* ----------------------------------- */
+	
+	protected final DubModel model;
 	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubModelManager.class.getSimpleName());
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
 	
-	protected final ListenerListHelper<IDubProcessListener> dubProcessListenersHelper = new ListenerListHelper<>();
-	
-	public void addDubProcessListener(IDubProcessListener dubProcessListener) {
-		dubProcessListenersHelper.addListener(dubProcessListener);
+	public DubModelManager(DubModel model) throws CoreException {
+		this.model = model;
+		
+		startManager();
 	}
 	
-	public void removeDubProcessListener(IDubProcessListener dubProcessListener) {
-		dubProcessListenersHelper.removeListener(dubProcessListener);
-	}
-	
-	public DubModelManager() throws CoreException {
+	protected void startManager() {
 		// Run initialization in executor thread.
 		// This is necessary so that we avoid running the initialization during plugin initialization.
 		// Otherwise there could be problems because initialization is heavyweight code:
@@ -119,6 +111,7 @@ public class DubModelManager extends ListenerListHelper<IDubModelListener> {
 		});
 	}
 	
+	@RunsInDubExecutor
 	protected void initializeModelManager() {
 		try {
 			DLTKCore.run(new IWorkspaceRunnable() {
@@ -156,27 +149,6 @@ public class DubModelManager extends ListenerListHelper<IDubModelListener> {
 		}
 	}
 	
-	protected synchronized void addProject(IProject project, DubBundleDescription dubBundleDescription) {
-		log.println(">> Add project info: ", project);
-		dubBundleInfos.put(project.getName(), dubBundleDescription);
-		fireUpdateEvent(this, dubBundleDescription);
-	}
-	
-	protected synchronized void removeProject(IProject project) {
-		log.println(">> Removing project: ", project);
-		DubBundleDescription oldDesc = dubBundleInfos.remove(project.getName());
-		fireUpdateEvent(this, oldDesc);
-	}
-	
-	protected void fireUpdateEvent(DubModelManager source, DubBundleDescription object) {
-		for (IDubModelListener listener : getListeners()) {
-			listener.notifyUpdateEvent(source, object);
-		}
-	}
-	
-	protected synchronized DubBundleDescription doGetBundleInfo(String projectName) {
-		return dubBundleInfos.get(projectName);
-	}
 	
 	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path("dub.json");
 	
@@ -227,12 +199,6 @@ public class DubModelManager extends ListenerListHelper<IDubModelListener> {
 		
 	}
 	
-	/** Marker interface for listener callbacks that runs in the Dub executor */
-	@Target(ElementType.METHOD)
-	@Retention(RetentionPolicy.SOURCE)
-	public static @interface RunsInDubExecutor {
-	}
-	
 	protected void checkNewProject(IProject project) {
 		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
 		if(packageFile != null && packageFile.getType() == IResource.FILE) {
@@ -252,6 +218,14 @@ public class DubModelManager extends ListenerListHelper<IDubModelListener> {
 		executorAgent.submit(new UpdateProjectModel(project, this));
 	}
 	
+	protected void addProject(IProject project, DubBundleDescription dubBundleDescription) {
+		model.addProject(project, dubBundleDescription);
+	}
+	
+	protected void removeProject(IProject project) {
+		model.removeProject(project);
+	}
+	
 	public void syncPendingUpdates() {
 		executorAgent.waitForPendingTasks();
 	}
@@ -264,7 +238,19 @@ public class DubModelManager extends ListenerListHelper<IDubModelListener> {
 	public static IMarker[] getDubErrorMarkers(IProject project) throws CoreException {
 		return project.findMarkers(DubModelManager.DUB_PROBLEM_ID, true, IResource.DEPTH_ONE);
 	}
-
+	
+	/* ----------------------------------- */
+	
+	protected final ListenerListHelper<IDubProcessListener> dubProcessListenersHelper = new ListenerListHelper<>();
+	
+	public void addDubProcessListener(IDubProcessListener dubProcessListener) {
+		dubProcessListenersHelper.addListener(dubProcessListener);
+	}
+	
+	public void removeDubProcessListener(IDubProcessListener dubProcessListener) {
+		dubProcessListenersHelper.removeListener(dubProcessListener);
+	}
+	
 }
 
 
@@ -413,7 +399,8 @@ class UpdateProjectModel implements Runnable {
 		}
 	}
 	
-	protected void updateDubContainer(IScriptProject projectElement, IBuildpathEntry[] entries) throws ModelException {
+	protected void updateDubContainer(IScriptProject projectElement, IBuildpathEntry[] entries) 
+			throws ModelException {
 		Path containerPath = new Path(DubBuildpathContainerInitializer.ID);
 		DubContainer dubContainer = new DubContainer(containerPath, projectElement, entries);
 		DLTKCore.setBuildpathContainer(containerPath, array(projectElement), array(dubContainer), null);

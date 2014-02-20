@@ -19,6 +19,6 @@ public interface IDubModelListener {
 	 * Do run long running or locking code in the implementation, 
 	 * just post the event to another thread/agent/dispatcher to handle.
 	 */
-	void notifyUpdateEvent(DubModelManager source, DubBundleDescription object);
+	void notifyUpdateEvent(DubModel source, DubBundleDescription object);
 	
 }

@@ -101,7 +101,7 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 	}
 	
 	protected static DubBundleDescription getExistingDubBundleInfo(String projectName) {
-		return assertNotNull(DubModelManager.getBundleInfo(projectName));
+		return assertNotNull(DubModel.getBundleInfo(projectName));
 	}
 	
 	protected static LatchRunnable writeDubJson(IProject project, String contents) throws CoreException {

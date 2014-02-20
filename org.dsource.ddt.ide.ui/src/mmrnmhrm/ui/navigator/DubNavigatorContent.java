@@ -4,7 +4,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.util.swt.jface.AbstractContentProvider;
 import mmrnmhrm.core.projectmodel.CommonDubElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
-import mmrnmhrm.core.projectmodel.DubModelManager;
+import mmrnmhrm.core.projectmodel.DubModel;
 import mmrnmhrm.core.projectmodel.IDubModelListener;
 
 import org.eclipse.core.resources.IProject;
@@ -34,10 +34,10 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		super.inputChanged(viewer, oldInput, newInput);
-		DubModelManager.getDefault().addListener(new IDubModelListener() {
+		DubModel.getDefault().addListener(new IDubModelListener() {
 			
 			@Override
-			public void notifyUpdateEvent(DubModelManager source, DubBundleDescription eventObject) {
+			public void notifyUpdateEvent(DubModel source, DubBundleDescription eventObject) {
 				Display.getDefault().asyncExec(new Runnable() {
 					@Override
 					public void run() {
@@ -56,7 +56,7 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	public boolean hasChildren(Object element) {
 		if(element instanceof IProject) {
 			IProject project = (IProject) element;
-			return DubModelManager.getBundleInfo(project.getName()) != null;
+			return DubModel.getBundleInfo(project.getName()) != null;
 		}
 		if(element instanceof CommonDubElement) {
 			return ((CommonDubElement) element).hasChildren();
@@ -67,7 +67,7 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	@Override
 	public Object[] getChildren(Object parent) {
 		if(parent instanceof IProject) {
-			DubDependenciesContainer dubContainer = DubModelManager.getDubContainer((IProject) parent);
+			DubDependenciesContainer dubContainer = DubModel.getDubContainer((IProject) parent);
 			if(dubContainer == null) {
 				return null;
 			}

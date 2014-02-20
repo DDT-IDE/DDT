@@ -40,7 +40,7 @@ import dtool.dub.DubManifestParserTest;
 public class DubModelManagerTest extends CommonDubModelTest {
 	
 	protected DubDependenciesContainer getDubContainer(IProject project) {
-		return DubModelManager.getDubContainer(project);
+		return DubModel.getDubContainer(project);
 	}
 	
 	/* ************************************ */
@@ -56,14 +56,14 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		// check no change:
 		assertTrue(getDubExecutorAgent().getSubmittedTaskCount() == taskCount); 
-		assertTrue(DubModelManager.getBundleInfo(DUB_TEST) == null);
+		assertTrue(DubModel.getBundleInfo(DUB_TEST) == null);
 		
 		try {
 			runBasicTestSequence(project);
 		} finally {
 			project.delete(true, null); // cleanup
 		}
-		assertTrue(DubModelManager.getBundleInfo(project.getName()) == null);
+		assertTrue(DubModel.getBundleInfo(project.getName()) == null);
 		assertTrue(getDubContainer(project) == null);
 		
 		// Verify code path where a project that already has dub manifest is added.
