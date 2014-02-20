@@ -41,7 +41,9 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IBuildpathEntry;
@@ -70,7 +72,7 @@ public class DubModelManager {
 	}
 	
 	public static void shutdownDefault() {
-		defaultInstance.shutdown();
+		defaultInstance.shutdownManager();
 	}
 	
 	public static DubModelManager getDefault() {
@@ -90,13 +92,17 @@ public class DubModelManager {
 	protected final DubModel model;
 	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubModelManager.class.getSimpleName());
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
+	protected boolean started = false;
 	
 	public DubModelManager(DubModel model) {
 		this.model = model;
 	}
 	
-	protected void startManager() {
-		// Run initialization in executor thread.
+	public void startManager() {
+		assertTrue(started == false); // start only once
+		started = true;
+		
+		// Run heavyweight initialization in executor thread.
 		// This is necessary so that we avoid running the initialization during plugin initialization.
 		// Otherwise there could be problems because initialization is heavyweight code:
 		// it requests workspace locks (which may not be available) and issues workspace deltas
@@ -106,6 +112,18 @@ public class DubModelManager {
 				initializeModelManager();
 			}
 		});
+	}
+	
+	public void shutdownManager() {
+		// It is possible to shutdown the manager without having it started.
+		
+		DLTKCore.removeElementChangedListener(listener);
+		executorAgent.shutdownNow();
+		try {
+			executorAgent.awaitTermination();
+		} catch (InterruptedException e) {
+			DeeCore.log(e);
+		}
 	}
 	
 	@RunsInDubExecutor
@@ -122,16 +140,6 @@ public class DubModelManager {
 			DeeCore.logError(e);
 			// This really should not happen, but still try to recover by registering listener.
 			DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
-		}
-	}
-	
-	public void shutdown() {
-		DLTKCore.removeElementChangedListener(listener);
-		executorAgent.shutdownNow();
-		try {
-			executorAgent.awaitTermination();
-		} catch (InterruptedException e) {
-			DeeCore.log(e);
 		}
 	}
 	
@@ -206,13 +214,17 @@ public class DubModelManager {
 	protected void queueProjectUpdate(final IProject project) {
 		log.println(">> Updating project: ", project);
 		
+		readUnresolvedBundleDescription(project);
+		
+		new UpdateProjectModelJob(project, this).schedule();
+	}
+	
+	protected void readUnresolvedBundleDescription(final IProject project) {
 		java.nio.file.Path location = project.getLocation().toFile().toPath();
 		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation(location);
 		
 		DubBundleDescription dubBundleDescription = new DubBundleDescription(unresolvedBundle, false);
 		addProject(project, dubBundleDescription);
-		
-		executorAgent.submit(new UpdateProjectModel(project, this));
 	}
 	
 	protected void addProject(IProject project, DubBundleDescription dubBundleDescription) {
@@ -253,8 +265,16 @@ public class DubModelManager {
 
 class DubExternalProcessHelper extends ExternalProcessOutputHelper {
 	
-	public DubExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders) {
-		super(process, readStdErr, startReaders);
+	protected IProgressMonitor monitor;
+	
+	public DubExternalProcessHelper(Process process, IProgressMonitor monitor, boolean startReaders) {
+		super(process, true, startReaders);
+		this.monitor = monitor;
+	}
+	
+	@Override
+	protected boolean isCanceled() {
+		return monitor.isCanceled();
 	}
 	
 	@Override
@@ -264,19 +284,28 @@ class DubExternalProcessHelper extends ExternalProcessOutputHelper {
 	
 }
 
-class UpdateProjectModel implements Runnable {
+class UpdateProjectModelJob extends Job {
 	
 	protected final IProject project;
 	protected final DubModelManager dubModelManager;
 	
-	protected UpdateProjectModel(IProject project, DubModelManager dubModelManager) {
+	protected UpdateProjectModelJob(IProject project, DubModelManager dubModelManager) {
+		super("Running 'dub describe' on project: " + project.getName());
 		this.project = project;
 		this.dubModelManager = dubModelManager;
 	}
 	
 	@Override
-	public void run() {
-		updateProject(project);
+	protected IStatus run(final IProgressMonitor monitor) {
+		dubModelManager.executorAgent.submit(new Runnable() {
+			@Override
+			public void run() {
+				setThread(Thread.currentThread());
+				updateProject(project, monitor);
+				done(DeeCore.createStatus("done")); 
+			}
+		});
+		return ASYNC_FINISH;
 	}
 	
 	protected void logInternalError(CoreException ce) {
@@ -290,7 +319,7 @@ class UpdateProjectModel implements Runnable {
 		}
 	}
 	
-	protected Void updateProject(IProject project) {
+	protected Void updateProject(IProject project, IProgressMonitor monitor) {
 		
 		deleteDubMarkers(project);
 		
@@ -300,7 +329,7 @@ class UpdateProjectModel implements Runnable {
 		
 		ExternalProcessOutputHelper processHelper;
 		try {
-			processHelper = new DubExternalProcessHelper(pb.start(), true, false);
+			processHelper = new DubExternalProcessHelper(pb.start(), monitor, false);
 		} catch (IOException e) {
 			return setProjectDubError(project, "Could not start dub process: ",  e);
 		}
@@ -311,6 +340,9 @@ class UpdateProjectModel implements Runnable {
 		try {
 			processHelper.awaitTerminationStrict_destroyOnException();
 		} catch (InterruptedException e) {
+			if(monitor.isCanceled()) {
+				return setProjectDubError(project, "Cancelled dub process.", null);
+			}
 			return setProjectDubError(project, "Interrupted running dub process.", null);
 		}
 		String descriptionOutput;
