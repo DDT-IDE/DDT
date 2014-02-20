@@ -23,39 +23,37 @@ public class DubBundleDescription {
 	protected final DubBundle mainDubBundle;
 	protected final DubBundle[] bundleDependencies;
 	protected final DubBundleException error;
-	protected final boolean isDubDescribeError;
+	
+	/** Constructor for unresolved descriptions. */
+	public DubBundleDescription(DubBundle unresolvedBundle) {
+		this(unresolvedBundle, EMTPY_BUNDLE_DEPS, false);
+	}
 	
 	public DubBundleDescription(DubBundle mainDubBunble, DubBundle[] deps) {
+		this(mainDubBunble, deps, true);
+	}
+	
+	protected DubBundleDescription(DubBundle mainDubBunble, DubBundle[] deps, boolean isResolvedFlag) {
 		assertNotNull(mainDubBunble);
 		assertNotNull(deps);
 		
 		this.mainDubBundle = mainDubBunble;
 		this.bundleDependencies = deps;
-		this.isResolved = true;
-		this.isDubDescribeError = false;
 		
+		this.error = findError(mainDubBunble, bundleDependencies);
+		this.isResolved = isResolvedFlag && error == null;
+	}
+	
+	protected static DubBundleException findError(DubBundle mainDubBunble, DubBundle[] bundleDependencies) {
 		if(mainDubBunble.error != null) {
-			error = mainDubBunble.error;
+			return mainDubBunble.error;
 		} else {
 			for (DubBundle dubBundle : bundleDependencies) {
 				if(dubBundle.error != null) {
-					error = dubBundle.error;
-					return;
+					return dubBundle.error;
 				}
 			}
-			error = null;
-		}
-	}
-	
-	/** Constructor for unresolved descriptions. */
-	public DubBundleDescription(DubBundle unresolvedBundle, boolean isResolved, boolean isDubDescribeError) {
-		this.mainDubBundle = unresolvedBundle;
-		this.bundleDependencies = EMTPY_BUNDLE_DEPS;
-		this.isResolved = isResolved;
-		this.error = mainDubBundle.error;
-		this.isDubDescribeError = isDubDescribeError;
-		if(isDubDescribeError) {
-			assertNotNull(error);
+			return null;
 		}
 	}
 	
@@ -69,6 +67,8 @@ public class DubBundleDescription {
 		return assertNotNull(bundleDependencies);
 	}
 	
+	/** A bundle description is considered resolved if dub.json had no errors, and if 
+	 * a 'dub describe' output was processed successfully. */
 	public boolean isResolved() {
 		return isResolved;
 	}

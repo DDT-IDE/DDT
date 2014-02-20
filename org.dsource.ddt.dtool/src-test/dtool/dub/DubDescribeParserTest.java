@@ -66,9 +66,8 @@ public class DubDescribeParserTest extends CommonDubTest {
 			
 			checkResolvedBundle(dubDescribe, "Bundle name not defined.",
 				main(IGNORE_PATH, null, "xptobundle", IGNORE_STR, null,
-					rawDeps("foo_lib", "bar_lib"),
- 					bundle("Bundle name not defined.", IGNORE_STR),
-					bundle(null, "bar_lib")));
+					rawDeps("foo_lib"),
+ 					IGNORE_DEPS));
 		}
 	}
 	

@@ -72,7 +72,7 @@ public class DubModel extends ListenerListHelper<IDubModelListener> {
 		
 		DubBundleDescription bundleDesc = new DubBundleDescription(
 				new DubBundle(main.location, main.name, main.version, main.srcFolders, main.implicitSrcFolders,
-					main.dependencies, dubError), false, true);
+					main.dependencies, dubError));
 		addProjectModel(project, bundleDesc);
 	}
 	

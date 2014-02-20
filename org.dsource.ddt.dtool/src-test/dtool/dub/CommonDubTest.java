@@ -109,7 +109,8 @@ public class CommonDubTest extends DToolBaseTest {
 			
 			if(!isResolved) {
 				check(bundleDescription.getMainBundle(), isResolved);
-				assertTrue(bundleDescription.getBundleDependencies().length == 0);
+				assertTrue(bundleDescription.hasErrors() ||
+					bundleDescription.getBundleDependencies().length == 0);
 				return;
 			} else {
 				checkAllExceptDepRefs(bundleDescription.getMainBundle(), isResolved);
@@ -149,7 +150,8 @@ public class CommonDubTest extends DToolBaseTest {
 			DubBundleChecker mainBundleChecker) {
 		assertExceptionContains(bundleDescription.error, dubDescribeError);
 		
-		mainBundleChecker.checkBundleDescription(bundleDescription, true);
+		boolean isResolved = dubDescribeError == null;
+		mainBundleChecker.checkBundleDescription(bundleDescription, isResolved);
 	}
 	
 	/* ------------------------------ */

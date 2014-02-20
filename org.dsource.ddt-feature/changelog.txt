@@ -11,6 +11,7 @@
    * DLTK Model elements in Project Explorer
     * UI actions
    * get parent
+   * dub.json errors presenting
    * DUB program path preference.
    * automatic Compiler Library setup from DUB.
    * remove DLTK outdated UI

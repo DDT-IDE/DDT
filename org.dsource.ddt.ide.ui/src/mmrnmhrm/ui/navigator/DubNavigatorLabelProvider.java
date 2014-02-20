@@ -52,17 +52,17 @@ class DubElementTextProvider extends DubElementSwitcher<String>{
 		String baseText = "Dub Dependencies";
 		
 		DubBundleDescription bundleInfo = element.getBundleInfo();
-		if(bundleInfo.isResolved()) {
-			if(bundleInfo.hasErrors()) {
-				return baseText + " [DUB error]";
+		if(bundleInfo.hasErrors()) {
+			if(bundleInfo.isResolved()) {
+				return baseText + " [DUB error]"; // TODO: query exception for more details
 			} else {
-				return baseText;
+				return baseText + " [DUB error]";
 			}
 		} else {
-			if(bundleInfo.hasErrors()) {
-				return baseText + " [dub.json error]";
+			if(bundleInfo.isResolved()) {
+				return baseText;
 			} else {
-				return baseText + " <dub describe'ing>";
+				return baseText + " <dub describing>";
 			}
 		}
 	}

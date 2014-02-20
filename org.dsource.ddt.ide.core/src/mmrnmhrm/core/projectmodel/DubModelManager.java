@@ -228,7 +228,7 @@ public class DubModelManager {
 		java.nio.file.Path location = project.getLocation().toFile().toPath();
 		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation(location);
 		
-		DubBundleDescription dubBundleDescription = new DubBundleDescription(unresolvedBundle, false, false);
+		DubBundleDescription dubBundleDescription = new DubBundleDescription(unresolvedBundle);
 		addProjectModel(project, dubBundleDescription);
 		return dubBundleDescription;
 	}
