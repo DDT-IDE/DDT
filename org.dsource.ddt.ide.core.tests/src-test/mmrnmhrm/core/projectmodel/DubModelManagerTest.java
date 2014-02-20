@@ -1,5 +1,6 @@
 package mmrnmhrm.core.projectmodel;
 
+import static dtool.dub.CommonDubTest.ERROR_DUB_RETURNED_NON_ZERO;
 import static dtool.dub.CommonDubTest.bundle;
 import static dtool.dub.CommonDubTest.main;
 import static dtool.dub.CommonDubTest.paths;
@@ -49,6 +50,11 @@ public class DubModelManagerTest extends CommonDubModelTest {
 	public static final String DUB_TEST = "DubTest";
 	public static Path DUB_WORKSPACE = DubManifestParserTest.DUB_WORKSPACE;
 	
+	protected static final DubBundleChecker FOO_LIB_BUNDLE = bundle(DUB_WORKSPACE.resolve("foo_lib"), 
+		null, "foo_lib", DEFAULT_VERSION, paths("src", "src2"));
+	protected static final DubBundleChecker BAR_LIB_BUNDLE = bundle(DUB_WORKSPACE.resolve("bar_lib"), 
+		null, "bar_lib", DEFAULT_VERSION, paths("source"));
+	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
@@ -60,9 +66,10 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		assertTrue(DubModel.getBundleInfo(DUB_TEST) == null);
 		
 		try {
-			runBasicTestSequence(project);
-		} finally {
+			runBasicTestSequence______________(project);
 			project.delete(true, null); // cleanup
+		} finally {
+			
 		}
 		assertTrue(DubModel.getBundleInfo(project.getName()) == null);
 		assertTrue(getDubContainer(project) == null);
@@ -71,13 +78,15 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		project = createAndOpenProject(DUB_TEST, true);
 		LatchRunnable latch = writeDubJson(project, "{"+ jsEntry("name", "xptobundle")+ jsFileEnd());
 		setupStandardDeeProject(project);
+		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project.getName());
+		latch.releaseAll();
 		
 		Path location = project.getLocation().toFile().toPath();
-		checkDubModel(latch, project, 
+		checkDubModel(unresolvedBundleDesc, project, 
 			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
 	}
 	
-	public void runBasicTestSequence(IProject project) throws Exception {
+	public void runBasicTestSequence______________(IProject project) throws Exception {
 		Path location = project.getLocation().toFile().toPath();
 		
 		writeDubJsonAndCheckDubModel("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
@@ -101,8 +110,8 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			project,
 			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders("src", "src-test"), 
 				rawDeps("foo_lib"), 
-				bundle(DUB_WORKSPACE.resolve("foo_lib"), null, "foo_lib", DEFAULT_VERSION, paths("src", "src2")),
-				bundle(DUB_WORKSPACE.resolve("bar_lib"), null, "bar_lib", DEFAULT_VERSION, paths("source"))
+				FOO_LIB_BUNDLE,
+				BAR_LIB_BUNDLE
 			)
 		);
 		
@@ -115,34 +124,47 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			project, 
 			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
+		
+		// Test errors while running dub describe
+		writeDubJsonAndCheckDubModel(
+			readFileContents(DUB_WORKSPACE.resolve("ErrorBundle_MissingDep/dub.json")),
+			
+			project,
+			main(location, ERROR_DUB_RETURNED_NON_ZERO, "ErrorBundle_MissingDep", DEFAULT_VERSION, srcFolders("src"), 
+				rawDeps("foo_lib", "NonExistantDep"), 
+				FOO_LIB_BUNDLE,
+				bundle("" , "NonExistantDep")
+			)
+		);
+		
 	}
 	
-	public void writeDubJsonAndCheckDubModel(String dubJson, IProject project, DubBundleChecker mainBundle)
+	public void writeDubJsonAndCheckDubModel(String dubJson, IProject project, DubBundleChecker expMainBundle)
 			throws CoreException {
 		LatchRunnable preWriteLatch = writeDubJson(project, dubJson);
-		checkDubModel(preWriteLatch, project, mainBundle);
+		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project.getName());
+		preWriteLatch.releaseAll();
+		
+		checkDubModel(unresolvedBundleDesc, project, expMainBundle);
 	}
 	
-	public void checkDubModel(LatchRunnable preWriteLatch, IProject project, DubBundleChecker expMainBundle) 
-			throws CoreException {
+	public void checkDubModel(DubBundleDescription unresolvedDubBundle, IProject project, 
+			DubBundleChecker expMainBundle) throws CoreException {
+		checkUnresolvedBundle(project, expMainBundle, unresolvedDubBundle);
 		
-		checkUnresolvedBundle(project, expMainBundle);
-		
-		preWriteLatch.releaseAll();
 		DubModelManager.getDefault().syncPendingUpdates();
 		
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project.getName());
-		if(expMainBundle.errorMsgStart != null) {
+		if(unresolvedDubBundle.hasErrors()) {
 			// Check that we did not attempt to call dub describe on a manifest with errors
-			return; // TODO remove this check
+			assertTrue(unresolvedDubBundle == dubBundle);
+			return;
 		}
 		
-		expMainBundle.checkBundleDescription(dubBundle, true);
-		testDubContainer(project, expMainBundle);
-		
 		DubBundleException error = dubBundle.getError();
-		DubBundleChecker[] deps = expMainBundle.deps;
 		if(error != null) {
+			expMainBundle.checkBundleDescription(unresolvedDubBundle, false);
+			testDubContainerUnresolved(project, expMainBundle, true);
 			
 			IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
 			assertTrue(markers.length == 1);
@@ -151,6 +173,10 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			assertEquals(errorMarker.getAttribute(IMarker.SEVERITY), IMarker.SEVERITY_ERROR);
 			
 		} else {
+			expMainBundle.checkBundleDescription(dubBundle, true);
+			testDubContainer(project, expMainBundle);
+
+			DubBundleChecker[] deps = expMainBundle.deps;
 			IScriptProject dubProject = DLTKCore.create(project);
 			checkRawBuildpath(dubProject.getRawBuildpath(), expMainBundle.sourceFolders);
 			
@@ -161,10 +187,10 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		}
 	}
 	
-	protected void checkUnresolvedBundle(IProject project, DubBundleChecker expMainBundle) {
-		DubBundleDescription dubBundleDesc = getExistingDubBundleInfo(project.getName());
+	protected void checkUnresolvedBundle(IProject project, DubBundleChecker expMainBundle,
+			DubBundleDescription dubBundleDesc) {
 		expMainBundle.checkBundleDescription(dubBundleDesc, false);
-		testDubContainerUnresolved(project, expMainBundle);
+		testDubContainerUnresolved(project, expMainBundle, !expMainBundle.isResolvedOnlyError());
 	}
 	
 	public static void checkRawBuildpath(IBuildpathEntry[] rawBuildpath, Path[] srcFolders) throws ModelException {
@@ -235,14 +261,17 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		assertTrue(depSourcePaths == null || depSourcePaths.isEmpty());
 	}
 	
-	protected void testDubContainerUnresolved(IProject project, DubBundleChecker expMainBundle) {
+	protected void testDubContainerUnresolved(IProject project, DubBundleChecker expMainBundle, 
+			boolean expectedError) {
 		DubDependenciesContainer dubContainer = getDubContainer(project);
 		assertNotNull(dubContainer);
 		LinkedList<CommonDubElement> depChildren = CollectionUtil.createLinkedList(dubContainer.getChildren());
 		for (String rawDep : expMainBundle.rawDeps) {
 			removeChild(depChildren, rawDep);
 		}
-		removeErrorElement(expMainBundle, depChildren);
+		if(expectedError) {
+			removeErrorElement(expMainBundle, depChildren);
+		}
 		assertTrue(depChildren.isEmpty());
 	}
 	

@@ -43,6 +43,8 @@ public class CommonDubTest extends DToolBaseTest {
 	public static final DubBundleChecker[] IGNORE_DEPS = new DubBundleChecker[0];
 	public static final String[] IGNORE_RAW_DEPS = new String[0];
 	
+	public static final String ERROR_DUB_RETURNED_NON_ZERO = "dub returned non-zero";
+	
 	public static class DubBundleChecker extends CommonChecker {
 		
 		public final Path location;
@@ -69,15 +71,23 @@ public class CommonDubTest extends DToolBaseTest {
 			return expected == IGNORE_DEPS || expected == IGNORE_ARR || expected == IGNORE_RAW_DEPS;
 		}
 		
-		public void check(DubBundle bundle) {
-			checkAllExceptDepRefs(bundle);
+		public boolean isResolvedOnlyError() {
+			return errorMsgStart == ERROR_DUB_RETURNED_NON_ZERO;
+		}
+		
+		public void check(DubBundle bundle, boolean isResolved) {
+			checkAllExceptDepRefs(bundle, isResolved);
 			checkDepRefs(bundle);
 		}
 		
-		protected void checkAllExceptDepRefs(DubBundle bundle) {
+		protected void checkAllExceptDepRefs(DubBundle bundle, boolean isResolved) {
 			checkAreEqual(bundle.location, location);
 			checkAreEqual(bundle.name, bundleName);
-			assertExceptionMsgStart(bundle.error, errorMsgStart);
+			if(isResolvedOnlyError() && !isResolved) {
+				// Don't check, error occurs only in resolved bundles
+			} else {
+				assertExceptionMsgStart(bundle.error, errorMsgStart);
+			}
 			checkAreEqual(bundle.version, version);
 			checkAreEqualArray(bundle.getSourceFolders(), ignoreIfNull(sourceFolders));
 		}
@@ -97,12 +107,12 @@ public class CommonDubTest extends DToolBaseTest {
 		public void checkBundleDescription(DubBundleDescription bundleDescription, boolean isResolved) {
 			assertTrue(bundleDescription.isResolved() == isResolved);
 			
-			if(isResolved) {
-				checkAllExceptDepRefs(bundleDescription.getMainBundle());
-			} else {
-				check(bundleDescription.getMainBundle());
+			if(!isResolved) {
+				check(bundleDescription.getMainBundle(), isResolved);
 				assertTrue(bundleDescription.getBundleDependencies().length == 0);
 				return;
+			} else {
+				checkAllExceptDepRefs(bundleDescription.getMainBundle(), isResolved);
 			}
 			
 			if(deps == IGNORE_DEPS) 
@@ -111,7 +121,7 @@ public class CommonDubTest extends DToolBaseTest {
 			assertTrue(deps.length == bundleDescription.getBundleDependencies().length);
 			for (int ix = 0; ix < deps.length; ix++) {
 				DubBundleChecker dubDepChecker = deps[ix];
-				dubDepChecker.check(bundleDescription.getBundleDependencies()[ix]);
+				dubDepChecker.check(bundleDescription.getBundleDependencies()[ix], true);
 			}
 		}
 		

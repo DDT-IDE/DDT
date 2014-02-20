@@ -46,7 +46,7 @@ public class DubBundle {
 	}
 	
 	public DubBundle(Path location, String name, DubBundleException error) {
-		this(location, name, name, null, null, null, error);
+		this(location, name, null, null, null, null, error);
 	}
 	
 	public boolean hasErrors() {

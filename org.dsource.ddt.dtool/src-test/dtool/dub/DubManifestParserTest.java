@@ -47,7 +47,7 @@ public class DubManifestParserTest extends CommonDubTest {
 	}
 	
 	public void testBundle(DubBundleChecker bundle) {
-		bundle.check(parseDubBundle(bundle.location));
+		bundle.check(parseDubBundle(bundle.location), false);
 	}
 	
 	

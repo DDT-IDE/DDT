@@ -89,6 +89,7 @@ public class CommonTestUtils {
 		if(string == null) {
 			assertTrue(exception == null);
 		} else {
+			assertNotNull(exception);
 			String message = exception.getMessage();
 			assertNotNull(message);
 			assertTrue(message.startsWith(string));

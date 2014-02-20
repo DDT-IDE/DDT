@@ -11,6 +11,7 @@
 package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
@@ -41,9 +42,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IBuildpathEntry;
@@ -182,7 +181,7 @@ public class DubModelManager {
 				checkNewProject(project);
 				break;
 			case IModelElementDelta.REMOVED:
-				removeProject(project);
+				removeProjectModel(project);
 				break;
 			case IModelElementDelta.CHANGED:
 				IResourceDelta[] resourceDeltas = projectDelta.getResourceDeltas();
@@ -192,7 +191,7 @@ public class DubModelManager {
 					if(resourceDelta.getResource().getType() == IResource.FILE && 
 							resourceDelta.getProjectRelativePath().equals(DUB_BUNDLE_PACKAGE_FILE)) {
 						if(resourceDelta.getResource().getType() == IResource.FILE) {
-							queueProjectUpdate(project);
+							updateProjectDubModel(project);
 						}
 					}
 				}
@@ -207,32 +206,39 @@ public class DubModelManager {
 	protected void checkNewProject(IProject project) {
 		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
 		if(packageFile != null && packageFile.getType() == IResource.FILE) {
-			queueProjectUpdate(project);
+			updateProjectDubModel(project);
 		}
 	}
 	
-	protected void queueProjectUpdate(final IProject project) {
+	protected void updateProjectDubModel(final IProject project) {
 		log.println(">> Updating project: ", project);
 		
-		readUnresolvedBundleDescription(project);
-		
-		new UpdateProjectModelJob(project, this).schedule();
+		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
+		// only run dub describe if unresolved description had no errors
+		if(unresolvedDescription.hasErrors() == false) {
+			queueDubDescribeJob(project);
+		}
 	}
 	
-	protected void readUnresolvedBundleDescription(final IProject project) {
+	protected void queueDubDescribeJob(final IProject project) {
+		executorAgent.submit(new DubDescribeUpdateProjectTask(project, this));
+	}
+	
+	protected DubBundleDescription readUnresolvedBundleDescription(final IProject project) {
 		java.nio.file.Path location = project.getLocation().toFile().toPath();
 		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation(location);
 		
-		DubBundleDescription dubBundleDescription = new DubBundleDescription(unresolvedBundle, false);
-		addProject(project, dubBundleDescription);
+		DubBundleDescription dubBundleDescription = new DubBundleDescription(unresolvedBundle, false, false);
+		addProjectModel(project, dubBundleDescription);
+		return dubBundleDescription;
 	}
 	
-	protected void addProject(IProject project, DubBundleDescription dubBundleDescription) {
-		model.addProject(project, dubBundleDescription);
+	protected void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
+		model.addProjectModel(project, dubBundleDescription);
 	}
 	
-	protected void removeProject(IProject project) {
-		model.removeProject(project);
+	protected void removeProjectModel(IProject project) {
+		model.removeProjectModel(project);
 	}
 	
 	public void syncPendingUpdates() {
@@ -284,42 +290,32 @@ class DubExternalProcessHelper extends ExternalProcessOutputHelper {
 	
 }
 
-class UpdateProjectModelJob extends Job {
+class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
 	
 	protected final IProject project;
 	protected final DubModelManager dubModelManager;
 	
-	protected UpdateProjectModelJob(IProject project, DubModelManager dubModelManager) {
-		super("Running 'dub describe' on project: " + project.getName());
+	protected DubDescribeUpdateProjectTask(IProject project, DubModelManager dubModelManager) {
 		this.project = project;
 		this.dubModelManager = dubModelManager;
 	}
 	
 	@Override
-	protected IStatus run(final IProgressMonitor monitor) {
-		dubModelManager.executorAgent.submit(new Runnable() {
-			@Override
-			public void run() {
-				setThread(Thread.currentThread());
-				updateProject(project, monitor);
-				done(DeeCore.createStatus("done")); 
-			}
-		});
-		return ASYNC_FINISH;
+	protected String getNameForJob() {
+		return "Running 'dub describe' on project: " + project.getName();
+	}
+	
+	@Override
+	protected void runWithMonitor(IProgressMonitor monitor) {
+		assertNotNull(monitor);
+		updateProject(monitor);
 	}
 	
 	protected void logInternalError(CoreException ce) {
 		DeeCore.logError(ce);
 	}
 	
-	public void notifyDubProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb) {
-		List<IDubProcessListener> listeners = dubModelManager.dubProcessListenersHelper.getListeners();
-		for (IDubProcessListener dubProcessListener : listeners) {
-			dubProcessListener.handleProcessStarted(processHelper, pb);
-		}
-	}
-	
-	protected Void updateProject(IProject project, IProgressMonitor monitor) {
+	protected Void updateProject(IProgressMonitor monitor) {
 		
 		deleteDubMarkers(project);
 		
@@ -346,18 +342,15 @@ class UpdateProjectModelJob extends Job {
 			return setProjectDubError(project, "Interrupted running dub process.", null);
 		}
 		String descriptionOutput;
-		String stdErr;
 		try {
 			descriptionOutput = processHelper.getStdOutBytes().toString(StringUtil.UTF8);
-			stdErr = processHelper.getStdErrBytes().toString(StringUtil.UTF8);
 		} catch (IOException e) {
 			return setProjectDubError(project, "Error occurred reading dub process output: ", e);
 		}
 		
 		int exitValue = processHelper.getProcess().exitValue();
 		if(exitValue != 0) {
-			return setProjectDubError(project, "dub returned non-zero status: " + exitValue 
-					+ " \n--STDERR:\n" + stdErr + "\n--STDOUT:\n" + descriptionOutput, null);
+			return setProjectDubError(project, "dub returned non-zero status: " + exitValue, null);
 		}
 		
 		
@@ -369,6 +362,13 @@ class UpdateProjectModelJob extends Job {
 			setProjectDubError(project, "Error parsing description:", bundleDesc.getError());
 		}
 		return null;
+	}
+	
+	public void notifyDubProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb) {
+		List<IDubProcessListener> listeners = dubModelManager.dubProcessListenersHelper.getListeners();
+		for (IDubProcessListener dubProcessListener : listeners) {
+			dubProcessListener.handleProcessStarted(processHelper, pb);
+		}
 	}
 	
 	protected void deleteDubMarkers(IProject project) {
@@ -383,13 +383,10 @@ class UpdateProjectModelJob extends Job {
 	}
 	
 	protected Void setProjectDubError(IProject project, String message, Exception exception) {
-		java.nio.file.Path location = project.getLocation().toFile().toPath();
 		
 		DubBundleException dubError = new DubBundleException(message, exception);
-		DubBundleDescription bundleDesc = new DubBundleDescription(
-				new DubBundle(location, "<dub_error>", dubError), true); //TODO test this path
 		
-		dubModelManager.addProject(project, bundleDesc);
+		dubModelManager.model.addErrorToProjectModel(project, dubError);
 		
 		try {
 			IMarker dubMarker = project.createMarker(DubModelManager.DUB_PROBLEM_ID);
@@ -422,7 +419,7 @@ class UpdateProjectModelJob extends Job {
 			updateDubContainer(projectElement, getBuildpathEntriesFromDesc(bundleDesc));
 			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
 			
-			dubModelManager.addProject(project, bundleDesc);
+			dubModelManager.addProjectModel(project, bundleDesc);
 		} catch (ModelException me) {
 			logInternalError(me);
 		}

@@ -17,6 +17,8 @@ import melnorme.utilbox.misc.ListenerListHelper;
 import org.eclipse.core.resources.IProject;
 
 import dtool.SimpleLogger;
+import dtool.dub.DubBundle.DubBundleException;
+import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 
 /**
@@ -52,16 +54,26 @@ public class DubModel extends ListenerListHelper<IDubModelListener> {
 	
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
 	
-	protected synchronized void addProject(IProject project, DubBundleDescription dubBundleDescription) {
+	protected synchronized void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
 		log.println(">> Add project info: ", project);
 		dubBundleInfos.put(project.getName(), dubBundleDescription);
 		fireUpdateEvent(this, dubBundleDescription);
 	}
 	
-	protected synchronized void removeProject(IProject project) {
+	protected synchronized void removeProjectModel(IProject project) {
 		log.println(">> Removing project: ", project);
 		DubBundleDescription oldDesc = dubBundleInfos.remove(project.getName());
 		fireUpdateEvent(this, oldDesc);
+	}
+	
+	protected synchronized void addErrorToProjectModel(IProject project, DubBundleException dubError) {
+		DubBundleDescription unresolvedDescription = dubBundleInfos.get(project.getName());
+		DubBundle main = unresolvedDescription.getMainBundle();
+		
+		DubBundleDescription bundleDesc = new DubBundleDescription(
+				new DubBundle(main.location, main.name, main.version, main.srcFolders, main.implicitSrcFolders,
+					main.dependencies, dubError), false, true);
+		addProjectModel(project, bundleDesc);
 	}
 	
 	protected void fireUpdateEvent(DubModel source, DubBundleDescription object) {

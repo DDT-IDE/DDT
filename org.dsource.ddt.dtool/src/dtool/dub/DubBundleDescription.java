@@ -19,10 +19,11 @@ import dtool.dub.DubBundle.DubBundleException;
  */
 public class DubBundleDescription {
 	
+	protected final boolean isResolved;
 	protected final DubBundle mainDubBundle;
 	protected final DubBundle[] bundleDependencies;
 	protected final DubBundleException error;
-	protected final boolean isResolved;
+	protected final boolean isDubDescribeError;
 	
 	public DubBundleDescription(DubBundle mainDubBunble, DubBundle[] deps) {
 		assertNotNull(mainDubBunble);
@@ -31,6 +32,7 @@ public class DubBundleDescription {
 		this.mainDubBundle = mainDubBunble;
 		this.bundleDependencies = deps;
 		this.isResolved = true;
+		this.isDubDescribeError = false;
 		
 		if(mainDubBunble.error != null) {
 			error = mainDubBunble.error;
@@ -45,14 +47,14 @@ public class DubBundleDescription {
 		}
 	}
 	
-	/** Constructor for unresolved descriptions, 
-	 * or descriptions representing an error in the describe source. */
-	public DubBundleDescription(DubBundle unresolvedBundle, boolean isResolved) {
+	/** Constructor for unresolved descriptions. */
+	public DubBundleDescription(DubBundle unresolvedBundle, boolean isResolved, boolean isDubDescribeError) {
 		this.mainDubBundle = unresolvedBundle;
 		this.bundleDependencies = EMTPY_BUNDLE_DEPS;
 		this.isResolved = isResolved;
 		this.error = mainDubBundle.error;
-		if(isResolved) {
+		this.isDubDescribeError = isDubDescribeError;
+		if(isDubDescribeError) {
 			assertNotNull(error);
 		}
 	}
