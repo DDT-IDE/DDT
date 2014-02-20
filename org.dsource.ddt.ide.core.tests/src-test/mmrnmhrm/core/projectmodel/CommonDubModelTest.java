@@ -42,6 +42,7 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
+		DubModelManager.startDefault();
 		DubDescribeParserTest.initDubRepositoriesPath();
 	}
 	@AfterClass

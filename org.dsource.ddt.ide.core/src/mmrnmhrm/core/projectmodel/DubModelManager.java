@@ -63,15 +63,14 @@ public class DubModelManager {
 	
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
-	protected static DubModelManager defaultInstance;
+	protected static final DubModelManager defaultInstance = new DubModelManager(DubModel.getDefault());
 	
-	public static void initializeDefault() throws CoreException {
-		assertTrue(defaultInstance == null);
-		defaultInstance = new DubModelManager(DubModel.getDefault());
+	public static void startDefault() {
+		defaultInstance.startManager();
 	}
 	
-	public static void disposeDefault() throws CoreException {
-		defaultInstance.dispose();
+	public static void shutdownDefault() {
+		defaultInstance.shutdown();
 	}
 	
 	public static DubModelManager getDefault() {
@@ -92,10 +91,8 @@ public class DubModelManager {
 	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubModelManager.class.getSimpleName());
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
 	
-	public DubModelManager(DubModel model) throws CoreException {
+	public DubModelManager(DubModel model) {
 		this.model = model;
-		
-		startManager();
 	}
 	
 	protected void startManager() {
@@ -128,7 +125,7 @@ public class DubModelManager {
 		}
 	}
 	
-	public void dispose() {
+	public void shutdown() {
 		DLTKCore.removeElementChangedListener(listener);
 		executorAgent.shutdownNow();
 		try {

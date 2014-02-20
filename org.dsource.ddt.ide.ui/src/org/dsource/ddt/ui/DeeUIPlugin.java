@@ -65,6 +65,7 @@ public class DeeUIPlugin extends LangUIPlugin {
 		
 		dubProcessListener = new DubProcessUIListener();
 		DubModelManager.getDefault().addDubProcessListener(dubProcessListener);
+		DubModelManager.startDefault();
 	}
 	
 	@Override

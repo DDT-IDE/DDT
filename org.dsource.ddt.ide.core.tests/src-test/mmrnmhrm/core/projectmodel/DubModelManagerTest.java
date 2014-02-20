@@ -4,6 +4,7 @@ import static dtool.dub.CommonDubTest.bundle;
 import static dtool.dub.CommonDubTest.main;
 import static dtool.dub.CommonDubTest.paths;
 import static dtool.dub.CommonDubTest.rawDeps;
+import static dtool.dub.DubBundle.DEFAULT_VERSION;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -81,7 +82,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		
 		writeDubJsonAndCheckDubModel("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
 			project, 
-			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
+			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
 		writeDubJsonAndCheckDubModel("{"+
 			jsEntry("name", "xptobundle")+
@@ -98,10 +99,10 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			readFileContents(DUB_WORKSPACE.resolve("XptoBundle/dub.json")),
 			
 			project,
-			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders("src", "src-test"), 
+			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders("src", "src-test"), 
 				rawDeps("foo_lib"), 
-				bundle(DUB_WORKSPACE.resolve("foo_lib"), null, "foo_lib", DubBundle.DEFAULT_VERSION, paths("src", "src2")),
-				bundle(DUB_WORKSPACE.resolve("bar_lib"), null, "bar_lib", DubBundle.DEFAULT_VERSION, paths("source"))
+				bundle(DUB_WORKSPACE.resolve("foo_lib"), null, "foo_lib", DEFAULT_VERSION, paths("src", "src2")),
+				bundle(DUB_WORKSPACE.resolve("bar_lib"), null, "bar_lib", DEFAULT_VERSION, paths("source"))
 			)
 		);
 		
@@ -112,7 +113,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		
 		writeDubJsonAndCheckDubModel("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
 			project, 
-			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
+			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
 	}
 	

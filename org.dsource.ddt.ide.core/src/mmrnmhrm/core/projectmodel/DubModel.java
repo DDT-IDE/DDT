@@ -28,7 +28,7 @@ public class DubModel extends ListenerListHelper<IDubModelListener> {
 	
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
-	protected static DubModel defaultInstance = new DubModel();
+	protected static final DubModel defaultInstance = new DubModel();
 	
 	public static DubModel getDefault() {
 		return defaultInstance;

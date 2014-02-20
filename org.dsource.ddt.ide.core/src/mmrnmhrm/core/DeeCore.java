@@ -39,7 +39,7 @@ public class DeeCore extends LangCore {
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		DeeProjectModel.dispose();
-		DubModelManager.disposeDefault();
+		DubModelManager.shutdownDefault();
 		pluginInstance = null;
 	}
 	
@@ -48,9 +48,11 @@ public class DeeCore extends LangCore {
 		//TypeHierarchy.DEBUG = true;
 		
 		DeeProjectModel.initializeModel();
-		DubModelManager.initializeDefault();
+		
+		// Note: the core plugin does not start the DubModelManager... it is the responsiblity of
+		// the Dee UI plugin (or some other "application" code) to start it, 
+		// so that they can register listeners first.
+		//DubModelManager.startDefault();
 	}
-	
-	/* *********************************************** */
 	
 }
