@@ -154,7 +154,7 @@ public class DubModelManager {
 	}
 	
 	
-	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path("dub.json");
+	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path(DubManifestParser.DUB_MANIFEST_FILENAME);
 	
 	protected final class DubProjectModelResourceListener implements IElementChangedListener {
 		

@@ -33,6 +33,8 @@ import dtool.dub.DubBundle.DubDependecyRef;
  */
 public class DubManifestParser extends CommonDubParser {
 	
+	public static final String DUB_MANIFEST_FILENAME = "dub.json";
+	
 	public static final String ERROR_BUNDLE_NAME_UNDEFINED = "Bundle name not defined.";
 	
 	public static DubBundle parseDubBundleFromLocation(Path location) {
@@ -81,7 +83,7 @@ public class DubManifestParser extends CommonDubParser {
 	}
 	
 	protected void parseFromLocation(Path location) throws DubBundleException {
-		File jsonLocation = location.resolve(MiscUtil.createValidPath("dub.json")).toFile();
+		File jsonLocation = location.resolve(MiscUtil.createValidPath(DUB_MANIFEST_FILENAME)).toFile();
 		
 		try {
 			source = readStringFromFile(jsonLocation);

@@ -71,23 +71,28 @@ public abstract class ProjectWizardExtension extends ProjectWizard {
 			return super.initBuildpath(monitor);
 		}
 		
-		public void configureScriptProject(IProgressMonitor monitor) throws CoreException{
-			if (monitor == null) {
-				monitor = new NullProgressMonitor();
-			}
-
-			try {
-				final IProject project = getCreatedElement().getProject();
-				ResourceUtil.addNature(project, monitor, getScriptNature());
-				
-				IBuildpathEntry[] bpEntries = initBuildpath(new SubProgressMonitor(monitor, 0));
-				getCreatedElement().setRawBuildpath(bpEntries, new SubProgressMonitor(monitor, 0));
-				
-			} finally {
-				monitor.worked(1);
-			}
+	}
+	
+	public void configureScriptProject(IProgressMonitor monitor) throws CoreException{
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
 		}
-		
+
+		try {
+			final IProject project = getCreatedElement().getProject();
+			ResourceUtil.addNature(project, monitor, getScriptNature());
+			
+			configureProjectBuildpath(project, monitor);
+			
+		} finally {
+			monitor.worked(1);
+		}
+	}
+	
+	@SuppressWarnings("unused")
+	protected void configureProjectBuildpath(final IProject project, IProgressMonitor monitor) throws CoreException {
+		IBuildpathEntry[] bpEntries = getProjectCreator().initBuildpath(new SubProgressMonitor(monitor, 0));
+		getCreatedElement().setRawBuildpath(bpEntries, new SubProgressMonitor(monitor, 0));
 	}
 	
 }

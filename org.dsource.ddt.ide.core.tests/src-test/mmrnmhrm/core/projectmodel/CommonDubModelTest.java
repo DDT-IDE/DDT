@@ -18,11 +18,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.WorkspaceUtils;
 import mmrnmhrm.tests.BaseDeeTest;
 
 import org.eclipse.core.resources.IFile;
@@ -47,7 +47,6 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 	}
 	@AfterClass
 	public static void cleanupDubRepositoriesPath() {
-		DubModelManager.getDefault().shutdownManager();
 		DubDescribeParserTest.cleanupDubRepositoriesPath();
 	}
 	
@@ -59,7 +58,7 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 	public static void writeStringToFile(IProject project, String name, String contents) 
 			throws CoreException {
 		IFile file = project.getFile(name);
-		WorkspaceUtils.writeFile(file, new ByteArrayInputStream(contents.getBytes(StringUtil.UTF8)));
+		EclipseUtils.writeToFile(file, new ByteArrayInputStream(contents.getBytes(StringUtil.UTF8)));
 	}
 	
 	

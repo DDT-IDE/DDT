@@ -15,7 +15,6 @@
    * dub.json errors presenting
    * DUB program path preference.
    * automatic Compiler Library setup from DUB.
-   * remove DLTK outdated UI
    * DUB build support
 
 == DDT 0.9.1 (2014-02-07) ===

@@ -49,7 +49,6 @@ public class DeeBuilder {
 			//builder.dontCollectModules = true;
 			builder.collectBuildUnits(monitor);
 		} catch(CoreException e) {
-			DeeCore.log(e);
 			return "Cannot determine preview: " + e;
 		}
 		
@@ -75,8 +74,8 @@ public class DeeBuilder {
 		
 		IInterpreterInstall install = ScriptRuntime.getInterpreterInstall(deeProj);
 		if(!(install instanceof CommonDeeInstall)) {
-			throw DeeCore.createCoreException(
-					"Could not find a D compiler/interpreter associated to the project", null);
+			throw new CoreException(
+				DeeCore.createStatus("Could not find a D compiler/interpreter associated to the project"));
 		}
 		deeCompiler = ((CommonDeeInstall) install);
 		
