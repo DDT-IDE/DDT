@@ -5,6 +5,7 @@ import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.tests.ui.accessors.ProjectWizardFirstPage__Accessor;
@@ -70,10 +71,12 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 	}
 	
 	private void simulatePage2GoBack() {
+		DubModelManager.getDefault().syncPendingUpdates(); // Make sure dub process terminates
 		wizDialog.backPressed();
 	}
 	
 	private void simulatePressCancel() {
+		DubModelManager.getDefault().syncPendingUpdates(); // Make sure dub process terminates
 		wizDialog.cancelPressed();
 	}
 	

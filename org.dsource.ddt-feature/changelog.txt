@@ -19,6 +19,7 @@
    * automatic Compiler Library setup from DUB.
    * Launch config
    * review DeeLaunchShortcut
+   * dub describe bug when downloading.
 
 == DDT 0.9.1 (2014-02-07) ===
  * Added debug hover to D editor. When a CDT debug session is active, this hover presents detailed info for the variable under the cursor, similar to the Variables view.
