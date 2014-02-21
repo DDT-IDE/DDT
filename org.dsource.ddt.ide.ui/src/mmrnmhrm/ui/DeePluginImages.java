@@ -79,6 +79,8 @@ public abstract class DeePluginImages extends LangImages {
 		ISharedImages.IMG_OBJS_ERROR_TSK);
 //	public static final String DUB_MANIFEST = createManaged(T_OBJ_DUB, "DubManifest.png");
 	
+	public static final String DUB_PROCESS = createManaged(T_OBJ_DUB, "DubProcess.png");
+	
 	/* ------------------------------------------- */
 	
 	public static final ImageDescriptor OPEN_DEF_DESC = createUnmanaged(T_ACTIONS, "gotodef.gif");

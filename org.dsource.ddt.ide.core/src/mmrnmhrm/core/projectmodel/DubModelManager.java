@@ -290,7 +290,7 @@ class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
 		
 		ExternalProcessOutputHelper processHelper;
 		try {
-			processHelper = dubModelManager.runDubProcess(pb, monitor);
+			processHelper = dubModelManager.runDubProcess(pb, project, monitor);
 		} catch (CoreException ce) {
 			return setProjectDubError(project, ce.getMessage(), ce.getCause());
 		}

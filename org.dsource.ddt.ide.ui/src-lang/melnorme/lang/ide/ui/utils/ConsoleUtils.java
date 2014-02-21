@@ -10,6 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.utils;
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -39,6 +42,20 @@ public class ConsoleUtils {
 			}
 		}
 		return null;
+	}
+	
+	/** Create a new {@link MessageConsole}. 
+	 * If an existing console already exists, remove it before adding a new one.
+	 */
+	public static MessageConsole recreateMessageConsole(String name, ImageDescriptor imageDescriptor) {
+		MessageConsole console = findConsole(name, MessageConsole.class);
+		if(console != null) {
+			ConsolePlugin.getDefault().getConsoleManager().removeConsoles(array(console));
+		}
+		// create a new one
+		MessageConsole msgConsole = new MessageConsole(name, imageDescriptor);
+		ConsolePlugin.getDefault().getConsoleManager().addConsoles(array(msgConsole));
+		return msgConsole;
 	}
 	
 }

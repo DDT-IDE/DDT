@@ -10,12 +10,14 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
+import org.eclipse.core.resources.IProject;
+
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 
 
 public interface IDubProcessListener {
 	
 	@DubModelManager.RunsInDubExecutor
-	void handleProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb);
+	void handleProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb, IProject project);
 	
 }

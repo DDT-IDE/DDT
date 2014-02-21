@@ -46,14 +46,14 @@ public class DubManager {
 		dubProcessListenersHelper.removeListener(dubProcessListener);
 	}
 	
-	public Future<Void> submitDubCommand(IProject project, final IProgressMonitor monitor, 
+	public Future<Void> submitDubCommand(final IProject project, final IProgressMonitor monitor, 
 		final String... commands) {
 		final Path location = project.getLocation().toFile().toPath();
 		Future<Void> dubBuildFuture = executorAgent.submit(new Callable<Void>() {
 			@Override
 			public Void call() throws CoreException {
 				ProcessBuilder pb = new ProcessBuilder(commands).directory(location.toFile());
-				runDubProcess(pb, monitor);
+				runDubProcess(pb, project, monitor);
 				return null;
 			}
 		});
@@ -61,7 +61,8 @@ public class DubManager {
 		return dubBuildFuture;
 	}
 	
-	protected ExternalProcessOutputHelper runDubProcess(ProcessBuilder pb, IProgressMonitor cancelMonitor) 
+	protected ExternalProcessOutputHelper runDubProcess(ProcessBuilder pb, IProject project, 
+			IProgressMonitor cancelMonitor) 
 			throws CoreException {
 		ExternalProcessOutputHelper processHelper;
 		try {
@@ -70,7 +71,7 @@ public class DubManager {
 			throw createDubProcessException("Could not start dub process: ",  e);
 		}
 		
-		notifyDubProcessStarted(processHelper, pb);		
+		notifyDubProcessStarted(processHelper, pb, project);		
 		processHelper.startReaderThreads();
 		
 		try {
@@ -89,10 +90,11 @@ public class DubManager {
 		return new CoreException(DeeCore.createErrorStatus(message, e));
 	}
 	
-	public void notifyDubProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb) {
+	public void notifyDubProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb, 
+			IProject project) {
 		List<IDubProcessListener> listeners = dubProcessListenersHelper.getListeners();
 		for (IDubProcessListener dubProcessListener : listeners) {
-			dubProcessListener.handleProcessStarted(processHelper, pb);
+			dubProcessListener.handleProcessStarted(processHelper, pb, project);
 		}
 	}
 	
