@@ -32,6 +32,12 @@ public class GDCInstallType extends CommonInstallType {
 		return new GDCInstall(this, id);
 	}
 	
+	public class GDCInstall extends CommonDeeInstall { 
+		public GDCInstall(GDCInstallType type, String id) {
+			super(type, id);
+		}
+	}
+	
 	@Override
 	protected void addDefaultLibraryLocations(IFileHandle executableLocation, List<LibraryLocation> locs) {
 		IEnvironment env = executableLocation.getEnvironment();

@@ -11,6 +11,8 @@ public class DeeProjectWizardPage1 extends ProjectWizardFirstPage {
 
 	public DeeProjectWizardPage1(DeeProjectWizard deeNewProjectWizard) {
 		super();
+		setTitle(DeeNewWizardMessages.LangNewProject_Page1_pageTitle);
+		setDescription(DeeNewWizardMessages.LangNewProject_Page1_pageDescription);
 		this.deeNewProjectWizard = deeNewProjectWizard;
 	}
 	

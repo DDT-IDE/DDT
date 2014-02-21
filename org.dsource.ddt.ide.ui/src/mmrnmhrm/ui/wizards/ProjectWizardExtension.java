@@ -28,7 +28,6 @@ import org.eclipse.dltk.utils.ResourceUtil;
 
 public abstract class ProjectWizardExtension extends ProjectWizard {
 	
-	
 	public ProjectWizardExtension() {
 		super();
 	}

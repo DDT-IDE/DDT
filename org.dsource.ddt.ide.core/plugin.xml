@@ -85,11 +85,11 @@
       </buildpathContainerInitializer>
    </extension>
    <extension
-         id="deebuilder"
-         name="Dee Builder"
+         id="DubBuilder"
+         name="DUB Build"
          point="org.eclipse.core.resources.builders">
       <builder>
-         <run class="mmrnmhrm.core.build.DeeProjectBuilder">
+         <run class="mmrnmhrm.core.build.DubBasedBuilder">
             <parameter
                   name="comment"
                   value="Builder comment"/>

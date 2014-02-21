@@ -21,16 +21,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
-import java.util.List;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.CoreExecutorAgent;
 import mmrnmhrm.core.DeeCore;
 
 import org.dsource.ddt.ide.core.DeeNature;
@@ -60,7 +56,10 @@ import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParser;
 import dtool.dub.DubManifestParser;
 
-public class DubModelManager {
+/**
+ * Updates {@link DubModel} when resource changes occur, using 'dub describe' 
+ */
+public class DubModelManager extends DubManager {
 	
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
@@ -89,7 +88,6 @@ public class DubModelManager {
 	/* ----------------------------------- */
 	
 	protected final DubModel model;
-	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(DubModelManager.class.getSimpleName());
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
 	protected boolean started = false;
 	
@@ -253,42 +251,9 @@ public class DubModelManager {
 	public static IMarker[] getDubErrorMarkers(IProject project) throws CoreException {
 		return project.findMarkers(DubModelManager.DUB_PROBLEM_ID, true, IResource.DEPTH_ONE);
 	}
-	
-	/* ----------------------------------- */
-	
-	protected final ListenerListHelper<IDubProcessListener> dubProcessListenersHelper = new ListenerListHelper<>();
-	
-	public void addDubProcessListener(IDubProcessListener dubProcessListener) {
-		dubProcessListenersHelper.addListener(dubProcessListener);
-	}
-	
-	public void removeDubProcessListener(IDubProcessListener dubProcessListener) {
-		dubProcessListenersHelper.removeListener(dubProcessListener);
-	}
-	
+
 }
 
-
-class DubExternalProcessHelper extends ExternalProcessOutputHelper {
-	
-	protected IProgressMonitor monitor;
-	
-	public DubExternalProcessHelper(Process process, IProgressMonitor monitor, boolean startReaders) {
-		super(process, true, startReaders);
-		this.monitor = monitor;
-	}
-	
-	@Override
-	protected boolean isCanceled() {
-		return monitor.isCanceled();
-	}
-	
-	@Override
-	protected void handleListenerException(RuntimeException e) {
-		LangCore.logError(e, "Internal error notifying listener");
-	}
-	
-}
 
 class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
 	
@@ -325,22 +290,11 @@ class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
 		
 		ExternalProcessOutputHelper processHelper;
 		try {
-			processHelper = new DubExternalProcessHelper(pb.start(), monitor, false);
-		} catch (IOException e) {
-			return setProjectDubError(project, "Could not start dub process: ",  e);
+			processHelper = dubModelManager.runDubProcess(pb, monitor);
+		} catch (CoreException ce) {
+			return setProjectDubError(project, ce.getMessage(), ce.getCause());
 		}
 		
-		notifyDubProcessStarted(processHelper, pb);		
-		processHelper.startReaderThreads();
-		
-		try {
-			processHelper.awaitTerminationStrict_destroyOnException();
-		} catch (InterruptedException e) {
-			if(monitor.isCanceled()) {
-				return setProjectDubError(project, "Cancelled dub process.", null);
-			}
-			return setProjectDubError(project, "Interrupted running dub process.", null);
-		}
 		String descriptionOutput;
 		try {
 			descriptionOutput = processHelper.getStdOutBytes().toString(StringUtil.UTF8);
@@ -364,13 +318,6 @@ class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
 		return null;
 	}
 	
-	public void notifyDubProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb) {
-		List<IDubProcessListener> listeners = dubModelManager.dubProcessListenersHelper.getListeners();
-		for (IDubProcessListener dubProcessListener : listeners) {
-			dubProcessListener.handleProcessStarted(processHelper, pb);
-		}
-	}
-	
 	protected void deleteDubMarkers(IProject project) {
 		try {
 			IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
@@ -382,7 +329,7 @@ class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
 		}
 	}
 	
-	protected Void setProjectDubError(IProject project, String message, Exception exception) {
+	protected Void setProjectDubError(IProject project, String message, Throwable exception) {
 		
 		DubBundleException dubError = new DubBundleException(message, exception);
 		

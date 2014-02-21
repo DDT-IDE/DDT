@@ -9,11 +9,8 @@ import java.io.File;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.build.DeeBuilder__Accessor;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.core.compiler_installs.GDCInstallType;
-import mmrnmhrm.core.projectmodel.DeeProjectModel;
-import mmrnmhrm.core.projectmodel.DeeProjectModel_Accessor;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;
@@ -53,7 +50,6 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		disableWorkspaceAutoBuild();
 		disableDLTKIndexer();
 		
-		DeeBuilder__Accessor.setTestsMode(true);
 		setupTestDeeInstalls();
 		
 		SamplePreExistingProject.checkForExistanceOfPreExistingProject();
@@ -173,9 +169,16 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 //		scriptProject.setOption(DLTKCore.INDEXER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
 //		scriptProject.setOption(DLTKCore.BUILDER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
 		
-		DeeProjectModel_Accessor.checkInstall(scriptProject, installTypeId, installId);
-		DeeProjectModel.getDeeProjectInfo(scriptProject);
+		checkInstall(scriptProject, installTypeId, installId);
 		return scriptProject;
+	}
+	
+	public static void checkInstall(IScriptProject project, String installTypeId, String installId) 
+			throws CoreException {
+		IInterpreterInstall install = ScriptRuntime.getInterpreterInstall(project);
+		assertNotNull(install);
+		assertTrue(install.getInterpreterInstallType().getId().endsWith(installTypeId));
+		assertTrue(install.getId().startsWith(installId));
 	}
 	
 	public static IProject createAndOpenProject(String name, boolean overwrite) throws CoreException {

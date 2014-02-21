@@ -44,6 +44,14 @@ public class GenericInstallType extends CommonInstallType {
 		return new GenericInstall(this, id);
 	}
 	
+	public class GenericInstall extends CommonDeeInstall { 
+		
+		public GenericInstall(GenericInstallType type, String id) {
+			super(type, id);
+		}
+		
+	}
+	
 	@Override
 	protected void addDefaultLibraryLocations(IFileHandle executableLocation, List<LibraryLocation> locs) {
 		// Generic install adds no libraryLocations

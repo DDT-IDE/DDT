@@ -130,6 +130,12 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 	}
 	
 	@Override
+	protected void finishPage(IProgressMonitor monitor)
+			throws InterruptedException, CoreException {
+		getProjectCreator().performFinish(monitor);
+	}
+	
+	@Override
 	public boolean performFinish() {
 		boolean res = super.performFinish();
 		if (res) {
@@ -144,6 +150,7 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 					DeeCore.log(e);
 				}
 			}
+			return fBuildSettingsPage.performOk();
 		}
 		return res;
 	}

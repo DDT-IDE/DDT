@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mmrnmhrm.core.launch.DeeLaunchConstants;
-import mmrnmhrm.core.projectmodel.DeeProjectModel;
-import mmrnmhrm.core.projectmodel.DeeProjectOptions;
+import mmrnmhrm.core.projectmodel.DubModel;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IFile;
@@ -25,7 +24,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.internal.debug.ui.launcher.AbstractScriptLaunchShortcut;
@@ -33,6 +31,8 @@ import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+
+import dtool.dub.DubBundleDescription;
 
 public class DeeLaunchShortcut extends AbstractScriptLaunchShortcut {
 	
@@ -59,19 +59,19 @@ public class DeeLaunchShortcut extends AbstractScriptLaunchShortcut {
 					list.add(f);
 			} else if (object instanceof IProject) {
 				IProject proj = (IProject) object;
-				list.add(getProjectExecutableArtifact(proj));
+//				list.add(getProjectExecutableArtifact(proj));
 			} else if (object instanceof IScriptProject) {
 				IScriptProject deeProj = (IScriptProject) object;
-				list.add(getProjectExecutableArtifact(deeProj.getProject()));
+//				list.add(getProjectExecutableArtifact(deeProj.getProject()));
 			}
 		}
 		return list.toArray(new IResource[list.size()]);
 	}
 	
-	
+	// TODO review this code
 	protected static IFile getProjectExecutableArtifact(IProject proj) {
-		DeeProjectOptions projectInfo = DeeProjectModel.getDeeProjectInfo(DLTKCore.create(proj));
-		return projectInfo.getOutputFolder().getFile(projectInfo.getArtifactName());
+		DubBundleDescription bundleInfo = DubModel.getBundleInfo(proj.getName());
+		return null;
 	}
 	
 	@Override

@@ -18,19 +18,14 @@ public final class DeeNewWizardMessages extends NLS {
 		// Do not instantiate
 	}
 	
-	public static String NewElementWizard_op_error_title =
-		"New Element Wizard Error";
-	public static String NewElementWizard_op_error_message = 
-		"Creation of element failed.";
-
 	/* -------- New Project -------- */ 
 	public static String LangNewProject_wizardTitle = 
-		"New D Project";
+		"New DUB Project";
 	
 	public static String LangNewProject_Page1_pageTitle =
-		"Create a D project.";
+		"Create a DUB project.";
 	public static String LangNewProject_Page1_pageDescription =
-		"Create a D project in the workspace or in an external location.";
+		"Create a DUB project in the workspace or in an external location.";
 
 	
 	public static String LangNewProject_Page1_NameGroup_label = 
@@ -69,6 +64,6 @@ public final class DeeNewWizardMessages extends NLS {
 	public static String LangNewProject_Page1_DCEGroup_default_compliance = 
 		"Use def&ault DCE (Currently ''{0}'')";
 	public static String LangNewProject_Page1_DCEGroup_link_description =
-		"<a>C&onfigure DCEs... [TODO]</a>";;
-
+		"<a>C&onfigure DCEs... [TODO]</a>";
+	
 }
