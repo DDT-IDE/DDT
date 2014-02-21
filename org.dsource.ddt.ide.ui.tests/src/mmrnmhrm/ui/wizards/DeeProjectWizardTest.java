@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class DeeProjectWizardTest extends BaseDeeUITest {
 	
-	private DeeNewProjectWizard wizard;
+	private DeeProjectWizard wizard;
 	private WizardDialog__Accessor wizDialog;
 	
 	final static String NEWPROJNAME = "WizardCreationProject";
@@ -36,7 +36,7 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 		
 		tearDown();
 		//WorkbenchPlugin.getDefault().getNewWizardRegistry().findWizard(id);
-		wizard = new DeeNewProjectWizard();
+		wizard = new DeeProjectWizard();
 		IWorkbenchWindow window = WorkbenchUtils.getActiveWorkbenchWindow();
 		wizard.init(window.getWorkbench(), null);
 		

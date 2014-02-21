@@ -54,7 +54,7 @@
             name="%LangWizardsCategory.name"/>
       <wizard
             category="org.dsource.ddt.ide.category"
-            class="mmrnmhrm.ui.wizards.DeeNewProjectWizard"
+            class="mmrnmhrm.ui.wizards.DeeProjectWizard"
             finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
             icon="icons/action16e/newprj_wiz.gif"
             id="org.dsource.ddt.ide.ui.wizards.deeProjectWizard"
@@ -65,16 +65,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.propertyPages">
-      <page
-            class="mmrnmhrm.ui.preferences.pages.DeeBuildPathPropertyPage"
-            id="org.dsource.ddt.ide.ui.properties.DeeBuildPathProperties"
-            name="%LangBuildPathPropertyPage.name">
-         <enabledWhen>
-            <reference
-                  definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
-            </reference>
-         </enabledWhen>
-      </page>
       <page
             class="mmrnmhrm.ui.preferences.pages.DeeProjectOptionsPropertyPage"
             id="org.dsource.ddt.ide.ui.properties.DeeCompileOptionsProperties"

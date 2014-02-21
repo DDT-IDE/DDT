@@ -6,6 +6,7 @@
  * Added DUB support.
    * Modify buildpath to include dub dependencies.
    * DUB describe console output
+ * Removed all buildpath UI.  
  TODO:
    * UI actions for DUB Elements in navigator
    * DLTK Model elements in Project Explorer
