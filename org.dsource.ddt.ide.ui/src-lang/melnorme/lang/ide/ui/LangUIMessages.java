@@ -16,6 +16,10 @@ public final class LangUIMessages extends LangUIMessages_Actual {
 	
 	private LangUIMessages() {} // Do not instantiate
 	
+	public static String getFormattedString(String message, Object... args) {
+		return MessageFormat.format(message, args);
+	}	
+	
 	public static String LangPlugin_internal_error = 
 			"Internal Error";
 	public static String ExceptionDialog_seeErrorLogMessage = 
@@ -62,8 +66,26 @@ public final class LangUIMessages extends LangUIMessages_Actual {
 	public static final String LangArgumentsTab_Arguments = 
 			"Arguments";
 	
-	public static String getFormattedString(String message, Object... args) {
-		return MessageFormat.format(message, args);
-	}
+	/* ----------------------------------- */
 	
+	
+	public static final String ScriptLaunchShortcut_Error0 = 
+			"Error";
+	public static final String ScriptLaunchShortcut_Error1 = 
+			"Error";
+	
+	public static final String LaunchShortcut_selectionContainsNoScript = 
+			"Selection contains no launchables";
+	
+	public static final String LaunchShortcut_searchingForScripts = 
+			"Searching for launchables...";
+	
+	public static final String LaunchShortcut_selectLaunchableToLaunch = 
+			"Select a launchable resource to launch";
+	
+	public static final String LaunchShortcut_selectLaunch_title = 
+			"Launch configurations";
+	public static final String LaunchShortcut_selectLaunch_message = 
+			"&Select existing configuration:";
+
 }

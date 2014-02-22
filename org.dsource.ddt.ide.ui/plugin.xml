@@ -494,37 +494,32 @@
                description="%LangLaunchShortcut.debugDescription"
                mode="debug">
          </description>
+        
+         <configurationType
+               id="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
+         </configurationType>
          <contextualLaunch>
             <enablement>
-              <with variable="selection">
-                <count value="1"/>
-                <iterate>
-                  <!--
-                  <test args="org.dsource.ddt.ide.core.nature"
-                    property="org.eclipse.dltk.launching.hasProjectNature">
-                  </test>
-                  -->
-                  <or>
-                    <adapt type="org.eclipse.core.resources.IFile">
-                      <test property="org.eclipse.core.resources.name" value="*.exe" />
-                    </adapt>
-                    <adapt type="org.eclipse.core.resources.IProject">
-                      <test property="org.eclipse.core.resources.projectNature"
-                        value="org.dsource.ddt.ide.core.nature"/>
-                    </adapt>
-               	  </or>
-                </iterate>
-              </with>
-            </enablement>
-            <contextLabel
-                  label="%LangLaunchShortcut.runName"
-                  mode="run">
-            </contextLabel>
-            <contextLabel
-                  label="%LangLaunchShortcut.debugName"
-                  mode="debug">
-            </contextLabel>
-         </contextualLaunch>
+               <with
+                     variable="selection">
+                  <count value="1" />
+                  <iterate>
+                     <or>
+                        <instanceof value="org.eclipse.ui.IEditorInput">
+                        </instanceof>
+                        <adapt type="org.eclipse.core.resources.IFile">
+                           <test property="org.eclipse.core.resources.name" value="*.exe">
+                           </test>
+                        </adapt>
+                        <adapt type="org.eclipse.core.resources.IProject">
+                           <reference
+                                 definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
+                           </reference>
+                        </adapt></or>
+                  </iterate>
+               </with></enablement>
+         </contextualLaunch> 
+
       </shortcut>
    </extension>
    
