@@ -15,6 +15,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.nullToEmpty;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import melnorme.utilbox.misc.MiscUtil;
 
 public class DubBundle {
 	
@@ -28,25 +31,29 @@ public class DubBundle {
 	public final Path[] srcFolders;
 	public final Path[] implicitSrcFolders;
 	public final DubDependecyRef[] dependencies;
+	public final String targetName;
+	public final String targetPath;
 	
-	public DubBundle(Path location, String name, String version, Path[] srcFolders, Path[] implicitSrcFolders,
-			DubDependecyRef[] dependencies, DubBundleException error) {
+	public DubBundle(Path location, String name, DubBundleException error, String version, Path[] srcFolders,
+			Path[] implicitSrcFolders, DubDependecyRef[] dependencies, String targetName, String targetPath) {
 		this.location = location;
 		this.name = assertNotNull(name);
+		this.error = error;
+		
 		this.version = version == null ? DEFAULT_VERSION : version;
 		this.srcFolders = srcFolders;
 		this.implicitSrcFolders = implicitSrcFolders;
 		this.dependencies = nullToEmpty(dependencies, DubDependecyRef.class);
-		this.error = error;
+		this.targetName = targetName;
+		this.targetPath = targetPath;
+		
 		if(!hasErrors()) {
 			assertTrue(location != null);
-		} else {
-			assertTrue(error.getMessage() != null);
 		}
 	}
 	
 	public DubBundle(Path location, String name, DubBundleException error) {
-		this(location, name, null, null, null, null, error);
+		this(location, name, error, null, null, null, null, null, null);
 	}
 	
 	public boolean hasErrors() {
@@ -63,6 +70,31 @@ public class DubBundle {
 	
 	public DubDependecyRef[] getDependencyRefs() {
 		return dependencies;
+	}
+	
+	public String getTargetName() {
+		return targetName;
+	}
+	
+	public String getTargetPath() {
+		return targetPath;
+	}
+	
+	public String getEffectiveTargetName() {
+		String baseName = targetName != null ? targetName : name;
+		return baseName + getExecutableSuffix();
+	}
+	
+	protected static String getExecutableSuffix() {
+		return MiscUtil.OS_IS_WINDOWS ? ".exe" : "";
+	}
+	
+	public Path getEffectiveTargetFullPath() {
+		Path path = MiscUtil.createValidPath(getTargetPath() == null ? "" : getTargetPath());
+		if(path == null) {
+			path = Paths.get("");
+		}
+		return path.resolve(getEffectiveTargetName());
 	}
 	
 	public static class DubDependecyRef {
@@ -95,6 +127,11 @@ public class DubBundle {
 		public DubBundleException(Throwable exception) {
 	        super(exception);
 	    }
+		
+		@Override
+		public String getMessage() {
+			return super.getMessage();
+		}
 		
 	}
 	

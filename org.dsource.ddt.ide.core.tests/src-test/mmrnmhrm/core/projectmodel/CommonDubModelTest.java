@@ -18,7 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.FileUtil;
@@ -58,7 +58,7 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 	public static void writeStringToFile(IProject project, String name, String contents) 
 			throws CoreException {
 		IFile file = project.getFile(name);
-		EclipseUtils.writeToFile(file, new ByteArrayInputStream(contents.getBytes(StringUtil.UTF8)));
+		ResourceUtils.writeToFile(file, new ByteArrayInputStream(contents.getBytes(StringUtil.UTF8)));
 	}
 	
 	

@@ -4,7 +4,7 @@ package mmrnmhrm.ui.wizards;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
@@ -101,10 +101,10 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 		if(!dubManifest.exists()) {
 			
 			final IFolder folder = project.getFolder("source");
-			EclipseUtils.createFolder(folder, true, true, null);
+			ResourceUtils.createFolder(folder, true, true, null);
 			
 			String dubManifestSource = getDefaultDubJSon();
-			EclipseUtils.writeToFile(dubManifest, createInputStream(dubManifestSource, StringUtil.UTF8));
+			ResourceUtils.writeToFile(dubManifest, createInputStream(dubManifestSource, StringUtil.UTF8));
 		}
 	}
 	

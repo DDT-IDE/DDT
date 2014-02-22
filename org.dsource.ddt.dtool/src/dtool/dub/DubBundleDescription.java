@@ -26,21 +26,26 @@ public class DubBundleDescription {
 	
 	/** Constructor for unresolved descriptions. */
 	public DubBundleDescription(DubBundle unresolvedBundle) {
-		this(unresolvedBundle, EMTPY_BUNDLE_DEPS, false);
+		this(unresolvedBundle, EMTPY_BUNDLE_DEPS, false, null);
+	}
+	
+	public DubBundleDescription(DubBundle unresolvedBundle, DubBundleException error) {
+		this(unresolvedBundle, EMTPY_BUNDLE_DEPS, false, error);
 	}
 	
 	public DubBundleDescription(DubBundle mainDubBunble, DubBundle[] deps) {
-		this(mainDubBunble, deps, true);
+		this(mainDubBunble, deps, true, null);
 	}
 	
-	protected DubBundleDescription(DubBundle mainDubBunble, DubBundle[] deps, boolean isResolvedFlag) {
+	protected DubBundleDescription(DubBundle mainDubBunble, DubBundle[] deps, boolean isResolvedFlag,
+			DubBundleException error) {
 		assertNotNull(mainDubBunble);
 		assertNotNull(deps);
 		
 		this.mainDubBundle = mainDubBunble;
 		this.bundleDependencies = deps;
 		
-		this.error = findError(mainDubBunble, bundleDependencies);
+		this.error = error != null ? error : findError(mainDubBunble, bundleDependencies);
 		this.isResolved = isResolvedFlag && error == null;
 	}
 	

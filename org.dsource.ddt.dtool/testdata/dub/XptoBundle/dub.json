@@ -1,7 +1,6 @@
 {
 	"name": "xptobundle",
 	"description": "An example project skeleton",
-	"homepage": "http://example.org",
 	"copyright": "Copyright © 2000, Your Name",
 	"authors": [
 		"Your Name"
@@ -24,6 +23,7 @@
 		},
 		{
 			"name": "metro-app",
+			"targetName": "xpto-metro-app",
 			"targetType": "executable",
 			"versions": [ "MetroApp" ],
 			"sourcePaths": [ "src-other" ],

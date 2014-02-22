@@ -31,6 +31,10 @@ public class CommonDubTest extends DToolBaseTest {
 		super();
 	}
 	
+	public static Path path(String str) {
+		return Paths.get(str);
+	}
+	
 	public static Path[] paths(String... str) {
 		Path[] newArray = new Path[str.length];
 		for (int i = 0; i < str.length; i++) {

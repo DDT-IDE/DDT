@@ -40,6 +40,18 @@ public class DubManifestParserTest extends CommonDubTest {
 			null, "lenient-json1", DubBundle.DEFAULT_VERSION, paths("src", "src-test"),
 			rawDeps("foo_lib", "other_lib")));
 		
+		
+		testPath(DUB_WORKSPACE.resolve("XptoBundle"), 
+			"bin", path("bin/xptobundle" + DubBundle.getExecutableSuffix()));
+
+		testPath(DUB_WORKSPACE.resolve("bar_lib"), 
+			null, path("bar_lib" + DubBundle.getExecutableSuffix()));
+	}
+	
+	protected void testPath(Path location, String targetPath, Path expectedEffectiveFullPath) {
+		DubBundle xptoBundle = parseDubBundle(location);
+		assertAreEqual(xptoBundle.getTargetPath(), targetPath);
+		assertAreEqual(xptoBundle.getEffectiveTargetFullPath(), expectedEffectiveFullPath);
 	}
 	
 	public DubBundle parseDubBundle(Path location) {

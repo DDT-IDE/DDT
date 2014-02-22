@@ -187,11 +187,12 @@ public abstract class AbstractLaunchShortcut implements ILaunchShortcut {
 		ILaunchConfigurationWorkingCopy wc = null;
 		try {
 			ILaunchConfigurationType configType = getConfigurationType();
-			String launchName = getLaunchManager().generateLaunchConfigurationName(launchable.getName());
+			String suggestedName = launchable.getProject().getName();
+			String launchName = getLaunchManager().generateLaunchConfigurationName(suggestedName);
 			wc = configType.newInstance(null, launchName);
 			wc.setAttribute(
 				LaunchConstants.ATTR_PROJECT_NAME,
-				launchable.getProject().getName());
+				suggestedName);
 			wc.setAttribute(
 				LaunchConstants.ATTR_PROGRAM_PATH,
 				launchable.getProjectRelativePath().toPortableString());

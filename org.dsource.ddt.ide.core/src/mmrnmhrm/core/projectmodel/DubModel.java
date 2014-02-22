@@ -70,9 +70,7 @@ public class DubModel extends ListenerListHelper<IDubModelListener> {
 		DubBundleDescription unresolvedDescription = dubBundleInfos.get(project.getName());
 		DubBundle main = unresolvedDescription.getMainBundle();
 		
-		DubBundleDescription bundleDesc = new DubBundleDescription(
-				new DubBundle(main.location, main.name, main.version, main.srcFolders, main.implicitSrcFolders,
-					main.dependencies, dubError));
+		DubBundleDescription bundleDesc = new DubBundleDescription(main, dubError);
 		addProjectModel(project, bundleDesc);
 	}
 	

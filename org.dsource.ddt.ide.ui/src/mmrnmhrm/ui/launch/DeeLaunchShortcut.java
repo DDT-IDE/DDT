@@ -11,11 +11,13 @@
 
 package mmrnmhrm.ui.launch;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut;
+import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.launch.DeeLaunchConstants;
 import mmrnmhrm.core.projectmodel.DubModel;
 
@@ -25,7 +27,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 import dtool.dub.DubBundleDescription;
 
@@ -38,7 +39,7 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut {
 	
 	@Override
 	protected IResource[] findLaunchablesDo(Object[] objects, IProgressMonitor pm) {
-		List<IResource> list = new ArrayList<IResource>(objects.length);
+		List<IResource> list = new ArrayList<>(objects.length);
 		for (int i = 0; i < objects.length; i++) {
 			Object object = objects[i];
 			if (object instanceof IFile) {
@@ -53,7 +54,7 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut {
 				list.add(scriptProj.getProject());
 			}
 		}
-		return list.toArray(new IResource[list.size()]);
+		return ArrayUtil.createFrom(list, IResource.class);
 	}
 	
 	@Override
@@ -71,11 +72,9 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut {
 	protected IFile getProjectExecutableArtifact(IProject project) {
 		String name = project.getName();
 		DubBundleDescription bundleInfo = DubModel.getBundleInfo(name);
+		Path targetFilePath = bundleInfo.getMainBundle().getEffectiveTargetFullPath();
 		
-		MessageDialog.openError(getShell(), LangUIMessages.ScriptLaunchShortcut_Error1, 
-			"Could not determine default target executable for project " + name );
-		
-		return null; // TODO determine target binaryPath
+		return project.getFile(ResourceUtils.getPath(targetFilePath));
 	}
 	
 }
