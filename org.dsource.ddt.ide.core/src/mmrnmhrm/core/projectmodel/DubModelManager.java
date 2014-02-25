@@ -307,6 +307,9 @@ class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
 			return setProjectDubError(project, "dub returned non-zero status: " + exitValue, null);
 		}
 		
+		// Trim leading characters. They shouldn't be there, but sometimes dub outputs non JSON text
+		// if downloading packages
+		descriptionOutput = StringUtil.trimUntil('{', descriptionOutput);
 		
 		DubBundleDescription bundleDesc = DubDescribeParser.parseDescription(location, descriptionOutput);
 		
