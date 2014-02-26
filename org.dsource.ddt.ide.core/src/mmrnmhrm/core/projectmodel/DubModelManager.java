@@ -23,10 +23,10 @@ import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.IExecutorAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
+import mmrnmhrm.core.CoreExecutorAgent;
 import mmrnmhrm.core.DeeCore;
 
 import org.dsource.ddt.ide.core.DeeNature;
@@ -59,7 +59,7 @@ import dtool.dub.DubManifestParser;
 /**
  * Updates {@link DubModel} when resource changes occur, using 'dub describe' 
  */
-public class DubModelManager extends DubManager {
+public class DubModelManager {
 	
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
@@ -90,9 +90,15 @@ public class DubModelManager extends DubManager {
 	protected final DubModel model;
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
 	protected boolean started = false;
+	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(getClass().getSimpleName());
+	protected final DubProcessManager dubProcessManager = new DubProcessManager();
 	
 	public DubModelManager(DubModel model) {
 		this.model = model;
+	}
+	
+	public DubProcessManager getProcessManager() {
+		return dubProcessManager;
 	}
 	
 	public void startManager() {
@@ -115,6 +121,8 @@ public class DubModelManager extends DubManager {
 		// It is possible to shutdown the manager without having it started.
 		
 		DLTKCore.removeElementChangedListener(listener);
+		// TODO review this
+		dubProcessManager.dubProcessExecutor.shutdownNow();
 		executorAgent.shutdownNow();
 		try {
 			executorAgent.awaitTermination();
@@ -209,27 +217,37 @@ public class DubModelManager extends DubManager {
 	}
 	
 	protected void updateProjectDubModel(final IProject project) {
-		log.println(">> Updating project: ", project);
+		log.println(">> Starting project update: ", project);
 		
-		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
+		deleteDubMarkers(project);
+		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription2(project);
+		addProjectModel(project, unresolvedDescription);
+		
 		// only run dub describe if unresolved description had no errors
 		if(unresolvedDescription.hasErrors() == false) {
-			queueDubDescribeJob(project);
+			executorAgent.submit(new ProjectModelDubDescribeTask(project, this));
 		}
 	}
 	
-	protected void queueDubDescribeJob(final IProject project) {
-		executorAgent.submit(new DubDescribeUpdateProjectTask(project, this));
+	protected void deleteDubMarkers(IProject project) {
+		try {
+			IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
+			for (IMarker marker : markers) {
+				marker.delete();
+			}
+		} catch (CoreException ce) {
+			DeeCore.logError(ce);
+		}
 	}
 	
-	protected DubBundleDescription readUnresolvedBundleDescription(final IProject project) {
+	protected DubBundleDescription readUnresolvedBundleDescription2(final IProject project) {
 		java.nio.file.Path location = project.getLocation().toFile().toPath();
 		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation(location);
 		
-		DubBundleDescription dubBundleDescription = new DubBundleDescription(unresolvedBundle);
-		addProjectModel(project, dubBundleDescription);
-		return dubBundleDescription;
+		return new DubBundleDescription(unresolvedBundle);
 	}
+	
+	/* ----------------------------------- */
 	
 	protected void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
 		model.addProjectModel(project, dubBundleDescription);
@@ -255,12 +273,12 @@ public class DubModelManager extends DubManager {
 }
 
 
-class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
+class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 	
 	protected final IProject project;
 	protected final DubModelManager dubModelManager;
 	
-	protected DubDescribeUpdateProjectTask(IProject project, DubModelManager dubModelManager) {
+	protected ProjectModelDubDescribeTask(IProject project, DubModelManager dubModelManager) {
 		this.project = project;
 		this.dubModelManager = dubModelManager;
 	}
@@ -280,18 +298,16 @@ class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
 		DeeCore.logError(ce);
 	}
 	
-	protected Void updateProject(IProgressMonitor monitor) {
+	protected Void updateProject(IProgressMonitor pm) {
 		
-		deleteDubMarkers(project);
-		
-		java.nio.file.Path location = project.getLocation().toFile().toPath();
-		assertTrue(location.isAbsolute());
-		ProcessBuilder pb = new ProcessBuilder("dub", "describe").directory(location.toFile());
-		
-		ExternalProcessOutputHelper processHelper;
+		final DubProcessManager dubProcessManager = dubModelManager.dubProcessManager;
+		DubExternalProcessHelper processHelper;
 		try {
-			processHelper = dubModelManager.runDubProcess(pb, project, monitor);
-		} catch (CoreException ce) {
+			processHelper = dubProcessManager.submitDubCommandAndWait(project, pm, "dub", "describe");
+		} catch (InterruptedException e) {
+			/// XXX: review this code
+			return setProjectDubError(project, "Thread interrupted.", e);
+		}  catch (CoreException ce) {
 			return setProjectDubError(project, ce.getMessage(), ce.getCause());
 		}
 		
@@ -307,10 +323,11 @@ class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
 			return setProjectDubError(project, "dub returned non-zero status: " + exitValue, null);
 		}
 		
-		// Trim leading characters. They shouldn't be there, but sometimes dub outputs non JSON text
-		// if downloading packages
+		// Trim leading characters. 
+		// They shouldn't be there, but sometimes dub outputs non JSON text if downloading packages
 		descriptionOutput = StringUtil.trimUntil('{', descriptionOutput);
 		
+		final java.nio.file.Path location = processHelper.getLocation();
 		DubBundleDescription bundleDesc = DubDescribeParser.parseDescription(location, descriptionOutput);
 		
 		if(!bundleDesc.hasErrors()) {
@@ -319,17 +336,6 @@ class DubDescribeUpdateProjectTask extends RunnableWithEclipseAsynchJob {
 			setProjectDubError(project, "Error parsing description:", bundleDesc.getError());
 		}
 		return null;
-	}
-	
-	protected void deleteDubMarkers(IProject project) {
-		try {
-			IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
-			for (IMarker marker : markers) {
-				marker.delete();
-			}
-		} catch (CoreException ce) {
-			logInternalError(ce);
-		}
 	}
 	
 	protected Void setProjectDubError(IProject project, String message, Throwable exception) {

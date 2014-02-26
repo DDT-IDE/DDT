@@ -70,24 +70,26 @@ public class ExecutorAgent extends ThreadPoolExecutor implements ExecutorService
 	
 	@Override
 	protected void beforeExecute(Thread thread, Runnable runnable) {
+		super.beforeExecute(thread, runnable);
 	}
 	
 	@Override
 	protected void afterExecute(Runnable runnable, Throwable throwable) {
+		super.afterExecute(runnable, throwable);
 		
 		if (throwable == null && runnable instanceof Future) {
 			Future<?> future = (Future<?>) runnable;
 			assertTrue(future.isDone());
 			try {
 				future.get();
+			} catch (InterruptedException ie) {
+				// This should not happen because the future is done, get() should return succesfully
+				throw assertFail();
 			} catch (CancellationException ce) {
 				assertTrue(future.isCancelled());
 				throwable = ce;
 			} catch (ExecutionException ee) {
 				throwable = ee.getCause();
-			} catch (InterruptedException ie) {
-				// This should not happen because the future is done, get() should return succesfully
-				throw assertFail();
 			}
 		}
 		
@@ -104,7 +106,7 @@ public class ExecutorAgent extends ThreadPoolExecutor implements ExecutorService
 	}
 	
 	/** @return true if there is any task being executed, or queued to be executed.
-	 * WARNING: This method has a concurrency bug and may not return false
+	 * WARNING: This method has a concurrency bug and may return false
 	 * even if the current thread has submited a task that has not yet completed.
 	 * Use only for test code, in a tentative way only. */
 	public boolean guess_hasPendingTasks() {
@@ -150,7 +152,6 @@ public class ExecutorAgent extends ThreadPoolExecutor implements ExecutorService
 			awaitTermination();
 		}
 	}
-	
 	
 	@Override
 	public void awaitTermination() throws InterruptedException {

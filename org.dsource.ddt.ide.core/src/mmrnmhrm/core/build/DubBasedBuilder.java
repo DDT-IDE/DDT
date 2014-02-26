@@ -14,20 +14,20 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.projectmodel.DubModelManager;
+import mmrnmhrm.core.projectmodel.DubProcessManager;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 
 
 public class DubBasedBuilder extends IncrementalProjectBuilder {
@@ -40,19 +40,12 @@ public class DubBasedBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected void submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) throws CoreException {
-		Future<Void> future = DubModelManager.getDefault().submitDubCommand(getProject(), monitor, commands);
+		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
 		
 		try {
-			future.get();
+			dubProcessManager.submitDubCommandAndWait(getProject(), monitor, commands);
 		} catch (InterruptedException e) {
-			future.cancel(true);
-		} catch (ExecutionException e) {
-			Throwable cause = e.getCause();
-			if(cause instanceof CoreException) {
-				throw (CoreException) cause;
-			}
-			// this shouldn't happen
-			throw new CoreException(DeeCore.createErrorStatus("Internal error running dub build", cause));
+			throw new OperationCanceledException();
 		}
 	}
 	

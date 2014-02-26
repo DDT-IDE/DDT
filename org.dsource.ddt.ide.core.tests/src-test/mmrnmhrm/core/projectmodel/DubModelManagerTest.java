@@ -59,10 +59,10 @@ public class DubModelManagerTest extends CommonDubModelTest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		IProject project;
-		long taskCount = getDubExecutorAgent().getSubmittedTaskCount();
+		long taskCount = getModelExecutorAgent().getSubmittedTaskCount();
 		project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		// check no change:
-		assertTrue(getDubExecutorAgent().getSubmittedTaskCount() == taskCount); 
+		assertTrue(getModelExecutorAgent().getSubmittedTaskCount() == taskCount); 
 		assertTrue(DubModel.getBundleInfo(DUB_TEST) == null);
 		
 		try {

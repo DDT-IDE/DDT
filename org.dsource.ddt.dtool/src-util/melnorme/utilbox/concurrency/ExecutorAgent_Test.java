@@ -13,6 +13,9 @@ package melnorme.utilbox.concurrency;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.junit.Test;
@@ -42,6 +45,34 @@ public class ExecutorAgent_Test {
 		assertTrue(agent.isShutdown());
 		assertTrue(agent.isTerminating() == false);
 		assertTrue(agent.isTerminated());
+	}
+	
+	
+	
+	@Test
+	public void testExceptionHandling() throws Exception { testExceptionHandling$(); }
+	public void testExceptionHandling$() throws Exception {
+		ExecutorAgent agent = new ExecutorAgent("blah") {
+		};
+		Future<?> future;
+		
+		future = agent.submit(new Runnable() {
+			@Override
+			public void run() {
+				throw new NullPointerException(); // a RuntimeException
+			}
+		});
+		
+		try {
+			future.cancel(true);
+			future.get();
+		} catch (ExecutionException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		} catch (CancellationException ce) {
+			
+		}
+		
+		
 	}
 	
 }

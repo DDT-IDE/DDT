@@ -57,13 +57,13 @@ public class DeeUIPlugin extends LangUIPlugin {
 		SWTUtil.enableDebugColorHelpers = Platform.inDebugMode();
 		
 		dubProcessListener = new DubProcessUIListener();
-		DubModelManager.getDefault().addDubProcessListener(dubProcessListener);
+		DubModelManager.getDefault().getProcessManager().addDubProcessListener(dubProcessListener);
 		DubModelManager.startDefault();
 	}
 	
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		DubModelManager.getDefault().removeDubProcessListener(dubProcessListener);
+		DubModelManager.getDefault().getProcessManager().removeDubProcessListener(dubProcessListener);
 		
 		super.stop(context);
 		pluginInstance = null;

@@ -93,7 +93,7 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 		return sb;
 	}
 	
-	protected static IExecutorAgent getDubExecutorAgent() {
+	protected static IExecutorAgent getModelExecutorAgent() {
 		return DubModelManager.getDefault().internal_getExecutorAgent();
 	}
 	
@@ -107,7 +107,7 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 	
 	protected static LatchRunnable writeDubJson(IProject project, String contents) throws CoreException {
 		LatchRunnable latchRunnable = new LatchRunnable();
-		getDubExecutorAgent().submit(latchRunnable);
+		getModelExecutorAgent().submit(latchRunnable);
 		writeStringToFile(project, "dub.json", contents);
 		return latchRunnable;
 	}

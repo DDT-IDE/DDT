@@ -52,8 +52,8 @@ public abstract class LangCore extends Plugin {
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */
-	public static CoreException createCoreException(String msg, Exception e) {
-		return new CoreException(createErrorStatus(msg, e));
+	public static CoreException createCoreException(String message, Throwable throwable) {
+		return new CoreException(createErrorStatus(message, throwable));
 	}
 	
 	public static void log(Exception e) {
