@@ -14,9 +14,12 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.CollectionUtil;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.ICommonDepElement;
 
@@ -309,5 +312,25 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			}
 		}
 		assertFail(); // Must have removed
+	}
+	
+	@Test
+	public void testShutdown() throws Exception { testShutdown$(); }
+	public void testShutdown$() throws Exception {
+		DubModelManager dmm = new DubModelManager(new DubModel()); 
+		dmm.initializeModelManager();
+		final CountDownLatch latch = new CountDownLatch(1);
+		
+		dmm.executorAgent.submit(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				latch.countDown();
+				new CountDownLatch(1).await(); // wait until interrupted
+				throw DeeCore.createCoreException("error", new Exception());
+			}
+		});
+		latch.await();
+		// Test that shutdown happens successfully even with pending task, and no log entries are made.
+		dmm.shutdownManager(); 
 	}
 }

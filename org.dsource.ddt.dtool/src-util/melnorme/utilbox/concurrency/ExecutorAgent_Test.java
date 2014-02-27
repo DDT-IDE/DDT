@@ -12,24 +12,28 @@ package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.junit.Test;
 
-public class ExecutorAgent_Test {
+import dtool.tests.CommonTestUtils;
+
+public class ExecutorAgent_Test extends CommonTestUtils {
 	
 	@Test
 	public void testShutdownNow() throws Exception {
-		ExecutorAgent agent = new ExecutorAgent("blah");
+		ExecutorAgent agent = new ExecutorAgent("testShutdownNow");
 		LatchRunnable firstTask = new LatchRunnable();
 		agent.submit(firstTask);
 		Future<?> secondTask = agent.submit(firstTask);
 		
-		firstTask.awaitEntry();
+		firstTask.awaitTaskEntry();
 		assertTrue(secondTask.isCancelled() == false);
 		
 		List<Runnable> cancelledTasks = agent.shutdownNow();
@@ -52,27 +56,71 @@ public class ExecutorAgent_Test {
 	@Test
 	public void testExceptionHandling() throws Exception { testExceptionHandling$(); }
 	public void testExceptionHandling$() throws Exception {
-		ExecutorAgent agent = new ExecutorAgent("blah") {
+		final LinkedBlockingQueue<Throwable> unexpectedExceptions = new LinkedBlockingQueue<>();
+		
+		ExecutorAgent agent = new ExecutorAgent("testExceptionHandling") {
+			@Override
+			protected void handleUnexpectedException(Throwable throwable) {
+				if(throwable != null) {
+					unexpectedExceptions.add(throwable);
+				}
+			}
 		};
 		Future<?> future;
 		
-		future = agent.submit(new Runnable() {
+		Runnable npeRunnable = new Runnable() {
 			@Override
 			public void run() {
-				throw new NullPointerException(); // a RuntimeException
+				throw new NullPointerException(); // a RuntimeException, representing an internal error
 			}
-		});
+		};
+		Callable<String> normalTask = new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				throw new IOException("Some expected exception");
+			}
+		};
+		
+		
+		future = agent.submit(npeRunnable);
 		
 		try {
 			future.cancel(true);
 			future.get();
-		} catch (ExecutionException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		} catch (CancellationException ce) {
-			
+			// ok
 		}
+		agent.awaitPendingTasks();
+		assertTrue(unexpectedExceptions.size() == 0);
 		
 		
+		checkExceptionHandling(unexpectedExceptions, agent, 
+			agent.submit(npeRunnable), NullPointerException.class, false);
+		
+		checkExceptionHandling(unexpectedExceptions, agent, 
+			agent.submit(normalTask), IOException.class, true);
+	}
+	
+	protected void checkExceptionHandling(final LinkedBlockingQueue<Throwable> unexpectedExceptions, 
+			ExecutorAgent agent, Future<?> future, Class<? extends Exception> expectedKlass, boolean isExpected) 
+					throws InterruptedException {
+		
+		try {
+			future.get();
+		} catch (ExecutionException ce) {
+			assertTrue(expectedKlass.isInstance(ce.getCause()));
+			// ok
+		}
+		agent.awaitPendingTasks();
+		
+		if(expectedKlass == null || isExpected) {
+			assertTrue(unexpectedExceptions.size() == 0);
+			return;
+		} else {
+			assertTrue(unexpectedExceptions.size() == 1);
+			Throwable removed = unexpectedExceptions.remove();
+			assertTrue(expectedKlass.isInstance(removed));
+		}
 	}
 	
 }

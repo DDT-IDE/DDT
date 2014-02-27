@@ -20,13 +20,11 @@ public class CoreExecutorAgent extends ExecutorAgent {
 	}
 	
 	@Override
-	protected void handleThrowableException(Throwable throwable) {
-		if(throwable != null) {
-			// Log unexpected exceptions. This is important for two reasons:
-			// 1: Give some user feedback an internal error ocurred, even if is for the log only.
-			// 2: For tests to be able to determine if exceptions that should fail the test have occurred.
-			LangCore.logError(throwable, "Unhandled exception in CoreExecutor: " + getName());
-		}
+	protected void handleUnexpectedException(Throwable throwable) {
+		// Log unexpected exceptions. This is important for two reasons:
+		// 1: Give some user feedback an internal error ocurred, even if is for the log only.
+		// 2: For tests to be able to determine if exceptions that should fail the test have occurred.
+		LangCore.logError(throwable, "Unhandled exception in CoreExecutor: " + getName());
 	}
 	
 }

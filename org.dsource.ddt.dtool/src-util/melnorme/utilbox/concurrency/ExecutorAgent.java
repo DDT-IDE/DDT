@@ -12,6 +12,7 @@ package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.MiscUtil.isUncheckedException;
 
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -87,17 +88,24 @@ public class ExecutorAgent extends ThreadPoolExecutor implements ExecutorService
 				throw assertFail();
 			} catch (CancellationException ce) {
 				assertTrue(future.isCancelled());
-				throwable = ce;
+				return;
 			} catch (ExecutionException ee) {
 				throwable = ee.getCause();
+				if(!isUncheckedException(throwable)) {
+					// for Future's, we only consider it to be unexpected if it's an unchecked exception
+					// otherwise it can be expected the task client code know how to handle to exception
+					return;
+				}
 			}
 		}
 		
-		handleThrowableException(throwable);
+		if(throwable != null) {
+			handleUnexpectedException(throwable);
+		}
 	}
 	
 	@SuppressWarnings("unused")
-	protected void handleThrowableException(Throwable throwable) {
+	protected void handleUnexpectedException(Throwable throwable) {
 	}
 	
 	@Override

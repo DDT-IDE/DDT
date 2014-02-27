@@ -180,4 +180,9 @@ public class MiscUtil {
 		
 	}
 	
+	/** @return true if given throwable is a Java unchecked throwable, false otherwise. */
+	public static boolean isUncheckedException(Throwable throwable) {
+		return throwable instanceof RuntimeException || throwable instanceof Error;
+	}
+	
 }

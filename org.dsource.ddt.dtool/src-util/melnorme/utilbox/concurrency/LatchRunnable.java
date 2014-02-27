@@ -37,7 +37,7 @@ public class LatchRunnable implements Runnable, AutoCloseable {
 		}
 	}
 	
-	public void awaitEntry() throws InterruptedException {
+	public void awaitTaskEntry() throws InterruptedException {
 		entryLatch.await();
 	}
 	

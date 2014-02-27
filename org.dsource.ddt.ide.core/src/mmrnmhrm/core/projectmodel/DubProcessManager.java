@@ -68,7 +68,6 @@ public class DubProcessManager {
 	public DubExternalProcessHelper submitDubCommandAndWait(DubExternalProcessTask task) 
 			throws InterruptedException, CoreException {
 		Future<DubExternalProcessHelper> future = dubProcessExecutor.submit(task);
-		
 		try {
 			return future.get();
 		} catch (InterruptedException e) {
