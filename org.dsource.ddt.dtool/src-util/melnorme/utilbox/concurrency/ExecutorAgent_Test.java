@@ -30,16 +30,18 @@ public class ExecutorAgent_Test extends CommonTestUtils {
 	public void testShutdownNow() throws Exception {
 		ExecutorAgent agent = new ExecutorAgent("testShutdownNow");
 		LatchRunnable firstTask = new LatchRunnable();
+		LatchRunnable secondTask = new LatchRunnable();
+		
 		agent.submit(firstTask);
-		Future<?> secondTask = agent.submit(firstTask);
+		Future<?> secondTaskFuture = agent.submit(secondTask);
 		
 		firstTask.awaitTaskEntry();
-		assertTrue(secondTask.isCancelled() == false);
+		assertTrue(secondTaskFuture.isCancelled() == false);
 		
 		List<Runnable> cancelledTasks = agent.shutdownNow();
 		assertTrue(cancelledTasks.size() == 1);
 		
-		assertTrue(secondTask.isCancelled() == true);
+		assertTrue(secondTaskFuture.isCancelled() == true);
 		assertTrue(agent.isShutdown());
 		Thread.sleep(1);
 		assertTrue(agent.isTerminating() == true);
@@ -49,8 +51,25 @@ public class ExecutorAgent_Test extends CommonTestUtils {
 		assertTrue(agent.isShutdown());
 		assertTrue(agent.isTerminating() == false);
 		assertTrue(agent.isTerminated());
+		
+		testShutdownNow_Interrupt();
 	}
 	
+	// test that shutdownNow interrupts current task.
+	public void testShutdownNow_Interrupt() throws InterruptedException {
+		ExecutorAgent agent = new ExecutorAgent("testShutdownNow_Interrupt");
+		LatchRunnable firstTask = new LatchRunnable(false);
+		agent.submit(firstTask);
+		
+		agent.submit(new LatchRunnable());
+		
+		firstTask.awaitTaskEntry();
+		
+		List<Runnable> cancelledTasks = agent.shutdownNow();
+		assertTrue(cancelledTasks.size() == 1);
+		
+		agent.awaitTermination();
+	}
 	
 	
 	@Test

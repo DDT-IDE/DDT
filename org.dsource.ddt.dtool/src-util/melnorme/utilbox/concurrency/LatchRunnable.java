@@ -20,8 +20,14 @@ public class LatchRunnable implements Runnable, AutoCloseable {
 	
 	public final CountDownLatch entryLatch = new CountDownLatch(1);
 	public final CountDownLatch exitLatch = new CountDownLatch(1);
+	public final boolean retryAwait;
 	
 	public LatchRunnable() {
+		this(true);
+	}
+	
+	public LatchRunnable(boolean retryAwait) {
+		this.retryAwait = retryAwait; 
 	}
 	
 	@Override
@@ -32,7 +38,11 @@ public class LatchRunnable implements Runnable, AutoCloseable {
 				exitLatch.await();
 				return;
 			} catch (InterruptedException e) {
-				continue;
+				if(retryAwait) {
+					continue;
+				} else {
+					return;
+				}
 			}
 		}
 	}
