@@ -39,7 +39,7 @@ public class EclipseUtils {
 				debugPlugin.start(Bundle.START_TRANSIENT);
 			}
 		} catch (BundleException e) {
-			LangCore.log(e);
+			LangCore.logError(e);
 		}
 	}
 	

@@ -55,7 +55,7 @@ public class DeeSourceElementParser extends AbstractSourceElementParser {
 				provider.provide(deeModuleDecl);
 //				moduleDeclaration.traverse(requestor);
 			} catch (RuntimeException e) {
-				DeeCore.log(e);
+				DeeCore.logError(e);
 				throw e;
 			}
 		}

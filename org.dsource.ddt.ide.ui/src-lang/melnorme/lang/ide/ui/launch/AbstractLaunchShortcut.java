@@ -200,7 +200,7 @@ public abstract class AbstractLaunchShortcut implements ILaunchShortcut {
 			wc.setMappedResources(new IResource[] { launchable });
 			config = wc.doSave();
 		} catch (CoreException exception) {
-			LangCore.log(exception);
+			LangCore.logError(exception);
 		}
 		return config;
 	}

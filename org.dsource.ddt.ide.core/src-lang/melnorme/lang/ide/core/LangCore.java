@@ -56,18 +56,14 @@ public abstract class LangCore extends Plugin {
 		return new CoreException(createErrorStatus(message, throwable));
 	}
 	
-	public static void log(Exception e) {
-		logError(e);
+	/** Logs given error status. */
+	public static void logStatus(IStatus status) {
+		getInstance().getLog().log(status);
 	}
 	
 	/** Logs an error status with given exception and given message. */
 	public static void logError(Throwable throwable, String message) {
 		getInstance().getLog().log(createErrorStatus(message, throwable));
-	}
-	
-	/** Logs given error status. */
-	public static void logError(IStatus status) {
-		getInstance().getLog().log(status);
 	}
 	
 	/** Logs an error status with given message. */
@@ -84,6 +80,11 @@ public abstract class LangCore extends Plugin {
 	public static void logWarning(String message) {
 		getInstance().getLog().log(
 				new Status(IStatus.WARNING, PLUGIN_ID, ILangConstants.INTERNAL_ERROR, message, null));
+	}
+	
+	@Deprecated
+	public static void log(Exception e) {
+		logError(e);
 	}
 	
 }

@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 
 
-public class DubBasedBuilder extends IncrementalProjectBuilder {
+public class DubProjectBuilder extends IncrementalProjectBuilder {
 	
 	public final static String BUILDER_ID = DeeCore.PLUGIN_ID + ".DubBuilder";
 	
@@ -59,6 +59,8 @@ public class DubBasedBuilder extends IncrementalProjectBuilder {
 	
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+		assertTrue(kind != CLEAN_BUILD);
+		
 		String dubPath = DeeCorePreferences.getDubPath();
 		
 		ArrayList<String> commands = new ArrayList<String>();
@@ -68,10 +70,17 @@ public class DubBasedBuilder extends IncrementalProjectBuilder {
 		if(kind == FULL_BUILD) {
 			commands.add("--force");
 		}
+		
 		String[] extraCommands = getExtraCommands();
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
-		submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
+		try {
+			submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
+		} catch (CoreException ce) {
+			DeeCore.logStatus(ce.getStatus());
+			// Don't rethrow
+			forgetLastBuiltState();
+		}
 		
 		return null;
 	}

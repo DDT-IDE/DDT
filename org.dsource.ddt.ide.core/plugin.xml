@@ -89,7 +89,7 @@
          name="DUB Build"
          point="org.eclipse.core.resources.builders">
       <builder>
-         <run class="mmrnmhrm.core.build.DubBasedBuilder">
+         <run class="mmrnmhrm.core.build.DubProjectBuilder">
             <parameter
                   name="comment"
                   value="Builder comment"/>
