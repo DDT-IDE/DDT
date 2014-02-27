@@ -16,13 +16,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.IOException;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -78,15 +75,9 @@ public class DubModelManager {
 		return defaultInstance;
 	}
 	
-	public static final String DUB_PROBLEM_ID = DeeCore.EXTENSIONS_IDPREFIX + "DubProblem";
-	
-	/** Marker interface for listener callbacks that runs in the Dub executor. 
-	 * Used for documentation purposes only, has no effect in code. */
-	@Target(ElementType.METHOD)
-	@Retention(RetentionPolicy.SOURCE)
-	public static @interface RunsInDubExecutor { }
-	
 	/* ----------------------------------- */
+	
+	public static final String DUB_PROBLEM_ID = DeeCore.EXTENSIONS_IDPREFIX + "DubProblem";
 	
 	protected final DubModel model;
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
@@ -132,7 +123,6 @@ public class DubModelManager {
 		}
 	}
 	
-	@RunsInDubExecutor
 	protected void initializeModelManager() {
 		try {
 			DLTKCore.run(new IWorkspaceRunnable() {
@@ -300,12 +290,13 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 	}
 	
 	protected Void updateProject(IProgressMonitor pm) {
+		java.nio.file.Path location = project.getLocation().toFile().toPath();
 		
 		final DubProcessManager dubProcessManager = dubModelManager.dubProcessManager;
-		DubExternalProcessHelper processHelper;
+		ExternalProcessOutputHelper processHelper;
 		try {
 			String dubPath = DeeCorePreferences.getDubPath();
-			processHelper = dubProcessManager.submitDubCommandAndWait(project, pm, dubPath, "describe");
+			processHelper = dubProcessManager.submitDubCommandAndWait(pm, location, dubPath, "describe");
 		} catch (InterruptedException e) {
 			// Should only happen during manager shutdown, so dont bother updating the model.
 			return null;
@@ -329,7 +320,6 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		// They shouldn't be there, but sometimes dub outputs non JSON text if downloading packages
 		descriptionOutput = StringUtil.trimUntil('{', descriptionOutput);
 		
-		final java.nio.file.Path location = processHelper.getLocation();
 		DubBundleDescription bundleDesc = DubDescribeParser.parseDescription(location, descriptionOutput);
 		
 		if(!bundleDesc.hasErrors()) {

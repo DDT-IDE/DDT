@@ -10,23 +10,20 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.ExceptionAdapter;
+import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.ListenerListHelper;
 import mmrnmhrm.core.CoreTaskAgent;
-import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -43,37 +40,44 @@ public class DubProcessManager {
 		dubProcessAgent.shutdownNow();
 	}
 	
+	/* ----------------- listeners ----------------- */
+	
+	protected final ListenerListHelper<IExternalProcessListener> processListenersHelper = new ListenerListHelper<>();
+	
+	public void addDubProcessListener(IExternalProcessListener dubProcessListener) {
+		processListenersHelper.addListener(dubProcessListener);
+	}
+	
+	public void removeDubProcessListener(IExternalProcessListener dubProcessListener) {
+		processListenersHelper.removeListener(dubProcessListener);
+	}
+	
+	/** Marker interface for listener callbacks that runs in the Dub agent. 
+	 * Used for documentation purposes only, has no effect in code. */
+	@Target(ElementType.METHOD)
+	@Retention(RetentionPolicy.SOURCE)
+	public static @interface RunsInDubProcessAgent { }
+	
 	/* ----------------------------------- */
 	
-	protected final ListenerListHelper<IDubProcessListener> dubProcessListenersHelper = new ListenerListHelper<>();
-	
-	public void addDubProcessListener(IDubProcessListener dubProcessListener) {
-		dubProcessListenersHelper.addListener(dubProcessListener);
-	}
-	
-	public void removeDubProcessListener(IDubProcessListener dubProcessListener) {
-		dubProcessListenersHelper.removeListener(dubProcessListener);
-	}
-	
-	public Future<DubExternalProcessHelper> submitDubCommand(DubExternalProcessTask task) {
+	public Future<ExternalProcessOutputHelper> submitDubCommand(RunExternalProcessTask task) {
 		return dubProcessAgent.submit(task);
 	}
 	
-	public DubExternalProcessHelper submitDubCommandAndWait(IProject project, IProgressMonitor monitor, 
+	public ExternalProcessOutputHelper submitDubCommandAndWait(IProject project, IProgressMonitor monitor, 
 			String... commands) throws InterruptedException, CoreException {
-		return submitDubCommandAndWait(newDubExternalProcessTask(project, monitor, commands));
+		Path location = project.getLocation().toFile().toPath();
+		return submitDubCommandAndWait(monitor, location, commands);
 	}
 	
-	public DubExternalProcessTask newDubExternalProcessTask(IProject project, IProgressMonitor monitor,
-			String... commands) {
-		final Path location = project.getLocation().toFile().toPath();
-		final ProcessBuilder pb = new ProcessBuilder(commands).directory(location.toFile());
-		return new DubExternalProcessTask(monitor, project, pb);
+	public ExternalProcessOutputHelper submitDubCommandAndWait(IProgressMonitor monitor, Path location,
+			String... commands) throws InterruptedException, CoreException {
+		return submitDubCommandAndWait(newExternalProcessTask(monitor, location, commands));
 	}
 	
-	public DubExternalProcessHelper submitDubCommandAndWait(DubExternalProcessTask task) 
+	public <T> T submitDubCommandAndWait(ICallable<T, CoreException> task) 
 			throws InterruptedException, CoreException {
-		Future<DubExternalProcessHelper> future = dubProcessAgent.submit(task);
+		Future<T> future = dubProcessAgent.submit(task);
 		try {
 			return future.get();
 		} catch (InterruptedException e) {
@@ -88,85 +92,10 @@ public class DubProcessManager {
 		}
 	}
 	
-	public class DubExternalProcessTask implements Callable<DubExternalProcessHelper> {
-		protected final IProgressMonitor monitor;
-		protected final IProject project;
-		protected final ProcessBuilder pb;
-		
-		public DubExternalProcessTask(IProgressMonitor monitor, IProject project, ProcessBuilder pb) {
-			this.monitor = monitor;
-			this.project = project;
-			this.pb = pb;
-		}
-		
-		@Override
-		public DubExternalProcessHelper call() throws CoreException {
-			return runDubProcess(pb, project, monitor);
-		}
-	}
-	
-	protected DubExternalProcessHelper runDubProcess(ProcessBuilder pb, IProject project, 
-			IProgressMonitor cancelMonitor) throws CoreException {
-		DubExternalProcessHelper processHelper;
-		try {
-			processHelper = new DubExternalProcessHelper(pb, false, cancelMonitor);
-		} catch (IOException e) {
-			throw createDubProcessException("Could not start dub process: ",  e);
-		}
-		
-		notifyDubProcessStarted(processHelper, pb, project);		
-		processHelper.startReaderThreads();
-		
-		try {
-			processHelper.awaitTerminationStrict_destroyOnException();
-		} catch (InterruptedException e) {
-			throw createDubProcessException("Interrupted running dub process.", null);
-		} catch (TimeoutException e) {
-			assertTrue(cancelMonitor.isCanceled());
-			throw createDubProcessException("Cancelled dub process.", null);
-		}
-		
-		return processHelper;
-	}
-	
-	protected static CoreException createDubProcessException(String message, IOException e) {
-		return new CoreException(DeeCore.createErrorStatus(message, e));
-	}
-	
-	public void notifyDubProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb, 
-			IProject project) {
-		List<IDubProcessListener> listeners = dubProcessListenersHelper.getListeners();
-		for (IDubProcessListener dubProcessListener : listeners) {
-			dubProcessListener.handleProcessStarted(processHelper, pb, project);
-		}
-	}
-	
-}
-
-class DubExternalProcessHelper extends ExternalProcessOutputHelper {
-	
-	protected final IProgressMonitor monitor;
-	protected final ProcessBuilder pb;
-	
-	public DubExternalProcessHelper(ProcessBuilder pb, boolean startReaders, IProgressMonitor monitor) 
-			throws IOException {
-		super(pb.start(), true, startReaders);
-		this.pb = pb;
-		this.monitor = monitor;
-	}
-	
-	public Path getLocation() {
-		return pb.directory().toPath();
-	}
-	
-	@Override
-	protected boolean isCanceled() {
-		return monitor.isCanceled();
-	}
-	
-	@Override
-	protected void handleListenerException(RuntimeException e) {
-		LangCore.logError(e, "Internal error notifying listener");
+	public RunExternalProcessTask newExternalProcessTask(IProgressMonitor monitor, Path workingDir,
+			String... commands) {
+		ProcessBuilder pb = new ProcessBuilder(commands).directory(workingDir.toFile());
+		return new RunExternalProcessTask(monitor, pb, processListenersHelper.getListeners());
 	}
 	
 }

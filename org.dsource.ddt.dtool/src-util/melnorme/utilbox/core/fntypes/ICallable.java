@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,18 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package melnorme.utilbox.core.fntypes;
 
-import org.eclipse.core.resources.IProject;
-
-import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
+import java.util.concurrent.Callable;
 
 
-public interface IDubProcessListener {
+/**
+ * A {@link Callable} with a stricter API: 
+ * allows specifying a more specific Exception that the {@link #call()} method throws.
+ */
+public interface ICallable<RET, EXC extends Exception> extends Callable<RET> {
 	
-	@DubModelManager.RunsInDubExecutor
-	void handleProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb, IProject project);
+	@Override
+	public RET call() throws EXC;
 	
 }

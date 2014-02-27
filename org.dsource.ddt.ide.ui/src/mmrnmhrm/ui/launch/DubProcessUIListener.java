@@ -1,24 +1,25 @@
 package mmrnmhrm.ui.launch;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper.IProcessOutputListener;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.projectmodel.DubModelManager.RunsInDubExecutor;
-import mmrnmhrm.core.projectmodel.IDubProcessListener;
+import mmrnmhrm.core.projectmodel.IExternalProcessListener;
+import mmrnmhrm.core.projectmodel.DubProcessManager.RunsInDubProcessAgent;
 import mmrnmhrm.ui.DeePluginImages;
 
 import org.dsource.ddt.ui.DeeUIPlugin;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.console.MessageConsole;
 
-public class DubProcessUIListener implements IDubProcessListener {
+public class DubProcessUIListener implements IExternalProcessListener {
 	
 	private static final String CONSOLE_NAME = "DUB Output";
 	
@@ -26,10 +27,12 @@ public class DubProcessUIListener implements IDubProcessListener {
 		return DeeUIPlugin.getDefault().getTextTools().getColorManager();
 	}
 	
-	@RunsInDubExecutor
+	@RunsInDubProcessAgent
 	@Override
-	public void handleProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb, IProject project) {
-		final DubProcessUIConsoleOutputHandler outputListener = new DubProcessUIConsoleOutputHandler(project);
+	public void handleProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb) {
+		String consoleQualifier = getConsoleQualifier(pb); 
+		final DubProcessUIConsoleOutputHandler outputListener = 
+				new DubProcessUIConsoleOutputHandler(consoleQualifier);
 		
 		// BM: it's not clear to me if a Color can be created outside UI thread, so do asyncExec
 		// I would think one cant, but some Platform code (ProcessConsole) does freely create Color instances
@@ -53,6 +56,15 @@ public class DubProcessUIListener implements IDubProcessListener {
 		processHelper.getOutputListeningHelper().addListener(outputListener);
 	}
 	
+	protected String getConsoleQualifier(ProcessBuilder pb) {
+		File directory = pb.directory();
+		if(directory == null || directory.toPath().getNameCount() == 0) {
+			return "(Global)";
+		}
+		Path dirPath = directory.toPath();
+		return "["+ dirPath.getFileName() +"]";
+	}
+	
 	public static class DubProcessUIConsoleOutputHandler implements IProcessOutputListener {
 		
 		private final MessageConsole console;
@@ -60,8 +72,7 @@ public class DubProcessUIListener implements IDubProcessListener {
 		private final IOConsoleOutputStream stdOut;
 		private final IOConsoleOutputStream stdErr;
 		
-		public DubProcessUIConsoleOutputHandler(IProject project) {
-			String consoleQualifier = project == null ? "(Global)" : "["+project.getName()+"]"; 
+		public DubProcessUIConsoleOutputHandler(String consoleQualifier) {
 			
 			console = ConsoleUtils.recreateMessageConsole(CONSOLE_NAME + " " + consoleQualifier, 
 				DeePluginImages.getDescriptor(DeePluginImages.DUB_PROCESS));
