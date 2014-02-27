@@ -28,6 +28,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.DeeCorePreferences;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IMarker;
@@ -219,7 +220,7 @@ public class DubModelManager {
 	protected void updateProjectDubModel(final IProject project) {
 		log.println(">> Starting project update: ", project);
 		
-		deleteDubMarkers(project);
+		deleteDubMarkers(project); /*BUG here*/
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription2(project);
 		addProjectModel(project, unresolvedDescription);
 		
@@ -303,7 +304,8 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		final DubProcessManager dubProcessManager = dubModelManager.dubProcessManager;
 		DubExternalProcessHelper processHelper;
 		try {
-			processHelper = dubProcessManager.submitDubCommandAndWait(project, pm, "dub", "describe");
+			String dubPath = DeeCorePreferences.getDubPath();
+			processHelper = dubProcessManager.submitDubCommandAndWait(project, pm, dubPath, "describe");
 		} catch (InterruptedException e) {
 			// Should only happen during manager shutdown, so dont bother updating the model.
 			return null;

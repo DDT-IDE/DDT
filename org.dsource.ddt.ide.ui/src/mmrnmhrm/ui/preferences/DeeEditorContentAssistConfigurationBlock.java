@@ -12,9 +12,12 @@ package mmrnmhrm.ui.preferences;
 
 import java.util.ArrayList;
 
+import mmrnmhrm.ui.DeePreferencesMessages;
+
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.preferences.CodeAssistConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
+import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -27,7 +30,7 @@ public class DeeEditorContentAssistConfigurationBlock extends CodeAssistConfigur
 	}
 	
 	@Override
-	protected void getOverlayKeys(ArrayList overlayKeys) {
+	protected void getOverlayKeys(ArrayList<OverlayKey> overlayKeys) {
 		super.getOverlayKeys(overlayKeys);
 		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.STRING,

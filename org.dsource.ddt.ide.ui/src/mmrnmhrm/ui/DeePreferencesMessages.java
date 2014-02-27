@@ -8,15 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.preferences;
+package mmrnmhrm.ui;
 
-import org.eclipse.osgi.util.NLS;
 
-public final class DeePreferencesMessages extends NLS {
-	
-//	private static final String BUNDLE_NAME = DeePreferencesMessages.class.getSimpleName();
-	
-	
+public final class DeePreferencesMessages {
 	
 	public static final String EditorPreferencePage_AutoEdits = 
 		"AutoEdits";
@@ -62,7 +57,4 @@ public final class DeePreferencesMessages extends NLS {
 		// Do not instantiate
 	}
 	
-	/*static {
-		NLS.initializeMessages(BUNDLE_NAME, DeePreferencesMessages.class);
-	}*/
 }

@@ -15,7 +15,6 @@
     * UI actions
    * get parent
    
-   * DUB program path preference.
    * automatic Compiler Library setup from DUB.
 
 == DDT 0.9.1 (2014-02-07) ===

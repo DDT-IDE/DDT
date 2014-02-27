@@ -51,9 +51,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 
-/**
- * The root preference page for DDT 
- */
 public class DeeAppearancePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	
 	private static final String LABEL_PROVIDER_STYLE = 

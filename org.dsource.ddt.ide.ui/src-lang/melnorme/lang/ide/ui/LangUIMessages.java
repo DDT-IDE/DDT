@@ -12,9 +12,7 @@ package melnorme.lang.ide.ui;
 
 import java.text.MessageFormat;
 
-public final class LangUIMessages extends LangUIMessages_Actual {
-	
-	private LangUIMessages() {} // Do not instantiate
+public abstract class LangUIMessages extends LangUIMessages_Actual {
 	
 	public static String getFormattedString(String message, Object... args) {
 		return MessageFormat.format(message, args);

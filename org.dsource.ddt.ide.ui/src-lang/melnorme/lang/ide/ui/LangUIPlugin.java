@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore.ILangConstants;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.MiscUtil;
@@ -18,8 +19,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
 
 
@@ -111,5 +114,15 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	public static IPreferenceStore getPrefStore() {
 		return getInstance().getPreferenceStore();
 	}
+	
+	private IPreferenceStore corePreferenceStore;
+	
+    public IPreferenceStore getCorePreferenceStore() {
+        // Create the preference store lazily.
+        if (corePreferenceStore == null) {
+        	corePreferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LangCore.PLUGIN_ID);
+        }
+        return corePreferenceStore;
+    }
 	
 }

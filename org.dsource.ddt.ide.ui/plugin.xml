@@ -89,6 +89,11 @@
 	          name="%LangAppearancePreferencePage.name"/>
       	<page
 	          category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
+	          class="mmrnmhrm.ui.preferences.pages.DeeDubPreferencePage"
+	          id="org.dsource.ddt.ide.ui.preferences.Dub"
+	          name="%DeeDubPreferencePage.name"/>
+      	<page
+	          category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
 	          class="mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage"
 	          id="org.dsource.ddt.ide.ui.preferences.Editor"
 	          name="%LangEditorPreferencePage.name"/>
