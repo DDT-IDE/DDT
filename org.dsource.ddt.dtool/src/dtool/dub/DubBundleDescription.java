@@ -26,26 +26,26 @@ public class DubBundleDescription {
 	
 	/** Constructor for unresolved descriptions. */
 	public DubBundleDescription(DubBundle unresolvedBundle) {
-		this(unresolvedBundle, EMTPY_BUNDLE_DEPS, false, null);
+		this(unresolvedBundle, EMTPY_BUNDLE_DEPS, false, unresolvedBundle.error);
 	}
 	
 	public DubBundleDescription(DubBundle unresolvedBundle, DubBundleException error) {
 		this(unresolvedBundle, EMTPY_BUNDLE_DEPS, false, error);
 	}
 	
-	public DubBundleDescription(DubBundle mainDubBunble, DubBundle[] deps) {
-		this(mainDubBunble, deps, true, null);
+	public DubBundleDescription(DubBundle mainBundle, DubBundle[] bundleDeps) {
+		this(mainBundle, bundleDeps, true, findError(mainBundle, bundleDeps));
 	}
 	
-	protected DubBundleDescription(DubBundle mainDubBunble, DubBundle[] deps, boolean isResolvedFlag,
+	protected DubBundleDescription(DubBundle mainBundle, DubBundle[] bundleDeps, boolean isResolvedFlag,
 			DubBundleException error) {
-		assertNotNull(mainDubBunble);
-		assertNotNull(deps);
+		assertNotNull(mainBundle);
+		assertNotNull(bundleDeps);
 		
-		this.mainDubBundle = mainDubBunble;
-		this.bundleDependencies = deps;
+		this.mainDubBundle = mainBundle;
+		this.bundleDependencies = bundleDeps;
 		
-		this.error = error != null ? error : findError(mainDubBunble, bundleDependencies);
+		this.error = error;
 		this.isResolved = isResolvedFlag && error == null;
 	}
 	
