@@ -121,9 +121,9 @@ public class DubModelManager {
 		// It is possible to shutdown the manager without having it started.
 		
 		DLTKCore.removeElementChangedListener(listener);
-		// TODO review this
-		dubProcessManager.dubProcessExecutor.shutdownNow();
+		// shutdown model manager agent first, since model agent uses dub process agent
 		executorAgent.shutdownNow();
+		dubProcessManager.dubProcessExecutor.shutdownNow();
 		try {
 			executorAgent.awaitTermination();
 		} catch (InterruptedException e) {
@@ -305,8 +305,8 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		try {
 			processHelper = dubProcessManager.submitDubCommandAndWait(project, pm, "dub", "describe");
 		} catch (InterruptedException e) {
-			/// XXX: review this code
-			return setProjectDubError(project, "Thread interrupted.", e);
+			// Should only happen during manager shutdown, so dont bother updating the model.
+			return null;
 		}  catch (CoreException ce) {
 			return setProjectDubError(project, ce.getMessage(), ce.getCause());
 		}

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -142,8 +140,8 @@ public abstract class ExternalProcessHelper {
 	/**
 	 * Await termination of process, with given timeoutMs timeout. Can use -1 for no timeout.
 	 * Periodically polls cancel monitor, if one exists.
-	 * @return true if termination reached, false if timeout reached.
-	 * @throws InterruptedException if interrupted or cancel signalled.
+	 * @return true if termination reached, false if timeout reached, or cancel requested.
+	 * @throws InterruptedException if interrupted.
 	 */
 	protected boolean awaitTermination(int timeoutMs) throws InterruptedException {
 		int waitedTime = 0;
@@ -155,7 +153,7 @@ public abstract class ExternalProcessHelper {
 				return true;
 			}
 			if(isCanceled()) {
-				throw new InterruptedException();
+				return false;
 			}
 			if(timeoutMs != NO_TIMEOUT && waitedTime >= timeoutMs) {
 				return false;
@@ -171,9 +169,10 @@ public abstract class ExternalProcessHelper {
 	protected abstract boolean isCanceled();
 	
 	/** 
-	 * Same as {@link #awaitTermination(int))} but:
-	 * Will throw exception on any outcome other than successful termination.
-	 * @return process exit value
+	 * Same as {@link #awaitTermination(int))} but: 
+	 * throws exception on any outcome other than successful awaitTermination.
+	 * Note that even with no timeout provided (value -1), a TimeoutException can be thrown if cancel is requested.
+	 * @return The process exit value.
 	 */
 	public int awaitTerminationStrict(int timeoutMs) throws InterruptedException, TimeoutException {
 		boolean success = awaitTermination(timeoutMs);
@@ -194,12 +193,8 @@ public abstract class ExternalProcessHelper {
 		}
 	}
 	
-	public int awaitTerminationStrict_destroyOnException() throws InterruptedException {
-		try {
-			return awaitTerminationStrict_destroyOnException(NO_TIMEOUT);
-		} catch (TimeoutException e) {
-			throw assertFail(); // Can't happen with NO_TIMEOUT
-		}
+	public int awaitTerminationStrict_destroyOnException() throws InterruptedException, TimeoutException {
+		return awaitTerminationStrict_destroyOnException(NO_TIMEOUT);
 	}
 	
 }

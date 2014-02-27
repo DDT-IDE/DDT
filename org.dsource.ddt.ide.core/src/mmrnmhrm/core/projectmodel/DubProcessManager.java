@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,10 +18,12 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.IExecutorAgent;
+import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.ListenerListHelper;
 import mmrnmhrm.core.CoreExecutorAgent;
 import mmrnmhrm.core.DeeCore;
@@ -71,7 +73,6 @@ public class DubProcessManager {
 		try {
 			return future.get();
 		} catch (InterruptedException e) {
-			/// XXX: review this code
 			future.cancel(true);
 			throw e;
 		} catch (ExecutionException e) {
@@ -79,10 +80,7 @@ public class DubProcessManager {
 			if(cause instanceof CoreException) {
 				throw (CoreException) cause;
 			}
-			if(cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw assertFail();
+			throw ExceptionAdapter.unchecked(cause); // Should not happen
 		}
 	}
 	
@@ -104,8 +102,7 @@ public class DubProcessManager {
 	}
 	
 	protected DubExternalProcessHelper runDubProcess(ProcessBuilder pb, IProject project, 
-			IProgressMonitor cancelMonitor) 
-			throws CoreException {
+			IProgressMonitor cancelMonitor) throws CoreException {
 		DubExternalProcessHelper processHelper;
 		try {
 			processHelper = new DubExternalProcessHelper(pb, false, cancelMonitor);
@@ -119,10 +116,10 @@ public class DubProcessManager {
 		try {
 			processHelper.awaitTerminationStrict_destroyOnException();
 		} catch (InterruptedException e) {
-			if(cancelMonitor.isCanceled()) {
-				throw createDubProcessException("Cancelled dub process.", null);
-			}
 			throw createDubProcessException("Interrupted running dub process.", null);
+		} catch (TimeoutException e) {
+			assertTrue(cancelMonitor.isCanceled());
+			throw createDubProcessException("Cancelled dub process.", null);
 		}
 		
 		return processHelper;
