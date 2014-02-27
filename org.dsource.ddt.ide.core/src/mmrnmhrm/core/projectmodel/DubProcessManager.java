@@ -22,7 +22,7 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
-import melnorme.utilbox.concurrency.IExecutorAgent;
+import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.ListenerListHelper;
 import mmrnmhrm.core.CoreExecutorAgent;
@@ -37,7 +37,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class DubProcessManager {
 	
-	protected final IExecutorAgent dubProcessExecutor = new CoreExecutorAgent(getClass().getSimpleName());
+	protected final ITaskAgent dubProcessAgent = new CoreExecutorAgent(getClass().getSimpleName());
+	
+	public void shutdownNow() {
+		dubProcessAgent.shutdownNow();
+	}
 	
 	/* ----------------------------------- */
 	
@@ -52,7 +56,7 @@ public class DubProcessManager {
 	}
 	
 	public Future<DubExternalProcessHelper> submitDubCommand(DubExternalProcessTask task) {
-		return dubProcessExecutor.submit(task);
+		return dubProcessAgent.submit(task);
 	}
 	
 	public DubExternalProcessHelper submitDubCommandAndWait(IProject project, IProgressMonitor monitor, 
@@ -69,7 +73,7 @@ public class DubProcessManager {
 	
 	public DubExternalProcessHelper submitDubCommandAndWait(DubExternalProcessTask task) 
 			throws InterruptedException, CoreException {
-		Future<DubExternalProcessHelper> future = dubProcessExecutor.submit(task);
+		Future<DubExternalProcessHelper> future = dubProcessAgent.submit(task);
 		try {
 			return future.get();
 		} catch (InterruptedException e) {

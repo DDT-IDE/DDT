@@ -62,10 +62,10 @@ public class DubModelManagerTest extends CommonDubModelTest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		IProject project;
-		long taskCount = getModelExecutorAgent().getSubmittedTaskCount();
+		long taskCount = getModelAgent().getSubmittedTaskCount();
 		project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		// check no change:
-		assertTrue(getModelExecutorAgent().getSubmittedTaskCount() == taskCount); 
+		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount); 
 		assertTrue(DubModel.getBundleInfo(DUB_TEST) == null);
 		
 		try {
@@ -321,7 +321,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		dmm.initializeModelManager();
 		final CountDownLatch latch = new CountDownLatch(1);
 		
-		dmm.executorAgent.submit(new Callable<Void>() {
+		dmm.modelAgent.submit(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
 				latch.countDown();

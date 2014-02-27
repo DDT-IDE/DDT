@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.utilbox.concurrency.IExecutorAgent;
+import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -93,8 +93,8 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 		return sb;
 	}
 	
-	protected static IExecutorAgent getModelExecutorAgent() {
-		return DubModelManager.getDefault().internal_getExecutorAgent();
+	protected static ITaskAgent getModelAgent() {
+		return DubModelManager.getDefault().internal_getModelAgent();
 	}
 	
 	protected static DubModelManager getProjectModel() {
@@ -107,7 +107,7 @@ public abstract class CommonDubModelTest extends BaseDeeTest {
 	
 	protected static LatchRunnable writeDubJson(IProject project, String contents) throws CoreException {
 		LatchRunnable latchRunnable = new LatchRunnable();
-		getModelExecutorAgent().submit(latchRunnable);
+		getModelAgent().submit(latchRunnable);
 		writeStringToFile(project, "dub.json", contents);
 		return latchRunnable;
 	}

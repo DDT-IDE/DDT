@@ -26,11 +26,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An implementation of {@link IExecutorAgent}.
+ * An implementation of {@link ITaskAgent} based on an {@link ExecutorService}.
  */
-public class ExecutorAgent extends ThreadPoolExecutor implements ExecutorService, IExecutorAgent {
+public class ExecutorAgent extends ThreadPoolExecutor implements ExecutorService, ITaskAgent {
 	
-	public static IExecutorAgent createExecutorAgent(String name) {
+	public static ITaskAgent createExecutorAgent(String name) {
 		return new ExecutorAgent(name);
 	}
 	

@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.utilbox.concurrency.IExecutorAgent;
+import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.CoreExecutorAgent;
@@ -90,7 +90,7 @@ public class DubModelManager {
 	protected final DubModel model;
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
 	protected boolean started = false;
-	protected final IExecutorAgent executorAgent = new CoreExecutorAgent(getClass().getSimpleName());
+	protected final ITaskAgent modelAgent = new CoreExecutorAgent(getClass().getSimpleName());
 	protected final DubProcessManager dubProcessManager = new DubProcessManager();
 	
 	public DubModelManager(DubModel model) {
@@ -109,7 +109,7 @@ public class DubModelManager {
 		// This is necessary so that we avoid running the initialization during plugin initialization.
 		// Otherwise there could be problems because initialization is heavyweight code:
 		// it requests workspace locks (which may not be available) and issues workspace deltas
-		executorAgent.submit(new Runnable() {
+		modelAgent.submit(new Runnable() {
 			@Override
 			public void run() {
 				initializeModelManager();
@@ -122,10 +122,10 @@ public class DubModelManager {
 		
 		DLTKCore.removeElementChangedListener(listener);
 		// shutdown model manager agent first, since model agent uses dub process agent
-		executorAgent.shutdownNow();
-		dubProcessManager.dubProcessExecutor.shutdownNow();
+		modelAgent.shutdownNow();
+		dubProcessManager.shutdownNow();
 		try {
-			executorAgent.awaitTermination();
+			modelAgent.awaitTermination();
 		} catch (InterruptedException e) {
 			DeeCore.log(e);
 		}
@@ -225,7 +225,7 @@ public class DubModelManager {
 		
 		// only run dub describe if unresolved description had no errors
 		if(unresolvedDescription.hasErrors() == false) {
-			executorAgent.submit(new ProjectModelDubDescribeTask(project, this));
+			modelAgent.submit(new ProjectModelDubDescribeTask(project, this));
 		}
 	}
 	
@@ -258,12 +258,12 @@ public class DubModelManager {
 	}
 	
 	public void syncPendingUpdates() {
-		executorAgent.waitForPendingTasks();
+		modelAgent.waitForPendingTasks();
 	}
 	
 	/** WARNING: this API is for test use only */
-	public IExecutorAgent internal_getExecutorAgent() {
-		return executorAgent;
+	public ITaskAgent internal_getModelAgent() {
+		return modelAgent;
 	}
 	
 	public static IMarker[] getDubErrorMarkers(IProject project) throws CoreException {
