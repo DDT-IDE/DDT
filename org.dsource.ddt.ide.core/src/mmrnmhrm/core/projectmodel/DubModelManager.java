@@ -296,7 +296,7 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		ExternalProcessOutputHelper processHelper;
 		try {
 			String dubPath = DeeCorePreferences.getDubPath();
-			processHelper = dubProcessManager.submitDubCommandAndWait(pm, location, dubPath, "describe");
+			processHelper = dubProcessManager.submitDubCommandAndWait(pm, project, dubPath, "describe");
 		} catch (InterruptedException e) {
 			// Should only happen during manager shutdown, so dont bother updating the model.
 			return null;

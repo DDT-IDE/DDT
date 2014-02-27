@@ -66,13 +66,12 @@ public class DubProcessManager {
 	
 	public ExternalProcessOutputHelper submitDubCommandAndWait(IProject project, IProgressMonitor monitor, 
 			String... commands) throws InterruptedException, CoreException {
-		Path location = project.getLocation().toFile().toPath();
-		return submitDubCommandAndWait(monitor, location, commands);
+		return submitDubCommandAndWait(monitor, project, commands);
 	}
 	
-	public ExternalProcessOutputHelper submitDubCommandAndWait(IProgressMonitor monitor, Path location,
+	public ExternalProcessOutputHelper submitDubCommandAndWait(IProgressMonitor monitor, IProject project,
 			String... commands) throws InterruptedException, CoreException {
-		return submitDubCommandAndWait(newExternalProcessTask(monitor, location, commands));
+		return submitDubCommandAndWait(newExternalProcessTask(monitor, project, commands));
 	}
 	
 	public <T> T submitDubCommandAndWait(ICallable<T, CoreException> task) 
@@ -92,10 +91,11 @@ public class DubProcessManager {
 		}
 	}
 	
-	public RunExternalProcessTask newExternalProcessTask(IProgressMonitor monitor, Path workingDir,
+	public RunExternalProcessTask newExternalProcessTask(IProgressMonitor monitor, IProject project,
 			String... commands) {
+		Path workingDir = project.getLocation().toFile().toPath();
 		ProcessBuilder pb = new ProcessBuilder(commands).directory(workingDir.toFile());
-		return new RunExternalProcessTask(monitor, pb, processListenersHelper.getListeners());
+		return new RunExternalProcessTask(pb, project, monitor, processListenersHelper);
 	}
 	
 }

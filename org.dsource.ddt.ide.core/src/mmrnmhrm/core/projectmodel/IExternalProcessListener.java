@@ -10,12 +10,16 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
+import java.io.IOException;
+
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 
 
 
 public interface IExternalProcessListener {
 	
-	void handleProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb);
+	void handleProcessStarted(ProcessBuilder pb, String projectName, ExternalProcessOutputHelper processHelper);
+	
+	void handleProcessFailedToStarted(ProcessBuilder pb, String projectName, IOException e);
 	
 }

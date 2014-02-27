@@ -1,15 +1,13 @@
 package mmrnmhrm.ui.launch;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper.IProcessOutputListener;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.projectmodel.IExternalProcessListener;
 import mmrnmhrm.core.projectmodel.DubProcessManager.RunsInDubProcessAgent;
+import mmrnmhrm.core.projectmodel.IExternalProcessListener;
 import mmrnmhrm.ui.DeePluginImages;
 
 import org.dsource.ddt.ui.DeeUIPlugin;
@@ -29,8 +27,21 @@ public class DubProcessUIListener implements IExternalProcessListener {
 	
 	@RunsInDubProcessAgent
 	@Override
-	public void handleProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb) {
-		String consoleQualifier = getConsoleQualifier(pb); 
+	public void handleProcessStarted(ProcessBuilder pb, String projectName, 
+			ExternalProcessOutputHelper processHelper) {
+		String consoleQualifier = getConsoleQualifier(projectName); 
+		final DubProcessUIConsoleOutputHandler outputHandler = createProcessOutputHandler(consoleQualifier);
+		
+		try {
+			writeProcessStartPrefix(pb, outputHandler);
+			
+			processHelper.getOutputListeningHelper().addListener(outputHandler);
+		} catch (IOException e) {
+			return;
+		}
+	}
+
+	protected DubProcessUIConsoleOutputHandler createProcessOutputHandler(String consoleQualifier) {
 		final DubProcessUIConsoleOutputHandler outputListener = 
 				new DubProcessUIConsoleOutputHandler(consoleQualifier);
 		
@@ -44,25 +55,37 @@ public class DubProcessUIListener implements IExternalProcessListener {
 				outputListener.stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 			}
 		});
-		
-		try {
-			outputListener.metaOut.write("************  Running dub command  ************\n");
-			outputListener.metaOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
-			outputListener.metaOut.write("@ " + pb.directory() +"\n");
-		} catch (IOException e) {
-			return;
-		}
-		
-		processHelper.getOutputListeningHelper().addListener(outputListener);
+		return outputListener;
 	}
 	
-	protected String getConsoleQualifier(ProcessBuilder pb) {
-		File directory = pb.directory();
-		if(directory == null || directory.toPath().getNameCount() == 0) {
+	protected void writeProcessStartPrefix(ProcessBuilder pb, final DubProcessUIConsoleOutputHandler outputHandler)
+			throws IOException {
+		outputHandler.metaOut.write("************  Running dub command  ************\n");
+		outputHandler.metaOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
+		outputHandler.metaOut.write("@ " + pb.directory() +"\n");
+	}
+	
+	@RunsInDubProcessAgent
+	@Override
+	public void handleProcessFailedToStarted(ProcessBuilder pb, String projectName,
+			IOException processStartException) {
+		String consoleQualifier = getConsoleQualifier(projectName); 
+		final DubProcessUIConsoleOutputHandler outputHandler = createProcessOutputHandler(consoleQualifier);
+		
+		try {
+			writeProcessStartPrefix(pb, outputHandler);
+			outputHandler.metaOut.write(">>>  Failed to start process: \n");
+			outputHandler.metaOut.write(processStartException.getMessage());
+		} catch (IOException consoleIOE) {
+			return;
+		}
+	}
+	
+	protected String getConsoleQualifier(String consoleID) {
+		if(consoleID == null) {
 			return "(Global)";
 		}
-		Path dirPath = directory.toPath();
-		return "["+ dirPath.getFileName() +"]";
+		return "["+ consoleID +"]";
 	}
 	
 	public static class DubProcessUIConsoleOutputHandler implements IProcessOutputListener {

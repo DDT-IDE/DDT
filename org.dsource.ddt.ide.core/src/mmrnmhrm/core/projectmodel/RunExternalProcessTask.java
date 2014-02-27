@@ -14,44 +14,60 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.core.fntypes.ICallable;
+import melnorme.utilbox.misc.ListenerListHelper;
 import mmrnmhrm.core.DeeCore;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public class RunExternalProcessTask implements ICallable<ExternalProcessOutputHelper, CoreException> {
-	protected final IProgressMonitor monitor;
-	protected final ProcessBuilder pb;
-	protected final List<IExternalProcessListener> listeners;
 	
-	protected RunExternalProcessTask(IProgressMonitor monitor, ProcessBuilder pb, 
-			List<IExternalProcessListener> listeners) {
-		this.monitor = monitor;
+	protected final ProcessBuilder pb;
+	protected final IProject project;
+	protected final IProgressMonitor cancelMonitor;
+	protected final ListenerListHelper<IExternalProcessListener> listenersHelper;
+	
+	protected RunExternalProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor, 
+			ListenerListHelper<IExternalProcessListener> listenersHelper) {
 		this.pb = pb;
-		this.listeners = listeners;
+		this.project = project;
+		this.cancelMonitor = cancelMonitor;
+		this.listenersHelper = listenersHelper;
 	}
 	
 	@Override
 	public ExternalProcessOutputHelper call() throws CoreException {
-		return runDubProcess(pb, monitor);
+		return startProcessAndAwait();
 	}
 	
-	protected ExternalProcessEclipseHelper runDubProcess(ProcessBuilder pb, IProgressMonitor cancelMonitor) 
-			throws CoreException {
+	public void notifyProcessStarted(ExternalProcessOutputHelper processHelper) {
+		for (IExternalProcessListener dubProcessListener : listenersHelper.getListeners()) {
+			dubProcessListener.handleProcessStarted(pb, project.getName(), processHelper);
+		}
+	}
+	
+	public void notifyProcessFailedToStart(IOException e) {
+		for (IExternalProcessListener dubProcessListener : listenersHelper.getListeners()) {
+			dubProcessListener.handleProcessFailedToStarted(pb, project.getName(), e);
+		}
+	}
+	
+	protected ExternalProcessEclipseHelper startProcessAndAwait() throws CoreException {
 		ExternalProcessEclipseHelper processHelper;
 		try {
 			processHelper = new ExternalProcessEclipseHelper(pb, false, cancelMonitor);
 		} catch (IOException e) {
+			notifyProcessFailedToStart(e);
 			throw createDubProcessException("Could not start process: ",  e);
 		}
 		
-		notifyDubProcessStarted(processHelper, pb);		
+		notifyProcessStarted(processHelper);		
 		processHelper.startReaderThreads();
 		
 		try {
@@ -68,12 +84,6 @@ public class RunExternalProcessTask implements ICallable<ExternalProcessOutputHe
 	
 	protected CoreException createDubProcessException(String message, IOException e) {
 		return new CoreException(DeeCore.createErrorStatus(message, e));
-	}
-	
-	public void notifyDubProcessStarted(ExternalProcessOutputHelper processHelper, ProcessBuilder pb) {
-		for (IExternalProcessListener dubProcessListener : listeners) {
-			dubProcessListener.handleProcessStarted(processHelper, pb);
-		}
 	}
 	
 	public static class ExternalProcessEclipseHelper extends ExternalProcessOutputHelper {
