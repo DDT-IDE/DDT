@@ -24,11 +24,11 @@ import org.junit.Test;
 
 import dtool.tests.CommonTestUtils;
 
-public class ExecutorAgent_Test extends CommonTestUtils {
+public class ExecutorTaskAgent_Test extends CommonTestUtils {
 	
 	@Test
 	public void testShutdownNow() throws Exception {
-		ExecutorAgent agent = new ExecutorAgent("testShutdownNow");
+		ExecutorTaskAgent agent = new ExecutorTaskAgent("testShutdownNow");
 		LatchRunnable firstTask = new LatchRunnable();
 		LatchRunnable secondTask = new LatchRunnable();
 		
@@ -57,7 +57,7 @@ public class ExecutorAgent_Test extends CommonTestUtils {
 	
 	// test that shutdownNow interrupts current task.
 	public void testShutdownNow_Interrupt() throws InterruptedException {
-		ExecutorAgent agent = new ExecutorAgent("testShutdownNow_Interrupt");
+		ExecutorTaskAgent agent = new ExecutorTaskAgent("testShutdownNow_Interrupt");
 		LatchRunnable firstTask = new LatchRunnable(false);
 		agent.submit(firstTask);
 		
@@ -77,7 +77,7 @@ public class ExecutorAgent_Test extends CommonTestUtils {
 	public void testExceptionHandling$() throws Exception {
 		final LinkedBlockingQueue<Throwable> unexpectedExceptions = new LinkedBlockingQueue<>();
 		
-		ExecutorAgent agent = new ExecutorAgent("testExceptionHandling") {
+		ExecutorTaskAgent agent = new ExecutorTaskAgent("testExceptionHandling") {
 			@Override
 			protected void handleUnexpectedException(Throwable throwable) {
 				if(throwable != null) {
@@ -121,7 +121,7 @@ public class ExecutorAgent_Test extends CommonTestUtils {
 	}
 	
 	protected void checkExceptionHandling(final LinkedBlockingQueue<Throwable> unexpectedExceptions, 
-			ExecutorAgent agent, Future<?> future, Class<? extends Exception> expectedKlass, boolean isExpected) 
+			ExecutorTaskAgent agent, Future<?> future, Class<? extends Exception> expectedKlass, boolean isExpected) 
 					throws InterruptedException {
 		
 		try {

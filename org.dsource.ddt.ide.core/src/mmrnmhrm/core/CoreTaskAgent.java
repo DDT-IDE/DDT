@@ -11,11 +11,11 @@
 package mmrnmhrm.core;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.utilbox.concurrency.ExecutorAgent;
+import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 
-public class CoreExecutorAgent extends ExecutorAgent {
+public class CoreTaskAgent extends ExecutorTaskAgent {
 	
-	public CoreExecutorAgent(String name) {
+	public CoreTaskAgent(String name) {
 		super(name);
 	}
 	

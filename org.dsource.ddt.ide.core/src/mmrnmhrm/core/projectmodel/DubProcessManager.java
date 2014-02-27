@@ -25,7 +25,7 @@ import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.ListenerListHelper;
-import mmrnmhrm.core.CoreExecutorAgent;
+import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IProject;
@@ -37,7 +37,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class DubProcessManager {
 	
-	protected final ITaskAgent dubProcessAgent = new CoreExecutorAgent(getClass().getSimpleName());
+	protected final ITaskAgent dubProcessAgent = new CoreTaskAgent(getClass().getSimpleName());
 	
 	public void shutdownNow() {
 		dubProcessAgent.shutdownNow();

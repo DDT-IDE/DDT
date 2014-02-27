@@ -28,15 +28,15 @@ import java.util.concurrent.TimeUnit;
 /**
  * An implementation of {@link ITaskAgent} based on an {@link ExecutorService}.
  */
-public class ExecutorAgent extends ThreadPoolExecutor implements ExecutorService, ITaskAgent {
+public class ExecutorTaskAgent extends ThreadPoolExecutor implements ExecutorService, ITaskAgent {
 	
 	public static ITaskAgent createExecutorAgent(String name) {
-		return new ExecutorAgent(name);
+		return new ExecutorTaskAgent(name);
 	}
 	
 	protected final String name;
 	
-	public ExecutorAgent(String name) {
+	public ExecutorTaskAgent(String name) {
 		super(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new NameAgentThreadFactory(name));
 		this.name = name;
 	}

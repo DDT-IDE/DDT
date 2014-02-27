@@ -26,7 +26,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.CoreExecutorAgent;
+import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 
 import org.dsource.ddt.ide.core.DeeNature;
@@ -90,7 +90,7 @@ public class DubModelManager {
 	protected final DubModel model;
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
 	protected boolean started = false;
-	protected final ITaskAgent modelAgent = new CoreExecutorAgent(getClass().getSimpleName());
+	protected final ITaskAgent modelAgent = new CoreTaskAgent(getClass().getSimpleName());
 	protected final DubProcessManager dubProcessManager = new DubProcessManager();
 	
 	public DubModelManager(DubModel model) {
