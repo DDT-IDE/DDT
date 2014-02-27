@@ -42,8 +42,8 @@ public class DubDependenciesContainer extends CommonDubElement {
 				newChildren.add(new DubRawDependencyElement(this, dubBundleRef));
 			}
 		}
-		if(bundleInfo.getMainBundle().error != null) {
-			newChildren.add(new DubErrorElement(this, bundleInfo.getMainBundle().error.getMessage()));
+		if(bundleInfo.getError() != null) {
+			newChildren.add(new DubErrorElement(this, bundleInfo.getError().getMessage()));
 		}
 		return ArrayUtil.createFrom(newChildren, CommonDubElement.class);
 	}

@@ -15,7 +15,6 @@
     * UI actions
    * get parent
    
-   * dub.json errors presenting
    * DUB program path preference.
    * automatic Compiler Library setup from DUB.
    * review executor's shutdown and interrupted exception 
