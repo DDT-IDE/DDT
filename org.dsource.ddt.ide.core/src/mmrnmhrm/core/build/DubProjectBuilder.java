@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -37,16 +38,6 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 	@Override
 	protected void startupOnInitialize() {
 		assertTrue(getProject() != null);
-	}
-	
-	protected void submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) throws CoreException {
-		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
-		
-		try {
-			dubProcessManager.submitDubCommandAndWait(getProject(), monitor, commands);
-		} catch (InterruptedException e) {
-			throw new OperationCanceledException();
-		}
 	}
 	
 	@Override
@@ -77,8 +68,11 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		try {
 			submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
 		} catch (CoreException ce) {
+			if(ce.getCause() instanceof TimeoutException && monitor.isCanceled()) {
+				throw new OperationCanceledException();
+			}
 			DeeCore.logStatus(ce.getStatus());
-			// Don't rethrow
+			// Don't rethrow, just forget
 			forgetLastBuiltState();
 		}
 		
@@ -90,6 +84,16 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		extraOptionsStr = extraOptionsStr.trim();
 		String[] extraCommands = extraOptionsStr.split(" *");
 		return extraCommands;
+	}
+	
+	protected void submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) throws CoreException {
+		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
+		
+		try {
+			dubProcessManager.submitDubCommandAndWait(getProject(), monitor, commands);
+		} catch (InterruptedException e) {
+			throw DeeCore.createCoreException("Should not happen", e);
+		}
 	}
 	
 }
