@@ -17,8 +17,7 @@ Require-Bundle: org.dsource.ddt.dtool;bundle-version="[0.10.0,0.11.0)";visibilit
  org.eclipse.dltk.launching;bundle-version="[5.0.0,6.0.0)",
  org.eclipse.debug.core;bundle-version="3.6.0",
  org.eclipse.core.variables;bundle-version="3.2.0"
-Bundle-ClassPath: .,
- libs/ini4j-0.3.2/ini4j-0.3.2.jar
+Bundle-ClassPath: .
 Export-Package: melnorme.lang.ide.core,
  melnorme.lang.ide.core.utils,
  melnorme.lang.ide.launching,
