@@ -9,6 +9,7 @@
           nature="org.dsource.ddt.ide.core.nature"
           priority="0"/>
 	</extension>
+	
 	<extension
          id="DeeDocumentSetupParticipant"
          name="D Document Setup Participant"
@@ -18,10 +19,7 @@
             contentTypeId="org.dsource.ddt.ide.core.content.dsource">
 		</participant>
 	</extension>
-	<extension
-         point="org.eclipse.core.runtime.preferences">
-		<initializer class="mmrnmhrm.ui.DeeUIPreferenceInitializer"/>
-	</extension>
+	
 	<extension
          point="org.eclipse.ui.ide.projectNatureImages">
 		<image
@@ -29,24 +27,33 @@
             id="org.dsource.ddt.ide.ui.deeProjectNatureImage"
             natureId="org.dsource.ddt.ide.core.nature"/>
 	</extension>
-	<extension
-       point="org.eclipse.ui.perspectives">
-		<perspective
-          class="mmrnmhrm.ui.views.DeePerspective"
-          icon="icons/view16/ddt_persp.png"
-          id="org.dsource.ddt.ide.ui.DeePerspective"
-          name="%LangPerspective.name">
-		</perspective>
+	
+	<extension point="org.eclipse.ui.editors">
+		<editor
+         class="mmrnmhrm.ui.editor.DeeEditor"
+         contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
+         default="true"
+         icon="icons/obj16/dee_file.gif"
+         id="org.dsource.ddt.ide.ui.editors.DeeEditor"
+         name="%LangEditor.name">
+			<contentTypeBinding contentTypeId="org.dsource.ddt.ide.core.content.dsource">
+			</contentTypeBinding>
+		</editor>
 	</extension>
-	<extension
-       point="org.eclipse.ui.perspectiveExtensions">
-		<perspectiveExtension
-          targetID="org.dsource.ddt.ide.ui.DeePerspective">
-			<showInPart
-             id="org.eclipse.ui.navigator.ProjectExplorer">
-			</showInPart>
-		</perspectiveExtension>
+	<extension point="org.eclipse.ui.contexts">
+		<context
+            name="%LangEditContext.name"
+            description="%LangEditContext.description"
+            parentId="org.eclipse.dltk.ui.scriptEditorScope"
+            id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
+		</context>
 	</extension>
+	
+	<extension
+         point="org.eclipse.core.runtime.preferences">
+		<initializer class="mmrnmhrm.ui.DeeUIPreferenceInitializer"/>
+	</extension>
+	
 	<extension
          point="org.eclipse.ui.newWizards">
 		<category
@@ -132,30 +139,23 @@
             name="%LangCompilersPreferencePage.name">
 		</page>
 	</extension>
+	
 	<extension
-	     point="org.eclipse.ui.editors">
-		<editor
-         class="mmrnmhrm.ui.editor.DeeEditor"
-         contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
-         default="true"
-         icon="icons/obj16/dee_file.gif"
-         id="org.dsource.ddt.ide.ui.editors.DeeEditor"
-         name="%LangEditor.name">
-			<contentTypeBinding
-            contentTypeId="org.dsource.ddt.ide.core.content.dsource">
-			</contentTypeBinding>
-		</editor>
-         point="org.eclipse.ui.editors">
-   </extension>
-	<extension
-         point="org.eclipse.ui.contexts">
-		<context
-            name="%LangEditContext.name"
-            description="%LangEditContext.description"
-            parentId="org.eclipse.dltk.ui.scriptEditorScope"
-            id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
-		</context>
+       point="org.eclipse.ui.perspectives">
+		<perspective
+          class="mmrnmhrm.ui.views.DeePerspective"
+          icon="icons/view16/ddt_persp.png"
+          id="org.dsource.ddt.ide.ui.DeePerspective"
+          name="%LangPerspective.name">
+		</perspective>
 	</extension>
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="org.dsource.ddt.ide.ui.DeePerspective">
+			<showInPart id="org.eclipse.ui.navigator.ProjectExplorer">
+			</showInPart>
+		</perspectiveExtension>
+	</extension>
+	
 	<extension
          point="org.eclipse.search.searchPages">
 		<page
@@ -225,9 +225,38 @@
             name="Test Action">
       </command>
 -->
-
 	</extension>
-
+	
+	<extension point="org.eclipse.ui.menus">
+	</extension>
+	<extension
+         point="org.eclipse.ui.bindings">
+		<key
+            commandId="org.dsource.ddt.ide.ui.commands.openDefinition"
+            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F3">
+		</key>
+		<key
+            commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
+            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+T">
+		</key>
+		<key
+            commandId="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
+            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+H">
+		</key>
+		<key
+            commandId="org.eclipse.dltk.ui.edit.text.script.search.references.in.workspace"
+            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+G">
+		</key>
+	</extension>
+	
 	<extension
          point="org.eclipse.ui.actionSets">
 		<actionSet
@@ -235,16 +264,7 @@
             id="org.dsource.ddt.ide.ui.DeeActionSet"
             label="%LangActionSet.label"
             visible="false">
-			<!--
-         <action
-               definitionId="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
-               label="%OpenTypeInHierarchyAction.label"
-               tooltip="%OpenTypeInHierarchyAction.tooltip"
-               class="mmrnmhrm.ui.actions.DeeOpenTypeInHierarchyAction"
-               menubarPath="navigate/open.ext2"
-               id="org.dsource.ddt.ide.ui.actions.openTypeInHierarchy">
-         </action>
--->
+
 			<action
                class="mmrnmhrm.ui.actions.GoToDefinitionAction"
                definitionId="org.dsource.ddt.ide.ui.commands.openDefinition"
@@ -291,53 +311,21 @@
             targetID="org.eclipse.ui.edit.text.actionSet.presentation">
 			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
 		</actionSetPartAssociation>
-		<!--
-      <actionSetPartAssociation
-            targetID="org.eclipse.dltk.ui.A_OpenActionSet">
-         <part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
-      </actionSetPartAssociation>
-      <actionSetPartAssociation
-            targetID="org.eclipse.dltk.ui.ScriptCodingActionSet">
-         <part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
-      </actionSetPartAssociation>
--->
 		<actionSetPartAssociation
             targetID="org.dsource.ddt.ide.ui.DeeActionSet">
 			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
 		</actionSetPartAssociation>
 	</extension>
+	
+	<extension point="org.eclipse.ui.actionSetPartAssociations">
+		<actionSetPartAssociation
+			targetID="org.eclipse.debug.ui.launchActionSet">
+			<part id="org.eclipse.dltk.ui.ScriptExplorer" />
+			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor" />
+		</actionSetPartAssociation>
+	</extension>
 
 
-	<extension
-         point="org.eclipse.ui.menus">
-	</extension>
-	<extension
-         point="org.eclipse.ui.bindings">
-		<key
-            commandId="org.dsource.ddt.ide.ui.commands.openDefinition"
-            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="F3">
-		</key>
-		<key
-            commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
-            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+T">
-		</key>
-		<key
-            commandId="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
-            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+H">
-		</key>
-		<key
-            commandId="org.eclipse.dltk.ui.edit.text.script.search.references.in.workspace"
-            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+G">
-		</key>
-	</extension>
 	<extension
        point="org.eclipse.dltk.ui.scriptDocumentationProviders">
 		<provider
@@ -528,14 +516,6 @@
 			</contextualLaunch>
 
 		</shortcut>
-	</extension>
-
-	<extension point="org.eclipse.ui.actionSetPartAssociations">
-		<actionSetPartAssociation
-			targetID="org.eclipse.debug.ui.launchActionSet">
-			<part id="org.eclipse.dltk.ui.ScriptExplorer" />
-			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor" />
-		</actionSetPartAssociation>
 	</extension>
 
 </plugin>
