@@ -249,6 +249,9 @@
 			</triggerPoints>
 			<possibleChildren>
 				<or>
+       <instanceof
+             value="mmrnmhrm.core.projectmodel.IDubElement">
+       </instanceof>
 				</or>
 			</possibleChildren>
 		</navigatorContent>

@@ -5,6 +5,7 @@ import melnorme.util.swt.jface.AbstractContentProvider;
 import mmrnmhrm.core.projectmodel.CommonDubElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.DubModel;
+import mmrnmhrm.core.projectmodel.IDubElement;
 import mmrnmhrm.core.projectmodel.IDubModelListener;
 
 import org.eclipse.core.resources.IProject;
@@ -81,7 +82,14 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	
 	@Override
 	public Object getParent(Object element) {
-		// TODO Auto-generated method stub
+		if(element instanceof DubDependenciesContainer) {
+			DubDependenciesContainer dubDependenciesContainer = (DubDependenciesContainer) element;
+			return dubDependenciesContainer.getProject(); 
+		}
+		if(element instanceof IDubElement) {
+			IDubElement dubElement = (IDubElement) element;
+			return dubElement.getParent();
+		}
 		return null;
 	}
 	

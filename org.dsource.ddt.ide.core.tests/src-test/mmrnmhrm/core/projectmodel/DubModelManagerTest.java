@@ -289,7 +289,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			boolean expectedError) {
 		DubDependenciesContainer dubContainer = getDubContainer(project);
 		assertNotNull(dubContainer);
-		LinkedList<CommonDubElement> depChildren = CollectionUtil.createLinkedList(dubContainer.getChildren());
+		LinkedList<IDubElement> depChildren = CollectionUtil.createLinkedList(dubContainer.getChildren());
 		for (String rawDep : expMainBundle.rawDeps) {
 			removeChild(depChildren, rawDep);
 		}
@@ -304,8 +304,8 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		assertNotNull(dubContainer);
 		assertTrue(dubContainer.getBundleInfo().isResolved());
 		
-		CommonDubElement[] children = dubContainer.getChildren();
-		LinkedList<CommonDubElement> depChildren = CollectionUtil.createLinkedList(children);
+		IDubElement[] children = dubContainer.getChildren();
+		LinkedList<IDubElement> depChildren = CollectionUtil.createLinkedList(children);
 		for (DubBundleChecker dep : expMainBundle.deps) {
 			removeChild(depChildren, dep.bundleName);
 		}
@@ -313,17 +313,17 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		assertTrue(depChildren.isEmpty());
 	}
 	
-	protected void removeErrorElement(DubBundleChecker expMainBundle, LinkedList<CommonDubElement> depChildren) {
+	protected void removeErrorElement(DubBundleChecker expMainBundle, LinkedList<IDubElement> depChildren) {
 		if(expMainBundle.errorMsgStart != null) {
 			assertTrue(depChildren.size() > 0);
-			CommonDubElement removed = depChildren.remove(0);
+			IDubElement removed = depChildren.remove(0);
 			DubErrorElement dubErrorElement = assertCast(removed, DubErrorElement.class);
 			assertTrue(dubErrorElement.errorDescription.startsWith(expMainBundle.errorMsgStart));
 		}
 	}
 	
-	protected void removeChild(Collection<CommonDubElement> children, String name) {
-		for (CommonDubElement dubElement : children) {
+	protected void removeChild(Collection<IDubElement> children, String name) {
+		for (IDubElement dubElement : children) {
 			if(dubElement instanceof ICommonDepElement) {
 				ICommonDepElement depElement = (ICommonDepElement) dubElement;
 				if(depElement.getBundleName().equals(name)) {

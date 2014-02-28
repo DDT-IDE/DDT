@@ -44,7 +44,7 @@ public class DubModel extends ListenerListHelper<IDubModelListener> {
 		DubBundleDescription bundleInfo = getBundleInfo(project.getName());
 		if(bundleInfo == null)
 			return null;
-		return new DubDependenciesContainer(bundleInfo);
+		return new DubDependenciesContainer(bundleInfo, project);
 	}
 	
 	/* ----------------------------------- */

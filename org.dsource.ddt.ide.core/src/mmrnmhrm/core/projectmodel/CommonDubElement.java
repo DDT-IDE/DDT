@@ -11,19 +11,11 @@
 package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import melnorme.utilbox.tree.IElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
 
-public abstract class CommonDubElement implements IElement {
-	
-	public static enum DubElementType {
-		DUB_DEP_CONTAINER,
-		DUB_RESOLVED_DEP,
-		DUB_RAW_DEP,
-		DUB_ERROR_ELEMENT,
-	}
+public abstract class CommonDubElement implements IDubElement {
 	
 	protected final CommonDubElement parent;
 	
@@ -36,15 +28,13 @@ public abstract class CommonDubElement implements IElement {
 		return parent;
 	}
 	
-	public abstract DubElementType getElementType();
-	
 	@Override
 	public boolean hasChildren() {
 		return false; // TODO
 	}
 	
 	@Override
-	public CommonDubElement[] getChildren() {
+	public IDubElement[] getChildren() {
 		return null;
 	}
 	

@@ -14,6 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IProject;
+
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubDependecyRef;
@@ -23,10 +25,12 @@ public class DubDependenciesContainer extends CommonDubElement {
 	
 	protected final DubBundleDescription bundleInfo;
 	protected final CommonDubElement[] depElements;
+	protected final IProject project;
 	
-	public DubDependenciesContainer(DubBundleDescription bundleInfo) {
+	public DubDependenciesContainer(DubBundleDescription bundleInfo, IProject project) {
 		super(null);
 		this.bundleInfo = assertNotNull(bundleInfo);
+		this.project = project;
 		depElements = createChildren();
 	}
 	
@@ -57,13 +61,17 @@ public class DubDependenciesContainer extends CommonDubElement {
 		return bundleInfo;
 	}
 	
+	public IProject getProject() {
+		return project;
+	}
+	
 	@Override
 	public boolean hasChildren() {
 		return depElements.length > 0;
 	}
 	
 	@Override
-	public CommonDubElement[] getChildren() {
+	public IDubElement[] getChildren() {
 		return depElements;
 	}
 	
@@ -82,7 +90,7 @@ public class DubDependenciesContainer extends CommonDubElement {
 		}
 	}
 	
-	public interface ICommonDepElement {
+	public interface ICommonDepElement extends IDubElement {
 		public String getBundleName();
 	}
 	
