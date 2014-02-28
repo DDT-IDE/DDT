@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.navigator;
 
-import mmrnmhrm.core.projectmodel.ProjectModelUtil;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.actions.OperationsManager;
 import mmrnmhrm.ui.editor.DeeEditor;
 
@@ -25,6 +25,12 @@ import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 
 public class DeeCommonActionProvider extends CommonActionProvider {
 	
+	/** Get's a sourceModule's file, apparently getUnderlyingResource()
+	 * doesn't work all the time. */
+	public static IFile getSourceModuleFile(ISourceModule srcModule) {
+		return DeeCore.getWorkspaceRoot().getFile(srcModule.getPath());
+	}
+	
 	public static class OpenFromExplorerAction extends Action {
 		private IWorkbenchPage page;
 		private ISelectionProvider selProvider;
@@ -42,9 +48,12 @@ public class DeeCommonActionProvider extends CommonActionProvider {
 				return false;
 			
 			IStructuredSelection sel = (IStructuredSelection) selection;
-			if(sel.size() == 1 && sel.getFirstElement() instanceof ISourceModule) {
-				file = ProjectModelUtil.getSourceModuleFile((ISourceModule) sel.getFirstElement()); 
-				return true;
+			if(sel.size() == 1) {
+				if (sel.getFirstElement() instanceof ISourceModule) {
+					ISourceModule sourceModule = (ISourceModule) sel.getFirstElement();
+					file = getSourceModuleFile(sourceModule); // TODO: fix this 
+					return true;
+				}
 			}
 			return false;
 		}

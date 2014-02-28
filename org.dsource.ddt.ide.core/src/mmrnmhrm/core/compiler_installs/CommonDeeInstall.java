@@ -28,10 +28,6 @@ public abstract class CommonDeeInstall extends AbstractInterpreterInstall {
 		return getInstallLocation().getPath();
 	}
 	
-	public abstract String getDefaultBuildFileData();
-	
-	public abstract String getDefaultBuildToolCmdLine() ;
-	
 	@Override
 	public IInterpreterRunner getInterpreterRunner(String mode) {
 		return null; // No need for one, the D LaunchConfigurationDelegate know how to launch things

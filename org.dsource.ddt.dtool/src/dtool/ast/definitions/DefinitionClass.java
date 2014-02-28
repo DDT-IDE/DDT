@@ -1,7 +1,7 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.misc.IteratorUtil.nonNullIterable;
-import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -90,7 +90,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	public void resolveSearchInSuperScopes(CommonDefUnitSearch search) {
 		IModuleResolver mr = search.getModuleResolver();
 		
-		for(Reference baseclass : CollectionUtil.nullToEmpty(baseClasses)) {
+		for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
 			INamedElement baseClassElem = baseclass.findTargetDefElement(mr);
 			if(baseClassElem == null)
 				continue;

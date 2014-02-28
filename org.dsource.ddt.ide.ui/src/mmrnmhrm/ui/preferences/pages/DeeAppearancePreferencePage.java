@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.utilbox.core.CoreUtil;
+import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.ui.DeePlugin;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
@@ -21,9 +22,7 @@ import mmrnmhrm.ui.DeeUIPreferenceConstants;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.dltk.ast.Modifiers;
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParameter;
 import org.eclipse.dltk.core.IProjectFragment;
@@ -52,9 +51,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 
-/**
- * The root preference page for DDT 
- */
 public class DeeAppearancePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	
 	private static final String LABEL_PROVIDER_STYLE = 
@@ -181,7 +177,7 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 		protected IModelElement[] treeModel = createTreeModel();
 		
 		protected IModelElement[] createTreeModel() {
-			IScriptModel model = DLTKCore.create(ResourcesPlugin.getWorkspace().getRoot());
+			IScriptModel model = DLTKUtils.getDLTKModel();
 			IScriptProject scriptProj = model.getScriptProject("#__PreviewProject");
 			
 			IProjectFragment projectFragment = scriptProj.getProjectFragment(scriptProj.getProject().getFolder("src"));

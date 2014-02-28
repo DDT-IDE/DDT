@@ -54,7 +54,7 @@
             name="%LangWizardsCategory.name"/>
       <wizard
             category="org.dsource.ddt.ide.category"
-            class="mmrnmhrm.ui.wizards.DeeNewProjectWizard"
+            class="mmrnmhrm.ui.wizards.DeeProjectWizard"
             finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
             icon="icons/action16e/newprj_wiz.gif"
             id="org.dsource.ddt.ide.ui.wizards.deeProjectWizard"
@@ -65,16 +65,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.propertyPages">
-      <page
-            class="mmrnmhrm.ui.preferences.pages.DeeBuildPathPropertyPage"
-            id="org.dsource.ddt.ide.ui.properties.DeeBuildPathProperties"
-            name="%LangBuildPathPropertyPage.name">
-         <enabledWhen>
-            <reference
-                  definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
-            </reference>
-         </enabledWhen>
-      </page>
       <page
             class="mmrnmhrm.ui.preferences.pages.DeeProjectOptionsPropertyPage"
             id="org.dsource.ddt.ide.ui.properties.DeeCompileOptionsProperties"
@@ -97,6 +87,11 @@
 	          class="mmrnmhrm.ui.preferences.pages.DeeAppearancePreferencePage"
 	          id="org.dsource.ddt.ide.ui.preferences.Appearance"
 	          name="%LangAppearancePreferencePage.name"/>
+      	<page
+	          category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
+	          class="mmrnmhrm.ui.preferences.pages.DeeDubPreferencePage"
+	          id="org.dsource.ddt.ide.ui.preferences.Dub"
+	          name="%DeeDubPreferencePage.name"/>
       	<page
 	          category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
 	          class="mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage"
@@ -406,45 +401,40 @@
            language="org.dsource.ddt.ide.core.nature">
      </modelLabelProvider>
   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="mmrnmhrm.ui.navigator.DubNavigatorContent"
+            icon="icons/action16e/extra/spathi.16.gif"
+            id="org.dsource.ddt.ide.ui.DubNavigatorContent"
+            labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
+            name="Dub Elements"
+            priority="higher">
+         <triggerPoints>
+            <or>
+               <instanceof
+                     value="org.eclipse.core.resources.IProject">
+               </instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <or>
+            </or>
+         </possibleChildren>
+      </navigatorContent>
+   </extension>
    
    <extension
          point="org.eclipse.ui.navigator.viewer">
       <viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
          <includes>
             <contentExtension pattern="org.dsource.ddt.ide.ui.navigatorContent"/>
+            <contentExtension
+                  pattern="org.dsource.ddt.ide.ui.DubNavigatorContent">
+            </contentExtension>
          </includes>
       </viewerContentBinding>
-   </extension>
-   <extension
-         point="org.eclipse.ui.navigator.navigatorContent">
-      <navigatorContent
-            activeByDefault="true"
-            contentProvider="mmrnmhrm.ui.navigator.DeeNavigatorContentProvider"
-            icon="icons/action16e/extra/sample.gif"
-            id="org.dsource.ddt.ide.ui.navigatorContent"
-            labelProvider="mmrnmhrm.ui.navigator.DeeNavigatorLabelProvider"
-            name="D Elements"
-            priority="high">
-         <triggerPoints>
-            <or>
-               <reference
-                     definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
-               </reference>
-            </or>
-         </triggerPoints>
-         <possibleChildren>
-            <or>
-               <instanceof value="org.eclipse.core.resources.IResource"/>
-               <instanceof
-                     value="org.eclipse.dltk.core.IModelElement">
-               </instanceof>
-            </or>
-         </possibleChildren>
-         <actionProvider
-               class="mmrnmhrm.ui.navigator.DeeCommonActionProvider"
-               id="org.dsource.ddt.ide.ui.actions.navigatorActionProvider">
-         </actionProvider>
-      </navigatorContent>
    </extension>
    <extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
@@ -509,37 +499,32 @@
                description="%LangLaunchShortcut.debugDescription"
                mode="debug">
          </description>
+        
+         <configurationType
+               id="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
+         </configurationType>
          <contextualLaunch>
             <enablement>
-              <with variable="selection">
-                <count value="1"/>
-                <iterate>
-                  <!--
-                  <test args="org.dsource.ddt.ide.core.nature"
-                    property="org.eclipse.dltk.launching.hasProjectNature">
-                  </test>
-                  -->
-                  <or>
-                    <adapt type="org.eclipse.core.resources.IFile">
-                      <test property="org.eclipse.core.resources.name" value="*.exe" />
-                    </adapt>
-                    <adapt type="org.eclipse.core.resources.IProject">
-                      <test property="org.eclipse.core.resources.projectNature"
-                        value="org.dsource.ddt.ide.core.nature"/>
-                    </adapt>
-               	  </or>
-                </iterate>
-              </with>
-            </enablement>
-            <contextLabel
-                  label="%LangLaunchShortcut.runName"
-                  mode="run">
-            </contextLabel>
-            <contextLabel
-                  label="%LangLaunchShortcut.debugName"
-                  mode="debug">
-            </contextLabel>
-         </contextualLaunch>
+               <with
+                     variable="selection">
+                  <count value="1" />
+                  <iterate>
+                     <or>
+                        <instanceof value="org.eclipse.ui.IEditorInput">
+                        </instanceof>
+                        <adapt type="org.eclipse.core.resources.IFile">
+                           <test property="org.eclipse.core.resources.name" value="*.exe">
+                           </test>
+                        </adapt>
+                        <adapt type="org.eclipse.core.resources.IProject">
+                           <reference
+                                 definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
+                           </reference>
+                        </adapt></or>
+                  </iterate>
+               </with></enablement>
+         </contextualLaunch> 
+
       </shortcut>
    </extension>
    

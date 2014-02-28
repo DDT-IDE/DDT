@@ -2,7 +2,7 @@ package org.dsource.ddt.ide.core;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.build.DeeProjectBuilder;
+import mmrnmhrm.core.build.DubProjectBuilder;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProjectDescription;
@@ -18,15 +18,13 @@ public class DeeNature extends ScriptNature  {
 	/** Configure the project with a Dee nature. */
 	@Override
 	public void configure() throws CoreException {
-		super.configure();
-		addToBuildSpec2(DeeProjectBuilder.BUILDER_ID);
+		addToBuildSpec2(DubProjectBuilder.BUILDER_ID);
 	}
 	
 	/** Remove the Dee nature from the project. */
 	@Override
 	public void deconfigure() throws CoreException {
-		super.configure();
-		removeFromBuildSpec(DeeProjectBuilder.BUILDER_ID);
+		removeFromBuildSpec(DubProjectBuilder.BUILDER_ID);
 	}
 	
 	/** Adds a builder with given builderID to the build spec of our project, if the

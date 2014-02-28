@@ -10,15 +10,19 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-import melnorme.lang.ide.core.EclipseUtils;
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore.ILangConstants;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
 
 
@@ -35,10 +39,19 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		getInstance().getLog().log(status);
 	}
 	
-	/** Logs the given Throwable, wrapping it in a Status. */
-	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, PLUGIN_ID, ILangStatusConstants.INTERNAL_ERROR,
-				LangUIMessages.LangPlugin_internal_error, e)); 
+	/** Logs the given throwable, wrapping it in a Status. */
+	public static void log(Throwable throwable) {
+		log(createErrorStatus(LangUIMessages.LangPlugin_internal_error, throwable));
+	}
+	
+	/** Creates a status describing an error in this plugin, with given message and given throwable. */
+	public static Status createErrorStatus(String message, Throwable throwable) {
+		return new Status(IStatus.ERROR, PLUGIN_ID, ILangConstants.INTERNAL_ERROR, message, throwable); 
+	}
+	
+	/** Logs an error status with given message. */
+	public static void logError(String message) {
+		getInstance().getLog().log(createErrorStatus(message, null));
 	}
 	
 	public static void logWarning(String message) {
@@ -101,5 +114,15 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	public static IPreferenceStore getPrefStore() {
 		return getInstance().getPreferenceStore();
 	}
+	
+	private IPreferenceStore corePreferenceStore;
+	
+    public IPreferenceStore getCorePreferenceStore() {
+        // Create the preference store lazily.
+        if (corePreferenceStore == null) {
+        	corePreferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LangCore.PLUGIN_ID);
+        }
+        return corePreferenceStore;
+    }
 	
 }

@@ -182,13 +182,23 @@ public final class StringUtil {
 	}
 	
 	
-	/** Trim an given endMatch String from given string if there is a match. 
+	/** Trim given endMatch String from given string if there is a match. 
 	 * @return the result. */
 	public static String trimEnding(String string, String endMatch) {
 		if(string.endsWith(endMatch)) {
 			return string.substring(0, string.length() - endMatch.length());
 		}
 		return string;
+	}
+	
+	/** Trim all leading characters from given string until given ch is found. 
+	 * @return the result. Empty string if no match is found. */
+	public static String trimUntil(char ch, String string) {
+		int indexOf = string.indexOf(ch);
+		if(indexOf != -1) {
+			return string.substring(indexOf);
+		}
+		return "";
 	}
 	
 	/** @return a copy of given string without leading spaces. */

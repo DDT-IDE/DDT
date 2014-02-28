@@ -1,0 +1,34 @@
+{
+	"name": "xptobundle",
+	"description": "An example project skeleton",
+	"copyright": "Copyright © 2000, Your Name",
+	"authors": [
+		"Your Name"
+	],
+	"dependencies": {
+		"foo_lib": "~master"
+	},
+	"targetPath": "bin",
+	"sourcePaths": [ "src", "src-test" ],
+	"importPaths": [ "src", "src-test" ],
+	"excludedSourceFiles" : [ "src-test/xcluded/*"],
+	"stringimportPaths__TODO" : [ "strings" ],
+	
+	
+	"configurations": [
+		{
+			"name": "default",
+			"targetType": "executable",
+			"versions": [ ]
+		},
+		{
+			"name": "metro-app",
+			"targetName": "xpto-metro-app",
+			"targetType": "executable",
+			"versions": [ "MetroApp" ],
+			"sourcePaths": [ "src-other" ],
+			"importPaths": [ "src-other" ]
+		}
+	]
+	
+}

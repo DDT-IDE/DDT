@@ -15,6 +15,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -148,6 +151,38 @@ public class MiscUtil {
 	
 	public static <T> T nullToOther(T object, T altValue) {
 		return object == null ? altValue : object;
+	}
+	
+	public static Path createValidPath(String pathString) {
+		try {
+			return Paths.get(pathString);
+		} catch (InvalidPathException ipe) {
+			return null;
+		}
+	}
+	
+	public static Path createPath(String pathString) throws InvalidPathExceptionX {
+		try {
+			return Paths.get(pathString);
+		} catch (InvalidPathException ipe) {
+			throw new InvalidPathExceptionX(ipe);
+		}
+	}
+	
+	/** Checked wrapper for {@link InvalidPathException} */
+	public static class InvalidPathExceptionX extends Exception {
+		
+		private static final long serialVersionUID = 1L;
+		
+		public InvalidPathExceptionX(InvalidPathException ipe) {
+			super(ipe);
+		}
+		
+	}
+	
+	/** @return true if given throwable is a Java unchecked throwable, false otherwise. */
+	public static boolean isUncheckedException(Throwable throwable) {
+		return throwable instanceof RuntimeException || throwable instanceof Error;
 	}
 	
 }

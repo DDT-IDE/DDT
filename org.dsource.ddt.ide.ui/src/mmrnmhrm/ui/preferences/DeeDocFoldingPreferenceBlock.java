@@ -1,5 +1,7 @@
 package mmrnmhrm.ui.preferences;
 
+import mmrnmhrm.ui.DeePreferencesMessages;
+
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import org.eclipse.dltk.ui.text.folding.DocumentationFoldingPreferenceBlock;
 import org.eclipse.jface.preference.PreferencePage;

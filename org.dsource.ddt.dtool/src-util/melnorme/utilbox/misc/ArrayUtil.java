@@ -24,18 +24,15 @@ public class ArrayUtil {
 	
 	public static final Object[] EMPTY_ARRAY = new Object[] {};
 	
-//	/** Returns true if both arrays have the same elements, ignoring order. False otherwise. */
-//	public static <T extends Comparable<? super T>> boolean arrayContainsSame(T[] arr1, T[] arr2) {
-//		List<T> list1 = Arrays.asList(arr1);
-//		List<T> list2 = Arrays.asList(arr2);
-//		return CollectionUtil.sort(list1).equals(CollectionUtil.sort(list2));
-//	}
-//	
-//	public static <T> boolean arrayContainsSame(T[] arr1, T[] arr2) {
-//		List<T> list1 = Arrays.asList(arr1);
-//		List<T> list2 = Arrays.asList(arr2);
-//		return new HashSet<T>(list1).equals(new HashSet<T>(list2));
-//	}
+	/** @return the given array if it is non-null, an empty array otherwise. */
+	public static Object[] nullToEmpty(Object[] array) {
+		return array == null ? EMPTY_ARRAY : array;
+	}
+	
+	/** @return the given array if it is non-null, an empty array otherwise with given klass as component type. */
+	public static <T> T[] nullToEmpty(T[] array, Class<T> klass) {
+		return array == null ? create(0, klass) : array;
+	}
 	
 	/** Creates a new array of given length, and same component type as given compType. */
 	public static <T> T[] create(int length, T[] compType) {

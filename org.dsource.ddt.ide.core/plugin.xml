@@ -78,11 +78,18 @@
       </interpreterContainerExtension>
    </extension>
    <extension
-         id="deebuilder"
-         name="Dee Builder"
+         point="org.eclipse.dltk.core.buildpathContainerInitializer">
+      <buildpathContainerInitializer
+            class="mmrnmhrm.core.projectmodel.DubBuildpathContainerInitializer"
+            id="org.dsource.ddt.ide.core.DubContainer">
+      </buildpathContainerInitializer>
+   </extension>
+   <extension
+         id="DubBuilder"
+         name="DUB Build"
          point="org.eclipse.core.resources.builders">
       <builder>
-         <run class="mmrnmhrm.core.build.DeeProjectBuilder">
+         <run class="mmrnmhrm.core.build.DubProjectBuilder">
             <parameter
                   name="comment"
                   value="Builder comment"/>
@@ -90,12 +97,12 @@
       </builder>
    </extension>
    <extension
-         id="deeproblem"
-         name="Dee Problem Name"
+         id="DubProblem"
+         name="Dub Problem"
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.core.resources.problemmarker"/>
       <super type="org.eclipse.core.resources.textmarker"/>
-      <persistent value="true"/>
+      <persistent value="false"/>
    </extension>
    <extension
          point="org.eclipse.core.expressions.definitions">

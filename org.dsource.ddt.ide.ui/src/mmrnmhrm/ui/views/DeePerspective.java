@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.views;
 
-import mmrnmhrm.ui.wizards.DeeNewProjectWizard;
+import mmrnmhrm.ui.wizards.DeeProjectWizard;
 
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.search.ui.NewSearchUI;
@@ -69,7 +69,7 @@ public class DeePerspective implements IPerspectiveFactory {
 	
 	protected void addNewWizardShortcuts(IPageLayout layout) {
 		// Lang
-		layout.addNewWizardShortcut(DeeNewProjectWizard.WIZARD_ID);
+		layout.addNewWizardShortcut(DeeProjectWizard.WIZARD_ID);
 		
 		// General
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$

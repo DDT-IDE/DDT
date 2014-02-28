@@ -1,0 +1,13 @@
+{
+	"mainPackage_MISSING": "xptobundle",
+	"packages": [
+	],
+	"configuration": "application",
+	"compiler": "dmd",
+	"architecture": [
+		"x86"
+	],
+	"platform": [
+		"windows"
+	]
+}

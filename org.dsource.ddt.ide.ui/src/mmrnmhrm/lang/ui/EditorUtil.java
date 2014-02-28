@@ -80,7 +80,7 @@ public class EditorUtil {
 			return null;
 		return (ISourceModule) element;
 	}
-
+	
 	/** Gets a Module from this editor's input, and setups the Module'
 	 * modUnit as the editor's input. */
 	public static Module getModuleFromEditor(IEditorPart textEditor) {
@@ -91,5 +91,5 @@ public class EditorUtil {
 		Module module = DeeModuleParsingUtil.getParsedDeeModule(modUnit);
 		return module == null ? null : module;
 	}
-
+	
 }

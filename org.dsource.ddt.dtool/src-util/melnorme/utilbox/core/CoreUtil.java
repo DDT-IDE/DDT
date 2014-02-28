@@ -12,6 +12,8 @@ package melnorme.utilbox.core;
 
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Utils for miscellaneous Java core language functionality. 
@@ -26,7 +28,7 @@ public class CoreUtil /* extends Assert */ {
 	/** @return whether the two given arrays are the same (including null) or equal 
 	 * according to {@link Arrays#equals(Object[], Object[])}. */
 	public static boolean areEqualArrays(Object[] a1, Object[] a2) {
-		return (a1 == a2) || (a1 != null && a2 != null && Arrays.equals(a1, a2));
+		return Arrays.equals(a1, a2);
 	}
 	
 	/** Casts given object to a supertype as typed by given klass (actual value not used). This cast is safe. */
@@ -101,6 +103,11 @@ public class CoreUtil /* extends Assert */ {
 	/** @return an array of double's. */
 	public static double[] arrayD(double... elems) {
 		return elems;
+	}
+	
+	/** @return given coll if it's not null, or an immutable empty collection otherwise. */
+	public static <U> Collection<U> nullToEmpty(Collection<U> coll) {
+		return coll == null ? Collections.EMPTY_LIST : coll;
 	}
 	
 }

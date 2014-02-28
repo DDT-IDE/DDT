@@ -1,9 +1,8 @@
 package mmrnmhrm.ui.views;
 
-import melnorme.util.swt.jface.SimpleLabelProvider;
-
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -15,7 +14,7 @@ import dtool.ast.IASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.Reference;
 
-public class ASTViewerLabelProvider extends SimpleLabelProvider implements IColorProvider, IFontProvider {
+public class ASTViewerLabelProvider extends LabelProvider implements IColorProvider, IFontProvider {
 
 	
 	protected final Color cNoSourceRangeColor;
@@ -29,10 +28,6 @@ public class ASTViewerLabelProvider extends SimpleLabelProvider implements IColo
 
 		cDefUnitColor = Display.getDefault().getSystemColor(SWT.COLOR_DARK_MAGENTA);
 		cEntityColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-	}
-	
-	@Override
-	public void dispose() {
 	}
 	
 	@Override

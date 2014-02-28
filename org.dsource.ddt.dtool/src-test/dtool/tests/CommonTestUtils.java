@@ -1,7 +1,10 @@
 package dtool.tests;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,11 +30,11 @@ public class CommonTestUtils {
 		return true;
 	}
 	
-	public static <T> void assertEquals(T obj1, T obj2) {
+	public static void assertEquals(Object obj1, Object obj2) {
 		Assert.equals(obj1, obj2);
 	}
 	
-	public static <T> void assertAreEqual(T obj1, T obj2) {
+	public static void assertAreEqual(Object obj1, Object obj2) {
 		assertTrue(CoreUtil.areEqual(obj1, obj2));
 	}
 	
@@ -74,6 +77,25 @@ public class CommonTestUtils {
 		);
 	}
 	
+	public static void assertExceptionContains(Exception exception, String string) {
+		if(string == null) {
+			assertTrue(exception == null);
+		} else {
+			assertTrue(exception.toString().contains(string));
+		}
+	}
+	
+	public static void assertExceptionMsgStart(Exception exception, String string) {
+		if(string == null) {
+			assertTrue(exception == null);
+		} else {
+			assertNotNull(exception);
+			String message = exception.getMessage();
+			assertNotNull(message);
+			assertTrue(message.startsWith(string));
+		}
+	}
+	
 	/* -------------------------- */
 	
 	@SafeVarargs
@@ -111,7 +133,7 @@ public class CommonTestUtils {
 		setCopy.retainAll(retainColl);
 		return setCopy;
 	}
-
+	
 	public static <T> HashSet<T> removeAllCopy(Set<T> set, Collection<?> removeColl) {
 		HashSet<T> setCopy = CollectionUtil.createHashSet(set);
 		setCopy.removeAll(removeColl);
@@ -170,6 +192,42 @@ public class CommonTestUtils {
 			T next = coll[i];
 			predicates[i].visit(next);
 		}
+	}
+	
+	public static final Path IGNORE_PATH = Paths.get("###NO_CHECK###");
+	public static final String IGNORE_STR = "###NO_CHECK###";
+	public static final Object[] IGNORE_ARR = new Object[0];
+	public static final String[] IGNORE_ARR_STR = new String[0];
+	
+	public interface Checker<T> {
+		
+		void check(T obj);
+		
+	}
+	
+	/** Helper class to check result values against expected ones. */
+	public static abstract class CommonChecker {
+		
+		public void checkAreEqual(Object obj, Object expected) {
+			if(expected == IGNORE_PATH || expected == IGNORE_STR)
+				return;
+			assertTrue(CoreUtil.areEqual(obj, expected));
+		}
+		
+		public void checkAreEqualArray(Object[] obj, Object[] expected) {
+			if(isIgnoreArray(expected))
+				return;
+			assertTrue(CoreUtil.areEqualArrays(obj, expected));
+		}
+		
+		protected boolean isIgnoreArray(Object[] expected){
+			return expected == IGNORE_ARR || expected == IGNORE_ARR_STR;
+		}
+		
+		protected Object[] ignoreIfNull(Object[] expected) {
+			return expected == null ? IGNORE_ARR : expected;
+		}
+		
 	}
 	
 }

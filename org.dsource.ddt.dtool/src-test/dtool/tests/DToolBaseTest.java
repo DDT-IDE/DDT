@@ -18,6 +18,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,7 +31,8 @@ import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Before;
 
-import dtool.DeeNamingRules_Test;
+import dtool.project.DeeNamingRules_Test;
+import dtool.tests.utils.MiscFileUtils;
 import dtool.util.NewUtils;
 
 
@@ -60,7 +62,11 @@ public class DToolBaseTest extends CommonTest {
 	}
 	
 	public static String readStringFromFile(File file) throws IOException, FileNotFoundException {
-		return new String(FileUtil.readBytesFromFile(file), DEFAULT_TESTDATA_ENCODING);
+		return FileUtil.readStringFromFile(file, DEFAULT_TESTDATA_ENCODING);
+	}
+	
+	public static String readStringFromFile(Path path) throws IOException, FileNotFoundException {
+		return readStringFromFile(path.toFile());
 	}
 	
 	public static String readStringFromFileUnchecked(File file) {

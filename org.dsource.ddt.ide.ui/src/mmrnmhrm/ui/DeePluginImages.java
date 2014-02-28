@@ -5,6 +5,7 @@ import melnorme.lang.ide.ui.LangImages;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.ISharedImages;
 
 public abstract class DeePluginImages extends LangImages {
 	
@@ -66,6 +67,21 @@ public abstract class DeePluginImages extends LangImages {
 	public static final ImageDescriptor DESC_OVR_TEMPLATED = createUnmanaged(T_OVR, "ovr_templated.png");
 	public static final ImageDescriptor DESC_OVR_ALIAS = createUnmanaged(T_OVR, "ovr_alias_arrow.png");
 	
+	
+	/* ---------- DUB elements ---------- */
+	
+	protected static final String T_OBJ_DUB = "obj16_dub";
+	
+	public static final String DUB_DEPENDENCIES_CONTAINER = createManaged(T_OBJ_DUB, "DubDependenciesContainer.png");
+	public static final String DUB_BUNDLE_DEP = createManaged(T_OBJ_DUB, "DubBundleDep.png");
+	public static final String DUB_RAW_DEP = createManaged(T_OBJ_DUB, "DubRawDep.png");
+	public static final String DUB_ERROR_ELEMENT = putSharedImages(T_OBJ_DUB, "DubErrorElement", 
+		ISharedImages.IMG_OBJS_ERROR_TSK);
+//	public static final String DUB_MANIFEST = createManaged(T_OBJ_DUB, "DubManifest.png");
+	
+	public static final String DUB_PROCESS = createManaged(T_OBJ_DUB, "DubProcess.png");
+	
+	/* ------------------------------------------- */
 	
 	public static final ImageDescriptor OPEN_DEF_DESC = createUnmanaged(T_ACTIONS, "gotodef.gif");
 	

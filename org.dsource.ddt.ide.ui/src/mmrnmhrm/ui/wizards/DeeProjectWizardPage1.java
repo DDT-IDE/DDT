@@ -7,17 +7,25 @@ import org.eclipse.swt.widgets.Composite;
 
 public class DeeProjectWizardPage1 extends ProjectWizardFirstPage {
 	
+	protected final DeeProjectWizard deeNewProjectWizard;
+
+	public DeeProjectWizardPage1(DeeProjectWizard deeNewProjectWizard) {
+		super();
+		setTitle(DeeNewWizardMessages.LangNewProject_Page1_pageTitle);
+		setDescription(DeeNewWizardMessages.LangNewProject_Page1_pageDescription);
+		this.deeNewProjectWizard = deeNewProjectWizard;
+	}
+	
+	@Override
+	protected IInterpreterGroup createInterpreterGroup(Composite parent) {
+		return new DeeInterpreterGroup(parent);
+	}
+	
 	final class DeeInterpreterGroup extends AbstractInterpreterGroup {
 		
 		public DeeInterpreterGroup(Composite composite) {
 			super (composite);
 		}
-		
-		// Commented since DLTK 2.0
-//		@Override
-//		protected String getCurrentLanguageNature() {
-//			return DeeNature.NATURE_ID;
-//		}
 		
 		@Override
 		protected String getIntereprtersPreferencePageId() {
@@ -25,11 +33,6 @@ public class DeeProjectWizardPage1 extends ProjectWizardFirstPage {
 		}
 		
 	};
-	
-	@Override
-	protected IInterpreterGroup createInterpreterGroup(Composite parent) {
-		return new DeeInterpreterGroup(parent);
-	}
 	
 	@Override
 	protected boolean interpeterRequired() {
@@ -40,4 +43,13 @@ public class DeeProjectWizardPage1 extends ProjectWizardFirstPage {
 	public boolean isSrc() {
 		return true; // Create src+bin buildpath
 	}
+	
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		if(visible) {
+			deeNewProjectWizard.pageChanged(this);
+		}
+	}
+	
 }

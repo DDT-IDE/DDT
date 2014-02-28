@@ -20,7 +20,7 @@ import org.junit.Test;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
-import dtool.tests.MiscNodeUtils;
+import dtool.tests.utils.MiscNodeUtils;
 
 public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 	

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.core.fntypes.VoidFunction;
@@ -18,8 +19,7 @@ import org.junit.runners.Parameterized.Parameters;
 import dtool.tests.CommonTestUtils;
 import dtool.tests.DToolTestResources;
 import dtool.tests.DToolTests;
-import dtool.tests.MiscDeeTestUtils;
-import dtool.tests.MiscFileUtils;
+import dtool.tests.utils.MiscFileUtils;
 
 /**
  * Test conversion of common sources (Phobos, Tango)
@@ -86,6 +86,8 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 		super(testDescription, testRunnable);
 	}
 	
+	public static final Pattern LINE_SPLITTER = Pattern.compile("\n|(\r\n)|\r");
+	
 	public static class MassParseTestRunnable extends CommonTestUtils implements Runnable {
 		
 		public final File unpackedFolder;
@@ -112,7 +114,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 			if(!exclusionsFiles.exists()) 
 				return new String[0];
 			String exclusionsFileSource = readStringFromFileUnchecked(exclusionsFiles);
-			String[] exclusions = MiscDeeTestUtils.splitLines(exclusionsFileSource);
+			String[] exclusions = LINE_SPLITTER.split(exclusionsFileSource);
 			exclusions = ArrayUtil.filter(exclusions, new Predicate<String>() {
 				@Override
 				public boolean evaluate(String obj) {

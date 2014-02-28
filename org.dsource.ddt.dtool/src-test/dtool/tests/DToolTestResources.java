@@ -15,9 +15,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 
 import dtool.DToolBundle;
-
+import dtool.tests.utils.MiscFileUtils;
 
 
 public class DToolTestResources {
@@ -58,6 +60,14 @@ public class DToolTestResources {
 	
 	public static File getTestResource(String... segments) {
 		return MiscFileUtils.getFile(DToolTestResources.getInstance().getResourcesDir(), segments);
+	}
+	
+	public static Path getTestResourcePath(String... segments) {
+		try {
+			return getTestResource(segments).getCanonicalFile().toPath();
+		} catch (IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 	protected static String testsWorkingDir;

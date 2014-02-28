@@ -15,6 +15,7 @@ import java.util.List;
 
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import melnorme.utilbox.misc.ArrayUtil;
+import mmrnmhrm.ui.DeePreferencesMessages;
 import mmrnmhrm.ui.DeeUIPreferenceConstants;
 
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlock;

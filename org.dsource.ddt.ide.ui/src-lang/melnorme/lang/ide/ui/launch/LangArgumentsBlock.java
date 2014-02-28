@@ -13,6 +13,7 @@
 package melnorme.lang.ide.ui.launch;
 
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.util.swt.ControlAccessibleListener;
 import melnorme.util.swt.components.FieldComponent;
 
 import org.eclipse.swt.SWT;

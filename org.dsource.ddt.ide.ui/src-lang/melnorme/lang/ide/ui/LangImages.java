@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.PlatformUI;
 
 public abstract class LangImages {
 	
@@ -31,6 +32,13 @@ public abstract class LangImages {
 	
 	protected static String createManaged(String prefix, String name) {
 		return helper.createManaged(prefix, name);
+	}
+	
+	protected static String putSharedImages(String prefix, String name, String sharedImagesName) {
+		ImageDescriptor descriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(sharedImagesName);
+		String key = helper.getKey(prefix, name);
+		helper.getImageRegistry().put(key, descriptor);
+		return key;
 	}
 	
 	protected static ImageDescriptor createUnmanaged(String prefix, String name) {

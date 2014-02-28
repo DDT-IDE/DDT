@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import melnorme.utilbox.misc.StreamUtil;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TemplatedSourceException;
-import dtool.tests.SimpleParser;
+import dtool.tests.utils.SimpleParser;
 
 public abstract class SplitProcessor {
 	

@@ -2,6 +2,7 @@ package mmrnmhrm.ui.preferences;
 
 import java.util.List;
 
+import mmrnmhrm.ui.DeePreferencesMessages;
 import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;

@@ -1,0 +1,10 @@
+{
+	"name": "ErrorBundle_MissingDep",
+	"dependencies": {
+		"foo_lib": "~master",
+		"NonExistantDep": "~master"
+	},
+	"sourcePaths": [ "src" ],
+	"importPaths": [ "src" ],
+	"targetPath": "bin"
+}

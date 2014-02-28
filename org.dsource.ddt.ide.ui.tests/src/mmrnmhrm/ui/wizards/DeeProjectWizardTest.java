@@ -3,8 +3,9 @@ package mmrnmhrm.ui.wizards;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.MiscUtil;
+import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.projectmodel.ProjectModelUtil;
+import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.tests.ui.accessors.ProjectWizardFirstPage__Accessor;
@@ -25,7 +26,7 @@ import org.junit.Test;
 
 public class DeeProjectWizardTest extends BaseDeeUITest {
 	
-	private DeeNewProjectWizard wizard;
+	private DeeProjectWizard wizard;
 	private WizardDialog__Accessor wizDialog;
 	
 	final static String NEWPROJNAME = "WizardCreationProject";
@@ -36,7 +37,7 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 		
 		tearDown();
 		//WorkbenchPlugin.getDefault().getNewWizardRegistry().findWizard(id);
-		wizard = new DeeNewProjectWizard();
+		wizard = new DeeProjectWizard();
 		IWorkbenchWindow window = WorkbenchUtils.getActiveWorkbenchWindow();
 		wizard.init(window.getWorkbench(), null);
 		
@@ -70,10 +71,12 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 	}
 	
 	private void simulatePage2GoBack() {
+		DubModelManager.getDefault().syncPendingUpdates(); // Make sure dub process terminates
 		wizDialog.backPressed();
 	}
 	
 	private void simulatePressCancel() {
+		DubModelManager.getDefault().syncPendingUpdates(); // Make sure dub process terminates
 		wizDialog.cancelPressed();
 	}
 	
@@ -181,11 +184,12 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 	
 	protected boolean checkNoChanges() throws Throwable {
 		logErrorListener.checkErrors();
-		return ProjectModelUtil.getDeeProject(NEWPROJNAME).exists() == false;
+		
+		return DLTKUtils.getDLTKModel().getScriptProject(NEWPROJNAME).exists() == false;
 	}
 	
 	protected boolean checkProjectCreated() throws Throwable {
 		logErrorListener.checkErrors();
-		return ProjectModelUtil.getDeeProject(NEWPROJNAME).exists();
+		return DLTKUtils.getDLTKModel().getScriptProject(NEWPROJNAME).exists();
 	}
 }

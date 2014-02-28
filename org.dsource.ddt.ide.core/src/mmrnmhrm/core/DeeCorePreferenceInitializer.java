@@ -12,12 +12,19 @@ package mmrnmhrm.core;
 
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 
 public class DeeCorePreferenceInitializer extends AbstractPreferenceInitializer {
 	
 	@Override
 	public void initializeDefaultPreferences() {
+		
+		IEclipsePreferences defaultPreferences = DefaultScope.INSTANCE.getNode(DeeCore.PLUGIN_ID);
+		
+		defaultPreferences.put(DeeCorePreferencesConstants.PREF_DUB_PATH, "dub");
+		
 	}
 	
 }

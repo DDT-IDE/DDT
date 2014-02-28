@@ -1,6 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import mmrnmhrm.ui.preferences.DeeProjectOptionsBlock;
+import mmrnmhrm.ui.preferences.DeeProjectBuildOptionsBlock;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
@@ -14,10 +24,10 @@ import org.eclipse.ui.dialogs.PropertyPage;
 
 public class DeeProjectOptionsPropertyPage extends PropertyPage {
 	
-	private DeeProjectOptionsBlock fProjCfg;
+	private DeeProjectBuildOptionsBlock prjBuildOptionsBlock;
 	
 	public DeeProjectOptionsPropertyPage() {
-		fProjCfg = new DeeProjectOptionsBlock();
+		prjBuildOptionsBlock = new DeeProjectBuildOptionsBlock();
 	}
 	
 	@Override
@@ -26,13 +36,13 @@ public class DeeProjectOptionsPropertyPage extends PropertyPage {
 		noDefaultAndApplyButton();		
 		
 		if (getProject() == null) {
+			setVisible(false);
 			Label label = new Label(parent, SWT.NONE);
 			label.setText("Target not a D project.");
-			setVisible(false);
 			return label;
 		} else {
-			fProjCfg.init2(DLTKCore.create(getProject()));
-			return fProjCfg.createControl(parent);
+			prjBuildOptionsBlock.initializeFrom(DLTKCore.create(getProject()));
+			return prjBuildOptionsBlock.createControl(parent);
 		}
 	}
 	
@@ -46,7 +56,7 @@ public class DeeProjectOptionsPropertyPage extends PropertyPage {
 	
 	@Override
 	public boolean performOk() {
-		return fProjCfg.performOk();
+		return prjBuildOptionsBlock.performOk();
 	}
 	
 }
