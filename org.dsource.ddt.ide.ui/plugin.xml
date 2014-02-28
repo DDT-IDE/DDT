@@ -2,57 +2,57 @@
 <?eclipse version="3.2"?>
 <plugin>
 
-<extension
+	<extension
        point="org.eclipse.dltk.ui.language">
-    <language
+		<language
           class="mmrnmhrm.ui.DeeUILanguageToolkit"
           nature="org.dsource.ddt.ide.core.nature"
           priority="0"/>
- </extension>
-   <extension
+	</extension>
+	<extension
          id="DeeDocumentSetupParticipant"
          name="D Document Setup Participant"
          point="org.eclipse.core.filebuffers.documentSetup">
-      <participant
+		<participant
             class="mmrnmhrm.ui.text.DeeDocumentSetupParticipant"
             contentTypeId="org.dsource.ddt.ide.core.content.dsource">
-      </participant>
-   </extension>
-   <extension
+		</participant>
+	</extension>
+	<extension
          point="org.eclipse.core.runtime.preferences">
-      <initializer class="mmrnmhrm.ui.DeeUIPreferenceInitializer"/>
-   </extension>
-   <extension
+		<initializer class="mmrnmhrm.ui.DeeUIPreferenceInitializer"/>
+	</extension>
+	<extension
          point="org.eclipse.ui.ide.projectNatureImages">
-      <image
+		<image
             icon="icons/ovr16/d-dark_ovr.gif"
             id="org.dsource.ddt.ide.ui.deeProjectNatureImage"
             natureId="org.dsource.ddt.ide.core.nature"/>
-   </extension>
- <extension
+	</extension>
+	<extension
        point="org.eclipse.ui.perspectives">
-    <perspective
+		<perspective
           class="mmrnmhrm.ui.views.DeePerspective"
           icon="icons/view16/ddt_persp.png"
           id="org.dsource.ddt.ide.ui.DeePerspective"
           name="%LangPerspective.name">
-    </perspective>
- </extension>
- <extension
+		</perspective>
+	</extension>
+	<extension
        point="org.eclipse.ui.perspectiveExtensions">
-    <perspectiveExtension
+		<perspectiveExtension
           targetID="org.dsource.ddt.ide.ui.DeePerspective">
-       <showInPart
+			<showInPart
              id="org.eclipse.ui.navigator.ProjectExplorer">
-       </showInPart>
-    </perspectiveExtension>
- </extension>
-   <extension
+			</showInPart>
+		</perspectiveExtension>
+	</extension>
+	<extension
          point="org.eclipse.ui.newWizards">
-      <category
+		<category
             id="org.dsource.ddt.ide.category"
             name="%LangWizardsCategory.name"/>
-      <wizard
+		<wizard
             category="org.dsource.ddt.ide.category"
             class="mmrnmhrm.ui.wizards.DeeProjectWizard"
             finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
@@ -61,104 +61,104 @@
             name="%NewProjectWizard.name"
             preferredPerspectives="org.dsource.ddt.ide.ui.DeePerspective"
             project="true">
-      </wizard>
-   </extension>
-   <extension
+		</wizard>
+	</extension>
+	<extension
          point="org.eclipse.ui.propertyPages">
-      <page
+		<page
             class="mmrnmhrm.ui.preferences.pages.DeeProjectOptionsPropertyPage"
             id="org.dsource.ddt.ide.ui.properties.DeeCompileOptionsProperties"
             name="%LangBuildOptionsPropertyPage.name">
-         <enabledWhen>
-            <reference
+			<enabledWhen>
+				<reference
                   definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
-            </reference>
-         </enabledWhen>
-      </page>
-   </extension>
-   <extension
+				</reference>
+			</enabledWhen>
+		</page>
+	</extension>
+	<extension
          point="org.eclipse.ui.preferencePages">
-      <page
+		<page
             class="mmrnmhrm.ui.preferences.pages.DeeRootPreferencePage"
             id="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
             name="%LangPreferencePage.name"/>
-      	<page
+		<page
 	          category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
 	          class="mmrnmhrm.ui.preferences.pages.DeeAppearancePreferencePage"
 	          id="org.dsource.ddt.ide.ui.preferences.Appearance"
 	          name="%LangAppearancePreferencePage.name"/>
-      	<page
+		<page
 	          category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
 	          class="mmrnmhrm.ui.preferences.pages.DeeDubPreferencePage"
 	          id="org.dsource.ddt.ide.ui.preferences.Dub"
 	          name="%DeeDubPreferencePage.name"/>
-      	<page
+		<page
 	          category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
 	          class="mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage"
 	          id="org.dsource.ddt.ide.ui.preferences.Editor"
 	          name="%LangEditorPreferencePage.name"/>
-       <page
+		<page
              category="org.dsource.ddt.ide.ui.preferences.Editor"
              class="mmrnmhrm.ui.preferences.pages.DeeEditorSmartTypingPreferencePage"
              id="org.dsource.ddt.ide.ui.preferences.Editor.typing"
              name="%LangEditorTypingPreferencePage.name">
-       </page>
-	    <page
+		</page>
+		<page
 	          category="org.dsource.ddt.ide.ui.preferences.Editor"
 	          class="mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage"
 	          id="org.dsource.ddt.ide.ui.preferences.editor.SourceColoring"
 	          name="%LangEditorSyntaxColoringPreferencePage.name"/>
-     <page
+		<page
            category="org.dsource.ddt.ide.ui.preferences.Editor"
            class="mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage"
            id="org.dsource.ddt.ide.ui.preferences.editor.ContentAssist"
            name="%LangContentAssistPreferencePage.name">
-     </page>
-     	<page
+		</page>
+		<page
               category="org.dsource.ddt.ide.ui.preferences.Editor"
               class="mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage"
               id="org.dsource.ddt.ide.ui.preferences.editor.CodeTemplates"
               name="%LangCodeTemplatesPreferencePage.name" />
-      <page
+		<page
             category="org.dsource.ddt.ide.ui.preferences.Editor"
             class="mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage"
             id="org.dsource.ddt.ide.ui.preferences.editor.Folding"
             name="%LangEditorFoldingPreferencePage.name">
-      </page>
-      <page
+		</page>
+		<page
             category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
             class="mmrnmhrm.ui.preferences.pages.DeeCompilersPreferencePage"
             id="org.dsource.ddt.ide.ui.preferences.DeeCompilers"
             name="%LangCompilersPreferencePage.name">
-      </page>
-   </extension>
-   	 <extension
+		</page>
+	</extension>
+	<extension
 	     point="org.eclipse.ui.editors">
-	  <editor
+		<editor
          class="mmrnmhrm.ui.editor.DeeEditor"
          contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
          default="true"
          icon="icons/obj16/dee_file.gif"
          id="org.dsource.ddt.ide.ui.editors.DeeEditor"
          name="%LangEditor.name">
-      <contentTypeBinding
+			<contentTypeBinding
             contentTypeId="org.dsource.ddt.ide.core.content.dsource">
-      </contentTypeBinding>
-      </editor>
+			</contentTypeBinding>
+		</editor>
          point="org.eclipse.ui.editors">
    </extension>
-   <extension
+	<extension
          point="org.eclipse.ui.contexts">
-      <context
+		<context
             name="%LangEditContext.name"
             description="%LangEditContext.description"
             parentId="org.eclipse.dltk.ui.scriptEditorScope"
             id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
-      </context>
-   </extension>
-   <extension
+		</context>
+	</extension>
+	<extension
          point="org.eclipse.search.searchPages">
-      <page
+		<page
             canSearchEnclosingProjects="true"
             class="mmrnmhrm.ui.search.DeeSearchPage"
             enabled="true"
@@ -168,74 +168,74 @@
             label="%LangSearchPage.label"
             showScopeSection="true"
             sizeHint="460,160">
-      </page>
-   </extension>
-   <extension
+		</page>
+	</extension>
+	<extension
          point="org.eclipse.ui.views">
-      <category
+		<category
             id="org.dsource.ddt.ide.ui"
             name="%LangViewsCategory.name"/>
-      <view
+		<view
             category="org.dsource.ddt.ide.ui"
             class="mmrnmhrm.ui.views.ASTViewer"
             icon="icons/action16e/extra/sample.gif"
             id="org.dsource.ddt.ide.ui.views.ASTViewer"
             name="DDT AST Viewer"/>
-   </extension>
-   <extension
+	</extension>
+	<extension
          point="org.eclipse.ui.commands">
-      <category
+		<category
             description="%LangCommandCategory.description"
             id="org.dsource.ddt.ide.ui.commands.category1"
             name="%LangCommandCategory.name">
-      </category>
-	<command
+		</category>
+		<command
        categoryId="org.dsource.ddt.ide.ui.commands.category1"
        description="%OpenDefinitionAction.tooltip"
        id="org.dsource.ddt.ide.ui.commands.openDefinition"
        name="%OpenDefinitionAction.name">
-      </command>
- <command
+		</command>
+		<command
        categoryId="org.dsource.ddt.ide.ui.commands.category1"
        defaultHandler="mmrnmhrm.ui.actions.DeeOpenTypeHandler"
        description="%OpenTypeAction.tooltip"
        id="org.dsource.ddt.ide.ui.commands.openDeeType"
        name="%OpenTypeAction.name">
- </command>
- 
- <command
+		</command>
+
+		<command
        categoryId="org.dsource.ddt.ide.ui.commands.category1"
        description="%OpenTypeInHierarchyAction.tooltip"
        id="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
        name="%OpenTypeInHierarchyAction.name">
- </command>
+		</command>
 
- <command
+		<command
        categoryId="org.dsource.ddt.ide.ui.commands.category1"
        defaultHandler="mmrnmhrm.ui.actions.DeeOpenSearchPageHandler"
        description="%OpenLangSearchPageAction.tooltip"
        id="org.dsource.ddt.ide.ui.commands.openDeeSearchPage"
        name="%OpenLangSearchPageAction.name">
- </command>
-<!--
+		</command>
+		<!--
       <command
             categoryId="org.dsource.ddt.ide.ui.commands.category1"
             defaultHandler="mmrnmhrm.ui.actions.SampleTest1Handler"
             id="org.dsource.ddt.ide.ui.commands.sampleCommand"
             name="Test Action">
       </command>
---> 
- 
-   </extension>   
+-->
 
-   <extension
+	</extension>
+
+	<extension
          point="org.eclipse.ui.actionSets">
-      <actionSet
+		<actionSet
             description="%LangActionSet.description"
             id="org.dsource.ddt.ide.ui.DeeActionSet"
             label="%LangActionSet.label"
             visible="false">
-<!--
+			<!--
          <action
                definitionId="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
                label="%OpenTypeInHierarchyAction.label"
@@ -244,8 +244,8 @@
                menubarPath="navigate/open.ext2"
                id="org.dsource.ddt.ide.ui.actions.openTypeInHierarchy">
          </action>
--->  
-         <action
+-->
+			<action
                class="mmrnmhrm.ui.actions.GoToDefinitionAction"
                definitionId="org.dsource.ddt.ide.ui.commands.openDefinition"
                icon="icons/action16e/gotodef.gif"
@@ -254,8 +254,8 @@
                menubarPath="navigate/open.ext"
                toolbarPath="org.eclipse.search.searchActionSet/Search"
                tooltip="%OpenDefinitionAction.tooltip">
-         </action>
-         <action
+			</action>
+			<action
             definitionId="org.dsource.ddt.ide.ui.commands.openDeeType"
             class="mmrnmhrm.ui.actions.DeeOpenTypeAction"
             icon="icons/action16e/opentype.gif"
@@ -264,16 +264,16 @@
             menubarPath="navigate/open.ext2"
             toolbarPath="org.eclipse.search.searchActionSet/Search"
             tooltip="%OpenTypeAction.tooltip">
-         </action>
-       
-         <menu
+			</action>
+
+			<menu
                label="%SearchMenu.label"
                path="navigate"
                id="org.eclipse.search.menu">
-			   <groupMarker name="dialogGroup"/>
-         </menu>
-         
-         <action
+				<groupMarker name="dialogGroup"/>
+			</menu>
+
+			<action
                class="mmrnmhrm.ui.actions.DeeOpenSearchPageAction"
                definitionId="org.dsource.ddt.ide.ui.commands.openDeeSearchPage"
                icon="icons/action16e/d_search.png"
@@ -281,17 +281,17 @@
                label="%OpenLangSearchPageAction.label"
                menubarPath="org.eclipse.search.menu/dialogGroup"
                tooltip="%OpenLangSearchPageAction.tooltip">
-         </action>
-         
-      </actionSet>
-   </extension>
-   <extension
+			</action>
+
+		</actionSet>
+	</extension>
+	<extension
          point="org.eclipse.ui.actionSetPartAssociations">
-      <actionSetPartAssociation
+		<actionSetPartAssociation
             targetID="org.eclipse.ui.edit.text.actionSet.presentation">
-         <part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
-      </actionSetPartAssociation>
-<!--
+			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
+		</actionSetPartAssociation>
+		<!--
       <actionSetPartAssociation
             targetID="org.eclipse.dltk.ui.A_OpenActionSet">
          <part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
@@ -301,52 +301,52 @@
          <part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
       </actionSetPartAssociation>
 -->
-      <actionSetPartAssociation
+		<actionSetPartAssociation
             targetID="org.dsource.ddt.ide.ui.DeeActionSet">
-         <part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
-      </actionSetPartAssociation>
-   </extension>
-   
-   
-   <extension
+			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
+		</actionSetPartAssociation>
+	</extension>
+
+
+	<extension
          point="org.eclipse.ui.menus">
-   </extension>
-   <extension
+	</extension>
+	<extension
          point="org.eclipse.ui.bindings">
-      <key
+		<key
             commandId="org.dsource.ddt.ide.ui.commands.openDefinition"
             contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F3">
-      </key>
-      <key
+		</key>
+		<key
             commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
             contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+T">
-      </key>
-      <key
+		</key>
+		<key
             commandId="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
             contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+H">
-      </key>
-      <key
+		</key>
+		<key
             commandId="org.eclipse.dltk.ui.edit.text.script.search.references.in.workspace"
             contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+G">
-      </key>
-   </extension>
- <extension
+		</key>
+	</extension>
+	<extension
        point="org.eclipse.dltk.ui.scriptDocumentationProviders">
-    <provider
+		<provider
           class="mmrnmhrm.ui.editor.doc.DeeDocumentationProvider"
           id="org.dsource.ddt.ide.ui.DeeDocumentationProvider"
           nature="org.dsource.ddt.ide.core.nature">
-    </provider>
- </extension>
- <extension
+		</provider>
+	</extension>
+	<extension
        id="DeeCodeCompletionProposalComputer"
        point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
 		<scriptCompletionProposalComputer
@@ -356,54 +356,54 @@
         toolkitId="org.dsource.ddt.ide.core.nature">
 			<partition type="__dftl_partition_content_type"/>
 		</scriptCompletionProposalComputer>
- </extension>
- <extension
+	</extension>
+	<extension
        point="org.eclipse.dltk.ui.completion">
-    <proposalLabelProvider
+		<proposalLabelProvider
           class="mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalLabelProvider"
           nature="org.dsource.ddt.ide.core.nature">
-    </proposalLabelProvider>
- </extension>
- 
-   
-	 <extension
+		</proposalLabelProvider>
+	</extension>
+
+
+	<extension
 	       point="org.eclipse.ui.editors.templates">
-	    <contextType
+		<contextType
 	          class="mmrnmhrm.ui.editor.templates.DeeUniversalTemplateContextType"
 	          id="DeeUniversalTemplateContextType"
 	          name="%LangTemplateContext.name">
-	    </contextType>
-	    <include
+		</contextType>
+		<include
 	          file="templates/default-templates.xml"
 	          translations="templates/default-templates.properties">
-	    </include>
-	 </extension>
-  <extension
+		</include>
+	</extension>
+	<extension
         point="org.eclipse.dltk.ui.folding">
-     <structureProvider
+		<structureProvider
            class="org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider"
            nature="org.dsource.ddt.ide.core.nature">
-     </structureProvider>
-     <blockProvider
+		</structureProvider>
+		<blockProvider
            class="mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider"
            nature="org.dsource.ddt.ide.core.nature">
-     </blockProvider>
-     <blockProvider
+		</blockProvider>
+		<blockProvider
            class="mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider"
            nature="org.dsource.ddt.ide.core.nature">
-     </blockProvider>
-  </extension>
-  <extension
+		</blockProvider>
+	</extension>
+	<extension
         point="org.eclipse.dltk.ui.modelLabelProvider">
-     <modelLabelProvider
+		<modelLabelProvider
            class="mmrnmhrm.ui.views.DeeModelElementLabelProvider"
            id="org.dsource.ddt.ide.ui.modelLabelProvider"
            language="org.dsource.ddt.ide.core.nature">
-     </modelLabelProvider>
-  </extension>
-   <extension
+		</modelLabelProvider>
+	</extension>
+	<extension
          point="org.eclipse.ui.navigator.navigatorContent">
-      <navigatorContent
+		<navigatorContent
             activeByDefault="true"
             contentProvider="mmrnmhrm.ui.navigator.DubNavigatorContent"
             icon="icons/action16e/extra/spathi.16.gif"
@@ -411,60 +411,60 @@
             labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
             name="Dub Elements"
             priority="higher">
-         <triggerPoints>
-            <or>
-               <instanceof
+			<triggerPoints>
+				<or>
+					<instanceof
                      value="org.eclipse.core.resources.IProject">
-               </instanceof>
-            </or>
-         </triggerPoints>
-         <possibleChildren>
-            <or>
-            </or>
-         </possibleChildren>
-      </navigatorContent>
-   </extension>
-   
-   <extension
+					</instanceof>
+				</or>
+			</triggerPoints>
+			<possibleChildren>
+				<or>
+				</or>
+			</possibleChildren>
+		</navigatorContent>
+	</extension>
+
+	<extension
          point="org.eclipse.ui.navigator.viewer">
-      <viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
-         <includes>
-            <contentExtension pattern="org.dsource.ddt.ide.ui.navigatorContent"/>
-            <contentExtension
+		<viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+			<includes>
+				<contentExtension pattern="org.dsource.ddt.ide.ui.navigatorContent"/>
+				<contentExtension
                   pattern="org.dsource.ddt.ide.ui.DubNavigatorContent">
-            </contentExtension>
-         </includes>
-      </viewerContentBinding>
-   </extension>
-   <extension
+				</contentExtension>
+			</includes>
+		</viewerContentBinding>
+	</extension>
+	<extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
-      <target
+		<target
             id="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget"
             name="%hyperlinkDetector.target.name">
-         <context
+			<context
                type="org.eclipse.ui.texteditor.ITextEditor">
-         </context>
-      </target>
-   </extension>
-   <extension
+			</context>
+		</target>
+	</extension>
+	<extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
-      <hyperlinkDetector
+		<hyperlinkDetector
             class="mmrnmhrm.ui.editor.text.DeeHyperlinkDetector"
             id="org.dsource.ddt.ide.ui.editor.text.DeeHyperlinkDetector"
             name="%hyperlinkDetector.name"
             targetId="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget">
-      </hyperlinkDetector>
-   </extension>
-   <extension
+		</hyperlinkDetector>
+	</extension>
+	<extension
          point="org.eclipse.dltk.ui.buildpathContainerPage">
-      <buildpathContainerPage
+		<buildpathContainerPage
             class="mmrnmhrm.ui.wizards.DeeCompilerContainerWizardPage"
             id="org.dsource.ddt.ide.core.launching.INTERPRETER_CONTAINER"
             name="D System Libraries"
             nature="org.dsource.ddt.ide.core.nature">
-      </buildpathContainerPage>
-   </extension>
-   
+		</buildpathContainerPage>
+	</extension>
+
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
 		<launchConfigurationTypeImage
             configTypeID="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
@@ -472,62 +472,64 @@
             id="org.dsource.ddt.ide.ui.launchConfigurationTypeImage1">
 		</launchConfigurationTypeImage>
 	</extension>
-   
-   <extension
+
+	<extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup
+		<launchConfigurationTabGroup
             class="org.dsource.ddt.ui.tabgroup.DeeTabGroup"
             description="%LangTabGroup.description"
             id="org.dsource.ddt.ide.ui.launchConfigurationTabGroup1"
             type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
-      </launchConfigurationTabGroup>
-   </extension>
-   <extension
+		</launchConfigurationTabGroup>
+	</extension>
+	<extension
          point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
+		<shortcut
             class="mmrnmhrm.ui.launch.DeeLaunchShortcut"
             description="%LangLaunchShortcut.description"
             icon="$nl$/icons/action16e/d_app_launch.png"
             id="org.dsource.ddt.ide.ui.launch.launchShortcut"
             label="%LangLaunchShortcut.name"
             modes="run, debug">
-         <description
+			<description
                description="%LangLaunchShortcut.runDescription"
                mode="run">
-         </description>
-         <description
+			</description>
+			<description
                description="%LangLaunchShortcut.debugDescription"
                mode="debug">
-         </description>
-        
-         <configurationType
-               id="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
-         </configurationType>
-         <contextualLaunch>
-            <enablement>
-               <with
-                     variable="selection">
-                  <count value="1" />
-                  <iterate>
-                     <or>
-                        <instanceof value="org.eclipse.ui.IEditorInput">
-                        </instanceof>
-                        <adapt type="org.eclipse.core.resources.IFile">
-                           <test property="org.eclipse.core.resources.name" value="*.exe">
-                           </test>
-                        </adapt>
-                        <adapt type="org.eclipse.core.resources.IProject">
-                           <reference
-                                 definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
-                           </reference>
-                        </adapt></or>
-                  </iterate>
-               </with></enablement>
-         </contextualLaunch> 
+			</description>
 
-      </shortcut>
-   </extension>
-   
+			<configurationType
+               id="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
+			</configurationType>
+			<contextualLaunch>
+				<enablement>
+					<with
+                     variable="selection">
+						<count value="1" />
+						<iterate>
+							<or>
+								<instanceof value="org.eclipse.ui.IEditorInput">
+								</instanceof>
+								<adapt type="org.eclipse.core.resources.IFile">
+									<test property="org.eclipse.core.resources.name" value="*.exe">
+									</test>
+								</adapt>
+								<adapt type="org.eclipse.core.resources.IProject">
+									<reference
+                                 definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
+									</reference>
+								</adapt>
+							</or>
+						</iterate>
+					</with>
+				</enablement>
+			</contextualLaunch>
+
+		</shortcut>
+	</extension>
+
 	<extension point="org.eclipse.ui.actionSetPartAssociations">
 		<actionSetPartAssociation
 			targetID="org.eclipse.debug.ui.launchActionSet">
