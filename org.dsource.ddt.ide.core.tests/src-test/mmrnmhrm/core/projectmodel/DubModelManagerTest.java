@@ -118,17 +118,18 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			)
 		);
 		
-		// TODO: Test error in raw DUB.json, check that project info should stay same as before:
 		writeDubJsonAndCheckDubModel("{"+ jsEntry("nameMISSING", "xptobundle")+ jsFileEnd(),
 			project, 
 			bundle(DubManifestParser.ERROR_BUNDLE_NAME_UNDEFINED, IGNORE_STR));
+		
+		testClearErrors(project);
 		
 		writeDubJsonAndCheckDubModel("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
 			project, 
 			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
 		
-		// Test errors while running dub describe
+		// Test errors occurring from running dub describe
 		writeDubJsonAndCheckDubModel(
 			readFileContents(DUB_WORKSPACE.resolve("ErrorBundle_MissingDep/dub.json")),
 			
@@ -142,11 +143,25 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		
 	}
 	
+	protected void testClearErrors(IProject project) throws CoreException {
+		assertTrue(getDubErrorMarker(project) != null);
+		
+		LatchRunnable preUpdateLatch = writeDubJson(project, "");
+		
+		LatchRunnable dubProcessLatch = new LatchRunnable();
+		getProjectModel().getProcessManager().dubProcessAgent.submit(dubProcessLatch);
+		preUpdateLatch.releaseAll();
+		dubProcessLatch.awaitTaskEntry_unchecked();
+		
+		assertTrue(getDubErrorMarker(project) == null);
+		dubProcessLatch.releaseAll();
+	}
+	
 	public void writeDubJsonAndCheckDubModel(String dubJson, IProject project, DubBundleChecker expMainBundle)
 			throws CoreException {
-		LatchRunnable preWriteLatch = writeDubJson(project, dubJson);
+		LatchRunnable preUpdateLatch = writeDubJson(project, dubJson);
 		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project.getName());
-		preWriteLatch.releaseAll();
+		preUpdateLatch.releaseAll();
 		
 		checkDubModel(unresolvedBundleDesc, project, expMainBundle);
 	}
@@ -161,7 +176,6 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		if(unresolvedDubBundle.hasErrors()) {
 			// Check that we did not attempt to call dub describe on a manifest with errors
 			assertTrue(unresolvedDubBundle == dubBundle);
-			return;
 		}
 		
 		DubBundleException error = dubBundle.getError();
@@ -169,9 +183,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			expMainBundle.checkBundleDescription(unresolvedDubBundle, false);
 			testDubContainerUnresolved(project, expMainBundle, true);
 			
-			IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
-			assertTrue(markers.length == 1);
-			IMarker errorMarker = markers[0];
+			IMarker errorMarker = assertNotNull(getDubErrorMarker(project));
 			assertTrue(errorMarker.getAttribute(IMarker.MESSAGE, "").startsWith(error.getMessage()));
 			assertEquals(errorMarker.getAttribute(IMarker.SEVERITY), IMarker.SEVERITY_ERROR);
 			
@@ -188,6 +200,15 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			IMarker[] dubErrorMarkers = DubModelManager.getDubErrorMarkers(project);
 			assertTrue(dubErrorMarkers.length == 0);
 		}
+	}
+	
+	protected IMarker getDubErrorMarker(IProject project) throws CoreException {
+		IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
+		if(markers.length == 0)
+			return null;
+		
+		assertTrue(markers.length == 1);
+		return markers[0];
 	}
 	
 	protected void checkUnresolvedBundle(IProject project, DubBundleChecker expMainBundle,

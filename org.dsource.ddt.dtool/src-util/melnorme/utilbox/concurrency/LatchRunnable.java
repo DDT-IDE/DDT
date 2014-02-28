@@ -14,7 +14,7 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * A latchRunnable provides a two way (entry and exit) concurrency barrier.
- * It is useful mostly for automated tests related to concurrent code.
+ * It is useful mostly for tests related to concurrent code.
  */
 public class LatchRunnable implements Runnable, AutoCloseable {
 	
@@ -49,6 +49,14 @@ public class LatchRunnable implements Runnable, AutoCloseable {
 	
 	public void awaitTaskEntry() throws InterruptedException {
 		entryLatch.await();
+	}
+	
+	public void awaitTaskEntry_unchecked() {
+		try {
+			entryLatch.await();
+		} catch (InterruptedException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 	public void releaseAll() {

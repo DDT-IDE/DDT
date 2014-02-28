@@ -119,7 +119,7 @@ public class DubModelManager {
 		try {
 			modelAgent.awaitTermination();
 		} catch (InterruptedException e) {
-			DeeCore.log(e);
+			DeeCore.logError(e);
 		}
 	}
 	
@@ -145,8 +145,8 @@ public class DubModelManager {
 			for (IProject project : deeProjects) {
 				checkNewProject(project);
 			}
-		} catch (CoreException e) {
-			DeeCore.log(e);
+		} catch (CoreException ce) {
+			DeeCore.logStatus(ce.getStatus());
 		}
 	}
 	
@@ -210,25 +210,10 @@ public class DubModelManager {
 	protected void updateProjectDubModel(final IProject project) {
 		log.println(">> Starting project update: ", project);
 		
-		deleteDubMarkers(project); /*BUG here*/
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription2(project);
 		addProjectModel(project, unresolvedDescription);
 		
-		// only run dub describe if unresolved description had no errors
-		if(unresolvedDescription.hasErrors() == false) {
-			modelAgent.submit(new ProjectModelDubDescribeTask(project, this));
-		}
-	}
-	
-	protected void deleteDubMarkers(IProject project) {
-		try {
-			IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
-			for (IMarker marker : markers) {
-				marker.delete();
-			}
-		} catch (CoreException ce) {
-			DeeCore.logError(ce);
-		}
+		modelAgent.submit(new ProjectModelDubDescribeTask(project, unresolvedDescription, this));
 	}
 	
 	protected DubBundleDescription readUnresolvedBundleDescription2(final IProject project) {
@@ -252,7 +237,7 @@ public class DubModelManager {
 		modelAgent.waitForPendingTasks();
 	}
 	
-	/** WARNING: this API is for test use only */
+	/** WARNING: this API is intended to be used for tests only */
 	public ITaskAgent internal_getModelAgent() {
 		return modelAgent;
 	}
@@ -268,10 +253,52 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 	
 	protected final IProject project;
 	protected final DubModelManager dubModelManager;
+	protected final DubBundleDescription unresolvedDescription;
 	
-	protected ProjectModelDubDescribeTask(IProject project, DubModelManager dubModelManager) {
+	protected ProjectModelDubDescribeTask(IProject project, DubBundleDescription unresolvedDescription, 
+			DubModelManager dubModelManager) {
 		this.project = project;
+		this.unresolvedDescription = unresolvedDescription;
 		this.dubModelManager = dubModelManager;
+	}
+	
+	protected void logInternalError(CoreException ce) {
+		DeeCore.logError(ce);
+	}
+	
+	@Override
+	public void run() {
+		deleteDubMarkers(project);
+
+		// only run dub describe if unresolved description had no errors
+		if(unresolvedDescription.hasErrors() == false) {
+			super.run();
+		} else {
+			DubBundleException error = unresolvedDescription.getError();
+			setDubErrorMarker(project, error.getMessage(), error.getCause());
+		}
+	}
+	
+	protected void deleteDubMarkers(IProject project) {
+		try {
+			IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
+			for (IMarker marker : markers) {
+				marker.delete();
+			}
+		} catch (CoreException ce) {
+			DeeCore.logError(ce);
+		}
+	}
+	
+	protected void setDubErrorMarker(IProject project, String message, Throwable exception) {
+		try {
+			IMarker dubMarker = project.createMarker(DubModelManager.DUB_PROBLEM_ID);
+			String messageExtra = exception == null ? "" : exception.getMessage();
+			dubMarker.setAttribute(IMarker.MESSAGE, message + messageExtra);
+			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		} catch (CoreException ce) {
+			logInternalError(ce);
+		}
 	}
 	
 	@Override
@@ -283,10 +310,6 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 	protected void runWithMonitor(IProgressMonitor monitor) {
 		assertNotNull(monitor);
 		updateProject(monitor);
-	}
-	
-	protected void logInternalError(CoreException ce) {
-		DeeCore.logError(ce);
 	}
 	
 	protected Void updateProject(IProgressMonitor pm) {
@@ -336,14 +359,7 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		
 		dubModelManager.model.addErrorToProjectModel(project, dubError);
 		
-		try {
-			IMarker dubMarker = project.createMarker(DubModelManager.DUB_PROBLEM_ID);
-			String messageExtra = exception == null ? "" : exception.getMessage();
-			dubMarker.setAttribute(IMarker.MESSAGE, message + messageExtra);
-			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		} catch (CoreException ce) {
-			logInternalError(ce);
-		}
+		setDubErrorMarker(project, message, exception);
 		return null;
 	}
 	
@@ -352,7 +368,6 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		
 		ArrayList<IBuildpathEntry> entries = new ArrayList<>();
 		
-		// TODO: correlate the compiler install used by Dub with the one on buildpath
 		entries.add(DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()));
 		
 		entries.add(DLTKCore.newContainerEntry(new Path(DubBuildpathContainerInitializer.ID)));

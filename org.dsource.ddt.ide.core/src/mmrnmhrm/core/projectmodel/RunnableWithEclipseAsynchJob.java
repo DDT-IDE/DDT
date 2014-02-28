@@ -60,7 +60,8 @@ public abstract class RunnableWithEclipseAsynchJob implements Runnable {
 	
 	protected abstract String getNameForJob();
 	
-	/** The main code to run */
+	/** The main code to run. An Eclipse asynch job connect to this thread will be active.
+	 * The given monitor comes from that job. */
 	protected abstract void runWithMonitor(IProgressMonitor monitor);
 	
 }

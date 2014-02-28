@@ -116,7 +116,8 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		checkTestSetupInvariants();
 	}
 	
-	protected static void createFakeDeeInstall(String installTypeId, String installName, String installExePath, boolean setAsDefault) {
+	protected static void createFakeDeeInstall(String installTypeId, String installName, String installExePath, 
+			boolean setAsDefault) {
 		IInterpreterInstallType deeDmdInstallType = ScriptRuntime.getInterpreterInstallType(installTypeId);
 		InterpreterStandin install = new InterpreterStandin(deeDmdInstallType, installName + ".id");
 		
