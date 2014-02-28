@@ -28,30 +28,18 @@
             natureId="org.dsource.ddt.ide.core.nature"/>
 	</extension>
 	
-	<extension point="org.eclipse.ui.editors">
-		<editor
-         class="mmrnmhrm.ui.editor.DeeEditor"
-         contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
-         default="true"
-         icon="icons/obj16/dee_file.gif"
-         id="org.dsource.ddt.ide.ui.editors.DeeEditor"
-         name="%LangEditor.name">
-			<contentTypeBinding contentTypeId="org.dsource.ddt.ide.core.content.dsource">
-			</contentTypeBinding>
-		</editor>
-	</extension>
-	<extension point="org.eclipse.ui.contexts">
-		<context
-            name="%LangEditContext.name"
-            description="%LangEditContext.description"
-            parentId="org.eclipse.dltk.ui.scriptEditorScope"
-            id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
-		</context>
-	</extension>
-	
 	<extension
          point="org.eclipse.core.runtime.preferences">
 		<initializer class="mmrnmhrm.ui.DeeUIPreferenceInitializer"/>
+	</extension>
+	
+	<extension point="org.eclipse.ui.perspectives">
+		<perspective
+          class="mmrnmhrm.ui.views.DeePerspective"
+          icon="icons/view16/ddt_persp.png"
+          id="org.dsource.ddt.ide.ui.DeePerspective"
+          name="%LangPerspective.name">
+		</perspective>
 	</extension>
 	
 	<extension
@@ -70,6 +58,7 @@
             project="true">
 		</wizard>
 	</extension>
+	
 	<extension
          point="org.eclipse.ui.propertyPages">
 		<page
@@ -140,20 +129,149 @@
 		</page>
 	</extension>
 	
-	<extension
-       point="org.eclipse.ui.perspectives">
-		<perspective
-          class="mmrnmhrm.ui.views.DeePerspective"
-          icon="icons/view16/ddt_persp.png"
-          id="org.dsource.ddt.ide.ui.DeePerspective"
-          name="%LangPerspective.name">
-		</perspective>
+	<!-- ============ EDITOR related ============= -->
+
+	<extension point="org.eclipse.ui.editors">
+		<editor
+         class="mmrnmhrm.ui.editor.DeeEditor"
+         contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
+         default="true"
+         icon="icons/obj16/dee_file.gif"
+         id="org.dsource.ddt.ide.ui.editors.DeeEditor"
+         name="%LangEditor.name">
+			<contentTypeBinding contentTypeId="org.dsource.ddt.ide.core.content.dsource">
+			</contentTypeBinding>
+		</editor>
 	</extension>
-	<extension point="org.eclipse.ui.perspectiveExtensions">
-		<perspectiveExtension targetID="org.dsource.ddt.ide.ui.DeePerspective">
-			<showInPart id="org.eclipse.ui.navigator.ProjectExplorer">
-			</showInPart>
-		</perspectiveExtension>
+	<extension point="org.eclipse.ui.contexts">
+		<context
+            name="%LangEditContext.name"
+            description="%LangEditContext.description"
+            parentId="org.eclipse.dltk.ui.scriptEditorScope"
+            id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
+		</context>
+	</extension>
+	
+	<extension point="org.eclipse.dltk.ui.scriptDocumentationProviders">
+		<provider
+          class="mmrnmhrm.ui.editor.doc.DeeDocumentationProvider"
+          id="org.dsource.ddt.ide.ui.DeeDocumentationProvider"
+          nature="org.dsource.ddt.ide.core.nature">
+		</provider>
+	</extension>
+	<extension
+       id="DeeCodeCompletionProposalComputer"
+       point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
+		<scriptCompletionProposalComputer
+        activate="false"
+        categoryId="org.eclipse.dltk.ui.scriptTypeProposalCategory"
+        class="mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer"
+        toolkitId="org.dsource.ddt.ide.core.nature">
+			<partition type="__dftl_partition_content_type"/>
+		</scriptCompletionProposalComputer>
+	</extension>
+	<extension point="org.eclipse.dltk.ui.completion">
+		<proposalLabelProvider
+          class="mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalLabelProvider"
+          nature="org.dsource.ddt.ide.core.nature">
+		</proposalLabelProvider>
+	</extension>
+
+	<extension point="org.eclipse.ui.editors.templates">
+		<contextType
+	          class="mmrnmhrm.ui.editor.templates.DeeUniversalTemplateContextType"
+	          id="DeeUniversalTemplateContextType"
+	          name="%LangTemplateContext.name">
+		</contextType>
+		<include
+	          file="templates/default-templates.xml"
+	          translations="templates/default-templates.properties">
+		</include>
+	</extension>
+	<extension point="org.eclipse.dltk.ui.folding">
+		<structureProvider
+           class="org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider"
+           nature="org.dsource.ddt.ide.core.nature">
+		</structureProvider>
+		<blockProvider
+           class="mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider"
+           nature="org.dsource.ddt.ide.core.nature">
+		</blockProvider>
+		<blockProvider
+           class="mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider"
+           nature="org.dsource.ddt.ide.core.nature">
+		</blockProvider>
+	</extension>
+	
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+		<target
+            id="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget"
+            name="%hyperlinkDetector.target.name">
+			<context type="org.eclipse.ui.texteditor.ITextEditor">
+			</context>
+		</target>
+	</extension>
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+		<hyperlinkDetector
+            class="mmrnmhrm.ui.editor.text.DeeHyperlinkDetector"
+            id="org.dsource.ddt.ide.ui.editor.text.DeeHyperlinkDetector"
+            name="%hyperlinkDetector.name"
+            targetId="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget">
+		</hyperlinkDetector>
+	</extension>
+	
+	<!-- ============ other extensions ============= -->
+	
+	<extension
+        point="org.eclipse.dltk.ui.modelLabelProvider">
+		<modelLabelProvider
+           class="mmrnmhrm.ui.views.DeeModelElementLabelProvider"
+           id="org.dsource.ddt.ide.ui.modelLabelProvider"
+           language="org.dsource.ddt.ide.core.nature">
+		</modelLabelProvider>
+	</extension>
+	
+	<extension point="org.eclipse.ui.navigator.navigatorContent">
+		<navigatorContent
+            activeByDefault="true"
+            contentProvider="mmrnmhrm.ui.navigator.DubNavigatorContent"
+            icon="icons/action16e/extra/spathi.16.gif"
+            id="org.dsource.ddt.ide.ui.DubNavigatorContent"
+            labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
+            name="Dub Elements"
+            priority="higher">
+			<triggerPoints>
+				<or>
+					<instanceof
+                     value="org.eclipse.core.resources.IProject">
+					</instanceof>
+				</or>
+			</triggerPoints>
+			<possibleChildren>
+				<or>
+				</or>
+			</possibleChildren>
+		</navigatorContent>
+	</extension>
+
+	<extension point="org.eclipse.ui.navigator.viewer">
+		<viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+			<includes>
+				<contentExtension pattern="org.dsource.ddt.ide.ui.navigatorContent"/>
+				<contentExtension
+                  pattern="org.dsource.ddt.ide.ui.DubNavigatorContent">
+				</contentExtension>
+			</includes>
+		</viewerContentBinding>
+	</extension>
+	<extension
+         point="org.eclipse.dltk.ui.buildpathContainerPage">
+		<buildpathContainerPage
+            class="mmrnmhrm.ui.wizards.DeeCompilerContainerWizardPage"
+            id="org.dsource.ddt.ide.core.launching.INTERPRETER_CONTAINER"
+            name="D System Libraries"
+            nature="org.dsource.ddt.ide.core.nature">
+		</buildpathContainerPage>
 	</extension>
 	
 	<extension
@@ -182,6 +300,9 @@
             id="org.dsource.ddt.ide.ui.views.ASTViewer"
             name="DDT AST Viewer"/>
 	</extension>
+	
+	
+	<!-- ============ commands/actions ============= -->
 	<extension
          point="org.eclipse.ui.commands">
 		<category
@@ -227,8 +348,6 @@
 -->
 	</extension>
 	
-	<extension point="org.eclipse.ui.menus">
-	</extension>
 	<extension
          point="org.eclipse.ui.bindings">
 		<key
@@ -255,6 +374,9 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+G">
 		</key>
+	</extension>
+	
+	<extension point="org.eclipse.ui.menus">
 	</extension>
 	
 	<extension
@@ -305,8 +427,7 @@
 
 		</actionSet>
 	</extension>
-	<extension
-         point="org.eclipse.ui.actionSetPartAssociations">
+	<extension point="org.eclipse.ui.actionSetPartAssociations">
 		<actionSetPartAssociation
             targetID="org.eclipse.ui.edit.text.actionSet.presentation">
 			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
@@ -317,141 +438,14 @@
 		</actionSetPartAssociation>
 	</extension>
 	
-	<extension point="org.eclipse.ui.actionSetPartAssociations">
-		<actionSetPartAssociation
-			targetID="org.eclipse.debug.ui.launchActionSet">
-			<part id="org.eclipse.dltk.ui.ScriptExplorer" />
-			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor" />
-		</actionSetPartAssociation>
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="org.dsource.ddt.ide.ui.DeePerspective">
+			<showInPart id="org.eclipse.ui.navigator.ProjectExplorer">
+			</showInPart>
+		</perspectiveExtension>
 	</extension>
-
-
-	<extension
-       point="org.eclipse.dltk.ui.scriptDocumentationProviders">
-		<provider
-          class="mmrnmhrm.ui.editor.doc.DeeDocumentationProvider"
-          id="org.dsource.ddt.ide.ui.DeeDocumentationProvider"
-          nature="org.dsource.ddt.ide.core.nature">
-		</provider>
-	</extension>
-	<extension
-       id="DeeCodeCompletionProposalComputer"
-       point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
-		<scriptCompletionProposalComputer
-        activate="false"
-        categoryId="org.eclipse.dltk.ui.scriptTypeProposalCategory"
-        class="mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer"
-        toolkitId="org.dsource.ddt.ide.core.nature">
-			<partition type="__dftl_partition_content_type"/>
-		</scriptCompletionProposalComputer>
-	</extension>
-	<extension
-       point="org.eclipse.dltk.ui.completion">
-		<proposalLabelProvider
-          class="mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalLabelProvider"
-          nature="org.dsource.ddt.ide.core.nature">
-		</proposalLabelProvider>
-	</extension>
-
-
-	<extension
-	       point="org.eclipse.ui.editors.templates">
-		<contextType
-	          class="mmrnmhrm.ui.editor.templates.DeeUniversalTemplateContextType"
-	          id="DeeUniversalTemplateContextType"
-	          name="%LangTemplateContext.name">
-		</contextType>
-		<include
-	          file="templates/default-templates.xml"
-	          translations="templates/default-templates.properties">
-		</include>
-	</extension>
-	<extension
-        point="org.eclipse.dltk.ui.folding">
-		<structureProvider
-           class="org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider"
-           nature="org.dsource.ddt.ide.core.nature">
-		</structureProvider>
-		<blockProvider
-           class="mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider"
-           nature="org.dsource.ddt.ide.core.nature">
-		</blockProvider>
-		<blockProvider
-           class="mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider"
-           nature="org.dsource.ddt.ide.core.nature">
-		</blockProvider>
-	</extension>
-	<extension
-        point="org.eclipse.dltk.ui.modelLabelProvider">
-		<modelLabelProvider
-           class="mmrnmhrm.ui.views.DeeModelElementLabelProvider"
-           id="org.dsource.ddt.ide.ui.modelLabelProvider"
-           language="org.dsource.ddt.ide.core.nature">
-		</modelLabelProvider>
-	</extension>
-	<extension
-         point="org.eclipse.ui.navigator.navigatorContent">
-		<navigatorContent
-            activeByDefault="true"
-            contentProvider="mmrnmhrm.ui.navigator.DubNavigatorContent"
-            icon="icons/action16e/extra/spathi.16.gif"
-            id="org.dsource.ddt.ide.ui.DubNavigatorContent"
-            labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
-            name="Dub Elements"
-            priority="higher">
-			<triggerPoints>
-				<or>
-					<instanceof
-                     value="org.eclipse.core.resources.IProject">
-					</instanceof>
-				</or>
-			</triggerPoints>
-			<possibleChildren>
-				<or>
-				</or>
-			</possibleChildren>
-		</navigatorContent>
-	</extension>
-
-	<extension
-         point="org.eclipse.ui.navigator.viewer">
-		<viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
-			<includes>
-				<contentExtension pattern="org.dsource.ddt.ide.ui.navigatorContent"/>
-				<contentExtension
-                  pattern="org.dsource.ddt.ide.ui.DubNavigatorContent">
-				</contentExtension>
-			</includes>
-		</viewerContentBinding>
-	</extension>
-	<extension
-         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
-		<target
-            id="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget"
-            name="%hyperlinkDetector.target.name">
-			<context
-               type="org.eclipse.ui.texteditor.ITextEditor">
-			</context>
-		</target>
-	</extension>
-	<extension
-         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
-		<hyperlinkDetector
-            class="mmrnmhrm.ui.editor.text.DeeHyperlinkDetector"
-            id="org.dsource.ddt.ide.ui.editor.text.DeeHyperlinkDetector"
-            name="%hyperlinkDetector.name"
-            targetId="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget">
-		</hyperlinkDetector>
-	</extension>
-	<extension
-         point="org.eclipse.dltk.ui.buildpathContainerPage">
-		<buildpathContainerPage
-            class="mmrnmhrm.ui.wizards.DeeCompilerContainerWizardPage"
-            id="org.dsource.ddt.ide.core.launching.INTERPRETER_CONTAINER"
-            name="D System Libraries"
-            nature="org.dsource.ddt.ide.core.nature">
-		</buildpathContainerPage>
-	</extension>
+	
+	<!-- ============ Launch ============= -->
 
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
 		<launchConfigurationTypeImage
@@ -470,8 +464,14 @@
             type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
 		</launchConfigurationTabGroup>
 	</extension>
-	<extension
-         point="org.eclipse.debug.ui.launchShortcuts">
+	
+	<extension point="org.eclipse.ui.actionSetPartAssociations">
+		<actionSetPartAssociation targetID="org.eclipse.debug.ui.launchActionSet">
+			<part id="org.dsource.ddt.ide.ui.editors.DeeEditor" />
+		</actionSetPartAssociation>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchShortcuts">
 		<shortcut
             class="mmrnmhrm.ui.launch.DeeLaunchShortcut"
             description="%LangLaunchShortcut.description"
@@ -479,17 +479,17 @@
             id="org.dsource.ddt.ide.ui.launch.launchShortcut"
             label="%LangLaunchShortcut.name"
             modes="run, debug">
-			<description
-               description="%LangLaunchShortcut.runDescription"
-               mode="run">
+			<description 
+				description="%LangLaunchShortcut.runDescription"
+				mode="run">
 			</description>
 			<description
-               description="%LangLaunchShortcut.debugDescription"
-               mode="debug">
+				description="%LangLaunchShortcut.debugDescription"
+				mode="debug">
 			</description>
 
 			<configurationType
-               id="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
+				id="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
 			</configurationType>
 			<contextualLaunch>
 				<enablement>
