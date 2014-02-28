@@ -31,7 +31,6 @@ public class DeePerspective implements IPerspectiveFactory {
 		String editorArea = layout.getEditorArea();
 		
 		IFolderLayout leftFolder = layout.createFolder("leftPane", IPageLayout.LEFT, 0.25f, editorArea);
-		leftFolder.addView(SCRIPTEXPLORER_VIEW_ID);
 		leftFolder.addView(ProjectExplorer.VIEW_ID);
 		
 		

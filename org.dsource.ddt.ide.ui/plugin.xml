@@ -442,6 +442,7 @@
 		<perspectiveExtension targetID="org.dsource.ddt.ide.ui.DeePerspective">
 			<showInPart id="org.eclipse.ui.navigator.ProjectExplorer">
 			</showInPart>
+			<actionSet id="org.dsource.ddt.ide.ui.DeeActionSet" />
 		</perspectiveExtension>
 	</extension>
 	
