@@ -242,16 +242,21 @@
             priority="higher">
          <triggerPoints>
             <or>
-               <instanceof
-                     value="org.eclipse.core.resources.IProject">
-               </instanceof>
+               <reference
+                     definitionId="org.dsource.ddt.ide.core.expressions.isDeeProject">
+               </reference>
             </or>
          </triggerPoints>
+         <!-- Note: possibleChildren affects label usage regardless of trigger points, 
+         so make sure possibleChildren only affects resources under projects of our nature -->
          <possibleChildren>
             <or>
                <instanceof
                      value="mmrnmhrm.core.projectmodel.IDubElement">
                </instanceof>
+               <reference
+                     definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject">
+               </reference>
             </or>
          </possibleChildren>
       </navigatorContent>

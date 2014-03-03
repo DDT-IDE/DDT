@@ -16,9 +16,55 @@
             default-charset="UTF-8"
             file-extensions="d, di, dh"
             id="org.dsource.ddt.ide.core.content.dsource"
-            name="D Source (Mmrnmhrm)"
+            name="D Source"
             priority="high">
       </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+         <!-- Deprecate this in favor of isDeeProject -->
+      <definition
+            id="org.dsource.ddt.ide.core.expressions.isDeeNature">
+         <adapt
+               type="org.eclipse.core.resources.IProject">
+            <test
+                  property="org.eclipse.core.resources.projectNature"
+                  value="org.dsource.ddt.ide.core.nature">
+            </test>
+         </adapt>
+      </definition>
+      <definition
+            id="org.dsource.ddt.ide.core.expressions.isDeeProject">
+         <adapt
+               type="org.eclipse.core.resources.IProject">
+            <test
+                  property="org.eclipse.core.resources.projectNature"
+                  value="org.dsource.ddt.ide.core.nature">
+            </test>
+         </adapt>
+      </definition>
+      <definition
+            id="org.dsource.ddt.ide.core.expressions.isDeeNatureContainer">
+         <adapt
+               type="org.eclipse.core.resources.IContainer">
+            <test
+                  property="org.eclipse.core.resources.projectNature"
+                  value="org.dsource.ddt.ide.core.nature">
+            </test>
+         </adapt>
+      </definition>
+      <definition
+            id="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject">
+         <and>
+            <instanceof
+                  value="org.eclipse.core.resources.IResource">
+            </instanceof>
+            <test
+                  property="org.eclipse.core.resources.projectNature"
+                  value="org.dsource.ddt.ide.core.nature">
+            </test>
+         </and>
+      </definition>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -103,29 +149,6 @@
       <super type="org.eclipse.core.resources.problemmarker"/>
       <super type="org.eclipse.core.resources.textmarker"/>
       <persistent value="false"/>
-   </extension>
-   <extension
-         point="org.eclipse.core.expressions.definitions">
-      <definition
-            id="org.dsource.ddt.ide.core.expressions.isDeeNature">
-         <adapt
-               type="org.eclipse.core.resources.IProject">
-            <test
-                  property="org.eclipse.core.resources.projectNature"
-                  value="org.dsource.ddt.ide.core.nature">
-            </test>
-         </adapt>
-      </definition>
-      <definition
-            id="org.dsource.ddt.ide.core.expressions.isDeeNatureContainer">
-         <adapt
-               type="org.eclipse.core.resources.IContainer">
-            <test
-                  property="org.eclipse.core.resources.projectNature"
-                  value="org.dsource.ddt.ide.core.nature">
-            </test>
-         </adapt>
-      </definition>
    </extension>
    <extension
          name="TODO"

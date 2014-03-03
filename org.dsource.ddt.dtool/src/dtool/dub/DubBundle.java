@@ -23,7 +23,7 @@ public class DubBundle {
 	
 	public static final String DEFAULT_VERSION = "~master";
 	
-	public final Path location; // location in the filesystem where bundle is installed. Can be null if not installed.
+	public final Path location;// location in the filesystem where bundle is installed. Can be null if not installed.
 	public final String name; 
 	public final DubBundleException error;
 	
@@ -64,7 +64,7 @@ public class DubBundle {
 		if(srcFolders != null) {
 			return srcFolders;
 		} else {
-			return implicitSrcFolders;
+			return nullToEmpty(implicitSrcFolders, Path.class); /*BUG here make*/
 		}
 	}
 	
