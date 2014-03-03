@@ -239,36 +239,43 @@
             id="org.dsource.ddt.ide.ui.DubNavigatorContent"
             labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
             name="Dub Elements"
-            priority="higher">
+            priority="highest">
+            <!-- Priority needs to be highest, because we could be competing with other plugins like JDT or CDT,
+            which have trigger points for any IResource regardless of project nature. 
+            While that doesn't affect the content providers, it affects the common sorter, since we want to sort IResource's.
+            Also, triggerpoints has to apply to the children we want to sort, not just the parent for the content provider, 
+            so we can't use just expressions.isDeeProject -->
          <triggerPoints>
             <or>
-               <reference
-                     definitionId="org.dsource.ddt.ide.core.expressions.isDeeProject">
-               </reference>
-            </or>
-         </triggerPoints>
-         <!-- Note: possibleChildren affects label usage regardless of trigger points, 
-         so make sure possibleChildren only affects resources under projects of our nature -->
-         <possibleChildren>
-            <or>
-               <instanceof
-                     value="mmrnmhrm.core.projectmodel.IDubElement">
-               </instanceof>
                <reference
                      definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject">
                </reference>
             </or>
+         </triggerPoints>
+         <!-- Despite what the documentation currently says, possibleChildren is queried by Navigator service to find out whether 
+         to use label provider or not, regardless of trigger points. Therefore we should ensure possible children only aplies to D projects. 
+         See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=429572
+         -->
+         <possibleChildren>
+            <or>
+               <instanceof value="mmrnmhrm.core.projectmodel.IDubElement" />
+               <reference definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject" />
+            </or>
          </possibleChildren>
+         <commonSorter class="mmrnmhrm.ui.navigator.DubNavigatorSorter">
+            <parentExpression>
+               <reference
+                     definitionId="org.dsource.ddt.ide.core.expressions.isDeeProject">
+               </reference>
+            </parentExpression>
+         </commonSorter>
       </navigatorContent>
    </extension>
 
    <extension point="org.eclipse.ui.navigator.viewer">
       <viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
          <includes>
-            <contentExtension pattern="org.dsource.ddt.ide.ui.navigatorContent"/>
-            <contentExtension
-                  pattern="org.dsource.ddt.ide.ui.DubNavigatorContent">
-            </contentExtension>
+            <contentExtension pattern="org.dsource.ddt.ide.ui.DubNavigatorContent" />
          </includes>
       </viewerContentBinding>
    </extension>

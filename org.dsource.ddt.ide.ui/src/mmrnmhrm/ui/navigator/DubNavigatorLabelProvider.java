@@ -15,18 +15,12 @@ import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
-import mmrnmhrm.core.projectmodel.DubModel;
 import mmrnmhrm.ui.DeePluginImages;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import dtool.dub.DubBundleDescription;
-import dtool.dub.DubManifestParser;
 
 
 public class DubNavigatorLabelProvider extends LabelProvider {
@@ -46,29 +40,14 @@ public class DubNavigatorLabelProvider extends LabelProvider {
 			CommonDubElement dubElement = (CommonDubElement) element;
 			return new DubElementImageProvider().switchElement(dubElement);
 		}
-		if(element instanceof IFile) {
-			IFile file = (IFile) element;
-			if(file.getProjectRelativePath().equals(new Path(DubManifestParser.DUB_MANIFEST_FILENAME))) {
-				return DeePluginImages.getImage(DeePluginImages.DUB_MANIFEST);
-			}
+		if(DubNavigatorContent.isDubManifestFile(element)) {
+			return DeePluginImages.getImage(DeePluginImages.DUB_MANIFEST);
 		}
-		if(element instanceof IFolder) {
-			IFolder folder = (IFolder) element;
-			IProject project = folder.getProject();
-			DubBundleDescription bundleInfo = DubModel.getBundleInfo(project.getName());
-			if(bundleInfo == null) {
-				return null;
-			}
-			if(folder.getProjectRelativePath().equals(new Path(".dub"))) {
-				return DeePluginImages.getImage(DeePluginImages.BINARY_FOLDER);
-			}
-			
-			java.nio.file.Path[] sourceFolders = bundleInfo.getMainBundle().getEffectiveSourceFolders();
-			for (java.nio.file.Path srcFolderPath : sourceFolders) {
-				if(folder.getProjectRelativePath().toFile().toPath().equals(srcFolderPath)) {
-					return DeePluginImages.getImage(DeePluginImages.SOURCE_FOLDER);
-				}
-			}
+		if(DubNavigatorContent.isDubCacheFolder(element)) {
+			return DeePluginImages.getImage(DeePluginImages.BINARY_FOLDER);
+		}
+		if(DubNavigatorContent.isDubSourceFolder(element)) {
+			return DeePluginImages.getImage(DeePluginImages.SOURCE_FOLDER);
 		}
 		return null;
 	}

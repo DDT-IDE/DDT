@@ -11,7 +11,6 @@
    * Project build options configuration page has only one field now: a field with optional extra option to pass to DUB.
  TODO:
    * check label decorations
-   * project explorer, sorting.
    * styled label
    * automatic Compiler Library setup.
    * DLTK Model elements in Project Explorer
