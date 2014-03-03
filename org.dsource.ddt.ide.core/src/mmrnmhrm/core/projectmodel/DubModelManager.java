@@ -210,13 +210,13 @@ public class DubModelManager {
 	protected void updateProjectDubModel(final IProject project) {
 		log.println(">> Starting project update: ", project);
 		
-		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription2(project);
+		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
 		addProjectModel(project, unresolvedDescription);
 		
 		modelAgent.submit(new ProjectModelDubDescribeTask(project, unresolvedDescription, this));
 	}
 	
-	protected DubBundleDescription readUnresolvedBundleDescription2(final IProject project) {
+	protected DubBundleDescription readUnresolvedBundleDescription(final IProject project) {
 		java.nio.file.Path location = project.getLocation().toFile().toPath();
 		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation(location);
 		
@@ -372,14 +372,14 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		
 		entries.add(DLTKCore.newContainerEntry(new Path(DubBuildpathContainerInitializer.ID)));
 		
-		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getSourceFolders()) {
+		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getEffectiveSourceFolders()) {
 			IPath path2 = projectElement.getPath().append(srcFolder.toString());
 			entries.add(DLTKCore.newSourceEntry(path2));
 		}
 		
 		try {
 			// TODO: should all this be set atomically?
-			updateDubContainer(projectElement, getBuildpathEntriesFromDesc(bundleDesc));
+			updateDubContainer(projectElement, getBuildpathEntriesFromDeps(bundleDesc));
 			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
 			
 			dubModelManager.addProjectModel(project, bundleDesc);
@@ -395,7 +395,7 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		DLTKCore.setBuildpathContainer(containerPath, array(projectElement), array(dubContainer), null);
 	}
 	
-	protected static IBuildpathEntry[] getBuildpathEntriesFromDesc(DubBundleDescription bundleDesc) {
+	protected static IBuildpathEntry[] getBuildpathEntriesFromDeps(DubBundleDescription bundleDesc) {
 		ArrayList<IBuildpathEntry> depEntries = new ArrayList<>();
 		for (DubBundle depBundle : bundleDesc.getBundleDependencies()) {
 			if(depBundle.hasErrors()) {
@@ -403,7 +403,7 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 			}
 			
 			// TODO project dependencies
-			for (java.nio.file.Path srcFolder : depBundle.getSourceFolders()) {
+			for (java.nio.file.Path srcFolder : depBundle.getEffectiveSourceFolders()) {
 				
 				java.nio.file.Path srcFolderAbsolute = depBundle.location.resolve(srcFolder);
 				assertTrue(srcFolderAbsolute.isAbsolute());

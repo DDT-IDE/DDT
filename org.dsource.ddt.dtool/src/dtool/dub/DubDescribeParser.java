@@ -91,7 +91,7 @@ public class DubDescribeParser extends CommonDubParser {
 			JsonToken tokenType = jsonParser.peek();
 			
 			if(tokenType == JsonToken.BEGIN_OBJECT) {
-				DubBundle bundle = new DubManifestParser().readBundle(jsonParser).createBundle(null);
+				DubBundle bundle = new DubManifestParser().readBundle(jsonParser).createBundle(null, false);
 				bundles.add(bundle);
 			} else {
 				jsonParser.errorUnexpected(tokenType);

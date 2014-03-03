@@ -63,7 +63,7 @@ public class DubNavigatorLabelProvider extends LabelProvider {
 				return DeePluginImages.getImage(DeePluginImages.BINARY_FOLDER);
 			}
 			
-			java.nio.file.Path[] sourceFolders = bundleInfo.getMainBundle().getSourceFolders();
+			java.nio.file.Path[] sourceFolders = bundleInfo.getMainBundle().getEffectiveSourceFolders();
 			for (java.nio.file.Path srcFolderPath : sourceFolders) {
 				if(folder.getProjectRelativePath().toFile().toPath().equals(srcFolderPath)) {
 					return DeePluginImages.getImage(DeePluginImages.SOURCE_FOLDER);

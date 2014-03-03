@@ -12,19 +12,15 @@ package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.misc.MiscUtil.createPath;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.FileUtil;
-import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 import melnorme.utilbox.misc.StringUtil;
 
 import com.google.gson.stream.JsonReader;
@@ -64,23 +60,6 @@ public abstract class CommonDubParser {
 	}
 	
 	protected abstract void readData(JsonReaderExt jsonParser) throws IOException;
-	
-	protected Path[] createPaths(String[] paths) {
-		if(paths == null) 
-			return null;
-		
-		ArrayList<Path> pathArray = new ArrayList<>();
-		for (String pathString : paths) {
-			try {
-				pathArray.add(createPath(pathString));
-			} catch (InvalidPathExceptionX e) {
-				putError("Invalid source/import path: " + pathString);
-			}
-		}
-		
-		return ArrayUtil.createFrom(pathArray, Path.class);
-	}
-	
 	
 	/** Utility extensions to JsonReader */
 	public static class JsonReaderExt extends JsonReader {

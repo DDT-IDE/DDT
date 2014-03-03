@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.dub;
 
+import static melnorme.utilbox.misc.MiscUtil.createPath;
 import static melnorme.utilbox.misc.MiscUtil.createValidPath;
 
 import java.io.File;
@@ -48,7 +49,6 @@ public class DubManifestParser extends CommonDubParser {
 	
 	protected String version = null;
 	protected String[] sourceFolders = null;
-	protected Path[] autoSourceFolders = null;
 	protected DubDependecyRef[] dependencies = null;
 	protected String targetName = null;
 	protected String targetPath = null;
@@ -62,10 +62,21 @@ public class DubManifestParser extends CommonDubParser {
 		} catch (DubBundleException e) {
 			dubError = e;
 		}
-		return createBundle(location);
+		return createBundle(location, true);
 	}
 	
-	public DubBundle createBundle(Path location) {
+	protected void parseFromLocation(Path location) throws DubBundleException {
+		File jsonLocation = location.resolve(MiscUtil.createValidPath(DUB_MANIFEST_FILENAME)).toFile();
+		
+		try {
+			source = readStringFromFile(jsonLocation);
+		} catch (IOException e) {
+			throw new DubBundleException(e);
+		}
+		parseFromSource(source);
+	}
+	
+	public DubBundle createBundle(Path location, boolean searchImplicitSourceFolders) {
 		if(location == null) {
 			try {
 				location = MiscUtil.createPath(locationStr);
@@ -79,25 +90,57 @@ public class DubManifestParser extends CommonDubParser {
 			putError(ERROR_BUNDLE_NAME_UNDEFINED);
 		}
 		
-		Path[] sourceFoldersPaths = createPaths(sourceFolders);
+		Path[] effectiveSourceFolders;
+		if(sourceFolders != null) {
+			effectiveSourceFolders = createPaths(sourceFolders);
+		} else if(searchImplicitSourceFolders) {
+			effectiveSourceFolders = searchImplicitSrcFolders(location);
+		} else {
+			effectiveSourceFolders = null;
+		}
 		
-		return new DubBundle(location, bundleName, dubError, version, sourceFoldersPaths, 
-				autoSourceFolders, dependencies, targetName, targetPath);
+		return new DubBundle(location, bundleName, dubError, version, sourceFolders, 
+			effectiveSourceFolders, dependencies, targetName, targetPath);
 	}
 	
-	protected void parseFromLocation(Path location) throws DubBundleException {
-		File jsonLocation = location.resolve(MiscUtil.createValidPath(DUB_MANIFEST_FILENAME)).toFile();
+	protected Path[] createPaths(String[] paths) {
+		if(paths == null) 
+			return null;
 		
-		try {
-			source = readStringFromFile(jsonLocation);
-			parseFromSource(source);
-		} catch (IOException e) {
-			throw new DubBundleException(e);
+		ArrayList<Path> pathArray = new ArrayList<>();
+		for (String pathString : paths) {
+			try {
+				pathArray.add(createPath(pathString));
+			} catch (InvalidPathExceptionX e) {
+				putError("Invalid source/import path: " + pathString);
+			}
 		}
 		
-		if(sourceFolders == null) {
-			autoSourceFolders = searchImplicitSrcFolders(location);
+		return ArrayUtil.createFrom(pathArray, Path.class);
+	}
+	
+	protected Path[] searchImplicitSrcFolders(Path location) {
+		if(location == null) {
+			return new Path[0];
 		}
+		File locationDir = location.toFile();
+		if(!locationDir.isDirectory()) {
+			putError("location is not a directory");
+			return new Path[0];
+		}
+		
+		final ArrayList<Path> implicitFolders = new ArrayList<>();
+		locationDir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				if(dir.isDirectory() && (name.equals("src") || name.equals("source"))) {
+					implicitFolders.add(createValidPath(name));
+				}
+				return false;
+			}
+		});
+		
+		return ArrayUtil.createFrom(implicitFolders, Path.class);
 	}
 	
 	@Override
@@ -200,27 +243,4 @@ public class DubManifestParser extends CommonDubParser {
 		}
 	}
 	
-	protected Path[] searchImplicitSrcFolders(Path location) throws DubBundleException {
-		final ArrayList<Path> implicitFolders = new ArrayList<>();
-		
-		if(location == null) {
-			return new Path[0];
-		}
-		File locationDir = location.toFile();
-		if(!locationDir.isDirectory())
-			throw new DubBundleException("location is not a directory");
-		
-		locationDir.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if(dir.isDirectory() && (name.equals("src") || name.equals("source"))) {
-					implicitFolders.add(createValidPath(name));
-				}
-				return false;
-			}
-		});
-		
-		return ArrayUtil.createFrom(implicitFolders, Path.class);
-	}
-
 }

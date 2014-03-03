@@ -28,21 +28,21 @@ public class DubBundle {
 	public final DubBundleException error;
 	
 	public final String version;
-	public final Path[] srcFolders;
-	public final Path[] implicitSrcFolders;
+	public final String[] srcFolders;
+	public final Path[] effectiveSrcFolders;
 	public final DubDependecyRef[] dependencies;
 	public final String targetName;
 	public final String targetPath;
 	
-	public DubBundle(Path location, String name, DubBundleException error, String version, Path[] srcFolders,
-			Path[] implicitSrcFolders, DubDependecyRef[] dependencies, String targetName, String targetPath) {
+	public DubBundle(Path location, String name, DubBundleException error, String version, String[] srcFolders,
+			Path[] effectiveSrcFolders, DubDependecyRef[] dependencies, String targetName, String targetPath) {
 		this.location = location;
 		this.name = assertNotNull(name);
 		this.error = error;
 		
 		this.version = version == null ? DEFAULT_VERSION : version;
 		this.srcFolders = srcFolders;
-		this.implicitSrcFolders = implicitSrcFolders;
+		this.effectiveSrcFolders = nullToEmpty(effectiveSrcFolders, Path.class);
 		this.dependencies = nullToEmpty(dependencies, DubDependecyRef.class);
 		this.targetName = targetName;
 		this.targetPath = targetPath;
@@ -60,12 +60,12 @@ public class DubBundle {
 		return error != null;
 	}
 	
-	public Path[] getSourceFolders() {
-		if(srcFolders != null) {
-			return srcFolders;
-		} else {
-			return nullToEmpty(implicitSrcFolders, Path.class); /*BUG here make*/
-		}
+	public String[] getDefinedSourceFolders() {
+		return srcFolders;
+	}
+	
+	public Path[] getEffectiveSourceFolders() {
+		return assertNotNull(effectiveSrcFolders);
 	}
 	
 	public DubDependecyRef[] getDependencyRefs() {

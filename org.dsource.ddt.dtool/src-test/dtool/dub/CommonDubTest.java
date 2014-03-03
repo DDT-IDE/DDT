@@ -93,7 +93,7 @@ public class CommonDubTest extends DToolBaseTest {
 				assertExceptionMsgStart(bundle.error, errorMsgStart);
 			}
 			checkAreEqual(bundle.version, version);
-			checkAreEqualArray(bundle.getSourceFolders(), ignoreIfNull(sourceFolders));
+			checkAreEqualArray(bundle.getDefinedSourceFolders(), ignoreIfNull(sourceFolders));
 		}
 		
 		protected void checkDepRefs(DubBundle bundle) {
