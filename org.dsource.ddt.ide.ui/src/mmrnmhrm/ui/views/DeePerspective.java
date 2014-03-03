@@ -8,7 +8,6 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
-import org.eclipse.ui.navigator.resources.ProjectExplorer;
 import org.eclipse.ui.progress.IProgressConstants;
 
 public class DeePerspective implements IPerspectiveFactory {
@@ -31,7 +30,7 @@ public class DeePerspective implements IPerspectiveFactory {
 		String editorArea = layout.getEditorArea();
 		
 		IFolderLayout leftFolder = layout.createFolder("leftPane", IPageLayout.LEFT, 0.25f, editorArea);
-		leftFolder.addView(ProjectExplorer.VIEW_ID);
+		leftFolder.addView(IPageLayout.ID_PROJECT_EXPLORER);
 		
 		
 		IFolderLayout bottomFolder = layout.createFolder("bottomPane", IPageLayout.BOTTOM, 0.75f, editorArea);
