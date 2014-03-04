@@ -3,14 +3,20 @@
 = DDT Change Log =
 
 == DDT 0.10.0  ===
- * Added DUB support.
-   * Modify buildpath to include dub dependencies.
-   * DUB describe console output
- * Removed all buildpath UI.  
- * Added DUB build support. Removed basic builder. 
-   * Project build options configuration page has only one field now: a field with optional extra option to pass to DUB.
+ * Added DUB support. Project import-path now determined by dub.json file and running 'dub describe'.
+   * On startup, or whenever dub.json is modified (and saved), 'dud describe' will be run to resolve dependencies and supply source folders and import path for the project.
+ * Added a per-project Eclipse console to monitor the output for DUB commands.
+ * Added DUB elements support for the Project Explorer view.
+   * Add icon for source folders, DUB cache folder, dub.json manifest file.
+   * Add elements for DUB dependencies, and DUB error status.
+   * The Script Explorer view is now deprecated. Use Project Explorer view instead.
+ * Removed all DLTK-based buildpath UI. This functionality was never fully supported. 
+   * Modifying the import-path is now only possible by means of the dub.json file.
+ * Added DUB build support. Removed basic builder (the previous build functionality using response files). 
+   * Project build configuration page has only one field now: a field with optional extra options to pass to DUB when building.
+   * Previously created DDT projects are no longer supported. You should recreate the project using the new DUB project wizard.
  TODO:
-   * check label decorations
+   * check label decorations work
    * styled label
    * automatic Compiler Library setup.
    * DLTK Model elements in Project Explorer
