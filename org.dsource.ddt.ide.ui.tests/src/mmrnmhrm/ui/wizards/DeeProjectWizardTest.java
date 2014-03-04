@@ -51,16 +51,14 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 	@After
 	public void tearDown() throws Exception {
 		// Should undo all wizard actions
+		DubModelManager.getDefault().syncPendingUpdates(); // ensure DUB process finished
 		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				/*DeeProject deeproj = ModelUtil.getDeeProject(NEWPROJNAME);
-				if(deeproj != null) {
-					deeproj.getProject().delete(true, monitor);
-				}*/
 				IProject project = DeeCore.getWorkspaceRoot().getProject(NEWPROJNAME);
-				if(project.exists())
+				if(project.exists()) {
 					project.delete(true, monitor);
+				}
 			}
 		}, null);
 	}
@@ -71,12 +69,10 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 	}
 	
 	private void simulatePage2GoBack() {
-		DubModelManager.getDefault().syncPendingUpdates(); // Make sure dub process terminates
 		wizDialog.backPressed();
 	}
 	
 	private void simulatePressCancel() {
-		DubModelManager.getDefault().syncPendingUpdates(); // Make sure dub process terminates
 		wizDialog.cancelPressed();
 	}
 	
@@ -104,25 +100,6 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 		assertTrue(checkProjectCreated());
 	}
 	
-	
-	/*@Test
-	public void test_P1_P2_Finish() throws Throwable {
-		TestAccessor._NameGroup_setName(wizard.fFirstPage, NEWPROJNAME);
-		assertTrue(wizard.canFinish());
-		
-		simulateEnterPage2();
-		
-		ProjectConfigBlockTest auxtest = new ProjectConfigBlockTest();
-		auxtest.init(wizard.fSecondPage.projectConfigBlock);
-		auxtest.doChangeSet1();
-		
-		simulatePressFinish();
-		assertTrue(checkProjectCreated());
-		//auxtest.assertChangeSet1Applied();
-	}*/
-	
-	
-	
 	@Test
 	public void test_P1_P2_P1_Finish() throws Throwable {
 		ProjectWizardFirstPage__Accessor.access_fNameGroup(wizard.fFirstPage).setName(NEWPROJNAME);
@@ -148,39 +125,6 @@ public class DeeProjectWizardTest extends BaseDeeUITest {
 		assertTrue(checkNoChanges());
 	}
 	
-	
-	/*@Test
-	public void test_P1_P2_Cancel() throws Throwable {
-		wizard.fFirstPage.fNameGroup.setName(NEWPROJNAME);
-		assertTrue(wizard.canFinish());
-		
-		simulateEnterPage2();
-		ProjectConfigBlockTest auxtest = new ProjectConfigBlockTest();
-		auxtest.init(wizard.fSecondPage.projectConfigBlock);
-		auxtest.doChangeSet1();
-
-		simulatePressCancel();
-		assertTrue(checkNoChanges());
-		auxtest.assertChangeSet1NotApplied();
-	}*/
-	
-	
-	/*@Test
-	public void test_P1_P2_P1_Cancel() throws Throwable {
-		wizard.fFirstPage.fNameGroup.setName(NEWPROJNAME);
-		assertTrue(wizard.canFinish());
-		
-		simulateEnterPage2();
-		ProjectConfigBlockTest auxtest = new ProjectConfigBlockTest();
-		auxtest.init(wizard.fSecondPage.projectConfigBlock);
-		auxtest.doChangeSet1();
-		
-		simulatePage2GoBack();
-		
-		simulatePressCancel();
-		assertTrue(checkNoChanges());
-		auxtest.assertChangeSet1NotApplied();
-	}*/
 	
 	protected boolean checkNoChanges() throws Throwable {
 		logErrorListener.checkErrors();

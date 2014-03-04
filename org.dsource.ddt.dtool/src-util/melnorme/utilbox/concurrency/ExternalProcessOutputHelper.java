@@ -46,7 +46,6 @@ public class ExternalProcessOutputHelper extends ExternalProcessOutputReader {
 			protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
 				notifyDataRead(buffer, offset, readCount, true);
 			}
-
 		};
 	}
 	

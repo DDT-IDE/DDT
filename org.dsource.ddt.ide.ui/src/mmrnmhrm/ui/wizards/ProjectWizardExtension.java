@@ -46,7 +46,7 @@ public abstract class ProjectWizardExtension extends ProjectWizard {
 	}
 	
 	protected final class ProjectCreatorExt extends ProjectCreator {
-		private ProjectCreatorExt(IProjectWizard owner, ILocationGroup locationGroup) {
+		protected ProjectCreatorExt(IProjectWizard owner, ILocationGroup locationGroup) {
 			super(owner, locationGroup);
 		}
 		
@@ -62,7 +62,7 @@ public abstract class ProjectWizardExtension extends ProjectWizard {
 			if (monitor.isCanceled()) {
 				throw new OperationCanceledException();
 			}
-			configureScriptProject(new SubProgressMonitor(monitor, 0));
+			configureCreatedProject(new SubProgressMonitor(monitor, 0));
 		}
 		
 		@Override
@@ -70,9 +70,18 @@ public abstract class ProjectWizardExtension extends ProjectWizard {
 			return super.initBuildpath(monitor);
 		}
 		
+		@Override
+		public void removeProject() {
+			prepareRemoveProject();
+			super.removeProject();
+		}
+		
 	}
 	
-	public void configureScriptProject(IProgressMonitor monitor) throws CoreException{
+	public void prepareRemoveProject() {
+	}
+	
+	public void configureCreatedProject(IProgressMonitor monitor) throws CoreException{
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}

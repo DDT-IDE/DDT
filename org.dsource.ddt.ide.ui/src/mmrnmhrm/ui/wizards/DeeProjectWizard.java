@@ -2,12 +2,14 @@ package mmrnmhrm.ui.wizards;
 
 
 import java.io.ByteArrayInputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.ui.DeePlugin;
 
 import org.dsource.ddt.ide.core.DeeNature;
@@ -24,6 +26,7 @@ import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.wizards.GenericDLTKProjectWizard;
 import org.eclipse.dltk.ui.wizards.ILocationGroup;
 import org.eclipse.dltk.ui.wizards.ProjectWizardFirstPage;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
@@ -147,12 +150,30 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 				try {
 					activePage.openEditor(new FileEditorInput(file), EditorsUI.DEFAULT_TEXT_EDITOR_ID);
 				} catch (PartInitException e) {
-					DeeCore.log(e);
+					DeeCore.logError(e);
 				}
 			}
 			return fBuildSettingsPage.performOk();
 		}
 		return res;
+	}
+	
+	@Override
+	public void prepareRemoveProject() {
+		IRunnableWithProgress op = new IRunnableWithProgress() {
+			@Override
+			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+				// TODO: more clean way to do this.
+				DubModelManager.getDefault().syncPendingUpdates();
+			}
+		};
+		try {
+			getContainer().run(true, true, op);
+		} catch (InvocationTargetException e) {
+			DeeCore.logError(e);
+		} catch (InterruptedException e) {
+			// cancel pressed
+		}
 	}
 	
 }

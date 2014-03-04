@@ -378,7 +378,7 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		}
 		
 		try {
-			// TODO: should all this be set atomically?
+			// TODO: should all this be set atomically? also, check if project exists
 			updateDubContainer(projectElement, getBuildpathEntriesFromDeps(bundleDesc));
 			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
 			
