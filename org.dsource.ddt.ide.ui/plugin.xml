@@ -235,7 +235,7 @@
       <navigatorContent
             activeByDefault="true"
             contentProvider="mmrnmhrm.ui.navigator.DubNavigatorContent"
-            icon="icons/action16e/extra/spathi.16.gif"
+            icon="icons/view16/ddt_persp.png"
             id="org.dsource.ddt.ide.ui.DubNavigatorContent"
             labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
             name="Dub Elements"
