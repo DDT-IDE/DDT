@@ -9,7 +9,7 @@ Alternatively, use a version qualifier prefix:
 
 Run this repo upload script:
 It requires a git repo of the project updateSite Git repo, as specified by -DupdateSiteGitRepo
-	ant -f repo-release-script.xml uploadRelease -DupdateSiteGitRepo="../ddt.updates" -DcommitLog="new daily"
+	ant -f repo-release-script.xml uploadRelease -DupdateSiteGitRepo="../DDT/ddt.updates" -DcommitLog="new daily"
      ====================================================================== -->
 <project name="project" >
 
@@ -21,17 +21,16 @@ It requires a git repo of the project updateSite Git repo, as specified by -Dupd
 		<echo>${commitLog}</echo>
 		<echo>${repoSrc}</echo>
 	</target>
-	
-	<target name="setReleaseSite" depends="">
-		<fail unless="updateSiteGitRepo"/>
-		<property name="repoDest" location="${updateSiteGitRepo}/ddt.feature-repo" />
+
+	<target name="uploadRelease" depends="commitReleaseToRepo">
+		<exec dir="${repoDest}" executable="${gitLocation}" >
+			<arg line="push origin"/>
+		</exec>
 	</target>
-
-
-	<target name="uploadRelease" depends="setReleaseSite, uploadRepo" />
 	
 	
-	<target name="_check.repoDest">
+	<target name="prep.repoDest">
+		<fail unless="updateSiteGitRepo"/>
 		<fail message="updateSiteGitRepo dir is missing.">
 			<condition>
 				<not>
@@ -39,10 +38,11 @@ It requires a git repo of the project updateSite Git repo, as specified by -Dupd
 				</not>
 			</condition>
 		</fail>
+		<property name="repoDest" location="${updateSiteGitRepo}/ddt.feature-repo" />
 		<echo>${repoDest}</echo>
 	</target>
 	
-	<target name="uploadRepo" depends="echoInfo, _check.repoDest">
+	<target name="commitReleaseToRepo" depends="echoInfo, prep.repoDest">
 		<fail unless="commitLog"/>
 
 		<mkdir dir="${repoDest}"/> <!-- Seems like erroronmissingdir isn't working? -->
@@ -64,17 +64,14 @@ It requires a git repo of the project updateSite Git repo, as specified by -Dupd
 			<arg line="commit -m"/>
 			<arg value="${commitLog}"/>
 		</exec>
-		<exec dir="${repoDest}" executable="${gitLocation}" >
-			<arg line="push origin"/>
-		</exec>
 	</target>
 
 	
-	<!-- ======================================================================
-		This task must be run from within eclipse, example:
-		eclipse -application org.eclipse.ant.core.antRunner -console -consolelog -f repo-release-script.xml createCompositeRepo -updateSiteGitRepo=../ddt.updates-PR
-	     ====================================================================== -->
-	<target name="createCompositeRepo" depends="_check.repoDest">
+<!-- ======================================================================
+	This task must be run from within eclipse, example:
+	eclipse -application org.eclipse.ant.core.antRunner -console -consolelog -f repo-release-script.xml createCompositeRepo -updateSiteGitRepo=../ddt.updates-PR
+     ====================================================================== -->
+	<target name="createCompositeRepo" depends="prep.repoDest">
 		<p2.composite.repository>
 			<repository location="${updateSiteGitRepo}" name="DDT repository" compressed="false" />
 			<add>
