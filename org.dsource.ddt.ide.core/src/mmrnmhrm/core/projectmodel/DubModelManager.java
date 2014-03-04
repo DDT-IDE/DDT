@@ -188,7 +188,7 @@ public class DubModelManager {
 					if(resourceDelta.getResource().getType() == IResource.FILE && 
 							resourceDelta.getProjectRelativePath().equals(DUB_BUNDLE_PACKAGE_FILE)) {
 						if(resourceDelta.getResource().getType() == IResource.FILE) {
-							updateProjectDubModel(project);
+							startDubModelProjectUpdate(project);
 						}
 					}
 				}
@@ -203,11 +203,11 @@ public class DubModelManager {
 	protected void checkNewProject(IProject project) {
 		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
 		if(packageFile != null && packageFile.getType() == IResource.FILE) {
-			updateProjectDubModel(project);
+			startDubModelProjectUpdate(project);
 		}
 	}
 	
-	protected void updateProjectDubModel(final IProject project) {
+	protected void startDubModelProjectUpdate(final IProject project) {
 		log.println(">> Starting project update: ", project);
 		
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);

@@ -122,8 +122,6 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			project, 
 			bundle(DubManifestParser.ERROR_BUNDLE_NAME_UNDEFINED, IGNORE_STR));
 		
-		testClearErrors(project);
-		
 		writeDubJsonAndCheckDubModel("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
 			project, 
 			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders(), rawDeps()));
@@ -141,20 +139,6 @@ public class DubModelManagerTest extends CommonDubModelTest {
 			)
 		);
 		
-	}
-	
-	protected void testClearErrors(IProject project) throws CoreException {
-		assertTrue(getDubErrorMarker(project) != null);
-		
-		LatchRunnable preUpdateLatch = writeDubJson(project, "");
-		
-		LatchRunnable dubProcessLatch = new LatchRunnable();
-		getProjectModel().getProcessManager().dubProcessAgent.submit(dubProcessLatch);
-		preUpdateLatch.releaseAll();
-		dubProcessLatch.awaitTaskEntry_unchecked();
-		
-		assertTrue(getDubErrorMarker(project) == null);
-		dubProcessLatch.releaseAll();
 	}
 	
 	public void writeDubJsonAndCheckDubModel(String dubJson, IProject project, DubBundleChecker expMainBundle)
