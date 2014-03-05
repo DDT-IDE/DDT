@@ -18,6 +18,7 @@
    * Previously created DDT Eclipse projects are no longer compatible. You should recreate the project using the new DUB Project wizard.
 -- Preview Release --
  * Removed compilers/interpreters config block from New DUB Project wizard.   
+ * Removed host option from location group in New DUB Project wizard. (it made no difference)
  TODO:
    * check label decorations work
    * styled label

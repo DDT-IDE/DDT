@@ -1,5 +1,7 @@
 package mmrnmhrm.ui.wizards;
 
+import org.eclipse.dltk.core.environment.EnvironmentManager;
+import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.ui.wizards.ProjectWizardFirstPage;
 import org.eclipse.swt.widgets.Composite;
 
@@ -12,6 +14,27 @@ public class DeeProjectWizardPage1 extends ProjectWizardFirstPage {
 		setTitle(DeeNewWizardMessages.LangNewProject_Page1_pageTitle);
 		setDescription(DeeNewWizardMessages.LangNewProject_Page1_pageDescription);
 		this.deeNewProjectWizard = deeNewProjectWizard;
+	}
+	
+	@Override
+	protected LocationGroup createLocationGroup() {
+		return new LocationGroup() {
+			@Override
+			protected void createEnvironmentControls(Composite group, int numColumns) {
+				//super.createEnvironmentControls(group, numColumns);
+				// Do nothing, prevent Environment control to be created
+			}
+			
+			@Override
+			protected boolean canChangeEnvironment() {
+				return false;
+			}
+			
+			@Override
+			public IEnvironment getEnvironment() {
+				return EnvironmentManager.getLocalEnvironment();
+			}
+		};
 	}
 	
 	@Override
