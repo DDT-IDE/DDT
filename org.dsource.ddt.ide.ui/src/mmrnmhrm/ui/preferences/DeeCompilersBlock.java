@@ -11,14 +11,24 @@
 package mmrnmhrm.ui.preferences;
 
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import mmrnmhrm.core.DeeCoreMessages;
+import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask;
+
 import org.dsource.ddt.ide.core.DeeNature;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AddScriptInterpreterDialog;
 import org.eclipse.dltk.internal.debug.ui.interpreters.InterpretersBlock;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
+import org.eclipse.dltk.launching.InterpreterStandin;
 import org.eclipse.dltk.launching.ScriptRuntime;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 
-// TODO: rewrite InterpretersBlock, remove host and "interpreters name"
+// TODO: rewrite InterpretersBlock, remove host and "interpreters" names
 public class DeeCompilersBlock extends InterpretersBlock {
 	
 	@Override
@@ -31,6 +41,38 @@ public class DeeCompilersBlock extends InterpretersBlock {
 		IInterpreterInstallType[] deeInstallTypes = ScriptRuntime.getInterpreterInstallTypes(getCurrentNature());
 		DialogAddDeeCompiler dialog = new DialogAddDeeCompiler(this, getShell(), deeInstallTypes, standin);
 		return dialog;
+	}
+	
+	@Override
+	protected void search() {
+		SearchTaskRunnable str = new SearchTaskRunnable();
+		
+		try {
+			ProgressMonitorDialog progress = new ProgressMonitorDialog(getShell());
+			progress.run(true, true, str);
+		} catch (InvocationTargetException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e.getCause());
+		} catch (InterruptedException e) {
+			return; // cancelled
+		}
+		
+		List<InterpreterStandin> foundInstalls = str.searchTask.getFoundInstalls();
+		for (InterpreterStandin interpreterStandin : foundInstalls) {
+			if(!isDuplicateName(interpreterStandin.getName(), null)) {
+				interpreterAdded(interpreterStandin);
+			}
+		}
+	}
+	
+	protected final class SearchTaskRunnable implements IRunnableWithProgress {
+		protected volatile SearchAndAddCompilersOnPathTask searchTask;
+		
+		@Override
+		public void run(IProgressMonitor monitor) {
+			monitor.beginTask(DeeCoreMessages.SearchAndAddCompilersOnPath_JobName, IProgressMonitor.UNKNOWN);
+			searchTask = new SearchAndAddCompilersOnPathTask(monitor);
+			searchTask.searchForCompilers();
+		}
 	}
 	
 }

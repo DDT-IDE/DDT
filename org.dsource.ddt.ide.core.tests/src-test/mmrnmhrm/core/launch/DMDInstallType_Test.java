@@ -1,9 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.core.launch;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.io.File;
-
 import mmrnmhrm.core.compiler_installs.CommonInstallType;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.tests.BaseDeeTest;
@@ -23,10 +30,8 @@ public class DMDInstallType_Test extends BaseDeeTest {
 	@Test
 	public void testLibraryLocations() throws Exception { testLibraryLocations$(); }
 	public void testLibraryLocations$() throws Exception {
-		DMDInstallType dmdInstallType = new DMDInstallType();
-		File compilerInstallExe = DeeCoreTestResources.getWorkingDirFile(MOCK_DMD2_TESTDATA_PATH);
-		Path compilerPath = new Path(compilerInstallExe.getAbsolutePath());
-		LibraryLocation[] libLocations = getLibraryLocations(dmdInstallType, compilerPath);
+		Path compilerPath = DeeCoreTestResources.getWorkingDirPath(MOCK_DMD2_TESTDATA_PATH);
+		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
 			"src/druntime/import", "src/phobos");	
@@ -38,10 +43,9 @@ public class DMDInstallType_Test extends BaseDeeTest {
 	@Test
 	public void testLibraryLocUnix() throws Exception { testLibraryLocUnix$(); }
 	public void testLibraryLocUnix$() throws Exception {
-		File compilerInstallExe = DeeCoreTestResources.getWorkingDirFile(MOCK_DMD2_SYSTEM_PATH);
-		Path compilerPath = new Path(compilerInstallExe.getAbsolutePath());
+		Path compilerPath = DeeCoreTestResources.getWorkingDirPath(MOCK_DMD2_SYSTEM_PATH);
 		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
-
+		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
 			"usr/include/dmd/druntime/import", "usr/include/dmd/phobos");		 
 	}
@@ -49,8 +53,7 @@ public class DMDInstallType_Test extends BaseDeeTest {
 	@Test
 	public void testLibraryLocUnix2() throws Exception { testLibraryLocUnix2$(); }
 	public void testLibraryLocUnix2$() throws Exception {
-		File compilerInstallExe = DeeCoreTestResources.getWorkingDirFile(MOCK_DMD2_SYSTEM_PATH2);
-		Path compilerPath = new Path(compilerInstallExe.getAbsolutePath());
+		Path compilerPath = DeeCoreTestResources.getWorkingDirPath(MOCK_DMD2_SYSTEM_PATH2);
 		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 

@@ -2,6 +2,7 @@ package mmrnmhrm.core.compiler_installs;
 
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
+import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
 import org.eclipse.dltk.internal.launching.AbstractInterpreterInstallType;
 import org.eclipse.dltk.launching.EnvironmentVariable;
 import org.eclipse.dltk.launching.LibraryLocation;
@@ -44,6 +46,24 @@ public abstract class CommonInstallType extends AbstractInterpreterInstallType {
 		return DeeLaunchingPlugin.getInstance().getLog();
 	}
 	
+	public IFileHandle directoryHasCompilerPresent(Path exeDir) {
+		String possibleCompilerExeNames[] = getPossibleInterpreterNames();
+		
+		for (String possibleCompilerExeName : possibleCompilerExeNames) {
+			Path compileExeLocation = exeDir.resolve(possibleCompilerExeName);
+			if(compileExeLocation.toFile().isFile()) {
+				return LocalEnvironment.getInstance().getFile(compileExeLocation.toUri());
+			}
+			// Try .exe extension. Note, it is intentional that both extensions are checked regardless of 
+			// what actual platform we are on. 
+			compileExeLocation = exeDir.resolve(possibleCompilerExeName + ".exe");
+			if(compileExeLocation.toFile().isFile()) {
+				return LocalEnvironment.getInstance().getFile(compileExeLocation.toUri());
+			}
+		}
+		
+		return null;
+	}
 	
 	@Override
 	public synchronized LibraryLocation[] getDefaultLibraryLocations(IFileHandle installLocation,

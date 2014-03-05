@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -28,6 +38,12 @@ public class DeeCoreTestResources {
 	
 	public static File getWorkingDirFile(String relativePath) {
 		return new File(DToolTestResources.getWorkingDir(), relativePath);
+	}
+	
+	public static Path getWorkingDirPath(String relativePath) {
+		File workingDirFile = getWorkingDirFile(relativePath);
+		assertTrue(workingDirFile.getPath().equals(workingDirFile.getAbsolutePath()));
+		return new Path(workingDirFile.getAbsolutePath());
 	}
 	
 	public static void createSrcFolderFromDeeCoreResource(String resourcePath, IContainer destFolder) 

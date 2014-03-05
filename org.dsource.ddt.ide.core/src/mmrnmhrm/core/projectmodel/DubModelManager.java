@@ -26,6 +26,7 @@ import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask.SearchAndAddCompilersOnPathJob;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IMarker;
@@ -124,6 +125,15 @@ public class DubModelManager {
 	}
 	
 	protected void initializeModelManager() {
+		// First of all, search for compilers on the path
+		SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
+		compilerSearchJob.schedule();
+		try {
+			compilerSearchJob.join();
+		} catch (InterruptedException ie) {
+			// continue, we should still run init
+		}
+		
 		try {
 			DLTKCore.run(new IWorkspaceRunnable() {
 				@Override

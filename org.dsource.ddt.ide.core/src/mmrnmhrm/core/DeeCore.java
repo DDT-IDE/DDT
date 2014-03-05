@@ -4,7 +4,6 @@ import melnorme.lang.ide.core.LangCore;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -23,9 +22,6 @@ public class DeeCore extends LangCore {
 	public static LangCore getInstance() {
 		return pluginInstance;
 	}
-	
-	public static final boolean DEBUG_MODE = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/debug/ResultCollector"));
-	
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
