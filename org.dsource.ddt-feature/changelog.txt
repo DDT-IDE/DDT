@@ -9,12 +9,15 @@
  * Added DUB elements support for the Project Explorer view.
    * Add icon for source folders, DUB cache folder, dub.json manifest file.
    * Add elements for DUB dependencies, and DUB error status.
-   * The Script Explorer view is now deprecated. Use Project Explorer view instead.
+   * The Script Explorer view is now deprecated. Use Project Explorer view instead. 
+   * Note that some Script Explorer functionality has not been re-implemented in Project Explorer. For example the source folders of dependencies (and its modules)  are not shown.
  * Removed all DLTK-based buildpath UI. This functionality was never fully supported. 
    * Modifying the import-path is now only possible by means of the dub.json file.
  * Added DUB build support. Removed basic builder (the previous build functionality using response files). 
    * Project build configuration page has only one field now: a field with optional extra options to pass to DUB when building.
-   * Previously created DDT projects are no longer supported. You should recreate the project using the new DUB project wizard.
+   * Previously created DDT Eclipse projects are no longer compatible. You should recreate the project using the new DUB Project wizard.
+-- Preview Release --
+ * Removed compilers/interpreters config block from New DUB Project wizard.   
  TODO:
    * check label decorations work
    * styled label
