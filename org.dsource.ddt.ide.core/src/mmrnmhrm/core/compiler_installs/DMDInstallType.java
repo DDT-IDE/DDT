@@ -8,12 +8,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.IInterpreterInstall;
-import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.LibraryLocation;
 
 public class DMDInstallType extends CommonInstallType {
 	
-	public static final String INSTALLTYPE_ID = DeeCore.EXTENSIONS_IDPREFIX+"launching.deeDmdInstallType";
+	public static final String INSTALLTYPE_ID = DeeCore.EXTENSIONS_IDPREFIX+"launching.DMDInstallType";
 	
 	@Override
 	public String getName() {
@@ -29,13 +28,7 @@ public class DMDInstallType extends CommonInstallType {
 	
 	@Override
 	protected IInterpreterInstall doCreateInterpreterInstall(String id) {
-		return new DMDInstall(this, id);
-	}
-	
-	public class DMDInstall extends CommonDeeInstall {
-		public DMDInstall(IInterpreterInstallType type, String id) {
-			super(type, id);
-		}
+		return new CommonDeeInstall(this, id);
 	}
 	
 	@Override

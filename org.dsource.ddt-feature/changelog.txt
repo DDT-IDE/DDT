@@ -19,6 +19,7 @@
 -- Preview Release --
  * Removed compilers/interpreters config block from New DUB Project wizard.   
  * Removed host option from location group in New DUB Project wizard. (it made no difference)
+ * Added support for LDC compiler install.
  TODO:
    * check label decorations work
    * styled label

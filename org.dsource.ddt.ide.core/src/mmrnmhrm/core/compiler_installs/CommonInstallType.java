@@ -62,56 +62,23 @@ public abstract class CommonInstallType extends AbstractInterpreterInstallType {
 		List<LibraryLocation> locs);
 	
 	
+	protected void addExpectedLibraryLocation(List<LibraryLocation> locs, IEnvironment env, IPath path) {
+		if(!path.toFile().isDirectory()) {
+			DeeCore.logError("Missing expected library directory: " + path.toString() 
+				+ " for install type: " + getName());
+			return;
+		}
+		addLibraryLocationFromPath(locs, env, path);
+	}
+	
 	protected static void addLibraryLocationFromPath(List<LibraryLocation> locs, IEnvironment env, IPath path) {
 		LibraryLocation loc = new LibraryLocation(EnvironmentPathUtils.getFullPath(env, path));
 		locs.add(loc);
 	}
 	
-	
 	@Override
 	protected IPath createPathFile(IDeployment deployment) throws IOException {
 		Assert.fail("Does not run lookup executable"); return null;
 	}
-	
-	// Generating the InstallName not supported yet
-	/*
-	public String generateAutomaticInstallName(File installLocation) {
-		Process process = null;
-		String[] env = extractEnvironment();
-		String path = installLocation.getAbsolutePath();
-		String[] cmdLine = new String[]{ path };
-		
-		try {
-			process = Runtime.getRuntime().exec(cmdLine, env);
-			String line = readLine(process);
-			int ix = line.indexOf(" v");
-			if(ix == -1)
-				return null;
-			return line.substring(ix+2);
-		} catch (IOException e) {
-		    Status status = DeeCore.createErrorStatus(
-		    		"Error running DMD to determine version", e); 
-			LangCore.log(new CoreException(status));
-			return null;
-		}
-	}
-
-	private static String readLine(Process process) throws IOException {
-		InputStream is = process.getInputStream();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(isr);
-		try {
-			// FIXME: when used code
-			is.close(); is.close();
-			isr.close(); isr.close();
-			br.close(); br.close();
-			return br.readLine();
-		} finally {
-			is.close(); is.close();
-			isr.close(); isr.close();
-			br.close(); br.close();
-		}
-	}
-	 */
 	
 }

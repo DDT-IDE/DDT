@@ -100,20 +100,15 @@
          </parser>
       </parserContribution>
    </extension>
-   <extension
-         point="org.eclipse.dltk.launching.interpreterInstallTypes">
-      <interpreterInstallType
-            class="mmrnmhrm.core.compiler_installs.DMDInstallType"
-            id="org.dsource.ddt.ide.core.launching.deeDmdInstallType">
-      </interpreterInstallType>
-      <interpreterInstallType
-            class="mmrnmhrm.core.compiler_installs.GDCInstallType"
-            id="org.dsource.ddt.ide.core.launching.GDCInstallType">
-      </interpreterInstallType>
-      <interpreterInstallType
-            class="mmrnmhrm.core.compiler_installs.GenericInstallType"
-            id="org.dsource.ddt.ide.core.launching.GenericInstallType">
-      </interpreterInstallType>
+   <extension point="org.eclipse.dltk.launching.interpreterInstallTypes">
+      <interpreterInstallType class="mmrnmhrm.core.compiler_installs.DMDInstallType"
+            id="org.dsource.ddt.ide.core.launching.DMDInstallType" />
+      <interpreterInstallType class="mmrnmhrm.core.compiler_installs.GDCInstallType"
+            id="org.dsource.ddt.ide.core.launching.GDCInstallType" />
+      <interpreterInstallType class="mmrnmhrm.core.compiler_installs.LDCInstallType"
+            id="org.dsource.ddt.ide.core.launching.LDCInstallType" />
+      <interpreterInstallType class="mmrnmhrm.core.compiler_installs.GenericInstallType"
+            id="org.dsource.ddt.ide.core.launching.GenericInstallType" />
    </extension>
    <extension
          point="org.eclipse.dltk.launching.interpreterContainerExtension">

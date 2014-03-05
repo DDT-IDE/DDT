@@ -7,7 +7,7 @@ import org.eclipse.dltk.launching.AbstractInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.IInterpreterRunner;
 
-public abstract class CommonDeeInstall extends AbstractInterpreterInstall {
+public class CommonDeeInstall extends AbstractInterpreterInstall {
 	
 	public CommonDeeInstall(IInterpreterInstallType type, String id) {
 		super(type, id);

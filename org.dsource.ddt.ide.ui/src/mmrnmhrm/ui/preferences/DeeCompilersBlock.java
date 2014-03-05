@@ -18,18 +18,19 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
+// TODO: rewrite InterpretersBlock, remove host and "interpreters name"
 public class DeeCompilersBlock extends InterpretersBlock {
+	
+	@Override
+	protected String getCurrentNature() {
+		return DeeNature.NATURE_ID;
+	}
 	
 	@Override
 	protected AddScriptInterpreterDialog createInterpreterDialog(IInterpreterInstall standin) {
 		IInterpreterInstallType[] deeInstallTypes = ScriptRuntime.getInterpreterInstallTypes(getCurrentNature());
 		DialogAddDeeCompiler dialog = new DialogAddDeeCompiler(this, getShell(), deeInstallTypes, standin);
 		return dialog;
-	}
-	
-	@Override
-	protected String getCurrentNature() {
-		return DeeNature.NATURE_ID;
 	}
 	
 }
