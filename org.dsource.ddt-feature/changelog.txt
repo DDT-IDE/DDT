@@ -22,6 +22,8 @@
    * DDT will look on the PATH environment variable for compilers installations.
  * Cleanup: Removed compilers/interpreters config block from New DUB Project wizard.   
  * Cleanup: Removed host option from location group in New DUB Project wizard. (it made no difference)
+ * Fixed ##46  0.10.0-PR adds spaces between characters to DUB extra options
+ * DUB builder: incremental builds are now retried if previous 'dub build' exited with non-zero return code.
  TODO:
    * check label decorations work
    * styled label

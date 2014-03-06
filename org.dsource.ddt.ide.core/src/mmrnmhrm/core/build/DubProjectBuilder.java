@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.DeeCore;
@@ -66,7 +67,10 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
 		try {
-			submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
+			ExternalProcessOutputHelper processHelper = submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
+			if(processHelper.getProcess().exitValue() != 0) {
+				forgetLastBuiltState();
+			}
 		} catch (CoreException ce) {
 			if(ce.getCause() instanceof TimeoutException && monitor.isCanceled()) {
 				throw new OperationCanceledException();
@@ -86,11 +90,12 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		return extraCommands;
 	}
 	
-	protected void submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) throws CoreException {
+	protected ExternalProcessOutputHelper submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) throws CoreException {
 		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
 		
 		try {
-			dubProcessManager.submitDubCommandAndWait(getProject(), monitor, commands);
+			ExternalProcessOutputHelper processHelper = dubProcessManager.submitDubCommandAndWait(getProject(), monitor, commands);
+			return processHelper;
 		} catch (InterruptedException e) {
 			throw DeeCore.createCoreException("Should not happen", e);
 		}
