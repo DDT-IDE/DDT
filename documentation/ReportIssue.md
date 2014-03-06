@@ -1,6 +1,5 @@
-
 ## Reporting issues
- Issues can be reported here: https://github.com/bruno-medeiros/DDT/issues
+ Issues can be reported in the project's Github page: https://github.com/bruno-medeiros/DDT/issues
 
  Notes:
 
@@ -10,5 +9,4 @@
  `"Help/About/Installation Details/Configuration/Error Log"`). 
  If you see any error entries that you think might be relevant to the issue, post them.
 
- * Optional: you might be asked to post/attach the Configuration Log: This can be found at 
- `"Help/About/Installation Details/Configuration"`
+ * Optional: you might be asked to post/attach the Configuration Log: This can be found at `"Help/About/Installation Details/Configuration"`
