@@ -59,6 +59,10 @@ public class CommonDubTest extends DToolBaseTest {
 		public final String[] rawDeps;
 		public final DubBundleChecker[] deps;
 		
+		public DubBundleChecker(Path location, String bundleName) {
+			this(location, bundleName, null, IGNORE_STR, null, IGNORE_RAW_DEPS, IGNORE_DEPS);
+		}
+		
 		public DubBundleChecker(Path location, String bundleName, String errorMsgStart, String version,
 				Path[] sourceFolders, String[] rawDeps, DubBundleChecker[] deps) {
 			this.location = location;

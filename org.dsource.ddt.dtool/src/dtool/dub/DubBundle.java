@@ -36,7 +36,7 @@ public class DubBundle {
 	
 	public DubBundle(Path location, String name, DubBundleException error, String version, String[] srcFolders,
 			Path[] effectiveSrcFolders, DubDependecyRef[] dependencies, String targetName, String targetPath) {
-		this.location = location;
+		this.location = location == null ? null : location.toAbsolutePath();
 		this.name = assertNotNull(name);
 		this.error = error;
 		
@@ -54,6 +54,14 @@ public class DubBundle {
 	
 	public DubBundle(Path location, String name, DubBundleException error) {
 		this(location, name, error, null, null, null, null, null, null);
+	}
+	
+	public String getBundleName() {
+		return name;
+	}
+	
+	public String getLocationString() {
+		return  location.toString();
 	}
 	
 	public boolean hasErrors() {

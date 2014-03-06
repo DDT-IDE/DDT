@@ -73,7 +73,7 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 		return findModule(packages, moduleName, this.scriptProject);
 	}
 	
-	protected static Module findModule(String[] packages, String modName, IScriptProject deeproj) 
+	protected Module findModule(String[] packages, String modName, IScriptProject deeproj) 
 		throws ModelException {
 		ISourceModule moduleUnit = findModuleUnit(deeproj, packages, modName);
 		if(moduleUnit == null)
@@ -83,39 +83,44 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 		return module;
 	}
 	
-	public static ISourceModule findModuleUnit(IScriptProject deeProject, String[] packages, String moduleName) 
+	public ISourceModule findModuleUnit(IScriptProject deeProject, String[] packages, String moduleName) 
+			throws ModelException {
+		IPath packagesPath = new Path(StringUtil.collToString(packages, "/"));
+		
+		return findModuleForImport(deeProject, moduleName, packagesPath);
+	}
+	
+	protected ISourceModule findModuleForImport(IScriptProject deeProject, String moduleName, IPath packagesPath)
 			throws ModelException {
 		if(deeProject.exists() == false || !isDeeProject(deeProject))
 			return null;
 		
-		IPath packagesPath = new Path(StringUtil.collToString(packages, "/"));
-		
 		for (IProjectFragment srcFolder : deeProject.getProjectFragments()) {
-			IScriptFolder scriptFolder = srcFolder.getScriptFolder(packagesPath);
-			
-			if(scriptFolder.exists()) {
-				for (String validExtension : DeeNamingRules.VALID_EXTENSIONS) {
-					ISourceModule sourceModule = scriptFolder.getSourceModule(moduleName + validExtension);
-					if(DLTKModelUtils.exists(sourceModule)) {
-						return sourceModule;
-					}
-				}
+			ISourceModule srcModule = findModuleForImport(moduleName, packagesPath, srcFolder);
+			if(srcModule != null) {
+				return srcModule;
 			}
 		}
 		
-		packagesPath = packagesPath.append(moduleName); // search for package.d
+		return null;
+	}
+	
+	protected ISourceModule findModuleForImport(String moduleName, IPath packagesPath, IProjectFragment srcFolder) {
+		IScriptFolder scriptFolder = srcFolder.getScriptFolder(packagesPath);
 		
-		for (IProjectFragment srcFolder : deeProject.getProjectFragments()) {
-			IScriptFolder scriptFolder = srcFolder.getScriptFolder(packagesPath);
-			
-			if(scriptFolder.exists()) {
-				ISourceModule sourceModule = scriptFolder.getSourceModule("package.d");
+		if(scriptFolder.exists()) {
+			for (String validExtension : DeeNamingRules.VALID_EXTENSIONS) {
+				ISourceModule sourceModule = scriptFolder.getSourceModule(moduleName + validExtension);
 				if(DLTKModelUtils.exists(sourceModule)) {
 					return sourceModule;
 				}
+				// search for package.d
+				ISourceModule srcModule = findModuleForImport("package", packagesPath.append(moduleName), srcFolder);
+				if(srcModule != null) {
+					return srcModule;
+				}
 			}
 		}
-		
 		return null;
 	}
 	
@@ -137,7 +142,7 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 				IScriptFolder pkgFrag = (IScriptFolder) pkgFragElem;
 				
 				String packagePath= pkgFrag.getElementName();
-				
+				/*BUG here with package.d*/
 				if(!DeeNamingRules.isValidPackagePathName(packagePath))
 					continue;
 				

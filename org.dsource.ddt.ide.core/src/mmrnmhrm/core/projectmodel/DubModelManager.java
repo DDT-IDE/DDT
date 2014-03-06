@@ -405,24 +405,53 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		DLTKCore.setBuildpathContainer(containerPath, array(projectElement), array(dubContainer), null);
 	}
 	
-	protected static IBuildpathEntry[] getBuildpathEntriesFromDeps(DubBundleDescription bundleDesc) {
+	protected IBuildpathEntry[] getBuildpathEntriesFromDeps(DubBundleDescription bundleDesc) {
 		ArrayList<IBuildpathEntry> depEntries = new ArrayList<>();
 		for (DubBundle depBundle : bundleDesc.getBundleDependencies()) {
 			if(depBundle.hasErrors()) {
 				continue;
 			}
-			
-			// TODO project dependencies
-			for (java.nio.file.Path srcFolder : depBundle.getEffectiveSourceFolders()) {
-				
-				java.nio.file.Path srcFolderAbsolute = depBundle.location.resolve(srcFolder);
-				assertTrue(srcFolderAbsolute.isAbsolute());
-				IPath path = new Path(srcFolderAbsolute.toString());
-				depEntries.add(DubContainer.createDubBuildpathEntry(path));
+			IProject workspaceProject = findProjectForBundle(depBundle);
+			if(workspaceProject != null) {
+				depEntries.add(DLTKCore.newProjectEntry(workspaceProject.getFullPath(), true));
+			} else {
+				for (java.nio.file.Path srcFolder : depBundle.getEffectiveSourceFolders()) {
+					
+					java.nio.file.Path srcFolderAbsolute = depBundle.location.resolve(srcFolder);
+					assertTrue(srcFolderAbsolute.isAbsolute());
+					depEntries.add(DubContainer.createDubBuildpathEntry(new Path(srcFolderAbsolute.toString())));
+				}
 			}
 		}
 		
 		return ArrayUtil.createFrom(depEntries, IBuildpathEntry.class);
+	}
+	
+	protected IProject findProjectForBundle(DubBundle depBundle) {
+		return findProjectForBundleLocation(depBundle.location);
+	}
+	
+	protected IProject findProjectForBundleLocation(java.nio.file.Path location) {
+		if(location == null) {
+			return null;
+		}
+		
+		// BM: There is a minor race condition here that will cause a temporary inconsistent state.
+		// TODO: to avoid that we should maintain a mapping of location->project in Dub Model.
+		IProject[] deeProjects;
+		try {
+			deeProjects = EclipseUtils.getOpenedProjects(DeeCore.NATURE_ID);
+		} catch (CoreException e) {
+			return null;
+		}
+		for (IProject project : deeProjects) {
+			if(project.getLocation().toFile().toPath().equals(location) && 
+					dubModelManager.model.doGetBundleInfo(project.getName()) != null) {
+				return project;
+			}
+		}
+		
+		return null;
 	}
 	
 }

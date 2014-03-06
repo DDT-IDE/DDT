@@ -15,18 +15,20 @@
  * Added DUB build support. Removed basic builder (the previous build functionality using response files). 
    * Project build configuration page has only one field now: a field with optional extra options to pass to DUB when building.
    * Previously created DDT Eclipse projects are no longer compatible. You should recreate the project using the new DUB Project wizard.
--- Preview Release --
+###### Preview Release
  * Added support for LDC compiler install.
  * Compiler installations are now automatically searched and added on DDT startup.
    * DDT will look on the PATH environment variable for compilers installations.
  * Cleanup: Removed compilers/interpreters config block from New DUB Project wizard.   
  * Cleanup: Removed host option from location group in New DUB Project wizard. (it made no difference)
- * Fixed ##46  0.10.0-PR adds spaces between characters to DUB extra options
+ * Fixed #46  0.10.0-PR adds spaces between characters to DUB extra options
  * DUB builder: incremental builds are now retried if previous 'dub build' exited with non-zero return code.
  TODO:
    * check label decorations work
    * DLTK Model elements in Project Explorer
    * project dependencies in model
+   * cleanup loggers output
+   * module resolver: /*BUG here with package.d*/
 
 ### DDT 0.9.1 (2014-02-07)
  * Added debug hover to D editor. When a CDT debug session is active, this hover presents detailed info for the variable under the cursor, similar to the Variables view.
