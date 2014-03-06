@@ -18,15 +18,45 @@ import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyEleme
 import mmrnmhrm.ui.DeePluginImages;
 
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.StyledString.Styler;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.TextStyle;
+import org.eclipse.swt.widgets.Display;
 
 import dtool.dub.DubBundleDescription;
 
+class ForegroundColorStyler extends Styler {
+	protected final RGB fgColor;
+	
+	public ForegroundColorStyler(RGB fgColor) {
+		this.fgColor = fgColor;
+	}
+	
+	@Override
+	public void applyStyles(TextStyle textStyle) {
+		if(fgColor != null) {
+			textStyle.foreground = new Color(Display.getCurrent(), fgColor);
+		}
+	}
+}
 
-public class DubNavigatorLabelProvider extends LabelProvider {
+public class DubNavigatorLabelProvider extends LabelProvider implements IStyledLabelProvider {
 	
 	@Override
 	public String getText(Object element) {
+		StyledString styledText = getStyledText(element);
+		if(styledText != null) {
+			return styledText.getString();
+		}
+		return null;
+	}
+	
+	@Override
+	public StyledString getStyledText(Object element) {
 		if(element instanceof CommonDubElement) {
 			CommonDubElement dubElement = (CommonDubElement) element;
 			return new DubElementTextProvider().switchElement(dubElement);
@@ -54,41 +84,49 @@ public class DubNavigatorLabelProvider extends LabelProvider {
 	
 }
 
-class DubElementTextProvider extends DubElementSwitcher<String>{
-
+class DubElementTextProvider extends DubElementSwitcher<StyledString>{
+	
+	protected static final RGB DUB_ELEMENT_LABEL_ANNOTATION_BG = new RGB(128, 128, 128);
+	protected static final RGB DUB_ELEMENT_LABEL_ERROR_ANNOTATION_BG = new RGB(196, 64, 64);
+	
+	protected ForegroundColorStyler styler(RGB rgb) {
+		return new ForegroundColorStyler(rgb);
+	}
+	
 	@Override
-	public String visitDepContainer(DubDependenciesContainer element) {
-		String baseText = "DUB Dependencies";
+	public StyledString visitDepContainer(DubDependenciesContainer element) {
+		StyledString baseText = new StyledString("DUB Dependencies");
 		
 		DubBundleDescription bundleInfo = element.getBundleInfo();
 		if(bundleInfo.hasErrors()) {
+			// TODO: present more details about origin of error (json or dub describre)
 			if(bundleInfo.isResolved()) {
-				return baseText + " [DUB error]"; // TODO: query exception for more details
+				return baseText.append(" [DUB error]", styler(DUB_ELEMENT_LABEL_ERROR_ANNOTATION_BG)); 
 			} else {
-				return baseText + " [DUB error]";
+				return baseText.append(" [DUB error]", styler(DUB_ELEMENT_LABEL_ERROR_ANNOTATION_BG));
 			}
 		} else {
 			if(bundleInfo.isResolved()) {
 				return baseText;
 			} else {
-				return baseText + " <dub describing>";
+				return baseText.append(" <dub describing>", styler(DUB_ELEMENT_LABEL_ANNOTATION_BG));
 			}
 		}
 	}
-
+	
 	@Override
-	public String visitDepElement(DubDependencyElement element) {
-		return element.getBundleName();
+	public StyledString visitDepElement(DubDependencyElement element) {
+		return new StyledString(element.getBundleName());
 	}
 	
 	@Override
-	public String visitRawDepElement(DubRawDependencyElement element) {
-		return element.getBundleName();
+	public StyledString visitRawDepElement(DubRawDependencyElement element) {
+		return new StyledString(element.getBundleName());
 	}
 	
 	@Override
-	public String visitErrorElement(DubErrorElement element) {
-		return element.errorDescription;
+	public StyledString visitErrorElement(DubErrorElement element) {
+		return new StyledString(element.errorDescription);
 	}
 	
 }

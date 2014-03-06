@@ -26,7 +26,6 @@
  * DUB builder: incremental builds are now retried if previous 'dub build' exited with non-zero return code.
  TODO:
    * check label decorations work
-   * styled label
    * DLTK Model elements in Project Explorer
    * project dependencies in model
 
