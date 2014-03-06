@@ -82,7 +82,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 	protected String[] getExtraCommands() {
 		String extraOptionsStr = DeeCorePreferences.getDubBuildOptions(getProject());
 		extraOptionsStr = extraOptionsStr.trim();
-		String[] extraCommands = extraOptionsStr.split(" *");
+		String[] extraCommands = extraOptionsStr.split(" +");
 		return extraCommands;
 	}
 	
