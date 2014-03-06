@@ -58,7 +58,7 @@ class DubElementTextProvider extends DubElementSwitcher<String>{
 
 	@Override
 	public String visitDepContainer(DubDependenciesContainer element) {
-		String baseText = "Dub Dependencies";
+		String baseText = "DUB Dependencies";
 		
 		DubBundleDescription bundleInfo = element.getBundleInfo();
 		if(bundleInfo.hasErrors()) {
