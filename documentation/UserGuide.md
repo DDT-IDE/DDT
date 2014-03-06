@@ -69,9 +69,7 @@ These are not currently supported/implemented, even though they are present in t
 
 *Semantic Search:*
 The search dialog allows searching for definitions based on a text pattern. Available in the main menu, under 'Search' / 'D...':
-
 [![UserGuide_SearchDialog](screenshots/UserGuide_SearchDialog.png)](:)
-
 It is also possible to search for all references to a given definition. In the editor, select the name of a definition, and use the editor context menu to search for references (shortcut: Ctrl-Shift-G). This can also be invoked on references, invoking a search for all references to the same definition the selected reference resolves to.
 
 
@@ -83,7 +81,9 @@ Alternatively, to automatically create and run a launch configuration (if a matc
 Whenever a launch is requested, a build will be performed beforehand. This behavior can be configured under general Eclipse settings, or in the launch configuration.
 
 D launches can be run in debug mode. You will need a GDB debugger. To configure debug options (in particular, the path to the debugger to use), open the launch under 'Run' / 'Debug Configurations...', and then navigate to the 'Debugger' tab in the desired launch configuration:
-[![UserGuide_DebuggerLaunchConfiguration](screenshots/UserGuide_DebuggerLaunchConfiguration.png)]](:)
+
+[![UserGuide_DebuggerLaunchConfiguration](screenshots/UserGuide_DebuggerLaunchConfiguration.png)](:)
+
 GDB debugger integration is achieved by using the CDT plugins. To configure global debugger options, go the 'C/C++'/'Debug'/'GDB' preference page.
 
 ### Built-in Build:
