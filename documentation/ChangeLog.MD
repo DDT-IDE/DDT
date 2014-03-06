@@ -234,7 +234,7 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Improved name lookup: statement blocks and enum bodies are now supported correctly (they don't see forward definitions anymore).
  * Improved Code completion: duplicates or occluded names are no longer presented.
  * Can now set, view, and remove Descent-compatible breakpoints in Mmrnmhrm's editor (these will work with Descent's debugger).
- * DDoc text and code completion hovers are now processed and presented as HTML instead of raw characters, thanks to Ary Mazana's Descent DDoc parser. ([http://svn.dsource.org/projects/descent/downloads/images/mmrnmhrm_html_ddoc_hover2.png pic])
+ * DDoc text and code completion hovers are now processed and presented as HTML instead of raw characters, thanks to Ary Mazana's Descent DDoc parser. ([pic](http://svn.dsource.org/projects/descent/downloads/images/mmrnmhrm_html_ddoc_hover2.png))
  * Fixed some Neo AST bugs.
  * Minor builder changes (builder still work in progress).
 

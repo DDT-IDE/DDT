@@ -3,10 +3,10 @@
 
 ### What is the history of DDT?
 
-DDT (D Development Tools) is a direct continuation of the [http://www.dsource.org/projects/descent/wiki/Mmrnmhrm Mmrnmrhm] project, started by Bruno Medeiros in 2007. After a hiatus period, development resumed, and so it was renamed to "DDT" in 2010, since a more serious and friendly name was desired.
+DDT (D Development Tools) is a direct continuation of the [Mmrnmrhm](http://www.dsource.org/projects/descent/wiki/Mmrnmhrm) project, started by Bruno Medeiros in 2007. After a hiatus period, development resumed, and so it was renamed to "DDT" in 2010, since a more serious and friendly name was desired.
 
 ### Wasn't there already a project named DDT in DSource.org?
-Yes. There was a project originally called [http://www.dsource.org/projects/eclipsed EclipseD], who was later renamed to DDT (around 2005 I think). It was long abandoned, and permission was granted by the EclipseD/DDT developer to reclaim the DDT name.
+Yes. There was a project originally called [EclipseD](http://www.dsource.org/projects/eclipsed), who was later renamed to DDT (around 2005 I think). It was long abandoned, and permission was granted by the EclipseD/DDT developer to reclaim the DDT name.
 
 
 ### Can I contribute to DDT? How?
@@ -20,7 +20,7 @@ Be prepared to provide basic info about your Eclipse installation, like:
 
 
 ### What's the relation with Descent?
-The [http://www.dsource.org/projects/descent Descent] project was created by Ary Borenszweig (aka Ary Manzana), and had it's first release in late 2006, a few months after development of Mmrnmrhm started. Mmrnmrhm was then changed to use some code from Descent, namely the Descent DMD parser, which was part of Descent's Java port of the DMD compiler frontend. All the remaining code base was developed separately, and this is still the case today, the only change being that the Descent DMD frontend code was separated into it's own plugin: `descent.compiler`.
+The [Descent](http://www.dsource.org/projects/descent) project was created by Ary Borenszweig (aka Ary Manzana), and had it's first release in late 2006, a few months after development of Mmrnmrhm started. Mmrnmrhm was then changed to use some code from Descent, namely the Descent DMD parser, which was part of Descent's Java port of the DMD compiler frontend. All the remaining code base was developed separately, and this is still the case today, the only change being that the Descent DMD frontend code was separated into it's own plugin: `descent.compiler`.
 
 ### Why not develop Descent instead of Mmrnmrhm/DDT?
 Mmrnmrhm was first created as part of a MSc. thesis, and because of that a tight control and clear separation of code was necessary. That was no longer the case when development of Mmrnmrhm resumed (in early 2010), but nonetheless, even though Descent then had significantly richer functionality than Mmrnmrhm, a technical decision was made to not work with the main Descent code base. (Smaller parts of code might be adapted though, as appropriate).
@@ -33,7 +33,7 @@ Yes. A simple way is to simply install DDT normally on a computer with Internet,
 
 
 A proper install without an Internet Connection is possible by means of downloading the update sites of DDT and of its dependencies (such as DLTK and EMF):
- * Download the DDT update site from [http://code.google.com/a/eclipselabs.org/p/ddt/downloads/list downloads]. ([http://ddt.eclipselabs.org.codespot.com/files/ddt-0.4.3-updateSite.zip latest as of 2011-08]). Alternatively, if a download is not available for the latest update site, use Mercurial to download it from the repo:
+ * Download the DDT update site from [downloads](http://code.google.com/a/eclipselabs.org/p/ddt/downloads/list). ([http://ddt.eclipselabs.org.codespot.com/files/ddt-0.4.3-updateSite.zip latest as of 2011-08]). Alternatively, if a download is not available for the latest update site, use Mercurial to download it from the repo:
 ```
 hg clone http://code.google.com/a/eclipselabs.org/p/ddt.updates/
 ```
