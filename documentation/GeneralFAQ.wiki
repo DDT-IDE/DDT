@@ -1,0 +1,42 @@
+#summary Frequently Asked Questions
+
+=== What is the history of DDT? ===
+
+DDT (D Development Tools) is a direct continuation of the [http://www.dsource.org/projects/descent/wiki/Mmrnmhrm Mmrnmrhm] project, started by Bruno Medeiros in 2007. After a hiatus period, development resumed, and so it was renamed to "DDT" in 2010, since a more serious and friendly name was desired.
+
+=== Wasn't there already a project named DDT in DSource.org? ===
+Yes. There was a project originally called [http://www.dsource.org/projects/eclipsed EclipseD], who was later renamed to DDT (around 2005 I think). It was long abandoned, and permission was granted by the EclipseD/DDT developer to reclaim the DDT name.
+
+
+=== Can I contribute to DDT? How? ===
+Sure, help is much appreciated. The simple stuff: testing, bug reports, test cases for the test framework is something that anyone can easily contribute. If you have more time, grab your Java and Eclipse skills, and contribute some code. See the development wiki entries for more info.
+Please direct your questions or comments regarding contributing to the [http://groups.google.com/group/ddt-ide DDT Discussion Group].
+
+=== What do I need to know to open a bug report? ===
+Be prepared to provide basic info about your Eclipse installation, like:
+ * The DDT version, can be found in Eclipse under "Help/About/Installation Details/Installed Software", look for DDT entry.
+ * The Eclipse log, can be found in Eclipse under "Help/About/Installation Details/Configuration/Error Log", or in the Eclipse workspace directory in the `.metadata/.log` file.
+
+
+=== What's the relation with Descent? ===
+The [http://www.dsource.org/projects/descent Descent] project was created by Ary Borenszweig (aka Ary Manzana), and had it's first release in late 2006, a few months after development of Mmrnmrhm started. Mmrnmrhm was then changed to use some code from Descent, namely the Descent DMD parser, which was part of Descent's Java port of the DMD compiler frontend. All the remaining code base was developed separately, and this is still the case today, the only change being that the Descent DMD frontend code was separated into it's own plugin: `descent.compiler`.
+
+=== Why not develop Descent instead of Mmrnmrhm/DDT? ===
+Mmrnmrhm was first created as part of a MSc. thesis, and because of that a tight control and clear separation of code was necessary. That was no longer the case when development of Mmrnmrhm resumed (in early 2010), but nonetheless, even though Descent then had significantly richer functionality than Mmrnmrhm, a technical decision was made to not work with the main Descent code base. (Smaller parts of code might be adapted though, as appropriate).
+The full discussion for this can be found on the D.ide newsgroup: [http://www.digitalmars.com/d/archives/digitalmars/D/ide/Future_of_Descent_and_D_Eclipse_IDE_635.html "Future of Descent and D Eclipse IDE" - D archives] (direct [news://news.digitalmars.com:119/htdofk$2te3$1@digitalmars.com NNTP link]). In summary the reasoning was:
+ * The Descent DMD port required a lot of work to maintain, it was also buggy and did not have good performance (and Ary was not willing to work on it anymore).
+ * The bulk of Descent's IDE code (which is code ported from JDT) also had similar problems (although to a lesser scale). A more structured alternative, such as DLTK, was preferred.
+
+=== Can I install DDT without an Internet connection? ===
+Yes. A simple way is to simply install DDT normally on a computer with Internet, and after installation is complete, then copy the eclipse folder to another computer. But this is limited in the the redistribution will be of the same platform as the computer where it was installed.
+
+
+A proper install without an Internet Connection is possible by means of downloading the update sites of DDT and of its dependencies (such as DLTK and EMF):
+ * Download the DDT update site from [http://code.google.com/a/eclipselabs.org/p/ddt/downloads/list downloads]. ([http://ddt.eclipselabs.org.codespot.com/files/ddt-0.4.3-updateSite.zip latest as of 2011-08]). Alternatively, if a download is not available for the latest update site, use Mercurial to download it from the repo:
+{{{
+hg clone http://code.google.com/a/eclipselabs.org/p/ddt.updates/
+}}}
+ * Download the DLTK update site. Go to [http://download.eclipse.org/technology/dltk/downloads/], look under "Released", open the link for the appropriate version (latest is DLTK 2.0), go to "Dynamic Languages Toolkit Bundles", and download the "All-in-1 updateSite" archive. ([http://www.eclipse.org/downloads/download.php?file=/technology/dltk/downloads/drops/R2.0/R-2.0-201006161315/dltk-R-2.0-201006161315-updateSite.zip latest as of 2011-08]). Also notice on this page what is the required EMF version (should be mentioned at the top) (latest is EMF 2.5.0)
+ * Download the EMF update site. Go to [http://www.eclipse.org/modeling/emf/downloads/?project=emf], look for the appropriate version under "Latest Releases", the download the "All-In-One Update Site" archive ([http://www.eclipse.org/modeling/download.php?file=/modeling/emf/emf/downloads/drops/2.5.0/R200906151043/emf-xsd-Update-2.5.0.zip latest as of 2011-08]).
+ * Follow the [UserGuide#Installation] instructions normally, but when adding an update site, instead of the URL location, click "Archive" (or "Local") and point it to the downloaded DDT update site archive. Do the same for the DLTK and EMF update site.
+ * The rest of the installation should proceed as normal.
