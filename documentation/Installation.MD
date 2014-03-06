@@ -1,6 +1,6 @@
-#summary installation and updating.
 
-== Installation ==
+## Installation
+
 Requirements: You will need a *Java 1.7* VM or greater, Eclipse 4.3 (Kepler) or greater. Requirements for the builder: A supported D2 compiler (DMD or GDC).
 
 Instructions:
@@ -12,5 +12,5 @@ Instructions:
  1. Select the DDT feature, click Next in the wizard. A few dependencies should show up (such as DLTK). Click Next and complete the installation wizard. 
  1. Restart Eclipse. You should now configure an installed D compiler (see UserGuide).
 
-=== Updating ===
+### Updating
 If you followed the installation steps above, you can update DDT to the latest releases by clicking "Help -> Check for Updates..." on the Eclipse IDE.

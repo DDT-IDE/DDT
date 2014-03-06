@@ -1,8 +1,7 @@
-#summary ChangeLog for releases.
 
-= DDT Change Log =
+## DDT release ChangeLog
 
-== DDT 0.10.0  ===
+### DDT 0.10.0 
  * Added DUB support. Project import-path now determined by dub.json file and running 'dub describe'.
    * On startup, or whenever dub.json is modified (and saved), 'dud describe' will be run to resolve dependencies and supply source folders and import path for the project.
  * Added a per-project Eclipse console to monitor the output for DUB commands.
@@ -29,20 +28,20 @@
    * DLTK Model elements in Project Explorer
    * project dependencies in model
 
-== DDT 0.9.1 (2014-02-07) ===
+### DDT 0.9.1 (2014-02-07)
  * Added debug hover to D editor. When a CDT debug session is active, this hover presents detailed info for the variable under the cursor, similar to the Variables view.
  * Added D 2.064 support for eponymous template shortcut syntax for alias and enum.
- * Added D 2.064 support for the package.d import rule. ([https://github.com/bruno-medeiros/DDT/issues/33 #33])
+ * Added D 2.064 support for the package.d import rule. (#33)
  * Fixed bug: working directory option of a D launch configuration not honored when run in debug mode.
  * Fixed bug: environment variables non-append option of a D launch configuration not honored.
  * Fixed some potential issues related to debugging occurring unless the user had full CDT feature manually installed.
- * Fixed [https://github.com/bruno-medeiros/DDT/issues/20 #20]: GDC `incluce/d/*/` library location layout not recognized
- * Fixed [https://github.com/bruno-medeiros/DDT/issues/36 #36]: Editor/parser doesn't recognize `new` operator's nested class instantiation syntax. 
+ * Fixed #20: GDC `incluce/d/*/` library location layout not recognized
+ * Fixed #36: Editor/parser doesn't recognize `new` operator's nested class instantiation syntax. 
  * Cleaned up the behavior and labels of D Application launch configuration dialog.
  * UI cleanup: "Interpreter Container" now named "D Standard Library"
  * Updated UserGuide documentation: added info for debugging, Code Templates, Auto-Indent. Restructured sections and updated/removed old info.
 
-== DDT 0.9.0 (2013-11-14) ==
+### DDT 0.9.0 (2013-11-14)
  * Issue #13: Added integrated debugging support, using CDT's GDB debugger integration. Supports:
    * Stop/resume program execution. Listing program threads and stack frame contents. 
    * Setting breakpoints, watchpoints (breakpoint on data/variables), tracepoints. Breakpoint conditions.
@@ -53,7 +52,7 @@
  * Fixed issue #17: Assertion failure with cast expression and invalid code in UnaryExpression
  * Changed D perspective icon.
 
-== DDT 0.8.1 (2013-09-23) ==
+### DDT 0.8.1 (2013-09-23)
  * Documentation: added entry in [UserGuide#Eclipse_basics] about Eclipse memory settings optimization.
  * Fixed: Code Completion module list in import declarations now shows the module's DDoc.
  * Implemented: Code Completion now resolves:
@@ -73,36 +72,36 @@
  * Fixed issue #9: Control-click opens up new editor everytime
  * Fixed 0.8.0 regression: missing icon for D application launch action/configuration.
 
-== DDT 0.8.0 (2013-08-30) ==
+### DDT 0.8.0 (2013-08-30)
  * Updated DDT to latest version of DLTK (version 5.0, from Eclipse Kepler).
  * Changed: In DDoc view, the text of undefined macros now remains unmodified, instead of being replaced by empty text.
-   * Example: _{{{My $(NO_SUCH_MACRO undefined) macro}}}_ will render as _{{{My $(NO_SUCH_MACRO undefined) macro}}}_ instead of _{{{My  macro}}}_.
- * Added: In DDoc view, added predefined DDoc macro: _{{{D}}}_. Works the same as _{{{D_CODE}}}_.
+   * Example: *`My $(NO_SUCH_MACRO undefined) macro`* will render as *`My $(NO_SUCH_MACRO undefined) macro`* instead of *`My  macro`*.
+ * Added: In DDoc view, added predefined DDoc macro: *`D`*. Works the same as *`D_CODE`*.
  * Implemented: Code Completion now presents language primitive results (void, int, char, etc.).
  * Fixed unintended behavior regression in 0.7.0 where Code Completion would not show any results when invoked in certain type reference source contexts. Examples (♦ denotes location where CC would be invoked):
-{{{
+```
 foo[♦]♦
 foo[123]♦
 foo!♦(♦)
 const(foo)♦
-}}} 
- * Improved Code Completion to work when invoked next or inside a keyword. Previously it worked on primitive type keywords only ({{{int}}}, {{{char}}}, etc. ). Examples:   
-   {{{
+``` 
+ * Improved Code Completion to work when invoked next or inside a keyword. Previously it worked on primitive type keywords only (`int`, `char`, etc. ). Examples:   
+```
 char intro, intro2; in♦ // CC invoked here will offer 【intro, intro2】 as completions
 class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【intro】 as completions
-}}}
+```
  * Fixed 0.7.0 regression bug in editor resolving functionality where a reference would not be found if the cursor was at the very end of the reference.
    * Affects: Open Definition, Open Definition hyperlinks, References search, DDoc view hovers.
  * Cleanup: new UI base icons for most D source elements. New icon for D search.
   * The new icon design is meant to better convey visual information for the semantics of the underlying element.
  * Added icon adornment for templated types.
- * Added icon adornments for {{{const,immutable}}} attributes in variables.
+ * Added icon adornments for `const,immutable` attributes in variables.
  * Fixed issue #8: Missing enum members in the outline view.
  * Fixed bug with implementation of issue #3: support Debian Linux DMD layout.
  * Cleanup: changed some of the dialog messages for the Open Definition operation to be more clear and concise.
  * Cleanup: restricted some editor functionality to named references only (Open Definition, Open Definition hyperlinks, DDoc view hovers).
 
-== DDT 0.7.0 - "Midnight Riders" (2013-08-15) ==
+### DDT 0.7.0 - "Midnight Riders" (2013-08-15)
  * Requirements changes: now requires minimum Java VM version 1.7 .
  * Implemented issue #2: Support parsing of latest D syntax (up to D language version 2.063).
    * Completely rewrote D parser, creating a new hand-written parser (IDE no longer depends on descent.compiler).
@@ -123,7 +122,7 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Fixed code completion NPE bug with conditional declarations/statements with missing bodies.
  * Fixed bug with the display text of function and template parameters in code completion popup.  
 
-== DDT 0.6.0 (2012-05-17) ==
+### DDT 0.6.0 (2012-05-17)
  * Fixed bug causing DDT to never load the pre-defined editor Code Templates.
  * Added support for GDC, as well as a generic compiler install. ([http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=59 issue@ELabs #59])
  * Added support for DMD Unix style compiler installs ("usr/bin/dmd" and similar). ([http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=56 issue@ELabs #56])
@@ -139,7 +138,7 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Fixed some invalid menu entries in editor context menu (entries for commands that are not implemented).
  * Modules without module declarations will now have their names inferred from their filename. ([http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=26 issue@ELabs #26])
  
-== DDT 0.5.0 (2011-08-26) ==
+### DDT 0.5.0 (2011-08-26)
  * Updated DDT to DTLK 3.0
  * Made icons of D source elements (classes, structs templates, etc.) consistent throughout the UI. 
    * (Previously DLTK views and some popups used simplified icons, and only CA and outline used more detailed icons.)
@@ -157,7 +156,7 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Fixed some issues relate to completion of imports, including [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=53 issue@ELabs #53]. 
  * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=58 issue@ELabs #58]: typing the dot causes selected completion proposal to be applied.
 
-== DDT 0.4.3 (2011-06-02) ==
+### DDT 0.4.3 (2011-06-02)
  * Resolved [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=12 issue@ELabs #12], added Content Assist preference page. 
    * Options: Completion insert/override; Single proposals automatic insert; Auto-Activation enable and delay;
    * Added Content Assist proposal auto-insertion trigger characters: ' ', '=', ';', '.'.  
@@ -174,7 +173,7 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=41 issue@ELabs #41] and some other related parsing bugs with qualified expressions (DotIdExp).
  * Fixed issue where syntax highlighting would break when typing inside a multi-line r"" string.
  
-== DDT 0.4.2 (2011-04-29) ==
+### DDT 0.4.2 (2011-04-29)
  * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=33 issue@ELabs #33], bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.
  * Fixed bug where all D comments where considered DDoc comments for documentation hover.
  * Fixed limitation where problem hovers where not more prioritary than documentation hovers.
@@ -189,7 +188,7 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
     * Changed syntax coloring example in preferences
  * Fixed minor Content Assist bug where completions would not appear when requested on certain syntax errors.
 
-== DDT 0.4.1 (2011-03-04) ==
+### DDT 0.4.1 (2011-03-04)
  * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)
  * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=25 issue@ELabs #25] and other source highlighting bugs (like nested comments being lexed as non-nested comments). 
    * Also added additional syntax highlighting options for WYSIWYG strings, delimited strings, and character literals.
@@ -198,7 +197,7 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=17 issue@ELabs #17], [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=18 issue@ELabs #18], [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=20 issue@ELabs #20], all related to editor auto edits. Properly implemented:
    * Editor auto-edits (smart indenting/deindenting according to block structure), added "Typing" preference page.
 
-== DDT 0.4.0 (2010-11-17) ==
+### DDT 0.4.0 (2010-11-17)
  * Renamed project to DDT
  * Updated IDE to latest DLTK version (2.0).
  * Fixed comment indentation character (was '#' instead of '//') on toggle comment actions 
@@ -209,13 +208,13 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Fixed several parser bugs.
  * Removed Content Assist Templates preference page.
  
-== Mmrnmhrm 0.3.1 (2010-04-12) ==
+### Mmrnmhrm 0.3.1 (2010-04-12)
  * Updated IDE to latest DLTK version (1.0), fixed bugs related to DLTK version migration.
  * Added Eclipse feature and update-site (so now supports automatic updating).
  * Updated support for new folder layout in newer DMD compiler installations.
  * Added D perspective.
 
-== Mmrnmhrm 0.3.0 (2008-10-09) ==
+### Mmrnmhrm 0.3.0 (2008-10-09)
  * Updated IDE to latest DLTK version (1.0M2), and also to Eclipse 3.4.
  * Minor builder changes. Added $DEEBUILDER.COMPILERPATH builder flag for compiler executable location.
  * Implemented initial DLTK Type Hierarchies implementation. Supertype hierarchy viewing should work ok, but subtype hierarchy is not, needs further work on part of DLTK. (Type Hierarchy View is available by pressing F4, Type Hierarchy Pop-up is available by pressing Ctrl-T).
@@ -223,14 +222,14 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Added auto edit strategies: smarter indentation on enter presses, copy&paste, etc. There may still be some kinks.
 
 
-== Mmrnmhrm 0.2.2 (2007-11-13) ==
+### Mmrnmhrm 0.2.2 (2007-11-13)
  * Fixed dependency on the org.junit plugin, and consequently on JDT.
  * Fixed SWT debug colors allways on.
  * Fixed Source Coloring preference page "Basic types" entry bug.
  * Removed unused DTLK project script builder (fix only takes effect on new projects).
  * Rethought and implemented the integrated project builder, based on a simple IDE-managed response file. It should be ready for use now.
 
-== Mmrnmhrm 0.2.1 (2007-10-23) ==
+### Mmrnmhrm 0.2.1 (2007-10-23)
  * Fixed major bug with document syntax highlighting and partitions.
  * Improved name lookup: statement blocks and enum bodies are now supported correctly (they don't see forward definitions anymore).
  * Improved Code completion: duplicates or occluded names are no longer presented.
@@ -239,7 +238,7 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Fixed some Neo AST bugs.
  * Minor builder changes (builder still work in progress).
 
-== Mmrnmhrm 0.2.0 (2007-09-18) ==
+### Mmrnmhrm 0.2.0 (2007-09-18)
 
  * Major rewrite of Mmrnmhrm to use the DTLK framework.
  * Huge Model improvements:
@@ -260,7 +259,7 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Added very basic builder support (using BUD (http://www.dsource.org/projects/build))
  * Added very basic launch support (debugging not supported)
 
-== Mmrnmhrm 0.1 - (2007-08-17) ==
+### Mmrnmhrm 0.1 - (2007-08-17)
 Initial public release 
 
  * New Project Wizard  

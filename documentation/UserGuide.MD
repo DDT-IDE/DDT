@@ -1,19 +1,20 @@
-#summary configuration and usage info.
+
+## User Guide
 
 *Note:* For an overview of DDT features, see [Features]. This also serves to document which major functionalities are available.
 
-== Eclipse basics ==
+### Eclipse basics
 
 If you are new to Eclipse, you can learn some of the basics of the Eclipse IDE with this short intro article: http://www.ibm.com/developerworks/opensource/library/os-eclipse-master1/ 
 
 Also, to improve Eclipse performance on modern machines, it is recommended you increase the memory available to the JVM. You can do so by modifying the _`eclipse.ini`_ file in your Eclipse installation. The two VM parameters in _`eclipse.ini`_ to note are _-Xms_ (initial Java heap size) and _-Xmx_ (maximum Java heap size). For a machine with 4Gb of RAM or more, the following is recommended as minimum values:
-{{{
+```
 -vmargs
 -Xms256m
 -Xmx1024m
-}}}
+```
 
-== DDT Configuration ==
+### DDT Configuration
 
 Before creating D projects, you should configure a D compiler installation (they are often called 'interpreters' throughout the IDE UI. This is due to a current limitation arising from DDT's usage of _DLTK - the Dynamic Languages ToolKit_). The compiler itself might not be used, but adding a D compiler installation allows the standard library to be part of a project build path.
 
@@ -23,7 +24,7 @@ https://ddt.googlecode.com/git/documentation/screenshots/UserGuide_DDT_EditInter
 
 _Only DMD and GDC are supported at the moment._ However other compilers or standard libraries can be partially supported by manually adding or changing the default locations in the "Interpreter system libraries" list.
 
-== Project setup ==
+### Project setup
 
 *Project creation:*
 A new D project can be created with the 'New' / 'DDT/D Project' wizard. The D perspective should open after creation. Use the Script Explorer view to work with D projects. (the Project Explorer view is not yet properly supported)
@@ -41,7 +42,7 @@ Note: library entries in the build path, with the exception of the standard libr
 The default build behavior is to use the simple DDT built-in builder (configuration guide in last section).
 You can change this, and configure an external builder instead (it is recommended to use Dub). To do this, open the project 'Properties' page (available in the project context menu), go the 'Builders' page. Disable the existing builders, and add your own, invoking an external program.
 
-== Editor and Navigation ==
+### Editor and Navigation
 
 *Editor newline auto-indentation:*
 The editor will auto-indent new lines after an Enter is pressed. Pressing Backspace with the cursor after the indent characters in the start of the line will delete the indent and preceding newline, thus joining the rest of the line with the previous line. Pressing Delete before a newline will have an identical effect.
@@ -74,7 +75,7 @@ https://ddt.googlecode.com/git/documentation/screenshots/UserGuide_SearchDialog.
 It is also possible to search for all references to a given definition. In the editor, select the name of a definition, and use the editor context menu to search for references (shortcut: Ctrl-Shift-G). This can also be invoked on references, invoking a search for all references to the same definition the selected reference resolves to.
 
 
-==Launch and Debug:==
+### Launch and Debug:
 To run a D project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open 'Run' / 'Run Configurations...'. Then double click 'D Application" to create a new D launch, and configure it accordingly. You can run these launches from the 'Run Configurations...', or for quicker access, from the Launch button in the Eclipse toolbar.
 
 Alternatively, to automatically create and run a launch configuration (if a matching one doesn't exist already), you can select a D project in the workspace explorer, open the context menu, and do 'Run As...' / 'D Application'. (or 'Debug As...' for debugging instead). If a matching configuration exists already, that one will be run.
@@ -85,7 +86,7 @@ D launches can be run in debug mode. You will need a GDB debugger. To configure 
 https://ddt.googlecode.com/git/documentation/screenshots/UserGuide_DebuggerLaunchConfiguration.png
 GDB debugger integration is achieved by using the CDT plugins. To configure global debugger options, go the 'C/C++'/'Debug'/'GDB' preference page.
 
-==Built-in Build:==
+### Built-in Build:
 *Note* In the near future all project configuration (including building) will be setup by means of the [http://code.dlang.org/about Dub tool].
 
 There is some support for integrated builder functionality, namely, the IDE can automatically manage some of the build settings according to the IDE's D project configuration. The build settings can be accessed on the "D Compile Options" project properties page. Here's how it works: DDT will create a build.rf file in the project root folder and then invoke a builder according to the "Build Command:" entry. You can, and should, specify arguments to the build command in the entry, such as the response file "build.rf". 
