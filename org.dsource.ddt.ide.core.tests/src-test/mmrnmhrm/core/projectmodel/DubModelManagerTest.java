@@ -68,6 +68,7 @@ public class DubModelManagerTest extends CommonDubModelTest {
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount); 
 		assertTrue(DubModel.getBundleInfo(DUB_TEST) == null);
 		
+		DubModelManager.getDefault().syncPendingUpdates();
 		try {
 			runBasicTestSequence______________(project);
 			project.delete(true, null); // cleanup

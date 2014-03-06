@@ -65,6 +65,10 @@ public class SearchAndAddCompilersOnPathTask {
 	}
 	
 	public void applyFoundInstalls() {
+		// TODO: There are some bugs related to this, in particular, saving prefs
+		// Also, I'm not sure how safe it is to call this outside UI thread
+		if(monitor.isCanceled()) 
+			return;
 		for (InterpreterStandin install : foundInstalls) {
 			install.convertToRealInterpreter();
 		}
