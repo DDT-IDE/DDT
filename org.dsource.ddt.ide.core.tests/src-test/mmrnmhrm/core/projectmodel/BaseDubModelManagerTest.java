@@ -14,6 +14,7 @@ package mmrnmhrm.core.projectmodel;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.CollectionUtil.createCollection;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -345,7 +346,7 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 			ProjDepChecker projDepChecker = (ProjDepChecker) bundleDep;
 			removeDepProjBPEntry(projDepChecker.project, buildpathToVerify);
 		} else {
-			for (Path srcFolderPath : bundleDep.sourceFolders) {
+			for (Path srcFolderPath : createCollection(bundleDep.sourceFolders)) {
 				Path srcFolderAbsolutePath = bundleDep.location.resolve(srcFolderPath);
 				removeDepBuildpathEntry(buildpathToVerify, srcFolderAbsolutePath);
 			}

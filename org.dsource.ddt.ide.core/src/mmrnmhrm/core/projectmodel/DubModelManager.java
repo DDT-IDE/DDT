@@ -17,8 +17,11 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
+import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -26,6 +29,7 @@ import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.core.projectmodel.DubModelManager.DubModelManagerTask;
 import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask.SearchAndAddCompilersOnPathJob;
 
 import org.dsource.ddt.ide.core.DeeNature;
@@ -139,7 +143,7 @@ public class DubModelManager {
 				@Override
 				public void run(IProgressMonitor monitor) {
 					DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
-					readProjectInfo(monitor);
+					initializeProjectsInfo(monitor);
 				}
 			}, null);
 		} catch (CoreException e) {
@@ -149,19 +153,25 @@ public class DubModelManager {
 		}
 	}
 	
-	protected void readProjectInfo(@SuppressWarnings("unused") IProgressMonitor monitor) {
+	protected void initializeProjectsInfo(@SuppressWarnings("unused") IProgressMonitor monitor) {
 		try {
 			IProject[] deeProjects = EclipseUtils.getOpenedProjects(DeeNature.NATURE_ID);
 			for (IProject project : deeProjects) {
-				checkNewProject(project);
+				startModelUpdateIfIsDubProject(project);
 			}
 		} catch (CoreException ce) {
 			DeeCore.logStatus(ce.getStatus());
 		}
 	}
 	
-	
 	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path(DubManifestParser.DUB_MANIFEST_FILENAME);
+	
+	protected void startModelUpdateIfIsDubProject(IProject project) {
+		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
+		if(packageFile != null && packageFile.getType() == IResource.FILE) {
+			startDubProjectModelUpdate(project);
+		}
+	}
 	
 	protected final class DubProjectModelResourceListener implements IElementChangedListener {
 		
@@ -185,10 +195,10 @@ public class DubModelManager {
 			
 			switch(projectDelta.getKind()) {
 			case IModelElementDelta.ADDED:
-				checkNewProject(project);
+				startModelUpdateIfIsDubProject(project);
 				break;
 			case IModelElementDelta.REMOVED:
-				removeProjectModel(project);
+				startRemoveProjectUpdate(project);
 				break;
 			case IModelElementDelta.CHANGED:
 				IResourceDelta[] resourceDeltas = projectDelta.getResourceDeltas();
@@ -198,7 +208,7 @@ public class DubModelManager {
 					if(resourceDelta.getResource().getType() == IResource.FILE && 
 							resourceDelta.getProjectRelativePath().equals(DUB_BUNDLE_PACKAGE_FILE)) {
 						if(resourceDelta.getResource().getType() == IResource.FILE) {
-							startDubModelProjectUpdate(project);
+							startDubProjectModelUpdate(project);
 						}
 					}
 				}
@@ -210,20 +220,13 @@ public class DubModelManager {
 		
 	}
 	
-	protected void checkNewProject(IProject project) {
-		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
-		if(packageFile != null && packageFile.getType() == IResource.FILE) {
-			startDubModelProjectUpdate(project);
-		}
-	}
-	
-	protected void startDubModelProjectUpdate(final IProject project) {
+	protected void startDubProjectModelUpdate(final IProject project) {
 		log.println(">> Starting project update: ", project);
 		
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
 		addProjectModel(project, unresolvedDescription);
 		
-		modelAgent.submit(new ProjectModelDubDescribeTask(project, unresolvedDescription, this));
+		modelAgent.submit(new ProjectModelDubDescribeTask(this, project, unresolvedDescription));
 	}
 	
 	protected DubBundleDescription readUnresolvedBundleDescription(final IProject project) {
@@ -233,13 +236,18 @@ public class DubModelManager {
 		return new DubBundleDescription(unresolvedBundle);
 	}
 	
+	protected void startRemoveProjectUpdate(IProject project) {
+		removeProjectModel(project);
+		modelAgent.submit(new UpdateAllProjectsBuildpathTask(this, project));
+	}
+	
 	/* ----------------------------------- */
 	
-	protected void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
+	protected final void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
 		model.addProjectModel(project, dubBundleDescription);
 	}
 	
-	protected void removeProjectModel(IProject project) {
+	protected final void removeProjectModel(IProject project) {
 		model.removeProjectModel(project);
 	}
 	
@@ -255,25 +263,38 @@ public class DubModelManager {
 	public static IMarker[] getDubErrorMarkers(IProject project) throws CoreException {
 		return project.findMarkers(DubModelManager.DUB_PROBLEM_ID, true, IResource.DEPTH_ONE);
 	}
-
+	
+	protected abstract class DubModelManagerTask implements Runnable {
+		
+		protected final DubModelManager dubModelManager;
+		
+		public DubModelManagerTask() {
+			this.dubModelManager = DubModelManager.this;
+		}
+		
+		protected DubModel getModel() {
+			return model;
+		}
+		
+		protected void logInternalError(CoreException ce) {
+			DeeCore.logError(ce);
+		}
+		
+	}
+	
 }
 
 
-class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
+class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements IRunnableWithJob {
 	
 	protected final IProject project;
-	protected final DubModelManager dubModelManager;
 	protected final DubBundleDescription unresolvedDescription;
 	
-	protected ProjectModelDubDescribeTask(IProject project, DubBundleDescription unresolvedDescription, 
-			DubModelManager dubModelManager) {
+	protected ProjectModelDubDescribeTask(DubModelManager dubModelManager, IProject project, 
+			DubBundleDescription unresolvedDescription) {
+		super(dubModelManager);
 		this.project = project;
 		this.unresolvedDescription = unresolvedDescription;
-		this.dubModelManager = dubModelManager;
-	}
-	
-	protected void logInternalError(CoreException ce) {
-		DeeCore.logError(ce);
 	}
 	
 	@Override
@@ -282,11 +303,19 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 
 		// only run dub describe if unresolved description had no errors
 		if(unresolvedDescription.hasErrors() == false) {
-			super.run();
+			try {
+				EclipseAsynchJobAdapter.runUnderAsynchJob(getNameForJob(), this);
+			} catch (InterruptedException e) {
+				return;
+			}
 		} else {
 			DubBundleException error = unresolvedDescription.getError();
 			setDubErrorMarker(project, error.getMessage(), error.getCause());
 		}
+	}
+	
+	protected String getNameForJob() {
+		return "Running 'dub describe' on project: " + project.getName();
 	}
 	
 	protected void deleteDubMarkers(IProject project) {
@@ -311,13 +340,9 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		}
 	}
 	
-	@Override
-	protected String getNameForJob() {
-		return "Running 'dub describe' on project: " + project.getName();
-	}
 	
 	@Override
-	protected void runWithMonitor(IProgressMonitor monitor) {
+	public void runUnderEclipseJob(IProgressMonitor monitor) {
 		assertNotNull(monitor);
 		updateProject(monitor);
 	}
@@ -355,10 +380,11 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		
 		DubBundleDescription bundleDesc = DubDescribeParser.parseDescription(location, descriptionOutput);
 		
-		if(!bundleDesc.hasErrors()) {
-			updateBuildpath(project, bundleDesc);
-		} else {
+		if(bundleDesc.hasErrors()) {
 			setProjectDubError(project, "Error parsing description:", bundleDesc.getError());
+		} else {
+			dubModelManager.addProjectModel(project, bundleDesc);
+			updateBuildpath(project, bundleDesc);
 		}
 		return null;
 	}
@@ -373,13 +399,20 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		return null;
 	}
 	
+}
+
+abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
+	
+	protected ProjectUpdateBuildpathTask(DubModelManager dubModelManager) {
+		dubModelManager.super();
+	}
+	
 	protected void updateBuildpath(IProject project, DubBundleDescription bundleDesc) {
 		IScriptProject projectElement = DLTKCore.create(project);
 		
 		ArrayList<IBuildpathEntry> entries = new ArrayList<>();
 		
 		entries.add(DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()));
-		
 		entries.add(DLTKCore.newContainerEntry(new Path(DubBuildpathContainerInitializer.ID)));
 		
 		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getEffectiveSourceFolders()) {
@@ -389,16 +422,15 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		
 		try {
 			// TODO: should all this be set atomically? also, check if project exists
-			updateDubContainer(projectElement, getBuildpathEntriesFromDeps(bundleDesc));
+			updateDubBuildpathContainer(projectElement, getBuildpathEntriesFromDeps(bundleDesc));
 			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
 			
-			dubModelManager.addProjectModel(project, bundleDesc);
 		} catch (ModelException me) {
 			logInternalError(me);
 		}
 	}
 	
-	protected void updateDubContainer(IScriptProject projectElement, IBuildpathEntry[] entries) 
+	protected void updateDubBuildpathContainer(IScriptProject projectElement, IBuildpathEntry[] entries) 
 			throws ModelException {
 		Path containerPath = new Path(DubBuildpathContainerInitializer.ID);
 		DubContainer dubContainer = new DubContainer(containerPath, projectElement, entries);
@@ -452,6 +484,27 @@ class ProjectModelDubDescribeTask extends RunnableWithEclipseAsynchJob {
 		}
 		
 		return null;
+	}
+}
+
+class UpdateAllProjectsBuildpathTask extends ProjectUpdateBuildpathTask {
+	
+	protected IProject removedProject;
+
+	protected UpdateAllProjectsBuildpathTask(DubModelManager dubModelManager, IProject removedProject) {
+		super(dubModelManager);
+		this.removedProject = removedProject;
+	}
+	
+	@Override
+	public void run() {
+		Set<String> dubProjects = dubModelManager.model.getDubProjects();
+		for (String projectName : dubProjects) {
+			// BM: we could optimize this, and update only if removed project was in buildpath of project to update.
+			DubBundleDescription bundleDesc = dubModelManager.model.doGetBundleInfo(projectName);
+			IProject project = DeeCore.getWorkspaceRoot().getProject(projectName);
+			updateBuildpath(project, bundleDesc);
+		}
 	}
 	
 }

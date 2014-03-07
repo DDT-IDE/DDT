@@ -25,7 +25,8 @@ import melnorme.utilbox.core.fntypes.Predicate;
  */
 public class CollectionUtil {
 	
-	/** @return a new {@link ArrayList} from given collection (a null collection is considered as if it's an empty one). */
+	/** @return a new {@link ArrayList} from given collection 
+	 * (a null collection is considered as if it's an empty one). */
 	public static <T> ArrayList<T> createArrayList(Collection<? extends T> collection) {
 		return new ArrayList<T>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
@@ -39,7 +40,8 @@ public class CollectionUtil {
 		return newCollection;
 	}
 	
-	/** @return a new {@link LinkedList} from given collection (a null collection is considered as if it's an empty one). */
+	/** @return a new {@link LinkedList} from given collection 
+	 * (a null collection is considered as if it's an empty one). */
 	public static <T> LinkedList<T> createLinkedList(Collection<? extends T> collection) {
 		return new LinkedList<T>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
@@ -53,7 +55,8 @@ public class CollectionUtil {
 		return newCollection;
 	}
 	
-	/** @return a new {@link HashSet} from given collection (a null collection is considered as if it's an empty one). */
+	/** @return a new {@link HashSet} from given collection 
+	 * (a null collection is considered as if it's an empty one). */
 	public static <T> HashSet<T> createHashSet(Collection<? extends T> collection) {
 		return new HashSet<T>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
@@ -65,6 +68,17 @@ public class CollectionUtil {
 			Collections.addAll(newCollection, array);
 		}
 		return newCollection;
+	}
+	
+	/** @return a new unmodifiable {@link Collection} from given array 
+	 * (a null array is considered like it's an empty one). */
+	@SafeVarargs
+	public static <T> Collection<T> createCollection(T... array) {
+		ArrayList<T> newCollection = new ArrayList<T>();
+		if(array != null) {
+			Collections.addAll(newCollection, array);
+		}
+		return Collections.unmodifiableCollection(newCollection);
 	}
 	
 	/** @return given coll if it's non-null, an empty collection otherwise.

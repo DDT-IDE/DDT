@@ -146,6 +146,10 @@ public class CommonDubTest extends DToolBaseTest {
 		return main(location, errorMsgStart, name, version, srcFolders, IGNORE_RAW_DEPS, IGNORE_DEPS);
 	}
 	
+	public static DubBundleChecker bundle(Path location, String name) {
+		return new DubBundleChecker(location, name, null, IGNORE_STR, null, IGNORE_RAW_DEPS, IGNORE_DEPS);
+	}
+	
 	public static DubBundleChecker bundle(String errorMsgStart, String name) {
 		return new DubBundleChecker(IGNORE_PATH, name, errorMsgStart, IGNORE_STR, null, IGNORE_RAW_DEPS, IGNORE_DEPS);
 	}

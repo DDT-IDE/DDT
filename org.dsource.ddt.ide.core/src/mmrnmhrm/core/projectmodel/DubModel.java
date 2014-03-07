@@ -11,6 +11,7 @@
 package mmrnmhrm.core.projectmodel;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import melnorme.utilbox.misc.ListenerListHelper;
 
@@ -64,6 +65,10 @@ public class DubModel extends ListenerListHelper<IDubModelListener> {
 		log.println(">> Removing project: ", project);
 		DubBundleDescription oldDesc = dubBundleInfos.remove(project.getName());
 		fireUpdateEvent(this, oldDesc);
+	}
+	
+	protected synchronized Set<String> getDubProjects() {
+		return dubBundleInfos.keySet();
 	}
 	
 	protected synchronized void addErrorToProjectModel(IProject project, DubBundleException dubError) {

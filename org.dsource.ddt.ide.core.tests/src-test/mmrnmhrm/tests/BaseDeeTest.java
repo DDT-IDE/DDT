@@ -207,4 +207,13 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		assertNotNull(ScriptRuntime.getInterpreterInstall(dltkProj));
 	}
 	
+	public static void deleteProject(String projectName) {
+		IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
+		try {
+			project.delete(true, null);
+		} catch (CoreException e) {
+			// Ignore
+		}
+	}
+	
 }

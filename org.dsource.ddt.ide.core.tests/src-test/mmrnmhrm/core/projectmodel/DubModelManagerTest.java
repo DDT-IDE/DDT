@@ -26,6 +26,26 @@ import dtool.dub.DubManifestParserTest;
 
 public class DubModelManagerTest extends BaseDubModelManagerTest {
 	
+	@Test
+	public void testShutdown() throws Exception { testShutdown$(); }
+	public void testShutdown$() throws Exception {
+		DubModelManager dmm = new DubModelManager(new DubModel()); 
+		dmm.initializeModelManager();
+		final CountDownLatch latch = new CountDownLatch(1);
+		
+		dmm.modelAgent.submit(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				latch.countDown();
+				new CountDownLatch(1).await(); // wait until interrupted
+				throw DeeCore.createCoreException("error", new Exception());
+			}
+		});
+		latch.await();
+		// Test that shutdown happens successfully even with pending task, and no log entries are made.
+		dmm.shutdownManager(); 
+	}
+	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";
 	public static Path DUB_WORKSPACE = DubManifestParserTest.DUB_WORKSPACE;
@@ -46,12 +66,8 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 		assertTrue(DubModel.getBundleInfo(DUB_TEST) == null);
 		
 		DubModelManager.getDefault().syncPendingUpdates();
-		try {
-			runBasicTestSequence______________(project);
-			project.delete(true, null); // cleanup
-		} finally {
-			
-		}
+		runBasicTestSequence______________(project);
+		project.delete(true, null); // cleanup
 		assertTrue(DubModel.getBundleInfo(project.getName()) == null);
 		assertTrue(getDubContainer(project) == null);
 		
@@ -65,6 +81,8 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 		Path location = project.getLocation().toFile().toPath();
 		checkDubModel(unresolvedBundleDesc, project, 
 			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
+		
+		testProjectBPDependencies();
 	}
 	
 	public void runBasicTestSequence______________(IProject project) throws Exception {
@@ -119,30 +137,7 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 		
 	}
 	
-	
-	@Test
-	public void testShutdown() throws Exception { testShutdown$(); }
-	public void testShutdown$() throws Exception {
-		DubModelManager dmm = new DubModelManager(new DubModel()); 
-		dmm.initializeModelManager();
-		final CountDownLatch latch = new CountDownLatch(1);
-		
-		dmm.modelAgent.submit(new Callable<Void>() {
-			@Override
-			public Void call() throws Exception {
-				latch.countDown();
-				new CountDownLatch(1).await(); // wait until interrupted
-				throw DeeCore.createCoreException("error", new Exception());
-			}
-		});
-		latch.await();
-		// Test that shutdown happens successfully even with pending task, and no log entries are made.
-		dmm.shutdownManager(); 
-	}
-	
-	@Test
-	public void testProjectDeps() throws Exception { testProjectDeps$(); }
-	public void testProjectDeps$() throws Exception {
+	public void testProjectBPDependencies() throws Exception {
 		IProject project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		String dubTestJson = jsObject(jsEntry("name", "dub_test"), 
 			jsEntryValue("dependencies", "{ \"dub_lib\": \"~master\"}"));
@@ -160,7 +155,15 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 				new ProjDepChecker(libProject, "dub_lib")
 			));
 		
-		// TODO: test project remove
+		Path libProjectLocation = loc(libProject);
+		libProject.delete(true, null);
+		DubModelManager.getDefault().syncPendingUpdates();
+		
+		checkFullyResolvedCode(project, dubBundle, 
+			main(loc(project), null, "dub_test", DEFAULT_VERSION, srcFolders(), 
+				rawDeps("dub_lib"), 
+				bundle(libProjectLocation, "dub_lib")
+			));
 	}
 	
 	protected Path loc(IProject project) {
