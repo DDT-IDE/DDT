@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.osgi.framework.BundleContext;
 
 public abstract class LangCore extends Plugin {
 	
@@ -22,9 +23,30 @@ public abstract class LangCore extends Plugin {
 	public static final String PLUGIN_ID = LangCore_Actual.PLUGIN_ID;
 	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
-	public static Plugin getInstance() {
-		return LangCore_Actual.getInstance();
+	protected static LangCore pluginInstance;
+	
+	/** Returns the singleton for this plugin instance. */
+	public static LangCore getInstance() {
+		return pluginInstance;
 	}
+	
+	@Override
+	public final void start(BundleContext context) throws Exception {
+		pluginInstance = this;
+		super.start(context);
+		doCustomStart(context);
+	}
+	
+	protected abstract void doCustomStart(BundleContext context);
+
+	@Override
+	public final void stop(BundleContext context) throws Exception {
+		doCustomStop(context);
+		super.stop(context);
+		pluginInstance = null;
+	}
+	
+	protected abstract void doCustomStop(BundleContext context);
 	
 	/** Convenience method to get the WorkspaceRoot. */
 	public static IWorkspaceRoot getWorkspaceRoot() {

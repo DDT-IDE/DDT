@@ -9,18 +9,16 @@ import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import org.dsource.ddt.ui.DeeUIPlugin;
 
 /**
- * Alias for the actual running plugin, used by Lang code. 
+ * Actual/concrete IDE constants and other bindings, for Lang UI code. 
  */
-public final class LangUIPlugin_Actual extends DeeUIPlugin {
+public final class LangUIPlugin_Actual {
 	
-	protected static DeeUIPlugin __getInstance() {
-		return DeeUIPlugin.getInstance();
-	}
+	public static final String PLUGIN_ID = DeeUIPlugin.PLUGIN_ID;
 	
 	// ID to start the debug plugin automatically, if present
 	protected static final String DEBUG_PLUGIN_ID = "org.dsource.ddt.ide.debug";
 	
-	public static void initTextHovers(List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
+	protected static void initTextHovers(List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
 		textHoverSpecifications.add(AnnotationHover_Adapter.ProblemHover_Adapter.class);
 		textHoverSpecifications.add(DeeDocTextHover.class);
 		textHoverSpecifications.add(AnnotationHover_Adapter.class);

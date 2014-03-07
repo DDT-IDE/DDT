@@ -24,7 +24,7 @@ public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	
 	@Override
 	protected void setPreferenceStore() {
-		setPreferenceStore(DeePlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(DeePlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

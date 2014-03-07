@@ -56,7 +56,7 @@ class DubModelImpl extends ListenerListHelper<IDubModelListener> implements IDub
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
-
+	
 	public DubModelImpl() {
 	}
 	
@@ -103,6 +103,5 @@ class DubModelImpl extends ListenerListHelper<IDubModelListener> implements IDub
 		DubBundleDescription bundleDesc = new DubBundleDescription(main, dubError);
 		addProjectModel(project, bundleDesc);
 	}
-	
 	
 }

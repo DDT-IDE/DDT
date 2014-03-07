@@ -49,7 +49,6 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
-import dtool.SimpleLogger;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
@@ -61,9 +60,11 @@ import dtool.dub.DubManifestParser;
  */
 public class DubModelManager {
 	
-	protected static SimpleLogger log = new SimpleLogger(true);
-	
 	protected static final DubModelManager defaultInstance = new DubModelManager(DubModel.defaultInstance);
+	
+	public static DubModelManager getDefault() {
+		return defaultInstance;
+	}
 	
 	public static void startDefault() {
 		defaultInstance.startManager();
@@ -71,10 +72,6 @@ public class DubModelManager {
 	
 	public static void shutdownDefault() {
 		defaultInstance.shutdownManager();
-	}
-	
-	public static DubModelManager getDefault() {
-		return defaultInstance;
 	}
 	
 	public static DubDependenciesContainer getDubContainer(IProject project) {
@@ -236,8 +233,6 @@ public class DubModelManager {
 	}
 	
 	protected void startDubProjectModelUpdate(final IProject project) {
-		log.println(">> Starting project update: ", project);
-		
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
 		addProjectModel(project, unresolvedDescription);
 		

@@ -11,8 +11,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.osgi.framework.BundleContext;
 
-import dtool.Logg;
-
 
 public class DeeUIPlugin extends LangUIPlugin {
 	
@@ -20,37 +18,18 @@ public class DeeUIPlugin extends LangUIPlugin {
 	// The convention for the id prefix for extensions contributed by this plugin
 	public static final String EXTENSIONS_IDPREFIX = PLUGIN_ID + ".";
 	
-	protected static DeeUIPlugin pluginInstance;
-	
-	/** Returns the plugin instance. */
-	public static DeeUIPlugin getInstance() {
-		return getDefault();
-	}
-	
-	/** Returns the plugin instance. */
 	public static DeeUIPlugin getDefault() {
-		return pluginInstance;
+		return (DeeUIPlugin) getInstance();
 	}
 	
 	/* -------- start/stop methods -------- */
 	
-	@Override
-	public void start(BundleContext context) throws Exception {
-		pluginInstance = this;
-		
-		Logg.main.println(" =============  DDT INITIALIZING  ============= " );
-		Logg.main.println("Location: " + Platform.getLocation());
-		Logg.main.println("Instance Location: " + Platform.getInstanceLocation().getURL());
-		
-		super.start(context);
-	}
+	private DubProcessUIListener dubProcessListener;
 	
 	@Override
-	protected Class<?> start_getImagesClass() {
+	protected Class<?> doCustomStart_getImagesClass() {
 		return DeePluginImages.class;
 	}
-	
-	private DubProcessUIListener dubProcessListener;
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {
@@ -62,11 +41,8 @@ public class DeeUIPlugin extends LangUIPlugin {
 	}
 	
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	protected void doCustomStop(BundleContext context) {
 		DubModelManager.getDefault().getProcessManager().removeDubProcessListener(dubProcessListener);
-		
-		super.stop(context);
-		pluginInstance = null;
 	}
 	
 	/* --------  -------- */
