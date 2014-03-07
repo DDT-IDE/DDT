@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.preferences;
 
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterLibraryBlock;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AddScriptInterpreterDialog;
@@ -28,7 +28,6 @@ public class DeeCompilerLibraryBlock extends AbstractInterpreterLibraryBlock {
 	
 	@Override
 	protected IDialogSettings getDialogSettions() {
-		return DeePlugin.getDefault().getDialogSettings();
-		//return RubyDebugUIPlugin.getDefault().getDialogSettings();
+		return DeeUIPlugin.getInstance().getDialogSettings();
 	}
 }

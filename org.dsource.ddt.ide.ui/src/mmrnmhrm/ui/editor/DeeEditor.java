@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.editor;
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.text.DeePartitions;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
@@ -16,8 +16,8 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 public class DeeEditor extends DeeBaseEditor {
 	
-	public static final String EDITOR_ID = DeePlugin.EXTENSIONS_IDPREFIX+"editors.DeeEditor";
-	public static final String CONTEXTS_DEE_EDITOR = DeePlugin.EXTENSIONS_IDPREFIX+"contexts.DeeEditor";
+	public static final String EDITOR_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"editors.DeeEditor";
+	public static final String CONTEXTS_DEE_EDITOR = DeeUIPlugin.EXTENSIONS_IDPREFIX+"contexts.DeeEditor";
 	
 	public static final String EDITOR_CONTEXT = "#DeeEditorContext";
 	public static final String RULER_CONTEXT = "#DeeRulerContext";
@@ -43,12 +43,12 @@ public class DeeEditor extends DeeBaseEditor {
 	
 	@Override
 	public ScriptTextTools getTextTools() {
-		return DeePlugin.getDefault().getTextTools();
+		return DeeUIPlugin.getDefault().getTextTools();
 	}
 	
 	@Override
 	protected ScriptOutlinePage doCreateOutlinePage() {
-		return new DeeOutlinePage(this, DeePlugin.getDefault().getPreferenceStore());
+		return new DeeOutlinePage(this, DeeUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override
@@ -94,7 +94,7 @@ public class DeeEditor extends DeeBaseEditor {
 	@Override
 	protected org.eclipse.dltk.internal.ui.actions.FoldingActionGroup createFoldingActionGroup() {
 		return new org.eclipse.dltk.internal.ui.actions.
-		FoldingActionGroup(this, getViewer(), DeePlugin.getDefault().getPreferenceStore());
+		FoldingActionGroup(this, getViewer(), DeeUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

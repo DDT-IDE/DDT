@@ -16,7 +16,7 @@ import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.model_elements.DefElementFlagConstants;
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPreferenceConstants;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
@@ -66,7 +66,7 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 	
 	@Override
 	public void init(IWorkbench workbench) {
-		setPreferenceStore(DeePlugin.getInstance().getPreferenceStore());
+		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	protected ElementIconsStyle selectedIconStyle;
@@ -115,7 +115,7 @@ public class DeeAppearancePreferencePage extends FieldEditorPreferencePage imple
 	/** Triggers a refresh on all viewers with model element label providers. 
 	 * (Uses a workaround to trigger refresh in {@link AppearanceAwareLabelProvider} ) */
 	protected void refreshIDEViewers() {
-		IPreferenceStore prefStore = DeePlugin.getInstance().getPreferenceStore();
+		IPreferenceStore prefStore = DeeUIPlugin.getInstance().getPreferenceStore();
 		String value = prefStore.getString(PreferenceConstants.APPEARANCE_METHOD_RETURNTYPE);
 		prefStore.firePropertyChangeEvent(PreferenceConstants.APPEARANCE_METHOD_RETURNTYPE, value, value);
 	}

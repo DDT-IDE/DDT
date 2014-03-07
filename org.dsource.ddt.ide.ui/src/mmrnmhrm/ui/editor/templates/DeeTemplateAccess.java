@@ -30,6 +30,6 @@ public class DeeTemplateAccess extends ScriptTemplateAccess {
 	
 	@Override
 	protected IPreferenceStore getPreferenceStore() {
-		return DeeUI.getDefault().getPreferenceStore();
+		return DeeUI.getInstance().getPreferenceStore();
 	}
 }

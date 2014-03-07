@@ -12,10 +12,11 @@ package melnorme.lang.ide.debug.ui;
 
 import melnorme.lang.ide.ui.LangEditorTextHoversRegistry;
 
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 
-public class DebugUI extends DebugUI_Actual {
+public class DebugUI extends Plugin {
 	
 	@Override
 	public void start(BundleContext context) throws Exception {

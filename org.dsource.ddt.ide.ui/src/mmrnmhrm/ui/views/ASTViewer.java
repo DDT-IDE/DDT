@@ -4,7 +4,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.parser.DeeModuleDeclaration;
 import mmrnmhrm.core.parser.DeeModuleParsingUtil;
 import mmrnmhrm.lang.ui.EditorUtil;
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
@@ -57,7 +57,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		IDocumentListener, ISelectionChangedListener, IDoubleClickListener {
 	
 	
-	public static final String VIEW_ID = DeePlugin.EXTENSIONS_IDPREFIX+"views.ASTViewer";
+	public static final String VIEW_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"views.ASTViewer";
 	
 	private IWorkbenchWindow window;
 	
@@ -193,7 +193,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		try {
 			fSourceModule.makeConsistent(null);
 		} catch (ModelException e) {
-			DeeCore.log(e);
+			DeeCore.logError(e);
 		}
 		fDeeModule = DeeModuleParsingUtil.getParsedDeeModuleDecl(fSourceModule);
 		if(fDeeModule == null) {

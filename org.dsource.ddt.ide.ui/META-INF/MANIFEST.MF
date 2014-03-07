@@ -4,7 +4,7 @@ Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
 Bundle-SymbolicName: org.dsource.ddt.ide.ui;singleton:=true
 Bundle-Version: 0.10.0.qualifier
-Bundle-Activator: org.dsource.ddt.ui.DeeUIPlugin
+Bundle-Activator: mmrnmhrm.ui.DeeUIPlugin
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -30,5 +30,4 @@ Require-Bundle: org.dsource.ddt.ide.core;bundle-version="[0.10.0,0.11.0)",
  org.eclipse.debug.ui;bundle-version="3.6.0"
 Export-Package: melnorme.lang.ide.ui;x-friends:="org.dsource.ddt.ide.debug",
  melnorme.lang.ide.ui.editors;x-friends:="org.dsource.ddt.ide.debug",
- org.dsource.ddt.ui,
  org.dsource.ddt.ui.tabgroup

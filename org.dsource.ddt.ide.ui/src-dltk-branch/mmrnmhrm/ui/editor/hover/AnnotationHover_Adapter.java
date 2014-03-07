@@ -1,8 +1,8 @@
 package mmrnmhrm.ui.editor.hover;
 
 import melnorme.lang.ide.ui.editors.ILangEditorTextHover;
+import mmrnmhrm.ui.DeeUIPlugin;
 
-import org.dsource.ddt.ui.DeeUIPlugin;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;

@@ -44,7 +44,7 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
 	@Override
 	protected boolean insertCompletion() {
-		IPreferenceStore preference = DeeUI.getDefault().getPreferenceStore();
+		IPreferenceStore preference = DeeUI.getInstance().getPreferenceStore();
 		return preference.getBoolean(PreferenceConstants.CODEASSIST_INSERT_COMPLETION);
 	}
 	

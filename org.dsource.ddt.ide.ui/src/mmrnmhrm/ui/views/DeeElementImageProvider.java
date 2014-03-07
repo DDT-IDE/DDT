@@ -7,7 +7,7 @@ import melnorme.utilbox.tree.IElement;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.core.model_elements.DefElementFlagsUtil;
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIPreferenceConstants;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
@@ -41,7 +41,7 @@ public class DeeElementImageProvider {
 	}
 	
 	public static ElementIconsStyle getIconStylePreference() {
-		String iconStyleStr = DeePlugin.getPrefStore().getString(DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE);
+		String iconStyleStr = DeeUIPlugin.getPrefStore().getString(DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE);
 		return ElementIconsStyle.fromString(iconStyleStr, ElementIconsStyle.DDT);
 	}
 	

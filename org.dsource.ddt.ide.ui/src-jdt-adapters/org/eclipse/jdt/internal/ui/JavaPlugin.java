@@ -1,13 +1,13 @@
 package org.eclipse.jdt.internal.ui;
 
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 
 
 /**
- * JDT STUB/Adaptor for JavaPlugin
+ * JavaPlugin is alias to true plugin code
  */
-public class JavaPlugin extends DeePlugin {
+public class JavaPlugin extends DeeUIPlugin {
 
 
 }

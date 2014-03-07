@@ -10,7 +10,7 @@ import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.DubModelManager;
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IFile;
@@ -42,7 +42,7 @@ import dtool.dub.DubManifestParser;
  */
 public class DeeProjectWizard extends ProjectWizardExtension {
 	
-	public static final String WIZARD_ID = DeePlugin.EXTENSIONS_IDPREFIX+"wizards.deeProjectWizard";
+	public static final String WIZARD_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"wizards.deeProjectWizard";
 	
 	protected final ProjectWizardFirstPage fFirstPage = new DeeProjectWizardPage1(this);
 	protected final DeeProjectWizardBuildSettingsPage fBuildSettingsPage = 

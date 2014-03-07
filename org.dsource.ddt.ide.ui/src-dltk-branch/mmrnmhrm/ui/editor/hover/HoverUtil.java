@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
 import org.eclipse.core.resources.IProject;
@@ -32,10 +32,10 @@ public class HoverUtil {
 	
 	public static class DeePluginPreferences {
 		public static String getPreference(String key, @SuppressWarnings("unused") IProject project) {
-			return DeePlugin.getPrefStore().getString(key);
+			return DeeUIPlugin.getPrefStore().getString(key);
 		}
 	}
-
+	
 	private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
 
 	/** Gets the HTML info for the given DefUnit. */

@@ -3,10 +3,9 @@ package melnorme.lang.ide.ui;
 import java.util.List;
 
 import melnorme.lang.ide.ui.editors.ILangEditorTextHover;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.hover.AnnotationHover_Adapter;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
-
-import org.dsource.ddt.ui.DeeUIPlugin;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 

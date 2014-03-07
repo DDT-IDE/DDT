@@ -11,7 +11,7 @@
 package mmrnmhrm.ui.preferences.pages;
 
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.preferences.DeeEditorConfigurationBlock;
 
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
@@ -21,7 +21,7 @@ import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 
 public class DeeEditorPreferencePage extends AbstractConfigurationBlockPreferencePage {
 	
-	public final static String PAGE_ID = DeePlugin.EXTENSIONS_IDPREFIX+"preferences.Editor";
+	public final static String PAGE_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"preferences.Editor";
 	
 	@Override
 	protected void setDescription() {
@@ -30,7 +30,7 @@ public class DeeEditorPreferencePage extends AbstractConfigurationBlockPreferenc
 	
 	@Override
 	protected void setPreferenceStore() {
-		setPreferenceStore(DeePlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

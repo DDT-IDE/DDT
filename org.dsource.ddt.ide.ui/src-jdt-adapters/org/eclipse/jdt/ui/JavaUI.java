@@ -1,11 +1,11 @@
 package org.eclipse.jdt.ui;
 
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 
 
 public class JavaUI {
 
-	public static final String ID_PLUGIN = DeePlugin.PLUGIN_ID;
+	public static final String ID_PLUGIN = DeeUIPlugin.PLUGIN_ID;
 
 }

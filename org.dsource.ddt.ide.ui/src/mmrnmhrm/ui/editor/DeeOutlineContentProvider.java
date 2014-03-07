@@ -82,7 +82,7 @@ public class DeeOutlineContentProvider extends ElementContentProvider {
 		
 		/*if(newInput instanceof IEditorInput) {
 			IEditorInput input = (IEditorInput) newInput;
-	    	DeeDocumentProvider docProvider = DeePlugin.getDeeDocumentProvider();
+	    	DeeDocumentProvider docProvider = DeeUIPlugin.getDeeDocumentProvider();
 	    	root = docProvider.getCompilationUnit(input);
 	    } else {
 	    	root = null;

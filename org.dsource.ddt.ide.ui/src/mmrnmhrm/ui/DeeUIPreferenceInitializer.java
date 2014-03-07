@@ -28,7 +28,7 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 	// Extension point entry point
 	@Override
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = DeePlugin.getInstance().getPreferenceStore();
+		IPreferenceStore store = DeeUIPlugin.getInstance().getPreferenceStore();
 		
 		EditorsUI.useAnnotationsPreferencePage(store);
 		EditorsUI.useQuickDiffPreferencePage(store);

@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.editor.codeassist;
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
@@ -18,7 +18,7 @@ public class DeeContentAssistPreference extends ContentAssistPreference {
 
 	@Override
 	protected ScriptTextTools getTextTools() {
-		return DeePlugin.getDefault().getTextTools();
+		return DeeUIPlugin.getDefault().getTextTools();
 	}
 	
 	@Override

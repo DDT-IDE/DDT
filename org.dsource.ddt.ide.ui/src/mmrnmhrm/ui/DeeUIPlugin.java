@@ -1,9 +1,8 @@
-package org.dsource.ddt.ui;
+package mmrnmhrm.ui;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTUtil;
 import mmrnmhrm.core.projectmodel.DubModelManager;
-import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.launch.DubProcessUIListener;
 import mmrnmhrm.ui.text.DeeTextTools;
 

@@ -11,12 +11,13 @@
 package mmrnmhrm.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Map;
 
 import melnorme.lang.ide.ui.editors.BestMatchHover;
 import melnorme.utilbox.core.CoreUtil;
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistPreference;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
@@ -110,7 +111,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		} else if (DeePartitions.$Methods.isString(contentType)) {
 			return new IAutoEditStrategy[] { };
 		} else {
-			return new IAutoEditStrategy[] { new DeeAutoEditStrategy(DeePlugin.getPrefStore(), contentType, sourceViewer) };
+			return array(new DeeAutoEditStrategy(DeeUIPlugin.getPrefStore(), contentType, sourceViewer));
 		}
 	}
 	
@@ -208,7 +209,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 				return new HierarchyInformationControl(parent, shellStyle, treeStyle) {
 					@Override
 					protected IPreferenceStore getPreferenceStore() {
-						return DeePlugin.getDefault().getPreferenceStore();
+						return DeeUIPlugin.getInstance().getPreferenceStore();
 					}
 				};
 			}

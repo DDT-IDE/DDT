@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.editor.hover;
 
 import melnorme.lang.ide.ui.editors.ILangEditorTextHover;
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -17,7 +17,7 @@ public class AbstractDocTextHover extends org.eclipse.dltk.internal.ui.text.hove
 	
 	public AbstractDocTextHover() {
 		super();
-		setPreferenceStore(DeePlugin.getPrefStore());
+		setPreferenceStore(DeeUIPlugin.getPrefStore());
 	}
 	
 	@Override

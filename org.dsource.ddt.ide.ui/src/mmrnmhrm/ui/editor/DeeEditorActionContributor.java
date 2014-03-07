@@ -31,7 +31,7 @@ public class DeeEditorActionContributor extends	SourceModuleEditorActionContribu
 	/*
 	public static CommandContributionItem getCommand_SearchReferences() {
 		return new CommandContributionItem(new CommandContributionItemParameter(
-				DeePlugin.getActiveWorkbenchWindow(), null, 
+				DeeUIPlugin.getActiveWorkbenchWindow(), null, 
 				"GoToDefinitionHandler.COMMAND_ID", null,
 				null, null, null, null, null, null,
 				CommandContributionItem.STYLE_PUSH, null, true));

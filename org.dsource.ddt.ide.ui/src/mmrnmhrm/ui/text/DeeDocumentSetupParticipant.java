@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
@@ -20,7 +20,7 @@ public class DeeDocumentSetupParticipant implements IDocumentSetupParticipant {
 	
 	@Override
 	public void setup(IDocument document) {
-		ScriptTextTools tools = DeePlugin.getDefault().getTextTools();
+		ScriptTextTools tools = DeeUIPlugin.getDefault().getTextTools();
 		tools.setupDocumentPartitioner(document, DeePartitions.DEE_PARTITIONING);
 	}
 

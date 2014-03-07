@@ -9,8 +9,8 @@ import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.projectmodel.DubProcessManager.RunsInDubProcessAgent;
 import mmrnmhrm.core.projectmodel.IExternalProcessListener;
 import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeUIPlugin;
 
-import org.dsource.ddt.ui.DeeUIPlugin;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;

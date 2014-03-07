@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.preferences.DeeSourceColoringConfigurationBlock;
 
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
@@ -19,7 +19,7 @@ import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 
 public class DeeSourceColoringPreferencePage extends AbstractConfigurationBlockPreferencePage {
 	
-	public final static String PAGE_ID = DeePlugin.EXTENSIONS_IDPREFIX+"preferences.editor.SourceColoring";
+	public final static String PAGE_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"preferences.editor.SourceColoring";
 	
 	@Override
 	protected String getHelpId() {
@@ -33,7 +33,7 @@ public class DeeSourceColoringPreferencePage extends AbstractConfigurationBlockP
 	
 	@Override
 	protected void setPreferenceStore() {
-		setPreferenceStore(DeePlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

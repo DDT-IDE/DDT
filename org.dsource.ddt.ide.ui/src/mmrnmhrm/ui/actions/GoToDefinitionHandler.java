@@ -7,7 +7,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.codeassist.ReferenceSwitchHelper;
 import mmrnmhrm.lang.ui.EditorUtil;
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
@@ -49,7 +49,7 @@ import dtool.ast.references.Reference;
 
 public class GoToDefinitionHandler extends AbstractHandler  {
 	
-	public static final String COMMAND_ID = DeePlugin.EXTENSIONS_IDPREFIX+"commands.openDefinition";
+	public static final String COMMAND_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"commands.openDefinition";
 	protected static final String GO_TO_DEFINITION_OPNAME = "Go to Definition";
 	
 	protected static final String ELEMENT_NEXT_TO_CURSOR_IS_ALREADY_A_DEFINITION_NOT_A_REFERENCE = 

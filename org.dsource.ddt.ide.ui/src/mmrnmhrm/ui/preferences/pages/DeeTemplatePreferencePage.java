@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.preferences.pages;
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
 import mmrnmhrm.ui.text.DeePartitions;
@@ -15,7 +15,7 @@ public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	
 	private static final String DEE_TEMPLATE_PREFPAGE_TITLE = "Code Templates";
 	
-	public final static String PAGE_ID = DeePlugin.EXTENSIONS_IDPREFIX + "preferences.editor.CodeTemplates";
+	public final static String PAGE_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX + "preferences.editor.CodeTemplates";
 	
 	@Override
 	public void setTitle(String title) {
@@ -24,7 +24,7 @@ public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	
 	@Override
 	protected void setPreferenceStore() {
-		setPreferenceStore(DeePlugin.getInstance().getPreferenceStore());
+		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	}
 	
 	protected ScriptTextTools getTextTools() {
-		return DeePlugin.getDefault().getTextTools();
+		return DeeUIPlugin.getDefault().getTextTools();
 	}
 	
 }

@@ -12,8 +12,8 @@ package mmrnmhrm.ui.preferences.pages;
 
 import mmrnmhrm.core.DeeCorePreferencesConstants;
 import mmrnmhrm.ui.DeeUIMessages;
+import mmrnmhrm.ui.DeeUIPlugin;
 
-import org.dsource.ddt.ui.DeeUIPlugin;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.ui.IWorkbench;

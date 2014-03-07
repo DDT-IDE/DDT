@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.preferences.pages;
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.preferences.DeeDocFoldingPreferenceBlock;
 import mmrnmhrm.ui.preferences.DeeSourceFoldingPreferenceBlock;
 
@@ -13,7 +13,7 @@ import org.eclipse.jface.preference.PreferencePage;
 
 public class DeeFoldingPreferencePage extends AbstractConfigurationBlockPreferencePage {
 	
-	public final static String PAGE_ID = DeePlugin.EXTENSIONS_IDPREFIX+"preferences.editor.folding";
+	public final static String PAGE_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"preferences.editor.folding";
 	
 	@Override
 	protected void setDescription() {
@@ -22,7 +22,7 @@ public class DeeFoldingPreferencePage extends AbstractConfigurationBlockPreferen
 	
 	@Override
 	protected void setPreferenceStore() {
-		setPreferenceStore(DeePlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

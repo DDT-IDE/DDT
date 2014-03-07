@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import mmrnmhrm.ui.DeePlugin;
+import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
@@ -26,7 +26,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class DeeRootPreferencePage extends PreferencePage implements IWorkbenchPreferencePage{
 	
 	public DeeRootPreferencePage() {
-		setPreferenceStore(DeePlugin.getPrefStore());
+		setPreferenceStore(DeeUIPlugin.getPrefStore());
 		setDescription("General DDT preferences");
 	}
 	
