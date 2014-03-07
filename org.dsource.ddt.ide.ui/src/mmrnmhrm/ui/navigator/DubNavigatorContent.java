@@ -41,10 +41,16 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	public void init(ICommonContentExtensionSite aConfig) {
 	}
 	
+	protected IDubModelListener listener;
+
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		super.inputChanged(viewer, oldInput, newInput);
-		DubModel.getDefault().addListener(new IDubModelListener() {
+		
+		// Remove previous listener, even though I think inputChange is only called once.
+		DubModel.getDefault().removeListener(listener); 
+		
+		listener = new IDubModelListener() {
 			@Override
 			public void notifyUpdateEvent(IDubModel source, DubBundleDescription eventObject) {
 				Display.getDefault().asyncExec(new Runnable() {
@@ -54,13 +60,13 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 					}
 				});
 			}
-		});
+		};
+		DubModel.getDefault().addListener(listener);
 	}
 	
 	@Override
 	public void dispose() {
-		/*BUG here*/
-		System.out.println("asdfd");
+		DubModel.getDefault().removeListener(listener);
 	}
 	
 	protected StructuredViewer getViewer() {

@@ -23,11 +23,11 @@
  * Cleanup: Removed host option from location group in New DUB Project wizard. (it made no difference)
  * Fixed #46  0.10.0-PR adds spaces between characters to DUB extra options
  * DUB builder: incremental builds are now retried if previous 'dub build' exited with non-zero return code.
+ * Fixed exception when dub.json modified and Package Explorer view was closed.
  TODO:
    * check label decorations work
    * DLTK Model elements in Project Explorer
    * cleanup loggers output
-   * navigator content dispose
 
 ### DDT 0.9.1 (2014-02-07)
  * Added debug hover to D editor. When a CDT debug session is active, this hover presents detailed info for the variable under the cursor, similar to the Variables view.
