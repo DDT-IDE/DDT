@@ -26,9 +26,9 @@
  TODO:
    * check label decorations work
    * DLTK Model elements in Project Explorer
-   * project dependencies in model
    * cleanup loggers output
-   * module resolver: /*BUG here with package.d*/
+   * cleanup deeNature
+   * cleanup DeeCore and Model singletons
 
 ### DDT 0.9.1 (2014-02-07)
  * Added debug hover to D editor. When a CDT debug session is active, this hover presents detailed info for the variable under the cursor, similar to the Variables view.

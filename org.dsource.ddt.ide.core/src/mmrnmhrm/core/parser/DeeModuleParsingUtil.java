@@ -1,5 +1,7 @@
 package mmrnmhrm.core.parser;
 
+import mmrnmhrm.core.DeeCore;
+
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.SourceParserUtil;
@@ -9,6 +11,10 @@ import dtool.ast.definitions.Module;
 public abstract class DeeModuleParsingUtil {
 	
 	public static Module getParsedDeeModule(ISourceModule sourceModule) {
+		if(sourceModule.exists() == false) {
+			DeeCore.logWarning("#getParsedDeeModule with module that does not exist: " + 
+					sourceModule.getElementName());
+		}
 		IModuleDeclaration moduleDeclaration = SourceParserUtil.parse(sourceModule, null);
 		if (moduleDeclaration instanceof DeeModuleDeclaration) {
 			return ((DeeModuleDeclaration) moduleDeclaration).getModule();

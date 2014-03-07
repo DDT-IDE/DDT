@@ -103,7 +103,7 @@ public class RunExternalProcessTask implements ICallable<ExternalProcessOutputHe
 		
 		@Override
 		protected void handleListenerException(RuntimeException e) {
-			LangCore.logError(e, "Internal error notifying listener");
+			LangCore.logError("Internal error notifying listener", e);
 		}
 		
 	}

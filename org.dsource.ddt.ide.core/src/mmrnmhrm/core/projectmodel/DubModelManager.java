@@ -190,7 +190,7 @@ public class DubModelManager {
 			
 			DubBundleDescription existingProjectModel = model.doGetBundleInfo(project.getName());
 			
-			if(projectDelta.getKind() == IResourceDelta.REMOVED || !isAcessibleDeeProject(project)) {
+			if(projectDelta.getKind() == IResourceDelta.REMOVED || !DeeNature.isAcessible(project, true)) {
 				if(existingProjectModel == null) {
 					return; // Nothing to removed, might not have been a DUB model project.
 				}
@@ -223,15 +223,6 @@ public class DubModelManager {
 					}
 				}
 				break;
-			}
-		}
-		
-		protected boolean isAcessibleDeeProject(IProject project) {
-			try {
-				return project.isAccessible() && project.hasNature(DeeCore.NATURE_ID); 
-			} catch (CoreException e) {
-				DeeCore.logError(e);
-				return false;
 			}
 		}
 

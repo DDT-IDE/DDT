@@ -135,7 +135,7 @@ public class DeeNodePatternMatcherFactory implements IUsesReflectionToAccessInte
 				DeeCore.logError("DLTK API error using reflection, field changed type");
 			}
 		} catch (NoSuchFieldException e) {
-			DeeCore.logError(e, "DLTK API error using reflection");
+			DeeCore.logError("DLTK API error using reflection", e);
 		}
 		return defaultValue;
 	}

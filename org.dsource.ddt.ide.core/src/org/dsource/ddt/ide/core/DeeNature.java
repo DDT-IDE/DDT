@@ -1,10 +1,12 @@
 package org.dsource.ddt.ide.core;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DubProjectBuilder;
 
 import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.ScriptNature;
@@ -54,6 +56,21 @@ public class DeeNature extends ScriptNature  {
 			}
 		}
 		return -1;
+	}
+	
+	public static boolean isAcessible(IProject project) throws CoreException {
+		return project.isAccessible() && project.hasNature(NATURE_ID);
+	}
+	
+	public static boolean isAcessible(IProject project, boolean logOnError){
+		try {
+			return project.isAccessible() && project.hasNature(NATURE_ID);
+		} catch (CoreException e) {
+			if(logOnError) {
+				LangCore.logError("Error trying to determine project nature.", e);
+			}
+			return false;
+		}
 	}
 	
 }

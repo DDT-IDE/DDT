@@ -62,7 +62,7 @@ public abstract class LangCore extends Plugin {
 	}
 	
 	/** Logs an error status with given exception and given message. */
-	public static void logError(Throwable throwable, String message) {
+	public static void logError(String message, Throwable throwable) {
 		getInstance().getLog().log(createErrorStatus(message, throwable));
 	}
 	
