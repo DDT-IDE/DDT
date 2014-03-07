@@ -15,7 +15,7 @@ import dtool.util.NewUtils;
 
 public class GenericInstallType extends CommonInstallType {
 	
-	public static final String INSTALLTYPE_ID = DeeCore.EXTENSIONS_IDPREFIX+"launching.GenericInstallType";
+	public static final String INSTALLTYPE_ID = DeeCore.PLUGIN_ID + ".launching.GenericInstallType";
 	
 	@Override
 	public String getName() {

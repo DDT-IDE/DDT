@@ -12,7 +12,7 @@ import org.eclipse.dltk.launching.LibraryLocation;
 
 public class DMDInstallType extends CommonInstallType {
 	
-	public static final String INSTALLTYPE_ID = DeeCore.EXTENSIONS_IDPREFIX+"launching.DMDInstallType";
+	public static final String INSTALLTYPE_ID = DeeCore.PLUGIN_ID + ".launching.DMDInstallType";
 	
 	@Override
 	public String getName() {

@@ -15,8 +15,7 @@ import dtool.project.DeeNamingRules;
 
 public class DeeLanguageToolkit extends AbstractLanguageToolkit  {
 	
-	private static final String DEE_LANGUAGE_CONTENT_DSOURCE = DeeCore.EXTENSIONS_IDPREFIX+"content.dsource";
-	public static final String NATURE_ID = DeeNature.NATURE_ID;
+	private static final String DEE_LANGUAGE_CONTENT_DSOURCE = DeeCore.PLUGIN_ID + ".content.dsource";
 	
 	private static final IDLTKLanguageToolkit instance = new DeeLanguageToolkit();
 	

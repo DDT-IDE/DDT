@@ -86,7 +86,7 @@ public class DubModelManager {
 	
 	/* ----------------------------------- */
 	
-	public static final String DUB_PROBLEM_ID = DeeCore.EXTENSIONS_IDPREFIX + "DubProblem";
+	public static final String DUB_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubProblem";
 	
 	protected final DubModelImpl model;
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();

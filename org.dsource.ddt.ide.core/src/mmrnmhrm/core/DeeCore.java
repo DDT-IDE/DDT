@@ -13,9 +13,7 @@ public class DeeCore extends LangCore {
 	
 	public static final String PLUGIN_ID = "org.dsource.ddt.ide.core";
 	public static final String TESTS_PLUGIN_ID = PLUGIN_ID + ".tests";
-	// The convention for the id prefix for extensions contributed by this plugin
-	public static final String EXTENSIONS_IDPREFIX = PLUGIN_ID + "."; 
-
+	
 	protected static DeeCore pluginInstance;
 	
 	/** Returns the shared instance. */

@@ -13,7 +13,7 @@ import org.eclipse.dltk.launching.LibraryLocation;
 
 public class GDCInstallType extends CommonInstallType {
 	
-	public static final String INSTALLTYPE_ID = DeeCore.EXTENSIONS_IDPREFIX+"launching.GDCInstallType";
+	public static final String INSTALLTYPE_ID = DeeCore.PLUGIN_ID + ".launching.GDCInstallType";
 	
 	@Override
 	public String getName() {
