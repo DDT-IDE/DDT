@@ -238,12 +238,29 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 		assertNotNull(dubContainer);
 		LinkedList<IDubElement> depChildren = CollectionUtil.createLinkedList(dubContainer.getChildren());
 		for (String rawDep : expMainBundle.rawDeps) {
-			removeChild(depChildren, rawDep);
+			checkAndRemoveRawDep(depChildren, rawDep);
 		}
 		if(expectedError) {
 			removeErrorElement(expMainBundle, depChildren);
 		}
 		assertTrue(depChildren.isEmpty());
+	}
+	
+	protected void checkAndRemoveRawDep(Collection<IDubElement> children, String depName) {
+		assertNotNull(removeChildDep(children, depName));
+	}
+	
+	protected ICommonDepElement removeChildDep(Collection<IDubElement> children, String depName) {
+		for (IDubElement dubElement : children) {
+			if(dubElement instanceof ICommonDepElement) {
+				ICommonDepElement depElement = (ICommonDepElement) dubElement;
+				if(depElement.getBundleName().equals(depName)) {
+					assertTrue(children.remove(dubElement));
+					return depElement;
+				}
+			}
+		}
+		return null;
 	}
 	
 	protected void testDubContainer(IProject project, DubBundleChecker expMainBundle) {
@@ -254,7 +271,7 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 		IDubElement[] children = dubContainer.getChildren();
 		LinkedList<IDubElement> depChildren = CollectionUtil.createLinkedList(children);
 		for (DubBundleChecker dep : expMainBundle.deps) {
-			removeChild(depChildren, dep.bundleName);
+			checkAndRemoveChildDep(depChildren, dep);
 		}
 		removeErrorElement(expMainBundle, depChildren);
 		assertTrue(depChildren.isEmpty());
@@ -269,18 +286,17 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 		}
 	}
 	
-	protected void removeChild(Collection<IDubElement> children, String name) {
-		for (IDubElement dubElement : children) {
-			if(dubElement instanceof ICommonDepElement) {
-				ICommonDepElement depElement = (ICommonDepElement) dubElement;
-				if(depElement.getBundleName().equals(name)) {
-					assertTrue(children.remove(dubElement));
-					return;
-				}
-			}
+	protected void checkAndRemoveChildDep(Collection<IDubElement> children, DubBundleChecker dep) {
+		String depName = dep.bundleName;
+		ICommonDepElement depElement = removeChildDep(children, depName);
+		assertNotNull(depElement);
+		if(dep.sourceFolders == null) {
+			return;
 		}
-		assertFail(); // Must have removed
+		// TODO: check children
 	}
+	
+	/* ----------------- buildpath checking ----------------- */
 	
 	public static void checkRawBuildpath(IBuildpathEntry[] rawBuildpath, Path[] srcFolders) throws ModelException {
 		HashSet<Path> sourcePaths = hashSet(srcFolders);

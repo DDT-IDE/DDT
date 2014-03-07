@@ -11,6 +11,7 @@
 package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+import mmrnmhrm.core.DLTKUtils;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.DLTKCore;
@@ -19,8 +20,6 @@ import org.eclipse.dltk.core.IBuildpathAttribute;
 import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
-import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
 
 public class DubContainer implements IBuildpathContainer {
 	
@@ -71,7 +70,7 @@ public class DubContainer implements IBuildpathContainer {
 	}
 	
 	public static IBuildpathEntry createDubBuildpathEntry(IPath path) {
-		return DLTKCore.newLibraryEntry(localEnvPath(path), 
+		return DLTKCore.newLibraryEntry(DLTKUtils.localEnvPath(path), 
 				NO_ACCESS_RULES, array(new DubBuildpathAttribute()), true, true);
 	}
 	
@@ -82,10 +81,6 @@ public class DubContainer implements IBuildpathContainer {
 			}
 		}
 		return false;
-	}
-	
-	public static IPath localEnvPath(IPath path) {
-		return EnvironmentPathUtils.getFullPath(LocalEnvironment.getInstance(), path);
 	}
 	
 }

@@ -112,6 +112,10 @@ public class DubDependenciesContainer extends CommonDubElement {
 		public String getBundleName() {
 			return dubBundle.name;
 		}
+		
+		public DubBundle getDubBundle() {
+			return dubBundle;
+		}
 	}
 	
 	public static class DubRawDependencyElement extends CommonDubElement implements ICommonDepElement {

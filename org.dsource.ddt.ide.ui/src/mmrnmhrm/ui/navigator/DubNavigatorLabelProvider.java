@@ -86,8 +86,9 @@ public class DubNavigatorLabelProvider extends LabelProvider implements IStyledL
 
 class DubElementTextProvider extends DubElementSwitcher<StyledString>{
 	
-	protected static final RGB DUB_ELEMENT_LABEL_ANNOTATION_BG = new RGB(128, 128, 128);
-	protected static final RGB DUB_ELEMENT_LABEL_ERROR_ANNOTATION_BG = new RGB(196, 64, 64);
+	protected static final RGB DUB_DEP_ANNOTATION_FG = new RGB(128, 128, 128);
+	protected static final RGB DUB_DEPCONTAINER_ANNOTATION_FG = new RGB(128, 128, 128);
+	protected static final RGB DUB_DEPCONTAINER_ERROR_ANNOTATION_FG = new RGB(196, 64, 64);
 	
 	protected ForegroundColorStyler styler(RGB rgb) {
 		return new ForegroundColorStyler(rgb);
@@ -101,22 +102,23 @@ class DubElementTextProvider extends DubElementSwitcher<StyledString>{
 		if(bundleInfo.hasErrors()) {
 			// TODO: present more details about origin of error (json or dub describre)
 			if(bundleInfo.isResolved()) {
-				return baseText.append(" [DUB error]", styler(DUB_ELEMENT_LABEL_ERROR_ANNOTATION_BG)); 
+				return baseText.append(" [DUB error]", styler(DUB_DEPCONTAINER_ERROR_ANNOTATION_FG)); 
 			} else {
-				return baseText.append(" [DUB error]", styler(DUB_ELEMENT_LABEL_ERROR_ANNOTATION_BG));
+				return baseText.append(" [DUB error]", styler(DUB_DEPCONTAINER_ERROR_ANNOTATION_FG));
 			}
 		} else {
 			if(bundleInfo.isResolved()) {
 				return baseText;
 			} else {
-				return baseText.append(" <dub describing>", styler(DUB_ELEMENT_LABEL_ANNOTATION_BG));
+				return baseText.append(" <dub describing>", styler(DUB_DEPCONTAINER_ANNOTATION_FG));
 			}
 		}
 	}
 	
 	@Override
 	public StyledString visitDepElement(DubDependencyElement element) {
-		return new StyledString(element.getBundleName());
+		return new StyledString(element.getBundleName()).
+				append(" - " + element.getDubBundle().getLocationString(), styler(DUB_DEP_ANNOTATION_FG));
 	}
 	
 	@Override

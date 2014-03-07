@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import melnorme.utilbox.misc.ArrayUtil;
+
 /**
  * Utils for miscellaneous Java core language functionality. 
  */
@@ -108,6 +110,12 @@ public class CoreUtil /* extends Assert */ {
 	/** @return given coll if it's not null, or an immutable empty collection otherwise. */
 	public static <U> Collection<U> nullToEmpty(Collection<U> coll) {
 		return coll == null ? Collections.EMPTY_LIST : coll;
+	}
+	
+	/** Create an array from the given list, with the given cpType as the run-time component type.
+	 * If the list is null, a zero-length array is created. */
+	public static <T> T[] arrayFrom(Collection<? extends T> list, Class<T> cpType) {
+		return ArrayUtil.createFrom(list, cpType);
 	}
 	
 }

@@ -59,6 +59,11 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 		DubModelManager.getDefault().syncPendingUpdates();
 	}
 	
+	
+	protected Path loc(IProject project) {
+		return project.getLocation().toFile().toPath();
+	}
+	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
@@ -185,7 +190,4 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 			));
 	}
 	
-	protected Path loc(IProject project) {
-		return project.getLocation().toFile().toPath();
-	}
 }
