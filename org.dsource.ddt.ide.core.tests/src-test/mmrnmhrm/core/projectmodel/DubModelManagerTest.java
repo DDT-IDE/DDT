@@ -29,7 +29,7 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 	@Test
 	public void testShutdown() throws Exception { testShutdown$(); }
 	public void testShutdown$() throws Exception {
-		DubModelManager dmm = new DubModelManager(new DubModel()); 
+		DubModelManager dmm = new DubModelManager(new DubModelImpl()); 
 		dmm.initializeModelManager();
 		final CountDownLatch latch = new CountDownLatch(1);
 		

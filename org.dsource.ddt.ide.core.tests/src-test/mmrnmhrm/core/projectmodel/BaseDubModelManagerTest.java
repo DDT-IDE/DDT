@@ -146,7 +146,7 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 	}
 	
 	protected DubDependenciesContainer getDubContainer(IProject project) {
-		return DubModel.getDubContainer(project);
+		return DubModelManager.getDubContainer(project);
 	}
 	
 	protected static LatchRunnable writeDubJsonWithModelLatch(IProject project, String contents) 

@@ -14,46 +14,69 @@ import java.util.HashMap;
 import java.util.Set;
 
 import melnorme.utilbox.misc.ListenerListHelper;
+import mmrnmhrm.core.projectmodel.DubModel.IDubModel;
 
 import org.eclipse.core.resources.IProject;
 
 import dtool.SimpleLogger;
-import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundle;
+import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 
-/**
- * Dub model. Holds information about DUB bundles, usually indexed by project.
- * Designed to be managed concurrently by some other code (see {@link DubModelManager}).
- * Can notify listeners of updates. 
- */
-public class DubModel extends ListenerListHelper<IDubModelListener> {
+public abstract class DubModel {
 	
-	protected static SimpleLogger log = new SimpleLogger(true);
+	protected static final DubModelImpl defaultInstance = new DubModelImpl();
 	
-	protected static final DubModel defaultInstance = new DubModel();
-	
-	public static DubModel getDefault() {
+	public static IDubModel getDefault() {
 		return defaultInstance;
 	}
 	
 	public static DubBundleDescription getBundleInfo(String projectName) {
-		return getDefault().doGetBundleInfo(projectName);
+		return defaultInstance.getBundleInfo(projectName);
 	}
 	
-	public static DubDependenciesContainer getDubContainer(IProject project) {
-		DubBundleDescription bundleInfo = getBundleInfo(project.getName());
-		if(bundleInfo == null)
-			return null;
-		return new DubDependenciesContainer(bundleInfo, project);
+	/**
+	 * DUB model. Holds information about DUB bundles, usually indexed by project.
+	 * Designed to be managed concurrently by some other code (see {@link DubModelManager}).
+	 * Can notify listeners of updates. 
+	 */
+	public static interface IDubModel {
+		
+		public void addListener(IDubModelListener listener);
+		public void removeListener(IDubModelListener listener);
+		
+		public DubBundleDescription getBundleInfo(String projectName);
+		
 	}
 	
-	/* ----------------------------------- */
+}
+
+class DubModelImpl extends ListenerListHelper<IDubModelListener> implements IDubModel {
 	
-	public DubModel() {
-	}
+	protected static SimpleLogger log = new SimpleLogger(true);
 	
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
+
+	public DubModelImpl() {
+	}
+	
+	@Override
+	public void addListener(IDubModelListener listener) {
+		super.addListener(listener);
+	}
+	@Override
+	public void removeListener(IDubModelListener listener) {
+		super.removeListener(listener);
+	}
+	
+	@Override
+	public synchronized DubBundleDescription getBundleInfo(String projectName) {
+		return dubBundleInfos.get(projectName);
+	}
+	
+	protected synchronized Set<String> getDubProjects() {
+		return dubBundleInfos.keySet();
+	}
 	
 	protected synchronized void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
 		log.println(">> Add project info: ", project);
@@ -67,8 +90,10 @@ public class DubModel extends ListenerListHelper<IDubModelListener> {
 		fireUpdateEvent(this, oldDesc);
 	}
 	
-	protected synchronized Set<String> getDubProjects() {
-		return dubBundleInfos.keySet();
+	protected void fireUpdateEvent(IDubModel source, DubBundleDescription object) {
+		for (IDubModelListener listener : getListeners()) {
+			listener.notifyUpdateEvent(source, object);
+		}
 	}
 	
 	protected synchronized void addErrorToProjectModel(IProject project, DubBundleException dubError) {
@@ -79,14 +104,5 @@ public class DubModel extends ListenerListHelper<IDubModelListener> {
 		addProjectModel(project, bundleDesc);
 	}
 	
-	protected void fireUpdateEvent(DubModel source, DubBundleDescription object) {
-		for (IDubModelListener listener : getListeners()) {
-			listener.notifyUpdateEvent(source, object);
-		}
-	}
-	
-	protected synchronized DubBundleDescription doGetBundleInfo(String projectName) {
-		return dubBundleInfos.get(projectName);
-	}
 	
 }

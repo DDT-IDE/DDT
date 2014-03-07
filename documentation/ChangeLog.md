@@ -27,7 +27,7 @@
    * check label decorations work
    * DLTK Model elements in Project Explorer
    * cleanup loggers output
-   * cleanup DeeCore and Model singletons
+   * navigator content dispose
 
 ### DDT 0.9.1 (2014-02-07)
  * Added debug hover to D editor. When a CDT debug session is active, this hover presents detailed info for the variable under the cursor, similar to the Variables view.

@@ -63,7 +63,7 @@ public class DubModelManager {
 	
 	protected static SimpleLogger log = new SimpleLogger(true);
 	
-	protected static final DubModelManager defaultInstance = new DubModelManager(DubModel.getDefault());
+	protected static final DubModelManager defaultInstance = new DubModelManager(DubModel.defaultInstance);
 	
 	public static void startDefault() {
 		defaultInstance.startManager();
@@ -77,17 +77,24 @@ public class DubModelManager {
 		return defaultInstance;
 	}
 	
+	public static DubDependenciesContainer getDubContainer(IProject project) {
+		DubBundleDescription bundleInfo = DubModel.getBundleInfo(project.getName());
+		if(bundleInfo == null)
+			return null;
+		return new DubDependenciesContainer(bundleInfo, project);
+	}
+	
 	/* ----------------------------------- */
 	
 	public static final String DUB_PROBLEM_ID = DeeCore.EXTENSIONS_IDPREFIX + "DubProblem";
 	
-	protected final DubModel model;
+	protected final DubModelImpl model;
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
 	protected boolean started = false;
 	protected final ITaskAgent modelAgent = new CoreTaskAgent(getClass().getSimpleName());
 	protected final DubProcessManager dubProcessManager = new DubProcessManager();
 	
-	public DubModelManager(DubModel model) {
+	public DubModelManager(DubModelImpl model) {
 		this.model = model;
 	}
 	
@@ -188,7 +195,7 @@ public class DubModelManager {
 			assertTrue(projectDelta.getResource().getType() == IResource.PROJECT);
 			IProject project = (IProject) projectDelta.getResource();
 			
-			DubBundleDescription existingProjectModel = model.doGetBundleInfo(project.getName());
+			DubBundleDescription existingProjectModel = model.getBundleInfo(project.getName());
 			
 			if(projectDelta.getKind() == IResourceDelta.REMOVED || !DeeNature.isAcessible(project, true)) {
 				if(existingProjectModel == null) {
@@ -280,7 +287,7 @@ public class DubModelManager {
 			this.dubModelManager = DubModelManager.this;
 		}
 		
-		protected DubModel getModel() {
+		protected DubModelImpl getModel() {
 			return model;
 		}
 		
@@ -486,7 +493,7 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 		}
 		for (IProject project : deeProjects) {
 			if(project.getLocation().toFile().toPath().equals(location) && 
-					dubModelManager.model.doGetBundleInfo(project.getName()) != null) {
+					getModel().getBundleInfo(project.getName()) != null) {
 				return project;
 			}
 		}
@@ -506,10 +513,10 @@ class UpdateAllProjectsBuildpathTask extends ProjectUpdateBuildpathTask {
 	
 	@Override
 	public void run() {
-		Set<String> dubProjects = dubModelManager.model.getDubProjects();
+		Set<String> dubProjects = getModel().getDubProjects();
 		for (String projectName : dubProjects) {
 			// BM: we could optimize this, and update only if removed project was in buildpath of project to update.
-			DubBundleDescription bundleDesc = dubModelManager.model.doGetBundleInfo(projectName);
+			DubBundleDescription bundleDesc = getModel().getBundleInfo(projectName);
 			IProject project = DeeCore.getWorkspaceRoot().getProject(projectName);
 			updateBuildpath(project, bundleDesc);
 		}

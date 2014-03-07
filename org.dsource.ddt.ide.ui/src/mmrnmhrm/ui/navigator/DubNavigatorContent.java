@@ -7,8 +7,10 @@ import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.projectmodel.CommonDubElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.DubModel;
-import mmrnmhrm.core.projectmodel.IDubElement;
+import mmrnmhrm.core.projectmodel.DubModel.IDubModel;
 import mmrnmhrm.core.projectmodel.IDubModelListener;
+import mmrnmhrm.core.projectmodel.DubModelManager;
+import mmrnmhrm.core.projectmodel.IDubElement;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -43,9 +45,8 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		super.inputChanged(viewer, oldInput, newInput);
 		DubModel.getDefault().addListener(new IDubModelListener() {
-			
 			@Override
-			public void notifyUpdateEvent(DubModel source, DubBundleDescription eventObject) {
+			public void notifyUpdateEvent(IDubModel source, DubBundleDescription eventObject) {
 				Display.getDefault().asyncExec(new Runnable() {
 					@Override
 					public void run() {
@@ -54,6 +55,12 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 				});
 			}
 		});
+	}
+	
+	@Override
+	public void dispose() {
+		/*BUG here*/
+		System.out.println("asdfd");
 	}
 	
 	protected StructuredViewer getViewer() {
@@ -86,7 +93,7 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	protected Object[] getProjectChildren(IProject project) {
 		ArrayList<Object> arrayList = new ArrayList<>();
 		if(project.isAccessible()) {
-			DubDependenciesContainer dubContainer = DubModel.getDubContainer(project);
+			DubDependenciesContainer dubContainer = DubModelManager.getDubContainer(project);
 			if(dubContainer != null) {
 				arrayList.add(dubContainer);
 			}
