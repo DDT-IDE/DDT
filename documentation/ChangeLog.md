@@ -27,7 +27,6 @@
    * check label decorations work
    * DLTK Model elements in Project Explorer
    * cleanup loggers output
-   * cleanup deeNature
    * cleanup DeeCore and Model singletons
 
 ### DDT 0.9.1 (2014-02-07)
