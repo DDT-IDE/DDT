@@ -25,7 +25,6 @@
  * DUB builder: incremental builds are now retried if previous 'dub build' exited with non-zero return code.
  * Fixed exception when dub.json modified and Package Explorer view was closed.
  TODO:
-   * check label decorations work
    * DLTK Model elements in Project Explorer
    * cleanup loggers output
 
