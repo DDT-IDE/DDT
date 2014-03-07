@@ -17,4 +17,6 @@ public abstract class DeeUIMessages extends LangUIMessages {
 	public static final String DubPrefPage_fieldLabel = 
 			"DUB path:";
 	
+	public static final String DUB_CONSOLE_NAME = "DUB Output";
+	
 }

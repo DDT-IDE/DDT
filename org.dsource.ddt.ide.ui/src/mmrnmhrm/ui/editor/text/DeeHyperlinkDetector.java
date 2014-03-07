@@ -16,7 +16,7 @@ import dtool.ast.references.NamedReference;
 
 public class DeeHyperlinkDetector extends AbstractHyperlinkDetector {
 	
-	public static final String DEE_EDITOR_TARGET = DeeUIPlugin.EXTENSIONS_IDPREFIX+"texteditor.deeCodeTarget";
+	public static final String DEE_EDITOR_TARGET = DeeUIPlugin.PLUGIN_ID + ".texteditor.deeCodeTarget";
 	
 	@Override
 	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean canShowMultipleHyperlinks) {

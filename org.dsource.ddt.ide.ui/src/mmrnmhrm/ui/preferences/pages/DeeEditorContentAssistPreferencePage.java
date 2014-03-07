@@ -19,7 +19,7 @@ import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 
 public class DeeEditorContentAssistPreferencePage extends AbstractConfigurationBlockPreferencePage {
 	
-	public final static String PAGE_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"preferences.editor.ContentAssist";
+	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".preferences.editor.ContentAssist";
 	
 	@Override
 	protected void setDescription() {

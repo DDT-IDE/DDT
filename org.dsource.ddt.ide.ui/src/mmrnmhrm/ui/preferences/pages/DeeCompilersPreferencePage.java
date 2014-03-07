@@ -8,7 +8,7 @@ import org.eclipse.dltk.internal.debug.ui.interpreters.ScriptInterpreterPreferen
 
 public class DeeCompilersPreferencePage extends ScriptInterpreterPreferencePage {
 	
-	public final static String PAGE_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"preferences.DeeCompilers";
+	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".preferences.DeeCompilers";
 	
 	@Override
 	public InterpretersBlock createInterpretersBlock() {

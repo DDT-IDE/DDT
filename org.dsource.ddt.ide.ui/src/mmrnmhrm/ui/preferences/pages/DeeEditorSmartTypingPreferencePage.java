@@ -21,7 +21,7 @@ import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 
 public class DeeEditorSmartTypingPreferencePage extends AbstractConfigurationBlockPreferencePage {
 	
-	public final static String PAGE_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"preferences.Editor.typing";
+	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".preferences.Editor.typing";
 	
 	@Override
 	protected void setDescription() {

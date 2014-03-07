@@ -57,7 +57,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		IDocumentListener, ISelectionChangedListener, IDoubleClickListener {
 	
 	
-	public static final String VIEW_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"views.ASTViewer";
+	public static final String VIEW_ID = DeeUIPlugin.PLUGIN_ID + ".views.ASTViewer";
 	
 	private IWorkbenchWindow window;
 	

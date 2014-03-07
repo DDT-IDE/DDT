@@ -42,7 +42,7 @@ import dtool.dub.DubManifestParser;
  */
 public class DeeProjectWizard extends ProjectWizardExtension {
 	
-	public static final String WIZARD_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"wizards.deeProjectWizard";
+	public static final String WIZARD_ID = DeeUIPlugin.PLUGIN_ID + ".wizards.deeProjectWizard";
 	
 	protected final ProjectWizardFirstPage fFirstPage = new DeeProjectWizardPage1(this);
 	protected final DeeProjectWizardBuildSettingsPage fBuildSettingsPage = 

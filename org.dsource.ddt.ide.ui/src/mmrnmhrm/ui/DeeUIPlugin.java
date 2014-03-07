@@ -14,8 +14,6 @@ import org.osgi.framework.BundleContext;
 public class DeeUIPlugin extends LangUIPlugin {
 	
 	public static final String PLUGIN_ID = "org.dsource.ddt.ide.ui";
-	// The convention for the id prefix for extensions contributed by this plugin
-	public static final String EXTENSIONS_IDPREFIX = PLUGIN_ID + ".";
 	
 	public static DeeUIPlugin getDefault() {
 		return (DeeUIPlugin) getInstance();

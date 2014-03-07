@@ -16,8 +16,8 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 public class DeeEditor extends DeeBaseEditor {
 	
-	public static final String EDITOR_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"editors.DeeEditor";
-	public static final String CONTEXTS_DEE_EDITOR = DeeUIPlugin.EXTENSIONS_IDPREFIX+"contexts.DeeEditor";
+	public static final String EDITOR_ID = DeeUIPlugin.PLUGIN_ID + ".editors.DeeEditor";
+	public static final String CONTEXTS_DEE_EDITOR = DeeUIPlugin.PLUGIN_ID + ".contexts.DeeEditor";
 	
 	public static final String EDITOR_CONTEXT = "#DeeEditorContext";
 	public static final String RULER_CONTEXT = "#DeeRulerContext";

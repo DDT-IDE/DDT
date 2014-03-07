@@ -8,7 +8,7 @@ import org.eclipse.search.ui.NewSearchUI;
 
 public class DeeOpenSearchPageAction extends AbstractWorkbenchWindowActionDelegate {
 	
-	private static final String DEE_SEARCH_PAGE_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"DeeSearchPage";
+	private static final String DEE_SEARCH_PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".DeeSearchPage";
 	
 	@Override
 	public void run(IAction action) {

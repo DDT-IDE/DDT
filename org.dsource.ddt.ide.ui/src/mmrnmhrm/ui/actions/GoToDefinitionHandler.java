@@ -49,7 +49,7 @@ import dtool.ast.references.Reference;
 
 public class GoToDefinitionHandler extends AbstractHandler  {
 	
-	public static final String COMMAND_ID = DeeUIPlugin.EXTENSIONS_IDPREFIX+"commands.openDefinition";
+	public static final String COMMAND_ID = DeeUIPlugin.PLUGIN_ID + ".commands.openDefinition";
 	protected static final String GO_TO_DEFINITION_OPNAME = "Go to Definition";
 	
 	protected static final String ELEMENT_NEXT_TO_CURSOR_IS_ALREADY_A_DEFINITION_NOT_A_REFERENCE = 

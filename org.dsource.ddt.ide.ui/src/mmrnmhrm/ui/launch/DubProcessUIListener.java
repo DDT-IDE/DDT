@@ -9,6 +9,7 @@ import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.projectmodel.DubProcessManager.RunsInDubProcessAgent;
 import mmrnmhrm.core.projectmodel.IExternalProcessListener;
 import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeUIMessages;
 import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.dltk.ui.text.IColorManager;
@@ -18,8 +19,6 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.console.MessageConsole;
 
 public class DubProcessUIListener implements IExternalProcessListener {
-	
-	private static final String CONSOLE_NAME = "DUB Output";
 	
 	protected static IColorManager getColorManager() {
 		return DeeUIPlugin.getDefault().getTextTools().getColorManager();
@@ -97,7 +96,7 @@ public class DubProcessUIListener implements IExternalProcessListener {
 		
 		public DubProcessUIConsoleOutputHandler(String consoleQualifier) {
 			
-			console = ConsoleUtils.recreateMessageConsole(CONSOLE_NAME + " " + consoleQualifier, 
+			console = ConsoleUtils.recreateMessageConsole(DeeUIMessages.DUB_CONSOLE_NAME + " " + consoleQualifier, 
 				DeePluginImages.getDescriptor(DeePluginImages.DUB_PROCESS));
 			// We recreate a message console to have a clear console. 
 			// console.clearConsole() is not used because of poor concurrency behavior: if more than one cleanConsole
