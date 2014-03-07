@@ -10,14 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.io.InputStream;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 
 public class ResourceUtils {
 
@@ -42,8 +44,32 @@ public class ResourceUtils {
 		folder.create(force, local, monitor);
 	}
 	
-	public static Path getPath(java.nio.file.Path path) {
-		return new Path(path.toString());
+	public static String printDelta(IResourceDelta delta) {
+		StringBuilder sb = new StringBuilder();
+		doPrintDelta(delta, "  ", sb);
+		return sb.toString();
+	}
+	
+	protected static void doPrintDelta(IResourceDelta delta, String indent, StringBuilder sb) {
+		sb.append(indent);
+		sb.append(delta);
+		
+		sb.append(" " + deltaKindToString(delta) + "\n");
+		for (IResourceDelta childDelta : delta.getAffectedChildren()) {
+			doPrintDelta(childDelta, indent + "  ", sb);
+		}
+	}
+	
+	protected static String deltaKindToString(IResourceDelta delta) {
+		switch (delta.getKind()) {
+		case IResourceDelta.ADDED: return "+";
+		case IResourceDelta.REMOVED: return "-";
+		case IResourceDelta.CHANGED: return "*";
+		case IResourceDelta.ADDED_PHANTOM: return "%+%";
+		case IResourceDelta.REMOVED_PHANTOM: return "%-%";
+		default:
+			throw assertFail();
+		}
 	}
 	
 }

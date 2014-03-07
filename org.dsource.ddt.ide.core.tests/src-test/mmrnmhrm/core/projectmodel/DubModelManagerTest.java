@@ -55,32 +55,51 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 	protected static final DubBundleChecker BAR_LIB_BUNDLE = bundle(DUB_WORKSPACE.resolve("bar_lib"), 
 		null, "bar_lib", DEFAULT_VERSION, paths("source"));
 	
+	protected void _awaitModelUpdates_() {
+		DubModelManager.getDefault().syncPendingUpdates();
+	}
+	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		IProject project;
-		long taskCount = getModelAgent().getSubmittedTaskCount();
+		long taskCount;
+		deleteProject(DUB_TEST);
+		_awaitModelUpdates_();
+		
+		// Test project with dub.json, but no D nature
+		taskCount = getModelAgent().getSubmittedTaskCount();
+		project = createAndOpenProject(DUB_TEST, true).getProject();
+		writeDubJson(project, jsObject(jsEntry("name", "xptobundle")));
+		// check no changes or updates submitted:
+		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount);
+		assertTrue(DubModel.getBundleInfo(DUB_TEST) == null);
+		
+		// Ensure non-d projects dont provoke updates
+		deleteProject(DUB_TEST);
+		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount);
+		
+		// Test project with D nature, but no dub.json
+		taskCount = getModelAgent().getSubmittedTaskCount();
 		project = createAndOpenDeeProject(DUB_TEST, true).getProject();
-		// check no change:
+		// check no changes or updates submitted:
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount); 
 		assertTrue(DubModel.getBundleInfo(DUB_TEST) == null);
 		
-		DubModelManager.getDefault().syncPendingUpdates();
+		_awaitModelUpdates_();
 		runBasicTestSequence______________(project);
 		project.delete(true, null); // cleanup
 		assertTrue(DubModel.getBundleInfo(project.getName()) == null);
 		assertTrue(getDubContainer(project) == null);
 		
-		// Verify code path where a project that already has dub manifest is added.
+		// Verify code path where a non-D project that already has dub manifest is made a D project.
 		project = createAndOpenProject(DUB_TEST, true);
-		LatchRunnable latch = writeDubJson(project, "{"+ jsEntry("name", "xptobundle")+ jsFileEnd());
+		LatchRunnable modelLatch = writeDubJsonWithModelLatch(project, jsObject(jsEntry("name", "xptobundle")));
 		setupStandardDeeProject(project);
 		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project.getName());
-		latch.releaseAll();
-		
-		Path location = project.getLocation().toFile().toPath();
+		modelLatch.releaseAll();
 		checkDubModel(unresolvedBundleDesc, project, 
-			main(location, null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
+			main(loc(project), null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
 		testProjectBPDependencies();
 	}
@@ -141,13 +160,13 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 		IProject project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		String dubTestJson = jsObject(jsEntry("name", "dub_test"), 
 			jsEntryValue("dependencies", "{ \"dub_lib\": \"~master\"}"));
-		writeDubJson(project, dubTestJson).releaseAll();
+		writeDubJson(project, dubTestJson);
 		
 		IProject libProject = createAndOpenDeeProject(DUB_LIB, true).getProject();
 		String dubLibJson = jsObject(jsEntry("name", "dub_lib"));
-		writeDubJson(libProject, dubLibJson).releaseAll();
+		writeDubJson(libProject, dubLibJson);
 		
-		DubModelManager.getDefault().syncPendingUpdates();
+		_awaitModelUpdates_();
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project.getName());
 		checkFullyResolvedCode(project, dubBundle, 
 			main(loc(project), null, "dub_test", DEFAULT_VERSION, srcFolders(), 
@@ -157,7 +176,7 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 		
 		Path libProjectLocation = loc(libProject);
 		libProject.delete(true, null);
-		DubModelManager.getDefault().syncPendingUpdates();
+		_awaitModelUpdates_();
 		
 		checkFullyResolvedCode(project, dubBundle, 
 			main(loc(project), null, "dub_test", DEFAULT_VERSION, srcFolders(), 

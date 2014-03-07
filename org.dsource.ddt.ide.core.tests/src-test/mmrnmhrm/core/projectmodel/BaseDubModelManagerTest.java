@@ -149,11 +149,16 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 		return DubModel.getDubContainer(project);
 	}
 	
-	protected static LatchRunnable writeDubJson(IProject project, String contents) throws CoreException {
+	protected static LatchRunnable writeDubJsonWithModelLatch(IProject project, String contents) 
+			throws CoreException {
 		LatchRunnable latchRunnable = new LatchRunnable();
 		getModelAgent().submit(latchRunnable);
-		writeStringToFile(project, "dub.json", contents);
+		writeDubJson(project, contents);
 		return latchRunnable;
+	}
+	
+	protected static void writeDubJson(IProject project, String contents) throws CoreException {
+		writeStringToFile(project, "dub.json", contents);
 	}
 	
 	public static Path[] srcFolders(String... elems) {
@@ -162,7 +167,7 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 	
 	public void writeDubJsonAndCheckDubModel(String dubJson, IProject project, DubBundleChecker expMainBundle)
 			throws CoreException {
-		LatchRunnable preUpdateLatch = writeDubJson(project, dubJson);
+		LatchRunnable preUpdateLatch = writeDubJsonWithModelLatch(project, dubJson);
 		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project.getName());
 		preUpdateLatch.releaseAll();
 		

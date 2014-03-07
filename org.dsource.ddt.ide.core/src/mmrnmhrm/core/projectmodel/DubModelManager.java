@@ -10,7 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
@@ -20,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -36,6 +35,8 @@ import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -43,11 +44,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IBuildpathEntry;
-import org.eclipse.dltk.core.IElementChangedListener;
-import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.launching.ScriptRuntime;
@@ -117,7 +114,7 @@ public class DubModelManager {
 	public void shutdownManager() {
 		// It is possible to shutdown the manager without having it started.
 		
-		DLTKCore.removeElementChangedListener(listener);
+		DeeCore.getWorkspace().removeResourceChangeListener(listener);
 		// shutdown model manager agent first, since model agent uses dub process agent
 		modelAgent.shutdownNow();
 		dubProcessManager.shutdownNow();
@@ -135,21 +132,21 @@ public class DubModelManager {
 		try {
 			compilerSearchJob.join();
 		} catch (InterruptedException ie) {
-			// continue, we should still run init
+			// continue, we should still run rest of initialization
 		}
 		
 		try {
-			DLTKCore.run(new IWorkspaceRunnable() {
+			DeeCore.getWorkspace().run(new IWorkspaceRunnable() {
 				@Override
 				public void run(IProgressMonitor monitor) {
-					DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
+					DeeCore.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
 					initializeProjectsInfo(monitor);
 				}
 			}, null);
 		} catch (CoreException e) {
 			DeeCore.logError(e);
 			// This really should not happen, but still try to recover by registering listener.
-			DLTKCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
+			DeeCore.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
 		}
 	}
 	
@@ -157,7 +154,7 @@ public class DubModelManager {
 		try {
 			IProject[] deeProjects = EclipseUtils.getOpenedProjects(DeeNature.NATURE_ID);
 			for (IProject project : deeProjects) {
-				startModelUpdateIfIsDubProject(project);
+				startModelUpdateIfHasDubManifest(project);
 			}
 		} catch (CoreException ce) {
 			DeeCore.logStatus(ce.getStatus());
@@ -166,42 +163,55 @@ public class DubModelManager {
 	
 	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path(DubManifestParser.DUB_MANIFEST_FILENAME);
 	
-	protected void startModelUpdateIfIsDubProject(IProject project) {
+	protected void startModelUpdateIfHasDubManifest(IProject project) {
 		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
 		if(packageFile != null && packageFile.getType() == IResource.FILE) {
 			startDubProjectModelUpdate(project);
 		}
 	}
 	
-	protected final class DubProjectModelResourceListener implements IElementChangedListener {
+	protected final class DubProjectModelResourceListener implements IResourceChangeListener {
 		
 		@Override
-		public void elementChanged(ElementChangedEvent event) {
-			IModelElementDelta delta = event.getDelta();
+		public void resourceChanged(IResourceChangeEvent resourceChange) {
+			IResourceDelta workspaceDelta = resourceChange.getDelta();
+			assertTrue(workspaceDelta != null);
 			
-			assertTrue(delta.getElement().getElementType() == IModelElement.SCRIPT_MODEL);
-			
-			IModelElementDelta[] affectedChildren = delta.getAffectedChildren();
-			for (IModelElementDelta projectElementDelta : affectedChildren) {
-				
-				assertTrue(projectElementDelta.getElement().getElementType() == IModelElement.SCRIPT_PROJECT);
-				processScriptProjectDelta(projectElementDelta);
+			for (IResourceDelta projectDelta : workspaceDelta.getAffectedChildren()) {
+				processProjectDelta(projectDelta);
 			}
 		}
 		
-		protected void processScriptProjectDelta(IModelElementDelta projectDelta) {
-			IScriptProject projectElement = (IScriptProject) projectDelta.getElement();
-			IProject project = projectElement.getProject();
+		protected void processProjectDelta(IResourceDelta projectDelta) {
+			//System.out.println("--- Got DELTA: " + EclipseUtils.printDelta(projectDelta));
+			
+			assertTrue(projectDelta.getResource().getType() == IResource.PROJECT);
+			IProject project = (IProject) projectDelta.getResource();
+			
+			DubBundleDescription existingProjectModel = model.doGetBundleInfo(project.getName());
+			
+			if(projectDelta.getKind() == IResourceDelta.REMOVED || !isAcessibleDeeProject(project)) {
+				if(existingProjectModel == null) {
+					return; // Nothing to removed, might not have been a DUB model project.
+				}
+				startRemoveProjectUpdate(project);
+				return;
+			}
 			
 			switch(projectDelta.getKind()) {
-			case IModelElementDelta.ADDED:
-				startModelUpdateIfIsDubProject(project);
+			case IResourceDelta.ADDED:
+				startModelUpdateIfHasDubManifest(project);
 				break;
-			case IModelElementDelta.REMOVED:
-				startRemoveProjectUpdate(project);
-				break;
-			case IModelElementDelta.CHANGED:
-				IResourceDelta[] resourceDeltas = projectDelta.getResourceDeltas();
+			case IResourceDelta.CHANGED:
+				if((projectDelta.getFlags() & IResourceDelta.DESCRIPTION) != 0) {
+					// It might be the case that project wasn't a DUB model project before, and now is.
+					if(existingProjectModel == null) {
+						// Then it's true, project has become DUB model project.
+						startModelUpdateIfHasDubManifest(project);
+						return;
+					}
+				}
+				IResourceDelta[] resourceDeltas = projectDelta.getAffectedChildren();
 				if(resourceDeltas == null)
 					break;
 				for (IResourceDelta resourceDelta : resourceDeltas) {
@@ -213,11 +223,18 @@ public class DubModelManager {
 					}
 				}
 				break;
-			default:
-				assertFail("Unknown delta type for project;");
 			}
 		}
 		
+		protected boolean isAcessibleDeeProject(IProject project) {
+			try {
+				return project.isAccessible() && project.hasNature(DeeCore.NATURE_ID); 
+			} catch (CoreException e) {
+				DeeCore.logError(e);
+				return false;
+			}
+		}
+
 	}
 	
 	protected void startDubProjectModelUpdate(final IProject project) {
