@@ -50,6 +50,7 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
+import dtool.SimpleLogger;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
@@ -60,6 +61,8 @@ import dtool.dub.DubManifestParser;
  * Updates {@link DubModel} when resource changes occur, using 'dub describe' 
  */
 public class DubModelManager {
+	
+	protected static SimpleLogger log = new SimpleLogger(true);
 	
 	protected static final DubModelManager defaultInstance = new DubModelManager(DubModel.defaultInstance);
 	
@@ -101,6 +104,7 @@ public class DubModelManager {
 	}
 	
 	public void startManager() {
+		log.print("==> Starting: " + getClass().getSimpleName());
 		assertTrue(started == false); // start only once
 		started = true;
 		

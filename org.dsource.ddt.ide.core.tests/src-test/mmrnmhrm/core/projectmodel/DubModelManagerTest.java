@@ -48,11 +48,11 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";
-	public static Path DUB_WORKSPACE = DubManifestParserTest.DUB_WORKSPACE;
+	public static Path DUB_TEST_BUNDLES = DubManifestParserTest.DUB_TEST_BUNDLES;
 	
-	protected static final DubBundleChecker FOO_LIB_BUNDLE = bundle(DUB_WORKSPACE.resolve("foo_lib"), 
+	protected static final DubBundleChecker FOO_LIB_BUNDLE = bundle(DUB_TEST_BUNDLES.resolve("foo_lib"), 
 		null, "foo_lib", DEFAULT_VERSION, paths("src", "src2"));
-	protected static final DubBundleChecker BAR_LIB_BUNDLE = bundle(DUB_WORKSPACE.resolve("bar_lib"), 
+	protected static final DubBundleChecker BAR_LIB_BUNDLE = bundle(DUB_TEST_BUNDLES.resolve("bar_lib"), 
 		null, "bar_lib", DEFAULT_VERSION, paths("source"));
 	
 	@Test
@@ -119,7 +119,7 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 		
 		
 		writeDubJsonAndCheckDubModel(
-			readFileContents(DUB_WORKSPACE.resolve("XptoBundle/dub.json")),
+			readFileContents(DUB_TEST_BUNDLES.resolve("XptoBundle/dub.json")),
 			
 			project,
 			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders("src", "src-test"), 
@@ -140,7 +140,7 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 		
 		// Test errors occurring from running dub describe
 		writeDubJsonAndCheckDubModel(
-			readFileContents(DUB_WORKSPACE.resolve("ErrorBundle_MissingDep/dub.json")),
+			readFileContents(DUB_TEST_BUNDLES.resolve("ErrorBundle_MissingDep/dub.json")),
 			
 			project,
 			main(location, ERROR_DUB_RETURNED_NON_ZERO, "ErrorBundle_MissingDep", DEFAULT_VERSION, srcFolders("src"), 

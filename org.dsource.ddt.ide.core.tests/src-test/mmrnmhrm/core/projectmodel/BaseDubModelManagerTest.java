@@ -46,8 +46,8 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.launching.ScriptRuntime;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
 
 import dtool.dub.CommonDubTest;
 import dtool.dub.CommonDubTest.DubBundleChecker;
@@ -60,18 +60,25 @@ import dtool.dub.DubDescribeParserTest;
  */
 public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 	
-	protected static final Path WORKSPACE_PATH = DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
+	protected static final Path ECLIPSE_WORKSPACE_PATH = DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
 	
-	@BeforeClass
-	public static void initDubRepositoriesPath() {
-		DubDescribeParserTest.initDubRepositoriesPath();
-		DubDescribeParserTest.dubAddPath(WORKSPACE_PATH);
-		DubModelManager.startDefault();
+	static {
+		initDubRepositoriesPath();
 	}
-	@AfterClass
-	public static void cleanupDubRepositoriesPath() {
-		DubDescribeParserTest.dubRemovePath(WORKSPACE_PATH);
-		DubDescribeParserTest.cleanupDubRepositoriesPath();
+	
+	private static void initDubRepositoriesPath() {
+		DubDescribeParserTest.initDubRepositoriesPath();
+		DubDescribeParserTest.dubAddPath(ECLIPSE_WORKSPACE_PATH);
+		DubModelManager.startDefault();
+		
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+	    		System.out.println("BaseDubModelManagerTest shutdown hook.");
+	    		DubDescribeParserTest.dubRemovePath(ECLIPSE_WORKSPACE_PATH);
+				DubDescribeParserTest.cleanupDubRepositoriesPath();
+			}
+		});
 	}
 	
 	public static String readFileContents(Path path) throws IOException {

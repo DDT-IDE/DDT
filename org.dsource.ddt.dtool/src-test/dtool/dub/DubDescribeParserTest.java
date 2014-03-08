@@ -18,19 +18,21 @@ import org.junit.Test;
 
 import dtool.tests.DToolTestResources;
 
-public class DubDescribeParserTest extends CommonDubTest {
+
+// final because of @BeforeClass/@AfterClass usage
+public final class DubDescribeParserTest extends CommonDubTest {
 	
-	public static final Path DUB_WORKSPACE = DubManifestParserTest.DUB_WORKSPACE;
+	public static final Path DUB_TEST_BUNDLES = DubManifestParserTest.DUB_TEST_BUNDLES;
 	
-	protected static final Path XPTO_BUNDLE_PATH = DUB_WORKSPACE.resolve("XptoBundle");
+	protected static final Path XPTO_BUNDLE_PATH = DUB_TEST_BUNDLES.resolve("XptoBundle");
 	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
-		dubAddPath(DUB_WORKSPACE);
+		dubAddPath(DUB_TEST_BUNDLES);
 	}
 	@AfterClass
 	public static void cleanupDubRepositoriesPath() {
-		dubRemovePath(DUB_WORKSPACE);
+		dubRemovePath(DUB_TEST_BUNDLES);
 	}
 	
 	@Test
@@ -43,8 +45,8 @@ public class DubDescribeParserTest extends CommonDubTest {
 		checkResolvedBundle(description, null, 
 			main(XPTO_BUNDLE_PATH, null, "xptobundle", "~master", paths("src", "src-test"),
 				rawDeps("foo_lib"),
-				bundle(DUB_WORKSPACE.resolve("foo_lib"), null, "foo_lib", "~master", paths("src", "src2")), 
-				bundle(DUB_WORKSPACE.resolve("bar_lib"), null, "bar_lib", "~master", paths("source"))));
+				bundle(DUB_TEST_BUNDLES.resolve("foo_lib"), null, "foo_lib", "~master", paths("src", "src2")), 
+				bundle(DUB_TEST_BUNDLES.resolve("bar_lib"), null, "bar_lib", "~master", paths("source"))));
 	}
 	
 	public static final Path DESCRIBE_RESPATH = DToolTestResources.getTestResourcePath("dub", "_describeErrors");

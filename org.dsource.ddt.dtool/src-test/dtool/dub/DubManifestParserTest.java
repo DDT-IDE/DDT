@@ -18,33 +18,33 @@ import dtool.tests.DToolTestResources;
 
 public class DubManifestParserTest extends CommonDubTest {
 	
-	public static final Path DUB_WORKSPACE = DToolTestResources.getTestResourcePath("dub");	
+	public static final Path DUB_TEST_BUNDLES = DToolTestResources.getTestResourcePath("dub");	
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		testBundle(main(DUB_WORKSPACE.resolve("bar_lib"), 
+		testBundle(main(DUB_TEST_BUNDLES.resolve("bar_lib"), 
 			null, "bar_lib", DubBundle.DEFAULT_VERSION, paths("source"),
 			rawDeps()));
 		
-		testBundle(main(DUB_WORKSPACE.resolve("foo_lib"), 
+		testBundle(main(DUB_TEST_BUNDLES.resolve("foo_lib"), 
 			null, "foo_lib", DubBundle.DEFAULT_VERSION, paths("src", "src2"), 
 			rawDeps("bar_lib")));
 		
-		testBundle(main(DUB_WORKSPACE.resolve("XptoBundle"), 
+		testBundle(main(DUB_TEST_BUNDLES.resolve("XptoBundle"), 
 			null, "xptobundle", DubBundle.DEFAULT_VERSION, paths("src", "src-test"),
 			rawDeps("foo_lib")));
 		
-		testBundle(main(DUB_WORKSPACE.resolve("LenientJsonA"), 
+		testBundle(main(DUB_TEST_BUNDLES.resolve("LenientJsonA"), 
 			null, "lenient-json1", DubBundle.DEFAULT_VERSION, paths("src", "src-test"),
 			rawDeps("foo_lib", "other_lib")));
 		
 		
-		testPath(DUB_WORKSPACE.resolve("XptoBundle"), 
+		testPath(DUB_TEST_BUNDLES.resolve("XptoBundle"), 
 			"bin", path("bin/xptobundle" + DubBundle.getExecutableSuffix()));
 
-		testPath(DUB_WORKSPACE.resolve("bar_lib"), 
+		testPath(DUB_TEST_BUNDLES.resolve("bar_lib"), 
 			null, path("bar_lib" + DubBundle.getExecutableSuffix()));
 	}
 	

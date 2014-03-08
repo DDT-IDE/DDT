@@ -11,26 +11,20 @@
 package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
-
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.dltk.core.IProjectFragment;
 import org.junit.Test;
 
 import dtool.dub.CommonDubTest;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
-import dtool.dub.DubManifestParserTest;
 
 public class DubTreeModelTest extends BaseDubModelManagerTest {
 	
 	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";
-	public static Path DUB_WORKSPACE = DubManifestParserTest.DUB_WORKSPACE;
 	
 	protected DubModelManager getModelManager() {
 		return DubModelManager.defaultInstance;
