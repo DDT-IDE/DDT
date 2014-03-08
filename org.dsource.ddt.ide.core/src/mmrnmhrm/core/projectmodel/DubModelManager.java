@@ -247,6 +247,7 @@ public class DubModelManager {
 	}
 	
 	protected void startRemoveProjectUpdate(IProject project) {
+		// TODO: optimize this to prevent redundant updates
 		removeProjectModel(project);
 		modelAgent.submit(new UpdateAllProjectsBuildpathTask(this, project));
 	}

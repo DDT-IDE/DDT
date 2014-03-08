@@ -55,15 +55,6 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 	protected static final DubBundleChecker BAR_LIB_BUNDLE = bundle(DUB_WORKSPACE.resolve("bar_lib"), 
 		null, "bar_lib", DEFAULT_VERSION, paths("source"));
 	
-	protected void _awaitModelUpdates_() {
-		DubModelManager.getDefault().syncPendingUpdates();
-	}
-	
-	
-	protected Path loc(IProject project) {
-		return project.getLocation().toFile().toPath();
-	}
-	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {

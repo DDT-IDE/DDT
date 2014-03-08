@@ -1,22 +1,33 @@
 package mmrnmhrm.ui.navigator;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+
 import java.util.ArrayList;
 
 import melnorme.util.swt.jface.AbstractContentProvider;
 import melnorme.utilbox.misc.CollectionUtil;
-import mmrnmhrm.core.projectmodel.CommonDubElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
 import mmrnmhrm.core.projectmodel.DubModel;
 import mmrnmhrm.core.projectmodel.DubModel.IDubModel;
-import mmrnmhrm.core.projectmodel.IDubModelListener;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.core.projectmodel.IDubElement;
+import mmrnmhrm.core.projectmodel.IDubElement.DubElementType;
+import mmrnmhrm.core.projectmodel.IDubModelListener;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IParent;
+import org.eclipse.dltk.core.IProjectFragment;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
@@ -36,13 +47,13 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	@Override
 	public void restoreState(IMemento aMemento) {
 	}
-
+	
 	@Override
 	public void init(ICommonContentExtensionSite aConfig) {
 	}
 	
 	protected IDubModelListener listener;
-
+	
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		super.inputChanged(viewer, oldInput, newInput);
@@ -73,27 +84,84 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 		return (StructuredViewer) viewer;
 	}
 	
+	public static abstract class DubContentsSwitcher<RET> {
+		
+		public RET switchElement(Object element) {
+			if(element instanceof IDubElement) {
+				return visitDubElement((IDubElement) element);
+			} else if(element instanceof IProject) {
+				return visitProject((IProject) element);
+			} if(element instanceof IModelElement && element instanceof IParent) {
+				return visitModelElement((IModelElement) element, (IParent) element);
+			} else {
+				return visitOther(element);
+			}
+		}
+		
+		public abstract RET visitDubElement(IDubElement dubElement);
+		
+		public abstract RET visitProject(IProject project);
+		
+		public abstract RET visitModelElement(IModelElement element, IParent elementAsParent);
+		
+		public abstract RET visitOther(Object element);
+		
+	}
+	
+	
 	@Override
 	public boolean hasChildren(Object element) {
-		if(element instanceof IProject) {
-			IProject project = (IProject) element;
-			return project.isAccessible() && DubModel.getBundleInfo(project.getName()) != null;
-		}
-		if(element instanceof CommonDubElement) {
-			return ((CommonDubElement) element).hasChildren();
-		}
-		return false;
+		return new DubContentsSwitcher<Boolean>() {
+			@Override
+			public Boolean visitProject(IProject project) {
+				return project.isAccessible() && DubModel.getBundleInfo(project.getName()) != null;
+			}
+			@Override
+			public Boolean visitDubElement(IDubElement dubElement) {
+				if(dubElement.getElementType() == DubElementType.DUB_DEP_SRC_FOLDER) {
+					return false; // modelElement children disabled for now. // TODO:
+				}
+				return dubElement.hasChildren();
+			}
+			@Override
+			public Boolean visitModelElement(IModelElement element, IParent elementAsParent) {
+				try {
+					return elementAsParent.hasChildren();
+				} catch (ModelException e) {
+					return false;
+				}
+			}
+			@Override
+			public Boolean visitOther(Object element) {
+				return false;
+			}
+		}.switchElement(element);
 	}
 	
 	@Override
 	public Object[] getChildren(Object parent) {
-		if(parent instanceof IProject) {
-			return getProjectChildren((IProject) parent);
-		}
-		if(parent instanceof CommonDubElement) {
-			return ((CommonDubElement) parent).getChildren();
-		}
-		return null;
+		return new DubContentsSwitcher<Object[]>() {
+			@Override
+			public Object[] visitProject(IProject project) {
+				return getProjectChildren(project);
+			}
+			@Override
+			public Object[] visitDubElement(IDubElement dubElement) {
+				return dubElement.getChildren();
+			}
+			@Override
+			public Object[] visitModelElement(IModelElement element, IParent elementAsParent) {
+				try {
+					return elementAsParent.getChildren();
+				} catch (ModelException e) {
+					return IDubElement.NO_CHILDREN;
+				}
+			}
+			@Override
+			public Object[] visitOther(Object element) {
+				return null;
+			}
+		}.switchElement(parent);
 	}
 	
 	protected Object[] getProjectChildren(IProject project) {
@@ -119,15 +187,81 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	
 	@Override
 	public Object getParent(Object element) {
-		if(element instanceof DubDependenciesContainer) {
-			DubDependenciesContainer dubDependenciesContainer = (DubDependenciesContainer) element;
-			return dubDependenciesContainer.getProject(); 
+		return new DubContentsSwitcher<Object>() {
+			@Override
+			public Object visitProject(IProject project) {
+				return project.getParent();
+			}
+			@Override
+			public Object visitDubElement(IDubElement dubElement) {
+				return dubElement.getParent();
+			}
+			@Override
+			public Object visitModelElement(IModelElement element, IParent elementAsParent) {
+				IModelElement parent = element.getParent();
+				if(parent instanceof IProjectFragment) {
+					// TODO: need to map to DepSourceContainer
+					return null;
+				}
+				return parent;
+			}
+			@Override
+			public Object visitOther(Object element) {
+				return null;
+			}
+		}.switchElement(element);
+	}
+	
+	/* ----------------- specific switcher ----------------- */
+	
+	public static abstract class DubAllContentSwitcher<RET> extends DubContentsSwitcher<RET> {
+		
+		@Override
+		public RET visitProject(IProject project) {
+			return null;
 		}
-		if(element instanceof IDubElement) {
-			IDubElement dubElement = (IDubElement) element;
-			return dubElement.getParent();
+		
+		@Override
+		public RET visitDubElement(IDubElement element) {
+			switch (element.getElementType()) {
+			case DUB_DEP_CONTAINER: return visitDepContainer((DubDependenciesContainer) element);
+			case DUB_RAW_DEP: return visitRawDepElement((DubRawDependencyElement) element);
+			case DUB_ERROR_ELEMENT: return visitErrorElement((DubErrorElement) element);
+			case DUB_RESOLVED_DEP: return visitDepElement((DubDependencyElement) element);
+			case DUB_DEP_SRC_FOLDER: return visitDepSourceFolderElement((DubDependencySourceFolderElement) element);
+			}
+			throw assertUnreachable();
 		}
-		return null;
+		
+		public abstract RET visitDepContainer(DubDependenciesContainer element);
+		public abstract RET visitRawDepElement(DubRawDependencyElement element);
+		public abstract RET visitErrorElement(DubErrorElement element);
+		public abstract RET visitDepElement(DubDependencyElement element);
+		public abstract RET visitDepSourceFolderElement(DubDependencySourceFolderElement element);
+		
+		@Override
+		public abstract RET visitModelElement(IModelElement element, IParent elementAsParent);
+		
+		@Override
+		public RET visitOther(Object element) {
+			if(isDubManifestFile(element)) {
+				return visitDubManifestFile((IResource) element);
+			}
+			if(isDubCacheFolder(element)) {
+				return visitDubCacheFolder((IResource) element);
+			}
+			if(isDubSourceFolder(element)) {
+				return visitDubSourceFolder((IResource) element);
+			}
+			return null;
+		}
+		
+		public abstract RET visitDubManifestFile(IResource element);
+		
+		public abstract RET visitDubCacheFolder(IResource element);
+		
+		public abstract RET visitDubSourceFolder(IResource element);
+		
 	}
 	
 	public static boolean isDubManifestFile(Object element) {

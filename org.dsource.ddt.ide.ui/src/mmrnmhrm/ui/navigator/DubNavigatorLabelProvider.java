@@ -9,18 +9,22 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package mmrnmhrm.ui.navigator;
-import mmrnmhrm.core.projectmodel.CommonDubElement;
-import mmrnmhrm.core.projectmodel.CommonDubElement.DubElementSwitcher;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
 import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.navigator.DubNavigatorContent.DubAllContentSwitcher;
 
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IParent;
+import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
-import org.eclipse.jface.viewers.StyledString.Styler;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
@@ -57,34 +61,17 @@ public class DubNavigatorLabelProvider extends LabelProvider implements IStyledL
 	
 	@Override
 	public StyledString getStyledText(Object element) {
-		if(element instanceof CommonDubElement) {
-			CommonDubElement dubElement = (CommonDubElement) element;
-			return new DubElementTextProvider().switchElement(dubElement);
-		}
-		return null;
+		return new DubElementTextProvider().switchElement(element);
 	}
 	
 	@Override
 	public Image getImage(Object element) {
-		if(element instanceof CommonDubElement) {
-			CommonDubElement dubElement = (CommonDubElement) element;
-			return new DubElementImageProvider().switchElement(dubElement);
-		}
-		if(DubNavigatorContent.isDubManifestFile(element)) {
-			return DeePluginImages.getImage(DeePluginImages.DUB_MANIFEST);
-		}
-		if(DubNavigatorContent.isDubCacheFolder(element)) {
-			return DeePluginImages.getImage(DeePluginImages.BINARY_FOLDER);
-		}
-		if(DubNavigatorContent.isDubSourceFolder(element)) {
-			return DeePluginImages.getImage(DeePluginImages.SOURCE_FOLDER);
-		}
-		return null;
+		return new DubElementImageProvider().switchElement(element);
 	}
 	
 }
 
-class DubElementTextProvider extends DubElementSwitcher<StyledString>{
+class DubElementTextProvider extends DubAllContentSwitcher<StyledString>{
 	
 	protected static final RGB DUB_DEP_ANNOTATION_FG = new RGB(128, 128, 128);
 	protected static final RGB DUB_DEPCONTAINER_ANNOTATION_FG = new RGB(128, 128, 128);
@@ -116,12 +103,6 @@ class DubElementTextProvider extends DubElementSwitcher<StyledString>{
 	}
 	
 	@Override
-	public StyledString visitDepElement(DubDependencyElement element) {
-		return new StyledString(element.getBundleName()).
-				append(" - " + element.getDubBundle().getLocationString(), styler(DUB_DEP_ANNOTATION_FG));
-	}
-	
-	@Override
 	public StyledString visitRawDepElement(DubRawDependencyElement element) {
 		return new StyledString(element.getBundleName());
 	}
@@ -131,18 +112,45 @@ class DubElementTextProvider extends DubElementSwitcher<StyledString>{
 		return new StyledString(element.errorDescription);
 	}
 	
+	@Override
+	public StyledString visitDepElement(DubDependencyElement element) {
+		return new StyledString(element.getBundleName()).
+				append(" - " + element.getDubBundle().getLocationString(), styler(DUB_DEP_ANNOTATION_FG));
+	}
+	
+	@Override
+	public StyledString visitDepSourceFolderElement(DubDependencySourceFolderElement element) {
+		return new StyledString(element.getSourceFolderLocalPath().toString());
+	}
+	
+	@Override
+	public StyledString visitDubManifestFile(IResource element) {
+		return null; // TODO: maybe add custom annotation
+	}
+	
+	@Override
+	public StyledString visitDubCacheFolder(IResource element) {
+		return null; // Use defaults
+	}
+	
+	@Override
+	public StyledString visitDubSourceFolder(IResource element) {
+		return null; // Use defaults
+	}
+	
+	@Override
+	public StyledString visitModelElement(IModelElement element, IParent elementAsParent) {
+		// TODO
+		return new StyledString(element.getElementName());
+	}
+	
 }
 
-class DubElementImageProvider extends DubElementSwitcher<Image>{
-
+class DubElementImageProvider extends DubAllContentSwitcher<Image>{
+	
 	@Override
 	public Image visitDepContainer(DubDependenciesContainer element) {
 		return DeePluginImages.getImage(DeePluginImages.DUB_DEPENDENCIES_CONTAINER);
-	}
-
-	@Override
-	public Image visitDepElement(DubDependencyElement element) {
-		return DeePluginImages.getImage(DeePluginImages.DUB_BUNDLE_DEP);
 	}
 	
 	@Override
@@ -153,6 +161,39 @@ class DubElementImageProvider extends DubElementSwitcher<Image>{
 	@Override
 	public Image visitErrorElement(DubErrorElement element) {
 		return DeePluginImages.getImage(DeePluginImages.DUB_ERROR_ELEMENT);
+	}
+	
+	@Override
+	public Image visitDepElement(DubDependencyElement element) {
+		return DeePluginImages.getImage(DeePluginImages.DUB_BUNDLE_DEP);
+	}
+	
+	@Override
+	public Image visitDepSourceFolderElement(DubDependencySourceFolderElement element) {
+		return DeePluginImages.getImage(DeePluginImages.SOURCE_FOLDER);
+	}
+	
+	@Override
+	public Image visitDubManifestFile(IResource element) {
+		return DeePluginImages.getImage(DeePluginImages.DUB_MANIFEST);
+	}
+	
+	@Override
+	public Image visitDubCacheFolder(IResource element) {
+		return DeePluginImages.getImage(DeePluginImages.BINARY_FOLDER);
+	}
+	
+	@Override
+	public Image visitDubSourceFolder(IResource element) {
+		return DeePluginImages.getImage(DeePluginImages.SOURCE_FOLDER);
+	}
+	
+	// TODO: review this usage
+	protected final ScriptUILabelProvider scriptLabelProvider = new ScriptUILabelProvider();
+	
+	@Override
+	public Image visitModelElement(IModelElement element, IParent elementAsParent) {
+		return scriptLabelProvider.getImage(element);
 	}
 	
 }

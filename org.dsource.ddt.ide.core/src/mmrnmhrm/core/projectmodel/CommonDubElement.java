@@ -11,20 +11,21 @@
 package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
 
-public abstract class CommonDubElement implements IDubElement {
+public abstract class CommonDubElement<PARENT> implements IDubElement {
 	
-	protected final CommonDubElement parent;
+	protected final PARENT parent;
 	
-	public CommonDubElement(CommonDubElement parent) {
+	public CommonDubElement(PARENT parent) {
 		this.parent = parent;
 	}
 	
 	@Override
-	public CommonDubElement getParent() {
+	public PARENT getParent() {
 		return parent;
 	}
 	
@@ -34,22 +35,19 @@ public abstract class CommonDubElement implements IDubElement {
 	}
 	
 	@Override
-	public IDubElement[] getChildren() {
+	public Object[] getChildren() {
 		return null;
-	}
-	
-	public final <RET> RET acceptSwitcher(DubElementSwitcher<RET> switcher) {
-		return switcher.switchElement(this);
 	}
 	
 	public static abstract class DubElementSwitcher<RET> {
 		
-		public RET switchElement(CommonDubElement element) {
+		public RET switchElement(IDubElement element) {
 			switch (element.getElementType()) {
 			case DUB_DEP_CONTAINER: return visitDepContainer((DubDependenciesContainer) element);
 			case DUB_RAW_DEP: return visitRawDepElement((DubRawDependencyElement) element);
-			case DUB_RESOLVED_DEP: return visitDepElement((DubDependencyElement) element);
 			case DUB_ERROR_ELEMENT: return visitErrorElement((DubErrorElement) element);
+			case DUB_RESOLVED_DEP: return visitDepElement((DubDependencyElement) element);
+			case DUB_DEP_SRC_FOLDER: return visitDepSourceFolderElement((DubDependencySourceFolderElement) element);
 			}
 			throw assertUnreachable();
 		}
@@ -58,9 +56,11 @@ public abstract class CommonDubElement implements IDubElement {
 		
 		public abstract RET visitRawDepElement(DubRawDependencyElement element);
 		
+		public abstract RET visitErrorElement(DubErrorElement element);
+		
 		public abstract RET visitDepElement(DubDependencyElement element);
 		
-		public abstract RET visitErrorElement(DubErrorElement element);
+		public abstract RET visitDepSourceFolderElement(DubDependencySourceFolderElement element);
 		
 	}
 	

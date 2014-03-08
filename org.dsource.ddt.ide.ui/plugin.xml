@@ -240,11 +240,13 @@
             labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
             name="Dub Elements"
             priority="highest">
-            <!-- Priority needs to be highest, because we could be competing with other plugins like JDT or CDT,
-            which have trigger points for any IResource regardless of project nature. 
-            While that doesn't affect the content providers, it affects the common sorter, since we want to sort IResource's.
-            Also, triggerpoints has to apply to the children we want to sort, not just the parent for the content provider, 
-            so we can't use just expressions.isDeeProject -->
+    <!-- 
+    Priority needs to be highest, because we could be competing with other plugins like JDT or CDT,
+    which have triggerPoints for any IResource regardless of project nature:
+    While that doesn't affect the content providers, it affects the common sorter, since we want to sort IResource's.
+    Also, triggerPoints has to match the children we want to sort, not just the parent of the children, 
+    so we can't use just expressions.isDeeProject 
+    -->
          <triggerPoints>
             <or>
                <reference
@@ -252,10 +254,12 @@
                </reference>
             </or>
          </triggerPoints>
-         <!-- Despite what the documentation currently says, possibleChildren is queried by Navigator service to find out whether 
-         to use label provider or not, regardless of trigger points. Therefore we should ensure possible children only aplies to D projects. 
-         See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=429572
-         -->
+	 <!-- 
+	 Despite what the documentation currently says, possibleChildren is queried by Navigator service 
+	 to find out whether to use label provider or not, regardless of trigger points. 
+	 Therefore we should ensure possible children only aplies to D projects. 
+	 See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=429572
+	 -->
          <possibleChildren>
             <or>
                <instanceof value="mmrnmhrm.core.projectmodel.IDubElement" />

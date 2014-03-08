@@ -11,31 +11,38 @@
 package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.arrayFrom;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IProjectFragment;
+import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.ModelException;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.ArrayUtil;
+import mmrnmhrm.core.DLTKUtils;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.dub.DubBundleDescription;
 
-public class DubDependenciesContainer extends CommonDubElement {
+public class DubDependenciesContainer extends CommonDubElement<IProject> {
 	
 	protected final DubBundleDescription bundleInfo;
-	protected final CommonDubElement[] depElements;
-	protected final IProject project;
+	protected final IDubElement[] depElements;
 	
 	public DubDependenciesContainer(DubBundleDescription bundleInfo, IProject project) {
-		super(null);
+		super(project);
 		this.bundleInfo = assertNotNull(bundleInfo);
-		this.project = project;
 		depElements = createChildren();
 	}
 	
-	protected CommonDubElement[] createChildren() {
-		ArrayList<CommonDubElement> newChildren = new ArrayList<>();
+	protected IDubElement[] createChildren() {
+		ArrayList<IDubElement> newChildren = new ArrayList<>();
 		
 		if(bundleInfo.isResolved()) {
 			for (DubBundle dubBundle : bundleInfo.getBundleDependencies()) {
@@ -49,7 +56,7 @@ public class DubDependenciesContainer extends CommonDubElement {
 		if(bundleInfo.getError() != null) {
 			newChildren.add(new DubErrorElement(this, bundleInfo.getError().getMessage()));
 		}
-		return ArrayUtil.createFrom(newChildren, CommonDubElement.class);
+		return ArrayUtil.createFrom(newChildren, IDubElement.class);
 	}
 	
 	@Override
@@ -62,7 +69,11 @@ public class DubDependenciesContainer extends CommonDubElement {
 	}
 	
 	public IProject getProject() {
-		return project;
+		return getParent();
+	}
+	
+	public IScriptProject getScriptProject() {
+		return DLTKCore.create(getProject());
 	}
 	
 	@Override
@@ -75,11 +86,11 @@ public class DubDependenciesContainer extends CommonDubElement {
 		return depElements;
 	}
 	
-	public static class DubErrorElement extends CommonDubElement {
+	public static class DubErrorElement extends CommonDubElement<IDubElement> {
 		
 		public final String errorDescription;
 		
-		public DubErrorElement(CommonDubElement parent, String errorDescription) {
+		public DubErrorElement(IDubElement parent, String errorDescription) {
 			super(parent);
 			this.errorDescription = assertNotNull(errorDescription);
 		}
@@ -94,13 +105,37 @@ public class DubDependenciesContainer extends CommonDubElement {
 		public String getBundleName();
 	}
 	
-	public static class DubDependencyElement extends CommonDubElement implements ICommonDepElement {
+	public static class DubRawDependencyElement extends CommonDubElement<DubDependenciesContainer>
+			implements ICommonDepElement {
 		
-		protected DubBundle dubBundle;
+		protected DubDependecyRef dubBundleRef;
 		
-		public DubDependencyElement(CommonDubElement parent, DubBundle dubBundle) {
+		public DubRawDependencyElement(DubDependenciesContainer parent, DubDependecyRef dubBundleRef) {
+			super(parent);
+			this.dubBundleRef = dubBundleRef;
+		}
+		
+		@Override
+		public DubElementType getElementType() {
+			return DubElementType.DUB_RAW_DEP;
+		}
+		
+		@Override
+		public String getBundleName() {
+			return dubBundleRef.bundleName;
+		}
+	}
+	
+	public static class DubDependencyElement extends CommonDubElement<DubDependenciesContainer> 
+			implements ICommonDepElement {
+		
+		protected final DubBundle dubBundle;
+		protected final DubDependencySourceFolderElement[] children;
+		
+		public DubDependencyElement(DubDependenciesContainer parent, DubBundle dubBundle) {
 			super(parent);
 			this.dubBundle = dubBundle;
+			this.children = createChildren();
 		}
 		
 		@Override
@@ -116,25 +151,78 @@ public class DubDependenciesContainer extends CommonDubElement {
 		public DubBundle getDubBundle() {
 			return dubBundle;
 		}
+		
+		protected DubDependencySourceFolderElement[] createChildren() {
+			ArrayList<DubDependencySourceFolderElement> sourceContainers = new ArrayList<>();
+			IScriptProject scriptProject = getParent().getScriptProject();
+			
+			for (Path localPath : dubBundle.getEffectiveSourceFolders()) {
+				sourceContainers.add(new DubDependencySourceFolderElement(this, localPath, scriptProject));
+			}
+			return arrayFrom(sourceContainers, DubDependencySourceFolderElement.class);
+		}
+		
+		@Override
+		public boolean hasChildren() {
+			return children.length > 0;
+		}
+		
+		@Override
+		public Object[] getChildren() {
+			return children;
+		}
+		
 	}
 	
-	public static class DubRawDependencyElement extends CommonDubElement implements ICommonDepElement {
+	public static class DubDependencySourceFolderElement extends CommonDubElement<DubDependencyElement> {
 		
-		protected DubDependecyRef dubBundleRef;
+		protected final Path srcFolderPath;
+		protected final IScriptProject scriptProject;
 		
-		public DubRawDependencyElement(CommonDubElement parent, DubDependecyRef dubBundleRef) {
+		public DubDependencySourceFolderElement(DubDependencyElement parent, Path srcFolderPath, 
+				IScriptProject scriptProject) {
 			super(parent);
-			this.dubBundleRef = dubBundleRef;
+			this.srcFolderPath = assertNotNull(srcFolderPath);
+			this.scriptProject = assertNotNull(scriptProject);
 		}
 		
 		@Override
 		public DubElementType getElementType() {
-			return DubElementType.DUB_RAW_DEP;
+			return DubElementType.DUB_DEP_SRC_FOLDER;
+		}
+		
+		public Path getSourceFolderLocalPath() {
+			return srcFolderPath;
+		}
+
+		public IProjectFragment getUnderlyingProjectFragment() {
+			Path path = getParent().getDubBundle().location.resolve(srcFolderPath);
+			IPath bpPath = DLTKUtils.localEnvPath(EclipseUtils.getPath(path));
+			try {
+				return scriptProject.findProjectFragment(bpPath);
+			} catch (ModelException e) {
+				return null;
+			}
 		}
 		
 		@Override
-		public String getBundleName() {
-			return dubBundleRef.bundleName;
+		public boolean hasChildren() {
+			IProjectFragment projectFragment = getUnderlyingProjectFragment();
+			try {
+				return projectFragment != null && projectFragment.hasChildren();
+			} catch (ModelException e) {
+				return false;
+			}
+		}
+		
+		@Override
+		public Object[] getChildren() {
+			IProjectFragment projectFragment = getUnderlyingProjectFragment();
+			try {
+				return projectFragment == null ? NO_CHILDREN : projectFragment.getChildren();
+			} catch (ModelException e) {
+				return NO_CHILDREN;
+			}
 		}
 	}
 	

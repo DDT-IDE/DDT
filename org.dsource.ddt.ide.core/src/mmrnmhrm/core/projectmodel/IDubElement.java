@@ -10,16 +10,24 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
-import melnorme.utilbox.tree.IElement;
 
+public interface IDubElement {
+	
+	public static IDubElement[] NO_CHILDREN = new IDubElement[0];
+	
+	Object getParent();
+	
+	boolean hasChildren();
 
-public interface IDubElement extends IElement {
+	/** Returns the node's children. */
+	Object[] getChildren();
 	
 	public static enum DubElementType {
 		DUB_DEP_CONTAINER,
 		DUB_RESOLVED_DEP,
 		DUB_RAW_DEP,
 		DUB_ERROR_ELEMENT,
+		DUB_DEP_SRC_FOLDER,
 	}
 	
 	public abstract DubElementType getElementType();

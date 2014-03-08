@@ -133,8 +133,18 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 		return sb;
 	}
 	
+	/* -----------------  ----------------- */
+	
+	protected Path loc(IProject project) {
+		return project.getLocation().toFile().toPath();
+	}
+	
 	protected static ITaskAgent getModelAgent() {
 		return DubModelManager.getDefault().internal_getModelAgent();
+	}
+	
+	protected void _awaitModelUpdates_() {
+		DubModelManager.getDefault().syncPendingUpdates();
 	}
 	
 	protected static DubModelManager getProjectModel() {
