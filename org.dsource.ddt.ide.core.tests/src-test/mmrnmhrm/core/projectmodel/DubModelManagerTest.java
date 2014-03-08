@@ -158,22 +158,32 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 			jsEntryValue("dependencies", "{ \"dub_lib\": \"~master\"}"));
 		writeDubJson(project, dubTestJson);
 		
-		IProject libProject = createAndOpenDeeProject(DUB_LIB, true).getProject();
+		IProject libProject = createAndOpenProject(DUB_LIB, true).getProject();
+		Path libProjectLocation = loc(libProject);
 		String dubLibJson = jsObject(jsEntry("name", "dub_lib"));
 		writeDubJson(libProject, dubLibJson);
 		
+		// DUB_LIB project buildpath entry not on DUB_TEST yet
 		_awaitModelUpdates_();
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project.getName());
+		checkFullyResolvedCode(project, dubBundle, 
+			main(loc(project), null, "dub_test", DEFAULT_VERSION, srcFolders(), 
+				rawDeps("dub_lib"), 
+				bundle(libProjectLocation, "dub_lib")
+			));
+		
+		setupStandardDeeProject(libProject);
+		_awaitModelUpdates_();
+		// Check project buildpath entry has been added
 		checkFullyResolvedCode(project, dubBundle, 
 			main(loc(project), null, "dub_test", DEFAULT_VERSION, srcFolders(), 
 				rawDeps("dub_lib"), 
 				new ProjDepChecker(libProject, "dub_lib")
 			));
 		
-		Path libProjectLocation = loc(libProject);
 		libProject.delete(true, null);
 		_awaitModelUpdates_();
-		
+		// Check project buildpath entry has been removed
 		checkFullyResolvedCode(project, dubBundle, 
 			main(loc(project), null, "dub_test", DEFAULT_VERSION, srcFolders(), 
 				rawDeps("dub_lib"), 

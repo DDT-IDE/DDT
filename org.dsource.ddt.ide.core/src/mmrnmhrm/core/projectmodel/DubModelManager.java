@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
@@ -158,8 +159,12 @@ public class DubModelManager {
 		try {
 			IProject[] deeProjects = EclipseUtils.getOpenedProjects(DeeNature.NATURE_ID);
 			for (IProject project : deeProjects) {
-				startModelUpdateIfHasDubManifest(project);
+				if(projectHasDubManifestFile(project)) {
+					beginProjectDescribeUpdate(project);
+				}
 			}
+			queueUpdateAllProjectsBuildpath(null);
+			
 		} catch (CoreException ce) {
 			DeeCore.logStatus(ce.getStatus());
 		}
@@ -167,11 +172,12 @@ public class DubModelManager {
 	
 	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path(DubManifestParser.DUB_MANIFEST_FILENAME);
 	
-	protected void startModelUpdateIfHasDubManifest(IProject project) {
+	protected boolean projectHasDubManifestFile(IProject project) {
 		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
 		if(packageFile != null && packageFile.getType() == IResource.FILE) {
-			startDubProjectModelUpdate(project);
+			return true;
 		}
+		return false;
 	}
 	
 	protected final class DubProjectModelResourceListener implements IResourceChangeListener {
@@ -198,20 +204,24 @@ public class DubModelManager {
 				if(existingProjectModel == null) {
 					return; // Nothing to removed, might not have been a DUB model project.
 				}
-				startRemoveProjectUpdate(project);
+				dubProjectRemoved(project);
 				return;
 			}
 			
 			switch(projectDelta.getKind()) {
 			case IResourceDelta.ADDED:
-				startModelUpdateIfHasDubManifest(project);
+				if(projectHasDubManifestFile(project)) {
+					dubProjectAdded(project);
+				}
 				break;
 			case IResourceDelta.CHANGED:
 				if((projectDelta.getFlags() & IResourceDelta.DESCRIPTION) != 0) {
 					// It might be the case that project wasn't a DUB model project before, and now is.
 					if(existingProjectModel == null) {
 						// Then it's true, project has become DUB model project.
-						startModelUpdateIfHasDubManifest(project);
+						if(projectHasDubManifestFile(project)) {
+							dubProjectAdded(project);
+						}
 						return;
 					}
 				}
@@ -222,7 +232,7 @@ public class DubModelManager {
 					if(resourceDelta.getResource().getType() == IResource.FILE && 
 							resourceDelta.getProjectRelativePath().equals(DUB_BUNDLE_PACKAGE_FILE)) {
 						if(resourceDelta.getResource().getType() == IResource.FILE) {
-							startDubProjectModelUpdate(project);
+							dubManifestFileChanged(project);
 						}
 					}
 				}
@@ -232,7 +242,27 @@ public class DubModelManager {
 
 	}
 	
-	protected void startDubProjectModelUpdate(final IProject project) {
+	protected void dubProjectAdded(IProject project) {
+		beginProjectDescribeUpdate(project);
+		queueUpdateAllProjectsBuildpath(project);
+	}
+	
+	protected void dubProjectRemoved(IProject project) {
+		removeProjectModel(project);
+		queueUpdateAllProjectsBuildpath(project);
+	}
+	
+	protected void dubManifestFileChanged(final IProject project) {
+		beginProjectDescribeUpdate(project);
+		queueUpdateAllProjectsBuildpath(project); // We do this because project might have changed name
+	}
+	
+	protected Future<?> queueUpdateAllProjectsBuildpath(IProject project) {
+		// TODO: this could be optimized to prevent duplicate tasks queued
+		return modelAgent.submit(new UpdateAllProjectsBuildpathTask(this, project));
+	}
+	
+	protected void beginProjectDescribeUpdate(final IProject project) {
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
 		addProjectModel(project, unresolvedDescription);
 		
@@ -244,12 +274,6 @@ public class DubModelManager {
 		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation(location);
 		
 		return new DubBundleDescription(unresolvedBundle);
-	}
-	
-	protected void startRemoveProjectUpdate(IProject project) {
-		// TODO: optimize this to prevent redundant updates
-		removeProjectModel(project);
-		modelAgent.submit(new UpdateAllProjectsBuildpathTask(this, project));
 	}
 	
 	/* ----------------------------------- */
@@ -500,18 +524,20 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 
 class UpdateAllProjectsBuildpathTask extends ProjectUpdateBuildpathTask {
 	
-	protected IProject removedProject;
+	protected IProject changedProject;
 
-	protected UpdateAllProjectsBuildpathTask(DubModelManager dubModelManager, IProject removedProject) {
+	protected UpdateAllProjectsBuildpathTask(DubModelManager dubModelManager, IProject changedProject) {
 		super(dubModelManager);
-		this.removedProject = removedProject;
+		this.changedProject = changedProject;
 	}
 	
 	@Override
 	public void run() {
 		Set<String> dubProjects = getModel().getDubProjects();
 		for (String projectName : dubProjects) {
-			// BM: we could optimize this, and update only if removed project was in buildpath of project to update.
+			if(changedProject != null && changedProject.getName().equals(projectName))
+				continue; // changedProject is supposed to be up to date, so no need to update that.
+			
 			DubBundleDescription bundleDesc = getModel().getBundleInfo(projectName);
 			IProject project = DeeCore.getWorkspaceRoot().getProject(projectName);
 			updateBuildpath(project, bundleDesc);
