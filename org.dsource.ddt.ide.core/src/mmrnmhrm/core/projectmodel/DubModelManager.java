@@ -455,7 +455,7 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 		ArrayList<IBuildpathEntry> entries = new ArrayList<>();
 		
 		entries.add(DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()));
-		entries.add(DLTKCore.newContainerEntry(new Path(DubBuildpathContainerInitializer.ID)));
+		entries.add(DLTKCore.newContainerEntry(new Path(DubBuildpathContainer.CONTAINER_PATH_ID)));
 		
 		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getEffectiveSourceFolders()) {
 			IPath path2 = projectElement.getPath().append(srcFolder.toString());
@@ -475,9 +475,9 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 	
 	protected void updateDubBuildpathContainer(IScriptProject projectElement, IBuildpathEntry[] entries) 
 			throws ModelException {
-		Path containerPath = new Path(DubBuildpathContainerInitializer.ID);
-		DubContainer dubContainer = new DubContainer(containerPath, projectElement, entries);
-		DLTKCore.setBuildpathContainer(containerPath, array(projectElement), array(dubContainer), null);
+		DubBuildpathContainer dubContainer = new DubBuildpathContainer(projectElement, entries);
+		DLTKCore.setBuildpathContainer(DubBuildpathContainer.CONTAINER_PATH, array(projectElement), 
+			array(dubContainer), null);
 	}
 	
 	protected IBuildpathEntry[] getBuildpathEntriesFromDeps(DubBundleDescription bundleDesc) {
@@ -494,7 +494,8 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 					
 					java.nio.file.Path srcFolderAbsolute = depBundle.location.resolve(srcFolder);
 					assertTrue(srcFolderAbsolute.isAbsolute());
-					depEntries.add(DubContainer.createDubBuildpathEntry(EclipseUtils.getPath(srcFolderAbsolute)));
+					depEntries.add(
+						DubBuildpathContainer.createDubBuildpathEntry(EclipseUtils.getPath(srcFolderAbsolute)));
 				}
 			}
 		}

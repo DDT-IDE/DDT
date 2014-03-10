@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.CollectionUtil.createCollection;
+import static mmrnmhrm.core.projectmodel.DubBuildpathContainer.isDubBuildpathEntry;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -324,7 +325,7 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 			}
 			
 			if((bpEntry.getEntryKind() == IBuildpathEntry.BPE_CONTAINER)) {
-				assertTrue(entryPath.toString() .equals(DubBuildpathContainerInitializer.ID));
+				assertTrue(entryPath.toString() .equals(DubBuildpathContainer.CONTAINER_PATH_ID));
 				continue;
 			}
 			
@@ -354,7 +355,7 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 			
 			IPath entryPath = EnvironmentPathUtils.getLocalPath(bpEntry.getPath());
 			
-			if(bpEntry.getEntryKind() == IBuildpathEntry.BPE_LIBRARY && !DubContainer.isDubBuildpathEntry(bpEntry)) {
+			if(bpEntry.getEntryKind() == IBuildpathEntry.BPE_LIBRARY && !isDubBuildpathEntry(bpEntry)) {
 				String entryPathStr = entryPath.toString();
 				assertTrue(
 						entryPathStr.endsWith("druntime/import") || 

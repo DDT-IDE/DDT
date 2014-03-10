@@ -12,8 +12,12 @@ package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 import mmrnmhrm.core.DLTKUtils;
+import mmrnmhrm.core.DeeCore;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.dltk.core.BuildpathContainerInitializer;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IAccessRule;
 import org.eclipse.dltk.core.IBuildpathAttribute;
@@ -21,14 +25,17 @@ import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 
-public class DubContainer implements IBuildpathContainer {
+public class DubBuildpathContainer implements IBuildpathContainer {
+	
+	public static String CONTAINER_PATH_ID = DeeCore.PLUGIN_ID + ".DubContainer";
+	public static Path CONTAINER_PATH = new Path(CONTAINER_PATH_ID);
 	
 	protected final IPath containerPath;
 	protected final IScriptProject project;
 	protected final IBuildpathEntry[] entries;
 	
-	public DubContainer(IPath containerPath, IScriptProject project, IBuildpathEntry[] entries) {
-		this.containerPath = containerPath;
+	public DubBuildpathContainer(IScriptProject project, IBuildpathEntry[] entries) {
+		this.containerPath = CONTAINER_PATH;
 		this.project = project;
 		this.entries = entries;
 	}
@@ -48,7 +55,7 @@ public class DubContainer implements IBuildpathContainer {
 		return "Dub Dependencies";
 	}
 	
-	protected static final IBuildpathEntry[] NO_ENTRIES = new IBuildpathEntry[0];
+	protected static final IBuildpathEntry[] NO_ENTRIES = { };
 	
 	@Override
 	public IBuildpathEntry[] getBuildpathEntries() {
@@ -81,6 +88,25 @@ public class DubContainer implements IBuildpathContainer {
 			}
 		}
 		return false;
+	}
+	
+	public static class DubBPContainerInitializer extends BuildpathContainerInitializer {
+		
+		@Override
+		public String getDescription(IPath containerPath, IScriptProject project) {
+			return "Dub Container";
+		}
+		
+		@Override
+		public void initialize(IPath containerPath, IScriptProject project) throws CoreException {
+			if(!containerPath.equals(CONTAINER_PATH)) {
+				DeeCore.logError("containerPath doesn' match expected");
+				return;
+			}
+//			IBuildpathContainer container = new DubBuildpathContainer(project, null);
+//			DLTKCore.setBuildpathContainer(containerPath, array(project), array(container), null);
+		}
+		
 	}
 	
 }
