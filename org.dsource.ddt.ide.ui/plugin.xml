@@ -287,15 +287,6 @@
          </includes>
       </viewerContentBinding>
    </extension>
-   <extension
-         point="org.eclipse.dltk.ui.buildpathContainerPage">
-      <buildpathContainerPage
-            class="mmrnmhrm.ui.wizards.DeeCompilerContainerWizardPage"
-            id="org.dsource.ddt.ide.core.launching.INTERPRETER_CONTAINER"
-            name="D System Libraries"
-            nature="org.dsource.ddt.ide.core.nature">
-      </buildpathContainerPage>
-   </extension>
    
    <extension
          point="org.eclipse.search.searchPages">
