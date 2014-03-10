@@ -26,7 +26,6 @@
  * Fixed exception when dub.json modified and Package Explorer view was closed.
  * Minor improvements to DUB elements in Package Explorer (added source folders for deps)
  TODO:
-   * label update bug
    * DLTK Model elements in Project Explorer
      * flatten root script folder
      * respond to DLTK model updates

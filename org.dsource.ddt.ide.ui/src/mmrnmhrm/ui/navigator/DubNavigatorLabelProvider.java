@@ -15,7 +15,7 @@ import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFo
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
 import mmrnmhrm.ui.DeePluginImages;
-import mmrnmhrm.ui.navigator.DubNavigatorContent.DubAllContentSwitcher;
+import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.dltk.core.IModelElement;
@@ -71,7 +71,7 @@ public class DubNavigatorLabelProvider extends LabelProvider implements IStyledL
 	
 }
 
-class DubElementTextProvider extends DubAllContentSwitcher<StyledString>{
+class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>{
 	
 	protected static final RGB DUB_DEP_ANNOTATION_FG = new RGB(128, 128, 128);
 	protected static final RGB DUB_DEPCONTAINER_ANNOTATION_FG = new RGB(128, 128, 128);
@@ -146,7 +146,7 @@ class DubElementTextProvider extends DubAllContentSwitcher<StyledString>{
 	
 }
 
-class DubElementImageProvider extends DubAllContentSwitcher<Image>{
+class DubElementImageProvider extends DubAllContentElementsSwitcher<Image>{
 	
 	@Override
 	public Image visitDepContainer(DubDependenciesContainer element) {

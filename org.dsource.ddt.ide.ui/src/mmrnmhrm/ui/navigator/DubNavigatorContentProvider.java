@@ -4,7 +4,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 
-import melnorme.util.swt.jface.AbstractContentProvider;
 import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
@@ -29,29 +28,13 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IMemento;
-import org.eclipse.ui.navigator.ICommonContentExtensionSite;
-import org.eclipse.ui.navigator.ICommonContentProvider;
 
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubManifestParser;
 
-public class DubNavigatorContent extends AbstractContentProvider implements ICommonContentProvider {
-	
-	@Override
-	public void saveState(IMemento aMemento) {
-	}
-	
-	@Override
-	public void restoreState(IMemento aMemento) {
-	}
-	
-	@Override
-	public void init(ICommonContentExtensionSite aConfig) {
-	}
+public class DubNavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
 	protected IDubModelListener listener;
 	
@@ -65,9 +48,9 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 		listener = new IDubModelListener() {
 			@Override
 			public void notifyUpdateEvent(DubModelUpdateEvent updateEvent) {
-				// TODO: workaround bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=430005
-				
-				postRefreshEventToUI(updateEvent);
+				// we use throttle Job as a workaround to to ensure label is updated, due to bug:
+				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=430005
+				viewerRefreshThrottleJob.scheduleRefreshJob();
 			}
 		};
 		DubModel.getDefault().addListener(listener);
@@ -78,11 +61,14 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 		DubModel.getDefault().removeListener(listener);
 	}
 	
-	protected StructuredViewer getViewer() {
-		return (StructuredViewer) viewer;
-	}
+	protected final ThrottleCodeJob viewerRefreshThrottleJob = new ThrottleCodeJob(1200) {
+		@Override
+		protected void runThrottledCode() {
+			postRefreshEventToUI(this);
+		};
+	};
 	
-	protected void postRefreshEventToUI(@SuppressWarnings("unused") DubModelUpdateEvent updateEvent) {
+	protected void postRefreshEventToUI(final ThrottleCodeJob throttleCodeJob) {
 		final ArrayList<IProject> dubProjects = new ArrayList<>();
 		for (String projectName : DubModel.getDefault().getDubProjects()) {
 			IProject project = DeeCore.getWorkspaceRoot().getProject(projectName);
@@ -92,6 +78,7 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
+				throttleCodeJob.markRequestFinished();
 				for (IProject dubProject : dubProjects) {
 					getViewer().refresh(dubProject);
 				}
@@ -99,7 +86,7 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 		});
 	}
 	
-	public static abstract class DubContentsSwitcher<RET> {
+	public static abstract class DubContentElementsSwitcher<RET> {
 		
 		public RET switchElement(Object element) {
 			if(element instanceof IDubElement) {
@@ -126,7 +113,7 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	
 	@Override
 	public boolean hasChildren(Object element) {
-		return new DubContentsSwitcher<Boolean>() {
+		return new DubContentElementsSwitcher<Boolean>() {
 			@Override
 			public Boolean visitProject(IProject project) {
 				return project.isAccessible() && DubModel.getBundleInfo(project.getName()) != null;
@@ -155,7 +142,7 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	
 	@Override
 	public Object[] getChildren(Object parent) {
-		return new DubContentsSwitcher<Object[]>() {
+		return new DubContentElementsSwitcher<Object[]>() {
 			@Override
 			public Object[] visitProject(IProject project) {
 				return getProjectChildren(project);
@@ -202,7 +189,7 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	
 	@Override
 	public Object getParent(Object element) {
-		return new DubContentsSwitcher<Object>() {
+		return new DubContentElementsSwitcher<Object>() {
 			@Override
 			public Object visitProject(IProject project) {
 				return project.getParent();
@@ -229,7 +216,7 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	
 	/* ----------------- specific switcher ----------------- */
 	
-	public static abstract class DubAllContentSwitcher<RET> extends DubContentsSwitcher<RET> {
+	public static abstract class DubAllContentElementsSwitcher<RET> extends DubContentElementsSwitcher<RET> {
 		
 		@Override
 		public RET visitProject(IProject project) {

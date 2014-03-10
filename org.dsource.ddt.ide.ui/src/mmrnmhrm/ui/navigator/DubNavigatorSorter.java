@@ -32,10 +32,10 @@ public class DubNavigatorSorter extends ViewerSorter {
 		if(element instanceof DubDependenciesContainer) {
 			return -10;
 		}
-		if(DubNavigatorContent.isDubSourceFolder(element)) {
+		if(DubNavigatorContentProvider.isDubSourceFolder(element)) {
 			return -5;
 		}
-		if(DubNavigatorContent.isDubCacheFolder(element)) {
+		if(DubNavigatorContentProvider.isDubCacheFolder(element)) {
 			return -4;
 		}
 		if(element instanceof IFolder) {

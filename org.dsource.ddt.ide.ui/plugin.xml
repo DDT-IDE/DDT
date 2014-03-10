@@ -234,7 +234,7 @@
    <extension point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             activeByDefault="true"
-            contentProvider="mmrnmhrm.ui.navigator.DubNavigatorContent"
+            contentProvider="mmrnmhrm.ui.navigator.DubNavigatorContentProvider"
             icon="icons/view16/ddt_persp.png"
             id="org.dsource.ddt.ide.ui.DubNavigatorContent"
             labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
