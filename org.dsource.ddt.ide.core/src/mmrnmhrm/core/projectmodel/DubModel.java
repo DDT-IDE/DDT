@@ -18,7 +18,6 @@ import mmrnmhrm.core.projectmodel.DubModel.IDubModel;
 
 import org.eclipse.core.resources.IProject;
 
-import dtool.SimpleLogger;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
@@ -53,8 +52,6 @@ public abstract class DubModel {
 
 class DubModelImpl extends ListenerListHelper<IDubModelListener> implements IDubModel {
 	
-	protected static SimpleLogger log = new SimpleLogger(true);
-	
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
 	
 	public DubModelImpl() {
@@ -79,13 +76,11 @@ class DubModelImpl extends ListenerListHelper<IDubModelListener> implements IDub
 	}
 	
 	protected synchronized void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
-		log.println(">> Add project info: ", project);
 		dubBundleInfos.put(project.getName(), dubBundleDescription);
 		fireUpdateEvent(this, dubBundleDescription);
 	}
 	
 	protected synchronized void removeProjectModel(IProject project) {
-		log.println(">> Removing project: ", project);
 		DubBundleDescription oldDesc = dubBundleInfos.remove(project.getName());
 		fireUpdateEvent(this, oldDesc);
 	}

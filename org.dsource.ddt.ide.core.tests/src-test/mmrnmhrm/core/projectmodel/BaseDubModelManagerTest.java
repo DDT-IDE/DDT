@@ -32,7 +32,6 @@ import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.ICommonDepElement;
 import mmrnmhrm.tests.BaseDeeTest;
 
 import org.eclipse.core.resources.IFile;
@@ -46,8 +45,6 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.launching.ScriptRuntime;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleListener;
 
 import dtool.dub.CommonDubTest;
 import dtool.dub.CommonDubTest.DubBundleChecker;
@@ -267,11 +264,11 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 		assertNotNull(removeChildDep(children, depName));
 	}
 	
-	protected ICommonDepElement removeChildDep(Collection<IDubElement> children, String depName) {
+	protected IDubElement removeChildDep(Collection<IDubElement> children, String depName) {
 		for (IDubElement dubElement : children) {
-			if(dubElement instanceof ICommonDepElement) {
-				ICommonDepElement depElement = (ICommonDepElement) dubElement;
-				if(depElement.getBundleName().equals(depName)) {
+			if(dubElement instanceof IDubElement) {
+				IDubElement depElement = (IDubElement) dubElement;
+				if(depElement.getElementName().equals(depName)) {
 					assertTrue(children.remove(dubElement));
 					return depElement;
 				}
@@ -305,7 +302,7 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 	
 	protected void checkAndRemoveChildDep(Collection<IDubElement> children, DubBundleChecker dep) {
 		String depName = dep.bundleName;
-		ICommonDepElement depElement = removeChildDep(children, depName);
+		IDubElement depElement = removeChildDep(children, depName);
 		assertNotNull(depElement);
 		if(dep.sourceFolders == null) {
 			return;

@@ -48,7 +48,7 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";
-	public static Path DUB_TEST_BUNDLES = DubManifestParserTest.DUB_TEST_BUNDLES;
+	public static final Path DUB_TEST_BUNDLES = DubManifestParserTest.DUB_TEST_BUNDLES;
 	
 	protected static final DubBundleChecker FOO_LIB_BUNDLE = bundle(DUB_TEST_BUNDLES.resolve("foo_lib"), 
 		null, "foo_lib", DEFAULT_VERSION, paths("src", "src2"));

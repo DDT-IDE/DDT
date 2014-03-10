@@ -64,6 +64,8 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 		listener = new IDubModelListener() {
 			@Override
 			public void notifyUpdateEvent(IDubModel source, DubBundleDescription eventObject) {
+				// TODO: workaround bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=430005
+				
 				Display.getDefault().asyncExec(new Runnable() {
 					@Override
 					public void run() {

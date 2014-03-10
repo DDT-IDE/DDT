@@ -423,6 +423,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			setProjectDubError(project, "Error parsing description:", bundleDesc.getError());
 		} else {
 			dubModelManager.addProjectModel(project, bundleDesc);
+			// TODO: need to think more about how these need to be in sync
 			updateBuildpath(project, bundleDesc);
 		}
 		return null;
@@ -461,7 +462,8 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 		
 		try {
 			// TODO: should all this be set atomically? also, check if project exists
-			updateDubBuildpathContainer(projectElement, getBuildpathEntriesFromDeps(bundleDesc));
+			IBuildpathEntry[] bpEntriesFromDeps = getBuildpathEntriesFromDeps(bundleDesc);
+			updateDubBuildpathContainer(projectElement, bpEntriesFromDeps);
 			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
 			
 		} catch (ModelException me) {

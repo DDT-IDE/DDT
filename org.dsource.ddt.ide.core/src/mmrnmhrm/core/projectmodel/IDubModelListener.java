@@ -17,7 +17,7 @@ public interface IDubModelListener {
 	
 	/** 
 	 * Note, several locks are held in the scope of this method (DubModel, and potentially Workspace Root).
-	 * Do run long running or locking code in the implementation, 
+	 * Do NOT run long running or locking code in the implementation, 
 	 * just post the event to another thread/agent/dispatcher to handle.
 	 */
 	void notifyUpdateEvent(IDubModel source, DubBundleDescription object);

@@ -77,6 +77,16 @@ public class DubDependenciesContainer extends CommonDubElement<IProject> {
 	}
 	
 	@Override
+	public String getElementName() {
+		return "{Dependencies}";
+	}
+	
+	@Override
+	public String getPathString() {
+		return getProject().getFullPath().toPortableString() + "/" + getElementName();
+	}
+	
+	@Override
 	public boolean hasChildren() {
 		return depElements.length > 0;
 	}
@@ -99,14 +109,19 @@ public class DubDependenciesContainer extends CommonDubElement<IProject> {
 		public DubElementType getElementType() {
 			return DubElementType.DUB_ERROR_ELEMENT;
 		}
+		
+		@Override
+		public String getElementName() {
+			return "<error>";
+		}
+		
+		@Override
+		public String getPathString() {
+			return getParent().getPathString() + "/" + getElementName();
+		}
 	}
 	
-	public interface ICommonDepElement extends IDubElement {
-		public String getBundleName();
-	}
-	
-	public static class DubRawDependencyElement extends CommonDubElement<DubDependenciesContainer>
-			implements ICommonDepElement {
+	public static class DubRawDependencyElement extends CommonDubElement<DubDependenciesContainer> {
 		
 		protected DubDependecyRef dubBundleRef;
 		
@@ -120,14 +135,22 @@ public class DubDependenciesContainer extends CommonDubElement<IProject> {
 			return DubElementType.DUB_RAW_DEP;
 		}
 		
-		@Override
 		public String getBundleName() {
 			return dubBundleRef.bundleName;
 		}
+		
+		@Override
+		public String getElementName() {
+			return getBundleName();
+		}
+		
+		@Override
+		public String getPathString() {
+			return getParent().getPathString() + "/@" + getElementName();
+		}
 	}
 	
-	public static class DubDependencyElement extends CommonDubElement<DubDependenciesContainer> 
-			implements ICommonDepElement {
+	public static class DubDependencyElement extends CommonDubElement<DubDependenciesContainer> {
 		
 		protected final DubBundle dubBundle;
 		protected final DubDependencySourceFolderElement[] children;
@@ -143,9 +166,18 @@ public class DubDependenciesContainer extends CommonDubElement<IProject> {
 			return DubElementType.DUB_RESOLVED_DEP;
 		}
 		
-		@Override
 		public String getBundleName() {
 			return dubBundle.name;
+		}
+		
+		@Override
+		public String getElementName() {
+			return getBundleName();
+		}
+		
+		@Override
+		public String getPathString() {
+			return getParent().getPathString() + "/["+getBundleName()+"]";
 		}
 		
 		public DubBundle getDubBundle() {
@@ -194,7 +226,17 @@ public class DubDependenciesContainer extends CommonDubElement<IProject> {
 		public Path getSourceFolderLocalPath() {
 			return srcFolderPath;
 		}
-
+		
+		@Override
+		public String getElementName() {
+			return srcFolderPath.toString();
+		}
+		
+		@Override
+		public String getPathString() {
+			return getParent().getPathString() + "/"+getElementName()+"::";
+		}
+		
 		public IProjectFragment getUnderlyingProjectFragment() {
 			Path path = getParent().getDubBundle().location.resolve(srcFolderPath);
 			IPath bpPath = DLTKUtils.localEnvPath(EclipseUtils.getPath(path));

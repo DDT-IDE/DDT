@@ -11,6 +11,8 @@
 package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
@@ -31,13 +33,45 @@ public abstract class CommonDubElement<PARENT> implements IDubElement {
 	
 	@Override
 	public boolean hasChildren() {
-		return false; // TODO
+		return false;
 	}
-	
 	@Override
 	public Object[] getChildren() {
 		return null;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(this == other) {
+			return true;
+		}
+		if(!(other instanceof IDubElement)) {
+			return false;
+		}
+		IDubElement otherDubElement = (IDubElement) other;
+		
+		if(this.getElementType() != otherDubElement.getElementType()) {
+			return false;
+		}
+		if(!areEqual(this.getElementName(), otherDubElement.getElementName())) {
+			return false;
+		}
+		
+		return areEqual(this.getParent(), otherDubElement.getParent());
+	}
+	
+	@Override
+	public int hashCode() {
+		return MiscUtil.combineHashCodes(getParent().hashCode(), 
+			getElementName().hashCode());
+	}
+	
+	@Override
+	public String toString() {
+		return getPathString() + "  #" + getClass().getSimpleName();
+	}
+	
+	/* ----------------- ----------------- */
 	
 	public static abstract class DubElementSwitcher<RET> {
 		

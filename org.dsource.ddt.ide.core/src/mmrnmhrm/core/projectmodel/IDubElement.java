@@ -30,6 +30,10 @@ public interface IDubElement {
 		DUB_DEP_SRC_FOLDER,
 	}
 	
-	public abstract DubElementType getElementType();
+	public DubElementType getElementType();
+	
+	public String getElementName();
+	
+	public String getPathString();
 	
 }
