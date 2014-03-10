@@ -10,8 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
-import mmrnmhrm.core.projectmodel.DubModel.IDubModel;
-import dtool.dub.DubBundleDescription;
+import mmrnmhrm.core.projectmodel.DubModel.DubModelUpdateEvent;
 
 public interface IDubModelListener {
 	
@@ -20,6 +19,6 @@ public interface IDubModelListener {
 	 * Do NOT run long running or locking code in the implementation, 
 	 * just post the event to another thread/agent/dispatcher to handle.
 	 */
-	void notifyUpdateEvent(IDubModel source, DubBundleDescription object);
+	void notifyUpdateEvent(DubModelUpdateEvent updateEvent);
 	
 }

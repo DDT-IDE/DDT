@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import melnorme.utilbox.misc.ListenerListHelper;
+import mmrnmhrm.core.projectmodel.DubModel.DubModelUpdateEvent;
 import mmrnmhrm.core.projectmodel.DubModel.IDubModel;
 
 import org.eclipse.core.resources.IProject;
@@ -42,9 +43,21 @@ public abstract class DubModel {
 	public static interface IDubModel {
 		
 		public void addListener(IDubModelListener listener);
+		Set<String> getDubProjects();
 		public void removeListener(IDubModelListener listener);
 		
 		public DubBundleDescription getBundleInfo(String projectName);
+		
+	}
+	
+	public static class DubModelUpdateEvent {
+		public final IProject project;
+		public final DubBundleDescription dubBundleDescription;
+		
+		public DubModelUpdateEvent(IProject project, DubBundleDescription dubBundleDescription) {
+			this.project = project;
+			this.dubBundleDescription = dubBundleDescription;
+		}
 		
 	}
 	
@@ -71,23 +84,24 @@ class DubModelImpl extends ListenerListHelper<IDubModelListener> implements IDub
 		return dubBundleInfos.get(projectName);
 	}
 	
-	protected synchronized Set<String> getDubProjects() {
+	@Override
+	public synchronized Set<String> getDubProjects() {
 		return dubBundleInfos.keySet();
 	}
 	
 	protected synchronized void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
 		dubBundleInfos.put(project.getName(), dubBundleDescription);
-		fireUpdateEvent(this, dubBundleDescription);
+		fireUpdateEvent(new DubModelUpdateEvent(project, dubBundleDescription));
 	}
 	
 	protected synchronized void removeProjectModel(IProject project) {
 		DubBundleDescription oldDesc = dubBundleInfos.remove(project.getName());
-		fireUpdateEvent(this, oldDesc);
+		fireUpdateEvent(new DubModelUpdateEvent(project, oldDesc));
 	}
 	
-	protected void fireUpdateEvent(IDubModel source, DubBundleDescription object) {
+	protected void fireUpdateEvent(DubModelUpdateEvent updateEvent) {
 		for (IDubModelListener listener : getListeners()) {
-			listener.notifyUpdateEvent(source, object);
+			listener.notifyUpdateEvent(updateEvent);
 		}
 	}
 	

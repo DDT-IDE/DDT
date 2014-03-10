@@ -6,13 +6,14 @@ import java.util.ArrayList;
 
 import melnorme.util.swt.jface.AbstractContentProvider;
 import melnorme.utilbox.misc.CollectionUtil;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
 import mmrnmhrm.core.projectmodel.DubModel;
-import mmrnmhrm.core.projectmodel.DubModel.IDubModel;
+import mmrnmhrm.core.projectmodel.DubModel.DubModelUpdateEvent;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.core.projectmodel.IDubElement;
 import mmrnmhrm.core.projectmodel.IDubElement.DubElementType;
@@ -63,15 +64,10 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 		
 		listener = new IDubModelListener() {
 			@Override
-			public void notifyUpdateEvent(IDubModel source, DubBundleDescription eventObject) {
+			public void notifyUpdateEvent(DubModelUpdateEvent updateEvent) {
 				// TODO: workaround bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=430005
 				
-				Display.getDefault().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						getViewer().refresh(); //TODO refresh specific element only
-					}
-				});
+				postRefreshEventToUI(updateEvent);
 			}
 		};
 		DubModel.getDefault().addListener(listener);
@@ -84,6 +80,23 @@ public class DubNavigatorContent extends AbstractContentProvider implements ICom
 	
 	protected StructuredViewer getViewer() {
 		return (StructuredViewer) viewer;
+	}
+	
+	protected void postRefreshEventToUI(@SuppressWarnings("unused") DubModelUpdateEvent updateEvent) {
+		final ArrayList<IProject> dubProjects = new ArrayList<>();
+		for (String projectName : DubModel.getDefault().getDubProjects()) {
+			IProject project = DeeCore.getWorkspaceRoot().getProject(projectName);
+			dubProjects.add(project);
+		}
+		
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				for (IProject dubProject : dubProjects) {
+					getViewer().refresh(dubProject);
+				}
+			}
+		});
 	}
 	
 	public static abstract class DubContentsSwitcher<RET> {
