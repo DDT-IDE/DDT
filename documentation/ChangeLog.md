@@ -23,8 +23,8 @@
  * Cleanup: Removed host option from location group in New DUB Project wizard. (it made no difference)
  * Fixed #46  0.10.0-PR adds spaces between characters to DUB extra options
  * DUB builder: incremental builds are now retried if previous 'dub build' exited with non-zero return code.
- * Fixed exception when dub.json modified and Package Explorer view was closed.
- * Minor improvements to DUB elements in Package Explorer (added source folders for deps)
+ * Fixed exception when dub.json modified and Project Explorer view was closed.
+ * Minor improvements and bugfixes to DUB elements in Project Explorer.
  TODO:
    * DLTK Model elements in Project Explorer
      * flatten root script folder
