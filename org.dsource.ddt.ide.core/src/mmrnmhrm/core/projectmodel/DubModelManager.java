@@ -493,7 +493,7 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 					
 					java.nio.file.Path srcFolderAbsolute = depBundle.location.resolve(srcFolder);
 					assertTrue(srcFolderAbsolute.isAbsolute());
-					depEntries.add(DubContainer.createDubBuildpathEntry(new Path(srcFolderAbsolute.toString())));
+					depEntries.add(DubContainer.createDubBuildpathEntry(EclipseUtils.getPath(srcFolderAbsolute)));
 				}
 			}
 		}

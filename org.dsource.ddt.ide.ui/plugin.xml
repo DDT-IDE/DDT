@@ -249,9 +249,7 @@
     -->
          <triggerPoints>
             <or>
-               <reference
-                     definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject">
-               </reference>
+               <reference definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject"/>
             </or>
          </triggerPoints>
 	 <!-- 
@@ -268,9 +266,15 @@
          </possibleChildren>
          <commonSorter class="mmrnmhrm.ui.navigator.DubNavigatorSorter">
             <parentExpression>
-               <reference
-                     definitionId="org.dsource.ddt.ide.core.expressions.isDeeProject">
-               </reference>
+               <or>
+                  <reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeProject"/>
+                  <and>
+                     <instanceof value="mmrnmhrm.core.projectmodel.IDubElement" />
+                     <not>
+                        <instanceof value="mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement" />
+                     </not>
+                  </and>
+               </or>
             </parentExpression>
          </commonSorter>
       </navigatorContent>

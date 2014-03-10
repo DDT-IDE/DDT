@@ -10,11 +10,22 @@
  *******************************************************************************/
 package mmrnmhrm.ui.navigator;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.text.Collator;
 
 import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
+import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
+import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IParent;
 import org.eclipse.jface.viewers.ViewerSorter;
 
 public class DubNavigatorSorter extends ViewerSorter {
@@ -29,19 +40,70 @@ public class DubNavigatorSorter extends ViewerSorter {
 	
 	@Override
 	public int category(Object element) {
-		if(element instanceof DubDependenciesContainer) {
-			return -10;
-		}
-		if(DubNavigatorContentProvider.isDubSourceFolder(element)) {
-			return -5;
-		}
-		if(DubNavigatorContentProvider.isDubCacheFolder(element)) {
-			return -4;
-		}
-		if(element instanceof IFolder) {
-			return -2;
-		} 
-		return 0;
+		return new DubAllContentElementsSwitcher<Integer>() {
+			// Note: make sure we don't allocate Integer's here:
+			// for values between -127 and 127 Java has a cache, so it's fine (see Integer.valueOf(int))
+			
+			@Override
+			public Integer visitProject(IProject project) {
+				assertFail();
+				return null;
+			}
+			
+			@Override
+			public Integer visitModelElement(IModelElement element, IParent elementAsParent) {
+				assertFail();
+				return null;
+			}
+			
+			@Override
+			public Integer visitDepContainer(DubDependenciesContainer element) {
+				return -10;
+			}
+			
+			@Override
+			public Integer visitRawDepElement(DubRawDependencyElement element) {
+				return 0;
+			}
+			
+			@Override
+			public Integer visitErrorElement(DubErrorElement element) {
+				return -10;
+			}
+			
+			@Override
+			public Integer visitDepElement(DubDependencyElement element) {
+				return 0;
+			}
+			
+			@Override
+			public Integer visitDepSourceFolderElement(DubDependencySourceFolderElement element) {
+				return 0;
+			}
+			
+			@Override
+			public Integer visitDubSourceFolder(IResource element) {
+				return -5;
+			}
+			
+			@Override
+			public Integer visitDubCacheFolder(IResource element) {
+				return -4;
+			}
+			
+			@Override
+			public Integer visitDubManifestFile(IResource element) {
+				return 0;
+			}
+			
+			@Override
+			public Integer visitOther(Object element) {
+				if(element instanceof IFolder) {
+					return -2;
+				} 
+				return 0;
+			}
+		}.switchElement(element);
 	}
 	
 }
