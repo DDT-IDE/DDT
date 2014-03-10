@@ -20,29 +20,26 @@ public class SimpleLogger {
 	public SimpleLogger(boolean enabled) {
 		this.enabled = enabled;
 	}
+	
 	public SimpleLogger() {
 		this(true);
 	}
 	
-	public void enable() {
-		enabled = true;
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
-	public void disable() {
-		enabled = false;
-	}
-
 	public void println(Object... objs) {
 		for(Object obj : objs)
 			print(obj);
 		println();
 	}
-
+	
 	public void print(Object string) {
 		if (masterLoggEnabled && enabled)
 			System.out.print(string);
 	}
-
+	
 	public void println() {
 		if (masterLoggEnabled && enabled)
 			System.out.println();

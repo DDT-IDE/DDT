@@ -44,6 +44,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
@@ -62,7 +63,7 @@ import dtool.dub.DubManifestParser;
  */
 public class DubModelManager {
 	
-	protected static SimpleLogger log = new SimpleLogger(true);
+	protected static SimpleLogger log = new SimpleLogger(Platform.inDebugMode());
 	
 	protected static final DubModelManager defaultInstance = new DubModelManager(DubModel.defaultInstance);
 	
