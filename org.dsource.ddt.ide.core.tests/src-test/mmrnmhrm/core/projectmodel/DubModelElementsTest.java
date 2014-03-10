@@ -11,7 +11,8 @@
 package mmrnmhrm.core.projectmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
+import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
+import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
 
 import org.eclipse.core.resources.IProject;
 import org.junit.Test;
@@ -20,7 +21,7 @@ import dtool.dub.CommonDubTest;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 
-public class DubTreeModelTest extends BaseDubModelManagerTest {
+public class DubModelElementsTest extends BaseDubModelManagerTest {
 	
 	
 	public static final String DUB_TEST = "DubTest";

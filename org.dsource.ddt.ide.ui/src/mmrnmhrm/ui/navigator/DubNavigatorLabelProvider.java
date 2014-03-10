@@ -9,11 +9,11 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package mmrnmhrm.ui.navigator;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
+import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
+import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
+import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
+import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
+import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
 
@@ -119,7 +119,7 @@ class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>
 	}
 	
 	@Override
-	public StyledString visitDepSourceFolderElement(DubDependencySourceFolderElement element) {
+	public StyledString visitDepSourceFolderElement(DubDepSourceFolderElement element) {
 		return new StyledString(element.getSourceFolderLocalPath().toString());
 	}
 	
@@ -169,7 +169,7 @@ class DubElementImageProvider extends DubAllContentElementsSwitcher<Image>{
 	}
 	
 	@Override
-	public Image visitDepSourceFolderElement(DubDependencySourceFolderElement element) {
+	public Image visitDepSourceFolderElement(DubDepSourceFolderElement element) {
 		return DeePluginImages.getImage(DeePluginImages.SOURCE_FOLDER);
 	}
 	

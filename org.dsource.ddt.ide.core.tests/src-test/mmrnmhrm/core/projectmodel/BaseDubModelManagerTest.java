@@ -31,7 +31,9 @@ import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
+import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
+import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
+import mmrnmhrm.core.projectmodel.elements.IDubElement;
 import mmrnmhrm.tests.BaseDeeTest;
 
 import org.eclipse.core.resources.IFile;

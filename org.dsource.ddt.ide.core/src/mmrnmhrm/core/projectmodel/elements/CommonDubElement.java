@@ -8,15 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.projectmodel.elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.utilbox.misc.MiscUtil;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
 
 public abstract class CommonDubElement<PARENT> implements IDubElement {
 	
@@ -81,7 +77,7 @@ public abstract class CommonDubElement<PARENT> implements IDubElement {
 			case DUB_RAW_DEP: return visitRawDepElement((DubRawDependencyElement) element);
 			case DUB_ERROR_ELEMENT: return visitErrorElement((DubErrorElement) element);
 			case DUB_RESOLVED_DEP: return visitDepElement((DubDependencyElement) element);
-			case DUB_DEP_SRC_FOLDER: return visitDepSourceFolderElement((DubDependencySourceFolderElement) element);
+			case DUB_DEP_SRC_FOLDER: return visitDepSourceFolderElement((DubDepSourceFolderElement) element);
 			}
 			throw assertUnreachable();
 		}
@@ -94,7 +90,7 @@ public abstract class CommonDubElement<PARENT> implements IDubElement {
 		
 		public abstract RET visitDepElement(DubDependencyElement element);
 		
-		public abstract RET visitDepSourceFolderElement(DubDependencySourceFolderElement element);
+		public abstract RET visitDepSourceFolderElement(DubDepSourceFolderElement element);
 		
 	}
 	

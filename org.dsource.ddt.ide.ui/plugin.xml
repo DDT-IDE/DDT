@@ -260,7 +260,7 @@
 	 -->
          <possibleChildren>
             <or>
-               <instanceof value="mmrnmhrm.core.projectmodel.IDubElement" />
+               <instanceof value="mmrnmhrm.core.projectmodel.elements.IDubElement" />
                <reference definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject" />
             </or>
          </possibleChildren>
@@ -269,9 +269,9 @@
                <or>
                   <reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeProject"/>
                   <and>
-                     <instanceof value="mmrnmhrm.core.projectmodel.IDubElement" />
+                     <instanceof value="mmrnmhrm.core.projectmodel.elements.IDubElement" />
                      <not>
-                        <instanceof value="mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement" />
+                        <instanceof value="mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement" />
                      </not>
                   </and>
                </or>

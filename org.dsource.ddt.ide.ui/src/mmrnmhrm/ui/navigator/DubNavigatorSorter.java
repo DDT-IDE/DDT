@@ -14,11 +14,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.text.Collator;
 
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
+import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
+import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
+import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
+import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
+import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
 import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
 
 import org.eclipse.core.resources.IFolder;
@@ -77,7 +77,7 @@ public class DubNavigatorSorter extends ViewerSorter {
 			}
 			
 			@Override
-			public Integer visitDepSourceFolderElement(DubDependencySourceFolderElement element) {
+			public Integer visitDepSourceFolderElement(DubDepSourceFolderElement element) {
 				return 0;
 			}
 			

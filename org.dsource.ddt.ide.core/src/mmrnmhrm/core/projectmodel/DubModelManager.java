@@ -31,6 +31,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.projectmodel.DubModelManager.DubModelManagerTask;
 import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask.SearchAndAddCompilersOnPathJob;
+import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IMarker;

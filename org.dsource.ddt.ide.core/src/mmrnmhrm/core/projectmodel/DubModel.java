@@ -36,7 +36,7 @@ public abstract class DubModel {
 	}
 	
 	/**
-	 * DUB model. Holds information about DUB bundles, usually indexed by project.
+	 * DUB model. Holds information about DUB bundles, for the projects in the workspace.
 	 * Designed to be managed concurrently by some other code (see {@link DubModelManager}).
 	 * Can notify listeners of updates. 
 	 */

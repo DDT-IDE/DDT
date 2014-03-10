@@ -6,16 +6,16 @@ import java.util.ArrayList;
 
 import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencyElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubDependencySourceFolderElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubErrorElement;
-import mmrnmhrm.core.projectmodel.DubDependenciesContainer.DubRawDependencyElement;
 import mmrnmhrm.core.projectmodel.DubModel;
 import mmrnmhrm.core.projectmodel.DubModel.DubModelUpdateEvent;
 import mmrnmhrm.core.projectmodel.DubModelManager;
-import mmrnmhrm.core.projectmodel.IDubElement;
-import mmrnmhrm.core.projectmodel.IDubElement.DubElementType;
+import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
+import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
+import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
+import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
+import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
+import mmrnmhrm.core.projectmodel.elements.IDubElement;
+import mmrnmhrm.core.projectmodel.elements.IDubElement.DubElementType;
 import mmrnmhrm.core.projectmodel.IDubModelListener;
 
 import org.eclipse.core.resources.IFile;
@@ -230,7 +230,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 			case DUB_RAW_DEP: return visitRawDepElement((DubRawDependencyElement) element);
 			case DUB_ERROR_ELEMENT: return visitErrorElement((DubErrorElement) element);
 			case DUB_RESOLVED_DEP: return visitDepElement((DubDependencyElement) element);
-			case DUB_DEP_SRC_FOLDER: return visitDepSourceFolderElement((DubDependencySourceFolderElement) element);
+			case DUB_DEP_SRC_FOLDER: return visitDepSourceFolderElement((DubDepSourceFolderElement) element);
 			}
 			throw assertUnreachable();
 		}
@@ -239,7 +239,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		public abstract RET visitRawDepElement(DubRawDependencyElement element);
 		public abstract RET visitErrorElement(DubErrorElement element);
 		public abstract RET visitDepElement(DubDependencyElement element);
-		public abstract RET visitDepSourceFolderElement(DubDependencySourceFolderElement element);
+		public abstract RET visitDepSourceFolderElement(DubDepSourceFolderElement element);
 		
 		@Override
 		public abstract RET visitModelElement(IModelElement element, IParent elementAsParent);

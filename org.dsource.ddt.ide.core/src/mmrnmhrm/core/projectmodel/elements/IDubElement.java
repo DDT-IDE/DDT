@@ -8,12 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.projectmodel.elements;
 
 
 public interface IDubElement {
 	
-	public static IDubElement[] NO_CHILDREN = new IDubElement[0];
+	public static IDubElement[] NO_CHILDREN = { };
 	
 	Object getParent();
 	
