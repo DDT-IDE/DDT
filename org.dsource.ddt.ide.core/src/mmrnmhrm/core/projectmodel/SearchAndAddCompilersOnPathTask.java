@@ -77,7 +77,9 @@ public class SearchAndAddCompilersOnPathTask {
 	
 	protected void searchEnvironmentVar(String envVarName) {
 		String fullPathString = System.getenv(envVarName);
-		searchPathsString(fullPathString, envVarName);
+		if(fullPathString != null) {
+			searchPathsString(fullPathString, envVarName);
+		}
 	}
 	
 	protected void searchPathsString(String pathsString, String envVarName) {
