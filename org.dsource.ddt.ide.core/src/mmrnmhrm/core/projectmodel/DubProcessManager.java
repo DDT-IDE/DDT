@@ -18,12 +18,15 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
+import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.ListenerListHelper;
 import mmrnmhrm.core.CoreTaskAgent;
+import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -93,7 +96,9 @@ public class DubProcessManager {
 	
 	public RunExternalProcessTask newExternalProcessTask(IProgressMonitor monitor, IProject project,
 			String... commands) {
-		Path workingDir = project.getLocation().toFile().toPath();
+		Path workingDir = project != null ?
+				project.getLocation().toFile().toPath() :
+				DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
 		ProcessBuilder pb = new ProcessBuilder(commands).directory(workingDir.toFile());
 		return new RunExternalProcessTask(pb, project, monitor, processListenersHelper);
 	}

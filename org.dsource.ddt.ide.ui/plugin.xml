@@ -277,6 +277,8 @@
                </or>
             </parentExpression>
          </commonSorter>
+         <actionProvider class="mmrnmhrm.ui.navigator.DubNavigatorActionProvider">
+         </actionProvider>
       </navigatorContent>
    </extension>
 

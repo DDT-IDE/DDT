@@ -67,7 +67,8 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
 		try {
-			ExternalProcessOutputHelper processHelper = submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
+			ExternalProcessOutputHelper processHelper = submitAndAwaitDubCommand(monitor, 
+				ArrayUtil.createFrom(commands, String.class));
 			if(processHelper.getProcess().exitValue() != 0) {
 				forgetLastBuiltState();
 			}
@@ -90,11 +91,13 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		return extraCommands;
 	}
 	
-	protected ExternalProcessOutputHelper submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) throws CoreException {
+	protected ExternalProcessOutputHelper submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
+			throws CoreException {
 		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
 		
 		try {
-			ExternalProcessOutputHelper processHelper = dubProcessManager.submitDubCommandAndWait(getProject(), monitor, commands);
+			ExternalProcessOutputHelper processHelper = dubProcessManager.submitDubCommandAndWait(getProject(), 
+				monitor, commands);
 			return processHelper;
 		} catch (InterruptedException e) {
 			throw DeeCore.createCoreException("Should not happen", e);

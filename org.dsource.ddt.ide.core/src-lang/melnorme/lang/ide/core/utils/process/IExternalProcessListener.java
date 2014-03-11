@@ -8,9 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package melnorme.lang.ide.core.utils.process;
 
 import java.io.IOException;
+
+import org.eclipse.core.resources.IProject;
 
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 
@@ -18,8 +20,8 @@ import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 
 public interface IExternalProcessListener {
 	
-	void handleProcessStarted(ProcessBuilder pb, String projectName, ExternalProcessOutputHelper processHelper);
+	void handleProcessStarted(ProcessBuilder pb, IProject project, ExternalProcessOutputHelper processHelper);
 	
-	void handleProcessFailedToStarted(ProcessBuilder pb, String projectName, IOException e);
+	void handleProcessStartFailure(ProcessBuilder pb, IProject project, IOException e);
 	
 }

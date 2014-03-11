@@ -19,4 +19,9 @@ public abstract class DeeUIMessages extends LangUIMessages {
 	
 	public static final String DUB_CONSOLE_NAME = "DUB Output";
 	
+	public static final String DubActionMenu = "DUB";
+	public static final String DubAction_AddLocalPath = "Add project as local package";
+	public static final String DubAction_RemoveLocalPath = "Remove project from local packages";
+	public static final String DubAction_RunDubList = "Run 'dub list'";
+	
 }

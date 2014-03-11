@@ -1,17 +1,28 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 IBM Corporation and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.launch;
 
 import java.io.IOException;
 
+import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ExternalProcessOutputHelper.IProcessOutputListener;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.projectmodel.DubProcessManager.RunsInDubProcessAgent;
-import mmrnmhrm.core.projectmodel.IExternalProcessListener;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIMessages;
 import mmrnmhrm.ui.DeeUIPlugin;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -26,9 +37,9 @@ public class DubProcessUIListener implements IExternalProcessListener {
 	
 	@RunsInDubProcessAgent
 	@Override
-	public void handleProcessStarted(ProcessBuilder pb, String projectName, 
+	public void handleProcessStarted(ProcessBuilder pb, IProject project,
 			ExternalProcessOutputHelper processHelper) {
-		String consoleQualifier = getConsoleQualifier(projectName); 
+		String consoleQualifier = getConsoleQualifier(project); 
 		final DubProcessUIConsoleOutputHandler outputHandler = createProcessOutputHandler(consoleQualifier);
 		
 		try {
@@ -66,9 +77,9 @@ public class DubProcessUIListener implements IExternalProcessListener {
 	
 	@RunsInDubProcessAgent
 	@Override
-	public void handleProcessFailedToStarted(ProcessBuilder pb, String projectName,
+	public void handleProcessStartFailure(ProcessBuilder pb, IProject project,
 			IOException processStartException) {
-		String consoleQualifier = getConsoleQualifier(projectName); 
+		String consoleQualifier = getConsoleQualifier(project); 
 		final DubProcessUIConsoleOutputHandler outputHandler = createProcessOutputHandler(consoleQualifier);
 		
 		try {
@@ -80,11 +91,11 @@ public class DubProcessUIListener implements IExternalProcessListener {
 		}
 	}
 	
-	protected String getConsoleQualifier(String consoleID) {
-		if(consoleID == null) {
+	protected String getConsoleQualifier(IProject project) {
+		if(project == null) {
 			return "(Global)";
 		}
-		return "["+ consoleID +"]";
+		return "["+ project.getName() +"]";
 	}
 	
 	public static class DubProcessUIConsoleOutputHandler implements IProcessOutputListener {
