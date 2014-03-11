@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import mmrnmhrm.ui.preferences.DeeProjectBuildOptionsBlock;
+import mmrnmhrm.ui.preferences.DubProjectOptionsBlock;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
@@ -22,13 +22,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 
-public class DeeProjectOptionsPropertyPage extends PropertyPage {
+public class DubOptionsPropertyPage extends PropertyPage {
 	
-	private DeeProjectBuildOptionsBlock prjBuildOptionsBlock;
-	
-	public DeeProjectOptionsPropertyPage() {
-		prjBuildOptionsBlock = new DeeProjectBuildOptionsBlock();
-	}
+	protected final DubProjectOptionsBlock prjBuildOptionsBlock = new DubProjectOptionsBlock();
 	
 	@Override
 	protected Control createContents(Composite parent) {

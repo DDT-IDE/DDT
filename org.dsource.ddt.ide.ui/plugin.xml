@@ -62,7 +62,7 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="mmrnmhrm.ui.preferences.pages.DeeProjectOptionsPropertyPage"
+            class="mmrnmhrm.ui.preferences.pages.DubOptionsPropertyPage"
             id="org.dsource.ddt.ide.ui.properties.DeeCompileOptionsProperties"
             name="%LangBuildOptionsPropertyPage.name">
          <enabledWhen>

@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.wizards;
 
-import mmrnmhrm.ui.preferences.DeeProjectBuildOptionsBlock;
+import mmrnmhrm.ui.preferences.DubProjectOptionsBlock;
 
 import org.eclipse.dltk.ui.wizards.IProjectWizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -11,7 +11,7 @@ public class DeeProjectWizardBuildSettingsPage extends WizardPage {
 	private static final String PAGE_NAME = DeeProjectWizardBuildSettingsPage.class.getSimpleName();
 	
 	protected final DeeProjectWizard deeNewProjectWizard;
-	protected DeeProjectBuildOptionsBlock prjBuildOptionsBlock;
+	protected DubProjectOptionsBlock prjBuildOptionsBlock;
 	
 	public DeeProjectWizardBuildSettingsPage(DeeProjectWizard deeNewProjectWizard) {
 		super(PAGE_NAME);
@@ -22,7 +22,7 @@ public class DeeProjectWizardBuildSettingsPage extends WizardPage {
 	
 	@Override
 	public void createControl(Composite parent) {
-		prjBuildOptionsBlock = new DeeProjectBuildOptionsBlock();
+		prjBuildOptionsBlock = new DubProjectOptionsBlock();
 		setControl(prjBuildOptionsBlock.createControl(parent));
 	}
 	

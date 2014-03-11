@@ -24,7 +24,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class DeeProjectBuildOptionsBlock {
+public class DubProjectOptionsBlock {
 	
 	private final class FieldListener implements IDialogFieldListener {
 		@Override
@@ -36,7 +36,7 @@ public class DeeProjectBuildOptionsBlock {
 	
 	protected IProject project;
 	
-	public DeeProjectBuildOptionsBlock() {
+	public DubProjectOptionsBlock() {
 		fExtraOptions = new StringDialogField(SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		fExtraOptions.setLabelText("Extra build options for dub build:");
 		fExtraOptions.setDialogFieldListener(new FieldListener());
