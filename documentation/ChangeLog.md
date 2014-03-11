@@ -1,32 +1,35 @@
-
 ## DDT release ChangeLog
 
 ### DDT 0.10.0 
- * Added DUB support. Project import-path now determined by dub.json file and running 'dub describe'.
-   * On startup, or whenever dub.json is modified (and saved), 'dud describe' will be run to resolve dependencies and supply source folders and import path for the project.
- * Added a per-project Eclipse console to monitor the output for DUB commands.
+ * Added DUB support. Project import-path now determined by the `dub.json` manifest file and running `dub describe`.
+   * On DDT startup, or whenever `dub.json` is modified (and saved), `dub describe` will be run to resolve dependencies and to supply source folders and import path info for the project (as well as some other DUB package info).
+ * Added a per-project Eclipse console to monitor the output of issued DUB commands.
  * Added DUB elements support for the Project Explorer view.
-   * Add icon for source folders, DUB cache folder, dub.json manifest file.
+   * Added icon for source folders, DUB cache folder, dub.json manifest file.
    * Add elements for DUB dependencies, and DUB error status.
    * The Script Explorer view is now deprecated. Use Project Explorer view instead. 
-   * Note that some Script Explorer functionality has not been re-implemented in Project Explorer. For example the source folders of dependencies (and its modules)  are not shown.
- * Removed all DLTK-based buildpath UI. This functionality was never fully supported. 
-   * Modifying the import-path is now only possible by means of the dub.json file.
+   * Note that some Script Explorer functionality has not been re-implemented in Project Explorer. For example the packages and modules of dependencies are not shown (#50).
+ * Removed all DLTK-based buildpath UI from standard DDT views. This functionality was never fully supported. 
+   * Modifying the import-path is now only supported by means of the dub.json file.
  * Added DUB build support. Removed basic builder (the previous build functionality using response files). 
    * Project build configuration page has only one field now: a field with optional extra options to pass to DUB when building.
-   * Previously created DDT Eclipse projects are no longer compatible. You should recreate the project using the new DUB Project wizard.
-###### Preview Release
- * Added support for LDC compiler install.
- * Compiler installations are now automatically searched and added on DDT startup.
+   * Previously created DDT Eclipse projects are no longer compatible with this new version. You should recreate the project using the new DUB Project wizard.
+
+##### Changes after the Preview Release
+ * Added support for LDC compiler locations.
+ * Compiler locations are now automatically searched and added on DDT startup:
    * DDT will look on the PATH environment variable for compilers installations.
- * Cleanup: Removed compilers/interpreters config block from New DUB Project wizard.   
- * Cleanup: Removed host option from location group in New DUB Project wizard. (it made no difference)
- * Fixed #46  0.10.0-PR adds spaces between characters to DUB extra options
+ * Cleanup: Removed compilers/interpreters config block from `New DUB Project` wizard.   
+ * Cleanup: Removed host option from location group in New DUB Project wizard. (it was unnecessary)
+ * Fixed #46: 0.10.0-PR adds spaces between characters to DUB extra options
  * DUB builder: incremental builds are now retried if previous 'dub build' exited with non-zero return code.
  * Fixed exception when dub.json modified and Project Explorer view was closed.
- * Minor improvements and bugfixes to DUB elements in Project Explorer.
- * Added to Project Explorer context menu some DUB actions to add/remove project from local packages.
- * Refresh project after build.
+ * Minor improvements and bugfixes to DUB UI tree elements in Project Explorer.
+ * Added to Project Explorer context menu a few DUB actions to add/remove the project from local packages.
+ * DUB builder: fixed project not being refreshed after build.
+Some DUB functionality was not fully implemented/support in this release:
+ * Issue #49 DUB: Add proper support for configurations 
+ * Issue #48 DUB: improve UI support for sub-packages
 
 
 ### DDT 0.9.1 (2014-02-07)
@@ -235,48 +238,4 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Improved name lookup: statement blocks and enum bodies are now supported correctly (they don't see forward definitions anymore).
  * Improved Code completion: duplicates or occluded names are no longer presented.
  * Can now set, view, and remove Descent-compatible breakpoints in Mmrnmhrm's editor (these will work with Descent's debugger).
- * DDoc text and code completion hovers are now processed and presented as HTML instead of raw characters, thanks to Ary Mazana's Descent DDoc parser. ([pic](http://svn.dsource.org/projects/descent/downloads/images/mmrnmhrm_html_ddoc_hover2.png))
- * Fixed some Neo AST bugs.
- * Minor builder changes (builder still work in progress).
-
-### Mmrnmhrm 0.2.0 (2007-09-18)
-
- * Major rewrite of Mmrnmhrm to use the DTLK framework.
- * Huge Model improvements:
-  * Rich JDT-like project model, (with build path support for source and zip folders, local and external libraries, build path variables and containers, build path access rules, as well as UI boilerplate code for build path management and navigation)
-  * Supports caching and indexing (improved performance in large projects)
-  * Supports resource delta processing (no more need for manual refreshing)
-  * Added support for DMD+Phobos install location and Standard Library
- * Updated the parser to latest Descent parser (now supports D 2.0)
- * Added editor folding
- * Added JDT-like Quick Outline
- * Added JDT-like Open Type Dialog
- * Selections in selective imports no longer considered definitions, they are now considered references. This behavior is now according to the spec.
- * Added special code completion context for module names in imports (completion shows available modules for importing).
- * Added special code completion context for name selections in selective imports (completion shows available names for selection).
- * Added initial semantic search: 
-   * Search for definitions based on a text pattern.
-   * Search for all references to a given definition.
- * Added very basic builder support (using BUD (http://www.dsource.org/projects/build))
- * Added very basic launch support (debugging not supported)
-
-### Mmrnmhrm 0.1 - (2007-08-17)
-Initial public release 
-
- * New Project Wizard  
- * Very basic D Project Model (src-folders only, uncached, no resource listening)
- * Project Configuration Page
- * D Editor:
-  * Syntax Highlighting
-  * Content Outline
- * Syntax Highlighting configuration page
- * Find Definition: Locates any definition unit: Module, class, struct/union, variable, function parameter, template, template parameter, alias, typedef, named enums, enum members, unnamed enum members, named mixins, import aliases, import selections. Unsupported:
-   * Searching inside unnamed mixins, and the scope of the with() statement.
-   * Special reference targets: goto labels, version/debug identifiers.
-   * Most expression reference nodes (including function calls).
-   * Special references (new, delete, this, super).
-   * Some native references (int, void, arrays, functions, etc.).
-   * Function or template overload resolution (if there are several matches, lists all homonyms).
- * Basic Code Completion
-   * with some minor syntax recovery
- * An AST Viewer (for IDE debugging purposes only)
+ * DDoc text and code completion hovers are now processed and presented as HTML instead of raw characters, thanks to Ary Mazana's Descent DDoc parser. ([pic](http://svn.d
