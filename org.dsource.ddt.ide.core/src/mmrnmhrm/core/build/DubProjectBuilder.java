@@ -26,6 +26,7 @@ import mmrnmhrm.core.projectmodel.DubProcessManager;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -80,6 +81,8 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 			// Don't rethrow, just forget
 			forgetLastBuiltState();
 		}
+		
+		getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		
 		return null;
 	}

@@ -25,7 +25,8 @@
  * DUB builder: incremental builds are now retried if previous 'dub build' exited with non-zero return code.
  * Fixed exception when dub.json modified and Project Explorer view was closed.
  * Minor improvements and bugfixes to DUB elements in Project Explorer.
- * Added to Project Explorer context menu some DUB actions to add/remove project from local packages. 
+ * Added to Project Explorer context menu some DUB actions to add/remove project from local packages.
+ * Refresh project after build.
  TODO:
    * DLTK Model elements in Project Explorer
      * flatten root script folder
