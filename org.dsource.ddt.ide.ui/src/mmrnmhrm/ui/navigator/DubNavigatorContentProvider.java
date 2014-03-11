@@ -9,19 +9,18 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.DubModel;
 import mmrnmhrm.core.projectmodel.DubModel.DubModelUpdateEvent;
 import mmrnmhrm.core.projectmodel.DubModelManager;
+import mmrnmhrm.core.projectmodel.IDubModelListener;
+import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
 import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
-import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
 import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
 import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
 import mmrnmhrm.core.projectmodel.elements.IDubElement;
 import mmrnmhrm.core.projectmodel.elements.IDubElement.DubElementType;
-import mmrnmhrm.core.projectmodel.IDubModelListener;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IModelElement;
@@ -247,22 +246,22 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		@Override
 		public RET visitOther(Object element) {
 			if(isDubManifestFile(element)) {
-				return visitDubManifestFile((IResource) element);
+				return visitDubManifestFile((IFile) element);
 			}
 			if(isDubCacheFolder(element)) {
-				return visitDubCacheFolder((IResource) element);
+				return visitDubCacheFolder((IFolder) element);
 			}
 			if(isDubSourceFolder(element)) {
-				return visitDubSourceFolder((IResource) element);
+				return visitDubSourceFolder((IFolder) element);
 			}
 			return null;
 		}
 		
-		public abstract RET visitDubManifestFile(IResource element);
+		public abstract RET visitDubManifestFile(IFile element);
 		
-		public abstract RET visitDubCacheFolder(IResource element);
+		public abstract RET visitDubCacheFolder(IFolder element);
 		
-		public abstract RET visitDubSourceFolder(IResource element);
+		public abstract RET visitDubSourceFolder(IFolder element);
 		
 	}
 	

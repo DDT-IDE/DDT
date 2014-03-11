@@ -14,16 +14,16 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.text.Collator;
 
+import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
 import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
-import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
 import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
 import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
 import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -82,17 +82,17 @@ public class DubNavigatorSorter extends ViewerSorter {
 			}
 			
 			@Override
-			public Integer visitDubSourceFolder(IResource element) {
+			public Integer visitDubSourceFolder(IFolder element) {
 				return -5;
 			}
 			
 			@Override
-			public Integer visitDubCacheFolder(IResource element) {
+			public Integer visitDubCacheFolder(IFolder element) {
 				return -4;
 			}
 			
 			@Override
-			public Integer visitDubManifestFile(IResource element) {
+			public Integer visitDubManifestFile(IFile element) {
 				return 0;
 			}
 			

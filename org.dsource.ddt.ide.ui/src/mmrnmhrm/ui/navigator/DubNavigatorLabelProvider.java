@@ -9,15 +9,17 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package mmrnmhrm.ui.navigator;
+import mmrnmhrm.core.projectmodel.DubModel;
+import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
 import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
-import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
 import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
 import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
 
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
@@ -31,6 +33,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 
+import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 
 class ForegroundColorStyler extends Styler {
@@ -73,7 +76,8 @@ public class DubNavigatorLabelProvider extends LabelProvider implements IStyledL
 
 class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>{
 	
-	protected static final RGB DUB_DEP_ANNOTATION_FG = new RGB(128, 128, 128);
+	protected static final RGB DUB_LOCATION_ANNOTATION_FG = new RGB(128, 128, 128);
+	protected static final RGB DUB_VERSION_ANNOTATION_FG = new RGB(120, 120, 200);
 	protected static final RGB DUB_DEPCONTAINER_ANNOTATION_FG = new RGB(128, 128, 128);
 	protected static final RGB DUB_DEPCONTAINER_ERROR_ANNOTATION_FG = new RGB(196, 64, 64);
 	
@@ -114,8 +118,9 @@ class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>
 	
 	@Override
 	public StyledString visitDepElement(DubDependencyElement element) {
-		return new StyledString(element.getBundleName()).
-				append(" - " + element.getDubBundle().getLocationString(), styler(DUB_DEP_ANNOTATION_FG));
+		StyledString baseString = new StyledString(element.getBundleName());
+		baseString = appendVersionString(baseString, element.getDubBundle());
+		return baseString.append(" - " + element.getDubBundle().getLocationString(), styler(DUB_LOCATION_ANNOTATION_FG));
 	}
 	
 	@Override
@@ -124,17 +129,27 @@ class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>
 	}
 	
 	@Override
-	public StyledString visitDubManifestFile(IResource element) {
-		return null; // TODO: maybe add custom annotation
+	public StyledString visitDubManifestFile(IFile element) {
+		StyledString baseString = new StyledString(element.getName());
+		DubBundleDescription bundleInfo = DubModel.getBundleInfo(element.getProject().getName());
+		return appendVersionString(baseString, bundleInfo.getMainBundle());
+	}
+	
+	protected StyledString appendVersionString(StyledString baseStyled, DubBundle bundle) {
+		String versionStr = bundle.version;
+		if(versionStr == null) {
+			versionStr = "?";
+		}
+		return baseStyled.append(" [" + versionStr + "]", styler(DUB_VERSION_ANNOTATION_FG));
 	}
 	
 	@Override
-	public StyledString visitDubCacheFolder(IResource element) {
+	public StyledString visitDubCacheFolder(IFolder element) {
 		return null; // Use defaults
 	}
 	
 	@Override
-	public StyledString visitDubSourceFolder(IResource element) {
+	public StyledString visitDubSourceFolder(IFolder element) {
 		return null; // Use defaults
 	}
 	
@@ -174,17 +189,17 @@ class DubElementImageProvider extends DubAllContentElementsSwitcher<Image>{
 	}
 	
 	@Override
-	public Image visitDubManifestFile(IResource element) {
+	public Image visitDubManifestFile(IFile element) {
 		return DeePluginImages.getImage(DeePluginImages.DUB_MANIFEST);
 	}
 	
 	@Override
-	public Image visitDubCacheFolder(IResource element) {
+	public Image visitDubCacheFolder(IFolder element) {
 		return DeePluginImages.getImage(DeePluginImages.BINARY_FOLDER);
 	}
 	
 	@Override
-	public Image visitDubSourceFolder(IResource element) {
+	public Image visitDubSourceFolder(IFolder element) {
 		return DeePluginImages.getImage(DeePluginImages.SOURCE_FOLDER);
 	}
 	
