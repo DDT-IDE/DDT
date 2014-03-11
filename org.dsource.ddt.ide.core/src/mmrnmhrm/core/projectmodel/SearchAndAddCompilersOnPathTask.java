@@ -62,6 +62,7 @@ public class SearchAndAddCompilersOnPathTask {
 	
 	public void searchForCompilers() {
 		searchEnvironmentVar("PATH");
+		searchEnvironmentVar("DUB_COMPILERS_PATH");
 	}
 	
 	public void applyFoundInstalls() {
@@ -143,7 +144,7 @@ public class SearchAndAddCompilersOnPathTask {
 		}
 		// Note: there can be multiple installs in same location if all have different compiler type. 
 		
-		String installName = "AUTO::" + compilerLocation.getPath().toString();
+		String installName = "AUTO@" + compilerLocation.getPath().toString();
 		InterpreterStandin install = new InterpreterStandin(installType, installName);
 		
 		install.setInstallLocation(compilerLocation);

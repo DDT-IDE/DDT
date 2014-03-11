@@ -27,13 +27,7 @@
  * Minor improvements and bugfixes to DUB elements in Project Explorer.
  * Added to Project Explorer context menu some DUB actions to add/remove project from local packages.
  * Refresh project after build.
- TODO:
-   * DLTK Model elements in Project Explorer
-     * flatten root script folder
-     * respond to DLTK model updates
-     * review Script label provider (text+image) 
-   * better support for sub-packages
-   * support for configurations
+
 
 ### DDT 0.9.1 (2014-02-07)
  * Added debug hover to D editor. When a CDT debug session is active, this hover presents detailed info for the variable under the cursor, similar to the Variables view.
