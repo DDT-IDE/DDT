@@ -1,0 +1,13 @@
+{
+	"name" : "screenshotsdemo",
+	"description" : "A minimal D bundle.",
+	"dependencies" : {
+		"vibe-d" : ">0.7.0"
+	},
+	
+	"excludedSourceFiles" : [
+		"*sample_ca*", "*sample_debug*"
+	],
+	
+	"targetPath": "bin"
+}

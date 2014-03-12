@@ -2,18 +2,23 @@
 
 ### DDT 0.10.0 
  * Added DUB support. Project import-path now determined by the `dub.json` manifest file and running `dub describe`.
-   * On DDT startup, or whenever `dub.json` is modified (and saved), `dub describe` will be run to resolve dependencies and to supply source folders and import path info for the project (as well as some other DUB package info).
+   * On DDT startup, or whenever `dub.json` is modified (and saved), `dub describe` will be run to resolve 
+   dependencies and to supply source folders and import path info for the project (as well as some other DUB 
+   package information).
  * Added a per-project Eclipse console to monitor the output of issued DUB commands.
  * Added DUB elements support for the Project Explorer view.
    * Added icon for source folders, DUB cache folder, dub.json manifest file.
    * Add elements for DUB dependencies, and DUB error status.
-   * The Script Explorer view is now deprecated. Use Project Explorer view instead. 
-   * Note that some Script Explorer functionality has not been re-implemented in Project Explorer. For example the packages and modules of dependencies are not shown (#50).
+   * <u>The Script Explorer view is now deprecated.</u> Use Project Explorer view instead. 
+   * Note that some Script Explorer functionality has not been re-implemented in Project Explorer. For example the 
+   packages and modules of dependencies are not shown (#50).
  * Removed all DLTK-based buildpath UI from standard DDT views. This functionality was never fully supported. 
    * Modifying the import-path is now only supported by means of the dub.json file.
  * Added DUB build support. Removed basic builder (the previous build functionality using response files). 
-   * Project build configuration page has only one field now: a field with optional extra options to pass to DUB when building.
-   * Previously created DDT Eclipse projects are no longer compatible with this new version. You should recreate the project using the new DUB Project wizard.
+   * Project build configuration page has only one field now: a field with optional extra options to pass to DUB 
+   when building.
+   * <u>Previously created DDT Eclipse projects are no longer compatible with this new version.</u> You should 
+   recreate the project using the new DUB Project wizard.
 
 ##### Changes after the Preview Release
  * Added support for LDC compiler locations.
@@ -27,10 +32,16 @@
  * Minor improvements and bugfixes to DUB UI tree elements in Project Explorer.
  * Added to Project Explorer context menu a few DUB actions to add/remove the project from local packages.
  * DUB builder: fixed project not being refreshed after build.
-Some DUB functionality was not fully implemented/support in this release:
+ * Documentation: updated the [Prerequisites](UserGuide.md#ddt-prerequisites-and-configuration) and 
+ [Project Setup](UserGuide.md#project-setup) UserGuide sections with new DUB info.
+
+Some DUB functionality was not fully implemented/supported in this release:
  * Issue #49 DUB: Add proper support for configurations 
  * Issue #48 DUB: improve UI support for sub-packages
 
+TODO:
+search compilers bug
+ExpCall bug
 
 ### DDT 0.9.1 (2014-02-07)
  * Added debug hover to D editor. When a CDT debug session is active, this hover presents detailed info for the variable under the cursor, similar to the Variables view.

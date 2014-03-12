@@ -1,10 +1,12 @@
 ## User Guide
 
-*Note:* For an overview of DDT features, see [Features]. This also serves to document which major functionalities are available.
+*Note:* For an overview of DDT features, see [Features](Features.md#ddt-features). This also serves to document the major functionalities available.
 
 ### Eclipse basics
 
-If you are new to Eclipse, you can learn some of the basics of the Eclipse IDE with this short intro article: http://www.ibm.com/developerworks/opensource/library/os-eclipse-master1/ 
+If you are new to Eclipse, you can learn some of the basics of the Eclipse IDE with this short intro article: 
+
+[An introduction to Eclipse for Visual Studio users](http://www.ibm.com/developerworks/opensource/library/os-eclipse-visualstudio/)
 
 Also, to improve Eclipse performance on modern machines, it is recommended you increase the memory available to the JVM. You can do so by modifying the _`eclipse.ini`_ file in your Eclipse installation. The two VM parameters in _`eclipse.ini`_ to note are _-Xms_ (initial Java heap size) and _-Xmx_ (maximum Java heap size). For a machine with 4Gb of RAM or more, the following is recommended as minimum values:
 ```
@@ -13,61 +15,66 @@ Also, to improve Eclipse performance on modern machines, it is recommended you i
 -Xmx1024m
 ```
 
-### DDT Configuration
+### DDT Prerequisites and Configuration
 
-Before creating D projects, you should configure a D compiler installation (they are often called 'interpreters' throughout the IDE UI. This is due to a current limitation arising from DDT's usage of _DLTK - the Dynamic Languages ToolKit_). The compiler itself might not be used, but adding a D compiler installation allows the standard library to be part of a project build path.
+The [DUB tool](http://code.dlang.org/about) is required to fully enable all DDT functionality. DDT will automatically find DUB if it is on the `PATH` environment variable. If it's not, the DUB path can be configured in the DDT `DUB` preference page.
 
-Open 'Preferences' and go the preference page: 'DDT / Compilers'. Click "Add..", then "Browse.." and then navigate and select the DMD executable for the D compiler installation. Now the "Interpreter system libraries" locations should be filled automatically. You should see something similar to this:
+A D compiler is also required. This is so the system library modules can be found and used (for code completion, etc.). All 3 major compilers are supported: DMD, GDC, LDC. On each startup, DDT will automatically search for all compilers it can find in the `PATH` environment variable, and add them to the DDT configuration. Most compiler layouts of the library locations will be recognized, but if they are not, the library locations for the found compilers can be configured in the `DDT / Compilers` preference page:
 
-[![UserGuide_DDT_EditInterpreter](screenshots/UserGuide_DDT_EditInterpreter.png)](:)
+<div align="center">
+<a><img src="screenshots/UserGuide_DDT_EditInterpreter.png" border=2 /><a/> <br/>
+<sup>TODO update SS</sup>
+</div> 
 
-_Only DMD and GDC are supported at the moment._ However other compilers or standard libraries can be partially supported by manually adding or changing the default locations in the "Interpreter system libraries" list.
+Other compiler locations that are not present in the `PATH` can also be added in this preference page, although at the moment this is of limited use since DUB may not be able to find them when building.
+
 
 ### Project setup
 
-*Project creation:*
-A new D project can be created with the 'New' / 'DDT/D Project' wizard. The D perspective should open after creation. Use the Script Explorer view to work with D projects. (the Project Explorer view is not yet properly supported)
+##### Project creation:
+A new D project can be created in the Project Explorer view. Open `New / Project...` and then `D / DUB Project`. The D perspective should open after creation, if it's not open already.
 
-*Build Path:*
-A project has a build path configuration. The build path is the set of folders that contain the D files that constitute the D project. Semantic features (such as code completion) will only see the modules contained in the build path. The built-in builder also works by means of the project build path. 
-*Note:* In the future all project configuration will be made entirely by means of the [http://code.dlang.org/about Dub tool].
+##### Import Path:
+A project has an import path: a list of folder locations that are D import path roots. The import path is derived from the import roots of the project itself (usually the same as the _source folders_), and the import paths of the dependency DUB packages. Only the modules contained in the import path will be visible to semantic features (such as code completion).
 
-*Build Path configuration:*
-The build path can be configured in the "D Build Path" project property page, or in several context menu actions of the Script Explorer view. The simplest element of the build path is a source folder, which is a folder that contains D files (.d or .di), whose module/package declaration must match the filesystem directory hierarchy, rooted at the source folder.
+The configuration of the import path and source folders, as well as dependencies and other settings is done in the `dub.json` manifest file. Edit this file in Eclipse and save it after applying the desired changes. On startup, or whenever DDT detects the `dub.json` file has been modified, `dub describe` will be run to resolve dependencies
+and to supply the fully resolved import path for the project (as well as some other DUB package information). The output of this DUB command (as well as any other DUB command) will be displayed in a DUB console in the Console view.
 
-Note: library entries in the build path, with the exception of the standard library, are not supported as build path entries (they can be added in the Libraries UI, but they will have no effect). Project dependencies are also not supported: there is a Project References functionality in the UI but it will have little effect. Source folder exclusions/inclusions are not supported by the builder. 
+If an error occurs during this process, an error will placed in the project. For more details on what caused the error, view the DUB console contents.
 
-*Build configuration:*
-The default build behavior is to use the simple DDT built-in builder (configuration guide in last section).
-You can change this, and configure an external builder instead (it is recommended to use Dub). To do this, open the project 'Properties' page (available in the project context menu), go the 'Builders' page. Disable the existing builders, and add your own, invoking an external program.
+##### Build configuration:
+
+The project is built using DUB, which will be run whenever an Eclipse workspace build is requested. Note that if the `Project / Build Automatically` option in the main menu is enabled (the default), a workspace build will be requested whenever any file is saved. Turn this on or off as desired.
+
+The build is performed by running `dub build`, the output of which will also be presented in the DUB console. Additional command-line options to this process can be configured in the `DUB Options` project property page. Also, it is possible to configure arbitrary external processes to run before of after the DUB build, in the `Builders` property page. (if desired, the DUB builder itself can also be disabled).
 
 ### Editor and Navigation
 
-*Editor newline auto-indentation:*
+##### Editor newline auto-indentation:
 The editor will auto-indent new lines after an Enter is pressed. Pressing Backspace with the cursor after the indent characters in the start of the line will delete the indent and preceding newline, thus joining the rest of the line with the previous line. Pressing Delete before a newline will have an identical effect.
 This is unlike most source editors - if instead you want to just remove one level of indent (or delete the preceding Tab), press Shift-Tab. 
 
-*Open Definition:*
+##### Open Definition:
 The Open Definition functionality is invoked by pressing F3 in the DDT source editor, or by clicking the Open Definition button placed in the toolbar. When using the toolbar button, Open Definition will work in any text editor, however it won't be able to follow imports across modules if the file is not on the build path of a DDT project. Open Definition is also available in the editor context menu and by means of editor *hyper-linking* (hold Ctrl and select a reference with the mouse).
 
 Open Definition functionality should find any definition under basic reference contexts, but references under complex expressions might resolve inaccurately, or not at all.
 Particularly: function call overloading, template overloads, template instantiation, IFTI, operator overloading are not currently understood by the semantic engine.
 
-*Code-Completion/Auto-Complete:*
+##### Code-Completion/Auto-Complete:
 Invoked with Ctrl-Space. This functionality is generally called Content Assist in Eclipse. For DDT, it has the same semantic power as Open Definition to determine completions. Can be used in import statements to list available modules to import.
 
 Content Assist can also present Code Templates. These are predefined parameterized blocks of code that can be automatically inserted in the current source. These can be configured in the preferences, under 'DDT/Editor/Code Templates'.
 
-*Text Hover:*
+##### Text Hover:
 Text hover shows a text popup over the reference or definition under the mouse cursor. The hover will display the signature of the definition, as well as DDoc, if available. DDoc will be rendered in a graphical way, similar to a standard HTML presentation.
 
-*Open-Type dialog:*
+##### Open-Type dialog:
 Invoked with Ctrl-Shift-T. This is a dialog that allows one to search for any definitions (types or meta-types) and open an editor on the source of the selected definition. Search works the same as JDT, a simple text filter can be used, or camel-case matching can be used to match the desired element (for example: the `FEx` text will match `FiberException`, `FileException`, `FormatException`, etc.). Wildcards can also be used in the filter text.
  
-*Hierarchy View:*
+##### Hierarchy View:
 These are not currently supported/implemented, even though they are present in the UI.
 
-*Semantic Search:*
+##### Semantic Search:
 The search dialog allows searching for definitions based on a text pattern. Available in the main menu, under 'Search' / 'D...':
 [![UserGuide_SearchDialog](screenshots/UserGuide_SearchDialog.png)](:)
 It is also possible to search for all references to a given definition. In the editor, select the name of a definition, and use the editor context menu to search for references (shortcut: Ctrl-Shift-G). This can also be invoked on references, invoking a search for all references to the same definition the selected reference resolves to.
@@ -86,21 +93,4 @@ D launches can be run in debug mode. You will need a GDB debugger. To configure 
 
 GDB debugger integration is achieved by using the CDT plugins. To configure global debugger options, go the 'C/C++'/'Debug'/'GDB' preference page.
 
-### Built-in Build:
-*Note* In the near future all project configuration (including building) will be setup by means of the [Dub tool](http://code.dlang.org/about).
 
-There is some support for integrated builder functionality, namely, the IDE can automatically manage some of the build settings according to the IDE's D project configuration. The build settings can be accessed on the "D Compile Options" project properties page. Here's how it works: DDT will create a build.rf file in the project root folder and then invoke a builder according to the "Build Command:" entry. You can, and should, specify arguments to the build command in the entry, such as the response file "build.rf". 
-
-The contents of the build.rf file will be the same as the "Managed Response File" configuration entry, except that some special tokens will be replaced by the IDE. With this functionality it should be possible to use any builder, such as [rebuild](http://www.dsource.org/projects/dsss/wiki/Rebuild), [bud](http://www.dsource.org/projects/build/), or even DMD itself, which is the default (but not recommend for large projects though). The available replace tokens are: 
- * $DEEBUILDER.OUTPUTPATH - Project relative output path
- * $DEEBUILDER.OUTPUTEXE - Project relative output executable path
- * $DEEBUILDER.SRCLIBS.-I - Absolute path of all source libs, each prefixed by "-I" and separated by newlines
- * $DEEBUILDER.SRCFOLDERS.-I - Project relative  path of all source folder, each prefixed by "-I" and separated by newlines
- * $DEEBUILDER.SRCMODULES - All source modules (.d files) found in the project's source folders, separated by newlines
-
-There is also a substitution token performed for the builder command line ('Build Command:' option) :
- * $DEEBUILDER.COMPILEREXEPATH - Full path to the compiler executable, as defined in the project's configured interpreter.
- * $DEEBUILDER.COMPILERPATH - Full path to the directory containing the compiler executable (same as $DEEBUILDER.COMPILEREXEPATH, but without the last segment).
-
-
-When run, the builder will print its output on the Eclipse console. If by any reason you have problems with the builder, it can be disabled on the Builders page of the project properties.

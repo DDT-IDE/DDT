@@ -1,19 +1,23 @@
-
 ## DDT features
 
- * Project viewer (with flat or hierarchical packages view). New D project wizard.
+DDT screenshot:
+[![sample_basic](screenshots/sample_basic.png)](:)
+
+ * Build and project configuration/dependencies support using [DUB](http://code.dlang.org/about).
+ * Project viewer annotated with DUB elements (under the Project Explorer view).
  
 |[![sample_basic](screenshots/thumbs/sample_basic.png)](https://raw.github.com/bruno-medeiros/DDT/latest/documentation/screenshots/sample_basic.png)|
 |----|
-   * (Yes, the project view has the name "Script" Explorer due to an internal limitation related to the use of DLTK).
- * D Editor:
+
+ * D source editor:
    * Syntax Highlighting (configurable styling) and syntax error reporting.
    * Folding of source blocks, bracket matching.
    * Outline view of source file elements and Quick-Outline. (`Ctrl+O`)
    
 |[![sample_quickOutline](screenshots/thumbs/sample_quickOutline.png)](https://raw.github.com/bruno-medeiros/DDT/latest/documentation/screenshots/sample_quickOutline.png)<br/>`Quick outline popup, with name filter "*Aut"`|
 |----|
-   * DDoc viewer hovers. (renders DDoc into corresponding HTML)
+
+   * DDoc editor hover. (renders DDoc into an annotated visual representation)
    
 |[![sample_ddocView](screenshots/thumbs/sample_ddocView.png)](https://raw.github.com/bruno-medeiros/DDT/latest/documentation/screenshots/sample_ddocView.png)|
 |----|
@@ -37,8 +41,6 @@
 
 |[![sample_searchReferences](screenshots/thumbs/sample_searchReferences.png)](https://raw.github.com/bruno-medeiros/DDT/latest/documentation/screenshots/sample_searchReferences.png)<br/>`Search results after searching for "writeln" references`|
 |----|
- * Simple built-in builder support (automatically generates a response file for the D compiler to build the whole project). Can automatically launch created executable.
-   * This is good enough for toy projects only. For more serious projects an external builder should be used. D projects in DDT can be configured to use an external builder instead of the default one.
 
  * Debugging functionality. Fully featured GDB debugger support (reusing Eclipse CDT's GDB integration)
   * Stop/resume program execution. Listing program threads and stack frame contents.

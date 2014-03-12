@@ -1,4 +1,4 @@
-module sample_basic;
+module sample_searchResults;
 
 import std.stdio;
 
@@ -9,7 +9,7 @@ class MyClass {
    int data;
 }
 
-void main() {
+void searchResults() {
    // play with a MyStruct object
    MyStruct s1;
    MyStruct s2 = s1;

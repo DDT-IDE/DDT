@@ -4,6 +4,7 @@ import std.stdio;
 
 struct MyStruct {
    int data;
+   string name;
 }
 class MyClass {
    int data;
