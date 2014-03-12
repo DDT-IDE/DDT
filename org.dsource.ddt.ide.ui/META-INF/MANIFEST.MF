@@ -31,3 +31,4 @@ Require-Bundle: org.dsource.ddt.ide.core;bundle-version="[0.10.0,0.11.0)",
 Export-Package: melnorme.lang.ide.ui;x-friends:="org.dsource.ddt.ide.debug",
  melnorme.lang.ide.ui.editors;x-friends:="org.dsource.ddt.ide.debug",
  org.dsource.ddt.ui.tabgroup
+Bundle-ClassPath: .

@@ -1,4 +1,4 @@
-package org.eclipse.jdt.internal.ui;
+package melnorme.lang.jdt.internal.ui;
 
 
 import mmrnmhrm.ui.DeeUIPlugin;

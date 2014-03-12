@@ -2,11 +2,10 @@ package org.eclipse.jdt.internal.ui.dialogs;
 
 
 
+import melnorme.lang.jdt.ui.JavaUI;
+
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.jface.util.Assert;
-
-import org.eclipse.jdt.ui.JavaUI;
 
 /**
  * A settable IStatus. 

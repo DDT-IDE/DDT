@@ -7,6 +7,8 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
+import melnorme.lang.jdt.internal.ui.JavaPlugin;
+import melnorme.lang.jdt.ui.JDT_PreferenceConstants;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
@@ -14,8 +16,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
-import org.eclipse.jdt.ui.JDT_PreferenceConstants;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.FontData;

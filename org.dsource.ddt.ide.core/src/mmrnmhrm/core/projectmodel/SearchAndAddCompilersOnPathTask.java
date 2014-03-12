@@ -30,7 +30,11 @@ import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
+import dtool.SimpleLogger;
+
 public class SearchAndAddCompilersOnPathTask {
+	
+	protected static final SimpleLogger log = new SimpleLogger(true);
 	
 	public static class SearchAndAddCompilersOnPathJob extends Job {
 		
@@ -71,6 +75,7 @@ public class SearchAndAddCompilersOnPathTask {
 		if(monitor.isCanceled()) 
 			return;
 		for (InterpreterStandin install : foundInstalls) {
+			log.println("Found compiler on PATH: " + install.getInstallLocation());
 			install.convertToRealInterpreter();
 		}
 	}

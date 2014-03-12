@@ -132,6 +132,9 @@ class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>
 	public StyledString visitDubManifestFile(IFile element) {
 		StyledString baseString = new StyledString(element.getName());
 		DubBundleDescription bundleInfo = DubModel.getBundleInfo(element.getProject().getName());
+		if(bundleInfo == null) {
+			return null;
+		}
 		return appendVersionString(baseString, bundleInfo.getMainBundle());
 	}
 	

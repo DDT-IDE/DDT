@@ -12,7 +12,7 @@ package mmrnmhrm.ui.preferences;
 
 import melnorme.util.swt.GridComposite;
 import melnorme.util.swt.SWTLayoutUtil;
-import melnorme.util.ui.fields.FieldUtil;
+import melnorme.util.ui.fields.FieldLayoutUtil;
 import melnorme.util.ui.fields.StringDialogField;
 import mmrnmhrm.core.DeeCorePreferences;
 
@@ -59,7 +59,7 @@ public class DubProjectOptionsBlock {
 
 		Composite comp;
 		
-		comp = FieldUtil.createCompose(rowComposite, true, fExtraOptions);
+		comp = FieldLayoutUtil.createCompose(rowComposite, true, fExtraOptions);
 		SWTLayoutUtil.enableDiagonalExpand(comp);
 		SWTLayoutUtil.enableDiagonalExpand(fExtraOptions.getTextControl(null));
 		SWTLayoutUtil.setHeightHint(fExtraOptions.getTextControl(null), 200);

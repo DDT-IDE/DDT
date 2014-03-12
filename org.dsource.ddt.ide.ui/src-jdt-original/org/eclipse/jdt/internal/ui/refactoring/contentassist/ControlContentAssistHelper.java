@@ -28,13 +28,11 @@ public class ControlContentAssistHelper {
 	}
 
 
-/*
-	public static SubjectControlContentAssistant createJavaContentAssistant(IContentAssistProcessor processor) {
-		final SubjectControlContentAssistant contentAssistant= new SubjectControlContentAssistant();
-		
-		contentAssistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
-		
-		return contentAssistant;
-	}
-	*/
+//	public static SubjectControlContentAssistant createJavaContentAssistant(IContentAssistProcessor processor) {
+//		final SubjectControlContentAssistant contentAssistant= new SubjectControlContentAssistant();
+//		
+//		contentAssistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
+//		
+//		return contentAssistant;
+//	}
 }

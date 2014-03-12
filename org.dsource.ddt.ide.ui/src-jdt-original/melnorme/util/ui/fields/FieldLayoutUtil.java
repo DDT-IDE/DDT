@@ -9,7 +9,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-public class FieldUtil {
+public class FieldLayoutUtil {
 
 	/** Calculates the number of columns needed by field editors */
 	public static int getNumberOfColumns(DialogField[] editors) {
@@ -25,7 +25,7 @@ public class FieldUtil {
 	 */
 	public static void doDefaultLayout(Composite parent, DialogField[] editors,
 			boolean labelOnTop) {
-		FieldUtil.doDefaultLayout(parent, editors, labelOnTop, 0, 0);
+		FieldLayoutUtil.doDefaultLayout(parent, editors, labelOnTop, 0, 0);
 	}
 
 	/** Fills in the given editors in the parent Composite.
@@ -81,7 +81,7 @@ public class FieldUtil {
 	/** Creates a Composite and fills in the given fields. */
 	public static Composite createCompose(Composite parent, boolean labelOnTop, DialogField field) {
 		Composite content = new GridComposite(parent, field.getNumberOfControls());
-		FieldUtil.doDefaultLayout2(content, labelOnTop, field);
+		FieldLayoutUtil.doDefaultLayout2(content, labelOnTop, field);
 		return content;
 	}
 }
