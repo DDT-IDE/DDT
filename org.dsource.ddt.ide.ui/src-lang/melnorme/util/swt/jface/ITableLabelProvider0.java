@@ -10,23 +10,16 @@
  *******************************************************************************/
 package melnorme.util.swt.jface;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.swt.graphics.Image;
 
-
-public abstract class AbstractContentProvider implements IStructuredContentProvider {
+public interface ITableLabelProvider0<T> extends IBaseLabelProvider {
 	
-	protected Viewer viewer;
-	protected Object input;
-	
-	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		this.viewer = viewer;
-		this.input = newInput;
-	}
-	
-	@Override
-	public void dispose() {
-	}
-	
+	/** See {@link ITableLabelProvider#getColumnImage(Object, int)} */
+    public Image getColumnImage0(T element, int columnIndex);
+    
+    /** See {@link ITableLabelProvider#getColumnText(Object, int)} */
+    public String getColumnText0(T element, int columnIndex);
+    
 }

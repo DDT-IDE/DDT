@@ -11,22 +11,11 @@
 package melnorme.util.swt.jface;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 
-
-public abstract class AbstractContentProvider implements IStructuredContentProvider {
+public interface IStructuredContentProvider0<T> extends IStructuredContentProvider {
 	
-	protected Viewer viewer;
-	protected Object input;
-	
+	// Note, result must not be modified
 	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		this.viewer = viewer;
-		this.input = newInput;
-	}
-	
-	@Override
-	public void dispose() {
-	}
+	public T[] getElements(Object inputElement);
 	
 }

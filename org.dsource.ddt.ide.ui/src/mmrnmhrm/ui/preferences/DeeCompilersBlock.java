@@ -11,15 +11,17 @@
 package mmrnmhrm.ui.preferences;
 
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.dltk.ui.interpreters.CompilersBlock;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask;
-import mmrnmhrm.dltk.internal.debug.ui.interpreters.CompilersBlock;
 
-import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AddScriptInterpreterDialog;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
@@ -28,23 +30,18 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
-// TODO: rewrite InterpretersBlock, remove host and "interpreters" names
 public class DeeCompilersBlock extends CompilersBlock {
 	
+	// TODO: rewrite AddScriptInterpreterDialog
 	@Override
-	protected String getCurrentNature() {
-		return DeeNature.NATURE_ID;
+	protected AddScriptInterpreterDialog createInterpreterDialogDo(IInterpreterInstall standin) {
+		IInterpreterInstallType[] deeInstallTypes = ScriptRuntime.getInterpreterInstallTypes(LangCore.NATURE_ID);
+		assertTrue(deeInstallTypes.length > 0);
+		return new DialogAddDeeCompiler(this, getShell(), deeInstallTypes, standin);
 	}
 	
 	@Override
-	protected AddScriptInterpreterDialog createInterpreterDialog(IInterpreterInstall standin) {
-		IInterpreterInstallType[] deeInstallTypes = ScriptRuntime.getInterpreterInstallTypes(getCurrentNature());
-		DialogAddDeeCompiler dialog = new DialogAddDeeCompiler(this, getShell(), deeInstallTypes, standin);
-		return dialog;
-	}
-	
-	@Override
-	protected void search() {
+	protected void searchButtonPressed() {
 		SearchTaskRunnable str = new SearchTaskRunnable();
 		
 		try {
@@ -56,12 +53,7 @@ public class DeeCompilersBlock extends CompilersBlock {
 			return; // cancelled
 		}
 		
-		List<InterpreterStandin> foundInstalls = str.searchTask.getFoundInstalls();
-		for (InterpreterStandin interpreterStandin : foundInstalls) {
-			if(!isDuplicateName(interpreterStandin.getName(), null)) {
-				interpreterAdded(interpreterStandin);
-			}
-		}
+		addElements(str.searchTask.getFoundInstalls());
 	}
 	
 	protected final class SearchTaskRunnable implements IRunnableWithProgress {
@@ -70,7 +62,19 @@ public class DeeCompilersBlock extends CompilersBlock {
 		@Override
 		public void run(IProgressMonitor monitor) {
 			monitor.beginTask(DeeCoreMessages.SearchAndAddCompilersOnPath_JobName, IProgressMonitor.UNKNOWN);
-			searchTask = new SearchAndAddCompilersOnPathTask(monitor);
+			searchTask = new SearchAndAddCompilersOnPathTask(monitor) {
+				@Override
+				protected IInterpreterInstall getExistingInstall(IInterpreterInstallType installType,
+						IFileHandle location) {
+					for (InterpreterStandin install : getElements()) {
+						if(install.getInterpreterInstallType().getId().equals(installType.getId()) &&
+							install.getInstallLocation().equals(location)) {
+							return install;
+						}
+					}
+					return null;
+				}
+			};
 			searchTask.searchForCompilers();
 		}
 	}

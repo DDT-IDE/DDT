@@ -45,9 +45,8 @@ public class ProjectField extends FieldComponent<String> {
 	protected Text fProjText;
 	
 	@Override
-	public Group createComponent(Composite parent, Object layoutData) {
+	public Group createComponent(Composite parent) {
 		Group topControl = new Group(parent, SWT.NONE);
-		topControl.setLayoutData(layoutData);
 		topControl.setText(LangUIMessages.mainTab_projectGroup);
 		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		

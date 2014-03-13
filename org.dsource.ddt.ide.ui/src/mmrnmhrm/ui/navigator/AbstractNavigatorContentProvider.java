@@ -12,7 +12,7 @@ package mmrnmhrm.ui.navigator;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.util.swt.jface.AbstractContentProvider;
+import melnorme.util.swt.jface.AbstractTreeContentProvider;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,7 +24,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 
-public abstract class AbstractNavigatorContentProvider extends AbstractContentProvider 
+public abstract class AbstractNavigatorContentProvider extends AbstractTreeContentProvider 
 		implements ICommonContentProvider {
 	
 	public AbstractNavigatorContentProvider() {

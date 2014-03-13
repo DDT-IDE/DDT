@@ -52,6 +52,17 @@ public class ArrayUtil {
 		return list.toArray((T[])Array.newInstance(cpType, list.size()));
 	}
 	
+    /** Create an array from the given element, with the given cpType as the runtime component type.
+     * If the element is null, a zero-length array is created. */
+	public static <T> T[] singletonArray(T element, Class<T> cpType) {
+		if(element == null) {
+			return (T[]) Array.newInstance(cpType, 0);
+		}
+		T[]newArray = (T[]) Array.newInstance(cpType, 1);
+		newArray[0] = element;
+		return newArray;
+	}
+	
     /** Create an array from the given list, with the given cpType as the run-time component type.
      * If the list is null, null is returned. */
 	public static <T> T[] toArray(Collection<? extends T> list, Class<T> cpType) {

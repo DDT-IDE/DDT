@@ -10,23 +10,17 @@
  *******************************************************************************/
 package melnorme.util.swt.jface;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import org.eclipse.jface.viewers.ITreeContentProvider;
 
 
-public abstract class AbstractContentProvider implements IStructuredContentProvider {
-	
-	protected Viewer viewer;
-	protected Object input;
+public abstract class AbstractTreeContentProvider extends AbstractContentProvider implements ITreeContentProvider {
 	
 	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		this.viewer = viewer;
-		this.input = newInput;
-	}
-	
-	@Override
-	public void dispose() {
+	public Object[] getElements(Object inputElement) {
+		assertTrue(input == inputElement);
+		return getChildren(inputElement);
 	}
 	
 }

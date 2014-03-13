@@ -37,9 +37,8 @@ public class LangArgumentsBlock extends FieldComponent<String> {
 	protected Button fArgumentVariablesButton;
 	
 	@Override
-	public Group createComponent(Composite comp, Object layoutData) {
+	public Group createComponent(Composite comp) {
 		Group topControl = new Group(comp, SWT.NONE);
-		topControl.setLayoutData(layoutData);
 		Font font = comp.getFont();
 		topControl.setFont(font);
 		topControl.setLayout(new GridLayout());

@@ -14,8 +14,10 @@ package melnorme.utilbox.core;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.CollectionUtil;
 
 /**
  * Utils for miscellaneous Java core language functionality. 
@@ -116,6 +118,12 @@ public class CoreUtil /* extends Assert */ {
 	 * If the list is null, a zero-length array is created. */
 	public static <T> T[] arrayFrom(Collection<? extends T> list, Class<T> cpType) {
 		return ArrayUtil.createFrom(list, cpType);
+	}
+	
+	/** @return a new read-only {@link List} from given array (a null array is considered like an empty one). */
+	@SafeVarargs
+	public static <T> List<T> listFrom(T... array) {
+		return Collections.unmodifiableList(CollectionUtil.createArrayList(array));
 	}
 	
 }

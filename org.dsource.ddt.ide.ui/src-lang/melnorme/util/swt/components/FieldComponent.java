@@ -22,7 +22,13 @@ public abstract class FieldComponent<T> {
 	
  	protected final ListenerList listeners = new ListenerList(); // TODO
  	
- 	public abstract Control createComponent(Composite parent, Object layoutData);
+ 	public final Control createComponent(Composite parent, Object layoutData) {
+ 		Control control = createComponent(parent);
+ 		control.setLayoutData(layoutData);
+ 		return control;
+ 	}
+ 	
+ 	public abstract Control createComponent(Composite parent);
 	
 	public abstract T getFieldValue();
 
