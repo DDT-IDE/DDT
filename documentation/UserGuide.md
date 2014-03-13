@@ -1,14 +1,20 @@
 ## User Guide
 
-*Note:* For an overview of DDT features, see [Features](Features.md#ddt-features). This also serves to document the major functionalities available.
+*Note:* For an overview of DDT features, see [Features](Features.md#ddt-features). This also serves to document 
+the major functionalities available.
 
 ### Eclipse basics
 
 If you are new to Eclipse, you can learn some of the basics of the Eclipse IDE with this short intro article: 
 
-[An introduction to Eclipse for Visual Studio users](http://www.ibm.com/developerworks/opensource/library/os-eclipse-visualstudio/)
+[An introduction to Eclipse for Visual Studio users
+](http://www.ibm.com/developerworks/opensource/library/os-eclipse-visualstudio/)
 
-Also, to improve Eclipse performance on modern machines, it is recommended you increase the memory available to the JVM. You can do so by modifying the _`eclipse.ini`_ file in your Eclipse installation. The two VM parameters in _`eclipse.ini`_ to note are _-Xms_ (initial Java heap size) and _-Xmx_ (maximum Java heap size). For a machine with 4Gb of RAM or more, the following is recommended as minimum values:
+Also, to improve Eclipse performance on modern machines, it is recommended you increase the memory available to 
+the JVM. You can do so by modifying the _`eclipse.ini`_ file in your Eclipse installation. The two VM parameters 
+in _`eclipse.ini`_ to note are _-Xms_ (initial Java heap size) and _-Xmx_ (maximum Java heap size). For a machine
+with 4Gb of RAM or more, the following is recommended as minimum values:
+
 ```
 -vmargs
 -Xms256m
@@ -17,16 +23,23 @@ Also, to improve Eclipse performance on modern machines, it is recommended you i
 
 ### DDT Prerequisites and Configuration
 
-The [DUB tool](http://code.dlang.org/about) is required to fully enable all DDT functionality. DDT will automatically find DUB if it is on the `PATH` environment variable. If it's not, the DUB path can be configured in the DDT `DUB` preference page.
+The [DUB tool](http://code.dlang.org/about) is required to fully enable all DDT functionality. DDT will automatically 
+find DUB if it is on the `PATH` environment variable. If it's not, the DUB path can be configured in the DDT `DUB` 
+preference page.
 
-A D compiler is also required. This is so the system library modules can be found and used (for code completion, etc.). All 3 major compilers are supported: DMD, GDC, LDC. On each startup, DDT will automatically search for all compilers it can find in the `PATH` environment variable, and add them to the DDT configuration. Most compiler layouts of the library locations will be recognized, but if they are not, the library locations for the found compilers can be configured in the `DDT / Compilers` preference page:
+A D compiler is also required. This is so the system library modules can be found and used (for code completion, etc.). 
+All 3 major compilers are supported: DMD, GDC, LDC. On each startup, DDT will automatically search for all compilers 
+it can find in the `PATH` environment variable, and add them to the DDT configuration. Most compiler layouts of the 
+library locations will be recognized, but if they are not, the library locations for the found compilers can be 
+configured in the `DDT / Compilers` preference page:
 
 <div align="center">
-<a><img src="screenshots/UserGuide_DDT_EditInterpreter.png" border=2 /><a/> <br/>
-<sup>TODO update SS</sup>
+<a><img src="screenshots/UserGuide_CompilersPage.png" /><a/> 
+<br/> <sup>the compilers preference page</sup>
 </div> 
 
-Other compiler locations that are not present in the `PATH` can also be added in this preference page, although at the moment this is of limited use since DUB may not be able to find them when building.
+Other compiler locations that are not present in the `PATH` can also be added in this preference page, although at the
+moment this is of limited use since DUB may not be able to find them when building.
 
 
 ### Project setup
@@ -76,7 +89,11 @@ These are not currently supported/implemented, even though they are present in t
 
 ##### Semantic Search:
 The search dialog allows searching for definitions based on a text pattern. Available in the main menu, under 'Search' / 'D...':
-[![UserGuide_SearchDialog](screenshots/UserGuide_SearchDialog.png)](:)
+
+<div align="center">
+<a><img src="screenshots/UserGuide_SearchDialog.png" /><a/> 
+</div>
+
 It is also possible to search for all references to a given definition. In the editor, select the name of a definition, and use the editor context menu to search for references (shortcut: Ctrl-Shift-G). This can also be invoked on references, invoking a search for all references to the same definition the selected reference resolves to.
 
 
@@ -89,7 +106,9 @@ Whenever a launch is requested, a build will be performed beforehand. This behav
 
 D launches can be run in debug mode. You will need a GDB debugger. To configure debug options (in particular, the path to the debugger to use), open the launch under 'Run' / 'Debug Configurations...', and then navigate to the 'Debugger' tab in the desired launch configuration:
 
-[![UserGuide_DebuggerLaunchConfiguration](screenshots/UserGuide_DebuggerLaunchConfiguration.png)](:)
+<div align="center">
+<a><img src="screenshots/UserGuide_DebuggerLaunchConfiguration.png" /><a/> 
+</div>
 
 GDB debugger integration is achieved by using the CDT plugins. To configure global debugger options, go the 'C/C++'/'Debug'/'GDB' preference page.
 
