@@ -146,7 +146,7 @@ public class SearchAndAddCompilersOnPathTask {
 	
 	protected void addCompilerInstall(IInterpreterInstallType installType, IFileHandle compilerLocation) {
 		IInterpreterInstall existingInstall = getExistingInstall(installType, compilerLocation);
-		if(existingInstall != null && !existingInstall.getName().startsWith("AUTO::")) {
+		if(existingInstall != null) {
 			return;
 		}
 		// Note: there can be multiple installs in same location if all have different compiler type. 
@@ -162,11 +162,10 @@ public class SearchAndAddCompilersOnPathTask {
 		foundInstalls.add(install);
 	}
 	
-	protected IInterpreterInstall getExistingInstall(IInterpreterInstallType installType, 
-			IFileHandle installLocation) {
+	protected IInterpreterInstall getExistingInstall(IInterpreterInstallType installType, IFileHandle location) {
 		IInterpreterInstall[] interpreterInstalls = installType.getInterpreterInstalls();
 		for (IInterpreterInstall interpreterInstall : interpreterInstalls) {
-			if(interpreterInstall.getInstallLocation().equals(installLocation)) {
+			if(interpreterInstall.getInstallLocation().equals(location)) {
 				return interpreterInstall;
 			}
 		}
