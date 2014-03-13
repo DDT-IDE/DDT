@@ -16,11 +16,11 @@ import java.util.List;
 
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask;
+import mmrnmhrm.dltk.internal.debug.ui.interpreters.CompilersBlock;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AddScriptInterpreterDialog;
-import org.eclipse.dltk.internal.debug.ui.interpreters.InterpretersBlock;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
@@ -29,7 +29,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 // TODO: rewrite InterpretersBlock, remove host and "interpreters" names
-public class DeeCompilersBlock extends InterpretersBlock {
+public class DeeCompilersBlock extends CompilersBlock {
 	
 	@Override
 	protected String getCurrentNature() {
