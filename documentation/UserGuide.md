@@ -35,7 +35,7 @@ configured in the `DDT / Compilers` preference page:
 
 <div align="center">
 <a><img src="screenshots/UserGuide_CompilersPage.png" /><a/> 
-<br/> <sup>the compilers preference page</sup>
+<br/> <sup>The compilers preference page, with auto-detected compilers.</sup>
 </div> 
 
 Other compiler locations that are not present in the `PATH` can also be added in this preference page, although at the
@@ -54,6 +54,15 @@ The configuration of the import path and source folders, as well as dependencies
 and to supply the fully resolved import path for the project (as well as some other DUB package information). The output of this DUB command (as well as any other DUB command) will be displayed in a DUB console in the Console view.
 
 If an error occurs during this process, an error will placed in the project. For more details on what caused the error, view the DUB console contents.
+
+Note also, if you created a DUB project in the default workspace location, and want to use it as a dependency in 
+another project/package, DUB must be able to find it in the packages search path. In the Project Explorer, under 
+the project context menu (or in the `dub.json` file context menu), there a few commands to add or remove the project 
+as DUB local package.
+
+<div align="center">
+<a><img src="screenshots/UserGuide_DubCtxMenu.png" /><a/> 
+</div> 
 
 ##### Build configuration:
 
