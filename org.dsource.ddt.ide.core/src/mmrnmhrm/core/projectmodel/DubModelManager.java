@@ -93,16 +93,23 @@ public class DubModelManager {
 	
 	protected final DubModelImpl model;
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
-	protected boolean started = false;
 	protected final ITaskAgent modelAgent = new CoreTaskAgent(getClass().getSimpleName());
 	protected final DubProcessManager dubProcessManager = new DubProcessManager();
 	
+	protected final SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
+	
+	protected boolean started = false;
+
 	public DubModelManager(DubModelImpl model) {
 		this.model = model;
 	}
 	
 	public DubProcessManager getProcessManager() {
 		return dubProcessManager;
+	}
+	
+	public SearchAndAddCompilersOnPathJob getCompilersSearchJob() {
+		return compilerSearchJob;
 	}
 	
 	public void startManager() {
@@ -138,7 +145,6 @@ public class DubModelManager {
 	
 	protected void initializeModelManager() {
 		// First of all, search for compilers on the path
-		SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
 		compilerSearchJob.schedule();
 		try {
 			compilerSearchJob.join();

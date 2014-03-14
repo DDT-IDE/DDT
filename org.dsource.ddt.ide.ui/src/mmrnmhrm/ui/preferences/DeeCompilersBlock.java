@@ -32,7 +32,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 
 public class DeeCompilersBlock extends CompilersBlock {
 	
-	// TODO: rewrite AddScriptInterpreterDialog
 	@Override
 	protected AddScriptInterpreterDialog createInterpreterDialogDo(IInterpreterInstall standin) {
 		IInterpreterInstallType[] deeInstallTypes = ScriptRuntime.getInterpreterInstallTypes(LangCore.NATURE_ID);

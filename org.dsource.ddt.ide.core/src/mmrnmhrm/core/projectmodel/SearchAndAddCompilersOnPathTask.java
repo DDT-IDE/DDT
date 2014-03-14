@@ -21,6 +21,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.compiler_installs.CommonInstallType;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
@@ -77,6 +78,11 @@ public class SearchAndAddCompilersOnPathTask {
 		for (InterpreterStandin install : foundInstalls) {
 			log.println("Found compiler on PATH: " + install.getInstallLocation());
 			install.convertToRealInterpreter();
+		}
+		try {
+			ScriptRuntime.saveInterpreterConfiguration();
+		} catch (CoreException e) {
+			DeeCore.logError("Error saving found compilers configuration", e);
 		}
 	}
 	
