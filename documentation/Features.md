@@ -1,8 +1,8 @@
-## DDT features
 
-DDT screenshot:
+## DDT - D Development Tools:
 [![sample_basic](screenshots/sample_basic.png)](:)
 
+## DDT features:
  * Build and project configuration/dependencies support using [DUB](http://code.dlang.org/about).
  * Project viewer annotated with DUB elements (under the Project Explorer view).
  
