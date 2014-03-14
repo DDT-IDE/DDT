@@ -22,7 +22,6 @@ import java.util.List;
  */
 public class ListenerListHelper<LISTENER> {
 	
-	private final Object listenersLock = new Object();
 	private volatile List<LISTENER> listeners = Collections.unmodifiableList(new ArrayList<LISTENER>());
 	
 	public void addListener(LISTENER listener) {
@@ -46,7 +45,7 @@ public class ListenerListHelper<LISTENER> {
 	}
 	
 	private void setNewListeners(ArrayList<LISTENER> newListeners) {
-		synchronized (listenersLock) {
+		synchronized(this) {
 			listeners = newListeners;
 		}
 	}

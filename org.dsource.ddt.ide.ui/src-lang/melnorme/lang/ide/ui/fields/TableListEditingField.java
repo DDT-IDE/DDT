@@ -60,7 +60,7 @@ public abstract class TableListEditingField<E> extends CommonTableBasedField<E> 
 	protected final List<E> elements = new ArrayList<>();
 	protected E checkedElement = null;
 	
-	protected Composite componentParent;
+	protected Composite componentComposite;
 	protected CheckboxTableViewerExt<E> elementsTableViewer;
 	
 	protected Button buttonAdd;
@@ -136,12 +136,13 @@ public abstract class TableListEditingField<E> extends CommonTableBasedField<E> 
 		return SWTFactoryUtil.createPushButton(parent, label, null);
 	}
 	
-	public Composite createControl(Composite ancestor) {
-		componentParent = new Composite(ancestor, SWT.NULL);
-		componentParent.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
+	@Override
+	public Composite createComponent(Composite parent) {
+		componentComposite = new Composite(parent, SWT.NULL);
+		componentComposite.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
 		
-		Composite tableComposite = createTable(componentParent);
-		PixelConverter conv = new PixelConverter(componentParent);
+		Composite tableComposite = createTable(componentComposite);
+		PixelConverter conv = new PixelConverter(componentComposite);
 		tableComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).
 			hint(conv.convertWidthInCharsToPixels(80), SWT.DEFAULT).create());
 		
@@ -184,17 +185,17 @@ public abstract class TableListEditingField<E> extends CommonTableBasedField<E> 
 		
 		table.layout();
 		
-		Composite buttonComposite = new Composite(componentParent, SWT.NULL);
+		Composite buttonComposite = new Composite(componentComposite, SWT.NULL);
 		buttonComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		createButtons(buttonComposite);
 		
 		updateButtonEnablement();
 		
-		return componentParent;
+		return componentComposite;
 	}
 	
 	public Control getControl() {
-		return componentParent;
+		return componentComposite;
 	}
 	
 	protected Shell getShell() {

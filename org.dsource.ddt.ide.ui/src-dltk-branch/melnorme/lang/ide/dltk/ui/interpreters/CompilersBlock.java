@@ -58,13 +58,13 @@ public abstract class CompilersBlock extends TableListEditingField<InterpreterSt
 	protected Button buttonSearch;
 	
 	@Override
-	public Composite createControl(Composite ancestor) {
-		super.createControl(ancestor);
+	public Composite createComponent(Composite parent) {
+		super.createComponent(parent);
 		
 		// by default, sort by name
 		sortByName();
 
-		return componentParent;
+		return componentComposite;
 	}
 	
 	@Override

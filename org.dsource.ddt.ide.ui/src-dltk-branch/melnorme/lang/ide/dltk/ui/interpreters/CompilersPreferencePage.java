@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.fields.CommonTableBasedField.IFieldValueListener;
+import melnorme.util.swt.components.FieldWithListeners.IFieldValueListener;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.dltk.core.environment.EnvironmentManager;
@@ -62,7 +62,7 @@ public abstract class CompilersPreferencePage extends PreferencePage implements 
 		noDefaultAndApplyButton();
 		
 		fInterpretersBlock = createInterpretersBlock();
-		Composite composite = fInterpretersBlock.createControl(ancestor);
+		Composite composite = fInterpretersBlock.createComponent(ancestor);
 		composite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		
 		fInterpretersBlock.restoreTableSettings(getSettingsSection());

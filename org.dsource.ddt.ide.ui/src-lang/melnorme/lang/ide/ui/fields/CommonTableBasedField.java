@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.fields;
 
-import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.util.swt.components.FieldWithListeners;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -19,33 +19,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-// TODO: this class needs cleanup
-public class CommonTableBasedField<T> {
+public class CommonTableBasedField<T> extends FieldWithListeners<T> {
 	
-	public static interface IFieldValueListener {
-		
-		void fieldValueChanged();
-		
-	}
-	
-	protected final ListenerListHelper<IFieldValueListener> listeners = new ListenerListHelper<>();
-	
-	
-	public void addValueChangedListener(IFieldValueListener listener) {
-		listeners.addListener(listener);
-	}
-	
-	public void removeValueChangedListener(IFieldValueListener listener) {
-		listeners.removeListener(listener);
-	}
-	
-	protected void fireFieldValueChanged() {
-		for (IFieldValueListener listener : listeners.getListeners()) {
-			listener.fieldValueChanged();
-		}
+	@Override
+	public Control createComponent(Composite parent) {
+		return createTable(parent);
 	}
 	
 	/* ----------------------------------- */
@@ -55,8 +37,8 @@ public class CommonTableBasedField<T> {
 	
 	protected int sortingColumn = 0;
 	
-	protected Composite createTable(Composite componentParent) {
-		Composite tableComposite = new Composite(componentParent, SWT.NONE);
+	protected Composite createTable(Composite parent) {
+		Composite tableComposite = new Composite(parent, SWT.NONE);
 		
 		table = new Table(tableComposite, getCreateTableStyle());
 		table.setHeaderVisible(true);
