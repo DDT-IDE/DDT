@@ -24,9 +24,9 @@ public abstract class InterpretersMessages {
 			"Select a default compiler";
 	
 	public static String InstalledInterpreters_AddIntepreterDialog_Title = 
-			"Add interpreter";
+			"Add compiler";
 	public static String InstalledInterpreters_EditIntepreterDialog_Title =
-			"Edit interpreter";
+			"Edit compiler";
 	
 	public static String InstalledInterpreters_LocationColumnLabel =
 			"Location";
@@ -35,69 +35,39 @@ public abstract class InterpretersMessages {
 	public static String InstalledInterpreters_IdColumnLabel =
 			"Id";
 	
+	/* ----------------- interpreter add dialog ----------------- */
 	
-	/* ----------------- header ----------------- */
+	public static String InterpreterLibraryBlock_7 = "A&dd...";
+	public static String InterpreterLibraryBlock_6 = "Re&move";
+	public static String InterpreterLibraryBlock_4 = "U&p";
+	public static String InterpreterLibraryBlock_5 = "&Down";
+	public static String InterpreterLibraryBlock_9 = "&Restore Default";
 
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_add;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_addFromEnvironment;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_addVariable;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_couldNotRetrieveEnvironmentVariablesFrom;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_edit;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_editVariable;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_environmentExport;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_environmentImport;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_export;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_exportEnvironmentVariablesToFile;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_importEnvironmentVariablesFromFile;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_failedToRetrieveEnvironment;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_import;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_name;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_selectedFileDoesntExist;
-//	public static String AbstractInterpreterEnvironmentVariablesBlock_value;
-//	public static String AbstractInterpreterLibraryBlock_rediscover;
-//	public static String AbstractInterpreterLibraryBlock_setPathVisibleToDltk;
-//	public static String addInterpreterDialog_InterpreterEnvironmentName;
-//	public static String AddScriptInterpreterDialog_executables;
-//	public static String AddScriptInterpreterDialog_interpreterEnvironmentVariables;
-//	public static String EnvironmentTab_19;
-//	public static String EnvironmentTab_20;
-//	public static String EnvironmentTab_7;
-//	public static String InterpretersBlock_0;
-//	public static String InterpretersBlock_host;
-//	public static String InstalledInterpretersBlock_15;
-//	public static String InstalledInterpretersBlock_18;
-//	public static String addInterpreterDialog_InterpreterExecutableName;
-//	public static String addInterpreterDialog_browse1;
-//	public static String AddInterpreterDialog_Interpreter_system_libraries__1;
-//	public static String addInterpreterDialog_enterLocation;
-//	public static String addInterpreterDialog_locationNotExists;
-//	public static String addInterpreterDialog_enterName;
-//	public static String addInterpreterDialog_duplicateName;
-//	public static String InterpretersComboBlock_3;
-//	public static String InterpretersComboBlock_1;
-//	public static String InterpretersComboBlock_0;
-//	public static String InterpretersComboBlock_2;
-//	public static String InterpretersComboBlock_12;
-//	public static String InterpretersComboBlock_13;
-//	public static String InterpretersComboBlock_8;
-//	public static String addInterpreterDialog_InterpreterEnvironmentType;
-//	public static String LibraryStandin_0;
-//	public static String InterpreterLibraryBlock_7;
-//	public static String InterpreterLibraryBlock_6;
-//	public static String InterpreterLibraryBlock_4;
-//	public static String InterpreterLibraryBlock_5;
-//	public static String InterpreterLibraryBlock_9;
-//	public static String InterpreterLibraryBlock_Libraries_cannot_be_empty__1;
-//	public static String InterpreterLibraryBlock_10;
-//	public static String InterpretersUpdater_0;
-//	public static String InstalledInterpretersBlock_11;
-//	public static String InstalledInterpretersBlock_12;
-//	public static String InstalledInterpretersBlock_14;
-//	public static String InterpreterContainerWizardPage_3;
-//	public static String InterpreterContainerWizardPage_Interpreter_System_Library_1;
-//	public static String InterpreterContainerWizardPage_Select_the_Interpreter_used_to_build_this_project__4;
-//	public static String InstalledInterpretersBlock_113;
-//	public static String AddInterpreterDialog_iArgs;
-//	public static String LibraryStandin_pathIsEmpty;
-		
+	public static String AbstractInterpreterLibraryBlock_rediscover = "Rediscover";
+	public static String AbstractInterpreterLibraryBlock_setPathVisibleToDltk = "Set path visible to DLTK";
+	
+	
+	public static String addInterpreterDialog_InterpreterEnvironmentName = 
+			"Compiler &name:";
+	public static String addInterpreterDialog_interpreterEnvironmentVariables =
+			"Compiler environment variables:";
+	public static String addInterpreterDialog_InterpreterExecutableName = 
+			"Compiler &executable:";
+	public static String addInterpreterDialog_browse1 = 
+			"&Browse...";
+	public static String addInterpreterDialog_Interpreter_system_libraries__1 = 
+			"Compiler system libraries:";
+	public static String addInterpreterDialog_enterLocation = 
+			"Enter the location of the compiler.";
+	public static String addInterpreterDialog_locationNotExists = 
+			"The location does not exist.";
+	public static String addInterpreterDialog_enterName = 
+			"Enter a name for the compiler.";
+	public static String addInterpreterDialog_duplicateName = 
+			"The name is already used.";
+	public static String addInterpreterDialog_InterpreterEnvironmentType = 
+			"Compiler &type:";
+	public static String AddInterpreterDialog_iArgs = 
+			"Compiler arguments:";
+	
 }

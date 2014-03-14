@@ -20,9 +20,9 @@ import java.util.List;
 import melnorme.lang.ide.ui.FieldMessages;
 import melnorme.lang.ide.ui.fields.TableListEditingField;
 import melnorme.util.swt.jface.TypedTableLabelProvider;
+import mmrnmhrm.dltk.ui.interpreters.AddScriptInterpreterDialog;
 
 import org.eclipse.dltk.core.environment.EnvironmentManager;
-import org.eclipse.dltk.internal.debug.ui.interpreters.AddScriptInterpreterDialog;
 import org.eclipse.dltk.internal.debug.ui.interpreters.IAddInterpreterDialogRequestor;
 import org.eclipse.dltk.internal.debug.ui.interpreters.IScriptInterpreterDialog;
 import org.eclipse.dltk.launching.IInterpreterInstall;

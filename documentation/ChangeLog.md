@@ -40,7 +40,6 @@ Some DUB functionality was not fully implemented/supported in this release:
  * Issue #48 DUB: improve UI support for sub-packages
 
 TODO:
-interpreters dialog fix messages
 ExpCall bug
 sorter bug
 

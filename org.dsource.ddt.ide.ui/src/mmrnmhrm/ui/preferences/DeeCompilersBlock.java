@@ -19,10 +19,10 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.dltk.ui.interpreters.CompilersBlock;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask;
+import mmrnmhrm.dltk.ui.interpreters.AddScriptInterpreterDialog;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.environment.IFileHandle;
-import org.eclipse.dltk.internal.debug.ui.interpreters.AddScriptInterpreterDialog;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
@@ -36,7 +36,7 @@ public class DeeCompilersBlock extends CompilersBlock {
 	protected AddScriptInterpreterDialog createInterpreterDialogDo(IInterpreterInstall standin) {
 		IInterpreterInstallType[] deeInstallTypes = ScriptRuntime.getInterpreterInstallTypes(LangCore.NATURE_ID);
 		assertTrue(deeInstallTypes.length > 0);
-		return new DialogAddDeeCompiler(this, getShell(), deeInstallTypes, standin);
+		return new AddDeeCompilerDialog(this, getShell(), deeInstallTypes, standin);
 	}
 	
 	@Override

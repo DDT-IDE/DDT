@@ -11,17 +11,17 @@
 package mmrnmhrm.ui.preferences;
 
 
-import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterLibraryBlock;
-import org.eclipse.dltk.internal.debug.ui.interpreters.AddScriptInterpreterDialog;
+import mmrnmhrm.dltk.ui.interpreters.AbstractInterpreterLibraryBlock;
+import mmrnmhrm.dltk.ui.interpreters.AddScriptInterpreterDialog;
+
 import org.eclipse.dltk.internal.debug.ui.interpreters.IAddInterpreterDialogRequestor;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.swt.widgets.Shell;
 
-// TODO: rewrite AddScriptInterpreterDialog
-public class DialogAddDeeCompiler extends AddScriptInterpreterDialog {
+public class AddDeeCompilerDialog extends AddScriptInterpreterDialog {
 
-	public DialogAddDeeCompiler(IAddInterpreterDialogRequestor requestor,
+	public AddDeeCompilerDialog(IAddInterpreterDialogRequestor requestor,
 			Shell shell, IInterpreterInstallType[] interpreterInstallTypes,
 			IInterpreterInstall editedInterpreter) {
 		super(requestor, shell, interpreterInstallTypes, editedInterpreter);
