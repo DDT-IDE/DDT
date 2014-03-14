@@ -267,7 +267,7 @@
          <commonSorter class="mmrnmhrm.ui.navigator.DubNavigatorSorter">
             <parentExpression>
                <or>
-                  <reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeProject"/>
+                  <reference definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject"/>
                   <and>
                      <instanceof value="mmrnmhrm.core.projectmodel.elements.IDubElement" />
                      <not>
