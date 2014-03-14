@@ -34,13 +34,13 @@
  * DUB builder: fixed project not being refreshed after build.
  * Documentation: updated the [Prerequisites](UserGuide.md#ddt-prerequisites-and-configuration) and 
  [Project Setup](UserGuide.md#project-setup) UserGuide sections with new DUB info.
+ * Fixed NPE when resolving a function call against on a non-function reference.
 
 Some DUB functionality was not fully implemented/supported in this release:
  * Issue #49 DUB: Add proper support for configurations 
  * Issue #48 DUB: improve UI support for sub-packages
 
 TODO:
-ExpCall bug
 sorter bug
 
 ### DDT 0.9.1 (2014-02-07)

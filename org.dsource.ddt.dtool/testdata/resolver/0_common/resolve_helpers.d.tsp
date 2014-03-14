@@ -30,3 +30,5 @@
 max_10_exp▪max_exp▪min_10_exp▪min_exp▪max▪min_normal▪re▪im▪▪】
 
 #@ARRAY_PROPERTIES【#@TYPE_PROPERTIES▪length▪ptr▪dup▪idup▪reverse▪sort】
+
+#@CLASS_PROPERTIES【#@TYPE_PROPERTIES▪classinfo】

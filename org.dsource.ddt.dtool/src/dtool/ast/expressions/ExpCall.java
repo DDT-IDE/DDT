@@ -5,11 +5,13 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import dtool.ast.ASTCodePrinter;
+import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.INamedElement;
+import dtool.ast.definitions.Module;
 import dtool.project.IModuleResolver;
 import dtool.resolver.DefUnitSearch;
 
@@ -51,7 +53,16 @@ public class ExpCall extends Expression {
 			return Collections.singleton(calleeResult);
 		}
 		
-		DefUnitSearch search = new DefUnitSearch("opCall", null, false, moduleResolver);
+		Module moduleNode = null;
+		if(calleeElem instanceof ASTNode) {
+			ASTNode astNode = (ASTNode) calleeElem;
+			moduleNode = astNode.getModuleNode();
+		}
+		if(moduleNode == null) {
+			return null;
+		}
+		
+		DefUnitSearch search = new DefUnitSearch("opCall", moduleNode, false, moduleResolver);
 		calleeElem.resolveSearchInMembersScope(search);
 		
 		for (Iterator<INamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {

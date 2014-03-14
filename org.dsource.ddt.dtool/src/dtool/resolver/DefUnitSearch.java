@@ -12,7 +12,6 @@ import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.Reference;
 import dtool.ast.util.NamedElementUtil;
 import dtool.project.IModuleResolver;
 
@@ -27,8 +26,9 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	private ArrayList<INamedElement> namedElements;
 	protected boolean matchesArePartialDefUnits = false;
 	
-	public DefUnitSearch(String searchName, Reference searchref, boolean findOneOnly, IModuleResolver moduleResolver) {
-		this(searchName, searchref.getModuleNode(), -1, findOneOnly, moduleResolver);
+	public DefUnitSearch(String searchName, Module refOriginModule, boolean findOneOnly, 
+			IModuleResolver moduleResolver) {
+		this(searchName, refOriginModule, -1, findOneOnly, moduleResolver);
 	}
 	
 	public DefUnitSearch(String searchName, Module refOriginModule, int refOffset, boolean findOneOnly,
