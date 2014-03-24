@@ -3,7 +3,7 @@ package mmrnmhrm.ui;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTUtil;
 import mmrnmhrm.core.projectmodel.DubModelManager;
-import mmrnmhrm.ui.launch.DubProcessUIListener;
+import mmrnmhrm.ui.launch.DubCommandsConsoleListener;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.core.runtime.Platform;
@@ -21,7 +21,7 @@ public class DeeUIPlugin extends LangUIPlugin {
 	
 	/* -------- start/stop methods -------- */
 	
-	private DubProcessUIListener dubProcessListener;
+	private DubCommandsConsoleListener dubProcessListener;
 	
 	@Override
 	protected Class<?> doCustomStart_getImagesClass() {
@@ -32,7 +32,7 @@ public class DeeUIPlugin extends LangUIPlugin {
 	protected void doCustomStart(BundleContext context) {
 		SWTUtil.enableDebugColorHelpers = Platform.inDebugMode();
 		
-		dubProcessListener = new DubProcessUIListener();
+		dubProcessListener = new DubCommandsConsoleListener();
 		DubModelManager.getDefault().getProcessManager().addDubProcessListener(dubProcessListener);
 		DubModelManager.startDefault();
 	}
