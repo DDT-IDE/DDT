@@ -1,7 +1,6 @@
 package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -48,6 +47,9 @@ public abstract class LangCore extends Plugin {
 	
 	protected abstract void doCustomStop(BundleContext context);
 	
+	
+	/* ----------------- ----------------- */
+	
 	/** Convenience method to get the WorkspaceRoot. */
 	public static IWorkspaceRoot getWorkspaceRoot() {
 		return EclipseUtils.getWorkspaceRoot();
@@ -60,7 +62,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Creates an OK status with given message. */
 	public static Status createStatus(String message) {
-		return new Status(IStatus.OK, DeeCore.PLUGIN_ID, message); 
+		return new Status(IStatus.OK, LangCore.PLUGIN_ID, message);
 	}
 	
 	/** Creates a status describing an error in this plugin, with given message. */
@@ -70,7 +72,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Creates a status describing an error in this plugin, with given message and given throwable. */
 	public static Status createErrorStatus(String message, Throwable throwable) {
-		return new Status(IStatus.ERROR, PLUGIN_ID, ILangConstants.INTERNAL_ERROR, message, throwable); 
+		return new Status(IStatus.ERROR, PLUGIN_ID, ILangConstants.INTERNAL_ERROR, message, throwable);
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */

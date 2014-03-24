@@ -3,6 +3,7 @@ package melnorme.lang.ide.ui;
 import java.util.List;
 
 import melnorme.lang.ide.ui.editors.ILangEditorTextHover;
+
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.hover.AnnotationHover_Adapter;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;

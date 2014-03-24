@@ -22,9 +22,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.junit.Test;
 
-import dtool.tests.CommonTestUtils;
-
-public class ExecutorTaskAgent_Test extends CommonTestUtils {
+public class ExecutorTaskAgent_Test {
 	
 	@Test
 	public void testShutdownNow() throws Exception {

@@ -1,6 +1,6 @@
 ## DDT release ChangeLog
 
-### DDT 0.10.0 
+### DDT 0.10.0 (2014-03-14)
  * Added DUB support. Project import-path now determined by the `dub.json` manifest file and running `dub describe`.
    * On DDT startup, or whenever `dub.json` is modified (and saved), `dub describe` will be run to resolve 
    dependencies and to supply source folders and import path info for the project (as well as some other DUB 

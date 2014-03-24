@@ -34,8 +34,8 @@ public abstract class LangImages {
 		return helper.createManaged(prefix, name);
 	}
 	
-	protected static String putSharedImages(String prefix, String name, String sharedImagesName) {
-		ImageDescriptor descriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(sharedImagesName);
+	protected static String createFromPlatformSharedImage(String prefix, String name, String sharedImageName) {
+		ImageDescriptor descriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(sharedImageName);
 		String key = helper.getKey(prefix, name);
 		helper.getImageRegistry().put(key, descriptor);
 		return key;

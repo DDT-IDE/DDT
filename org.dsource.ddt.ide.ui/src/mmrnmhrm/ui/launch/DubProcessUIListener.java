@@ -23,7 +23,7 @@ import mmrnmhrm.ui.DeeUIMessages;
 import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.dltk.ui.text.IColorManager;
+import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IOConsoleOutputStream;
@@ -31,7 +31,7 @@ import org.eclipse.ui.console.MessageConsole;
 
 public class DubProcessUIListener implements IExternalProcessListener {
 	
-	protected static IColorManager getColorManager() {
+	protected static ISharedTextColors getColorManager() {
 		return DeeUIPlugin.getDefault().getTextTools().getColorManager();
 	}
 	

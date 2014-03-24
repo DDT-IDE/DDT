@@ -14,8 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.concurrent.CountDownLatch;
 
-import mmrnmhrm.core.DeeCore;
-
+import melnorme.lang.ide.core.LangCore;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
@@ -53,7 +52,7 @@ public class EclipseAsynchJobAdapter extends Job {
 			job.setThread(Thread.currentThread());
 			runnable.runUnderEclipseJob(job.monitor);
 		} finally {
-			job.done(DeeCore.createStatus(null)); 
+			job.done(LangCore.createStatus(null));
 		}
 	}
 	

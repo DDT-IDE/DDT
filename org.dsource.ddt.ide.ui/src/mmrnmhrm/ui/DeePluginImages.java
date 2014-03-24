@@ -75,7 +75,7 @@ public abstract class DeePluginImages extends LangImages {
 	public static final String DUB_DEPENDENCIES_CONTAINER = createManaged(T_OBJ_DUB, "DubDependenciesContainer.png");
 	public static final String DUB_BUNDLE_DEP = createManaged(T_OBJ_DUB, "DubBundleDep.png");
 	public static final String DUB_RAW_DEP = createManaged(T_OBJ_DUB, "DubRawDep.png");
-	public static final String DUB_ERROR_ELEMENT = putSharedImages(T_OBJ_DUB, "DubErrorElement", 
+	public static final String DUB_ERROR_ELEMENT = createFromPlatformSharedImage(T_OBJ_DUB, "DubErrorElement", 
 		ISharedImages.IMG_OBJS_ERROR_TSK);
 	public static final String DUB_MANIFEST = createManaged(T_OBJ_DUB, "DubManifest.png");
 	public static final String SOURCE_FOLDER = createManaged(T_OBJ_DUB, "SourceFolder.png");
