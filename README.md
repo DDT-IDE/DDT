@@ -57,5 +57,4 @@ This is donely solely as an aid when debugging code, so that the "Drop to frame"
 
 TODO: investigate if there is an alternate way to achieve the same. I haven't actually checked that.
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/bruno-medeiros/ddt/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
