@@ -32,4 +32,5 @@ Export-Package: descent.core.ddoc,
  melnorme.utilbox.core,
  melnorme.utilbox.core.fntypes,
  melnorme.utilbox.misc,
+ melnorme.utilbox.process,
  melnorme.utilbox.tree

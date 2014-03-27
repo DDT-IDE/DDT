@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.projectmodel.DubModelManager;
@@ -68,7 +68,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
 		try {
-			ExternalProcessOutputHelper processHelper = submitAndAwaitDubCommand(monitor, 
+			ExternalProcessNotifyingHelper processHelper = submitAndAwaitDubCommand(monitor, 
 				ArrayUtil.createFrom(commands, String.class));
 			if(processHelper.getProcess().exitValue() != 0) {
 				forgetLastBuiltState();
@@ -94,12 +94,12 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		return extraCommands;
 	}
 	
-	protected ExternalProcessOutputHelper submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
+	protected ExternalProcessNotifyingHelper submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
 			throws CoreException {
 		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
 		
 		try {
-			ExternalProcessOutputHelper processHelper = dubProcessManager.submitDubCommandAndWait(getProject(), 
+			ExternalProcessNotifyingHelper processHelper = dubProcessManager.submitDubCommandAndWait(getProject(), 
 				monitor, commands);
 			return processHelper;
 		} catch (InterruptedException e) {

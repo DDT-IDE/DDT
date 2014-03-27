@@ -18,9 +18,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
 
-import melnorme.utilbox.concurrency.ExternalProcessOutputReader;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessHelper;
 import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTests;
@@ -169,13 +169,13 @@ public class CommonDubTest extends DToolBaseTest {
 	/* ------------------------------ */
 	
 	protected String runDubDescribe(java.nio.file.Path workingDir) throws Exception {
-		ExternalProcessOutputReader processHelper = startDubProcess(workingDir, "describe");
+		ExternalProcessHelper processHelper = startDubProcess(workingDir, "describe");
 		processHelper.awaitTerminationStrict_destroyOnException(2000);
 		
 		return processHelper.getStdOutBytes().toString(StringUtil.UTF8);
 	}
 	
-	public static ExternalProcessOutputReader startDubProcess(Path workingDir, String... arguments) 
+	public static ExternalProcessHelper startDubProcess(Path workingDir, String... arguments) 
 			throws IOException {
 		String[] command = ArrayUtil.prepend(DToolTests.DUB_PROGRAM_PATH, arguments);
 		ProcessBuilder pb = new ProcessBuilder(command);
@@ -183,14 +183,14 @@ public class CommonDubTest extends DToolBaseTest {
 			pb.directory(workingDir.toFile());
 		}
 		
-		return new ExternalProcessOutputReader(pb);
+		return new ExternalProcessHelper(pb);
 	}
 	
 	public static void dubAddPath(Path packageRootDir) {
 		String packageRootDirStr = packageRootDir.toString();
 		System.out.println(":::: Adding DUB package root path: " + packageRootDirStr);
 		try {
-			ExternalProcessOutputReader processHelper;
+			ExternalProcessHelper processHelper;
 			processHelper = startDubProcess(null, "add-path", packageRootDirStr);
 			processHelper.awaitTerminationStrict_destroyOnException(2000);
 			assertTrue(processHelper.getProcess().exitValue() == 0);
@@ -203,7 +203,7 @@ public class CommonDubTest extends DToolBaseTest {
 		String packageRootDirStr = packageRootDir.toString();
 		System.out.println(":::: Removing DUB package root path: " + packageRootDirStr);
 		try {
-			ExternalProcessOutputReader processHelper;
+			ExternalProcessHelper processHelper;
 			processHelper = startDubProcess(null, "remove-path", packageRootDirStr);
 			processHelper.awaitTerminationStrict_destroyOnException(2000);
 			assertTrue(processHelper.getProcess().exitValue() == 0);

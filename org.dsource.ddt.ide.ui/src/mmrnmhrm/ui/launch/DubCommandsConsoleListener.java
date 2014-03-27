@@ -16,9 +16,9 @@ import java.io.IOException;
 
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
-import melnorme.utilbox.concurrency.ExternalProcessOutputHelper.IProcessOutputListener;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 import mmrnmhrm.core.projectmodel.DubProcessManager.RunsInDubProcessAgent;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIMessages;
@@ -102,7 +102,7 @@ public class DubCommandsConsoleListener implements IExternalProcessListener {
 	
 	@RunsInDubProcessAgent
 	@Override
-	public void handleProcessStarted(ProcessBuilder pb, IProject project, ExternalProcessOutputHelper processHelper) {
+	public void handleProcessStarted(ProcessBuilder pb, IProject project, ExternalProcessNotifyingHelper processHelper) {
 		DubCommandsConsole console = getConsoleForOperation(project, true);
 		
 		try {

@@ -22,10 +22,10 @@ import java.util.concurrent.Future;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
@@ -398,7 +398,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		java.nio.file.Path location = project.getLocation().toFile().toPath();
 		
 		final DubProcessManager dubProcessManager = dubModelManager.dubProcessManager;
-		ExternalProcessOutputHelper processHelper;
+		ExternalProcessNotifyingHelper processHelper;
 		try {
 			String dubPath = DeeCorePreferences.getDubPath();
 			processHelper = dubProcessManager.submitDubCommandAndWait(pm, project, dubPath, "describe");

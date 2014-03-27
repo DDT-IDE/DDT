@@ -20,11 +20,11 @@ import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
-import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 
@@ -63,16 +63,16 @@ public class DubProcessManager {
 	
 	/* ----------------------------------- */
 	
-	public Future<ExternalProcessOutputHelper> submitDubCommand(RunExternalProcessTask task) {
+	public Future<ExternalProcessNotifyingHelper> submitDubCommand(RunExternalProcessTask task) {
 		return dubProcessAgent.submit(task);
 	}
 	
-	public ExternalProcessOutputHelper submitDubCommandAndWait(IProject project, IProgressMonitor monitor, 
+	public ExternalProcessNotifyingHelper submitDubCommandAndWait(IProject project, IProgressMonitor monitor, 
 			String... commands) throws InterruptedException, CoreException {
 		return submitDubCommandAndWait(monitor, project, commands);
 	}
 	
-	public ExternalProcessOutputHelper submitDubCommandAndWait(IProgressMonitor monitor, IProject project,
+	public ExternalProcessNotifyingHelper submitDubCommandAndWait(IProgressMonitor monitor, IProject project,
 			String... commands) throws InterruptedException, CoreException {
 		return submitDubCommandAndWait(newExternalProcessTask(monitor, project, commands));
 	}
