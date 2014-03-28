@@ -11,10 +11,10 @@
 package org.dsource.ddt.ui.tabgroup;
 
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
+import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
-import org.eclipse.dltk.debug.ui.launchConfigurations.ScriptCommonTab;
 
 public class DeeTabGroup extends AbstractLaunchConfigurationTabGroup {
 	
@@ -24,7 +24,7 @@ public class DeeTabGroup extends AbstractLaunchConfigurationTabGroup {
 				new DeeMainLaunchConfigurationTab(),
 				new DeeProgramArgumentsTab(),
 				new EnvironmentTab(),
-				new ScriptCommonTab()
+				new CommonTab()
 		};
 		
 		setTabs(tabs);

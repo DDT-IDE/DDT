@@ -1,18 +1,15 @@
-DDT
-===
+See project page ( http://code.google.com/p/ddt/ ) for user information.
 
-DDT is an Eclipse-based IDE for the D programming language.
-
-## Development workspace setup and usage
+Developers Guide
+================
 
 #### Setting up the development environment:
- * Clone the DDT repository.
- * In Eclipse, import from the Git repo all the `org.dsource.ddt*` projects. Java Compiler settings should automatically be configured, since each project has project-specific settings stored in source control.
- * Finally you'll need to setup the target platform: Open the target platform file: `org.dsource.ddt-build\target-platform\DDT.target` and set it as your target platform.
+ * Clone the Git repository.
+ * In Eclipse, use the "import existing projects" wizard, navigate to the Git repository, and add all the Eclipse projects that are present in the root directory of the Git repo. Java Compiler settings should automatically be configured, since each project has project-specific settings stored in source control.
+ * Setup the target platform: Open the target platform file: `org.dsource.ddt-build\target-platform\DDT.target` and set it as your target platform.
 
  
 #### Running the tests in Eclipse:
-
 
  * The tests are divided into 3 suites for each of the 3 main plugins: DTool, IDE Core, IDE UI.
  * There are common Eclipse launch configurations for each of these test suites, they should already be available in your workspace, and properly configured to run out of the box. Some of the default VM arguments in the launch configuration (already configured) should be:
@@ -56,5 +53,3 @@ public void testXXX$() throws Exception {
 This is donely solely as an aid when debugging code, so that the "Drop to frame" functionality can be used on the unit-test method. It seems the Eclipse debugger cannot drop-to-frame to a method that is invoked dynamically (such as the unit-test method). So we wrap the unit-test method on another one. So while we now cannot drop-to-frame in `testXXX`, we can do it in `testXXX$`, which basically allows us to restart the unit-test.
 
 TODO: investigate if there is an alternate way to achieve the same. I haven't actually checked that.
-
-
