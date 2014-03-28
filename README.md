@@ -1,7 +1,7 @@
-See project page ( http://code.google.com/p/ddt/ ) for user information.
-
 Developers Guide
 ================
+
+See project page ( http://code.google.com/p/ddt/ ) for user information.
 
 #### Setting up the development environment:
  * Clone the Git repository.
@@ -24,11 +24,12 @@ Using Maven (and Tycho), it is possible to automatically build DDT, create an up
  * Run `mvn integration-test` to build DDT as above and also run the test suites. You can do `mvn integration-test -P TestsLiteMode` to run the test suites in "Lite Mode" (skip certain long-running tests).
  * Also, running `mvn package -P build-ide-product` will build a pre-packaged Eclipse installation with DDT already installed. This is not released to the public, but can potentially be of some use internally.
 
-#### Uploading a new release:
+#### Deploying a new release:
  Releases are made on the p2 update site. The DDT update site is the `updates` Git repository, accessed through plain HTTP: http://updates.ddt.googlecode.com/git/ . Therefore, a new DDT release is created by building a the p2 repository locally as described above (run `mvn integration-test`), then placing the p2 repository in the `https://code.google.com/p/ddt.updates/` Git repository (and pushing to origin of course):
  * The DDT update site is a composite p2 repository, containing the DDT feature repository, and a link to DDT repository dependencies (such as Kepler). This structure should be maintained when updating the repository.
  * There is an Ant script that can help with this task: repo-release-script.xml
 
+Additionally, a new release tag should be created, and the appropriate changelog added to the Github release notes (see [documentation/ChangeLog.md](documentation/ChangeLog.md)). The `latest` tag/branch should also be updated to refer to the new release, so that documentantion links are updated.
 
 ## Project design info and notes
 
