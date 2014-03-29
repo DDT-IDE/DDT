@@ -46,15 +46,17 @@ import org.eclipse.swt.widgets.Event;
  */
 public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
-	protected LangAutoEditsPreferencesAdapter fPreferences;
-	
+	protected final IPreferenceStore store;
+	protected final LangAutoEditsPreferencesAdapter fPreferences;
+
 	protected boolean fIsSmartMode;
 	protected boolean fCloseBlocks;
 	
 	protected Event lastKeyEvent;
 	
 	public LangAutoEditStrategy(IPreferenceStore store, ITextViewer viewer) {
-		fPreferences = new LangAutoEditsPreferencesAdapter(store);
+		this.store = store;
+		this.fPreferences = new LangAutoEditsPreferencesAdapter(store);
 		
 		lastKeyEvent = new Event();
 		if (viewer instanceof ITextViewerExtension) {
@@ -100,19 +102,19 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			return;
 		
 		clearCachedValues();
-		if (!isSmartMode()) {
+		if(!isSmartMode()) {
 			super.customizeDocumentCommand(doc, cmd); 
 			return;
 		}
 		
 		try {
-			if (AutoEditUtils.isNewLineInsertionCommand(doc, cmd)) {
+			if(AutoEditUtils.isNewLineInsertionCommand(doc, cmd)) {
 				smartIndentAfterNewLine(doc, cmd);
 			} else if(smartDeIndentAfterDeletion(doc, cmd)) {
 				return;
-			} else if (AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(cmd)) {
+			} else if(AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(cmd)) {
 				smartIndentOnKeypress(doc, cmd);
-			} else if (cmd.text.length() > 1 && fPreferences.isSmartPaste()) {
+			} else if(cmd.text.length() > 1 && fPreferences.isSmartPaste()) {
 				smartPaste(doc, cmd); // no smart backspace for paste
 			} else {
 				super.customizeDocumentCommand(doc, cmd);

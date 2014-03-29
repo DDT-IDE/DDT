@@ -28,8 +28,7 @@
             natureId="org.dsource.ddt.ide.core.nature"/>
    </extension>
    
-   <extension
-         point="org.eclipse.core.runtime.preferences">
+   <extension point="org.eclipse.core.runtime.preferences">
       <initializer class="mmrnmhrm.ui.DeeUIPreferenceInitializer"/>
    </extension>
    

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 import mmrnmhrm.ui.text.color.DeeColorPreferenceInitializer;
@@ -29,7 +30,7 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 	// Extension point entry point
 	@Override
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = DeeUIPlugin.getInstance().getPreferenceStore();
+		IPreferenceStore store = LangUIPlugin.getInstance().getPreferenceStore();
 		
 		EditorsUI.useAnnotationsPreferencePage(store);
 		EditorsUI.useQuickDiffPreferencePage(store);
@@ -62,6 +63,7 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION, true);		
 		store.setDefault(PreferenceConstants.EDITOR_TAB_ALWAYS_INDENT, true);
 		store.setDefault(PreferenceConstants.EDITOR_TAB_WIDTH, 4);
+		// TODO: there is cleanup redundancy in tab preferences keys
 		
 		
 		store.setDefault(LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, true);

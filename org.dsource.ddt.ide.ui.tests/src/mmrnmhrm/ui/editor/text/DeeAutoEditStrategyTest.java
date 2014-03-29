@@ -10,9 +10,9 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
-import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyTest;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategy;
-import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
+import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyTest;
+import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.DeeTextTestUtils;
 
 import org.eclipse.jface.text.Document;
@@ -23,7 +23,7 @@ public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {
 	@Override
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
-			autoEditStrategy = new DeeAutoEditStrategy(createPreferenceStore());
+			autoEditStrategy = new DeeAutoEditStrategy(createPreferenceStore(), DeePartitions.DEE_CODE, null);
 		}
 		return autoEditStrategy;
 	}

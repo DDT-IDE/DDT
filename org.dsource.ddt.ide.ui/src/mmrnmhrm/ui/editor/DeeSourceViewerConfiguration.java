@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Map;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.ui.DeeUIPlugin;
@@ -111,7 +112,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		} else if (DeePartitions.$Methods.isString(contentType)) {
 			return new IAutoEditStrategy[] { };
 		} else {
-			return array(new DeeAutoEditStrategy(DeeUIPlugin.getPrefStore(), contentType, sourceViewer));
+			return array(new DeeAutoEditStrategy(LangUIPlugin.getPrefStore(), contentType, sourceViewer));
 		}
 	}
 	
