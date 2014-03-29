@@ -51,8 +51,9 @@ public class DeeEditorConfigurationBlock extends EditorConfigurationBlock {
 	@Override
 	public Control createControl(Composite parent) {
 		Composite composite = (Composite) super.createControl(parent);
-		Composite group = createSmartNavigationGroup(composite);
-		group.moveBelow(composite.getChildren()[0]);
+		// Disable this, don't allow configuring these prefs 
+//		Composite group = createSmartNavigationGroup(composite);
+//		group.moveBelow(composite.getChildren()[0]);
 		return composite;
 	}
 	
