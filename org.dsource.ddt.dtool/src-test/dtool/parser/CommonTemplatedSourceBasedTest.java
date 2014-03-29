@@ -32,6 +32,7 @@ import melnorme.utilbox.core.fntypes.Predicate;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import dtool.SimpleLogger;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessor;
@@ -43,6 +44,9 @@ import dtool.util.NewUtils;
 
 @RunWith(Parameterized.class)
 public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
+	
+	public static SimpleLogger templatedTestsSourceLog = new SimpleLogger("TemplatedSourceBasedTest");
+	public static SimpleLogger expandedTestCaseLog = new SimpleLogger("TemplatedSourceBasedTest");
 	
 	public static ArrayList<File> getDeeModuleList(String testFolder) {
 		return getDeeModuleList(getTestResource(testFolder), true);
@@ -67,7 +71,7 @@ public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 			assertTrue(tsp.getGenCases().size() == 0);
 			NewUtils.addNew(commonDefs, tsp.getGlobalExpansions());
 		}
-		testsLogger.println("<<<<<<" );
+		testsLogger.println("--------------" );
 	}
 	
 	/* ----------------------------------------------- */
@@ -153,7 +157,7 @@ public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 		HashSet<String> printedTemplatedSources = new HashSet<String>();
 		
 		boolean printTestCaseSource = true;
-		int originalTemplateChildCount = -1;
+		int splitTemplateChildCount = -1;
 		for (AnnotatedSource testCase : sourceBasedTests) {
 			
 			if(testCase.findMetadata("comment", "NO_STDOUT") != null) {
@@ -162,24 +166,31 @@ public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 			boolean printCaseSeparator = testCase.findMetadata("comment", "PRINT_SEP") != null;
 			
 			if(!printedTemplatedSources.contains(testCase.originalTemplatedSource)) {
-				printCaseEnd(originalTemplateChildCount);
-				originalTemplateChildCount = 0;
+				printCaseEnd(splitTemplateChildCount);
+				splitTemplateChildCount = 0;
 				String testClassName = getClass().getSimpleName();
 				String fileName = file.getName();
-				testsLogger.println(">> ----------- "+testClassName+" TEMPLATE ("+fileName+") : ----------- <<");
-				testsLogger.print(testCase.originalTemplatedSource);
+				templatedTestsSourceLog.println(
+					">> ----------- "+testClassName+" TEMPLATE ("+fileName+") : ----------- <<");
+				templatedTestsSourceLog.print(testCase.originalTemplatedSource);
 				if(!testCase.originalTemplatedSource.endsWith("\n"))
-					testsLogger.println();
-				testsLogger.println(" ----------- ^^^^ ----------- ");
+					templatedTestsSourceLog.println();
+				templatedTestsSourceLog.println(" ----------- ^^^^ ----------- ");
 			}
 			printedTemplatedSources.add(testCase.originalTemplatedSource);
 			
 			checkOffsetInvariant(testCase);
 			enterAnnotatedSourceCase(testCase, printTestCaseSource, printCaseSeparator);
-			originalTemplateChildCount++;
+			splitTemplateChildCount++;
 		}
-		printCaseEnd(originalTemplateChildCount);
-		testsLogger.println();
+		printCaseEnd(splitTemplateChildCount);
+		templatedTestsSourceLog.println();
+	}
+	
+	protected void printCaseEnd(int originalTemplateChildCount) {
+		if(originalTemplateChildCount > 10 && originalTemplateChildCount != -1) {
+			templatedTestsSourceLog.println("<< ^^^ Previous case count: " + originalTemplateChildCount);
+		}
 	}
 	
 	protected void enterAnnotatedSourceCase(AnnotatedSource testCase, boolean printTestCaseSource,
@@ -204,17 +215,11 @@ public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 	
 	public void printTestCaseSource(AnnotatedSource testCase, boolean printCaseSeparator) {
 		if(printCaseSeparator) {
-			testsLogger.println(">-----------");
+			expandedTestCaseLog.println(">-----------");
 		}
 //		String caseSource = AnnotatedSource.printSourceWithMetadata(testCase);
 		String caseSource = testCase.source;
-		testsLogger.println(STARTING_NEWLINES_TRIMMER.matcher(caseSource).replaceAll(""));
-	}
-	
-	protected void printCaseEnd(int originalTemplateChildCount) {
-		if(originalTemplateChildCount > 10 && originalTemplateChildCount != -1) {
-			testsLogger.println("<< ^^^ Previous case count: " + originalTemplateChildCount);
-		}
+		expandedTestCaseLog.println(STARTING_NEWLINES_TRIMMER.matcher(caseSource).replaceAll(""));
 	}
 	
 	protected abstract void runAnnotatedSourceTest(AnnotatedSource testCase);

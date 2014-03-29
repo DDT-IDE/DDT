@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2007 DSource.org and others.
+ * Copyright (c) 2007, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Bruno Medeiros - initial implementation
+ *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package dtool;
 
@@ -23,6 +23,11 @@ public class SimpleLogger {
 	
 	public SimpleLogger() {
 		this(true);
+	}
+	
+	public SimpleLogger(String propertyKey) {
+		this();
+		enabled = System.getProperty("SimpleLogger." + propertyKey) != null;
 	}
 	
 	public boolean isEnabled() {

@@ -31,6 +31,7 @@ import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Before;
 
+import dtool.SimpleLogger;
 import dtool.project.DeeNamingRules_Test;
 import dtool.tests.utils.MiscFileUtils;
 import dtool.util.NewUtils;
@@ -39,6 +40,7 @@ import dtool.util.NewUtils;
 public class DToolBaseTest extends CommonTest {
 	
 	public static PrintStream testsLogger = System.out;
+	public static SimpleLogger testsLogVerbose = new SimpleLogger("verbose");
 	
 	public static Set<String> executedTests = new HashSet<String>();
 	

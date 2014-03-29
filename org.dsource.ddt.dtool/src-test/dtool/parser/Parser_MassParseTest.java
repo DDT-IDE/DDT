@@ -125,7 +125,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 		}
 		
 		public void testFileParse(boolean canHaveSyntaxErrors, File file, String[] exclusions) {
-			testsLogger.println("----------> " + DToolTestResources.resourceFileToString(file, COMMON_UNPACK));
+			testsLogVerbose.println("----------> " + DToolTestResources.resourceFileToString(file, COMMON_UNPACK));
 			String fileName = file.getName().toLowerCase();
 			if(!(fileName.endsWith(".d") || fileName.endsWith(".di")) ) {
 				canHaveSyntaxErrors = true;
@@ -143,7 +143,8 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 			String source = readStringFromFileUnchecked(file);
 			int count = System.getProperty("PerformanceTests") != null ? 5 : 1;
 			for (int i = 0; i < count; i++) {
-				DeeParsingChecks.runSimpleSourceParseTest(source, "_massParse", canHaveSyntaxErrors ? null : false, false);
+				DeeParsingChecks.runSimpleSourceParseTest(source, "_massParse", 
+					canHaveSyntaxErrors ? null : false, false);
 			}
 		}
 		

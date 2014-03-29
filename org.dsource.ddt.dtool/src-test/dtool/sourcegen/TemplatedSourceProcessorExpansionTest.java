@@ -16,6 +16,7 @@ import static dtool.sourcegen.TemplatedSourceProcessor.StandardErrors.REDEFINITI
 import static dtool.sourcegen.TemplatedSourceProcessor.StandardErrors.UNDEFINED_REFER;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
@@ -612,9 +613,14 @@ public class TemplatedSourceProcessorExpansionTest extends TemplatedSourceProces
 		testSourceProcessing("#",  "#:HEADER ____\n"+"> #@{A,B,C}", 
 			2);
 		
+	}
+	
+	@Ignore
+	@Test
+	public void testExpansionPerformance() throws Exception { testExpansionPerformance$(); }
+	public void testExpansionPerformance$() throws Exception {
 		// Performance test:
 		AnnotatedSource[] processTemplatedSource = TemplatedSourceProcessor.processTemplatedSource("#", 
-			"#:HEADER ____\n"+
 			">#@N{X#tag(arg){xxx} #tag2(arg){xxx} #tag3(arg){xxx}}"+
 			" #@N2!{a#@N,b#@N,c#@N,d#@N,e#@N,f#@N),g#@N,h#@N,k#@N,l#@N}"+
 			" #@N3{#@N2,#@N2,#@N2,#@N2,#@N2,#@N2),#@N2,#@N2,#@N2,#@N2}"+

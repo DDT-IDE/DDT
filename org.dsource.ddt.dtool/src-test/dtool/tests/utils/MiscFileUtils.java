@@ -155,8 +155,8 @@ public class MiscFileUtils {
 				
 				entryTargetFile.getParentFile().mkdirs();
 				Path destPath = entryTargetFile.toPath();
-				DToolBaseTest.testsLogger.println("Unzipped: " + entry);
-				DToolBaseTest.testsLogger.println("  to: " + destPath);
+				DToolBaseTest.testsLogVerbose.println("Unzipped: " + entry);
+				DToolBaseTest.testsLogVerbose.println("  to: " + destPath);
 				Files.copy(zip.getInputStream(entry), destPath);
 			}
 			

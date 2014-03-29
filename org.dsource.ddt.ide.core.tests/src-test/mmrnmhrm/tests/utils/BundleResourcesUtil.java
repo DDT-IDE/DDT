@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
+import dtool.tests.DToolBaseTest;
+
 
 public class BundleResourcesUtil {
 	
@@ -28,6 +30,8 @@ public class BundleResourcesUtil {
 	 * If targetDir doesn't exists, it is created (top level directory only).
 	 */
 	public static void copyDirContents(String bundleId, String resourcePath, final File targetDir) throws IOException {
+		DToolBaseTest.testsLogger.println(">>> Copying " + bundleId + "::" + resourcePath);
+		DToolBaseTest.testsLogger.println("  to: " + targetDir);
 		
 		// normalize path with regards to separators
 		final String normalizedBasePath = new Path(resourcePath).makeRelative().addTrailingSeparator().toString(); 
@@ -44,7 +48,7 @@ public class BundleResourcesUtil {
 					inputStream = sourceFile.openConnection().getInputStream();
 					
 					String srcSubPath = determineSubPath(srcPath);
-					System.out.println(srcSubPath);
+					DToolBaseTest.testsLogVerbose.println(srcSubPath);
 					
 					File newFile = new File(targetDir, srcSubPath);
 					newFile.getParentFile().mkdir(); // Likely not necessary, but do it just in case
@@ -60,7 +64,7 @@ public class BundleResourcesUtil {
 			@Override
 			protected void handleDirectory(String srcPath) {
 				String srcSubPath = determineSubPath(srcPath);
-				System.out.println(srcSubPath);
+				DToolBaseTest.testsLogVerbose.println(srcSubPath);
 				
 				File newDir = new File(targetDir, srcSubPath);
 				if(!newDir.exists()) {

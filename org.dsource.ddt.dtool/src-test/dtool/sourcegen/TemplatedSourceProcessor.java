@@ -393,7 +393,8 @@ public class TemplatedSourceProcessor extends SplitProcessor {
 			processArgument(sourceCase, elementStream, secondaryIdToActivate, null, arguments.get(ix), ix);
 		} else {
 			for (int ix = 0; ix < arguments.size(); ix++) {
-				processArgument(sourceCase, elementStream, secondaryIdToActivate, pairedIdToActivate, arguments.get(ix), ix);
+				processArgument(sourceCase, elementStream, secondaryIdToActivate, pairedIdToActivate, 
+					arguments.get(ix), ix);
 			}
 		}
 		return true;

@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
+import dtool.SimpleLogger;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.parser.CommonTemplatedSourceBasedTest;
@@ -32,6 +33,8 @@ import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
 import dtool.tests.DToolTestResources;
 
 public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBasedTest {
+	
+	public static SimpleLogger resolverTestsLog = new SimpleLogger("ResolverSourceTests");
 	
 	protected static final String TESTFILESDIR = "resolver";
 	
@@ -65,10 +68,10 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	@Override
 	public void printTestCaseSource(AnnotatedSource testCase, boolean printCaseSeparator) {
 		if(printCaseSeparator) {
-			testsLogger.println(">-----------");
+			expandedTestCaseLog.println(">-----------");
 		}
 		String caseSource = AnnotatedSource.printSourceWithMetadata(testCase);
-		testsLogger.println(caseSource);
+		expandedTestCaseLog.println(caseSource);
 	}
 	
 	public File getProjectDirectory(String projectFolderName) {
@@ -143,9 +146,9 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		setupTestProject(testsModuleName, testsProjectDirName, testCase);
 		assertNotNull(mr);
 		
-		testsLogger.println("-----");
+		resolverTestsLog.println("-----");
 		processResolverTestMetadata(testCase);
-		testsLogger.println("----------  ----------");
+		resolverTestsLog.println("----------  ----------");
 	}
 	
 	public abstract void setupTestProject(String moduleName, String projectFolderName, AnnotatedSource testCase);
@@ -177,7 +180,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	}
 	
 	public void printMDE(MetadataEntry mde) {
-		testsLogger.println(mde);
+		resolverTestsLog.println(mde);
 	}
 	
 	/* =============== */
