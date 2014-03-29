@@ -17,7 +17,6 @@ import java.util.List;
 
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
-import org.dsource.ddt.lang.text.FullPatternRule;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;

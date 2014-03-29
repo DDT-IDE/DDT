@@ -15,5 +15,5 @@ public interface FieldMessages {
 			"&Copy...";
 	public static String ListField_ButtonRemove_Label =
 			"&Remove";
-
+	
 }

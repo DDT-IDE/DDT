@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.lang.text;
+package melnorme.lang.ide.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -17,11 +17,14 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
 /**
- * A scanner to parse block tokens. 
- * The blocks are specified by pairs of characters (must be one char in length each)
+ * A scanner to parse block tokens, and determine the balance of open vs. close tokens. 
+ * The blocks are specified by pairs of characters (must be one char in length each).
  * The scanning is partition aware, it only parse partitions of a given type.
+ * 
+ * The scanner is heuristic in that the block balance may not be 100% accurate according to
+ * the underlying language sematics of the source being scanned.
  */
-public class BlockHeuristicsScannner extends LangHeuristicScanner {
+public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 	
 	public static final class BlockTokenRule {
 		public final char open;
@@ -35,7 +38,8 @@ public class BlockHeuristicsScannner extends LangHeuristicScanner {
 	protected final BlockTokenRule[] blockRules;
 	protected final BlockTokenRule[] blockRulesReversed;
 	
-	public BlockHeuristicsScannner(IDocument document, String partitioning, String contentType, BlockTokenRule... blockRules) {
+	public BlockHeuristicsScannner(IDocument document, String partitioning, String contentType, 
+			BlockTokenRule... blockRules) {
 		super(document, partitioning, contentType);
 		this.blockRules = blockRules;
 		

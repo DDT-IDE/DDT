@@ -1,4 +1,14 @@
-package dtool.tests;
+/*******************************************************************************
+ * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+package melnorme.utilbox.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -22,7 +32,6 @@ import melnorme.utilbox.misc.StringUtil;
 
 /**
  * A base class for common, miscellaneous test utils. 
- * Some of this stuff may later be refactored into the common utils code (ie, into melnorme/utilbox)
  */
 public class CommonTestUtils {
 	

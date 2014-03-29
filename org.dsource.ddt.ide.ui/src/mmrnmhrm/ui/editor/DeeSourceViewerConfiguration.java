@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Map;
 
-import melnorme.lang.ide.ui.editors.BestMatchHover;
+import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;

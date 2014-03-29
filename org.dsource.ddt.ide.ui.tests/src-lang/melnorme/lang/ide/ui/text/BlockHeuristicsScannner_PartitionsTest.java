@@ -8,11 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.lang.text;
+package melnorme.lang.ide.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.FnTokenAdvance;
 
-import org.dsource.ddt.lang.text.BlockHeuristicsScannner.FnTokenAdvance;
 import org.eclipse.jface.text.BadLocationException;
 import org.junit.Test;
 
@@ -71,10 +71,11 @@ public class BlockHeuristicsScannner_PartitionsTest extends BlockHeuristicsScann
 					document.get(oldPos, scanner.pos - oldPos) : 
 					document.get(scanner.pos, oldPos - scanner.pos);
 			assertEquals(tokenStr, expectedToken);
-			assertEquals(scanner.token, expectedToken.length() == 1 ? expectedToken.charAt(0) : TOKEN_OUTSIDE);
+			assertEquals(scanner.token, expectedToken.length() == 1 ? 
+					expectedToken.charAt(0) : AbstractDocumentScanner.TOKEN_OUTSIDE);
 		}
 		assertTrue(scanner.getPosition() == (forward ? document.getLength() : 0));
-		assertTrue(scanner.readNextCharacter() == TOKEN_EOF);
+		assertTrue(scanner.readNextCharacter() == AbstractDocumentScanner.TOKEN_EOF);
 	}
 	
 	@Test

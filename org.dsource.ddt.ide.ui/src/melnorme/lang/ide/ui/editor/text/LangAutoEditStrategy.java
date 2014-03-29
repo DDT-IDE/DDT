@@ -8,14 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.lang.text;
+package melnorme.lang.ide.ui.editor.text;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockBalanceResult;
+import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
 
-import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockBalanceResult;
-import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;

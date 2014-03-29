@@ -5,9 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+ * Contributors:
+ *     DLTK ?? - initial API and implementation? (Originally was RubyPreferencesInterpreter)
+ *     Bruno Medeiros - lang modifications
  *******************************************************************************/
-package org.dsource.ddt.lang.text;
+package melnorme.lang.ide.ui.editor.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 

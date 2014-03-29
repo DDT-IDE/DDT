@@ -11,14 +11,13 @@
 package mmrnmhrm.tests;
 
 
+import melnorme.utilbox.tests.CommonTest;
 import mmrnmhrm.tests.utils.ErrorLogListener;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-
-import dtool.tests.CommonTest;
 
 /** 
  * Base core test class that adds an exception listener to the platform log. 

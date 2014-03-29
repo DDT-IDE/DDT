@@ -12,12 +12,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.util.NamedElementUtil;
 import dtool.resolver.LanguageIntrinsics.IPrimitiveDefUnit;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.tests.CommonTestUtils;
 
 public class DefUnitResultsChecker extends CommonTestUtils {
 	

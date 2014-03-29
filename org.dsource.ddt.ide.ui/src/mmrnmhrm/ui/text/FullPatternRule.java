@@ -8,8 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.lang.text;
+package mmrnmhrm.ui.text;
 
+import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
@@ -30,10 +31,10 @@ public class FullPatternRule implements IRule {
 	protected final IWordDetector ruleCancelWordDetector;
 	protected char[][] possibleSequences;
 	
-	public FullPatternRule(IToken token, String[] possibleSequences, IWordDetector ruleCancelDetector) {
+	public FullPatternRule(IToken token, String[] possibleSequences, IWordDetector ruleCancelWordDetector) {
 		this.token = token;
-		this.ruleCancelWordDetector = ruleCancelDetector;
-		this.possibleSequences = ArrayUtil.map(possibleSequences, LangTextUtil.STRING_to_CHAR_ARRAY, char[].class);
+		this.ruleCancelWordDetector = ruleCancelWordDetector;
+		this.possibleSequences = ArrayUtil.map(possibleSequences, STRING_to_CHAR_ARRAY, char[].class);
 	}
 	
 	@Override
@@ -82,5 +83,12 @@ public class FullPatternRule implements IRule {
 			scanner.unread();
 		}
 	}
+	
+	public static final Function<String, char[]> STRING_to_CHAR_ARRAY = new Function<String, char[]>() {
+		@Override
+		public char[] evaluate(String obj) {
+			return obj.toCharArray();
+		}
+	};
 	
 }

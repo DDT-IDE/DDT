@@ -8,13 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.lang.text;
+package melnorme.lang.ide.ui.editor.text;
 
 import org.eclipse.dltk.ui.PreferenceConstants;
 
 public interface LangAutoEditPreferenceConstants {
-	
-	String PREFIX = "autoedit.";
 	
 	String AE_SMART_INDENT = PreferenceConstants.EDITOR_SMART_INDENT;
 	String AE_SMART_DEINDENT = "autoedit.smart_deindent";

@@ -13,13 +13,13 @@ package mmrnmhrm.ui.editor.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.CoreUtil.array;
+import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategy;
+import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.ui.DeeUIPreferenceConstants;
 import mmrnmhrm.ui.text.DeePartitions;
 
-import org.dsource.ddt.lang.text.BlockHeuristicsScannner;
-import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
-import org.dsource.ddt.lang.text.LangAutoEditStrategy;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentCommand;

@@ -13,6 +13,7 @@ package mmrnmhrm.ui.text;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
+import melnorme.utilbox.tests.CommonTest;
 
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.text.BadPositionCategoryException;
@@ -21,8 +22,6 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TypedPosition;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.junit.Test;
-
-import dtool.tests.CommonTest;
 
 // BM: a lot more could done in terms of test, this is just basic example
 public class DeePartitionScannerTest extends CommonTest implements DeePartitions {

@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.ArrayList;
 
+import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -27,7 +28,6 @@ import dtool.ast.util.ASTSourceRangeChecker;
 import dtool.parser.DeeParser_Parameters.AmbiguousParameter;
 import dtool.parser.DeeParser_Parameters.TplOrFnMode;
 import dtool.parser.ParserError.ParserErrorTypes;
-import dtool.tests.CommonTestUtils;
 
 /**
  * Various checks for invariants in node parsing.

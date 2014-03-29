@@ -10,7 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
-import org.dsource.ddt.lang.text.Scanner_BaseTest;
+import melnorme.lang.ide.ui.text.Scanner_BaseTest;
+
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.rules.FastPartitioner;
 

@@ -11,12 +11,12 @@ import java.util.regex.Pattern;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.tests.CommonTestUtils;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.tests.CommonTestUtils;
 import dtool.tests.DToolTestResources;
 import dtool.tests.DToolTests;
 import dtool.tests.utils.MiscFileUtils;

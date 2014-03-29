@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2011 IBM Corporation and others.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,23 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.lang.text;
+package melnorme.lang.ide.ui.text;
 
-import melnorme.utilbox.core.fntypes.Function;
+public class LangAutoEditUtils {
 
-public class LangTextUtil {
-	
-	public static final Function<String, char[]> STRING_to_CHAR_ARRAY = new Function<String, char[]>() {
-		@Override
-		public char[] evaluate(String obj) {
-			return obj.toCharArray();
-		}
-	};
+	public static char getBracePair(char braceChar) {
+		
+		switch (braceChar) {
+		case '(': return ')';
+		case ')': return '(';
+		case '[': return ']';
+		case ']': return '[';
+		case '{': return '}';
+		case '}': return '{';
+		case '\"': return '\"';
+		case '\'': return '\'';
+		}		
+		return braceChar;
+	}
 	
 }

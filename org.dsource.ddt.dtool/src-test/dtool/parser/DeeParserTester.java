@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -51,7 +52,6 @@ import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.parser.DeeParsingChecks.ParametersReparseCheck;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.tests.CommonTestUtils;
 import dtool.tests.DToolTests;
 import dtool.util.NewUtils;
 

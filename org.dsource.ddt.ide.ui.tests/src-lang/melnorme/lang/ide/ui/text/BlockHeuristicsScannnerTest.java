@@ -8,18 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.lang.text;
+package melnorme.lang.ide.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
 
-import org.dsource.ddt.lang.text.BlockHeuristicsScannner.BlockTokenRule;
-import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.junit.Test;
 
 
-public class BlockHeuristicsScannnerTest extends Scanner_BaseTest implements ILangHeuristicSymbols {
+public class BlockHeuristicsScannnerTest extends Scanner_BaseTest {
 	
 	public static BlockTokenRule[] SAMPLE_BLOCK_TOKENS = new BlockTokenRule[] {
 		new BlockTokenRule('{', '}'),
@@ -68,11 +67,11 @@ public class BlockHeuristicsScannnerTest extends Scanner_BaseTest implements ILa
 		
 		assertTrue(balance == expecBalance);
 		assertTrue(scanner.getPosition() == srcPre.length());
-		assertTrue((scanner.token == ILangHeuristicSymbols.TOKEN_INVALID) == expecInvalidLeft);
+		assertTrue((scanner.token == AbstractDocumentScanner.TOKEN_INVALID) == expecInvalidLeft);
 		
 		if(balance == 0) {
 			int blockEndOffset = srcBefore.length();
-			if (scanner.token != ILangHeuristicSymbols.TOKEN_INVALID) {
+			if (scanner.token != AbstractDocumentScanner.TOKEN_INVALID) {
 				balance = scanner.scanToBlockEnd(scanner.getPosition());
 				assertTrue(balance == 0);
 				assertEquals(scanner.getPosition()-1, blockEndOffset);
@@ -91,14 +90,14 @@ public class BlockHeuristicsScannnerTest extends Scanner_BaseTest implements ILa
 		
 		assertTrue(balance == expecBalance);
 		assertTrue(scanner.getPosition() == reversePosition(srcPre.length()));
-		assertTrue((scanner.token == ILangHeuristicSymbols.TOKEN_INVALID) == expecInvalidLeft);
+		assertTrue((scanner.token == AbstractDocumentScanner.TOKEN_INVALID) == expecInvalidLeft);
 	}
 	
 	protected String reverse(String string) {
 		StringBuffer buffer = new StringBuffer();
 		for (int i = string.length()-1; i >= 0; i--) {
 			char ch = string.charAt(i);
-			char revertedCh = AutoEditUtils.getBracePair(ch);
+			char revertedCh = LangAutoEditUtils.getBracePair(ch);
 			buffer.append(revertedCh);
 		}
 		return buffer.toString();

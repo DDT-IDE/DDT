@@ -85,5 +85,5 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 			"Launch configurations";
 	public static final String LaunchShortcut_selectLaunch_message = 
 			"&Select existing configuration:";
-
+	
 }

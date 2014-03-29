@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
-import org.dsource.ddt.lang.text.LangAutoEditPreferenceConstants;
+import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 
 public interface DeeUIPreferenceConstants extends LangAutoEditPreferenceConstants {
 	

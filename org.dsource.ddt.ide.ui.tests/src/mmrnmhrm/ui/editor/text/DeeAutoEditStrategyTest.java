@@ -10,11 +10,11 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
+import melnorme.lang.ide.ui.editor.text.LangAutoEditStragetyTest;
+import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategy;
 import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.text.DeeTextTestUtils;
 
-import org.dsource.ddt.lang.text.LangAutoEditStragetyTest;
-import org.dsource.ddt.lang.text.LangAutoEditStrategy;
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
 

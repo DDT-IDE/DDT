@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.lang.text;
+package melnorme.lang.ide.ui.text;
 
 
 
@@ -26,10 +26,14 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TypedRegion;
 
 /**
- * LangHeuristicScanner can be configured with or without a partitioning.
+ * Helper abstract class to scan a document, such that it is aware of document partitions.
  * With a partitioning there must be a partitioner for that partitioning, and document must be a IDocumentExtension3 
  */
-public class LangHeuristicScanner implements ILangHeuristicSymbols {
+public class AbstractDocumentScanner {
+	
+	public static int TOKEN_EOF = -1;
+	public static int TOKEN_INVALID = -2;
+	public static int TOKEN_OUTSIDE = -3; // Token for whole partitions that we skip over
 	
 	protected final IDocument document;
 	protected final String partitioning;
@@ -48,7 +52,7 @@ public class LangHeuristicScanner implements ILangHeuristicSymbols {
 	/** last accessed partition (for caching purposes) */
 	protected ITypedRegion lastPartition = new TypedRegion(-1, 0, "__no_partition_at_all"); // init with empty value 
 	
-	protected LangHeuristicScanner(IDocument document, String partitioning, String contentType) {
+	protected AbstractDocumentScanner(IDocument document, String partitioning, String contentType) {
 		Assert.isLegal(document != null);
 		this.document = document;
 		this.partitioning = partitioning;
@@ -131,7 +135,7 @@ public class LangHeuristicScanner implements ILangHeuristicSymbols {
 		pos--;
 	}
 	
-	protected ITypedRegion getPartition(int position) throws BadLocationException {
+	public ITypedRegion getPartition(int position) throws BadLocationException {
 		if(!partitionContainsPosition(lastPartition, position)) {
 			if(documentExt3 != null) {
 				try {
