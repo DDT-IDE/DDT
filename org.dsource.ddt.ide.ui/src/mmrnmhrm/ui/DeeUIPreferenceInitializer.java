@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
+import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 import mmrnmhrm.ui.text.color.DeeColorPreferenceInitializer;
 
@@ -63,16 +64,16 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.EDITOR_TAB_WIDTH, 4);
 		
 		
-		store.setDefault(DeeUIPreferenceConstants.AE_CLOSE_STRINGS, true);
-		store.setDefault(DeeUIPreferenceConstants.AE_CLOSE_BRACES, true);
-		store.setDefault(DeeUIPreferenceConstants.AE_CLOSE_BRACKETS, true);
+		store.setDefault(LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, true);
+		store.setDefault(LangAutoEditPreferenceConstants.AE_CLOSE_BRACES, true);
+		store.setDefault(LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS, true);
 		
-		store.setDefault(DeeUIPreferenceConstants.AE_SMART_INDENT, true);
-		store.setDefault(DeeUIPreferenceConstants.AE_SMART_DEINDENT, true);
-		store.setDefault(DeeUIPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, true);
-
+		store.setDefault(LangAutoEditPreferenceConstants.AE_SMART_INDENT, true);
+		store.setDefault(LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, true);
+		store.setDefault(LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, true);
+		
 		store.setDefault(PreferenceConstants.EDITOR_SMART_TAB, true); // Not used currently
-		store.setDefault(PreferenceConstants.EDITOR_SMART_PASTE, true); // Not used currently
+		store.setDefault(LangAutoEditPreferenceConstants.AE_SMART_PASTE, true); // Not used currently
 		
 		
 		store.setDefault(PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, true);

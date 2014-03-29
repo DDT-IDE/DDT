@@ -13,11 +13,11 @@ package mmrnmhrm.ui.editor.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.CoreUtil.array;
+import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategy;
 import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.ui.DeeUIPreferenceConstants;
 import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -59,7 +59,7 @@ public class DeeAutoEditStrategy extends LangAutoEditStrategy {
 	
 	@Override
 	public void customizeDocumentCommand(IDocument doc, DocumentCommand cmd) {
-		parenthesesAsBlocks = store.getBoolean(DeeUIPreferenceConstants.AE_PARENTHESES_AS_BLOCKS);
+		parenthesesAsBlocks = store.getBoolean(LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS);
 		
 		IDocumentListener listener = new AssertNoChangesDocumentListener();
 		doc.addDocumentListener(listener);

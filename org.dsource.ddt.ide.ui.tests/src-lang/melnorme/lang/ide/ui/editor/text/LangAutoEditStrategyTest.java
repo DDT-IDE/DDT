@@ -11,17 +11,17 @@
 package melnorme.lang.ide.ui.editor.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
-import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategy;
-import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAdapter;
+
+import java.io.IOException;
+
+import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.ui.text.SamplePartitionScanner;
 import melnorme.lang.ide.ui.text.Scanner_BaseTest;
-import mmrnmhrm.tests.ui.DeeUITests;
+import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
+import melnorme.lang.ide.ui.text.util.TabStyle;
+import melnorme.utilbox.misc.MiscUtil;
 
-import org.eclipse.dltk.ui.CodeFormatterConstants;
-import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -31,10 +31,17 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.swt.SWT;
 import org.junit.Test;
 
-public class LangAutoEditStragetyTest extends Scanner_BaseTest {
+public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	
-	public static final String GENERIC_CODE = DeeUITests.readResource("common/samplecode.d");
-	public static final String NEUTRAL_SRCX = GENERIC_CODE;
+	public static final String NEUTRAL_SRCX; 
+	
+	static {
+		try {
+			NEUTRAL_SRCX = MiscUtil.getClassResourceAsString(LangAutoEditStrategyTest.class, "sample_block_code");
+		} catch (IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
 	
 	public static final String PENDING_WS1 = "  "; 
 	public static final String PENDING_WS2 = "\t ";
@@ -63,7 +70,7 @@ public class LangAutoEditStragetyTest extends Scanner_BaseTest {
 		prefStore.setValue(LangAutoEditPreferenceConstants.AE_CLOSE_BRACES, true);
 		prefStore.setValue(LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS, true);
 		prefStore.setValue(LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, true);
-		prefStore.setValue(PreferenceConstants.EDITOR_SMART_PASTE, true);
+		prefStore.setValue(LangAutoEditPreferenceConstants.AE_SMART_PASTE, true);
 		
 		prefStore.setValue(CodeFormatterConstants.FORMATTER_TAB_SIZE, 4);
 		prefStore.setValue(CodeFormatterConstants.FORMATTER_TAB_CHAR, TabStyle.TAB.getName());
@@ -148,7 +155,8 @@ public class LangAutoEditStragetyTest extends Scanner_BaseTest {
 		checkCommand(documentCommand, text, offset, length, -1);
 	}
 	
-	protected void checkCommand(DocumentCommand documentCommand, String text, int offset, int length, int caretOffset) {
+	protected void checkCommand(DocumentCommand documentCommand, String text, int offset, int length, 
+			int caretOffset) {
 		assertEquals(documentCommand.text, text);
 		assertTrue(documentCommand.offset == offset);
 		assertTrue(documentCommand.length == length);
@@ -220,7 +228,7 @@ public class LangAutoEditStragetyTest extends Scanner_BaseTest {
 			mkline(indent, "{func{")+
 			mkline(indent+2, NEUTRAL_SRC1)+
 			mklast(indent, "}blah{"); // test close, -2 : 1, right=}} {{..}{_..}     
-		testEnterAutoEdit(s, NL+NEUTRAL_SRC1+mkline(indent, "}"), expectInd(indent+1), expectClose(indent+1, "}"));		
+		testEnterAutoEdit(s, NL+NEUTRAL_SRC1+mkline(indent, "}"), expectInd(indent+1), expectClose(indent+1, "}"));
 		
 		indent = 0;
 		
@@ -364,7 +372,7 @@ public class LangAutoEditStragetyTest extends Scanner_BaseTest {
 	}
 	
 	protected static String TABn(int indent) {
-		return LangAutoEditsPreferencesAdapter.stringNTimes(TAB, indent);
+		return LangAutoEditUtils.stringNTimes(TAB, indent);
 	}
 	
 	protected static String expectInd(int indent) {
@@ -517,7 +525,8 @@ public class LangAutoEditStragetyTest extends Scanner_BaseTest {
 		testDeIndentAutoEdit(srcPre, srcIndent, sourceAfter, true);
 	}
 	
-	protected void testDeIndentAutoEdit(String srcPre, String srcIndent, String sourceAfter, boolean indentNotSmaller) {
+	protected void testDeIndentAutoEdit(String srcPre, String srcIndent, String sourceAfter, 
+			boolean indentNotSmaller) {
 		testBackSpaceDeindent(srcPre, srcIndent, sourceAfter);
 		
 		testDeleteDeindent(srcPre, srcIndent, sourceAfter);

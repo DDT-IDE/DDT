@@ -10,9 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
-import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 
-public interface DeeUIPreferenceConstants extends LangAutoEditPreferenceConstants {
+public interface DeeUIPreferenceConstants {
 	
 	public static String ELEMENT_ICONS_STYLE = "elementIcons.style";
 	

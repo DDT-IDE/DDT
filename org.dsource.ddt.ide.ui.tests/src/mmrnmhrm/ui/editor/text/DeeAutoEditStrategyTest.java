@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
-import melnorme.lang.ide.ui.editor.text.LangAutoEditStragetyTest;
+import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyTest;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategy;
 import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.text.DeeTextTestUtils;
@@ -18,7 +18,7 @@ import mmrnmhrm.ui.text.DeeTextTestUtils;
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
 
-public class DeeAutoEditStrategyTest extends LangAutoEditStragetyTest {
+public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {
 	
 	@Override
 	protected LangAutoEditStrategy getAutoEditStrategy() {

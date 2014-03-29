@@ -10,16 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.text;
 
-import org.eclipse.dltk.ui.PreferenceConstants;
+import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants_Actual;
 
-public interface LangAutoEditPreferenceConstants {
+
+public interface LangAutoEditPreferenceConstants extends LangAutoEditPreferenceConstants_Actual {
 	
-	String AE_SMART_INDENT = PreferenceConstants.EDITOR_SMART_INDENT;
+	String AE_SMART_INDENT = "autoedit.editorSmartIndent";
 	String AE_SMART_DEINDENT = "autoedit.smart_deindent";
 	String AE_PARENTHESES_AS_BLOCKS = "autoedit.parentheses_as_blocks";
 	
-	String AE_CLOSE_STRINGS = PreferenceConstants.EDITOR_CLOSE_STRINGS;
-	String AE_CLOSE_BRACKETS = PreferenceConstants.EDITOR_CLOSE_BRACKETS;
-	String AE_CLOSE_BRACES = PreferenceConstants.EDITOR_CLOSE_BRACES;
+	String AE_SMART_PASTE = "autoedit.smartPaste";
 	
 }

@@ -16,8 +16,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockBalanceResult;
 import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.lang.ide.ui.text.util.AutoEditUtils;
+import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
 
-import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
@@ -251,7 +252,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 	
 	protected String addIndent(String indentStr, int indentDelta) {
-		return indentStr + fPreferences.getIndent(indentDelta);
+		return indentStr + LangAutoEditUtils.stringNTimes(fPreferences.getIndent(), indentDelta);
 	}
 	
 	/* ------------------------------------- */

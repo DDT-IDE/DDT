@@ -13,10 +13,10 @@ package mmrnmhrm.ui.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.ui.DeePreferencesMessages;
-import mmrnmhrm.ui.DeeUIPreferenceConstants;
 
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
@@ -39,21 +39,21 @@ public class DeeEditorSmartTypingConfigurationBlock extends AbstractConfiguratio
 		
 		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) { // TODO implement
 			keys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, 
-					DeeUIPreferenceConstants.AE_CLOSE_STRINGS));
+				LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS));
 			keys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, 
-					DeeUIPreferenceConstants.AE_CLOSE_BRACKETS));
+				LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS));
 		}
 		keys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, 
-				DeeUIPreferenceConstants.AE_CLOSE_BRACES));
+			LangAutoEditPreferenceConstants.AE_CLOSE_BRACES));
 		
 		keys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, 
-				DeeUIPreferenceConstants.AE_SMART_INDENT));
+			LangAutoEditPreferenceConstants.AE_SMART_INDENT));
 		
 		keys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, 
-				DeeUIPreferenceConstants.AE_SMART_DEINDENT));
+			LangAutoEditPreferenceConstants.AE_SMART_DEINDENT));
 		
 		keys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, 
-				DeeUIPreferenceConstants.AE_PARENTHESES_AS_BLOCKS));
+			LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS));
 		
 		store.addKeys(ArrayUtil.createFrom(keys, OverlayKey.class));
 	}
@@ -82,16 +82,16 @@ public class DeeEditorSmartTypingConfigurationBlock extends AbstractConfiguratio
 		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
 		addCheckBox(group,
 				DeePreferencesMessages.LangSmartTypingConfigurationBlock_closeStrings,
-				DeeUIPreferenceConstants.AE_CLOSE_STRINGS, 0);
+				LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, 0);
 		
 		addCheckBox(group,
 				DeePreferencesMessages.LangSmartTypingConfigurationBlock_closeBrackets,
-				DeeUIPreferenceConstants.AE_CLOSE_BRACKETS, 0);
+				LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS, 0);
 		}
 		
 		addCheckBox(group,
 				DeePreferencesMessages.LangSmartTypingConfigurationBlock_closeBraces,
-				DeeUIPreferenceConstants.AE_CLOSE_BRACES, 0);
+				LangAutoEditPreferenceConstants.AE_CLOSE_BRACES, 0);
 		
 	}
 	
@@ -105,15 +105,15 @@ public class DeeEditorSmartTypingConfigurationBlock extends AbstractConfiguratio
 		
 		addCheckBox(group,
 				DeePreferencesMessages.EditorPreferencePage_smartIndent,
-				DeeUIPreferenceConstants.AE_SMART_INDENT, 2);
+				LangAutoEditPreferenceConstants.AE_SMART_INDENT, 2);
 		
 		addCheckBox(group,
 				DeePreferencesMessages.EditorPreferencePage_smartDeIndent,
-				DeeUIPreferenceConstants.AE_SMART_DEINDENT, 2);
+				LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, 2);
 		
 		addCheckBox(group,
 				DeePreferencesMessages.EditorPreferencePage_considerParenthesesAsBlocks,
-				DeeUIPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, 2);
+				LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, 2);
 		
 		return group;
 	}
