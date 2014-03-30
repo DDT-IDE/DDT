@@ -4,11 +4,11 @@ import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
 import mmrnmhrm.ui.text.DeePartitions;
+import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 import org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
-import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.text.IDocument;
 
 public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
@@ -35,15 +35,15 @@ public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	@Override
 	protected ScriptSourceViewerConfiguration createSourceViewerConfiguration() {
 		return new DeeSimpleSourceViewerConfiguration(getTextTools().getColorManager(), getPreferenceStore(), null,
-				DeePartitions.DEE_PARTITIONING, false);
+				DeePartitions.PARTITIONING_ID, false);
 	}
 	
 	@Override
 	protected void setDocumentParticioner(IDocument document) {
-		getTextTools().setupDocumentPartitioner(document, DeePartitions.DEE_PARTITIONING);
+		getTextTools().setupDocumentPartitioner(document, DeePartitions.PARTITIONING_ID);
 	}
 	
-	protected ScriptTextTools getTextTools() {
+	protected DeeTextTools getTextTools() {
 		return DeeUIPlugin.getDefault().getTextTools();
 	}
 	

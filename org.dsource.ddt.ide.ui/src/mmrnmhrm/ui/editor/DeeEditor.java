@@ -53,7 +53,7 @@ public class DeeEditor extends DeeBaseEditor {
 	
 	@Override
 	protected String getPartitioningToConnect() {
-		return DeePartitions.DEE_PARTITIONING;
+		return DeePartitions.PARTITIONING_ID;
 	}
 	
 	@Override

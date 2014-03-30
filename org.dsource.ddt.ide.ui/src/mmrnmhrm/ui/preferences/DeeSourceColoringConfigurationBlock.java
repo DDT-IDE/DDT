@@ -2,8 +2,8 @@ package mmrnmhrm.ui.preferences;
 
 import java.io.InputStream;
 
+import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
-import mmrnmhrm.ui.text.DeeDocumentSetupParticipant;
 import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
@@ -65,14 +65,13 @@ public class DeeSourceColoringConfigurationBlock extends
 			IColorManager colorManager, IPreferenceStore preferenceStore,
 			ITextEditor editor, boolean configureFormatter) {
 		return new DeeSimpleSourceViewerConfiguration(colorManager,
-				preferenceStore, editor, DeePartitions.DEE_PARTITIONING,
+				preferenceStore, editor, DeePartitions.PARTITIONING_ID,
 				configureFormatter);
 	}
 	
 	@Override
 	protected void setDocumentPartitioning(IDocument document) {
-		//DeeDocumentSetupParticipant participant = new DeeDocumentSetupParticipant();
-		(new DeeDocumentSetupParticipant()).setup(document);
+		LangDocumentPartitionerSetup.getInstance().setup(document);;
 	}
 	
 	@Override

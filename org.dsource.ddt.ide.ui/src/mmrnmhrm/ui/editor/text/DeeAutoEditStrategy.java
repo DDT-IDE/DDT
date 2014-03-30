@@ -19,7 +19,7 @@ import mmrnmhrm.ui.text.DeePartitions;
 public class DeeAutoEditStrategy extends LangAutoEditStrategyExt {
 	
 	public DeeAutoEditStrategy(IPreferenceStore store, String contentType, ITextViewer viewer) {
-		super(store, DeePartitions.DEE_PARTITIONING, contentType, viewer);
+		super(store, DeePartitions.PARTITIONING_ID, contentType, viewer);
 	}
 	
 }

@@ -14,7 +14,7 @@ import org.eclipse.jface.text.IDocument;
 
 public interface DeePartitions {
 	
-	String DEE_PARTITIONING = "___dee_partioning";
+	String PARTITIONING_ID = "___dee_partioning";
 	
 	String DEE_CODE = IDocument.DEFAULT_CONTENT_TYPE;
 	String DEE_STRING = "___dee_string";

@@ -23,7 +23,7 @@ public class DeePartitioningProvider implements IPartitioningProvider {
 	
 	@Override
 	public String getPartitioning() {
-		return DeePartitions.DEE_PARTITIONING;
+		return DeePartitions.PARTITIONING_ID;
 	}
 	
 	@Override

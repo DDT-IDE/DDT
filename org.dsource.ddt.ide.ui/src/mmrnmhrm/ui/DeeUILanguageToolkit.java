@@ -19,6 +19,7 @@ import mmrnmhrm.ui.preferences.pages.DeeEditorSmartTypingPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage;
+import mmrnmhrm.ui.text.DeePartitions;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
@@ -57,7 +58,7 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	
 	@Override
 	public String getPartitioningId() {
-		return DeeConstants.PARTITIONING_ID;
+		return DeePartitions.PARTITIONING_ID;
 	}
 	
 	@Override

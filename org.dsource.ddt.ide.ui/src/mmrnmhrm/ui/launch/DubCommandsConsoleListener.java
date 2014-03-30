@@ -16,13 +16,13 @@ import java.io.IOException;
 
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
+import melnorme.util.swt.jface.ColorManager;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 import mmrnmhrm.core.projectmodel.DubProcessManager.RunsInDubProcessAgent;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIMessages;
-import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.source.ISharedTextColors;
@@ -35,7 +35,7 @@ import org.eclipse.ui.console.MessageConsole;
 public class DubCommandsConsoleListener implements IExternalProcessListener {
 	
 	protected static ISharedTextColors getColorManager() {
-		return DeeUIPlugin.getDefault().getTextTools().getColorManager();
+		return ColorManager.getDefault();
 	}
 	
 	public static DubCommandsConsole createOperationConsole(String name, boolean recreateConsole) {

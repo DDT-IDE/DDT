@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.CoreUtil.downCast;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import melnorme.utilbox.tests.CommonTest;
 
-import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.Position;
@@ -58,7 +57,7 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 	}
 	
 	private void installPartitionerOnDocumentWithTextTools() {
-		ScriptTextTools textTools = new DeeTextTools(true);
+		DeeTextTools textTools = new DeeTextTools(true);
 		textTools.setupDefaultDocumentPartitioner(document);
 		fp = (FastPartitioner) document.getDocumentPartitioner();
 	}

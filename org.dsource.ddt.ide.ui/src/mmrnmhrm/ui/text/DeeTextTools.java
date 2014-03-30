@@ -10,8 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.utilbox.core.Assert;
-import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
@@ -22,25 +22,22 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class DeeTextTools extends ScriptTextTools {
 	
-	protected static final String[] LEGAL_CONTENT_TYPES = 
-		ArrayUtil.remove(DeePartitions.DEE_PARTITION_TYPES, DeePartitions.DEE_CODE);
-	
-	
 	public DeeTextTools(boolean autoDisposeOnDisplayDispose) {
-		super(DeePartitions.DEE_PARTITIONING, LEGAL_CONTENT_TYPES, autoDisposeOnDisplayDispose);
+		super(LangUIPlugin_Actual.LANG_PARTITIONING, LangUIPlugin_Actual.LEGAL_CONTENT_TYPES, 
+			autoDisposeOnDisplayDispose);
 	}
 	
 	@Override
 	public IPartitionTokenScanner createPartitionScanner() {
-		return new DeePartitionScanner();
+		return LangUIPlugin_Actual.createPartitionScanner();
 	}
 	
 	@Override
 	public ScriptSourceViewerConfiguration createSourceViewerConfiguraton(IPreferenceStore preferenceStore, 
 			ITextEditor editor, String partitioning) {
-		Assert.isTrue(partitioning.equals(DeePartitions.DEE_PARTITIONING));
+		Assert.isTrue(partitioning.equals(DeePartitions.PARTITIONING_ID));
 		return new DeeSourceViewerConfiguration(getColorManager(), preferenceStore, editor, 
-				DeePartitions.DEE_PARTITIONING);
+				DeePartitions.PARTITIONING_ID);
 	}
 	
 }

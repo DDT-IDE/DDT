@@ -7,7 +7,6 @@ import mmrnmhrm.ui.launch.DubCommandsConsoleListener;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.osgi.framework.BundleContext;
 
 
@@ -46,7 +45,7 @@ public class DeeUIPlugin extends LangUIPlugin {
 	
 	private DeeTextTools fTextTools;
 	
-	public ScriptTextTools getTextTools() {
+	public DeeTextTools getTextTools() {
 		if (fTextTools == null) {
 			fTextTools = new DeeTextTools(true);
 		}
