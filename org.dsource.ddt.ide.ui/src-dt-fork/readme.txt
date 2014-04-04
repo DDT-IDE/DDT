@@ -3,7 +3,6 @@ but whose code has little modifications.
 Usually only warnings are fixed, and imports changed.
 
 Classes here should not depend only on Eclipse and Lang code, nothing else.
-(for classes with DLTk deps there is another source folder. 
 
 All copied classes should document the version of the original plugin they were copied from.
 

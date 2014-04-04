@@ -1,9 +1,9 @@
 package melnorme.util.ui.fields;
 
+import melnorme.lang.jdt.ui.wizards.dialogfields.DialogField;
 import melnorme.util.swt.GridComposite;
 import melnorme.util.swt.SWTLayoutUtil;
 
-import org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;

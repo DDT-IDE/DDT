@@ -1,11 +1,11 @@
 package melnorme.lang.jdt.ui;
 
 
-import mmrnmhrm.ui.DeeUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin;
 
-
+// alias
 public class JavaUI {
 
-	public static final String ID_PLUGIN = DeeUIPlugin.PLUGIN_ID;
+	public static final String ID_PLUGIN = LangUIPlugin.PLUGIN_ID;
 
 }

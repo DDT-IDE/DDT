@@ -10,6 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences;
 
+import melnorme.lang.jdt.ui.wizards.dialogfields.DialogField;
+import melnorme.lang.jdt.ui.wizards.dialogfields.IDialogFieldListener;
 import melnorme.util.swt.GridComposite;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.ui.fields.FieldLayoutUtil;
@@ -18,8 +20,6 @@ import mmrnmhrm.core.DeeCorePreferences;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField;
-import org.eclipse.jdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.osgi.service.prefs.BackingStoreException;

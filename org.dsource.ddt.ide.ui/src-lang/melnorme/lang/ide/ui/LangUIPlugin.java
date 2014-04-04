@@ -21,9 +21,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.forms.FormColors;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.prefs.BackingStoreException;
 
 
 public abstract class LangUIPlugin extends AbstractUIPlugin {
@@ -132,5 +136,27 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
         }
         return corePreferenceStore;
     }
+    
+	/* -------- JDT copied stuff -------- */
+	
+	public static void flushInstanceScope() {
+		try {
+			InstanceScope.INSTANCE.getNode(PLUGIN_ID).flush();
+		} catch (BackingStoreException e) {
+			log(e);
+		}
+	}
+	
+	private FormToolkit fDialogsFormToolkit;
+	
+	public FormToolkit getDialogsFormToolkit() {
+		if (fDialogsFormToolkit == null) {
+			FormColors colors= new FormColors(Display.getCurrent());
+			colors.setBackground(null);
+			colors.setForeground(null);
+			fDialogsFormToolkit= new FormToolkit(colors);
+		}
+		return fDialogsFormToolkit;
+	}
 	
 }

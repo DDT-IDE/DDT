@@ -7,8 +7,8 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
-import melnorme.lang.jdt.internal.ui.JavaPlugin;
 import melnorme.lang.jdt.ui.JDT_PreferenceConstants;
+import melnorme.lang.jdt.ui.JavaPlugin;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
 

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jdt.internal.ui.wizards.dialogfields;
 
+import melnorme.lang.jdt.ui.wizards.dialogfields.DialogField;
+
 /**
  * Change listener used by <code>StringButtonDialogField</code>
  */

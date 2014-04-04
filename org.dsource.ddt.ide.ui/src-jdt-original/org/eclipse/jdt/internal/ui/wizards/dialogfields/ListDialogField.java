@@ -16,8 +16,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.layout.PixelConverter;
+
 import melnorme.lang.jdt.internal.ui.util.TableLayoutComposite;
 import melnorme.lang.jdt.internal.ui.util.SWTUtil;
+import melnorme.lang.jdt.ui.wizards.dialogfields.DialogField;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ColumnLayoutData;
