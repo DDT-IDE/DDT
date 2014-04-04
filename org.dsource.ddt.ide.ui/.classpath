@@ -4,7 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src-lang/base"/>
 	<classpathentry kind="src" path="src-lang/jdt-clone"/>
-	<classpathentry kind="src" path="src-jdt-original"/>
 	<classpathentry kind="src" path="src-dltk-branch"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>

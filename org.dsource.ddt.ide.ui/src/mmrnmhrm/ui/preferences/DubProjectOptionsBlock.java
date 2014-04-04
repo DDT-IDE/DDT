@@ -11,17 +11,18 @@
 package mmrnmhrm.ui.preferences;
 
 import melnorme.lang.jdt.ui.wizards.dialogfields.DialogField;
+import melnorme.lang.jdt.ui.wizards.dialogfields.FieldLayoutUtilExt;
 import melnorme.lang.jdt.ui.wizards.dialogfields.IDialogFieldListener;
+import melnorme.lang.jdt.ui.wizards.dialogfields.StringDialogField;
 import melnorme.util.swt.GridComposite;
 import melnorme.util.swt.SWTLayoutUtil;
-import melnorme.util.ui.fields.FieldLayoutUtil;
-import melnorme.util.ui.fields.StringDialogField;
 import mmrnmhrm.core.DeeCorePreferences;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class DubProjectOptionsBlock {
@@ -37,7 +38,12 @@ public class DubProjectOptionsBlock {
 	protected IProject project;
 	
 	public DubProjectOptionsBlock() {
-		fExtraOptions = new StringDialogField(SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		fExtraOptions = new StringDialogField() {
+			@Override
+			protected Text createTextControl(Composite parent) {
+				return new Text(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+			}
+		};
 		fExtraOptions.setLabelText("Extra build options for dub build:");
 		fExtraOptions.setDialogFieldListener(new FieldListener());
 	}
@@ -59,7 +65,7 @@ public class DubProjectOptionsBlock {
 
 		Composite comp;
 		
-		comp = FieldLayoutUtil.createCompose(rowComposite, true, fExtraOptions);
+		comp = FieldLayoutUtilExt.createCompose(rowComposite, true, fExtraOptions);
 		SWTLayoutUtil.enableDiagonalExpand(comp);
 		SWTLayoutUtil.enableDiagonalExpand(fExtraOptions.getTextControl(null));
 		SWTLayoutUtil.setHeightHint(fExtraOptions.getTextControl(null), 200);
