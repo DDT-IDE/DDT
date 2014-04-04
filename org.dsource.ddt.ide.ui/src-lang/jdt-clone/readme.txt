@@ -6,4 +6,4 @@ Classes here should not depend only on Eclipse and Lang code, nothing else.
 
 All copied classes should document the version of the original plugin they were copied from.
 
-With a full review and refactoring, a class from here might be migrated to the src-lang/ folder. 
+With a full review and refactoring, a class from here might be migrated to the base/ source folder.

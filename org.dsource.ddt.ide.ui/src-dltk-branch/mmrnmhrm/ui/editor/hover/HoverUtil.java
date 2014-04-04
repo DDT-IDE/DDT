@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
-import melnorme.lang.jdt.ui.JDT_PreferenceConstants;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.jdt.ui.JavaPlugin;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
@@ -27,6 +27,21 @@ import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ddoc.IDeeDocColorConstants;
+
+class JDT_PreferenceConstants {
+
+	private JDT_PreferenceConstants() {
+	}
+	
+	/**
+	 * The symbolic font name for the font used to display Javadoc 
+	 * (value <code>"org.eclipse.jdt.ui.javadocfont"</code>).
+	 * 
+	 * @since 3.3
+	 */
+	public final static String APPEARANCE_JAVADOC_FONT= LangUIPlugin.PLUGIN_ID + ".javadocfont";
+	
+}
 
 public class HoverUtil {
 	
