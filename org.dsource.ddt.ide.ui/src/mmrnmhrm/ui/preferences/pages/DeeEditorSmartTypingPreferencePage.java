@@ -11,17 +11,19 @@
 package mmrnmhrm.ui.preferences.pages;
 
 
-import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.preferences.DeeEditorSmartTypingConfigurationBlock;
-
-import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
-import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
-import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
+import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
+import melnorme.lang.ide.ui.preferences.LangEditorSmartTypingConfigurationBlock;
 
 
-public class DeeEditorSmartTypingPreferencePage extends AbstractConfigurationBlockPreferencePage {
+public class DeeEditorSmartTypingPreferencePage extends AbstractPreferencesComponentPrefPage {
 	
-	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".preferences.Editor.typing";
+	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + ".preferences.Editor.typing";
+	
+	public DeeEditorSmartTypingPreferencePage() {
+		super(LangUIPlugin.getInstance().getPreferenceStore());
+	}
 	
 	@Override
 	protected void setDescription() {
@@ -29,13 +31,13 @@ public class DeeEditorSmartTypingPreferencePage extends AbstractConfigurationBlo
 	}
 	
 	@Override
-	protected void setPreferenceStore() {
-		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
+	protected IPreferencesComponent createPreferencesComponent() {
+		return new LangEditorSmartTypingConfigurationBlock(this);
 	}
 	
 	@Override
-	protected IPreferenceConfigurationBlock createConfigurationBlock(OverlayPreferenceStore overlayPreferenceStore) {
-		return new DeeEditorSmartTypingConfigurationBlock(overlayPreferenceStore);
+	protected String getHelpId() {
+		return null;
 	}
 	
 }

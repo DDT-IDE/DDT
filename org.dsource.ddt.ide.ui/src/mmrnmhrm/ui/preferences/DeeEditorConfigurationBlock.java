@@ -10,21 +10,20 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences;
 
+import melnorme.lang.ide.ui.preferences.EditorAppearanceColorsComponent.EditorColorItem;
 import melnorme.lang.ide.ui.preferences.EditorConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
-import melnorme.lang.ide.ui.preferences.EditorAppearanceColorsComponent.EditorColorItem;
 import melnorme.lang.ide.ui.preferences.fields.CheckBoxConfigField;
 
 import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 public class DeeEditorConfigurationBlock extends EditorConfigurationBlock {
 	
-	public DeeEditorConfigurationBlock(PreferencePage mainPreferencePage, IPreferenceStore store) {
-		super(mainPreferencePage, store);
+	public DeeEditorConfigurationBlock(PreferencePage mainPreferencePage) {
+		super(mainPreferencePage);
 	}
 	
 	@Override

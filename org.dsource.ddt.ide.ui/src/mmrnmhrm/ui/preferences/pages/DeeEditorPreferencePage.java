@@ -12,14 +12,18 @@ package mmrnmhrm.ui.preferences.pages;
 
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.AbstractConfigurationBlockPreferencePage2;
-import melnorme.lang.ide.ui.preferences.IPreferenceConfigurationBlock2;
+import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
+import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
 import mmrnmhrm.ui.preferences.DeeEditorConfigurationBlock;
 
 
-public class DeeEditorPreferencePage extends AbstractConfigurationBlockPreferencePage2 {
+public class DeeEditorPreferencePage extends AbstractPreferencesComponentPrefPage {
 	
 	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + ".preferences.Editor";
+	
+	public DeeEditorPreferencePage() {
+		super(LangUIPlugin.getInstance().getPreferenceStore());
+	}
 	
 	@Override
 	protected void setDescription() {
@@ -27,13 +31,8 @@ public class DeeEditorPreferencePage extends AbstractConfigurationBlockPreferenc
 	}
 	
 	@Override
-	protected void setPreferenceStore() {
-		setPreferenceStore(LangUIPlugin.getInstance().getPreferenceStore());
-	}
-	
-	@Override
-	protected IPreferenceConfigurationBlock2 createConfigurationBlock() {
-		return new DeeEditorConfigurationBlock(this, getPreferenceStore());
+	protected IPreferencesComponent createPreferencesComponent() {
+		return new DeeEditorConfigurationBlock(this);
 	}
 	
 	@Override
