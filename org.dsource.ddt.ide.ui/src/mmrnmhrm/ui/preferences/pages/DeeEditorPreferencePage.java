@@ -11,17 +11,15 @@
 package mmrnmhrm.ui.preferences.pages;
 
 
-import mmrnmhrm.ui.DeeUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.preferences.AbstractConfigurationBlockPreferencePage2;
+import melnorme.lang.ide.ui.preferences.IPreferenceConfigurationBlock2;
 import mmrnmhrm.ui.preferences.DeeEditorConfigurationBlock;
 
-import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
-import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
-import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 
-
-public class DeeEditorPreferencePage extends AbstractConfigurationBlockPreferencePage {
+public class DeeEditorPreferencePage extends AbstractConfigurationBlockPreferencePage2 {
 	
-	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".preferences.Editor";
+	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + ".preferences.Editor";
 	
 	@Override
 	protected void setDescription() {
@@ -30,11 +28,17 @@ public class DeeEditorPreferencePage extends AbstractConfigurationBlockPreferenc
 	
 	@Override
 	protected void setPreferenceStore() {
-		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
+		setPreferenceStore(LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override
-	protected IPreferenceConfigurationBlock createConfigurationBlock(OverlayPreferenceStore overlayPreferenceStore) {
-		return new DeeEditorConfigurationBlock(this, overlayPreferenceStore);
+	protected IPreferenceConfigurationBlock2 createConfigurationBlock() {
+		return new DeeEditorConfigurationBlock(this, getPreferenceStore());
 	}
+	
+	@Override
+	protected String getHelpId() {
+		return null;
+	}
+	
 }

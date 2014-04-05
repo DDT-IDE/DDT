@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * A more high level SWT component.
- * XXX: needs more work @see also {@link FieldWithListeners}
+ * XXX: needs more work @see also {@link FieldValueNotifier}
  */
 public abstract class FieldComponent<T> {
 	
@@ -25,7 +25,7 @@ public abstract class FieldComponent<T> {
  		return control;
  	}
  	
- 	public abstract Control createComponent(Composite parent);
+	public abstract Control createComponent(Composite parent);
 	
 	public abstract T getFieldValue();
 

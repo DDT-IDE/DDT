@@ -1,7 +1,7 @@
 package mmrnmhrm.ui;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.util.swt.SWTUtil;
+import melnorme.util.swt.SWTFactoryUtil_Old;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.ui.launch.DubCommandsConsoleListener;
 import mmrnmhrm.ui.text.DeeTextTools;
@@ -29,7 +29,7 @@ public class DeeUIPlugin extends LangUIPlugin {
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {
-		SWTUtil.enableDebugColorHelpers = Platform.inDebugMode();
+		SWTFactoryUtil_Old.enableDebugColorHelpers = Platform.inDebugMode();
 		
 		dubProcessListener = new DubCommandsConsoleListener();
 		DubModelManager.getDefault().getProcessManager().addDubProcessListener(dubProcessListener);

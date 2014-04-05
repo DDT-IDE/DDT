@@ -12,8 +12,8 @@
 package melnorme.lang.ide.ui.editor.text;
 
 import melnorme.lang.ide.ui.CodeFormatterConstants;
+import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
 import melnorme.lang.ide.ui.text.util.AutoEditUtils;
-import melnorme.lang.ide.ui.text.util.TabStyle;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -47,20 +47,20 @@ public class LangAutoEditsPreferencesAdapter {
 	}
 	
 
-	public TabStyle getTabStyle() {
-		return TabStyle.forName(store.getString(CodeFormatterConstants.FORMATTER_TAB_CHAR), TabStyle.TAB);
+	public IndentMode getTabStyle() {
+		return IndentMode.fromPrefStore(store);
 	}
-
+	
 	public String getIndent() {
-		if (getTabStyle() == TabStyle.SPACES) {
+		if (getTabStyle() == IndentMode.SPACES) {
 			return AutoEditUtils.getNSpaces(getIndentSize());
 		} else {
-			return "\t"; //$NON-NLS-1$
+			return "\t";
 		}
 	}
 	
 	public int getIndentSize() {
-		return store.getInt(CodeFormatterConstants.FORMATTER_INDENTATION_SIZE);
+		return store.getInt(CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE);
 	}
 	
 }

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.util.swt.components.FieldWithListeners.IFieldValueListener;
+import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 

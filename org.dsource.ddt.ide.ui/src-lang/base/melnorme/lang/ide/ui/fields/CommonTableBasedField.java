@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.fields;
 
-import melnorme.util.swt.components.FieldWithListeners;
+import melnorme.util.swt.components.FieldValueNotifier;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -23,9 +23,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-public class CommonTableBasedField<T> extends FieldWithListeners<T> {
+public class CommonTableBasedField<T> extends FieldValueNotifier {
 	
-	@Override
 	public Control createComponent(Composite parent) {
 		return createTable(parent);
 	}

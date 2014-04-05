@@ -5,7 +5,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+  * Contributors:
+ *     IBM Corporation - initial API and implementation (JDT)
+ *     DLTK team ? - DLTK modifications 
+ *     Bruno Medeiros - modifications
  *******************************************************************************/
 package mmrnmhrm.dltk.ui.interpreters;
 

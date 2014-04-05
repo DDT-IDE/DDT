@@ -5,7 +5,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+ * Contributors:
+ *     IBM Corporation - initial API and implementation (JDT)
+ *     DLTK team ? - DLTK modifications 
+ *     Bruno Medeiros - modifications
  *******************************************************************************/
 package mmrnmhrm.dltk.ui.interpreters;
 
@@ -61,6 +64,7 @@ import org.eclipse.swt.widgets.Label;
 /**
  * Control used to edit the libraries associated with a Interpreter install
  */
+@SuppressWarnings("static-method")
 public abstract class AbstractInterpreterLibraryBlock implements
 		SelectionListener, ISelectionChangedListener {
 

@@ -12,21 +12,7 @@ package melnorme.util.swt.components;
 
 import melnorme.utilbox.misc.ListenerListHelper;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-
-// TODO: combine this class with FieldComponent
-public abstract class FieldWithListeners<T> {
-	
-	public static interface IFieldValueListener {
-		
-		void fieldValueChanged();
-		
-	}
-	
-	public FieldWithListeners() {
-		super();
-	}
+public abstract class FieldValueNotifier {
 	
 	protected final ListenerListHelper<IFieldValueListener> listeners = new ListenerListHelper<>();
 	
@@ -43,7 +29,5 @@ public abstract class FieldWithListeners<T> {
 			listener.fieldValueChanged();
 		}
 	}
-	
-	public abstract Control createComponent(Composite parent);
 	
 }
