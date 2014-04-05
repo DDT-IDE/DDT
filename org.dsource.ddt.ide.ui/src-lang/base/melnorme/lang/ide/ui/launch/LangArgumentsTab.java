@@ -37,18 +37,10 @@ import org.eclipse.swt.widgets.Composite;
  * </p>
  */
 public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
-	/**
-	 * Tab identifier used for ordering of tabs added using the 
-	 * <code>org.eclipse.debug.ui.launchConfigurationTabs</code>
-	 * extension point.
-	 *   
-	 * @since 6.0
-	 */
-//	public static final String TAB_ID = "org.eclipse.cdt.cdi.launch.argumentsTab"; //$NON-NLS-1$
 	
 	protected final LangArgumentsBlock argumentsBlock = new LangArgumentsBlock() {
 		@Override
-		protected void fieldValueChanged(String newFieldValue) {
+		protected void fieldValueChanged() {
 			updateLaunchConfigurationDialog();
 		};
 	}; 

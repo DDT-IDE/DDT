@@ -35,7 +35,7 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	}
 	
 	@Override
-	public Button doCreateControl(Composite parent) {
+	public Button doCreateControls(Composite parent) {
 		checkBox = new Button(parent, SWT.CHECK);
 		checkBox.setText(label);
 

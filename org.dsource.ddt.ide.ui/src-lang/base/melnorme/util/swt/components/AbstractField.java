@@ -17,19 +17,22 @@ import melnorme.util.swt.SWTUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-public abstract class AbstractField<VALUE> extends FieldValueNotifier {
+public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 	
-	private VALUE value;
+	private VALUE value; // private to prevent direct modifications.
 	protected boolean runningUpdateControls;
 	
+	@Override
 	public VALUE getFieldValue() {
 		return value;
 	}
 	
+	@Override
 	public void setFieldValue(VALUE value) {
 		setFieldValue(value, true);
 	}
 	
+	/** Update the field value from a control modification. */
 	protected void updateFieldValue(VALUE value) {
 		if(runningUpdateControls) {
 			assertTrue(areEqual(getFieldValue(), value));
@@ -47,12 +50,12 @@ public abstract class AbstractField<VALUE> extends FieldValueNotifier {
 	}
 	
 	public Control createControl(Composite parent) {
-		Control control = doCreateControl(parent);
+		Control control = doCreateControls(parent);
 		doUpdateControls();
 		return control;
 	}
 	
-	public abstract Control doCreateControl(Composite parent);
+	public abstract Control doCreateControls(Composite parent);
 	
 	public abstract Control getFieldControl();
 	
@@ -61,6 +64,7 @@ public abstract class AbstractField<VALUE> extends FieldValueNotifier {
 	}
 	
 	public void setEnabled(boolean enabled) {
+		// default implementation, classes might need to override
 		getFieldControl().setEnabled(enabled);
 	}
 	

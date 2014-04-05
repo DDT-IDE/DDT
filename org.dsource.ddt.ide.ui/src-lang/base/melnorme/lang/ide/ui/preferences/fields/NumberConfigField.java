@@ -23,17 +23,17 @@ public class NumberConfigField extends TextConfigField {
 	}
 	
 	@Override
-	protected void controlChanged() {
-		String numberText = textControl.getText();
+	protected void updateFieldValue(String numberText) {
 		IStatus status = validatePositiveNumber(numberText);
 		if(status.isOK()) {
-			updateFieldValue(numberText);
+			super.updateFieldValue(numberText);
 		}
 		statusChanged(status);
 	}
 	
 	@SuppressWarnings("unused")
-	protected void statusChanged(IStatus status) { }
+	protected void statusChanged(IStatus status) { 
+	}
 	
 	protected IStatus validatePositiveNumber(String number) {
 		if (number.length() == 0) {

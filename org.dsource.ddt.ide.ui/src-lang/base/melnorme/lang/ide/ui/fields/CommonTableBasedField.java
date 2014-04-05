@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-public class CommonTableBasedField<T> extends FieldValueNotifier {
+public abstract class CommonTableBasedField extends FieldValueNotifier {
 	
 	public Control createComponent(Composite parent) {
 		return createTable(parent);

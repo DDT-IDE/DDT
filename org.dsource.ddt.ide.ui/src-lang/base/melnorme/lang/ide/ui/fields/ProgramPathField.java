@@ -12,12 +12,10 @@ package melnorme.lang.ide.ui.fields;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.FieldComponent;
+import melnorme.util.swt.components.WidgetFieldComponent;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -29,7 +27,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Field for a program path relative to Eclipse project.
  */
-public class ProgramPathField extends FieldComponent<String> {
+public class ProgramPathField extends WidgetFieldComponent<String> {
 	
 	protected Text fProgramText;
 	protected Button fSearchButton;
@@ -40,16 +38,8 @@ public class ProgramPathField extends FieldComponent<String> {
 		mainControl.setText(LangUIMessages.ProgramPathField_title);
 		mainControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
-		fProgramText = new Text(mainControl, SWT.SINGLE | SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		
-		fProgramText.setLayoutData(gd);
-		fProgramText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				fieldValueChanged(getFieldValue());
-			}
-		});
+		fProgramText = createFieldText(mainControl, SWT.SINGLE | SWT.BORDER);
+		fProgramText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		fSearchButton = SWTFactoryUtil.createPushButton(mainControl, 
 				LangUIMessages.ProgramPathField__searchButton, null);

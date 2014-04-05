@@ -16,15 +16,13 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.FieldComponent;
+import melnorme.util.swt.components.WidgetFieldComponent;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -39,10 +37,10 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 /**
  * A field whose main value is a project name from the Eclipse workspace.
  */
-public class ProjectField extends FieldComponent<String> {
+public class ProjectField extends WidgetFieldComponent<String> {
 	
-	protected Button fProjButton;
-	protected Text fProjText;
+	protected Text projectText;
+	protected Button projectSelectionButton;
 	
 	@Override
 	public Group createComponent(Composite parent) {
@@ -50,19 +48,12 @@ public class ProjectField extends FieldComponent<String> {
 		topControl.setText(LangUIMessages.mainTab_projectGroup);
 		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
-		fProjText = new Text(topControl, SWT.SINGLE | SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		fProjText.setLayoutData(gd);
-		fProjText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				fieldValueChanged(getFieldValue());
-			}
-		});
+		projectText = createFieldText(topControl, SWT.SINGLE | SWT.BORDER);
+		projectText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-		fProjButton = SWTFactoryUtil.createPushButton(topControl, 
+		projectSelectionButton = SWTFactoryUtil.createPushButton(topControl, 
 				LangUIMessages.mainTab_projectButton, null);
-		fProjButton.addSelectionListener(new SelectionAdapter() {
+		projectSelectionButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleProjectButtonSelected();
@@ -73,12 +64,12 @@ public class ProjectField extends FieldComponent<String> {
 	
 	@Override
 	public String getFieldValue() {
-		return fProjText.getText().trim();
+		return projectText.getText().trim();
 	}
 	
 	@Override
 	public void setFieldValue(String projectName) {
-		fProjText.setText(projectName);
+		projectText.setText(projectName);
 	}
 	
 	protected IProject getProject() {
@@ -104,7 +95,7 @@ public class ProjectField extends FieldComponent<String> {
 	}
 	
 	protected IProject chooseProject() {
-		Shell shell = fProjButton.getShell();
+		Shell shell = projectSelectionButton.getShell();
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(shell, new WorkbenchLabelProvider());
 		dialog.setTitle(LangUIMessages.projectField_chooseProject_title);
 		dialog.setMessage(LangUIMessages.projectField_chooseProject_message);

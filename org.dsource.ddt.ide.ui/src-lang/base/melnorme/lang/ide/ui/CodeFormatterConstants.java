@@ -12,13 +12,13 @@ public interface CodeFormatterConstants extends CodeFormatterConstants_Actual {
 	
 	// helper for tab indent mode
 	public enum IndentMode {
-
+		
 		TAB(CodeFormatterConstants.TAB),
 		SPACES(CodeFormatterConstants.SPACES),
 		MIXED(CodeFormatterConstants.MIXED);
-
+		
 		protected final String prefValue;
-
+		
 		private IndentMode(String prefKey) {
 			this.prefValue = prefKey;
 		}

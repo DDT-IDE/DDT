@@ -39,7 +39,7 @@ public class ComboBoxConfigField extends AbstractConfigField<String> {
 	}
 	
 	@Override
-	public Label doCreateControl(Composite parent) {
+	public Label doCreateControls(Composite parent) {
 		Label labelControl = new Label(parent, SWT.NONE);
 		labelControl.setText(label);
 		labelControl.setLayoutData(GridDataFactory.swtDefaults().create());

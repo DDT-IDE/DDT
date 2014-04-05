@@ -24,10 +24,16 @@ public abstract class FieldValueNotifier {
 		listeners.removeListener(listener);
 	}
 	
-	protected void fireFieldValueChanged() {
+	protected final void fireFieldValueChanged() {
+		fieldValueChanged();
 		for (IFieldValueListener listener : listeners.getListeners()) {
 			listener.fieldValueChanged();
 		}
+	}
+	
+	// this methos allows listening by means of overriding this class
+	protected void fieldValueChanged() {
+		// Default: do nothing
 	}
 	
 }

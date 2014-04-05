@@ -46,10 +46,9 @@ public abstract class MainLaunchConfigurationTab extends CommonMainLaunchConfigu
 		};
 		
 		@Override
-		protected void fieldValueChanged(String newFieldValue) {
+		protected void fieldValueChanged() {
 			updateLaunchConfigurationDialog();
 		};
-		
 	};
 	
 	@Override

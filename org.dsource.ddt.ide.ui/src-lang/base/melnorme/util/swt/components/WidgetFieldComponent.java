@@ -10,14 +10,19 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 
 /**
- * A more high level SWT component.
- * XXX: needs more work @see also {@link FieldValueNotifier}
+ * A limited for of a field component.
+ * Setting and getting the value only work *after* the field has been created.
+ * BM: consider deprecating and replacing with {@link AbstractField} which does not have that limitation
  */
-public abstract class FieldComponent<T> {
+public abstract class WidgetFieldComponent<VALUE> extends CommonFieldComponent<VALUE> {
 	
  	public final Control createComponent(Composite parent, Object layoutData) {
  		Control control = createComponent(parent);
@@ -27,12 +32,21 @@ public abstract class FieldComponent<T> {
  	
 	public abstract Control createComponent(Composite parent);
 	
-	public abstract T getFieldValue();
-
-	public abstract void setFieldValue(T projectName);
+	/* ----------------- helper methods ----------------- */
 	
-	@SuppressWarnings("unused") 
-	protected void fieldValueChanged(T newFieldValue) {
+	protected Text createFieldText(Group parent, int style) {
+		Text fieldText = new Text(parent, style);
+		addFieldTextModifyListener(fieldText);
+		return fieldText;
 	}
 	
+	protected void addFieldTextModifyListener(Text text) {
+		text.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent evt) {
+				fireFieldValueChanged();
+			}
+		});
+	}
+
 }

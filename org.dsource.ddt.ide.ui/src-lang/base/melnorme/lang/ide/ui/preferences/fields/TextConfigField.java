@@ -34,7 +34,7 @@ public class TextConfigField extends AbstractConfigField<String> {
 	}
 	
 	@Override
-	public Control doCreateControl(Composite parent) {
+	public Control doCreateControls(Composite parent) {
 		PixelConverter pixelConverter = new PixelConverter(parent);
 		
 		Label labelControl = SWTFactoryUtil.createLabel(parent, SWT.NONE, label, new GridData()); 
@@ -47,7 +47,7 @@ public class TextConfigField extends AbstractConfigField<String> {
 		textControl.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				controlChanged();
+				updateFieldValue(textControl.getText());
 			}
 		});
 		
@@ -57,10 +57,6 @@ public class TextConfigField extends AbstractConfigField<String> {
 	@Override
 	public Control getFieldControl() {
 		return textControl;
-	}
-	
-	protected void controlChanged() {
-		updateFieldValue(textControl.getText());
 	}
 	
 	@Override

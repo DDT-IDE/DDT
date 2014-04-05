@@ -55,7 +55,7 @@ import org.eclipse.swt.widgets.Table;
  * List is presented under a table with columns.
  * The component also has several buttons are added to add/remove/edit the elements.
  */
-public abstract class TableListEditingField<E> extends CommonTableBasedField<E> {
+public abstract class TableListEditingField<E> extends CommonTableBasedField {
 	
 	protected final List<E> elements = new ArrayList<>();
 	protected E checkedElement = null;
