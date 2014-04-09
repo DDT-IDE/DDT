@@ -1,4 +1,3 @@
-
 ## DDT - D Development Tools:
 [![sample_basic](screenshots/sample_basic.png)](:)
 
@@ -42,7 +41,8 @@
 |[![sample_searchReferences](screenshots/thumbs/sample_searchReferences.png)](https://raw.github.com/bruno-medeiros/DDT/latest/documentation/screenshots/sample_searchReferences.png)<br/>`Search results after searching for "writeln" references`|
 |----|
 
- * Debugging functionality. Fully featured GDB debugger support (reusing Eclipse CDT's GDB integration)
+#### Debugging functionality. 
+Fully featured GDB debugger support (reusing Eclipse CDT's GDB integration)
   * Stop/resume program execution. Listing program threads and stack frame contents.
   * Setting breakpoints, watchpoints (breakpoint on data/variables), tracepoints. Breakpoint conditions.
   * Stack variables inspection view. Expression watch and view. Disassembly view.
