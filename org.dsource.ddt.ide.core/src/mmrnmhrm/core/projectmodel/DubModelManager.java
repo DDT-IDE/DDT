@@ -423,7 +423,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		// Trim leading characters. 
 		// They shouldn't be there, but sometimes dub outputs non JSON text if downloading packages
-		descriptionOutput = StringUtil.trimUntil('{', descriptionOutput);
+		descriptionOutput = StringUtil.substringFromMatch('{', descriptionOutput);
 		
 		DubBundleDescription bundleDesc = DubDescribeParser.parseDescription(location, descriptionOutput);
 		
