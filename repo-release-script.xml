@@ -9,71 +9,87 @@ Alternatively, use a version qualifier prefix:
 
 Run this repo upload script:
 It requires a git repo of the project updateSite Git repo, as specified by -DupdateSiteGitRepo
-	ant -f repo-release-script.xml uploadRelease -DupdateSiteGitRepo="../DDT/ddt.updates" -DcommitLog="new daily"
+	ant -f repo-release-script.xml uploadRelease -DfromScratch=true -DupdateSiteGitURL=https://site.com
      ====================================================================== -->
 <project name="project" >
 
-	<property name="repoSrc" location="bin-maven/ddt.repository/repository" />
+	<property name="localStagingSiteDir" location="bin-maven/updateSite/" />
+	<property name="repoDest" location="${localStagingSiteDir}/ddt.feature-repo" />
+	<property name="fromScratch">false</property>
 
 	<property name="gitLocation">git</property>
+	<property name="repoSrc" location="bin-maven/ddt.repository/repository" />
+	<property name="compositeSrc" location="org.dsource.ddt-build/composite-repository" />
 	
-	<target name="echoInfo">
-		<echo>${commitLog}</echo>
-		<echo>${repoSrc}</echo>
-	</target>
 
-	<target name="uploadRelease" depends="commitReleaseToRepo">
-		<exec dir="${repoDest}" executable="${gitLocation}" >
-			<arg line="push origin"/>
-		</exec>
-	</target>
-	
-	
-	<target name="prep.repoDest">
-		<fail unless="updateSiteGitRepo"/>
-		<fail message="updateSiteGitRepo dir is missing.">
-			<condition>
-				<not>
-					<available file="${updateSiteGitRepo}" type="dir" />
-				</not>
-			</condition>
-		</fail>
-		<property name="repoDest" location="${updateSiteGitRepo}/ddt.feature-repo" />
-		<echo>${repoDest}</echo>
-	</target>
-	
-	<target name="commitReleaseToRepo" depends="echoInfo, prep.repoDest">
-		<fail unless="commitLog"/>
-
-		<mkdir dir="${repoDest}"/> <!-- Seems like erroronmissingdir isn't working? -->
-		<delete verbose="true">
-			<fileset dir="${repoDest}" erroronmissingdir="false" includes="**/*.jar"/>
-		</delete>
+	<target name="CopyRepoToStagingSite">
 		<mkdir dir="${repoDest}"/>
 		<copy verbose="true" todir="${repoDest}">
 			<fileset dir="${repoSrc}"/>
 		</copy>
+	</target>
+	
+	<target name="initStagingSite.FromScratch" if="${fromScratch}">
+		<mkdir dir="${localStagingSiteDir}"/>
 		
-		<exec dir="${repoDest}" executable="${gitLocation}" >
-			<arg line="status"/>
+		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
+			<arg line="init"/>
 		</exec>
-		<exec dir="${repoDest}" executable="${gitLocation}" >
-			<arg line="add -A *"/>
+		
+		<copy verbose="true" todir="${localStagingSiteDir}">
+			<fileset dir="${compositeSrc}" erroronmissingdir="false"/>
+		</copy>
+		
+		<antcall target="CopyRepoToStagingSite"/>
+		
+		<property name="gitPushCommandExtra" value=" --force" />
+	</target>
+	
+	<target name="initStagingSite.FromExisting" unless="${fromScratch}">
+		<mkdir dir="${localStagingSiteDir}"/>
+		
+		<fail unless="updateSiteGitURL"/>
+		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
+			<arg line="clone ${updateSiteGitURL} ."/>
 		</exec>
-		<exec dir="${repoDest}" executable="${gitLocation}" >
+	
+		<delete verbose="true">
+			<fileset dir="${repoDest}" erroronmissingdir="false" includes="**/*.jar"/>
+		</delete>
+		
+		<antcall target="CopyRepoToStagingSite"/>
+		<property name="gitPushCommandExtra" value=" " />
+	</target>
+	
+	<target name="initStagingSite" depends="initStagingSite.FromExisting, initStagingSite.FromScratch">
+
+		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
+			<arg line="add -A"/>
+		</exec>
+		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
 			<arg line="commit -m"/>
-			<arg value="${commitLog}"/>
+			<arg value="update site"/>
 		</exec>
 	</target>
 
-	
+	<target name="uploadRelease" depends="initStagingSite">
+		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
+			<arg line="status"/>
+		</exec>
+		
+		<fail unless="updateSiteGitURL"/>
+		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
+			<arg line="push ${updateSiteGitURL} ${gitPushCommandExtra}"/>
+		</exec>
+	</target>
+
 <!-- ======================================================================
 	This task must be run from within eclipse, example:
 	eclipse -application org.eclipse.ant.core.antRunner -console -consolelog -f repo-release-script.xml createCompositeRepo -updateSiteGitRepo=../ddt.updates-PR
      ====================================================================== -->
-	<target name="createCompositeRepo" depends="prep.repoDest">
+	<target name="createCompositeRepo">
 		<p2.composite.repository>
-			<repository location="${updateSiteGitRepo}" name="DDT repository" compressed="false" />
+			<repository location="${compositeSrc}" name="DDT repository" compressed="false" />
 			<add>
 				<repository location="http://download.eclipse.org/releases/kepler" />
 				<repository location="ddt.feature-repo" />
