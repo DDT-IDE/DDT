@@ -4,6 +4,7 @@ import org.eclipse.cdt.dsf.gdb.GDBTypeParser;
 import org.eclipse.cdt.dsf.gdb.GDBTypeParser.GDBDerivedType;
 import org.eclipse.cdt.dsf.gdb.GDBTypeParser.GDBType;
 import org.eclipse.cdt.dsf.mi.service.MIVariableManager;
+import org.eclipse.cdt.dsf.mi.service.command.output.MIVar;
 import org.eclipse.cdt.dsf.service.DsfServicesTracker;
 import org.eclipse.cdt.dsf.service.DsfSession;
 
@@ -34,12 +35,19 @@ public class MIVariableManager_LangExtension extends MIVariableManager {
 		@Override
 		public void setType(String newTypeName) {
 			super.setType(newTypeName);
-			corrected_gdbType = parseCorrectedGdbType(newTypeName, super.getGDBType());
+			corrected_gdbType = getCorrectedGdbType(newTypeName, super.getGDBType());
 		}
 		
 		@Override
 		public GDBType getGDBType() {
 			return corrected_gdbType;
+		}
+		
+		@Override
+		protected MIVariableObject createChild(VariableObjectId childId, String childFullExpression, int indexInParent,
+				MIVar childData) {
+			childFullExpression = createChild_getChildFullExpression(childFullExpression, childData);
+			return super.createChild(childId, childFullExpression, indexInParent, childData);
 		}
 		
 	}
@@ -55,7 +63,7 @@ public class MIVariableManager_LangExtension extends MIVariableManager {
 		@Override
 		public void setType(String newTypeName) {
 			super.setType(newTypeName);
-			corrected_gdbType = parseCorrectedGdbType(newTypeName, super.getGDBType());
+			corrected_gdbType = getCorrectedGdbType(newTypeName, super.getGDBType());
 		}
 		
 		@Override
@@ -63,13 +71,20 @@ public class MIVariableManager_LangExtension extends MIVariableManager {
 			return corrected_gdbType;
 		}
 		
+		@Override
+		protected MIVariableObject createChild(VariableObjectId childId, String childFullExpression, int indexInParent,
+				MIVar childData) {
+			childFullExpression = createChild_getChildFullExpression(childFullExpression, childData);
+			return super.createChild(childId, childFullExpression, indexInParent, childData);
+		}
+		
 	}
 	
 	protected final GDBTypeParser gdbTypeParser = new GDBTypeParser();
 
 	@SuppressWarnings("unused")
-	protected GDBType parseCorrectedGdbType( String newTypeName, GDBType gdbType) {
-		if(gdbType != null && gdbType.getType() == GDBType.ARRAY && gdbType instanceof GDBDerivedType) {
+	protected GDBType getCorrectedGdbType(String newTypeName, GDBType gdbType) {
+		if(gdbType.getType() == GDBType.ARRAY && gdbType instanceof GDBDerivedType) {
 			GDBDerivedType gdbDerivedType = (GDBDerivedType) gdbType;
 			if(gdbDerivedType.getDimension() == 0) {
 				// Correct a limitation in the GDBTypeParser when a "[]" type decl is present
@@ -79,6 +94,11 @@ public class MIVariableManager_LangExtension extends MIVariableManager {
 			}
 		}
 		return gdbType;
+	}
+	
+	@SuppressWarnings("unused")
+	public String createChild_getChildFullExpression(String childFullExpression, MIVar childData) {
+		return childFullExpression;
 	}
 	
 }

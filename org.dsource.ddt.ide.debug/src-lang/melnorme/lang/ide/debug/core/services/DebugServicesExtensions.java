@@ -12,9 +12,12 @@ package melnorme.lang.ide.debug.core.services;
 
 import org.eclipse.cdt.dsf.debug.service.IExpressions;
 import org.eclipse.cdt.dsf.gdb.service.GDBPatternMatchingExpressions;
+import org.eclipse.cdt.dsf.gdb.service.command.CommandFactory_6_8;
+import org.eclipse.cdt.dsf.gdb.service.macos.MacOSCommandFactory;
 import org.eclipse.cdt.dsf.mi.service.IMIExpressions;
 import org.eclipse.cdt.dsf.mi.service.MIExpressions;
 import org.eclipse.cdt.dsf.mi.service.MIVariableManager;
+import org.eclipse.cdt.dsf.mi.service.command.CommandFactory;
 import org.eclipse.cdt.dsf.service.DsfServicesTracker;
 import org.eclipse.cdt.dsf.service.DsfSession;
 
@@ -31,9 +34,21 @@ public class DebugServicesExtensions {
 		return new GDBPatternMatchingExpressions(session, originialExpressionService);
 	}
 	
-	protected MIVariableManager services_createMIVariableManager(DsfSession session, 
+	protected MIVariableManager services_createMIVariableManager(DsfSession session,
 			DsfServicesTracker servicesTracker) {
 		return new MIVariableManager_LangExtension(session, servicesTracker);
+	}
+	
+	public CommandFactory_6_8 createCommandFactory_6_8() {
+		return new CommandFactory_6_8();
+	}
+	
+	public CommandFactory createCommandFactory() {
+		return new CommandFactory();
+	}
+	
+	public CommandFactory createMacOSCommandFactory() {
+		return new MacOSCommandFactory();
 	}
 	
 }

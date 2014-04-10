@@ -4,12 +4,17 @@ import melnorme.lang.ide.debug.core.services.DebugServicesExtensions;
 
 import org.eclipse.cdt.dsf.debug.service.IDsfDebugServicesFactory;
 import org.eclipse.cdt.dsf.debug.service.IExpressions;
+import org.eclipse.cdt.dsf.debug.service.command.ICommandControl;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupDirector;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupParticipant;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate;
 import org.eclipse.cdt.dsf.gdb.launching.LaunchUtils;
 import org.eclipse.cdt.dsf.gdb.service.GdbDebugServicesFactory;
 import org.eclipse.cdt.dsf.gdb.service.GdbDebugServicesFactoryNS;
+import org.eclipse.cdt.dsf.gdb.service.command.GDBControl;
+import org.eclipse.cdt.dsf.gdb.service.command.GDBControl_7_0;
+import org.eclipse.cdt.dsf.gdb.service.command.GDBControl_7_2;
+import org.eclipse.cdt.dsf.gdb.service.command.GDBControl_7_4;
 import org.eclipse.cdt.dsf.gdb.service.macos.MacOSGdbDebugServicesFactory;
 import org.eclipse.cdt.dsf.service.DsfSession;
 import org.eclipse.core.runtime.CoreException;
@@ -95,6 +100,24 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 			return servicesExtensions.createExpressionService(session);
 		}
 		
+		@Override
+		protected ICommandControl createCommandControl(DsfSession session, ILaunchConfiguration config) {
+			String fVersion = getVersion();
+			if (GDB_7_4_VERSION.compareTo(fVersion) <= 0) {
+				return new GDBControl_7_4(session, config, servicesExtensions.createCommandFactory_6_8());
+			}
+			if (GDB_7_2_VERSION.compareTo(fVersion) <= 0) {
+				return new GDBControl_7_2(session, config, servicesExtensions.createCommandFactory_6_8());
+			}
+			if (GDB_7_0_VERSION.compareTo(fVersion) <= 0) {
+				return new GDBControl_7_0(session, config, servicesExtensions.createCommandFactory_6_8());
+			}
+			if (GDB_6_8_VERSION.compareTo(fVersion) <= 0) {
+				return new GDBControl(session, config, servicesExtensions.createCommandFactory_6_8());
+			}
+			return new GDBControl(session, config, servicesExtensions.createCommandFactory());
+		}
+		
 	}
 	
 	protected class GdbDebugServicesFactory_LangExtension extends GdbDebugServicesFactory {
@@ -107,10 +130,28 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 			// See super.createExpressionService(session);
 			return servicesExtensions.createExpressionService(session);
 		}
+		
+		@Override
+		protected ICommandControl createCommandControl(DsfSession session, ILaunchConfiguration config) {
+			String fVersion = getVersion();
+			if (GDB_7_4_VERSION.compareTo(fVersion) <= 0) {
+				return new GDBControl_7_4(session, config, servicesExtensions.createCommandFactory_6_8());
+			}
+			if (GDB_7_2_VERSION.compareTo(fVersion) <= 0) {
+				return new GDBControl_7_2(session, config, servicesExtensions.createCommandFactory_6_8());
+			}
+			if (GDB_7_0_VERSION.compareTo(fVersion) <= 0) {
+				return new GDBControl_7_0(session, config, servicesExtensions.createCommandFactory_6_8());
+			}
+			if (GDB_6_8_VERSION.compareTo(fVersion) <= 0) {
+				return new GDBControl(session, config, servicesExtensions.createCommandFactory_6_8());
+			}
+			return new GDBControl(session, config, servicesExtensions.createCommandFactory());
+		}
 	}
 	
-	protected final class MacOSGdbDebugServicesFactory_LangExtension extends MacOSGdbDebugServicesFactory {
-		private MacOSGdbDebugServicesFactory_LangExtension(String gdbVersion, String appleVersion) {
+	protected class MacOSGdbDebugServicesFactory_LangExtension extends MacOSGdbDebugServicesFactory {
+		public MacOSGdbDebugServicesFactory_LangExtension(String gdbVersion, String appleVersion) {
 			super(gdbVersion, appleVersion);
 		}
 		
@@ -118,6 +159,11 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 		protected IExpressions createExpressionService(DsfSession session) {
 			// See super.createExpressionService(session);
 			return servicesExtensions.createExpressionService(session);
+		}
+		
+		@Override
+		protected ICommandControl createCommandControl(DsfSession session, ILaunchConfiguration config) {
+			return new GDBControl(session, config, servicesExtensions.createMacOSCommandFactory());
 		}
 	}
 	
