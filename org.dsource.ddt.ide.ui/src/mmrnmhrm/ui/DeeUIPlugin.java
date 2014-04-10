@@ -23,17 +23,19 @@ public class DeeUIPlugin extends LangUIPlugin {
 	private DubCommandsConsoleListener dubProcessListener;
 	
 	@Override
-	protected Class<?> doCustomStart_getImagesClass() {
-		return DeePluginImages.class;
+	protected void doCustomStart_initialStage(BundleContext context) {
+		super.doCustomStart_initialStage(context);
+		SWTFactoryUtil_Old.enableDebugColorHelpers = Platform.inDebugMode();
 	}
 	
 	@Override
-	protected void doCustomStart(BundleContext context) {
-		SWTFactoryUtil_Old.enableDebugColorHelpers = Platform.inDebugMode();
-		
+	protected void doCustomStart_finalStage() {
+		// Add process listener and start model manager. 
 		dubProcessListener = new DubCommandsConsoleListener();
 		DubModelManager.getDefault().getProcessManager().addDubProcessListener(dubProcessListener);
 		DubModelManager.startDefault();
+		
+		super.doCustomStart_finalStage();
 	}
 	
 	@Override

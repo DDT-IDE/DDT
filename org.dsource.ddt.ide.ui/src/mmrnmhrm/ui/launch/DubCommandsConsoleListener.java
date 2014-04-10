@@ -34,6 +34,9 @@ import org.eclipse.ui.console.MessageConsole;
 
 public class DubCommandsConsoleListener implements IExternalProcessListener {
 	
+	public DubCommandsConsoleListener() {
+	}
+	
 	protected static ISharedTextColors getColorManager() {
 		return ColorManager.getDefault();
 	}
