@@ -12,7 +12,10 @@ package melnorme.lang.ide.debug.ui;
 
 import melnorme.lang.ide.ui.LangEditorTextHoversRegistry;
 
+import org.eclipse.cdt.dsf.gdb.launching.GdbLaunch;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.osgi.framework.BundleContext;
 
 
@@ -28,7 +31,20 @@ public class DebugUI extends Plugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		LangEditorTextHoversRegistry.removeTextHoverSpec(DelegatingDebugTextHover.class);
+		
+		disposeAdapterSets();
 		super.stop(context);
+	}
+	
+	/**
+	 * Dispose adapter sets for all launches.
+	 */
+	private void disposeAdapterSets() {
+	    for (ILaunch launch : DebugPlugin.getDefault().getLaunchManager().getLaunches()) {
+	        if (launch instanceof GdbLaunch) {
+	            GdbAdapterFactory.disposeAdapterSet(launch);
+	        }
+	    }
 	}
 	
 }

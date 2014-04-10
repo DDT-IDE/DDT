@@ -16,15 +16,23 @@ import melnorme.lang.ide.launching.ProcessSpawnInfo;
 import mmrnmhrm.core.launch.DeeLaunchConfigurationDelegate;
 
 import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
+import org.eclipse.cdt.dsf.gdb.launching.GdbLaunch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.model.ISourceLocator;
 
 public class DeeDebugLaunchConfigurationDelegate extends DeeLaunchConfigurationDelegate {
 	
-	protected final GdbLaunchDelegateExtension gdbLaunchDelegate = new GdbLaunchDelegateExtension();
+	protected final GdbLaunchDelegateExtension gdbLaunchDelegate = new GdbLaunchDelegateExtension() {
+		@Override
+		protected GdbLaunch createGdbLaunch(ILaunchConfiguration configuration, String mode, ISourceLocator locator)
+				throws CoreException {
+			return new DeeGdbLaunch(configuration, mode, locator);
+		}
+	};
 	
 	@Override
 	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {

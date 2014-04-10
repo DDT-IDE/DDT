@@ -2,6 +2,8 @@
 
 ### DDT 0.10.?
  * Removed some unused/invalid preferences from Editor preference page.
+ * Debugger: The "Details" format is now the default display value for variables in the Variables view, Expressions view, debug hover.
+  * This is more in line to what GDB display in the command line, and is usually a more useful value. It replaces the uselesss '{...}' value that was most commonly displayed for most complex type.   
 
 ### DDT 0.10.0 (2014-03-14)
  * Added DUB support. Project import-path now determined by the `dub.json` manifest file and running `dub describe`.
@@ -24,7 +26,7 @@
    recreate the project using the new DUB Project wizard.
 
 ##### Changes after the Preview Release
- * Added support for LDC compiler locations.
+ * Implemented #16: Added support for LDC compiler locations.
  * Compiler locations are now automatically searched and added on DDT startup:
    * DDT will look on the PATH environment variable for compilers installations.
  * Cleanup: Removed compilers/interpreters config block from `New DUB Project` wizard.   
