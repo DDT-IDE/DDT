@@ -1,10 +1,16 @@
 package melnorme.lang.ide.debug.core;
 
+import melnorme.lang.ide.debug.core.services.DebugServicesExtensions;
+
 import org.eclipse.cdt.dsf.debug.service.IDsfDebugServicesFactory;
+import org.eclipse.cdt.dsf.debug.service.IExpressions;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupDirector;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupParticipant;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate;
 import org.eclipse.cdt.dsf.gdb.launching.LaunchUtils;
+import org.eclipse.cdt.dsf.gdb.service.GdbDebugServicesFactory;
+import org.eclipse.cdt.dsf.gdb.service.GdbDebugServicesFactoryNS;
+import org.eclipse.cdt.dsf.gdb.service.macos.MacOSGdbDebugServicesFactory;
 import org.eclipse.cdt.dsf.service.DsfSession;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -54,7 +60,65 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 	
 	@Override
 	protected IDsfDebugServicesFactory newServiceFactory(ILaunchConfiguration config, String version) {
-		return super.newServiceFactory(config, version);
+		boolean fIsNonStopSession = LaunchUtils.getIsNonStopMode(config);
+		if (fIsNonStopSession && isNonStopSupportedInGdbVersion(version)) {
+			return new GdbDebugServicesFactoryNS_LangExtension(version);
+		}
+		
+		if (version.contains(LaunchUtils.MACOS_GDB_MARKER)) {
+			// The version string at this point should look like
+			// 6.3.50-20050815APPLE1346, we extract the gdb version and apple version
+			String versions [] = version.split(LaunchUtils.MACOS_GDB_MARKER);
+			if (versions.length == 2) {
+				return new MacOSGdbDebugServicesFactory_LangExtension(versions[0], versions[1]);
+			}
+		}
+		
+		return new GdbDebugServicesFactory_LangExtension(version);
+	}
+	
+	protected final DebugServicesExtensions servicesExtensions = createServicesExtensions();
+	
+	protected DebugServicesExtensions createServicesExtensions() {
+		return new DebugServicesExtensions();
+	}
+	
+	protected class GdbDebugServicesFactoryNS_LangExtension extends GdbDebugServicesFactoryNS {
+		
+		public GdbDebugServicesFactoryNS_LangExtension(String version) {
+			super(version);
+		}
+		
+		@Override
+		protected IExpressions createExpressionService(DsfSession session) {
+			// See super.createExpressionService(session);
+			return servicesExtensions.createExpressionService(session);
+		}
+		
+	}
+	
+	protected class GdbDebugServicesFactory_LangExtension extends GdbDebugServicesFactory {
+		public GdbDebugServicesFactory_LangExtension(String version) {
+			super(version);
+		}
+		
+		@Override
+		protected IExpressions createExpressionService(DsfSession session) {
+			// See super.createExpressionService(session);
+			return servicesExtensions.createExpressionService(session);
+		}
+	}
+	
+	protected final class MacOSGdbDebugServicesFactory_LangExtension extends MacOSGdbDebugServicesFactory {
+		private MacOSGdbDebugServicesFactory_LangExtension(String gdbVersion, String appleVersion) {
+			super(gdbVersion, appleVersion);
+		}
+		
+		@Override
+		protected IExpressions createExpressionService(DsfSession session) {
+			// See super.createExpressionService(session);
+			return servicesExtensions.createExpressionService(session);
+		}
 	}
 	
 }
