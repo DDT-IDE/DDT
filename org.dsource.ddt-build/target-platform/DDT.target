@@ -8,8 +8,8 @@
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.feature.group" version="4.3.0.v20130605-2000"/>
 <unit id="org.eclipse.dltk.core.feature.group" version="5.0.0.201306060709"/>
-<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="4.2.0.201309180223"/>
-<unit id="org.eclipse.cdt.platform.feature.group" version="8.2.1.201309180223"/>
+<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.3.0.201402142303"/>
+<unit id="org.eclipse.cdt.platform.feature.group" version="8.3.0.201402142303"/>
 <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.0.v20130521-0416"/>
 <repository location="http://download.eclipse.org/releases/kepler/"/>
 </location>
