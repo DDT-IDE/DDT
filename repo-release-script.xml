@@ -1,100 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- ====================================================================== 
-	
-Ant script for automated release and deploy of update site. Sample usage:
-First, Run the build script:
-	mvn clean integration-test
-Alternatively, use a version qualifier prefix:
-	mvn clean integration-test -Dqualifier_default_prefix=PR1-
+<!-- 
+====================================================================== 
+Ant script for automated release and deploy of the update site. Sample usage:
+First, run the Maven build script:
+mvn clean integration-test
 
-Run this repo upload script:
-It requires a git repo of the project updateSite Git repo, as specified by -DupdateSiteGitRepo
-	ant -f repo-release-script.xml uploadRelease -DfromScratch=true -DupdateSiteGitURL=https://site.com
-     ====================================================================== -->
+ant -f site-release-script.xml UploadUpdateSiteToGit -DupdateSiteGitURL=file://..DDT/ddt.updates-PR
+====================================================================== 
+-->
 <project name="project" >
 
-	<property name="localStagingSiteDir" location="bin-maven/updateSite/" />
-	<property name="repoDest" location="${localStagingSiteDir}/ddt.feature-repo" />
-	<property name="fromScratch">false</property>
+	<property name="localUpdateSiteDir" location="bin-maven/updateSite/" />
 
-	<property name="gitLocation">git</property>
-	<property name="repoSrc" location="bin-maven/ddt.repository/repository" />
-	<property name="compositeSrc" location="org.dsource.ddt-build/composite-repository" />
+	<property name="gitLocation" value="git" />
+	<property name="repoSrc" location="bin-maven/features.repository/repository" />
+	<property name="updateSiteSkeleton.Dir" location="releng/UpdateSite-skeleton" />
 	
+	<target name="clean">
+		<delete dir="${localUpdateSiteDir}" failonerror="true"/>
+	</target>
 
-	<target name="CopyRepoToStagingSite">
-		<mkdir dir="${repoDest}"/>
+	<target name="CopyRepoToLocalUpdateSite">
+		<property name="repoDest" location="${localUpdateSiteDir}/local-repo" />
 		<copy verbose="true" todir="${repoDest}">
 			<fileset dir="${repoSrc}"/>
 		</copy>
 	</target>
 	
-	<target name="initStagingSite.FromScratch" if="${fromScratch}">
-		<mkdir dir="${localStagingSiteDir}"/>
-		
-		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
-			<arg line="init"/>
-		</exec>
-		
-		<copy verbose="true" todir="${localStagingSiteDir}">
-			<fileset dir="${compositeSrc}" erroronmissingdir="false"/>
+	<target name="CreateUpdateSiteFromScratch" depends="clean">
+		<copy verbose="true" todir="${localUpdateSiteDir}">
+			<fileset dir="${updateSiteSkeleton.Dir}"/>
 		</copy>
 		
-		<antcall target="CopyRepoToStagingSite"/>
-		
-		<property name="gitPushCommandExtra" value=" --force" />
+		<antcall target="CopyRepoToLocalUpdateSite"/>
 	</target>
 	
-	<target name="initStagingSite.FromExisting" unless="${fromScratch}">
-		<mkdir dir="${localStagingSiteDir}"/>
-		
+	<target name="UploadUpdateSite" depends="CreateUpdateSiteFromScratch">
+		<fail unless="UpdateSiteUploadURL"/>
+	
+		<exec dir="." executable="mvn" failonerror="true">
+			<arg line="-f upload-helper.pom.xml wagon:upload -Dwagon.url=${UpdateSiteUploadURL}"/>
+		</exec>
+	</target>
+	
+	<!-- ================================= -->
+	
+	<target name="CreateUpdateSiteFromGit" depends="clean">
 		<fail unless="updateSiteGitURL"/>
-		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
-			<arg line="clone ${updateSiteGitURL} ."/>
+		<exec dir="." executable="${gitLocation}" failonerror="true">
+			<arg line="clone ${updateSiteGitURL} ${localUpdateSiteDir}"/>
 		</exec>
 	
 		<delete verbose="true">
 			<fileset dir="${repoDest}" erroronmissingdir="false" includes="**/*.jar"/>
 		</delete>
 		
-		<antcall target="CopyRepoToStagingSite"/>
-		<property name="gitPushCommandExtra" value=" " />
+		<antcall target="CopyRepoToLocalUpdateSite"/>
+		<antcall target="_commitGitChanges"/>
 	</target>
-	
-	<target name="initStagingSite" depends="initStagingSite.FromExisting, initStagingSite.FromScratch">
 
-		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
+	<target name="_commitGitChanges">
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
 			<arg line="add -A"/>
 		</exec>
-		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
 			<arg line="commit -m"/>
 			<arg value="update site"/>
 		</exec>
-	</target>
-
-	<target name="uploadRelease" depends="initStagingSite">
-		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
 			<arg line="status"/>
 		</exec>
+	</target>
+	
+	<target name="UploadUpdateSite.ToGit" depends="CreateUpdateSiteFromGit">
 		
 		<fail unless="updateSiteGitURL"/>
-		<exec dir="${localStagingSiteDir}" executable="${gitLocation}" >
-			<arg line="push ${updateSiteGitURL} ${gitPushCommandExtra}"/>
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
+			<arg line="push ${updateSiteGitURL} "/>
 		</exec>
 	</target>
-
-<!-- ======================================================================
-	This task must be run from within eclipse, example:
-	eclipse -application org.eclipse.ant.core.antRunner -console -consolelog -f repo-release-script.xml createCompositeRepo -updateSiteGitRepo=../ddt.updates-PR
-     ====================================================================== -->
-	<target name="createCompositeRepo">
-		<p2.composite.repository>
-			<repository location="${compositeSrc}" name="DDT repository" compressed="false" />
-			<add>
-				<repository location="http://download.eclipse.org/releases/kepler" />
-				<repository location="ddt.feature-repo" />
-			</add>
-		</p2.composite.repository>
+	
+	<target name="UploadUpdateSite.ToGit_Reset" depends="CreateUpdateSiteFromScratch">
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
+			<arg line="init"/>
+		</exec>
+		<antcall target="_commitGitChanges"/>
+		
+		<fail unless="updateSiteGitURL"/>
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
+			<arg line="push ${updateSiteGitURL} --force"/>
+		</exec>
 	</target>
 	
 </project>

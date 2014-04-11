@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-Helper POM to upload/deploy a directory using webdav
-
-Example: mvn -f upload-helper-pom.xml wagon:upload -Dwagon.url=http://repository-bruno-medeiros.forge.cloudbees.com/DDT-CI/
+Helper POM to upload/deploy a directory using webdav. Example: 
+mvn -f upload-helper.pom.xml wagon:upload -Dwagon.url=dav:https://repository-bruno-medeiros.forge.cloudbees.com/DDT-CI/ -DserverId=bm-cloudbees
 
 -->
 <project>
