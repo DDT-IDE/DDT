@@ -11,10 +11,10 @@ ant -f site-release-script.xml UploadUpdateSiteToGit -DupdateSiteGitURL=file://.
 <project name="project" >
 
 	<property name="localUpdateSiteDir" location="bin-maven/updateSite/" />
-
-	<property name="gitLocation" value="git" />
 	<property name="repoSrc" location="bin-maven/features.repository/repository" />
 	<property name="updateSiteSkeleton.Dir" location="releng/UpdateSite-skeleton" />
+
+	<property name="gitLocation" value="git" />
 	
 	<target name="clean">
 		<delete dir="${localUpdateSiteDir}" failonerror="true"/>

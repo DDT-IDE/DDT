@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-Helper POM to upload/deploy a directory using webdav. Example: 
+Helper POM to upload/deploy a directory using webdav wagon. Example: 
 mvn -f upload-helper.pom.xml wagon:upload -Dwagon.url=dav:https://repository-bruno-medeiros.forge.cloudbees.com/DDT-CI/ -DserverId=bm-cloudbees
 
 -->
@@ -11,6 +11,10 @@ mvn -f upload-helper.pom.xml wagon:upload -Dwagon.url=dav:https://repository-bru
 	<artifactId>fake</artifactId>
 	<version>1</version>
 	<packaging>pom</packaging>
+
+	<properties>
+		<dirToUpload>../bin-maven/updateSite</dirToUpload>
+	</properties>
 	
 	<build>
 		<extensions>
@@ -34,7 +38,7 @@ mvn -f upload-helper.pom.xml wagon:upload -Dwagon.url=dav:https://repository-bru
 						<goal>upload</goal>
 					</goals>
 					<configuration>
-						<fromDir>bin-maven/updateSite</fromDir>
+						<fromDir>${dirToUpload}</fromDir>
 						<includes>**</includes>
 					</configuration>
 				</execution>
