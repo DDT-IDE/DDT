@@ -16,7 +16,7 @@
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
 
-		<ddt.targetPlatform>org.dsource.ddt-build/target-platform/DDT</ddt.targetPlatform>
+		<ddt.targetPlatform>releng/target-platform/DDT</ddt.targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
 			
 		<dtool.testdataDir>${parentBaseDir}/org.dsource.ddt.dtool/testdata</dtool.testdataDir>
@@ -31,14 +31,14 @@
 		<module>org.dsource.ddt.ide.debug</module>
 		<module>org.dsource.ddt-feature</module>
 		<module>org.dsource.ddt-base-feature</module>
-		<module>org.dsource.ddt-build/repository</module>
+		<module>releng/repository</module>
 	</modules>
 
 	<profiles>
 		<profile>
 			<id>build-ide-product</id>
 			<modules>
-				<module>org.dsource.ddt-build/ddt-product</module>
+				<module>releng/ddt-product</module>
 			</modules>
 
 			<build>
