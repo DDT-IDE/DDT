@@ -7,9 +7,9 @@ import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.tests.SampleMainProject;
-import mmrnmhrm.tests.ui.BaseDeeUITest;
 import mmrnmhrm.tests.ui.accessors.ProjectWizardFirstPage__Accessor;
 import mmrnmhrm.tests.ui.accessors.WizardDialog__Accessor;
+import mmrnmhrm.ui.CommonDeeUITest;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -24,7 +24,7 @@ import org.junit.Test;
 
 
 
-public class DeeProjectWizardTest extends BaseDeeUITest {
+public class DeeProjectWizardTest extends CommonDeeUITest {
 	
 	private DeeProjectWizard wizard;
 	private WizardDialog__Accessor wizDialog;

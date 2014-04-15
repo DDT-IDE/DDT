@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.misc.ReflectionUtils;
-import mmrnmhrm.tests.ui.BaseDeeUITest;
+import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 
 import org.eclipse.core.resources.IFile;
@@ -34,19 +34,19 @@ import org.eclipse.jface.text.source.ISourceViewer;
 
 import dtool.ast.definitions.INamedElement;
 
-public class ContentAssistUI_CommonTest extends BaseDeeUITest {
+public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
 	protected final ISourceModule srcModule;
 	protected final ScriptEditor editor;
 	
 	public ContentAssistUI_CommonTest(IFile file) {
-		this.editor = BaseDeeUITest.openDeeEditorForFile(file);
+		this.editor = CommonDeeUITest.openDeeEditorForFile(file);
 		this.srcModule = DLTKCore.createSourceModuleFrom(file);
 	}
 	
 	public ContentAssistUI_CommonTest(ISourceModule sourceModule) {
 		this.srcModule = sourceModule;
-		this.editor = BaseDeeUITest.openDeeEditorForFile((IFile) sourceModule.getResource());
+		this.editor = CommonDeeUITest.openDeeEditorForFile((IFile) sourceModule.getResource());
 	}
 	
 	protected int getMarkerStartPos(String markerString) {

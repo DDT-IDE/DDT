@@ -4,7 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
-import mmrnmhrm.tests.ui.BaseDeeUITest;
+import mmrnmhrm.ui.CommonDeeUITest;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorPart;
@@ -12,7 +12,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.ide.IDE;
 import org.junit.Test;
 
-public class DeeEditor_FoldingTest extends BaseDeeUITest {
+public class DeeEditor_FoldingTest extends CommonDeeUITest {
 	
 	// Very basic test, could use more stuff
 	

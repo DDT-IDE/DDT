@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.tests.ui;
+package mmrnmhrm.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.tests.CommonUITest;
@@ -22,7 +22,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 
 
-public class BaseDeeUITest extends CommonUITest {
+public class CommonDeeUITest extends CommonUITest {
 	
 	public static ScriptEditor openDeeEditorForFile(IFile file) {
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();

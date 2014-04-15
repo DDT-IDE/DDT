@@ -13,7 +13,7 @@ import melnorme.util.swt.SWTTestUtils;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.codeassist.CompletionEngineSourceTests;
-import mmrnmhrm.tests.ui.BaseDeeUITest;
+import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
@@ -29,7 +29,7 @@ import dtool.sourcegen.AnnotatedSource;
 public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	
 	static {
-		MiscUtil.loadClass(BaseDeeUITest.class);
+		MiscUtil.loadClass(CommonDeeUITest.class);
 	}
 	
 	public ContentAssistUISourceTests(String testUIDescription, File file) {
@@ -51,7 +51,7 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 		super.setupTestProject_do(explicitModuleName, projectFolderName, testCase);
 		
 		IFile file = (IFile) sourceModule.getResource();
-		editor = BaseDeeUITest.openDeeEditorForFile(file);
+		editor = CommonDeeUITest.openDeeEditorForFile(file);
 		sourceModule.discardWorkingCopy(); // XXX: In the future this might not be necessary
 		
 		ContentAssistant ca = ContentAssistUI_CommonTest.getContentAssistant(editor);

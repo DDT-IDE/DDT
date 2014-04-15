@@ -18,7 +18,7 @@ import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.SampleNonDeeProject;
-import mmrnmhrm.tests.ui.BaseDeeUITest;
+import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 import mmrnmhrm.ui.editor.DeeEditor;
 
@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class OpenDefinitionOperationTest extends BaseDeeUITest {
+public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	
 	protected IFile file; 
 	protected IEditorPart editor;

@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.views;
 
-import mmrnmhrm.tests.ui.BaseDeeUITest;
+import mmrnmhrm.ui.CommonDeeUITest;
 
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import dtool.resolver.DefUnitSearch;
 import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;
 
-public class DeeElementLabelProvider_Test extends BaseDeeUITest {
+public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }

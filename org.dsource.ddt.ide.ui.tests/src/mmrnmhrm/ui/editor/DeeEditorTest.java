@@ -3,7 +3,7 @@ package mmrnmhrm.ui.editor;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.tests.SampleMainProject;
-import mmrnmhrm.tests.ui.BaseDeeUITest;
+import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.views.ASTViewer;
 
 import org.eclipse.core.resources.IFile;
@@ -17,7 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DeeEditorTest extends BaseDeeUITest {
+public class DeeEditorTest extends CommonDeeUITest {
 	
 	public static IDocument getDocument(ScriptEditor editor) {
 		return editor.getScriptSourceViewer().getDocument();
