@@ -1,62 +1,28 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.tests.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.tests.CommonUITest;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import melnorme.util.swt.SWTTestUtils;
-import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.ui.editor.DeeEditor;
-import mmrnmhrm.ui.views.DeePerspective;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.intro.IIntroPart;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 
 
-public class BaseDeeUITest extends BaseDeeTest {
-	
-	static {
-		assertTrue(PlatformUI.getWorkbench() != null);
-		IWorkbenchPage page = WorkbenchUtils.getActivePage();
-		page.closeAllEditors(false);
-		
-		IIntroPart intro = PlatformUI.getWorkbench().getIntroManager().getIntro();
-		PlatformUI.getWorkbench().getIntroManager().closeIntro(intro);
-		
-		page.setPerspective(
-			PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(DeePerspective.PERSPECTIVE_ID));
-		
-		SWTTestUtils.________________flushUIEventQueue________________();
-	}
-	
-	@AfterClass
-	public static void staticTestEnd() throws Exception {
-		WorkbenchUtils.getActivePage().closeAllEditors(false);
-	}
-	
-	@Before
-	public void checkWorbench() throws Exception {
-		assertTrue(PlatformUI.getWorkbench().getIntroManager().getIntro() == null);
-	}
-	
-	@After
-	public void after_clearEventQueue() throws Throwable {
-		SWTTestUtils.clearEventQueue();
-	}
-	
-	@Override
-	public void checkLogErrorListener() throws Throwable {
-		SWTTestUtils.clearEventQueue();
-		super.checkLogErrorListener();
-	}
-	
-	/*--------------*/
+public class BaseDeeUITest extends CommonUITest {
 	
 	public static ScriptEditor openDeeEditorForFile(IFile file) {
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();

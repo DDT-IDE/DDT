@@ -6,6 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 
+import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;

@@ -14,13 +14,13 @@ import java.util.Map;
 
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.SimpleLogger;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.parser.CommonTemplatedSourceBasedTest;

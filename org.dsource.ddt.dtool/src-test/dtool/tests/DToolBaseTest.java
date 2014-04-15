@@ -27,12 +27,12 @@ import java.util.Set;
 
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
 
 import org.junit.Before;
 
-import dtool.SimpleLogger;
 import dtool.project.DeeNamingRules_Test;
 import dtool.tests.utils.MiscFileUtils;
 import dtool.util.NewUtils;

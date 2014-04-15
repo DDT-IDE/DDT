@@ -15,9 +15,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
+import melnorme.lang.ide.core.tests.utils.BundleResourcesUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.tests.utils.BundleResourcesUtil;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;

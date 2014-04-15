@@ -24,6 +24,7 @@ import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.CoreTaskAgent;
@@ -52,7 +53,6 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
-import dtool.SimpleLogger;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;

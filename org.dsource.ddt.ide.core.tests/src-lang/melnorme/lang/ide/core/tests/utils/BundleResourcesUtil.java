@@ -1,4 +1,4 @@
-package mmrnmhrm.tests.utils;
+package melnorme.lang.ide.core.tests.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -13,14 +13,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 
+import melnorme.lang.ide.core.tests.CoreTests;
 import melnorme.utilbox.misc.StreamUtil;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-
-import dtool.tests.DToolBaseTest;
 
 
 public class BundleResourcesUtil {
@@ -30,8 +29,8 @@ public class BundleResourcesUtil {
 	 * If targetDir doesn't exists, it is created (top level directory only).
 	 */
 	public static void copyDirContents(String bundleId, String resourcePath, final File targetDir) throws IOException {
-		DToolBaseTest.testsLogger.println(">>> Copying " + bundleId + "::" + resourcePath);
-		DToolBaseTest.testsLogger.println("  to: " + targetDir);
+		CoreTests.testsLogger.println(">>> Copying " + bundleId + "::" + resourcePath);
+		CoreTests.testsLogger.println("  to: " + targetDir);
 		
 		// normalize path with regards to separators
 		final String normalizedBasePath = new Path(resourcePath).makeRelative().addTrailingSeparator().toString(); 
@@ -48,7 +47,7 @@ public class BundleResourcesUtil {
 					inputStream = sourceFile.openConnection().getInputStream();
 					
 					String srcSubPath = determineSubPath(srcPath);
-					DToolBaseTest.testsLogVerbose.println(srcSubPath);
+					CoreTests.testsLogVerbose.println(srcSubPath);
 					
 					File newFile = new File(targetDir, srcSubPath);
 					newFile.getParentFile().mkdir(); // Likely not necessary, but do it just in case
@@ -64,7 +63,7 @@ public class BundleResourcesUtil {
 			@Override
 			protected void handleDirectory(String srcPath) {
 				String srcSubPath = determineSubPath(srcPath);
-				DToolBaseTest.testsLogVerbose.println(srcSubPath);
+				CoreTests.testsLogVerbose.println(srcSubPath);
 				
 				File newDir = new File(targetDir, srcSubPath);
 				if(!newDir.exists()) {

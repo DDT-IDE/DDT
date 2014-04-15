@@ -28,11 +28,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.fntypes.Predicate;
+import melnorme.utilbox.misc.SimpleLogger;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import dtool.SimpleLogger;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessor;

@@ -4,8 +4,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import melnorme.lang.ide.core.tests.CommonCoreTest;
 import mmrnmhrm.core.codeassist.DeeCompletionEngine.RefSearchCompletionProposal;
-import mmrnmhrm.tests.CommonCoreTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 

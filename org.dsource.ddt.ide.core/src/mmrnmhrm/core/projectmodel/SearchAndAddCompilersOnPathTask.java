@@ -17,6 +17,7 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.SimpleLogger;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.compiler_installs.CommonInstallType;
@@ -30,8 +31,6 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.eclipse.dltk.launching.ScriptRuntime;
-
-import dtool.SimpleLogger;
 
 public class SearchAndAddCompilersOnPathTask {
 	

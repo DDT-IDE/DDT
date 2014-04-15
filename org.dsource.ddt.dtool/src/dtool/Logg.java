@@ -1,5 +1,7 @@
 package dtool;
 
+import melnorme.utilbox.misc.SimpleLogger;
+
 
 /** 
  * dtool's and upwards log streams

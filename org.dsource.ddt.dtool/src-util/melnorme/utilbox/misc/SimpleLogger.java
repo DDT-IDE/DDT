@@ -8,9 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool;
+package melnorme.utilbox.misc;
 
-
+/** 
+ * Very simple and basic logging helper. 
+ */
 public class SimpleLogger {
 
 	public static boolean masterLoggEnabled = true;

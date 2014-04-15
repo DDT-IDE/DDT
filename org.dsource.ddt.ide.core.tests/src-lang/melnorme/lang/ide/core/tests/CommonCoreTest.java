@@ -8,11 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.tests;
+package melnorme.lang.ide.core.tests;
 
 
+import melnorme.lang.ide.core.tests.utils.ErrorLogListener;
 import melnorme.utilbox.tests.CommonTest;
-import mmrnmhrm.tests.utils.ErrorLogListener;
 
 import org.junit.After;
 import org.junit.AfterClass;
