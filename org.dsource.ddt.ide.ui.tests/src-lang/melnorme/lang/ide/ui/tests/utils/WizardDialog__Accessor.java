@@ -1,4 +1,4 @@
-package mmrnmhrm.tests.ui.accessors;
+package melnorme.lang.ide.ui.tests.utils;
 
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;

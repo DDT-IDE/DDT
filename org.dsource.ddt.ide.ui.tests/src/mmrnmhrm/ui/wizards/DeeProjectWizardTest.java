@@ -1,14 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.wizards;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.tests.utils.WizardDialog__Accessor;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DLTKUtils;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.tests.SampleMainProject;
-import mmrnmhrm.tests.ui.accessors.ProjectWizardFirstPage__Accessor;
-import mmrnmhrm.tests.ui.accessors.WizardDialog__Accessor;
 import mmrnmhrm.ui.CommonDeeUITest;
 
 import org.eclipse.core.resources.IProject;
@@ -55,7 +64,7 @@ public class DeeProjectWizardTest extends CommonDeeUITest {
 		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				IProject project = DeeCore.getWorkspaceRoot().getProject(NEWPROJNAME);
+				IProject project = EclipseUtils.getWorkspaceRoot().getProject(NEWPROJNAME);
 				if(project.exists()) {
 					project.delete(true, monitor);
 				}
@@ -64,65 +73,16 @@ public class DeeProjectWizardTest extends CommonDeeUITest {
 	}
 	
 	
-	private void simulateEnterPage2() {
-		wizDialog.nextPressed();
-	}
-	
-	private void simulatePage2GoBack() {
-		wizDialog.backPressed();
-	}
-	
-	private void simulatePressCancel() {
+	protected void simulatePressCancel() {
 		wizDialog.cancelPressed();
 	}
 	
-	private void simulatePressFinish() {
+	protected void simulatePressFinish() {
 		wizDialog.finishPressed();
 	}
 	
-	@Test
-	public void test_P1Validation() throws Throwable { test_P1Validation$(); }
-	public void test_P1Validation$() throws Throwable {
-		ProjectWizardFirstPage__Accessor.access_fNameGroup(wizard.fFirstPage).setName(SampleMainProject.SAMPLEPROJNAME);
-		assertTrue(!wizard.canFinish());
-		
-		simulatePressCancel();
-		assertTrue(checkNoChanges());
-	}
-	
-	@Test
-	public void test_P1_Finish() throws Throwable {
-		wizard.fFirstPage.getProjectName();
-		ProjectWizardFirstPage__Accessor.access_fNameGroup(wizard.fFirstPage).setName(NEWPROJNAME);
-		assertTrue(wizard.canFinish());
-		
-		simulatePressFinish();
-		assertTrue(checkProjectCreated());
-	}
-	
-	@Test
-	public void test_P1_P2_P1_Finish() throws Throwable {
-		ProjectWizardFirstPage__Accessor.access_fNameGroup(wizard.fFirstPage).setName(NEWPROJNAME);
-		assertTrue(wizard.canFinish());
-		simulateEnterPage2();
-		
-		simulatePage2GoBack();
-		
-		simulatePressFinish();
-		assertTrue(checkProjectCreated());
-	}
-	
-	
-	/* ---- */
-	
-	@Test
-	public void test_P1_Cancel() throws Throwable {
-		ProjectWizardFirstPage__Accessor.access_fNameGroup(wizard.fFirstPage).setName(NEWPROJNAME);
-		assertTrue(wizard.canFinish());
-		
-		
-		simulatePressCancel();
-		assertTrue(checkNoChanges());
+	protected void firstPage_setProjectName(String name) throws NoSuchFieldException {
+		ProjectWizardFirstPage__Accessor.access_fNameGroup(wizard.fFirstPage).setName(name);
 	}
 	
 	
@@ -136,4 +96,57 @@ public class DeeProjectWizardTest extends CommonDeeUITest {
 		logErrorListener.checkErrors();
 		return DLTKUtils.getDLTKModel().getScriptProject(NEWPROJNAME).exists();
 	}
+	
+	@Test
+	public void test_P1Validation() throws Throwable { test_P1Validation$(); }
+	public void test_P1Validation$() throws Throwable {
+		firstPage_setProjectName(SampleMainProject.SAMPLEPROJNAME);
+		assertTrue(!wizard.canFinish());
+		
+		simulatePressCancel();
+		assertTrue(checkNoChanges());
+	}
+	
+	@Test
+	public void test_P1_Finish() throws Throwable {
+		wizard.fFirstPage.getProjectName();
+		firstPage_setProjectName(NEWPROJNAME);
+		assertTrue(wizard.canFinish());
+		
+		simulatePressFinish();
+		assertTrue(checkProjectCreated());
+	}
+	
+	@Test
+	public void test_P1_Cancel() throws Throwable {
+		firstPage_setProjectName(NEWPROJNAME);
+		assertTrue(wizard.canFinish());
+		
+		
+		simulatePressCancel();
+		assertTrue(checkNoChanges());
+	}
+	
+	@Test
+	public void test_P1_P2_P1_Finish() throws Throwable {
+		firstPage_setProjectName(NEWPROJNAME);
+		assertTrue(wizard.canFinish());
+		simulateEnterPage2();
+		
+		simulatePage2GoBack();
+		
+		simulatePressFinish();
+		assertTrue(checkProjectCreated());
+	}
+	
+	/* ----------------- ----------------- */
+	
+	protected void simulateEnterPage2() {
+		wizDialog.nextPressed();
+	}
+	
+	protected void simulatePage2GoBack() {
+		wizDialog.backPressed();
+	}
+	
 }

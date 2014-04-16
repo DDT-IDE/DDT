@@ -7,13 +7,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.core.compiler_installs.GDCInstallType;
 
-import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
@@ -183,22 +181,11 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		assertTrue(install.getId().startsWith(installId));
 	}
 	
-	public static IProject createAndOpenProject(String name, boolean overwrite) throws CoreException {
-		final IProject project = EclipseUtils.getWorkspaceRoot().getProject(name);
-		if(overwrite && project.exists()) {
-			project.delete(true, null);
-		}
-		project.create(null);
-		project.open(null);
-		assertTrue(project.exists() && project.isOpen());
-		return project;
-	}
 	
 	public static void setupDeeProject(IProject project, String libraryEntry) throws CoreException {
-		assertTrue(project.exists());
 		IScriptProject dltkProj = DLTKCore.create(project);
-		assertTrue(!dltkProj.exists()); 
-		EclipseUtils.addNature(project, DeeNature.NATURE_ID);
+		assertTrue(!dltkProj.exists());
+		setupLangProject(project);
 		assertTrue(dltkProj.exists());
 		
 		IBuildpathEntry entry = DLTKCore.newContainerEntry(
@@ -206,15 +193,6 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		);
 		dltkProj.setRawBuildpath(new IBuildpathEntry[] {entry}, null);
 		assertNotNull(ScriptRuntime.getInterpreterInstall(dltkProj));
-	}
-	
-	public static void deleteProject(String projectName) {
-		IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
-		try {
-			project.delete(true, null);
-		} catch (CoreException e) {
-			// Ignore
-		}
 	}
 	
 }

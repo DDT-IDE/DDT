@@ -1,4 +1,4 @@
-package mmrnmhrm.tests.ui.accessors;
+package mmrnmhrm.ui.wizards;
 
 import melnorme.utilbox.misc.ReflectionUtils;
 
