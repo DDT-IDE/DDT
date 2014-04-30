@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -68,17 +69,15 @@ public class DubProcessManager {
 	}
 	
 	public ExternalProcessNotifyingHelper submitDubCommandAndWait(IProject project, IProgressMonitor monitor, 
-			String... commands) throws InterruptedException, CoreException {
-		return submitDubCommandAndWait(monitor, project, commands);
+			String... commands) throws CoreException {
+		try {
+			return submitDubCommandAndGet(newExternalProcessTask(monitor, project, commands));
+		} catch (InterruptedException e) {
+			throw LangCore.createCoreException("Unexpected interruption", e);
+		}
 	}
 	
-	public ExternalProcessNotifyingHelper submitDubCommandAndWait(IProgressMonitor monitor, IProject project,
-			String... commands) throws InterruptedException, CoreException {
-		return submitDubCommandAndWait(newExternalProcessTask(monitor, project, commands));
-	}
-	
-	public <T> T submitDubCommandAndWait(ICallable<T, CoreException> task) 
-			throws InterruptedException, CoreException {
+	public <T> T submitDubCommandAndGet(ICallable<T, CoreException> task) throws InterruptedException, CoreException {
 		Future<T> future = dubProcessAgent.submit(task);
 		try {
 			return future.get();

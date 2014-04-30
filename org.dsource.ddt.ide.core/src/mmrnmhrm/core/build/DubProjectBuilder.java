@@ -97,13 +97,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 			throws CoreException {
 		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
 		
-		try {
-			ExternalProcessNotifyingHelper processHelper = dubProcessManager.submitDubCommandAndWait(getProject(), 
-				monitor, commands);
-			return processHelper;
-		} catch (InterruptedException e) {
-			throw DeeCore.createCoreException("Should not happen", e);
-		}
+		return dubProcessManager.submitDubCommandAndWait(getProject(), monitor, commands);
 	}
 	
 }

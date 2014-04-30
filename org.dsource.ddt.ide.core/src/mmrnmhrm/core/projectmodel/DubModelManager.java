@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -344,6 +345,10 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		this.unresolvedDescription = unresolvedDescription;
 	}
 	
+	protected DubProcessManager getProcessManager() {
+		return dubModelManager.dubProcessManager;
+	}
+	
 	@Override
 	public void run() {
 		deleteDubMarkers(project);
@@ -391,34 +396,31 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	@Override
 	public void runUnderEclipseJob(IProgressMonitor monitor) {
 		assertNotNull(monitor);
-		updateProject(monitor);
+		try {
+			updateProjectOperation(monitor);
+		} catch (CoreException ce) {
+			setProjectDubError(project, ce.getMessage(), ce.getCause());
+		}
 	}
 	
-	protected Void updateProject(IProgressMonitor pm) {
+	protected Void updateProjectOperation(IProgressMonitor pm) throws CoreException {
 		java.nio.file.Path location = project.getLocation().toFile().toPath();
 		
-		final DubProcessManager dubProcessManager = dubModelManager.dubProcessManager;
-		ExternalProcessNotifyingHelper processHelper;
-		try {
-			String dubPath = DeeCorePreferences.getDubPath();
-			processHelper = dubProcessManager.submitDubCommandAndWait(pm, project, dubPath, "describe");
-		} catch (InterruptedException e) {
-			// Should only happen during manager shutdown, so dont bother updating the model.
-			return null;
-		}  catch (CoreException ce) {
-			return setProjectDubError(project, ce.getMessage(), ce.getCause());
-		}
+		String dubPath = DeeCorePreferences.getDubPath();
+		
+		ExternalProcessNotifyingHelper processHelper = 
+			getProcessManager().submitDubCommandAndWait(project, pm, dubPath, "describe");
 		
 		String descriptionOutput;
 		try {
 			descriptionOutput = processHelper.getStdOutBytes().toString(StringUtil.UTF8);
 		} catch (IOException e) {
-			return setProjectDubError(project, "Error occurred reading dub process output: ", e);
+			throw LangCore.createCoreException("Error occurred reading dub process output: ", e);
 		}
 		
 		int exitValue = processHelper.getProcess().exitValue();
 		if(exitValue != 0) {
-			return setProjectDubError(project, "dub returned non-zero status: " + exitValue, null);
+			throw LangCore.createCoreException("dub returned non-zero status: " + exitValue, null);
 		}
 		
 		// Trim leading characters. 
@@ -437,14 +439,13 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		return null;
 	}
 	
-	protected Void setProjectDubError(IProject project, String message, Throwable exception) {
+	protected void setProjectDubError(IProject project, String message, Throwable exception) {
 		
 		DubBundleException dubError = new DubBundleException(message, exception);
 		
 		dubModelManager.model.addErrorToProjectModel(project, dubError);
 		
 		setDubErrorMarker(project, message, exception);
-		return null;
 	}
 	
 }
