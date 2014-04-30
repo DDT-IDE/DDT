@@ -1131,8 +1131,7 @@ protected class ParseRule_Expression {
 	
 	protected NodeResult<ExpCall> parseCallExpression_atParenthesis(Expression callee) {
 		ParseHelper parse = new ParseHelper(callee);
-		consumeLookAhead(DeeTokens.OPEN_PARENS);
-		NodeListView<Expression> args = parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
+		NodeListView<Expression> args = parseParenthesesDelimited_ExpArgumentList(parse);
 		return parse.resultConclude(new ExpCall(callee, args));
 	}
 	
@@ -1149,6 +1148,14 @@ protected class ParseRule_Expression {
 		
 		parse.consumeRequired(tokenLISTCLOSE);
 		return elementListParse.members;
+	}
+	
+	protected final NodeListView<Expression> parseParenthesesDelimited_ExpArgumentList(ParseHelper parse) {
+		if(tryConsume(DeeTokens.OPEN_PARENS)) {
+			return parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
+		} else {
+			return null;
+		}
 	}
 	
 	protected final class TypeOrExpArgumentListSimpleParse extends SimpleListParseHelper<Resolvable> {
@@ -1354,10 +1361,10 @@ protected class ParseRule_Expression {
 		NodeListView<Expression> args = null;
 		
 		parsing: {
-			if(parse.consumeOptional(DeeTokens.OPEN_PARENS)) {
-				allocArgs = parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
-				if(parse.ruleBroken) break parsing;
-			}
+			assertTrue(!parse.ruleBroken);
+			
+			allocArgs = parseParenthesesDelimited_ExpArgumentList(parse);
+			if(parse.ruleBroken) break parsing;
 			
 			if(outerClass == null && parse.consumeOptional(DeeTokens.KW_CLASS)) {
 				return parseNewAnonClassExpression_afterClassKeyword(parse, allocArgs);
@@ -1366,9 +1373,7 @@ protected class ParseRule_Expression {
 			type = parse.checkResult(parseTypeReference_ToMissing(true));
 			if(parse.ruleBroken) break parsing;
 			
-			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				args = parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
-			}
+			args = parseParenthesesDelimited_ExpArgumentList(parse);
 		}
 		
 		return parse.resultConclude(new ExpNew(outerClass, allocArgs, type, args));
@@ -1382,10 +1387,8 @@ protected class ParseRule_Expression {
 		DeclBlock declBody = null;
 		
 		parsing: {
-			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				args = parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
-				if(parse.ruleBroken) break parsing;
-			}
+			args = parseParenthesesDelimited_ExpArgumentList(parse);
+			if(parse.ruleBroken) break parsing;
 			
 			baseClasses.parseSimpleList(DeeTokens.COMMA, true, false);
 			

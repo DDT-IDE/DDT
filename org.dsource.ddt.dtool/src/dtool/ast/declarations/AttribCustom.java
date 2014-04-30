@@ -16,7 +16,7 @@ import dtool.ast.references.RefIdentifier;
 public class AttribCustom extends Attribute {
 	
 	public final RefIdentifier ref;
-	public final NodeListView<Expression> args;
+	public final NodeListView<Expression> args; // if null, no argument list
 	
 	public AttribCustom(RefIdentifier ref, NodeListView<Expression> args) {
 		this.ref = parentize(ref);

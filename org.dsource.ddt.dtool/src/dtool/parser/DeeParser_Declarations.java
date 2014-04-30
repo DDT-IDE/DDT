@@ -336,12 +336,10 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 			refId = attemptParseRefIdentifier();
 			if(parse.ruleBroken) break parsing;
 			
-			if(tryConsume(DeeTokens.OPEN_PARENS)) {
-				args = parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
-			} else {
-				parse.storeError(refId == null ?
-					createErrorExpectedRule(RULE_ID_OR_EXP_ARGLIST) : 
-					createExpectedTokenError(DeeTokens.OPEN_PARENS));
+			args = parseParenthesesDelimited_ExpArgumentList(parse);
+			
+			if(args == null && refId == null) {
+				parse.storeError(createErrorExpectedRule(RULE_ID_OR_EXP_ARGLIST));
 			}
 		}
 		return parse.resultConclude(new AttribCustom(refId, args));		

@@ -354,8 +354,9 @@ public abstract class AbstractParser {
 			return consume(expectedTokenType, false, false);
 		}
 		
-		public final boolean consumeOptional(DeeTokens expectedTokenType) {
-			return consume(expectedTokenType, true, false);
+		public final boolean consumeOptional(DeeTokens tokenType) {
+			assertTrue(!ruleBroken);
+			return tryConsume(tokenType);
 		}
 		
 		public final boolean consume(DeeTokens expectedTokenType, boolean isOptional, boolean breaksRule) {

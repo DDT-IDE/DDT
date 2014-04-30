@@ -29,9 +29,8 @@ public class DeeParserAdditionalTests extends DToolBaseTest {
 	
 	public ParseHelper parseArgumentList(String source) {
 		DeeParser parser = new DeeParser(source);
-		parser.consumeLookAhead(DeeTokens.OPEN_PARENS);
 		ParseHelper parse = parser.new ParseHelper();
-		parser.parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
+		parser.parseParenthesesDelimited_ExpArgumentList(parse);;
 		return parse;
 	}
 	

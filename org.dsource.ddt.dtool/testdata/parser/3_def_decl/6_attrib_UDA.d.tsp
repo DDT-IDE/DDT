@@ -9,7 +9,7 @@
 ¤》
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)  #@INDEXEE #?NOREF【#error(EXPRULE_IdOrExpArgList)¤【】●#error(EXP_OPEN_PARENS)¤【】】  :
+#PARSE(DECLARATION)  #@INDEXEE #?NOREF【#error(EXPRULE_IdOrExpArgList)¤【】● 】  :
 #STRUCTURE_EXPECTED: 
    DeclarationAttrib( #@INDEXEE) DeclList)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
