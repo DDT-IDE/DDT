@@ -8,6 +8,7 @@
  * Debugger: DDT now requires CDT 8.3.x .
  * Fixed #51 - corrected parsing/splitting of DUB build extra arguments. (also can now use quotes to prevent splitting)
  * Fixed #52 - User Defined Attributes without parantheses marked as syntax errors     
+ * Fixed #53 - Code completion doesn't see variables defined in foreach loop
 
 ### DDT 0.10.0 (2014-03-14)
  * Added DUB support. Project import-path now determined by the `dub.json` manifest file and running `dub describe`.

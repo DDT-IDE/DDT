@@ -37,7 +37,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			INamedElement defElement = iterator.next();
 			
 			if(ignoreDummyResults && 
-				(defElement.getName().equals("_dummy") || defElement.getName().equals("_ignore"))) {
+				(defElement.getName().equals("_dummy") || defElement.getName().endsWith("_ignore"))) {
 				iterator.remove();
 			}
 			
