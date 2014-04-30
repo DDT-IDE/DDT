@@ -31,6 +31,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.debug.core.DebugPlugin;
 
 
 public class DubProjectBuilder extends IncrementalProjectBuilder {
@@ -88,10 +89,8 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected String[] getExtraCommands() {
-		String extraOptionsStr = DeeCorePreferences.getDubBuildOptions(getProject());
-		extraOptionsStr = extraOptionsStr.trim();
-		String[] extraCommands = extraOptionsStr.split(" +");
-		return extraCommands;
+		String extraOptionsString = DeeCorePreferences.getDubBuildOptions(getProject());
+		return DebugPlugin.parseArguments(extraOptionsString);
 	}
 	
 	protected ExternalProcessNotifyingHelper submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
