@@ -36,7 +36,7 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 				project = sampleDeeProj.getProject();
 				DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_SRC_SIMPLE, project.getFolder(PROJ_SRC));
 			} catch (Exception e) {
-				DeeCore.log(e);
+				DeeCore.logError(e);
 				ExceptionAdapter.unchecked(e);
 			}
 			// And throw up, to force restarting the unit tests

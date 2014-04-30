@@ -7,13 +7,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.core.compiler_installs.GDCInstallType;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -159,12 +159,12 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 			String installId) throws CoreException {
 		final String libraryBuildpathEntry = installTypeId + "/" + installId;
 		EnvironmentManager.setEnvironmentId(project, null, false);
-		project.getWorkspace().run(new IWorkspaceRunnable() {
+		ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				setupDeeProject(project, libraryBuildpathEntry);
 			}
-		}, null, IWorkspace.AVOID_UPDATE, null);
+		}, null);
 		IScriptProject scriptProject = DLTKCore.create(project);
 //		scriptProject.setOption(DLTKCore.INDEXER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
 //		scriptProject.setOption(DLTKCore.BUILDER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
