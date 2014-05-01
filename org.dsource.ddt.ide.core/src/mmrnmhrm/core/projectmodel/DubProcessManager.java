@@ -11,10 +11,12 @@
 package mmrnmhrm.core.projectmodel;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.process.AbstractRunExternalProcessTask;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -42,9 +44,9 @@ public class DubProcessManager {
 	
 	/* ----------------- listeners ----------------- */
 	
-	public static interface IDubProcessListener extends IExternalProcessListener {
+	public static interface IDubProcessListener {
 		
-		void handleDubOperationStarted(String operationName, IProject project);
+		void handleDubOperationStarted(IDubOperation dubOperation);
 		
 	}
 	
@@ -58,16 +60,33 @@ public class DubProcessManager {
 		processListenersHelper.removeListener(dubProcessListener);
 	}
 	
+	public static interface IDubOperation {
+		public IProject getProject();
+		public String getOperationName();
+		
+		public void addExternalProcessListener(IExternalProcessListener processListener);
+		
+	}
+	
+	public void notifyOperationStarted(IDubOperation dubOperation) {
+		for(IDubProcessListener processListener : processListenersHelper.getListeners()) {
+			processListener.handleDubOperationStarted(dubOperation);
+		}
+	}
+	
 	/* ----------------------------------- */
 	
-	public Future<ExternalProcessNotifyingHelper> submitDubCommand(RunExternalProcessTask task) {
+	public static interface IDubTask extends ICallable<ExternalProcessNotifyingHelper, CoreException> {
+	}
+	
+	public Future<ExternalProcessNotifyingHelper> submitDubCommand(IDubTask task) {
 		return dubProcessAgent.submit(task);
 	}
 	
-	public ExternalProcessNotifyingHelper submitDubCommandAndWait(RunExternalProcessTask newExternalProcessTask)
+	public ExternalProcessNotifyingHelper submitDubCommandAndWait(IDubTask task)
 			throws CoreException {
 		try {
-			return submitDubCommandAndGet(newExternalProcessTask);
+			return submitDubCommandAndGet(task);
 		} catch (InterruptedException e) {
 			throw LangCore.createCoreException("Unexpected interruption", e);
 		}
@@ -89,39 +108,100 @@ public class DubProcessManager {
 		}
 	}
 	
-	public RunDubProcessOperation newDubOperation(String operationName, IProgressMonitor monitor, 
-			IProject project, String... commands) {
+	public IDubTask newDubOperation(String operationName, IProject project, 
+			String[] commands, IProgressMonitor monitor) {
 		ProcessBuilder pb = createProcessBuilder(project, commands);
 		return new RunDubProcessOperation(operationName, pb, project, monitor);
 	}
 	
-	protected ProcessBuilder createProcessBuilder(IProject project, String... commands) {
+	public static ProcessBuilder createProcessBuilder(IProject project, String... commands) {
 		Path workingDir = project != null ?
-				project.getLocation().toFile().toPath() :
-				DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
+			project.getLocation().toFile().toPath() :
+			DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
 		return new ProcessBuilder(commands).directory(workingDir.toFile());
 	}
 	
-	public class RunDubProcessOperation extends RunExternalProcessTask {
+	public class RunDubProcessOperation extends AbstractRunExternalProcessTask implements IDubOperation, IDubTask {
 		
 		protected final String operationName;
+		protected final ListenerListHelper<IExternalProcessListener> listenersList;
 		
-		public RunDubProcessOperation(String operationName, ProcessBuilder pb, IProject project,
+		protected RunDubProcessOperation(String operationName, ProcessBuilder pb, IProject project,
 				IProgressMonitor cancelMonitor) {
-			super(pb, project, cancelMonitor, processListenersHelper.createCopy());
+			super(pb, project, cancelMonitor);
 			this.operationName = operationName;
+			this.listenersList = new ListenerListHelper<IExternalProcessListener>();
+		}
+		
+		@Override
+		protected List<? extends IExternalProcessListener> getListeners() {
+			return listenersList.getListeners();
 		}
 		
 		@Override
 		public ExternalProcessNotifyingHelper call() throws CoreException {
-			notifyOperationStarted(operationName, project);
+			notifyOperationStarted(this);
 			return super.call();
 		}
+		
+		@Override
+		public IProject getProject() {
+			return project;
+		}
+		
+		@Override
+		public String getOperationName() {
+			return operationName;
+		}
+		
+		@Override
+		public void addExternalProcessListener(IExternalProcessListener processListener) {
+			listenersList.addListener(processListener);
+		}
+		
 	}
 	
-	public void notifyOperationStarted(String operationName, IProject project) {
-		for(IDubProcessListener processListener : processListenersHelper.getListeners()) {
-			processListener.handleDubOperationStarted(operationName, project);
+	public static class DubCompositeOperation implements IDubOperation {
+		
+		protected final String operationName;
+		protected final IProject project;
+		protected final ListenerListHelper<IExternalProcessListener> listenerListHelper = new ListenerListHelper<>();
+		
+		public DubCompositeOperation(String operationName, IProject project) {
+			this.project = project;
+			this.operationName = operationName;
+		}
+		
+		@Override
+		public IProject getProject() {
+			return project;
+		}
+		
+		@Override
+		public String getOperationName() {
+			return operationName;
+		}
+		
+		@Override
+		public void addExternalProcessListener(IExternalProcessListener processListener) {
+			listenerListHelper.addListener(processListener);
+		}
+		
+		public ListenerListHelper<IExternalProcessListener> getListenersList() {
+			return listenerListHelper;
+		}
+		
+		public IDubTask newDubProcessTask(IProject project, String[] commands, IProgressMonitor monitor) {
+			ProcessBuilder pb = createProcessBuilder(project, commands);
+			return new RunDubProcessTask(pb, project, monitor, listenerListHelper);
+		}
+		
+	}
+	
+	public static class RunDubProcessTask extends RunExternalProcessTask implements IDubTask {
+		protected RunDubProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor,
+				ListenerListHelper<? extends IExternalProcessListener> listenersList) {
+			super(pb, project, cancelMonitor, listenersList);
 		}
 	}
 	

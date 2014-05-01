@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
@@ -25,6 +24,7 @@ import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.core.projectmodel.DubProcessManager;
+import mmrnmhrm.core.projectmodel.DubProcessManager.IDubTask;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -99,9 +99,9 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 			throws CoreException {
 		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
 		
-		RunExternalProcessTask newExternalProcessTask = dubProcessManager.newDubOperation(
-			DeeCoreMessages.RunningDubBuild, monitor, getProject(), commands);
-		return dubProcessManager.submitDubCommandAndWait(newExternalProcessTask);
+		IDubTask runDubProcessOperation = dubProcessManager.newDubOperation(
+			DeeCoreMessages.RunningDubBuild, getProject(), commands, monitor);
+		return dubProcessManager.submitDubCommandAndWait(runDubProcessOperation);
 	}
 	
 }

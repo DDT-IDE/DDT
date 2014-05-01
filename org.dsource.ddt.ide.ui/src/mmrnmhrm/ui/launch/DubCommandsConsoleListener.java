@@ -14,11 +14,13 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.IOException;
 
+import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.util.swt.jface.ColorManager;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
+import mmrnmhrm.core.projectmodel.DubProcessManager.IDubOperation;
 import mmrnmhrm.core.projectmodel.DubProcessManager.IDubProcessListener;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIMessages;
@@ -103,48 +105,46 @@ public class DubCommandsConsoleListener implements IDubProcessListener {
 	}
 	
 	@Override
-	public void handleDubOperationStarted(String operationName, IProject project) {
-		DubCommandsConsole console = getConsoleForOperation(project, true);
+	public void handleDubOperationStarted(IDubOperation dubOperation) {
+		final DubCommandsConsole console = getConsoleForOperation(dubOperation.getProject(), true);
 		try {
-			console.metaOut.write("************  " + operationName + "  ************\n");
+			console.metaOut.write("************  " + dubOperation.getOperationName() + "  ************\n");
 		} catch (IOException e) {
 			return;
 		}
-	}
-	
-	@Override
-	public void handleProcessStarted(ProcessBuilder pb, IProject project, 
-			ExternalProcessNotifyingHelper processHelper) {
-		DubCommandsConsole console = getConsoleForOperation(project, false);
 		
-		try {
-			writeProcessStartPrefix(pb, console);
+		dubOperation.addExternalProcessListener(new IExternalProcessListener() {
 			
-			DubProcessOutputToConsoleListener outputListener = new DubProcessOutputToConsoleListener(console);
-			processHelper.getOutputListeningHelper().addListener(outputListener);
-		} catch (IOException e) {
-			return;
-		}
+			@Override
+			public void handleProcessStarted(ProcessBuilder pb, IProject project, 
+					ExternalProcessNotifyingHelper processHelper) {
+				try {
+					writeProcessDescription(pb, console);
+					
+					DubProcessOutputToConsoleListener outputListener = new DubProcessOutputToConsoleListener(console);
+					processHelper.getOutputListeningHelper().addListener(outputListener);
+				} catch (IOException e) {
+					return;
+				}
+			}
+			
+			@Override
+			public void handleProcessStartFailure(ProcessBuilder pb, IProject project, 
+					IOException processStartException) {
+				try {
+					writeProcessDescription(pb, console);
+					console.metaOut.write(">>>  Failed to start process, exception: \n");
+					console.metaOut.write(processStartException.getMessage());
+				} catch (IOException consoleIOE) {
+					return;
+				}
+			}
+		});
 	}
 	
-	protected void writeProcessStartPrefix(ProcessBuilder pb, final DubCommandsConsole console)
-			throws IOException {
+	protected void writeProcessDescription(ProcessBuilder pb, DubCommandsConsole console) throws IOException {
 		console.metaOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
 		console.metaOut.write("@ " + pb.directory() +"\n");
-	}
-	
-	@Override
-	public void handleProcessStartFailure(ProcessBuilder pb, IProject project, 
-			IOException processStartException) {
-		DubCommandsConsole console = getConsoleForOperation(project, false);
-		
-		try {
-			writeProcessStartPrefix(pb, console);
-			console.metaOut.write(">>>  Failed to start process: \n");
-			console.metaOut.write(processStartException.getMessage());
-		} catch (IOException consoleIOE) {
-			return;
-		}
 	}
 	
 	public static class DubProcessOutputToConsoleListener implements IProcessOutputListener {

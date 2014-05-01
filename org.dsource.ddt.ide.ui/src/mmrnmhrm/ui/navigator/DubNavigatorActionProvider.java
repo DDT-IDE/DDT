@@ -133,10 +133,10 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 			public void run() {
 				IProject project = getDubProjectFromSelection();
 				DubProcessManager dubMgr = DubModelManager.getDefault().getProcessManager();
-				NullProgressMonitor pm = new NullProgressMonitor();
+				NullProgressMonitor monitor = new NullProgressMonitor(); // TODO: should create Job for this
 				
 				dubMgr.submitDubCommand(dubMgr.newDubOperation(
-					DeeCoreMessages.RunningDubCommand, pm, null, getCommands(project)));
+					DeeCoreMessages.RunningDubCommand, null, getCommands(project), monitor));
 			}
 			
 			protected abstract String[] getCommands(IProject project);

@@ -20,7 +20,7 @@ import java.util.List;
  * This class is designed to be thread safe.
  * @see also {@link org.eclipse.core.runtime.ListenerList} 
  */
-public class ListenerListHelper<LISTENER> {
+public class ListenerListHelper<LISTENER> implements IListenerList<LISTENER> {
 	
 	private volatile List<LISTENER> listeners;
 	
@@ -32,10 +32,12 @@ public class ListenerListHelper<LISTENER> {
 		this.listeners = listeners; // listeners must be unmodifiable
 	}
 	
+	@Override
 	public ListenerListHelper<LISTENER> createCopy() {
 		return new ListenerListHelper<LISTENER>(listeners);
 	}
 	
+	@Override
 	public void addListener(LISTENER listener) {
 		ArrayList<LISTENER> newListeners = new ArrayList<>(listeners);
 		newListeners.add(listener);
@@ -43,6 +45,7 @@ public class ListenerListHelper<LISTENER> {
 		setNewListeners(newListeners);
 	}
 	
+	@Override
 	public void removeListener(LISTENER listener) {
 		ArrayList<LISTENER> newListeners = new ArrayList<LISTENER>(listeners);
 		for (Iterator<LISTENER> iter = newListeners.iterator(); iter.hasNext(); ) {
@@ -62,6 +65,7 @@ public class ListenerListHelper<LISTENER> {
 		}
 	}
 	
+	@Override
 	public List<LISTENER> getListeners() {
 		return listeners;
 	}
