@@ -10,10 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -46,21 +42,18 @@ public class DubProcessManager {
 	
 	/* ----------------- listeners ----------------- */
 	
-	protected final ListenerListHelper<IExternalProcessListener> processListenersHelper = new ListenerListHelper<>();
+	public static interface IDubProcessListener extends IExternalProcessListener {
+	}
 	
-	public void addDubProcessListener(IExternalProcessListener dubProcessListener) {
+	protected final ListenerListHelper<IDubProcessListener> processListenersHelper = new ListenerListHelper<>();
+	
+	public void addDubProcessListener(IDubProcessListener dubProcessListener) {
 		processListenersHelper.addListener(dubProcessListener);
 	}
 	
-	public void removeDubProcessListener(IExternalProcessListener dubProcessListener) {
+	public void removeDubProcessListener(IDubProcessListener dubProcessListener) {
 		processListenersHelper.removeListener(dubProcessListener);
 	}
-	
-	/** Marker interface for listener callbacks that runs in the Dub agent. 
-	 * Used for documentation purposes only, has no effect in code. */
-	@Target(ElementType.METHOD)
-	@Retention(RetentionPolicy.SOURCE)
-	public static @interface RunsInDubProcessAgent { }
 	
 	/* ----------------------------------- */
 	

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.navigator;
 
+import static melnorme.utilbox.core.CoreUtil.array;
 import mmrnmhrm.core.projectmodel.DubModel;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.core.projectmodel.DubProcessManager;
@@ -132,11 +133,13 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 				IProject project = getDubProjectFromSelection();
 				DubProcessManager dubMgr = DubModelManager.getDefault().getProcessManager();
 				NullProgressMonitor pm = new NullProgressMonitor();
-				run(dubMgr, pm, project);
+				
+				dubMgr.submitDubCommand(
+					dubMgr.newExternalProcessTask(pm, null, getCommands(project)));
 			}
 			
-			protected abstract void run(DubProcessManager dubMgr, NullProgressMonitor pm, IProject project);
-			
+			protected abstract String[] getCommands(IProject project);
+
 		}
 		
 		public class AddDubProjectToLocalPath extends CommonDubAction {
@@ -145,9 +148,9 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 			}
 			
 			@Override
-			protected void run(DubProcessManager dubMgr, NullProgressMonitor pm, IProject project) {
-				dubMgr.submitDubCommand(dubMgr.newExternalProcessTask(pm, project, "dub", "add-local", 
-					project.getLocation().toFile().toString()));			}
+			protected String[] getCommands(IProject project) {
+				return array("dub", "add-local", project.getLocation().toFile().toString());
+			}
 		}
 		
 		public class RemoveDubProjectFromLocalPath extends CommonDubAction {
@@ -156,9 +159,8 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 			}
 			
 			@Override
-			protected void run(DubProcessManager dubMgr, NullProgressMonitor pm, IProject project) {
-				dubMgr.submitDubCommand(dubMgr.newExternalProcessTask(pm, project, "dub", "remove-local", 
-					project.getLocation().toFile().toString()));
+			protected String[] getCommands(IProject project) {
+				return array("dub", "remove-local", project.getLocation().toFile().toString());
 			}
 		}
 		
@@ -168,8 +170,8 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 			}
 			
 			@Override
-			protected void run(DubProcessManager dubMgr, NullProgressMonitor pm, IProject project) {
-				dubMgr.submitDubCommand(dubMgr.newExternalProcessTask(pm, null, "dub", "list"));
+			protected String[] getCommands(IProject project) {
+				return array("dub", "list");
 			}
 		}
 		

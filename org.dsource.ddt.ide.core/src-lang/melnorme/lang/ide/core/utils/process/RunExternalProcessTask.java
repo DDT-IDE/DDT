@@ -47,13 +47,13 @@ public class RunExternalProcessTask implements ICallable<ExternalProcessNotifyin
 	}
 	
 	public void notifyProcessStarted(ExternalProcessNotifyingHelper processHelper) {
-		for (IExternalProcessListener processListener : listenersHelper.getListeners()) {
+		for(IExternalProcessListener processListener : listenersHelper.getListeners()) {
 			processListener.handleProcessStarted(pb, project, processHelper);
 		}
 	}
 	
 	public void notifyProcessFailedToStart(IOException e) {
-		for (IExternalProcessListener processListener : listenersHelper.getListeners()) {
+		for(IExternalProcessListener processListener : listenersHelper.getListeners()) {
 			processListener.handleProcessStartFailure(pb, project, e);
 		}
 	}

@@ -14,13 +14,12 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.IOException;
 
-import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.util.swt.jface.ColorManager;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
-import mmrnmhrm.core.projectmodel.DubProcessManager.RunsInDubProcessAgent;
+import mmrnmhrm.core.projectmodel.DubProcessManager.IDubProcessListener;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIMessages;
 
@@ -32,7 +31,7 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.console.MessageConsole;
 
-public class DubCommandsConsoleListener implements IExternalProcessListener {
+public class DubCommandsConsoleListener implements IDubProcessListener {
 	
 	public DubCommandsConsoleListener() {
 	}
@@ -103,9 +102,9 @@ public class DubCommandsConsoleListener implements IExternalProcessListener {
 		
 	}
 	
-	@RunsInDubProcessAgent
 	@Override
-	public void handleProcessStarted(ProcessBuilder pb, IProject project, ExternalProcessNotifyingHelper processHelper) {
+	public void handleProcessStarted(ProcessBuilder pb, IProject project, 
+			ExternalProcessNotifyingHelper processHelper) {
 		DubCommandsConsole console = getConsoleForOperation(project, true);
 		
 		try {
@@ -125,9 +124,9 @@ public class DubCommandsConsoleListener implements IExternalProcessListener {
 		console.metaOut.write("@ " + pb.directory() +"\n");
 	}
 	
-	@RunsInDubProcessAgent
 	@Override
-	public void handleProcessStartFailure(ProcessBuilder pb, IProject project, IOException processStartException) {
+	public void handleProcessStartFailure(ProcessBuilder pb, IProject project, 
+			IOException processStartException) {
 		DubCommandsConsole console = getConsoleForOperation(project, true);
 		
 		try {
