@@ -43,6 +43,9 @@ public class DubProcessManager {
 	/* ----------------- listeners ----------------- */
 	
 	public static interface IDubProcessListener extends IExternalProcessListener {
+		
+		void handleDubOperationStarted(String operationName, IProject project);
+		
 	}
 	
 	protected final ListenerListHelper<IDubProcessListener> processListenersHelper = new ListenerListHelper<>();
@@ -61,10 +64,10 @@ public class DubProcessManager {
 		return dubProcessAgent.submit(task);
 	}
 	
-	public ExternalProcessNotifyingHelper submitDubCommandAndWait(IProject project, IProgressMonitor monitor, 
-			String... commands) throws CoreException {
+	public ExternalProcessNotifyingHelper submitDubCommandAndWait(RunExternalProcessTask newExternalProcessTask)
+			throws CoreException {
 		try {
-			return submitDubCommandAndGet(newExternalProcessTask(monitor, project, commands));
+			return submitDubCommandAndGet(newExternalProcessTask);
 		} catch (InterruptedException e) {
 			throw LangCore.createCoreException("Unexpected interruption", e);
 		}
@@ -86,13 +89,40 @@ public class DubProcessManager {
 		}
 	}
 	
-	public RunExternalProcessTask newExternalProcessTask(IProgressMonitor monitor, IProject project,
-			String... commands) {
+	public RunDubProcessOperation newDubOperation(String operationName, IProgressMonitor monitor, 
+			IProject project, String... commands) {
+		ProcessBuilder pb = createProcessBuilder(project, commands);
+		return new RunDubProcessOperation(operationName, pb, project, monitor);
+	}
+	
+	protected ProcessBuilder createProcessBuilder(IProject project, String... commands) {
 		Path workingDir = project != null ?
 				project.getLocation().toFile().toPath() :
 				DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
-		ProcessBuilder pb = new ProcessBuilder(commands).directory(workingDir.toFile());
-		return new RunExternalProcessTask(pb, project, monitor, processListenersHelper);
+		return new ProcessBuilder(commands).directory(workingDir.toFile());
+	}
+	
+	public class RunDubProcessOperation extends RunExternalProcessTask {
+		
+		protected final String operationName;
+		
+		public RunDubProcessOperation(String operationName, ProcessBuilder pb, IProject project,
+				IProgressMonitor cancelMonitor) {
+			super(pb, project, cancelMonitor, processListenersHelper.createCopy());
+			this.operationName = operationName;
+		}
+		
+		@Override
+		public ExternalProcessNotifyingHelper call() throws CoreException {
+			notifyOperationStarted(operationName, project);
+			return super.call();
+		}
+	}
+	
+	public void notifyOperationStarted(String operationName, IProject project) {
+		for(IDubProcessListener processListener : processListenersHelper.getListeners()) {
+			processListener.handleDubOperationStarted(operationName, project);
+		}
 	}
 	
 }

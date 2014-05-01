@@ -11,6 +11,7 @@
 package mmrnmhrm.ui.navigator;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.projectmodel.DubModel;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.core.projectmodel.DubProcessManager;
@@ -134,8 +135,8 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 				DubProcessManager dubMgr = DubModelManager.getDefault().getProcessManager();
 				NullProgressMonitor pm = new NullProgressMonitor();
 				
-				dubMgr.submitDubCommand(
-					dubMgr.newExternalProcessTask(pm, null, getCommands(project)));
+				dubMgr.submitDubCommand(dubMgr.newDubOperation(
+					DeeCoreMessages.RunningDubCommand, pm, null, getCommands(project)));
 			}
 			
 			protected abstract String[] getCommands(IProject project);

@@ -103,9 +103,19 @@ public class DubCommandsConsoleListener implements IDubProcessListener {
 	}
 	
 	@Override
+	public void handleDubOperationStarted(String operationName, IProject project) {
+		DubCommandsConsole console = getConsoleForOperation(project, true);
+		try {
+			console.metaOut.write("************  " + operationName + "  ************\n");
+		} catch (IOException e) {
+			return;
+		}
+	}
+	
+	@Override
 	public void handleProcessStarted(ProcessBuilder pb, IProject project, 
 			ExternalProcessNotifyingHelper processHelper) {
-		DubCommandsConsole console = getConsoleForOperation(project, true);
+		DubCommandsConsole console = getConsoleForOperation(project, false);
 		
 		try {
 			writeProcessStartPrefix(pb, console);
@@ -119,7 +129,6 @@ public class DubCommandsConsoleListener implements IDubProcessListener {
 	
 	protected void writeProcessStartPrefix(ProcessBuilder pb, final DubCommandsConsole console)
 			throws IOException {
-		console.metaOut.write("************  Running dub command  ************\n");
 		console.metaOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
 		console.metaOut.write("@ " + pb.directory() +"\n");
 	}
@@ -127,7 +136,7 @@ public class DubCommandsConsoleListener implements IDubProcessListener {
 	@Override
 	public void handleProcessStartFailure(ProcessBuilder pb, IProject project, 
 			IOException processStartException) {
-		DubCommandsConsole console = getConsoleForOperation(project, true);
+		DubCommandsConsole console = getConsoleForOperation(project, false);
 		
 		try {
 			writeProcessStartPrefix(pb, console);

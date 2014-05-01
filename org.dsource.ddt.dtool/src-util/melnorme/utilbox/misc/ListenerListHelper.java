@@ -22,7 +22,19 @@ import java.util.List;
  */
 public class ListenerListHelper<LISTENER> {
 	
-	private volatile List<LISTENER> listeners = Collections.unmodifiableList(new ArrayList<LISTENER>());
+	private volatile List<LISTENER> listeners;
+	
+	public ListenerListHelper() {
+		this.listeners = Collections.unmodifiableList(new ArrayList<LISTENER>());
+	}
+	
+	protected ListenerListHelper(List<LISTENER> listeners) {
+		this.listeners = listeners; // listeners must be unmodifiable
+	}
+	
+	public ListenerListHelper<LISTENER> createCopy() {
+		return new ListenerListHelper<LISTENER>(listeners);
+	}
 	
 	public void addListener(LISTENER listener) {
 		ArrayList<LISTENER> newListeners = new ArrayList<>(listeners);

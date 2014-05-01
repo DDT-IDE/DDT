@@ -16,10 +16,12 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.core.projectmodel.DubProcessManager;
@@ -97,7 +99,9 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 			throws CoreException {
 		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
 		
-		return dubProcessManager.submitDubCommandAndWait(getProject(), monitor, commands);
+		RunExternalProcessTask newExternalProcessTask = dubProcessManager.newDubOperation(
+			DeeCoreMessages.RunningDubBuild, monitor, getProject(), commands);
+		return dubProcessManager.submitDubCommandAndWait(newExternalProcessTask);
 	}
 	
 }

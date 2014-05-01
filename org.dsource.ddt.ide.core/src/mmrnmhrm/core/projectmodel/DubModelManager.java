@@ -23,6 +23,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.SimpleLogger;
@@ -30,6 +31,7 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.projectmodel.DubModelManager.DubModelManagerTask;
 import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask.SearchAndAddCompilersOnPathJob;
@@ -408,8 +410,9 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		String dubPath = DeeCorePreferences.getDubPath();
 		
-		ExternalProcessNotifyingHelper processHelper = 
-			getProcessManager().submitDubCommandAndWait(project, pm, dubPath, "describe");
+		RunExternalProcessTask dubOperation = getProcessManager().newDubOperation(
+			DeeCoreMessages.RunningDubDescribe, pm, project, dubPath, "describe");
+		ExternalProcessNotifyingHelper processHelper = getProcessManager().submitDubCommandAndWait(dubOperation);
 		
 		String descriptionOutput;
 		try {
