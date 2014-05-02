@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Set;
@@ -24,11 +23,11 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -422,14 +421,14 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		IDubTask dubDescribeTask = resolveProjectOperation.newDubProcessTask(
 			project, array(dubPath, "describe"), pm);
-		ExternalProcessNotifyingHelper processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);
+		ExternalProcessEclipseHelper processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);
 		
 		int exitValue = processHelper.getProcess().exitValue();
 		if(exitValue != 0) {
 			throw LangCore.createCoreException("dub returned non-zero status: " + exitValue, null);
 		}
 		
-		String describeOutput = getDubProcessStdOut(processHelper);
+		String describeOutput = processHelper.getStdOutBytes_CoreException().toString(StringUtil.UTF8);
 		
 		// Trim leading characters. 
 		// They shouldn't be there, but sometimes dub outputs non JSON text if downloading packages
@@ -445,14 +444,6 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			updateBuildpath(project, bundleDesc);
 		}
 		return null;
-	}
-	
-	protected String getDubProcessStdOut(ExternalProcessNotifyingHelper processHelper) throws CoreException {
-		try {
-			return processHelper.getStdOutBytes().toString(StringUtil.UTF8);
-		} catch (IOException e) {
-			throw LangCore.createCoreException("Error occurred reading dub process output: ", e);
-		}
 	}
 	
 	protected void setProjectDubError(IProject project, String message, Throwable exception) {

@@ -15,10 +15,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
@@ -27,6 +30,7 @@ import mmrnmhrm.core.projectmodel.DubProcessManager;
 import mmrnmhrm.core.projectmodel.DubProcessManager.IDubTask;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -38,7 +42,9 @@ import org.eclipse.debug.core.DebugPlugin;
 
 public class DubProjectBuilder extends IncrementalProjectBuilder {
 	
-	public final static String BUILDER_ID = DeeCore.PLUGIN_ID + ".DubBuilder";
+	public static final String BUILDER_ID = DeeCore.PLUGIN_ID + ".DubBuilder";
+	
+	public static final String DUB_BUILD_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubBuildProblem";
 	
 	@Override
 	protected void startupOnInitialize() {
@@ -51,11 +57,25 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		if(dubCacheFolder.exists()) {
 			dubCacheFolder.delete(true, monitor);
 		}
+		deleteDubMarkers();
+	}
+	
+	protected void deleteDubMarkers() {
+		try {
+			IMarker[] markers = getProject().findMarkers(DUB_BUILD_PROBLEM_ID, true, IResource.DEPTH_INFINITE);
+			for (IMarker marker : markers) {
+				marker.delete();
+			}
+		} catch (CoreException ce) {
+			DeeCore.logError(ce);
+		}
 	}
 	
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		assertTrue(kind != CLEAN_BUILD);
+		
+		deleteDubMarkers();
 		
 		String dubPath = DeeCorePreferences.getDubPath();
 		
@@ -70,22 +90,23 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		String[] extraCommands = getExtraCommands();
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
+		ExternalProcessEclipseHelper processHelper;
 		try {
-			ExternalProcessNotifyingHelper processHelper = submitAndAwaitDubCommand(monitor, 
-				ArrayUtil.createFrom(commands, String.class));
-			if(processHelper.getProcess().exitValue() != 0) {
-				forgetLastBuiltState();
-			}
+			processHelper = submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
+			
 		} catch (CoreException ce) {
 			if(ce.getCause() instanceof TimeoutException && monitor.isCanceled()) {
 				throw new OperationCanceledException();
 			}
 			DeeCore.logStatus(ce.getStatus());
-			// Don't rethrow, just forget
+			// Don't rethrow, just forget build state
 			forgetLastBuiltState();
+			return null;
+		} finally {
+			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		}
 		
-		getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+		processBuildOutput(processHelper);
 		
 		return null;
 	}
@@ -95,7 +116,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		return DebugPlugin.parseArguments(extraOptionsString);
 	}
 	
-	protected ExternalProcessNotifyingHelper submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
+	protected ExternalProcessEclipseHelper submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
 			throws CoreException {
 		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
 		
@@ -103,5 +124,44 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 			DeeCoreMessages.RunningDubBuild, getProject(), commands, monitor);
 		return dubProcessManager.submitDubCommandAndWait(runDubProcessOperation);
 	}
+	
+	protected void processBuildOutput(ExternalProcessEclipseHelper processHelper) throws CoreException {
+		int buildExitValue = processHelper.getProcess().exitValue();
+		
+		String stderr = processHelper.getStdErrBytes_CoreException().toString(StringUtil.UTF8);
+		
+		if(buildExitValue != 0) {
+			String dubErrorLine = getDubError(stderr);
+			if(dubErrorLine == null) {
+				dubErrorLine = "Error running dub build command.";
+			}
+			
+			IMarker dubMarker = getProject().createMarker(DUB_BUILD_PROBLEM_ID);
+			dubMarker.setAttribute(IMarker.MESSAGE, dubErrorLine);
+			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		}
+		
+//		processDErrors(stderr);
+	}
+	
+	protected String getDubError(String stderr) {
+		Matcher matcher = Pattern.compile("^(Error executing command.*)$", Pattern.MULTILINE).
+				matcher(stderr);
+		if(matcher.find()) {
+			return matcher.group(1);
+		}
+		return null;
+	}
+	
+//	protected static final String REGEX = "^([^():]*)"+"\\([^)]*\\):"+"\\sError:\\s(.*)$";
+//
+//	protected void processDErrors(String stderr) {
+//		Matcher matcher = Pattern.compile(REGEX, Pattern.MULTILINE).matcher(stderr);
+//		while(matcher.find()) {
+//			String file = matcher.group(1);
+//			String line = matcher.group(2);
+//			String errorMsg = matcher.group(3);
+//		}
+//	}
 	
 }

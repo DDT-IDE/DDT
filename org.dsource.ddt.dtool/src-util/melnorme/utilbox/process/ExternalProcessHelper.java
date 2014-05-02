@@ -40,6 +40,11 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	}
 	
 	@Override
+	protected boolean isCanceled() {
+		return false;
+	}
+	
+	@Override
 	protected ReadAllBytesTask createMainReaderTask() {
 		return mainReader = new ReadAllBytesTask(process.getInputStream());
 	}
@@ -47,11 +52,6 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	@Override
 	protected ReadAllBytesTask createStdErrReaderTask() {
 		return stderrReader = new ReadAllBytesTask(process.getErrorStream());
-	}
-	
-	@Override
-	protected boolean isCanceled() {
-		return false;
 	}
 	
 	protected static class ReadAllBytesTask extends ExceptionTrackingRunnable<IByteSequence, IOException> {
@@ -64,6 +64,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 		@Override
 		public IByteSequence doRun() throws IOException {
+			// BM: Hum, should we treat an IOException not as an error, but just like an EOF?
 			try {
 				final int BUFFER_SIZE = 1024;
 				byte[] buffer = new byte[BUFFER_SIZE];

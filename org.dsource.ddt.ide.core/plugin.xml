@@ -131,18 +131,22 @@
          point="org.eclipse.core.resources.builders">
       <builder>
          <run class="mmrnmhrm.core.build.DubProjectBuilder">
-            <parameter
-                  name="comment"
-                  value="Builder comment"/>
          </run>
       </builder>
    </extension>
    <extension
          id="DubProblem"
-         name="Dub Problem"
+         name="%DUBProblem"
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.core.resources.problemmarker"/>
       <super type="org.eclipse.core.resources.textmarker"/>
+      <persistent value="false"/>
+   </extension>
+   <extension
+         id="DubBuildProblem"
+         name="%DUBBuildProblem"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
       <persistent value="false"/>
    </extension>
    <extension

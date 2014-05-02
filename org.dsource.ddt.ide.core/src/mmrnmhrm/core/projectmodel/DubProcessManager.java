@@ -17,13 +17,13 @@ import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.AbstractRunExternalProcessTask;
+import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.ListenerListHelper;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 
@@ -76,14 +76,14 @@ public class DubProcessManager {
 	
 	/* ----------------------------------- */
 	
-	public static interface IDubTask extends ICallable<ExternalProcessNotifyingHelper, CoreException> {
+	public static interface IDubTask extends ICallable<ExternalProcessEclipseHelper, CoreException> {
 	}
 	
-	public Future<ExternalProcessNotifyingHelper> submitDubCommand(IDubTask task) {
+	public Future<ExternalProcessEclipseHelper> submitDubCommand(IDubTask task) {
 		return dubProcessAgent.submit(task);
 	}
 	
-	public ExternalProcessNotifyingHelper submitDubCommandAndWait(IDubTask task) throws CoreException {
+	public ExternalProcessEclipseHelper submitDubCommandAndWait(IDubTask task) throws CoreException {
 		try {
 			return submitAndGetTask(task);
 		} catch (InterruptedException e) {
@@ -138,7 +138,7 @@ public class DubProcessManager {
 		}
 		
 		@Override
-		public ExternalProcessNotifyingHelper call() throws CoreException {
+		public ExternalProcessEclipseHelper call() throws CoreException {
 			notifyOperationStarted(this);
 			return super.call();
 		}
