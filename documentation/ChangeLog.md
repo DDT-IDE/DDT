@@ -1,17 +1,17 @@
 ## DDT release ChangeLog
 
-### DDT 0.10.?
- * Removed some unused/invalid preferences from Editor preference page.
+### DDT 0.10.1 (2014-05-02)
+ * Build: now adds problem marker to project for DUB build failures. 
+ * Build: now adds problem markers to resources with compiler errors.
+ * Debugger: DDT now requires CDT 8.3.x .
  * Debugger: The "Details" format is now the default display value for variables in the Variables view, Expressions view, debug hover.
   * This is more in line to what GDB display in the command line, and is usually a more useful value. It replaces the uselesss '{...}' value that was most commonly displayed for most complex type.
  * Debugger: fixed #43 - Backend errors when displaying the value of dynamic array variables.
- * Debugger: DDT now requires CDT 8.3.x .
  * Fixed #51 - corrected parsing/splitting of DUB build extra arguments. (also can now use quotes to prevent splitting)
  * Fixed #52 - User Defined Attributes without parantheses marked as syntax errors     
  * Fixed #53 - Code completion doesn't see variables defined in foreach loop
- * Build: now adds problem marker to project for DUB build failures. 
- * Build: now adds problem markers to resources with compiler errors.
-
+ * Removed some unused/invalid preferences from Editor preference page.
+ 
 ### DDT 0.10.0 (2014-03-14)
  * Added DUB support. Project import-path now determined by the `dub.json` manifest file and running `dub describe`.
    * On DDT startup, or whenever `dub.json` is modified (and saved), `dub describe` will be run to resolve 
