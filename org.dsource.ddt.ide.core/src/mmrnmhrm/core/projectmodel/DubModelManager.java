@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -411,31 +412,30 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		String dubPath = DeeCorePreferences.getDubPath();
 		
-		DubCompositeOperation dubResolveProjectOperation = 
-			new DubCompositeOperation(DeeCoreMessages.RunningDubDescribe, project);
-		getProcessManager().notifyOperationStarted(dubResolveProjectOperation);
+		DubCompositeOperation resolveProjectOperation = new DubCompositeOperation(
+			MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName()), project);
+		getProcessManager().notifyOperationStarted(resolveProjectOperation);
+
+//		TODO: when new DUB .22 is released
+//		getProcessManager().submitDubCommandAndWait(resolveProjectOperation.newDubProcessTask(
+//			project, array(dubPath, "upgrade", "--missing-only"), pm));
 		
-		IDubTask dubProcessTask = dubResolveProjectOperation.newDubProcessTask(
+		IDubTask dubDescribeTask = resolveProjectOperation.newDubProcessTask(
 			project, array(dubPath, "describe"), pm);
-		ExternalProcessNotifyingHelper processHelper = getProcessManager().submitDubCommandAndWait(dubProcessTask);
-		
-		String descriptionOutput;
-		try {
-			descriptionOutput = processHelper.getStdOutBytes().toString(StringUtil.UTF8);
-		} catch (IOException e) {
-			throw LangCore.createCoreException("Error occurred reading dub process output: ", e);
-		}
+		ExternalProcessNotifyingHelper processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);
 		
 		int exitValue = processHelper.getProcess().exitValue();
 		if(exitValue != 0) {
 			throw LangCore.createCoreException("dub returned non-zero status: " + exitValue, null);
 		}
 		
+		String describeOutput = getDubProcessStdOut(processHelper);
+		
 		// Trim leading characters. 
 		// They shouldn't be there, but sometimes dub outputs non JSON text if downloading packages
-		descriptionOutput = StringUtil.substringFromMatch('{', descriptionOutput);
+		describeOutput = StringUtil.substringFromMatch('{', describeOutput);
 		
-		DubBundleDescription bundleDesc = DubDescribeParser.parseDescription(location, descriptionOutput);
+		DubBundleDescription bundleDesc = DubDescribeParser.parseDescription(location, describeOutput);
 		
 		if(bundleDesc.hasErrors()) {
 			setProjectDubError(project, "Error parsing description:", bundleDesc.getError());
@@ -445,6 +445,14 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			updateBuildpath(project, bundleDesc);
 		}
 		return null;
+	}
+	
+	protected String getDubProcessStdOut(ExternalProcessNotifyingHelper processHelper) throws CoreException {
+		try {
+			return processHelper.getStdOutBytes().toString(StringUtil.UTF8);
+		} catch (IOException e) {
+			throw LangCore.createCoreException("Error occurred reading dub process output: ", e);
+		}
 	}
 	
 	protected void setProjectDubError(IProject project, String message, Throwable exception) {

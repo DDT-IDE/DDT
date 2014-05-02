@@ -26,6 +26,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+/**
+ * {@link ICallable} task that runs an external process and waits for it to terminate. 
+ */
 public abstract class AbstractRunExternalProcessTask implements
 		ICallable<ExternalProcessNotifyingHelper, CoreException> {
 	

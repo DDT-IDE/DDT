@@ -83,16 +83,15 @@ public class DubProcessManager {
 		return dubProcessAgent.submit(task);
 	}
 	
-	public ExternalProcessNotifyingHelper submitDubCommandAndWait(IDubTask task)
-			throws CoreException {
+	public ExternalProcessNotifyingHelper submitDubCommandAndWait(IDubTask task) throws CoreException {
 		try {
-			return submitDubCommandAndGet(task);
+			return submitAndGetTask(task);
 		} catch (InterruptedException e) {
 			throw LangCore.createCoreException("Unexpected interruption", e);
 		}
 	}
 	
-	public <T> T submitDubCommandAndGet(ICallable<T, CoreException> task) throws InterruptedException, CoreException {
+	public <T> T submitAndGetTask(ICallable<T, CoreException> task) throws InterruptedException, CoreException {
 		Future<T> future = dubProcessAgent.submit(task);
 		try {
 			return future.get();
