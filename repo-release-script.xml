@@ -4,8 +4,8 @@
 Ant script for automated release and deploy of the update site. Sample usage:
 First, run the Maven build script:
 mvn clean integration-test
-
-ant -f site-release-script.xml UploadUpdateSiteToGit -DupdateSiteGitURL=file://..DDT/ddt.updates-PR
+// upload a new release to the update site:
+ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https://code.google.com/p/ddt.updates/
 ====================================================================== 
 -->
 <project name="project" >
