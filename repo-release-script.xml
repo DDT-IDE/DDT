@@ -19,7 +19,7 @@ ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https:/
 	<target name="clean">
 		<delete dir="${localUpdateSiteDir}" failonerror="true"/>
 	</target>
-
+	
 	<target name="CopyRepoToLocalUpdateSite">
 		<property name="repoDest" location="${localUpdateSiteDir}/local-repo" />
 		<copy verbose="true" todir="${repoDest}">
@@ -27,12 +27,18 @@ ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https:/
 		</copy>
 	</target>
 	
-	<target name="CreateUpdateSiteFromScratch" depends="clean">
-		<copy verbose="true" todir="${localUpdateSiteDir}">
+	<target name="CreateLocalUpdateSite" depends="">
+		<copy todir="${localUpdateSiteDir}" overwrite="true" verbose="true">
 			<fileset dir="${updateSiteSkeleton.Dir}"/>
 		</copy>
 		
 		<antcall target="CopyRepoToLocalUpdateSite"/>
+	</target>
+	
+	<!-- ================================= -->
+	
+	<target name="CreateUpdateSiteFromScratch" depends="clean">
+		<antcall target="CreateLocalUpdateSite"/>
 	</target>
 	
 	<target name="UploadUpdateSite" depends="CreateUpdateSiteFromScratch">
@@ -55,7 +61,7 @@ ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https:/
 			<fileset dir="${repoDest}" erroronmissingdir="false" includes="**/*.jar"/>
 		</delete>
 		
-		<antcall target="CopyRepoToLocalUpdateSite"/>
+		<antcall target="CreateLocalUpdateSite"/>
 		<antcall target="_commitGitChanges"/>
 	</target>
 
