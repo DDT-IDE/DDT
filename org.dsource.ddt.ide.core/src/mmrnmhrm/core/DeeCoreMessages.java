@@ -24,4 +24,9 @@ public abstract class DeeCoreMessages extends LangCoreMessages {
 			"Running DUB build";
 	public static final String RunningDubDescribe = 
 			"Resolving DUB project: {0}";
+	
+	
+	public static final String RunningDubBuild_Error = 
+			"Error running dub build command.";
+	
 }

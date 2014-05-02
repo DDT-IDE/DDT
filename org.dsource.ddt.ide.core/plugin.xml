@@ -139,15 +139,22 @@
          name="%DUBProblem"
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.core.resources.problemmarker"/>
-      <super type="org.eclipse.core.resources.textmarker"/>
-      <persistent value="false"/>
+      <persistent value="true"/>
    </extension>
    <extension
          id="DubBuildProblem"
          name="%DUBBuildProblem"
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.core.resources.problemmarker"/>
-      <persistent value="false"/>
+      <persistent value="true"/>
+   </extension>
+   <extension
+         id="DubBuildProblem_DeeSourceProblem"
+         name="%DeeProblem"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <super type="org.dsource.ddt.ide.core.DubBuildProblem"/>
+      <persistent value="true"/>
    </extension>
    <extension
          name="TODO"

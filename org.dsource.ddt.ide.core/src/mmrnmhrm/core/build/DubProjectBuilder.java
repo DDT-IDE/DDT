@@ -45,6 +45,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 	public static final String BUILDER_ID = DeeCore.PLUGIN_ID + ".DubBuilder";
 	
 	public static final String DUB_BUILD_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubBuildProblem";
+	public static final String DEE_PROBLEM_ID = DUB_BUILD_PROBLEM_ID + "_DeeSourceProblem";
 	
 	@Override
 	protected void startupOnInitialize() {
@@ -133,7 +134,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		if(buildExitValue != 0) {
 			String dubErrorLine = getDubError(stderr);
 			if(dubErrorLine == null) {
-				dubErrorLine = "Error running dub build command.";
+				dubErrorLine = DeeCoreMessages.RunningDubBuild_Error;
 			}
 			
 			IMarker dubMarker = getProject().createMarker(DUB_BUILD_PROBLEM_ID);
@@ -141,7 +142,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		}
 		
-//		processDErrors(stderr);
+		processCompilerErrors(stderr);
 	}
 	
 	protected String getDubError(String stderr) {
@@ -153,15 +154,41 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 	
-//	protected static final String REGEX = "^([^():]*)"+"\\([^)]*\\):"+"\\sError:\\s(.*)$";
-//
-//	protected void processDErrors(String stderr) {
-//		Matcher matcher = Pattern.compile(REGEX, Pattern.MULTILINE).matcher(stderr);
-//		while(matcher.find()) {
-//			String file = matcher.group(1);
-//			String line = matcher.group(2);
-//			String errorMsg = matcher.group(3);
-//		}
-//	}
+	protected static final String ERROR_REGEX = "^([^():]*)"+"\\(([^:)]*)\\):"+"\\sError:\\s(.*)$";
+	
+	protected void processCompilerErrors(String stderr) {
+		Matcher matcher = Pattern.compile(ERROR_REGEX, Pattern.MULTILINE).matcher(stderr);
+		while(matcher.find()) {
+			String file = matcher.group(1);
+			String lineStr = matcher.group(2);
+			String errorMsg = matcher.group(3);
+			try {
+				processErrorLine(file, lineStr, errorMsg);
+			} catch (CoreException e) {
+				DeeCore.logError(e);
+				// ignore, continue
+			}
+		}
+	}
+	
+	private void processErrorLine(String file, String lineStr, String errorMsg) throws CoreException {
+		IResource resource = getProject().findMember(file);
+		if(!resource.exists()) {
+			return;
+		}
+		
+		IMarker dubMarker = resource.createMarker(DEE_PROBLEM_ID);
+		
+		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		dubMarker.setAttribute(IMarker.MESSAGE, errorMsg);
+		
+		try {
+			int line = Integer.valueOf(lineStr);
+			dubMarker.setAttribute(IMarker.LINE_NUMBER, line);
+		} catch (NumberFormatException e) {
+			// don't set line attribute
+			return;
+		}
+	}
 	
 }
