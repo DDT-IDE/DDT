@@ -5,11 +5,11 @@
  * Build: now adds problem markers to resources with compiler errors.
  * Debugger: DDT now requires CDT 8.3.x .
  * Debugger: The "Details" format is now the default display value for variables in the Variables view, Expressions view, debug hover.
-  * This is more in line to what GDB display in the command line, and is usually a more useful value. It replaces the uselesss '{...}' value that was most commonly displayed for most complex type.
+  * This is more in line to what GDB display in the command line, and is usually a more useful display. It replaces the uselesss '{...}' value that was commonly displayed for most complex types.
  * Debugger: fixed #43 - Backend errors when displaying the value of dynamic array variables.
  * Fixed #51 - corrected parsing/splitting of DUB build extra arguments. (also can now use quotes to prevent splitting)
- * Fixed #52 - User Defined Attributes without parantheses marked as syntax errors     
- * Fixed #53 - Code completion doesn't see variables defined in foreach loop
+ * Fixed #52 - User Defined Attributes without parantheses marked as syntax errors.     
+ * Fixed #53 - Code completion doesn't see variables defined in foreach loop.
  * Removed some unused/invalid preferences from Editor preference page.
  
 ### DDT 0.10.0 (2014-03-14)

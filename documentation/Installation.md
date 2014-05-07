@@ -1,6 +1,9 @@
 ## Installation
 
-Requirements: You will need a **1.7 Java VM** or greater, **Eclipse 4.3** (Kepler) or greater. 
+#### Requirements: 
+ * Eclipse 4.3 (Kepler) or later.
+ * A **1.7** Java VM or later. Otherwise DDT will silently fail to start.
+ * A [DUB](http://code.dlang.org/about) installation and at least one D compiler. GDB for debugging.
 
 #### Instructions:
  1. Use your existing Eclipse, or download a new Eclipse package from http://www.eclipse.org/downloads/. 
@@ -10,9 +13,8 @@ Requirements: You will need a **1.7 Java VM** or greater, **Eclipse 4.3** (Keple
  1. Select the recently added update site in the `Work with:` dropdown. Type `DDT` in the filter box. Now the DDT feature should appear below.
  1. Select the `DDT - D Development Tools` feature, and complete the wizard. 
   * DDT dependencies such as CDT and DLTK will automatically be added during installation.
- 1. Restart Eclipse. After that take a look at the DDT configuration guide in the [User Guide](UserGuide.md#user-guide).
+ 1. Restart Eclipse. After that take a look at the setup section in the [User Guide](UserGuide.md#user-guide).
   
 
 #### Updating:
-If you followed the installation steps above, you can update DDT to the latest release by clicking
-`Help -> Check for Updates...` on the Eclipse IDE.
+If you already have DDT installed, and want to update it to a newer release, click `Help -> Check for Updates...`.
