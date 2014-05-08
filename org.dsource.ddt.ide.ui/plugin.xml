@@ -514,16 +514,17 @@
                   <count value="1" />
                   <iterate>
                      <or>
-                        <instanceof value="org.eclipse.ui.IEditorInput">
-                        </instanceof>
+                     	<and>
+	                        <instanceof value="org.eclipse.ui.IEditorInput" />
+	                        <adapt type="org.eclipse.core.resources.IResource">
+	                           <reference definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject" />
+	                        </adapt>
+                     	</and>
                         <adapt type="org.eclipse.core.resources.IFile">
-                           <test property="org.eclipse.core.resources.name" value="*.exe">
-                           </test>
+                           <test property="org.eclipse.core.resources.name" value="*.exe" />
                         </adapt>
                         <adapt type="org.eclipse.core.resources.IProject">
-                           <reference
-                                 definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
-                           </reference>
+                           <reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature" />
                         </adapt>
                      </or>
                   </iterate>

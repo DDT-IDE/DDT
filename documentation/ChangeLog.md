@@ -1,5 +1,8 @@
 ## DDT release ChangeLog
 
+### DDT 0.10.x
+ * Fixed - D application run/debug launch shorted appearing in non-D editors
+
 ### DDT 0.10.1 (2014-05-02)
  * Build: now adds problem marker to project for DUB build failures. 
  * Build: now adds problem markers to resources with compiler errors.

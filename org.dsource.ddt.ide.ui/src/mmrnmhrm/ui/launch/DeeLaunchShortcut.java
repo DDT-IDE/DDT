@@ -12,21 +12,16 @@
 package mmrnmhrm.ui.launch;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut;
-import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.launch.DeeLaunchConstants;
 import mmrnmhrm.core.projectmodel.DubModel;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.dltk.core.IScriptProject;
 
 import dtool.dub.DubBundleDescription;
 
@@ -35,26 +30,6 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut {
 	@Override
 	protected ILaunchConfigurationType getConfigurationType() {
 		return getLaunchManager().getLaunchConfigurationType(DeeLaunchConstants.ID_DEE_LAUNCH_TYPE);
-	}
-	
-	@Override
-	protected IResource[] findLaunchablesDo(Object[] objects, IProgressMonitor pm) {
-		List<IResource> list = new ArrayList<>(objects.length);
-		for (int i = 0; i < objects.length; i++) {
-			Object object = objects[i];
-			if (object instanceof IFile) {
-				IFile f = (IFile) object;
-				if(!f.getName().startsWith("."))
-					list.add(f);
-			} else if (object instanceof IProject) {
-				IProject proj = (IProject) object;
-				list.add(proj);
-			} else if (object instanceof IScriptProject) {
-				IScriptProject scriptProj = (IScriptProject) object;
-				list.add(scriptProj.getProject());
-			}
-		}
-		return ArrayUtil.createFrom(list, IResource.class);
 	}
 	
 	@Override
