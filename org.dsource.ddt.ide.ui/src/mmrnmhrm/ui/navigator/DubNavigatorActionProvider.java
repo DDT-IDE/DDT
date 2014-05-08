@@ -87,7 +87,7 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 				return;
 			
 			MenuManager dubMenu = new MenuManager(DeeUIMessages.DubActionMenu, 
-				DeePluginImages.getDescriptor(DeePluginImages.DUB_DEPENDENCIES_CONTAINER), "dubMenu");
+				DeePluginImages.DUB_DEPS_CONTAINER.getDescriptor(), "dubMenu");
 			dubMenu.add(action1);
 			dubMenu.add(action2);
 			dubMenu.add(action3);

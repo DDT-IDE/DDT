@@ -18,7 +18,6 @@ import melnorme.util.swt.SWTUtil;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
@@ -57,9 +56,12 @@ public class PluginImagesHelper {
 		return null;
 	}
 	
-	protected ImageDescriptor createImageDescriptor(String prefix, String imagePath, 
-			boolean useMissingImageDescriptor) {
-		IPath path = imagesPath.append(prefix).append(imagePath);
+	public ImageDescriptor createImageDescriptor(String imagePath) {
+		return createImageDescriptor(imagePath, false);
+	}
+	
+	public ImageDescriptor createImageDescriptor(String imagePath, boolean useMissingImageDescriptor) {
+		IPath path = imagesPath.append(imagePath);
 		ImageDescriptor imageDescriptor = getImageDescriptor(bundle, path, useMissingImageDescriptor);
 		if(failOnMissingImage) {
 			assertNotNull(imageDescriptor); 
@@ -67,24 +69,15 @@ public class PluginImagesHelper {
 		return imageDescriptor;
 	}
 	
-	public ImageDescriptor createUnmanaged(String prefix, String imagePath) {
-		return createUnmanaged(prefix, imagePath, false);
-	}
-	
-	public ImageDescriptor createUnmanaged(String prefix, String imagePath, boolean useMissingImageDescriptor) {
-		return createImageDescriptor(prefix, imagePath, useMissingImageDescriptor);
-	}
-	
-	public String getKey(String prefix, String imagePath) {
-		return new Path(prefix).append(imagePath).toString();
-	}
-	
-	public String createManaged(String prefix, String imagePath) {
-		ImageDescriptor result = createImageDescriptor(prefix, imagePath, false);
+	public ImageHandle createManaged(String imagePath) {
+		ImageDescriptor result = createImageDescriptor(imagePath, false);
 		assertNotNull(result);
-		String key = getKey(prefix, imagePath); 
-		imageRegistry.put(key, result);
-		return key;
+		return putManaged(imagePath, result);
+	}
+	
+	public ImageHandle putManaged(String imageKey, ImageDescriptor imageDescriptor) {
+		imageRegistry.put(imageKey, imageDescriptor);
+		return new ImageHandle(imageKey);
 	}
 	
 	/** 
@@ -100,6 +93,30 @@ public class PluginImagesHelper {
 	 */
 	public ImageDescriptor getImageDescriptor(String key) {
 		return imageRegistry.getDescriptor(key);
+	}
+	
+	/** 
+	 * A handle to an image in an image registry. 
+	 */
+	public class ImageHandle {
+		
+		protected String imageKey;
+		
+		public ImageHandle(String imageKey) {
+			this.imageKey = imageKey;
+		}
+		
+		public String getKey() {
+			return imageKey;
+		}
+		
+		public Image getImage() {
+			return imageRegistry.get(imageKey);
+		}
+		
+		public ImageDescriptor getDescriptor() {
+			return imageRegistry.getDescriptor(imageKey);
+		}
 	}
 	
 }

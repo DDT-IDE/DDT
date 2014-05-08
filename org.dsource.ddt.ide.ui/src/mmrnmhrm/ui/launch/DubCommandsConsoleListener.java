@@ -81,7 +81,7 @@ public class DubCommandsConsoleListener implements IDubProcessListener {
 		protected final IOConsoleOutputStream stdErr;
 		
 		public DubCommandsConsole(String name) {
-			super(name, DeePluginImages.getDescriptor(DeePluginImages.DUB_PROCESS));
+			super(name, DeePluginImages.DUB_PROCESS.getDescriptor());
 			
 			metaOut = newOutputStream();
 			

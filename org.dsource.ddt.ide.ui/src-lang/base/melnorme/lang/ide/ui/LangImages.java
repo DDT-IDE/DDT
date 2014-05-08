@@ -10,7 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import melnorme.lang.ide.ui.utils.ImageDescriptorRegistry;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper;
+import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -30,34 +32,36 @@ public abstract class LangImages {
 	protected static final String T_OVR = "ovr16";
 	protected static final String T_TABS = "view16/";
 	
-	protected static String createManaged(String prefix, String name) {
-		return helper.createManaged(prefix, name);
+	protected static String getKey(String prefix, String name) {
+		return prefix + "/" + name;
 	}
 	
-	protected static String createFromPlatformSharedImage(String prefix, String name, String sharedImageName) {
+	protected static ImageHandle createManaged(String prefix, String name) {
+		return helper.createManaged(getKey(prefix, name));
+	}
+	
+	protected static ImageHandle createFromPlatformSharedImage(String prefix, String name, String sharedImageName) {
 		ImageDescriptor descriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(sharedImageName);
-		String key = helper.getKey(prefix, name);
-		helper.getImageRegistry().put(key, descriptor);
-		return key;
+		String key = getKey(prefix, name);
+		return helper.putManaged(key, descriptor);
 	}
 	
 	protected static ImageDescriptor createUnmanaged(String prefix, String name) {
-		return helper.createUnmanaged(prefix, name);
+		return helper.createImageDescriptor(getKey(prefix, name), false);
 	}
 	
-	/** Gets the managed {@link Image} associated with the given key. */
-	public static Image getImage(String key) {
-		return helper.getImage(key);
-	}
 	
-	/** Gets the managed {@link ImageDescriptor} associated with the given key. */
-	public static ImageDescriptor getDescriptor(String key) {
-		return helper.getImageDescriptor(key);
+	/* ----------------- Image cache indexed by ImageDescriptor ----------------- */
+	
+	protected static final ImageDescriptorRegistry imageCache = new ImageDescriptorRegistry();
+	
+	public static Image getCachedImage(ImageDescriptor imageDescriptor) {
+		return imageCache.getImage(imageDescriptor);
 	}
 	
 	/* ---------------- Common Lang images ---------------- */
 	
-	public static String IMG_LAUNCHTAB_MAIN = createManaged(T_TABS, "main_launch_tab.png");
-	public static String IMG_LAUNCHTAB_ARGUMENTS = createManaged(T_TABS, "arguments_tab.gif");
+	public static ImageHandle IMG_LAUNCHTAB_MAIN = createManaged(T_TABS, "main_launch_tab.png");
+	public static ImageHandle IMG_LAUNCHTAB_ARGUMENTS = createManaged(T_TABS, "arguments_tab.gif");
 	
 }

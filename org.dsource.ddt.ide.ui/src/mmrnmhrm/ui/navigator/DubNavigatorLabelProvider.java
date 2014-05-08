@@ -168,42 +168,42 @@ class DubElementImageProvider extends DubAllContentElementsSwitcher<Image>{
 	
 	@Override
 	public Image visitDepContainer(DubDependenciesContainer element) {
-		return DeePluginImages.getImage(DeePluginImages.DUB_DEPENDENCIES_CONTAINER);
+		return DeePluginImages.DUB_DEPS_CONTAINER.getImage();
 	}
 	
 	@Override
 	public Image visitRawDepElement(DubRawDependencyElement element) {
-		return DeePluginImages.getImage(DeePluginImages.DUB_RAW_DEP);
+		return DeePluginImages.DUB_RAW_DEP.getImage();
 	}
 	
 	@Override
 	public Image visitErrorElement(DubErrorElement element) {
-		return DeePluginImages.getImage(DeePluginImages.DUB_ERROR_ELEMENT);
+		return DeePluginImages.DUB_ERROR_ELEMENT.getImage();
 	}
 	
 	@Override
 	public Image visitDepElement(DubDependencyElement element) {
-		return DeePluginImages.getImage(DeePluginImages.DUB_BUNDLE_DEP);
+		return DeePluginImages.DUB_BUNDLE_DEP.getImage();
 	}
 	
 	@Override
 	public Image visitDepSourceFolderElement(DubDepSourceFolderElement element) {
-		return DeePluginImages.getImage(DeePluginImages.SOURCE_FOLDER);
+		return DeePluginImages.SOURCE_FOLDER.getImage();
 	}
 	
 	@Override
 	public Image visitDubManifestFile(IFile element) {
-		return DeePluginImages.getImage(DeePluginImages.DUB_MANIFEST);
+		return DeePluginImages.DUB_MANIFEST.getImage();
 	}
 	
 	@Override
 	public Image visitDubCacheFolder(IFolder element) {
-		return DeePluginImages.getImage(DeePluginImages.BINARY_FOLDER);
+		return DeePluginImages.BINARY_FOLDER.getImage();
 	}
 	
 	@Override
 	public Image visitDubSourceFolder(IFolder element) {
-		return DeePluginImages.getImage(DeePluginImages.SOURCE_FOLDER);
+		return DeePluginImages.SOURCE_FOLDER.getImage();
 	}
 	
 	// TODO: review this usage
