@@ -111,7 +111,7 @@ public class DubCommandsConsoleListener implements IDubProcessListener {
 					writeProcessDescription(pb, console);
 					
 					DubProcessOutputToConsoleListener outputListener = new DubProcessOutputToConsoleListener(console);
-					processHelper.getOutputListeningHelper().addListener(outputListener);
+					processHelper.getOutputListenersHelper().addListener(outputListener);
 				} catch (IOException e) {
 					return;
 				}

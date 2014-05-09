@@ -323,5 +323,5 @@ public class ArrayUtil {
 		}
 		return newIx == arrayIx ? newArray : Arrays.copyOfRange(newArray, 0, newIx);
 	}
-
+	
 }
