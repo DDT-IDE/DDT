@@ -170,7 +170,7 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 			try {
 				report(match);
 			} catch (CoreException e) {
-				DeeCore.log(e);
+				DeeCore.logError(e);
 			}
 		}
 	}

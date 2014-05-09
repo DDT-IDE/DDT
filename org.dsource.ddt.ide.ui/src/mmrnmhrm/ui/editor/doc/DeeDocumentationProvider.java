@@ -69,7 +69,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 			if(range == null)
 				return null;
 		} catch(ModelException e) {
-			DeeCore.log(e);
+			DeeCore.logError(e);
 			return null;
 		}
 		

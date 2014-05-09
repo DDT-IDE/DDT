@@ -50,7 +50,6 @@ public abstract class LangImages {
 		return helper.createImageDescriptor(getKey(prefix, name), false);
 	}
 	
-	
 	/* ----------------- Image cache indexed by ImageDescriptor ----------------- */
 	
 	protected static final ImageDescriptorRegistry imageCache = new ImageDescriptorRegistry();

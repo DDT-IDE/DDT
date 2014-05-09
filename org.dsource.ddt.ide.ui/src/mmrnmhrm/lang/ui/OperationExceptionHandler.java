@@ -20,7 +20,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 
 
-
+// BM: TODO refactor this class
 public class OperationExceptionHandler {
 	
 	private static OperationExceptionHandler fgInstance = new OperationExceptionHandler();
@@ -49,12 +49,12 @@ public class OperationExceptionHandler {
 	// ------------------------------------
 	
 	protected void perform(CoreException e, Shell shell, String title, String dialogMessage) {
-		LangCore.log(e);
+		LangCore.logError(e);
 		ErrorDialog.openError(shell, title, dialogMessage, e.getStatus());
 	}
 	
 	protected void perform(RuntimeException e, Shell shell, String title, String dialogMessage) {
-		LangCore.log(e);
+		LangCore.logError(e);
 		String statusMessage = e.getMessage();
 		if (e.getMessage() != null && !e.getMessage().isEmpty()) {
 			statusMessage = e.getMessage();
