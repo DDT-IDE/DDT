@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
+import melnorme.lang.ide.ui.utils.AbstractProcessMessageConsole;
 import melnorme.util.swt.jface.ColorManager;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
@@ -28,10 +29,8 @@ import mmrnmhrm.ui.DeeUIMessages;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
-import org.eclipse.ui.console.MessageConsole;
 
 public class DubCommandsConsoleListener implements IDubProcessListener {
 	
@@ -74,32 +73,22 @@ public class DubCommandsConsoleListener implements IDubProcessListener {
 		return "["+ project.getName() +"]";
 	}
 	
-	public static class DubCommandsConsole extends MessageConsole {
+	public static class DubCommandsConsole extends AbstractProcessMessageConsole {
 		
-		protected final IOConsoleOutputStream metaOut;
-		protected final IOConsoleOutputStream stdOut;
-		protected final IOConsoleOutputStream stdErr;
+		public final IOConsoleOutputStream metaOut;
 		
 		public DubCommandsConsole(String name) {
 			super(name, DeePluginImages.DUB_PROCESS.getDescriptor());
 			
 			metaOut = newOutputStream();
 			
-			stdOut = newOutputStream();
-			stdErr = newOutputStream();
-			stdErr.setActivateOnWrite(true);
-			
-			// BM: it's not clear to me if a Color can be created outside UI thread, so do asyncExec
-			// I would think one cant, but some Platform code (ProcessConsole) does freely create Color instances
-			// on the UI thread, so maybe the asyncExec is not necessary.
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					metaOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
-					stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
-				}
-			});
-			
+			post_initOutputStreamColors();
+		}
+		
+		@Override
+		protected void ui_initOutputStreamColors() {
+			metaOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
+			stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 		}
 		
 	}
