@@ -64,8 +64,7 @@ public class RunExternalProcessTask<LISTENER extends IExternalProcessListener> i
 	}
 	
 	public ExternalProcessResult startProcessAndAwait() throws CoreException {
-		EclipseExternalProcessHelper processHelper = startProcess();
-		return processHelper.strictAwaitTermination();
+		return startProcess().strictAwaitTermination();
 	}
 	
 	public EclipseExternalProcessHelper startProcess() throws CoreException {

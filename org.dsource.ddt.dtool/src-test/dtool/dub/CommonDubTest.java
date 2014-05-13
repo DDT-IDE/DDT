@@ -21,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTests;
@@ -169,10 +170,9 @@ public class CommonDubTest extends DToolBaseTest {
 	/* ------------------------------ */
 	
 	protected String runDubDescribe(java.nio.file.Path workingDir) throws Exception {
-		ExternalProcessHelper processHelper = startDubProcess(workingDir, "describe");
-		processHelper.strictAwaitTermination(2000);
+		ExternalProcessResult processResult = startDubProcess(workingDir, "describe").strictAwaitTermination(2000);
 		
-		return processHelper.getStdOutBytes().toString(StringUtil.UTF8);
+		return processResult.getStdOutBytes().toString(StringUtil.UTF8);
 	}
 	
 	public static ExternalProcessHelper startDubProcess(Path workingDir, String... arguments) 

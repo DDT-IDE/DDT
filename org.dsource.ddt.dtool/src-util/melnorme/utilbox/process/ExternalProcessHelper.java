@@ -90,12 +90,12 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 	}
 	
-	public ByteArrayOutputStreamExt getStdOutBytes() {
+	protected ByteArrayOutputStreamExt getStdOutBytes() {
 		assertTrue(isFullyTerminated());
 		return mainReader.byteArray;
 	}
 	
-	public ByteArrayOutputStreamExt getStdErrBytes() {
+	protected ByteArrayOutputStreamExt getStdErrBytes() {
 		assertTrue(isFullyTerminated());
 		assertTrue(readStdErr);
 		return stderrReader.byteArray;
@@ -110,7 +110,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	/** 
 	 * Awaits for successful process termination, as well as successful termination of reader threads,
 	 * throws an exception otherwise (and destroys the process).
-	 * @return process exit code. 
+	 * @return the process result encapsulated in data class {@link ExternalProcessResult}. 
 	 * @throws InterruptedException if interrupted
 	 * @throws TimeoutException if timeout occurs, or cancel requested.
 	 * @throws IOException if an IO error occured in the reader threads.
@@ -140,6 +140,14 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 			this.exitValue = exitValue;
 			this.stdout = stdout;
 			this.stderr = stderr;
+		}
+		
+		public ByteArrayOutputStreamExt getStdOutBytes() {
+			return stdout;
+		}
+		
+		public ByteArrayOutputStreamExt getStdErrBytes() {
+			return stderr;
 		}
 		
 	}

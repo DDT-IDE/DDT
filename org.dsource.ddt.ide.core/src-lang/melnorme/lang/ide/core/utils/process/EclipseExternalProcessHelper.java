@@ -17,7 +17,6 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
-import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -72,14 +71,6 @@ public class EclipseExternalProcessHelper {
 	
 	public Process getProcess() {
 		return ph.getProcess();
-	}
-	
-	public ByteArrayOutputStreamExt getStdOutBytes() {
-		return ph.getStdOutBytes();
-	}
-	
-	public ByteArrayOutputStreamExt getStdErrBytes() {
-		return ph.getStdErrBytes();
 	}
 	
 	public ExternalProcessResult strictAwaitTermination() throws CoreException {
