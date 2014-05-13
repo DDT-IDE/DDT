@@ -11,19 +11,19 @@
 package mmrnmhrm.core.projectmodel;
 
 import java.nio.file.Path;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.process.AbstractRunExternalProcessTask;
-import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
-import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
+import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
+import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
+import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 
@@ -76,14 +76,11 @@ public class DubProcessManager {
 	
 	/* ----------------------------------- */
 	
-	public static interface IDubTask extends ICallable<ExternalProcessEclipseHelper, CoreException> {
-	}
-	
-	public Future<ExternalProcessEclipseHelper> submitDubCommand(IDubTask task) {
+	public Future<?> submitDubCommand(IRunProcessTask task) {
 		return dubProcessAgent.submit(task);
 	}
 	
-	public ExternalProcessEclipseHelper submitDubCommandAndWait(IDubTask task) throws CoreException {
+	public ExternalProcessResult submitDubCommandAndWait(IRunProcessTask task) throws CoreException {
 		try {
 			return submitAndGetTask(task);
 		} catch (InterruptedException e) {
@@ -107,7 +104,7 @@ public class DubProcessManager {
 		}
 	}
 	
-	public IDubTask newDubOperation(String operationName, IProject project, 
+	public IRunProcessTask newDubOperation(String operationName, IProject project, 
 			String[] commands, IProgressMonitor monitor) {
 		ProcessBuilder pb = createProcessBuilder(project, commands);
 		return new RunDubProcessOperation(operationName, pb, project, monitor);
@@ -120,27 +117,20 @@ public class DubProcessManager {
 		return new ProcessBuilder(commands).directory(workingDir.toFile());
 	}
 	
-	public class RunDubProcessOperation extends AbstractRunExternalProcessTask implements IDubOperation, IDubTask {
+	public class RunDubProcessOperation extends RunExternalProcessTask<IExternalProcessListener> implements IDubOperation {
 		
 		protected final String operationName;
-		protected final ListenerListHelper<IExternalProcessListener> listenersList;
 		
 		protected RunDubProcessOperation(String operationName, ProcessBuilder pb, IProject project,
 				IProgressMonitor cancelMonitor) {
-			super(pb, project, cancelMonitor);
+			super(pb, project, cancelMonitor, new ListenerListHelper<IExternalProcessListener>());
 			this.operationName = operationName;
-			this.listenersList = new ListenerListHelper<IExternalProcessListener>();
 		}
 		
 		@Override
-		protected List<? extends IExternalProcessListener> getListeners() {
-			return listenersList.getListeners();
-		}
-		
-		@Override
-		public ExternalProcessEclipseHelper call() throws CoreException {
+		public EclipseExternalProcessHelper startProcess() throws CoreException {
 			notifyOperationStarted(this);
-			return super.call();
+			return super.startProcess();
 		}
 		
 		@Override
@@ -190,16 +180,16 @@ public class DubProcessManager {
 			return listenerListHelper;
 		}
 		
-		public IDubTask newDubProcessTask(IProject project, String[] commands, IProgressMonitor monitor) {
+		public IRunProcessTask newDubProcessTask(IProject project, String[] commands, IProgressMonitor monitor) {
 			ProcessBuilder pb = createProcessBuilder(project, commands);
 			return new RunDubProcessTask(pb, project, monitor, listenerListHelper);
 		}
 		
 	}
 	
-	public static class RunDubProcessTask extends RunExternalProcessTask implements IDubTask {
+	public static class RunDubProcessTask extends RunExternalProcessTask<IExternalProcessListener> {
 		protected RunDubProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor,
-				ListenerListHelper<? extends IExternalProcessListener> listenersList) {
+				ListenerListHelper<IExternalProcessListener> listenersList) {
 			super(pb, project, cancelMonitor, listenersList);
 		}
 	}

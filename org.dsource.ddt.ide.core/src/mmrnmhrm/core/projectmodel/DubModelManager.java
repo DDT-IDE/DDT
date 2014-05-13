@@ -23,18 +23,18 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
+import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.projectmodel.DubModelManager.DubModelManagerTask;
 import mmrnmhrm.core.projectmodel.DubProcessManager.DubCompositeOperation;
-import mmrnmhrm.core.projectmodel.DubProcessManager.IDubTask;
 import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask.SearchAndAddCompilersOnPathJob;
 import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 
@@ -419,16 +419,16 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 //		getProcessManager().submitDubCommandAndWait(resolveProjectOperation.newDubProcessTask(
 //			project, array(dubPath, "upgrade", "--missing-only"), pm));
 		
-		IDubTask dubDescribeTask = resolveProjectOperation.newDubProcessTask(
+		IRunProcessTask dubDescribeTask = resolveProjectOperation.newDubProcessTask(
 			project, array(dubPath, "describe"), pm);
-		ExternalProcessEclipseHelper processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);
+		ExternalProcessResult processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);
 		
-		int exitValue = processHelper.getProcess().exitValue();
+		int exitValue = processHelper.exitValue;
 		if(exitValue != 0) {
 			throw LangCore.createCoreException("dub returned non-zero status: " + exitValue, null);
 		}
 		
-		String describeOutput = processHelper.getStdOutBytes_CoreException().toString(StringUtil.UTF8);
+		String describeOutput = processHelper.stdout.toString(StringUtil.UTF8);
 		
 		// Trim leading characters. 
 		// They shouldn't be there, but sometimes dub outputs non JSON text if downloading packages

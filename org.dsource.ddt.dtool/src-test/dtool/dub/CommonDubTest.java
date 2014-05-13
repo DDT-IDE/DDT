@@ -170,7 +170,7 @@ public class CommonDubTest extends DToolBaseTest {
 	
 	protected String runDubDescribe(java.nio.file.Path workingDir) throws Exception {
 		ExternalProcessHelper processHelper = startDubProcess(workingDir, "describe");
-		processHelper.awaitTerminationStrict_destroyOnException(2000);
+		processHelper.strictAwaitTermination(2000);
 		
 		return processHelper.getStdOutBytes().toString(StringUtil.UTF8);
 	}
@@ -192,7 +192,7 @@ public class CommonDubTest extends DToolBaseTest {
 		try {
 			ExternalProcessHelper processHelper;
 			processHelper = startDubProcess(null, "add-path", packageRootDirStr);
-			processHelper.awaitTerminationStrict_destroyOnException(2000);
+			processHelper.strictAwaitTermination(2000);
 			assertTrue(processHelper.getProcess().exitValue() == 0);
 		} catch (TimeoutException | InterruptedException | IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
@@ -205,7 +205,7 @@ public class CommonDubTest extends DToolBaseTest {
 		try {
 			ExternalProcessHelper processHelper;
 			processHelper = startDubProcess(null, "remove-path", packageRootDirStr);
-			processHelper.awaitTerminationStrict_destroyOnException(2000);
+			processHelper.strictAwaitTermination(2000);
 			assertTrue(processHelper.getProcess().exitValue() == 0);
 		} catch (TimeoutException | InterruptedException | IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);

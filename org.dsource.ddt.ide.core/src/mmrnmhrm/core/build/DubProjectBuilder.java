@@ -18,16 +18,16 @@ import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
+import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.core.projectmodel.DubProcessManager;
-import mmrnmhrm.core.projectmodel.DubProcessManager.IDubTask;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -91,9 +91,9 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		String[] extraCommands = getExtraCommands();
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
-		ExternalProcessEclipseHelper processHelper;
+		ExternalProcessResult processResult;
 		try {
-			processHelper = submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
+			processResult = submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
 			
 		} catch (CoreException ce) {
 			if(ce.getCause() instanceof TimeoutException && monitor.isCanceled()) {
@@ -107,7 +107,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		}
 		
-		processBuildOutput(processHelper);
+		processBuildOutput(processResult);
 		
 		return null;
 	}
@@ -117,19 +117,19 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		return DebugPlugin.parseArguments(extraOptionsString);
 	}
 	
-	protected ExternalProcessEclipseHelper submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
+	protected ExternalProcessResult submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
 			throws CoreException {
 		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
 		
-		IDubTask runDubProcessOperation = dubProcessManager.newDubOperation(
+		IRunProcessTask runDubProcessOperation = dubProcessManager.newDubOperation(
 			DeeCoreMessages.RunningDubBuild, getProject(), commands, monitor);
 		return dubProcessManager.submitDubCommandAndWait(runDubProcessOperation);
 	}
 	
-	protected void processBuildOutput(ExternalProcessEclipseHelper processHelper) throws CoreException {
-		int buildExitValue = processHelper.getProcess().exitValue();
+	protected void processBuildOutput(ExternalProcessResult processResult) throws CoreException {
+		int buildExitValue = processResult.exitValue;
 		
-		String stderr = processHelper.getStdErrBytes_CoreException().toString(StringUtil.UTF8);
+		String stderr = processResult.stderr.toString(StringUtil.UTF8);
 		
 		if(buildExitValue != 0) {
 			String dubErrorLine = getDubError(stderr);
