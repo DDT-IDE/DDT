@@ -1,6 +1,10 @@
 package dtool.project;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
+
+import java.nio.file.Path;
+
 import melnorme.utilbox.misc.StringUtil;
 import dtool.parser.DeeLexerKeywordHelper;
 import dtool.parser.DeeTokens;
@@ -89,6 +93,10 @@ public class DeeNamingRules {
 		return StringUtil.substringUntilMatch(fileName, ".");
 	}
 	
+	public static String getModuleNameFromFilePath(Path filePath) {
+		assertTrue(filePath.getNameCount() > 0);
+		return getModuleNameFromFileName(filePath.getFileName().toString());
+	}
 	
 	/**
 	 * @return The fully qualified name of the module with given packagePath and given fileName,

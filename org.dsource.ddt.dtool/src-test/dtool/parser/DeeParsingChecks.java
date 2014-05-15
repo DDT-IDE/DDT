@@ -18,9 +18,9 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.util.ArrayList;
 
 import melnorme.utilbox.tests.CommonTestUtils;
-import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
+import dtool.ast.ASTVisitor;
 import dtool.ast.IASTNode;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.TemplateParameter;
@@ -129,7 +129,7 @@ public class DeeParsingChecks extends CommonTestUtils {
 	
 	public static ArrayList<ParserError> collectNodeErrors(ASTNode node) {
 		assertNotNull(node);
-		return DeeParserResult.collectErrors(new ArrayList<ParserError>(), node);
+		return DeeParser.collectErrors(new ArrayList<ParserError>(), node);
 	}
 	
 	public static class DeeParsingNodeCheck {
