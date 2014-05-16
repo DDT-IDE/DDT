@@ -98,8 +98,9 @@ public class DToolTestResources {
 		String property = System.getProperty(TEST_RESOURCES_WORKING_DIR_PROPERTY);
 		if(property != null) {
 			initWorkingDir(property);
+		} else {
+			initWorkingDir(System.getProperty("java.io.tmpdir") + "/_tests_workingdir");
 		}
-		// Maybe use workingDir = "../_runtime-tests" instead
 	}
 	
 	public static String resourceFileToString(File file) {

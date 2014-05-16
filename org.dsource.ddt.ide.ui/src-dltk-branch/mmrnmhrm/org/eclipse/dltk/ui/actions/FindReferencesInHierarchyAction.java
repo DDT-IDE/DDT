@@ -12,6 +12,7 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.SearchEngine;
+import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.search.DLTKSearchScopeFactory;
 import org.eclipse.dltk.internal.ui.search.SearchMessages;
@@ -50,7 +51,7 @@ public final class FindReferencesInHierarchyAction extends FindAction {
 	}
 	
 	protected QuerySpecification createQuery(DefUnit defunit) throws ModelException {
-		ISourceModule sourceModule = EditorUtil.getModuleUnit(deeEditor);
+		ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(deeEditor, false);
 		IType type = (IType) DeeModelEngine.findCorrespondingModelElement(defunit, sourceModule);
 		if (type == null) {
 			return super.createQuery(defunit);

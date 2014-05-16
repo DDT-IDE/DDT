@@ -74,9 +74,17 @@ public class MiscFileUtils {
 		
 	}
 	
-	public static void copyDirContentsIntoDirectory(File sourceDir, final File destFolder) {
+	public static void copyDirContentsIntoDirectory(File sourceDir, File destFolder) {
 		try {
 			new FileCopyTraverser(destFolder).traverseDirectory(sourceDir);
+		} catch(IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	public static void copyDirContentsIntoDirectory(Path sourceDir, Path destFolder) {
+		try {
+			new FileCopyTraverser(destFolder.toFile()).traverseDirectory(sourceDir.toFile());
 		} catch(IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

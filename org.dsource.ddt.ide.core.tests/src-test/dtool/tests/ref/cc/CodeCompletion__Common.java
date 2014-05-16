@@ -2,7 +2,7 @@ package dtool.tests.ref.cc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
-import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+import mmrnmhrm.core.parser.ModuleParsingHandler;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
@@ -92,7 +92,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	}
 	
 	public static PrefixDefUnitSearch doCompletionSearch(int offset, ISourceModule moduleUnit) throws ModelException {
-		DeeParserResult parseResult = DeeModuleParsingUtil.getParsedDeeModuleDecl(moduleUnit).deeParserResult;
+		DeeParserResult parseResult = ModuleParsingHandler.parseModule(moduleUnit);
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit);
 		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr);
 	}

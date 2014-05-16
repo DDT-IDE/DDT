@@ -1,12 +1,11 @@
 package mmrnmhrm.core.search;
 
 
-import mmrnmhrm.core.parser.DeeModuleDeclaration;
-
 import org.eclipse.dltk.core.ISourceModule;
 
-import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
+import dtool.ast.ASTVisitor;
+import dtool.parser.DeeParserResult.ParsedModule;
 
 public abstract class AbstractNodePatternMatcher {
 	
@@ -22,8 +21,8 @@ public abstract class AbstractNodePatternMatcher {
 		this.matchReferences = findReferences;
 	}
 	
-	public void doMatching(DeeModuleDeclaration deeUnit, final ISourceModule sourceModule) {
-		deeUnit.getModule().accept(new ASTVisitor() {
+	public void doMatching(ParsedModule parsedModule, final ISourceModule sourceModule) {
+		parsedModule.getModuleNode().accept(new ASTVisitor() {
 			@Override
 			public boolean preVisit(ASTNode node) {
 				return match(node, sourceModule);

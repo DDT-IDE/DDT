@@ -18,8 +18,6 @@ import dtool.tests.DToolTestResources;
 
 public class DubManifestParserTest extends CommonDubTest {
 	
-	public static final Path DUB_TEST_BUNDLES = DToolTestResources.getTestResourcePath("dub");	
-	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {

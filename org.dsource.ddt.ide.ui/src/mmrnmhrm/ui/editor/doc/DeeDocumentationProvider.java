@@ -6,7 +6,7 @@ import java.io.Reader;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
-import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+import mmrnmhrm.core.parser.ModuleParsingHandler;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
 import org.eclipse.dltk.core.IMember;
@@ -75,7 +75,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 		
 		final int start = range.getOffset();
 		
-		Module deeModule = DeeModuleParsingUtil.getParsedDeeModule(member.getSourceModule());
+		Module deeModule = ModuleParsingHandler.parseModule(member.getSourceModule()).module;
 		ASTNode pickedNode = ASTNodeFinder.findElement(deeModule, start);
 		
 		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(member.getScriptProject());

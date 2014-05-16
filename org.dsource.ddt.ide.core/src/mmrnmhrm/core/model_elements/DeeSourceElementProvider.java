@@ -12,7 +12,6 @@ package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static mmrnmhrm.core.model_elements.DefElementFlagsUtil.getCommonDefinitionModifiersInfo;
-import mmrnmhrm.core.parser.DeeModuleDeclaration;
 
 import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
@@ -47,6 +46,7 @@ import dtool.ast.expressions.ExpCall;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
+import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.util.ArrayView;
 
 public final class DeeSourceElementProvider extends ASTSwitchVisitor {
@@ -57,10 +57,10 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 		this.requestor = requestor;
 	}
 	
-	public void provide(DeeModuleDeclaration moduleDecl) {
+	public void provide(ParsedModule parsedModule) {
 		requestor.enterModule();
 		
-		Module module = moduleDecl.getModule();
+		Module module = parsedModule.getModuleNode();
 		if(module.md != null) {
 			requestor.enterNamespace(module.md.packages);
 		} else {

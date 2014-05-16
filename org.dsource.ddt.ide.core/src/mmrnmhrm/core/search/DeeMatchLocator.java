@@ -112,7 +112,7 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 		
 		// Stage 1: collect matches 
 		matches = new ArrayList<SearchMatch>();
-		patternMatcher.doMatching(deeUnit, sourceModule);
+		patternMatcher.doMatching(deeUnit.deeParserResult, sourceModule);
 		
 		
 		// Stage 2: report matches

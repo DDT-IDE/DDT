@@ -1,5 +1,6 @@
 package dtool.project;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
@@ -75,6 +76,16 @@ public class DeeNamingRules_Test extends DeeNamingRules {
 		
 		assertTrue(!isValidPackagePathName("foo/while"));
 		assertTrue(!isValidPackagePathName("package/bar"));
+	}
+	
+	@Test
+	public void testGetModuleName() throws Exception { testGetModuleName$(); }
+	public void testGetModuleName$() throws Exception {
+		assertEquals(getModuleNameFromFilePath("sadf/mymod.d"), "mymod");
+		assertEquals(getModuleNameFromFilePath("sadf/mymod"), "mymod");
+		assertEquals(getModuleNameFromFilePath("/mymod.d"), "mymod");
+		assertEquals(getModuleNameFromFilePath("mymod.d"), "mymod");
+		assertEquals(getModuleNameFromFilePath("mymod"), "mymod");
 	}
 	
 }

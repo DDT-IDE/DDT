@@ -45,8 +45,8 @@ import dtool.util.NewUtils;
 @RunWith(Parameterized.class)
 public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 	
-	public static SimpleLogger templatedTestsSourceLog = new SimpleLogger("TemplatedSourceBasedTest");
-	public static SimpleLogger expandedTestCaseLog = new SimpleLogger("TemplatedSourceBasedTest");
+	public static SimpleLogger templatedTestsSourceLog = SimpleLogger.create("TemplatedSourceBasedTest");
+	public static SimpleLogger expandedTestCaseLog = SimpleLogger.create("TemplatedSourceBasedTest");
 	
 	public static ArrayList<File> getDeeModuleList(String testFolder) {
 		return getDeeModuleList(getTestResource(testFolder), true);

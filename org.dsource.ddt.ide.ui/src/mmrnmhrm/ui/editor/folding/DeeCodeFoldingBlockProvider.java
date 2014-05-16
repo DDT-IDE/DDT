@@ -10,9 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.folding;
 
-import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+import mmrnmhrm.core.parser.ModuleParsingHandler;
 
-import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockRequestor;
@@ -20,8 +19,8 @@ import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Region;
 
-import dtool.ast.ASTVisitor;
 import dtool.ast.ASTNode;
+import dtool.ast.ASTVisitor;
 import dtool.ast.definitions.Module;
 
 public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
@@ -64,43 +63,41 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	
 	@Override
 	public void computeFoldableBlocks(IFoldingContent content) {
-		if (content.getModelElement() instanceof ISourceModule) {
-			ISourceModule sourceModule = (ISourceModule) content.getModelElement();
-			Module deeModule = DeeModuleParsingUtil.parseAndGetAST(sourceModule);
-			if (deeModule != null) {
-				deeModule.accept(new ASTVisitor() {
-					
-					@Override
-					public boolean preVisit(ASTNode node) {
-						switch (node.getNodeType()) {
-						case DEFINITION_STRUCT:
-						case DEFINITION_UNION:
-						case DEFINITION_CLASS:
-						case DEFINITION_INTERFACE:
-						case DEFINITION_TEMPLATE:
-							reportBlock(node, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
-							break;
-						case DEFINITION_FUNCTION:
-							reportBlock(node, DeeFoldingBlockKind.FUNCTION, collapseFunctions);
-							break;
-						case EXP_FUNCTION_LITERAL:
-							reportBlock(node, DeeFoldingBlockKind.FUNCTIONLITERALS, collapseFunctionLiterals);
-							break;
-						case EXP_NEW_ANON_CLASS:
-							reportBlock(node, DeeFoldingBlockKind.ANONCLASSES, collapseAnonClasses);
-							break;
-						case DECLARATION_UNITEST:
-							reportBlock(node, DeeFoldingBlockKind.UNITTEST, collapseUnittests);
-							break;
-						case DECLARATION_DEBUG_VERSION:
-							reportBlock(node, DeeFoldingBlockKind.CONDITIONALS, collapseConditionals);
-							break;
-						default:
-						}
-						return VISIT_CHILDREN;
+		Module deeModule = ModuleParsingHandler.parseModule(content).module;
+		
+		if (deeModule != null) {
+			deeModule.accept(new ASTVisitor() {
+				
+				@Override
+				public boolean preVisit(ASTNode node) {
+					switch (node.getNodeType()) {
+					case DEFINITION_STRUCT:
+					case DEFINITION_UNION:
+					case DEFINITION_CLASS:
+					case DEFINITION_INTERFACE:
+					case DEFINITION_TEMPLATE:
+						reportBlock(node, DeeFoldingBlockKind.AGGREGATE, collapseAggregates);
+						break;
+					case DEFINITION_FUNCTION:
+						reportBlock(node, DeeFoldingBlockKind.FUNCTION, collapseFunctions);
+						break;
+					case EXP_FUNCTION_LITERAL:
+						reportBlock(node, DeeFoldingBlockKind.FUNCTIONLITERALS, collapseFunctionLiterals);
+						break;
+					case EXP_NEW_ANON_CLASS:
+						reportBlock(node, DeeFoldingBlockKind.ANONCLASSES, collapseAnonClasses);
+						break;
+					case DECLARATION_UNITEST:
+						reportBlock(node, DeeFoldingBlockKind.UNITTEST, collapseUnittests);
+						break;
+					case DECLARATION_DEBUG_VERSION:
+						reportBlock(node, DeeFoldingBlockKind.CONDITIONALS, collapseConditionals);
+						break;
+					default:
 					}
-				});
-			}
+					return VISIT_CHILDREN;
+				}
+			});
 		}
 	}
 	

@@ -17,6 +17,12 @@ public class SimpleLogger {
 
 	public static boolean masterLoggEnabled = true;
 
+	public static SimpleLogger create(String propertyKey) {
+		boolean enabled = System.getProperty("SimpleLogger." + propertyKey) != null
+			|| System.getProperty("SimpleLogger.ALL") != null;
+		return new SimpleLogger(enabled);
+	}
+	
 	protected boolean enabled = true;
 	
 	public SimpleLogger(boolean enabled) {
@@ -25,11 +31,6 @@ public class SimpleLogger {
 	
 	public SimpleLogger() {
 		this(true);
-	}
-	
-	public SimpleLogger(String propertyKey) {
-		this();
-		enabled = System.getProperty("SimpleLogger." + propertyKey) != null;
 	}
 	
 	public boolean isEnabled() {

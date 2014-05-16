@@ -2,7 +2,7 @@ package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+import mmrnmhrm.core.parser.ModuleParsingHandler;
 
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -40,7 +40,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			
 			if(moduleSource instanceof ISourceModule) {
 				ISourceModule sourceModule = (ISourceModule) moduleSource;
-				parseResult = DeeModuleParsingUtil.getParsedDeeModuleDecl(sourceModule).deeParserResult;
+				parseResult = ModuleParsingHandler.parseModule(sourceModule);
 				mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
 			} else {
 				String defaultModuleName = getDefaultModuleName(moduleSource);

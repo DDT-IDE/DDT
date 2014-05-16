@@ -6,13 +6,13 @@ import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 
 import dtool.ast.IASTNode;
 import dtool.ast.definitions.Module;
-import dtool.parser.DeeParserResult;
+import dtool.parser.DeeParserResult.ParsedModule;
 
 public class DeeModuleDeclaration implements IModuleDeclaration {
 
-	public final DeeParserResult deeParserResult;
+	public final ParsedModule deeParserResult;
 	
-	public DeeModuleDeclaration(DeeParserResult deeParserResult) {
+	public DeeModuleDeclaration(ParsedModule deeParserResult) {
 		this.deeParserResult = assertNotNull(deeParserResult);
 	}
 	

@@ -3,16 +3,8 @@ package mmrnmhrm.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.util.swt.SWTUtil;
-import melnorme.utilbox.tree.IElement;
-import mmrnmhrm.core.parser.DeeModuleParsingUtil;
-
 import org.eclipse.dltk.ast.Modifiers;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.ElementChangedEvent;
-import org.eclipse.dltk.core.IElementChangedListener;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.ui.DLTKPluginImages;
@@ -23,12 +15,8 @@ import org.eclipse.dltk.ui.viewsupport.ModelElementFlagsFilter;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ILabelDecorator;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
-
-import dtool.ast.ASTNode;
-import dtool.ast.definitions.Module;
 
 /**
  * TODO: DLTK request: we would like {@link #isInnerType()}  to be protected so we can extends
@@ -55,87 +43,6 @@ public class DeeOutlinePage extends ScriptOutlinePage {
 	@Override
 	public void dispose() {
 		super.dispose();
-	}
-	
-	@Deprecated
-	protected final class DeeOutlinePageContentProvider extends DeeOutlineContentProvider {
-		
-		private final class ElementChangedListener implements IElementChangedListener {
-			@Override
-			public void elementChanged(ElementChangedEvent event) {
-				SWTUtil.runInSWTThread(new Runnable() {
-					@Override
-					public void run() {
-						if(getControl() == null || fOutlineViewer == null)
-							return; // may have been disposed meanwhile
-						deeOutlinePage.getControl().setRedraw(false);
-						deeOutlinePage.fOutlineViewer.refresh();
-						deeOutlinePage.fOutlineViewer.expandAll();
-						deeOutlinePage.getControl().setRedraw(true);
-					}
-				});
-			}
-		}
-		
-		private final DeeOutlinePage deeOutlinePage;
-		
-		protected DeeOutlinePageContentProvider(DeeOutlinePage deeOutlinePage) {
-			this.deeOutlinePage = deeOutlinePage;
-		}
-		
-		private IElementChangedListener fListener;
-		
-		
-		@Override
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			boolean isCU = (newInput instanceof ISourceModule);
-			
-			if (isCU && fListener == null) {
-				fListener = new ElementChangedListener();
-				DLTKCore.addElementChangedListener(fListener);
-			} else if (!isCU && fListener != null) {
-				DLTKCore.removeElementChangedListener(fListener);
-				fListener = null;
-			}
-		}
-		
-		@Override
-		public void dispose() {
-			if (fListener != null) {
-				DLTKCore.removeElementChangedListener(fListener);
-				fListener = null;
-			}
-		}
-		
-		@Override
-		public boolean hasChildren(Object element) {
-			return super.hasChildren(element);
-		}
-		
-		
-		@Override
-		public Object[] getChildren(Object element) {
-			return super.getChildren(element);
-		}
-		
-		@Override
-		public Object[] getElements(Object parent) {
-			if(parent instanceof ISourceModule) {
-				ISourceModule sourceModule = (ISourceModule) parent;
-				Module module = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
-				if(module != null)
-					return super.getElements(module);
-			}
-			return ASTNode.NO_ELEMENTS;
-		}
-		
-		@Override
-		public Object getParent(Object element) {
-			if(element instanceof IElement)
-				return super.getParent(element);
-			return null;
-		}
-		
 	}
 	
 	@Override

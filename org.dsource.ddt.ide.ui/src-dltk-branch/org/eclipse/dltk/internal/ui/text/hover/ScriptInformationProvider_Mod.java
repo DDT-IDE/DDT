@@ -29,6 +29,7 @@ import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * Mod from DLTK 3.0 that allows a different fImplementation other than a ScriptTypeHover
@@ -66,7 +67,7 @@ public class ScriptInformationProvider_Mod implements IInformationProvider,
 		}
 	}
 
-	protected IEditorPart fEditor;
+	protected ITextEditor fEditor;
 	protected IPartListener fPartListener;
 
 	protected String fCurrentPerspective;
@@ -77,7 +78,7 @@ public class ScriptInformationProvider_Mod implements IInformationProvider,
 	 */
 	private IInformationControlCreator fPresenterControlCreator;
 
-	public ScriptInformationProvider_Mod(IEditorPart editor) {
+	public ScriptInformationProvider_Mod(ITextEditor editor) {
 
 		fEditor = editor;
 

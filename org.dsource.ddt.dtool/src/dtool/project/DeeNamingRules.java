@@ -89,6 +89,12 @@ public class DeeNamingRules {
 		return strict ? isValidDIdentifier(partname) : isValidDAlphaNumeric(partname);
 	}
 	
+	public static String getModuleNameFromFilePath(String filePath) {
+		// Note: we dont convert filePath to a java.nio.file.Path so that 
+		// this method can handle OS-invalid path names as well.
+		return getModuleNameFromFileName(StringUtil.substringAfterMatch(filePath, "/"));
+	}
+	
 	public static String getModuleNameFromFileName(String fileName) {
 		return StringUtil.substringUntilMatch(fileName, ".");
 	}

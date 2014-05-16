@@ -92,7 +92,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		String source = parseResult.source;
 		assertTrue(offset >= 0 && offset <= source.length());		
 		
-		Module module = parseResult.getParsedModule();
+		Module module = parseResult.getModuleNode();
 		
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, mr);
 		

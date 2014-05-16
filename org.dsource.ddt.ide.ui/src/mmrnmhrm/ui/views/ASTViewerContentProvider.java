@@ -2,7 +2,7 @@ package mmrnmhrm.ui.views;
 
 import melnorme.util.swt.jface.ElementContentProvider;
 import melnorme.utilbox.tree.IElement;
-import mmrnmhrm.core.parser.DeeModuleDeclaration;
+import dtool.parser.DeeParserResult;
 
 public class ASTViewerContentProvider extends ElementContentProvider {
 	
@@ -14,11 +14,11 @@ public class ASTViewerContentProvider extends ElementContentProvider {
 	
 	@Override
 	public Object[] getElements(Object inputElement) {
-		DeeModuleDeclaration deeModuleDecl = view.fDeeModule;
+		DeeParserResult deeModuleDecl = view.fDeeModule;
 		if(deeModuleDecl == null) {
 			return IElement.NO_ELEMENTS;
 		}
-		IElement input = deeModuleDecl.getModule(); 
+		IElement input = deeModuleDecl.getModuleNode(); 
 		return input.getChildren();
 	}
 	

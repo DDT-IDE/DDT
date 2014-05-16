@@ -1,16 +1,16 @@
 package mmrnmhrm.ui.views;
 
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.parser.DeeModuleDeclaration;
-import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+import mmrnmhrm.core.parser.ModuleParsingHandler;
 import mmrnmhrm.lang.ui.EditorUtil;
-import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -48,6 +48,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.IASTNode;
+import dtool.parser.DeeParserResult;
 
 
 /**
@@ -72,7 +73,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	protected ITextEditor fEditor;
 	protected IDocument fDocument;
 	protected ISourceModule fSourceModule;
-	protected DeeModuleDeclaration fDeeModule;
+	protected DeeParserResult fDeeModule;
 	protected IASTNode selNode;
 	
 	
@@ -172,10 +173,12 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		} else {
 			fEditor = editor;
 			
-			fSourceModule = EditorUtil.getModuleUnit(fEditor);
+			fSourceModule = EditorUtility.getEditorInputModelElement(fEditor, false);
 			if(fSourceModule != null) {
 				fDocument = fEditor.getDocumentProvider().getDocument(editor.getEditorInput());
-				fDocument.addDocumentListener(this);
+				if(fDocument != null) {
+					fDocument.addDocumentListener(this);
+				}
 			} 
 			refreshViewer();
 		}
@@ -195,7 +198,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		} catch (ModelException e) {
 			DeeCore.logError(e);
 		}
-		fDeeModule = DeeModuleParsingUtil.getParsedDeeModuleDecl(fSourceModule);
+		fDeeModule = ModuleParsingHandler.parseModule(fSourceModule);
 		if(fDeeModule == null) {
 			setContentDescription("No DeeModuleUnit available");
 			viewer.getControl().setVisible(false);
@@ -209,7 +212,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		
 		//viewer.getControl().setRedraw(false);
 		viewer.refresh();
-		selNode = ASTNodeFinder.findElement(fDeeModule.getModule(), offset);
+		selNode = ASTNodeFinder.findElement(fDeeModule.getModuleNode(), offset);
 		if(selNode != null) {
 			viewer.reveal(selNode);
 		}

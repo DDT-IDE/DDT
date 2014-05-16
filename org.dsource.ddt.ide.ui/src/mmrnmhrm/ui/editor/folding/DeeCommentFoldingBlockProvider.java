@@ -2,11 +2,10 @@ package mmrnmhrm.ui.editor.folding;
 
 import java.util.List;
 
-import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+import mmrnmhrm.core.parser.ModuleParsingHandler;
 import mmrnmhrm.ui.text.DeePartitioningProvider;
 import mmrnmhrm.ui.text.DeePartitions;
 
-import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.dltk.ui.text.folding.PartitioningFoldingBlockProvider;
@@ -25,7 +24,7 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 	
 	protected boolean fStringFolding;
 	protected boolean fInitCollapseStrings;
-	protected int offsetForFirstMember; // Used to determine header comments
+	protected int offsetForModuleDeclaration; // Used to determine header comments
 
 	
 	@Override
@@ -41,17 +40,14 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 	
 	@Override
 	public void computeFoldableBlocks(IFoldingContent content) {
-		offsetForFirstMember = -1;
+		offsetForModuleDeclaration = -1;
 		
 		if(isFoldingComments()) {
-			ISourceModule sourceModule = (ISourceModule) content.getModelElement();
 			
 			// With changes in the parser perhaps this code could be simplified.
-			Module deeModule = DeeModuleParsingUtil.parseAndGetAST(sourceModule);
-			if (deeModule != null) {
-				if(deeModule.md != null) {
-					offsetForFirstMember = deeModule.md.getOffset();
-				}
+			Module deeModule = ModuleParsingHandler.parseModule(content).module;
+			if (deeModule != null && deeModule.md != null) {
+				offsetForModuleDeclaration = deeModule.md.getOffset();
 			}
 			
 			computeBlocksForPartitionType(content,
@@ -92,7 +88,7 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 			Object element = null;
 			
 			boolean effectiveCollapse = collapse;
-			if(kind.isComment() && offsetForFirstMember != -1 && region.getOffset() < offsetForFirstMember) {
+			if(kind.isComment() && offsetForModuleDeclaration != -1 && region.getOffset() < offsetForModuleDeclaration) {
 				effectiveCollapse = isCollapseHeaderComment();
 			}
 			

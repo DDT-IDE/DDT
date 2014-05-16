@@ -41,7 +41,7 @@ import dtool.util.NewUtils;
 public class DToolBaseTest extends CommonTest {
 	
 	public static PrintStream testsLogger = System.out;
-	public static SimpleLogger testsLogVerbose = new SimpleLogger("verbose");
+	public static SimpleLogger testsLogVerbose = SimpleLogger.create("verbose");
 	
 	public static Set<String> executedTests = new HashSet<String>();
 	

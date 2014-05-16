@@ -53,27 +53,26 @@ public final class FileUtil extends StreamUtil {
 	
 	
 	/** Write the given array of bytes to given file */
-	public static void writeBytesToFile(byte[] bytes, File file) throws IOException,
-			FileNotFoundException {
+	public static void writeBytesToFile(File file, byte[] bytes) throws IOException, FileNotFoundException {
 		FileOutputStream fileOS = new FileOutputStream(file);
 		writeBytesToStream(bytes, fileOS);
 	}
 	
 	/** Writes given chars array to given writer. 
 	 * Close writer afterwards. */
-	public static void writeCharsToFile(char[] chars, File file, String charsetName) 
+	public static void writeCharsToFile(File file, char[] chars, Charset charset) 
 			throws IOException, FileNotFoundException {
 		FileOutputStream fileOS = new FileOutputStream(file);
-		OutputStreamWriter osWriter = new OutputStreamWriter(fileOS, charsetName);
+		OutputStreamWriter osWriter = new OutputStreamWriter(fileOS, charset);
 		writeCharsToWriter(chars, osWriter);
 	}
 	
 	/** Writes given string to given writer. 
 	 * Close writer afterwards. */
-	public static void writeStringToFile(String string, File file, String charsetName) 
+	public static void writeStringToFile(File file, String string, Charset charset) 
 			throws IOException, FileNotFoundException {
 		FileOutputStream fileOS = new FileOutputStream(file);
-		OutputStreamWriter osWriter = new OutputStreamWriter(fileOS, charsetName);
+		OutputStreamWriter osWriter = new OutputStreamWriter(fileOS, charset);
 		writeStringToWriter(string, osWriter);
 	}
 	

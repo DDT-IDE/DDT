@@ -3,15 +3,19 @@ package mmrnmhrm.lang.ui;
 
 
 
-import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.dltk.core.IModelElement;
+import melnorme.lang.ide.ui.utils.ProgressRunnableWithResult;
+import mmrnmhrm.core.parser.ModuleParsingHandler;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -22,6 +26,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
 import dtool.ast.definitions.Module;
+import dtool.parser.DeeParserResult.ParsedModule;
 
 public class EditorUtil {
 	
@@ -74,22 +79,35 @@ public class EditorUtil {
 	
 	// ------------  Used by editor ------------ 
 	
-	public static ISourceModule getModuleUnit(IEditorPart textEditor) {
-		IModelElement element = EditorUtility.getEditorInputModelElement(textEditor, false);
-		if(!(element instanceof ISourceModule))
-			return null;
-		return (ISourceModule) element;
+	public static Module parseModuleFromEditorInput(IEditorPart textEditor) {
+		return parseModuleFromEditorInput(textEditor, true);
 	}
 	
-	/** Gets a Module from this editor's input, and setups the Module'
-	 * modUnit as the editor's input. */
-	public static Module getModuleFromEditor(IEditorPart textEditor) {
-		IModelElement element = EditorUtility.getEditorInputModelElement(textEditor, false);
-		if(!(element instanceof ISourceModule))
+	public static Module parseModuleFromEditorInput(IEditorPart textEditor, boolean useBusyCursorInUI) {
+		final ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(textEditor, false);
+		if(sourceModule == null) {
 			return null;
-		ISourceModule modUnit = (ISourceModule) element;
-		Module module = DeeModuleParsingUtil.getParsedDeeModule(modUnit);
-		return module == null ? null : module;
+		}
+		
+		if(Display.getCurrent() == null || !useBusyCursorInUI) {
+			return ModuleParsingHandler.parseModule(sourceModule).module;
+		}
+		
+		try {
+			ProgressRunnableWithResult<ParsedModule> parseModuleTask = new ProgressRunnableWithResult<ParsedModule>() {
+				@Override
+				public ParsedModule doCall(IProgressMonitor monitor) 
+						throws InvocationTargetException, InterruptedException {
+					return ModuleParsingHandler.parseModule(sourceModule);
+				}
+			};
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(parseModuleTask);
+			return parseModuleTask.result.module;
+		} catch (InvocationTargetException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		} catch (InterruptedException e) {
+			return null;
+		}
 	}
 	
 }

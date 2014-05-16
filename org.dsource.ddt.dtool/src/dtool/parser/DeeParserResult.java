@@ -44,7 +44,7 @@ public class DeeParserResult {
 		return errors != null && errors.size() > 0;
 	}
 	
-	public Module getParsedModule() {
+	public Module getModuleNode() {
 		assertNotNull(module);
 		return module;
 	}

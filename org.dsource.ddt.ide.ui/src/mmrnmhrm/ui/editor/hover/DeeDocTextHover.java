@@ -21,7 +21,6 @@ import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
@@ -60,14 +59,10 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 	public DeeDocTextHover() {
 	}
 	
-	public DeeDocTextHover(ITextEditor textEditor) {
-		assertNotNull(textEditor);
-	}
-	
 	private ASTNode getNodeAtOffset(int offset) {
 		IEditorPart editor = getEditor();
 		assertNotNull(editor);
-		Module module = EditorUtil.getModuleFromEditor(editor);
+		Module module = EditorUtil.parseModuleFromEditorInput(editor, false);
 		if(module == null)
 			return null;
 		

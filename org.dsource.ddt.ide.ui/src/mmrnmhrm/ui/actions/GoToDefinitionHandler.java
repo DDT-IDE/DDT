@@ -95,7 +95,7 @@ public class GoToDefinitionHandler extends AbstractHandler  {
 			throws CoreException {
 		final IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
 		
-		Module module = EditorUtil.getModuleFromEditor(editor);
+		Module module = EditorUtil.parseModuleFromEditorInput(editor);
 		ASTNode node = ASTNodeFinder.findElement(module, offset);
 		if(node == null) {
 			// Shouldn't happen, apart from threading/concurrency issues

@@ -34,7 +34,7 @@ import dtool.tests.DToolTestResources;
 
 public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBasedTest {
 	
-	public static SimpleLogger resolverTestsLog = new SimpleLogger("ResolverSourceTests");
+	public static SimpleLogger resolverTestsLog = SimpleLogger.create("ResolverSourceTests");
 	
 	protected static final String TESTFILESDIR = "resolver";
 	

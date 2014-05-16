@@ -14,7 +14,7 @@ import java.util.HashSet;
 import melnorme.utilbox.misc.Pair;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
-import mmrnmhrm.core.parser.DeeModuleParsingUtil;
+import mmrnmhrm.core.parser.ModuleParsingHandler;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.IMember;
@@ -113,7 +113,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 			ISourceModule sourceModule = key.getFirst();
 			ArrayList<Integer> nodeTreePath = blindCast(key.getSecond());
 			
-			Module deeModule = DeeModuleParsingUtil.getParsedDeeModule(sourceModule);
+			Module deeModule = ModuleParsingHandler.parseModule(sourceModule).module;
 			ASTNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModule, nodeTreePath);
 			
 			final DefUnit defUnit = (DefUnit) node;

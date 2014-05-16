@@ -22,10 +22,6 @@ import dtool.tests.DToolTestResources;
 // final because of @BeforeClass/@AfterClass usage
 public final class DubDescribeParserTest extends CommonDubTest {
 	
-	public static final Path DUB_TEST_BUNDLES = DubManifestParserTest.DUB_TEST_BUNDLES;
-	
-	protected static final Path XPTO_BUNDLE_PATH = DUB_TEST_BUNDLES.resolve("XptoBundle");
-	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
 		dubAddPath(DUB_TEST_BUNDLES);

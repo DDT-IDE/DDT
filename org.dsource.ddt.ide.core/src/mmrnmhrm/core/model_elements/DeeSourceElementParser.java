@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-
 package mmrnmhrm.core.model_elements;
 
 
-import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.parser.DeeModuleDeclaration;
+import mmrnmhrm.core.parser.ModuleParsingHandler;
 
 import org.dsource.ddt.ide.core.DeeNature;
-import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.AbstractSourceElementParser;
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.SourceParserUtil;
+
+import dtool.parser.DeeParserResult.ParsedModule;
 
 public class DeeSourceElementParser extends AbstractSourceElementParser {
 	
@@ -32,32 +29,12 @@ public class DeeSourceElementParser extends AbstractSourceElementParser {
 		return DeeNature.NATURE_ID;
 	}
 	
-	protected DeeModuleDeclaration parse2(IModuleSource module) {
-		if (module instanceof ISourceModule) {
-			ISourceModule sourceModule = (ISourceModule) module;
-			return (DeeModuleDeclaration) SourceParserUtil.parse(sourceModule, getProblemReporter());
-		} else {
-			// parse directly without cache
-			final IModuleDeclaration result = SourceParserUtil.parse(module, getNatureId(), getProblemReporter());
-			return (DeeModuleDeclaration) result;
-		}
-	}
-	
 	@Override
-	public void parseSourceModule(IModuleSource module) {
-		final IModuleDeclaration moduleDeclaration = parse2(module);
-		if (moduleDeclaration != null) {
-			DeeModuleDeclaration deeModuleDecl = (DeeModuleDeclaration) moduleDeclaration;
+	public void parseSourceModule(IModuleSource moduleSource) {
+		ParsedModule parsedModule = ModuleParsingHandler.parseModule(moduleSource);
+		if (parsedModule != null) {
 			DeeSourceElementProvider provider = new DeeSourceElementProvider(getRequestor());
-//			final SourceElementRequestVisitor requestor = createVisitor();
-			
-			try {
-				provider.provide(deeModuleDecl);
-//				moduleDeclaration.traverse(requestor);
-			} catch (RuntimeException e) {
-				DeeCore.logError(e);
-				throw e;
-			}
+			provider.provide(parsedModule);
 		}
 	}
 	

@@ -24,7 +24,7 @@ public class DeeHyperlinkDetector extends AbstractHyperlinkDetector {
 			return null;
 
 		ITextEditor textEditor= (ITextEditor)getAdapter(ITextEditor.class);
-		ASTNode module = EditorUtil.getModuleFromEditor(textEditor);
+		ASTNode module = EditorUtil.parseModuleFromEditorInput(textEditor, false);
 		ASTNode selNode = ASTNodeFinder.findElement(module, region.getOffset(), false);
 		if(!(selNode instanceof NamedReference))
 			return null;
