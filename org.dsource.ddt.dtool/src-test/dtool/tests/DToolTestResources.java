@@ -74,7 +74,6 @@ public class DToolTestResources {
 	
 	protected static void initWorkingDir(String workingDir) {
 		assertTrue(workingDir != null);
-		assertTrue(testsWorkingDir == null);
 		testsWorkingDir = workingDir;
 		
 		System.out.println("====>> WORKING DIR: " + testsWorkingDir);
