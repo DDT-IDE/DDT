@@ -36,7 +36,6 @@ import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.projectmodel.DubModelManager.DubModelManagerTask;
 import mmrnmhrm.core.projectmodel.DubProcessManager.DubCompositeOperation;
 import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask.SearchAndAddCompilersOnPathJob;
-import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IMarker;
@@ -70,32 +69,15 @@ public class DubModelManager {
 	
 	protected static SimpleLogger log = new SimpleLogger(Platform.inDebugMode());
 	
-	protected static final DubModelManager defaultInstance = new DubModelManager(DubModel.defaultInstance);
-	
 	public static DubModelManager getDefault() {
-		return defaultInstance;
-	}
-	
-	public static void startDefault() {
-		defaultInstance.startManager();
-	}
-	
-	public static void shutdownDefault() {
-		defaultInstance.shutdownManager();
-	}
-	
-	public static DubDependenciesContainer getDubContainer(IProject project) {
-		DubBundleDescription bundleInfo = DubModel.getBundleInfo(project.getName());
-		if(bundleInfo == null)
-			return null;
-		return new DubDependenciesContainer(bundleInfo, project);
+		return CoreDubModel.modelManager;
 	}
 	
 	/* ----------------------------------- */
 	
 	public static final String DUB_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubProblem";
 	
-	protected final DubModelImpl model;
+	protected final DubModel model;
 	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
 	protected final ITaskAgent modelAgent = new CoreTaskAgent(getClass().getSimpleName());
 	protected final DubProcessManager dubProcessManager = new DubProcessManager();
@@ -104,7 +86,7 @@ public class DubModelManager {
 	
 	protected boolean started = false;
 
-	public DubModelManager(DubModelImpl model) {
+	public DubModelManager(DubModel model) {
 		this.model = model;
 	}
 	
@@ -312,7 +294,7 @@ public class DubModelManager {
 	}
 	
 	public static IMarker[] getDubErrorMarkers(IProject project) throws CoreException {
-		return project.findMarkers(DubModelManager.DUB_PROBLEM_ID, true, IResource.DEPTH_ONE);
+		return project.findMarkers(DUB_PROBLEM_ID, true, IResource.DEPTH_ONE);
 	}
 	
 	protected abstract class DubModelManagerTask implements Runnable {
@@ -323,7 +305,7 @@ public class DubModelManager {
 			this.dubModelManager = DubModelManager.this;
 		}
 		
-		protected DubModelImpl getModel() {
+		protected DubModel getModel() {
 			return model;
 		}
 		

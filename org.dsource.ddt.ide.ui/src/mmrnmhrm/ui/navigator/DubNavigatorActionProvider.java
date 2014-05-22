@@ -12,7 +12,7 @@ package mmrnmhrm.ui.navigator;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 import mmrnmhrm.core.DeeCoreMessages;
-import mmrnmhrm.core.projectmodel.DubModel;
+import mmrnmhrm.core.projectmodel.CoreDubModel;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.core.projectmodel.DubProcessManager;
 import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
@@ -111,7 +111,7 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 			Object selElement = getSelectionFirst();
 			if(selElement instanceof IProject) {
 				IProject project = (IProject) selElement;
-				if(DubModel.getBundleInfo(project.getName()) != null) {
+				if(CoreDubModel.getBundleInfo(project.getName()) != null) {
 					return project;
 				}
 				return null;

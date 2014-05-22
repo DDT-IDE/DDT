@@ -14,8 +14,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import melnorme.utilbox.misc.ListenerListHelper;
-import mmrnmhrm.core.projectmodel.DubModel.DubModelUpdateEvent;
-import mmrnmhrm.core.projectmodel.DubModel.IDubModel;
+import mmrnmhrm.core.projectmodel.IDubModel.IDubModelListener;
 
 import org.eclipse.core.resources.IProject;
 
@@ -23,51 +22,11 @@ import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 
-public abstract class DubModel {
-	
-	protected static final DubModelImpl defaultInstance = new DubModelImpl();
-	
-	public static IDubModel getDefault() {
-		return defaultInstance;
-	}
-	
-	public static DubBundleDescription getBundleInfo(String projectName) {
-		return defaultInstance.getBundleInfo(projectName);
-	}
-	
-	/**
-	 * DUB model. Holds information about DUB bundles, for the projects in the workspace.
-	 * Designed to be managed concurrently by some other code (see {@link DubModelManager}).
-	 * Can notify listeners of updates. 
-	 */
-	public static interface IDubModel {
-		
-		public void addListener(IDubModelListener listener);
-		Set<String> getDubProjects();
-		public void removeListener(IDubModelListener listener);
-		
-		public DubBundleDescription getBundleInfo(String projectName);
-		
-	}
-	
-	public static class DubModelUpdateEvent {
-		public final IProject project;
-		public final DubBundleDescription dubBundleDescription;
-		
-		public DubModelUpdateEvent(IProject project, DubBundleDescription dubBundleDescription) {
-			this.project = project;
-			this.dubBundleDescription = dubBundleDescription;
-		}
-		
-	}
-	
-}
-
-class DubModelImpl extends ListenerListHelper<IDubModelListener> implements IDubModel {
+public class DubModel extends ListenerListHelper<IDubModelListener> implements IDubModel {
 	
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
 	
-	public DubModelImpl() {
+	public DubModel() {
 	}
 	
 	@Override

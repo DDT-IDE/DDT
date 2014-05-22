@@ -117,7 +117,8 @@ public class DubProcessManager {
 		return new ProcessBuilder(commands).directory(workingDir.toFile());
 	}
 	
-	public class RunDubProcessOperation extends RunExternalProcessTask<IExternalProcessListener> implements IDubOperation {
+	public class RunDubProcessOperation extends RunExternalProcessTask<IExternalProcessListener> 
+		implements IDubOperation {
 		
 		protected final String operationName;
 		

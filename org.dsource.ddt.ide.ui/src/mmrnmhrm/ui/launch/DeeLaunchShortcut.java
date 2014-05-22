@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut;
 import mmrnmhrm.core.launch.DeeLaunchConstants;
-import mmrnmhrm.core.projectmodel.DubModel;
+import mmrnmhrm.core.projectmodel.CoreDubModel;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -46,7 +46,7 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut {
 	
 	protected IFile getProjectExecutableArtifact(IProject project) {
 		String name = project.getName();
-		DubBundleDescription bundleInfo = DubModel.getBundleInfo(name);
+		DubBundleDescription bundleInfo = CoreDubModel.getBundleInfo(name);
 		Path targetFilePath = bundleInfo.getMainBundle().getEffectiveTargetFullPath();
 		
 		return project.getFile(EclipseUtils.getPath(targetFilePath));

@@ -26,7 +26,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.projectmodel.DubModelManager;
+import mmrnmhrm.core.projectmodel.CoreDubModel;
 import mmrnmhrm.core.projectmodel.DubProcessManager;
 
 import org.eclipse.core.resources.IFolder;
@@ -119,7 +119,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected ExternalProcessResult submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
 			throws CoreException {
-		DubProcessManager dubProcessManager = DubModelManager.getDefault().getProcessManager();
+		DubProcessManager dubProcessManager = CoreDubModel.getProcessManager();
 		
 		IRunProcessTask runDubProcessOperation = dubProcessManager.newDubOperation(
 			DeeCoreMessages.RunningDubBuild, getProject(), commands, monitor);

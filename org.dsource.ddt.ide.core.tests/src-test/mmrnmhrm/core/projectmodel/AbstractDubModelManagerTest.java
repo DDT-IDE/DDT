@@ -58,7 +58,7 @@ import dtool.dub.DubDescribeParserTest;
 /**
  * Utilities for manipulation of Dub projects
  */
-public abstract class BaseDubModelManagerTest extends BaseDeeTest {
+public abstract class AbstractDubModelManagerTest extends BaseDeeTest {
 	
 	protected static final Path ECLIPSE_WORKSPACE_PATH = DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
 	
@@ -69,7 +69,7 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 	private static void initDubRepositoriesPath() {
 		DubDescribeParserTest.initDubRepositoriesPath();
 		DubDescribeParserTest.dubAddPath(ECLIPSE_WORKSPACE_PATH);
-		DubModelManager.startDefault();
+		CoreDubModel.startDefaultManager();
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
@@ -159,11 +159,11 @@ public abstract class BaseDubModelManagerTest extends BaseDeeTest {
 	}
 	
 	protected static DubBundleDescription getExistingDubBundleInfo(String projectName) {
-		return assertNotNull(DubModel.getBundleInfo(projectName));
+		return assertNotNull(CoreDubModel.getBundleInfo(projectName));
 	}
 	
 	protected DubDependenciesContainer getDubContainer(IProject project) {
-		return DubModelManager.getDubContainer(project);
+		return CoreDubModel.getDubContainer(project);
 	}
 	
 	protected static LatchRunnable writeDubJsonWithModelLatch(IProject project, String contents) 

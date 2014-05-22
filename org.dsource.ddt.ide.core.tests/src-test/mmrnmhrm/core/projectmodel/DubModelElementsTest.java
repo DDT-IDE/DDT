@@ -21,14 +21,14 @@ import dtool.dub.CommonDubTest;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 
-public class DubModelElementsTest extends BaseDubModelManagerTest {
+public class DubModelElementsTest extends AbstractDubModelManagerTest {
 	
 	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";
 	
 	protected DubModelManager getModelManager() {
-		return DubModelManager.defaultInstance;
+		return CoreDubModel.modelManager;
 	}
 	
 	@Test
@@ -58,7 +58,7 @@ public class DubModelElementsTest extends BaseDubModelManagerTest {
 		getModelManager().dubProjectRemoved(libProject);
 		_awaitModelUpdates_();
 		
-		DubDependenciesContainer dubContainer = DubModelManager.getDubContainer(project);
+		DubDependenciesContainer dubContainer = CoreDubModel.getDubContainer(project);
 		assertTrue(dubContainer.getChildren().length == 1);
 		
 		DubDependencyElement libDepElement = 

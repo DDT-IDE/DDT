@@ -24,12 +24,12 @@ import dtool.dub.DubBundleDescription;
 import dtool.dub.DubManifestParser;
 import dtool.dub.DubManifestParserTest;
 
-public class DubModelManagerTest extends BaseDubModelManagerTest {
+public class CoreModelManagerTest extends AbstractDubModelManagerTest {
 	
 	@Test
 	public void testShutdown() throws Exception { testShutdown$(); }
 	public void testShutdown$() throws Exception {
-		DubModelManager dmm = new DubModelManager(new DubModelImpl()); 
+		DubModelManager dmm = new DubModelManager(new DubModel()); 
 		dmm.initializeModelManager();
 		final CountDownLatch latch = new CountDownLatch(1);
 		
@@ -69,7 +69,7 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 		writeDubJson(project, jsObject(jsEntry("name", "xptobundle")));
 		// check no changes or updates submitted:
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount);
-		assertTrue(DubModel.getBundleInfo(DUB_TEST) == null);
+		assertTrue(CoreDubModel.getBundleInfo(DUB_TEST) == null);
 		
 		// Ensure non-d projects dont provoke updates
 		deleteProject(DUB_TEST);
@@ -80,12 +80,12 @@ public class DubModelManagerTest extends BaseDubModelManagerTest {
 		project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		// check no changes or updates submitted:
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount); 
-		assertTrue(DubModel.getBundleInfo(DUB_TEST) == null);
+		assertTrue(CoreDubModel.getBundleInfo(DUB_TEST) == null);
 		
 		_awaitModelUpdates_();
 		runBasicTestSequence______________(project);
 		project.delete(true, null); // cleanup
-		assertTrue(DubModel.getBundleInfo(project.getName()) == null);
+		assertTrue(CoreDubModel.getBundleInfo(project.getName()) == null);
 		assertTrue(getDubContainer(project) == null);
 		
 		// Verify code path where a non-D project that already has dub manifest is made a D project.

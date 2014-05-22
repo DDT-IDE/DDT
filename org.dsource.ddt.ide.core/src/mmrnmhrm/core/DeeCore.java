@@ -12,7 +12,7 @@ package mmrnmhrm.core;
 
 import melnorme.lang.ide.core.LangCore;
 import mmrnmhrm.core.parser.ModuleParsingHandler;
-import mmrnmhrm.core.projectmodel.DubModelManager;
+import mmrnmhrm.core.projectmodel.CoreDubModel;
 
 import org.osgi.framework.BundleContext;
 
@@ -28,12 +28,12 @@ public class DeeCore extends LangCore {
 		// Note: the core plugin does not start the DubModelManager... it is the responsiblity of
 		// the Dee UI plugin (or some other "application" code) to start it, 
 		// so that they can register listeners first.
-		//DubModelManager.startDefault();
+		//CoreDubModel.startDefaultManager();
 	}
 	
 	@Override
 	protected void doCustomStop(BundleContext context) {
-		DubModelManager.shutdownDefault();
+		CoreDubModel.shutdownDefaultManager();
 		ModuleParsingHandler.dispose();
 	}
 	
