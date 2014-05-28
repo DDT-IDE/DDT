@@ -10,17 +10,26 @@
  *******************************************************************************/
 package dtool.dub;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+import melnorme.utilbox.core.fntypes.Predicate;
+import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.MiscUtil;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import dtool.dub.DubBundle.BundleFile;
 import dtool.tests.DToolTestResources;
 
 
-// final because of @BeforeClass/@AfterClass usage
-public final class DubDescribeParserTest extends CommonDubTest {
+public class DubDescribeParserTest extends CommonDubTest {
 	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
@@ -44,10 +53,24 @@ public final class DubDescribeParserTest extends CommonDubTest {
 				bundle(DUB_TEST_BUNDLES.resolve("foo_lib"), null, "foo_lib", "~master", paths("src", "src2")), 
 				bundle(DUB_TEST_BUNDLES.resolve("bar_lib"), null, "bar_lib", "~master", paths("source"))));
 		
-//		assertEquals(description.mainDubBundle.sourceFiles, 
-//			list("src/app.d", "src/xptoApp.d", "src-other/other/blah.d"));
-//		assertEquals(description.mainDubBundle.importFiles, 
-//			list("src-import/modA_import_only.d"));
+		checkBundleFiles(description.mainDubBundle.bundleFiles, list(
+			"src/app.d", 
+			"src/xptoApp.d", 
+			"src-import/modA_import_only.d"));
+	}
+	
+	protected void checkBundleFiles(List<BundleFile> bundleFilesOriginal, List<String> expected) {
+		ArrayList<BundleFile> bundleFiles = new ArrayList<>(bundleFilesOriginal);
+		for (String expectedFile : expected) {
+			final Path expectedPath = MiscUtil.createValidPath(expectedFile);
+			
+			assertTrue(CollectionUtil.removeElement(bundleFiles, new Predicate<BundleFile>() {
+				@Override
+				public boolean evaluate(BundleFile obj) {
+					return areEqual(MiscUtil.createValidPath(obj.filePath), expectedPath);
+				}
+			}));
+		}
 	}
 	
 	public static final Path DESCRIBE_RESPATH = DToolTestResources.getTestResourcePath("dub", "_describeErrors");

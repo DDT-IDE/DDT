@@ -27,6 +27,7 @@ import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
 
+import dtool.dub.DubBundle.BundleFile;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundle.DubDependecyRef;
 
@@ -50,8 +51,7 @@ public class DubManifestParser extends CommonDubParser {
 	
 	protected String version = null;
 	protected String[] sourceFolders = null;
-	protected List<String> sourceFiles = null; //TODO
-	protected List<String> importFiles = null;
+	protected List<BundleFile> bundleFiles = null;
 	protected DubDependecyRef[] dependencies = null;
 	protected String targetName = null;
 	protected String targetPath = null;
@@ -104,7 +104,7 @@ public class DubManifestParser extends CommonDubParser {
 		
 		return new DubBundle(location, bundleName, dubError, version, 
 			sourceFolders, effectiveSourceFolders, 
-			sourceFiles, importFiles,
+			bundleFiles,
 			dependencies, targetName, targetPath);
 	}
 	
@@ -153,48 +153,91 @@ public class DubManifestParser extends CommonDubParser {
 		readBundle(jsonParser);
 	}
 	
-	protected DubManifestParser readBundle(JsonReaderExt jsonParser) throws IOException {
-		jsonParser.consumeExpected(JsonToken.BEGIN_OBJECT);
+	protected DubManifestParser readBundle(JsonReaderExt jsonReader) throws IOException {
+		jsonReader.consumeExpected(JsonToken.BEGIN_OBJECT);
 		
-		while(jsonParser.hasNext()) {
-			JsonToken tokenType = jsonParser.peek();
+		while(jsonReader.hasNext()) {
+			JsonToken tokenType = jsonReader.peek();
 			
 			if(tokenType == JsonToken.NAME) {
-				String propertyName = jsonParser.nextName();
+				String propertyName = jsonReader.nextName();
 				
 				if(propertyName.equals("name")) {
-					bundleName = jsonParser.consumeStringValue();
+					bundleName = jsonReader.consumeStringValue();
 				} else if(propertyName.equals("version")) {
-					version = jsonParser.consumeStringValue();
-				} else if(propertyName.equals("importPaths")) {
-					sourceFolders = readSourcePaths(jsonParser);
-				} else if(propertyName.equals("dependencies")) {
-					dependencies = readDependencies(jsonParser);
+					version = jsonReader.consumeStringValue();
 				} else if(propertyName.equals("path")) {
-					locationStr = jsonParser.consumeStringValue();
+					locationStr = jsonReader.consumeStringValue();
+				} else if(propertyName.equals("importPaths")) {
+					sourceFolders = parseSourcePaths(jsonReader);
+				} else if(propertyName.equals("dependencies")) {
+					dependencies = parseDependencies(jsonReader);
+				} else if(propertyName.equals("files")) {
+					bundleFiles = parseFiles(jsonReader);
 				} else if(propertyName.equals("targetName")) {
-					targetName = jsonParser.consumeStringValue();
+					targetName = jsonReader.consumeStringValue();
 				} else if(propertyName.equals("targetPath")) {
-					targetPath = jsonParser.consumeStringValue();
+					targetPath = jsonReader.consumeStringValue();
 				} else {
-					jsonParser.skipValue();
+					jsonReader.skipValue();
 				}
 			} else {
-				jsonParser.errorUnexpected(tokenType);
+				jsonReader.errorUnexpected(tokenType);
 			}
 		}
 		
-		jsonParser.consumeExpected(JsonToken.END_OBJECT);
+		jsonReader.consumeExpected(JsonToken.END_OBJECT);
 		return this;
 	}
 	
-	protected String[] readSourcePaths(JsonReaderExt jsonParser) throws IOException {
-		ArrayList<String> stringArray = jsonParser.consumeStringArray(true);
+	protected String[] parseSourcePaths(JsonReaderExt jsonReader) throws IOException {
+		ArrayList<String> stringArray = jsonReader.consumeStringArray(true);
 		return ArrayUtil.createFrom(stringArray, String.class);
 	}
 	
 	
-	protected DubDependecyRef[] readDependencies(JsonReaderExt jsonParser) throws IOException {
+	protected ArrayList<BundleFile> parseFiles(JsonReaderExt jsonReader) throws IOException {
+		jsonReader.consumeExpected(JsonToken.BEGIN_ARRAY);
+		
+		ArrayList<BundleFile> bundleFiles = new ArrayList<>();
+		
+		while(jsonReader.hasNext()) {
+			BundleFile bundleFile = parseFile(jsonReader);
+			bundleFiles.add(bundleFile);
+		}
+		
+		jsonReader.consumeExpected(JsonToken.END_ARRAY);
+		return bundleFiles;
+	}
+	
+	protected BundleFile parseFile(JsonReaderExt jsonReader) throws IOException {
+		jsonReader.consumeExpected(JsonToken.BEGIN_OBJECT);
+		String path = null;
+		boolean importOnly = false;
+		
+		while(jsonReader.hasNext()) {
+			String propName = jsonReader.consumeExpectedPropName();
+			
+			switch(propName) {
+			case "path":
+				path = jsonReader.consumeStringValue();
+				break;
+			case "type":
+				//TODO
+				
+			default:
+				jsonReader.skipValue();
+			}
+		}
+		jsonReader.consumeExpected(JsonToken.END_OBJECT);
+		if(path == null) {
+			path = "<missing_path>";
+			putError("missing path property for files entry.");
+		}
+		return new DubBundle.BundleFile(path, importOnly);
+	}
+	
+	protected DubDependecyRef[] parseDependencies(JsonReaderExt jsonParser) throws IOException {
 		return new BundleDependenciesSegmentParser(jsonParser).parse();
 	}
 	
@@ -219,13 +262,7 @@ public class DubManifestParser extends CommonDubParser {
 			ArrayList<DubDependecyRef> deps = new ArrayList<>();
 			
 			while(jsonReader.hasNext()) {
-				JsonToken tokenType = jsonReader.peek();
-				
-				if(tokenType != JsonToken.NAME) {
-					jsonReader.sourceError("Expected key name, instead got: " + tokenType);
-				}
-				
-				String depName = jsonReader.nextName();
+				String depName = jsonReader.consumeExpectedPropName();
 				jsonReader.skipValue(); // Ignore value for now, TODO
 				
 				deps.add(new DubDependecyRef(depName, null));

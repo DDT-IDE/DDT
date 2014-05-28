@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.dub;
 
+import static java.util.Collections.unmodifiableList;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.nullToEmpty;
@@ -32,8 +33,7 @@ public class DubBundle {
 	public final String version;
 	public final String[] srcFolders;
 	public final Path[] effectiveSrcFolders;
-	public final List<String> sourceFiles;
-	public final List<String> importFiles;
+	public final List<BundleFile> bundleFiles;
 	
 	public final DubDependecyRef[] dependencies;
 	public final String targetName;
@@ -46,8 +46,7 @@ public class DubBundle {
 			String version, 
 			String[] srcFolders,
 			Path[] effectiveSrcFolders, 
-			List<String> sourceFiles,
-			List<String> importFiles,
+			List<BundleFile> bundleFiles,
 			DubDependecyRef[] dependencies, 
 			String targetName, 
 			String targetPath) {
@@ -59,8 +58,7 @@ public class DubBundle {
 		this.srcFolders = srcFolders;
 		this.effectiveSrcFolders = nullToEmpty(effectiveSrcFolders, Path.class);
 		this.dependencies = nullToEmpty(dependencies, DubDependecyRef.class);
-		this.sourceFiles = CollectionUtil.nullToEmpty(sourceFiles);
-		this.importFiles = CollectionUtil.nullToEmpty(sourceFiles); /*BUG here*/
+		this.bundleFiles = unmodifiableList(CollectionUtil.nullToEmpty(bundleFiles));
 		this.targetName = targetName;
 		this.targetPath = targetPath;
 		
@@ -70,7 +68,7 @@ public class DubBundle {
 	}
 	
 	public DubBundle(Path location, String name, DubBundleException error) {
-		this(location, name, error, null, null, null, null, null, null, null, null);
+		this(location, name, error, null, null, null, null, null, null, null);
 	}
 	
 	public String getBundleName() {
@@ -91,6 +89,18 @@ public class DubBundle {
 	
 	public Path[] getEffectiveSourceFolders() {
 		return assertNotNull(effectiveSrcFolders);
+	}
+	
+	public static class BundleFile {
+		
+		public final String filePath;
+		public final boolean importOnly;
+		
+		public BundleFile(String filePath, boolean importOnly) {
+			this.filePath = assertNotNull(filePath);
+			this.importOnly = importOnly;
+		}
+		
 	}
 	
 	public DubDependecyRef[] getDependencyRefs() {

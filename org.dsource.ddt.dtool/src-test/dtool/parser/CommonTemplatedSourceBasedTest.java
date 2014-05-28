@@ -54,7 +54,7 @@ public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 	
 	public static void addCommonDefinitions(Class<?> klass, String testFolder,
 		Map<String, TspExpansionElement> commonDefs) {
-		List<File> commonDefsFileList = getDeeModuleList(testFolder);
+		ArrayList<File> commonDefsFileList = getDeeModuleList(testFolder);
 		commonDefsFileList = filter(commonDefsFileList, new TemplatedTestFilesFilter(){{filterHeaders = false;}});
 		
 		String klassSimpleName = klass.getSimpleName();

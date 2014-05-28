@@ -135,6 +135,18 @@ public abstract class CommonDubParser {
 			sourceError("Unexpected token: " + tokenType);
 		}
 		
+		public String consumeExpectedPropName() throws IOException {
+			JsonToken tokenType = jsonReader.peek();
+			
+			if(tokenType != JsonToken.NAME) {
+				jsonReader.sourceError("Expected property name, instead got: " + tokenType);
+			}
+			
+			return jsonReader.nextName(); 
+			// Note: there is a bug in nextName, it throws IllegalStateException insteand of IOE
+			// so that's why we check peek ourselves.
+		}
+		
 	}
 	
 }

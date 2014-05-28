@@ -40,7 +40,7 @@ public class DubModelElementsTest extends AbstractDubModelManagerTest {
 		
 		DubBundle mainBundle = new DubBundle(loc(project), "dub_test", null,
 			"~master", array("source"), CommonDubTest.paths("source"), 
-			null, null,
+			null,
 			array(new DubBundle.DubDependecyRef("dub_lib", null)), 
 			null, null);
 		
@@ -50,7 +50,7 @@ public class DubModelElementsTest extends AbstractDubModelManagerTest {
 		
 		DubBundle[] bundleDeps = array(new DubBundle(loc(libProject), "dub_lib", null,
 			"~master", array("src"), CommonDubTest.paths("src"), 
-			null, null,
+			null,
 			null, 
 			null, null));
 		

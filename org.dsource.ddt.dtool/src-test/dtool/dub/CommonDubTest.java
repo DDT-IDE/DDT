@@ -22,6 +22,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import dtool.dub.DubBundle.BundleFile;
 import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
@@ -165,6 +166,10 @@ public class CommonDubTest extends DToolBaseTest {
 	
 	public static DubBundleChecker bundle(String errorMsgStart, String name) {
 		return new DubBundleChecker(IGNORE_PATH, name, errorMsgStart, IGNORE_STR, null, IGNORE_RAW_DEPS, IGNORE_DEPS);
+	}
+	
+	public static BundleFile bf(String filePath) {
+		return new BundleFile(filePath, false);
 	}
 	
 	public static String[] rawDeps(String... rawDeps) {
