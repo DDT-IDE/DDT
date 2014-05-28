@@ -91,6 +91,10 @@ public class DubBundle {
 		return assertNotNull(effectiveSrcFolders);
 	}
 	
+	public Path[] getEffectiveImportPathFolders() {
+		return assertNotNull(effectiveSrcFolders);
+	}
+	
 	public static class BundleFile {
 		
 		public final String filePath;

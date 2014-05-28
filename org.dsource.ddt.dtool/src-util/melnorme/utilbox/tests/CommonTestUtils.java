@@ -15,12 +15,15 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import melnorme.utilbox.core.Assert;
@@ -235,6 +238,39 @@ public class CommonTestUtils {
 		
 		protected Object[] ignoreIfNull(Object[] expected) {
 			return expected == null ? IGNORE_ARR : expected;
+		}
+		
+	}
+	
+	public static class MapChecker<K, V> implements Runnable {
+		
+		public final Map<K, V> map;
+		
+		protected final ArrayList<MapEntryChecker> entryChecks = new ArrayList<>();
+		
+		public MapChecker(Map<K, V> map) {
+			this.map = new HashMap<>(map);
+		}
+		
+		@Override
+		public void run() {
+			runEntryChecks();
+			assertTrue(map.size() == 0);
+		}
+		
+		protected void runEntryChecks() {
+			for (MapEntryChecker check : entryChecks) {
+				check.run();
+			}
+		}
+		
+		public abstract class MapEntryChecker implements Runnable {
+			
+			public V getExpectedEntry(K key) {
+				assertTrue(map.containsKey(key));
+				return map.remove(key);
+			}
+			
 		}
 		
 	}

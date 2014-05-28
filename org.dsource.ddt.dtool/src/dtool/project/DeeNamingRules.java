@@ -1,11 +1,12 @@
 package dtool.project;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
+import static melnorme.utilbox.misc.IteratorUtil.iterable;
 
 import java.nio.file.Path;
 
 import melnorme.utilbox.misc.StringUtil;
+import dtool.model.ModuleFullName;
 import dtool.parser.DeeLexerKeywordHelper;
 import dtool.parser.DeeTokens;
 
@@ -100,7 +101,8 @@ public class DeeNamingRules {
 	}
 	
 	public static String getModuleNameFromFilePath(Path filePath) {
-		assertTrue(filePath.getNameCount() > 0);
+		if(filePath.getNameCount() == 0)
+			return null;
 		return getModuleNameFromFileName(filePath.getFileName().toString());
 	}
 	
@@ -125,6 +127,30 @@ public class DeeNamingRules {
 			return packageName.isEmpty() ? moduleName : packageName + "." + moduleName;
 		}
 		
+	}
+	
+	
+	/* ----------------- ----------------- */
+	
+	public static ModuleFullName getModuleFullNameFromPath(Path filePath) {
+		if(filePath.getNameCount() == 0)
+			return null;
+		
+		StringBuilder moduleNameSB = new StringBuilder();
+		
+		for (Path packagePath : iterable(filePath.getParent())) {
+			String packageName = packagePath.getFileName().toString();
+			if(!isValidPackagePathName(packageName))
+				return null;
+			moduleNameSB.append(packageName);
+			moduleNameSB.append(".");
+		}
+		
+		String fileName = filePath.getFileName().toString();
+		if(!isValidCompilationUnitName(fileName))
+			return null;
+		moduleNameSB.append(getModuleNameFromFileName(fileName));
+		return new ModuleFullName(moduleNameSB.toString());
 	}
 	
 }

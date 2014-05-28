@@ -1,10 +1,13 @@
-module test.fooLib;
 
 import std.stdio;
 import basic_lib_foo;
 
-void fooLibFunction_test(string str)
+import mod_nested_import_only;
+
+void func(string str)
 {
 	barLibFunction("FooLib " ~ str);
 	writeln("FooLib", str);
+	
+	nested_module_Function("blah");
 }

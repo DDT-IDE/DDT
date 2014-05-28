@@ -6,5 +6,8 @@
 	},
 	"sourcePaths": [ "src", "src2" ],
 	"sourceFiles": [ "src-extra/modA_src_extra.d"],
-	"importPaths": [ "src", "src2", "src-import" ]
+	"importPaths": [ "src", "src2", "src-import", "src-import/nested" ],
+	
+	
+	"targetPath": ".dub"
 }

@@ -1,5 +1,6 @@
 {
 	"name": "basic_lib_foo",
 	"dependencies": {
-	}
+	},
+	"targetPath": ".dub"
 }

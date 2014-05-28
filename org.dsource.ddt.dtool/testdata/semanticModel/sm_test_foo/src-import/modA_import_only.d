@@ -1,6 +1,6 @@
 
 import std.stdio;
-import bar_lib;
+import basic_lib_foo;
 
 void fooLibFunction(string str)
 {

@@ -34,7 +34,7 @@ public class DToolServer {
 		};
 	};
 	
-	protected final SemanticManager semanticManager = new SemanticManager(dubProcessAgent);
+	protected final SemanticManager semanticManager = new SemanticManager(dubProcessAgent, this);
 	
 	public DToolServer() {
 		logMessage("DTool started");

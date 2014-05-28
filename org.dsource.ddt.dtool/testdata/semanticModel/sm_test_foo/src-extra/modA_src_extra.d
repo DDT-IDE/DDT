@@ -1,9 +1,7 @@
 
 import std.stdio;
-import bar_lib;
 
-void fooLibFunction(string str)
+void xptoFunction(string str)
 {
-	barLibFunction("FooLib " ~ str);
-	writeln("FooLib", str);
+	writeln("xpto", str);
 }
