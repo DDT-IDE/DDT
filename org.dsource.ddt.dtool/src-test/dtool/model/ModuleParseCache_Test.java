@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.project;
+package dtool.model;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -23,8 +23,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import dtool.dub.CommonDubTest;
+import dtool.model.ModuleParseCache;
+import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.project.ModuleParseCache.ParseSourceException;
 import dtool.tests.DToolTestResources;
 import dtool.tests.utils.MiscFileUtils;
 

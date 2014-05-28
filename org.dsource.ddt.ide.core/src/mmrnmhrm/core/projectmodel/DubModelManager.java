@@ -27,7 +27,6 @@ import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.SimpleLogger;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
@@ -59,8 +58,8 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
-import dtool.dub.DubDescribeParser;
 import dtool.dub.DubManifestParser;
+import dtool.model.SemanticManager;
 
 /**
  * Updates {@link DubModel} when resource changes occur, using 'dub describe' 
@@ -410,13 +409,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			throw LangCore.createCoreException("dub returned non-zero status: " + exitValue, null);
 		}
 		
-		String describeOutput = processHelper.stdout.toString(StringUtil.UTF8);
-		
-		// Trim leading characters. 
-		// They shouldn't be there, but sometimes dub outputs non JSON text if downloading packages
-		describeOutput = StringUtil.substringFromMatch('{', describeOutput);
-		
-		DubBundleDescription bundleDesc = DubDescribeParser.parseDescription(location, describeOutput);
+		DubBundleDescription bundleDesc = SemanticManager.parseDubDescribe(location, processHelper);
 		
 		if(bundleDesc.hasErrors()) {
 			setProjectDubError(project, "Error parsing description:", bundleDesc.getError());

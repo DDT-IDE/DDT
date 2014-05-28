@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.project;
+package dtool.model;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -26,6 +26,7 @@ import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
+import dtool.project.DeeNamingRules;
 
 /**
  * Manages a cache of parsed modules, indexed by file path
@@ -82,10 +83,7 @@ public class ModuleParseCache {
 	/* -----------------  ----------------- */
 	
 	protected Path validatePath(Path filePath) {
-		assertTrue(filePath.isAbsolute());
-		assertTrue(filePath.getNameCount() > 0);
-		filePath = filePath.normalize();
-		return filePath;
+		return SemanticManager.validatePath(filePath);
 	}
 	
 	protected String getKeyFromPath(Path filePath) {

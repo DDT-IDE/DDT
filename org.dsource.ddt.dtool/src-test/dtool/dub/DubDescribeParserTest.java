@@ -39,10 +39,15 @@ public final class DubDescribeParserTest extends CommonDubTest {
 		DubBundleDescription description = DubDescribeParser.parseDescription(XPTO_BUNDLE_PATH, describeSource);
 		
 		checkResolvedBundle(description, null, 
-			main(XPTO_BUNDLE_PATH, null, "xptobundle", "~master", paths("src", "src-test"),
+			main(XPTO_BUNDLE_PATH, null, "xptobundle", "~master", paths("src", "src-test", "src-import"),
 				rawDeps("foo_lib"),
 				bundle(DUB_TEST_BUNDLES.resolve("foo_lib"), null, "foo_lib", "~master", paths("src", "src2")), 
 				bundle(DUB_TEST_BUNDLES.resolve("bar_lib"), null, "bar_lib", "~master", paths("source"))));
+		
+//		assertEquals(description.mainDubBundle.sourceFiles, 
+//			list("src/app.d", "src/xptoApp.d", "src-other/other/blah.d"));
+//		assertEquals(description.mainDubBundle.importFiles, 
+//			list("src-import/modA_import_only.d"));
 	}
 	
 	public static final Path DESCRIBE_RESPATH = DToolTestResources.getTestResourcePath("dub", "_describeErrors");

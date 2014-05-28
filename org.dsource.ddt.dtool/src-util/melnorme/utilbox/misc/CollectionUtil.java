@@ -70,21 +70,16 @@ public class CollectionUtil {
 		return newCollection;
 	}
 	
-	/** @return a new unmodifiable {@link Collection} from given array 
-	 * (a null array is considered like it's an empty one). */
-	@SafeVarargs
-	public static <T> Collection<T> createCollection(T... array) {
-		ArrayList<T> newCollection = new ArrayList<T>();
-		if(array != null) {
-			Collections.addAll(newCollection, array);
-		}
-		return Collections.unmodifiableCollection(newCollection);
-	}
-	
 	/** @return given coll if it's non-null, an empty collection otherwise.
 	 * The returned collection cannot be modified. */
 	public static <T> Collection<T> nullToEmpty(Collection<T> coll) {
 		return coll == null ? Collections.EMPTY_LIST : coll;
+	}
+	
+	/** @return given list if it's non-null, an empty List otherwise.
+	 * The returned list cannot be modified. */
+	public static <T> List<T> nullToEmpty(List<T> list) {
+		return list == null ? Collections.EMPTY_LIST : list;
 	}
 	
 	/** Creates a List copy of orig, with all elements except elements equal to excludedElem. */

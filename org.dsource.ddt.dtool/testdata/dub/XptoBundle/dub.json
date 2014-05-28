@@ -10,7 +10,7 @@
 	},
 	"targetPath": "bin",
 	"sourcePaths": [ "src", "src-test" ],
-	"importPaths": [ "src", "src-test" ],
+	"importPaths": [ "src", "src-test", "src-import" ],
 	"excludedSourceFiles" : [ "src-test/xcluded/*"],
 	"stringimportPaths__TODO" : [ "strings" ],
 	

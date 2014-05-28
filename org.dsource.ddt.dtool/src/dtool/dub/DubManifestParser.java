@@ -18,6 +18,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.MiscUtil;
@@ -49,6 +50,8 @@ public class DubManifestParser extends CommonDubParser {
 	
 	protected String version = null;
 	protected String[] sourceFolders = null;
+	protected List<String> sourceFiles = null; //TODO
+	protected List<String> importFiles = null;
 	protected DubDependecyRef[] dependencies = null;
 	protected String targetName = null;
 	protected String targetPath = null;
@@ -99,8 +102,10 @@ public class DubManifestParser extends CommonDubParser {
 			effectiveSourceFolders = null;
 		}
 		
-		return new DubBundle(location, bundleName, dubError, version, sourceFolders, 
-			effectiveSourceFolders, dependencies, targetName, targetPath);
+		return new DubBundle(location, bundleName, dubError, version, 
+			sourceFolders, effectiveSourceFolders, 
+			sourceFiles, importFiles,
+			dependencies, targetName, targetPath);
 	}
 	
 	protected Path[] createPaths(String[] paths) {

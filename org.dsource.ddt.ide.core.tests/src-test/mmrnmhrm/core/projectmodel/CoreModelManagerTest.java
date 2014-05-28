@@ -122,7 +122,7 @@ public class CoreModelManagerTest extends AbstractDubModelManagerTest {
 			readFileContents(DUB_TEST_BUNDLES.resolve("XptoBundle/dub.json")),
 			
 			project,
-			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders("src", "src-test"), 
+			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders("src", "src-test", "src-import"), 
 				rawDeps("foo_lib"), 
 				FOO_LIB_BUNDLE,
 				BAR_LIB_BUNDLE

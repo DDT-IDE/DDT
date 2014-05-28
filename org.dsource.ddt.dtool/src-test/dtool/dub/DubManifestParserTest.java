@@ -31,7 +31,7 @@ public class DubManifestParserTest extends CommonDubTest {
 			rawDeps("bar_lib")));
 		
 		testBundle(main(DUB_TEST_BUNDLES.resolve("XptoBundle"), 
-			null, "xptobundle", DubBundle.DEFAULT_VERSION, paths("src", "src-test"),
+			null, "xptobundle", DubBundle.DEFAULT_VERSION, paths("src", "src-test", "src-import"),
 			rawDeps("foo_lib")));
 		
 		testBundle(main(DUB_TEST_BUNDLES.resolve("LenientJsonA"), 

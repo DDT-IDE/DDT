@@ -14,6 +14,8 @@ package melnorme.utilbox.misc;
 import java.util.Collections;
 import java.util.Iterator;
 
+import dtool.util.ArrayView;
+
 public class IteratorUtil { 
 	
 	public static final Iterator<?> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
@@ -44,6 +46,14 @@ public class IteratorUtil {
 	/** @return the given iterable, or an empty {@link Iterable} if given iterable is null */
 	public static <T> Iterable<T> nonNullIterable(Iterable<T> iterable) {
 		return iterable == null ? Collections.<T>emptyList() : iterable;
+	}
+	
+	/** @return an {@link Iterable} for given array. A null array is treated as if it's an empty one. */
+	public static <T> Iterable<T> iterable(T... array) {
+		if(array == null) {
+			return Collections.EMPTY_LIST;
+		}
+		return new ArrayView<>(array);
 	}
 	
 }

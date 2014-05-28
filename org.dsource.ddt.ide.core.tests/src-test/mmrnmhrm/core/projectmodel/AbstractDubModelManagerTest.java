@@ -14,7 +14,6 @@ package mmrnmhrm.core.projectmodel;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.misc.CollectionUtil.createCollection;
 import static mmrnmhrm.core.projectmodel.DubBuildpathContainer.isDubBuildpathEntry;
 
 import java.io.ByteArrayInputStream;
@@ -30,6 +29,7 @@ import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
@@ -384,7 +384,7 @@ public abstract class AbstractDubModelManagerTest extends BaseDeeTest {
 			ProjDepChecker projDepChecker = (ProjDepChecker) bundleDep;
 			removeDepProjBPEntry(projDepChecker.project, buildpathToVerify);
 		} else {
-			for (Path srcFolderPath : createCollection(bundleDep.sourceFolders)) {
+			for (Path srcFolderPath : IteratorUtil.iterable(bundleDep.sourceFolders)) {
 				Path srcFolderAbsolutePath = bundleDep.location.resolve(srcFolderPath);
 				removeDepBuildpathEntry(buildpathToVerify, srcFolderAbsolutePath);
 			}

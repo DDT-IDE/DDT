@@ -140,6 +140,13 @@ public class CommonDubTest extends DToolBaseTest {
 			}
 		}
 		
+		protected void checkResolvedBundle(DubBundleDescription bundleDescription, String dubDescribeError) {
+			assertExceptionContains(bundleDescription.error, dubDescribeError);
+			
+			boolean isResolved = dubDescribeError == null;
+			checkBundleDescription(bundleDescription, isResolved);
+		}
+		
 	}
 	
 	public static DubBundleChecker main(Path location, String errorMsgStart, String name, 
@@ -166,10 +173,7 @@ public class CommonDubTest extends DToolBaseTest {
 	
 	protected void checkResolvedBundle(DubBundleDescription bundleDescription, String dubDescribeError, 
 			DubBundleChecker mainBundleChecker) {
-		assertExceptionContains(bundleDescription.error, dubDescribeError);
-		
-		boolean isResolved = dubDescribeError == null;
-		mainBundleChecker.checkBundleDescription(bundleDescription, isResolved);
+		mainBundleChecker.checkResolvedBundle(bundleDescription, dubDescribeError);
 	}
 	
 	/* ------------------------------ */

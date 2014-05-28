@@ -26,9 +26,9 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 
+import dtool.model.ModuleParseCache;
+import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.project.ModuleParseCache;
-import dtool.project.ModuleParseCache.ParseSourceException;
 
 /**
  * Handler for parsing modules using the default {@link ModuleParseCache}.

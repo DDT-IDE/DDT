@@ -16,7 +16,9 @@ import static melnorme.utilbox.misc.ArrayUtil.nullToEmpty;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
+import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.MiscUtil;
 
 public class DubBundle {
@@ -30,12 +32,25 @@ public class DubBundle {
 	public final String version;
 	public final String[] srcFolders;
 	public final Path[] effectiveSrcFolders;
+	public final List<String> sourceFiles;
+	public final List<String> importFiles;
+	
 	public final DubDependecyRef[] dependencies;
 	public final String targetName;
 	public final String targetPath;
 	
-	public DubBundle(Path location, String name, DubBundleException error, String version, String[] srcFolders,
-			Path[] effectiveSrcFolders, DubDependecyRef[] dependencies, String targetName, String targetPath) {
+	public DubBundle(
+			Path location, 
+			String name, 
+			DubBundleException error, 
+			String version, 
+			String[] srcFolders,
+			Path[] effectiveSrcFolders, 
+			List<String> sourceFiles,
+			List<String> importFiles,
+			DubDependecyRef[] dependencies, 
+			String targetName, 
+			String targetPath) {
 		this.location = location == null ? null : location.toAbsolutePath();
 		this.name = assertNotNull(name);
 		this.error = error;
@@ -44,6 +59,8 @@ public class DubBundle {
 		this.srcFolders = srcFolders;
 		this.effectiveSrcFolders = nullToEmpty(effectiveSrcFolders, Path.class);
 		this.dependencies = nullToEmpty(dependencies, DubDependecyRef.class);
+		this.sourceFiles = CollectionUtil.nullToEmpty(sourceFiles);
+		this.importFiles = CollectionUtil.nullToEmpty(sourceFiles); /*BUG here*/
 		this.targetName = targetName;
 		this.targetPath = targetPath;
 		
@@ -53,7 +70,7 @@ public class DubBundle {
 	}
 	
 	public DubBundle(Path location, String name, DubBundleException error) {
-		this(location, name, error, null, null, null, null, null, null);
+		this(location, name, error, null, null, null, null, null, null, null, null);
 	}
 	
 	public String getBundleName() {
