@@ -217,7 +217,7 @@ public class DeeParserSourceTests extends CommonTemplatedSourceBasedTest {
 		return correctedParseSource;
 	}
 	
-	protected static final Map<String,ParserErrorTypes> errorNameToType = NewUtils.initMap(
+	protected static final Map<String,ParserErrorTypes> errorNameToType = NewUtils.newHashMap(
 		Pair.create("ITC", ParserErrorTypes.INVALID_TOKEN_CHARACTERS),
 		Pair.create("MT", ParserErrorTypes.MALFORMED_TOKEN),
 		Pair.create("MTC", ParserErrorTypes.MALFORMED_TOKEN),

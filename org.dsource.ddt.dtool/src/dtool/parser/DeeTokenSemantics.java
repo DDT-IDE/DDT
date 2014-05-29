@@ -55,7 +55,7 @@ public class DeeTokenSemantics {
 		}
 	}
 	
-	protected static final Map<String, Boolean> traitsIdMapper = NewUtils.initMap(
+	protected static final Map<String, Boolean> traitsIdMapper = NewUtils.newHashMap(
 		Pair.create("isAbstractClass", true),
 		Pair.create("isArithmetic", true),
 		Pair.create("isAssociativeArray", true),
@@ -102,7 +102,7 @@ public class DeeTokenSemantics {
 		return createError(ParserErrorTypes.INVALID_TRAITS_ID, traitsId, null);
 	}
 	
-	protected static final Map<String, Boolean> attribIdMapper = NewUtils.initMap(
+	protected static final Map<String, Boolean> attribIdMapper = NewUtils.newHashMap(
 		Pair.create("property", true),
 		Pair.create("safe", true),
 		Pair.create("trusted", true),

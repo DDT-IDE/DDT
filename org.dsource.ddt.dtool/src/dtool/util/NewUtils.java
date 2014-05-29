@@ -160,21 +160,16 @@ public class NewUtils {
 	}
 	
 	@SafeVarargs
-	public static <K, V> HashMap<K, V> initMap(Pair<K, V>... entries) {
-		HashMap<K, V> hashMap = new HashMap<K, V>();
+	public static <K, V> HashMap<K, V> newHashMap(Pair<K, V>... entries) {
+		return addEntries(new HashMap<K, V>(), entries);
+	}
+	
+	@SafeVarargs
+	public static <K, V> HashMap<K, V> addEntries(HashMap<K, V> hashMap, Pair<K, V>... entries) {
 		for (Pair<K,V> pair : entries) {
 			hashMap.put(pair.getFirst(), pair.getSecond());
 		}
 		return hashMap;
-	}
-	
-	public static <T> Iterable<T> iteratorAsIterable(final Iterator<T> iter) {
-		return new Iterable<T>() {
-			@Override
-			public Iterator<T> iterator() {
-				return iter;
-			}
-		};
 	}
 	
 	public static final int EOF = -1;
