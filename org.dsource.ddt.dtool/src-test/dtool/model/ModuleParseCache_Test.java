@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.model;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -65,8 +66,7 @@ public class ModuleParseCache_Test {
 		assertTrue(mpm.getParsedModule(cuPath) == parsedModule);
 		
 		FileUtil.writeStringToFile(CU_PATH.toFile(), SOURCE1, StringUtil.UTF8);
-		assertTrue(mpm.getParsedModule(CU_PATH).source.equals(SOURCE1));
-		
+		assertEquals(mpm.getParsedModule(CU_PATH).source, SOURCE1);
 		
 		// Test caching
 		checkGetParsedModule(CU_PATH, WC_SOURCE);

@@ -68,7 +68,9 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 		}
 		
 		String moduleName = nullToOther(explicitModuleName, DEFAULT_MODULE_NAME);
-		mr = new TestsWorkspaceModuleResolver(scriptProject, moduleName, testCase.source);
+		TestsWorkspaceModuleResolver tmr = new TestsWorkspaceModuleResolver(scriptProject, moduleName, testCase.source);
+		mr = tmr;
+		mrTestCleanup = tmr;
 		
 		sourceModule = (ISourceModule) DLTKCore.create(getModuleResolver().customFile);
 		checkModuleSetupConsistency();

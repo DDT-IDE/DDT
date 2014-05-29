@@ -36,6 +36,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		
 		if(projectFolderName == null || projectFolderName.isEmpty()) {
 			mr = new TestsNullModuleResolver();
+			mrTestCleanup = new TestsNullModuleResolver();
 			return;
 		}
 		TestsSimpleModuleResolver existingMR = moduleResolvers.get(projectFolderName);
@@ -48,6 +49,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 			existingMR.setExtraModule(moduleName, parseResult);
 		}
 		mr = existingMR;
+		mrTestCleanup = existingMR;
 	}
 	
 	@Override

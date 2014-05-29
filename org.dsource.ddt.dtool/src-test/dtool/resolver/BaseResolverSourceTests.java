@@ -87,7 +87,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	
 	/*------------------------------*/
 	
-	public interface ITestsModuleResolver extends IModuleResolver {
+	public interface ITestsModuleResolver {
 		void cleanupChanges();
 	}
 	
@@ -96,7 +96,9 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	protected static HashMap<String, TestsSimpleModuleResolver> moduleResolvers = new HashMap<>();
 	
 	protected AnnotatedSource testCase;
-	protected ITestsModuleResolver mr;
+	protected IModuleResolver mr;
+	protected ITestsModuleResolver mrTestCleanup;
+	
 	
 	protected Map<String, MetadataEntry> markers;
 	
@@ -115,7 +117,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	}
 	
 	public void doAnnotatedTestCleanup() {
-		mr.cleanupChanges();
+		mrTestCleanup.cleanupChanges();
 	}
 	
 	protected void processTestAnnotations(AnnotatedSource testCase) {

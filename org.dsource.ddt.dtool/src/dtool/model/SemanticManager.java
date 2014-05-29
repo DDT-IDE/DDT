@@ -22,20 +22,17 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.fntypes.ICallable;
-import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import dtool.dub.DubBundle;
-import dtool.dub.DubBundle.BundleFile;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParser;
-import dtool.project.DeeNamingRules;
 
 public class SemanticManager {
 	
 	protected final ITaskAgent processAgent;
 	protected final DToolServer dtoolServer;
+	protected final ModuleParseCache parseCache = ModuleParseCache.getDefault();
 	
 	protected final HashMap<Path, DubBundleDescription> bundleInfos = new HashMap<>();
 	
@@ -58,29 +55,6 @@ public class SemanticManager {
 		return processAgent.submit(new GetSemanticContextOperation(bundlePath)).get();
 	}
 	
-	public class SemanticContext {
-		
-		protected final DubBundleDescription bundleDesc;
-		protected final HashMap<ModuleFullName, Path> bundleModules;
-
-		public SemanticContext(DubBundleDescription bundleDesc) {
-			this.bundleDesc = bundleDesc;
-			DubBundle mainBundle = bundleDesc.getMainBundle();
-			assertNotNull(mainBundle.getBundleName());
-			
-			this.bundleModules = calculateBundleModules(mainBundle);
-		}
-		
-		public String getBundleId() {
-			return bundleDesc.getMainBundle().getBundleName();
-		}
-		
-		public HashMap<ModuleFullName, Path> getBundleModuleFiles() {
-			return bundleModules;
-		}
-		
-	}
-	
 	protected class GetSemanticContextOperation implements ICallable<SemanticContext, Exception> {
 		
 		protected Path bundlePath;
@@ -101,7 +75,7 @@ public class SemanticManager {
 			}
 			
 			DubBundleDescription bundleDesc = parseDubDescribe(bundlePath, processResult);
-			return new SemanticContext(bundleDesc);
+			return new SemanticContext(SemanticManager.this, bundleDesc);
 		}
 	}
 	
@@ -113,50 +87,6 @@ public class SemanticManager {
 		describeOutput = StringUtil.substringFromMatch('{', describeOutput);
 		
 		return DubDescribeParser.parseDescription(location, describeOutput);
-	}
-	
-	/* ----------------- ----------------- */
-	
-	protected HashMap<ModuleFullName, Path> calculateBundleModules(DubBundle mainBundle) {
-		HashMap<ModuleFullName, Path> hashMap = new HashMap<>();
-		
-		for (BundleFile bundleFiles : mainBundle.bundleFiles) {
-			Path filePath = MiscUtil.createValidPath(bundleFiles.filePath);
-			if(filePath == null) {
-				logError("Invalid filesystem path: " + bundleFiles.filePath);
-				continue; // ignore
-			}
-			
-			Path[] importFolders = mainBundle.getEffectiveImportPathFolders();
-			for (Path importFolder : importFolders) {
-				if(filePath.startsWith(importFolder)) {
-					Path relPath = importFolder.relativize(filePath);
-					if(relPath.getNameCount() == 0) {
-						logError("File has same path as import folder: " + filePath);
-						continue;
-					}
-					
-					ModuleFullName moduleFullName = DeeNamingRules.getModuleFullName(relPath);
-					if(!moduleFullName.isValid()) {
-						logWarning("Invalid path for a D module: " + relPath);
-						continue;
-					}
-					hashMap.put(moduleFullName, filePath);
-					
-					// continue looking, the same file can be present in multiple import paths, if nested
-					// it's not an elegant scenario, but it's probably ok to support.
-				}
-			}
-		}
-		return hashMap;
-	}
-	
-	protected void logError(String message) {
-		dtoolServer.logError(message, null);
-	}
-	
-	protected void logWarning(String message) {
-		dtoolServer.logMessage(message);
 	}
 	
 }

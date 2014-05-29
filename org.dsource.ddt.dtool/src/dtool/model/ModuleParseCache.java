@@ -162,7 +162,7 @@ public class ModuleParseCache {
 				assertNotNull(source);
 			} else if(source == null) {
 				readSource(file);
-			} else if(file.lastModified() > readTimestamp){
+			} else if(file.lastModified() > readTimestamp){ //BUG here if modified twice in same millisecond  
 				readSource(file);
 			}
 			

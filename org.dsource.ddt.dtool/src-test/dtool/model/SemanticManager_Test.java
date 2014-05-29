@@ -22,7 +22,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import dtool.dub.CommonDubTest;
-import dtool.model.SemanticManager.SemanticContext;
 import dtool.tests.DToolBaseTest;
 import dtool.tests.DToolTestResources;
 
