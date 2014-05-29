@@ -20,23 +20,15 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		super(testUIDescription, file);
 	}
 	
-	public static final class TestsNullModuleResolver extends NullModuleResolver 
-		implements ITestsModuleResolver {
-		@Override
-		public void cleanupChanges() {
-		}
-	}
-	
 	protected DeeParserResult parseResult;
 	
 	@Override
-	public void setupTestProject(String moduleName, String projectFolderName, AnnotatedSource testCase) {
+	public void prepareTestCase(String moduleName, String projectFolderName, AnnotatedSource testCase) {
 		moduleName = nullToOther(moduleName, DEFAULT_MODULE_NAME);
 		parseResult = DeeParser.parseSource(testCase.source, moduleName);
 		
 		if(projectFolderName == null || projectFolderName.isEmpty()) {
-			mr = new TestsNullModuleResolver();
-			mrTestCleanup = new TestsNullModuleResolver();
+			mr = new NullModuleResolver();
 			return;
 		}
 		TestsSimpleModuleResolver existingMR = moduleResolvers.get(projectFolderName);
@@ -47,9 +39,10 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		}
 		if(moduleName != null) {
 			existingMR.setExtraModule(moduleName, parseResult);
+		} else {
+			existingMR.setExtraModule(null, null);
 		}
 		mr = existingMR;
-		mrTestCleanup = existingMR;
 	}
 	
 	@Override

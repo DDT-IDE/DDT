@@ -39,16 +39,16 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	protected static ScriptEditor editor;
 	
 	@Override
-	public void doAnnotatedTestCleanup() {
-		super.doAnnotatedTestCleanup();
+	public void cleanupTestCase() {
+		super.cleanupTestCase();
 		
 		SWTTestUtils.________________clearEventQueue________________();
 	}
 	
 	@Override
-	public void setupTestProject_do(String explicitModuleName, String projectFolderName, AnnotatedSource testCase)
+	public void prepareTestCase_do(String explicitModuleName, String projectFolderName, AnnotatedSource testCase)
 		throws CoreException, IOException {
-		super.setupTestProject_do(explicitModuleName, projectFolderName, testCase);
+		super.prepareTestCase_do(explicitModuleName, projectFolderName, testCase);
 		
 		IFile file = (IFile) sourceModule.getResource();
 		editor = CommonDeeUITest.openDeeEditorForFile(file);

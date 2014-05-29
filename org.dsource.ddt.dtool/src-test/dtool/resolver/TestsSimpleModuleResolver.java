@@ -16,10 +16,9 @@ import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.project.CommonModuleResolver;
 import dtool.project.DeeNamingRules;
-import dtool.resolver.BaseResolverSourceTests.ITestsModuleResolver;
 import dtool.tests.DToolBaseTest;
 
-public final class TestsSimpleModuleResolver extends CommonModuleResolver implements ITestsModuleResolver {
+public final class TestsSimpleModuleResolver extends CommonModuleResolver {
 	
 	protected File projectFolder;
 	protected Map<String, DeeParserResult> modules = new HashMap<>();
@@ -35,12 +34,6 @@ public final class TestsSimpleModuleResolver extends CommonModuleResolver implem
 	public void setExtraModule(String extraModuleName, DeeParserResult extraModuleResult) {
 		this.extraModuleName = extraModuleName;
 		this.extraModuleResult = extraModuleResult;
-	}
-	
-	@Override
-	public void cleanupChanges() {
-		extraModuleName = null;
-		extraModuleResult = null;
 	}
 	
 	public void initModules(File projectFolder, String packagePath) {

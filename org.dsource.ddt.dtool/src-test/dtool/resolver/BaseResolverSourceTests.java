@@ -87,17 +87,12 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	
 	/*------------------------------*/
 	
-	public interface ITestsModuleResolver {
-		void cleanupChanges();
-	}
-	
 	public static final String DEFAULT_MODULE_NAME = "_dummy";
 	
 	protected static HashMap<String, TestsSimpleModuleResolver> moduleResolvers = new HashMap<>();
 	
 	protected AnnotatedSource testCase;
 	protected IModuleResolver mr;
-	protected ITestsModuleResolver mrTestCleanup;
 	
 	
 	protected Map<String, MetadataEntry> markers;
@@ -112,12 +107,8 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 			this.testCase = testCase;
 			processTestAnnotations(testCase);
 		} finally {
-			doAnnotatedTestCleanup();
+			cleanupTestCase();
 		}
-	}
-	
-	public void doAnnotatedTestCleanup() {
-		mrTestCleanup.cleanupChanges();
 	}
 	
 	protected void processTestAnnotations(AnnotatedSource testCase) {
@@ -145,7 +136,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 			testsProjectDirName = emptyAsNull(testsProjectDirName);
 		}
 		
-		setupTestProject(testsModuleName, testsProjectDirName, testCase);
+		prepareTestCase(testsModuleName, testsProjectDirName, testCase);
 		assertNotNull(mr);
 		
 		resolverTestsLog.println("-----");
@@ -153,7 +144,10 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		resolverTestsLog.println("----------  ----------");
 	}
 	
-	public abstract void setupTestProject(String moduleName, String projectFolderName, AnnotatedSource testCase);
+	public abstract void prepareTestCase(String moduleName, String projectFolderName, AnnotatedSource testCase);
+	
+	public void cleanupTestCase() {
+	}
 	
 	/*----------------------------------------*/
 	

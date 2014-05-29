@@ -17,12 +17,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 
-import dtool.resolver.BaseResolverSourceTests.ITestsModuleResolver;
-
 /**
- * Module resolver helper for the ResolverSourceTests fixture
+ * Module resolver helper for the {@link CoreResolverSourceTests} fixture
  */
-public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver implements ITestsModuleResolver {
+public class TestsWorkspaceModuleResolver {
 	
 	protected final IFile customFile;
 	protected final boolean customFileRequiresCleanup;
@@ -31,7 +29,6 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 	
 	public TestsWorkspaceModuleResolver(IScriptProject scriptProject, String moduleName, String source) 
 		throws IOException, CoreException {
-		super(scriptProject);
 		this.scriptProject = scriptProject;
 		
 		if(moduleName == null) {
@@ -63,7 +60,6 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 		}
 	}
 	
-	@Override
 	public void cleanupChanges() {
 		try {
 			doCleanupChanges();
@@ -83,7 +79,7 @@ public class TestsWorkspaceModuleResolver extends DeeProjectModuleResolver imple
 		}
 	}
 	
-	public static IScriptProject createTestsWorkspaceProject(File projectSourceDir) throws CoreException {
+	public static IScriptProject createProjectForResolverTestCase(File projectSourceDir) throws CoreException {
 		String projectName = projectSourceDir == null ? "r__emptyProject" : "r_" + projectSourceDir.getName();
 		
 		IScriptProject resolverProject = BaseDeeTest.createAndOpenDeeProject(projectName);

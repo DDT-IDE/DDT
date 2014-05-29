@@ -44,47 +44,44 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	
 	protected static HashMap<String, IScriptProject> fixtureProjects = new HashMap<>();
 	
+	protected TestsWorkspaceModuleResolver mrTestCleanup;
 	protected ISourceModule sourceModule;
 	protected IModuleSource moduleSource;
 	
 	
 	@Override
-	public void setupTestProject(String moduleName, String projectFolderName, AnnotatedSource testCase) {
+	public void prepareTestCase(String moduleName, String projectFolderName, AnnotatedSource testCase) {
 		try {
-			setupTestProject_do(moduleName, projectFolderName, testCase);
+			prepareTestCase_do(moduleName, projectFolderName, testCase);
 		} catch(CoreException | IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}
 	
-	public void setupTestProject_do(String explicitModuleName, String projectFolderName, AnnotatedSource testCase)
+	public void prepareTestCase_do(String explicitModuleName, String projectFolderName, AnnotatedSource testCase)
 		throws CoreException, IOException {
 		IScriptProject scriptProject = fixtureProjects.get(projectFolderName /*Can be null*/);
 		
 		if(scriptProject == null) {
 			File projectDir = projectFolderName == null ? null : getProjectDirectory(projectFolderName);
-			scriptProject = TestsWorkspaceModuleResolver.createTestsWorkspaceProject(projectDir);
+			scriptProject = TestsWorkspaceModuleResolver.createProjectForResolverTestCase(projectDir);
 			fixtureProjects.put(projectFolderName, scriptProject);
 		}
 		
 		String moduleName = nullToOther(explicitModuleName, DEFAULT_MODULE_NAME);
-		TestsWorkspaceModuleResolver tmr = new TestsWorkspaceModuleResolver(scriptProject, moduleName, testCase.source);
-		mr = tmr;
-		mrTestCleanup = tmr;
+		mrTestCleanup = new TestsWorkspaceModuleResolver(scriptProject, moduleName, testCase.source);
+		mr = new DeeProjectModuleResolver(scriptProject);
 		
-		sourceModule = (ISourceModule) DLTKCore.create(getModuleResolver().customFile);
+		sourceModule = (ISourceModule) DLTKCore.create(mrTestCleanup.customFile);
 		checkModuleSetupConsistency();
 		
 		IModelElement modelElement = projectFolderName == null ? null : sourceModule;
 		moduleSource = new ModuleSource(explicitModuleName, modelElement, testCase.source);
 	}
 	
-	protected TestsWorkspaceModuleResolver getModuleResolver() {
-		return (TestsWorkspaceModuleResolver) mr; 
-	}
-	
-	protected IScriptProject getScriptProject() {
-		return getModuleResolver().scriptProject;
+	@Override
+	public void cleanupTestCase() {
+		mrTestCleanup.cleanupChanges();
 	}
 	
 	@Override
