@@ -17,12 +17,16 @@ public class DToolServer {
 	
 	protected static final DToolServer instance = new DToolServer();
 	
-	protected static DToolServer getInstance() {
+	public static DToolServer getInstance() {
 		return instance;
 	}
 	
-	protected static ITaskAgent getProcessAgent() {
+	public static ITaskAgent getProcessAgent() {
 		return getInstance().dubProcessAgent;
+	}
+	
+	public static SemanticManager getSemanticManager() {
+		return getInstance().semanticManager;
 	}
 	
 	/* ----------------- ----------------- */
@@ -40,7 +44,7 @@ public class DToolServer {
 		logMessage("DTool started");
 	}
 	
-	public void shutdown() {
+	protected void shutdown() {
 		dubProcessAgent.shutdownNow();
 	}
 	

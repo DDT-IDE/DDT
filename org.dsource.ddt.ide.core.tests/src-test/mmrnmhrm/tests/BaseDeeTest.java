@@ -9,6 +9,7 @@ import java.io.File;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.core.ExceptionAdapter;
+import melnorme.utilbox.tests.TestsWorkingDir;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.core.compiler_installs.GDCInstallType;
@@ -33,8 +34,6 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import org.junit.After;
 import org.junit.Before;
 
-import dtool.tests.DToolTestResources;
-
 /**
  * Initializes a common Dee test setup:
  * - No autobuild, no DLTK indexer, creates mock compiler installs. 
@@ -44,8 +43,6 @@ import dtool.tests.DToolTestResources;
 public abstract class BaseDeeTest extends CommonCoreTest {
 	
 	static {
-		DToolResourcesWorkingDirAdapter.initialize();
-		
 		disableWorkspaceAutoBuild();
 		disableDLTKIndexer();
 		
@@ -89,7 +86,7 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 	
 	protected static void setupTestDeeInstalls() {
 		try {
-			File destFolder = new File(DToolTestResources.getWorkingDir(), "deeCompilerInstalls");
+			File destFolder = new File(TestsWorkingDir.getWorkingDir(), "deeCompilerInstalls");
 			DeeCoreTestResources.copyTestFolderContentsFromDeeResource("deeCompilerInstalls", destFolder);
 		} catch(CoreException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);

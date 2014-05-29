@@ -11,17 +11,26 @@
 package melnorme.lang.ide.core.tests;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.tests.utils.ErrorLogListener;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.tests.CommonTest;
+import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -33,6 +42,10 @@ import org.junit.BeforeClass;
  * when running as plugin test. 
  */
 public abstract class CommonCoreTest extends CommonTest {
+	
+	static {
+		initializeWorkingDirAsEclipseInstanceLocation();
+	}
 	
 	protected static ErrorLogListener logErrorListener;
 	
@@ -54,6 +67,17 @@ public abstract class CommonCoreTest extends CommonTest {
 	@After
 	public void checkLogErrorListener() throws Throwable {
 		logErrorListener.checkErrors();
+	}
+	
+	private static void initializeWorkingDirAsEclipseInstanceLocation() {
+		Location instanceLocation = Platform.getInstanceLocation();
+		try {
+			URI uri = instanceLocation.getURL().toURI();
+			String workingDirPath = new File(uri).getAbsolutePath();
+			TestsWorkingDir.initWorkingDir(workingDirPath);
+		} catch (URISyntaxException e) {
+			throw assertFail();
+		}
 	}
 	
 	/* ----------------- utilities ----------------- */

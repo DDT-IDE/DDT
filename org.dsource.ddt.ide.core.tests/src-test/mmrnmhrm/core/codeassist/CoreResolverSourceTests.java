@@ -19,11 +19,13 @@ import java.util.HashMap;
 
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.DeeCoreTestResources;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
@@ -42,9 +44,9 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 		super(testUIDescription, file);
 	}
 	
-	protected static HashMap<String, IScriptProject> fixtureProjects = new HashMap<>();
+	protected static HashMap<String, IScriptProject> defaultFixtureProjects = new HashMap<>();
 	
-	protected TestsWorkspaceModuleResolver mrTestCleanup;
+	protected TestsProjectFileOverlay fixtureSourceOverlay;
 	protected ISourceModule sourceModule;
 	protected IModuleSource moduleSource;
 	
@@ -60,28 +62,53 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	
 	public void prepareTestCase_do(String explicitModuleName, String projectFolderName, AnnotatedSource testCase)
 		throws CoreException, IOException {
-		IScriptProject scriptProject = fixtureProjects.get(projectFolderName /*Can be null*/);
+		IScriptProject scriptProject = defaultFixtureProjects.get(projectFolderName /*Can be null*/);
 		
 		if(scriptProject == null) {
 			File projectDir = projectFolderName == null ? null : getProjectDirectory(projectFolderName);
-			scriptProject = TestsWorkspaceModuleResolver.createProjectForResolverTestCase(projectDir);
-			fixtureProjects.put(projectFolderName, scriptProject);
+			scriptProject = createProjectForResolverTestCase(projectDir);
+			defaultFixtureProjects.put(projectFolderName, scriptProject);
 		}
 		
 		String moduleName = nullToOther(explicitModuleName, DEFAULT_MODULE_NAME);
-		mrTestCleanup = new TestsWorkspaceModuleResolver(scriptProject, moduleName, testCase.source);
+		fixtureSourceOverlay = new TestsProjectFileOverlay(scriptProject, moduleName, testCase.source);
+		
 		mr = new DeeProjectModuleResolver(scriptProject);
 		
-		sourceModule = (ISourceModule) DLTKCore.create(mrTestCleanup.customFile);
+		sourceModule = (ISourceModule) DLTKCore.create(fixtureSourceOverlay.overlayedFile);
 		checkModuleSetupConsistency();
 		
 		IModelElement modelElement = projectFolderName == null ? null : sourceModule;
 		moduleSource = new ModuleSource(explicitModuleName, modelElement, testCase.source);
+		
+		if(moduleName == CoreResolverSourceTests.DEFAULT_MODULE_NAME) {
+			// Avoid doing TestsProjectFileOverlay cleanup if it is not necessary. 
+			// This is done for performance reasons, 
+			// since UI tests gets slow if a file with an attached editor gets deleted
+			// (Opening an editor is somewhat expensive apparently)
+			fixtureSourceOverlay = null;
+		}
+	}
+	
+	public static IScriptProject createProjectForResolverTestCase(File projectSourceDir) throws CoreException {
+		String projectName = projectSourceDir == null ? "r__emptyProject" : "r_" + projectSourceDir.getName();
+		
+		IScriptProject resolverProject = BaseDeeTest.createAndOpenDeeProject(projectName);
+		resolverProject.setRawBuildpath(new IBuildpathEntry[] {}, null); // Remove library entry
+		
+		if(projectSourceDir == null) {
+			DeeCoreTestResources.addSourceFolder(resolverProject.getProject(), null);
+			return resolverProject;
+		}
+		DeeCoreTestResources.createSrcFolderFromDirectory(projectSourceDir, resolverProject, "src-dtool");
+		return resolverProject;
 	}
 	
 	@Override
 	public void cleanupTestCase() {
-		mrTestCleanup.cleanupChanges();
+		if(fixtureSourceOverlay != null) {
+			fixtureSourceOverlay.cleanupChanges();
+		}
 	}
 	
 	@Override

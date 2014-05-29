@@ -13,5 +13,5 @@
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.dsource.ddt.dtool"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DDTool.TestResourcesDir=${workspace_loc:/org.dsource.ddt.dtool/testdata}&#13;&#10;-DDTool.TestsWorkingDir=${workspace_loc}/_runtime-tests"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DDTool.TestResourcesDir=${workspace_loc:/org.dsource.ddt.dtool/testdata}&#13;&#10;-DMelnorme.TestsWorkingDir=${workspace_loc}/_runtime-tests"/>
 </launchConfiguration>

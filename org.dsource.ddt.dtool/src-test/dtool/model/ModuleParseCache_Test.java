@@ -19,22 +19,21 @@ import java.nio.file.Path;
 
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import dtool.dub.CommonDubTest;
-import dtool.model.ModuleParseCache;
 import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.tests.DToolTestResources;
 import dtool.tests.utils.MiscFileUtils;
 
 public class ModuleParseCache_Test {
 	
 	public static final Path XPTO_BUNDLE_PATH = CommonDubTest.XPTO_BUNDLE_PATH;
 	
-	public static final Path WORKING_DIR = DToolTestResources.getWorkingDir().toPath();
+	public static final Path WORKING_DIR = TestsWorkingDir.getWorkingDir().toPath();
 	public static final Path TEST_WORKING_DIR = WORKING_DIR.resolve(ModuleParseCache_Test.class.getSimpleName());
 	
 	protected static final Path CU_PATH = TEST_WORKING_DIR.resolve("app.d");

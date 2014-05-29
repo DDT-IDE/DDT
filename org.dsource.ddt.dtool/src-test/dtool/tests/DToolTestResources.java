@@ -11,7 +11,6 @@
 
 package dtool.tests;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
@@ -25,7 +24,6 @@ import dtool.tests.utils.MiscFileUtils;
 public class DToolTestResources {
 	
 	protected static final String TEST_RESOURCES_BASE_DIR_PROPERTY = DToolTests.DTOOL_PREFIX + "TestResourcesDir";
-	protected static final String TEST_RESOURCES_WORKING_DIR_PROPERTY = DToolTests.DTOOL_PREFIX + "TestsWorkingDir";
 	
 	protected static final String TESTDATA = "testdata";
 	
@@ -35,7 +33,6 @@ public class DToolTestResources {
 	public static synchronized DToolTestResources getInstance() {
 		if(instance == null) {
 			instance = new DToolTestResources();
-			initWorkingdir(); // attempt default init
 		}
 		return instance;
 	}
@@ -67,38 +64,6 @@ public class DToolTestResources {
 			return getTestResource(segments).getCanonicalFile().toPath();
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-	}
-	
-	protected static String testsWorkingDir;
-	
-	protected static void initWorkingDir(String workingDir) {
-		assertTrue(workingDir != null);
-		testsWorkingDir = workingDir;
-		
-		System.out.println("====>> WORKING DIR: " + testsWorkingDir);
-		
-		File file = new File(testsWorkingDir);
-		if(!file.exists()) {
-			file.mkdir();
-		}
-	}
-	
-	public static File getWorkingDir() {
-		getInstance();
-		assertNotNull(testsWorkingDir);
-		File file = new File(testsWorkingDir);
-		assertTrue(file.exists() && file.isDirectory());
-		return file;
-	}
-	
-	protected static void initWorkingdir() {
-		// default init:
-		String property = System.getProperty(TEST_RESOURCES_WORKING_DIR_PROPERTY);
-		if(property != null) {
-			initWorkingDir(property);
-		} else {
-			initWorkingDir(System.getProperty("java.io.tmpdir") + "/_tests_workingdir");
 		}
 	}
 	

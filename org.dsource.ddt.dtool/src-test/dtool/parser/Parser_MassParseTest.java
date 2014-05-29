@@ -12,6 +12,7 @@ import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
+import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -76,7 +77,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 	}
 	
 	public static File getMassParseUnpackedResource(String... segments) {
-		File unpackedRoot = MiscFileUtils.getFile(DToolTestResources.getWorkingDir(), COMMON_UNPACK);
+		File unpackedRoot = MiscFileUtils.getFile(TestsWorkingDir.getWorkingDir(), COMMON_UNPACK);
 		return MiscFileUtils.getFile(unpackedRoot, segments);
 	}
 	
