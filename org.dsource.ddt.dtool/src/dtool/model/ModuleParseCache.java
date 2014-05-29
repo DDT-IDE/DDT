@@ -50,7 +50,7 @@ public class ModuleParseCache {
 		if(path != null && path.isAbsolute()) {
 			return getParsedModule(path, source);
 		}
-		String moduleNameFromFilePath = DeeNamingRules.getModuleNameFromFilePath(freeformFilePath);
+		String moduleNameFromFilePath = DeeNamingRules.getDefaultModuleName(path);
 		ModuleEntry entry = updateEntry(freeformFilePath, null, moduleNameFromFilePath);
 		return entry.getParsedModuleWithWorkingCopySource(source);
 	}
@@ -105,7 +105,7 @@ public class ModuleParseCache {
 		assertNotNull(filePath);
 		filePath = validatePath(filePath);
 		String key = getKeyFromPath(filePath);
-		String defaultModuleName = DeeNamingRules.getModuleNameFromFilePath(filePath);
+		String defaultModuleName = DeeNamingRules.getDefaultModuleName(filePath);
 		return updateEntry(key, filePath, defaultModuleName);
 	}
 	

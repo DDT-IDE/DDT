@@ -111,6 +111,22 @@ public final class StringUtil {
 		}
 		return strs;
 	}
+	
+	/* ----------------- queries ----------------- */
+	
+	/** @return the number of ocurrences of given character in given string */
+	public static int occurrenceCount(String string, char character) {
+		int count = 0;
+		
+		for(int fromIndex = 0; true ; count++, fromIndex++ ) {
+			fromIndex = string.indexOf(character, fromIndex);
+			if(fromIndex == -1) {
+				return count;
+			}
+		}
+	}
+	
+	/* ----------------- modifications ----------------- */
 
 	/** @return str with the given range (repOffset and repLen) substituted for repStr. */
 	public static String replaceStr(String str, int repOffset, int repLen, String repStr) {
@@ -243,6 +259,24 @@ public final class StringUtil {
 			sb = sb.append(str);
 		
 		return sb.toString();
+	}
+	
+	/** Splits given string acording to given delimiter.
+	 * @return an array with all the segments from the split string. */
+	public static String[] splitString(String string, char delimiter) {
+		final int count = occurrenceCount(string, delimiter);
+		String[] segments = new String[count + 1];
+		
+		int startIx = 0;
+		
+		for (int i = 0; i < count; i++) {
+			int endIx = string.indexOf(delimiter, startIx);
+			segments[i] = string.substring(startIx, endIx);
+			startIx = endIx + 1;
+		}
+		
+		segments[count] = string.substring(startIx);
+		return segments;
 	}
 	
 }

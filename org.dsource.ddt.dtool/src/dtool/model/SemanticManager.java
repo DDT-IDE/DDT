@@ -131,10 +131,14 @@ public class SemanticManager {
 			for (Path importFolder : importFolders) {
 				if(filePath.startsWith(importFolder)) {
 					Path relPath = importFolder.relativize(filePath);
+					if(relPath.getNameCount() == 0) {
+						logError("File has same path as import folder: " + filePath);
+						continue;
+					}
 					
-					ModuleFullName moduleFullName = DeeNamingRules.getModuleFullNameFromPath(relPath);
-					if(moduleFullName == null) {
-						logError("Invalid path for a D module: " + relPath);
+					ModuleFullName moduleFullName = DeeNamingRules.getModuleFullName(relPath);
+					if(!moduleFullName.isValid()) {
+						logWarning("Invalid path for a D module: " + relPath);
 						continue;
 					}
 					hashMap.put(moduleFullName, filePath);
@@ -149,6 +153,10 @@ public class SemanticManager {
 	
 	protected void logError(String message) {
 		dtoolServer.logError(message, null);
+	}
+	
+	protected void logWarning(String message) {
+		dtoolServer.logMessage(message);
 	}
 	
 }

@@ -1,7 +1,7 @@
 package dtool.project;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
-import static melnorme.utilbox.misc.IteratorUtil.iterable;
 
 import java.nio.file.Path;
 
@@ -19,6 +19,7 @@ public class DeeNamingRules {
 	
 	private static final String DEE_FILE_EXTENSION = ".d";
 	private static final String DEE_HEADERFILE_EXTENSION = ".di";
+	
 	public static final String[] VALID_EXTENSIONS = array(DEE_FILE_EXTENSION, DEE_HEADERFILE_EXTENSION);
 	
 	public static boolean isValidDIdentifier(String text) {
@@ -50,6 +51,61 @@ public class DeeNamingRules {
 		return true;	
 	}
 	
+	/* ----------------- ----------------- */
+	
+	public static ModuleFullName getModuleFullName(Path filePath) {
+		if(filePath.getNameCount() == 0)
+			return null;
+		
+		int count = filePath.getNameCount();
+		// TODO: "package.d" rule /*BUG here*/
+		
+		String[] segments = new String[count];
+		
+		for (int i = 0; i < count - 1; i++) {
+			segments[i] = filePath.getName(i).toString();
+		}
+		
+		String fileName = filePath.getFileName().toString();
+		segments[count - 1] = getDefaultModuleNameFromFileName(fileName);
+		return new ModuleFullName(segments);
+	}
+	
+	public static String getDefaultModuleNameFromFileName(String fileName) {
+		return StringUtil.substringUntilMatch(fileName, ".");
+	}
+	
+	public static String getDefaultModuleName(Path filePath) {
+		Path fileName = filePath.getFileName();
+		assertNotNull(fileName);
+		return getDefaultModuleNameFromFileName(fileName.toString());
+	}
+	
+	/* ----------------- ----------------- */
+	
+	/**
+	 * @return The fully qualified name of the module with given packagePath and given fileName,
+	 * or null if this compilation has a name or path that cannot be imported.
+	 * The fully qualified name is the name by which the module can be imported.
+	 * @param packagePath package path separated by "/"
+	 * @param fileName the compilation unit file name
+	 */
+	public static String getModuleFQNameFromFilePath(String packagePath, String fileName) {
+		packagePath = StringUtil.trimEnding(packagePath, "/");
+		String packageName = packagePath.replace("/", ".");
+		
+		if(fileName.equals("package.d") && !packageName.isEmpty()) {
+			return packageName;
+		} else {
+			if(!DeeNamingRules.isValidCompilationUnitName(fileName)) {
+				return null;
+			}
+			String moduleName = getDefaultModuleNameFromFileName(fileName);
+			return packageName.isEmpty() ? moduleName : packageName + "." + moduleName;
+		}
+		
+	}
+	
 	/** @return Whether given fileName is a strictly valid compilationUnitName. 
 	 * For a compilation unit name to be strictly valid, one must be able to import it in some way. */
 	public static boolean isValidCompilationUnitName(String fileName) {
@@ -57,7 +113,7 @@ public class DeeNamingRules {
 	}
 	
 	public static boolean isValidCompilationUnitName(String fileName, boolean strict) {
-		String fileNameWithoutExtension = getModuleNameFromFileName(fileName);
+		String fileNameWithoutExtension = getDefaultModuleNameFromFileName(fileName);
 		String fileExtension = fileName.substring(fileNameWithoutExtension.length());
 		
 		return strict ?
@@ -88,69 +144,6 @@ public class DeeNamingRules {
 	
 	public static boolean isValidPackageNamePart(String partname, boolean strict) {
 		return strict ? isValidDIdentifier(partname) : isValidDAlphaNumeric(partname);
-	}
-	
-	public static String getModuleNameFromFilePath(String filePath) {
-		// Note: we dont convert filePath to a java.nio.file.Path so that 
-		// this method can handle OS-invalid path names as well.
-		return getModuleNameFromFileName(StringUtil.substringAfterMatch(filePath, "/"));
-	}
-	
-	public static String getModuleNameFromFileName(String fileName) {
-		return StringUtil.substringUntilMatch(fileName, ".");
-	}
-	
-	public static String getModuleNameFromFilePath(Path filePath) {
-		if(filePath.getNameCount() == 0)
-			return null;
-		return getModuleNameFromFileName(filePath.getFileName().toString());
-	}
-	
-	/**
-	 * @return The fully qualified name of the module with given packagePath and given fileName,
-	 * or null if this compilation has a name or path that cannot be imported.
-	 * The fully qualified name is the name by which the module can be imported.
-	 * @param packagePath package path separated by "/"
-	 * @param fileName the compilation unit file name
-	 */
-	public static String getModuleFQNameFromFilePath(String packagePath, String fileName) {
-		packagePath = StringUtil.trimEnding(packagePath, "/");
-		String packageName = packagePath.replace("/", ".");
-		
-		if(fileName.equals("package.d") && !packageName.isEmpty()) {
-			return packageName;
-		} else {
-			if(!DeeNamingRules.isValidCompilationUnitName(fileName)) {
-				return null;
-			}
-			String moduleName = getModuleNameFromFileName(fileName);
-			return packageName.isEmpty() ? moduleName : packageName + "." + moduleName;
-		}
-		
-	}
-	
-	
-	/* ----------------- ----------------- */
-	
-	public static ModuleFullName getModuleFullNameFromPath(Path filePath) {
-		if(filePath.getNameCount() == 0)
-			return null;
-		
-		StringBuilder moduleNameSB = new StringBuilder();
-		
-		for (Path packagePath : iterable(filePath.getParent())) {
-			String packageName = packagePath.getFileName().toString();
-			if(!isValidPackagePathName(packageName))
-				return null;
-			moduleNameSB.append(packageName);
-			moduleNameSB.append(".");
-		}
-		
-		String fileName = filePath.getFileName().toString();
-		if(!isValidCompilationUnitName(fileName))
-			return null;
-		moduleNameSB.append(getModuleNameFromFileName(fileName));
-		return new ModuleFullName(moduleNameSB.toString());
 	}
 	
 }

@@ -12,6 +12,7 @@ package melnorme.utilbox.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.CollectionUtil.createHashSet;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,9 +29,8 @@ import java.util.Set;
 
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 /**
@@ -108,7 +108,18 @@ public class CommonTestUtils {
 		}
 	}
 	
-	/* -------------------------- */
+	/* ---- */
+	
+	public static <T> HashSet<T> removeAllCopy(Set<T> set, Collection<?> removeColl) {
+		return removeAll(createHashSet(set), removeColl);
+	}
+	
+	public static <E, T extends Set<E>> T removeAll(T set, Collection<?> removeColl) {
+		set.removeAll(removeColl);
+		return set;
+	}
+	
+	/* ----------------- util constructors ----------------- */
 	
 	@SafeVarargs
 	public static <T> T[] array(T... elems) {
@@ -137,44 +148,8 @@ public class CommonTestUtils {
 		return Collections.unmodifiableCollection(set);
 	}
 	
-	/** ---- **/
-	
-	
-	public static <T> HashSet<T> retainAllCopy(Set<T> set, Collection<?> retainColl) {
-		HashSet<T> setCopy = CollectionUtil.createHashSet(set);
-		setCopy.retainAll(retainColl);
-		return setCopy;
-	}
-	
-	public static <T> HashSet<T> removeAllCopy(Set<T> set, Collection<?> removeColl) {
-		HashSet<T> setCopy = CollectionUtil.createHashSet(set);
-		setCopy.removeAll(removeColl);
-		return setCopy;
-	}
-	
-	public static <T> String[] strmap(Collection<T> coll, Function<? super T, String> evalFunction) {
-		return ArrayUtil.map(coll, evalFunction, String.class);
-	}
-	
-	public static <T, RE, C extends Collection<RE>> C mapOut(
-		Collection<T> coll, Function<? super T, ? extends RE> evalFunction, C outColl
-	) {
-		for(T elem : coll) {
-			outColl.add(evalFunction.evaluate(elem));
-		}
-		return outColl;
-	}
-	
-	public static <T> T[] removeLast(T[] array, int count) {
-		return ArrayUtil.removeLast(array, count);
-	}
-	
-	/* -------- misc -------- */
-	
-	public static <T extends Exception> void throwIf(boolean condition, String message) throws RuntimeException {
-		if(condition) {
-			throw new RuntimeException(message);
-		}
+	public static Path path(String pathString) {
+		return MiscUtil.createValidPath(pathString);
 	}
 	
 	public static String safeToString(Object obj) {

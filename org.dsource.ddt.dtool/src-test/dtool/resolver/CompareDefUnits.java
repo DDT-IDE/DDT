@@ -1,5 +1,6 @@
 package dtool.resolver;
 
+import static dtool.resolver.DefUnitResultsChecker.strmap;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 

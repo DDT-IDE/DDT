@@ -33,7 +33,7 @@ import melnorme.utilbox.tests.CommonTest;
 
 import org.junit.Before;
 
-import dtool.project.DeeNamingRules_Test;
+import dtool.project.DeeNamingRules;
 import dtool.tests.utils.MiscFileUtils;
 import dtool.util.NewUtils;
 
@@ -113,7 +113,7 @@ public class DToolBaseTest extends CommonTest {
 					// exclude team private folder, like .svn, and other crap
 					return !childName.startsWith(".");
 				} else {
-					return addInAnyFileName || DeeNamingRules_Test.isValidCompilationUnitName(childName, false);
+					return addInAnyFileName || DeeNamingRules.isValidCompilationUnitName(childName, false);
 				}
 			}
 		};

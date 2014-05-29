@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import melnorme.utilbox.core.fntypes.Function;
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.definitions.DefUnit;
@@ -107,6 +109,10 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	
 	
 	/* ------ */
+	
+	public static <T> String[] strmap(Collection<T> coll, Function<? super T, String> evalFunction) {
+		return ArrayUtil.map(coll, evalFunction, String.class);
+	}
 	
 	public static void removeDefUnitByMarker(Collection<INamedElement> resolvedDefUnits, MetadataEntry marker) {
 		for (Iterator<INamedElement> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {

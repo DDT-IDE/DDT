@@ -67,7 +67,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
 	public String getDefaultModuleName(IModuleSource moduleSource) {
 		String fileName = moduleSource.getFileName();
-		return fileName == null ? "" : DeeNamingRules.getModuleNameFromFileName(fileName);
+		return fileName == null ? "" : DeeNamingRules.getDefaultModuleNameFromFileName(fileName);
 	}
 	
 	protected CompletionProposal createProposal(INamedElement namedElem, int ccOffset,
