@@ -10,7 +10,6 @@
 package org.eclipse.dltk.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.CoreUtil.downCast;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
@@ -91,6 +90,7 @@ public class ScriptElementImageDescriptor_Extension extends CompositeImageDescri
 	/* (non-Javadoc)
 	 * Method declared in CompositeImageDescriptor
 	 */
+	@Override
 	protected Point getSize() {
 		return fSize;
 	}
@@ -98,6 +98,7 @@ public class ScriptElementImageDescriptor_Extension extends CompositeImageDescri
 	/* (non-Javadoc)
 	 * Method declared on Object.
 	 */
+	@Override
 	public boolean equals(Object object) {		
 		if (this == object)
 			return true;
@@ -117,6 +118,7 @@ public class ScriptElementImageDescriptor_Extension extends CompositeImageDescri
 	/* (non-Javadoc)
 	 * Method declared on Object.
 	 */
+	@Override
 	public int hashCode() {
 		if( this.fBaseImage != null ) {
 			return fBaseImage.hashCode() | fSize.hashCode() + this.fFlags;
@@ -142,6 +144,7 @@ public class ScriptElementImageDescriptor_Extension extends CompositeImageDescri
 	}
 
 	
+	@Override
 	protected void drawCompositeImage( int width, int height ) {
 		ImageData bg= getImageData(fBaseImage);
 		

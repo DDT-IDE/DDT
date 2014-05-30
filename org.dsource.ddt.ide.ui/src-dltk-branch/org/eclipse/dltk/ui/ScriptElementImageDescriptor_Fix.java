@@ -81,6 +81,7 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 	/* (non-Javadoc)
 	 * Method declared in CompositeImageDescriptor
 	 */
+	@Override
 	protected Point getSize() {
 		return fSize;
 	}
@@ -88,6 +89,7 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 	/* (non-Javadoc)
 	 * Method declared on Object.
 	 */
+	@Override
 	public boolean equals(Object object) {		
 		if (object == null || !ScriptElementImageDescriptor_Fix.class.equals(object.getClass())) {			
 			return false;
@@ -106,6 +108,7 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 	/* (non-Javadoc)
 	 * Method declared on Object.
 	 */
+	@Override
 	public int hashCode() {
 		if( this.fBaseImage != null ) {
 			return fBaseImage.hashCode() | fSize.hashCode() + this.fFlags;
@@ -131,6 +134,7 @@ public class ScriptElementImageDescriptor_Fix extends CompositeImageDescriptor
 	}
 
 	
+	@Override
 	protected void drawCompositeImage( int width, int height ) {
 		ImageData bg= getImageData(fBaseImage);
 		
