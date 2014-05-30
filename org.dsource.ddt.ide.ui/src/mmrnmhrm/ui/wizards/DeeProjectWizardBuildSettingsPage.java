@@ -33,7 +33,7 @@ public class DeeProjectWizardBuildSettingsPage extends WizardPage {
 		}
 		
 		if (visible) {
-			prjBuildOptionsBlock.initializeFrom(deeNewProjectWizard.getCreatedElement());
+			prjBuildOptionsBlock.initializeFrom(deeNewProjectWizard.getCreatedElement().getProject());
 		}
 		super.setVisible(visible);
 	}

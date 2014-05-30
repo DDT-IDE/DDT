@@ -1,12 +1,10 @@
 package mmrnmhrm.ui;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.util.swt.SWTFactoryUtil_Old;
 import mmrnmhrm.core.projectmodel.DubModelManager;
 import mmrnmhrm.ui.launch.DubCommandsConsoleListener;
 import mmrnmhrm.ui.text.DeeTextTools;
 
-import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleContext;
 
 
@@ -25,7 +23,6 @@ public class DeeUIPlugin extends LangUIPlugin {
 	@Override
 	protected void doCustomStart_initialStage(BundleContext context) {
 		super.doCustomStart_initialStage(context);
-		SWTFactoryUtil_Old.enableDebugColorHelpers = Platform.inDebugMode();
 	}
 	
 	@Override

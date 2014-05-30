@@ -10,44 +10,24 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
+import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
 import mmrnmhrm.ui.preferences.DubProjectOptionsBlock;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.dialogs.PropertyPage;
 
 
-public class DubOptionsPropertyPage extends PropertyPage {
+public class DubOptionsPropertyPage extends AbstractProjectPropertyPage {
 	
 	protected final DubProjectOptionsBlock prjBuildOptionsBlock = new DubProjectOptionsBlock();
 	
 	@Override
-	protected Control createContents(Composite parent) {
-		
+	protected Control createContents(Composite parent, IProject project) {
 		noDefaultAndApplyButton();		
 		
-		if (getProject() == null) {
-			setVisible(false);
-			Label label = new Label(parent, SWT.NONE);
-			label.setText("Target not a D project.");
-			return label;
-		} else {
-			prjBuildOptionsBlock.initializeFrom(DLTKCore.create(getProject()));
-			return prjBuildOptionsBlock.createControl(parent);
-		}
-	}
-	
-	private IProject getProject() {
-		IAdaptable adaptable= getElement();
-		if(adaptable instanceof IProject) {
-			return (IProject) adaptable;
-		}
-		return (IProject) adaptable.getAdapter(IProject.class);
+		prjBuildOptionsBlock.initializeFrom(getProject());
+		return prjBuildOptionsBlock.createControl(parent);
 	}
 	
 	@Override

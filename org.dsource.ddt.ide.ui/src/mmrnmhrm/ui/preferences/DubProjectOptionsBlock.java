@@ -14,12 +14,11 @@ import melnorme.lang.jdt.ui.wizards.dialogfields.DialogField;
 import melnorme.lang.jdt.ui.wizards.dialogfields.FieldLayoutUtilExt;
 import melnorme.lang.jdt.ui.wizards.dialogfields.IDialogFieldListener;
 import melnorme.lang.jdt.ui.wizards.dialogfields.StringDialogField;
-import melnorme.util.swt.GridComposite;
 import melnorme.util.swt.SWTLayoutUtil;
 import mmrnmhrm.core.DeeCorePreferences;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -37,6 +36,8 @@ public class DubProjectOptionsBlock {
 	
 	protected IProject project;
 	
+//	protected TextComponent textComponent;
+	
 	public DubProjectOptionsBlock() {
 		fExtraOptions = new StringDialogField() {
 			@Override
@@ -46,29 +47,35 @@ public class DubProjectOptionsBlock {
 		};
 		fExtraOptions.setLabelText("Extra build options for dub build:");
 		fExtraOptions.setDialogFieldListener(new FieldListener());
+		
+//		textComponent = new TextComponent("Extra build options for dub build:") {
+//			@Override
+//			protected Text createText(Composite parent) {
+//				return new Text(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+//			}
+//		};
 	}
 	
-	public void initializeFrom(IScriptProject scriptProject) {
-		project = scriptProject.getProject();
+	public void initializeFrom(IProject project) {
+		this.project = project;
 		String dubBuildOptions = DeeCorePreferences.getDubBuildOptions(project);
 		
 		fExtraOptions.setTextWithoutUpdate(dubBuildOptions);
 	}
 	
 	public Composite createControl(Composite parent) {
-		Composite content = parent;
-		content = new GridComposite(parent);
 		
-		GridComposite rowComposite = new GridComposite(content);
-		SWTLayoutUtil.setWidthHint(rowComposite, 200);
-		SWTLayoutUtil.enableDiagonalExpand(rowComposite);
-
-		Composite comp;
+		Composite content = new Composite(parent, SWT.NONE);
+		content.setLayout(SWTLayoutUtil.createGridLayout(2));
 		
-		comp = FieldLayoutUtilExt.createCompose(rowComposite, true, fExtraOptions);
-		SWTLayoutUtil.enableDiagonalExpand(comp);
-		SWTLayoutUtil.enableDiagonalExpand(fExtraOptions.getTextControl(null));
-		SWTLayoutUtil.setHeightHint(fExtraOptions.getTextControl(null), 200);
+		FieldLayoutUtilExt.doDefaultLayout2(content, true, fExtraOptions);
+		
+		fExtraOptions.getTextControl(null).setLayoutData(
+			GridDataFactory.fillDefaults().grab(true, true).hint(200, SWT.DEFAULT).create());
+		
+//		textComponent.createComponentInlined(parent);
+//		textComponent.getTextControl().setLayoutData(
+//			GridDataFactory.fillDefaults().grab(true, true).hint(200, SWT.DEFAULT).create());
 		
 		return content;
 	}
