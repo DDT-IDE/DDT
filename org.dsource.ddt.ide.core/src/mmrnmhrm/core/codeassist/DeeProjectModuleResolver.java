@@ -40,10 +40,6 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 		this.scriptProject = scriptProject;
 	}
 	
-	public DeeProjectModuleResolver(ISourceModule sourceModule) {
-		this(sourceModule.getScriptProject());
-	}
-	
 	/** Shortcut method */
 	public ISourceModule findModuleUnit(Module module) throws ModelException {
 		return findModuleUnit(module, null);

@@ -65,9 +65,7 @@
             id="org.dsource.ddt.ide.ui.properties.DeeCompileOptionsProperties"
             name="%LangBuildOptionsPropertyPage.name">
          <enabledWhen>
-            <reference
-                  definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature">
-            </reference>
+            <reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature" />
          </enabledWhen>
       </page>
    </extension>

@@ -41,7 +41,7 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 			if(!ref.canMatch(defUnitDescriptor))
 				return true;
 			
-			DeeProjectModuleResolver mr = new DeeProjectModuleResolver(sourceModule);
+			DeeProjectModuleResolver mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
 			Collection<INamedElement> defUnits = ref.findTargetDefElements(mr, false);
 			if(defUnits == null)
 				return true;

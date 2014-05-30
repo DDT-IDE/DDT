@@ -93,7 +93,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	
 	public static PrefixDefUnitSearch doCompletionSearch(int offset, ISourceModule moduleUnit) throws ModelException {
 		DeeParserResult parseResult = ModuleParsingHandler.parseModule(moduleUnit);
-		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit);
+		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit.getScriptProject());
 		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr);
 	}
 	

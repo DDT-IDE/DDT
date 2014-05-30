@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+
    <extension
          id="nature"
          name="Dee nature"
@@ -9,6 +10,7 @@
          <run class="org.dsource.ddt.ide.core.DeeNature"/>
       </runtime>
    </extension>
+   
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
@@ -20,6 +22,7 @@
             priority="high">
       </content-type>
    </extension>
+   
    <extension
          point="org.eclipse.core.expressions.definitions">
          <!-- Deprecate this in favor of isDeeProject -->
