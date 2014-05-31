@@ -24,15 +24,18 @@ public class DubOptionsPropertyPage extends AbstractProjectPropertyPage {
 	
 	@Override
 	protected Control createContents(Composite parent, IProject project) {
-		noDefaultAndApplyButton();		
-		
 		prjBuildOptionsBlock.initializeFrom(getProject());
-		return prjBuildOptionsBlock.createControl(parent);
+		return prjBuildOptionsBlock.createComponent(parent);
 	}
 	
 	@Override
 	public boolean performOk() {
 		return prjBuildOptionsBlock.performOk();
+	}
+	
+	@Override
+	protected void performDefaults() {
+		prjBuildOptionsBlock.restoreDefaults();
 	}
 	
 }

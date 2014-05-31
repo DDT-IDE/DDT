@@ -23,11 +23,16 @@ public class DeeCorePreferences implements DeeCorePreferencesConstants {
 	}
 
 	public static String getDubBuildOptions(IProject project) {
-		return new CorePreferencesLookup(project).getString(PREF_DUB_BUILD_OPTIONS, "");
+		return new CorePreferencesLookup(project).getString(PREF_DUB_BUILD_OPTIONS, getDubBuildOptionsDefault());
+	}
+	
+	public static String getDubBuildOptionsDefault() {
+		return "";
 	}
 	
 	public static void putDubBuildOptions(IProject project, String value) {
-		getProjectPreferences(project).put(PREF_DUB_BUILD_OPTIONS, value);
+		IEclipsePreferences projectPreferences = getProjectPreferences(project);
+		projectPreferences.put(PREF_DUB_BUILD_OPTIONS, value);
 	}
 	
 	public static IEclipsePreferences getProjectPreferences(IProject project) {
