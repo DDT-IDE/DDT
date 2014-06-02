@@ -10,8 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences;
 
-import melnorme.util.swt.components.AbstractComponent;
-import melnorme.util.swt.components.fields.TextComponent;
+import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.fields.TextField;
 import mmrnmhrm.core.DeeCorePreferences;
 
 import org.eclipse.core.resources.IProject;
@@ -20,11 +20,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-public class DubProjectOptionsBlock extends AbstractComponent {
+public class DubProjectOptionsBlock extends AbstractComponentExt {
 	
 	protected IProject project;
 	
-	protected final TextComponent dubBuildExtraOptions = new TextComponent("Extra build options for dub build:") {
+	protected final TextField dubBuildExtraOptions = new TextField("Extra build options for dub build:") {
 		@Override
 		protected Text createText(Composite parent) {
 			return new Text(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -34,42 +34,36 @@ public class DubProjectOptionsBlock extends AbstractComponent {
 	public DubProjectOptionsBlock() {
 	}
 	
-	public void initializeFrom(IProject project) {
-		this.project = project;
-		
-		updateFromInput();
-	}
-	
-	protected void updateFromInput() {
-		if(dubBuildExtraOptions.isCreated()) {
-			dubBuildExtraOptions.setValue(DeeCorePreferences.getDubBuildOptions(project));
-		}
-	}
-	
 	@Override
 	protected void createContents(Composite topControl) {
 		dubBuildExtraOptions.createComponentInlined(topControl);
-		dubBuildExtraOptions.getTextControl().setLayoutData(
+		dubBuildExtraOptions.getFieldControl().setLayoutData(
 			GridDataFactory.fillDefaults().grab(true, true).hint(200, SWT.DEFAULT).create());
-		
+	}
+	
+	@Override
+	public void updateComponentFromInput() {
 		if(project != null) {
-			updateFromInput();
+			dubBuildExtraOptions.setFieldValue(DeeCorePreferences.getDubBuildOptions(project));
 		}
+	}
+	
+	// Note this can be called before the component is created
+	public void initializeFrom(IProject project) {
+		this.project = project;
+		updateComponentFromInput();
 	}
 	
 	public boolean performOk() {
 		if(project == null) {
 			return false;
 		}
-		DeeCorePreferences.putDubBuildOptions(project, dubBuildExtraOptions.getValue());
+		DeeCorePreferences.putDubBuildOptions(project, dubBuildExtraOptions.getFieldValue());
 		return true;
 	}
 	
 	public void restoreDefaults() {
-		if(project != null) {
-			dubBuildExtraOptions.setValue(DeeCorePreferences.getDubBuildOptionsDefault());
-			updateFromInput();
-		}
+		updateComponentFromInput();
 	}
 	
 }
