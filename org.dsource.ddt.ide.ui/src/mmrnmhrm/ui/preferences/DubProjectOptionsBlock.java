@@ -61,7 +61,7 @@ public class DubProjectOptionsBlock extends AbstractComponentExt {
 	}
 	
 	public void restoreDefaults() {
-		updateComponentFromInput();
+		dubBuildExtraOptions.setFieldValue(DeeCorePreferences.getDubBuildOptionsDefault());
 	}
 	
 }
